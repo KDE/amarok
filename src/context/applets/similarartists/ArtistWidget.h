@@ -93,8 +93,10 @@ protected:
     void resizeEvent( QGraphicsSceneResizeEvent *event );
 
 private:
-    void fetchPhoto();     //!< Fetch the photo of the artist
-    void queryArtist();    //!< Query collection about artist
+    void fetchPhoto();       //!< Fetch the photo of the artist
+    void fetchDescription(); //!< Fetch the artist description
+    void fetchTopTrack();    //!< Fetch the artist'stop track
+    void queryArtist();      //!< Query collection about artist
 
     /**
      * Layout the text for artist's description
@@ -182,7 +184,19 @@ private slots:
     /**
      * Handle artist photo retrieved from Last.fm
      */
-    void setImageFromInternet( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void photoFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+
+    /**
+     * Parse the xml fetched on the lastFM API for the similarArtist description.
+     * Launched when the download of the data are finished and for each similarArtists.
+     */
+    void parseArtistDescription( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+
+    /**
+     * Parse the xml fetched on the lastFM API for the similarArtist most known track.
+     * Launched when the download of the data are finished and for each similarArtists.
+     */
+    void parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
      * Open an URL
@@ -230,9 +244,6 @@ public:
 
     QString name() const;
     void setName( const QString &name );
-
-    void setDescription( const QString &artist, const QString &description );
-    void setTopTrack( const QString &artist, const QString &track );
 
     void clear();
 

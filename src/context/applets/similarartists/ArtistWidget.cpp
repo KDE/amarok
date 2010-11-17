@@ -171,9 +171,9 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_nameLabel->setText( m_artist->name() );
 
     fetchPhoto();
+    fetchDescription();
+    fetchTopTrack();
     queryArtist();
-    setDescription( m_artist->description() );
-    setTopTrack( m_artist->topTrack() );
 }
 
 ArtistWidget::~ArtistWidget()
@@ -202,11 +202,43 @@ ArtistWidget::fetchPhoto()
         return;
 
     The::networkAccessManager()->getData( m_artist->urlImage(), this,
-         SLOT(setImageFromInternet(KUrl,QByteArray,NetworkAccessManagerProxy::Error)), Qt::QueuedConnection );
+         SLOT(photoFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-ArtistWidget::setImageFromInternet( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+ArtistWidget::fetchDescription()
+{
+    // we genere the url for the demand on the lastFM Api
+    KUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/2.0/" );
+    url.addQueryItem( "method", "artist.getInfo" );
+    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+    url.addQueryItem( "artist", m_artist->name() );
+
+    The::networkAccessManager()->getData( url, this,
+         SLOT(parseArtistDescription(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+}
+
+void
+ArtistWidget::fetchTopTrack()
+{
+    // we genere the url for the demand on the lastFM Api
+    KUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/2.0/" );
+    url.addQueryItem( "method", "artist.getTopTracks" );
+    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
+    url.addQueryItem( "artist",  m_artist->name() );
+
+    The::networkAccessManager()->getData( url, this,
+         SLOT(parseArtistTopTrack(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+}
+
+void
+ArtistWidget::photoFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( url != m_artist->urlImage() )
         return;
@@ -229,6 +261,114 @@ ArtistWidget::setImageFromInternet( const KUrl &url, QByteArray data, NetworkAcc
 }
 
 void
+ArtistWidget::parseArtistDescription( const KUrl &url, QByteArray data,
+                                      NetworkAccessManagerProxy::Error e )
+{
+    Q_UNUSED( url )
+    if( e.code != QNetworkReply::NoError )
+        return;
+
+    if( data.isEmpty() )
+        return;
+
+    QString name;
+    QString summary;
+    QXmlStreamReader xml( data );
+    while( !xml.atEnd() && !xml.hasError() )
+    {
+        xml.readNext();
+        if( xml.isStartElement() && xml.name() == "artist" )
+        {
+            while( !xml.atEnd() )
+            {
+                xml.readNext();
+                if( xml.isEndElement() && xml.name() == "artist" )
+                    break;
+                if( !xml.isStartElement() )
+                    continue;
+
+                if( xml.name() == "bio" )
+                {
+                    while( !xml.atEnd() )
+                    {
+                        xml.readNext();
+                        if( xml.isEndElement() && xml.name() == "bio" )
+                            break;
+                        if( !xml.isStartElement() )
+                            continue;
+
+                        if( xml.name() == "summary" )
+                            summary = xml.readElementText().simplified();
+                        else
+                            xml.skipCurrentElement();
+                    }
+                }
+                else if( xml.name() == "name" )
+                    name = xml.readElementText();
+                else
+                    xml.skipCurrentElement();
+            }
+        }
+    }
+    setDescription( summary );
+}
+
+void
+ArtistWidget::parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+{
+    Q_UNUSED( url )
+    if( e.code != QNetworkReply::NoError )
+        return;
+
+    if( data.isEmpty() )
+        return;
+
+    QString artist;
+    QString topTrack;
+    QXmlStreamReader xml( data );
+    while( !xml.atEnd() && !xml.hasError() )
+    {
+        xml.readNext();
+        if( xml.isStartElement() && xml.name() == "track" )
+        {
+            while( !xml.atEnd() )
+            {
+                xml.readNext();
+                if( xml.isEndElement() && xml.name() == "track" )
+                    break;
+                if( !xml.isStartElement() )
+                    continue;
+
+                if( xml.name() == "artist" )
+                {
+                    while( !xml.atEnd() )
+                    {
+                        xml.readNext();
+                        if( xml.isEndElement() && xml.name() == "artist" )
+                            break;
+                        if( !xml.isStartElement() )
+                            continue;
+
+                        if( xml.name() == "name" )
+                            artist = xml.readElementText();
+                        else
+                            xml.skipCurrentElement();
+                    }
+                }
+                else if( xml.name() == "name" )
+                    topTrack = xml.readElementText();
+                else
+                    xml.skipCurrentElement();
+            }
+        }
+
+        if( !artist.isEmpty() && !topTrack.isEmpty() )
+            break;
+    }
+    setTopTrack( topTrack );
+}
+
+void
 ArtistWidget::queryArtist()
 {
     // Figure out of this applet is present in the local collection,
@@ -243,7 +383,7 @@ ArtistWidget::queryArtist()
     qm->setAutoDelete( true );
 
     connect( qm, SIGNAL(newResultReady(QString,Meta::ArtistList)),
-             SLOT(resultReady(QString,Meta::ArtistList)), Qt::QueuedConnection );
+             SLOT(resultReady(QString,Meta::ArtistList)) );
 
     qm->run();
 }
@@ -293,11 +433,10 @@ ArtistWidget::setDescription( const QString &description )
 void
 ArtistWidget::setTopTrack( const QString &topTrack )
 {
-    m_topTrackButton->hide();
-    
     if( topTrack.isEmpty() )
     {
         m_topTrackLabel->setText( i18n("Top track not found") );
+        m_topTrackButton->hide();
     }
     else
     {
@@ -528,26 +667,6 @@ ArtistWidget::resultReady( const QString &collectionId, const Meta::TrackList &t
         m_topTrack = tracks.first();
         m_navigateButton->show();
         m_topTrackButton->show();
-    }
-}
-
-void
-ArtistsListWidget::setDescription( const QString &artist, const QString &description )
-{
-    foreach( ArtistWidget *widget, m_widgets )
-    {
-        if( widget->artist()->name() == artist )
-            widget->setDescription( description );
-    }
-}
-
-void
-ArtistsListWidget::setTopTrack( const QString &artist, const QString &track )
-{
-    foreach( ArtistWidget *widget, m_widgets )
-    {
-        if( widget->artist()->name() == artist )
-            widget->setTopTrack( track );
     }
 }
 

@@ -141,10 +141,7 @@ SimilarArtistsApplet::init()
 void
 SimilarArtistsApplet::connectSource( const QString &source )
 {
-    QStringList allowed;
-    allowed << "similarArtists" << "description" << "toptrack";
-
-    if( allowed.contains( source ) )
+    if( source == QLatin1String("similarArtists") )
         dataEngine( "amarok-similarArtists" )->connectSource( source, this );
 }
 
@@ -184,14 +181,6 @@ SimilarArtistsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
         {
             m_headerLabel->setScrollingText( i18n( "Similar Artists" ) );
         }
-    }
-    else if( source == "description" )
-    {
-        m_scroll->setDescription( artist, data["text"].toString() );
-    }
-    else if( source == "toptrack" )
-    {
-        m_scroll->setTopTrack( artist, data["track"].toString() );
     }
 }
 

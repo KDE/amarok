@@ -33,7 +33,6 @@ using namespace Context;
 
 SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
-    , m_isDelayingSetData( false )
     , m_maxArtists( 5 )
 {
     EngineController *engine = The::engineController();
@@ -120,38 +119,6 @@ SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
 }
 
 void
-SimilarArtistsEngine::artistDescriptionRequest( const QString &artistName )
-{
-    // we genere the url for the demand on the lastFM Api
-    KUrl url;
-    url.setScheme( "http" );
-    url.setHost( "ws.audioscrobbler.com" );
-    url.setPath( "/2.0/" );
-    url.addQueryItem( "method", "artist.getInfo" );
-    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-    url.addQueryItem( "artist", artistName );
-
-    The::networkAccessManager()->getData( url, this,
-         SLOT(parseArtistDescription(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-}
-
-void
-SimilarArtistsEngine::artistTopTrackRequest( const QString &artistName )
-{
-    // we genere the url for the demand on the lastFM Api
-    KUrl url;
-    url.setScheme( "http" );
-    url.setHost( "ws.audioscrobbler.com" );
-    url.setPath( "/2.0/" );
-    url.addQueryItem( "method", "artist.gettoptracks" );
-    url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
-    url.addQueryItem( "artist",  artistName );
-
-    The::networkAccessManager()->getData( url, this,
-         SLOT(parseArtistTopTrack(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-}
-
-void
 SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data,
                                            NetworkAccessManagerProxy::Error e )
 {
@@ -200,8 +167,6 @@ SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data,
             }
             SimilarArtistPtr artist( new SimilarArtist( name, match, artistUrl, imageUrl, m_artist ) );
             saList.append( artist );
-            artistDescriptionRequest( name );
-            artistTopTrackRequest( name );
         }
     }
 
@@ -210,146 +175,6 @@ SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data,
     eData[ "artist"  ] = m_artist;
     eData[ "similar" ] = qVariantFromValue( saList );
     setData( "similarArtists", eData );
-}
-
-void
-SimilarArtistsEngine::parseArtistDescription( const KUrl &url, QByteArray data,
-                                              NetworkAccessManagerProxy::Error e )
-{
-    Q_UNUSED( url )
-    if( e.code != QNetworkReply::NoError )
-        return;
-
-    if( data.isEmpty() )
-        return;
-
-    QString name;
-    QString summary;
-    QXmlStreamReader xml( data );
-    while( !xml.atEnd() && !xml.hasError() )
-    {
-        xml.readNext();
-        if( xml.isStartElement() && xml.name() == "artist" )
-        {
-            while( !xml.atEnd() )
-            {
-                xml.readNext();
-                if( xml.isEndElement() && xml.name() == "artist" )
-                    break;
-                if( !xml.isStartElement() )
-                    continue;
-
-                if( xml.name() == "bio" )
-                {
-                    while( !xml.atEnd() )
-                    {
-                        xml.readNext();
-                        if( xml.isEndElement() && xml.name() == "bio" )
-                            break;
-                        if( !xml.isStartElement() )
-                            continue;
-
-                        if( xml.name() == "summary" )
-                            summary = xml.readElementText().simplified();
-                        else
-                            xml.skipCurrentElement();
-                    }
-                }
-                else if( xml.name() == "name" )
-                    name = xml.readElementText();
-                else
-                    xml.skipCurrentElement();
-            }
-        }
-    }
-
-    Plasma::DataEngine::Data eData;
-    eData[ "artist" ] = name;
-    eData[ "text"   ] = summary;
-    m_descriptions << eData;
-    if( !m_isDelayingSetData )
-        delayedSetData();
-}
-
-void
-SimilarArtistsEngine::parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
-{
-    Q_UNUSED( url )
-    if( e.code != QNetworkReply::NoError )
-        return;
-
-    if( data.isEmpty() )
-        return;
-
-    QString artist;
-    QString topTrack;
-    QXmlStreamReader xml( data );
-    while( !xml.atEnd() && !xml.hasError() )
-    {
-        xml.readNext();
-        if( xml.isStartElement() && xml.name() == "track" )
-        {
-            while( !xml.atEnd() )
-            {
-                xml.readNext();
-                if( xml.isEndElement() && xml.name() == "track" )
-                    break;
-                if( !xml.isStartElement() )
-                    continue;
-
-                if( xml.name() == "artist" )
-                {
-                    while( !xml.atEnd() )
-                    {
-                        xml.readNext();
-                        if( xml.isEndElement() && xml.name() == "artist" )
-                            break;
-                        if( !xml.isStartElement() )
-                            continue;
-
-                        if( xml.name() == "name" )
-                            artist = xml.readElementText();
-                        else
-                            xml.skipCurrentElement();
-                    }
-                }
-                else if( xml.name() == "name" )
-                    topTrack = xml.readElementText();
-                else
-                    xml.skipCurrentElement();
-            }
-        }
-
-        if( !artist.isEmpty() && !topTrack.isEmpty() )
-            break;
-    }
-
-    Plasma::DataEngine::Data eData;
-    eData[ "artist" ] = artist;
-    eData[ "track"  ] = topTrack;
-    m_topTracks << eData;
-    if( !m_isDelayingSetData )
-        delayedSetData();
-}
-
-void
-SimilarArtistsEngine::delayedSetData()
-{
-    m_isDelayingSetData = true;
-    if( m_topTracks.isEmpty() && m_descriptions.isEmpty() )
-    {
-        m_isDelayingSetData = false;
-    }
-    else
-    {
-        if( !m_descriptions.isEmpty() )
-            setData( "description", m_descriptions.takeFirst() );
-
-        if( !m_topTracks.isEmpty() )
-            setData( "toptrack", m_topTracks.takeFirst() );
-
-        QTimer::singleShot( 50, this, SLOT(delayedSetData()) );
-    }
 }
 
 int

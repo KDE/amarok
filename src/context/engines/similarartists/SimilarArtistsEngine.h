@@ -75,22 +75,6 @@ protected:
     bool sourceRequestEvent( const QString &name );
 
 private:
-    bool m_isDelayingSetData;
-    QList<Plasma::DataEngine::Data> m_descriptions;
-    QList<Plasma::DataEngine::Data> m_topTracks;
-
-    /**
-     * Fetches the description of the artist artistName on the LastFM API.
-     * @param artistName the name of the artist
-     */
-    void artistDescriptionRequest( const QString &artistName );
-
-    /**
-     * Fetches the the most known artist track of the artist artistName on the LastFM API
-     * @param artistName the name of the artist
-     */
-    void artistTopTrackRequest( const QString &artistName );
-
     /**
      * The max number of similar artists to get
      */
@@ -116,28 +100,6 @@ private slots:
      * Launched when the download of the data are finished.
      */
     void parseSimilarArtists( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-
-    /**
-     * Parse the xml fetched on the lastFM API for the similarArtist description.
-     * Launched when the download of the data are finished and for each similarArtists.
-     */
-    void parseArtistDescription( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-
-    /**
-     * Parse the xml fetched on the lastFM API for the similarArtist most known track.
-     * Launched when the download of the data are finished and for each similarArtists.
-     */
-    void parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-
-    /**
-     * Delays setting engine data for descriptions and toptracks.
-     * When descriptions and top tracks are parsed from the xml they are added
-     * to \p m_descriptions and \p m_topTracks respectively. Then setData()
-     * is called on them one at a time with a small delay in between. This is
-     * necessary so multiple setData() is not called too closely to eachother
-     * and cause the applet to miss any data.
-     */
-    void delayedSetData();
 };
 
 #endif // SIMILARARTISTSENGINE_H
