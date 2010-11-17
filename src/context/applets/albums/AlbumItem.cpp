@@ -33,6 +33,12 @@ AlbumItem::AlbumItem()
     setEditable( false );
 }
 
+AlbumItem::~AlbumItem()
+{
+    if( m_album )
+        unsubscribeFrom( m_album );
+}
+
 void
 AlbumItem::setAlbum( Meta::AlbumPtr albumPtr )
 {
