@@ -766,23 +766,27 @@ SqlRegistry::emptyCache()
          && ( hasComposer = m_composerMutex.tryLock() )
          && ( hasLabel = m_labelMutex.tryLock() ) )
     {
-        debug() << "SqlRegistry::emptyCache is running";
+        DEBUG_BLOCK
+        #define mapCached( Cache, Key, Map, Res ) \
+        Cache[Key] = qMakePair( Map.count(), Res.join(QLatin1String(" ")).toInt() );
+
+        QMap<QString, QPair<int, int> > cachedBefore;
 
         QString query = QString( "SELECT COUNT(*) FROM albums;" );
         QStringList res = m_collection->sqlStorage()->query( query );
-        debug() << "    albums:" << m_albumMap.count() << "of" << res << "cached.";
+        mapCached( cachedBefore, "albums", m_albumMap, res );
 
         query = QString( "SELECT COUNT(*) FROM tracks;" );
         res = m_collection->sqlStorage()->query( query );
-        debug() << "     tracks:" << m_trackMap.count() << "of" << res << "cached.";
+        mapCached( cachedBefore, "tracks", m_trackMap, res );
 
         query = QString( "SELECT COUNT(*) FROM artists;" );
         res = m_collection->sqlStorage()->query( query );
-        debug() << "    artists:" << m_artistMap.count() << "of" << res << "cached.";
+        mapCached( cachedBefore, "artists", m_artistMap, res );
 
         query = QString( "SELECT COUNT(*) FROM genres;" );
         res = m_collection->sqlStorage()->query( query );
-        debug() << "     genres:" << m_genreMap.count() << "of" << res << "cached.";
+        mapCached( cachedBefore, "genres", m_genreMap, res );
 
         //this very simple garbage collector doesn't handle cyclic object graphs
         //so care has to be taken to make sure that we are not dealing with a cyclic graph
@@ -824,23 +828,41 @@ SqlRegistry::emptyCache()
         foreachCollectGarbage( QString, Meta::LabelPtr, 2, m_labelMap );
         #undef foreachCollectGarbage
 
-        debug() << "--- after run: ---";
+        QMap<QString, QPair<int, int> > cachedAfter;
 
         query = QString( "SELECT COUNT(*) FROM albums;" );
         res = m_collection->sqlStorage()->query( query );
-        debug() << "    albums:" << m_albumMap.count() << "of" << res << "cached.";
+        mapCached( cachedAfter, "albums", m_albumMap, res );
 
         query = QString( "SELECT COUNT(*) FROM tracks;" );
         res = m_collection->sqlStorage()->query( query );
-        debug() << "     tracks:" << m_trackMap.count() << "of" << res << "cached.";
+        mapCached( cachedAfter, "tracks", m_trackMap, res );
 
         query = QString( "SELECT COUNT(*) FROM artists;" );
         res = m_collection->sqlStorage()->query( query );
-        debug() << "    artists:" << m_artistMap.count() << "of" << res << "cached.";
+        mapCached( cachedAfter, "artists", m_artistMap, res );
 
         query = QString( "SELECT COUNT(*) FROM genres;" );
         res = m_collection->sqlStorage()->query( query );
-        debug() << "     genres:" << m_genreMap.count() << "of" << res << "cached.";
+        mapCached( cachedAfter, "genres", m_genreMap, res );
+        #undef mapCached
+
+        if( cachedBefore != cachedAfter )
+        {
+            QMapIterator<QString, QPair<int, int> > i(cachedAfter), iLast(cachedBefore);
+            while( i.hasNext() && iLast.hasNext() )
+            {
+                i.next();
+                iLast.next();
+                int count = i.value().first;
+                int total = i.value().second;
+                QString diff = QString::number( count - iLast.value().first );
+                QString text = QString( "%1 (%2) of %3 cached" ).arg( count ).arg( diff ).arg( total );
+                debug() << QString( "%1: %2" ).arg( i.key(), 8 ).arg( text ).toLocal8Bit().constData();
+            }
+        }
+        else
+            debug() << "Cache unchanged";
     }
 
     //make sure to unlock all necessary locks
