@@ -49,7 +49,7 @@ include_directories(
 #------------------------------- DatabaseUpdater Test -------------------------------
 
 set( databaseupdatertest_SRCS
-        DatabaseUpdaterTest.cpp
+        TestDatabaseUpdater.cpp
     )
 
 kde4_add_unit_test( testsqldatabaseupdater TESTNAME testsqldatabaseupdater ${databaseupdatertest_SRCS} )
@@ -116,25 +116,6 @@ set( testscanresultprocessorfull_SRCS
 kde4_add_unit_test( testscanresultprocessorfull ${testscanresultprocessorfull_SRCS} )
 
 link_database_test( testscanresultprocessorfull )
-
-#-------------------------------- Test ArtistHelper -----------------------
-
-set( testartisthelper_SRCS
-        TestArtistHelper.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/collections/support/ArtistHelper.cpp
-    )
-
-
-kde4_add_unit_test( testartisthelper ${testartisthelper_SRCS} )
-
-    if(APPLE)
-        SET_TARGET_PROPERTIES(testartisthelper PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-    endif(APPLE)
-
-target_link_libraries( testartisthelper
-                        ${QT_QTTEST_LIBRARY}
-                        ${QT_QTCORE_LIBRARY}
-                        ${KDE4_KDECORE_LIBS})
 
 #-------------------------------- Test SqlTrack -----------------------
 

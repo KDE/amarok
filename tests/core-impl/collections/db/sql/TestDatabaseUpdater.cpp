@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,17 +14,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "DatabaseUpdaterTest.h"
+#include "TestDatabaseUpdater.h"
 
-// #include "core/support/Debug.h"
-// #include "core/meta/support/MetaConstants.h"
 #include "SqlCollection.h"
 #include "DatabaseUpdater.h"
 #include "mysqlecollection/MySqlEmbeddedStorage.h"
 
 #include <KTempDir>
 
-// #include <QMutex>
 #include <QString>
 #include <QStringList>
 
@@ -156,4 +153,4 @@ DatabaseUpdaterTest::testCreatePermanentTables()
     QCOMPARE( tables.count(), 18 );
 }
 
-#include "DatabaseUpdaterTest.moc"
+#include "TestDatabaseUpdater.moc"

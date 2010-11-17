@@ -33,3 +33,23 @@ target_link_libraries(testmemoryquerymaker
     ${QT_QTTEST_LIBRARY}
     ${QT_QTCORE_LIBRARY}
     ${GOOGLEMOCK_LIBRARIES})
+
+#-------------------------------- Test ArtistHelper -----------------------
+
+set( testartisthelper_SRCS
+        TestArtistHelper.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/support/ArtistHelper.cpp
+    )
+
+
+kde4_add_unit_test( testartisthelper ${testartisthelper_SRCS} )
+
+    if(APPLE)
+        SET_TARGET_PROPERTIES(testartisthelper PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    endif(APPLE)
+
+target_link_libraries( testartisthelper
+                        ${QT_QTTEST_LIBRARY}
+                        ${QT_QTCORE_LIBRARY}
+                        ${KDE4_KDECORE_LIBS})
+
