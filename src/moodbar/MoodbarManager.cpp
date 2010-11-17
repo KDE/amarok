@@ -204,7 +204,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     if( path.isEmpty() )
         return data;
 
-    debug() << "Moodbar::readFile: Trying to read " << path << endl;
+    debug() << "Trying to read " << path;
 
     QFile moodFile( path );
 
@@ -212,15 +212,13 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
         return data;
 
     int r, g, b, samples = moodFile.size() / 3;
-    debug() << "Moodbar::readFile: File " << path
-            << " opened. Proceeding to read contents... s=" << samples << endl;
+    debug() << "File" << path << "opened. Proceeding to read contents... s=" << samples;
 
     // This would be bad.
     if( samples == 0 )
     {
-        debug() << "Moodbar::readFile: File " << moodFile.fileName()
-                << " is corrupted, removing." << endl;
-                //TODO: notify the user somehow
+        debug() << "Filex " << moodFile.fileName() << "is corrupted, removing";
+        //TODO: notify the user somehow
         //moodFile.remove();
         return data;
     }
@@ -413,10 +411,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
         mx = i;
     m_hueSort += mx;
 */
-    //debug() << "Moodbar::readFile: All done." << endl;
-
-
-
+    //debug() << "All done.";
     return data;
 }
 
