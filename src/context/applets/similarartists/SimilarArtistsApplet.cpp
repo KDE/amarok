@@ -87,14 +87,39 @@ SimilarArtistsApplet::init()
     m_settingsIcon->setToolTip( i18n( "Settings" ) );
     connect( m_settingsIcon, SIGNAL(clicked()), this, SLOT(configure()) );
 
+    QAction* backwardAction = new QAction( this );
+    backwardAction->setIcon( KIcon( "go-previous" ) );
+    backwardAction->setEnabled( false );
+    backwardAction->setText( i18n( "Back" ) );
+    m_backwardIcon = addAction( backwardAction );
+    connect( m_backwardIcon, SIGNAL(clicked()), this, SLOT(goBackward()) );
+
+    QAction* forwardAction = new QAction( this );
+    forwardAction->setIcon( KIcon( "go-next" ) );
+    forwardAction->setEnabled( false );
+    forwardAction->setText( i18n( "Forward" ) );
+    m_forwardIcon = addAction( forwardAction );
+    connect( m_forwardIcon, SIGNAL(clicked()), this, SLOT(goForward()) );
+
+    QAction *currentAction = new QAction( this );
+    currentAction->setIcon( KIcon( "filename-artist-amarok" ) );
+    currentAction->setEnabled( true );
+    currentAction->setText( i18n( "Show Similar Artists for Currently Playing Track" ) );
+    m_currentArtistIcon = addAction( currentAction );
+    connect( m_currentArtistIcon, SIGNAL(clicked()), this, SLOT(queryForCurrentTrack()) );
+
     QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    headerLayout->addItem( m_backwardIcon );
+    headerLayout->addItem( m_forwardIcon );
     headerLayout->addItem( m_headerLabel );
+    headerLayout->addItem( m_currentArtistIcon );
     headerLayout->addItem( m_settingsIcon );
     headerLayout->setContentsMargins( 0, 4, 0, 2 );
 
     // create a scrollarea
     m_scroll = new ArtistsListWidget( this );
     m_scroll->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    connect( m_scroll, SIGNAL(showSimilarArtists(QString)), SLOT(showSimilarArtists(QString)) );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
     layout->addItem( headerLayout );
@@ -147,10 +172,12 @@ SimilarArtistsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
     QString artist = data[ "artist" ].toString();
     if( source == "similarArtists" )
     {
+        setBusy( false );
         if( !artist.isEmpty() )
         {
             m_artist = artist;
             m_similars = data[ "similar" ].value<SimilarArtist::List>();
+            updateNavigationIcons();
             artistsUpdate();
         }
         else
@@ -211,6 +238,63 @@ SimilarArtistsApplet::artistsUpdate()
     {
         m_headerLabel->setScrollingText( i18n( "Similar Artists: Not Found" ) );
     }
+}
+
+void
+SimilarArtistsApplet::showSimilarArtists( const QString &name )
+{
+    if( m_artist != name )
+        m_historyBack.push( m_artist );
+    m_historyForward.clear();
+    queryArtist( name );
+    updateNavigationIcons();
+    setBusy( true );
+}
+
+void
+SimilarArtistsApplet::queryArtist( const QString &name )
+{
+    dataEngine( "amarok-similarArtists" )->setProperty( "artist", name );
+    dataEngine( "amarok-similarArtists" )->query( "similarArtists:artist" );
+}
+
+void
+SimilarArtistsApplet::queryForCurrentTrack()
+{
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( Meta::ArtistPtr artist = track->artist() )
+        queryArtist( artist->name() );
+}
+
+void
+SimilarArtistsApplet::goBackward()
+{
+    if( !m_historyBack.isEmpty() )
+    {
+        m_historyForward.push( m_artist );
+        m_artist = m_historyBack.pop();
+        queryArtist( m_artist );
+        updateNavigationIcons();
+    }
+}
+
+void
+SimilarArtistsApplet::goForward()
+{
+    if( !m_historyForward.isEmpty() )
+    {
+        m_historyBack.push( m_artist );
+        m_artist = m_historyForward.pop();
+        queryArtist( m_artist );
+        updateNavigationIcons();
+    }
+}
+
+void
+SimilarArtistsApplet::updateNavigationIcons()
+{
+    m_forwardIcon->action()->setEnabled( !m_historyForward.isEmpty() );
+    m_backwardIcon->action()->setEnabled( !m_historyBack.isEmpty() );
 }
 
 #include "SimilarArtistsApplet.moc"

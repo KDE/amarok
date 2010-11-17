@@ -29,6 +29,7 @@
 
 class QGraphicsGridLayout;
 class QGraphicsLinearLayout;
+class QSignalMapper;
 class QLabel;
 
 namespace Plasma {
@@ -81,6 +82,12 @@ public:
      * @param topTrack the top track of this artist
      */
     void setTopTrack( const QString &topTrack );
+
+signals:
+    /**
+     * Show similar artists of the artist associated with this widget
+     */
+    void showSimilarArtists();
 
 protected:
     void resizeEvent( QGraphicsSceneResizeEvent *event );
@@ -148,6 +155,11 @@ private:
      * Button to open Last.fm's artist webpage using external browser
      */
     Plasma::PushButton *m_urlButton;
+
+    /**
+     * Button to show similar artists of the artist associated with this widget
+     */
+    Plasma::PushButton *m_similarArtistButton;
 
     /**
      * Description of the artist
@@ -224,11 +236,15 @@ public:
 
     void clear();
 
+signals:
+    void showSimilarArtists( const QString &name );
+
 private:
     void addSeparator();
     int m_separatorCount;
     QString m_name;
     QGraphicsLinearLayout *m_layout;
+    QSignalMapper *m_showArtistsSigMapper;
     QList<ArtistWidget*> m_widgets;
     Q_DISABLE_COPY( ArtistsListWidget )
 };

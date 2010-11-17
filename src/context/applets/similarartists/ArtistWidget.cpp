@@ -45,6 +45,7 @@
 #include <QLabel>
 #include <QPainter>
 #include <QPixmapCache>
+#include <QSignalMapper>
 #include <QTextDocument>
 
 #include <cmath>
@@ -131,6 +132,12 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_topTrackButton->hide();
     connect( m_topTrackButton, SIGNAL(clicked()), this, SLOT(addTopTrackToPlaylist()) );
 
+    m_similarArtistButton = new Plasma::PushButton( this );
+    m_similarArtistButton->setMaximumSize( QSizeF( 22, 22 ) );
+    m_similarArtistButton->setIcon( KIcon( "similarartists-amarok" ) );
+    m_similarArtistButton->setToolTip( i18n( "Show Similar Artists of %1", m_artist->name() ) );
+    connect( m_similarArtistButton, SIGNAL(clicked()), this, SIGNAL(showSimilarArtists()) );
+
     QGraphicsLinearLayout *buttonsLayout = new QGraphicsLinearLayout( Qt::Horizontal );
     buttonsLayout->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
     buttonsLayout->addItem( m_topTrackButton );
@@ -147,6 +154,8 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
         connect( m_urlButton, SIGNAL(clicked()), this, SLOT(openArtistUrl()) );
         buttonsLayout->addItem( m_urlButton );
     }
+
+    buttonsLayout->addItem( m_similarArtistButton );
 
     // the image display is extended on two row
     m_layout = new QGraphicsGridLayout;
@@ -172,6 +181,7 @@ ArtistWidget::~ArtistWidget()
     QString photoUrl = m_artist->urlImage().url();
     if( !photoUrl.isEmpty() )
         QPixmapCache::remove( photoUrl );
+    clear();
 }
 
 void
@@ -187,6 +197,10 @@ ArtistWidget::fetchPhoto()
         return;
     }
     m_image->setPixmap( Amarok::semiTransparentLogo( 120 ) );
+
+    if( m_artist->urlImage().isEmpty() )
+        return;
+
     The::networkAccessManager()->getData( m_artist->urlImage(), this,
          SLOT(setImageFromInternet(KUrl,QByteArray,NetworkAccessManagerProxy::Error)), Qt::QueuedConnection );
 }
@@ -416,6 +430,9 @@ ArtistsListWidget::ArtistsListWidget( QGraphicsWidget *parent )
     QGraphicsWidget *content = new QGraphicsWidget( this );
     content->setLayout( m_layout );
     setWidget( content );
+
+    m_showArtistsSigMapper = new QSignalMapper( this );
+    connect( m_showArtistsSigMapper, SIGNAL(mapped(QString)), SIGNAL(showSimilarArtists(QString)) );
 }
 
 ArtistsListWidget::~ArtistsListWidget()
@@ -434,6 +451,8 @@ ArtistsListWidget::addItem( ArtistWidget *widget )
 {
     if( !m_widgets.isEmpty() )
         addSeparator();
+    connect( widget, SIGNAL(showSimilarArtists()), m_showArtistsSigMapper, SLOT(map()) );
+    m_showArtistsSigMapper->setMapping( widget, widget->artist()->name() );
     m_layout->addItem( widget );
     m_widgets << widget;
 }
@@ -444,6 +463,8 @@ ArtistsListWidget::addArtist( const SimilarArtistPtr &artist )
     if( !m_widgets.isEmpty() )
         addSeparator();
     ArtistWidget *widget = new ArtistWidget( artist );
+    connect( widget, SIGNAL(showSimilarArtists()), m_showArtistsSigMapper, SLOT(map()) );
+    m_showArtistsSigMapper->setMapping( widget, widget->artist()->name() );
     m_layout->addItem( widget );
     m_widgets << widget;
 }

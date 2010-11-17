@@ -34,6 +34,7 @@ class SimilarArtistsEngine : public DataEngine
 {
     Q_OBJECT
     Q_PROPERTY( int maximumArtists READ maximumArtists WRITE setMaximumArtists )
+    Q_PROPERTY( QString artist READ artist WRITE setArtist )
 
 public:
 
@@ -67,6 +68,9 @@ public:
      */
     void setMaximumArtists( int number );
 
+    QString artist() const;
+    void setArtist( const QString &name );
+
 protected:
     bool sourceRequestEvent( const QString &name );
 
@@ -99,10 +103,13 @@ private:
 
 private slots:
     /**
-     * Prepare the calling of the similarArtistsRequest method.
+     * Update similar artists for the current playing track.
      * Launch when the track played on amarok has changed.
+     * @param force force update to take place.
      */
     void update( bool force = false );
+
+    void update( const QString &name );
 
     /**
      * Parse the xml fetched on the lastFM API.

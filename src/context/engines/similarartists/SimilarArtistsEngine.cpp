@@ -56,7 +56,10 @@ SimilarArtistsEngine::sourceRequestEvent( const QString &name )
     if( tokens.contains( QLatin1String("forceUpdate") ) )
         force = true;
 
-    update( force );
+    if( tokens.contains( QLatin1String("artist") ) )
+        update( m_artist );
+    else
+        update( force );
     return true;
 }
 
@@ -87,6 +90,16 @@ SimilarArtistsEngine::update( bool force )
             similarArtistsRequest( m_artist );
         }
     }
+}
+
+void
+SimilarArtistsEngine::update( const QString &name )
+{
+    if( name.isEmpty() )
+        return;
+
+    m_artist = name;
+    similarArtistsRequest( m_artist );
 }
 
 void
@@ -349,6 +362,18 @@ void
 SimilarArtistsEngine::setMaximumArtists( int number )
 {
     m_maxArtists = number;
+}
+
+QString
+SimilarArtistsEngine::artist() const
+{
+    return m_artist;
+}
+
+void
+SimilarArtistsEngine::setArtist( const QString &name )
+{
+    m_artist = name;
 }
 
 #include "SimilarArtistsEngine.moc"
