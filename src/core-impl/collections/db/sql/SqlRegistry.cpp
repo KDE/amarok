@@ -655,7 +655,6 @@ Meta::AlbumPtr
 SqlRegistry::getAlbum( int id )
 {
     Q_ASSERT( id > 0 ); // must be a valid id
-    QMutexLocker locker( &m_albumMutex );
 
     QString query = QString( "SELECT name, artist FROM albums WHERE id = %1" ).arg( id );
     QStringList res = m_collection->sqlStorage()->query( query );
@@ -664,14 +663,7 @@ SqlRegistry::getAlbum( int id )
 
     QString name = res[0];
     int artistId = res[1].toInt();
-
-    Meta::SqlAlbum *sqlAlbum = new Meta::SqlAlbum( m_collection, id, name, artistId );
-    Meta::AlbumPtr album( sqlAlbum );
-
-    Meta::ArtistPtr artist = getArtist( artistId );
-    AlbumKey key(name, artist ? artist->name() : QString() );
-    m_albumMap.insert( key, album );
-    return album;
+    return getAlbum( id, name, artistId );
 }
 
 Meta::AlbumPtr

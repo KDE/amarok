@@ -112,7 +112,10 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, int deviceId,
     m_statisticsId = -1;
 
     setUrl( deviceId, rpath, directoryId );
+    m_url = m_cache.value( Meta::valUrl ).toString(); // SqlRegistry already has this url
     setUidUrl( uidUrl );
+    m_uid = m_cache.value( Meta::valUniqueId ).toString(); // SqlRegistry already has this uid
+
 
     // ensure that these values get a correct database id
     m_cache.insert( Meta::valAlbum, QVariant() );
