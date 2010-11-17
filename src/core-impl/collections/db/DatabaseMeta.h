@@ -358,28 +358,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS DatabaseAlbum : public Meta::Album
 
         //updating album images is possible for local tracks, but let's ignore it for now
 
-        /** Returns true if the album has a cover image.
-         *  @param size The maximum width or height of the result.
-         *  when size is <= 1, return the full size image
-         */
-        virtual bool hasImage(int size = 1) const;
-        virtual bool canUpdateImage() const { return true; }
-
-        /** Returns the album cover image.
-         *  Returns a default image if no specific album image could be found.
-         *  In such a case it will start the cover fetcher.
-         *
-         *  Note: as this function can create a pixmap it is not recommended to
-         *  call this function from outside the UI thread.
-         *
-         *  @param size is the maximum width or height of the resulting image.
-         *  when size is <= 1, return the full size image
-         */
-        virtual QPixmap image( int size = 1 );
-
-        virtual KUrl imageLocation( int size = 1 );
-        virtual void setImage( const QPixmap &pixmap );
-        virtual void removeImage() = 0;
         virtual void setSuppressImageAutoFetch( const bool suppress ) { m_suppressAutoFetch = suppress; }
         virtual bool suppressImageAutoFetch() const { return m_suppressAutoFetch; }
 
@@ -442,7 +420,7 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS DatabaseAlbum : public Meta::Album
          *  The path should point to a valid image.
          *  Note: setImage will not delete the already set image.
          */
-       virtual void setImage( const QString &path ) = 0;
+       // virtual void setImage( const QString &path ) = 0;
 
        /** Finds or creates a magic value in the database which tells Amarok not to auto fetch an image since it has been explicitly unset.
        */

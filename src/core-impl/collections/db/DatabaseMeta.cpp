@@ -744,9 +744,11 @@ DatabaseTrack::commitMetaDataChanges()
         // physically copied.
         // This would also prevent warning messages during scanning when
         // a pixmap is handled from outside the UI thread
+        /* TODO for database collection
         if( oldAlbum &&
             oldAlbum->hasImage(0) && !newAlbum->hasImage(0) )
             newAlbum->setImage( oldAlbum->imageLocation(0).path() );
+            */
 
         collectionChanged = true;
     }
@@ -1066,160 +1068,6 @@ DatabaseAlbum::tracks()
     return m_tracks;
 }
 
-// note for internal implementation:
-// if hasImage returns true then m_imagePath is set
-bool
-DatabaseAlbum::hasImage( int size ) const
-{
-    Q_UNUSED(size); // we have every size if we have an image at all
-
-    if( !m_hasImageChecked )
-    {
-        m_hasImageChecked = true;
-
-        const_cast<DatabaseAlbum*>( this )->largeImagePath();
-
-        // The user has explicitly set no cover
-        if( m_imagePath == AMAROK_UNSET_MAGIC )
-            m_hasImage = false;
-
-        // if we don't have an image but it was not explicitely blocked
-        else if( m_imagePath.isEmpty() )
-        {
-            // Cover fetching runs in another thread. If there is a retrieved cover
-            // then updateImage() gets called which updates the cache and alerts the
-            // subscribers. We use queueAlbum() because this runs the fetch as a
-            // background job and doesn't give an intruding popup asking for confirmation
-            if( !m_suppressAutoFetch && !m_name.isEmpty() && AmarokConfig::autoGetCoverArt() )
-                CoverFetcher::instance()->queueAlbum( AlbumPtr(const_cast<DatabaseAlbum *>(this)) );
-
-            m_hasImage = false;
-        }
-        else
-            m_hasImage = true;
-    }
-
-    return m_hasImage;
-}
-
-QPixmap
-DatabaseAlbum::image( int size )
-{
-    if( !hasImage() )
-        return Meta::Album::image( size );
-
-    QPixmap pixmap;
-    // look in the memory pixmap cache
-    // large scale images are not stored in memory
-#if QT_VERSION >= 0x040600
-    QString cachedPixmapKey = QString::number(size) + "@acover" + QString::number(m_imageId);
-    if( size > 1 && QPixmapCache::find( cachedPixmapKey, &pixmap ) )
-        return pixmap;
-#endif
-
-    // findCachedImage looks for a scaled version of the fullsize image
-    // which may have been saved on a previous lookup
-    QString cachedImagePath;
-    if( size <= 1 && !hasEmbeddedImage() )
-        cachedImagePath = m_imagePath;
-    else
-        cachedImagePath = scaledDiskCachePath( size );
-
-    //FIXME this cache doesn't differentiate between shadowed/unshadowed
-    // a image exists. just load it.
-    if( !cachedImagePath.isEmpty() && QFile( cachedImagePath ).exists() )
-    {
-        pixmap = QPixmap( cachedImagePath );
-        if( pixmap.isNull() )
-            return Meta::Album::image( size );
-#if QT_VERSION >= 0x040600
-        if( size > 0)
-            QPixmapCache::insert( cachedPixmapKey, pixmap );
-#endif
-        return pixmap;
-    }
-
-    // no cached scaled image exists. Have to create it
-    QImage img;
-    if( hasEmbeddedImage() )
-        img = getEmbeddedImage();
-    else
-        img = QImage( m_imagePath );
-
-    if( img.isNull() )
-        return Meta::Album::image( size );
-
-    if( size > 1 && size < 1000 )
-    {
-        img = img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        img.save( cachedImagePath, "JPG" );
-    }
-    else if( hasEmbeddedImage() )
-    {
-        // store it on the disk for later reference.
-        img.save( cachedImagePath, "JPG" );
-    }
-
-    pixmap = QPixmap::fromImage( img );
-#if QT_VERSION >= 0x040600
-    if( size > 1)
-        QPixmapCache::insert( cachedPixmapKey, pixmap );
-#endif
-    return pixmap;
-}
-
-KUrl
-DatabaseAlbum::imageLocation( int size )
-{
-    if( !hasImage() )
-        return KUrl();
-
-    // findCachedImage looks for a scaled version of the fullsize image
-    // which may have been saved on a previous lookup
-    QString cachedImagePath;
-    if( size >= 1 && !hasEmbeddedImage() )
-        cachedImagePath = m_imagePath;
-    else
-        cachedImagePath = scaledDiskCachePath( size );
-
-    if( cachedImagePath.isEmpty() )
-        return KUrl();
-
-    if( !QFile( cachedImagePath ).exists() )
-    {
-        // If we don't have the location, it's possible that we haven't tried to find the image yet
-        // So, let's look for it and just ignore the result
-        QPixmap i = image( size );
-        Q_UNUSED( i )
-    }
-
-    if( !QFile( cachedImagePath ).exists() )
-        return KUrl();
-
-    return cachedImagePath;
-}
-
-void
-DatabaseAlbum::setImage( const QPixmap &pixmap )
-{
-    if( pixmap.isNull() )
-        return;
-
-    // removeImage() will destroy all scaled cached versions of the artwork
-    // and remove references from the database if required.
-    removeImage();
-
-    QString path = largeDiskCachePath();
-    // make sure not to overwrite existing images
-    while( QFile(path).exists() )
-        path += "_"; // not that nice but it shouldn't happen that often.
-
-    setImage( path );
-    pixmap.save( path, "JPG" );
-
-    notifyObservers();
-}
-
 bool
 DatabaseAlbum::isCompilation() const
 {
@@ -1243,69 +1091,6 @@ DatabaseAlbum::albumArtist() const
     return m_artist;
 }
 
-QByteArray
-DatabaseAlbum::md5sum( const QString& artist, const QString& album, const QString& file ) const
-{
-    // FIXME: names with unicode characters are not supported.
-    // FIXME: "The Beatles"."Collection" and "The"."Beatles Collection" will produce the same hash.
-    // FIXME: Correcting this now would invalidate all existing image stores.
-    KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() + file.toLocal8Bit() );
-    return context.hexDigest();
-}
-
-QString
-DatabaseAlbum::largeDiskCachePath() const
-{
-    // IMPROVEMENT: the large disk cache path could be human readable
-    const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-    if( artist.isEmpty() && m_name.isEmpty() )
-        return QString();
-
-    QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
-    const QString key = md5sum( artist, m_name, QString() );
-        return largeCoverDir.filePath( key );
-}
-
-QString
-DatabaseAlbum::scaledDiskCachePath( int size ) const
-{
-    const QByteArray widthKey = QByteArray::number( size ) + '@';
-    QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-    QString key = md5sum( QString(), QString(), m_imagePath );
-
-    if( !cacheCoverDir.exists( widthKey + key ) )
-    {
-        // the correct location is empty
-        // check deprecated locations for the image cache and delete them
-        // (deleting the scaled image cache is fine)
-
-        const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-        if( artist.isEmpty() && m_name.isEmpty() )
-            ; // do nothing special
-        else
-        {
-            QString oldKey;
-            oldKey = md5sum( artist, m_name, m_imagePath );
-            if( cacheCoverDir.exists( widthKey + oldKey ) )
-                cacheCoverDir.remove( widthKey + oldKey );
-
-            oldKey = md5sum( artist, m_name, QString() );
-            if( cacheCoverDir.exists( widthKey + oldKey ) )
-                cacheCoverDir.remove( widthKey + oldKey );
-        }
-    }
-
-    return cacheCoverDir.filePath( widthKey + key );
-}
-
-bool
-DatabaseAlbum::hasEmbeddedImage() const
-{
-    if( !hasImage() )
-        return false;
-
-    return m_imagePath.startsWith( "amarok-sqltrackuid://" );
-}
 
 void
 DatabaseAlbum::setCompilation( bool compilation )
@@ -1333,8 +1118,7 @@ DatabaseAlbum::setCompilation( bool compilation )
                 KSharedPtr<DatabaseTrack> databaseTrack = KSharedPtr<DatabaseTrack>::dynamicCast( metaTrack );
 
                 // copy over the cover image
-                if( databaseTrack->album()->hasImage(0) && !databaseAlbum->hasImage(0) )
-                    databaseAlbum->setImage( databaseTrack->album()->imageLocation(0).path() );
+                // TODO
 
                 // move the track
                 databaseTrack->setAlbum( databaseAlbum->id() );
@@ -1359,8 +1143,7 @@ DatabaseAlbum::setCompilation( bool compilation )
                 KSharedPtr<DatabaseAlbum> databaseAlbum = KSharedPtr<DatabaseAlbum>::dynamicCast( metaAlbum );
 
                 // copy over the cover image
-                if( databaseTrack->album()->hasImage(0) && !databaseAlbum->hasImage(0) )
-                    databaseAlbum->setImage( databaseTrack->album()->imageLocation(0).path() );
+                // TODO
 
                 // move the track
                 databaseTrack->setAlbum( databaseAlbum->id() );
