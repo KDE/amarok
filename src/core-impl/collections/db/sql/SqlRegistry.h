@@ -139,6 +139,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         QHash<QString, Meta::GenrePtr > m_genreMap;
         QHash<int, Meta::YearPtr > m_yearMap;
         QHash<AlbumKey, Meta::AlbumPtr > m_albumMap;
+        QHash<int, Meta::AlbumPtr > m_albumIdMap;
         QHash<QString, Meta::LabelPtr > m_labelMap;
 
         QMutex m_trackMutex;

@@ -99,6 +99,9 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
 
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+
+        /** Gets an existing track (or a new one) at the given position.
+            This function should only be used by the SqlScanResultProcessor. */
         virtual Meta::TrackPtr getTrack( int deviceId, const QString &rpath, int directoryId, const QString &uidUrl );
         virtual Meta::TrackPtr getTrackFromUid( const QString &uniqueid );
         virtual Meta::AlbumPtr getAlbum( const QString &album, const QString &artist );

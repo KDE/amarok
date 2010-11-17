@@ -1034,7 +1034,8 @@ SqlTrack::commitMetaDataChanges()
     writeUrlToDb( m_cache );
     writeMetaDataToDb( m_cache );
     writeStatisticsToDb( m_cache );
-    writePlaylistsToDb( m_cache, oldUid );
+    if( m_uid != oldUid )
+        writePlaylistsToDb( m_cache, oldUid );
 
     // --- clean up and notify everybody
     m_cache.clear();

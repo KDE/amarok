@@ -355,8 +355,10 @@ SqlCollection::trackForUrl( const KUrl &url )
 {
     if( url.protocol() == uidUrlProtocol() )
         return m_registry->getTrackFromUid( url.url() );
-
-    return m_registry->getTrack( url.path() );
+    else if( url.protocol() == "file" )
+        return m_registry->getTrack( url.path() );
+    else
+        return Meta::TrackPtr();
 }
 
 Meta::TrackPtr

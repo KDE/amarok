@@ -648,38 +648,43 @@ SqlRegistry::getAlbum( const QString &name, const QString &artist )
     Meta::SqlAlbum *sqlAlbum = new Meta::SqlAlbum( m_collection, albumId, name, artistId );
     Meta::AlbumPtr album( sqlAlbum );
     m_albumMap.insert( key, album );
+    m_albumIdMap.insert( albumId, album );
     return album;
 }
 
 Meta::AlbumPtr
-SqlRegistry::getAlbum( int id )
+SqlRegistry::getAlbum( int albumId )
 {
-    Q_ASSERT( id > 0 ); // must be a valid id
+    Q_ASSERT( albumId > 0 ); // must be a valid id
 
-    QString query = QString( "SELECT name, artist FROM albums WHERE id = %1" ).arg( id );
+    if( m_albumIdMap.contains( albumId ) )
+        return m_albumIdMap.value( albumId );
+
+    QString query = QString( "SELECT name, artist FROM albums WHERE id = %1" ).arg( albumId );
     QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
         return Meta::AlbumPtr(); // someone messed up
 
     QString name = res[0];
     int artistId = res[1].toInt();
-    return getAlbum( id, name, artistId );
+    return getAlbum( albumId, name, artistId );
 }
 
 Meta::AlbumPtr
-SqlRegistry::getAlbum( int id, const QString &name, int artistId )
+SqlRegistry::getAlbum( int albumId, const QString &name, int artistId )
 {
-    Q_ASSERT( id > 0 ); // must be a valid id
+    Q_ASSERT( albumId > 0 ); // must be a valid id
     QMutexLocker locker( &m_albumMutex );
+
+    if( m_albumIdMap.contains( albumId ) )
+        return m_albumIdMap.value( albumId );
 
     Meta::ArtistPtr artist = getArtist( artistId );
     AlbumKey key(name, artist ? artist->name() : QString() );
-    if( m_albumMap.contains( key ) )
-        return m_albumMap.value( key );
-
-    Meta::SqlAlbum *sqlAlbum = new Meta::SqlAlbum( m_collection, id, name, artistId );
+    Meta::SqlAlbum *sqlAlbum = new Meta::SqlAlbum( m_collection, albumId, name, artistId );
     Meta::AlbumPtr album( sqlAlbum );
     m_albumMap.insert( key, album );
+    m_albumIdMap.insert( albumId, album );
     return album;
 }
 
@@ -794,9 +799,10 @@ SqlRegistry::emptyCache()
         foreachInvalidateCache( QString, Meta::LabelPtr, KSharedPtr<Meta::SqlLabel>, m_labelMap );
         #undef foreachInvalidateCache
 
-        //elem.count() == 2 is correct because elem is one pointer to the object
-        //and the other is stored in the hash map (except for m_trackMap, where
-        //another refence is stored in m_uidMap
+        // elem.count() == 2 is correct because elem is one pointer to the object
+        // and the other is stored in the hash map (except for m_trackMap, m_albumMap
+        // and m_artistMap , where another refence is stored in m_uidMap, m_albumIdMap
+        // and m_artistIdMap
         #define foreachCollectGarbage( Key, Type, RefCount, x ) \
         for( QMutableHashIterator<Key,Type > iter(x); iter.hasNext(); ) \
         { \
@@ -807,8 +813,9 @@ SqlRegistry::emptyCache()
 
         foreachCollectGarbage( TrackId, Meta::TrackPtr, 3, m_trackMap );
         foreachCollectGarbage( QString, Meta::TrackPtr, 2, m_uidMap );
-        //run before artist so that album artist pointers can be garbage collected
-        foreachCollectGarbage( AlbumKey, Meta::AlbumPtr, 2, m_albumMap );
+        // run before artist so that album artist pointers can be garbage collected
+        foreachCollectGarbage( AlbumKey, Meta::AlbumPtr, 3, m_albumMap );
+        foreachCollectGarbage( int, Meta::AlbumPtr, 2, m_albumIdMap );
         foreachCollectGarbage( QString, Meta::ArtistPtr, 3, m_artistMap );
         foreachCollectGarbage( int, Meta::ArtistPtr, 2, m_artistIdMap );
         foreachCollectGarbage( QString, Meta::GenrePtr, 2, m_genreMap );
