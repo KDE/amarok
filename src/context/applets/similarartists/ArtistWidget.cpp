@@ -60,8 +60,10 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_image = new QLabel;
     m_image->setAttribute( Qt::WA_NoSystemBackground, true );
     m_image->setFixedSize( 128, 128 );
+    m_image->setCursor( Qt::PointingHandCursor );
     QGraphicsProxyWidget *imageProxy = new QGraphicsProxyWidget( this );
     imageProxy->setWidget( m_image );
+    m_image->installEventFilter( this );
 
     m_nameLabel = new QLabel;
     m_match     = new QLabel;
@@ -71,9 +73,9 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     QGraphicsProxyWidget *nameProxy     = new QGraphicsProxyWidget( this );
     QGraphicsProxyWidget *matchProxy    = new QGraphicsProxyWidget( this );
     QGraphicsProxyWidget *topTrackProxy = new QGraphicsProxyWidget( this );
-    nameProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    matchProxy->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
-    topTrackProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    nameProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    matchProxy->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+    topTrackProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
     nameProxy->setWidget( m_nameLabel );
     matchProxy->setWidget( m_match );
@@ -92,8 +94,8 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_match->setWordWrap( false );
     m_topTrackLabel->setWordWrap( false );
 
-    m_match->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    m_topTrackLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    m_match->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    m_topTrackLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_match->setMinimumWidth( 10 );
     m_topTrackLabel->setMinimumWidth( 10 );
     m_nameLabel->setMinimumWidth( 10 );
@@ -139,7 +141,7 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     connect( m_similarArtistButton, SIGNAL(clicked()), this, SIGNAL(showSimilarArtists()) );
 
     QGraphicsLinearLayout *buttonsLayout = new QGraphicsLinearLayout( Qt::Horizontal );
-    buttonsLayout->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+    buttonsLayout->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
     buttonsLayout->addItem( m_topTrackButton );
     buttonsLayout->addItem( m_navigateButton );
     buttonsLayout->addItem( m_lastfmStationButton );
@@ -182,6 +184,21 @@ ArtistWidget::~ArtistWidget()
     if( !photoUrl.isEmpty() )
         QPixmapCache::remove( photoUrl );
     clear();
+}
+
+bool
+ArtistWidget::eventFilter( QObject *obj, QEvent *event )
+{
+    if( obj == m_image )
+    {
+        if( event->type() == QEvent::MouseButtonPress )
+        {
+            emit showBio();
+            event->accept();
+            return true;
+        }
+    }
+    return QGraphicsWidget::eventFilter( obj, event );
 }
 
 void
@@ -255,6 +272,7 @@ ArtistWidget::photoFetched( const KUrl &url, QByteArray data, NetworkAccessManag
     {
         image = image.scaled( 116, 116, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         image = The::svgHandler()->addBordersToPixmap( image, 6, QString(), true );
+        m_image->setToolTip( i18nc( "@info:tooltip Artist biography", "Show Biography" ) );
         m_image->setPixmap( image );
         QPixmapCache::insert( url.url(), image );
     }
@@ -274,7 +292,7 @@ ArtistWidget::parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerP
     xml.readNextStartElement(); // lfm
     if( xml.attributes().value(QLatin1String("status")) != QLatin1String("ok") )
     {
-        setBio( QString() );
+        setBioSummary( QString() );
         return;
     }
 
@@ -290,17 +308,18 @@ ArtistWidget::parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerP
 
         while( xml.readNextStartElement() )
         {
-            if( xml.name() != QLatin1String("summary") )
-            {
+            if( xml.name() == QLatin1String("published") )
+                m_fullBio.first = KDateTime::fromString( xml.readElementText(), "%a, %d %b %Y %H:%M:%S" );
+            else if( xml.name() == QLatin1String("summary") )
+                summary = xml.readElementText().simplified();
+            else if( xml.name() == QLatin1String("content") )
+                m_fullBio.second = xml.readElementText().replace( QRegExp("\n+"), QLatin1String("<br>") );
+            else
                 xml.skipCurrentElement();
-                continue;
-            }
-            summary = xml.readElementText().simplified();
-            break;
         }
         break;
     }
-    setBio( summary );
+    setBioSummary( summary );
 }
 
 void
@@ -393,7 +412,7 @@ ArtistWidget::openArtistUrl()
 }
 
 void
-ArtistWidget::setBio( const QString &bio )
+ArtistWidget::setBioSummary( const QString &bio )
 {
     if( bio.isEmpty() )
     {
@@ -509,6 +528,18 @@ ArtistWidget::layoutBio()
     update();
 }
 
+KDateTime
+ArtistWidget::bioPublished() const
+{
+    return m_fullBio.first;
+}
+
+QString
+ArtistWidget::fullBio() const
+{
+    return m_fullBio.second;
+}
+
 void
 ArtistWidget::addTopTrackToPlaylist()
 {
@@ -552,6 +583,9 @@ ArtistsListWidget::ArtistsListWidget( QGraphicsWidget *parent )
 
     m_showArtistsSigMapper = new QSignalMapper( this );
     connect( m_showArtistsSigMapper, SIGNAL(mapped(QString)), SIGNAL(showSimilarArtists(QString)) );
+
+    m_showBioSigMapper = new QSignalMapper( this );
+    connect( m_showBioSigMapper, SIGNAL(mapped(QString)), SIGNAL(showBio(QString)) );
 }
 
 ArtistsListWidget::~ArtistsListWidget()
@@ -570,8 +604,11 @@ ArtistsListWidget::addItem( ArtistWidget *widget )
 {
     if( !m_widgets.isEmpty() )
         addSeparator();
+    const QString &artist = widget->artist()->name();
     connect( widget, SIGNAL(showSimilarArtists()), m_showArtistsSigMapper, SLOT(map()) );
-    m_showArtistsSigMapper->setMapping( widget, widget->artist()->name() );
+    m_showArtistsSigMapper->setMapping( widget, artist );
+    connect( widget, SIGNAL(showBio()), m_showBioSigMapper, SLOT(map()) );
+    m_showBioSigMapper->setMapping( widget, artist );
     m_layout->addItem( widget );
     m_widgets << widget;
 }
@@ -582,8 +619,11 @@ ArtistsListWidget::addArtist( const SimilarArtistPtr &artist )
     if( !m_widgets.isEmpty() )
         addSeparator();
     ArtistWidget *widget = new ArtistWidget( artist );
+    const QString &name = artist->name();
     connect( widget, SIGNAL(showSimilarArtists()), m_showArtistsSigMapper, SLOT(map()) );
-    m_showArtistsSigMapper->setMapping( widget, widget->artist()->name() );
+    m_showArtistsSigMapper->setMapping( widget, name );
+    connect( widget, SIGNAL(showBio()), m_showBioSigMapper, SLOT(map()) );
+    m_showBioSigMapper->setMapping( widget, name );
     m_layout->addItem( widget );
     m_widgets << widget;
 }
@@ -636,6 +676,17 @@ void
 ArtistsListWidget::setName( const QString &name )
 {
     m_name = name;
+}
+
+ArtistWidget *
+ArtistsListWidget::widget( const QString &artistName )
+{
+    foreach( ArtistWidget *widget, m_widgets )
+    {
+        if( widget->artist()->name() == artistName )
+            return widget;
+    }
+    return 0;
 }
 
 void

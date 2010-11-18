@@ -23,6 +23,7 @@
 #include "SimilarArtist.h"
 
 #include <KUrl>
+#include <KDateTime>
 #include <Plasma/ScrollWidget>
 
 #include <QTextLayout>
@@ -45,6 +46,8 @@ namespace Plasma {
 class ArtistWidget : public QGraphicsWidget
 {
     Q_OBJECT
+    Q_PROPERTY( KDateTime bioPublished READ bioPublished )
+    Q_PROPERTY( QString fullBio READ fullBio )
 
 public:
     /**
@@ -72,10 +75,16 @@ public:
     void clear();
 
     /**
-     * Set the artist bio
-     * @param bio The bio of this artist
+     * The date/time the bio was published
+     * @return date/time
      */
-    void setBio( const QString &bio );
+    KDateTime bioPublished() const;
+
+    /**
+     * Complete bio of artist on last.fm
+     * @return bio of artist
+     */
+    QString fullBio() const;
 
     /**
      * Change the most known track of this artist
@@ -83,11 +92,18 @@ public:
      */
     void setTopTrack( const QString &topTrack );
 
+    bool eventFilter( QObject *obj, QEvent *event );
+
 signals:
     /**
      * Show similar artists of the artist associated with this widget
      */
     void showSimilarArtists();
+
+    /**
+     * Show full bio of artist
+     */
+    void showBio();
 
 protected:
     void resizeEvent( QGraphicsSceneResizeEvent *event );
@@ -97,6 +113,12 @@ private:
     void fetchInfo();        //!< Fetch the artist info
     void fetchTopTrack();    //!< Fetch the artist'stop track
     void queryArtist();      //!< Query collection about artist
+
+    /**
+     * Set the artist bio summary
+     * @param bio The bio of this artist
+     */
+    void setBioSummary( const QString &bio );
 
     /**
      * Layout the text for artist's bio summary
@@ -178,6 +200,11 @@ private:
      */
     bool m_bioCropped;
 
+    /**
+     * The complete bio with its published date
+     */
+    QPair<KDateTime, QString> m_fullBio;
+
     const SimilarArtistPtr m_artist;
 
 private slots:
@@ -247,8 +274,11 @@ public:
 
     void clear();
 
+    ArtistWidget *widget( const QString &artistName );
+
 signals:
-    void showSimilarArtists( const QString &name );
+    void showSimilarArtists( const QString &artist );
+    void showBio( const QString &artist );
 
 private:
     void addSeparator();
@@ -256,6 +286,7 @@ private:
     QString m_name;
     QGraphicsLinearLayout *m_layout;
     QSignalMapper *m_showArtistsSigMapper;
+    QSignalMapper *m_showBioSigMapper;
     QList<ArtistWidget*> m_widgets;
     Q_DISABLE_COPY( ArtistsListWidget )
 };

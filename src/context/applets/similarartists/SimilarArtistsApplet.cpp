@@ -31,10 +31,12 @@
 #include "context/widgets/TextScrollingWidget.h"
 
 //Kde
-#include <Plasma/Theme>
-#include <plasma/widgets/iconwidget.h>
 #include <KConfigDialog>
 #include <KStandardDirs>
+#include <KTextBrowser>
+#include <Plasma/TextBrowser>
+#include <Plasma/Theme>
+#include <plasma/widgets/iconwidget.h>
 
 //Qt
 #include <QDesktopServices>
@@ -120,6 +122,7 @@ SimilarArtistsApplet::init()
     m_scroll = new ArtistsListWidget( this );
     m_scroll->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     connect( m_scroll, SIGNAL(showSimilarArtists(QString)), SLOT(showSimilarArtists(QString)) );
+    connect( m_scroll, SIGNAL(showBio(QString)), SLOT(showArtistBio(QString)) );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
     layout->addItem( headerLayout );
@@ -217,7 +220,9 @@ SimilarArtistsApplet::saveSettings()
 void
 SimilarArtistsApplet::artistsUpdate()
 {
-    m_scroll->clear();
+    if( !m_scroll->isEmpty() )
+        m_scroll->clear();
+
     if( !m_similars.isEmpty() )
     {
         m_headerLabel->setScrollingText( i18n( "Similar Artists of %1", m_artist ) );
@@ -238,6 +243,42 @@ SimilarArtistsApplet::showSimilarArtists( const QString &name )
     queryArtist( name );
     updateNavigationIcons();
     setBusy( true );
+}
+
+void
+SimilarArtistsApplet::showArtistBio( const QString &name )
+{
+    const ArtistWidget *widget = m_scroll->widget( name );
+    if( !widget || widget->fullBio().isEmpty() )
+        return;
+
+    Plasma::TextBrowser *tb = new Plasma::TextBrowser( 0 );
+    tb->nativeWidget()->setFrameShape( QFrame::StyledPanel );
+    tb->nativeWidget()->setOpenExternalLinks( true );
+    tb->nativeWidget()->setAutoFormatting( QTextEdit::AutoAll );
+    tb->nativeWidget()->viewport()->setAutoFillBackground( true );
+
+    QString bio = widget->fullBio();
+    KDateTime pub = widget->bioPublished();
+    if( pub.isValid() )
+    {
+        QString pubDate = i18nc( "@item:intext Artist biography published date",
+                                 "Published: %1", pub.toString( KDateTime::LocalDate ) );
+        bio = QString( "%1<hr>%2" ).arg( pubDate, bio );
+    }
+    tb->nativeWidget()->setHtml( bio );
+
+    QGraphicsLinearLayout *l = new QGraphicsLinearLayout( Qt::Vertical );
+    l->setContentsMargins( 1, 1, 1, 1 );
+    l->addItem( tb );
+    qreal width = m_scroll->boundingRect().width() * 3 / 5;
+    qreal height = m_scroll->boundingRect().height() * 3 / 5;
+    QRectF rect( 0, 0, width, height );
+    rect.moveCenter( m_scroll->boundingRect().center() );
+    QGraphicsWidget *w = new QGraphicsWidget( 0, Qt::Window );
+    w->setGeometry( rect );
+    w->setLayout( l );
+    scene()->addItem( w );
 }
 
 void
