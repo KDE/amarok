@@ -26,7 +26,6 @@
 #include "context/widgets/TextScrollingWidget.h"
 #include "PaletteHandler.h"
 
-
 #include <KConfigDialog>
 #include <KConfigGroup>
 #include <KDialog>
@@ -36,7 +35,6 @@
 
 #include <QGraphicsProxyWidget>
 #include <QScrollBar>
-#include <QTreeView>
 
 /**
  * \brief Constructor
@@ -48,7 +46,6 @@
  */
 TabsApplet::TabsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_model( 0 )
     , m_tabsView( 0 )
     , m_currentState( InitState )
     , m_layout( 0 )
@@ -70,7 +67,6 @@ TabsApplet::TabsApplet( QObject* parent, const QVariantList& args )
 TabsApplet::~TabsApplet()
 {
     DEBUG_BLOCK
-    delete m_model;
     delete m_tabsView;
     if( m_reloadIcon )
         delete m_reloadIcon.data();
@@ -91,9 +87,6 @@ TabsApplet::init()
     // applet base initializtation
     Context::Applet::init();
 
-    // defining the initial height of the context view (full height)
-    resize( 500, -1 );
-
     // create the header label
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
@@ -106,12 +99,8 @@ TabsApplet::init()
     // defines the collapse size for the context applet
     setCollapseHeight( m_titleLabel.data()->size().height() + 3 * standardPadding() );
 
-    // creates the basic tab view and the corresponding model
-    m_model = new QStandardItemModel();
-    m_model->setColumnCount( 1 );
-
+    // creates the tab view
     m_tabsView = new TabsView( this );
-    m_tabsView->setModel( m_model );
 
     // Set the collapse size
     setCollapseHeight( m_titleLabel.data()->size().height() + 2 * ( 4 + QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) ) + 3 );
@@ -184,11 +173,6 @@ TabsApplet::constraintsEvent( Plasma::Constraints constraints )
     prepareGeometryChange();
 
     m_titleLabel.data()->setScrollingText( m_titleLabel.data()->text() );
-
-    // increase list-width when scrollbar is shown
-    const QScrollBar *vTabListScrollBar = m_tabsView->tabsListView()->verticalScrollBar();
-    const qreal vTabListScrollBarWidthOffset = vTabListScrollBar->isVisible() ?  vTabListScrollBar->width() : 0;
-    m_tabsView->tabsListView()->setFixedWidth( 48 + vTabListScrollBarWidthOffset );
 }
 
 void
@@ -205,8 +189,8 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     Q_UNUSED( name )
 
     // remove previously fetched stuff
-    m_model->clear();
-    m_tabsView->setTabTextContent( "" );
+    m_tabsView->clear();
+    m_tabsView->clearTabBrowser();
     setBusy( false );
 
     if( data.empty() )
@@ -274,7 +258,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
                 TabsItem *tabsItem = new TabsItem();
                 tabsItem->setTab( item );
 
-                m_model->appendRow( tabsItem );
+                m_tabsView->appendTab( tabsItem );
                 if( !tabFound )
                 {
                     // update the applet and display the first tab in list
@@ -293,10 +277,12 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 void
 TabsApplet::updateInterface( const AppletState appletState )
 {
+    // return if state has not changed (except for init state)
     if( m_currentState == appletState && appletState != InitState )
         return;
 
-    if( m_currentState == StoppedState )
+    // coming from stopped or init state, resize applet to full height
+    if( m_currentState == StoppedState || m_currentState == InitState )
     {
         resize( 500, -1 );
         setCollapseOff();

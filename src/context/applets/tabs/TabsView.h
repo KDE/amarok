@@ -17,18 +17,21 @@
 #ifndef AMAROK_TabsVIEW_H
 #define AMAROK_TabsVIEW_H
 
-#include <QGraphicsProxyWidget>
-#include <Plasma/TextBrowser>
-
 #include "core/meta/Meta.h"
 
+#include <Plasma/TextBrowser>
+
+#include <QGraphicsProxyWidget>
+#include <QStandardItemModel>
+
 class TabsItem;
-class TabsView;
 class TabsTreeView;
 
-class QTreeView;
-class QAbstractItemModel;
 class QModelIndex;
+namespace Plasma
+{
+    class ScrollBar;
+}
 
 class TabsView : public QGraphicsProxyWidget
 {
@@ -36,35 +39,13 @@ class TabsView : public QGraphicsProxyWidget
 
 public:
     explicit TabsView( QGraphicsWidget *parent = 0 );
-    ~TabsView() { };
+    ~TabsView();
 
-    /**
-     * Sets a model for this view
-     *
-     * @arg the model to display
-     */
-    void setModel( QAbstractItemModel *model );
-
-    /**
-     * @return the model shown by this view
-     */
-    QAbstractItemModel *model();
-
-    /**
-     * sets the content of the tab textbrowser
-     */
-    void setTabTextContent( const QString &tabText );
-
-    /**
-     * @return the native widget wrapped by this TabsView
-     */
-    QTreeView* tabsListView() const;
+    void appendTab( TabsItem *tabsItem );
+    void clear();
+    void clearTabBrowser();
 
 public slots:
-    /**
-    * ----
-    * \param tab :
-    */
     void showTab( TabsItem *tab );
 
 protected:
@@ -72,11 +53,17 @@ protected:
 
 private slots:
     void itemClicked( const QModelIndex &index );
+    void slotScrollBarRangeChanged( int min, int max );
 
 private:
     Plasma::TextBrowser *m_tabTextBrowser;
     TabsTreeView *m_treeView;
     QGraphicsProxyWidget *m_treeProxy;
+
+    QStandardItemModel *m_model;
+
+    void updateScrollBarVisibility();
+    Plasma::ScrollBar *m_scrollBar;
 };
 
 #endif // multiple inclusion guard

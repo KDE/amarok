@@ -22,6 +22,7 @@
 #include "PaletteHandler.h"
 
 #include <KTextBrowser>
+#include <Plasma/ScrollBar>
 #include <Plasma/TextBrowser>
 
 #include <QGraphicsProxyWidget>
@@ -48,8 +49,9 @@ class TabsTreeView : public Amarok::PrettyTreeView
             setAnimated( true );
             setRootIsDecorated( false );
             setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-            setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+            setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
             setFixedWidth( 48 );
+
         }
     protected:
 
@@ -67,6 +69,10 @@ TabsView::TabsView( QGraphicsWidget *parent )
     connect( m_treeView, SIGNAL( clicked( const QModelIndex & ) ),
              this, SLOT( itemClicked( const QModelIndex & ) ) );
 
+    m_model = new QStandardItemModel();
+    m_model->setColumnCount( 1 );
+    m_treeView->setModel( m_model );
+
     m_treeProxy = new QGraphicsProxyWidget( this );
     m_treeProxy->setWidget( m_treeView );
 
@@ -83,38 +89,54 @@ TabsView::TabsView( QGraphicsWidget *parent )
     browserWidget->viewport()->setAttribute( Qt::WA_NoSystemBackground );
     browserWidget->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
 
+    QScrollBar *treeScrollBar = m_treeView->verticalScrollBar();
+    m_scrollBar = new Plasma::ScrollBar( this );
+    m_scrollBar->setFocusPolicy( Qt::NoFocus );
+
+    // synchronize scrollbars
+    connect( treeScrollBar, SIGNAL( rangeChanged( int, int ) ), SLOT( slotScrollBarRangeChanged( int, int ) ) );
+    connect( treeScrollBar, SIGNAL( valueChanged( int ) ), m_scrollBar, SLOT( setValue( int ) ) );
+    connect( m_scrollBar, SIGNAL( valueChanged( int ) ), treeScrollBar, SLOT( setValue( int ) ) );
+    m_scrollBar->setRange( treeScrollBar->minimum(), treeScrollBar->maximum() );
+    m_scrollBar->setPageStep( treeScrollBar->pageStep() );
+    m_scrollBar->setSingleStep( treeScrollBar->singleStep() );
+
     // arrange textbrowser and treeview in a horizontal layout
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Horizontal );
     layout->addItem( m_treeProxy );
+    layout->addItem( m_scrollBar );
     layout->addItem( m_tabTextBrowser );
     layout->setSpacing( 2 );
     layout->setContentsMargins( 0, 0, 0, 0 );
     setLayout( layout );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    updateScrollBarVisibility();
+}
+
+TabsView::~TabsView()
+{
+    delete m_model;
+    delete m_treeProxy;
 }
 
 void
-TabsView::setModel( QAbstractItemModel *model )
+TabsView::appendTab( TabsItem *tabsItem  )
 {
-    tabsListView()->setModel( model );
-}
-
-QAbstractItemModel*
-TabsView::model()
-{
-    return tabsListView()->model();
-}
-
-QTreeView*
-TabsView::tabsListView() const
-{
-    return static_cast<QTreeView*>( m_treeView );
+    if( tabsItem )
+        m_model->appendRow( tabsItem );
 }
 
 void
-TabsView::setTabTextContent(const QString &tabText )
+TabsView::clear()
 {
-    m_tabTextBrowser->nativeWidget()->setPlainText( tabText );
+    qDeleteAll( m_model->findItems(QLatin1String("*"), Qt::MatchWildcard) );
+    m_model->clear();
+}
+
+void
+TabsView::clearTabBrowser()
+{
+    m_tabTextBrowser->nativeWidget()->clear();
 }
 
 void
@@ -168,7 +190,7 @@ TabsView::showTab( TabsItem *tab )
 void
 TabsView::itemClicked( const QModelIndex &index )
 {
-    const QStandardItemModel *itemModel = static_cast<QStandardItemModel*>( const_cast<TabsView*>( this )->model() );
+    const QStandardItemModel *itemModel = static_cast<QStandardItemModel*>( m_treeView->model() );
 
     QStandardItem *item = itemModel->itemFromIndex( index );
     TabsItem *tab = dynamic_cast<TabsItem*>( item );
@@ -179,15 +201,37 @@ TabsView::itemClicked( const QModelIndex &index )
 void
 TabsView::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
-    QGraphicsProxyWidget::resizeEvent( event );
-
-    const int newWidth = size().width() / tabsListView()->header()->count();
-
-    for( int i = 0; i < tabsListView()->header()->count(); ++i )
-        tabsListView()->header()->resizeSection( i, newWidth );
-
-    tabsListView()->setColumnWidth( 0, 100 );
+    QGraphicsWidget::resizeEvent( event );
 }
+
+void
+TabsView::slotScrollBarRangeChanged( int min, int max )
+{
+    m_scrollBar->setRange( min, max );
+    m_scrollBar->setPageStep( m_treeView->verticalScrollBar()->pageStep() );
+    m_scrollBar->setSingleStep( m_treeView->verticalScrollBar()->singleStep() );
+    updateScrollBarVisibility();
+}
+
+void
+TabsView::updateScrollBarVisibility()
+{
+    QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( layout() );
+    if( m_scrollBar->maximum() == 0 )
+    {
+        if( lo->count() > 2 && lo->itemAt( 1 ) == m_scrollBar )
+        {
+            lo->removeAt( 1 );
+            m_scrollBar->hide();
+        }
+    }
+    else if( lo->count() == 2 )
+    {
+        lo->insertItem( 1, m_scrollBar );
+        m_scrollBar->show();
+    }
+}
+
 
 #include <TabsView.moc>
 

@@ -159,7 +159,7 @@ AlbumsView::scrollTo( QStandardItem *album )
 void
 AlbumsView::clear()
 {
-    qDeleteAll( m_model->findItems(QLatin1String("*"), Qt::MatchWildcard) );
+    qDeleteAll( m_model->findItems( QLatin1String( "*" ), Qt::MatchWildcard ) );
     m_model->clear();
 }
 
