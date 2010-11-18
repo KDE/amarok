@@ -66,7 +66,7 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_nameLabel = new QLabel;
     m_match     = new QLabel;
     m_topTrackLabel = new QLabel;
-    m_desc      = new QGraphicsWidget( this );
+    m_bio = new QGraphicsWidget( this );
 
     QGraphicsProxyWidget *nameProxy     = new QGraphicsProxyWidget( this );
     QGraphicsProxyWidget *matchProxy    = new QGraphicsProxyWidget( this );
@@ -99,10 +99,10 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_nameLabel->setMinimumWidth( 10 );
 
     QFontMetricsF fm( font() );
-    m_desc->setMinimumHeight( fm.lineSpacing() * 6 );
-    m_desc->setMaximumHeight( fm.lineSpacing() * 6 );
-    m_desc->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    m_descLayout.setCacheEnabled( true );
+    m_bio->setMinimumHeight( fm.lineSpacing() * 6 );
+    m_bio->setMaximumHeight( fm.lineSpacing() * 6 );
+    m_bio->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_bioLayout.setCacheEnabled( true );
 
     QFont artistFont;
     artistFont.setPointSize( artistFont.pointSize() + 2 );
@@ -164,14 +164,14 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_layout->addItem( buttonsLayout, 0, 2, Qt::AlignRight );
     m_layout->addItem( topTrackProxy, 1, 1 );
     m_layout->addItem( matchProxy, 1, 2, Qt::AlignRight );
-    m_layout->addItem( m_desc, 2, 1, 1, 2 );
+    m_layout->addItem( m_bio, 2, 1, 1, 2 );
     setLayout( m_layout );
 
     m_match->setText( i18n( "Match: %1%", QString::number( m_artist->match() ) ) );
     m_nameLabel->setText( m_artist->name() );
 
     fetchPhoto();
-    fetchDescription();
+    fetchInfo();
     fetchTopTrack();
     queryArtist();
 }
@@ -206,7 +206,7 @@ ArtistWidget::fetchPhoto()
 }
 
 void
-ArtistWidget::fetchDescription()
+ArtistWidget::fetchInfo()
 {
     // we genere the url for the demand on the lastFM Api
     KUrl url;
@@ -218,7 +218,7 @@ ArtistWidget::fetchDescription()
     url.addQueryItem( "artist", m_artist->name() );
 
     The::networkAccessManager()->getData( url, this,
-         SLOT(parseArtistDescription(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(parseInfo(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
@@ -234,7 +234,7 @@ ArtistWidget::fetchTopTrack()
     url.addQueryItem( "artist",  m_artist->name() );
 
     The::networkAccessManager()->getData( url, this,
-         SLOT(parseArtistTopTrack(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(parseTopTrack(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
@@ -261,8 +261,7 @@ ArtistWidget::photoFetched( const KUrl &url, QByteArray data, NetworkAccessManag
 }
 
 void
-ArtistWidget::parseArtistDescription( const KUrl &url, QByteArray data,
-                                      NetworkAccessManagerProxy::Error e )
+ArtistWidget::parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
@@ -275,7 +274,7 @@ ArtistWidget::parseArtistDescription( const KUrl &url, QByteArray data,
     xml.readNextStartElement(); // lfm
     if( xml.attributes().value(QLatin1String("status")) != QLatin1String("ok") )
     {
-        setDescription( QString() );
+        setBio( QString() );
         return;
     }
 
@@ -301,11 +300,11 @@ ArtistWidget::parseArtistDescription( const KUrl &url, QByteArray data,
         }
         break;
     }
-    setDescription( summary );
+    setBio( summary );
 }
 
 void
-ArtistWidget::parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+ArtistWidget::parseTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
@@ -394,21 +393,21 @@ ArtistWidget::openArtistUrl()
 }
 
 void
-ArtistWidget::setDescription( const QString &description )
+ArtistWidget::setBio( const QString &bio )
 {
-    if( description.isEmpty() )
+    if( bio.isEmpty() )
     {
-        m_descLayout.clearLayout();
-        m_descLayout.setText( i18n( "No description available." ) );
+        m_bioLayout.clearLayout();
+        m_bioLayout.setText( i18n( "No description available." ) );
     }
     else
     {
         QTextDocument doc;
-        doc.setHtml( description );
+        doc.setHtml( bio );
         QString plain = doc.toPlainText();
-        m_descLayout.setText( plain );
+        m_bioLayout.setText( plain );
     }
-    layoutDescription();
+    layoutBio();
 }
 
 void
@@ -445,7 +444,7 @@ void
 ArtistWidget::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
     QGraphicsWidget::resizeEvent( event );
-    layoutDescription();
+    layoutBio();
     QFontMetrics fm( m_match->font() );
     m_match->setMaximumWidth( fm.width( m_match->text() ) );
 }
@@ -456,15 +455,15 @@ ArtistWidget::paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidge
     QGraphicsWidget::paint( p, option, widget );
 
     p->save();
-    QFontMetricsF fm( m_desc->font() );
-    QPointF pos = m_desc->geometry().topLeft();
-    const int maxLines = floor( m_desc->size().height() / fm.lineSpacing() );
-    for( int i = 0, lines = m_descLayout.lineCount(); i < lines; ++i )
+    QFontMetricsF fm( m_bio->font() );
+    QPointF pos = m_bio->geometry().topLeft();
+    const int maxLines = floor( m_bio->size().height() / fm.lineSpacing() );
+    for( int i = 0, lines = m_bioLayout.lineCount(); i < lines; ++i )
     {
-        const QTextLine &line = m_descLayout.lineAt( i );
-        if( m_descCropped && (i == (maxLines - 1)) )
+        const QTextLine &line = m_bioLayout.lineAt( i );
+        if( m_bioCropped && (i == (maxLines - 1)) )
         {
-            // fade out the last bit of text if not all of the description is shown
+            // fade out the last bit of text if not all of the bio is shown
             QLinearGradient alphaGradient( 0, 0, 1, 0 );
             alphaGradient.setCoordinateMode( QGradient::ObjectBoundingMode );
             const QColor &textColor = The::paletteHandler()->palette().text().color();
@@ -482,22 +481,22 @@ ArtistWidget::paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidge
 }
 
 void
-ArtistWidget::layoutDescription()
+ArtistWidget::layoutBio()
 {
-    QFontMetricsF fm( m_desc->font() );
-    QRectF geom = m_desc->geometry();
-    int maxLines = floor( m_desc->size().height() / fm.lineSpacing() );
+    QFontMetricsF fm( m_bio->font() );
+    QRectF geom = m_bio->geometry();
+    int maxLines = floor( m_bio->size().height() / fm.lineSpacing() );
     int leading = fm.leading();
     qreal height = 0;
-    m_descCropped = true;
-    m_descLayout.clearLayout();
-    m_descLayout.beginLayout();
-    while( m_descLayout.lineCount() < maxLines )
+    m_bioCropped = true;
+    m_bioLayout.clearLayout();
+    m_bioLayout.beginLayout();
+    while( m_bioLayout.lineCount() < maxLines )
     {
-        QTextLine line = m_descLayout.createLine();
+        QTextLine line = m_bioLayout.createLine();
         if( !line.isValid() )
         {
-            m_descCropped = false;
+            m_bioCropped = false;
             break;
         }
 
@@ -506,7 +505,7 @@ ArtistWidget::layoutDescription()
         line.setPosition( QPointF(0, height) );
         height += line.height();
     }
-    m_descLayout.endLayout();
+    m_bioLayout.endLayout();
     update();
 }
 

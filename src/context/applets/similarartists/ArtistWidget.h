@@ -72,10 +72,10 @@ public:
     void clear();
 
     /**
-     * Set the artist description
-     * @param description The description of this artist
+     * Set the artist bio
+     * @param bio The bio of this artist
      */
-    void setDescription( const QString &description );
+    void setBio( const QString &bio );
 
     /**
      * Change the most known track of this artist
@@ -94,14 +94,14 @@ protected:
 
 private:
     void fetchPhoto();       //!< Fetch the photo of the artist
-    void fetchDescription(); //!< Fetch the artist description
+    void fetchInfo();        //!< Fetch the artist info
     void fetchTopTrack();    //!< Fetch the artist'stop track
     void queryArtist();      //!< Query collection about artist
 
     /**
-     * Layout the text for artist's description
+     * Layout the text for artist's bio summary
      */
-    void layoutDescription();
+    void layoutBio();
 
     /**
      * Layout for the formatting of the widget contents
@@ -164,19 +164,19 @@ private:
     Plasma::PushButton *m_similarArtistButton;
 
     /**
-     * Description of the artist
+     * Bio summary of the artist
      */
-    QGraphicsWidget *m_desc;
+    QGraphicsWidget *m_bio;
 
     /**
-     * Text layout for the artist description
+     * Text layout for the artist bio
      */
-    QTextLayout m_descLayout;
+    QTextLayout m_bioLayout;
 
     /**
-     * Whether all of artist description is shown
+     * Whether all of artist bio is shown
      */
-    bool m_descCropped;
+    bool m_bioCropped;
 
     const SimilarArtistPtr m_artist;
 
@@ -187,16 +187,16 @@ private slots:
     void photoFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
-     * Parse the xml fetched on the lastFM API for the similarArtist description.
+     * Parse the xml fetched on the lastFM API for the artist info.
      * Launched when the download of the data are finished and for each similarArtists.
      */
-    void parseArtistDescription( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
      * Parse the xml fetched on the lastFM API for the similarArtist most known track.
      * Launched when the download of the data are finished and for each similarArtists.
      */
-    void parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void parseTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
      * Open an URL
