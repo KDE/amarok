@@ -480,7 +480,7 @@ AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vo
 {
     const QModelIndex &index = vopt.index;
 
-    int trackDigitCount = index.data( AlbumTrackCountRole ).toString().length();
+    int trackDigitCount = index.data( AlbumMaxTrackNumberRole ).toString().length();
     bool isCompilation = index.data( AlbumCompilationRole ).toBool();
     const QString &name = index.data( TrackNameRole ).toString();
     const QString &artist = index.data( TrackArtistRole ).toString();

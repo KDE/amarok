@@ -28,7 +28,7 @@ enum AlbumsModelItemTypes
 enum AlbumsModelCustomRoles
 {
     AlbumCompilationRole = Qt::UserRole + 1,
-    AlbumTrackCountRole,
+    AlbumMaxTrackNumberRole,
     AlbumNameRole,
     AlbumLengthRole,
     AlbumYearRole,

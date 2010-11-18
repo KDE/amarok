@@ -67,7 +67,13 @@ TrackItem::metadataChanged( Meta::TrackPtr track )
     if( album )
     {
         setData( album->isCompilation(), AlbumCompilationRole );
-        setData( album->tracks().count(), AlbumTrackCountRole );
+        int num = 0;
+        foreach( const Meta::TrackPtr &track, album->tracks() )
+        {
+            if( num < track->trackNumber() )
+                num = track->trackNumber();
+        }
+        setData( num, AlbumMaxTrackNumberRole );
     }
     setToolTip( QString( "%1 (%2)" ).arg( track->name(), Meta::msToPrettyTime(track->length()) ) );
 }
