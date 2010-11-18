@@ -98,3 +98,15 @@ SimilarArtist::setTopTrack(const QString &track)
 {
     m_topTrack=track;
 }
+
+QString
+SimilarArtist::similarTo() const
+{
+    return m_similarTo;
+}
+
+void
+SimilarArtist::setSimilarTo( const QString &artist )
+{
+    m_similarTo = artist;
+}

@@ -87,6 +87,17 @@ public:
     QString description() const;
 
     /**
+     * @return the artist this similar artist is related to
+     */
+    QString similarTo() const;
+
+    /**
+     * Set the artist this similar artist is related to
+     * @param artist artist name
+     */
+    void setSimilarTo( const QString &artist );
+
+    /**
      * Set the description of this artist
      * @param desc the description
      */
