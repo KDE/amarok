@@ -18,7 +18,7 @@
 
 #include "browsers/CollectionTreeItem.h"
 #include "core/support/Debug.h"
-#include "core/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 
 #include <KMenu>
 
@@ -73,15 +73,18 @@ ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
                     Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
                     if( data )
                     {
-                        Capabilities::CustomActionsCapability *cac = data->create<Capabilities::CustomActionsCapability>();
-                        if( cac )
+                        QScopedPointer< Capabilities::ActionsCapability > ac( data->create<Capabilities::ActionsCapability>() );
+                        if( ac )
                         {
-                            QList<QAction*> actions = cac->customActions();
-                            if( actions.count() )
+                            QList<QAction*> actions = ac->actions();
+                            if( !actions.isEmpty() )
                                 menu.addSeparator();
                             foreach( QAction *action, actions )
+                            {
+                                if( !action->parent() )
+                                    action->setParent( &menu );
                                 menu.addAction( action );
-                            delete cac;
+                            }
                         }
                     }
                 }

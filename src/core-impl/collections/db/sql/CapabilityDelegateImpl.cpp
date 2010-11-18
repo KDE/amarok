@@ -19,15 +19,14 @@
 #include "CapabilityDelegateImpl.h"
 
 #include "core/support/Debug.h"
-#include "SqlBookmarkThisCapability.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
 #include "SqlReadLabelCapability.h"
 #include "SqlWriteLabelCapability.h"
 #include "amarokurls/BookmarkMetaActions.h"
 #include "covermanager/CoverFetchingActions.h"
-#include "core/capabilities/CustomActionsCapability.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/StatisticsCapability.h"
@@ -46,7 +45,7 @@ class CompilationAction : public QAction
 {
     Q_OBJECT
     public:
-        CompilationAction( QObject* parent, Meta::SqlAlbum *album )
+        CompilationAction( QObject* parent, Meta::SqlAlbumPtr album )
                 : QAction( parent )
                 , m_album( album )
                 , m_isCompilation( album->isCompilation() )
@@ -69,8 +68,9 @@ class CompilationAction : public QAction
         {
             m_album->setCompilation( !m_isCompilation );
         }
+
     private:
-        KSharedPtr<Meta::SqlAlbum> m_album;
+        Meta::SqlAlbumPtr m_album;
         bool m_isCompilation;
 };
 
@@ -293,11 +293,11 @@ TrackCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::T
 
     switch( type )
     {
-        case Capabilities::Capability::CustomActions:
+        case Capabilities::Capability::Actions:
         case Capabilities::Capability::Importable:
         case Capabilities::Capability::Organisable:
         case Capabilities::Capability::Updatable:
-        case Capabilities::Capability::CurrentTrackActions:
+        case Capabilities::Capability::BookmarkThis:
         case Capabilities::Capability::WriteTimecode:
         case Capabilities::Capability::LoadTimecode:
         case Capabilities::Capability::ReadLabel:
@@ -331,14 +331,14 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
         case Capabilities::Capability::Importable:
             return new StatisticsCapabilityImpl( track );
 
-        case Capabilities::Capability::CustomActions:
+        case Capabilities::Capability::Actions:
         {
             QList<QAction*> actions;
             //TODO These actions will hang around until m_collection is destructed.
             // Find a better parent to avoid this memory leak.
             //actions.append( new CopyToDeviceAction( m_collection, this ) );
 
-            return new Capabilities::CustomActionsCapability( actions );
+            return new Capabilities::ActionsCapability( actions );
         }
 
         case Capabilities::Capability::Organisable:
@@ -347,13 +347,8 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
         case Capabilities::Capability::Updatable:
             return new UpdateCapabilityImpl( track );
 
-        case Capabilities::Capability::CurrentTrackActions:
-        {
-            QList< QAction * > actions;
-            QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
-            actions << flag;
-            return new Capabilities::CurrentTrackActionsCapability( actions );
-        }
+        case Capabilities::Capability::BookmarkThis:
+            return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
         case Capabilities::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityImpl( track );
         case Capabilities::Capability::LoadTimecode:
@@ -406,10 +401,7 @@ ArtistCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capabilit
     switch( type )
     {
         case Capabilities::Capability::BookmarkThis:
-        {
-            QAction *bookmarkAction = new BookmarkArtistAction( 0, Meta::ArtistPtr( artist ) );
-            return new Capabilities::SqlBookmarkThisCapability( bookmarkAction );
-        }
+            return new Capabilities::BookmarkThisCapability( new BookmarkArtistAction( 0, Meta::ArtistPtr( artist ) ) );
         default:
             return 0;
     }
@@ -435,7 +427,7 @@ AlbumCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::T
 
     switch( type )
     {
-        case Capabilities::Capability::CustomActions:
+        case Capabilities::Capability::Actions:
             return true;
         case Capabilities::Capability::BookmarkThis:
             return true;
@@ -454,45 +446,38 @@ AlbumCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
 
     switch( type )
     {
-        case Capabilities::Capability::CustomActions:
+        case Capabilities::Capability::Actions:
         {
             QList<QAction*> actions;
-            actions.append( new CompilationAction( 0, album ) );
-
-            QAction *separator          = new QAction( 0 );
+            actions.append( new CompilationAction( 0, Meta::SqlAlbumPtr( album ) ) );
+            actions.append( new FetchCoverAction( 0, Meta::AlbumPtr( album ) ) );
+            actions.append( new SetCustomCoverAction( 0, Meta::AlbumPtr( album ) ) );
             QAction *displayCoverAction = new DisplayCoverAction( 0, Meta::AlbumPtr( album ) );
             QAction *unsetCoverAction   = new UnsetCoverAction( 0, Meta::AlbumPtr( album ) );
 
-            separator->setSeparator( true );
-            actions.append( separator );
-            actions.append( displayCoverAction );
-            actions.append( new FetchCoverAction( 0, Meta::AlbumPtr( album ) ) );
-            actions.append( new SetCustomCoverAction( 0, Meta::AlbumPtr( album ) ) );
             if( !album->hasImage() )
             {
                 displayCoverAction->setEnabled( false );
                 unsetCoverAction->setEnabled( false );
             }
+            actions.append( displayCoverAction );
             actions.append( unsetCoverAction );
-            return new Capabilities::CustomActionsCapability( actions );
+            return new Capabilities::ActionsCapability( actions );
         }
         case Capabilities::Capability::BookmarkThis:
-        {
-            QAction *bookmarkAction = new BookmarkAlbumAction( 0, Meta::AlbumPtr( album ) );
-            return new Capabilities::SqlBookmarkThisCapability( bookmarkAction );
-        }
+            return new Capabilities::BookmarkThisCapability( new BookmarkAlbumAction( 0, Meta::AlbumPtr( album ) ) );
 
         default:
             return 0;
     }
 }
 
-CollectionCapabilityDelegateImpl::CollectionCapabilityDelegateImpl()
-    : CollectionCapabilityDelegate()
+ActionsCapabilityDelegateImpl::ActionsCapabilityDelegateImpl()
+    : ActionsCapabilityDelegate()
 {
 }
 
-bool CollectionCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::Type type, const Collections::SqlCollection *collection ) const
+bool ActionsCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::Type type, const Collections::SqlCollection *collection ) const
 {
     if( !collection )
         return 0;
@@ -505,7 +490,7 @@ bool CollectionCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Cap
 }
 
 Capabilities::Capability*
-CollectionCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability::Type type, Collections::SqlCollection *collection )
+ActionsCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability::Type type, Collections::SqlCollection *collection )
 {
     if( !collection )
         return 0;

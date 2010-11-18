@@ -21,7 +21,7 @@
 #include "core/support/Debug.h"
 #include "amarokconfig.h"
 
-#include "core/capabilities/DecoratorCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 
 #include <KLocale>
 #include <KIcon>
@@ -188,9 +188,9 @@ QList<QAction*>
 CollectionTreeItem::decoratorActions() const
 {
     QList<QAction*> decoratorActions;
-    QScopedPointer<Capabilities::DecoratorCapability> dc( m_parentCollection->create<Capabilities::DecoratorCapability>() );
+    QScopedPointer<Capabilities::ActionsCapability> dc( m_parentCollection->create<Capabilities::ActionsCapability>() );
     if( dc )
-        decoratorActions = dc->decoratorActions();
+        decoratorActions = dc->actions();
     return decoratorActions;
 }
 

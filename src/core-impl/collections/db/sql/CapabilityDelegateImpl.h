@@ -61,11 +61,11 @@ public:
 
 };
 
-class CollectionCapabilityDelegateImpl : public CollectionCapabilityDelegate
+class ActionsCapabilityDelegateImpl : public ActionsCapabilityDelegate
 {
 public:
-    CollectionCapabilityDelegateImpl();
-    virtual ~ CollectionCapabilityDelegateImpl() {};
+    ActionsCapabilityDelegateImpl();
+    virtual ~ ActionsCapabilityDelegateImpl() {};
 
     virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Collections::SqlCollection *collection ) const;
     virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Collections::SqlCollection *collection );

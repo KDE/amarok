@@ -25,7 +25,7 @@
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "TagDialog.h"
@@ -48,57 +48,55 @@ Playlist::ViewCommon::~ViewCommon()
 
 
 void
-Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, const QPoint &pos, bool coverActions )
+Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, const QPoint &pos )
 {
     DEBUG_BLOCK
 
     KMenu *menu = new KMenu( parent );
 
-    menu->addActions( trackActionsFor( parent, index ) );
+    menu->addActions( parentCheckActions( parent, trackActionsFor( parent, index ) ) );
     menu->addSeparator();
 
-    if( coverActions )
+    QList<QAction*> albumActionsList = parentCheckActions( parent, albumActionsFor( index ) );
+    if ( !albumActionsList.isEmpty() )
     {
-        QList<QAction*> coverActionsList = coverActionsFor( index );
-        if ( !coverActionsList.isEmpty() )
-        {
-            // there are no cover actions if the song/album is not in the collection
-            KMenu *menuCover = new KMenu( i18n( "Album" ), menu );
-            menuCover->addActions( coverActionsList );
-            menuCover->setIcon( KIcon( "filename-album-amarok" ) );
-            menu->addMenu( menuCover );
-            menu->addSeparator();
-        }
+        // there are no cover actions if the song/album is not in the collection
+        KMenu *menuCover = new KMenu( i18n( "Album" ), menu );
+        menuCover->addActions( albumActionsList );
+        menuCover->setIcon( KIcon( "filename-album-amarok" ) );
+        menu->addMenu( menuCover );
+        menu->addSeparator();
     }
 
-    menu->addActions( multiSourceActionsFor( parent, index ) );
+    menu->addActions( parentCheckActions( parent, multiSourceActionsFor( parent, index ) ) );
     menu->addSeparator();
-    menu->addActions( editActionsFor( parent, index ) );
+    menu->addActions( parentCheckActions( parent, editActionsFor( parent, index ) ) );
 
     menu->exec( pos );
 }
 
 
 QList<QAction*>
-Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, bool coverActions )
+Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index )
 {
     QList<QAction*> actions;
 
     QAction *separator = new QAction( parent );
     separator->setSeparator( true );
 
-    actions << trackActionsFor( parent, index );
+    actions << parentCheckActions( parent, trackActionsFor( parent, index ) );
     actions << separator;
 
-    if( coverActions )
+    QList<QAction*> albumActionsList = parentCheckActions( parent, albumActionsFor( index ) );
+    if ( !albumActionsList.isEmpty() )
     {
-        actions << coverActionsFor( index );
+        actions << albumActionsList;
         actions << separator;
     }
 
-    actions << multiSourceActionsFor( parent, index );
+    actions << parentCheckActions( parent, multiSourceActionsFor( parent, index ) );
     actions << separator;
-    actions << editActionsFor( parent, index );
+    actions << parentCheckActions( parent, editActionsFor( parent, index ) );
 
     return actions;
 }
@@ -163,17 +161,11 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         foreach( QAction *action, globalCurrentTrackActions )
             actions << action;
 
-        if( track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
+        if( track->hasCapabilityInterface( Capabilities::Capability::Actions ) )
         {
-            Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
-            if ( cac )
-            {
-                QList<QAction *> cActions = cac->customActions();
-
-                foreach( QAction *action, cActions )
-                    actions << action;
-            }
-            delete cac;
+            QScopedPointer< Capabilities::ActionsCapability > ac( track->create<Capabilities::ActionsCapability>() );
+            if ( ac )
+                actions.append( ac->actions() );
         }
     }
 
@@ -191,7 +183,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
 }
 
 QList<QAction*>
-Playlist::ViewCommon::coverActionsFor( const QModelIndex *index )
+Playlist::ViewCommon::albumActionsFor( const QModelIndex *index )
 {
     QList<QAction*> actions;
 
@@ -200,14 +192,9 @@ Playlist::ViewCommon::coverActionsFor( const QModelIndex *index )
     Meta::AlbumPtr album = track->album();
     if( album )
     {
-        Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
-        if ( cac )
-        {
-            QList<QAction *> customActions = cac->customActions();
-            foreach( QAction *customAction, customActions )
-                actions << customAction;
-        }
-        delete cac;
+        QScopedPointer< Capabilities::ActionsCapability > ac( album->create<Capabilities::ActionsCapability>() );
+        if( ac )
+            actions.append( ac->actions() );
     }
 
     return actions;
@@ -248,3 +235,16 @@ Playlist::ViewCommon::editActionsFor( QWidget *parent, const QModelIndex *index 
 
     return actions;
 }
+
+QList<QAction*>
+Playlist::ViewCommon::parentCheckActions( QObject *parent, QList<QAction*> actions )
+{
+    foreach( QAction *action, actions )
+    {
+        if( !action->parent() )
+            action->setParent( parent );
+    }
+
+    return actions;
+}
+

@@ -21,7 +21,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core/capabilities/EditCapability.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "SqlPodcastProvider.h"
@@ -235,7 +235,7 @@ SqlPodcastEpisode::hasCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Capabilities::Capability::CurrentTrackActions:
+        case Capabilities::Capability::Actions:
         case Capabilities::Capability::WriteTimecode:
         case Capabilities::Capability::LoadTimecode:
             //only downloaded episodes can be position marked
@@ -255,12 +255,11 @@ SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type typ
 {
     switch( type )
     {
-        case Capabilities::Capability::CurrentTrackActions:
+        case Capabilities::Capability::Actions:
         {
             QList< QAction * > actions;
-            QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
-            actions << flag;
-            return new Capabilities::CurrentTrackActionsCapability( actions );
+            actions << new BookmarkCurrentTrackPositionAction( 0 );
+            return new Capabilities::ActionsCapability( actions );
         }
         case Capabilities::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityPodcastImpl( this );

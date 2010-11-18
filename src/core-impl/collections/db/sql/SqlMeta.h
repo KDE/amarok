@@ -597,6 +597,10 @@ private:
     friend class SqlTrack; // needs to call notifyObservers
 };
 
+typedef KSharedPtr<SqlTrack> SqlTrackPtr;
+typedef KSharedPtr<SqlArtist> SqlArtistPtr;
+typedef KSharedPtr<SqlAlbum> SqlAlbumPtr;
+
 }
 
 #endif /* SQLMETA_H */

@@ -25,7 +25,8 @@
 #include "EngineController.h"
 #include "amarokconfig.h"
 #include "GlobalCurrentTrackActions.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "SvgHandler.h"
 #include <KAboutData>
@@ -266,15 +267,18 @@ Amarok::TrayIcon::updateMenu()
     foreach( QAction *action, The::globalCurrentTrackActions()->actions() )
         m_extraActions.append( action );
 
-    if ( m_track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
+    QScopedPointer<Capabilities::ActionsCapability> ac( m_track->create<Capabilities::ActionsCapability>() );
+    if( ac )
     {
-        QScopedPointer<Capabilities::CurrentTrackActionsCapability> cac( m_track->create<Capabilities::CurrentTrackActionsCapability>() );
-        if( cac )
-        {
-            QList<QAction *> currentTrackActions = cac->customActions();
-            foreach( QAction *action, currentTrackActions )
-                m_extraActions.append( action );
-        }
+        QList<QAction*> actions = ac->actions();
+        foreach( QAction *action, actions )
+            m_extraActions.append( action );
+    }
+
+    QScopedPointer<Capabilities::BookmarkThisCapability> btc( m_track->create<Capabilities::BookmarkThisCapability>() );
+    if( btc )
+    {
+        m_extraActions.append( btc->bookmarkAction() );
     }
 
     if ( m_extraActions.count() > 0 )

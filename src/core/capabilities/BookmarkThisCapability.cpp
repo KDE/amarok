@@ -18,9 +18,12 @@
 
 namespace Capabilities {
 
+BookmarkThisCapability::BookmarkThisCapability( QAction *action )
+    : m_action( action )
+{ }
+
 BookmarkThisCapability::~BookmarkThisCapability()
-{
-}
+{ }
 
 
 }

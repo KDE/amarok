@@ -30,7 +30,7 @@
 #include <KIcon>
 
 namespace Capabilities {
-    class CollectionCapabilityDelegate;
+    class ActionsCapabilityDelegate;
     class AlbumCapabilityDelegate;
     class ArtistCapabilityDelegate;
     class TrackCapabilityDelegate;
@@ -158,7 +158,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
 
     private:
         SqlRegistry *m_registry;
-        Capabilities::CollectionCapabilityDelegate *m_capabilityDelegate;
+        Capabilities::ActionsCapabilityDelegate *m_capabilityDelegate;
         Capabilities::AlbumCapabilityDelegate *m_albumCapabilityDelegate;
         Capabilities::ArtistCapabilityDelegate *m_artistCapabilityDelegate;
         Capabilities::TrackCapabilityDelegate *m_trackCapabilityDelegate;

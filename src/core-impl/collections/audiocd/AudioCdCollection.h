@@ -84,12 +84,7 @@ public:
     virtual bool possiblyContainsTrack( const KUrl &url ) const;
     virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-    virtual QAction* ejectAction() const;
-
     void cdRemoved();
-
-    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-    virtual Capabilities::Capability* asCapabilityInterface( Capabilities::Capability::Type type );
 
     virtual void startFullScan(); //Override this one as I really don't want to move parsing to the handler atm.
     virtual void startFullScanDevice() { startFullScan(); }
@@ -97,7 +92,7 @@ public:
     bool isReady();
 
 public slots:
-    void eject();
+    virtual void eject();
 
 private slots:
     void audioCdEntries( KIO::Job *job, const KIO::UDSEntryList &list );
@@ -120,8 +115,6 @@ private:
     QString m_discCddbId;
     QString m_udi;
     mutable int m_encodingFormat;
-
-    QAction * m_ejectAction;
 
     QString m_fileNamePattern;
     QString m_albumNamePattern;

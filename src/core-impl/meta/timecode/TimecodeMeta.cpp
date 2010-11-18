@@ -19,7 +19,7 @@
 #include "core/support/Debug.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "covermanager/CoverFetcher.h"
-#include "core/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/BoundedPlaybackCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeEditCapability.h"
@@ -573,12 +573,12 @@ void TimecodeAlbum::setIsCompilation( bool compilation )
 
 bool TimecodeAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return type == Capabilities::Capability::CustomActions;
+    return type == Capabilities::Capability::Actions;
 }
 
 Capabilities::Capability* TimecodeAlbum::asCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( type == Capabilities::Capability::CustomActions )
+    if( type == Capabilities::Capability::Actions )
     {
         QList<QAction*> actions;
 
@@ -610,7 +610,7 @@ Capabilities::Capability* TimecodeAlbum::asCapabilityInterface( Capabilities::Ca
             m_unsetCoverAction->setEnabled( true );
         }
 
-        return new CustomActionsCapability( actions );
+        return new ActionsCapability( actions );
     }
 
     return 0;

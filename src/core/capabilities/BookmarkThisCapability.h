@@ -25,31 +25,35 @@
 namespace Capabilities {
 
 /**
-This capability determines whether a meta item in a collection can be directly bookmarked. Not all collections/services supports bookmarks on all levels, and some might not support Item level bookmarks at all as they have no query field and some might only support simple queries.
+  This capability determines whether a meta item in a collection can be directly bookmarked. Not all collections/services supports bookmarks on all levels, and some might not support Item level bookmarks at all as they have no query field and some might only support simple queries.
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class AMAROK_CORE_EXPORT BookmarkThisCapability : public Capability {
     Q_OBJECT
 public:
+    BookmarkThisCapability( QAction* action );
     virtual ~BookmarkThisCapability();
 
-    virtual bool isBookmarkable() { return false; }
-    virtual QString browserName() = 0;
-    virtual QString collectionName() = 0;
+    virtual bool isBookmarkable() { return true; }
+    virtual QString browserName() { return "collections"; }
+    virtual QString collectionName() { return QString(); }
     virtual bool simpleFiltering() { return false; }
 
     /**
        The caller has to free the action after usage.
        @return the bookmarkAction itself (or 0).
     */
-    virtual QAction * bookmarkAction() = 0;
+    virtual QAction * bookmarkAction() const { return m_action; }
 
     /**
      * Get the capabilityInterfaceType of this capability
      * @return The capabilityInterfaceType ( always Capabilities::Capability::BookmarkThis; )
     */
     static Type capabilityInterfaceType() { return Capabilities::Capability::BookmarkThis; }
+
+protected:
+    QAction* m_action;
 
 };
 

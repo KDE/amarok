@@ -22,9 +22,7 @@
 #include "MediaDeviceInfo.h"
 #include "MediaDeviceMeta.h"
 
-#include "core/capabilities/CollectionCapability.h"
-#include "MediaDeviceCollectionCapability.h"
-#include "MediaDeviceDecoratorCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 
 #include "MediaDeviceMonitor.h"
 
@@ -166,20 +164,11 @@ MediaDeviceCollection::handler()
     return m_handler;
 }
 
-/// disconnectDevice is called when ConnectionAssistant
-/// is told it is to be disconnected.  This could be
-/// because another part of Amarok (e.g. applet) told it to
-/// or because the MediaDeviceMonitor noticed it disconnect
 void
-MediaDeviceCollection::disconnectDevice()
+MediaDeviceCollection::eject()
 {
     DEBUG_BLOCK
-    // First, attempt to write to database,
-    // and regardless of success remove
-    // the collection.
-    // NOTE: this also calls the handler's destructor
-    // which gives it a chance to do last-minute cleanup
-
+    // Do nothing special here.
     emit collectionDisconnected( m_udi );
 }
 
@@ -215,8 +204,7 @@ MediaDeviceCollection::hasCapabilityInterface( Capabilities::Capability::Type ty
 {
     switch( type )
     {
-        case Capabilities::Capability::Collection:
-        case Capabilities::Capability::Decorator:
+        case Capabilities::Capability::Actions:
             return true;
 
         default:
@@ -229,10 +217,12 @@ MediaDeviceCollection::createCapabilityInterface( Capabilities::Capability::Type
 {
     switch( type )
     {
-        case Capabilities::Capability::Collection:
-            return new Capabilities::MediaDeviceCollectionCapability( this );
-        case Capabilities::Capability::Decorator:
-            return new Capabilities::MediaDeviceDecoratorCapability( this );
+        case Capabilities::Capability::Actions:
+            {
+                QList< QAction* > actions;
+                actions << ejectAction();
+                return new Capabilities::ActionsCapability( actions );
+            }
         default:
             return 0;
     }
@@ -275,7 +265,7 @@ MediaDeviceCollection::ejectAction() const
         m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Disconnect Device" ), 0 );
         m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
 
-        connect( m_ejectAction, SIGNAL( triggered() ), SLOT( disconnectDevice() ) );
+        connect( m_ejectAction, SIGNAL( triggered() ), SLOT( eject() ) );
     }
     return m_ejectAction;
 }

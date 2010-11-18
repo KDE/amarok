@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_CUSTOMACTIONSCAPABILITY_H
-#define AMAROK_CUSTOMACTIONSCAPABILITY_H
+#ifndef AMAROK_ACTIONSCAPABILITY_H
+#define AMAROK_ACTIONSCAPABILITY_H
 
 #include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
@@ -30,10 +30,10 @@ namespace Capabilities
      * or anywhere else where the actions are shown. This is useful for purchasing from stores, downloading from services
      * banning a genre or whatever we can think of in the future
      *
-     *         @author Nikolaj Hald Nielsen <nhn@kde.org>
+     * @author Nikolaj Hald Nielsen <nhn@kde.org>
      */
 
-    class AMAROK_CORE_EXPORT CustomActionsCapability : public Capabilities::Capability
+    class AMAROK_CORE_EXPORT ActionsCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:
@@ -41,30 +41,33 @@ namespace Capabilities
             /**
              * Constructor
              */
-            CustomActionsCapability();
+            ActionsCapability();
 
             /**
              * Constructor
+             * Note: The actions are not freed after usage
              * @param actions A list of actions to use.
              */
-            CustomActionsCapability( const QList< QAction* > &actions );
+            ActionsCapability( const QList< QAction* > &actions );
+
             /**
              * Destructor
              */
-            virtual ~CustomActionsCapability();
+            virtual ~ActionsCapability();
 
             /**
              * Get the custom actions for this capablility
-             * The caller must free the actions.
-             * @return The list of custom actions
+             * The caller must free actions that have no parent after use.
+             * Actions with a parent are freed by the parent (obviously)
+             * @return The list of actions
              */
-            virtual QList<QAction *> customActions() const;
+            virtual QList<QAction *> actions() const;
 
             /**
              * Get the capabilityInterfaceType of this capability
-             * @return The capabilityInterfaceType ( always Capabilities::Capability::CustomActions; )
+             * @return The capabilityInterfaceType ( always Capabilities::Capability::Actions; )
              */
-            static Type capabilityInterfaceType() { return Capabilities::Capability::CustomActions; }
+            static Type capabilityInterfaceType() { return Capabilities::Capability::Actions; }
 
         protected:
             QList< QAction* > m_actions;

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,31 +14,30 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_COLLECTIONCAPABILITY_H
-#define AMAROK_COLLECTIONCAPABILITY_H
+#include "core/capabilities/ActionsCapability.h"
 
-#include "shared/amarok_export.h"
-#include "core/capabilities/Capability.h"
-#include "core/meta/Meta.h"
-
-
-#include <QAction>
-#include <QList>
-#include <QObject>
-
-namespace Capabilities
+Capabilities::ActionsCapability::ActionsCapability()
+    : Capabilities::Capability()
 {
-
-    class AMAROK_CORE_EXPORT CollectionCapability : public Capabilities::Capability
-    {
-        Q_OBJECT
-
-        public:
-            virtual ~CollectionCapability();
-
-            static Type capabilityInterfaceType() { return Capabilities::Capability::Collection; }
-            virtual QList<QAction*> collectionActions() = 0;
-    };
+    //nothing to do
 }
 
-#endif
+Capabilities::ActionsCapability::ActionsCapability( const QList<QAction*> &actions )
+    : Capabilities::Capability()
+    , m_actions( actions )
+{
+    //nothing to do
+}
+
+Capabilities::ActionsCapability::~ActionsCapability()
+{
+    //nothing to do.
+}
+
+QList<QAction *>
+Capabilities::ActionsCapability::actions() const
+{
+    return m_actions;
+}
+
+#include "ActionsCapability.moc"

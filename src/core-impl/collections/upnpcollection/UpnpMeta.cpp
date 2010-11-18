@@ -19,7 +19,8 @@
 #include "UpnpCollectionBase.h"
 #include "core/support/Debug.h"
 #include "covermanager/CoverFetchingActions.h"
-#include "core/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
+
 
 #include <QAction>
 
@@ -523,21 +524,12 @@ UpnpAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Capabilities::Capability::CustomActions:
+        case Capabilities::Capability::Actions:
         {
             QList<QAction *> actions;
-
-            QAction *separator = new QAction( this );
-            separator->setSeparator( true );
-            actions << separator;
-
-            QAction * displayCoverAction = new DisplayCoverAction( this, AlbumPtr::dynamicCast( UpnpAlbumPtr( this ) ) );
-
-            actions << displayCoverAction;
-
-            return new Capabilities::CustomActionsCapability( actions );
+            actions << new DisplayCoverAction( this, AlbumPtr::dynamicCast( UpnpAlbumPtr( this ) ) );
+            return new Capabilities::ActionsCapability( actions );
         }
-
         default:
             return 0;
     }

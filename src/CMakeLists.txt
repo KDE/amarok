@@ -100,8 +100,6 @@ set(libmediadeviceframework_SRCS
   core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceCollectionLocation.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp
-  core-impl/collections/mediadevicecollection/MediaDeviceCollectionCapability.cpp
-  core-impl/collections/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp

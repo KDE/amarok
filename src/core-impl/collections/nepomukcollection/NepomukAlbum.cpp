@@ -22,7 +22,7 @@
 #include "NepomukRegistry.h"
 
 #include "covermanager/CoverFetchingActions.h"
-#include "core/meta/CustomActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 
@@ -259,7 +259,7 @@ NepomukAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) cons
 {
     switch( type )
     {
-        case Capabilities::Capability::CustomActions:
+        case Capabilities::Capability::Actions:
             return true;
 
         default:
@@ -272,7 +272,7 @@ NepomukAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Capabilities::Capability::CustomActions:
+        case Capabilities::Capability::Actions:
         {
             QList<QAction*> actions;
             //actions.append( new CopyToDeviceAction( m_collection, this ) );
@@ -280,10 +280,10 @@ NepomukAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
             //QAction* separator = new QAction( m_collection );
             //separator->setSeparator( true );
             //actions.append( separator );
-            actions.append( new FetchCoverAction( m_collection, this ) );
-            actions.append( new SetCustomCoverAction( m_collection, this ) );
-            QAction *displayCoverAction = new DisplayCoverAction( m_collection, this );
-            QAction *unsetCoverAction   = new UnsetCoverAction( m_collection, this );
+            actions.append( new FetchCoverAction( 0, this ) );
+            actions.append( new SetCustomCoverAction( 0, this ) );
+            QAction *displayCoverAction = new DisplayCoverAction( 0, this );
+            QAction *unsetCoverAction   = new UnsetCoverAction( 0, this );
             if( !hasImage() )
             {
                 displayCoverAction->setEnabled( false );
@@ -291,7 +291,7 @@ NepomukAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
             }
             actions.append( displayCoverAction );
             actions.append( unsetCoverAction );
-            return new CustomActionsCapability( actions );
+            return new ActionsCapability( actions );
         }
 
         default:

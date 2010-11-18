@@ -102,10 +102,8 @@ namespace LastFm
             virtual QPixmap emblem();
             virtual QString scalableEmblem();
 
-            QList< QAction * > nowPlayingActions() const;
-
-        //LastFm specific methods, cast the object to LastFm::Track to use them
-        //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)
+            //LastFm specific methods, cast the object to LastFm::Track to use them
+            //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)
             KUrl internalUrl() const; // this returns the private temporary url to the .mp3, DO NOT USE,
                                    // if you are asking, it has already expired
             QString streamName() const; // A nice name for the stream..
@@ -124,7 +122,7 @@ namespace LastFm
             void init( int id = -1 );
             //use a d-pointer because some code is going to work directly with LastFm::Track
             Private * const d;
-            QList< QAction * > m_currentTrackActions;
+            QList< QAction * > m_trackActions;
     };
 
     class LastFmProviderCapability : public Capabilities::Capability

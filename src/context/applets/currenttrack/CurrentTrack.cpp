@@ -28,7 +28,8 @@
 #include "CollectionManager.h"
 #include "covermanager/CoverViewDialog.h"
 #include "core/capabilities/EditCapability.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/meta/support/MetaUtility.h"
 #include "MainWindow.h"
@@ -79,6 +80,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
 
 CurrentTrack::~CurrentTrack()
 {
+    clearTrackActions();
 }
 
 void
@@ -231,16 +233,18 @@ CurrentTrack::contextualActions()
     if( !track )
         return actions;
 
+    if( !m_contextActions.isEmpty() )
+        return m_contextActions;
+
     Meta::AlbumPtr album = track->album();
     if( !album )
         return actions;
 
-    QScopedPointer<Capabilities::CustomActionsCapability> cac( album->create<Capabilities::CustomActionsCapability>() );
-    if( cac )
+    QScopedPointer<Capabilities::ActionsCapability> ac( album->create<Capabilities::ActionsCapability>() );
+    if( ac )
     {
-        QList<QAction *> customActions = cac->customActions();
-        foreach( QAction *action, customActions )
-            actions.append( action );
+        m_contextActions << ac->actions();
+        actions.append( m_contextActions );
     }
     return actions;
 }
@@ -591,7 +595,9 @@ CurrentTrack::clearTrackActions()
         delete child;
     }
     qDeleteAll( m_customActions );
+    qDeleteAll( m_contextActions );
     m_customActions.clear();
+    m_contextActions.clear();
 }
 
 void
@@ -781,11 +787,23 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
 
     using namespace Capabilities;
 
-    if( track->hasCapabilityInterface( Capability::CurrentTrackActions ) )
+    QScopedPointer<ActionsCapability> ac( track->create<ActionsCapability>() );
+    if( ac )
     {
-        QScopedPointer<CurrentTrackActionsCapability> cac( track->create<CurrentTrackActionsCapability>() );
-        if( cac )
-            actions << cac->customActions();
+        QList<QAction*> trackActions = ac->actions();
+        // ensure that the actions get deleted afterwards
+        foreach( QAction* action, trackActions )
+        {
+            if( !action->parent() )
+                action->setParent( this );
+            actions << action;
+        }
+    }
+
+    QScopedPointer<BookmarkThisCapability> btc( track->create<BookmarkThisCapability>() );
+    if( btc )
+    {
+        actions << btc->bookmarkAction();
     }
 
     if( m_showEditTrackDetailsAction && track->hasCapabilityInterface( Capability::Editable ) )

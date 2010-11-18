@@ -23,15 +23,13 @@
 #include "amarokurls/AmarokUrl.h"
 
 #include "core/capabilities/BookmarkThisCapability.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
-#include "core/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
 
 
 class BookmarkThisProvider;
-class CurrentTrackActionsProvider;
-class CustomActionsProvider;
+class ActionsProvider;
 class SourceInfoProvider;
 
 namespace Meta
@@ -55,7 +53,7 @@ public:
     virtual QString browserName();
     virtual QString collectionName();
     virtual bool simpleFiltering();
-    virtual QAction * bookmarkAction();
+    virtual QAction * bookmarkAction() const;
 
 private:
 
@@ -63,31 +61,17 @@ private:
 };
 
 
-
-class AMAROK_EXPORT ServiceCurrentTrackActionsCapability : public Capabilities::CurrentTrackActionsCapability {
-    Q_OBJECT
-    public:
-        ServiceCurrentTrackActionsCapability( CurrentTrackActionsProvider * currentTrackActionsProvider  );
-        virtual ~ServiceCurrentTrackActionsCapability();
-        virtual QList< QAction * > customActions() const;
-
-    private:
-        CurrentTrackActionsProvider * m_currentTrackActionsProvider;
-};
-
-
-
-class AMAROK_EXPORT ServiceCustomActionsCapability : public Capabilities::CustomActionsCapability
+class AMAROK_EXPORT ServiceActionsCapability : public Capabilities::ActionsCapability
 {
     Q_OBJECT
 
     public:
-        ServiceCustomActionsCapability( CustomActionsProvider * customActionsProvider  );
-        virtual ~ServiceCustomActionsCapability();
-        virtual QList< QAction * > customActions() const;
+        ServiceActionsCapability( ActionsProvider * actionsProvider  );
+        virtual ~ServiceActionsCapability();
+        virtual QList< QAction * > actions() const;
 
     private:
-        CustomActionsProvider * m_customActionsProvider;
+        ActionsProvider * m_actionsProvider;
 };
 
 

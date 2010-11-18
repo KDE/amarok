@@ -33,7 +33,9 @@ namespace CustomRoles
         ByLineRole = Qt::UserRole + 3,
         HasCapacityRole = Qt::UserRole + 4,
         UsedCapacityRole = Qt::UserRole + 5,
+        /** The number of collection actions */
         DecoratorRoleCount = Qt::UserRole + 6,
+        /** The collection actions */
         DecoratorRole = Qt::UserRole + 7
     };
 }
@@ -112,6 +114,9 @@ class CollectionTreeItem : public QObject
         void collectionUpdated();
 
     private:
+        /** Returns a list of collection actions.
+            Collection actions are shown on top of the collection tree item as icons (decorations)
+        */
         QList<QAction*> decoratorActions() const;
         void prepareForRemoval();
 

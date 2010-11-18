@@ -63,11 +63,11 @@ public:
     virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlAlbum *album ) = 0;
 };
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS CollectionCapabilityDelegate
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS ActionsCapabilityDelegate
 {
 public:
-    CollectionCapabilityDelegate() {};
-    virtual ~ CollectionCapabilityDelegate() {};
+    ActionsCapabilityDelegate() {};
+    virtual ~ ActionsCapabilityDelegate() {};
 
     virtual bool hasCapabilityInterface( Capabilities::Capability::Type type, const Collections::SqlCollection *collection ) const = 0;
     virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type, Collections::SqlCollection *collection ) = 0;

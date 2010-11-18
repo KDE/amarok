@@ -18,7 +18,8 @@
 
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
 
 
 CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )
@@ -46,19 +47,23 @@ void CurrentTrackToolbar::handleAddActions()
 
     foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
         addAction( action );
-    
-    if( track && track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
-    {
-        Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
-        if( cac )
-        {
-            QList<QAction *> currentTrackActions = cac->customActions();
-            foreach( QAction *action, currentTrackActions )
-                addAction( action );
 
+    if( track )
+    {
+        QScopedPointer< Capabilities::ActionsCapability > ac( track->create<Capabilities::ActionsCapability>() );
+        if( ac )
+        {
+            QList<QAction *> currentTrackActions = ac->actions();
+            foreach( QAction *action, currentTrackActions )
+            {
+                if( !action->parent() )
+                    action->setParent( this );
+                addAction( action );
+            }
         }
-        delete cac;
+
+        QScopedPointer< Capabilities::BookmarkThisCapability > btc( track->create<Capabilities::BookmarkThisCapability>() );
+        if( btc && btc->bookmarkAction() )
+            addAction( btc->bookmarkAction() );
     }
 }
-
-

@@ -23,15 +23,15 @@
 #include "LastFmCapabilityImpl_p.moc"
 #include "MultiPlayableCapabilityImpl_p.h"
 #include "MultiPlayableCapabilityImpl_p.moc"
-#include "CurrentTrackActionsCapabilityImpl_p.h"
-#include "CurrentTrackActionsCapabilityImpl_p.moc"
 #include "ServiceCapabilities.h"
 
 #include "LastFmService.h"
 #include "LastFmStreamInfoCapability.h"
 #include "ScrobblerAdapter.h"
 
+#include "EngineController.h"
 #include "core/support/Debug.h"
+#include "core/capabilities/ActionsCapability.h"
 
 #include <KLocale>
 #include <KSharedPtr>
@@ -102,13 +102,13 @@ void Track::init( int id /* = -1*/ )
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
     connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );
-    m_currentTrackActions.append( banAction );
+    m_trackActions.append( banAction );
 
     QAction * skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
     skipAction->setShortcut( i18n( "Ctrl+S" ) );
     skipAction->setStatusTip( i18n( "Skip this track" ) );
     connect( skipAction, SIGNAL( triggered() ), this, SLOT( skip() ) );
-    m_currentTrackActions.append( skipAction );
+    m_trackActions.append( skipAction );
 }
 
 QString
@@ -464,8 +464,8 @@ Track::ban()
     DEBUG_BLOCK
     d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).ban();
     connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
-    emit( skipTrack() );
-
+    if( The::engineController()->currentTrack() == this )
+        emit( skipTrack() );
 }
 
 void
@@ -520,7 +520,7 @@ Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
     return type == Capabilities::Capability::LastFm
                 || type == Capabilities::Capability::MultiPlayable
                 || type == Capabilities::Capability::SourceInfo
-                || type == Capabilities::Capability::CurrentTrackActions
+                || type == Capabilities::Capability::Actions
                 || type == Capabilities::Capability::StreamInfo;
 }
 
@@ -535,8 +535,8 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
             return new MultiPlayableCapabilityImpl( this );
         case Capabilities::Capability::SourceInfo:
             return new ServiceSourceInfoCapability( this );
-        case Capabilities::Capability::CurrentTrackActions:
-            return new CurrentTrackActionsCapabilityImpl( this );
+        case Capabilities::Capability::Actions:
+            return new Capabilities::ActionsCapability( m_trackActions );
         case Capabilities::Capability::StreamInfo:
             return new LastFmStreamInfoCapability( this );
         default:
@@ -570,11 +570,6 @@ QString LastFm::Track::scalableEmblem()
         return KStandardDirs::locate( "data", "amarok/images/emblem-lastfm-scalable.svg" );
     else
         return QString();
-}
-
-QList< QAction * > LastFm::Track::nowPlayingActions() const
-{
-    return m_currentTrackActions;
 }
 
 #include "LastFmMeta.moc"

@@ -36,10 +36,7 @@ set(libcore_capabilities_SRCS
     capabilities/Capability.cpp
     capabilities/BookmarkThisCapability.cpp
     capabilities/BoundedPlaybackCapability.cpp
-    capabilities/CollectionCapability.cpp
-    capabilities/CurrentTrackActionsCapability.cpp
-    capabilities/CustomActionsCapability.cpp
-    capabilities/DecoratorCapability.cpp
+    capabilities/ActionsCapability.cpp
     capabilities/EditCapability.cpp
     capabilities/EditablePlaylistCapability.cpp
     capabilities/FindInSourceCapability.cpp

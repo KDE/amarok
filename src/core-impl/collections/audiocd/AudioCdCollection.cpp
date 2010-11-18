@@ -20,7 +20,6 @@
 #include "AudioCdCollection.h"
 
 #include "amarokconfig.h"
-#include "AudioCdCollectionCapability.h"
 #include "AudioCdCollectionLocation.h"
 #include "AudioCdMeta.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -73,11 +72,6 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
     m_udi = cdInfo->udi();
 
     readAudioCdSettings();
-
-    m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Eject" ), 0 );
-    m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
-
-    connect( m_ejectAction, SIGNAL( triggered() ), this, SLOT( eject() ) );
 
     m_handler = new Meta::AudioCdHandler( this );
 }
@@ -405,34 +399,6 @@ AudioCdCollection::eject()
         drive->eject();
     else
         debug() << "disc has no drive";
-}
-
-QAction *
-AudioCdCollection::ejectAction() const
-{
-    return m_ejectAction;
-}
-
-bool
-AudioCdCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
-{
-    switch( type )
-    {
-        case Capabilities::Capability::Collection:
-        case Capabilities::Capability::Decorator:
-            return true;
-
-        default:
-            return false;
-    }
-}
-
-Capabilities::Capability *
-AudioCdCollection::asCapabilityInterface( Capabilities::Capability::Type type )
-{
-    if ( type == Capabilities::Capability::Collection )
-        return new Capabilities::AudioCdCollectionCapability( this );
-    return 0;
 }
 
 void

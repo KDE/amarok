@@ -32,7 +32,8 @@
 
 #include "browsers/collectionbrowser/CollectionWidget.h"
 
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 
@@ -378,16 +379,15 @@ MainToolbar::updateCurrentTrackActions()
         actions << action;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track && track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
+    if( track )
     {
-        Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
-        if ( cac )
-        {
-            QList<QAction *> currentTrackActions = cac->customActions();
-            foreach( QAction *action, currentTrackActions )
-                actions << action;
-        }
-        delete cac;
+        QScopedPointer< Capabilities::ActionsCapability > ac( track->create<Capabilities::ActionsCapability>() );
+        if ( ac )
+            actions << ac->actions();
+
+        QScopedPointer< Capabilities::BookmarkThisCapability > btc( track->create<Capabilities::BookmarkThisCapability>() );
+        if ( btc && btc->bookmarkAction() )
+            actions << btc->bookmarkAction();
     }
 
     QHBoxLayout *hbl = static_cast<QHBoxLayout*>( m_current.label->layout() );
@@ -401,6 +401,8 @@ MainToolbar::updateCurrentTrackActions()
         if ( i == n )
             hbl->addStretch( 10 );
         btn = new TrackActionButton( m_current.label, actions.at(i) );
+        if( !actions.at(i)->parent() ) // see documentation of ActionsCapability::actions
+            actions.at(i)->setParent(btn);
         btn->installEventFilter( this );
         hbl->addWidget( btn );
     }

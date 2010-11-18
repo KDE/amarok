@@ -22,8 +22,8 @@
 #include "SqlCollection.h"
 #include "SqlMountPointManagerMock.h"
 
-#include "core/capabilities/CustomActionsCapability.h"
-#include "core-impl/collections/db/sql/SqlBookmarkThisCapability.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
 
 #include <QFile>
 #include <QImage>
@@ -193,10 +193,10 @@ TestSqlAlbum::testCapabilities()
 {
     Meta::AlbumPtr album = m_collection->registry()->getAlbum( "Test album", "test artist" );
 
-    QVERIFY( album->hasCapabilityInterface( Capabilities::Capability::CustomActions ) );
-    Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
-    QVERIFY( cac );
-    QVERIFY( cac->customActions().count() > 4 );
+    QVERIFY( album->hasCapabilityInterface( Capabilities::Capability::Actions ) );
+    Capabilities::ActionsCapability *ac = album->create<Capabilities::ActionsCapability>();
+    QVERIFY( ac );
+    QVERIFY( ac->actions().count() > 4 );
 
     QVERIFY( album->hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     Capabilities::BookmarkThisCapability *btc = album->create<Capabilities::BookmarkThisCapability>();
@@ -207,10 +207,10 @@ TestSqlAlbum::testCapabilities()
 
     // need to delete the actions. They hold pointers that prevent the registry from cleaning
     // it's state.
-    foreach( QAction *action, cac->customActions() )
+    foreach( QAction *action, ac->actions() )
         delete action;
     delete btc->bookmarkAction();
-    delete cac;
+    delete ac;
     delete btc;
 }
 

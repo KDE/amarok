@@ -36,22 +36,24 @@ namespace Playlist
             ~ViewCommon();
 
             void editTrackInformation();
-            void trackMenu( QWidget *, const QModelIndex *, const QPoint &pos, bool coverActions = false );
-            QList<QAction*> actionsFor( QWidget *parent, const QModelIndex *index, bool coverActions );
+            void trackMenu( QWidget *, const QModelIndex *, const QPoint &pos );
+            QList<QAction*> actionsFor( QWidget *parent, const QModelIndex *index );
 
             QList<QAction*> trackActionsFor( QWidget *parent, const QModelIndex *index );
-            QList<QAction*> coverActionsFor( const QModelIndex *index );
+            QList<QAction*> albumActionsFor( const QModelIndex *index );
             QList<QAction*> multiSourceActionsFor( QWidget *parent, const QModelIndex *index );
             QList<QAction*> editActionsFor( QWidget *parent, const QModelIndex *index );
 
         private:
 
+            /** Sets the parent to \c parent for all actions that don't already have one set.
+                This is needed because ActionsCapability expects actions without parent to be freed by the caller.
+            */
+            QList<QAction*> parentCheckActions( QObject *parent, QList<QAction*> actions );
             QAction* m_stopAfterTrackAction;
             QAction* m_cueTrackAction;
             QAction* m_removeTracTrackAction;
             QAction* m_findInSourceAction;
-            
-            
     };
 
 }

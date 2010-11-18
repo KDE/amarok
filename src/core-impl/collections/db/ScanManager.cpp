@@ -120,8 +120,23 @@ ScanManager::requestFullScan()
         QMutexLocker locker( &m_mutex );
         m_fullScanRequested = true;
         m_scanDirsRequested.unite( m_collection->mountPointManager()->collectionFolders().toSet() );
+
+        if( m_scanDirsRequested.isEmpty() )
+            warning() << "Cleaning complete collection requested.";
     }
     startScanner();
+}
+
+void
+ScanManager::requestImport( const KUrl &url )
+{
+    abort( i18n("Database import requested") );
+
+    // wait until the scanner is completely finished
+    while( isRunning() )
+        qApp->processEvents();
+
+    createParser( ScanResultProcessor::FullScan, url.path() );
 }
 
 
@@ -191,11 +206,29 @@ void ScanManager::startScanner()
     else
         scanType = ScanResultProcessor::PartialUpdateScan;
 
-    // -- Create the parser job
-    m_parser = new XmlParseJob( this, m_collection, scanType );
+    createParser( scanType );
+    m_restartCount = 0;
 
-    connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
-    ThreadWeaver::Weaver::instance()->enqueue( m_parser );
+    // -- Create the scanner process
+    startScannerProcess( false );
+
+    // -- Remember the current settings
+    m_fullScan = m_fullScanRequested;
+    m_scanDirs = m_scanDirsRequested;
+
+    m_fullScanRequested = false;
+    m_scanDirsRequested.clear();
+}
+
+void
+ScanManager::createParser( ScanResultProcessor::ScanType scanType,
+                           const QString &xmlFilePath )
+{
+    if( m_parser )
+        return;
+
+    // -- Create the parser job
+    m_parser = new XmlParseJob( this, m_collection, scanType, xmlFilePath );
 
     // - connect the status bar
     if( The::statusBar() )
@@ -211,17 +244,10 @@ void ScanManager::startScanner()
                  Qt::QueuedConnection );
     }
 
-    m_restartCount = 0;
-
-    // -- Create the scanner process
-    startScannerProcess( false );
-
-    // -- Remember the current settings
-    m_fullScan = m_fullScanRequested;
-    m_scanDirs = m_scanDirsRequested;
-
-    m_fullScanRequested = false;
-    m_scanDirsRequested.clear();
+    // - enqueue it.
+    connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
+    connect( m_parser, SIGNAL( message( QString ) ), this, SIGNAL( message( QString ) ) );
+    ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
 
 void
@@ -419,6 +445,8 @@ ScanManager::slotJobDone()
     m_parser->deleteLater();
     m_parser = 0;
     stopScanner();
+
+    emit finished();
 }
 
 void
@@ -489,12 +517,16 @@ ScanManager::stopParser()
 ///////////////////////////////////////////////////////////////////////////////
 
 XmlParseJob::XmlParseJob( QObject *parent, Collections::DatabaseCollection *collection,
-                          ScanResultProcessor::ScanType scanType )
+                          ScanResultProcessor::ScanType scanType,
+                          const QString &xmlFilePath )
     : ThreadWeaver::Job( parent )
     , m_collection( collection )
     , m_scanType( scanType )
     , m_abortRequested( false )
-{ }
+{
+    if( !xmlFilePath.isEmpty() )
+        m_reader.setDevice( new QFile( xmlFilePath, this ) );
+}
 
 XmlParseJob::~XmlParseJob()
 { }
@@ -536,6 +568,7 @@ XmlParseJob::run()
                 if( name == "scanner" )
                 {
                 debug() << "XmlParseJob: got count:" << m_reader.attributes().value( "count" ).toString().toInt();
+                    emit message( i18n("Found %1 directories").arg(m_reader.attributes().value( "count" ).toString()) );
                     emit totalSteps( this,
                                      m_reader.attributes().value( "count" ).toString().toInt() * 2);
                 }
@@ -548,6 +581,7 @@ XmlParseJob::run()
                     debug() << "XmlParseJob: run:"<<count<<"current path"<<dir->rpath();
                     count++;
 
+                    emit message( i18n("Got directory %1 from scanner.").arg( dir->rpath() ) );
                     emit step( this );
                 }
                 else
@@ -575,11 +609,13 @@ XmlParseJob::run()
     if( m_reader.hasError() )
     {
         warning() << "Aborting ScanManager XmlParseJob with error"<<m_reader.errorString();
+        emit message( i18n("Aborting scanner with error: %1").arg( m_reader.errorString() ) );
         processor->rollback();
     }
     else if( m_abortRequested )
     {
         debug() << "Aborting ScanManager XmlParseJob";
+        emit message( i18n("Aborting scanner requested.") );
         processor->rollback();
     }
     else

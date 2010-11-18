@@ -28,7 +28,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "CompoundProgressBar.h"
 #include "core/support/Debug.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core/meta/Meta.h"
 #include "core/collections/QueryMaker.h"
 #include "CoverFetchingActions.h"
@@ -778,10 +778,10 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
         Meta::AlbumPtr album = item->albumPtr();
         if( album )
         {
-            QScopedPointer<Capabilities::CustomActionsCapability> cac( album->create<Capabilities::CustomActionsCapability>() );
-            if( cac )
+            QScopedPointer<Capabilities::ActionsCapability> ac( album->create<Capabilities::ActionsCapability>() );
+            if( ac )
             {
-                actions = cac->customActions();
+                actions = ac->actions();
                 foreach( QAction *action, actions )
                     menu.addAction( action );
             }
@@ -802,10 +802,10 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
             Meta::AlbumPtr album = cvItem->albumPtr();
             if( album )
             {
-                QScopedPointer<Capabilities::CustomActionsCapability> cac( album->create<Capabilities::CustomActionsCapability>() );
-                if( cac )
+                QScopedPointer<Capabilities::ActionsCapability> ac( album->create<Capabilities::ActionsCapability>() );
+                if( ac )
                 {
-                    QList<QAction *> actions = cac->customActions();
+                    QList<QAction *> actions = ac->actions();
                     foreach( QAction *action, actions )
                     {
                         if( qobject_cast<FetchCoverAction*>(action) )

@@ -105,6 +105,9 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
         void copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination, bool removeSources ) const;
         void removeTracks( const QSet<CollectionTreeItem*> &items, bool useTrash ) const;
+
+        // creates different actions from the different objects.
+        // note: you should not delete the created actions.
         QActionList createBasicActions( const QModelIndexList &indcies );
         QActionList createExtendedActions( const QModelIndexList &indcies );
         QActionList createCollectionActions( const QModelIndexList &indices );

@@ -23,6 +23,15 @@
 
 namespace Capabilities
 {
+    /** The capabilities are used by several amarok objects to express add on functionality.
+        Capabilities are used inside Amarok to implement a Java-like interface pattern.
+        Several object (Collection, Track, Album) can return capability object.
+        Since the implementation of these objects is in a library usually it would
+        be otherwise difficult to implement something like this.
+
+        Please note that the capability object will be created on demand and
+        also destroyed.
+    */
     class AMAROK_CORE_EXPORT Capability : public QObject
     {
         Q_OBJECT
@@ -34,25 +43,27 @@ namespace Capabilities
                         , Editable = 1
                         , LastFm = 2
                         , Buyable = 3
-                        , CustomActions = 4
+                        , Actions = 4
                         , EditablePlaylist = 5
                         , MultiPlayable = 6
                         , Organisable = 7
                         , SourceInfo = 8
-                        , CurrentTrackActions = 9
+                        // not longer used
                         , StreamInfo = 10
                         , Updatable = 11
                         , Importable = 12
-                        , Collection = 13
+                        // not longer used
                         , BookmarkThis = 14
                         , WriteTimecode = 15
                         , LoadTimecode = 16
                         , MultiSource = 17
                         , BoundedPlayback = 18
-                        , Decorator = 19
+                        // not longer used
                         , ReadLabel = 20
                         , WriteLabel = 21
                         , FindInSource = 22
+                        , CollectionImport = 23
+                        , CollectionScan = 24
                       };
 
             virtual ~Capability();

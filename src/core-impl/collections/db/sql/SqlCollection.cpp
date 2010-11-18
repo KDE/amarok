@@ -147,7 +147,7 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     updater.cleanupDatabase();
 
     m_registry = new SqlRegistry( this );
-    m_capabilityDelegate = new Capabilities::CollectionCapabilityDelegateImpl();
+    m_capabilityDelegate = new Capabilities::ActionsCapabilityDelegateImpl();
     m_albumCapabilityDelegate = new Capabilities::AlbumCapabilityDelegateImpl();
     m_artistCapabilityDelegate = new Capabilities::ArtistCapabilityDelegateImpl();
     m_trackCapabilityDelegate = new Capabilities::TrackCapabilityDelegateImpl();

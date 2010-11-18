@@ -338,13 +338,6 @@ SqlTrack::setAlbum( int albumId )
 {
     QWriteLocker locker( &m_lock );
 
-    if( m_album )
-    {
-        Meta::SqlAlbum *oldAlbum = static_cast<SqlAlbum*>(m_album.data());
-        if( oldAlbum->id() == albumId )
-            return;
-    }
-
     m_cache.insert( Meta::valAlbumId, albumId );
     if( !m_batchUpdate )
         commitMetaDataChanges();
@@ -979,12 +972,25 @@ SqlTrack::commitMetaDataChanges()
 
         newAlbum = static_cast<SqlAlbum*>(m_album.data());
 
-        // copy the image BUG: 203211
-        if( oldAlbum && newAlbum &&
-            oldAlbum->hasImage() && !newAlbum->hasImage() )
-            newAlbum->setImage( oldAlbum->imageLocation().path() );
+        // due to the complex logic with artist and albumId it can happen that
+        // in the end we have the same album as before.
+        if( newAlbum == oldAlbum )
+        {
+            m_cache.remove( Meta::valAlbum );
+            m_cache.remove( Meta::valAlbumId );
+            m_cache.remove( Meta::valAlbumArtist );
+            oldAlbum.clear();
+            newAlbum.clear();
+        }
+        else
+        {
+            // copy the image BUG: 203211
+            if( oldAlbum && newAlbum &&
+                oldAlbum->hasImage() && !newAlbum->hasImage() )
+                newAlbum->setImage( oldAlbum->imageLocation().path() );
 
-        collectionChanged = true;
+            collectionChanged = true;
+        }
     }
 
     if( m_cache.contains( Meta::valComposer ) )

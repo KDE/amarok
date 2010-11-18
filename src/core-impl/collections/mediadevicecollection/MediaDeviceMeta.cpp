@@ -26,7 +26,7 @@
 #include "covermanager/CoverFetchingActions.h"
 #include "core/support/Debug.h"
 #include "SvgHandler.h"
-#include "core/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/UpdateCapability.h"
 
@@ -952,7 +952,7 @@ MediaDeviceAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) 
 {
     switch( type )
     {
-        case Capabilities::Capability::CustomActions:
+        case Capabilities::Capability::Actions:
             return true;
         default:
             return false;
@@ -964,7 +964,7 @@ MediaDeviceAlbum::createCapabilityInterface( Capabilities::Capability::Type type
 {
     switch( type )
     {
-        case Capabilities::Capability::CustomActions:
+        case Capabilities::Capability::Actions:
         {
             QList<QAction*> actions;
             if( canUpdateImage() )
@@ -986,7 +986,7 @@ MediaDeviceAlbum::createCapabilityInterface( Capabilities::Capability::Type type
                 }
                 actions.append( unsetCoverAction );
             }
-            return new Capabilities::CustomActionsCapability( actions );
+            return new Capabilities::ActionsCapability( actions );
         }
 
         default:

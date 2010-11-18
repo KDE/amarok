@@ -24,7 +24,7 @@
 #include <config-amarok.h>
 #include "MainWindow.h"
 #include "core/meta/Meta.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/StatisticsCapability.h"
@@ -659,7 +659,7 @@ Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 #endif
     return type == Capabilities::Capability::Editable ||
            type == Capabilities::Capability::Importable ||
-           type == Capabilities::Capability::CurrentTrackActions ||
+           type == Capabilities::Capability::BookmarkThis ||
            type == Capabilities::Capability::WriteTimecode ||
            type == Capabilities::Capability::LoadTimecode ||
            ( type == Capabilities::Capability::ReadLabel && readlabel ) ||
@@ -677,14 +677,8 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
         case Capabilities::Capability::Importable:
             return new StatisticsCapabilityImpl( this );
 
-        case Capabilities::Capability::CurrentTrackActions:
-            {
-                QList< QAction * > actions;
-                QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
-                actions << flag;
-                debug() << "returning bookmarkcurrenttrack action";
-                return new Capabilities::CurrentTrackActionsCapability( actions );
-            }
+        case Capabilities::Capability::BookmarkThis:
+            return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
 
         case Capabilities::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityImpl( this );

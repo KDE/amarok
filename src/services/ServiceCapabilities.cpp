@@ -19,7 +19,7 @@
 
 
 ServiceBookmarkThisCapability::ServiceBookmarkThisCapability( BookmarkThisProvider * provider )
-    : Capabilities::BookmarkThisCapability()
+    : Capabilities::BookmarkThisCapability(0)
     , m_provider( provider )
 {
 }
@@ -49,50 +49,27 @@ bool ServiceBookmarkThisCapability::simpleFiltering()
     return m_provider->simpleFiltering();
 }
 
-QAction * ServiceBookmarkThisCapability::bookmarkAction()
+QAction * ServiceBookmarkThisCapability::bookmarkAction() const
 {
     return m_provider->bookmarkAction();
 }
 
-
-
 ///////////////////////////////////////////////////////
 
 
-ServiceCurrentTrackActionsCapability::ServiceCurrentTrackActionsCapability( CurrentTrackActionsProvider * currentTrackActionsProvider )
-    : Capabilities::CurrentTrackActionsCapability( )
-    , m_currentTrackActionsProvider( currentTrackActionsProvider )
+ServiceActionsCapability::ServiceActionsCapability(ActionsProvider * actionsProvider)
+    : Capabilities::ActionsCapability( )
+    , m_actionsProvider( actionsProvider )
 {
 }
 
-
-ServiceCurrentTrackActionsCapability::~ServiceCurrentTrackActionsCapability()
+ServiceActionsCapability::~ServiceActionsCapability()
 {
 }
 
-QList< QAction * >
-ServiceCurrentTrackActionsCapability::customActions() const
+QList< QAction * > ServiceActionsCapability::actions() const
 {
-    return m_currentTrackActionsProvider->currentTrackActions();
-}
-
-
-///////////////////////////////////////////////////////
-
-
-ServiceCustomActionsCapability::ServiceCustomActionsCapability(CustomActionsProvider * customActionsProvider)
-    : Capabilities::CustomActionsCapability( )
-    , m_customActionsProvider( customActionsProvider )
-{
-}
-
-ServiceCustomActionsCapability::~ServiceCustomActionsCapability()
-{
-}
-
-QList< QAction * > ServiceCustomActionsCapability::customActions() const
-{
-    return m_customActionsProvider->customActions();
+    return m_actionsProvider->actions();
 }
 
 ///////////////////////////////////////////////////////

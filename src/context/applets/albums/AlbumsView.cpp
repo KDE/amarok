@@ -24,7 +24,7 @@
 #include "SvgHandler.h"
 #include "TrackItem.h"
 #include "dialogs/TagDialog.h"
-#include "core/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h"
@@ -231,12 +231,19 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
     if( item->type() == AlbumType )
     {
         Meta::AlbumPtr album = static_cast<const AlbumItem*>( item )->album();
-        QScopedPointer<Capabilities::CustomActionsCapability> cac( album->create<Capabilities::CustomActionsCapability>() );
-        if( cac )
+        QScopedPointer<Capabilities::ActionsCapability> ac( album->create<Capabilities::ActionsCapability>() );
+        if( ac )
         {
-            QList<QAction *> actions = cac->customActions();
+            QList<QAction *> actions = ac->actions();
             if( !actions.isEmpty() )
             {
+                // ensure that the actions are cleaned up afterwards
+                foreach( QAction *action, actions )
+                {
+                    if( !action->parent() )
+                        action->setParent( &menuCover );
+                }
+
                 menuCover.addActions( actions );
                 menuCover.setIcon( KIcon( "filename-album-amarok" ) );
                 menu.addMenu( &menuCover );

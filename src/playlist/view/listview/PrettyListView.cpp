@@ -34,7 +34,7 @@
 #include "EngineController.h"
 #include "dialogs/TagDialog.h"
 #include "GlobalCurrentTrackActions.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/meta/Meta.h"
@@ -359,7 +359,7 @@ Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
     if( event->modifiers() & Qt::ControlModifier )
         return;
 
-    trackMenu( this, &index, event->globalPos(), true );
+    trackMenu( this, &index, event->globalPos() );
     event->accept();
 }
 
@@ -656,7 +656,7 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         qDebug() << "m_pd SVG renderer is " << (QObject*)(m_pd->svgRenderer());
         qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
 
-        QList<QAction*> actions =  actionsFor( this, &indices.first(), true );
+        QList<QAction*> actions =  actionsFor( this, &indices.first() );
         foreach( QAction * action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
 

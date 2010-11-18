@@ -34,8 +34,7 @@
 #include "core/meta/Meta.h"
 #include "core/collections/MetaQueryMaker.h"
 #include "core/capabilities/BookmarkThisCapability.h"
-#include "core/capabilities/CollectionCapability.h"
-#include "core/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
@@ -944,33 +943,23 @@ CollectionTreeView::createCustomActions( const QModelIndexList &indices )
             Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
             if( data )
             {
-                Capabilities::CustomActionsCapability *cac = data->create<Capabilities::CustomActionsCapability>();
-                if( cac )
+                QScopedPointer<Capabilities::ActionsCapability> ac( data->create<Capabilities::ActionsCapability>() );
+                if( ac )
                 {
-                    QActionList cActions = cac->customActions();
+                    QActionList cActions = ac->actions();
 
                     foreach( QAction *action, cActions )
                     {
-                        if( action )
-                        {
-                            actions.append( action );
-                            debug() << "Got custom action: " << action->text();
-                        }
+                        Q_ASSERT( action );
+                        actions.append( action );
+                        debug() << "Got custom action: " << action->text();
                     }
-                    delete cac;
                 }
-                //check if this item can be bookmarked...
-                Capabilities::BookmarkThisCapability *btc = data->create<Capabilities::BookmarkThisCapability>();
-                if( btc )
-                {
-                    if( btc->isBookmarkable() ) {
 
-                        QAction *bookmarAction = btc->bookmarkAction();
-                        if ( bookmarAction )
-                            actions.append( bookmarAction );
-                    }
-                    delete btc;
-                }
+                //check if this item can be bookmarked...
+                QScopedPointer<Capabilities::BookmarkThisCapability> btc( data->create<Capabilities::BookmarkThisCapability>() );
+                if( btc && btc->isBookmarkable() && btc->bookmarkAction() )
+                    actions.append( btc->bookmarkAction() );
             }
         }
     }
@@ -993,13 +982,10 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
 
     // Generate CollectionCapability, test for existence
 
-    Capabilities::CollectionCapability *cc = collection->create<Capabilities::CollectionCapability>();
+    QScopedPointer<Capabilities::ActionsCapability> cc( collection->create<Capabilities::ActionsCapability>() );
 
     if( cc )
-    {
-        actions = cc->collectionActions();
-        delete cc;
-    }
+        actions = cc->actions();
 
     return actions;
 }

@@ -3,6 +3,7 @@
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
  * Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>                             *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -33,6 +34,7 @@
 #include <QXmlStreamReader>
 
 #include <threadweaver/Job.h>
+#include <KUrl>
 
 class XmlParseJob;
 class QSharedMemory;
@@ -63,6 +65,10 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
          */
         virtual void requestFullScan();
 
+        /** Requests the scanner to do a full scan using the given import file.
+         */
+        virtual void requestImport( const KUrl &url );
+
         /** Requests the scanner to do an incremental scan.
          *  The incremental scan will check for new files or sub-folders.
          *  @param directory The directory to scan or and empty string if every
@@ -72,6 +78,12 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
 
         /** Abort the request and all currently running scans. */
         virtual void abort( const QString &reason = QString() );
+
+    signals:
+        /** This are status messages that the scanner emits frequently */
+        void message( QString message );
+        void aborted( QString reason );
+        void finished();
 
     private slots:
         /** This slot is called once to check the scanner version.
@@ -94,9 +106,16 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         /** Called when the parser job has finished. */
         void slotJobDone();
 
-        /* Tries to start the scanner */
+        /** Tries to start the scanner */
         void startScanner();
+
+        /** Creates the parser job and connects it to the status bar.
+            Enqueue it.
+        */
+        void createParser( ScanResultProcessor::ScanType scanType,
+                           const QString &xmlFilePath = QString() );
         void startScannerProcess( bool restart );
+
 
     private:
 
@@ -154,9 +173,11 @@ class XmlParseJob : public ThreadWeaver::Job
     public:
         /** Creates the parse job.
             The constructor itself should be called from the UI thread.
+            @param xmlFilePath An optional xml file that is parsed
         */
         XmlParseJob( QObject *parent, Collections::DatabaseCollection *collection,
-                     ScanResultProcessor::ScanType scanType );
+                     ScanResultProcessor::ScanType scanType,
+                     const QString &xmlFilePath = QString() );
         ~XmlParseJob();
 
         void run();
@@ -166,6 +187,8 @@ class XmlParseJob : public ThreadWeaver::Job
     Q_SIGNALS:
         void totalSteps( const QObject *o, int totalSteps );
         void step( const QObject *o );
+        /** This are status messages that the scanner emits frequently */
+        void message( QString message );
 
     private Q_SLOTS:
         void directoryCommitted();
