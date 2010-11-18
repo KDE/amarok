@@ -271,44 +271,35 @@ ArtistWidget::parseArtistDescription( const KUrl &url, QByteArray data,
     if( data.isEmpty() )
         return;
 
-    QString name;
-    QString summary;
     QXmlStreamReader xml( data );
-    while( !xml.atEnd() && !xml.hasError() )
+    xml.readNextStartElement(); // lfm
+    if( xml.attributes().value(QLatin1String("status")) != QLatin1String("ok") )
     {
-        xml.readNext();
-        if( xml.isStartElement() && xml.name() == "artist" )
+        setDescription( QString() );
+        return;
+    }
+
+    QString summary;
+    xml.readNextStartElement(); // artist
+    while( xml.readNextStartElement() )
+    {
+        if( xml.name() != QLatin1String("bio") )
         {
-            while( !xml.atEnd() )
-            {
-                xml.readNext();
-                if( xml.isEndElement() && xml.name() == "artist" )
-                    break;
-                if( !xml.isStartElement() )
-                    continue;
-
-                if( xml.name() == "bio" )
-                {
-                    while( !xml.atEnd() )
-                    {
-                        xml.readNext();
-                        if( xml.isEndElement() && xml.name() == "bio" )
-                            break;
-                        if( !xml.isStartElement() )
-                            continue;
-
-                        if( xml.name() == "summary" )
-                            summary = xml.readElementText().simplified();
-                        else
-                            xml.skipCurrentElement();
-                    }
-                }
-                else if( xml.name() == "name" )
-                    name = xml.readElementText();
-                else
-                    xml.skipCurrentElement();
-            }
+            xml.skipCurrentElement();
+            continue;
         }
+
+        while( xml.readNextStartElement() )
+        {
+            if( xml.name() != QLatin1String("summary") )
+            {
+                xml.skipCurrentElement();
+                continue;
+            }
+            summary = xml.readElementText().simplified();
+            break;
+        }
+        break;
     }
     setDescription( summary );
 }
@@ -323,46 +314,36 @@ ArtistWidget::parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAcce
     if( data.isEmpty() )
         return;
 
-    QString artist;
-    QString topTrack;
     QXmlStreamReader xml( data );
-    while( !xml.atEnd() && !xml.hasError() )
+    xml.readNextStartElement(); // lfm
+    if( xml.attributes().value(QLatin1String("status")) != QLatin1String("ok") )
     {
-        xml.readNext();
-        if( xml.isStartElement() && xml.name() == "track" )
+        setTopTrack( QString() );
+        return;
+    }
+
+    QString topTrack;
+    xml.readNextStartElement(); // toptracks
+    while( xml.readNextStartElement() )
+    {
+        if( xml.name() != QLatin1String("track") )
         {
-            while( !xml.atEnd() )
-            {
-                xml.readNext();
-                if( xml.isEndElement() && xml.name() == "track" )
-                    break;
-                if( !xml.isStartElement() )
-                    continue;
-
-                if( xml.name() == "artist" )
-                {
-                    while( !xml.atEnd() )
-                    {
-                        xml.readNext();
-                        if( xml.isEndElement() && xml.name() == "artist" )
-                            break;
-                        if( !xml.isStartElement() )
-                            continue;
-
-                        if( xml.name() == "name" )
-                            artist = xml.readElementText();
-                        else
-                            xml.skipCurrentElement();
-                    }
-                }
-                else if( xml.name() == "name" )
-                    topTrack = xml.readElementText();
-                else
-                    xml.skipCurrentElement();
-            }
+            xml.skipCurrentElement();
+            continue;
         }
 
-        if( !artist.isEmpty() && !topTrack.isEmpty() )
+        while( xml.readNextStartElement() )
+        {
+            if( xml.name() != QLatin1String("name") )
+            {
+                xml.skipCurrentElement();
+                continue;
+            }
+            topTrack = xml.readElementText();
+            break;
+        }
+
+        if( !topTrack.isEmpty() )
             break;
     }
     setTopTrack( topTrack );
