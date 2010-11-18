@@ -26,6 +26,7 @@
 #include <QString>
 
 class SimilarArtist;
+class QXmlStreamReader;
 typedef KSharedPtr<SimilarArtist> SimilarArtistPtr;
 
 /**
@@ -87,6 +88,8 @@ public:
      * @param artist artist name
      */
     void setSimilarTo( const QString &artist );
+
+    static SimilarArtist::List listFromXml( QXmlStreamReader &xml );
 
 private:
     /**

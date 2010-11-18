@@ -122,11 +122,10 @@ void
 SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data,
                                            NetworkAccessManagerProxy::Error e )
 {
-    Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
     {
         removeAllData( "similarArtists" );
-        debug() << "Error: failed to parse similar artists xml!" << e.description;
+        warning() << "Failed to parse similar artists xml:" << url << e.description;
         return;
     }
 
@@ -134,47 +133,7 @@ SimilarArtistsEngine::parseSimilarArtists( const KUrl &url, QByteArray data,
         return;
 
     QXmlStreamReader xml( data );
-    xml.readNextStartElement(); // lfm
-    if( xml.attributes().value(QLatin1String("status")) != QLatin1String("ok") )
-    {
-        removeAllData( "similarArtists" );
-        return;
-    }
-
-    SimilarArtist::List saList;
-    xml.readNextStartElement(); // similarartists
-    while( xml.readNextStartElement() )
-    {
-        if( xml.name() == QLatin1String("artist") )
-        {
-            QString name;
-            KUrl artistUrl;
-            KUrl imageUrl;
-            float match( 0.0 );
-            while( xml.readNextStartElement() )
-            {
-                const QStringRef &n = xml.name();
-                const QXmlStreamAttributes &a = xml.attributes();
-                if( n == QLatin1String("name") )
-                    name = xml.readElementText();
-                else if( n == QLatin1String("match") )
-                    match = xml.readElementText().toFloat() * 100.0;
-                else if( n == QLatin1String("url") )
-                    artistUrl = KUrl( xml.readElementText() );
-                else if( n == QLatin1String("image")
-                         && a.hasAttribute(QLatin1String("size"))
-                         && a.value(QLatin1String("size")) == QLatin1String("large") )
-                    imageUrl = KUrl( xml.readElementText() );
-                else
-                    xml.skipCurrentElement();
-            }
-            SimilarArtistPtr artist( new SimilarArtist( name, match, artistUrl, imageUrl, m_artist ) );
-            saList.append( artist );
-        }
-        else
-            xml.skipCurrentElement();
-    }
-
+    SimilarArtist::List saList = SimilarArtist::listFromXml( xml );
     debug() << "Found" << saList.size() << "similar artists of" << m_artist;
     Plasma::DataEngine::Data eData;
     eData[ "artist"  ] = m_artist;
