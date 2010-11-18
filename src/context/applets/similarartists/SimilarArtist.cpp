@@ -19,15 +19,11 @@
 SimilarArtist::SimilarArtist() {}
 
 SimilarArtist::SimilarArtist( const QString &name, const int match, const KUrl &url,
-                              const KUrl &urlImage, const QString &similarTo,
-                              const QString &description,
-                              const QString &topTrack )
+                              const KUrl &urlImage, const QString &similarTo )
     : m_name( name )
     , m_match( match )
     , m_url( url )
     , m_urlImage( urlImage )
-    , m_description( description )
-    , m_topTrack( topTrack )
     , m_similarTo( similarTo )
 {
 
@@ -45,8 +41,6 @@ SimilarArtist::SimilarArtist( const SimilarArtist &other )
     , m_match( other.m_match )
     , m_url( other.m_url )
     , m_urlImage( other.m_urlImage )
-    , m_description( other.m_description )
-    , m_topTrack( other.m_topTrack )
     , m_similarTo( other.m_similarTo )
 {
 }
@@ -73,30 +67,6 @@ KUrl
 SimilarArtist::urlImage() const
 {
     return m_urlImage;
-}
-
-QString
-SimilarArtist::description() const
-{
-    return m_description;
-}
-
-void
-SimilarArtist::setDescription(const QString &description)
-{
-    m_description=description;
-}
-
-QString
-SimilarArtist::topTrack() const
-{
-    return m_topTrack;
-}
-
-void
-SimilarArtist::setTopTrack(const QString &track)
-{
-    m_topTrack=track;
 }
 
 QString
