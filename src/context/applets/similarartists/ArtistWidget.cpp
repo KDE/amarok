@@ -189,9 +189,6 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
 
 ArtistWidget::~ArtistWidget()
 {
-    QString photoUrl = m_artist->urlImage().url();
-    if( !photoUrl.isEmpty() )
-        QPixmapCache::remove( photoUrl );
     clear();
 }
 

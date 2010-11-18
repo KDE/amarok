@@ -132,8 +132,6 @@ UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
 
 UpcomingEventsWidget::~UpcomingEventsWidget()
 {
-    if( !m_imageUrl.isEmpty() )
-        QPixmapCache::remove( m_imageUrl.url() );
 }
 
 QGraphicsProxyWidget *
