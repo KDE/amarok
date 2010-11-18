@@ -34,7 +34,6 @@ class QSignalMapper;
 class QLabel;
 
 namespace Plasma {
-    class Label;
     class PushButton;
 }
 
@@ -121,6 +120,11 @@ private:
     void setBioSummary( const QString &bio );
 
     /**
+     * Set arist tags
+     */
+    void setTags();
+
+    /**
      * Layout the text for artist's bio summary
      */
     void layoutBio();
@@ -154,6 +158,11 @@ private:
      * Label showing the title of the top track of the artist
      */
     QLabel *m_topTrackLabel;
+
+    /**
+     * Label showing artist tags
+     */
+    QLabel *m_tagsLabel;
 
     /**
      * Meta::LabelPtr to the top track, if it's in a collection
@@ -204,6 +213,11 @@ private:
      * The complete bio with its published date
      */
     QPair<KDateTime, QString> m_fullBio;
+
+    /**
+     * List of artist tags
+     */
+    QStringList m_tags;
 
     const SimilarArtistPtr m_artist;
 

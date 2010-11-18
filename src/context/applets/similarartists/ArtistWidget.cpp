@@ -67,43 +67,52 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
 
     m_nameLabel = new QLabel;
     m_match     = new QLabel;
+    m_tagsLabel = new QLabel;
     m_topTrackLabel = new QLabel;
     m_bio = new QGraphicsWidget( this );
 
     QGraphicsProxyWidget *nameProxy     = new QGraphicsProxyWidget( this );
     QGraphicsProxyWidget *matchProxy    = new QGraphicsProxyWidget( this );
     QGraphicsProxyWidget *topTrackProxy = new QGraphicsProxyWidget( this );
+    QGraphicsProxyWidget *tagsProxy     = new QGraphicsProxyWidget( this );
     nameProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     matchProxy->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
     topTrackProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    tagsProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    imageProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
     nameProxy->setWidget( m_nameLabel );
     matchProxy->setWidget( m_match );
     topTrackProxy->setWidget( m_topTrackLabel );
+    tagsProxy->setWidget( m_tagsLabel );
 
     m_nameLabel->setAttribute( Qt::WA_NoSystemBackground );
     m_match->setAttribute( Qt::WA_NoSystemBackground );
     m_topTrackLabel->setAttribute( Qt::WA_NoSystemBackground );
+    m_tagsLabel->setAttribute( Qt::WA_NoSystemBackground );
 
     m_image->setAlignment( Qt::AlignCenter );
     m_match->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     m_nameLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
     m_topTrackLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+    m_tagsLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
 
     m_nameLabel->setWordWrap( false );
     m_match->setWordWrap( false );
     m_topTrackLabel->setWordWrap( false );
+    m_tagsLabel->setWordWrap( false );
 
     m_match->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_topTrackLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_match->setMinimumWidth( 10 );
     m_topTrackLabel->setMinimumWidth( 10 );
     m_nameLabel->setMinimumWidth( 10 );
+    m_tagsLabel->setMinimumWidth( 10 );
 
     QFontMetricsF fm( font() );
-    m_bio->setMinimumHeight( fm.lineSpacing() * 6 );
-    m_bio->setMaximumHeight( fm.lineSpacing() * 6 );
-    m_bio->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_bio->setMinimumHeight( fm.lineSpacing() * 5 );
+    m_bio->setMaximumHeight( fm.lineSpacing() * 5 );
+    m_bio->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_bioLayout.setCacheEnabled( true );
 
     QFont artistFont;
@@ -111,8 +120,8 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     artistFont.setBold( true );
     m_nameLabel->setFont( artistFont );
     m_topTrackLabel->setFont( KGlobalSettings::smallestReadableFont() );
+    m_tagsLabel->setFont( KGlobalSettings::smallestReadableFont() );
     m_match->setFont( KGlobalSettings::smallestReadableFont() );
-    m_image->setFont( KGlobalSettings::smallestReadableFont() );
 
     m_navigateButton = new Plasma::PushButton( this );
     m_navigateButton->setMaximumSize( QSizeF( 22, 22 ) );
@@ -160,14 +169,14 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     buttonsLayout->addItem( m_similarArtistButton );
 
     // the image display is extended on two row
-    m_layout = new QGraphicsGridLayout;
-    m_layout->addItem( imageProxy, 0, 0, 3, 1 );
+    m_layout = new QGraphicsGridLayout( this );
+    m_layout->addItem( imageProxy, 0, 0, 4, 1 );
     m_layout->addItem( nameProxy, 0, 1 );
     m_layout->addItem( buttonsLayout, 0, 2, Qt::AlignRight );
     m_layout->addItem( topTrackProxy, 1, 1 );
     m_layout->addItem( matchProxy, 1, 2, Qt::AlignRight );
-    m_layout->addItem( m_bio, 2, 1, 1, 2 );
-    setLayout( m_layout );
+    m_layout->addItem( tagsProxy, 2, 1, 1, 2 );
+    m_layout->addItem( m_bio, 3, 1, 1, 2 );
 
     m_match->setText( i18n( "Match: %1%", QString::number( m_artist->match() ) ) );
     m_nameLabel->setText( m_artist->name() );
@@ -300,26 +309,42 @@ ArtistWidget::parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerP
     xml.readNextStartElement(); // artist
     while( xml.readNextStartElement() )
     {
-        if( xml.name() != QLatin1String("bio") )
+        if( xml.name() == QLatin1String("tags") )
         {
-            xml.skipCurrentElement();
-            continue;
-        }
+            m_tags.clear();
+            while( xml.readNextStartElement() )
+            {
+                if( xml.name() != QLatin1String("tag") )
+                    continue;
 
-        while( xml.readNextStartElement() )
-        {
-            if( xml.name() == QLatin1String("published") )
-                m_fullBio.first = KDateTime::fromString( xml.readElementText(), "%a, %d %b %Y %H:%M:%S" );
-            else if( xml.name() == QLatin1String("summary") )
-                summary = xml.readElementText().simplified();
-            else if( xml.name() == QLatin1String("content") )
-                m_fullBio.second = xml.readElementText().replace( QRegExp("\n+"), QLatin1String("<br>") );
-            else
-                xml.skipCurrentElement();
+                while( xml.readNextStartElement() )
+                {
+                    if( xml.name() == QLatin1String("name") )
+                        m_tags << xml.readElementText();
+                    else
+                        xml.skipCurrentElement();
+                }
+            }
         }
-        break;
+        else if( xml.name() == QLatin1String("bio") )
+        {
+            while( xml.readNextStartElement() )
+            {
+                if( xml.name() == QLatin1String("published") )
+                    m_fullBio.first = KDateTime::fromString( xml.readElementText(), "%a, %d %b %Y %H:%M:%S" );
+                else if( xml.name() == QLatin1String("summary") )
+                    summary = xml.readElementText().simplified();
+                else if( xml.name() == QLatin1String("content") )
+                    m_fullBio.second = xml.readElementText().replace( QRegExp("\n+"), QLatin1String("<br>") );
+                else
+                    xml.skipCurrentElement();
+            }
+        }
+        else
+            xml.skipCurrentElement();
     }
     setBioSummary( summary );
+    setTags();
 }
 
 void
@@ -427,6 +452,14 @@ ArtistWidget::setBioSummary( const QString &bio )
         m_bioLayout.setText( plain );
     }
     layoutBio();
+}
+
+void
+ArtistWidget::setTags()
+{
+    QString tags = m_tags.isEmpty() ? i18n( "none" ) : m_tags.join( QLatin1String(", ") );
+    QString label = i18nc( "@label:textbox", "Tags: %1", tags );
+    m_tagsLabel->setText( label );
 }
 
 void
