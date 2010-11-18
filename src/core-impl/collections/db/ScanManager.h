@@ -36,7 +36,7 @@
 #include <threadweaver/Job.h>
 #include <KUrl>
 
-class XmlParseJob;
+class ScannerJob;
 class QSharedMemory;
 
 class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
@@ -48,8 +48,8 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         virtual ~ScanManager();
 
         /** Aborts a currently running scan and blocks starting new scans if set to true.
-         *  After blockScan has been set to false the scan will be resumed.
-         *  requested scans will be delayed until the blocking has stopped.
+         *  After blockScan has been set to false the scan will not be resumed.
+         *  Requested scans will be delayed until the blocking has stopped.
          *  If the scan has been blocked twice it needs to be unblocked twice again.
          */
         virtual void blockScan();
@@ -82,10 +82,17 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
     signals:
         /** This are status messages that the scanner emits frequently */
         void message( QString message );
-        void aborted( QString reason );
-        void finished();
+
+        void succeeded();
+        void failed( QString message );
 
     private slots:
+        /** Tries to start the scanner.
+            Does nothing if scanning is currently blocked, if another scanner
+            is running or if there is nothing to do.
+        */
+        void startScanner();
+
         /** This slot is called once to check the scanner version.
             An error message is displayed if the versions don't match.
         */
@@ -94,70 +101,25 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         /** Slot is called when the check folder timer runs out. */
         void slotWatchFolders();
 
-        /** Called when the scanner process has outputted some data. */
-        void slotReadReady();
-
-        /** Called when the scanner process is finished. */
-        void slotFinished(int exitCode, QProcess::ExitStatus exitStatus);
-
-        /** Called when the scanner process has an error. */
-        void slotError(QProcess::ProcessError error);
-
-        /** Called when the parser job has finished. */
+        /** Called when the scanner job has finished. */
         void slotJobDone();
 
-        /** Tries to start the scanner */
-        void startScanner();
-
-        /** Creates the parser job and connects it to the status bar.
-            Enqueue it.
-            @param input Optional parameter that tells the parser to use the given input device instead of listening to addXmlData signals.
-        */
-        void createParser( ScanResultProcessor::ScanType scanType,
-                           QIODevice *input = 0 );
-        void startScannerProcess( bool restart );
-
-
-    private:
-
-        /** Returns the path to the collection scanner */
-        QString scannerPath() const;
-
-        /**
-           Returns a list of all directories and their modification time from the
-           database.
-         */
-        QList< QPair<QString, uint> > getKnownDirs();
-
-        void deleteRemovedDirectories();
-
-        void handleRestart();
-
-        void stopScanner();
-        void stopParser();
 
     private:
         Collections::DatabaseCollection *m_collection;
 
-        AmarokProcess *m_scanner;
-        QSharedMemory *m_scannerStateMemory; // a persistent storage of the current scanner state in case it needs to be restarted.
-        QString       m_sharedMemoryKey;
-        XmlParseJob *m_parser;
+        ScannerJob *m_scanner;
 
         int m_restartCount;
         int m_blockCount;
 
         bool m_fullScanRequested;
         QSet<QString> m_scanDirsRequested;
-
-        bool m_fullScan;
-        QSet<QString> m_scanDirs;
-
-        QString m_batchfilePath;
+        QIODevice *m_importRequested;
 
         /**
            This mutex is protecting the variables:
-           m_fullScanRequested, m_fullScan, m_scanDirsRequested, m_scanDirs
+           m_fullScanRequested, m_scanDirsRequested, m_importRequested, m_scanner
           */
         QMutex m_mutex;
 };
@@ -167,7 +129,7 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
     ScanResultProcessor.
     The job will delete itself when finished or aborted.
 */
-class XmlParseJob : public ThreadWeaver::Job
+class ScannerJob : public ThreadWeaver::Job
 {
     Q_OBJECT
 
@@ -176,36 +138,73 @@ class XmlParseJob : public ThreadWeaver::Job
             The constructor itself should be called from the UI thread.
             @param xmlFilePath An optional xml file that is parsed
         */
-        XmlParseJob( QObject *parent, Collections::DatabaseCollection *collection,
-                     ScanResultProcessor::ScanType scanType,
-                     QIODevice *input = 0 );
-        ~XmlParseJob();
+        ScannerJob( QObject *parent, Collections::DatabaseCollection *collection,
+                    QIODevice *input = 0 );
+
+        ScannerJob( QObject *parent, Collections::DatabaseCollection *collection,
+                    ScanResultProcessor::ScanType scanType,
+                    QStringList scanDirsRequested );
+
+        ~ScannerJob();
 
         void run();
-        void addNewXmlData( const QString &data );
         void requestAbort();
+        void requestAbort(const QString &reason);
 
+        /** Returns the path to the collection scanner */
+        static QString scannerPath();
+
+    // note: since this job doesn't have it's own event queue all signals and slots
+    // go through the UI event queue
     Q_SIGNALS:
         void totalSteps( const QObject *o, int totalSteps );
         void step( const QObject *o );
+
         /** This are status messages that the scanner emits frequently */
         void message( QString message );
+
+        void succeeded();
+        void failed( QString message );
+        // and the ThreadWeaver::Job also emits done
 
     private Q_SLOTS:
         void directoryCommitted();
 
     private:
+        /** Creates the scanner process.
+            @returns true if successfull started
+        */
+        bool createScannerProcess( bool restart );
+        bool tryRestart();
+
+        /** Wait for the scanner to produce some output or die */
+        void getScannerOutput();
+
+        /**
+           Returns a list of all directories and their modification time from the
+           database.
+         */
+        QList< QPair<QString, uint> > getKnownDirs();
+
         Collections::DatabaseCollection *m_collection;
         ScanResultProcessor::ScanType m_scanType;
+        QStringList m_scanDirsRequested;
         QScopedPointer< QIODevice > m_input;
 
+        int m_restartCount;
         bool m_abortRequested;
+        QString m_abortReason;
         QString m_incompleteTagBuffer; // strings received via addNewXmlData but not terminated by either a </directory> or a </scanner>
+
+        AmarokProcess *m_scanner;
+        QString m_batchfilePath;
+        QSharedMemory *m_scannerStateMemory; // a persistent storage of the current scanner state in case it needs to be restarted.
+        QString       m_sharedMemoryKey;
 
         QXmlStreamReader m_reader;
 
-        QWaitCondition m_wait;
-        QMutex m_mutex;
+        QMutex m_mutex; // only protects m_abortRequested and the abort reason
+
 };
 
 #endif
