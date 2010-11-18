@@ -967,8 +967,8 @@ endif(Q_WS_MAC)
 
 ########### install files ###############
 
-install(FILES amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
-install(FILES amarok_containers.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+install(PROGRAMS amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+install(PROGRAMS amarok_containers.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 
 install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_codecinstall.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
