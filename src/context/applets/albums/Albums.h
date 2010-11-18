@@ -19,8 +19,9 @@
 #ifndef ALBUMS_APPLET_H
 #define ALBUMS_APPLET_H
 
-#include <context/Applet.h>
-#include <context/DataEngine.h>
+#include "context/Applet.h"
+#include "context/DataEngine.h"
+#include "core/meta/Meta.h"
 
 class AlbumsView;
 class TextScrollingWidget;
@@ -53,6 +54,8 @@ private:
     int m_recentCount;
     bool m_rightAlignLength;
     AlbumsView *m_albumsView;
+    Meta::AlbumList m_albums;
+    Meta::TrackPtr m_currentTrack;
     TextScrollingWidget *m_headerText;
 };
 

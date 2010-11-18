@@ -208,7 +208,9 @@ CurrentEngine::update( Meta::ArtistPtr artist )
 
     debug() << "updating albums for" << artist->name();
     Meta::AlbumList albums = artist->albums();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
     setData( "albums", "headerText", QVariant( i18n( "Albums by %1", artist->name() ) ) );
+    setData( "albums", "currentTrack", qVariantFromValue(track) );
 
     if( albums.isEmpty() )
     {

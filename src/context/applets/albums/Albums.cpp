@@ -26,21 +26,16 @@
 #include "core/support/Debug.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "EngineController.h"
 #include "context/widgets/TextScrollingWidget.h"
-#include "core/meta/Meta.h"
 #include "TrackItem.h"
 
 #include <Plasma/IconWidget>
-#include <Plasma/Theme>
 #include <KConfigDialog>
 
 #include <QAction>
 #include <QCheckBox>
 #include <QFormLayout>
-#include <QPainter>
 #include <QSpinBox>
-#include <QTreeView>
 #include <QGraphicsLinearLayout>
 
 Albums::Albums( QObject* parent, const QVariantList& args )
@@ -117,16 +112,23 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
         return;
 
     Meta::AlbumList albums = data[ "albums" ].value<Meta::AlbumList>();
+    Meta::TrackPtr track = data[ "currentTrack" ].value<Meta::TrackPtr>();
     m_headerText->setScrollingText( data[ "headerText" ].toString() );
 
     //Don't keep showing the albums for the artist of the last track that had album in the collection
     if( albums.isEmpty() )
         return;
+    if( (m_currentTrack == track) && (m_albums == albums) )
+    {
+        debug() << "albums view data unchanged, not updating";
+        return;
+    }
 
+    DEBUG_BLOCK
+    m_albums = albums;
+    m_currentTrack = track;
     m_albumsView->clear();
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    m_albumsView->setMode( currentTrack ? AlbumsProxyModel::SortByYear : AlbumsProxyModel::SortByCreateDate );
-    const bool showArtist = !currentTrack;
+    m_albumsView->setMode( track ? AlbumsProxyModel::SortByYear : AlbumsProxyModel::SortByCreateDate );
     AlbumItem *currentAlbum( 0 );
 
     foreach( Meta::AlbumPtr albumPtr, albums )
@@ -138,7 +140,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
         AlbumItem *albumItem = new AlbumItem();
         albumItem->setIconSize( 50 );
         albumItem->setAlbum( albumPtr );
-        albumItem->setShowArtist( showArtist );
+        albumItem->setShowArtist( !m_currentTrack );
 
         int numberOfDiscs = 0;
         int childRow = 0;
@@ -155,12 +157,12 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
             trackItem->setTrack( trackPtr );
 
             // bold the current track to make it more visible
-            if( currentTrack == trackPtr )
+            if( m_currentTrack == trackPtr )
                 trackItem->bold();
 
             // If compilation and same artist, then highlight, but only if there's a current track
-            if( currentTrack
-                && (currentTrack->artist() == trackPtr->artist())
+            if( m_currentTrack
+                && (m_currentTrack->artist() == trackPtr->artist())
                 && albumPtr->isCompilation() )
             {
                 trackItem->italicise();
@@ -192,7 +194,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
         }
 
         m_albumsView->appendAlbum( albumItem );
-        if( currentTrack && currentTrack->album() == albumPtr )
+        if( m_currentTrack && m_currentTrack->album() == albumPtr )
             currentAlbum = albumItem;
     }
 
