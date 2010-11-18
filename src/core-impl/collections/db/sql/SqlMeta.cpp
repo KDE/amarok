@@ -559,7 +559,7 @@ SqlTrack::setScore( double newScore )
 {
     QWriteLocker locker( &m_lock );
 
-    if( qAbs( newScore - m_score ) < 0.01 )
+    if( qAbs( newScore - m_score ) < 0.001 ) // we don't commit for minimal changes
         return;
 
     m_cache.insert( Meta::valScore, newScore );
@@ -1896,27 +1896,24 @@ SqlAlbum::largeImagePath()
 void
 SqlAlbum::setImage( const QString &path )
 {
-    QString imagePath = path;
-
-    QMutexLocker locker( &m_mutex );
-    if( m_name.isEmpty() )
+    if( m_imagePath == path )
+        return;
+    if( m_name.isEmpty() ) // the empty album never has an image
         return;
 
+    QMutexLocker locker( &m_mutex );
+
+    QString imagePath = path;
 
     // --- embedded cover
+    // we need to write the cover to the disk so that it won't get lost when
+    // the track uid changes or even worse the track is deleted.
     {
         // -- check if we have a track with the given path as uid
-        QString query = QString( "SELECT deviceid, rpath FROM urls WHERE uniqueid = '%1';" ).arg( imagePath );
-        QStringList result = m_collection->sqlStorage()->query( query );
-        if( !result.isEmpty() )
+        Meta::TrackPtr track = m_collection->getTrackFromUid(imagePath);
+        if( track )
         {
-            // we need to write the cover to the disk so that it won't get lost when
-            // the track uid changes or even worse the track is deleted.
-
-            // -- find the track with the cover
-            QString finalPath = m_collection->mountPointManager()->getAbsolutePath( result[0].toInt(), result[1] );
-
-            QImage image = MetaFile::Track::getEmbeddedCover( finalPath );
+            QImage image = MetaFile::Track::getEmbeddedCover( track->playableUrl().path() );
             if( image.isNull() )
                 return;
 

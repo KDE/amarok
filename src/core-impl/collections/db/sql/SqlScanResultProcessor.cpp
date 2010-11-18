@@ -53,8 +53,9 @@ SqlScanResultProcessor::commit()
             nonSkippedDirectories++;
         }
 
-    if( nonSkippedDirectories > 50 )
+    if( nonSkippedDirectories > 0 && (m_directories.count() / nonSkippedDirectories < 3) )
     {
+        debug() << "in commit, buffering all tracks";
         // ok. enough directories changed. Use the query manager to read
         // all the tracks into the cache in one go.
         // that saves us a lot of single database queries later

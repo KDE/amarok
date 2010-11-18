@@ -616,7 +616,7 @@ SqlRegistry::getAlbum( const QString &name, const QString &artist )
 
     QMutexLocker locker( &m_albumMutex );
 
-    AlbumKey key(name, artist);
+    AlbumKey key(name, albumArtist);
     if( m_albumMap.contains( key ) )
         return m_albumMap.value( key );
 
