@@ -648,14 +648,14 @@ void
 CurrentTrack::queryCollection()
 {
     Collections::QueryMaker *qmTracks = CollectionManager::instance()->queryMaker();
-    Collections::QueryMaker *qmAlbums = CollectionManager::instance()->queryMaker();
-    Collections::QueryMaker *qmGenres = CollectionManager::instance()->queryMaker();
+    // Collections::QueryMaker *qmAlbums = CollectionManager::instance()->queryMaker();
+    // Collections::QueryMaker *qmGenres = CollectionManager::instance()->queryMaker();
     connect( qmTracks, SIGNAL(newResultReady(QString, QStringList)),
              this, SLOT(tracksCounted(QString, QStringList)) );
-    connect( qmAlbums, SIGNAL(newResultReady(QString, QStringList)),
+    /*connect( qmAlbums, SIGNAL(newResultReady(QString, QStringList)),
              this, SLOT(albumsCounted(QString, QStringList)) );
     connect( qmGenres, SIGNAL(newResultReady(QString, QStringList)),
-             this, SLOT(genresCounted(QString, QStringList)) );
+             this, SLOT(genresCounted(QString, QStringList)) );*/
 
     qmTracks->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
