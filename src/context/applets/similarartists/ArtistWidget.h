@@ -23,16 +23,17 @@
 #include "SimilarArtist.h"
 
 #include <KUrl>
+#include <KDateTime>
 #include <Plasma/ScrollWidget>
 
 #include <QTextLayout>
 
 class QGraphicsGridLayout;
 class QGraphicsLinearLayout;
+class QSignalMapper;
 class QLabel;
 
 namespace Plasma {
-    class Label;
     class PushButton;
 }
 
@@ -44,6 +45,8 @@ namespace Plasma {
 class ArtistWidget : public QGraphicsWidget
 {
     Q_OBJECT
+    Q_PROPERTY( KDateTime bioPublished READ bioPublished )
+    Q_PROPERTY( QString fullBio READ fullBio )
 
 public:
     /**
@@ -71,10 +74,16 @@ public:
     void clear();
 
     /**
-     * Set the artist description
-     * @param description The description of this artist
+     * The date/time the bio was published
+     * @return date/time
      */
-    void setDescription( const QString &description );
+    KDateTime bioPublished() const;
+
+    /**
+     * Complete bio of artist on last.fm
+     * @return bio of artist
+     */
+    QString fullBio() const;
 
     /**
      * Change the most known track of this artist
@@ -82,17 +91,43 @@ public:
      */
     void setTopTrack( const QString &topTrack );
 
+    bool eventFilter( QObject *obj, QEvent *event );
+
+signals:
+    /**
+     * Show similar artists of the artist associated with this widget
+     */
+    void showSimilarArtists();
+
+    /**
+     * Show full bio of artist
+     */
+    void showBio();
+
 protected:
     void resizeEvent( QGraphicsSceneResizeEvent *event );
 
 private:
-    void fetchPhoto();     //!< Fetch the photo of the artist
-    void queryArtist();    //!< Query collection about artist
+    void fetchPhoto();       //!< Fetch the photo of the artist
+    void fetchInfo();        //!< Fetch the artist info
+    void fetchTopTrack();    //!< Fetch the artist'stop track
+    void queryArtist();      //!< Query collection about artist
 
     /**
-     * Layout the text for artist's description
+     * Set the artist bio summary
+     * @param bio The bio of this artist
      */
-    void layoutDescription();
+    void setBioSummary( const QString &bio );
+
+    /**
+     * Set arist tags
+     */
+    void setTags();
+
+    /**
+     * Layout the text for artist's bio summary
+     */
+    void layoutBio();
 
     /**
      * Layout for the formatting of the widget contents
@@ -125,6 +160,11 @@ private:
     QLabel *m_topTrackLabel;
 
     /**
+     * Label showing artist tags
+     */
+    QLabel *m_tagsLabel;
+
+    /**
      * Meta::LabelPtr to the top track, if it's in a collection
      */
     Meta::TrackPtr m_topTrack;
@@ -150,19 +190,34 @@ private:
     Plasma::PushButton *m_urlButton;
 
     /**
-     * Description of the artist
+     * Button to show similar artists of the artist associated with this widget
      */
-    QGraphicsWidget *m_desc;
+    Plasma::PushButton *m_similarArtistButton;
 
     /**
-     * Text layout for the artist description
+     * Bio summary of the artist
      */
-    QTextLayout m_descLayout;
+    QGraphicsWidget *m_bio;
 
     /**
-     * Whether all of artist description is shown
+     * Text layout for the artist bio
      */
-    bool m_descCropped;
+    QTextLayout m_bioLayout;
+
+    /**
+     * Whether all of artist bio is shown
+     */
+    bool m_bioCropped;
+
+    /**
+     * The complete bio with its published date
+     */
+    QPair<KDateTime, QString> m_fullBio;
+
+    /**
+     * List of artist tags
+     */
+    QStringList m_tags;
 
     const SimilarArtistPtr m_artist;
 
@@ -170,7 +225,19 @@ private slots:
     /**
      * Handle artist photo retrieved from Last.fm
      */
-    void setImageFromInternet( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void photoFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+
+    /**
+     * Parse the xml fetched on the lastFM API for the artist info.
+     * Launched when the download of the data are finished and for each similarArtists.
+     */
+    void parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+
+    /**
+     * Parse the xml fetched on the lastFM API for the similarArtist most known track.
+     * Launched when the download of the data are finished and for each similarArtists.
+     */
+    void parseTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
      * Open an URL
@@ -219,16 +286,21 @@ public:
     QString name() const;
     void setName( const QString &name );
 
-    void setDescription( const QString &artist, const QString &description );
-    void setTopTrack( const QString &artist, const QString &track );
-
     void clear();
+
+    ArtistWidget *widget( const QString &artistName );
+
+signals:
+    void showSimilarArtists( const QString &artist );
+    void showBio( const QString &artist );
 
 private:
     void addSeparator();
     int m_separatorCount;
     QString m_name;
     QGraphicsLinearLayout *m_layout;
+    QSignalMapper *m_showArtistsSigMapper;
+    QSignalMapper *m_showBioSigMapper;
     QList<ArtistWidget*> m_widgets;
     Q_DISABLE_COPY( ArtistsListWidget )
 };

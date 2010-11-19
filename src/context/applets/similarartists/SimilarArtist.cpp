@@ -16,18 +16,16 @@
 
 #include "SimilarArtist.h"
 
+#include <QXmlStreamReader>
+
 SimilarArtist::SimilarArtist() {}
 
 SimilarArtist::SimilarArtist( const QString &name, const int match, const KUrl &url,
-                              const KUrl &urlImage, const QString &similarTo,
-                              const QString &description,
-                              const QString &topTrack )
+                              const KUrl &urlImage, const QString &similarTo )
     : m_name( name )
     , m_match( match )
     , m_url( url )
     , m_urlImage( urlImage )
-    , m_description( description )
-    , m_topTrack( topTrack )
     , m_similarTo( similarTo )
 {
 
@@ -45,8 +43,6 @@ SimilarArtist::SimilarArtist( const SimilarArtist &other )
     , m_match( other.m_match )
     , m_url( other.m_url )
     , m_urlImage( other.m_urlImage )
-    , m_description( other.m_description )
-    , m_topTrack( other.m_topTrack )
     , m_similarTo( other.m_similarTo )
 {
 }
@@ -76,25 +72,60 @@ SimilarArtist::urlImage() const
 }
 
 QString
-SimilarArtist::description() const
+SimilarArtist::similarTo() const
 {
-    return m_description;
+    return m_similarTo;
 }
 
 void
-SimilarArtist::setDescription(const QString &description)
+SimilarArtist::setSimilarTo( const QString &artist )
 {
-    m_description=description;
+    m_similarTo = artist;
 }
 
-QString
-SimilarArtist::topTrack() const
+SimilarArtist::List
+SimilarArtist::listFromXml( QXmlStreamReader &xml )
 {
-    return m_topTrack;
-}
+    SimilarArtist::List saList;
+    xml.readNextStartElement(); // lfm
+    if( xml.attributes().value(QLatin1String("status")) != QLatin1String("ok") )
+        return saList;
 
-void
-SimilarArtist::setTopTrack(const QString &track)
-{
-    m_topTrack=track;
+    QString similarTo;
+    xml.readNextStartElement(); // similarartists
+    if( xml.attributes().hasAttribute(QLatin1String("artist")) )
+        similarTo = xml.attributes().value(QLatin1String("artist")).toString();
+
+    while( xml.readNextStartElement() )
+    {
+        if( xml.name() == QLatin1String("artist") )
+        {
+            QString name;
+            KUrl artistUrl;
+            KUrl imageUrl;
+            float match( 0.0 );
+            while( xml.readNextStartElement() )
+            {
+                const QStringRef &n = xml.name();
+                const QXmlStreamAttributes &a = xml.attributes();
+                if( n == QLatin1String("name") )
+                    name = xml.readElementText();
+                else if( n == QLatin1String("match") )
+                    match = xml.readElementText().toFloat() * 100.0;
+                else if( n == QLatin1String("url") )
+                    artistUrl = KUrl( xml.readElementText() );
+                else if( n == QLatin1String("image")
+                         && a.hasAttribute(QLatin1String("size"))
+                         && a.value(QLatin1String("size")) == QLatin1String("large") )
+                    imageUrl = KUrl( xml.readElementText() );
+                else
+                    xml.skipCurrentElement();
+            }
+            SimilarArtistPtr artist( new SimilarArtist( name, match, artistUrl, imageUrl, similarTo ) );
+            saList.append( artist );
+        }
+        else
+            xml.skipCurrentElement();
+    }
+    return saList;
 }

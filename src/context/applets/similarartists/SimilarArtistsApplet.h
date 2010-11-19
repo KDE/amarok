@@ -27,6 +27,7 @@
 
 #include <ui_similarArtistsSettings.h>
 
+#include <QStack>
 
 class TextScrollingWidget;
 class KConfigDialog;
@@ -82,6 +83,11 @@ public slots:
 
 private slots:
     void stopped();
+    void goBackward();
+    void goForward();
+    void updateNavigationIcons();
+    void queryArtist( const QString &name );
+    void queryForCurrentTrack();
 
 private:
 
@@ -89,8 +95,6 @@ private:
      * Update the display of the artists according to the lists m_similars
      */
     void artistsUpdate();
-
-    QString m_descriptionPreferredLang;
 
     /**
      * This scrollArea contents the artists widgets
@@ -112,7 +116,11 @@ private:
      */
     TextScrollingWidget *m_headerLabel;
 
-    //Icons on the title right
+    QStack<QString> m_historyBack;
+    QStack<QString> m_historyForward;
+    Plasma::IconWidget *m_backwardIcon;
+    Plasma::IconWidget *m_forwardIcon;
+    Plasma::IconWidget *m_currentArtistIcon;
     Plasma::IconWidget *m_settingsIcon;
     Ui::similarArtistsSettings ui_Settings;
 
@@ -132,8 +140,10 @@ private slots:
      * Show the settings windows
      */
     void configure();
-    void switchToLang(const QString &lang);
     void saveSettings();
+
+    void showSimilarArtists( const QString &name );
+    void showArtistBio( const QString &name );
 };
 
 K_EXPORT_AMAROK_APPLET( similarArtists, SimilarArtistsApplet )

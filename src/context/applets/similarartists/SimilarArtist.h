@@ -26,6 +26,7 @@
 #include <QString>
 
 class SimilarArtist;
+class QXmlStreamReader;
 typedef KSharedPtr<SimilarArtist> SimilarArtistPtr;
 
 /**
@@ -51,13 +52,9 @@ public:
      * @param url   A url of this artist on the web, for example on last.fm
      * @param urlImage  A url of an image of this artist, for example on last.fm
      * @param similarTo The name of the artist similar to this artist
-     * @param desc The description of this artist, empty string as default
-     * @param topTrack The most known artist track.
      */
     SimilarArtist( const QString &name, const int match, const KUrl &url,
-                   const KUrl &urlImage, const QString &similarTo,
-                   const QString &description = QString(),
-                   const QString &topTrack = QString() );
+                   const KUrl &urlImage, const QString &similarTo );
 
     SimilarArtist( const SimilarArtist &other );
 
@@ -82,26 +79,17 @@ public:
     KUrl urlImage() const;
 
     /**
-     * @return the description of this artist
+     * @return the artist this similar artist is related to
      */
-    QString description() const;
+    QString similarTo() const;
 
     /**
-     * Set the description of this artist
-     * @param desc the description
+     * Set the artist this similar artist is related to
+     * @param artist artist name
      */
-    void setDescription(const QString &description);
+    void setSimilarTo( const QString &artist );
 
-    /**
-     * @return the most known artist track
-     */
-    QString topTrack() const;
-
-    /**
-     * Set the most known artist track
-     * @param track the top track
-     */
-    void setTopTrack(const QString &track);
+    static SimilarArtist::List listFromXml( QXmlStreamReader &xml );
 
 private:
     /**
@@ -123,16 +111,6 @@ private:
      * A image url of this artist on the web
      */
     KUrl m_urlImage;
-
-    /**
-     * The description of this artist
-     */
-    QString m_description;
-
-    /**
-     * The most known track of this artist
-     */
-    QString m_topTrack;
 
     /**
      * The name of the artist similar to this artist

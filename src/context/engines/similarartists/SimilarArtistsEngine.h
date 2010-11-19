@@ -24,8 +24,6 @@
 #include "context/applets/similarartists/SimilarArtist.h"
 #include "core/meta/Meta.h"
 
-#include <QLocale>
-
 using namespace Context;
 
 /**
@@ -35,6 +33,8 @@ using namespace Context;
 class SimilarArtistsEngine : public DataEngine
 {
     Q_OBJECT
+    Q_PROPERTY( int maximumArtists READ maximumArtists WRITE setMaximumArtists )
+    Q_PROPERTY( QString artist READ artist WRITE setArtist )
 
 public:
 
@@ -50,43 +50,31 @@ public:
     virtual ~SimilarArtistsEngine();
 
     /**
-    * Fetches the similar artists for an artist thanks to the LastFm WebService
-    * @param artistName the name of the artist
-    * @return a map with the names of the artists with their match rate
-    */
-    QMap<int, QString> similarArtists( const QString &artistName );
-
-    /**
      * Fetches the similar artists for an artist thanks to the LastFM WebService
      * Store this in the similar artist list of this class
      * @param artistName the name of the artist
      */
     void similarArtistsRequest( const QString &artistName );
 
+    /**
+     * The maximum number of similar artists
+     * @return number of similar artists
+     */
+    int maximumArtists() const;
+
+    /**
+     * Set the maximum number of similar artists
+     * @param number The maximum number of similar artists
+     */
+    void setMaximumArtists( int number );
+
+    QString artist() const;
+    void setArtist( const QString &name );
+
 protected:
     bool sourceRequestEvent( const QString &name );
 
 private:
-    QString descriptionLocale() const;
-
-    bool m_isDelayingSetData;
-    QList<Plasma::DataEngine::Data> m_descriptions;
-    QList<Plasma::DataEngine::Data> m_topTracks;
-    QLocale m_descriptionLang;
-    QString m_descriptionWideLang;
-
-    /**
-     * Fetches the description of the artist artistName on the LastFM API.
-     * @param artistName the name of the artist
-     */
-    void artistDescriptionRequest( const QString &artistName );
-
-    /**
-     * Fetches the the most known artist track of the artist artistName on the LastFM API
-     * @param artistName the name of the artist
-     */
-    void artistTopTrackRequest( const QString &artistName );
-
     /**
      * The max number of similar artists to get
      */
@@ -99,38 +87,19 @@ private:
 
 private slots:
     /**
-     * Prepare the calling of the similarArtistsRequest method.
+     * Update similar artists for the current playing track.
      * Launch when the track played on amarok has changed.
+     * @param force force update to take place.
      */
-    void update();
+    void update( bool force = false );
+
+    void update( const QString &name );
 
     /**
      * Parse the xml fetched on the lastFM API.
      * Launched when the download of the data are finished.
      */
     void parseSimilarArtists( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-
-    /**
-     * Parse the xml fetched on the lastFM API for the similarArtist description.
-     * Launched when the download of the data are finished and for each similarArtists.
-     */
-    void parseArtistDescription( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-
-    /**
-     * Parse the xml fetched on the lastFM API for the similarArtist most known track.
-     * Launched when the download of the data are finished and for each similarArtists.
-     */
-    void parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-
-    /**
-     * Delays setting engine data for descriptions and toptracks.
-     * When descriptions and top tracks are parsed from the xml they are added
-     * to \p m_descriptions and \p m_topTracks respectively. Then setData()
-     * is called on them one at a time with a small delay in between. This is
-     * necessary so multiple setData() is not called too closely to eachother
-     * and cause the applet to miss any data.
-     */
-    void delayedSetData();
 };
 
 #endif // SIMILARARTISTSENGINE_H

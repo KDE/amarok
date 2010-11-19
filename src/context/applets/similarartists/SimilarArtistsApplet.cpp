@@ -31,10 +31,12 @@
 #include "context/widgets/TextScrollingWidget.h"
 
 //Kde
-#include <Plasma/Theme>
-#include <plasma/widgets/iconwidget.h>
 #include <KConfigDialog>
 #include <KStandardDirs>
+#include <KTextBrowser>
+#include <Plasma/TextBrowser>
+#include <Plasma/Theme>
+#include <plasma/widgets/iconwidget.h>
 
 //Qt
 #include <QDesktopServices>
@@ -87,14 +89,40 @@ SimilarArtistsApplet::init()
     m_settingsIcon->setToolTip( i18n( "Settings" ) );
     connect( m_settingsIcon, SIGNAL(clicked()), this, SLOT(configure()) );
 
+    QAction* backwardAction = new QAction( this );
+    backwardAction->setIcon( KIcon( "go-previous" ) );
+    backwardAction->setEnabled( false );
+    backwardAction->setText( i18n( "Back" ) );
+    m_backwardIcon = addAction( backwardAction );
+    connect( m_backwardIcon, SIGNAL(clicked()), this, SLOT(goBackward()) );
+
+    QAction* forwardAction = new QAction( this );
+    forwardAction->setIcon( KIcon( "go-next" ) );
+    forwardAction->setEnabled( false );
+    forwardAction->setText( i18n( "Forward" ) );
+    m_forwardIcon = addAction( forwardAction );
+    connect( m_forwardIcon, SIGNAL(clicked()), this, SLOT(goForward()) );
+
+    QAction *currentAction = new QAction( this );
+    currentAction->setIcon( KIcon( "filename-artist-amarok" ) );
+    currentAction->setEnabled( true );
+    currentAction->setText( i18n( "Show Similar Artists for Currently Playing Track" ) );
+    m_currentArtistIcon = addAction( currentAction );
+    connect( m_currentArtistIcon, SIGNAL(clicked()), this, SLOT(queryForCurrentTrack()) );
+
     QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    headerLayout->addItem( m_backwardIcon );
+    headerLayout->addItem( m_forwardIcon );
     headerLayout->addItem( m_headerLabel );
+    headerLayout->addItem( m_currentArtistIcon );
     headerLayout->addItem( m_settingsIcon );
     headerLayout->setContentsMargins( 0, 4, 0, 2 );
 
     // create a scrollarea
     m_scroll = new ArtistsListWidget( this );
     m_scroll->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    connect( m_scroll, SIGNAL(showSimilarArtists(QString)), SLOT(showSimilarArtists(QString)) );
+    connect( m_scroll, SIGNAL(showBio(QString)), SLOT(showArtistBio(QString)) );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
     layout->addItem( headerLayout );
@@ -106,6 +134,7 @@ SimilarArtistsApplet::init()
 
     Plasma::DataEngine *engine = dataEngine( "amarok-similarArtists" );
     connect( engine, SIGNAL(sourceAdded(QString)), SLOT(connectSource(QString)) );
+    engine->setProperty( "maximumArtists", m_maxArtists );
     engine->query( "similarArtists" );
 
     updateConstraints();
@@ -115,10 +144,7 @@ SimilarArtistsApplet::init()
 void
 SimilarArtistsApplet::connectSource( const QString &source )
 {
-    QStringList allowed;
-    allowed << "similarArtists" << "description" << "toptrack";
-
-    if( allowed.contains( source ) )
+    if( source == QLatin1String("similarArtists") )
         dataEngine( "amarok-similarArtists" )->connectSource( source, this );
 }
 
@@ -146,24 +172,18 @@ SimilarArtistsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
     QString artist = data[ "artist" ].toString();
     if( source == "similarArtists" )
     {
+        setBusy( false );
         if( !artist.isEmpty() )
         {
             m_artist = artist;
             m_similars = data[ "similar" ].value<SimilarArtist::List>();
+            updateNavigationIcons();
             artistsUpdate();
         }
         else
         {
             m_headerLabel->setScrollingText( i18n( "Similar Artists" ) );
         }
-    }
-    else if( source == "description" )
-    {
-        m_scroll->setDescription( artist, data["text"].toString() );
-    }
-    else if( source == "toptrack" )
-    {
-        m_scroll->setTopTrack( artist, data["track"].toString() );
     }
 }
 
@@ -174,52 +194,16 @@ SimilarArtistsApplet::configure()
 }
 
 void
-SimilarArtistsApplet::switchToLang(const QString &lang)
-{
-    DEBUG_BLOCK
-    if (lang == i18n("English") )
-        m_descriptionPreferredLang = "en";
-    else if (lang == i18n("French") )
-        m_descriptionPreferredLang = "fr";
-    else if (lang == i18n("German") )
-        m_descriptionPreferredLang = "de";
-    else if (lang == i18n("Italian") )
-        m_descriptionPreferredLang = "it";
-    else if (lang == i18n("Spanish") )
-        m_descriptionPreferredLang = "es";
-    else
-        m_descriptionPreferredLang = "aut";
-
-    KConfigGroup config = Amarok::config("SimilarArtists Applet");
-    config.writeEntry( "PreferredLang", m_descriptionPreferredLang );
-    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:lang:" ) + m_descriptionPreferredLang );
-}
-
-void
 SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     QWidget *settings = new QWidget();
     ui_Settings.setupUi( settings );
 
-    if ( m_descriptionPreferredLang == "aut" )
-        ui_Settings.comboBox->setCurrentIndex( 0 );
-    else if ( m_descriptionPreferredLang == "en" )
-        ui_Settings.comboBox->setCurrentIndex( 1 );
-    else if ( m_descriptionPreferredLang == "fr" )
-        ui_Settings.comboBox->setCurrentIndex( 2 );
-    else if ( m_descriptionPreferredLang == "de" )
-        ui_Settings.comboBox->setCurrentIndex( 3 );
-    else if ( m_descriptionPreferredLang == "it" )
-        ui_Settings.comboBox->setCurrentIndex( 4 );
-    else if ( m_descriptionPreferredLang == "es" )
-        ui_Settings.comboBox->setCurrentIndex( 5 );
-
     ui_Settings.spinBox->setValue( m_maxArtists );
 
     parent->addPage( settings, i18n( "Similar Artists Settings" ), "preferences-system" );
 
-    connect( ui_Settings.comboBox, SIGNAL(currentIndexChanged(QString)), SLOT(switchToLang(QString)) );
     connect( parent, SIGNAL(okClicked()), SLOT(saveSettings()) );
 }
 
@@ -229,13 +213,16 @@ SimilarArtistsApplet::saveSettings()
     DEBUG_BLOCK
     m_maxArtists = ui_Settings.spinBox->value();
     Amarok::config( "SimilarArtists Applet" ).writeEntry( "maxArtists", m_maxArtists );
-    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:%1" ).arg( m_maxArtists ) );
+    dataEngine( "amarok-similarArtists" )->setProperty( "maximumArtists", m_maxArtists );
+    dataEngine( "amarok-similarArtists" )->query( "similarArtists:forceUpdate" );
 }
 
 void
 SimilarArtistsApplet::artistsUpdate()
 {
-    m_scroll->clear();
+    if( !m_scroll->isEmpty() )
+        m_scroll->clear();
+
     if( !m_similars.isEmpty() )
     {
         m_headerLabel->setScrollingText( i18n( "Similar Artists of %1", m_artist ) );
@@ -245,6 +232,99 @@ SimilarArtistsApplet::artistsUpdate()
     {
         m_headerLabel->setScrollingText( i18n( "Similar Artists: Not Found" ) );
     }
+}
+
+void
+SimilarArtistsApplet::showSimilarArtists( const QString &name )
+{
+    if( m_artist != name )
+        m_historyBack.push( m_artist );
+    m_historyForward.clear();
+    queryArtist( name );
+    updateNavigationIcons();
+    setBusy( true );
+}
+
+void
+SimilarArtistsApplet::showArtistBio( const QString &name )
+{
+    const ArtistWidget *widget = m_scroll->widget( name );
+    if( !widget || widget->fullBio().isEmpty() )
+        return;
+
+    Plasma::TextBrowser *tb = new Plasma::TextBrowser( 0 );
+    tb->nativeWidget()->setFrameShape( QFrame::StyledPanel );
+    tb->nativeWidget()->setOpenExternalLinks( true );
+    tb->nativeWidget()->setAutoFormatting( QTextEdit::AutoAll );
+    tb->nativeWidget()->viewport()->setAutoFillBackground( true );
+
+    QString bio = widget->fullBio();
+    KDateTime pub = widget->bioPublished();
+    if( pub.isValid() )
+    {
+        QString pubDate = i18nc( "@item:intext Artist biography published date",
+                                 "Published: %1", pub.toString( KDateTime::LocalDate ) );
+        bio = QString( "%1<hr>%2" ).arg( pubDate, bio );
+    }
+    tb->nativeWidget()->setHtml( bio );
+
+    QGraphicsLinearLayout *l = new QGraphicsLinearLayout( Qt::Vertical );
+    l->setContentsMargins( 1, 1, 1, 1 );
+    l->addItem( tb );
+    qreal width = m_scroll->boundingRect().width() * 3 / 5;
+    qreal height = m_scroll->boundingRect().height() * 3 / 5;
+    QRectF rect( 0, 0, width, height );
+    rect.moveCenter( m_scroll->boundingRect().center() );
+    QGraphicsWidget *w = new QGraphicsWidget( 0, Qt::Window );
+    w->setGeometry( rect );
+    w->setLayout( l );
+    scene()->addItem( w );
+}
+
+void
+SimilarArtistsApplet::queryArtist( const QString &name )
+{
+    dataEngine( "amarok-similarArtists" )->setProperty( "artist", name );
+    dataEngine( "amarok-similarArtists" )->query( "similarArtists:artist" );
+}
+
+void
+SimilarArtistsApplet::queryForCurrentTrack()
+{
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( Meta::ArtistPtr artist = track->artist() )
+        queryArtist( artist->name() );
+}
+
+void
+SimilarArtistsApplet::goBackward()
+{
+    if( !m_historyBack.isEmpty() )
+    {
+        m_historyForward.push( m_artist );
+        m_artist = m_historyBack.pop();
+        queryArtist( m_artist );
+        updateNavigationIcons();
+    }
+}
+
+void
+SimilarArtistsApplet::goForward()
+{
+    if( !m_historyForward.isEmpty() )
+    {
+        m_historyBack.push( m_artist );
+        m_artist = m_historyForward.pop();
+        queryArtist( m_artist );
+        updateNavigationIcons();
+    }
+}
+
+void
+SimilarArtistsApplet::updateNavigationIcons()
+{
+    m_forwardIcon->action()->setEnabled( !m_historyForward.isEmpty() );
+    m_backwardIcon->action()->setEnabled( !m_historyBack.isEmpty() );
 }
 
 #include "SimilarArtistsApplet.moc"
