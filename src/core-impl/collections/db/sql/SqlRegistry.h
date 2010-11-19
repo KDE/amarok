@@ -126,6 +126,11 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         */
         bool updateCachedUid( const QString &oldUid, const QString &newUid );
 
+        /** Updates the count number from the database.
+         *  This will be done regulary to prevent problems when the database an the
+         *  internal count get out of sync.
+         */
+        void updateDatabaseCount() const;
 
 
         // --- functions needed to commit a track
@@ -175,6 +180,10 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         QMutex m_albumMutex;
         QMutex m_labelMutex;
 
+        /** The number of track entries in the database */
+        mutable int m_databaseTrackCount;
+
+        /** The timer is used for cleaning up the different caches. */
         QTimer *m_timer;
 
         Collections::SqlCollection *m_collection;

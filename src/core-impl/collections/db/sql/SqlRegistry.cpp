@@ -45,6 +45,9 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     databaseUpdater.deleteAllRedundant( "url" );
     databaseUpdater.deleteAllRedundant( "year" );
 
+    // -- figure out how many object we have
+    updateDatabaseCount();
+
     m_timer = new QTimer( this );
     m_timer->setInterval( 30 * 1000 );  //try to clean up every 30 seconds, change if necessary
     m_timer->setSingleShot( false );
@@ -146,6 +149,8 @@ SqlRegistry::getTrack( const QString &path )
     TrackId id(deviceId, rpath);
     if( m_trackMap.contains( id ) )
         return m_trackMap.value( id );
+    else if( m_databaseTrackCount <= m_trackMap.count() ) // we have all the tracks already
+        return Meta::TrackPtr();
     else
     {
         // -- first a fast lookup if we really have such a track
@@ -155,7 +160,6 @@ SqlRegistry::getTrack( const QString &path )
                            m_collection->sqlStorage()->escape( rpath ) );
         QStringList result = m_collection->sqlStorage()->query( query );
 
-        // -- now either create the track or get it from the database
         Meta::SqlTrack *sqlTrack;
 
         if( result.isEmpty() )
@@ -189,34 +193,38 @@ SqlRegistry::getTrack( int deviceId, const QString &rpath, int directoryId, cons
         return m_trackMap.value( id );
     else
     {
-        // -- first a fast lookup if we really have such a track
-        QString query = "SELECT id FROM urls "
-            "WHERE urls.deviceid = %1 AND urls.rpath = '%2';";
-        query = query.arg( QString::number( deviceId ),
-                           m_collection->sqlStorage()->escape( rpath ) );
-        QStringList result = m_collection->sqlStorage()->query( query );
+        Meta::SqlTrack *sqlTrack = 0;
 
-        // -- now either create the track or get it from the database
-        Meta::SqlTrack *sqlTrack;
-
-        if( result.isEmpty() )
+        if( m_databaseTrackCount > m_trackMap.count() )
         {
-            // ok. we have to create a new track
+            // -- first a fast lookup if we really have such a track
+            QString query = "SELECT id FROM urls "
+                "WHERE urls.deviceid = %1 AND urls.rpath = '%2';";
+            query = query.arg( QString::number( deviceId ),
+                               m_collection->sqlStorage()->escape( rpath ) );
+            QStringList result = m_collection->sqlStorage()->query( query );
 
-            sqlTrack = new Meta::SqlTrack( m_collection, deviceId, rpath, directoryId, uidUrl );
+            if( !result.isEmpty() )
+            {
+                Q_ASSERT( result.count() == 1 ); // path is unique
+
+                // -- get it from the database
+                query = "SELECT %1 FROM urls %2 "
+                    "WHERE urls.id = %3;";
+                query = query.arg( Meta::SqlTrack::getTrackReturnValues(),
+                                   Meta::SqlTrack::getTrackJoinConditions(),
+                                   result[0] );
+                result = m_collection->sqlStorage()->query( query );
+
+                sqlTrack = new Meta::SqlTrack( m_collection, result );
+            }
         }
-        else
+
+        // -- we have to create a new track
+        if( !sqlTrack )
         {
-            Q_ASSERT( result.count() == 1 ); // path is unique
-
-            query = "SELECT %1 FROM urls %2 "
-                "WHERE urls.id = %3;";
-            query = query.arg( Meta::SqlTrack::getTrackReturnValues(),
-                               Meta::SqlTrack::getTrackJoinConditions(),
-                               result[0] );
-            result = m_collection->sqlStorage()->query( query );
-
-            sqlTrack = new Meta::SqlTrack( m_collection, result );
+            sqlTrack = new Meta::SqlTrack( m_collection, deviceId, rpath, directoryId, uidUrl );
+            m_databaseTrackCount++;
         }
 
         Meta::TrackPtr trackPtr( sqlTrack );
@@ -383,6 +391,8 @@ SqlRegistry::deleteTrack( int trackId )
         locker.unlock(); // prevent deadlock
         m_collection->collectionUpdated();
     }
+
+    m_databaseTrackCount--;
 }
 
 // -------- artist
@@ -875,6 +885,7 @@ SqlRegistry::emptyCache()
         query = QString( "SELECT COUNT(*) FROM tracks;" );
         res = m_collection->sqlStorage()->query( query );
         mapCached( cachedBefore, "tracks", m_trackMap, res );
+        debug() << "     tracks internal count:" << m_databaseTrackCount << "cached.";
 
         query = QString( "SELECT COUNT(*) FROM artists;" );
         res = m_collection->sqlStorage()->query( query );
@@ -883,6 +894,8 @@ SqlRegistry::emptyCache()
         query = QString( "SELECT COUNT(*) FROM genres;" );
         res = m_collection->sqlStorage()->query( query );
         mapCached( cachedBefore, "genres", m_genreMap, res );
+
+        updateDatabaseCount();
 
         //this very simple garbage collector doesn't handle cyclic object graphs
         //so care has to be taken to make sure that we are not dealing with a cyclic graph
@@ -971,6 +984,17 @@ SqlRegistry::emptyCache()
     if( hasGenre ) m_genreMutex.unlock();
     if( hasComposer ) m_composerMutex.unlock();
     if( hasLabel ) m_labelMutex.unlock();
+}
+
+void SqlRegistry::updateDatabaseCount() const
+{
+    QString query;
+    QStringList res;
+
+    query = QString( "SELECT COUNT(*) FROM tracks;" );
+    res = m_collection->sqlStorage()->query( query );
+    if( !res.isEmpty() )
+        m_databaseTrackCount = res.first().toInt();
 }
 
 #include "SqlRegistry.moc"
