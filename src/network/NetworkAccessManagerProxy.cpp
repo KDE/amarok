@@ -115,10 +115,8 @@ public:
 
         ~CallBackData()
         {
-            if( !reply )
-                return;
-            reply.data()->abort();
-            reply.data()->deleteLater();
+            if( reply )
+                reply.data()->deleteLater();
         }
 
         QWeakPointer<QObject> receiver;
