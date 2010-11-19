@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,24 +15,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TESTSCANRESULTPROCESSORFULL_H
-#define TESTSCANRESULTPROCESSORFULL_H
+#ifndef TESTSQLSCANMANAGER_H
+#define TESTSQLSCANMANAGER_H
 
 #include <QtTest/QTest>
+
+#include "core/meta/support/MetaConstants.h"
 
 #include <KTempDir>
 
 class SqlStorage;
+class ScanManager;
 
 namespace Collections {
     class SqlCollection;
 }
 
-class TestScanResultProcessorFull : public QObject
+/** Test the ScanManager, the SqlScanResultProcessor and the amarokcollectionscanner itself.
+ */
+class TestSqlScanManager : public QObject
 {
     Q_OBJECT
 public:
-    TestScanResultProcessorFull();
+    TestSqlScanManager();
 
 private slots:
     void initTestCase();
@@ -39,17 +45,64 @@ private slots:
 
     void cleanup();
 
-    void testSingleInsert();
+    /**
+     * Check that a single insert really inserts all the information
+     */
+    void testScanSingle();
+
+    /**
+     * Check that fully scanning a directory works
+     */
+    void testScanDirectory();
+
+    /**
+     * Check that the scanner continues if crashed
+     */
+    void testRestartScanner();
+
+    /**
+     * Check that a blocked scan really does nothing.
+     */
+    void testBlock();
+
+    /**
+     *  Test adding a whole directory (incremental scan)
+     */
     void testAddDirectory();
+
+    /**
+     *  Test rescanning and detecting a removed directory (incremental)
+     */
+    void testRemoveDir();
+
+    /**
+     *  Test rescanning and detecting a removed track (incremental)
+     */
+    void testRemoveTrack();
+
+    /**
+     * Test merging of the result with an incremental scan.
+     * New files should be added to existing albums.
+     * Existing files should be merged.
+     */
     void testMerges();
 
     void testLargeInsert();
     void testIdentifyCompilationInMultipleDirectories();
 
 private:
-    Collections::SqlCollection *m_collection;
+    void createTrack( const Meta::FieldHash &values );
+    void createSingleTrack();
+    void createAlbum();
+    void createCompilation();
+    void createCompilationTrack();
+
     SqlStorage *m_storage;
     KTempDir *m_tmpDir;
+    QString m_sourcePath; // the path to the template .mp3 file
+
+    Collections::SqlCollection *m_collection;
+    ScanManager *m_scanManager;
 };
 
-#endif // TESTSCANRESULTPROCESSORFULL_H
+#endif // TESTSQLSCANMANAGER_H

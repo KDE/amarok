@@ -102,20 +102,16 @@ kde4_add_unit_test( testsqlquerymaker ${testsqlquerymaker_SRCS} )
 
 link_database_test( testsqlquerymaker )
 
-#-------------------------------- Test ScanResultProcessor Full scan mode -----------------------
+#-------------------------------- Test SqlScanManager -----------------------
 
-set( testscanresultprocessorfull_SRCS
-        TestScanResultProcessorFull.cpp
-        ${AMAROK_SOURCE_TREE}/../utilities/collectionscanner/Directory.cpp
-        ${AMAROK_SOURCE_TREE}/../utilities/collectionscanner/Playlist.cpp
-        ${AMAROK_SOURCE_TREE}/../utilities/collectionscanner/Album.cpp
-        ${AMAROK_SOURCE_TREE}/../utilities/collectionscanner/Track.cpp
+set( testsqlscanmanager_SRCS
+        TestSqlScanManager.cpp
     )
 
 
-kde4_add_unit_test( testscanresultprocessorfull ${testscanresultprocessorfull_SRCS} )
+kde4_add_unit_test( testsqlscanmanager ${testsqlscanmanager_SRCS} )
 
-link_database_test( testscanresultprocessorfull )
+link_database_test( testsqlscanmanager )
 
 #-------------------------------- Test SqlTrack -----------------------
 
