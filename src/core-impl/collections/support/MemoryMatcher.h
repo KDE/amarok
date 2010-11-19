@@ -20,6 +20,7 @@
 
 #include "amarok_export.h"
 #include "MemoryCollection.h"
+#include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 
 /**
@@ -58,12 +59,14 @@ class AMAROK_EXPORT TrackMatcher : public MemoryMatcher
 class AMAROK_EXPORT ArtistMatcher : public MemoryMatcher
 {
     public:
-        ArtistMatcher( Meta::ArtistPtr artist );
+        ArtistMatcher( Meta::ArtistPtr artist, Collections::QueryMaker::ArtistQueryMode artistMode
+                       = Collections::QueryMaker::TrackArtists );
         virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
         virtual Meta::TrackList match( const Meta::TrackList &tracks );
 
     private:
         Meta::ArtistPtr m_artist;
+        Collections::QueryMaker::ArtistQueryMode m_queryMode;
 };
 
 class AMAROK_EXPORT AlbumMatcher : public MemoryMatcher

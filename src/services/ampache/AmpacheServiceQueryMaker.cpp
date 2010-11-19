@@ -107,6 +107,7 @@ AmpacheServiceQueryMaker::setQueryType( QueryType type )
     switch( type ) {
 
     case QueryMaker::Artist:
+    case QueryMaker::AlbumArtist:
         d->type = Private::ARTIST;
         return this;
 

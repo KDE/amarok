@@ -74,6 +74,7 @@ class XmlQueryWriter : public QueryMaker
         QueryMaker* limitMaxResultSize( int size );
 
         QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+        QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
 
         QueryMaker* beginAnd();
         QueryMaker* beginOr();

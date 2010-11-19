@@ -36,6 +36,10 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
                               , OnlyCompilations = 1
                               , OnlyNormalAlbums = 2 };
 
+        enum ArtistQueryMode { TrackArtists         = 0,
+                               AlbumArtists         = 1,
+                               AlbumOrTrackArtists  = 2 };
+
         enum LabelQueryMode { NoConstraint = 0
                                 , OnlyWithLabels = 1
                                 , OnlyWithoutLabels = 2 };
@@ -43,14 +47,15 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         //Filters that the QueryMaker accepts for searching.
         //not all implementations will accept all filter levels, so make it possible to
         //specify which ones make sense for a given qm. Add to this as needed
-        enum ValidFilters { TitleFilter     =     1,
-                            AlbumFilter     =     2,
-                            ArtistFilter    =     4,
-                            GenreFilter     =     8,
-                            ComposerFilter  =    16,
-                            YearFilter      =    32,
-                            UrlFilter       =    64,
-                            AllFilters      = 65535 };
+        enum ValidFilters { TitleFilter      =     1,
+                            AlbumFilter      =     2,
+                            ArtistFilter     =     4,
+                            AlbumArtistFilter=     8,
+                            GenreFilter      =    16,
+                            ComposerFilter   =    32,
+                            YearFilter       =    64,
+                            UrlFilter        =   128,
+                            AllFilters       = 65535 };
 
         enum ReturnFunction { Count = 0,
                               Sum = 1,
@@ -65,6 +70,7 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
                          Track,
                          Artist,
                          Album,
+                         AlbumArtist,
                          Genre,
                          Composer,
                          Year,
@@ -186,6 +192,12 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          * QueryMaker defaults to AlbumQueryMode::AllAlbums.
          */
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+
+        /**
+         * Set artist query mode. If this method is not called,
+         * QueryMaker defaults to ArtistQueryMode::TrackArtist.
+         */
+        virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
 
         /**
           * Sets the label query mode. This method restricts a query to tracks

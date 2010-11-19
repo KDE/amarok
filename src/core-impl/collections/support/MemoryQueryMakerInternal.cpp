@@ -41,6 +41,7 @@ MemoryQueryMakerInternal::MemoryQueryMakerInternal( const QWeakPointer<MemoryCol
     , m_returnAsDataPtrs( false )
     , m_type( QueryMaker::None )
     , m_albumQueryMode( QueryMaker::AllAlbums )
+    , m_artistQueryMode( QueryMaker::TrackArtists )
     , m_orderDescending( false )
     , m_orderByNumberField( false )
     , m_orderByField( 0 )
@@ -277,6 +278,34 @@ MemoryQueryMakerInternal::handleResult()
             emitProperResult<Meta::ArtistPtr>( artists );
             break;
         }
+        case QueryMaker::AlbumArtist :
+        {
+            Meta::ArtistList artists;
+            Meta::AlbumList tmp = coll ? coll->albumMap().values() : Meta::AlbumList();
+            foreach( Meta::AlbumPtr album, tmp )
+            {
+                if( !album->hasAlbumArtist() )
+                    continue;
+
+                Meta::TrackList tracks = album->tracks();
+                foreach( Meta::TrackPtr track, tracks )
+                {
+                    if( ( m_albumQueryMode == QueryMaker::AllAlbums
+                        || ( m_albumQueryMode == QueryMaker::OnlyCompilations && album->isCompilation() )
+                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !album->isCompilation()) ) &&
+                        ( m_labelQueryMode == QueryMaker::NoConstraint
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                    {
+                        artists.append( album->albumArtist() );
+                        break;
+                    }
+                }
+            }
+            artists = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( artists, m_orderDescending );
+            emitProperResult<Meta::ArtistPtr>( artists );
+            break;
+        }
         case QueryMaker::Composer :
         {
             Meta::ComposerList composers;
@@ -492,6 +521,19 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             foreach( Meta::TrackPtr track, tracks )
             {
                 artistSet.insert( track->artist() );
+            }
+            Meta::ArtistList list = artistSet.toList();
+            list = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( list, m_orderDescending );
+            emitProperResult<Meta::ArtistPtr>( list );
+            break;
+        }
+        case QueryMaker::AlbumArtist :
+        {
+            QSet<Meta::ArtistPtr> artistSet;
+            foreach( Meta::TrackPtr track, tracks )
+            {
+                if( !track->album().isNull() && track->album()->hasAlbumArtist() )
+                    artistSet.insert( track->album()->albumArtist() );
             }
             Meta::ArtistList list = artistSet.toList();
             list = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( list, m_orderDescending );

@@ -33,6 +33,7 @@ static const QStringList typeElements = ( QStringList()
 << "%composer"
 << "%year"
 << "%album"
+<< "%albumartist"
 << "%comment"
 << "%genre"
 << "%filetype"
@@ -66,6 +67,7 @@ class FilenameLayoutDialog
             , Composer
             , Year
             , Album
+            , AlbumArtist
             , Comment
             , Genre
             , FileType
@@ -119,6 +121,7 @@ class FilenameLayoutDialog
         QColor m_color_Composer;
         QColor m_color_Year;
         QColor m_color_Album;
+        QColor m_color_AlbumArtist;
         QColor m_color_Comment;
         QColor m_color_Genre;
         

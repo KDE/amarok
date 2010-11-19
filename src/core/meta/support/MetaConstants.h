@@ -111,7 +111,6 @@ namespace Meta
         static const QString UNIQUEID       = "xesam:id";
 
         // new
-        static const QString ALBUM_ARTIST   = "xesam:albumArtist";
         static const QString COMPILATION    = "xesam:compilation";
     }
 }

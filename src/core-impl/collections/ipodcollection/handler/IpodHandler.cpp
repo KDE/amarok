@@ -1546,6 +1546,12 @@ IpodHandler::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 }
 
 QString
+IpodHandler::libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->albumartist );
+}
+
+QString
 IpodHandler::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
 {
     return QString::fromUtf8( m_itdbtrackhash[ track ]->composer );
@@ -1665,6 +1671,14 @@ IpodHandler::libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album
     m_itdbtrackhash[ track ]->album = g_strdup( album.toUtf8() );
     setDatabaseChanged();
 }
+
+void
+IpodHandler::libSetAlbumArtist( MediaDeviceTrackPtr &track, const QString &albumArtist )
+{
+    m_itdbtrackhash[ track ]->albumartist = g_strdup( albumArtist.toUtf8() );
+    setDatabaseChanged();
+}
+
 void
 IpodHandler::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist )
 {

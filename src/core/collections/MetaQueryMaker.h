@@ -72,6 +72,7 @@ class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
         virtual QueryMaker* endAndOr();
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+        virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
         virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
     private slots:

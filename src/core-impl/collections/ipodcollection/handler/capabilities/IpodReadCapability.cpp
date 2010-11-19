@@ -74,6 +74,12 @@ IpodReadCapability::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 }
 
 QString
+IpodReadCapability::libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_handler->libGetAlbumArtist( track );
+}
+
+QString
 IpodReadCapability::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetComposer( track );

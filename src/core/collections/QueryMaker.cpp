@@ -43,6 +43,13 @@ QueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 }
 
 QueryMaker*
+QueryMaker::setArtistQueryMode( ArtistQueryMode mode )
+{
+    Q_UNUSED( mode )
+    return this;
+}
+
+QueryMaker*
 QueryMaker::setLabelQueryMode( LabelQueryMode mode )
 {
     Q_UNUSED( mode )

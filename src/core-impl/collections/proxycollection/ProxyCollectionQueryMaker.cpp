@@ -336,6 +336,14 @@ ProxyQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 }
 
 QueryMaker*
+ProxyQueryMaker::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
+{
+    foreach( QueryMaker *b, m_builders )
+        b->setArtistQueryMode( mode );
+    return this;
+}
+
+QueryMaker*
 ProxyQueryMaker::setLabelQueryMode( LabelQueryMode mode )
 {
     foreach( QueryMaker *b, m_builders )
@@ -468,6 +476,19 @@ ProxyQueryMaker::handleResult()
             break;
         }
         case QueryMaker::Artist :
+        {
+            Meta::ArtistList artists;
+            foreach( KSharedPtr<Meta::ProxyAlbum> album, m_albums )
+            {
+                if( album->hasAlbumArtist() )
+                    artists.append( Meta::ArtistPtr::staticCast( album->albumArtist() ) );
+            }
+
+            artists = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( artists, m_orderDescending );
+            emitProperResult<Meta::ArtistPtr>( artists );
+            break;
+        }
+        case QueryMaker::AlbumArtist :
         {
             Meta::ArtistList artists;
             foreach( KSharedPtr<Meta::ProxyArtist> artist, m_artists )

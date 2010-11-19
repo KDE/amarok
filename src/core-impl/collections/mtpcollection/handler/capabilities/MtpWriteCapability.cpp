@@ -107,6 +107,11 @@ MtpWriteCapability::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QStrin
     m_handler->libSetArtist( track, artist );
 }
 
+void
+MtpWriteCapability::libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString &albumArtist )
+{
+    m_handler->ligSetAlbumArtist( track, albumArtist );
+}
 
 void
 MtpWriteCapability::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )

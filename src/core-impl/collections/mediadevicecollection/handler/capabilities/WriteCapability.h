@@ -76,6 +76,7 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::WriteCapabi
         virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title ) = 0;
         virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album ) = 0;
         virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist ) = 0;
+        virtual void libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString& albumArtist ) = 0;
         virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer ) = 0;
         virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre ) = 0;
         virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year ) = 0;

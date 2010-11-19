@@ -80,6 +80,12 @@ UmsReadCapability::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 }
 
 QString
+UmsReadCapability::libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_handler->libGetAlbumArtist( track );
+}
+
+QString
 UmsReadCapability::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetComposer( track );

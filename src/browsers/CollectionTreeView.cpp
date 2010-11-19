@@ -1210,10 +1210,14 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
         CollectionTreeItem *tmp = item;
         while( tmp->isDataItem() )
         {
-            if ( tmp->isVariousArtistItem() )
+            if( tmp->isVariousArtistItem() )
                 qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
-            else
+            else if( tmp->data() )
+            {
+                if( m_treeModel->levelCategory( tmp->data() - 1 ) == CategoryId::AlbumArtist )
+                    qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
                 qm->addMatch( tmp->data() );
+            }
             tmp = tmp->parent();
         }
         m_treeModel->addFilters( qm );

@@ -193,7 +193,7 @@ TagGuesser::cutTagTrailingSpaces( QString tag )
 QString
 TagGuesser::getRegExpFromSchema( QString schema )
 {
-    return schema.replace( QRegExp("(%track|%title|%artist|%composer|%year|%album|%comment|%genre|%ignore)"), "(.*)" );
+    return schema.replace( QRegExp("(%track|%title|%artist|%composer|%year|%album|%albumartist|%comment|%genre|%ignore)"), "(.*)" );
 }
 
 // creates a colored version of the filename
@@ -221,6 +221,13 @@ TagGuesser::coloredFileName()
             else if( ( m_tags.contains( "artist" ) ) && ( tag.value().type == "artist" ) )
             {
                 colored.insert( Pos,QString( "<font color=\"" + QColor( artist_color ).name() + "\">" ) );
+                Pos += tag.value().tag.length()+22;
+                colored.insert( Pos,QString( "</font>" ) );
+                Pos += 7;
+            }
+            else if( ( m_tags.contains( "albumartist" ) ) && ( tag.value().type == "albumartist" ) )
+            {
+                colored.insert( Pos,QString( "<font color=\"" + QColor( albumartist_color ).name() + "\">" ) );
                 Pos += tag.value().tag.length()+22;
                 colored.insert( Pos,QString( "</font>" ) );
                 Pos += 7;

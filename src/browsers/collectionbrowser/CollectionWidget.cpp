@@ -198,30 +198,35 @@ CollectionWidget::init()
 
     d->menuLevel[0] = filterMenu->addMenu( i18n( "First Level" ) );
 
-    QAction *firstArtistAction   = d->menuLevel[0]->addAction( i18n( "Artist" ) );
+    QAction *firstArtistAction      = d->menuLevel[0]->addAction( i18n( "Artist" ) );
     firstArtistAction->setData( CategoryId::Artist );
 
-    QAction *firstAlbumAction    = d->menuLevel[0]->addAction( i18n( "Album"  ) );
+    QAction *firstAlbumAction       = d->menuLevel[0]->addAction( i18n( "Album"  ) );
     firstAlbumAction->setData( CategoryId::Album );
 
-    QAction *firstGenreAction    = d->menuLevel[0]->addAction( i18n( "Genre"  ) );
+    QAction *firstAlbumArtistAction = d->menuLevel[0]->addAction( i18n( "Album Artist"  ) );
+    firstAlbumArtistAction->setData( CategoryId::AlbumArtist );
+
+    QAction *firstGenreAction       = d->menuLevel[0]->addAction( i18n( "Genre"  ) );
     firstGenreAction->setData( CategoryId::Genre );
 
-    QAction *firstComposerAction = d->menuLevel[0]->addAction( i18n( "Composer" ) );
+    QAction *firstComposerAction    = d->menuLevel[0]->addAction( i18n( "Composer" ) );
     firstComposerAction->setData( CategoryId::Composer );
 
-    QAction *firstLabelAction = d->menuLevel[0]->addAction( i18n( "Label" ) );
+    QAction *firstLabelAction       = d->menuLevel[0]->addAction( i18n( "Label" ) );
     firstLabelAction->setData( CategoryId::Label );
 
-    firstArtistAction->setCheckable  ( true );
-    firstAlbumAction->setCheckable   ( true );
-    firstGenreAction->setCheckable   ( true );
-    firstComposerAction->setCheckable( true );
-    firstLabelAction->setCheckable( true );
+    firstArtistAction->setCheckable     ( true );
+    firstAlbumAction->setCheckable      ( true );
+    firstAlbumArtistAction->setCheckable( true );
+    firstGenreAction->setCheckable      ( true );
+    firstComposerAction->setCheckable   ( true );
+    firstLabelAction->setCheckable      ( true );
 
     QActionGroup *firstGroup = new QActionGroup( this );
     firstGroup->addAction( firstArtistAction );
     firstGroup->addAction( firstAlbumAction );
+    firstGroup->addAction( firstAlbumArtistAction );
     firstGroup->addAction( firstGenreAction );
     firstGroup->addAction( firstComposerAction );
     firstGroup->addAction( firstLabelAction );
@@ -229,35 +234,40 @@ CollectionWidget::init()
     connect( d->menuLevel[0], SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
 
     d->menuLevel[1] = filterMenu->addMenu( i18n( "Second Level" ) );
-    QAction *secondNullAction     = d->menuLevel[1]->addAction( i18n( "None" ) );
+    QAction *secondNullAction       = d->menuLevel[1]->addAction( i18n( "None" ) );
     secondNullAction->setData( CategoryId::None );
 
-    QAction *secondArtistAction   = d->menuLevel[1]->addAction( i18n( "Artist" ) );
+    QAction *secondArtistAction     = d->menuLevel[1]->addAction( i18n( "Artist" ) );
     secondArtistAction->setData( CategoryId::Artist );
 
-    QAction *secondAlbumAction    = d->menuLevel[1]->addAction( i18n( "Album"  ) );
+    QAction *secondAlbumAction      = d->menuLevel[1]->addAction( i18n( "Album"  ) );
     secondAlbumAction->setData( CategoryId::Album );
 
-    QAction *secondGenreAction    = d->menuLevel[1]->addAction( i18n( "Genre"  ) );
+    QAction *secondAlbumArtistAction= d->menuLevel[1]->addAction( i18n( "Album Artist"  ) );
+    secondAlbumArtistAction->setData( CategoryId::AlbumArtist );
+
+    QAction *secondGenreAction      = d->menuLevel[1]->addAction( i18n( "Genre"  ) );
     secondGenreAction->setData( CategoryId::Genre );
 
-    QAction *secondComposerAction = d->menuLevel[1]->addAction( i18n( "Composer" ) );
+    QAction *secondComposerAction   = d->menuLevel[1]->addAction( i18n( "Composer" ) );
     secondComposerAction->setData( CategoryId::Composer );
 
-    QAction *secondLabelAction = d->menuLevel[1]->addAction( i18n( "Label" ) );
+    QAction *secondLabelAction      = d->menuLevel[1]->addAction( i18n( "Label" ) );
     secondLabelAction->setData( CategoryId::Label );
 
-    secondNullAction->setCheckable    ( true );
-    secondArtistAction->setCheckable  ( true );
-    secondAlbumAction->setCheckable   ( true );
-    secondGenreAction->setCheckable   ( true );
-    secondComposerAction->setCheckable( true );
-    secondLabelAction->setCheckable( true );
+    secondNullAction->setCheckable       ( true );
+    secondArtistAction->setCheckable     ( true );
+    secondAlbumAction->setCheckable      ( true );
+    secondAlbumArtistAction->setCheckable( true );
+    secondGenreAction->setCheckable      ( true );
+    secondComposerAction->setCheckable   ( true );
+    secondLabelAction->setCheckable      ( true );
 
     QActionGroup *secondGroup = new QActionGroup( this );
     secondGroup->addAction( secondNullAction );
     secondGroup->addAction( secondArtistAction );
     secondGroup->addAction( secondAlbumAction );
+    secondGroup->addAction( secondAlbumArtistAction );
     secondGroup->addAction( secondGenreAction );
     secondGroup->addAction( secondComposerAction );
     secondGroup->addAction( secondLabelAction );
@@ -266,35 +276,40 @@ CollectionWidget::init()
     connect( d->menuLevel[1], SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
 
     d->menuLevel[2] = filterMenu->addMenu( i18n( "Third Level" ) );
-    QAction *thirdNullAction     = d->menuLevel[2]->addAction( i18n( "None" ) );
+    QAction *thirdNullAction        = d->menuLevel[2]->addAction( i18n( "None" ) );
     thirdNullAction->setData( CategoryId::None );
 
-    QAction *thirdArtistAction   = d->menuLevel[2]->addAction( i18n( "Artist" ) );
+    QAction *thirdArtistAction      = d->menuLevel[2]->addAction( i18n( "Artist" ) );
     thirdArtistAction->setData( CategoryId::Artist );
 
-    QAction *thirdAlbumAction    = d->menuLevel[2]->addAction( i18n( "Album"  ) );
+    QAction *thirdAlbumAction       = d->menuLevel[2]->addAction( i18n( "Album"  ) );
     thirdAlbumAction->setData( CategoryId::Album );
 
-    QAction *thirdGenreAction    = d->menuLevel[2]->addAction( i18n( "Genre"  ) );
+    QAction *thirdAlbumArtistAction = d->menuLevel[2]->addAction( i18n( "Album Artist"  ) );
+    thirdAlbumArtistAction->setData( CategoryId::AlbumArtist );
+
+    QAction *thirdGenreAction       = d->menuLevel[2]->addAction( i18n( "Genre"  ) );
     thirdGenreAction->setData( CategoryId::Genre );
 
-    QAction *thirdComposerAction = d->menuLevel[2]->addAction( i18n( "Composer" ) );
+    QAction *thirdComposerAction    = d->menuLevel[2]->addAction( i18n( "Composer" ) );
     thirdComposerAction->setData( CategoryId::Composer );
 
-    QAction *thirdLabelAction = d->menuLevel[2]->addAction( i18n( "Label" ) );
+    QAction *thirdLabelAction       = d->menuLevel[2]->addAction( i18n( "Label" ) );
     thirdLabelAction->setData( CategoryId::Label );
 
-    thirdNullAction->setCheckable    ( true );
-    thirdArtistAction->setCheckable  ( true );
-    thirdAlbumAction->setCheckable   ( true );
-    thirdGenreAction->setCheckable   ( true );
-    thirdComposerAction->setCheckable( true );
-    thirdLabelAction->setCheckable( true );
+    thirdNullAction->setCheckable       ( true );
+    thirdArtistAction->setCheckable     ( true );
+    thirdAlbumAction->setCheckable      ( true );
+    thirdAlbumArtistAction->setCheckable( true );
+    thirdGenreAction->setCheckable      ( true );
+    thirdComposerAction->setCheckable   ( true );
+    thirdLabelAction->setCheckable      ( true );
 
     QActionGroup *thirdGroup = new QActionGroup( this );
     thirdGroup->addAction( thirdNullAction );
     thirdGroup->addAction( thirdArtistAction );
     thirdGroup->addAction( thirdAlbumAction );
+    thirdGroup->addAction( thirdAlbumArtistAction );
     thirdGroup->addAction( thirdGenreAction );
     thirdGroup->addAction( thirdComposerAction );
     thirdGroup->addAction( thirdLabelAction );
@@ -335,6 +350,9 @@ CollectionWidget::init()
             case CategoryId::Album:
                 firstAlbumAction->setChecked( true );
                 break;
+            case CategoryId::AlbumArtist:
+                firstAlbumArtistAction->setChecked( true );
+                break;
             case CategoryId::Genre:
                 firstGenreAction->setChecked( true );
                 break;
@@ -356,6 +374,9 @@ CollectionWidget::init()
                 break;
             case CategoryId::Album:
                 secondAlbumAction->setChecked( true );
+                break;
+            case CategoryId::AlbumArtist:
+                secondAlbumArtistAction->setChecked( true );
                 break;
             case CategoryId::Genre:
                 secondGenreAction->setChecked( true );
@@ -380,6 +401,9 @@ CollectionWidget::init()
                 break;
             case CategoryId::Album:
                 thirdAlbumAction->setChecked( true );
+                break;
+            case CategoryId::AlbumArtist:
+                thirdAlbumArtistAction->setChecked( true );
                 break;
             case CategoryId::Genre:
                 thirdGenreAction->setChecked( true );
@@ -416,8 +440,6 @@ CollectionWidget::init()
     QToolButton *tbutton = qobject_cast<QToolButton*>( d->searchWidget->toolBar()->widgetForAction( searchMenuAction ) );
     if( tbutton )
         tbutton->setPopupMode( QToolButton::InstantPopup );
-    
-
 }
 
 void

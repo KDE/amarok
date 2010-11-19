@@ -54,6 +54,7 @@ class MtpWriteCapability : public WriteCapability
     virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
     virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
     virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
+    virtual void libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString& albumArtist );
     virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
     virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
     virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );

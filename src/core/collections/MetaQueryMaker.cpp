@@ -296,6 +296,14 @@ MetaQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 }
 
 QueryMaker*
+MetaQueryMaker::setArtistQueryMode( ArtistQueryMode mode )
+{
+    foreach( QueryMaker *qm, builders )
+        qm->setArtistQueryMode( mode );
+    return this;
+}
+
+QueryMaker*
 MetaQueryMaker::setLabelQueryMode( LabelQueryMode mode )
 {
     foreach( QueryMaker *qm, builders )

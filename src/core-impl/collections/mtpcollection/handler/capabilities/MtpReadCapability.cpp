@@ -79,6 +79,12 @@ MtpReadCapability::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 }
 
 QString
+MtpReadCapability::libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_handler.data()->libGetAlbumArtist( track );
+}
+
+QString
 MtpReadCapability::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler.data()->libGetComposer( track );

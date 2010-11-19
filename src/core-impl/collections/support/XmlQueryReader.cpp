@@ -148,6 +148,18 @@ XmlQueryReader::readQuery()
             {
                 d->qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
             }
+            else if( name() == "onlyTrackArtists" )
+            {
+                d->qm->setArtistQueryMode( Collections::QueryMaker::TrackArtists );
+            }
+            else if( name() == "onlyAlbumArtists" )
+            {
+                d->qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
+            }
+            else if( name() == "AlbumOrTrackArtists" )
+            {
+                d->qm->setArtistQueryMode( Collections::QueryMaker::AlbumOrTrackArtists );
+            }
             else if( name() == "returnValues" )
                 readReturnValues();
             //add more container elements here
@@ -197,6 +209,10 @@ XmlQueryReader::readReturnValues()
             else if( name() == "albums" )
             {
                 d->qm->setQueryType( Collections::QueryMaker::Album );
+            }
+            else if( name() == "albumartist" )
+            {
+                d->qm->setQueryType( Collections::QueryMaker::AlbumArtist );
             }
             else if( name() == "genres" )
             {
@@ -338,6 +354,7 @@ XmlQueryReader::fieldVal( QStringRef field )
     else if( field == "title"      ) return Meta::valTitle;
     else if( field == "artist"     ) return Meta::valArtist;
     else if( field == "album"      ) return Meta::valAlbum;
+    else if( field == "albumartist") return Meta::valAlbumArtist;
     else if( field == "genre"      ) return Meta::valGenre;
     else if( field == "composer"   ) return Meta::valComposer;
     else if( field == "year"       ) return Meta::valYear;

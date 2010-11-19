@@ -113,6 +113,7 @@ Mp3tunesServiceQueryMaker::setQueryType( QueryType type )
 {
     switch( type ) {
     case QueryMaker::Artist:
+    case QueryMaker::AlbumArtist:
     {
         DEBUG_BLOCK
         d->type = Private::ARTIST;

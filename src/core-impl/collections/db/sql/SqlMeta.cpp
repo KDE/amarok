@@ -539,7 +539,17 @@ SqlTrack::setAlbumArtist( const QString &newAlbumArtist )
     if( m_album.isNull() )
         return;
 
-    m_cache.insert( Meta::valAlbumArtist, ArtistHelper::realTrackArtist( newAlbumArtist ) );
+    if( !newAlbumArtist.compare( "Various Artists", Qt::CaseInsensitive ) ||
+        !newAlbumArtist.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) )
+    {
+        m_cache.insert( Meta::valCompilation, true );
+    }
+    else
+    {
+        m_cache.insert( Meta::valAlbumArtist, ArtistHelper::realTrackArtist( newAlbumArtist ) );
+        m_cache.insert( Meta::valCompilation, false );
+    }
+
     if( !m_batchUpdate )
         commitMetaDataChanges();
 }
@@ -960,9 +970,6 @@ SqlTrack::commitMetaDataChanges()
                 newArtistName = QString();
             else if( oldAlbum && oldAlbum->hasAlbumArtist() )
                 newArtistName = oldAlbum->albumArtist()->name();
-
-            if( newArtistName.compare( "Various Artists", Qt::CaseInsensitive ) == 0 )
-                newArtistName.clear();
 
             m_album = m_collection->registry()->getAlbum( m_cache.contains( Meta::valAlbum)
                                                           ? m_cache.value( Meta::valAlbum ).toString()

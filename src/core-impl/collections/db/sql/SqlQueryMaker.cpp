@@ -88,6 +88,7 @@ struct SqlQueryMaker::Private
     bool withoutDuplicates;
     int maxResultSize;
     AlbumQueryMode albumMode;
+    ArtistQueryMode artistMode;
     LabelQueryMode labelMode;
     SqlWorkerThread *worker;
 
@@ -119,6 +120,7 @@ SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
     d->resultAsDataPtrs = false;
     d->withoutDuplicates = false;
     d->albumMode = AllAlbums;
+    d->artistMode = TrackArtists;
     d->labelMode = QueryMaker::NoConstraint;
     d->maxResultSize = -1;
     d->andStack.clear();
@@ -271,6 +273,17 @@ SqlQueryMaker::setQueryType( QueryType type )
         }
         return this;
 
+    case QueryMaker::AlbumArtist:
+      if( d->queryType == QueryMaker::None )
+        {
+            d->queryType = QueryMaker::AlbumArtist;
+            d->withoutDuplicates = true;
+            d->linkedTables |= Private::ALBUMARTIST_TAB;
+            d->linkedTables |= Private::ALBUM_TAB;
+            d->queryReturnValues = "albumartists.name, albumartists.id";
+        }
+        return this;
+
     case QueryMaker::Composer:
         if( d->queryType == QueryMaker::None )
         {
@@ -384,7 +397,22 @@ SqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
     if( !artist || artist->name().isEmpty() )
         d->queryMatch += " AND ( artists.name IS NULL OR artists.name = '')";
     else
-        d->queryMatch += QString( " AND artists.name = '%1'" ).arg( escape( artist->name() ) );
+    {
+        switch( d->artistMode )
+        {
+            case TrackArtists:
+                d->queryMatch += QString( " AND artists.name = '%1'" ).arg( escape( artist->name() ) );
+                break;
+            case AlbumArtists:
+                d->queryMatch += QString( " AND albumartists.name = '%1'" ).arg( escape( artist->name() ) );
+                break;
+            case AlbumOrTrackArtists:
+                d->queryMatch += QString( " AND ( artists.name = '%1' OR albumartists.name = '%1' )" ).arg( escape( artist->name() ) );
+                break;
+        }
+        //Turn back default value, so we don't need to worry about this until the next AlbumArtist request.
+        d->artistMode = TrackArtists;
+    }
     return this;
 }
 
@@ -652,6 +680,16 @@ SqlQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 }
 
 QueryMaker*
+SqlQueryMaker::setArtistQueryMode( ArtistQueryMode mode )
+{
+    if( mode == AlbumArtists || mode == AlbumOrTrackArtists )
+        d->linkedTables |= Private::ALBUMARTIST_TAB;
+
+    d->artistMode = mode;
+    return this;
+}
+
+QueryMaker*
 SqlQueryMaker::setLabelQueryMode( LabelQueryMode mode )
 {
     d->labelMode = mode;
@@ -707,6 +745,7 @@ SqlQueryMaker::linkTables()
             break;
         }
         case QueryMaker::Album:
+        case QueryMaker::AlbumArtist:
         {
             d->queryFrom += " albums";
             if( d->linkedTables != Private::ALBUM_TAB && d->linkedTables != ( Private::ALBUM_TAB | Private::ALBUMARTIST_TAB ) )
@@ -742,7 +781,7 @@ SqlQueryMaker::linkTables()
                 d->linkedTables ^= Private::YEAR_TAB;
             break;
         }
-    case QueryMaker::Label:
+        case QueryMaker::Label:
         {
             d->queryFrom += " labels";
             if( d->linkedTables != Private::LABELS_TAB )

@@ -87,6 +87,7 @@ SqlQueryMakerInternal::handleResult( const QStringList &result )
             handleTracks( result );
             break;
         case QueryMaker::Artist:
+        case QueryMaker::AlbumArtist:
             handleArtists( result );
             break;
         case QueryMaker::Album:
@@ -125,6 +126,7 @@ SqlQueryMakerInternal::handleResult( const QStringList &result )
                     emit newResultReady( m_collection.data()->collectionId(), Meta::TrackList() );
                     break;
                 case QueryMaker::Artist:
+                case QueryMaker::AlbumArtist:
                     emit newResultReady( m_collection.data()->collectionId(), Meta::ArtistList() );
                     break;
                 case QueryMaker::Album:
@@ -195,7 +197,8 @@ SqlQueryMakerInternal::handleArtists( const QStringList &result )
     {
         QString name = iter.next();
         QString id = iter.next();
-        artists.append( reg->getArtist( id.toInt(), name ) );
+        if( id.toInt() > 0 )
+            artists.append( reg->getArtist( id.toInt(), name ) );
     }
     emitProperResult( Meta::ArtistPtr, artists );
 }

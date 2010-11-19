@@ -81,27 +81,41 @@ TrackList TrackMatcher::match( const TrackList &tracks )
 
 
 
-ArtistMatcher::ArtistMatcher( ArtistPtr artist )
+ArtistMatcher::ArtistMatcher( ArtistPtr artist, Collections::QueryMaker::ArtistQueryMode artistMode )
     : MemoryMatcher()
     , m_artist( artist )
+    , m_queryMode( artistMode )
 {}
 
 TrackList ArtistMatcher::match( Collections::MemoryCollection *memColl )
 {
     if( !m_artist || !memColl )
         return TrackList();
-    ArtistMap artistMap = memColl->artistMap();
-    if ( artistMap.contains( m_artist->name() ) )
-    {
-        ArtistPtr artist = artistMap.value( m_artist->name() );
-        TrackList matchingTracks = artist->tracks();
-        if ( isLast() )
-            return matchingTracks;
-        else
-            return next()->match( matchingTracks );
-    }
-    else
+
+    if( !memColl->artistMap().contains( m_artist->name() ) )
         return TrackList();
+
+    ArtistPtr artist = memColl->artistMap().value( m_artist->name() );
+
+    TrackList matchingTracks;
+    switch( m_queryMode )
+    {
+        case Collections::QueryMaker::AlbumOrTrackArtists:
+        case Collections::QueryMaker::AlbumArtists:
+            foreach( AlbumPtr album, artist->albums() )
+                matchingTracks.append( album->tracks() );
+
+            if( m_queryMode != Collections::QueryMaker::AlbumOrTrackArtists )
+                break;
+
+        case Collections::QueryMaker::TrackArtists:
+            matchingTracks.append( artist->tracks() );
+    }
+
+    if( isLast() || matchingTracks.isEmpty() )
+        return matchingTracks;
+    else
+        return next()->match( matchingTracks );
 }
 
 
@@ -112,9 +126,21 @@ TrackList ArtistMatcher::match( const TrackList &tracks )
     TrackList matchingTracks;
     QString name = m_artist->name();
     foreach( TrackPtr track, tracks )
-        if ( track->artist()->name() == name )
-            matchingTracks.append( track );
-    if ( isLast() || matchingTracks.count() == 0)
+        switch( m_queryMode )
+        {
+            case Collections::QueryMaker::AlbumOrTrackArtists:
+            case Collections::QueryMaker::AlbumArtists:
+                if( track->album()->hasAlbumArtist() &&
+                    track->album()->albumArtist()->name() == name )
+                    matchingTracks.append( track );
+                if( m_queryMode != Collections::QueryMaker::AlbumOrTrackArtists )
+                    break;
+            case Collections::QueryMaker::TrackArtists:
+                if( track->artist()->name() == name )
+                    matchingTracks.append( track );
+        }
+
+    if( isLast() || matchingTracks.isEmpty() )
         return matchingTracks;
     else
         return next()->match( matchingTracks );

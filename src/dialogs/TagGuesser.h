@@ -22,6 +22,7 @@
 #include <QRegExp>
 
 #define album_color Qt::red
+#define albumartist_color Qt::blue
 #define artist_color Qt::blue
 #define comment_color Qt::gray
 #define composer_color Qt::magenta

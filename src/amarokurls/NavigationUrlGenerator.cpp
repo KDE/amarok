@@ -86,6 +86,9 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
             case CategoryId::Album:
                 sortMode += "album-";
                 break;
+            case CategoryId::AlbumArtist:
+                sortMode += "albumartist-";
+                break;
             case CategoryId::Composer:
                 sortMode += "composer-";
                 break;

@@ -46,6 +46,7 @@ class IpodReadCapability : public ReadCapability
         virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
+        virtual QString libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );

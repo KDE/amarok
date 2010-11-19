@@ -98,6 +98,13 @@ IpodWriteCapability::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QStri
 }
 
 void
+IpodWriteCapability::libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString &albumArtist )
+{
+    m_handler->libSetAlbumArtist( track, albumArtist );
+}
+
+
+void
 IpodWriteCapability::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
 {
     m_handler->libSetComposer( track, composer );

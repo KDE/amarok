@@ -189,6 +189,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
 
         virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
+        virtual QString libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );

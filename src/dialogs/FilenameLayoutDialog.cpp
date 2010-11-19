@@ -195,6 +195,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     {
         m_color_Album = QColor( album_color );
         m_color_Artist = QColor( artist_color );
+        m_color_AlbumArtist = QColor( albumartist_color );
         m_color_Comment = QColor( comment_color );
         m_color_Composer = QColor( composer_color );
         m_color_Genre = QColor( genre_color );
@@ -204,8 +205,8 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     }
     else
     {
-        m_color_Album = m_color_Artist = m_color_Comment = m_color_Composer = m_color_Genre = \
-        m_color_Title = m_color_Track = m_color_Year = Qt::black;
+        m_color_Album = m_color_Artist = m_color_AlbumArtist = m_color_Comment = \
+        m_color_Composer = m_color_Genre = m_color_Title = m_color_Track = m_color_Year = Qt::black;
     }
 
     //INIT for tokenPool
@@ -233,6 +234,10 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     nToken->setTextColor( m_color_Album );
     tokenPool->addToken( nToken );
 
+    nToken = new Token( i18n( "Album Artist" ), "filename-artist-amarok", AlbumArtist );
+    nToken->setTextColor( m_color_AlbumArtist );
+    tokenPool->addToken( nToken );
+
     nToken = new Token( i18n( "Comment" ), "filename-comment-amarok", Comment );
     nToken->setTextColor( m_color_Comment );
     tokenPool->addToken( nToken );
@@ -257,9 +262,10 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
                                      <font color=\"%1\">%track</font>, <font color=\"%2\">%title</font>, \
                                      <font color=\"%3\">%artist</font>, <font color=\"%4\">%composer</font>, \
                                      <font color=\"%5\">%year</font>, <font color=\"%6\">%album</font>, \
-                                     <font color=\"%7\">%comment</font>, <font color=\"%8\">%genre</font>, \
-                                     %ignore.", m_color_Track.name(), m_color_Title.name(), m_color_Artist.name(), \
-				     m_color_Composer.name(), m_color_Year.name(), m_color_Album.name(), \
+                                     <font color=\"%7\">%albumartist</font>, <font color=\"%8\">%comment</font>, \
+                                     <font color=\"%9\">%genre</font>, %ignore."
+                                     , m_color_Track.name(), m_color_Title.name(), m_color_Artist.name(), \
+				     m_color_Composer.name(), m_color_Year.name(), m_color_Album.name(), m_color_AlbumArtist.name(), \
 				     m_color_Comment.name(), m_color_Genre.name() ) );
     }
     else
@@ -272,7 +278,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
                                     // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \
-                                     <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %initial, %folder, %filetype, %discnumber." ) );
+                                     <br>%track, %title, %artist, %composer, %year, %album, %albumartist %comment, %genre, %initial, %folder, %filetype, %discnumber." ) );
 
     }
     if( m_isOrganizeCollection )
@@ -371,6 +377,11 @@ FilenameLayoutDialog::updatePreview()                 //SLOT
                 Album_result->setText( "<font color='" + QColor( album_color ).name() + "'>" + tags["album"] + "</font>" );
             else
                 Album_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
+
+            if( tags.contains( "albumartist" ) )
+                AlbumArtist_result->setText( "<font color='" + QColor( albumartist_color ).name() + "'>" + tags["albumartist"] + "</font>" );
+            else
+                AlbumArtist_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
             if( tags.contains( "title" ) )
                 Title_result->setText( "<font color='" + QColor( title_color ).name() + "'>" + tags["title"] + "</font>" );
@@ -579,6 +590,13 @@ FilenameLayoutDialog::inferScheme( const QString &s ) //SLOT
                 nToken->setTextColor( m_color_Year );
                 m_dropTarget->insertToken( nToken );
                 i += 5;
+            }
+            else if( s.mid( i, 12 ) == "%albumartist" )
+            {
+                Token *nToken = new Token( i18n( "Album Artist" ), "filename-artist-amarok", AlbumArtist );
+                nToken->setTextColor( m_color_Album );
+                m_dropTarget->insertToken( nToken );
+                i += 6;
             }
             else if( s.mid( i, 6 ) == "%album" )
             {

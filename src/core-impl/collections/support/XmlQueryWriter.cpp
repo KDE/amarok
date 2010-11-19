@@ -103,7 +103,7 @@ XmlQueryWriter::setQueryType( QueryType type )
         insertRetValue( "track" );
         m_qm->setQueryType( QueryMaker::Track );
         return this;
-            
+
     case QueryMaker::Artist:
         insertRetValue( "artist" );
         m_qm->setQueryType( QueryMaker::Artist );
@@ -113,7 +113,10 @@ XmlQueryWriter::setQueryType( QueryType type )
         insertRetValue( "album" );
         m_qm->setQueryType( QueryMaker::Album );
         return this;
-
+    case QueryMaker::AlbumArtist:
+        insertRetValue( "albumartist" );
+        m_qm->setQueryType( QueryMaker::AlbumArtist );
+        return this;
     case QueryMaker::Genre:
         insertRetValue( "genre" );
         m_qm->setQueryType( QueryMaker::Genre );
@@ -138,7 +141,7 @@ XmlQueryWriter::setQueryType( QueryType type )
         insertRetValue( "label" );
         m_qm->setQueryType( QueryMaker::Label );
         return this;
-    
+
     case QueryMaker::None:
         return this;
     }
@@ -346,6 +349,33 @@ XmlQueryWriter::setAlbumQueryMode( AlbumQueryMode mode )
     return this;
 }
 
+QueryMaker *
+XmlQueryWriter::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
+{
+    m_element.removeChild( m_element.lastChildElement( "onlyTrackArtists" ) );
+    m_element.removeChild( m_element.lastChildElement( "onlyAlbumArtists" ) );
+    m_element.removeChild( m_element.lastChildElement( "AlbumOrTrackArtists" ) );
+
+    if( mode == TrackArtists )
+    {
+        QDomElement e = m_doc.createElement( "onlyTrackArtists" );
+        m_element.appendChild( e );
+    }
+    else if( mode == AlbumArtists )
+    {
+        QDomElement e = m_doc.createElement( "onlyAlbumArtists" );
+        m_element.appendChild( e );
+    }
+    else if( mode == AlbumOrTrackArtists )
+    {
+        QDomElement e = m_doc.createElement( "AlbumOrTrackArtists" );
+        m_element.appendChild( e );
+    }
+
+    m_qm->setArtistQueryMode( mode );
+    return this;
+}
+
 QueryMaker*
 XmlQueryWriter::beginAnd()
 {
@@ -434,6 +464,7 @@ XmlQueryWriter::fieldName( qint64 val )
         case Meta::valTitle:       return "title";
         case Meta::valArtist:      return "artist";
         case Meta::valAlbum:       return "album";
+        case Meta::valAlbumArtist: return "albumartist";
         case Meta::valGenre:       return "genre";
         case Meta::valComposer:    return "composer";
         case Meta::valYear:        return "year";

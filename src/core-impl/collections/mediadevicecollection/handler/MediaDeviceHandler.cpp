@@ -141,7 +141,15 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
 
     m_wc->libSetTitle( destTrack, srcTrack->name() );
     if ( srcTrack->album() )
+    {
         m_wc->libSetAlbum( destTrack, srcTrack->album()->name() ); Debug::stamp();
+
+        if( srcTrack->album()->hasAlbumArtist() )
+            m_wc->libSetAlbumArtist( destTrack, srcTrack->album()->albumArtist()->name() ); Debug::stamp();
+
+        if( srcTrack->album()->hasImage() )
+            m_wc->libSetCoverArt( destTrack, srcTrack->album()->image().toImage() );
+    }
     if ( srcTrack->artist() )
         m_wc->libSetArtist( destTrack, srcTrack->artist()->name() ); Debug::stamp();
     if ( srcTrack->composer() )
@@ -163,9 +171,6 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     m_wc->libSetRating( destTrack, srcTrack->rating() ); Debug::stamp();
     m_wc->libSetType( destTrack, srcTrack->type() ); Debug::stamp();
     //libSetPlayableUrl( destTrack, srcTrack );
-
-    if( srcTrack->album()->hasImage() )
-        m_wc->libSetCoverArt( destTrack, srcTrack->album()->image().toImage() );
 }
 
 void
@@ -721,9 +726,10 @@ void
 MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
 {
     const QString artist( m_rcb->libGetArtist( track ) );
+    const QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
-    if ( artistMap.contains( artist ) )
+    if( artistMap.contains( artist ) )
         artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
     else
     {
@@ -733,6 +739,13 @@ MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& 
 
     artistPtr->addTrack( track );
     track->setArtist( artistPtr );
+
+    if( !albumArtist.isEmpty() && albumArtist != artist &&
+        !artistMap.contains( albumArtist ) )
+    {
+        artistPtr = MediaDeviceArtistPtr( new MediaDeviceArtist( albumArtist ) );
+        artistMap.insert( albumArtist, ArtistPtr::staticCast( artistPtr ) );
+    }
 }
 
 void
@@ -740,6 +753,7 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 {
     const QString album( m_rcb->libGetAlbum( track ) );
     const QString artist( m_rcb->libGetArtist( track ) );
+    const QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
     MediaDeviceAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
@@ -753,9 +767,15 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
     albumPtr->addTrack( track );
     track->setAlbum( albumPtr );
 
-    if( !artist.isEmpty() && artistMap.contains( artist ) )
+    MediaDeviceArtistPtr artistPtr;
+
+    if( !albumArtist.isEmpty() && artistMap.contains( artist ) )
+        artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( albumArtist ) );
+    else if( !artist.isEmpty() && artistMap.contains( artist ) )
+        artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
+
+    if( !artistPtr.isNull() )
     {
-        MediaDeviceArtistPtr artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
         artistPtr->addAlbum( albumPtr );
         albumPtr->setAlbumArtist( artistPtr );
     }

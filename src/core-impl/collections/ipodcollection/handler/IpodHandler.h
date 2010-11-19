@@ -182,6 +182,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
         virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
         virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
+        virtual void libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString& albumArtist );
         virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
         virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
         virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
@@ -225,6 +226,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
+        virtual QString libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );

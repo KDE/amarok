@@ -437,7 +437,11 @@ CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) 
             while( tmpItem->isDataItem() )
             {
                 if( tmpItem->data() )
+                {
+                    if( levelCategory( tmpItem->level() - 1 ) == CategoryId::AlbumArtist )
+                        qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
                     qm->addMatch( tmpItem->data() );
+                }
                 else
                     qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
                 tmpItem = tmpItem->parent();
@@ -489,6 +493,9 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
             icon = "media-optical-amarok";
             break;
         case CategoryId::Artist :
+            icon = "view-media-artist-amarok";
+            break;
+        case CategoryId::AlbumArtist :
             icon = "view-media-artist-amarok";
             break;
         case CategoryId::Composer :
@@ -544,13 +551,18 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
                 case CategoryId::Album :
                     //restrict query to normal albums if the previous level
                     //was the artist category. in that case we handle compilations below
-                    if( level > 0 && m_levelType[level-1] == CategoryId::Artist && !parent->isVariousArtistItem() )
+                    if( level > 0 &&
+                        ( m_levelType[level-1] == CategoryId::Artist ||
+                          m_levelType[level-1] == CategoryId::AlbumArtist
+                        ) &&
+                        !parent->isVariousArtistItem() )
                     {
                         qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
                     }
                     break;
 
                 case CategoryId::Artist :
+                case CategoryId::AlbumArtist:
                     //handle compilations only if the next level ist CategoryId::Album
                     if( nextLevel == Collections::QueryMaker::Album )
                     {
@@ -574,7 +586,11 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
             if( tmpItem->isVariousArtistItem() )
                 qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
             else if( tmpItem->data() )
+            {
+                if( levelCategory( tmpItem->level() - 1 ) == CategoryId::AlbumArtist )
+                    qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
                 qm->addMatch( tmpItem->data() );
+            }
         }
         addFilters( qm );
         qm->setReturnResultAsDataPtrs( true );
@@ -601,6 +617,9 @@ CollectionTreeItemModelBase::mapCategoryToQueryType( int levelType ) const
         break;
     case CategoryId::Artist:
         type = Collections::QueryMaker::Artist;
+        break;
+    case CategoryId::AlbumArtist:
+        type = Collections::QueryMaker::AlbumArtist;
         break;
     case CategoryId::Composer:
         type = Collections::QueryMaker::Composer;
@@ -661,6 +680,8 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                     ADD_OR_EXCLUDE_FILTER( Meta::valAlbum, elem.text, false, false );
                 if( ( validFilters & Collections::QueryMaker::ArtistFilter ) )
                     ADD_OR_EXCLUDE_FILTER( Meta::valArtist, elem.text, false, false );
+                if( ( validFilters & Collections::QueryMaker::AlbumArtistFilter ) )
+                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbumArtist, elem.text, false, false );
                 if( ( validFilters & Collections::QueryMaker::ComposerFilter ) )
                     ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, false, false );
                 if( ( validFilters & Collections::QueryMaker::GenreFilter ) )
@@ -700,6 +721,11 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     if ( ( validFilters & Collections::QueryMaker::ArtistFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valArtist, elem.text, false, false );
+                }
+                else if ( lcField.compare( "albumartist", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "albumartist" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    if ( ( validFilters & Collections::QueryMaker::AlbumArtistFilter ) == 0 ) continue;
+                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbumArtist, elem.text, false, false );
                 }
                 else if ( lcField.compare( "genre", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "genre" ), Qt::CaseInsensitive ) == 0)
                 {
@@ -1164,6 +1190,7 @@ CollectionTreeItemModelBase::nameForLevel(int level) const
     {
         case CategoryId::Album      : return AmarokConfig::showYears() ? i18n( "Year - Album" ) : i18n( "Album" );
         case CategoryId::Artist     : return i18n( "Artist" );
+        case CategoryId::AlbumArtist: return i18n( "Album Artist" );
         case CategoryId::Composer   : return i18n( "Composer" );
         case CategoryId::Genre      : return i18n( "Genre" );
         case CategoryId::Year       : return i18n( "Year" );
@@ -1437,6 +1464,15 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
         //Nuke it
         qm->deleteLater();
     }
+}
+
+int
+CollectionTreeItemModelBase::levelCategory( const int level ) const
+{
+    if( level >= 0 && level + levelModifier() < m_levelType.count() )
+        return m_levelType[ level + levelModifier() ];
+
+    return CategoryId::None;
 }
 
 #include "CollectionTreeItemModelBase.moc"

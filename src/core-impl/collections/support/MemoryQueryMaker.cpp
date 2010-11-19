@@ -80,6 +80,7 @@ struct MemoryQueryMaker::Private {
     bool orderDescending;
     bool orderByNumberField;
     AlbumQueryMode albumQueryMode;
+    ArtistQueryMode artistQueryMode;
     LabelQueryMode labelQueryMode;
     QString collectionId;
 };
@@ -104,6 +105,7 @@ MemoryQueryMaker::MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QSt
     d->orderDescending = false;
     d->orderByNumberField = false;
     d->albumQueryMode = AllAlbums;
+    d->artistQueryMode = TrackArtists;
     d->labelQueryMode = QueryMaker::NoConstraint;
 }
 
@@ -146,6 +148,7 @@ MemoryQueryMaker::run()
         qmi->setCustomReturnValues( d->returnValues );
         d->returnValues.clear(); //will be deleted by MemoryQueryMakerInternal
         qmi->setAlbumQueryMode( d->albumQueryMode );
+        qmi->setArtistQueryMode( d->artistQueryMode );
         qmi->setLabelQueryMode( d->labelQueryMode );
         qmi->setOrderDescending( d->orderDescending );
         qmi->setOrderByNumberField( d->orderByNumberField );
@@ -197,6 +200,11 @@ MemoryQueryMaker::setQueryType( QueryType type )
     case QueryMaker::Album:
         if ( d->type == QueryMaker::None )
             d->type = QueryMaker::Album;
+        return this;
+
+    case QueryMaker::AlbumArtist:
+        if ( d->type == QueryMaker::None )
+            d->type = QueryMaker::AlbumArtist;
         return this;
 
     case QueryMaker::Composer:
@@ -334,7 +342,7 @@ MemoryQueryMaker::addMatch( const Meta::TrackPtr &track )
 QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::ArtistPtr &artist )
 {
-    MemoryMatcher *artistMatcher = new ArtistMatcher( artist );
+    MemoryMatcher *artistMatcher = new ArtistMatcher( artist, d->artistQueryMode );
     if ( d->matcher == 0 )
         d->matcher = artistMatcher;
     else
@@ -344,6 +352,8 @@ MemoryQueryMaker::addMatch( const Meta::ArtistPtr &artist )
             tmp = tmp->next();
         tmp->setNext( artistMatcher );
     }
+
+    d->artistQueryMode = QueryMaker::TrackArtists;
     return this;
 }
 
@@ -516,6 +526,12 @@ MemoryQueryMaker::done( ThreadWeaver::Job *job )
 QueryMaker * MemoryQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
     d->albumQueryMode = mode;
+    return this;
+}
+
+QueryMaker* MemoryQueryMaker::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
+{
+    d->artistQueryMode = mode;
     return this;
 }
 

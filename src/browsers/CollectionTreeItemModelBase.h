@@ -46,6 +46,7 @@ namespace CategoryId
     None = 0,
     Album,
     Artist,
+    AlbumArtist,
     Composer,
     Genre,
     Year,
@@ -87,6 +88,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         virtual void setLevels( const QList<int> &levelType ) = 0;
         virtual QList<int> levels() const { return m_levelType; }
+        virtual int levelCategory( const int level ) const;
 
         virtual void addFilters( Collections::QueryMaker *qm ) const;
 

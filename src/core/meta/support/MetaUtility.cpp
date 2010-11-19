@@ -122,7 +122,11 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
             map["artist"] = track->artist()->name();
 
         if( track->album() )
+        {
             map["album"] = track->album()->name();
+            if( track->album()->hasAlbumArtist() && !track->album()->albumArtist()->name().isEmpty() )
+                map[ "albumartist" ] = track->album()->albumArtist()->name();
+        }
 
         map["tracknumber"] = track->trackNumber();
         map["time"] = track->length() / 1000;
@@ -252,6 +256,8 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
     QString album = metadata.contains( Meta::Field::ALBUM ) ?
                             metadata.value( Meta::Field::ALBUM ).toString() : QString();
     ec->setAlbum( album );
+    QString albumArtist = metadata.contains( Meta::Field::ALBUMARTIST ) ?
+                            metadata.value( Meta::Field::ALBUMARTIST ).toString() : QString();
     QString genre = metadata.contains( Meta::Field::GENRE ) ?
                             metadata.value( Meta::Field::GENRE ).toString() : QString();
     ec->setGenre( genre );
@@ -272,6 +278,8 @@ Meta::Field::xesamPrettyToFullFieldName( const QString &name )
         return XESAM_ARTIST;
     else if( name == Meta::Field::ALBUM )
         return XESAM_ALBUM;
+    else if( name == Meta::Field::ALBUMARTIST )
+        return XESAM_ALBUMARTIST;
     else if( name == Meta::Field::BITRATE )
         return XESAM_BITRATE;
     else if( name == Meta::Field::BPM )
