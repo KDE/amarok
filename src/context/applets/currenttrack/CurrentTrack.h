@@ -126,6 +126,11 @@ private:
     QDateTime m_lastPlayed;
     QString m_sourceEmblemPath;
     bool m_isStopped;
+    QVariantMap m_currentInfo;
+    qint64 m_coverKey;
+
+    enum View { Stopped, Playing } m_view;
+    void setView( View mode );
 
     Ui::currentTrackSettings ui_Settings;
     bool m_showEditTrackDetailsAction;

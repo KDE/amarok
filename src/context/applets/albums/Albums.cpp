@@ -113,7 +113,8 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
     Meta::AlbumList albums = data[ "albums" ].value<Meta::AlbumList>();
     Meta::TrackPtr track = data[ "currentTrack" ].value<Meta::TrackPtr>();
-    m_headerText->setScrollingText( data[ "headerText" ].toString() );
+    QString headerText = data[ "headerText" ].toString();
+    m_headerText->setScrollingText( headerText.isEmpty() ? i18n("Albums") : headerText );
 
     //Don't keep showing the albums for the artist of the last track that had album in the collection
     if( albums.isEmpty() )

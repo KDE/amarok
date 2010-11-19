@@ -48,7 +48,6 @@ class CurrentEngine : public Context::DataEngine
 public:
     CurrentEngine( QObject* parent, const QList<QVariant>& args );
     virtual ~CurrentEngine();
-    virtual void init();
 
     QStringList sources() const;
 
@@ -72,6 +71,7 @@ private:
     QStringList m_sources;
     QHash< QString, bool > m_requested;
     Meta::AlbumList m_albums;
+    Meta::TrackPtr m_currentTrack;
     QWeakPointer<Collections::QueryMaker> m_recentAlbumsQm;
 
 private slots:

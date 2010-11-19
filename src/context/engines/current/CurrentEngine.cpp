@@ -65,12 +65,6 @@ CurrentEngine::~CurrentEngine()
 {
 }
 
-void
-CurrentEngine::init()
-{
-    Plasma::DataEngine::init();
-}
-
 QStringList
 CurrentEngine::sources() const
 {
@@ -166,19 +160,12 @@ CurrentEngine::update( Meta::TrackPtr track )
     if( !m_requested.value( QLatin1String("current") ) )
         return;
 
-    debug() << "updating track" << track->name();
     removeAllData( "current" );
+    Plasma::DataEngine::Data data;
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
+    data["current"] = trackInfo;
     Meta::AlbumPtr album = track->album();
-    if( album )
-    {
-        QPixmap art = album->image( m_coverWidth );
-        setData( "current", "albumart",  QVariant( art ) );
-    }
-    else
-        setData( "current", "albumart", QVariant( QPixmap() ) );
-
-    setData( "current", "current", trackInfo );
+    data["albumart"] = QVariant( album ? album->image(m_coverWidth) : QPixmap() );
 
     Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
     if( sic )
@@ -187,12 +174,15 @@ CurrentEngine::update( Meta::TrackPtr track )
         const QString source = sic->sourceName();
         debug() <<" We have source " <<source;
         if( !source.isEmpty() )
-            setData( "current", "source_emblem", sic->scalableEmblem() );
+            data["source_emblem"] = sic->scalableEmblem();
 
         delete sic;
     }
     else
-        setData( "current", "source_emblem",  QVariant( QPixmap() ) );
+        data["source_emblem"] = QVariant( QPixmap() );
+
+    debug() << "updating track" << track->name();
+    setData( "current", data );
 }
 
 void
@@ -201,16 +191,22 @@ CurrentEngine::update( Meta::ArtistPtr artist )
     if( !m_requested.value( QLatin1String("albums") ) )
         return;
 
-    m_albums.clear();
-    removeAllData( QLatin1String("albums") );
     if( !artist )
         return;
 
-    debug() << "updating albums for" << artist->name();
     Meta::AlbumList albums = artist->albums();
     Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( (albums == m_albums) && (track == m_currentTrack) )
+    {
+        debug() << "albums list unchanged, not updating";
+        return;
+    }
+
+    m_albums.clear();
+    removeAllData( QLatin1String("albums") );
     setData( "albums", "headerText", QVariant( i18n( "Albums by %1", artist->name() ) ) );
     setData( "albums", "currentTrack", qVariantFromValue(track) );
+    m_currentTrack = track;
 
     if( albums.isEmpty() )
     {
@@ -235,6 +231,7 @@ CurrentEngine::update( Meta::ArtistPtr artist )
 void
 CurrentEngine::setupAlbumsData()
 {
+    debug() << "setting up" << m_albums.count() << "albums";
     setData( "albums", "albums", QVariant::fromValue( m_albums ) );
 }
 

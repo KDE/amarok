@@ -70,6 +70,8 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_albumCount( 0 )
     , m_genreCount( 0 )
     , m_isStopped( true )
+    , m_coverKey( 0 )
+    , m_view( Stopped )
     , m_showEditTrackDetailsAction( true )
     , m_showFindInSourceAction( false )
     , m_albumWidth( 135 )
@@ -96,7 +98,6 @@ CurrentTrack::init()
     m_ratingWidget->setSpacing( 2 );
     m_ratingWidget->setMinimumSize( m_albumWidth + 10, 30 );
     m_ratingWidget->setMaximumSize( m_albumWidth + 10, 30 );
-    m_ratingWidget->hide();
     connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( trackRatingChanged( int ) ) );
 
     QLabel *collectionLabel = new QLabel( i18n( "Local Collection" ) );
@@ -141,12 +142,6 @@ CurrentTrack::init()
     const QFont tinyFont = KGlobalSettings::smallestReadableFont();
     m_byText->setFont( tinyFont );
     m_onText->setFont( tinyFont );
-
-    m_byText->hide();
-    m_onText->hide();
-    m_title->hide();
-    m_artist->hide();
-    m_album->hide();
 
     m_actionsLayout = new QGraphicsLinearLayout;
     m_actionsLayout->setMinimumWidth( 10 );
@@ -207,6 +202,7 @@ CurrentTrack::init()
     connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
              this, SLOT(queryCollection()), Qt::QueuedConnection );
     queryCollection();
+    setView( Stopped );
 
     PERF_LOG( "Finished init" );
 }
@@ -336,48 +332,34 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         return;
 
     DEBUG_BLOCK
-    clearTrackActions();
     if( data.contains( QLatin1String("notrack" ) ) )
     {
-        m_isStopped = true;
-        m_collectionLabel->show();
-        m_ratingWidget->hide();
-        m_byText->hide();
-        m_onText->hide();
-        m_title->hide();
-        m_artist->hide();
-        m_album->hide();
-        m_recentWidget->show();
-        m_recentHeader->show();
-        m_albumCover->setPixmap( Amarok::semiTransparentLogo(m_albumWidth) );
-        m_albumCover->graphicsItem()->setAcceptDrops( false );
-        m_albumCover->graphicsItem()->unsetCursor();
-        updateConstraints();
+        if( m_view != Stopped )
+            setView( Stopped );
         return;
     }
 
-    m_isStopped = false;
-    m_collectionLabel->hide();
-    m_ratingWidget->show();
-    m_byText->show();
-    m_onText->show();
-    m_title->show();
-    m_artist->show();
-    m_album->show();
-    m_recentWidget->hide();
-    m_recentHeader->hide();
-    m_albumCover->graphicsItem()->setCursor( Qt::PointingHandCursor );
+    if( m_view != Playing )
+        setView( Playing );
 
+    const QPixmap cover = data[ "albumart" ].value<QPixmap>();
     const QVariantMap &currentInfo = data[ QLatin1String("current") ].toMap();
+    bool updateCover = ( m_coverKey != cover.cacheKey() );
+    if( (m_currentInfo == currentInfo) && !updateCover )
+        return;
+
     QString title = currentInfo.value( Meta::Field::TITLE ).toString();
     QString artist = currentInfo.value( Meta::Field::ARTIST ).toString();
     QString album = currentInfo.value( Meta::Field::ALBUM ).toString();
     artist = handleUnknown( artist, m_artist, UNKNOWN_ARTIST.toString() );
     album = handleUnknown( album, m_album, UNKNOWN_ALBUM.toString() );
 
-    m_title->setScrollingText( title );
-    m_artist->setScrollingText( artist );
-    m_album->setScrollingText( album );
+    if( title != m_currentInfo.value(Meta::Field::TITLE) )
+        m_title->setScrollingText( title );
+    if( artist != m_currentInfo.value(Meta::Field::ARTIST) )
+        m_artist->setScrollingText( artist );
+    if( album != m_currentInfo.value(Meta::Field::ALBUM) )
+        m_album->setScrollingText( album );
 
     m_rating      = currentInfo[ Meta::Field::RATING ].toInt();
     m_trackLength = currentInfo[ Meta::Field::LENGTH ].toInt();
@@ -387,9 +369,14 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
 
     m_ratingWidget->setRating( m_rating );
 
-    resizeCover( data[ "albumart" ].value<QPixmap>(), m_albumWidth );
+    if( updateCover )
+    {
+        m_coverKey = cover.cacheKey();
+        resizeCover( cover, m_albumWidth );
+    }
+    m_currentInfo = currentInfo;
     m_sourceEmblemPath = data[ "source_emblem" ].toString();
-
+    clearTrackActions();
     setupLayoutActions( The::engineController()->currentTrack() );
     updateConstraints();
 }
@@ -603,6 +590,7 @@ CurrentTrack::clearTrackActions()
 void
 CurrentTrack::resizeCover( const QPixmap &cover, qreal width )
 {
+    DEBUG_BLOCK
     QPixmap coverWithBorders;
     if( !cover.isNull() )
     {
@@ -899,6 +887,39 @@ CurrentTrack::findInSource( const QString &name )
         fis->findInSource( FindInSourceCapability::Genre );
     else if( name == QLatin1String("year") )
         fis->findInSource( FindInSourceCapability::Year );
+}
+
+void
+CurrentTrack::setView( CurrentTrack::View mode )
+{
+    m_view = mode;
+    m_isStopped = ( mode == CurrentTrack::Stopped );
+    if( m_isStopped )
+    {
+        m_coverKey = 0;
+        m_currentInfo.clear();
+        m_sourceEmblemPath.clear();
+        m_albumCover->setPixmap( Amarok::semiTransparentLogo(m_albumWidth) );
+        m_albumCover->graphicsItem()->setAcceptDrops( false );
+        m_albumCover->graphicsItem()->unsetCursor();
+        clearTrackActions();
+        updateConstraints();
+    }
+    else
+    {
+        m_albumCover->graphicsItem()->setCursor( Qt::PointingHandCursor );
+    }
+
+    m_collectionLabel->setVisible( m_isStopped );
+    m_recentWidget->setVisible( m_isStopped );
+    m_recentHeader->setVisible( m_isStopped );
+
+    m_ratingWidget->setVisible( !m_isStopped );
+    m_byText->setVisible( !m_isStopped );
+    m_onText->setVisible( !m_isStopped );
+    m_title->setVisible( !m_isStopped );
+    m_artist->setVisible( !m_isStopped );
+    m_album->setVisible( !m_isStopped );
 }
 
 #include "CurrentTrack.moc"
