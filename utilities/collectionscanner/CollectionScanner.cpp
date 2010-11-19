@@ -138,6 +138,8 @@ CollectionScanner::ScanningState::setLastFile( const QString &file )
     if( file == m_lastFile )
         return;
 
+    m_lastFile = file;
+
     if( !isValid() )
         return;
 

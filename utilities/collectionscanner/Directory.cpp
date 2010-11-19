@@ -184,7 +184,7 @@ CollectionScanner::Directory::Directory( const QString &path,
             newAlbum.merge( oldAlbum );
 
             // - upated the albums
-            m_albums.clear();
+            albumHash.clear();
             albumHash.insert( AlbumKey( newAlbum.name(), newAlbum.artist() ),
                               newAlbum );
             albumNames.clear();

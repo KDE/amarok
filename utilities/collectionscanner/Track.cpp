@@ -127,6 +127,15 @@ CollectionScanner::Track::Track( const QString &path)
 
     fileref = TagLib::FileRef( encodedName, true, readStyle );
 
+    // for the unit test.
+    // in a debug build a file called "crash_amarok_here.ogg" will crash the collection
+    // scanner
+    if( path.contains("crash_amarok_here.ogg") )
+    {
+        qDebug() << "Crashing at"<<path;
+        Q_ASSERT( false );
+    }
+
     if( !fileref.isNull() )
     {
         tag = fileref.tag();
