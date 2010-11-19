@@ -765,9 +765,14 @@ void
 SqlTrack::setUidUrl( const QString &uid )
 {
     QWriteLocker locker( &m_lock );
+
+    // -- ensure that the uid starts with the collections protocol (amarok-sqltrackuid)
     QString newid = uid;
-    if( !newid.startsWith( "amarok-sqltrackuid" ) )
-        newid.prepend( "amarok-sqltrackuid://" );
+    QString protocol;
+    if( m_collection )
+        protocol = m_collection->uidUrlProtocol()+"://";
+    if( !newid.startsWith( protocol ) )
+        newid.prepend( protocol );
 
     m_cache.insert( Meta::valUniqueId, newid );
 
