@@ -42,10 +42,7 @@
 
 #include <threadweaver/ThreadWeaver.h>
 
-// #include <unistd.h>
-
-static const int MAX_RESTARTS = 80;
-static const int MAX_FAILURE_PERCENTAGE = 5;
+static const int MAX_RESTARTS = 40;
 static const int WATCH_INTERVAL = 60 * 1000; // = 60 seconds
 
 static const int SHARED_MEMORY_SIZE = 1024 * 1024; // 1 MB shared memory
@@ -559,6 +556,9 @@ ScannerJob::tryRestart()
 {
     DEBUG_BLOCK;
 
+    if( m_scanner->exitStatus() == QProcess::NormalExit )
+        return false; // all shiny. no need to restart
+
     m_restartCount++;
     debug() << "Collection scanner crashed, restart count is " << m_restartCount;
 
@@ -579,12 +579,10 @@ ScannerJob::getScannerOutput()
 {
     DEBUG_BLOCK;
 
-    debug() << "Waiting";
     if( !m_scanner->waitForReadyRead( -1 ) )
         return;
     m_incompleteTagBuffer += m_scanner->readAll();
 
-    debug() << "Adding";
     int index = m_incompleteTagBuffer.lastIndexOf( "</scanner>" );
     if( index >= 0 )
     {
@@ -603,11 +601,6 @@ ScannerJob::getScannerOutput()
         }
     }
 
-
-    /*
-    debug() << "ScannerJob: addNewXmlData, new:"<<data.length()<<"incomplete:"<<m_incompleteTagBuffer.length();
-    debug() << "             "<<m_incompleteTagBuffer<<"*";
-    */
 }
 
 
