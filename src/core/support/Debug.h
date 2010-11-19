@@ -29,6 +29,12 @@
 
 #include <QMutex>
 
+#if QT_VERSION >= 0x040700
+# include <QElapsedTimer>
+#else
+# include <QTime>
+#endif
+
 // Platform specific macros
 #ifdef _WIN32
 #define __PRETTY_FUNCTION__ __FUNCTION__
@@ -164,7 +170,13 @@ namespace Debug
         AMAROK_CORE_EXPORT ~Block();
 
     private:
-       BlockPrivate *const d;
+#if QT_VERSION >= 0x040700
+        QElapsedTimer m_startTime;
+#else
+        QTime m_startTime;
+#endif
+        const char *m_label;
+        int m_color;
     };
 
     /**

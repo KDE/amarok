@@ -55,6 +55,16 @@ kde4_add_unit_test( testcaseconverter  ${testcaseconverter_SRCS} )
 
 target_link_libraries(testcaseconverter ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarokcore)
 
+#------------------------ Test Debug -----------------------------
+
+set( testdebug_SRCS
+     TestDebug.cpp
+     ${AMAROK_SOURCE_TREE}/core/support/Debug.cpp
+     )
+
+kde4_add_unit_test( testdebug ${testdebug_SRCS} )
+target_link_libraries(testdebug ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarokcore )
+
 #------------------------ Test Expression -----------------------------
 
 set( testexpression_SRCS

@@ -21,12 +21,6 @@
 
 #include <QString>
 
-#if QT_VERSION >= 0x040700
-# include <QElapsedTimer>
-#else
-# include <QTime>
-#endif
-
 class IndentPrivate
     : public QObject
 {
@@ -37,20 +31,6 @@ public:
     static IndentPrivate* instance();
 
     QString m_string;
-};
-
-class BlockPrivate
-{
-public:
-    BlockPrivate( const char *text );
-
-#if QT_VERSION >= 0x040700
-    QElapsedTimer startTime;
-#else
-    QTime startTime;
-#endif
-    const char *label;
-    int color;
 };
 
 #endif // DEBUGPRIVATE_H
