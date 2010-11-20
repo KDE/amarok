@@ -452,13 +452,6 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
-
-    EngineController* engine = The::engineController();
-
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
 }
 
 LyricsApplet::~LyricsApplet()
@@ -583,6 +576,10 @@ LyricsApplet::init()
     if( font.fromString( Amarok::config("Lyrics Applet").readEntry("Font", QString()) ) )
         browserWidget->setFont( font );
 
+    EngineController* engine = The::engineController();
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ), this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
     connect( suggestTree, SIGNAL(activated(QModelIndex)), this, SLOT(_suggestionChosen(QModelIndex)) );
     connect( dataEngine("amarok-lyrics"), SIGNAL(sourceAdded(QString)), this, SLOT(connectSource(QString)) );
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
