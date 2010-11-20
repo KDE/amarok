@@ -584,6 +584,9 @@ LyricsApplet::init()
     connect( dataEngine("amarok-lyrics"), SIGNAL(sourceAdded(QString)), this, SLOT(connectSource(QString)) );
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
 
+    // Update the palette.
+    paletteChanged( The::paletteHandler()->palette() );
+
     d->setEditing( false );
     d->determineActionIconsState();
     connectSource( "lyrics" );
@@ -720,11 +723,14 @@ LyricsApplet::hasHeightForWidth() const
 void
 LyricsApplet::paletteChanged( const QPalette &palette )
 {
-    Q_UNUSED( palette )
     Q_D( LyricsApplet );
     KTextBrowser *textBrowser = d->browser->nativeWidget();
     QPalette::ColorRole bg = textBrowser->isReadOnly() ? QPalette::Base : QPalette::AlternateBase;
     textBrowser->viewport()->setBackgroundRole( bg );
+
+    // Use the text-color from KDE's colorscheme as we're already using it's background color.
+    // Not using it might cause "conflicts" (where the text could become unreadable).
+    textBrowser->setTextColor( palette.text().color() );
 }
 
 void
