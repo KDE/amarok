@@ -278,7 +278,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
                                     // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \
-                                     <br>%track, %title, %artist, %composer, %year, %album, %albumartist %comment, %genre, %initial, %folder, %filetype, %discnumber." ) );
+                                     <br>%track, %title, %artist, %composer, %year, %album, %albumartist, %comment, %genre, %initial, %folder, %filetype, %discnumber." ) );
 
     }
     if( m_isOrganizeCollection )
