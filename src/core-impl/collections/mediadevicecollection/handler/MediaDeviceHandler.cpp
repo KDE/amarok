@@ -147,8 +147,13 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
         if( srcTrack->album()->hasAlbumArtist() )
             m_wc->libSetAlbumArtist( destTrack, srcTrack->album()->albumArtist()->name() ); Debug::stamp();
 
-        if( srcTrack->album()->hasImage() )
-            m_wc->libSetCoverArt( destTrack, srcTrack->album()->image().toImage() );
+        /* This line crashes.
+           It is using a pixmap from outside the UI thread.
+           A little refactoring is needed to solve this.
+
+           if( srcTrack->album()->hasImage() )
+           m_wc->libSetCoverArt( destTrack, srcTrack->album()->image().toImage() );
+        */
     }
     if ( srcTrack->artist() )
         m_wc->libSetArtist( destTrack, srcTrack->artist()->name() ); Debug::stamp();
