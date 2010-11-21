@@ -178,6 +178,7 @@ SqlUserPlaylistProvider::playlistActions( Playlists::PlaylistPtr playlist )
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
     }
+    m_deleteAction->setObjectName( "deleteAction" );
 
     Playlists::SqlPlaylistList actionList = m_deleteAction->data().value<Playlists::SqlPlaylistList>();
     actionList << sqlPlaylist;
@@ -204,6 +205,8 @@ SqlUserPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trac
         m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
     }
+    m_removeTrackAction->setObjectName( "deleteAction" );
+
     //Add the playlist/track combination to a QMultiMap that is stored in the action.
     //In the slot we use this data to remove that track from the playlist.
     PlaylistTrackMap playlistMap = m_removeTrackAction->data().value<PlaylistTrackMap>();

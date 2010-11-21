@@ -263,8 +263,21 @@ PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent( QKeyEvent *event )
     {
         case Qt::Key_Delete:
         {
-            foreach( const QModelIndex &selectedIdx, selectedIndexes() )
-                model()->removeRow( selectedIdx.row(), selectedIdx.parent() );
+            QModelIndexList indices = selectedIndexes();
+            QActionList actions = actionsFor( indices );
+
+            if( actions.isEmpty() )
+            {
+                debug() <<"No actions !";
+                return;
+            }
+            foreach( QAction *actn, actions )
+                if( actn )
+                    if( actn->objectName() == "deleteAction" )
+                    {
+                        actn->trigger();
+                        actn->setData( QVariant() );
+                    }
             return;
         }
      }

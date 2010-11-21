@@ -336,6 +336,7 @@ SqlPodcastProvider::playlistActions( Playlists::PlaylistPtr playlist )
     {
         actionChannels = m_removeAction->data().value<Podcasts::SqlPodcastChannelList>();
     }
+    m_removeAction->setObjectName( "deleteAction" );
 
     actionChannels << sqlChannel;
     m_removeAction->setData( QVariant::fromValue( actionChannels ) );
@@ -392,6 +393,7 @@ SqlPodcastProvider::trackActions( Playlists::PlaylistPtr playlist, int trackInde
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDeleteDownloadedEpisodes() ) );
     }
+    m_deleteAction->setObjectName( "deleteAction" );
 
     if( m_writeTagsAction == 0 )
     {
