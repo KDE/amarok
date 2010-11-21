@@ -31,7 +31,7 @@
 #include <collectionscanner/Track.h>
 #include <collectionscanner/Playlist.h>
 
-ScanResultProcessor::ScanResultProcessor( ScanType type, QObject *parent )
+ScanResultProcessor::ScanResultProcessor( QObject *parent )
     : QObject( parent )
     , m_type( PartialUpdateScan )
 {

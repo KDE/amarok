@@ -805,28 +805,30 @@ SqlTrack::replayGain( ReplayGainTag mode ) const
 void
 SqlTrack::setReplayGain( Meta::ReplayGainTag mode, qreal value )
 {
-    QWriteLocker locker( &m_lock );
-
     if( qAbs( value - replayGain( mode ) ) < 0.01 )
         return;
 
-    switch( mode )
     {
-    case Meta::ReplayGain_Track_Gain:
-        m_cache.insert( Meta::valTrackGain, value );
-        break;
-    case Meta::ReplayGain_Track_Peak:
-        m_cache.insert( Meta::valTrackGainPeak, value );
-        break;
-    case Meta::ReplayGain_Album_Gain:
-        m_cache.insert( Meta::valAlbumGain, value );
-        break;
-    case Meta::ReplayGain_Album_Peak:
-        m_cache.insert( Meta::valAlbumGainPeak, value );
-        break;
+        QWriteLocker locker( &m_lock );
+
+        switch( mode )
+        {
+        case Meta::ReplayGain_Track_Gain:
+            m_cache.insert( Meta::valTrackGain, value );
+            break;
+        case Meta::ReplayGain_Track_Peak:
+            m_cache.insert( Meta::valTrackGainPeak, value );
+            break;
+        case Meta::ReplayGain_Album_Gain:
+            m_cache.insert( Meta::valAlbumGain, value );
+            break;
+        case Meta::ReplayGain_Album_Peak:
+            m_cache.insert( Meta::valAlbumGainPeak, value );
+            break;
+        }
+        if( !m_batchUpdate )
+            commitMetaDataChanges();
     }
-    if( !m_batchUpdate )
-        commitMetaDataChanges();
 }
 
 
