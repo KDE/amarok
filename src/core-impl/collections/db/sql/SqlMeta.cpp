@@ -559,7 +559,7 @@ SqlTrack::setScore( double newScore )
 {
     QWriteLocker locker( &m_lock );
 
-    if( newScore == m_score )
+    if( qAbs( newScore - m_score ) < 0.01 )
         return;
 
     m_cache.insert( Meta::valScore, newScore );
@@ -713,15 +713,12 @@ SqlTrack::setLastPlayed( const QDateTime &newTime )
 {
     QWriteLocker locker( &m_lock );
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::valLastPlayed, newTime );
-    else
-    {
-        m_lastPlayed = newTime;
-        writeStatisticsToDb( Meta::valLastPlayed );
-        locker.unlock();
-        notifyObservers();
-    }
+    if( newTime == m_lastPlayed )
+        return;
+
+    m_cache.insert( Meta::valLastPlayed, newTime );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 QDateTime
@@ -736,15 +733,12 @@ SqlTrack::setFirstPlayed( const QDateTime &newTime )
 {
     QWriteLocker locker( &m_lock );
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::valFirstPlayed, newTime );
-    else
-    {
-        m_firstPlayed = newTime;
-        writeStatisticsToDb( Meta::valFirstPlayed );
-        locker.unlock();
-        notifyObservers();
-    }
+    if( newTime == m_firstPlayed )
+        return;
+
+    m_cache.insert( Meta::valFirstPlayed, newTime );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 int
@@ -770,7 +764,6 @@ SqlTrack::setPlayCount( const int newCount )
 void
 SqlTrack::setUidUrl( const QString &uid )
 {
-    DEBUG_BLOCK
     QWriteLocker locker( &m_lock );
     QString newid = uid;
     if( !newid.startsWith( "amarok-sqltrackuid" ) )
@@ -808,6 +801,9 @@ void
 SqlTrack::setReplayGain( Meta::ReplayGainTag mode, qreal value )
 {
     QWriteLocker locker( &m_lock );
+
+    if( qAbs( value - replayGain( mode ) ) < 0.01 )
+        return;
 
     switch( mode )
     {
@@ -1043,163 +1039,48 @@ SqlTrack::commitMetaDataChanges()
         }
     }
 
-    // --- write the database
-    writeUrlToDb( m_cache );
-    writeMetaDataToDb( m_cache );
-    writeStatisticsToDb( m_cache );
+    // --- add to the registry dirty list
+    SqlRegistry *registry = m_collection->registry();
+    {
+        QMutexLocker locker2( &registry->m_blockMutex );
+        registry->m_dirtyTracks.insert( Meta::SqlTrackPtr( this ) );
+        if( oldArtist )
+            registry->m_dirtyArtists.insert( oldArtist );
+        if( newArtist )
+            registry->m_dirtyArtists.insert( newArtist );
+        if( oldAlbum )
+            registry->m_dirtyAlbums.insert( oldAlbum );
+        if( newAlbum )
+            registry->m_dirtyAlbums.insert( newAlbum );
+        if( oldComposer )
+            registry->m_dirtyComposers.insert( oldComposer );
+        if( newComposer )
+            registry->m_dirtyComposers.insert( newComposer );
+        if( oldGenre )
+            registry->m_dirtyGenres.insert( oldGenre );
+        if( newGenre )
+            registry->m_dirtyGenres.insert( newGenre );
+        if( oldYear )
+            registry->m_dirtyYears.insert( oldYear );
+        if( newYear )
+            registry->m_dirtyYears.insert( newYear );
+    }
+
+    m_lock.unlock(); // or else we provoke a deadlock
+    registry->commitDirtyTracks();
+    m_lock.lockForWrite();
+
     if( m_uid != oldUid )
         writePlaylistsToDb( m_cache, oldUid );
 
-    // --- clean up and notify everybody
+    // --- clean up
     m_cache.clear();
-
-    m_lock.unlock(); // prevent deadlocks
-    notifyObservers();
-
-    // these calls must be made after the database has been updated
-#define INVALIDATE_AND_UPDATE(X) if( X ) \
-    { \
-        X->invalidateCache(); \
-        X->notifyObservers(); \
-    }
-    INVALIDATE_AND_UPDATE(oldArtist);
-    INVALIDATE_AND_UPDATE(newArtist);
-    INVALIDATE_AND_UPDATE(oldAlbum);
-    INVALIDATE_AND_UPDATE(newAlbum);
-    INVALIDATE_AND_UPDATE(oldComposer);
-    INVALIDATE_AND_UPDATE(newComposer);
-    INVALIDATE_AND_UPDATE(oldGenre);
-    INVALIDATE_AND_UPDATE(newGenre);
-    INVALIDATE_AND_UPDATE(oldYear);
-    INVALIDATE_AND_UPDATE(newYear);
-#undef INVALIDATE_AND_UPDATE
-
-    if( collectionChanged )
-        m_collection->collectionUpdated();
-
-    m_lock.lockForWrite(); // lock again to prevent double unlock
 }
 
 void
 SqlTrack::writeMetaDataToFile()
 {
     Meta::Field::writeFields( m_url.path(), m_cache );
-}
-
-void
-SqlTrack::writeMetaDataToDb( const FieldHash &fields )
-{
-    if( fields.isEmpty() )
-        return; // nothing to do
-
-    SqlStorage *storage = m_collection->sqlStorage();
-    QString tags;
-
-    if( fields.contains( Meta::valTitle ) )
-        tags += QString( ",title='%1'" ).arg( storage->escape( m_title ) );
-    if( fields.contains( Meta::valComment ) )
-        tags += QString( ",comment='%1'" ).arg( storage->escape( m_comment ) );
-    if( fields.contains( Meta::valArtist ) )
-        tags += QString( ",artist=%1" ).arg( m_artist ?
-            KSharedPtr<SqlArtist>::staticCast( m_artist )->id() :
-            -1 );
-    if( fields.contains( Meta::valAlbum ) ||
-        fields.contains( Meta::valAlbumId ) )
-        tags += QString( ",album=%1" ).arg( m_album ?
-            KSharedPtr<SqlAlbum>::staticCast( m_album )->id() :
-            -1 );
-    if( fields.contains( Meta::valGenre ) )
-        tags += QString( ",genre=%1" ).arg( m_genre ?
-            KSharedPtr<SqlGenre>::staticCast( m_genre )->id() :
-            -1 );
-    if( fields.contains( Meta::valComposer ) )
-        tags += QString( ",composer=%1" ).arg( m_composer ?
-            KSharedPtr<SqlComposer>::staticCast( m_composer )->id() :
-            -1 );
-    if( fields.contains( Meta::valYear ) )
-        tags += QString( ",year=%1" ).arg( m_year ?
-            KSharedPtr<SqlYear>::staticCast( m_year )->id() :
-            -1 );
-    if( fields.contains( Meta::valBpm ) )
-        tags += QString( ",bpm=%1" ).arg( m_bpm );
-    if( fields.contains( Meta::valLength ) )
-        tags += QString( ",length=%1" ).arg( m_length );
-    if( fields.contains( Meta::valSamplerate ) )
-        tags += QString( ",samplerate=%1" ).arg( m_sampleRate );
-    if( fields.contains( Meta::valBitrate ) )
-        tags += QString( ",bitrate=%1" ).arg( m_bitrate );
-    if( fields.contains( Meta::valTrackNr ) )
-        tags += QString( ",tracknumber=%1" ).arg( m_trackNumber );
-    if( fields.contains( Meta::valDiscNr ) )
-        tags += QString( ",discnumber=%1" ).arg( m_discNumber );
-    if( fields.contains( Meta::valCreateDate ) )
-        tags += QString(",createdate=%1").arg( m_createDate.toTime_t() );
-    if( fields.contains( Meta::valTrackGain ) )
-        tags += QString( ",trackgain=%1" ).arg( m_trackGain );
-    if( fields.contains( Meta::valTrackGainPeak ) )
-        tags += QString( ",trackpeakgain=%1" ).arg( m_trackPeakGain );
-    if( fields.contains( Meta::valAlbumGain ) )
-        tags += QString( ",albumgain=%1" ).arg( m_albumGain );
-    if( fields.contains( Meta::valAlbumGainPeak ) )
-        tags += QString( ",albumpeakgain=%1" ).arg( m_albumPeakGain );
-    if( fields.contains( Meta::valFilesize ) )
-        tags += QString( ",filesize=%1" ).arg( m_filesize );
-    if( fields.contains( Meta::valFiletype ) )
-        tags += QString( ",filetype=%1" ).arg( int(m_filetype) );
-
-    if( !tags.isEmpty() )
-    {
-        tags = tags.remove(0, 1); // the first character is always a ','
-        if( m_trackId > 0 )
-        {
-            QString update = "UPDATE tracks SET %1 WHERE id = %2;";
-            update = update.arg( tags, QString::number( m_trackId ) );
-            storage->query( update );
-        }
-        else
-        {
-            QString insert = "INSERT INTO tracks SET %1,url=%2;";
-            insert = insert.arg( tags, QString::number( m_urlId ) );
-            m_trackId = storage->insert( insert, "tracks" );
-        }
-    }
-}
-
-void
-SqlTrack::writeUrlToDb( const FieldHash &fields )
-{
-    if( fields.isEmpty() )
-        return; // nothing to do
-
-    SqlStorage *storage = m_collection->sqlStorage();
-    QString tags;
-
-    if( fields.contains( Meta::valUrl ) )
-        tags += QString( ",deviceid=%1,rpath='%2',directory=%3" ).
-            arg( m_deviceId ).
-            arg( storage->escape( m_rpath ) ).
-            arg( m_directoryId );
-
-    if( fields.contains( Meta::valUniqueId ) )
-        tags += QString( ",uniqueid='%1'" ).arg( storage->escape( m_uid ) );
-
-    if( !tags.isEmpty() )
-    {
-        tags = tags.remove(0, 1); // the first character is always a ','
-        // debug()<<"writeUrlToDb"<<tags;
-        if( m_urlId > 0 )
-        {
-            QString update = "UPDATE urls SET %1 WHERE id = %4;";
-            update = update.arg( tags ).arg( m_urlId );
-            storage->query( update );
-        }
-        else
-        {
-            QString insert = "INSERT INTO urls SET %1;";
-            insert = insert.arg( tags );
-            m_urlId = storage->insert( insert, "urls" );
-        }
-    }
 }
 
 void
@@ -1230,52 +1111,6 @@ SqlTrack::writePlaylistsToDb( const FieldHash &fields, const QString &oldUid )
         QString update = "UPDATE playlist_tracks SET %1 WHERE uniqueid = '%2';";
         update = update.arg( tags, storage->escape( oldUid ) );
         storage->query( update );
-    }
-}
-
-void
-SqlTrack::writeStatisticsToDb( qint64 field )
-{
-    FieldHash fields;
-    fields.insert( field, QVariant() );
-    writeStatisticsToDb( fields );
-}
-
-void
-SqlTrack::writeStatisticsToDb( const FieldHash &fields )
-{
-    if( fields.isEmpty() )
-        return; // nothing to do
-
-    SqlStorage *storage = m_collection->sqlStorage();
-    QString stats;
-
-    if( fields.contains( Meta::valRating ) )
-        stats += QString( ",rating=%1" ).arg( QString::number( m_rating ) );
-    if( fields.contains( Meta::valScore ) )
-        stats += QString( ",score=%1" ).arg( QString::number( m_score ) );
-    if( fields.contains( Meta::valPlaycount ) )
-        stats += QString( ",playcount=%1" ).arg( QString::number( m_playCount ) );
-    if( fields.contains( Meta::valFirstPlayed ) )
-        stats += QString(",createdate=%1").arg( QString::number( m_firstPlayed.toTime_t() ) );
-    if( fields.contains( Meta::valLastPlayed ) )
-        stats += QString( ",accessdate=%1" ).arg( QString::number( m_lastPlayed.toTime_t() ) );
-
-    if( !stats.isEmpty() )
-    {
-        stats = stats.remove(0, 1); // the first character is always a ','
-        if( m_statisticsId > 0 )
-        {
-            QString update = "UPDATE statistics SET %1 WHERE id = %2;";
-            update = update.arg( stats, QString::number( m_statisticsId ) );
-            storage->query( update );
-        }
-        else
-        {
-            QString insert = "INSERT INTO statistics SET %1,url=%2;";
-            insert = insert.arg( stats, QString::number( m_urlId ) );
-            m_statisticsId = storage->insert( insert, "statistics" );
-        }
     }
 }
 
@@ -1508,31 +1343,9 @@ void
 SqlTrack::remove()
 {
     QWriteLocker locker( &m_lock );
-
     m_cache.clear();
-
-    // -- remove from db
-    QString query;
-    if( m_trackId > 0 )
-    {
-        query = QString( "DELETE FROM tracks where id = %1;" ).arg( m_trackId );
-        m_collection->sqlStorage()->query( query );
-        m_trackId = -1;
-    }
-    if( m_urlId > 0 )
-    {
-        query = QString( "DELETE FROM urls WHERE id = %1;").arg( m_urlId );
-        m_collection->sqlStorage()->query( query );
-        m_urlId = -1;
-    }
-    if( m_statisticsId > 0 )
-    {
-        query = QString( "DELETE FROM statistics WHERE id = %1;").arg( m_statisticsId );
-        m_collection->sqlStorage()->query( query );
-        m_statisticsId = -1;
-    }
-
     locker.unlock();
+
     // -- inform all albums, artist, years
 #undef foreachInvalidateCache
 #define INVALIDATE_AND_UPDATE(X) if( X ) \
@@ -1552,7 +1365,9 @@ SqlTrack::remove()
     m_genre = 0;
     m_year = 0;
 
-    m_collection->collectionUpdated();
+    m_urlId = 0;
+    m_trackId = 0;
+    m_statisticsId = 0;
 }
 
 //---------------------- class Artist --------------------------

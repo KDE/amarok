@@ -29,9 +29,9 @@
 #include <collectionscanner/Track.h>
 #include <collectionscanner/Playlist.h>
 
-SqlScanResultProcessor::SqlScanResultProcessor( Collections::DatabaseCollection *collection, ScanType type, QObject *parent )
-    : ScanResultProcessor( collection, type, parent ),
-      m_sqlCollection( static_cast<Collections::SqlCollection*>( collection ) )
+SqlScanResultProcessor::SqlScanResultProcessor( Collections::SqlCollection *collection, ScanType type, QObject *parent )
+    : ScanResultProcessor( type, parent ),
+      m_collection( collection )
 {
 }
 
@@ -70,19 +70,38 @@ SqlScanResultProcessor::commit()
     ScanResultProcessor::commit();
 }
 
+void
+SqlScanResultProcessor::blockUpdates()
+{
+    m_collection->blockUpdatedSignal();
+    m_collection->registry()->blockDatabaseUpdate();
+}
+
+void
+SqlScanResultProcessor::unblockUpdates()
+{
+    m_collection->registry()->unblockDatabaseUpdate();
+    m_collection->unblockUpdatedSignal();
+}
+
+int
+SqlScanResultProcessor::getDirectory( const QString &path, uint mtime )
+{
+    return m_collection->registry()->getDirectory( path, mtime );
+}
 
 void
 SqlScanResultProcessor::commitAlbum( const CollectionScanner::Album *album, int directoryId )
 {
-    debug() << "SRP::commitAlbum on"<<album->name()<< "artist"<<album->artist()<<"compilation"<<album->isCompilation();
+    // debug() << "SRP::commitAlbum on"<<album->name()<< "artist"<<album->artist()<<"compilation"<<album->isCompilation();
 
     // --- get or create the album
     int albumId = -1;
     KSharedPtr<Meta::SqlAlbum> metaAlbum;
     if( album->isCompilation() )
-        metaAlbum = KSharedPtr<Meta::SqlAlbum>::staticCast( m_sqlCollection->getAlbum( album->name(), QString() ) );
+        metaAlbum = KSharedPtr<Meta::SqlAlbum>::staticCast( m_collection->getAlbum( album->name(), QString() ) );
     else
-        metaAlbum = KSharedPtr<Meta::SqlAlbum>::staticCast( m_sqlCollection->getAlbum( album->name(), album->artist() ) );
+        metaAlbum = KSharedPtr<Meta::SqlAlbum>::staticCast( m_collection->getAlbum( album->name(), album->artist() ) );
     albumId = metaAlbum->id();
 
     // --- add all tracks
@@ -122,13 +141,13 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
         return;
     }
     uid = m_collection->uidUrlProtocol() + "://" + uid;
-    debug() << "SRP::commitTrack"<<uid<<"at"<<track->path()<<"for album"<<albumId;
+    // debug() << "SRP::commitTrack"<<uid<<"at"<<track->path()<<"for album"<<albumId;
 
-    int deviceId = m_sqlCollection->mountPointManager()->getIdForUrl( track->path() );
-    QString rpath = m_sqlCollection->mountPointManager()->getRelativePath( deviceId, track->path() );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( track->path() );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, track->path() );
 
     KSharedPtr<Meta::SqlTrack> metaTrack;
-    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->trackForUrl( uid ) );
+    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_collection->trackForUrl( uid ) );
 
     if( metaTrack )
     {
@@ -137,15 +156,15 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
 
         // check if there is an older track at the same position.
         KSharedPtr<Meta::SqlTrack> otherTrack;
-        otherTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->trackForUrl( track->path() ) );
+        otherTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_collection->trackForUrl( track->path() ) );
         if( otherTrack && otherTrack != metaTrack )
-            m_sqlCollection->registry()->deleteTrack( otherTrack->id() );
+            m_collection->registry()->deleteTrack( otherTrack->id() );
 
         metaTrack->setUrl( deviceId, rpath, directoryId );
     }
     else
     {
-        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_sqlCollection->getTrack( deviceId, rpath, directoryId, uid ) );
+        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_collection->getTrack( deviceId, rpath, directoryId, uid ) );
 
         metaTrack->setWriteFile( false ); // no need to write the tags back
         metaTrack->beginMetaDataUpdate();
@@ -153,10 +172,11 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
         metaTrack->setUidUrl( uid );
     }
 
-    if( m_foundTracks.contains( metaTrack->id() ) )
+    if( m_foundTracks.contains( uid ) )
     {
-    warning() << "track"<<track->path()<<"with uid"<<uid<<"already committed. There seems to be a duplicate uid.";
+        warning() << "track"<<track->path()<<"with uid"<<uid<<"already committed. There seems to be a duplicate uid.";
     }
+    m_foundTracks.insert( uid );
 
     // TODO: we need to check the modified date of the file agains the last updated of the file
     // to figure out if the track information was updated from outside Amarok.
@@ -245,8 +265,6 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
 
     metaTrack->endMetaDataUpdate();
     metaTrack->setWriteFile( true );
-
-    m_foundTracks.insert( metaTrack->id() );
 }
 
 
@@ -254,7 +272,7 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
 void
 SqlScanResultProcessor::deleteDeletedDirectories()
 {
-    SqlStorage *storage = m_sqlCollection->sqlStorage();
+    SqlStorage *storage = m_collection->sqlStorage();
 
     // -- get all directories
     QString query = QString( "SELECT id FROM directories;" );
@@ -278,10 +296,10 @@ SqlScanResultProcessor::deleteDeletedDirectories()
 void
 SqlScanResultProcessor::deleteDeletedTracks( int dirId )
 {
-    SqlStorage *storage = m_sqlCollection->sqlStorage();
+    SqlStorage *storage = m_collection->sqlStorage();
 
     // -- find all tracks
-    QString query = QString( "SELECT tracks.id, urls.deviceid, urls.rpath "
+    QString query = QString( "SELECT tracks.id, urls.uniqueid "
                              "FROM urls INNER JOIN tracks ON urls.id = tracks.url "
                              "WHERE  urls.directory = %1;" ).arg( dirId );
     QStringList res = storage->query( query );
@@ -290,14 +308,12 @@ SqlScanResultProcessor::deleteDeletedTracks( int dirId )
     for( int i = 0; i < res.count(); )
     {
         int trackId = res.at(i++).toInt();
-        int deviceId = res.at(i++).toInt();
-        QString rpath = res.at(i++);
+        QString uid = res.at(i++);
 
-        if( !m_foundTracks.contains( trackId ) )
+        if( !m_foundTracks.contains( uid ) )
         {
-            QString url = m_sqlCollection->mountPointManager()->getAbsolutePath( deviceId, rpath );
-            debug() << "deleteDeletedTracks" << url <<"id"<< trackId;
-            m_sqlCollection->registry()->deleteTrack( trackId );
+            debug() << "deleteDeletedTracks" << uid <<"id"<< trackId;
+            m_collection->registry()->deleteTrack( trackId );
         }
     }
 }

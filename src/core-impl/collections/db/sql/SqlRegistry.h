@@ -95,6 +95,14 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         Meta::LabelPtr getLabel( const QString &label );
         Meta::LabelPtr getLabel( int id );
 
+        /** Call this function to collect changes for the sql database.
+            This function can be called in preparation of larger updates.
+         */
+        void blockDatabaseUpdate();
+
+        /** Unblocks one blockDatabaseUpdate call. */
+        void unblockDatabaseUpdate();
+
     private slots:
         /** empytCache clears up the different hash tables by unrefing all pointers that are no longer ref'd by anyone else.
             SqlRegistry is calling this function periodically.
@@ -117,6 +125,23 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
             @return true if the update was successfull.
         */
         bool updateCachedUid( const QString &oldUid, const QString &newUid );
+
+
+
+        // --- functions needed to commit a track
+
+        /** Returns a string with all the values needed to be committed to the urls table */
+        QString getTrackUrlsValues( Meta::SqlTrack *track );
+
+        /** Returns a string with all the values needed to be committed to the tracks table */
+        QString getTrackTracksValues( Meta::SqlTrack *track );
+
+        /** Returns a string with all the values needed to be committed to the statistics table */
+        QString getTrackStatisticsValues( Meta::SqlTrack *track );
+
+        void commitDirtyTracks();
+
+
 
         friend class Meta::SqlTrack;
 
@@ -153,6 +178,25 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         QTimer *m_timer;
 
         Collections::SqlCollection *m_collection;
+
+        QMutex m_blockMutex; // protects the count and all the dirty sets.
+        int m_blockDatabaseUpdateCount;
+
+        /** A set of all tracks that need to be written to the database */
+        QSet< Meta::SqlTrackPtr > m_dirtyTracks;
+
+        /** A set of all tracks that are dirty.
+            Dirty years do not need to be written back as they are
+            invariant. However we need to notice the observers and
+            invalidate the cache. */
+        QSet< Meta::SqlYearPtr > m_dirtyYears;
+        QSet< Meta::SqlGenrePtr > m_dirtyGenres;
+        QSet< Meta::SqlAlbumPtr > m_dirtyAlbums;
+        QSet< Meta::SqlArtistPtr > m_dirtyArtists;
+        QSet< Meta::SqlComposerPtr > m_dirtyComposers;
+
+        /** Set to true when something was added or removed form the database */
+        bool m_collectionChanged;
 
         // all those classes need to call emptyCache
         friend class TestScanResultProcessorFull;

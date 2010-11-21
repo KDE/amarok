@@ -31,9 +31,8 @@
 #include <collectionscanner/Track.h>
 #include <collectionscanner/Playlist.h>
 
-ScanResultProcessor::ScanResultProcessor( Collections::DatabaseCollection *collection, ScanType type, QObject *parent )
+ScanResultProcessor::ScanResultProcessor( ScanType type, QObject *parent )
     : QObject( parent )
-    , m_collection( static_cast<Collections::DatabaseCollection*>( collection ) )
     , m_type( type )
 {
 }
@@ -57,7 +56,7 @@ ScanResultProcessor::commit()
 {
     // we are blocking the updated signal for maximum of one second.
     QDateTime blockedTime = QDateTime::currentDateTime();
-    m_collection->blockUpdatedSignal();
+    blockUpdates();
 
     // -- now commit the directories
     foreach( const CollectionScanner::Directory* dir, m_directories )
@@ -67,9 +66,9 @@ ScanResultProcessor::commit()
         // release the block every 5 second. Maybe not really needed, but still nice
         if( blockedTime.secsTo( QDateTime::currentDateTime() ) >= 5 )
         {
-            m_collection->unblockUpdatedSignal();
+            unblockUpdates();
             blockedTime = QDateTime::currentDateTime();
-            m_collection->blockUpdatedSignal();
+            blockUpdates();
         }
     }
 
@@ -77,7 +76,7 @@ ScanResultProcessor::commit()
     if( m_type != PartialUpdateScan )
         deleteDeletedDirectories();
 
-    m_collection->unblockUpdatedSignal();
+    unblockUpdates();
 }
 
 void
@@ -98,7 +97,7 @@ ScanResultProcessor::commitDirectory( const CollectionScanner::Directory *dir )
     // selects and inserts should be done atomar, in theory
 
     // --- updated the directory entry
-    int dirId = m_collection->getDirectory( dir->path(), dir->mtime() );
+    int dirId = getDirectory( dir->path(), dir->mtime() );
 
     m_foundDirectories.insert(dirId, dir->path());
     if( dir->isSkipped() )

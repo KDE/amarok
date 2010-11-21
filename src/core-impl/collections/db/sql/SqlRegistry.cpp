@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,6 +19,7 @@
 #include "core/support/Debug.h"
 
 #include "SqlRegistry.h"
+#include "SqlRegistry_p.h"
 #include "SqlCollection.h"
 #include "../ScanManager.h"
 
@@ -27,6 +29,8 @@
 SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     : QObject( 0 )
     , m_collection( collection )
+    , m_blockDatabaseUpdateCount( 0 )
+    , m_collectionChanged( false )
 {
     setObjectName( "SqlRegistry" );
 
@@ -78,6 +82,7 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
                         .arg( QString::number( deviceId ), QString::number( mtime ),
                                 storage->escape( rdir ) );
         dirId = storage->insert( insert, "directories" );
+        m_collectionChanged = true;
     }
     else
     {
@@ -352,7 +357,15 @@ SqlRegistry::deleteTrack( int trackId )
     int urlId = result.at(0).toInt();
     QString uid = result.at(1);
 
-    // --- delete the track from memory and database
+    // --- delete the track from database
+    query = QString( "DELETE FROM tracks where url = %1;" ).arg( urlId );
+    m_collection->sqlStorage()->query( query );
+    query = QString( "DELETE FROM urls WHERE id = '%1';").arg( urlId );
+    m_collection->sqlStorage()->query( query );
+    query = QString( "DELETE FROM statistics WHERE url = '%1';").arg( urlId );
+    m_collection->sqlStorage()->query( query );
+
+    // --- delete the track from memory
     if( m_uidMap.contains( uid ) )
     {
         // -- remove from hashes
@@ -365,20 +378,10 @@ SqlRegistry::deleteTrack( int trackId )
         m_trackMap.remove( id );
 
         locker.unlock(); // prevent deadlock
+
         sqlTrack->remove();
-        return;
-    }
-
-    // --- delete the track only from database
-    else
-    {
-        QString query;
-
-        // -- remove from db
-        query = QString( "DELETE FROM tracks where url = %1;" ).arg( urlId );
-        m_collection->sqlStorage()->query( query );
-        query = QString( "DELETE FROM urls WHERE id = '%1';").arg( urlId );
-        m_collection->sqlStorage()->query( query );
+        locker.unlock(); // prevent deadlock
+        m_collection->collectionUpdated();
     }
 }
 
@@ -400,6 +403,7 @@ SqlRegistry::getArtist( const QString &name )
     {
         QString insert = QString( "INSERT INTO artists( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( name ) );
         id = m_collection->sqlStorage()->insert( insert, "artists" );
+        m_collectionChanged = true;
     }
     else
     {
@@ -465,6 +469,7 @@ SqlRegistry::getGenre( const QString &name )
     {
         QString insert = QString( "INSERT INTO genres( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( name ) );
         id = m_collection->sqlStorage()->insert( insert, "genres" );
+        m_collectionChanged = true;
     }
     else
     {
@@ -524,6 +529,7 @@ SqlRegistry::getComposer( const QString &name )
     {
         QString insert = QString( "INSERT INTO composers( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( name ) );
         id = m_collection->sqlStorage()->insert( insert, "composers" );
+        m_collectionChanged = true;
     }
     else
     {
@@ -587,6 +593,7 @@ SqlRegistry::getYear( int year, int yearId )
         {
             QString insert = QString( "INSERT INTO years( name ) VALUES ('%1');" ).arg( QString::number( year ) );
             yearId = m_collection->sqlStorage()->insert( insert, "years" );
+            m_collectionChanged = true;
         }
         else
         {
@@ -639,6 +646,7 @@ SqlRegistry::getAlbum( const QString &name, const QString &artist )
             arg( m_collection->sqlStorage()->escape( name ),
                  artistId > 0 ? QString::number( artistId ) : "NULL" );
         albumId = m_collection->sqlStorage()->insert( insert, "albums" );
+        m_collectionChanged = true;
     }
     else
     {
@@ -747,6 +755,94 @@ SqlRegistry::getLabel( int id, const QString &label )
     m_labelMap.insert( label, labelPtr );
     return labelPtr;
 }
+
+
+
+// ---------------- generic database management --------------
+
+void
+SqlRegistry::blockDatabaseUpdate()
+{
+    QMutexLocker locker( &m_blockMutex );
+    m_blockDatabaseUpdateCount ++;
+}
+
+void
+SqlRegistry::unblockDatabaseUpdate()
+{
+    {
+        QMutexLocker locker( &m_blockMutex );
+        Q_ASSERT( m_blockDatabaseUpdateCount > 0 );
+        m_blockDatabaseUpdateCount --;
+    }
+
+    // update the database
+    commitDirtyTracks();
+}
+
+void
+SqlRegistry::commitDirtyTracks()
+{
+    QMutexLocker locker( &m_blockMutex );
+
+    if( m_blockDatabaseUpdateCount > 0 )
+        return;
+
+    QList< Meta::SqlYearPtr > dirtyYears = m_dirtyYears.toList();
+    QList< Meta::SqlGenrePtr > dirtyGenres = m_dirtyGenres.toList();
+    QList< Meta::SqlAlbumPtr > dirtyAlbums = m_dirtyAlbums.toList();
+    QList< Meta::SqlTrackPtr > dirtyTracks = m_dirtyTracks.toList();
+    QList< Meta::SqlArtistPtr > dirtyArtists = m_dirtyArtists.toList();
+    QList< Meta::SqlComposerPtr > dirtyComposers = m_dirtyComposers.toList();
+
+    m_dirtyYears.clear();
+    m_dirtyGenres.clear();
+    m_dirtyAlbums.clear();
+    m_dirtyTracks.clear();
+    m_dirtyArtists.clear();
+    m_dirtyComposers.clear();
+    locker.unlock(); // need to unlock before notifying the observers
+
+    // -- commit all the dirty tracks
+    TrackUrlsTableCommitter().commit( dirtyTracks );
+    TrackTracksTableCommitter().commit( dirtyTracks );
+    TrackStatisticsTableCommitter().commit( dirtyTracks );
+
+    // -- notify all observers
+    foreach( Meta::SqlYearPtr year, dirtyYears )
+    {
+        year->invalidateCache();
+        year->notifyObservers();
+    }
+    foreach( Meta::SqlGenrePtr genre, dirtyGenres )
+    {
+        genre->invalidateCache();
+        genre->notifyObservers();
+    }
+    foreach( Meta::SqlAlbumPtr album, dirtyAlbums )
+    {
+        album->invalidateCache();
+        album->notifyObservers();
+    }
+    foreach( Meta::SqlTrackPtr track, dirtyTracks )
+    {
+        track->notifyObservers();
+    }
+    foreach( Meta::SqlArtistPtr artist, dirtyArtists )
+    {
+        artist->invalidateCache();
+        artist->notifyObservers();
+    }
+    foreach( Meta::SqlComposerPtr composer, dirtyComposers )
+    {
+        composer->invalidateCache();
+        composer->notifyObservers();
+    }
+    if( m_collectionChanged )
+        m_collection->collectionUpdated();
+}
+
+
 
 void
 SqlRegistry::emptyCache()

@@ -31,6 +31,7 @@ set(amarok_collection-sqlcollection_SRCS
     SqlQueryMakerInternal.cpp
     SqlReadLabelCapability.cpp
     SqlRegistry.cpp
+    SqlRegistry_p.cpp
     SqlMeta.cpp
     SqlWriteLabelCapability.cpp
     SqlScanResultProcessor.cpp

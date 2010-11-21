@@ -87,7 +87,7 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
             PartialUpdateScan = 2
         };
 
-        ScanResultProcessor( Collections::DatabaseCollection *collection, ScanType type, QObject *parent = 0 );
+        ScanResultProcessor( ScanType type, QObject *parent = 0 );
         virtual ~ScanResultProcessor();
 
         /** Submits a new directory for processing.
@@ -104,6 +104,17 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
         void directoryCommitted();
 
     protected:
+        /** Will block the collection from noticing the many small updates we are doing */
+        virtual void blockUpdates() = 0;
+        virtual void unblockUpdates() = 0;
+
+        /** Will get a directory id for a given directory path and modification time.
+            If the directory entry is not present, then it will be created.
+        */
+        virtual int getDirectory( const QString &path, uint mtime ) = 0;
+
+        virtual void commitDirectory( const CollectionScanner::Directory *dir );
+        virtual void commitPlaylist( const CollectionScanner::Playlist *playlist );
         virtual void commitAlbum( const CollectionScanner::Album *album, int directoryId ) = 0;
         virtual void commitTrack( const CollectionScanner::Track *track, int directoryId, int albumId = -1 ) = 0;
 
@@ -115,19 +126,12 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
         */
         virtual void deleteDeletedTracks( int dirId ) = 0;
 
-        Collections::DatabaseCollection *m_collection;
-
         QList<CollectionScanner::Directory*> m_directories;
 
         QHash<int, QString> m_foundDirectories;
-        QSet<int> m_foundTracks;
+        QSet<QString> m_foundTracks;
 
         ScanType m_type;
-
-    private:
-        void commitDirectory( const CollectionScanner::Directory *dir );
-        void commitPlaylist( const CollectionScanner::Playlist *playlist );
-
 };
 
 #endif

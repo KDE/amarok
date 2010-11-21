@@ -90,8 +90,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT DatabaseCollection : public Collections::
         /** Returns true if the directory is already known in the database. */
         virtual bool isDirInCollection( const QString &path ) = 0;
 
-        virtual int getDirectory( const QString &path, uint mtime ) = 0;
-
         /** Every collection has this function. */
         virtual bool possiblyContainsTrack( const KUrl &url ) const = 0;
 

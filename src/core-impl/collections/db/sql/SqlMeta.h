@@ -40,6 +40,10 @@ namespace Capabilities {
 }
 class QAction;
 
+class SqlRegistry;
+class TrackUrlsTableCommitter;
+class TrackTracksTableCommitter;
+class TrackStatisticsTableCommitter;
 namespace Collections {
     class SqlCollection;
 }
@@ -235,11 +239,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
          */
         void commitMetaDataChanges();
         void writeMetaDataToFile();
-        void writeMetaDataToDb( const FieldHash &fields );
-        void writeUrlToDb( const FieldHash &fields );
         void writePlaylistsToDb( const FieldHash &fields, const QString &oldUid );
-        void writeStatisticsToDb( const FieldHash &fields );
-        void writeStatisticsToDb( qint64 field );
 
     private:
         //helper functions
@@ -301,6 +301,11 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
 
         mutable bool m_labelsInCache;
         mutable Meta::LabelList m_labelsCache;
+
+        friend class ::SqlRegistry; // needs to call notifyObservers
+        friend class ::TrackUrlsTableCommitter;
+        friend class ::TrackTracksTableCommitter;
+        friend class ::TrackStatisticsTableCommitter;
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlArtist : public Meta::Artist
@@ -334,7 +339,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlArtist : public Meta::Artist
         Meta::AlbumList m_albums;
         QMutex m_mutex;
 
-        friend class SqlTrack; // needs to call notifyObservers
+        friend class ::SqlRegistry; // needs to call notifyObservers
+        friend class Meta::SqlTrack; // needs to call notifyObservers
 };
 
 /** Represents an albums stored in the database.
@@ -480,7 +486,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
 
         //TODO: add album artist
 
-        friend class SqlTrack; // needs to call notifyObservers
+        friend class ::SqlRegistry; // needs to call notifyObservers
+        friend class Meta::SqlTrack; // needs to set images directly
         friend class ::SqlScanResultProcessor; // needs to set images directly
 };
 
@@ -508,7 +515,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlComposer : public Meta::Composer
         Meta::TrackList m_tracks;
         QMutex m_mutex;
 
-        friend class SqlTrack; // needs to call notifyObservers
+        friend class ::SqlRegistry; // needs to call notifyObservers
+        friend class Meta::SqlTrack; // needs to call notifyObservers
 };
 
 class SqlGenre : public Meta::Genre
@@ -537,7 +545,8 @@ class SqlGenre : public Meta::Genre
         Meta::TrackList m_tracks;
         QMutex m_mutex;
 
-        friend class SqlTrack; // needs to call notifyObservers
+        friend class ::SqlRegistry; // needs to call notifyObservers
+        friend class Meta::SqlTrack; // needs to call notifyObservers
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlYear : public Meta::Year
@@ -567,7 +576,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlYear : public Meta::Year
         Meta::TrackList m_tracks;
         QMutex m_mutex;
 
-        friend class SqlTrack; // needs to call notifyObservers
+        friend class ::SqlRegistry; // needs to call notifyObservers
+        friend class Meta::SqlTrack; // needs to call notifyObservers
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlLabel : public Meta::Label
@@ -594,12 +604,16 @@ private:
     Meta::TrackList m_tracks;
     QMutex m_mutex;
 
-    friend class SqlTrack; // needs to call notifyObservers
+    friend class ::SqlRegistry; // needs to call notifyObservers
+    friend class Meta::SqlTrack; // needs to call notifyObservers
 };
 
 typedef KSharedPtr<SqlTrack> SqlTrackPtr;
 typedef KSharedPtr<SqlArtist> SqlArtistPtr;
 typedef KSharedPtr<SqlAlbum> SqlAlbumPtr;
+typedef KSharedPtr<SqlComposer> SqlComposerPtr;
+typedef KSharedPtr<SqlGenre> SqlGenrePtr;
+typedef KSharedPtr<SqlYear> SqlYearPtr;
 
 }
 

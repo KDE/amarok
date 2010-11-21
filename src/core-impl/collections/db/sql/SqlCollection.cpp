@@ -332,12 +332,6 @@ SqlCollection::isDirInCollection( const QString &p )
     return !values.isEmpty();
 }
 
-int
-SqlCollection::getDirectory( const QString &path, uint mtime )
-{
-    return m_registry->getDirectory( path, mtime );
-}
-
 bool
 SqlCollection::possiblyContainsTrack( const KUrl &url ) const
 {
