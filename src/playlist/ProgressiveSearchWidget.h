@@ -26,6 +26,7 @@ class KAction;
 class QKeyEvent;
 class QLabel;
 class QMenu;
+class QToolBar;
 
 namespace Playlist
 {
@@ -214,6 +215,7 @@ private:
     KAction   *m_previousAction;
     QMenu     *m_menu;
     QLabel    *m_warningLabel;
+    QToolBar  *m_toolBar;
 
     int        m_searchFieldsMask;
     bool       m_showOnlyMatches;
