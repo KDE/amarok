@@ -615,7 +615,6 @@ LabelsApplet::toggleLabel( const QString &label )
         debug() << "adding label: " << label;
         m_selfAdded = true;
     }
-    uc->collectionUpdated();
 
     if( !m_allLabels.contains( label ) )
     {
