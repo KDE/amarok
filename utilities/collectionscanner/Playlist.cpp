@@ -36,9 +36,9 @@ CollectionScanner::Playlist::Playlist( QXmlStreamReader *reader )
 
         if( reader->isStartElement() )
         {
-            if( reader->name() == "path" )
+            if( reader->name() == QLatin1String("path") )
                 m_path = reader->readElementText();
-            else if( reader->name() == "rpath" )
+            else if( reader->name() == QLatin1String("rpath") )
                 m_path = reader->readElementText();
             else
                 reader->readElementText(); // just read over the element
@@ -66,7 +66,7 @@ CollectionScanner::Playlist::rpath() const
 void
 CollectionScanner::Playlist::toXml( QXmlStreamWriter *writer ) const
 {
-    writer->writeTextElement( "path", m_path );
-    writer->writeTextElement( "rpath", m_rpath );
+    writer->writeTextElement( QLatin1String("path"), m_path );
+    writer->writeTextElement( QLatin1String("rpath"), m_rpath );
 }
 

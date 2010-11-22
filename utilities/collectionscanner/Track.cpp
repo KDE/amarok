@@ -224,7 +224,7 @@ CollectionScanner::Track::Track( const QString &path)
                         if( !frame )
                             continue;
 
-                        if( TStringToQString(frame->email()) == "" ) // only read anonymous ratings
+                        if( TStringToQString(frame->email()).isEmpty() ) // only read anonymous ratings
                         {
                             // FMPS tags have precedence
                             if( m_rating == -1 && frame->rating() != 0 )
@@ -261,9 +261,9 @@ CollectionScanner::Track::Track( const QString &path)
                         if( identifier.isEmpty() )
                             continue;
 
-                        if( owner == "http://musicbrainz.org" )
+                        if( owner == QLatin1String("http://musicbrainz.org") )
                             m_uniqueid = "mb-" + identifier;
-                        else if( owner == "Amarok 2 AFTv1 - amarok.kde.org" )
+                        else if( owner == QLatin1String("Amarok 2 AFTv1 - amarok.kde.org") )
                             m_uniqueid = identifier;
                     }
                 }
@@ -354,19 +354,19 @@ CollectionScanner::Track::Track( const QString &path)
                     QString name = TStringToQString( it->first );
                     QString value = TStringToQString( it->second.toStringList().toString("\n") );
 
-                    if( name == "\xA9wrt" )
+                    if( name == QLatin1String("\xA9wrt") )
                         m_composer = value;
 
-                    else if( name == "aART" ) // iTunes 4.0
+                    else if( name == QLatin1String("aART") ) // iTunes 4.0
                         m_albumArtist = value;
 
-                    else if( name == "tmpo" )
+                    else if( name == QLatin1String("tmpo") )
                         m_bpm = it->second.toInt();
 
-                    else if( name == "disk" )
+                    else if( name == QLatin1String("disk") )
                         m_disc = it->second.toIntPair().first;
 
-                    else if( name == "cpil" )
+                    else if( name == QLatin1String("cpil") )
                     {
                         if( it->second.toBool() )
                             m_compilation = true;
@@ -374,15 +374,15 @@ CollectionScanner::Track::Track( const QString &path)
                             m_noCompilation = true;
                     }
 
-                    else if( name == "----:com.apple.iTunes:MusicBrainz Track Id" )
+                    else if( name == QLatin1String("----:com.apple.iTunes:MusicBrainz Track Id") )
                         m_uniqueid = "mb-" + value;
 
-                    else if( name == "----:com.apple.iTunes:Amarok 2 AFTv1 - amarok.kde.org" )
+                    else if( name == QLatin1String("----:com.apple.iTunes:Amarok 2 AFTv1 - amarok.kde.org") )
                         m_uniqueid = value;
 
                     else
                     {
-                        if( name.startsWith("----:com.apple.iTunes") )
+                        if( name.startsWith(QLatin1String("----:com.apple.iTunes")) )
                         {
                             decodeFMPS( name.remove(0, 22), value, true );
                         }
@@ -463,76 +463,76 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader )
         if( reader->isStartElement() )
         {
             QStringRef name = reader->name();
-            if( name == "uniqueid" )
+            if( name == QLatin1String("uniqueid") )
                 m_uniqueid = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "path" )
+            else if( name == QLatin1String("path") )
                 m_path = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "rpath" )
+            else if( name == QLatin1String("rpath") )
                 m_rpath = reader->readElementText(QXmlStreamReader::SkipChildElements);
 
-            else if( name == "filetype" )
+            else if( name == QLatin1String("filetype") )
                 m_filetype = (Amarok::FileType)reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "title" )
+            else if( name == QLatin1String("title") )
                 m_title = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "artist" )
+            else if( name == QLatin1String("artist") )
                 m_artist = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "albumArtist" )
+            else if( name == QLatin1String("albumArtist") )
                 m_albumArtist = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "album" )
+            else if( name == QLatin1String("album") )
                 m_album = reader->readElementText();
-            else if( name == "compilation" )
+            else if( name == QLatin1String("compilation") )
             {
                 m_compilation = true;
                 reader->skipCurrentElement();
             }
-            else if( name == "noCompilation" )
+            else if( name == QLatin1String("noCompilation") )
             {
                 m_noCompilation = true;
                 reader->skipCurrentElement();
             }
-            else if( name == "hasCover" )
+            else if( name == QLatin1String("hasCover") )
             {
                 m_hasCover = true;
                 reader->skipCurrentElement();
             }
-            else if( name == "comment" )
+            else if( name == QLatin1String("comment") )
                 m_comment = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "genre" )
+            else if( name == QLatin1String("genre") )
                 m_genre = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "year" )
+            else if( name == QLatin1String("year") )
                 m_year = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "disc" )
+            else if( name == QLatin1String("disc") )
                 m_disc = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "track" )
+            else if( name == QLatin1String("track") )
                 m_track = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "bpm" )
+            else if( name == QLatin1String("bpm") )
                 m_bpm = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "bitrate" )
+            else if( name == QLatin1String("bitrate") )
                 m_bitrate = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "length" )
+            else if( name == QLatin1String("length") )
                 m_length = reader->readElementText(QXmlStreamReader::SkipChildElements).toLong();
-            else if( name == "samplerate" )
+            else if( name == QLatin1String("samplerate") )
                 m_samplerate = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "filesize" )
+            else if( name == QLatin1String("filesize") )
                 m_filesize = reader->readElementText(QXmlStreamReader::SkipChildElements).toLong();
 
-            else if( name == "trackGain" )
+            else if( name == QLatin1String("trackGain") )
                 m_trackGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "trackPeakGain" )
+            else if( name == QLatin1String("trackPeakGain") )
                 m_trackPeakGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "albumGain" )
+            else if( name == QLatin1String("albumGain") )
                 m_albumGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "albumPeakGain" )
+            else if( name == QLatin1String("albumPeakGain") )
                 m_albumPeakGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
 
-            else if( name == "composer" )
+            else if( name == QLatin1String("composer") )
                 m_composer = reader->readElementText(QXmlStreamReader::SkipChildElements);
 
-            else if( name == "rating" )
+            else if( name == QLatin1String("rating") )
                 m_rating = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "score" )
+            else if( name == QLatin1String("score") )
                 m_score = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "playcount" )
+            else if( name == QLatin1String("playcount") )
                 m_playcount = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
 
             else
@@ -585,88 +585,88 @@ CollectionScanner::Track::toXml( QXmlStreamWriter *writer ) const
     if( !m_valid )
         return;
 
-    write( writer, "uniqueid", m_uniqueid );
-    write( writer, "path", m_path );
-    write( writer, "rpath", m_rpath );
+    write( writer, QLatin1String("uniqueid"), m_uniqueid );
+    write( writer, QLatin1String("path"), m_path );
+    write( writer, QLatin1String("rpath"), m_rpath );
 
-    write(writer, "filetype", QString::number( (int)m_filetype ) );
+    write(writer, QLatin1String("filetype"), QString::number( (int)m_filetype ) );
 
-    write( writer, "title", m_title);
-    write( writer, "artist", m_artist);
-    write( writer, "albumArtist", m_albumArtist);
-    write( writer, "album", m_album);
+    write( writer, QLatin1String("title"), m_title);
+    write( writer, QLatin1String("artist"), m_artist);
+    write( writer, QLatin1String("albumArtist"), m_albumArtist);
+    write( writer, QLatin1String("album"), m_album);
     if( m_compilation )
-        writer->writeEmptyElement( "compilation" );
+        writer->writeEmptyElement( QLatin1String("compilation") );
     if( m_noCompilation )
-        writer->writeEmptyElement( "noCompilation" );
+        writer->writeEmptyElement( QLatin1String("noCompilation") );
     if( m_hasCover )
-        writer->writeEmptyElement( "hasCover" );
-    write( writer, "comment", m_comment);
-    write( writer, "genre", m_genre);
+        writer->writeEmptyElement( QLatin1String("hasCover") );
+    write( writer, QLatin1String("comment"), m_comment);
+    write( writer, QLatin1String("genre"), m_genre);
     if( m_year != -1 )
-        write(writer, "year", QString::number( m_year ) );
+        write(writer, QLatin1String("year"), QString::number( m_year ) );
     if( m_disc != -1 )
-        write(writer, "disc", QString::number( m_disc ) );
+        write(writer, QLatin1String("disc"), QString::number( m_disc ) );
     if( m_track != -1 )
-        write(writer, "track", QString::number( m_track ) );
+        write(writer, QLatin1String("track"), QString::number( m_track ) );
     if( m_bpm != -1 )
-        write(writer, "bpm", QString::number( m_bpm ) );
+        write(writer, QLatin1String("bpm"), QString::number( m_bpm ) );
     if( m_bitrate != -1 )
-        write(writer, "bitrate", QString::number( m_bitrate ) );
+        write(writer, QLatin1String("bitrate"), QString::number( m_bitrate ) );
     if( m_length != -1 )
-        write(writer, "length", QString::number( m_length ) );
+        write(writer, QLatin1String("length"), QString::number( m_length ) );
     if( m_samplerate != -1 )
-        write(writer, "samplerate", QString::number( m_samplerate ) );
+        write(writer, QLatin1String("samplerate"), QString::number( m_samplerate ) );
     if( m_filesize != -1 )
-        write(writer, "filesize", QString::number( m_filesize ) );
+        write(writer, QLatin1String("filesize"), QString::number( m_filesize ) );
 
     if( m_trackGain != 0 )
-        write(writer, "trackGain", QString::number( m_trackGain ) );
+        write(writer, QLatin1String("trackGain"), QString::number( m_trackGain ) );
     if( m_trackPeakGain != 0 )
-        write(writer, "trackPeakGain", QString::number( m_trackPeakGain ) );
+        write(writer, QLatin1String("trackPeakGain"), QString::number( m_trackPeakGain ) );
     if( m_albumGain != 0 )
-        write(writer, "albumGain", QString::number( m_albumGain ) );
+        write(writer, QLatin1String("albumGain"), QString::number( m_albumGain ) );
     if( m_albumPeakGain != 0 )
-        write(writer, "albumPeakGain", QString::number( m_albumPeakGain ) );
+        write(writer, QLatin1String("albumPeakGain"), QString::number( m_albumPeakGain ) );
 
-    write( writer, "composer", m_composer);
+    write( writer, QLatin1String("composer"), m_composer);
 
     if( m_rating != -1 )
-        write(writer, "rating", QString::number( m_rating ) );
+        write(writer, QLatin1String("rating"), QString::number( m_rating ) );
     if( m_score != -1 )
-        write(writer, "score", QString::number( m_score ) );
+        write(writer, QLatin1String("score"), QString::number( m_score ) );
     if( m_playcount != -1 )
-        write(writer, "playcount", QString::number( m_playcount ) );
+        write(writer, QLatin1String("playcount"), QString::number( m_playcount ) );
 
 }
 
 void
 CollectionScanner::Track::decodeXiph( const QString &name, const QString &value )
 {
-    if( name == "COMPOSER" )
+    if( name == QLatin1String("COMPOSER") )
         m_composer = value;
 
-    else if( name == "ALBUMARTIST" )
+    else if( name == QLatin1String("ALBUMARTIST") )
         m_albumArtist = value;
 
-    else if( name == "BPM" )
+    else if( name == QLatin1String("BPM") )
         m_bpm = value.toFloat();
 
-    else if( name == "DISCNUMBER" )
+    else if( name == QLatin1String("DISCNUMBER") )
         m_disc = splitNumber(value.trimmed());
 
-    else if( name == "COMPILATION" )
+    else if( name == QLatin1String("COMPILATION") )
     {
         if( value.toInt() )
             m_compilation = true;
         else
             m_noCompilation = true;
     }
-    else if( name == "MUSICBRAINZ_TRACKID" )
+    else if( name == QLatin1String("MUSICBRAINZ_TRACKID") )
     {
         m_uniqueid = "mb-" + value;
     }
-    else if( name == "AMAROK 2 AFTV1 - AMAROK.KDE.ORG" )
+    else if( name == QLatin1String("AMAROK 2 AFTV1 - AMAROK.KDE.ORG") )
     {
         m_uniqueid = value;
     }
@@ -680,22 +680,22 @@ CollectionScanner::Track::decodeFMPS( const QString &identifier, const QString &
     bool ok = false;
     qreal f = value.toFloat( &ok );
 
-    if( (camelCase  && identifier == "FMPS_Rating") ||
-        (!camelCase && identifier == "FMPS_RATING") )
+    if( (camelCase  && identifier == QLatin1String("FMPS_Rating")) ||
+        (!camelCase && identifier == QLatin1String("FMPS_RATING")) )
     {
         if( ok )
             m_rating = f;
     }
 
-    else if( (camelCase  && identifier == "FMPS_Rating_Amarok_Score") ||
-             (!camelCase && identifier == "FMPS_RATING_AMAROK_SCORE") )
+    else if( (camelCase  && identifier == QLatin1String("FMPS_Rating_Amarok_Score")) ||
+             (!camelCase && identifier == QLatin1String("FMPS_RATING_AMAROK_SCORE")) )
     {
         if( ok )
             m_score = f;
     }
 
-    else if( (camelCase  && identifier == "FMPS_Playcount") ||
-             (!camelCase && identifier == "FMPS_PLAYCOUNT") )
+    else if( (camelCase  && identifier == QLatin1String("FMPS_Playcount")) ||
+             (!camelCase && identifier == QLatin1String("FMPS_PLAYCOUNT")) )
     {
         if( ok )
             m_playcount = f;

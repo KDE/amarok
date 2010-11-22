@@ -49,19 +49,19 @@ CollectionScanner::BatchFile::BatchFile( const QString &batchPath )
         {
             QStringRef name = reader.name();
 
-            if( name == "scanner" )
+            if( name == QLatin1String("scanner") )
             {
                 ; // just recurse into the element
             }
-            else if( name == "directory" )
+            else if( name == QLatin1String("directory") )
             {
                 path.clear();
                 mtime = 0;
                 haveMtime = false;
             }
-            else if( name == "path" )
+            else if( name == QLatin1String("path") )
                 path = reader.readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "mtime" )
+            else if( name == QLatin1String("mtime") )
             {
                 mtime = reader.readElementText(QXmlStreamReader::SkipChildElements).toUInt();
                 haveMtime = true;
@@ -74,7 +74,7 @@ CollectionScanner::BatchFile::BatchFile( const QString &batchPath )
         else if( reader.isEndElement() )
         {
             QStringRef name = reader.name();
-            if( name == "directory" )
+            if( name == QLatin1String("directory") )
             {
                 if( !path.isEmpty() )
                 {
@@ -123,12 +123,12 @@ CollectionScanner::BatchFile::write( const QString &batchPath )
     writer.setAutoFormatting( true );
 
     writer.writeStartDocument();
-    writer.writeStartElement( "scanner" );
+    writer.writeStartElement( QLatin1String("scanner") );
 
     foreach( const QString &dir, m_directories )
     {
-        writer.writeStartElement( "directory" );
-        writer.writeTextElement( "path", dir );
+        writer.writeStartElement( QLatin1String("directory") );
+        writer.writeTextElement( QLatin1String("path"), dir );
         writer.writeEndElement();
     }
 
@@ -137,10 +137,10 @@ CollectionScanner::BatchFile::write( const QString &batchPath )
         QString path( pair.first );
         uint mtime = pair.second;
 
-        writer.writeStartElement( "directory" );
-        writer.writeTextElement( "path", path );
+        writer.writeStartElement( QLatin1String("directory") );
+        writer.writeTextElement( QLatin1String("path"), path );
         // note: some file systems return an mtime of 0
-        writer.writeTextElement( "mtime", QString::number( mtime ) );
+        writer.writeTextElement( QLatin1String("mtime"), QString::number( mtime ) );
         writer.writeEndElement();
     }
 
