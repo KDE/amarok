@@ -258,9 +258,16 @@ void
 SqlCollection::setMountPointManager( MountPointManager *mpm )
 {
     Q_ASSERT( mpm );
-    connect( mpm, SIGNAL( deviceAdded(int) ), SLOT( slotDeviceAdded(int) ) );
-    connect( mpm, SIGNAL( deviceRemoved(int) ), SLOT( slotDeviceRemoved(int) ) );
+
+    if( m_mpm )
+    {
+        disconnect( mpm, SIGNAL( deviceAdded(int) ), this, SLOT( slotDeviceAdded(int) ) );
+        disconnect( mpm, SIGNAL( deviceRemoved(int) ), this, SLOT( slotDeviceRemoved(int) ) );
+    }
+
     m_mpm = mpm;
+    connect( mpm, SIGNAL( deviceAdded(int) ), this, SLOT( slotDeviceAdded(int) ) );
+    connect( mpm, SIGNAL( deviceRemoved(int) ), this, SLOT( slotDeviceRemoved(int) ) );
 }
 
 void

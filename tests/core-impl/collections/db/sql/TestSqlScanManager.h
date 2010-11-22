@@ -32,6 +32,8 @@ namespace Collections {
 }
 
 /** Test the ScanManager, the SqlScanResultProcessor and the amarokcollectionscanner itself.
+    Note: currently this test is using the installed amarokcollectionscanner and not
+     the one from util/collectionscanner.
  */
 class TestSqlScanManager : public QObject
 {
@@ -43,6 +45,7 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
 
+    void init();
     void cleanup();
 
     /**
@@ -54,6 +57,11 @@ private slots:
      * Check that fully scanning a directory works
      */
     void testScanDirectory();
+
+    /**
+     * Check that detecting compilations works
+     */
+    void testCompilation();
 
     /**
      * Check that the scanner continues if crashed
@@ -91,6 +99,7 @@ private slots:
     void testIdentifyCompilationInMultipleDirectories();
 
 private:
+    void waitScannerFinished();
     void createTrack( const Meta::FieldHash &values );
     void createSingleTrack();
     void createAlbum();
@@ -98,7 +107,8 @@ private:
     void createCompilationTrack();
 
     SqlStorage *m_storage;
-    KTempDir *m_tmpDir;
+    KTempDir *m_tmpDatabaseDir;
+    KTempDir *m_tmpCollectionDir;
     QString m_sourcePath; // the path to the template .mp3 file
 
     Collections::SqlCollection *m_collection;
