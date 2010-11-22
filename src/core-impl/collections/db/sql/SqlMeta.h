@@ -239,7 +239,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
          */
         void commitMetaDataChanges();
         void writeMetaDataToFile();
-        void writePlaylistsToDb( const FieldHash &fields, const QString &oldUid );
+        void updatePlaylistsToDb( const FieldHash &fields, const QString &oldUid );
+        void updateEmbeddedCoversToDb( const FieldHash &fields, const QString &oldUid );
 
     private:
         //helper functions

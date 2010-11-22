@@ -1078,7 +1078,10 @@ SqlTrack::commitMetaDataChanges()
     m_lock.lockForWrite();
 
     if( m_uid != oldUid )
-        writePlaylistsToDb( m_cache, oldUid );
+    {
+        updatePlaylistsToDb( m_cache, oldUid );
+        updateEmbeddedCoversToDb( m_cache, oldUid );
+    }
 
     // --- clean up
     m_cache.clear();
@@ -1091,7 +1094,7 @@ SqlTrack::writeMetaDataToFile()
 }
 
 void
-SqlTrack::writePlaylistsToDb( const FieldHash &fields, const QString &oldUid )
+SqlTrack::updatePlaylistsToDb( const FieldHash &fields, const QString &oldUid )
 {
     if( fields.isEmpty() )
         return; // nothing to do
@@ -1116,6 +1119,27 @@ SqlTrack::writePlaylistsToDb( const FieldHash &fields, const QString &oldUid )
     {
         tags = tags.remove(0, 1); // the first character is always a ','
         QString update = "UPDATE playlist_tracks SET %1 WHERE uniqueid = '%2';";
+        update = update.arg( tags, storage->escape( oldUid ) );
+        storage->query( update );
+    }
+}
+
+void
+SqlTrack::updateEmbeddedCoversToDb( const FieldHash &fields, const QString &oldUid )
+{
+    if( fields.isEmpty() )
+        return; // nothing to do
+
+    SqlStorage *storage = m_collection->sqlStorage();
+    QString tags;
+
+    if( fields.contains( Meta::valUniqueId ) )
+        tags += QString( ",path='%1'" ).arg( storage->escape( m_uid ) );
+
+    if( !tags.isEmpty() )
+    {
+        tags = tags.remove(0, 1); // the first character is always a ','
+        QString update = "UPDATE images SET %1 WHERE path = '%2';";
         update = update.arg( tags, storage->escape( oldUid ) );
         storage->query( update );
     }
@@ -1613,19 +1637,31 @@ SqlAlbum::image( int size )
     }
 
     // no cached scaled image exists. Have to create it
-    QImage img;
-    img = QImage( m_imagePath );
+    QImage image;
 
-    if( img.isNull() )
+    // --- embedded cover
+    if( m_collection && m_imagePath.startsWith( m_collection->uidUrlProtocol() ) )
+    {
+        // -- check if we have a track with the given path as uid
+        Meta::TrackPtr track = m_collection->getTrackFromUid( m_imagePath );
+        if( track )
+            image = MetaFile::Track::getEmbeddedCover( track->playableUrl().path() );
+    }
+
+    // --- a normal path
+    if( image.isNull() )
+        image = QImage( m_imagePath );
+
+    if( image.isNull() )
         return Meta::Album::image( size );
 
     if( size > 1 && size < 1000 )
     {
-        img = img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        img.save( cachedImagePath, "JPG" );
+        image = image.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        image.save( cachedImagePath, "PNG" );
     }
 
-    pixmap = QPixmap::fromImage( img );
+    pixmap = QPixmap::fromImage( image );
     if( size > 1)
     {
         if( QPixmapCache::insert( cachedPixmapKey, pixmap ) )
@@ -1912,29 +1948,6 @@ SqlAlbum::setImage( const QString &path )
 
     QString imagePath = path;
 
-    // --- embedded cover
-    // we need to write the cover to the disk so that it won't get lost when
-    // the track uid changes or even worse the track is deleted.
-    {
-        // -- check if we have a track with the given path as uid
-        Meta::TrackPtr track = m_collection->getTrackFromUid(imagePath);
-        if( track )
-        {
-            QImage image = MetaFile::Track::getEmbeddedCover( track->playableUrl().path() );
-            if( image.isNull() )
-                return;
-
-            // -- compute the large image cache path and save the image there.
-            imagePath = largeDiskCachePath();
-            // make sure not to overwrite existing images
-            while( QFile(imagePath).exists() )
-                imagePath += "_"; // not that nice but it shouldn't happen that often.
-
-            image.save( imagePath, "JPG" );
-        }
-    }
-
-    // --- a normal path
     QString query = "SELECT id FROM images WHERE path = '%1'";
     query = query.arg( m_collection->sqlStorage()->escape( imagePath ) );
     QStringList res = m_collection->sqlStorage()->query( query );
