@@ -257,8 +257,8 @@ private:
     // the top level outlines of <body>.
     QList<OpmlOutline *> m_outlines;
 
-    // currently processing outline so we can do nested outlines.
-    OpmlOutline *m_current;
+    // currently processing outlines so we can do nested outlines.
+    QStack<OpmlOutline *> m_outlineStack;
 
     KUrl m_url;
     KIO::TransferJob *m_transferJob;
