@@ -789,7 +789,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
     }
 
     QScopedPointer<BookmarkThisCapability> btc( track->create<BookmarkThisCapability>() );
-    if( btc )
+    if( btc && btc->bookmarkAction() )
     {
         actions << btc->bookmarkAction();
     }
