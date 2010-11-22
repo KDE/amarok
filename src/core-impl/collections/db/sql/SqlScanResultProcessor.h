@@ -49,19 +49,6 @@ class SqlStorage;
 class DatabaseUpdater;
 
 /** The ScanResulProcessor class takes the results from the ScanManager and puts them into the database.
- *  Some notes regarding performance:
- *  Scanning of nearly 10000 tracks on my lokal disk takes over 2 minutes.
- *  The second time it only a little over 4 seconds. However I would not see the
- *  second scan as a valid usecase.
- *  Putting 10000 tracks from memory directly into the database takes around
- *  6 seconds. This is what the old ScanResultProcessor did. Writing
- *  big blocks of data, deleting everything else as it goes.
- *  Using normal database access it takes around 12 seconds.
- *  Two times as much but with the additional benefit of a much clearer design.
- *
- *  If one would like to improve this time the following idea would work:
- *  The SqlRegistry reads every url in advance from the database in bulk.
- *  Now all selects for url's are unneeded.
  */
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResultProcessor
 {

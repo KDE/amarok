@@ -43,9 +43,40 @@ namespace Collections {
 typedef QPair<int, QString> TrackId;
 
 /** The SqlRegistry class buffers Meta objects from an Sql database.
- *  This class can be considered a memory cache for the Sql database.
- *  All requests for Meta objects like SqlTrack should go through here.
- */
+    This class can be considered a memory cache for the Sql database.
+    All requests for Meta objects like SqlTrack should go through here.
+
+    Some notes regarding performance:
+    Scanning of nearly 10000 tracks on my lokal disk takes over 2 minutes.
+    The second time it only a little over 4 seconds. However I would not see the
+    second scan as a valid usecase.
+    Putting 10000 tracks from memory directly into the database with
+    single inserts takes around 12 seconds.
+    This time however increases dramatically with the amount of tracks.
+    50000 tracks take around 15 minutes.
+    The reason is the many indices that need to be updated. The tracks
+    table e.g. has around 15 indices.
+
+    To increase the performance we are currently using two tricks.
+    1. Prevent queries.
+      The ScanResultProcessor will query all tracks in the database.
+      The SqlRegistry is caching them as usually but while the scanner
+      is running it will not clean the cache.
+      It will also notice that all existing tracks are cached and not
+      query for additional tracks in such a case.
+
+    2. Combine inserts and updates.
+      All dirty tracks will be written in one big insert or with delayed
+      updates.
+      The ScanResultProcessor will block database access for five
+      seconds at a time to collect dirty tracks for such a batch update.
+      Have a look at the AbstractTrackTableCommitter to see how this
+      is done.
+
+    Note: updating tracks is not optimized for single changes.
+    A single update is only done very seldom and does currently not
+    need to be optimized.
+*/
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
 {
     Q_OBJECT
