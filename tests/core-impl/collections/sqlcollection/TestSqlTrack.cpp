@@ -377,7 +377,7 @@ TestSqlTrack::testSetAllValuesBatch()
         sqlTrack1->beginMetaDataUpdate();
 
         setAllValues( sqlTrack1 );
-        QCOMPARE( metaSpy.notificationsFromTracks().count(), 2 ); // add label does one notify and an additional one for writing the rest of the metadata
+        QCOMPARE( metaSpy.notificationsFromTracks().count(), 1 ); // add label does one notify
 
         sqlTrack1->endMetaDataUpdate();
         QCOMPARE( metaSpy.notificationsFromTracks().count(), 2 ); // only one notificate for all the changes

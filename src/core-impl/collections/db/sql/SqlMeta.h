@@ -238,6 +238,12 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
          *  3. It will notify all observers and the collection about the changes.
          */
         void commitMetaDataChanges();
+        void commitMetaDataChanges( qint64 field, const QVariant &value )
+        {
+            m_cache.insert( field, value );
+            if( !m_batchUpdate )
+                commitMetaDataChanges();
+        }
         void writeMetaDataToFile();
         void updatePlaylistsToDb( const FieldHash &fields, const QString &oldUid );
         void updateEmbeddedCoversToDb( const FieldHash &fields, const QString &oldUid );
