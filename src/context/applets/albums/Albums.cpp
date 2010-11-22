@@ -254,6 +254,8 @@ void Albums::saveConfiguration()
 void Albums::collectionDataChanged( Collections::Collection *collection )
 {
     Q_UNUSED( collection )
+    DEBUG_BLOCK
+    m_albums.clear(); // clear to force an update
     Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "albums" );
     dataUpdated( QLatin1String("albums"), data );
 }
