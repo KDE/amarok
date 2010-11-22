@@ -65,6 +65,12 @@ private:
     OcsPersonListWidget *m_creditListWidget;
     bool m_isOfflineCreditWidget;
 
+//Donors:
+    AnimatedBarWidget *m_showOcsDonorButton;
+    QWidget *m_donorWidget;
+    OcsPersonListWidget *m_donorListWidget;
+    bool m_isOfflineDonorWidget;
+
 };
 
 #endif  //AMAROK_EXTENDEDABOUTDIALOG_H

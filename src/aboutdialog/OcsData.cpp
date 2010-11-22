@@ -36,3 +36,8 @@ OcsData::addCredit( const QString &username, const KAboutPerson &person )
     m_credits.append( QPair< QString, KAboutPerson >( username, person ) );
 }
 
+void
+OcsData::addDonor( const QString &username, const KAboutPerson &person )
+{
+    m_donors.append( QPair< QString, KAboutPerson >( username, person) );
+}

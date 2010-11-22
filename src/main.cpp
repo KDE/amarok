@@ -207,6 +207,9 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Stefan Bogner"), ki18n("Loads of stuff"), "bochi@online.ms" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
+    //Donors:
+    //ocsData.addDonor( "oD.o username", KAboutPerson( ki18n( "Random Dude" ), ki18n( "??€" ), "random@du.de" ) );
+
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
 
