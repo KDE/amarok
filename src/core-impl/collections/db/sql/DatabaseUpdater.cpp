@@ -681,6 +681,7 @@ DatabaseUpdater::createTables() const
         storage->query( create );
         storage->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
         storage->query( "CREATE INDEX urls_uniqueid ON urls(uniqueid);" );
+        storage->query( "CREATE INDEX urls_directory ON urls(directory);" );
     }
     {
         QString create = "CREATE TABLE directories "
