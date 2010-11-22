@@ -359,7 +359,7 @@ OpmlParser::stopWithError( const QString &message )
 void
 OpmlParser::beginOpml()
 {
-    m_current = 0;
+    m_outlineStack.clear();
 }
 
 void
@@ -372,8 +372,16 @@ void
 OpmlParser::beginOutline()
 {
     DEBUG_BLOCK
-    // TODO: should push a new outline on the stack and make it m_current now.
-    OpmlOutline *outline = new OpmlOutline( m_current );
+
+    OpmlOutline *parent = m_outlineStack.empty() ? 0 : m_outlineStack.top();
+    OpmlOutline *outline = new OpmlOutline( parent );
+    //adding outline to stack
+    m_outlineStack.push( outline );
+    if( parent )
+    {
+        parent->setHasChildren( true );
+        parent->addChild( outline );
+    }
 
     foreach( QXmlStreamAttribute attribute, attributes() )
         outline->addAttribute( attribute.name().toString(), attribute.value().toString() );
@@ -410,9 +418,9 @@ OpmlParser::endTitle()
 void
 OpmlParser::endOutline()
 {
-    // TODO: remove m_current from the stack
-    // if( outlineStack.isEmpty() )
-    m_outlines << m_current;
+    OpmlOutline *outline = m_outlineStack.pop();
+    if( m_outlineStack.isEmpty() )
+        m_outlines << outline;
 }
 
 void

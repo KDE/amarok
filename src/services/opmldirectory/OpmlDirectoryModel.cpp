@@ -58,6 +58,7 @@ OpmlDirectoryModel::parent( const QModelIndex &idx ) const
 {
     if( !idx.isValid() )
         return QModelIndex();
+    debug() << idx;
     OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
     if( outline->isRootItem() )
         return QModelIndex();
@@ -67,7 +68,7 @@ OpmlDirectoryModel::parent( const QModelIndex &idx ) const
     if( parentOutline->isRootItem() )
         childIndex = m_rootOutlines.indexOf( parentOutline );
     else
-        childIndex = parentOutline->parent()->children().indexOf( outline );
+        childIndex = parentOutline->parent()->children().indexOf( parentOutline );
     return createIndex( childIndex, 0, parentOutline );
 }
 
@@ -111,12 +112,13 @@ OpmlDirectoryModel::columnCount( const QModelIndex &parent ) const
 }
 
 QVariant
-OpmlDirectoryModel::data( const QModelIndex &index, int role ) const
+OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
 {
-    if( !index.isValid() )
+    if( !idx.isValid() )
         return QVariant();
 
-    OpmlOutline *outline = static_cast<OpmlOutline *>( index.internalPointer() );
+    debug() << idx;
+    OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
     if( !outline )
         return QVariant();
 
@@ -135,8 +137,8 @@ bool
 OpmlDirectoryModel::canFetchMore( const QModelIndex &parent ) const
 {
     debug() << parent;
-    //already fetching?
-    if( m_currentFetchingMap.values().contains( parent ) )
+    //already fetched or just started?
+    if( rowCount( parent ) || m_currentFetchingMap.values().contains( parent ) )
         return false;
     if( !parent.isValid() )
         return m_rootOutlines.isEmpty();
@@ -189,16 +191,25 @@ OpmlDirectoryModel::slotOpmlOutlineParsed( OpmlOutline *outline )
 {
     OpmlParser *parser = qobject_cast<OpmlParser *>( QObject::sender() );
     QModelIndex idx = m_currentFetchingMap.value( parser );
-    if( !idx.isValid() )
-        m_rootOutlines << outline;
-    else
+
+    //no reparenting required when the item is already parented.
+    if( outline->isRootItem() )
     {
-        //children need to be manually added to include outlines
-        OpmlOutline *parentOutline = static_cast<OpmlOutline *>( idx.internalPointer() );
-        if( !parentOutline )
-            return;
-        parentOutline->addChild( outline );
-        parentOutline->setHasChildren( true );
+        if( !idx.isValid() )
+        {
+            m_rootOutlines << outline;
+        }
+        else
+        {
+            //children need to be manually added to include outlines
+            OpmlOutline *parentOutline = static_cast<OpmlOutline *>( idx.internalPointer() );
+            if( !parentOutline )
+                return;
+
+            parentOutline->addChild( outline );
+            parentOutline->setHasChildren( true );
+            outline->setParent( parentOutline );
+        }
     }
 
     int beginRow = rowCount( idx );

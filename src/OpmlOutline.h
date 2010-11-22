@@ -30,6 +30,7 @@ class AMAROK_EXPORT OpmlOutline
         ~OpmlOutline() {}
 
         OpmlOutline *parent() const { return m_parent; }
+        void setParent( OpmlOutline *parent ) { m_parent = parent; }
         bool isRootItem() const { return m_parent == 0; }
 
         QMap<QString,QString> attributes() const { return m_attributes; }
