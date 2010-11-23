@@ -204,6 +204,7 @@ LabelsApplet::animationFinished()
     {
         if( QObject::sender() == m_labelAnimations.at(i) )
         {
+            m_labelItems.at(i)->updateHoverStatus();
             m_labelAnimations.at(i)->setEasingCurve( QEasingCurve::InOutQuad );
             return;
         }
@@ -213,7 +214,6 @@ LabelsApplet::animationFinished()
     {
         if( QObject::sender() == m_labelAnimationsToDelete.at(i) )
         {
-            debug() << "deleting label:" << m_labelItemsToDelete.at(i)->toPlainText();
             delete m_labelItemsToDelete.at(i);
             delete m_labelAnimationsToDelete.at(i);
             m_labelItemsToDelete.removeAt(i);
@@ -236,7 +236,7 @@ LabelsApplet::updateLabels()
     {
         finalLabelsMap.insert( m_userLabels.at( i ), m_personalCount );
     }
-    // add the downloaded labels to the temp map first (if they aren't alreday in the final map / update value in final map if necessary)
+    // add the downloaded labels to the temp map first (if they aren't already in the final map / update value in final map if necessary)
     QMapIterator < QString, QVariant > it_infos ( m_webLabels );
     while( it_infos.hasNext() )
     {
@@ -258,6 +258,7 @@ LabelsApplet::updateLabels()
     QList < int > tempLabelsValues = tempLabelsMap.values();
     qSort( tempLabelsValues.begin(), tempLabelsValues.end(), qGreater < int > () );
     // and copy the highest rated labels to the final map until max. number is reached
+    // if there are multiple items with equal low rating, move them to minList, sort it and add to the final map until max. number is reached
     const int additionalNum = m_numLabels - finalLabelsMap.count();
     if( additionalNum > 0 && tempLabelsValues.count() > 0 )
     {
@@ -290,6 +291,7 @@ LabelsApplet::updateLabels()
         }
     }
     // now make the label cloud nicer by determinating the quality of the web labels
+    // a lot of different values (73,68,51) is good, equal values (66,66,33) look suspicious
     // 0.7 / 0.3 is a pretty moderate choice; 0.5 / 0.5 would be more extreme
     const float qualityFactor = ( webCounts.count() > 0 ) ? 0.7 + 0.3 * webCounts.toSet().count()/webCounts.count() : 1.0;
     // delete all unneeded label items
@@ -307,8 +309,9 @@ LabelsApplet::updateLabels()
             i--;
         }
     }
+    
     // and finally create the LabelGraphicsItems
-    // sort label items alphabetically to the temp list
+    // add them to a temp list first, so they are in the same order as the final label items map (sorted alphabetically)
     QList < LabelGraphicsItem * > tempLabelItems;
     QList < QPropertyAnimation * > tempLabelAnimations;
     QMapIterator < QString, int > it_final ( finalLabelsMap );
@@ -344,7 +347,7 @@ LabelsApplet::updateLabels()
             labelGraphics->setSelectedColor( m_selectedColor );
             if( m_selfAdded )
             {
-                labelGraphics->setPos( m_addLabelProxy.data()->pos() );
+                labelGraphics->setPos( m_addLabelProxy.data()->pos().x(), m_addLabelProxy.data()->pos().y() + m_addLabelProxy.data()->size().height()/2 - labelGraphics->boundingRect().height()/2 );
                 m_selfAdded = false;
             }
             connect( labelGraphics, SIGNAL( toggled( const QString & ) ), this, SLOT( toggleLabel( const QString & ) ) );
@@ -359,12 +362,12 @@ LabelsApplet::updateLabels()
         tempLabelAnimations.append( labelAnimation );
 
         labelGraphics->setSelected( m_userLabels.contains( it_final.key() ) );
-        debug() << "setting label" << it_final.key() << "to selected:" << m_userLabels.contains( it_final.key() );
     }
+    // copy the temp list to the final list
     m_labelItems = tempLabelItems;
     m_labelAnimations = tempLabelAnimations;
     
-    m_selfAdded = false;
+    m_selfAdded = false; // should be unnecessary, but better safe than sorry
 
     constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
     update();

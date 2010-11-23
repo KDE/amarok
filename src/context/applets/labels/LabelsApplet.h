@@ -95,7 +95,7 @@ private:
     QString                 m_title;
     QString                 m_album;
 
-    // if the user adds a label through the combobox, the animation should start at the bottom
+    // if the user adds a label through the combobox, the animation should start at the combobox
     bool                    m_selfAdded;
     
     Ui::labelsSettings      ui_Settings;
