@@ -95,8 +95,12 @@ private:
 
     /// Show the cover that has been found
     void showCover( const CoverFetchUnit::Ptr &unit,
-                    const QImage &cover = QImage(),
+                    const QPixmap &cover = QPixmap(),
                     const CoverFetch::Metadata &data = CoverFetch::Metadata() );
+
+    void handleCoverPayload( const CoverFetchUnit::Ptr &unit,
+                             const QByteArray &data,
+                             const KUrl &url );
 
     CoverFetch::Source fetchSource() const;
 };

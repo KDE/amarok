@@ -34,6 +34,9 @@
 #include <KLocale>
 #include <KUrl>
 
+#include <QBuffer>
+#include <QImageReader>
+
 CoverFetcher* CoverFetcher::s_instance = 0;
 
 CoverFetcher*
@@ -142,7 +145,7 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
     // show the dialog straight away if fetch is interactive
     if( !m_dialog && unit->isInteractive() )
     {
-        showCover( unit, QImage() );
+        showCover( unit, QPixmap() );
     }
     else if( urls.isEmpty() )
     {
@@ -193,7 +196,7 @@ CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManager
     switch( payload->type() )
     {
     case CoverFetchPayload::Info:
-        m_queue->add( unit->album(), unit->options(), unit->payload()->source(), data );
+        m_queue->add( unit->album(), unit->options(), payload->source(), data );
         m_queue->remove( unit );
         break;
 
@@ -203,23 +206,75 @@ CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManager
         break;
 
     case CoverFetchPayload::Art:
-        QImage image;
-        if( image.loadFromData( data ) )
-        {
-            if( unit->isInteractive() )
-            {
-                const CoverFetch::Metadata &metadata = payload->urls().value( url );
-                showCover( unit, image, metadata );
-                m_queue->remove( unit );
-            }
-            else
-            {
-                m_selectedImages.insert( unit, image );
-                finish( unit );
-            }
-        }
+        handleCoverPayload( unit, data, url );
         break;
     }
+}
+
+void
+CoverFetcher::handleCoverPayload( const CoverFetchUnit::Ptr &unit, const QByteArray &data, const KUrl &url )
+{
+    if( data.isEmpty() )
+    {
+        finish( unit, NotFound );
+        return;
+    }
+
+    QBuffer buffer;
+    buffer.setData( data );
+    buffer.open( QIODevice::ReadOnly );
+    QImageReader reader( &buffer );
+    if( !reader.canRead() )
+    {
+        finish( unit, Error, reader.errorString() );
+        return;
+    }
+
+    QSize imageSize = reader.size();
+    const CoverFetchArtPayload *payload = static_cast<const CoverFetchArtPayload*>( unit->payload() );
+    const CoverFetch::Metadata &metadata = payload->urls().value( url );
+
+    if( payload->imageSize() == CoverFetch::ThumbSize )
+    {
+        if( imageSize.isEmpty() )
+        {
+            imageSize.setWidth( metadata.value( QLatin1String("width") ).toInt() );
+            imageSize.setHeight( metadata.value( QLatin1String("height") ).toInt() );
+        }
+        imageSize.scale( 120, 120, Qt::KeepAspectRatio );
+        reader.setScaledSize( imageSize );
+        // This will force the JPEG decoder to use JDCT_IFAST
+        reader.setQuality( 49 );
+    }
+
+    if( unit->isInteractive() )
+    {
+        QPixmap pixmap;
+#if QT_VERSION >= 0x040700
+        pixmap = QPixmap::fromImageReader( &reader );
+#else
+        QImage image;
+        if( reader.read( &image ) )
+            pixmap = QPixmap::fromImage( image );
+#endif
+        if( !pixmap.isNull() )
+        {
+            showCover( unit, pixmap, metadata );
+            m_queue->remove( unit );
+            return;
+        }
+    }
+    else
+    {
+        QImage image;
+        if( reader.read( &image ) )
+        {
+            m_selectedImages.insert( unit, image );
+            finish( unit );
+            return;
+        }
+    }
+    finish( unit, Error, reader.errorString() );
 }
 
 void
@@ -229,7 +284,7 @@ CoverFetcher::slotDialogFinished()
     switch( m_dialog.data()->result() )
     {
     case KDialog::Accepted:
-        m_selectedImages.insert( unit, m_dialog.data()->image() );
+        m_selectedImages.insert( unit, m_dialog.data()->image().toImage() );
         finish( unit );
         break;
 
@@ -258,7 +313,7 @@ CoverFetcher::slotDialogFinished()
 
 void
 CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
-                         const QImage &cover,
+                         const QPixmap &cover,
                          const CoverFetch::Metadata &data )
 {
     if( !m_dialog )
