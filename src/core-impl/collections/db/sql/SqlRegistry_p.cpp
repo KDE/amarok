@@ -323,7 +323,7 @@ QStringList
 TrackStatisticsTableCommitter::getFields()
 {
     QStringList result;
-    result << "url" << "createdate" << "accessdate" << "score" << "rating" << "playcount" /*<< "deleted"*/;
+    result << "url" << "createdate" << "accessdate" << "score" << "rating" << "playcount" << "deleted";
     return result;
 }
 
@@ -337,7 +337,7 @@ TrackStatisticsTableCommitter::getValues( Meta::SqlTrack *track )
     result << nullNumber( track->m_score );
     result << nullNumber( track->m_rating );
     result << nullNumber( track->m_playCount );
-    // note: we also have a deleted flag for statistics
+    result << "0"; // not deleted
     return result;
 }
 

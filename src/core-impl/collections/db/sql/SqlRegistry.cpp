@@ -366,11 +366,10 @@ SqlRegistry::deleteTrack( int trackId )
     QString uid = result.at(1);
 
     // --- delete the track from database
-    query = QString( "DELETE FROM tracks where url = %1;" ).arg( urlId );
+    query = QString( "DELETE FROM tracks where url=%1;" ).arg( urlId );
     m_collection->sqlStorage()->query( query );
-    query = QString( "DELETE FROM urls WHERE id = '%1';").arg( urlId );
-    m_collection->sqlStorage()->query( query );
-    query = QString( "DELETE FROM statistics WHERE url = '%1';").arg( urlId );
+    // keep the urls and statistics entry in case a deleted track is restored later.
+    query = QString( "UPDATE statistics SET deleted=1 WHERE url=%1;").arg( urlId );
     m_collection->sqlStorage()->query( query );
 
     // --- delete the track from memory
