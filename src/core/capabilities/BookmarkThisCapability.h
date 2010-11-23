@@ -41,7 +41,8 @@ public:
     virtual bool simpleFiltering() { return false; }
 
     /**
-       The caller has to free the action after usage.
+       The caller must free actions that have no parent after use.
+       Actions with a parent are freed by the parent (obviously)
        @return the bookmarkAction itself (or 0).
     */
     virtual QAction * bookmarkAction() const { return m_action; }

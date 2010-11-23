@@ -262,7 +262,8 @@ MediaDeviceCollection::ejectAction() const
 {
     if( !m_ejectAction )
     {
-        m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Disconnect Device" ), 0 );
+        m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Disconnect Device" ),
+                                     const_cast<MediaDeviceCollection*>(this) );
         m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
 
         connect( m_ejectAction, SIGNAL( triggered() ), SLOT( eject() ) );
