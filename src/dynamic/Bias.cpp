@@ -331,13 +331,18 @@ Dynamic::GlobalBias::setFilter( const MetaQueryWidget::Filter &filter)
     DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
 
-    if( !m_collection )
-        m_collection = CollectionManager::instance()->primaryCollection();
-
     if (m_qm)
         delete m_qm.data();
 
-    m_qm = m_collection->queryMaker();
+    // the whole bias/collection management is not very robust.
+    // here we do our best to get a collection and a query maker
+    // when in principle a bias should be collection independent.
+    if( !m_collection )
+        m_collection = CollectionManager::instance()->primaryCollection();
+    if( !m_collection )
+        m_qm = CollectionManager::instance()->queryMaker();
+    else
+        m_qm = m_collection->queryMaker();
 
     switch( filter.condition )
     {
