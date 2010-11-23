@@ -178,7 +178,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
     rpath.setPath( relativePath );
     KUrl absolutePath;
 
-    //debug() << "id is " << deviceId << ", relative path is " << relativePath.path();
+    // debug() << "id is " << deviceId << ", relative path is " << relativePath;
     if ( deviceId == -1 )
     {
 #ifdef Q_OS_WIN32
@@ -188,7 +188,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
         absolutePath.addPath( rpath.path() );
 #endif
         absolutePath.cleanPath();
-        //debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path();
+        // debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path();
     }
     else
     {

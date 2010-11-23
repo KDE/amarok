@@ -319,7 +319,7 @@ SqlTrack::setUrl( int deviceId, const QString &rpath, int directoryId )
     m_directoryId = directoryId;
 
     commitMetaDataChanges( Meta::valUrl,
-                           KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) ).path() );
+                           m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
 }
 
 QString
@@ -838,11 +838,11 @@ SqlTrack::commitMetaDataChanges()
         // At least the ScanResultProcessor handles this problem
 
         KUrl oldUrl = m_url;
-        // debug() << "m_cache contains a new URL, setting m_url to " << m_url << " from " << oldUrl;
         KUrl newUrl = m_cache.value( Meta::valUrl ).toString();
-        if( oldUrl != newUrl &&
-            m_collection->registry()->updateCachedUrl( oldUrl.path(), newUrl.path() ) )
-            m_url = newUrl;
+        if( oldUrl != newUrl )
+            m_collection->registry()->updateCachedUrl( oldUrl.path(), newUrl.path() );
+        m_url = newUrl;
+        debug() << "m_cache contains a new URL, setting m_url to " << m_url << " from " << oldUrl;
     }
 
     // Use the latest uid here

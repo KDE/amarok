@@ -239,7 +239,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         bool m_collectionChanged;
 
         // all those classes need to call emptyCache
-        friend class TestScanResultProcessorFull;
+        friend class TestSqlScanManager;
         friend class TestSqlAlbum;
         friend class TestSqlArtist;
         friend class TestSqlTrack;

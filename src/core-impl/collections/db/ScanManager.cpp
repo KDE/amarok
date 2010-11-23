@@ -178,7 +178,7 @@ void ScanManager::startScanner()
         debug() << "scanning currently blocked";
         return;
     }
-    if( pApp->isNonUniqueInstance() )
+    if( pApp && pApp->isNonUniqueInstance() )
         warning() << "Running scanner from Amarok while another Amarok instance is also running is dangerous.";
 
     // -- write the batch file
@@ -409,6 +409,7 @@ ScanManager::scannerPath() const
     // If the binary is not in $PATH, then search in the application folder too
     if( path.isEmpty() )
         path = App::applicationDirPath() + QDir::separator() + "amarokcollectionscanner";
+    // TODO: For testing it would be good to specify the scanner in the build directory
 
     return path;
 }
