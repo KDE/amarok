@@ -60,6 +60,7 @@ private slots:
 
     /**
      * Check that detecting compilations works
+     * Test also compilation/no compilation tags
      */
     void testCompilation();
 
@@ -85,8 +86,24 @@ private slots:
 
     /**
      *  Test rescanning and detecting a removed track (incremental)
+     *  Will also check that the statistics are not deleted.
      */
     void testRemoveTrack();
+
+    /**
+     *  Test rescanning and detecting a moved track or directory
+     */
+    void testMove();
+
+    /**
+     *  Test "feat" artist and albums
+     */
+    void testFeat();
+
+    /**
+     *  Test images
+     */
+    void testAlbumImage();;
 
     /**
      * Test merging of the result with an incremental scan.
@@ -96,15 +113,26 @@ private slots:
     void testMerges();
 
     void testLargeInsert();
+
     void testIdentifyCompilationInMultipleDirectories();
+
+
+    void slotCollectionUpdated();
 
 private:
     void waitScannerFinished();
+
+    /**
+       Creates a track in the m_tmpCollectionDir with the given values.
+       Meta::valUrl gives the relative path to the target track.
+    */
     void createTrack( const Meta::FieldHash &values );
     void createSingleTrack();
     void createAlbum();
     void createCompilation();
     void createCompilationTrack();
+
+    int m_collectionUpdatedCount;
 
     SqlStorage *m_storage;
     KTempDir *m_tmpDatabaseDir;

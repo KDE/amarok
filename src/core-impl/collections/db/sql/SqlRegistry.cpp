@@ -664,12 +664,17 @@ SqlRegistry::getAlbum( int id )
 
     QString name = res[0];
     int artistId = res[1].toInt();
+    Meta::ArtistPtr artist;
+    if( artistId > 0 )
+     artist = getArtist( artistId );
+
+    AlbumKey key(name, artist ? artist->name() : QString() );
+    if( m_albumMap.contains( key ) )
+        return m_albumMap.value( key );
 
     Meta::SqlAlbum *sqlAlbum = new Meta::SqlAlbum( m_collection, id, name, artistId );
     Meta::AlbumPtr album( sqlAlbum );
 
-    Meta::ArtistPtr artist = getArtist( artistId );
-    AlbumKey key(name, artist ? artist->name() : QString() );
     m_albumMap.insert( key, album );
     return album;
 }
