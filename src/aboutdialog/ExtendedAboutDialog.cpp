@@ -374,9 +374,12 @@ ExtendedAboutDialog::switchToOcsWidgets()
         return;
     }
 
-    m_showOcsAuthorButton->animate();
-    m_showOcsCreditButton->animate();
-    m_showOcsDonorButton->animate();
+    if( m_showOcsAuthorButton )
+        m_showOcsAuthorButton->animate();
+    if( m_showOcsCreditButton )
+        m_showOcsCreditButton->animate();
+    if( m_showOcsDonorButton )
+        m_showOcsDonorButton->animate();
     AmarokAttica::ProviderInitJob *providerJob = AmarokAttica::Provider::byId( m_ocsData.providerId() );
     connect( providerJob, SIGNAL( result( KJob * ) ), this, SLOT( onProviderFetched( KJob * ) ) );
 }
@@ -389,9 +392,12 @@ ExtendedAboutDialog::onProviderFetched( KJob *job )
     {
         debug()<<"Successfully fetched OCS provider"<< providerJob->provider().name();
         debug()<<"About to request OCS data";
-        m_authorListWidget->switchToOcs( providerJob->provider() );
-        m_creditListWidget->switchToOcs( providerJob->provider() );
-        m_donorListWidget->switchToOcs( providerJob->provider() );
+        if( m_authorListWidget )
+            m_authorListWidget->switchToOcs( providerJob->provider() );
+        if( m_creditListWidget )
+            m_creditListWidget->switchToOcs( providerJob->provider() );
+        if( m_donorListWidget )
+            m_donorListWidget->switchToOcs( providerJob->provider() );
     }
     else
         warning() << "OCS provider fetch failed";
