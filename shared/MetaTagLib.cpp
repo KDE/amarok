@@ -26,7 +26,6 @@
 #include "FileType.h"
 #include "MetaReplayGain.h"
 
-#include <QDebug>
 #include <QImage>
 #include <QDir>
 #include <QFile>
@@ -284,10 +283,18 @@ Meta::Tag::readTags( const QString &path, bool useCharsetDetector )
         result.insert( Meta::valTrackGain, replayGainTags[Meta::ReplayGain_Track_Gain] );
     if( replayGainTags.contains( Meta::ReplayGain_Track_Peak ) )
         result.insert( Meta::valTrackGainPeak, replayGainTags[Meta::ReplayGain_Track_Peak] );
+
+    // strangely: the album gain defaults to the track gain
     if( replayGainTags.contains( Meta::ReplayGain_Album_Gain ) )
         result.insert( Meta::valAlbumGain, replayGainTags[Meta::ReplayGain_Album_Gain] );
+    else if( replayGainTags.contains( Meta::ReplayGain_Track_Gain ) )
+        result.insert( Meta::valAlbumGain, replayGainTags[Meta::ReplayGain_Track_Gain] );
     if( replayGainTags.contains( Meta::ReplayGain_Album_Peak ) )
         result.insert( Meta::valAlbumGainPeak, replayGainTags[Meta::ReplayGain_Album_Peak] );
+    else if( replayGainTags.contains( Meta::ReplayGain_Track_Peak ) )
+        result.insert( Meta::valAlbumGainPeak, replayGainTags[Meta::ReplayGain_Track_Peak] );
+
+
 
     /* As MPEG implementation on TagLib uses a Tag class that's not defined on the headers,
        we have to cast the files, not the tags! */
