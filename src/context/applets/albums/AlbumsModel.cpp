@@ -36,6 +36,12 @@ AlbumsModel::AlbumsModel( QObject *parent )
     updateRowHeight();
 }
 
+int
+AlbumsModel::rowHeight() const
+{
+    return m_rowHeight;
+}
+
 void
 AlbumsModel::updateRowHeight()
 {
