@@ -16,14 +16,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ScanResultProcessor"
+
 #include "ScanResultProcessor.h"
+#include "core/support/Debug.h"
 #include "DatabaseCollection.h"
 #include "DatabaseMeta.h"
-#include "sql/MountPointManager.h"
-
 #include "playlistmanager/PlaylistManager.h"
-
-#include "core/support/Debug.h"
+#include "sql/MountPointManager.h"
 
 // include files from the collection scanner utility
 #include <collectionscanner/Directory.h>
@@ -120,7 +120,7 @@ ScanResultProcessor::commitDirectory( const CollectionScanner::Directory *dir )
 void
 ScanResultProcessor::commitPlaylist( const CollectionScanner::Playlist *playlist )
 {
-    // debug() << "SRP::commitPlaylist on " << playlist->path();
+    // debug() << "commitPlaylist on " << playlist->path();
 
     if( The::playlistManager() )
         The::playlistManager()->import( "file:"+playlist->path() );

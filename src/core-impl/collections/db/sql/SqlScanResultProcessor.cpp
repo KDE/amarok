@@ -16,12 +16,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "SqlScanResultProcessor.h"
-#include "SqlQueryMaker.h"
+#define DEBUG_PREFIX "SqlScanResultProcessor"
 
-#include "playlistmanager/PlaylistManager.h"
+#include "SqlScanResultProcessor.h"
 
 #include "core/support/Debug.h"
+#include "SqlQueryMaker.h"
+#include "playlistmanager/PlaylistManager.h"
 
 // include files from the collection scanner utility
 #include <collectionscanner/Directory.h>
@@ -74,7 +75,7 @@ SqlScanResultProcessor::commit()
 void
 SqlScanResultProcessor::commitAlbum( const CollectionScanner::Album *album, int directoryId )
 {
-    debug() << "SRP::commitAlbum on"<<album->name()<< "artist"<<album->artist()<<"compilation"<<album->isCompilation();
+    debug() << "commitAlbum on"<<album->name()<< "artist"<<album->artist()<<"compilation"<<album->isCompilation();
 
     // --- get or create the album
     int albumId = -1;
@@ -122,7 +123,7 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
         return;
     }
     uid = m_collection->uidUrlProtocol() + "://" + uid;
-    debug() << "SRP::commitTrack"<<uid<<"at"<<track->path()<<"for album"<<albumId;
+    debug() << "commitTrack"<<uid<<"at"<<track->path()<<"for album"<<albumId;
 
     int deviceId = m_sqlCollection->mountPointManager()->getIdForUrl( track->path() );
     QString rpath = m_sqlCollection->mountPointManager()->getRelativePath( deviceId, track->path() );
