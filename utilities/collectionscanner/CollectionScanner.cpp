@@ -340,6 +340,9 @@ CollectionScanner::Scanner::doJob() //SLOT
         xmlWriter.writeAttribute("count", QString::number( entries.count() ) );
         if( m_incremental )
             xmlWriter.writeAttribute("incremental", QString());
+        // write some information into the file and close previous tag
+        xmlWriter.writeComment("Created by amarokcollectionscanner "AMAROK_VERSION"on"+QDateTime::currentDateTime().toString());
+        xmlFile.flush();
     }
 
     // --- now do the scanning

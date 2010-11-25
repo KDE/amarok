@@ -219,7 +219,7 @@ CollectionScanner::Track::Track( const QString &path)
                         // -- compilation
                         else if( name == "TCMP" )
                         {
-                            if( value.toInt() )
+                            if( value.toLower() == "true" || value.toInt() )
                                 m_compilation = true;
                             else
                                 m_noCompilation = true;
