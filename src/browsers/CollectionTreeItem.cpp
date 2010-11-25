@@ -134,8 +134,13 @@ CollectionTreeItem::data( int role ) const
 {
     if( isNoLabelItem() )
     {
-        if( role == Qt::DisplayRole )
+        switch( role )
+        {
+        case Qt::DisplayRole:
             return i18nc( "No labels are assigned to the given item are any of its subitems", "No Labels" );
+        case Qt::DecorationRole:
+            return KIcon( "label-amarok" );
+        }
         return QVariant();
     }
     else if( m_parentCollection )
