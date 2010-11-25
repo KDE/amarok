@@ -90,6 +90,7 @@ PlaylistManager::~PlaylistManager()
     delete m_defaultPodcastProvider;
     delete m_defaultUserPlaylistProvider;
     delete m_playlistFileProvider;
+    delete m_syncRelStore;
 }
 
 bool
