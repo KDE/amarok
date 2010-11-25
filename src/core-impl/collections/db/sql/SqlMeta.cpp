@@ -82,7 +82,7 @@ SqlTrack::getTrackReturnValues()
 QString
 SqlTrack::getTrackJoinConditions()
 {
-    return "INNER JOIN tracks ON urls.id = tracks.url "
+    return "LEFT JOIN tracks ON urls.id = tracks.url "
            "LEFT JOIN statistics ON urls.id = statistics.url "
            "LEFT JOIN artists ON tracks.artist = artists.id "
            "LEFT JOIN albums ON tracks.album = albums.id "
@@ -842,7 +842,7 @@ SqlTrack::commitMetaDataChanges()
         if( oldUrl != newUrl )
             m_collection->registry()->updateCachedUrl( oldUrl.path(), newUrl.path() );
         m_url = newUrl;
-        debug() << "m_cache contains a new URL, setting m_url to " << m_url << " from " << oldUrl;
+        // debug() << "m_cache contains a new URL, setting m_url to " << m_url << " from " << oldUrl;
     }
 
     // Use the latest uid here
@@ -1241,6 +1241,13 @@ SqlTrack::id() const
     return m_trackId;
 }
 
+int
+SqlTrack::urlId() const
+{
+    QReadLocker locker( &m_lock );
+    return m_trackId;
+}
+
 void
 SqlTrack::removeLabel( const Meta::LabelPtr &label )
 {
@@ -1297,6 +1304,7 @@ SqlTrack::remove()
     QWriteLocker locker( &m_lock );
     m_cache.clear();
     locker.unlock();
+    m_collection->registry()->removeTrack( m_urlId, m_uid );
 
     // -- inform all albums, artist, years
 #undef foreachInvalidateCache
@@ -1320,6 +1328,8 @@ SqlTrack::remove()
     m_urlId = 0;
     m_trackId = 0;
     m_statisticsId = 0;
+
+    m_collection->collectionUpdated();
 }
 
 //---------------------- class Artist --------------------------

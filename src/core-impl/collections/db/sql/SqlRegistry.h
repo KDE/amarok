@@ -40,7 +40,7 @@ namespace Collections {
     class SqlCollection;
     class SqlQueryMakerInternal;
 }
-typedef QPair<int, QString> TrackId;
+typedef QPair<int, QString> TrackPath;
 
 /** The SqlRegistry class buffers Meta objects from an Sql database.
     This class can be considered a memory cache for the Sql database.
@@ -59,11 +59,10 @@ typedef QPair<int, QString> TrackId;
 
     To increase the performance we are currently using two tricks.
     1. Prevent queries.
-      The ScanResultProcessor will query all tracks in the database.
+      The SqlScanResultProcessor will query all tracks in the database.
       The SqlRegistry is caching them as usually but while the scanner
       is running it will not clean the cache.
-      It will also notice that all existing tracks are cached and not
-      query for additional tracks in such a case.
+      The SqlScanResultProcessor will also cache all urls entries.
 
     2. Combine inserts and updates.
       All dirty tracks will be written in one big insert or with delayed
@@ -92,7 +91,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
          */
         int getDirectory( const QString &path, uint mtime = 0 );
 
-        Meta::TrackPtr getTrack( int id );
+        Meta::TrackPtr getTrack( int urlId );
         Meta::TrackPtr getTrack( const QString &path );
 
         /** Returns the track located at the given url or a new one if not existing.
@@ -104,10 +103,12 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
             Use SqlCollection::trackForUrl instead.
          */
         Meta::TrackPtr getTrack( int deviceId, const QString &rpath, int directoryId, const QString &uidUrl );
-        Meta::TrackPtr getTrackFromUid( const QString &uid );
 
-        /** Removes the track from the database (but not from the file system) */
-        void deleteTrack( int trackId );
+        /** Returns a track from a specific uid.
+            Returns a complete track, a track containing only the statistics (in case
+            of a previously deleted track with the same uid) or 0.
+        */
+        Meta::TrackPtr getTrackFromUid( const QString &uid );
 
         Meta::ArtistPtr getArtist( const QString &name );
         Meta::ArtistPtr getArtist( int id );
@@ -157,12 +158,11 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         */
         bool updateCachedUid( const QString &oldUid, const QString &newUid );
 
-        /** Updates the count number from the database.
-         *  This will be done regulary to prevent problems when the database an the
-         *  internal count get out of sync.
-         */
-        void updateDatabaseCount() const;
-
+        /** Removes the track from the database and the cache (but not from the file system)
+            This function is called by SqlTrack. Do not call directly unless you know
+            what you do.
+        */
+        void removeTrack( int urlId, const QString uid );
 
         // --- functions needed to commit a track
 
@@ -191,8 +191,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
 
         friend class Collections::SqlQueryMakerInternal;
 
-        //we don't care about the ordering so use the faster QHash
-        QHash<TrackId, Meta::TrackPtr > m_trackMap;
+        // we don't care about the ordering so use the faster QHash
+        QHash<TrackPath, Meta::TrackPtr > m_trackMap;
         QHash<QString, Meta::TrackPtr > m_uidMap;
         QHash<QString, Meta::ArtistPtr > m_artistMap;
         QHash<int, Meta::ArtistPtr > m_artistIdMap;
@@ -210,9 +210,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         QMutex m_yearMutex;
         QMutex m_albumMutex;
         QMutex m_labelMutex;
-
-        /** The number of track entries in the database */
-        mutable int m_databaseTrackCount;
 
         /** The timer is used for cleaning up the different caches. */
         QTimer *m_timer;
@@ -237,6 +234,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
 
         /** Set to true when something was added or removed form the database */
         bool m_collectionChanged;
+
+        friend class SqlScanResultProcessor;
 
         // all those classes need to call emptyCache
         friend class TestSqlScanManager;

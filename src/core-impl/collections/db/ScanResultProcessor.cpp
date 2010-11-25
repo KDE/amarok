@@ -72,6 +72,10 @@ ScanResultProcessor::commit()
         }
     }
 
+    // -- now check if some of the tracks are not longer used and also not moved to another directory
+    foreach( const CollectionScanner::Directory* dir, m_directories )
+        deleteDeletedTracks( getDirectory( dir->path(), dir->mtime() ) );
+
     // -- delete all not-found directories
     if( m_type != PartialUpdateScan )
         deleteDeletedDirectories();
@@ -110,8 +114,6 @@ ScanResultProcessor::commitDirectory( const CollectionScanner::Directory *dir )
     // --- add all playlists
     foreach( const CollectionScanner::Playlist &playlist, dir->playlists() )
         commitPlaylist( &playlist );
-
-    deleteDeletedTracks( dirId );
 
     emit directoryCommitted();
 }

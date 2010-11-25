@@ -141,10 +141,8 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
         // we are going to delete it from the database only if is no longer on disk
         removed = !QFile::exists( src.path() );
         if( removed )
-        {
-            KSharedPtr<Meta::SqlTrack> sqlTrack = KSharedPtr<Meta::SqlTrack>::staticCast( track );
-            m_collection->registry()->deleteTrack( sqlTrack->id() );
-        }
+            static_cast<Meta::SqlTrack*>(const_cast<Meta::Track*>(track.data()))->remove();
+
         return removed;
     }
     else

@@ -612,7 +612,7 @@ XmlParseJob::run()
     } while( !finished &&
              (!m_reader.hasError() || m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError) );
 
-    if( m_reader.hasError() )
+    if( !finished && m_reader.hasError() )
     {
         warning() << "Aborting ScanManager XmlParseJob with error"<<m_reader.errorString();
         emit message( i18n("Aborting scanner with error: %1").arg( m_reader.errorString() ) );
@@ -659,6 +659,7 @@ XmlParseJob::addNewXmlData( const QString &data )
     }
 
     debug() << "Adding";
+
     /*
     debug() << "XmlParseJob: addNewXmlData, new:"<<data.length()<<"incomplete:"<<m_incompleteTagBuffer.length();
     debug() << "             "<<m_incompleteTagBuffer<<"*";

@@ -194,6 +194,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         int deviceId() const;
         QString rpath() const;
         int id() const;
+        int urlId() const;
         Collections::SqlCollection* sqlCollection() const { return m_collection; }
 
         /** Does it's best to remove the track from database.

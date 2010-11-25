@@ -155,9 +155,7 @@ class OrganiseCapabilityImpl : public Capabilities::OrganiseCapability
         virtual void deleteTrack()
         {
             if( QFile::remove( m_track->playableUrl().path() ) )
-            {
-                m_track->sqlCollection()->registry()->deleteTrack( m_track->id() );
-            }
+                m_track->remove();
         }
 
     private:

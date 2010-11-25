@@ -23,12 +23,11 @@
 
 #include <QFileInfo>
 #include <QList>
-#include <QMap>
-#include <QPair>
+#include <QHash>
+#include <QMultiHash>
 #include <QSet>
 #include <QString>
 #include <QStringList>
-#include <QVariant>
 
 #include "amarok_databasecollection_export.h"
 
@@ -118,7 +117,9 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
 
         QList<CollectionScanner::Directory*> m_directories;
 
+        /** Contains all found directories with the directory id and the path */
         QHash<int, QString> m_foundDirectories;
+        /** Contains all found tracks with the unique id */
         QSet<QString> m_foundTracks;
 
         ScanType m_type;

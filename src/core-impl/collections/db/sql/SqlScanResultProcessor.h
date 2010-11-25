@@ -75,7 +75,28 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
         void deleteDeletedTracks( int dirId );
 
     private:
+        void removeTrack( int urlId, const QString uid );
+
         Collections::SqlCollection* m_collection;
+
+        // to speed up the scanning we buffer the whole urls table
+        struct UrlEntry
+        {
+            int id;
+            QString path;
+            int directoryId;
+            QString uid;
+        };
+
+        void cacheUrlsInit();
+        void cacheUrlsInsert( const UrlEntry &entry );
+        void cacheUrlsRemove( int id );
+
+        QHash<int, UrlEntry> m_urlsCache;
+        QHash<QString, int> m_urlsCacheUid;
+        QHash<QString, int> m_urlsCachePath;
+        QMultiHash<int, int> m_urlsCacheDirectory;
+
 };
 
 #endif
