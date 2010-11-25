@@ -382,16 +382,16 @@ Meta::Tag::readTags( const QString &path, bool useCharsetDetector )
                 if( name == QLatin1String( "\xA9wrt" ) )
                     result.insert( Meta::valComposer, value );
 
-                else if( name == "aART" ) // iTunes 4.0
+                else if( name == QLatin1String( "aART" ) ) // iTunes 4.0
                     result.insert( Meta::valAlbumArtist, value );
 
-                else if( name == "tmpo" )
+                else if( name == QLatin1String( "tmpo" ) )
                     result.insert( Meta::valBpm, it->second.toInt() );
 
-                else if( name == "disk" )
+                else if( name == QLatin1String( "disk" ) )
                     result.insert( Meta::valDiscNr, it->second.toIntPair().first );
 
-                else if( name == "cpil" )
+                else if( name == QLatin1String( "cpil" ) )
                 {
                     if( it->second.toBool() )
                         result.insert( Meta::valCompilation, true );
@@ -494,7 +494,7 @@ Meta::Tag::decodeMpeg( TagLib::MPEG::File *file )
             // -- compilation
             else if( name == "TCMP" )
             {
-                if( value.toInt() )
+                if( value.toLower() == QLatin1String( "true" ) || value.toInt() )
                     result.insert( Meta::valCompilation, true );
                 else
                     result.insert( Meta::valCompilation, false );
@@ -989,6 +989,9 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
         }
         else
         {
+            if( field == Meta::valCompilation )
+                tValue = Qt4QStringToTString( QString::number( value.toInt() ) ); // use 0 and 1 instead of true and false
+
             if( tValue.isEmpty() )
                 tag->removeFrames( tName );
             else
