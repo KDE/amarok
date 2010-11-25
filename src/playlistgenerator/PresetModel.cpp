@@ -191,13 +191,15 @@ APG::PresetModel::setActivePreset( const QModelIndex& index )
 }
 
 void
-APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::PresetPtr> pl ) const
+APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::PresetPtr> &pl ) const
 {
     QDomDocument xmldoc;
     QDomElement base = xmldoc.createElement( "playlistgenerator" );
+    QList<QDomNode*> nodes;
     foreach ( APG::PresetPtr ps, pl ) {
         QDomElement* elemPtr = ps->toXml( xmldoc );
         base.appendChild( (*elemPtr) );
+        nodes << elemPtr;
     }
 
     xmldoc.appendChild( base );
@@ -213,6 +215,7 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
         The::statusBar()->longMessage( i18n("Preset could not be exported to %1", filename), StatusBar::Sorry );
         error() << "Can not write presets to " << filename;
     }
+    qDeleteAll( nodes );
 }
 
 void
