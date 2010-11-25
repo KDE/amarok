@@ -94,6 +94,8 @@ SqlScanResultProcessor::commitAlbum( const CollectionScanner::Album *album, int 
     // we need to do this after the tracks are added in case of an embedded cover
     if( metaAlbum )
     {
+        bool suppressAutoFetch = metaAlbum->suppressImageAutoFetch();
+        metaAlbum->setSuppressImageAutoFetch( true );
         if( m_type == FullScan )
         {
             if( !album->cover().isEmpty() )
@@ -107,6 +109,7 @@ SqlScanResultProcessor::commitAlbum( const CollectionScanner::Album *album, int 
             if( !metaAlbum->hasImage() && !album->cover().isEmpty() )
                 metaAlbum->setImage( album->cover() );
         }
+        metaAlbum->setSuppressImageAutoFetch( suppressAutoFetch );
     }
 }
 
