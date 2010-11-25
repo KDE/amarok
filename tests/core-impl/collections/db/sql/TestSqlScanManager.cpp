@@ -691,6 +691,7 @@ TestSqlScanManager::testLargeInsert()
 
     writer.writeEndElement();
 
+    aDate = QDateTime::currentDateTime();
     // -- feed the scanner in batch mode
     buffer->seek( 0 );
     m_scanManager->requestImport( buffer );
@@ -711,13 +712,23 @@ TestSqlScanManager::testLargeInsert()
     for( int i = 0; i < trackCount; i++ )
     {
         Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( m_collection->uidUrlProtocol() + "://uid" + QString::number(i) );
-        if( !track )
-            qDebug() << "Track nr" << i << "not found";
-        // QVERIFY( track );
+        QVERIFY( track );
     }
 
     qDebug() << "performance test secs:"<< aDate.secsTo( QDateTime::currentDateTime() ) << "tracks:" << trackCount;
     QCOMPARE( tracks.count(), trackCount );
+
+    // -- scan the input a second time. that should be a lot faster (but currently isn't)
+    aDate = QDateTime::currentDateTime();
+    // -- feed the scanner in batch mode
+    buffer = new QBuffer(&byteArray); // the old scanner deleted the old buffer.
+    buffer->open(QIODevice::ReadWrite);
+    m_scanManager->requestImport( buffer );
+    waitScannerFinished();
+
+    qDebug() << "performance test secs:"<< aDate.secsTo( QDateTime::currentDateTime() );
+
+    QVERIFY( aDate.secsTo( QDateTime::currentDateTime() ) < 80 );
 }
 
 void
