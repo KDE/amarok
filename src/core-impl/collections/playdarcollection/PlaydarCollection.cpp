@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PlaydarCollection"
+
 #include "PlaydarCollection.h"
 
 #include "core/collections/Collection.h"
@@ -38,19 +40,19 @@ namespace Collections
     AMAROK_EXPORT_COLLECTION( PlaydarCollectionFactory, playdarcollection )
     
     PlaydarCollectionFactory::PlaydarCollectionFactory( QObject* parent, const QVariantList &args )
-        : m_controller( new Playdar::Controller(this) )
-        , m_collection( 0 )
+        : CollectionFactory( parent )
+        , m_controller( new Playdar::Controller(this) )
         , m_collectionIsManaged( false )
     {
         DEBUG_BLOCK
-
-        setParent( parent );
         Q_UNUSED( args );
     }
 
     PlaydarCollectionFactory::~PlaydarCollectionFactory()
     {
         DEBUG_BLOCK
+        delete m_collection.data();
+        delete m_controller;
     }
 
     void
@@ -65,8 +67,8 @@ namespace Collections
         checkStatus();
 
         m_collection = new PlaydarCollection;
-        connect( m_collection, SIGNAL( remove() ), this, SLOT( collectionRemoved() ) );
-        CollectionManager::instance()->addTrackProvider( m_collection );
+        connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
+        CollectionManager::instance()->addTrackProvider( m_collection.data() );
     }
 
     void
@@ -84,13 +86,13 @@ namespace Collections
         if( !m_collection )
         {
             m_collection = new PlaydarCollection();
-            connect( m_collection, SIGNAL( remove() ), this, SLOT( collectionRemoved() ) );
+            connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
         }
 
         if( !m_collectionIsManaged )
         {
             m_collectionIsManaged = true;
-            emit newCollection( m_collection );
+            emit newCollection( m_collection.data() );
         }
     }
 
@@ -102,7 +104,7 @@ namespace Collections
         if( error == Playdar::Controller::ErrorState( 1 ) )
         {
             if( m_collection && !m_collectionIsManaged )
-                CollectionManager::instance()->removeTrackProvider( m_collection );
+                CollectionManager::instance()->removeTrackProvider( m_collection.data() );
             
             QTimer::singleShot( 10000, this, SLOT( checkStatus() ) );
         }

@@ -52,7 +52,7 @@ namespace Collections
 
         private:
             Playdar::Controller* m_controller;
-            QPointer< PlaydarCollection > m_collection;
+            QWeakPointer< PlaydarCollection > m_collection;
             bool m_collectionIsManaged;
     };
     
