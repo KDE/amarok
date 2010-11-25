@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.4-Beta 1
   FEATURES:
+    * Leave focus in playlist search widget when using up/down to scroll through
+      filtered results. Thanks to Thomas Karpiniec for the patch!
     * LyricsApplet: the lyrics in are now updated when they were changed in a
       different place (for example in TagDialog). Conflicts have to be resolved
       by the user (therefore a message is shown which asks the user which changes

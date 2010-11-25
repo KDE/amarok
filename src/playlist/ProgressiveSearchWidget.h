@@ -110,6 +110,11 @@ signals:
      */
     void downPressed();
 
+    /**
+     * Signal emitted when the up key is pressed. Forwarded on from Amarok::LineEdit
+     */
+    void upPressed();
+
 public slots:
     /**
      * Notify the widget that there are matches (at least one), so the next and previous actions

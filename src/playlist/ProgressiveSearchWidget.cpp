@@ -58,6 +58,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     connect( m_searchEdit, SIGNAL( returnPressed( const QString & ) ), this, SLOT( slotFilterClear() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), this, SLOT( defocus() ) );
     connect( m_searchEdit, SIGNAL( downPressed() ), this, SIGNAL( downPressed() ) );
+    connect( m_searchEdit, SIGNAL( upPressed() ), this, SIGNAL( upPressed() ) );
 
     m_nextAction = new KAction( KIcon( "go-down" ), i18n( "&Next" ), this );
     connect( m_nextAction, SIGNAL( triggered() ), this, SLOT( slotNext() ) );

@@ -28,6 +28,7 @@ namespace Amarok
      * Namely:
      *   1. Pressing the escape key clears the contents
      *   2. Pressing down emits the downPressed signal
+     *   3. Pressing up emits the upPressed signal
      */
     class LineEdit : public KLineEdit
     {
@@ -41,6 +42,7 @@ namespace Amarok
 
         signals:
             void downPressed();
+            void upPressed();
     };
 }
 

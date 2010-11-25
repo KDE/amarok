@@ -264,6 +264,43 @@ Playlist::PrettyListView::scrollToActiveTrack()
 }
 
 void
+Playlist::PrettyListView::downOneTrack()
+{
+    DEBUG_BLOCK
+
+    moveTrackSelection( 1 );
+}
+
+void
+Playlist::PrettyListView::upOneTrack()
+{
+    DEBUG_BLOCK
+
+    moveTrackSelection( -1 );
+}
+
+void
+Playlist::PrettyListView::moveTrackSelection( int offset )
+{
+    if ( offset == 0 )
+        return;
+
+    int finalRow = model()->rowCount() - 1;
+    int target = 0;
+
+    if ( offset < 0 )
+        target = finalRow;
+
+    QList<int> rows = selectedRows();
+    if ( rows.count() > 0 )
+        target = rows.at( 0 ) + offset;
+
+    target = qBound(0, target, finalRow);
+    QModelIndex index = model()->index( target, 0 );
+    setCurrentIndex( index );
+}
+
+void
 Playlist::PrettyListView::slotPlaylistActiveTrackChanged()
 {
     DEBUG_BLOCK
@@ -287,6 +324,8 @@ Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
     //make sure that the track we just activated is also set as the current index or
     //the selected index will get moved to the first row, making keyboard navigation difficult (BUG 225791)
     selectionModel_setCurrentIndex( idx, QItemSelectionModel::ClearAndSelect );
+
+    setFocus();
 }
 
 
@@ -739,10 +778,10 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
         QItemSelection selItems( index, index );
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
+        QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+        setCurrentIndex( foundIndex );
         if ( !filter )
         {
-            QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
-            setCurrentIndex( foundIndex );
             if ( foundIndex.isValid() )
                 scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
         }
