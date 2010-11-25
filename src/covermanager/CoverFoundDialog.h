@@ -85,7 +85,7 @@ private slots:
     void downloadProgressed( qint64 bytesReceived, qint64 bytesTotal );
     void handleFetchResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void insertComboText( const QString &text );
-    void itemSelected();
+    void currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
     void processQuery();

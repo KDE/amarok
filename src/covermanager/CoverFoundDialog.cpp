@@ -172,8 +172,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_view->setViewMode( QListView::IconMode );
     m_view->setResizeMode( QListView::Adjust );
 
-    connect( m_view, SIGNAL(itemSelectionChanged()),
-             this,   SLOT(itemSelected()) );
+    connect( m_view, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+             this,   SLOT(currentItemChanged(QListWidgetItem*, QListWidgetItem*)) );
     connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
              this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
     connect( m_view, SIGNAL(customContextMenuRequested(const QPoint&)),
@@ -323,13 +323,12 @@ void CoverFoundDialog::insertComboText( const QString &text )
     m_search->setCurrentIndex( 0 );
 }
 
-void CoverFoundDialog::itemSelected()
+void CoverFoundDialog::currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
-    QListWidgetItem *item = m_view->currentItem();
-    if( !item )
+    Q_UNUSED( previous )
+    if( !current )
         return;
-
-    CoverFoundItem *it = static_cast< CoverFoundItem* >( item );
+    CoverFoundItem *it = static_cast< CoverFoundItem* >( current );
     QPixmap pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
     m_image = pixmap;
     m_sideBar->setPixmap( pixmap, it->metadata() );
