@@ -75,6 +75,8 @@ CollectionScanner::Track::Track( const QString &path)
         m_artist = values.value(Meta::valArtist).toString();
     if( values.contains(Meta::valAlbum) )
         m_album = values.value(Meta::valAlbum).toString();
+    if( values.contains( Meta::valAlbumArtist ) )
+        m_albumArtist = values.value( Meta::valAlbumArtist ).toString();
     if( values.contains(Meta::valCompilation) )
     // for the unit test.
     // in a debug build a file called "crash_amarok_here.ogg" will crash the collection
