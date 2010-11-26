@@ -104,9 +104,6 @@
             <property name="text">
              <string>fuzzy</string>
             </property>
-            <property name="buddy">
-             <cstring></cstring>
-            </property>
            </widget>
           </item>
           <item>
