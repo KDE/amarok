@@ -90,29 +90,30 @@ SqlScanResultProcessor::unblockUpdates()
     m_collection->unblockUpdatedSignal();
 }
 
-int
-SqlScanResultProcessor::getDirectory( const QString &path, uint mtime )
+void
+SqlScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory )
 {
-    return m_collection->registry()->getDirectory( path, mtime );
+    // --- updated the directory entry
+    int dirId = m_collection->registry()->getDirectory( directory->path(), directory->mtime() );
+    m_directoryIds.insert( directory, dirId );
+    m_foundDirectories.insert( dirId, directory );
+
+    ScanResultProcessor::commitDirectory( directory );
 }
 
 void
-SqlScanResultProcessor::commitAlbum( const CollectionScanner::Album *album, int directoryId )
+SqlScanResultProcessor::commitAlbum( CollectionScanner::Album *album )
 {
     // debug() << "SRP::commitAlbum on"<<album->name()<< "artist"<<album->artist()<<"compilation"<<album->isCompilation();
 
     // --- get or create the album
-    int albumId = -1;
     KSharedPtr<Meta::SqlAlbum> metaAlbum;
-    if( album->isCompilation() )
-        metaAlbum = KSharedPtr<Meta::SqlAlbum>::staticCast( m_collection->getAlbum( album->name(), QString() ) );
-    else
-        metaAlbum = KSharedPtr<Meta::SqlAlbum>::staticCast( m_collection->getAlbum( album->name(), album->artist() ) );
-    albumId = metaAlbum->id();
+    metaAlbum = KSharedPtr<Meta::SqlAlbum>::staticCast( m_collection->getAlbum( album->name(), album->artist() ) );
+    m_albumIds.insert( album, metaAlbum->id() );
 
     // --- add all tracks
-    foreach( const CollectionScanner::Track &track, album->tracks() )
-        commitTrack( &track, directoryId, albumId );
+    foreach( CollectionScanner::Track *track, album->tracks() )
+        commitTrack( track, album );
 
     // --- set the cover if we have one
     // we need to do this after the tracks are added in case of an embedded cover
@@ -138,10 +139,13 @@ SqlScanResultProcessor::commitAlbum( const CollectionScanner::Album *album, int 
 }
 
 void
-SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int directoryId, int albumId )
+SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
+                                     CollectionScanner::Album *srcAlbum )
 {
-    Q_ASSERT( directoryId );
-    Q_ASSERT( albumId ); // no track without album
+    Q_ASSERT( srcAlbum );
+
+    int directoryId = m_directoryIds.value( track->directory() );
+    int albumId = m_albumIds.value( srcAlbum );
 
     QString uid = track->uniqueid();
     if( uid.isEmpty() )
@@ -319,10 +323,11 @@ SqlScanResultProcessor::deleteDeletedDirectories()
 }
 
 void
-SqlScanResultProcessor::deleteDeletedTracks( int dirId )
+SqlScanResultProcessor::deleteDeletedTracks( CollectionScanner::Directory *directory )
 {
     // -- find all tracks
-    QList<int> urlIds = m_urlsCacheDirectory.values( dirId );
+    int directoryId = m_directoryIds.value( directory );
+    QList<int> urlIds = m_urlsCacheDirectory.values( directoryId );
 
     // -- check if the tracks have been found during the scan
     foreach( int urlId, urlIds )

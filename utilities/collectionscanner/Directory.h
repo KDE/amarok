@@ -69,8 +69,8 @@ public:
      */
     bool isSkipped() const;
 
-    /** Returns all albums (compilation and not compilations) */
-    QList<Album> albums() const;
+    QStringList covers() const;
+    QList<Track> tracks() const;
     QList<Playlist> playlists() const;
 
 #ifdef UTILITIES_BUILD
@@ -89,7 +89,8 @@ private:
     bool m_skipped;
     bool m_ignored; // the directory was ingored e.g. because of "fmps_ignore"
 
-    QList<Album> m_albums;
+    QStringList m_covers;
+    QList<Track> m_tracks;
     QList<Playlist> m_playlists;
 };
 

@@ -32,57 +32,39 @@ class QXmlStreamWriter;
 namespace CollectionScanner
 {
 
-/**
- * @class Album
- * @short Represents a scanned album and it's contents
- */
-
+/** This album class is used by the ScanResultProcessor to sort tracks into albums.
+    @class Album
+    @short Represents a scanned album and it's contents
+    @author Ralf Engels <ralf-engels@gmx.de>
+*/
 class Album
 {
 public:
     Album();
-    Album( const QString &name );
-    Album( QXmlStreamReader *reader );
+    Album( const QString &name, const QString &artist );
 
-    void append( const Track &track );
-
-    /** Copies all tracks and covers from the otherAlbum to this one.
-     *  This can be done when one has to merge different albums into one compilation.
-     */
-    void merge( const Album &otherAlbum );
+    /** Adds a track to this album.
+        The track must still be freed by the caller.
+    */
+    void addTrack( Track *track );
 
     void addCovers( const QStringList &covers );
 
     QString name() const;
 
-    /** Returns the artist of this album.
-     */
+    /** Returns the artist of this album.  */
     QString artist() const;
-
-    /** Returns true if this album is a compilation (an album with different artists) */
-    bool isCompilation() const;
-
-    /** Returns true if this album is not a compilation. */
-    bool isNoCompilation() const;
 
     /** Returns the picture best suited as cover for this album */
     QString cover() const;
 
-    QList<Track> tracks() const;
-
-#ifdef UTILITIES_BUILD
-    /** Writes the contents of this object to an xml stream.
-     *  Only the content is writen and no enclosing directory tags.
-     *  This is done to make it mirror the constructor which does not read those
-     *  tags either.
-     */
-    void toXml( QXmlStreamWriter *writer ) const;
-#endif // UTILITIES_BUILD
+    QList<Track*> tracks() const;
 
 private:
     QString m_name;
+    QString m_artist;
     QStringList m_covers;
-    QList<Track> m_tracks;
+    QList<Track*> m_tracks;
 };
 
 }

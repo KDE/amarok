@@ -41,15 +41,39 @@ ScanResultProcessor::~ScanResultProcessor()
 {
     foreach( CollectionScanner::Directory *dir, m_directories )
         delete dir;
-}
 
+    QHash<QString, CollectionScanner::Album*>::const_iterator i = m_albumNames.constBegin();
+    while (i != m_albumNames.constEnd()) {
+        delete i.value();
+        ++i;
+    }
+ }
+
+#include <core-impl/collections/support/ArtistHelper.h>
 
 void
 ScanResultProcessor::addDirectory( CollectionScanner::Directory *dir )
 {
     m_directories.append( dir );
-}
 
+    // -- sort the tracks into albums
+    QSet<CollectionScanner::Album*> dirAlbums;
+
+    foreach( CollectionScanner::Track track, dir->tracks() )
+        dirAlbums.insert( sortTrack( &track ) );
+
+    // -- sort the remainder
+    // -- use the directory name as album name
+    {
+        QString dirAlbumName = QDir( dir->path() ).dirName();
+        foreach( CollectionScanner::Track track, dir->tracks() )
+            dirAlbums.insert( sortTrack( &track ) );
+    }
+
+    // if all the tracks from this directory end up in one album then also add the images
+    if( dirAlbums.count() == 1 )
+        (*dirAlbums.begin())->addCovers( dir->covers() );
+}
 
 void
 ScanResultProcessor::commit()
@@ -58,10 +82,21 @@ ScanResultProcessor::commit()
     QDateTime blockedTime = QDateTime::currentDateTime();
     blockUpdates();
 
-    // -- now commit the directories
-    foreach( const CollectionScanner::Directory* dir, m_directories )
-    {
+    // -- commit the directories
+    foreach( CollectionScanner::Directory* dir, m_directories )
         commitDirectory( dir );
+
+    // --- add all albums
+    QMultiHash<QString, CollectionScanner::Album*>::const_iterator i = m_albumNames.constBegin();
+    while (i != m_albumNames.constEnd()) {
+
+        // if we have multiple albums with the same name, check if it
+        // might be a compilation
+
+        // commit all albums with a track with the noCompilation flag
+
+        // commit all the remaining albums as a compilation
+        commitAlbum( i.value() );
 
         // release the block every 5 second. Maybe not really needed, but still nice
         if( blockedTime.secsTo( QDateTime::currentDateTime() ) >= 5 )
@@ -70,12 +105,13 @@ ScanResultProcessor::commit()
             blockedTime = QDateTime::currentDateTime();
             blockUpdates();
         }
+        ++i;
     }
 
     // -- now check if some of the tracks are not longer used and also not moved to another directory
-    foreach( const CollectionScanner::Directory* dir, m_directories )
+    foreach( CollectionScanner::Directory* dir, m_directories )
         if( !dir->isSkipped() )
-            deleteDeletedTracks( getDirectory( dir->path(), dir->mtime() ) );
+        deleteDeletedTracks( dir );
 
     // -- delete all not-found directories
     if( m_type != PartialUpdateScan )
@@ -91,42 +127,77 @@ ScanResultProcessor::rollback()
 }
 
 void
-ScanResultProcessor::commitDirectory( const CollectionScanner::Directory *dir )
+ScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory )
 {
-    if( dir->path().isEmpty() )
+    if( directory->path().isEmpty() )
     {
         warning() << "got directory with no path from the scanner, not adding";
         return;
     }
 
-    // selects and inserts should be done atomar, in theory
-
-    // --- updated the directory entry
-    int dirId = getDirectory( dir->path(), dir->mtime() );
-
-    m_foundDirectories.insert(dirId, dir->path());
-    if( dir->isSkipped() )
+    if( directory->isSkipped() )
         return;
 
-    // --- add all albums
-    foreach( const CollectionScanner::Album &album, dir->albums() )
-        commitAlbum( &album, dirId );
-
     // --- add all playlists
-    foreach( const CollectionScanner::Playlist &playlist, dir->playlists() )
+    foreach( CollectionScanner::Playlist playlist, directory->playlists() )
         commitPlaylist( &playlist );
 
     emit directoryCommitted();
 }
 
 void
-ScanResultProcessor::commitPlaylist( const CollectionScanner::Playlist *playlist )
+ScanResultProcessor::commitPlaylist( CollectionScanner::Playlist *playlist )
 {
     // debug() << "commitPlaylist on " << playlist->path();
 
     if( The::playlistManager() )
         The::playlistManager()->import( "file:"+playlist->path() );
 }
+
+CollectionScanner::Album*
+ScanResultProcessor::sortTrack( CollectionScanner::Track *track )
+{
+    QString albumArtist( track->albumArtist() );
+    if( albumArtist.isEmpty() )
+        albumArtist = ArtistHelper::realTrackArtist( track->artist() );
+    if( track->isCompilation() )
+        albumArtist.clear();
+
+    if( track->album().isEmpty() && albumArtist.isEmpty() )
+        return false;
+    else
+        return sortTrack( track, track->album(), albumArtist );
+}
+
+/** This will just put the tracks into an album.
+    @param album the name of the target album
+    @returns true if the track was put into an album
+*/
+CollectionScanner::Album*
+ScanResultProcessor::sortTrack( CollectionScanner::Track *track,
+                                const QString &albumName,
+                                const QString &albumArtist )
+{
+    QString newAlbumArtist( albumArtist );
+    if( albumName.isEmpty() )
+        newAlbumArtist.clear(); // no album, no album artist
+
+    AlbumKey key( albumName, newAlbumArtist );
+
+    CollectionScanner::Album *album;
+    if( m_albums.contains( key ) )
+        album = m_albums.value( key );
+    else
+    {
+        album = new CollectionScanner::Album( albumName, newAlbumArtist );
+        m_albums.insert( key, album );
+        m_albumNames.insert( albumName, album );
+    }
+
+    album->addTrack( track );
+    return album;
+}
+
 
 #include "ScanResultProcessor.moc"
 

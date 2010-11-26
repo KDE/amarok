@@ -63,21 +63,29 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
     protected:
         virtual void blockUpdates();
         virtual void unblockUpdates();
-        virtual int getDirectory( const QString &path, uint mtime );
 
-        void commitAlbum( const CollectionScanner::Album *album, int directoryId );
-        void commitTrack( const CollectionScanner::Track *track, int directoryId, int albumId = -1 );
+        void commitDirectory( CollectionScanner::Directory *dir );
+        void commitAlbum( CollectionScanner::Album *album );
+        void commitTrack( CollectionScanner::Track *track, CollectionScanner::Album *srcAlbum );
 
         /** Deletes all directories (and it's tracks) not contained in m_foundDirectories */
         void deleteDeletedDirectories();
 
         /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks. */
-        void deleteDeletedTracks( int dirId );
+        void deleteDeletedTracks( CollectionScanner::Directory *directory );
 
     private:
         void removeTrack( int urlId, const QString uid );
 
         Collections::SqlCollection* m_collection;
+
+        /** Contains all found directories with the directory id and the path */
+        QHash<int, CollectionScanner::Directory*> m_foundDirectories;
+        /** Contains all found tracks with the unique id */
+        QSet<QString> m_foundTracks;
+
+        QHash<CollectionScanner::Directory*, int> m_directoryIds;
+        QHash<CollectionScanner::Album*, int> m_albumIds;
 
         // to speed up the scanning we buffer the whole urls table
         struct UrlEntry

@@ -18,7 +18,7 @@
 #include "TestSqlScanManager.h"
 
 #include "amarokconfig.h"
-#include "shared/MetaTagLib.h"
+#include "core-impl/meta/file/TagLibUtils.h"
 #include "core-impl/collections/db/ScanManager.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/db/sql/SqlCollectionFactory.h"
@@ -633,8 +633,6 @@ TestSqlScanManager::testLargeInsert()
         writer.writeTextElement( "rpath", "/" + QString::number(dirId) );
         writer.writeTextElement( "mtime", QString::number(aDate.toTime_t()) );
 
-        writer.writeStartElement( "album" );
-        writer.writeTextElement( "name", QString::number(dirId) );
         for( int trackId = 0; trackId < 20; trackId++ )
         {
             writer.writeStartElement( "track" );
@@ -649,8 +647,6 @@ TestSqlScanManager::testLargeInsert()
         }
 
         writer.writeEndElement();
-
-        writer.writeEndElement();
     }
 
     // a simulated genre folders
@@ -663,11 +659,6 @@ TestSqlScanManager::testLargeInsert()
 
         for( int albumId = 0; albumId < 1000; albumId++ )
         {
-            writer.writeStartElement( "album" );
-            writer.writeTextElement( "name",
-                                      "genre album" + QString::number(dirId) +
-                                      "xx" + QString::number(albumId) );
-
             writer.writeStartElement( "track" );
             writer.writeTextElement( "uniqueid", "uid" + QString::number(trackCount) );
             writer.writeTextElement( "path", "/path" + QString::number(trackCount) );
@@ -680,8 +671,6 @@ TestSqlScanManager::testLargeInsert()
             writer.writeTextElement( "album",
                                       "genre album" + QString::number(dirId) +
                                       "xx" + QString::number(albumId) );
-            writer.writeEndElement();
-
             writer.writeEndElement();
         }
 
@@ -696,9 +685,6 @@ TestSqlScanManager::testLargeInsert()
         writer.writeTextElement( "rpath", "/collection" + QString::number(dirId) );
         writer.writeTextElement( "mtime", QString::number(aDate.toTime_t()) );
 
-        writer.writeStartElement( "album" );
-        writer.writeTextElement( "name", "album" + QString::number(dirId % 300) );
-
         writer.writeStartElement( "track" );
         writer.writeTextElement( "uniqueid", "uid" + QString::number(trackCount) );
         writer.writeTextElement( "path", "/path" + QString::number(trackCount) );
@@ -707,8 +693,6 @@ TestSqlScanManager::testLargeInsert()
         writer.writeTextElement( "title", "track" + QString::number(trackCount) );
         writer.writeTextElement( "artist", "album artist" + QString::number(dirId % 200) );
         writer.writeTextElement( "album", "album" + QString::number(dirId % 300) );
-        writer.writeEndElement();
-
         writer.writeEndElement();
 
         writer.writeEndElement();
@@ -841,7 +825,7 @@ TestSqlScanManager::createTrack( const Meta::FieldHash &values )
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 
     // -- set all the values that we need
-    Meta::Tag::writeTags( targetPath, values );
+    Meta::Field::writeFields( targetPath, values );
 }
 
 void

@@ -21,10 +21,10 @@
 
 #include "core/meta/Meta.h"
 
-#include <QFileInfo>
 #include <QList>
 #include <QHash>
 #include <QMultiHash>
+#include <QPair>
 #include <QSet>
 #include <QString>
 #include <QStringList>
@@ -33,9 +33,9 @@
 
 namespace CollectionScanner
 {
-    class Album;
     class Track;
     class Directory;
+    class Album;
     class Playlist;
 }
 
@@ -48,30 +48,33 @@ class SqlStorage;
 class DatabaseUpdater;
 
 /** The ScanResulProcessor class takes the results from the ScanManager and puts them into the database.
- */
+*/
 class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObject
 {
     Q_OBJECT
 
     public:
-    /** The scan mode.
-     *  In general a full scan will consider the information read from the disk
-     *  as being superiour to the one in the database.
-     *  The full scan will overwrite existing album covers and statistics.
-     *
-     *  An update scan is a scan done automatically by Amarok. I will check
-     *  for new and changed tracks and will add to information already existing
-     *  in the database.
-     *
-     *  A partial update scan is an update scan that does not cover all directories, so
-     *  the processor cannot rely on getting all directories from the scanner
-     */
+        /** The scan mode.
+            In general a full scan will consider the information read from the disk
+            as being superiour to the one in the database.
+            The full scan will overwrite existing album covers and statistics.
+
+            An update scan is a scan done automatically by Amarok. I will check
+            for new and changed tracks and will add to information already existing
+            in the database.
+
+            A partial update scan is an update scan that does not cover all directories, so
+            the processor cannot rely on getting all directories from the scanner
+         */
         enum ScanType
         {
             FullScan = 0,
             UpdateScan = 1,
             PartialUpdateScan = 2
         };
+
+        // The keys for this hashtable are album name, artist (artist is empty for compilations)
+        typedef QPair<QString, QString> AlbumKey;
 
         ScanResultProcessor( QObject *parent = 0 );
         virtual ~ScanResultProcessor();
@@ -97,30 +100,28 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
         virtual void blockUpdates() = 0;
         virtual void unblockUpdates() = 0;
 
-        /** Will get a directory id for a given directory path and modification time.
-            If the directory entry is not present, then it will be created.
-        */
-        virtual int getDirectory( const QString &path, uint mtime ) = 0;
-
-        virtual void commitDirectory( const CollectionScanner::Directory *dir );
-        virtual void commitPlaylist( const CollectionScanner::Playlist *playlist );
-        virtual void commitAlbum( const CollectionScanner::Album *album, int directoryId ) = 0;
-        virtual void commitTrack( const CollectionScanner::Track *track, int directoryId, int albumId = -1 ) = 0;
+        virtual void commitDirectory( CollectionScanner::Directory *dir );
+        virtual void commitPlaylist( CollectionScanner::Playlist *playlist );
+        virtual void commitAlbum( CollectionScanner::Album *album ) = 0;
+        virtual void commitTrack( CollectionScanner::Track *track, CollectionScanner::Album *album ) = 0;
 
         /** Deletes all directories (and its tracks) not contained in m_foundDirectories
         */
         virtual void deleteDeletedDirectories() = 0;
 
-        /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks.
+        /** Removes all tracks contained in the directory dirId that are not longer present.
         */
-        virtual void deleteDeletedTracks( int dirId ) = 0;
+        virtual void deleteDeletedTracks( CollectionScanner::Directory *directory) = 0;
+
+        CollectionScanner::Album* sortTrack( CollectionScanner::Track *track );
+        CollectionScanner::Album* sortTrack( CollectionScanner::Track *track,
+                                             const QString &albumName,
+                                             const QString &albumArtist );
 
         QList<CollectionScanner::Directory*> m_directories;
-
-        /** Contains all found directories with the directory id and the path */
-        QHash<int, QString> m_foundDirectories;
-        /** Contains all found tracks with the unique id */
-        QSet<QString> m_foundTracks;
+        QHash<AlbumKey, CollectionScanner::Album*> m_albums;
+        // all the albums sorted by album name
+        QMultiHash<QString, CollectionScanner::Album*> m_albumNames;
 
         ScanType m_type;
 };

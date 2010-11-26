@@ -31,20 +31,21 @@ class QXmlStreamWriter;
 namespace CollectionScanner
 {
 
-/**
- * @class Track
- * @short Represents a scanned track
- * An empty QString or a negative int means that the value is unset.
- */
+class Directory;
 
+/**
+   @class Track
+   @short Represents a scanned track
+   An empty QString or a negative int means that the value is unset.
+ */
 class Track
 {
 public:
     /** Reads a track from the given path */
-    Track( const QString &path );
+    Track( const QString &path, Directory* directory );
 
     /** Tries to parse the track from the xml stream */
-    Track( QXmlStreamReader *reader );
+    Track( QXmlStreamReader *reader, Directory* directory );
 
     /** Writes the contents of this object to an xml stream.
         Only the content is writen and no enclosing directory tags.
@@ -55,6 +56,8 @@ public:
 
     /** Returns true if this track is really a song. */
     bool isValid() const;
+
+    Directory* directory() const;
 
     QString uniqueid() const;
 
@@ -108,6 +111,8 @@ private:
     QString escape( QString str ) const;
     void write( QXmlStreamWriter *writer, const QString &tag, const QString &str ) const;
     bool m_valid;
+
+    Directory* m_directory;
 
     QString m_uniqueid;
 

@@ -80,14 +80,6 @@ CollectionScanner::Directory::Directory( const QString &path,
         state->setBadFiles( badFiles );
     }
 
-    QStringList covers;
-
-    // The keys for this hashtable are album name, artist (artist is empty for compilations)
-    typedef QPair<QString, QString> AlbumKey;
-    QHash<AlbumKey, Album> albumHash;
-    QSet<QString> albumNames;
-    QSet<QString> artistNames;
-
     dir.setFilter( QDir::NoDotAndDotDot | QDir::Files );
     QFileInfoList fileInfos = dir.entryInfoList();
 
@@ -106,15 +98,11 @@ CollectionScanner::Directory::Directory( const QString &path,
 
         // -- cover image ?
         if( validImages.contains( suffix ) )
-        {
-            covers += filePath;
-        }
+            m_covers.append( filePath );
 
         // -- playlist ?
         else if( validPlaylists.contains( suffix ) )
-        {
             m_playlists.append( CollectionScanner::Playlist( filePath ) );
-        }
 
         // -- audio track ?
         else
@@ -124,89 +112,9 @@ CollectionScanner::Directory::Directory( const QString &path,
 
             CollectionScanner::Track newTrack( filePath );
             if( newTrack.isValid() )
-            {
-                // remember. the default is that tracks are not in a compilation
-                QString aArtist = newTrack.albumArtist();
-                if( aArtist.isEmpty() )
-                    aArtist = newTrack.artist();
-                if( newTrack.isCompilation() )
-                    aArtist.clear();
-
-                AlbumKey key( newTrack.album(), aArtist );
-
-                // hash of a hash
-                if( !albumHash.contains( key ) )
-                    albumHash.insert( key,
-                                      CollectionScanner::Album( newTrack.album() ) );
-
-                albumHash[key].append( newTrack );
-                albumNames.insert( newTrack.album() );
-                artistNames.insert( aArtist );
-            }
+                m_tracks.append( newTrack );
         }
     }
-
-    // -- if all tracks in the directory are in the same album but have different artists,
-    //    then it's definitely a compilation
-    // TODO: check if some of the tracks have noCompilation
-    if( albumNames.count() == 1 &&
-        artistNames.count() > 1 )
-    {
-        QHash<AlbumKey, Album>::const_iterator j = albumHash.constBegin();
-
-        // - create the new album and copy it
-        CollectionScanner::Album newAlbum( j->name() );
-        while (j != albumHash.constEnd())
-        {
-            newAlbum.merge( *j );
-            ++j;
-        }
-
-        // - upated the albums
-        albumHash.clear();
-        albumHash.insert( AlbumKey( newAlbum.name(), newAlbum.artist() ),
-                          newAlbum );
-        artistNames.clear();
-        artistNames.insert( newAlbum.artist() );
-    }
-
-    // -- use the directory name as album name if not a single track in the director
-    //    has an album name
-    // Note: this is just a heuristic.
-    if( albumHash.count() == 1 )
-    {
-        CollectionScanner::Album oldAlbum = albumHash.values().first();
-        if( oldAlbum.name().isEmpty() && // no album name
-            oldAlbum.tracks().count() < 20 ) // more than 20 songs make it unlikely that it's an album
-        {
-            // - create the new album and copy it
-            CollectionScanner::Album newAlbum( QDir( path ).dirName() );
-            newAlbum.merge( oldAlbum );
-
-            // - upated the albums
-            albumHash.clear();
-            albumHash.insert( AlbumKey( newAlbum.name(), newAlbum.artist() ),
-                              newAlbum );
-            albumNames.clear();
-            albumNames.insert( newAlbum.name() );
-        }
-    }
-
-    // -- add the covers to all albums
-    // if the directory contains only one album
-    // (or several albums with the same name that did not recognize as a collection)
-    // set the images found inside the directory as cover for this album.
-    if( albumNames.count() == 1 ) // only one album name
-    {
-        QHash<AlbumKey, Album>::iterator j = albumHash.begin();
-        while( j != albumHash.end() )
-        {
-            j.value().addCovers( covers );
-            ++j;
-        }
-    }
-
-    m_albums = albumHash.values();
 }
 #endif // UTILITIES_BUILD
 
@@ -228,6 +136,8 @@ CollectionScanner::Directory::Directory( const QString &path,
                 m_rpath = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "mtime" )
                 m_mtime = reader->readElementText(QXmlStreamReader::SkipChildElements).toUInt();
+            else if( name == "cover" )
+                m_covers.append(reader->readElementText(QXmlStreamReader::SkipChildElements));
             else if( name == "skipped" )
             {
                 m_skipped = true;
@@ -238,10 +148,8 @@ CollectionScanner::Directory::Directory( const QString &path,
                 m_ignored = true;
                 reader->skipCurrentElement();
             }
-            else if( name == "album" )
-            {
-                m_albums.append(CollectionScanner::Album( reader ));
-            }
+            else if( name == QLatin1String("track") )
+                m_tracks.append( CollectionScanner::Track( reader ) );
             else if( name == "playlist" )
                 m_playlists.append( CollectionScanner::Playlist( reader ) );
             else
@@ -282,6 +190,12 @@ CollectionScanner::Directory::isSkipped() const
     return m_skipped;
 }
 
+QStringList
+CollectionScanner::Directory::covers() const
+{
+    return m_covers;
+}
+
 QList<CollectionScanner::Album>
 CollectionScanner::Directory::albums() const
 {
@@ -306,10 +220,14 @@ CollectionScanner::Directory::toXml( QXmlStreamWriter *writer ) const
     if( m_ignored )
         writer->writeEmptyElement( "ignored" );
 
-    foreach( const CollectionScanner::Album &album, m_albums )
+    foreach( const QString &cover, m_covers )
     {
-        writer->writeStartElement( "album" );
-        album.toXml( writer );
+        writer->writeTextElement( "cover", cover );
+    }
+    foreach( const CollectionScanner::Track &track, m_tracks )
+    {
+        writer->writeStartElement( QLatin1String("track") );
+        track.toXml( writer );
         writer->writeEndElement();
     }
 
