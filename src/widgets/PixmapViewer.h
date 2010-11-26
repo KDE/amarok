@@ -30,16 +30,19 @@ class QPixmap;
 class PixmapViewer : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY( qreal zoomFactor READ zoomFactor WRITE setZoomFactor NOTIFY zoomFactorChanged )
 
 public:
     PixmapViewer( QWidget *parent, const QPixmap &pixmap, int screenNumber );
     virtual ~PixmapViewer();
 
+    qreal zoomFactor() const;
+
 public slots:
-    void setZoomFactor( float f );
+    void setZoomFactor( qreal f );
 
 signals:
-    void zoomFactorChanged( float );
+    void zoomFactorChanged( qreal );
 
 protected:
     void paintEvent( QPaintEvent *event );
@@ -47,7 +50,7 @@ protected:
 
 private:
     const QPixmap m_pixmap;
-    float m_zoomFactor;
+    qreal m_zoomFactor;
 };
 
 #endif

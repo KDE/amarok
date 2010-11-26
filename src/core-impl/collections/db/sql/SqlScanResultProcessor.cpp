@@ -16,12 +16,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "SqlScanResultProcessor.h"
-#include "SqlQueryMaker.h"
+#define DEBUG_PREFIX "SqlScanResultProcessor"
 
-#include "playlistmanager/PlaylistManager.h"
+#include "SqlScanResultProcessor.h"
 
 #include "core/support/Debug.h"
+#include "SqlQueryMaker.h"
+#include "playlistmanager/PlaylistManager.h"
 
 // include files from the collection scanner utility
 #include <collectionscanner/Directory.h>
@@ -117,6 +118,8 @@ SqlScanResultProcessor::commitAlbum( const CollectionScanner::Album *album, int 
     // we need to do this after the tracks are added in case of an embedded cover
     if( metaAlbum )
     {
+        bool suppressAutoFetch = metaAlbum->suppressImageAutoFetch();
+        metaAlbum->setSuppressImageAutoFetch( true );
         if( m_type == FullScan )
         {
             if( !album->cover().isEmpty() )
@@ -130,6 +133,7 @@ SqlScanResultProcessor::commitAlbum( const CollectionScanner::Album *album, int 
             if( !metaAlbum->hasImage() && !album->cover().isEmpty() )
                 metaAlbum->setImage( album->cover() );
         }
+        metaAlbum->setSuppressImageAutoFetch( suppressAutoFetch );
     }
 }
 
@@ -149,7 +153,6 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
 
     int deviceId = m_collection->mountPointManager()->getIdForUrl( track->path() );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, track->path() );
-    debug() << "SRP::commitTrack"<<uid<<"at"<<track->path()<<"for album"<<albumId;
 
     if( m_foundTracks.contains( uid ) )
     {

@@ -62,7 +62,7 @@ namespace APG {
             void setActivePreset( const QModelIndex& );
 
         private slots:
-            void savePresetsToXml( const QString&, const QList<APG::PresetPtr> ) const;
+            void savePresetsToXml( const QString&, const QList<APG::PresetPtr> & ) const;
             void loadPresetsFromXml( const QString& );
 
         private:

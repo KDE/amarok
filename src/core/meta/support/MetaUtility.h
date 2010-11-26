@@ -45,12 +45,23 @@ namespace Meta
 
 
     AMAROK_CORE_EXPORT QString msToPrettyTime( qint64 ms );
+
+    /** Returns the character representation for the time duration.
+        This is a pretty short representation looking like this: 3:45.
+        It is used in the playlist.
+        It is not usefull for times above a 24 hours.
+    */
     AMAROK_CORE_EXPORT QString secToPrettyTime( int seconds );
+
+    /** Returns the character representation for the time duration.
+        This is a longer human friendy representation looking like this: 5 minutes even when
+        the actual seconds are 307.
+    */
+    AMAROK_CORE_EXPORT QString secToPrettyTimeLong( int seconds );
 
     AMAROK_CORE_EXPORT QString prettyFilesize( quint64 size );
     AMAROK_CORE_EXPORT QString prettyBitrate( int bitrate );
 
-    AMAROK_CORE_EXPORT QString prettyRating( int rating );
 }
 
 #endif

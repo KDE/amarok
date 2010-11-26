@@ -603,7 +603,7 @@ App::continueInit()
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
     QTextCodec::setCodecForCStrings( utf8codec ); //We need this to make CollectionViewItem showing the right characters.
 
-    new Amarok::DefaultApplicationController();
+    new Amarok::DefaultApplicationController( this );
     Amarok::Components::applicationController()->start();
 
     KSplashScreen* splash = 0;

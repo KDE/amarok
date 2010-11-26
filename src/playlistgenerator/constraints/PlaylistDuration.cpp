@@ -66,9 +66,14 @@ ConstraintTypes::PlaylistDuration::PlaylistDuration( QDomElement& xmlelem, Const
     DEBUG_BLOCK
     QDomAttr a;
 
+    // I the duration seems to have been a PlaylistLength before.
+    // the attribute used there was called "length".
+    // So we parse it, just to be on the safe side.
     a = xmlelem.attributeNode( "duration" );
+    if ( a.isNull() )
+        a = xmlelem.attributeNode( "length" );
     if ( !a.isNull() )
-        m_duration = a.value().toInt();
+        m_duration = a.value().toLongLong();
 
     a = xmlelem.attributeNode( "comparison" );
     if ( !a.isNull() )
@@ -96,7 +101,7 @@ ConstraintTypes::PlaylistDuration::editWidget() const
 {
     PlaylistDurationEditWidget* e = new PlaylistDurationEditWidget( m_duration, m_comparison, static_cast<int>( 10*m_strictness ) );
     connect( e, SIGNAL( comparisonChanged( const int ) ), this, SLOT( setComparison( const int ) ) );
-    connect( e, SIGNAL( durationChanged( const int ) ), this, SLOT( setDuration( const int ) ) );
+    connect( e, SIGNAL( durationChanged( const qint64 ) ), this, SLOT( setDuration( const qint64 ) ) );
     connect( e, SIGNAL( strictnessChanged( const int ) ), this, SLOT( setStrictness( const int ) ) );
     return e;
 }
@@ -289,7 +294,7 @@ ConstraintTypes::PlaylistDuration::setComparison( const int c )
 }
 
 void
-ConstraintTypes::PlaylistDuration::setDuration( const int v )
+ConstraintTypes::PlaylistDuration::setDuration( const qint64 v )
 {
     m_duration = v;
     emit dataChanged();
@@ -305,7 +310,7 @@ ConstraintTypes::PlaylistDuration::setStrictness( const int sv )
  * Edit Widget                *
  ******************************/
 
-ConstraintTypes::PlaylistDurationEditWidget::PlaylistDurationEditWidget( const int duration,
+ConstraintTypes::PlaylistDurationEditWidget::PlaylistDurationEditWidget( const qint64 duration,
                                                                      const int comparison,
                                                                      const int strictness ) : QWidget( 0 )
 {

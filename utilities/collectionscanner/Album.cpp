@@ -44,11 +44,11 @@ CollectionScanner::Album::Album( QXmlStreamReader *reader )
         {
             QStringRef name = reader->name();
 
-            if( name == "name" )
+            if( name == QLatin1String("name") )
                 m_name = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "track" )
+            else if( name == QLatin1String("track") )
                 m_tracks.append( CollectionScanner::Track( reader ) );
-            else if( name == "cover" )
+            else if( name == QLatin1String("cover") )
                 m_covers.append( reader->readElementText(QXmlStreamReader::SkipChildElements) );
             else
             {
@@ -110,7 +110,7 @@ CollectionScanner::Album::isCompilation() const
         return false;
 
     QString strArtist = artist();
-    if( strArtist.compare("Various Artists", Qt::CaseInsensitive) == 0 ||
+    if( strArtist.compare(QLatin1String("Various Artists"), Qt::CaseInsensitive) == 0 ||
         strArtist.compare(QObject::tr("Various Artists"), Qt::CaseInsensitive) == 0 )
         return true;
 
@@ -149,7 +149,7 @@ CollectionScanner::Album::isNoCompilation() const
         return false;
 
     QString strArtist = artist();
-    if( strArtist.compare("Various Artists", Qt::CaseInsensitive) == 0 ||
+    if( strArtist.compare(QLatin1String("Various Artists"), Qt::CaseInsensitive) == 0 ||
         strArtist.compare(QObject::tr("Various Artists"), Qt::CaseInsensitive) == 0 )
         return false;
 
@@ -206,7 +206,7 @@ CollectionScanner::Album::cover() const
         // IMPROVEMENT: skip covers that have a strange aspect ratio or are
         // unrealistically small, or do not resolve to a valid image
         if( track.hasCover() )
-            return "amarok-sqltrackuid://" + track.uniqueid();
+            return QLatin1String("amarok-sqltrackuid://") + track.uniqueid();
     }
 
     // ok. Now we have to figure out which of the cover images is
@@ -219,17 +219,17 @@ CollectionScanner::Album::cover() const
     {
         int rating = 0;
 
-        if( cover.contains( "front", Qt::CaseInsensitive ) ||
+        if( cover.contains( QLatin1String("front"), Qt::CaseInsensitive ) ||
             cover.contains( QObject::tr( "front", "Front cover of an album" ), Qt::CaseInsensitive ) )
             rating += 2;
 
-        if( cover.contains( "cover", Qt::CaseInsensitive ) ||
+        if( cover.contains( QLatin1String("cover"), Qt::CaseInsensitive ) ||
             cover.contains( QObject::tr( "cover", "(Front) Cover of an album" ), Qt::CaseInsensitive ) )
             rating += 2;
 
         //next: try "folder" (some applications apparently use this)
         //using compare and not contains to not hit "Folder-Back" or something.
-        if( cover.compare( "folder", Qt::CaseInsensitive ) == 0)
+        if( cover.compare( QLatin1String("folder"), Qt::CaseInsensitive ) == 0)
             rating += 1;
 
         QFileInfo info( cover );
@@ -256,18 +256,18 @@ void
 CollectionScanner::Album::toXml( QXmlStreamWriter *writer ) const
 {
 
-    writer->writeTextElement( "name", m_name );
+    writer->writeTextElement( QLatin1String("name"), m_name );
 
     foreach( const CollectionScanner::Track &track, m_tracks )
     {
-        writer->writeStartElement( "track" );
+        writer->writeStartElement( QLatin1String("track") );
         track.toXml( writer );
         writer->writeEndElement();
     }
 
     foreach( const QString &str, m_covers )
     {
-        writer->writeTextElement( "cover", str );
+        writer->writeTextElement( QLatin1String("cover"), str );
     }
 }
 #endif // UTILITIES_BUILD

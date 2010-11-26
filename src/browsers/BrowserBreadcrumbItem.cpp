@@ -139,6 +139,8 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
 
 BrowserBreadcrumbItem::~BrowserBreadcrumbItem()
 {
+    if( m_menuButton )
+        delete m_menuButton->menu();
 }
 
 void

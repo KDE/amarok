@@ -22,59 +22,22 @@
  ***************************************************************************/
 
 #include "Track.h"
-#include "AFTUtility.h"
+
+#include "MetaTagLib.h"
+#include "MetaReplayGain.h"
 
 #include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QTextCodec>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#ifdef UTILITIES_BUILD
-
-#include "charset-detector/include/chardet.h"
-#include "MetaReplayGain.h"
-
-//Taglib:
-#include <audioproperties.h>
-#include <fileref.h>
-
-#include <apetag.h>
-#include <fileref.h>
-#include <flacfile.h>
-#include <id3v1tag.h>
-#include <id3v2tag.h>
-#include <mp4file.h>
-#include <mp4tag.h>
-#include <mp4item.h>
-#include <mpcfile.h>
-#include <mpegfile.h>
-#include <oggfile.h>
-#include <oggflacfile.h>
-#include <speexfile.h>
-#include <tlist.h>
-#include <tstring.h>
-#include <vorbisfile.h>
-
-#include <popularimeterframe.h>
-#include <textidentificationframe.h>
-#include <uniquefileidentifierframe.h>
-#include <attachedpictureframe.h>
-#include <commentsframe.h>
-#include <xiphcomment.h>
-
-#endif // UTILITIES_BUILD
-
 bool CollectionScanner::Track::s_useCharsetDetector = false;
 
-#ifdef UTILITIES_BUILD
-
-#define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
 
 CollectionScanner::Track::Track( const QString &path)
-   : m_valid( false )
+   : m_valid( true )
    , m_filetype( Amarok::Unknown )
    , m_compilation( false )
    , m_noCompilation( false )
@@ -82,51 +45,37 @@ CollectionScanner::Track::Track( const QString &path)
    , m_year( -1 )
    , m_disc( -1 )
    , m_track( -1 )
-   , m_bpm( -1 )
+   , m_bpm( -1.0 )
    , m_bitrate( -1 )
-   , m_length( -1 )
+   , m_length( -1.0 )
    , m_samplerate( -1 )
    , m_filesize( -1 )
 
-   , m_trackGain( 0 )
-   , m_trackPeakGain( 0 )
-   , m_albumGain( 0 )
-   , m_albumPeakGain( 0 )
+   , m_trackGain( -1.0 )
+   , m_trackPeakGain( -1.0 )
+   , m_albumGain( -1.0 )
+   , m_albumPeakGain( -1.0 )
 
-   , m_rating( -1 )
-   , m_score( -1 )
-   , m_playcount( -1 )
+   , m_rating( -1.0 )
+   , m_score( -1.0 )
+   , m_playcount( -1.0 )
 {
-#define strip( x ) TStringToQString( x ).trimmed()
+    Meta::FieldHash values = Meta::Tag::readTags( path, s_useCharsetDetector );
 
+    m_valid = !values.empty();
+    if( values.contains(Meta::valUniqueId) )
+        m_uniqueid = values.value(Meta::valUniqueId).toString();
     m_path = path;
     m_rpath = QDir::current().relativeFilePath( path );
-
-#ifdef Q_OS_WIN32
-    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
-#else
-#ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
-#else
-    QByteArray fileName = QFile::encodeName( path );
-    const char *encodedName = fileName.constData(); // valid as long as fileName exists
-#endif
-#endif
-
-    TagLib::FileRef fileref;
-    TagLib::Tag *tag = 0;
-    // Tests reveal the following:
-    //
-    // TagLib::AudioProperties   Relative Time Taken
-    //
-    //  No AudioProp Reading        1
-    //  Fast                        1.18
-    //  Average                     Untested
-    //  Accurate                    Untested
-    TagLib::AudioProperties::ReadStyle readStyle = TagLib::AudioProperties::Fast;
-
-    fileref = TagLib::FileRef( encodedName, true, readStyle );
-
+    if( values.contains(Meta::valFiletype) )
+        m_filetype = Amarok::FileType(values.value(Meta::valFiletype).toInt());
+    if( values.contains(Meta::valTitle) )
+        m_title = values.value(Meta::valTitle).toString();
+    if( values.contains(Meta::valArtist) )
+        m_artist = values.value(Meta::valArtist).toString();
+    if( values.contains(Meta::valAlbum) )
+        m_album = values.value(Meta::valAlbum).toString();
+    if( values.contains(Meta::valCompilation) )
     // for the unit test.
     // in a debug build a file called "crash_amarok_here.ogg" will crash the collection
     // scanner
@@ -136,310 +85,54 @@ CollectionScanner::Track::Track( const QString &path)
         Q_ASSERT( false );
     }
 
-    if( !fileref.isNull() )
     {
-        tag = fileref.tag();
-        if( tag )
-        {
-            m_title = strip( tag->title() );
-            m_artist = strip( tag->artist() );
-            m_album = strip( tag->album() );
-            m_comment = strip( tag->comment() );
-            m_genre = strip( tag->genre() );
-            if( tag->year() && tag->year() < 2200 )
-                m_year = tag->year();
-            if( tag->track() )
-                m_track = tag->track();
-
-            m_valid = true;
-        }
-
-        Meta::ReplayGainTagMap replayGainTags = Meta::readReplayGainTags( fileref );
-        if ( replayGainTags.contains( Meta::ReplayGain_Track_Gain ) )
-        {
-            m_trackGain = replayGainTags[Meta::ReplayGain_Track_Gain];
-            if ( replayGainTags.contains( Meta::ReplayGain_Track_Peak ) )
-                m_trackPeakGain = replayGainTags[Meta::ReplayGain_Track_Peak];
-        }
-        if ( replayGainTags.contains( Meta::ReplayGain_Album_Gain ) )
-        {
-            m_albumGain = replayGainTags[Meta::ReplayGain_Album_Gain];
-            if ( replayGainTags.contains( Meta::ReplayGain_Album_Peak ) )
-                m_albumPeakGain = replayGainTags[Meta::ReplayGain_Album_Peak];
-        }
-
-        /* As MPEG implementation on TagLib uses a Tag class that's not defined on the headers,
-           we have to cast the files, not the tags! */
-        if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
-        {
-            m_filetype = Amarok::Mp3;
-            if ( file->ID3v2Tag() )
-            {
-                for( TagLib::ID3v2::FrameList::ConstIterator it = file->ID3v2Tag()->frameList().begin(); it != file->ID3v2Tag()->frameList().end(); ++it )
-                {
-                    TagLib::String name  = TagLib::String((*it)->frameID());
-
-                    // -- comments
-                    if( name == "TXXX" )
-                    {
-                        TagLib::ID3v2::UserTextIdentificationFrame* frame = dynamic_cast<TagLib::ID3v2::UserTextIdentificationFrame*>(*it);
-                        if( !frame )
-                            continue;
-
-                        // the value of the user text frame is stored in the
-                        // second and following fields.
-                        TagLib::StringList fields = frame->fieldList();
-                        if( fields.size() >= 2 )
-                        {
-                            decodeFMPS( TStringToQString( fields[0] ),
-                                        TStringToQString( fields[1] ), true );
-                        }
-                    }
-
-                    else if( name[0] == 'T' )
-                    {
-                        TagLib::ID3v2::TextIdentificationFrame* frame = dynamic_cast<TagLib::ID3v2::TextIdentificationFrame*>(*it);
-                        if( !frame )
-                            continue;
-
-                        QString value = TStringToQString(frame->fieldList().toString("\n"));
-
-                        if( name == "TPOS" )
-                            m_disc = splitNumber(value);
-
-                        else if( name == "TBPM" )
-                            m_bpm = value.toFloat();
-
-                        else if( name == "TCOM" )
-                            m_composer = value;
-
-                        else if( name == "TPE2" ) // non-standard: Apple, Microsoft
-                            m_albumArtist = value;
-
-                        // -- compilation
-                        else if( name == "TCMP" )
-                        {
-                            if( value.toLower() == "true" || value.toInt() )
-                                m_compilation = true;
-                            else
-                                m_noCompilation = true;
-                        }
-                    }
-
-                    // -- rating, playcount
-                    else if( name == "POPM" )
-                    {
-                        TagLib::ID3v2::PopularimeterFrame *frame = dynamic_cast<TagLib::ID3v2::PopularimeterFrame *>(*it);
-                        if( !frame )
-                            continue;
-
-                        if( TStringToQString(frame->email()) == "" ) // only read anonymous ratings
-                        {
-                            // FMPS tags have precedence
-                            if( m_rating == -1 && frame->rating() != 0 )
-                                m_rating = qreal(frame->rating()) / 256.0;
-                            if( m_playcount == -1 && frame->counter() < 10000 )
-                                m_playcount = frame->counter();
-                        }
-                    }
-
-                    // -- covers
-                    else if( name == "APIC" )
-                    {
-                        TagLib::ID3v2::AttachedPictureFrame* frame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(*it);
-                        if( !frame )
-                            continue;
-
-                        if( (frame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover ||
-                             frame->type() == TagLib::ID3v2::AttachedPictureFrame::Other) &&
-                             frame->picture().size() > 1024 ) // must be at least 1kb
-                        {
-                            m_hasCover = true;
-                        }
-                    }
-
-                    // -- uid
-                    else if( name == "UFID" )
-                    {
-                        TagLib::ID3v2::UniqueFileIdentifierFrame* frame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*it);
-                        if( !frame )
-                            continue;
-
-                        QString owner = TStringToQString( frame->owner() );
-                        QString identifier = TStringToQString( TagLib::String( frame->identifier() ) );
-                        if( identifier.isEmpty() )
-                            continue;
-
-                        if( owner == "http://musicbrainz.org" )
-                            m_uniqueid = "mb-" + identifier;
-                        else if( owner == "Amarok 2 AFTv1 - amarok.kde.org" )
-                            m_uniqueid = identifier;
-                    }
-                }
-            }
-
-            // HACK: charset-detector disabled, so all tags assumed utf-8
-            // TODO: fix charset-detector to detect encoding with higher accuracy
-
-            if( s_useCharsetDetector && tag )
-            {
-                TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
-                const char* buf = metaData.toCString();
-                size_t len = strlen( buf );
-                int res = 0;
-                chardet_t det = NULL;
-                char encoding[CHARDET_MAX_ENCODING_NAME];
-                chardet_create( &det );
-                res = chardet_handle_data( det, buf, len );
-                chardet_data_end( det );
-                res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
-                chardet_destroy( det );
-
-                QString track_encoding = encoding;
-
-                if ( res == CHARDET_RESULT_OK )
-                {
-                    /*  for further information please refer to:
-                     http://doc.trolltech.com/4.4/qtextcodec.html
-                     http://www.mozilla.org/projects/intl/chardet.html
-                     */
-                    if ( ( track_encoding.toUtf8() == "gb18030" )
-                         || ( track_encoding.toUtf8() == "big5" )
-                         || ( track_encoding.toUtf8() == "euc-kr" )
-                         || ( track_encoding.toUtf8() == "euc-jp" )
-                         || ( track_encoding.toUtf8() == "koi8-r" ) )
-                    {
-                        QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
-                        QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
-                        QTextCodec::setCodecForCStrings( utf8codec );
-                        if ( codec != 0 )
-                        {
-                            m_title = codec->toUnicode( strip( tag->title() ).toLatin1() );
-                            m_artist = codec->toUnicode( strip( tag->artist() ).toLatin1() );
-                            m_album = codec->toUnicode( strip( tag->album() ).toLatin1() );
-                            m_comment = codec->toUnicode( strip( tag->comment() ).toLatin1() );
-                        }
-                    }
-                }
-            }
-        }
-
-        else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
-        {
-            m_filetype = Amarok::Ogg;
-            if ( file->tag() )
-            {
-                for( TagLib::Ogg::FieldListMap::ConstIterator it = file->tag()->fieldListMap().begin(); it != file->tag()->fieldListMap().end(); ++it )
-                {
-                    QString name = TStringToQString( it->first );
-                    QString value = TStringToQString( it->second.toString("\n") );
-                    decodeXiph( name, value );
-                }
-            }
-        }
-
-        else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
-        {
-            m_filetype = Amarok::Flac;
-            if ( file->xiphComment() )
-            {
-                for( TagLib::Ogg::FieldListMap::ConstIterator it = file->xiphComment()->fieldListMap().begin(); it != file->xiphComment()->fieldListMap().end(); ++it )
-                {
-                    QString name = TStringToQString( it->first );
-                    QString value = TStringToQString( it->second.toString("\n") );
-                    decodeXiph( name, value );
-                }
-            }
-        }
-
-        else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
-        {
-            m_filetype = Amarok::Mp4;
-            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
-            if( mp4tag )
-            {
-                for( TagLib::MP4::ItemListMap::Iterator it = mp4tag->itemListMap().begin(); it != mp4tag->itemListMap().end(); ++it )
-                {
-                    QString name = TStringToQString( it->first );
-                    QString value = TStringToQString( it->second.toStringList().toString("\n") );
-
-                    if( name == "\xA9wrt" )
-                        m_composer = value;
-
-                    else if( name == "aART" ) // iTunes 4.0
-                        m_albumArtist = value;
-
-                    else if( name == "tmpo" )
-                        m_bpm = it->second.toInt();
-
-                    else if( name == "disk" )
-                        m_disc = it->second.toIntPair().first;
-
-                    else if( name == "cpil" )
-                    {
-                        if( it->second.toBool() )
-                            m_compilation = true;
-                        else
-                            m_noCompilation = true;
-                    }
-
-                    else if( name == "----:com.apple.iTunes:MusicBrainz Track Id" )
-                        m_uniqueid = "mb-" + value;
-
-                    else if( name == "----:com.apple.iTunes:Amarok 2 AFTv1 - amarok.kde.org" )
-                        m_uniqueid = value;
-
-                    else
-                    {
-                        if( name.startsWith("----:com.apple.iTunes") )
-                        {
-                            decodeFMPS( name.remove(0, 22), value, true );
-                        }
-                    }
-
-//                 if ( images && mp4tag->cover().size() )
-//                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );
-                }
-            }
-        }
-        //we didn't set a FileType till now, let's look it up via FileExtension
-        if ( m_filetype == Amarok::Unknown )
-        {
-            QString ext = path.mid( path.lastIndexOf( '.' ) + 1 ); 
-            m_filetype = Amarok::FileTypeSupport::fileType( ext );
-        }
+        m_compilation = values.value(Meta::valCompilation).toBool();
+        m_noCompilation = !values.value(Meta::valCompilation).toBool();
     }
+    if( values.contains(Meta::valHasCover) )
+        m_hasCover = values.value(Meta::valHasCover).toBool();
+    if( values.contains(Meta::valComment) )
+        m_comment = values.value(Meta::valComment).toString();
+    if( values.contains(Meta::valGenre) )
+        m_genre = values.value(Meta::valGenre).toString();
+    if( values.contains(Meta::valYear) )
+        m_year = values.value(Meta::valYear).toInt();
+    if( values.contains(Meta::valDiscNr) )
+        m_disc = values.value(Meta::valDiscNr).toInt();
+    if( values.contains(Meta::valTrackNr) )
+        m_track = values.value(Meta::valTrackNr).toInt();
+    if( values.contains(Meta::valBpm) )
+        m_bpm = values.value(Meta::valBpm).toReal();
+    if( values.contains(Meta::valBitrate) )
+        m_bitrate = values.value(Meta::valBitrate).toInt();
+    if( values.contains(Meta::valLength) )
+        m_length = values.value(Meta::valLength).toLongLong();
+    if( values.contains(Meta::valSamplerate) )
+        m_samplerate = values.value(Meta::valSamplerate).toInt();
+    if( values.contains(Meta::valFilesize) )
+        m_filesize = values.value(Meta::valFilesize).toLongLong();
 
-    if( m_valid && fileref.audioProperties() )
-    {
-        m_bitrate = fileref.audioProperties()->bitrate();
-        m_length = fileref.audioProperties()->length() * 1000;
-        m_samplerate = fileref.audioProperties()->sampleRate();
-    }
-
-    m_filesize = QFile( path ).size();
-
-    if( m_valid && m_uniqueid.isEmpty() )
-    {
-        AFTUtility aftutil;
-        m_uniqueid = aftutil.readUniqueId( path );
-    }
-    // remove leading slashes. They cause problems
+    if( values.contains(Meta::valTrackGain) )
+        m_trackGain = values.value(Meta::valTrackGain).toReal();
+    if( values.contains(Meta::valTrackGainPeak) )
+        m_trackPeakGain = values.value(Meta::valTrackGainPeak).toReal();
+    if( values.contains(Meta::valAlbumGain) )
+        m_albumGain = values.value(Meta::valAlbumGain).toReal();
+    if( values.contains(Meta::valAlbumGainPeak) )
+        m_albumPeakGain = values.value(Meta::valAlbumGainPeak).toReal();
     while( m_uniqueid.startsWith('/') )
         m_uniqueid = m_uniqueid.mid(1);
 
-    // TODO:
-    // --- if no tags could be found. Invent something from the filename
-    // replace underscores with spaces
-    // capitalize each word if all characters are lower case
-    // - split up the filename at dashes
-    // if the filename starts with a number that is probably a track number
-    // - two parts mean "artist - title"
+    if( values.contains(Meta::valComposer) )
+        m_composer = values.value(Meta::valComposer).toString();
 
-#undef strip
+    if( values.contains(Meta::valRating) )
+        m_rating = values.value(Meta::valRating).toReal();
+    if( values.contains(Meta::valScore) )
+        m_score = values.value(Meta::valScore).toReal();
+    if( values.contains(Meta::valPlaycount) )
+        m_playcount = values.value(Meta::valPlaycount).toReal();
 }
-
-#endif // UTILITIES_BUILD
 
 CollectionScanner::Track::Track( QXmlStreamReader *reader )
    : m_valid( true )
@@ -472,76 +165,76 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader )
         if( reader->isStartElement() )
         {
             QStringRef name = reader->name();
-            if( name == "uniqueid" )
+            if( name == QLatin1String("uniqueid") )
                 m_uniqueid = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "path" )
+            else if( name == QLatin1String("path") )
                 m_path = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "rpath" )
+            else if( name == QLatin1String("rpath") )
                 m_rpath = reader->readElementText(QXmlStreamReader::SkipChildElements);
 
-            else if( name == "filetype" )
+            else if( name == QLatin1String("filetype") )
                 m_filetype = (Amarok::FileType)reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "title" )
+            else if( name == QLatin1String("title") )
                 m_title = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "artist" )
+            else if( name == QLatin1String("artist") )
                 m_artist = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "albumArtist" )
+            else if( name == QLatin1String("albumArtist") )
                 m_albumArtist = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "album" )
+            else if( name == QLatin1String("album") )
                 m_album = reader->readElementText();
-            else if( name == "compilation" )
+            else if( name == QLatin1String("compilation") )
             {
                 m_compilation = true;
                 reader->skipCurrentElement();
             }
-            else if( name == "noCompilation" )
+            else if( name == QLatin1String("noCompilation") )
             {
                 m_noCompilation = true;
                 reader->skipCurrentElement();
             }
-            else if( name == "hasCover" )
+            else if( name == QLatin1String("hasCover") )
             {
                 m_hasCover = true;
                 reader->skipCurrentElement();
             }
-            else if( name == "comment" )
+            else if( name == QLatin1String("comment") )
                 m_comment = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "genre" )
+            else if( name == QLatin1String("genre") )
                 m_genre = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "year" )
+            else if( name == QLatin1String("year") )
                 m_year = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "disc" )
+            else if( name == QLatin1String("disc") )
                 m_disc = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "track" )
+            else if( name == QLatin1String("track") )
                 m_track = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "bpm" )
+            else if( name == QLatin1String("bpm") )
                 m_bpm = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "bitrate" )
+            else if( name == QLatin1String("bitrate") )
                 m_bitrate = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "length" )
+            else if( name == QLatin1String("length") )
                 m_length = reader->readElementText(QXmlStreamReader::SkipChildElements).toLong();
-            else if( name == "samplerate" )
+            else if( name == QLatin1String("samplerate") )
                 m_samplerate = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
-            else if( name == "filesize" )
+            else if( name == QLatin1String("filesize") )
                 m_filesize = reader->readElementText(QXmlStreamReader::SkipChildElements).toLong();
 
-            else if( name == "trackGain" )
+            else if( name == QLatin1String("trackGain") )
                 m_trackGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "trackPeakGain" )
+            else if( name == QLatin1String("trackPeakGain") )
                 m_trackPeakGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "albumGain" )
+            else if( name == QLatin1String("albumGain") )
                 m_albumGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "albumPeakGain" )
+            else if( name == QLatin1String("albumPeakGain") )
                 m_albumPeakGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
 
-            else if( name == "composer" )
+            else if( name == QLatin1String("composer") )
                 m_composer = reader->readElementText(QXmlStreamReader::SkipChildElements);
 
-            else if( name == "rating" )
+            else if( name == QLatin1String("rating") )
                 m_rating = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "score" )
+            else if( name == QLatin1String("score") )
                 m_score = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
-            else if( name == "playcount" )
+            else if( name == QLatin1String("playcount") )
                 m_playcount = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
 
             else
@@ -557,8 +250,6 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader )
         }
     }
 }
-
-#ifdef UTILITIES_BUILD
 
 /** Removes all characters not allowed by xml 1.0 specification.
     We need this because the Qt 4.6 xml scanner is behaving very badly
@@ -594,149 +285,60 @@ CollectionScanner::Track::toXml( QXmlStreamWriter *writer ) const
     if( !m_valid )
         return;
 
-    write( writer, "uniqueid", m_uniqueid );
-    write( writer, "path", m_path );
-    write( writer, "rpath", m_rpath );
+    write( writer, QLatin1String("uniqueid"), m_uniqueid );
+    write( writer, QLatin1String("path"), m_path );
+    write( writer, QLatin1String("rpath"), m_rpath );
 
-    write(writer, "filetype", QString::number( (int)m_filetype ) );
+    write(writer, QLatin1String("filetype"), QString::number( (int)m_filetype ) );
 
-    write( writer, "title", m_title);
-    write( writer, "artist", m_artist);
-    write( writer, "albumArtist", m_albumArtist);
-    write( writer, "album", m_album);
+    write( writer, QLatin1String("title"), m_title);
+    write( writer, QLatin1String("artist"), m_artist);
+    write( writer, QLatin1String("albumArtist"), m_albumArtist);
+    write( writer, QLatin1String("album"), m_album);
     if( m_compilation )
-        writer->writeEmptyElement( "compilation" );
+        writer->writeEmptyElement( QLatin1String("compilation") );
     if( m_noCompilation )
-        writer->writeEmptyElement( "noCompilation" );
+        writer->writeEmptyElement( QLatin1String("noCompilation") );
     if( m_hasCover )
-        writer->writeEmptyElement( "hasCover" );
-    write( writer, "comment", m_comment);
-    write( writer, "genre", m_genre);
+        writer->writeEmptyElement( QLatin1String("hasCover") );
+    write( writer, QLatin1String("comment"), m_comment);
+    write( writer, QLatin1String("genre"), m_genre);
     if( m_year != -1 )
-        write(writer, "year", QString::number( m_year ) );
+        write(writer, QLatin1String("year"), QString::number( m_year ) );
     if( m_disc != -1 )
-        write(writer, "disc", QString::number( m_disc ) );
+        write(writer, QLatin1String("disc"), QString::number( m_disc ) );
     if( m_track != -1 )
-        write(writer, "track", QString::number( m_track ) );
+        write(writer, QLatin1String("track"), QString::number( m_track ) );
     if( m_bpm != -1 )
-        write(writer, "bpm", QString::number( m_bpm ) );
+        write(writer, QLatin1String("bpm"), QString::number( m_bpm ) );
     if( m_bitrate != -1 )
-        write(writer, "bitrate", QString::number( m_bitrate ) );
+        write(writer, QLatin1String("bitrate"), QString::number( m_bitrate ) );
     if( m_length != -1 )
-        write(writer, "length", QString::number( m_length ) );
+        write(writer, QLatin1String("length"), QString::number( m_length ) );
     if( m_samplerate != -1 )
-        write(writer, "samplerate", QString::number( m_samplerate ) );
+        write(writer, QLatin1String("samplerate"), QString::number( m_samplerate ) );
     if( m_filesize != -1 )
-        write(writer, "filesize", QString::number( m_filesize ) );
+        write(writer, QLatin1String("filesize"), QString::number( m_filesize ) );
 
     if( m_trackGain != 0 )
-        write(writer, "trackGain", QString::number( m_trackGain ) );
+        write(writer, QLatin1String("trackGain"), QString::number( m_trackGain ) );
     if( m_trackPeakGain != 0 )
-        write(writer, "trackPeakGain", QString::number( m_trackPeakGain ) );
+        write(writer, QLatin1String("trackPeakGain"), QString::number( m_trackPeakGain ) );
     if( m_albumGain != 0 )
-        write(writer, "albumGain", QString::number( m_albumGain ) );
+        write(writer, QLatin1String("albumGain"), QString::number( m_albumGain ) );
     if( m_albumPeakGain != 0 )
-        write(writer, "albumPeakGain", QString::number( m_albumPeakGain ) );
+        write(writer, QLatin1String("albumPeakGain"), QString::number( m_albumPeakGain ) );
 
-    write( writer, "composer", m_composer);
+    write( writer, QLatin1String("composer"), m_composer);
 
     if( m_rating != -1 )
-        write(writer, "rating", QString::number( m_rating ) );
+        write(writer, QLatin1String("rating"), QString::number( m_rating ) );
     if( m_score != -1 )
-        write(writer, "score", QString::number( m_score ) );
+        write(writer, QLatin1String("score"), QString::number( m_score ) );
     if( m_playcount != -1 )
-        write(writer, "playcount", QString::number( m_playcount ) );
+        write(writer, QLatin1String("playcount"), QString::number( m_playcount ) );
 
 }
-
-void
-CollectionScanner::Track::decodeXiph( const QString &name, const QString &value )
-{
-    if( name == "COMPOSER" )
-        m_composer = value;
-
-    else if( name == "ALBUMARTIST" )
-        m_albumArtist = value;
-
-    else if( name == "BPM" )
-        m_bpm = value.toFloat();
-
-    else if( name == "DISCNUMBER" )
-        m_disc = splitNumber(value.trimmed());
-
-    else if( name == "COMPILATION" )
-    {
-        if( value.toInt() )
-            m_compilation = true;
-        else
-            m_noCompilation = true;
-    }
-    else if( name == "MUSICBRAINZ_TRACKID" )
-    {
-        m_uniqueid = "mb-" + value;
-    }
-    else if( name == "AMAROK 2 AFTV1 - AMAROK.KDE.ORG" )
-    {
-        m_uniqueid = value;
-    }
-    else
-        decodeFMPS( name, value, false );
-}
-
-void
-CollectionScanner::Track::decodeFMPS( const QString &identifier, const QString &value, bool camelCase )
-{
-    bool ok = false;
-    qreal f = value.toFloat( &ok );
-
-    if( (camelCase  && identifier == "FMPS_Rating") ||
-        (!camelCase && identifier == "FMPS_RATING") )
-    {
-        if( ok )
-            m_rating = f;
-    }
-
-    else if( (camelCase  && identifier == "FMPS_Rating_Amarok_Score") ||
-             (!camelCase && identifier == "FMPS_RATING_AMAROK_SCORE") )
-    {
-        if( ok )
-            m_score = f;
-    }
-
-    else if( (camelCase  && identifier == "FMPS_Playcount") ||
-             (!camelCase && identifier == "FMPS_PLAYCOUNT") )
-    {
-        if( ok )
-            m_playcount = f;
-    }
-}
-
-int
-CollectionScanner::Track::splitNumber( const QString str ) const
-{
-    int i;
-    int res;
-    bool ok = false;
-
-    i = str.indexOf('/');
-    if( i != -1 )
-        i = str.indexOf(':');
-
-    // guard against b0rked tags
-    if ( i != -1 )
-        // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
-        res = str.left( i-1 ).toInt( &ok );
-    else
-        res = str.toInt( &ok );
-
-    if( !ok )
-        return -1;
-
-    return res;
-}
-
-#endif // UTILITIES_BUILD
-
 
 bool
 CollectionScanner::Track::isValid() const

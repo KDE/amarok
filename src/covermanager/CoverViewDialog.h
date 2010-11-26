@@ -31,7 +31,7 @@ class AMAROK_EXPORT CoverViewDialog : public QDialog
 
     private slots:
         void updateCaption();
-        void zoomFactorChanged( float value );
+        void zoomFactorChanged( qreal value );
 
     private:
         void createViewer( const QPixmap &pixmap, const QWidget *widget );

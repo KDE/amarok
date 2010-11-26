@@ -61,7 +61,7 @@ CoverViewDialog::updateCaption()
 }
 
 void
-CoverViewDialog::zoomFactorChanged( float value )
+CoverViewDialog::zoomFactorChanged( qreal value )
 {
     m_zoom = 100 * value;
     updateCaption();
@@ -76,10 +76,12 @@ CoverViewDialog::createViewer( const QPixmap &pixmap, const QWidget *widget )
     layout->addWidget( pixmapViewer );
     layout->setSizeConstraint( QLayout::SetFixedSize );
     layout->setContentsMargins( 0, 0, 0, 0 );
-    connect( pixmapViewer, SIGNAL(zoomFactorChanged(float)), SLOT(zoomFactorChanged(float)) );
+    connect( pixmapViewer, SIGNAL(zoomFactorChanged(qreal)), SLOT(zoomFactorChanged(qreal)) );
 
+    qreal zoom = pixmapViewer->zoomFactor();
+    zoomFactorChanged( zoom );
     QPoint topLeft = mapFromParent( widget->geometry().center() );
-    topLeft -= QPoint( pixmap.width() / 2, pixmap.height() / 2 );
+    topLeft -= QPoint( pixmap.width() * zoom / 2, pixmap.height() * zoom / 2 );
     move( topLeft );
     activateWindow();
     raise();

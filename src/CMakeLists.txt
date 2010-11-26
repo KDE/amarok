@@ -271,8 +271,8 @@ set(libstatusbar_SRCS
 #####################################################################
 set(libmetaimpl_SRCS
     core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
-    core-impl/meta/file/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
+    ../shared/MetaTagLib.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp
@@ -525,7 +525,7 @@ set(apg_SRCS
     playlistgenerator/constraints/PlaylistLength.cpp
     playlistgenerator/constraints/PreventDuplicates.cpp
     playlistgenerator/constraints/TagMatch.cpp
-    playlistgenerator/constraints/TagMatchSupport.cpp
+    playlistgenerator/constraints/TagMatchComparer.cpp
     playlistgenerator/constraints/TrackSpreader.cpp
 )
 

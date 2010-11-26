@@ -40,15 +40,11 @@ namespace CollectionScanner
 class Track
 {
 public:
-#ifdef UTILITIES_BUILD
     /** Reads a track from the given path */
     Track( const QString &path );
-#endif
 
     /** Tries to parse the track from the xml stream */
     Track( QXmlStreamReader *reader );
-
-#ifdef UTILITIES_BUILD
 
     /** Writes the contents of this object to an xml stream.
         Only the content is writen and no enclosing directory tags.
@@ -56,7 +52,6 @@ public:
         tags either.
      */
     void toXml( QXmlStreamWriter *writer ) const;
-#endif
 
     /** Returns true if this track is really a song. */
     bool isValid() const;
@@ -110,24 +105,8 @@ public:
 
 private:
 
-#ifdef UTILITIES_BUILD
     QString escape( QString str ) const;
     void write( QXmlStreamWriter *writer, const QString &tag, const QString &str ) const;
-
-    void decodeXiph( const QString &name, const QString &value );
-
-    /** Decodes FMPS tags.
-        http://gitorious.org/~jefferai/xdg-specs/jefferais-xdg-specs/blobs/d3fef64aa1e2e0528b991b0313fd5b68d78761bd/specifications/FMPSpecs/specification.txt
-     */
-    void decodeFMPS( const QString &identifier, const QString &value, bool camelCase );
-
-    /** Splits a string with two numers and returns the first.
-       e.g. "1/11" is split and 1 returned.
-       returns -1 if the number could not be parsed
-     */
-    int splitNumber( const QString str ) const;
-#endif
-
     bool m_valid;
 
     QString m_uniqueid;

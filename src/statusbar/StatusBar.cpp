@@ -150,13 +150,11 @@ StatusBar::StatusBar( QWidget * parent )
     qRegisterMetaType<MessageType>( "MessageType" );
     connect( this, SIGNAL( signalLongMessage( const QString &, MessageType ) ), SLOT( slotLongMessage( const QString &, MessageType ) ), Qt::QueuedConnection );
 
-    connect( The::playlist()->qaim(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
     // Ignore The::playlist() layoutChanged: rows moving around does not change the total playlist length.
-    connect( The::playlist()->qaim(), SIGNAL( modelReset() ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlist()->qaim(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlist()->qaim(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-
-    connect( The::playlist()->qaim(), SIGNAL( queueChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( modelReset() ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
 
     updateTotalPlaylistLength();
 
@@ -373,14 +371,14 @@ StatusBar::updateTotalPlaylistLength() //SLOT
     DEBUG_BLOCK
 
     const quint64 totalLength = The::playlist()->totalLength();
-    const quint64 totalSize = The::playlist()->totalSize();
     const int trackCount = The::playlist()->qaim()->rowCount();
-    const QString prettyTotalLength = Meta::msToPrettyTime( totalLength );
-    const QString prettyTotalSize = Meta::prettyFilesize( totalSize );
 
     if( totalLength > 0 && trackCount > 0 )
     {
-        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, prettyTotalLength ) );
+        const QString prettyTotalLength = Meta::msToPrettyTime( totalLength );
+        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time",
+                                                "%1 track (%2)", "%1 tracks (%2)",
+                                                trackCount, prettyTotalLength ) );
         m_playlistLengthLabel->show();
 
         quint64 queuedTotalLength( 0 );
@@ -393,10 +391,12 @@ StatusBar::updateTotalPlaylistLength() //SLOT
             {
                 queuedTotalLength += The::playlist()->trackAt( i )->length();
                 queuedTotalSize += The::playlist()->trackAt( i )->filesize();
-                queuedCount++;
+                ++queuedCount;
             }
         }
 
+        const quint64 totalSize = The::playlist()->totalSize();
+        const QString prettyTotalSize = Meta::prettyFilesize( totalSize );
         const QString prettyQueuedTotalLength = Meta::msToPrettyTime( queuedTotalLength );
         const QString prettyQueuedTotalSize   = Meta::prettyFilesize( queuedTotalSize );
 
@@ -422,8 +422,9 @@ StatusBar::updateTotalPlaylistLength() //SLOT
         m_playlistLengthLabel->setToolTip( 0 );
         m_separator->show();
     }
-    //Total Length will not be > 0 if trackCount is 0, so we can ignore it
-    else { // TotalLength = 0 and trackCount = 0;
+    else // Total Length will not be > 0 if trackCount is 0, so we can ignore it
+    {
+        // TotalLength = 0 and trackCount = 0;
         m_playlistLengthLabel->hide();
         m_separator->hide();
     }

@@ -35,14 +35,17 @@ public:
     virtual ~OcsData();
     void addAuthor( const QString &username, const KAboutPerson &person );
     void addCredit( const QString &username, const KAboutPerson &person );
+    void addDonor( const QString &username, const KAboutPerson &person );
 
     const OcsPersonList * authors() const { return &m_authors; }
     const OcsPersonList * credits() const { return &m_credits; }
+    const OcsPersonList * donors() const { return &m_donors; }
     const QString providerId() const { return m_providerId; }
 
 private:
     QList< QPair< QString, KAboutPerson > > m_authors;
     QList< QPair< QString, KAboutPerson > > m_credits;
+    QList< QPair< QString, KAboutPerson > > m_donors;
     QString m_providerId;
 };
 

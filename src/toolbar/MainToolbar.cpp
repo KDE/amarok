@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MainToolbar"
+
 #include "MainToolbar.h"
 
 #include "amarokconfig.h"
@@ -22,6 +24,7 @@
 #include "App.h"
 #include "ActionClasses.h"
 #include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "MainWindow.h"
@@ -78,6 +81,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     : QToolBar( i18n( "Main Toolbar" ), parent )
     , m_lastTime( -1 )
 {
+    DEBUG_BLOCK
     setObjectName( "MainToolbar" );
 
     m_promoString = i18n( "Rediscover Your Music" );
@@ -93,13 +97,11 @@ MainToolbar::MainToolbar( QWidget *parent )
     spacerWidget->setFixedWidth( leftRightSpacer );
     addWidget( spacerWidget );
 
-debug() << "+++ MainToolbar" << engine->isPlaying() << "ct:" << engine->currentTrack();
-
     m_playPause = new PlayPauseButton;
     m_playPause->setPlaying( engine->isPlaying() );
     m_playPause->setFixedSize( icnSize, icnSize );
     addWidget( m_playPause );
-    connect ( m_playPause, SIGNAL( toggled(bool) ), engine, SLOT( playPause() ) );
+    connect( m_playPause, SIGNAL(toggled(bool)), engine, SLOT(playPause()) );
 
     QWidget *info = new QWidget(this);
     QVBoxLayout *vl = new QVBoxLayout( info );
@@ -124,7 +126,7 @@ debug() << "+++ MainToolbar" << engine->isPlaying() << "ct:" << engine->currentT
     m_prev.label->setOpacity( prevOpacity );
     m_prev.label->installEventFilter( this );
     m_prev.label->setForegroundRole( prev_next_role );
-    connect ( m_prev.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
+    connect( m_prev.label, SIGNAL(clicked(QString)), The::playlistActions(), SLOT(back()) );
 
     m_current.label = new AnimatedLabelStack( QStringList( m_promoString ), info );
     m_current.label->setFont( fnt );
@@ -132,7 +134,8 @@ debug() << "+++ MainToolbar" << engine->isPlaying() << "ct:" << engine->currentT
     m_current.label->setBold( true );
     m_current.label->setLayout( new QHBoxLayout );
     m_current.label->installEventFilter( this );
-    connect ( m_current.label, SIGNAL( clicked(const QString&) ), Amarok::actionCollection()->action("show_active_track"), SLOT( trigger() ) );
+    connect( m_current.label, SIGNAL(clicked(QString)),
+             Amarok::actionCollection()->action("show_active_track"), SLOT(trigger()) );
 
     m_next.key = 0;
     m_next.label = new AnimatedLabelStack(QStringList(), info);
@@ -146,7 +149,7 @@ debug() << "+++ MainToolbar" << engine->isPlaying() << "ct:" << engine->currentT
     m_next.label->setOpacity( nextOpacity );
     m_next.label->installEventFilter( this );
     m_next.label->setForegroundRole( prev_next_role );
-    connect ( m_next.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( next() ) );
+    connect( m_next.label, SIGNAL(clicked(QString)), The::playlistActions(), SLOT(next()) );
 
     m_dummy.label = new AnimatedLabelStack(QStringList(), info);
     m_next.label->setFont( fnt );
@@ -156,16 +159,16 @@ debug() << "+++ MainToolbar" << engine->isPlaying() << "ct:" << engine->currentT
 
     vl->addSpacing( space_between_tracks_and_slider );
 
-    connect ( m_prev.label, SIGNAL( pulsing(bool) ), m_current.label, SLOT( setStill(bool) ) );
-    connect ( m_next.label, SIGNAL( pulsing(bool) ), m_current.label, SLOT( setStill(bool) ) );
+    connect( m_prev.label, SIGNAL(pulsing(bool)), m_current.label, SLOT(setStill(bool)) );
+    connect( m_next.label, SIGNAL(pulsing(bool)), m_current.label, SLOT(setStill(bool)) );
 
     m_timeLabel = new QLabel( info );
     m_timeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
     m_slider = new Amarok::TimeSlider( info );
-    connect( m_slider, SIGNAL( sliderReleased( int ) ), The::engineController(), SLOT( seek( int ) ) );
-    connect( m_slider, SIGNAL( valueChanged( int ) ), SLOT( setLabelTime( int ) ) );
-    connect( App::instance(), SIGNAL( settingsChanged() ), this, SLOT( layoutProgressBar() ) );
+    connect( m_slider, SIGNAL(sliderReleased(int)), The::engineController(), SLOT(seek(int)) );
+    connect( m_slider, SIGNAL(valueChanged(int)), SLOT( setLabelTime(int) ) );
+    connect( App::instance(), SIGNAL(settingsChanged()), SLOT(layoutProgressBar()) );
 
     m_remainingTimeLabel = new QLabel( info );
     m_remainingTimeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignLeft );
@@ -183,9 +186,11 @@ debug() << "+++ MainToolbar" << engine->isPlaying() << "ct:" << engine->currentT
     m_volume->addWheelProxies( QList<QWidget*>() << this << info
                                                  << m_prev.label << m_current.label << m_next.label
                                                  << m_timeLabel << m_remainingTimeLabel );
+
     addWidget( m_volume );
-    connect ( m_volume, SIGNAL( valueChanged(int) ), engine, SLOT( setVolume(int) ) );
-    connect ( m_volume, SIGNAL( muteToggled(bool) ), engine, SLOT( setMuted(bool) ) );
+    connect( engine, SIGNAL(volumeChanged(int)), m_volume, SLOT(setValue(int)) );
+    connect( m_volume, SIGNAL(valueChanged(int)), engine, SLOT(setVolume(int)) );
+    connect( m_volume, SIGNAL(muteToggled(bool)), engine, SLOT(setMuted(bool)) );
 
     spacerWidget = new QWidget(this);
     spacerWidget->setFixedWidth( leftRightSpacer );

@@ -43,7 +43,9 @@
 #include <QGraphicsSceneContextMenuEvent>
 #include <QHeaderView>
 #include <QPainter>
+#include <QScrollBar>
 #include <QTreeView>
+#include <QWheelEvent>
 
 // Subclassed to override the access level of some methods.
 // The AlbumsTreeView and the AlbumsView are so highly coupled that this is acceptable, imo.
@@ -66,7 +68,7 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
             setRootIsDecorated( false );
             setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
             setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-            setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
+            setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // see wheelEvent()
             setItemDelegate( new AlbumsItemDelegate( this ) );
             setFrameStyle( QFrame::NoFrame );
         }
@@ -74,6 +76,17 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
         // Override access level to make it public. Only visible to the AlbumsView.
         // Used for context menu methods.
         QModelIndexList selectedIndexes() const { return PrettyTreeView::selectedIndexes(); }
+
+    protected:
+        void wheelEvent( QWheelEvent *e )
+        {
+            // scroll per pixel doesn't work when using delegates with big height (QTBUG-7232).
+            // This is a work around for scrolling with smaller steps.
+            AlbumsProxyModel *proxyModel = static_cast<AlbumsProxyModel*>( model() );
+            AlbumsModel *albumsModel = static_cast<AlbumsModel*>( proxyModel->sourceModel() );
+            verticalScrollBar()->setSingleStep( albumsModel->rowHeight() );
+            Amarok::PrettyTreeView::wheelEvent( e );
+        }
 };
 
 AlbumsView::AlbumsView( QGraphicsWidget *parent )

@@ -31,7 +31,6 @@
 #include <QList>
 #include <QListWidgetItem>
 #include <QObject>
-#include <QImage>
 #include <QWeakPointer>
 
 class CoverFoundItem;
@@ -59,7 +58,7 @@ public:
     /**
      * @returns the currently selected cover image
      */
-    const QImage image() const { return m_image; }
+    const QPixmap image() const { return m_image; }
 
     void setQueryPage( int page );
 
@@ -69,7 +68,7 @@ signals:
     void newCustomQuery( Meta::AlbumPtr album, const QString &query, int page );
 
 public slots:
-    void add( const QImage &cover,
+    void add( const QPixmap &cover,
               const CoverFetch::Metadata &metadata,
               const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
 
@@ -86,7 +85,7 @@ private slots:
     void downloadProgressed( qint64 bytesReceived, qint64 bytesTotal );
     void handleFetchResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void insertComboText( const QString &text );
-    void itemSelected();
+    void currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
     void processQuery();
@@ -116,7 +115,7 @@ private:
     Meta::AlbumPtr m_album;           //!< Album associated with @ref m_unit;
     QAction *m_sortAction;            //!< Action to sort covers by size
     QList< int > m_sortSizes;         //!< List of sorted cover sizes used for indexing
-    QImage m_image;                   //!< Currently selected cover image
+    QPixmap m_image;                  //!< Currently selected cover image
     QString m_query;                  //!< Cache for the last entered custom query
     bool m_isSorted;                  //!< Are the covers sorted in the view?
     bool m_sortEnabled;               //!< Sort covers by size

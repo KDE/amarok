@@ -120,7 +120,8 @@ Playlist::Dock::polish()
     connect( m_searchWidget, SIGNAL( filterCleared() ), m_playlistView, SLOT( clearSearchTerm() ) );
     connect( m_searchWidget, SIGNAL( showOnlyMatches( bool ) ), m_playlistView, SLOT( showOnlyMatches( bool ) ) );
     connect( m_searchWidget, SIGNAL( activateFilterResult() ), m_playlistView, SLOT( playFirstSelected() ) );
-    connect( m_searchWidget, SIGNAL( downPressed() ), m_playlistView, SLOT( setFocus() ) );
+    connect( m_searchWidget, SIGNAL( downPressed() ), m_playlistView, SLOT( downOneTrack() ) );
+    connect( m_searchWidget, SIGNAL( upPressed() ), m_playlistView, SLOT( upOneTrack() ) );
 
     connect( The::mainWindow(), SIGNAL( switchQueueStateShortcut() ), m_playlistView, SLOT( switchQueueState() ) );
 

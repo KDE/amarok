@@ -82,7 +82,7 @@ APG::Preset::Preset( const QString& title, QDomElement& xmlelem )
 }
 
 APG::Preset::Preset( const QString& title )
-        : m_title( title )
+    : m_title( title )
 {
 
     m_constraintTreeRoot = ConstraintFactory::instance()->createGroup( 0 );
@@ -90,7 +90,7 @@ APG::Preset::Preset( const QString& title )
 
 APG::Preset::~Preset()
 {
-    m_constraintTreeRoot->deleteLater();
+    delete m_constraintTreeRoot;
 }
 
 QDomElement*

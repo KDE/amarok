@@ -476,18 +476,6 @@ ProxyQueryMaker::handleResult()
             break;
         }
         case QueryMaker::Artist :
-        {
-            Meta::ArtistList artists;
-            foreach( KSharedPtr<Meta::ProxyAlbum> album, m_albums )
-            {
-                if( album->hasAlbumArtist() )
-                    artists.append( Meta::ArtistPtr::staticCast( album->albumArtist() ) );
-            }
-
-            artists = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( artists, m_orderDescending );
-            emitProperResult<Meta::ArtistPtr>( artists );
-            break;
-        }
         case QueryMaker::AlbumArtist :
         {
             Meta::ArtistList artists;

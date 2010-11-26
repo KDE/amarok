@@ -104,6 +104,8 @@ LabelGraphicsItem::setDeltaPointSize( qreal deltaPointSize )
     m_blacklistLabelItem.data()->setSize( iconsSize );
     m_blacklistLabelItem.data()->setPos( iconsSize * 2 + iconsSpace * 2, ( boundingRect().height() - iconsSize ) / 2 );
     m_blacklistLabelItem.data()->setEnabled( iconsCount >= 3 );
+
+    updateHoverStatus();
 }
 
 void

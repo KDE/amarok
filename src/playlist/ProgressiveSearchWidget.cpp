@@ -58,17 +58,13 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     connect( m_searchEdit, SIGNAL( returnPressed( const QString & ) ), this, SLOT( slotFilterClear() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), this, SLOT( defocus() ) );
     connect( m_searchEdit, SIGNAL( downPressed() ), this, SIGNAL( downPressed() ) );
-
-    QToolBar *toolbar = new QToolBar( searchBox );
+    connect( m_searchEdit, SIGNAL( upPressed() ), this, SIGNAL( upPressed() ) );
 
     m_nextAction = new KAction( KIcon( "go-down" ), i18n( "&Next" ), this );
     connect( m_nextAction, SIGNAL( triggered() ), this, SLOT( slotNext() ) );
 
     m_previousAction = new KAction( KIcon( "go-up" ), i18n( "&Previous" ), this );
     connect( m_previousAction, SIGNAL( triggered() ), this, SLOT( slotPrevious() ) );
-
-    toolbar->addAction( m_nextAction );
-    toolbar->addAction( m_previousAction );
 
     m_nextAction->setEnabled( false );
     m_previousAction->setEnabled( false );
@@ -130,21 +126,24 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     showOnlyMatchesAction->setCheckable( true );
     connect( showOnlyMatchesAction, SIGNAL( toggled( bool ) ), this, SLOT( slotShowOnlyMatches( bool ) ) );
 
+    m_toolBar = new QToolBar( searchBox );
     showOnlyMatchesAction->setChecked( m_showOnlyMatches );
     m_menu->addAction( showOnlyMatchesAction );
+    slotShowOnlyMatches( m_showOnlyMatches );
 
     m_nextAction->setVisible( !m_showOnlyMatches );
     m_previousAction->setVisible( !m_showOnlyMatches );
 
     KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
     searchMenuAction->setMenu( m_menu );
-    toolbar->addAction( searchMenuAction );
 
-    QToolButton *tbutton = qobject_cast<QToolButton*>(toolbar->widgetForAction( searchMenuAction ) );
+    m_toolBar->addAction( searchMenuAction );
+
+    QToolButton *tbutton = qobject_cast<QToolButton*>( m_toolBar->widgetForAction( searchMenuAction ) );
     if( tbutton )
         tbutton->setPopupMode( QToolButton::InstantPopup );
 
-    toolbar->setFixedHeight( m_searchEdit->sizeHint().height() );
+    m_toolBar->setFixedHeight( m_searchEdit->sizeHint().height() );
 
     //make sure that this edit is cleared when the playlist is cleared:
     connect( Amarok::actionCollection()->action( "playlist_clear" ), SIGNAL( triggered() ), this, SLOT( slotFilterClear() ) );
@@ -152,7 +151,9 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
 
 ProgressiveSearchWidget::~ProgressiveSearchWidget()
-{}
+{
+    Amarok::config( "Playlist Search" ).writeEntry( "ShowOnlyMatches", m_showOnlyMatches );
+}
 
 void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
 {
@@ -356,14 +357,20 @@ void ProgressiveSearchWidget::slotShowOnlyMatches( bool onlyMatches )
 {
     DEBUG_BLOCK
 
-    KConfigGroup config = Amarok::config( "Playlist Search" );
-    config.writeEntry( "ShowOnlyMatches", onlyMatches );
+    if( onlyMatches )
+    {
+        m_toolBar->removeAction( m_previousAction );
+        m_toolBar->removeAction( m_nextAction );
+    }
+    else
+    {
+        m_toolBar->insertAction( m_menu->menuAction(), m_nextAction );
+        m_toolBar->insertAction( m_nextAction, m_previousAction );
+    }
 
     m_showOnlyMatches = onlyMatches;
-
     m_nextAction->setVisible( !onlyMatches );
     m_previousAction->setVisible( !onlyMatches );
-
     emit( showOnlyMatches( onlyMatches ) );
 }
 

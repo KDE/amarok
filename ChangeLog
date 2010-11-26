@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.4-Beta 1
   FEATURES:
+    * Leave focus in playlist search widget when using up/down to scroll through
+      filtered results. Thanks to Thomas Karpiniec for the patch!
     * LyricsApplet: the lyrics in are now updated when they were changed in a
       different place (for example in TagDialog). Conflicts have to be resolved
       by the user (therefore a message is shown which asks the user which changes
@@ -36,6 +38,8 @@ VERSION 2.4-Beta 1
       to music provided by a running local Playdar service.
 
   CHANGES:
+    * Added a "Donors" tab to the About dialog for our generous Roktober 2010
+      donors who wish to be mentioned.
     * Tracks might contain lyrics in the HTML format, where there's no user-visible
       content in the HTML. Those lyrics are now regarded as "empty".
     * LyricsApplet: changed the layout of the "Do you really want to refetch lyrics"

@@ -149,6 +149,7 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
 
 NavigatorConfigAction::~NavigatorConfigAction()
 {
+    delete menu();
 }
 
 void NavigatorConfigAction::setActiveNavigator( QAction *navigatorAction )

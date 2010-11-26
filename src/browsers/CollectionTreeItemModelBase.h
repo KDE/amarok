@@ -82,7 +82,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual QMimeData* mimeData( const QList<CollectionTreeItem*> &items ) const;
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
-        virtual QPixmap iconForLevel( int level ) const;
+        virtual QIcon iconForLevel( int level ) const;
         virtual void listForLevel( int level, Collections::QueryMaker *qm, CollectionTreeItem* parent );
 
 

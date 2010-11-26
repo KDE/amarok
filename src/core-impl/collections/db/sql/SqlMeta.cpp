@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "SqlMeta"
+
 #include "SqlMeta.h"
 
 #include "amarokconfig.h"
@@ -23,8 +25,7 @@
 #include "CapabilityDelegate.h"
 #include <core/support/Debug.h>
 #include <core/meta/support/MetaUtility.h>
-#include <core-impl/meta/file/File.h> // for getting an embedded cover
-#include <core-impl/meta/file/TagLibUtils.h>
+#include <shared/MetaTagLib.h> // for getting an embedded cover
 #include <core-impl/collections/support/ArtistHelper.h>
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
@@ -75,8 +76,7 @@ SqlTrack::getTrackReturnValues()
            "albums.name, albums.id, albums.artist, " // TODO: again here
            "genres.name, genres.id, " // TODO: again here
            "composers.name, composers.id, " // TODO: again here
-           "years.name, years.id, " // TODO: again here
-           "tracks.filetype";
+           "years.name, years.id"; // TODO: again here
 }
 
 QString
@@ -180,7 +180,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &r
     if( time > 0 )
         m_lastPlayed = QDateTime::fromTime_t(time);
     m_playCount = (*(iter++)).toInt();
-    ++iter; //file type
+    m_filetype = Amarok::FileType( (*(iter++)).toInt() );
     m_bpm = (*(iter++)).toFloat();
     m_createDate = QDateTime::fromTime_t((*(iter++)).toUInt());
 
@@ -227,7 +227,6 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &r
     int yearId = (*(iter++)).toInt();
     if( yearId > 0 ) // sanity check
     m_year = registry->getYear( year.toInt(), yearId );
-    m_filetype = Amarok::FileType( (*(iter++)).toInt());
     //Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( Collections::SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields: expected " + result.size() );
 }
 
@@ -1011,7 +1010,7 @@ SqlTrack::commitMetaDataChanges()
 void
 SqlTrack::writeMetaDataToFile()
 {
-    Meta::Field::writeFields( m_url.path(), m_cache );
+    Meta::Tag::writeTags( m_url.path(), m_cache );
 }
 
 void
@@ -1576,7 +1575,7 @@ SqlAlbum::image( int size )
         // -- check if we have a track with the given path as uid
         Meta::TrackPtr track = m_collection->getTrackFromUid( m_imagePath );
         if( track )
-            image = MetaFile::Track::getEmbeddedCover( track->playableUrl().path() );
+            image = Meta::Tag::getEmbeddedCover( track->playableUrl().path() );
     }
 
     // --- a normal path
@@ -1939,7 +1938,7 @@ SqlAlbum::setCompilation( bool compilation )
 
                 // move the track
                 sqlTrack->setAlbum( sqlAlbum->id() );
-                Meta::Field::writeFields( sqlTrack->playableUrl().path(), changes );
+                Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes );
             }
             /* TODO: delete all old tracks albums */
         }
@@ -1966,7 +1965,7 @@ SqlAlbum::setCompilation( bool compilation )
 
                 // move the track
                 sqlTrack->setAlbum( sqlAlbum->id() );
-                Meta::Field::writeFields( sqlTrack->playableUrl().path(), changes );
+                Meta::Tag::writeTags( sqlTrack->playableUrl().path(), changes );
             }
             /* TODO //step 5: delete the original album, if necessary */
         }

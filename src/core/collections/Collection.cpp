@@ -19,7 +19,7 @@
 #include "core/collections/CollectionLocation.h"
 #include "core/meta/Meta.h"
 
-Collections::CollectionFactory::CollectionFactory() : QObject()
+Collections::CollectionFactory::CollectionFactory( QObject *parent ) : QObject( parent )
 {
 }
 

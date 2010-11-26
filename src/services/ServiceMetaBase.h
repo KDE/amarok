@@ -98,7 +98,7 @@ class AMAROK_EXPORT BookmarkThisProvider : public QObject
     Q_OBJECT
     public:
 
-        BookmarkThisProvider() : QObject(), m_bookmarkAction( 0 ) {}
+        BookmarkThisProvider() : QObject() {}
         virtual ~BookmarkThisProvider() {}
 
         virtual bool isBookmarkable() const { return false; }
@@ -108,7 +108,7 @@ class AMAROK_EXPORT BookmarkThisProvider : public QObject
         virtual QAction * bookmarkAction() { return 0; };
 
     protected:
-        QAction * m_bookmarkAction;
+        QWeakPointer<QAction> m_bookmarkAction;
 };
 
 
@@ -324,9 +324,9 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
         virtual QAction * bookmarkAction() {
 
             if ( isBookmarkable() ) {
-                if ( m_bookmarkAction ==  0)
-                    m_bookmarkAction = new BookmarkArtistAction( this, ArtistPtr( this ) );
-                return m_bookmarkAction;
+                if ( m_bookmarkAction.isNull())
+                    m_bookmarkAction = QWeakPointer<QAction>( new BookmarkArtistAction( this, ArtistPtr( this ) ) );
+                return m_bookmarkAction.data();
             }
             else
                 return 0;
@@ -395,9 +395,9 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
         virtual QAction * bookmarkAction() {
 
             if ( isBookmarkable() ) {
-                if ( m_bookmarkAction ==  0)
-                    m_bookmarkAction = new BookmarkAlbumAction( this, AlbumPtr( this ) );
-                return m_bookmarkAction;
+                if ( m_bookmarkAction.isNull())
+                    m_bookmarkAction = QWeakPointer<QAction>( new BookmarkAlbumAction( this, AlbumPtr( this ) ) );
+                return m_bookmarkAction.data();
             }
             else
                 return 0;

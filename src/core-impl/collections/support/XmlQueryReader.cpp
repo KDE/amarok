@@ -107,7 +107,7 @@ XmlQueryReader::readQuery()
                     d->qm->orderByRandom();
                 else
                 {
-                    qint64 field = fieldVal( fieldStr );
+                    qint64 field = Meta::fieldForName( fieldStr.toString() );
                     bool descending = valueStr == "descending";
 
                     if( field != 0 )
@@ -262,7 +262,7 @@ XmlQueryReader::readFilter(QXmlStreamReader *reader)
     QXmlStreamAttributes attr = reader->attributes();
 
     filter.exclude = (reader->name() != "include");
-    filter.field = fieldVal( attr.value( "field" ) );
+    filter.field = Meta::fieldForName( attr.value( "field" ).toString() );
     filter.value = attr.value( "value" ).toString();
 
     QStringRef compareStr = attr.value( "compare" );
@@ -345,35 +345,6 @@ XmlQueryReader::readFilters()
             readFilters();
         }
     }
-}
-
-qint64
-XmlQueryReader::fieldVal( QStringRef field )
-{
-    if     ( field == "url"        ) return Meta::valUrl;
-    else if( field == "title"      ) return Meta::valTitle;
-    else if( field == "artist"     ) return Meta::valArtist;
-    else if( field == "album"      ) return Meta::valAlbum;
-    else if( field == "albumartist") return Meta::valAlbumArtist;
-    else if( field == "genre"      ) return Meta::valGenre;
-    else if( field == "composer"   ) return Meta::valComposer;
-    else if( field == "year"       ) return Meta::valYear;
-    else if( field == "comment"    ) return Meta::valComment; 
-    else if( field == "tracknr"    ) return Meta::valTrackNr;
-    else if( field == "discnr"     ) return Meta::valDiscNr;
-    else if( field == "length"     ) return Meta::valLength;
-    else if( field == "bitrate"    ) return Meta::valBitrate;
-    else if( field == "samplerate" ) return Meta::valSamplerate;
-    else if( field == "filesize"   ) return Meta::valFilesize;
-    else if( field == "format"     ) return Meta::valFormat;
-    else if( field == "createdate" ) return Meta::valCreateDate;
-    else if( field == "score"      ) return Meta::valScore;
-    else if( field == "rating"     ) return Meta::valRating;
-    else if( field == "firstplay"  ) return Meta::valFirstPlayed;
-    else if( field == "lastplay"   ) return Meta::valLastPlayed;
-    else if( field == "playcount"  ) return Meta::valPlaycount;
-    else if( field == "label"      ) return Meta::valLabel;
-    else                             return 0;
 }
 
 int

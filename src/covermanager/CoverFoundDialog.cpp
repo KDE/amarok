@@ -172,8 +172,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_view->setViewMode( QListView::IconMode );
     m_view->setResizeMode( QListView::Adjust );
 
-    connect( m_view, SIGNAL(itemSelectionChanged()),
-             this,   SLOT(itemSelected()) );
+    connect( m_view, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+             this,   SLOT(currentItemChanged(QListWidgetItem*, QListWidgetItem*)) );
     connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
              this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
     connect( m_view, SIGNAL(customContextMenuRequested(const QPoint&)),
@@ -204,9 +204,9 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     if( !m_album->hasImage() )
         m_sideBar->setPixmap( m_album->image(190) );
     else if( payload )
-        add( m_album->image().toImage(), data, payload->imageSize() );
+        add( m_album->image(), data, payload->imageSize() );
     else
-        add( m_album->image().toImage(), data );
+        add( m_album->image(), data );
     m_view->setCurrentItem( m_view->item( 0 ) );
     updateGui();
 }
@@ -227,7 +227,7 @@ void CoverFoundDialog::hideEvent( QHideEvent *event )
     event->accept();
 }
 
-void CoverFoundDialog::add( const QImage &cover,
+void CoverFoundDialog::add( const QPixmap &cover,
                             const CoverFetch::Metadata &metadata,
                             const CoverFetch::ImageSize imageSize )
 {
@@ -236,7 +236,7 @@ void CoverFoundDialog::add( const QImage &cover,
 
     if( !contains( metadata ) )
     {
-        CoverFoundItem *item = new CoverFoundItem( QPixmap::fromImage(cover), metadata, imageSize );
+        CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
         addToView( item );
     }
 }
@@ -323,15 +323,14 @@ void CoverFoundDialog::insertComboText( const QString &text )
     m_search->setCurrentIndex( 0 );
 }
 
-void CoverFoundDialog::itemSelected()
+void CoverFoundDialog::currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
-    QListWidgetItem *item = m_view->currentItem();
-    if( !item )
+    Q_UNUSED( previous )
+    if( !current )
         return;
-
-    CoverFoundItem *it = static_cast< CoverFoundItem* >( item );
+    CoverFoundItem *it = static_cast< CoverFoundItem* >( current );
     QPixmap pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
-    m_image = pixmap.toImage();
+    m_image = pixmap;
     m_sideBar->setPixmap( pixmap, it->metadata() );
 }
 
@@ -432,7 +431,7 @@ void CoverFoundDialog::slotButtonClicked( int button )
 
         if( gotBigPix )
         {
-            m_image = item->bigPix().toImage();
+            m_image = item->bigPix();
             accept();
         }
     }

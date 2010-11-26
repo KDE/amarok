@@ -26,8 +26,8 @@
 
 using namespace Amarok;
 
-DefaultApplicationController::DefaultApplicationController()
-    : ApplicationController()
+DefaultApplicationController::DefaultApplicationController( QObject *parent )
+    : ApplicationController( parent )
 {
     //there can be only one applicationcontroller
     ApplicationController *oldController = Components::setApplicationController( this );

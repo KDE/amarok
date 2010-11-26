@@ -23,8 +23,8 @@
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
-#include "core-impl/meta/file/TagLibUtils.h"
 #include "shared/MetaReplayGain.h"
+#include "shared/MetaTagLib.h"
 #include "core/statistics/StatisticsProvider.h"
 
 #include <QDateTime>
@@ -34,27 +34,6 @@
 #include <QWeakPointer>
 #include <QSet>
 #include <QString>
-#include <QTextCodec>
-
-#include <KEncodingProber>
-#include <KLocale>
-
-// Taglib Includes
-#include <fileref.h>
-#include <tag.h>
-#include <flacfile.h>
-#include <id3v1tag.h>
-#include <id3v2tag.h>
-#include <mpcfile.h>
-#include <apetag.h>
-#include <mpegfile.h>
-#include <oggfile.h>
-#include <oggflacfile.h>
-#include <tlist.h>
-#include <tstring.h>
-#include <vorbisfile.h>
-#include <mp4file.h>
-#include <attachedpictureframe.h>
 
 namespace Capabilities
 {
@@ -77,7 +56,7 @@ struct MetaData
         , sampleRate( 0 )
         , bitRate( 0 )
         , year( 0 )
-        , bpm( 0.0 )
+        , bpm( -1.0 )
         , trackGain( 0.0 )
         , trackPeak( 0.0 )
         , albumGain( 0.0 )
@@ -134,7 +113,14 @@ public:
     void readMetaData();
     Meta::FieldHash changes;
 
-    void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( track->getFileRef( url ), changes ); changes.clear(); readMetaData(); }
+    void writeMetaData()
+    {
+        DEBUG_BLOCK;
+        Meta::Tag::writeTags( url.isLocalFile() ? url.toLocalFile() : url.path(), changes );
+        changes.clear();
+        readMetaData();
+    }
+
     MetaData m_data;
 
 private:
@@ -147,195 +133,59 @@ void Track::Private::readMetaData()
     QFileInfo fi( url.isLocalFile() ? url.toLocalFile() : url.path() );
     m_data.created = fi.created().toTime_t();
 
-#define strip( x ) TStringToQString( x ).trimmed()
-    TagLib::FileRef fileRef = track->getFileRef( url );
+    Meta::FieldHash values = Meta::Tag::readTags( fi.absoluteFilePath() );
 
-    TagLib::Tag *tag = 0;
-    if( !fileRef.isNull() )
-        tag = fileRef.tag();
+    if( values.contains(Meta::valTitle) )
+        m_data.title = values.value(Meta::valTitle).toString();
+    if( values.contains(Meta::valArtist) )
+        m_data.artist = values.value(Meta::valArtist).toString();
+    if( values.contains(Meta::valAlbum) )
+        m_data.album = values.value(Meta::valAlbum).toString();
+    if( values.contains(Meta::valHasCover) )
+        m_data.embeddedImage = values.value(Meta::valHasCover).toBool();
+    if( values.contains(Meta::valComment) )
+        m_data.comment = values.value(Meta::valComment).toString();
+    if( values.contains(Meta::valGenre) )
+        m_data.genre = values.value(Meta::valGenre).toString();
+    if( values.contains(Meta::valYear) )
+        m_data.year = values.value(Meta::valYear).toInt();
+    if( values.contains(Meta::valDiscNr) )
+        m_data.discNumber = values.value(Meta::valDiscNr).toInt();
+    if( values.contains(Meta::valTrackNr) )
+        m_data.trackNumber = values.value(Meta::valTrackNr).toInt();
+    if( values.contains(Meta::valBpm) )
+        m_data.bpm = values.value(Meta::valBpm).toReal();
+    if( values.contains(Meta::valBitrate) )
+        m_data.bitRate = values.value(Meta::valBitrate).toInt();
+    if( values.contains(Meta::valLength) )
+        m_data.length = values.value(Meta::valLength).toLongLong();
+    if( values.contains(Meta::valSamplerate) )
+        m_data.sampleRate = values.value(Meta::valSamplerate).toInt();
+    if( values.contains(Meta::valFilesize) )
+        m_data.fileSize = values.value(Meta::valFilesize).toLongLong();
 
-    if( tag )
+    if( values.contains(Meta::valTrackGain) )
+        m_data.trackGain = values.value(Meta::valTrackGain).toReal();
+    if( values.contains(Meta::valTrackGainPeak) )
+        m_data.trackPeak= values.value(Meta::valTrackGainPeak).toReal();
+    if( values.contains(Meta::valAlbumGain) )
+        m_data.albumGain = values.value(Meta::valAlbumGain).toReal();
+    if( values.contains(Meta::valAlbumGainPeak) )
+        m_data.albumPeak= values.value(Meta::valAlbumGainPeak).toReal();
+
+    if( values.contains(Meta::valComposer) )
+        m_data.composer = values.value(Meta::valComposer).toString();
+
+    if( provider )
     {
-        m_data.title = strip( tag->title() );
-        m_data.artist = strip( tag->artist() );
-        m_data.album = strip( tag->album() );
-        m_data.comment = strip( tag->comment() );
-        m_data.genre = strip( tag->genre() );
-        m_data.trackNumber = tag->track();
-        m_data.year = tag->year();
-    }
-    if( !fileRef.isNull() )
-    {
-        if( fileRef.audioProperties() )
-        {
-            m_data.bitRate = fileRef.audioProperties()->bitrate();
-            m_data.sampleRate = fileRef.audioProperties()->sampleRate();
-            m_data.length = fileRef.audioProperties()->length() * 1000;
-        }
-
-        Meta::ReplayGainTagMap map = Meta::readReplayGainTags( fileRef );
-        if ( map.contains( Meta::ReplayGain_Track_Gain ) )
-            m_data.trackGain = map[Meta::ReplayGain_Track_Gain];
-        if ( map.contains( Meta::ReplayGain_Track_Peak ) )
-            m_data.trackPeak = map[Meta::ReplayGain_Track_Peak];
-        if ( map.contains( Meta::ReplayGain_Album_Gain ) )
-            m_data.albumGain = map[Meta::ReplayGain_Album_Gain];
-        else
-            m_data.albumGain = m_data.trackGain;
-        if ( map.contains( Meta::ReplayGain_Album_Peak ) )
-            m_data.albumPeak = map[Meta::ReplayGain_Album_Peak];
-        else
-            m_data.albumPeak = m_data.trackPeak;
-    }
-    //This is pretty messy...
-    QString disc;
-    m_data.bpm = -1.0;
-    if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileRef.file() ) )
-    {
-        if( file->ID3v2Tag() )
-        {
-            const TagLib::ID3v2::FrameListMap flm = file->ID3v2Tag()->frameListMap();
-            if( !flm[ fieldName( Meta::valDiscNr, MPEG ) ].isEmpty() )
-                disc = strip( flm[ fieldName( Meta::valDiscNr, MPEG ) ].front()->toString() );
-
-            if( !flm[ fieldName( Meta::valComposer, MPEG ) ].isEmpty() )
-                m_data.composer = strip( flm[ fieldName( Meta::valComposer, MPEG ) ].front()->toString() );
-
-            if( !flm[ fieldName( Meta::valAlbumArtist, MPEG ) ].isEmpty() )
-                m_data.albumArtist = strip( flm[ fieldName( Meta::valAlbumArtist, MPEG ) ].front()->toString() );
-
-            if( !flm[ fieldName( Meta::valBpm, MPEG ) ].isEmpty() )
-                m_data.bpm = TStringToQString( flm[ fieldName( Meta::valBpm, MPEG ) ].front()->toString() ).toFloat();
-
-            if ( !file->ID3v2Tag()->frameListMap()["APIC"].isEmpty() )
-            {
-                TagLib::ID3v2::FrameList apicList = file->ID3v2Tag()->frameListMap()["APIC"];
-                TagLib::ID3v2::FrameList::ConstIterator iter;
-                for( iter = apicList.begin(); iter != apicList.end(); ++iter )
-                {
-                    TagLib::ID3v2::AttachedPictureFrame* currFrame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(*iter);
-                    if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover ||
-                        currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::Other )
-                    {
-                        m_data.embeddedImage = true;
-                    }
-                }
-            }
-
-        }
-        if( AmarokConfig::useCharsetDetector() && tag )
-        {
-            TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
-            const char* buf = metaData.toCString();
-            size_t len = strlen( buf );
-            KEncodingProber prober;
-            KEncodingProber::ProberState result = prober.feed( buf, len );
-            QString track_encoding( prober.encoding() );
-            if ( result != KEncodingProber::NotMe )
-            {
-                /*  for further information please refer to:
-                    http://doc.trolltech.com/4.4/qtextcodec.html
-                    http://www.mozilla.org/projects/intl/chardet.html
-                */
-                if ( ( track_encoding.toUtf8() == "gb18030" ) || ( track_encoding.toUtf8() == "big5" )
-                    || ( track_encoding.toUtf8() == "euc-kr" ) || ( track_encoding.toUtf8() == "euc-jp" )
-                    || ( track_encoding.toUtf8() == "koi8-r" ) )
-                {
-                    debug () << "Final Codec Name:" << track_encoding.toUtf8();
-                    QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
-                    QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
-                    QTextCodec::setCodecForCStrings( utf8codec );
-                    if ( codec != 0 )
-                    {
-                        m_data.title = codec->toUnicode( m_data.title.toLatin1() );
-                        m_data.artist = codec->toUnicode( m_data.artist.toLatin1() );
-                        m_data.album = codec->toUnicode( m_data.album.toLatin1() );
-                        m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
-                        debug() << "track Info Decoded!";
-                    }
-                }
-                else
-                {
-                    debug() << "possible encoding: " << track_encoding.toUtf8();
-                    debug() << "encoding decoded as UTF-8";
-                }
-            }
-        }
+        if( values.contains(Meta::valRating) )
+            provider->setRating( values.value(Meta::valRating).toReal() );
+        if( values.contains(Meta::valScore) )
+            provider->setScore( values.value(Meta::valScore).toReal() );
+        if( values.contains(Meta::valPlaycount) )
+            provider->setPlayCount( values.value(Meta::valPlaycount).toReal() );
     }
 
-    else if( TagLib::Ogg::Vorbis::File *file = dynamic_cast< TagLib::Ogg::Vorbis::File *>( fileRef.file() ) )
-    {
-        if( file->tag() )
-        {
-            const TagLib::Ogg::FieldListMap flm = file->tag()->fieldListMap();
-            if( !flm[ fieldName( Meta::valAlbumArtist, OGG ) ].isEmpty() )
-                m_data.albumArtist = strip( flm[ fieldName( Meta::valAlbumArtist, OGG ) ].front() );
-            if( !flm[ fieldName( Meta::valComposer, OGG ) ].isEmpty() )
-                m_data.composer = strip( flm[ fieldName( Meta::valComposer, OGG ) ].front() );
-            if( !flm[ fieldName( Meta::valDiscNr, OGG ) ].isEmpty() )
-                disc = strip( flm[ fieldName( Meta::valDiscNr, OGG ) ].front() );
-            if( !flm[ fieldName( Meta::valBpm, OGG ) ].isEmpty() )
-                m_data.bpm = TStringToQString( flm[ fieldName( Meta::valBpm, OGG ) ].front() ).toFloat();
-        }
-    }
-
-    else if( TagLib::FLAC::File *file = dynamic_cast< TagLib::FLAC::File *>( fileRef.file() ) )
-    {
-        if( file->xiphComment() )
-        {
-            const TagLib::Ogg::FieldListMap flm = file->xiphComment()->fieldListMap();
-            if( !flm[ fieldName( Meta::valAlbumArtist, FLAC ) ].isEmpty() )
-                m_data.albumArtist = strip( flm[ fieldName( Meta::valAlbumArtist, FLAC ) ].front() );
-            if( !flm[ fieldName( Meta::valComposer, FLAC ) ].isEmpty() )
-                m_data.composer = strip( flm[ fieldName( Meta::valComposer, FLAC ) ].front() );
-            if( !flm[ fieldName( Meta::valDiscNr, FLAC ) ].isEmpty() )
-                disc = strip( flm[ fieldName( Meta::valDiscNr, FLAC ) ].front() );
-            if( !flm[ fieldName( Meta::valBpm, FLAC ) ].isEmpty() )
-                m_data.bpm = TStringToQString( flm[ fieldName( Meta::valBpm, FLAC ) ].front() ).toFloat();
-        }
-    }
-    else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileRef.file() ) )
-    {
-        TagLib::MP4::Tag *mp4tag = dynamic_cast< TagLib::MP4::Tag *>( file->tag() );
-        if( mp4tag )
-        {
-            if ( mp4tag->itemListMap().contains( fieldName( Meta::valAlbumArtist, MP4 ) ) )
-                m_data.albumArtist = strip( mp4tag->itemListMap()[fieldName( Meta::valAlbumArtist, MP4 )].toStringList().front() );
-
-            if ( mp4tag->itemListMap().contains( fieldName( Meta::valComposer, MP4 ) ) )
-                m_data.composer = strip( mp4tag->itemListMap()[fieldName( Meta::valComposer, MP4 )].toStringList().front() );
-
-            if ( mp4tag->itemListMap().contains( fieldName( Meta::valDiscNr, MP4 ) ) )
-                disc = QString::number( mp4tag->itemListMap()[fieldName( Meta::valDiscNr, MP4 )].toIntPair().first );
-
-            if ( mp4tag->itemListMap().contains( fieldName( Meta::valBpm, MP4 ) ) )
-                m_data.bpm = mp4tag->itemListMap()[fieldName( Meta::valBpm, MP4 )].toIntPair().first;
-        }
-    }
-    else if( TagLib::MPC::File *file = dynamic_cast< TagLib::MPC::File *>( fileRef.file() ) )
-    {
-        if( file->APETag() )
-        {
-            const TagLib::APE::ItemListMap &itemsMap = file->APETag()->itemListMap();
-            if( itemsMap.contains( fieldName( Meta::valAlbumArtist, MPC ) ) )
-                m_data.albumArtist = strip( itemsMap[ fieldName( Meta::valAlbumArtist, MPC ) ].toString() );
-            if( itemsMap.contains( fieldName( Meta::valComposer, MPC ) ) )
-                m_data.composer = strip( itemsMap[ fieldName( Meta::valComposer, MPC ) ].toString() );
-            if( itemsMap.contains( fieldName( Meta::valDiscNr, MPC ) ) )
-                disc = strip( itemsMap[ fieldName( Meta::valDiscNr, MPC ) ].toString() );
-            if( itemsMap.contains( fieldName( Meta::valBpm, MPC ) ) )
-                m_data.bpm = TStringToQString( itemsMap[ fieldName( Meta::valBpm, MPC ) ].toString() ).toFloat();
-        }
-    }
-    if( !disc.isEmpty() )
-    {
-        int i = disc.indexOf( '/' );
-        if( i != -1 )
-            m_data.discNumber = disc.left( i ).toInt();
-        else
-            m_data.discNumber = disc.toInt();
-    }
-#undef strip
     if(url.isLocalFile())
     {
         m_data.fileSize = QFile( url.toLocalFile() ).size();
@@ -382,10 +232,12 @@ public:
         return artist;
     }
 
+    /*
     QString prettyName() const
     {
         return name();
     }
+    */
 
     bool operator==( const Meta::Artist &other ) const {
         return name() == other.name();
@@ -433,10 +285,12 @@ public:
             return QString();
     }
 
+    /*
     QString prettyName() const
     {
         return name();
     }
+    */
 
     QPixmap image( int size )
     {
@@ -469,10 +323,12 @@ public:
         return genreName;
     }
 
+    /*
     QString prettyName() const
     {
         return name();
     }
+    */
 
     bool operator==( const Meta::Genre &other ) const {
         return name() == other.name();

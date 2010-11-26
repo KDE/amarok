@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (C) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,39 +14,36 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TAGLIBUTILS_H
-#define TAGLIBUTILS_H
+#ifndef AMAROK_METATAGLIB_H
+#define AMAROK_METATAGLIB_H
 
+#ifndef UTILITIES_BUILD
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
-#include "core/meta/support/MetaConstants.h"
+#else
+#define AMAROK_EXPORT
+#endif
 
+#include "MetaValues.h"
 #include <QString>
+#include <QImage>
 
-namespace TagLib
-{
-    class FileRef;
-}
-
+/* This file exists because we need to share the implementation between
+ * amaroklib and amarokcollectionscanner (which doesn't link to amaroklib).
+ */
 namespace Meta
 {
-    namespace Field
+    namespace Tag
     {
-        AMAROK_EXPORT void writeFields( const QString &filename, const FieldHash &changes );
-        AMAROK_EXPORT void writeFields( TagLib::FileRef fileref, const FieldHash &changes );
+
+        AMAROK_EXPORT Meta::FieldHash readTags( const QString &path, bool useCharsetDetector = true );
+
+        AMAROK_EXPORT void writeTags( const QString &path, const FieldHash &changes );
+
+#ifndef UTILITIES_BUILD
+        // the utilities don't need to handle images
+        AMAROK_EXPORT QImage getEmbeddedCover( const QString &path );
+#endif
     }
 }
 
-enum FileTypes
-{
-    FLAC,
-    MPEG,
-    MP4,
-    MPC,
-    OGG,
-    SPEEX
-};
-
-const char *fieldName( const qint64 &field, const FileTypes &type );
-
-#endif // TAGLIBUTILS_H
+#endif // AMAROK_METATAGLIB_H

@@ -311,8 +311,6 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         {
         case Qt::DecorationRole:
             return KIcon( "similarartists-amarok" );
-        case Qt::SizeHintRole:
-            return QSize( 1, d->rowHeight );
         case Qt::DisplayRole:
             return i18n( "Various Artists" );
         case CustomRoles::SortRole:
@@ -482,36 +480,29 @@ CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item )
     }
 }
 
-QPixmap
+QIcon
 CollectionTreeItemModelBase::iconForLevel(int level) const
 {
-    QString icon;
     switch( m_levelType[level] )
     {
         case CategoryId::Album :
-//             icon = "view-media-album-amarok"; // Doesn't exist..
-            icon = "media-optical-amarok";
-            break;
+            return KIcon( "media-optical-amarok" );
         case CategoryId::Artist :
-            icon = "view-media-artist-amarok";
-            break;
+            return KIcon( "view-media-artist-amarok" );
         case CategoryId::AlbumArtist :
-            icon = "view-media-artist-amarok";
-            break;
+            return KIcon( "amarok_artist" );
         case CategoryId::Composer :
-            icon = "view-media-artist-amarok";
-            break;
+            return KIcon( "filename-composer-amarok" );
         case CategoryId::Genre :
-            icon = "favorite-genres-amarok";
-            break;
+            return KIcon( "favorite-genres-amarok" );
         case CategoryId::Year :
-            icon = "clock";
-            break;
+            return KIcon( "clock" );
         case CategoryId::Label :
-            icon = "label"; //FIXME
-            break;
+            return KIcon( "label-amarok" );
+        case CategoryId::None :
+        default:
+            return KIcon( "image-missing" );
     }
-    return KIconLoader::global()->loadIcon( icon, KIconLoader::Toolbar, KIconLoader::SizeSmall );
 }
 
 void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMaker * qm, CollectionTreeItem * parent)
@@ -769,7 +760,7 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 }
                 else if( lcField.compare( "rating", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "rating" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valRating, elem.text.toInt(), compare );
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valRating, elem.text.toFloat() * 2, compare );
                 }
                 else if( lcField.compare( "score", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "score" ), Qt::CaseInsensitive ) == 0 )
                 {

@@ -227,7 +227,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         m_isOfflineAuthorWidget = true; //is this still used?
     }
 
-    //Finally, the Credits page:
+    //Then the Credits page:
     const int creditCount = aboutData->credits().count();
 
     if (creditCount)
@@ -253,6 +253,40 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         tabWidget->addTab( m_creditWidget, i18n("&Thanks To"));
         m_isOfflineCreditWidget = true; //is this still used?
     }
+
+    //Finally, the Donors page:
+    const int donorCount = ocsData->donors()->count();
+
+    if (donorCount)
+    {
+        m_donorWidget = new QWidget( this );
+        QVBoxLayout *donorLayout = new QVBoxLayout( m_donorWidget );
+
+        m_showOcsDonorButton = new AnimatedBarWidget( openDesktopIcon,
+                                     i18n( "Get data from openDesktop.org to learn more about our generous donors" ),
+                                     "process-working", m_donorWidget );
+        connect( m_showOcsDonorButton, SIGNAL( clicked() ), this, SLOT( switchToOcsWidgets() ) );
+        donorLayout->addWidget( m_showOcsDonorButton );
+
+        QList< KAboutPerson > donors;
+        for( QList< QPair< QString, KAboutPerson > >::const_iterator it = m_ocsData.donors()->constBegin();
+             it != m_ocsData.donors()->constEnd(); ++it )
+        {
+            donors << ( *it ).second;
+        }
+        m_donorListWidget = new OcsPersonListWidget( donors , m_ocsData.donors(), OcsPersonItem::Contributor, m_donorWidget );
+        connect( m_donorListWidget, SIGNAL( switchedToOcs() ), m_showOcsDonorButton, SLOT( stop() ) );
+        connect( m_donorListWidget, SIGNAL( switchedToOcs() ), m_showOcsDonorButton, SLOT( fold() ) );
+
+        donorLayout->addWidget( m_donorListWidget );
+        donorLayout->setMargin( 0 );
+        donorLayout->setSpacing( 2 );
+        m_donorWidget->setLayout( donorLayout );
+
+        tabWidget->addTab( m_donorWidget, i18n("&Donors"));
+        m_isOfflineDonorWidget = true;
+    }
+
 
     //And the translators:
     QPalette transparentBackgroundPalette;
@@ -340,8 +374,12 @@ ExtendedAboutDialog::switchToOcsWidgets()
         return;
     }
 
-    m_showOcsAuthorButton->animate();
-    m_showOcsCreditButton->animate();
+    if( m_showOcsAuthorButton )
+        m_showOcsAuthorButton->animate();
+    if( m_showOcsCreditButton )
+        m_showOcsCreditButton->animate();
+    if( m_showOcsDonorButton )
+        m_showOcsDonorButton->animate();
     AmarokAttica::ProviderInitJob *providerJob = AmarokAttica::Provider::byId( m_ocsData.providerId() );
     connect( providerJob, SIGNAL( result( KJob * ) ), this, SLOT( onProviderFetched( KJob * ) ) );
 }
@@ -354,8 +392,12 @@ ExtendedAboutDialog::onProviderFetched( KJob *job )
     {
         debug()<<"Successfully fetched OCS provider"<< providerJob->provider().name();
         debug()<<"About to request OCS data";
-        m_authorListWidget->switchToOcs( providerJob->provider() );
-        m_creditListWidget->switchToOcs( providerJob->provider() );
+        if( m_authorListWidget )
+            m_authorListWidget->switchToOcs( providerJob->provider() );
+        if( m_creditListWidget )
+            m_creditListWidget->switchToOcs( providerJob->provider() );
+        if( m_donorListWidget )
+            m_donorListWidget->switchToOcs( providerJob->provider() );
     }
     else
         warning() << "OCS provider fetch failed";

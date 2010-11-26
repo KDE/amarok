@@ -18,7 +18,7 @@
 #include "TestSqlScanManager.h"
 
 #include "amarokconfig.h"
-#include "core-impl/meta/file/TagLibUtils.h"
+#include "shared/MetaTagLib.h"
 #include "core-impl/collections/db/ScanManager.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/db/sql/SqlCollectionFactory.h"
@@ -816,7 +816,7 @@ TestSqlScanManager::createTrack( const Meta::FieldHash &values )
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 
     // -- set all the values that we need
-    Meta::Field::writeFields( targetPath, values );
+    Meta::Tag::writeTags( targetPath, values );
 }
 
 void

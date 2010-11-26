@@ -191,13 +191,15 @@ APG::PresetModel::setActivePreset( const QModelIndex& index )
 }
 
 void
-APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::PresetPtr> pl ) const
+APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::PresetPtr> &pl ) const
 {
     QDomDocument xmldoc;
     QDomElement base = xmldoc.createElement( "playlistgenerator" );
+    QList<QDomNode*> nodes;
     foreach ( APG::PresetPtr ps, pl ) {
         QDomElement* elemPtr = ps->toXml( xmldoc );
         base.appendChild( (*elemPtr) );
+        nodes << elemPtr;
     }
 
     xmldoc.appendChild( base );
@@ -213,6 +215,7 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
         The::statusBar()->longMessage( i18n("Preset could not be exported to %1", filename), StatusBar::Sorry );
         error() << "Can not write presets to " << filename;
     }
+    qDeleteAll( nodes );
 }
 
 void
@@ -347,8 +350,8 @@ const QString APG::PresetModel::presetExamples =
 "          <constraint field=\"genre\" comparison=\"3\" invert=\"false\" type=\"TagMatch\" value=\"Industrial\" strictness=\"1\"/>"
 "        </group>"
 "        <group matchtype=\"all\">"
-"          <constraint comparison=\"2\" length=\"4500000\" type=\"PlaylistDuration\" strictness=\"0.4\"/>"
-"          <constraint comparison=\"0\" length=\"4800000\" type=\"PlaylistDuration\" strictness=\"1\"/>"
+"          <constraint comparison=\"2\" duration=\"4500000\" type=\"PlaylistDuration\" strictness=\"0.4\"/>"
+"          <constraint comparison=\"0\" duration=\"4800000\" type=\"PlaylistDuration\" strictness=\"1\"/>"
 "        </group>"
 "      </group>"
 "    </constrainttree>"

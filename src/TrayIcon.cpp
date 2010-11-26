@@ -250,7 +250,7 @@ Amarok::TrayIcon::updateMenu()
     {
         contextMenu()->removeAction( action );
         // -- delete actions without parent (e.g. the ones from the capabilities)
-        if( !action->parent() )
+        if( action && !action->parent() )
         {
             delete action;
         }

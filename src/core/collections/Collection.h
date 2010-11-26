@@ -45,7 +45,7 @@ class AMAROK_CORE_EXPORT CollectionFactory : public QObject
 {
     Q_OBJECT
     public:
-        CollectionFactory();
+        CollectionFactory( QObject *parent = 0 );
         virtual ~CollectionFactory();
 
         virtual void init() = 0;

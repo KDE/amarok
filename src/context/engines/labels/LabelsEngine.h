@@ -30,7 +30,7 @@
 using namespace Context;
 
  /**
-   *   This class provide labels from flickr
+   *   This class provide labels from last.fm
    *
    */
 class LabelsEngine : public DataEngine, public ContextObserver

@@ -227,7 +227,10 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     QActionList customActions = createCustomActions( indices );
     KMenu menuCustom( i18n( "Album" )  );
     foreach( QAction *action, customActions )
-        action->setParent( &menuCustom );
+    {
+        if( !action->parent() )
+            action->setParent( &menuCustom );
+    }
 
     if( customActions.count() > 1 )
     {
@@ -244,7 +247,10 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     QActionList collectionActions = createCollectionActions( indices );
     KMenu menuCollection( i18n( "Collection" ) );
     foreach( QAction *action, collectionActions )
-        action->setParent( &menuCollection );
+    {
+        if( !action->parent() )
+            action->setParent( &menuCollection );
+    }
 
     if( collectionActions.count() > 1 )
     {
