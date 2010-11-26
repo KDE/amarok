@@ -18,22 +18,48 @@
 #ifndef AMAROK_PHOTOS_INFO
 #define AMAROK_PHOTOS_INFO
 
-#include "context/DataEngine.h"
-
 #include <KUrl>
+#include <KSharedPtr>
+
+#include <QSharedData>
+#include <QPixmap>
+
+class PhotosInfo;
+typedef KSharedPtr<PhotosInfo> PhotosInfoPtr;
 
 //!  Struct PhotosInfo, contain all the info vor a photos
-class PhotosInfo {
-
+class PhotosInfo : public QSharedData
+{
 public:
+    typedef QList<PhotosInfoPtr> List;
 
-    PhotosInfo() {}
+    PhotosInfo()
+    {
+        static bool metaTypeRegistered = false;
+        if( !metaTypeRegistered )
+        {
+            qRegisterMetaType<PhotosInfo>( "PhotosInfo" );
+            qRegisterMetaType<PhotosInfoPtr>( "PhotosInfoPtr" );
+            qRegisterMetaType<PhotosInfo::List>( "PhotosInfo::List" );
+            metaTypeRegistered = true;
+        }
+    }
+
+    PhotosInfo( const PhotosInfo &other )
+        : QSharedData( other )
+        , title( other.title )
+        , urlphoto( other.urlphoto )
+        , urlpage( other.urlpage )
+    {}
     ~PhotosInfo() {}
     
     QString title;      // Name of the phtos
     KUrl urlphoto;      // url of the photos, for the download
     KUrl urlpage;       // Url for the browser ( http://www.flickr.com/photos/wanderlustg/322285063/ )
-    QPixmap photo;      // Image data
 };
+
+Q_DECLARE_METATYPE( PhotosInfo )
+Q_DECLARE_METATYPE( PhotosInfoPtr )
+Q_DECLARE_METATYPE( PhotosInfo::List )
 
 #endif

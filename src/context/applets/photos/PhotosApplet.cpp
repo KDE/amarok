@@ -21,7 +21,6 @@
 
 // Amarok
 #include "core/support/Amarok.h"
-#include "EngineController.h"
 #include "core/support/Debug.h"
 #include "context/ContextView.h"
 #include "context/widgets/TextScrollingWidget.h"
@@ -43,7 +42,6 @@
 
 PhotosApplet::PhotosApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_stoppedstate( false )
     , m_settingsIcon( 0 )
 {
     DEBUG_BLOCK
@@ -54,6 +52,8 @@ PhotosApplet::PhotosApplet( QObject* parent, const QVariantList& args )
 void
 PhotosApplet::init()
 {
+    DEBUG_BLOCK
+
     // Call the base implementation.
     Context::Applet::init();
     
@@ -79,8 +79,12 @@ PhotosApplet::init()
     connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
 
     m_widget = new PhotosScrollWidget( this );
-    m_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_widget->setContentsMargins( 0, 0, 0, 0 );
+    m_widget->setPreferredHeight( 300 );
+    // m_widget->setMaximumHeight( 300 );
+    setMaximumHeight( 300 );
+    setMinimumHeight( 300 );
 
     QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout;
     headerLayout->addItem( m_headerText );
@@ -90,34 +94,28 @@ PhotosApplet::init()
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
     layout->addItem( headerLayout );
     layout->addItem( m_widget );
-    layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    // layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Photos Applet");
     m_nbPhotos = config.readEntry( "NbPhotos", "10" ).toInt();
     m_Animation = config.readEntry( "Animation", "Fading" );
-    m_KeyWords = config.readEntry( "KeyWords", "" );
+    m_KeyWords = config.readEntry( "KeyWords", QStringList() );
 
-    if ( m_Animation == i18nc( "animation type", "Automatic" ) )
+    if( m_Animation == i18nc( "animation type", "Automatic" ) )
         m_widget->setMode( 0 );
-    
-    if ( m_Animation == i18n( "Interactive" ) )
+    else if( m_Animation == i18n( "Interactive" ) )
         m_widget->setMode( 1 );
-    
-    if ( m_Animation == i18n( "Fading" ) )
+    else // fading
         m_widget->setMode( 2 );
   
-    connectSource( "photos" );
-    connect( dataEngine( "amarok-photos" ), SIGNAL( sourceAdded( const QString & ) ),
-             this, SLOT( connectSource( const QString & ) ) );
-
-    dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
-    dataEngine( "amarok-photos" )->query( QString( "photos:keywords:" ) + m_KeyWords );
+    Plasma::DataEngine *engine = dataEngine( "amarok-photos" );
+    // connect( engine, SIGNAL(sourceAdded(QString)), SLOT(connectSource(QString)) );
+    engine->setProperty( "fetchSize", m_nbPhotos );
+    engine->setProperty( "keywords", m_KeyWords );
+    engine->connectSource( "photos", this );
+    // engine->query( QLatin1String( "photos" ) );
     stopped();
-
-    EngineController *engine = The::engineController();
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)), SLOT(trackPlaying()) );
-    connect( engine, SIGNAL(stopped(qint64, qint64)), SLOT(stopped()) );
 
     updateConstraints();
 }
@@ -128,26 +126,17 @@ PhotosApplet::~PhotosApplet()
 }
 
 void
-PhotosApplet::trackPlaying()
-{
-    DEBUG_BLOCK
-    m_stoppedstate = false;
-    dataEngine( "amarok-photos" )->query( QString( "photos" ) );
-}
-
-void
 PhotosApplet::stopped()
 {
     DEBUG_BLOCK
 
-    m_stoppedstate = true;
     m_headerText->setScrollingText( i18n( "Photos" ) + QString( " : " ) + i18n( "No track playing" ) );
     m_widget->clear();
     m_widget->hide();
     setBusy( false );
-    dataEngine( "amarok-photos" )->query( QString( "photos:stopped" ) );
-    setMinimumHeight( 0 );
-    emit sizeHintChanged( Qt::MinimumSize );
+    // dataEngine( "amarok-photos" )->query( QString( "photos:stopped" ) );
+    // setMinimumHeight( 0 );
+    // emit sizeHintChanged( Qt::MinimumSize );
     setCollapseOn();
     updateConstraints();
 }
@@ -161,29 +150,18 @@ PhotosApplet::constraintsEvent( Plasma::Constraints constraints )
 }
 
 void 
-PhotosApplet::connectSource( const QString &source )
-{
-    if ( source == "photos" )
-        dataEngine( "amarok-photos" )->connectSource( "photos", this );
-}
-
-void 
 PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
-    Q_UNUSED( name )
-
-    if ( data.empty() )
+    DEBUG_BLOCK
+    if( name != QLatin1String("photos") || data.isEmpty() )
         return;
 
-   DEBUG_BLOCK
-    if ( m_stoppedstate )
-    {
-        stopped();
-        return;
-    }
+    setBusy( false );
+
     // if we get a message, show it
-    if ( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
+    if( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
     {
+        debug() << "received message: Fetching";
         //FIXME: This should use i18n( "blah %1 blah", foo ). 
         m_headerText->setScrollingText( i18n( "Photos" ) + QString( " : " ) + i18n( "Fetching ..." ) );
         setCollapseOff();
@@ -192,41 +170,47 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         if( canAnimate() )
             setBusy( true );
     }
-    else if ( data.contains( "message" ) && data["message"].toString().contains("NA_Collapse") )
+    else if( data.contains( "message" ) && data["message"].toString().contains("stopped") )
     {
+        debug() << "received message: stopped";
+        stopped();
+    }
+    else if( data.contains( "message" ) && data["message"].toString().contains("NA_Collapse") )
+    {
+        debug() << "received message: NA_Collapse";
         setCollapseOn();
         m_widget->clear();
         m_widget->hide();
-        setBusy( false );
     }
-    else if ( data.contains( "message" ) )
+    else if( data.contains( "message" ) )
     {
+        debug() << "received message:" << data["message"].toString();
         //FIXME: This should use i18n( "blah %1 blah", foo ). 
         m_headerText->setScrollingText( i18n( "Photos" ) + " : " + data[ "message" ].toString() );
         m_widget->hide();
         setCollapseOn();
-        setBusy( false );
     }
-    else if ( data.contains( "data" ) )
+    else if( data.contains( "data" ) )
     {
+        debug() << "received data for:" << data["artist"].toString();
+        m_widget->clear();
         // Do not show some picture if we're still animating as it can lead to trouble
         // let's hope animating time will be shorter than fetching time of all the picture :/
         // this also prevent the stupid effect of reanimating several time.
-        if ( isAppletExtended() )
-        {
+        // if ( isAppletExtended() )
+        // {
             //FIXME: This should use i18n( "blah %1 blah", foo ). 
             m_headerText->setScrollingText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );
             setCollapseOff();
             // Send the data to the scrolling widget
-            m_widget->setPixmapList( data[ "data" ].value< QList < PhotosInfo * > >() );
+            m_widget->setPhotosInfoList( data[ "data" ].value< PhotosInfo::List >() );
             m_widget->show();
-            setBusy(false);
-            setMinimumHeight( 300 );
-            emit sizeHintChanged( Qt::MinimumSize );
+            // setMinimumHeight( 300 );
+            // emit sizeHintChanged( Qt::MinimumSize );
             layout()->invalidate();
-        }
-        else
-            return;
+        // }
+        // else
+            // return;
     }
     updateConstraints();
 }
@@ -242,7 +226,7 @@ PhotosApplet::createConfigurationInterface( KConfigDialog *parent )
 
     ui_Settings.animationComboBox->setCurrentIndex( ui_Settings.animationComboBox->findText( m_Animation ) );
     ui_Settings.photosSpinBox->setValue( m_nbPhotos );
-    ui_Settings.additionalkeywordsLineEdit->setText( m_KeyWords );
+    ui_Settings.additionalkeywordsLineEdit->setText( m_KeyWords.join(", ") );
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
 
@@ -254,17 +238,18 @@ PhotosApplet::saveSettings()
 
     m_nbPhotos = ui_Settings.photosSpinBox->value();
     m_Animation = ui_Settings.animationComboBox->currentText();
-    m_KeyWords = ui_Settings.additionalkeywordsLineEdit->text();
+    m_KeyWords = ui_Settings.additionalkeywordsLineEdit->text().split(", ");
     config.writeEntry( "NbPhotos", m_nbPhotos );
     config.writeEntry( "Animation", m_Animation );
     config.writeEntry( "KeyWords", m_KeyWords );
 
     m_widget->setMode( ui_Settings.animationComboBox->currentIndex() );
-
     m_widget->clear();
     
-    dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
-    dataEngine( "amarok-photos" )->query( QString( "photos:keywords:" ) + m_KeyWords );
+    Plasma::DataEngine *engine = dataEngine( "amarok-photos" );
+    engine->setProperty( "fetchSize", m_nbPhotos );
+    engine->setProperty( "keywords", m_KeyWords );
+    engine->query( QLatin1String( "photos:forceUpdate" ) );
 }
 
 #include "PhotosApplet.moc"

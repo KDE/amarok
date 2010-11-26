@@ -1,5 +1,6 @@
-include_directories( ../.. 
-					 ../../..
+include_directories(
+    ${Amarok_SOURCE_DIR}/src
+    ${Amarok_SOURCE_DIR}/src/network
 )
 
 set( photos_applet_SRCS

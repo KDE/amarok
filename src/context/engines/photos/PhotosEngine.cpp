@@ -20,92 +20,95 @@
 
 // Amarok
 #include "core/support/Amarok.h"
-#include "ContextObserver.h"
 #include "ContextView.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 
 // Qt
-#include <QDomDocument>
+#include <QXmlStreamReader>
 #include <QPixmap>
 
 using namespace Context;
 
 PhotosEngine::PhotosEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
-        , ContextObserver( ContextView::self() )
-        , m_nbFlickr( -1 )
         , m_nbPhotos( 10 )
-        , m_keywords( QString() )
-        , m_requested( true )
-        , m_reload( false )
 {
     m_sources << "flickr" ;
-    update();
+    // update();
 }
 
 PhotosEngine::~PhotosEngine()
 {
-    m_photos.clear();
 }
 
-QStringList 
+void
+PhotosEngine::init()
+{
+    DEBUG_BLOCK
+    EngineController *controller = The::engineController();
+    connect( controller, SIGNAL(trackPlaying(Meta::TrackPtr)), SLOT(trackPlaying()) );
+    connect( controller, SIGNAL(stopped(qint64, qint64)), SLOT(stopped()) );
+}
+
+void
+PhotosEngine::stopped()
+{
+    DEBUG_BLOCK
+    removeAllData( "photos" );
+    setData( "photos", "message", "stopped" );
+}
+
+void
+PhotosEngine::trackPlaying()
+{
+    DEBUG_BLOCK
+    update();
+}
+
+QStringList
 PhotosEngine::sources() const
 {
     return m_sources;
 }
 
-bool 
+int
+PhotosEngine::fetchSize() const
+{
+    return m_nbPhotos;
+}
+
+void
+PhotosEngine::setFetchSize( int size )
+{
+    m_nbPhotos = size;
+}
+
+QStringList
+PhotosEngine::keywords() const
+{
+    return m_keywords;
+}
+
+void
+PhotosEngine::setKeywords( const QStringList &keywords )
+{
+    m_keywords = keywords;
+}
+
+bool
 PhotosEngine::sourceRequestEvent( const QString& name )
 {
     DEBUG_BLOCK
-    m_requested = true; // someone is asking for data, so we turn ourselves on :)
-    QStringList tokens = name.split( ':' );
-
-    // user has change the number of photos to download
-    if ( tokens.contains( "nbphotos" ) && tokens.size() > 1 )
-    {
-        if ( ( tokens.at( 1 ) == QString( "nbphotos" ) ) && ( tokens.size() > 2 ) )
-        {
-            m_nbPhotos = tokens.at( 2 ).toInt();
-            return false;
-        }
-    }
-    // user has change the key words
-    else if ( tokens.contains( "keywords" ) && tokens.size() > 1 )
-    {
-        if ( ( tokens.at( 1 ) == QString( "keywords" ) ) && ( tokens.size() > 2 ) )
-        {
-            m_keywords = tokens.at( 2 );
-            m_reload = true;
-        }
-    }
-
-    // we've been notified by the applet to be in state stop <3
-    else if ( tokens.contains( "stopped" ) && tokens.size() > 1 )
-    {
-        if ( tokens.at( 1 ) == QString( "stopped" ) )
-        {
-//             removeSource( "photos" );
-            m_reload = true;
-            return false;
-        }
-    }
-    
-    removeAllData( name );
-    setData( name, QVariant() );
-    update();
+    bool force( false );
+    QStringList tokens = name.split( QLatin1Char(':'), QString::SkipEmptyParts );
+    if( tokens.contains( QLatin1String("forceUpdate") ) )
+        force = true;
+    update( force );
     return true;
 }
 
-void 
-PhotosEngine::message( const ContextState& state )
-{
-    if ( state == Current && m_requested )
-        update();        
-}
-
-void 
+void
 PhotosEngine::metadataChanged( Meta::TrackPtr track )
 {
     const bool hasChanged = track->artist()->name() != m_artist;
@@ -113,19 +116,27 @@ PhotosEngine::metadataChanged( Meta::TrackPtr track )
         update();
 }
 
-void PhotosEngine::update()
+void
+PhotosEngine::update( bool force )
 {
     DEBUG_BLOCK
     QString tmpYoutStr;
     // prevent
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if ( !currentTrack || !currentTrack->artist() )
+    if( !currentTrack || !currentTrack->artist() )
+    {
+        debug() << "invalid current track";
+        setData( "photos", DataEngine::Data() );
         return;
-    else if ( currentTrack->artist()->name() == m_artist && !m_reload )
+    }
+    else if( !force && currentTrack->artist()->name() == m_artist )
+    {
+        debug() << "artist name unchanged";
+        setData( "photos", DataEngine::Data() );
         return;
+    }
     else
     {
-        m_reload = false;
         unsubscribeFrom( m_currentTrack );
         m_currentTrack = currentTrack;
         subscribeTo( currentTrack );
@@ -136,15 +147,8 @@ void PhotosEngine::update()
         // Save artist
         m_artist = currentTrack->artist()->name();
 
-        m_nbFlickr=-1;
-            
         removeAllData( "photos" );
 
-        qDeleteAll( m_photos );
-        qDeleteAll( m_photosInit );
-        m_photos.clear();
-        m_photosInit.clear();
-        
         // Show the information
         if( !m_artist.isEmpty() )
         {
@@ -154,16 +158,27 @@ void PhotosEngine::update()
         else
         {
             setData( "photos", "message", "NA_Collapse" );
-            resultFinalize();
             return;
         }
 
+        QStringList tags = m_keywords;
+        tags << QLatin1String("artist");
+        tags.removeDuplicates();
+
         // Query flickr, order by relevance, 10 max
         // Flickr :http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=ARTIST&per_page=20
-        KUrl flickrUrl(
-            QString( "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=" )
-            + m_artist + QString(" ") + m_keywords + QString( "&per_page=" ) + QString().setNum( m_nbPhotos ) + QString( "&sort=relevance&media=photos" ) );
-        debug()<< "Flickr : " << flickrUrl.toMimeDataString() ;
+        KUrl flickrUrl;
+        flickrUrl.setScheme( "http" );
+        flickrUrl.setHost( "api.flickr.com" );
+        flickrUrl.setPath( "/services/rest/" );
+        flickrUrl.addQueryItem( "method", "flickr.photos.search" );
+        flickrUrl.addQueryItem( "api_key", Amarok::flickrApiKey() );
+        flickrUrl.addQueryItem( "per_page", QString::number( m_nbPhotos ) );
+        flickrUrl.addQueryItem( "sort", "relevance" );
+        flickrUrl.addQueryItem( "media", "photos" );
+        flickrUrl.addQueryItem( "tags", tags.join(",") );
+        flickrUrl.addQueryItem( "text", m_artist );
+        debug() << "Flickr url:" << flickrUrl.toMimeDataString();
 
         m_flickrUrls << flickrUrl;
         The::networkAccessManager()->getData( flickrUrl, this,
@@ -172,117 +187,75 @@ void PhotosEngine::update()
     }
 }
 
-void PhotosEngine::resultFlickr( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+void
+PhotosEngine::resultFlickr( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( !m_flickrUrls.contains( url ) )
         return;
 
+    DEBUG_BLOCK
     m_flickrUrls.remove( url );
     if( e.code != QNetworkReply::NoError )
     {
-        m_nbFlickr = 0; //say that we didn't fetch any images (which is true !)
         setData( "photos", "message", i18n( "Unable to retrieve from Flickr.com: %1", e.description ) );
-        debug() << "Unable to retrieve Flickr information:" << e.description; 
-        resultFinalize();
+        debug() << "Unable to retrieve Flickr information:" << e.description;
         return;
     }
 
-    DEBUG_BLOCK
     if( data.isNull() )
     {
         debug() << "Got bad xml!";
-        resultFinalize();
         return;
     }
-    QDomDocument xmlDoc;
-    xmlDoc.setContent( data );
-    QDomNodeList xmlNodeList = xmlDoc.elementsByTagName( "photo" );
 
-    QTime tim, time( 0, 0 );
-    m_nbFlickr = 0;
-    for ( uint i = 0; i < xmlNodeList.length() ; i++ )
-    {
-        // repare the new photos info
-        PhotosInfo *item = new PhotosInfo;
-        
-        // Get all the information
-        QDomElement nd = xmlNodeList.at( i ).toElement();
-        QString url = "http://farm" + nd.attribute( "farm" ) + ".static.flickr.com/" + nd.attribute( "server" ) + "/" + nd.attribute( "id" ) +"_"+ nd.attribute( "secret" ) +".jpg";
-        QString urlpage = "http://www.flickr.com/photos/" + nd.attribute( "owner" ) + "/" + nd.attribute( "id" );
-        item->urlpage = urlpage;
-        item->urlphoto = url;
-        debug() << urlpage;
-        // Insert the item in the list
-        m_imageUrls << url;
-        m_photosInit << item;
-        The::networkAccessManager()->getData( url, this,
-             SLOT(resultImageFetcher(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-    }
-    m_nbFlickr += xmlNodeList.length();
-    // Check how many clip we've find and send message if all the jobs are finished but no clip were find
-    debug() << "Flickr fetch : " << m_nbFlickr << " photos ";
-    resultFinalize();
+    removeAllData( "photos" );
+    QXmlStreamReader xml( data );
+    PhotosInfo::List photosInfo = photosListFromXml( xml );
+    debug() << "got" << photosInfo.size() << "photo info";
+    setData( "photos", "artist", m_artist );
+    setData( "photos", "data", qVariantFromValue( photosInfo ) );
 }
 
-void PhotosEngine::resultImageFetcher( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+PhotosInfo::List
+PhotosEngine::photosListFromXml( QXmlStreamReader &xml )
 {
-    if( !m_imageUrls.contains( url ) )
-        return;
+    PhotosInfo::List photoList;
+    xml.readNextStartElement(); // rsp
+    if( xml.attributes().value(QLatin1String("stat")) != QLatin1String("ok") )
+        return photoList;
 
-    m_imageUrls.remove( url );
-    if( e.code != QNetworkReply::NoError )
+    xml.readNextStartElement(); // photos
+    while( xml.readNextStartElement() )
     {
-        debug() << "PhotosEngine | Unable to retrieve an image:" << e.description;
-        resultFinalize();
-        return;
-    }
-
-    QPixmap pixmap;
-    pixmap.loadFromData( data );
-    foreach( PhotosInfo *item, m_photosInit )
-    {
-        if( item->urlphoto == url )
+        if( xml.name() == QLatin1String("photo") )
         {
-            item->photo = pixmap ;
-            m_photos << item;
-            //remove from list of unfinished downlaods or we will get in big trouble
-            //when deleting items
-            m_photosInit.removeAll( item );
+            const QXmlStreamAttributes &attr = xml.attributes();
+            QStringRef id     = attr.value( QLatin1String("id") );
+            QStringRef farm   = attr.value( QLatin1String("farm") );
+            QStringRef owner  = attr.value( QLatin1String("owner") );
+            QStringRef secret = attr.value( QLatin1String("secret") );
+            QStringRef server = attr.value( QLatin1String("server") );
+            QStringRef title  = attr.value( QLatin1String("title") );
+
+            KUrl photoUrl;
+            photoUrl.setScheme( "http" );
+            photoUrl.setHost( QString("farm%1.static.flickr.com").arg( farm.toString() ) );
+            photoUrl.setPath( QString("/%1/%2_%3.jpg").arg( server.toString(), id.toString(), secret.toString() ) );
+
+            KUrl pageUrl;
+            pageUrl.setScheme( "http" );
+            pageUrl.setHost( QLatin1String("www.flickr.com") );
+            pageUrl.setPath( QString("/photos/%1/%2").arg( owner.toString(), id.toString() ) );
+
+            PhotosInfoPtr info( new PhotosInfo );
+            info->title = title.toString();
+            info->urlpage = pageUrl;
+            info->urlphoto = photoUrl;
+            photoList.append( info );
         }
+        xml.skipCurrentElement();
     }
-    resultFinalize();
-}
-
-void PhotosEngine::resultFinalize()
-{
-    if ( m_nbFlickr==0 )
-    {
-        DEBUG_BLOCK
-        debug() << "No Photos found";
-        setData( "photos", "message", i18n( "No information found..." ) );
-        return;
-    }
-
-    if ( m_nbFlickr == -1 )
-        return;
-
-    if ( !m_photos.empty() )
-    {
-  //      DEBUG_BLOCK
-       // debug() << "PhotosEngine : " << m_photos.size() << " entries";
-
-        // remove previous message
-        removeData( "photos", "message" );
-
-        // if the song hasn't change while fetchin, we sen the info
-        if ( m_currentTrack != The::engineController()->currentTrack() )
-            return;
-
-        QVariant var;
-        var.setValue< QList< PhotosInfo *> > ( m_photos );
-        setData( "photos", "data", var );
-    }
+    return photoList;
 }
 
 #include "PhotosEngine.moc"
-

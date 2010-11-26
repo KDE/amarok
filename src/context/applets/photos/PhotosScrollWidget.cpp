@@ -21,6 +21,7 @@
 #include "DragPixmapItem.h"
 
 // Amarok
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "SvgHandler.h"
 
@@ -64,25 +65,21 @@ PhotosScrollWidget::PhotosScrollWidget( QGraphicsItem* parent )
 
 PhotosScrollWidget::~PhotosScrollWidget()
 {
-    DEBUG_BLOCK
     clear();
-
 }
-
 
 void PhotosScrollWidget::clear()
 {
-    DEBUG_BLOCK
-
+    // DEBUG_BLOCK
     if( m_animation->state() == QAbstractAnimation::Running )
         m_animation->stop();
 
     // stop the timer for animation
-    if ( m_timer->isActive() )
+    if( m_timer->isActive() )
         m_timer->stop();
 
     //delete!!!
-    debug() << "Going to delete " << m_pixmaplist.count() << " items";
+    // debug() << "Going to delete " << m_pixmaplist.count() << " items";
 
     qDeleteAll( m_pixmaplist );
 
@@ -99,103 +96,129 @@ void PhotosScrollWidget::setMode( int mode )
 {
     DEBUG_BLOCK
     m_mode = mode;
-    QList < PhotosInfo * > tmp = m_currentlist;
+    PhotosInfo::List tmp = m_currentlist;
     clear();
-    setPixmapList( tmp );
+    setPhotosInfoList( tmp );
     tmp.clear();
 }
 
-void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
+void PhotosScrollWidget::setPhotosInfoList( const PhotosInfo::List &list )
 {
     DEBUG_BLOCK
     // if the list is the same, nothing happen.
-    if ( list == m_currentlist )
+    if( list == m_currentlist )
         return;
 
-  //  debug() << "adding " << list.count() << "new pics";
-    // If a new one arrived, we change.
-    foreach( PhotosInfo *item, list )
+    debug() << "adding " << list.count() << "new photos";
+    foreach( PhotosInfoPtr item, list )
     {
-        if ( !m_currentlist.contains( item ) )
+        if( m_currentlist.contains( item ) )
+            continue;
+
+        KUrl url = item->urlphoto;
+        if( url.isValid() )
         {
-            if ( !item->photo.isNull() )
-            {
-                switch ( m_mode )
-                {
-                    case PHOTOS_MODE_INTERACTIVE :
-                    {
-                        if( m_animation->state() == QAbstractAnimation::Running ) // careful we're animating
-                            m_animation->stop();
-
-                        DragPixmapItem *dragpix = new DragPixmapItem( this );
-                        dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-                        item->photo.scaledToHeight( (int) size().height() - 2 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
-                        dragpix->setPos( m_actualpos, 0 );
-                        dragpix->SetClickableUrl( item->urlpage );
-                        dragpix->show();
-
-                        m_pixmaplist << dragpix;
-
-                        int delta = dragpix->boundingRect().width() + m_margin;
-                        m_scrollmax += delta;
-                        m_actualpos += delta;
-
-                        break;
-                    }
-                    case PHOTOS_MODE_AUTOMATIC :
-                    {
-                        DragPixmapItem *dragpix = new DragPixmapItem( this );
-                        dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-                            item->photo.scaledToHeight( (int) size().height() - 2 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
-                        dragpix->SetClickableUrl( item->urlpage );
-
-                        // only pos and show if no animation, otherwise it will be set at the end automatically
-                        if ( m_animation->state() != QAbstractAnimation::Running )
-                        {
-                            if ( ! m_pixmaplist.empty() )
-                            {
-                                dragpix->setPos( m_pixmaplist.last()->boundingRect().width() + m_pixmaplist.last()->pos().x() + m_margin , 0 ) ;
-                                dragpix->show();
-                            }
-                            else
-                            {
-                                m_actualpos = 0;
-                                dragpix->setPos( m_actualpos, 0 ) ;
-                                dragpix->show();
-                            }
-                        }
-
-                        m_pixmaplist << dragpix;
-
-                        // set a timer after and launch
-                        QTimer::singleShot( m_interval, this, SLOT( automaticAnimBegin() ) );
-
-                        break;
-                    }
-                    case PHOTOS_MODE_FADING :
-                    {
-
-                        DragPixmapItem *dragpix = new DragPixmapItem( this );
-                        dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-                        item->photo.scaledToHeight( (int) size().height() - 2 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
-                        dragpix->setPos( ( size().width() - dragpix->boundingRect().width() ) / 2, 0 );
-                        dragpix->SetClickableUrl( item->urlpage );
-                        dragpix->hide();
-                        m_pixmaplist << dragpix;
-                        if ( m_pixmaplist.size() == 1 )
-                        {
-                            dragpix->show();
-                            m_timer->start( m_interval );
-                        }
-
-                        break;
-                    }
-                }
-            }
+            m_infoHash[ url ] = item;
+            The::networkAccessManager()->getData( url, this,
+                 SLOT(photoFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
     }
     m_currentlist = list;
-  //  debug() << "total count: " << m_pixmaplist.count();
+}
+
+void PhotosScrollWidget::photoFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+{
+    if( !m_infoHash.contains( url ) )
+        return;
+
+    PhotosInfoPtr info = m_infoHash.take( url );
+    if( e.code != QNetworkReply::NoError )
+    {
+        debug() << "Error fetching photo" << e.description;
+        return;
+    }
+
+    QPixmap pixmap;
+    if( pixmap.loadFromData( data ) )
+        addPhoto( info, pixmap );
+}
+
+void PhotosScrollWidget::addPhoto( const PhotosInfoPtr &item, const QPixmap &photo )
+{
+    if( photo.isNull() )
+        return;
+
+    QPixmap pixmap = photo.scaledToHeight( size().height() - 2 * m_margin, Qt::SmoothTransformation );
+    pixmap = The::svgHandler()->addBordersToPixmap( pixmap, 5, QString(), true );
+
+    switch( m_mode )
+    {
+    case PHOTOS_MODE_INTERACTIVE:
+        {
+            if( m_animation->state() == QAbstractAnimation::Running ) // careful we're animating
+                m_animation->stop();
+
+            DragPixmapItem *dragpix = new DragPixmapItem( this );
+            dragpix->setPixmap( pixmap );
+            dragpix->setPos( m_actualpos, 0 );
+            dragpix->SetClickableUrl( item->urlpage );
+            dragpix->show();
+
+            m_pixmaplist << dragpix;
+
+            int delta = dragpix->boundingRect().width() + m_margin;
+            m_scrollmax += delta;
+            m_actualpos += delta;
+            break;
+        }
+
+    case PHOTOS_MODE_AUTOMATIC:
+        {
+            DragPixmapItem *dragpix = new DragPixmapItem( this );
+            dragpix->setPixmap( pixmap );
+            dragpix->SetClickableUrl( item->urlpage );
+
+            // only pos and show if no animation, otherwise it will be set at the end automatically
+            if( m_animation->state() != QAbstractAnimation::Running )
+            {
+                if( !m_pixmaplist.isEmpty() )
+                {
+                    int x = m_pixmaplist.last()->boundingRect().width();
+                    x += m_pixmaplist.last()->pos().x() + m_margin;
+                    dragpix->setPos( x , 0 ) ;
+                    dragpix->show();
+                }
+                else
+                {
+                    m_actualpos = 0;
+                    dragpix->setPos( m_actualpos, 0 ) ;
+                    dragpix->show();
+                }
+            }
+
+            m_pixmaplist << dragpix;
+
+            // set a timer after and launch
+            QTimer::singleShot( m_interval, this, SLOT(automaticAnimBegin()) );
+            break;
+        }
+
+    case PHOTOS_MODE_FADING:
+        {
+            DragPixmapItem *dragpix = new DragPixmapItem( this );
+            dragpix->setPixmap( pixmap );
+            dragpix->setPos( (size().width() - dragpix->boundingRect().width()) / 2, 0 );
+            dragpix->SetClickableUrl( item->urlpage );
+            dragpix->hide();
+            m_pixmaplist << dragpix;
+            if( m_pixmaplist.size() == 1 )
+            {
+                dragpix->show();
+                m_timer->start( m_interval );
+            }
+            break;
+        }
+    }
 }
 
 void PhotosScrollWidget::hoverEnterEvent(QGraphicsSceneHoverEvent*)
@@ -264,18 +287,17 @@ void PhotosScrollWidget::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
 
 void PhotosScrollWidget::resize(qreal wid, qreal hei)
 {
-
     switch( m_mode )
     {
         case PHOTOS_MODE_FADING:
         {
-            foreach (DragPixmapItem *item, m_pixmaplist)
+            foreach(DragPixmapItem *item, m_pixmaplist)
             {
-                if ( !item->pixmap().isNull() )
+                if( !item->pixmap().isNull() )
                 {
-                    if ( size().height() != hei )
+                    if( size().height() != hei )
                         item->setPixmap( item->pixmap().scaledToHeight( (int) hei - 2 * m_margin,  Qt::SmoothTransformation ) );
-                    if ( size().width() != wid )
+                    if( size().width() != wid )
                         item->setPos( ( wid - item->boundingRect().width() ) / 2, 0 );
                 }
             }
@@ -286,9 +308,7 @@ void PhotosScrollWidget::resize(qreal wid, qreal hei)
     QGraphicsWidget::resize( wid, hei );
 }
 
-
-void
-PhotosScrollWidget::automaticAnimBegin()
+void PhotosScrollWidget::automaticAnimBegin()
 {
     if ( m_pixmaplist.size() > 1 && m_animation->state() != QAbstractAnimation::Running )  // only start if m_pixmaplist >= 2
     {
@@ -323,8 +343,7 @@ PhotosScrollWidget::automaticAnimBegin()
     }
 }
 
-void
-PhotosScrollWidget::automaticAnimEnd()
+void PhotosScrollWidget::automaticAnimEnd()
 {
     switch( m_mode )
     {
@@ -470,4 +489,3 @@ void PhotosScrollWidget::animate( qreal anim )
 }
 
 #include "PhotosScrollWidget.moc"
-

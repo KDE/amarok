@@ -1,7 +1,8 @@
-include_directories( ../..
-                    ../../..
-                    ${Amarok_SOURCE_DIR}/src/network
-                    ${CMAKE_CURRENT_BINARY_DIR} # for amarok_config.h
+include_directories(
+    ${Amarok_SOURCE_DIR}/src
+    ${Amarok_SOURCE_DIR}/src/context
+    ${Amarok_SOURCE_DIR}/src/network
+    ${CMAKE_CURRENT_BINARY_DIR} # for amarok_config.h
 )
 
 set( photos_engine_SRCS
