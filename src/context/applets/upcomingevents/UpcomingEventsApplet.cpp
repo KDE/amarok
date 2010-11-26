@@ -124,7 +124,6 @@ UpcomingEventsApplet::init()
     engine->query( "venueevents" );
 
     updateConstraints();
-    update();
 }
 
 void
@@ -137,9 +136,10 @@ UpcomingEventsApplet::engineSourceAdded( const QString &source )
 void
 UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_UNUSED( constraints );
+    Context::Applet::constraintsEvent( constraints );
     prepareGeometryChange();
     m_headerLabel->setScrollingText( i18n( "Upcoming Events" ) );
+    update();
 }
 
 void

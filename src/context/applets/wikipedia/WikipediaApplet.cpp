@@ -590,15 +590,15 @@ WikipediaApplet::init()
     d->scheduleEngineUpdate();
 
     updateConstraints();
-    update();
 }
 
 void
 WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_UNUSED( constraints );
     Q_D( WikipediaApplet );
+    Context::Applet::constraintsEvent( constraints );
     d->wikipediaLabel->setScrollingText( d->wikipediaLabel->text() );
+    update();
 }
 
 bool

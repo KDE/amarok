@@ -58,10 +58,6 @@ void
 Context::VerticalToolbarContainment::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
-
-    if( m_view )
-        m_applets->setGeometry( QRectF(QPointF(0, 0), m_view->maximumViewportSize()) );
-    
     if( m_noAppletText )
     {
         QRectF masterRect = contentsRect();
@@ -124,6 +120,7 @@ Context::VerticalToolbarContainment::updateGeometry()
     Context::Containment::updateGeometry();
     QRectF rect = scene()->sceneRect();
     setGeometry( rect );
+    m_applets->setGeometry( rect );
 }
 
 Plasma::Applet*

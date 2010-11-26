@@ -97,13 +97,13 @@ void Albums::init()
              this, SLOT(collectionDataChanged(Collections::Collection*)) );
 
     updateConstraints();
-    update();
 }
 
 void Albums::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_UNUSED( constraints )
+    Context::Applet::constraintsEvent( constraints );
     m_headerText->setScrollingText( m_headerText->text() );
+    update();
 }
 
 void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &data )
@@ -207,7 +207,6 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
     }
 
     updateConstraints();
-    update();
 }
 
 void Albums::createConfigurationInterface( KConfigDialog *parent )

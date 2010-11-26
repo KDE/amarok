@@ -138,7 +138,6 @@ SimilarArtistsApplet::init()
     engine->query( "similarArtists" );
 
     updateConstraints();
-    update();
 }
 
 void
@@ -151,11 +150,11 @@ SimilarArtistsApplet::connectSource( const QString &source )
 void
 SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_UNUSED( constraints );
-
+    Context::Applet::constraintsEvent( constraints );
     prepareGeometryChange();
     QString header = m_headerLabel->isEmpty() ? i18n( "Similar Artists" ) : m_headerLabel->text();
     m_headerLabel->setScrollingText( header );
+    update();
 }
 
 void

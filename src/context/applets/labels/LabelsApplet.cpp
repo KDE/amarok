@@ -188,7 +188,6 @@ void LabelsApplet::setStoppedState( bool stopped )
     }
 
     constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
-    update();
 }
 
 void
@@ -373,13 +372,13 @@ LabelsApplet::updateLabels()
     m_selfAdded = false; // should be unnecessary, but better safe than sorry
 
     constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
-    update();
 }
 
 void
 LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_UNUSED( constraints );
+    Context::Applet::constraintsEvent( constraints );
+
     prepareGeometryChange();
 
     m_titleLabel.data()->setScrollingText( m_titleText );
@@ -455,6 +454,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         updateGeometry();
         emit sizeHintChanged( Qt::PreferredSize );
     }
+    update();
 }
 
 void
@@ -484,7 +484,6 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
         if ( !data.contains( "user" ) ) // avoid calling update twice
         {
             constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
-            update();
         }
         if( canAnimate() )
             setBusy( true );
@@ -495,7 +494,6 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
         if( !data.contains( "user" ) ) // avoid calling update twice
         {
             constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
-            update();
         }
         setBusy( false );
     }

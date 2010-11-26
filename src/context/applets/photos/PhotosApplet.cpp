@@ -120,7 +120,6 @@ PhotosApplet::init()
     connect( engine, SIGNAL(stopped(qint64, qint64)), SLOT(stopped()) );
 
     updateConstraints();
-    update();
 }
 
 PhotosApplet::~PhotosApplet()
@@ -151,14 +150,14 @@ PhotosApplet::stopped()
     emit sizeHintChanged( Qt::MinimumSize );
     setCollapseOn();
     updateConstraints();
-    update();
 }
 
 void 
 PhotosApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_UNUSED( constraints );
+    Context::Applet::constraintsEvent( constraints );
     m_headerText->setScrollingText( i18n( "Photos" ) );
+    update();
 }
 
 void 
@@ -230,7 +229,6 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
             return;
     }
     updateConstraints();
-    update();
 }
 
 void

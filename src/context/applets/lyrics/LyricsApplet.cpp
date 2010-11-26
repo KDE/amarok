@@ -649,11 +649,10 @@ LyricsApplet::connectSource( const QString& source )
 void
 LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_UNUSED( constraints );
     Q_D( LyricsApplet );
-
-    prepareGeometryChange();
+    Context::Applet::constraintsEvent( constraints );
     d->titleLabel->setScrollingText( d->titleText );
+    update();
 }
 
 void
@@ -751,7 +750,6 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     d->determineActionIconsState();
     d->collapseToMin();
     constraintsEvent();
-    update();
 }
 
 bool
