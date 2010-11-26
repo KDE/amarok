@@ -742,7 +742,7 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 }
                 else if( lcField.compare( "rating", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "rating" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valRating, elem.text.toInt(), compare );
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valRating, elem.text.toFloat() * 2, compare );
                 }
                 else if( lcField.compare( "score", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "score" ), Qt::CaseInsensitive ) == 0 )
                 {

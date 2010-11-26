@@ -67,7 +67,7 @@ RatingWidget::RatingWidget( QGraphicsItem* parent )
     , m_startupUpdates( 2 )
 {
     setAcceptHoverEvents( true );
-    setToolTip( i18n( "Track rating: %1", d->rating ) );
+    setToolTip( i18n( "Track rating: %1", (float)d->rating / 2 ) );
 }
 
 
@@ -218,7 +218,7 @@ RatingWidget::mousePressEvent( QGraphicsSceneMouseEvent* e )
         if ( ratingFromPos >= 0 )
         {
             d->hoverRating = d->rating = ratingFromPos;
-            setToolTip( i18n( "Track rating: %1", d->rating ) );
+            setToolTip( i18n( "Track rating: %1", (float)d->rating / 2 ) );
             update();
             emit ratingChanged( d->rating );
         }
@@ -244,7 +244,7 @@ RatingWidget::hoverEnterEvent( QGraphicsSceneHoverEvent* e )
                     contentsRect().width(), contentsRect().height() );
     d->hoverRating = d->ratingPainter.ratingFromPosition( rect, QPoint( e->pos().x(), e->pos().y() ) );
 
-    setToolTip( i18n( "Track rating: %1", d->rating ) );
+    setToolTip( i18n( "Track rating: %1", (float)d->rating / 2 ) );
 
     update();
 }

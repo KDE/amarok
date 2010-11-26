@@ -933,6 +933,11 @@ QString MetaQueryWidget::Filter::toString( bool invert )
     {
         strValue1 = Amarok::FileTypeSupport::toString( Amarok::FileType( numValue ));
     }
+    else if( field == Meta::valRating )
+    {
+        strValue1 = QString::number( (float)numValue / 2 );
+        strValue2 = QString::number( (float)numValue2 / 2 );
+    }
     else if( MetaQueryWidget::isDate(field) )
     {
         // here we are handling only the date. relative times are handled below
