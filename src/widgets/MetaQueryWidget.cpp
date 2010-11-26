@@ -551,11 +551,11 @@ MetaQueryWidget::makeValueSelection()
     else if( field == Meta::valLength )
         makeLengthSelection();
     else if( field == Meta::valBitrate )
-        makeGenericNumberSelection( 60, 400, 160 );
+        makeGenericNumberSelection( 60, 2000, 160, i18nc("Unit for data rate kilo bit per seconds", "kbps") );
     else if( field == Meta::valSamplerate )
-        makeGenericNumberSelection( 8000, 48000, 44000 );
+        makeGenericNumberSelection( 8000, 48000, 44000, i18nc("Unit for sample rate", "Hz") );
     else if( field == Meta::valFilesize )
-        makeGenericNumberSelection( 0, 20000000, 1000 );
+        makeGenericNumberSelection( 0, 1000, 10, i18nc("Unit for file size in mega byte", "MiB") );
     else if( field == Meta::valFormat )
         makeFormatComboSelection();
     else if( field == Meta::valCreateDate )
@@ -737,11 +737,13 @@ MetaQueryWidget::makeLengthSelection()
 }
 
 void
-MetaQueryWidget::makeGenericNumberSelection( int min, int max, int def )
+MetaQueryWidget::makeGenericNumberSelection( int min, int max, int def, const QString& unit )
 {
     KIntSpinBox* spin = new KIntSpinBox();
     spin->setMinimum( min );
     spin->setMaximum( max );
+    if( !unit.isEmpty() )
+        spin->setSuffix( " " + unit );
     if( m_filter.condition == Contains ||
         m_filter.numValue < min || m_filter.numValue > max )
     {
@@ -763,6 +765,8 @@ MetaQueryWidget::makeGenericNumberSelection( int min, int max, int def )
     KIntSpinBox* spin2 = new KIntSpinBox();
     spin2->setMinimum( min );
     spin2->setMaximum( max );
+    if( !unit.isEmpty() )
+        spin2->setSuffix( " " + unit );
     if( m_filter.condition == Contains ||
         m_filter.numValue2 < min || m_filter.numValue2 > max )
     {
