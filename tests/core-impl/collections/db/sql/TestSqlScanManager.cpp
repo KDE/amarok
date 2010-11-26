@@ -558,7 +558,7 @@ TestSqlScanManager::testMerges()
     QCOMPARE( track->artist()->name(), QString("Soundtrack & Theme Orchestra") );
     QVERIFY( track->album() );
     QCOMPARE( track->album()->name(), QString("Big Screen Adventures") );
-    QVERIFY( track->album()->isCompilation() );
+    QVERIFY( !track->album()->isCompilation() );
     QCOMPARE( track->composer()->name(), QString("Unknown Composer") );
     QCOMPARE( track->comment(), QString("Amazon.com Song ID: 210541237") );
     QCOMPARE( track->year()->year(), 2009 );
@@ -573,6 +573,25 @@ TestSqlScanManager::testMerges()
     QVERIFY( !track->firstPlayed().isValid() );
     QVERIFY( !track->lastPlayed().isValid() );
     QVERIFY( track->createDate().isValid() );
+
+
+    // -- now do an incremental scan
+    createAlbum();
+    m_scanManager->requestIncrementalScan();
+    waitScannerFinished();
+
+    // -- check the commit
+    Meta::AlbumPtr album;
+
+    // the old track is still there
+    album = m_collection->registry()->getAlbum( "Big Screen Adventures",
+                                                "Soundtrack & Theme Orchestra" );
+    QCOMPARE( album->tracks().count(), 1 );
+
+    // the new album is now here
+    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QCOMPARE( album->tracks().count(), 9 );
+    QVERIFY( !album->isCompilation() );
 }
 
 void

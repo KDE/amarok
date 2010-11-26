@@ -185,14 +185,17 @@ SqlScanResultProcessor::commitTrack( const CollectionScanner::Track *track, int 
     // --- find an existing track by path or create a new one
     else
     {
+        UrlEntry entry;
+        entry.id = -1;
+        entry.path = track->path();
         if( m_urlsCachePath.contains( track->path() ) )
         {
             UrlEntry entry = m_urlsCache.value( m_urlsCachePath.value( track->path() ) );
             cacheUrlsRemove( entry.id ); // remove the old cache entry
-            entry.uid = uid;
-            entry.directoryId = directoryId;
-            cacheUrlsInsert( entry );
         }
+        entry.uid = uid;
+        entry.directoryId = directoryId;
+        cacheUrlsInsert( entry ); // and insert it again (or new)
 
         metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_collection->getTrack( deviceId, rpath, directoryId, uid ) );
     }

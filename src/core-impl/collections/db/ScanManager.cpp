@@ -584,7 +584,7 @@ XmlParseJob::run()
                     CollectionScanner::Directory *dir = new CollectionScanner::Directory( &m_reader );
                     processor->addDirectory( dir );
                     m_mutex.lock();
-                    debug() << "XmlParseJob: run:"<<count<<"current path"<<dir->rpath();
+                    // debug() << "XmlParseJob: run:"<<count<<"current path"<<dir->rpath();
                     count++;
 
                     emit message( i18n("Got directory \"%1\" from scanner.").arg( dir->rpath() ) );
@@ -658,7 +658,7 @@ XmlParseJob::addNewXmlData( const QString &data )
         }
     }
 
-    debug() << "Adding";
+    // debug() << "Adding";
 
     /*
     debug() << "XmlParseJob: addNewXmlData, new:"<<data.length()<<"incomplete:"<<m_incompleteTagBuffer.length();
