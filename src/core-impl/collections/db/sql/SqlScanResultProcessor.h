@@ -71,8 +71,10 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
         /** Deletes all directories (and it's tracks) not contained in m_foundDirectories */
         void deleteDeletedDirectories();
 
-        /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks. */
         void deleteDeletedTracks( CollectionScanner::Directory *directory );
+
+        /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks. */
+        void deleteDeletedTracks( int directoryId );
 
     private:
         void removeTrack( int urlId, const QString uid );

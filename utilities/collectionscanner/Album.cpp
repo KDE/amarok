@@ -64,12 +64,12 @@ CollectionScanner::Album::cover() const
 {
     // we prefere covers included in tracks.
     // At least we know exactly that they really belong to the album
-    foreach( const Track &track, m_tracks )
+    foreach( Track *track, m_tracks )
     {
         // IMPROVEMENT: skip covers that have a strange aspect ratio or are
         // unrealistically small, or do not resolve to a valid image
-        if( track.hasCover() )
-            return QLatin1String("amarok-sqltrackuid://") + track.uniqueid();
+        if( track->hasCover() )
+            return QLatin1String("amarok-sqltrackuid://") + track->uniqueid();
     }
 
     // ok. Now we have to figure out which of the cover images is

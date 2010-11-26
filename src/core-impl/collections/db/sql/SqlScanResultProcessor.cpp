@@ -325,8 +325,14 @@ SqlScanResultProcessor::deleteDeletedDirectories()
 void
 SqlScanResultProcessor::deleteDeletedTracks( CollectionScanner::Directory *directory )
 {
-    // -- find all tracks
     int directoryId = m_directoryIds.value( directory );
+    deleteDeletedTracks( directoryId );
+}
+
+void
+SqlScanResultProcessor::deleteDeletedTracks( int directoryId )
+{
+    // -- find all tracks
     QList<int> urlIds = m_urlsCacheDirectory.values( directoryId );
 
     // -- check if the tracks have been found during the scan

@@ -57,6 +57,7 @@ public:
     /** Returns true if this track is really a song. */
     bool isValid() const;
 
+    /** Returns the directory this track was found in. */
     Directory* directory() const;
 
     QString uniqueid() const;

@@ -36,8 +36,9 @@
 bool CollectionScanner::Track::s_useCharsetDetector = false;
 
 
-CollectionScanner::Track::Track( const QString &path)
+CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directory* directory )
    : m_valid( true )
+   , m_directory( directory )
    , m_filetype( Amarok::Unknown )
    , m_compilation( false )
    , m_noCompilation( false )
@@ -136,8 +137,9 @@ CollectionScanner::Track::Track( const QString &path)
         m_playcount = values.value(Meta::valPlaycount).toReal();
 }
 
-CollectionScanner::Track::Track( QXmlStreamReader *reader )
+CollectionScanner::Track::Track( QXmlStreamReader *reader, CollectionScanner::Directory* directory )
    : m_valid( true )
+   , m_directory( directory )
    , m_filetype( Amarok::Unknown )
    , m_compilation( false )
    , m_noCompilation( false )
@@ -346,6 +348,12 @@ bool
 CollectionScanner::Track::isValid() const
 {
     return m_valid;
+}
+
+CollectionScanner::Directory*
+CollectionScanner::Track::directory() const
+{
+    return m_directory;
 }
 
 QString

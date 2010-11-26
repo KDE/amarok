@@ -110,7 +110,7 @@ CollectionScanner::Directory::Directory( const QString &path,
             // remember the last file before it get's dangerous. Before starting taglib
             state->setLastFile( f.absoluteFilePath() );
 
-            CollectionScanner::Track newTrack( filePath );
+            CollectionScanner::Track newTrack( filePath, this );
             if( newTrack.isValid() )
                 m_tracks.append( newTrack );
         }
@@ -148,8 +148,8 @@ CollectionScanner::Directory::Directory( const QString &path,
                 m_ignored = true;
                 reader->skipCurrentElement();
             }
-            else if( name == QLatin1String("track") )
-                m_tracks.append( CollectionScanner::Track( reader ) );
+            else if( name == "track" )
+                m_tracks.append( CollectionScanner::Track( reader, this ) );
             else if( name == "playlist" )
                 m_playlists.append( CollectionScanner::Playlist( reader ) );
             else
@@ -165,6 +165,9 @@ CollectionScanner::Directory::Directory( const QString &path,
         }
     }
 }
+
+CollectionScanner::Directory::~Directory()
+{}
 
 QString
 CollectionScanner::Directory::path() const
@@ -196,13 +199,13 @@ CollectionScanner::Directory::covers() const
     return m_covers;
 }
 
-QList<CollectionScanner::Album>
-CollectionScanner::Directory::albums() const
+const QList<CollectionScanner::Track>&
+CollectionScanner::Directory::tracks() const
 {
-    return m_albums;
+    return m_tracks;
 }
 
-QList<CollectionScanner::Playlist>
+const QList<CollectionScanner::Playlist>&
 CollectionScanner::Directory::playlists() const
 {
     return m_playlists;

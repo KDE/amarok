@@ -52,6 +52,8 @@ public:
      */
     Directory( QXmlStreamReader *reader );
 
+    ~Directory();
+
     /** The absolute path to the file.
      *  Because of symbolic links the path could be outside the original scanning directories.
      */
@@ -70,8 +72,8 @@ public:
     bool isSkipped() const;
 
     QStringList covers() const;
-    QList<Track> tracks() const;
-    QList<Playlist> playlists() const;
+    const QList<Track> &tracks() const;
+    const QList<Playlist> &playlists() const;
 
 #ifdef UTILITIES_BUILD
     /** Writes the contents of this object to an xml stream.
