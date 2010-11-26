@@ -111,7 +111,7 @@ ScanResultProcessor::commit()
     // -- now check if some of the tracks are not longer used and also not moved to another directory
     foreach( CollectionScanner::Directory* dir, m_directories )
         if( !dir->isSkipped() )
-        deleteDeletedTracks( dir );
+            deleteDeletedTracks( dir );
 
     // -- delete all not-found directories
     if( m_type != PartialUpdateScan )
