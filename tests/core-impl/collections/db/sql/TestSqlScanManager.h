@@ -132,6 +132,12 @@ private:
     void createCompilation();
     void createCompilationTrack();
 
+    /**
+     * Album that looks alike compillation: various track's artists
+     * but single album artist and no compillation flag.
+     */
+    void createCompilationLookAlikeAlbum();
+
     int m_collectionUpdatedCount;
 
     SqlStorage *m_storage;

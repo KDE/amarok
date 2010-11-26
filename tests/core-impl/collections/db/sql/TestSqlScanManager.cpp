@@ -177,6 +177,7 @@ TestSqlScanManager::testCompilation()
 {
     createAlbum();
     createCompilation();
+    createCompilationLookAlikeAlbum();
 
     Meta::FieldHash values;
 
@@ -247,6 +248,11 @@ TestSqlScanManager::testCompilation()
     album = m_collection->registry()->getAlbum( "The Last Unicorn", "In-Mood" );
     QCOMPARE( album->tracks().count(), 1 );
     QVERIFY( !album->isCompilation() );
+
+    album = m_collection->registry()->getAlbum( "Once", "Glen Hansard & Markéta Irglová" );
+    QCOMPARE( album->albumArtist()->name(), QString( "Glen Hansard & Markéta Irglová" ) );
+    QCOMPARE( album->tracks().count(), 13 );
+    QVERIFY( !album->isCompilation() );
 }
 
 
@@ -273,7 +279,7 @@ TestSqlScanManager::testRestartScanner()
     QCOMPARE( album->tracks().count(), 9 );
 
 #else
-    QSKIP( "Collection scanner only crashes in debug build." );
+    QSKIP( "Collection scanner only crashes in debug build.", SkipAll );
 #endif
 }
 
@@ -1045,6 +1051,142 @@ TestSqlScanManager::createCompilation()
     values.insert( Meta::valTitle, QVariant("Top Gun Anthem") );
     values.insert( Meta::valArtist, QVariant("Harold Faltermeyer &amp; Steve Stevens") );
     values.insert( Meta::valAlbum, QVariant("Top Gun") );
+    createTrack( values );
+}
+
+void
+TestSqlScanManager::createCompilationLookAlikeAlbum()
+{
+    Meta::FieldHash values;
+
+    values.insert( Meta::valUniqueId, QVariant( "8375aa24-e0e0-434c-a0c3-6e382b6f188c" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/01 Glen Hansard & Markéta Irglová - Falling Slowly.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "Falling Slowly" ) );
+    values.insert( Meta::valArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "1" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "ff3f82b1-c2e1-434d-9d1a-7b6aec67ac9c" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/02 Glen Hansard & Markéta Irglová - If You Want Me.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "If You Want Me" ) );
+    values.insert( Meta::valArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "2" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "8fb2396f-8d97-4f61-96d2-b2ef93ba2551" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/03 Glen Hansard - Broken Hearted Hoover Fixer Sucker Guy.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "Broken Hearted Hoover Fixer Sucker Guy" ) );
+    values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "3" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "3a211546-b91c-4bf7-a4ec-9d41325e5a01" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/04 Glen Hansard & Markéta Irglová - When Your Mind's Made Up.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "When Your Mind's Made Up" ) );
+    values.insert( Meta::valArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "4" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "e7a1ed52-777c-4375-82a2-17cd29cc35f7" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/05 Glen Hansard - Lies.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "Lies" ) );
+    values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "5" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "e0c88a85-884d-40c8-9952-2cd733718d9e" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/06 Interference - Gold.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "Gold" ) );
+    values.insert( Meta::valArtist, QVariant( "Interference" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "6" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "0969ea61-2844-4e12-8cfc-ac95207bd525" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/07 Markéta Irglová - The Hill.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "The Hill" ) );
+    values.insert( Meta::valArtist, QVariant( "Markéta Irglová" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "7" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "c1d6eff3-cb6c-42ea-a0d6-3e186ef1b749" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/08 Glen Hansard - Fallen From the Sky.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "Fallen From the Sky" ) );
+    values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "8" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "b6611dbc-cd0e-49bc-a8db-5dc598b7bf4f" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/09 Glen Hansard - Leave.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "Leave" ) );
+    values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "9" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "46873076-087f-48dd-a553-fc5ebd3c0fb6" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/10 Glen Hansard - Trying to Pull Myself Away.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "Trying to Pull Myself Away" ) );
+    values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "10" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "ea29de7b-131c-4cf2-8df1-77a8cda990ee" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/11 Glen Hansard - All the Way Down.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "All the Way Down" ) );
+    values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "11" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "66259801-d8ba-4d50-a2df-df0129bc8792" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/12 Glen Hansard & Markéta Irglová - Once.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "Once" ) );
+    values.insert( Meta::valArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "12" ) );
+    createTrack( values );
+
+    values.insert( Meta::valUniqueId, QVariant( "a654e8c5-afb1-4de7-b55b-6548ac02f724" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/13 Glen Hansard - Say It to Me Now.mp3" ) );
+    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valTitle, QVariant( "Say It to Me Now" ) );
+    values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
+    values.insert( Meta::valAlbum, QVariant( "Once" ) );
+    values.insert( Meta::valAlbumArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
+    values.insert( Meta::valTrackNr, QVariant( "13" ) );
     createTrack( values );
 }
 

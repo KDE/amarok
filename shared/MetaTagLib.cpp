@@ -548,7 +548,7 @@ Meta::Tag::decodeMpeg( TagLib::MPEG::File *file )
             if( owner == QLatin1String( "http://musicbrainz.org" ) )
             {
                 if( isValidMusicBrainzId( identifier ) )
-                    result.insert( Meta::valUniqueId, identifier );
+                    result.insert( Meta::valUniqueId, identifier.prepend( "mb-" ) );
             }
             else if( owner == QLatin1String( "Amarok 2 AFTv1 - amarok.kde.org" ) )
             {
