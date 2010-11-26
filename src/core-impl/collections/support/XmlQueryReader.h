@@ -58,7 +58,6 @@ public:
      */
     static Filter readFilter(QXmlStreamReader *reader);
 
-    static qint64 fieldVal( QStringRef field );
     static int compareVal( QStringRef compare );
 
 private:

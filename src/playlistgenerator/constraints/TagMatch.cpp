@@ -18,6 +18,10 @@
 
 #include "TagMatch.h"
 
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaConstants.h"
+#include "core/meta/support/MetaUtility.h"
+
 #include "playlistgenerator/Constraint.h"
 #include "playlistgenerator/ConstraintFactory.h"
 
@@ -25,11 +29,6 @@
 #include "core/support/Debug.h"
 
 #include <KRandom>
-
-#include <QtGlobal>
-
-#include <math.h>
-#include <stdlib.h>
 
 Constraint*
 ConstraintTypes::TagMatch::createFromXml( QDomElement& xmlelem, ConstraintNode* p )
@@ -60,47 +59,87 @@ ConstraintTypes::TagMatch::registerMe()
 
 ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
         : MatchingConstraint( p )
-        , m_comparer( new Comparer() )
-        , m_fieldsModel( new TagMatchFieldsModel() )
 {
     DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "field" );
     if ( !a.isNull() ) {
-        if ( m_fieldsModel->contains( a.value() ) )
-            m_field = a.value();
-        else
+        m_filter.field = Meta::fieldForPlaylistName( a.value() );
+        if( !m_filter.field )
             debug() << a.value() << "is not a recognized field name" << endl;
     }
 
     a = xmlelem.attributeNode( "comparison" );
     if ( !a.isNull() ) {
-        m_comparison = a.value().toInt();
+        int comparison = a.value().toInt();
+
+        if( m_filter.isDate() )
+        {
+            if( comparison == 0 )
+                m_filter.condition = MetaQueryWidget::LessThan;
+            else if( comparison == 1 )
+                m_filter.condition = MetaQueryWidget::Equals;
+            else if( comparison == 2 )
+                m_filter.condition = MetaQueryWidget::GreaterThan;
+            else if( comparison == 3 )
+                m_filter.condition = MetaQueryWidget::Within;
+        }
+        else if( m_filter.isNumeric() )
+        {
+            if( comparison == 0 )
+                m_filter.condition = MetaQueryWidget::LessThan;
+            else if( comparison == 1 )
+                m_filter.condition = MetaQueryWidget::Equals;
+            else if( comparison == 2 )
+                m_filter.condition = MetaQueryWidget::GreaterThan;
+        }
+        else
+        {
+            if( comparison == 0 )
+                m_filter.condition = MetaQueryWidget::Matches;
+            else if( comparison == 1 )
+                m_filter.condition = MetaQueryWidget::StartsWith;
+            else if( comparison == 2 )
+                m_filter.condition = MetaQueryWidget::EndsWith;
+            else
+                m_filter.condition = MetaQueryWidget::Contains;
+        }
     }
 
     a = xmlelem.attributeNode( "value" );
     if ( !a.isNull() ) {
-        if ( m_fieldsModel->type_of( m_field ) == FieldTypeInt ) {
-            m_value = a.value().toInt();
-        } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
-            if ( m_comparison == CompareDateWithin ) {
+        if( m_filter.isDate() )
+        {
+            if( m_filter.condition == MetaQueryWidget::OlderThan ||
+                m_filter.condition == MetaQueryWidget::Within )
+            {
                 QStringList parts = a.value().split(" ");
-                if ( parts.size() == 2 ) {
-                    int u = parts.at( 0 ).toInt();
-                    int v = 0;
+                if ( parts.size() == 2 )
+                {
+                    qint64 u = parts.at( 0 ).toLong();
+                    u *= 60 * 60 * 24; // days
                     if ( parts.at( 1 ) == "months" )
-                        v = 1;
+                        u *= 30;
                     else if ( parts.at( 1 ) == "years" )
-                        v = 2;
-                    m_value = QVariant::fromValue( DateRange( u, v ) );
-                } else
-                    m_value = QVariant::fromValue( DateRange( 0, 0 ) );
-            } else
-                m_value = QDate::fromString( a.value(), Qt::ISODate );
-        } else { // String type
-            m_value = a.value();
+                        u *= 365;
+
+                    m_filter.numValue = u;
+                }
+                else
+                {
+                    m_filter.numValue = a.value().toLong();
+                }
+            }
+            else
+                m_filter.numValue = QDateTime::fromString( a.value(), Qt::ISODate ).toTime_t();
         }
+
+        else if( m_filter.isNumeric() )
+            m_filter.numValue = a.value().toLong();
+
+        else
+            m_filter.value = a.value();
     }
 
     a = xmlelem.attributeNode( "invert" );
@@ -118,13 +157,8 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
 
 ConstraintTypes::TagMatch::TagMatch( ConstraintNode* p )
         : MatchingConstraint( p )
-        , m_comparison( CompareStrEquals )
-        , m_field( "title" )
         , m_invert( false )
         , m_strictness( 1.0 )
-        , m_value()
-        , m_comparer( new Comparer() )
-        , m_fieldsModel( new TagMatchFieldsModel() )
 {
     DEBUG_BLOCK
     debug() << "new default TagMatch";
@@ -132,24 +166,15 @@ ConstraintTypes::TagMatch::TagMatch( ConstraintNode* p )
 
 ConstraintTypes::TagMatch::~TagMatch()
 {
-    delete m_comparer;
-    delete m_fieldsModel;
 }
 
 QWidget*
 ConstraintTypes::TagMatch::editWidget() const
 {
-    TagMatchEditWidget* e = new TagMatchEditWidget(
-                                            m_comparison,
-                                            m_field,
-                                            m_invert,
-                                            static_cast<int>( m_strictness * 10 ),
-                                            m_value );
-    connect( e, SIGNAL( comparisonChanged( int ) ), this, SLOT( setComparison( int ) ) );
-    connect( e, SIGNAL( fieldChanged( const QString& ) ), this, SLOT( setField( const QString& ) ) );
+    TagMatchEditWidget* e = new TagMatchEditWidget( m_filter, m_invert, int(m_strictness * 10) );
+    connect( e, SIGNAL( filterChanged( const MetaQueryWidget::Filter& ) ), this, SLOT( setFilter( const MetaQueryWidget::Filter& ) ) );
     connect( e, SIGNAL( invertChanged( bool ) ), this, SLOT( setInvert( bool ) ) );
     connect( e, SIGNAL( strictnessChanged( int ) ), this, SLOT( setStrictness( int ) ) );
-    connect( e, SIGNAL( valueChanged( const QVariant& ) ), this, SLOT( setValue( const QVariant& ) ) );
     return e;
 }
 
@@ -159,9 +184,44 @@ ConstraintTypes::TagMatch::toXml( QDomDocument& doc, QDomElement& elem ) const
     QDomElement c = doc.createElement( "constraint" );
 
     c.setAttribute( "type", "TagMatch" );
-    c.setAttribute( "field", m_field );
-    c.setAttribute( "comparison", m_comparison );
-    c.setAttribute( "value", valueToString() );
+    c.setAttribute( "field", Meta::playlistNameForField( m_filter.field ) );
+
+    switch( m_filter.condition )
+    {
+    case MetaQueryWidget::LessThan:
+        c.setAttribute( "comparison", 0 ); break;
+    case MetaQueryWidget::Equals:
+        c.setAttribute( "comparison", 1 ); break;
+    case MetaQueryWidget::GreaterThan:
+        c.setAttribute( "comparison", 2 ); break;
+    case MetaQueryWidget::Within:
+        c.setAttribute( "comparison", 3 ); break;
+
+    case MetaQueryWidget::Matches:
+        c.setAttribute( "comparison", 0 ); break;
+    case MetaQueryWidget::StartsWith:
+        c.setAttribute( "comparison", 1 ); break;
+    case MetaQueryWidget::EndsWith:
+        c.setAttribute( "comparison", 2 ); break;
+    case MetaQueryWidget::Contains:
+        c.setAttribute( "comparison", 3 ); break;
+
+    default:
+        c.setAttribute( "comparison", -1 );
+    }
+
+    if( m_filter.isDate() )
+    {
+        if( m_filter.condition == MetaQueryWidget::OlderThan ||
+            m_filter.condition == MetaQueryWidget::Within )
+            c.setAttribute( "value", QString::number( m_filter.numValue / (60*60*24) /*days*/  ) );
+        else
+            c.setAttribute( "value", QString::number( m_filter.numValue ) );
+    }
+    else if( m_filter.isNumeric() )
+        c.setAttribute( "value", QString::number( m_filter.numValue ) );
+    else
+        c.setAttribute( "value", m_filter.value );
 
     if ( m_invert )
         c.setAttribute( "invert", "true" );
@@ -171,131 +231,148 @@ ConstraintTypes::TagMatch::toXml( QDomDocument& doc, QDomElement& elem ) const
     c.setAttribute( "strictness", QString::number( m_strictness ) );
 
     elem.appendChild( c );
-}
+    }
 
 QString
 ConstraintTypes::TagMatch::getName() const
 {
-    QString v( i18n("Match tag:%1 %2 %3 %4") );
-    v = v.arg( ( m_invert ? i18n(" not") : "" ), m_fieldsModel->pretty_name_of( m_field ), comparisonToString() );
-    if ( m_field == "rating" ) {
-        double r = m_value.toDouble() / 2.0;
-        return v.arg( i18ncp("number of stars in the rating of a track", "%1 star", "%1 stars", r) );
-    } else if ( m_field == "length" ) {
-        return v.arg( QTime().addMSecs( m_value.toInt() ).toString( "H:mm:ss" ) );
-    } else {
-        if ( m_fieldsModel->type_of( m_field ) == FieldTypeString ) {
-            // put quotes around any strings (eg, track title or artist name) ...
-            QString s = QString( i18nc("an arbitrary string surrounded by quotes", "\"%1\"") ).arg( valueToString() );
-            return v.arg( s );
-        } else {
-            // ... but don't quote put quotes around anything else
-            return v.arg( valueToString() );
-        }
+    if( m_filter.field == 0 ) // simple search
+    {
+        return i18n("Match tag:%2 %3 %4 anywhere").
+            arg( MetaQueryWidget::conditionToString( m_filter.condition,
+                                                     m_filter.isDate()),
+                 ( m_invert ? i18n(" not") : "" ),
+                 valueToString() );
+    }
+    else
+    {
+        return i18n("Match tag:%1 %2 %3 %4").
+            arg( m_filter.fieldToString(),
+                 MetaQueryWidget::conditionToString( m_filter.condition,
+                                                     m_filter.isDate()),
+                 ( m_invert ? i18n(" not") : "" ),
+                 valueToString() );
     }
 }
 
 Collections::QueryMaker*
 ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
 {
-    if ( ( m_fieldsModel->type_of( m_field ) == FieldTypeInt ) ) {
-        int v = m_value.toInt();
-        int range = static_cast<int>( m_comparer->rangeNum( m_strictness, m_fieldsModel->meta_value_of( m_field ) ) );
-        if ( m_comparison == CompareNumEquals ) {
-            if ( !m_invert ) {
-                if ( m_strictness < 0.99 ) { // fuzzy approximation of "1.0"
-                    qm->beginAnd();
-                    qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v - range, Collections::QueryMaker::GreaterThan );
-                    qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v + range, Collections::QueryMaker::LessThan );
-                    qm->endAndOr();
-                } else {
-                    qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v, Collections::QueryMaker::Equals );
-                }
-            } else {
-                if ( m_strictness > 0.99 ) {
-                    qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), v, Collections::QueryMaker::Equals );
-                }
-            }
-        } else if ( m_comparison == CompareNumGreaterThan ) {
-            if ( m_invert )
-                qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), v + range, Collections::QueryMaker::GreaterThan );
+    // --- compute a range and the min and max values for fuzzy compare
+    int range = 0;
+    range = Comparer::rangeNum( m_strictness, m_filter.field );
+
+    int minValue = m_filter.numValue - range;
+    int maxValue = m_filter.numValue + range;
+
+    if( m_filter.condition == MetaQueryWidget::Between )
+    {
+        minValue = qMin(m_filter.numValue, m_filter.numValue2) - 1 - range;
+        minValue = qMax(m_filter.numValue, m_filter.numValue2) + 1 + range;
+    }
+
+    // --- set the filters
+    switch( m_filter.condition )
+    {
+    case MetaQueryWidget::GreaterThan:
+        if ( m_invert )
+            qm->excludeNumberFilter( m_filter.field, maxValue, Collections::QueryMaker::GreaterThan );
+        else
+            qm->addNumberFilter( m_filter.field, minValue, Collections::QueryMaker::GreaterThan );
+        break;
+
+    case MetaQueryWidget::LessThan:
+        if ( m_invert )
+            qm->excludeNumberFilter( m_filter.field, minValue, Collections::QueryMaker::LessThan );
+        else
+            qm->addNumberFilter( m_filter.field, maxValue, Collections::QueryMaker::LessThan );
+        break;
+
+    case MetaQueryWidget::Equals:
+    case MetaQueryWidget::Between:
+        if ( minValue == maxValue )
+        {
+            if( m_invert )
+                qm->excludeNumberFilter( m_filter.field, minValue, Collections::QueryMaker::Equals );
             else
-                qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v - range, Collections::QueryMaker::GreaterThan );
-        } else if ( m_comparison == CompareNumLessThan ) {
-            if ( m_invert )
-                qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), v - range, Collections::QueryMaker::LessThan );
-            else
-                qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), v + range, Collections::QueryMaker::LessThan );
+                qm->addNumberFilter( m_filter.field, minValue, Collections::QueryMaker::Equals );
         }
-    } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
-        uint referenceDate = 0;
-        int range = m_comparer->rangeDate( m_strictness );
-        if ( m_comparison == CompareDateBefore ) {
-            referenceDate = m_value.toDateTime().toTime_t();
-            if ( m_invert )
-                qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate - range, Collections::QueryMaker::LessThan );
-            else
-                qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate + range, Collections::QueryMaker::LessThan );
-        } else if ( m_comparison == CompareDateOn ) {
-            referenceDate = m_value.toDateTime().toTime_t();
-            if ( !m_invert ) {
-                qm->beginAnd();
-                qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate - range, Collections::QueryMaker::GreaterThan );
-                qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate + range, Collections::QueryMaker::LessThan );
+        else
+        {
+            if( m_invert )
+            {
+                qm->beginOr();
+                qm->excludeNumberFilter( m_filter.field, minValue, Collections::QueryMaker::LessThan );
+                qm->excludeNumberFilter( m_filter.field, maxValue, Collections::QueryMaker::GreaterThan );
                 qm->endAndOr();
             }
-        } else if ( m_comparison == CompareDateAfter ) {
-            referenceDate = m_value.toDateTime().toTime_t();
-            if ( m_invert )
-                qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate + range, Collections::QueryMaker::GreaterThan );
             else
-                qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate - range, Collections::QueryMaker::GreaterThan );
-        } else if ( m_comparison == CompareDateWithin ) {
-            QDateTime now = QDateTime::currentDateTime();
-            DateRange r = m_value.value<DateRange>();
-            switch ( r.second ) {
-                case 0:
-                    referenceDate = now.addDays( -1 * r.first ).toTime_t();
-                    break;
-                case 1:
-                    referenceDate = now.addMonths( -1 * r.first ).toTime_t();
-                    break;
-                case 2:
-                    referenceDate = now.addYears( -1 * r.first ).toTime_t();
-                    break;
-                default:
-                    break;
+            {
+                qm->beginAnd();
+                qm->addNumberFilter( m_filter.field, minValue, Collections::QueryMaker::GreaterThan );
+                qm->addNumberFilter( m_filter.field, maxValue, Collections::QueryMaker::LessThan );
+                qm->endAndOr();
             }
-            if ( m_invert )
-                qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate + range, Collections::QueryMaker::GreaterThan );
-            else
-                qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate - range, Collections::QueryMaker::GreaterThan );
         }
-    } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeString ) {
-        if ( m_comparison == CompareStrEquals ) {
+        break;
+
+    case MetaQueryWidget::OlderThan:
+    case MetaQueryWidget::Within:
+    {
+        bool inv = (m_filter.condition == MetaQueryWidget::Within) ? m_invert : !m_invert;
+        if ( inv  )
+            qm->addNumberFilter( m_filter.field, QDateTime::currentDateTime().toTime_t() - maxValue, Collections::QueryMaker::GreaterThan );
+        else
+            qm->excludeNumberFilter( m_filter.field, QDateTime::currentDateTime().toTime_t() - minValue, Collections::QueryMaker::LessThan );
+        break;
+    }
+
+    case MetaQueryWidget::Contains:
+    case MetaQueryWidget::Matches:
+    case MetaQueryWidget::StartsWith:
+    case MetaQueryWidget::EndsWith:
+    {
+        bool matchBegin = (m_filter.condition == MetaQueryWidget::Matches ||
+                           m_filter.condition == MetaQueryWidget::StartsWith);
+        bool matchEnd =   (m_filter.condition == MetaQueryWidget::Matches ||
+                           m_filter.condition == MetaQueryWidget::EndsWith);
+        if( m_filter.field == 0 )
+        {
+            // simple search
+            // TODO: split different words and make seperate searches
             if ( m_invert )
-                qm->excludeFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), true, true );
+            {
+                qm->beginAnd();
+                qm->excludeFilter( Meta::valArtist,  m_filter.value, matchBegin, matchEnd );
+                qm->excludeFilter( Meta::valTitle,   m_filter.value, matchBegin, matchEnd );
+                qm->excludeFilter( Meta::valAlbum,   m_filter.value, matchBegin, matchEnd );
+                qm->excludeFilter( Meta::valGenre,   m_filter.value, matchBegin, matchEnd );
+                qm->excludeFilter( Meta::valUrl,     m_filter.value, matchBegin, matchEnd );
+                qm->excludeFilter( Meta::valComment, m_filter.value, matchBegin, matchEnd );
+                qm->excludeFilter( Meta::valLabel,   m_filter.value, matchBegin, matchEnd );
+                qm->endAndOr();
+            }
             else
-                qm->addFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), true, true );
-        } else if ( m_comparison == CompareStrStartsWith ) {
-            if ( m_invert )
-                qm->excludeFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), true, false );
-            else
-                qm->addFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), true, false );
-        } else if ( m_comparison == CompareStrEndsWith ) {
-            if ( m_invert )
-                qm->excludeFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), false, true );
-            else
-                qm->addFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), false, true );
-        } else if ( m_comparison == CompareStrContains ) {
-            if ( m_invert )
-                qm->excludeFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), false, false );
-            else
-                qm->addFilter( m_fieldsModel->meta_value_of( m_field ), m_value.toString(), false, false );
+            {
+                qm->beginOr();
+                qm->addFilter( Meta::valArtist,  m_filter.value, matchBegin, matchEnd );
+                qm->addFilter( Meta::valTitle,   m_filter.value, matchBegin, matchEnd );
+                qm->addFilter( Meta::valAlbum,   m_filter.value, matchBegin, matchEnd );
+                qm->addFilter( Meta::valGenre,   m_filter.value, matchBegin, matchEnd );
+                qm->addFilter( Meta::valUrl,     m_filter.value, matchBegin, matchEnd );
+                qm->addFilter( Meta::valComment, m_filter.value, matchBegin, matchEnd );
+                qm->addFilter( Meta::valLabel,   m_filter.value, matchBegin, matchEnd );
+                qm->endAndOr();
+            }
         }
-        // TODO: regexp
-    } else {
-        error() << "TagMatch cannot initialize QM for unknown type";
+        else
+        {
+            if ( m_invert )
+                qm->excludeFilter( m_filter.field, m_filter.value, matchBegin, matchEnd );
+            else
+                qm->addFilter( m_filter.field, m_filter.value, matchBegin, matchEnd );
+        }
+    }
     }
 
     return qm;
@@ -431,146 +508,72 @@ ConstraintTypes::TagMatch::whatTracksMatch( const Meta::TrackList& tl )
 int
 ConstraintTypes::TagMatch::constraintMatchType() const
 {
-    return ( 0 << 28 ) + m_fieldsModel->index_of( m_field );
-}
-
-
-QString
-ConstraintTypes::TagMatch::comparisonToString() const
-{
-    if ( m_fieldsModel->type_of( m_field ) == FieldTypeInt ) {
-        if ( m_comparison == CompareNumEquals ) {
-            return QString( i18nc("a numerical tag (like year or track number) equals a value","equals") );
-        } else if ( m_comparison == CompareNumGreaterThan ) {
-            return QString( i18n("greater than") );
-        } else if ( m_comparison == CompareNumLessThan ) {
-            return QString( i18n("less than") );
-        }
-    } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
-        if ( m_comparison == CompareDateBefore ) {
-            return QString( i18n("before") );
-        } else if ( m_comparison == CompareDateOn ) {
-            return QString( i18n("on") );
-        } else if ( m_comparison == CompareDateAfter ) {
-            return QString( i18n("after") );
-        } else if ( m_comparison == CompareDateWithin ) {
-            return QString( i18n("within") );
-        }
-    } else {
-        if ( m_comparison == CompareStrEquals ) {
-            return QString( i18nc("an alphabetical tag (like title or artist name) equals some string","equals") );
-        } else if ( m_comparison == CompareStrStartsWith ) {
-            return QString( i18nc("an alphabetical tag (like title or artist name) starts with some string","starts with") );
-        } else if ( m_comparison == CompareStrEndsWith ) {
-            return QString( i18nc("an alphabetical tag (like title or artist name) ends with some string","ends with") );
-        } else if ( m_comparison == CompareStrContains ) {
-            return QString( i18nc("an alphabetical tag (like title or artist name) contains some string","contains") );
-        } else if ( m_comparison == CompareStrRegExp ) {
-            return QString( i18n("regexp") );
-        }
+    // find the index of the field (the field is a bitvector)
+    int index = 0;
+    qint64 field = m_filter.field;
+    while( field > 1 )
+    {
+        index++;
+        field = field >> 1;
     }
-    return QString( i18n("unknown comparison") );
+
+    return ( 0 << 28 ) + index; // no idea what the senseless shift should mean.
 }
 
 QString
 ConstraintTypes::TagMatch::valueToString() const
 {
-    if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
-        if ( m_comparison != CompareDateWithin ) {
-            return m_value.toDate().toString( Qt::ISODate );
-        } else {
-            QString unit;
-            switch ( m_value.value<DateRange>().second ) {
-                case 0:
-                    unit = "days";
-                    break;
-                case 1:
-                    unit = "months";
-                    break;
-                case 2:
-                    unit = "years";
-                    break;
-                default:
-                    break;
-            }
-            return QString("%1 %2").arg( m_value.value<DateRange>().first ).arg( unit );
-        }
-    } else {
-        return m_value.toString();
+    if( m_filter.field == Meta::valRating )
+    {
+        qreal r = qreal(m_filter.numValue) / 2.0;
+        return i18ncp("number of stars in the rating of a track", "%1 star", "%1 stars", r);
     }
+
+    else if ( m_filter.field == Meta::valLength )
+        return QTime().addSecs( m_filter.numValue ).toString(/* "H:mm:ss" */);
+
+    else if ( m_filter.field == Meta::valFilesize )
+            return Meta::prettyFilesize( m_filter.numValue );
+
+    /* the prettyBitrate is stupid
+    else if ( m_filter.field == Meta::valBitrate )
+            return Meta::prettyBitrate( m_filter.numValue );
+            */
+
+    else if( m_filter.isDate() )
+    {
+        if( m_filter.condition == MetaQueryWidget::Within ||
+            m_filter.condition == MetaQueryWidget::OlderThan)
+        {
+            return Meta::secToPrettyTimeLong( m_filter.numValue );
+        }
+        else
+            return QDateTime::fromTime_t( m_filter.numValue ).date().toString();
+    }
+
+    else if( m_filter.isNumeric() )
+        return QString::number( m_filter.numValue );
+
+    else
+        return QString( i18nc("an arbitrary string surrounded by quotes", "\"%1\"") ).arg( m_filter.value );
 }
 
 bool
 ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
 {
-    if ( !m_matchCache.contains( track ) ) {
+    if ( !m_matchCache.contains( track ) )
+    {
         double v = 0.0;
-        qint64 fmv = m_fieldsModel->meta_value_of( m_field );
-        switch ( fmv ) {
-            case Meta::valUrl:
-                v = m_comparer->compareStr( track->prettyUrl(), m_comparison, m_value.toString() );
-                break;
-            case Meta::valTitle:
-                v = m_comparer->compareStr( track->prettyName(), m_comparison, m_value.toString() );
-                break;
-            case Meta::valArtist:
-                v = m_comparer->compareStr( track->artist()->prettyName(), m_comparison, m_value.toString() );
-                break;
-            case Meta::valAlbum:
-                v = m_comparer->compareStr( track->album()->prettyName(), m_comparison, m_value.toString() );
-                break;
-            case Meta::valGenre:
-                v = m_comparer->compareStr( track->genre()->prettyName(), m_comparison, m_value.toString() );
-                break;
-            case Meta::valComposer:
-                v = m_comparer->compareStr( track->composer()->prettyName(), m_comparison, m_value.toString() );
-                break;
-            case Meta::valYear:
-                v = m_comparer->compareNum( track->year()->prettyName().toInt(), m_comparison, m_value.toInt(), m_strictness, fmv );
-                break;
-            case Meta::valComment:
-                v = m_comparer->compareStr( track->comment(), m_comparison, m_value.toString() );
-                break;
-            case Meta::valTrackNr:
-                v = m_comparer->compareNum( track->trackNumber(), m_comparison, m_value.toInt(), m_strictness, fmv );
-                break;
-            case Meta::valDiscNr:
-                v = m_comparer->compareNum( track->discNumber(), m_comparison, m_value.toInt(), m_strictness, fmv );
-                break;
-            case Meta::valLength:
-                v = m_comparer->compareNum( track->length(), m_comparison, m_value.toInt(), m_strictness, fmv );
-                break;
-            case Meta::valBitrate:
-                v = m_comparer->compareNum( track->bitrate(), m_comparison, m_value.toInt(), m_strictness, fmv );
-                break;
-            case Meta::valFilesize:
-                v = m_comparer->compareNum( track->filesize(), m_comparison, m_value.toInt(), m_strictness, fmv );
-                break;
-            case Meta::valCreateDate:
-                v = m_comparer->compareDate( track->createDate(), m_comparison, m_value, m_strictness );
-                break;
-            case Meta::valScore:
-                v = m_comparer->compareNum( track->score(), m_comparison, m_value.toDouble(), m_strictness, fmv );
-                break;
-            case Meta::valRating:
-                v = m_comparer->compareNum( track->rating(), m_comparison, m_value.toInt(), m_strictness, fmv );
-                break;
-            case Meta::valFirstPlayed:
-                v = m_comparer->compareDate( track->firstPlayed(), m_comparison, m_value, m_strictness );
-                break;
-            case Meta::valLastPlayed:
-                v = m_comparer->compareDate( track->lastPlayed(), m_comparison, m_value, m_strictness );
-                break;
-            case Meta::valPlaycount:
-                v = m_comparer->compareNum( track->playCount(), m_comparison, m_value.toInt(), m_strictness, fmv );
-                break;
-            case Meta::valLabel:
-                v = m_comparer->compareLabels( track, m_comparison, m_value.toString() );
-                break;
-            default:
-                v = 0.0;
-                break;
-        }
+
+        if( m_filter.isNumeric() )
+            v = Comparer::compareNum( Meta::valueForField( m_filter.field, track ).toDouble(),
+                                      m_filter.condition, m_filter.numValue, m_strictness, m_filter.field );
+        else if( m_filter.field == Meta::valLabel )
+            v = Comparer::compareLabels( track, m_filter.condition, m_filter.value );
+        else
+            v = Comparer::compareStr( Meta::valueForField( m_filter.field, track ).toString(),
+                                      m_filter.condition, m_filter.value );
+
         if ( m_invert )
             v = 1.0 - v;
 
@@ -579,18 +582,11 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
     return m_matchCache.value( track );
 }
 
-void
-ConstraintTypes::TagMatch::setComparison( int c )
-{
-    m_comparison = c;
-    m_matchCache.clear();
-    emit dataChanged();
-}
 
 void
-ConstraintTypes::TagMatch::setField( const QString& s )
+ConstraintTypes::TagMatch::setFilter( const MetaQueryWidget::Filter &filter )
 {
-    m_field = s;
+    m_filter = filter;
     m_matchCache.clear();
     emit dataChanged();
 }
@@ -614,249 +610,45 @@ ConstraintTypes::TagMatch::setStrictness( int v )
     m_matchCache.clear();
 }
 
-void
-ConstraintTypes::TagMatch::setValue( const QVariant& v )
-{
-    m_value = v;
-    m_matchCache.clear();
-    emit dataChanged();
-}
 
 /******************************
  * Edit Widget                *
  ******************************/
 
-ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget(
-                        const int comparison,
-                        const QString& field,
-                        const bool invert,
-                        const int strictness,
-                        const QVariant& value )
+ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget( const MetaQueryWidget::Filter &filter,
+                                                         bool invert, int strictness)
         : QWidget( 0 )
-        , m_fieldsModel( new TagMatchFieldsModel() )
 {
     ui.setupUi( this );
 
-    // plural support in combobox labels
-    connect( ui.spinBox_ValueDateValue, SIGNAL( valueChanged( int ) ), this, SLOT( slotUpdateComboBoxLabels( int ) ) );
-    ui.comboBox_ValueDateUnit->insertItem(0, i18ncp("within the last %1 days", "day", "days", 0));
-    ui.comboBox_ValueDateUnit->insertItem(1, i18ncp("within the last %1 months", "month", "months", 0));
-    ui.comboBox_ValueDateUnit->insertItem(2, i18ncp("within the last %1 years", "year", "years", 0));
-
-    // fill in appropriate defaults for some attributes
-    ui.kdatewidget_DateSpecific->setDate( QDate::currentDate() );
-
-    // fill in user-specified values before the slots have been connected to we don't have to call back to the constraint a dozen times
-    ui.comboBox_Field->setModel( m_fieldsModel );
+    ui.attributeQuery->setAPGMode( true );
+    ui.slider_Strictness->setValue( strictness );
     ui.checkBox_Invert->setChecked( invert );
 
-    if ( field == "rating" ) {
-        ui.comboBox_ComparisonRating->setCurrentIndex( comparison );
-        ui.slider_StrictnessRating->setValue( strictness );
-        ui.rating_RatingValue->setRating( value.toInt() );
-    } else if ( field == "length" ) {
-        ui.comboBox_ComparisonTime->setCurrentIndex( comparison );
-        ui.slider_StrictnessTime->setValue( strictness );
-        ui.timeEdit_TimeValue->setTime( QTime().addMSecs( value.toInt() ) );
-    } else if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeInt ) {
-        ui.comboBox_ComparisonInt->setCurrentIndex( comparison );
-        ui.slider_StrictnessInt->setValue( strictness );
-        ui.spinBox_ValueInt->setValue( value.toInt() );
-    } else if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeDate ) {
-        ui.comboBox_ComparisonDate->setCurrentIndex( comparison );
-        ui.slider_StrictnessDate->setValue( strictness );
-        if ( comparison == TagMatch::CompareDateWithin ) {
-            ui.stackedWidget_Date->setCurrentIndex( 1 );
-            ui.spinBox_ValueDateValue->setValue( value.value<DateRange>().first );
-            ui.comboBox_ValueDateUnit->setCurrentIndex( value.value<DateRange>().second );
-        } else {
-            ui.stackedWidget_Date->setCurrentIndex( 0 );
-            ui.kdatewidget_DateSpecific->setDate( value.toDate() );
-        }
-    } else if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeString ) {
-        ui.comboBox_ComparisonString->setCurrentIndex( comparison );
-        ui.lineEdit_StringValue->setText( value.toString() );
-    }
+    ui.attributeQuery->setFilter( filter );
+    slotUpdateStrictness();
 
-    // set this after the slot has been connected so that it also sets the field page correctly
-    ui.comboBox_Field->setCurrentIndex( m_fieldsModel->index_of( field ) );
+    connect( ui.checkBox_Invert, SIGNAL( clicked( bool ) ),
+             this, SIGNAL( invertChanged( bool ) ) );
+
+    connect( ui.slider_Strictness, SIGNAL( valueChanged( int ) ),
+             this, SIGNAL( strictnessChanged( int ) ) );
+
+    connect( ui.attributeQuery, SIGNAL( changed( const MetaQueryWidget::Filter& )),
+             this, SIGNAL( filterChanged( const MetaQueryWidget::Filter& ) ) );
+    connect( ui.attributeQuery, SIGNAL( changed( const MetaQueryWidget::Filter& )),
+             this, SLOT( slotUpdateStrictness() ) );
 }
 
 ConstraintTypes::TagMatchEditWidget::~TagMatchEditWidget()
-{
-    delete m_fieldsModel;
-}
-
-// ComboBox slots for comparisons
-void
-ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonDate_currentIndexChanged( int c )
-{
-    if ( c == TagMatch::CompareDateWithin )
-        ui.stackedWidget_Date->setCurrentIndex( 1 );
-    else
-        ui.stackedWidget_Date->setCurrentIndex( 0 );
-    emit comparisonChanged( c );
-}
+{ }
 
 void
-ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonInt_currentIndexChanged( int c )
+ConstraintTypes::TagMatchEditWidget::slotUpdateStrictness()
 {
-    emit comparisonChanged( c );
+    ui.label_Strictness->setEnabled( ui.attributeQuery->filter().isNumeric() );
+    ui.label_Fuzzy->setEnabled( ui.attributeQuery->filter().isNumeric() );
+    ui.slider_Strictness->setEnabled( ui.attributeQuery->filter().isNumeric() );
+    ui.label_Exact->setEnabled( ui.attributeQuery->filter().isNumeric() );
 }
 
-void
-ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonRating_currentIndexChanged( int c )
-{
-    emit comparisonChanged( c );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonString_currentIndexChanged( int c )
-{
-    emit comparisonChanged( c );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonTime_currentIndexChanged( int c )
-{
-    emit comparisonChanged( c );
-}
-
-// ComboBox slots for field
-void
-ConstraintTypes::TagMatchEditWidget::on_comboBox_Field_currentIndexChanged( int idx )
-{
-    QString field = m_fieldsModel->field_at( idx );
-    int c = 0;
-    int s = 0;
-    QVariant v;
-    if ( field == "length" ) {
-        ui.stackedWidget_Field->setCurrentIndex( 3 );
-        c = ui.comboBox_ComparisonTime->currentIndex();
-        s = ui.slider_StrictnessTime->value();
-        v = QTime().msecsTo( ui.timeEdit_TimeValue->time() );
-    } else if ( field == "rating" ) {
-        ui.stackedWidget_Field->setCurrentIndex( 4 );
-        c = ui.comboBox_ComparisonRating->currentIndex();
-        s = ui.slider_StrictnessRating->value();
-        v = ui.rating_RatingValue->rating();
-    } else {
-        if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeInt ) {
-            ui.stackedWidget_Field->setCurrentIndex( 0 );
-            c = ui.comboBox_ComparisonInt->currentIndex();
-            s = ui.slider_StrictnessInt->value();
-            v = ui.spinBox_ValueInt->value();
-        } else if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeDate ) {
-            ui.stackedWidget_Field->setCurrentIndex( 1 );
-            c = ui.comboBox_ComparisonDate->currentIndex();
-            s = ui.slider_StrictnessDate->value();
-            if ( c == TagMatch::CompareDateWithin ) {
-                ui.stackedWidget_Date->setCurrentIndex( 1 );
-                int a = ui.spinBox_ValueDateValue->value();
-                int b = ui.comboBox_ValueDateUnit->currentIndex();
-                v = QVariant::fromValue( DateRange( a, b ) );
-            } else {
-                ui.stackedWidget_Date->setCurrentIndex( 0 );
-                v = ui.kdatewidget_DateSpecific->date();
-            }
-        } else if ( m_fieldsModel->type_of( field ) == TagMatch::FieldTypeString ) {
-            ui.stackedWidget_Field->setCurrentIndex( 2 );
-            c = ui.comboBox_ComparisonString->currentIndex();
-            s = 1.0;
-            v = ui.lineEdit_StringValue->text();
-        }
-    }
-
-    // TODO: set range limitations and default values depending on field
-
-    emit fieldChanged( field );
-    emit valueChanged( v );
-    emit comparisonChanged( c );
-    emit strictnessChanged( s );
-}
-
-// Invert checkbox slot
-void
-ConstraintTypes::TagMatchEditWidget::on_checkBox_Invert_clicked( bool v )
-{
-    emit invertChanged( v );
-}
-
-// Strictness Slider slots
-void
-ConstraintTypes::TagMatchEditWidget::on_slider_StrictnessDate_valueChanged( int v )
-{
-    emit strictnessChanged( v );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::on_slider_StrictnessInt_valueChanged( int v )
-{
-    emit strictnessChanged( v );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::on_slider_StrictnessRating_valueChanged( int v )
-{
-    emit strictnessChanged( v );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::on_slider_StrictnessTime_valueChanged( int v )
-{
-    emit strictnessChanged( v );
-}
-
-// various value slots
-void
-ConstraintTypes::TagMatchEditWidget::on_kdatewidget_DateSpecific_changed( const QDate& v )
-{
-    emit valueChanged( QVariant( v ) );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::on_comboBox_ValueDateUnit_currentIndexChanged( int u )
-{
-    int v = ui.spinBox_ValueDateValue->value();
-    emit valueChanged( QVariant::fromValue( DateRange( v, u ) ) );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::on_spinBox_ValueDateValue_valueChanged( int v )
-{
-    int u = ui.comboBox_ValueDateUnit->currentIndex();
-    emit valueChanged( QVariant::fromValue( DateRange( v, u ) ) );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::on_spinBox_ValueInt_valueChanged( int v )
-{
-    emit valueChanged( QVariant( v ) );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::on_lineEdit_StringValue_textChanged( const QString& v )
-{
-    emit valueChanged( QVariant( v ) );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::on_rating_RatingValue_ratingChanged( int v )
-{
-    emit valueChanged( QVariant( v ) );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::on_timeEdit_TimeValue_timeChanged( const QTime& t )
-{
-    int v = QTime().msecsTo( t );
-    emit valueChanged( QVariant( v ) );
-}
-
-void
-ConstraintTypes::TagMatchEditWidget::slotUpdateComboBoxLabels( int value )
-{
-    ui.comboBox_ValueDateUnit->setItemText(0, i18ncp("within the last %1 days", "day", "days", value));
-    ui.comboBox_ValueDateUnit->setItemText(1, i18ncp("within the last %1 months", "month", "months", value));
-    ui.comboBox_ValueDateUnit->setItemText(2, i18ncp("within the last %1 years", "year", "years", value));
-}

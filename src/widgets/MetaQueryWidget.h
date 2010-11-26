@@ -70,7 +70,7 @@ class MetaQueryWidget : public QWidget
     public:
         /** Creates a MetaQueryWidget which can be used to select one meta query filter.
          *  @param onlyNumeric If set to true the widget will only display numeric fields.
-         *  @param noBetween If set to true the condition Between will not be used.
+         *  @param noCondition If set to true no condition can be selected.
          */
         explicit MetaQueryWidget( QWidget* parent = 0, bool onlyNumeric = false, bool noCondition = false );
         ~MetaQueryWidget();
@@ -82,7 +82,13 @@ class MetaQueryWidget : public QWidget
             LessThan = 2,
             Between = 3,
             OlderThan = 4,
-            Contains = 5 // this is the string comparison
+            Contains = 5, // this is the string comparison
+
+            // only for the advanced playlist generator
+            Within = 6,
+            Matches = 7,
+            StartsWith = 8,
+            EndsWith = 9
         };
 
         struct Filter
@@ -96,12 +102,18 @@ class MetaQueryWidget : public QWidget
 
             /** Returns a textual representation of the field.
              */
-            QString fieldToString();
+            QString fieldToString() const;
 
             /** Returns a textual representation of the filter.
              *  Used for the edit filter dialog (or for debugging)
              */
             QString toString( bool invert = false );
+
+            bool isNumeric() const
+            { return MetaQueryWidget::isNumeric(field); }
+
+            bool isDate() const
+            { return MetaQueryWidget::isDate(field); }
 
             qint64   field;
             QString  value;
@@ -114,11 +126,22 @@ class MetaQueryWidget : public QWidget
          */
         Filter filter() const;
 
+        /** Set the automatic playlist generator mode.
+            The widget will show a little different set of conditions.
+        */
+        void setAPGMode( bool value );
+
         /** Returns true if the given field is a numeric field */
         static bool isNumeric( qint64 field );
 
         /** Returns true if the given field is a date field */
         static bool isDate( qint64 field );
+
+        /** Returns a localized text of the condition.
+            @param isDate True if the condition is meant for a date (as it has slightly different texts)
+        */
+        static QString conditionToString( FilterCondition condition, bool isDate = false );
+
 
     public slots:
         void setFilter(const MetaQueryWidget::Filter &value);
@@ -159,7 +182,7 @@ class MetaQueryWidget : public QWidget
         void makeMetaComboSelection( qint64 field );
 
         void makeFormatComboSelection();
-        void makeGenericNumberSelection( int min, int max, int def );
+        void makeGenericNumberSelection( int min, int max, int def, const QString& unit = "" );
         void makePlaycountSelection();
         void makeRatingSelection();
         void makeLengthSelection();
@@ -168,6 +191,7 @@ class MetaQueryWidget : public QWidget
 
         bool m_onlyNumeric;
         bool m_noCondition;
+        bool m_apgMode;
 
         bool m_settingFilter; // if set to true we are just setting the filter
 

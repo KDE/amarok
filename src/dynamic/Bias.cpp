@@ -30,8 +30,6 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/collections/MetaQueryMaker.h"
 #include "core/collections/QueryMaker.h"
-#include "core-impl/collections/support/XmlQueryReader.h"
-#include "core-impl/collections/support/XmlQueryWriter.h"
 
 #include <QMutexLocker>
 #include <QDateTime>
@@ -206,6 +204,8 @@ Dynamic::GlobalBias::filterConditionToString( MetaQueryWidget::FilterCondition c
         return "older";
     case MetaQueryWidget::Contains:
         return "contains";
+    default:
+        ;// the other conditions are only for the advanced playlist generator
     }
     return QString();
 }
@@ -226,7 +226,7 @@ Dynamic::GlobalBias::fromXml( QDomElement e )
             if( !includeElement.isNull() )
             {
                 QString field = includeElement.attribute("field");
-                filter.field = XmlQueryReader::fieldVal( QStringRef(&field) );
+                filter.field = Meta::fieldForName( field );
                 filter.value = includeElement.attribute( "value", "" );
                 filter.numValue = filter.value.toLongLong();
                 filter.numValue2 = includeElement.attribute( "value2", 0 ).toLongLong();
@@ -267,7 +267,7 @@ Dynamic::GlobalBias::xml() const
     QDomElement queryElement = doc.createElement( "query" );
     QDomElement filtersElement = doc.createElement( "filters" );
     QDomElement includeElement = doc.createElement( "include" );
-    includeElement.setAttribute( "field", Collections::XmlQueryWriter::fieldName( m_filter.field ) );
+    includeElement.setAttribute( "field", Meta::nameForField( m_filter.field ) );
     if( m_filter.condition == MetaQueryWidget::Contains )
         includeElement.setAttribute( "value", m_filter.value );
     else
@@ -384,6 +384,10 @@ Dynamic::GlobalBias::setFilter( const MetaQueryWidget::Filter &filter)
         {
             m_qm.data()->addFilter( filter.field, filter.value );
         }
+        break;
+
+    default:
+        ;// the other conditions are only for the advanced playlist generator
     }
 
     m_qm.data()->setQueryType( Collections::QueryMaker::Custom );
@@ -591,11 +595,10 @@ Dynamic::NormalBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
 {
     Q_UNUSED(context)
 
-
     QList<double> fields;
 
     foreach( Meta::TrackPtr t, playlist )
-        fields += relevantField(t) - m_mu;
+        fields += Meta::valueForField( m_field, t ).toDouble() - m_mu;
 
     qSort( fields );
 
@@ -615,43 +618,6 @@ Dynamic::NormalBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
     }
 
     return D;
-}
-
-double
-Dynamic::NormalBias::relevantField( Meta::TrackPtr track ) const
-{
-    if( !track )
-        return m_mu;
-    if( m_field == Meta::valYear && track->year() )
-        return (double)track->year()->name().toInt();
-    if( m_field == Meta::valTrackNr )
-        return (double)track->trackNumber();
-    if( m_field == Meta::valDiscNr )
-        return (double)track->discNumber();
-    if( m_field == Meta::valBpm )
-        return (double)track->bpm();
-    if( m_field == Meta::valLength )
-        return (double)track->length();
-    if( m_field == Meta::valBitrate )
-        return (double)track->bitrate();
-    if( m_field == Meta::valSamplerate )
-        return (double)track->sampleRate();
-    if( m_field == Meta::valFilesize )
-        return (double)track->filesize();
-    if( m_field == Meta::valCreateDate )
-        return (double)track->createDate().toTime_t();
-    if( m_field == Meta::valScore )
-        return track->score();
-    if( m_field == Meta::valRating )
-        return (double)track->rating();
-    if( m_field == Meta::valFirstPlayed )
-        return (double)track->firstPlayed().toTime_t();
-    if( m_field == Meta::valLastPlayed )
-        return (double)track->lastPlayed().toTime_t();
-    if( m_field == Meta::valPlaycount )
-        return (double)track->playCount();
-
-    return m_mu;
 }
 
 double

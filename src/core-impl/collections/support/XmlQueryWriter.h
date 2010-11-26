@@ -90,7 +90,6 @@ class XmlQueryWriter : public QueryMaker
         static QDomElement xmlForFilter( QDomDocument doc, bool exclude, quint64 field, QString value);
         static QDomElement xmlForFilter( QDomDocument doc, bool exclude, quint64 field, quint64 numValue, NumberComparison compare);
 
-        static QString fieldName( qint64 );
         static QString compareName( QueryMaker::NumberComparison );
 
     private:

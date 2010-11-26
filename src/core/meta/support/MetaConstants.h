@@ -18,10 +18,46 @@
 #define AMAROK_METACONSTANTS_H
 
 #include <shared/MetaValues.h>
+#include "shared/amarok_export.h"
+#include "core/meta/Meta.h"
 #include <QString>
 
 namespace Meta
 {
+
+
+    /** Returns a textual identification for the given field.
+        This name can be used e.g. for identifying the field in a xml file.
+     */
+    AMAROK_CORE_EXPORT QString nameForField( qint64 field );
+
+    /** The inverse of nameForField
+     */
+    AMAROK_CORE_EXPORT qint64 fieldForName( const QString &name );
+
+    /** Returns a localized name for the given field.
+     */
+    AMAROK_CORE_EXPORT QString i18nForField( qint64 field );
+
+    /** Returns a textual identification for the given field.
+        This name is used in the playlist generator and is slightly different from
+        the one in nameForField
+     */
+    AMAROK_CORE_EXPORT QString playlistNameForField( qint64 field );
+
+    /** The inverse of playlistNameForField
+     */
+    AMAROK_CORE_EXPORT qint64 fieldForPlaylistName( const QString &name );
+
+    /** Returns the name of the icon representing the field.
+        May return an empty string if no such icon exists.
+        Create the icon with KIcon(iconForField(field))
+     */
+    AMAROK_CORE_EXPORT QString iconForField( qint64 field );
+
+    /** Returns the value for the given field.
+     */
+    AMAROK_CORE_EXPORT QVariant valueForField( qint64 field, TrackPtr track );
     /** The Field variables can be used in cases where a key for metadate is needed.
      */
     namespace Field
