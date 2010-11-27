@@ -84,7 +84,7 @@ ScanResultProcessor::commit()
         }
 
         // -- sort the remainder
-        if( dirAlbums.count() <= 0 )
+        if( dirAlbums.count() == 0 )
         {
             // -- use the directory name as album name
             QString dirAlbumName = QDir( dir->path() ).dirName();
@@ -218,6 +218,9 @@ ScanResultProcessor::sortTrack( CollectionScanner::Track *track )
     QString albumArtist( track->albumArtist() );
     if( albumArtist.isEmpty() )
         albumArtist = ArtistHelper::realTrackArtist( track->artist() );
+    if( albumArtist.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) == 0 ||
+        albumArtist.compare( QLatin1String( "Various Artists" ), Qt::CaseInsensitive ) == 0 )
+        albumArtist.clear();
 
     if( track->album().isEmpty() && albumArtist.isEmpty() )
         return false;

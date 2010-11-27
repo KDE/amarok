@@ -914,11 +914,6 @@ SqlTrack::commitMetaDataChanges()
         }
         else
         {
-            // copy the image BUG: 203211
-            if( oldAlbum && newAlbum &&
-                oldAlbum->hasImage() && !newAlbum->hasImage() )
-                newAlbum->setImage( oldAlbum->imageLocation().path() );
-
             collectionChanged = true;
         }
     }
@@ -994,6 +989,12 @@ SqlTrack::commitMetaDataChanges()
     }
 
     m_lock.unlock(); // or else we provoke a deadlock
+
+    // copy the image BUG: 203211 (we need to do it here or provoke a dead lock)
+    if( oldAlbum && newAlbum &&
+        oldAlbum->hasImage() && !newAlbum->hasImage() )
+        newAlbum->setImage( oldAlbum->imageLocation().path() );
+
     registry->commitDirtyTracks();
     m_lock.lockForWrite();
 

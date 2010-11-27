@@ -43,6 +43,10 @@ TestSqlScanManager::TestSqlScanManager()
 void
 TestSqlScanManager::initTestCase()
 {
+    setenv( "LC_ALL", "", 1 ); // this breakes the test
+    // Amarok does not force LC_ALL=C but obviously the test does it which
+    // will prevent scanning of files with umlauts.
+
     // that is the original mp3 file that we use to generate the "real" tracks
     m_sourcePath = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/audio/Platz 01.mp3" );
     QVERIFY( QFile::exists( m_sourcePath ) );
@@ -131,6 +135,8 @@ TestSqlScanManager::testScanSingle()
     QCOMPARE( track->artist()->name(), QString("Soundtrack & Theme Orchestra") );
     QVERIFY( track->album() );
     QCOMPARE( track->album()->name(), QString("Big Screen Adventures") );
+    QVERIFY( track->album()->albumArtist() );
+    QCOMPARE( track->album()->albumArtist()->name(), QString("Theme Orchestra") );
     QVERIFY( !track->album()->isCompilation() ); // One single track is not compilation
     QCOMPARE( track->composer()->name(), QString("Unknown Composer") );
     QCOMPARE( track->comment(), QString("Amazon.com Song ID: 210541237") );
@@ -191,12 +197,12 @@ TestSqlScanManager::testCompilation()
     values.insert( Meta::valCompilation, QVariant(true) );
     createTrack( values );
 
-    // create one none compilation track
+    // create one various artists track
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("6ae759476c34256ff1d06f0b5c964d75") );
     values.insert( Meta::valUrl, QVariant("The Cross Of Changes/06 - The Dream Of The Dolphin.mp3") );
     values.insert( Meta::valTitle, QVariant("The Dream Of The Dolphin") );
-    values.insert( Meta::valArtist, QVariant("Enigma") );
+    values.insert( Meta::valArtist, QVariant("Various Artists") );
     values.insert( Meta::valAlbum, QVariant("The Cross Of Changes") );
     values.insert( Meta::valCompilation, QVariant(false) );
     createTrack( values );
@@ -210,6 +216,7 @@ TestSqlScanManager::testCompilation()
     values.insert( Meta::valAlbum, QVariant("Solid") );
     createTrack( values );
 
+    // create one none compilation track
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("b88c3405cfee64c50768b75eb6e3feea") );
     values.insert( Meta::valUrl, QVariant("In-Mood feat. Juliette - The Last Unicorn (Elemental Radio Mix).mp3") );
@@ -237,9 +244,9 @@ TestSqlScanManager::testCompilation()
     QCOMPARE( album->tracks().count(), 1 );
     QVERIFY( album->isCompilation() );
 
-    album = m_collection->registry()->getAlbum( "The Cross Of Changes", "Enigma" );
+    album = m_collection->registry()->getAlbum( "The Cross Of Changes", QString() );
     QCOMPARE( album->tracks().count(), 1 );
-    QVERIFY( !album->isCompilation() );
+    QVERIFY( album->isCompilation() ); // the album is by various artists
 
     album = m_collection->registry()->getAlbum( "Solid", "Ashford & Simpson" );
     QCOMPARE( album->tracks().count(), 1 );
@@ -564,7 +571,7 @@ TestSqlScanManager::testMerges()
     QCOMPARE( track->artist()->name(), QString("Soundtrack & Theme Orchestra") );
     QVERIFY( track->album() );
     QCOMPARE( track->album()->name(), QString("Big Screen Adventures") );
-    QVERIFY( !track->album()->isCompilation() );
+    QVERIFY( track->album()->isCompilation() ); // the track is by various artists
     QCOMPARE( track->composer()->name(), QString("Unknown Composer") );
     QCOMPARE( track->comment(), QString("Amazon.com Song ID: 210541237") );
     QCOMPARE( track->year()->year(), 2009 );
@@ -590,8 +597,8 @@ TestSqlScanManager::testMerges()
     Meta::AlbumPtr album;
 
     // the old track is still there
-    album = m_collection->registry()->getAlbum( "Big Screen Adventures",
-                                                "Soundtrack & Theme Orchestra" );
+    // and it's still has an album artist "various artists" so it's still a compilation
+    album = m_collection->registry()->getAlbum( "Big Screen Adventures", QString() );
     QCOMPARE( album->tracks().count(), 1 );
 
     // the new album is now here
@@ -822,6 +829,7 @@ TestSqlScanManager::createTrack( const Meta::FieldHash &values )
     QVERIFY( values.contains( Meta::valUrl ) );
     const QString targetPath = m_tmpCollectionDir->name() + values.value( Meta::valUrl ).toString();
     QVERIFY( QDir( m_tmpCollectionDir->name() ).mkpath( QFileInfo( values.value( Meta::valUrl ).toString() ).path() ) );
+
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 
     // -- set all the values that we need
@@ -838,7 +846,7 @@ TestSqlScanManager::createSingleTrack()
     values.insert( Meta::valFiletype, QVariant("1") );
     values.insert( Meta::valTitle, QVariant("Theme From Armageddon") );
     values.insert( Meta::valArtist, QVariant("Soundtrack & Theme Orchestra") );
-    values.insert( Meta::valAlbumArtist, QVariant("Various Artists") );
+    values.insert( Meta::valAlbumArtist, QVariant("Theme Orchestra") );
     values.insert( Meta::valAlbum, QVariant("Big Screen Adventures") );
     values.insert( Meta::valComposer, QVariant("Unknown Composer") );
     values.insert( Meta::valComment, QVariant("Amazon.com Song ID: 210541237") );
