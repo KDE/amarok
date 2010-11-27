@@ -18,7 +18,7 @@
 #include "TestSqlScanManager.h"
 
 #include "amarokconfig.h"
-#include "core-impl/meta/file/TagLibUtils.h"
+#include "shared/MetaTagLib.h"
 #include "core-impl/collections/db/ScanManager.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/db/sql/SqlCollectionFactory.h"
@@ -131,7 +131,7 @@ TestSqlScanManager::testScanSingle()
     QCOMPARE( track->artist()->name(), QString("Soundtrack & Theme Orchestra") );
     QVERIFY( track->album() );
     QCOMPARE( track->album()->name(), QString("Big Screen Adventures") );
-    QVERIFY( track->album()->isCompilation() );
+    QVERIFY( !track->album()->isCompilation() ); // One single track is not compilation
     QCOMPARE( track->composer()->name(), QString("Unknown Composer") );
     QCOMPARE( track->comment(), QString("Amazon.com Song ID: 210541237") );
     QCOMPARE( track->year()->year(), 2009 );
@@ -233,7 +233,7 @@ TestSqlScanManager::testCompilation()
     QCOMPARE( album->tracks().count(), 10 );
     QVERIFY( album->isCompilation() );
 
-    album = m_collection->registry()->getAlbum( "The Sum Of All Fears", QString() );
+    album = m_collection->registry()->getAlbum( "The Sum of All Fears", QString() );
     QCOMPARE( album->tracks().count(), 1 );
     QVERIFY( album->isCompilation() );
 
@@ -825,7 +825,7 @@ TestSqlScanManager::createTrack( const Meta::FieldHash &values )
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 
     // -- set all the values that we need
-    Meta::Field::writeFields( targetPath, values );
+    Meta::Tag::writeTags( targetPath, values );
 }
 
 void

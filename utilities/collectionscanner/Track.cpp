@@ -61,6 +61,15 @@ CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directo
    , m_score( -1.0 )
    , m_playcount( -1.0 )
 {
+    // for the unit test.
+    // in a debug build a file called "crash_amarok_here.ogg" will crash the collection
+    // scanner
+    if( path.contains("crash_amarok_here.ogg") )
+    {
+        qDebug() << "Crashing at"<<path;
+        Q_ASSERT( false );
+    }
+
     Meta::FieldHash values = Meta::Tag::readTags( path, s_useCharsetDetector );
 
     m_valid = !values.empty();
@@ -79,15 +88,6 @@ CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directo
     if( values.contains( Meta::valAlbumArtist ) )
         m_albumArtist = values.value( Meta::valAlbumArtist ).toString();
     if( values.contains(Meta::valCompilation) )
-    // for the unit test.
-    // in a debug build a file called "crash_amarok_here.ogg" will crash the collection
-    // scanner
-    if( path.contains("crash_amarok_here.ogg") )
-    {
-        qDebug() << "Crashing at"<<path;
-        Q_ASSERT( false );
-    }
-
     {
         m_compilation = values.value(Meta::valCompilation).toBool();
         m_noCompilation = !values.value(Meta::valCompilation).toBool();

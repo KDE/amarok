@@ -34,6 +34,7 @@ class QXmlStreamWriter;
 namespace CollectionScanner
 {
 
+class Track;
 class ScanningState;
 
 /**
@@ -71,9 +72,9 @@ public:
      */
     bool isSkipped() const;
 
-    QStringList covers() const;
-    const QList<Track> &tracks() const;
-    const QList<Playlist> &playlists() const;
+    const QStringList& covers() const;
+    const QList<Track*>& tracks() const;
+    const QList<Playlist>& playlists() const;
 
 #ifdef UTILITIES_BUILD
     /** Writes the contents of this object to an xml stream.
@@ -92,7 +93,7 @@ private:
     bool m_ignored; // the directory was ingored e.g. because of "fmps_ignore"
 
     QStringList m_covers;
-    QList<Track> m_tracks;
+    QList<Track*> m_tracks;
     QList<Playlist> m_playlists;
 };
 

@@ -110,9 +110,11 @@ CollectionScanner::Directory::Directory( const QString &path,
             // remember the last file before it get's dangerous. Before starting taglib
             state->setLastFile( f.absoluteFilePath() );
 
-            CollectionScanner::Track newTrack( filePath, this );
-            if( newTrack.isValid() )
+            CollectionScanner::Track *newTrack = new CollectionScanner::Track( filePath, this );
+            if( newTrack->isValid() )
                 m_tracks.append( newTrack );
+            else
+                delete newTrack;
         }
     }
 }
@@ -149,7 +151,7 @@ CollectionScanner::Directory::Directory( const QString &path,
                 reader->skipCurrentElement();
             }
             else if( name == "track" )
-                m_tracks.append( CollectionScanner::Track( reader, this ) );
+                m_tracks.append( new CollectionScanner::Track( reader, this ) );
             else if( name == "playlist" )
                 m_playlists.append( CollectionScanner::Playlist( reader ) );
             else
@@ -167,7 +169,10 @@ CollectionScanner::Directory::Directory( const QString &path,
 }
 
 CollectionScanner::Directory::~Directory()
-{}
+{
+    foreach( CollectionScanner::Track *track, m_tracks )
+        delete track;
+}
 
 QString
 CollectionScanner::Directory::path() const
@@ -193,13 +198,13 @@ CollectionScanner::Directory::isSkipped() const
     return m_skipped;
 }
 
-QStringList
+const QStringList&
 CollectionScanner::Directory::covers() const
 {
     return m_covers;
 }
 
-const QList<CollectionScanner::Track>&
+const QList<CollectionScanner::Track *>&
 CollectionScanner::Directory::tracks() const
 {
     return m_tracks;
@@ -227,10 +232,10 @@ CollectionScanner::Directory::toXml( QXmlStreamWriter *writer ) const
     {
         writer->writeTextElement( "cover", cover );
     }
-    foreach( const CollectionScanner::Track &track, m_tracks )
+    foreach( CollectionScanner::Track *track, m_tracks )
     {
         writer->writeStartElement( QLatin1String("track") );
-        track.toXml( writer );
+        track->toXml( writer );
         writer->writeEndElement();
     }
 

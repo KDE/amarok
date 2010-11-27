@@ -55,24 +55,6 @@ void
 ScanResultProcessor::addDirectory( CollectionScanner::Directory *dir )
 {
     m_directories.append( dir );
-
-    // -- sort the tracks into albums
-    QSet<CollectionScanner::Album*> dirAlbums;
-
-    foreach( CollectionScanner::Track track, dir->tracks() )
-        dirAlbums.insert( sortTrack( &track ) );
-
-    // -- sort the remainder
-    // -- use the directory name as album name
-    {
-        QString dirAlbumName = QDir( dir->path() ).dirName();
-        foreach( CollectionScanner::Track track, dir->tracks() )
-            dirAlbums.insert( sortTrack( &track ) );
-    }
-
-    // if all the tracks from this directory end up in one album then also add the images
-    if( dirAlbums.count() == 1 )
-        (*dirAlbums.begin())->addCovers( dir->covers() );
 }
 
 void
@@ -84,28 +66,104 @@ ScanResultProcessor::commit()
 
     // -- commit the directories
     foreach( CollectionScanner::Directory* dir, m_directories )
+    {
         commitDirectory( dir );
 
+        // -- sort the tracks into albums
+        QSet<CollectionScanner::Album*> dirAlbums;
+        QList<CollectionScanner::Track*> tracks = dir->tracks();
+
+        for( int i = tracks.count() - 1; i >= 0; --i )
+        {
+            CollectionScanner::Album *album = sortTrack( tracks.at( i ) );
+            if( album )
+            {
+                dirAlbums.insert( album );
+                tracks.removeAt( i );
+            }
+        }
+
+        // -- sort the remainder
+        if( dirAlbums.count() <= 0 )
+        {
+            // -- use the directory name as album name
+            QString dirAlbumName = QDir( dir->path() ).dirName();
+            for( int i = tracks.count() - 1; i >= 0; --i )
+            {
+                CollectionScanner::Album *album = sortTrack( tracks.at( i ), dirAlbumName, QString() );
+                if( album )
+                {
+                    dirAlbums.insert( album );
+                    tracks.removeAt( i );
+                }
+            }
+        }
+        else
+        {
+            // -- put into the empty album
+            for( int i = tracks.count() - 1; i >= 0; --i )
+            {
+                CollectionScanner::Album *album = sortTrack( tracks.at( i ), QString(), QString() );
+                if( album )
+                {
+                    dirAlbums.insert( album );
+                    tracks.removeAt( i );
+                }
+            }
+        }
+
+        // if all the tracks from this directory end up in one album then also add the images
+        if( dirAlbums.count() == 1 )
+            (*dirAlbums.begin())->setCovers( dir->covers() );
+    }
+
+
     // --- add all albums
-    QMultiHash<QString, CollectionScanner::Album*>::const_iterator i = m_albumNames.constBegin();
-    while (i != m_albumNames.constEnd()) {
+    QList<QString> keys = m_albumNames.uniqueKeys();
+    foreach( const QString &key, keys )
+    {
+        // --- commit the albums as compilation or normal album
+
+        QList<CollectionScanner::Album*> albums = m_albumNames.values( key );
+        // debug() << "commit got" <<albums.count() << "x" << key;
 
         // if we have multiple albums with the same name, check if it
         // might be a compilation
 
         // commit all albums with a track with the noCompilation flag
+        for( int i = albums.count() - 1; i >= 0; --i )
+        {
+            if( albums.at( i )->isNoCompilation() )
+                commitAlbum( albums.takeAt( i ) );
+        }
 
-        // commit all the remaining albums as a compilation
-        commitAlbum( i.value() );
+        // only one album left. It's no compilation.
+        if( albums.count() == 1 )
+        {
+            commitAlbum( albums.takeFirst() );
+        }
 
-        // release the block every 5 second. Maybe not really needed, but still nice
+        // compilation
+        else if( albums.count() > 1 )
+        {
+            CollectionScanner::Album compilation( key, QString() );
+            for( int i = albums.count() - 1; i >= 0; --i )
+            {
+                CollectionScanner::Album *album = albums.takeAt( i );
+                foreach( CollectionScanner::Track *track, album->tracks() )
+                    compilation.addTrack( track );
+                compilation.setCovers( album->covers() + compilation.covers() );
+            }
+            commitAlbum( &compilation );
+        }
+
+        // --- unblock every 5 second. Maybe not really needed, but still nice
         if( blockedTime.secsTo( QDateTime::currentDateTime() ) >= 5 )
         {
             unblockUpdates();
             blockedTime = QDateTime::currentDateTime();
             blockUpdates();
         }
-        ++i;
     }
 
     // -- now check if some of the tracks are not longer used and also not moved to another directory
@@ -160,8 +218,6 @@ ScanResultProcessor::sortTrack( CollectionScanner::Track *track )
     QString albumArtist( track->albumArtist() );
     if( albumArtist.isEmpty() )
         albumArtist = ArtistHelper::realTrackArtist( track->artist() );
-    if( track->isCompilation() )
-        albumArtist.clear();
 
     if( track->album().isEmpty() && albumArtist.isEmpty() )
         return false;
@@ -181,6 +237,8 @@ ScanResultProcessor::sortTrack( CollectionScanner::Track *track,
     QString newAlbumArtist( albumArtist );
     if( albumName.isEmpty() )
         newAlbumArtist.clear(); // no album, no album artist
+    if( track->isCompilation() )
+        newAlbumArtist.clear();
 
     AlbumKey key( albumName, newAlbumArtist );
 

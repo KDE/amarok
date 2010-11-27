@@ -48,8 +48,6 @@ public:
     */
     void addTrack( Track *track );
 
-    void addCovers( const QStringList &covers );
-
     QString name() const;
 
     /** Returns the artist of this album.  */
@@ -58,7 +56,13 @@ public:
     /** Returns the picture best suited as cover for this album */
     QString cover() const;
 
+    /** Returns all covers added via addCovers() */
+    QStringList covers() const;
+    void setCovers( const QStringList &covers );
+
     QList<Track*> tracks() const;
+
+    bool isNoCompilation() const;
 
 private:
     QString m_name;

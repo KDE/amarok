@@ -40,12 +40,6 @@ CollectionScanner::Album::addTrack( Track *track )
     m_tracks.append( track );
 }
 
-void
-CollectionScanner::Album::addCovers( const QStringList &covers )
-{
-    m_covers.append(covers);
-}
-
 QString
 CollectionScanner::Album::name() const
 {
@@ -108,8 +102,34 @@ CollectionScanner::Album::cover() const
     return bestCover;
 }
 
+QStringList
+CollectionScanner::Album::covers() const
+{
+    return m_covers;
+}
+
+void
+CollectionScanner::Album::setCovers( const QStringList &covers )
+{
+    m_covers = covers;
+}
+
+
+
 QList<CollectionScanner::Track*>
 CollectionScanner::Album::tracks() const
 {
     return m_tracks;
+}
+
+bool
+CollectionScanner::Album::isNoCompilation() const
+{
+    foreach( CollectionScanner::Track *track, m_tracks )
+    {
+        if( track->isNoCompilation() )
+            return true;
+    }
+
+    return false;
 }
