@@ -475,8 +475,11 @@ UpcomingEventsStackItem::boundingRect() const
 {
     Q_D( const UpcomingEventsStackItem );
     if( !d->collapsed && d->widget )
-        return d->toolbox->boundingRect().united( d->widget.data()->boundingRect() );
-
+    {
+        QSharedPointer<QGraphicsWidget> w = d->widget.toStrongRef();
+        if( w )
+            return d->toolbox->boundingRect().united( mapRectFromItem( w.data(), w->boundingRect() ) );
+    }
     return d->toolbox->boundingRect();
 }
 
