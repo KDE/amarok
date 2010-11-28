@@ -436,7 +436,7 @@ MainWindow::showDock( AmarokDockId dockId )
             name = m_playlistDock.data()->windowTitle();
             break;
     }
-  
+
     QList < QTabBar * > tabList = findChildren < QTabBar * > ();
 
     foreach( QTabBar *bar, tabList )
@@ -509,7 +509,7 @@ MainWindow::queryExit()
 
     // save layout on app exit
     saveLayout();
-    
+
     return true; // KMainWindow API expects us to always return true
 }
 
@@ -742,6 +742,9 @@ MainWindow::createActions()
     action = new KAction( KIcon( "edit-clear-list-amarok" ), i18nc( "clear playlist", "&Clear Playlist" ), this );
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( clear() ) );
     ac->addAction( "playlist_clear", action );
+
+    action = new KAction( KIcon( "edit-clear-list-amarok" ), i18nc( "edit play queue of playlist", "Edit &Queue" ), this );
+    ac->addAction( "playlist_edit_queue", action );
 
     action = new KAction( i18nc( "Remove duplicate and dead (unplayable) tracks from the playlist", "Re&move Duplicates" ), this );
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( removeDeadAndDuplicates() ) );

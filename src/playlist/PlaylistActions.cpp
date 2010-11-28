@@ -349,6 +349,18 @@ Playlist::Actions::queue()
 }
 
 void
+Playlist::Actions::queueMoveUp(quint64 id)
+{
+    m_navigator->queueMoveUp(id);
+}
+
+void
+Playlist::Actions::queueMoveDown(quint64 id)
+{
+    m_navigator->queueMoveDown(id);
+}
+
+void
 Playlist::Actions::queue( QList<int> rows )
 {
     DEBUG_BLOCK

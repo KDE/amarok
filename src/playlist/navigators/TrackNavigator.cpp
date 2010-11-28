@@ -38,7 +38,8 @@ Playlist::TrackNavigator::TrackNavigator()
     //   Ignore SIGNAL layoutChanged: we don't need to know when rows are moved around.
     connect( m_model->qaim(), SIGNAL( modelReset() ), this, SLOT( slotModelReset() ) );
     //   Ignore SIGNAL rowsInserted.
-    connect( m_model->qaim(), SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotRowsAboutToBeRemoved( const QModelIndex&, int, int ) ) );
+    connect( m_model->qaim(), SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ),
+             this, SLOT( slotRowsAboutToBeRemoved( const QModelIndex&, int, int ) ) );
 }
 
 void
@@ -63,6 +64,29 @@ void
 Playlist::TrackNavigator::dequeueId( const quint64 id )
 {
     m_queue.removeAll( id );
+}
+
+void
+Playlist::TrackNavigator::queueMoveUp( const quint64 id )
+{
+    int idx = m_queue.indexOf(id);
+    if ( idx < 1 )
+        return;
+    quint64 temp = m_queue[idx - 1];
+    m_queue[idx - 1] = m_queue[idx];
+    m_queue[idx] = temp;
+}
+
+void
+Playlist::TrackNavigator::queueMoveDown( const quint64 id )
+{
+    int idx = m_queue.indexOf(id);
+    if ( idx == -1 || idx == m_queue.count() - 1 )
+        return;
+    quint64 temp = m_queue[idx + 1];
+    m_queue[idx + 1] = m_queue[idx];
+    m_queue[idx] = temp;
+
 }
 
 int

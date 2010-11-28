@@ -100,6 +100,16 @@ namespace Playlist
              */
             virtual void dequeueId( const quint64 id );
 
+            /**
+             * Play the track one position earlier.
+             */
+            void queueMoveUp( const quint64 id );
+
+            /**
+             * Play the track one position later.
+             */
+            void queueMoveDown( const quint64 id );
+
         private slots:
             void slotModelReset();
             void slotRowsAboutToBeRemoved( const QModelIndex& parent, int start, int end );

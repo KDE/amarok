@@ -403,6 +403,7 @@ set(libplaylist_SRCS
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
     playlist/PlaylistModelStack.cpp
+    playlist/PlaylistQueueEditor.cpp
     playlist/PlaylistSortWidget.cpp
     playlist/PlaylistViewUrlGenerator.cpp
     playlist/PlaylistViewUrlRunner.cpp
@@ -437,6 +438,10 @@ set(libplaylist_SRCS
     playlist/proxymodels/SortFilterProxy.cpp
     playlist/proxymodels/SortScheme.cpp
     playlist/proxymodels/SearchProxy.cpp
+)
+
+kde4_add_ui_files(libplaylist_SRCS
+    playlist/PlaylistQueueEditor.ui
 )
 
 #####################################################################

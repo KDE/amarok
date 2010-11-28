@@ -68,6 +68,7 @@ private slots:
     void playlistProviderAdded( Playlists::PlaylistProvider *provider, int category );
     void playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category );
     void slotSaveCurrentPlaylist();
+    void slotEditQueue();
 
 private:
     KActionMenu *m_savePlaylistMenu;

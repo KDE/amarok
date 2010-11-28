@@ -34,6 +34,7 @@
 #include "PlaylistDefines.h"
 #include "PlaylistManager.h"
 #include "PlaylistModelStack.h"
+#include "PlaylistQueueEditor.h"
 #include "ProgressiveSearchWidget.h"
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "widgets/HorizontalDivider.h"
@@ -192,6 +193,11 @@ Playlist::Dock::polish()
         QToolButton *toolButton = qobject_cast<QToolButton*>(plBar->widgetForAction( navigatorConfig ) );
         if( toolButton )
             toolButton->setPopupMode( QToolButton::InstantPopup );
+
+        QAction *queueEditAction = Amarok::actionCollection()->action( "playlist_edit_queue" );
+        plBar->addAction( queueEditAction );
+        connect( queueEditAction, SIGNAL( triggered( bool ) ),
+                 SLOT( slotEditQueue() ) );
     } // END Playlist Toolbar
 
     // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.
@@ -259,6 +265,13 @@ Playlist::Dock::slotSaveCurrentPlaylist()
 
     The::playlistManager()->save( The::playlist()->tracks(),
                                   Playlist::ModelStack::instance()->bottom()->generatePlaylistName(), provider );
+}
+
+void
+Playlist::Dock::slotEditQueue()
+{
+    PlaylistQueueEditor* pqEditor = new PlaylistQueueEditor();
+    pqEditor->exec();
 }
 
 void

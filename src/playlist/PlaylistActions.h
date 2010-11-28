@@ -112,6 +112,9 @@ public:
     // should be publicly accessible
     QQueue<quint64> queue();
 
+    void queueMoveUp(quint64 id);
+    void queueMoveDown(quint64 id);
+
 public slots:
     void play();
     void play( const int row );
