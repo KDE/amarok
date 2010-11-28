@@ -349,17 +349,17 @@ Playlist::Actions::queue()
 }
 
 bool
-Playlist::Actions::queueMoveUp(quint64 id)
+Playlist::Actions::queueMoveUp( quint64 id )
 {
-    const bool ret = m_navigator->queueMoveUp(id);
+    const bool ret = m_navigator->queueMoveUp( id );
     The::playlist()->emitQueueChanged();
     return ret;
 }
 
 bool
-Playlist::Actions::queueMoveDown(quint64 id)
+Playlist::Actions::queueMoveDown( quint64 id )
 {
-    const bool ret = m_navigator->queueMoveDown(id);
+    const bool ret = m_navigator->queueMoveDown( id );
     The::playlist()->emitQueueChanged();
     return ret;
 }

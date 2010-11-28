@@ -69,24 +69,24 @@ Playlist::TrackNavigator::dequeueId( const quint64 id )
 bool
 Playlist::TrackNavigator::queueMoveUp( const quint64 id )
 {
-    int idx = m_queue.indexOf(id);
+    const int idx = m_queue.indexOf( id );
     if ( idx < 1 )
         return false;
-    quint64 temp = m_queue[idx - 1];
-    m_queue[idx - 1] = m_queue[idx];
-    m_queue[idx] = temp;
+    quint64 temp = m_queue[ idx - 1 ];
+    m_queue[ idx - 1 ] = m_queue[ idx ];
+    m_queue[ idx ] = temp;
     return true;
 }
 
 bool
 Playlist::TrackNavigator::queueMoveDown( const quint64 id )
 {
-    int idx = m_queue.indexOf(id);
+    const int idx = m_queue.indexOf( id );
     if ( idx == -1 || idx == m_queue.count() - 1 )
         return false;
-    quint64 temp = m_queue[idx + 1];
-    m_queue[idx + 1] = m_queue[idx];
-    m_queue[idx] = temp;
+    quint64 temp = m_queue[ idx + 1 ];
+    m_queue[ idx + 1 ] = m_queue[ idx ];
+    m_queue[ idx ] = temp;
     return true;
 }
 
