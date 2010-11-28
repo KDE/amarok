@@ -247,18 +247,19 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
             Meta::YearPtr year         = m_track->year();
             QString name;
 
+            // NOTE: i18n calls need to use the same strings as filters in CollectionTreeItemModelBase.cpp
             if( tag.testFlag(Artist) && !(name = artist ? artist->prettyName() : QString()).isEmpty() )
-                filters << QString( "artist:\"%1\"" ).arg( name );
+                filters << QString( "%1:\"%2\"" ).arg( i18n("artist"), name );
             if( tag.testFlag(Album) && !(name = album ? album->prettyName() : QString()).isEmpty() )
-                filters << QString( "album:\"%1\"" ).arg( name );
+                filters << QString( "%1:\"%2\"" ).arg( i18n("album"), name );
             if( tag.testFlag(Composer) && !(name = composer ? composer->prettyName() : QString()).isEmpty() )
-                filters << QString( "composer:\"%1\"" ).arg( name );
+                filters << QString( "%1:\"%2\"" ).arg( i18n("composer"), name );
             if( tag.testFlag(Genre) && !(name = genre ? genre->prettyName() : QString()).isEmpty() )
-                filters << QString( "genre:\"%1\"" ).arg( name );
+                filters << QString( "%1:\"%2\"" ).arg( i18n("genre"), name );
             if( tag.testFlag(Track) && !(name = m_track ? m_track->prettyName() : QString()).isEmpty() )
-                filters << QString( "title:\"%1\"" ).arg( name );
+                filters << QString( "%1:\"%2\"" ).arg( i18n("title"), name );
             if( tag.testFlag(Year) && !(name = year ? year->name() : QString()).isEmpty() )
-                filters << QString( "year:%1" ).arg( name );
+                filters << QString( "%1:%2" ).arg( i18n("year"), name );
 
             if( !filters.isEmpty() )
             {
