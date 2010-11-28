@@ -80,7 +80,6 @@ void LikeBackBar::bugClicked()
 }
 
 
-
 // Move the bar to the new active window
 void LikeBackBar::changeWindow( QWidget *oldWidget, QWidget *newWidget )
 {
@@ -117,17 +116,20 @@ void LikeBackBar::changeWindow( QWidget *oldWidget, QWidget *newWidget )
 
     // Do not perform the switch if the new window is null, a popup or tool etc,
     // or if it's the send feedback window
-    if(  newWindow != 0
-         &&   newWindow->objectName() != "LikeBackFeedBack"
-         &&   newWindow->objectName() != "KBugReport"
-         &&   newWindow->objectName() != "BookmarkManager"
-         &&   newWindow->objectName() != "TheCoverManager"
-         &&   newWindow->objectName() != "PlayMedia"
-         &&   newWindow->objectName() != "PlaylistExport"
-         &&   newWindow->objectName() != "SqlPodcastProviderSettings"
-         &&   newWindow->objectName() != "TrayIconContextMenu"
-         && ( newWindow->windowType() == Qt::Window
-              ||   newWindow->windowType() == Qt::Dialog ) )
+    if( !newWindow )
+        return;
+    const QString name = newWindow->objectName();
+    if(      name != "LikeBackFeedBack"
+        &&   name != "KBugReport"
+        &&   name != "BookmarkManager"
+        &&   name != "TheCoverManager"
+        &&   name != "PlayMedia"
+        &&   name != "PlaylistExport"
+        &&   name != "SqlPodcastProviderSettings"
+        &&   name != "TrayIconContextMenu"
+        &&   name != "PlaylistQueueEditor"
+        && ( newWindow->windowType() == Qt::Window
+             ||   newWindow->windowType() == Qt::Dialog ) )
     {
 #ifdef DEBUG_LIKEBACK
         debug() << "Adding to new window:" << newWindow;
