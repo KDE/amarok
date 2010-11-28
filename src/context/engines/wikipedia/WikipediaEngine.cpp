@@ -438,33 +438,36 @@ WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
 void
 WikipediaEnginePrivate::_checkRequireUpdate( Meta::TrackPtr track )
 {
+    if( !track )
+        return;
+
     Meta::DataPtr oldData;
-    Meta::DataPtr newData;
+    QString newName;
 
     switch( currentSelection )
     {
     case WikipediaEnginePrivate::Artist:
-        if( track )
-            newData = track->artist().data();
+        if( track->artist() )
+            newName = track->artist()->name();
         if( currentTrack )
             oldData = currentTrack->artist().data();
         break;
+
     case WikipediaEnginePrivate::Album:
-        if( track )
-            newData = track->album().data();
+        if( track->album() )
+            newName = track->album()->name();
         if( currentTrack )
             oldData = currentTrack->album().data();
         break;
+
     case WikipediaEnginePrivate::Track:
-        if( track )
-            newData = track.data();
+        newName = track->name();
         if( currentTrack )
             oldData = currentTrack.data();
         break;
     }
 
-    if( (oldData ? oldData->name() : QString()) !=
-        (newData ? newData->name() : QString()) )
+    if( (oldData ? oldData->name() : QString()) != newName )
     {
         currentTrack = track;
         urls.clear();
