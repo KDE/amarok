@@ -348,16 +348,20 @@ Playlist::Actions::queue()
     return m_navigator->queue();
 }
 
-void
+bool
 Playlist::Actions::queueMoveUp(quint64 id)
 {
-    m_navigator->queueMoveUp(id);
+    const bool ret = m_navigator->queueMoveUp(id);
+    The::playlist()->emitQueueChanged();
+    return ret;
 }
 
-void
+bool
 Playlist::Actions::queueMoveDown(quint64 id)
 {
-    m_navigator->queueMoveDown(id);
+    const bool ret = m_navigator->queueMoveDown(id);
+    The::playlist()->emitQueueChanged();
+    return ret;
 }
 
 void
@@ -370,7 +374,7 @@ Playlist::Actions::queue( QList<int> rows )
         quint64 id = The::playlist()->idAt( row );
         debug() << "About to queue proxy row"<< row;
         m_navigator->queueId( id );
-        The::playlist()->setRowQueued( row );
+        The::playlist()->emitQueueChanged();
     }
 }
 
@@ -383,7 +387,7 @@ Playlist::Actions::dequeue( QList<int> rows )
     {
         quint64 id = The::playlist()->idAt( row );
         m_navigator->dequeueId( id );
-        The::playlist()->setRowDequeued( row );
+        The::playlist()->emitQueueChanged();
     }
 }
 

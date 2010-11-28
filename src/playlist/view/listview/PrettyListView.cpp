@@ -211,8 +211,7 @@ void
 Playlist::PrettyListView::switchQueueState() // slot
 {
     DEBUG_BLOCK
-
-    const bool isQueued = currentIndex().data( Playlist::StateRole ).toInt() & Item::Queued;
+    const bool isQueued = currentIndex().data( Playlist::QueuePositionRole ).toInt() != 0;
     isQueued ? dequeueSelection() : queueSelection();
     update(); // repaint (necessary when using shortcut)
 }
@@ -608,7 +607,7 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
             list.append( index.row() );
         }
 
-        if( index.data( Playlist::StateRole ).toInt() & Item::Queued )
+        if( index.data( Playlist::QueuePositionRole ).toInt() != 0 )
             Actions::instance()->dequeue( list );
         else
             Actions::instance()->queue( list );

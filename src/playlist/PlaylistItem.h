@@ -29,11 +29,10 @@ namespace Playlist
         public:
             enum State
             {
-                Invalid,
+                Invalid = 0,
                 NewlyAdded,
                 Unplayed,
-                Played,
-                Queued
+                Played
             };
 
             static void listRemove( QList<quint64> &target, QSet<quint64> &removeSet );

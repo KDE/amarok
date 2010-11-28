@@ -85,8 +85,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void setActiveRow( int row );
         void setAllNewlyAddedToUnplayed();
         void setAllUnplayed();
-        void setRowQueued( int row );
-        void setRowDequeued( int row );
+        void emitQueueChanged();
+        int queuePositionOfRow( int row );
         Item::State stateOfId( quint64 id ) const;
         Item::State stateOfRow( int row ) const;
         qint64 totalLength() const { return m_totalLength; }

@@ -335,9 +335,8 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
     }
 
     // --- paint the markers
-    if( !headerRow && index.data( StateRole ).toInt() & Item::Queued )
+    if( !headerRow )
     {
-        // Check that the queue position is actually valid
         const int queuePosition = index.data( QueuePositionRole ).toInt();
         if( queuePosition > 0 )
         {
@@ -352,8 +351,6 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
             if ( !showCover )
                 rowOffsetX = markerOffsetX;
         }
-        else
-            warning() << "discrepancy: Item::Queued but queuePosition == 0";
     }
 
     if( !headerRow && index.data( MultiSourceRole ).toBool() )

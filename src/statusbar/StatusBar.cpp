@@ -387,7 +387,7 @@ StatusBar::updateTotalPlaylistLength() //SLOT
 
         for( int i = 0; i < trackCount; ++i )
         {
-            if( The::playlist()->stateOfRow( i ) & Playlist::Item::Queued )
+            if( The::playlist()->queuePositionOfRow( i ) != 0 )
             {
                 queuedTotalLength += The::playlist()->trackAt( i )->length();
                 queuedTotalSize += The::playlist()->trackAt( i )->filesize();

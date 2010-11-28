@@ -69,8 +69,8 @@ public:
     virtual void setActiveId( const quint64 id );
     virtual void setActiveRow( int row );
     virtual void setAllUnplayed();
-    virtual void setRowQueued( int row );
-    virtual void setRowDequeued( int row );
+    virtual void emitQueueChanged();
+    virtual int queuePositionOfRow( int row );
     virtual void showOnlyMatches( bool onlyMatches );
     virtual Item::State stateOfId( quint64 id ) const;
     virtual Item::State stateOfRow( int row ) const;

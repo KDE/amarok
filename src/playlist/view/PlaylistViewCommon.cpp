@@ -111,8 +111,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
 
     QAction *separator = new QAction( parent );
     separator->setSeparator( true );
-
-    const bool isQueued = index->data( Playlist::StateRole ).toInt() & Item::Queued;
+    const bool isQueued = index->data( Playlist::QueuePositionRole ).toInt() != 0;
     const QString queueText = !isQueued ? i18n( "Queue Track" ) : i18n( "Dequeue Track" );
 
     if( m_cueTrackAction == 0 )

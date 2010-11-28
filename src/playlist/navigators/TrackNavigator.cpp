@@ -66,27 +66,28 @@ Playlist::TrackNavigator::dequeueId( const quint64 id )
     m_queue.removeAll( id );
 }
 
-void
+bool
 Playlist::TrackNavigator::queueMoveUp( const quint64 id )
 {
     int idx = m_queue.indexOf(id);
     if ( idx < 1 )
-        return;
+        return false;
     quint64 temp = m_queue[idx - 1];
     m_queue[idx - 1] = m_queue[idx];
     m_queue[idx] = temp;
+    return true;
 }
 
-void
+bool
 Playlist::TrackNavigator::queueMoveDown( const quint64 id )
 {
     int idx = m_queue.indexOf(id);
     if ( idx == -1 || idx == m_queue.count() - 1 )
-        return;
+        return false;
     quint64 temp = m_queue[idx + 1];
     m_queue[idx + 1] = m_queue[idx];
     m_queue[idx] = temp;
-
+    return true;
 }
 
 int

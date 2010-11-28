@@ -29,30 +29,30 @@ static const int s_myType = QListWidgetItem::UserType;
 
 PlaylistQueueEditor::PlaylistQueueEditor()
     : QDialog(),
-      m_blockViewUpdates(false)
+      m_blockViewUpdates( false )
 {
-    m_ui.setupUi(this);
+    m_ui.setupUi( this );
     updateView();
-    connect(The::playlist()->qaim(), SIGNAL(queueChanged()), SLOT(queueChanged()));
-    m_ui.upButton->setIcon(KIcon("go-up"));
-    m_ui.downButton->setIcon(KIcon("go-down"));
-    m_ui.clearButton->setIcon(KIcon("edit-clear-list"));
-    connect(m_ui.upButton, SIGNAL(clicked()), SLOT(moveUp()));
-    connect(m_ui.downButton, SIGNAL(clicked()), SLOT(moveDown()));
-    connect(m_ui.clearButton, SIGNAL(clicked()), SLOT(clear()));
-    connect(m_ui.buttonBox->buttons().first(), SIGNAL(clicked()), SLOT(accept()));
+    connect( The::playlist()->qaim(), SIGNAL( queueChanged() ), SLOT( queueChanged() ) );
+    m_ui.upButton->setIcon( KIcon( "go-up" ) );
+    m_ui.downButton->setIcon( KIcon( "go-down" ) );
+    m_ui.clearButton->setIcon( KIcon(" edit-clear-list" ) );
+    connect( m_ui.upButton, SIGNAL( clicked() ), SLOT( moveUp() ) );
+    connect( m_ui.downButton, SIGNAL( clicked() ), SLOT( moveDown() ) );
+    connect( m_ui.clearButton, SIGNAL( clicked() ), SLOT( clear() ) );
+    connect( m_ui.buttonBox->buttons().first(), SIGNAL( clicked() ), SLOT( accept() ) );
 }
 
 void PlaylistQueueEditor::updateView()
 {
-    if (m_blockViewUpdates) {
+    if ( m_blockViewUpdates )
         return;
-    }
+
     m_ui.listWidget->clear();
-    foreach (quint64 id, The::playlistActions()->queue()) {
-        QListWidgetItem *item = new QListWidgetItem(m_ui.listWidget, s_myType);
-        item->setData(s_idRole, id);
-        item->setText(The::playlist()->trackForId(id)->fixedName());
+    foreach ( quint64 id, The::playlistActions()->queue() ) {
+        QListWidgetItem *item = new QListWidgetItem( m_ui.listWidget, s_myType );
+        item->setData( s_idRole, id );
+        item->setText( The::playlist()->trackForId( id )->fixedName() );
     }
 }
 
@@ -63,32 +63,33 @@ void PlaylistQueueEditor::queueChanged()
 
 quint64 PlaylistQueueEditor::currentId()
 {
-    if (QListWidgetItem *item = m_ui.listWidget->currentItem()) {
+    if ( QListWidgetItem *item = m_ui.listWidget->currentItem() ) {
         bool ok;
-        quint64 id = item->data(s_idRole).toULongLong(&ok);
-        if (ok) {
+        quint64 id = item->data( s_idRole ).toULongLong( &ok );
+        if ( ok )
             return id;
-        }
     }
     return 0;
 }
 
 void PlaylistQueueEditor::moveUp()
 {
-    quint64 id = currentId();
-    if (!id) {
+    const quint64 id = currentId();
+    if ( !id )
         return;
-    }
-    //The::playlistActions()->queueMoveUp(id);
+    const QModelIndex index = m_ui.listWidget->currentIndex();
+    if ( The::playlistActions()->queueMoveUp( id ) )
+        m_ui.listWidget->setCurrentIndex( index.sibling( index.row() - 1, index.column() ) );
 }
 
 void PlaylistQueueEditor::moveDown()
 {
-    quint64 id = currentId();
-    if (!id) {
+    const quint64 id = currentId();
+    if ( !id )
         return;
-    }
-    //The::playlistActions()->queueMoveDown(id);
+    const QModelIndex index = m_ui.listWidget->currentIndex();
+    if ( The::playlistActions()->queueMoveDown( id ) )
+        m_ui.listWidget->setCurrentIndex( index.sibling( index.row() + 1, index.column() ) );
 }
 
 void PlaylistQueueEditor::clear()

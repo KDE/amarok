@@ -103,12 +103,12 @@ namespace Playlist
             /**
              * Play the track one position earlier.
              */
-            void queueMoveUp( const quint64 id );
+            bool queueMoveUp( const quint64 id );
 
             /**
              * Play the track one position later.
              */
-            void queueMoveDown( const quint64 id );
+            bool queueMoveDown( const quint64 id );
 
         private slots:
             void slotModelReset();

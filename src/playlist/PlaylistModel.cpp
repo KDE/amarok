@@ -611,33 +611,15 @@ Playlist::Model::setActiveRow( int row )
 }
 
 void
-Playlist::Model::setRowQueued( int row )
+Playlist::Model::emitQueueChanged()
 {
-    if( rowExists( row ) )
-    {
-        Item::State state = stateOfRow(row);
-        if( state == Item::Invalid )
-            state = Item::Queued;
-        else
-            state = (Item::State) ( state | Item::Queued );
-        setStateOfRow( row, state );
-        emit queueChanged();
-    }
+    emit queueChanged();
 }
 
-void
-Playlist::Model::setRowDequeued( int row )
+int
+Playlist::Model::queuePositionOfRow( int row )
 {
-    if( rowExists( row ) )
-    {
-        Item::State state = stateOfRow(row);
-        if( state == Item::Queued )
-            state = Item::Invalid;
-        else
-            state = (Item::State) ( stateOfRow(row) & ~Item::Queued );
-        setStateOfRow( row, state );
-        emit queueChanged();
-    }
+    return Actions::instance()->queuePosition( idAt( row ) ) + 1;
 }
 
 Playlist::Item::State

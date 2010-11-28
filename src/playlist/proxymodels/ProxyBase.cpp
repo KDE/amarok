@@ -212,15 +212,15 @@ ProxyBase::setAllUnplayed()
 }
 
 void
-ProxyBase::setRowQueued( int row )
+ProxyBase::emitQueueChanged()
 {
-    m_belowModel->setRowQueued( rowToSource( row ) );
+    emit queueChanged();
 }
 
-void
-ProxyBase::setRowDequeued( int row )
+int
+ProxyBase::queuePositionOfRow( int row )
 {
-    m_belowModel->setRowDequeued( rowToSource( row ) );
+    return m_belowModel->queuePositionOfRow( rowToSource ( row ) );
 }
 
 void

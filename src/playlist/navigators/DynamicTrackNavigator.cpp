@@ -120,7 +120,7 @@ Playlist::DynamicTrackNavigator::repopulate()
     QList<int> rows;
 
     do {
-        if( !(m_model->stateOfRow( row ) & Item::Queued) )
+        if( !m_model->queuePositionOfRow( row ) )
             rows << row;
         row++;
     }

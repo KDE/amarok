@@ -117,7 +117,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 
         topModelInsertRow = m_topModel->activeRow() + 1;
 
-        while( m_topModel->stateOfRow( topModelInsertRow ) & Item::Queued )
+        while( m_topModel->queuePositionOfRow( topModelInsertRow ) )
             topModelInsertRow++;    // We want to add the newly queued items after any items which are already queued
 
         int bottomModelInsertRow = insertionTopRowToBottom( topModelInsertRow );

@@ -238,16 +238,14 @@ public:
     virtual void setAllUnplayed() = 0;
 
     /**
-     * Adds a row to the playlist queue.
-     * @param row the row to add.
+     * Emit the queueChanged() signal. Call this after changing the queue in PlaylistActions.
      */
-    virtual void setRowQueued( int row ) = 0;
+    virtual void emitQueueChanged() = 0;
 
     /**
-     * Removes a row from the playlist queue.
-     * @param row the row to remove.
+     * Return position of @p row in the playlist queue, zero if not queued.
      */
-    virtual void setRowDequeued( int row ) = 0;
+    virtual int queuePositionOfRow( int row ) = 0;
 
     /**
      * Decides if FilterProxy or SearchProxy should be used.
