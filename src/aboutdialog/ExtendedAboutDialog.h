@@ -30,7 +30,7 @@
 
 #include <KAboutData>
 #include <kdialog.h>
-#include <QPointer>
+#include <QWeakPointer>
 
 class AMAROK_EXPORT ExtendedAboutDialog : public KDialog
 {
@@ -55,21 +55,21 @@ private:
 
 //Authors:
     QString m_authorPageTitle;
-    QPointer<AnimatedBarWidget> m_showOcsAuthorButton;
-    QPointer<QWidget> m_authorWidget;
-    QPointer<OcsPersonListWidget> m_authorListWidget;
+    QWeakPointer<AnimatedBarWidget> m_showOcsAuthorButton;
+    QWeakPointer<QWidget> m_authorWidget;
+    QWeakPointer<OcsPersonListWidget> m_authorListWidget;
     bool m_isOfflineAuthorWidget;
 
 //Contributors:
-    QPointer<AnimatedBarWidget> m_showOcsCreditButton;
-    QPointer<QWidget> m_creditWidget;
-    QPointer<OcsPersonListWidget> m_creditListWidget;
+    QWeakPointer<AnimatedBarWidget> m_showOcsCreditButton;
+    QWeakPointer<QWidget> m_creditWidget;
+    QWeakPointer<OcsPersonListWidget> m_creditListWidget;
     bool m_isOfflineCreditWidget;
 
 //Donors:
-    QPointer<AnimatedBarWidget> m_showOcsDonorButton;
-    QPointer<QWidget> m_donorWidget;
-    QPointer<OcsPersonListWidget> m_donorListWidget;
+    QWeakPointer<AnimatedBarWidget> m_showOcsDonorButton;
+    QWeakPointer<QWidget> m_donorWidget;
+    QWeakPointer<OcsPersonListWidget> m_donorListWidget;
     bool m_isOfflineDonorWidget;
 
 };
