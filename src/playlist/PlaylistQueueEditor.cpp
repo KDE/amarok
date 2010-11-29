@@ -50,10 +50,13 @@ PlaylistQueueEditor::updateView()
         return;
 
     m_ui.listWidget->clear();
+    int i = 1;
     foreach ( quint64 id, The::playlistActions()->queue() ) {
         QListWidgetItem *item = new QListWidgetItem( m_ui.listWidget, s_myType );
         item->setData( s_idRole, id );
-        item->setText( The::playlist()->trackForId( id )->fullPrettyName() );
+        QString itemText = QString("%1: %2").arg( QString::number( i++ ),
+                               The::playlist()->trackForId( id )->fullPrettyName() );
+        item->setText( itemText );
     }
 }
 
