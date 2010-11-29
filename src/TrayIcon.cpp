@@ -96,6 +96,9 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     connect( engine, SIGNAL( muteStateChanged( bool ) ),
              this, SLOT( updateToolTip() ) );
 
+    connect( engine, SIGNAL( playbackStateChanged() ),
+             this, SLOT( updateOverlayIcon() ) );
+
 
     connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ), SLOT( slotScrollRequested(int, Qt::Orientation) ) );
     connect( this, SIGNAL( secondaryActivateRequested( const QPoint & ) ),
@@ -193,7 +196,6 @@ Amarok::TrayIcon::trackPlaying( Meta::TrackPtr track )
 {
     m_track = track;
 
-    updateOverlayIcon();
     updateMenu();
     updateToolTipIcon();
 }
@@ -201,7 +203,6 @@ Amarok::TrayIcon::trackPlaying( Meta::TrackPtr track )
 void
 Amarok::TrayIcon::paused()
 {
-    updateOverlayIcon();
     updateToolTipIcon();
 
 }
@@ -210,7 +211,6 @@ void
 Amarok::TrayIcon::stopped()
 {
     m_track = 0;
-    updateOverlayIcon();
     updateMenu(); // remove custom track actions on stop
     updateToolTipIcon();
 }

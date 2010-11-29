@@ -446,6 +446,11 @@ Q_SIGNALS:
      */
     void sessionEnded( bool resumePlayback );
 
+    /**
+     * Called when playback state changes to PlayingState, StoppedState or PausedState.
+     */
+    void playbackStateChanged();
+
 private slots:
     /**
      * Sets up the Phonon system

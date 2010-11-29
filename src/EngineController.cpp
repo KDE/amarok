@@ -1166,6 +1166,12 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
     else if( newState == Phonon::PlayingState )
     {
         errorCount = 0;
+        emit playbackStateChanged();
+    }
+    else if( newState == Phonon::StoppedState ||
+             newState == Phonon::PausedState )
+    {
+        emit playbackStateChanged();
     }
 }
 

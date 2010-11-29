@@ -39,6 +39,7 @@ public:
     void setVisible( bool visible );
 
 private slots:
+    void updateOverlayIcon();
     void updateToolTipIcon();
     void updateToolTip();
     void updateMenu();
@@ -52,8 +53,6 @@ private slots:
     void slotScrollRequested( int delta, Qt::Orientation orientation );
 
 private:
-    void updateOverlayIcon();
-
     Meta::TrackPtr m_track;
 
     SmartPointerList<QAction> m_extraActions;
