@@ -114,6 +114,8 @@ CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directo
         m_samplerate = values.value(Meta::valSamplerate).toInt();
     if( values.contains(Meta::valFilesize) )
         m_filesize = values.value(Meta::valFilesize).toLongLong();
+    if( values.contains(Meta::valModified) )
+        m_modified = values.value(Meta::valModified).toDateTime();
 
     if( values.contains(Meta::valTrackGain) )
         m_trackGain = values.value(Meta::valTrackGain).toReal();
@@ -221,6 +223,8 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader, CollectionScanner::Di
                 m_samplerate = reader->readElementText(QXmlStreamReader::SkipChildElements).toInt();
             else if( name == QLatin1String("filesize") )
                 m_filesize = reader->readElementText(QXmlStreamReader::SkipChildElements).toLong();
+            else if( name == QLatin1String("mtime") )
+                m_modified = QDateTime::fromTime_t(reader->readElementText(QXmlStreamReader::SkipChildElements).toLong());
 
             else if( name == QLatin1String("trackGain") )
                 m_trackGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
@@ -323,6 +327,8 @@ CollectionScanner::Track::toXml( QXmlStreamWriter *writer ) const
         write(writer, QLatin1String("samplerate"), QString::number( m_samplerate ) );
     if( m_filesize != -1 )
         write(writer, QLatin1String("filesize"), QString::number( m_filesize ) );
+    if( m_modified.isValid() )
+        write(writer, QLatin1String("mtime"), QString::number( m_modified.toTime_t() ) );
 
     if( m_trackGain != 0 )
         write(writer, QLatin1String("trackGain"), QString::number( m_trackGain ) );
@@ -481,6 +487,12 @@ qint64
 CollectionScanner::Track::filesize() const
 {
     return m_filesize;
+}
+
+QDateTime
+CollectionScanner::Track::modified() const
+{
+    return m_modified;
 }
 
 

@@ -264,6 +264,10 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     // the filesize is updated every time after the
     // file is changed. Doesn't make sense to set it.
 
+    if( (m_type == FullScan || !metaTrack->modifyDate().isValid()) &&
+        track->modified().isValid() )
+        metaTrack->setModifyDate( track->modified() );
+
     if( (m_type == FullScan || metaTrack->sampleRate() == 0) &&
         track->samplerate() >= 0 )
         metaTrack->setSampleRate( track->samplerate() );

@@ -424,7 +424,9 @@ Meta::Tag::readTags( const QString &path, bool useCharsetDetector )
         result.insert( Meta::valSamplerate, fileref.audioProperties()->sampleRate() );
     }
 
-    result.insert( Meta::valFilesize, QFile( path ).size() );
+    QFileInfo fileInfo( path );
+    result.insert( Meta::valFilesize, fileInfo.size() );
+    result.insert( Meta::valModified, fileInfo.lastModified() );
 
     if( !result.contains( Meta::valUniqueId ) )
         result.insert( Meta::valUniqueId, generateUniqueId( path, fileref ) );

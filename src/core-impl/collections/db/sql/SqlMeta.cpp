@@ -70,7 +70,7 @@ SqlTrack::getTrackReturnValues()
            "statistics.id, "
            "statistics.createdate, statistics.accessdate, "
            "statistics.playcount, tracks.filetype, tracks.bpm, "
-           "tracks.createdate, tracks.albumgain, tracks.albumpeakgain, "
+           "tracks.createdate, tracks.modifydate, tracks.albumgain, tracks.albumpeakgain, "
            "tracks.trackgain, tracks.trackpeakgain, "
            "artists.name, artists.id, " // TODO: just reading the id should be sufficient
            "albums.name, albums.id, albums.artist, " // TODO: again here
@@ -183,6 +183,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &r
     m_filetype = Amarok::FileType( (*(iter++)).toInt() );
     m_bpm = (*(iter++)).toFloat();
     m_createDate = QDateTime::fromTime_t((*(iter++)).toUInt());
+    m_modifyDate = QDateTime::fromTime_t((*(iter++)).toUInt());
 
     // if there is no track gain, we assume a gain of 0
     // if there is no album gain, we use the track gain
@@ -621,6 +622,22 @@ SqlTrack::createDate() const
     return m_createDate;
 }
 
+QDateTime
+SqlTrack::modifyDate() const
+{
+    QReadLocker locker( &m_lock );
+    return m_modifyDate;
+}
+
+void
+SqlTrack::setModifyDate( const QDateTime &newTime )
+{
+    QWriteLocker locker( &m_lock );
+
+    if( newTime != m_modifyDate )
+        commitMetaDataChanges( Meta::valModified, newTime );
+}
+
 int
 SqlTrack::trackNumber() const
 {
@@ -821,6 +838,8 @@ SqlTrack::commitMetaDataChanges()
         m_playCount = m_cache.value( Meta::valPlaycount ).toInt();
     if( m_cache.contains( Meta::valCreateDate ) )
         m_createDate = m_cache.value( Meta::valCreateDate ).toDateTime();
+    if( m_cache.contains( Meta::valModified ) )
+        m_modifyDate = m_cache.value( Meta::valModified ).toDateTime();
     if( m_cache.contains( Meta::valTrackGain ) )
         m_trackGain = m_cache.value( Meta::valTrackGain ).toDouble();
     if( m_cache.contains( Meta::valTrackGainPeak ) )

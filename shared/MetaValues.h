@@ -35,6 +35,8 @@ namespace Meta
     // Most importantly the QueryMaker
     // it's also used when reading and writing taglib tags
 
+    // if something is added here: also updsate MetaConstants.cpp
+
     //track metadata
     static const qint64 valUrl          = 1LL << 0;
     static const qint64 valTitle        = 1LL << 1;
@@ -69,12 +71,13 @@ namespace Meta
 
     static const qint64 valAlbumArtist  = 1LL << 27;
     static const qint64 valLabel        = 1LL << 28;
+    static const qint64 valModified     = 1LL << 29;
 
     // currently only used for reading and writing tags. Not supported for queryMaker
     // TODO: support for queryMaker
-    static const qint64 valCompilation  = 1LL << 29;
-    static const qint64 valHasCover     = (1LL << 29) + 1;
-    static const qint64 valFiletype     = (1LL << 29) + 2;
+    static const qint64 valCompilation  = 1LL << 40;
+    static const qint64 valHasCover     = (1LL << 40) + 1;
+    static const qint64 valFiletype     = (1LL << 40) + 2;
 
     // start for custom numbers
     static const qint64 valCustom       = 1LL << 60;

@@ -257,7 +257,7 @@ TrackTracksTableCommitter::getFields()
     result << "url" << "artist" << "album" << "genre" << "composer" << "year" <<
         "title" << "comment" << "tracknumber" << "discnumber" << "bitrate" <<
         "length" << "samplerate" << "filesize" << "filetype" << "bpm" << "createdate" <<
-        /* "modifydate" <<*/ "albumgain" << "albumpeakgain" << "trackgain" << "trackpeakgain";
+        "modifydate" << "albumgain" << "albumpeakgain" << "trackgain" << "trackpeakgain";
     return result;
 }
 
@@ -292,6 +292,7 @@ TrackTracksTableCommitter::getValues( Meta::SqlTrack *track )
     result << nullNumber( int(track->m_filetype) );
     result << nullNumber( track->m_bpm );
     result << nullDate( track->m_createDate );
+    result << nullDate( track->m_modifyDate );
     result << nullNumber( track->m_albumGain );
     result << nullNumber( track->m_albumPeakGain );
     result << nullNumber( track->m_trackGain );

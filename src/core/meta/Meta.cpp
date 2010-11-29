@@ -301,6 +301,11 @@ Meta::Track::createDate() const
     return QDateTime();
 }
 
+QDateTime
+Meta::Track::modifyDate() const
+{
+    return QDateTime();
+}
 
 qreal
 Meta::Track::replayGain( Meta::ReplayGainTag mode ) const

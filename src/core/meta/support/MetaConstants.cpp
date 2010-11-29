@@ -53,6 +53,7 @@ QString Meta::nameForField( qint64 field )
 
     case Meta::valAlbumArtist: return "albumartist";
     case Meta::valLabel:       return "label";
+    case Meta::valModified:    return "modifydate";
     default:                   return "";
     }
 }
@@ -91,13 +92,12 @@ qint64 Meta::fieldForName( const QString &name )
 
     else if( name == "albumartist" ) return Meta::valAlbumArtist;
     else if( name == "label" ) return Meta::valLabel;
+    else if( name == "modifydate" ) return Meta::valModified;
     else return 0;
 }
 
 QString Meta::i18nForField( qint64 field )
 {
-    // see also src/browsers/CollectionTreeItemModelBase.cpp for localized names
-
     switch( field )
     {
     case 0:                    return i18nc("The field name in case nothing specific is selected e.g. in the automatic playlist generator", "anything");
@@ -132,6 +132,50 @@ QString Meta::i18nForField( qint64 field )
 
     case Meta::valAlbumArtist: return i18n("album artist name");
     case Meta::valLabel:       return i18n("label");
+    case Meta::valModified:    return i18n("last modified");
+    default:                   return QString();
+    }
+}
+
+QString Meta::shortI18nForField( qint64 field )
+{
+    // see also src/browsers/CollectionTreeItemModelBase.cpp for localized names
+
+    switch( field )
+    {
+    case 0:                    return i18nc("The field name in case nothing specific is selected e.g. in the automatic playlist generator", "anything");
+    case Meta::valUrl:         return i18nc( "The name of the file this track is stored in", "filename" );
+    case Meta::valTitle:       return i18n("title");
+    case Meta::valArtist:      return i18nc("One word translation used in the collection filter", "artist");
+    case Meta::valAlbum:       return i18nc("One word translation used in the collection filter", "album");
+    case Meta::valGenre:       return i18nc("One word translation used in the collection filter", "genre");
+    case Meta::valComposer:    return i18nc("One word translation used in the collection filter", "composer");
+    case Meta::valYear:        return i18nc("One word translation used in the collection filter", "year");
+    case Meta::valComment:     return i18nc("One word translation used in the collection filter", "comment");
+    case Meta::valTrackNr:     return i18nc("One word translation used in the collection filter", "tracknumber");
+    case Meta::valDiscNr:      return i18nc("One word translation used in the collection filter", "discnumber");
+    case Meta::valBpm:         return i18nc("One word translation used in the collection filter", "bpm");
+    case Meta::valLength:      return i18nc("One word translation used in the collection filter", "length");
+    case Meta::valBitrate:     return i18nc("One word translation used in the collection filter", "bitrate");
+    case Meta::valSamplerate:  return i18nc("One word translation used in the collection filter", "samplerate");
+    case Meta::valFilesize:    return i18nc("One word translation used in the collection filter", "filesize");
+    case Meta::valFormat:      return i18nc("One word translation used in the collection filter", "format");
+    case Meta::valCreateDate:  return i18nc("One word translation used in the collection filter", "added");
+    case Meta::valScore:       return i18nc("One word translation used in the collection filter", "score");
+    case Meta::valRating:      return i18nc("One word translation used in the collection filter", "rating");
+    case Meta::valFirstPlayed: return i18nc("One word translation used in the collection filter. First played time / access date", "first");
+    case Meta::valLastPlayed:  return i18nc("One word translation used in the collection filter. Last played time / access date", "last");
+    case Meta::valPlaycount:   return i18nc("One word translation used in the collection filter", "playcount");
+    case Meta::valUniqueId:    return i18nc("One word translation used in the collection filter", "uniqueid");
+
+    case Meta::valTrackGain:   return i18nc("One word translation used in the collection filter", "trackgain");
+    case Meta::valTrackGainPeak:   return i18nc("One word translation used in the collection filter", "trackgainpeak");
+    case Meta::valAlbumGain:   return i18nc("One word translation used in the collection filter", "albumgain");
+    case Meta::valAlbumGainPeak:   return i18nc("One word translation used in the collection filter", "albumgainpeak");
+
+    case Meta::valAlbumArtist: return i18nc("One word translation used in the collection filter", "albumartist");
+    case Meta::valLabel:       return i18nc("One word translation used in the collection filter", "label");
+    case Meta::valModified:    return i18nc("One word translation used in the collection filter", "modified");
     default:                   return QString();
     }
 }
@@ -172,6 +216,7 @@ QString Meta::playlistNameForField( qint64 field )
 
     case Meta::valAlbumArtist: return "album artist name";
     case Meta::valLabel:       return "label";
+    case Meta::valModified:    return "modifydate";
     default:                   return "";
     }
 }
@@ -210,6 +255,7 @@ qint64 Meta::fieldForPlaylistName( const QString &name )
 
     else if( name == "album artist name" ) return Meta::valAlbumArtist;
     else if( name == "label" ) return Meta::valLabel;
+    else if( name == "modifydate" ) return Meta::valModified;
     else return 0;
 }
 
@@ -282,7 +328,7 @@ QVariant Meta::valueForField( qint64 field, Meta::TrackPtr track )
     case Meta::valSamplerate:  return track->sampleRate();
     case Meta::valFilesize:    return track->filesize();
     case Meta::valFormat:      return track->type(); // this is a string
-    case Meta::valCreateDate:  return track->createDate().toTime_t();
+    case Meta::valCreateDate:  return track->createDate();
     case Meta::valScore:       return track->score();
     case Meta::valRating:      return track->rating();
     case Meta::valFirstPlayed: return track->firstPlayed();
@@ -306,6 +352,7 @@ QVariant Meta::valueForField( qint64 field, Meta::TrackPtr track )
               strLabels.append( label->name() );
           return QVariant( strLabels );
       }
+    case Meta::valModified:  return track->modifyDate();
     default: return QVariant();
     }
 }

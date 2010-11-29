@@ -147,6 +147,11 @@ TestSqlScanManager::testScanSingle()
     QCOMPARE( track->length(), qint64(12000) );
     QCOMPARE( track->sampleRate(), 44100 );
     QCOMPARE( track->filesize(), 389679 );
+    QDateTime aDate = QDateTime::currentDateTime();
+    QVERIFY( track->createDate().secsTo( aDate ) < 5 ); // I just imported the file
+    QVERIFY( track->createDate().secsTo( aDate ) >= 0 );
+    QVERIFY( track->modifyDate().secsTo( aDate ) < 5 ); // I just wrote the file
+    QVERIFY( track->modifyDate().secsTo( aDate ) >= 0 );
     qFuzzyCompare( track->score(), 0.875 );
     QCOMPARE( track->playCount(), 5 );
     QVERIFY( !track->firstPlayed().isValid() );

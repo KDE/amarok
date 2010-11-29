@@ -1074,6 +1074,9 @@ SqlQueryMaker::nameForValue( qint64 value )
             //so add albums as well
             d->linkedTables |= Private::ALBUM_TAB;
             return "albumartists.name";
+        case Meta::valModified:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tracks.modifydate";
         default:
             return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
     }

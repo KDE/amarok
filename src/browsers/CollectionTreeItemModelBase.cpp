@@ -632,18 +632,7 @@ CollectionTreeItemModelBase::mapCategoryToQueryType( int levelType ) const
     return type;
 }
 
-void
-CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
-{
-    int validFilters = qm->validFilterMask();
 
-    ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
-    foreach( const or_list &orList, parsed )
-    {
-        qm->beginOr();
-
-        foreach ( const expression_element &elem, orList )
-        {
 #define ADD_OR_EXCLUDE_FILTER( VALUE, FILTER, MATCHBEGIN, MATCHEND ) \
             { if( elem.negate ) \
                 qm->excludeFilter( VALUE, FILTER, MATCHBEGIN, MATCHEND ); \
@@ -654,6 +643,45 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 qm->excludeNumberFilter( VALUE, FILTER, COMPARE ); \
             else \
                 qm->addNumberFilter( VALUE, FILTER, COMPARE ); }
+
+void
+CollectionTreeItemModelBase::addDateFilter( qint64 field, Collections::QueryMaker::NumberComparison compare, const expression_element &elem, Collections::QueryMaker *qm ) const
+{
+    if( compare == Collections::QueryMaker::Equals )
+    {
+        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
+        if( dateCutOff > 0 )
+        {
+            ADD_OR_EXCLUDE_NUMBER_FILTER( field, dateCutOff, Collections::QueryMaker::GreaterThan );
+        }
+    }
+    else
+    {
+        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
+        if( compare == Collections::QueryMaker::GreaterThan )
+        {
+            qm->endAndOr();
+            qm->beginAnd();
+            compareAlt = Collections::QueryMaker::LessThan;
+            ADD_OR_EXCLUDE_NUMBER_FILTER( field, 0, compare );
+        }
+        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
+        ADD_OR_EXCLUDE_NUMBER_FILTER( field, time_t, compareAlt );
+    }
+}
+
+void
+CollectionTreeItemModelBase::addFilters( Collections::QueryMaker *qm ) const
+{
+    int validFilters = qm->validFilterMask();
+
+    ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
+    foreach( const or_list &orList, parsed )
+    {
+        qm->beginOr();
+
+        foreach ( const expression_element &elem, orList )
+        {
             if( elem.negate )
                 qm->beginAnd();
             else
@@ -703,82 +731,82 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 }
 
                 // TODO: Once we have MetaConstants.cpp use those functions here
-                if ( lcField.compare( "album", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "album" ), Qt::CaseInsensitive ) == 0 )
+                if ( lcField.compare( "album", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valAlbum ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & Collections::QueryMaker::AlbumFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valAlbum, elem.text, false, false );
                 }
-                else if ( lcField.compare( "artist", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "artist" ), Qt::CaseInsensitive ) == 0 )
+                else if ( lcField.compare( "artist", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valArtist ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & Collections::QueryMaker::ArtistFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valArtist, elem.text, false, false );
                 }
-                else if ( lcField.compare( "albumartist", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "albumartist" ), Qt::CaseInsensitive ) == 0 )
+                else if ( lcField.compare( "albumartist", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valAlbumArtist ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & Collections::QueryMaker::AlbumArtistFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valAlbumArtist, elem.text, false, false );
                 }
-                else if ( lcField.compare( "genre", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "genre" ), Qt::CaseInsensitive ) == 0)
+                else if ( lcField.compare( "genre", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valGenre ), Qt::CaseInsensitive ) == 0)
                 {
                     if ( ( validFilters & Collections::QueryMaker::GenreFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valGenre, elem.text, false, false );
                 }
-                else if ( lcField.compare( "title", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "title" ), Qt::CaseInsensitive ) == 0 )
+                else if ( lcField.compare( "title", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valTitle ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & Collections::QueryMaker::TitleFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, false, false );
                 }
-                else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "composer" ), Qt::CaseInsensitive ) == 0 )
+                else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valComposer ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & Collections::QueryMaker::ComposerFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, false, false );
                 }
-                else if( lcField.compare( "label", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "label" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "label", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valLabel ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_FILTER( Meta::valLabel, elem.text, false, false );
                 }
-                else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "year" ), Qt::CaseInsensitive ) == 0)
+                else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valYear ), Qt::CaseInsensitive ) == 0)
                 {
                     if ( ( validFilters & Collections::QueryMaker::YearFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valYear, elem.text.toInt(), compare );
                 }
-                else if ( lcField.compare( "bpm", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "bpm" ), Qt::CaseInsensitive ) == 0)
+                else if ( lcField.compare( "bpm", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valBpm ), Qt::CaseInsensitive ) == 0)
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBpm, elem.text.toInt(), compare );
                 }
-                else if( lcField.compare( "comment", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "comment" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "comment", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valComment ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_FILTER( Meta::valComment, elem.text, false, false );
                 }
-                else if( lcField.compare( "filename", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "filename" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "filename", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valUrl ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_FILTER( Meta::valUrl, elem.text, false, false );
                 }
-                else if( lcField.compare( "bitrate", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "bitrate" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "bitrate", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valBitrate ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBitrate, elem.text.toInt(), compare );
                 }
-                else if( lcField.compare( "rating", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "rating" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "rating", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valRating ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valRating, elem.text.toFloat() * 2, compare );
                 }
-                else if( lcField.compare( "score", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "score" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "score", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valScore ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valScore, elem.text.toInt(), compare );
                 }
-                else if( lcField.compare( "playcount", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "playcount" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "playcount", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valPlaycount ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valPlaycount, elem.text.toInt(), compare );
                 }
-                else if( lcField.compare( "samplerate", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "samplerate" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "samplerate", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valSamplerate ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valSamplerate, elem.text.toInt(), compare );
                 }
-                else if( lcField.compare( "length", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "length" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "length", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valLength ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLength, elem.text.toInt() * 1000, compare );
                 }
-                else if( lcField.compare( "filesize", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "filesize" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "filesize", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valFilesize ), Qt::CaseInsensitive ) == 0 )
                 {
                     bool doubleOk( false );
                     const double mbytes = elem.text.toDouble( &doubleOk ); // input in MBs
@@ -809,88 +837,37 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                         break;
                     }
                 }
-                else if( lcField.compare( "format", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "format" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "format", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valFormat ), Qt::CaseInsensitive ) == 0 )
                 {
                     // NOTE: possible keywords that could be considered: codec, filetype, etc.
                     const QString &ftStr = elem.text;
                     Amarok::FileType ft = Amarok::FileTypeSupport::fileType(ftStr);
-                    
+
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFormat, int(ft), compare );
                 }
-                else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "discnumber" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valDiscNr ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valDiscNr, elem.text.toInt(), compare );
                 }
-                else if( lcField.compare( "tracknumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "tracknumber" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "tracknumber", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valTrackNr ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valTrackNr, elem.text.toInt(), compare );
                 }
-                else if( lcField.compare( "played", Qt::CaseInsensitive ) == 0 || lcField.compare( i18nc( "last played time / access date", "played" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "played", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valLastPlayed ), Qt::CaseInsensitive ) == 0 )
                 {
-                    if( compare == Collections::QueryMaker::Equals )
-                    {
-                        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
-                        if( dateCutOff > 0 )
-                        {
-                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, dateCutOff, Collections::QueryMaker::GreaterThan );
-                        }
-                    }
-                    else
-                    {
-                        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
-                        if( compare == Collections::QueryMaker::GreaterThan )
-                        {
-                            qm->endAndOr();
-                            qm->beginAnd();
-                            compareAlt = Collections::QueryMaker::LessThan;
-                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, 0, compare );
-                        }
-                        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, time_t, compareAlt );
-                    }
+                    addDateFilter( Meta::valLastPlayed, compare, elem, qm );
                 }
-                else if( lcField.compare( "first", Qt::CaseInsensitive ) == 0 || lcField.compare( i18nc( "first played time / access date", "first" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "first", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valFirstPlayed ), Qt::CaseInsensitive ) == 0 )
                 {
-                    if( compare == Collections::QueryMaker::Equals )
-                    {
-                        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
-                        if( dateCutOff > 0 )
-                        {
-                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFirstPlayed, dateCutOff, Collections::QueryMaker::GreaterThan );
-                        }
-                    }
-                    else
-                    {
-                        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
-                        if( compare == Collections::QueryMaker::GreaterThan )
-                        {
-                            qm->endAndOr();
-                            qm->beginAnd();
-                            compareAlt = Collections::QueryMaker::LessThan;
-                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, 0, compare );
-                        }
-                        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFirstPlayed, time_t, compareAlt );
-                    }
+                    addDateFilter( Meta::valFirstPlayed, compare, elem, qm );
                 }
-                else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "added" ), Qt::CaseInsensitive ) == 0 )
+                else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valCreateDate ), Qt::CaseInsensitive ) == 0 )
                 {
-                    if( compare == Collections::QueryMaker::Equals )
-                    {
-                        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
-                        if( dateCutOff > 0 )
-                        {
-                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, dateCutOff, Collections::QueryMaker::GreaterThan );
-                        }
-                    }
-                    else
-                    {
-                        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
-                        if( compare == Collections::QueryMaker::GreaterThan )
-                            compareAlt = Collections::QueryMaker::LessThan;
-                        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, time_t, compareAlt );
-                    }
+                    addDateFilter( Meta::valCreateDate, compare, elem, qm );
+                }
+                else if( lcField.compare( "modified", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valModified ), Qt::CaseInsensitive ) == 0 )
+                {
+                    addDateFilter( Meta::valModified, compare, elem, qm );
                 }
             }
             qm->endAndOr();

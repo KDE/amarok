@@ -257,6 +257,7 @@ MetaQueryWidget::makeFieldSelection()
     addIconItem( m_fieldSelection, Meta::valPlaycount );
     if (!m_onlyNumeric)
         addIconItem( m_fieldSelection, Meta::valLabel );
+    addIconItem( m_fieldSelection, Meta::valModified );
     connect( m_fieldSelection, SIGNAL(currentIndexChanged(int)), this, SLOT(fieldChanged(int)) );
 }
 
@@ -572,6 +573,8 @@ MetaQueryWidget::makeValueSelection()
         makeGenericNumberSelection( 0, 1000, 0 );
     else if( field == Meta::valLabel )
         makeGenericComboSelection( true, 0 );
+    else if( field == Meta::valModified )
+        makeDateTimeSelection();
     else // e.g. the simple search
         makeGenericComboSelection( true, 0 );
 }
@@ -849,6 +852,7 @@ bool MetaQueryWidget::isNumeric( qint64 field )
     case Meta::valFirstPlayed:
     case Meta::valLastPlayed:
     case Meta::valPlaycount:
+    case Meta::valModified:
         return true;
     default:
         return false;
@@ -862,6 +866,7 @@ bool MetaQueryWidget::isDate( qint64 field )
     case Meta::valCreateDate:
     case Meta::valFirstPlayed:
     case Meta::valLastPlayed:
+    case Meta::valModified:
         return true;
     default:
         return false;
@@ -919,7 +924,7 @@ QString MetaQueryWidget::conditionToString( FilterCondition condition, bool isDa
 
 QString MetaQueryWidget::Filter::fieldToString() const
 {
-    return Meta::i18nForField( field );
+    return Meta::shortI18nForField( field );
 }
 
 QString MetaQueryWidget::Filter::toString( bool invert )

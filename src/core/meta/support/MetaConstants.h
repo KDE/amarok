@@ -39,6 +39,12 @@ namespace Meta
      */
     AMAROK_CORE_EXPORT QString i18nForField( qint64 field );
 
+    /** Returns a short localized name for the given field.
+        The short form is only one word and is used for the collection filter.
+        e.g. the "added to collecition" is just "added"
+     */
+    AMAROK_CORE_EXPORT QString shortI18nForField( qint64 field );
+
     /** Returns a textual identification for the given field.
         This name is used in the playlist generator and is slightly different from
         the one in nameForField

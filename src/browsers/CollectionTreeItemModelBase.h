@@ -24,6 +24,7 @@
 #include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 #include "CollectionTreeItem.h"
+#include "Expression.h"
 
 #include <QAbstractItemModel>
 #include <QDateTime>
@@ -89,6 +90,8 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual void setLevels( const QList<int> &levelType ) = 0;
         virtual QList<int> levels() const { return m_levelType; }
         virtual int levelCategory( const int level ) const;
+
+        virtual void addDateFilter( qint64 field, Collections::QueryMaker::NumberComparison compare, const expression_element &elem, Collections::QueryMaker *qm ) const;
 
         virtual void addFilters( Collections::QueryMaker *qm ) const;
 

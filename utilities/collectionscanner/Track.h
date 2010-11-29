@@ -21,6 +21,7 @@
 #define COLLECTIONSCANNER_TRACK_H
 
 #include <QString>
+#include <QDateTime>
 
 #include "shared/FileType.h"
 #include "shared/MetaReplayGain.h"
@@ -89,6 +90,7 @@ public:
     qint64 length() const;
     int samplerate() const;
     qint64 filesize() const;
+    QDateTime modified() const;
 
     QString composer() const;
 
@@ -138,6 +140,7 @@ private:
     qint64 m_length;
     int m_samplerate;
     qint64 m_filesize;
+    QDateTime m_modified;
 
     qreal m_trackGain;
     qreal m_trackPeakGain;

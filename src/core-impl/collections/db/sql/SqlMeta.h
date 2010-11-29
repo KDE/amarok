@@ -145,6 +145,9 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
 
         virtual QDateTime createDate() const;
 
+        virtual QDateTime modifyDate() const;
+        virtual void setModifyDate( const QDateTime &newTime );
+
         virtual int trackNumber() const;
         virtual void setTrackNumber( int newTrackNumber );
 
@@ -287,6 +290,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         qreal m_trackGain;
         qreal m_trackPeakGain;
         QDateTime m_createDate;
+        QDateTime m_modifyDate;
 
         Meta::AlbumPtr m_album;
         Meta::ArtistPtr m_artist;

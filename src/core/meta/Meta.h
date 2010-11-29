@@ -253,6 +253,9 @@ namespace Meta
             /** Returns the time when the track was added to the collection,
                 or an invalid QDateTime if the time is not known. */
             virtual QDateTime createDate() const;
+            /** Returns the time when the track was last modified (before being added to the collection)
+                or an invalid QDateTime if the time is not known. */
+            virtual QDateTime modifyDate() const;
             /** Returns the track number of this track */
             virtual int trackNumber() const = 0;
             /** Returns the discnumber of this track */
