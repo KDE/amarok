@@ -264,7 +264,6 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
     // an error occurred during the HTTP-request
     if( e.code != QNetworkReply::NoError )
     {
-        setData( "tabs", "message", i18n( "Unable to retrieve tab information from Ultimate Guitar: %1", e.description ) );
         debug() << "Unable to search for tab on UltimateGuitar.com: " << e.description;
         resultFinalize();
         return;
@@ -380,7 +379,6 @@ TabsEngine::resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAcces
     // an error occurred during the HTTP-request
     if( e.code != QNetworkReply::NoError )
     {
-        setData( "tabs", "message", i18n( "Unable to retrieve tab information from fretplay.com: %1", e.description ) );
         debug() << "Unable to search for tab on fretplay.com: " << e.description;
         resultFinalize();
         return;
@@ -482,9 +480,7 @@ TabsEngine::resultFinalize()
     // reset the fetching state
     removeData( "tabs", "state" );
 
-            // else if all the parallel jobs have finished and they have been called
     debug() << "Total # of fetched tabs: " << m_tabs.size();
-
     if( m_tabs.size() == 0 )
     {
         setData( "tabs", "state", "noTabs" );

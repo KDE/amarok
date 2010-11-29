@@ -220,25 +220,15 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     }
     else if( data.contains( "state" ) && state.contains( "noTabs") )
     {
-        if( data.contains( "message" ) )
-        {
-            // if we've found no tabs and got a message from the engine (e.g. connectivity issues)
-            m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
-            m_infoLabel.data()->setText( message );
-            updateInterface( MsgState );
-        }
-        else
-        {
-            // no tabs for the current track
-            m_titleLabel.data()->setText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
-            m_infoLabel.data()->setText( i18n( "There were no tabs found for this track" ) );
-            updateInterface( NoTabsState );
-        }
+        // no tabs for the current track
+        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
+        m_infoLabel.data()->setText( i18n( "There were no tabs found for this track" ) );
+        updateInterface( NoTabsState );
         return;
     }
     else if( data.contains( "message" ) )
     {
-        // if(we get a message, show it
+        // if we get a message, show it
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
         m_infoLabel.data()->setText( message );
         updateInterface( MsgState );
