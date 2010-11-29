@@ -35,7 +35,7 @@ private slots:
 private:
     void updateView();
     quint64 currentId();
-    void setCurrentId(quint64 id);
+    void setCurrentId( quint64 id );
     bool m_blockViewUpdates;
     Ui::PlaylistQueueEditor m_ui;
 };
