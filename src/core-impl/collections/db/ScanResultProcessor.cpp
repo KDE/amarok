@@ -71,6 +71,7 @@ ScanResultProcessor::commit()
 
         // -- sort the tracks into albums
         QSet<CollectionScanner::Album*> dirAlbums;
+        QSet<QString> dirAlbumNames;
         QList<CollectionScanner::Track*> tracks = dir->tracks();
 
         for( int i = tracks.count() - 1; i >= 0; --i )
@@ -79,6 +80,7 @@ ScanResultProcessor::commit()
             if( album )
             {
                 dirAlbums.insert( album );
+                dirAlbumNames.insert( album->name() );
                 tracks.removeAt( i );
             }
         }
@@ -94,6 +96,7 @@ ScanResultProcessor::commit()
                 if( album )
                 {
                     dirAlbums.insert( album );
+                    dirAlbumNames.insert( album->name() );
                     tracks.removeAt( i );
                 }
             }
@@ -107,13 +110,16 @@ ScanResultProcessor::commit()
                 if( album )
                 {
                     dirAlbums.insert( album );
+                    dirAlbumNames.insert( album->name() );
                     tracks.removeAt( i );
                 }
             }
         }
 
-        // if all the tracks from this directory end up in one album then also add the images
-        if( dirAlbums.count() == 1 )
+        // if all the tracks from this directory end up in one album
+        // (or they have at least the same name) then it's likely that an image
+        // from this directory could be a cover
+        if( dirAlbumNames.count() == 1 )
             (*dirAlbums.begin())->setCovers( dir->covers() );
     }
 
@@ -130,10 +136,18 @@ ScanResultProcessor::commit()
         // if we have multiple albums with the same name, check if it
         // might be a compilation
 
-        // commit all albums with a track with the noCompilation flag
         for( int i = albums.count() - 1; i >= 0; --i )
         {
-            if( albums.at( i )->isNoCompilation() )
+            CollectionScanner::Album *album = albums.at( i );
+            // commit all albums with a track with the noCompilation flag
+            if( album->isNoCompilation() ||
+
+            // or "Best Of" or "Anthology" those are unlikely to be compilations
+                (album->name().compare( QLatin1String( "Best Of" ), Qt::CaseInsensitive ) == 0 ||
+                 album->name().compare( QLatin1String( "Anthology" ), Qt::CaseInsensitive ) == 0 ||
+                 album->name().compare( QLatin1String( "Hit collection" ), Qt::CaseInsensitive ) == 0 ||
+                 album->name().compare( QLatin1String( "Greatest hits" ), Qt::CaseInsensitive ) == 0 )
+                 )
                 commitAlbum( albums.takeAt( i ) );
         }
 

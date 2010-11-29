@@ -651,14 +651,14 @@ Meta::Tag::splitNumber( const QString str )
     bool ok = false;
 
     i = str.indexOf('/');
-    if( i != -1 )
+    if( i == -1 )
         i = str.indexOf(':');
 
     // guard against b0rked tags
     if( i == 0 )
         return -1;
     else if( i != -1 )
-        res = str.left( i-1 ).toInt( &ok );
+        res = str.left( i ).toInt( &ok );
         // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
     else
         res = str.toInt( &ok );
