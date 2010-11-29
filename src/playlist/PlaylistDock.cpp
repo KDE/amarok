@@ -257,7 +257,8 @@ Playlist::Dock::slotSaveCurrentPlaylist()
     QWeakPointer<Playlists::UserPlaylistProvider> pointer = action->data().value< QWeakPointer<Playlists::UserPlaylistProvider> >();
     Playlists::UserPlaylistProvider* provider = pointer.data();
 
-    The::playlistManager()->save( The::playlist()->tracks(), QString(), provider );
+    The::playlistManager()->save( The::playlist()->tracks(),
+                                  Playlist::ModelStack::instance()->bottom()->generatePlaylistName(), provider );
 }
 
 void

@@ -4,6 +4,7 @@
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
+ * Copyright (c) 2010 Dennis Francis <dennisfrancis.in@gmail.com>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -814,6 +815,74 @@ Playlist::Model::tracks() const
     foreach( Item* item, m_items )
         tl << item->track();
     return tl;
+}
+
+QString
+Playlist::Model::generatePlaylistName() const
+{
+    QString datePart = KGlobal::locale()->formatDateTime( QDateTime::currentDateTime(),
+                                                          KLocale::ShortDate, true );
+    Meta::TrackList trackList = tracks();
+
+    if( trackList.count() == 0 )
+    {
+        return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
+                      the parentheses",
+                      "Empty Playlist (%1)").arg( datePart );
+    }
+
+    bool singleArtist = true;
+    bool singleAlbum = true;
+
+    Meta::ArtistPtr artist = trackList.first()->artist();
+    Meta::AlbumPtr album = trackList.first()->album();
+
+    QString artistPart;
+    QString albumPart;
+
+    foreach( const Meta::TrackPtr track, trackList )
+    {
+        if( artist != track->artist() )
+            singleArtist = false;
+
+        if( album != track->album() )
+            singleAlbum = false;
+
+        if ( !singleArtist && !singleAlbum )
+            break;
+    }
+
+    if( ( !singleArtist && !singleAlbum ) ||
+        ( !artist && !album ) )
+        return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
+                      the parentheses",
+                      "Various Tracks (%1)" ).arg( datePart );
+
+    if( singleArtist )
+    {
+        if( artist )
+            artistPart = artist->prettyName();
+        else
+            artistPart = i18n( "Unknown Artist(s)" );
+    }
+    else if( album && album->hasAlbumArtist() && singleAlbum )
+        artistPart = album->albumArtist()->prettyName();
+    else
+        artistPart = i18n( "Various Artists" );
+
+    if( singleAlbum )
+    {
+        if( album )
+            albumPart = album->prettyName();
+        else
+            albumPart = i18n( "Unknown Album(s)" );
+    }
+    else
+        albumPart = i18n( "Various Albums" );
+
+    return i18nc( "A saved playlist titled <artist> - <album>", "%1 - %2")
+            .arg( artistPart, albumPart );
+
 }
 
 QString
