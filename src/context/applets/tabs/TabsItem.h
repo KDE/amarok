@@ -19,7 +19,6 @@
 
 #include "context/engines/tabs/TabsInfo.h"
 
-#include <QSize>
 #include <QStandardItem>
 
 class TabsItem : public QStandardItem

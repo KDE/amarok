@@ -18,23 +18,18 @@
 
 #include "TabsApplet.h"
 
-#include "TabsView.h"
 #include "TabsItem.h"
+#include "TabsView.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "context/ContextView.h"
 #include "context/widgets/TextScrollingWidget.h"
-#include "PaletteHandler.h"
 
 #include <KConfigDialog>
 #include <KConfigGroup>
 #include <KDialog>
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
-#include <Plasma/Theme>
-
-#include <QGraphicsProxyWidget>
-#include <QScrollBar>
 
 /**
  * \brief Constructor
@@ -59,9 +54,7 @@ TabsApplet::TabsApplet( QObject* parent, const QVariantList& args )
     setBackgroundHints( Plasma::Applet::NoBackground );
 
     EngineController *engine = The::engineController();
-
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ), this, SLOT( stopped() ) );
 }
 
 TabsApplet::~TabsApplet()

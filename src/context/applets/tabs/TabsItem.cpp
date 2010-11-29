@@ -21,6 +21,7 @@
 
 #include <QIcon>
 #include <QPixmap>
+#include <QSize>
 
 TabsItem::TabsItem()
     : QStandardItem()

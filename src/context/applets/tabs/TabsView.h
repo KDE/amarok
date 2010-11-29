@@ -17,10 +17,6 @@
 #ifndef AMAROK_TabsVIEW_H
 #define AMAROK_TabsVIEW_H
 
-#include "core/meta/Meta.h"
-
-#include <Plasma/TextBrowser>
-
 #include <QGraphicsProxyWidget>
 #include <QStandardItemModel>
 
@@ -31,6 +27,7 @@ class QModelIndex;
 namespace Plasma
 {
     class ScrollBar;
+    class TextBrowser;
 }
 
 class TabsView : public QGraphicsProxyWidget

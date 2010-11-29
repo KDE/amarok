@@ -17,18 +17,14 @@
 #include "TabsView.h"
 #include "TabsItem.h"
 #include "core/support/Debug.h"
-#include "SvgHandler.h"
-#include "widgets/PrettyTreeView.h"
 #include "PaletteHandler.h"
+#include "widgets/PrettyTreeView.h"
 
 #include <KTextBrowser>
 #include <Plasma/ScrollBar>
 #include <Plasma/TextBrowser>
 
-#include <QGraphicsProxyWidget>
 #include <QGraphicsLinearLayout>
-#include <QHeaderView>
-#include <QTreeView>
 
 // Subclassed to override the access level of some methods.
 // The TabsTreeView and the TabsView are so highly coupled that this is acceptable, imo.

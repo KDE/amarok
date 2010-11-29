@@ -205,7 +205,7 @@ void
 TabsEngine::requestTab( const QString &artist, const QString &title )
 {
     DEBUG_BLOCK
-    debug() << "request tabs for artis: " << artist << " and title " << title;
+    debug() << "request tabs for artist: " << artist << " and title " << title;
 
     // clean all previously allocated stuff
     foreach( TabsInfo *tab, m_tabs )
