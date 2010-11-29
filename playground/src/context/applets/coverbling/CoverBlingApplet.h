@@ -59,7 +59,6 @@ class CoverBlingApplet : public Context::Applet
 		void albumSearch(QString ialbum);
 		void switchSearchIcon();
 		void displaySearchName();
-
     protected :
         virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
         void createConfigurationInterface(KConfigDialog *parent);

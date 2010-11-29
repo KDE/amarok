@@ -56,11 +56,6 @@ CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
     DEBUG_BLOCK
 
     setHasConfigurationInterface( true );
-
-    EngineController *engine = The::engineController();
-
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( jumpToPlaying() ) );
 }
 
 void
@@ -159,6 +154,11 @@ CoverBlingApplet::init()
     displaySearchName();
 
     m_initrandompos = config.readEntry( "RandomPos", false );
+
+    EngineController *engine = The::engineController();
+    if ( m_autojump )
+    	connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             	this, SLOT( jumpToPlaying() ) );
     constraintsEvent();
 }
 
@@ -400,15 +400,6 @@ void CoverBlingApplet::jumpToPlaying()
         }
     }
 }
-
-void CoverBlingApplet::trackPlaying( Meta::TrackPtr track )
-{
-    if ( m_autojump )
-    {
-        jumpToPlaying();
-    }
-}
-
 void CoverBlingApplet::skipToFirst()
 {
     m_pictureflow->skipToSlide( 0 );
