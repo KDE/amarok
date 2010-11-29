@@ -188,7 +188,7 @@ Playlist::Dock::polish()
 
         NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( m_mainWidget );
         plBar->addAction( navigatorConfig );
-        plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
+        plBar->addSeparator();
 
         QToolButton *toolButton = qobject_cast<QToolButton*>(plBar->widgetForAction( navigatorConfig ) );
         if( toolButton )
@@ -196,6 +196,7 @@ Playlist::Dock::polish()
 
         QAction *queueEditAction = Amarok::actionCollection()->action( "playlist_edit_queue" );
         plBar->addAction( queueEditAction );
+        plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
         connect( queueEditAction, SIGNAL( triggered( bool ) ),
                  SLOT( slotEditQueue() ) );
     } // END Playlist Toolbar
