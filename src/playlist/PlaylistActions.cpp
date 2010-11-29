@@ -374,8 +374,9 @@ Playlist::Actions::queue( QList<int> rows )
         quint64 id = The::playlist()->idAt( row );
         debug() << "About to queue proxy row"<< row;
         m_navigator->queueId( id );
-        The::playlist()->emitQueueChanged();
     }
+    if ( !rows.isEmpty() )
+        The::playlist()->emitQueueChanged();
 }
 
 void
@@ -387,8 +388,9 @@ Playlist::Actions::dequeue( QList<int> rows )
     {
         quint64 id = The::playlist()->idAt( row );
         m_navigator->dequeueId( id );
-        The::playlist()->emitQueueChanged();
     }
+    if ( !rows.isEmpty() )
+        The::playlist()->emitQueueChanged();
 }
 
 void

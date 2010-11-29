@@ -23,6 +23,7 @@
 #include "StandardTrackNavigator.h"
 
 #include "core/support/Amarok.h"
+#include "playlist/PlaylistModelStack.h"
 #include "amarokconfig.h"
 
 
@@ -52,8 +53,11 @@ Playlist::StandardTrackNavigator::likelyLastTrack()
 quint64
 Playlist::StandardTrackNavigator::requestNextTrack()
 {
-    if( !m_queue.isEmpty() )
-        return m_queue.takeFirst();
+    if( !m_queue.isEmpty() ) {
+        quint64 ret = m_queue.takeFirst();
+        The::playlist()->emitQueueChanged();
+        return ret;
+    }
 
     return chooseNextTrack( m_repeatPlaylist );
 }
@@ -61,8 +65,11 @@ Playlist::StandardTrackNavigator::requestNextTrack()
 quint64
 Playlist::StandardTrackNavigator::requestUserNextTrack()
 {
-    if( !m_queue.isEmpty() )
-        return m_queue.takeFirst();
+    if( !m_queue.isEmpty() ) {
+        quint64 ret = m_queue.takeFirst();
+        The::playlist()->emitQueueChanged();
+        return ret;
+    }
 
     // Don't make wrap-around conditional on 'm_repeatPlaylist': the user is explicitly asking for this.
     return chooseNextTrack( true );

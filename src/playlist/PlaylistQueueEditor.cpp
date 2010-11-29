@@ -52,13 +52,16 @@ void PlaylistQueueEditor::updateView()
     foreach ( quint64 id, The::playlistActions()->queue() ) {
         QListWidgetItem *item = new QListWidgetItem( m_ui.listWidget, s_myType );
         item->setData( s_idRole, id );
-        item->setText( The::playlist()->trackForId( id )->fixedName() );
+        item->setText( The::playlist()->trackForId( id )->fullPrettyName() );
     }
 }
 
 void PlaylistQueueEditor::queueChanged()
 {
+    const quint64 id = currentId();
     updateView();
+    if ( id )
+        setCurrentId( id );
 }
 
 quint64 PlaylistQueueEditor::currentId()
@@ -72,14 +75,26 @@ quint64 PlaylistQueueEditor::currentId()
     return 0;
 }
 
+void PlaylistQueueEditor::setCurrentId( quint64 newCurrentId )
+{
+    for ( int i = 0; i < m_ui.listWidget->count(); i++ ) {
+        QListWidgetItem *item = m_ui.listWidget->item( i );
+        bool ok;
+        quint64 id = item->data( s_idRole ).toULongLong( &ok );
+        if ( ok && id == newCurrentId ) {
+            m_ui.listWidget->setCurrentItem( item );
+            break;
+        }
+    }
+}
+
 void PlaylistQueueEditor::moveUp()
 {
     const quint64 id = currentId();
     if ( !id )
         return;
     const QModelIndex index = m_ui.listWidget->currentIndex();
-    if ( The::playlistActions()->queueMoveUp( id ) )
-        m_ui.listWidget->setCurrentIndex( index.sibling( index.row() - 1, index.column() ) );
+    The::playlistActions()->queueMoveUp( id );
 }
 
 void PlaylistQueueEditor::moveDown()
@@ -88,8 +103,7 @@ void PlaylistQueueEditor::moveDown()
     if ( !id )
         return;
     const QModelIndex index = m_ui.listWidget->currentIndex();
-    if ( The::playlistActions()->queueMoveDown( id ) )
-        m_ui.listWidget->setCurrentIndex( index.sibling( index.row() + 1, index.column() ) );
+    The::playlistActions()->queueMoveDown( id );
 }
 
 void PlaylistQueueEditor::clear()

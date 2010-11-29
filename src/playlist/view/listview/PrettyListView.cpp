@@ -107,6 +107,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( slotPlaylistActiveTrackChanged() ) );
 
+    connect( model(), SIGNAL( queueChanged() ), this, SLOT( update() ) );
+
     //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->bottom()'.
     connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
 
@@ -213,7 +215,6 @@ Playlist::PrettyListView::switchQueueState() // slot
     DEBUG_BLOCK
     const bool isQueued = currentIndex().data( Playlist::QueuePositionRole ).toInt() != 0;
     isQueued ? dequeueSelection() : queueSelection();
-    update(); // repaint (necessary when using shortcut)
 }
 
 void Playlist::PrettyListView::selectSource()
