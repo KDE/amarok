@@ -43,7 +43,8 @@ PlaylistQueueEditor::PlaylistQueueEditor()
     connect( m_ui.buttonBox->buttons().first(), SIGNAL( clicked() ), SLOT( accept() ) );
 }
 
-void PlaylistQueueEditor::updateView()
+void
+PlaylistQueueEditor::updateView()
 {
     if ( m_blockViewUpdates )
         return;
@@ -56,7 +57,8 @@ void PlaylistQueueEditor::updateView()
     }
 }
 
-void PlaylistQueueEditor::queueChanged()
+void
+PlaylistQueueEditor::queueChanged()
 {
     const quint64 id = currentId();
     updateView();
@@ -64,7 +66,8 @@ void PlaylistQueueEditor::queueChanged()
         setCurrentId( id );
 }
 
-quint64 PlaylistQueueEditor::currentId()
+quint64
+PlaylistQueueEditor::currentId()
 {
     if ( QListWidgetItem *item = m_ui.listWidget->currentItem() ) {
         bool ok;
@@ -75,7 +78,8 @@ quint64 PlaylistQueueEditor::currentId()
     return 0;
 }
 
-void PlaylistQueueEditor::setCurrentId( quint64 newCurrentId )
+void
+PlaylistQueueEditor::setCurrentId( quint64 newCurrentId )
 {
     for ( int i = 0; i < m_ui.listWidget->count(); i++ ) {
         QListWidgetItem *item = m_ui.listWidget->item( i );
@@ -88,7 +92,8 @@ void PlaylistQueueEditor::setCurrentId( quint64 newCurrentId )
     }
 }
 
-void PlaylistQueueEditor::moveUp()
+void
+PlaylistQueueEditor::moveUp()
 {
     const quint64 id = currentId();
     if ( !id )
@@ -97,7 +102,8 @@ void PlaylistQueueEditor::moveUp()
     The::playlistActions()->queueMoveUp( id );
 }
 
-void PlaylistQueueEditor::moveDown()
+void
+PlaylistQueueEditor::moveDown()
 {
     const quint64 id = currentId();
     if ( !id )
@@ -106,7 +112,8 @@ void PlaylistQueueEditor::moveDown()
     The::playlistActions()->queueMoveDown( id );
 }
 
-void PlaylistQueueEditor::clear()
+void
+PlaylistQueueEditor::clear()
 {
     m_blockViewUpdates = true;
     QList<int> rowsToDequeue;
