@@ -107,6 +107,9 @@ TabsView::TabsView( QGraphicsWidget *parent )
     setLayout( layout );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     updateScrollBarVisibility();
+
+    // update the palette.
+    paletteChanged( The::paletteHandler()->palette() );
 }
 
 TabsView::~TabsView()
@@ -181,6 +184,15 @@ TabsView::showTab( TabsItem *tab )
             m_tabTextBrowser->nativeWidget()->setHtml( htmlData );
         }
     }
+}
+
+void
+TabsView::paletteChanged( const QPalette &palette )
+{
+    // Use the text-color from KDE's colorscheme as we're already using it's background color.
+    // Not using it might cause "conflicts" (where the text could become unreadable).
+    // (code taken from lyrics applet)
+    m_tabTextBrowser->nativeWidget()->setTextColor( palette.text().color() );
 }
 
 void

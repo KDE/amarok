@@ -51,12 +51,12 @@ protected:
 private slots:
     void itemClicked( const QModelIndex &index );
     void slotScrollBarRangeChanged( int min, int max );
+    void paletteChanged( const QPalette &palette );
 
 private:
     Plasma::TextBrowser *m_tabTextBrowser;
     TabsTreeView *m_treeView;
     QGraphicsProxyWidget *m_treeProxy;
-
     QStandardItemModel *m_model;
 
     void updateScrollBarVisibility();
