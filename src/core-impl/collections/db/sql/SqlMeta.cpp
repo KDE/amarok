@@ -1629,11 +1629,10 @@ SqlAlbum::imageLocation( int size )
 
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
-    QString cachedImagePath;
     if( size <= 1 )
-        cachedImagePath = m_imagePath;
-    else
-        cachedImagePath = scaledDiskCachePath( size );
+        return m_imagePath;
+
+    QString cachedImagePath = scaledDiskCachePath( size );
 
     if( cachedImagePath.isEmpty() )
         return KUrl();
