@@ -36,7 +36,7 @@ PlaylistQueueEditor::PlaylistQueueEditor()
     connect( The::playlist()->qaim(), SIGNAL( queueChanged() ), SLOT( queueChanged() ) );
     m_ui.upButton->setIcon( KIcon( "go-up" ) );
     m_ui.downButton->setIcon( KIcon( "go-down" ) );
-    m_ui.clearButton->setIcon( KIcon(" edit-clear-list" ) );
+    m_ui.clearButton->setIcon( KIcon( "edit-clear-list" ) );
     connect( m_ui.upButton, SIGNAL( clicked() ), SLOT( moveUp() ) );
     connect( m_ui.downButton, SIGNAL( clicked() ), SLOT( moveDown() ) );
     connect( m_ui.clearButton, SIGNAL( clicked() ), SLOT( clear() ) );
