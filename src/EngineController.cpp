@@ -1145,19 +1145,22 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
         emit trackError( m_currentTrack );
 
         warning() << "Phonon failed to play this URL. Error: " << m_media.data()->errorString();
+        warning() << "Forcing phonon engine reinitialization.";
+
+        /* In case of error Phonon MediaObject automaticaly switches to KioMediaSource,
+           which cause problems: runs StopAfterCurrentTrack mode, force PlayPause button to
+           reply the track (can't be paused). So we should reinitiate Phonon after each Error.
+        */
+        initializePhonon();
 
         errorCount++;
         if ( errorCount >= maxErrors )
         {
             Amarok::Components::logger()->longMessage( i18n( "Too many errors encountered in playlist. Playback stopped." ), Amarok::Logger::Warning );
             error() << "Stopping playlist.";
-            stop();
-            // don't request a new track
         }
         else
         {
-            // stopping apparently is needed to reset the error.
-            m_media.data()->stop();
             // and start the next song
             slotAboutToFinish();
         }
