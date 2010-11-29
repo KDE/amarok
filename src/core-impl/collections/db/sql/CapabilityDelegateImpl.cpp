@@ -33,9 +33,11 @@
 #include "core/capabilities/OrganiseCapability.h"
 #include "core/capabilities/UpdateCapability.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core/meta/support/MetaConstants.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "amarokurls/PlayUrlRunner.h"
+#include "shared/MetaValues.h"
 
 #include <QAction>
 #include <QFile>
@@ -247,19 +249,18 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
             Meta::YearPtr year         = m_track->year();
             QString name;
 
-            // NOTE: i18n calls need to use the same strings as filters in CollectionTreeItemModelBase.cpp
             if( tag.testFlag(Artist) && !(name = artist ? artist->prettyName() : QString()).isEmpty() )
-                filters << QString( "%1:\"%2\"" ).arg( i18n("artist"), name );
+                filters << QString( "%1:\"%2\"" ).arg( Meta::shortI18nForField( Meta::valArtist ), name );
             if( tag.testFlag(Album) && !(name = album ? album->prettyName() : QString()).isEmpty() )
-                filters << QString( "%1:\"%2\"" ).arg( i18n("album"), name );
+                filters << QString( "%1:\"%2\"" ).arg( Meta::shortI18nForField( Meta::valAlbum ), name );
             if( tag.testFlag(Composer) && !(name = composer ? composer->prettyName() : QString()).isEmpty() )
-                filters << QString( "%1:\"%2\"" ).arg( i18n("composer"), name );
+                filters << QString( "%1:\"%2\"" ).arg( Meta::shortI18nForField( Meta::valComposer ), name );
             if( tag.testFlag(Genre) && !(name = genre ? genre->prettyName() : QString()).isEmpty() )
-                filters << QString( "%1:\"%2\"" ).arg( i18n("genre"), name );
+                filters << QString( "%1:\"%2\"" ).arg( Meta::shortI18nForField( Meta::valGenre ), name );
             if( tag.testFlag(Track) && !(name = m_track ? m_track->prettyName() : QString()).isEmpty() )
-                filters << QString( "%1:\"%2\"" ).arg( i18n("title"), name );
+                filters << QString( "%1:\"%2\"" ).arg( Meta::shortI18nForField( Meta::valTitle ), name );
             if( tag.testFlag(Year) && !(name = year ? year->name() : QString()).isEmpty() )
-                filters << QString( "%1:%2" ).arg( i18n("year"), name );
+                filters << QString( "%1:%2" ).arg( Meta::shortI18nForField( Meta::valYear ), name );
 
             if( !filters.isEmpty() )
             {
