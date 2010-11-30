@@ -423,7 +423,12 @@ void CoverFoundDialog::slotButtonClicked( int button )
 {
     if( button == KDialog::Ok )
     {
-        CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->currentItem() );
+        CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
+        if( !item )
+        {
+            reject();
+            return;
+        }
 
         bool gotBigPix( true );
         if( !item->hasBigPix() )
