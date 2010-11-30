@@ -63,6 +63,10 @@ IndentPrivate* IndentPrivate::instance()
     return (obj ? static_cast<IndentPrivate*>( obj ) : new IndentPrivate( qApp ));
 }
 
+/*
+  Text color codes (use last digit here)
+  30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+*/
 static int s_colors[] = { 1, 2, 4, 5, 6 }; // no yellow and white for sanity
 static int s_colorIndex = 0;
 
@@ -78,6 +82,19 @@ static QString toString( DebugLevel level )
             return "[FATAL__]";
         default:
             return QString();
+    }
+}
+
+static int toColor( DebugLevel level )
+{
+    switch( level ) {
+        case KDEBUG_WARN:
+            return 3; // red
+        case KDEBUG_ERROR:
+        case KDEBUG_FATAL:
+            return 1; // yellow
+        default:
+            return 0; // default: black
     }
 }
 
@@ -131,14 +148,11 @@ kdbgstream Debug::dbgstream( DebugLevel level )
     const QString currentIndent = indent();
     mutex.unlock();
 
-    QString text = QString("%1%2")
-        .arg( APP_PREFIX )
-        .arg( currentIndent );
+    QString text = QString("%1%2").arg( APP_PREFIX ).arg( currentIndent );
     if ( level > KDEBUG_INFO )
-        text.append( ' ' + reverseColorize( toString(level), level ) );
+        text.append( ' ' + reverseColorize( toString(level), toColor( level ) ) );
 
-    return kdbgstream( QtDebugMsg )
-        << qPrintable( text );
+    return kdbgstream( QtDebugMsg ) << qPrintable( text );
 }
 
 void Debug::perfLog( const QString &message, const QString &func )
@@ -204,7 +218,7 @@ Block::~Block()
             << qPrintable( colorize( QString( "END__:" ), m_color ) )
             << m_label
             << qPrintable( reverseColorize( QString( "[DELAY Took (quite long) %3s]")
-                                            .arg( QString::number(duration, 'g', 2) ), KDEBUG_WARN ) );
+                                            .arg( QString::number(duration, 'g', 2) ), toColor( KDEBUG_WARN ) ) );
     }
 }
 
