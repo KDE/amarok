@@ -879,7 +879,10 @@ explodeUidUrl( const QString &uidUrl, const Meta::Tag::FileTypes type )
     return qMakePair( owner, uid );
 }
 
-static void
+/** Creates or replaces an exiting tag field with the new information
+    @returns true if successfull and saving is needed.
+*/
+static bool
 replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &value )
 {
     TagLib::String tName;
@@ -890,7 +893,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
         TagLib::ByteVector tName( fieldName( field, Meta::Tag::MPEG ) );
 
         if( tName.isEmpty() )
-            return;
+            return false;
 
         TagLib::ID3v2::Tag *tag = file->ID3v2Tag( true ); // true ^= create
 
@@ -914,7 +917,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
                             frame->setIdentifier( tUid );
                         else
                             tag->removeFrame( frame );
-                       return; // finished
+                       return true; // finished
                     }
                 }
             }
@@ -980,7 +983,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
                             frame->setText( tValue );
                         else
                             tag->removeFrame( frame );
-                       return; // finished
+                       return true; // finished
                     }
                 }
             }
@@ -993,6 +996,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
                 frame->setDescription( description );
                 frame->setText( tValue );
                 tag->addFrame( frame );
+                return true;
             }
         }
         else
@@ -1017,6 +1021,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
                 // note: TagLib is smart enough to automatically set UTF8 encoding if needed.
                 frame->setText(tValue);
             }
+            return true;
         }
     }
     // ogg
@@ -1036,9 +1041,10 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
             tValue = Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) );
 
         if( tName.isEmpty() )
-            return;
+            return false;
 
         file->tag()->addField( tName,  tValue );
+        return true;
     }
     // flac
     else if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
@@ -1057,9 +1063,10 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
             tValue = Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) );
 
         if ( tName.isEmpty() )
-            return;
+            return false;
 
         file->xiphComment()->addField( tName, tValue );
+        return true;
     }
     // speex
     else if( TagLib::Ogg::Speex::File *file = dynamic_cast<TagLib::Ogg::Speex::File *>( fileref.file() ) )
@@ -1078,9 +1085,10 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
             tValue = Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) );
 
         if ( tName.isEmpty() )
-            return;
+            return false;
 
         file->tag()->addField( tName, tValue );
+        return true;
     }
     //MP4
     else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
@@ -1095,7 +1103,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
         }
 
         if ( tName.isEmpty() )
-            return;
+            return false;
 
         TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
         if( field == Meta::valBpm || field == Meta::valDiscNr ||
@@ -1106,6 +1114,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
             mp4tag->itemListMap()[tName] = TagLib::MP4::Item( value.toBool() );
         else
             mp4tag->itemListMap()[tName] = TagLib::StringList( tValue );
+        return true;
     }
     //MPC
     else if( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
@@ -1124,10 +1133,12 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
             tValue = Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) );
 
         if ( tName.isEmpty() )
-            return;
+            return false;
 
         file->APETag( true )->addValue( tName, tValue );
+        return true;
     }
+    return false;
 }
 
 void
@@ -1150,6 +1161,7 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes )
     if( !tag )
         return;
 
+    bool needsSaving = false;
     TagLib::String str;
     TagLib::uint val;
 
@@ -1170,37 +1182,44 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes )
         case Meta::valTitle:
             str = Qt4QStringToTString( changes.value( Meta::valTitle ).toString() );
             tag->setTitle( str );
+            needsSaving = true;
             break;
         case Meta::valAlbum:
             str = Qt4QStringToTString( changes.value( Meta::valAlbum ).toString() );
             tag->setAlbum( str );
+            needsSaving = true;
             break;
         case Meta::valArtist:
             str = Qt4QStringToTString( changes.value( Meta::valArtist ).toString() );
             tag->setArtist( str );
+            needsSaving = true;
             break;
         case Meta::valComment:
             str = Qt4QStringToTString( changes.value( Meta::valComment ).toString() );
             tag->setComment( str );
+            needsSaving = true;
             break;
         case Meta::valGenre:
             str = Qt4QStringToTString( changes.value( Meta::valGenre ).toString() );
             tag->setGenre( str );
+            needsSaving = true;
             break;
         case Meta::valYear:
             val = changes.value( Meta::valYear ).toUInt();
             tag->setYear( val );
+            needsSaving = true;
             break;
         case Meta::valTrackNr:
             val = changes.value( Meta::valTrackNr ).toUInt();
             tag->setTrack( val );
+            needsSaving = true;
             break;
         default:
-            replaceField( fileref, field, changes.value( field ) );
+            needsSaving |= replaceField( fileref, field, changes.value( field ) );
         }
     }
 
-    if( !changes.isEmpty() )
+    if( needsSaving )
         fileref.save();
 }
 
