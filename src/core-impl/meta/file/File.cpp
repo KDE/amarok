@@ -706,7 +706,7 @@ QImage
 Track::getEmbeddedCover() const
 {
     if( d->m_data.embeddedImage )
-        return Meta::Tag::getEmbeddedCover( d->url.path()  );
+        return Meta::Tag::embeddedCover( d->url.path()  );
 
     return QImage();
 }

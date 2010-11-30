@@ -41,7 +41,12 @@ namespace Meta
 
 #ifndef UTILITIES_BUILD
         // the utilities don't need to handle images
-        AMAROK_EXPORT QImage getEmbeddedCover( const QString &path );
+        AMAROK_EXPORT QImage embeddedCover( const QString &path );
+
+        /** This will write an ID3v2 embedded cover.
+            It will also overwrite existing covers, so make sure the user knows what he get's.
+        */
+        AMAROK_EXPORT void setEmbeddedCover( const QString &path, const QImage &cover );
 #endif
     }
 }

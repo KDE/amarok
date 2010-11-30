@@ -502,22 +502,38 @@ TestSqlScanManager::testFeat()
 void
 TestSqlScanManager::testAlbumImage()
 {
+    createSingleTrack();
     createAlbum();
+    createCompilation();
 
     // put an image into the album directory
     QString imageSourcePath = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/playlists/no-playlist.png" );
     QVERIFY( QFile::exists( imageSourcePath ) );
-    const QString targetPath = m_tmpCollectionDir->name() + "Thriller/cover.png";
+    QString targetPath;
+    targetPath = m_tmpCollectionDir->name() + "Thriller/cover.png";
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
+
+    // put an image into the compilation directory
+    targetPath = m_tmpCollectionDir->name() + "Top Gun/front.png";
+    QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
+
+    // set an embedded image
+    targetPath = m_tmpCollectionDir->name() + "Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3";
+    Meta::Tag::setEmbeddedCover( targetPath, QImage( 200, 200, QImage::Format_RGB32 ) );
 
     m_scanManager->requestFullScan();
     waitScannerFinished();
 
     // -- check the commit
     Meta::AlbumPtr album;
+
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
-    QCOMPARE( album->name(), QString("Thriller") );
-    QCOMPARE( album->tracks().count(), 9 );
+    QVERIFY( album->hasImage() );
+
+    album = m_collection->registry()->getAlbum( "Top Gun", QString() );
+    QVERIFY( album->hasImage() );
+
+    album = m_collection->registry()->getAlbum( "Big Screen Adventures", "Theme Orchestra" );
     QVERIFY( album->hasImage() );
 }
 

@@ -1595,7 +1595,7 @@ SqlAlbum::image( int size )
         // -- check if we have a track with the given path as uid
         Meta::TrackPtr track = m_collection->getTrackFromUid( m_imagePath );
         if( track )
-            image = Meta::Tag::getEmbeddedCover( track->playableUrl().path() );
+            image = Meta::Tag::embeddedCover( track->playableUrl().path() );
     }
 
     // --- a normal path

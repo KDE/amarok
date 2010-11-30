@@ -27,6 +27,7 @@
 #include "MetaReplayGain.h"
 
 #include <QImage>
+#include <QBuffer>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -35,6 +36,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QTime>
+#include <QDebug>
 
 #include <KEncodingProber>
 
@@ -673,7 +675,7 @@ Meta::Tag::splitNumber( const QString str )
 // the utilities don't need to handle images
 
 QImage
-Meta::Tag::getEmbeddedCover( const QString &path )
+Meta::Tag::embeddedCover( const QString &path )
 {
     TagLib::FileRef fileref = getFileRef( path );
 
@@ -1181,6 +1183,59 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes )
     if( !changes.isEmpty() )
         fileref.save();
 }
+
+#ifndef UTILITIES_BUILD
+
+void
+Meta::Tag::setEmbeddedCover( const QString &path, const QImage &cover )
+{
+    QMutexLocker locker( &s_mutex ); // we do not rely on taglib being thread safe especially when writing the same file from different threads.
+
+    TagLib::FileRef fileref = getFileRef( path );
+
+    if( fileref.isNull() )
+        return;
+
+    TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() );
+    if( !file || !file->ID3v2Tag() )
+        return;
+
+    QByteArray bytes;
+    QBuffer buffer(&bytes);
+    buffer.open(QIODevice::WriteOnly);
+
+    qDebug() << "Syncing file image is" << cover.width() << "x" << cover.width();
+
+    if( !cover.save(&buffer, "JPEG") )
+        return;
+
+    // -- search for a cover picture we can overwrite
+    TagLib::ID3v2::AttachedPictureFrame *apic = 0;
+    TagLib::ID3v2::FrameList frames = file->ID3v2Tag()->frameListMap()["APIC"];
+
+    for( unsigned int i=0; i<frames.size() && !apic; i++ )
+    {
+        apic = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame *>(frames[i]);
+        if( apic->type() != TagLib::ID3v2::AttachedPictureFrame::FrontCover )
+            apic = 0; // that's not it.
+    }
+
+    // -- create a new picture frame
+    if( !apic )
+    {
+        apic = new TagLib::ID3v2::AttachedPictureFrame("APIC");
+        file->ID3v2Tag()->addFrame(apic);
+    }
+
+    qDebug() << "write image with size:" <<bytes.count();
+
+    apic->setMimeType("image/jpeg");
+    apic->setType( TagLib::ID3v2::AttachedPictureFrame::FrontCover );
+    apic->setPicture( TagLib::ByteVector(bytes.data(), bytes.count()));
+    fileref.save();
+}
+
+#endif
 
 #undef Qt4QStringToTString
 
