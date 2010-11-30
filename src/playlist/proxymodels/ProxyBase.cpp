@@ -214,7 +214,8 @@ ProxyBase::setAllUnplayed()
 void
 ProxyBase::emitQueueChanged()
 {
-    emit queueChanged();
+    Q_ASSERT_X(false, "emitQueueChanged", "queueChanged() should be emitted at the bottom of "
+                                          "the model stack so it can be received from every model.");
 }
 
 int

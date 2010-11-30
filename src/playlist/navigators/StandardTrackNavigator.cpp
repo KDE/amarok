@@ -55,7 +55,7 @@ Playlist::StandardTrackNavigator::requestNextTrack()
 {
     if( !m_queue.isEmpty() ) {
         quint64 ret = m_queue.takeFirst();
-        The::playlist()->emitQueueChanged();
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
         return ret;
     }
 
@@ -67,7 +67,7 @@ Playlist::StandardTrackNavigator::requestUserNextTrack()
 {
     if( !m_queue.isEmpty() ) {
         quint64 ret = m_queue.takeFirst();
-        The::playlist()->emitQueueChanged();
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
         return ret;
     }
 

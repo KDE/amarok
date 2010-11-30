@@ -352,7 +352,7 @@ bool
 Playlist::Actions::queueMoveUp( quint64 id )
 {
     const bool ret = m_navigator->queueMoveUp( id );
-    The::playlist()->emitQueueChanged();
+    Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
     return ret;
 }
 
@@ -360,7 +360,7 @@ bool
 Playlist::Actions::queueMoveDown( quint64 id )
 {
     const bool ret = m_navigator->queueMoveDown( id );
-    The::playlist()->emitQueueChanged();
+    Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
     return ret;
 }
 
@@ -376,7 +376,7 @@ Playlist::Actions::queue( QList<int> rows )
         m_navigator->queueId( id );
     }
     if ( !rows.isEmpty() )
-        The::playlist()->emitQueueChanged();
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
 }
 
 void
@@ -390,7 +390,7 @@ Playlist::Actions::dequeue( QList<int> rows )
         m_navigator->dequeueId( id );
     }
     if ( !rows.isEmpty() )
-        The::playlist()->emitQueueChanged();
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
 }
 
 void

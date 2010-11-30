@@ -739,7 +739,7 @@ MainToolbar::showEvent( QShowEvent *ev )
     connect ( The::playlistController(), SIGNAL( changed()),
               this, SLOT( updatePrevAndNext() ) );
 
-    connect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( queueChanged() ),
+    connect ( The::playlist()->qaim(), SIGNAL( queueChanged() ),
               this, SLOT( updatePrevAndNext() ) );
 
     connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
