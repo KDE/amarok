@@ -352,7 +352,8 @@ bool
 Playlist::Actions::queueMoveUp( quint64 id )
 {
     const bool ret = m_navigator->queueMoveUp( id );
-    Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
+    if ( ret )
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
     return ret;
 }
 
@@ -360,7 +361,8 @@ bool
 Playlist::Actions::queueMoveDown( quint64 id )
 {
     const bool ret = m_navigator->queueMoveDown( id );
-    Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
+    if ( ret )
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
     return ret;
 }
 

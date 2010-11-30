@@ -101,7 +101,6 @@ PlaylistQueueEditor::moveUp()
     const quint64 id = currentId();
     if ( !id )
         return;
-    const QModelIndex index = m_ui.listWidget->currentIndex();
     The::playlistActions()->queueMoveUp( id );
 }
 
@@ -111,7 +110,6 @@ PlaylistQueueEditor::moveDown()
     const quint64 id = currentId();
     if ( !id )
         return;
-    const QModelIndex index = m_ui.listWidget->currentIndex();
     The::playlistActions()->queueMoveDown( id );
 }
 
