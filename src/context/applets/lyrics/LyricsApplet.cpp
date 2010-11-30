@@ -130,8 +130,8 @@ LyricsAppletPrivate::determineActionIconsState()
 {
     bool isEditing = !browser->nativeWidget()->isReadOnly();
 
-    editIcon->action()->setEnabled( showBrowser & !isEditing );
-    editIcon->action()->setVisible( showBrowser & !isEditing );
+    editIcon->action()->setEnabled( !isEditing );
+    editIcon->action()->setVisible( !isEditing );
 
     closeIcon->action()->setEnabled( showBrowser & isEditing );
     closeIcon->action()->setVisible( showBrowser & isEditing );
@@ -139,8 +139,8 @@ LyricsAppletPrivate::determineActionIconsState()
     saveIcon->action()->setEnabled( showBrowser & isEditing );
     saveIcon->action()->setVisible( showBrowser & isEditing );
 
-    reloadIcon->action()->setEnabled( showBrowser & !isEditing );
-    reloadIcon->action()->setVisible( showBrowser & !isEditing );
+    reloadIcon->action()->setEnabled( !isEditing );
+    reloadIcon->action()->setVisible( !isEditing );
 
     // remove all header widgets and add back below
     int count = headerLayout->count();
