@@ -132,7 +132,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
     m_writeBackStatistics = new QCheckBox( i18n("Write back statistics"), this );
-    m_writeBackStatistics->setToolTip( i18n( "Write changed statistics (e.g. rating or playcount) back to the file." ) );
+    m_writeBackCover = new QCheckBox( i18n("Write back covers"), this );
     m_charset   = new QCheckBox( i18n("&Enable character set detection in ID3 tags"), this );
     connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_monitor  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
@@ -141,11 +141,14 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
     m_monitor->setToolTip(   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
+    m_writeBackStatistics->setToolTip( i18n( "Write changed statistics (e.g. rating or playcount) back to the file." ) );
+    m_writeBackCover->setToolTip( i18n( "Write changed covers back to the file. This will replace existing embedded covers." ) );
     m_charset->setToolTip(   i18n( "If selected, Amarok will use Mozilla's Character Set Detector to attempt to automatically guess the character sets used in ID3 tags." ) );
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
     m_writeBackStatistics->setChecked( AmarokConfig::writeBackStatistics() );
+    m_writeBackCover->setChecked( AmarokConfig::writeBackCover() );
     m_charset->setChecked( AmarokConfig::useCharsetDetector() );
 
     // set the model _after_ constructing the checkboxes
@@ -174,16 +177,16 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 bool
 CollectionSetup::hasChanged() const
 {
-    DEBUG_BLOCK
-
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
-    const bool foldersChanged = m_model->directories() != collectionFolders;
-    const bool recursiveChanged = m_recursive->isChecked() != AmarokConfig::scanRecursively();
-    const bool monitorChanged  = m_monitor->isChecked() != AmarokConfig::monitorChanges();
-    const bool charsetChanged  = m_charset->isChecked() != AmarokConfig::useCharsetDetector();
 
-    return foldersChanged || recursiveChanged || monitorChanged || charsetChanged;
+    return
+        m_model->directories() != collectionFolders ||
+        m_recursive->isChecked() != recursive() ||
+        m_monitor->isChecked() != monitor() ||
+        m_writeBackStatistics->isChecked() != writeBackStatistics() ||
+        m_writeBackCover->isChecked() != writeBackCover() ||
+        m_charset->isChecked() != AmarokConfig::useCharsetDetector();
 }
 
 void
@@ -193,6 +196,8 @@ CollectionSetup::writeConfig()
 
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
+    AmarokConfig::setWriteBackStatistics( writeBackStatistics() );
+    AmarokConfig::setWriteBackCover( writeBackCover() );
     AmarokConfig::setUseCharsetDetector( charset() );
 
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();

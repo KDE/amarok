@@ -1654,6 +1654,7 @@ SqlAlbum::imageLocation( int size )
 void
 SqlAlbum::setImage( const QImage &image )
 {
+    // the unnamed album is special. it will never have an image
     if( m_name.isEmpty() )
         return;
 
@@ -1675,6 +1676,26 @@ SqlAlbum::setImage( const QImage &image )
 
     locker.unlock();
     notifyObservers();
+
+    // -- write back the album cover if allowed
+    if( AmarokConfig::writeBackCover() )
+    {
+        // - scale to cover to a sensible size
+        QImage scaledImage( image );
+        if( scaledImage.width() > 200 || scaledImage.height() > 200 )
+            scaledImage = scaledImage.scaled( 200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+
+        // - set the image for each track
+        Meta::TrackList myTracks = tracks();
+        foreach( Meta::TrackPtr metaTrack, myTracks )
+        {
+            // the song needs to be at least one mb big or we won't set an image
+            // that means that the new image will increase the file size by less than 2%
+            if( metaTrack->filesize() > 1024l * 1024l )
+                Meta::Tag::setEmbeddedCover( metaTrack->playableUrl().path(), scaledImage );
+            // note: we might want to update the track file size after writing the image
+        }
+    }
 }
 
 void
@@ -1845,6 +1866,9 @@ SqlAlbum::scaledDiskCachePath( int size ) const
 QString
 SqlAlbum::largeImagePath()
 {
+    if( !m_collection )
+        m_imagePath;
+
     // Look up in the database
     QString query = "SELECT images.id, images.path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;"; // TODO: shouldn't we do a JOIN here?
     QStringList res = m_collection->sqlStorage()->query( query.arg( m_id ) );
@@ -1858,12 +1882,10 @@ SqlAlbum::largeImagePath()
             return AMAROK_UNSET_MAGIC;
 
         // embedded image (e.g. id3v2 APIC
-        if( m_imagePath.startsWith( "amarok-sqltrackuid://" ) )
-        {
-            // Amarok 2.3.2 did store embedded images as unique ids in the database
-            setImage( m_imagePath );
+        // We store embedded images as unique ids in the database
+        // we will get the real image later on from the track.
+        if( m_imagePath.startsWith( m_collection->uidUrlProtocol()+"://" ) )
             return m_imagePath;
-        }
 
         // normal file
         if( !m_imagePath.isEmpty() && QFile::exists( m_imagePath ) )
@@ -1880,8 +1902,7 @@ SqlAlbum::largeImagePath()
 
     m_imageId = -1;
     m_imagePath = QString();
-
-    return QString();
+    return m_imagePath;
 }
 
 // note: we won't notify the observers. we are a private function. the caller must do that.
