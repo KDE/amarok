@@ -612,8 +612,6 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
             Actions::instance()->dequeue( list );
         else
             Actions::instance()->queue( list );
-
-        update(); // refresh view
     }
 }
 
