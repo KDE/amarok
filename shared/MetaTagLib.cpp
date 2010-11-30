@@ -1133,6 +1133,12 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
 void
 Meta::Tag::writeTags( const QString &path, const FieldHash &changes )
 {
+#ifndef UTILITIES_BUILD
+    // depending on the configuration we might not want to write back anything
+    if( !AmarokConfig::writeBack() )
+        return;
+#endif
+
     QMutexLocker locker( &s_mutex ); // we do not rely on taglib being thread safe especially when writing the same file from different threads.
 
     TagLib::FileRef fileref = getFileRef( path );

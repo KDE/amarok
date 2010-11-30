@@ -131,24 +131,31 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
-    m_writeBackStatistics = new QCheckBox( i18n("Write back statistics"), this );
-    m_writeBackCover = new QCheckBox( i18n("Write back covers"), this );
+    m_writeBack = new QCheckBox( i18n("Write metadata to file"), this );
+    m_writeBackStatistics = new QCheckBox( i18n("Write statistics to file"), this );
+    m_writeBackCover = new QCheckBox( i18n("Write covers to file"), this );
     m_charset   = new QCheckBox( i18n("&Enable character set detection in ID3 tags"), this );
     connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_monitor  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+    connect( m_writeBack, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_writeBackStatistics, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+    connect( m_writeBackCover, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_charset  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
-    m_monitor->setToolTip(   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
-    m_writeBackStatistics->setToolTip( i18n( "Write changed statistics (e.g. rating or playcount) back to the file." ) );
-    m_writeBackCover->setToolTip( i18n( "Write changed covers back to the file. This will replace existing embedded covers." ) );
-    m_charset->setToolTip(   i18n( "If selected, Amarok will use Mozilla's Character Set Detector to attempt to automatically guess the character sets used in ID3 tags." ) );
+    m_monitor->setToolTip(   i18n( "If selected, folders will automatically get rescanned\nwhen the content is modified,\ne.g. when a new file was added." ) );
+    m_writeBack->setToolTip( i18n( "Write meta data changes back to the original file.\nYou can also prevent writing back by write protecting the file.\nThis might be a good idea if you are currently\nsharing those files via the internet." ) );
+    m_writeBackStatistics->setToolTip( i18n( "Write changed statistics (e.g. rating or playcount)\nback to the file." ) );
+    m_writeBackCover->setToolTip( i18n( "Write changed covers back to the file.\nThis will replace existing embedded covers." ) );
+    m_charset->setToolTip(   i18n( "If selected, Amarok will use Mozilla's\nCharacter Set Detector to attempt to automatically guess the\ncharacter sets used in ID3 tags." ) );
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
+    m_writeBack->setChecked( AmarokConfig::writeBack() );
     m_writeBackStatistics->setChecked( AmarokConfig::writeBackStatistics() );
+    m_writeBackStatistics->setEnabled( writeBack() );
     m_writeBackCover->setChecked( AmarokConfig::writeBackCover() );
+    m_writeBackCover->setEnabled( writeBack() );
     m_charset->setChecked( AmarokConfig::useCharsetDetector() );
 
     // set the model _after_ constructing the checkboxes
@@ -180,10 +187,14 @@ CollectionSetup::hasChanged() const
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
 
+    m_writeBackStatistics->setEnabled( writeBack() );
+    m_writeBackCover->setEnabled( writeBack() );
+
     return
         m_model->directories() != collectionFolders ||
         m_recursive->isChecked() != recursive() ||
         m_monitor->isChecked() != monitor() ||
+        m_writeBack->isChecked() != writeBack() ||
         m_writeBackStatistics->isChecked() != writeBackStatistics() ||
         m_writeBackCover->isChecked() != writeBackCover() ||
         m_charset->isChecked() != AmarokConfig::useCharsetDetector();
@@ -196,6 +207,7 @@ CollectionSetup::writeConfig()
 
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
+    AmarokConfig::setWriteBack( writeBack() );
     AmarokConfig::setWriteBackStatistics( writeBackStatistics() );
     AmarokConfig::setWriteBackCover( writeBackCover() );
     AmarokConfig::setUseCharsetDetector( charset() );

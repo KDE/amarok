@@ -68,6 +68,7 @@ class CollectionSetup : public KVBox
         QStringList dirs() const { return m_dirs; }
         bool recursive() const { return m_recursive && m_recursive->isChecked(); }
         bool monitor() const { return m_monitor && m_monitor->isChecked(); }
+        bool writeBack() const { return m_writeBack&& m_writeBack->isChecked(); }
         bool writeBackStatistics() const { return m_writeBackStatistics && m_writeBackStatistics->isChecked(); }
         bool writeBackCover() const { return m_writeBackCover && m_writeBackCover->isChecked(); }
         bool charset() const { return m_charset && m_charset->isChecked(); }
@@ -88,6 +89,7 @@ class CollectionSetup : public KVBox
         QStringList m_dirs;
         QCheckBox *m_recursive;
         QCheckBox *m_monitor;
+        QCheckBox *m_writeBack;
         QCheckBox *m_writeBackStatistics;
         QCheckBox *m_writeBackCover;
         QCheckBox *m_charset;
