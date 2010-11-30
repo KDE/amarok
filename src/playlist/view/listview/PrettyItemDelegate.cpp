@@ -255,17 +255,16 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
     else
         style = QApplication::style();
 
-    int horizontalSpace = style->pixelMetric( QStyle::PM_LayoutHorizontalSpacing );
-    int smallIconSize = style->pixelMetric( QStyle::PM_SmallIconSize );
-    int frameHMargin = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
-    int frameVMargin = style->pixelMetric( QStyle::PM_FocusFrameVMargin );
-    int iconSpacing = style->pixelMetric( QStyle::PM_ToolBarItemSpacing );
+    const int horizontalSpace = style->pixelMetric( QStyle::PM_LayoutHorizontalSpacing );
+    const int smallIconSize = style->pixelMetric( QStyle::PM_SmallIconSize );
+    const int frameHMargin = style->pixelMetric( QStyle::PM_FocusFrameHMargin );
+    const int frameVMargin = style->pixelMetric( QStyle::PM_FocusFrameVMargin );
+    const int iconSpacing = style->pixelMetric( QStyle::PM_ToolBarItemSpacing );
 
     int rowOffsetX = frameHMargin * 2; // keep the text a little bit away from the border
     int rowOffsetY = frameVMargin;
-    int markerOffsetX = frameHMargin;
 
-    int imageSize = option.rect.height() - frameVMargin * 2;
+    const int imageSize = option.rect.height() - frameVMargin * 2;
     QRectF nominalImageRect( frameHMargin,
                              frameVMargin, imageSize, imageSize );
 
@@ -273,8 +272,8 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
     if ( showCover )
         rowOffsetX += imageSize + horizontalSpace + frameHMargin * 2;
 
-    int rowHeight = (option.rect.height() - frameVMargin * 2) / rowCount;
-    int rowWidth = option.rect.width() - rowOffsetX - frameHMargin * 2; // again, away from the border
+    const int rowHeight = (option.rect.height() - frameVMargin * 2) / rowCount;
+    const int rowWidth = option.rect.width() - rowOffsetX - frameHMargin * 2; // again, away from the border
 
     // --- paint the active track background
     // We do not want to paint this for head items.
@@ -334,6 +333,8 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
             painter->drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
     }
 
+    int markerOffsetX = frameHMargin;
+    const int rowOffsetXBeforeMarkers = rowOffsetX;
     // --- paint the markers
     if( !headerRow )
     {
@@ -376,6 +377,7 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
         if ( !showCover )
             rowOffsetX += ( smallIconSize + iconSpacing );
     }
+    int markersWidth = rowOffsetX - rowOffsetXBeforeMarkers;
 
     // --- paint all the rows
     for ( int i = 0; i < rowCount; i++ )
@@ -398,7 +400,7 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
                 autoSizeElemCount++;
         }
 
-        qreal spacePerAutoSizeElem = spareSpace / (qreal) autoSizeElemCount;
+        qreal spacePerAutoSizeElem = spareSpace / qreal( autoSizeElemCount );
 
         for ( int j = 0; j < elementCount; ++j )
         {
@@ -414,9 +416,11 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
             qreal itemWidth;
             if( j == elementCount - 1 )
                 // use the full with for the last item
-                itemWidth = rowWidth - (currentItemX - rowOffsetX);
+                itemWidth = rowWidth - (currentItemX - rowOffsetXBeforeMarkers);
             else
-                itemWidth = rowWidth * size;
+                itemWidth = rowWidth * size - markersWidth;
+
+            markersWidth = 0; // leave columns > 0 alone, they are unaffected by markers
 
             if( itemWidth <= 1 )
                 continue; // no sense to paint such small items
