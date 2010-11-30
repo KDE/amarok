@@ -56,6 +56,8 @@ RecentlyPlayedListWidget::addTrack( const Meta::TrackPtr &track )
 {
     if( !track )
         return;
+    if( !track->lastPlayed().isValid() )
+        return;
 
     const QString &name = track->prettyName();
     if( name.isEmpty() )
