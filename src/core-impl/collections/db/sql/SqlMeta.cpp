@@ -883,12 +883,21 @@ SqlTrack::commitMetaDataChanges()
         // if the current album is no compilation and we aren't changing
         // the album anyway, then we need to create a new album with the
         // new artist.
-        if( m_album &&
-            m_album->hasAlbumArtist() &&
-            m_album->albumArtist() == oldArtist &&
-            !m_cache.contains( Meta::valAlbum ) &&
-            !m_cache.contains( Meta::valAlbumId ) )
-            m_cache.insert( Meta::valAlbum, m_album->name() );
+        if( m_album )
+        {
+            bool supp = m_album->suppressImageAutoFetch();
+            m_album->setSuppressImageAutoFetch( true );
+
+            if( m_album->hasAlbumArtist() &&
+                m_album->albumArtist() == oldArtist &&
+                !m_cache.contains( Meta::valAlbum ) &&
+                !m_cache.contains( Meta::valAlbumId ) )
+            {
+                m_cache.insert( Meta::valAlbum, m_album->name() );
+            }
+
+            m_album->setSuppressImageAutoFetch( supp );
+        }
 
         collectionChanged = true;
     }
@@ -1010,9 +1019,19 @@ SqlTrack::commitMetaDataChanges()
     m_lock.unlock(); // or else we provoke a deadlock
 
     // copy the image BUG: 203211 (we need to do it here or provoke a dead lock)
-    if( oldAlbum && newAlbum &&
-        oldAlbum->hasImage() && !newAlbum->hasImage() )
-        newAlbum->setImage( oldAlbum->imageLocation().path() );
+    if( oldAlbum && newAlbum )
+    {
+        bool oldSupp = oldAlbum->suppressImageAutoFetch();
+        bool newSupp = newAlbum->suppressImageAutoFetch();
+        oldAlbum->setSuppressImageAutoFetch( true );
+        newAlbum->setSuppressImageAutoFetch( true );
+
+        if( oldAlbum->hasImage() && !newAlbum->hasImage() )
+            newAlbum->setImage( oldAlbum->imageLocation().path() );
+
+        oldAlbum->setSuppressImageAutoFetch( oldSupp );
+        newAlbum->setSuppressImageAutoFetch( newSupp );
+    }
 
     registry->commitDirtyTracks();
     m_lock.lockForWrite();
