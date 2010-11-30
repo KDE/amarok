@@ -36,3 +36,4 @@
 ########### install files ###############
 
         install( FILES amarok_service_opmldirectory.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+        install( FILES podcast_directory.opml DESTINATION ${DATA_INSTALL_DIR}/amarok/data)

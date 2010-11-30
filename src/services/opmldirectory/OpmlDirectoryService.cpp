@@ -27,6 +27,7 @@
 #include "core/podcasts/PodcastProvider.h"
 #include "ServiceSqlRegistry.h"
 
+#include <KStandardDirs>
 #include <KTemporaryFile>
 #include <threadweaver/ThreadWeaver.h>
 
@@ -100,8 +101,24 @@ void OpmlDirectoryService::polish()
     view->setSortingEnabled( false );
     view->setDragDropMode ( QAbstractItemView::DragOnly );
     setView( view );
-    setModel( new OpmlDirectoryModel( KUrl( "http://kollide.net/~stecchino/amarok_podcasts.opml"),
-                                      this ) );
+    KUrl opmlLocation( Amarok::saveLocation() );
+    opmlLocation.addPath( "podcast_directory.opml" );
+
+    if( !QFile::exists( opmlLocation.toLocalFile() ) )
+    {
+        //copy from the standard data dir
+        KUrl schippedOpmlLocation( KStandardDirs::locate( "data", "amarok/data/" ) );
+        schippedOpmlLocation.addPath( "podcast_directory.opml" );
+        if( !QFile::copy( schippedOpmlLocation.toLocalFile(), opmlLocation.toLocalFile() ) )
+        {
+            debug() << QString( "Failed to copy from %1 to %2" )
+            .arg( schippedOpmlLocation.toLocalFile(), opmlLocation.toLocalFile() );
+            //TODO: error box drawn in the view's area.
+            return;
+        }
+    }
+
+    setModel( new OpmlDirectoryModel( opmlLocation, this ) );
 
     m_subscribeButton = new QPushButton();
     m_subscribeButton->setParent( m_bottomPanel );
