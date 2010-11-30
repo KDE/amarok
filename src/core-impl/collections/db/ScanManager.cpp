@@ -313,7 +313,7 @@ ScannerJob::~ScannerJob()
     {
         disconnect( m_scanner, 0, this, 0 );
         m_scanner->terminate();
-        m_scanner->deleteLater();
+        delete m_scanner;
         m_scanner = 0;
     }
 
