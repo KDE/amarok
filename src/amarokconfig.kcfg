@@ -446,6 +446,18 @@
         <label>Whether Collection folders are rescanned on change</label>
         <default>true</default>
     </entry>
+    <entry key="Write Back" type="Bool">
+        <label>Whether meta data changes are written back</label>
+        <default>true</default>
+    </entry>
+    <entry key="Write Back Statistics" type="Bool">
+        <label>Whether changes to the track statistics are written back</label>
+        <default>false</default>
+    </entry>
+    <entry key="Write Back Cover" type="Bool">
+        <label>Whether changes to the album cover are written back</label>
+        <default>false</default>
+    </entry>
     <entry key="Collection Folders" type="PathList">
         <label>List of folders in the Collection</label>
     </entry>
