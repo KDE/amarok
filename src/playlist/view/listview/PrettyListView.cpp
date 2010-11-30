@@ -107,7 +107,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( slotPlaylistActiveTrackChanged() ) );
 
-    connect( model(), SIGNAL( queueChanged() ), this, SLOT( update() ) );
+    connect( model(), SIGNAL( queueChanged() ), viewport(), SLOT( update() ) );
 
     //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->bottom()'.
     connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
