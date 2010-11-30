@@ -26,6 +26,10 @@
 #include "FileType.h"
 #include "MetaReplayGain.h"
 
+#ifndef UTILITIES_BUILD
+#include "amarokconfig.h"
+#endif
+
 #include <QImage>
 #include <QBuffer>
 #include <QDir>
@@ -1145,6 +1149,16 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes )
 
     foreach( const qint64 field, changes.keys() )
     {
+#ifndef UTILITIES_BUILD
+        // depending on the configuration we might not want to write back statistics
+        if( !AmarokConfig::writeBackStatistics() &&
+            (field == Meta::valScore ||
+             field == Meta::valRating ||
+             field == Meta::valFirstPlayed ||
+             field == Meta::valLastPlayed ||
+             field == Meta::valPlaycount) )
+            continue;
+#endif
         switch( field )
         {
         case Meta::valTitle:

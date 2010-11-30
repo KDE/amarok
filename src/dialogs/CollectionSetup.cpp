@@ -131,9 +131,12 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
+    m_writeBackStatistics = new QCheckBox( i18n("Write back statistics"), this );
+    m_writeBackStatistics->setToolTip( i18n( "Write changed statistics (e.g. rating or playcount) back to the file." ) );
     m_charset   = new QCheckBox( i18n("&Enable character set detection in ID3 tags"), this );
     connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_monitor  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+    connect( m_writeBackStatistics, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_charset  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
@@ -142,6 +145,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
+    m_writeBackStatistics->setChecked( AmarokConfig::writeBackStatistics() );
     m_charset->setChecked( AmarokConfig::useCharsetDetector() );
 
     // set the model _after_ constructing the checkboxes

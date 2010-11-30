@@ -86,6 +86,7 @@ class CollectionSetup : public KVBox
         QStringList m_dirs;
         QCheckBox *m_recursive;
         QCheckBox *m_monitor;
+        QCheckBox *m_writeBackStatistics;
         QCheckBox *m_charset;
 };
 
