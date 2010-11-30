@@ -410,10 +410,8 @@ ScannerJob::run()
                 }
                 else if( name == "directory" )
                 {
-                    m_mutex.unlock();
                     CollectionScanner::Directory *dir = new CollectionScanner::Directory( &m_reader );
                     processor->addDirectory( dir );
-                    m_mutex.lock();
                     debug() << "ScannerJob: run:"<<count<<"current path"<<dir->rpath();
                     count++;
 
