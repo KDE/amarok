@@ -323,8 +323,11 @@ UpcomingEventsListWidget::addEvent( const LastFmEventPtr &event )
     index *= 2;  // take separators into account
     m_layout->insertItem( index, widget );
     m_layout->insertItem( index + 1, new Plasma::Separator );
-    connect( widget->m_mapButton, SIGNAL(clicked()), m_sigmap, SLOT(map()) );
-    m_sigmap->setMapping( widget->m_mapButton, widget );
+    if( widget->m_mapButton )
+    {
+        connect( widget->m_mapButton, SIGNAL(clicked()), m_sigmap, SLOT(map()) );
+        m_sigmap->setMapping( widget->m_mapButton, widget );
+    }
     emit eventAdded( event );
 }
 
