@@ -1886,7 +1886,7 @@ QString
 SqlAlbum::largeImagePath()
 {
     if( !m_collection )
-        m_imagePath;
+        return m_imagePath;
 
     // Look up in the database
     QString query = "SELECT images.id, images.path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;"; // TODO: shouldn't we do a JOIN here?
