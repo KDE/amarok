@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>388</width>
-    <height>572</height>
+    <height>615</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -296,6 +296,36 @@ Note that always all personal labels will be shown.</string>
      </item>
      <item>
       <widget class="KColorButton" name="selectedColorButton">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Color for labels background:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="KColorButton" name="backgroundColorButton">
        <property name="minimumSize">
         <size>
          <width>100</width>

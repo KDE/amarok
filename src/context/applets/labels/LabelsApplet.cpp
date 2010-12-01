@@ -147,7 +147,9 @@ LabelsApplet::init()
     m_matchTitle = config.readEntry( "MatchTitle", true );
     m_matchAlbum = config.readEntry( "MatchAlbum", true );
     m_blacklist = config.readEntry( "Blacklist", QStringList() );
-    m_selectedColor = config.readEntry( "SelectedColor", QColor(0, 110, 0) );
+    m_selectedColor = config.readEntry( "SelectedColor", PaletteHandler::highlightColor( 2.0, 0.7 ) );
+    const QPalette pal;
+    m_backgroundColor = config.readEntry( "BackgroundColor", pal.color( QPalette::Base ) );
 
     setStoppedState( true );
 
@@ -241,7 +243,7 @@ LabelsApplet::updateLabels()
     while( it_infos.hasNext() )
     {
         it_infos.next();
-        if( !finalLabelsMap.contains( it_infos.key() ) && !m_blacklist.contains( it_infos.key() ) && it_infos.value().toInt() >= m_minCount && QString(it_infos.key()).length() <= 40
+        if( !finalLabelsMap.contains( it_infos.key() ) && it_infos.value().toInt() >= m_minCount && QString(it_infos.key()).length() <= 40 && !m_blacklist.contains( it_infos.key() )
             && !( m_matchArtist && QString(it_infos.key()).toLower() == m_artist.toLower() )
             && !( m_matchTitle && QString(it_infos.key()).toLower() == m_title.toLower() )
             && !( m_matchAlbum && QString(it_infos.key()).toLower() == m_album.toLower() ) )
@@ -297,7 +299,7 @@ LabelsApplet::updateLabels()
     // delete all unneeded label items
     for( int i=0; i<m_labelItems.count(); i++ )
     {
-        if( !finalLabelsMap.contains( m_labelItems.at(i)->toPlainText() ) )
+        if( !finalLabelsMap.contains( m_labelItems.at(i)->text() ) )
         {
             m_labelAnimations.at(i)->setEndValue( QPointF( size().width(), m_labelItems.at(i)->pos().y() ) );
             m_labelAnimations.at(i)->setEasingCurve( QEasingCurve::InQuad );
@@ -333,7 +335,7 @@ LabelsApplet::updateLabels()
         QPropertyAnimation *labelAnimation = 0;
         for( int i=0; i<m_labelItems.count(); i++ )
         {
-            if( m_labelItems.at(i)->toPlainText() == it_final.key() )
+            if( m_labelItems.at(i)->text() == it_final.key() )
             {
                 labelGraphics = m_labelItems.at(i);
                 labelGraphics->setDeltaPointSize( f_size );
@@ -345,6 +347,7 @@ LabelsApplet::updateLabels()
         {
             labelGraphics = new LabelGraphicsItem( it_final.key(), f_size, this );
             labelGraphics->setSelectedColor( m_selectedColor );
+            labelGraphics->setBackgroundColor( m_backgroundColor );
             if( m_selfAdded )
             {
                 labelGraphics->setPos( m_addLabelProxy.data()->pos().x(), m_addLabelProxy.data()->pos().y() + m_addLabelProxy.data()->size().height()/2 - labelGraphics->boundingRect().height()/2 );
@@ -383,6 +386,8 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     if( !m_stoppedstate )
     {
+        const qreal horzontalPadding = standardPadding() / 2;
+        const qreal verticalPadding = standardPadding() / 2;
         qreal x_pos;
         qreal y_pos = m_titleLabel.data()->pos().y() + m_titleLabel.data()->boundingRect().height() + standardPadding();
         qreal width = 0;
@@ -393,18 +398,18 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         for( int i = 0; i < m_labelItems.count(); i++ )
         {
             QRectF l_size = m_labelItems.at(i)->boundingRect();
-            if( width + l_size.width() + 3 * standardPadding() <= max_width || i == 0 )
+            if( width + l_size.width() + horzontalPadding <= max_width || i == 0 )
             {
                 width += l_size.width();
                 if( i != 0 )
-                    width += standardPadding();
+                    width += horzontalPadding;
                 if( l_size.height() > height )
                     height = l_size.height();
                 end_index = i;
             }
             else
             {
-                x_pos = ( max_width - width ) / 2;
+                x_pos = ( max_width - width ) / 2 + standardPadding();
                 for( int j = start_index; j <= end_index; j++ )
                 {
                     const QRectF c_size = m_labelItems.at(j)->boundingRect();
@@ -415,16 +420,16 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
                     if( m_labelAnimations.at(j)->state() != QAbstractAnimation::Running )
                         m_labelAnimations.at(j)->start();
                     m_labelItems.at(j)->updateHoverStatus();
-                    x_pos += c_size.width() + standardPadding();
+                    x_pos += c_size.width() + horzontalPadding;
                 }
-                y_pos += height; // no padding needed
+                y_pos += height + verticalPadding;
                 width = l_size.width();
                 height = l_size.height();
                 start_index = i;
                 end_index = i;
             }
         }
-        x_pos = ( max_width - width ) / 2;
+        x_pos = ( max_width - width ) / 2 + standardPadding();
         for( int j = start_index; j <= end_index; j++ )
         {
             const QRectF c_size = m_labelItems.at(j)->boundingRect();
@@ -435,7 +440,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
             if( m_labelAnimations.at(j)->state() != QAbstractAnimation::Running )
                 m_labelAnimations.at(j)->start();
             m_labelItems.at(j)->updateHoverStatus();
-            x_pos += c_size.width() + standardPadding();
+            x_pos += c_size.width() + horzontalPadding;
         }
         if( m_labelItems.count() > 0 )
             y_pos += height + standardPadding();
@@ -447,8 +452,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         y_pos += m_addLabelProxy.data()->size().height() + standardPadding();
 
         resize( size().width(), y_pos );
-        setMinimumHeight( y_pos );
-        setMaximumHeight( y_pos );
+        updateGeometry();
         emit sizeHintChanged( Qt::PreferredSize );
     }
 }
@@ -548,7 +552,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
                 while( it.hasNext() )
                 {
                     it.next();
-                    if( !m_blacklist.contains( it.key() ) && it.value().toInt() >= m_minAutoAddCount && QString(it.key()).length() <= 40
+                    if( it.value().toInt() >= m_minAutoAddCount && QString(it.key()).length() <= 40 && !m_blacklist.contains( it.key() )
                         && !( m_matchArtist && QString(it.key()).toLower() == m_artist.toLower() )
                         && !( m_matchTitle && QString(it.key()).toLower() == m_title.toLower() )
                         && !( m_matchAlbum && QString(it.key()).toLower() == m_album.toLower() ) )
@@ -585,15 +589,9 @@ LabelsApplet::toggleLabel( const QString &label )
         return;
     
     Meta::TrackPtr track = The::engineController()->currentTrack();
-
     if( !track )
         return;
     
-    // Inform collections of end of a metadata update
-    QScopedPointer<Capabilities::UpdateCapability> uc( track->create<Capabilities::UpdateCapability>() );
-    if( !uc )
-        return;
-
     Meta::LabelPtr labelPtr;
     
     foreach( const Meta::LabelPtr &labelIt, track->labels() )
@@ -680,6 +678,7 @@ LabelsApplet::createConfigurationInterface( KConfigDialog *parent )
     ui_Settings.matchAlbumCheckBox->setChecked( m_matchAlbum );
     ui_Settings.blacklistEditListBox->insertStringList( m_blacklist );
     ui_Settings.selectedColorButton->setColor( m_selectedColor );
+    ui_Settings.backgroundColorButton->setColor( m_backgroundColor );
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
 
@@ -699,6 +698,7 @@ LabelsApplet::saveSettings()
     m_matchAlbum = ui_Settings.matchAlbumCheckBox->checkState() == Qt::Checked;
     m_blacklist = ui_Settings.blacklistEditListBox->items();
     m_selectedColor = ui_Settings.selectedColorButton->color();
+    m_backgroundColor = ui_Settings.backgroundColorButton->color();
     
     config.writeEntry( "NumLabels", m_numLabels );
     config.writeEntry( "MinCount", m_minCount );
@@ -710,10 +710,12 @@ LabelsApplet::saveSettings()
     config.writeEntry( "MatchAlbum", m_matchAlbum );
     config.writeEntry( "Blacklist", m_blacklist );
     config.writeEntry( "SelectedColor", m_selectedColor );
+    config.writeEntry( "BackgroundColor", m_backgroundColor );
     
     for( int i=0; i<m_labelItems.count(); i++ )
     {
         m_labelItems.at(i)->setSelectedColor( m_selectedColor );
+        m_labelItems.at(i)->setBackgroundColor( m_backgroundColor );
     }
 
     reload();

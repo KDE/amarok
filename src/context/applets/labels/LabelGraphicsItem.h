@@ -19,15 +19,18 @@
 
 #include "context/Applet.h"
 
-#include <QGraphicsTextItem>
+#include <QGraphicsObject>
 #include <QWeakPointer>
 
 class LabelOverlayButton;
+class QGraphicsBlurEffect;
+class QGraphicsPixmapItem;
 class QGraphicsSceneHoverEvent;
 class QGraphicsSceneMouseEvent;
+class QGraphicsTextItem;
 class QPropertyAnimation;
 
-class LabelGraphicsItem : public QGraphicsTextItem
+class LabelGraphicsItem : public QGraphicsObject
 {
     Q_OBJECT
     Q_PROPERTY( qreal hoverValue READ hoverValue WRITE setHoverValue )
@@ -37,11 +40,17 @@ public:
     LabelGraphicsItem( const QString& text, qreal deltaPointSize, QGraphicsItem *parent );
     ~LabelGraphicsItem();
 
+    QString text();
+    void setText( const QString& text );
     void setDeltaPointSize( qreal deltaPointSize );
     void setSelected( bool selected );
     void setSelectedColor( QColor color );
+    void setBackgroundColor( QColor color );
     void updateHoverStatus();
     
+    QRectF boundingRect() const;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
+
 protected:
     virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
     virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
@@ -50,7 +59,13 @@ protected:
 private:
     qreal hoverValue();
     void setHoverValue( qreal value );
+    void updateGeometry();
 
+    QGraphicsTextItem               *m_textItem;
+    QGraphicsPixmapItem             *m_backgroundItem;
+    QGraphicsBlurEffect             *m_backgroundBlurEffect;
+    QColor                           m_backgroundColor;
+    
     qreal                            m_hoverValue;
     QColor                           m_hoverColor;
     QWeakPointer<QPropertyAnimation> m_hoverValueAnimation;

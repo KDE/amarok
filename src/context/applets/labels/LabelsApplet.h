@@ -66,8 +66,11 @@ private:
     QWeakPointer<QGraphicsProxyWidget> m_addLabelProxy;
     QWeakPointer<KComboBox>            m_addLabel;
 
+    // all labels currently used by the user in the collection (used for the combobox at the bottom)
     QStringList                     m_allLabels;
+    // labels assigned to the current track
     QStringList                     m_userLabels;
+    // labels received through last.fm
     QMap < QString, QVariant >      m_webLabels;
 
     // the list of the active label items and their animations - both lists have to be in sync
@@ -89,6 +92,7 @@ private:
     bool                    m_matchAlbum;
     QStringList             m_blacklist;
     QColor                  m_selectedColor;
+    QColor                  m_backgroundColor;
     
     bool                    m_stoppedstate;
     QString                 m_artist;

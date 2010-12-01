@@ -25,12 +25,17 @@
 
 // Qt
 #include <QApplication>
+#include <QGraphicsBlurEffect>
 #include <QGraphicsSceneHoverEvent>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsTextItem>
+#include <QPainter>
+#include <QPixmap>
 #include <QPropertyAnimation>
 
 
 LabelGraphicsItem::LabelGraphicsItem( const QString &text, qreal deltaPointSize, QGraphicsItem *parent )
-    : QGraphicsTextItem( text, parent ),
+    : QGraphicsObject( parent ),
     m_selected( false )
 {
     setAcceptHoverEvents( true );
@@ -40,20 +45,35 @@ LabelGraphicsItem::LabelGraphicsItem( const QString &text, qreal deltaPointSize,
     m_hoverValueAnimation = new QPropertyAnimation( this, "hoverValue", this );
     m_hoverValueAnimation.data()->setEasingCurve( QEasingCurve::InOutQuad );
 
+    m_textItem = new QGraphicsTextItem( text, this );
+    m_textItem->setZValue( 10 );
+    m_textItem->setPos( qRound( m_textItem->boundingRect().height() / 4 ), 0 );
+
+    m_backgroundItem = new QGraphicsPixmapItem( this );
+    m_backgroundItem->setZValue( 0 );
+    m_backgroundItem->setOpacity( 0.7 );
+    m_backgroundBlurEffect = new QGraphicsBlurEffect( this );
+    m_backgroundBlurEffect->setBlurRadius( 4.0 );
+    m_backgroundItem->setGraphicsEffect( m_backgroundBlurEffect );
+
     KIconLoader *iconLoader = new KIconLoader();
     m_addLabelItem = new LabelOverlayButton( this );
+    m_addLabelItem.data()->setZValue( 20 );
     m_addLabelItem.data()->setPixmap( iconLoader->loadIcon( "list-add", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
     m_addLabelItem.data()->setToolTip( i18n( "Add label" ) );
     m_addLabelItem.data()->setOpacity( 0.0 );
     m_removeLabelItem = new LabelOverlayButton( this );
+    m_removeLabelItem.data()->setZValue( 20 );
     m_removeLabelItem.data()->setPixmap( iconLoader->loadIcon( "list-remove", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
     m_removeLabelItem.data()->setToolTip( i18n( "Remove label" ) );
     m_removeLabelItem.data()->setOpacity( 0.0 );
     m_listLabelItem = new LabelOverlayButton( this );
+    m_listLabelItem.data()->setZValue( 20 );
     m_listLabelItem.data()->setPixmap( iconLoader->loadIcon( "edit-find", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
     m_listLabelItem.data()->setToolTip( i18n( "Show in Media Sources" ) );
     m_listLabelItem.data()->setOpacity( 0.0 );
     m_blacklistLabelItem = new LabelOverlayButton( this );
+    m_blacklistLabelItem.data()->setZValue( 20 );
     m_blacklistLabelItem.data()->setPixmap( iconLoader->loadIcon( "flag-black", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
     m_blacklistLabelItem.data()->setToolTip( i18n( "Add to blacklist" ) );
     m_blacklistLabelItem.data()->setOpacity( 0.0 );
@@ -74,46 +94,37 @@ LabelGraphicsItem::LabelGraphicsItem( const QString &text, qreal deltaPointSize,
 LabelGraphicsItem::~LabelGraphicsItem()
 {}
 
+QString
+LabelGraphicsItem::text()
+{
+    return m_textItem->toPlainText();
+}
+
+void
+LabelGraphicsItem::setText(const QString& text)
+{
+    m_textItem->setPlainText( text );
+}
+
 void
 LabelGraphicsItem::setDeltaPointSize( qreal deltaPointSize )
 {
     QFont f = qApp->font();
     f.setPointSize( f.pointSizeF() + deltaPointSize );
-    setFont( f );
-
-    int iconsCount = 3;
-    const int maxHeight = boundingRect().height() * 2 / 3;
-    int maxWidth = ( boundingRect().width() - ( iconsCount - 1 ) * 2 ) / iconsCount;
-    while( maxWidth < 14 )
-    {
-        iconsCount--;
-        maxWidth = ( boundingRect().width() - ( iconsCount - 1 ) * 2 ) / iconsCount;
-    }
-    const int iconsSize = qMin( maxHeight, maxWidth );
-    const int iconsSpaceA = ( boundingRect().width() - iconsSize * iconsCount ) / ( iconsCount - 1 );
-    const int iconsSpaceB = iconsSize / 2;
-    const int iconsSpace = qMin( iconsSpaceA, iconsSpaceB );
-
-    m_addLabelItem.data()->setSize( iconsSize );
-    m_addLabelItem.data()->setPos( 0, ( boundingRect().height() - iconsSize ) / 2 );
-    m_removeLabelItem.data()->setSize( iconsSize );
-    m_removeLabelItem.data()->setPos( 0, ( boundingRect().height() - iconsSize ) / 2 );
-    m_listLabelItem.data()->setSize( iconsSize );
-    m_listLabelItem.data()->setPos( iconsSize + iconsSpace, ( boundingRect().height() - iconsSize ) / 2 );
-    m_listLabelItem.data()->setEnabled( iconsCount >= 2 );
-    m_blacklistLabelItem.data()->setSize( iconsSize );
-    m_blacklistLabelItem.data()->setPos( iconsSize * 2 + iconsSpace * 2, ( boundingRect().height() - iconsSize ) / 2 );
-    m_blacklistLabelItem.data()->setEnabled( iconsCount >= 3 );
-
-    updateHoverStatus();
+    f.setBold( m_selected );
+    m_textItem->setFont( f );
+    updateGeometry();
 }
 
 void
 LabelGraphicsItem::setSelected( bool selected )
 {
     m_selected = selected;
+    QFont f = m_textItem->font();
+    f.setBold( m_selected );
+    m_textItem->setFont( f );
     setHoverValue( (float)isUnderMouse() );
-    update();
+    updateGeometry();
 }
 
 void
@@ -122,6 +133,68 @@ LabelGraphicsItem::setSelectedColor( QColor color )
     m_selectedColor = color;
     setSelected( m_selected );
     update();
+}
+
+void
+LabelGraphicsItem::setBackgroundColor( QColor color )
+{
+    m_backgroundColor = color;
+    update();
+}
+
+void
+LabelGraphicsItem::updateGeometry()
+{
+    const QSizeF size = boundingRect().size();
+
+    m_textItem->setPos( qRound( size.height() / 4 ), 0 );
+
+    const qreal radius = size.height() / 4;
+
+    QPixmap pixmap( size.width(), size.height() );
+    pixmap.fill( Qt::transparent );
+    QPainter *painter = new QPainter( &pixmap );
+    painter->setRenderHint( QPainter::Antialiasing );
+    painter->setPen( QPen(m_backgroundColor) );
+    painter->setBrush( QBrush(m_backgroundColor) );
+    painter->drawRoundedRect( QRectF(2,2,size.width()-4,size.height()-4), radius, radius );
+    delete painter;
+    m_backgroundItem->setPixmap( pixmap );
+
+    int iconsCount = 3;
+    const int maxHeight = size.height() * 2 / 3;
+    // minimum space between icnos is 2 pixels (number of spaces is iconsCount - 1)
+    int maxWidth = ( size.width() - ( iconsCount - 1 ) * 2 ) / iconsCount;
+    // minimum icon size is 14 pixels, hide icons until the remaining icons fit
+    while( maxWidth < 14 && iconsCount > 0 )
+    {
+        iconsCount--;
+        maxWidth = ( size.width() - ( iconsCount - 1 ) * 2 ) / iconsCount;
+    }
+    const int iconsSize = qMin( maxHeight, maxWidth );
+    // maximum space between icons left
+    const int iconsSpaceA = ( size.width() - iconsSize * iconsCount ) / ( iconsCount - 1 );
+    // optimal space
+    const int iconsSpaceB = iconsSize / 2;
+    const int iconsSpace = qMin( iconsSpaceA, iconsSpaceB );
+    // if there's enough space left, start the icons at the same position as the text
+    // align buttons left
+    const int offset = qRound( qMin( ( size.width() - iconsSize * iconsCount - iconsSpace * ( iconsCount - 1 ) ) / 2, m_textItem->boundingRect().height() / 4 ) );
+    // align buttons centered
+//     const int offset = qRound( ( size.width() - iconsSize * iconsCount - iconsSpace * ( iconsCount - 1 ) ) / 2 );
+
+    m_addLabelItem.data()->setSize( iconsSize );
+    m_addLabelItem.data()->setPos( offset, ( size.height() - iconsSize ) / 2 );
+    m_removeLabelItem.data()->setSize( iconsSize );
+    m_removeLabelItem.data()->setPos( offset, ( size.height() - iconsSize ) / 2 );
+    m_listLabelItem.data()->setSize( iconsSize );
+    m_listLabelItem.data()->setPos( offset + iconsSize + iconsSpace, ( size.height() - iconsSize ) / 2 );
+    m_listLabelItem.data()->setEnabled( iconsCount >= 2 );
+    m_blacklistLabelItem.data()->setSize( iconsSize );
+    m_blacklistLabelItem.data()->setPos( offset + iconsSize * 2 + iconsSpace * 2, ( size.height() - iconsSize ) / 2 );
+    m_blacklistLabelItem.data()->setEnabled( iconsCount >= 3 );
+
+    updateHoverStatus();
 }
 
 void
@@ -267,11 +340,11 @@ LabelGraphicsItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     if( m_addLabelItem.data()->boundingRect().contains( mapToItem( m_addLabelItem.data(), event->pos() ) ) ||
         m_removeLabelItem.data()->boundingRect().contains( mapToItem( m_removeLabelItem.data(), event->pos() ) ) )
-        emit toggled( toPlainText() );
+        emit toggled( m_textItem->toPlainText() );
     else if( m_listLabelItem.data()->isEnabled() && m_listLabelItem.data()->boundingRect().contains( mapToItem( m_listLabelItem.data(), event->pos() ) ) )
-        emit list( toPlainText() );
+        emit list( m_textItem->toPlainText() );
     else if( m_blacklistLabelItem.data()->isEnabled() && m_blacklistLabelItem.data()->boundingRect().contains( mapToItem( m_blacklistLabelItem.data(), event->pos() ) ) )
-        emit blacklisted( toPlainText() );
+        emit blacklisted( m_textItem->toPlainText() );
 }
 
 qreal
@@ -292,6 +365,23 @@ LabelGraphicsItem::setHoverValue( qreal value )
     const int green = defaultColor.green() + ( m_hoverColor.green() - defaultColor.green() ) * m_hoverValue;
     const int blue  = defaultColor.blue()  + ( m_hoverColor.blue()  - defaultColor.blue()  ) * m_hoverValue;
 
-    setDefaultTextColor( QColor( red, green, blue ) );
+    m_textItem->setDefaultTextColor( QColor( red, green, blue ) );
 }
+
+QRectF
+LabelGraphicsItem::boundingRect() const
+{
+    QRectF rect = m_textItem->boundingRect();
+    rect.setWidth( rect.width() + qRound( rect.height() / 2 ) );
+    return rect;
+}
+
+void
+LabelGraphicsItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
+{
+    Q_UNUSED( painter )
+    Q_UNUSED( option )
+    Q_UNUSED( widget )
+}
+
 
