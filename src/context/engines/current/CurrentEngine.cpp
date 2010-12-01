@@ -112,7 +112,7 @@ CurrentEngine::trackPlaying( Meta::TrackPtr track )
         m_recentAlbumsQm.data()->abortQuery();
     if( m_requested.value( QLatin1String("current") ) )
         update( track );
-    if( m_requested.value( QLatin1String("albums") ) )
+    if( track && m_requested.value( QLatin1String("albums") ) )
         update( track->artist() );
 }
 
