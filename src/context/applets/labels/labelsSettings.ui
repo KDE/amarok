@@ -91,8 +91,8 @@
         </size>
        </property>
        <property name="toolTip">
-        <string>Don't show more labels than that.
-Note that always all personal labels will be shown.</string>
+        <string>Do not show more than this many labels.
+Note that personal labels will always be shown.</string>
        </property>
       </widget>
      </item>
@@ -213,7 +213,7 @@ Note that always all personal labels will be shown.</string>
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Don't show the following labels</string>
+      <string>Do not show the following labels</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
