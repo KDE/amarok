@@ -29,7 +29,7 @@
             <bool>true</bool>
            </property>
            <property name="toolTip">
-            <string>Move up</string>
+            <string>Move Up</string>
            </property>
            <property name="iconSize">
             <size>
@@ -45,7 +45,7 @@
             <bool>true</bool>
            </property>
            <property name="toolTip">
-            <string>Move down</string>
+            <string>Move Down</string>
            </property>
            <property name="iconSize">
             <size>
@@ -56,12 +56,22 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="removeTrackButton">
+           <property name="toolTip">
+            <string>Remove Track</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="clearButton">
            <property name="enabled">
             <bool>true</bool>
            </property>
            <property name="toolTip">
-            <string>Clear</string>
+            <string>Clear Queue</string>
            </property>
            <property name="iconSize">
             <size>

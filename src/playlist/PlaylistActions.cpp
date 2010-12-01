@@ -367,6 +367,14 @@ Playlist::Actions::queueMoveDown( quint64 id )
 }
 
 void
+Playlist::Actions::dequeue( quint64 id )
+{
+    m_navigator->dequeueId( id ); // has no return value, *shrug*
+    Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
+    return;
+}
+
+void
 Playlist::Actions::queue( QList<int> rows )
 {
     DEBUG_BLOCK

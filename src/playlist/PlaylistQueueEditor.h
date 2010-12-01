@@ -30,6 +30,7 @@ private slots:
     void queueChanged();
     void moveUp();
     void moveDown();
+    void removeTrack();
     void clear();
 
 private:

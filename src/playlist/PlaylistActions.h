@@ -114,6 +114,7 @@ public:
 
     bool queueMoveUp( quint64 id );
     bool queueMoveDown( quint64 id );
+    void dequeue( quint64 id );
 
 public slots:
     void play();
