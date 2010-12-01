@@ -579,35 +579,30 @@ WikipediaApplet::init()
 
     QAction* artistAction = new QAction( this );
     artistAction->setIcon( KIcon( "filename-artist-amarok" ) );
-    artistAction->setEnabled( false );
     artistAction->setText( i18n( "Artist" ) );
     d->artistIcon = addAction( artistAction );
     connect( d->artistIcon, SIGNAL(clicked()), this, SLOT(_gotoArtist()) );
 
     QAction* albumAction = new QAction( this );
     albumAction->setIcon( KIcon( "filename-album-amarok" ) );
-    albumAction->setEnabled( false );
     albumAction->setText( i18n( "Album" ) );
     d->albumIcon = addAction( albumAction );
     connect( d->albumIcon, SIGNAL(clicked()), this, SLOT(_gotoAlbum()) );
 
     QAction* trackAction = new QAction( this );
     trackAction->setIcon( KIcon( "filename-title-amarok" ) );
-    trackAction->setEnabled( false );
     trackAction->setText( i18n( "Track" ) );
     d->trackIcon = addAction( trackAction );
     connect( d->trackIcon, SIGNAL(clicked()), this, SLOT(_gotoTrack()) );
 
-    QAction* langAction = new QAction( this );
-    langAction->setIcon( KIcon( "preferences-system" ) );
-    langAction->setEnabled( true );
-    langAction->setText( i18n( "Settings" ) );
-    d->settingsIcon = addAction( langAction );
+    QAction* settingsAction = new QAction( this );
+    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setText( i18n( "Settings" ) );
+    d->settingsIcon = addAction( settingsAction );
     connect( d->settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
 
     QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
-    reloadAction->setEnabled( false );
     reloadAction->setText( i18n( "Reload" ) );
     d->reloadIcon = addAction( reloadAction );
     connect( d->reloadIcon, SIGNAL(clicked()), this, SLOT(_reloadWikipedia()) );
@@ -721,18 +716,6 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
     {
         d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
     }
-
-    if( d->reloadIcon->action() && !d->reloadIcon->action()->isEnabled() )
-        d->reloadIcon->action()->setEnabled( true );
-
-    if( d->artistIcon->action() && !d->artistIcon->action()->isEnabled() )
-        d->artistIcon->action()->setEnabled( true );
-
-    if( d->albumIcon->action() && !d->albumIcon->action()->isEnabled() )
-        d->albumIcon->action()->setEnabled( true );
-
-    if( d->trackIcon->action() && !d->trackIcon->action()->isEnabled() )
-        d->trackIcon->action()->setEnabled( true );
 }
 
 void
