@@ -185,7 +185,7 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
 
     if( currentSelection == Artist ) // default, or applet told us to fetch artist
     {
-        if( currentTrack->artist() )
+        if( currentTrack && currentTrack->artist() )
         {
             data[QLatin1String("label")] =  QLatin1String("Artist");
             data[QLatin1String("title")] = currentTrack->artist()->prettyName();
@@ -198,7 +198,7 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
     }
     else if( currentSelection == Album )
     {
-        if( currentTrack->album() )
+        if( currentTrack && currentTrack->album() )
         {
             data[QLatin1String("label")] = QLatin1String("Album");
             data[QLatin1String("title")] = currentTrack->album()->prettyName();
