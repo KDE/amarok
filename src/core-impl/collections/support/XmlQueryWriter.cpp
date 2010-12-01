@@ -272,13 +272,6 @@ XmlQueryWriter::addMatch( const Meta::LabelPtr &label )
 }
 
 QueryMaker*
-XmlQueryWriter::addMatch( const Meta::DataPtr &data )
-{
-    m_qm->addMatch( data );
-    return this;
-}
-
-QueryMaker*
 XmlQueryWriter::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     DEBUG_BLOCK

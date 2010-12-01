@@ -289,12 +289,6 @@ Meta::Track::removeLabel( const Meta::LabelPtr &label )
     Q_UNUSED( label )
 }
 
-void
-Meta::Track::addMatchTo( Collections::QueryMaker *qm )
-{
-    qm->addMatch( TrackPtr( this ) );
-}
-
 QDateTime
 Meta::Track::createDate() const
 {
@@ -395,12 +389,6 @@ Meta::Track::lessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right )
 
 //Meta::Artist
 
-void
-Meta::Artist::addMatchTo( Collections::QueryMaker *qm )
-{
-    qm->addMatch( ArtistPtr( this ) );
-}
-
 QString
 Meta::Artist::prettyName() const
 {
@@ -445,12 +433,6 @@ Meta::Artist::sortableName() const
 }
 
 //Meta::Album
-
-void
-Meta::Album::addMatchTo( Collections::QueryMaker *qm )
-{
-    qm->addMatch( AlbumPtr( this ) );
-}
 
 QString
 Meta::Album::prettyName() const
@@ -518,12 +500,6 @@ Meta::Genre::prettyName() const
 }
 
 void
-Meta::Genre::addMatchTo( Collections::QueryMaker *qm )
-{
-    qm->addMatch( GenrePtr( this ) );
-}
-
-void
 Meta::Genre::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
@@ -542,12 +518,6 @@ Meta::Genre::operator==( const Meta::Genre &genre ) const
 }
 
 //Meta::Composer
-
-void
-Meta::Composer::addMatchTo( Collections::QueryMaker *qm )
-{
-    qm->addMatch( ComposerPtr( this ) );
-}
 
 QString
 Meta::Composer::prettyName() const
@@ -576,12 +546,6 @@ Meta::Composer::operator==( const Meta::Composer &composer ) const
 //Meta::Year
 
 void
-Meta::Year::addMatchTo( Collections::QueryMaker *qm )
-{
-    qm->addMatch( YearPtr( this ) );
-}
-
-void
 Meta::Year::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
@@ -595,12 +559,6 @@ bool
 Meta::Year::operator==( const Meta::Year &year ) const
 {
     return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &year );
-}
-
-void
-Meta::Label::addMatchTo( Collections::QueryMaker *qm )
-{
-    qm->addMatch( Meta::LabelPtr( this ) );
 }
 
 void

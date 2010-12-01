@@ -288,14 +288,6 @@ NepomukQueryMaker::addMatch( const YearPtr &year )
 }
 
 QueryMaker*
-NepomukQueryMaker::addMatch( const DataPtr &data )
-{
-    debug() << "addMatch(data)" << endl;
-    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
-    return this;
-}
-
-QueryMaker*
 NepomukQueryMaker::addMatch( const KUrl &url )
 {
     m_queryMatch +=  QString(

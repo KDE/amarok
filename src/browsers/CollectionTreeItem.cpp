@@ -273,6 +273,31 @@ CollectionTreeItem::queryMaker() const
     return 0;
 }
 
+void
+CollectionTreeItem::addMatch( Collections::QueryMaker *qm ) const
+{
+    if( !m_data || m_type != Data )
+        return;
+    if( !qm )
+        return;
+
+    if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data ) )
+        qm->addMatch( track );
+    else if( Meta::ArtistPtr artist = Meta::ArtistPtr::dynamicCast( m_data ) )
+        qm->addMatch( artist );
+    else if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
+        qm->addMatch( album );
+    else if( Meta::ComposerPtr composer = Meta::ComposerPtr::dynamicCast( m_data ) )
+        qm->addMatch( composer );
+    else if( Meta::GenrePtr genre = Meta::GenrePtr::dynamicCast( m_data ) )
+        qm->addMatch( genre );
+    else if( Meta::YearPtr year = Meta::YearPtr::dynamicCast( m_data ) )
+        qm->addMatch( year );
+    else if( Meta::LabelPtr label = Meta::LabelPtr::dynamicCast( m_data ) )
+        qm->addMatch( label );
+}
+
+
 KUrl::List
 CollectionTreeItem::urls() const
 {

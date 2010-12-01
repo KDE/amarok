@@ -724,46 +724,6 @@ Meta::DataList asList( const Meta::YearPtr &year )
 #undef PointerToDataList
 
 void
-TestSqlQueryMaker::testMatch_data()
-{
-    QTest::addColumn<Collections::QueryMaker::QueryType>( "type" );
-    QTest::addColumn<Meta::DataList>( "dataList" );
-    QTest::addColumn<int>( "count" );
-
-    SqlRegistry *r = m_collection->registry();
-
-    QTest::newRow( "track matches artist" ) << Collections::QueryMaker::Track << asList( r->getArtist( "artist1" ) ) << 3;
-    QTest::newRow( "track matches album" ) << Collections::QueryMaker::Track << asList( r->getAlbum( "album1", "artist1" ) ) << 1;
-    QTest::newRow( "track matches genre" ) << Collections::QueryMaker::Track << asList( r->getGenre( "genre1" ) ) << 3;
-    QTest::newRow( "track matches composer" ) << Collections::QueryMaker::Track << asList( r->getComposer( "composer1" ) ) << 3;
-    QTest::newRow( "track matches year" ) << Collections::QueryMaker::Track << asList( r->getYear(1)) << 3;
-    QTest::newRow( "artist matches album" ) << Collections::QueryMaker::Artist << asList(r->getAlbum("album1", "artist1" )) << 1;
-    QTest::newRow( "artist matches genre" ) << Collections::QueryMaker::Artist << asList(r->getGenre("genre1")) << 2;
-}
-
-void
-TestSqlQueryMaker::testMatch()
-{
-    QFETCH( Collections::QueryMaker::QueryType, type );
-    QFETCH( Meta::DataList, dataList );
-    QFETCH( int, count );
-
-    Collections::SqlQueryMaker qm( m_collection );
-    qm.setBlocking( true );
-    qm.setQueryType( type );
-    qm.setReturnResultAsDataPtrs( true );
-
-    foreach( const Meta::DataPtr &data, dataList )
-    {
-        qm.addMatch( data );
-    }
-
-    qm.run();
-
-    QCOMPARE( qm.data( "testId" ).count(), count );
-}
-
-void
 TestSqlQueryMaker::testDynamicCollection()
 {
     //this will not crash as we reset the correct mock in cleanup()

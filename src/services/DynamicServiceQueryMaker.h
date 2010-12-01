@@ -72,9 +72,6 @@ public:
     virtual QueryMaker* addMatch ( const Meta::YearPtr &year );
     virtual QueryMaker* addMatch ( const Meta::LabelPtr &label );
 
-    //this function must be reimplemented if the QueryMaker accepts any kind of qualifiers
-    virtual QueryMaker* addMatch ( const Meta::DataPtr &data );
-
     virtual QueryMaker* addFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
     virtual QueryMaker* excludeFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
 

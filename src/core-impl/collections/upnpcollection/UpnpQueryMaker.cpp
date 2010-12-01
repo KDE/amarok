@@ -316,14 +316,6 @@ DEBUG_BLOCK
     return this;
 }
 
-QueryMaker* UpnpQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-DEBUG_BLOCK
-    debug() << this << "Adding dataptr match" << data->name();
-    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
-    return this;
-}
-
 QueryMaker* UpnpQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
 DEBUG_BLOCK

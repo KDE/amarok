@@ -466,11 +466,4 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter( qint64 value, const QString
 
 }
 
-QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::DataPtr & data )
-{
-    //DEBUG_BLOCK
-    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
-    return this;
-}
-
 #include "ScriptableServiceQueryMaker.moc"

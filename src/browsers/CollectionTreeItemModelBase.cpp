@@ -438,7 +438,7 @@ CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) 
                 {
                     if( levelCategory( tmpItem->level() - 1 ) == CategoryId::AlbumArtist )
                         qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
-                    qm->addMatch( tmpItem->data() );
+                    tmpItem->addMatch( qm );
                 }
                 else
                     qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
@@ -580,7 +580,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
             {
                 if( levelCategory( tmpItem->level() - 1 ) == CategoryId::AlbumArtist )
                     qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
-                qm->addMatch( tmpItem->data() );
+                 tmpItem->addMatch( qm );
             }
         }
         addFilters( qm );
@@ -1180,11 +1180,8 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
     qm->setQueryType( Collections::QueryMaker::Album );
     for( CollectionTreeItem *tmpItem = parent; tmpItem->parent(); tmpItem = tmpItem->parent() )
-    {
-        //ignore special nodes that do not have a data pointer
-        if( tmpItem->data() )
-            qm->addMatch( tmpItem->data() );
-    }
+        tmpItem->addMatch( qm );
+
     addFilters( qm );
     qm->setReturnResultAsDataPtrs( true );
     connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
@@ -1203,11 +1200,8 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
     qm->setLabelQueryMode( Collections::QueryMaker::OnlyWithoutLabels );
     qm->setReturnResultAsDataPtrs( true );
     for( CollectionTreeItem *tmpItem = parent; tmpItem->parent(); tmpItem = tmpItem->parent() )
-    {
-        //ignore special nodes that do not have a data pointer
-        if( tmpItem->data() )
-            qm->addMatch( tmpItem->data() );
-    }
+        tmpItem->addMatch( qm );
+
     addFilters( qm );
     connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );

@@ -181,10 +181,6 @@ namespace Meta
              */
             virtual QString fixedName() const { return prettyName(); }
 
-            virtual void addMatchTo( Collections::QueryMaker *qm ) = 0;
-
-
-
         protected:
             virtual void subscribe( Observer *observer );
             virtual void unsubscribe( Observer *observer );
@@ -287,8 +283,6 @@ namespace Meta
                 The argument is the percentage of the track which was played, in the range 0 to 1*/
             virtual void finishedPlaying( double playedFraction );
 
-            virtual void addMatchTo( Collections::QueryMaker* qm );
-
             /** returns true if the track is part of a collection false otherwise */
             virtual bool inCollection() const;
             /**
@@ -345,8 +339,6 @@ namespace Meta
 
             /** returns all albums by this artist */
             virtual AlbumList albums() = 0;
-
-            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Artist &artist ) const;
 
@@ -415,8 +407,6 @@ namespace Meta
             /** should automatic artwork retrieval be suppressed? */
             virtual bool suppressImageAutoFetch() const { return false; }
 
-            virtual void addMatchTo( Collections::QueryMaker* qm );
-
             virtual bool operator==( const Meta::Album &album ) const;
 
         protected:
@@ -433,8 +423,6 @@ namespace Meta
             /** returns all tracks by this composer */
             virtual TrackList tracks() = 0;
 
-            virtual void addMatchTo( Collections::QueryMaker* qm );
-
             virtual bool operator==( const Meta::Composer &composer ) const;
 
         protected:
@@ -450,8 +438,6 @@ namespace Meta
             virtual QString prettyName() const;
             /** returns all tracks which belong to the genre */
             virtual TrackList tracks() = 0;
-
-            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Genre &genre ) const;
 
@@ -474,8 +460,6 @@ namespace Meta
             /** returns all tracks which are tagged with this year */
             virtual TrackList tracks() = 0;
 
-            virtual void addMatchTo( Collections::QueryMaker* qm );
-
             virtual bool operator==( const Meta::Year &year ) const;
 
         protected:
@@ -496,8 +480,6 @@ namespace Meta
           Destructs an existing Label.
           */
         virtual ~ Label() {}
-
-        virtual void addMatchTo( Collections::QueryMaker* qm );
 
     protected:
         virtual void notifyObservers() const;

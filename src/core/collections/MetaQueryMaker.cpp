@@ -231,15 +231,6 @@ MetaQueryMaker::addMatch( const Meta::YearPtr &year )
 }
 
 QueryMaker*
-MetaQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-    Meta::DataPtr tmp = const_cast<Meta::DataPtr&>( data );
-    foreach( QueryMaker *b, builders )
-        tmp->addMatchTo( b );
-    return this;
-}
-
-QueryMaker*
 MetaQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
     foreach( QueryMaker *b, builders )

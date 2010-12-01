@@ -348,17 +348,7 @@ namespace Collections
         
         return this;
     }
-    
-    QueryMaker*
-    PlaydarQueryMaker::addMatch( const Meta::DataPtr &data )
-    {
-        DEBUG_BLOCK
-        
-        ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
-        
-        return this;
-    }
-    
+
     QueryMaker*
     PlaydarQueryMaker::addMatch( const Meta::LabelPtr &label )
     {

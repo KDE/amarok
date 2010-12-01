@@ -62,9 +62,6 @@ private slots:
     void testFilter();
     void testFilter_data();
 
-    void testMatch();
-    void testMatch_data();
-
     void testDynamicCollection();
 
     void testSpecialCharacters_data();

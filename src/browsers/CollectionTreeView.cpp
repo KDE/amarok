@@ -1222,7 +1222,7 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
             {
                 if( m_treeModel->levelCategory( tmp->data() - 1 ) == CategoryId::AlbumArtist )
                     qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
-                qm->addMatch( tmp->data() );
+                tmp->addMatch( qm );
             }
             tmp = tmp->parent();
         }

@@ -157,7 +157,6 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer ) = 0;
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre ) = 0;
         virtual QueryMaker* addMatch( const Meta::YearPtr &year ) = 0;
-        virtual QueryMaker* addMatch( const Meta::DataPtr &data ) = 0;
         virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
 
         /**

@@ -1320,7 +1320,7 @@ SqlTrack::labels() const
     {
         Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( Collections::QueryMaker::Label );
-        const_cast<SqlTrack*>( this )->addMatchTo( qm );
+        qm->addMatch( Meta::TrackPtr( const_cast<SqlTrack*>(this) ) );
         qm->setBlocking( true );
         qm->run();
 
@@ -1404,7 +1404,7 @@ SqlArtist::tracks()
 
     Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
     qm->setQueryType( Collections::QueryMaker::Track );
-    addMatchTo( qm );
+    qm->addMatch( Meta::ArtistPtr( this ) );
     qm->setBlocking( true );
     qm->run();
     m_tracks = qm->tracks( m_collection->collectionId() );
@@ -1422,7 +1422,7 @@ SqlArtist::albums()
 
     Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
     qm->setQueryType( Collections::QueryMaker::Album );
-    addMatchTo( qm );
+    qm->addMatch( Meta::ArtistPtr( this ) );
     qm->setBlocking( true );
     qm->run();
     m_albums = qm->albums( m_collection->collectionId() );
@@ -1509,7 +1509,7 @@ SqlAlbum::tracks()
 
     Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
     qm->setQueryType( Collections::QueryMaker::Track );
-    addMatchTo( qm );
+    qm->addMatch( Meta::AlbumPtr( this ) );
     qm->orderBy( Meta::valDiscNr );
     qm->orderBy( Meta::valTrackNr );
     qm->orderBy( Meta::valTitle );
@@ -2086,7 +2086,7 @@ SqlComposer::tracks()
     {
         Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( Collections::QueryMaker::Track );
-        addMatchTo( qm );
+        qm->addMatch( Meta::ComposerPtr( this ) );
         qm->setBlocking( true );
         qm->run();
         m_tracks = qm->tracks( m_collection->collectionId() );
@@ -2127,7 +2127,7 @@ SqlGenre::tracks()
 
     Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
     qm->setQueryType( Collections::QueryMaker::Track );
-    addMatchTo( qm );
+    qm->addMatch( Meta::GenrePtr( this ) );
     qm->setBlocking( true );
     qm->run();
     m_tracks = qm->tracks( m_collection->collectionId() );
@@ -2165,7 +2165,7 @@ SqlYear::tracks()
 
     Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
     qm->setQueryType( Collections::QueryMaker::Track );
-    addMatchTo( qm );
+    qm->addMatch( Meta::YearPtr( this ) );
     qm->setBlocking( true );
     qm->run();
     m_tracks = qm->tracks( m_collection->collectionId() );
@@ -2203,7 +2203,7 @@ SqlLabel::tracks()
 
     Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
     qm->setQueryType( Collections::QueryMaker::Track );
-    addMatchTo( qm );
+    qm->addMatch( Meta::LabelPtr( this ) );
     qm->setBlocking( true );
     qm->run();
     m_tracks = qm->tracks();

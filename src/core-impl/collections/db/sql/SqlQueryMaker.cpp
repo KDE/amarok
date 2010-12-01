@@ -498,13 +498,6 @@ SqlQueryMaker::addMatch( const Meta::LabelPtr &label )
 }
 
 QueryMaker*
-SqlQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
-    return this;
-}
-
-QueryMaker*
 SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     // special case for albumartist...

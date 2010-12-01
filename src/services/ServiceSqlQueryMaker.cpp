@@ -435,14 +435,6 @@ ServiceSqlQueryMaker::addMatch( const Meta::LabelPtr &label )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
-    //TODO needed at all?
-    return this;
-}
-
-QueryMaker*
 ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     if( !isValidValue( value ) )

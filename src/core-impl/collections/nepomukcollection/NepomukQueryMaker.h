@@ -56,8 +56,7 @@ class NepomukQueryMaker : public QueryMaker
 	    virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
 	    virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
 	    virtual QueryMaker* addMatch( const Meta::YearPtr &year );
-	    virtual QueryMaker* addMatch( const Meta::DataPtr &data );
-	
+
 	    virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 	    virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 	

@@ -114,13 +114,6 @@ QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::LabelPtr & label)
     return this;
 }
 
-QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::DataPtr & data)
-{
-    DEBUG_BLOCK
-    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
-    return this;
-}
-
 QueryMaker * DynamicServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool matchBegin, bool matchEnd)
 {
     Q_UNUSED( value );

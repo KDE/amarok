@@ -266,15 +266,6 @@ ProxyQueryMaker::addMatch( const Meta::YearPtr &year )
 }
 
 QueryMaker*
-ProxyQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-    Meta::DataPtr tmp = const_cast<Meta::DataPtr&>( data );
-    foreach( QueryMaker *b, m_builders )
-        tmp->addMatchTo( b );
-    return this;
-}
-
-QueryMaker*
 ProxyQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
     foreach( QueryMaker *b, m_builders )

@@ -90,6 +90,9 @@ class CollectionTreeItem : public QObject
 
         Collections::QueryMaker* queryMaker() const;
 
+        /** Call addMatch for this objects data and it's query maker */
+        void addMatch( Collections::QueryMaker *qm ) const;
+
         bool operator<( const CollectionTreeItem& other ) const;
 
         const Meta::DataPtr data() const { return m_data; }

@@ -422,13 +422,6 @@ MemoryQueryMaker::addMatch( const Meta::YearPtr &year )
 }
 
 QueryMaker*
-MemoryQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
-    return this;
-}
-
-QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
     MemoryMatcher *labelMatcher = new LabelMatcher( label );
