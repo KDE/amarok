@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LyricsManager"
+
 #include "LyricsManager.h"
 
 #include "core-impl/collections/support/CollectionManager.h"
@@ -52,6 +54,7 @@ LyricsObserver::~LyricsObserver()
 
 void LyricsSubject::sendNewLyrics( QStringList lyrics )
 {
+    DEBUG_BLOCK
     foreach( LyricsObserver* obs, m_observers )
     {
         obs->newLyrics( lyrics );
@@ -60,6 +63,7 @@ void LyricsSubject::sendNewLyrics( QStringList lyrics )
 
 void LyricsSubject::sendNewLyricsHtml( QString lyrics )
 {
+    DEBUG_BLOCK
     foreach( LyricsObserver* obs, m_observers )
     {
         obs->newLyricsHtml( lyrics );
@@ -68,6 +72,7 @@ void LyricsSubject::sendNewLyricsHtml( QString lyrics )
 
 void LyricsSubject::sendNewSuggestions( const QVariantList &sug )
 {
+    DEBUG_BLOCK
     foreach( LyricsObserver* obs, m_observers )
     {
         obs->newSuggestions( sug );
@@ -217,6 +222,7 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
 void
 LyricsManager::lyricsError( const QString &error )
 {
+    DEBUG_BLOCK
     if( !showCached() )
     {
         sendLyricsMessage( "error", error );
@@ -227,31 +233,15 @@ LyricsManager::lyricsError( const QString &error )
 void
 LyricsManager::lyricsNotFound( const QString& notfound )
 {
+    DEBUG_BLOCK
     if( !showCached() )
-    {
-        //if we have cached lyrics there is absolutely no point in not showing these..
-        Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-	if( !currentTrack )
-            return;
-
-        Meta::ArtistPtr currentArtist = currentTrack->artist();
-	if( !currentArtist )
-            return;
-
-        const QString title = currentTrack->prettyName();
-
-        QStringList lyricsData;
-        lyricsData << title
-        << currentArtist->name()
-        << QString() // TODO lyrics site
-        << notfound;
-        sendNewLyrics( lyricsData );
-    }
+        sendLyricsMessage( "notfound", notfound );
 }
 
 
 bool LyricsManager::showCached()
 {
+    DEBUG_BLOCK
     //if we have cached lyrics there is absolutely no point in not showing these..
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( currentTrack && !isEmpty( currentTrack->cachedLyrics() ) )

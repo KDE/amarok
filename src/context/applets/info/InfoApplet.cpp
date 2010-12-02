@@ -15,19 +15,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "InfoApplet"
+
 #include "InfoApplet.h"
 
-#include "core/support/Amarok.h"
 #include "App.h"
 #include "amarokurls/AmarokUrl.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistController.h"
 
+#include <KGraphicsWebView>
 #include <KStandardDirs>
 
 #include <QPainter>
 #include <QDesktopServices>
+#include <QGraphicsLinearLayout>
 
 QString InfoApplet::s_defaultHtml = "<html>"
                                     "    <head>"
@@ -55,36 +59,31 @@ InfoApplet::~InfoApplet()
 }
 
 
-void  InfoApplet::init()
+void InfoApplet::init()
 {
     // Call the base implementation.
     Context::Applet::init();
 
     dataEngine( "amarok-info" )->connectSource( "info", this );
 
-    m_webView = new AmarokWebView( this );
-
-    resize( 500, -1 );
+    m_webView = new KGraphicsWebView( this );
 
     QPalette p = m_webView->palette();
     p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
     p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
     m_webView->setPalette( p );
 
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
+    layout->addItem( m_webView );
+
     connect( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ), SLOT( linkClicked ( const QUrl & ) ) );
 
-    constraintsEvent();
+    updateConstraints();
 }
 
 void InfoApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
-    
-    prepareGeometryChange();
-
-    m_webView->setPos( standardPadding(), standardPadding() );
-    m_webView->resize( boundingRect().width() - 2 * standardPadding(), boundingRect().height() - 2 * standardPadding() );
-
     m_initialized = true;
 }
 
@@ -95,7 +94,7 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
     if( data.isEmpty() )
         return;
 
-    if  ( m_initialized )
+    if( m_initialized )
     {
         QString currentHtml = data[ "main_info" ].toString();
         if ( !currentHtml.isEmpty() )
@@ -119,29 +118,6 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         m_webView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
         updateConstraints();
     }
-}
-
-void InfoApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{    
-    Q_UNUSED( option );
-
-    //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
-    //context view has been minimized completely
-    if ( ( contentsRect.width() < 40 ) || ( contentsRect.height() < 40 ) )
-    {
-        debug() << "Too little room to paint, hiding all children ( making myself invisible but still painted )!";
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
-            childItem->hide();
-
-        return;
-    }
-    else
-    {
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
-            childItem->show();
-    }
-
-    addGradientToAppletBackground( p );
 }
 
 void InfoApplet::linkClicked( const QUrl & url )

@@ -33,10 +33,8 @@ LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
     , LyricsObserver( LyricsManager::self() )
 {
-    m_requested = true; // testing
 
     EngineController* engine = The::engineController();
-
     connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
              this, SLOT( update() ), Qt::QueuedConnection );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
@@ -53,7 +51,6 @@ QStringList LyricsEngine::sources() const
 
 bool LyricsEngine::sourceRequestEvent( const QString& name )
 {
-    m_requested = true; // someone is asking for data, so we turn ourselves on :)
     if( name.contains( "previous lyrics" ) )
     {
         removeAllData( "lyrics" );
@@ -122,7 +119,7 @@ void LyricsEngine::update()
         removeAllData( "lyrics" );
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
         disconnect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), this, 0 );
-        connect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), SLOT(update()), Qt::QueuedConnection );
+        connect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), SLOT(update()) );
         return;
     }
 

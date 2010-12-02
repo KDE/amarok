@@ -60,6 +60,7 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _wikiResult(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
     Q_PRIVATE_SLOT( d_ptr, void _parseLangLinksResult(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
     Q_PRIVATE_SLOT( d_ptr, void _parseListingResult(const KUrl&,QByteArray,NetworkAccessManagerProxy::Error) )
+    Q_PRIVATE_SLOT( d_ptr, void _stopped() )
 };
 
 K_EXPORT_AMAROK_DATAENGINE( wikipedia, WikipediaEngine )

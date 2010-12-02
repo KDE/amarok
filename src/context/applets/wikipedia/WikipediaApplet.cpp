@@ -412,6 +412,8 @@ WikipediaAppletPrivate::_pageLoadStarted()
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( q->layout() );
     lo->addItem( proxy );
     lo->activate();
+    q->setCollapseHeight( q->collapseHeight() + proxy->size().height() );
+    emit q->sizeHintChanged( Qt::PreferredSize );
     QObject::connect( webView, SIGNAL(loadProgress(int)), q, SLOT(_pageLoadProgress(int)) );
 }
 
@@ -436,6 +438,9 @@ WikipediaAppletPrivate::_pageLoadFinished( bool ok )
     QGraphicsProxyWidget *proxy = static_cast<QGraphicsProxyWidget*>( lo->itemAt( lo->count() - 1 ) );
     lo->removeItem( proxy );
     lo->activate();
+    q->setCollapseHeight( wikipediaLabel->size().height()
+                          + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
+    emit q->sizeHintChanged( Qt::PreferredSize );
     proxy->deleteLater();
 }
 
@@ -479,13 +484,11 @@ WikipediaApplet::~WikipediaApplet()
 void
 WikipediaApplet::init()
 {
-    // Call the base implementation.
+    DEBUG_BLOCK
+
     Context::Applet::init();
 
     Q_D( WikipediaApplet );
-
-    // ask for all the CV height
-    resize( 500, -1 );
 
     d->wikipediaLabel = new TextScrollingWidget( this );
     d->webView = new WikipediaWebView( this );
@@ -512,8 +515,13 @@ WikipediaApplet::init()
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
     d->wikipediaLabel->setFont( labelFont );
-    d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
+    d->wikipediaLabel->setText( i18n( "Wikipedia" ) );
     d->wikipediaLabel->setDrawBackground( true );
+
+    setCollapseHeight( d->wikipediaLabel->size().height()
+                       + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
+    setMinimumHeight( collapseHeight() );
+    setPreferredHeight( collapseHeight() );
 
     QAction* backwardAction = new QAction( this );
     backwardAction->setIcon( KIcon( "go-previous" ) );
@@ -590,15 +598,15 @@ WikipediaApplet::init()
     d->scheduleEngineUpdate();
 
     updateConstraints();
-    update();
 }
 
 void
 WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_UNUSED( constraints );
     Q_D( WikipediaApplet );
+    Context::Applet::constraintsEvent( constraints );
     d->wikipediaLabel->setScrollingText( d->wikipediaLabel->text() );
+    update();
 }
 
 bool
@@ -617,19 +625,31 @@ WikipediaApplet::heightForWidth( qreal width ) const
 void
 WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::Data &data )
 {
+    DEBUG_BLOCK
     Q_UNUSED( source )
     Q_D( WikipediaApplet );
 
     if( data.isEmpty() )
+    {
+        debug() << "data Empty!";
+        d->webView->hide();
+        setCollapseOn();
         return;
+    }
+
+    if( data.contains( "stopped" ) )
+    {
+        debug() << "stopped";
+        d->dataContainer->removeAllData();
+        d->webView->hide();
+        setCollapseOn();
+        return;
+    }
 
     if( data.contains( "busy" ) )
     {
         if( canAnimate() && data["busy"].toBool() )
-        {
-            d->webView->hide();
             setBusy( true );
-        }
         return;
     }
     else
@@ -640,12 +660,12 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
 
     if( data.contains( "message" ) )
     {
+        setCollapseOn();
         // messages have higher priority than pages
         const QString &message = data.value( "message" ).toString();
         if( !message.isEmpty() )
         {
-            d->webView->setHtml( data[ "message" ].toString(), QUrl() ); // set data
-            d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
+            d->wikipediaLabel->setScrollingText( i18n( "Wikipedia: %1", message ) );
             d->dataContainer->removeAllData();
         }
     }

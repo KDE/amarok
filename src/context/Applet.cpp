@@ -15,10 +15,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Context::Applet"
+
 #include "Applet.h"
 
-#include "App.h"
 #include "Containment.h"
+#include "ContextView.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
@@ -41,14 +43,13 @@ namespace Context
 Context::Applet::Applet( QObject * parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
     , m_canAnimate( !KServiceTypeTrader::self()->query("Plasma/Animator", QString()).isEmpty() )
-    , m_collapsed( false )
+    , m_heightCollapseOff( -1 )
     , m_transient( 0 )
     , m_isMessageShown( false )
     , m_standardPadding( 6.0 )
 {
-    setBackgroundHints(NoBackground);
-
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
+    setBackgroundHints( NoBackground );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette )) );
 }
 
 Context::Applet::~Applet()
@@ -135,12 +136,6 @@ Context::Applet::standardPadding()
     return  m_standardPadding;
 }
 
-qreal
-Context::Applet::animationValue() const
-{
-    return m_heightCurrent;
-}
-
 void
 Context::Applet::destroy()
 {
@@ -179,20 +174,6 @@ Context::Applet::cleanUpAndDelete()
     Plasma::Applet::deleteLater();
 }
 
-QSizeF
-Context::Applet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
-{
-    return QSizeF( Plasma::Applet::sizeHint( which, constraint ).width(), m_heightCurrent );
-}
-
-void
-Context::Applet::resize( qreal wid, qreal hei)
-{
-    m_heightCollapseOff = hei;
-    m_heightCurrent = hei;
-    Plasma::Applet::resize( wid, hei );
-}
-
 Plasma::IconWidget*
 Context::Applet::addAction( QAction *action, const int size )
 {
@@ -214,116 +195,83 @@ Context::Applet::addAction( QAction *action, const int size )
     return tool;
 }
 
+bool
+Context::Applet::isAnimating() const
+{
+    QSharedPointer<QPropertyAnimation> anim = m_animation.toStrongRef();
+    if( anim )
+        return (anim->state() == QAbstractAnimation::Running);
+    return false;
+}
+
+bool
+Context::Applet::isCollapsed() const
+{
+    return m_heightCollapseOn == size().height();
+}
+
 void
 Context::Applet::setCollapseOn()
 {
-
-    resize( size().width(), m_heightCollapseOn );
-    return;
-
-    // We are asked to collapse, but the applet is already animating to collapse, do nothing
-    QPropertyAnimation *animation = m_animation.data();
-    if( animation &&
-            animation->state() == QAbstractAnimation::Running &&
-            animation->direction() == QAbstractAnimation::Forward )
-        return;
-
-    // We are already collapsed
-    if ( size().height() == m_heightCollapseOn )
-        return;
-
-    debug() << "collapsing applet to..." << m_heightCollapseOn;
-    if( m_heightCollapseOff == -1 )
-        m_animFromHeight = size().height();
-    else
-        m_animFromHeight = m_heightCollapseOff;
-
-    if( !animation )
-    {
-        animation = new QPropertyAnimation(this, "animate");
-        animation->setDuration(1000);
-        animation->setEasingCurve(QEasingCurve::InQuad);
-        animation->setStartValue(0.0);
-        animation->setEndValue(1.0);
-
-        m_animation = animation;
-        connect(animation, SIGNAL(finished()), this, SLOT(animateEnd()));
-    }
-    else if(animation->state() == QAbstractAnimation::Running &&
-            animation->direction() == QAbstractAnimation::Backward)
-    {
-        animation->stop();
-    }
-
-    m_collapsed = false;
-
-    if( animation )
-    {
-        animation->setDirection(QAbstractAnimation::Forward);
-        animation->start(QAbstractAnimation::DeleteWhenStopped);
-    }
+    collapse( true );
 }
 
 void
 Context::Applet::setCollapseOff()
 {
-    DEBUG_BLOCK
+    collapse( false );
+}
 
-    resize( size().width(), m_heightCollapseOff );
-    return;
+void
+Context::Applet::collapse( bool on )
+{
+    qreal finalHeight = ( on ) ? m_heightCollapseOn : m_heightCollapseOff;
+    const qreal maxHeight = containment()->size().height();
+    if( (finalHeight > maxHeight) || (finalHeight < 0) )
+        finalHeight = maxHeight;
 
-    // We are asked to extend, but the applet is already animating to extend, do nothing
-    QPropertyAnimation *animation = m_animation.data();
-    if( animation &&
-            animation->state() == QAbstractAnimation::Running &&
-            animation->direction() == QAbstractAnimation::Backward )
+    if( finalHeight == size().height() )
         return;
 
-    // Applet already extended
-    if ( size().height() == m_heightCollapseOff )
-        return;
-
-    debug() << "height:" << size().height() << "target:" << m_heightCollapseOff << "m_collapsed:" << m_collapsed;
-    if( m_heightCollapseOff == -1) // if it's self-expanding, don't animate as we don't know where we're going. also, if we're shrinking
-    {                                                                       // stop that and expand regardless
-        // stop the animation on now
-        if( animation &&
-                animation->state() == QAbstractAnimation::Running &&
-                animation->direction() == QAbstractAnimation::Forward )
-        {
-            animation->stop();
-        }
-        m_heightCurrent =  m_heightCollapseOff;
-        emit sizeHintChanged(Qt::PreferredSize);
-        updateGeometry();
-        m_collapsed = false;
-        return;
-    }
-
-    if( !animation )
+    QPropertyAnimation *pan = m_animation.data();
+    if( pan )
     {
-        animation = new QPropertyAnimation(this, "animate");
-        animation->setDuration(1000);
-        animation->setEasingCurve(QEasingCurve::InQuad);
-        animation->setStartValue(0.0);
-        animation->setEndValue(1.0);
-
-        m_animation = animation;
-        connect(animation, SIGNAL(finished()), this, SLOT(animateEnd()));
-    }
-    else if(animation->state() == QAbstractAnimation::Running &&
-            animation->direction() == QAbstractAnimation::Forward)
-    {
-        animation->stop();
+        if( pan->state() == QAbstractAnimation::Running )
+            pan->stop();
+        delete pan;
     }
 
-    m_collapsed = true ;
+    // debug() << pluginName() << (on ? "collapsing to" : "uncollapsing to") << finalHeight;
+    pan = new QPropertyAnimation( this, "preferredSize" );
+    pan->setDuration( 600 );
+    pan->setEasingCurve( QEasingCurve::InQuad );
+    pan->setStartValue( size() );
+    pan->setEndValue( QSizeF(size().width(), finalHeight) );
+    connect( pan, SIGNAL(finished()), SLOT(collapseAnimationFinished()) );
+    m_animation = pan;
+    pan->setDirection( QAbstractAnimation::Forward );
+    ContextView *v = static_cast<ContextView*>( view() );
+    v->addCollapseAnimation( pan );
+}
 
-    if( animation )
-    {
-        animation->setDirection(QAbstractAnimation::Backward);
-        animation->start(QAbstractAnimation::DeleteWhenStopped);
-    }
+int
+Context::Applet::collapseHeight() const
+{
+    return m_heightCollapseOn;
+}
+
+int
+Context::Applet::collapseOffHeight() const
+{
+    return m_heightCollapseOff;
+}
+
+void
+Context::Applet::collapseAnimationFinished()
+{
+    emit sizeHintChanged( Qt::PreferredSize );
+    updateConstraints();
+    update();
 }
 
 void
@@ -332,54 +280,10 @@ Context::Applet::setCollapseHeight( int h )
     m_heightCollapseOn = h;
 }
 
-bool
-Context::Applet::isAppletCollapsed()
-{
-    return ( m_heightCollapseOn == m_heightCurrent );
-}
-
-bool
-Context::Applet::isAppletExtended()
-{
-    return ( m_heightCollapseOff == m_heightCurrent );
-}
-
-
 void
-Context::Applet::animate( qreal progress )
+Context::Applet::setCollapseOffHeight( int h )
 {
-    QPropertyAnimation *animation = m_animation.data();
-    if( !animation )
-        return;
-
-    if( animation->direction() == QAbstractAnimation::Forward )
-        m_heightCurrent = m_animFromHeight - ( m_animFromHeight - m_heightCollapseOn ) * progress ;
-    else
-        m_heightCurrent =  m_heightCollapseOn + ( m_heightCollapseOff - m_heightCollapseOn ) * progress ;
-
-    emit sizeHintChanged(Qt::PreferredSize);
-}
-
-void
-Context::Applet::animateEnd()
-{
-    QPropertyAnimation *animation = m_animation.data();
-    if( !animation )
-        return;
-
-    if( animation->direction() == QAbstractAnimation::Forward )
-    {
-        Plasma::Applet::resize( size().width(), m_heightCollapseOn );
-        m_collapsed = true;
-    }
-    else
-    {
-        Plasma::Applet::resize( size().width(), m_heightCollapseOff );
-        m_collapsed = false;
-    }
-
-    updateGeometry();
-    emit sizeHintChanged(Qt::PreferredSize);
+    m_heightCollapseOff = h;
 }
 
 void

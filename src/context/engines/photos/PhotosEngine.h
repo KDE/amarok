@@ -17,11 +17,12 @@
 #ifndef AMAROK_PHOTOS_ENGINE
 #define AMAROK_PHOTOS_ENGINE
 
-#include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "core/meta/Meta.h"
 #include "NetworkAccessManagerProxy.h"
 #include "PhotosInfo.h"
+
+class QXmlStreamReader;
 
 using namespace Context;
 
@@ -29,16 +30,26 @@ using namespace Context;
    *   This class provide photos from flickr
    *
    */
-class PhotosEngine : public DataEngine, public ContextObserver, Meta::Observer
+class PhotosEngine : public DataEngine, public Meta::Observer
 {
     Q_OBJECT
+    Q_PROPERTY( int fetchSize READ fetchSize WRITE setFetchSize )
+    Q_PROPERTY( QStringList keywords READ keywords WRITE setKeywords )
+
 public:
     PhotosEngine( QObject* parent, const QList<QVariant>& args );
     virtual ~PhotosEngine();
 
+    void init();
+
+    int fetchSize() const;
+    void setFetchSize( int size );
+
+    QStringList keywords() const;
+    void setKeywords( const QStringList &keywords );
+
     QStringList sources() const;
-    // reimplemented from Context::Observer
-    virtual void message( const ContextState& state );
+
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
     void metadataChanged( Meta::TrackPtr track );
@@ -49,62 +60,43 @@ protected:
 
 private slots:
 
- /**
-   *   This slots will handle Flickr result for this query :
-   *   API key is : 9c5a288116c34c17ecee37877397fe31
-   *   Secret is : cc25e5a9532ddc97
-   *   http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=My+Bloody+Valentine
-   *   see here for details: http://www.flickr.com/services/api/
-   */
+    /**
+     * This slots will handle Flickr result for this query :
+     * API key is : 9c5a288116c34c17ecee37877397fe31
+     * Secret is : cc25e5a9532ddc97
+     * http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=My+Bloody+Valentine
+     * see here for details: http://www.flickr.com/services/api/
+     */
     void resultFlickr( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
-  /**
-   *   An image fetcher, will store the QPixmap in the corresponding videoInfo
-   */
-    void resultImageFetcher( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-
-  /**
-   *   This method will send the info to the applet and order them if every job are finished
-   */
-    void resultFinalize();
-
+    void stopped();
+    void trackPlaying();
 
 private:
-  /**
-   *   Engine was updated, so we check if the songs is different, and if it is, we delete every and start
-   *   all the query/ fetching stuff
-   */
-    void update();
+    /**
+     * Engine was updated, so we check if the songs is different, and if it is, we delete every and start
+     * all the query/ fetching stuff
+     */
+    void update( bool force = false );
+
+    PhotosInfo::List photosListFromXml( QXmlStreamReader &xml );
 
     // TODO implement a reload
     void reloadPhotos();
 
-    int m_nbFlickr;
     int m_nbPhotos;
 
     QSet<KUrl> m_flickrUrls;
-    QSet<KUrl> m_imageUrls;
-
     QStringList m_sources;
 
     Meta::TrackPtr m_currentTrack;
     // Cache the artist of the current track so we can check against metadata
     // updates. We only want to update the photos if the artist change
 
-    QString    m_artist;
-    QString    m_keywords;
-
-    // stores what features are enabled
-    bool m_requested;
-    bool m_reload;
-
-    //!  List containing all the info
-    QList < PhotosInfo *>m_photos;      // Item with all the information
-    QList < PhotosInfo *>m_photosInit;  // Item not finished to download
-
+    QString m_artist;
+    QStringList m_keywords;
 };
 
-Q_DECLARE_METATYPE ( QList < PhotosInfo * > )
 K_EXPORT_AMAROK_DATAENGINE( photos, PhotosEngine )
-#endif
 
+#endif

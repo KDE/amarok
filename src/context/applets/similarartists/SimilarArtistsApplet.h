@@ -31,6 +31,7 @@
 
 class TextScrollingWidget;
 class KConfigDialog;
+class QGraphicsLinearLayout;
 
 namespace Plasma
 {
@@ -82,7 +83,6 @@ public slots:
     void dataUpdated( const QString &source, const Plasma::DataEngine::Data &data );
 
 private slots:
-    void stopped();
     void goBackward();
     void goForward();
     void updateNavigationIcons();
@@ -122,6 +122,7 @@ private:
     Plasma::IconWidget *m_forwardIcon;
     Plasma::IconWidget *m_currentArtistIcon;
     Plasma::IconWidget *m_settingsIcon;
+    QGraphicsLinearLayout *m_layout;
     Ui::similarArtistsSettings ui_Settings;
 
     /**

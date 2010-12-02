@@ -165,9 +165,6 @@ signals:
     void eventAdded( const LastFmEventPtr &event );
     void eventRemoved( const LastFmEventPtr &event );
 
-protected:
-    QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
-
 private:
     QString m_name;
     LastFmEvent::List m_events;

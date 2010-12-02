@@ -37,10 +37,12 @@
 
 #include <QMouseEvent>
 #include <QGraphicsView>
+#include <QQueue>
 #include <QWeakPointer>
 
 class QPixmap;
 class ContextUrlRunner;
+class QParallelAnimationGroup;
 
 namespace Context
 {
@@ -73,8 +75,8 @@ public:
     void clear( const ContextState& name );
 
     void clearNoSave();
-    
-    /** 
+
+    /**
         Shows the home state. Loads applets from config file.
     */
     void showHome();
@@ -89,6 +91,7 @@ public:
     */
     QStringList currentAppletNames();
 
+    void addCollapseAnimation( QAbstractAnimation *anim );
 
 public slots:
     /**
@@ -113,13 +116,13 @@ private slots:
     void slotTrackChanged( Meta::TrackPtr track );
     void slotMetadataChanged( Meta::TrackPtr track );
     void slotPositionAppletExplorer();
+    void slotStartCollapseAnimations();
+    void slotCollapseAnimationsFinished();
 
 private:
     static ContextView* s_self;
-      
-    void loadConfig();
 
-    typedef QWeakPointer< Context::Applet > AppletPointer;    
+    void loadConfig();
 
     // holds what is currently being shown
     ContextState m_curState;
@@ -127,6 +130,9 @@ private:
     ContextUrlRunner * m_urlRunner;
 
     QWeakPointer<AppletExplorer> m_appletExplorer;
+    QWeakPointer<QParallelAnimationGroup> m_collapseAnimations;
+    QQueue< QWeakPointer<QAbstractAnimation> > m_queuedAnimations;
+    QWeakPointer<QTimer> m_collapseGroupTimer;
 };
 
 } // Context namespace

@@ -231,6 +231,7 @@ ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 void
 ScriptManager::notifyFetchLyricsByUrl( const QString& artist, const QString& title, const QString& url )
 {
+    DEBUG_BLOCK
     emit fetchLyrics( Qt::escape( artist ), Qt::escape( title ), url );
 }
 

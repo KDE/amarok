@@ -89,14 +89,14 @@ TabsApplet::init()
     m_titleLabel.data()->setDrawBackground( true );
     m_titleLabel.data()->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
-    // defines the collapse size for the context applet
-    setCollapseHeight( m_titleLabel.data()->size().height() + 3 * standardPadding() );
-
     // creates the tab view
     m_tabsView = new TabsView( this );
 
     // Set the collapse size
-    setCollapseHeight( m_titleLabel.data()->size().height() + 2 * ( 4 + QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) ) + 3 );
+    m_headerHeight = m_titleLabel.data()->size().height() + 2 * ( 4 + QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) ) + 3;
+    setCollapseHeight( m_headerHeight );
+    setMinimumHeight( collapseHeight() );
+    setPreferredHeight( collapseHeight() );
 
     // create the reload icon
     QAction* reloadAction = new QAction( this );
@@ -163,8 +163,6 @@ void
 TabsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
-    prepareGeometryChange();
-
     m_titleLabel.data()->setScrollingText( m_titleLabel.data()->text() );
 }
 
@@ -264,17 +262,9 @@ TabsApplet::updateInterface( const AppletState appletState )
     if( m_currentState == appletState && appletState != InitState )
         return;
 
-    // coming from stopped or init state, resize applet to full height
-    if( m_currentState == StoppedState || m_currentState == InitState )
-    {
-        resize( 500, -1 );
-        setCollapseOff();
-        constraintsEvent();
-        update();
-    }
-
     debug() << "updating interface from state " << m_currentState << " to " << appletState;
     m_currentState = appletState;
+    bool collapse = true;
 
     switch( m_currentState )
     {
@@ -283,7 +273,6 @@ TabsApplet::updateInterface( const AppletState appletState )
             m_reloadIcon.data()->setEnabled( false );
             m_showInfoLabel = false;
             m_showTabBrowser = false;
-            setCollapseOn();
             break;
         case NoTabsState:
             m_reloadIcon.data()->setEnabled( true );
@@ -304,6 +293,7 @@ TabsApplet::updateInterface( const AppletState appletState )
             m_reloadIcon.data()->setEnabled( true );
             m_showInfoLabel = false;
             m_showTabBrowser = true;
+            collapse = false;
             break;
     }
 
@@ -316,7 +306,9 @@ TabsApplet::updateInterface( const AppletState appletState )
     m_showTabBrowser ? lo->addItem( m_tabsView ) : lo->removeItem( m_tabsView );
     m_showTabBrowser ? m_tabsView->show() : m_tabsView->hide();
 
-    constraintsEvent();
+    collapse ? setCollapseOn() : setCollapseOff();
+
+    updateConstraints();
     update();
 }
 

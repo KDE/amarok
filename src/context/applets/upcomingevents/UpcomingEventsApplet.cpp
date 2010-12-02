@@ -60,12 +60,14 @@ UpcomingEventsApplet::~UpcomingEventsApplet()
 void
 UpcomingEventsApplet::init()
 {
-    // Call the base implementation.
+    DEBUG_BLOCK
+
     Context::Applet::init();
-    setBackgroundHints( Plasma::Applet::NoBackground );
 
     m_stack = new UpcomingEventsStack( this );
     m_stack->setContentsMargins( 0, 0, 0, 0 );
+
+    connect( m_stack, SIGNAL(collapseStateChanged()), SLOT(collapseStateChanged()) );
     connect( this, SIGNAL(listWidgetRemoved(UpcomingEventsListWidget*)),
              m_stack, SLOT(cleanupListWidgets()) );
 
@@ -106,12 +108,10 @@ UpcomingEventsApplet::init()
     connect( m_artistEventsList, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
+    layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     layout->addItem( headerLayout );
     layout->addItem( m_stack );
     setLayout( layout );
-
-    // ask for all the CV height
-    resize( 500, -1 );
 
     // Read config and inform the engine.
     enableVenueGrouping( Amarok::config("UpcomingEvents Applet").readEntry( "groupVenues", false ) );
@@ -124,7 +124,6 @@ UpcomingEventsApplet::init()
     engine->query( "venueevents" );
 
     updateConstraints();
-    update();
 }
 
 void
@@ -137,9 +136,10 @@ UpcomingEventsApplet::engineSourceAdded( const QString &source )
 void
 UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_UNUSED( constraints );
+    Context::Applet::constraintsEvent( constraints );
     prepareGeometryChange();
     m_headerLabel->setScrollingText( i18n( "Upcoming Events" ) );
+    update();
 }
 
 void
@@ -522,6 +522,12 @@ UpcomingEventsApplet::mapView()
     connect( this, SIGNAL(listWidgetRemoved(UpcomingEventsListWidget*)),
              view, SLOT(removeEventsListWidget(UpcomingEventsListWidget*)) );
     return view;
+}
+
+void
+UpcomingEventsApplet::collapseStateChanged()
+{
+    emit sizeHintChanged( Qt::PreferredSize );
 }
 
 void

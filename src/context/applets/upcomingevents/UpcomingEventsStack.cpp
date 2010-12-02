@@ -147,6 +147,7 @@ UpcomingEventsStack::create( const QString &name )
     d->layout->addItem( item.data() );
     d->items.insert( name, item );
     connect( item.data(), SIGNAL(destroyed()), SLOT(_itemDestroyed()) );
+    connect( item.data(), SIGNAL(collapseChanged(bool)), SIGNAL(collapseStateChanged()) );
     return item.data();
 }
 

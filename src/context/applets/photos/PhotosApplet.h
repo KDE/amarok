@@ -22,8 +22,6 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 
-#include "../../engines/photos/PhotosInfo.h"
-
 #include <ui_photosSettings.h>
 
 class TextScrollingWidget;
@@ -51,11 +49,9 @@ class PhotosApplet : public Context::Applet
     public slots:
         virtual void init();
         void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-        void connectSource( const QString &source );
         void saveSettings();
 
     protected slots:
-        void trackPlaying();
         void stopped();
         
     protected:
@@ -65,18 +61,16 @@ class PhotosApplet : public Context::Applet
         TextScrollingWidget     *m_headerText;
         PhotosScrollWidget      *m_widget;
 
-        int   m_height;
+        qreal m_headerHeight;
         int   m_nbPhotos;
-        bool  m_stoppedstate;
         
         QString m_Animation;
-        QString m_KeyWords;
+        QStringList m_KeyWords;
 
         Ui::photosSettings      ui_Settings;
         Plasma::IconWidget      *m_settingsIcon;
 };
 
-Q_DECLARE_METATYPE ( QList < PhotosInfo * > )
 K_EXPORT_AMAROK_APPLET( photos, PhotosApplet )
 
 #endif /* Photos_APPLET_H */

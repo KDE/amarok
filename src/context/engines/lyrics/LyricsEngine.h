@@ -67,9 +67,6 @@ private:
                             const QString& oldHtmlLyrics,
                             QStringList oldPlainLyrics ) const;
 
-    // stores is we have been disabled (disconnected)
-    bool m_requested;
-
     // Cache the title/artist of the current track so we can check against
     // metadata updates. We only want to update the lyrics if either the
     // title or the artist change (but not other attributes like rating, score,
@@ -77,8 +74,8 @@ private:
     QStringList m_currentLyricsList,m_prevLyricsList;
     QVariantList m_currentSuggestionsList,m_prevSuggestionsList;
     QString m_currentLyrics,m_prevLyrics;
-    QString        m_title;
-    QString        m_artist;
+    QString m_title;
+    QString m_artist;
 };
 
 K_EXPORT_AMAROK_DATAENGINE( lyrics, LyricsEngine )

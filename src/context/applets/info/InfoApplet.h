@@ -17,26 +17,17 @@
 #ifndef SERVICE_INFO_APPLET_H
 #define SERVICE_INFO_APPLET_H
 
-#include "context/widgets/AmarokWebView.h"
-
-#include <context/Applet.h>
-#include <context/DataEngine.h>
-#include <context/Svg.h>
-
+#include "context/Applet.h"
+#include "context/DataEngine.h"
+#include "context/Svg.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "core/playlists/Playlist.h"
 
 #include <KDialog>
 
 #include <QGraphicsProxyWidget>
-#include <qwebview.h>
 
-
-class QGraphicsPixmapItem;
-class QLabel;
-class QHBoxLayout;
-class QSpinBox;
-class QCheckBox;
+class KGraphicsWebView;
 
 class InfoApplet : public Context::Applet
 {
@@ -46,7 +37,6 @@ public:
     InfoApplet( QObject* parent, const QVariantList& args );
     virtual ~InfoApplet();
 
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
 public slots:
@@ -57,9 +47,9 @@ private slots:
     void linkClicked( const QUrl & url );
 
 private:
-    AmarokWebView * m_webView;
+    KGraphicsWebView *m_webView;
     bool m_initialized;
-    Playlists::XSPFPlaylist * m_currentPlaylist;
+    Playlists::XSPFPlaylist *m_currentPlaylist;
 
     static QString s_defaultHtml;
 };

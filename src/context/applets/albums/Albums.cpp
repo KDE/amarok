@@ -32,6 +32,7 @@
 #include <Plasma/IconWidget>
 #include <KConfigDialog>
 
+#include <QApplication>
 #include <QAction>
 #include <QCheckBox>
 #include <QFormLayout>
@@ -45,6 +46,7 @@ Albums::Albums( QObject* parent, const QVariantList& args )
     , m_albumsView( 0 )
 {
     setHasConfigurationInterface( true );
+    setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
 Albums::~Albums()
@@ -53,14 +55,10 @@ Albums::~Albums()
 
 void Albums::init()
 {
+    DEBUG_BLOCK
+
     // Call the base implementation.
     Context::Applet::init();
-
-    setBackgroundHints( Plasma::Applet::NoBackground );
-
-    // properly set the height
-    // -1 means ask for all available space left
-    resize( globalConfig().readEntry( "width", 500 ), -1 );
 
     m_headerText = new TextScrollingWidget( this );
     QFont labelFont;
@@ -68,6 +66,10 @@ void Albums::init()
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Recently added albums" ) );
     m_headerText->setDrawBackground( true );
+
+    setCollapseHeight( m_headerText->size().height()
+                       + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
+    setMinimumHeight( collapseHeight() );
 
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
@@ -82,14 +84,13 @@ void Albums::init()
     headerLayout->addItem( settingsIcon );
 
     m_albumsView = new AlbumsView( this );
-    m_albumsView->setMinimumSize( 100, 150 );
+    m_albumsView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     if( m_rightAlignLength )
         m_albumsView->setLengthAlignment( Qt::AlignRight );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->addItem( headerLayout );
     layout->addItem( m_albumsView );
-    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setLayout( layout );
 
     dataEngine( "amarok-current" )->connectSource( "albums", this );
@@ -97,13 +98,13 @@ void Albums::init()
              this, SLOT(collectionDataChanged(Collections::Collection*)) );
 
     updateConstraints();
-    update();
 }
 
 void Albums::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_UNUSED( constraints )
+    Context::Applet::constraintsEvent( constraints );
     m_headerText->setScrollingText( m_headerText->text() );
+    update();
 }
 
 void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &data )
@@ -117,13 +118,20 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
     m_headerText->setScrollingText( headerText.isEmpty() ? i18n("Albums") : headerText );
 
     //Don't keep showing the albums for the artist of the last track that had album in the collection
-    if( albums.isEmpty() )
-        return;
     if( (m_currentTrack == track) && (m_albums == albums) )
     {
         debug() << "albums view data unchanged, not updating";
         return;
     }
+
+    if( albums.isEmpty() )
+    {
+        setCollapseOn();
+        m_albums.clear();
+        return;
+    }
+
+    setCollapseOff();
 
     DEBUG_BLOCK
     m_albums = albums;
@@ -207,7 +215,6 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
     }
 
     updateConstraints();
-    update();
 }
 
 void Albums::createConfigurationInterface( KConfigDialog *parent )

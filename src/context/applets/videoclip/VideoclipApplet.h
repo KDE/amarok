@@ -44,16 +44,13 @@ namespace Phonon
 namespace Plasma
 {
     class IconWidget;
+    class ScrollWidget;
 }
 
 class KConfigDialog;
-class KratingWidget;
-class KratingPainter;
-class QAction;
-class QGraphicsProxyWidget;
 class QGraphicsWidget;
-class QHBoxLayout;
-class QScrollArea;
+class QGraphicsLinearLayout;
+class QGraphicsSceneResizeEvent;
 
 class CustomVideoWidget;
 class TextScrollingWidget;
@@ -71,49 +68,48 @@ class VideoclipApplet : public Context::Applet
         VideoclipApplet( QObject* parent, const QVariantList& args );
         ~VideoclipApplet();
 
-        void    paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
-        void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
+        virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
     public slots:
         virtual void init();
 
-        void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-        void    connectSource( const QString &source );
+        virtual void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
+        void connectSource( const QString &source );
 
         // right click context menu
-        void    appendVideoClip( VideoInfo *info );
-        void    queueVideoClip( VideoInfo *info );
-        void    appendPlayVideoClip( VideoInfo *info );
+        void appendVideoClip( VideoInfo *info );
+        void queueVideoClip( VideoInfo *info );
+        void appendPlayVideoClip( VideoInfo *info );
 
-        void    saveSettings();
+        void saveSettings();
+
     protected:
-        void    createConfigurationInterface(KConfigDialog *parent);
+        void createConfigurationInterface(KConfigDialog *parent);
+        virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
 
     private slots:
-        virtual void trackPlaying();
-        virtual void stateChanged(Phonon::State, Phonon::State );
-        virtual void stopped();
+        void trackPlaying();
+        void stateChanged(Phonon::State, Phonon::State );
+        void stopped();
 
     private:
         QWeakPointer<CustomVideoWidget> m_videoWidget;
+        SmartPointerList<VideoItemButton> m_videoItemButtons;
 
         // The two big container, only one who need a resize
         TextScrollingWidget     *m_headerText;
-        QGraphicsProxyWidget    *m_widget;
-        QScrollArea             *m_scroll;
-        QHBoxLayout             *m_layout;
-        QList<QWidget *>        m_layoutWidgetList;
-        SmartPointerList<VideoItemButton> m_videoItemButtons;
+        Plasma::ScrollWidget    *m_scroll;
+        QGraphicsLinearLayout   *m_scrollLayout;
+        QGraphicsLinearLayout   *m_layout;
 
-        QPixmap                 *m_pixYoutube;
-        QPixmap                 *m_pixDailymotion;
-        QPixmap                 *m_pixVimeo;
+        QPixmap m_pixYoutube;
+        QPixmap m_pixDailymotion;
+        QPixmap m_pixVimeo;
 
         Plasma::IconWidget      *m_settingsIcon;
         Ui::videoclipSettings   ui_Settings;
         bool                    m_youtubeHQ;
-        int                     m_height;
+        qreal                   m_headerHeight;
 };
 
 #endif /* VIDEOCLIP_APPLET_H */

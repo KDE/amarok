@@ -19,14 +19,13 @@
 
 #include "amarok_export.h"
 
-#include <plasma/applet.h>
+#include <KIcon>
+#include <Plasma/Applet>
 
 #include <QFont>
 #include <QRectF>
 #include <QString>
 #include <QWeakPointer>
-
-#include <KIcon>
 
 class QPainter;
 class QPropertyAnimation;
@@ -44,7 +43,9 @@ namespace Context
 class AMAROK_EXPORT Applet : public Plasma::Applet
 {
     Q_OBJECT
-    Q_PROPERTY(qreal animate READ animationValue WRITE animate)
+    Q_PROPERTY( int collapseHeight READ collapseHeight WRITE setCollapseHeight )
+    Q_PROPERTY( int collapseOffHeight READ collapseOffHeight WRITE setCollapseOffHeight )
+
     public:
         explicit Applet( QObject* parent, const QVariantList& args = QVariantList() );
         ~Applet();
@@ -68,29 +69,44 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         qreal standardPadding();
 
         /**
-          * Collapse animation
+          * Set the preferred applet height when collapsed.
+          * The actual height when collapsed will be constrained by the applet's
+          * minimum and maximum heights, as well as the current available height
+          * from the containment.
           */
-        void setCollapseOn();
-        void setCollapseOff();
         void setCollapseHeight( int );
 
-        bool isAppletCollapsed();
-        bool isAppletExtended();
+        /**
+          * Set the preferred applet height when uncollapsed.
+          * The actual height when collapsed will be constrained by the applet's
+          * minimum and maximum heights, as well as the current available height
+          * from the containment. Depending on the vertical size policy, the
+          * other applets currently showing, and the aforementioned constraints,
+          * the actual height when collapse is off may be different. This is so
+          * that, for example, the applet may take up the rest of the space when
+          * the size policy is set to Expanding.
+          */
+        void setCollapseOffHeight( int );
 
         /**
-          * sizeHint is reimplemented here only for all the applet.
-          */
-        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
+         * Preferred applet height when collapsed.
+         */
+        int collapseHeight() const;
 
         /**
-          * resize is reimplemented here is reimplemented here only for all the applet.
-          */
-        virtual void   resize( qreal, qreal );
+         * Preferred applet height when uncollapsed.
+         */
+        int collapseOffHeight() const;
 
         /**
-          * Returns the current animation value.
-          */
-        qreal animationValue() const;
+         * Whether a collapse animation is currently running.
+         */
+        bool isAnimating() const;
+
+        /**
+         * Whether the applet is currently collapsed to collapseHeight().
+         */
+        bool isCollapsed() const;
 
         /**
          * Shows a warning dialog which blocks access to the applet.
@@ -116,19 +132,15 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
     public Q_SLOTS:
         virtual void destroy();
 
-    protected slots:
-        void animate( qreal );
-        void animateEnd();
-
-    private slots:
-        void paletteChanged( const QPalette & palette );
+        /**
+         * Collapse to collapseHeight().
+         */
+        void setCollapseOn();
 
         /**
-         * A private slot used to cleanup internal things like
-         * signals/slots and the flag if a dialog is shown.
-         * This is needed to avoid duplicate code in the applets.
+         * Collapse to collapseOffHeight().
          */
-        void plasmaMessageHidden();
+        void setCollapseOff();
 
     protected:
         /**
@@ -142,11 +154,22 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         bool canAnimate();
 
         bool m_canAnimate;
-        bool m_collapsed;
         int  m_heightCurrent;
         int  m_heightCollapseOn;
         int  m_heightCollapseOff;
-        int  m_animFromHeight;
+
+
+    private slots:
+        void paletteChanged( const QPalette & palette );
+        void collapseAnimationFinished();
+        void collapse( bool on );
+
+        /**
+         * A private slot used to cleanup internal things like
+         * signals/slots and the flag if a dialog is shown.
+         * This is needed to avoid duplicate code in the applets.
+         */
+        void plasmaMessageHidden();
 
     private:
         void cleanUpAndDelete();
