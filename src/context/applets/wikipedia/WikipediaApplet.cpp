@@ -71,7 +71,7 @@ WikipediaAppletPrivate::parseWikiLangXml( const QByteArray &data )
                 item->setData( PrefixRole, prefix );
                 item->setData( UrlPrefixRole, urlPrefix );
                 item->setData( LanguageStringRole, language );
-                ui.langSelector->availableListWidget()->addItem( item );
+                languageSettingsUi.langSelector->availableListWidget()->addItem( item );
             }
         }
     }
@@ -104,10 +104,43 @@ WikipediaAppletPrivate::scheduleEngineUpdate()
 }
 
 void
+WikipediaAppletPrivate::setUrl( const QUrl &url )
+{
+    webView->settings()->resetFontSize( QWebSettings::MinimumFontSize );
+    webView->settings()->resetFontSize( QWebSettings::MinimumLogicalFontSize );
+    webView->settings()->resetFontSize( QWebSettings::DefaultFontSize );
+    webView->settings()->resetFontSize( QWebSettings::DefaultFixedFontSize );
+    webView->setUrl( url );
+    currentUrl = url;
+    pushUrlHistory( url );
+    dataContainer->removeAllData();
+}
+
+void
+WikipediaAppletPrivate::pushUrlHistory( const QUrl &url )
+{
+    if( !isForwardHistory && !isBackwardHistory && !url.isEmpty() )
+    {
+        if( !historyBack.isEmpty() && (url != historyBack.top()) )
+            historyBack.push( url );
+        historyForward.clear();
+    }
+    isBackwardHistory = false;
+    isForwardHistory = false;
+    updateNavigationIcons();
+}
+
+void
 WikipediaAppletPrivate::updateNavigationIcons()
 {
     forwardIcon->action()->setEnabled( !historyForward.isEmpty() );
     backwardIcon->action()->setEnabled( !historyBack.isEmpty() );
+}
+
+void
+WikipediaAppletPrivate::_titleChanged( const QString &title )
+{
+    wikipediaLabel->setScrollingText( title );
 }
 
 void
@@ -176,6 +209,11 @@ WikipediaAppletPrivate::_linkClicked( const QUrl &url )
     Q_Q( WikipediaApplet );
     if( url.host().contains( "wikipedia.org" ) )
     {
+        if( useMobileWikipedia )
+        {
+            setUrl( url );
+            return;
+        }
         q->setBusy( true );
         dataContainer->setData( "clickUrl", url );
         scheduleEngineUpdate();
@@ -189,7 +227,7 @@ void
 WikipediaAppletPrivate::_loadSettings()
 {
     QStringList list;
-    QListWidget *listWidget = ui.langSelector->selectedListWidget();
+    QListWidget *listWidget = languageSettingsUi.langSelector->selectedListWidget();
     for( int i = 0, count = listWidget->count(); i < count; ++i )
     {
         QListWidgetItem *item = listWidget->item( i );
@@ -199,14 +237,24 @@ WikipediaAppletPrivate::_loadSettings()
         list << (prefix == urlPrefix ? prefix : concat);
     }
     langList = list;
+    useMobileWikipedia = (generalSettingsUi.mobileCheckBox->checkState() == Qt::Checked);
     Amarok::config("Wikipedia Applet").writeEntry( "PreferredLang", list );
+    Amarok::config("Wikipedia Applet").writeEntry( "UseMobile", useMobileWikipedia );
+    _paletteChanged( App::instance()->palette() );
     dataContainer->setData( "lang", langList );
+    dataContainer->setData( "mobile", useMobileWikipedia );
     scheduleEngineUpdate();
 }
 
 void
 WikipediaAppletPrivate::_paletteChanged( const QPalette &palette )
 {
+    if( useMobileWikipedia )
+    {
+        webView->settings()->setUserStyleSheetUrl( QUrl() );
+        return;
+    }
+
     // read css, replace color placeholders, write to file, load into page
     QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
@@ -271,7 +319,7 @@ WikipediaAppletPrivate::_updateWebFonts()
 void
 WikipediaAppletPrivate::_getLangMapProgress( qint64 received, qint64 total )
 {
-    ui.progressBar->setValue( 100.0 * qreal(received) / total );
+    languageSettingsUi.progressBar->setValue( 100.0 * qreal(received) / total );
 }
 
 void
@@ -279,8 +327,8 @@ WikipediaAppletPrivate::_getLangMapFinished( const KUrl &url, QByteArray data,
                                              NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
-    ui.downloadButton->setEnabled( true );
-    ui.progressBar->setEnabled( false );
+    languageSettingsUi.downloadButton->setEnabled( true );
+    languageSettingsUi.progressBar->setEnabled( false );
 
     if( e.code != QNetworkReply::NoError )
     {
@@ -288,16 +336,16 @@ WikipediaAppletPrivate::_getLangMapFinished( const KUrl &url, QByteArray data,
         return;
     }
 
-    QListWidget *availableListWidget = ui.langSelector->availableListWidget();
+    QListWidget *availableListWidget = languageSettingsUi.langSelector->availableListWidget();
     availableListWidget->clear();
     parseWikiLangXml( data );
-    ui.langSelector->setButtonsEnabled();
+    languageSettingsUi.langSelector->setButtonsEnabled();
     QString buttonText = ( availableListWidget->count() > 0 )
                        ? i18n( "Update Supported Languages" )
                        : i18n( "Get Supported Languages" );
-    ui.downloadButton->setText( buttonText );
+    languageSettingsUi.downloadButton->setText( buttonText );
 
-    QListWidget *selectedListWidget = ui.langSelector->selectedListWidget();
+    QListWidget *selectedListWidget = languageSettingsUi.langSelector->selectedListWidget();
     QList<QListWidgetItem*> selectedListItems = selectedListWidget->findItems( QChar('*'), Qt::MatchWildcard );
     for( int i = 0, count = selectedListItems.count(); i < count; ++i )
     {
@@ -311,7 +359,7 @@ WikipediaAppletPrivate::_getLangMapFinished( const KUrl &url, QByteArray data,
         if( !foundItems.isEmpty() )
         {
             item = foundItems.first();
-            int rowAtAvailableList = ui.langSelector->availableListWidget()->row( item );
+            int rowAtAvailableList = languageSettingsUi.langSelector->availableListWidget()->row( item );
             item = availableListWidget->takeItem( rowAtAvailableList );
             selectedListWidget->addItem( item );
         }
@@ -337,10 +385,10 @@ void
 WikipediaAppletPrivate::_getLangMap()
 {
     Q_Q( WikipediaApplet );
-    ui.downloadButton->setEnabled( false );
-    ui.progressBar->setEnabled( true );
-    ui.progressBar->setMaximum( 100 );
-    ui.progressBar->setValue( 0 );
+    languageSettingsUi.downloadButton->setEnabled( false );
+    languageSettingsUi.progressBar->setEnabled( true );
+    languageSettingsUi.progressBar->setMaximum( 100 );
+    languageSettingsUi.progressBar->setValue( 0 );
 
     KUrl url;
     url.setScheme( "http" );
@@ -367,11 +415,11 @@ WikipediaAppletPrivate::_configureLangSelector()
         parseWikiLangXml( savedFile.readAll() );
     savedFile.close();
 
-    QListWidget *availableListWidget = ui.langSelector->availableListWidget();
+    QListWidget *availableListWidget = languageSettingsUi.langSelector->availableListWidget();
     QString buttonText = ( availableListWidget->count() > 0 )
                        ? i18n( "Update Supported Languages" )
                        : i18n( "Get Supported Languages" );
-    ui.downloadButton->setText( buttonText );
+    languageSettingsUi.downloadButton->setText( buttonText );
 
     for( int i = 0, count = langList.count(); i < count; ++i )
     {
@@ -385,22 +433,22 @@ WikipediaAppletPrivate::_configureLangSelector()
             QListWidgetItem *item = new QListWidgetItem( prefix, 0 );
             item->setData( WikipediaAppletPrivate::PrefixRole, prefix );
             item->setData( WikipediaAppletPrivate::UrlPrefixRole, urlPrefix );
-            ui.langSelector->selectedListWidget()->addItem( item );
+            languageSettingsUi.langSelector->selectedListWidget()->addItem( item );
         }
         else // should only have found one item if any
         {
             QListWidgetItem *item = foundItems.first();
             int rowAtAvailableList = availableListWidget->row( item );
             item = availableListWidget->takeItem( rowAtAvailableList );
-            ui.langSelector->selectedListWidget()->addItem( item );
+            languageSettingsUi.langSelector->selectedListWidget()->addItem( item );
         }
     }
-    q->connect( ui.langSelector, SIGNAL(added(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
-    q->connect( ui.langSelector, SIGNAL(movedDown(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
-    q->connect( ui.langSelector, SIGNAL(movedUp(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
-    q->connect( ui.langSelector, SIGNAL(removed(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
-    q->connect( ui.langSelector->availableListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
-    q->connect( ui.langSelector->selectedListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    q->connect( languageSettingsUi.langSelector, SIGNAL(added(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    q->connect( languageSettingsUi.langSelector, SIGNAL(movedDown(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    q->connect( languageSettingsUi.langSelector, SIGNAL(movedUp(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    q->connect( languageSettingsUi.langSelector, SIGNAL(removed(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    q->connect( languageSettingsUi.langSelector->availableListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
+    q->connect( languageSettingsUi.langSelector->selectedListWidget(), SIGNAL(itemClicked(QListWidgetItem*)), q, SLOT(_langSelectorItemChanged(QListWidgetItem*)) );
 }
 
 void
@@ -462,7 +510,7 @@ void
 WikipediaAppletPrivate::_langSelectorItemChanged( QListWidgetItem *item )
 {
     Q_UNUSED( item )
-    ui.langSelector->setButtonsEnabled();
+    languageSettingsUi.langSelector->setButtonsEnabled();
 }
 
 WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
@@ -503,7 +551,6 @@ WikipediaApplet::init()
     d->_updateWebFonts();
     connect( KGlobalSettings::self(), SIGNAL(appearanceChanged()), SLOT(_updateWebFonts()) );
 
-    d->_paletteChanged( App::instance()->palette() );
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(_paletteChanged(QPalette)) );
     connect( d->webView->page(), SIGNAL(linkClicked(QUrl)), SLOT(_linkClicked(QUrl)) );
     connect( d->webView->page(), SIGNAL(loadStarted()), SLOT(_pageLoadStarted()) );
@@ -511,6 +558,7 @@ WikipediaApplet::init()
     connect( d->webView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), SLOT(_jsWindowObjectCleared()) );
     connect( d->webView->lineEdit(), SIGNAL(textChanged(QString)), SLOT(_searchLineEditTextEdited(QString)) );
     connect( d->webView->lineEdit(), SIGNAL(returnPressed()), SLOT(_searchLineEditReturnPressed()) );
+    connect( d->webView, SIGNAL(titleChanged(QString)), this, SLOT(_titleChanged(QString)) );
 
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
@@ -539,35 +587,30 @@ WikipediaApplet::init()
 
     QAction* artistAction = new QAction( this );
     artistAction->setIcon( KIcon( "filename-artist-amarok" ) );
-    artistAction->setEnabled( false );
     artistAction->setText( i18n( "Artist" ) );
     d->artistIcon = addAction( artistAction );
     connect( d->artistIcon, SIGNAL(clicked()), this, SLOT(_gotoArtist()) );
 
     QAction* albumAction = new QAction( this );
     albumAction->setIcon( KIcon( "filename-album-amarok" ) );
-    albumAction->setEnabled( false );
     albumAction->setText( i18n( "Album" ) );
     d->albumIcon = addAction( albumAction );
     connect( d->albumIcon, SIGNAL(clicked()), this, SLOT(_gotoAlbum()) );
 
     QAction* trackAction = new QAction( this );
     trackAction->setIcon( KIcon( "filename-title-amarok" ) );
-    trackAction->setEnabled( false );
     trackAction->setText( i18n( "Track" ) );
     d->trackIcon = addAction( trackAction );
     connect( d->trackIcon, SIGNAL(clicked()), this, SLOT(_gotoTrack()) );
 
-    QAction* langAction = new QAction( this );
-    langAction->setIcon( KIcon( "preferences-system" ) );
-    langAction->setEnabled( true );
-    langAction->setText( i18n( "Settings" ) );
-    d->settingsIcon = addAction( langAction );
+    QAction* settingsAction = new QAction( this );
+    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setText( i18n( "Settings" ) );
+    d->settingsIcon = addAction( settingsAction );
     connect( d->settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
 
     QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
-    reloadAction->setEnabled( false );
     reloadAction->setText( i18n( "Reload" ) );
     d->reloadIcon = addAction( reloadAction );
     connect( d->reloadIcon, SIGNAL(clicked()), this, SLOT(_reloadWikipedia()) );
@@ -594,7 +637,10 @@ WikipediaApplet::init()
 
     // Read config and inform the engine.
     d->langList = Amarok::config("Wikipedia Applet").readEntry( "PreferredLang", QStringList() << "en" );
+    d->useMobileWikipedia = Amarok::config("Wikipedia Applet").readEntry( "UseMobile", false );
+    d->_paletteChanged( App::instance()->palette() );
     d->dataContainer->setData( "lang", d->langList );
+    d->dataContainer->setData( "mobile", d->useMobileWikipedia );
     d->scheduleEngineUpdate();
 
     updateConstraints();
@@ -669,42 +715,31 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
             d->dataContainer->removeAllData();
         }
     }
+    else if( data.contains( "sourceUrl" ) )
+    {
+        const KUrl &url = data.value( "sourceUrl" ).value<KUrl>();
+        d->setUrl( url );
+        debug() << "source URL" << url;
+        setCollapseOff();
+
+    }
     else if( data.contains( "page" ) )
     {
         if( data.contains( "url" ) && !data.value( "url" ).toUrl().isEmpty() )
         {
             const QUrl &url = data.value( "url" ).toUrl();
-            if( !d->isForwardHistory && !d->isBackwardHistory && !d->currentUrl.isEmpty() )
-            {
-                // save last page, useful when you are reading but the song changes
-                d->historyBack.push( d->currentUrl );
-                d->historyForward.clear();
-            }
+            d->_updateWebFonts();
             d->currentUrl = url;
             d->webView->setHtml( data[ "page" ].toString(), url );
-            d->wikipediaLabel->setScrollingText( d->webView->page()->currentFrame()->title() );
-            d->updateNavigationIcons();
-            d->isBackwardHistory = false;
-            d->isForwardHistory = false;
+            d->pushUrlHistory( url );
             d->dataContainer->removeAllData();
         }
+        setCollapseOff();
     }
     else
     {
         d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
     }
-
-    if( d->reloadIcon->action() && !d->reloadIcon->action()->isEnabled() )
-        d->reloadIcon->action()->setEnabled( true );
-
-    if( d->artistIcon->action() && !d->artistIcon->action()->isEnabled() )
-        d->artistIcon->action()->setEnabled( true );
-
-    if( d->albumIcon->action() && !d->albumIcon->action()->isEnabled() )
-        d->albumIcon->action()->setEnabled( true );
-
-    if( d->trackIcon->action() && !d->trackIcon->action()->isEnabled() )
-        d->trackIcon->action()->setEnabled( true );
 }
 
 void
@@ -719,20 +754,25 @@ WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     Q_D( WikipediaApplet );
     KConfigGroup configuration = config();
-    QWidget *settings = new QWidget;
-    d->ui.setupUi( settings );
-    d->ui.downloadButton->setGuiItem( KStandardGuiItem::find() );
-    d->ui.langSelector->availableListWidget()->setAlternatingRowColors( true );
-    d->ui.langSelector->selectedListWidget()->setAlternatingRowColors( true );
-    d->ui.langSelector->availableListWidget()->setUniformItemSizes( true );
-    d->ui.langSelector->selectedListWidget()->setUniformItemSizes( true );
-    d->ui.progressBar->setEnabled( false );
+    QWidget *langSettings = new QWidget;
+    d->languageSettingsUi.setupUi( langSettings );
+    d->languageSettingsUi.downloadButton->setGuiItem( KStandardGuiItem::find() );
+    d->languageSettingsUi.langSelector->availableListWidget()->setAlternatingRowColors( true );
+    d->languageSettingsUi.langSelector->selectedListWidget()->setAlternatingRowColors( true );
+    d->languageSettingsUi.langSelector->availableListWidget()->setUniformItemSizes( true );
+    d->languageSettingsUi.langSelector->selectedListWidget()->setUniformItemSizes( true );
+    d->languageSettingsUi.progressBar->setEnabled( false );
 
-    connect( d->ui.downloadButton, SIGNAL(clicked()), this, SLOT(_getLangMap()) );
+    QWidget *genSettings = new QWidget;
+    d->generalSettingsUi.setupUi( genSettings );
+    d->generalSettingsUi.mobileCheckBox->setCheckState( d->useMobileWikipedia ? Qt::Checked : Qt::Unchecked );
+
+    connect( d->languageSettingsUi.downloadButton, SIGNAL(clicked()), this, SLOT(_getLangMap()) );
     connect( parent, SIGNAL(applyClicked()), this, SLOT(_loadSettings()) );
     connect( parent, SIGNAL(okClicked()), this, SLOT(_loadSettings()) );
 
-    parent->addPage( settings, i18n( "Wikipedia Language Settings" ), "applications-education-language");
+    parent->addPage( genSettings, i18n( "Wikipedia General Settings" ), "configure" );
+    parent->addPage( langSettings, i18n( "Wikipedia Language Settings" ), "applications-education-language" );
     QTimer::singleShot( 0, this, SLOT(_configureLangSelector()) );
 }
 

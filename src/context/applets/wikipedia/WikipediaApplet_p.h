@@ -20,7 +20,8 @@
 #define AMAROK_WIKIPEDIAAPPLET_P_H
 
 #include "WikipediaApplet.h"
-#include "ui_wikipediaSettings.h"
+#include "ui_wikipediaGeneralSettings.h"
+#include "ui_wikipediaLanguageSettings.h"
 
 #include <KGraphicsWebView>
 #include <KLineEdit>
@@ -72,9 +73,11 @@ public:
     ~WikipediaAppletPrivate() {}
 
     // functions
+    void pushUrlHistory( const QUrl &url );
     void parseWikiLangXml( const QByteArray &xml );
     qint64 writeStyleSheet( const QByteArray &css );
     void scheduleEngineUpdate();
+    void setUrl( const QUrl &url );
     void updateNavigationIcons();
 
     // private slots
@@ -100,6 +103,7 @@ public:
     void _configureLangSelector();
     void _langSelectorItemChanged( QListWidgetItem *item );
 
+    void _titleChanged( const QString &title );
     void _pageLoadStarted();
     void _pageLoadProgress( int progress );
     void _pageLoadFinished( bool ok );
@@ -130,10 +134,12 @@ public:
     QUrl currentUrl;
     QStringList langList;
     TextScrollingWidget *wikipediaLabel;
-    Ui::wikipediaSettings ui;
+    Ui::wikipediaGeneralSettings generalSettingsUi;
+    Ui::wikipediaLanguageSettings languageSettingsUi;
     qreal aspectRatio;
     bool isForwardHistory;
     bool isBackwardHistory;
+    bool useMobileWikipedia;
 };
 
 class WikipediaSearchLineEdit : public Plasma::LineEdit

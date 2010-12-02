@@ -41,6 +41,7 @@ public:
     WikipediaEnginePrivate( WikipediaEngine *parent )
         : q_ptr( parent )
         , currentSelection( Artist )
+        , useMobileVersion( false )
         , dataContainer( 0 )
     {}
     ~WikipediaEnginePrivate() {}
@@ -69,6 +70,7 @@ public:
     QUrl wikiCurrentUrl;
     QStringList preferredLangs;
     Meta::TrackPtr currentTrack;
+    bool useMobileVersion;
 
     Plasma::DataContainer *dataContainer;
 
@@ -137,6 +139,17 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
                  SLOT(_wikiResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
         q->removeData( source, QLatin1String("clickUrl") );
+    }
+
+    if( data.contains( QLatin1String("mobile") ) )
+    {
+        bool mobile = data.value( QLatin1String("mobile") ).toBool();
+        if( mobile != useMobileVersion )
+        {
+            debug() << (mobile ? "switching to mobile wikipedia" : "switching to normal wikipedia");
+            useMobileVersion = mobile;
+            updateEngine();
+        }
     }
 
     if( data.contains( QLatin1String("lang") ) )
@@ -449,33 +462,36 @@ WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
 void
 WikipediaEnginePrivate::_checkRequireUpdate( Meta::TrackPtr track )
 {
+    if( !track )
+        return;
+
     Meta::DataPtr oldData;
-    Meta::DataPtr newData;
+    QString newName;
 
     switch( currentSelection )
     {
     case WikipediaEnginePrivate::Artist:
-        if( track )
-            newData = track->artist().data();
+        if( track->artist() )
+            newName = track->artist()->name();
         if( currentTrack )
             oldData = currentTrack->artist().data();
         break;
+
     case WikipediaEnginePrivate::Album:
-        if( track )
-            newData = track->album().data();
+        if( track->album() )
+            newName = track->album()->name();
         if( currentTrack )
             oldData = currentTrack->album().data();
         break;
+
     case WikipediaEnginePrivate::Track:
-        if( track )
-            newData = track.data();
+        newName = track->name();
         if( currentTrack )
             oldData = currentTrack.data();
         break;
     }
 
-    if( (oldData ? oldData->name() : QString()) !=
-        (newData ? newData->name() : QString()) )
+    if( (oldData ? oldData->name() : QString()) != newName )
     {
         currentTrack = track;
         urls.clear();
@@ -498,16 +514,34 @@ void
 WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPrefix )
 {
     Q_Q( WikipediaEngine );
+    KUrl pageUrl;
+    QString host( ".wikipedia.org" );
+    pageUrl.setScheme( QLatin1String("http") );
+
+    if( useMobileVersion )
+    {
+        host.prepend( ".m" );
+        host.prepend( urlPrefix );
+        pageUrl.setHost( host );
+        pageUrl.setPath( QLatin1String("/wiki") );
+        pageUrl.addQueryItem( QLatin1String("search"), title );
+        DataEngine::Data data;
+        data[QLatin1String("sourceUrl")] = pageUrl;
+        q->removeAllData( QLatin1String("wikipedia") );
+        q->setData( QLatin1String("wikipedia"), data );
+        q->scheduleSourcesUpdated();
+        return;
+    }
+
     // We now use:  http://en.wikipedia.org/w/index.php?title=The_Beatles&useskin=monobook
     // instead of:  http://en.wikipedia.org/wiki/The_Beatles
     // So that wikipedia skin is forced to default "monoskin", and the page can be parsed correctly (see BUG 205901 )
-    KUrl pageUrl;
-    pageUrl.setScheme( QLatin1String("http") );
-    pageUrl.setHost( urlPrefix + QLatin1String(".wikipedia.org") );
+    host.prepend( urlPrefix );
+    pageUrl.setHost( host );
     pageUrl.setPath( QLatin1String("/w/index.php") );
-    pageUrl.addQueryItem( QLatin1String("useskin"), QLatin1String("monobook") );
     pageUrl.addQueryItem( QLatin1String("title"), title );
     pageUrl.addQueryItem( QLatin1String("redirects"), QString::number(1) );
+    pageUrl.addQueryItem( QLatin1String("useskin"), QLatin1String("monobook") );
     wikiCurrentUrl = pageUrl;
     urls << pageUrl;
     The::networkAccessManager()->getData( pageUrl, q,
