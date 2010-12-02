@@ -61,6 +61,11 @@ TestSqlScanManager::initTestCase()
     AmarokConfig::setScanRecursively( true );
     AmarokConfig::setMonitorChanges( false );
 
+    // switch on writing back so that we can create the test files with all the information
+    AmarokConfig::setWriteBack( true );
+    AmarokConfig::setWriteBackStatistics( true );
+    AmarokConfig::setWriteBackCover( true );
+
     // I just need the table and not the whole playlist manager
     /*
     m_storage->query( QString( "CREATE TABLE playlist_tracks ("
