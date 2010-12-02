@@ -44,6 +44,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 {
     Q_OBJECT
     Q_PROPERTY( int collapseHeight READ collapseHeight WRITE setCollapseHeight )
+    Q_PROPERTY( int collapseOffHeight READ collapseOffHeight WRITE setCollapseOffHeight )
 
     public:
         explicit Applet( QObject* parent, const QVariantList& args = QVariantList() );
@@ -68,14 +69,43 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         qreal standardPadding();
 
         /**
-          * Collapse animation
+          * Set the preferred applet height when collapsed.
+          * The actual height when collapsed will be constrained by the applet's
+          * minimum and maximum heights, as well as the current available height
+          * from the containment.
           */
         void setCollapseHeight( int );
+
+        /**
+          * Set the preferred applet height when uncollapsed.
+          * The actual height when collapsed will be constrained by the applet's
+          * minimum and maximum heights, as well as the current available height
+          * from the containment. Depending on the vertical size policy, the
+          * other applets currently showing, and the aforementioned constraints,
+          * the actual height when collapse is off may be different. This is so
+          * that, for example, the applet may take up the rest of the space when
+          * the size policy is set to Expanding.
+          */
         void setCollapseOffHeight( int );
+
+        /**
+         * Preferred applet height when collapsed.
+         */
         int collapseHeight() const;
 
+        /**
+         * Preferred applet height when uncollapsed.
+         */
         int collapseOffHeight() const;
+
+        /**
+         * Whether a collapse animation is currently running.
+         */
         bool isAnimating() const;
+
+        /**
+         * Whether the applet is currently collapsed to collapseHeight().
+         */
         bool isCollapsed() const;
 
         /**
@@ -101,7 +131,15 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 
     public Q_SLOTS:
         virtual void destroy();
+
+        /**
+         * Collapse to collapseHeight().
+         */
         void setCollapseOn();
+
+        /**
+         * Collapse to collapseOffHeight().
+         */
         void setCollapseOff();
 
     protected:
