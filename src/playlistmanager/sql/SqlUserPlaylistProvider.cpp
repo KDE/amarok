@@ -197,14 +197,12 @@ SqlUserPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trac
 
     if( m_removeTrackAction == 0 )
     {
-        m_removeTrackAction = new QAction(
-                    KIcon( "media-track-remove-amarok" ),
-                    i18nc( "Remove a track from a saved playlist", "Remove From \"%1\"", playlist->name() ),
-                    this
-                );
+        m_removeTrackAction = new QAction( this );
+        m_removeTrackAction->setIcon( KIcon( "media-track-remove-amarok" ) );
         m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
     }
+
     m_removeTrackAction->setObjectName( "deleteAction" );
 
     //Add the playlist/track combination to a QMultiMap that is stored in the action.
@@ -220,6 +218,11 @@ SqlUserPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trac
     }
     m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
 
+    if( playlistMap.keys().count() > 1 )
+        m_removeTrackAction->setText( i18n( "Remove tracks" ) );
+    else
+        m_removeTrackAction->setText( i18nc( "Remove a track from a saved playlist",
+                                                 "Remove From \"%1\"", playlist->name() ) );
     actions << m_removeTrackAction;
 
     return actions;
