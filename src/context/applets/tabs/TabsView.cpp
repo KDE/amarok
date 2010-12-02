@@ -140,11 +140,10 @@ TabsView::showTab( TabsItem *tab )
 {
     if( tab )
     {
-        const QString htmlCr =  "<br></br>";
         QString tabText = tab->getTabData();
         if( tabText.length() > 0 )
         {
-            tabText.replace( "\n", htmlCr, Qt::CaseInsensitive);
+            tabText.replace( "\n", "<br></br>", Qt::CaseInsensitive );
 
             QFont tabFont( "monospace");
             tabFont.setStyleHint( QFont::Courier );
@@ -180,7 +179,14 @@ TabsView::showTab( TabsItem *tab )
                     // tab data
                     htmlData += tabText + "</body></html>";
 
+            // backup current scrollbar position
+            QScrollBar *vbar = m_tabTextBrowser->nativeWidget()->verticalScrollBar();
+            int scrollPosition = vbar->isVisible() ? vbar->value() : vbar->minimum();
+
             m_tabTextBrowser->nativeWidget()->setHtml( htmlData );
+
+            // re-apply scrollbar position
+            vbar->setSliderPosition( scrollPosition );
         }
     }
 }
