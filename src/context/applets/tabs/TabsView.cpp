@@ -107,9 +107,6 @@ TabsView::TabsView( QGraphicsWidget *parent )
     setLayout( layout );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     updateScrollBarVisibility();
-
-    // update the palette.
-    paletteChanged( The::paletteHandler()->palette() );
 }
 
 TabsView::~TabsView()
@@ -161,12 +158,14 @@ TabsView::showTab( TabsItem *tab )
             headingFont.setStyleStrategy( QFont::PreferAntialias );
             headingFont.setWeight( QFont::Black );
             QString linkColor = The::paletteHandler()->palette().link().color().name();
+            QString textColor = The::paletteHandler()->palette().text().color().name();
             int headingWeight = 600;
 
             QString htmlData = "<html>";
                     htmlData += "<body style=\"font-family:'" + tabFont.family() + "';";
                     htmlData += "font-size:" + QString::number( tabFont.pointSize() ) + "pt;";
-                    htmlData += "font-weight:" + QString::number( tabFont.weight() ) + ";\">";
+                    htmlData += "font-weight:" + QString::number( tabFont.weight() ) + ";";
+                    htmlData += "color:" + textColor + ";\">";
 
                     // tab heading + tab source
                     htmlData += "<p><span style=\"font-family:'" + headingFont.family() + "';";
@@ -184,15 +183,6 @@ TabsView::showTab( TabsItem *tab )
             m_tabTextBrowser->nativeWidget()->setHtml( htmlData );
         }
     }
-}
-
-void
-TabsView::paletteChanged( const QPalette &palette )
-{
-    // Use the text-color from KDE's colorscheme as we're already using it's background color.
-    // Not using it might cause "conflicts" (where the text could become unreadable).
-    // (code taken from lyrics applet)
-    m_tabTextBrowser->nativeWidget()->setTextColor( palette.text().color() );
 }
 
 void
