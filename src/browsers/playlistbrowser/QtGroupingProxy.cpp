@@ -621,14 +621,11 @@ QtGroupingProxy::modelRowsInserted( const QModelIndex& index, int start, int end
 }
 
 void
-QtGroupingProxy::modelRowsRemoved( const QModelIndex& index, int start, int end )
+QtGroupingProxy::modelRowsRemoved( const QModelIndex &idx, int start, int end )
 {
-    Q_UNUSED( index )
-    Q_UNUSED( start )
-    Q_UNUSED( end )
-    //don't call buildTree() because it will mess up with removing multiple rows
-    //individually using removeRow().
-    //TODO: this breaks the view when rows are not deleted manually.
+    QModelIndex proxyIndex = mapFromSource( idx );
+    beginRemoveRows( proxyIndex, start, end );
+    endRemoveRows();
 }
 
 void
