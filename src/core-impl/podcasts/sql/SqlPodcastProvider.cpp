@@ -62,6 +62,7 @@ SqlPodcastProvider::SqlPodcastProvider()
         , m_updatingChannels( 0 )
         , m_completedDownloads( 0 )
         , m_providerSettingsDialog( 0 )
+        , m_providerSettingsWidget( 0 )
         , m_configureChannelAction( 0 )
         , m_deleteAction( 0 )
         , m_downloadAction( 0 )
@@ -112,17 +113,28 @@ SqlPodcastProvider::SqlPodcastProvider()
         else
             updateDatabase( version /*from*/, PODCAST_DB_VERSION /*to*/ );
 
-        bool startAutoRefreshTimer = false;
-        foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
-        {
-            startAutoRefreshTimer = channel->autoScan();
-        }
-        if( startAutoRefreshTimer )
-        {
-            float interval = 1.0;
-            m_updateTimer->start( interval * 1000 * 60 * m_autoUpdateInterval );
-        }
+        startTimer();
+    }
+}
 
+void
+SqlPodcastProvider::startTimer()
+{
+    if( !m_autoUpdateInterval )
+        return; //timer is disabled
+
+    if( m_updateTimer->isActive() &&
+        m_updateTimer->interval() == ( m_autoUpdateInterval * 1000 * 60 ) )
+        return; //already started with correct interval
+
+    //and only start if at least one channel has autoscan enabled
+    foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
+    {
+        if( channel->autoScan() )
+        {
+            m_updateTimer->start( 1000 * 60 * m_autoUpdateInterval );
+            return;
+        }
     }
 }
 
@@ -521,7 +533,6 @@ SqlPodcastProvider::addChannel( Podcasts::PodcastChannelPtr channel )
 Podcasts::PodcastEpisodePtr
 SqlPodcastProvider::addEpisode( Podcasts::PodcastEpisodePtr episode )
 {
-    DEBUG_BLOCK
     Podcasts::SqlPodcastEpisodePtr sqlEpisode =
             Podcasts::SqlPodcastEpisodePtr::dynamicCast( episode );
     if( sqlEpisode.isNull() )
@@ -575,11 +586,11 @@ SqlPodcastProvider::removeSubscription( Podcasts::SqlPodcastChannelPtr sqlChanne
 void
 SqlPodcastProvider::configureProvider()
 {
-    DEBUG_BLOCK
     m_providerSettingsDialog = new KDialog( The::mainWindow() );
     QWidget *settingsWidget = new QWidget( m_providerSettingsDialog );
     m_providerSettingsDialog->setObjectName( "SqlPodcastProviderSettings" );
     Ui::SqlPodcastProviderSettingsWidget settings;
+    m_providerSettingsWidget = &settings;
     settings.setupUi( settingsWidget );
 
     settings.m_baseDirUrl->setMode( KFile::Directory );
@@ -602,28 +613,26 @@ SqlPodcastProvider::configureProvider()
 
     if( m_providerSettingsDialog->exec() == QDialog::Accepted )
     {
-        debug() << "accepted";
-
-        //TODO: apply
+        m_autoUpdateInterval = settings.m_autoUpdateInterval->value();
+        if( m_autoUpdateInterval )
+            startTimer();
+        else
+            m_updateTimer->stop();
     }
 
     delete m_providerSettingsDialog;
     m_providerSettingsDialog = 0;
-
+    m_providerSettingsWidget = 0;
 }
 
 void
 SqlPodcastProvider::slotConfigChanged()
 {
-    Ui::SqlPodcastProviderSettingsWidget *settings =
-            dynamic_cast<Ui::SqlPodcastProviderSettingsWidget *>(
-                    m_providerSettingsDialog->mainWidget() );
-
-    if( !settings )
+    if( !m_providerSettingsWidget )
         return;
 
-    if( settings->m_autoUpdateInterval->value() != m_autoUpdateInterval
-        || settings->m_baseDirUrl->url() != m_baseDownloadDir )
+    if( m_providerSettingsWidget->m_autoUpdateInterval->value() != m_autoUpdateInterval
+        || m_providerSettingsWidget->m_baseDirUrl->url() != m_baseDownloadDir )
     {
         m_providerSettingsDialog->enableButtonApply( true );
     }
@@ -687,6 +696,7 @@ SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel 
     KUrl oldSaveLocation = sqlChannel->saveLocation();
     bool oldHasPurge = sqlChannel->hasPurge();
     int oldPurgeCount = sqlChannel->purgeCount();
+    bool oldAutoScan = sqlChannel->autoScan();
 
     PodcastSettingsDialog dialog( sqlChannel, The::mainWindow() );
     dialog.configure();
@@ -750,6 +760,10 @@ SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel 
     //if the url changed force an update.
     if( oldUrl != sqlChannel->url() )
         updateSqlChannel( sqlChannel );
+
+    //start autoscan in case it wasn't already
+    if( sqlChannel->autoScan() && !oldAutoScan )
+        startTimer();
 }
 
 QList<QAction *>
@@ -1105,7 +1119,6 @@ SqlPodcastProvider::completePodcastDownloads()
 void
 SqlPodcastProvider::autoUpdate()
 {
-    DEBUG_BLOCK
     if( Solid::Networking::status() != Solid::Networking::Connected
             && Solid::Networking::status() != Solid::Networking::Unknown )
     {
@@ -1151,7 +1164,6 @@ SqlPodcastProvider::updateSqlChannel( Podcasts::SqlPodcastChannelPtr channel )
 void
 SqlPodcastProvider::slotReadResult( Podcasts::PodcastReader *podcastReader )
 {
-    DEBUG_BLOCK
     if( podcastReader->error() != QXmlStreamReader::NoError )
     {
         debug() << podcastReader->errorString();
@@ -1268,8 +1280,6 @@ SqlPodcastProvider::downloadEpisode( Podcasts::PodcastEpisodePtr episode )
 void
 SqlPodcastProvider::cleanupDownload( KJob *job, bool downloadFailed )
 {
-    DEBUG_BLOCK
-
     QFile *tmpFile = m_tmpFileMap.value( job );
 
     if( downloadFailed && tmpFile )
@@ -1287,8 +1297,6 @@ SqlPodcastProvider::cleanupDownload( KJob *job, bool downloadFailed )
 QFile*
 SqlPodcastProvider::createTmpFile( KJob *job )
 {
-    DEBUG_BLOCK
-
     Podcasts::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
     if( sqlEpisode.isNull() )
     {
@@ -1397,7 +1405,6 @@ SqlPodcastProvider::addData( KIO::Job *job, const QByteArray &data )
 void
 SqlPodcastProvider::deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode )
 {
-    DEBUG_BLOCK
     deleteDownloadedEpisode( SqlPodcastEpisodePtr::dynamicCast( episode ) );
 }
 
@@ -1494,8 +1501,6 @@ SqlPodcastProvider::redirected( KIO::Job *job, const KUrl & redirectedUrl )
 void
 SqlPodcastProvider::createTables() const
 {
-    DEBUG_BLOCK
-
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
@@ -1628,8 +1633,6 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
 void
 SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
 {
-    DEBUG_BLOCK
-
     if( m_podcastImageFetcher == 0 )
     {
         m_podcastImageFetcher = new PodcastImageFetcher();
@@ -1649,8 +1652,6 @@ SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
 void
 SqlPodcastProvider::channelImageReady( Podcasts::PodcastChannelPtr channel, QImage image )
 {
-    DEBUG_BLOCK
-    debug() << "channel: " << channel->title();
     if( image.isNull() )
         return;
 

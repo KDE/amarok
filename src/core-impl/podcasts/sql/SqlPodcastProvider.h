@@ -32,6 +32,10 @@ class PodcastReader;
 class SqlStorage;
 class QTimer;
 
+namespace Ui {
+    class SqlPodcastProviderSettingsWidget;
+}
+
 namespace Podcasts {
 
 /**
@@ -117,6 +121,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void slotOpmlWriterDone( int result );
 
     private:
+        void startTimer();
         void configureProvider();
         void configureChannel( Podcasts::SqlPodcastChannelPtr channel );
         void updateSqlChannel( Podcasts::SqlPodcastChannelPtr channel );
@@ -170,6 +175,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         KUrl m_baseDownloadDir;
 
         KDialog *m_providerSettingsDialog;
+        Ui::SqlPodcastProviderSettingsWidget *m_providerSettingsWidget;
 
         QList<QAction *> m_providerActions;
 
