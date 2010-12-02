@@ -49,12 +49,6 @@ UpnpTrack::name() const
     return m_name;
 }
 
-QString
-UpnpTrack::prettyName() const
-{
-    return m_name;
-}
-
 KUrl
 UpnpTrack::playableUrl() const
 {
@@ -368,12 +362,6 @@ UpnpArtist::name() const
     return m_name;
 }
 
-QString
-UpnpArtist::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 UpnpArtist::tracks()
 {
@@ -424,12 +412,6 @@ UpnpAlbum::~UpnpAlbum()
 
 QString
 UpnpAlbum::name() const
-{
-    return m_name;
-}
-
-QString
-UpnpAlbum::prettyName() const
 {
     return m_name;
 }
@@ -555,12 +537,6 @@ UpnpGenre::name() const
     return m_name;
 }
 
-QString
-UpnpGenre::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 UpnpGenre::tracks()
 {
@@ -600,12 +576,6 @@ UpnpComposer::name() const
     return m_name;
 }
 
-QString
-UpnpComposer::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 UpnpComposer::tracks()
 {
@@ -641,12 +611,6 @@ UpnpYear::~UpnpYear()
 
 QString
 UpnpYear::name() const
-{
-    return m_name;
-}
-
-QString
-UpnpYear::prettyName() const
 {
     return m_name;
 }

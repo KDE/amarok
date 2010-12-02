@@ -232,13 +232,6 @@ public:
         return artist;
     }
 
-    /*
-    QString prettyName() const
-    {
-        return name();
-    }
-    */
-
     bool operator==( const Meta::Artist &other ) const {
         return name() == other.name();
     }
@@ -285,13 +278,6 @@ public:
             return QString();
     }
 
-    /*
-    QString prettyName() const
-    {
-        return name();
-    }
-    */
-
     QPixmap image( int size )
     {
         return Meta::Album::image( size );
@@ -323,13 +309,6 @@ public:
         return genreName;
     }
 
-    /*
-    QString prettyName() const
-    {
-        return name();
-    }
-    */
-
     bool operator==( const Meta::Genre &other ) const {
         return name() == other.name();
     }
@@ -356,11 +335,6 @@ public:
         return composer;
      }
 
-    QString prettyName() const
-    {
-        return name();
-    }
-
     bool operator==( const Meta::Composer &other ) const {
         return name() == other.name();
     }
@@ -385,11 +359,6 @@ public:
     {
         const QString year = QString::number( d.data()->m_data.year );
         return year;
-    }
-
-    QString prettyName() const
-    {
-        return name();
     }
 
     bool operator==( const Meta::Year &other ) const {

@@ -213,12 +213,6 @@ ServiceTrack::name() const
     return m_name;
 }
 
-QString
-ServiceTrack::prettyName() const
-{
-    return name();
-}
-
 KUrl
 ServiceTrack::playableUrl() const
 {
@@ -614,12 +608,6 @@ ServiceArtist::name() const
     return m_name;
 }
 
-QString
-ServiceArtist::prettyName() const
-{
-    return m_name;
-}
-
 void
 ServiceArtist::setTitle(const QString & title)
 {
@@ -745,12 +733,6 @@ ServiceAlbum::name() const
     return m_name;
 }
 
-QString
-ServiceAlbum::prettyName() const
-{
-    return m_name;
-}
-
 void
 ServiceAlbum::setTitle(const QString & title)
 {
@@ -869,12 +851,6 @@ ServiceGenre::name() const
     return m_name;
 }
 
-QString
-ServiceGenre::prettyName() const
-{
-    return m_name;
-}
-
 int
 ServiceGenre::albumId()
 {
@@ -932,12 +908,6 @@ ServiceComposer::name() const
     return m_name;
 }
 
-QString
-ServiceComposer::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 ServiceComposer::tracks()
 {
@@ -978,12 +948,6 @@ ServiceYear::~ServiceYear()
 
 QString
 ServiceYear::name() const
-{
-    return m_name;
-}
-
-QString
-ServiceYear::prettyName() const
 {
     return m_name;
 }

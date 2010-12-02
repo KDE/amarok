@@ -38,7 +38,6 @@ namespace Playlists
 
             // Playlist Functions
             virtual QString name() const { return m_name; }
-            virtual QString prettyName() const { return m_name; }
             virtual QString description() const { return QString(); }
             virtual KUrl uidUrl() const { return KUrl(); }
 

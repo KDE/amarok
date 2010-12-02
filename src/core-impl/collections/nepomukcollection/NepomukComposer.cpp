@@ -36,12 +36,6 @@ NepomukComposer::name() const
     return m_name;
 }
 
-QString
-NepomukComposer::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 NepomukComposer::tracks()
 {

@@ -125,12 +125,6 @@ Track::name() const
 }
 
 QString
-Track::prettyName() const
-{
-    return name();
-}
-
-QString
 Track::fullPrettyName() const
 {
     if( d->track.isEmpty() || d->artist.isEmpty() )

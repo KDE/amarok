@@ -122,12 +122,6 @@ MediaDeviceTrack::name() const
     return m_name;
 }
 
-QString
-MediaDeviceTrack::prettyName() const
-{
-    return m_name;
-}
-
 KUrl
 MediaDeviceTrack::playableUrl() const
 {
@@ -760,12 +754,6 @@ MediaDeviceArtist::name() const
     return m_name;
 }
 
-QString
-MediaDeviceArtist::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 MediaDeviceArtist::tracks()
 {
@@ -828,12 +816,6 @@ MediaDeviceAlbum::~MediaDeviceAlbum()
 
 QString
 MediaDeviceAlbum::name() const
-{
-    return m_name;
-}
-
-QString
-MediaDeviceAlbum::prettyName() const
 {
     return m_name;
 }
@@ -1033,12 +1015,6 @@ MediaDeviceComposer::name() const
     return m_name;
 }
 
-QString
-MediaDeviceComposer::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 MediaDeviceComposer::tracks()
 {
@@ -1074,12 +1050,6 @@ MediaDeviceGenre::~MediaDeviceGenre()
 
 QString
 MediaDeviceGenre::name() const
-{
-    return m_name;
-}
-
-QString
-MediaDeviceGenre::prettyName() const
 {
     return m_name;
 }
@@ -1120,12 +1090,6 @@ MediaDeviceYear::~MediaDeviceYear()
 
 QString
 MediaDeviceYear::name() const
-{
-    return m_name;
-}
-
-QString
-MediaDeviceYear::prettyName() const
 {
     return m_name;
 }

@@ -151,7 +151,6 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         virtual ~ServiceTrack();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
         virtual KUrl downloadableUrl() const;
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
@@ -294,7 +293,6 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
         virtual ~ServiceArtist();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -365,7 +363,6 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
         virtual ~ServiceAlbum();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual bool isCompilation() const;
         virtual bool hasAlbumArtist() const;
@@ -449,7 +446,6 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
         virtual ~ServiceGenre();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -505,7 +501,6 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
         virtual ~ServiceComposer();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -548,7 +543,6 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
         virtual ~ServiceYear();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 

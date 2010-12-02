@@ -50,7 +50,6 @@ class SqlPlaylist : public Playlist, public Meta::Observer
         /* Playlist virtual functions */
         virtual KUrl uidUrl() const;
         virtual QString name() const { return m_name; }
-        virtual QString prettyName() const { return m_name; }
         virtual QString description() const { return m_description; }
 
         virtual PlaylistProvider *provider() const { return m_provider; }

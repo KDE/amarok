@@ -88,12 +88,6 @@ Meta::PlaydarTrack::name() const
     return m_name;
 }
 
-QString
-Meta::PlaydarTrack::prettyName() const
-{
-    return m_name;
-}
-
 KUrl
 Meta::PlaydarTrack::playableUrl() const
 {
@@ -434,12 +428,6 @@ Meta::PlaydarArtist::name() const
     return m_name;
 }
 
-QString
-Meta::PlaydarArtist::prettyName() const
-{
-    return name();
-}
-
 Meta::TrackList
 Meta::PlaydarArtist::tracks()
 {
@@ -490,12 +478,6 @@ QString
 Meta::PlaydarAlbum::name() const
 {
     return m_name;
-}
-
-QString
-Meta::PlaydarAlbum::prettyName() const
-{
-    return name();
 }
 
 bool
@@ -624,12 +606,6 @@ Meta::PlaydarComposer::name() const
     return m_name;
 }
 
-QString
-Meta::PlaydarComposer::prettyName() const
-{
-    return name();
-}
-
 Meta::TrackList
 Meta::PlaydarComposer::tracks()
 {
@@ -658,12 +634,6 @@ QString
 Meta::PlaydarGenre::name() const
 {
     return m_name;
-}
-
-QString
-Meta::PlaydarGenre::prettyName() const
-{
-    return name();
 }
 
 Meta::TrackList
@@ -696,12 +666,6 @@ Meta::PlaydarYear::name() const
     return m_name;
 }
 
-QString
-Meta::PlaydarYear::prettyName() const
-{
-    return name();
-}
-
 Meta::TrackList
 Meta::PlaydarYear::tracks()
 {
@@ -730,12 +694,6 @@ QString
 Meta::PlaydarLabel::name() const
 {
     return m_name;
-}
-
-QString
-Meta::PlaydarLabel::prettyName() const
-{
-    return name();
 }
 
 void

@@ -225,13 +225,6 @@ public:
         return QString( "Last.fm" );
     }
 
-    QString prettyName() const
-    {
-        if( d )
-            return d->artist;
-        return QString( "Last.fm" );
-    }
-
     Track::Private * const d;
 
     friend class Track::Private;
@@ -255,13 +248,6 @@ public:
     }
 
     QString name() const
-    {
-        if( d )
-            return d->album;
-        return QString();
-    }
-
-    QString prettyName() const
     {
         if( d )
             return d->album;
@@ -330,11 +316,6 @@ public:
         return QString();
     }
 
-    QString prettyName() const
-    {
-        return QString();
-    }
-
     Meta::TrackList tracks()
     {
         return Meta::TrackList();
@@ -358,11 +339,6 @@ public:
         return QString();
     }
 
-    QString prettyName() const
-    {
-        return QString();
-    }
-
     Meta::TrackList tracks()
     {
         return Meta::TrackList();
@@ -382,11 +358,6 @@ public:
     {}
 
     QString name() const
-    {
-        return QString();
-    }
-
-    QString prettyName() const
     {
         return QString();
     }

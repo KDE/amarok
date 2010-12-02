@@ -34,12 +34,6 @@ QString
     return m_name;
 }
 
-QString
- NepomukGenre::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 NepomukGenre::tracks()
 {

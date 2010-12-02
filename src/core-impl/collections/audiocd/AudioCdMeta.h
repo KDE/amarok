@@ -48,7 +48,6 @@ class AudioCdTrack : public Meta::Track
         virtual ~AudioCdTrack();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
@@ -143,7 +142,6 @@ class AudioCdArtist : public Meta::Artist
         virtual ~AudioCdArtist();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -164,7 +162,6 @@ class AudioCdAlbum : public Meta::Album
         virtual ~AudioCdAlbum();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual bool isCompilation() const;
         virtual bool hasAlbumArtist() const;
@@ -196,7 +193,6 @@ class AudioCdGenre : public Meta::Genre
         virtual ~AudioCdGenre();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -215,7 +211,6 @@ class AudioCdComposer : public Meta::Composer
         virtual ~AudioCdComposer();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -234,7 +229,6 @@ class AudioCdYear : public Meta::Year
         virtual ~AudioCdYear();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 

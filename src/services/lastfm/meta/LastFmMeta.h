@@ -45,7 +45,6 @@ namespace LastFm
 
         //methods inherited from Meta::MetaBase
             virtual QString name() const;
-            virtual QString prettyName() const;
             virtual QString fullPrettyName() const;
             virtual QString sortableName() const;
             virtual QString fixedName() const;

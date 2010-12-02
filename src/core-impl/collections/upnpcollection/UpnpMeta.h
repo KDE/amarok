@@ -47,7 +47,6 @@ class UpnpTrack : public Meta::Track
         virtual ~UpnpTrack();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
@@ -147,7 +146,6 @@ class UpnpArtist : public Meta::Artist
         virtual ~UpnpArtist();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -172,7 +170,6 @@ class UpnpAlbum : public QObject, public Meta::Album
         virtual ~UpnpAlbum();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual bool isCompilation() const;
         virtual bool hasAlbumArtist() const;
@@ -208,7 +205,6 @@ class UpnpGenre : public Meta::Genre
         virtual ~UpnpGenre();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -228,7 +224,6 @@ class UpnpComposer : public Meta::Composer
         virtual ~UpnpComposer();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -248,7 +243,6 @@ class UpnpYear : public Meta::Year
         virtual ~UpnpYear();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 

@@ -76,7 +76,6 @@ namespace Meta
             ~PlaydarTrack();
             
             QString name() const;
-            QString prettyName() const;
             KUrl playableUrl() const;
             QString prettyUrl() const;
             QString uidUrl() const;
@@ -174,7 +173,6 @@ namespace Meta
             ~PlaydarArtist();
 
             QString name() const;
-            QString prettyName() const;
 
             TrackList tracks();
             AlbumList albums();
@@ -196,7 +194,6 @@ namespace Meta
             bool isCompilation() const;
             
             QString name() const;
-            QString prettyName() const;
             
             bool hasAlbumArtist() const;
             ArtistPtr albumArtist() const;
@@ -229,10 +226,9 @@ namespace Meta
         public:
             PlaydarComposer( const QString &name );
             ~PlaydarComposer();
-            
+
             QString name() const;
-            QString prettyName() const;
-            
+
             TrackList tracks();
 
             void addTrack( PlaydarTrackPtr newTrack );
@@ -247,10 +243,9 @@ namespace Meta
         public:
             PlaydarGenre( const QString &name );
             ~PlaydarGenre();
-            
+
             QString name() const;
-            QString prettyName() const;
-            
+
             TrackList tracks();
 
             void addTrack( PlaydarTrackPtr newTrack );
@@ -265,10 +260,9 @@ namespace Meta
         public:
             PlaydarYear( const QString &name );
             ~PlaydarYear();
-            
+
             QString name() const;
-            QString prettyName() const;
-            
+
             TrackList tracks();
 
             void addTrack( PlaydarTrackPtr newTrack );
@@ -283,9 +277,8 @@ namespace Meta
         public:
             PlaydarLabel( const QString &name );
             ~PlaydarLabel();
-            
+
             QString name() const;
-            QString prettyName() const;
 
             void addTrack( PlaydarTrackPtr newTrack );
 

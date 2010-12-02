@@ -58,12 +58,6 @@ TimecodeTrack::name() const
     return m_name;
 }
 
-QString
-TimecodeTrack::prettyName() const
-{
-    return name();
-}
-
 KUrl
 TimecodeTrack::playableUrl() const
 {
@@ -450,12 +444,6 @@ TimecodeArtist::name() const
     return m_name;
 }
 
-QString
-TimecodeArtist::prettyName() const
-{
-    return name();
-}
-
 TrackList
 TimecodeArtist::tracks()
 {
@@ -496,12 +484,6 @@ QString
 TimecodeAlbum::name() const
 {
     return m_name;
-}
-
-QString
-TimecodeAlbum::prettyName() const
-{
-    return name();
 }
 
 bool
@@ -633,12 +615,6 @@ TimecodeGenre::name() const
     return m_name;
 }
 
-QString
-TimecodeGenre::prettyName() const
-{
-    return name();
-}
-
 TrackList
 TimecodeGenre::tracks()
 {
@@ -668,12 +644,6 @@ TimecodeComposer::name() const
     return m_name;
 }
 
-QString
-TimecodeComposer::prettyName() const
-{
-    return name();
-}
-
 TrackList
 TimecodeComposer::tracks()
 {
@@ -701,12 +671,6 @@ QString
 TimecodeYear::name() const
 {
     return m_name;
-}
-
-QString
-TimecodeYear::prettyName() const
-{
-    return name();
 }
 
 TrackList

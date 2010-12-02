@@ -30,7 +30,6 @@ class NepomukYear : public Year
         NepomukYear( const QString &name );
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 

@@ -59,7 +59,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual ~MediaDeviceTrack();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
@@ -186,7 +185,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceArtist : public Meta::Artist
         virtual ~MediaDeviceArtist();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
         virtual AlbumList albums();
@@ -211,7 +209,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         virtual ~MediaDeviceAlbum();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual bool isCompilation() const;
         void setIsCompilation( bool compilation );
@@ -257,7 +254,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceComposer : public Meta::Composer
         virtual ~MediaDeviceComposer();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -277,7 +273,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceGenre : public Meta::Genre
         virtual ~MediaDeviceGenre();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -298,7 +293,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceYear : public Meta::Year
         virtual ~MediaDeviceYear();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 

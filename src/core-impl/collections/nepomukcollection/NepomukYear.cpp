@@ -35,12 +35,6 @@ QString
     return m_name;
 }
 
-QString
-NepomukYear::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 NepomukYear::tracks()
 {

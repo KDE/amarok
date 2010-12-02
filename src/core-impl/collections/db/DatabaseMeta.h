@@ -61,9 +61,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS DatabaseTrack : public Meta::Track
 
         /** returns the title of this track as stored in the database **/
         virtual QString name() const { return m_title; }
-        /** returns the title of the track if existing in the database,
-            a value deduced from the file name otherwise */
-        virtual QString prettyName() const;
         /** returns "[artist] - [title]" if both are stored in the database,
             a value deduced from the file name otherwise */
         virtual QString fullPrettyName() const;
@@ -296,7 +293,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS DatabaseArtist : public Meta::Artis
         ~DatabaseArtist();
 
         virtual QString name() const { return m_name; }
-        virtual QString prettyName() const { return m_name; } //change if necessary
 
         // void updateData( Collections::DatabaseCollection* collection, int id, const QString &name );
 
@@ -336,7 +332,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS DatabaseAlbum : public Meta::Album
         ~DatabaseAlbum();
 
         virtual QString name() const { return m_name; }
-        virtual QString prettyName() const { return m_name; }
 
         virtual void invalidateCache();
 
@@ -460,7 +455,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS DatabaseComposer : public Meta::Com
         DatabaseComposer( Collections::DatabaseCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
-        virtual QString prettyName() const { return m_name; }
 
         // void updateData( Collections::DatabaseCollection* collection, int id, const QString &name );
 
@@ -491,7 +485,6 @@ class DatabaseGenre : public Meta::Genre
         DatabaseGenre( Collections::DatabaseCollection* collection, int id, const QString &name );
 
         virtual QString name() const { return m_name; }
-        virtual QString prettyName() const { return m_name; }
 
         /** Invalidates the tracks cache */
         virtual void invalidateCache();
@@ -521,7 +514,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS DatabaseYear : public Meta::Year
         DatabaseYear( Collections::DatabaseCollection* collection, int id, int year );
 
         virtual QString name() const { return QString::number(m_year); }
-        virtual QString prettyName() const { return name(); }
         virtual int year() const { return m_year; }
 
         /** Invalidates the tracks cache */
@@ -552,7 +544,6 @@ public:
     DatabaseLabel( Collections::DatabaseCollection *collection, int id, const QString &name );
 
     virtual QString name() const { return m_name; }
-    virtual QString prettyName() const { return m_name; }
 
     /** Invalidates the tracks cache */
     virtual void invalidateCache();

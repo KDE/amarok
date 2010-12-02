@@ -52,12 +52,6 @@ DaapTrack::name() const
     return m_name;
 }
 
-QString
-DaapTrack::prettyName() const
-{
-    return m_name;
-}
-
 KUrl
 DaapTrack::playableUrl() const
 {
@@ -344,12 +338,6 @@ DaapArtist::name() const
     return m_name;
 }
 
-QString
-DaapArtist::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 DaapArtist::tracks()
 {
@@ -386,12 +374,6 @@ DaapAlbum::~DaapAlbum()
 
 QString
 DaapAlbum::name() const
-{
-    return m_name;
-}
-
-QString
-DaapAlbum::prettyName() const
 {
     return m_name;
 }
@@ -478,12 +460,6 @@ DaapGenre::name() const
     return m_name;
 }
 
-QString
-DaapGenre::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 DaapGenre::tracks()
 {
@@ -517,12 +493,6 @@ DaapComposer::name() const
     return m_name;
 }
 
-QString
-DaapComposer::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 DaapComposer::tracks()
 {
@@ -552,12 +522,6 @@ DaapYear::~DaapYear()
 
 QString
 DaapYear::name() const
-{
-    return m_name;
-}
-
-QString
-DaapYear::prettyName() const
 {
     return m_name;
 }

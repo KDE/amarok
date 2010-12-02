@@ -28,10 +28,9 @@ class NepomukGenre : public Genre
 {
     public:
         NepomukGenre( const QString &name );
-        
+
         virtual QString name() const;
-        virtual QString prettyName() const;
-        
+
         virtual TrackList tracks();
         
     private:

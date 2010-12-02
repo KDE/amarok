@@ -47,7 +47,6 @@ class DaapTrack : public Meta::Track
         virtual ~DaapTrack();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
@@ -139,7 +138,6 @@ class DaapArtist : public Meta::Artist
         virtual ~DaapArtist();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -160,7 +158,6 @@ class DaapAlbum : public Meta::Album
         virtual ~DaapAlbum();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual bool isCompilation() const;
         virtual bool hasAlbumArtist() const;
@@ -190,7 +187,6 @@ class DaapGenre : public Meta::Genre
         virtual ~DaapGenre();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -209,7 +205,6 @@ class DaapComposer : public Meta::Composer
         virtual ~DaapComposer();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -228,7 +223,6 @@ class DaapYear : public Meta::Year
         virtual ~DaapYear();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 

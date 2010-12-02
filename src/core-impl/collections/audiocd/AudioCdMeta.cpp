@@ -49,12 +49,6 @@ AudioCdTrack::name() const
     return m_name;
 }
 
-QString
-AudioCdTrack::prettyName() const
-{
-    return m_name;
-}
-
 KUrl
 AudioCdTrack::playableUrl() const
 {
@@ -346,12 +340,6 @@ AudioCdArtist::name() const
     return m_name;
 }
 
-QString
-AudioCdArtist::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 AudioCdArtist::tracks()
 {
@@ -388,12 +376,6 @@ AudioCdAlbum::~AudioCdAlbum()
 
 QString
 AudioCdAlbum::name() const
-{
-    return m_name;
-}
-
-QString
-AudioCdAlbum::prettyName() const
 {
     return m_name;
 }
@@ -491,12 +473,6 @@ AudioCdGenre::name() const
     return m_name;
 }
 
-QString
-AudioCdGenre::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 AudioCdGenre::tracks()
 {
@@ -530,12 +506,6 @@ AudioCdComposer::name() const
     return m_name;
 }
 
-QString
-AudioCdComposer::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 AudioCdComposer::tracks()
 {
@@ -565,12 +535,6 @@ AudioCdYear::~AudioCdYear()
 
 QString
 AudioCdYear::name() const
-{
-    return m_name;
-}
-
-QString
-AudioCdYear::prettyName() const
 {
     return m_name;
 }

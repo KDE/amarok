@@ -103,7 +103,6 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
 
         //MetaBase methods
         virtual QString name() const { return m_title; }
-        virtual QString prettyName() const { return m_title; }
 
         //Track Methods
         virtual KUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
@@ -226,7 +225,6 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         //Playlist virtual methods
         virtual KUrl uidUrl() const { return m_url; }
         virtual QString name() const { return title(); }
-        virtual QString prettyName() const { return title(); }
 
         virtual Meta::TrackList tracks();
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
@@ -323,11 +321,6 @@ public:
         return author;
     }
 
-    QString prettyName() const
-    {
-        return name();
-    }
-
     bool operator==( const Meta::Artist &other ) const
     {
         return name() == other.name();
@@ -375,11 +368,6 @@ public:
             return QString();
     }
 
-    QString prettyName() const
-    {
-        return name();
-    }
-
     QPixmap image( int size )
     {
         QPixmap image = episode->channel()->image();
@@ -411,11 +399,6 @@ public:
     {
         const QString genreName = i18n( "Podcast" );
         return genreName;
-    }
-
-    QString prettyName() const
-    {
-        return name();
     }
 
     bool operator==( const Meta::Genre &other ) const
@@ -451,11 +434,6 @@ public:
 
      }
 
-    QString prettyName() const
-    {
-        return name();
-    }
-
     bool operator==( const Meta::Composer &other ) const
     {
         return name() == other.name();
@@ -486,11 +464,6 @@ public:
         }
         else
             return QString();
-    }
-
-    QString prettyName() const
-    {
-        return name();
     }
 
     bool operator==( const Meta::Year &other ) const

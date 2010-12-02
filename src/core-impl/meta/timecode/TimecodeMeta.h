@@ -46,7 +46,6 @@ public:
     virtual ~TimecodeTrack();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual KUrl playableUrl() const;
     virtual QString uidUrl() const;
@@ -160,7 +159,6 @@ public:
     virtual ~TimecodeArtist();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual TrackList tracks();
 
@@ -187,7 +185,6 @@ public:
     virtual ~TimecodeAlbum();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual bool isCompilation() const;
     virtual bool hasAlbumArtist() const;
@@ -234,7 +231,6 @@ public:
     virtual ~TimecodeGenre();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual TrackList tracks();
 
@@ -258,7 +254,6 @@ public:
     virtual ~TimecodeComposer();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual TrackList tracks();
 
@@ -282,7 +277,6 @@ public:
     virtual ~TimecodeYear();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual TrackList tracks();
 

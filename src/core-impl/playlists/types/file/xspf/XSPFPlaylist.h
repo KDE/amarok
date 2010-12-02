@@ -72,7 +72,6 @@ public:
     ~XSPFPlaylist();
 
     virtual QString name() const { return title(); }
-    virtual QString prettyName() const { return name(); }
     virtual QString description() const;
 
     /** returns all tracks in this playlist */
