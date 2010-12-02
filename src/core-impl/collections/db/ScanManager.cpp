@@ -308,7 +308,6 @@ ScannerJob::~ScannerJob()
     DEBUG_BLOCK;
     QMutexLocker locker( &m_mutex );
 
-    Q_ASSERT( !m_scanner );
     // remove the batch file
     if( !m_batchfilePath.isEmpty() )
         QFile::remove( m_batchfilePath );
@@ -436,31 +435,37 @@ ScannerJob::run()
         debug() << "Aborting ScanManager ScannerJob";
         emit failed( m_abortReason );
         processor->rollback();
+        if( m_scanner )
+        {
+            m_scanner->close();
+            m_scanner->waitForFinished(); // waits at most 3 seconds
+        }
     }
     else if( !finished && m_reader.hasError() )
     {
         warning() << "Aborting ScanManager ScannerJob with error"<<m_reader.errorString();
         emit failed( i18n("Aborting scanner with error: %1").arg( m_reader.errorString() ) );
         processor->rollback();
+        if( m_scanner )
+        {
+            m_scanner->close();
+            m_scanner->waitForFinished(); // waits at most 3 seconds
+        }
     }
     else
     {
         processor->commit();
         emit succeeded();
-    }
-
-    if( m_scanner ) {
-        // kill and delete the scanner process
-        m_scanner->close();
-        disconnect( m_scanner, 0, this, 0 );
-        m_scanner->terminate();
-        delete m_scanner;
-        m_scanner = 0;
+        if( m_scanner )
+            m_scanner->waitForFinished(); // waits at most 3 seconds
     }
 
     debug() << "ScannerJob finished";
 
+    delete m_scanner;
+    m_scanner = 0;
     delete processor;
+    processor = 0;
 }
 
 void
