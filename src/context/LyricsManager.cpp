@@ -235,25 +235,7 @@ LyricsManager::lyricsNotFound( const QString& notfound )
 {
     DEBUG_BLOCK
     if( !showCached() )
-    {
-        //if we have cached lyrics there is absolutely no point in not showing these..
-        Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-	if( !currentTrack )
-            return;
-
-        Meta::ArtistPtr currentArtist = currentTrack->artist();
-	if( !currentArtist )
-            return;
-
-        const QString title = currentTrack->prettyName();
-
-        QStringList lyricsData;
-        lyricsData << title
-        << currentArtist->name()
-        << QString() // TODO lyrics site
-        << notfound;
-        sendNewLyrics( lyricsData );
-    }
+        sendLyricsMessage( "notfound", notfound );
 }
 
 

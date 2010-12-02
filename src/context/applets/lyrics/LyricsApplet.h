@@ -49,7 +49,6 @@ private slots:
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
     void keyPressEvent( QKeyEvent *e );
-    virtual QVariant itemChange( GraphicsItemChange change, const QVariant &value );
 
 private:
     LyricsAppletPrivate *const d_ptr;

@@ -35,13 +35,18 @@ SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVarian
     : DataEngine( parent )
     , m_maxArtists( 5 )
 {
-    EngineController *engine = The::engineController();
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)), SLOT(update()) );
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), SLOT(update()) );
 }
 
 SimilarArtistsEngine::~SimilarArtistsEngine()
 {
+}
+
+void
+SimilarArtistsEngine::init()
+{
+    EngineController *engine = The::engineController();
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)), SLOT(update()) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), SLOT(update()) );
 }
 
 bool
@@ -56,13 +61,12 @@ SimilarArtistsEngine::sourceRequestEvent( const QString &name )
         force = true;
 
     if( tokens.contains( QLatin1String("artist") ) )
-        update( m_artist );
+        return update( m_artist );
     else
-        update( force );
-    return true;
+        return update( force );
 }
 
-void
+bool
 SimilarArtistsEngine::update( bool force )
 {
     QString newArtist;
@@ -78,6 +82,7 @@ SimilarArtistsEngine::update( bool force )
     {
         m_artist.clear();
         removeAllData( "similarArtists" );
+        return false;
     }
     else   //valid artist
     {
@@ -87,18 +92,21 @@ SimilarArtistsEngine::update( bool force )
             // if the artist has changed
             m_artist = newArtist;
             similarArtistsRequest( m_artist );
+            return true;
         }
     }
+    return false;
 }
 
-void
+bool
 SimilarArtistsEngine::update( const QString &name )
 {
     if( name.isEmpty() )
-        return;
+        return false;
 
     m_artist = name;
     similarArtistsRequest( m_artist );
+    return true;
 }
 
 void

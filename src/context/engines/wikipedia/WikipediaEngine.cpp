@@ -80,15 +80,23 @@ public:
     void _parseLangLinksResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void _parseListingResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void _wikiResult( const KUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e );
+    void _stopped();
 };
 
 void
 WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plasma::DataEngine::Data &data )
 {
+    DEBUG_BLOCK
     Q_Q( WikipediaEngine );
 
     if( source != QLatin1String("wikipedia") )
         return;
+
+    if( data.isEmpty() )
+    {
+        debug() << "data is empty";
+        return;
+    }
 
     if( data.contains( QLatin1String("reload") ) )
     {
@@ -182,6 +190,10 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
     wikiParse( wiki );
     data[QLatin1String("page")] = wiki;
     data[QLatin1String("url")] = QUrl(url);
+    q->removeData( QLatin1String("wikipedia"), QLatin1String("busy") );
+
+    if( !currentTrack )
+        return;
 
     if( currentSelection == Artist ) // default, or applet told us to fetch artist
     {
@@ -204,7 +216,6 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
             data[QLatin1String("title")] = currentTrack->album()->prettyName();
         }
     }
-    q->removeData( QLatin1String("wikipedia"), QLatin1String("busy") );
     q->setData( QLatin1String("wikipedia"), data );
     q->scheduleSourcesUpdated();
 }
@@ -470,6 +481,17 @@ WikipediaEnginePrivate::_checkRequireUpdate( Meta::TrackPtr track )
         urls.clear();
         updateEngine();
     }
+}
+
+void
+WikipediaEnginePrivate::_stopped()
+{
+    DEBUG_BLOCK
+    Q_Q( WikipediaEngine );
+    dataContainer->removeAllData();
+    dataContainer->setData( "stopped", 1 );
+    q->scheduleSourcesUpdated();
+    currentTrack.clear();
 }
 
 void
@@ -848,6 +870,8 @@ WikipediaEngine::init()
              this, SLOT( _checkRequireUpdate( Meta::TrackPtr ) ) );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
              this, SLOT( _checkRequireUpdate( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( _stopped() ) );
 }
 
 bool

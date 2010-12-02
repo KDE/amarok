@@ -109,7 +109,7 @@ class VideoclipApplet : public Context::Applet
         Plasma::IconWidget      *m_settingsIcon;
         Ui::videoclipSettings   ui_Settings;
         bool                    m_youtubeHQ;
-        int                     m_height;
+        qreal                   m_headerHeight;
 };
 
 #endif /* VIDEOCLIP_APPLET_H */

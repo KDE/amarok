@@ -221,6 +221,7 @@ private slots:
     void handleMapRequest( QObject *widget );
     void listWidgetDestroyed( QObject *obj );
     void openUrl( const QString &url );
+    void collapseStateChanged();
     void viewCalendar();
 };
 

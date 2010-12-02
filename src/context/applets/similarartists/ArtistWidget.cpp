@@ -606,9 +606,8 @@ ArtistsListWidget::ArtistsListWidget( QGraphicsWidget *parent )
     : Plasma::ScrollWidget( parent )
     , m_separatorCount( 0 )
 {
-    m_layout = new QGraphicsLinearLayout( Qt::Vertical );
     QGraphicsWidget *content = new QGraphicsWidget( this );
-    content->setLayout( m_layout );
+    m_layout = new QGraphicsLinearLayout( Qt::Vertical, content );
     setWidget( content );
 
     m_showArtistsSigMapper = new QSignalMapper( this );
@@ -688,6 +687,17 @@ ArtistsListWidget::clear()
         }
         m_separatorCount = 0;
     }
+    m_layout->invalidate();
+    updateGeometry();
+}
+
+QSizeF
+ArtistsListWidget::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
+{
+    QSizeF sz = Plasma::ScrollWidget::sizeHint( which, constraint );
+    if( count() == 0 )
+        sz.rheight() = 0;
+    return sz;
 }
 
 bool

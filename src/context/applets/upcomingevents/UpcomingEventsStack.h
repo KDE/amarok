@@ -49,9 +49,10 @@ public:
 
 public slots:
     void maximizeItem( const QString &name ); ///< expand item with name and collapse all else
-
-public slots:
     void cleanupListWidgets();
+
+signals:
+    void collapseStateChanged();
 
 private:
     UpcomingEventsStackPrivate *const d_ptr;

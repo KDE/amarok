@@ -61,7 +61,7 @@ class PhotosApplet : public Context::Applet
         TextScrollingWidget     *m_headerText;
         PhotosScrollWidget      *m_widget;
 
-        int   m_height;
+        qreal m_headerHeight;
         int   m_nbPhotos;
         
         QString m_Animation;

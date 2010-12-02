@@ -35,7 +35,6 @@ PhotosEngine::PhotosEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         , m_nbPhotos( 10 )
 {
     m_sources << "flickr" ;
-    // update();
 }
 
 PhotosEngine::~PhotosEngine()
@@ -57,6 +56,8 @@ PhotosEngine::stopped()
     DEBUG_BLOCK
     removeAllData( "photos" );
     setData( "photos", "message", "stopped" );
+    m_artist.clear();
+    m_currentTrack.clear();
 }
 
 void
@@ -126,13 +127,13 @@ PhotosEngine::update( bool force )
     if( !currentTrack || !currentTrack->artist() )
     {
         debug() << "invalid current track";
-        setData( "photos", DataEngine::Data() );
+        setData( "photos", Plasma::DataEngine::Data() );
         return;
     }
     else if( !force && currentTrack->artist()->name() == m_artist )
     {
         debug() << "artist name unchanged";
-        setData( "photos", DataEngine::Data() );
+        setData( "photos", Plasma::DataEngine::Data() );
         return;
     }
     else
@@ -157,7 +158,7 @@ PhotosEngine::update( bool force )
         }
         else
         {
-            setData( "photos", "message", "NA_Collapse" );
+            removeAllData( "photos" );
             return;
         }
 

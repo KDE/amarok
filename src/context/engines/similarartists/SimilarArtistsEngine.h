@@ -44,6 +44,8 @@ public:
      */
     SimilarArtistsEngine( QObject *parent, const QList<QVariant> &args );
 
+    virtual void init();
+
     /**
      * Destroy the dataEngine
      */
@@ -91,9 +93,9 @@ private slots:
      * Launch when the track played on amarok has changed.
      * @param force force update to take place.
      */
-    void update( bool force = false );
+    bool update( bool force = false );
 
-    void update( const QString &name );
+    bool update( const QString &name );
 
     /**
      * Parse the xml fetched on the lastFM API.

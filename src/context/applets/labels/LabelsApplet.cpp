@@ -451,6 +451,8 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         y_pos += m_addLabelProxy.data()->size().height() + standardPadding();
 
         resize( size().width(), y_pos );
+        setMinimumHeight( y_pos );
+        setMaximumHeight( y_pos );
         updateGeometry();
         emit sizeHintChanged( Qt::PreferredSize );
     }

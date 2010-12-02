@@ -265,8 +265,6 @@ UpcomingEventsStackItem::UpcomingEventsStackItem( const QString &name,
 {
     Q_ASSERT( parent );
     Q_D( UpcomingEventsStackItem );
-    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    setContentsMargins( 0, 0, 0, 0 );
     d->stack = parent;
     d->name = name;
 
@@ -302,6 +300,9 @@ UpcomingEventsStackItem::UpcomingEventsStackItem( const QString &name,
     d->toolboxLayout->setStretchFactor( d->titleLabel, 10 );
     connect( d->collapseButton, SIGNAL(clicked()), SLOT(_toggleCollapse()) );
 
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    setContentsMargins( 0, 0, 0, 0 );
+
     d->_updateToolbox();
     d->_themeChanged();
     connect( Plasma::Theme::defaultTheme(), SIGNAL(themeChanged()), SLOT(_themeChanged()) );
@@ -325,6 +326,7 @@ UpcomingEventsStackItem::setWidget( QGraphicsWidget *widget )
     widget->setParentItem( this );
     d->widget = widget;
     d->layout->insertItem( 1, d->widget.data() );
+    d->layout->setItemSpacing( 0, 2 );
     d->widget.data()->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     d->widget.data()->setVisible( !d->collapsed );
 }
@@ -436,12 +438,18 @@ UpcomingEventsStackItem::setCollapsed( bool collapsed )
     d->collapsed = collapsed;
     if( d->widget )
     {
+        prepareGeometryChange();
         d->widget.data()->setVisible( !collapsed );
         if( collapsed )
             d->layout->removeItem( d->widget.data() );
         else
+        {
             d->layout->insertItem( 1, d->widget.data() );
+            d->layout->setItemSpacing( 0, 2 );
+        }
         d->toolboxLayout->invalidate();
+        emit collapseChanged( collapsed );
+        updateGeometry();
     }
     d->collapseButton->setToolTip( collapsed ? i18n("Expand this widget") : i18n("Collapse this widget") );
 }
@@ -468,6 +476,19 @@ UpcomingEventsStackItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
     Q_D( UpcomingEventsStackItem );
     if( !(d->toolbox->boundingRect().contains(event->pos())) )
         event->ignore();
+}
+
+QSizeF
+UpcomingEventsStackItem::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
+{
+    Q_D( const UpcomingEventsStackItem );
+    QSizeF size = d->toolbox->effectiveSizeHint( which, constraint );
+    if( !d->collapsed && d->widget )
+    {
+        size.rheight() += d->layout->itemSpacing( 1 ) * 2;
+        size.rheight() += d->widget.data()->effectiveSizeHint( which, constraint ).height();
+    }
+    return size;
 }
 
 QRectF

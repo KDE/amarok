@@ -290,6 +290,8 @@ public:
 
     ArtistWidget *widget( const QString &artistName );
 
+    QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
+
 signals:
     void showSimilarArtists( const QString &artist );
     void showBio( const QString &artist );

@@ -19,14 +19,13 @@
 
 #include "amarok_export.h"
 
-#include <plasma/applet.h>
+#include <KIcon>
+#include <Plasma/Applet>
 
 #include <QFont>
 #include <QRectF>
 #include <QString>
 #include <QWeakPointer>
-
-#include <KIcon>
 
 class QPainter;
 class QPropertyAnimation;
@@ -44,7 +43,8 @@ namespace Context
 class AMAROK_EXPORT Applet : public Plasma::Applet
 {
     Q_OBJECT
-    Q_PROPERTY(qreal animate READ animationValue WRITE animate)
+    Q_PROPERTY( int collapseHeight READ collapseHeight WRITE setCollapseHeight )
+
     public:
         explicit Applet( QObject* parent, const QVariantList& args = QVariantList() );
         ~Applet();
@@ -70,27 +70,13 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         /**
           * Collapse animation
           */
-        void setCollapseOn();
-        void setCollapseOff();
         void setCollapseHeight( int );
+        void setCollapseOffHeight( int );
+        int collapseHeight() const;
 
-        bool isAppletCollapsed();
-        bool isAppletExtended();
-
-        /**
-          * sizeHint is reimplemented here only for all the applet.
-          */
-        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
-
-        /**
-          * resize is reimplemented here is reimplemented here only for all the applet.
-          */
-        virtual void   resize( qreal, qreal );
-
-        /**
-          * Returns the current animation value.
-          */
-        qreal animationValue() const;
+        int collapseOffHeight() const;
+        bool isAnimating() const;
+        bool isCollapsed() const;
 
         /**
          * Shows a warning dialog which blocks access to the applet.
@@ -115,20 +101,8 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 
     public Q_SLOTS:
         virtual void destroy();
-
-    protected slots:
-        void animate( qreal );
-        void animateEnd();
-
-    private slots:
-        void paletteChanged( const QPalette & palette );
-
-        /**
-         * A private slot used to cleanup internal things like
-         * signals/slots and the flag if a dialog is shown.
-         * This is needed to avoid duplicate code in the applets.
-         */
-        void plasmaMessageHidden();
+        void setCollapseOn();
+        void setCollapseOff();
 
     protected:
         /**
@@ -142,13 +116,22 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         bool canAnimate();
 
         bool m_canAnimate;
-        bool m_collapsed;
         int  m_heightCurrent;
         int  m_heightCollapseOn;
         int  m_heightCollapseOff;
-        int  m_animFromHeight;
 
-        void updateGeometry();
+
+    private slots:
+        void paletteChanged( const QPalette & palette );
+        void collapseAnimationFinished();
+        void collapse( bool on );
+
+        /**
+         * A private slot used to cleanup internal things like
+         * signals/slots and the flag if a dialog is shown.
+         * This is needed to avoid duplicate code in the applets.
+         */
+        void plasmaMessageHidden();
 
     private:
         void cleanUpAndDelete();

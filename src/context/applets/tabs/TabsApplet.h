@@ -118,6 +118,8 @@ class TabsApplet : public Context::Applet
         QWeakPointer<Plasma::IconWidget>  m_reloadIcon;
         QWeakPointer<Plasma::Label>       m_infoLabel;
 
+        qreal m_headerHeight;
+
         bool m_fetchGuitar;
         bool m_fetchBass;
 

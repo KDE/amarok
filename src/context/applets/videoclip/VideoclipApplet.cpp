@@ -16,7 +16,7 @@
 
 #define DEBUG_PREFIX "VideoclipApplet"
 
-#include "VideoclipApplet.h" 
+#include "VideoclipApplet.h"
 
 #include "CustomVideoWidget.h"
 #include "PaletteHandler.h"
@@ -73,23 +73,7 @@ VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         , m_settingsIcon( 0 )
         , m_youtubeHQ( false )
 {
-    DEBUG_BLOCK
     setHasConfigurationInterface( true );
-
-    EngineController *engine = The::engineController();
-
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying() ) );
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
-
-    const Phonon::MediaObject *media = engine->phononMediaObject();
-
-    connect( media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ),
-             this, SLOT( stateChanged( Phonon::State, Phonon::State ) ) );
-
-    // setMaximumHeight( 300 );
-    // setPreferredHeight( 300 );
 }
 
 void
@@ -104,10 +88,10 @@ VideoclipApplet::init()
     m_videoWidget = new CustomVideoWidget();
     m_videoWidget.data()->setParent( Context::ContextView::self()->viewport(), Qt::SubWindow | Qt::FramelessWindowHint );
     m_videoWidget.data()->hide();
-    
-    // we create path no need to add a lot of fancy thing 
+
+    // we create path no need to add a lot of fancy thing
     Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget.data() );
-    
+
     // Load pixmap
     m_pixYoutube = QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-youtube.png" ) );
     m_pixDailymotion = QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-dailymotion.png" ) );
@@ -120,7 +104,7 @@ VideoclipApplet::init()
     langAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addAction( langAction );
     connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
-    
+
     // Create label
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
@@ -130,8 +114,15 @@ VideoclipApplet::init()
     m_headerText->setDrawBackground( true );
     m_headerText->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
+    m_headerHeight = m_headerText->size().height()
+        + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6;
+
     // Set the collapse size
-    setCollapseHeight( m_headerText->boundingRect().height() + 2 * standardPadding() + 2 );
+    setCollapseOffHeight( 300 );
+    setCollapseHeight( m_headerHeight );
+    setMinimumHeight( collapseHeight() );
+    setPreferredHeight( collapseHeight() );
+    setMaximumHeight( 300 );
 
     // Create layout
     m_scrollLayout = new QGraphicsLinearLayout( Qt::Horizontal );
@@ -156,8 +147,8 @@ VideoclipApplet::init()
     m_layout = new QGraphicsLinearLayout( Qt::Vertical, this );
     m_layout->addItem( headerLayout );
     m_layout->addItem( m_scroll );
+    m_layout->setAlignment( m_scroll, Qt::AlignHCenter );
     m_layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     connectSource( "videoclip" );
     connect( dataEngine( "amarok-videoclip" ), SIGNAL( sourceAdded( const QString & ) ),
@@ -168,7 +159,14 @@ VideoclipApplet::init()
     m_youtubeHQ = config.readEntry( "YoutubeHQ", false );
     dataEngine( "amarok-videoclip" )->query( QString( "videoclip:youtubeHQ:" ) + QString().setNum( m_youtubeHQ ) );
 
-    setCollapseOn();
+    EngineController *engine = The::engineController();
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)), SLOT(trackPlaying()) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)), SLOT(stopped()) );
+
+    const Phonon::MediaObject *media = engine->phononMediaObject();
+    connect( media, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
+             this, SLOT(stateChanged(Phonon::State, Phonon::State)), Qt::QueuedConnection );
+
     updateConstraints();
     update();
 }
@@ -184,13 +182,19 @@ VideoclipApplet::trackPlaying()
 {
     DEBUG_BLOCK
     // on new track, we expand the applet if not already
-    setCollapseOff();
-    // m_layout->addItem( m_scroll );
-    // m_scroll->show();
-    // m_videoWidget.data()->show();
     setMinimumHeight( 300 );
-    emit sizeHintChanged( Qt::MinimumSize );
-    layout()->invalidate();
+    setMaximumHeight( 300 );
+    setCollapseOff();
+    m_layout->addItem( m_scroll );
+    m_scroll->show();
+}
+
+void
+VideoclipApplet::resizeEvent( QGraphicsSceneResizeEvent * event )
+{
+    Context::Applet::resizeEvent( event );
+    if( m_videoWidget && m_videoWidget.data()->isVisible() )
+        m_videoWidget.data()->setGeometry( m_scroll->geometry().toRect() );
 }
 
 void
@@ -217,10 +221,9 @@ VideoclipApplet::stateChanged(Phonon::State currentState, Phonon::State oldState
             if( oldState == Phonon::BufferingState || oldState == Phonon::StoppedState )
             {
                 debug() <<" video state : playing";
-                setCollapseOff();
                 setMinimumHeight( 300 );
-                emit sizeHintChanged( Qt::MinimumSize );
-                layout()->invalidate();
+                setMaximumHeight( 300 );
+                setCollapseOff();
 
                 if( The::engineController()->phononMediaObject()->hasVideo() )
                 {
@@ -230,11 +233,7 @@ VideoclipApplet::stateChanged(Phonon::State currentState, Phonon::State oldState
                     m_videoWidget.data()->show();
                     m_videoWidget.data()->activateWindow();
                     Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget.data() );
-                    if( m_videoWidget.data()->isActiveWindow() ) {
-                        //FIXME dual-screen this seems to still show
-                        QContextMenuEvent e( QContextMenuEvent::Other, QPoint() );
-                        QApplication::sendEvent( m_videoWidget.data(), &e );
-                    }
+                    m_videoWidget.data()->setGeometry( m_scroll->geometry().toRect() );
                 }
                 else
                 {
@@ -251,16 +250,23 @@ VideoclipApplet::stateChanged(Phonon::State currentState, Phonon::State oldState
         case Phonon::LoadingState:
         {
             debug() <<" video state : buffering";
-
+            debug() << "Hide VideoWidget";
             setBusy( true );
             m_videoWidget.data()->hide();
             m_scroll->hide();
             break;
         }
 
+        case Phonon::StoppedState:
+            debug() <<" video state : stopped";
+            break;
+
+        case Phonon::PausedState:
+            debug() <<" video state : paused";
+            break;
+
         default:
-            debug() <<" video state : unknown";
-            setCollapseOn();
+            debug() <<" video state : unknown" << currentState;
             break;
     }
 }
@@ -272,42 +278,36 @@ VideoclipApplet::stopped()
     // On playback ending, we hide everything and collapse
     setBusy( false );
     m_scroll->hide();
+    debug() << "Hide VideoWidget";
     m_videoWidget.data()->hide();
-    // m_layout->removeItem( m_scroll );
+    m_layout->removeItem( m_scroll );
+    setMinimumHeight( m_headerHeight );
+    setMaximumHeight( m_headerHeight );
     setCollapseOn();
 }
 
 void
-VideoclipApplet::resizeEvent( QGraphicsSceneResizeEvent * event )
-{
-    DEBUG_BLOCK
-    Context::Applet::resizeEvent( event );
-    debug() << "new:" << event->newSize() << "old:" << event->oldSize();
-}
-
-void 
 VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Context::Applet::constraintsEvent( constraints );
     m_headerText->setScrollingText( i18n( "Video Clip" ) );
 }
 
-void 
+void
 VideoclipApplet::connectSource( const QString &source )
 {
     if ( source == "videoclip" )
         dataEngine( "amarok-videoclip" )->connectSource( "videoclip", this );
 }
 
-void 
-VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
+void
+VideoclipApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &data )
 {
-    Q_UNUSED( name )
-    if( data.empty() )
+    if( name != QLatin1String("videoclip") )
         return;
-    
+
     DEBUG_BLOCK
-    if ( !m_videoWidget.data()->isVisible() && !The::engineController()->phononMediaObject()->hasVideo() )
+    if( !m_videoWidget.data()->isVisible() && !The::engineController()->phononMediaObject()->hasVideo() )
     {
         // int width = 130;
         // Properly delete previsouly allocated item
@@ -321,35 +321,36 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
                 delete child;
             }
         }
-        
+
         // if we get a message, show it
-        if ( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
+        if( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
         {
             m_headerText->setScrollingText( i18n( "Video Clip" ) );
             updateConstraints();
             update();
             debug() <<" message fetching ";
-            m_scroll->hide();
-            // m_layout->removeItem( m_scroll );
-			setBusy( true );
+            setBusy( true );
         }
-		else if ( data.contains( "message" ) )
-		{
+        else if( data.contains( "message" ) )
+        {
             //if nothing found, we collapse and inform user
             m_headerText->setScrollingText( i18n( "Video Clip " ) + ':' + i18n( " No information found..." ) );
             update();
-			setBusy( false );
+            setBusy( false );
             m_scroll->hide();
-            // m_layout->removeItem( m_scroll );
+            setMinimumHeight( m_headerHeight );
+            setMaximumHeight( m_headerHeight );
             setCollapseOn();
-		}
+        }
         else if ( data.contains( "item:0" ) )
         {
             m_headerText->setScrollingText( i18n( "Video Clip" ) );
+            setMinimumHeight( 300 );
+            setMaximumHeight( 300 );
             setCollapseOff();
             m_scroll->show();
 
-			setBusy(false);
+            setBusy(false);
             for (int i=0; i< data.size(); i++ )
             {
                 VideoInfo *item = data[ QString ("item:" )+QString().setNum(i) ].value<VideoInfo *>() ;
@@ -409,7 +410,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 
                     QGraphicsLinearLayout *l = new QGraphicsLinearLayout( Qt::Vertical, widget );
                     l->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-                    l->setSpacing( 3 );
+                    l->setSpacing( 2 );
                     l->addItem( videoWidget );
                     l->addItem( linkWidget );
                     l->addItem( webiWidget );
@@ -426,7 +427,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 
                     if( i < data.size() - 1 )
                     {
-                        Plasma::Separator *line = new Plasma::Separator( this );
+                        Plasma::Separator *line = new Plasma::Separator;
                         line->setOrientation( Qt::Vertical );
                         m_scrollLayout->addItem( line );
                     }
@@ -440,31 +441,30 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         && The::engineController()->phononMediaObject()->state() != Phonon::LoadingState )
     {
         setBusy( false );
-        debug() << " VideoclipApplet | Show VideoWidget";
+        debug() << "Show VideoWidget";
         m_scroll->hide();
         m_videoWidget.data()->show();
         m_videoWidget.data()->activateWindow();
         if ( m_videoWidget.data()->inputPaths().isEmpty() )
             Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget.data() );
-        if( m_videoWidget.data()->isActiveWindow() )
-        {
-            QContextMenuEvent e( QContextMenuEvent::Other, QPoint() );
-            QApplication::sendEvent( m_videoWidget.data(), &e );
-        }
     }
-    
+    else
+    {
+        setBusy( false );
+        debug() << "unknown error";
+    }
     updateConstraints();
 }
 
-void 
+void
 VideoclipApplet::appendVideoClip( VideoInfo *info )
 {
-	DEBUG_BLOCK
+    DEBUG_BLOCK
     QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
     if ( button )
     {
         QStringList lst = button->text().split(" | ");
-    
+
         MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
         tra->setTitle( info->title );
         tra->setAlbum( info->source );
@@ -484,7 +484,7 @@ VideoclipApplet::queueVideoClip( VideoInfo *info )
     if ( button )
     {
         QStringList lst = button->text().split(" | ");
-        
+
         MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
         tra->setTitle( info->title );
         tra->setAlbum( info->source );
@@ -504,7 +504,7 @@ VideoclipApplet::appendPlayVideoClip( VideoInfo *info )
     if ( button )
     {
         QStringList lst = button->text().split(" | ");
-        
+
         MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
         tra->setTitle( info->title );
         tra->setAlbum( info->source );
@@ -522,11 +522,11 @@ VideoclipApplet::createConfigurationInterface( KConfigDialog *parent )
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
-    
+
     // TODO bad, it's done manually ...
     if ( m_youtubeHQ == true )
         ui_Settings.checkYoutubeHQ->setChecked( true );
-    
+
     parent->addPage( settings, i18n( "Video Clip Settings" ), "preferences-system");
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
@@ -536,10 +536,10 @@ VideoclipApplet::saveSettings()
 {
     DEBUG_BLOCK
     KConfigGroup config = Amarok::config("Videoclip Applet");
-    
+
     m_youtubeHQ = ui_Settings.checkYoutubeHQ->isChecked();
     config.writeEntry( "YoutubeHQ", m_youtubeHQ );
-    
+
     dataEngine( "amarok-videoclip" )->query( QString( "videoclip:youtubeHQ:" ) + QString().setNum( m_youtubeHQ ) );
 }
 

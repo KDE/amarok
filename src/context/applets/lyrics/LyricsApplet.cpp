@@ -35,7 +35,6 @@
 
 #include <Plasma/Containment>
 #include <Plasma/IconWidget>
-#include <Plasma/Label>
 #include <Plasma/TextBrowser>
 #include <Plasma/TreeView>
 
@@ -51,8 +50,7 @@ class LyricsAppletPrivate
 {
 public:
     LyricsAppletPrivate( LyricsApplet *parent )
-        : titleText( i18n( "Lyrics" ) )
-        , titleLabel( 0 )
+        : titleLabel( 0 )
         , saveIcon( 0 )
         , editIcon( 0 )
         , reloadIcon( 0 )
@@ -64,14 +62,12 @@ public:
         , hasLyrics( false )
         , isRichText( true )
         , showBrowser( false )
-        , showInfoLabel( false )
         , showSuggestions( false )
         , q_ptr( parent ) {}
     ~LyricsAppletPrivate() {}
 
     // member functions
     void setEditing( const bool isEditing );
-    void collapseToMin();
     void determineActionIconsState();
     void clearLyrics();
     void refetchLyrics();
@@ -92,7 +88,6 @@ public:
     void _refetchMessageButtonPressed( const MessageButton );
 
     // data / widgets
-    QString titleText;
     TextScrollingWidget *titleLabel;
 
     QGraphicsLinearLayout *headerLayout;
@@ -105,8 +100,6 @@ public:
     Plasma::TextBrowser *browser;
     Plasma::TreeView    *suggestView;
 
-    Plasma::Label *infoLabel;
-
     Ui::lyricsSettings ui_settings;
 
     Meta::TrackPtr currentTrack;
@@ -116,7 +109,6 @@ public:
     bool hasLyrics;
     bool isRichText;
     bool showBrowser;
-    bool showInfoLabel;
     bool showSuggestions;
 
 private:
@@ -131,76 +123,6 @@ LyricsAppletPrivate::setEditing( const bool isEditing )
     KTextBrowser *textBrowser = browser->nativeWidget();
     QPalette::ColorRole bg = textBrowser->isReadOnly() ? QPalette::Base : QPalette::AlternateBase;
     textBrowser->viewport()->setBackgroundRole( bg );
-}
-
-void
-LyricsAppletPrivate::collapseToMin()
-{
-    DEBUG_BLOCK
-    Q_Q( LyricsApplet );
-
-    // Simply drop out if one of the conditions is met:
-    // -The applet is currently not visible.
-    // -One of the widgets is 0.
-    if ( !q->isVisible() || !browser || !suggestView || !infoLabel )
-        return;
-
-    KTextBrowser *textBrowser = browser->nativeWidget();
-    QTreeView *treeView = suggestView->nativeWidget();
-    QLabel *label = infoLabel->nativeWidget();
-
-    qreal contentItemHeight = 0;
-
-    if( showBrowser && textBrowser )
-    {
-        // use a dummy item to get the lyrics layout being displayed
-        QGraphicsTextItem testItem;
-        testItem.setTextWidth( textBrowser->document()->size().width() );
-        testItem.setFont( textBrowser->currentFont() );
-        testItem.setHtml( textBrowser->toHtml() );
-
-        // Add the height of the test item to the calculated height.
-        contentItemHeight += testItem.boundingRect().height();
-    }
-
-    if( showSuggestions && treeView )
-    {
-        // Add the height of the suggestion view to the
-        // calculated test item height.
-        contentItemHeight += treeView->sizeHint().height();
-    }
-
-    if( showInfoLabel && label )
-    {
-        QGraphicsTextItem testItem;
-        testItem.setPlainText( label->text() );
-        testItem.setFont( label->font() );
-
-        // Add the height of the test item to the calculated height.
-        // We multiply the height with 2 as there's some spacing between
-        // the text and the header.
-        contentItemHeight += testItem.boundingRect().height() * 2;
-    }
-
-    const qreal padding        = q->standardPadding();
-    const qreal frameWidth     = textBrowser->frameWidth();
-    const qreal headerHeight   = titleLabel->pos().y() + titleLabel->boundingRect().height() + padding;
-    const qreal contentHeight  = headerHeight + frameWidth + contentItemHeight + frameWidth + padding;
-
-    // only show vertical scrollbar if there are lyrics and is needed
-    textBrowser->setVerticalScrollBarPolicy( hasLyrics ? Qt::ScrollBarAsNeeded : Qt::ScrollBarAlwaysOff );
-
-    // maybe we were just added, don't have a view yet
-    if( !q || !q->containment() || !q->containment()->view() )
-        return;
-
-    const qreal containerOffset = q->mapToView( q->containment()->view(), q->boundingRect() ).topLeft().y();
-    const qreal containerHeight = q->containment()->size().height() - containerOffset;
-    const qreal collapsedHeight = ( contentHeight > containerHeight ) ? containerHeight : contentHeight;
-
-    q->setCollapseHeight( collapsedHeight );
-    q->setCollapseOn();
-    q->updateConstraints();
 }
 
 void
@@ -249,16 +171,15 @@ LyricsAppletPrivate::clearLyrics()
 void
 LyricsAppletPrivate::showLyrics( const QString &text, bool isRichText )
 {
+    DEBUG_BLOCK
     clearLyrics();
     if( isRichText )
         browser->nativeWidget()->setHtml( text );
     else
         browser->nativeWidget()->setPlainText( text );
-    showInfoLabel = false;
     showSuggestions = false;
     showBrowser = true;
     determineActionIconsState();
-    collapseToMin();
 }
 
 void
@@ -292,7 +213,6 @@ LyricsAppletPrivate::showSuggested( const QVariantList &suggestions )
     header->resizeSection( 0, width * 2 / 3 );
     header->setStretchLastSection( true );
     showSuggestions = true;
-    collapseToMin();
 }
 
 const QString
@@ -372,8 +292,6 @@ LyricsAppletPrivate::_changeLyricsFont()
     KConfigGroup config = Amarok::config("Lyrics Applet");
     config.writeEntry( "Font", font.toString() );
     debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
-    // resize with new font
-    collapseToMin();
 }
 
 void
@@ -503,13 +421,12 @@ LyricsApplet::~LyricsApplet()
 void
 LyricsApplet::init()
 {
+    DEBUG_BLOCK
+
     Q_D( LyricsApplet );
 
     // Call the base implementation.
     Context::Applet::init();
-
-    // properly set the size, asking for the whole cv size.
-    resize( 500, -1 );
 
     d->titleLabel = new TextScrollingWidget( this );
     QFont bigger = d->titleLabel->font();
@@ -518,6 +435,11 @@ LyricsApplet::init()
     d->titleLabel->setText( i18n( "Lyrics" ) );
     d->titleLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     d->titleLabel->setDrawBackground( true );
+
+    setCollapseHeight( d->titleLabel->size().height()
+                       + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
+    setMinimumHeight( collapseHeight() );
+    setPreferredHeight( collapseHeight() );
 
     QAction* editAction = new QAction( this );
     editAction->setIcon( KIcon( "document-edit" ) );
@@ -577,7 +499,6 @@ LyricsApplet::init()
     d->browser = new Plasma::TextBrowser( this );
     KTextBrowser *browserWidget = d->browser->nativeWidget();
     browserWidget->setFrameShape( QFrame::StyledPanel );
-    browserWidget->setAttribute( Qt::WA_NoSystemBackground );
     browserWidget->setOpenExternalLinks( true );
     browserWidget->setUndoRedoEnabled( true );
     browserWidget->setAutoFillBackground( false );
@@ -601,11 +522,6 @@ LyricsApplet::init()
     suggestTree->setSortingEnabled( true );
     suggestTree->setUniformRowHeights( true );
     d->suggestView->hide();
-
-    d->infoLabel = new Plasma::Label( this );
-    d->infoLabel->setAlignment( Qt::AlignCenter );
-    d->infoLabel->nativeWidget()->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    d->infoLabel->hide();
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->addItem( d->headerLayout );
@@ -653,105 +569,95 @@ LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_D( LyricsApplet );
     Context::Applet::constraintsEvent( constraints );
-    d->titleLabel->setScrollingText( d->titleText );
+    d->titleLabel->setScrollingText( d->titleLabel->text() );
     update();
 }
 
 void
 LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
-    Q_UNUSED( name )
+    DEBUG_BLOCK
     Q_D( LyricsApplet );
+
+    if( name != QLatin1String("lyrics") )
+        return;
 
     unsetCursor();
     d->hasLyrics = false;
     d->showSuggestions = false;
-    d->showInfoLabel = false;
+    d->showBrowser = false;
     setBusy( false );
+    QString titleText;
 
     if( data.contains( "noscriptrunning" ) )
     {
-        d->titleText = i18n( "Lyrics: No script is running" );
-        d->infoLabel->setText( i18n( "Lyrics can not be fetched as no script is running" ) );
-        d->showInfoLabel = true;
-        d->showBrowser = false;
+        titleText = i18n( "Lyrics: No script is running" );
+        setCollapseOn();
     }
     else if( data.contains( "stopped" ) )
     {
-        d->titleText = i18n( "Lyrics" );
-        d->showBrowser = false;
+        titleText = i18n( "Lyrics" );
+        setCollapseOn();
     }
     else if( data.contains( "fetching" ) )
     {
         if( canAnimate() )
             setBusy( true );
-        d->titleText = i18n( "Lyrics: Fetching ..." );
-        d->infoLabel->setText( i18n( "Lyrics are being fetched" ) );
-        d->showInfoLabel = true;
-        d->showBrowser = false;
+        titleText = i18n( "Lyrics: Fetching ..." );
     }
     else if( data.contains( "error" ) )
     {
-        d->titleText = i18n( "Lyrics: Fetch error" );
-        d->infoLabel->setText( i18n( "Could not download lyrics.\n"
-                                     "Please check your Internet connection.\n"
-                                     "Error message:\n"
-                                     "%1", data["error"].toString() ) );
-        d->showInfoLabel = true;
-        d->showBrowser = false;
+        titleText = i18n( "Lyrics: Fetch error" );
+        setCollapseOn();
     }
     else if( data.contains( "suggested" ) )
     {
         QVariantList suggested = data[ "suggested" ].toList();
-        d->titleText = i18n( "Lyrics: Suggested URLs" );
+        titleText = i18n( "Lyrics: Suggested URLs" );
         d->showSuggested( suggested );
+        setCollapseOff();
     }
     else if( data.contains( "html" ) )
     {
         d->hasLyrics = true;
         d->isRichText = true;
-        // show pure html in the text area
-        d->titleText = QString( "%1: %2" )
+        titleText = QString( "%1: %2" )
             .arg( i18n( "Lyrics" ) )
             .arg( data[ "html" ].toString().section( "<title>", 1, 1 ).section( "</title>", 0, 0 ) );
         d->showLyrics( data["html"].toString(), true );
-        emit sizeHintChanged(Qt::MaximumSize);
+        setCollapseOff();
     }
     else if( data.contains( "lyrics" ) )
     {
         d->hasLyrics = true;
         d->isRichText = false;
         QVariantList lyrics  = data[ "lyrics" ].toList();
-
-        d->titleText = QString( "%1: %2 - %3" )
+        titleText = QString( "%1: %2 - %3" )
             .arg( i18n( "Lyrics" ) )
             .arg( lyrics[0].toString() ).arg( lyrics[1].toString() );
         d->showLyrics( lyrics[3].toString().trimmed(), false );
-
-        // the following line is needed to fix the bug of the lyrics applet sometimes not being correctly resized.
-        // I don't have the courage to put this into Applet::setCollapseOff(), maybe that would break other applets.
-        emit sizeHintChanged(Qt::MaximumSize);
+        setCollapseOff();
     }
     else if( data.contains( "notfound" ) )
     {
-        d->titleText = i18n( "Lyrics: Not found" );
-        d->infoLabel->setText( i18n( "There were no lyrics found for this track" ) );
-        d->showInfoLabel = true;
-        d->showBrowser = false;
+        titleText = i18n( "Lyrics: Not found" );
+        setCollapseOn();
     }
+    else
+    {
+        debug() << "should not be here";
+        return;
+    }
+
+    d->titleLabel->setScrollingText( titleText );
 
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( layout() );
     d->showSuggestions ? lo->insertItem( 1, d->suggestView ) : lo->removeItem( d->suggestView );
-    d->showInfoLabel ? lo->insertItem( 1, d->infoLabel ) : lo->removeItem( d->infoLabel );
-    d->showBrowser ? lo->addItem( d->browser ) : lo->removeItem( d->browser );
-
-    d->showSuggestions ? d->suggestView->show() : d->suggestView->hide();
-    d->showInfoLabel ? d->infoLabel->show() : d->infoLabel->hide();
-    d->showBrowser ? d->browser->show() : d->browser->hide();
+    d->showBrowser     ? lo->addItem( d->browser )           : lo->removeItem( d->browser );
+    d->showSuggestions ? d->suggestView->show()              : d->suggestView->hide();
+    d->showBrowser     ? d->browser->show()                  : d->browser->hide();
 
     d->determineActionIconsState();
-    d->collapseToMin();
-    constraintsEvent();
 }
 
 bool
@@ -843,34 +749,6 @@ LyricsApplet::keyPressEvent( QKeyEvent *e )
         }
     }
     Context::Applet::keyPressEvent( e );
-}
-
-QVariant
-LyricsApplet::itemChange( GraphicsItemChange change, const QVariant &value )
-{
-    Q_D( LyricsApplet );
-
-    // There are at least two cases where we have to
-    // collapse again:
-    // -The track changed while the applet was not visible
-    // -The user moved the applet around.
-    switch( change )
-    {
-        // Fall-through for all cases here, as in all
-        // cases a collapseToMin() should be triggered.
-        case QGraphicsItem::ItemPositionHasChanged:
-        case QGraphicsItem::ItemVisibleHasChanged:
-        case QGraphicsItem::ItemSceneHasChanged:
-        case QGraphicsItem::ItemScenePositionHasChanged:
-            d->collapseToMin();
-            break;
-
-        // We'll simply do nothing for all other changes.
-        default:
-            break;
-    }
-
-    return Context::Applet::itemChange( change, value );
 }
 
 #include "LyricsApplet.moc"

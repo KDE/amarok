@@ -37,7 +37,7 @@ class UpcomingEventsStackItem : public QGraphicsWidget
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( QIcon icon READ icon WRITE setIcon )
     Q_PROPERTY( UpcomingEventsStack *stack READ stack )
-    Q_PROPERTY( bool collapsed READ isCollapsed WRITE setCollapsed )
+    Q_PROPERTY( bool collapsed READ isCollapsed WRITE setCollapsed NOTIFY collapseChanged )
 
 public:
     explicit UpcomingEventsStackItem( const QString &name, UpcomingEventsStack *parent );
@@ -124,9 +124,13 @@ public slots:
     void setCollapsed( bool collapsed );
     void showCloseButton( bool show = true );
 
+signals:
+    void collapseChanged( bool isCollapsed );
+
 protected:
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
     void mousePressEvent( QGraphicsSceneMouseEvent *event );
+    QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
 
 private:
     UpcomingEventsStackItemPrivate *const d_ptr;

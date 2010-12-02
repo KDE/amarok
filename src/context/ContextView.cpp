@@ -36,6 +36,7 @@
 
 #include <plasma/dataenginemanager.h>
 
+#include <QParallelAnimationGroup>
 #include <QWheelEvent>
 
 namespace Context
@@ -85,6 +86,14 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
 
     m_urlRunner = new ContextUrlRunner();
     The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
+
+    m_collapseAnimations = new QParallelAnimationGroup( this );
+    connect( m_collapseAnimations.data(), SIGNAL(finished()),
+             this, SLOT(slotCollapseAnimationsFinished()) );
+
+    m_collapseGroupTimer = new QTimer( this );
+    m_collapseGroupTimer.data()->setSingleShot( true );
+    connect( m_collapseGroupTimer.data(), SIGNAL(timeout()), SLOT(slotStartCollapseAnimations()) );
 
     EngineController* const engine = The::engineController();
 
@@ -219,6 +228,69 @@ ContextView::addApplet( const QString& name, const QStringList& args )
 }
 
 void
+ContextView::addCollapseAnimation( QAbstractAnimation *anim )
+{
+    if( !anim )
+    {
+        debug() << "failed to add collapsing animation";
+        return;
+    }
+
+    QParallelAnimationGroup *group = m_collapseAnimations.data();
+    if( group && group->state() == QAbstractAnimation::Running )
+    {
+        m_queuedAnimations.enqueue( anim );
+        return;
+    }
+
+    QTimer *timer( 0 );
+    if( m_collapseGroupTimer )
+        timer = m_collapseGroupTimer.data();
+
+    if( group && timer && !timer->isActive() )
+    {
+        group->addAnimation( anim );
+        timer->start( 0 );
+    }
+    else
+    {
+        m_queuedAnimations.enqueue( anim );
+    }
+}
+
+void
+ContextView::slotCollapseAnimationsFinished()
+{
+    QTimer *timer = m_collapseGroupTimer.data();
+    if( timer )
+        timer->stop();
+
+    QParallelAnimationGroup *group = m_collapseAnimations.data();
+    if( group )
+        group->clear();
+
+    while( !m_queuedAnimations.isEmpty() )
+    {
+        if( QWeakPointer<QAbstractAnimation> anim = m_queuedAnimations.dequeue() )
+        {
+            if( group )
+                group->addAnimation( anim.data() );
+        }
+    }
+
+    if( group && (group->animationCount() > 0) )
+        timer->start( 0 );
+}
+
+void
+ContextView::slotStartCollapseAnimations()
+{
+    QParallelAnimationGroup *group = m_collapseAnimations.data();
+    if( group && (group->animationCount() > 0) )
+        group->start( QAbstractAnimation::KeepWhenStopped );
+}
+
+void
 ContextView::hideAppletExplorer()
 {
     if( m_appletExplorer )
@@ -267,9 +339,6 @@ ContextView::contextScene()
 void
 ContextView::resizeEvent( QResizeEvent* event )
 {
-    // DEBUG_BLOCK
-    Q_UNUSED( event )
-
     Plasma::View::resizeEvent( event );
     if( testAttribute( Qt::WA_PendingResizeEvent ) )
         return; // lets not do this more than necessary, shall we?

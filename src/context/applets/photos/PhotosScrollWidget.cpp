@@ -30,6 +30,7 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QList>
 #include <QPixmap>
+#include <QPixmapCache>
 #include <QTimer>
 #include <QPropertyAnimation>
 
@@ -109,8 +110,8 @@ void PhotosScrollWidget::setPhotosInfoList( const PhotosInfo::List &list )
     if( list == m_currentlist )
         return;
 
-    debug() << "adding " << list.count() << "new photos";
-    foreach( PhotosInfoPtr item, list )
+    PhotosInfo::List toAddList;
+    foreach( const PhotosInfoPtr &item, list )
     {
         if( m_currentlist.contains( item ) )
             continue;
@@ -118,12 +119,22 @@ void PhotosScrollWidget::setPhotosInfoList( const PhotosInfo::List &list )
         KUrl url = item->urlphoto;
         if( url.isValid() )
         {
-            m_infoHash[ url ] = item;
-            The::networkAccessManager()->getData( url, this,
-                 SLOT(photoFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+            QPixmap pixmap;
+            if( QPixmapCache::find( url.url(), &pixmap ) )
+            {
+                addPhoto( item, pixmap );
+            }
+            else
+            {
+                m_infoHash[ url ] = item;
+                The::networkAccessManager()->getData( url, this,
+                     SLOT(photoFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+            }
+            toAddList << item;
         }
     }
-    m_currentlist = list;
+    debug() << "adding" << toAddList.count() << "new photos";
+    m_currentlist = toAddList;
 }
 
 void PhotosScrollWidget::photoFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
@@ -140,7 +151,10 @@ void PhotosScrollWidget::photoFetched( const KUrl &url, QByteArray data, Network
 
     QPixmap pixmap;
     if( pixmap.loadFromData( data ) )
+    {
+        QPixmapCache::insert( url.url(), pixmap );
         addPhoto( info, pixmap );
+    }
 }
 
 void PhotosScrollWidget::addPhoto( const PhotosInfoPtr &item, const QPixmap &photo )
@@ -148,7 +162,8 @@ void PhotosScrollWidget::addPhoto( const PhotosInfoPtr &item, const QPixmap &pho
     if( photo.isNull() )
         return;
 
-    QPixmap pixmap = photo.scaledToHeight( size().height() - 2 * m_margin, Qt::SmoothTransformation );
+    qreal height = 180.0 - 2 * m_margin;
+    QPixmap pixmap = photo.scaledToHeight( height , Qt::SmoothTransformation );
     pixmap = The::svgHandler()->addBordersToPixmap( pixmap, 5, QString(), true );
 
     switch( m_mode )

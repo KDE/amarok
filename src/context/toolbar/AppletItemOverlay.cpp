@@ -350,7 +350,6 @@ void
 Context::AppletItemOverlay::enterEvent( QEvent *event )
 {
     Q_UNUSED( event )
-    DEBUG_BLOCK
     update();
 }
 
@@ -358,7 +357,6 @@ void
 Context::AppletItemOverlay::leaveEvent( QEvent *event )
 {
     Q_UNUSED( event )
-    DEBUG_BLOCK
     update();
 }
 

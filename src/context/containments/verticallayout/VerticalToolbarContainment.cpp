@@ -121,6 +121,7 @@ Context::VerticalToolbarContainment::updateGeometry()
     QRectF rect = scene()->sceneRect();
     setGeometry( rect );
     m_applets->setGeometry( rect );
+    m_applets->refresh();
 }
 
 Plasma::Applet*
@@ -162,7 +163,6 @@ void
 Context::VerticalToolbarContainment::wheelEvent( QGraphicsSceneWheelEvent* event )
 {
     Q_UNUSED( event )
-
     //eat wheel events, we don't want scrolling
 }
 
