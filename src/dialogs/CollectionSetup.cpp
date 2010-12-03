@@ -152,10 +152,12 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
     m_writeBack->setChecked( AmarokConfig::writeBack() );
+    m_writeBack->setVisible( false ); // probably not a usecase
     m_writeBackStatistics->setChecked( AmarokConfig::writeBackStatistics() );
     m_writeBackStatistics->setEnabled( writeBack() );
     m_writeBackCover->setChecked( AmarokConfig::writeBackCover() );
     m_writeBackCover->setEnabled( writeBack() );
+    m_writeBackCover->setVisible( false ); // only for profi users
     m_charset->setChecked( AmarokConfig::useCharsetDetector() );
 
     // set the model _after_ constructing the checkboxes
