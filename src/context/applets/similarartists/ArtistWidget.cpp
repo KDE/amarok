@@ -640,6 +640,7 @@ ArtistsListWidget::addItem( ArtistWidget *widget )
     m_showBioSigMapper->setMapping( widget, artist );
     m_layout->addItem( widget );
     m_widgets << widget;
+    updateGeometry();
 }
 
 void
@@ -655,6 +656,7 @@ ArtistsListWidget::addArtist( const SimilarArtistPtr &artist )
     m_showBioSigMapper->setMapping( widget, name );
     m_layout->addItem( widget );
     m_widgets << widget;
+    updateGeometry();
 }
 
 void
