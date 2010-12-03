@@ -58,6 +58,8 @@ class PhotosScrollWidget : public QGraphicsWidget
 
         void clear();
 
+        int count() const;
+
         qreal animValue() const;
         bool isAnimating() const;
 
@@ -70,6 +72,9 @@ class PhotosScrollWidget : public QGraphicsWidget
         * Reimplement resize in order to correctly repositioned the stack of pixmap
         */
         virtual void resize( qreal, qreal );
+
+    signals:
+        void photoAdded();
 
     protected:
 

@@ -89,6 +89,7 @@ PhotosApplet::init()
     m_widget = new PhotosScrollWidget( this );
     m_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_widget->setContentsMargins( 0, 0, 0, 0 );
+    connect( m_widget, SIGNAL(photoAdded()), SLOT(updateHeaderText()) );
 
     QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout;
     headerLayout->addItem( m_headerText );
@@ -146,6 +147,13 @@ PhotosApplet::constraintsEvent( Plasma::Constraints constraints )
 }
 
 void
+PhotosApplet::updateHeaderText()
+{
+    m_headerText->setScrollingText( i18nc( "@title:window Number of photos of artist", "%1 Photos: %2",
+                                           m_widget->count(), m_currentArtist ) );
+}
+
+void
 PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     DEBUG_BLOCK
@@ -188,7 +196,7 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     else if( data.contains( "data" ) )
     {
         m_widget->clear();
-        text = data["artist"].toString();
+        m_currentArtist = text = data["artist"].toString();
         PhotosInfo::List photos = data["data"].value< PhotosInfo::List >();
         debug() << "received data for:" << text << photos.count();
         m_headerText->setScrollingText( i18n( "Photos: %1", text ) );

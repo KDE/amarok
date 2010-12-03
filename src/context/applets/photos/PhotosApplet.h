@@ -56,6 +56,9 @@ class PhotosApplet : public Context::Applet
         
     protected:
         void createConfigurationInterface(KConfigDialog *parent);
+
+    private slots:
+        void updateHeaderText();
         
     private:
         TextScrollingWidget     *m_headerText;
@@ -64,6 +67,7 @@ class PhotosApplet : public Context::Applet
         qreal m_headerHeight;
         int   m_nbPhotos;
         
+        QString m_currentArtist;
         QString m_Animation;
         QStringList m_KeyWords;
 

@@ -92,6 +92,10 @@ void PhotosScrollWidget::clear()
     m_lastPix = 0;
 }
 
+int PhotosScrollWidget::count() const
+{
+    return m_pixmaplist.count();
+}
 
 void PhotosScrollWidget::setMode( int mode )
 {
@@ -184,6 +188,7 @@ void PhotosScrollWidget::addPhoto( const PhotosInfoPtr &item, const QPixmap &pho
             int delta = dragpix->boundingRect().width() + m_margin;
             m_scrollmax += delta;
             m_actualpos += delta;
+            emit photoAdded();
             break;
         }
 
@@ -215,6 +220,7 @@ void PhotosScrollWidget::addPhoto( const PhotosInfoPtr &item, const QPixmap &pho
 
             // set a timer after and launch
             QTimer::singleShot( m_interval, this, SLOT(automaticAnimBegin()) );
+            emit photoAdded();
             break;
         }
 
@@ -231,6 +237,7 @@ void PhotosScrollWidget::addPhoto( const PhotosInfoPtr &item, const QPixmap &pho
                 dragpix->show();
                 m_timer->start( m_interval );
             }
+            emit photoAdded();
             break;
         }
     }
