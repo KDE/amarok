@@ -231,18 +231,18 @@ Context::Applet::collapse( bool on )
         finalHeight = maxHeight;
 
     if( finalHeight == size().height() )
-        return;
-
-    QPropertyAnimation *pan = m_animation.data();
-    if( pan )
     {
-        if( pan->state() == QAbstractAnimation::Running )
-            pan->stop();
-        delete pan;
+        setPreferredHeight( finalHeight );
+        emit sizeHintChanged( Qt::PreferredSize );
+        return;
     }
 
     // debug() << pluginName() << (on ? "collapsing to" : "uncollapsing to") << finalHeight;
-    pan = new QPropertyAnimation( this, "preferredSize" );
+    QPropertyAnimation *pan = m_animation.data();
+    if( !pan )
+        pan = new QPropertyAnimation( this, "preferredSize" );
+    if( pan->state() == QAbstractAnimation::Running )
+        pan->stop();
     pan->setDuration( 600 );
     pan->setEasingCurve( QEasingCurve::InQuad );
     pan->setStartValue( size() );

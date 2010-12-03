@@ -40,7 +40,7 @@ Context::VerticalAppletLayout::VerticalAppletLayout( QGraphicsItem* parent )
 {
     m_layout->setContentsMargins( 0, 2, 0, 2 );
     m_layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    m_layout->setSpacing( 1 );
+    m_layout->setSpacing( 0 );
 
     // This dummy widget is added at the end of the layout to eat up the
     // remaining space and keep the graphicslayout at the right size. Otherwise,
@@ -196,6 +196,7 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     if( !firstApplet )
         return;
     m_layout->insertItem( 0, firstApplet );
+    m_layout->setStretchFactor( firstApplet, 10000 );
     firstApplet->show();
     firstApplet->update();
 
@@ -203,7 +204,7 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     // hints provided by the applets
     int currentIndex = m_appletList.size();
     qreal height = firstApplet->effectiveSizeHint( Qt::PreferredSize ).height();
-    for( int count = m_appletList.count(), i = index + 1; i < count; ++i )
+    for( int count = currentIndex, i = index + 1; i < count; ++i )
     {
         Plasma::Applet *item   = m_appletList.at( i );
         const qreal preferredH = item->effectiveSizeHint( Qt::PreferredSize ).height();
@@ -240,11 +241,7 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         applet->hide();
     }
 
-    if( height < size().height() )
-    {
-        m_layout->addItem( m_dummyWidget );
-        m_layout->setStretchFactor( m_dummyWidget, 10000 );
-    }
+    m_layout->addItem( m_dummyWidget );
     m_showingIndex = index;
 }
 

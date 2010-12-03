@@ -181,7 +181,7 @@ void LabelsApplet::setStoppedState( bool stopped )
         m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "No track playing" );
         m_addLabelProxy.data()->hide();
         setBusy( false );
-        setMinimumHeight( 0 );
+        setMinimumHeight( collapseHeight() );
         setCollapseOn();
         qDeleteAll( m_labelItems );
         m_labelItems.clear();

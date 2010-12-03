@@ -117,6 +117,7 @@ SimilarArtistsApplet::init()
                        + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
     setMinimumHeight( collapseHeight() );
     setPreferredHeight( collapseHeight() );
+    setCollapseOn();
 
     // create a scrollarea
     m_scroll = new ArtistsListWidget( this );

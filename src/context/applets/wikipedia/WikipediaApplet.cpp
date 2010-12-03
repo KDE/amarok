@@ -566,6 +566,7 @@ WikipediaApplet::init()
     d->wikipediaLabel->setText( i18n( "Wikipedia" ) );
     d->wikipediaLabel->setDrawBackground( true );
 
+    setCollapseOffHeight( -1 );
     setCollapseHeight( d->wikipediaLabel->size().height()
                        + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
     setMinimumHeight( collapseHeight() );
