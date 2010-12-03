@@ -117,7 +117,6 @@ SimilarArtistsApplet::init()
                        + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
     setMinimumHeight( collapseHeight() );
     setPreferredHeight( collapseHeight() );
-    setCollapseOn();
 
     // create a scrollarea
     m_scroll = new ArtistsListWidget( this );
@@ -180,7 +179,6 @@ SimilarArtistsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
             m_headerLabel->setScrollingText( i18n( "Similar Artists" ) );
             m_scroll->clear();
             m_scroll->hide();
-            m_layout->removeItem( m_scroll );
             setCollapseOn();
         }
     }
@@ -228,14 +226,12 @@ SimilarArtistsApplet::artistsUpdate()
         m_headerLabel->setScrollingText( i18n( "Similar Artists of %1", m_artist ) );
         m_scroll->addArtists( m_similars );
         m_scroll->show();
-        m_layout->addItem( m_scroll );
         setCollapseOff();
     }
     else // No similar artist found
     {
         m_headerLabel->setScrollingText( i18n( "Similar Artists: Not Found" ) );
         m_scroll->hide();
-        m_layout->removeItem( m_scroll );
         setCollapseOn();
     }
 }
