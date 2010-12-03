@@ -96,6 +96,13 @@ Context::Applet::truncateTextToFit( const QString &text, const QFont& font, cons
 }
 
 void
+Context::Applet::updateGeometry()
+{
+    Plasma::Applet::updateGeometry();
+    update();
+}
+
+void
 Context::Applet::paintInterface( QPainter *p,
                                  const QStyleOptionGraphicsItem *option,
                                  const QRect &contentsRect )
