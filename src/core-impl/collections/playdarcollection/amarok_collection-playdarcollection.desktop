@@ -16,6 +16,7 @@ Name[ru]=Коллекция Playdar
 Name[sv]=Playdar-samling
 Name[uk]=Збірка Playdar
 Name[x-test]=xxPlaydar Collectionxx
+Name[zh_TW]=Playdar 收藏
 Comment=Music that Playdar can find
 Comment[ca]=Música que el Playdar pot trobar
 Comment[de]=Von Playdar auffindbare Musik
@@ -32,6 +33,7 @@ Comment[ru]=Модуль коллекции Playdar для Amarok
 Comment[sv]=Musik som Playdar kan hitta
 Comment[uk]=Музика, яку може знайти Playdar
 Comment[x-test]=xxMusic that Playdar can findxx
+Comment[zh_TW]=Playdar 可以找到的音樂
 
 ServiceTypes=Amarok/Plugin
 

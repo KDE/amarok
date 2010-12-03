@@ -12,6 +12,7 @@ Name[pt_BR]=Tablaturas
 Name[sv]=Flikar
 Name[uk]=Акорди
 Name[x-test]=xxTabsxx
+Name[zh_TW]=Tabs
 Type=Service
 Icon=filename-genre-amarok
 ServiceTypes=Plasma/Applet

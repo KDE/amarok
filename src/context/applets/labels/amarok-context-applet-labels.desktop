@@ -24,6 +24,7 @@ Name[sr@latin]=Etikete
 Name[sv]=Etiketter
 Name[uk]=Мітки
 Name[x-test]=xxLabelsxx
+Name[zh_TW]=標籤
 Type=Service
 Icon=label-amarok
 ServiceTypes=Plasma/Applet
