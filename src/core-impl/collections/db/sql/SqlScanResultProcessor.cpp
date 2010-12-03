@@ -187,7 +187,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
         metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_collection->trackForUrl( uid ) );
     }
     // --- find an existing track by path or create a new one
-    else
+    if( !metaTrack )
     {
         UrlEntry entry;
         entry.id = -1;
@@ -202,6 +202,12 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
         cacheUrlsInsert( entry ); // and insert it again (or new)
 
         metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_collection->getTrack( deviceId, rpath, directoryId, uid ) );
+    }
+
+    if( !metaTrack )
+    {
+        warning() << "Something went wrong when importing track"<<track->path();
+        return;
     }
 
     // TODO: we need to check the modified date of the file agains the last updated of the file

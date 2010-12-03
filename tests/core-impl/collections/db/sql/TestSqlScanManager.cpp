@@ -450,6 +450,9 @@ TestSqlScanManager::testRemoveTrack()
 void
 TestSqlScanManager::testMove()
 {
+    createAlbum();
+    createCompilation();
+
     // we use the created and first played attributes for identifying the moved tracks.
     // currently those are not written back to the track
 
@@ -457,7 +460,6 @@ TestSqlScanManager::testMove()
     Meta::TrackPtr track;
     QDateTime aDate = QDateTime::currentDateTime();
 
-    createAlbum();
     m_scanManager->requestFullScan();
     waitScannerFinished();
 
@@ -466,7 +468,7 @@ TestSqlScanManager::testMove()
     QCOMPARE( album->tracks().count(), 9 );
     QVERIFY( !album->isCompilation() );
 
-    // -- move one track
+    // --- move one track
     track = album->tracks().first();
     QCOMPARE( track->trackNumber(), 1 );
     static_cast<Meta::SqlTrack*>(track.data())->setFirstPlayed( aDate );
@@ -479,6 +481,24 @@ TestSqlScanManager::testMove()
     // -- check that the track is moved
     QCOMPARE( track->firstPlayed(), aDate );
     QCOMPARE( track->playableUrl().path(), targetPath );
+
+
+    // --- move a directory
+    album = m_collection->registry()->getAlbum( "Top Gun", QString() );
+    QCOMPARE( album->tracks().count(), 10 );
+    track = album->tracks().first();
+    KUrl oldUrl = track->playableUrl();
+
+    QVERIFY( QFile::rename( m_tmpCollectionDir->name() + "Top Gun",
+                            m_tmpCollectionDir->name() + "Top Gun - Soundtrack" ) );
+
+    // do an incremental scan
+    m_scanManager->requestIncrementalScan();
+    waitScannerFinished();
+
+    // check that the track is now moved (but still the old object)
+    QCOMPARE( album->tracks().count(), 10 ); // no doublicate tracks
+    QVERIFY( oldUrl != track->playableUrl() );
 }
 
 void
