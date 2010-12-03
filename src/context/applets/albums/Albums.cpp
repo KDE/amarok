@@ -67,6 +67,7 @@ void Albums::init()
     m_headerText->setText( i18n( "Recently added albums" ) );
     m_headerText->setDrawBackground( true );
 
+    setCollapseOffHeight( -1 );
     setCollapseHeight( m_headerText->size().height()
                        + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
     setMinimumHeight( collapseHeight() );
