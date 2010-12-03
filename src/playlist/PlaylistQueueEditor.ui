@@ -56,9 +56,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="removeTrackButton">
+          <widget class="QPushButton" name="dequeueTrackButton">
            <property name="toolTip">
-            <string>Remove Track</string>
+            <string>Dequeue Track</string>
            </property>
            <property name="text">
             <string/>

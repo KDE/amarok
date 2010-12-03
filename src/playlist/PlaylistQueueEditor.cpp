@@ -36,12 +36,12 @@ PlaylistQueueEditor::PlaylistQueueEditor()
     connect( The::playlist()->qaim(), SIGNAL( queueChanged() ), SLOT( queueChanged() ) );
     m_ui.upButton->setIcon( KIcon( "go-up" ) );
     m_ui.downButton->setIcon( KIcon( "go-down" ) );
-    m_ui.removeTrackButton->setIcon( KIcon( "list-remove" ) );
+    m_ui.dequeueTrackButton->setIcon( KIcon( "list-remove" ) );
     m_ui.clearButton->setIcon( KIcon( "edit-clear-list" ) );
     connect( m_ui.upButton, SIGNAL( clicked() ), SLOT( moveUp() ) );
     connect( m_ui.downButton, SIGNAL( clicked() ), SLOT( moveDown() ) );
     connect( m_ui.clearButton, SIGNAL( clicked() ), SLOT( clear() ) );
-    connect( m_ui.removeTrackButton, SIGNAL( clicked() ), SLOT( removeTrack() ) );
+    connect( m_ui.dequeueTrackButton, SIGNAL( clicked() ), SLOT( dequeueTrack() ) );
     connect( m_ui.buttonBox->buttons().first(), SIGNAL( clicked() ), SLOT( accept() ) );
 }
 
@@ -116,7 +116,7 @@ PlaylistQueueEditor::moveDown()
 }
 
 void
-PlaylistQueueEditor::removeTrack()
+PlaylistQueueEditor::dequeueTrack()
 {
     const quint64 id = currentId();
     if ( !id )
