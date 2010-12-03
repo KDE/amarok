@@ -70,7 +70,7 @@ private slots:
     void resultFlickr( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     void stopped();
-    void trackPlaying();
+    void trackChanged( Meta::TrackPtr track );
 
 private:
     /**

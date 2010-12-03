@@ -46,7 +46,8 @@ PhotosEngine::init()
 {
     DEBUG_BLOCK
     EngineController *controller = The::engineController();
-    connect( controller, SIGNAL(trackPlaying(Meta::TrackPtr)), SLOT(trackPlaying()) );
+    connect( controller, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), SLOT(trackChanged(Meta::TrackPtr)) );
+    connect( controller, SIGNAL(trackChanged(Meta::TrackPtr)), SLOT(trackChanged(Meta::TrackPtr)) );
     connect( controller, SIGNAL(stopped(qint64, qint64)), SLOT(stopped()) );
 }
 
@@ -61,9 +62,11 @@ PhotosEngine::stopped()
 }
 
 void
-PhotosEngine::trackPlaying()
+PhotosEngine::trackChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
+    if( !track )
+        return;
+
     update();
 }
 
