@@ -536,13 +536,6 @@
   </entry>
 </group>
 
-<group name="Panel Sizes">
-    <entry key="PanelsSavedState" type="IntList">
-        <label>State of main window splitter</label>
-        <default>-1</default>
-    </entry>
-</group>
-
 <group name="Playlist Search">
     <entry key="MatchTrack" type="Bool">
         <label>Include track names in matching</label>
@@ -629,33 +622,6 @@
     <entry key="MoodbarPaintStyle" type="Int">
         <label>The style to use when painting the moodbar</label>
         <default>0</default>
-    </entry>
-</group>
-
-<group name="UpcomingEvents">
-    <entry key="enabledLinks" type="Bool">
-        <label>Clickable locations' names</label>
-        <whatsthis>Enable/Disable links to Google Map</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="timeSpan" type="Enum">
-        <label>Timespan for upcoming events</label>
-        <whatsthis>Set the timespan for the upcoming events.</whatsthis>
-        <choices>
-            <choice name="AllEvents"/>
-            <choice name="ThisWeek"/>
-            <choice name="ThisMonth"/>
-            <choice name="ThisYear"/>
-        </choices>
-        <default>AllEvents</default>
-    </entry>
-</group>
-
-<group name="SimilarArtists">
-    <entry key="maxArtists" type="Int">
-        <label>Maximum similar artists</label>
-        <whatsthis>Maximum similar artists to be shown</whatsthis>
-        <default>20</default>
     </entry>
 </group>
 

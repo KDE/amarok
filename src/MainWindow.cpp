@@ -194,13 +194,6 @@ MainWindow::~MainWindow()
     //save currently active category
     Amarok::config().writeEntry( "Browser Path", m_browserDock.data()->list()->path() );
 
-    QList<int> sPanels;
-
-    //foreach( int a, m_splitter->saveState() )
-    //    sPanels.append( a );
-
-    //AmarokConfig::setPanelsSavedState( sPanels );
-
     //delete m_splitter;
 #ifdef DEBUG_BUILD_TYPE
     delete m_networkViewer.data();
