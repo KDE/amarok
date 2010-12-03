@@ -166,7 +166,7 @@ PhotosEngine::update( bool force )
         }
 
         QStringList tags = m_keywords;
-        tags << QLatin1String("artist");
+        tags << m_artist;
         tags.removeDuplicates();
 
         // Query flickr, order by relevance, 10 max
@@ -178,11 +178,11 @@ PhotosEngine::update( bool force )
         flickrUrl.addQueryItem( "method", "flickr.photos.search" );
         flickrUrl.addQueryItem( "api_key", Amarok::flickrApiKey() );
         flickrUrl.addQueryItem( "per_page", QString::number( m_nbPhotos ) );
-        flickrUrl.addQueryItem( "sort", "relevance" );
+        flickrUrl.addQueryItem( "sort", "date-posted-desc" );
         flickrUrl.addQueryItem( "media", "photos" );
-        flickrUrl.addQueryItem( "tags", tags.join(",") );
-        flickrUrl.addQueryItem( "text", m_artist );
-        debug() << "Flickr url:" << flickrUrl.toMimeDataString();
+        flickrUrl.addQueryItem( "content_type", QString::number(1) );
+        flickrUrl.addQueryItem( "text", tags.join(" ") );
+        debug() << "Flickr url:" << flickrUrl;
 
         m_flickrUrls << flickrUrl;
         The::networkAccessManager()->getData( flickrUrl, this,
