@@ -58,7 +58,7 @@ class PhotosApplet : public Context::Applet
         void createConfigurationInterface(KConfigDialog *parent);
 
     private slots:
-        void updateHeaderText();
+        void photoAdded();
         
     private:
         TextScrollingWidget     *m_headerText;

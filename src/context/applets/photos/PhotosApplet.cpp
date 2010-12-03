@@ -89,7 +89,7 @@ PhotosApplet::init()
     m_widget = new PhotosScrollWidget( this );
     m_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_widget->setContentsMargins( 0, 0, 0, 0 );
-    connect( m_widget, SIGNAL(photoAdded()), SLOT(updateHeaderText()) );
+    connect( m_widget, SIGNAL(photoAdded()), SLOT(photoAdded()) );
 
     QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout;
     headerLayout->addItem( m_headerText );
@@ -147,8 +147,9 @@ PhotosApplet::constraintsEvent( Plasma::Constraints constraints )
 }
 
 void
-PhotosApplet::updateHeaderText()
+PhotosApplet::photoAdded()
 {
+    setBusy( false );
     m_headerText->setScrollingText( i18nc( "@title:window Number of photos of artist", "%1 Photos: %2",
                                            m_widget->count(), m_currentArtist ) );
 }
@@ -161,7 +162,6 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         return;
 
     QString text;
-    setBusy( false );
 
     if( data.contains( "message" ) )
     {
@@ -191,6 +191,7 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
             setMinimumHeight( m_headerHeight );
             setCollapseHeight( m_headerHeight );
             setCollapseOn();
+            setBusy( false );
         }
     }
     else if( data.contains( "data" ) )
@@ -198,6 +199,8 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         m_widget->clear();
         m_currentArtist = text = data["artist"].toString();
         PhotosInfo::List photos = data["data"].value< PhotosInfo::List >();
+        if( !photos.isEmpty() )
+            setBusy( true );
         debug() << "received data for:" << text << photos.count();
         m_headerText->setScrollingText( i18n( "Photos: %1", text ) );
         m_widget->setPhotosInfoList( photos );
@@ -213,6 +216,7 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         setCollapseOn();
         m_widget->clear();
         m_widget->hide();
+        setBusy( false );
     }
     updateConstraints();
 }
