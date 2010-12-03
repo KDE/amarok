@@ -687,8 +687,11 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
     {
         debug() << "stopped";
         d->dataContainer->removeAllData();
-        d->webView->hide();
-        setCollapseOn();
+        if( d->webView->title().isEmpty() )
+        {
+            d->webView->hide();
+            setCollapseOn();
+        }
         return;
     }
 
