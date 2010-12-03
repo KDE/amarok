@@ -62,6 +62,13 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="kcfg_AnimateAppletCollapse">
+        <property name="text">
+         <string>Enable context applets collapse animations</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

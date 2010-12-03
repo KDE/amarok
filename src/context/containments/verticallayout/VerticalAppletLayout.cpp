@@ -196,7 +196,6 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     if( !firstApplet )
         return;
     m_layout->insertItem( 0, firstApplet );
-    m_layout->setStretchFactor( firstApplet, 10000 );
     firstApplet->show();
     firstApplet->update();
 

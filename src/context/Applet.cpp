@@ -19,6 +19,7 @@
 
 #include "Applet.h"
 
+#include "amarokconfig.h"
 #include "Containment.h"
 #include "ContextView.h"
 #include "core/support/Debug.h"
@@ -237,10 +238,11 @@ Context::Applet::collapse( bool on )
     if( (finalHeight > maxHeight) || (finalHeight < 0) )
         finalHeight = maxHeight;
 
-    if( finalHeight == size().height() )
+    if( (finalHeight == size().height()) || !AmarokConfig::animateAppletCollapse() )
     {
         setPreferredHeight( finalHeight );
         emit sizeHintChanged( Qt::PreferredSize );
+        updateGeometry();
         return;
     }
 

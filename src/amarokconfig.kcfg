@@ -122,6 +122,11 @@
         <label>Play the first run jingle</label>
         <default>true</default>
     </entry>
+    <entry key="AnimateAppletCollapse" type="Bool">
+        <label>Enable context applets collapse animations</label>
+        <whatsthis>If set, context applets will collapse using animations.</whatsthis>
+        <default>false</default>
+    </entry>
 </group>
 
 <group name="OrganizeCollectionDialog">
