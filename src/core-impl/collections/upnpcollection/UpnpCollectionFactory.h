@@ -26,7 +26,7 @@
 class QDBusInterface;
 
 typedef QHash<QString, QString> DeviceTypeMap;
-Q_DECLARE_METATYPE( DeviceTypeMap );
+Q_DECLARE_METATYPE( DeviceTypeMap )
 
 namespace Collections {
 
