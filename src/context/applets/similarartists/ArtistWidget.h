@@ -279,8 +279,6 @@ public:
     int count() const;
     bool isEmpty() const;
 
-    void addItem( ArtistWidget *widget );
-    void addArtist( const SimilarArtistPtr &artist );
     void addArtists( const SimilarArtist::List &artists );
 
     QString name() const;
@@ -297,6 +295,7 @@ signals:
     void showBio( const QString &artist );
 
 private:
+    void addArtist( const SimilarArtistPtr &artist );
     void addSeparator();
     int m_separatorCount;
     QString m_name;

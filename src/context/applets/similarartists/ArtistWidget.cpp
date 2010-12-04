@@ -629,21 +629,6 @@ ArtistsListWidget::count() const
 }
 
 void
-ArtistsListWidget::addItem( ArtistWidget *widget )
-{
-    if( !m_widgets.isEmpty() )
-        addSeparator();
-    const QString &artist = widget->artist()->name();
-    connect( widget, SIGNAL(showSimilarArtists()), m_showArtistsSigMapper, SLOT(map()) );
-    m_showArtistsSigMapper->setMapping( widget, artist );
-    connect( widget, SIGNAL(showBio()), m_showBioSigMapper, SLOT(map()) );
-    m_showBioSigMapper->setMapping( widget, artist );
-    m_layout->addItem( widget );
-    m_widgets << widget;
-    updateGeometry();
-}
-
-void
 ArtistsListWidget::addArtist( const SimilarArtistPtr &artist )
 {
     if( !m_widgets.isEmpty() )
@@ -656,7 +641,6 @@ ArtistsListWidget::addArtist( const SimilarArtistPtr &artist )
     m_showBioSigMapper->setMapping( widget, name );
     m_layout->addItem( widget );
     m_widgets << widget;
-    updateGeometry();
 }
 
 void
@@ -664,6 +648,7 @@ ArtistsListWidget::addArtists( const SimilarArtist::List &artists )
 {
     foreach( const SimilarArtistPtr &artist, artists )
         addArtist( artist );
+    updateGeometry();
 }
 
 void
