@@ -161,7 +161,7 @@ TabsApplet::constraintsEvent( Plasma::Constraints constraints )
 void
 TabsApplet::stopped()
 {
-    m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs: No track playing" ) );
+    m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
     updateInterface( StoppedState );
 }
 
