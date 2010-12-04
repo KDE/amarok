@@ -46,7 +46,6 @@ TabsApplet::TabsApplet( QObject* parent, const QVariantList& args )
     , m_layout( 0 )
     , m_fetchGuitar( true )
     , m_fetchBass( true )
-    , m_showInfoLabel( false )
     , m_showTabBrowser( false )
 {
     DEBUG_BLOCK
@@ -65,8 +64,6 @@ TabsApplet::~TabsApplet()
         delete m_reloadIcon.data();
     if( m_titleLabel )
         delete m_titleLabel.data();
-    if( m_infoLabel )
-        delete m_infoLabel.data();
 }
 
 /**
@@ -126,11 +123,6 @@ TabsApplet::init()
     m_layout->addItem( headerLayout );
     m_layout->addItem( m_tabsView );
     setLayout( m_layout );
-
-    m_infoLabel = new Plasma::Label( this );
-    m_infoLabel.data()->setAlignment( Qt::AlignCenter );
-    m_infoLabel.data()->nativeWidget()->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    m_showInfoLabel = false;
 
     // read configuration data and update the engine.
     KConfigGroup config = Amarok::config("Tabs Applet");
@@ -192,7 +184,6 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     }
 
     const QString state      = data[ "state" ].toString();
-    const QString message    = data[ "message" ].toString();
     const QString artistName = data[ "artist" ].toString();
     const QString titleName  = data[ "title" ].toString();
     if( data.contains( "state" ) && state.contains( "Fetching" ) )
@@ -200,7 +191,6 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
         if( canAnimate() )
             setBusy( true );
         m_titleLabel.data()->setText( i18n( "Tabs: Fetching ..." ) );
-        m_infoLabel.data()->setText( i18n( "Tabs are being fetched" ) );
         updateInterface( FetchingState );
         return;
     }
@@ -213,16 +203,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     {
         // no tabs for the current track
         m_titleLabel.data()->setText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
-        m_infoLabel.data()->setText( i18n( "There were no tabs found for this track" ) );
         updateInterface( NoTabsState );
-        return;
-    }
-    else if( data.contains( "message" ) )
-    {
-        // if we get a message, show it
-        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
-        m_infoLabel.data()->setText( message );
-        updateInterface( MsgState );
         return;
     }
 
@@ -271,38 +252,25 @@ TabsApplet::updateInterface( const AppletState appletState )
         case InitState:
         case StoppedState:
             m_reloadIcon.data()->setEnabled( false );
-            m_showInfoLabel = false;
             m_showTabBrowser = false;
             collapse = true;
             break;
         case NoTabsState:
             m_reloadIcon.data()->setEnabled( true );
-            m_showInfoLabel = true;
             m_showTabBrowser = false;
             collapse = true;
             break;
-        case MsgState:
-            m_reloadIcon.data()->setEnabled( true );
-            m_showInfoLabel = true;
-            m_showTabBrowser = false;
-            break;
         case FetchingState:
             m_reloadIcon.data()->setEnabled( false );
-            m_showInfoLabel = true;
             m_showTabBrowser = false;
             break;
         case TabState:
             m_reloadIcon.data()->setEnabled( true );
-            m_showInfoLabel = false;
             m_showTabBrowser = true;
             break;
     }
 
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( layout() );
-    lo->insertItem( 1, m_infoLabel.data() );
-
-    m_showInfoLabel  ? lo->insertItem( 1, m_infoLabel.data() ) : lo->removeItem(  m_infoLabel.data() );
-    m_showInfoLabel  ? m_infoLabel.data()->show() : m_infoLabel.data()->hide();
 
     m_showTabBrowser ? lo->addItem( m_tabsView ) : lo->removeItem( m_tabsView );
     m_showTabBrowser ? m_tabsView->show() : m_tabsView->hide();

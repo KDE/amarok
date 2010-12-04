@@ -186,13 +186,13 @@ TabsEngine::update()
     if( newTitle == m_titleName && newArtist == m_artistName )
     {
         debug() << "nothing changed";
-        return; // nothing changed
+        return;
     }
 
     // stop fetching for unknown artists or titles
     if( newTitle.isEmpty() || newArtist.isEmpty() )
     {
-        setData("tabs", "message", i18n( "No valid artist or titlename found for the current track." ) );
+        setData("tabs", "state", "noTabs" );
         return;
     }
     requestTab( newArtist, newTitle );

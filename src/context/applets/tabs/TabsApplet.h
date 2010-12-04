@@ -106,7 +106,7 @@ class TabsApplet : public Context::Applet
     private:
         TabsView *m_tabsView;
 
-        enum AppletState { InitState, StoppedState, FetchingState, TabState, MsgState, NoTabsState  };
+        enum AppletState { InitState, StoppedState, FetchingState, TabState, NoTabsState  };
         AppletState m_currentState;
         void updateInterface( const AppletState appletState );
 
@@ -116,14 +116,12 @@ class TabsApplet : public Context::Applet
         QGraphicsLinearLayout *m_layout;
         QWeakPointer<TextScrollingWidget> m_titleLabel;
         QWeakPointer<Plasma::IconWidget>  m_reloadIcon;
-        QWeakPointer<Plasma::Label>       m_infoLabel;
 
         qreal m_headerHeight;
 
         bool m_fetchGuitar;
         bool m_fetchBass;
 
-        bool m_showInfoLabel;
         bool m_showTabBrowser;
         Ui::TabsSettings ui_Settings;
 };
