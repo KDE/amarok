@@ -242,9 +242,18 @@ void
 TabsEngine::queryUltimateGuitar( const QString &artist, const QString &title )
 {
     // Query UltimateGuitar.com (filtering guitar (tabs + chords) and bass tabs)
-    const KUrl ultimateGuitarUrl( QString( "http://www.ultimate-guitar.com/search.php?view_state=advanced" ) +
-                                  QString( "&band_name=" ) + artist + QString( "&song_name=") + title +
-                                  QString( "&type[]=200&type[]=400&type[]=300&version_la=" ) );
+    KUrl ultimateGuitarUrl;
+    ultimateGuitarUrl.setScheme( "http" );
+    ultimateGuitarUrl.setHost( "www.ultimate-guitar.com" );
+    ultimateGuitarUrl.setPath( "/search.php" );
+    ultimateGuitarUrl.addQueryItem( "view_state", "advanced" );
+    ultimateGuitarUrl.addQueryItem( "band_name", artist );
+    ultimateGuitarUrl.addQueryItem( "song_name", title );
+    ultimateGuitarUrl.addQueryItem( "type%5B%5D", QString::number ( 200 ) );  // filter guitar tabs
+    ultimateGuitarUrl.addQueryItem( "type%5B%5D", QString::number ( 300 ) );  // filter guitar chords
+    ultimateGuitarUrl.addQueryItem( "type%5B%5D", QString::number ( 400 ) );  // filter bass tabs
+    ultimateGuitarUrl.addQueryItem( "version_la", "" );
+
     The::networkAccessManager()->getData( ultimateGuitarUrl, this,
         SLOT( resultUltimateGuitarSearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
     m_urls.insert( ultimateGuitarUrl, UltimateGuitar );
@@ -358,8 +367,13 @@ TabsEngine::queryFretplay( const QString &artist, const QString &title )
     Q_UNUSED( artist );
 
     // Query fretplay.com (search for song name and filter afterwards according to artist)
-    // fretplay.com : http://www.fretplay.com/search-tabs?search=SongName
-    const KUrl fretplayUrl( QString( "http://www.fretplay.com/search-tabs?search=" ) + title );
+    // http://www.fretplay.com/search-tabs?search=<SongName>
+    KUrl fretplayUrl;
+    fretplayUrl.setScheme( "http" );
+    fretplayUrl.setHost( "www.fretplay.com" );
+    fretplayUrl.setPath( "/search-tabs" );
+    fretplayUrl.addQueryItem( "search", title );
+
     The::networkAccessManager()->getData( fretplayUrl, this,
         SLOT( resultFretplaySearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
     m_urls.insert( fretplayUrl, FretPlay );
@@ -554,12 +568,12 @@ TabsEngine::defineArtistSearchCriteria( const QString &artist )
 {
     QStringList artists;
 
-    QString searchArtist = artist.trimmed().replace( ' ', '+' );
+    QString searchArtist = artist.trimmed();
     artists << searchArtist;
 
     // remove trailing "The" (otherwise no results for 'The Cure', 'The Smashing Pumpkins', ...)
-    if( searchArtist.startsWith( "The+", Qt::CaseInsensitive ) )
-        artists << searchArtist.remove( "The+", Qt::CaseInsensitive );
+    if( searchArtist.startsWith( "The ", Qt::CaseInsensitive ) )
+        artists << searchArtist.remove( "The ", Qt::CaseInsensitive );
 
     return artists;
 }
@@ -573,20 +587,20 @@ TabsEngine::defineTitleSearchCriteria( const QString &title )
 {
     QStringList titles;
 
-    QString searchTitle  = title.trimmed().replace( ' ', '+' );
+    QString searchTitle  = title.trimmed();
     titles << searchTitle;
 
     // remove trailing "The"
-    if( searchTitle.startsWith( "The+", Qt::CaseInsensitive ) )
-        titles << searchTitle.remove( "The+", Qt::CaseInsensitive );
+    if( searchTitle.startsWith( "The ", Qt::CaseInsensitive ) )
+        titles << searchTitle.remove( "The ", Qt::CaseInsensitive );
 
     // remove anything like (live), (demo-tape), ...
-    QRegExp regex = QRegExp( "\\+*\\([A-Za-z0-9\\+]*\\)", Qt::CaseInsensitive );
+    QRegExp regex = QRegExp( "\\s*\\([A-Za-z0-9\\s]*\\)", Qt::CaseInsensitive );
     if( regex.indexIn( searchTitle ) > 0 )
         titles << searchTitle.remove( regex );
 
     // remove anything like [xxxx].
-    regex = QRegExp( "\\+*\\[[A-Za-z0-9\\+]*\\]", Qt::CaseInsensitive );
+    regex = QRegExp( "\\s*\\[[A-Za-z0-9\\s]*\\]", Qt::CaseInsensitive );
     if( regex.indexIn( searchTitle ) > 0 )
         titles << searchTitle.remove( regex );
 
