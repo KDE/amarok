@@ -38,7 +38,7 @@ namespace Collections
 {
 
     AMAROK_EXPORT_COLLECTION( PlaydarCollectionFactory, playdarcollection )
-    
+
     PlaydarCollectionFactory::PlaydarCollectionFactory( QObject* parent, const QVariantList &args )
         : CollectionFactory( parent )
         , m_controller( new Playdar::Controller(this) )
@@ -105,8 +105,8 @@ namespace Collections
         {
             if( m_collection && !m_collectionIsManaged )
                 CollectionManager::instance()->removeTrackProvider( m_collection.data() );
-            
-            QTimer::singleShot( 10000, this, SLOT( checkStatus() ) );
+
+            QTimer::singleShot( 10 * 60 * 1000, this, SLOT( checkStatus() ) );
         }
     }
 
@@ -118,15 +118,15 @@ namespace Collections
         m_collectionIsManaged = false;
         QTimer::singleShot( 10000, this, SLOT( checkStatus() ) );
     }
-    
+
     PlaydarCollection::PlaydarCollection()
         : m_collectionId( i18n( "Playdar Collection" ) )
         , m_memoryCollection( new MemoryCollection )
     {
         DEBUG_BLOCK
-        
+
     }
-    
+
     PlaydarCollection::~PlaydarCollection()
     {
         DEBUG_BLOCK
@@ -143,12 +143,12 @@ namespace Collections
                  this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
         return freshQueryMaker;
     }
-    
+
     Playlists::UserPlaylistProvider*
     PlaydarCollection::userPlaylistProvider()
     {
         DEBUG_BLOCK
-        
+
         return 0;
     }
 
@@ -157,19 +157,19 @@ namespace Collections
     {
         return QString( "playdar" );
     }
-    
+
     QString
     PlaydarCollection::collectionId() const
     {
         return m_collectionId;
     }
-    
+
     QString
     PlaydarCollection::prettyName() const
     {
         return collectionId();
     }
-    
+
     KIcon
     PlaydarCollection::icon() const
     {
@@ -180,15 +180,15 @@ namespace Collections
     PlaydarCollection::isWritable() const
     {
         DEBUG_BLOCK
-        
+
         return false;
     }
-    
+
     bool
     PlaydarCollection::isOrganizable() const
     {
         DEBUG_BLOCK
-        
+
         return false;
     }
 
@@ -196,7 +196,7 @@ namespace Collections
     PlaydarCollection::possiblyContainsTrack( const KUrl &url ) const
     {
         DEBUG_BLOCK
-        
+
         if( url.protocol() == uidUrlProtocol() &&
             url.hasQueryItem( QString( "artist" ) ) &&
             url.hasQueryItem( QString( "album" ) ) &&
@@ -205,14 +205,14 @@ namespace Collections
         else
             return false;
     }
-    
+
     Meta::TrackPtr
     PlaydarCollection::trackForUrl( const KUrl &url )
     {
         DEBUG_BLOCK
 
         m_memoryCollection->acquireReadLock();
-        
+
         if( m_memoryCollection->trackMap().contains( url.url() ) )
         {
             Meta::TrackPtr track = m_memoryCollection->trackMap().value( url.url() );
@@ -230,7 +230,7 @@ namespace Collections
 
             connect( proxyResolver, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
                      this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
-                
+
             return Meta::TrackPtr::staticCast( proxyTrack );
         }
     }
@@ -242,7 +242,7 @@ namespace Collections
         Q_UNUSED( type );
         return false;
     }
-    
+
     Capabilities::Capability*
     PlaydarCollection::createCapabilityInterface( Capabilities::Capability::Type type )
     {
@@ -255,14 +255,14 @@ namespace Collections
     PlaydarCollection::addNewTrack( Meta::PlaydarTrackPtr track )
     {
         DEBUG_BLOCK
-        
+
         m_memoryCollection->acquireReadLock();
-        
+
         if( !m_memoryCollection->trackMap().contains( track->uidUrl() ) )
         {
             m_memoryCollection->releaseLock();
             m_memoryCollection->acquireWriteLock();
-            
+
             Meta::PlaydarArtistPtr artistPtr;
             if( m_memoryCollection->artistMap().contains( track->artist()->name() ) )
             {
@@ -277,7 +277,7 @@ namespace Collections
             }
             artistPtr->addTrack( track );
             track->setArtist( artistPtr );
-            
+
             Meta::PlaydarAlbumPtr albumPtr;
             if( m_memoryCollection->albumMap().contains( track->album()->name() ) )
             {
@@ -294,7 +294,7 @@ namespace Collections
             }
             albumPtr->addTrack( track );
             track->setAlbum( albumPtr );
-            
+
             Meta::PlaydarGenrePtr genrePtr;
             if( m_memoryCollection->genreMap().contains( track->genre()->name() ) )
             {
@@ -309,7 +309,7 @@ namespace Collections
             }
             genrePtr->addTrack( track );
             track->setGenre( genrePtr );
-            
+
             Meta::PlaydarComposerPtr composerPtr;
             if( m_memoryCollection->composerMap().contains( track->composer()->name() ) )
             {
@@ -324,7 +324,7 @@ namespace Collections
             }
             composerPtr->addTrack( track );
             track->setComposer( composerPtr );
-            
+
             Meta::PlaydarYearPtr yearPtr;
             if( m_memoryCollection->yearMap().contains( track->year()->year() ) )
             {
@@ -360,7 +360,7 @@ namespace Collections
     {
         return m_memoryCollection;
     }
-    
+
     void
     PlaydarCollection::slotPlaydarError( Playdar::Controller::ErrorState error )
     {
