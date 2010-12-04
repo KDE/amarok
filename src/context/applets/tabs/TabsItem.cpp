@@ -30,6 +30,7 @@ TabsItem::TabsItem()
 {
     m_tabsInfo = new TabsInfo();
     setEditable( false );
+    setText( "" );
     setIconSize( 36 );
 }
 
