@@ -20,8 +20,8 @@
 #include "TabsInfo.h"
 
 #include "context/DataEngine.h"
-#include "NetworkAccessManagerProxy.h"
 #include "core/meta/Meta.h"
+#include "NetworkAccessManagerProxy.h"
 
 #include <QVariant>
 
@@ -35,18 +35,7 @@ class TabsEngine : public DataEngine
 {
     Q_OBJECT
     public:
-        /**
-         * \brief Constructor
-         *
-         * Creates a new instance of the TabsEngine
-         */
         TabsEngine( QObject* parent, const QList<QVariant>& args );
-
-        /**
-         * \brief Destructor
-         *
-         * Destroys a TabsEngine instance
-         */
         virtual ~TabsEngine();
 
         /**
@@ -58,42 +47,49 @@ class TabsEngine : public DataEngine
         bool sourceRequestEvent( const QString &name );
 
     private slots:
-
         /**
-         *   parses the HTML-result from UltimateGuitar.com and extracts the tab-information
-         *   http://www.ultimate-guitar.com/search.php?view_state=advanced&
-                        band_name=red+hot+chili+peppers&
-                        song_name=californication&
-                        type[]=200&type[]=400&type[]=300&version_la=
-         */
-        void queryUltimateGuitar( const QString &artist, const QString &title );
+        *   handling of tab data search results from ultimateguitar.com
+        */
         void resultUltimateGuitarSearch( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
         void resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
         /**
-         *   queries fretplay.com and extracts the tab-information
-         *   fretplay.com : http://www.fretplay.com/search-tabs?search=SongName
-         */
-        void queryFretplay( const QString &artist, const QString &title );
+        *   handling of tab data search results from fretplay.com
+        */
         void resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
         void resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
-      /**
-       *   This method will send the info to the applet and order them if every jobs are finished
-       */
+        /**
+        *   This method will send the info to the applet and order them if every jobs are finished
+        */
         void resultFinalize();
 
+        /**
+         * Prepare the calling of the requestTab method.
+         * Launched when the track played on amarok has changed.
+         */
+        void update();
+
     private:
+        /**
+         * starts a new tab-search
+         */
+        void requestTab( const QString &artist, const QString &title );
+
+        /**
+         *   starts a tab search at ultimateguitar.com
+         */
+        void queryUltimateGuitar( const QString &artist, const QString &title );
+
+        /**
+         *   starts a tab search at fretplay.com
+         */
+        void queryFretplay( const QString &artist, const QString &title );
 
         /**
          * available tab sites
          */
         enum Source { UltimateGuitar, FretPlay };
-
-        /**
-         * starts a new tab-search
-         */
-        void requestTab( const QString &artist, const QString &title );
 
         /**
          * The currently playing track
@@ -141,13 +137,6 @@ class TabsEngine : public DataEngine
          * returns a list of possible search criteria for the current title
          */
         QStringList defineTitleSearchCriteria( const QString &title );
-
-    private slots:
-        /**
-         * Prepare the calling of the requestTab method.
-         * Launched when the track played on amarok has changed.
-         */
-        void update();
 };
 
 Q_DECLARE_METATYPE ( TabsInfo * )
