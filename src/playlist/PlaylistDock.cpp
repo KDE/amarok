@@ -271,8 +271,13 @@ Playlist::Dock::slotSaveCurrentPlaylist()
 void
 Playlist::Dock::slotEditQueue()
 {
-    PlaylistQueueEditor* pqEditor = new PlaylistQueueEditor();
-    pqEditor->exec();
+    if( m_playlistQueueEditor ) {
+        m_playlistQueueEditor.data()->raise();
+        return;
+    }
+    m_playlistQueueEditor = new PlaylistQueueEditor;
+    m_playlistQueueEditor.data()->setAttribute( Qt::WA_DeleteOnClose) ;
+    m_playlistQueueEditor.data()->show();
 }
 
 void

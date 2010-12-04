@@ -32,6 +32,7 @@
 class KActionCollection;
 class KActionMenu;
 class QWidget;
+class PlaylistQueueEditor;
 
 namespace Playlists {
     class PlaylistProvider;
@@ -73,6 +74,7 @@ private slots:
 private:
     KActionMenu *m_savePlaylistMenu;
     KActionCollection *m_saveActions;
+    QWeakPointer<PlaylistQueueEditor> m_playlistQueueEditor;
 
     PrettyListView* m_playlistView;
     ProgressiveSearchWidget * m_searchWidget;
