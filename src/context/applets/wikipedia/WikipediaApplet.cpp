@@ -296,6 +296,11 @@ void
 WikipediaAppletPrivate::_reloadWikipedia()
 {
     DEBUG_BLOCK
+    if( useMobileWikipedia )
+    {
+        webView->reload();
+        return;
+    }
     dataContainer->setData( "reload", true );
     scheduleEngineUpdate();
 }
