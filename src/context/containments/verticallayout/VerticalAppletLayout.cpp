@@ -171,6 +171,8 @@ Context::VerticalAppletLayout::showAtIndex( int index )
 {
     if( index < 0 || index > m_appletList.size() )
         return;
+    if( !m_appletList.at( index ) )
+        return;
 
     setGeometry( scene()->sceneRect() );
     m_layout->removeItem( m_dummyWidget );
