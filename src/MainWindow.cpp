@@ -105,7 +105,7 @@
 #include "mac/GrowlInterface.h"
 #endif
 
-#define AMAROK_CAPTION "Amarok"
+#define AMAROK_CAPTION I18N_NOOP( "Amarok" )
 
 extern KAboutData aboutData;
 extern OcsData ocsData;
@@ -1155,7 +1155,7 @@ MainWindow::slotStopped()
 void
 MainWindow::slotPaused()
 {
-    setPlainCaption( i18n( "Paused  ::  %1", QString( AMAROK_CAPTION ) ) );
+    setPlainCaption( i18n( "Paused  ::  %1", i18n( AMAROK_CAPTION ) ) );
 }
 
 void
@@ -1168,7 +1168,7 @@ void
 MainWindow::slotMetadataChanged( Meta::TrackPtr track )
 {
     if( track )
-        setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
+        setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), i18n( AMAROK_CAPTION ) ) );
 }
 
 CollectionWidget *
