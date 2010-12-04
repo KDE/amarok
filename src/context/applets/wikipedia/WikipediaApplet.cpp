@@ -112,7 +112,6 @@ WikipediaAppletPrivate::setUrl( const QUrl &url )
     webView->settings()->resetFontSize( QWebSettings::DefaultFixedFontSize );
     webView->setUrl( url );
     currentUrl = url;
-    pushUrlHistory( url );
     dataContainer->removeAllData();
 }
 
@@ -121,7 +120,7 @@ WikipediaAppletPrivate::pushUrlHistory( const QUrl &url )
 {
     if( !isForwardHistory && !isBackwardHistory && !url.isEmpty() )
     {
-        if( !historyBack.isEmpty() && (url != historyBack.top()) )
+        if( historyBack.isEmpty() || (!historyBack.isEmpty() && (url != historyBack.top())) )
             historyBack.push( url );
         historyForward.clear();
     }
@@ -206,9 +205,13 @@ WikipediaAppletPrivate::_jsWindowObjectCleared()
 void
 WikipediaAppletPrivate::_linkClicked( const QUrl &url )
 {
+    DEBUG_BLOCK
     Q_Q( WikipediaApplet );
     if( url.host().contains( "wikipedia.org" ) )
     {
+        isBackwardHistory = false;
+        isForwardHistory = false;
+        pushUrlHistory( currentUrl );
         if( useMobileWikipedia )
         {
             setUrl( url );
@@ -217,7 +220,6 @@ WikipediaAppletPrivate::_linkClicked( const QUrl &url )
         q->setBusy( true );
         dataContainer->setData( "clickUrl", url );
         scheduleEngineUpdate();
-        updateNavigationIcons();
     }
     else
         QDesktopServices::openUrl( url.toString() );
@@ -740,7 +742,6 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
             d->_updateWebFonts();
             d->currentUrl = url;
             d->webView->setHtml( data[ "page" ].toString(), url );
-            d->pushUrlHistory( url );
             d->dataContainer->removeAllData();
         }
         setCollapseOff();
