@@ -185,6 +185,8 @@ void LabelsApplet::setStoppedState( bool stopped )
         setCollapseOn();
         qDeleteAll( m_labelItems );
         m_labelItems.clear();
+        qDeleteAll( m_labelAnimations );
+        m_labelAnimations.clear();
     }
 
     constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
@@ -201,11 +203,15 @@ LabelsApplet::reload()
 void
 LabelsApplet::animationFinished()
 {
+    if( QObject::sender() == 0 )
+        return;
+    
     for( int i=0; i<m_labelAnimations.count(); i++ )
     {
         if( QObject::sender() == m_labelAnimations.at(i) )
         {
-            m_labelItems.at(i)->updateHoverStatus();
+            if( m_labelItems.at(i) )
+                m_labelItems.at(i)->updateHoverStatus();
             m_labelAnimations.at(i)->setEasingCurve( QEasingCurve::InOutQuad );
             return;
         }
