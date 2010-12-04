@@ -199,10 +199,17 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         m_widget->clear();
         m_currentArtist = text = data["artist"].toString();
         PhotosInfo::List photos = data["data"].value< PhotosInfo::List >();
-        if( !photos.isEmpty() )
-            setBusy( true );
         debug() << "received data for:" << text << photos.count();
         m_headerText->setScrollingText( i18n( "Photos: %1", text ) );
+        if( photos.isEmpty() )
+        {
+            setBusy( false );
+            setMinimumHeight( m_headerHeight );
+            setCollapseHeight( m_headerHeight );
+            setCollapseOn();
+            return;
+        }
+        setBusy( true );
         m_widget->setPhotosInfoList( photos );
         setMinimumHeight( 220 );
         setCollapseOff();
