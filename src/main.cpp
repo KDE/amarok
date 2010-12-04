@@ -208,18 +208,18 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
     //Donors:
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Benoît AlK Zugmeyer" ), ki18n( "" ), "benoit@zugmeyer.com" ) );
-    ocsData.addDonor( "bubeck", KAboutPerson( ki18n( "Dr. Tilmann Bubeck" ), ki18n( "" ), "t.bubeck@reinform.de" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Edward Karavakis" ), ki18n( "" ), "edward.karavakis@cern.ch" ) );
-    ocsData.addDonor( "hekkro", KAboutPerson( ki18n( "Hekkro" ), ki18n( "" ), "hekkro@hekkro.com" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Maik Keller" ), ki18n( "" ), "mk3ll3r@gmail.com" ) );
-    ocsData.addDonor( "mastercactapus", KAboutPerson( ki18n( "Nathan Caza" ), ki18n( "" ), "mastercactapus@gmail.com" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Paul Erntges" ), ki18n( "" ), "fleischindosen@web.de" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Štětka" ), ki18n( "" ), "robert.stetka@gmail.com" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Tell" ), ki18n( "" ), "robert.tell@gmx.net" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Ryan Rix" ), ki18n( "" ), "phrkonaleash@gmail.com" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Thomas Kahle" ), ki18n( "" ), "tom111@gmx.de" ) );
-    ocsData.addDonor( "valoriez", KAboutPerson( ki18n( "Valorie Zimmerman" ), ki18n( "" ), "valorie.zimmerman@gmail.com" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Benoît AlK Zugmeyer" ), KLocalizedString(), "benoit@zugmeyer.com" ) );
+    ocsData.addDonor( "bubeck", KAboutPerson( ki18n( "Dr. Tilmann Bubeck" ), KLocalizedString(), "t.bubeck@reinform.de" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Edward Karavakis" ), KLocalizedString(), "edward.karavakis@cern.ch" ) );
+    ocsData.addDonor( "hekkro", KAboutPerson( ki18n( "Hekkro" ), KLocalizedString(), "hekkro@hekkro.com" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Maik Keller" ), KLocalizedString(), "mk3ll3r@gmail.com" ) );
+    ocsData.addDonor( "mastercactapus", KAboutPerson( ki18n( "Nathan Caza" ), KLocalizedString(), "mastercactapus@gmail.com" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Paul Erntges" ), KLocalizedString(), "fleischindosen@web.de" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Štětka" ), KLocalizedString(), "robert.stetka@gmail.com" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Tell" ), KLocalizedString(), "robert.tell@gmx.net" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Ryan Rix" ), KLocalizedString(), "phrkonaleash@gmail.com" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Thomas Kahle" ), KLocalizedString(), "tom111@gmx.de" ) );
+    ocsData.addDonor( "valoriez", KAboutPerson( ki18n( "Valorie Zimmerman" ), KLocalizedString(), "valorie.zimmerman@gmail.com" ) );
     //Last update: 4/12/2010
 
     KCmdLineArgs::reset();
