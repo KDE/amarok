@@ -87,11 +87,6 @@ class TabsEngine : public DataEngine
         void queryFretplay( const QString &artist, const QString &title );
 
         /**
-         * available tab sites
-         */
-        enum Source { UltimateGuitar, FretPlay };
-
-        /**
          * The currently playing track
          */
         Meta::TrackPtr m_currentTrack;
@@ -109,9 +104,9 @@ class TabsEngine : public DataEngine
         QList < TabsInfo * > m_tabs;
 
         /**
-         * Hashtable containing the currently active jobs
+         * Set containing urls of active jobs
          */
-        QHash < const KUrl, Source > m_urls;
+        QSet < const KUrl > m_urls;
 
         /**
          * Controls whether guitar-tabs will be fetched

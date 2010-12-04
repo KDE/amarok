@@ -256,7 +256,7 @@ TabsEngine::queryUltimateGuitar( const QString &artist, const QString &title )
 
     The::networkAccessManager()->getData( ultimateGuitarUrl, this,
         SLOT( resultUltimateGuitarSearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
-    m_urls.insert( ultimateGuitarUrl, UltimateGuitar );
+    m_urls.insert( ultimateGuitarUrl );
 }
 
 /**
@@ -295,7 +295,7 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
                 const KUrl tabFetchUrl = KUrl( tabUrl );
                 The::networkAccessManager()->getData( tabFetchUrl, this,
                     SLOT( resultUltimateGuitarTab( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
-                m_urls.insert( tabFetchUrl, UltimateGuitar );
+                m_urls.insert( tabFetchUrl );
             }
         }
     }
@@ -376,7 +376,7 @@ TabsEngine::queryFretplay( const QString &artist, const QString &title )
 
     The::networkAccessManager()->getData( fretplayUrl, this,
         SLOT( resultFretplaySearch( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
-    m_urls.insert( fretplayUrl, FretPlay );
+    m_urls.insert( fretplayUrl );
 }
 
 /**
@@ -417,7 +417,7 @@ TabsEngine::resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAcces
                     // Query fretplay.com for the specific tab using the url found in the results
                     The::networkAccessManager()->getData( tabFetchUrl, this,
                         SLOT( resultFretplayTab( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
-                    m_urls.insert( tabFetchUrl, FretPlay );
+                    m_urls.insert( tabFetchUrl );
                 }
             }
         }
