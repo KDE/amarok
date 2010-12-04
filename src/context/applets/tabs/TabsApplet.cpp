@@ -90,8 +90,9 @@ TabsApplet::init()
     m_tabsView = new TabsView( this );
 
     // Set the collapse size
-    m_headerHeight = m_titleLabel.data()->size().height() + 2 * ( 4 + QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) ) + 3;
-    setCollapseHeight( m_headerHeight );
+    qreal headerHeight = m_titleLabel.data()->size().height()
+            + 2 * QApplication::style()->pixelMetric( QStyle::PM_LayoutTopMargin ) + 6;
+    setCollapseHeight( headerHeight );
     setMinimumHeight( collapseHeight() );
     setPreferredHeight( collapseHeight() );
 

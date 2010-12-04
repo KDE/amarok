@@ -117,8 +117,6 @@ class TabsApplet : public Context::Applet
         QWeakPointer<TextScrollingWidget> m_titleLabel;
         QWeakPointer<Plasma::IconWidget>  m_reloadIcon;
 
-        qreal m_headerHeight;
-
         bool m_fetchGuitar;
         bool m_fetchBass;
 
