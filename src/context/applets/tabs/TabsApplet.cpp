@@ -264,7 +264,7 @@ TabsApplet::updateInterface( const AppletState appletState )
 
     debug() << "updating interface from state " << m_currentState << " to " << appletState;
     m_currentState = appletState;
-    bool collapse = true;
+    bool collapse = false;
 
     switch( m_currentState )
     {
@@ -273,11 +273,13 @@ TabsApplet::updateInterface( const AppletState appletState )
             m_reloadIcon.data()->setEnabled( false );
             m_showInfoLabel = false;
             m_showTabBrowser = false;
+            collapse = true;
             break;
         case NoTabsState:
             m_reloadIcon.data()->setEnabled( true );
             m_showInfoLabel = true;
             m_showTabBrowser = false;
+            collapse = true;
             break;
         case MsgState:
             m_reloadIcon.data()->setEnabled( true );
@@ -293,7 +295,6 @@ TabsApplet::updateInterface( const AppletState appletState )
             m_reloadIcon.data()->setEnabled( true );
             m_showInfoLabel = false;
             m_showTabBrowser = true;
-            collapse = false;
             break;
     }
 
