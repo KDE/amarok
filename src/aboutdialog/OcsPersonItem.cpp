@@ -176,8 +176,9 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
     {
         m_aboutText.append( "<br/>" );
         if( !ocsPerson.city().isEmpty() )
-            m_aboutText.append( QString( ocsPerson.city() + ", " ) );
-        m_aboutText.append( QString( ocsPerson.country() ) );
+            m_aboutText.append( i18nc( "A person's location: City, Country", "%1, %2", ocsPerson.city(), ocsPerson.country() ) );
+        else
+            m_aboutText.append( ocsPerson.country() );
     }
 
     if( m_status == Author )
