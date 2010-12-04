@@ -146,6 +146,7 @@ Context::VerticalAppletLayout::moveApplet( Plasma::Applet* applet, int oldLoc, i
     QGraphicsLayoutItem *item = m_layout->itemAt( oldLoc );
     m_layout->removeAt( oldLoc );
     m_layout->insertItem( newLoc, item );
+    showApplet( applet );
 }
 
 void
@@ -162,6 +163,7 @@ Context::VerticalAppletLayout::appletRemoved( Plasma::Applet* app )
     debug() << "got " << m_appletList.size() << " applets left";
     if( m_appletList.size() == 0 )
         emit noApplets( true );
+    refresh();
 }
 
 void
