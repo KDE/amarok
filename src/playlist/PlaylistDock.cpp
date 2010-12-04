@@ -276,7 +276,7 @@ Playlist::Dock::slotEditQueue()
         return;
     }
     m_playlistQueueEditor = new PlaylistQueueEditor;
-    m_playlistQueueEditor.data()->setAttribute( Qt::WA_DeleteOnClose) ;
+    m_playlistQueueEditor.data()->setAttribute( Qt::WA_DeleteOnClose );
     m_playlistQueueEditor.data()->show();
 }
 
