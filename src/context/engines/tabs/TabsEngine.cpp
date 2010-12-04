@@ -40,6 +40,7 @@ TabsEngine::TabsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
         , m_fetchGuitar( true )
         , m_fetchBass( true )
+        , m_numAbortedUrls( 0 )
 {
     EngineController *engine = The::engineController();
     connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
@@ -212,6 +213,7 @@ TabsEngine::requestTab( const QString &artist, const QString &title )
         delete tab;
     m_tabs.clear();
     m_urls.clear();
+    m_numAbortedUrls = 0;
     removeAllData( "tabs" );
 
     m_artistName = artist;
@@ -270,13 +272,9 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
         return;
     m_urls.remove( url );
 
-    // an error occurred during the HTTP-request
-    if( e.code != QNetworkReply::NoError )
-    {
-        debug() << "Unable to search for tab on UltimateGuitar.com: " << e.description;
-        resultFinalize();
+    // check if an error occurred during the HTTP-request
+    if( netReplyError( e ) )
         return;
-    }
 
     // get and parse the result
     const QString result( data );
@@ -313,13 +311,9 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
         return;
     m_urls.remove( url );
 
-    // an error occurred during the HTTP-request
-    if( e.code != QNetworkReply::NoError )
-    {
-        debug() << "Unable to retrieve Ultimate Guitar information: " << e.description;
-        resultFinalize();
+    // check if an error occurred during the HTTP-request
+    if( netReplyError( e ) )
         return;
-    }
 
     // TODO: is this valid in all cases?
     // without fromLatin1, umlauts in german tabs are not displayed correctly
@@ -390,13 +384,9 @@ TabsEngine::resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAcces
         return;
     m_urls.remove( url );
 
-    // an error occurred during the HTTP-request
-    if( e.code != QNetworkReply::NoError )
-    {
-        debug() << "Unable to search for tab on fretplay.com: " << e.description;
-        resultFinalize();
+    // check if an error occurred during the HTTP-request
+    if( netReplyError( e ) )
         return;
-    }
 
     // get and parse the result, we searched for song name, so filter out the artist
     const QString result( data );
@@ -436,13 +426,9 @@ TabsEngine::resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessMa
         return;
     m_urls.remove( url );
 
-    // an error occurred during the HTTP-request
-    if( e.code != QNetworkReply::NoError )
-    {
-        debug() << "Unable to retrieve fretplay information: " << e.description;
-        resultFinalize();
+    // check if an error occurred during the HTTP-request
+    if( netReplyError( e ) )
         return;
-    }
 
     // TODO: is this valid in all cases?
     // without fromLatin1, umlauts in german tabs are not displayed correctly
@@ -491,11 +477,16 @@ TabsEngine::resultFinalize()
     if( m_urls.count() > 0 )
         return;
 
-    // reset the fetching state
+    // remove fetching state
     removeData( "tabs", "state" );
 
     debug() << "Total # of fetched tabs: " << m_tabs.size();
-    if( m_tabs.size() == 0 )
+    if( m_numAbortedUrls > 0 )
+    {
+        setData( "tabs", "state", "FetchError" );
+        return;
+    }
+    else if( m_tabs.size() == 0 )
     {
         setData( "tabs", "state", "noTabs" );
         return;
@@ -605,6 +596,29 @@ TabsEngine::defineTitleSearchCriteria( const QString &title )
         titles << searchTitle.remove( regex );
 
     return titles;
+}
+
+/**
+ * checks if a tab-fetch job aborted with an error
+ * returns true in case of error, false otherwise
+ */
+bool
+TabsEngine::netReplyError( NetworkAccessManagerProxy::Error e )
+{
+    // check the access manager network replay
+    if( e.code == QNetworkReply::NoError )
+    {
+        // at least one job successful, clear list of aborted urls
+        m_numAbortedUrls = 0;
+        return false;
+    }
+    else
+    {
+        // store url, list gets checked in resultFinalize
+        m_numAbortedUrls++;
+        resultFinalize();
+        return true;
+    }
 }
 
 #include "TabsEngine.moc"

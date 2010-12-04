@@ -207,6 +207,12 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
         updateInterface( NoTabsState );
         return;
     }
+    else if( data.contains( "state" ) && state.contains( "FetchError") )
+    {
+        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs: Fetch Error" ) );
+        updateInterface( NoTabsState );
+        return;
+    }
 
     // getting the tab-data from the engine
     bool tabFound = false;

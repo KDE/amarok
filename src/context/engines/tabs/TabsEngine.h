@@ -132,6 +132,13 @@ class TabsEngine : public DataEngine
          * returns a list of possible search criteria for the current title
          */
         QStringList defineTitleSearchCriteria( const QString &title );
+
+        /**
+         * checks if a tab-fetch job aborted with an error
+         * returns true in case of error, false otherwise
+         */
+        bool netReplyError( NetworkAccessManagerProxy::Error e );
+        int m_numAbortedUrls;
 };
 
 Q_DECLARE_METATYPE ( TabsInfo * )
