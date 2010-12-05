@@ -113,7 +113,7 @@ X-KDE-Library=amarok_collection-upnpcollection
 
 X-KDE-Amarok-authors=Nikhil Marathe
 X-KDE-Amarok-email=nsm.nikhil@gmail.com
-X-KDE-Amarok-framework-version=58
+X-KDE-Amarok-framework-version=59
 X-KDE-Amarok-name=upnp-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
