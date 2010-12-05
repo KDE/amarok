@@ -27,7 +27,6 @@
 #include <QWeakPointer>
 
 class LabelGraphicsItem;
-class TextScrollingWidget;
 class KComboBox;
 class QGraphicsProxyWidget;
 
@@ -62,7 +61,6 @@ private:
     QWeakPointer<Plasma::IconWidget>   m_reloadIcon;
     QWeakPointer<Plasma::IconWidget>   m_settingsIcon;
     QString                            m_titleText;
-    QWeakPointer<TextScrollingWidget>  m_titleLabel;
     QWeakPointer<QGraphicsProxyWidget> m_addLabelProxy;
     QWeakPointer<KComboBox>            m_addLabel;
 

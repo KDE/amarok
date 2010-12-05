@@ -23,9 +23,9 @@
 
 #include "App.h"
 #include "amarokurls/AmarokUrl.h"
-#include "context/widgets/TextScrollingWidget.h"
-#include "core/support/Debug.h"
+#include "context/widgets/AppletHeader.h"
 #include "core/capabilities/UpdateCapability.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "Theme.h"
 
@@ -83,15 +83,11 @@ LabelsApplet::init()
     setZValue( zValue() + 100 );
 
     // Create the title label
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_titleLabel = new TextScrollingWidget( this );
-    m_titleLabel.data()->setFont( labelFont );
-    m_titleLabel.data()->setDrawBackground( true );
-    m_titleText = i18n( "Labels" );
+    enableHeader( true );
+    setHeaderText( i18n( "Labels" ) );
 
     // Set the collapse size
-    setCollapseHeight( m_titleLabel.data()->size().height() + 2 * ( 4 + QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) ) + 3 );
+    setCollapseHeight( m_header->height() );
 
     // reload icon
     QAction *reloadAction = new QAction( this );
@@ -99,7 +95,7 @@ LabelsApplet::init()
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );
     reloadAction->setText( i18n( "Reload" ) );
-    m_reloadIcon = addAction( reloadAction );
+    m_reloadIcon = addLeftHeaderAction( reloadAction );
     m_reloadIcon.data()->setEnabled( false );
     connect( m_reloadIcon.data(), SIGNAL( clicked() ), this, SLOT( reload() ) );
 
@@ -109,17 +105,11 @@ LabelsApplet::init()
     settingsAction->setVisible( true );
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
-    m_settingsIcon = addAction( settingsAction );
+    m_settingsIcon = addRightHeaderAction( settingsAction );
     connect( m_settingsIcon.data(), SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
 
-    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout;
-    headerLayout->addItem( m_reloadIcon.data() );
-    headerLayout->addItem( m_titleLabel.data() );
-    headerLayout->addItem( m_settingsIcon.data() );
-    headerLayout->setContentsMargins( 0, 4, 0, 2 );
-
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
-    layout->addItem( headerLayout );
+    layout->addItem( m_header );
 
     m_addLabelProxy = new QGraphicsProxyWidget( this );
     m_addLabelProxy.data()->setAttribute( Qt::WA_NoSystemBackground );
@@ -384,17 +374,16 @@ void
 LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Context::Applet::constraintsEvent( constraints );
-
     prepareGeometryChange();
 
-    m_titleLabel.data()->setScrollingText( m_titleText );
+    setHeaderText( m_titleText );
 
     if( !m_stoppedstate )
     {
         const qreal horzontalPadding = standardPadding() / 2;
         const qreal verticalPadding = standardPadding() / 2;
         qreal x_pos;
-        qreal y_pos = m_titleLabel.data()->pos().y() + m_titleLabel.data()->boundingRect().height() + standardPadding();
+        qreal y_pos = m_header->boundingRect().bottom() + standardPadding();
         qreal width = 0;
         qreal height = 0;
         int start_index = 0;

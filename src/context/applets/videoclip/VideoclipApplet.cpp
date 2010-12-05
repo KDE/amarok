@@ -33,7 +33,7 @@
 #include "context/widgets/RatingWidget.h"
 #include "playlist/PlaylistModelStack.h"
 #include "SvgHandler.h"
-#include "widgets/TextScrollingWidget.h"
+#include "widgets/AppletHeader.h"
 
 // KDE
 #include <KColorScheme>
@@ -97,29 +97,21 @@ VideoclipApplet::init()
     m_pixDailymotion = QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-dailymotion.png" ) );
     m_pixVimeo = QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-vimeo.png" ) );
 
+    // Create label
+    enableHeader( true );
+    setHeaderText( i18n( "Video Clip" ) );
+
     QAction* langAction = new QAction( this );
     langAction->setIcon( KIcon( "preferences-system" ) );
     langAction->setVisible( true );
     langAction->setEnabled( true );
     langAction->setText( i18n( "Settings" ) );
-    m_settingsIcon = addAction( langAction );
+    m_settingsIcon = addRightHeaderAction( langAction );
     connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
-
-    // Create label
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_headerText = new TextScrollingWidget( this );
-    m_headerText->setFont( labelFont );
-    m_headerText->setText( i18n( "Video Clip" ) );
-    m_headerText->setDrawBackground( true );
-    m_headerText->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-
-    m_headerHeight = m_headerText->size().height()
-        + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6;
 
     // Set the collapse size
     setCollapseOffHeight( 300 );
-    setCollapseHeight( m_headerHeight );
+    setCollapseHeight( m_header->height() );
     setMinimumHeight( collapseHeight() );
     setPreferredHeight( collapseHeight() );
     setMaximumHeight( 300 );
@@ -138,14 +130,8 @@ VideoclipApplet::init()
     m_scroll->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     m_scroll->setWidget( scrollContent );
 
-    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout;
-    headerLayout->addItem( m_headerText );
-    headerLayout->addItem( m_settingsIcon );
-    headerLayout->setContentsMargins( 0, 4, 0, 2 );
-    headerLayout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-
     m_layout = new QGraphicsLinearLayout( Qt::Vertical, this );
-    m_layout->addItem( headerLayout );
+    m_layout->addItem( m_header );
     m_layout->addItem( m_scroll );
     m_layout->setAlignment( m_scroll, Qt::AlignHCenter );
     m_layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -281,8 +267,8 @@ VideoclipApplet::stopped()
     debug() << "Hide VideoWidget";
     m_videoWidget.data()->hide();
     m_layout->removeItem( m_scroll );
-    setMinimumHeight( m_headerHeight );
-    setMaximumHeight( m_headerHeight );
+    setMinimumHeight( m_header->height() );
+    setMaximumHeight( m_header->height() );
     setCollapseOn();
 }
 
@@ -290,7 +276,7 @@ void
 VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Context::Applet::constraintsEvent( constraints );
-    m_headerText->setScrollingText( i18n( "Video Clip" ) );
+    setHeaderText( i18n( "Video Clip" ) );
 }
 
 void
@@ -325,7 +311,7 @@ VideoclipApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Dat
         // if we get a message, show it
         if( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
         {
-            m_headerText->setScrollingText( i18n( "Video Clip" ) );
+            setHeaderText( i18n( "Video Clip: Fetching" ) );
             updateConstraints();
             update();
             debug() <<" message fetching ";
@@ -334,17 +320,17 @@ VideoclipApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Dat
         else if( data.contains( "message" ) )
         {
             //if nothing found, we collapse and inform user
-            m_headerText->setScrollingText( i18n( "Video Clip " ) + ':' + i18n( " No information found..." ) );
+            setHeaderText( i18n( "Video Clip: No information found" ) );
             update();
             setBusy( false );
             m_scroll->hide();
-            setMinimumHeight( m_headerHeight );
-            setMaximumHeight( m_headerHeight );
+            setMinimumHeight( m_header->height() );
+            setMaximumHeight( m_header->height() );
             setCollapseOn();
         }
         else if ( data.contains( "item:0" ) )
         {
-            m_headerText->setScrollingText( i18n( "Video Clip" ) );
+            setHeaderText( i18n( "Video Clip" ) );
             setMinimumHeight( 300 );
             setMaximumHeight( 300 );
             setCollapseOff();

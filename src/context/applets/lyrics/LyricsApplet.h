@@ -35,8 +35,6 @@ public:
 
     bool hasHeightForWidth() const;
 
-    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-    
 public slots:
     virtual void init();
     void connectSource( const QString& source );

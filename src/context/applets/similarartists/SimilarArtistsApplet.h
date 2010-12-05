@@ -29,7 +29,6 @@
 
 #include <QStack>
 
-class TextScrollingWidget;
 class KConfigDialog;
 class QGraphicsLinearLayout;
 
@@ -62,11 +61,6 @@ public:
      * SimilarArtistsApplet destructor
      */
     ~SimilarArtistsApplet();
-
-    /**
-     * This method puts the widgets in the layout, in the initialization
-     */
-    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
@@ -110,11 +104,6 @@ private:
      * Artist which you want to see artists like
      */
     QString m_artist;
-
-    /**
-     * Title of the applet (in the top bar)
-     */
-    TextScrollingWidget *m_headerLabel;
 
     QStack<QString> m_historyBack;
     QStack<QString> m_historyForward;

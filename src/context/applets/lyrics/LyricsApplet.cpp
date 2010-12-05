@@ -21,7 +21,7 @@
 
 #include "EngineController.h"
 #include "PaletteHandler.h"
-#include "context/widgets/TextScrollingWidget.h"
+#include "context/widgets/AppletHeader.h"
 #include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
@@ -50,8 +50,7 @@ class LyricsAppletPrivate
 {
 public:
     LyricsAppletPrivate( LyricsApplet *parent )
-        : titleLabel( 0 )
-        , saveIcon( 0 )
+        : saveIcon( 0 )
         , editIcon( 0 )
         , reloadIcon( 0 )
         , closeIcon( 0 )
@@ -87,10 +86,6 @@ public:
     void _lyricsChangedMessageButtonPressed( const MessageButton );
     void _refetchMessageButtonPressed( const MessageButton );
 
-    // data / widgets
-    TextScrollingWidget *titleLabel;
-
-    QGraphicsLinearLayout *headerLayout;
     Plasma::IconWidget *saveIcon;
     Plasma::IconWidget *editIcon;
     Plasma::IconWidget *reloadIcon;
@@ -131,35 +126,9 @@ LyricsAppletPrivate::determineActionIconsState()
     bool isEditing = !browser->nativeWidget()->isReadOnly();
 
     editIcon->action()->setEnabled( !isEditing );
-    editIcon->action()->setVisible( !isEditing );
-
     closeIcon->action()->setEnabled( showBrowser & isEditing );
-    closeIcon->action()->setVisible( showBrowser & isEditing );
-
     saveIcon->action()->setEnabled( showBrowser & isEditing );
-    saveIcon->action()->setVisible( showBrowser & isEditing );
-
     reloadIcon->action()->setEnabled( !isEditing );
-    reloadIcon->action()->setVisible( !isEditing );
-
-    // remove all header widgets and add back below
-    int count = headerLayout->count();
-    while( --count >= 0 )
-    {
-        QGraphicsLayoutItem *child = headerLayout->itemAt( 0 );
-        headerLayout->removeItem( child );
-    }
-
-    QList<QGraphicsWidget*> widgets; // preserve widget order
-    widgets << titleLabel;
-    if( saveIcon->action()->isVisible() )   widgets << saveIcon;
-    if( editIcon->action()->isVisible() )   widgets << editIcon;
-    if( reloadIcon->action()->isVisible() ) widgets << reloadIcon;
-    if( closeIcon->action()->isVisible() )  widgets << closeIcon;
-    widgets << settingsIcon;
-    QList<QGraphicsWidget*>::const_iterator it, itEnd;
-    for( it = widgets.constBegin(), itEnd = widgets.constEnd(); it != itEnd; ++it  )
-        headerLayout->addItem( *it );
 }
 
 void
@@ -428,74 +397,48 @@ LyricsApplet::init()
     // Call the base implementation.
     Context::Applet::init();
 
-    d->titleLabel = new TextScrollingWidget( this );
-    QFont bigger = d->titleLabel->font();
-    bigger.setPointSize( bigger.pointSize() + 2 );
-    d->titleLabel->setFont( bigger );
-    d->titleLabel->setText( i18n( "Lyrics" ) );
-    d->titleLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
-    d->titleLabel->setDrawBackground( true );
+    enableHeader( true );
+    setHeaderText( i18n( "Lyrics" ) );
 
     setCollapseOffHeight( -1 );
-    setCollapseHeight( d->titleLabel->size().height()
-                       + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
+    setCollapseHeight( m_header->height() );
     setMinimumHeight( collapseHeight() );
     setPreferredHeight( collapseHeight() );
 
     QAction* editAction = new QAction( this );
     editAction->setIcon( KIcon( "document-edit" ) );
-    editAction->setVisible( true );
     editAction->setEnabled( false );
     editAction->setText( i18n( "Edit Lyrics" ) );
-    d->editIcon = addAction( editAction );
-
+    d->editIcon = addLeftHeaderAction( editAction );
     connect( d->editIcon, SIGNAL(clicked()), this, SLOT(_editLyrics()) );
+
+    QAction* reloadAction = new QAction( this );
+    reloadAction->setIcon( KIcon( "view-refresh" ) );
+    reloadAction->setEnabled( true );
+    reloadAction->setText( i18n( "Reload Lyrics" ) );
+    d->reloadIcon = addLeftHeaderAction( reloadAction );
+    connect( d->reloadIcon, SIGNAL(clicked()), this, SLOT(refreshLyrics()) );
 
     QAction* closeAction = new QAction( this );
     closeAction->setIcon( KIcon( "document-close" ) );
-    closeAction->setVisible( false );
     closeAction->setEnabled( false );
     closeAction->setText( i18n( "Close" ) );
-    d->closeIcon = addAction( closeAction );
-
+    d->closeIcon = addRightHeaderAction( closeAction );
     connect( d->closeIcon, SIGNAL(clicked()), this, SLOT(_closeLyrics()) );
 
     QAction* saveAction = new QAction( this );
     saveAction->setIcon( KIcon( "document-save" ) );
-    saveAction->setVisible( false );
     saveAction->setEnabled( false );
     saveAction->setText( i18n( "Save Lyrics" ) );
-    d->saveIcon = addAction( saveAction );
-
+    d->saveIcon = addRightHeaderAction( saveAction );
     connect( d->saveIcon, SIGNAL(clicked()), this, SLOT(_saveLyrics()) );
-
-    QAction* reloadAction = new QAction( this );
-    reloadAction->setIcon( KIcon( "view-refresh" ) );
-    reloadAction->setVisible( true );
-    reloadAction->setEnabled( true );
-    reloadAction->setText( i18n( "Reload Lyrics" ) );
-    d->reloadIcon = addAction( reloadAction );
-
-    connect( d->reloadIcon, SIGNAL(clicked()), this, SLOT(refreshLyrics()) );
 
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
-    settingsAction->setVisible( true );
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
-    d->settingsIcon = addAction( settingsAction );
-
+    d->settingsIcon = addRightHeaderAction( settingsAction );
     connect( d->settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
-
-    d->headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
-    d->headerLayout->addItem( d->titleLabel );
-    d->headerLayout->addItem( d->saveIcon );
-    d->headerLayout->addItem( d->editIcon );
-    d->headerLayout->addItem( d->reloadIcon );
-    d->headerLayout->addItem( d->closeIcon );
-    d->headerLayout->addItem( d->settingsIcon );
-    d->headerLayout->setContentsMargins( 0, 4, 0, 2 );
-    d->headerLayout->setMinimumWidth( 0 );
 
     d->browser = new Plasma::TextBrowser( this );
     KTextBrowser *browserWidget = d->browser->nativeWidget();
@@ -525,7 +468,7 @@ LyricsApplet::init()
     d->suggestView->hide();
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
-    layout->addItem( d->headerLayout );
+    layout->addItem( m_header );
     layout->addItem( d->browser );
     setLayout( layout );
 
@@ -563,15 +506,6 @@ LyricsApplet::connectSource( const QString& source )
         dataEngine( "amarok-lyrics" )->connectSource( source, this );
         dataUpdated( source, dataEngine("amarok-lyrics" )->query( "suggested" ) );
     }
-}
-
-void
-LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
-{
-    Q_D( LyricsApplet );
-    Context::Applet::constraintsEvent( constraints );
-    d->titleLabel->setScrollingText( d->titleLabel->text() );
-    update();
 }
 
 void
@@ -650,7 +584,7 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         return;
     }
 
-    d->titleLabel->setScrollingText( titleText );
+    setHeaderText( titleText );
 
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( layout() );
     d->showSuggestions ? lo->insertItem( 1, d->suggestView ) : lo->removeItem( d->suggestView );

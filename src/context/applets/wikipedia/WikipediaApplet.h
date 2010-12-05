@@ -26,7 +26,6 @@ class QAction;
 class KDialog;
 class KConfigDialog;
 class QListWidgetItem;
-class TextScrollingWidget;
 class WikipediaAppletPrivate;
 
 namespace Plasma

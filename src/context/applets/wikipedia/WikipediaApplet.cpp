@@ -21,11 +21,11 @@
 #include "WikipediaApplet_p.h"
 #include "WikipediaApplet_p.moc"
 
-#include "core/support/Amarok.h"
 #include "App.h"
+#include "core/support/Amarok.h"
+#include "context/widgets/AppletHeader.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
-#include "widgets/TextScrollingWidget.h"
 
 #include <KConfigDialog>
 #include <KGlobalSettings>
@@ -139,7 +139,8 @@ WikipediaAppletPrivate::updateNavigationIcons()
 void
 WikipediaAppletPrivate::_titleChanged( const QString &title )
 {
-    wikipediaLabel->setScrollingText( title );
+    Q_Q( WikipediaApplet );
+    q->setHeaderText( title );
 }
 
 void
@@ -467,8 +468,6 @@ WikipediaAppletPrivate::_pageLoadStarted()
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( q->layout() );
     lo->addItem( proxy );
     lo->activate();
-    q->setCollapseHeight( q->collapseHeight() + proxy->size().height() );
-    emit q->sizeHintChanged( Qt::PreferredSize );
     QObject::connect( webView, SIGNAL(loadProgress(int)), q, SLOT(_pageLoadProgress(int)) );
 }
 
@@ -493,9 +492,6 @@ WikipediaAppletPrivate::_pageLoadFinished( bool ok )
     QGraphicsProxyWidget *proxy = static_cast<QGraphicsProxyWidget*>( lo->itemAt( lo->count() - 1 ) );
     lo->removeItem( proxy );
     lo->activate();
-    q->setCollapseHeight( wikipediaLabel->size().height()
-                          + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
-    emit q->sizeHintChanged( Qt::PreferredSize );
     proxy->deleteLater();
 }
 
@@ -525,7 +521,6 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     , d_ptr( new WikipediaAppletPrivate( this ) )
 {
     setHasConfigurationInterface( true );
-    setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
 WikipediaApplet::~WikipediaApplet()
@@ -545,7 +540,6 @@ WikipediaApplet::init()
 
     Q_D( WikipediaApplet );
 
-    d->wikipediaLabel = new TextScrollingWidget( this );
     d->webView = new WikipediaWebView( this );
     d->webView->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     d->webView->page()->mainFrame()->addToJavaScriptWindowObject( "mWebPage", this );
@@ -567,15 +561,11 @@ WikipediaApplet::init()
     connect( d->webView->lineEdit(), SIGNAL(returnPressed()), SLOT(_searchLineEditReturnPressed()) );
     connect( d->webView, SIGNAL(titleChanged(QString)), this, SLOT(_titleChanged(QString)) );
 
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
-    d->wikipediaLabel->setFont( labelFont );
-    d->wikipediaLabel->setText( i18n( "Wikipedia" ) );
-    d->wikipediaLabel->setDrawBackground( true );
+    enableHeader( true );
+    setHeaderText( i18n( "Wikipedia" ) );
 
     setCollapseOffHeight( -1 );
-    setCollapseHeight( d->wikipediaLabel->size().height()
-                       + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
+    setCollapseHeight( m_header->height() );
     setMinimumHeight( collapseHeight() );
     setPreferredHeight( collapseHeight() );
 
@@ -583,60 +573,49 @@ WikipediaApplet::init()
     backwardAction->setIcon( KIcon( "go-previous" ) );
     backwardAction->setEnabled( false );
     backwardAction->setText( i18n( "Back" ) );
-    d->backwardIcon = addAction( backwardAction );
+    d->backwardIcon = addLeftHeaderAction( backwardAction );
     connect( d->backwardIcon, SIGNAL(clicked()), this, SLOT(_goBackward()) );
 
     QAction* forwardAction = new QAction( this );
     forwardAction->setIcon( KIcon( "go-next" ) );
     forwardAction->setEnabled( false );
     forwardAction->setText( i18n( "Forward" ) );
-    d->forwardIcon = addAction( forwardAction );
+    d->forwardIcon = addLeftHeaderAction( forwardAction );
     connect( d->forwardIcon, SIGNAL(clicked()), this, SLOT(_goForward()) );
+
+    QAction* reloadAction = new QAction( this );
+    reloadAction->setIcon( KIcon( "view-refresh" ) );
+    reloadAction->setText( i18n( "Reload" ) );
+    d->reloadIcon = addLeftHeaderAction( reloadAction );
+    connect( d->reloadIcon, SIGNAL(clicked()), this, SLOT(_reloadWikipedia()) );
 
     QAction* artistAction = new QAction( this );
     artistAction->setIcon( KIcon( "filename-artist-amarok" ) );
     artistAction->setText( i18n( "Artist" ) );
-    d->artistIcon = addAction( artistAction );
+    d->artistIcon = addRightHeaderAction( artistAction );
     connect( d->artistIcon, SIGNAL(clicked()), this, SLOT(_gotoArtist()) );
 
     QAction* albumAction = new QAction( this );
     albumAction->setIcon( KIcon( "filename-album-amarok" ) );
     albumAction->setText( i18n( "Album" ) );
-    d->albumIcon = addAction( albumAction );
+    d->albumIcon = addRightHeaderAction( albumAction );
     connect( d->albumIcon, SIGNAL(clicked()), this, SLOT(_gotoAlbum()) );
 
     QAction* trackAction = new QAction( this );
     trackAction->setIcon( KIcon( "filename-title-amarok" ) );
     trackAction->setText( i18n( "Track" ) );
-    d->trackIcon = addAction( trackAction );
+    d->trackIcon = addRightHeaderAction( trackAction );
     connect( d->trackIcon, SIGNAL(clicked()), this, SLOT(_gotoTrack()) );
 
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
     settingsAction->setText( i18n( "Settings" ) );
-    d->settingsIcon = addAction( settingsAction );
+    d->settingsIcon = addRightHeaderAction( settingsAction );
     connect( d->settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
-
-    QAction* reloadAction = new QAction( this );
-    reloadAction->setIcon( KIcon( "view-refresh" ) );
-    reloadAction->setText( i18n( "Reload" ) );
-    d->reloadIcon = addAction( reloadAction );
-    connect( d->reloadIcon, SIGNAL(clicked()), this, SLOT(_reloadWikipedia()) );
-
-    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
-    headerLayout->addItem( d->backwardIcon );
-    headerLayout->addItem( d->forwardIcon );
-    headerLayout->addItem( d->reloadIcon );
-    headerLayout->addItem( d->wikipediaLabel );
-    headerLayout->addItem( d->artistIcon );
-    headerLayout->addItem( d->albumIcon );
-    headerLayout->addItem( d->trackIcon );
-    headerLayout->addItem( d->settingsIcon );
-    headerLayout->setContentsMargins( 0, 4, 0, 4 );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->setSpacing( 2 );
-    layout->addItem( headerLayout );
+    layout->addItem( m_header );
     layout->addItem( d->webView );
     setLayout( layout );
 
@@ -657,9 +636,7 @@ WikipediaApplet::init()
 void
 WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_D( WikipediaApplet );
     Context::Applet::constraintsEvent( constraints );
-    d->wikipediaLabel->setScrollingText( d->wikipediaLabel->text() );
     update();
 }
 
@@ -722,7 +699,7 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
         const QString &message = data.value( "message" ).toString();
         if( !message.isEmpty() )
         {
-            d->wikipediaLabel->setScrollingText( i18n( "Wikipedia: %1", message ) );
+            setHeaderText( i18n( "Wikipedia: %1", message ) );
             d->dataContainer->removeAllData();
         }
     }
@@ -748,7 +725,7 @@ WikipediaApplet::dataUpdated( const QString &source, const Plasma::DataEngine::D
     }
     else
     {
-        d->wikipediaLabel->setScrollingText( i18n( "Wikipedia" ) );
+        setHeaderText( i18n( "Wikipedia" ) );
     }
 }
 

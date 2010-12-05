@@ -19,6 +19,7 @@
 
 #include "Applet.h"
 
+#include "AppletHeader.h"
 #include "amarokconfig.h"
 #include "Containment.h"
 #include "ContextView.h"
@@ -45,6 +46,7 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
     , m_canAnimate( !KServiceTypeTrader::self()->query("Plasma/Animator", QString()).isEmpty() )
     , m_heightCollapseOff( 0 )
+    , m_header( 0 )
     , m_transient( 0 )
     , m_isMessageShown( false )
     , m_standardPadding( 6.0 )
@@ -94,13 +96,6 @@ Context::Applet::truncateTextToFit( const QString &text, const QFont& font, cons
 {
     QFontMetrics fm( font );
     return fm.elidedText ( text, Qt::ElideRight, (int)bounds.width() );
-}
-
-void
-Context::Applet::updateGeometry()
-{
-    Plasma::Applet::updateGeometry();
-    update();
 }
 
 void
@@ -201,6 +196,60 @@ Context::Applet::addAction( QAction *action, const int size )
     tool->setZValue( zValue() + 1 );
 
     return tool;
+}
+
+void
+Context::Applet::enableHeader( bool enable )
+{
+    if( m_header )
+    {
+        delete m_header;
+        m_header = 0;
+    }
+
+    if( enable )
+    {
+        m_header = new AppletHeader( this );
+        m_header->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    }
+}
+
+Plasma::IconWidget *
+Context::Applet::addLeftHeaderAction( QAction *action )
+{
+    if( !m_header )
+        return 0;
+
+    Plasma::IconWidget *icon = addAction( action );
+    m_header->addIcon( icon, Qt::AlignLeft );
+    return icon;
+}
+
+Plasma::IconWidget *
+Context::Applet::addRightHeaderAction( QAction *action )
+{
+    if( !m_header )
+        return 0;
+
+    Plasma::IconWidget *icon = addAction( action );
+    m_header->addIcon( icon, Qt::AlignRight );
+    return icon;
+}
+
+QString
+Context::Applet::headerText() const
+{
+    if( !m_header )
+        return QString();
+    return m_header->titleText();
+}
+
+void
+Context::Applet::setHeaderText( const QString &text )
+{
+    if( !m_header )
+        return;
+    m_header->setTitleText( text );
 }
 
 bool

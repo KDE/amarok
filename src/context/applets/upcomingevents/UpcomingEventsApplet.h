@@ -31,7 +31,6 @@ class KConfigDialog;
 class QGraphicsLinearLayout;
 class QListWidgetItem;
 class QXmlStreamReader;
-class TextScrollingWidget;
 class UpcomingEventsMapWidget;
 class UpcomingEventsStackItem;
 class UpcomingEventsStack;
@@ -121,11 +120,6 @@ public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
 private:
-    /**
-     * Title of the applet (in the top bar)
-     */
-    TextScrollingWidget *m_headerLabel;
-
     /**
      * The UI of the general settings page
      */

@@ -65,7 +65,6 @@ public:
         , settingsIcon( 0 )
         , trackIcon( 0 )
         , webView( 0 )
-        , wikipediaLabel( 0 )
         , aspectRatio( 0 )
         , isForwardHistory( false )
         , isBackwardHistory( false )
@@ -133,7 +132,6 @@ public:
     QStack<QUrl> historyForward;
     QUrl currentUrl;
     QStringList langList;
-    TextScrollingWidget *wikipediaLabel;
     Ui::wikipediaGeneralSettings generalSettingsUi;
     Ui::wikipediaLanguageSettings languageSettingsUi;
     qreal aspectRatio;

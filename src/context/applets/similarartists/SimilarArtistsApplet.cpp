@@ -28,7 +28,7 @@
 #include "context/Svg.h"
 #include "context/ContextView.h"
 #include "PaletteHandler.h"
-#include "context/widgets/TextScrollingWidget.h"
+#include "context/widgets/AppletHeader.h"
 
 //Kde
 #include <KConfigDialog>
@@ -50,11 +50,9 @@
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
         , m_scroll( 0 )
-        , m_headerLabel( 0 )
         , m_settingsIcon( 0 )
 {
     setHasConfigurationInterface( true );
-    setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
 SimilarArtistsApplet::~SimilarArtistsApplet()
@@ -69,52 +67,39 @@ SimilarArtistsApplet::init()
     // Call the base implementation.
     Context::Applet::init();
 
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_headerLabel = new TextScrollingWidget( this );
-    m_headerLabel->setFont( labelFont );
-    m_headerLabel->setText( i18n( "Similar Artists" ) );
-    m_headerLabel->setDrawBackground( true );
-
-    QAction* settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
-    settingsAction->setEnabled( true );
-    m_settingsIcon = addAction( settingsAction );
-    m_settingsIcon->setToolTip( i18n( "Settings" ) );
-    connect( m_settingsIcon, SIGNAL(clicked()), this, SLOT(configure()) );
+    enableHeader( true );
+    setHeaderText( i18n( "Similar Artists" ) );
 
     QAction* backwardAction = new QAction( this );
     backwardAction->setIcon( KIcon( "go-previous" ) );
     backwardAction->setEnabled( false );
     backwardAction->setText( i18n( "Back" ) );
-    m_backwardIcon = addAction( backwardAction );
+    m_backwardIcon = addLeftHeaderAction( backwardAction );
     connect( m_backwardIcon, SIGNAL(clicked()), this, SLOT(goBackward()) );
 
     QAction* forwardAction = new QAction( this );
     forwardAction->setIcon( KIcon( "go-next" ) );
     forwardAction->setEnabled( false );
     forwardAction->setText( i18n( "Forward" ) );
-    m_forwardIcon = addAction( forwardAction );
+    m_forwardIcon = addLeftHeaderAction( forwardAction );
     connect( m_forwardIcon, SIGNAL(clicked()), this, SLOT(goForward()) );
 
     QAction *currentAction = new QAction( this );
     currentAction->setIcon( KIcon( "filename-artist-amarok" ) );
     currentAction->setEnabled( true );
     currentAction->setText( i18n( "Show Similar Artists for Currently Playing Track" ) );
-    m_currentArtistIcon = addAction( currentAction );
+    m_currentArtistIcon = addRightHeaderAction( currentAction );
     connect( m_currentArtistIcon, SIGNAL(clicked()), this, SLOT(queryForCurrentTrack()) );
 
-    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
-    headerLayout->addItem( m_backwardIcon );
-    headerLayout->addItem( m_forwardIcon );
-    headerLayout->addItem( m_headerLabel );
-    headerLayout->addItem( m_currentArtistIcon );
-    headerLayout->addItem( m_settingsIcon );
-    headerLayout->setContentsMargins( 0, 4, 0, 2 );
+    QAction* settingsAction = new QAction( this );
+    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setEnabled( true );
+    settingsAction->setText( i18n( "Settings" ) );
+    m_settingsIcon = addRightHeaderAction( settingsAction );
+    connect( m_settingsIcon, SIGNAL(clicked()), this, SLOT(configure()) );
 
     setCollapseOffHeight( -1 );
-    setCollapseHeight( m_headerLabel->size().height()
-                       + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
+    setCollapseHeight( m_header->height() );
     setMinimumHeight( collapseHeight() );
     setPreferredHeight( collapseHeight() );
 
@@ -125,7 +110,7 @@ SimilarArtistsApplet::init()
     connect( m_scroll, SIGNAL(showBio(QString)), SLOT(showArtistBio(QString)) );
 
     m_layout = new QGraphicsLinearLayout( Qt::Vertical, this );
-    m_layout->addItem( headerLayout );
+    m_layout->addItem( m_header );
     m_layout->addItem( m_scroll );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
@@ -144,15 +129,6 @@ SimilarArtistsApplet::connectSource( const QString &source )
 {
     if( source == QLatin1String("similarArtists") )
         dataEngine( "amarok-similarArtists" )->connectSource( source, this );
-}
-
-void
-SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
-{
-    Context::Applet::constraintsEvent( constraints );
-    QString header = m_headerLabel->isEmpty() ? i18n( "Similar Artists" ) : m_headerLabel->text();
-    m_headerLabel->setScrollingText( header );
-    update();
 }
 
 void
@@ -176,7 +152,7 @@ SimilarArtistsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
         }
         else
         {
-            m_headerLabel->setScrollingText( i18n( "Similar Artists" ) );
+            setHeaderText( i18n( "Similar Artists" ) );
             m_scroll->clear();
             m_scroll->hide();
             setCollapseOn();
@@ -223,14 +199,14 @@ SimilarArtistsApplet::artistsUpdate()
 
     if( !m_similars.isEmpty() )
     {
-        m_headerLabel->setScrollingText( i18n( "Similar Artists of %1", m_artist ) );
+        setHeaderText( i18n( "Similar Artists of %1", m_artist ) );
         m_scroll->addArtists( m_similars );
         m_scroll->show();
         setCollapseOff();
     }
     else // No similar artist found
     {
-        m_headerLabel->setScrollingText( i18n( "Similar Artists: Not Found" ) );
+        setHeaderText( i18n( "Similar Artists: Not Found" ) );
         m_scroll->hide();
         setCollapseOn();
     }

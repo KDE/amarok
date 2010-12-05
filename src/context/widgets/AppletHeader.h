@@ -1,7 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
- * Copyright (c) 2008 William Viana Soares <vianasw@gmail.com>                          *
- * Copyright (c) 2009 simon.esneault <simon.esneault@gmail.com>                         *
+ * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,46 +14,54 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef ALBUMS_APPLET_H
-#define ALBUMS_APPLET_H
+#ifndef CONTEXTAPPLETHEADER_H
+#define CONTEXTAPPLETHEADER_H
 
-#include "context/Applet.h"
-#include "context/DataEngine.h"
-#include "core/meta/Meta.h"
+#include "amarok_export.h"
 
-class AlbumsView;
-namespace Collections {
-    class Collection;
+#include <QGraphicsWidget>
+
+class TextScrollingWidget;
+class QGraphicsLinearLayout;
+
+namespace Plasma {
+    class IconWidget;
 }
 
-class Albums : public Context::Applet
+namespace Context
+{
+
+class AMAROK_EXPORT AppletHeader : public QGraphicsWidget
 {
     Q_OBJECT
+    Q_PROPERTY( QString titleText READ titleText WRITE setTitleText )
+    Q_PROPERTY( qreal height READ height )
+
 public:
-    Albums( QObject* parent, const QVariantList& args );
-    ~Albums();
+    AppletHeader( QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0 );
+    ~AppletHeader();
 
-public slots:
-    virtual void init();
-    void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
+    qreal height() const;
 
-protected:
-    void createConfigurationInterface( KConfigDialog *parent );
+    QString titleText() const;
+    void setTitleText( const QString &text );
 
-private slots:
-    void collectionDataChanged( Collections::Collection *collection );
-    void saveConfiguration();
-    void setRecentCount( int val );
-    void setRightAlignLength( int state );
+    void addIcon( Plasma::IconWidget *icon, Qt::Alignment align );
+
+    TextScrollingWidget *textScrollingWidget();
 
 private:
-    int m_recentCount;
-    bool m_rightAlignLength;
-    AlbumsView *m_albumsView;
-    Meta::AlbumList m_albums;
-    Meta::TrackPtr m_currentTrack;
+    void clearDummyItems();
+
+    qreal m_height;
+    QGraphicsLinearLayout *m_mainLayout;
+    QGraphicsLinearLayout *m_leftLayout;
+    QGraphicsLinearLayout *m_rightLayout;
+    QList<QGraphicsLayoutItem*> m_dummyItems;
+    TextScrollingWidget *m_titleWidget;
+    Q_DISABLE_COPY( AppletHeader )
 };
 
-K_EXPORT_AMAROK_APPLET( albums, Albums )
+} // namespace Context
 
-#endif
+#endif // CONTEXTAPPLETHEADER_H

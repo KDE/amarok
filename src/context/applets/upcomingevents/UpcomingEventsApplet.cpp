@@ -23,7 +23,7 @@
 
 #include "amarokurls/AmarokUrl.h"
 #include "context/applets/upcomingevents/LastFmEvent.h"
-#include "context/widgets/TextScrollingWidget.h"
+#include "context/widgets/AppletHeader.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "SvgHandler.h"
@@ -45,7 +45,6 @@
 
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_headerLabel( 0 )
     , m_groupVenues( false )
     , m_stack( 0 )
 {
@@ -64,6 +63,9 @@ UpcomingEventsApplet::init()
 
     Context::Applet::init();
 
+    enableHeader( true );
+    setHeaderText( i18n( "Upcoming Events" ) );
+
     m_stack = new UpcomingEventsStack( this );
     m_stack->setContentsMargins( 0, 0, 0, 0 );
 
@@ -74,30 +76,15 @@ UpcomingEventsApplet::init()
     QAction *calendarAction = new QAction( this );
     calendarAction->setIcon( KIcon( "view-calendar" ) );
     calendarAction->setToolTip( i18n( "View Events Calendar" ) );
-    Plasma::IconWidget *calendarIcon = addAction( calendarAction );
+    Plasma::IconWidget *calendarIcon = addLeftHeaderAction( calendarAction );
     connect( calendarIcon, SIGNAL(clicked()), this, SLOT(viewCalendar()) );
 
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
     settingsAction->setToolTip( i18n( "Settings" ) );
     settingsAction->setEnabled( true );
-    Plasma::IconWidget *settingsIcon = addAction( settingsAction );
+    Plasma::IconWidget *settingsIcon = addRightHeaderAction( settingsAction );
     connect( settingsIcon, SIGNAL(clicked()), this, SLOT(configure()) );
-
-    // Use the same font as the other applets
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_headerLabel = new TextScrollingWidget( this );
-    m_headerLabel->setFont( labelFont );
-    m_headerLabel->setText( i18n( "Upcoming Events" ) );
-    m_headerLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
-    m_headerLabel->setDrawBackground( true );
-
-    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
-    headerLayout->addItem( calendarIcon );
-    headerLayout->addItem( m_headerLabel );
-    headerLayout->addItem( settingsIcon );
-    headerLayout->setContentsMargins( 0, 4, 0, 2 );
 
     m_artistStackItem = m_stack->create( QLatin1String("currentartistevents") );
     m_artistEventsList = new UpcomingEventsListWidget( m_artistStackItem );
@@ -109,7 +96,7 @@ UpcomingEventsApplet::init()
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    layout->addItem( headerLayout );
+    layout->addItem( m_header );
     layout->addItem( m_stack );
     setLayout( layout );
 
@@ -138,7 +125,7 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Context::Applet::constraintsEvent( constraints );
     prepareGeometryChange();
-    m_headerLabel->setScrollingText( i18n( "Upcoming Events" ) );
+    setHeaderText( i18n( "Upcoming Events" ) );
     update();
 }
 

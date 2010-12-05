@@ -24,7 +24,7 @@
 #include "core/support/Debug.h"
 #include "context/ContextView.h"
 #include "context/engines/photos/PhotosInfo.h"
-#include "context/widgets/TextScrollingWidget.h"
+#include "context/widgets/AppletHeader.h"
 
 // KDE
 #include <KAction>
@@ -47,7 +47,6 @@ PhotosApplet::PhotosApplet( QObject* parent, const QVariantList& args )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( true );
-    setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
 void
@@ -59,19 +58,11 @@ PhotosApplet::init()
     Context::Applet::init();
 
     // Create label
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_headerText = new TextScrollingWidget( this );
-    m_headerText->setFont( labelFont );
-    m_headerText->setText( i18n( "Photos" ) );
-    m_headerText->setDrawBackground( true );
-    m_headerText->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-
-    m_headerHeight = m_headerText->size().height()
-        + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6;
+    enableHeader( true );
+    setHeaderText( i18n( "Photos" ) );
 
     // Set the collapse size
-    setCollapseHeight( m_headerHeight );
+    setCollapseHeight( m_header->height() );
     setCollapseOffHeight( 220 );
     setMaximumHeight( 220 );
     setMinimumHeight( collapseHeight() );
@@ -83,7 +74,7 @@ PhotosApplet::init()
     settingsAction->setVisible( true );
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
-    m_settingsIcon = addAction( settingsAction );
+    m_settingsIcon = addRightHeaderAction( settingsAction );
     connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
 
     m_widget = new PhotosScrollWidget( this );
@@ -91,13 +82,8 @@ PhotosApplet::init()
     m_widget->setContentsMargins( 0, 0, 0, 0 );
     connect( m_widget, SIGNAL(photoAdded()), SLOT(photoAdded()) );
 
-    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout;
-    headerLayout->addItem( m_headerText );
-    headerLayout->addItem( m_settingsIcon );
-    headerLayout->setContentsMargins( 0, 4, 0, 2 );
-
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
-    layout->addItem( headerLayout );
+    layout->addItem( m_header );
     layout->addItem( m_widget );
 
     // Read config and inform the engine.
@@ -128,30 +114,22 @@ void
 PhotosApplet::stopped()
 {
     DEBUG_BLOCK
-    m_headerText->setScrollingText( i18n( "Photos: No track playing" ) );
+    setHeaderText( i18n( "Photos: No track playing" ) );
     m_widget->clear();
     m_widget->hide();
     setBusy( false );
-    setMinimumHeight( m_headerHeight );
-    setCollapseHeight( m_headerHeight );
+    setMinimumHeight( m_header->height() );
+    setCollapseHeight( m_header->height() );
     setCollapseOn();
     updateConstraints();
-}
-
-void
-PhotosApplet::constraintsEvent( Plasma::Constraints constraints )
-{
-    Context::Applet::constraintsEvent( constraints );
-    m_headerText->setScrollingText( m_headerText->text() );
-    update();
 }
 
 void
 PhotosApplet::photoAdded()
 {
     setBusy( false );
-    m_headerText->setScrollingText( i18nc( "@title:window Number of photos of artist", "%1 Photos: %2",
-                                           m_widget->count(), m_currentArtist ) );
+    setHeaderText( i18nc( "@title:window Number of photos of artist", "%1 Photos: %2",
+                          m_widget->count(), m_currentArtist ) );
 }
 
 void
@@ -169,9 +147,9 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         if( text.contains( QLatin1String("Fetching") ) )
         {
             debug() << "received message: Fetching";
-            m_headerText->setScrollingText( i18n( "Photos: %1", text ) );
-            setMinimumHeight( m_headerHeight );
-            setCollapseHeight( m_headerHeight );
+            setHeaderText( i18n( "Photos: %1", text ) );
+            setMinimumHeight( m_header->height() );
+            setCollapseHeight( m_header->height() );
             setCollapseOn();
             m_widget->clear();
             m_widget->hide();
@@ -186,10 +164,10 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         else
         {
             debug() << "received message:" << text;
-            m_headerText->setScrollingText( i18n( "Photos: %1", text ) );
+            setHeaderText( i18n( "Photos: %1", text ) );
             m_widget->hide();
-            setMinimumHeight( m_headerHeight );
-            setCollapseHeight( m_headerHeight );
+            setMinimumHeight( m_header->height() );
+            setCollapseHeight( m_header->height() );
             setCollapseOn();
             setBusy( false );
         }
@@ -200,12 +178,12 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         m_currentArtist = text = data["artist"].toString();
         PhotosInfo::List photos = data["data"].value< PhotosInfo::List >();
         debug() << "received data for:" << text << photos.count();
-        m_headerText->setScrollingText( i18n( "Photos: %1", text ) );
+        setHeaderText( i18n( "Photos: %1", text ) );
         if( photos.isEmpty() )
         {
             setBusy( false );
-            setMinimumHeight( m_headerHeight );
-            setCollapseHeight( m_headerHeight );
+            setMinimumHeight( m_header->height() );
+            setCollapseHeight( m_header->height() );
             setCollapseOn();
             return;
         }
@@ -218,8 +196,8 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     }
     else
     {
-        setMinimumHeight( m_headerHeight );
-        setCollapseHeight( m_headerHeight );
+        setMinimumHeight( m_header->height() );
+        setCollapseHeight( m_header->height() );
         setCollapseOn();
         m_widget->clear();
         m_widget->hide();

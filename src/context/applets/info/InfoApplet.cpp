@@ -50,7 +50,6 @@ InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
    
 {
     setHasConfigurationInterface( false );
-    setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
 InfoApplet::~InfoApplet()

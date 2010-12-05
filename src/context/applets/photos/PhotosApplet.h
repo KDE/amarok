@@ -24,7 +24,6 @@
 
 #include <ui_photosSettings.h>
 
-class TextScrollingWidget;
 class KConfigDialog;
 class PhotosScrollWidget;
 class QGraphicsSimpleTextItem;
@@ -44,8 +43,6 @@ class PhotosApplet : public Context::Applet
         PhotosApplet( QObject* parent, const QVariantList& args );
         ~PhotosApplet();
 
-        void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-
     public slots:
         virtual void init();
         void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
@@ -61,11 +58,9 @@ class PhotosApplet : public Context::Applet
         void photoAdded();
         
     private:
-        TextScrollingWidget     *m_headerText;
-        PhotosScrollWidget      *m_widget;
+        PhotosScrollWidget *m_widget;
 
-        qreal m_headerHeight;
-        int   m_nbPhotos;
+        int m_nbPhotos;
         
         QString m_currentArtist;
         QString m_Animation;

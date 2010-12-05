@@ -37,7 +37,6 @@ namespace Plasma
     class Label;
 }
 
-class TextScrollingWidget;
 class KConfigDialog;
 
 
@@ -59,19 +58,6 @@ class TabsApplet : public Context::Applet
          * TabApplet destructor
          */
         ~TabsApplet();
-
-        /**
-         * Called when any of the geometry constraints have been updated.
-         *
-         * This is always called prior to painting and should be used as an
-         * opportunity to layout the widget, calculate sizings, etc.
-         *
-         * Do not call update() from this method; an update() will be triggered
-         * at the appropriate time for the applet.
-         *
-         * \param constraints : the type of constraints that were updated
-         */
-        void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
     public slots:
 
@@ -114,7 +100,6 @@ class TabsApplet : public Context::Applet
          * Layout for the formatting of the applet contents
          */
         QGraphicsLinearLayout *m_layout;
-        QWeakPointer<TextScrollingWidget> m_titleLabel;
         QWeakPointer<Plasma::IconWidget>  m_reloadIcon;
 
         bool m_fetchGuitar;

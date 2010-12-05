@@ -119,23 +119,13 @@ void
 TextScrollingWidget::setScrollingText( const QString &text )
 {
     Q_D( TextScrollingWidget );
-
-    // reset the animation and stuff
-    QPropertyAnimation *animation = d->animation.data();
-    if( animation ) {
-        animation->stop();
-        d->animation.clear();
+    if( d->text != text )
+    {
+        QTextDocument doc;
+        doc.setHtml( text );
+        d->text = doc.toPlainText();
     }
-
     updateGeometry();
-    QFontMetricsF fm( font() );
-    int textWidth = fm.width( text );
-    d->width = size().width();
-    d->delta = textWidth > d->width ? textWidth - d->width : 0;
-    QTextDocument doc;
-    doc.setHtml( text );
-    d->text = doc.toPlainText();
-    d->textItem->setText( fm.elidedText( d->text, Qt::ElideRight, d->width ) );
 }
 
 void
@@ -193,11 +183,24 @@ void
 TextScrollingWidget::setGeometry( const QRectF &rect )
 {
     Q_D( TextScrollingWidget );
-    prepareGeometryChange();
     QGraphicsWidget::setGeometry( rect );
-    setPos( rect.topLeft() );
+
+    // reset the animation and stuff
+    QPropertyAnimation *animation = d->animation.data();
+    if( animation )
+    {
+        animation->stop();
+        animation->deleteLater();
+        d->animation.clear();
+    }
 
     QRectF textRect = mapFromParent( rect ).boundingRect();
+    QFontMetricsF fm( font() );
+    int textWidth = fm.width( d->text );
+    d->width = textRect.width();
+    d->delta = (textWidth > d->width) ? (textWidth - d->width) : 0;
+    d->textItem->setText( fm.elidedText( d->text, Qt::ElideRight, d->width ) );
+
     qreal textX( 0.0 );
     switch( d->alignment )
     {
@@ -235,7 +238,7 @@ bool
 TextScrollingWidget::isAnimating() const
 {
     Q_D( const TextScrollingWidget );
-    return ( d->animation.data() && d->animation.data()->state() == QAbstractAnimation::Running );
+    return ( d->animation && d->animation.data()->state() == QAbstractAnimation::Running );
 }
 
 qreal
@@ -249,10 +252,10 @@ void
 TextScrollingWidget::animationFinished()
 {
     Q_D( TextScrollingWidget );
-    QPropertyAnimation *animation = d->animation.data();
-    if( !animation )
+    if( !d->animation )
         return;
 
+    QPropertyAnimation *animation = d->animation.data();
     if( animation->direction() == QAbstractAnimation::Forward )
     {
         startAnimation( QAbstractAnimation::Backward );
@@ -298,7 +301,6 @@ TextScrollingWidget::startAnimation( QAbstractAnimation::Direction direction )
 void
 TextScrollingWidget::animate( qreal value )
 {
-    // DEBUG_BLOCK
     Q_D( TextScrollingWidget );
     if( d->animation.isNull() )
         return;

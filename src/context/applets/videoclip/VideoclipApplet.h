@@ -53,7 +53,6 @@ class QGraphicsLinearLayout;
 class QGraphicsSceneResizeEvent;
 
 class CustomVideoWidget;
-class TextScrollingWidget;
 class VideoItemButton;
 
 
@@ -97,7 +96,6 @@ class VideoclipApplet : public Context::Applet
         SmartPointerList<VideoItemButton> m_videoItemButtons;
 
         // The two big container, only one who need a resize
-        TextScrollingWidget     *m_headerText;
         Plasma::ScrollWidget    *m_scroll;
         QGraphicsLinearLayout   *m_scrollLayout;
         QGraphicsLinearLayout   *m_layout;
@@ -109,7 +107,6 @@ class VideoclipApplet : public Context::Applet
         Plasma::IconWidget      *m_settingsIcon;
         Ui::videoclipSettings   ui_Settings;
         bool                    m_youtubeHQ;
-        qreal                   m_headerHeight;
 };
 
 #endif /* VIDEOCLIP_APPLET_H */

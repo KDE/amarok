@@ -26,7 +26,7 @@
 #include "core/support/Debug.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "context/widgets/TextScrollingWidget.h"
+#include "context/widgets/AppletHeader.h"
 #include "TrackItem.h"
 
 #include <Plasma/IconWidget>
@@ -46,7 +46,6 @@ Albums::Albums( QObject* parent, const QVariantList& args )
     , m_albumsView( 0 )
 {
     setHasConfigurationInterface( true );
-    setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
 Albums::~Albums()
@@ -60,29 +59,19 @@ void Albums::init()
     // Call the base implementation.
     Context::Applet::init();
 
-    m_headerText = new TextScrollingWidget( this );
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_headerText->setFont( labelFont );
-    m_headerText->setText( i18n( "Recently added albums" ) );
-    m_headerText->setDrawBackground( true );
+    enableHeader( true );
+    setHeaderText( i18n( "Recently added albums" ) );
 
     setCollapseOffHeight( -1 );
-    setCollapseHeight( m_headerText->size().height()
-                       + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
+    setCollapseHeight( m_header->height() );
     setMinimumHeight( collapseHeight() );
 
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
     settingsAction->setEnabled( true );
-    Plasma::IconWidget *settingsIcon = addAction( settingsAction );
-    settingsIcon->setToolTip( i18n( "Settings" ) );
-    connect( settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
-
-    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
-    headerLayout->setContentsMargins( 0, 4, 0, 2 );
-    headerLayout->addItem( m_headerText );
-    headerLayout->addItem( settingsIcon );
+    settingsAction->setToolTip( i18n( "Settings" ) );
+    addRightHeaderAction( settingsAction );
+    connect( settingsAction, SIGNAL(triggered()), this, SLOT(showConfigurationInterface()) );
 
     m_albumsView = new AlbumsView( this );
     m_albumsView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -90,7 +79,7 @@ void Albums::init()
         m_albumsView->setLengthAlignment( Qt::AlignRight );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
-    layout->addItem( headerLayout );
+    layout->addItem( m_header );
     layout->addItem( m_albumsView );
     setLayout( layout );
 
@@ -101,13 +90,6 @@ void Albums::init()
     updateConstraints();
 }
 
-void Albums::constraintsEvent( Plasma::Constraints constraints )
-{
-    Context::Applet::constraintsEvent( constraints );
-    m_headerText->setScrollingText( m_headerText->text() );
-    update();
-}
-
 void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &data )
 {
     if( name != QLatin1String("albums") )
@@ -116,7 +98,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
     Meta::AlbumList albums = data[ "albums" ].value<Meta::AlbumList>();
     Meta::TrackPtr track = data[ "currentTrack" ].value<Meta::TrackPtr>();
     QString headerText = data[ "headerText" ].toString();
-    m_headerText->setScrollingText( headerText.isEmpty() ? i18n("Albums") : headerText );
+    setHeaderText( headerText.isEmpty() ? i18n("Albums") : headerText );
 
     //Don't keep showing the albums for the artist of the last track that had album in the collection
     if( (m_currentTrack == track) && (m_albums == albums) )

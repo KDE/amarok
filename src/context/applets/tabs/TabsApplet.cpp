@@ -23,7 +23,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "context/ContextView.h"
-#include "context/widgets/TextScrollingWidget.h"
+#include "context/widgets/AppletHeader.h"
 
 #include <KConfigDialog>
 #include <KConfigGroup>
@@ -50,7 +50,6 @@ TabsApplet::TabsApplet( QObject* parent, const QVariantList& args )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( true );
-    setBackgroundHints( Plasma::Applet::NoBackground );
 
     EngineController *engine = The::engineController();
     connect( engine, SIGNAL( stopped( qint64, qint64 ) ), this, SLOT( stopped() ) );
@@ -62,8 +61,6 @@ TabsApplet::~TabsApplet()
     delete m_tabsView;
     if( m_reloadIcon )
         delete m_reloadIcon.data();
-    if( m_titleLabel )
-        delete m_titleLabel.data();
 }
 
 /**
@@ -78,22 +75,15 @@ TabsApplet::init()
     Context::Applet::init();
 
     // create the header label
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_titleLabel = new TextScrollingWidget( this );
-    m_titleLabel.data()->setFont( labelFont );
-    m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
-    m_titleLabel.data()->setDrawBackground( true );
-    m_titleLabel.data()->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+    enableHeader( true );
+    setHeaderText( i18nc( "Guitar tablature", "Tabs" ) );
 
     // creates the tab view
     m_tabsView = new TabsView( this );
 
     // Set the collapse size
-    qreal headerHeight = m_titleLabel.data()->size().height()
-            + 2 * QApplication::style()->pixelMetric( QStyle::PM_LayoutTopMargin ) + 6;
-    setCollapseHeight( headerHeight );
     setCollapseOffHeight( -1 );
+    setCollapseHeight( m_header->height() );
     setMinimumHeight( collapseHeight() );
     setPreferredHeight( collapseHeight() );
 
@@ -103,7 +93,7 @@ TabsApplet::init()
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );
     reloadAction->setText( i18nc( "Guitar tablature", "Reload tabs" ) );
-    m_reloadIcon = addAction( reloadAction );
+    m_reloadIcon = addLeftHeaderAction( reloadAction );
     m_reloadIcon.data()->setEnabled( false );
     connect( m_reloadIcon.data(), SIGNAL( clicked() ), this, SLOT( reloadTabs() ) );
 
@@ -112,17 +102,11 @@ TabsApplet::init()
     settingsAction->setIcon( KIcon( "preferences-system" ) );
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
-    QWeakPointer<Plasma::IconWidget> settingsIcon = addAction( settingsAction );
+    QWeakPointer<Plasma::IconWidget> settingsIcon = addRightHeaderAction( settingsAction );
     connect( settingsIcon.data(), SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
 
-    QGraphicsLinearLayout *headerLayout = new QGraphicsLinearLayout( Qt::Horizontal );
-    headerLayout->addItem( m_reloadIcon.data() );
-    headerLayout->addItem( m_titleLabel.data() );
-    headerLayout->addItem( settingsIcon.data() );
-    headerLayout->setContentsMargins( 0, 4, 0, 2 );
-
     m_layout = new QGraphicsLinearLayout( Qt::Vertical );
-    m_layout->addItem( headerLayout );
+    m_layout->addItem( m_header );
     m_layout->addItem( m_tabsView );
     setLayout( m_layout );
 
@@ -154,16 +138,9 @@ TabsApplet::connectSource( const QString &source )
 }
 
 void
-TabsApplet::constraintsEvent( Plasma::Constraints constraints )
-{
-    Q_UNUSED( constraints )
-    m_titleLabel.data()->setScrollingText( m_titleLabel.data()->text() );
-}
-
-void
 TabsApplet::stopped()
 {
-    m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
+    setHeaderText( i18nc( "Guitar tablature", "Tabs" ) );
     updateInterface( StoppedState );
 }
 
@@ -180,7 +157,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
 
     if( data.empty() )
     {
-        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs" ) );
+        setHeaderText( i18nc( "Guitar tablature", "Tabs" ) );
         updateInterface( InitState );
         return;
     }
@@ -192,7 +169,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     {
         if( canAnimate() )
             setBusy( true );
-        m_titleLabel.data()->setText( i18n( "Tabs: Fetching ..." ) );
+        setHeaderText( i18n( "Tabs: Fetching ..." ) );
         updateInterface( FetchingState );
         return;
     }
@@ -204,13 +181,13 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     else if( data.contains( "state" ) && state.contains( "noTabs") )
     {
         // no tabs for the current track
-        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
+        setHeaderText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
         updateInterface( NoTabsState );
         return;
     }
     else if( data.contains( "state" ) && state.contains( "FetchError") )
     {
-        m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs: Fetch Error" ) );
+        setHeaderText( i18nc( "Guitar tablature", "Tabs: Fetch Error" ) );
         updateInterface( NoTabsState );
         return;
     }
@@ -235,7 +212,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
                     m_tabsView->showTab( tabsItem );
 
                     // update artist and title in the headerlabel
-                    m_titleLabel.data()->setText( i18nc( "Guitar tablature", "Tabs : %1 - %2", titleName, artistName ) );
+                    setHeaderText( i18nc( "Guitar tablature", "Tabs : %1 - %2", titleName, artistName ) );
                     updateInterface( TabState );
                     tabFound = true;
                 }

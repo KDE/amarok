@@ -40,11 +40,14 @@ using Plasma::MessageButton;
 namespace Context
 {
 
+class AppletHeader;
+
 class AMAROK_EXPORT Applet : public Plasma::Applet
 {
     Q_OBJECT
     Q_PROPERTY( int collapseHeight READ collapseHeight WRITE setCollapseHeight )
     Q_PROPERTY( int collapseOffHeight READ collapseOffHeight WRITE setCollapseOffHeight )
+    Q_PROPERTY( QString headerText READ headerText WRITE setHeaderText )
 
     public:
         explicit Applet( QObject* parent, const QVariantList& args = QVariantList() );
@@ -67,6 +70,39 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
           * Returns a standard CV-wide padding that applets can use for consistency.
           */
         qreal standardPadding();
+
+        /**
+         * Creates a header for showing title text and icon widgets, if enabled.
+         */
+        void enableHeader( bool enable = true );
+
+        /**
+         * Adds an action on the left of the header text. A header needs to be
+         * created by enableHeader() first.
+         * @param action Action to add
+         * @return An icon widget created for the action
+         */
+        Plasma::IconWidget *addLeftHeaderAction( QAction *action );
+
+        /**
+         * Adds an action on the right of the header text. A header needs to be
+         * created by enableHeader() first.
+         * @param action Action to add
+         * @return An icon widget created for the action
+         */
+        Plasma::IconWidget *addRightHeaderAction( QAction *action );
+
+        /**
+         * Returns the current header text. If no header exists this will return
+         * an empty string.
+         */
+        QString headerText() const;
+
+        /**
+         * Sets the text shown in the header. If no header exists this method
+         * does nothing.
+         */
+        void setHeaderText( const QString &text );
 
         /**
           * Set the preferred applet height when collapsed.
@@ -151,8 +187,6 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
          */
         void addGradientToAppletBackground( QPainter* p );
 
-        void updateGeometry();
-
         Plasma::IconWidget* addAction( QAction *action, const int size = 16 );
         bool canAnimate();
 
@@ -160,6 +194,8 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         int  m_heightCurrent;
         int  m_heightCollapseOn;
         int  m_heightCollapseOff;
+
+        AppletHeader *m_header;
 
 
     private slots:

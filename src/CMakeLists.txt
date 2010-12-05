@@ -331,6 +331,7 @@ set( libcontextview_SRCS
     context/toolbar/AppletToolbarAppletItem.cpp
     context/toolbar/AppletToolbarBase.cpp
     context/toolbar/AppletToolbarConfigItem.cpp
+    context/widgets/AppletHeader.cpp
     context/widgets/RatingWidget.cpp
     context/widgets/TextScrollingWidget.cpp
     context/widgets/DropPixmapItem.cpp
