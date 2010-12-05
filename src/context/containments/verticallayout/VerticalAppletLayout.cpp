@@ -71,7 +71,7 @@ void
 Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
 {
     DEBUG_BLOCK
-    debug() << "layout told to add applet" << applet->name() << "at" << location;
+    debug() << "layout told to add applet" << applet->pluginName() << "at" << location;
     if( m_appletList.isEmpty() )
         emit noApplets( false );
 
@@ -107,7 +107,7 @@ Context::VerticalAppletLayout::saveToConfig( KConfigGroup &conf )
         Plasma::Applet *applet = m_appletList.at(i);
         if( applet != 0 )
         {
-            debug() << "saving applet" << applet->name();
+            debug() << "saving applet" << applet->pluginName();
             plugins << applet->pluginName();
         }
         conf.writeEntry( "plugins", plugins );
@@ -124,7 +124,7 @@ Context::VerticalAppletLayout::refresh()
 void
 Context::VerticalAppletLayout::showApplet( Plasma::Applet* applet ) // SLOT
 {
-    debug() << "showing applet " << applet->name();
+    debug() << "showing applet" << applet->pluginName();
     showAtIndex( m_appletList.indexOf( applet ) );
 }
 
