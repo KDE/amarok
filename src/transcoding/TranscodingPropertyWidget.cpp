@@ -38,6 +38,7 @@ PropertyWidget::create( Property &property, QWidget * parent )
         return new PropertySliderWidget( property, parent );
     default:
         debug() << "Muy bad!";
+        return 0;
     }
 }
 
