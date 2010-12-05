@@ -139,7 +139,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
     m_currentTrack = track;
     m_albumsView->clear();
     m_albumsView->setMode( track ? AlbumsProxyModel::SortByYear : AlbumsProxyModel::SortByCreateDate );
-    AlbumItem *currentAlbum( 0 );
+    QStandardItem *currentItem( 0 );
 
     foreach( Meta::AlbumPtr albumPtr, albums )
     {
@@ -168,7 +168,10 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
             // bold the current track to make it more visible
             if( m_currentTrack == trackPtr )
+            {
+                currentItem = trackItem;
                 trackItem->bold();
+            }
 
             // If compilation and same artist, then highlight, but only if there's a current track
             if( m_currentTrack
@@ -202,17 +205,14 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
                 }
             }
         }
-
         m_albumsView->appendAlbum( albumItem );
-        if( m_currentTrack && m_currentTrack->album() == albumPtr )
-            currentAlbum = albumItem;
     }
 
     m_albumsView->sort();
-    if( currentAlbum )
+    if( currentItem )
     {
-        m_albumsView->setRecursiveExpanded( currentAlbum, true );
-        m_albumsView->scrollTo( currentAlbum );
+        m_albumsView->setRecursiveExpanded( currentItem, true );
+        m_albumsView->scrollTo( currentItem );
     }
 
     updateConstraints();

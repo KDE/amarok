@@ -166,7 +166,7 @@ void
 AlbumsView::scrollTo( QStandardItem *album )
 {
     const QModelIndex &proxyIndex = m_proxyModel->mapFromSource( album->index() );
-    m_treeView->scrollTo( proxyIndex, QAbstractItemView::PositionAtTop );
+    m_treeView->scrollTo( proxyIndex, QAbstractItemView::EnsureVisible );
 }
 
 void
