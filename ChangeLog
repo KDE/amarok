@@ -65,7 +65,7 @@ VERSION 2.4-Beta 1
       applets.
     * Improved presentation of suggested lyrics (currently only 3rd party
       scripts use).
-    * Now using QTooltip for playlist tooltips.
+    * Now using QToolTip for playlist tooltips.
     * Changed playlist delegate margins and inline editor formating.
     * Added "Added This Hour" filter preset to the collection brower widget.
     * Bumped KDE dependency to version 4.4., and Qt dependency to 4.6.
