@@ -189,6 +189,9 @@ LastFmServiceSettings::load()
     m_configDialog->kcfg_SubmitPlayedSongs->setChecked( m_config.scrobble() );
     m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( m_config.fetchSimilar() );
 
+    if( !m_config.username().isEmpty() && !m_config.password().isEmpty() )
+        m_configDialog->kcfg_SubmitPlayedSongs->setEnabled( true );
+
     KCModule::load();
 }
 
