@@ -142,6 +142,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "thomas12777", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Valentin Rouet"), ki18n("Developer"), "v.rouet@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Valorie Zimmerman"), ki18n("Rokymoter"), "valorie.zimmerman@gmail.com" );
+        ocsData.addCredit( "valoriez", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Wade Olson"), ki18n("Splash screen artist"), "wade@corefunction.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("William Viana Soares"), ki18n("Context view"), "vianasw@gmail.com" );
@@ -219,7 +221,6 @@ int main( int argc, char *argv[] )
     ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Tell" ), KLocalizedString(), "robert.tell@gmx.net" ) );
     ocsData.addDonor( "", KAboutPerson( ki18n( "Ryan Rix" ), KLocalizedString(), "phrkonaleash@gmail.com" ) );
     ocsData.addDonor( "", KAboutPerson( ki18n( "Thomas Kahle" ), KLocalizedString(), "tom111@gmx.de" ) );
-    ocsData.addDonor( "valoriez", KAboutPerson( ki18n( "Valorie Zimmerman" ), KLocalizedString(), "valorie.zimmerman@gmail.com" ) );
     //Last update: 4/12/2010
 
     KCmdLineArgs::reset();
