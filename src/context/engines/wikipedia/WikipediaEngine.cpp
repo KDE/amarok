@@ -837,6 +837,8 @@ void
 WikipediaEnginePrivate::reloadWikipedia()
 {
     Q_Q( WikipediaEngine );
+    if( !wikiCurrentUrl.isValid() )
+        return;
     urls << wikiCurrentUrl;
     q->setData( QLatin1String("wikipedia"), QLatin1String("busy"), true );
     q->scheduleSourcesUpdated();
