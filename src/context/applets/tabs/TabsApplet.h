@@ -47,33 +47,12 @@ class TabsApplet : public Context::Applet
 {
     Q_OBJECT
     public:
-        /**
-         * TabsApplet constructor
-         * @param parent The widget parent
-         * @param args   List of strings containing two entries: the service id
-         */
         TabsApplet( QObject* parent, const QVariantList& args );
-
-        /**
-         * TabApplet destructor
-         */
         ~TabsApplet();
 
     public slots:
 
-        /**
-         * \brief Initialization
-         *
-         * Initializes the TabsApplet with default parameters
-         */
         virtual void init();
-
-        /**
-         * Updates the data from the tabs engine
-         *
-         * \param name : the name
-         * \param data : the engine from where the data are received
-         */
         void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
         /**
@@ -82,17 +61,16 @@ class TabsApplet : public Context::Applet
         void saveSettings();
 
     protected:
-        void createConfigurationInterface(KConfigDialog *parent);
+        void createConfigurationInterface( KConfigDialog *parent );
 
     private slots:
-        void connectSource( const QString &source );
         void reloadTabs();
         void stopped();
 
     private:
         TabsView *m_tabsView;
 
-        enum AppletState { InitState, StoppedState, FetchingState, TabState, NoTabsState  };
+        enum AppletState { InitState, StoppedState, FetchingState, TabState, NoTabsState };
         AppletState m_currentState;
         void updateInterface( const AppletState appletState );
 

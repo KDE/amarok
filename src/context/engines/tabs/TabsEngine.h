@@ -34,13 +34,27 @@ using namespace Context;
 class TabsEngine : public DataEngine
 {
     Q_OBJECT
+    Q_PROPERTY( QString artistName READ artistName WRITE setArtistName )
+    Q_PROPERTY( QString titleName READ titleName WRITE setTitleName )
+    Q_PROPERTY( bool fetchGuitarTabs READ fetchGuitar WRITE setFetchGuitar )
+    Q_PROPERTY( bool fetchBassTabs READ fetchBass WRITE setFetchBass )
+
     public:
         TabsEngine( QObject* parent, const QList<QVariant>& args );
         virtual ~TabsEngine();
 
-        /**
-         * Returns the sources
-         */
+        QString artistName() const;
+        void setArtistName( const QString &artistName );
+
+        QString titleName() const;
+        void setTitleName( const QString &titleName );
+
+        bool fetchGuitar() const;
+        void setFetchGuitar( const bool fetch );
+
+        bool fetchBass() const;
+        void setFetchBass( const bool fetch );
+
         QStringList sources() const;
 
     protected:
@@ -92,12 +106,6 @@ class TabsEngine : public DataEngine
         Meta::TrackPtr m_currentTrack;
 
         /**
-         * Holds artist and title name of the current track
-         */
-        QString m_titleName;
-        QString m_artistName;
-
-        /**
          * Data strucuture which contains all tab-information for
          * the current song. After fetching this data will be send to the applet
          */
@@ -107,6 +115,12 @@ class TabsEngine : public DataEngine
          * Set containing urls of active jobs
          */
         QSet < const KUrl > m_urls;
+
+        /**
+         * Holds artist and title name of the current track
+         */
+        QString m_titleName;
+        QString m_artistName;
 
         /**
          * Controls whether guitar-tabs will be fetched

@@ -114,27 +114,13 @@ TabsApplet::init()
     KConfigGroup config = Amarok::config("Tabs Applet");
     m_fetchGuitar = config.readEntry( "FetchGuitar", true );
     m_fetchBass = config.readEntry( "FetchBass", true );
-    dataEngine( "amarok-tabs" )->query( QString( "tabs:fetchGuitar:" ).append( QString::number( m_fetchGuitar ) ) );
-    dataEngine( "amarok-tabs" )->query( QString( "tabs:fetchBass:" ).append( QString::number( m_fetchBass ) ) );
+
+    Plasma::DataEngine *engine = dataEngine( "amarok-tabs" );
+    engine->setProperty( "fetchGuitarTabs", m_fetchGuitar );
+    engine->setProperty( "fetchBassTabs", m_fetchBass );
+    engine->connectSource( "tabs", this );
 
     updateInterface( InitState );
-
-    // connect to the tabs data-engine
-    connectSource( "tabs" );
-    connect( dataEngine( "amarok-tabs" ), SIGNAL( sourceAdded( const QString & ) ), this, SLOT( connectSource( const QString & ) ) );
-}
-
-/**
- * Connects the source to the tabs engine and calls the dataUpdated function
- */
-void
-TabsApplet::connectSource( const QString &source )
-{
-    if( source == "tabs" )
-    {
-        dataEngine( "amarok-tabs" )->connectSource( "tabs", this );
-        dataUpdated( source, dataEngine( "tabs" )->query( "tabs" ) );
-    }
 }
 
 void
@@ -287,14 +273,27 @@ TabsApplet::saveSettings()
     DEBUG_BLOCK
     KConfigGroup config = Amarok::config("Tabs Applet");
 
-    m_fetchGuitar = ui_Settings.cbFetchGuitar->isChecked();
-    m_fetchBass = ui_Settings.cbFetchBass->isChecked();
+    bool fetchGuitar = ui_Settings.cbFetchGuitar->isChecked();
+    bool fetchBass = ui_Settings.cbFetchBass->isChecked();
 
-    config.writeEntry( "FetchGuitar", m_fetchGuitar );
-    config.writeEntry( "FetchBass", m_fetchBass );
+    // check if any setting has changed
+    bool forceUpdate = false;
+    if( m_fetchGuitar != fetchGuitar || m_fetchBass != fetchBass )
+        forceUpdate = true;
 
-    dataEngine( "amarok-tabs" )->query( QString( "tabs:fetchGuitar:" ).append( QString::number( m_fetchGuitar ) ) );
-    dataEngine( "amarok-tabs" )->query( QString( "tabs:fetchBass:" ).append( QString::number( m_fetchBass ) ) );
+    if( forceUpdate )
+    {
+        m_fetchGuitar = fetchGuitar;
+        m_fetchBass = fetchBass;
+
+        config.writeEntry( "FetchGuitar", m_fetchGuitar );
+        config.writeEntry( "FetchBass", m_fetchBass );
+
+        Plasma::DataEngine *engine = dataEngine( "amarok-tabs" );
+        engine->setProperty( "fetchGuitarTabs", m_fetchGuitar );
+        engine->setProperty( "fetchBassTabs", m_fetchBass );
+        engine->query( QLatin1String( "tabs:forceUpdate" ) );
+    }
 }
 
 void
@@ -313,13 +312,9 @@ TabsApplet::reloadTabs()
     reloadDialog.setMainWidget( reloadWidget );
 
     // query engine for current artist and title
-    Plasma::DataEngine::Data data = dataEngine( "amarok-tabs" )->query( "tabs" );
-    QString artistName;
-    QString titleName;
-    if( data.contains( "artist" ) )
-        artistName = data[ "artist" ].toString();
-    if( data.contains( "title" ) )
-        titleName  = data[ "title" ].toString();
+    Plasma::DataEngine *engine = dataEngine( "amarok-tabs" );
+    QString artistName = engine->property( "artistName" ).toString();
+    QString titleName = engine->property( "titleName" ).toString();
 
     // update ui
     reloadUI->artistLineEdit->setText( artistName );
@@ -327,10 +322,14 @@ TabsApplet::reloadTabs()
 
     if( reloadDialog.exec() == KDialog::Accepted )
     {
-        artistName = reloadUI->artistLineEdit->text();
-        titleName = reloadUI->titleLineEdit->text();
-        if( !artistName.isEmpty() && !titleName.isEmpty() )
-            dataEngine( "amarok-tabs" )->query( QString( "tabs:AMAROK_TOKEN:%1:AMAROK_TOKEN:%2").arg( artistName ).arg( titleName ) );
+        QString newArtist = reloadUI->artistLineEdit->text();
+        QString newTitle = reloadUI->titleLineEdit->text();
+        if ( newArtist != artistName || newTitle != titleName )
+        {
+            engine->setProperty( "artistName", newArtist );
+            engine->setProperty( "titleName", newTitle );
+            engine->query( QLatin1String( "tabs:forceUpdateSpecificTitleArtist" ) );
+        }
     }
 }
 

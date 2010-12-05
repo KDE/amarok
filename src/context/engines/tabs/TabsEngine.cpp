@@ -75,75 +75,78 @@ TabsEngine::sources() const
     return sources;
 }
 
-/**
- * When a source that does not currently exist is requested by the
- * consumer, this method is called to give the DataEngine the
- * opportunity to create one.
- */
+bool
+TabsEngine::fetchGuitar() const
+{
+    return m_fetchGuitar;
+}
+
+void
+TabsEngine::setFetchGuitar( const bool fetch )
+{
+    m_fetchGuitar = fetch;
+}
+
+bool
+TabsEngine::fetchBass() const
+{
+    return m_fetchBass;
+}
+
+void
+TabsEngine::setFetchBass( const bool fetch )
+{
+    m_fetchBass = fetch;
+}
+
+QString
+TabsEngine::artistName() const
+{
+    return m_artistName;
+}
+
+void
+TabsEngine::setArtistName( const QString &artistName )
+{
+    m_artistName = artistName;
+}
+
+QString
+TabsEngine::titleName() const
+{
+    return m_titleName;
+}
+
+void
+TabsEngine::setTitleName( const QString &titleName )
+{
+    m_titleName = titleName;
+}
+
 bool
 TabsEngine::sourceRequestEvent( const QString &name )
 {
-    QStringList tokens = name.split( ':' );
-
-    // data coming from the applet configuration dialog
-    if( ( tokens.contains( "fetchGuitar" ) || tokens.contains( "fetchBass" ) ) && tokens.size() > 2 )
-    {
-        bool forceUpdate = false;
-        QString tokenName = tokens.at( 1 );
-        int tokenValue    = tokens.at( 2 ).toInt();
-
-        if( tokenName == QString( "fetchGuitar" ) )
-        {
-            // check if setting has changed
-            if( m_fetchGuitar != tokenValue )
-            {
-                m_fetchGuitar = tokenValue;
-                forceUpdate = true;
-            }
-        }
-        if( tokenName == QString( "fetchBass" ) )
-        {
-            // check if setting has changed
-            if( m_fetchBass != tokenValue )
-            {
-                m_fetchBass = tokenValue;
-                forceUpdate = true;
-            }
-        }
-        // update if needed
-        if( forceUpdate )
-        {
-            m_titleName.clear();
-            m_artistName.clear();
-            removeAllData( name );
-            setData( name, QVariant() );
-            update();
-        }
-        return true;
-    }
-
-    // handle reload of a specific artist and title
-    if( name.contains( ":AMAROK_TOKEN:" ) && tokens.size() == 5 )
-    {
-        tokens = name.split( ":AMAROK_TOKEN:" );
-        if( tokens.size() == 3 )
-        {
-            QString artist = tokens.at( 1 );
-            QString title = tokens.at( 2 );
-            if( m_artistName != artist || m_titleName != title )
-            {
-                removeAllData( name );
-                setData( name, QVariant() );
-                requestTab( artist, title );
-            }
-        }
-        return true;
-    }
-
-    // update on initial request
     removeAllData( name );
     setData( name, QVariant() );
-    update();
+
+    QStringList tokens = name.split( QLatin1Char(':'), QString::SkipEmptyParts );
+    if( tokens.contains( QLatin1String( "forceUpdate" ) ) )
+    {
+        // data coming from the applet configuration dialog
+        m_titleName.clear();
+        m_artistName.clear();
+        update();
+    }
+    else if( tokens.contains( QLatin1String( "forceUpdateSpecificTitleArtist" ) ) )
+    {
+        // handle reload of a specific artist and title
+        requestTab( m_artistName, m_titleName );
+    }
+    else
+    {
+        // update on initial request
+        update();
+    }
     return true;
 }
 
