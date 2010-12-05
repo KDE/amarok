@@ -95,6 +95,17 @@ Optional
         * libavcodec & libavformat specifically
       * LibOFA - http://code.google.com/p/musicip-libofa/
 
+    * Transcoding requires (at runtime):
+      * FFmpeg 0.6.0 (or newer) - http://ffmpeg.org/
+      * For all supported encoders to be available in Amarok, FFmpeg needs to
+        support the following codecs:
+        * libfaac (NOT just "aac")
+        * alac
+        * flac
+        * libmp3lame (NOT just "mp3")
+        * libvorbis (NOT just "vorbis")
+        * wmav2
+
 Please note that if compiling from source you also need to install -dev/-devel
 versions of these packages, depending on your distribution.
 --------------------------------------------------------------------------------
