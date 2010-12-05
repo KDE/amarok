@@ -195,34 +195,32 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         applet->hide();
     }
 
-    // add the applet at index as first applet in layout
-    Context::Applet *firstApplet = qobject_cast<Context::Applet*>( m_appletList.at( index ) );
-    if( !firstApplet )
-        return;
-    m_layout->insertItem( 0, firstApplet );
-    firstApplet->show();
-    firstApplet->update();
-
-    // iterate through the rest and add ones that we can fit using the size
+    // iterate through the applets and add ones that we can fit using the size
     // hints provided by the applets
+    qreal height = 0.0;
     int currentIndex = m_appletList.size();
-    qreal height = firstApplet->effectiveSizeHint( Qt::PreferredSize ).height();
-    for( int count = currentIndex, i = index + 1; i < count; ++i )
+    for( int count = currentIndex, i = index; i < count; ++i )
     {
-        Plasma::Applet *item   = m_appletList.at( i );
+        Context::Applet *item  = qobject_cast<Context::Applet*>( m_appletList.at( i ) );
+        const qreal remainingH = size().height() - height;
         const qreal preferredH = item->effectiveSizeHint( Qt::PreferredSize ).height();
         const qreal minimumH   = item->effectiveSizeHint( Qt::MinimumSize ).height();
-        const qreal remainingH = size().height() - height;
+        const qreal maximumH   = item->effectiveSizeHint( Qt::MaximumSize ).height();
+        const bool wantSpace   = (item->collapseOffHeight() < 0) && (maximumH > remainingH);
 
-        if( preferredH > remainingH )
+        if( (preferredH > remainingH) || (wantSpace && !item->isCollapsed() ) )
         {
             bool show = ( minimumH <= remainingH );
-            height += remainingH;
             currentIndex = i;
             item->setVisible( show );
             if( show )
             {
                 m_layout->addItem( item );
+                if( wantSpace  )
+                {
+                    item->resize( size().width(), remainingH );
+                    m_layout->setStretchFactor( item, 10000 );
+                }
                 item->update();
                 ++currentIndex;
             }

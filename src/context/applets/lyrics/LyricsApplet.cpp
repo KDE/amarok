@@ -436,6 +436,7 @@ LyricsApplet::init()
     d->titleLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     d->titleLabel->setDrawBackground( true );
 
+    setCollapseOffHeight( -1 );
     setCollapseHeight( d->titleLabel->size().height()
                        + 2 * QApplication::style()->pixelMetric(QStyle::PM_LayoutTopMargin) + 6 );
     setMinimumHeight( collapseHeight() );

@@ -44,7 +44,7 @@ namespace Context
 Context::Applet::Applet( QObject * parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
     , m_canAnimate( !KServiceTypeTrader::self()->query("Plasma/Animator", QString()).isEmpty() )
-    , m_heightCollapseOff( -1 )
+    , m_heightCollapseOff( 0 )
     , m_transient( 0 )
     , m_isMessageShown( false )
     , m_standardPadding( 6.0 )
@@ -238,7 +238,10 @@ Context::Applet::collapse( bool on )
     if( (finalHeight > maxHeight) || (finalHeight < 0) )
         finalHeight = maxHeight;
 
-    if( (finalHeight == size().height()) || !AmarokConfig::animateAppletCollapse() )
+    if( finalHeight == size().height() )
+        return;
+
+    if( !AmarokConfig::animateAppletCollapse() )
     {
         setPreferredHeight( finalHeight );
         emit sizeHintChanged( Qt::PreferredSize );

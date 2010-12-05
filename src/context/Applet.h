@@ -84,7 +84,8 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
           * other applets currently showing, and the aforementioned constraints,
           * the actual height when collapse is off may be different. This is so
           * that, for example, the applet may take up the rest of the space when
-          * the size policy is set to Expanding.
+          * the size policy is set to Expanding. Setting this height to -1 will
+          * tell the layout to give the applet the rest of the available space.
           */
         void setCollapseOffHeight( int );
 
