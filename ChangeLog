@@ -15,7 +15,7 @@ VERSION 2.4-Beta 1
       Aurélien Croc for the patch!
     * Match space-separated search terms in the playlist filter var individually. Thanks 
       to Thomas Karpiniec for the patch!
-    * Added new context applet for displaying guitar tab information. Thanks to 
+    * Added new context applet for displaying guitar and bass tab information. Thanks to
       Rainer Sigle for the patch!
     * Added ability to set/update Album Artist.
     * Added map view and calendar in the upcoming events applet.
@@ -74,6 +74,7 @@ VERSION 2.4-Beta 1
       pressing SHIFT while clicking the action will bypass trash.
 
   BUGFIXES:
+    * Fixed white text on light blue background in tabs applet. (BR 258234)
     * Fixed cover dialog crash pressing Ok when nothing is selected. (BR 258187)
     * Title labels incorrectly used the text color from the plasma theme.
       This caused trouble with the fixed plasma theme and light color schemes.
