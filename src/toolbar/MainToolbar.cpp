@@ -751,6 +751,7 @@ MainToolbar::showEvent( QShowEvent *ev )
     trackChanged( The::engineController()->currentTrack() );
     layoutTrackBar();
     layoutProgressBar();
+    m_playPause->setPlaying( The::engineController()->isPlaying() );
 }
 
 
