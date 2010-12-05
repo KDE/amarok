@@ -56,6 +56,11 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     connect( The::playlistManager(), SIGNAL( providerRemoved( Playlists::PlaylistProvider*, int ) ),
              SLOT( slotUpdate() ) );
 
+    connect( The::playlistManager(), SIGNAL( playlistAdded( Playlists::PlaylistPtr, int ) ),
+             SLOT( slotPlaylistAdded( Playlists::PlaylistPtr,int ) ) );
+    connect( The::playlistManager(), SIGNAL( playlistRemoved( Playlists::PlaylistPtr, int ) ),
+             SLOT( slotPlaylistRemoved( Playlists::PlaylistPtr,int ) ) );
+
     connect( The::playlistManager(), SIGNAL(renamePlaylist( Playlists::PlaylistPtr )),
              SLOT(slotRenamePlaylist( Playlists::PlaylistPtr )) );
 
@@ -572,6 +577,37 @@ PlaylistBrowserModel::slotAppend()
     Meta::TrackList tracks = tracksFromIndexes( indexes );
     if( !tracks.isEmpty() )
         The::playlistController()->insertOptioned( tracks, Playlist::AppendAndPlay );
+}
+
+void
+PlaylistBrowserModel::slotPlaylistAdded( Playlists::PlaylistPtr playlist, int category )
+{
+    //ignore playlists of a different category
+    if( category != m_playlistCategory )
+        return;
+
+    subscribeTo( playlist );
+    int i;
+    for( i = 0; i < m_playlists.count(); i++ )
+    {
+        if( lessThanPlaylistTitles( playlist, m_playlists[i] ) )
+        {
+            m_playlists.insert( i, playlist );
+            break;
+        }
+    }
+    if( i == m_playlists.count() )
+        m_playlists.append( playlist );
+
+    beginInsertRows( QModelIndex(), i, i );
+    endInsertRows();
+}
+
+void
+PlaylistBrowserModel::slotPlaylistRemoved( Playlists::PlaylistPtr playlist, int category )
+{
+    if( category != m_playlistCategory )
+        return;
 }
 
 Meta::TrackList

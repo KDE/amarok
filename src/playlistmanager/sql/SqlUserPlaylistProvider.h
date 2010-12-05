@@ -66,6 +66,11 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 
         static Playlists::SqlPlaylistList toSqlPlaylists( Playlists::PlaylistList playlists );
 
+    signals:
+        void updated();
+        void playlistAdded( Playlists::PlaylistPtr playlist );
+        void playlistRemoved( Playlists::PlaylistPtr playlist );
+
     private slots:
         void slotDelete();
         void slotRename();

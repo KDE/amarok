@@ -144,6 +144,8 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         void categoryAdded( int category );
         void providerAdded( Playlists::PlaylistProvider *provider, int category );
         void providerRemoved( Playlists::PlaylistProvider *provider, int category );
+        void playlistAdded( Playlists::PlaylistPtr playlist, int category );
+        void playlistRemoved( Playlists::PlaylistPtr playlist, int category );
 
         void renamePlaylist( Playlists::PlaylistPtr playlist );
 
