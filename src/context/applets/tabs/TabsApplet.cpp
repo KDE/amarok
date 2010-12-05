@@ -74,7 +74,7 @@ TabsApplet::~TabsApplet()
 void
 TabsApplet::init()
 {
-    // applet base initializtation
+    // applet base initialization
     Context::Applet::init();
 
     // create the header label
@@ -93,6 +93,7 @@ TabsApplet::init()
     qreal headerHeight = m_titleLabel.data()->size().height()
             + 2 * QApplication::style()->pixelMetric( QStyle::PM_LayoutTopMargin ) + 6;
     setCollapseHeight( headerHeight );
+    setCollapseOffHeight( -1 );
     setMinimumHeight( collapseHeight() );
     setPreferredHeight( collapseHeight() );
 
