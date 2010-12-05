@@ -215,7 +215,7 @@ Context::Applet::isAnimating() const
 bool
 Context::Applet::isCollapsed() const
 {
-    return m_heightCollapseOn == size().height();
+    return m_heightCollapseOn == preferredHeight();
 }
 
 void
