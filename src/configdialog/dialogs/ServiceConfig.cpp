@@ -46,7 +46,7 @@ ServiceConfig::ServiceConfig( QWidget * parent )
     foreach ( ServiceFactory * factory, serviceFactories )
         pluginInfoList.append( factory->info() );
 
-    m_serviceSelector->addPlugins( pluginInfoList, KPluginSelector::ReadConfigFile, "Services" );
+    m_serviceSelector->addPlugins( pluginInfoList, KPluginSelector::ReadConfigFile, i18n("Internet Services") );
 }
 
 
