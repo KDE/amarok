@@ -3,6 +3,13 @@ Amarok ChangeLog
 (C) 2002-2010 the Amarok authors.
 
 
+VERSION 2.4-Beta 2
+  CHANGES:
+
+  BUGFIXES:
+
+
+
 VERSION 2.4-Beta 1
   FEATURES:
     * New transcoding feature which converts one or more tracks with a chosen encoder
