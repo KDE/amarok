@@ -29,8 +29,9 @@
 #include "context/widgets/AppletHeader.h"
 #include "TrackItem.h"
 
-#include <Plasma/IconWidget>
 #include <KConfigDialog>
+#include <KLineEdit>
+#include <Plasma/IconWidget>
 
 #include <QApplication>
 #include <QAction>
@@ -38,6 +39,7 @@
 #include <QFormLayout>
 #include <QSpinBox>
 #include <QGraphicsLinearLayout>
+#include <QGraphicsProxyWidget>
 
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -66,12 +68,19 @@ void Albums::init()
     setCollapseHeight( m_header->height() );
     setMinimumHeight( collapseHeight() );
 
-    QAction* settingsAction = new QAction( this );
+    QAction *settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
     settingsAction->setEnabled( true );
     settingsAction->setToolTip( i18n( "Settings" ) );
     addRightHeaderAction( settingsAction );
     connect( settingsAction, SIGNAL(triggered()), this, SLOT(showConfigurationInterface()) );
+
+    QAction *filterAction = new QAction( this );
+    filterAction->setIcon( KIcon( "view-filter" ) );
+    filterAction->setEnabled( true );
+    filterAction->setToolTip( i18n( "Filter Albums" ) );
+    m_filterIcon = addLeftHeaderAction( filterAction );
+    connect( filterAction, SIGNAL(triggered()), this, SLOT(showFilterBar()) );
 
     m_albumsView = new AlbumsView( this );
     m_albumsView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -88,6 +97,34 @@ void Albums::init()
              this, SLOT(collectionDataChanged(Collections::Collection*)) );
 
     updateConstraints();
+}
+
+void Albums::showFilterBar()
+{
+    m_filterIcon->setEnabled( false );
+    AlbumsFilterBar *bar = new AlbumsFilterBar( this );
+    bar->setContentsMargins( 0, 0, 0, 0 );
+    QGraphicsLinearLayout *l = static_cast<QGraphicsLinearLayout*>( layout() );
+    l->setItemSpacing( 1, 0 );
+    l->addItem( bar );
+    connect( bar, SIGNAL(filterTextChanged(QString)), this, SLOT(filterTextChanged(QString)) );
+    connect( bar, SIGNAL(closeRequested()), this, SLOT(closeFilterBar()) );
+    bar->focusEditor();
+}
+
+void Albums::closeFilterBar()
+{
+    filterTextChanged( QString() );
+    AlbumsFilterBar *bar = static_cast<AlbumsFilterBar*>( sender() );
+    QGraphicsLinearLayout *l = static_cast<QGraphicsLinearLayout*>( layout() );
+    l->removeItem( bar );
+    bar->deleteLater();
+    m_filterIcon->setEnabled( true );
+}
+
+void Albums::filterTextChanged( const QString &text )
+{
+    m_albumsView->setFilterPattern( text );
 }
 
 void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &data )
@@ -223,6 +260,20 @@ void Albums::createConfigurationInterface( KConfigDialog *parent )
     connect( parent, SIGNAL(accepted()), this, SLOT(saveConfiguration()) );
 }
 
+void Albums::keyPressEvent( QKeyEvent *event )
+{
+    if( event->key() == Qt::Key_Slash || event->matches( QKeySequence::Find ) )
+    {
+        if( m_filterIcon->isEnabled() )
+        {
+            showFilterBar();
+            event->accept();
+            return;
+        }
+    }
+    Context::Applet::keyPressEvent( event );
+}
+
 void Albums::setRecentCount( int val )
 {
     m_recentCount = val;
@@ -249,6 +300,65 @@ void Albums::collectionDataChanged( Collections::Collection *collection )
     m_albums.clear(); // clear to force an update
     Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "albums" );
     dataUpdated( QLatin1String("albums"), data );
+}
+
+AlbumsFilterBar::AlbumsFilterBar( QGraphicsItem *parent, Qt::WindowFlags wFlags )
+    : QGraphicsWidget( parent, wFlags )
+    , m_editor( new KLineEdit )
+    , m_closeIcon( new Plasma::IconWidget( KIcon("dialog-close"), QString(), this ) )
+{
+    QGraphicsProxyWidget *editProxy = new QGraphicsProxyWidget( this );
+    editProxy->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    editProxy->setWidget( m_editor );
+
+    m_editor->installEventFilter( this );
+    m_editor->setAttribute( Qt::WA_NoSystemBackground );
+    m_editor->setAutoFillBackground( true );
+    m_editor->setClearButtonShown( true );
+    m_editor->setClickMessage( i18n( "Filter Albums" ) );
+    m_editor->setContentsMargins( 0, 0, 0, 0 );
+
+    QSizeF iconSize = m_closeIcon->sizeFromIconSize( 16 );
+    m_closeIcon->setMaximumSize( iconSize );
+    m_closeIcon->setMinimumSize( iconSize );
+
+    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Horizontal, this );
+    layout->setSpacing( 1 );
+    layout->addItem( editProxy );
+    layout->addItem( m_closeIcon );
+    layout->setStretchFactor( editProxy, 100 );
+    layout->setAlignment( editProxy, Qt::AlignCenter );
+    layout->setAlignment( m_closeIcon, Qt::AlignCenter );
+    layout->setContentsMargins( 0, 2, 0, 0 );
+
+    m_closeIcon->setToolTip( i18n( "Close" ) );
+    connect( m_closeIcon, SIGNAL(clicked()), SIGNAL(closeRequested()) );
+    connect( m_editor, SIGNAL(textChanged(QString)), SIGNAL(filterTextChanged(QString)) );
+}
+
+bool
+AlbumsFilterBar::eventFilter( QObject *obj, QEvent *e )
+{
+    if( obj == m_editor )
+    {
+        if( e->type() == QEvent::KeyPress )
+        {
+            QKeyEvent *kev = static_cast<QKeyEvent*>( e );
+            if( kev->key() == Qt::Key_Escape )
+            {
+                kev->accept();
+                emit closeRequested();
+                return true;
+            }
+        }
+    }
+    return QGraphicsWidget::eventFilter( obj, e );
+}
+
+void
+AlbumsFilterBar::focusEditor()
+{
+    m_editor->setFocus( Qt::PopupFocusReason );
 }
 
 #include "Albums.moc"

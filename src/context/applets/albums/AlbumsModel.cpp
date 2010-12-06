@@ -150,6 +150,28 @@ AlbumsProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) 
         return KStringHandler::naturalCompare( leftItem->text(), model->itemFromIndex(right)->text() ) < 0;
 }
 
+bool
+AlbumsProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+    const QStandardItemModel *model = static_cast<QStandardItemModel*>( sourceModel() );
+    const QModelIndex &srcIndex     = sourceModel()->index( sourceRow, 0, sourceParent );
+    const QStandardItem *item       = model->itemFromIndex( srcIndex );
+
+    if( item->data( NameRole ).toString().contains( filterRegExp() ) )
+        return true;
+
+    if( item->type() == AlbumType )
+    {
+        for( int i = 0, count = model->rowCount( srcIndex ); i < count; ++i )
+        {
+            const QModelIndex &kid = srcIndex.child( i, 0 );
+            if( kid.data( NameRole ).toString().contains( filterRegExp() ) )
+                return true;
+        }
+    }
+    return false;
+}
+
 AlbumsProxyModel::Mode
 AlbumsProxyModel::mode() const
 {

@@ -40,6 +40,7 @@ class AlbumsView : public QGraphicsWidget
     Q_OBJECT
     Q_PROPERTY( AlbumsProxyModel::Mode mode READ mode WRITE setMode )
     Q_PROPERTY( Qt::Alignment lengthAlignment READ lengthAlignment WRITE setLengthAlignment )
+    Q_PROPERTY( QString filterPattern READ filterPattern WRITE setFilterPattern )
 
 public:
     explicit AlbumsView( QGraphicsWidget *parent = 0 );
@@ -53,6 +54,9 @@ public:
 
     Qt::Alignment lengthAlignment() const;
     void setLengthAlignment( Qt::Alignment alignment );
+
+    QString filterPattern() const;
+    void setFilterPattern( const QString &pattern );
 
     void clear();
 

@@ -57,7 +57,7 @@ TrackItem::metadataChanged( Meta::TrackPtr track )
     Meta::ArtistPtr artist = track->artist();
     Meta::AlbumPtr  album = track->album();
 
-    setData( track->prettyName(), TrackNameRole );
+    setData( track->prettyName(), NameRole );
     setData( track->trackNumber(), TrackNumberRole );
     setData( track->length(), TrackLengthRole );
 
@@ -109,8 +109,8 @@ TrackItem::operator<( const QStandardItem &other ) const
         return true;
     else if( trackA == trackB )
     {
-        const QString nameA = data( TrackNameRole ).toString();
-        const QString nameB = other.data( TrackNameRole ).toString();
+        const QString nameA = data( NameRole ).toString();
+        const QString nameB = other.data( NameRole ).toString();
         return KStringHandler::naturalCompare( nameA, nameB, Qt::CaseInsensitive ) < 0;
     }
     else

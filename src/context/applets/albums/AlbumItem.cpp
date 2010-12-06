@@ -98,7 +98,7 @@ AlbumItem::update()
     QString name = ( m_showArtist && m_album->hasAlbumArtist() )
                  ? QString( "%1 - %2" ).arg( m_album->albumArtist()->name(), albumName )
                  : albumName;
-    setData( name, AlbumNameRole );
+    setData( name, NameRole );
 
     qint64 totalTime = 0;
     foreach( Meta::TrackPtr item, tracks )
@@ -128,8 +128,8 @@ AlbumItem::operator<( const QStandardItem &other ) const
         return true;
     else if( yearA == yearB )
     {
-        const QString nameA = data( AlbumNameRole ).toString();
-        const QString nameB = other.data( AlbumNameRole ).toString();
+        const QString nameA = data( NameRole ).toString();
+        const QString nameB = other.data( NameRole ).toString();
         return KStringHandler::naturalCompare( nameA, nameB, Qt::CaseInsensitive ) < 0;
     }
     else

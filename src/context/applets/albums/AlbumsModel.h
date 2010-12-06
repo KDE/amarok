@@ -70,7 +70,9 @@ protected:
      * added <em>more recently</em> than all of the tracks in the album
      * referenced by @param right.
      */
-    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
 private:
     Mode m_mode;
