@@ -13,42 +13,37 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef SERVICECONFIGSCREEN_H
-#define SERVICECONFIGSCREEN_H
+
+#ifndef AMAROK_PLUGINSCONFIG_H
+#define AMAROK_PLUGINSCONFIG_H
 
 #include "ConfigDialogBase.h"
 
 class KPluginSelector;
 
 /**
-A widget that allows configuration of services
-
-	@author 
-*/
-class ServiceConfig : public ConfigDialogBase
+  * A widget that allows configuration of plugins
+  */
+class PluginsConfig : public ConfigDialogBase
 {
     Q_OBJECT
-            
-public:
-    ServiceConfig( QWidget * parent );
 
-    ~ServiceConfig();
+public:
+    PluginsConfig( QWidget *parent );
+    virtual ~PluginsConfig();
 
     virtual void updateSettings();
     virtual bool hasChanged();
     virtual bool isDefault();
 
 public slots:
-
     void slotConfigChanged( bool changed );
     void slotConfigComitted( const QByteArray & name );
 
 private:
-    KPluginSelector * m_serviceSelector;
-
     bool m_configChanged;
-    QStringList m_changedServices;
+    KPluginSelector *m_selector;
+    QStringList m_changedPlugins;
 };
 
-#endif
+#endif // AMAROK_PLUGINSCONFIG_H

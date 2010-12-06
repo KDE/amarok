@@ -189,7 +189,7 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/GeneralConfig.cpp
     configdialog/dialogs/NotificationsConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
-    configdialog/dialogs/ServiceConfig.cpp
+    configdialog/dialogs/PluginsConfig.cpp
     configdialog/dialogs/DatabaseConfig.cpp
 )
 

@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "ServiceConfig"
- 
-#include "ServiceConfig.h"
+#define DEBUG_PREFIX "PluginsConfig"
+
+#include "PluginsConfig.h"
 
 #include "core/support/Debug.h"
 #include "services/ServicePluginManager.h"
@@ -25,77 +25,73 @@
 
 #include <QVBoxLayout>
 
-ServiceConfig::ServiceConfig( QWidget * parent )
- : ConfigDialogBase( parent )
- , m_configChanged( false )
+PluginsConfig::PluginsConfig( QWidget *parent )
+    : ConfigDialogBase( parent )
+    , m_configChanged( false )
 {
-    m_serviceSelector = new KPluginSelector( this );
-    m_serviceSelector->setSizePolicy( QSizePolicy:: Expanding, QSizePolicy::Expanding );
+    DEBUG_BLOCK
+    m_selector = new KPluginSelector( this );
+    m_selector->setSizePolicy( QSizePolicy:: Expanding, QSizePolicy::Expanding );
 
     QVBoxLayout *layout = new QVBoxLayout( this );
     layout->setMargin( 0 );
-    layout->addWidget( m_serviceSelector );
+    layout->addWidget( m_selector );
 
-    connect( m_serviceSelector, SIGNAL( changed( bool ) ), SLOT( slotConfigChanged( bool ) ) );
-    connect( m_serviceSelector, SIGNAL( changed( bool ) ), parent, SLOT( updateButtons() ) );
-    connect( m_serviceSelector, SIGNAL( configCommitted ( const QByteArray & ) ), SLOT( slotConfigComitted( const QByteArray & ) ) );
+    connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
+    connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );
+    connect( m_selector, SIGNAL(configCommitted(QByteArray)), SLOT(slotConfigComitted(QByteArray)) );
 
     QList<ServiceFactory*> serviceFactories = ServicePluginManager::instance()->factories().values();
 
     QList<KPluginInfo> pluginInfoList;
-    foreach ( ServiceFactory * factory, serviceFactories )
+    foreach( ServiceFactory *factory, serviceFactories )
         pluginInfoList.append( factory->info() );
 
-    m_serviceSelector->addPlugins( pluginInfoList, KPluginSelector::ReadConfigFile, i18n("Internet Services") );
+    m_selector->addPlugins( pluginInfoList, KPluginSelector::ReadConfigFile, i18n("Internet Services") );
 }
 
+PluginsConfig::~PluginsConfig()
+{}
 
-ServiceConfig::~ServiceConfig()
-{} 
-
-
-void ServiceConfig::updateSettings()
+void PluginsConfig::updateSettings()
 {
-    if ( m_configChanged ) {
-        m_serviceSelector->save();
-        foreach ( const QString &name, m_changedServices ) {
+    DEBUG_BLOCK
+    if( m_configChanged )
+    {
+        m_selector->save();
+        foreach( const QString &name, m_changedPlugins )
             ServicePluginManager::instance()->settingsChanged( name );
-        }
 
-        //check if any services were disabled and needs to be removed, or any that are hidden needs to be enabled
+        // check if any services were disabled and needs to be removed, or any
+        // that are hidden needs to be enabled
         ServicePluginManager::instance()->checkEnabledStates();
-
     }
 }
 
-
-bool ServiceConfig::hasChanged()
+bool PluginsConfig::hasChanged()
 {
-    DEBUG_BLOCK;
+    DEBUG_BLOCK
     return m_configChanged;
 }
 
-
-bool ServiceConfig::isDefault()
+bool PluginsConfig::isDefault()
 {
-    DEBUG_BLOCK;
+    DEBUG_BLOCK
     return false;
 }
 
-
-void ServiceConfig::slotConfigChanged( bool changed )
+void PluginsConfig::slotConfigChanged( bool changed )
 {
     DEBUG_BLOCK
     m_configChanged = changed;
 }
 
-void ServiceConfig::slotConfigComitted( const QByteArray & name )
+void PluginsConfig::slotConfigComitted( const QByteArray & name )
 {
     DEBUG_BLOCK
     debug() << "config comitted for: " << name;
     m_configChanged = true;
-    m_changedServices << QString( name );
+    m_changedPlugins << QString( name );
 }
 
-#include "ServiceConfig.moc"
-
+#include "PluginsConfig.moc"
