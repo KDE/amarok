@@ -73,7 +73,7 @@ VorbisFormat::description() const
 {
     return i18nc( "Feel free to redirect the english Wikipedia link to a local version, if "
                   "it exists.",
-                  "<a href=http://en.wikipedia.org/wiki/Vorbis>Ogg Vorbis</a> if an open "
+                  "<a href=http://en.wikipedia.org/wiki/Vorbis>Ogg Vorbis</a> is an open "
                   "and royalty-free audio codec for lossy audio compression.<br>It produces "
                   "smaller files than MP3 at equivalent or higher quality. Ogg Vorbis is an "
                   "all-around excellent choice, especially for portable music players that "
