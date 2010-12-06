@@ -18,10 +18,8 @@
 #define SERVICECONFIGSCREEN_H
 
 #include "ConfigDialogBase.h"
-#include "services/ServicePluginManager.h"
 
-#include <KPluginSelector>
-
+class KPluginSelector;
 
 /**
 A widget that allows configuration of services
@@ -47,7 +45,6 @@ public slots:
     void slotConfigComitted( const QByteArray & name );
 
 private:
-    ServicePluginManager * m_servicePluginManager;
     KPluginSelector * m_serviceSelector;
 
     bool m_configChanged;

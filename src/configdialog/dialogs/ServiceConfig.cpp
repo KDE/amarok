@@ -13,14 +13,17 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
+#define DEBUG_PREFIX "ServiceConfig"
  
 #include "ServiceConfig.h"
 
 #include "core/support/Debug.h"
+#include "services/ServicePluginManager.h"
 
+#include <KPluginSelector>
 
 #include <QVBoxLayout>
-
 
 ServiceConfig::ServiceConfig( QWidget * parent )
  : ConfigDialogBase( parent )
