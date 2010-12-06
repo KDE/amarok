@@ -703,8 +703,6 @@ set(amaroklib_LIB_SRCS
     widgets/IconButton.cpp
     widgets/ComboBox.cpp
     widgets/LineEdit.cpp
-    widgets/MainControlsButton.cpp
-    widgets/MainControlsWidget.cpp
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
     widgets/PlayPauseButton.cpp
