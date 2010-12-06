@@ -143,9 +143,9 @@ QString Meta::shortI18nForField( qint64 field )
 
     switch( field )
     {
-    case 0:                    return i18nc("The field name in case nothing specific is selected e.g. in the automatic playlist generator", "anything");
-    case Meta::valUrl:         return i18nc( "The name of the file this track is stored in", "filename" );
-    case Meta::valTitle:       return i18n("title");
+    case 0:                    return i18nc("The field name in case nothing specific is selected e.g. in the automatic playlist generator. Use a one word translation.", "anything");
+    case Meta::valUrl:         return i18nc("One word translation used in the collection filter. The name of the file this track is stored in", "filename" );
+    case Meta::valTitle:       return i18nc("One word translation used in the collection filter", "title");
     case Meta::valArtist:      return i18nc("One word translation used in the collection filter", "artist");
     case Meta::valAlbum:       return i18nc("One word translation used in the collection filter", "album");
     case Meta::valGenre:       return i18nc("One word translation used in the collection filter", "genre");
