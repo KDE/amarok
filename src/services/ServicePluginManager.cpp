@@ -22,7 +22,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "ServiceBrowser.h"
-#include "core/plugins/PluginManager.h"
+#include "core/support/PluginUtility.h"
 
 #include <KService>
 
@@ -43,7 +43,11 @@ ServicePluginManager::ServicePluginManager( )
     : QObject()
     , m_serviceBrowser( ServiceBrowser::instance() )
 {
+    DEBUG_BLOCK
+    setObjectName( "ServicePluginManager" );
+    PERF_LOG( "Loading service plugins" )
     collect();
+    PERF_LOG( "Loaded service plugins" )
 }
 
 
@@ -62,18 +66,19 @@ ServicePluginManager::collect()
 {
     DEBUG_BLOCK
 
-    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'service'" );
-    debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
-    foreach( KService::Ptr service, plugins )
+    KService::List plugins = Plugins::PluginUtility::query( "[X-KDE-Amarok-plugintype] == 'service'" );
+    debug() << QString( "Received %1 service plugin offers" ).arg( plugins.count() );
+
+    foreach( const KService::Ptr &service, plugins )
     {
-        Plugins::Plugin *plugin = Plugins::PluginManager::createFromService( service );
-        if ( plugin )
+        const QString name( service->property( "X-KDE-Amarok-name" ).toString() );
+        KPluginLoader loader( *( service.constData() ) );
+        KPluginFactory *pluginFactory = loader.factory();
+        if( pluginFactory )
         {
-            debug() << "Got hold of a valid plugin";
-            ServiceFactory* factory = dynamic_cast<ServiceFactory*>( plugin );
-            if ( factory )
+            ServiceFactory* factory( 0 );
+            if( (factory = pluginFactory->create<ServiceFactory>( this )) )
             {
-                debug() << "Got hold of a valid factory";
                 m_factories.insert( factory->name(), factory );
                 connect( factory, SIGNAL( newService( ServiceBase * ) ), this, SLOT( slotNewService( ServiceBase * ) ) );
                 connect( factory, SIGNAL( removeService( ServiceBase * ) ), this,
@@ -81,12 +86,14 @@ ServicePluginManager::collect()
             }
             else
             {
-                debug() << "Plugin has wrong factory class";
-                continue;
+                debug() << QString( "Plugin '%1' has wrong factory class: %2" )
+                                             .arg( name, loader.errorString() );
             }
-        } else {
-            debug() << "bad plugin";
-            continue;
+        }
+        else
+        {
+            warning() << QString( "Failed to get factory '%1' from KPluginLoader: %2" )
+                                                     .arg( name, loader.errorString() );
         }
     }
 }
@@ -94,14 +101,15 @@ ServicePluginManager::collect()
 void
 ServicePluginManager::init()
 {
-    foreach( ServiceFactory* factory,  m_factories ) {
-
-        if ( !factory->isInitialized() ) {
+    foreach( ServiceFactory* factory, m_factories )
+    {
+        if( !factory->isInitialized() )
+        {
             //check if this service is enabled
             QString pluginName = factory->info().pluginName();
 
             debug() << "PLUGIN CHECK:" << pluginName;
-            if ( Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true ) )
+            if( Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true ) )
             {
                 factory->init();
                 m_loadedServices << pluginName;

@@ -37,7 +37,7 @@ end
 
 
 # Bump PluginFrameworkVersion in Amarok.h
-file = File.new( "src/core/plugins/Plugin.h", File::RDWR )
+file = File.new( "src/core/support/PluginUtility.h", File::RDWR )
 str = file.read()
 file.rewind()
 file.truncate( 0 )

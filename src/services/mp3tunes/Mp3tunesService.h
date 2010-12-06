@@ -31,7 +31,9 @@ class Mp3tunesServiceFactory: public ServiceFactory
     Q_OBJECT
 
     public:
-        explicit Mp3tunesServiceFactory() {}
+        Mp3tunesServiceFactory( QObject *parent, const QVariantList &args )
+            : ServiceFactory( parent, args )
+        {}
         virtual ~Mp3tunesServiceFactory() {}
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;

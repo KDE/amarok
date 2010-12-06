@@ -7,22 +7,20 @@ include_directories(
 
 ########### next target ###############
 
-set(amarok_massstorage-device_PART_SRCS MassStorageDeviceHandler.cpp )
+set(amarok_device_massstorage_PART_SRCS MassStorageDeviceHandler.cpp )
 
-kde4_add_plugin(amarok_massstorage-device 
-${amarok_massstorage-device_PART_SRCS})
+kde4_add_plugin(amarok_device_massstorage ${amarok_device_massstorage_PART_SRCS})
 
-target_link_libraries(amarok_massstorage-device
+target_link_libraries(amarok_device_massstorage
     amarok-sqlcollection
     amaroklib
     amarokcore
     ${KDE4_KDECORE_LIBS}
     ${KDE4_SOLID_LIBS} )
 
-install(TARGETS amarok_massstorage-device DESTINATION ${PLUGIN_INSTALL_DIR} )
-
+install(TARGETS amarok_device_massstorage DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 ########### install files ###############
 
-install(FILES  amarok_massstorage-device.desktop  DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES  amarok_device_massstorage.desktop  DESTINATION ${SERVICES_INSTALL_DIR})
 

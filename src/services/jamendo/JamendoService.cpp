@@ -41,7 +41,7 @@
 
 using namespace Meta;
 
-AMAROK_EXPORT_PLUGIN( JamendoServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( jamendo, JamendoServiceFactory )
 
 void JamendoServiceFactory::init()
 {

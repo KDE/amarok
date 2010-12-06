@@ -35,7 +35,7 @@
 
 #include <KLocale>
 
-AMAROK_EXPORT_PLUGIN( AmpacheServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( ampache, AmpacheServiceFactory )
 
 void AmpacheServiceFactory::init()
 {

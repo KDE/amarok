@@ -24,7 +24,6 @@
 #include "ServiceMetaBase.h"
 #include "amarok_export.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core/plugins/Plugin.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "widgets/PrettyTreeView.h"
 
@@ -46,14 +45,14 @@ A virtual base class for factories for creating and handling the different types
 
 @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
-class AMAROK_EXPORT ServiceFactory : public QObject, public Plugins::Plugin, public Collections::TrackProvider
+class AMAROK_EXPORT ServiceFactory : public QObject, public Collections::TrackProvider
 {
     Q_OBJECT
     public:
         /**
          * Constructor.
          */
-        ServiceFactory();
+        ServiceFactory( QObject *parent, const QVariantList &args );
 
         /**
          * Destructor.
@@ -357,5 +356,8 @@ private: // need to move stuff here
     QSortFilterProxyModel * m_filterModel;
 };
 
+#define AMAROK_EXPORT_SERVICE_PLUGIN(libname, classname) \
+K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
+K_EXPORT_PLUGIN(factory("amarok_service_" #libname))\
 
 #endif

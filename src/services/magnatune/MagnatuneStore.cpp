@@ -50,7 +50,7 @@
 
 #include <typeinfo>
 
-AMAROK_EXPORT_PLUGIN( MagnatuneServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( magnatunestore, MagnatuneServiceFactory )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // class MagnatuneServiceFactory

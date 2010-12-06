@@ -24,13 +24,15 @@
 
 #include "shared/amarok_export.h"
 
-class KLibrary;
+class KPluginLoader;
 
 namespace Plugins {
 
+static const int PluginFrameworkVersion = 59;
+
 class Plugin;
 
-class PluginManager
+class PluginUtility
 {
     public:
         /**
@@ -59,35 +61,6 @@ class PluginManager
         AMAROK_CORE_EXPORT static KService::List query( const QString& constraint = QString() );
 
         /**
-         * Load and instantiate plugin from query
-         * @param constraint  A constraint to limit the choices returned, QString::null to
-         *                    get all services of the given @p servicetype
-         * @return            Pointer to Plugin, or NULL if error
-         * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
-         */
-        AMAROK_CORE_EXPORT static Plugins::Plugin* createFromQuery( const QString& constraint = QString() );
-
-        /**
-         * Load and instantiate plugin from service
-         * @param service     Pointer to KService
-         * @return            Pointer to Plugin, or NULL if error
-         */
-        AMAROK_CORE_EXPORT static Plugins::Plugin* createFromService( const KService::Ptr service );
-
-        /**
-         * Remove library and delete plugin
-         * @param plugin      Pointer to plugin
-         */
-        static void unload( Plugins::Plugin* plugin );
-
-        /**
-         * Look up service for loaded plugin from store
-         * @param pointer     Pointer to plugin
-         * @return            KService, or 0 if not found
-         */
-        static KService::Ptr getService( const Plugins::Plugin* plugin );
-
-        /**
          * Dump properties from a service to stdout for debugging
          * @param service     Pointer to KService
          */
@@ -98,21 +71,8 @@ class PluginManager
          * @param constraint  A constraint to limit the choices returned
          */
         static void showAbout( const QString& constraint );
-
-    private:
-        struct StoreItem {
-            Plugins::Plugin* plugin;
-            KLibrary* library;
-            KService::Ptr service;
-        };
-
-        static std::vector<StoreItem>::iterator lookupPlugin( const Plugins::Plugin* plugin );
-
-    //attributes:
-        static std::vector<StoreItem> m_store;
 };
 
 }
 
 #endif /* AMAROK_PLUGINMANAGER_H */
-

@@ -64,7 +64,7 @@
 #include <QFrame>
 #include <QTextDocument>        //Qt::escape
 
-AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( lastfm, LastFmServiceFactory )
 
 QString md5( const QByteArray& src )
 {

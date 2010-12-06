@@ -16,7 +16,7 @@
  
 #include "NfsDeviceHandler.h"
 
-AMAROK_EXPORT_PLUGIN( NfsDeviceHandlerFactory )
+AMAROK_EXPORT_PLUGIN( amarok_nfs-device, NfsDeviceHandlerFactory )
 
 #include "core/support/Debug.h"
 

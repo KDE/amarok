@@ -29,7 +29,7 @@
 
 #include <QRegExp>
 
-AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( mp3tunes, Mp3tunesServiceFactory )
 
 void Mp3tunesServiceFactory::init()
 {

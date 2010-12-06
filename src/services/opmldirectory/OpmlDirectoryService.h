@@ -33,7 +33,9 @@ class OpmlDirectoryServiceFactory: public ServiceFactory
     Q_OBJECT
 
     public:
-        OpmlDirectoryServiceFactory() {}
+        OpmlDirectoryServiceFactory( QObject *parent, const QVariantList &args )
+            : ServiceFactory( parent, args )
+        {}
         virtual ~OpmlDirectoryServiceFactory() {}
 
         virtual void init();

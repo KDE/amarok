@@ -16,7 +16,7 @@
  
 #include "SmbDeviceHandler.h"
 
-AMAROK_EXPORT_PLUGIN( SmbDeviceHandlerFactory )
+AMAROK_EXPORT_PLUGIN( amarok_smb-device, SmbDeviceHandlerFactory )
 
 #include "core/support/Debug.h"
 

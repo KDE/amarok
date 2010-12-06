@@ -44,7 +44,9 @@ class MagnatuneServiceFactory : public ServiceFactory
     Q_OBJECT
 
     public:
-        MagnatuneServiceFactory() {}
+        MagnatuneServiceFactory( QObject *parent, const QVariantList &args )
+            : ServiceFactory( parent, args )
+        {}
         virtual ~MagnatuneServiceFactory() {}
 
         virtual void init();

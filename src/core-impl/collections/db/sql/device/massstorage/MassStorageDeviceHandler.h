@@ -26,7 +26,7 @@ class SqlStorage;
 class MassStorageDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
-    MassStorageDeviceHandlerFactory();
+    MassStorageDeviceHandlerFactory( QObject *parent, const QVariantList &args );
     virtual ~MassStorageDeviceHandlerFactory();
 
     virtual bool canHandle( const Solid::Device &device ) const;

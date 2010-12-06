@@ -31,7 +31,9 @@ class JamendoServiceFactory : public ServiceFactory
     Q_OBJECT
 
     public:
-        JamendoServiceFactory() {}
+        JamendoServiceFactory( QObject *parent, const QVariantList &args )
+            : ServiceFactory( parent, args )
+        {}
         virtual ~JamendoServiceFactory() {}
 
         virtual void init();

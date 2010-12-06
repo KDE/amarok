@@ -51,7 +51,9 @@ class LastFmServiceFactory : public ServiceFactory
     Q_OBJECT
 
 public:
-    LastFmServiceFactory() {}
+    LastFmServiceFactory( QObject *parent, const QVariantList &args )
+        : ServiceFactory( parent, args )
+    {}
     virtual ~LastFmServiceFactory() {}
 
     virtual void init();

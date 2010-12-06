@@ -25,7 +25,7 @@
 #include "core/collections/Collection.h"
 #include "core/collections/MetaQueryMaker.h"
 #include "core/collections/support/SqlStorage.h"
-#include "core/plugins/PluginManager.h"
+#include "core/support/PluginUtility.h"
 #include "core/support/SmartPointerList.h"
 #include "core-impl/meta/file/File.h"
 #include "core-impl/meta/stream/Stream.h"
@@ -107,6 +107,8 @@ CollectionManager::CollectionManager()
     : QObject()
     , d( new Private )
 {
+    DEBUG_BLOCK
+    setObjectName( "CollectionManager" );
     qRegisterMetaType<SqlStorage *>( "SqlStorage*" );
     d->sqlDatabase = 0;
     d->primaryCollection = 0;
@@ -114,7 +116,9 @@ CollectionManager::CollectionManager()
     s_instance = this;
     m_haveEmbeddedMysql = false;
 
+    PERF_LOG( "Loading collection plugins" )
     init();
+    PERF_LOG( "Loaded collection plugins" )
 }
 
 CollectionManager::~CollectionManager()
@@ -130,8 +134,6 @@ CollectionManager::~CollectionManager()
     d->trackProviders.clear();
     qDeleteAll( d->managedCollections );
     qDeleteAll( d->factories );
-
-
     delete d;
 }
 
@@ -145,16 +147,16 @@ CollectionManager::init()
     m_timecodeTrackProvider = new TimecodeTrackProvider();
     addTrackProvider( m_timecodeTrackProvider );
 
-    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
-    debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
+    KService::List plugins = Plugins::PluginUtility::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
+    debug() << QString( "Received %1 collection plugin offers" ).arg( plugins.count() );
 
     if( plugins.isEmpty() )
     {
         debug() << "No Amarok plugins found, running kbuildsycoca4.";
         KBuildSycocaProgressDialog::rebuildKSycoca( 0 );
 
-        plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
-        debug() << "Second attempt: Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
+        plugins = Plugins::PluginUtility::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
+        debug() << QString( "Second attempt: Received %1 collection plugin offers" ).arg( plugins.count() );
 
         if( plugins.isEmpty() )
         {
@@ -177,12 +179,12 @@ CollectionManager::init()
     foreach( const KService::Ptr &service, plugins )
     {
         const QString name = service->property( "X-KDE-Amarok-name" ).toString();
-        if( name == "mysqlserver-collection" )
+        if( name == QLatin1String("mysqlserver-collection") )
         {
             if( useMySqlServer )
                 orderedPlugins.prepend( service );
         }
-        else if( name == "mysqle-collection" )
+        else if( name == QLatin1String("mysqle-collection") )
         {
             if( !useMySqlServer )
                 orderedPlugins.prepend( service );
@@ -214,7 +216,7 @@ CollectionManager::loadServices( const KService::List &services )
                 d->factories.append( factory );
                 debug() << "Initialising" << name;
                 factory->init();
-                if( name == "mysqle-collection" )
+                if( name == QLatin1String("mysqle-collection") )
                     m_haveEmbeddedMysql = true;
             }
             else

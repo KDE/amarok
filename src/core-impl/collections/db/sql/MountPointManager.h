@@ -19,8 +19,6 @@
 
 #include "core/support/Amarok.h"
 #include "amarok_sqlcollection_export.h"
-#include "core/plugins/Plugin.h"
-#include "core/plugins/PluginManager.h"
 
 #include <KConfigGroup>
 #include <KUrl>
@@ -39,10 +37,12 @@ typedef QList<int> IdList;
 typedef QList<DeviceHandlerFactory*> FactoryList;
 typedef QMap<int, DeviceHandler*> HandlerMap;
 
-class AMAROK_SQLCOLLECTION_EXPORT DeviceHandlerFactory : public Plugins::Plugin
+class AMAROK_SQLCOLLECTION_EXPORT DeviceHandlerFactory : public QObject
 {
+    Q_OBJECT
+
 public:
-    DeviceHandlerFactory() {}
+    DeviceHandlerFactory( QObject *parent, const QVariantList &args );
     virtual ~DeviceHandlerFactory() {}
 
     /**
@@ -248,5 +248,10 @@ private:
     void updateStatistics();
     void updateLabels();
 };
+
+#define AMAROK_EXPORT_DEVICE_PLUGIN(libname, classname) \
+K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
+K_EXPORT_PLUGIN(factory("amarok_device_" #libname))\
+
 
 #endif

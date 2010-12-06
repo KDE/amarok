@@ -33,8 +33,11 @@
 #include <QLabel>
 
 
-ServiceFactory::ServiceFactory() : m_initialized( false )
+ServiceFactory::ServiceFactory( QObject *parent, const QVariantList &args )
+    : QObject( parent )
+    , m_initialized( false )
 {
+    Q_UNUSED( args );
     CollectionManager::instance()->addTrackProvider( this );
 }
 

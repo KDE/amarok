@@ -34,7 +34,7 @@
 
 using namespace Meta;
 
-AMAROK_EXPORT_PLUGIN( OpmlDirectoryServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( opmldirectory, OpmlDirectoryServiceFactory )
 
 void OpmlDirectoryServiceFactory::init()
 {

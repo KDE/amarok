@@ -22,6 +22,7 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core/support/PluginUtility.h"
 #include "statusbar/StatusBar.h"
 #include "core/collections/support/SqlStorage.h"
 
@@ -42,10 +43,18 @@
 #include <QStringList>
 #include <QTimer>
 
+DeviceHandlerFactory::DeviceHandlerFactory( QObject *parent, const QVariantList &args )
+    : QObject( parent )
+{
+    Q_UNUSED( args );
+}
+
+
 MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
     : QObject( parent )
     , m_storage( storage )
 {
+    DEBUG_BLOCK
     setObjectName( "MountPointManager" );
 
     if ( !Amarok::config( "Collection" ).readEntry( "DynamicCollection", true ) )
@@ -57,7 +66,9 @@ MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
     connect( MediaDeviceCache::instance(), SIGNAL( deviceAdded( QString ) ), SLOT( deviceAdded( QString ) ) );
     connect( MediaDeviceCache::instance(), SIGNAL( deviceRemoved( QString ) ), SLOT( deviceRemoved( QString ) ) );
 
+    PERF_LOG( "Loading device plugins" )
     init();
+    PERF_LOG( "Loaded device plugins" )
 
 //     SqlStorage *collDB = CollectionManager::instance()->sqlStorage();
 
@@ -92,29 +103,42 @@ void
 MountPointManager::init()
 {
     DEBUG_BLOCK
-    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'device'" );
-    debug() << "Received [" << QString::number( plugins.count() ) << "] device plugin offers";
-    oldForeachType( KService::List, plugins )
+    KService::List plugins = Plugins::PluginUtility::query( "[X-KDE-Amarok-plugintype] == 'device'" );
+    debug() << QString( "Received %1 device plugin offers" ).arg( plugins.count() );
+
+    foreach( const KService::Ptr &service, plugins )
     {
-        Plugins::Plugin *plugin = Plugins::PluginManager::createFromService( *it );
-        if( plugin )
+        const QString name( service->property( "X-KDE-Amarok-name" ).toString() );
+        KPluginLoader loader( *( service.constData() ) );
+        KPluginFactory *pluginFactory = loader.factory();
+        if( pluginFactory )
         {
-            DeviceHandlerFactory *factory = static_cast<DeviceHandlerFactory*>( plugin );
-            if ( factory->canCreateFromMedium() )
-                m_mediumFactories.append( factory );
-            else if (factory->canCreateFromConfig() )
-                m_remoteFactories.append( factory );
+            DeviceHandlerFactory* factory( 0 );
+            if( (factory = pluginFactory->create<DeviceHandlerFactory>( this )) )
+            {
+                if ( factory->canCreateFromMedium() )
+                    m_mediumFactories.append( factory );
+                else if (factory->canCreateFromConfig() )
+                    m_remoteFactories.append( factory );
+                else //FIXME max: better error message
+                    debug() << "Unknown DeviceHandlerFactory";
+
+                Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageVolume );
+                QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
+                foreach( const Solid::Device &device, devices )
+                    createHandlerFromDevice( device, device.udi() );
+            }
             else
-                //FIXME max: better error message
-                debug() << "Unknown DeviceHandlerFactory";
+            {
+                debug() << QString( "Plugin '%1' has wrong factory class: %2" )
+                                             .arg( name, loader.errorString() );
+            }
         }
         else
-            debug() << "Plugin could not be loaded";
-
-        Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageVolume );
-        QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
-        foreach( const Solid::Device &device, devices )
-            createHandlerFromDevice( device, device.udi() );
+        {
+            warning() << QString( "Failed to get factory '%1' from KPluginLoader: %2" )
+                                                     .arg( name, loader.errorString() );
+        }
     }
 }
 

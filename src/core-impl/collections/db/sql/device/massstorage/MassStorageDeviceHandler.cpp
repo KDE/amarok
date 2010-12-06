@@ -18,9 +18,8 @@
 
 #include "MassStorageDeviceHandler.h"
 
-AMAROK_EXPORT_PLUGIN( MassStorageDeviceHandlerFactory )
-
 #include "core/support/Debug.h"
+#include "core/support/PluginUtility.h"
 #include "core/collections/support/SqlStorage.h"
 
 #include <kconfig.h>
@@ -28,6 +27,7 @@ AMAROK_EXPORT_PLUGIN( MassStorageDeviceHandlerFactory )
 #include <solid/storagevolume.h>
 #include <solid/storageaccess.h>
 
+AMAROK_EXPORT_DEVICE_PLUGIN( massstorage, MassStorageDeviceHandlerFactory )
 
 MassStorageDeviceHandler::MassStorageDeviceHandler(): DeviceHandler()
 {
@@ -122,7 +122,8 @@ bool MassStorageDeviceHandlerFactory::canHandle( const Solid::Device &device ) c
            && !volume->isIgnored() && !excludedFilesystem( volume->fsType() );
 }
 
-MassStorageDeviceHandlerFactory::MassStorageDeviceHandlerFactory( )
+MassStorageDeviceHandlerFactory::MassStorageDeviceHandlerFactory( QObject *parent, const QVariantList &args )
+    : DeviceHandlerFactory( parent, args )
 {
 }
 
