@@ -555,7 +555,8 @@ Meta::Tag::decodeMpeg( TagLib::MPEG::File *file )
 
             if( owner == QLatin1String( "http://musicbrainz.org" ) )
             {
-                if( isValidMusicBrainzId( identifier ) )
+                if( isValidMusicBrainzId( identifier ) &&
+                    !result.contains( Meta::valUniqueId ) ) // AFT id is prefered
                     result.insert( Meta::valUniqueId, identifier.prepend( "mb-" ) );
             }
             else if( owner == QLatin1String( "Amarok 2 AFTv1 - amarok.kde.org" ) )
@@ -634,7 +635,8 @@ Meta::Tag::decodeFMPS( const QString &identifier, const QString &value, bool cam
     else if( (camelCase  && identifier == QLatin1String( "MusicBrainz Track Id" )) ||
              (!camelCase && identifier == QLatin1String( "MUSICBRAINZ_TRACKID" )) )
     {
-        if( isValidMusicBrainzId( value ) )
+        if( isValidMusicBrainzId( value ) &&
+            !result.contains( Meta::valUniqueId ) ) // AFT id is prefered
             result.insert( Meta::valUniqueId,
                            QVariant("mb-" + value) );
     }
