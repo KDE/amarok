@@ -41,7 +41,7 @@ namespace Collections
 
     PlaydarCollectionFactory::PlaydarCollectionFactory( QObject* parent, const QVariantList &args )
         : CollectionFactory( parent )
-        , m_controller( new Playdar::Controller(this) )
+        , m_controller( 0 )
         , m_collectionIsManaged( false )
     {
         DEBUG_BLOCK
@@ -59,7 +59,7 @@ namespace Collections
     PlaydarCollectionFactory::init()
     {
         DEBUG_BLOCK
-
+        m_controller = new Playdar::Controller( this );
         connect( m_controller, SIGNAL( playdarReady() ),
                  this, SLOT( playdarReady() ) );
         connect( m_controller, SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
