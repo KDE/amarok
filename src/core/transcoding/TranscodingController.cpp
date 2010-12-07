@@ -24,36 +24,8 @@
 #include "formats/TranscodingVorbisFormat.h"
 #include "formats/TranscodingWmaFormat.h"
 
-namespace The
-{
-Transcoding::Controller *transcodingController()
-{
-    return Transcoding::Controller::instance();
-}
-}
-
 namespace Transcoding
 {
-
-Controller *Controller::s_instance = 0;
-
-Controller *
-Controller::instance()
-{
-    if( s_instance == 0 )
-        s_instance = new Controller();
-    return s_instance;
-}
-
-void
-Controller::destroy()
-{
-    if( s_instance )
-    {
-        delete s_instance;
-        s_instance = 0;
-    }
-}
 
 Controller::Controller( QObject *parent )
     : QObject( parent )

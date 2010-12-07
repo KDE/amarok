@@ -27,7 +27,7 @@ public:
         , sqlStorage( 0 )
         , applicationController( 0 )
         , collectionLocationDelegate( 0 )
-
+        , transcodingController( 0 )
     {}
 
     CollectionManager *collectionManager;
@@ -36,6 +36,7 @@ public:
     Amarok::Logger *logger;
     Amarok::ApplicationController *applicationController;
     Collections::CollectionLocationDelegate *collectionLocationDelegate;
+    Transcoding::Controller *transcodingController;
 };
 
 //using a static variable is ok in this case as ComponentsPrivate does nothing on destruction
@@ -70,4 +71,6 @@ COMPONENT_ACCESSORS( Amarok::Logger*, logger, setLogger )
 COMPONENT_ACCESSORS( Amarok::ApplicationController*, applicationController, setApplicationController )
 
 COMPONENT_ACCESSORS( Collections::CollectionLocationDelegate*, collectionLocationDelegate, setCollectionLocationDelegate )
+
+COMPONENT_ACCESSORS( Transcoding::Controller*, transcodingController, setTranscodingController )
 

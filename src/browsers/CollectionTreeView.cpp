@@ -1150,7 +1150,7 @@ void CollectionTreeView::slotCopyTracks()
         {
             Transcoding::Configuration configuration = Transcoding::Configuration();
 
-            if( !The::transcodingController()->availableFormats().isEmpty() )
+            if( !Amarok::Components::transcodingController()->availableFormats().isEmpty() )
             {
                 Transcoding::AssistantDialog dialog( this );
                 if( dialog.exec() )

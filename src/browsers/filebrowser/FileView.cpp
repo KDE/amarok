@@ -250,7 +250,7 @@ FileView::slotPrepareTranscodeTracks()
     debug()<<" SRC URL IS " << list.urlList().first();
     debug()<<" SRC URL IS " << list.urlList().first();
 
-    if( !The::transcodingController()->availableFormats().isEmpty() )
+    if( !Amarok::Components::transcodingController()->availableFormats().isEmpty() )
     {
         Transcoding::AssistantDialog *d = new Transcoding::AssistantDialog( this );
         debug() << "About to show Transcoding::AssistantDialog";

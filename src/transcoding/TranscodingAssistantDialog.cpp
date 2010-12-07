@@ -92,7 +92,7 @@ AssistantDialog::AssistantDialog( QWidget *parent )
 void
 AssistantDialog::populateFormatList()
 {
-    foreach( Format *format, The::transcodingController()->availableFormats() )
+    foreach( Format *format, Amarok::Components::transcodingController()->availableFormats() )
     {
         QListWidgetItem *item = new QListWidgetItem( format->icon(), format->prettyName() );
         item->setToolTip( format->description() );
@@ -112,7 +112,7 @@ AssistantDialog::onTranscodeWithDefaultsClicked() //SLOT
 {
     //REMOVE THIS BUTTON!
     m_configuration = Configuration( VORBIS );
-    foreach( Property property, The::transcodingController()->format( VORBIS )->propertyList() )
+    foreach( Property property, Amarok::Components::transcodingController()->format( VORBIS )->propertyList() )
     {
         switch( property.type() )
         {
@@ -122,6 +122,8 @@ AssistantDialog::onTranscodeWithDefaultsClicked() //SLOT
             m_configuration.addProperty( property.name(), property.defaultText() );
         case Property::LIST:
             m_configuration.addProperty( property.name(), property.defaultIndex() );
+        case Property::TRADEOFF:
+            m_configuration.addProperty( property.name(), property.defaultValue() );
         }
     }
     KDialog::done( KDialog::Accepted );
@@ -162,7 +164,7 @@ AssistantDialog::onFormatSelect( QListWidgetItem *item ) //SLOT
         ui.formatIconLabel->show();
         ui.formatNameLabel->show();
         Encoder encoder = static_cast< Encoder >( item->data( Qt::UserRole ).toInt() );
-        const Format *format = The::transcodingController()->format( encoder );
+        const Format *format = Amarok::Components::transcodingController()->format( encoder );
         ui.formatIconLabel->setPixmap( format->icon().pixmap( 32, 32 ) );
         ui.formatNameLabel->setText( format->prettyName() );
         ui.formatIconLabel->setToolTip( format->description() );
