@@ -42,6 +42,13 @@ IpodCollectionFactory::~IpodCollectionFactory()
 {
 }
 
+KPluginInfo
+IpodCollectionFactory::info() const
+{
+    KPluginInfo pluginInfo( "amarok_collection-ipodcollection.desktop", "services" );
+    return pluginInfo;
+}
+
 //IpodCollection
 
 IpodCollection::IpodCollection( MediaDeviceInfo* info )

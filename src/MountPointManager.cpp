@@ -109,6 +109,7 @@ MountPointManager::loadDevicePlugins( const QList<DeviceHandlerFactory*> &factor
         if( !enabled )
             continue;
 
+        debug() << "initializing:" << name;
         if( factory->canCreateFromMedium() )
             m_mediumFactories.append( factory );
         else if (factory->canCreateFromConfig() )

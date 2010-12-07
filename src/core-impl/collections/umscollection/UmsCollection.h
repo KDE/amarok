@@ -39,6 +39,7 @@ class UmsCollectionFactory : public MediaDeviceCollectionFactory<UmsCollection>
     public:
         UmsCollectionFactory( QObject *parent, const QVariantList &args );
         virtual ~UmsCollectionFactory();
+        virtual KPluginInfo info() const;
 };
 
 class UmsCollection : public MediaDeviceCollection

@@ -35,6 +35,7 @@ class MySqlEmbeddedCollectionFactory : public Collections::CollectionFactory
         virtual ~MySqlEmbeddedCollectionFactory() {}
 
         virtual void init();
+        virtual KPluginInfo info() const;
 };
 
 } //namespace Collections

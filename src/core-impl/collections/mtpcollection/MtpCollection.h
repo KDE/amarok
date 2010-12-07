@@ -40,6 +40,7 @@ class MtpCollectionFactory : public MediaDeviceCollectionFactory<MtpCollection>
     public:
         MtpCollectionFactory( QObject *parent, const QVariantList &args );
         virtual ~MtpCollectionFactory();
+        virtual KPluginInfo info() const;
 
 };
 

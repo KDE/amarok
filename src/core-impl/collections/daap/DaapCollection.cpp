@@ -53,6 +53,13 @@ DaapCollectionFactory::~DaapCollectionFactory()
     delete m_browser;
 }
 
+KPluginInfo
+DaapCollectionFactory::info() const
+{
+    KPluginInfo pluginInfo( "amarok_collection-daapcollection.desktop", "services" );
+    return pluginInfo;
+}
+
 void
 DaapCollectionFactory::init()
 {

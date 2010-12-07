@@ -28,8 +28,7 @@
 
 #include <KIcon>
 #include <KUrl>
-#include <KPluginFactory>
-#include <KPluginLoader>
+#include <KPluginInfo>
 
 namespace Playlists {
 class UserPlaylistProvider;
@@ -49,6 +48,8 @@ class AMAROK_CORE_EXPORT CollectionFactory : public QObject
         virtual ~CollectionFactory();
 
         virtual void init() = 0;
+
+        virtual KPluginInfo info() const = 0;
 
     signals:
         void newCollection( Collections::Collection *newCollection );

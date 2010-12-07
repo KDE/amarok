@@ -43,6 +43,13 @@ MySqlServerCollectionFactory::init()
     emit newCollection( collection );
 }
 
+KPluginInfo
+MySqlServerCollectionFactory::info() const
+{
+    KPluginInfo pluginInfo( "amarok_collection-mysqlservercollection.desktop", "services" );
+    return pluginInfo;
+}
+
 MySqlServerStorage::MySqlServerStorage()
     : MySqlStorage()
 {

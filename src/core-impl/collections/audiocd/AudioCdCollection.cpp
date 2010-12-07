@@ -59,6 +59,13 @@ AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVari
     Q_UNUSED( args );
 }
 
+KPluginInfo
+AudioCdCollectionFactory::info() const
+{
+    KPluginInfo pluginInfo( "amarok_collection-audiocdcollection.desktop", "services" );
+    return pluginInfo;
+}
+
 
 AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
    : MediaDeviceCollection()

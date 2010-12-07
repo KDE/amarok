@@ -71,6 +71,13 @@ namespace Collections
         CollectionManager::instance()->addTrackProvider( m_collection.data() );
     }
 
+    KPluginInfo
+    PlaydarCollectionFactory::info() const
+    {
+        KPluginInfo pluginInfo( "amarok_collection-playdarcollection.desktop", "services" );
+        return pluginInfo;
+    }
+
     void
     PlaydarCollectionFactory::checkStatus()
     {

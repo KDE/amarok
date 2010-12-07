@@ -41,6 +41,13 @@ UmsCollectionFactory::~UmsCollectionFactory()
 {
 }
 
+KPluginInfo
+UmsCollectionFactory::info() const
+{
+    KPluginInfo pluginInfo( "amarok_collection-umscollection.desktop", "services" );
+    return pluginInfo;
+}
+
 //UmsCollection
 
 UmsCollection::UmsCollection(MediaDeviceInfo* info)

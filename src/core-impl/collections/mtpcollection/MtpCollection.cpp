@@ -43,6 +43,13 @@ MtpCollectionFactory::~MtpCollectionFactory()
     // nothing to do
 }
 
+KPluginInfo
+MtpCollectionFactory::info() const
+{
+    KPluginInfo pluginInfo( "amarok_collection-mtpcollection.desktop", "services" );
+    return pluginInfo;
+}
+
 //MtpCollection
 
 MtpCollection::MtpCollection( MediaDeviceInfo* info )

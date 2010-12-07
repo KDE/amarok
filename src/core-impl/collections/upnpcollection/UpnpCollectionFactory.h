@@ -39,7 +39,8 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
     UpnpCollectionFactory( QObject *parent, const QVariantList &args );
     virtual ~UpnpCollectionFactory();
 
-    void init();
+    virtual void init();
+    virtual KPluginInfo info() const;
 
   private:
 

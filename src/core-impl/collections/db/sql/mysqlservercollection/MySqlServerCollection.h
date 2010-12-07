@@ -33,6 +33,7 @@ class MySqlServerCollectionFactory : public Collections::CollectionFactory
         virtual ~MySqlServerCollectionFactory() {}
 
         virtual void init();
+        virtual KPluginInfo info() const;
 };
 
 } //namespace Collections

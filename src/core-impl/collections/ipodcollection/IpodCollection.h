@@ -43,6 +43,7 @@ class IpodCollectionFactory : public MediaDeviceCollectionFactory<IpodCollection
     public:
         IpodCollectionFactory( QObject *parent, const QVariantList &args );
         virtual ~IpodCollectionFactory();
+        virtual KPluginInfo info() const;
 };
 
 class IpodCollection : public MediaDeviceCollection

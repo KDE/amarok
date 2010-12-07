@@ -92,6 +92,13 @@ void UpnpCollectionFactory::init()
     //}
 }
 
+KPluginInfo UpnpCollectionFactory::info() const
+{
+    KPluginInfo pluginInfo( "amarok_collection-upnpcollection.desktop", "services" );
+    return pluginInfo;
+}
+
+
 void UpnpCollectionFactory::slotDeviceAdded( const DeviceTypeMap &map )
 {
     foreach( QString udn, map.keys() ) {

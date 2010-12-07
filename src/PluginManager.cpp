@@ -25,6 +25,7 @@
 #include "services/ServiceBase.h"
 #include "services/ServicePluginManager.h"
 
+#include <KBuildSycocaProgressDialog>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KServiceTypeTrader>
@@ -57,12 +58,9 @@ Plugins::PluginManager::PluginManager( QObject *parent )
     setObjectName( "PluginManager" );
     s_instance = this;
 
-    m_servicePluginManager = new ServicePluginManager( this );
-    m_serviceFactories = findPlugins<ServiceFactory>( QLatin1String("service") );
-
-    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-    m_mountPointManager = static_cast<Collections::SqlCollection*>( coll )->mountPointManager();
-    m_deviceFactories = findPlugins<DeviceHandlerFactory>( QLatin1String("device") );
+    PERF_LOG( "Initialising Plugin Manager" )
+    init();
+    PERF_LOG( "Initialised Plugin Manager" )
 }
 
 Plugins::PluginManager::~PluginManager()
@@ -72,8 +70,64 @@ Plugins::PluginManager::~PluginManager()
 void
 Plugins::PluginManager::init()
 {
+    m_collectionFactories = findPlugins<Collections::CollectionFactory>( QLatin1String("collection") );
+    if( m_collectionFactories.isEmpty() )
+    {
+        debug() << "No Amarok collection plugins found, running kbuildsycoca4.";
+        KBuildSycocaProgressDialog::rebuildKSycoca( 0 );
+
+        debug() << "Second attempt at finding collection plugins";
+        m_collectionFactories = findPlugins<Collections::CollectionFactory>( QLatin1String("collection") );
+
+        if( m_collectionFactories.isEmpty() )
+        {
+            KMessageBox::error( 0, i18n(
+                    "<p>Amarok could not find any collection plugins. "
+                    "It is possible that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
+                    "$ cd /path/to/amarok/source-code/<br>"
+                    "$ su -c \"make uninstall\"<br>"
+                    "$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>"
+                    "$ kbuildsycoca4 --noincremental<br>"
+                    "$ amarok</pre>"
+                    "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
+            // don't use QApplication::exit, as the eventloop may not have started yet
+            std::exit( EXIT_SUCCESS );
+        }
+    }
+
+    PERF_LOG( "Loading collection plugins" )
+    CollectionManager::instance()->init( m_collectionFactories );
+    PERF_LOG( "Loaded collection plugins" )
+
+    m_servicePluginManager = new ServicePluginManager( this );
+    m_serviceFactories = findPlugins<ServiceFactory>( QLatin1String("service") );
+
+    PERF_LOG( "Loading service plugins" )
     m_servicePluginManager->init( m_serviceFactories );
+    PERF_LOG( "Loaded service plugins" )
+
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
+    m_mountPointManager = static_cast<Collections::SqlCollection*>( coll )->mountPointManager();
+    m_deviceFactories = findPlugins<DeviceHandlerFactory>( QLatin1String("device") );
+
+    PERF_LOG( "Loading device plugins" )
     m_mountPointManager->loadDevicePlugins( m_deviceFactories );
+    PERF_LOG( "Loaded device plugins" )
+}
+
+KPluginInfo::List
+Plugins::PluginManager::collectionPluginInfos() const
+{
+    KPluginInfo::List infos;
+    foreach( Collections::CollectionFactory *factory, m_collectionFactories )
+        infos.append( factory->info() );
+    return infos;
+}
+
+QList<Collections::CollectionFactory*>
+Plugins::PluginManager::collectionFactories() const
+{
+    return m_collectionFactories;
 }
 
 KPluginInfo::List

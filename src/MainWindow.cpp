@@ -295,20 +295,13 @@ MainWindow::init()
         m_browserDock.data()->list()->addCategory( m_playlistBrowser );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
-
         PERF_LOG( "Creating FileBrowser" )
         FileBrowser * fileBrowserMkII = new FileBrowser( "files", 0 );
         fileBrowserMkII->setPrettyName( i18n("Files") );
         fileBrowserMkII->setIcon( KIcon( "folder-amarok" ) );
         fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );
         m_browserDock.data()->list()->addCategory( fileBrowserMkII );
-
-
         PERF_LOG( "Created FileBrowser" )
-
-        PERF_LOG( "Initialising Plugin Manager" )
-        The::pluginManager()->init();
-        PERF_LOG( "Initialised Plugin Manager" )
 
         internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )

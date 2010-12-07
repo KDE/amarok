@@ -37,5 +37,11 @@ MySqlEmbeddedCollectionFactory::init()
     emit newCollection( collection );
 }
 
-#include "MySqlEmbeddedCollection.moc"
+KPluginInfo
+MySqlEmbeddedCollectionFactory::info() const
+{
+    KPluginInfo pluginInfo( "amarok_collection-mysqlecollection.desktop", "services" );
+    return pluginInfo;
+}
 
+#include "MySqlEmbeddedCollection.moc"

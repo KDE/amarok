@@ -26,6 +26,9 @@ class DeviceHandlerFactory;
 class MountPointManager;
 class ServicePluginManager;
 class ServiceFactory;
+namespace Collections {
+    class CollectionFactory;
+}
 
 namespace Plugins {
 
@@ -57,6 +60,9 @@ class AMAROK_EXPORT PluginManager : public QObject
 
         KPluginInfo::List devicePluginInfos() const;
         QList<DeviceHandlerFactory*> deviceFactories() const;
+
+        KPluginInfo::List collectionPluginInfos() const;
+        QList<Collections::CollectionFactory*> collectionFactories() const;
 
         /**
          * It will return a list of services that match your
@@ -102,6 +108,7 @@ class AMAROK_EXPORT PluginManager : public QObject
         ServicePluginManager *m_servicePluginManager;
         QList<ServiceFactory*> m_serviceFactories;
         QList<DeviceHandlerFactory*> m_deviceFactories;
+        QList<Collections::CollectionFactory*> m_collectionFactories;
 
         static const int s_pluginFrameworkVersion;
         static PluginManager *s_instance;

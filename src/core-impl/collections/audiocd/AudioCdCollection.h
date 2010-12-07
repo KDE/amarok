@@ -40,6 +40,8 @@ public:
     AudioCdCollectionFactory( QObject *parent, const QVariantList &args );
     virtual ~AudioCdCollectionFactory() {};
 
+    virtual KPluginInfo info() const;
+
 /*    virtual void init();
 
 private slots:

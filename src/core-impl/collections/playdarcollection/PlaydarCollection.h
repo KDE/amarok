@@ -43,6 +43,7 @@ namespace Collections
             virtual ~PlaydarCollectionFactory();
             
             virtual void init();
+            virtual KPluginInfo info() const;
             
         private Q_SLOTS:
             void checkStatus();
