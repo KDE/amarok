@@ -72,7 +72,7 @@ private:
 
 namespace The
 {
-    AMAROK_EXPORT Transcoding::Controller *transcodingController();
+    AMAROK_CORE_EXPORT Transcoding::Controller *transcodingController();
 }
 
 #endif //TRANSCODING_CONTROLLER_H

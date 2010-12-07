@@ -26,7 +26,7 @@
 
 namespace The
 {
-AMAROK_EXPORT Transcoding::Controller *transcodingController()
+Transcoding::Controller *transcodingController()
 {
     return Transcoding::Controller::instance();
 }
