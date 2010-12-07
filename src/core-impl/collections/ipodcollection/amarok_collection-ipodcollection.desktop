@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Service
+Icon=multimedia-player-apple-ipod
 Name=Ipod Collection
 Name[be]=Калекцыя Ipod
 Name[bg]=Колекция IPod 
@@ -109,8 +110,6 @@ Comment[zh_TW]=Amarok 的 Ipod 收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=amarok_collection-ipodcollection
-
 X-KDE-Amarok-authors=Alejandro Wainzinger
 X-KDE-Amarok-email=aikawarazuni@gmail.com
 X-KDE-Amarok-framework-version=59
@@ -118,3 +117,12 @@ X-KDE-Amarok-name=ipod-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
+
+X-KDE-PluginInfo-Author=Alejandro Wainzinger
+X-KDE-PluginInfo-Email=aikawarazuni@gmail.com
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Collection
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-Name=amarok_collection-ipodcollection
+X-KDE-Library=amarok_collection-ipodcollection

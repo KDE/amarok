@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Service
+Icon=drive-removable-media-usb-pendrive
 Name=Universal Mass Storage Collection
 Name[bg]=Колекция Universal Mass Storage
 Name[ca]=Col·lecció d'emmagatzematge en massa universal
@@ -42,8 +43,6 @@ Name[zh_TW]=通用大容量儲存裝置收藏
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=amarok_collection-umscollection
-
 X-KDE-Amarok-authors=Alejandro Wainzinger
 X-KDE-Amarok-email=aikawarazuni@gmail.com
 X-KDE-Amarok-framework-version=59
@@ -51,3 +50,12 @@ X-KDE-Amarok-name=ums-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
+
+X-KDE-PluginInfo-Author=Alejandro Wainzinger
+X-KDE-PluginInfo-Email=aikawarazuni@gmail.com
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Collection
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-Name=amarok_collection-umscollection
+X-KDE-Library=amarok_collection-umscollection
