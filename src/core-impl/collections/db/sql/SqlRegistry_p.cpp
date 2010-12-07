@@ -336,8 +336,8 @@ TrackStatisticsTableCommitter::getValues( Meta::SqlTrack *track )
     result << nullDate( track->m_firstPlayed );
     result << nullDate( track->m_lastPlayed );
     result << nullNumber( track->m_score );
-    result << nullNumber( track->m_rating );
-    result << nullNumber( track->m_playCount );
+    result << QString::number( track->m_rating ); // NOT NULL
+    result << QString::number( track->m_playCount ); // NOT NULL
     result << "0"; // not deleted
     return result;
 }
