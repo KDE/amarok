@@ -20,6 +20,8 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/db/sql/SqlCollection.h"
+#include "MountPointManager.h"
 #include "services/ServiceBase.h"
 #include "services/ServicePluginManager.h"
 
@@ -57,6 +59,10 @@ Plugins::PluginManager::PluginManager( QObject *parent )
 
     m_servicePluginManager = new ServicePluginManager( this );
     m_serviceFactories = findPlugins<ServiceFactory>( QLatin1String("service") );
+
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
+    m_mountPointManager = static_cast<Collections::SqlCollection*>( coll )->mountPointManager();
+    m_deviceFactories = findPlugins<DeviceHandlerFactory>( QLatin1String("device") );
 }
 
 Plugins::PluginManager::~PluginManager()
@@ -67,6 +73,16 @@ void
 Plugins::PluginManager::init()
 {
     m_servicePluginManager->init( m_serviceFactories );
+    m_mountPointManager->loadDevicePlugins( m_deviceFactories );
+}
+
+KPluginInfo::List
+Plugins::PluginManager::servicePluginInfos() const
+{
+    KPluginInfo::List infos;
+    foreach( ServiceFactory *factory, m_serviceFactories )
+        infos.append( factory->info() );
+    return infos;
 }
 
 QList<ServiceFactory*>
@@ -79,6 +95,21 @@ ServicePluginManager *
 Plugins::PluginManager::servicePluginManager()
 {
     return m_servicePluginManager;
+}
+
+KPluginInfo::List
+Plugins::PluginManager::devicePluginInfos() const
+{
+    KPluginInfo::List infos;
+    foreach( DeviceHandlerFactory *factory, m_deviceFactories )
+        infos.append( factory->info() );
+    return infos;
+}
+
+QList<DeviceHandlerFactory*>
+Plugins::PluginManager::deviceFactories() const
+{
+    return m_deviceFactories;
 }
 
 void

@@ -42,13 +42,11 @@ PluginsConfig::PluginsConfig( QWidget *parent )
     connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
     connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );
 
-    QList<ServiceFactory*> serviceFactories = The::pluginManager()->serviceFactories();
-
-    KPluginInfo::List pluginInfoList;
-    foreach( ServiceFactory *factory, serviceFactories )
-        pluginInfoList.append( factory->info() );
-
+    KPluginInfo::List pluginInfoList = The::pluginManager()->servicePluginInfos();
     m_selector->addPlugins( pluginInfoList, KPluginSelector::ReadConfigFile, i18n("Internet Services") );
+
+    pluginInfoList = The::pluginManager()->devicePluginInfos();
+    m_selector->addPlugins( pluginInfoList, KPluginSelector::ReadConfigFile, i18n("Devices") );
 }
 
 PluginsConfig::~PluginsConfig()

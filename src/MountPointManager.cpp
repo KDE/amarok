@@ -23,7 +23,6 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/collections/support/SqlStorage.h"
-#include "PluginManager.h"
 #include "statusbar/StatusBar.h"
 
 //solid stuff
@@ -66,10 +65,6 @@ MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
     connect( MediaDeviceCache::instance(), SIGNAL( deviceAdded( QString ) ), SLOT( deviceAdded( QString ) ) );
     connect( MediaDeviceCache::instance(), SIGNAL( deviceRemoved( QString ) ), SLOT( deviceRemoved( QString ) ) );
 
-    PERF_LOG( "Loading device plugins" )
-    init();
-    PERF_LOG( "Loaded device plugins" )
-
 //     SqlStorage *collDB = CollectionManager::instance()->sqlStorage();
 
     //FIXME: Port 2.0
@@ -90,7 +85,7 @@ MountPointManager::~MountPointManager()
     m_handlerMapMutex.lock();
     foreach( DeviceHandler *dh, m_handlerMap )
         delete dh;
-    
+
     while( !m_mediumFactories.isEmpty() )
         delete m_mediumFactories.takeFirst();
     while( !m_remoteFactories.isEmpty() )
@@ -100,45 +95,31 @@ MountPointManager::~MountPointManager()
 
 
 void
-MountPointManager::init()
+MountPointManager::loadDevicePlugins( const QList<DeviceHandlerFactory*> &factories )
 {
     DEBUG_BLOCK
-    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'device'" );
-    debug() << QString( "Received %1 device plugin offers" ).arg( plugins.count() );
-
-    foreach( const KService::Ptr &service, plugins )
+    foreach( DeviceHandlerFactory *factory, factories )
     {
-        const QString name( service->property( "X-KDE-Amarok-name" ).toString() );
-        KPluginLoader loader( *( service.constData() ) );
-        KPluginFactory *pluginFactory = loader.factory();
-        if( pluginFactory )
-        {
-            DeviceHandlerFactory* factory( 0 );
-            if( (factory = pluginFactory->create<DeviceHandlerFactory>( this )) )
-            {
-                if ( factory->canCreateFromMedium() )
-                    m_mediumFactories.append( factory );
-                else if (factory->canCreateFromConfig() )
-                    m_remoteFactories.append( factory );
-                else //FIXME max: better error message
-                    debug() << "Unknown DeviceHandlerFactory";
+        if( !factory )
+            continue;
 
-                Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageVolume );
-                QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
-                foreach( const Solid::Device &device, devices )
-                    createHandlerFromDevice( device, device.udi() );
-            }
-            else
-            {
-                debug() << QString( "Plugin '%1' has wrong factory class: %2" )
-                                             .arg( name, loader.errorString() );
-            }
-        }
-        else
-        {
-            warning() << QString( "Failed to get factory '%1' from KPluginLoader: %2" )
-                                                     .arg( name, loader.errorString() );
-        }
+        KPluginInfo info = factory->info();
+        QString name = info.pluginName();
+        bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", info.isPluginEnabledByDefault() );
+        if( !enabled )
+            continue;
+
+        if( factory->canCreateFromMedium() )
+            m_mediumFactories.append( factory );
+        else if (factory->canCreateFromConfig() )
+            m_remoteFactories.append( factory );
+        else //FIXME max: better error message
+            debug() << "Unknown DeviceHandlerFactory";
+
+        Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageVolume );
+        QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
+        foreach( const Solid::Device &device, devices )
+            createHandlerFromDevice( device, device.udi() );
     }
 }
 
@@ -385,7 +366,7 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
     typedef QMap<int, QStringList> FolderMap;
     KConfigGroup folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
-    
+
     foreach( const QString &folder, folders )
     {
         int id = getIdForUrl( folder );

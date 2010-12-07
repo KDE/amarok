@@ -41,6 +41,8 @@ public:
 
     virtual QString type() const;
 
+    virtual KPluginInfo info() const;
+
 private:
     bool excludedFilesystem( const QString &fstype ) const;
 };

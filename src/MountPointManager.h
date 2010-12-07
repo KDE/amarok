@@ -18,10 +18,11 @@
 #define AMAROK_MOUNTPOINTMANAGER_H
 
 #include "core/support/Amarok.h"
-#include "amarok_sqlcollection_export.h"
+#include "shared/amarok_export.h"
 
 #include <KConfigGroup>
 #include <KUrl>
+#include <KPluginInfo>
 #include <solid/device.h>
 #include <threadweaver/Job.h>
 
@@ -37,7 +38,7 @@ typedef QList<int> IdList;
 typedef QList<DeviceHandlerFactory*> FactoryList;
 typedef QMap<int, DeviceHandler*> HandlerMap;
 
-class AMAROK_SQLCOLLECTION_EXPORT DeviceHandlerFactory : public QObject
+class AMAROK_EXPORT DeviceHandlerFactory : public QObject
 {
     Q_OBJECT
 
@@ -78,13 +79,14 @@ public:
      */
     virtual QString type() const = 0;
 
+    virtual KPluginInfo info() const = 0;
 };
 
 /**
  *
  *
  */
-class AMAROK_SQLCOLLECTION_EXPORT DeviceHandler
+class AMAROK_EXPORT DeviceHandler
 {
 public:
     DeviceHandler() {}
@@ -140,7 +142,7 @@ public:
 /**
  *	@author Maximilian Kossick <maximilian.kossick@googlemail.com>
  */
-class AMAROK_SQLCOLLECTION_EXPORT MountPointManager : public QObject
+class AMAROK_EXPORT MountPointManager : public QObject
 {
     Q_OBJECT
 
@@ -188,6 +190,8 @@ public:
     virtual QStringList collectionFolders() const;
     virtual void setCollectionFolders( const QStringList &folders );
 
+    void loadDevicePlugins( const QList<DeviceHandlerFactory*> &factories );
+
 public slots:
 //     void mediumAdded( const Medium *m );
 //     /**
@@ -217,7 +221,6 @@ private:
      * @return true if the medium is mounted, false otherwise
      */
     bool isMounted ( const int deviceId ) const;
-    void init();
 
     SqlStorage *m_storage;
     /**

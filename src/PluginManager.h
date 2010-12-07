@@ -17,10 +17,13 @@
 #ifndef AMAROK_PLUGINMANAGER_H
 #define AMAROK_PLUGINMANAGER_H
 
+#include <KPluginInfo>
 #include <KService>
 
 #include "shared/amarok_export.h"
 
+class DeviceHandlerFactory;
+class MountPointManager;
 class ServicePluginManager;
 class ServiceFactory;
 
@@ -47,9 +50,13 @@ class AMAROK_EXPORT PluginManager : public QObject
 
         void checkPluginEnabledStates();
 
+        KPluginInfo::List servicePluginInfos() const;
         QList<ServiceFactory*> serviceFactories() const;
 
         ServicePluginManager *servicePluginManager();
+
+        KPluginInfo::List devicePluginInfos() const;
+        QList<DeviceHandlerFactory*> deviceFactories() const;
 
         /**
          * It will return a list of services that match your
@@ -91,8 +98,10 @@ class AMAROK_EXPORT PluginManager : public QObject
         AMAROK_EXPORT static void showAbout( const QString& constraint );
 
     private:
+        MountPointManager *m_mountPointManager;
         ServicePluginManager *m_servicePluginManager;
         QList<ServiceFactory*> m_serviceFactories;
+        QList<DeviceHandlerFactory*> m_deviceFactories;
 
         static const int s_pluginFrameworkVersion;
         static PluginManager *s_instance;

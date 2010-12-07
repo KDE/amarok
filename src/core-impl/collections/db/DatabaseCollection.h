@@ -19,11 +19,11 @@
 #ifndef AMAROK_COLLECTION_DATABASECOLLECTION_H
 #define AMAROK_COLLECTION_DATABASECOLLECTION_H
 
-#include <core/collections/Collection.h>
-#include <core-impl/collections/db/amarok_databasecollection_export.h>
-#include <core-impl/collections/support/CollectionManager.h>
-#include <core-impl/collections/db/ScanResultProcessor.h>
-#include <core-impl/collections/db/sql/MountPointManager.h>
+#include "core/collections/Collection.h"
+#include "core-impl/collections/db/amarok_databasecollection_export.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/db/ScanResultProcessor.h"
+#include "MountPointManager.h"
 
 #include <QMutex>
 

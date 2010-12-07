@@ -93,6 +93,13 @@ QString MassStorageDeviceHandlerFactory::type( ) const
     return "uuid";
 }
 
+KPluginInfo MassStorageDeviceHandlerFactory::info() const
+{
+    KPluginInfo pluginInfo( "amarok_device_massstorage.desktop", "services" );
+    pluginInfo.setConfig( Amarok::config("Device_MassiveStorage") );
+    return pluginInfo;
+}
+
 bool MassStorageDeviceHandlerFactory::canCreateFromMedium( ) const
 {
     return true;

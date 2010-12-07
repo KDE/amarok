@@ -21,7 +21,6 @@ include_directories(
 set(amarok_collection-sqlcollection_SRCS
     CapabilityDelegateImpl.cpp
     DatabaseUpdater.cpp
-    MountPointManager.cpp
     ../ScanManager.cpp
     ../DatabaseCollection.cpp
     ../ScanResultProcessor.cpp
