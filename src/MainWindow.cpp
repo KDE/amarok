@@ -59,12 +59,12 @@
 #include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PodcastCategory.h"
-#include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
 #include "toolbar/SlimToolbar.h"
 #include "toolbar/MainToolbar.h"
 #include "SvgHandler.h"
+#include "PluginManager.h"
 #include "widgets/Splitter.h"
 //#include "mediabrowser.h"
 
@@ -136,16 +136,16 @@ MainWindow::MainWindow()
     CollectionManager::instance();
     PERF_LOG( "Started Collection Manager instance" )
 
-    /* The ServicePluginManager needs to be loaded before the playlist model
+    /* The PluginManager needs to be loaded before the playlist model
     * (which gets started by "statusBar" below up so that it can handle any
     * tracks in the saved playlist that are associated with services. Eg, if
     * the playlist has a Magnatune track in it when Amarok is closed, then the
     * Magnatune service needs to be initialized before the playlist is loaded
     * here. */
 
-    PERF_LOG( "Instantiate Service Plugin Manager" )
-    ServicePluginManager::instance();
-    PERF_LOG( "Started Service Plugin Manager instance" )
+    PERF_LOG( "Instantiate Plugin Manager" )
+    The::pluginManager();
+    PERF_LOG( "Started Plugin Manager instance" )
 
     PERF_LOG( "Set Status Bar" )
     StatusBar * statusBar = new StatusBar( this );
@@ -306,9 +306,9 @@ MainWindow::init()
 
         PERF_LOG( "Created FileBrowser" )
 
-        PERF_LOG( "Initialising ServicePluginManager" )
-        ServicePluginManager::instance()->init();
-        PERF_LOG( "Initialised ServicePluginManager" )
+        PERF_LOG( "Initialising Plugin Manager" )
+        The::pluginManager()->init();
+        PERF_LOG( "Initialised Plugin Manager" )
 
         internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )

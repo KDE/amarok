@@ -69,7 +69,6 @@ set(libcore_support_SRCS
     support/Components.cpp
     support/SmartPointerList.cpp
     support/Debug.cpp
-    support/PluginUtility.cpp
 )
 
 set(libcore_transcoding_SRCS

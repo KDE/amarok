@@ -20,16 +20,16 @@
 
 #include "core/support/Debug.h"
 
-#include "EngineController.h"
 #include "core/capabilities/CollectionScanCapability.h"
 #include "core/collections/Collection.h"
 #include "core/collections/MetaQueryMaker.h"
 #include "core/collections/support/SqlStorage.h"
-#include "core/support/PluginUtility.h"
 #include "core/support/SmartPointerList.h"
 #include "core-impl/meta/file/File.h"
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
+#include "EngineController.h"
+#include "PluginManager.h"
 
 #include <QList>
 #include <QMetaEnum>
@@ -147,7 +147,7 @@ CollectionManager::init()
     m_timecodeTrackProvider = new TimecodeTrackProvider();
     addTrackProvider( m_timecodeTrackProvider );
 
-    KService::List plugins = Plugins::PluginUtility::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
+    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
     debug() << QString( "Received %1 collection plugin offers" ).arg( plugins.count() );
 
     if( plugins.isEmpty() )
@@ -155,7 +155,7 @@ CollectionManager::init()
         debug() << "No Amarok plugins found, running kbuildsycoca4.";
         KBuildSycocaProgressDialog::rebuildKSycoca( 0 );
 
-        plugins = Plugins::PluginUtility::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
+        plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
         debug() << QString( "Second attempt: Received %1 collection plugin offers" ).arg( plugins.count() );
 
         if( plugins.isEmpty() )

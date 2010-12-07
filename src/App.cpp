@@ -23,6 +23,7 @@
 #include "KNotificationBackend.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
+#include "PluginManager.h"
 #include "ScriptManager.h"
 #include "TrayIcon.h"
 #include "amarokconfig.h"
@@ -40,7 +41,6 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core/support/PluginUtility.h"
 #include "core/transcoding/TranscodingController.h"
 #include "covermanager/CoverFetcher.h"
 #include "dbus/CollectionDBusHandler.h"
@@ -269,6 +269,7 @@ App::~App()
     CollectionManager::destroy();
     CoverFetcher::destroy();
     NetworkAccessManagerProxy::destroy();
+    Plugins::PluginManager::destroy();
 
     //this should be moved to App::quit() I guess
     Amarok::Components::applicationController()->shutdown();

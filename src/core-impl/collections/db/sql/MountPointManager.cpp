@@ -22,9 +22,9 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core/support/PluginUtility.h"
-#include "statusbar/StatusBar.h"
 #include "core/collections/support/SqlStorage.h"
+#include "PluginManager.h"
+#include "statusbar/StatusBar.h"
 
 //solid stuff
 #include <solid/predicate.h>
@@ -103,7 +103,7 @@ void
 MountPointManager::init()
 {
     DEBUG_BLOCK
-    KService::List plugins = Plugins::PluginUtility::query( "[X-KDE-Amarok-plugintype] == 'device'" );
+    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'device'" );
     debug() << QString( "Received %1 device plugin offers" ).arg( plugins.count() );
 
     foreach( const KService::Ptr &service, plugins )

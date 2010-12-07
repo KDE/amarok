@@ -22,7 +22,7 @@
 #include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "MediaDevice.h"
-#include "core/support/PluginUtility.h"
+#include "core/support/PluginManager.h"
 #include "ScriptManager.h"
 
 #include <KLocale>

@@ -14,23 +14,118 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "PluginUtility"
+#define DEBUG_PREFIX "PluginManager"
 
-#include "core/support/PluginUtility.h"
+#include "PluginManager.h"
 
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "services/ServiceBase.h"
+#include "services/ServicePluginManager.h"
 
 #include <KLocalizedString>
 #include <KMessageBox>
+#include <KServiceTypeTrader>
 
 #include <QFile>
 
+const int Plugins::PluginManager::s_pluginFrameworkVersion = 59;
+Plugins::PluginManager* Plugins::PluginManager::s_instance = 0;
+
+Plugins::PluginManager*
+Plugins::PluginManager::instance()
+{
+    return s_instance ? s_instance : new PluginManager();
+}
+
+void
+Plugins::PluginManager::destroy()
+{
+    if( s_instance )
+    {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
+
+Plugins::PluginManager::PluginManager( QObject *parent )
+    : QObject( parent )
+{
+    DEBUG_BLOCK
+    setObjectName( "PluginManager" );
+    s_instance = this;
+
+    m_servicePluginManager = new ServicePluginManager( this );
+    m_serviceFactories = findPlugins<ServiceFactory>( QLatin1String("service") );
+}
+
+Plugins::PluginManager::~PluginManager()
+{
+}
+
+void
+Plugins::PluginManager::init()
+{
+    m_servicePluginManager->init( m_serviceFactories );
+}
+
+QList<ServiceFactory*>
+Plugins::PluginManager::serviceFactories() const
+{
+    return m_serviceFactories;
+}
+
+ServicePluginManager *
+Plugins::PluginManager::servicePluginManager()
+{
+    return m_servicePluginManager;
+}
+
+void
+Plugins::PluginManager::checkPluginEnabledStates()
+{
+    DEBUG_BLOCK
+    m_servicePluginManager->checkEnabledStates( m_serviceFactories );
+}
+
+template<typename T>
+QList<T*>
+Plugins::PluginManager::findPlugins( const QString &type )
+{
+    DEBUG_BLOCK
+    QString pluginsQuery = QString::fromLatin1( "[X-KDE-Amarok-plugintype] == '%1'" ).arg( type );
+    KService::List plugins = Plugins::PluginManager::query( pluginsQuery );
+    debug() << QString( "Received %1 plugin offers for %2 type" ).arg( plugins.count() ).arg( type );
+
+    QList<T*> factories;
+    foreach( const KService::Ptr &service, plugins )
+    {
+        const QString name( service->property( QLatin1String("X-KDE-Amarok-name") ).toString() );
+        KPluginLoader loader( *( service.constData() ) );
+        KPluginFactory *pluginFactory( loader.factory() );
+
+        if( !pluginFactory )
+        {
+            warning() << QString( "Failed to get factory '%1' from KPluginLoader: %2" )
+                            .arg( name, loader.errorString() );
+            continue;
+        }
+
+        T *factory = 0;
+        if( (factory = pluginFactory->create<T>( this )) )
+            factories << factory;
+        else
+            debug() << "Plugin" << name << "has wrong factory class:" << loader.errorString();
+    }
+    return factories;
+}
+
 KService::List
-Plugins::PluginUtility::query( const QString &constraint )
+Plugins::PluginManager::query( const QString &constraint )
 {
     // Add versioning constraint
     QString str = QString::fromLatin1( "[X-KDE-Amarok-framework-version] == %1" )
-            .arg( Plugins::PluginFrameworkVersion );
+            .arg( s_pluginFrameworkVersion );
     if( !constraint.trimmed().isEmpty() )
         str += QString::fromLatin1( " and %1" ).arg( constraint );
     str += QString::fromLatin1( " and [X-KDE-Amarok-rank] > 0" );
@@ -40,7 +135,7 @@ Plugins::PluginUtility::query( const QString &constraint )
 }
 
 void
-Plugins::PluginUtility::showAbout( const QString &constraint )
+Plugins::PluginManager::showAbout( const QString &constraint )
 {
     KService::List offers = query( constraint );
 
@@ -66,13 +161,13 @@ Plugins::PluginUtility::showAbout( const QString &constraint )
 }
 
 void
-Plugins::PluginUtility::dump( const KService::Ptr service )
+Plugins::PluginManager::dump( const KService::Ptr service )
 {
     #define ENDLI endl << Debug::indent()
 
     debug()
       << ENDLI
-      << "PluginUtility Service Info:" << ENDLI
+      << "PluginManager Service Info:" << ENDLI
       << "---------------------------" << ENDLI
       << "name                          :" << service->name() << ENDLI
       << "library                       :" << service->library() << ENDLI
@@ -88,3 +183,11 @@ Plugins::PluginUtility::dump( const KService::Ptr service )
 
     #undef ENDLI
 }
+
+int
+Plugins::PluginManager::pluginFrameworkVersion()
+{
+    return s_pluginFrameworkVersion;
+}
+
+#include "PluginManager.moc"

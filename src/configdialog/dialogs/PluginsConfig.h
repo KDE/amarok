@@ -38,12 +38,10 @@ public:
 
 public slots:
     void slotConfigChanged( bool changed );
-    void slotConfigComitted( const QByteArray & name );
 
 private:
     bool m_configChanged;
     KPluginSelector *m_selector;
-    QStringList m_changedPlugins;
 };
 
 #endif // AMAROK_PLUGINSCONFIG_H

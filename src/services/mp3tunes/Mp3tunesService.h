@@ -42,6 +42,9 @@ class Mp3tunesServiceFactory: public ServiceFactory
         virtual QString name();
         virtual KPluginInfo info();
         virtual KConfigGroup config();
+
+    private:
+        ServiceBase* createService();
 };
 
 

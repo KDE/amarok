@@ -628,6 +628,7 @@ set(amaroklib_LIB_SRCS
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
+    PluginManager.cpp
     StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp

@@ -19,8 +19,8 @@
 #include "MassStorageDeviceHandler.h"
 
 #include "core/support/Debug.h"
-#include "core/support/PluginUtility.h"
 #include "core/collections/support/SqlStorage.h"
+#include "PluginManager.h"
 
 #include <kconfig.h>
 #include <kurl.h>

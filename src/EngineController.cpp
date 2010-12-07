@@ -40,13 +40,13 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core/support/PluginUtility.h"
 #include "playlist/PlaylistActions.h"
 
 #include <KFileItem>
 #include <KIO/Job>
 #include <KMessageBox>
 #include <KRun>
+#include <KServiceTypeTrader>
 
 #include <Phonon/AudioOutput>
 #include <Phonon/BackendCapabilities>

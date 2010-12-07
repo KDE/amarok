@@ -19,8 +19,10 @@
 #include "PluginsConfig.h"
 
 #include "core/support/Debug.h"
-#include "services/ServicePluginManager.h"
+#include "services/ServiceBase.h"
+#include "PluginManager.h"
 
+#include <KPluginInfo>
 #include <KPluginSelector>
 
 #include <QVBoxLayout>
@@ -39,11 +41,10 @@ PluginsConfig::PluginsConfig( QWidget *parent )
 
     connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
     connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );
-    connect( m_selector, SIGNAL(configCommitted(QByteArray)), SLOT(slotConfigComitted(QByteArray)) );
 
-    QList<ServiceFactory*> serviceFactories = ServicePluginManager::instance()->factories().values();
+    QList<ServiceFactory*> serviceFactories = The::pluginManager()->serviceFactories();
 
-    QList<KPluginInfo> pluginInfoList;
+    KPluginInfo::List pluginInfoList;
     foreach( ServiceFactory *factory, serviceFactories )
         pluginInfoList.append( factory->info() );
 
@@ -58,40 +59,30 @@ void PluginsConfig::updateSettings()
     DEBUG_BLOCK
     if( m_configChanged )
     {
+        debug() << "config changed";
         m_selector->save();
-        foreach( const QString &name, m_changedPlugins )
-            ServicePluginManager::instance()->settingsChanged( name );
 
         // check if any services were disabled and needs to be removed, or any
         // that are hidden needs to be enabled
-        ServicePluginManager::instance()->checkEnabledStates();
+        The::pluginManager()->checkPluginEnabledStates();
     }
 }
 
 bool PluginsConfig::hasChanged()
 {
-    DEBUG_BLOCK
     return m_configChanged;
 }
 
 bool PluginsConfig::isDefault()
 {
-    DEBUG_BLOCK
     return false;
 }
 
 void PluginsConfig::slotConfigChanged( bool changed )
 {
-    DEBUG_BLOCK
     m_configChanged = changed;
-}
-
-void PluginsConfig::slotConfigComitted( const QByteArray & name )
-{
-    DEBUG_BLOCK
-    debug() << "config comitted for: " << name;
-    m_configChanged = true;
-    m_changedPlugins << QString( name );
+    if( changed )
+        debug() << "config changed";
 }
 
 #include "PluginsConfig.moc"

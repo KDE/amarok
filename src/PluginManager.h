@@ -18,23 +18,39 @@
 #define AMAROK_PLUGINMANAGER_H
 
 #include <KService>
-#include <KServiceTypeTrader>
-
-#include <vector>
 
 #include "shared/amarok_export.h"
 
-class KPluginLoader;
+class ServicePluginManager;
+class ServiceFactory;
 
 namespace Plugins {
 
-static const int PluginFrameworkVersion = 59;
-
-class Plugin;
-
-class PluginUtility
+class AMAROK_EXPORT PluginManager : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY( int pluginFrameworkVersion READ pluginFrameworkVersion )
+
     public:
+        ~PluginManager();
+
+        AMAROK_EXPORT static PluginManager *instance();
+        AMAROK_EXPORT static void destroy();
+
+        template<typename T>
+            QList<T*> findPlugins( const QString &type );
+
+        /**
+         * Load any services that are configured to be loaded
+         */
+        void init();
+
+        void checkPluginEnabledStates();
+
+        QList<ServiceFactory*> serviceFactories() const;
+
+        ServicePluginManager *servicePluginManager();
+
         /**
          * It will return a list of services that match your
          * specifications.  The only required parameter is the service
@@ -58,21 +74,37 @@ class PluginUtility
          * @return            A list of services that satisfy the query
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        AMAROK_CORE_EXPORT static KService::List query( const QString& constraint = QString() );
+        AMAROK_EXPORT static KService::List query( const QString& constraint = QString() );
+
+        AMAROK_EXPORT static int pluginFrameworkVersion();
 
         /**
          * Dump properties from a service to stdout for debugging
          * @param service     Pointer to KService
          */
-        static void dump( const KService::Ptr service );
+        AMAROK_EXPORT static void dump( const KService::Ptr service );
 
        /**
          * Show modal info dialog about plugin
          * @param constraint  A constraint to limit the choices returned
          */
-        static void showAbout( const QString& constraint );
+        AMAROK_EXPORT static void showAbout( const QString& constraint );
+
+    private:
+        ServicePluginManager *m_servicePluginManager;
+        QList<ServiceFactory*> m_serviceFactories;
+
+        static const int s_pluginFrameworkVersion;
+        static PluginManager *s_instance;
+
+        PluginManager( QObject *parent = 0 );
 };
 
+} // namespace Plugins
+
+namespace The
+{
+    inline Plugins::PluginManager *pluginManager() { return Plugins::PluginManager::instance(); }
 }
 
 #endif /* AMAROK_PLUGINMANAGER_H */
