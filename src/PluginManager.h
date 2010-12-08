@@ -40,11 +40,9 @@ class AMAROK_EXPORT PluginManager : public QObject
     public:
         ~PluginManager();
 
-        AMAROK_EXPORT static PluginManager *instance();
-        AMAROK_EXPORT static void destroy();
-
-        template<typename T>
-            QList<T*> findPlugins( const QString &type );
+        static PluginManager *instance();
+        static void destroy();
+        static int pluginFrameworkVersion();
 
         /**
          * Load any services that are configured to be loaded
@@ -53,62 +51,30 @@ class AMAROK_EXPORT PluginManager : public QObject
 
         void checkPluginEnabledStates();
 
-        KPluginInfo::List servicePluginInfos() const;
+        KPluginInfo::List plugins( const QString &category );
+
         QList<ServiceFactory*> serviceFactories() const;
 
         ServicePluginManager *servicePluginManager();
 
-        KPluginInfo::List devicePluginInfos() const;
         QList<DeviceHandlerFactory*> deviceFactories() const;
 
-        KPluginInfo::List collectionPluginInfos() const;
         QList<Collections::CollectionFactory*> collectionFactories() const;
 
-        /**
-         * It will return a list of services that match your
-         * specifications.  The only required parameter is the service
-         * type.  This is something like 'text/plain' or 'text/html'.  The
-         * constraint parameter is used to limit the possible choices
-         * returned based on the constraints you give it.
-         *
-         * The @p constraint language is rather full.  The most common
-         * keywords are AND, OR, NOT, IN, and EXIST, all used in an
-         * almost spoken-word form.  An example is:
-         * \code
-         * (Type == 'Service') and (('KParts/ReadOnlyPart' in ServiceTypes) or (exist Exec))
-         * \endcode
-         *
-         * The keys used in the query (Type, ServiceType, Exec) are all
-         * fields found in the .desktop files.
-         *
-         * @param constraint  A constraint to limit the choices returned, QString::null to
-         *                    get all services of the given @p servicetype
-         *
-         * @return            A list of services that satisfy the query
-         * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
-         */
-        AMAROK_EXPORT static KService::List query( const QString& constraint = QString() );
-
-        AMAROK_EXPORT static int pluginFrameworkVersion();
-
-        /**
-         * Dump properties from a service to stdout for debugging
-         * @param service     Pointer to KService
-         */
-        AMAROK_EXPORT static void dump( const KService::Ptr service );
-
-       /**
-         * Show modal info dialog about plugin
-         * @param constraint  A constraint to limit the choices returned
-         */
-        AMAROK_EXPORT static void showAbout( const QString& constraint );
-
     private:
+        void findAllPlugins();
+        void handleEmptyCollectionFactories();
+
+        template<typename T>
+            QList<T*>
+            createFactories( const QString &category );
+
         MountPointManager *m_mountPointManager;
         ServicePluginManager *m_servicePluginManager;
         QList<ServiceFactory*> m_serviceFactories;
         QList<DeviceHandlerFactory*> m_deviceFactories;
         QList<Collections::CollectionFactory*> m_collectionFactories;
+        QHash<QString, KPluginInfo::List> m_pluginInfos;
 
         static const int s_pluginFrameworkVersion;
         static PluginManager *s_instance;

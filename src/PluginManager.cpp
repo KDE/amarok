@@ -70,73 +70,32 @@ Plugins::PluginManager::~PluginManager()
 void
 Plugins::PluginManager::init()
 {
-    m_collectionFactories = findPlugins<Collections::CollectionFactory>( QLatin1String("collection") );
-    if( m_collectionFactories.isEmpty() )
-    {
-        debug() << "No Amarok collection plugins found, running kbuildsycoca4.";
-        KBuildSycocaProgressDialog::rebuildKSycoca( 0 );
-
-        debug() << "Second attempt at finding collection plugins";
-        m_collectionFactories = findPlugins<Collections::CollectionFactory>( QLatin1String("collection") );
-
-        if( m_collectionFactories.isEmpty() )
-        {
-            KMessageBox::error( 0, i18n(
-                    "<p>Amarok could not find any collection plugins. "
-                    "It is possible that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
-                    "$ cd /path/to/amarok/source-code/<br>"
-                    "$ su -c \"make uninstall\"<br>"
-                    "$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>"
-                    "$ kbuildsycoca4 --noincremental<br>"
-                    "$ amarok</pre>"
-                    "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
-            // don't use QApplication::exit, as the eventloop may not have started yet
-            std::exit( EXIT_SUCCESS );
-        }
-    }
+    findAllPlugins();
 
     PERF_LOG( "Loading collection plugins" )
+    m_collectionFactories = createFactories<Collections::CollectionFactory>( QLatin1String("Collection") );
+    handleEmptyCollectionFactories();
     CollectionManager::instance()->init( m_collectionFactories );
     PERF_LOG( "Loaded collection plugins" )
 
-    m_servicePluginManager = new ServicePluginManager( this );
-    m_serviceFactories = findPlugins<ServiceFactory>( QLatin1String("service") );
-
     PERF_LOG( "Loading service plugins" )
+    m_servicePluginManager = new ServicePluginManager( this );
+    m_serviceFactories = createFactories<ServiceFactory>( QLatin1String("Service") );
     m_servicePluginManager->init( m_serviceFactories );
     PERF_LOG( "Loaded service plugins" )
 
+    PERF_LOG( "Loading device plugins" )
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     m_mountPointManager = static_cast<Collections::SqlCollection*>( coll )->mountPointManager();
-    m_deviceFactories = findPlugins<DeviceHandlerFactory>( QLatin1String("device") );
-
-    PERF_LOG( "Loading device plugins" )
+    m_deviceFactories = createFactories<DeviceHandlerFactory>( QLatin1String("Device") );
     m_mountPointManager->loadDevicePlugins( m_deviceFactories );
     PERF_LOG( "Loaded device plugins" )
-}
-
-KPluginInfo::List
-Plugins::PluginManager::collectionPluginInfos() const
-{
-    KPluginInfo::List infos;
-    foreach( Collections::CollectionFactory *factory, m_collectionFactories )
-        infos.append( factory->info() );
-    return infos;
 }
 
 QList<Collections::CollectionFactory*>
 Plugins::PluginManager::collectionFactories() const
 {
     return m_collectionFactories;
-}
-
-KPluginInfo::List
-Plugins::PluginManager::servicePluginInfos() const
-{
-    KPluginInfo::List infos;
-    foreach( ServiceFactory *factory, m_serviceFactories )
-        infos.append( factory->info() );
-    return infos;
 }
 
 QList<ServiceFactory*>
@@ -149,15 +108,6 @@ ServicePluginManager *
 Plugins::PluginManager::servicePluginManager()
 {
     return m_servicePluginManager;
-}
-
-KPluginInfo::List
-Plugins::PluginManager::devicePluginInfos() const
-{
-    KPluginInfo::List infos;
-    foreach( DeviceHandlerFactory *factory, m_deviceFactories )
-        infos.append( factory->info() );
-    return infos;
 }
 
 QList<DeviceHandlerFactory*>
@@ -173,18 +123,20 @@ Plugins::PluginManager::checkPluginEnabledStates()
     m_servicePluginManager->checkEnabledStates( m_serviceFactories );
 }
 
+KPluginInfo::List
+Plugins::PluginManager::plugins( const QString &category )
+{
+    return m_pluginInfos.value( category );
+}
+
 template<typename T>
 QList<T*>
-Plugins::PluginManager::findPlugins( const QString &type )
+Plugins::PluginManager::createFactories( const QString &category )
 {
-    DEBUG_BLOCK
-    QString pluginsQuery = QString::fromLatin1( "[X-KDE-Amarok-plugintype] == '%1'" ).arg( type );
-    KService::List plugins = Plugins::PluginManager::query( pluginsQuery );
-    debug() << QString( "Received %1 plugin offers for %2 type" ).arg( plugins.count() ).arg( type );
-
     QList<T*> factories;
-    foreach( const KService::Ptr &service, plugins )
+    foreach( const KPluginInfo &plugin, plugins( category ) )
     {
+        KService::Ptr service = plugin.service();
         const QString name( service->property( QLatin1String("X-KDE-Amarok-name") ).toString() );
         KPluginLoader loader( *( service.constData() ) );
         KPluginFactory *pluginFactory( loader.factory() );
@@ -197,76 +149,61 @@ Plugins::PluginManager::findPlugins( const QString &type )
         }
 
         T *factory = 0;
-        if( (factory = pluginFactory->create<T>( this )) )
-            factories << factory;
-        else
-            debug() << "Plugin" << name << "has wrong factory class:" << loader.errorString();
+        if( !(factory = pluginFactory->create<T>( this )) )
+        {
+            warning() << "Failed to create plugin" << name << loader.errorString();
+            continue;
+        }
+        factories << factory;
     }
     return factories;
 }
 
-KService::List
-Plugins::PluginManager::query( const QString &constraint )
+void
+Plugins::PluginManager::findAllPlugins()
 {
-    // Add versioning constraint
-    QString str = QString::fromLatin1( "[X-KDE-Amarok-framework-version] == %1" )
-            .arg( s_pluginFrameworkVersion );
-    if( !constraint.trimmed().isEmpty() )
-        str += QString::fromLatin1( " and %1" ).arg( constraint );
-    str += QString::fromLatin1( " and [X-KDE-Amarok-rank] > 0" );
+    DEBUG_BLOCK
+    QString query = QString::fromLatin1( "[X-KDE-Amarok-framework-version] == %1"
+                                         "and [X-KDE-Amarok-rank] > 0" ).arg( s_pluginFrameworkVersion );
 
-    debug() << "Plugin trader constraint:" << str;
-    return KServiceTypeTrader::self()->query( "Amarok/Plugin", str );
+    KService::List services = KServiceTypeTrader::self()->query( "Amarok/Plugin", query );
+    KPluginInfo::List plugins = KPluginInfo::fromServices( services );
+    qSort( plugins ); // sort list by category
+
+    foreach( const KPluginInfo &plugin, plugins )
+    {
+        debug() << "found plugin:" << plugin.pluginName();
+        m_pluginInfos[ plugin.category() ] << plugin;
+    }
+    debug() << plugins.count() << "plugins in total";
 }
 
 void
-Plugins::PluginManager::showAbout( const QString &constraint )
+Plugins::PluginManager::handleEmptyCollectionFactories()
 {
-    KService::List offers = query( constraint );
-
-    if ( offers.isEmpty() )
+    if( !m_collectionFactories.isEmpty() )
         return;
 
-    KService::Ptr s = offers.front();
+    debug() << "No Amarok collection plugins found, running kbuildsycoca4.";
+    KBuildSycocaProgressDialog::rebuildKSycoca( 0 );
 
-    const QString body = "<tr><td>%1</td><td>%2</td></tr>";
+    debug() << "Second attempt at finding collection plugins";
+    m_collectionFactories = createFactories<Collections::CollectionFactory>( QLatin1String("Collection") );
 
-    QString str  = "<html><body><table width=\"100%\" border=\"1\">";
-
-    str += body.arg( i18nc( "Title, as in: the title of this item", "Name" ),                s->name() );
-    str += body.arg( i18n( "Library" ),             s->library() );
-    str += body.arg( i18n( "Authors" ),             s->property( "X-KDE-Amarok-authors" ).toStringList().join( "\n" ) );
-    str += body.arg( i18nc( "Property, belonging to the author of this item", "Email" ),               s->property( "X-KDE-Amarok-email" ).toStringList().join( "\n" ) );
-    str += body.arg( i18n( "Version" ),             s->property( "X-KDE-Amarok-version" ).toString() );
-    str += body.arg( i18n( "Framework Version" ),   s->property( "X-KDE-Amarok-framework-version" ).toString() );
-
-    str += "</table></body></html>";
-
-    KMessageBox::information( 0, str, i18n( "Plugin Information" ) );
-}
-
-void
-Plugins::PluginManager::dump( const KService::Ptr service )
-{
-    #define ENDLI endl << Debug::indent()
-
-    debug()
-      << ENDLI
-      << "PluginManager Service Info:" << ENDLI
-      << "---------------------------" << ENDLI
-      << "name                          :" << service->name() << ENDLI
-      << "library                       :" << service->library() << ENDLI
-      << "desktopEntryPath              :" << service->entryPath() << ENDLI
-      << "X-KDE-Amarok-plugintype       :" << service->property( "X-KDE-Amarok-plugintype" ).toString() << ENDLI
-      << "X-KDE-Amarok-name             :" << service->property( "X-KDE-Amarok-name" ).toString() << ENDLI
-      << "X-KDE-Amarok-authors          :" << service->property( "X-KDE-Amarok-authors" ).toStringList() << ENDLI
-      << "X-KDE-Amarok-rank             :" << service->property( "X-KDE-Amarok-rank" ).toString() << ENDLI
-      << "X-KDE-Amarok-version          :" << service->property( "X-KDE-Amarok-version" ).toString() << ENDLI
-      << "X-KDE-Amarok-framework-version:" << service->property( "X-KDE-Amarok-framework-version" ).toString()
-      << endl
-     ;
-
-    #undef ENDLI
+    if( m_collectionFactories.isEmpty() )
+    {
+        KMessageBox::error( 0, i18n(
+                "<p>Amarok could not find any collection plugins. "
+                "It is possible that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
+                "$ cd /path/to/amarok/source-code/<br>"
+                "$ su -c \"make uninstall\"<br>"
+                "$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>"
+                "$ kbuildsycoca4 --noincremental<br>"
+                "$ amarok</pre>"
+                "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
+        // don't use QApplication::exit, as the eventloop may not have started yet
+        std::exit( EXIT_SUCCESS );
+    }
 }
 
 int

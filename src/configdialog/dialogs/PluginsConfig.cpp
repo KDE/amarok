@@ -39,14 +39,17 @@ PluginsConfig::PluginsConfig( QWidget *parent )
     layout->setMargin( 0 );
     layout->addWidget( m_selector );
 
-    m_selector->addPlugins( The::pluginManager()->collectionPluginInfos(),
-                            KPluginSelector::ReadConfigFile, i18n("Collections") );
+    QString key = QLatin1String( "Collection" );
+    m_selector->addPlugins( The::pluginManager()->plugins( key ),
+                            KPluginSelector::ReadConfigFile, i18n("Collections"), key );
 
-    m_selector->addPlugins( The::pluginManager()->servicePluginInfos(),
-                            KPluginSelector::ReadConfigFile, i18n("Internet Services") );
+    key = QLatin1String( "Service" );
+    m_selector->addPlugins( The::pluginManager()->plugins( key ),
+                            KPluginSelector::ReadConfigFile, i18n("Internet Services"), key );
 
-    m_selector->addPlugins( The::pluginManager()->devicePluginInfos(),
-                            KPluginSelector::ReadConfigFile, i18n("Devices") );
+    key = QLatin1String( "Device" );
+    m_selector->addPlugins( The::pluginManager()->plugins( key ),
+                            KPluginSelector::ReadConfigFile, i18n("Devices"), key );
 
     connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
     connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );
