@@ -14,40 +14,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRANSCODING_CONFIGURATION_H
-#define TRANSCODING_CONFIGURATION_H
+#ifndef AMAROK_TRANSCODING_EXPORT_H
+#define AMAROK_TRANSCODING_EXPORT_H
 
-#include "TranscodingDefines.h"
-#include "TranscodingProperty.h"
-#include "shared/amarok_export.h"
+/* needed for KDE_EXPORT and KDE_IMPORT macros */
+#include <kdemacros.h>
 
-#include <QMap>
-#include <QVariant>
+#ifndef AMAROK_TRANSCODING_EXPORT
+# ifdef MAKE_AMAROK_TRANSCODING_LIB
+   /* We are building this library */
+#  define AMAROK_TRANSCODING_EXPORT KDE_EXPORT
 
-namespace Transcoding
-{
+# else
+   /* We are using this library */
+#  define AMAROK_TRANSCODING_EXPORT KDE_IMPORT
 
-/**
- * This class defines the values of a set of properties as described by an instance of
- * Transcoding::PropertyList. It contains all the data needed to start a Transcoding::Job.
- * @author Téo Mrnjavac <teo@kde.org>
- */
-class AMAROK_CORE_EXPORT Configuration
-{
-public:
-    explicit Configuration( Encoder encoder = NULL_CODEC );
+# endif//MAKE_TRANSCODING_LIB
+#endif// AMAROK_EXPORT
 
-    void addProperty( QByteArray name, QVariant value );
-
-    Encoder encoder() const { return m_encoder; }
-
-    QVariant property( QByteArray name ) const;
-
-private:
-    Encoder m_encoder;
-    QMap< QByteArray, QVariant > m_values;
-};
-
-}
-
-#endif //TRANSCODING_CONFIGURATION_H
+#endif //AMAROK_TRANSCODING_EXPORT_H

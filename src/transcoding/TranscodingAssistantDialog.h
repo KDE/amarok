@@ -18,6 +18,7 @@
 #define TRANSCODING_ASSISTANTDIALOG_H
 
 #include "src/transcoding/ui_TranscodingAssistantDialog.h"
+#include "amarok_transcoding_export.h"
 #include "core/transcoding/TranscodingFormat.h"
 #include "core/transcoding/TranscodingConfiguration.h"
 #include "core/support/Debug.h"
@@ -33,7 +34,7 @@ namespace Transcoding
  * A KDialog for initiating a transcoding operation.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_EXPORT AssistantDialog : public KDialog
+class AMAROK_TRANSCODING_EXPORT AssistantDialog : public KDialog
 {
     Q_OBJECT
 public:
