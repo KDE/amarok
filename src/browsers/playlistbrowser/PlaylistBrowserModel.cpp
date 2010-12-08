@@ -93,9 +93,8 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             playlistCountList << provider->playlists().count();
             providerActionsCountList << provider->providerActions().count();
             providerActionsList <<  QVariant::fromValue( provider->providerActions() );
-            providerByLineList << i18ncp( "number of playlists from one source",
-                                          "One Playlist", "%1 playlists",
-                                          provider->playlists().count() );
+            //TODO: after string freeze possibly add a string indicating it's empty.
+            providerByLineList << QString();
         }
 
         switch( role )
@@ -171,6 +170,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
                     icon = provider->icon();
                     iconData << QVariant( icon );
                     playlistCount = provider->playlists().count();
+                    //TODO: after string freeze add a "loading" for -1"
                     playlistCountData << i18ncp( "number of playlists from one source",
                                                  "One Playlist", "%1 playlists",
                                                  playlistCount );
