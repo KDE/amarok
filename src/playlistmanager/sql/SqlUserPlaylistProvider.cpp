@@ -64,6 +64,12 @@ SqlUserPlaylistProvider::~SqlUserPlaylistProvider()
 {
 }
 
+int
+SqlUserPlaylistProvider::playlistCount() const
+{
+    return m_root->childSqlPlaylists().count();
+}
+
 Playlists::PlaylistList
 SqlUserPlaylistProvider::playlists()
 {
