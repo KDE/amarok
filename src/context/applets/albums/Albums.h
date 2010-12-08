@@ -56,6 +56,6 @@ private:
     Meta::TrackPtr m_currentTrack;
 };
 
-K_EXPORT_AMAROK_APPLET( albums, Albums )
+AMAROK_EXPORT_APPLET( albums, Albums )
 
 #endif

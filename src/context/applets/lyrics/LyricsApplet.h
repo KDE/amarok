@@ -63,6 +63,6 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _refetchMessageButtonPressed( const MessageButton ) )
 };
 
-K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )
+AMAROK_EXPORT_APPLET( lyrics, LyricsApplet )
 
 #endif

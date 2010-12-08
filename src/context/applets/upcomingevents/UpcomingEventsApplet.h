@@ -219,6 +219,6 @@ private slots:
     void viewCalendar();
 };
 
-K_EXPORT_AMAROK_APPLET( upcomingEvents, UpcomingEventsApplet )
+AMAROK_EXPORT_APPLET( upcomingEvents, UpcomingEventsApplet )
 
 #endif // UPCOMINGEVENTSAPPLET_H

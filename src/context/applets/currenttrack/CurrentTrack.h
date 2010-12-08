@@ -137,6 +137,6 @@ private:
     const int m_albumWidth;
 };
 
-K_EXPORT_AMAROK_APPLET( currenttrack, CurrentTrack )
+AMAROK_EXPORT_APPLET( currenttrack, CurrentTrack )
 
 #endif

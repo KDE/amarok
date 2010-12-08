@@ -63,7 +63,7 @@
 #include <QScrollBar>
 
 Q_DECLARE_METATYPE ( VideoInfo *)
-K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
+AMAROK_EXPORT_APPLET( videoclip, VideoclipApplet )
 
 /**
  * Plasma applet for showing a videoclip in the context view

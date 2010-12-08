@@ -64,6 +64,6 @@ private:
     QTextBrowser* m_songkick;
 };
 
-K_EXPORT_AMAROK_APPLET( songkick, SongkickApplet )
+AMAROK_EXPORT_APPLET( songkick, SongkickApplet )
 
 #endif

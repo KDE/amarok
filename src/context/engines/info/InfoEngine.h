@@ -64,6 +64,6 @@ private:
 
 };
 
-K_EXPORT_AMAROK_DATAENGINE( info, InfoEngine )
+AMAROK_EXPORT_DATAENGINE( info, InfoEngine )
 
 #endif

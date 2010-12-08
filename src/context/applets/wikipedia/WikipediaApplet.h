@@ -85,6 +85,6 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _jsWindowObjectCleared() )
 };
 
-K_EXPORT_AMAROK_APPLET( wikipedia, WikipediaApplet )
+AMAROK_EXPORT_APPLET( wikipedia, WikipediaApplet )
 
 #endif

@@ -78,6 +78,6 @@ private:
     QString m_artist;
 };
 
-K_EXPORT_AMAROK_DATAENGINE( lyrics, LyricsEngine )
+AMAROK_EXPORT_DATAENGINE( lyrics, LyricsEngine )
 
 #endif
