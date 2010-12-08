@@ -76,8 +76,8 @@ PlaylistBrowserNS::PlaylistBrowserView::setModel( QAbstractItemModel *model )
         || qobject_cast<PlaylistsInFoldersProxy*>( srcModel ) )
     {
         connect( srcModel, SIGNAL( renameIndex( QModelIndex ) ), SLOT( edit( QModelIndex ) ) );
-        Amarok::PrettyTreeView::setModel( model );
     }
+    Amarok::PrettyTreeView::setModel( model );
 }
 
 void
