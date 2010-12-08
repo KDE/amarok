@@ -31,7 +31,6 @@
 #include "KNotificationBackend.h"
 #include "Osd.h"
 #include "PaletteHandler.h"
-#include "ScriptManager.h"
 #include "amarokconfig.h"
 #include "aboutdialog/OcsData.h"
 #include "amarokurls/AmarokUrlHandler.h"
@@ -607,13 +606,6 @@ MainWindow::slotJumpTo() // slot
     m_playlistDock.data()->searchWidget()->focusInputLine();
 }
 
-void
-MainWindow::showScriptSelector() //SLOT
-{
-    ScriptManager::instance()->show();
-    ScriptManager::instance()->raise();
-}
-
 #ifdef DEBUG_BUILD_TYPE
 void
 MainWindow::showNetworkRequestViewer() //SLOT
@@ -775,10 +767,6 @@ MainWindow::createActions()
     ac->addAction( "playlist_playmedia", action );
     action->setShortcut( Qt::CTRL + Qt::Key_O );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( slotPlayMedia() ) );
-
-    action = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( showScriptSelector() ) );
-    ac->addAction( "script_manager", action );
 
     action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
     ac->addAction( "seek_forward", action );

@@ -17,13 +17,11 @@
 #ifndef AMAROK_SCRIPTUPDATER_H
 #define AMAROK_SCRIPTUPDATER_H
 
-#include <string.h>
-
 #include "shared/ScriptUpdaterStatic.h"
 
-#include <KIO/Job>
-
 #include <QTemporaryFile>
+
+class KJob;
 
 class ScriptUpdater : public QObject
 {
@@ -31,7 +29,7 @@ class ScriptUpdater : public QObject
     Q_OBJECT
 
     public:
-        explicit ScriptUpdater();
+        explicit ScriptUpdater( QObject *parent );
         virtual ~ScriptUpdater();
         void setScriptPath( const QString& scriptPath );
 
@@ -39,7 +37,7 @@ class ScriptUpdater : public QObject
         void updateScript();
 
     signals:
-        void finished( QString scriptPath );
+        void finished( const QString &scriptPath );
 
     /*protected:
         virtual void run();*/
@@ -52,7 +50,7 @@ class ScriptUpdater : public QObject
     private:
 
         bool isNewer(const QString & update, const QString & installed);
-        
+
         QString m_scriptPath;
 
         // dynamically collected information about the script

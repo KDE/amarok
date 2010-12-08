@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AmarokScriptableServiceScript"
+
 #include "AmarokScriptableServiceScript.h"
 
 #include "App.h"
@@ -179,7 +181,7 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QS
         error() << "The name of the scriptable script should be the same with the one in the script.spec file!";
         return engine->undefinedValue();
     }
-    QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts[serviceName].servicePtr );
+    QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts.value(serviceName)->servicePtr );
     engine->globalObject().setProperty( "ScriptableServiceScript", obj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
     return engine->undefinedValue();

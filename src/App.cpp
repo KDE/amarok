@@ -736,17 +736,14 @@ App::continueInit()
 
 void App::slotConfigAmarok( const QString& page )
 {
-    Amarok2ConfigDialog* dialog = static_cast<Amarok2ConfigDialog*>( KConfigDialog::exists( "settings" ) );
-
+    KConfigDialog *dialog = KConfigDialog::exists( "settings" );
     if( !dialog )
     {
         //KConfigDialog didn't find an instance of this dialog, so lets create it :
         dialog = new Amarok2ConfigDialog( mainWindow(), "settings", AmarokConfig::self() );
-
-        connect( dialog, SIGNAL( settingsChanged( const QString& ) ), SLOT( applySettings() ) );
+        connect( dialog, SIGNAL(settingsChanged(QString)), SLOT(applySettings()) );
     }
-
-    dialog->show( page );
+    static_cast<Amarok2ConfigDialog*>( dialog )->show( page );
 }
 
 void App::slotConfigShortcuts()

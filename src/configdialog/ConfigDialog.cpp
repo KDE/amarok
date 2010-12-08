@@ -18,8 +18,8 @@
 
 #include "ConfigDialog.h"
 
-#include "core/support/Amarok.h"
 #include "amarokconfig.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
 #include "CollectionConfig.h"
@@ -29,9 +29,9 @@
 #include "NotificationsConfig.h"
 #include "PlaybackConfig.h"
 #include "PluginsConfig.h"
+#include "ScriptsConfig.h"
 
-#include <KLocale>
-
+#include <KLocalizedString>
 
 QString Amarok2ConfigDialog::s_currentPage = "GeneralConfig";
 
@@ -42,6 +42,7 @@ QString Amarok2ConfigDialog::s_currentPage = "GeneralConfig";
 Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config )
    : KConfigDialog( parent, name, config )
 {
+    DEBUG_BLOCK
     setAttribute( Qt::WA_DeleteOnClose );
 
     ConfigDialogBase* general     = new GeneralConfig( this );
@@ -50,12 +51,14 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* playback    = new PlaybackConfig( this );
     ConfigDialogBase* notify      = new NotificationsConfig( this );
     ConfigDialogBase* database    = new DatabaseConfig( this );
+    ConfigDialogBase* scripts     = new ScriptsConfig( this );
 
     //ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
     addPage( general,     i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
     addPage( collection,  i18n( "Collection" ), "collection-amarok", i18n( "Configure Collection" ) );
     addPage( plugins,     i18n( "Plugins" ), "preferences-plugin", i18n( "Configure Plugins" ) );
+    addPage( scripts,     i18n( "Scripts" ), "preferences-plugin-script", i18n( "Configure Scripts" ) );
     addPage( playback,    i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
     addPage( notify,      i18n( "Notifications" ), "preferences-indicator-amarok", i18n( "Configure Notifications" ) );
     addPage( database,    i18n( "Database" ), "server-database", i18n( "Configure Database" ) );
@@ -66,7 +69,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
 
 Amarok2ConfigDialog::~Amarok2ConfigDialog()
 {
-    DEBUG_FUNC_INFO
+    DEBUG_BLOCK
 
     KPageWidgetItem* pageItem = currentPage();
 

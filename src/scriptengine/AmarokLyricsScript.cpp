@@ -19,17 +19,18 @@
 
 #include "AmarokLyricsScript.h"
 
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "LyricsManager.h"
-#include "core/meta/Meta.h"
 #include "ScriptManager.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <KApplication>
 
 #include <QByteArray>
 #include <QTextDocument>
+#include <QTextCodec>
 
 namespace AmarokScript
 {
