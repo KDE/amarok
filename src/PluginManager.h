@@ -66,8 +66,10 @@ class AMAROK_EXPORT PluginManager : public QObject
         void handleEmptyCollectionFactories();
 
         template<typename T>
-            QList<T*>
-            createFactories( const QString &category );
+            QList<T*> createFactories( const QString &category );
+
+        template<typename T>
+            T* createFactory( const KPluginInfo &plugin );
 
         MountPointManager *m_mountPointManager;
         ServicePluginManager *m_servicePluginManager;
@@ -75,6 +77,7 @@ class AMAROK_EXPORT PluginManager : public QObject
         QList<DeviceHandlerFactory*> m_deviceFactories;
         QList<Collections::CollectionFactory*> m_collectionFactories;
         QHash<QString, KPluginInfo::List> m_pluginInfos;
+        QHash<QString, bool> m_factoryCreated;
 
         static const int s_pluginFrameworkVersion;
         static PluginManager *s_instance;

@@ -120,6 +120,38 @@ void
 Plugins::PluginManager::checkPluginEnabledStates()
 {
     DEBUG_BLOCK
+    KPluginInfo::List newlyEnabledList;
+    foreach( const KPluginInfo::List &plugins, m_pluginInfos )
+    {
+        foreach( const KPluginInfo &plugin, plugins )
+        {
+            QString name = plugin.pluginName();
+            bool enabled = plugin.isPluginEnabled();
+            if( !enabled || m_factoryCreated.value(name) )
+                continue;
+
+            QString cate = plugin.category();
+            if( cate == QLatin1String("Collection") )
+            {
+                using namespace Collections;
+                CollectionFactory *fac = createFactory<CollectionFactory>( plugin );
+                if( fac )
+                    m_collectionFactories << fac;
+            }
+            else if( cate == QLatin1String("Service") )
+            {
+                ServiceFactory *fac = createFactory<ServiceFactory>( plugin );
+                if( fac )
+                    m_serviceFactories << fac;
+            }
+            else if( cate == QLatin1String("Device") )
+            {
+                DeviceHandlerFactory *fac = createFactory<DeviceHandlerFactory>( plugin );
+                if( fac )
+                    m_deviceFactories << fac;
+            }
+        }
+    }
     m_servicePluginManager->checkEnabledStates( m_serviceFactories );
 }
 
@@ -130,31 +162,48 @@ Plugins::PluginManager::plugins( const QString &category )
 }
 
 template<typename T>
+T*
+Plugins::PluginManager::createFactory( const KPluginInfo &plugin )
+{
+    QString name = plugin.pluginName();
+    bool enabledByDefault = plugin.isPluginEnabledByDefault();
+    bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
+    if( !enabled )
+        return 0;
+
+    KService::Ptr service = plugin.service();
+    KPluginLoader loader( *( service.constData() ) );
+    KPluginFactory *pluginFactory( loader.factory() );
+
+    if( !pluginFactory )
+    {
+        warning() << QString( "Failed to get factory '%1' from KPluginLoader: %2" )
+            .arg( name, loader.errorString() );
+        return 0;
+    }
+
+    T *factory = 0;
+    if( !(factory = pluginFactory->create<T>( this )) )
+    {
+        warning() << "Failed to create plugin" << name << loader.errorString();
+        return 0;
+    }
+
+    debug() << "created factory for plugin" << name;
+    m_factoryCreated[ name ] = true;
+    return factory;
+}
+
+template<typename T>
 QList<T*>
 Plugins::PluginManager::createFactories( const QString &category )
 {
     QList<T*> factories;
     foreach( const KPluginInfo &plugin, plugins( category ) )
     {
-        KService::Ptr service = plugin.service();
-        const QString name( service->property( QLatin1String("X-KDE-Amarok-name") ).toString() );
-        KPluginLoader loader( *( service.constData() ) );
-        KPluginFactory *pluginFactory( loader.factory() );
-
-        if( !pluginFactory )
-        {
-            warning() << QString( "Failed to get factory '%1' from KPluginLoader: %2" )
-                            .arg( name, loader.errorString() );
-            continue;
-        }
-
-        T *factory = 0;
-        if( !(factory = pluginFactory->create<T>( this )) )
-        {
-            warning() << "Failed to create plugin" << name << loader.errorString();
-            continue;
-        }
-        factories << factory;
+        T *factory = createFactory<T>( plugin );
+        if( factory )
+            factories << factory;
     }
     return factories;
 }
@@ -170,10 +219,11 @@ Plugins::PluginManager::findAllPlugins()
     KPluginInfo::List plugins = KPluginInfo::fromServices( services );
     qSort( plugins ); // sort list by category
 
-    foreach( const KPluginInfo &plugin, plugins )
+    foreach( const KPluginInfo &info, plugins )
     {
-        debug() << "found plugin:" << plugin.pluginName();
-        m_pluginInfos[ plugin.category() ] << plugin;
+        QString name = info.pluginName();
+        m_pluginInfos[ info.category() ] << info;
+        debug() << "found plugin:" << name << "enabled:" << info.isPluginEnabled();
     }
     debug() << plugins.count() << "plugins in total";
 }
