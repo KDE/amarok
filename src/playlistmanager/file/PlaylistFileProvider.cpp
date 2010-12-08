@@ -206,7 +206,7 @@ PlaylistFileProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
 Playlists::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks )
 {
-    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") + ".xspf" );
+    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") );
 }
 
 Playlists::PlaylistPtr
@@ -214,7 +214,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     DEBUG_BLOCK
     KUrl path( Amarok::saveLocation( "playlists" ) );
-    path.addPath( Amarok::vfatPath( name ) );
+    path.addPath( Amarok::vfatPath( name ) + ".xspf" );
     if( QFileInfo( path.toLocalFile() ).exists() )
     {
         //TODO:request overwrite
@@ -393,7 +393,7 @@ PlaylistFileProvider::loadPlaylists()
     {
         KUrl url( playlistDir.path() );
         url.addPath( file );
-        // debug() << QString( "Trying to open %1 as a playlist file" ).arg( url.url() );
+        debug() << QString( "Trying to open %1 as a playlist file" ).arg( url.url() );
         Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
         if( playlist.isNull() )
         {
