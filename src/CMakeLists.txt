@@ -338,8 +338,8 @@ set( libcontextview_SRCS
     context/widgets/TextScrollingWidget.cpp
     context/widgets/DropPixmapItem.cpp
     context/widgets/ToolBoxIcon.cpp
-    context/widgets/ContainmentArrow.cpp
-    context/widgets/ContainmentSelectionLayer.cpp
+    # context/widgets/ContainmentArrow.cpp
+    # context/widgets/ContainmentSelectionLayer.cpp
     context/widgets/appletexplorer/AppletExplorer.cpp
     context/widgets/appletexplorer/AppletIcon.cpp
     context/widgets/RecentlyPlayedListWidget.cpp
