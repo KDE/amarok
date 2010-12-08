@@ -83,6 +83,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
 CurrentTrack::~CurrentTrack()
 {
     clearTrackActions();
+    delete m_albumCover;
 }
 
 void
