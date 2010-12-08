@@ -31,11 +31,14 @@ class MySqlEmbeddedCollectionFactory : public Collections::CollectionFactory
     Q_OBJECT
 
     public:
-        MySqlEmbeddedCollectionFactory( QObject *parent, const QVariantList & /*args*/ ) { setParent( parent ); }
+        MySqlEmbeddedCollectionFactory( QObject *parent, const QVariantList &args )
+            : Collections::CollectionFactory( parent, args )
+        {
+            m_info = KPluginInfo( "amarok_collection-mysqlecollection.desktop", "services" );
+        }
         virtual ~MySqlEmbeddedCollectionFactory() {}
 
         virtual void init();
-        virtual KPluginInfo info() const;
 };
 
 } //namespace Collections

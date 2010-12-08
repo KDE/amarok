@@ -48,7 +48,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Col
         virtual void init();
 
     protected:
-        MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant );
+        MediaDeviceCollectionFactoryBase( QObject *parent, const QVariantList &args,
+                                          ConnectionAssistant* assistant );
 
     protected slots:
         virtual void slotDeviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
@@ -67,8 +68,9 @@ template <class CollType>
 class MediaDeviceCollectionFactory : public MediaDeviceCollectionFactoryBase
 {
     protected:
-        MediaDeviceCollectionFactory( ConnectionAssistant *assistant )
-            : MediaDeviceCollectionFactoryBase( assistant )
+        MediaDeviceCollectionFactory( QObject *parent, const QVariantList &args,
+                                      ConnectionAssistant *assistant )
+            : MediaDeviceCollectionFactoryBase( parent, args, assistant )
         {}
 
         virtual ~MediaDeviceCollectionFactory() {}

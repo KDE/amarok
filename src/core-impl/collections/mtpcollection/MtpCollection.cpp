@@ -31,23 +31,15 @@ using namespace Collections;
 AMAROK_EXPORT_COLLECTION( MtpCollectionFactory, mtpcollection )
 
 MtpCollectionFactory::MtpCollectionFactory( QObject *parent, const QVariantList &args )
-    : MediaDeviceCollectionFactory<MtpCollection> ( new MtpConnectionAssistant() )
+    : MediaDeviceCollectionFactory<MtpCollection>( parent, args, new MtpConnectionAssistant() )
 {
-    setParent( parent );
-    Q_UNUSED( args )
+    m_info = KPluginInfo( "amarok_collection-mtpcollection.desktop", "services" );
 }
 
 MtpCollectionFactory::~MtpCollectionFactory()
 {
     DEBUG_BLOCK
     // nothing to do
-}
-
-KPluginInfo
-MtpCollectionFactory::info() const
-{
-    KPluginInfo pluginInfo( "amarok_collection-mtpcollection.desktop", "services" );
-    return pluginInfo;
 }
 
 //MtpCollection

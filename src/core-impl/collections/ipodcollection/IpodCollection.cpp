@@ -32,21 +32,13 @@ using namespace Collections;
 AMAROK_EXPORT_COLLECTION( IpodCollectionFactory, ipodcollection )
 
 IpodCollectionFactory::IpodCollectionFactory( QObject *parent, const QVariantList &args )
-    : MediaDeviceCollectionFactory<IpodCollection> ( new IpodConnectionAssistant() )
+    : MediaDeviceCollectionFactory<IpodCollection>( parent, args, new IpodConnectionAssistant() )
 {
-    setParent( parent );
-    Q_UNUSED( args )
+    m_info = KPluginInfo( "amarok_collection-ipodcollection.desktop", "services" );
 }
 
 IpodCollectionFactory::~IpodCollectionFactory()
 {
-}
-
-KPluginInfo
-IpodCollectionFactory::info() const
-{
-    KPluginInfo pluginInfo( "amarok_collection-ipodcollection.desktop", "services" );
-    return pluginInfo;
 }
 
 //IpodCollection

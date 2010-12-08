@@ -33,6 +33,14 @@
 
 AMAROK_EXPORT_SERVICE_PLUGIN( mp3tunes, Mp3tunesServiceFactory )
 
+Mp3tunesServiceFactory::Mp3tunesServiceFactory( QObject *parent, const QVariantList &args )
+    : ServiceFactory( parent, args )
+{
+    KPluginInfo pluginInfo(  "amarok_service_mp3tunes.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    m_info = pluginInfo;
+}
+
 void Mp3tunesServiceFactory::init()
 {
     DEBUG_BLOCK
@@ -60,15 +68,6 @@ QString Mp3tunesServiceFactory::name()
 {
     return "MP3tunes.com";
 }
-
-
-KPluginInfo Mp3tunesServiceFactory::info()
-{
-    KPluginInfo pluginInfo(  "amarok_service_mp3tunes.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    return pluginInfo;
-}
-
 
 KConfigGroup Mp3tunesServiceFactory::config()
 {

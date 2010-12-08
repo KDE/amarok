@@ -18,6 +18,7 @@
 #define AMAROK_MOUNTPOINTMANAGER_H
 
 #include "core/support/Amarok.h"
+#include "core/support/PluginFactory.h"
 #include "shared/amarok_export.h"
 
 #include <KConfigGroup>
@@ -38,7 +39,7 @@ typedef QList<int> IdList;
 typedef QList<DeviceHandlerFactory*> FactoryList;
 typedef QMap<int, DeviceHandler*> HandlerMap;
 
-class AMAROK_EXPORT DeviceHandlerFactory : public QObject
+class AMAROK_EXPORT DeviceHandlerFactory : public Plugins::PluginFactory
 {
     Q_OBJECT
 
@@ -78,8 +79,6 @@ public:
      * @return a QString describing the type of the DeviceHandler
      */
     virtual QString type() const = 0;
-
-    virtual KPluginInfo info() const = 0;
 };
 
 /**
@@ -190,7 +189,7 @@ public:
     virtual QStringList collectionFolders() const;
     virtual void setCollectionFolders( const QStringList &folders );
 
-    void loadDevicePlugins( const QList<DeviceHandlerFactory*> &factories );
+    void loadDevicePlugins( const QList<Plugins::PluginFactory*> &factories );
 
 public slots:
 //     void mediumAdded( const Medium *m );

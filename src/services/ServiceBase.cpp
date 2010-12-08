@@ -34,10 +34,9 @@
 
 
 ServiceFactory::ServiceFactory( QObject *parent, const QVariantList &args )
-    : QObject( parent )
-    , m_initialized( false )
+    : Plugins::PluginFactory( parent, args )
 {
-    Q_UNUSED( args );
+    m_type = Plugins::PluginFactory::Service;
     CollectionManager::instance()->addTrackProvider( this );
 }
 

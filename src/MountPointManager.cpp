@@ -43,11 +43,10 @@
 #include <QTimer>
 
 DeviceHandlerFactory::DeviceHandlerFactory( QObject *parent, const QVariantList &args )
-    : QObject( parent )
+    : Plugins::PluginFactory( parent, args )
 {
-    Q_UNUSED( args );
+    m_type = Plugins::PluginFactory::Device;
 }
-
 
 MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
     : QObject( parent )
@@ -95,11 +94,12 @@ MountPointManager::~MountPointManager()
 
 
 void
-MountPointManager::loadDevicePlugins( const QList<DeviceHandlerFactory*> &factories )
+MountPointManager::loadDevicePlugins( const QList<Plugins::PluginFactory*> &factories )
 {
     DEBUG_BLOCK
-    foreach( DeviceHandlerFactory *factory, factories )
+    foreach( Plugins::PluginFactory *pFactory, factories )
     {
+        DeviceHandlerFactory *factory = qobject_cast<DeviceHandlerFactory*>( pFactory );
         if( !factory )
             continue;
 
@@ -110,6 +110,7 @@ MountPointManager::loadDevicePlugins( const QList<DeviceHandlerFactory*> &factor
             continue;
 
         debug() << "initializing:" << name;
+        factory->init();
         if( factory->canCreateFromMedium() )
             m_mediumFactories.append( factory );
         else if (factory->canCreateFromConfig() )

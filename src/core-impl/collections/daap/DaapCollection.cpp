@@ -41,23 +41,15 @@ using namespace Collections;
 AMAROK_EXPORT_COLLECTION( DaapCollectionFactory, daapcollection )
 
 DaapCollectionFactory::DaapCollectionFactory( QObject *parent, const QVariantList &args )
-    : Collections::CollectionFactory()
+    : Collections::CollectionFactory( parent, args )
     , m_browser( 0 )
 {
-    setParent( parent );
-    Q_UNUSED( args );
+    m_info = KPluginInfo( "amarok_collection-daapcollection.desktop", "services" );
 }
 
 DaapCollectionFactory::~DaapCollectionFactory()
 {
     delete m_browser;
-}
-
-KPluginInfo
-DaapCollectionFactory::info() const
-{
-    KPluginInfo pluginInfo( "amarok_collection-daapcollection.desktop", "services" );
-    return pluginInfo;
 }
 
 void
@@ -89,6 +81,7 @@ DaapCollectionFactory::init()
     default:
         debug() << "Unknown error with Zeroconf";
     }
+    m_initialized = true;
 }
 
 void

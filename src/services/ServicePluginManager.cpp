@@ -53,11 +53,12 @@ ServicePluginManager::setBrowser( ServiceBrowser * browser )
 }
 
 void
-ServicePluginManager::init( const QList<ServiceFactory*> &factories )
+ServicePluginManager::init( const QList<Plugins::PluginFactory*> &factories )
 {
     DEBUG_BLOCK
-    foreach( ServiceFactory* factory, factories )
+    foreach( Plugins::PluginFactory* pFactory, factories )
     {
+        ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
         if( !factory )
             continue;
         if( factory->isInitialized() )
@@ -72,11 +73,15 @@ ServicePluginManager::init( const QList<ServiceFactory*> &factories )
 }
 
 void
-ServicePluginManager::checkEnabledStates( const QList<ServiceFactory*> &factories )
+ServicePluginManager::checkEnabledStates( const QList<Plugins::PluginFactory*> &factories )
 {
     DEBUG_BLOCK
-    foreach( ServiceFactory* factory, factories )
+    foreach( Plugins::PluginFactory* pFactory, factories )
     {
+        ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
+        if( !factory )
+            continue;
+
         //check if this service is enabled
         const QString pluginName = factory->info().pluginName();
         bool enabledInConfig = Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true );
@@ -129,8 +134,12 @@ QStringList
 ServicePluginManager::loadedServices() const
 {
     QStringList names;
-    foreach( ServiceFactory *factory, The::pluginManager()->serviceFactories() )
+    foreach( Plugins::PluginFactory *pFactory, The::pluginManager()->factories(QLatin1String("Service")) )
     {
+        ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
+        if( !factory )
+            continue;
+
         foreach( ServiceBase *service, factory->activeServices() )
             names << service->name();
     }

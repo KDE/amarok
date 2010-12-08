@@ -24,6 +24,9 @@
 class ServiceBase;
 class ServiceBrowser;
 class ServiceFactory;
+namespace Plugins {
+    class PluginFactory;
+}
 
 /**
 A class to keep track of available service plugins and load them as needed
@@ -45,9 +48,9 @@ public:
     /**
      * Load any services that are configured to be loaded
      */
-    void init( const QList<ServiceFactory*> &factories );
+    void init( const QList<Plugins::PluginFactory*> &factories );
 
-    void checkEnabledStates( const QList<ServiceFactory*> &factories );
+    void checkEnabledStates( const QList<Plugins::PluginFactory*> &factories );
 
 public slots:
     QStringList loadedServices() const;

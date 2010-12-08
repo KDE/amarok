@@ -22,7 +22,6 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "MountPointManager.h"
-#include "services/ServiceBase.h"
 #include "services/ServicePluginManager.h"
 
 #include <KBuildSycocaProgressDialog>
@@ -31,6 +30,7 @@
 #include <KServiceTypeTrader>
 
 #include <QFile>
+#include <QMetaEnum>
 
 const int Plugins::PluginManager::s_pluginFrameworkVersion = 59;
 Plugins::PluginManager* Plugins::PluginManager::s_instance = 0;
@@ -71,49 +71,41 @@ void
 Plugins::PluginManager::init()
 {
     findAllPlugins();
+    QString key;
 
     PERF_LOG( "Loading collection plugins" )
-    m_collectionFactories = createFactories<Collections::CollectionFactory>( QLatin1String("Collection") );
+    key = QLatin1String( "Collection" );
+    m_factories[ key ] = createFactories( key );
     handleEmptyCollectionFactories();
-    CollectionManager::instance()->init( m_collectionFactories );
+    CollectionManager::instance()->init( m_factories.value( key ) );
     PERF_LOG( "Loaded collection plugins" )
 
     PERF_LOG( "Loading service plugins" )
+    key = QLatin1String( "Service" );
     m_servicePluginManager = new ServicePluginManager( this );
-    m_serviceFactories = createFactories<ServiceFactory>( QLatin1String("Service") );
-    m_servicePluginManager->init( m_serviceFactories );
+    m_factories[ key ] = createFactories( key );
+    m_servicePluginManager->init( m_factories.value( key ) );
     PERF_LOG( "Loaded service plugins" )
 
     PERF_LOG( "Loading device plugins" )
+    key = QLatin1String( "Device" );
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     m_mountPointManager = static_cast<Collections::SqlCollection*>( coll )->mountPointManager();
-    m_deviceFactories = createFactories<DeviceHandlerFactory>( QLatin1String("Device") );
-    m_mountPointManager->loadDevicePlugins( m_deviceFactories );
+    m_factories[ key ] = createFactories( key );
+    m_mountPointManager->loadDevicePlugins( m_factories.value( key ) );
     PERF_LOG( "Loaded device plugins" )
 }
 
-QList<Collections::CollectionFactory*>
-Plugins::PluginManager::collectionFactories() const
+QList<Plugins::PluginFactory*>
+Plugins::PluginManager::factories( const QString &category ) const
 {
-    return m_collectionFactories;
-}
-
-QList<ServiceFactory*>
-Plugins::PluginManager::serviceFactories() const
-{
-    return m_serviceFactories;
+    return m_factories.value( category );
 }
 
 ServicePluginManager *
 Plugins::PluginManager::servicePluginManager()
 {
     return m_servicePluginManager;
-}
-
-QList<DeviceHandlerFactory*>
-Plugins::PluginManager::deviceFactories() const
-{
-    return m_deviceFactories;
 }
 
 void
@@ -130,29 +122,12 @@ Plugins::PluginManager::checkPluginEnabledStates()
             if( !enabled || m_factoryCreated.value(name) )
                 continue;
 
-            QString cate = plugin.category();
-            if( cate == QLatin1String("Collection") )
-            {
-                using namespace Collections;
-                CollectionFactory *fac = createFactory<CollectionFactory>( plugin );
-                if( fac )
-                    m_collectionFactories << fac;
-            }
-            else if( cate == QLatin1String("Service") )
-            {
-                ServiceFactory *fac = createFactory<ServiceFactory>( plugin );
-                if( fac )
-                    m_serviceFactories << fac;
-            }
-            else if( cate == QLatin1String("Device") )
-            {
-                DeviceHandlerFactory *fac = createFactory<DeviceHandlerFactory>( plugin );
-                if( fac )
-                    m_deviceFactories << fac;
-            }
+            PluginFactory *factory = createFactory( plugin );
+            if( factory )
+                m_factories[ plugin.category() ] << factory;
         }
     }
-    m_servicePluginManager->checkEnabledStates( m_serviceFactories );
+    m_servicePluginManager->checkEnabledStates( m_factories.value(QLatin1String("Service")) );
 }
 
 KPluginInfo::List
@@ -161,8 +136,7 @@ Plugins::PluginManager::plugins( const QString &category )
     return m_pluginInfos.value( category );
 }
 
-template<typename T>
-T*
+Plugins::PluginFactory*
 Plugins::PluginManager::createFactory( const KPluginInfo &plugin )
 {
     QString name = plugin.pluginName();
@@ -182,26 +156,34 @@ Plugins::PluginManager::createFactory( const KPluginInfo &plugin )
         return 0;
     }
 
-    T *factory = 0;
-    if( !(factory = pluginFactory->create<T>( this )) )
+    PluginFactory *factory = 0;
+    if( !(factory = pluginFactory->create<PluginFactory>( this )) )
     {
         warning() << "Failed to create plugin" << name << loader.errorString();
         return 0;
     }
 
-    debug() << "created factory for plugin" << name;
+    if( factory->pluginType() == PluginFactory::Unknown )
+    {
+        warning() << "factory has unknown type!";
+        factory->deleteLater();
+        return 0;
+    }
+
+    const QMetaObject *mo = factory->metaObject();
+    QString type = mo->enumerator( mo->indexOfEnumerator("Type") ).valueToKey( factory->pluginType() );
+    debug() << "created factory for plugin" << name << "type:" << type;
     m_factoryCreated[ name ] = true;
     return factory;
 }
 
-template<typename T>
-QList<T*>
+QList<Plugins::PluginFactory*>
 Plugins::PluginManager::createFactories( const QString &category )
 {
-    QList<T*> factories;
+    QList<PluginFactory*> factories;
     foreach( const KPluginInfo &plugin, plugins( category ) )
     {
-        T *factory = createFactory<T>( plugin );
+        PluginFactory *factory = createFactory( plugin );
         if( factory )
             factories << factory;
     }
@@ -231,16 +213,17 @@ Plugins::PluginManager::findAllPlugins()
 void
 Plugins::PluginManager::handleEmptyCollectionFactories()
 {
-    if( !m_collectionFactories.isEmpty() )
+    const QString key = QLatin1String( "Collection" );
+    if( !m_factories.value( key ).isEmpty() )
         return;
 
     debug() << "No Amarok collection plugins found, running kbuildsycoca4.";
     KBuildSycocaProgressDialog::rebuildKSycoca( 0 );
 
     debug() << "Second attempt at finding collection plugins";
-    m_collectionFactories = createFactories<Collections::CollectionFactory>( QLatin1String("Collection") );
+    m_factories[ key ] = createFactories( key );
 
-    if( m_collectionFactories.isEmpty() )
+    if( m_factories.value( key ).isEmpty() )
     {
         KMessageBox::error( 0, i18n(
                 "<p>Amarok could not find any collection plugins. "

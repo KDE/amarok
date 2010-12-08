@@ -93,13 +93,6 @@ QString MassStorageDeviceHandlerFactory::type( ) const
     return "uuid";
 }
 
-KPluginInfo MassStorageDeviceHandlerFactory::info() const
-{
-    KPluginInfo pluginInfo( "amarok_device_massstorage.desktop", "services" );
-    pluginInfo.setConfig( Amarok::config("Device_MassiveStorage") );
-    return pluginInfo;
-}
-
 bool MassStorageDeviceHandlerFactory::canCreateFromMedium( ) const
 {
     return true;
@@ -132,10 +125,18 @@ bool MassStorageDeviceHandlerFactory::canHandle( const Solid::Device &device ) c
 MassStorageDeviceHandlerFactory::MassStorageDeviceHandlerFactory( QObject *parent, const QVariantList &args )
     : DeviceHandlerFactory( parent, args )
 {
+    KPluginInfo pluginInfo( "amarok_device_massstorage.desktop", "services" );
+    pluginInfo.setConfig( Amarok::config("Device_MassiveStorage") );
+    m_info = pluginInfo;
 }
 
 MassStorageDeviceHandlerFactory::~MassStorageDeviceHandlerFactory( )
 {
+}
+
+void MassStorageDeviceHandlerFactory::init()
+{
+    m_initialized = true;
 }
 
 DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( KSharedConfigPtr, SqlStorage* ) const

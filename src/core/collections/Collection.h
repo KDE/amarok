@@ -18,6 +18,7 @@
 #define AMAROK_COLLECTION_H
 
 #include "core/support/Amarok.h"
+#include "core/support/PluginFactory.h"
 #include "shared/amarok_export.h"
 #include "core/capabilities/Capability.h"
 #include "core/collections/QueryMaker.h"
@@ -40,16 +41,14 @@ namespace Collections
 class Collection;
 class CollectionLocation;
 
-class AMAROK_CORE_EXPORT CollectionFactory : public QObject
+class AMAROK_CORE_EXPORT CollectionFactory : public Plugins::PluginFactory
 {
     Q_OBJECT
     public:
-        CollectionFactory( QObject *parent = 0 );
+        CollectionFactory( QObject *parent, const QVariantList &args );
         virtual ~CollectionFactory();
 
         virtual void init() = 0;
-
-        virtual KPluginInfo info() const = 0;
 
     signals:
         void newCollection( Collections::Collection *newCollection );

@@ -31,21 +31,13 @@ using namespace Collections;
 AMAROK_EXPORT_COLLECTION( UmsCollectionFactory, umscollection )
 
 UmsCollectionFactory::UmsCollectionFactory( QObject *parent, const QVariantList &args )
-    : MediaDeviceCollectionFactory<UmsCollection> ( new UmsConnectionAssistant() )
+    : MediaDeviceCollectionFactory<UmsCollection>( parent, args, new UmsConnectionAssistant() )
 {
-    setParent( parent );
-    Q_UNUSED( args );
+    m_info = KPluginInfo( "amarok_collection-umscollection.desktop", "services" );
 }
 
 UmsCollectionFactory::~UmsCollectionFactory()
 {
-}
-
-KPluginInfo
-UmsCollectionFactory::info() const
-{
-    KPluginInfo pluginInfo( "amarok_collection-umscollection.desktop", "services" );
-    return pluginInfo;
 }
 
 //UmsCollection

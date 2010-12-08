@@ -43,6 +43,14 @@ using namespace Meta;
 
 AMAROK_EXPORT_SERVICE_PLUGIN( jamendo, JamendoServiceFactory )
 
+JamendoServiceFactory::JamendoServiceFactory( QObject *parent, const QVariantList &args )
+    : ServiceFactory( parent, args )
+{
+    KPluginInfo pluginInfo(  "amarok_service_jamendo.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    m_info = pluginInfo;
+}
+
 void JamendoServiceFactory::init()
 {
     ServiceBase* service = new JamendoService( this, "Jamendo.com" );
@@ -55,14 +63,6 @@ QString
 JamendoServiceFactory::name()
 {
     return "Jamendo.com";
-}
-
-KPluginInfo
-JamendoServiceFactory::info()
-{
-    KPluginInfo pluginInfo(  "amarok_service_jamendo.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    return pluginInfo;
 }
 
 KConfigGroup

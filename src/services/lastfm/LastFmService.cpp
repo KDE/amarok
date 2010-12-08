@@ -72,6 +72,14 @@ QString md5( const QByteArray& src )
     return QString::fromLatin1( digest.toHex() ).rightJustified( 32, '0' );
 }
 
+LastFmServiceFactory::LastFmServiceFactory( QObject *parent, const QVariantList &args )
+    : ServiceFactory( parent, args )
+{
+    KPluginInfo pluginInfo(  "amarok_service_lastfm.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    m_info = pluginInfo;
+}
+
 void
 LastFmServiceFactory::init()
 {
@@ -155,16 +163,6 @@ LastFmServiceFactory::name()
 {
     return "Last.fm";
 }
-
-
-KPluginInfo
-LastFmServiceFactory::info()
-{
-    KPluginInfo pluginInfo(  "amarok_service_lastfm.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    return pluginInfo;
-}
-
 
 KConfigGroup
 LastFmServiceFactory::config()

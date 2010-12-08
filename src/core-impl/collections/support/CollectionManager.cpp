@@ -133,7 +133,7 @@ CollectionManager::~CollectionManager()
 }
 
 void
-CollectionManager::init( const QList<Collections::CollectionFactory*> &factories )
+CollectionManager::init( const QList<Plugins::PluginFactory*> &factories )
 {
     DEBUG_BLOCK
 
@@ -144,8 +144,13 @@ CollectionManager::init( const QList<Collections::CollectionFactory*> &factories
 
     QList<Collections::CollectionFactory*> orderdFactories;
     const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
-    foreach( Collections::CollectionFactory *factory, factories )
+    foreach( Plugins::PluginFactory *pFactory, factories )
     {
+        using namespace Collections;
+        CollectionFactory *factory = qobject_cast<CollectionFactory*>( pFactory );
+        if( !factory )
+            continue;
+
         const QString name = factory->info().pluginName();
         if( name == QLatin1String("mysqlserver-collection") )
         {

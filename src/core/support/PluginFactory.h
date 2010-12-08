@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,27 +14,51 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MySqlEmbeddedCollection.h"
+#ifndef AMAROK_PLUGINFACTORY_H
+#define AMAROK_PLUGINFACTORY_H
 
-#include "MySqlEmbeddedStorage.h"
-#include "SqlCollection.h"
-#include "SqlCollectionFactory.h"
+#include "shared/amarok_export.h"
 
-#include <KLocale>
+#include <KPluginInfo>
 
-using namespace Collections;
+#include <QObject>
 
-AMAROK_EXPORT_COLLECTION( MySqlEmbeddedCollectionFactory, mysqlecollection )
+namespace Plugins {
 
-void
-MySqlEmbeddedCollectionFactory::init()
+class AMAROK_CORE_EXPORT PluginFactory : public QObject
 {
-    SqlCollectionFactory fac;
-    SqlStorage *storage = new MySqlEmbeddedStorage();
-    SqlCollection *collection = fac.createSqlCollection( "localCollection", i18n( "Local Collection" ), storage );
-    m_initialized = true;
+    Q_OBJECT
+    Q_ENUMS( Type )
+    Q_PROPERTY( KPluginInfo info READ info )
+    Q_PROPERTY( Type pluginType READ pluginType )
 
-    emit newCollection( collection );
-}
+public:
+    enum Type { Unknown, Collection, Device, Service };
+    PluginFactory( QObject *parent, const QVariantList &args );
+    virtual ~PluginFactory() = 0;
 
-#include "MySqlEmbeddedCollection.moc"
+    /**
+     * Initialize the service plugin of this type.
+     * Reimplemented by subclasses, which must set
+     * m_initialized = true when the function has finished.
+     * */
+    virtual void init() = 0;
+
+    /**
+     * Indicates whether or not the plugin has been initialized.
+     * @return Initialized or not
+     */
+    bool isInitialized() const;
+
+    KPluginInfo info() const;
+    Type pluginType() const;
+
+protected:
+    bool m_initialized;
+    KPluginInfo m_info;
+    Type m_type;
+};
+
+} // namespace Plugins
+
+#endif /* AMAROK_PLUGINFACTORY_H */

@@ -31,14 +31,11 @@ class JamendoServiceFactory : public ServiceFactory
     Q_OBJECT
 
     public:
-        JamendoServiceFactory( QObject *parent, const QVariantList &args )
-            : ServiceFactory( parent, args )
-        {}
+        JamendoServiceFactory( QObject *parent, const QVariantList &args );
         virtual ~JamendoServiceFactory() {}
 
         virtual void init();
         virtual QString name();
-        virtual KPluginInfo info();
         virtual KConfigGroup config();
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.url().contains( "jamendo.com", Qt::CaseInsensitive ); }

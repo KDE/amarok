@@ -40,12 +40,12 @@ namespace Collections
     AMAROK_EXPORT_COLLECTION( PlaydarCollectionFactory, playdarcollection )
 
     PlaydarCollectionFactory::PlaydarCollectionFactory( QObject* parent, const QVariantList &args )
-        : CollectionFactory( parent )
+        : CollectionFactory( parent, args )
         , m_controller( 0 )
         , m_collectionIsManaged( false )
     {
+        m_info = KPluginInfo( "amarok_collection-playdarcollection.desktop", "services" );
         DEBUG_BLOCK
-        Q_UNUSED( args );
     }
 
     PlaydarCollectionFactory::~PlaydarCollectionFactory()
@@ -69,13 +69,8 @@ namespace Collections
         m_collection = new PlaydarCollection;
         connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
         CollectionManager::instance()->addTrackProvider( m_collection.data() );
-    }
 
-    KPluginInfo
-    PlaydarCollectionFactory::info() const
-    {
-        KPluginInfo pluginInfo( "amarok_collection-playdarcollection.desktop", "services" );
-        return pluginInfo;
+        m_initialized = true;
     }
 
     void

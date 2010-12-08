@@ -33,14 +33,11 @@ class OpmlDirectoryServiceFactory: public ServiceFactory
     Q_OBJECT
 
     public:
-        OpmlDirectoryServiceFactory( QObject *parent, const QVariantList &args )
-            : ServiceFactory( parent, args )
-        {}
+        OpmlDirectoryServiceFactory( QObject *parent, const QVariantList &args );
         virtual ~OpmlDirectoryServiceFactory() {}
 
         virtual void init();
         virtual QString name();
-        virtual KPluginInfo info();
         virtual KConfigGroup config();
 };
 

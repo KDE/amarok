@@ -29,16 +29,13 @@ class AmpacheServiceFactory: public ServiceFactory
     Q_OBJECT
 
     public:
-        AmpacheServiceFactory( QObject *parent, const QVariantList &args )
-            : ServiceFactory( parent, args )
-        {}
+        AmpacheServiceFactory( QObject *parent, const QVariantList &args );
         virtual ~AmpacheServiceFactory() {}
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
 
         virtual void init();
         virtual QString name();
-        virtual KPluginInfo info();
         virtual KConfigGroup config();
 };
 

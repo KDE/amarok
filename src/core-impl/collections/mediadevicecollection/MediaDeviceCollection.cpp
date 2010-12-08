@@ -35,8 +35,9 @@
 
 using namespace Collections;
 
-MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant )
-    : Collections::CollectionFactory()
+MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( QObject *parent, const QVariantList &args,
+                                                                    ConnectionAssistant* assistant )
+    : Collections::CollectionFactory( parent, args )
     , m_assistant( assistant )
 {
 }
@@ -58,6 +59,8 @@ MediaDeviceCollectionFactoryBase::init()
 
     // Register the device type with the Monitor
     MediaDeviceMonitor::instance()->registerDeviceType( m_assistant );
+
+    m_initialized = true;
 }
 
 void MediaDeviceCollectionFactoryBase::slotDeviceDetected(MediaDeviceInfo* info)

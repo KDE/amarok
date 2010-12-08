@@ -37,12 +37,11 @@ namespace Collections {
 AMAROK_EXPORT_COLLECTION( UpnpCollectionFactory, upnpcollection )
 
 UpnpCollectionFactory::UpnpCollectionFactory( QObject *parent, const QVariantList &args )
-    : Collections::CollectionFactory()
+    : Collections::CollectionFactory( parent, args )
 {
-    setParent( parent );
+    m_info = KPluginInfo( "amarok_collection-upnpcollection.desktop", "services" );
     qDBusRegisterMetaType< QHash<QString, QString> >();
     qDBusRegisterMetaType<DeviceInfo>();
-    Q_UNUSED( args );
 }
 
 UpnpCollectionFactory::~UpnpCollectionFactory()
@@ -90,14 +89,9 @@ void UpnpCollectionFactory::init()
     //foreach( Solid::Device device, Solid::Device::allDevices() ) {
     //    slotDeviceAdded(device.udi());
     //}
-}
 
-KPluginInfo UpnpCollectionFactory::info() const
-{
-    KPluginInfo pluginInfo( "amarok_collection-upnpcollection.desktop", "services" );
-    return pluginInfo;
+    m_initialized = true;
 }
-
 
 void UpnpCollectionFactory::slotDeviceAdded( const DeviceTypeMap &map )
 {

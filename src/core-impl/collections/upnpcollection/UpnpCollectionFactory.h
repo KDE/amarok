@@ -40,7 +40,6 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
     virtual ~UpnpCollectionFactory();
 
     virtual void init();
-    virtual KPluginInfo info() const;
 
   private:
 

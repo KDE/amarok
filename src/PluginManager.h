@@ -17,18 +17,11 @@
 #ifndef AMAROK_PLUGINMANAGER_H
 #define AMAROK_PLUGINMANAGER_H
 
-#include <KPluginInfo>
-#include <KService>
-
+#include "core/support/PluginFactory.h"
 #include "shared/amarok_export.h"
 
-class DeviceHandlerFactory;
 class MountPointManager;
 class ServicePluginManager;
-class ServiceFactory;
-namespace Collections {
-    class CollectionFactory;
-}
 
 namespace Plugins {
 
@@ -51,31 +44,22 @@ class AMAROK_EXPORT PluginManager : public QObject
 
         void checkPluginEnabledStates();
 
+        QList<PluginFactory*> factories( const QString &category ) const;
+
         KPluginInfo::List plugins( const QString &category );
 
-        QList<ServiceFactory*> serviceFactories() const;
-
         ServicePluginManager *servicePluginManager();
-
-        QList<DeviceHandlerFactory*> deviceFactories() const;
-
-        QList<Collections::CollectionFactory*> collectionFactories() const;
 
     private:
         void findAllPlugins();
         void handleEmptyCollectionFactories();
 
-        template<typename T>
-            QList<T*> createFactories( const QString &category );
-
-        template<typename T>
-            T* createFactory( const KPluginInfo &plugin );
+        QList<PluginFactory*> createFactories( const QString &category );
+        PluginFactory* createFactory( const KPluginInfo &plugin );
 
         MountPointManager *m_mountPointManager;
         ServicePluginManager *m_servicePluginManager;
-        QList<ServiceFactory*> m_serviceFactories;
-        QList<DeviceHandlerFactory*> m_deviceFactories;
-        QList<Collections::CollectionFactory*> m_collectionFactories;
+        QHash<QString, QList<PluginFactory*> > m_factories;
         QHash<QString, KPluginInfo::List> m_pluginInfos;
         QHash<QString, bool> m_factoryCreated;
 

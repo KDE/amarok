@@ -31,16 +31,13 @@ class Mp3tunesServiceFactory: public ServiceFactory
     Q_OBJECT
 
     public:
-        Mp3tunesServiceFactory( QObject *parent, const QVariantList &args )
-            : ServiceFactory( parent, args )
-        {}
+        Mp3tunesServiceFactory( QObject *parent, const QVariantList &args );
         virtual ~Mp3tunesServiceFactory() {}
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
 
         virtual void init();
         virtual QString name();
-        virtual KPluginInfo info();
         virtual KConfigGroup config();
 
     private:

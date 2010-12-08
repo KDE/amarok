@@ -132,7 +132,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         bool haveEmbeddedMysql() { return m_haveEmbeddedMysql; }
 
-        void init( const QList<Collections::CollectionFactory*> &factories );
+        void init( const QList<Plugins::PluginFactory*> &factories );
 
     public slots:
         void startFullScan();

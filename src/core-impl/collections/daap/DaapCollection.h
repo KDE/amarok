@@ -51,8 +51,6 @@ class DaapCollectionFactory : public Collections::CollectionFactory
 
         virtual void init();
 
-        virtual KPluginInfo info() const;
-
     private:
         QString serverKey( const QString& host, quint16 port ) const;
 

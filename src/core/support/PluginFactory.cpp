@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,27 +14,35 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MySqlEmbeddedCollection.h"
+#include "core/support/PluginFactory.h"
 
-#include "MySqlEmbeddedStorage.h"
-#include "SqlCollection.h"
-#include "SqlCollectionFactory.h"
-
-#include <KLocale>
-
-using namespace Collections;
-
-AMAROK_EXPORT_COLLECTION( MySqlEmbeddedCollectionFactory, mysqlecollection )
-
-void
-MySqlEmbeddedCollectionFactory::init()
+Plugins::PluginFactory::PluginFactory( QObject *parent, const QVariantList &args )
+    : QObject( parent )
+    , m_initialized( false )
+    , m_type( Unknown )
 {
-    SqlCollectionFactory fac;
-    SqlStorage *storage = new MySqlEmbeddedStorage();
-    SqlCollection *collection = fac.createSqlCollection( "localCollection", i18n( "Local Collection" ), storage );
-    m_initialized = true;
-
-    emit newCollection( collection );
+    Q_UNUSED( args )
 }
 
-#include "MySqlEmbeddedCollection.moc"
+Plugins::PluginFactory::~PluginFactory()
+{}
+
+KPluginInfo
+Plugins::PluginFactory::info() const
+{
+    return m_info;
+}
+
+Plugins::PluginFactory::Type
+Plugins::PluginFactory::pluginType() const
+{
+    return m_type;
+}
+
+bool
+Plugins::PluginFactory::isInitialized() const
+{
+    return m_initialized;
+}
+
+#include "PluginFactory.moc"
