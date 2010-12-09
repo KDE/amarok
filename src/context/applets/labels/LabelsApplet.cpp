@@ -623,9 +623,6 @@ LabelsApplet::toggleLabel( const QString &label )
         m_addLabel.data()->completionObject()->setItems( m_allLabels );
         m_addLabel.data()->lineEdit()->setText( saveText );
     }
-
-    if( !m_allLabels.isEmpty() )
-        m_titleText = i18n( "Labels for %1 by %2", m_title, m_artist );
     
     // usuallay the engine keeps track of label changes of the playing track
     // (except if the lables get auto added, this is why we have to keep m_userLabels up to date)
