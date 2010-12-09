@@ -157,6 +157,7 @@ LabelsEngine::update( bool reload )
         QVariant varUser;
         varUser.setValue< QStringList >( userLabels );
         setData( "labels", "user", varUser );
+        m_userLabels = userLabels;
         return;
     }
 
