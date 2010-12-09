@@ -21,20 +21,10 @@
 #include "BiasedPlaylist.h"
 #include "DynamicPlaylist.h"
 
-
 #include <QAbstractItemModel>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QHash>
+#include <QList>
 #include <QMutex>
-#include <QSet>
 #include <QString>
-
-namespace Dynamic
-{
-    class Bias;
-}
-
 
 namespace PlaylistBrowserNS {
 
@@ -46,25 +36,24 @@ class DynamicModel : public QAbstractItemModel
 
         ~DynamicModel();
 
-        void loadPlaylists();
-
         void enable( bool enable );
         void changePlaylist( int i );
 
         QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
-        QString defaultPlaylistName();
-        Dynamic::DynamicPlaylistPtr activePlaylist();
+        /** Returns the currently active playlist.
+            Don't free this pointer
+        */
+        Dynamic::DynamicPlaylist* activePlaylist();
         int activePlaylistIndex();
 
         int playlistIndex( const QString& ) const;
 
         QModelIndex index ( int row, int column,
-                const QModelIndex & parent = QModelIndex() ) const;
+                            const QModelIndex & parent = QModelIndex() ) const;
 
         bool isActiveUnsaved() const;
         bool isActiveDefault() const;
-
 
         QModelIndex parent ( const QModelIndex & index ) const;
 
@@ -72,47 +61,43 @@ class DynamicModel : public QAbstractItemModel
         int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
 
         /// find the playlist with name, make it active and return it
-        Dynamic::DynamicPlaylistPtr setActivePlaylist( const QString& name );
-        Dynamic::DynamicPlaylistPtr setActivePlaylist( int );
-
-        QDomDocument savedPlaylistDoc() { return m_savedPlaylists; }
+        // Dynamic::DynamicPlaylist* setActivePlaylist( const QString& name );
+        Dynamic::DynamicPlaylist* setActivePlaylist( int );
 
         void saveCurrent();
-        
+
     signals:
         void activeChanged(); // active row changed
         void changeActive( int );  // request that active change
         void enableDynamicMode( bool );
 
     public slots:
-        void playlistModified( Dynamic::BiasedPlaylistPtr );
+        void playlistModified( Dynamic::BiasedPlaylist* );
         void saveActive( const QString& newTitle );
         void removeActive();
 
-    private slots:
-        void universeNeedsUpdate();
-        void savePlaylists( bool final = true );
-
     private:
-        Dynamic::DynamicPlaylistPtr createDefaultPlaylist();
-        void computeUniverseSet();
-        void loadAutoSavedPlaylist();
-        
+        void savePlaylists();
+        void loadPlaylists();
+        bool savePlaylists( const QString &filename );
+        bool loadPlaylists( const QString &filename );
+        void initPlaylists();
+
+        void saveCurrentPlaylists();
+        void loadCurrentPlaylists();
+
         DynamicModel();
         static DynamicModel* s_instance;
 
-        int m_activePlaylist;
-        Dynamic::DynamicPlaylistPtr m_activePlaylistPtr;
-        int m_defaultPlaylist;
+        int m_activePlaylistIndex;
+
+        /** Contains all the dynamic playlists.
+            The first playlist is always the default one so we always have
+            at least one playlist.
+        */
+        QList<Dynamic::DynamicPlaylist*> m_playlists;
 
         bool m_activeUnsaved;
-
-        QDomDocument m_savedPlaylists;
-        QDomElement m_savedPlaylistsRoot;
-
-        QHash< QString, QDomElement >                    m_playlistHash;
-        QList<QDomElement>                               m_playlistElements;
-
 };
 
 }

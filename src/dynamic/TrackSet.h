@@ -22,9 +22,27 @@
 #include "core/meta/Meta.h"
 
 #include <QBitArray>
+#include <QString>
+#include <QSharedData>
+#include <QSharedDataPointer>
 
 namespace Dynamic
 {
+    /** The TrackCollection stores all the uids that a TrackSet can contain.
+        Usually the dynamic playlist queries all the uids before computing a playlist.
+    */
+    class TrackCollection : public QSharedData
+    {
+        public:
+            TrackCollection( const QStringList& uids );
+
+        private:
+            QStringList m_uids;
+            QHash<QString, int> m_ids;
+    };
+
+    typedef QSharedDataPointer<TrackCollection> TrackCollectionPtr;
+
     /**
      * A representation of a set of tracks as a bit array, relative to the
      * given universe set.
@@ -36,29 +54,45 @@ namespace Dynamic
     class TrackSet
     {
         public:
-            /** Creates a TrackSet that represents the whole universe. All tracks are included.
-             */
-            TrackSet( const QList<QByteArray>& universe );
+            /** Creates a TrackSet that is outstanding */
+            TrackSet();
 
-            TrackSet( const QList<QByteArray>& universe, const QList<QByteArray>& uidList );
-            TrackSet( const QList<QByteArray>& universe, const QSet<QByteArray>& uidList );
+            /** Creates a TrackSet that represents the whole universe.
+                All tracks are included.
+            */
+            TrackSet( Dynamic::TrackCollectionPtr collection );
 
+            /** Removes all tracks from the set */
+            void clear();
+
+            /** Sets all tracks to the set */
             void reset();
+
+            /** Returns true if the results of this track set are not yet available */
+            bool isOutstanding();
 
             /**
              * The number of songs contained in this trackSet
              */
             int trackCount() const;
 
-            QByteArray getRandomTrack( const QList<QByteArray>& universe ) const;
+            bool isEmpty() const;
+            bool isFull() const;
 
+            QByteArray getRandomTrack() const;
+
+            void unite( const TrackSet& );
+            void unite( const QStringList& uids );
             void intersect( const TrackSet& );
+            void intersect( const QStringList& uids );
             void subtract( const TrackSet& );
 
             TrackSet& operator=( const TrackSet& );
 
         private:
             QBitArray m_bits;
+            bool m_outstanding;
+            TrackCollectionPtr m_collection;
     };
 }
 

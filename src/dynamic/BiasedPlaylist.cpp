@@ -43,71 +43,61 @@
 // Pick your poison...
 const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 50;
 
-
-Dynamic::BiasedPlaylist*
-Dynamic::BiasedPlaylist::fromXml( QDomElement e )
-{
-    if( e.tagName() != "playlist" )
-        return 0;
-
-    QString title = e.attribute( "title" );
-    QList<Dynamic::Bias*> biases;
-
-    for( int j = 0; j < e.childNodes().size(); ++j )
-    {
-        if( !e.childNodes().at(j).isElement() )
-            continue;
-
-        QDomElement e2 = e.childNodes().at(j).toElement();
-        if( e2.tagName() == "bias" )
-            biases.append( Dynamic::Bias::fromXml( e2 ) );
-    }
-
-    return new Dynamic::BiasedPlaylist( title, biases );
-}
-
-QString
-Dynamic::BiasedPlaylist::nameFromXml( QDomElement e )
-{
-    if( e.tagName() != "playlist" )
-        return 0;
-
-    return e.attribute( "title" );
-}
-
-
-Dynamic::BiasedPlaylist::BiasedPlaylist( QString title, QList<Bias*> biases, Collections::Collection* collection )
-    : DynamicPlaylist(collection)
+Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent = 0 )
+    : DynamicPlaylist( parent )
     , m_numRequested( 0 )
-    , m_biases( biases )
 {
-    setTitle( title );
+    m_title = i18nc( "Title for a default dynamic playlist. The default playlist only returns random tracks.", "Random" );
+    m_bias = new Dynamic::RandomBias( this );
+}
 
+Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *parent = 0 );
+    : DynamicPlaylist( parent )
+    , m_numRequested( 0 )
+    , m_bias( 0 )
+{
     // Make sure that the BiasedPlaylist instance gets destroyed when App destroys
     setParent( App::instance() );
-}
 
+    while (!reader->atEnd()) {
+        reader->readNext();
+
+        if( reader->isStartElement() )
+        {
+            QStringRef name = reader->name();
+            if( name == "title" )
+                m_title = reader->readElementText(QXmlStreamReader::SkipChildElements);
+            else if( name == "bias" )
+            {
+                m_bias = fromXml( reader );
+            }
+            else
+            {
+                debug()<<"Unexpected xml start element"<<reader->name()<<"in input";
+                reader->skipCurrentElement();
+            }
+        }
+        else if( reader->isEndElement() )
+        {
+            break;
+        }
+    }
+}
 
 Dynamic::BiasedPlaylist::~BiasedPlaylist()
 {
-    DEBUG_BLOCK
-
     requestAbort();
 }
 
-QDomElement
-Dynamic::BiasedPlaylist::xml() const
+void
+Dynamic::AndBias::toXml( QXmlStreamWriter *writer ) const
 {
-    QDomDocument doc;
-    QDomElement e = doc.createElement( "playlist" );
-    e.setAttribute( "title", m_title );
-
-    foreach( Bias* b, m_biases )
-    {
-        e.appendChild( b->xml() );
-    }
-
-    return e;
+    writer->writeTextElement( "title", m_title );
+    writer->writeStartElement( "bias" );
+    writer->writeStartElement( m_bias->name() );
+    m_bias->toXml( writer );
+    writer->writeEndElement();
+    writer->writeEndElement();
 }
 
 void

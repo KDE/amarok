@@ -24,10 +24,12 @@
 #include "DynamicPlaylist.h"
 #include "core/meta/Meta.h"
 
-#include <QDomElement>
 #include <QObject>
+#include <QMutex>
 #include <QWeakPointer>
 
+class QXmlStreamReader;
+class QXmlStreamReader;
 
 namespace Dynamic
 {
@@ -36,23 +38,24 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            static BiasedPlaylist* fromXml( QDomElement );
-            static QString nameFromXml( QDomElement );
+            /** Creates a new random playlist */
+            BiasedPlaylist( QObject *parent = 0 );
 
-            BiasedPlaylist( QString title, QList<Bias*>, Collections::Collection* m_collection = 0 );
+            /** Creates a new playlist from an xml stream */
+            BiasedPlaylist( QXmlStreamReader *reader, QObject *parent = 0 );
+
             ~BiasedPlaylist();
 
-            QDomElement xml() const;
+            void toXml( QXmlStreamWriter *writer ) const;
 
             void requestTracks(int);
 
-            QList<Bias*>& biases();
-            const QList<Bias*>& biases() const;
+            AbstractBias* bias() const;
 
             void requestAbort();
 
         public slots:
-            virtual void recalculate();       
+            virtual void recalculate();
             virtual void invalidate();
 
         private slots:
@@ -70,17 +73,17 @@ namespace Dynamic
 
             int m_numRequested;
 
-            QList<Bias*> m_biases;
+            AbstractBias* m_bias;
 
             QWeakPointer<BiasSolver> m_solver;
 
             static const int BUFFER_SIZE;
     };
 
-    typedef KSharedPtr<BiasedPlaylist> BiasedPlaylistPtr;
+    // typedef KSharedPtr<BiasedPlaylist> BiasedPlaylistPtr;
 }
 
-Q_DECLARE_METATYPE( Dynamic::BiasedPlaylistPtr )
+// Q_DECLARE_METATYPE( Dynamic::BiasedPlaylistPtr )
 
 #endif
 

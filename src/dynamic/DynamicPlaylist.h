@@ -21,9 +21,8 @@
 
 #include "core/meta/Meta.h"
 
-#include <QDomElement>
-#include <QSharedData>
-
+class QXmlStreamReader;
+class QXmlStreamWriter;
 
 namespace Dynamic {
 
@@ -31,24 +30,21 @@ namespace Dynamic {
  * Provides a basis for dynamic playlists which operate like a stream
  * of tracks, rather than a list.
  **/
-class DynamicPlaylist : public QObject, public QSharedData
+class DynamicPlaylist : public QObject
 {
     Q_OBJECT
 
     public:
-        DynamicPlaylist( Collections::Collection* coll = 0 );
-
+        DynamicPlaylist( QXmlStreamReader *reader, QObject *parent = 0 );
         virtual ~DynamicPlaylist();
 
-        virtual QDomElement xml() const;
+        void toXml( QXmlStreamWriter *writer ) const;
 
         virtual void requestTracks(int) = 0;
 
         QString title() const;
-
         void setTitle( QString );
-        virtual void setActive(bool active);
-        
+
         virtual void requestAbort() {}
 
     signals:
@@ -57,23 +53,13 @@ class DynamicPlaylist : public QObject, public QSharedData
     public slots:
         virtual void recalculate();
         virtual void invalidate();
-        
+
     protected:
         Collections::Collection* m_collection;
         QString m_title;
-        bool m_active;
 };
 
-
-typedef KSharedPtr<DynamicPlaylist> DynamicPlaylistPtr;
-typedef QList<DynamicPlaylistPtr> DynamicPlaylistList;
-
-
-
 }
-
-Q_DECLARE_METATYPE( Dynamic::DynamicPlaylistPtr )
-Q_DECLARE_METATYPE( Dynamic::DynamicPlaylistList )
 
 #endif
 

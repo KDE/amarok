@@ -64,6 +64,12 @@ Dynamic::TrackSet::trackCount() const
 }
 
 void
+Dynamic::TrackSet::unite( const Dynamic::TrackSet& B )
+{
+    m_bits |= B.m_bits;
+}
+
+void
 Dynamic::TrackSet::intersect( const Dynamic::TrackSet& B )
 {
     m_bits &= B.m_bits;

@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
  * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,6 +21,7 @@
 #include "DynamicTrackNavigator.h"
 
 #include "core/support/Debug.h"
+#include "dynamic/DynamicPlaylist.h"
 #include "DynamicModel.h"
 #include "DynamicPlaylist.h"
 #include "core/meta/Meta.h"
@@ -29,20 +31,19 @@
 #include <QMutexLocker>
 
 
-Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylistPtr p )
-        : m_playlist( p )
+Playlist::DynamicTrackNavigator::DynamicTrackNavigator()
 {
-    DEBUG_BLOCK
-
-    connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
     connect( m_model->qaim(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
     connect( m_model->qaim(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
-    connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( activeChanged() ), SLOT( activePlaylistChanged() ) );
+
+    connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( activeChanged() ),
+             SLOT( activePlaylistChanged() ) );
+    activePlaylistChanged();
 }
 
 Playlist::DynamicTrackNavigator::~DynamicTrackNavigator()
 {
-    if( !m_playlist.isNull() )
+    if( !m_playlist )
         m_playlist->requestAbort();
 }
 
@@ -91,11 +92,15 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
     if( m_playlist )
         m_playlist->requestAbort();
 
-    QMutexLocker locker( &m_mutex );
-
     m_playlist = newPlaylist;
-
-    connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
+    if( !m_playlist )
+    {
+        warning() << "No dynamic playlist current loaded! Creating dynamic track navigator with null playlist!";
+    }
+    else
+    {
+        connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
+    }
 }
 
 void

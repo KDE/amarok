@@ -94,30 +94,31 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-            explicit BiasWidget( Dynamic::Bias*, QWidget* parent = 0 );
+            explicit BiasWidget( Dynamic::AbstractBias*, QWidget* parent = 0 );
 
         signals:
-            void biasRemoved( Dynamic::Bias* );
-            void biasChanged( Dynamic::Bias* );
+            void biasRemoved( Dynamic::AbstractBias* );
+            void biasChanged( Dynamic::AbstractBias* );
 
         private slots:
             void biasRemoved();
 
         protected: //protected data members make Mike cry :'(
-            Dynamic::Bias* m_bias;
+            Dynamic::AbstractBias* m_bias;
 
         private:
             KToolBar* m_removeToolbar;
             QToolButton* m_removeButton;
     };
 
-    class BiasGlobalWidget : public BiasWidget
+    /** A bias that has sub biases like the AndBias */
+    class LevelBiasWidget : public BiasWidget
     {
         Q_OBJECT
 
         public:
-            explicit BiasGlobalWidget( Dynamic::GlobalBias* bias, QWidget* parent = 0 );
-            ~BiasGlobalWidget();
+            explicit LevelBiasWidget( Dynamic::AndBias* bias, QWidget* parent = 0 );
+            ~LevelBiasWidget();
 
         private slots:
             void weightChanged( int );
@@ -129,15 +130,15 @@ namespace PlaylistBrowserNS
             QLabel*         m_weightLabel;
             MetaQueryWidget* m_queryWidget;
 
-            Dynamic::GlobalBias* m_gbias;
+            Dynamic::AndBias* m_abias;
     };
 
-    class BiasNormalWidget : public BiasWidget
+    class TagMatchBiasWidget : public BiasWidget
     {
         Q_OBJECT
 
         public:
-            explicit BiasNormalWidget( Dynamic::NormalBias*, QWidget* parent = 0 );
+            explicit TagMatchBiasWidget( Dynamic::TagMatchBias*, QWidget* parent = 0 );
 
         private slots:
             void scaleChanged( int );
@@ -149,7 +150,7 @@ namespace PlaylistBrowserNS
             QLabel*          m_scaleLabel;
             MetaQueryWidget* m_queryWidget;
 
-            Dynamic::NormalBias* m_nbias;
+            Dynamic::TagMatchBias* m_tbias;
     };
 
 

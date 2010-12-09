@@ -20,12 +20,10 @@
 #ifndef AMAROK_DYNAMICBIASMODEL_H
 #define AMAROK_DYNAMICBIASMODEL_H
 
-
 #include "BiasedPlaylist.h"
 
 #include <QAbstractItemModel>
 #include <QListView>
-
 
 namespace PlaylistBrowserNS
 {
@@ -36,20 +34,19 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-
             enum Roles
             {
                 WidgetRole = 0xf00d
             };
 
             DynamicBiasModel( QListView* listView );
-            void setPlaylist( Dynamic::DynamicPlaylistPtr playlist );
+            void setPlaylist( Dynamic::DynamicPlaylist *playlist );
 
             ~DynamicBiasModel();
 
             QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
             QModelIndex index ( int row, int column,
-                    const QModelIndex & parent = QModelIndex() ) const;
+                                const QModelIndex & parent = QModelIndex() ) const;
 
             QModelIndex indexOf( BiasBoxWidget* );
 
@@ -60,23 +57,25 @@ namespace PlaylistBrowserNS
             int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
 
         signals:
-            void playlistModified( Dynamic::BiasedPlaylistPtr );
+            void playlistModified( Dynamic::BiasedPlaylist *playlist );
 
         public slots:
-            void widgetChanged( QWidget* w = 0 );
-            void removeBias( Dynamic::Bias* );
-            void biasChanged( Dynamic::Bias* );
+            void widgetChanged( QWidget* widget );
+            // void removeBias( Dynamic::AbstractBias* );
+            void biasChanged( Dynamic::AbstractBias *bias );
+            /*
             void appendGlobalBias();
             void appendCustomBias();
             void appendNormalBias();
+            */
 
         private:
-            void appendBias( Dynamic::Bias* );
+            // void appendBias( Dynamic::AbstractBias* );
             void clearWidgets();
 
             QListView* m_listView;
 
-            Dynamic::BiasedPlaylistPtr m_playlist;
+            Dynamic::BiasedPlaylist* m_playlist;
             QList<BiasBoxWidget*> m_widgets;
     };
 }

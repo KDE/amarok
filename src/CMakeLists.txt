@@ -464,15 +464,15 @@ set(libdynamic_SRCS
     dynamic/Bias.cpp
     dynamic/BiasedPlaylist.cpp
     dynamic/BiasSolver.cpp
-    dynamic/CustomBias.cpp
-    dynamic/CustomBiasEntry.cpp
-    dynamic/CustomBiasEntryWidget.cpp
+    # dynamic/CustomBias.cpp
+    # dynamic/CustomBiasEntry.cpp
+    # dynamic/CustomBiasEntryWidget.cpp
     dynamic/DynamicPlaylist.cpp
     dynamic/TrackSet.cpp
-    dynamic/gsl/gauss.c
+    # dynamic/gsl/gauss.c
 
     # biases
-    dynamic/biases/EchoNest.cpp
+    # dynamic/biases/EchoNest.cpp
 )
 
 #####################################################################

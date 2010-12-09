@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,24 +20,28 @@
 #ifndef DYNAMICTRACKNAVIGATOR_H
 #define DYNAMICTRACKNAVIGATOR_H
 
-#include "dynamic/DynamicPlaylist.h"
 #include "StandardTrackNavigator.h"
 
-#include <QMutex>
+namespace Dynamic
+{
+    class DynamicPlaylist;
+}
 
+#include <QPointer>
 
 namespace Playlist
 {
 
-    /**
-     * A navigator that implements 'dynamic mode', which is a never-ending queue of tracks.
-     */
+    /** A navigator that implements 'dynamic mode', which is a never-ending queue of tracks.
+        The navigator will use the current dynamic playlist and try to get new
+        tracks before advancing
+    */
     class DynamicTrackNavigator : public StandardTrackNavigator
     {
         Q_OBJECT
 
         public:
-            DynamicTrackNavigator( Dynamic::DynamicPlaylistPtr p ) ;
+            DynamicTrackNavigator() ;
             ~DynamicTrackNavigator();
 
             void appendUpcoming();
@@ -52,14 +57,7 @@ namespace Playlist
         private:
             void removePlayed();
 
-            bool m_waitingForNext;
-            bool m_waitingForUserNext;
-
-            bool m_abortRequested;
-
-            Dynamic::DynamicPlaylistPtr m_playlist;
-
-            QMutex m_mutex;
+            QPointer<Dynamic::DynamicPlaylist> m_playlist;
     };
 }
 

@@ -261,25 +261,12 @@ Playlist::Actions::playlistModeChanged()
 
     if ( AmarokConfig::dynamicMode() )
     {
-        PlaylistBrowserNS::DynamicModel* dm = PlaylistBrowserNS::DynamicModel::instance();
-
-        Dynamic::DynamicPlaylistPtr playlist = dm->activePlaylist();
-
-        if ( !playlist )
-        {
-            debug() << "No dynamic playlist current loaded! Creating dynamic track navigator with null playlist!";
-        }
-
-        m_navigator = new DynamicTrackNavigator( playlist );
-
+        m_navigator = new DynamicTrackNavigator();
         emit navigatorChanged();
-
         return;
-
     }
 
     m_navigator = 0;
-
 
     switch( AmarokConfig::trackProgression() )
     {

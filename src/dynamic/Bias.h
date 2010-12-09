@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,15 +21,13 @@
 #ifndef AMAROK_BIAS_H
 #define AMAROK_BIAS_H
 
-#include "core/meta/Meta.h"
-#include "core/meta/support/MetaConstants.h"
 #include "widgets/MetaQueryWidget.h"
+#include "TrackSet.h"
 
-#include <QDomElement>
-#include <QMutex>
 #include <QObject>
-#include <QWeakPointer>
-#include <QSet>
+
+class QXmlStreamReader;
+class QXmlStreamWriter;
 
 namespace Collections {
     class Collection;
@@ -44,271 +43,219 @@ namespace PlaylistBrowserNS
 namespace Dynamic
 {
 
-    class CollectionFilterCapability;
-    
-    /**
-     * A bias is essentially just a function that evaluates the suitability of a
-     * playlist in some arbitrary way.
+    /** A bias is essentially just a function that evaluates the suitability of a
+        playlist in some arbitrary way.
      */
-    class Bias
-    {
-        public:
-            static Bias* fromXml( QDomElement );
-
-            Bias();
-            virtual ~Bias() {}
-
-            QString description() const;
-            void setDescription( const QString& );
-
-            /**
-             * Create a widget appropriate for editing the bias.
-             */
-            virtual PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
-
-            /**
-             * Returns xml suitable to be loaded with fromXml.
-             */
-            virtual QDomElement xml() const = 0;
-
-            /**
-             * Should the bias be considered or ignored by the playlist?
-             */
-            void setActive( bool );
-            bool active();
-
-
-            /**
-             * Returns a value in the range [-1,1]. (The sign is not considered,
-             * but it may be useful to return negative numbers for
-             * implementing reevaluate.) Playlist generation is being
-             * treated as a minimization problem, so 0 means the bias is completely
-             * satisfied, (+/-)1 that it is not satisfied at all. The tracks that
-             * precede the playlist are passed as 'context'.
-             */
-            virtual double energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) const = 0;
-
-
-            /**
-             * When a track is swapped in the playlist, avoid completely reevaluating
-             * the energy function if possible.
-             */
-            virtual double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
-                    Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context ) const;
-
-            /**
-             * This returns whether or not this bias operates on the collection in such a way
-             * that it wants to filter the tracks to be used to generate the initial playlists.
-             * An example of this is the GlobalBias---which modifies the creation of playlists to
-             * optimized.
-             *
-             * If if this is false, and there are no biases that return true for this turned on, the
-             * BiasSolver selects a completely random playlist from the collection, then tries to
-             * optimize it by calling energy() on mutations.
-             *
-             * Classes that return true here should also return a valid CollectionFilterCapability.
-             *
-             */
-            virtual bool hasCollectionFilterCapability() { return false; }
-
-            /** 
-             * Returns a QSet< QByteArray > of track uids that match this bias. Used when building the
-             * initial playlists, this must be implemented if your bias returns true for filterFromCollection.
-             */
-            virtual CollectionFilterCapability* collectionFilterCapability() { return 0; }
-            
-        protected:
-            bool m_active;
-            QString m_description;
-    };
-
-
-
-    /**
-     * A bias that depends on the state of the collection.
-     * Actually this is more a bias that buffers results and needs to be updated.
-     */
-    class CollectionDependantBias : public QObject, public Bias
+    class AbstractBias : public QObject
     {
         Q_OBJECT
 
         public:
-            CollectionDependantBias();
-            CollectionDependantBias( Collections::Collection* );
+            virtual ~AbstractBias();
 
-            /**
-             * This gets called when the collection changes. It's expected to
-             * emit a biasUpdated signal when finished.
-             */
-            virtual void update() = 0;
-            bool needsUpdating();
+            /** Writes the contents of this object to an xml stream.
+                Only the content is writen and no enclosing tags.
+                This is done to make it mirror the constructor which does not read those
+                tags either.
+            */
+            virtual void toXml( QXmlStreamWriter *writer ) const = 0;
+
+            /** Returns the name of this bias.
+                The name is used for reading and writing to xml.
+            */
+            static QString name();
+            virtual QString description() const = 0;
+
+            /** Create a widget appropriate for editing the bias.
+            */
+            virtual PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 ) = 0;
+
+            /** Returns the tracks that would fit at the indicated position.
+                The function can also return an "outstanding" Track set and return
+                later with a resultReady signal.
+                In such a case "matchingTracks" cannot be called again until
+                the result was received or invalidate called.
+            */
+            virtual TrackSet matchingTracks( int position,
+                                             const Meta::TrackList& playlist,
+                                             TrackCollectionPtr universe ) const = 0;
 
         signals:
-            void biasUpdated( CollectionDependantBias* );
+            /** This signal is emitted when the bias is changed.
+                e.g. an internal variable is set so that the bias will return different tracks.
+                this can also happen if the bias depends on the current track and this
+                track changed.
+            */
+            void changed( Dynamic::AbstractBias* );
+
+            /** Emitted when the result to a previously called matchingTracks is ready */
+            void resultReady( const Dynamic::TrackSet &set );
 
         public slots:
-            void collectionUpdated();
+            /** This slot is called when the bias should discard cached results.
+                This will be done in case a new playlist is requested for an updated
+                collection.
+            */
+            virtual void invalidate();
 
         protected:
-            Collections::Collection* m_collection; // null => all queryable collections
-            bool m_needsUpdating;
-            QMutex m_mutex; // the mutext protecting m_property
+            /** Helper function to get a bias from an xml tag */
+            static AbstractBias* fromXml( QXmlStreamReader *reader );
     };
 
-    /**
-     * This is a capability that biases have if they operate on and expect to filter the collection. It stores
-     * the currently matching tracks in a QSet of uids, and shares them with the BiasSolver
-     * when asked in order to generate initial starting playlists.
-     */
-    class CollectionFilterCapability
-    {
-        public:
-            CollectionFilterCapability() {}
-            virtual ~CollectionFilterCapability() {}
-
-
-            /**
-             * This is the list of tracks from the collection that fit the Bias.
-             * The QSet is a set of bytearray UIDs from the collection itself. 
-             */
-            virtual const QSet< QByteArray> & propertySet() = 0;
-            
-            /**
-             * All collection filter biases must also share a weight to
-             * be read, as it is used by the solver when generating the
-             * initial playlist.
-             *
-             */
-            virtual double weight() const = 0;
-
-    };
-            
-    /**
-     * This a bias in which the order and size of the playlist are not
-     * considered. Instead we want a given proportion (weight) of the tracks to
-     * have a certain property (or belong to a certain set).
-     */
-    class GlobalBias : public CollectionDependantBias
+    /** A bias that returns all the tracks in the universe as possible tracks */
+    class RandomBias : public AbstractBias
     {
         Q_OBJECT
 
         public:
-            GlobalBias( double weight, MetaQueryWidget::Filter filter );
-            GlobalBias( Collections::Collection* coll, double weight, MetaQueryWidget::Filter filter );
+            RandomBias( QXmlStreamReader *reader );
+            virtual ~RandomBias();
 
-            ~GlobalBias();
+            void toXml( QXmlStreamWriter *writer ) const;
 
-            MetaQueryWidget::Filter filter() const;
+            static QString name();
+            QString description() const;
 
-            static QString filterConditionToString( MetaQueryWidget::FilterCondition cond );
+            virtual PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
 
-            QDomElement xml() const;
-            static GlobalBias* fromXml( QDomElement e );
-
-            PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
-
-            double energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) const;
-            double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
-                    Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context ) const;
-
-            virtual const QSet<QByteArray>* propertySet() { return &m_property; }
-            bool trackSatisfies( Meta::TrackPtr ) const;
-            void update();
-
-            virtual double weight() const;
-            void setWeight( double );
-
-            // reimplemented
-            virtual bool hasCollectionFilterCapability();
-            virtual CollectionFilterCapability* collectionFilterCapability();
+            virtual TrackSet matchingTracks( int position,
+                                             const Meta::TrackList& playlist,
+                                             TrackCollectionPtr universe ) const;
 
         public slots:
-            void collectionUpdated();
+            virtual void invalidate();
+
+        private:
+            Q_DISABLE_COPY(RandomBias)
+    };
+
+    class AndBias : public AbstractBias
+    {
+        Q_OBJECT
+
+        public:
+            AndBias( QXmlStreamReader *reader );
+            virtual ~AndBias();
+
+            void toXml( QXmlStreamWriter *writer ) const;
+
+            static QString name();
+            QString description() const;
+
+            virtual PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
+
+            virtual TrackSet matchingTracks( int position,
+                                             const Meta::TrackList& playlist,
+                                             TrackCollectionPtr universe ) const;
+
+            /** Appends a bias to this bias.
+                This object will take ownership of the bias and free it when destroyed.
+            */
+            void appendBias( AbstractBias* bias );
+            void removeBiasAt( int i );
+            void moveBias( int from, int to );
+
+        public slots:
+            virtual void invalidate();
+
+        protected slots:
+            virtual void resultReceived( const Dynamic::TrackSet &tracks );
+
+        protected:
+            QList<AbstractBias*> m_biases;
+
+            mutable TrackSet m_tracks;
+            mutable int m_outstandingMatches;
+
+        private:
+            Q_DISABLE_COPY(AndBias)
+    };
+
+    class OrBias : public AndBias
+    {
+        Q_OBJECT
+
+        public:
+            OrBias( QXmlStreamReader *reader );
+
+            static QString name();
+            QString description() const;
+
+            virtual PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
+
+            /** Returns the tracks that would fit at the indicated position */
+            virtual TrackSet matchingTracks( int position,
+                                             const Meta::TrackList& playlist,
+                                             TrackCollectionPtr universe ) const;
+
+        protected slots:
+            virtual void resultReceived( const Dynamic::TrackSet &tracks );
+
+        private:
+            Q_DISABLE_COPY(OrBias)
+    };
+
+    class TagMatchBias : public AbstractBias
+    {
+        Q_OBJECT
+
+        public:
+            TagMatchBias( QXmlStreamReader *reader );
+
+            void toXml( QXmlStreamWriter *writer ) const;
+
+            static QString name();
+            QString description() const;
+
+            virtual PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
+
+            /** Returns the tracks that would fit at the indicated position */
+            virtual TrackSet matchingTracks( int position,
+                                             const Meta::TrackList& playlist,
+                                             TrackCollectionPtr universe ) const;
+
+            MetaQueryWidget::Filter filter() const;
             void setFilter( const MetaQueryWidget::Filter &filter);
 
-        private slots:
-            void updateReady( QString collectionId, QStringList );
+        public slots:
+            virtual void invalidate();
+
+        protected slots:
+            /** Called when we get new uids from the query maker */
+            void updateReady( QString collectionId, QStringList uids );
+
+            /** Called when the querymaker is finished */
             void updateFinished();
 
-        private:
-            double m_weight; ///< range: [0,1]
-            QSet<QByteArray> m_property;
-            QWeakPointer<Collections::QueryMaker> m_qm;
+        protected:
+            void newQuery() const;
+
+            static QString nameForCondition( MetaQueryWidget::FilterCondition cond );
+            static MetaQueryWidget::FilterCondition conditionForName( const QString &name );
+
             MetaQueryWidget::Filter m_filter;
 
-            // Disable copy constructor and assignment
-            GlobalBias( const GlobalBias& );
-            GlobalBias& operator= ( const GlobalBias& );
+            mutable QScopedPointer<Collections::QueryMaker> m_qm;
 
-            friend class GlobalBiasFilterCapability; // friend so it we can share our privates
-    };
-
-    /**
-     * This is the implementation for GlobalBias of the CollectionFilterCapability.
-     */
-    class GlobalBiasFilterCapability : public CollectionFilterCapability
-    {
-        public:
-            GlobalBiasFilterCapability( GlobalBias* bias ) : m_bias( bias ) {}
-
-            virtual const QSet<QByteArray>& propertySet() { return m_bias->m_property; }
-            virtual double weight() const { return m_bias->weight(); };
+            /** The result from the current query manager are buffered in the m_uids set. */
+            bool m_tracksValid;
+            mutable TrackSet m_tracks;
 
         private:
-            GlobalBias* m_bias;
+            Q_DISABLE_COPY(TagMatchBias)
     };
-    
-    /**
-     * A bias that works with numerical fields and attempts to fit the playlist to
-     * a normal distribution.
-     */
-    class NormalBias : public Bias
-    {
-        public:
-            NormalBias();
 
-            QDomElement xml() const;
-            PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
+    /*
+    Other biases that we might want to do:
+    PreventDuplicateTagBias
+    QuizPlayBias (last chacter of song title is first character of new song title)
+    AlbumPlayBias (new track is the next track in current album)
+    */
 
-            double energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) const;
-
-            /**
-             * The mean of the distribution, the 'ideal' value.
-             */
-            void setValue( double );
-            double value() const;
-
-            /**
-             * The QueryMaker field that will be considered. Only numerical
-             * fields (e.g. year, score, etc) will work.
-             */
-            void setField( qint64 );
-            qint64 field() const;
-
-            /**
-             * A number in [0.0,1.0] that controls the variance of the
-             * distribution in a sort of contrived but user friendly way. 1.0 is
-             * maximum strictness, 0.0 means minimum strictness.
-             */
-            void setScale( double );
-            double scale();
-
-            virtual bool filterFromCollection() { return false; }
-
-        private:
-            double sigmaFromScale( double scale );
-            void setDefaultMu();
-
-            double m_scale;
-
-            double m_mu;    //!< mean
-            double m_sigma; //!< standard deviation
-
-            qint64 m_field;
-    };
 }
 
-Q_DECLARE_METATYPE( Dynamic::Bias* )
+Q_DECLARE_METATYPE( Dynamic::AbstractBias* )
 
 #endif
 

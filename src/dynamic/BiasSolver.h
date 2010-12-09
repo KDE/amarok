@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -71,12 +72,11 @@ namespace Dynamic
              * @param context The tracks (if any) that precede the playlist
              * being generated.
              */
-            BiasSolver( 
-                    int n, QList<Bias*> biases,
-                    Meta::TrackList context = Meta::TrackList() );
+            BiasSolver( int n, AbstractBias* bias,
+                        Meta::TrackList context = Meta::TrackList() );
 
             ~BiasSolver();
-            
+
             /**
              * Before the solver is run, it must prepared. This function returns
              * immediately, but the preparation is not finished until readyToRun
@@ -148,9 +148,9 @@ namespace Dynamic
              * collection being considered).
              */
             void updateUniverse();
-            
+
         private:
-            /** 
+            /**
              * Try to produce an optimal playlist using a genetic algorithm, and
              * return the best playlist produced.
              *
@@ -237,7 +237,7 @@ namespace Dynamic
 
             Meta::TrackList m_mutationPool; //!< a queue of tracks used by getMutation
 
-            QList<Bias*>  m_biases;     //!< current energy for the whole system
+            QList<AbstractBias*>  m_biases;     //!< current energy for the whole system
             QList<double> m_biasEnergy; //!< current energy of each individual bias
             QList<double> m_biasMutationEnergy; //!< individual bias energy for the mutation
 
@@ -251,8 +251,10 @@ namespace Dynamic
              * sets are non-empty). Set by computeDomain, but stored here so
              * generateInitialPlaylist can make use of it.
              */
+            /*
             QList<CollectionFilterCapability*> m_feasibleCollectionFilters;
             QList<TrackSet> m_feasibleCollectionFilterSets;
+            */
 
             bool m_abortRequested; //!< flag set when the thread is aborted
 
