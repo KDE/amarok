@@ -57,11 +57,11 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
 
     addPage( general,     i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
     addPage( collection,  i18n( "Collection" ), "collection-amarok", i18n( "Configure Collection" ) );
-    addPage( plugins,     i18n( "Plugins" ), "preferences-plugin", i18n( "Configure Plugins" ) );
-    addPage( scripts,     i18n( "Scripts" ), "preferences-plugin-script", i18n( "Configure Scripts" ) );
     addPage( playback,    i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
     addPage( notify,      i18n( "Notifications" ), "preferences-indicator-amarok", i18n( "Configure Notifications" ) );
     addPage( database,    i18n( "Database" ), "server-database", i18n( "Configure Database" ) );
+    addPage( plugins,     i18n( "Plugins" ), "preferences-plugin", i18n( "Configure Plugins" ) );
+    addPage( scripts,     i18n( "Scripts" ), "preferences-plugin-script", i18n( "Configure Scripts" ) );
     //addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
     setButtons( Help | Ok | Apply | Cancel );
