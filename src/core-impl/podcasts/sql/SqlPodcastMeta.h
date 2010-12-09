@@ -129,6 +129,7 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         const SqlPodcastEpisodeList sqlEpisodes() { return m_episodes; }
 
         void loadEpisodes();
+        void applyPurge();
 
     private:
         bool m_writeTags;

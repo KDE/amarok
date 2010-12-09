@@ -107,6 +107,11 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void slotExportOpml();
 
     signals:
+        //PlaylistProvider signals
+        void updated();
+        void playlistAdded( Playlists::PlaylistPtr playlist );
+        void playlistRemoved( Playlists::PlaylistPtr playlist );
+
         void totalPodcastDownloadProgress( int progress );
 
     private slots:

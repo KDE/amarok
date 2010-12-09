@@ -525,9 +525,11 @@ SqlPodcastProvider::subscribe( const KUrl &url )
 Podcasts::PodcastChannelPtr
 SqlPodcastProvider::addChannel( Podcasts::PodcastChannelPtr channel )
 {
-    Podcasts::SqlPodcastChannel *sqlChannel = new Podcasts::SqlPodcastChannel( this, channel );
-    m_channels << SqlPodcastChannelPtr( sqlChannel );
-    return Podcasts::PodcastChannelPtr( sqlChannel );
+    Podcasts::SqlPodcastChannelPtr sqlChannel =
+            SqlPodcastChannelPtr( new Podcasts::SqlPodcastChannel( this, channel ) );
+    m_channels <<  sqlChannel;
+    emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( sqlChannel ) );
+    return Podcasts::PodcastChannelPtr::dynamicCast( sqlChannel );
 }
 
 Podcasts::PodcastEpisodePtr
@@ -580,7 +582,7 @@ SqlPodcastProvider::removeSubscription( Podcasts::SqlPodcastChannelPtr sqlChanne
         sqlStorage->query( "DELETE FROM podcastepisodes WHERE 1;" );
     }
 
-    emit updated();
+    emit playlistRemoved( Playlists::PlaylistPtr::dynamicCast( sqlChannel ) );
 }
 
 void
@@ -703,29 +705,17 @@ SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel 
 
     sqlChannel->updateInDb();
 
-    if( sqlChannel->hasPurge() )
+    if( ( oldHasPurge && !sqlChannel->hasPurge() )
+        || ( oldPurgeCount < sqlChannel->purgeCount() ) )
     {
-        int toPurge = sqlChannel->purgeCount();
-        if( !oldHasPurge || ( oldPurgeCount != toPurge && toPurge > 0 ) )
-        {
-            debug() << "purge to " << toPurge << " newest episodes for "
-                    << sqlChannel->title();
-            foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
-            {
-                if( --toPurge < 0 )
-                    if( !episode->localUrl().isEmpty() )
-                        deleteDownloadedEpisode( episode );
-            }
-            sqlChannel->loadEpisodes();
-            emit( updated() );
-        }
-    }
-    else if( oldHasPurge )
-    {
-        /* changed from purge to no-purge:
+        /* changed from purge to no-purge or increase purge count:
         we need to reload all episodes from the database. */
         sqlChannel->loadEpisodes();
         emit( updated() );
+    }
+    else
+    {
+        sqlChannel->applyPurge();
     }
 
     if( oldSaveLocation != sqlChannel->saveLocation() )
@@ -979,7 +969,6 @@ SqlPodcastProvider::slotRemoveChannels()
 
     Podcasts::SqlPodcastChannelList channels = action->data().value<Podcasts::SqlPodcastChannelList>();
 
-    bool removedSomething = false;
     foreach( Podcasts::SqlPodcastChannelPtr channel, channels )
     {
         QPair<bool, bool> result = confirmUnsubscribe( channel );        
@@ -991,14 +980,10 @@ SqlPodcastProvider::slotRemoveChannels()
                 debug() << "removing all episodes";
                 Podcasts::SqlPodcastEpisodeList sqlEpisodes = channel->sqlEpisodes();
                 deleteDownloadedEpisodes( sqlEpisodes );
-                removedSomething = true;
             }
             removeSubscription( channel );
-            removedSomething = true;
         }
     }
-    if( removedSomething )
-        emit updated();
 }
 
 void
@@ -1190,8 +1175,6 @@ SqlPodcastProvider::slotReadResult( Podcasts::PodcastReader *podcastReader )
     channel->updateInDb();
 
     podcastReader->deleteLater();
-
-    emit( updated() );
 
     //first we work through the list of new subscriptions
     if( !m_subscribeQueue.isEmpty() )

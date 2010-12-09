@@ -631,10 +631,10 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
 
     //episodes are sorted on pubDate high to low
-    SqlPodcastEpisodeList::iterator i;
-    for( i = m_episodes.begin() ; i != m_episodes.end() ; ++i )
+    int i;
+    for( i = 0; i < m_episodes.count() ; i++ )
     {
-        if( sqlEpisode->pubDate() > (*i)->pubDate() )
+        if( sqlEpisode->pubDate() > m_episodes[i]->pubDate() )
         {
             m_episodes.insert( i, sqlEpisode );
             break;
@@ -642,19 +642,32 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     }
 
     //insert in case the list is empty or at the end of the list
-    if( i == m_episodes.end() )
+    if( i == m_episodes.count() )
         m_episodes << sqlEpisode;
 
-    if( hasPurge() && m_episodes.count() > purgeCount() )
+    notifyObserversTrackAdded( Meta::TrackPtr::dynamicCast( sqlEpisode ), i );
+
+    applyPurge();
+
+    return PodcastEpisodePtr::dynamicCast( sqlEpisode );
+}
+
+void
+SqlPodcastChannel::applyPurge()
+{
+    if( !hasPurge() )
+        return;
+
+    while( m_episodes.count() > purgeCount() )
     {
         debug() << "removing last episode from the list since we are limited to " << purgeCount();
         SqlPodcastEpisodePtr removedEpisode = m_episodes.takeLast();
         m_provider->deleteDownloadedEpisode( removedEpisode );
 
-        notifyObserversTrackRemoved( purgeCount() );
+        notifyObserversTrackRemoved( m_episodes.count() );
     }
 
-    return PodcastEpisodePtr::dynamicCast( sqlEpisode );
+    //TODO: load missing episodes in case m_episodes.count() <= purgeCount()
 }
 
 void
@@ -742,8 +755,9 @@ SqlPodcastChannel::loadEpisodes()
     for(int i=0; i < results.size(); i+=rowLength)
     {
         QStringList episodesResult = results.mid( i, rowLength );
-        SqlPodcastEpisode *episode = new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) );
-        m_episodes << SqlPodcastEpisodePtr( episode );
+        SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr(
+                new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) ) );
+        m_episodes <<  sqlEpisode;
     }
 }
 
