@@ -179,9 +179,9 @@ LabelGraphicsItem::updateGeometry()
     const int iconsSpace = qMin( iconsSpaceA, iconsSpaceB );
     // if there's enough space left, start the icons at the same position as the text
     // align buttons left
-    const int offset = qRound( qMin( ( size.width() - iconsSize * iconsCount - iconsSpace * ( iconsCount - 1 ) ) / 2, m_textItem->boundingRect().height() / 4 ) );
+//     const int offset = qRound( qMin( ( size.width() - iconsSize * iconsCount - iconsSpace * ( iconsCount - 1 ) ) / 2, m_textItem->boundingRect().height() / 4 ) );
     // align buttons centered
-//     const int offset = qRound( ( size.width() - iconsSize * iconsCount - iconsSpace * ( iconsCount - 1 ) ) / 2 );
+    const int offset = qRound( ( size.width() - iconsSize * iconsCount - iconsSpace * ( iconsCount - 1 ) ) / 2 );
 
     m_addLabelItem.data()->setSize( iconsSize );
     m_addLabelItem.data()->setPos( offset, ( size.height() - iconsSize ) / 2 );

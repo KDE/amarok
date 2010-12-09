@@ -385,7 +385,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         const qreal horzontalPadding = standardPadding() / 2;
         const qreal verticalPadding = standardPadding() / 2;
         qreal x_pos;
-        qreal y_pos = m_header->boundingRect().bottom() + standardPadding();
+        qreal y_pos = m_header->boundingRect().bottom() + 1.5 * standardPadding();
         qreal width = 0;
         qreal height = 0;
         int start_index = 0;
