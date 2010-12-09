@@ -65,6 +65,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     //addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
     setButtons( Help | Ok | Apply | Cancel );
+    restoreDialogSize( Amarok::config( "ConfigDialog" ) );
 }
 
 Amarok2ConfigDialog::~Amarok2ConfigDialog()
@@ -82,6 +83,8 @@ Amarok2ConfigDialog::~Amarok2ConfigDialog()
         }
     }
 
+    KConfigGroup config = Amarok::config( "ConfigDialog" );
+    saveDialogSize( config );
     AmarokConfig::self()->writeConfig();
 }
 
