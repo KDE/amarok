@@ -25,9 +25,6 @@
 #include "ScriptManager.h"
 #include "ui_ScriptsConfig.h"
 
-#include <KArchiveDirectory>
-#include <KFileDialog>
-#include <KIO/NetAccess>
 #include <KMessageBox>
 #include <KPluginInfo>
 #include <KPluginSelector>
@@ -46,12 +43,8 @@ ScriptsConfig::ScriptsConfig( QWidget *parent )
 
     // Load config
     gui.kcfg_AutoUpdateScripts->setChecked( AmarokConfig::autoUpdateScripts() );
-    gui.installButton  ->setIcon( KIcon( "folder-amarok" ) );
-    gui.retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
-    gui.uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
-    connect( gui.installButton,   SIGNAL(clicked()), SLOT(slotInstallScript()) );
-    connect( gui.retrieveButton,  SIGNAL(clicked()), SLOT(slotRetrieveScript()) );
-    connect( gui.uninstallButton, SIGNAL(clicked()), SLOT(slotUninstallScript()) );
+    gui.manageButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    connect( gui.manageButton, SIGNAL(clicked()), SLOT(slotManageScripts()) );
 
     m_selector = gui.scriptSelector;
 
@@ -74,90 +67,10 @@ ScriptsConfig::ScriptsConfig( QWidget *parent )
 ScriptsConfig::~ScriptsConfig()
 {}
 
-bool
-ScriptsConfig::slotInstallScript( const QString& path )
-{
-    DEBUG_BLOCK
-
-    QString _path = path;
-
-    if( path.isNull() )
-    {
-        _path = KFileDialog::getOpenFileName( KUrl(),
-            "*.amarokscript.tar *.amarokscript.tar.bz2 *.amarokscript.tar.gz|"
-            + i18n( "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)" )
-            , this );
-        if( _path.isNull() )
-            return false;
-    }
-
-    KTar archive( _path );
-    if( !archive.open( QIODevice::ReadOnly ) )
-    {
-        KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
-        return false;
-    }
-
-    QString destination = Amarok::saveLocation( "scripts/" );
-    const KArchiveDirectory* const archiveDir = archive.directory();
-
-    // Prevent installing a script that's already installed
-    const QString scriptFolder = destination + archiveDir->entries().first();
-    if( QFile::exists( scriptFolder ) )
-    {
-        KMessageBox::error( 0, i18n( "A script with the name '%1' is already installed. "
-                                     "Please uninstall it first.", archiveDir->entries().first() ) );
-        return false;
-    }
-
-    archiveDir->copyTo( destination );
-    bool installSuccess = false;
-    installSuccess = recurseInstall( archiveDir, destination );
-
-    if( installSuccess )
-    {
-        KMessageBox::information( 0, i18n( "<p>Script successfully installed.</p>"
-                                           "<p>Please restart Amarok to start the script.</p>" ) );
-        return true;
-    }
-    else
-    {
-        KMessageBox::sorry( 0, i18n( "<p>Script installation failed.</p>"
-                                     "<p>Please inform the package maintainer about this error.</p>" ) );
-
-        // Delete directory recursively
-        KIO::NetAccess::del( KUrl( scriptFolder ), 0 );
-    }
-    return false;
-}
-
-bool
-ScriptsConfig::recurseInstall( const KArchiveDirectory *archiveDir, const QString &destination )
-{
-    DEBUG_BLOCK
-
-    const QStringList entries = archiveDir->entries();
-    bool success = false;
-
-    foreach( const QString &entry, entries )
-    {
-        const KArchiveEntry* const archEntry = archiveDir->entry( entry );
-
-        if( archEntry->isDirectory() )
-        {
-            const KArchiveDirectory* const dir = static_cast<const KArchiveDirectory*>( archEntry );
-            success = recurseInstall( dir, destination + entry + '/' );
-            continue;
-        }
-        success = true;
-    }
-    return success;
-}
-
-
 void
-ScriptsConfig::slotRetrieveScript()
+ScriptsConfig::slotManageScripts()
 {
+    ScriptManager::instance()->stopScript( m_selector->currentItem() );
     KNS3::DownloadDialog dialog("amarok.knsrc", this);
     dialog.exec();
 
@@ -167,31 +80,6 @@ ScriptsConfig::slotRetrieveScript()
     } else if (!dialog.changedEntries().isEmpty()) {
         KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>"
                                             "<p>Please restart Amarok to totally remove the script.</p>" ) );
-    }
-}
-
-void
-ScriptsConfig::slotUninstallScript()
-{
-    DEBUG_BLOCK
-    const QString name = m_selector->currentItem();
-    if( name.isEmpty() )
-        return;
-
-    if( KMessageBox::warningContinueCancel( this, i18n( "Are you sure you want to uninstall the script '%1'?", name ), i18n("Uninstall Script"), KGuiItem( i18n("Uninstall") ) ) == KMessageBox::Cancel )
-        return;
-
-    bool success = ScriptManager::instance()->uninstallScript( name );
-    if( success )
-    {
-        KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>"
-                                           "<p>Please restart Amarok to totally remove the script.</p>" ) );
-    }
-    else
-    {
-        KMessageBox::sorry( 0, i18n( "<p>Could not uninstall this script.</p>"
-                                     "<p>The ScriptManager can only uninstall scripts"
-                                     "which have been installed as packages.</p>" ) );
     }
 }
 

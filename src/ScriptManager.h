@@ -58,8 +58,6 @@ class AMAROK_EXPORT ScriptManager : public QObject
          */
         bool stopScript( const QString& name );
 
-        bool uninstallScript( const QString &name );
-
         void configChanged( bool changed );
 
         KPluginInfo::List scripts( const QString &category );

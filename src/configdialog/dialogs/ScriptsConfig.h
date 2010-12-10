@@ -41,14 +41,9 @@ public slots:
     void slotConfigChanged( bool changed );
 
 private slots:
-    bool slotInstallScript( const QString& path = QString() );
-    void slotRetrieveScript();
-    void slotUninstallScript();
+    void slotManageScripts();
 
 private:
-    /** Copies the file permissions from the tarball and loads the script */
-    bool recurseInstall( const KArchiveDirectory *archiveDir, const QString &destination );
-
     bool m_configChanged;
     ScriptSelector *m_selector;
 };

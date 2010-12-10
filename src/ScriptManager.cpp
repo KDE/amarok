@@ -107,37 +107,10 @@ ScriptManager::runScript( const QString& name, bool silent )
 }
 
 bool
-ScriptManager::uninstallScript( const QString &name )
-{
-    DEBUG_BLOCK
-    if( name.isEmpty() )
-        return false;
-
-    ScriptItem *item = m_scripts.value( name );
-    if( !item )
-    {
-        error() << "no such script item";
-        return false;
-    }
-
-    const QString directory = item->url.directory();
-    debug() << "uninstalling script" << name << "at" << directory;
-
-    if( item->running )
-        slotStopScript( name );
-    m_scripts.remove( name );
-    delete item;
-
-    // Delete directory recursively
-    const KUrl url = KUrl( directory );
-    if( KIO::NetAccess::del( url, 0 ) )
-        return true;
-    return false;
-}
-
-bool
 ScriptManager::stopScript( const QString& name )
 {
+    if( name.isEmpty() )
+        return false;
     if( !m_scripts.contains( name ) )
         return false;
     slotStopScript( name );

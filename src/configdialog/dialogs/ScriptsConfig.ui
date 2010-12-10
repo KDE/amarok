@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>346</width>
-    <height>73</height>
+    <width>397</width>
+    <height>48</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,31 +29,17 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="kcfg_AutoUpdateScripts">
-     <property name="toolTip">
-      <string>Automatically download and install updates for the built-in scripts from the Amarok website if available</string>
-     </property>
-     <property name="whatsThis">
-      <string>Automatically download and install updates for the built-in scripts from the Amarok website if available</string>
-     </property>
-     <property name="text">
-      <string>Automatically update built-in scripts</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="installButton">
-       <property name="text">
-        <string>&amp;Install Script</string>
+      <widget class="QCheckBox" name="kcfg_AutoUpdateScripts">
+       <property name="toolTip">
+        <string>Automatically download and install updates for the built-in scripts from the Amarok website if available</string>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="uninstallButton">
+       <property name="whatsThis">
+        <string>Automatically download and install updates for the built-in scripts from the Amarok website if available</string>
+       </property>
        <property name="text">
-        <string>&amp;Uninstall</string>
+        <string>Automatically update built-in scripts</string>
        </property>
       </widget>
      </item>
@@ -71,9 +57,12 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="retrieveButton">
+      <widget class="QPushButton" name="manageButton">
+       <property name="toolTip">
+        <string>Browse, install, and uninstall scripts</string>
+       </property>
        <property name="text">
-        <string>&amp;Get More Scripts</string>
+        <string>Manage Scripts</string>
        </property>
       </widget>
      </item>
