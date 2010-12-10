@@ -29,6 +29,8 @@ namespace PlaylistBrowserNS
 {
     class BiasBoxWidget;
 
+    /** This model is used in the playlist browser do display a biased Playlist.
+    */
     class DynamicBiasModel : public QAbstractItemModel
     {
         Q_OBJECT
@@ -40,7 +42,7 @@ namespace PlaylistBrowserNS
             };
 
             DynamicBiasModel( QListView* listView );
-            void setPlaylist( Dynamic::DynamicPlaylist *playlist );
+            void setPlaylist( Dynamic::BiasedPlaylist *playlist );
 
             ~DynamicBiasModel();
 
@@ -49,7 +51,6 @@ namespace PlaylistBrowserNS
                                 const QModelIndex & parent = QModelIndex() ) const;
 
             QModelIndex indexOf( BiasBoxWidget* );
-
 
             QModelIndex parent ( const QModelIndex & index ) const;
 

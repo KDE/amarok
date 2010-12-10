@@ -42,24 +42,23 @@ PlaylistBrowserNS::DynamicBiasModel::~DynamicBiasModel()
 }
 
 void
-PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr playlist )
+PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::BiasedPlaylist playlist )
 {
     DEBUG_BLOCK
-    if( playlist.data() == m_playlist.data() )
+    if( playlist == m_playlist )
         return;
 
     clearWidgets();
 
-    Dynamic::BiasedPlaylist* bp = 
-        dynamic_cast<Dynamic::BiasedPlaylist*>( playlist.data() );
+    debug() << "Setting active playlist:" <<playlist->title() << playlist->xml().text();
 
-    debug() << "Setting active playlist:" <<bp->title() << bp->xml().text();
-
-    if( bp )
+    if( playlist )
     {
-        beginInsertRows( QModelIndex(), 0, bp->biases().size() );
-        m_playlist = bp;
-        foreach( Dynamic::Bias* b, bp->biases() )
+        // TODO: recursive add biases
+
+        beginInsertRows( QModelIndex(), 0, playlist->biases().size() );
+        m_playlist = playlist;
+        foreach( Dynamic::Bias* b, playlist->biases() )
         {
             debug() << "BIAS ADDED" << b->description();
             PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView->viewport() );
@@ -79,6 +78,7 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
 
         // add the bias adding widgets
         // add Proportional bias
+        // if( bias->getMaxBiases() > bias->biases().count() )
         PlaylistBrowserNS::BiasAddWidget* globalAdder =
             new PlaylistBrowserNS::BiasAddWidget(
                     i18n( "Proportional Bias" ),
@@ -87,37 +87,12 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
         if( !m_widgets.isEmpty() )
             globalAdder->setAlternate( !m_widgets.back()->alternate() );
 
-
         connect( globalAdder, SIGNAL(addBias()),
                 SLOT(appendGlobalBias()) );
 
         m_widgets.append( globalAdder );
         connect( m_widgets.back(), SIGNAL(widgetChanged(QWidget*)),
                 this, SLOT(widgetChanged(QWidget*)) );
-                
-        // add Custom bias
-        PlaylistBrowserNS::BiasAddWidget* customAdder =
-            new PlaylistBrowserNS::BiasAddWidget(
-                    i18n( "Custom Bias" ),
-                    i18n( "Match a certain portion of the playlist to a custom field." ),
-                    m_listView->viewport() );
-        if( !m_widgets.isEmpty() )
-            customAdder->setAlternate( !m_widgets.back()->alternate() );
-
-
-        connect( customAdder, SIGNAL(addBias()),
-                SLOT(appendCustomBias()) );
-
-        m_widgets.append( customAdder );
-        connect( m_widgets.back(), SIGNAL(widgetChanged(QWidget*)),
-                this, SLOT(widgetChanged(QWidget*)) );
-
-        // add fuzzy bias
-        PlaylistBrowserNS::BiasAddWidget* normalAdder =
-            new PlaylistBrowserNS::BiasAddWidget(
-                    i18n( "Fuzzy Bias" ),
-                    i18n( "Loosely match the playlist to an approximate value." ),
-                    m_listView->viewport() );
 
         if( !m_widgets.isEmpty() )
             normalAdder->setAlternate( !m_widgets.back()->alternate() );

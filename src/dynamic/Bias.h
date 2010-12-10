@@ -39,9 +39,11 @@ namespace PlaylistBrowserNS
     class BiasWidget;
 }
 
-
 namespace Dynamic
 {
+    class AbstractBias;
+
+    typedef QList<Dynamic::AbstractBias*> BiasList;
 
     /** A bias is essentially just a function that evaluates the suitability of a
         playlist in some arbitrary way.
@@ -51,6 +53,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
+            AbstractBias( QObject *parent = 0 );
             virtual ~AbstractBias();
 
             /** Writes the contents of this object to an xml stream.
@@ -80,6 +83,14 @@ namespace Dynamic
                                              const Meta::TrackList& playlist,
                                              TrackCollectionPtr universe ) const = 0;
 
+            /** Returns all sub-biases of this bias */
+            virtual BiasList biases() const;
+
+            /** Returns the maximum number of allowed sub-biases.
+                That can be either 0, 1 or more.
+            */
+            virtual int getMaxBiases() const;
+
         signals:
             /** This signal is emitted when the bias is changed.
                 e.g. an internal variable is set so that the bias will return different tracks.
@@ -98,9 +109,6 @@ namespace Dynamic
             */
             virtual void invalidate();
 
-        protected:
-            /** Helper function to get a bias from an xml tag */
-            static AbstractBias* fromXml( QXmlStreamReader *reader );
     };
 
     /** A bias that returns all the tracks in the universe as possible tracks */
@@ -109,7 +117,8 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            RandomBias( QXmlStreamReader *reader );
+            RandomBias( QObject *parent = 0 );
+            RandomBias( QXmlStreamReader *reader, QObject *parent = 0 );
             virtual ~RandomBias();
 
             void toXml( QXmlStreamWriter *writer ) const;
@@ -123,8 +132,7 @@ namespace Dynamic
                                              const Meta::TrackList& playlist,
                                              TrackCollectionPtr universe ) const;
 
-        public slots:
-            virtual void invalidate();
+            virtual BiasList biases() const;
 
         private:
             Q_DISABLE_COPY(RandomBias)
@@ -135,7 +143,8 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            AndBias( QXmlStreamReader *reader );
+            AndBias( QObject *parent = 0 );
+            AndBias( QXmlStreamReader *reader, QObject *parent = 0 );
             virtual ~AndBias();
 
             void toXml( QXmlStreamWriter *writer ) const;
@@ -148,6 +157,9 @@ namespace Dynamic
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist,
                                              TrackCollectionPtr universe ) const;
+
+            virtual BiasList biases() const;
+            virtual int getMaxBiases() const;
 
             /** Appends a bias to this bias.
                 This object will take ownership of the bias and free it when destroyed.
@@ -177,7 +189,8 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            OrBias( QXmlStreamReader *reader );
+            OrBias( QObject *parent = 0 );
+            OrBias( QXmlStreamReader *reader, QObject *parent = 0 );
 
             static QString name();
             QString description() const;
@@ -196,12 +209,39 @@ namespace Dynamic
             Q_DISABLE_COPY(OrBias)
     };
 
+    /** Actually this bias works more like a Nand bias. */
+    class NotBias : public AndBias
+    {
+        Q_OBJECT
+
+        public:
+            NotBias( QObject *parent = 0 );
+            NotBias( QXmlStreamReader *reader, QObject *parent = 0 );
+
+            static QString name();
+            QString description() const;
+
+            virtual PlaylistBrowserNS::BiasWidget* widget( QWidget* parent = 0 );
+
+            /** Returns the tracks that would fit at the indicated position */
+            virtual TrackSet matchingTracks( int position,
+                                             const Meta::TrackList& playlist,
+                                             TrackCollectionPtr universe ) const;
+
+        protected slots:
+            virtual void resultReceived( const Dynamic::TrackSet &tracks );
+
+        private:
+            Q_DISABLE_COPY(NotBias)
+    };
+
     class TagMatchBias : public AbstractBias
     {
         Q_OBJECT
 
         public:
-            TagMatchBias( QXmlStreamReader *reader );
+            TagMatchBias( QObject *parent = 0 );
+            TagMatchBias( QXmlStreamReader *reader, QObject *parent = 0 );
 
             void toXml( QXmlStreamWriter *writer ) const;
 

@@ -20,42 +20,43 @@
 
 #include <KRandom>
 
-Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe)
-    : m_bits( universe.size() )
+Dynamic::TrackCollection::TrackCollection( const QStringList& uids )
+{
+    m_uids = uids;
+    for( int i = 0; i < m_uids.count(); i++ )
+        m_ids.insert( m_uids[i], i );
+}
+
+int
+Dynamic::TrackCollection::count()
+{
+    return m_uids.count();
+}
+
+Dynamic::TrackSet::TrackSet( Dynamic::TrackCollectionPtr collection )
+    : m_bits( collection->count() )
+    , m_collection( collection )
 {
     m_bits.fill( true );
 }
 
-Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe,
-                             const QList<QByteArray>& uidList )
-    : m_bits( universe.size() )
+void
+Dynamic::TrackSet::clear()
 {
-    foreach( const QByteArray &t, uidList )
-    {
-        int i = universe.indexOf( t );
-        if( i != -1 )
-            m_bits.setBit( i );
-    }
-}
-
-Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe,
-                              const QSet<QByteArray>& uidSet )
-    : m_bits( universe.size() )
-{
-    foreach( const QByteArray &t, uidSet )
-    {
-        int i = universe.indexOf( t );
-        if( i != -1 )
-            m_bits.setBit( i );
-    }
+    m_bits.clear();
 }
 
 void
 Dynamic::TrackSet::reset()
 {
-    m_bits.clear();
+    m_bits.fill( true );
 }
 
+bool
+Dynamic::TrackSet::isOutstanding() const
+{
+    return !m_collection;
+}
 
 int
 Dynamic::TrackSet::trackCount() const
@@ -63,33 +64,27 @@ Dynamic::TrackSet::trackCount() const
     return m_bits.count(true);
 }
 
-void
-Dynamic::TrackSet::unite( const Dynamic::TrackSet& B )
+bool
+Dynamic::TrackSet::isEmpty() const
 {
-    m_bits |= B.m_bits;
+    return m_bits.isEmpty();
 }
 
-void
-Dynamic::TrackSet::intersect( const Dynamic::TrackSet& B )
+bool
+Dynamic::TrackSet::isFull() const
 {
-    m_bits &= B.m_bits;
+    return m_bits.count(true) == m_bits.count();
 }
 
-void
-Dynamic::TrackSet::subtract( const Dynamic::TrackSet& B )
+QString
+Dynamic::TrackSet::getRandomTrack() const
 {
-    m_bits |= B.m_bits;
-    m_bits ^= B.m_bits;
-}
-
-QByteArray
-Dynamic::TrackSet::getRandomTrack( const QList<QByteArray>& universe ) const
-{
-    Q_ASSERT( universe.size() == m_bits.size() );
+    if( !m_collection )
+        return QString();
 
     int count = trackCount();
     if( count == 0 )
-        return QByteArray();
+        return QString();
 
     // stupid that I have to go through the set like this...
     int trackNr = KRandom::random() % count;
@@ -101,13 +96,84 @@ Dynamic::TrackSet::getRandomTrack( const QList<QByteArray>& universe ) const
                 trackNr--;
             else
             {
-                return universe.at(i);
+                return m_collection->m_uids.at(i);
             }
         }
     }
 
-    return QByteArray();
+    return QString();
 }
+
+void
+Dynamic::TrackSet::unite( const Dynamic::TrackSet& B )
+{
+    m_bits |= B.m_bits;
+}
+
+void
+Dynamic::TrackSet::unite( const QStringList& B )
+{
+    if( !m_collection )
+        return;
+
+    foreach( const QString &str, B )
+    {
+        if( !m_collection->m_ids.contains( str ) )
+            continue;
+
+        int index = m_collection->m_ids.value( str );
+        m_bits.setBit( index );
+    }
+}
+
+void
+Dynamic::TrackSet::intersect( const Dynamic::TrackSet& B )
+{
+    m_bits &= B.m_bits;
+}
+
+void
+Dynamic::TrackSet::intersect( const QStringList& B )
+{
+    if( !m_collection )
+        return;
+
+    QBitArray bBits( m_bits.count() );
+    foreach( const QString &str, B )
+    {
+        if( !m_collection->m_ids.contains( str ) )
+            continue;
+
+        int index = m_collection->m_ids.value( str );
+        bBits.setBit( index );
+    }
+
+    m_bits &= bBits;
+}
+
+void
+Dynamic::TrackSet::subtract( const Dynamic::TrackSet& B )
+{
+    m_bits |= B.m_bits;
+    m_bits ^= B.m_bits;
+}
+
+void
+Dynamic::TrackSet::subtract( const QStringList& B )
+{
+    if( !m_collection )
+        return;
+
+    foreach( const QString &str, B )
+    {
+        if( !m_collection->m_ids.contains( str ) )
+            continue;
+
+        int index = m_collection->m_ids.value( str );
+        m_bits.clearBit( index );
+    }
+}
+
 
 
 

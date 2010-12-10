@@ -28,10 +28,8 @@
 #include "amarokconfig.h"
 #include "playlist/PlaylistModelStack.h"
 
-#include <QMutexLocker>
-
-
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator()
+    : m_playlist( 0 )
 {
     connect( m_model->qaim(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
     connect( m_model->qaim(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
@@ -64,7 +62,7 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
     int rowCount = m_model->qaim()->rowCount();
     int upcomingCountLag = AmarokConfig::upcomingTracks() - ( rowCount - updateRow );
 
-    if ( upcomingCountLag > 0 && !m_playlist.isNull() )
+    if( upcomingCountLag > 0 && !m_playlist.isNull() )
         m_playlist->requestTracks( upcomingCountLag );
 }
 
@@ -72,7 +70,7 @@ void
 Playlist::DynamicTrackNavigator::removePlayed()
 {
     int activeRow = m_model->activeRow();
-    if ( activeRow > AmarokConfig::previousTracks() )
+    if( activeRow > AmarokConfig::previousTracks() )
     {
         The::playlistController()->removeRows( 0, activeRow - AmarokConfig::previousTracks() );
     }
@@ -83,14 +81,18 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
 {
     DEBUG_BLOCK
 
-    Dynamic::DynamicPlaylistPtr newPlaylist =
+    Dynamic::DynamicPlaylist *newPlaylist =
         PlaylistBrowserNS::DynamicModel::instance()->activePlaylist();
 
-    if ( newPlaylist == m_playlist )
+    if( newPlaylist == m_playlist )
         return;
 
     if( m_playlist )
+    {
+        disconnect( m_playlist, SIGNAL( tracksReady( Meta::TrackList ) ),
+                    this, SLOT( receiveTracks( Meta::TrackList ) ) );
         m_playlist->requestAbort();
+    }
 
     m_playlist = newPlaylist;
     if( !m_playlist )
@@ -99,7 +101,8 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
     }
     else
     {
-        connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
+        connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ),
+                 this, SLOT( receiveTracks( Meta::TrackList ) ) );
     }
 }
 
@@ -113,30 +116,7 @@ Playlist::DynamicTrackNavigator::trackChanged()
 void
 Playlist::DynamicTrackNavigator::repopulate()
 {
-    DEBUG_BLOCK
-    if ( !m_mutex.tryLock() )
-        return;
-
-    int row = m_model->activeRow() + 1;
-    if ( row < 0 )
-        row = 0;
-
-    // Don't remove queued tracks
-    QList<int> rows;
-
-    do {
-        if( !m_model->queuePositionOfRow( row ) )
-            rows << row;
-        row++;
-    }
-    while( row < m_model->qaim()->rowCount() );
-
-    if( !rows.isEmpty() )
-        The::playlistController()->removeRows( rows );
-
-    if( !m_playlist.isNull() )
+    if( m_playlist )
         m_playlist->recalculate();
     appendUpcoming();
-
-    m_mutex.unlock();
 }

@@ -33,6 +33,8 @@ class QXmlStreamReader;
 
 namespace Dynamic
 {
+    /** A concrete implementation of the DynamicPlaylist that uses a bias structure to determine new tracks.
+    */
     class BiasedPlaylist : public DynamicPlaylist
     {
         Q_OBJECT

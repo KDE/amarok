@@ -21,6 +21,7 @@
 #define DEBUG_PREFIX "Bias"
 
 #include "Bias.h"
+#include "BiasFactory.h"
 
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -28,15 +29,16 @@
 
 #include "TrackSet.h"
 #include "DynamicBiasWidgets.h"
-// #include "DynamicModel.h"
-// #include "core/meta/support/MetaConstants.h"
-// #include "core/collections/MetaQueryMaker.h"
 #include "core/collections/QueryMaker.h"
 
-// #include <QMutexLocker>
 #include <QDateTime>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+
+
+Dynamic::AbstractBias::AbstractBias( QObject *parent )
+    : QObject( parent )
+{ }
 
 Dynamic::AbstractBias::~AbstractBias()
 { }
@@ -64,30 +66,59 @@ void
 Dynamic::AbstractBias::invalidate()
 { }
 
-Dynamic::AbstractBias*
-Dynamic::AbstractBias::fromXml( QXmlStreamReader *reader )
+// -------- RandomBias ------
+
+Dynamic::RandomBias::RandomBias( QObject *parent )
+    : AbstractBias( parent )
+{ }
+
+Dynamic::RandomBias::RandomBias( QXmlStreamReader *reader, QObject *parent )
+    : AbstractBias( parent )
 {
-    QStringRef name = reader->name();
-    if( name == Dynamic::AndBias::name() )
-        return new Dynamic::AndBias( reader );
-    else if( name == Dynamic::OrBias::name() )
-        return new Dynamic::OrBias( reader );
-    else if( name == Dynamic::TagMatchBias::name() )
-        return new Dynamic::TagMatchBias( reader );
-    else
-        return 0;
+    reader->skipCurrentElement();
 }
+
+Dynamic::RandomBias::~RandomBias()
+{ }
+
+void
+Dynamic::RandomBias::toXml( QXmlStreamWriter *writer ) const
+{
+    Q_UNUSED( writer );
+}
+
+QString
+Dynamic::RandomBias::name()
+{
+    return QLatin1String( "randomBias" );
+}
+
+Dynamic::TrackSet
+Dynamic::RandomBias::matchingTracks( int position,
+                                  const Meta::TrackList& playlist,
+                                  Dynamic::TrackCollectionPtr universe ) const
+{
+    Q_UNUSED( position );
+    Q_UNUSED( playlist );
+    return Dynamic::TrackSet( universe );
+}
+
 
 // -------- AndBias ------
 
-Dynamic::AndBias::AndBias( QXmlStreamReader *reader )
+Dynamic::AndBias::AndBias( QObject *parent )
+    : AbstractBias( parent )
+{ }
+
+Dynamic::AndBias::AndBias( QXmlStreamReader *reader, QObject *parent )
+    : AbstractBias( parent )
 {
     while (!reader->atEnd()) {
         reader->readNext();
 
         if( reader->isStartElement() )
         {
-            Dynamic::AbstractBias *bias = fromXml( reader );
+            Dynamic::AbstractBias *bias = Dynamic::BiasFactory::fromXml( reader, this );
             if( bias )
             {
                 m_biases.append(bias);
@@ -203,6 +234,14 @@ Dynamic::AndBias::moveBias( int from, int to )
 
 // -------- OrBias ------
 
+Dynamic::OrBias::OrBias( QObject *parent )
+    : AndBias( parent )
+{ }
+
+Dynamic::OrBias::OrBias( QXmlStreamReader *reader, QObject *parent )
+    : AndBias( reader, parent )
+{ }
+
 QString
 Dynamic::OrBias::name()
 {
@@ -251,7 +290,12 @@ Dynamic::OrBias::resultReceived( const Dynamic::TrackSet &tracks )
 
 // -------- TagMatchBias ------
 
-Dynamic::TagMatchBias::TagMatchBias( QXmlStreamReader *reader )
+Dynamic::TagMatchBias::TagMatchBias( QObject *parent )
+    : AbstractBias( parent )
+{ }
+
+Dynamic::TagMatchBias::TagMatchBias( QXmlStreamReader *reader, QObject *parent )
+    : AbstractBias( parent )
 {
     while (!reader->atEnd()) {
         reader->readNext();

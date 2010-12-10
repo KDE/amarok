@@ -19,16 +19,20 @@
 #define DEBUG_PREFIX "BiasedPlaylist"
 
 #include "BiasedPlaylist.h"
+#include "BiasFactory.h"
 
 #include "amarokconfig.h"
 #include "App.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "DynamicModel.h"
-#include "core/collections/MetaQueryMaker.h"
-#include "playlist/PlaylistModelStack.h"
+// #include "DynamicModel.h"
+// #include "core/collections/MetaQueryMaker.h"
+#include "playlist/PlaylistModelStack.h" // for The::playlist
 #include "statusbar/StatusBar.h"
+
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 #include <threadweaver/ThreadWeaver.h>
 #include <QThread>
@@ -43,7 +47,7 @@
 // Pick your poison...
 const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 50;
 
-Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent = 0 )
+Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     : DynamicPlaylist( parent )
     , m_numRequested( 0 )
 {
@@ -51,7 +55,7 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent = 0 )
     m_bias = new Dynamic::RandomBias( this );
 }
 
-Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *parent = 0 );
+Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *parent )
     : DynamicPlaylist( parent )
     , m_numRequested( 0 )
     , m_bias( 0 )
@@ -69,7 +73,7 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *pare
                 m_title = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "bias" )
             {
-                m_bias = fromXml( reader );
+                m_bias = Dynamic::BiasFactory::fromXml( reader, this );
             }
             else
             {
@@ -90,7 +94,7 @@ Dynamic::BiasedPlaylist::~BiasedPlaylist()
 }
 
 void
-Dynamic::AndBias::toXml( QXmlStreamWriter *writer ) const
+Dynamic::BiasedPlaylist::toXml( QXmlStreamWriter *writer ) const
 {
     writer->writeTextElement( "title", m_title );
     writer->writeStartElement( "bias" );
@@ -118,12 +122,9 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 
     if( !m_solver )
     {
-        BiasSolver::setUniverseCollection( m_collection );
         debug() << "assigning new m_solver";
-
-        m_solver = new BiasSolver( BUFFER_SIZE, m_biases, getContext() );
+        m_solver = new BiasSolver( BUFFER_SIZE, m_bias, getContext() );
         m_solver.data()->setAutoDelete(true);
-        connect( m_solver.data(), SIGNAL(readyToRun()), SLOT(solverReady()) );
         connect( m_solver.data(), SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
         connect( m_solver.data(), SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
 
@@ -134,19 +135,11 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
             connect( m_solver.data(), SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
         }
 
-        m_solver.data()->prepareToRun();
+        ThreadWeaver::Weaver::instance()->enqueue( m_solver.data() );
         debug() << "called prepareToRun";
     }
     else
         debug() << "solver already running!";
-}
-
-void
-Dynamic::BiasedPlaylist::solverReady()
-{
-    debug() << "ENQUEUEING new m_solver!" << m_solver;
-    if( m_solver )
-        ThreadWeaver::Weaver::instance()->enqueue( m_solver.data() );
 }
 
 
@@ -186,25 +179,17 @@ Dynamic::BiasedPlaylist::recalculate()
 void
 Dynamic::BiasedPlaylist::invalidate()
 {
-    DEBUG_BLOCK
-     if ( AmarokConfig::dynamicMode() )
-     {
-         BiasSolver::outdateUniverse();
-         if( m_active )
-            recalculate();
-     }
+    if ( AmarokConfig::dynamicMode() )
+    {
+        BiasSolver::outdateUniverse();
+        // recalculate();
+    }
 }
 
-QList<Dynamic::Bias*>&
-Dynamic::BiasedPlaylist::biases()
+Dynamic::AbstractBias*
+Dynamic::BiasedPlaylist::bias() const
 {
-    return m_biases;
-}
-
-const QList<Dynamic::Bias*>&
-Dynamic::BiasedPlaylist::biases() const
-{
-    return m_biases;
+    return m_bias;
 }
 
 void

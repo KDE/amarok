@@ -19,7 +19,7 @@
 
 #include "DynamicPlaylist.h"
 
-Dynamic::DynamicPlaylist::DynamicPlaylist( QObject parent )
+Dynamic::DynamicPlaylist::DynamicPlaylist( QObject *parent )
     : QObject( parent )
 {
 }

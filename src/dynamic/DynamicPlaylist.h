@@ -26,15 +26,16 @@ class QXmlStreamWriter;
 
 namespace Dynamic {
 
-/**
- * Provides a basis for dynamic playlists which operate like a stream
- * of tracks, rather than a list.
- **/
+/** Provides a basis for dynamic playlists.
+    The DynamicPlaylist is used by the DynamicTrackNavigator.
+    Currently the only implementation of this abstract class is the BiasedPlaylist.
+*/
 class DynamicPlaylist : public QObject
 {
     Q_OBJECT
 
     public:
+        DynamicPlaylist( QObject *parent = 0 );
         DynamicPlaylist( QXmlStreamReader *reader, QObject *parent = 0 );
         virtual ~DynamicPlaylist();
 

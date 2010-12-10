@@ -26,11 +26,14 @@
 
 #include <threadweaver/Job.h>
 
+#include <QMutex>
 #include <QWaitCondition>
 
 namespace Dynamic
 {
 
+    /** A playlist/energy pair, used by ga_optimize to sort lists of playlists by their energy.
+    */
     struct TrackListEnergyPair;
 
     /**
@@ -39,7 +42,16 @@ namespace Dynamic
      * complicated. It uses a a combination of heuristics, genetic algorithms,
      * and simulated annealing. The steps involved are documented in the source
      * code of BiasSolver::run.
-     *
+
+       The whole operation is a little bit tricky since the bias solver runs as
+       seperate job without it's own event queue.
+
+       The signals and slots are all handled via the UI threads event queue.
+       Since the BiasSolver and all biases are created from the UI thread this
+       is also the event queue of all objects.
+       Bottom line: don't create objects in the bias solver that use signals.
+
+
      * Playlist generation is treated as a minimization problem. We try to
      * produce a playlist with the lowest "energy", which can be thought of as
      * the badness of the playlist. High energy means the biases are poorly
@@ -51,7 +63,7 @@ namespace Dynamic
      * Automatic Playlist Generation."
      *
      * To use the solver:
-     * Create an instance, call prepareToRun, and when readyToRun is emitted,
+     * Create an instance
      * enqueue the job. When the job is finished, call solution to get the
      * playlist produced.
      */
@@ -63,26 +75,15 @@ namespace Dynamic
 
             /**
              * Create and prepare the solver. The constructor returns
-             * immediately, but the solver will not be fully constructed until
-             * readyToRun is emitted. Do not enqueue the job before the signal is
-             * emitted.
              *
              * @param n The size of the playlist to generate.
              * @param biases The system of biases being applied.
              * @param context The tracks (if any) that precede the playlist
              * being generated.
              */
-            BiasSolver( int n, AbstractBias* bias,
-                        Meta::TrackList context = Meta::TrackList() );
+            BiasSolver( int n, AbstractBias* bias, Meta::TrackList context );
 
             ~BiasSolver();
-
-            /**
-             * Before the solver is run, it must prepared. This function returns
-             * immediately, but the preparation is not finished until readyToRun
-             * is emitted. Do not enqueue the job before then.
-             */
-            void prepareToRun();
 
             /// Returns the playlist generated after the job has finished.
             Meta::TrackList solution();
@@ -105,12 +106,6 @@ namespace Dynamic
              * Defaults to false, i.e. the BiasSolver instance will not delete itself.
              */
             void setAutoDelete( bool autoDelete );
-
-            /**
-             * Set the collection that will be used when generating the
-             * playlist.
-             */
-            static void setUniverseCollection( Collections::Collection* );
 
             /**
              * Return the universe set (a list of the uid of every track being
@@ -138,18 +133,23 @@ namespace Dynamic
             void statusUpdate( int progress );
 
         private slots:
-            void biasUpdated();
-            void universeResults( QString collectionId, QStringList );
-            void universeUpdated();
+            void biasResultReady( const Dynamic::TrackSet &set );
 
+            void trackCollectionResultsReady( QString collectionId, QStringList );
+            void trackCollectionDone();
 
-            /**
-             * Query for the universe set (the set of all tracks in the
-             * collection being considered).
-             */
-            void updateUniverse();
 
         private:
+            /** Returns the TrackSet of tracks fitting in the indicated position.
+                The function blocks until the result is received */
+            TrackSet matchingTracks( int position, const Meta::TrackList& playlist ) const;
+
+            /** Query for the universe set (the set of all tracks in the collection being considered.
+                This function blocks.
+            */
+            void getTrackCollection();
+
+
             /**
              * Try to produce an optimal playlist using a genetic algorithm, and
              * return the best playlist produced.
@@ -168,36 +168,6 @@ namespace Dynamic
              * @param updateStatus Enable/disable statusUpdate signals.
              */
             void sa_optimize( Meta::TrackList& initialPlaylist, int iterationLimit, bool updateStatus = true );
-
-
-            /**
-             * Figures out what subset of the collection eligible tracks come
-             * from.
-             */
-            void computeFeasibleFilters();
-
-
-            /**
-             * Calculate and return the composite energy ("badness") of the
-             * given playlist.
-             *
-             * @param playlist The playlist to calculate the energy of.
-             */
-            double energy( const Meta::TrackList& playlist );
-
-
-            /**
-             * If we are just swapping one track (which we do a lot of), some
-             * biases can take advantage of that, and avoid completely
-             * recalculating the energy.
-             *
-             * @param playlist The playlist to calculate the energy of.
-             * @param mutation The track being swapped into playlist.
-             * @param mutationPos The proposed position in the playlist for
-             * mutation.
-             */
-            double recalculateEnergy( const Meta::TrackList& playlist, Meta::TrackPtr mutation, int mutationPos );
-
 
             /**
              * Get the track referenced by the uid stored in the given
@@ -218,13 +188,12 @@ namespace Dynamic
              */
             Meta::TrackPtr getRandomTrack( const TrackSet& subset ) const;
 
-
             /**
-             * Try to choose a good starting playlist using heuristics. The
+             * Try to choose a good playlist starting only from the playlist context.
              * details are a bit complicated, the algorithm is documented in the
              * source code.
              */
-            Meta::TrackList generateInitialPlaylist() const;
+            TrackListEnergyPair generateInitialPlaylist() const;
 
             /**
              * Used each iteration of the genetic algorithm. Choose
@@ -233,49 +202,24 @@ namespace Dynamic
              */
             QList<int> generateMatingPopulation( const QList<TrackListEnergyPair>& );
 
-            Meta::TrackList m_solution;
-
-            Meta::TrackList m_mutationPool; //!< a queue of tracks used by getMutation
-
-            QList<AbstractBias*>  m_biases;     //!< current energy for the whole system
-            QList<double> m_biasEnergy; //!< current energy of each individual bias
-            QList<double> m_biasMutationEnergy; //!< individual bias energy for the mutation
-
             int m_n;                    //!< size of playlist to generate
+            Dynamic::AbstractBias *m_bias; // bias used to determine tracks. not owned by solver
             Meta::TrackList m_context;  //!< tracks that precede the playlist
-            double m_epsilon;           //!< highest energy we consider optimal
 
-            int m_pendingBiasUpdates;
-
-            /** List of biases which are global biases and are feasible (their
-             * sets are non-empty). Set by computeDomain, but stored here so
-             * generateInitialPlaylist can make use of it.
-             */
-            /*
-            QList<CollectionFilterCapability*> m_feasibleCollectionFilters;
-            QList<TrackSet> m_feasibleCollectionFilterSets;
-            */
+            Meta::TrackList m_solution;
+            Meta::TrackList m_mutationPool; //!< a queue of tracks used by getMutation
 
             bool m_abortRequested; //!< flag set when the thread is aborted
 
-            /**
-             * We keep a list here of the uid of every track in the set
-             * collection being considered. This is unfortunately necessary
-             * because the algorithm in generateInitialPlaylist performs many
-             * set subtractions and intersections which would be impractical and
-             * inefficient to perform using database queries. Instead we
-             * represent a set of tracks as a bit list, where the n'th bit
-             * indicates whether the n'th track in s_universe is included in the
-             * set. Set operations can then be performed extremely quickly using
-             * bitwise operations, rather than tree operations which QSet would
-             * use.
-             */
-            static QList<QByteArray>  s_universe;
-            static QMutex             s_universeMutex;
-            static Collections::QueryMaker*  s_universeQuery;
-            static Collections::Collection*  s_universeCollection;
-            static bool               s_universeOutdated;
-            static unsigned int       s_uidUrlProtocolPrefixLength;
+            QMutex m_biasResultsMutex;
+            QWaitCondition m_biasResultsReady;
+            Dynamic::TrackSet m_tracks; // tracks just received from the bias.
+
+            QMutex m_collectionResultsMutex;
+            QWaitCondition m_collectionResultsReady;
+            /** All uids of all the tracks in the collection */
+            QStringList m_collectionUids;
+            TrackCollectionPtr m_trackCollection;
 
 
             // GENETIC ALGORITHM CONSTANTS

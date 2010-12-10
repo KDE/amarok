@@ -28,6 +28,24 @@
 
 namespace Dynamic
 {
+    class TrackSet;
+    class TrackCollection;
+
+    typedef QSharedDataPointer<TrackCollection> TrackCollectionPtr;
+
+    /**
+     * We keep a list here of the uid of every track in the set
+     * collection being considered. This is unfortunately necessary
+     * because the algorithm in generateInitialPlaylist performs many
+     * set subtractions and intersections which would be impractical and
+     * inefficient to perform using database queries. Instead we
+     * represent a set of tracks as a bit list, where the n'th bit
+     * indicates whether the n'th track in s_universe is included in the
+     * set. Set operations can then be performed extremely quickly using
+     * bitwise operations, rather than tree operations which QSet would
+     * use.
+     */
+
     /** The TrackCollection stores all the uids that a TrackSet can contain.
         Usually the dynamic playlist queries all the uids before computing a playlist.
     */
@@ -36,12 +54,14 @@ namespace Dynamic
         public:
             TrackCollection( const QStringList& uids );
 
+            int count();
+
         private:
             QStringList m_uids;
             QHash<QString, int> m_ids;
-    };
 
-    typedef QSharedDataPointer<TrackCollection> TrackCollectionPtr;
+            friend class TrackSet;
+    };
 
     /**
      * A representation of a set of tracks as a bit array, relative to the
@@ -69,7 +89,7 @@ namespace Dynamic
             void reset();
 
             /** Returns true if the results of this track set are not yet available */
-            bool isOutstanding();
+            bool isOutstanding() const;
 
             /**
              * The number of songs contained in this trackSet
@@ -79,13 +99,15 @@ namespace Dynamic
             bool isEmpty() const;
             bool isFull() const;
 
-            QByteArray getRandomTrack() const;
+            /** Returns the uids of a random track contains in this set */
+            QString getRandomTrack() const;
 
             void unite( const TrackSet& );
             void unite( const QStringList& uids );
             void intersect( const TrackSet& );
             void intersect( const QStringList& uids );
             void subtract( const TrackSet& );
+            void subtract( const QStringList& uids );
 
             TrackSet& operator=( const TrackSet& );
 
