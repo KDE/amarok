@@ -441,7 +441,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         if( m_labelItems.count() > 0 )
             y_pos += height + standardPadding();
 
-        const qreal addLabelProxyWidth = qMin( size().width() - 2 * standardPadding(), 300.0 );
+        const qreal addLabelProxyWidth = qMin( size().width() - 2 * standardPadding(), (qreal)300.0 );
         m_addLabelProxy.data()->setPos( ( size().width() - addLabelProxyWidth ) / 2, y_pos );
         m_addLabelProxy.data()->setMinimumWidth( addLabelProxyWidth );
         m_addLabelProxy.data()->setMaximumWidth( addLabelProxyWidth );
