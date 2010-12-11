@@ -387,7 +387,7 @@ TestSqlScanManager::testRemoveDir()
         QVERIFY( QFile::remove( t->playableUrl().path() ) );
     QVERIFY( QDir( m_tmpCollectionDir->name() ).rmdir( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
 
-    m_scanManager->requestFullScan();
+    m_scanManager->requestIncrementalScan();
     waitScannerFinished();
 
     // this both are gone

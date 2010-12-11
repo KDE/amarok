@@ -390,7 +390,10 @@ ScannerJob::run()
                 QStringRef name = m_reader.name();
                 if( name == "scanner" )
                 {
-                    if( m_reader.attributes().hasAttribute("incremental") )
+                    // when importing we can only tell an incremental scan from the
+                    // way the scanner was started
+                    if( m_input &&
+                        m_reader.attributes().hasAttribute("incremental") )
                         processor->setType( ScanResultProcessor::PartialUpdateScan );
 
                     debug() << "ScannerJob: got count:" << m_reader.attributes().value( "count" ).toString().toInt();
