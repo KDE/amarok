@@ -841,7 +841,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
     actions << m_customActions;
     foreach( QAction* action, actions )
     {
-        Plasma::IconWidget *icon = addAction( action, 24 );
+        Plasma::IconWidget *icon = addAction( this, action, 24 );
         icon->setText( QString() );
         m_actionsLayout->addItem( icon );
     }
