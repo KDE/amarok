@@ -355,7 +355,7 @@ Meta::Tag::readTags( const QString &path, bool useCharsetDetector )
             {
                 QString name = TStringToQString( it->first );
                 QString value = TStringToQString( it->second.toString("\n") );
-                decodeXiph( name, value );
+                result.unite( decodeXiph( name, value ) );
             }
         }
     }
