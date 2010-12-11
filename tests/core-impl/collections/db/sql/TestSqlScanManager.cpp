@@ -399,6 +399,62 @@ TestSqlScanManager::testRemoveDir()
 }
 
 void
+TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
+{
+    createAlbum();
+    m_scanManager->requestFullScan();
+    waitScannerFinished();
+
+    Meta::AlbumPtr album;
+    Meta::TrackList tracks;
+
+    // -- check the commit
+    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    tracks = album->tracks();
+    QCOMPARE( tracks.count(), 9 );
+    QCOMPARE( tracks.first()->uidUrl(), QString("amarok-sqltrackuid://1dc7022c52a3e4c51b46577da9b3c8ff") );
+    QVERIFY( !album->isCompilation() );
+
+    // change all the track uids in a silly way
+    QHash<int, QString> uidChanges; // uid hashed with track number
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        Meta::FieldHash uidChange;
+        QString uid = track->uidUrl().remove( QString("amarok-sqltrackuid://") );
+        QStringRef left = uid.leftRef( 10 );
+        QStringRef right = uid.rightRef( uid.size() - left.size() );
+        QString newUid = QString("%1%2").arg( right.toString(), left.toString() );
+        uidChange.insert( Meta::valUniqueId, newUid );
+        uidChanges.insert( track->trackNumber(), newUid );
+
+        KUrl url = track->playableUrl();
+        QVERIFY( url.isLocalFile() );
+        Meta::Tag::writeTags( url.path(), uidChange );
+    }
+
+    // move album directory
+    const KUrl oldUrl = tracks.first()->playableUrl();
+    const QString base = m_tmpCollectionDir->name() + "Thriller";
+    QVERIFY( QFile::rename( base, base + "Thriller (Moved)" ) );
+
+    // do an incremental scan
+    m_scanManager->requestIncrementalScan();
+    waitScannerFinished();
+
+    // recheck album
+    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    tracks = album->tracks();
+    QCOMPARE( tracks.count(), 9 );
+
+    // check changed uids
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        QString uid = track->uidUrl().remove( QString("amarok-sqltrackuid://") );
+        QCOMPARE( uid, uidChanges.value( track->trackNumber() ) );
+    }
+}
+
+void
 TestSqlScanManager::testRemoveTrack()
 {
     Meta::AlbumPtr album;
