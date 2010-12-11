@@ -575,19 +575,19 @@ Meta::FieldHash
 Meta::Tag::decodeXiph( const QString &name, const QString &value )
 {
     Meta::FieldHash result;
-    if( name == QLatin1String( "COMPOSER" ) )
+    if( name.compare( QLatin1String( "COMPOSER" ), Qt::CaseInsensitive ) == 0 )
         result.insert( Meta::valComposer, value );
 
-    else if( name == QLatin1String( "ALBUMARTIST" ) )
+    else if( name.compare( QLatin1String( "ALBUMARTIST" ), Qt::CaseInsensitive ) == 0 )
         result.insert( Meta::valAlbumArtist, value );
 
-    else if( name == QLatin1String( "BPM" ) )
+    else if( name.compare( QLatin1String( "BPM" ), Qt::CaseInsensitive ) == 0 )
         result.insert( Meta::valBpm, value.toFloat() );
 
-    else if( name == QLatin1String( "DISCNUMBER" ) )
+    else if( name.compare( QLatin1String( "DISCNUMBER" ), Qt::CaseInsensitive ) == 0 )
         result.insert( Meta::valDiscNr, splitNumber(value.trimmed()) );
 
-    else if( name == QLatin1String( "COMPILATION" ) )
+    else if( name.compare( QLatin1String( "COMPILATION" ), Qt::CaseInsensitive ) == 0 )
     {
         if( value.toInt() )
             result.insert( Meta::valCompilation, true );
