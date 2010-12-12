@@ -40,8 +40,10 @@ public:
     bool isWritable() const;
 
 protected:
-    void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
-    void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
+    void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                               const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+    void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources,
+                                const Transcoding::Configuration &configuration = Transcoding::Configuration() );
 
 private slots:
     void slotTrashJobFinished( KJob *job );
