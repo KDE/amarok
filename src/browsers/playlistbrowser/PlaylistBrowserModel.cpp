@@ -591,15 +591,11 @@ PlaylistBrowserModel::slotPlaylistAdded( Playlists::PlaylistPtr playlist, int ca
     for( i = 0; i < m_playlists.count(); i++ )
     {
         if( lessThanPlaylistTitles( playlist, m_playlists[i] ) )
-        {
-            m_playlists.insert( i, playlist );
             break;
-        }
     }
-    if( i == m_playlists.count() )
-        m_playlists.append( playlist );
 
     beginInsertRows( QModelIndex(), i, i );
+    m_playlists.insert( i, playlist );
     endInsertRows();
 }
 

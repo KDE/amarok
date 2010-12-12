@@ -119,7 +119,7 @@ QtGroupingProxy::buildTree()
     if( !m_model )
         return;
 
-    emit layoutAboutToBeChanged();
+    beginResetModel();
 
     m_groupHash.clear();
     //don't clear the data maps since most of it will probably be needed again.
@@ -153,7 +153,7 @@ QtGroupingProxy::buildTree()
     }
 //    dumpGroups();
 
-    emit layoutChanged();
+    endResetModel();
 }
 
 QList<int>
