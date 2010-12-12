@@ -206,6 +206,8 @@ PlaylistManager::removePlaylist( Playlists::PlaylistPtr playlist, int category )
     {
         m_playlistMap.remove( category, playlist );
     }
+
+    emit playlistRemoved( playlist, category );
 }
 
 void
@@ -233,7 +235,6 @@ void
 PlaylistManager::slotPlaylistRemoved( Playlists::PlaylistPtr playlist )
 {
     removePlaylist( playlist, playlist->provider()->category() );
-    emit updated();
 }
 
 Playlists::PlaylistList

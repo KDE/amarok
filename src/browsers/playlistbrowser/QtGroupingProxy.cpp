@@ -696,6 +696,14 @@ QtGroupingProxy::modelRowsInserted( const QModelIndex &parent, int start, int en
 void
 QtGroupingProxy::modelRowsRemoved( const QModelIndex &parent, int start, int end )
 {
+    if( parent == m_rootNode )
+    {
+        //rebuild tree, reseting the view
+        //TODO: don't rebuild but remove from
+        buildTree();
+        return;
+    }
+
     QModelIndex proxyParent = mapFromSource( parent );
     //TODO: move this to slot connected to rowsAboutToBeRemoved()
     beginRemoveRows( proxyParent, start, end );

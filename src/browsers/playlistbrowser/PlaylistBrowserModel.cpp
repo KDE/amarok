@@ -608,6 +608,17 @@ PlaylistBrowserModel::slotPlaylistRemoved( Playlists::PlaylistPtr playlist, int 
 {
     if( category != m_playlistCategory )
         return;
+
+    int position = m_playlists.indexOf( playlist );
+    if( position == -1 )
+    {
+        error() << "signal removed playlist not in m_playlists";
+        return;
+    }
+
+    beginRemoveRows( QModelIndex(), position, position );
+    m_playlists.removeAt( position );
+    endRemoveRows();
 }
 
 Meta::TrackList
