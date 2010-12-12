@@ -394,25 +394,34 @@ SqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
 {
     d->linkedTables |= Private::ARTIST_TAB;
 
-    if( !artist || artist->name().isEmpty() )
-        d->queryMatch += " AND ( artists.name IS NULL OR artists.name = '')";
+    QString artistQuery;
+    QString albumArtistQuery;
+
+    if( artist && !artist->name().isEmpty() )
+    {
+        artistQuery = QString("artists.name = '%1'").arg( escape( artist->name() ) );
+        albumArtistQuery = QString("albumartists.name = '%1'").arg( escape( artist->name() ) );
+    }
     else
     {
-        switch( d->artistMode )
-        {
-            case TrackArtists:
-                d->queryMatch += QString( " AND artists.name = '%1'" ).arg( escape( artist->name() ) );
-                break;
-            case AlbumArtists:
-                d->queryMatch += QString( " AND albumartists.name = '%1'" ).arg( escape( artist->name() ) );
-                break;
-            case AlbumOrTrackArtists:
-                d->queryMatch += QString( " AND ( artists.name = '%1' OR albumartists.name = '%1' )" ).arg( escape( artist->name() ) );
-                break;
-        }
-        //Turn back default value, so we don't need to worry about this until the next AlbumArtist request.
-        d->artistMode = TrackArtists;
+        artistQuery = "( artists.name IS NULL OR artists.name = '')";
+        albumArtistQuery = "( albumartists.name IS NULL OR albumartists.name = '')";
     }
+
+    switch( d->artistMode )
+    {
+    case TrackArtists:
+        d->queryMatch += " AND " + artistQuery;
+        break;
+    case AlbumArtists:
+        d->queryMatch += " AND " + albumArtistQuery;
+        break;
+    case AlbumOrTrackArtists:
+        d->queryMatch += " AND ( (" + artistQuery + " ) OR ( " + albumArtistQuery + " ) )";
+        break;
+    }
+    //Turn back default value, so we don't need to worry about this until the next AlbumArtist request.
+    d->artistMode = TrackArtists;
     return this;
 }
 
@@ -732,7 +741,7 @@ SqlQueryMaker::linkTables()
         {
             d->queryFrom += " artists";
             if( d->linkedTables != Private::ARTIST_TAB )
-                d->queryFrom += " INNER JOIN tracks ON tracks.artist = artists.id";
+                d->queryFrom += " JOIN tracks ON tracks.artist = artists.id";
             if( d->linkedTables & Private::ARTIST_TAB )
                 d->linkedTables ^= Private::ARTIST_TAB;
             break;
@@ -742,7 +751,7 @@ SqlQueryMaker::linkTables()
         {
             d->queryFrom += " albums";
             if( d->linkedTables != Private::ALBUM_TAB && d->linkedTables != ( Private::ALBUM_TAB | Private::ALBUMARTIST_TAB ) )
-                d->queryFrom += " INNER JOIN tracks ON tracks.album = albums.id";
+                d->queryFrom += " JOIN tracks ON tracks.album = albums.id";
             if( d->linkedTables & Private::ALBUM_TAB )
                 d->linkedTables ^= Private::ALBUM_TAB;
             break;
@@ -760,7 +769,7 @@ SqlQueryMaker::linkTables()
         {
             d->queryFrom += " composers";
             if( d->linkedTables != Private::COMPOSER_TAB )
-                d->queryFrom += " INNER JOIN tracks ON tracks.composer = composers.id";
+                d->queryFrom += " JOIN tracks ON tracks.composer = composers.id";
             if( d->linkedTables & Private::COMPOSER_TAB )
                 d->linkedTables ^= Private::COMPOSER_TAB;
             break;
@@ -769,7 +778,7 @@ SqlQueryMaker::linkTables()
         {
             d->queryFrom += " years";
             if( d->linkedTables != Private::YEAR_TAB )
-                d->queryFrom += " INNER JOIN tracks on tracks.year = years.id";
+                d->queryFrom += " JOIN tracks on tracks.year = years.id";
             if( d->linkedTables & Private::YEAR_TAB )
                 d->linkedTables ^= Private::YEAR_TAB;
             break;
