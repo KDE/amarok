@@ -283,6 +283,7 @@ QString Meta::iconForField( qint64 field )
     case Meta::valLastPlayed: return "filename-last-played";
     case Meta::valPlaycount: return "filename-comment-amarok";
     case Meta::valLabel: return "label-amarok";
+    case Meta::valAlbumArtist: return "amarok_artist";
     default: return QString();
     }
 }
