@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "XSPFPlaylist"
+
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 
 #include "core/support/Debug.h"
@@ -147,7 +149,7 @@ XSPFPlaylist::save( const KUrl &location, bool relative )
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        warning() << QString( "Cannot write playlist (%1)." ).arg( file.fileName() );
+        warning() << QString( "Cannot write playlist (%1)." ).arg( file.fileName() ) << file.errorString();
 
         return false;
     }

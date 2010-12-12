@@ -213,17 +213,32 @@ Playlists::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     DEBUG_BLOCK
+    if( name.isEmpty() )
+    {
+        error() << "trying to save playlist without a name";
+        return Playlists::PlaylistPtr();
+    }
+
+    QString filename = QString( name ).replace( QLatin1Char('/'), QLatin1Char('-') );
     KUrl path( Amarok::saveLocation( "playlists" ) );
-    path.addPath( Amarok::vfatPath( name ) + ".xspf" );
+    path.addPath( Amarok::vfatPath( filename ) );
     if( QFileInfo( path.toLocalFile() ).exists() )
     {
         //TODO:request overwrite
         return Playlists::PlaylistPtr();
     }
-    QString ext = Amarok::extension( path.fileName() );
+
     Playlists::PlaylistFormat format = m_defaultFormat;
-    if( !name.isNull() && !ext.isEmpty() )
+    QString ext = Amarok::extension( path.fileName() );
+    if( ext.isEmpty() )
+    {
+        ext = QLatin1String("xspf");
+        path.setFileName( QString("%1.%2").arg(Amarok::vfatPath(filename), ext) );
+    }
+    else
+    {
         format = Playlists::getFormat( path );
+    }
 
     Playlists::PlaylistFile *playlistFile = 0;
     switch( format )
@@ -238,10 +253,10 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
             playlistFile = new Playlists::XSPFPlaylist( tracks );
             break;
         default:
-            debug() << QString("Do not support filetype with extension \"%1!\"").arg( ext );
+            error() << QString("Do not support filetype with extension \"%1!\"").arg( ext );
             return Playlists::PlaylistPtr();
     }
-    playlistFile->setName( name );
+    playlistFile->setName( filename );
     debug() << "Forcing save of playlist!";
     playlistFile->save( path, true );
     playlistFile->setProvider( this );
