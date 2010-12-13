@@ -1417,12 +1417,12 @@ SqlPodcastProvider::downloadResult( KJob *job )
         {
             The::statusBar()->longMessage( job->errorText() );
         }
-        debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
+        error() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
         downloadFailed = true;
     }
     else if( !m_downloadJobMap.contains( job ) )
     {
-        warning() << "Download is finished for a job that was not added to m_downloadJobMap. Waah?";
+        error() << "Download is finished for a job that was not added to m_downloadJobMap. Waah?";
         downloadFailed = true;
     }
     else
