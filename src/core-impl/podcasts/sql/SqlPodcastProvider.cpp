@@ -1294,7 +1294,7 @@ SqlPodcastProvider::createTmpFile( KJob *job )
         return 0;
     }
 
-    QDir dir( sqlChannel->saveLocation().path() );
+    QDir dir( sqlChannel->saveLocation().toLocalFile() );
     dir.mkpath( "." );  // ensure that the path is there
 
     KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
