@@ -1211,10 +1211,13 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
         return;
     }
 
-    if( m_downloadJobMap.values().contains( sqlEpisode ) )
+    foreach( struct PodcastEpisodeDownload download, m_downloadJobMap.values() )
     {
-        debug() << "already downloading " << sqlEpisode->uidUrl();
-        return;
+        if( download.episode == sqlEpisode )
+        {
+            debug() << "already downloading " << sqlEpisode->uidUrl();
+            return;
+        }
     }
 
     if( m_downloadJobMap.size() >= m_maxConcurrentDownloads )
@@ -1231,8 +1234,31 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     KIO::TransferJob *transferJob =
             KIO::get( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
 
-    m_downloadJobMap[transferJob] = sqlEpisode;
-    m_fileNameMap[transferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
+
+    QFile *tmpFile = createTmpFile( sqlEpisode );
+    struct PodcastEpisodeDownload download = { sqlEpisode,
+                                               tmpFile,
+                                               tmpFile->fileName(),
+                                               false
+                                             };
+    m_downloadJobMap.insert( transferJob, download );
+
+    if( tmpFile->exists() )
+    {
+        qint64 offset = tmpFile->size();
+        debug() << "temporary file exists, resume download from offset " << offset;
+        QMap<QString, QString> resumeData;
+        resumeData.insert( "resume", QString::number( offset ) );
+        transferJob->addMetaData( resumeData );
+    }
+
+    if( !tmpFile->open( QIODevice::WriteOnly | QIODevice::Append ) )
+    {
+        The::statusBar()->longMessage( i18n( "Unable to save podcast episode file to %1",
+                                             tmpFile->fileName() ) );
+        delete tmpFile;
+        return;
+    }
 
     debug() << "starting download for " << sqlEpisode->title()
             << " url: " << sqlEpisode->prettyUrl();
@@ -1263,7 +1289,8 @@ SqlPodcastProvider::downloadEpisode( Podcasts::PodcastEpisodePtr episode )
 void
 SqlPodcastProvider::cleanupDownload( KJob *job, bool downloadFailed )
 {
-    QFile *tmpFile = m_tmpFileMap.value( job );
+    struct PodcastEpisodeDownload download = m_downloadJobMap.value( job );
+    QFile *tmpFile = download.tmpFile;
 
     if( downloadFailed && tmpFile )
     {
@@ -1271,16 +1298,13 @@ SqlPodcastProvider::cleanupDownload( KJob *job, bool downloadFailed )
         tmpFile->remove();
     }
     m_downloadJobMap.remove( job );
-    m_fileNameMap.remove( job );
-    m_tmpFileMap.remove( job );
 
     delete tmpFile;
 }
 
-QFile*
-SqlPodcastProvider::createTmpFile( KJob *job )
+QFile *
+SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
 {
-    Podcasts::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
     if( sqlEpisode.isNull() )
     {
         error() << "sqlEpisodePtr is NULL after download";
@@ -1298,28 +1322,21 @@ SqlPodcastProvider::createTmpFile( KJob *job )
     dir.mkpath( "." );  // ensure that the path is there
 
     KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
-    QString tmpFileName = m_fileNameMap.value( job );
-    localUrl.addPath( tmpFileName + PODCAST_TMP_POSTFIX );
-
-    QFile *tmpFile = new QFile( localUrl.toLocalFile() );
-    if( tmpFile->open( QIODevice::WriteOnly ) )
-    {
-        debug() << "podcast tmpfile created: " << localUrl.toLocalFile();
-        return tmpFile;
-    }
+    QString tempName;
+    if( !sqlEpisode->guid().isEmpty() )
+        tempName = QUrl::toPercentEncoding( sqlEpisode->guid() );
     else
-    {
-        The::statusBar()->longMessage( i18n( "Unable to save podcast episode file to %1",
-                                             localUrl.prettyUrl() ) );
-        delete tmpFile;
-        return 0;
-    }
+        tempName = QUrl::toPercentEncoding( sqlEpisode->uidUrl() );
+    localUrl.addPath( tempName + PODCAST_TMP_POSTFIX );
+
+    return new QFile( localUrl.toLocalFile() );
 }
 
 bool
 SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
 {
-    Podcasts::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
+    struct PodcastEpisodeDownload download = m_downloadJobMap.value( job );
+    Podcasts::SqlPodcastEpisodePtr sqlEpisode = download.episode;
     if( sqlEpisode.isNull() )
     {
         error() << "sqlEpisodePtr is NULL after download";
@@ -1334,7 +1351,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
     }
 
     QString fileName = sqlChannel->saveLocation().toLocalFile( KUrl::AddTrailingSlash );
-    fileName += m_fileNameMap.value( job );
+    fileName += download.fileName;
     debug() << "checking " << fileName;
     QFileInfo fileInfo( fileName );
     if( !fileInfo.exists() )
@@ -1356,31 +1373,21 @@ SqlPodcastProvider::addData( KIO::Job *job, const QByteArray &data )
         return; // EOF
     }
 
-    QFile *tmpFile = m_tmpFileMap.value( job );
+    struct PodcastEpisodeDownload download = m_downloadJobMap.value( job );
 
     // NOTE: if there is a tmpfile we are already downloading, no need to
     // checkEnclosureLocallyAvailable() on every data chunk. performance optimization.
-    if ( !tmpFile && checkEnclosureLocallyAvailable( job ) )
+    if( download.finalNameReady )
     {
-        return;
-    }
-
-    if( !tmpFile )
-    {
-        tmpFile = createTmpFile( job );
-        if( !tmpFile )
-        {
-            debug() << "failed to create tmpfile for podcast download";
-            job->kill();
+        download.finalNameReady = true;
+        if( checkEnclosureLocallyAvailable( job ) )
             return;
-        }
-        m_tmpFileMap[job] = tmpFile;
     }
 
-    if( tmpFile->write( data ) == -1 )
+    if( download.tmpFile->write( data ) == -1 )
     {
-        error() << "write error for " << tmpFile->fileName() << ": " <<
-        tmpFile->errorString();
+        error() << "write error for " << download.tmpFile->fileName() << ": "
+                << download.tmpFile->errorString();
         job->kill();
     }
 }
@@ -1406,7 +1413,8 @@ SqlPodcastProvider::slotUpdated()
 void
 SqlPodcastProvider::downloadResult( KJob *job )
 {
-    QFile *tmpFile = m_tmpFileMap.value( job );
+    struct PodcastEpisodeDownload download = m_downloadJobMap.value( job );
+    QFile *tmpFile = download.tmpFile;
     bool downloadFailed = false;
 
     if( job->error() )
@@ -1418,16 +1426,12 @@ SqlPodcastProvider::downloadResult( KJob *job )
             The::statusBar()->longMessage( job->errorText() );
         }
         error() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
-        downloadFailed = true;
-    }
-    else if( !m_downloadJobMap.contains( job ) )
-    {
-        error() << "Download is finished for a job that was not added to m_downloadJobMap. Waah?";
-        downloadFailed = true;
+        error() << "keeping temporary file for download restart";
+        downloadFailed = false;
     }
     else
     {
-        Podcasts::SqlPodcastEpisodePtr sqlEpisode = m_downloadJobMap.value( job );
+        Podcasts::SqlPodcastEpisodePtr sqlEpisode = download.episode;
         if( sqlEpisode.isNull() )
         {
             error() << "sqlEpisodePtr is NULL after download";
@@ -1443,8 +1447,8 @@ SqlPodcastProvider::downloadResult( KJob *job )
             return;
         }
 
-        QString finalName = tmpFile->fileName();
-        finalName.chop( PODCAST_TMP_POSTFIX.length() );
+        QString finalName = sqlChannel->saveLocation().toLocalFile(KUrl::AddTrailingSlash )
+                            + download.fileName;
         if( tmpFile->rename( finalName ) )
         {
             debug() << "successfully written Podcast Episode " << sqlEpisode->title()
@@ -1474,11 +1478,11 @@ SqlPodcastProvider::downloadResult( KJob *job )
 }
 
 void
-SqlPodcastProvider::redirected( KIO::Job *job, const KUrl & redirectedUrl )
+SqlPodcastProvider::redirected( KIO::Job *job, const KUrl &redirectedUrl )
 {
     debug() << "redirecting to " << redirectedUrl << ". filename: "
             << redirectedUrl.fileName();
-    m_fileNameMap[job] = redirectedUrl.fileName();
+    m_downloadJobMap[job].fileName = redirectedUrl.fileName();
 }
 
 void

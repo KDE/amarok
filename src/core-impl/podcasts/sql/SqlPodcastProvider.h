@@ -154,7 +154,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void removeSubscription( Podcasts::SqlPodcastChannelPtr channel );
 
         void subscribe( const KUrl &url );
-        QFile* createTmpFile ( KJob *job );
+        QFile* createTmpFile ( Podcasts::SqlPodcastEpisodePtr sqlEpisode );
         void cleanupDownload( KJob *job, bool downloadFailed );
 
         /** returns true if the file that is downloaded by 'job' is already locally available */
@@ -169,9 +169,14 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         Podcasts::SqlPodcastChannelList m_updateQueue;
         QList<KUrl> m_subscribeQueue;
 
-        QHash<KJob *, Podcasts::SqlPodcastEpisodePtr> m_downloadJobMap;
-        QHash<KJob *, QString> m_fileNameMap;
-        QHash<KJob *, QFile*> m_tmpFileMap;
+        struct PodcastEpisodeDownload {
+            Podcasts::SqlPodcastEpisodePtr episode;
+            QFile *tmpFile;
+            QString fileName;
+            bool finalNameReady;
+        };
+
+        QHash<KJob *, struct PodcastEpisodeDownload> m_downloadJobMap;
 
         Podcasts::SqlPodcastEpisodeList m_downloadQueue;
         int m_maxConcurrentDownloads;
