@@ -346,8 +346,8 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void setRemoveSources( bool removeSources ) { m_removeSources = removeSources; }
         bool m_removeSources;
         bool m_isRemoveAction;
-        Transcoding::Configuration m_transcodingConfiguration;  //only used when copying
         bool m_noRemoveConfirmation;
+        Transcoding::Configuration m_transcodingConfiguration;  //only used when copying
         //used by the source collection to store the tracks that were successfully
         //copied by the destination and can be removed as part of a move
         Meta::TrackList m_tracksSuccessfullyTransferred;

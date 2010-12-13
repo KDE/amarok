@@ -53,9 +53,12 @@ bool Mp3tunesServiceCollectionLocation::remove( const Meta::TrackPtr &/*track*/ 
     return false;
 }
 void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
-        const QMap<Meta::TrackPtr, KUrl> &sources )
+        const QMap<Meta::TrackPtr, KUrl> &sources,
+        const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
+    Q_UNUSED( configuration ); // TODO: we might support transcoding here
+
     QStringList urls;
     QString error;
     debug() << "sources has " << sources.count();

@@ -54,8 +54,10 @@ PlaylistCollectionLocation::remove( const Meta::TrackPtr &track )
 }
 
 void
-PlaylistCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
+PlaylistCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                                  const Transcoding::Configuration &configuration )
 {
+    Q_UNUSED( configuration );
     Playlists::PlaylistPtr playlist = m_collection->playlist();
     foreach( const Meta::TrackPtr &track, sources.keys() )
     {

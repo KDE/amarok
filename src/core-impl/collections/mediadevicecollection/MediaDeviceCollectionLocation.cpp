@@ -68,9 +68,11 @@ MediaDeviceCollectionLocation::remove( const Meta::TrackPtr &track )
 }
 
 void
-MediaDeviceCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
+MediaDeviceCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources,
+                                                      const Transcoding::Configuration &configuration )
 {
     Q_UNUSED( removeSources )
+    Q_UNUSED( configuration )
     if( m_handler->isOrganizable() )
     {
         QStringList folders;
@@ -112,9 +114,11 @@ MediaDeviceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks
 
 
 void
-MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
+MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                                     const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
+    Q_UNUSED( configuration )
 
     if( m_handler->isOrganizable() )
         m_handler->setDestinations( m_destinations );
