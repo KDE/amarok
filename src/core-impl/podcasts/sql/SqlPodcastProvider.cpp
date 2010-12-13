@@ -1333,7 +1333,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
         return false;
     }
 
-    QString fileName = sqlChannel->saveLocation().path(KUrl::AddTrailingSlash);
+    QString fileName = sqlChannel->saveLocation().toLocalFile( KUrl::AddTrailingSlash );
     fileName += m_fileNameMap.value( job );
     debug() << "checking " << fileName;
     QFileInfo fileInfo( fileName );
