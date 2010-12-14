@@ -215,9 +215,9 @@ SqlPodcastEpisode::setLocalUrl( const KUrl &url )
     {
         //if we had a local file previously it should get deleted by the KSharedPtr.
         m_localFile = new MetaFile::Track( m_localUrl );
-        if( m_channel->writeTags() )
-            writeTagsToFile();
     }
+    //poke PodcastModel to update the download status
+    notifyObservers();
 }
 
 qint64
