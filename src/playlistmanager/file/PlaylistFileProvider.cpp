@@ -202,24 +202,13 @@ PlaylistFileProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
     return actions;
 }
 
-
-Playlists::PlaylistPtr
-PlaylistFileProvider::save( const Meta::TrackList &tracks )
-{
-    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") );
-}
-
 Playlists::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     DEBUG_BLOCK
-    if( name.isEmpty() )
-    {
-        error() << "trying to save playlist without a name";
-        return Playlists::PlaylistPtr();
-    }
+    QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") : name;
+    filename = QString( filename ).replace( QLatin1Char('/'), QLatin1Char('-') );
 
-    QString filename = QString( name ).replace( QLatin1Char('/'), QLatin1Char('-') );
     KUrl path( Amarok::saveLocation( "playlists" ) );
     path.addPath( Amarok::vfatPath( filename ) );
     if( QFileInfo( path.toLocalFile() ).exists() )
