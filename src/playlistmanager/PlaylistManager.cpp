@@ -319,6 +319,7 @@ PlaylistManager::save( Meta::TrackList tracks, const QString &name,
     {
         debug() << "Playlist is being saved with name: " << name;
         playlist = prov->save( tracks, name );
+        AmarokUrl("amarok://navigate/playlists/user playlists").run();
     }
 
     return !playlist.isNull();
