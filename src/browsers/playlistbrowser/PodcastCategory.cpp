@@ -90,10 +90,10 @@ PodcastCategory::PodcastCategory( QWidget *parent )
     m_toolBar->insertAction( m_separator, addPodcastAction );
     connect( addPodcastAction, SIGNAL(triggered( bool )), The::podcastModel(), SLOT(addPodcast()) );
 
-    QAction *updateAllAction = new QAction( KIcon("view-refresh-amarok"),
-                                            i18n("&Update All"), m_toolBar );
+    QAction *updateAllAction = new QAction( KIcon("view-refresh-amarok"), QString(), m_toolBar );
+    updateAllAction->setToolTip( i18n("&Update All") );
     updateAllAction->setPriority( QAction::LowPriority );
-    m_toolBar->addAction( updateAllAction );
+    m_toolBar->insertAction( m_separator, updateAllAction );
     connect( updateAllAction, SIGNAL(triggered( bool )),
              The::podcastModel(), SLOT(refreshPodcasts()) );
 
