@@ -208,7 +208,10 @@ ScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory )
     }
 
     if( directory->isSkipped() )
+    {
+        emit directorySkipped();
         return;
+    }
 
     // --- add all playlists
     foreach( CollectionScanner::Playlist playlist, directory->playlists() )

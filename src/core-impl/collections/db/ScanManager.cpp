@@ -357,7 +357,8 @@ ScannerJob::run()
     // -- create the result processor
     ScanResultProcessor *processor = m_collection->getNewScanResultProcessor();
     processor->setType( m_scanType );
-    connect( processor, SIGNAL( directoryCommitted() ), this, SLOT( directoryCommitted() ) );
+    connect( processor, SIGNAL( directoryCommitted() ), this, SLOT( directoryProcessed() ) );
+    connect( processor, SIGNAL( directorySkipped() ), this, SLOT( directoryProcessed() ) );
 
     // -- read the input and loop
     bool finished = false;
@@ -499,7 +500,7 @@ ScannerJob::scannerPath()
 
 
 void
-ScannerJob::directoryCommitted()
+ScannerJob::directoryProcessed()
 {
     emit step( this );
 }
