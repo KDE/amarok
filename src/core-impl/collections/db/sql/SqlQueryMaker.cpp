@@ -105,6 +105,7 @@ struct SqlQueryMaker::Private
     Meta::LabelList blockingLabels;
     bool blocking;
     bool used;
+    qint64 returnValueType;
 };
 
 SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
@@ -127,6 +128,7 @@ SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
     d->andStack.push( true );   //and is default
     d->blocking = false;
     d->used = false;
+    d->returnValueType = 0;
 }
 
 SqlQueryMaker::~SqlQueryMaker()
@@ -610,6 +612,7 @@ SqlQueryMaker::addReturnValue( qint64 value )
         if ( !d->queryReturnValues.isEmpty() )
             d->queryReturnValues += ',';
         d->queryReturnValues += nameForValue( value );
+        d->returnValueType = value;
     }
     return this;
 }
@@ -640,6 +643,7 @@ SqlQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
                 sqlfunction = "Unknown function in SqlQueryMaker::addReturnFunction, function was: " + function;
         }
         d->queryReturnValues += QString( "%1(%2)" ).arg( sqlfunction, nameForValue( value ) );
+        d->returnValueType = value;
     }
     return this;
 }
@@ -729,7 +733,6 @@ SqlQueryMaker::linkTables()
 {
     switch( d->queryType )
     {
-        case QueryMaker::Custom:
         case QueryMaker::Track:
         {
             d->queryFrom += " tracks";
@@ -791,6 +794,39 @@ SqlQueryMaker::linkTables()
                                 " INNER JOIN tracks ON urls_labels.url = tracks.url";
             if( d->linkedTables & Private::LABELS_TAB )
                 d->linkedTables ^= Private::LABELS_TAB;
+            break;
+        }
+        case QueryMaker::Custom:
+        {
+            switch( d->returnValueType )
+            {
+                default:
+                case Meta::valUrl:
+                {
+                    d->queryFrom += " tracks";
+                    if( d->linkedTables & Private::TAGS_TAB )
+                        d->linkedTables ^= Private::TAGS_TAB;
+                    break;
+                }
+                case Meta::valAlbum:
+                {
+                    d->queryFrom += " albums";
+                    if( d->linkedTables & Private::ALBUM_TAB )
+                        d->linkedTables ^= Private::ALBUM_TAB;
+                    if( d->linkedTables & Private::URLS_TAB )
+                        d->linkedTables ^= Private::URLS_TAB;
+                    break;
+                }
+                case Meta::valGenre:
+                {
+                    d->queryFrom += " genres";
+                    if( d->linkedTables & Private::GENRE_TAB )
+                        d->linkedTables ^= Private::GENRE_TAB;
+                    if( d->linkedTables & Private::URLS_TAB )
+                        d->linkedTables ^= Private::URLS_TAB;
+                    break;
+                }
+            }
         }
         case QueryMaker::None:
         {
@@ -840,11 +876,11 @@ SqlQueryMaker::buildQuery()
     query += d->queryReturnValues;
     query += " FROM ";
     query += d->queryFrom;
-    query += " WHERE 1 ";
 
     //dynamic collection
-    if( m_collection->mountPointManager() )
+    if( (d->linkedTables & Private::URLS_TAB) && m_collection->mountPointManager() )
     {
+        query += " WHERE 1 ";
         IdList list = m_collection->mountPointManager()->getMountedDeviceIds();
         if( !list.isEmpty() )
         {
@@ -917,8 +953,6 @@ SqlQueryMaker::runQuery( const QString &query )
 {
     return m_collection->sqlStorage()->query( query );
 }
-
-
 
 void
 SqlQueryMaker::setBlocking( bool enabled )

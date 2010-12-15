@@ -616,20 +616,21 @@ void
 CurrentTrack::queryCollection()
 {
     Collections::QueryMaker *qmTracks = CollectionManager::instance()->queryMaker();
-    // Collections::QueryMaker *qmAlbums = CollectionManager::instance()->queryMaker();
-    // Collections::QueryMaker *qmGenres = CollectionManager::instance()->queryMaker();
+    Collections::QueryMaker *qmAlbums = CollectionManager::instance()->queryMaker();
+    Collections::QueryMaker *qmGenres = CollectionManager::instance()->queryMaker();
     connect( qmTracks, SIGNAL(newResultReady(QString, QStringList)),
              this, SLOT(tracksCounted(QString, QStringList)) );
-    /*connect( qmAlbums, SIGNAL(newResultReady(QString, QStringList)),
+    connect( qmAlbums, SIGNAL(newResultReady(QString, QStringList)),
              this, SLOT(albumsCounted(QString, QStringList)) );
     connect( qmGenres, SIGNAL(newResultReady(QString, QStringList)),
-             this, SLOT(genresCounted(QString, QStringList)) );*/
+             this, SLOT(genresCounted(QString, QStringList)) );
 
     qmTracks->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
       ->addReturnFunction( Collections::QueryMaker::Count, Meta::valUrl )
       ->run();
     /* TODO: These don't work since not implemented in SqlQueryMaker::linkedTables()
+      */
     qmAlbums->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
       ->addReturnFunction( Collections::QueryMaker::Count, Meta::valAlbum )
@@ -638,7 +639,6 @@ CurrentTrack::queryCollection()
       ->setQueryType( Collections::QueryMaker::Custom )
       ->addReturnFunction( Collections::QueryMaker::Count, Meta::valGenre )
       ->run();
-      */
 }
 
 void
