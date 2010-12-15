@@ -69,8 +69,6 @@ include_directories(
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
     ${QCA2_INCLUDE_DIR}
-    ${LIBAVCODEC_INCLUDE_DIR}
-    ${LIBAVFORMAT_INCLUDE_DIR}
 )
 
 if ( KDEMULTIMEDIA_FOUND )
@@ -771,6 +769,10 @@ if( LIBLASTFM_FOUND )
 endif( LIBLASTFM_FOUND )
 
 if( LIBOFA_FOUND )
+    include_directories(
+        ${LIBAVCODEC_INCLUDE_DIR}
+        ${LIBAVFORMAT_INCLUDE_DIR}
+    )
     set( EXTRA_LIBS
         ${EXTRA_LIBS}
         ${LIBOFA_LIBRARY}

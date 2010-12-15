@@ -108,7 +108,7 @@ if( WITH_PLAYER )
     macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2" FALSE "0.3" "" )
     macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
-    find_package( FFmpeg REQUIRED )
+    macro_optional_find_package( FFmpeg )
     macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.5" "" )
 
     if( FFMPEG_FOUND )
