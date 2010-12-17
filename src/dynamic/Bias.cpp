@@ -32,6 +32,8 @@
 #include "core/collections/QueryMaker.h"
 
 #include <QDateTime>
+#include <QStandardItem>
+#include <QStandardItemModel>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
@@ -56,11 +58,24 @@ Dynamic::AbstractBias::name()
 }
 
 
-PlaylistBrowserNS::BiasWidget*
-Dynamic::AbstractBias::widget( QWidget* parent )
+QWidget*
+Dynamic::AbstractBias::widget( QStandardItem* item, QWidget* parent )
 {
-    return new PlaylistBrowserNS::BiasWidget( this, parent );
+    return new PlaylistBrowserNS::BiasWidget( this, item, parent );
 }
+
+void
+Dynamic::AbstractBias::addToModel( QStandardItemModel *model, QWidget *parentWidget, QModelIndex parentIndex )
+{
+    QStandardItem *item = new QStandardItem();
+    item->setData( QVariant::fromValue( widget( item, parentWidget ) ), WidgetRole );
+
+    if( parentIndex.isValid() )
+        model->itemFromIndex( parentIndex )->appendRow( item );
+    else
+        model->appendRow( item );
+}
+
 
 void
 Dynamic::AbstractBias::invalidate()
@@ -93,16 +108,30 @@ Dynamic::RandomBias::name()
     return QLatin1String( "randomBias" );
 }
 
+QWidget*
+Dynamic::RandomBias::widget( QStandardItem* item, QWidget* parent )
+{
+    return new PlaylistBrowserNS::BiasWidget( this, item, parent );
+}
+
 Dynamic::TrackSet
 Dynamic::RandomBias::matchingTracks( int position,
-                                  const Meta::TrackList& playlist,
+                                  const Meta::TrackList& playlist, int contextCount,
                                   Dynamic::TrackCollectionPtr universe ) const
 {
     Q_UNUSED( position );
     Q_UNUSED( playlist );
+    Q_UNUSED( contextCount );
     return Dynamic::TrackSet( universe );
 }
 
+double
+Dynamic::RandomBias::energy( const Meta::TrackList& playlist, int contextCount ) const
+{
+    Q_UNUSED( playlist );
+    Q_UNUSED( contextCount );
+    return 0.0;
+}
 
 // -------- AndBias ------
 
@@ -161,9 +190,15 @@ Dynamic::AndBias::name()
     return QLatin1String( "andBias" );
 }
 
+QWidget*
+Dynamic::AndBias::widget( QStandardItem* item, QWidget* parent )
+{
+    return new PlaylistBrowserNS::LevelBiasWidget( this, item, parent );
+}
+
 Dynamic::TrackSet
 Dynamic::AndBias::matchingTracks( int position,
-                                  const Meta::TrackList& playlist,
+                                  const Meta::TrackList& playlist, int contextCount,
                                   Dynamic::TrackCollectionPtr universe ) const
 {
     m_tracks = Dynamic::TrackSet( universe );
@@ -171,11 +206,11 @@ Dynamic::AndBias::matchingTracks( int position,
 
     foreach( Dynamic::AbstractBias* bias, m_biases )
     {
-        Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, universe );
+        Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, contextCount, universe );
         if( tracks.isOutstanding() )
             m_outstandingMatches++;
         else
-            m_tracks.intersect( bias->matchingTracks( position, playlist, universe ) );
+            m_tracks.intersect( bias->matchingTracks( position, playlist, contextCount, universe ) );
 
         if( m_tracks.isEmpty() )
             break;
@@ -186,6 +221,41 @@ Dynamic::AndBias::matchingTracks( int position,
     else
         return m_tracks;
 }
+
+double
+Dynamic::AndBias::energy( const Meta::TrackList& playlist, int contextCount ) const
+{
+    double result = 0.0;
+
+    foreach( Dynamic::AbstractBias* bias, m_biases )
+    {
+        result = qMax( result, bias->energy( playlist, contextCount ) );
+    }
+    return result;
+}
+
+void
+Dynamic::AndBias::addToModel( QStandardItemModel *model, QWidget *parentWidget, QModelIndex parentIndex )
+{
+    QStandardItem *item = new QStandardItem();
+    item->setData( QVariant::fromValue( widget( item, parentWidget ) ), WidgetRole );
+
+    if( parentIndex.isValid() )
+        model->itemFromIndex( parentIndex )->appendRow( item );
+    else
+        model->appendRow( item );
+
+    foreach( Dynamic::AbstractBias* bias, m_biases )
+    {
+        bias->addToModel( model, parentWidget, item->index() );
+    }
+
+    // create the add bias widget
+    QStandardItem *addItem = new QStandardItem();
+    addItem->setData( QVariant::fromValue( qobject_cast<QWidget*>(new PlaylistBrowserNS::BiasAddWidget( addItem, parentWidget ) ) ), WidgetRole );
+    item->appendRow( addItem );
+}
+
 
 void
 Dynamic::AndBias::resultReceived( const Dynamic::TrackSet &tracks )
@@ -214,14 +284,17 @@ Dynamic::AndBias::appendBias( Dynamic::AbstractBias* bias )
 {
     connect( bias, SLOT( resultReady( const Dynamic::TrackSet & ) ),
              this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
+    connect( bias, SLOT( destroyed( QObject* ) ),
+             this,  SLOT( biasDestroyed( QObject* ) ) );
+    bias->setParent( this );
     m_biases.append( bias );
     emit changed( this );
 }
 
 void
-Dynamic::AndBias::removeBiasAt( int i )
+Dynamic::AndBias::biasDestroyed( QObject* bias )
 {
-    delete m_biases.takeAt( i );
+    m_biases.removeAll( qobject_cast<Dynamic::AbstractBias*>(bias) );
     emit changed( this );
 }
 
@@ -250,7 +323,7 @@ Dynamic::OrBias::name()
 
 Dynamic::TrackSet
 Dynamic::OrBias::matchingTracks( int position,
-                                 const Meta::TrackList& playlist,
+                                 const Meta::TrackList& playlist, int contextCount,
                                  Dynamic::TrackCollectionPtr universe ) const
 {
     m_tracks = Dynamic::TrackSet( universe );
@@ -259,11 +332,11 @@ Dynamic::OrBias::matchingTracks( int position,
 
     foreach( Dynamic::AbstractBias* bias, m_biases )
     {
-        Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, universe );
+        Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, contextCount, universe );
         if( tracks.isOutstanding() )
             m_outstandingMatches++;
         else
-            m_tracks.unite( bias->matchingTracks( position, playlist, universe ) );
+            m_tracks.unite( bias->matchingTracks( position, playlist, contextCount, universe ) );
 
         if( m_tracks.trackCount() == m_tracks.isFull() )
             break;
@@ -275,10 +348,82 @@ Dynamic::OrBias::matchingTracks( int position,
         return m_tracks;
 }
 
+double
+Dynamic::OrBias::energy( const Meta::TrackList& playlist, int contextCount ) const
+{
+    double result = 1.0;
+
+    foreach( Dynamic::AbstractBias* bias, m_biases )
+    {
+        result = qMin( result, bias->energy( playlist, contextCount ) );
+    }
+    return result;
+}
+
 void
 Dynamic::OrBias::resultReceived( const Dynamic::TrackSet &tracks )
 {
     m_tracks.unite( tracks );
+    --m_outstandingMatches;
+
+    if( m_outstandingMatches < 0 )
+        warning() << "Received more results than expected.";
+    else if( m_outstandingMatches == 0 )
+        emit resultReady( m_tracks );
+}
+
+// -------- NotBias ------
+
+Dynamic::NotBias::NotBias( QObject *parent )
+    : AndBias( parent )
+{ }
+
+Dynamic::NotBias::NotBias( QXmlStreamReader *reader, QObject *parent )
+    : AndBias( reader, parent )
+{ }
+
+QString
+Dynamic::NotBias::name()
+{
+    return QLatin1String( "orBias" );
+}
+
+Dynamic::TrackSet
+Dynamic::NotBias::matchingTracks( int position,
+                                 const Meta::TrackList& playlist, int contextCount,
+                                 Dynamic::TrackCollectionPtr universe ) const
+{
+    m_tracks = Dynamic::TrackSet( universe );
+    m_outstandingMatches = 0;
+
+    foreach( Dynamic::AbstractBias* bias, m_biases )
+    {
+        Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, contextCount, universe );
+        if( tracks.isOutstanding() )
+            m_outstandingMatches++;
+        else
+            m_tracks.subtract( bias->matchingTracks( position, playlist, contextCount, universe ) );
+
+        if( m_tracks.trackCount() == m_tracks.isEmpty() )
+            break;
+    }
+
+    if( m_outstandingMatches > 0 )
+        return Dynamic::TrackSet();
+    else
+        return m_tracks;
+}
+
+double
+Dynamic::NotBias::energy( const Meta::TrackList& playlist, int contextCount ) const
+{
+    return 1.0 - Dynamic::AndBias::energy( playlist, contextCount );
+}
+
+void
+Dynamic::NotBias::resultReceived( const Dynamic::TrackSet &tracks )
+{
+    m_tracks.subtract( tracks );
     --m_outstandingMatches;
 
     if( m_outstandingMatches < 0 )
@@ -350,13 +495,20 @@ Dynamic::TagMatchBias::name()
     return QLatin1String( "tagMatchBias" );
 }
 
+QWidget*
+Dynamic::TagMatchBias::widget( QStandardItem* item, QWidget* parent )
+{
+    return new PlaylistBrowserNS::TagMatchBiasWidget( this, item, parent );
+}
+
 Dynamic::TrackSet
 Dynamic::TagMatchBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist,
+                                       const Meta::TrackList& playlist, int contextCount,
                                        Dynamic::TrackCollectionPtr universe ) const
 {
     Q_UNUSED( position );
     Q_UNUSED( playlist );
+    Q_UNUSED( contextCount );
     Q_UNUSED( universe );
 
     if( m_tracksValid )
@@ -365,6 +517,21 @@ Dynamic::TagMatchBias::matchingTracks( int position,
     m_tracks = Dynamic::TrackSet( universe );
     newQuery();
     return Dynamic::TrackSet();
+}
+
+double
+Dynamic::TagMatchBias::energy( const Meta::TrackList& playlist, int contextCount ) const
+{
+    if( playlist.count() - contextCount <= 0 )
+        return 0.0;
+
+    int matchCount = 0;
+    for( int i = contextCount; i < playlist.count(); i++ )
+    {
+        if( matches( playlist.at( i ) ) )
+            matchCount++;
+    }
+    return 1.0 - (double(matchCount) / (playlist.count() - contextCount));
 }
 
 void
@@ -496,4 +663,32 @@ Dynamic::TagMatchBias::conditionForName( const QString &name )
     else if( name == "contains" ) return MetaQueryWidget::Contains;
     else return MetaQueryWidget::Equals;
 }
+
+bool
+Dynamic::TagMatchBias::matches( const Meta::TrackPtr &track ) const
+{
+    QVariant value = Meta::valueForField( m_filter.field, track );
+
+    switch( m_filter.condition )
+    {
+    case MetaQueryWidget::Equals:
+        return value.toLongLong() == m_filter.numValue;
+    case MetaQueryWidget::GreaterThan:
+        return value.toLongLong() > m_filter.numValue;
+    case MetaQueryWidget::LessThan:
+        return value.toLongLong() < m_filter.numValue;
+    case MetaQueryWidget::Between:
+        return value.toLongLong() > m_filter.numValue &&
+               value.toLongLong() < m_filter.numValue2;
+    case MetaQueryWidget::OlderThan:
+        return value.toLongLong() < m_filter.numValue + QDateTime::currentDateTime().toTime_t();
+    case MetaQueryWidget::Contains:
+        return m_filter.value.contains( value.toString(), Qt::CaseInsensitive );
+    default:
+        ;// the other conditions are only for the advanced playlist generator
+    }
+    return false;
+}
+
+#include "Bias.moc"
 

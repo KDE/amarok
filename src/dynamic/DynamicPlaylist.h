@@ -39,7 +39,7 @@ class DynamicPlaylist : public QObject
         DynamicPlaylist( QXmlStreamReader *reader, QObject *parent = 0 );
         virtual ~DynamicPlaylist();
 
-        void toXml( QXmlStreamWriter *writer ) const;
+        virtual void toXml( QXmlStreamWriter *writer ) const = 0;
 
         virtual void requestTracks(int) = 0;
 
@@ -52,8 +52,8 @@ class DynamicPlaylist : public QObject
         void tracksReady( Meta::TrackList );
 
     public slots:
+        /** Start recalculating all tracks after the currently played track */
         virtual void recalculate();
-        virtual void invalidate();
 
     protected:
         Collections::Collection* m_collection;

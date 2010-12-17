@@ -176,16 +176,6 @@ Dynamic::BiasedPlaylist::recalculate()
     }
 }
 
-void
-Dynamic::BiasedPlaylist::invalidate()
-{
-    if ( AmarokConfig::dynamicMode() )
-    {
-        BiasSolver::outdateUniverse();
-        // recalculate();
-    }
-}
-
 Dynamic::AbstractBias*
 Dynamic::BiasedPlaylist::bias() const
 {

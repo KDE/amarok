@@ -51,6 +51,9 @@ namespace Dynamic
              */
             virtual QString name() const = 0;
 
+            /** Returns the translated description of the bias */
+            virtual QString i18nDescription() const = 0;
+
             /** Create the custom bias. The caller takes owner of the pointer
              */
             virtual AbstractBias* createBias( QObject *parent ) = 0;

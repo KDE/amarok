@@ -45,7 +45,8 @@ class DynamicModel : public QAbstractItemModel
             Don't free this pointer
         */
         Dynamic::DynamicPlaylist* activePlaylist();
-        int activePlaylistIndex();
+        int activePlaylistIndex() const;
+        int defaultPlaylistIndex() const;
 
         int playlistIndex( const QString& ) const;
 
@@ -64,7 +65,8 @@ class DynamicModel : public QAbstractItemModel
         // Dynamic::DynamicPlaylist* setActivePlaylist( const QString& name );
         Dynamic::DynamicPlaylist* setActivePlaylist( int );
 
-        void saveCurrent();
+        void saveCurrentPlaylists();
+        void loadCurrentPlaylists();
 
     signals:
         void activeChanged(); // active row changed
@@ -82,9 +84,6 @@ class DynamicModel : public QAbstractItemModel
         bool savePlaylists( const QString &filename );
         bool loadPlaylists( const QString &filename );
         void initPlaylists();
-
-        void saveCurrentPlaylists();
-        void loadCurrentPlaylists();
 
         DynamicModel();
         static DynamicModel* s_instance;

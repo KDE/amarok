@@ -28,12 +28,17 @@ Dynamic::TrackCollection::TrackCollection( const QStringList& uids )
 }
 
 int
-Dynamic::TrackCollection::count()
+Dynamic::TrackCollection::count() const
 {
     return m_uids.count();
 }
 
-Dynamic::TrackSet::TrackSet( Dynamic::TrackCollectionPtr collection )
+Dynamic::TrackSet::TrackSet()
+    : m_bits()
+    , m_collection( 0 )
+{ }
+
+Dynamic::TrackSet::TrackSet( const Dynamic::TrackCollectionPtr collection )
     : m_bits( collection->count() )
     , m_collection( collection )
 {

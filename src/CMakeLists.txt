@@ -362,7 +362,6 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/DynamicModel.cpp
     browsers/playlistbrowser/DynamicCategory.cpp
     browsers/playlistbrowser/DynamicBiasDelegate.cpp
-    browsers/playlistbrowser/DynamicBiasModel.cpp
     browsers/playlistbrowser/DynamicBiasWidgets.cpp
     browsers/playlistbrowser/PlaylistBrowserModel.cpp
     browsers/playlistbrowser/PlaylistBrowserCategory.cpp

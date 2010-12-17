@@ -22,22 +22,29 @@
 #include "core/support/Debug.h"
 #include "DynamicModel.h"
 #include "DynamicBiasDelegate.h"
-#include "DynamicBiasModel.h"
-#include "dynamic/biases/EchoNest.h"
 #include "amarokconfig.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PaletteHandler.h"
 
+#include <QStandardItemModel>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QLabel>
+
+#include <QCheckBox>
+#include <QListView>
+#include <QPushButton>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QSpinBox>
 
 #include <KHBox>
 #include <KIcon>
 #include <KStandardDirs>
 #include <KSeparator>
 #include <KToolBar>
+#include <KComboBox>
 
 
 namespace PlaylistBrowserNS {
@@ -61,7 +68,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     setContentsMargins(0,0,0,0);
 
-    
     KHBox* controls1Layout = new KHBox( this );
 
     m_onOffCheckbox = new QCheckBox( controls1Layout );
@@ -115,9 +121,8 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     QLabel* presetLabel = new QLabel( i18n( "Playlist:" ), presetLayout );
 
     m_presetComboBox = new KComboBox( presetLayout );
-    DynamicModel::instance()->loadPlaylists();
     m_presetComboBox->setModel( DynamicModel::instance() );
-    
+
     connect( DynamicModel::instance(), SIGNAL( changeActive( int ) ),
             m_presetComboBox, SLOT(setCurrentIndex(int)) );
 
@@ -156,7 +161,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     connect( m_deleteButton, SIGNAL(clicked(bool)),
             DynamicModel::instance(), SLOT(removeActive()) );
-        
 
     m_biasListView = new QListView( this );
     m_biasListView->setFrameShape( QFrame::NoFrame );
@@ -166,7 +170,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     The::paletteHandler()->updateItemView( m_biasListView );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 
-    m_biasModel = new DynamicBiasModel( m_biasListView );
+    m_biasModel = new QStandardItemModel( m_biasListView );
     m_biasListView->setModel( m_biasModel );
 
     connect( m_biasModel, SIGNAL(playlistModified(Dynamic::BiasedPlaylistPtr)),
@@ -190,17 +194,12 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     }
 
     m_onOffCheckbox->setChecked( AmarokConfig::dynamicMode() );
-
-    /// HERE WE ADD ALL GENERAL CUSTOM BIASES
-    m_echoNestBiasFactory = new Dynamic::EchoNestBiasFactory;
-    Dynamic::CustomBias::registerNewBiasFactory( m_echoNestBiasFactory );
 }
 
 
 DynamicCategory::~DynamicCategory()
 {
     saveOnExit();
-    delete m_echoNestBiasFactory;
 }
 
 
@@ -286,8 +285,7 @@ void
 DynamicCategory::playlistSelectionChanged( int index )
 {
     DEBUG_BLOCK
-    Dynamic::DynamicPlaylistPtr playlist =
-        DynamicModel::instance()->setActivePlaylist( index );
+    Dynamic::BiasedPlaylist* playlist = qobject_cast<Dynamic::BiasedPlaylist*>(DynamicModel::instance()->setActivePlaylist( index ));
 
     if( !playlist )
         return;
@@ -304,8 +302,8 @@ DynamicCategory::playlistSelectionChanged( int index )
         AmarokConfig::self()->writeConfig();
     }
 
-
-    m_biasModel->setPlaylist( playlist );
+    m_biasModel->clear();
+    playlist->bias()->addToModel( m_biasModel, m_biasListView );
 
     debug() << "Changing biased playlist to: " << playlist->title();
 }
@@ -324,14 +322,16 @@ DynamicCategory::save()
 
     // TODO: write a custom dialog to prevent this from happening in the first
     // place
-    if( title == DynamicModel::instance()->defaultPlaylistName() )
+    DynamicModel* model = DynamicModel::instance();
+    if( model->playlistIndex( title ) == model->defaultPlaylistIndex() )
     {
-        QMessageBox::warning( this, i18n( "Warning" ), i18n( "Cannot overwrite the random playlist." ) );
+        QMessageBox::warning( this, i18n( "Warning" ),
+                              i18n( "Cannot overwrite the random playlist." ) );
         return;
     }
 
-    DynamicModel::instance()->saveActive( title );
-    playlistSelectionChanged( DynamicModel::instance()->playlistIndex( title ) );
+    model->saveActive( title );
+    playlistSelectionChanged( model->playlistIndex( title ) );
 }
 
 void
@@ -339,7 +339,7 @@ DynamicCategory::saveOnExit()
 {
     DEBUG_BLOCK
 
-    DynamicModel::instance()->saveCurrent();
+    DynamicModel::instance()->saveCurrentPlaylists();
 }
 
 } // namespace

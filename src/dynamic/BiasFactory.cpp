@@ -25,15 +25,31 @@
 #include <QList>
 #include <QXmlStreamReader>
 
+
+class RandomBiasFactory : public Dynamic::AbstractBiasFactory
+{
+    QString i18nName() const
+    { return i18nc("Name of the random bias", "Random"); }
+
+    QString name() const
+    { return Dynamic::RandomBias::name(); }
+
+    QString i18nDescription() const
+    { return i18nc("Description of the random bias",
+                   "The random bias adds random tracks from the whole collection without any bias."); }
+
+    Dynamic::AbstractBias* createBias( QObject *parent )
+    { return new Dynamic::RandomBias( parent ); }
+
+    Dynamic::AbstractBias* createBias( QXmlStreamReader *reader, QObject *parent )
+    { return new Dynamic::RandomBias( reader, parent ); }
+};
+
+
+
 Dynamic::BiasFactory* Dynamic::BiasFactory::s_instance = 0;
 
 QList<Dynamic::AbstractBiasFactory*> Dynamic::BiasFactory::s_biasFactories = QList<Dynamic::AbstractBiasFactory*>();
-
-/*
-QList< Dynamic::CustomBias* > Dynamic::CustomBias::s_biases = QList< Dynamic::CustomBias* >();
-QMap< QString, Dynamic::CustomBias* > Dynamic::CustomBias::s_failedMap = QMap< QString, Dynamic::CustomBias* >();
-QMap< QString, QDomElement > Dynamic::CustomBias::s_failedMapXml = QMap< QString, QDomElement >();
-*/
 
 Dynamic::BiasFactory*
 Dynamic::BiasFactory::instance()
@@ -45,7 +61,9 @@ Dynamic::BiasFactory::instance()
 
 Dynamic::BiasFactory::BiasFactory( QObject *parent )
     : QObject( parent )
-{ }
+{
+    registerNewBiasFactory( new RandomBiasFactory() );
+}
 
 Dynamic::AbstractBias*
 Dynamic::BiasFactory::fromXml( QXmlStreamReader *reader, QObject *parent )

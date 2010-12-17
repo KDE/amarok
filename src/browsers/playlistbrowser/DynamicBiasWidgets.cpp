@@ -25,7 +25,6 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "DynamicPlaylist.h"
-#include "DynamicBiasModel.h"
 #include "DynamicModel.h"
 #include "SliderWidget.h"
 #include "SvgHandler.h"
@@ -34,6 +33,7 @@
 
 #include <typeinfo>
 
+#include <QAbstractItemModel>
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -49,8 +49,9 @@
 #include <KVBox>
 #include <klocale.h>
 
-PlaylistBrowserNS::BiasBoxWidget::BiasBoxWidget( QWidget* parent )
-    : QWidget( parent ), m_alternate(false)
+PlaylistBrowserNS::BiasBoxWidget::BiasBoxWidget( QStandardItem* item, QWidget* parent )
+    : QWidget( parent )
+    , m_item( item )
 {
 }
 
@@ -64,16 +65,17 @@ PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
     QListView* parentList = dynamic_cast<QListView*>(parent());
     if( parentList )
     {
-        PlaylistBrowserNS::DynamicBiasModel* model =
-            dynamic_cast<PlaylistBrowserNS::DynamicBiasModel*>( parentList->model() );
+        QAbstractItemModel* model = parentList->model();
         if( model )
         {
+            /*
             QRect rect = parentList->visualRect( model->indexOf( this ) );
             if( rect.x() < 0 || rect.y() < 0 || rect.height() < height() )
             {
                 hide();
                 return;
             }
+            */
         }
     }
 
@@ -97,8 +99,8 @@ PlaylistBrowserNS::BiasBoxWidget::resizeEvent( QResizeEvent* )
 
 
 
-PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( const QString& caption, const QString& description, QWidget* parent )
-    : BiasBoxWidget( parent )
+PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( QStandardItem* item, QWidget* parent )
+    : BiasBoxWidget( item, parent )
     , m_addButton( new QToolButton( this ) )
 {
     DEBUG_BLOCK
@@ -108,7 +110,7 @@ PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( const QString& caption, const Q
     m_addButton->setToolTip( i18n( "Add a new bias." ) );
     connect( m_addButton, SIGNAL( clicked() ), SLOT( slotClicked() ) );
 
-    QLabel* descLabel = new QLabel( QString("<b>%1</b><br>%2").arg(caption, description), this );
+    QLabel* descLabel = new QLabel( i18n("Add bias") );
     descLabel->setAlignment( Qt::AlignCenter );
     descLabel->setWordWrap( true );
 
@@ -140,12 +142,10 @@ PlaylistBrowserNS::BiasAddWidget::slotClicked()
     emit addBias();
 }
 
-
-
-
-PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::Bias* b, QWidget* parent )
-    : BiasBoxWidget( parent )
-    , m_bias(b)
+PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::AbstractBias* b,
+                                           QStandardItem *item, QWidget* parent )
+    : BiasBoxWidget( item, parent )
+    , m_bias( b )
 {
     DEBUG_BLOCK
 
@@ -166,18 +166,29 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::Bias* b, QWidget* parent )
 void
 PlaylistBrowserNS::BiasWidget::biasRemoved()
 {
-    emit biasRemoved( m_bias );
+    m_bias->deleteLater();
+    if( m_item )
+        delete m_item;
 }
 
+PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias,
+                                                     QStandardItem* item,
+                                                     QWidget* parent )
+    : BiasWidget( bias, item, parent )
+    , m_abias( bias )
+{ }
 
-PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
-        Dynamic::GlobalBias* bias, QWidget* parent )
-    : BiasWidget( bias, parent )
-    , m_gbias( bias )
+
+PlaylistBrowserNS::TagMatchBiasWidget::TagMatchBiasWidget( Dynamic::TagMatchBias* bias,
+                                                           QStandardItem* item,
+                                                           QWidget* parent )
+    : BiasWidget( bias, item, parent )
+    , m_tbias( bias )
 {
     QFrame *frame = new QFrame( this );
     QFormLayout *layout = new QFormLayout( frame );
 
+    /*
     m_weightLabel = new QLabel( " 0%", frame );
     m_weightSelection = new Amarok::Slider( Qt::Horizontal, 100, frame );
     m_weightSelection->setToolTip(
@@ -186,48 +197,47 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
     QHBoxLayout* sliderLayout = new QHBoxLayout();
     sliderLayout->addWidget( m_weightSelection );
     sliderLayout->addWidget( m_weightLabel );
+    */
 
     m_queryWidget = new MetaQueryWidget( frame );
     m_queryWidget->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
                                                QSizePolicy::Preferred ) );
-    layout->addRow( i18n( "Proportion:" ), sliderLayout );
+    // layout->addRow( i18n( "Proportion:" ), sliderLayout );
     layout->addRow( i18n( "Match:" ), m_queryWidget );
 
     syncControlsToBias();
 
+    /*
     connect( m_weightSelection, SIGNAL(valueChanged(int)),
              SLOT(weightChanged(int)) );
+             */
     connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)),
              SLOT(syncBiasToControls()));
 
     this->layout()->addWidget( frame );
 }
 
-PlaylistBrowserNS::BiasGlobalWidget::~BiasGlobalWidget()
-{
-}
-
 void
-PlaylistBrowserNS::BiasGlobalWidget::syncControlsToBias()
+PlaylistBrowserNS::TagMatchBiasWidget::syncControlsToBias()
 {
+    /*
     int weight = (int)(m_gbias->weight() * 100.0);
     m_weightSelection->setValue(weight);
     weightChanged(weight); // the widget value might not have changed and thus the signal not fired
+    */
 
-    m_queryWidget->setFilter( m_gbias->filter() );
+    m_queryWidget->setFilter( m_tbias->filter() );
 }
 
 void
-PlaylistBrowserNS::BiasGlobalWidget::syncBiasToControls()
+PlaylistBrowserNS::TagMatchBiasWidget::syncBiasToControls()
 {
-    m_gbias->setFilter( m_queryWidget->filter() );
-    m_gbias->setActive( true );
-
-    emit biasChanged( m_gbias );
+    m_tbias->setFilter( m_queryWidget->filter() );
 }
 
+    /*
 void
-PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
+PlaylistBrowserNS::TagMatchBiasWidget::weightChanged( int ival )
 {
     m_weightLabel->setText( QString().sprintf( "%d%%", ival ) );
 
@@ -235,84 +245,8 @@ PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
     if( fval != m_gbias->weight() )
     {
         m_gbias->setWeight( fval );
-
-        emit biasChanged( m_gbias );
     }
 }
-
-
-
-PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias, QWidget* parent )
-    : BiasWidget( bias, parent )
-    , m_nbias(bias)
-{
-    QFrame *frame = new QFrame( this );
-    QFormLayout *layout = new QFormLayout( frame );
-    frame->setLayout( layout );
-
-    m_scaleLabel = new QLabel( " 0%", frame );
-    m_scaleSelection = new Amarok::Slider( Qt::Horizontal, 100, frame );
-    m_scaleSelection->setToolTip(
-            i18n( "This controls how strictly to match the given value." ) );
-    QHBoxLayout* sliderLayout = new QHBoxLayout();
-    sliderLayout->addWidget( m_scaleSelection );
-    sliderLayout->addWidget( m_scaleLabel );
-
-    m_queryWidget = new MetaQueryWidget( frame, true, true );
-    layout->addRow( i18n( "Strictness:" ), sliderLayout );
-    layout->addRow( i18n( "Match:" ), m_queryWidget );
-
-    syncControlsToBias();
-
-    connect( m_scaleSelection, SIGNAL(valueChanged(int)),
-             SLOT(scaleChanged(int)) );
-    connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)),
-             SLOT(syncBiasToControls()));
-
-
-    this->layout()->addWidget( frame );
-}
-
-void
-PlaylistBrowserNS::BiasNormalWidget::syncControlsToBias()
-{
-    int scale = (int)(m_nbias->scale() * 100.0);
-    m_scaleSelection->setValue(scale);
-    scaleChanged(scale); // the widget value might not have changed and thus the signal not fired
-
-    MetaQueryWidget::Filter filter;
-    filter.field    = m_nbias->field();
-    filter.numValue = m_nbias->value();
-
-    m_queryWidget->setFilter( filter );
-
-    filter = m_queryWidget->filter();
-}
-
-void
-PlaylistBrowserNS::BiasNormalWidget::syncBiasToControls()
-{
-    m_nbias->setField( m_queryWidget->filter().field );
-    m_nbias->setValue( m_queryWidget->filter().numValue );
-    m_nbias->setScale( m_scaleSelection->value() / 100.0 );
-    m_nbias->setActive( true );
-
-    emit biasChanged( m_nbias );
-}
-
-void
-PlaylistBrowserNS::BiasNormalWidget::scaleChanged( int ival )
-{
-    m_scaleLabel->setText( QString().sprintf( "%d%%", ival ) );
-
-    double fval = (double)ival / 100.0;
-    if( fval != m_nbias->scale() )
-    {
-        m_nbias->setScale( fval );
-
-        emit biasChanged( m_nbias );
-    }
-}
+    */
 
 #include "DynamicBiasWidgets.moc"
-

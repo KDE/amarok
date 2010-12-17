@@ -20,8 +20,8 @@
 
 #include "App.h"
 #include "core/support/Debug.h"
+#include "Bias.h"
 #include "DynamicBiasWidgets.h"
-#include "DynamicBiasModel.h"
 
 #include <QPainter>
 
@@ -38,7 +38,7 @@ PlaylistBrowserNS::DynamicBiasDelegate::paint ( QPainter * painter, const QStyle
 
     QRect rect( option.rect );
 
-    BiasBoxWidget* widget = qvariant_cast<BiasBoxWidget*>( index.data( DynamicBiasModel::WidgetRole ) ); 
+    QWidget* widget = qvariant_cast<QWidget*>( index.data( Dynamic::AbstractBias::WidgetRole ) ); 
     widget->setGeometry( rect );
     widget->show();
 }
@@ -50,7 +50,7 @@ PlaylistBrowserNS::DynamicBiasDelegate::sizeHint( const QStyleOptionViewItem & o
 {
     Q_UNUSED( option )
 
-    BiasBoxWidget* widget = qvariant_cast<BiasBoxWidget*>( index.data( DynamicBiasModel::WidgetRole ) );
+    QWidget* widget = qvariant_cast<QWidget*>( index.data( Dynamic::AbstractBias::WidgetRole ) );
     return widget->sizeHint();
 }
 

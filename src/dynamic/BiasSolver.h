@@ -34,7 +34,7 @@ namespace Dynamic
 
     /** A playlist/energy pair, used by ga_optimize to sort lists of playlists by their energy.
     */
-    struct TrackListEnergyPair;
+    class SolverList;
 
     /**
      * A class to implement the optimization algorithm used to generate
@@ -140,6 +140,9 @@ namespace Dynamic
 
 
         private:
+            double epsilon() const
+            { return 0.05 * m_n; }
+
             /** Returns the TrackSet of tracks fitting in the indicated position.
                 The function blocks until the result is received */
             TrackSet matchingTracks( int position, const Meta::TrackList& playlist ) const;
@@ -158,7 +161,7 @@ namespace Dynamic
              * @param updateStatus Enable/disable statusUpdate signals.
              */
 
-            Meta::TrackList ga_optimize( int iterationLimit, bool updateStatus = true );
+            void ga_optimize( SolverList *list, int iterationLimit, bool updateStatus = true );
             /**
              * Optimize a playlist using simulated annealing.
              * If the given initial playlist is already optimal it does not do anything.
@@ -167,14 +170,14 @@ namespace Dynamic
              * @param iterationLimit Maximum iterations allowed.
              * @param updateStatus Enable/disable statusUpdate signals.
              */
-            void sa_optimize( Meta::TrackList& initialPlaylist, int iterationLimit, bool updateStatus = true );
+            void sa_optimize( SolverList *list, int iterationLimit, bool updateStatus = true );
 
             /**
              * Get the track referenced by the uid stored in the given
              * QByteArray.
-             * @param uid The uid stored numerically as a QByteArray.
+             * @param uid The uid
              */
-            Meta::TrackPtr trackForUid( const QByteArray& uid ) const;
+            Meta::TrackPtr trackForUid( const QString& uid ) const;
 
             /**
              * Return a random track from the domain.
@@ -193,14 +196,14 @@ namespace Dynamic
              * details are a bit complicated, the algorithm is documented in the
              * source code.
              */
-            TrackListEnergyPair generateInitialPlaylist() const;
+            SolverList generateInitialPlaylist() const;
 
             /**
              * Used each iteration of the genetic algorithm. Choose
              * MATING_POPULATION_SIZE playlists from the given population to
              * produce offspring.
              */
-            QList<int> generateMatingPopulation( const QList<TrackListEnergyPair>& );
+            QList<int> generateMatingPopulation( const QList<SolverList>& );
 
             int m_n;                    //!< size of playlist to generate
             Dynamic::AbstractBias *m_bias; // bias used to determine tracks. not owned by solver
@@ -211,12 +214,12 @@ namespace Dynamic
 
             bool m_abortRequested; //!< flag set when the thread is aborted
 
-            QMutex m_biasResultsMutex;
-            QWaitCondition m_biasResultsReady;
-            Dynamic::TrackSet m_tracks; // tracks just received from the bias.
+            mutable QMutex m_biasResultsMutex;
+            mutable QWaitCondition m_biasResultsReady;
+            mutable Dynamic::TrackSet m_tracks; // tracks just received from the bias.
 
-            QMutex m_collectionResultsMutex;
-            QWaitCondition m_collectionResultsReady;
+            mutable QMutex m_collectionResultsMutex;
+            mutable QWaitCondition m_collectionResultsReady;
             /** All uids of all the tracks in the collection */
             QStringList m_collectionUids;
             TrackCollectionPtr m_trackCollection;

@@ -54,7 +54,7 @@ namespace Dynamic
         public:
             TrackCollection( const QStringList& uids );
 
-            int count();
+            int count() const;
 
         private:
             QStringList m_uids;
@@ -80,7 +80,7 @@ namespace Dynamic
             /** Creates a TrackSet that represents the whole universe.
                 All tracks are included.
             */
-            TrackSet( Dynamic::TrackCollectionPtr collection );
+            TrackSet( const Dynamic::TrackCollectionPtr collection );
 
             /** Removes all tracks from the set */
             void clear();
@@ -114,7 +114,7 @@ namespace Dynamic
         private:
             QBitArray m_bits;
             bool m_outstanding;
-            TrackCollectionPtr m_collection;
+            const TrackCollectionPtr m_collection;
     };
 }
 

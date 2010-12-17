@@ -21,22 +21,16 @@
 
 #include "browsers/BrowserCategory.h"
 
-#include <QCheckBox>
-#include <QListView>
-#include <QPushButton>
-#include <QToolButton>
-#include <QVBoxLayout>
-#include <QSpinBox>
-
-#include <KComboBox>
-
-namespace Dynamic {
-    class EchoNestBiasFactory;
-}
+class QCheckBox;
+class QPushButton;
+class KComboBox;
+class QToolButton;
+class QListView;
+class QStandardItemModel;
+class QSpinBox;
 
 namespace PlaylistBrowserNS {
 
-    class DynamicBiasModel;
     class DynamicBiasDelegate;
 
     /**
@@ -59,13 +53,13 @@ namespace PlaylistBrowserNS {
             void playlistCleared();
             void setUpcomingTracks( int );
             void setPreviousTracks( int );
-            
+
         private:
             void On();
             void Off();
 
             void saveOnExit();
-            
+
             QCheckBox *m_onOffCheckbox;
             QPushButton *m_repopulateButton;
 
@@ -74,13 +68,10 @@ namespace PlaylistBrowserNS {
             QToolButton *m_saveButton;
             QToolButton *m_deleteButton;
             QListView   *m_biasListView;
-            DynamicBiasModel *m_biasModel;
+            QStandardItemModel *m_biasModel;
             DynamicBiasDelegate *m_biasDelegate;
 
             QSpinBox *m_previous, *m_upcoming;
-
-            // custom biases
-            Dynamic::EchoNestBiasFactory *m_echoNestBiasFactory;
     };
 
 }

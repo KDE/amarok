@@ -58,10 +58,8 @@ namespace Dynamic
 
         public slots:
             virtual void recalculate();
-            virtual void invalidate();
 
         private slots:
-            void solverReady();
             void solverFinished();
             void updateStatus( int progress );
 
