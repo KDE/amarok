@@ -40,8 +40,7 @@ namespace PlaylistBrowserNS {
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
 class PlaylistBrowserModel : public QAbstractItemModel,
-                          public Playlists::PlaylistObserver,
-                          public Meta::Observer
+                          public Playlists::PlaylistObserver
 {
     Q_OBJECT
     public:
@@ -84,9 +83,6 @@ class PlaylistBrowserModel : public QAbstractItemModel,
         /* Playlists::PlaylistObserver methods */
         virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position );
         virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
-
-        /* Meta::MetaObserver methods */
-        virtual void metadataChanged( Meta::TrackPtr track );
 
     public slots:
         void slotRenamePlaylist( Playlists::PlaylistPtr playlist );

@@ -150,11 +150,11 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
 
     beginRemoveRows( parent, row, row + count - 1 );
     //ignore notifications while removing tracks
-    Playlists::PlaylistObserver::unsubscribeFrom( playlist );
+    unsubscribeFrom( playlist );
     for( int i = row; i < row + count; i++ )
         //deleting a track moves the next track up, so use the same row number each time
         playlist->removeTrack( row );
-    Playlists::PlaylistObserver::subscribeTo( playlist );
+    subscribeTo( playlist );
     endRemoveRows();
 
     return true;

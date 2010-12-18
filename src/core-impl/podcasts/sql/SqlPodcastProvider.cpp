@@ -724,6 +724,7 @@ SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel 
                 .arg( sqlChannel->title() )
                 .arg( sqlChannel->saveLocation().prettyUrl() );
 
+        KUrl::List filesToMove;
         foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
         {
             if( !episode->localUrl().isEmpty() )
@@ -1360,6 +1361,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
     // NOTE: we need to emit because the KJobProgressBar relies on it to clean up
     job->kill( KJob::EmitResult );
     sqlEpisode->setLocalUrl( fileName );
+    emit( updated() );  // repaint icons
     return true;
 }
 
@@ -1455,6 +1457,8 @@ SqlPodcastProvider::downloadResult( KJob *job )
 
             if( sqlChannel->writeTags() )
                 sqlEpisode->writeTagsToFile();
+            //force an update so the icon can be updated in the PlaylistBrowser
+            emit( updated() );
         }
         else
         {

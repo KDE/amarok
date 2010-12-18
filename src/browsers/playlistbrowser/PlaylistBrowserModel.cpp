@@ -480,7 +480,6 @@ PlaylistBrowserModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPt
     }
     QModelIndex playlistIdx = index( indexNumber, 0, QModelIndex() );
     beginInsertRows( playlistIdx, position, position );
-    Meta::Observer::subscribeTo( track );
     endInsertRows();
 }
 
@@ -496,23 +495,6 @@ PlaylistBrowserModel::trackRemoved( Playlists::PlaylistPtr playlist, int positio
     QModelIndex playlistIdx = index( indexNumber, 0, QModelIndex() );
     beginRemoveRows( playlistIdx, position, position );
     endRemoveRows();
-}
-
-void
-PlaylistBrowserModel::metadataChanged( Meta::TrackPtr track )
-{
-    //lookup track in all playlists
-    //TODO: optimize
-    for( int i = 0; i < m_playlists.count(); i++ )
-    {
-        QModelIndex parentIdx = createIndex( i, 0, i );
-        //emit dataChanged for all occurences of track in the playlist
-        while( volatile int position = m_playlists[i]->tracks().indexOf( track, position ) != -1 )
-        {
-            QModelIndex idx = index( position, 0, parentIdx );
-            emit dataChanged( idx, idx );
-        }
-    }
 }
 
 void
@@ -541,7 +523,7 @@ PlaylistBrowserModel::slotUpdate()
     emit layoutAboutToBeChanged();
 
     foreach( Playlists::PlaylistPtr playlist, m_playlists )
-        Playlists::PlaylistObserver::unsubscribeFrom( playlist );
+        unsubscribeFrom( playlist );
 
     m_playlists.clear();
     m_playlists = loadPlaylists();
@@ -561,9 +543,7 @@ PlaylistBrowserModel::loadPlaylists()
     while( i.hasNext() )
     {
         Playlists::PlaylistPtr playlist = i.next();
-        Playlists::PlaylistObserver::subscribeTo( playlist );
-        foreach( Meta::TrackPtr track, playlist->tracks() )
-            Meta::Observer::subscribeTo( track );
+        subscribeTo( playlist );
     }
 
     qSort( playlists.begin(), playlists.end(), lessThanPlaylistTitles );
@@ -606,7 +586,7 @@ PlaylistBrowserModel::slotPlaylistAdded( Playlists::PlaylistPtr playlist, int ca
     if( category != m_playlistCategory )
         return;
 
-    Playlists::PlaylistObserver::subscribeTo( playlist );
+    subscribeTo( playlist );
     int i;
     for( i = 0; i < m_playlists.count(); i++ )
     {
