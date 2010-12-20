@@ -25,6 +25,7 @@ VERSION 2.4.1
       <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
+    * Fixed tag dialog crash when sorting by genre and then changing tags.
     * Fixed track's statistics update in case of StopAfterCurrent playback mode
       (prevent double statistics change). (BR 265654)
     * Delete .mood files when tracks got removed from collection via Collection

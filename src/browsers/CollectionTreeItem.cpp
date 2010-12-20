@@ -222,8 +222,13 @@ int
 CollectionTreeItem::row() const
 {
     if( m_parent )
-        return m_parent->m_childItems.indexOf( const_cast<CollectionTreeItem*>(this) );
-
+    {
+        const QList<CollectionTreeItem*> &children = m_parent->m_childItems;
+        if( !children.isEmpty() && children.contains( const_cast<CollectionTreeItem*>(this) ) )
+            return children.indexOf( const_cast<CollectionTreeItem*>(this) );
+        else
+            return -1;
+    }
     return 0;
 }
 
