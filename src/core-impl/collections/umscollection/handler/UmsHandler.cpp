@@ -137,8 +137,10 @@ UmsHandler::init()
     KUrl playerFilePath( m_mountPoint );
     playerFilePath.addPath( s_settingsFileName );
     QFile playerFile( playerFilePath.toLocalFile() );
+    //prevent BR 259849: no audio_folder key in .is_audio_player file.
+    m_musicPath = m_mountPoint;
 
-    if (playerFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    if( playerFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
         debug() << QString( "Got %1 file").arg( s_settingsFileName );
         QTextStream in(&playerFile);
@@ -183,11 +185,7 @@ UmsHandler::init()
         }
 
     }
-/*
-    m_formats << "mp3" << "wav" << "asf" << "flac" << "wma" << "ogg" << "aac" << "m4a" << "m4b"
-            << "mp4" << "mp2" << "ac3";
 
-*/
     m_mimetypes << "audio/mpeg" << "audio/x-wav" << "video/x-ms-asf" << "audio/x-flac"
             << "audio/x-ms-wma" << "application/ogg" << "audio/mp4" << "audio/mp4a-latm"
             << "video/mp4" << "audio/ac3";
