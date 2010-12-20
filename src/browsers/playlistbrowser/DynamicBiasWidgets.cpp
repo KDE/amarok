@@ -216,15 +216,24 @@ PlaylistBrowserNS::BiasWidget::selectionChanged( int index )
     }
 
     m_bias->replace( bias ); // tell the old bias it has just been replaced
-    // TODO: update model
+    if( m_item )
+    {
+        QModelIndex parent = m_item->index().parent();
+        QStandardItemModel *model = m_item->model();
+        model->removeRows( m_item->row(), 1, parent );
+        bias->addToModel( model, parentWidget(), parent );
+    }
 }
 
 void
 PlaylistBrowserNS::BiasWidget::biasRemoved()
 {
-    m_bias->deleteLater();
     if( m_item )
-        delete m_item;
+    {
+        QModelIndex parent = m_item->index().parent();
+        m_item->model()->removeRows( m_item->row(), 1, parent );
+    }
+    m_bias->replace( Dynamic::BiasPtr() );
 }
 
 PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias,
