@@ -432,7 +432,7 @@ QtGroupingProxy::mapToSource( const QModelIndex& index ) const
 {
     //qDebug() << "mapToSource: " << index;
     if( !index.isValid() )
-        return QModelIndex();
+        return m_rootNode;
 
     if( isGroup( index ) )
     {
