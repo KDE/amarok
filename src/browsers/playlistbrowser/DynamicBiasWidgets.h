@@ -90,17 +90,20 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-            explicit BiasWidget( Dynamic::AbstractBias*,
+            explicit BiasWidget( Dynamic::BiasPtr bias,
                                  QStandardItem* item = 0, QWidget* parent = 0 );
 
         private slots:
+            void factoriesChanged();
+            void selectionChanged( int index );
             void biasRemoved();
 
         protected: //protected data members make Mike cry :'(
-            Dynamic::AbstractBias* m_bias;
+            Dynamic::BiasPtr m_bias;
 
         private:
-            KToolBar* m_removeToolbar;
+            // KToolBar* m_removeToolbar;
+            KComboBox* m_biasSelection;
             QToolButton* m_removeButton;
     };
 

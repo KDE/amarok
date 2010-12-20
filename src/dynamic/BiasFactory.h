@@ -20,6 +20,7 @@
 #define AMAROK_BIAS_FACTORY_H
 
 #include "shared/amarok_export.h"
+#include "Bias.h"
 
 #include <QObject>
 
@@ -28,7 +29,6 @@ class QXmlStreamWriter;
 
 namespace Dynamic
 {
-    class AbstractBias;
 
     /**
      * The factory which creates bias entries on demand. As the user can create any number
@@ -56,11 +56,11 @@ namespace Dynamic
 
             /** Create the custom bias. The caller takes owner of the pointer
              */
-            virtual AbstractBias* createBias( QObject *parent ) = 0;
+            virtual BiasPtr createBias() = 0;
 
             /** Creates a new custom bias from xml data
              */
-            virtual AbstractBias* createBias( QXmlStreamReader *reader, QObject *parent = 0 ) = 0;
+            virtual BiasPtr createBias( QXmlStreamReader *reader ) = 0;
     };
 
     class AMAROK_EXPORT BiasFactory : public QObject
@@ -80,10 +80,10 @@ namespace Dynamic
         static void removeBiasFactory( AbstractBiasFactory* factory );
 
         /** Helper function to get a bias from an xml tag */
-        static AbstractBias* fromXml( QXmlStreamReader *reader, QObject *parent = 0 );
+        static BiasPtr fromXml( QXmlStreamReader *reader );
 
         /** Helper function to get a bias from an name */
-        static AbstractBias* fromName( const QString &name, QObject *parent = 0 );
+        static BiasPtr fromName( const QString &name );
 
         /**
          * Returns all the current registered factories for this CustomBias

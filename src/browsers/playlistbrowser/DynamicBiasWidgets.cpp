@@ -21,6 +21,7 @@
 
 #include "App.h"
 #include "Bias.h"
+#include "BiasFactory.h"
 #include "BiasedPlaylist.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
@@ -142,7 +143,7 @@ PlaylistBrowserNS::BiasAddWidget::slotClicked()
     emit addBias();
 }
 
-PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::AbstractBias* b,
+PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::BiasPtr b,
                                            QStandardItem *item, QWidget* parent )
     : BiasBoxWidget( item, parent )
     , m_bias( b )
@@ -156,11 +157,66 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::AbstractBias* b,
     removeButton->setToolTip( i18n( "Remove this bias." ) );
     connect( removeButton, SIGNAL( clicked() ), SLOT( biasRemoved() ), Qt::QueuedConnection );
 
+
+    m_biasSelection = new KComboBox();
+    factoriesChanged();
+
+    connect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
+             this, SLOT( factoriesChanged() ) );
+
+    connect( m_biasSelection, SIGNAL( activated( int ) ),
+             this, SLOT( selectionChanged( int ) ) );
+
+    // connect( m_cbias, SIGNAL( biasChanged( Dynamic::Bias* ) ), this, SIGNAL( biasChanged( Dynamic::Bias* ) ) );
+
     mainLayout->addWidget( removeButton );
+    mainLayout->addWidget( new QLabel( i18n( "Match Type:" ) ) );
+    mainLayout->addWidget( m_biasSelection );
+
     mainLayout->setStretchFactor( removeButton, 0 );
     mainLayout->setAlignment( removeButton, Qt::AlignLeft | Qt::AlignVCenter );
 
     setLayout( mainLayout );
+}
+
+void
+PlaylistBrowserNS::BiasWidget::factoriesChanged()
+{
+    m_biasSelection->clear();
+    // -- add all the bias types to the list
+    QList<Dynamic::AbstractBiasFactory*> factories = Dynamic::BiasFactory::factories();
+    debug() << "factories" << factories.count();
+    int currentIndex = 0;
+    for( int i = 0; i <  factories.count(); i++ )
+    {
+        Dynamic::AbstractBiasFactory* factory = factories.at( i );
+    debug() << "factories::" << factory->name();
+        m_biasSelection->addItem( factory->i18nName(), QVariant( factory->name() ) );
+        if( m_bias && factory->name() == m_bias->name() )
+            currentIndex = i;
+    }
+    m_biasSelection->setCurrentIndex( currentIndex );
+
+}
+
+void
+PlaylistBrowserNS::BiasWidget::selectionChanged( int index )
+{
+    DEBUG_BLOCK
+    Q_ASSERT( m_biasSelection );
+
+    debug() << "selection changed to index: " << index;
+
+    QString biasName = m_biasSelection->itemData( index ).toString();
+    Dynamic::BiasPtr bias( Dynamic::BiasFactory::fromName( biasName ) );
+    if( !bias )
+    {
+        warning() << "Could not create bias with name:"<<biasName;
+        return;
+    }
+
+    m_bias->replace( bias ); // tell the old bias it has just been replaced
+    // TODO: update model
 }
 
 void
@@ -174,7 +230,7 @@ PlaylistBrowserNS::BiasWidget::biasRemoved()
 PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias,
                                                      QStandardItem* item,
                                                      QWidget* parent )
-    : BiasWidget( bias, item, parent )
+    : BiasWidget( Dynamic::BiasPtr(bias), item, parent )
     , m_abias( bias )
 { }
 
@@ -182,7 +238,7 @@ PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias,
 PlaylistBrowserNS::TagMatchBiasWidget::TagMatchBiasWidget( Dynamic::TagMatchBias* bias,
                                                            QStandardItem* item,
                                                            QWidget* parent )
-    : BiasWidget( bias, item, parent )
+    : BiasWidget( Dynamic::BiasPtr(bias), item, parent )
     , m_tbias( bias )
 {
     QFrame *frame = new QFrame( this );

@@ -50,9 +50,11 @@ const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 50;
 Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     : DynamicPlaylist( parent )
     , m_numRequested( 0 )
+    , m_bias( new Dynamic::RandomBias() )
 {
     m_title = i18nc( "Title for a default dynamic playlist. The default playlist only returns random tracks.", "Random" );
-    m_bias = new Dynamic::RandomBias( this );
+    connect( m_bias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+             this, SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
 }
 
 Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *parent )
@@ -73,7 +75,9 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *pare
                 m_title = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == "bias" )
             {
-                m_bias = Dynamic::BiasFactory::fromXml( reader, this );
+                m_bias = Dynamic::BiasFactory::fromXml( reader );
+                connect( m_bias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+                         this, SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
             }
             else
             {
@@ -142,6 +146,15 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
         debug() << "solver already running!";
 }
 
+void
+Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
+{
+    Q_UNUSED( oldBias );
+    m_bias = newBias;
+    connect( m_bias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+             this, SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+}
+
 
 void
 Dynamic::BiasedPlaylist::updateStatus( int progress )
@@ -176,7 +189,7 @@ Dynamic::BiasedPlaylist::recalculate()
     }
 }
 
-Dynamic::AbstractBias*
+Dynamic::BiasPtr
 Dynamic::BiasedPlaylist::bias() const
 {
     return m_bias;

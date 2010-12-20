@@ -52,7 +52,7 @@ namespace Dynamic
 
             void requestTracks(int);
 
-            AbstractBias* bias() const;
+            BiasPtr bias() const;
 
             void requestAbort();
 
@@ -61,6 +61,7 @@ namespace Dynamic
 
         private slots:
             void solverFinished();
+            void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
             void updateStatus( int progress );
 
         private:
@@ -73,7 +74,7 @@ namespace Dynamic
 
             int m_numRequested;
 
-            AbstractBias* m_bias;
+            BiasPtr m_bias;
 
             QWeakPointer<BiasSolver> m_solver;
 

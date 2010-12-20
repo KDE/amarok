@@ -59,7 +59,7 @@ namespace Dynamic
 
         SolverList( Meta::TrackList trackList,
                     int contextCount,
-                    AbstractBias *bias )
+                    BiasPtr bias )
             : m_trackList(trackList)
             , m_contextCount( contextCount )
             , m_bias( bias )
@@ -93,14 +93,14 @@ namespace Dynamic
 
         Meta::TrackList m_trackList;
         int m_contextCount; // the number of tracks belonging to the context
-        AbstractBias* m_bias;
+        BiasPtr m_bias;
         double m_energy;
     };
 }
 
 
 
-Dynamic::BiasSolver::BiasSolver( int n, Dynamic::AbstractBias *bias, Meta::TrackList context )
+Dynamic::BiasSolver::BiasSolver( int n, Dynamic::BiasPtr bias, Meta::TrackList context )
     : m_n(n)
     , m_bias(bias)
     , m_context(context)

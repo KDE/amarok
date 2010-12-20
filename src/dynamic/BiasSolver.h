@@ -81,7 +81,7 @@ namespace Dynamic
              * @param context The tracks (if any) that precede the playlist
              * being generated.
              */
-            BiasSolver( int n, AbstractBias* bias, Meta::TrackList context );
+            BiasSolver( int n, BiasPtr bias, Meta::TrackList context );
 
             ~BiasSolver();
 
@@ -206,7 +206,7 @@ namespace Dynamic
             QList<int> generateMatingPopulation( const QList<SolverList>& );
 
             int m_n;                    //!< size of playlist to generate
-            Dynamic::AbstractBias *m_bias; // bias used to determine tracks. not owned by solver
+            Dynamic::BiasPtr m_bias; // bias used to determine tracks. not owned by solver
             Meta::TrackList m_context;  //!< tracks that precede the playlist
 
             Meta::TrackList m_solution;

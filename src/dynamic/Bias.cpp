@@ -38,8 +38,7 @@
 #include <QXmlStreamWriter>
 
 
-Dynamic::AbstractBias::AbstractBias( QObject *parent )
-    : QObject( parent )
+Dynamic::AbstractBias::AbstractBias()
 { }
 
 Dynamic::AbstractBias::~AbstractBias()
@@ -61,7 +60,7 @@ Dynamic::AbstractBias::name()
 QWidget*
 Dynamic::AbstractBias::widget( QStandardItem* item, QWidget* parent )
 {
-    return new PlaylistBrowserNS::BiasWidget( this, item, parent );
+    return new PlaylistBrowserNS::BiasWidget( BiasPtr(this), item, parent );
 }
 
 void
@@ -81,14 +80,18 @@ void
 Dynamic::AbstractBias::invalidate()
 { }
 
+void
+Dynamic::AbstractBias::replace( Dynamic::BiasPtr newBias )
+{
+    emit replaced( BiasPtr(const_cast<Dynamic::AbstractBias*>(this)), newBias );
+}
+
 // -------- RandomBias ------
 
-Dynamic::RandomBias::RandomBias( QObject *parent )
-    : AbstractBias( parent )
+Dynamic::RandomBias::RandomBias()
 { }
 
-Dynamic::RandomBias::RandomBias( QXmlStreamReader *reader, QObject *parent )
-    : AbstractBias( parent )
+Dynamic::RandomBias::RandomBias( QXmlStreamReader *reader )
 {
     reader->skipCurrentElement();
 }
@@ -111,7 +114,7 @@ Dynamic::RandomBias::name()
 QWidget*
 Dynamic::RandomBias::widget( QStandardItem* item, QWidget* parent )
 {
-    return new PlaylistBrowserNS::BiasWidget( this, item, parent );
+    return new PlaylistBrowserNS::BiasWidget( BiasPtr(this), item, parent );
 }
 
 Dynamic::TrackSet
@@ -135,22 +138,20 @@ Dynamic::RandomBias::energy( const Meta::TrackList& playlist, int contextCount )
 
 // -------- AndBias ------
 
-Dynamic::AndBias::AndBias( QObject *parent )
-    : AbstractBias( parent )
+Dynamic::AndBias::AndBias()
 { }
 
-Dynamic::AndBias::AndBias( QXmlStreamReader *reader, QObject *parent )
-    : AbstractBias( parent )
+Dynamic::AndBias::AndBias( QXmlStreamReader *reader )
 {
     while (!reader->atEnd()) {
         reader->readNext();
 
         if( reader->isStartElement() )
         {
-            Dynamic::AbstractBias *bias = Dynamic::BiasFactory::fromXml( reader, this );
+            Dynamic::BiasPtr bias( Dynamic::BiasFactory::fromXml( reader ) );
             if( bias )
             {
-                m_biases.append(bias);
+                appendBias( bias );
             }
             else
             {
@@ -166,17 +167,12 @@ Dynamic::AndBias::AndBias( QXmlStreamReader *reader, QObject *parent )
 }
 
 Dynamic::AndBias::~AndBias()
-{
-    foreach( Dynamic::AbstractBias* bias, m_biases )
-    {
-        delete bias;
-    }
-}
+{ }
 
 void
 Dynamic::AndBias::toXml( QXmlStreamWriter *writer ) const
 {
-    foreach( Dynamic::AbstractBias* bias, m_biases )
+    foreach( Dynamic::BiasPtr bias, m_biases )
     {
         writer->writeStartElement( bias->name() );
         bias->toXml( writer );
@@ -204,7 +200,7 @@ Dynamic::AndBias::matchingTracks( int position,
     m_tracks = Dynamic::TrackSet( universe );
     m_outstandingMatches = 0;
 
-    foreach( Dynamic::AbstractBias* bias, m_biases )
+    foreach( Dynamic::BiasPtr bias, m_biases )
     {
         Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, contextCount, universe );
         if( tracks.isOutstanding() )
@@ -227,7 +223,7 @@ Dynamic::AndBias::energy( const Meta::TrackList& playlist, int contextCount ) co
 {
     double result = 0.0;
 
-    foreach( Dynamic::AbstractBias* bias, m_biases )
+    foreach( Dynamic::BiasPtr bias, m_biases )
     {
         result = qMax( result, bias->energy( playlist, contextCount ) );
     }
@@ -245,7 +241,7 @@ Dynamic::AndBias::addToModel( QStandardItemModel *model, QWidget *parentWidget, 
     else
         model->appendRow( item );
 
-    foreach( Dynamic::AbstractBias* bias, m_biases )
+    foreach( Dynamic::BiasPtr bias, m_biases )
     {
         bias->addToModel( model, parentWidget, item->index() );
     }
@@ -254,6 +250,35 @@ Dynamic::AndBias::addToModel( QStandardItemModel *model, QWidget *parentWidget, 
     QStandardItem *addItem = new QStandardItem();
     addItem->setData( QVariant::fromValue( qobject_cast<QWidget*>(new PlaylistBrowserNS::BiasAddWidget( addItem, parentWidget ) ) ), WidgetRole );
     item->appendRow( addItem );
+}
+
+
+void
+Dynamic::AndBias::invalidate()
+{
+    foreach( Dynamic::BiasPtr bias, m_biases )
+    {
+        bias->invalidate();
+    }
+    m_tracks = TrackSet();
+}
+
+void
+Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
+{
+    connect( bias.data(), SLOT( resultReady( const Dynamic::TrackSet & ) ),
+             this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
+    connect( bias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+             this, SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+    m_biases.append( bias );
+    emit changed( BiasPtr(this) );
+}
+
+void
+Dynamic::AndBias::moveBias( int from, int to )
+{
+    m_biases.insert( to, m_biases.takeAt( from ) );
+    emit changed( BiasPtr(this) );
 }
 
 
@@ -270,49 +295,29 @@ Dynamic::AndBias::resultReceived( const Dynamic::TrackSet &tracks )
 }
 
 void
-Dynamic::AndBias::invalidate()
+Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
 {
-    foreach( Dynamic::AbstractBias* bias, m_biases )
-    {
-        bias->invalidate();
-    }
-    m_tracks = TrackSet();
-}
+    int index = m_biases.indexOf( oldBias );
+    Q_ASSERT( index >= 0 );
 
-void
-Dynamic::AndBias::appendBias( Dynamic::AbstractBias* bias )
-{
-    connect( bias, SLOT( resultReady( const Dynamic::TrackSet & ) ),
+    disconnect( oldBias.data(), 0, this, 0 );
+    m_biases[ index ] = newBias;
+    connect( newBias.data(), SLOT( resultReady( const Dynamic::TrackSet & ) ),
              this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
-    connect( bias, SLOT( destroyed( QObject* ) ),
-             this,  SLOT( biasDestroyed( QObject* ) ) );
-    bias->setParent( this );
-    m_biases.append( bias );
-    emit changed( this );
+    connect( newBias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+             this, SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+    emit changed( BiasPtr(this) );
 }
 
-void
-Dynamic::AndBias::biasDestroyed( QObject* bias )
-{
-    m_biases.removeAll( qobject_cast<Dynamic::AbstractBias*>(bias) );
-    emit changed( this );
-}
-
-void
-Dynamic::AndBias::moveBias( int from, int to )
-{
-    m_biases.insert( to, m_biases.takeAt( from ) );
-    emit changed( this );
-}
 
 // -------- OrBias ------
 
-Dynamic::OrBias::OrBias( QObject *parent )
-    : AndBias( parent )
+Dynamic::OrBias::OrBias()
+    : AndBias()
 { }
 
-Dynamic::OrBias::OrBias( QXmlStreamReader *reader, QObject *parent )
-    : AndBias( reader, parent )
+Dynamic::OrBias::OrBias( QXmlStreamReader *reader )
+    : AndBias( reader )
 { }
 
 QString
@@ -330,7 +335,7 @@ Dynamic::OrBias::matchingTracks( int position,
     m_tracks.clear();
     m_outstandingMatches = 0;
 
-    foreach( Dynamic::AbstractBias* bias, m_biases )
+    foreach( Dynamic::BiasPtr bias, m_biases )
     {
         Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, contextCount, universe );
         if( tracks.isOutstanding() )
@@ -353,7 +358,7 @@ Dynamic::OrBias::energy( const Meta::TrackList& playlist, int contextCount ) con
 {
     double result = 1.0;
 
-    foreach( Dynamic::AbstractBias* bias, m_biases )
+    foreach( Dynamic::BiasPtr bias, m_biases )
     {
         result = qMin( result, bias->energy( playlist, contextCount ) );
     }
@@ -374,12 +379,12 @@ Dynamic::OrBias::resultReceived( const Dynamic::TrackSet &tracks )
 
 // -------- NotBias ------
 
-Dynamic::NotBias::NotBias( QObject *parent )
-    : AndBias( parent )
+Dynamic::NotBias::NotBias()
+    : AndBias()
 { }
 
-Dynamic::NotBias::NotBias( QXmlStreamReader *reader, QObject *parent )
-    : AndBias( reader, parent )
+Dynamic::NotBias::NotBias( QXmlStreamReader *reader )
+    : AndBias( reader )
 { }
 
 QString
@@ -396,7 +401,7 @@ Dynamic::NotBias::matchingTracks( int position,
     m_tracks = Dynamic::TrackSet( universe );
     m_outstandingMatches = 0;
 
-    foreach( Dynamic::AbstractBias* bias, m_biases )
+    foreach( Dynamic::BiasPtr bias, m_biases )
     {
         Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, contextCount, universe );
         if( tracks.isOutstanding() )
@@ -435,12 +440,10 @@ Dynamic::NotBias::resultReceived( const Dynamic::TrackSet &tracks )
 
 // -------- TagMatchBias ------
 
-Dynamic::TagMatchBias::TagMatchBias( QObject *parent )
-    : AbstractBias( parent )
+Dynamic::TagMatchBias::TagMatchBias()
 { }
 
-Dynamic::TagMatchBias::TagMatchBias( QXmlStreamReader *reader, QObject *parent )
-    : AbstractBias( parent )
+Dynamic::TagMatchBias::TagMatchBias( QXmlStreamReader *reader )
 {
     while (!reader->atEnd()) {
         reader->readNext();
@@ -560,7 +563,7 @@ Dynamic::TagMatchBias::setFilter( const MetaQueryWidget::Filter &filter)
 {
     m_filter = filter;
     invalidate();
-    emit changed( this );
+    emit changed( BiasPtr(this) );
 }
 
 void

@@ -38,11 +38,93 @@ class RandomBiasFactory : public Dynamic::AbstractBiasFactory
     { return i18nc("Description of the random bias",
                    "The random bias adds random tracks from the whole collection without any bias."); }
 
-    Dynamic::AbstractBias* createBias( QObject *parent )
-    { return new Dynamic::RandomBias( parent ); }
+    Dynamic::BiasPtr createBias()
+    { return Dynamic::BiasPtr( new Dynamic::RandomBias() ); }
 
-    Dynamic::AbstractBias* createBias( QXmlStreamReader *reader, QObject *parent )
-    { return new Dynamic::RandomBias( reader, parent ); }
+    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
+    { return Dynamic::BiasPtr( new Dynamic::RandomBias( reader ) ); }
+};
+
+
+class NotBiasFactory : public Dynamic::AbstractBiasFactory
+{
+    QString i18nName() const
+    { return i18nc("Name of the \"Not\" bias", "Not"); }
+
+    QString name() const
+    { return Dynamic::NotBias::name(); }
+
+    QString i18nDescription() const
+    { return i18nc("Description of the \"Not\" bias",
+                   "The \"Not\" bias adds tracks that do not match a sub bias."); }
+
+    Dynamic::BiasPtr createBias()
+    { return Dynamic::BiasPtr( new Dynamic::NotBias() ); }
+
+    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
+    { return Dynamic::BiasPtr( new Dynamic::NotBias( reader ) ); }
+};
+
+
+
+
+class AndBiasFactory : public Dynamic::AbstractBiasFactory
+{
+    QString i18nName() const
+    { return i18nc("Name of the \"And\" bias", "And"); }
+
+    QString name() const
+    { return Dynamic::AndBias::name(); }
+
+    QString i18nDescription() const
+    { return i18nc("Description of the \"And\" bias",
+                   "The \"And\" bias adds tracks that match all of the sub biases at the same time."); }
+
+    Dynamic::BiasPtr createBias()
+    { return Dynamic::BiasPtr( new Dynamic::AndBias() ); }
+
+    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
+    { return Dynamic::BiasPtr( new Dynamic::AndBias( reader ) ); }
+};
+
+
+class OrBiasFactory : public Dynamic::AbstractBiasFactory
+{
+    QString i18nName() const
+    { return i18nc("Name of the \"Or\" bias", "Or"); }
+
+    QString name() const
+    { return Dynamic::OrBias::name(); }
+
+    QString i18nDescription() const
+    { return i18nc("Description of the \"Or\" bias",
+                   "The \"Or\" bias adds tracks that match at least one of the sub biases at the same time."); }
+
+    Dynamic::BiasPtr createBias()
+    { return Dynamic::BiasPtr( new Dynamic::OrBias() ); }
+
+    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
+    { return Dynamic::BiasPtr( new Dynamic::OrBias( reader ) ); }
+};
+
+
+class TagMatchBiasFactory : public Dynamic::AbstractBiasFactory
+{
+    QString i18nName() const
+    { return i18nc("Name of the \"TagMatch\" bias", "TagMatch"); }
+
+    QString name() const
+    { return Dynamic::TagMatchBias::name(); }
+
+    QString i18nDescription() const
+    { return i18nc("Description of the \"TagMatch\" bias",
+                   "The \"TagMatch\" bias adds tracks that fulfill a specific condition."); }
+
+    Dynamic::BiasPtr createBias()
+    { return Dynamic::BiasPtr( new Dynamic::TagMatchBias() ); }
+
+    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
+    { return Dynamic::BiasPtr( new Dynamic::TagMatchBias( reader ) ); }
 };
 
 
@@ -55,59 +137,53 @@ Dynamic::BiasFactory*
 Dynamic::BiasFactory::instance()
 {
     if( !s_instance )
+    {
+        // --- build in biases
+        s_biasFactories.append( new RandomBiasFactory() );
+        s_biasFactories.append( new NotBiasFactory() );
+        s_biasFactories.append( new AndBiasFactory() );
+        s_biasFactories.append( new OrBiasFactory() );
+        s_biasFactories.append( new TagMatchBiasFactory() );
+
         s_instance = new BiasFactory( App::instance() );
+    }
     return s_instance;
 }
 
 Dynamic::BiasFactory::BiasFactory( QObject *parent )
     : QObject( parent )
-{
-    registerNewBiasFactory( new RandomBiasFactory() );
-}
+{ }
 
-Dynamic::AbstractBias*
-Dynamic::BiasFactory::fromXml( QXmlStreamReader *reader, QObject *parent )
+Dynamic::BiasPtr
+Dynamic::BiasFactory::fromXml( QXmlStreamReader *reader )
 {
     QStringRef name = reader->name();
 
-    foreach( Dynamic::AbstractBiasFactory* fac, instance()->factories() )
+    instance(); // ensure that we have an instance with the default factories
+    foreach( Dynamic::AbstractBiasFactory* fac, s_biasFactories )
     {
         if( name == fac->name() )
-            return fac->createBias( reader, parent );
+            return fac->createBias( reader );
     }
-
-    if( name == Dynamic::AndBias::name() )
-        return new Dynamic::AndBias( reader, parent );
-    else if( name == Dynamic::OrBias::name() )
-        return new Dynamic::OrBias( reader, parent );
-    else if( name == Dynamic::TagMatchBias::name() )
-        return new Dynamic::TagMatchBias( reader, parent );
-    else
-        return 0;
+    return BiasPtr();
 }
 
-Dynamic::AbstractBias*
-Dynamic::BiasFactory::fromName( const QString &name, QObject *parent )
+Dynamic::BiasPtr
+Dynamic::BiasFactory::fromName( const QString &name )
 {
-    foreach( Dynamic::AbstractBiasFactory* fac, instance()->factories() )
+    instance(); // ensure that we have an instance with the default factories
+    foreach( Dynamic::AbstractBiasFactory* fac, s_biasFactories )
     {
         if( name == fac->name() )
-            return fac->createBias( parent );
+            return fac->createBias();
     }
-
-    if( name == Dynamic::AndBias::name() )
-        return new Dynamic::AndBias( parent );
-    else if( name == Dynamic::OrBias::name() )
-        return new Dynamic::OrBias( parent );
-    else if( name == Dynamic::TagMatchBias::name() )
-        return new Dynamic::TagMatchBias( parent );
-    else
-        return 0;
+    return BiasPtr();
 }
 
 void
 Dynamic::BiasFactory::registerNewBiasFactory( Dynamic::AbstractBiasFactory* factory )
 {
+    instance(); // ensure that we have an instance with the default factories
     debug() << "new factory of type:" << factory->name();
     if( !s_biasFactories.contains( factory ) )
         s_biasFactories.append( factory );
@@ -142,6 +218,7 @@ Dynamic::BiasFactory::removeBiasFactory( Dynamic::AbstractBiasFactory* factory )
 QList<Dynamic::AbstractBiasFactory*>
 Dynamic::BiasFactory::factories()
 {
+    instance(); // ensure that we have an instance with the default factories
     return s_biasFactories;
 }
 

@@ -27,6 +27,9 @@
 #include <QObject>
 #include <QWidget>
 #include <QModelIndex>
+#include <QSharedData>
+
+#include <KSharedPtr>
 
 class QXmlStreamReader;
 class QXmlStreamWriter;
@@ -42,12 +45,16 @@ namespace Dynamic
 {
     class AbstractBias;
 
-    typedef QList<Dynamic::AbstractBias*> BiasList;
+    typedef KSharedPtr<Dynamic::AbstractBias> BiasPtr;
+    typedef QList<Dynamic::BiasPtr> BiasList;
 
     /** A bias is essentially just a function that evaluates the suitability of a
         playlist in some arbitrary way.
+
+        All biases are shared to prevent problems when they are removed while the
+        BiasSolver is running at the same time.
      */
-    class AbstractBias : public QObject
+    class AbstractBias : public QObject, public QSharedData
     {
         Q_OBJECT
 
@@ -58,7 +65,7 @@ namespace Dynamic
                 WidgetRole = 0xf00d
             };
 
-            AbstractBias( QObject *parent = 0 );
+            AbstractBias();
             virtual ~AbstractBias();
 
             /** Writes the contents of this object to an xml stream.
@@ -119,7 +126,10 @@ namespace Dynamic
                 this can also happen if the bias depends on the current track and this
                 track changed.
             */
-            void changed( Dynamic::AbstractBias* );
+            void changed( Dynamic::BiasPtr thisBias );
+
+            /** This signal is emitted when this bias should be replaced by a new one. */
+            void replaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
 
             /** Emitted when the result to a previously called matchingTracks is ready */
             void resultReady( const Dynamic::TrackSet &set );
@@ -131,6 +141,8 @@ namespace Dynamic
             */
             virtual void invalidate();
 
+            /** Call this function when this bias should be replaced by a new one. */
+            virtual void replace( Dynamic::BiasPtr newBias );
     };
 
     /** A bias that returns all the tracks in the universe as possible tracks */
@@ -139,8 +151,8 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            RandomBias( QObject *parent = 0 );
-            RandomBias( QXmlStreamReader *reader, QObject *parent = 0 );
+            RandomBias();
+            RandomBias( QXmlStreamReader *reader );
             virtual ~RandomBias();
 
             void toXml( QXmlStreamWriter *writer ) const;
@@ -164,8 +176,8 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            AndBias( QObject *parent = 0 );
-            AndBias( QXmlStreamReader *reader, QObject *parent = 0 );
+            AndBias();
+            AndBias( QXmlStreamReader *reader );
             virtual ~AndBias();
 
             void toXml( QXmlStreamWriter *writer ) const;
@@ -188,18 +200,18 @@ namespace Dynamic
             /** Appends a bias to this bias.
                 This object will take ownership of the bias and free it when destroyed.
             */
-            virtual void appendBias( AbstractBias* bias );
+            virtual void appendBias( BiasPtr bias );
             virtual void moveBias( int from, int to );
 
         public slots:
             virtual void invalidate();
 
         protected slots:
-            virtual void biasDestroyed( QObject* bias );
+            virtual void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
             virtual void resultReceived( const Dynamic::TrackSet &tracks );
 
         protected:
-            QList<AbstractBias*> m_biases;
+            BiasList m_biases;
 
             mutable TrackSet m_tracks;
             mutable int m_outstandingMatches;
@@ -213,8 +225,8 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            OrBias( QObject *parent = 0 );
-            OrBias( QXmlStreamReader *reader, QObject *parent = 0 );
+            OrBias();
+            OrBias( QXmlStreamReader *reader );
 
             static QString name();
 
@@ -240,8 +252,8 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            NotBias( QObject *parent = 0 );
-            NotBias( QXmlStreamReader *reader, QObject *parent = 0 );
+            NotBias();
+            NotBias( QXmlStreamReader *reader );
 
             static QString name();
 
@@ -266,8 +278,8 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            TagMatchBias( QObject *parent = 0 );
-            TagMatchBias( QXmlStreamReader *reader, QObject *parent = 0 );
+            TagMatchBias();
+            TagMatchBias( QXmlStreamReader *reader );
 
             void toXml( QXmlStreamWriter *writer ) const;
 
@@ -324,7 +336,7 @@ namespace Dynamic
 
 }
 
-Q_DECLARE_METATYPE( Dynamic::AbstractBias* )
+Q_DECLARE_METATYPE( Dynamic::BiasPtr )
 
 #endif
 
