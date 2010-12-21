@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,14 +27,10 @@
 #include <QWidget>
 #include <QStandardItem>
 
-class QFrame;
-class QGridLayout;
-class QHBoxLayout;
+class QFormLayout;
 class QLabel;
 class QToolButton;
 class KComboBox;
-class KToolBar;
-class KVBox;
 
 namespace Amarok
 {
@@ -80,7 +77,6 @@ namespace PlaylistBrowserNS
             virtual void mousePressEvent( QMouseEvent* event );
 
         private:
-            // KToolBar*    m_addToolbar;
             QToolButton* m_addButton;
             QLabel*      m_addLabel;
     };
@@ -101,8 +97,10 @@ namespace PlaylistBrowserNS
         protected: //protected data members make Mike cry :'(
             Dynamic::BiasPtr m_bias;
 
+            /** This is where sub-classes can add their stuff */
+            QFormLayout* m_layout;
+
         private:
-            // KToolBar* m_removeToolbar;
             KComboBox* m_biasSelection;
             QToolButton* m_removeButton;
     };

@@ -123,12 +123,6 @@ namespace Dynamic
             void run();
 
         signals:
-            /**
-             * A signal emitted after prepareToRun is called and the solver is
-             * prepared and ready to run.
-             */
-            void readyToRun();
-
             /// A [0,100] value emitted occasionally to indicate progress being made.
             void statusUpdate( int progress );
 
@@ -148,7 +142,7 @@ namespace Dynamic
             TrackSet matchingTracks( int position, const Meta::TrackList& playlist ) const;
 
             /** Query for the universe set (the set of all tracks in the collection being considered.
-                This function blocks.
+                This function needs to be called from a thread with an event loop.
             */
             void getTrackCollection();
 

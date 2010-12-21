@@ -107,6 +107,7 @@ Dynamic::BiasSolver::BiasSolver( int n, Dynamic::BiasPtr bias, Meta::TrackList c
     , m_abortRequested(false)
 {
     // debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId();
+    getTrackCollection();
 }
 
 
@@ -150,7 +151,16 @@ void Dynamic::BiasSolver::run()
 
     debug() << "BiasSolver::run in thread:" << QThread::currentThreadId();
 
-    getTrackCollection();
+    // wait until we get the track collection
+    {
+        QMutexLocker locker( &m_collectionResultsMutex );
+        if( !m_trackCollection )
+        {
+            debug() << "waiting for colleciton results";
+            m_collectionResultsReady.wait( &m_collectionResultsMutex );
+        }
+        debug() << "colleciton has" << m_trackCollection->count()<<"uids";
+    }
 
     /*
      * Two stage solver: Run ga_optimize and feed it's result into sa_optimize.
@@ -168,7 +178,9 @@ void Dynamic::BiasSolver::run()
      */
     //Meta::TrackList playlist = ga_optimize( GA_ITERATION_LIMIT, true );
 
+    debug() << "generating playlist";
     SolverList playlist = generateInitialPlaylist();
+    debug() << "got playlist with"<<playlist.m_energy;
     while( playlist.m_energy > epsilon() ) // the playlist is only slightly wrong
     {
         sa_optimize( &playlist, SA_ITERATION_LIMIT, true );
@@ -450,6 +462,8 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
     TrackSet universeSet( m_trackCollection );
     while( result.m_trackList.count() < m_context.count() + m_n )
     {
+    debug() << "matchingTracks for"<<m_bias->name()<<"at"<<result.m_trackList.count();
+
         TrackSet set = matchingTracks( result.m_trackList.count(), result.m_trackList );
         Meta::TrackPtr newTrack = getRandomTrack( set );
         if( newTrack )
@@ -502,6 +516,7 @@ Dynamic::BiasSolver::trackForUid( const QString& uid ) const
 void
 Dynamic::BiasSolver::biasResultReady( const Dynamic::TrackSet &set )
 {
+    QMutexLocker locker( &m_biasResultsMutex );
     m_tracks = set;
     m_biasResultsReady.wakeAll();
 }
@@ -512,7 +527,7 @@ Dynamic::BiasSolver::matchingTracks( int position, const Meta::TrackList& playli
     QMutexLocker locker( &m_biasResultsMutex );
     m_tracks = m_bias->matchingTracks( position, playlist, m_context.count(), m_trackCollection );
     if( m_tracks.isOutstanding() )
-        m_collectionResultsReady.wait( &m_collectionResultsMutex );
+        m_collectionResultsReady.wait( &m_biasResultsMutex );
 
     return m_tracks;
 }
@@ -523,6 +538,7 @@ Dynamic::BiasSolver::matchingTracks( int position, const Meta::TrackList& playli
 void
 Dynamic::BiasSolver::trackCollectionResultsReady( QString collectionId, QStringList uids )
 {
+    DEBUG_BLOCK;
     Q_UNUSED( collectionId );
     m_collectionUids.append( uids );
 }
@@ -530,16 +546,25 @@ Dynamic::BiasSolver::trackCollectionResultsReady( QString collectionId, QStringL
 void
 Dynamic::BiasSolver::trackCollectionDone()
 {
+    DEBUG_BLOCK;
+    QMutexLocker locker( &m_collectionResultsMutex );
+
+    m_trackCollection = TrackCollectionPtr( new TrackCollection( m_collectionUids ) );
+    m_collectionUids.clear();
+
     m_collectionResultsReady.wakeAll();
 }
 
 void
 Dynamic::BiasSolver::getTrackCollection()
 {
+    DEBUG_BLOCK
+
     // get all the unique ids from the collection manager
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     qm->setQueryType( Collections::QueryMaker::Custom );
     qm->addReturnValue( Meta::valUniqueId );
+    qm->setAutoDelete( true );
 
     connect( qm, SIGNAL(newResultReady( QString, QStringList )),
              this, SLOT(trackCollectionResultsReady( QString, QStringList )),
@@ -548,14 +573,7 @@ Dynamic::BiasSolver::getTrackCollection()
              this, SLOT(trackCollectionDone()),
              Qt::DirectConnection );
 
-    QMutexLocker locker( &m_collectionResultsMutex );
     qm->run();
-    // wait until all results are there
-    m_collectionResultsReady.wait( &m_collectionResultsMutex );
-    delete qm;
-
-    m_trackCollection = TrackCollectionPtr( new TrackCollection( m_collectionUids ) );
-    m_collectionUids.clear();
 }
 
 

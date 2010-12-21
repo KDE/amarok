@@ -78,7 +78,10 @@ namespace Dynamic
             /** Returns the name of this bias.
                 The name is used for reading and writing to xml.
             */
-            static QString name();
+            static QString sName();
+
+            /** The same as sName just not static */
+            virtual QString name() const;
 
             /** Create a widget appropriate for editing the bias.
             */
@@ -157,7 +160,8 @@ namespace Dynamic
 
             void toXml( QXmlStreamWriter *writer ) const;
 
-            static QString name();
+            static QString sName();
+            virtual QString name() const;
 
             virtual QWidget* widget( QStandardItem* item, QWidget* parent = 0 );
 
@@ -307,8 +311,10 @@ namespace Dynamic
             /** Called when the querymaker is finished */
             void updateFinished();
 
+            /** Creates a new query to get matching tracks. */
+            void newQuery();
+
         protected:
-            void newQuery() const;
 
             static QString nameForCondition( MetaQueryWidget::FilterCondition cond );
             static MetaQueryWidget::FilterCondition conditionForName( const QString &name );

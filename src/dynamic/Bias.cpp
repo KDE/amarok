@@ -32,6 +32,7 @@
 #include "core/collections/QueryMaker.h"
 
 #include <QDateTime>
+#include <QTimer>
 #include <QStandardItem>
 #include <QStandardItemModel>
 #include <QXmlStreamReader>
@@ -51,9 +52,15 @@ Dynamic::AbstractBias::toXml( QXmlStreamWriter *writer ) const
 }
 
 QString
-Dynamic::AbstractBias::name()
+Dynamic::AbstractBias::sName()
 {
     return QLatin1String( "abstractBias" );
+}
+
+QString
+Dynamic::AbstractBias::name() const
+{
+    return Dynamic::AbstractBias::name();
 }
 
 
@@ -106,10 +113,17 @@ Dynamic::RandomBias::toXml( QXmlStreamWriter *writer ) const
 }
 
 QString
-Dynamic::RandomBias::name()
+Dynamic::RandomBias::sName()
 {
     return QLatin1String( "randomBias" );
 }
+
+QString
+Dynamic::RandomBias::name() const
+{
+    return Dynamic::RandomBias::name();
+}
+
 
 QWidget*
 Dynamic::RandomBias::widget( QStandardItem* item, QWidget* parent )
@@ -266,10 +280,11 @@ Dynamic::AndBias::invalidate()
 void
 Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
 {
-    connect( bias.data(), SLOT( resultReady( const Dynamic::TrackSet & ) ),
+    DEBUG_BLOCK
+    connect( bias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
              this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
-    connect( bias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-             this, SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+    connect( bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+             this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
     m_biases.append( bias );
     emit changed( BiasPtr(this) );
 }
@@ -302,10 +317,10 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
 
     disconnect( oldBias.data(), 0, this, 0 );
     m_biases[ index ] = newBias;
-    connect( newBias.data(), SLOT( resultReady( const Dynamic::TrackSet & ) ),
+    connect( newBias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
              this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
-    connect( newBias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-             this, SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+    connect( newBias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+             this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
     emit changed( BiasPtr(this) );
 }
 
@@ -441,7 +456,9 @@ Dynamic::NotBias::resultReceived( const Dynamic::TrackSet &tracks )
 // -------- TagMatchBias ------
 
 Dynamic::TagMatchBias::TagMatchBias()
-{ }
+{
+    DEBUG_BLOCK
+}
 
 Dynamic::TagMatchBias::TagMatchBias( QXmlStreamReader *reader )
 {
@@ -509,6 +526,8 @@ Dynamic::TagMatchBias::matchingTracks( int position,
                                        const Meta::TrackList& playlist, int contextCount,
                                        Dynamic::TrackCollectionPtr universe ) const
 {
+    DEBUG_BLOCK
+
     Q_UNUSED( position );
     Q_UNUSED( playlist );
     Q_UNUSED( contextCount );
@@ -518,7 +537,9 @@ Dynamic::TagMatchBias::matchingTracks( int position,
         return m_tracks;
 
     m_tracks = Dynamic::TrackSet( universe );
-    newQuery();
+    QTimer::singleShot(0,
+                       const_cast<TagMatchBias*>(this),
+                       SLOT(newQuery())); // create the new query from my parent thread
     return Dynamic::TrackSet();
 }
 
@@ -575,7 +596,7 @@ Dynamic::TagMatchBias::invalidate()
 }
 
 void
-Dynamic::TagMatchBias::newQuery() const
+Dynamic::TagMatchBias::newQuery()
 {
     // ok, I need a new query maker
     m_qm.reset( CollectionManager::instance()->queryMaker() );

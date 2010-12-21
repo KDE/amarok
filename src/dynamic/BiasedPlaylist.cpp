@@ -52,6 +52,14 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     , m_numRequested( 0 )
     , m_bias( new Dynamic::RandomBias() )
 {
+    /*
+    Dynamic::AndBias *andB = new Dynamic::AndBias();
+andB->appendBias( BiasPtr( new Dynamic::RandomBias() ) );
+// andB->appendBias( BiasPtr( new Dynamic::TagMatchBias() ) );
+//andB->appendBias( BiasPtr( new Dynamic::NotBias() ) );
+m_bias = BiasPtr(andB);
+*/
+
     m_title = i18nc( "Title for a default dynamic playlist. The default playlist only returns random tracks.", "Random" );
     connect( m_bias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
              this, SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
@@ -111,6 +119,7 @@ Dynamic::BiasedPlaylist::toXml( QXmlStreamWriter *writer ) const
 void
 Dynamic::BiasedPlaylist::requestAbort()
 {
+    DEBUG_BLOCK
     if( m_solver ) {
         m_solver.data()->requestAbort();
         disconnect(m_solver.data(), 0, this, 0);
