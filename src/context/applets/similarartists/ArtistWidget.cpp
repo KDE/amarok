@@ -47,6 +47,7 @@
 #include <QPixmapCache>
 #include <QSignalMapper>
 #include <QTextDocument>
+#include <QTimer>
 
 #include <cmath>
 
@@ -181,6 +182,12 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_match->setText( i18n( "Match: %1%", QString::number( m_artist->match() ) ) );
     m_nameLabel->setText( m_artist->name() );
 
+    QTimer::singleShot( 0, this, SLOT(updateInfo()) );
+}
+
+void
+ArtistWidget::updateInfo()
+{
     fetchPhoto();
     fetchInfo();
     fetchTopTrack();

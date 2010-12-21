@@ -265,6 +265,8 @@ private slots:
      */
     void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
     void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+
+    void updateInfo();
 };
 
 class ArtistsListWidget : public Plasma::ScrollWidget
