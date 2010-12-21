@@ -887,13 +887,11 @@ explodeUidUrl( const QString &uidUrl, const Meta::Tag::FileTypes type )
 static bool
 replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &value )
 {
-    TagLib::String tName;
     TagLib::String tValue = Qt4QStringToTString( value.toString() );
 
     if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
         TagLib::ByteVector tName( fieldName( field, Meta::Tag::MPEG ) );
-
         if( tName.isEmpty() )
             return false;
 
@@ -1029,7 +1027,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
     // ogg
     else if( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
     {
-        tName = fieldName( field, Meta::Tag::OGG );
+        TagLib::String tName = fieldName( field, Meta::Tag::OGG );
 
         if( field == Meta::valUniqueId )
         {
@@ -1051,7 +1049,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
     // flac
     else if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
     {
-        tName = fieldName( field, Meta::Tag::FLAC );
+        TagLib::String tName = fieldName( field, Meta::Tag::FLAC );
 
         if( field == Meta::valUniqueId )
         {
@@ -1073,7 +1071,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
     // speex
     else if( TagLib::Ogg::Speex::File *file = dynamic_cast<TagLib::Ogg::Speex::File *>( fileref.file() ) )
     {
-        tName = fieldName( field, Meta::Tag::SPEEX );
+        TagLib::String tName = fieldName( field, Meta::Tag::SPEEX );
 
         if( field == Meta::valUniqueId )
         {
@@ -1095,7 +1093,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
     //MP4
     else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
-        tName = fieldName( field, Meta::Tag::MP4 );
+        TagLib::String tName = fieldName( field, Meta::Tag::MP4 );
 
         if( field == Meta::valUniqueId )
         {
@@ -1121,7 +1119,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
     //MPC
     else if( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
     {
-        tName = Meta::Tag::fieldName( field, Meta::Tag::MPC );
+        TagLib::String tName = Meta::Tag::fieldName( field, Meta::Tag::MPC );
 
         if( field == Meta::valUniqueId )
         {
