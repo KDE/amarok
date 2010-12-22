@@ -66,7 +66,7 @@ class SqlPlaylist : public Playlist, public Meta::Observer
 
         int id();
 
-        /** returns all tracks in this playlist */
+        virtual int trackCount() const;
         virtual Meta::TrackList tracks();
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
