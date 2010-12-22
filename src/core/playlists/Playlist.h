@@ -93,6 +93,7 @@ namespace Playlists
               * be determined before loading them all.
               */
             virtual int trackCount() const { return -1; }
+
             /** returns all tracks in this playlist */
             virtual Meta::TrackList tracks() = 0;
 
