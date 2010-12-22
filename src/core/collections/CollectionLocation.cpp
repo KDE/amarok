@@ -107,7 +107,6 @@ void
 CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination,
                                  const Transcoding::Configuration &configuration )
 {
-    debug() << "prepare copy"<<tracks.count()<<"tracks from"<<collection()->collectionId()<<"to"<<destination->collection()->collectionId();
     if( !destination->isWritable() )
     {
         Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
