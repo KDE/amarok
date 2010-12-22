@@ -35,7 +35,7 @@ namespace Playlists {
 
 M3UPlaylist::M3UPlaylist()
     : m_url( Playlists::newPlaylistFilePath( "m3u" ) )
-    , m_tracksLoaded( false )
+    , m_tracksLoaded( true )
 {
     m_name = m_url.fileName();
 }
@@ -66,19 +66,37 @@ M3UPlaylist::description() const
     return QString( "%1 (%2)").arg( mimeType->name(), "m3u" );
 }
 
+int
+M3UPlaylist::trackCount() const
+{
+    if( m_tracksLoaded )
+        return m_tracks.count();
+
+    //TODO: count the number of lines starting with #
+    return -1;
+}
+
 Meta::TrackList
 M3UPlaylist::tracks()
 {
+    return m_tracks;
+}
+
+void
+M3UPlaylist::triggerTrackLoad()
+{
+    //TODO make sure we've got all tracks first.
     if( m_tracksLoaded )
-        return m_tracks;
+        return;
 
     //check if file is local or remote
-    if ( m_url.isLocalFile() )
+    if( m_url.isLocalFile() )
     {
         QFile file( m_url.toLocalFile() );
-        if( !file.open( QIODevice::ReadOnly ) ) {
+        if( !file.open( QIODevice::ReadOnly ) )
+        {
             error() << "cannot open file";
-            return m_tracks;
+            return;
         }
 
         QString contents( file.readAll() );
@@ -93,7 +111,6 @@ M3UPlaylist::tracks()
     {
         The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
     }
-    return m_tracks;
 }
 
 bool
