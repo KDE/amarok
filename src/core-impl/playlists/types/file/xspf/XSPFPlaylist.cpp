@@ -200,6 +200,10 @@ XSPFPlaylist::tracks()
 void
 XSPFPlaylist::triggerTrackLoad()
 {
+    //TODO make sure we've got all tracks first.
+    if( m_tracksLoaded )
+        return;
+
     XSPFTrackList xspfTracks = trackList();
 
     foreach( const XSPFTrack &track, xspfTracks )
