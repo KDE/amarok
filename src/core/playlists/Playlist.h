@@ -97,6 +97,11 @@ namespace Playlists
             /** returns all tracks in this playlist */
             virtual Meta::TrackList tracks() = 0;
 
+            /** Called to make a playlist load it's tracks in memory.
+              * This is used by PlaylistBrowserModel to do on-demand loading.
+              */
+            virtual void forceLoadtracks() {}
+
             /** Add the track to a certain position in the playlist
              *  @arg position: place to add this track. The default value -1 appends to
              *  the end.

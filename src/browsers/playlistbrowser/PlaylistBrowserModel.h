@@ -72,8 +72,13 @@ class PlaylistBrowserModel : public QAbstractItemModel,
         virtual QModelIndex index( int row, int column,
                         const QModelIndex &parent = QModelIndex() ) const;
         virtual QModelIndex parent( const QModelIndex &index ) const;
+
+        virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
         virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+        virtual bool canFetchMore( const QModelIndex &parent ) const;
+        virtual void fetchMore ( const QModelIndex &parent );
 
         virtual QStringList mimeTypes() const;
         virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
@@ -101,6 +106,7 @@ class PlaylistBrowserModel : public QAbstractItemModel,
         Playlists::PlaylistProvider *providerForIndex( const QModelIndex &index ) const;
 
         Playlists::PlaylistList m_playlists;
+        QMap<Playlists::PlaylistPtr,int> m_playlistTracksLoaded;
 
         Playlists::PlaylistProvider *getProviderByName( const QString &name );
 

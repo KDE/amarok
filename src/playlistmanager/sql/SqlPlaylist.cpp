@@ -224,16 +224,23 @@ SqlPlaylist::trackCount() const
         error() << "no results for COUNT query on playlist_tracks table!";
         return -1;
     }
-    return results.first().toInt();
+    int trackCount = results.first().toInt();
+    debug() << trackCount;
+    return trackCount;
 }
 
 Meta::TrackList
 SqlPlaylist::tracks()
 {
-    if ( !m_tracksLoaded )
-        loadTracks();
-
+    //only returns the already loaded tracks.
     return m_tracks;
+}
+
+void
+SqlPlaylist::forceLoadtracks()
+{
+    if( !m_tracksLoaded )
+        loadTracks();
 }
 
 void

@@ -320,6 +320,24 @@ PlaylistBrowserModel::parent( const QModelIndex &index ) const
     return QModelIndex();
 }
 
+bool
+PlaylistBrowserModel::hasChildren( const QModelIndex &parent ) const
+{
+    if( parent.column() > 0 )
+        return false;
+    if( !parent.isValid() )
+    {
+        return m_playlists.isEmpty();
+    }
+    else if( !IS_TRACK(parent) )
+    {
+        Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
+        return playlist->trackCount() != 0; //-1 might mean there are tracks, but not yet loaded.
+    }
+
+    return false;
+}
+
 int
 PlaylistBrowserModel::rowCount( const QModelIndex &parent ) const
 {
@@ -347,6 +365,44 @@ PlaylistBrowserModel::columnCount( const QModelIndex &parent ) const
 
     //for tracks
     return 1; //only name
+}
+
+bool
+PlaylistBrowserModel::canFetchMore( const QModelIndex &parent ) const
+{
+    if( parent.column() > 0 )
+        return false;
+
+    if( !parent.isValid() )
+    {
+        return false;
+    }
+    else if( !IS_TRACK(parent) )
+    {
+        Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
+        //TODO: imeplement incremental loading of tracks by checking for ==
+        if( playlist->trackCount() != playlist->tracks().count() )
+            return true; //tracks still need to be loaded.
+    }
+
+    return false;
+}
+
+void
+PlaylistBrowserModel::fetchMore ( const QModelIndex &parent )
+{
+    if( parent.column() > 0 )
+        return;
+
+    //TODO: load playlists dynamically from provider
+    if( !parent.isValid() )
+        return;
+
+    if( !IS_TRACK(parent) )
+    {
+        Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
+        playlist->forceLoadtracks();
+    }
 }
 
 Qt::ItemFlags
