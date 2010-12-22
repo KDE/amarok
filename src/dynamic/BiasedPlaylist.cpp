@@ -26,8 +26,6 @@
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-// #include "DynamicModel.h"
-// #include "core/collections/MetaQueryMaker.h"
 #include "playlist/PlaylistModelStack.h" // for The::playlist
 #include "statusbar/StatusBar.h"
 
@@ -50,15 +48,15 @@ const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 50;
 Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     : DynamicPlaylist( parent )
     , m_numRequested( 0 )
-    , m_bias( new Dynamic::RandomBias() )
+    // , m_bias( new Dynamic::RandomBias() )
 {
-    /*
     Dynamic::AndBias *andB = new Dynamic::AndBias();
-andB->appendBias( BiasPtr( new Dynamic::RandomBias() ) );
-// andB->appendBias( BiasPtr( new Dynamic::TagMatchBias() ) );
-//andB->appendBias( BiasPtr( new Dynamic::NotBias() ) );
-m_bias = BiasPtr(andB);
-*/
+    /*
+    andB->appendBias( BiasPtr( new Dynamic::RandomBias() ) );
+    andB->appendBias( BiasPtr( new Dynamic::TagMatchBias() ) );
+    andB->appendBias( BiasPtr( new Dynamic::NotBias() ) );
+    */
+    m_bias = BiasPtr( andB );
 
     m_title = i18nc( "Title for a default dynamic playlist. The default playlist only returns random tracks.", "Random" );
     connect( m_bias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),

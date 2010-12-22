@@ -229,6 +229,7 @@ PlaylistBrowserNS::BiasWidget::selectionChanged( int index )
         model->removeRows( m_item->row(), 1, parent );
         bias->addToModel( model, parentWidget(), parent );
     }
+    this->deleteLater();
 }
 
 void

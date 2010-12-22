@@ -25,7 +25,7 @@ class QCheckBox;
 class QPushButton;
 class KComboBox;
 class QToolButton;
-class QListView;
+class QTreeView;
 class QStandardItemModel;
 class QSpinBox;
 
@@ -67,7 +67,7 @@ namespace PlaylistBrowserNS {
 
             QToolButton *m_saveButton;
             QToolButton *m_deleteButton;
-            QListView   *m_biasListView;
+            QTreeView   *m_biasListView;
             QStandardItemModel *m_biasModel;
             DynamicBiasDelegate *m_biasDelegate;
 

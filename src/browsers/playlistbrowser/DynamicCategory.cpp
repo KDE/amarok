@@ -162,7 +162,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     connect( m_deleteButton, SIGNAL(clicked(bool)),
             DynamicModel::instance(), SLOT(removeActive()) );
 
-    m_biasListView = new QListView( this );
+    m_biasListView = new QTreeView( this );
     m_biasListView->setFrameShape( QFrame::NoFrame );
     m_biasListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
     m_biasListView->setAlternatingRowColors( true );

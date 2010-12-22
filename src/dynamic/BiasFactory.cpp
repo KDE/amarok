@@ -32,7 +32,7 @@ class RandomBiasFactory : public Dynamic::AbstractBiasFactory
     { return i18nc("Name of the random bias", "Random"); }
 
     QString name() const
-    { return Dynamic::RandomBias::name(); }
+    { return Dynamic::RandomBias::sName(); }
 
     QString i18nDescription() const
     { return i18nc("Description of the random bias",
@@ -52,7 +52,7 @@ class NotBiasFactory : public Dynamic::AbstractBiasFactory
     { return i18nc("Name of the \"Not\" bias", "Not"); }
 
     QString name() const
-    { return Dynamic::NotBias::name(); }
+    { return Dynamic::NotBias::sName(); }
 
     QString i18nDescription() const
     { return i18nc("Description of the \"Not\" bias",
@@ -74,7 +74,7 @@ class AndBiasFactory : public Dynamic::AbstractBiasFactory
     { return i18nc("Name of the \"And\" bias", "And"); }
 
     QString name() const
-    { return Dynamic::AndBias::name(); }
+    { return Dynamic::AndBias::sName(); }
 
     QString i18nDescription() const
     { return i18nc("Description of the \"And\" bias",
@@ -94,7 +94,7 @@ class OrBiasFactory : public Dynamic::AbstractBiasFactory
     { return i18nc("Name of the \"Or\" bias", "Or"); }
 
     QString name() const
-    { return Dynamic::OrBias::name(); }
+    { return Dynamic::OrBias::sName(); }
 
     QString i18nDescription() const
     { return i18nc("Description of the \"Or\" bias",
@@ -114,7 +114,7 @@ class TagMatchBiasFactory : public Dynamic::AbstractBiasFactory
     { return i18nc("Name of the \"TagMatch\" bias", "TagMatch"); }
 
     QString name() const
-    { return Dynamic::TagMatchBias::name(); }
+    { return Dynamic::TagMatchBias::sName(); }
 
     QString i18nDescription() const
     { return i18nc("Description of the \"TagMatch\" bias",

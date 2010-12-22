@@ -60,7 +60,7 @@ Dynamic::AbstractBias::sName()
 QString
 Dynamic::AbstractBias::name() const
 {
-    return Dynamic::AbstractBias::name();
+    return Dynamic::AbstractBias::sName();
 }
 
 
@@ -121,7 +121,7 @@ Dynamic::RandomBias::sName()
 QString
 Dynamic::RandomBias::name() const
 {
-    return Dynamic::RandomBias::name();
+    return Dynamic::RandomBias::sName();
 }
 
 
@@ -153,7 +153,10 @@ Dynamic::RandomBias::energy( const Meta::TrackList& playlist, int contextCount )
 // -------- AndBias ------
 
 Dynamic::AndBias::AndBias()
-{ }
+{
+    // add one bias to start with
+    appendBias( BiasPtr( new Dynamic::RandomBias() ) );
+}
 
 Dynamic::AndBias::AndBias( QXmlStreamReader *reader )
 {
@@ -195,10 +198,17 @@ Dynamic::AndBias::toXml( QXmlStreamWriter *writer ) const
 }
 
 QString
-Dynamic::AndBias::name()
+Dynamic::AndBias::sName()
 {
     return QLatin1String( "andBias" );
 }
+
+QString
+Dynamic::AndBias::name() const
+{
+    return Dynamic::AndBias::sName();
+}
+
 
 QWidget*
 Dynamic::AndBias::widget( QStandardItem* item, QWidget* parent )
@@ -336,9 +346,15 @@ Dynamic::OrBias::OrBias( QXmlStreamReader *reader )
 { }
 
 QString
-Dynamic::OrBias::name()
+Dynamic::OrBias::sName()
 {
     return QLatin1String( "orBias" );
+}
+
+QString
+Dynamic::OrBias::name() const
+{
+    return Dynamic::OrBias::sName();
 }
 
 Dynamic::TrackSet
@@ -403,9 +419,15 @@ Dynamic::NotBias::NotBias( QXmlStreamReader *reader )
 { }
 
 QString
-Dynamic::NotBias::name()
+Dynamic::NotBias::sName()
 {
-    return QLatin1String( "orBias" );
+    return QLatin1String( "notBias" );
+}
+
+QString
+Dynamic::NotBias::name() const
+{
+    return Dynamic::NotBias::sName();
 }
 
 Dynamic::TrackSet
@@ -510,10 +532,17 @@ Dynamic::TagMatchBias::toXml( QXmlStreamWriter *writer ) const
 }
 
 QString
-Dynamic::TagMatchBias::name()
+Dynamic::TagMatchBias::sName()
 {
     return QLatin1String( "tagMatchBias" );
 }
+
+QString
+Dynamic::TagMatchBias::name() const
+{
+    return Dynamic::TagMatchBias::sName();
+}
+
 
 QWidget*
 Dynamic::TagMatchBias::widget( QStandardItem* item, QWidget* parent )

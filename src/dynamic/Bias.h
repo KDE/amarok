@@ -186,7 +186,8 @@ namespace Dynamic
 
             void toXml( QXmlStreamWriter *writer ) const;
 
-            static QString name();
+            static QString sName();
+            virtual QString name() const;
 
             virtual QWidget* widget( QStandardItem* item, QWidget* parent = 0 );
 
@@ -232,7 +233,8 @@ namespace Dynamic
             OrBias();
             OrBias( QXmlStreamReader *reader );
 
-            static QString name();
+            static QString sName();
+            virtual QString name() const;
 
             // virtual QWidget* widget( QStandardItem* item, QWidget* parent = 0 );
 
@@ -259,7 +261,8 @@ namespace Dynamic
             NotBias();
             NotBias( QXmlStreamReader *reader );
 
-            static QString name();
+            static QString sName();
+            virtual QString name() const;
 
             // virtual QWidget* widget( QStandardItem* item, QWidget* parent = 0 );
 
@@ -287,7 +290,8 @@ namespace Dynamic
 
             void toXml( QXmlStreamWriter *writer ) const;
 
-            static QString name();
+            static QString sName();
+            virtual QString name() const;
 
             virtual QWidget* widget( QStandardItem* item, QWidget* parent = 0 );
 
