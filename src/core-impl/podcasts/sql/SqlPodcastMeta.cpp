@@ -478,6 +478,7 @@ SqlPodcastChannel::fromPlaylistPtr( Playlists::PlaylistPtr playlist )
 SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
                                             const QStringList &result )
     : Podcasts::PodcastChannel()
+    , m_episodesLoaded( false )
     , m_provider( provider )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
@@ -497,7 +498,6 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     m_purge = sqlStorage->boolTrue() == *(iter++);
     m_purgeCount = (*(iter++)).toInt();
     m_writeTags = sqlStorage->boolTrue() == *(iter++);
-    loadEpisodes();
 }
 
 SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
@@ -544,6 +544,37 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
 
         m_episodes << SqlPodcastEpisodePtr( sqlEpisode );
     }
+    m_episodesLoaded = true;
+}
+
+int
+SqlPodcastChannel::trackCount() const
+{
+    if( m_episodesLoaded )
+        return m_episodes.count();
+
+    QString query = "SELECT COUNT(id) FROM podcastepisodes WHERE channel = %1";
+
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    Q_ASSERT( sql );
+
+    QStringList results = sql->query( query.arg( m_dbId ) );
+    debug() << results;
+    if( results.isEmpty() )
+    {
+        error() << "no results for COUNT query on playlist_tracks table!";
+        return -1;
+    }
+    int trackCount = results.first().toInt();
+    debug() << trackCount;
+    return m_purge ? qMin( m_purgeCount, trackCount ): trackCount;
+}
+
+void
+SqlPodcastChannel::triggerTrackLoad()
+{
+    if( !m_episodesLoaded )
+        loadEpisodes();
 }
 
 Playlists::PlaylistProvider *

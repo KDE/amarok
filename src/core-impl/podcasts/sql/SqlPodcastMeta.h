@@ -99,7 +99,10 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
 
         ~SqlPodcastChannel();
         // Playlists::Playlist methods
-        virtual Meta::TrackList tracks() { return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes ); }
+        virtual int trackCount() const;
+        virtual Meta::TrackList tracks() {
+            return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes ); }
+        virtual void triggerTrackLoad();
         virtual Playlists::PlaylistProvider *provider() const;
 
         virtual QStringList groups();
@@ -134,6 +137,7 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
     private:
         bool m_writeTags;
         int m_dbId; //database ID
+        bool m_episodesLoaded;
 
         SqlPodcastEpisodeList m_episodes;
         SqlPodcastProvider *m_provider;

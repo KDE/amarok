@@ -237,7 +237,7 @@ SqlPlaylist::tracks()
 }
 
 void
-SqlPlaylist::forceLoadtracks()
+SqlPlaylist::triggerTrackLoad()
 {
     if( !m_tracksLoaded )
         loadTracks();

@@ -181,14 +181,26 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
     return true;
 }
 
+int
+XSPFPlaylist::trackCount() const
+{
+    if( m_tracksLoaded )
+        return m_tracks.count();
+
+    //TODO: lookup in XML directly, without loading tracks
+    return -1;
+}
+
 Meta::TrackList
 XSPFPlaylist::tracks()
 {
-    if( m_tracksLoaded )
-        return m_tracks;
+    return m_tracks;
+}
 
+void
+XSPFPlaylist::triggerTrackLoad()
+{
     XSPFTrackList xspfTracks = trackList();
-    Meta::TrackList tracks;
 
     foreach( const XSPFTrack &track, xspfTracks )
     {
@@ -265,7 +277,6 @@ XSPFPlaylist::tracks()
     }
 
     m_tracksLoaded = true;
-    return m_tracks;
 }
 
 void

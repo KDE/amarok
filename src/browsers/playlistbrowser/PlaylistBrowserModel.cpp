@@ -401,7 +401,7 @@ PlaylistBrowserModel::fetchMore ( const QModelIndex &parent )
     if( !IS_TRACK(parent) )
     {
         Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
-        playlist->forceLoadtracks();
+        playlist->triggerTrackLoad();
     }
 }
 
@@ -683,7 +683,11 @@ PlaylistBrowserModel::tracksFromIndexes( const QModelIndexList &list ) const
         if( IS_TRACK(index) )
             tracks << trackFromIndex( index );
         else if( Playlists::PlaylistPtr playlist = playlistFromIndex( index ) )
+        {
+            //first trigger a load of the tracks or we'll end up with an empty list
+            playlist->triggerTrackLoad();
             tracks << playlist->tracks();
+        }
     }
     return tracks;
 }
