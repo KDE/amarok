@@ -51,6 +51,7 @@ var stationArray = new Array (
     new Station( "Radio Paradise [Rock/Pop/Alternative]",               "http://www.radioparadise.com/musiclinks/rp_128.m3u" ),
     new Station( "Raggakings [Reggae]",                                 "http://www.raggakings.net/listen.m3u" ),
     new Station( "SLAY Radio [C64 Remixes]",                            "http://www.slayradio.org/tune_in.php/128kbps/listen.m3u" ),
+    new Station( "NPR All Songs Considered 24/7",                       "http://npr.ic.llnwd.net/stream/npr_music2.pls" ),
     new Station( "SomaFM - Drone Zone [Ambient]",                       "http://somafm.com/dronezone.pls" ),
     new Station( "SomaFM - Groove Salad [Chill-Out]",                   "http://somafm.com/groovesalad.pls" ),
     new Station( "SomaFM - Indie Pop Rocks [Indie]",                    "http://somafm.com/indiepop.pls" ),
