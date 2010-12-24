@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.4-Beta 2
   CHANGES:
+    * The "Playdar Collection" feature has been disabled until some technical 
+      issues are resolved.
+    * Fixed some broken radio stream URLs.
 
   BUGFIXES:
     * Fixed issue with Audio CDs that do not provide CDDB information. Patch by
