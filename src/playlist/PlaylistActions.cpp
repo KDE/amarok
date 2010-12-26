@@ -176,10 +176,12 @@ Playlist::Actions::play()
 {
     DEBUG_BLOCK
 
-    if( 0 == m_nextTrackCandidate )
+    if ( m_nextTrackCandidate == 0 )
     {
         m_nextTrackCandidate = The::playlist()->activeId();
-        if( 0 == m_nextTrackCandidate )
+        // the queue has priority, and requestNextTrack() respects the queue.
+        // this is a bit of a hack because we "know" that all navigators will look at the queue first.
+        if ( !m_nextTrackCandidate || !m_navigator->queue().isEmpty() )
             m_nextTrackCandidate = m_navigator->requestNextTrack();
     }
 
