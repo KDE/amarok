@@ -86,7 +86,7 @@ class PlaylistBrowserModel : public QAbstractItemModel,
 
     public slots:
         void slotRenamePlaylist( Playlists::PlaylistPtr playlist );
-        void slotUpdate();
+        void slotUpdate( int category );
 
     signals:
         void renameIndex( const QModelIndex &index );

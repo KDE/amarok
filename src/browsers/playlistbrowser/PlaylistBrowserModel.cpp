@@ -52,9 +52,7 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     m_loadAction->setProperty( "popupdropper_svg_id", "load" );
     connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
 
-    connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()) );
-    connect( The::playlistManager(), SIGNAL( providerRemoved( Playlists::PlaylistProvider*, int ) ),
-             SLOT( slotUpdate() ) );
+    connect( The::playlistManager(), SIGNAL(updated( int )), SLOT(slotUpdate( int )) );
 
     connect( The::playlistManager(), SIGNAL( playlistAdded( Playlists::PlaylistPtr, int ) ),
              SLOT( slotPlaylistAdded( Playlists::PlaylistPtr,int ) ) );
@@ -518,9 +516,12 @@ PlaylistBrowserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
 }
 
 void
-PlaylistBrowserModel::slotUpdate()
+PlaylistBrowserModel::slotUpdate( int category )
 {
-    emit layoutAboutToBeChanged();
+    if( category != m_playlistCategory )
+        return;
+
+    beginResetModel();
 
     foreach( Playlists::PlaylistPtr playlist, m_playlists )
         unsubscribeFrom( playlist );
@@ -528,7 +529,7 @@ PlaylistBrowserModel::slotUpdate()
     m_playlists.clear();
     m_playlists = loadPlaylists();
 
-    emit layoutChanged();
+    endResetModel();
 }
 
 Playlists::PlaylistList

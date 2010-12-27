@@ -303,7 +303,7 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& nam
 }
 
 bool
-SqlUserPlaylistProvider::import( const QString& fromLocation )
+SqlUserPlaylistProvider::import( const QString &fromLocation )
 {
     DEBUG_BLOCK
     debug() << "importing playlist " << fromLocation;
@@ -356,8 +356,8 @@ SqlUserPlaylistProvider::import( const QString& fromLocation )
                                                      this,
                                                      fromLocation )
                               );
+    //TODO: don't reload database and emit playlistAdded()
     reloadFromDb();
-    emit updated();
 
     return true;
 }
