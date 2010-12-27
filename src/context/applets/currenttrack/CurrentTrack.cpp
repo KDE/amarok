@@ -83,6 +83,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
 CurrentTrack::~CurrentTrack()
 {
     clearTrackActions();
+    delete m_albumCover;
 }
 
 void
@@ -615,20 +616,21 @@ void
 CurrentTrack::queryCollection()
 {
     Collections::QueryMaker *qmTracks = CollectionManager::instance()->queryMaker();
-    // Collections::QueryMaker *qmAlbums = CollectionManager::instance()->queryMaker();
-    // Collections::QueryMaker *qmGenres = CollectionManager::instance()->queryMaker();
+    Collections::QueryMaker *qmAlbums = CollectionManager::instance()->queryMaker();
+    Collections::QueryMaker *qmGenres = CollectionManager::instance()->queryMaker();
     connect( qmTracks, SIGNAL(newResultReady(QString, QStringList)),
              this, SLOT(tracksCounted(QString, QStringList)) );
-    /*connect( qmAlbums, SIGNAL(newResultReady(QString, QStringList)),
+    connect( qmAlbums, SIGNAL(newResultReady(QString, QStringList)),
              this, SLOT(albumsCounted(QString, QStringList)) );
     connect( qmGenres, SIGNAL(newResultReady(QString, QStringList)),
-             this, SLOT(genresCounted(QString, QStringList)) );*/
+             this, SLOT(genresCounted(QString, QStringList)) );
 
     qmTracks->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
       ->addReturnFunction( Collections::QueryMaker::Count, Meta::valUrl )
       ->run();
     /* TODO: These don't work since not implemented in SqlQueryMaker::linkedTables()
+      */
     qmAlbums->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
       ->addReturnFunction( Collections::QueryMaker::Count, Meta::valAlbum )
@@ -637,7 +639,6 @@ CurrentTrack::queryCollection()
       ->setQueryType( Collections::QueryMaker::Custom )
       ->addReturnFunction( Collections::QueryMaker::Count, Meta::valGenre )
       ->run();
-      */
 }
 
 void
@@ -840,7 +841,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
     actions << m_customActions;
     foreach( QAction* action, actions )
     {
-        Plasma::IconWidget *icon = addAction( action, 24 );
+        Plasma::IconWidget *icon = addAction( this, action, 24 );
         icon->setText( QString() );
         m_actionsLayout->addItem( icon );
     }

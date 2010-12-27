@@ -17,6 +17,7 @@
 #ifndef TRANSCODING_JOB_H
 #define TRANSCODING_JOB_H
 
+#include "amarok_transcoding_export.h"
 #include "core/transcoding/TranscodingConfiguration.h"
 
 #include <KJob>
@@ -32,7 +33,7 @@ namespace Transcoding
  * codec and container format.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_EXPORT Job : public KJob
+class AMAROK_TRANSCODING_EXPORT Job : public KJob
 {
     Q_OBJECT
 public:

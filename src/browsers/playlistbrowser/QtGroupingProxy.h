@@ -23,8 +23,8 @@
 #include <QStringList>
 #include <QIcon>
 
-typedef QMap<int, QVariant> RoleVariantMap;
-typedef QMap<int, RoleVariantMap> ColumnVariantMap;
+typedef QMap<int, QVariant> IndexData;
+typedef QMap<int, IndexData> RowData;
 
 
 class QtGroupingProxy : public QAbstractProxyModel
@@ -57,7 +57,7 @@ class QtGroupingProxy : public QAbstractProxyModel
         virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
         /* QtGroupingProxy methods */
-        virtual QModelIndex addEmptyGroup( const ColumnVariantMap &data );
+        virtual QModelIndex addEmptyGroup( const RowData &data );
         virtual bool removeGroup( const QModelIndex &idx );
 
     protected slots:
@@ -79,18 +79,31 @@ class QtGroupingProxy : public QAbstractProxyModel
           * This data prepolulates the group-data cache. The rest is gathered on demand
           * from the children of the group.
           */
-        virtual QList<ColumnVariantMap> belongsTo( const QModelIndex &idx );
+        virtual QList<RowData> belongsTo( const QModelIndex &idx );
+
+        /**
+          * calls belongsTo(), checks cached data and adds the index to existing or new groups.
+          * @returns the groups this index was added to where -1 means it was added to the root.
+          */
+        QList<int> addSourceRow( const QModelIndex &idx );
         
         bool isGroup( const QModelIndex &index ) const;
         bool isAGroupSelected( const QModelIndexList& list ) const;
 
         QAbstractItemModel *m_model;
 
-        QMultiHash<quint32, int> m_groupHash;
-        QList<ColumnVariantMap> m_groupMaps;
+        /** Maintains the group -> sourcemodel row mapping
+          * The reason a QList<int> is use instead of a QMultiHash is that the values have to be
+          * reordered when new rows are inserted.
+          */
+        QHash<quint32, QList<int> > m_groupHash;
+        /** The data cache of the groups.
+          * This can be pre-loaded with data in belongsTo()
+          */
+        QList<RowData> m_groupMaps;
 
         /** "instuctions" how to create an item in the tree.
-        This is used by parent( QModelIndex )
+          * This is used by parent( QModelIndex )
         */
         struct ParentCreate
         {

@@ -32,7 +32,7 @@ namespace Transcoding
  * Transcoding::PropertyList. It contains all the data needed to start a Transcoding::Job.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_EXPORT Configuration
+class AMAROK_CORE_EXPORT Configuration
 {
 public:
     explicit Configuration( Encoder encoder = NULL_CODEC );

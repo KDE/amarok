@@ -668,7 +668,7 @@ App::continueInit()
 
     //Instantiate the Transcoding::Controller, this fires up an asynchronous KProcess with
     //FFmpeg which should not take more than ~200msec.
-    The::transcodingController();
+    Amarok::Components::setTranscodingController( new Transcoding::Controller( this ) );
 
     if( splash ) // close splash correctly
     {

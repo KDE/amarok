@@ -56,9 +56,8 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
 
         virtual bool canSavePlaylists() { return true; }
 
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks );
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
-                                        const QString &name );
+                                             const QString &name = QString() );
 
         virtual bool import( const KUrl &path );
 

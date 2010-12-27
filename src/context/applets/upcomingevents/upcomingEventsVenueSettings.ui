@@ -55,7 +55,7 @@
           <string>Restrict venues to a specific country</string>
          </property>
          <property name="sizeAdjustPolicy">
-          <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+          <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
          </property>
          <property name="minimumContentsLength">
           <number>10</number>

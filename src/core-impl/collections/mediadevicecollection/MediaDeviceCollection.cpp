@@ -214,6 +214,7 @@ MediaDeviceCollection::createCapabilityInterface( Capabilities::Capability::Type
         case Capabilities::Capability::Actions:
             {
                 QList< QAction* > actions;
+                actions << m_handler->collectionActions();
                 actions << ejectAction();
                 return new Capabilities::ActionsCapability( actions );
             }

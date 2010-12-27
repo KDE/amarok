@@ -187,7 +187,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
          */
         void addGradientToAppletBackground( QPainter* p );
 
-        Plasma::IconWidget* addAction( QAction *action, const int size = 16 );
+        Plasma::IconWidget* addAction( QGraphicsItem *parent, QAction *action, const int size = 16 );
         bool canAnimate();
 
         bool m_canAnimate;

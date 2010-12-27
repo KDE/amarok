@@ -141,6 +141,11 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
         debug() << "Encoding: " << prober.encoding();
         debug() << "got cddb info: " << cddbInfo;
+        if (cddbInfo.length() == 0) {
+            job->deleteLater();
+            noInfoAvailable();
+            return;
+        }
 
         int startIndex;
         int endIndex;

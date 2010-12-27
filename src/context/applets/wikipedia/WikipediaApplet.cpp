@@ -542,7 +542,7 @@ WikipediaApplet::init()
 
     d->webView = new WikipediaWebView( this );
     d->webView->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
-    d->webView->page()->mainFrame()->addToJavaScriptWindowObject( "mWebPage", this );
+    // d->webView->page()->mainFrame()->addToJavaScriptWindowObject( "mWebPage", this ); BUG:259075
     d->webView->page()->setNetworkAccessManager( The::networkAccessManager() );
     d->webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
     d->webView->page()->settings()->setAttribute( QWebSettings::PrivateBrowsingEnabled, true );
@@ -556,7 +556,7 @@ WikipediaApplet::init()
     connect( d->webView->page(), SIGNAL(linkClicked(QUrl)), SLOT(_linkClicked(QUrl)) );
     connect( d->webView->page(), SIGNAL(loadStarted()), SLOT(_pageLoadStarted()) );
     connect( d->webView->page(), SIGNAL(loadFinished(bool)), SLOT(_pageLoadFinished(bool)) );
-    connect( d->webView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), SLOT(_jsWindowObjectCleared()) );
+    // connect( d->webView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), SLOT(_jsWindowObjectCleared()) ); BUG:259075
     connect( d->webView->lineEdit(), SIGNAL(textChanged(QString)), SLOT(_searchLineEditTextEdited(QString)) );
     connect( d->webView->lineEdit(), SIGNAL(returnPressed()), SLOT(_searchLineEditReturnPressed()) );
     connect( d->webView, SIGNAL(titleChanged(QString)), this, SLOT(_titleChanged(QString)) );

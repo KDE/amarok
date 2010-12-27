@@ -168,7 +168,7 @@ class ScannerJob : public ThreadWeaver::Job
         // and the ThreadWeaver::Job also emits done
 
     private Q_SLOTS:
-        void directoryCommitted();
+        void directoryProcessed();
 
     private:
         /** Creates the scanner process.

@@ -810,7 +810,7 @@ WikipediaEnginePrivate::wikiParse( QString &wiki )
     wiki.prepend( QLatin1String("<html>\n") );
     wiki.append( QString(QLatin1String("<head><title>%1</title></head>\n")).arg(title) );
     wiki.append( QLatin1String("<body>\n") );
-    wiki.append( createLanguageComboBox(langMap) );
+    // wiki.append( createLanguageComboBox(langMap) ); // BUG:259075
     wiki.append( QLatin1String("</body></html>\n") );
 }
 

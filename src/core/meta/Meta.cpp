@@ -416,19 +416,24 @@ Meta::Artist::operator==( const Meta::Artist &artist ) const
 QString
 Meta::Artist::sortableName() const
 {
-    if( m_sortableName.isEmpty() && !name().isEmpty() ) {
-        if( name().startsWith( QLatin1String("the "), Qt::CaseInsensitive ) ) {
-            QString begin = name().left( 3 );
-            m_sortableName = QString( "%1, %2" ).arg( name(), begin );
-            m_sortableName = m_sortableName.mid( 4 );
-        } else if( name().startsWith( QLatin1String("dj "), Qt::CaseInsensitive ) ) {
-            QString begin = name().left( 2 );
-            m_sortableName = QString( "%1, %2" ).arg( name(), begin );
-            m_sortableName = m_sortableName.mid( 3 );
+    if( !m_sortableName.isEmpty() )
+        return m_sortableName;
+
+    const QString &n = name();
+    if( n.startsWith( QLatin1String("the "), Qt::CaseInsensitive ) )
+    {
+        QStringRef article = n.leftRef( 3 );
+        QStringRef subject = n.midRef( 4 );
+        m_sortableName = QString( "%1, %2" ).arg( subject.toString(), article.toString() );
     }
-        else
-            m_sortableName = name();
+    else if( n.startsWith( QLatin1String("dj "), Qt::CaseInsensitive ) )
+    {
+        QStringRef article = n.leftRef( 2 );
+        QStringRef subject = n.midRef( 3 );
+        m_sortableName = QString( "%1, %2" ).arg( subject.toString(), article.toString() );
     }
+    else
+        m_sortableName = n;
     return m_sortableName;
 }
 

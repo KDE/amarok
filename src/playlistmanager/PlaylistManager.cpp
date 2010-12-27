@@ -112,6 +112,9 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider *provider, int categor
     if( !m_providerMap.uniqueKeys().contains( category ) )
             newCategory = true;
 
+    //disconnect all signals connected to this object to be sure.
+    provider->disconnect( this, 0 );
+
     m_providerMap.insert( category, provider );
     connect( provider, SIGNAL(updated()), SLOT(slotUpdated()));
     connect( provider, SIGNAL(playlistAdded( Playlists::PlaylistPtr )),
@@ -141,17 +144,22 @@ PlaylistManager::addPlaylist( Playlists::PlaylistPtr playlist, int category )
     if( shouldBeSynced( playlist ) )
     {
         SyncedPlaylistPtr syncedPlaylist = m_syncRelStore->asSyncedPlaylist( playlist );
+        Playlists::PlaylistPtr syncedPlaylistPtr =
+                Playlists::PlaylistPtr::dynamicCast( syncedPlaylist );
         m_syncedPlaylistMap.insert( syncedPlaylist, playlist );
         if( !m_playlistMap.values( category ).contains(
-                Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) ) )
+                Playlists::PlaylistPtr::dynamicCast( syncedPlaylistPtr ) ) )
         {
-            m_playlistMap.insert( category,
-                                  Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) );
+            m_playlistMap.insert( category, syncedPlaylistPtr );
+            //reemit so models know about new playlist in their category
+            emit playlistAdded( syncedPlaylistPtr, category );
         }
     }
     else
     {
         m_playlistMap.insert( category, playlist );
+        //reemit so models know about new playlist in their category
+        emit playlistAdded( playlist, category );
     }
 }
 
@@ -198,6 +206,8 @@ PlaylistManager::removePlaylist( Playlists::PlaylistPtr playlist, int category )
     {
         m_playlistMap.remove( category, playlist );
     }
+
+    emit playlistRemoved( playlist, category );
 }
 
 void
@@ -219,14 +229,12 @@ void
 PlaylistManager::slotPlaylistAdded( Playlists::PlaylistPtr playlist )
 {
     addPlaylist( playlist, playlist->provider()->category() );
-    emit updated();
 }
 
 void
 PlaylistManager::slotPlaylistRemoved( Playlists::PlaylistPtr playlist )
 {
     removePlaylist( playlist, playlist->provider()->category() );
-    emit updated();
 }
 
 Playlists::PlaylistList
@@ -311,6 +319,7 @@ PlaylistManager::save( Meta::TrackList tracks, const QString &name,
     {
         debug() << "Playlist is being saved with name: " << name;
         playlist = prov->save( tracks, name );
+        AmarokUrl("amarok://navigate/playlists/user playlists").run();
     }
 
     return !playlist.isNull();

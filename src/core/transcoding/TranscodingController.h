@@ -20,6 +20,7 @@
 #include "shared/amarok_export.h"
 #include "TranscodingDefines.h"
 #include "TranscodingFormat.h"
+#include "core/support/Components.h"
 
 #include <KProcess>
 
@@ -32,23 +33,13 @@ namespace Transcoding
 
 /**
  * Singleton class that handles and wraps around the Transcoding architecture.
- * To talk to the transcoding controller, use The::transcodingController().
  * @author Téo Mrnjavac <teo@kde.org>
  */
 class AMAROK_CORE_EXPORT Controller : public QObject
 {
     Q_OBJECT
 public:
-    /**
-     * Accessor for the singleton pattern.
-     * @return a pointer to the only instance of Transcoding::Controller.
-     */
-    static Controller *instance();
-
-    /**
-     * Singleton destructor.
-     */
-    static void destroy();
+    Controller( QObject *parent = 0 );
 
     const QList< Format * > & availableFormats() const { return m_availableFormats; }
     const QList< Format * > & allFormats() const { return m_formats; }
@@ -58,8 +49,6 @@ private slots:
     void onAvailabilityVerified( int exitCode, QProcess::ExitStatus exitStatus );
 
 private:
-    Controller( QObject *parent = 0 );
-    static Controller *s_instance;
     const QList< Format * > m_formats;
     QList< Format * > m_availableFormats;   /* Unfortunately here I can't use QList< Format >
                                                instead of QList< Format * > because apparently
@@ -69,10 +58,5 @@ private:
 };
 
 } //namespace Transcoding
-
-namespace The
-{
-    AMAROK_EXPORT Transcoding::Controller *transcodingController();
-}
 
 #endif //TRANSCODING_CONTROLLER_H

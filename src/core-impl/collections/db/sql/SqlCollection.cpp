@@ -69,7 +69,7 @@ public:
     virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration
                                                   = Transcoding::Configuration() )
     { m_targetFileExtension =
-      The::transcodingController()->format( configuration.encoder() )->fileExtension(); }
+      Amarok::Components::transcodingController()->format( configuration.encoder() )->fileExtension(); }
 
     virtual void show()
     {

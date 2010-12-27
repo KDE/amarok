@@ -569,7 +569,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
             {
                 QString destPath = dest.path();
                 destPath.truncate( dest.path().lastIndexOf( '.' ) + 1 );
-                destPath.append( The::transcodingController()->
+                destPath.append( Amarok::Components::transcodingController()->
                                  format( configuration.encoder() )->fileExtension() );
                 dest.setPath( destPath );
                 job = new Transcoding::Job( src, dest, configuration, this );

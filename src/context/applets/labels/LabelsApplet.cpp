@@ -85,9 +85,9 @@ LabelsApplet::init()
     // Create the title label
     enableHeader( true );
     setHeaderText( i18n( "Labels" ) );
-
-    // Set the collapse size
+    
     setCollapseHeight( m_header->height() );
+    setMinimumHeight( collapseHeight() );
 
     // reload icon
     QAction *reloadAction = new QAction( this );
@@ -148,7 +148,8 @@ LabelsApplet::init()
              this, SLOT( connectSource( const QString & ) ) );
 }
 
-void LabelsApplet::setStoppedState( bool stopped )
+void
+LabelsApplet::setStoppedState( bool stopped )
 {
     if( stopped == m_stoppedstate )
         return;
@@ -164,6 +165,10 @@ void LabelsApplet::setStoppedState( bool stopped )
         m_titleText = i18n( "Labels" );
         m_addLabelProxy.data()->show();
         m_addLabel.data()->clearEditText();
+        // not needed at the moment, since setStoppedState(false) is only called in dataUpdated() and we know that the engine never sends state=started without the user labels;
+        // so the minimum size is set in constraintsEvent()
+//         setCollapseOffHeight( m_header->height() + m_addLabelProxy.data()->size().height() + 2 * standardPadding() );
+//         setCollapseOff();
     }
     else
     {
@@ -171,15 +176,13 @@ void LabelsApplet::setStoppedState( bool stopped )
         m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "No track playing" );
         m_addLabelProxy.data()->hide();
         setBusy( false );
-        setMinimumHeight( collapseHeight() );
-        setCollapseOn();
         qDeleteAll( m_labelItems );
         m_labelItems.clear();
         qDeleteAll( m_labelAnimations );
         m_labelAnimations.clear();
+        setMinimumHeight( collapseHeight() );
+        setCollapseOn();
     }
-
-    constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
 }
 
 void
@@ -374,7 +377,6 @@ void
 LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Context::Applet::constraintsEvent( constraints );
-    prepareGeometryChange();
 
     setHeaderText( m_titleText );
 
@@ -383,7 +385,7 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         const qreal horzontalPadding = standardPadding() / 2;
         const qreal verticalPadding = standardPadding() / 2;
         qreal x_pos;
-        qreal y_pos = m_header->boundingRect().bottom() + standardPadding();
+        qreal y_pos = m_header->boundingRect().bottom() + 1.5 * standardPadding();
         qreal width = 0;
         qreal height = 0;
         int start_index = 0;
@@ -439,19 +441,17 @@ LabelsApplet::constraintsEvent( Plasma::Constraints constraints )
         if( m_labelItems.count() > 0 )
             y_pos += height + standardPadding();
 
-        const qreal addLabelProxyWidth = qMin( size().width() - 2 * standardPadding(), 300.0 );
+        const qreal addLabelProxyWidth = qMin( size().width() - 2 * standardPadding(), (qreal)300.0 );
         m_addLabelProxy.data()->setPos( ( size().width() - addLabelProxyWidth ) / 2, y_pos );
         m_addLabelProxy.data()->setMinimumWidth( addLabelProxyWidth );
         m_addLabelProxy.data()->setMaximumWidth( addLabelProxyWidth );
         y_pos += m_addLabelProxy.data()->size().height() + standardPadding();
 
-        resize( size().width(), y_pos );
         setMinimumHeight( y_pos );
-        setMaximumHeight( y_pos );
-        updateGeometry();
-        emit sizeHintChanged( Qt::PreferredSize );
+
+        setCollapseOffHeight( y_pos );
+        setCollapseOff();
     }
-    update();
 }
 
 void
@@ -623,9 +623,6 @@ LabelsApplet::toggleLabel( const QString &label )
         m_addLabel.data()->completionObject()->setItems( m_allLabels );
         m_addLabel.data()->lineEdit()->setText( saveText );
     }
-
-    if( !m_allLabels.isEmpty() )
-        m_titleText = i18n( "Labels for %1 by %2", m_title, m_artist );
     
     // usuallay the engine keeps track of label changes of the playing track
     // (except if the lables get auto added, this is why we have to keep m_userLabels up to date)

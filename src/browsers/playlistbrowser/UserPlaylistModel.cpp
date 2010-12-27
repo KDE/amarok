@@ -184,10 +184,8 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
         if( playlist )
         {
             int insertAt = (row == -1) ? playlist->tracks().count() : row;
-            beginInsertRows( parent, insertAt, dragList->tracks().count() );
             foreach( Meta::TrackPtr track, dragList->tracks() )
                 playlist->addTrack( track, insertAt++ );
-            endInsertRows();
         }
         return !playlist.isNull();
     }

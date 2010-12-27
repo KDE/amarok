@@ -105,6 +105,7 @@ struct SqlQueryMaker::Private
     Meta::LabelList blockingLabels;
     bool blocking;
     bool used;
+    qint64 returnValueType;
 };
 
 SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
@@ -127,6 +128,7 @@ SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
     d->andStack.push( true );   //and is default
     d->blocking = false;
     d->used = false;
+    d->returnValueType = 0;
 }
 
 SqlQueryMaker::~SqlQueryMaker()
@@ -394,25 +396,34 @@ SqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
 {
     d->linkedTables |= Private::ARTIST_TAB;
 
-    if( !artist || artist->name().isEmpty() )
-        d->queryMatch += " AND ( artists.name IS NULL OR artists.name = '')";
+    QString artistQuery;
+    QString albumArtistQuery;
+
+    if( artist && !artist->name().isEmpty() )
+    {
+        artistQuery = QString("artists.name = '%1'").arg( escape( artist->name() ) );
+        albumArtistQuery = QString("albumartists.name = '%1'").arg( escape( artist->name() ) );
+    }
     else
     {
-        switch( d->artistMode )
-        {
-            case TrackArtists:
-                d->queryMatch += QString( " AND artists.name = '%1'" ).arg( escape( artist->name() ) );
-                break;
-            case AlbumArtists:
-                d->queryMatch += QString( " AND albumartists.name = '%1'" ).arg( escape( artist->name() ) );
-                break;
-            case AlbumOrTrackArtists:
-                d->queryMatch += QString( " AND ( artists.name = '%1' OR albumartists.name = '%1' )" ).arg( escape( artist->name() ) );
-                break;
-        }
-        //Turn back default value, so we don't need to worry about this until the next AlbumArtist request.
-        d->artistMode = TrackArtists;
+        artistQuery = "( artists.name IS NULL OR artists.name = '')";
+        albumArtistQuery = "( albumartists.name IS NULL OR albumartists.name = '')";
     }
+
+    switch( d->artistMode )
+    {
+    case TrackArtists:
+        d->queryMatch += " AND " + artistQuery;
+        break;
+    case AlbumArtists:
+        d->queryMatch += " AND " + albumArtistQuery;
+        break;
+    case AlbumOrTrackArtists:
+        d->queryMatch += " AND ( (" + artistQuery + " ) OR ( " + albumArtistQuery + " ) )";
+        break;
+    }
+    //Turn back default value, so we don't need to worry about this until the next AlbumArtist request.
+    d->artistMode = TrackArtists;
     return this;
 }
 
@@ -601,6 +612,7 @@ SqlQueryMaker::addReturnValue( qint64 value )
         if ( !d->queryReturnValues.isEmpty() )
             d->queryReturnValues += ',';
         d->queryReturnValues += nameForValue( value );
+        d->returnValueType = value;
     }
     return this;
 }
@@ -631,6 +643,7 @@ SqlQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
                 sqlfunction = "Unknown function in SqlQueryMaker::addReturnFunction, function was: " + function;
         }
         d->queryReturnValues += QString( "%1(%2)" ).arg( sqlfunction, nameForValue( value ) );
+        d->returnValueType = value;
     }
     return this;
 }
@@ -720,7 +733,6 @@ SqlQueryMaker::linkTables()
 {
     switch( d->queryType )
     {
-        case QueryMaker::Custom:
         case QueryMaker::Track:
         {
             d->queryFrom += " tracks";
@@ -732,7 +744,7 @@ SqlQueryMaker::linkTables()
         {
             d->queryFrom += " artists";
             if( d->linkedTables != Private::ARTIST_TAB )
-                d->queryFrom += " INNER JOIN tracks ON tracks.artist = artists.id";
+                d->queryFrom += " JOIN tracks ON tracks.artist = artists.id";
             if( d->linkedTables & Private::ARTIST_TAB )
                 d->linkedTables ^= Private::ARTIST_TAB;
             break;
@@ -742,7 +754,7 @@ SqlQueryMaker::linkTables()
         {
             d->queryFrom += " albums";
             if( d->linkedTables != Private::ALBUM_TAB && d->linkedTables != ( Private::ALBUM_TAB | Private::ALBUMARTIST_TAB ) )
-                d->queryFrom += " INNER JOIN tracks ON tracks.album = albums.id";
+                d->queryFrom += " JOIN tracks ON tracks.album = albums.id";
             if( d->linkedTables & Private::ALBUM_TAB )
                 d->linkedTables ^= Private::ALBUM_TAB;
             break;
@@ -760,7 +772,7 @@ SqlQueryMaker::linkTables()
         {
             d->queryFrom += " composers";
             if( d->linkedTables != Private::COMPOSER_TAB )
-                d->queryFrom += " INNER JOIN tracks ON tracks.composer = composers.id";
+                d->queryFrom += " JOIN tracks ON tracks.composer = composers.id";
             if( d->linkedTables & Private::COMPOSER_TAB )
                 d->linkedTables ^= Private::COMPOSER_TAB;
             break;
@@ -769,7 +781,7 @@ SqlQueryMaker::linkTables()
         {
             d->queryFrom += " years";
             if( d->linkedTables != Private::YEAR_TAB )
-                d->queryFrom += " INNER JOIN tracks on tracks.year = years.id";
+                d->queryFrom += " JOIN tracks on tracks.year = years.id";
             if( d->linkedTables & Private::YEAR_TAB )
                 d->linkedTables ^= Private::YEAR_TAB;
             break;
@@ -782,6 +794,39 @@ SqlQueryMaker::linkTables()
                                 " INNER JOIN tracks ON urls_labels.url = tracks.url";
             if( d->linkedTables & Private::LABELS_TAB )
                 d->linkedTables ^= Private::LABELS_TAB;
+            break;
+        }
+        case QueryMaker::Custom:
+        {
+            switch( d->returnValueType )
+            {
+                default:
+                case Meta::valUrl:
+                {
+                    d->queryFrom += " tracks";
+                    if( d->linkedTables & Private::TAGS_TAB )
+                        d->linkedTables ^= Private::TAGS_TAB;
+                    break;
+                }
+                case Meta::valAlbum:
+                {
+                    d->queryFrom += " albums";
+                    if( d->linkedTables & Private::ALBUM_TAB )
+                        d->linkedTables ^= Private::ALBUM_TAB;
+                    if( d->linkedTables & Private::URLS_TAB )
+                        d->linkedTables ^= Private::URLS_TAB;
+                    break;
+                }
+                case Meta::valGenre:
+                {
+                    d->queryFrom += " genres";
+                    if( d->linkedTables & Private::GENRE_TAB )
+                        d->linkedTables ^= Private::GENRE_TAB;
+                    if( d->linkedTables & Private::URLS_TAB )
+                        d->linkedTables ^= Private::URLS_TAB;
+                    break;
+                }
+            }
         }
         case QueryMaker::None:
         {
@@ -831,11 +876,11 @@ SqlQueryMaker::buildQuery()
     query += d->queryReturnValues;
     query += " FROM ";
     query += d->queryFrom;
-    query += " WHERE 1 ";
 
     //dynamic collection
-    if( m_collection->mountPointManager() )
+    if( (d->linkedTables & Private::URLS_TAB) && m_collection->mountPointManager() )
     {
+        query += " WHERE 1 ";
         IdList list = m_collection->mountPointManager()->getMountedDeviceIds();
         if( !list.isEmpty() )
         {
@@ -908,8 +953,6 @@ SqlQueryMaker::runQuery( const QString &query )
 {
     return m_collection->sqlStorage()->query( query );
 }
-
-
 
 void
 SqlQueryMaker::setBlocking( bool enabled )

@@ -45,7 +45,6 @@ CollectionLocation::CollectionLocation()
 
 CollectionLocation::CollectionLocation( const Collections::Collection* parentCollection)
     :QObject()
-    , m_transcodingConfiguration( Transcoding::Configuration() )
     , m_destination( 0 )
     , m_source( 0 )
     , m_sourceTracks()
@@ -53,6 +52,7 @@ CollectionLocation::CollectionLocation( const Collections::Collection* parentCol
     , m_removeSources( false )
     , m_isRemoveAction( false )
     , m_noRemoveConfirmation( false )
+    , m_transcodingConfiguration( Transcoding::Configuration() )
 {
     //nothing to do
 }
@@ -96,6 +96,7 @@ void
 CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination,
                                  const Transcoding::Configuration &configuration )
 {
+    debug() << "prepare copy 1 track from"<<collection()->collectionId()<<"to"<<destination->collection()->collectionId();
     Meta::TrackList list;
     list.append( track );
     prepareCopy( list, destination, configuration );
@@ -106,6 +107,7 @@ void
 CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination,
                                  const Transcoding::Configuration &configuration )
 {
+    debug() << "prepare copy"<<tracks.count()<<"tracks from"<<collection()->collectionId()<<"to"<<destination->collection()->collectionId();
     if( !destination->isWritable() )
     {
         Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
@@ -155,6 +157,7 @@ CollectionLocation::prepareMove( Meta::TrackPtr track, CollectionLocation *desti
 void
 CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination )
 {
+    debug() << "prepare move"<<tracks.count()<<"tracks from"<<collection()->collectionId()<<"to"<<(destination->collection()?destination->collection()->collectionId():"no destination. probably trash");
     DEBUG_BLOCK
     if( !destination->isWritable() )
     {
@@ -274,6 +277,7 @@ CollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sour
     DEBUG_BLOCK
     //reimplement in implementations which are writeable
     Q_UNUSED( sources )
+    Q_UNUSED( configuration )
     slotCopyOperationFinished();
 }
 
@@ -536,11 +540,11 @@ void
 CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    debug() << "Transfer errors: " << m_tracksWithError.count();
+    debug() << "Transfer errors:" << m_tracksWithError.count() << "of" << tracks.count();
 
     foreach( Meta::TrackPtr track, m_tracksWithError.keys() )
     {
-        debug() << "transfer error for track " << track->playableUrl();
+        debug() << "transfer error for track" << track->playableUrl();
     }
 
     QSet<Meta::TrackPtr> toRemove = QSet<Meta::TrackPtr>::fromList( tracks );

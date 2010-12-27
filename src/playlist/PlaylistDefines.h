@@ -173,7 +173,7 @@ static const QStringList iconNames = ( QStringList()
         << "filename-genre-amarok"
         << "filename-group-length"
         << "filename-group-tracks"
-        << "filename-labels-amarok"
+        << "label-amarok"
         << "filename-last-played"
         << "chronometer"
         << "chronometer"

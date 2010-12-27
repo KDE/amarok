@@ -783,13 +783,13 @@ DatabaseUpdater::createTables() const
     {
         QString c = "CREATE TABLE statistics "
                     "(id " + storage->idType() +
-                    ",url INTEGER"
+                    ",url INTEGER NOT NULL"
                     ",createdate INTEGER" // this is the first played time
                     ",accessdate INTEGER" // this is the last played time
                     ",score FLOAT"
-                    ",rating INTEGER DEFAULT 0"
-                    ",playcount INTEGER"
-                    ",deleted BOOL DEFAULT " + storage->boolFalse() +
+                    ",rating INTEGER NOT NULL DEFAULT 0" // the "default" undefined rating is 0. We cannot display anything else.
+                    ",playcount INTEGER NOT NULL DEFAULT 0" // a track is either played or not.
+                    ",deleted BOOL NOT NULL DEFAULT " + storage->boolFalse() +
                     ") COLLATE = utf8_bin ENGINE = MyISAM;";
         storage->query( c );
         storage->query( "CREATE UNIQUE INDEX statistics_url ON statistics(url);" );

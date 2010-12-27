@@ -178,12 +178,12 @@ Context::Applet::cleanUpAndDelete()
 }
 
 Plasma::IconWidget*
-Context::Applet::addAction( QAction *action, const int size )
+Context::Applet::addAction( QGraphicsItem *parent, QAction *action, const int size )
 {
     if( !action )
         return 0;
 
-    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
+    Plasma::IconWidget *tool = new Plasma::IconWidget( parent );
     tool->setAction( action );
     tool->setText( QString() );
     tool->setToolTip( action->text() );
@@ -220,7 +220,7 @@ Context::Applet::addLeftHeaderAction( QAction *action )
     if( !m_header )
         return 0;
 
-    Plasma::IconWidget *icon = addAction( action );
+    Plasma::IconWidget *icon = addAction( 0, action );
     m_header->addIcon( icon, Qt::AlignLeft );
     return icon;
 }
@@ -231,7 +231,7 @@ Context::Applet::addRightHeaderAction( QAction *action )
     if( !m_header )
         return 0;
 
-    Plasma::IconWidget *icon = addAction( action );
+    Plasma::IconWidget *icon = addAction( 0, action );
     m_header->addIcon( icon, Qt::AlignRight );
     return icon;
 }

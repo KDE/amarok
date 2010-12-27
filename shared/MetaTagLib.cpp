@@ -355,7 +355,7 @@ Meta::Tag::readTags( const QString &path, bool useCharsetDetector )
             {
                 QString name = TStringToQString( it->first );
                 QString value = TStringToQString( it->second.toString("\n") );
-                decodeXiph( name, value );
+                result.unite( decodeXiph( name, value ) );
             }
         }
     }
@@ -555,7 +555,8 @@ Meta::Tag::decodeMpeg( TagLib::MPEG::File *file )
 
             if( owner == QLatin1String( "http://musicbrainz.org" ) )
             {
-                if( isValidMusicBrainzId( identifier ) )
+                if( isValidMusicBrainzId( identifier ) &&
+                    !result.contains( Meta::valUniqueId ) ) // AFT id is prefered
                     result.insert( Meta::valUniqueId, identifier.prepend( "mb-" ) );
             }
             else if( owner == QLatin1String( "Amarok 2 AFTv1 - amarok.kde.org" ) )
@@ -574,19 +575,19 @@ Meta::FieldHash
 Meta::Tag::decodeXiph( const QString &name, const QString &value )
 {
     Meta::FieldHash result;
-    if( name == QLatin1String( "COMPOSER" ) )
+    if( name.compare( QLatin1String( "COMPOSER" ), Qt::CaseInsensitive ) == 0 )
         result.insert( Meta::valComposer, value );
 
-    else if( name == QLatin1String( "ALBUMARTIST" ) )
+    else if( name.compare( QLatin1String( "ALBUMARTIST" ), Qt::CaseInsensitive ) == 0 )
         result.insert( Meta::valAlbumArtist, value );
 
-    else if( name == QLatin1String( "BPM" ) )
+    else if( name.compare( QLatin1String( "BPM" ), Qt::CaseInsensitive ) == 0 )
         result.insert( Meta::valBpm, value.toFloat() );
 
-    else if( name == QLatin1String( "DISCNUMBER" ) )
+    else if( name.compare( QLatin1String( "DISCNUMBER" ), Qt::CaseInsensitive ) == 0 )
         result.insert( Meta::valDiscNr, splitNumber(value.trimmed()) );
 
-    else if( name == QLatin1String( "COMPILATION" ) )
+    else if( name.compare( QLatin1String( "COMPILATION" ), Qt::CaseInsensitive ) == 0 )
     {
         if( value.toInt() )
             result.insert( Meta::valCompilation, true );
@@ -634,7 +635,8 @@ Meta::Tag::decodeFMPS( const QString &identifier, const QString &value, bool cam
     else if( (camelCase  && identifier == QLatin1String( "MusicBrainz Track Id" )) ||
              (!camelCase && identifier == QLatin1String( "MUSICBRAINZ_TRACKID" )) )
     {
-        if( isValidMusicBrainzId( value ) )
+        if( isValidMusicBrainzId( value ) &&
+            !result.contains( Meta::valUniqueId ) ) // AFT id is prefered
             result.insert( Meta::valUniqueId,
                            QVariant("mb-" + value) );
     }
@@ -885,13 +887,11 @@ explodeUidUrl( const QString &uidUrl, const Meta::Tag::FileTypes type )
 static bool
 replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &value )
 {
-    TagLib::String tName;
     TagLib::String tValue = Qt4QStringToTString( value.toString() );
 
     if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
         TagLib::ByteVector tName( fieldName( field, Meta::Tag::MPEG ) );
-
         if( tName.isEmpty() )
             return false;
 
@@ -1027,7 +1027,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
     // ogg
     else if( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
     {
-        tName = fieldName( field, Meta::Tag::OGG );
+        TagLib::String tName = fieldName( field, Meta::Tag::OGG );
 
         if( field == Meta::valUniqueId )
         {
@@ -1049,7 +1049,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
     // flac
     else if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
     {
-        tName = fieldName( field, Meta::Tag::FLAC );
+        TagLib::String tName = fieldName( field, Meta::Tag::FLAC );
 
         if( field == Meta::valUniqueId )
         {
@@ -1071,7 +1071,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
     // speex
     else if( TagLib::Ogg::Speex::File *file = dynamic_cast<TagLib::Ogg::Speex::File *>( fileref.file() ) )
     {
-        tName = fieldName( field, Meta::Tag::SPEEX );
+        TagLib::String tName = fieldName( field, Meta::Tag::SPEEX );
 
         if( field == Meta::valUniqueId )
         {
@@ -1093,7 +1093,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
     //MP4
     else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
-        tName = fieldName( field, Meta::Tag::MP4 );
+        TagLib::String tName = fieldName( field, Meta::Tag::MP4 );
 
         if( field == Meta::valUniqueId )
         {
@@ -1119,7 +1119,7 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
     //MPC
     else if( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
     {
-        tName = Meta::Tag::fieldName( field, Meta::Tag::MPC );
+        TagLib::String tName = Meta::Tag::fieldName( field, Meta::Tag::MPC );
 
         if( field == Meta::valUniqueId )
         {

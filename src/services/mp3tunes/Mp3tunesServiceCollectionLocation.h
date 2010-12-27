@@ -33,12 +33,12 @@ class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
         Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection const *parentCollection );
         virtual ~Mp3tunesServiceCollectionLocation();
 
-        
         virtual QString prettyLocation() const;
         virtual bool isWritable() const;
         virtual bool remove( const Meta::TrackPtr &track );
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
-        
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                           const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+
     private:
         Mp3tunesServiceCollection *m_collection;
 };

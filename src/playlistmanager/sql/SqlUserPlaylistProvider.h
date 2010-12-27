@@ -45,6 +45,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         virtual QString description() const { return i18n( "Local playlists stored in the database" ); }
         virtual KIcon icon() const { return KIcon( "server-database" ); }
 
+        virtual int playlistCount() const;
         virtual Playlists::PlaylistList playlists();
 
         virtual bool canSavePlaylists() { return true; }
@@ -65,6 +66,11 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         bool import( const QString& fromLocation );
 
         static Playlists::SqlPlaylistList toSqlPlaylists( Playlists::PlaylistList playlists );
+
+    signals:
+        void updated();
+        void playlistAdded( Playlists::PlaylistPtr playlist );
+        void playlistRemoved( Playlists::PlaylistPtr playlist );
 
     private slots:
         void slotDelete();

@@ -201,7 +201,7 @@ PlaylistsByProviderProxy::dropMimeData( const QMimeData *data, Qt::DropAction ac
                     decodeMimeRows( data->data( AMAROK_PROVIDERPROXY_INDEXES ), m_model );
             //set the groupedColumn data of all playlist indexes to the data of this group
             //the model will understand this as a copy to the provider it's dropped on
-            RoleVariantMap groupData =
+            IndexData groupData =
                     m_groupMaps.value( parent.row() ).value( parent.column() );
             bool result = !originalIndexes.isEmpty();
             foreach( const QModelIndex& originalIndex, originalIndexes )

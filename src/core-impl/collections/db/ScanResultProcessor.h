@@ -95,6 +95,12 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
         */
         void directoryCommitted();
 
+        /**
+         * This signal is emitted after a directory is processed that does not
+         * need to commit to the database.
+         */
+        void directorySkipped();
+
     protected:
         /** Will block the collection from noticing the many small updates we are doing */
         virtual void blockUpdates() = 0;

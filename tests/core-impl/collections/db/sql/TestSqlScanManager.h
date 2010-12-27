@@ -116,6 +116,7 @@ private slots:
 
     void testIdentifyCompilationInMultipleDirectories();
 
+    void testUidChangeMoveDirectoryIncrementalScan();
 
     void slotCollectionUpdated();
 

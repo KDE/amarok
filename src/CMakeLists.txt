@@ -69,8 +69,6 @@ include_directories(
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
     ${QCA2_INCLUDE_DIR}
-    ${LIBAVCODEC_INCLUDE_DIR}
-    ${LIBAVFORMAT_INCLUDE_DIR}
 )
 
 if ( KDEMULTIMEDIA_FOUND )
@@ -338,8 +336,8 @@ set( libcontextview_SRCS
     context/widgets/TextScrollingWidget.cpp
     context/widgets/DropPixmapItem.cpp
     context/widgets/ToolBoxIcon.cpp
-    context/widgets/ContainmentArrow.cpp
-    context/widgets/ContainmentSelectionLayer.cpp
+    # context/widgets/ContainmentArrow.cpp
+    # context/widgets/ContainmentSelectionLayer.cpp
     context/widgets/appletexplorer/AppletExplorer.cpp
     context/widgets/appletexplorer/AppletIcon.cpp
     context/widgets/RecentlyPlayedListWidget.cpp
@@ -703,8 +701,6 @@ set(amaroklib_LIB_SRCS
     widgets/IconButton.cpp
     widgets/ComboBox.cpp
     widgets/LineEdit.cpp
-    widgets/MainControlsButton.cpp
-    widgets/MainControlsWidget.cpp
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
     widgets/PlayPauseButton.cpp
@@ -773,6 +769,10 @@ if( LIBLASTFM_FOUND )
 endif( LIBLASTFM_FOUND )
 
 if( LIBOFA_FOUND )
+    include_directories(
+        ${LIBAVCODEC_INCLUDE_DIR}
+        ${LIBAVFORMAT_INCLUDE_DIR}
+    )
     set( EXTRA_LIBS
         ${EXTRA_LIBS}
         ${LIBOFA_LIBRARY}

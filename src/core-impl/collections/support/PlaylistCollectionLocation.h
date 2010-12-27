@@ -41,7 +41,8 @@ public:
     bool remove( const Meta::TrackPtr &track );
 
 protected:
-    void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
+    void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                               const Transcoding::Configuration &configuration = Transcoding::Configuration() );
     //why is this called "removeUrls" if the argument are only tracks?
     void removeUrlsFromCollection( const Meta::TrackList &tracks );
 

@@ -324,8 +324,8 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
 QModelIndex
 PlaylistsInFoldersProxy::createNewFolder( const QString &groupName )
 {
-    ColumnVariantMap data;
-    RoleVariantMap roleData;
+    RowData data;
+    IndexData roleData;
     roleData.insert( Qt::DisplayRole, groupName );
     roleData.insert( Qt::DecorationRole, QVariant( KIcon( "folder" ) ) );
     roleData.insert( Qt::EditRole, groupName );

@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2010 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,35 +14,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MAINCONTROLSWIDGET_H
-#define MAINCONTROLSWIDGET_H
+#ifndef AMAROK_TRANSCODING_EXPORT_H
+#define AMAROK_TRANSCODING_EXPORT_H
 
-#include <QGraphicsView>
+/* needed for KDE_EXPORT and KDE_IMPORT macros */
+#include <kdemacros.h>
 
-class MainControlsButton;
-class QToolButton;
+#ifndef AMAROK_TRANSCODING_EXPORT
+# ifdef MAKE_AMAROK_TRANSCODING_LIB
+   /* We are building this library */
+#  define AMAROK_TRANSCODING_EXPORT KDE_EXPORT
 
+# else
+   /* We are using this library */
+#  define AMAROK_TRANSCODING_EXPORT KDE_IMPORT
 
-/**
- * A small widget containing the 4 main control buttons. Manages special layout
- * for these buttons
- */
-class MainControlsWidget : public QGraphicsView
-{
-public:
-    MainControlsWidget( QWidget * parent );
+# endif//MAKE_TRANSCODING_LIB
+#endif// AMAROK_EXPORT
 
-    ~MainControlsWidget();
-
-    void setPlayButton();
-    void setPauseButton();
-
-private:
-    MainControlsButton * m_playPauseButton;
-    QToolButton * m_prevButton;
-    QToolButton * m_playButton;
-    QToolButton * m_stopButton;
-    QToolButton * m_nextButton;
-};
-
-#endif
+#endif //AMAROK_TRANSCODING_EXPORT_H

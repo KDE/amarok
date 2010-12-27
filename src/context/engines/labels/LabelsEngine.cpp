@@ -67,7 +67,6 @@ bool
 LabelsEngine::sourceRequestEvent( const QString &name )
 {
     DEBUG_BLOCK
-//     Q_UNUSED( name )
 
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     if( coll )
@@ -158,6 +157,7 @@ LabelsEngine::update( bool reload )
         QVariant varUser;
         varUser.setValue< QStringList >( userLabels );
         setData( "labels", "user", varUser );
+        m_userLabels = userLabels;
         return;
     }
 
@@ -177,11 +177,6 @@ LabelsEngine::update( bool reload )
     QVariant varUser;
     varUser.setValue< QStringList >( m_userLabels );
     setData( "labels", "user", varUser );
-
-    // send the web labels too, because the labels applet clears all web labels if user labels arrive
-    QVariant varWeb;
-    varWeb.setValue< QMap< QString, QVariant > >( m_webLabels );
-    setData( "labels", "web", varWeb );
 
     m_try = 0;
     fetchLastFm();

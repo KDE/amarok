@@ -30,6 +30,11 @@ namespace Collections
     class CollectionLocationDelegate;
 }
 
+namespace Transcoding
+{
+    class Controller;
+}
+
 class CollectionManager;
 class EngineController;
 class SqlStorage;
@@ -55,6 +60,9 @@ namespace Amarok
 
         AMAROK_CORE_EXPORT Collections::CollectionLocationDelegate* collectionLocationDelegate();
         AMAROK_CORE_EXPORT Collections::CollectionLocationDelegate* setCollectionLocationDelegate( Collections::CollectionLocationDelegate *delegate );
+
+        AMAROK_CORE_EXPORT Transcoding::Controller* transcodingController();
+        AMAROK_CORE_EXPORT Transcoding::Controller* setTranscodingController( Transcoding::Controller *controller );
     }
 }
 

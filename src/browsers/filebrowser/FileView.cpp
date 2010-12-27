@@ -143,6 +143,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     KAction *transcodeAction = new KAction( "Transcode here", this );
     connect( transcodeAction, SIGNAL( triggered() ), this, SLOT( slotPrepareTranscodeTracks() ) );
     menu->addAction( transcodeAction );
+    transcodeAction->setVisible( false );   //This is just used for debugging, hide it!
 
     menu->exec( e->globalPos() );
 }
@@ -250,7 +251,7 @@ FileView::slotPrepareTranscodeTracks()
     debug()<<" SRC URL IS " << list.urlList().first();
     debug()<<" SRC URL IS " << list.urlList().first();
 
-    if( !The::transcodingController()->availableFormats().isEmpty() )
+    if( !Amarok::Components::transcodingController()->availableFormats().isEmpty() )
     {
         Transcoding::AssistantDialog *d = new Transcoding::AssistantDialog( this );
         debug() << "About to show Transcoding::AssistantDialog";

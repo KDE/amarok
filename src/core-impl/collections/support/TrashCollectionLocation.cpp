@@ -53,9 +53,12 @@ TrashCollectionLocation::isWritable() const
 }
 
 void
-TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
+TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                               const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
+    Q_UNUSED( configuration );
+
     if( sources.isEmpty() )
     {
         debug() << "Error: sources is empty";
@@ -99,9 +102,10 @@ TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> 
 }
 
 void
-TrashCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
+TrashCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources, const Transcoding::Configuration &configuration )
 {
     Q_UNUSED( removeSources )
+    Q_UNUSED( configuration )
     Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
     m_trashConfirmed = delegate->reallyTrash( this, tracks );
     if( !m_trashConfirmed )

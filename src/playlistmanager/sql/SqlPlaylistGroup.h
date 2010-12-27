@@ -61,6 +61,10 @@ namespace Playlists
             SqlPlaylistGroupList allChildGroups() const;
             SqlPlaylistList allChildPlaylists() const;
 
+            //transitional: this class is deprecated but we do need access to the children until
+            //the database changes to using labels for playlist groups.
+            friend class SqlUserPlaylistProvider;
+
         private:
             SqlPlaylistGroupList childSqlGroups() const;
             SqlPlaylistList childSqlPlaylists() const;

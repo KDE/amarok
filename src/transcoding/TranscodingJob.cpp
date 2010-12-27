@@ -51,7 +51,7 @@ Job::Job( KUrl &src,
     debug() << "Transcoding::Job ctor!!";
     debug()<< src;
     debug()<< src.path();
-    QString fileExtension = The::transcodingController()->format( configuration.encoder() )->fileExtension();
+    QString fileExtension = Amarok::Components::transcodingController()->format( configuration.encoder() )->fileExtension();
     if( !( fileExtension.isEmpty() ) )
     {
         QString destPath = src.path();
@@ -76,7 +76,7 @@ Job::init()
     *m_transcoder << QString( "-i" )
                   << m_src.path();
     //... and finally, outfile configuration followed by the outfile path.
-    const Transcoding::Format *format = The::transcodingController()->format( m_configuration.encoder() );
+    const Transcoding::Format *format = Amarok::Components::transcodingController()->format( m_configuration.encoder() );
     *m_transcoder << format->ffmpegParameters( m_configuration )
                   << QString( "-map_meta_data" )
                   << QString( m_dest.path() + ":" + m_src.path() )
