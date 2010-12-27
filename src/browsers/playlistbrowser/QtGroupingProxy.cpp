@@ -687,7 +687,7 @@ QtGroupingProxy::modelRowsInserted( const QModelIndex &parent, int start, int en
     {
         //a item was added to one of the original index, remap and pass it on
         QModelIndex proxyParent = mapFromSource( parent );
-        qDebug() << proxyParent;
+//        qDebug() << proxyParent;
         //TODO: move this to slot connected to rowsAboutToBeInserted()
         beginInsertRows( proxyParent, start, end );
         endInsertRows();
