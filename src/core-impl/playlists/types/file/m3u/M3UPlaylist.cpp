@@ -16,7 +16,7 @@
 
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 
-#define DEBUG_PREFIX "M3UPlaylist"
+#define _PREFIX "M3UPlaylist"
 
 #include "core/support/Amarok.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -52,8 +52,6 @@ M3UPlaylist::M3UPlaylist( const KUrl &url )
     : m_url( url )
     , m_tracksLoaded( false )
 {
-    //DEBUG_BLOCK
-    //debug() << "url: " << m_url;
     m_name = m_url.fileName();
 }
 
@@ -79,7 +77,7 @@ M3UPlaylist::tracks()
     {
         QFile file( m_url.toLocalFile() );
         if( !file.open( QIODevice::ReadOnly ) ) {
-            debug() << "cannot open file";
+            error() << "cannot open file";
             return m_tracks;
         }
 
@@ -101,8 +99,6 @@ M3UPlaylist::tracks()
 bool
 M3UPlaylist::loadM3u( QTextStream &stream )
 {
-    DEBUG_BLOCK
-
     const QString directory = m_url.directory();
     bool hasTracks = false;
     m_tracksLoaded = false;
@@ -120,8 +116,6 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             Meta::TrackPtr trackPtr;
             line = line.replace( "\\", "/" );
 
-            debug() << "line:" << line;
-
             // KUrl::isRelativeUrl() expects absolute URLs to start with a protocol, so prepend it if missing
             QString url = line;
             if( url.startsWith( '/' ) )
@@ -130,7 +124,6 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             // Also won't be windows url, so no need to worry about swapping \ for /
             if( KUrl::isRelativeUrl( url ) )
             {
-                debug() << "relative url";
                 //Replace \ with / for windows playlists
                 line.replace('\\','/');
                 KUrl kurl( directory );
@@ -141,12 +134,11 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             }
             else
             {
-                debug() << "absolute url";
                 trackPtr = CollectionManager::instance()->trackForUrl( KUrl( line ) );
             }
 
-            if ( trackPtr ) {
-                debug() << "track url: " << trackPtr->prettyUrl();
+            if( trackPtr )
+            {
                 m_tracks.append( trackPtr );
                 hasTracks = true;
                 m_tracksLoaded = true;
@@ -168,7 +160,7 @@ M3UPlaylist::save( const KUrl &location, bool relative )
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        debug() << "Unable to write to playlist " << savePath.path();
+        error() << "Unable to write to playlist " << savePath.path();
         return false;
     }
 
