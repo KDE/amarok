@@ -618,7 +618,6 @@ QtGroupingProxy::addEmptyGroup( const RowData &data )
     beginInsertRows( QModelIndex(), newRow, newRow );
     m_groupMaps << data;
     endInsertRows();
-    emit layoutChanged();
     return index( newRow, 0, QModelIndex() );
 }
 
@@ -708,29 +707,6 @@ QtGroupingProxy::modelRowsRemoved( const QModelIndex &parent, int start, int end
     //TODO: move this to slot connected to rowsAboutToBeRemoved()
     beginRemoveRows( proxyParent, start, end );
     endRemoveRows();
-}
-
-void
-QtGroupingProxy::slotDeleteGroup()
-{
-}
-
-void
-QtGroupingProxy::slotRenameGroup()
-{
-    //get the name for this new group
-    const QString newName = QInputDialog::getText( 0, tr("New name"),
-                tr("Enter a new name for a group that already exists", "Enter new group name:") );
-
-    foreach( int originalRow, m_groupHash.value( m_selectedGroups.first().row() ) )
-    {
-        QModelIndex index = m_model->index( originalRow, 0, QModelIndex() );
-        QStringList groups;
-        groups << newName;
-        //qDebug() << "Applying " << groups << " to " << index;
-    }
-    buildTree();
-    emit layoutChanged();
 }
 
 bool

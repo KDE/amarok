@@ -68,9 +68,6 @@ class QtGroupingProxy : public QAbstractProxyModel
         void modelRowsInserted( const QModelIndex&, int, int );
         void modelRowsRemoved( const QModelIndex&, int, int );
 
-        void slotDeleteGroup();
-        void slotRenameGroup();
-
     protected:
         /** Maps an item to a group.
           * The return value is a list because an item can put in multiple groups.
