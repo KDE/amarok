@@ -181,7 +181,7 @@ SqlPodcastProvider::loadPodcasts()
     }
     if( m_podcastImageFetcher )
         m_podcastImageFetcher->run();
-    emit( updated() );
+    emit updated();
 }
 
 SqlPodcastEpisodePtr
@@ -1049,7 +1049,6 @@ SqlPodcastProvider::deleteDownloadedEpisode( Podcasts::SqlPodcastEpisodePtr epis
     KIO::del( episode->localUrl(), KIO::HideProgressInfo );
 
     episode->setLocalUrl( KUrl() );
-    emit( updated() );
 }
 
 Podcasts::SqlPodcastChannelPtr
@@ -1361,7 +1360,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
     // NOTE: we need to emit because the KJobProgressBar relies on it to clean up
     job->kill( KJob::EmitResult );
     sqlEpisode->setLocalUrl( fileName );
-    emit( updated() );  // repaint icons
+    //TODO: repaint icons, probably with signal metadataUpdate()
     return true;
 }
 
@@ -1402,12 +1401,6 @@ void
 SqlPodcastProvider::slotStatusBarSorryMessage( const QString &message )
 {
     The::statusBar()->longMessage( message, StatusBar::Sorry );
-}
-
-void
-SqlPodcastProvider::slotUpdated()
-{
-    emit updated();
 }
 
 void
@@ -1457,8 +1450,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
 
             if( sqlChannel->writeTags() )
                 sqlEpisode->writeTagsToFile();
-            //force an update so the icon can be updated in the PlaylistBrowser
-            emit( updated() );
+            //TODO: force a redraw of the view so the icon can be updated in the PlaylistBrowser
         }
         else
         {
