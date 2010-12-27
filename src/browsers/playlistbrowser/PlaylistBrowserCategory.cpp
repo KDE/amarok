@@ -301,7 +301,7 @@ PlaylistBrowserCategory::createNewFolder()
             folderCount = regex.cap( 1 ).toInt();
         groupName += QString( " (%1)" ).arg( folderCount + 1 );
     }
-    QModelIndex idx = m_byFolderProxy->createNewFolder( groupName );
+    QModelIndex idx = m_filterProxy->mapFromSource( m_byFolderProxy->createNewFolder( groupName ) );
     m_playlistView->setCurrentIndex( idx );
     m_playlistView->edit( idx );
 }
