@@ -300,15 +300,7 @@ PlaylistsInFoldersProxy::slotRenameFolder()
     if( !ok || newName == folderName )
         return;
 
-    for( int i = 0; i < rowCount( folder ); i++ )
-    {
-        QModelIndex idx = index( i, PlaylistBrowserNS::UserModel::LabelColumn, folder );
-        setData( idx, newName, Qt::DisplayRole );
-    }
-    //remove the old foldername from the map
-    m_groupMaps.removeAt( folder.row() );
-    buildTree();
-    emit layoutChanged();
+    setData( folder, newName );
 }
 
 void

@@ -242,7 +242,7 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
     {
         case ProviderColumn:
         {
-            if( role == Qt::DisplayRole )
+            if( role == Qt::DisplayRole || role == Qt::EditRole )
             {
                 Playlists::PlaylistProvider *provider = getProviderByName( value.toString() );
                 if( !provider )

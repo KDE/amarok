@@ -251,7 +251,7 @@ QtGroupingProxy::indexOfParentCreate( const QModelIndex &parent ) const
 }
 
 QModelIndex
-QtGroupingProxy::index( int row, int column, const QModelIndex& parent ) const
+QtGroupingProxy::index( int row, int column, const QModelIndex &parent ) const
 {
 //    qDebug() << "index requested for: (" << row << "," << column << "), " << parent;
     if( !hasIndex(row, column, parent) )
@@ -396,14 +396,14 @@ QtGroupingProxy::setData( const QModelIndex &idx, const QVariant &value, int rol
         IndexData columnData = m_groupMaps[idx.row()][idx.column()];
 
         columnData.insert( role, value );
-        //also set the display role if we are changing the grouped column data or the
-        //first column
-        if( idx.column() == m_groupedColumn || idx.column() == 0 )
+        //QItemDelegate will always use Qt::EditRole
+        if( role == Qt::EditRole )
             columnData.insert( Qt::DisplayRole, value );
+
         //and make sure it's stored in the map
         m_groupMaps[idx.row()].insert( idx.column(), columnData );
 
-        int columnToChange = idx.row() != 0 ? idx.row() : m_groupedColumn;
+        int columnToChange = idx.column() ? idx.column() : m_groupedColumn;
         foreach( int originalRow, m_groupHash.value( idx.row() ) )
         {
             QModelIndex childIdx = m_model->index( originalRow, columnToChange,
@@ -411,6 +411,8 @@ QtGroupingProxy::setData( const QModelIndex &idx, const QVariant &value, int rol
             if( childIdx.isValid() )
                 m_model->setData( childIdx, value, role );
         }
+        //TODO: we might need to reload the data from the children at this point
+
         emit dataChanged( idx, idx );
         return true;
     }
