@@ -12,6 +12,9 @@ VERSION 2.4-Beta 2
   BUGFIXES:
     * Fixed issue with Audio CDs that do not provide CDDB information. Patch by
       Andriy Gapon <avg@icyb.net.ua>. (BR 257818)
+    * Fixed issue with the Organize Files Dialog that prevented presets from being
+      loaded when in advanced mode. Patch by Philipp Schmidt <philschmidt@gmx.net>
+      (BR 255325)
 
 
 

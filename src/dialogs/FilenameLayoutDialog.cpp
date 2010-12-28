@@ -346,7 +346,10 @@ FilenameLayoutDialog::setFileName( QString FileName )
 // attempts to set the scheme
 void FilenameLayoutDialog::setScheme(const QString& scheme)
 {
-    inferScheme( scheme );
+    if( m_advancedMode )
+        filenameLayoutEdit->setText( scheme );
+    else
+        inferScheme( scheme );
 }
 
 
