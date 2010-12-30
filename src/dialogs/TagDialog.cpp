@@ -1370,7 +1370,6 @@ TagDialog::setControlsAccessability()
     ui->kLineEdit_title->setClearButtonShown( editable );
 
     enableOrDisable( kComboBox_artist );
-    enableOrDisable( kComboBox_albumArtist );
     enableOrDisable( kComboBox_composer );
     enableOrDisable( kComboBox_album );
     enableOrDisable( kComboBox_genre );
