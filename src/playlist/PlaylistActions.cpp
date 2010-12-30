@@ -464,17 +464,19 @@ Playlist::Actions::restoreDefaultPlaylist()
     // non-collection Tracks will not be loaded correctly.
     The::playlistManager();
 
-    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Amarok::defaultPlaylistPath() );
-    if ( playlist && playlist->tracks().count() > 0 )
+    Playlists::PlaylistFilePtr playlist =
+            Playlists::loadPlaylistFile( Amarok::defaultPlaylistPath() );
+    playlist->triggerTrackLoad(); //playlist track loading is on demand.
+    if( playlist && playlist->tracks().count() > 0 )
     {
         Meta::TrackList tracks = playlist->tracks();
 
         QMutableListIterator<Meta::TrackPtr> i( tracks );
-        while ( i.hasNext() )
+        while( i.hasNext() )
         {
             i.next();
             Meta::TrackPtr track = i.value();
-            if ( ! track )
+            if( ! track )
                 i.remove();
             else if( Playlists::canExpand( track ) )
             {
@@ -483,6 +485,7 @@ Playlist::Actions::restoreDefaultPlaylist()
                 if( playlist )
                 {
                     i.remove();
+                    playlist->triggerTrackLoad(); //playlist track loading is on demand.
                     Meta::TrackList newtracks = playlist->tracks();
                     foreach( Meta::TrackPtr t, newtracks )
                         if( t )

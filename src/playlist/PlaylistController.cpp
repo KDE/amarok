@@ -595,6 +595,7 @@ Playlist::Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
             Playlists::PlaylistPtr playlist = Playlists::expand( track ); //expand() can return 0 if the KIO job times out
             if( playlist )
             {
+                playlist->triggerTrackLoad(); //playlist track loading is on demand.
                 //since this is a playlist masqueurading as a single track, make a MultiTrack out of it:
                 if ( playlist->tracks().count() > 0 )
                     modifiedList << Meta::TrackPtr( new Meta::MultiTrack( playlist ) );
