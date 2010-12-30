@@ -42,8 +42,8 @@ PLSPlaylist::PLSPlaylist()
 
 PLSPlaylist::PLSPlaylist( Meta::TrackList tracks )
     : m_url( Playlists::newPlaylistFilePath( "pls" ) )
-    , m_tracks( tracks )
     , m_tracksLoaded( true )
+    , m_tracks( tracks )
 {
     m_name = m_url.fileName();
 }
@@ -271,7 +271,7 @@ PLSPlaylist::save( const KUrl &location, bool relative )
     QTextStream stream( &file );
     stream << "[Playlist]\n";
     stream << "NumberOfEntries=" << m_tracks.count() << endl;
-    int i = 0;
+    int i = 1; //PLS starts at File1=
     foreach( Meta::TrackPtr track, m_tracks )
     {
         stream << "File" << i << "=";
