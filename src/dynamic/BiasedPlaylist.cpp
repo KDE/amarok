@@ -48,19 +48,16 @@ const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 50;
 Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     : DynamicPlaylist( parent )
     , m_numRequested( 0 )
-    // , m_bias( new Dynamic::RandomBias() )
 {
-    Dynamic::AndBias *andB = new Dynamic::AndBias();
-    /*
-    andB->appendBias( BiasPtr( new Dynamic::RandomBias() ) );
-    andB->appendBias( BiasPtr( new Dynamic::TagMatchBias() ) );
-    andB->appendBias( BiasPtr( new Dynamic::NotBias() ) );
-    */
-    m_bias = BiasPtr( andB );
+    // , m_bias( new Dynamic::RandomBias() )
+    AndBias *andB = new AndBias();
+    BiasPtr biasPtr = BiasPtr( andB );
+    andB->appendBias( BiasPtr( new TagMatchBias() ) );
+    andB->appendBias( BiasPtr( new NotBias() ) );
 
     m_title = i18nc( "Title for a default dynamic playlist. The default playlist only returns random tracks.", "Random" );
-    connect( m_bias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-             this, SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+
+    biasReplaced( BiasPtr(), biasPtr );
 }
 
 Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *parent )
@@ -82,8 +79,8 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *pare
             else if( name == "bias" )
             {
                 m_bias = Dynamic::BiasFactory::fromXml( reader );
-                connect( m_bias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-                         this, SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+                connect( m_bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+                         this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
             }
             else
             {
@@ -154,12 +151,21 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 }
 
 void
+Dynamic::BiasedPlaylist::biasChanged()
+{
+    DEBUG_BLOCK;
+    emit changed( this );
+}
+
+void
 Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
 {
     Q_UNUSED( oldBias );
     m_bias = newBias;
-    connect( m_bias.data(), SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-             this, SIGNAL( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+    connect( m_bias.data(), SIGNAL( changed( Dynamic::BiasPtr ) ),
+             this, SLOT( biasChanged() ) );
+    connect( m_bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+             this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
 }
 
 
@@ -185,7 +191,9 @@ void
 Dynamic::BiasedPlaylist::recalculate()
 {
     DEBUG_BLOCK
-    if ( AmarokConfig::dynamicMode() && !m_solver ) {
+    debug() << "recalculate" << AmarokConfig::dynamicMode() << "solver?" << m_solver << "requested:" << m_numRequested;
+    if( AmarokConfig::dynamicMode() && !m_solver )
+    {
         {
             QMutexLocker locker(&m_bufferMutex);
             m_buffer.clear();

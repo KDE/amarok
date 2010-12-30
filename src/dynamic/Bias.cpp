@@ -43,7 +43,9 @@ Dynamic::AbstractBias::AbstractBias()
 { }
 
 Dynamic::AbstractBias::~AbstractBias()
-{ }
+{
+    debug() << "destroying bias" << this << this->name();
+}
 
 void
 Dynamic::AbstractBias::toXml( QXmlStreamWriter *writer ) const
@@ -65,21 +67,9 @@ Dynamic::AbstractBias::name() const
 
 
 QWidget*
-Dynamic::AbstractBias::widget( QStandardItem* item, QWidget* parent )
+Dynamic::AbstractBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::BiasWidget( BiasPtr(this), item, parent );
-}
-
-void
-Dynamic::AbstractBias::addToModel( QStandardItemModel *model, QWidget *parentWidget, QModelIndex parentIndex )
-{
-    QStandardItem *item = new QStandardItem();
-    item->setData( QVariant::fromValue( widget( item, parentWidget ) ), WidgetRole );
-
-    if( parentIndex.isValid() )
-        model->itemFromIndex( parentIndex )->appendRow( item );
-    else
-        model->appendRow( item );
+    return new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
 }
 
 
@@ -126,9 +116,9 @@ Dynamic::RandomBias::name() const
 
 
 QWidget*
-Dynamic::RandomBias::widget( QStandardItem* item, QWidget* parent )
+Dynamic::RandomBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::BiasWidget( BiasPtr(this), item, parent );
+    return new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
 }
 
 Dynamic::TrackSet
@@ -211,9 +201,9 @@ Dynamic::AndBias::name() const
 
 
 QWidget*
-Dynamic::AndBias::widget( QStandardItem* item, QWidget* parent )
+Dynamic::AndBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::LevelBiasWidget( this, item, parent );
+    return new PlaylistBrowserNS::LevelBiasWidget( this, parent );
 }
 
 Dynamic::TrackSet
@@ -227,6 +217,7 @@ Dynamic::AndBias::matchingTracks( int position,
     foreach( Dynamic::BiasPtr bias, m_biases )
     {
         Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, contextCount, universe );
+    debug() << "AndBias::matchingTracks" << bias->name() << "tracks:"<<tracks.trackCount() << "outstanding?" << tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
         if( tracks.isOutstanding() )
             m_outstandingMatches++;
         else
@@ -235,6 +226,7 @@ Dynamic::AndBias::matchingTracks( int position,
         if( m_tracks.isEmpty() )
             break;
     }
+
 
     if( m_outstandingMatches > 0 )
         return Dynamic::TrackSet();
@@ -254,28 +246,6 @@ Dynamic::AndBias::energy( const Meta::TrackList& playlist, int contextCount ) co
     return result;
 }
 
-void
-Dynamic::AndBias::addToModel( QStandardItemModel *model, QWidget *parentWidget, QModelIndex parentIndex )
-{
-    QStandardItem *item = new QStandardItem();
-    item->setData( QVariant::fromValue( widget( item, parentWidget ) ), WidgetRole );
-
-    if( parentIndex.isValid() )
-        model->itemFromIndex( parentIndex )->appendRow( item );
-    else
-        model->appendRow( item );
-
-    foreach( Dynamic::BiasPtr bias, m_biases )
-    {
-        bias->addToModel( model, parentWidget, item->index() );
-    }
-
-    // create the add bias widget
-    QStandardItem *addItem = new QStandardItem();
-    addItem->setData( QVariant::fromValue( qobject_cast<QWidget*>(new PlaylistBrowserNS::BiasAddWidget( addItem, parentWidget ) ) ), WidgetRole );
-    item->appendRow( addItem );
-}
-
 
 void
 Dynamic::AndBias::invalidate()
@@ -290,20 +260,34 @@ Dynamic::AndBias::invalidate()
 void
 Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
 {
-    DEBUG_BLOCK
+    DEBUG_BLOCK;
+
+    bool justConstructed = m_biases.isEmpty();
+
+    m_biases.append( bias );
     connect( bias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
              this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
     connect( bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
              this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
-    m_biases.append( bias );
-    emit changed( BiasPtr(this) );
+
+    // creating a shared pointer and destructing it just afterwards would
+    // also destruct this object.
+    // so we give the object creating this bias a chance to increment the refcount
+    if( !justConstructed )
+    {
+        emit biasAppended( bias );
+        emit changed( BiasPtr( this ) );
+    }
 }
 
 void
 Dynamic::AndBias::moveBias( int from, int to )
 {
     m_biases.insert( to, m_biases.takeAt( from ) );
-    emit changed( BiasPtr(this) );
+
+    BiasPtr ptr( this );
+    emit changed( ptr );
+    emit biasMoved( from, to );
 }
 
 
@@ -326,12 +310,28 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
     Q_ASSERT( index >= 0 );
 
     disconnect( oldBias.data(), 0, this, 0 );
-    m_biases[ index ] = newBias;
-    connect( newBias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
-             this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
-    connect( newBias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-             this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
-    emit changed( BiasPtr(this) );
+
+
+    if( newBias )
+    {
+        m_biases[ index ] = newBias;
+        connect( newBias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
+                 this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
+        connect( newBias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+                 this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+
+        // we don't have an bias inserted signal
+        emit biasRemoved( index );
+        emit biasAppended( newBias );
+        emit biasMoved( m_biases.count()-1, index );
+    }
+    else
+    {
+        m_biases.removeAt( index );
+        emit biasRemoved( index );
+    }
+
+    emit changed( BiasPtr( this ) );
 }
 
 
@@ -474,6 +474,34 @@ Dynamic::NotBias::resultReceived( const Dynamic::TrackSet &tracks )
         emit resultReady( m_tracks );
 }
 
+// -------- PartBias ------
+
+Dynamic::PartBias::PartBias()
+    : AndBias()
+{ }
+
+Dynamic::PartBias::PartBias( QXmlStreamReader *reader )
+    : AndBias( reader )
+{ }
+
+QString
+Dynamic::PartBias::sName()
+{
+    return QLatin1String( "partBias" );
+}
+
+QString
+Dynamic::PartBias::name() const
+{
+    return Dynamic::PartBias::sName();
+}
+
+QWidget*
+Dynamic::PartBias::widget( QWidget* parent )
+{
+    return new PlaylistBrowserNS::PartBiasWidget( this, parent );
+}
+
 
 // -------- TagMatchBias ------
 
@@ -545,9 +573,9 @@ Dynamic::TagMatchBias::name() const
 
 
 QWidget*
-Dynamic::TagMatchBias::widget( QStandardItem* item, QWidget* parent )
+Dynamic::TagMatchBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::TagMatchBiasWidget( this, item, parent );
+    return new PlaylistBrowserNS::TagMatchBiasWidget( this, parent );
 }
 
 Dynamic::TrackSet
@@ -611,6 +639,7 @@ Dynamic::TagMatchBias::filter() const
 void
 Dynamic::TagMatchBias::setFilter( const MetaQueryWidget::Filter &filter)
 {
+    DEBUG_BLOCK;
     m_filter = filter;
     invalidate();
     emit changed( BiasPtr(this) );
@@ -627,6 +656,7 @@ Dynamic::TagMatchBias::invalidate()
 void
 Dynamic::TagMatchBias::newQuery()
 {
+    DEBUG_BLOCK;
     // ok, I need a new query maker
     m_qm.reset( CollectionManager::instance()->queryMaker() );
 

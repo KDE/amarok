@@ -25,10 +25,10 @@
 #include "widgets/MetaQueryWidget.h"
 
 #include <QWidget>
-#include <QStandardItem>
 
 class QFormLayout;
 class QLabel;
+class QSlider;
 class QToolButton;
 class KComboBox;
 
@@ -40,54 +40,39 @@ namespace Amarok
 
 namespace PlaylistBrowserNS
 {
-    /** This kind of widgets is used in the playlist browsers model to display entries. */
+    /** This widget encapsulates the real bias widgets and exchanges them if needed.
+        Also this widget will display a "list like" background.
+    */
     class BiasBoxWidget : public QWidget
     {
         Q_OBJECT
 
         public:
-            BiasBoxWidget( QStandardItem* item = 0, QWidget* parent = 0 );
+            BiasBoxWidget( Dynamic::BiasPtr bias, QWidget* parent = 0 );
             virtual ~BiasBoxWidget() {}
 
-        signals:
-            void widgetChanged( QWidget* );
+            void setRemovable( bool );
+
+        protected slots:
+            void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
 
         protected:
-            void resizeEvent( QResizeEvent* );
+            // void resizeEvent( QResizeEvent* );
             void paintEvent( QPaintEvent* );
 
-            QStandardItem* m_item;
+            QHBoxLayout* m_mainLayout;
+            QWidget *m_biasWidget;
+            bool m_removable;
     };
 
-    class BiasAddWidget : public BiasBoxWidget
+    class BiasWidget : public QWidget
     {
         Q_OBJECT
 
         public:
-            BiasAddWidget( QStandardItem* item = 0, QWidget* parent = 0 );
+            BiasWidget( Dynamic::BiasPtr bias, QWidget* parent = 0 );
 
-        private slots:
-            void slotClicked();
-
-        signals:
-            void addBias();
-            void clicked();
-
-        protected:
-            virtual void mousePressEvent( QMouseEvent* event );
-
-        private:
-            QToolButton* m_addButton;
-            QLabel*      m_addLabel;
-    };
-
-    class BiasWidget : public BiasBoxWidget
-    {
-        Q_OBJECT
-
-        public:
-            explicit BiasWidget( Dynamic::BiasPtr bias,
-                                 QStandardItem* item = 0, QWidget* parent = 0 );
+            void setRemovable( bool value );
 
         private slots:
             void factoriesChanged();
@@ -111,11 +96,42 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-            explicit LevelBiasWidget( Dynamic::AndBias* bias,
-                                      QStandardItem* item = 0, QWidget* parent = 0 );
+            LevelBiasWidget( Dynamic::AndBias* bias, QWidget* parent = 0 );
+
+        protected slots:
+            virtual void appendBias();
+            virtual void biasAppended( Dynamic::BiasPtr bias );
+            virtual void biasRemoved( int pos );
+            virtual void biasMoved( int from, int to );
 
         private:
+            /** calls setRemovable() for all sub-widgets */
+            void correctRemovability();
+
             Dynamic::AndBias* m_abias;
+            QList<BiasBoxWidget*> m_widgets;
+
+            QToolButton* m_addButton;
+    };
+
+    /** A BiasWidget for the PartBias */
+    class PartBiasWidget : public LevelBiasWidget
+    {
+        Q_OBJECT
+
+        public:
+            PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent = 0 );
+
+        private slots:
+            virtual void biasAppended( Dynamic::BiasPtr bias );
+            virtual void biasRemoved( int pos );
+            virtual void biasMoved( int from, int to );
+
+        private:
+            Dynamic::PartBias* m_pbias;
+
+            QSlider *m_weightSelection;
+            QList<QSlider*> m_sliders;
     };
 
     class TagMatchBiasWidget : public BiasWidget
@@ -123,8 +139,7 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-            explicit TagMatchBiasWidget( Dynamic::TagMatchBias* bias,
-                                         QStandardItem* item = 0, QWidget* parent = 0 );
+            TagMatchBiasWidget( Dynamic::TagMatchBias* bias, QWidget* parent = 0 );
 
         private slots:
             void syncControlsToBias();
@@ -138,11 +153,6 @@ namespace PlaylistBrowserNS
             Dynamic::TagMatchBias* m_tbias;
     };
 
-
-
 }
 
-Q_DECLARE_METATYPE( PlaylistBrowserNS::BiasBoxWidget* )
-
 #endif
-

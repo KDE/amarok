@@ -472,12 +472,14 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
             result.appendTrack( getRandomTrack( universeSet ) );
     }
 
+debug() << "generated playlist with"<<result.m_trackList.count()<<"tracks";
     return result;
 }
 
 Meta::TrackPtr
 Dynamic::BiasSolver::getRandomTrack( const TrackSet& subset ) const
 {
+    DEBUG_BLOCK;
     if( subset.trackCount() == 0 )
         return Meta::TrackPtr();
 
@@ -502,6 +504,7 @@ Dynamic::BiasSolver::getRandomTrack( const TrackSet& subset ) const
 Meta::TrackPtr
 Dynamic::BiasSolver::trackForUid( const QString& uid ) const
 {
+    DEBUG_BLOCK;
     const KUrl url( uid );
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 

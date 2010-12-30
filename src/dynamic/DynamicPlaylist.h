@@ -51,6 +51,11 @@ class DynamicPlaylist : public QObject
     signals:
         void tracksReady( Meta::TrackList );
 
+        /** Emitted when this playlist has been modified in some way.
+            The DynamicModel will listen to it to detect if it needs to save it.
+        */
+        void changed( Dynamic::DynamicPlaylist* playlist );
+
     public slots:
         /** Start recalculating all tracks after the currently played track */
         virtual void recalculate();

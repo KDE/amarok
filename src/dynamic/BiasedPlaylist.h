@@ -61,6 +61,7 @@ namespace Dynamic
 
         private slots:
             void solverFinished();
+            void biasChanged();
             void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
             void updateStatus( int progress );
 

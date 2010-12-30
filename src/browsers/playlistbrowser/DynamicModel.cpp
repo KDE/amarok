@@ -254,7 +254,7 @@ PlaylistBrowserNS::DynamicModel::columnCount( const QModelIndex& ) const
 
 
 void
-PlaylistBrowserNS::DynamicModel::playlistModified( Dynamic::BiasedPlaylist* p )
+PlaylistBrowserNS::DynamicModel::playlistChanged( Dynamic::BiasedPlaylist* p )
 {
     DEBUG_BLOCK
 
@@ -429,7 +429,13 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists( const QString &filename )
         {
             QStringRef name = xmlReader.name();
             if( name == "playlist" )
-                m_playlists.append( new Dynamic::BiasedPlaylist( &xmlReader, this ) );
+            {
+                Dynamic::BiasedPlaylist *playlist =  new Dynamic::BiasedPlaylist( &xmlReader, this );
+                connect( playlist, SIGNAL( changed( Dynamic::DynamicPlaylist ) ),
+                         this, SLOT( playlistChanged( Dynamic::DynamicPlaylist ) ) );
+
+                m_playlists.append( playlist );
+            }
             else
             {
                 qDebug() << "Unexpected xml start element"<<name<<"in input";
@@ -459,7 +465,11 @@ void
 PlaylistBrowserNS::DynamicModel::initPlaylists()
 {
     // create the empty default random playlist
-    m_playlists.append( new Dynamic::BiasedPlaylist( this ) );
+    Dynamic::BiasedPlaylist *playlist =  new Dynamic::BiasedPlaylist( this );
+    connect( playlist, SIGNAL( changed( Dynamic::DynamicPlaylist ) ),
+             this, SLOT( playlistChanged( Dynamic::DynamicPlaylist ) ) );
+
+    m_playlists.append( playlist );
     m_activePlaylistIndex = 0;
 }
 

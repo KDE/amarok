@@ -25,7 +25,7 @@ class QCheckBox;
 class QPushButton;
 class KComboBox;
 class QToolButton;
-class QTreeView;
+class QScrollArea;
 class QStandardItemModel;
 class QSpinBox;
 
@@ -42,11 +42,7 @@ namespace PlaylistBrowserNS {
             DynamicCategory( QWidget* parent );
             ~DynamicCategory();
 
-        protected slots:
-            void newPalette( const QPalette & palette );
-
         private slots:
-            void OnOff(bool);
             void enableDynamicMode( bool enable );
             void playlistSelectionChanged( int index );
             void save();
@@ -55,9 +51,6 @@ namespace PlaylistBrowserNS {
             void setPreviousTracks( int );
 
         private:
-            void On();
-            void Off();
-
             void saveOnExit();
 
             QCheckBox *m_onOffCheckbox;
@@ -67,9 +60,7 @@ namespace PlaylistBrowserNS {
 
             QToolButton *m_saveButton;
             QToolButton *m_deleteButton;
-            QTreeView   *m_biasListView;
-            QStandardItemModel *m_biasModel;
-            DynamicBiasDelegate *m_biasDelegate;
+            QScrollArea *m_scroller;
 
             QSpinBox *m_previous, *m_upcoming;
     };

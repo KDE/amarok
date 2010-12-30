@@ -29,12 +29,10 @@
 #include <QModelIndex>
 #include <QSharedData>
 
-#include <KSharedPtr>
+#include <QExplicitlySharedDataPointer>
 
 class QXmlStreamReader;
 class QXmlStreamWriter;
-class QStandardItem;
-class QStandardItemModel;
 
 namespace Collections {
     class Collection;
@@ -45,7 +43,7 @@ namespace Dynamic
 {
     class AbstractBias;
 
-    typedef KSharedPtr<Dynamic::AbstractBias> BiasPtr;
+    typedef QExplicitlySharedDataPointer<Dynamic::AbstractBias> BiasPtr;
     typedef QList<Dynamic::BiasPtr> BiasList;
 
     /** A bias is essentially just a function that evaluates the suitability of a
@@ -73,7 +71,7 @@ namespace Dynamic
                 This is done to make it mirror the constructor which does not read those
                 tags either.
             */
-            virtual void toXml( QXmlStreamWriter *writer ) const = 0;
+            virtual void toXml( QXmlStreamWriter *writer ) const;
 
             /** Returns the name of this bias.
                 The name is used for reading and writing to xml.
@@ -85,7 +83,7 @@ namespace Dynamic
 
             /** Create a widget appropriate for editing the bias.
             */
-            virtual QWidget* widget( QStandardItem* item, QWidget* parent = 0 ) = 0;
+            virtual QWidget* widget( QWidget* parent = 0 );
 
             /** Returns the tracks that would fit at the indicated position.
                 The function can also return an "outstanding" Track set and return
@@ -103,6 +101,14 @@ namespace Dynamic
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
                                              const TrackCollectionPtr universe ) const = 0;
+            /*
+            {
+                Q_UNUSED( position );
+                Q_UNUSED( playlist );
+                Q_UNUSED( contextCount );
+                return TrackSet( universe );
+            }
+            */
 
             /** Returns an energy value for the given playlist.
                 The energy value should be in the range 0-1.
@@ -111,17 +117,12 @@ namespace Dynamic
                 @param contextCount The number of songs that are already fixed. Those songs
                                 should not take part in the calculation of an energy value.
             */
-            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const = 0;
-
-            virtual void addToModel( QStandardItemModel *model, QWidget *parentWidget, QModelIndex parentIndex = QModelIndex() );
-
-            /** Returns all sub-biases of this bias */
-            // virtual BiasList biases() const;
-
-            /** Returns the maximum number of allowed sub-biases.
-                That can be either 0, 1 or more.
-            */
-            // virtual int getMaxBiases() const;
+            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const
+            {
+                Q_UNUSED( playlist );
+                Q_UNUSED( contextCount );
+                return 0.0;
+            }
 
         signals:
             /** This signal is emitted when the bias is changed.
@@ -163,7 +164,7 @@ namespace Dynamic
             static QString sName();
             virtual QString name() const;
 
-            virtual QWidget* widget( QStandardItem* item, QWidget* parent = 0 );
+            virtual QWidget* widget( QWidget* parent = 0 );
 
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
@@ -189,7 +190,7 @@ namespace Dynamic
             static QString sName();
             virtual QString name() const;
 
-            virtual QWidget* widget( QStandardItem* item, QWidget* parent = 0 );
+            virtual QWidget* widget( QWidget* parent = 0 );
 
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
@@ -197,16 +198,19 @@ namespace Dynamic
 
             virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
 
-            // virtual BiasList biases() const;
-            // virtual int getMaxBiases() const;
-
-            virtual void addToModel( QStandardItemModel *model, QWidget *parentWidget, QModelIndex parentIndex = QModelIndex() );
-
             /** Appends a bias to this bias.
                 This object will take ownership of the bias and free it when destroyed.
             */
-            virtual void appendBias( BiasPtr bias );
+            virtual void appendBias( Dynamic::BiasPtr bias );
             virtual void moveBias( int from, int to );
+
+            BiasList biases() const
+            { return m_biases; }
+
+        signals:
+            void biasAppended( Dynamic::BiasPtr bias );
+            void biasRemoved( int pos );
+            void biasMoved( int from, int to );
 
         public slots:
             virtual void invalidate();
@@ -280,6 +284,39 @@ namespace Dynamic
             Q_DISABLE_COPY(NotBias)
     };
 
+    class PartBias : public AndBias
+    {
+        Q_OBJECT
+
+        public:
+            PartBias();
+            PartBias( QXmlStreamReader *reader );
+
+            static QString sName();
+            virtual QString name() const;
+
+            virtual QWidget* widget( QWidget* parent = 0 );
+
+            /** Returns the tracks that would fit at the indicated position */
+            /*
+            virtual TrackSet matchingTracks( int position,
+                                             const Meta::TrackList& playlist, int contextCount,
+                                             const TrackCollectionPtr universe ) const;
+
+            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
+            */
+
+        protected slots:
+            // virtual void resultReceived( const Dynamic::TrackSet &tracks );
+
+        protected:
+            QList<qreal> m_weights;
+
+        private:
+            Q_DISABLE_COPY(PartBias)
+    };
+
+
     class TagMatchBias : public AbstractBias
     {
         Q_OBJECT
@@ -293,7 +330,7 @@ namespace Dynamic
             static QString sName();
             virtual QString name() const;
 
-            virtual QWidget* widget( QStandardItem* item, QWidget* parent = 0 );
+            virtual QWidget* widget( QWidget* parent = 0 );
 
             /** Returns the tracks that would fit at the indicated position */
             virtual TrackSet matchingTracks( int position,

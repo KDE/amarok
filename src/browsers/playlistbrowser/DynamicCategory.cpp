@@ -18,20 +18,21 @@
 
 #include "DynamicCategory.h"
 
+#include "DynamicModel.h"
+// #include "DynamicBiasDelegate.h"
+#include "DynamicBiasWidgets.h"
+#include "amarokconfig.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "DynamicModel.h"
-#include "DynamicBiasDelegate.h"
-#include "amarokconfig.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
-#include "PaletteHandler.h"
 
 #include <QStandardItemModel>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QLabel>
 
+#include <QScrollArea>
 #include <QCheckBox>
 #include <QListView>
 #include <QPushButton>
@@ -52,9 +53,6 @@ namespace PlaylistBrowserNS {
 
 DynamicCategory::DynamicCategory( QWidget* parent )
     : BrowserCategory( "dynamic category", parent )
-    , m_biasListView( 0 )
-    , m_biasModel( 0 )
-    , m_biasDelegate( 0 )
 {
     setPrettyName( i18n( "Dynamic Playlists" ) );
     setShortDescription( i18n( "Dynamically updating parameter based playlists" ) );
@@ -76,17 +74,17 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
     m_onOffCheckbox->setCheckable( true );
     m_onOffCheckbox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
-    QObject::connect( m_onOffCheckbox, SIGNAL( toggled( bool ) ), this, SLOT( OnOff ( bool ) ) );
+    QObject::connect( m_onOffCheckbox, SIGNAL( toggled( bool ) ),
+                      this, SLOT( enableDynamicMode( bool ) ) );
 
     m_repopulateButton = new QPushButton( controls1Layout );
     m_repopulateButton->setText( i18n("Repopulate") );
     m_repopulateButton->setToolTip( i18n("Replace the upcoming tracks with fresh ones.") );
     m_repopulateButton->setIcon( KIcon( "view-refresh-amarok" ) );
     m_repopulateButton->setEnabled( enabled );
-    m_repopulateButton->setSizePolicy( 
-    QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
+    m_repopulateButton->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
     QObject::connect( m_repopulateButton, SIGNAL( clicked(bool) ), The::playlistActions(), SLOT( repopulateDynamicPlaylist() ) );
-            
+
 
     new KSeparator( Qt::Horizontal, this );
 
@@ -112,7 +110,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ) );
     QObject::connect( (const QObject*)Amarok::actionCollection()->action( "disable_dynamic" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ), Qt::DirectConnection );
-    
+
 
 
     KHBox* presetLayout = new KHBox( this );
@@ -162,13 +160,11 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     connect( m_deleteButton, SIGNAL(clicked(bool)),
             DynamicModel::instance(), SLOT(removeActive()) );
 
+    /*
     m_biasListView = new QTreeView( this );
     m_biasListView->setFrameShape( QFrame::NoFrame );
     m_biasListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
     m_biasListView->setAlternatingRowColors( true );
-
-    The::paletteHandler()->updateItemView( m_biasListView );
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 
     m_biasModel = new QStandardItemModel( m_biasListView );
     m_biasListView->setModel( m_biasModel );
@@ -178,6 +174,10 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
     m_biasListView->setItemDelegate( m_biasDelegate );
+    */
+
+    m_scroller = new QScrollArea( this );
+    m_scroller->setWidgetResizable( true );
 
     int index = DynamicModel::instance()->activePlaylistIndex();
 
@@ -209,48 +209,24 @@ DynamicCategory::enableDynamicMode( bool enable )
     if( AmarokConfig::dynamicMode() == enable )
         return;
 
-    if( enable )
-        On();
-    else
-        Off();
-}
-
-void
-DynamicCategory::OnOff( bool checked )
-{
-    if( checked )
-        On();
-    else
-        Off();
-}
-
-
-void
-DynamicCategory::On()
-{
-    AmarokConfig::setDynamicMode( true );
+    AmarokConfig::setDynamicMode( enable );
     // TODO: turn off other incompatible modes
+    // TODO: should we restore the state of other modes?
     AmarokConfig::self()->writeConfig();
-    m_repopulateButton->setEnabled( true );
-    The::playlistActions()->playlistModeChanged();
+    m_repopulateButton->setEnabled( enable );
 
     //if the playlist is empty, repopulate while we are at it:
 
-    DynamicModel::instance()->enable( true );
-    if ( Playlist::ModelStack::instance()->bottom()->rowCount() == 0 )
-        The::playlistActions()->repopulateDynamicPlaylist();
-}
+    DynamicModel::instance()->enable( enable );
+    if( enable )
+    {
+        if ( Playlist::ModelStack::instance()->bottom()->rowCount() == 0 )
+            The::playlistActions()->repopulateDynamicPlaylist();
+    }
 
-void
-DynamicCategory::Off()
-{
-    AmarokConfig::setDynamicMode( false );
-    // TODO: should we restore the state of other modes?
-    AmarokConfig::self()->writeConfig();
-    DynamicModel::instance()->enable( false );
-    m_repopulateButton->setEnabled( false );
     The::playlistActions()->playlistModeChanged();
 }
+
 
 void
 DynamicCategory::playlistCleared() // SLOT
@@ -302,8 +278,9 @@ DynamicCategory::playlistSelectionChanged( int index )
         AmarokConfig::self()->writeConfig();
     }
 
-    m_biasModel->clear();
-    playlist->bias()->addToModel( m_biasModel, m_biasListView );
+    delete m_scroller->takeWidget();
+    m_scroller->setWidget( new PlaylistBrowserNS::BiasBoxWidget( playlist->bias(), m_scroller ) );
+    m_scroller->widget()->show();
 
     debug() << "Changing biased playlist to: " << playlist->title();
 }
@@ -343,13 +320,6 @@ DynamicCategory::saveOnExit()
 }
 
 } // namespace
-
-void PlaylistBrowserNS::DynamicCategory::newPalette(const QPalette & palette)
-{
-    Q_UNUSED( palette )
-    The::paletteHandler()->updateItemView( m_biasListView );
-    m_biasListView->reset();
-}
 
 #include "DynamicCategory.moc"
 

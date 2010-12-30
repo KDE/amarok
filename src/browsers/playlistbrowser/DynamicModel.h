@@ -74,7 +74,7 @@ class DynamicModel : public QAbstractItemModel
         void enableDynamicMode( bool );
 
     public slots:
-        void playlistModified( Dynamic::BiasedPlaylist* );
+        void playlistChanged( Dynamic::BiasedPlaylist* );
         void saveActive( const QString& newTitle );
         void removeActive();
 
