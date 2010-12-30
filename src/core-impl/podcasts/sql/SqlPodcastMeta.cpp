@@ -559,14 +559,12 @@ SqlPodcastChannel::trackCount() const
     Q_ASSERT( sql );
 
     QStringList results = sql->query( query.arg( m_dbId ) );
-    debug() << results;
     if( results.isEmpty() )
     {
         error() << "no results for COUNT query on playlist_tracks table!";
         return -1;
     }
     int trackCount = results.first().toInt();
-    debug() << trackCount;
     return m_purge ? qMin( m_purgeCount, trackCount ): trackCount;
 }
 
@@ -691,7 +689,6 @@ SqlPodcastChannel::applyPurge()
 
     while( m_episodes.count() > purgeCount() )
     {
-        debug() << "removing last episode from the list since we are limited to " << purgeCount();
         SqlPodcastEpisodePtr removedEpisode = m_episodes.takeLast();
         m_provider->deleteDownloadedEpisode( removedEpisode );
 
