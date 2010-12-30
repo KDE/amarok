@@ -35,45 +35,24 @@ namespace Playlists {
 
 PLSPlaylist::PLSPlaylist()
     : m_url( Playlists::newPlaylistFilePath( "pls" ) )
+    , m_tracksLoaded( true )
 {
     m_name = m_url.fileName();
 }
 
 PLSPlaylist::PLSPlaylist( Meta::TrackList tracks )
-    : m_tracks( tracks )
-    , m_url( Playlists::newPlaylistFilePath( "pls" ) )
+    : m_url( Playlists::newPlaylistFilePath( "pls" ) )
+    , m_tracks( tracks )
+    , m_tracksLoaded( true )
 {
     m_name = m_url.fileName();
 }
 
 PLSPlaylist::PLSPlaylist( const KUrl &url )
     : m_url( url )
+    , m_tracksLoaded( false )
 {
-    DEBUG_BLOCK
-    debug() << "url: " << m_url;
-
     m_name = m_url.fileName();
-
-    //check if file is local or remote
-    if ( m_url.isLocalFile() )
-    {
-        QFile file( m_url.toLocalFile() );
-        if( !file.open( QIODevice::ReadOnly ) ) {
-            debug() << "cannot open file";
-            return;
-        }
-
-        QString contents = QString( file.readAll() );
-        file.close();
-
-        QTextStream stream;
-        stream.setString( &contents );
-        loadPls( stream );
-    }
-    else
-    {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
-    }
 }
 
 PLSPlaylist::~PLSPlaylist()
@@ -85,6 +64,53 @@ PLSPlaylist::description() const
 {
     KMimeType::Ptr mimeType = KMimeType::mimeType( "audio/x-scpls" );
     return QString( "%1 (%2)").arg( mimeType->name(), "pls" );
+}
+
+int
+PLSPlaylist::trackCount() const
+{
+    if( m_tracksLoaded )
+        return m_tracks.count();
+
+    //TODO: count the number of lines starting with #
+    return -1;
+}
+
+Meta::TrackList
+PLSPlaylist::tracks()
+{
+    return m_tracks;
+}
+
+void
+PLSPlaylist::triggerTrackLoad()
+{
+    //TODO make sure we've got all tracks first.
+    if( m_tracksLoaded )
+        return;
+
+    //check if file is local or remote
+    if( m_url.isLocalFile() )
+    {
+        QFile file( m_url.toLocalFile() );
+        if( !file.open( QIODevice::ReadOnly ) )
+        {
+            error() << "cannot open file";
+            return;
+        }
+
+        QString contents( file.readAll() );
+        file.close();
+
+        QTextStream stream;
+        stream.setString( &contents );
+        loadPls( stream );
+        m_tracksLoaded = true;
+    }
+    else
+    {
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
+    }
 }
 
 bool
