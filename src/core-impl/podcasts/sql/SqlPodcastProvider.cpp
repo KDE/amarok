@@ -231,7 +231,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
             return episode;
 
     //The episode was found in the database but it's channel didn't have it in it's list.
-    //That probably is because it's beyond the purgecount limit.
+    //That probably is because it's beyond the purgecount limit or the tracks were not loaded yet.
     return SqlPodcastEpisodePtr( new SqlPodcastEpisode( dbResult.mid( 0, 14 ), channel ) );
 }
 
