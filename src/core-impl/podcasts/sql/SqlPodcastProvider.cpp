@@ -1237,7 +1237,9 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     QFile *tmpFile = createTmpFile( sqlEpisode );
     struct PodcastEpisodeDownload download = { sqlEpisode,
                                                tmpFile,
-                                               tmpFile->fileName(),
+    /* Unless a reidrect happens the filename from the enclosure is used. This is a potential source
+       of filename conflicts in downloadResult() */
+                                               KUrl( sqlEpisode->uidUrl() ).fileName(),
                                                false
                                              };
     m_downloadJobMap.insert( transferJob, download );
@@ -1372,11 +1374,11 @@ SqlPodcastProvider::addData( KIO::Job *job, const QByteArray &data )
         return; // EOF
     }
 
-    struct PodcastEpisodeDownload download = m_downloadJobMap.value( job );
+    struct PodcastEpisodeDownload &download = m_downloadJobMap[job];
 
     // NOTE: if there is a tmpfile we are already downloading, no need to
     // checkEnclosureLocallyAvailable() on every data chunk. performance optimization.
-    if( download.finalNameReady )
+    if( !download.finalNameReady )
     {
         download.finalNameReady = true;
         if( checkEnclosureLocallyAvailable( job ) )
