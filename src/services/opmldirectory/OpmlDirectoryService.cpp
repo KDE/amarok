@@ -101,6 +101,7 @@ void OpmlDirectoryService::polish()
     view->setDragEnabled ( true );
     view->setSortingEnabled( false );
     view->setDragDropMode ( QAbstractItemView::DragOnly );
+    view->setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
     setView( view );
     KUrl opmlLocation( Amarok::saveLocation() );
     opmlLocation.addPath( "podcast_directory.opml" );

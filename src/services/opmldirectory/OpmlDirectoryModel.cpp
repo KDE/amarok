@@ -37,6 +37,9 @@ OpmlDirectoryModel::OpmlDirectoryModel( KUrl outlineUrl, QObject *parent )
     //fetchMore will be called by the view
     m_addOpmlAction = new QAction( KIcon( "list-add" ), i18n( "Add OPML" ), this );
     connect( m_addOpmlAction, SIGNAL(triggered()), SLOT(slotAddOpmlAction()) );
+
+    m_addFolderAction = new QAction( KIcon( "folder-add" ), i18n( "Add Folder"), this );
+    connect( m_addFolderAction, SIGNAL(triggered()), SLOT(slotAddFolderAction()) );
 }
 
 OpmlDirectoryModel::~OpmlDirectoryModel()
@@ -62,6 +65,20 @@ OpmlDirectoryModel::index( int row, int column, const QModelIndex &parent ) cons
         return QModelIndex();
 
     return createIndex( row, column, parentOutline->children()[row] );
+}
+
+Qt::ItemFlags
+OpmlDirectoryModel::flags( const QModelIndex &idx ) const
+{
+    if( !idx.isValid() )
+        return Qt::ItemIsDropEnabled;
+
+    OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
+    if( outline && !outline->attributes().contains( "type" ) ) //probably a folder
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled
+                | Qt::ItemIsDropEnabled;
+
+    return QAbstractItemModel::flags( idx );
 }
 
 QModelIndex
@@ -130,7 +147,7 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
         if( role == ActionRole )
         {
             QList<QAction *> actions;
-            actions << m_addOpmlAction;
+            actions << m_addOpmlAction << m_addFolderAction;
             return QVariant::fromValue( actions );
         }
         return QVariant();
@@ -146,11 +163,30 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
         case Qt::DisplayRole:
             return outline->attributes()["text"];
         case ActionRole:
+        {
+            if( !outline->attributes().contains( "type" ) ) //probably a folder
+                return QVariant::fromValue( QActionList() << m_addOpmlAction << m_addFolderAction );
+        }
         default:
             return QVariant();
     }
 
     return QVariant();
+}
+
+bool
+OpmlDirectoryModel::setData( const QModelIndex &idx, const QVariant &value, int role )
+{
+    if( !idx.isValid() )
+        return false;
+
+    OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
+    if( !outline )
+        return false;
+
+    outline->mutableAttributes()["text"] = value.toString();
+
+    return true;
 }
 
 void
@@ -221,6 +257,20 @@ OpmlDirectoryModel::slotAddOpmlAction()
     saveOpml( m_rootOpmlUrl );
 
     delete dialog;
+}
+
+void
+OpmlDirectoryModel::slotAddFolderAction()
+{
+    OpmlOutline *outline = new OpmlOutline();
+    outline->addAttribute( "text", i18n( "New Folder" ) );
+    int newRow = m_rootOutlines.count();
+
+    beginInsertRows( QModelIndex(), newRow, newRow );
+    m_rootOutlines << outline;
+    endInsertRows();
+
+    saveOpml( m_rootOpmlUrl );
 }
 
 bool

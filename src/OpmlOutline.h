@@ -34,6 +34,9 @@ class AMAROK_EXPORT OpmlOutline
         bool isRootItem() const { return m_parent == 0; }
 
         QMap<QString,QString> attributes() const { return m_attributes; }
+
+        /** @return a modifiable reference to the attributes */
+        QMap<QString,QString> &mutableAttributes() { return m_attributes; }
         void addAttribute( const QString &key, const QString &value )
                 { m_attributes.insert( key, value ); }
 
