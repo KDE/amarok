@@ -24,7 +24,7 @@
 
 #include <QXmlStreamWriter>
 
-class OpmlWriter : public ThreadWeaver::Job
+class AMAROK_EXPORT OpmlWriter : public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
