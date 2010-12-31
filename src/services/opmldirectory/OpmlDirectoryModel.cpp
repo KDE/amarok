@@ -199,6 +199,8 @@ OpmlDirectoryModel::slotAddOpmlAction()
     QWidget *opmlAddWidget = new QWidget( dialog );
     Ui::AddOpmlWidget widget;
     widget.setupUi( opmlAddWidget );
+    widget.urlEdit->setMode( KFile::File );
+    dialog->setMainWidget( opmlAddWidget );
 
     if( dialog->exec() != QDialog::Accepted )
         return;
