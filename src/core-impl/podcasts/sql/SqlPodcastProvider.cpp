@@ -632,18 +632,19 @@ SqlPodcastProvider::slotConfigChanged()
 void
 SqlPodcastProvider::slotExportOpml()
 {
-    OpmlOutline *rootOutline = new OpmlOutline();
-    //TODO: root OPML outline head
+    QList<OpmlOutline *> rootOutlines;
+    QMap<QString,QString> headerData;
+    //TODO: set header data such as date
 
     //TODO: folder outline support
     foreach( SqlPodcastChannelPtr channel, m_channels )
     {
-        OpmlOutline *channelOutline = new OpmlOutline( rootOutline );
+        OpmlOutline *channelOutline = new OpmlOutline();
         #define addAttr( k, v ) channelOutline->addAttribute( k, v )
         addAttr( "text", channel->title() );
         addAttr( "type", "rss" );
         addAttr( "xmlUrl", channel->url().url() );
-        rootOutline->addChild( channelOutline );
+        rootOutlines << channelOutline;
     }
 
     //TODO: add checkbox as widget to filedialog to include podcast settings.
@@ -662,7 +663,7 @@ SqlPodcastProvider::slotExportOpml()
         error() << "could not open OPML file " << filePath.url();
         return;
     }
-    OpmlWriter *opmlWriter = new OpmlWriter( rootOutline, opmlFile );
+    OpmlWriter *opmlWriter = new OpmlWriter( rootOutlines, headerData, opmlFile );
     connect( opmlWriter, SIGNAL(result(int)), SLOT(slotOpmlWriterDone(int)) );
     opmlWriter->run();
 }
