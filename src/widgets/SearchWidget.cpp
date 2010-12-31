@@ -141,8 +141,10 @@ SearchWidget::slotShowFilterEditor()
 void
 SearchWidget::slotFilterEditorFinished( int result )
 {
-    Q_UNUSED( result )
     m_filterAction->setEnabled( true );
+
+    if( result && !m_sw->currentText().isEmpty() ) // result == QDialog::Accepted
+        addCompletion( m_sw->currentText() );
 }
 
 QToolBar * SearchWidget::toolBar()
