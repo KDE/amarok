@@ -4,6 +4,5 @@
     <body>
         <outline text="Amarok developer personal favorites" type="include" url="http://kollide.net/~stecchino/stecchinos_podcasts.opml"/>
         <outline text="public podcast directories (warning: large!)" type="include" url="http://kollide.net/~stecchino/public_podcast_directories.opml"/>
-        </outline>
     </body>
 </opml>
