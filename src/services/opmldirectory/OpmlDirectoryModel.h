@@ -42,12 +42,16 @@ public:
     explicit OpmlDirectoryModel( KUrl outlineUrl, QObject *parent = 0 );
     ~OpmlDirectoryModel();
 
+    // QAbstractItemModel methods
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
     virtual QModelIndex parent( const QModelIndex &index ) const;
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+
+    // OpmlDirectoryModel methods
+    virtual void saveOpml( const KUrl &saveLocation );
 
 signals:
 
@@ -61,6 +65,7 @@ protected:
 private slots:
     void slotOpmlOutlineParsed( OpmlOutline * );
     void slotOpmlParsingDone();
+    void slotOpmlWriterDone( int result );
 
 private:
     KUrl m_rootOpmlUrl;

@@ -19,6 +19,7 @@
 #include "core/support/Amarok.h"
 #include "MainWindow.h"
 #include "OpmlParser.h"
+#include "OpmlWriter.h"
 #include "core/support/Debug.h"
 
 #include "ui_AddOpmlWidget.h"
@@ -153,6 +154,43 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
 }
 
 void
+OpmlDirectoryModel::saveOpml( const KUrl &saveLocation )
+{
+    if( !saveLocation.isLocalFile() )
+    {
+        //TODO:implement
+        error() << "can not save OPML to remote location";
+        return;
+    }
+
+    QFile *opmlFile = new QFile( saveLocation.toLocalFile(), this );
+    if( !opmlFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    {
+        error() << "could not open OPML file for writing " << saveLocation.url();
+        return;
+    }
+
+    QMap<QString,QString> headerData;
+    //TODO: set header data such as date
+
+    OpmlWriter *opmlWriter = new OpmlWriter( m_rootOutlines, headerData, opmlFile );
+    connect( opmlWriter, SIGNAL(result(int)), SLOT(slotOpmlWriterDone(int)) );
+    opmlWriter->run();
+}
+
+void
+OpmlDirectoryModel::slotOpmlWriterDone( int result )
+{
+    Q_UNUSED( result )
+
+    OpmlWriter *writer = qobject_cast<OpmlWriter *>( QObject::sender() );
+    Q_ASSERT( writer );
+    writer->device()->close();
+    delete writer;
+}
+
+
+void
 OpmlDirectoryModel::slotAddOpmlAction()
 {
     KDialog *dialog = new KDialog( The::mainWindow() );
@@ -177,6 +215,8 @@ OpmlDirectoryModel::slotAddOpmlAction()
     beginInsertRows( QModelIndex(), newRow, newRow );
     m_rootOutlines << outline;
     endInsertRows();
+
+    saveOpml( m_rootOpmlUrl );
 
     delete dialog;
 }
