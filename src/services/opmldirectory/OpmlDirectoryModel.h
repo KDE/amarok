@@ -25,10 +25,20 @@
 
 class OpmlParser;
 
+class QAction;
+
+typedef QList<QAction *> QActionList;
+
 class OpmlDirectoryModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
+    enum
+    {
+        ActionRole = Qt::UserRole, //list of QActions for the index
+        CustomRoleOffset //first role that can be used by sublasses for their own data
+    };
+
     explicit OpmlDirectoryModel( KUrl outlineUrl, QObject *parent = 0 );
     ~OpmlDirectoryModel();
 
@@ -42,6 +52,7 @@ public:
 signals:
 
 public slots:
+    void slotAddOpmlAction();
 
 protected:
     virtual bool canFetchMore( const QModelIndex &parent ) const;
@@ -56,6 +67,10 @@ private:
     QList<OpmlOutline *> m_rootOutlines;
 
     QMap<OpmlParser *,QModelIndex> m_currentFetchingMap;
+
+    QAction *m_addOpmlAction;
 };
+
+Q_DECLARE_METATYPE(QActionList)
 
 #endif // OPMLDIRECTORYMODEL_H

@@ -16,16 +16,26 @@
 
 #include "OpmlDirectoryModel.h"
 
+#include "core/support/Amarok.h"
+#include "MainWindow.h"
 #include "OpmlParser.h"
 #include "core/support/Debug.h"
 
+#include "ui_AddOpmlWidget.h"
+
 #include <ThreadWeaver/Weaver>
+
+#include <KDialog>
+
+#include <QAction>
 
 OpmlDirectoryModel::OpmlDirectoryModel( KUrl outlineUrl, QObject *parent )
     : QAbstractItemModel( parent )
     , m_rootOpmlUrl( outlineUrl )
 {
     //fetchMore will be called by the view
+    m_addOpmlAction = new QAction( KIcon( "list-add" ), i18n( "Add OPML" ), this );
+    connect( m_addOpmlAction, SIGNAL(triggered()), SLOT(slotAddOpmlAction()) );
 }
 
 OpmlDirectoryModel::~OpmlDirectoryModel()
@@ -115,7 +125,15 @@ QVariant
 OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
 {
     if( !idx.isValid() )
+    {
+        if( role == ActionRole )
+        {
+            QList<QAction *> actions;
+            actions << m_addOpmlAction;
+            return QVariant::fromValue( actions );
+        }
         return QVariant();
+    }
 
     debug() << idx;
     OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
@@ -126,11 +144,41 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
     {
         case Qt::DisplayRole:
             return outline->attributes()["text"];
+        case ActionRole:
         default:
             return QVariant();
     }
 
     return QVariant();
+}
+
+void
+OpmlDirectoryModel::slotAddOpmlAction()
+{
+    KDialog *dialog = new KDialog( The::mainWindow() );
+    dialog->setCaption( i18n( "Add OPML" ) );
+    dialog->setButtons( KDialog::Ok | KDialog::Cancel );
+    QWidget *opmlAddWidget = new QWidget( dialog );
+    Ui::AddOpmlWidget widget;
+    widget.setupUi( opmlAddWidget );
+
+    if( dialog->exec() != QDialog::Accepted )
+        return;
+
+    QString url = widget.urlEdit->url().url();
+    QString title = widget.titleEdit->text();
+    debug() << QString( "creating a new OPML outline with url = %1 and title \"%2\"." ).arg( url, title );
+    OpmlOutline *outline = new OpmlOutline();
+    outline->addAttribute( "type", "include" );
+    outline->addAttribute( "text", title );
+    outline->addAttribute( "url", url );
+
+    int newRow = m_rootOutlines.count();
+    beginInsertRows( QModelIndex(), newRow, newRow );
+    m_rootOutlines << outline;
+    endInsertRows();
+
+    delete dialog;
 }
 
 bool

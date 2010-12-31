@@ -23,6 +23,7 @@
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "OpmlDirectoryInfoParser.h"
 #include "OpmlDirectoryModel.h"
+#include "OpmlDirectoryView.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "core/podcasts/PodcastProvider.h"
 #include "ServiceSqlRegistry.h"
@@ -94,7 +95,7 @@ void OpmlDirectoryService::polish()
     //do not allow this content to get added to the playlist. At least not for now
     setPlayableTracks( false );
 
-    Amarok::PrettyTreeView* view = new Amarok::PrettyTreeView( this );
+    OpmlDirectoryView* view = new OpmlDirectoryView( this );
     view->setHeaderHidden( true );
     view->setFrameShape( QFrame::NoFrame );
     view->setDragEnabled ( true );
