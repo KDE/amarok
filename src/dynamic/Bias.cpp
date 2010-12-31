@@ -126,6 +126,7 @@ Dynamic::RandomBias::matchingTracks( int position,
                                   const Meta::TrackList& playlist, int contextCount,
                                   Dynamic::TrackCollectionPtr universe ) const
 {
+    DEBUG_BLOCK;
     Q_UNUSED( position );
     Q_UNUSED( playlist );
     Q_UNUSED( contextCount );
@@ -203,7 +204,7 @@ Dynamic::AndBias::name() const
 QWidget*
 Dynamic::AndBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::LevelBiasWidget( this, parent );
+    return new PlaylistBrowserNS::LevelBiasWidget( this, false, parent );
 }
 
 Dynamic::TrackSet
@@ -211,22 +212,27 @@ Dynamic::AndBias::matchingTracks( int position,
                                   const Meta::TrackList& playlist, int contextCount,
                                   Dynamic::TrackCollectionPtr universe ) const
 {
+    DEBUG_BLOCK;
+debug() << "universe:" << universe.data();
+
     m_tracks = Dynamic::TrackSet( universe );
     m_outstandingMatches = 0;
 
     foreach( Dynamic::BiasPtr bias, m_biases )
     {
         Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, contextCount, universe );
-    debug() << "AndBias::matchingTracks" << bias->name() << "tracks:"<<tracks.trackCount() << "outstanding?" << tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
         if( tracks.isOutstanding() )
             m_outstandingMatches++;
         else
-            m_tracks.intersect( bias->matchingTracks( position, playlist, contextCount, universe ) );
+            m_tracks.intersect( tracks );
+
+    debug() << "AndBias::matchingTracks" << bias->name() << "tracks:"<<tracks.trackCount() << "outstanding?" << tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
 
         if( m_tracks.isEmpty() )
             break;
     }
 
+    debug() << "AndBias::matchingTracks end: tracks:"<<m_tracks.trackCount() << "outstanding?" << m_tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
 
     if( m_outstandingMatches > 0 )
         return Dynamic::TrackSet();
@@ -296,6 +302,7 @@ Dynamic::AndBias::resultReceived( const Dynamic::TrackSet &tracks )
 {
     m_tracks.intersect( tracks );
     --m_outstandingMatches;
+    debug() << "AndBias::resultReceived" << m_outstandingMatches << "tr" << m_tracks.trackCount();
 
     if( m_outstandingMatches < 0 )
         warning() << "Received more results than expected.";
@@ -372,7 +379,7 @@ Dynamic::OrBias::matchingTracks( int position,
         if( tracks.isOutstanding() )
             m_outstandingMatches++;
         else
-            m_tracks.unite( bias->matchingTracks( position, playlist, contextCount, universe ) );
+            m_tracks.unite( tracks );
 
         if( m_tracks.trackCount() == m_tracks.isFull() )
             break;
@@ -435,6 +442,9 @@ Dynamic::NotBias::matchingTracks( int position,
                                  const Meta::TrackList& playlist, int contextCount,
                                  Dynamic::TrackCollectionPtr universe ) const
 {
+    DEBUG_BLOCK;
+debug() << "universe:" << universe.data();
+
     m_tracks = Dynamic::TrackSet( universe );
     m_outstandingMatches = 0;
 
@@ -444,11 +454,14 @@ Dynamic::NotBias::matchingTracks( int position,
         if( tracks.isOutstanding() )
             m_outstandingMatches++;
         else
-            m_tracks.subtract( bias->matchingTracks( position, playlist, contextCount, universe ) );
+            m_tracks.subtract( tracks );
+
+    debug() << "NotBias::matchingTracks" << bias->name() << "tracks:"<<tracks.trackCount() << "outstanding?" << tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
 
         if( m_tracks.trackCount() == m_tracks.isEmpty() )
             break;
     }
+    debug() << "NotBias::matchingTracks end: tracks:"<<m_tracks.trackCount() << "outstanding?" << m_tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
 
     if( m_outstandingMatches > 0 )
         return Dynamic::TrackSet();
@@ -478,11 +491,54 @@ Dynamic::NotBias::resultReceived( const Dynamic::TrackSet &tracks )
 
 Dynamic::PartBias::PartBias()
     : AndBias()
-{ }
+{
+    m_weights.append( 1.0 );
+}
 
 Dynamic::PartBias::PartBias( QXmlStreamReader *reader )
-    : AndBias( reader )
-{ }
+    : AndBias()
+{
+    // the weight of the implicite random bias
+    m_weights.append( reader->attributes().value("weight").toString().toFloat() );
+
+    while (!reader->atEnd()) {
+        reader->readNext();
+
+        if( reader->isStartElement() )
+        {
+            Dynamic::BiasPtr bias( Dynamic::BiasFactory::fromXml( reader ) );
+            if( bias )
+            {
+                appendBias( bias );
+                m_weights[ m_weights.count() - 1 ] = reader->attributes().value( "weight" ).toString().toFloat();
+            }
+            else
+            {
+                debug()<<"Unexpected xml start element"<<reader->name()<<"in input";
+                reader->skipCurrentElement();
+            }
+        }
+        else if( reader->isEndElement() )
+        {
+            break;
+        }
+    }
+}
+
+void
+Dynamic::PartBias::toXml( QXmlStreamWriter *writer ) const
+{
+    // the weight of the implicite random bias
+    writer->writeAttribute( "weight", QString::number(m_weights[0]) );
+
+    for( int i = 1; i < m_biases.count(); i++ )
+    {
+        writer->writeStartElement( m_biases[i]->name() );
+        writer->writeAttribute( "weight", QString::number(m_weights[i]) );
+        m_biases[i]->toXml( writer );
+        writer->writeEndElement();
+    }
+}
 
 QString
 Dynamic::PartBias::sName()
@@ -499,18 +555,113 @@ Dynamic::PartBias::name() const
 QWidget*
 Dynamic::PartBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::PartBiasWidget( this, parent );
+    return new PlaylistBrowserNS::LevelBiasWidget( this, true, parent );
 }
 
+QList<qreal>
+Dynamic::PartBias::weights()
+{
+    return m_weights;
+}
+
+void
+Dynamic::PartBias::appendBias( Dynamic::BiasPtr bias )
+{
+    AndBias::appendBias( bias );
+    m_weights.append( qreal(0.0) );
+}
+
+void
+Dynamic::PartBias::moveBias( int from, int to )
+{
+    AndBias::moveBias( from, to );
+    m_weights.insert( to, m_weights.takeAt( from ) );
+}
+
+void
+Dynamic::PartBias::changeBiasWeight( int biasNum, qreal value )
+{
+    Q_ASSERT( biasNum >= 0 && biasNum < m_weights.count() );
+
+    // the weights should sum up to 1.0
+
+    // -- only one weight. that is easy
+    if( m_weights.count() == 1 )
+    {
+        if( m_weights.at(0) != 1.0 )
+        {
+            m_weights[0] = 1.0;
+            emit weightsChanged();
+        }
+        return;
+    }
+
+    // -- more than one. we have to modify the remaining.
+    m_weights[biasNum] = qBound( qreal( 0.0 ), value, qreal( 1.0 ) );
+
+    // - sum up all the weights
+    qreal sum = 0.0;
+    foreach( qreal v, m_weights )
+        sum += v;
+
+    // -- we are always using the first value to balance it out if possible
+    if( biasNum != 0 )
+    {
+        qreal oldV = m_weights.at(0);
+        qreal newV = qBound( qreal( 0.0 ), 1.0 - (sum - oldV), qreal( 1.0 ) );
+        m_weights[0] = newV;
+
+        sum = sum - oldV + newV;
+    }
+
+    // modify all the remaining value
+
+    if( sum != 1.0 )
+    {
+        if( sum - m_weights.at(biasNum) == 0.0 )
+        {
+            // in this case the entry has all the weight.
+            // distribute the remainder to the other weights
+            for( int i = 0; i < m_weights.count(); i++ )
+                if( i != biasNum )
+                    m_weights[i] = sum / (m_weights.count() - 1);
+
+        }
+        else
+        {
+            // in this case we have some remaining weights. use a factor
+            qreal factor = (1.0 - m_weights.at(biasNum)) / (sum - m_weights.at(biasNum));
+            for( int i = 0; i < m_weights.count(); i++ )
+                if( i != biasNum )
+                    m_weights[i] *= factor;
+        }
+    }
+
+    emit weightsChanged();
+    return;
+}
+
+void
+Dynamic::PartBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
+{
+    int index = m_biases.indexOf( oldBias );
+    AndBias::biasReplaced( oldBias, newBias );
+
+    if( !newBias )
+    {
+        m_weights.takeAt(index);
+        changeBiasWeight( 0, m_weights.at(0) ); // fix the weights to 1.0 again.
+    }
+}
 
 // -------- TagMatchBias ------
 
 Dynamic::TagMatchBias::TagMatchBias()
-{
-    DEBUG_BLOCK
-}
+    : m_tracksValid( false )
+{ }
 
 Dynamic::TagMatchBias::TagMatchBias( QXmlStreamReader *reader )
+    : m_tracksValid( false )
 {
     while (!reader->atEnd()) {
         reader->readNext();
@@ -594,9 +745,11 @@ Dynamic::TagMatchBias::matchingTracks( int position,
         return m_tracks;
 
     m_tracks = Dynamic::TrackSet( universe );
+
     QTimer::singleShot(0,
                        const_cast<TagMatchBias*>(this),
                        SLOT(newQuery())); // create the new query from my parent thread
+
     return Dynamic::TrackSet();
 }
 
@@ -654,9 +807,10 @@ Dynamic::TagMatchBias::invalidate()
 }
 
 void
-Dynamic::TagMatchBias::newQuery()
+Dynamic::TagMatchBias::newQuery() const
 {
     DEBUG_BLOCK;
+
     // ok, I need a new query maker
     m_qm.reset( CollectionManager::instance()->queryMaker() );
 

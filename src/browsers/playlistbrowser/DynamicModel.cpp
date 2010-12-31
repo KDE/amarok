@@ -466,8 +466,8 @@ PlaylistBrowserNS::DynamicModel::initPlaylists()
 {
     // create the empty default random playlist
     Dynamic::BiasedPlaylist *playlist =  new Dynamic::BiasedPlaylist( this );
-    connect( playlist, SIGNAL( changed( Dynamic::DynamicPlaylist ) ),
-             this, SLOT( playlistChanged( Dynamic::DynamicPlaylist ) ) );
+    connect( playlist, SIGNAL( changed( Dynamic::DynamicPlaylist* ) ),
+             this, SLOT( playlistChanged( Dynamic::DynamicPlaylist* ) ) );
 
     m_playlists.append( playlist );
     m_activePlaylistIndex = 0;

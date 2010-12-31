@@ -46,8 +46,6 @@ class DynamicPlaylist : public QObject
         QString title() const;
         void setTitle( QString );
 
-        virtual void requestAbort() {}
-
     signals:
         void tracksReady( Meta::TrackList );
 
@@ -56,9 +54,14 @@ class DynamicPlaylist : public QObject
         */
         void changed( Dynamic::DynamicPlaylist* playlist );
 
+
     public slots:
         /** Start recalculating all tracks after the currently played track */
         virtual void recalculate();
+
+        /** Aborts the current playlist generation operation */
+        virtual void requestAbort()
+        {}
 
     protected:
         Collections::Collection* m_collection;

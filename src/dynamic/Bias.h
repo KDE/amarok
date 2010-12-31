@@ -101,14 +101,6 @@ namespace Dynamic
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
                                              const TrackCollectionPtr universe ) const = 0;
-            /*
-            {
-                Q_UNUSED( position );
-                Q_UNUSED( playlist );
-                Q_UNUSED( contextCount );
-                return TrackSet( universe );
-            }
-            */
 
             /** Returns an energy value for the given playlist.
                 The energy value should be in the range 0-1.
@@ -117,12 +109,7 @@ namespace Dynamic
                 @param contextCount The number of songs that are already fixed. Those songs
                                 should not take part in the calculation of an energy value.
             */
-            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const
-            {
-                Q_UNUSED( playlist );
-                Q_UNUSED( contextCount );
-                return 0.0;
-            }
+            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const = 0;
 
         signals:
             /** This signal is emitted when the bias is changed.
@@ -284,6 +271,9 @@ namespace Dynamic
             Q_DISABLE_COPY(NotBias)
     };
 
+    /** The part bias will ensure that tracks are fulfilling all the sub-biases according to it's weights.
+        The bias has an implicit random sub-bias
+    */
     class PartBias : public AndBias
     {
         Q_OBJECT
@@ -291,6 +281,8 @@ namespace Dynamic
         public:
             PartBias();
             PartBias( QXmlStreamReader *reader );
+
+            virtual void toXml( QXmlStreamWriter *writer ) const;
 
             static QString sName();
             virtual QString name() const;
@@ -306,9 +298,27 @@ namespace Dynamic
             virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
             */
 
-        protected slots:
+            /** Returns the weights of the bias itself and all the sub-biases. */
+            virtual QList<qreal> weights();
+
+            /** Appends a bias to this bias.
+                This object will take ownership of the bias and free it when destroyed.
+            */
+            virtual void appendBias( Dynamic::BiasPtr bias );
+            virtual void moveBias( int from, int to );
+
+        public slots:
+            /** The overall weight has changed */
+            void changeBiasWeight( int biasNum, qreal value );
+
             // virtual void resultReceived( const Dynamic::TrackSet &tracks );
 
+        signals:
+            /** The overall weight has changed */
+            void weightsChanged();
+
+        protected slots:
+            virtual void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
         protected:
             QList<qreal> m_weights;
 
@@ -353,7 +363,7 @@ namespace Dynamic
             void updateFinished();
 
             /** Creates a new query to get matching tracks. */
-            void newQuery();
+            void newQuery() const;
 
         protected:
 

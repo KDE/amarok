@@ -96,43 +96,39 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-            LevelBiasWidget( Dynamic::AndBias* bias, QWidget* parent = 0 );
+            LevelBiasWidget( Dynamic::AndBias* bias, bool haveWeights,
+                             QWidget* parent = 0 );
+
+        signals:
+            void biasWeightChanged( int biasNum, qreal value );
 
         protected slots:
-            virtual void appendBias();
-            virtual void biasAppended( Dynamic::BiasPtr bias );
-            virtual void biasRemoved( int pos );
-            virtual void biasMoved( int from, int to );
+            void appendBias();
+            void biasAppended( Dynamic::BiasPtr bias );
+            void biasRemoved( int pos );
+            void biasMoved( int from, int to );
 
-        private:
+            void sliderValueChanged( int val );
+            void biasWeightsChanged();
+
+        protected:
             /** calls setRemovable() for all sub-widgets */
             void correctRemovability();
 
+            bool m_haveWeights;
+
+            /** True if we just handle a signal. Used to protect agains recursion */
+            bool m_inSignal;
+
             Dynamic::AndBias* m_abias;
+
+            QSlider *m_weightSelection;
             QList<BiasBoxWidget*> m_widgets;
+            QList<QSlider*> m_sliders;
 
             QToolButton* m_addButton;
     };
 
-    /** A BiasWidget for the PartBias */
-    class PartBiasWidget : public LevelBiasWidget
-    {
-        Q_OBJECT
-
-        public:
-            PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent = 0 );
-
-        private slots:
-            virtual void biasAppended( Dynamic::BiasPtr bias );
-            virtual void biasRemoved( int pos );
-            virtual void biasMoved( int from, int to );
-
-        private:
-            Dynamic::PartBias* m_pbias;
-
-            QSlider *m_weightSelection;
-            QList<QSlider*> m_sliders;
-    };
 
     class TagMatchBiasWidget : public BiasWidget
     {

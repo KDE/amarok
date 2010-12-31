@@ -54,10 +54,9 @@ namespace Dynamic
 
             BiasPtr bias() const;
 
-            void requestAbort();
-
         public slots:
             virtual void recalculate();
+            virtual void requestAbort();
 
         private slots:
             void solverFinished();

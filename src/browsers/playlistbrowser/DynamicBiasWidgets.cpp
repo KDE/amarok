@@ -176,6 +176,7 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::BiasPtr b, QWidget* parent )
 
     QHBoxLayout* mainLayout = new QHBoxLayout();
     m_layout = new QFormLayout();
+    m_layout->setVerticalSpacing( 0 );
     m_layout->setFormAlignment( Qt::AlignLeft | Qt::AlignTop ); // so that all biases are left aligned
     // m_layout->setFieldGrowthPolicy( QFormLayout::AllNonFixedFieldsGrow );
 
@@ -186,6 +187,7 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::BiasPtr b, QWidget* parent )
         m_removeButton = new QToolButton( this );
         m_removeButton->setIcon( KIcon( "list-remove-amarok" ) );
         m_removeButton->setToolTip( i18n( "Remove this bias." ) );
+        m_removeButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
         connect( m_removeButton, SIGNAL( clicked() ),
                  this, SLOT( biasRemoved() ) );
     }
@@ -203,11 +205,13 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::BiasPtr b, QWidget* parent )
 
     if( m_removeButton )
     {
-        mainLayout->addWidget( m_removeButton );
-        mainLayout->setAlignment( m_removeButton, Qt::AlignLeft | Qt::AlignTop );
+        mainLayout->addWidget( m_removeButton, 0/*, Qt::AlignLeft | Qt::AlignTop*/ );
+        /*
         mainLayout->setStretchFactor( m_removeButton, 0 );
+        mainLayout->setAlignment( m_removeButton, Qt::AlignLeft | Qt::AlignTop );
+        */
     }
-    mainLayout->addLayout( m_layout );
+    mainLayout->addLayout( m_layout, 1 );
     m_layout->addRow( i18n( "Match Type:" ), m_biasSelection );
 
 
@@ -257,38 +261,25 @@ PlaylistBrowserNS::BiasWidget::selectionChanged( int index )
         return;
     }
 
+    // TODO: keep the old sub-biases if possible e.g. between AND and OR bias
     m_bias->replace( bias ); // tell the old bias it has just been replaced
-    /*
-    if( m_item )
-    {
-        QModelIndex parent = m_item->index().parent();
-        QStandardItemModel *model = m_item->model();
-        model->removeRows( m_item->row(), 1, parent );
-        bias->addToModel( model, parentWidget(), parent );
-    }
-*/
-    // this->deleteLater();
 }
 
 void
 PlaylistBrowserNS::BiasWidget::biasRemoved()
 {
-    /*
-    if( m_item )
-    {
-        QModelIndex parent = m_item->index().parent();
-        m_item->model()->removeRows( m_item->row(), 1, parent );
-    }
-    */
     m_bias->replace( Dynamic::BiasPtr() );
-    // this->deleteLater();
 }
 
 // -------- LevelBiasWidget -----------
 
 
-PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias, QWidget* parent )
+PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias,
+                                                     bool haveWeights,
+                                                     QWidget* parent )
     : BiasWidget( Dynamic::BiasPtr(bias), parent )
+    , m_haveWeights( haveWeights )
+    , m_inSignal( false )
     , m_abias( bias )
 {
     connect( bias, SIGNAL( biasAppended( Dynamic::BiasPtr ) ),
@@ -299,6 +290,34 @@ PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias, QWi
 
     connect( bias, SIGNAL( biasMoved( int, int ) ),
              this, SLOT( biasMoved( int, int ) ) );
+
+    if( m_haveWeights )
+    {
+        connect( this, SIGNAL( biasWeightChanged( int, qreal ) ),
+                 bias, SLOT( changeBiasWeight( int, qreal ) ) );
+        connect( bias, SIGNAL( weightsChanged() ),
+                 this, SLOT( biasWeightsChanged() ) );
+    }
+
+    if( m_haveWeights )
+    {
+        /*
+           m_weightLabel = new QLabel( " 0%", frame );
+           m_weightSelection = new Amarok::Slider( Qt::Horizontal, 100, frame );
+           m_weightSelection->setToolTip(
+           i18n( "This controls what portion of the playlist should match the criteria" ) );
+
+           QHBoxLayout* sliderLayout = new QHBoxLayout();
+           sliderLayout->addWidget( m_weightSelection );
+           sliderLayout->addWidget( m_weightLabel );
+
+        m_weightSelection = new Amarok::Slider( Qt::Horizontal, 100, this );
+        m_weightSelection->setToolTip(
+                                      i18n( "This controls what portion of the playlist should match the criteria" ) );
+        m_layout->insertRow( 1, i18n( "Random Proportion:" ), m_weightSelection );
+
+           */
+    }
 
     // -- add an add button to add new widgets
     m_addButton = new QToolButton( this );
@@ -325,9 +344,45 @@ PlaylistBrowserNS::LevelBiasWidget::appendBias()
 void
 PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
 {
-    BiasBoxWidget* biasWidget = new BiasBoxWidget( bias, this );
-    m_widgets.append( biasWidget );
-    m_layout->insertRow( m_layout->rowCount() - 1, biasWidget );
+    DEBUG_BLOCK;
+
+    // special case for the PartBias. We hide the implicit random sub-bias
+    bool specialRandomBias = m_haveWeights &&
+        m_sliders.isEmpty() &&
+        (qobject_cast<Dynamic::RandomBias*>(bias.data()) != 0);
+
+    // -- add the slider
+    if( m_haveWeights )
+    {
+        Amarok::Slider *slider = new Amarok::Slider( Qt::Horizontal, 100, this );
+        if( Dynamic::PartBias *pb = qobject_cast<Dynamic::PartBias*>(m_bias.data()) )
+            slider->setValue( pb->weights().last() * 100.0 );
+
+        slider->setToolTip( i18n( "This controls what portion of the playlist should match the criteria" ) );
+        m_sliders.append( slider );
+
+        if( specialRandomBias )
+            m_layout->insertRow( m_layout->rowCount() - 1,
+                                 i18n( "Random Proportion:" ), slider );
+        else
+            m_layout->insertRow( m_layout->rowCount() - 1,
+                                 i18n( "Proportion:" ), slider );
+
+        connect( slider, SIGNAL(valueChanged(int)),
+                 SLOT(sliderValueChanged(int)) );
+    }
+
+    // -- add the widget
+    if( specialRandomBias )
+    {
+        m_widgets.append( 0 );
+    }
+    else
+    {
+        BiasBoxWidget* biasWidget = new BiasBoxWidget( bias, this );
+        m_widgets.append( biasWidget );
+        m_layout->insertRow( m_layout->rowCount() - 1, biasWidget );
+    }
 
     correctRemovability();
 }
@@ -336,7 +391,23 @@ void
 PlaylistBrowserNS::LevelBiasWidget::biasRemoved( int pos )
 {
     BiasBoxWidget* biasWidget = m_widgets.takeAt( pos );
-    biasWidget->hide();
+
+    if( m_haveWeights )
+    {
+        QSlider *slider = m_sliders.takeAt( pos );
+
+        // - determine the label position
+        int rowPtr;
+        QFormLayout::ItemRole rolePtr;
+        m_layout->getWidgetPosition ( slider, &rowPtr, &rolePtr );
+        QLayoutItem* item = m_layout->itemAt( rowPtr, QFormLayout::LabelRole);
+
+        if( item )
+            delete item->widget();
+
+        slider->deleteLater();
+    }
+
     biasWidget->deleteLater();
 
     correctRemovability();
@@ -348,74 +419,71 @@ PlaylistBrowserNS::LevelBiasWidget::biasMoved( int from, int to )
     BiasBoxWidget* biasWidget = m_widgets.takeAt( from );
     m_widgets.insert( to, biasWidget );
 
-    // TODO: remove the old row
-    m_layout->insertRow( m_layout->rowCount() - 1 - m_widgets.count() + to,
-                         biasWidget );
+    if( m_haveWeights )
+    {
+        QSlider* slider = m_sliders.takeAt( from );
+        m_sliders.insert( to, slider );
+
+        // - determine the label position
+        int rowPtr;
+        QFormLayout::ItemRole rolePtr;
+        m_layout->getWidgetPosition ( slider, &rowPtr, &rolePtr );
+        QLayoutItem* item = m_layout->itemAt( rowPtr, QFormLayout::LabelRole);
+
+        // -- move the item in the layout
+        if( item )
+        {
+            m_layout->insertRow( to * 2 + 1, biasWidget );
+            m_layout->insertRow( to * 2 + 1, item->widget(), slider );
+        }
+    }
+    else
+    {
+        // -- move the item in the layout
+        m_layout->insertRow( to + 1, biasWidget );
+    }
 
     correctRemovability();
+}
+
+void
+PlaylistBrowserNS::LevelBiasWidget::sliderValueChanged( int val )
+{
+    // protect agains recursion
+    if( m_inSignal )
+        return;
+
+    for( int i = 0; i < m_sliders.count(); i++ )
+    {
+        if( m_sliders.at(i) == sender() )
+            emit biasWeightChanged( i, qreal(val) / 100.0 );
+    }
+}
+
+void
+PlaylistBrowserNS::LevelBiasWidget::biasWeightsChanged()
+{
+    // protect agains recursion
+    if( m_inSignal )
+        return;
+    m_inSignal = true;
+
+    if( Dynamic::PartBias *pb = qobject_cast<Dynamic::PartBias*>(m_bias.data()) )
+    {
+        QList<qreal> weights = pb->weights();
+        for( int i = 0; i < weights.count(); i++ )
+            m_sliders.at(i)->setValue( weights.at(i) * 100.0 );
+    }
+
+    m_inSignal = false;
 }
 
 void
 PlaylistBrowserNS::LevelBiasWidget::correctRemovability()
 {
     for( int i = 0; i < m_widgets.count(); i++ )
-        m_widgets.at( i )->setRemovable( m_widgets.count() > 1 );
-}
-
-
-// -------- PartBiasWidget --------
-
-PlaylistBrowserNS::PartBiasWidget::PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent )
-    : LevelBiasWidget( bias, parent )
-    , m_pbias( bias )
-{
-    /*
-    m_weightLabel = new QLabel( " 0%", frame );
-    m_weightSelection = new Amarok::Slider( Qt::Horizontal, 100, frame );
-    m_weightSelection->setToolTip(
-            i18n( "This controls what portion of the playlist should match the criteria" ) );
-
-    QHBoxLayout* sliderLayout = new QHBoxLayout();
-    sliderLayout->addWidget( m_weightSelection );
-    sliderLayout->addWidget( m_weightLabel );
-    */
-
-    m_weightSelection = new Amarok::Slider( Qt::Horizontal, 100, this );
-    m_weightSelection->setToolTip(
-            i18n( "This controls what portion of the playlist should match the criteria" ) );
-    m_layout->insertRow( 1, i18n( "Proportion:" ), m_weightSelection );
-
-    /*
-    connect( m_weightSelection, SIGNAL(valueChanged(int)),
-             SLOT(weightChanged(int)) );
-             */
-}
-
-void
-PlaylistBrowserNS::PartBiasWidget::biasAppended( Dynamic::BiasPtr bias )
-{
-    Amarok::Slider *slider = new Amarok::Slider( Qt::Horizontal, 100, this );
-    slider->setToolTip( i18n( "This controls what portion of the playlist should match the criteria" ) );
-    m_sliders.append( slider );
-    m_layout->insertRow( m_layout->rowCount() - 1, i18n( "Proportion:" ), slider );
-
-    LevelBiasWidget::biasAppended( bias );
-}
-
-void
-PlaylistBrowserNS::PartBiasWidget::biasRemoved( int pos )
-{
-    QSlider *slider = m_sliders.takeAt( pos );
-    slider->hide();
-    slider->deleteLater();
-
-    LevelBiasWidget::biasRemoved( pos );
-}
-
-void
-PlaylistBrowserNS::PartBiasWidget::biasMoved( int from, int to )
-{
-    LevelBiasWidget::biasMoved( from, to );
+        if( m_widgets.at( i ) )
+            m_widgets.at( i )->setRemovable( m_widgets.count() > 1 );
 }
 
 

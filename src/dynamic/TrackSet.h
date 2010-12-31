@@ -24,14 +24,14 @@
 #include <QBitArray>
 #include <QString>
 #include <QSharedData>
-#include <QSharedDataPointer>
+#include <QExplicitlySharedDataPointer>
 
 namespace Dynamic
 {
     class TrackSet;
     class TrackCollection;
 
-    typedef QSharedDataPointer<TrackCollection> TrackCollectionPtr;
+    typedef QExplicitlySharedDataPointer<TrackCollection> TrackCollectionPtr;
 
     /**
      * We keep a list here of the uid of every track in the set
@@ -113,7 +113,6 @@ namespace Dynamic
 
         private:
             QBitArray m_bits;
-            bool m_outstanding;
             const TrackCollectionPtr m_collection;
     };
 }

@@ -138,7 +138,8 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 
         if( withStatusBar )
         {
-            The::statusBar()->newProgressOperation( m_solver.data(), i18n( "Generating playlist..." ) );
+            The::statusBar()->newProgressOperation( m_solver.data(), i18n( "Generating playlist..." ) )
+                ->setAbortSlot( this, SLOT( requestAbort() ) );
 
             connect( m_solver.data(), SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
         }
