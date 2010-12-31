@@ -44,11 +44,13 @@ public:
 
     // QAbstractItemModel methods
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
     virtual QModelIndex parent( const QModelIndex &index ) const;
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
     // OpmlDirectoryModel methods
     virtual void saveOpml( const KUrl &saveLocation );
@@ -57,6 +59,7 @@ signals:
 
 public slots:
     void slotAddOpmlAction();
+    void slotAddFolderAction();
 
 protected:
     virtual bool canFetchMore( const QModelIndex &parent ) const;
@@ -74,6 +77,7 @@ private:
     QMap<OpmlParser *,QModelIndex> m_currentFetchingMap;
 
     QAction *m_addOpmlAction;
+    QAction *m_addFolderAction;
 };
 
 Q_DECLARE_METATYPE(QActionList)
