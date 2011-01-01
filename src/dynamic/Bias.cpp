@@ -130,7 +130,7 @@ Dynamic::RandomBias::matchingTracks( int position,
     Q_UNUSED( position );
     Q_UNUSED( playlist );
     Q_UNUSED( contextCount );
-    return Dynamic::TrackSet( universe );
+    return Dynamic::TrackSet( universe, true );
 }
 
 double
@@ -215,7 +215,7 @@ Dynamic::AndBias::matchingTracks( int position,
     DEBUG_BLOCK;
 debug() << "universe:" << universe.data();
 
-    m_tracks = Dynamic::TrackSet( universe );
+    m_tracks = Dynamic::TrackSet( universe, true );
     m_outstandingMatches = 0;
 
     foreach( Dynamic::BiasPtr bias, m_biases )
@@ -369,8 +369,7 @@ Dynamic::OrBias::matchingTracks( int position,
                                  const Meta::TrackList& playlist, int contextCount,
                                  Dynamic::TrackCollectionPtr universe ) const
 {
-    m_tracks = Dynamic::TrackSet( universe );
-    m_tracks.clear();
+    m_tracks = Dynamic::TrackSet( universe, false );
     m_outstandingMatches = 0;
 
     foreach( Dynamic::BiasPtr bias, m_biases )
@@ -381,7 +380,7 @@ Dynamic::OrBias::matchingTracks( int position,
         else
             m_tracks.unite( tracks );
 
-        if( m_tracks.trackCount() == m_tracks.isFull() )
+        if( m_tracks.isFull() )
             break;
     }
 
@@ -445,7 +444,7 @@ Dynamic::NotBias::matchingTracks( int position,
     DEBUG_BLOCK;
 debug() << "universe:" << universe.data();
 
-    m_tracks = Dynamic::TrackSet( universe );
+    m_tracks = Dynamic::TrackSet( universe, true );
     m_outstandingMatches = 0;
 
     foreach( Dynamic::BiasPtr bias, m_biases )
@@ -458,7 +457,7 @@ debug() << "universe:" << universe.data();
 
     debug() << "NotBias::matchingTracks" << bias->name() << "tracks:"<<tracks.trackCount() << "outstanding?" << tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
 
-        if( m_tracks.trackCount() == m_tracks.isEmpty() )
+        if( m_tracks.isEmpty() )
             break;
     }
     debug() << "NotBias::matchingTracks end: tracks:"<<m_tracks.trackCount() << "outstanding?" << m_tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
@@ -744,7 +743,7 @@ Dynamic::TagMatchBias::matchingTracks( int position,
     if( m_tracksValid )
         return m_tracks;
 
-    m_tracks = Dynamic::TrackSet( universe );
+    m_tracks = Dynamic::TrackSet( universe, false );
 
     QTimer::singleShot(0,
                        const_cast<TagMatchBias*>(this),
@@ -780,6 +779,7 @@ Dynamic::TagMatchBias::updateFinished()
 {
     m_tracksValid = true;
     m_qm.reset();
+    debug() << "TagMatchBias::updateFinished" << m_tracks.trackCount();
     emit resultReady( m_tracks );
 }
 
@@ -803,6 +803,7 @@ Dynamic::TagMatchBias::invalidate()
 {
     m_tracksValid = false;
     m_tracks = TrackSet();
+    // TODO: need to finish a running query
     m_qm.reset();
 }
 
@@ -863,7 +864,6 @@ Dynamic::TagMatchBias::newQuery() const
 
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
-    m_qm->orderByRandom(); // as to not affect the amortized time (whatever that means)
 
     connect( m_qm.data(), SIGNAL(newResultReady( QString, QStringList )),
              this, SLOT(updateReady( QString, QStringList )) );

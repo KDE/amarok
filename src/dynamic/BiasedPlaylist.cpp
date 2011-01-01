@@ -76,16 +76,19 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *pare
             QStringRef name = reader->name();
             if( name == "title" )
                 m_title = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "bias" )
-            {
-                m_bias = Dynamic::BiasFactory::fromXml( reader );
-                connect( m_bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-                         this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
-            }
             else
             {
-                debug()<<"Unexpected xml start element"<<reader->name()<<"in input";
-                reader->skipCurrentElement();
+                m_bias = Dynamic::BiasFactory::fromXml( reader );
+                if( m_bias )
+                {
+                    connect( m_bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+                             this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+                }
+                else
+                {
+                    debug()<<"Unexpected xml start element"<<reader->name()<<"in input";
+                    reader->skipCurrentElement();
+                }
             }
         }
         else if( reader->isEndElement() )
@@ -104,10 +107,8 @@ void
 Dynamic::BiasedPlaylist::toXml( QXmlStreamWriter *writer ) const
 {
     writer->writeTextElement( "title", m_title );
-    writer->writeStartElement( "bias" );
     writer->writeStartElement( m_bias->name() );
     m_bias->toXml( writer );
-    writer->writeEndElement();
     writer->writeEndElement();
 }
 
@@ -189,10 +190,10 @@ Dynamic::BiasedPlaylist::requestTracks( int n )
 }
 
 void
-Dynamic::BiasedPlaylist::recalculate()
+Dynamic::BiasedPlaylist::repopulate()
 {
     DEBUG_BLOCK
-    debug() << "recalculate" << AmarokConfig::dynamicMode() << "solver?" << m_solver << "requested:" << m_numRequested;
+    debug() << "repopulate" << AmarokConfig::dynamicMode() << "solver?" << m_solver << "requested:" << m_numRequested;
     if( AmarokConfig::dynamicMode() && !m_solver )
     {
         {

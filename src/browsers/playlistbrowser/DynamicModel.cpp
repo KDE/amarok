@@ -33,20 +33,6 @@
 #include <QXmlStreamWriter>
 
 
-void
-Amarok::setDynamicPlaylist( const QString& title )
-{
-    PlaylistBrowserNS::DynamicModel::instance()->changePlaylist(
-            PlaylistBrowserNS::DynamicModel::instance()->playlistIndex( title ) );
-}
-
-void
-Amarok::enableDynamicMode( bool enable )
-{
-    PlaylistBrowserNS::DynamicModel::instance()->enable( enable );
-}
-
-
 PlaylistBrowserNS::DynamicModel* PlaylistBrowserNS::DynamicModel::s_instance = 0;
 
 PlaylistBrowserNS::DynamicModel*
@@ -63,13 +49,7 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
     : QAbstractItemModel()
     , m_activeUnsaved( false )
 {
-    DEBUG_BLOCK
-
     loadCurrentPlaylists();
-
-    connect( CollectionManager::instance(),
-             SIGNAL(collectionDataChanged(Collections::Collection*)),
-             SLOT(universeNeedsUpdate()) );
 }
 
 
@@ -77,56 +57,6 @@ PlaylistBrowserNS::DynamicModel::~DynamicModel()
 {
     saveCurrentPlaylists();
 }
-
-void
-PlaylistBrowserNS::DynamicModel::enable( bool enable )
-{
-    emit enableDynamicMode( enable );
-}
-
-void
-PlaylistBrowserNS::DynamicModel::changePlaylist( int i )
-{
-    emit changeActive( qMax( 0, i ) );
-}
-
-
-
-/*
-
-Dynamic::DynamicPlaylistPtr
-PlaylistBrowserNS::DynamicModel::setActivePlaylist( const QString& name )
-{
-    // TODO: how does this deal with unsaved ?
-
-    // find the playlist
-    bool found = false
-    bool changed = false
-    for( int i = 0; i < m_playlists.count(); i++ )
-    {
-        if( m_playlists[i]->name() == name )
-        {
-            found = true;
-            if( m_activePlaylistIndex != i )
-                changed = true;
-
-            m_activePlaylistIndex = i;
-        }
-    }
-
-    if( changed )
-    {
-        m_activeUnsaved = false;
-        savePlaylists();
-        emit activeChanged();
-    }
-
-    if( !found )
-        warning() << "Failed to find biased playlist: " << name;
-
-    return m_playlists[m_activePlaylistIndex];
-}
-*/
 
 Dynamic::DynamicPlaylist*
 PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
@@ -143,7 +73,7 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
     m_activeUnsaved = false;
     savePlaylists();
 
-    emit activeChanged();
+    emit activeChanged( index );
 
     return m_playlists[m_activePlaylistIndex];
 
@@ -254,7 +184,7 @@ PlaylistBrowserNS::DynamicModel::columnCount( const QModelIndex& ) const
 
 
 void
-PlaylistBrowserNS::DynamicModel::playlistChanged( Dynamic::BiasedPlaylist* p )
+PlaylistBrowserNS::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
 {
     DEBUG_BLOCK
 
@@ -328,6 +258,7 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
 
     // copy the modified playlist away;
     Dynamic::DynamicPlaylist *newPl = m_playlists.takeAt( m_activePlaylistIndex );
+    newPl->setTitle( newTitle );
 
     // load the old playlist with the unmodified entries
     loadPlaylists();
@@ -388,6 +319,8 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
 bool
 PlaylistBrowserNS::DynamicModel::loadPlaylists( const QString &filename )
 {
+    DEBUG_BLOCK;
+
     // -- clear all the old playlists
     foreach( Dynamic::DynamicPlaylist* playlist, m_playlists )
     {
@@ -409,8 +342,8 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists( const QString &filename )
     QXmlStreamReader xmlReader( &xmlFile );
 
     // -- check the version
-    xmlReader.readNext();
-    if( !xmlReader.atEnd() ||
+    xmlReader.readNextStartElement();
+    if( xmlReader.atEnd() ||
         !xmlReader.isStartElement() ||
         xmlReader.name() != "biasedPlaylists" ||
         xmlReader.attributes().value( "version" ) != "2" )
@@ -431,10 +364,18 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists( const QString &filename )
             if( name == "playlist" )
             {
                 Dynamic::BiasedPlaylist *playlist =  new Dynamic::BiasedPlaylist( &xmlReader, this );
-                connect( playlist, SIGNAL( changed( Dynamic::DynamicPlaylist ) ),
-                         this, SLOT( playlistChanged( Dynamic::DynamicPlaylist ) ) );
+                if( playlist->bias() )
+                {
+                    connect( playlist, SIGNAL( changed( Dynamic::DynamicPlaylist* ) ),
+                             this, SLOT( playlistChanged( Dynamic::DynamicPlaylist* ) ) );
 
-                m_playlists.append( playlist );
+                    m_playlists.append( playlist );
+                }
+                else
+                {
+                    delete playlist;
+                    warning() << "Just read a playlist without bias from"<<xmlFile.fileName();
+                }
             }
             else
             {

@@ -121,11 +121,13 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_presetComboBox = new KComboBox( presetLayout );
     m_presetComboBox->setModel( DynamicModel::instance() );
 
-    connect( DynamicModel::instance(), SIGNAL( changeActive( int ) ),
+    connect( DynamicModel::instance(), SIGNAL( activeChanged( int ) ),
             m_presetComboBox, SLOT(setCurrentIndex(int)) );
 
+    /*
     connect( DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ),
             SLOT(enableDynamicMode(bool)) );
+            */
 
     connect( m_presetComboBox, SIGNAL(currentIndexChanged( int ) ),
             this, SLOT(playlistSelectionChanged( int ) ) );
@@ -217,7 +219,6 @@ DynamicCategory::enableDynamicMode( bool enable )
 
     //if the playlist is empty, repopulate while we are at it:
 
-    DynamicModel::instance()->enable( enable );
     if( enable )
     {
         if ( Playlist::ModelStack::instance()->bottom()->rowCount() == 0 )

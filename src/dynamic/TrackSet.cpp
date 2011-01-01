@@ -38,23 +38,15 @@ Dynamic::TrackSet::TrackSet()
     , m_collection( 0 )
 { }
 
-Dynamic::TrackSet::TrackSet( const Dynamic::TrackCollectionPtr collection )
-    : m_bits( collection->count() )
+Dynamic::TrackSet::TrackSet( const Dynamic::TrackCollectionPtr collection, bool value )
+    : m_bits( collection->count(), value )
     , m_collection( collection )
-{
-    m_bits.fill( true );
-}
+{}
 
 void
-Dynamic::TrackSet::clear()
+Dynamic::TrackSet::reset( bool value )
 {
-    m_bits.clear();
-}
-
-void
-Dynamic::TrackSet::reset()
-{
-    m_bits.fill( true );
+    m_bits.fill( value );
 }
 
 bool
@@ -186,6 +178,7 @@ Dynamic::TrackSet&
 Dynamic::TrackSet::operator=( const Dynamic::TrackSet& B )
 {
     m_bits = B.m_bits;
+    m_collection = B.m_collection;
     return *this;
 }
 

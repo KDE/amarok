@@ -57,7 +57,7 @@ class DynamicPlaylist : public QObject
 
     public slots:
         /** Start recalculating all tracks after the currently played track */
-        virtual void recalculate();
+        virtual void repopulate();
 
         /** Aborts the current playlist generation operation */
         virtual void requestAbort()

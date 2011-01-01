@@ -211,7 +211,7 @@ Dynamic::BiasSolver::sa_optimize( SolverList *list,
      */
 
     double T = SA_INITIAL_TEMPERATURE;
-    TrackSet universeSet( m_trackCollection );
+    TrackSet universeSet( m_trackCollection, true );
 
     double oldEnergy = 0.0;
     int giveUpCount = 0;
@@ -459,11 +459,9 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
 
     // just create a simple playlist by adding tracks to the end.
 
-    TrackSet universeSet( m_trackCollection );
+    TrackSet universeSet( m_trackCollection, true );
     while( result.m_trackList.count() < m_context.count() + m_n )
     {
-    debug() << "matchingTracks for"<<m_bias->name()<<"at"<<result.m_trackList.count();
-
         TrackSet set = matchingTracks( result.m_trackList.count(), result.m_trackList );
         Meta::TrackPtr newTrack = getRandomTrack( set );
         if( newTrack )
@@ -479,7 +477,6 @@ debug() << "generated playlist with"<<result.m_trackList.count()<<"tracks";
 Meta::TrackPtr
 Dynamic::BiasSolver::getRandomTrack( const TrackSet& subset ) const
 {
-    DEBUG_BLOCK;
     if( subset.trackCount() == 0 )
         return Meta::TrackPtr();
 
@@ -504,7 +501,6 @@ Dynamic::BiasSolver::getRandomTrack( const TrackSet& subset ) const
 Meta::TrackPtr
 Dynamic::BiasSolver::trackForUid( const QString& uid ) const
 {
-    DEBUG_BLOCK;
     const KUrl url( uid );
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
@@ -532,6 +528,8 @@ Dynamic::BiasSolver::matchingTracks( int position, const Meta::TrackList& playli
     if( m_tracks.isOutstanding() )
         m_collectionResultsReady.wait( &m_biasResultsMutex );
 
+        debug() << "BiasSolver::matchingTracks returns"<<m_tracks.trackCount()<<"of"<<m_trackCollection->count()<<"tracks.";
+
     return m_tracks;
 }
 
@@ -541,7 +539,6 @@ Dynamic::BiasSolver::matchingTracks( int position, const Meta::TrackList& playli
 void
 Dynamic::BiasSolver::trackCollectionResultsReady( QString collectionId, QStringList uids )
 {
-    DEBUG_BLOCK;
     Q_UNUSED( collectionId );
     m_collectionUids.append( uids );
 }
@@ -549,7 +546,6 @@ Dynamic::BiasSolver::trackCollectionResultsReady( QString collectionId, QStringL
 void
 Dynamic::BiasSolver::trackCollectionDone()
 {
-    DEBUG_BLOCK;
     QMutexLocker locker( &m_collectionResultsMutex );
 
     m_trackCollection = TrackCollectionPtr( new TrackCollection( m_collectionUids ) );
@@ -561,8 +557,6 @@ Dynamic::BiasSolver::trackCollectionDone()
 void
 Dynamic::BiasSolver::getTrackCollection()
 {
-    DEBUG_BLOCK
-
     // get all the unique ids from the collection manager
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     qm->setQueryType( Collections::QueryMaker::Custom );

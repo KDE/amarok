@@ -45,6 +45,9 @@
 #include <QTimeEdit>
 #include <QToolButton>
 
+#include <QStyleOption>
+#include <QPalette>
+
 #include <KComboBox>
 #include <KIcon>
 #include <KVBox>
@@ -99,12 +102,34 @@ PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
     Q_UNUSED(e)
 
     QPainter painter(this);
+
+    QStyleOptionViewItemV4 opt;
+    opt.widget = this;
+    opt.state = QStyle::State_Enabled;
+    opt.rect = QRect( 0, 0, width(), height() );
+
+    bool isAlternateRow = (long(m_biasWidget) & 0x40);
+    if( isAlternateRow )
+        opt.features |= QStyleOptionViewItemV2::Alternate;
+
+    /*
+    QPalette::ColorGroup cg;
+    if ((itemModel->flags(*it) & Qt::ItemIsEnabled) == 0) {
+        option.state &= ~QStyle::State_Enabled;
+        cg = QPalette::Disabled;
+    } else {
+        cg = QPalette::Normal;
+    }
+    opt.palette.setCurrentColorGroup(cg);
+    */
+
+    style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &opt, &painter, this );
+
+
     painter.setRenderHint( QPainter::Antialiasing, true );
-
     QPixmap body;
-
-    body = The::svgHandler()->renderSvgWithDividers( "body", width(), height(), "body" );
-
+    // body = The::svgHandler()->renderSvgWithDividers( "body", width(), height(), "body" );
+    body = The::svgHandler()->renderSvgWithDividers( "track", width(), height(), "track" );
     painter.drawPixmap( 0, 0, body );
 
     painter.end();
@@ -351,6 +376,7 @@ PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
         m_sliders.isEmpty() &&
         (qobject_cast<Dynamic::RandomBias*>(bias.data()) != 0);
 
+    debug() << "1";
     // -- add the slider
     if( m_haveWeights )
     {
@@ -360,6 +386,8 @@ PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
 
         slider->setToolTip( i18n( "This controls what portion of the playlist should match the criteria" ) );
         m_sliders.append( slider );
+
+    debug() << "2";
 
         if( specialRandomBias )
             m_layout->insertRow( m_layout->rowCount() - 1,
@@ -371,6 +399,7 @@ PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
         connect( slider, SIGNAL(valueChanged(int)),
                  SLOT(sliderValueChanged(int)) );
     }
+    debug() << "3";
 
     // -- add the widget
     if( specialRandomBias )
@@ -383,6 +412,7 @@ PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
         m_widgets.append( biasWidget );
         m_layout->insertRow( m_layout->rowCount() - 1, biasWidget );
     }
+    debug() << "4";
 
     correctRemovability();
 }

@@ -34,7 +34,7 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator()
     connect( m_model->qaim(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
     connect( m_model->qaim(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
 
-    connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( activeChanged() ),
+    connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( activeChanged( int ) ),
              SLOT( activePlaylistChanged() ) );
     activePlaylistChanged();
 }
@@ -56,13 +56,13 @@ Playlist::DynamicTrackNavigator::receiveTracks( Meta::TrackList tracks )
 void
 Playlist::DynamicTrackNavigator::appendUpcoming()
 {
-    DEBUG_BLOCK
+    // a little bit stupid. the playlist jumps to the newly inserted tracks
 
     int updateRow = m_model->activeRow() + 1;
     int rowCount = m_model->qaim()->rowCount();
     int upcomingCountLag = AmarokConfig::upcomingTracks() - ( rowCount - updateRow );
 
-    if( upcomingCountLag > 0 && !m_playlist.isNull() )
+    if( upcomingCountLag > 0 && m_playlist )
         m_playlist->requestTracks( upcomingCountLag );
 }
 
@@ -71,9 +71,7 @@ Playlist::DynamicTrackNavigator::removePlayed()
 {
     int activeRow = m_model->activeRow();
     if( activeRow > AmarokConfig::previousTracks() )
-    {
         The::playlistController()->removeRows( 0, activeRow - AmarokConfig::previousTracks() );
-    }
 }
 
 void
@@ -101,7 +99,7 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
     }
     else
     {
-        connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ),
+        connect( m_playlist, SIGNAL( tracksReady( Meta::TrackList ) ),
                  this, SLOT( receiveTracks( Meta::TrackList ) ) );
     }
 }
@@ -116,7 +114,11 @@ Playlist::DynamicTrackNavigator::trackChanged()
 void
 Playlist::DynamicTrackNavigator::repopulate()
 {
-    if( m_playlist )
-        m_playlist->recalculate();
+    // remove all future tracks
+    int activeRow = m_model->activeRow();
+    int rowCount = m_model->qaim()->rowCount();
+    if( activeRow < rowCount )
+        The::playlistController()->removeRows( activeRow + 1, rowCount - activeRow - 1);
+
     appendUpcoming();
 }

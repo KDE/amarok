@@ -29,7 +29,7 @@ Dynamic::DynamicPlaylist::~DynamicPlaylist()
 }
 
 void
-Dynamic::DynamicPlaylist::recalculate()
+Dynamic::DynamicPlaylist::repopulate()
 {
     // do nothing by default
 }

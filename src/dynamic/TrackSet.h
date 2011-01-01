@@ -80,13 +80,10 @@ namespace Dynamic
             /** Creates a TrackSet that represents the whole universe.
                 All tracks are included.
             */
-            TrackSet( const Dynamic::TrackCollectionPtr collection );
-
-            /** Removes all tracks from the set */
-            void clear();
+            TrackSet( const Dynamic::TrackCollectionPtr collection, bool value );
 
             /** Sets all tracks to the set */
-            void reset();
+            void reset( bool value );
 
             /** Returns true if the results of this track set are not yet available */
             bool isOutstanding() const;
@@ -113,7 +110,7 @@ namespace Dynamic
 
         private:
             QBitArray m_bits;
-            const TrackCollectionPtr m_collection;
+            TrackCollectionPtr m_collection;
     };
 }
 

@@ -58,13 +58,15 @@ public:
     void polish();
 
 public slots:
-    void showDynamicHint( bool enabled );
     void clearFilterIfActive();
 
 protected:
     QSize sizeHint() const;
 
 private slots:
+    /** show or hide the dynamic playlist mode indicator */
+    void showDynamicHint();
+
     void paletteChanged( const QPalette& palette );
     void playlistProviderAdded( Playlists::PlaylistProvider *provider, int category );
     void playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category );
