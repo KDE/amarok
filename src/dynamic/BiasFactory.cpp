@@ -16,6 +16,8 @@
 
 #include "BiasFactory.h"
 #include "Bias.h"
+#include "PartBias.h"
+#include "TagMatchBias.h"
 
 #define DEBUG_PREFIX "BiasFactory"
 
@@ -45,6 +47,24 @@ class RandomBiasFactory : public Dynamic::AbstractBiasFactory
     { return Dynamic::BiasPtr( new Dynamic::RandomBias( reader ) ); }
 };
 
+class UniqueBiasFactory : public Dynamic::AbstractBiasFactory
+{
+    QString i18nName() const
+    { return i18nc("Name of the unique bias", "Unique"); }
+
+    QString name() const
+    { return Dynamic::UniqueBias::sName(); }
+
+    QString i18nDescription() const
+    { return i18nc("Description of the unique bias",
+                   "The unique bias adds matches tracks that are not already in the playlist effectively preventing duplicates."); }
+
+    Dynamic::BiasPtr createBias()
+    { return Dynamic::BiasPtr( new Dynamic::UniqueBias() ); }
+
+    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
+    { return Dynamic::BiasPtr( new Dynamic::UniqueBias( reader ) ); }
+};
 
 class NotBiasFactory : public Dynamic::AbstractBiasFactory
 {
@@ -161,6 +181,7 @@ Dynamic::BiasFactory::instance()
         s_biasFactories.append( new TagMatchBiasFactory() );
         s_biasFactories.append( new PartBiasFactory() );
         s_biasFactories.append( new RandomBiasFactory() );
+        s_biasFactories.append( new UniqueBiasFactory() );
         s_biasFactories.append( new NotBiasFactory() );
         s_biasFactories.append( new AndBiasFactory() );
         s_biasFactories.append( new OrBiasFactory() );

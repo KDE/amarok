@@ -103,6 +103,7 @@ namespace Dynamic
             void unite( const QStringList& uids );
             void intersect( const TrackSet& );
             void intersect( const QStringList& uids );
+            void subtract( const Meta::TrackPtr& );
             void subtract( const TrackSet& );
             void subtract( const QStringList& uids );
 

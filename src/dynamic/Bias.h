@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
- * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010, 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,14 +21,11 @@
 #ifndef AMAROK_BIAS_H
 #define AMAROK_BIAS_H
 
-#include "widgets/MetaQueryWidget.h"
 #include "TrackSet.h"
 
 #include <QObject>
 #include <QWidget>
-#include <QModelIndex>
 #include <QSharedData>
-
 #include <QExplicitlySharedDataPointer>
 
 class QXmlStreamReader;
@@ -102,14 +99,30 @@ namespace Dynamic
                                              const Meta::TrackList& playlist, int contextCount,
                                              const TrackCollectionPtr universe ) const = 0;
 
+            /** Returns true if indicated track fits that position.
+                The function might block until a result is ready.
+                @param position The position inside the playlist that we search a track for.
+                                The position can be larger than the number of playlist entries
+                                if we search a track for the end of the playlist.
+                @param playlist The current playlist context for the track.
+                @param contextCount The number of songs that are already fixed. Those songs
+                                should not take part in the calculation of an energy value.
+                @param universe A TrackCollectionPtr to be used for the resulting TrackSet
+            */
+            virtual bool trackMatches( int position,
+                                       const Meta::TrackList& playlist, int contextCount ) const = 0;
+
+
             /** Returns an energy value for the given playlist.
+                The function might block until a result is ready.
                 The energy value should be in the range 0-1.
                 0 is the perfect value.
+                The default implementation here uses trackMatches to calculate the energy
                 @param playlist The current playlist context for the track.
                 @param contextCount The number of songs that are already fixed. Those songs
                                 should not take part in the calculation of an energy value.
             */
-            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const = 0;
+            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
 
         signals:
             /** This signal is emitted when the bias is changed.
@@ -134,6 +147,9 @@ namespace Dynamic
 
             /** Call this function when this bias should be replaced by a new one. */
             virtual void replace( Dynamic::BiasPtr newBias );
+
+        protected:
+            /** Recursively set's the row number of the bias returning the next number */
     };
 
     /** A bias that returns all the tracks in the universe as possible tracks */
@@ -157,10 +173,43 @@ namespace Dynamic
                                              const Meta::TrackList& playlist, int contextCount,
                                              const TrackCollectionPtr universe ) const;
 
+            virtual bool trackMatches( int position,
+                                       const Meta::TrackList& playlist,
+                                       int contextCount ) const;
+
             virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
 
         private:
             Q_DISABLE_COPY(RandomBias)
+    };
+
+    /** A bias that returns tracks that are not in the playlist already */
+    class UniqueBias : public AbstractBias
+    {
+        Q_OBJECT
+
+        public:
+            UniqueBias();
+            UniqueBias( QXmlStreamReader *reader );
+            virtual ~UniqueBias();
+
+            void toXml( QXmlStreamWriter *writer ) const;
+
+            static QString sName();
+            virtual QString name() const;
+
+            virtual QWidget* widget( QWidget* parent = 0 );
+
+            virtual TrackSet matchingTracks( int position,
+                                             const Meta::TrackList& playlist, int contextCount,
+                                             const TrackCollectionPtr universe ) const;
+
+            virtual bool trackMatches( int position,
+                                       const Meta::TrackList& playlist,
+                                       int contextCount ) const;
+
+        private:
+            Q_DISABLE_COPY(UniqueBias)
     };
 
     class AndBias : public AbstractBias
@@ -182,6 +231,10 @@ namespace Dynamic
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
                                              const TrackCollectionPtr universe ) const;
+
+            virtual bool trackMatches( int position,
+                                       const Meta::TrackList& playlist,
+                                       int contextCount ) const;
 
             virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
 
@@ -207,6 +260,7 @@ namespace Dynamic
             virtual void resultReceived( const Dynamic::TrackSet &tracks );
 
         protected:
+            bool m_duringConstruction; // protect against accidentially freeing this bias by creating a BiasPtr
             BiasList m_biases;
 
             mutable TrackSet m_tracks;
@@ -233,6 +287,10 @@ namespace Dynamic
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
                                              const TrackCollectionPtr universe ) const;
+
+            virtual bool trackMatches( int position,
+                                       const Meta::TrackList& playlist,
+                                       int contextCount ) const;
 
             virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
 
@@ -262,6 +320,10 @@ namespace Dynamic
                                              const Meta::TrackList& playlist, int contextCount,
                                              const TrackCollectionPtr universe ) const;
 
+            virtual bool trackMatches( int position,
+                                       const Meta::TrackList& playlist,
+                                       int contextCount ) const;
+
             virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
 
         protected slots:
@@ -271,122 +333,9 @@ namespace Dynamic
             Q_DISABLE_COPY(NotBias)
     };
 
-    /** The part bias will ensure that tracks are fulfilling all the sub-biases according to it's weights.
-        The bias has an implicit random sub-bias
-    */
-    class PartBias : public AndBias
-    {
-        Q_OBJECT
-
-        public:
-            PartBias();
-            PartBias( QXmlStreamReader *reader );
-
-            virtual void toXml( QXmlStreamWriter *writer ) const;
-
-            static QString sName();
-            virtual QString name() const;
-
-            virtual QWidget* widget( QWidget* parent = 0 );
-
-            /** Returns the tracks that would fit at the indicated position */
-            /*
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
-                                             const TrackCollectionPtr universe ) const;
-
-            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
-            */
-
-            /** Returns the weights of the bias itself and all the sub-biases. */
-            virtual QList<qreal> weights();
-
-            /** Appends a bias to this bias.
-                This object will take ownership of the bias and free it when destroyed.
-            */
-            virtual void appendBias( Dynamic::BiasPtr bias );
-            virtual void moveBias( int from, int to );
-
-        public slots:
-            /** The overall weight has changed */
-            void changeBiasWeight( int biasNum, qreal value );
-
-            // virtual void resultReceived( const Dynamic::TrackSet &tracks );
-
-        signals:
-            /** The overall weight has changed */
-            void weightsChanged();
-
-        protected slots:
-            virtual void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
-        protected:
-            QList<qreal> m_weights;
-
-        private:
-            Q_DISABLE_COPY(PartBias)
-    };
-
-
-    class TagMatchBias : public AbstractBias
-    {
-        Q_OBJECT
-
-        public:
-            TagMatchBias();
-            TagMatchBias( QXmlStreamReader *reader );
-
-            void toXml( QXmlStreamWriter *writer ) const;
-
-            static QString sName();
-            virtual QString name() const;
-
-            virtual QWidget* widget( QWidget* parent = 0 );
-
-            /** Returns the tracks that would fit at the indicated position */
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
-                                             const TrackCollectionPtr universe ) const;
-
-            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
-
-            MetaQueryWidget::Filter filter() const;
-            void setFilter( const MetaQueryWidget::Filter &filter );
-
-        public slots:
-            virtual void invalidate();
-
-        protected slots:
-            /** Called when we get new uids from the query maker */
-            void updateReady( QString collectionId, QStringList uids );
-
-            /** Called when the querymaker is finished */
-            void updateFinished();
-
-            /** Creates a new query to get matching tracks. */
-            void newQuery() const;
-
-        protected:
-
-            static QString nameForCondition( MetaQueryWidget::FilterCondition cond );
-            static MetaQueryWidget::FilterCondition conditionForName( const QString &name );
-
-            bool matches( const Meta::TrackPtr &track ) const;
-
-            MetaQueryWidget::Filter m_filter;
-
-            mutable QScopedPointer<Collections::QueryMaker> m_qm;
-
-            /** The result from the current query manager are buffered in the m_uids set. */
-            bool m_tracksValid;
-            mutable TrackSet m_tracks;
-
-        private:
-            Q_DISABLE_COPY(TagMatchBias)
-    };
 
     /*
     Other biases that we might want to do:
-    PreventDuplicateTagBias
     QuizPlayBias (last chacter of song title is first character of new song title)
     AlbumPlayBias (new track is the next track in current album)
     */

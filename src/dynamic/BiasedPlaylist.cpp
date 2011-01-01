@@ -49,14 +49,9 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     : DynamicPlaylist( parent )
     , m_numRequested( 0 )
 {
-    // , m_bias( new Dynamic::RandomBias() )
-    AndBias *andB = new AndBias();
-    BiasPtr biasPtr = BiasPtr( andB );
-    andB->appendBias( BiasPtr( new TagMatchBias() ) );
-    andB->appendBias( BiasPtr( new NotBias() ) );
-
     m_title = i18nc( "Title for a default dynamic playlist. The default playlist only returns random tracks.", "Random" );
 
+    BiasPtr biasPtr = BiasPtr( new Dynamic::RandomBias() );
     biasReplaced( BiasPtr(), biasPtr );
 }
 

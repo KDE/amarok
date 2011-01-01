@@ -20,19 +20,15 @@
 
 #include "DynamicBiasWidgets.h"
 
-#include "App.h"
+// #include "App.h"
 #include "Bias.h"
+#include "TagMatchBias.h"
+#include "PartBias.h"
 #include "BiasFactory.h"
-#include "BiasedPlaylist.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "DynamicPlaylist.h"
 #include "SliderWidget.h"
 #include "SvgHandler.h"
 #include "widgets/MetaQueryWidget.h"
-#include "widgets/kdatecombo.h"
-
-#include <typeinfo>
 
 #include <QSlider>
 #include <QFormLayout>
@@ -41,8 +37,6 @@
 #include <QListView>
 #include <QPaintEvent>
 #include <QPainter>
-#include <QSpinBox>
-#include <QTimeEdit>
 #include <QToolButton>
 
 #include <QStyleOption>
@@ -56,6 +50,7 @@
 PlaylistBrowserNS::BiasBoxWidget::BiasBoxWidget( Dynamic::BiasPtr bias, QWidget* parent )
     : QWidget( parent )
     , m_mainLayout( 0 )
+    , m_bias( bias )
     , m_biasWidget( 0 )
     , m_removable( false )
 {
@@ -79,6 +74,7 @@ PlaylistBrowserNS::BiasBoxWidget::biasReplaced( Dynamic::BiasPtr oldBias, Dynami
 {
     Q_UNUSED( oldBias );
 
+    m_bias = newBias;
     m_biasWidget->deleteLater();
     m_biasWidget = 0;
 
@@ -99,8 +95,9 @@ PlaylistBrowserNS::BiasBoxWidget::biasReplaced( Dynamic::BiasPtr oldBias, Dynami
 void
 PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
 {
-    Q_UNUSED(e)
+    Q_UNUSED(e);
 
+    // -- paint the background
     QPainter painter(this);
 
     QStyleOptionViewItemV4 opt;
@@ -108,7 +105,7 @@ PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
     opt.state = QStyle::State_Enabled;
     opt.rect = QRect( 0, 0, width(), height() );
 
-    bool isAlternateRow = (long(m_biasWidget) & 0x40);
+    bool isAlternateRow = rowNumber() % 2;
     if( isAlternateRow )
         opt.features |= QStyleOptionViewItemV2::Alternate;
 
@@ -126,11 +123,11 @@ PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
     style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &opt, &painter, this );
 
 
+    // -- paint the fancy splitter line between the items just as the PrettyItemDelegate does
     painter.setRenderHint( QPainter::Antialiasing, true );
-    QPixmap body;
     // body = The::svgHandler()->renderSvgWithDividers( "body", width(), height(), "body" );
-    body = The::svgHandler()->renderSvgWithDividers( "track", width(), height(), "track" );
-    painter.drawPixmap( 0, 0, body );
+    painter.drawPixmap( 0, 0,
+                        The::svgHandler()->renderSvgWithDividers( "track", width(), height(), "track" ) );
 
     painter.end();
 }
@@ -143,6 +140,38 @@ PlaylistBrowserNS::BiasBoxWidget::resizeEvent( QResizeEvent* )
 }
 */
 
+int
+PlaylistBrowserNS::BiasBoxWidget::rowNumber() const
+{
+    int num = 0;
+
+    if( !m_biasWidget )
+        return num;
+
+    LevelBiasWidget *lbw = qobject_cast<LevelBiasWidget*>(parentWidget());
+    Dynamic::BiasPtr lastBias = m_bias;
+    while( lbw )
+    {
+        Dynamic::AndBias *aBias = qobject_cast<Dynamic::AndBias*>(lbw);
+        if( aBias )
+            num += aBias->biases().indexOf( lastBias );
+
+        num++;
+        BiasBoxWidget *w = qobject_cast<BiasBoxWidget*>(lbw->parentWidget());
+        if( w )
+        {
+            lastBias = w->m_bias;
+            lbw = qobject_cast<LevelBiasWidget*>(lbw->parentWidget());
+        }
+        else
+        {
+            lbw = 0;
+            break;
+        }
+    }
+
+    return num;
+}
 
 /*
 
@@ -345,13 +374,21 @@ PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias,
     }
 
     // -- add an add button to add new widgets
+    QHBoxLayout* buttonLayout = new QHBoxLayout( this );
+
     m_addButton = new QToolButton( this );
     m_addButton->setIcon( KIcon( "list-add-amarok" ) );
     m_addButton->setToolTip( i18n( "Add a new bias." ) );
     connect( m_addButton, SIGNAL( clicked() ),
              this, SLOT( appendBias() ) );
 
-    m_layout->addRow( i18n( "Add bias:"), m_addButton );
+    buttonLayout->addWidget( m_addButton );
+
+    QLabel* label = new QLabel( i18n( "Add bias:") );
+    buttonLayout->addWidget( label );
+
+    m_layout->addRow( buttonLayout );
+
 
     // -- add all sub-bias widgets
     foreach( Dynamic::BiasPtr bias, m_abias->biases() )
@@ -376,7 +413,6 @@ PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
         m_sliders.isEmpty() &&
         (qobject_cast<Dynamic::RandomBias*>(bias.data()) != 0);
 
-    debug() << "1";
     // -- add the slider
     if( m_haveWeights )
     {
@@ -386,8 +422,6 @@ PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
 
         slider->setToolTip( i18n( "This controls what portion of the playlist should match the criteria" ) );
         m_sliders.append( slider );
-
-    debug() << "2";
 
         if( specialRandomBias )
             m_layout->insertRow( m_layout->rowCount() - 1,
@@ -399,7 +433,6 @@ PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
         connect( slider, SIGNAL(valueChanged(int)),
                  SLOT(sliderValueChanged(int)) );
     }
-    debug() << "3";
 
     // -- add the widget
     if( specialRandomBias )
@@ -412,7 +445,6 @@ PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
         m_widgets.append( biasWidget );
         m_layout->insertRow( m_layout->rowCount() - 1, biasWidget );
     }
-    debug() << "4";
 
     correctRemovability();
 }

@@ -149,6 +149,20 @@ Dynamic::TrackSet::intersect( const QStringList& B )
 }
 
 void
+Dynamic::TrackSet::subtract( const Meta::TrackPtr& B )
+{
+    if( !m_collection )
+        return;
+
+    QString str = B->uidUrl();
+    if( !m_collection->m_ids.contains( str ) )
+        return;
+
+    int index = m_collection->m_ids.value( str );
+    m_bits.clearBit( index );
+}
+
+void
 Dynamic::TrackSet::subtract( const Dynamic::TrackSet& B )
 {
     m_bits |= B.m_bits;

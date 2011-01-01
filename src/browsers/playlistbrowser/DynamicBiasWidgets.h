@@ -37,6 +37,10 @@ namespace Amarok
     class Slider;
 }
 
+namespace Dynamic
+{
+    class TagMatchBias;
+}
 
 namespace PlaylistBrowserNS
 {
@@ -57,10 +61,18 @@ namespace PlaylistBrowserNS
             void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
 
         protected:
+
+            /** Returns a row number for this bias.
+                Used to display the alternate background for the widgets and
+                it's not really the row number but instead something that looks
+                good. */
+            int rowNumber() const;
+
             // void resizeEvent( QResizeEvent* );
             void paintEvent( QPaintEvent* );
 
             QHBoxLayout* m_mainLayout;
+            Dynamic::BiasPtr m_bias;
             QWidget *m_biasWidget;
             bool m_removable;
     };

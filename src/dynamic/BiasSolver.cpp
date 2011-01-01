@@ -108,6 +108,9 @@ Dynamic::BiasSolver::BiasSolver( int n, Dynamic::BiasPtr bias, Meta::TrackList c
 {
     // debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId();
     getTrackCollection();
+
+    connect( m_bias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
+             this,  SLOT( biasResultReady( const Dynamic::TrackSet & ) ) );
 }
 
 
@@ -515,6 +518,7 @@ Dynamic::BiasSolver::trackForUid( const QString& uid ) const
 void
 Dynamic::BiasSolver::biasResultReady( const Dynamic::TrackSet &set )
 {
+    DEBUG_BLOCK;
     QMutexLocker locker( &m_biasResultsMutex );
     m_tracks = set;
     m_biasResultsReady.wakeAll();
@@ -526,9 +530,9 @@ Dynamic::BiasSolver::matchingTracks( int position, const Meta::TrackList& playli
     QMutexLocker locker( &m_biasResultsMutex );
     m_tracks = m_bias->matchingTracks( position, playlist, m_context.count(), m_trackCollection );
     if( m_tracks.isOutstanding() )
-        m_collectionResultsReady.wait( &m_biasResultsMutex );
+        m_biasResultsReady.wait( &m_biasResultsMutex );
 
-        debug() << "BiasSolver::matchingTracks returns"<<m_tracks.trackCount()<<"of"<<m_trackCollection->count()<<"tracks.";
+    debug() << "BiasSolver::matchingTracks returns"<<m_tracks.trackCount()<<"of"<<m_trackCollection->count()<<"tracks.";
 
     return m_tracks;
 }
