@@ -23,11 +23,12 @@
 #include <KCmdLineArgs>
 #include <KDebug>
 
+#include <csignal>
+
 //#define AMAROK_USE_DRKONQI
 
 extern AMAROK_EXPORT class KAboutData aboutData; //defined in App.cpp
 extern AMAROK_EXPORT class OcsData ocsData;
-
 
 int main( int argc, char *argv[] )
 {
@@ -255,6 +256,12 @@ int main( int argc, char *argv[] )
             fprintf( stderr, "Amarok is already running!\n" );
         return 0;
     }
+
+    // Rewrite default SIGINT and SIGTERM handlers
+    // to make amarok save current playlists during forced
+    // application termination (logout, Ctr+C in console etc.)
+    signal( SIGINT, &QCoreApplication::exit );
+    signal( SIGTERM, &QCoreApplication::exit );
 
     App app;
     app.setUniqueInstance( startFlag == KUniqueApplication::NonUniqueInstance );
