@@ -10,6 +10,7 @@ VERSION 2.4-Beta 2
     * Fixed some broken radio stream URLs.
 
   BUGFIXES:
+    * Fix crash when moving tracks between collections. (BR 253033)
     * Fixed issue with UMS Collection that made amarok to delete original track
       instead of newly copied one. (BR 238915)
     * Fixed issue with Audio CDs that do not provide CDDB information. Patch by
