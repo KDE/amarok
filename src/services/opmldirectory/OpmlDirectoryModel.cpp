@@ -153,7 +153,6 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
         return QVariant();
     }
 
-    debug() << idx;
     OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
     if( !outline )
         return QVariant();
@@ -162,9 +161,11 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
     {
         case Qt::DisplayRole:
             return outline->attributes()["text"];
+        case Qt::DecorationRole:
+            return m_imageMap.contains( outline ) ? m_imageMap.value( outline ) : QVariant();
         case ActionRole:
         {
-            if( !outline->attributes().contains( "type" ) ) //probably a folder
+            if( opmlNodeType( outline ) == CategoryNode ) //probably a folder
                 return QVariant::fromValue( QActionList() << m_addOpmlAction << m_addFolderAction );
         }
         default:
@@ -177,6 +178,8 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
 bool
 OpmlDirectoryModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
+    Q_UNUSED(role);
+
     if( !idx.isValid() )
         return false;
 
@@ -185,6 +188,8 @@ OpmlDirectoryModel::setData( const QModelIndex &idx, const QVariant &value, int 
         return false;
 
     outline->mutableAttributes()["text"] = value.toString();
+
+    saveOpml( m_rootOpmlUrl );
 
     return true;
 }
@@ -225,6 +230,31 @@ OpmlDirectoryModel::slotOpmlWriterDone( int result )
     delete writer;
 }
 
+OpmlNodeType
+OpmlDirectoryModel::opmlNodeType( const QModelIndex &idx ) const
+{
+    OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
+    return opmlNodeType( outline );
+}
+
+OpmlNodeType
+OpmlDirectoryModel::opmlNodeType( const OpmlOutline *outline ) const
+{
+    if( !outline || !outline->attributes().contains( "text" ) )
+        return InvalidNode;
+
+    if( !outline->attributes().contains( "type") )
+        return CategoryNode;
+
+    if( outline->attributes()["type"] == "rss" )
+        return RssUrlNode;
+
+    if( outline->attributes()["type"] == "include" )
+        return IncludeNode;
+
+    return UnknownNode;
+
+}
 
 void
 OpmlDirectoryModel::slotAddOpmlAction()
@@ -332,6 +362,9 @@ OpmlDirectoryModel::slotOpmlOutlineParsed( OpmlOutline *outline )
     OpmlParser *parser = qobject_cast<OpmlParser *>( QObject::sender() );
     QModelIndex idx = m_currentFetchingMap.value( parser );
 
+    int beginRow = rowCount( idx );
+    beginInsertRows( idx, beginRow, beginRow );
+
     //no reparenting required when the item is already parented.
     if( outline->isRootItem() )
     {
@@ -352,9 +385,9 @@ OpmlDirectoryModel::slotOpmlOutlineParsed( OpmlOutline *outline )
         }
     }
 
-    int beginRow = rowCount( idx );
-    beginInsertRows( idx, beginRow, beginRow );
     endInsertRows();
+
+    //TODO: begin image fetch
 }
 
 void

@@ -26,16 +26,26 @@
 class OpmlParser;
 
 class QAction;
-
 typedef QList<QAction *> QActionList;
+
+enum OpmlNodeType
+{
+    InvalidNode,
+    UnknownNode,
+    RssUrlNode, //leaf node that link to an RSS
+    IncludeNode, //URL to an OPML file that will be loaded as a sub-tree upon expansion
+    CategoryNode //plain sub-tree which can be represented as a folder.
+};
 
 class OpmlDirectoryModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
+    //TODO: make these rols part of a common class in Amarok::.
     enum
     {
         ActionRole = Qt::UserRole, //list of QActions for the index
+        DecorationUriRole, //a URI for the decoration to be fetched by the view.
         CustomRoleOffset //first role that can be used by sublasses for their own data
     };
 
@@ -54,6 +64,7 @@ public:
 
     // OpmlDirectoryModel methods
     virtual void saveOpml( const KUrl &saveLocation );
+    virtual OpmlNodeType opmlNodeType( const QModelIndex &idx ) const;
 
 signals:
 
@@ -71,10 +82,13 @@ private slots:
     void slotOpmlWriterDone( int result );
 
 private:
+    OpmlNodeType opmlNodeType( const OpmlOutline *outline ) const;
+
     KUrl m_rootOpmlUrl;
     QList<OpmlOutline *> m_rootOutlines;
 
     QMap<OpmlParser *,QModelIndex> m_currentFetchingMap;
+    QMap<OpmlOutline *,QPixmap> m_imageMap;
 
     QAction *m_addOpmlAction;
     QAction *m_addFolderAction;
