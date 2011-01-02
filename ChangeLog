@@ -10,6 +10,8 @@ VERSION 2.4-Beta 2
     * Fixed some broken radio stream URLs.
 
   BUGFIXES:
+    * Fixed issue with UMS Collection that made amarok to delete original track
+      instead of newly copied one. (BR 238915)
     * Fixed issue with Audio CDs that do not provide CDDB information. Patch by
       Andriy Gapon <avg@icyb.net.ua>. (BR 257818)
     * Fixed issue with the Organize Files Dialog that prevented presets from being

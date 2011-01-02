@@ -610,7 +610,6 @@ UmsHandler::findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDev
 bool
 UmsHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack )
 {
-    Q_UNUSED( destTrack )
     DEBUG_BLOCK
 
     KUrl srcurl = KUrl::fromPath( srcTrack->playableUrl().path() );
@@ -692,8 +691,6 @@ UmsHandler::fileTransferred( KJob *job )  //SLOT
 void
 UmsHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed)
 {
-    Q_UNUSED( job )
-    Q_UNUSED( to )
     Q_UNUSED( mtime )
     Q_UNUSED( directory )
     Q_UNUSED( renamed )
@@ -705,6 +702,7 @@ UmsHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bo
     {
         Meta::TrackPtr metafiletrack( new MetaFile::Track( to ) );
         Meta::MediaDeviceTrackPtr destTrack = m_srctodest.value( track );
+        destTrack->setPlayableUrl( to );
         m_umstrackhash.insert( destTrack, metafiletrack );
         m_files.insert( to.path(), destTrack );
         slotFinalizeTrackCopy( track );

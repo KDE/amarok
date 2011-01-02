@@ -156,7 +156,6 @@ CollectionLocation::prepareMove( Meta::TrackPtr track, CollectionLocation *desti
 void
 CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination )
 {
-    debug() << "prepare move"<<tracks.count()<<"tracks from"<<collection()->collectionId()<<"to"<<(destination->collection()?destination->collection()->collectionId():"no destination. probably trash");
     DEBUG_BLOCK
     if( !destination->isWritable() )
     {
