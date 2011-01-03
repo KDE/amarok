@@ -50,6 +50,9 @@ class AMAROK_EXPORT OpmlOutline
                 { m_attributes.insert( key, value ); }
 
         QList<OpmlOutline *> children() const { return m_children; }
+
+        /** @return a modifiable reference to the children */
+        QList<OpmlOutline *> &mutableChildren() { return m_children; }
         void setHasChildren( bool hasChildren ) { m_hasChildren = hasChildren; }
         bool hasChildren() const { return m_hasChildren; }
         void addChild( OpmlOutline *outline ) { m_children << outline; }

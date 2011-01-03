@@ -4,6 +4,7 @@
 #include "src/widgets/PrettyTreeView.h"
 
 class QContextMenuEvent;
+class QKeyEvent;
 
 class OpmlDirectoryView : public Amarok::PrettyTreeView
 {
@@ -12,6 +13,7 @@ public:
     explicit OpmlDirectoryView( QWidget *parent = 0 );
 
     virtual void contextMenuEvent( QContextMenuEvent *event );
+    virtual void keyPressEvent( QKeyEvent *event );
 
 signals:
 
