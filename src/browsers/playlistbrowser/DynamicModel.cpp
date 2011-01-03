@@ -238,13 +238,14 @@ PlaylistBrowserNS::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
 void
 PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
 {
+    DEBUG_BLOCK
     int newIndex = playlistIndex( newTitle );
+    debug() << "saveActive" << newTitle << ":"<<newIndex;
 
     // if it's unchanged and the same name.. dont do anything
-    if( newIndex == m_activePlaylistIndex )
-    {
+    if( !m_activeUnsaved &&
+        newIndex == m_activePlaylistIndex )
         return;
-    }
 
     // overwriting an existing playlist entry
     if( newIndex >= 0 )
@@ -283,6 +284,8 @@ PlaylistBrowserNS::DynamicModel::savePlaylists()
 bool
 PlaylistBrowserNS::DynamicModel::savePlaylists( const QString &filename )
 {
+    DEBUG_BLOCK
+
     QFile xmlFile( Amarok::saveLocation() + filename );
     if( !xmlFile.open( QIODevice::WriteOnly ) )
     {
@@ -423,7 +426,8 @@ PlaylistBrowserNS::DynamicModel::saveCurrentPlaylists()
 void
 PlaylistBrowserNS::DynamicModel::loadCurrentPlaylists()
 {
-    loadPlaylists( "dynamic_current.xml" );
+    if( !loadPlaylists( "dynamic_current.xml" ) )
+        loadPlaylists( "dynamic.xml" );
 }
 
 

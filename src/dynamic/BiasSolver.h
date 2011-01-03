@@ -148,14 +148,10 @@ namespace Dynamic
 
 
             /**
-             * Try to produce an optimal playlist using a genetic algorithm, and
-             * return the best playlist produced.
-             *
-             * @param iterationLimit Maximum iterations allowed.
-             * @param updateStatus Enable/disable statusUpdate signals.
+             * Try to produce better playlist by replacing all tracks by tracks that fulfill the bias
              */
+            void simpleOptimize( SolverList *list );
 
-            void ga_optimize( SolverList *list, int iterationLimit, bool updateStatus = true );
             /**
              * Optimize a playlist using simulated annealing.
              * If the given initial playlist is already optimal it does not do anything.
@@ -164,7 +160,19 @@ namespace Dynamic
              * @param iterationLimit Maximum iterations allowed.
              * @param updateStatus Enable/disable statusUpdate signals.
              */
-            void sa_optimize( SolverList *list, int iterationLimit, bool updateStatus = true );
+            void annealingOptimize( SolverList *list, int iterationLimit, bool updateStatus = true );
+
+            /**
+             * Try to produce an optimal playlist using a genetic algorithm, and
+             * return the best playlist produced.
+             *
+             * @param iterationLimit Maximum iterations allowed.
+             * @param updateStatus Enable/disable statusUpdate signals.
+             */
+            void geneticOptimize( SolverList *list, int iterationLimit, bool updateStatus = true );
+
+            /** Returns a simple random playlist without caring about any bias */
+            SolverList generateInitialPlaylist() const;
 
             /**
              * Get the track referenced by the uid stored in the given
@@ -185,12 +193,6 @@ namespace Dynamic
              */
             Meta::TrackPtr getRandomTrack( const TrackSet& subset ) const;
 
-            /**
-             * Try to choose a good playlist starting only from the playlist context.
-             * details are a bit complicated, the algorithm is documented in the
-             * source code.
-             */
-            SolverList generateInitialPlaylist() const;
 
             /**
              * Used each iteration of the genetic algorithm. Choose

@@ -51,7 +51,7 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
 {
     m_title = i18nc( "Title for a default dynamic playlist. The default playlist only returns random tracks.", "Random" );
 
-    BiasPtr biasPtr = BiasPtr( new Dynamic::RandomBias() );
+    BiasPtr biasPtr( BiasPtr( new Dynamic::RandomBias() ) );
     biasReplaced( BiasPtr(), biasPtr );
 }
 
@@ -73,11 +73,10 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *pare
                 m_title = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else
             {
-                m_bias = Dynamic::BiasFactory::fromXml( reader );
-                if( m_bias )
+                BiasPtr biasPtr( Dynamic::BiasFactory::fromXml( reader ) );
+                if( biasPtr )
                 {
-                    connect( m_bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
-                             this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+                    biasReplaced( BiasPtr(), biasPtr );
                 }
                 else
                 {
@@ -151,18 +150,27 @@ void
 Dynamic::BiasedPlaylist::biasChanged()
 {
     DEBUG_BLOCK;
+    QMutexLocker locker(&m_bufferMutex);
+    m_buffer.clear();
+
     emit changed( this );
 }
 
 void
 Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
 {
-    Q_UNUSED( oldBias );
+    if( m_bias )
+        disconnect( m_bias.data(), 0, this, 0 );
+
     m_bias = newBias;
+
     connect( m_bias.data(), SIGNAL( changed( Dynamic::BiasPtr ) ),
              this, SLOT( biasChanged() ) );
     connect( m_bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
              this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+
+    if( oldBias ) // don't emit a changed during construction
+        biasChanged();
 }
 
 

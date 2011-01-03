@@ -242,6 +242,7 @@ Dynamic::AndBias::AndBias( QXmlStreamReader *reader )
 {
     while (!reader->atEnd()) {
         reader->readNext();
+debug() << "AndBias" << reader->name() << reader->isStartElement();
 
         if( reader->isStartElement() )
         {
@@ -252,7 +253,7 @@ Dynamic::AndBias::AndBias( QXmlStreamReader *reader )
             }
             else
             {
-                debug()<<"Unexpected xml start element"<<reader->name()<<"in input";
+                warning()<<"Unexpected xml start element"<<reader->name()<<"in input";
                 reader->skipCurrentElement();
             }
         }
@@ -419,7 +420,6 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
     Q_ASSERT( index >= 0 );
 
     disconnect( oldBias.data(), 0, this, 0 );
-
 
     if( newBias )
     {

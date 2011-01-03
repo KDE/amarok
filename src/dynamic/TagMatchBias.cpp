@@ -140,6 +140,7 @@ Dynamic::TagMatchBias::trackMatches( int position,
                                      const Meta::TrackList& playlist,
                                      int contextCount ) const
 {
+    Q_UNUSED( contextCount );
     return matches( playlist.at(position) );
 }
 

@@ -41,6 +41,7 @@
 
 #include <QStyleOption>
 #include <QPalette>
+#include <QStyle>
 
 #include <KComboBox>
 #include <KIcon>
@@ -52,11 +53,32 @@ PlaylistBrowserNS::BiasBoxWidget::BiasBoxWidget( Dynamic::BiasPtr bias, QWidget*
     , m_mainLayout( 0 )
     , m_bias( bias )
     , m_biasWidget( 0 )
-    , m_removable( false )
+    , m_removeButton( 0 )
+    , m_hover( false )
 {
     // setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
 
     m_mainLayout = new QHBoxLayout( this );
+
+    // add a remove button if the bias is not in the first level.
+    if( qobject_cast<BiasWidget*>(parentWidget()) )
+    {
+        m_removeButton = new QToolButton( this );
+        m_removeButton->setIcon( KIcon( "list-remove-amarok" ) );
+        m_removeButton->setToolTip( i18n( "Remove this bias." ) );
+        m_removeButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+        connect( m_removeButton, SIGNAL( clicked() ),
+                 this, SLOT( biasRemoved() ) );
+    }
+
+    if( m_removeButton )
+    {
+        m_mainLayout->addWidget( m_removeButton, 0/*, Qt::AlignLeft | Qt::AlignTop*/ );
+        /*
+        mainLayout->setStretchFactor( m_removeButton, 0 );
+        mainLayout->setAlignment( m_removeButton, Qt::AlignLeft | Qt::AlignTop );
+        */
+    }
 
     biasReplaced( Dynamic::BiasPtr(), bias );
 }
@@ -64,21 +86,30 @@ PlaylistBrowserNS::BiasBoxWidget::BiasBoxWidget( Dynamic::BiasPtr bias, QWidget*
 void
 PlaylistBrowserNS::BiasBoxWidget::setRemovable( bool value )
 {
-    m_removable = value;
-    if( BiasWidget *bw = qobject_cast<BiasWidget*>(m_biasWidget) )
-        bw->setRemovable( m_removable );
+    if( m_removeButton )
+        m_removeButton->setEnabled( value );
 }
+
+void
+PlaylistBrowserNS::BiasBoxWidget::biasRemoved()
+{
+    m_bias->replace( Dynamic::BiasPtr() );
+}
+
 
 void
 PlaylistBrowserNS::BiasBoxWidget::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
 {
     Q_UNUSED( oldBias );
 
-    m_bias = newBias;
-    m_biasWidget->deleteLater();
-    m_biasWidget = 0;
+    if( m_biasWidget )
+    {
+        m_biasWidget->deleteLater();
+        m_biasWidget = 0;
+    }
 
     debug() << "BoxWidget->biasReplaced" << newBias.data();
+    m_bias = newBias;
     if( !newBias )
         return;
 
@@ -86,28 +117,33 @@ PlaylistBrowserNS::BiasBoxWidget::biasReplaced( Dynamic::BiasPtr oldBias, Dynami
              this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
 
     m_biasWidget = newBias->widget( this );
-    if( BiasWidget *bw = qobject_cast<BiasWidget*>(m_biasWidget) )
-        bw->setRemovable( m_removable );
 
-    m_mainLayout->addWidget( m_biasWidget );
+    m_mainLayout->addWidget( m_biasWidget, 1 );
 }
 
 void
-PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
+PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent *event )
 {
-    Q_UNUSED(e);
+    Q_UNUSED(event);
 
     // -- paint the background
     QPainter painter(this);
 
-    QStyleOptionViewItemV4 opt;
-    opt.widget = this;
-    opt.state = QStyle::State_Enabled;
-    opt.rect = QRect( 0, 0, width(), height() );
+    QStyleOptionViewItemV4 option;
+    option.widget = this;
+    option.state = QStyle::State_Enabled;
+    option.rect = QRect( 0, 0, width(), height() );
 
     bool isAlternateRow = rowNumber() % 2;
     if( isAlternateRow )
-        opt.features |= QStyleOptionViewItemV2::Alternate;
+        option.features |= QStyleOptionViewItemV2::Alternate;
+
+    // -- the hover color is an indication that you can move the bias
+    // a bias can't be moved if it can't be removed
+    if( m_hover && m_removeButton && m_removeButton->isEnabled() )
+        option.state |= QStyle::State_MouseOver;
+    else
+        option.state &= ~QStyle::State_MouseOver;
 
     /*
     QPalette::ColorGroup cg;
@@ -117,10 +153,10 @@ PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
     } else {
         cg = QPalette::Normal;
     }
-    opt.palette.setCurrentColorGroup(cg);
+    option.palette.setCurrentColorGroup(cg);
     */
 
-    style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &opt, &painter, this );
+    style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, &painter, this );
 
 
     // -- paint the fancy splitter line between the items just as the PrettyItemDelegate does
@@ -132,13 +168,21 @@ PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
     painter.end();
 }
 
-/*
 void
-PlaylistBrowserNS::BiasBoxWidget::resizeEvent( QResizeEvent* )
+PlaylistBrowserNS::BiasBoxWidget::enterEvent( QEvent *event )
 {
-    emit widgetChanged( this );
+    Q_UNUSED(event);
+    m_hover = true;
+    update();
 }
-*/
+
+void
+PlaylistBrowserNS::BiasBoxWidget::leaveEvent( QEvent *event )
+{
+    Q_UNUSED(event);
+    m_hover = false;
+    update();
+}
 
 int
 PlaylistBrowserNS::BiasBoxWidget::rowNumber() const
@@ -148,106 +192,44 @@ PlaylistBrowserNS::BiasBoxWidget::rowNumber() const
     if( !m_biasWidget )
         return num;
 
+    // usually we have a BiasBoxWidget inside a LevelBiasWidget inside a BiasBoxWidget.
+
+    BiasBoxWidget *bbw = const_cast<BiasBoxWidget*>(this);
     LevelBiasWidget *lbw = qobject_cast<LevelBiasWidget*>(parentWidget());
-    Dynamic::BiasPtr lastBias = m_bias;
     while( lbw )
     {
-        Dynamic::AndBias *aBias = qobject_cast<Dynamic::AndBias*>(lbw);
-        if( aBias )
-            num += aBias->biases().indexOf( lastBias );
-
         num++;
-        BiasBoxWidget *w = qobject_cast<BiasBoxWidget*>(lbw->parentWidget());
-        if( w )
-        {
-            lastBias = w->m_bias;
-            lbw = qobject_cast<LevelBiasWidget*>(lbw->parentWidget());
-        }
+        num += lbw->widgets().indexOf( bbw );
+
+        bbw = qobject_cast<BiasBoxWidget*>(lbw->parentWidget());
+        if( bbw )
+            lbw = qobject_cast<LevelBiasWidget*>(bbw->parentWidget());
         else
-        {
             lbw = 0;
-            break;
-        }
     }
 
     return num;
 }
 
-/*
-
-PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( QWidget* parent )
-    : BiasBoxWidget( parent )
-    , m_addButton( new QToolButton( this ) )
-{
-    DEBUG_BLOCK
-
-    debug() << "--------------- addwidget";
-
-    QHBoxLayout* mainLayout = new QHBoxLayout( this );
-    m_addButton->setIcon( KIcon( "list-add-amarok" ) );
-    m_addButton->setToolTip( i18n( "Add a new bias." ) );
-    connect( m_addButton, SIGNAL( clicked() ), SLOT( slotClicked() ) );
-
-    QLabel* descLabel = new QLabel( i18n("Add bias") );
-    descLabel->setAlignment( Qt::AlignCenter );
-    descLabel->setWordWrap( true );
-
-    mainLayout->addWidget( m_addButton );
-    mainLayout->setStretchFactor( m_addButton, 0 );
-    mainLayout->setAlignment( m_addButton, Qt::AlignLeft | Qt::AlignVCenter );
-    mainLayout->addWidget( descLabel );
-    mainLayout->setStretchFactor( descLabel, 1 );
-
-    setLayout( mainLayout );
-}
-
-// TODO: For some reason this only works with double-click. Also, mouseReleaseEvent() doesn't work at all. Don't know why.
-void
-PlaylistBrowserNS::BiasAddWidget::mousePressEvent( QMouseEvent* event )
-{
-    DEBUG_BLOCK
-
-    slotClicked();
-
-    BiasBoxWidget::mousePressEvent( event );
-}
-
-void
-PlaylistBrowserNS::BiasAddWidget::slotClicked()
-{
-    DEBUG_BLOCK
-
-    emit addBias();
-}
-*/
+// ------- BiasWidget ----------
 
 PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::BiasPtr b, QWidget* parent )
     : QWidget( parent )
     , m_bias( b )
-    , m_removeButton( 0 )
+    , m_customWidget( 0 )
 {
     DEBUG_BLOCK
 
-    QHBoxLayout* mainLayout = new QHBoxLayout();
     m_layout = new QFormLayout();
     m_layout->setVerticalSpacing( 0 );
     m_layout->setFormAlignment( Qt::AlignLeft | Qt::AlignTop ); // so that all biases are left aligned
     // m_layout->setFieldGrowthPolicy( QFormLayout::AllNonFixedFieldsGrow );
 
-    // add a remove button if the bias is not in the first level.
-    if( qobject_cast<BiasBoxWidget*>(parent) &&
-        qobject_cast<BiasWidget*>(parent->parent()) )
-    {
-        m_removeButton = new QToolButton( this );
-        m_removeButton->setIcon( KIcon( "list-remove-amarok" ) );
-        m_removeButton->setToolTip( i18n( "Remove this bias." ) );
-        m_removeButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-        connect( m_removeButton, SIGNAL( clicked() ),
-                 this, SLOT( biasRemoved() ) );
-    }
-
+    // connect( m_cbias, SIGNAL( biasChanged( Dynamic::Bias* ) ), this, SIGNAL( biasChanged( Dynamic::Bias* ) ) );
     m_biasSelection = new KComboBox( this );
     factoriesChanged();
+
+    m_layout->addRow( i18n( "Match Type:" ), m_biasSelection );
 
     connect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
              this, SLOT( factoriesChanged() ) );
@@ -255,29 +237,34 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::BiasPtr b, QWidget* parent )
     connect( m_biasSelection, SIGNAL( activated( int ) ),
              this, SLOT( selectionChanged( int ) ) );
 
-    // connect( m_cbias, SIGNAL( biasChanged( Dynamic::Bias* ) ), this, SIGNAL( biasChanged( Dynamic::Bias* ) ) );
-
-    if( m_removeButton )
-    {
-        mainLayout->addWidget( m_removeButton, 0/*, Qt::AlignLeft | Qt::AlignTop*/ );
-        /*
-        mainLayout->setStretchFactor( m_removeButton, 0 );
-        mainLayout->setAlignment( m_removeButton, Qt::AlignLeft | Qt::AlignTop );
-        */
-    }
-    mainLayout->addLayout( m_layout, 1 );
-    m_layout->addRow( i18n( "Match Type:" ), m_biasSelection );
-
-
-    setLayout( mainLayout );
+    setLayout( m_layout );
 }
 
 void
-PlaylistBrowserNS::BiasWidget::setRemovable( bool value )
+PlaylistBrowserNS::BiasWidget::setCustomWidget( const QString &label, QWidget* widget )
 {
-    if( m_removeButton )
-        m_removeButton->setEnabled( value );
+    // -- remove the old custom widget
+    if( m_customWidget )
+    {
+        // - determine the label position
+        int rowPtr;
+        QFormLayout::ItemRole rolePtr;
+        m_layout->getWidgetPosition ( m_customWidget, &rowPtr, &rolePtr );
+        QLayoutItem* item = m_layout->itemAt( rowPtr, QFormLayout::LabelRole);
+
+        if( item )
+            delete item->widget();
+
+        m_customWidget->deleteLater();
+    }
+
+    m_customWidget = widget;
+    if( !widget )
+        return;
+
+    m_layout->insertRow( 0, label, m_customWidget );
 }
+
 
 void
 PlaylistBrowserNS::BiasWidget::factoriesChanged()
@@ -296,7 +283,6 @@ PlaylistBrowserNS::BiasWidget::factoriesChanged()
             currentIndex = i;
     }
     m_biasSelection->setCurrentIndex( currentIndex );
-
 }
 
 void
@@ -317,12 +303,6 @@ PlaylistBrowserNS::BiasWidget::selectionChanged( int index )
 
     // TODO: keep the old sub-biases if possible e.g. between AND and OR bias
     m_bias->replace( bias ); // tell the old bias it has just been replaced
-}
-
-void
-PlaylistBrowserNS::BiasWidget::biasRemoved()
-{
-    m_bias->replace( Dynamic::BiasPtr() );
 }
 
 // -------- LevelBiasWidget -----------
@@ -374,7 +354,9 @@ PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias,
     }
 
     // -- add an add button to add new widgets
-    QHBoxLayout* buttonLayout = new QHBoxLayout( this );
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+
+    buttonLayout->addSpacing( style()->pixelMetric( QStyle::PM_LayoutLeftMargin ) );
 
     m_addButton = new QToolButton( this );
     m_addButton->setIcon( KIcon( "list-add-amarok" ) );
@@ -384,7 +366,7 @@ PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias,
 
     buttonLayout->addWidget( m_addButton );
 
-    QLabel* label = new QLabel( i18n( "Add bias:") );
+    QLabel* label = new QLabel( i18n( "Add bias") );
     buttonLayout->addWidget( label );
 
     m_layout->addRow( buttonLayout );
@@ -413,38 +395,35 @@ PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
         m_sliders.isEmpty() &&
         (qobject_cast<Dynamic::RandomBias*>(bias.data()) != 0);
 
-    // -- add the slider
+    Amarok::Slider *slider = 0;
+    BiasBoxWidget *biasBoxWidget = 0;
     if( m_haveWeights )
     {
-        Amarok::Slider *slider = new Amarok::Slider( Qt::Horizontal, 100, this );
+        slider = new Amarok::Slider( Qt::Horizontal, 100, this );
         if( Dynamic::PartBias *pb = qobject_cast<Dynamic::PartBias*>(m_bias.data()) )
             slider->setValue( pb->weights().last() * 100.0 );
 
         slider->setToolTip( i18n( "This controls what portion of the playlist should match the criteria" ) );
-        m_sliders.append( slider );
-
-        if( specialRandomBias )
-            m_layout->insertRow( m_layout->rowCount() - 1,
-                                 i18n( "Random Proportion:" ), slider );
-        else
-            m_layout->insertRow( m_layout->rowCount() - 1,
-                                 i18n( "Proportion:" ), slider );
 
         connect( slider, SIGNAL(valueChanged(int)),
                  SLOT(sliderValueChanged(int)) );
     }
 
-    // -- add the widget
     if( specialRandomBias )
     {
-        m_widgets.append( 0 );
+        // -- add the slider
+        m_layout->insertRow( m_layout->rowCount() - 1, i18n( "Random Proportion:" ), slider );
     }
     else
     {
-        BiasBoxWidget* biasWidget = new BiasBoxWidget( bias, this );
-        m_widgets.append( biasWidget );
-        m_layout->insertRow( m_layout->rowCount() - 1, biasWidget );
+        // -- add the widget (with slider)
+        biasBoxWidget = new BiasBoxWidget( bias, this );
+        if( slider && biasBoxWidget->biasWidget() )
+            biasBoxWidget->biasWidget()->setCustomWidget( i18n( "Proportion:" ), slider );
+        m_layout->insertRow( m_layout->rowCount() - 1, biasBoxWidget );
     }
+    m_sliders.append( slider );
+    m_widgets.append( biasBoxWidget );
 
     correctRemovability();
 }
@@ -452,23 +431,8 @@ PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
 void
 PlaylistBrowserNS::LevelBiasWidget::biasRemoved( int pos )
 {
+    m_sliders.takeAt( pos );
     BiasBoxWidget* biasWidget = m_widgets.takeAt( pos );
-
-    if( m_haveWeights )
-    {
-        QSlider *slider = m_sliders.takeAt( pos );
-
-        // - determine the label position
-        int rowPtr;
-        QFormLayout::ItemRole rolePtr;
-        m_layout->getWidgetPosition ( slider, &rowPtr, &rolePtr );
-        QLayoutItem* item = m_layout->itemAt( rowPtr, QFormLayout::LabelRole);
-
-        if( item )
-            delete item->widget();
-
-        slider->deleteLater();
-    }
 
     biasWidget->deleteLater();
 
@@ -478,32 +442,13 @@ PlaylistBrowserNS::LevelBiasWidget::biasRemoved( int pos )
 void
 PlaylistBrowserNS::LevelBiasWidget::biasMoved( int from, int to )
 {
+    QSlider* slider = m_sliders.takeAt( from );
+    m_sliders.insert( to, slider );
     BiasBoxWidget* biasWidget = m_widgets.takeAt( from );
     m_widgets.insert( to, biasWidget );
 
-    if( m_haveWeights )
-    {
-        QSlider* slider = m_sliders.takeAt( from );
-        m_sliders.insert( to, slider );
-
-        // - determine the label position
-        int rowPtr;
-        QFormLayout::ItemRole rolePtr;
-        m_layout->getWidgetPosition ( slider, &rowPtr, &rolePtr );
-        QLayoutItem* item = m_layout->itemAt( rowPtr, QFormLayout::LabelRole);
-
-        // -- move the item in the layout
-        if( item )
-        {
-            m_layout->insertRow( to * 2 + 1, biasWidget );
-            m_layout->insertRow( to * 2 + 1, item->widget(), slider );
-        }
-    }
-    else
-    {
-        // -- move the item in the layout
-        m_layout->insertRow( to + 1, biasWidget );
-    }
+    // -- move the item in the layout
+    m_layout->insertRow( to + 1, biasWidget );
 
     correctRemovability();
 }

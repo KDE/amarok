@@ -64,7 +64,7 @@ namespace Dynamic
             virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
 
             /** Returns the weights of the bias itself and all the sub-biases. */
-            virtual QList<qreal> weights();
+            virtual QList<qreal> weights() const;
 
             /** Appends a bias to this bias.
                 This object will take ownership of the bias and free it when destroyed.

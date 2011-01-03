@@ -63,38 +63,51 @@ namespace Dynamic
             : m_trackList(trackList)
             , m_contextCount( contextCount )
             , m_bias( bias )
-            , m_energy( bias->energy( trackList, contextCount ) )
+            , m_energyValid( false )
         {}
 
         void appendTrack( Meta::TrackPtr track )
         {
             m_trackList.append( track );
-            m_energy = m_bias->energy( m_trackList, m_contextCount );
-        {}
+            m_energyValid = false;
         }
 
         void setTrack( int pos, Meta::TrackPtr track )
         {
             m_trackList.replace( pos, track );
-            m_energy = m_bias->energy( m_trackList, m_contextCount );
+            m_energyValid = false;
         }
 
         bool operator<( const SolverList& x ) const
-        { return m_energy < x.m_energy; }
+        { return energy() < x.energy(); }
 
         SolverList &operator=( const SolverList& x )
         {
             m_trackList = x.m_trackList;
+            m_energyValid = x.m_energyValid;
             m_energy = x.m_energy;
             m_contextCount = x.m_contextCount;
 
             return *this;
         }
 
+        double energy() const
+        {
+            if( !m_energyValid )
+            {
+                m_energy = m_bias->energy( m_trackList, m_contextCount );
+                m_energyValid = true;
+            }
+            return m_energy;
+        }
+
         Meta::TrackList m_trackList;
         int m_contextCount; // the number of tracks belonging to the context
         BiasPtr m_bias;
-        double m_energy;
+
+    private:
+        mutable bool m_energyValid;
+        mutable double m_energy;
     };
 }
 
@@ -183,21 +196,36 @@ void Dynamic::BiasSolver::run()
 
     debug() << "generating playlist";
     SolverList playlist = generateInitialPlaylist();
-    debug() << "got playlist with"<<playlist.m_energy;
-    while( playlist.m_energy > epsilon() ) // the playlist is only slightly wrong
+    debug() << "got playlist with"<<playlist.energy();
+    simpleOptimize( &playlist );
+    debug() << "after simple optimize playlist with"<<playlist.energy();
+    while( playlist.energy() > epsilon() ) // the playlist is only slightly wrong
     {
-        sa_optimize( &playlist, SA_ITERATION_LIMIT, true );
+        annealingOptimize( &playlist, SA_ITERATION_LIMIT, true );
     }
 
     m_solution = playlist.m_trackList.mid( m_context.count() );
-    debug() << "Found solution with energy"<<playlist.m_energy;
+    debug() << "Found solution with energy"<<playlist.energy();
 }
 
+void
+Dynamic::BiasSolver::simpleOptimize( SolverList *list )
+{
+    TrackSet universeSet( m_trackCollection, true );
+    for( int i = m_context.count();
+         i < m_context.count() + m_n && i < list->m_trackList.count(); i++ )
+    {
+        TrackSet set = matchingTracks( i, list->m_trackList );
+        Meta::TrackPtr newTrack = getRandomTrack( set );
+        if( newTrack )
+            list->setTrack( i, newTrack );
+    }
+}
 
 void
-Dynamic::BiasSolver::sa_optimize( SolverList *list,
-                                  int iterationLimit,
-                                  bool updateStatus )
+Dynamic::BiasSolver::annealingOptimize( SolverList *list,
+                                        int iterationLimit,
+                                        bool updateStatus )
 {
     /*
      * The process used here is called "simulated annealing". The basic idea is
@@ -218,15 +246,15 @@ Dynamic::BiasSolver::sa_optimize( SolverList *list,
 
     double oldEnergy = 0.0;
     int giveUpCount = 0;
-    while( iterationLimit-- && list->m_energy >= epsilon() && !m_abortRequested )
+    while( iterationLimit-- && list->energy() >= epsilon() && !m_abortRequested )
     {
         // if the energy hasn't changed in SA_GIVE_UP_LIMIT iterations, we give
         // up and bail out.
-        if( oldEnergy == list->m_energy )
+        if( oldEnergy == list->energy() )
             giveUpCount++;
         else
         {
-            oldEnergy = list->m_energy;
+            oldEnergy = list->energy();
             giveUpCount = 0;
         }
 
@@ -253,7 +281,7 @@ Dynamic::BiasSolver::sa_optimize( SolverList *list,
         SolverList newList = *list;
         newList.setTrack( newPos, newTrack );
 
-        double p = 1.0 / ( 1.0 + exp( (newList.m_energy - list->m_energy) / list->m_trackList.count()  / T ) );
+        double p = 1.0 / ( 1.0 + exp( (newList.energy() - list->energy()) / list->m_trackList.count()  / T ) );
         double r = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
 
         // accept the mutation ?
@@ -265,18 +293,22 @@ Dynamic::BiasSolver::sa_optimize( SolverList *list,
 
         if( updateStatus && iterationLimit % 100 == 0 )
         {
-            debug() << "SA: E = " << list->m_energy;
-            int progress = (int)(100.0 * (1.0 - list->m_energy));
+            debug() << "SA: E = " << list->energy();
+            int progress = (int)(100.0 * (1.0 - list->energy()));
             emit statusUpdate( progress >= 0 ? progress : 0 );
         }
     }
 }
 
 void
-Dynamic::BiasSolver::ga_optimize( SolverList *list,
-                                  int iterationLimit,
-                                  bool updateStatus )
+Dynamic::BiasSolver::geneticOptimize( SolverList *list,
+                                      int iterationLimit,
+                                      bool updateStatus )
 {
+    Q_UNUSED( list );
+    Q_UNUSED( iterationLimit );
+    Q_UNUSED( updateStatus );
+
     /**
      * Here we attempt to produce an optimal playlist using a genetic algorithm.
      * The basic steps:
@@ -313,7 +345,7 @@ Dynamic::BiasSolver::ga_optimize( SolverList *list,
             return Meta::TrackList();
         }
 
-        double plEnergy = playlist->m_energy;
+        double plEnergy = playlist->energy();
 
         if( plEnergy < epsilon() ) // no need to continue if we already found an optimal playlist
             return playlist;
@@ -460,20 +492,15 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
         return result;
     }
 
-    // just create a simple playlist by adding tracks to the end.
+    // just create a simple playlist by adding random tracks to the end.
 
     TrackSet universeSet( m_trackCollection, true );
     while( result.m_trackList.count() < m_context.count() + m_n )
     {
-        TrackSet set = matchingTracks( result.m_trackList.count(), result.m_trackList );
-        Meta::TrackPtr newTrack = getRandomTrack( set );
-        if( newTrack )
-            result.appendTrack( newTrack );
-        else
-            result.appendTrack( getRandomTrack( universeSet ) );
+        result.appendTrack( getRandomTrack( universeSet ) );
     }
 
-debug() << "generated playlist with"<<result.m_trackList.count()<<"tracks";
+    debug() << "generated random playlist with"<<result.m_trackList.count()<<"tracks";
     return result;
 }
 

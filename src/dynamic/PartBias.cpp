@@ -26,6 +26,8 @@
 #include "core/support/Debug.h"
 #include "DynamicBiasWidgets.h"
 
+#include <QtGlobal> // for qRound
+#include <QXmlStreamReader>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
@@ -39,10 +41,15 @@
    all the edges.
    */
 
+/** This is the helper object to calculate the maximum match.
+    For the sake of the algorithm we are using every sub-bias as a source with
+    a capacity depending on it's weight.
+    Every track in the playlist is a drain with capacity 1.
+*/
 class MatchState
 {
     public:
-        MatchState( Dynamic::PartBias *bias,
+        MatchState( const Dynamic::PartBias *bias,
                     const Meta::TrackList& playlist, int contextCount )
             : m_bias( bias )
             , m_playlist( playlist )
@@ -50,64 +57,146 @@ class MatchState
             , m_sourceCount( bias->weights().count() )
             , m_drainCount( playlist.count() - contextCount )
             , m_edges( m_sourceCount * m_drainCount, false )
-            , m_knownEdges( m_sourceCount * m_drainCount, false )
+            , m_edgesUsed( m_sourceCount * m_drainCount, false )
             , m_sourceCapacity( m_sourceCount )
             , m_sourceFlow( m_sourceCount )
+            , m_drainFlow( m_drainCount )
+            , m_drainSource( m_drainCount )
         {
             QList<qreal> weights = m_bias->weights();
-            for( int i = 0; i < m_sourceCount; i++ )
+            for( int source = m_sourceCount-1; source >= 0; --source )
             {
-                m_sourceCapacity[i] = qround( weights[i] * m_sourceCount );
-                m_sourceFlow[i] = 0;
+                m_sourceCapacity[source] = qRound( weights[source] * m_drainCount );
+        debug() << "MatchState: bias"<<m_bias->biases()[source]->name()<<"should match"<<m_sourceCapacity[source]<<"of"<< m_drainCount << "tracks.";
+            }
+
+            compute();
+        }
+
+        void compute()
+        {
+            // -- initialize the values
+            for( int source = m_sourceCount-1; source >= 0; --source )
+                m_sourceFlow[source] = 0;
+
+            for( int drain = m_drainCount-1; drain >= 0; --drain )
+                m_drainFlow[drain] = 0;
+
+            // -- get all the edges
+            Dynamic::BiasList biases = m_bias->biases();
+            for( int source = m_sourceCount-1; source >= 0; --source )
+                for( int drain = m_drainCount-1; drain >= 0; --drain )
+                {
+                    m_edges[ source * m_drainCount + drain ] =
+                        biases[source]->trackMatches( drain + m_contextCount,
+                                                      m_playlist,
+                                                      m_contextCount );
+                    m_edgesUsed[ source * m_drainCount + drain ] = false;
+
+                    // debug() << "edge:" << source << "x" << drain << ":" << m_edges[ source * m_drainCount + drain ];
+                }
+
+            // find a source whose capacity is not full
+            for( int source = m_sourceCount-1; source >= 0; --source )
+            {
+                if( m_sourceFlow[source] >= m_sourceCapacity[source] )
+                    continue;
+
+                for( int drain = 0; drain < m_drainCount; drain++ )
+                {
+                    if( !m_edges[ source * m_drainCount + drain ] )
+                        continue;
+
+                    if( m_drainFlow[drain] < 1 )
+                    {
+                        // direct connections source to drain
+                        // make a new connection
+                        m_sourceFlow[source]++;
+                        m_drainFlow[drain]++;
+                        m_drainSource[drain] = source;
+                        m_edgesUsed[ source * m_drainCount + drain ] = true;
+                    }
+                    else
+                    {
+                        // indirect connections source to drain to source to drain
+                        // or in other words: Check if we can re-order another source
+                        // to get a connection for this source
+                        int source2 = m_drainSource[drain];
+
+                        for( int drain2 = m_drainCount-1; drain2 >= 0; --drain2 )
+                        {
+                            if( m_drainFlow[drain2] == 0 )
+                                continue;
+                            if( !m_edgesUsed[ source2 * m_drainCount + drain ] )
+                                continue;
+                            if( !m_edges[ source2 * m_drainCount + drain2 ] )
+                                continue;
+
+                            // revert the old connection
+                            m_sourceFlow[source2]--;
+                            m_drainFlow[drain]--;
+                            m_edgesUsed[ source2 * m_drainCount + drain ] = false;
+
+                            // make two new connections
+                            m_sourceFlow[source]++;
+                            m_drainFlow[drain]++;
+                            m_drainSource[drain] = source;
+                            m_edgesUsed[ source * m_drainCount + drain ] = true;
+
+                            m_sourceFlow[source2]++;
+                            m_drainFlow[drain2]++;
+                            m_drainSource[drain2] = source2;
+                            m_edgesUsed[ source2 * m_drainCount + drain2 ] = true;
+                            break;
+                        }
+
+                    }
+
+                    // finished with this source?
+                    if( m_sourceFlow[source] >= m_sourceCapacity[source] )
+                        break;
+                }
             }
         }
 
-        void computeMatching()
-        {
-            bool finished = true;
-            do
-            {
-                // find a source whose capacity is not full and whose edges are
-                // not already fully known
 
-            } while( !finished );
-        }
-
-        QVector<int> flows()
-        {
-            return m_sourceFlow;
-        }
-
-
-    private:
-        Dynamic::PartBias *m_bias;
+        const Dynamic::PartBias* const m_bias;
         const Meta::TrackList& m_playlist;
         int m_contextCount;
 
         int m_sourceCount;
         int m_drainCount;
         QBitArray m_edges;
-        QBitArray m_knownEdges; // true if we have already called matchingTracks
+        QBitArray m_edgesUsed;
 
         QVector<int> m_sourceCapacity;
         QVector<int> m_sourceFlow;
+        QVector<int> m_drainFlow;
+        QVector<int> m_drainSource; // the source currently used by the drain
 };
 
 
 Dynamic::PartBias::PartBias()
     : AndBias()
 {
+    m_duringConstruction = true;
+
     m_weights.append( 1.0 );
+
+    m_duringConstruction = false;
 }
 
 Dynamic::PartBias::PartBias( QXmlStreamReader *reader )
     : AndBias()
 {
+    m_duringConstruction = true;
+
     // the weight of the implicite random bias
     m_weights.append( reader->attributes().value("weight").toString().toFloat() );
 
     while (!reader->atEnd()) {
         reader->readNext();
+debug() << "PartBias" << reader->name() << reader->isStartElement();
 
         if( reader->isStartElement() )
         {
@@ -119,7 +208,7 @@ Dynamic::PartBias::PartBias( QXmlStreamReader *reader )
             }
             else
             {
-                debug()<<"Unexpected xml start element"<<reader->name()<<"in input";
+                warning()<<"Unexpected xml start element"<<reader->name()<<"in input";
                 reader->skipCurrentElement();
             }
         }
@@ -128,6 +217,8 @@ Dynamic::PartBias::PartBias( QXmlStreamReader *reader )
             break;
         }
     }
+
+    m_duringConstruction = false;
 }
 
 void
@@ -164,7 +255,7 @@ Dynamic::PartBias::widget( QWidget* parent )
 }
 
 QList<qreal>
-Dynamic::PartBias::weights()
+Dynamic::PartBias::weights() const
 {
     return m_weights;
 }
@@ -174,21 +265,44 @@ Dynamic::PartBias::matchingTracks( int position,
                                   const Meta::TrackList& playlist, int contextCount,
                                   Dynamic::TrackCollectionPtr universe ) const
 {
-    m_tracks = Dynamic::TrackSet( universe, true );
-    m_outstandingMatches = 0;
+    // -- determine the current matching
+    MatchState state( this, playlist, contextCount );
 
-    foreach( Dynamic::BiasPtr bias, m_biases )
+    // - remove the current matching for the position
+    int drain = position - contextCount;
+    if( drain < state.m_drainCount && state.m_drainFlow[drain] > 0 )
     {
-        Dynamic::TrackSet tracks = bias->matchingTracks( position, playlist, contextCount, universe );
-        if( tracks.isOutstanding() )
-            m_outstandingMatches++;
-        else
-            m_tracks.intersect( tracks );
+        int source = state.m_drainSource[drain];
 
-        if( m_tracks.isEmpty() )
-            break;
+        state.m_sourceFlow[source]--;
+        state.m_drainFlow[drain]--;
+        state.m_edgesUsed[ source * state.m_drainCount + drain ] = false;
     }
 
+    // -- find all biases that is not fulfilled
+    m_tracks = Dynamic::TrackSet( universe, false );
+    m_outstandingMatches = 0;
+
+    // note: the first source is the random bias so we are finished very fast if that happens
+    for( int source = 0; source < state.m_sourceCount; source++ )
+    {
+        debug() << "PartBias::matchingTracks: biase"<<m_biases[source]->name()<<"only matches"<<state.m_sourceFlow[source]<<"out of"<<state.m_sourceCapacity[source]<<"tracks.";
+        if( state.m_sourceFlow[source] < state.m_sourceCapacity[source] )
+        {
+            Dynamic::TrackSet tracks = m_biases[source]->matchingTracks( position, playlist, contextCount, universe );
+
+            if( tracks.isOutstanding() )
+                m_outstandingMatches++;
+            else
+                m_tracks.unite( tracks );
+
+            if( m_tracks.isFull() )
+                break;
+        }
+    }
+    debug() << "     returning"<<m_tracks.trackCount()<<"tracks" << m_outstandingMatches << m_tracks.isOutstanding();
+
+    // -- return it's matching tracks
     if( m_outstandingMatches > 0 )
         return Dynamic::TrackSet();
     else
@@ -200,38 +314,38 @@ Dynamic::PartBias::trackMatches( int position,
                                  const Meta::TrackList& playlist,
                                  int contextCount ) const
 {
-    foreach( Dynamic::BiasPtr bias, m_biases )
-    {
-        if( !bias->trackMatches( position, playlist, contextCount ) )
-            return false;
-    }
-    return true;
+    MatchState state( this, playlist, contextCount );
+
+    return ( state.m_drainFlow[position - contextCount] >= 0 );
 }
 
 double
 Dynamic::PartBias::energy( const Meta::TrackList& playlist, int contextCount ) const
 {
-    double result = 0.0;
+    MatchState state( this, playlist, contextCount );
 
-    foreach( Dynamic::BiasPtr bias, m_biases )
+    int matchCount = 0;
+    for( int i = 0; i < state.m_drainCount; i++ )
     {
-        result = qMax( result, bias->energy( playlist, contextCount ) );
+        if( state.m_drainFlow[i] )
+            matchCount++;
     }
-    return result;
+
+    return 1.0 - (double(matchCount) / (state.m_drainCount));
 }
 
 void
 Dynamic::PartBias::appendBias( Dynamic::BiasPtr bias )
 {
-    AndBias::appendBias( bias );
     m_weights.append( qreal(0.0) );
+    AndBias::appendBias( bias );
 }
 
 void
 Dynamic::PartBias::moveBias( int from, int to )
 {
-    AndBias::moveBias( from, to );
     m_weights.insert( to, m_weights.takeAt( from ) );
+    AndBias::moveBias( from, to );
 }
 
 void
@@ -294,20 +408,21 @@ Dynamic::PartBias::changeBiasWeight( int biasNum, qreal value )
     }
 
     emit weightsChanged();
-    return;
+    if( !m_duringConstruction )
+        emit changed( BiasPtr( this ) );
 }
 
 void
 Dynamic::PartBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
 {
     int index = m_biases.indexOf( oldBias );
-    AndBias::biasReplaced( oldBias, newBias );
-
     if( !newBias )
     {
         m_weights.takeAt(index);
         changeBiasWeight( 0, m_weights.at(0) ); // fix the weights to 1.0 again.
     }
+
+    AndBias::biasReplaced( oldBias, newBias );
 }
 
 #include "PartBias.moc"
