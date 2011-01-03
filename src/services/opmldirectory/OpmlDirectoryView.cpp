@@ -44,3 +44,19 @@ OpmlDirectoryView::contextMenuEvent( QContextMenuEvent *event )
     foreach( QAction *action, actions )
         action->setData( QVariant() );
 }
+
+void
+OpmlDirectoryView::keyPressEvent( QKeyEvent *event )
+{
+    switch( event->key() )
+    {
+        case Qt::Key_Delete:
+        {
+            foreach( QItemSelectionRange range, selectionModel()->selection() )
+                model()->removeRows( range.top(), range.height(), range.parent() );
+            event->accept();
+            return;
+        }
+     }
+     Amarok::PrettyTreeView::keyPressEvent( event );
+}

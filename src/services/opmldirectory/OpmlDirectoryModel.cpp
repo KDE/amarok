@@ -194,6 +194,41 @@ OpmlDirectoryModel::setData( const QModelIndex &idx, const QVariant &value, int 
     return true;
 }
 
+bool
+OpmlDirectoryModel::removeRows( int row, int count, const QModelIndex &parent )
+{
+    if( !parent.isValid() )
+    {
+        if( m_rootOutlines.count() >= ( row + count ) )
+        {
+            beginRemoveRows( parent, row, row + count - 1 );
+            for( int i = 0; i < count; i++ )
+                m_rootOutlines.removeAt( row );
+            endRemoveRows();
+            saveOpml( m_rootOpmlUrl );
+            return true;
+        }
+
+        return false;
+    }
+
+    OpmlOutline *outline = static_cast<OpmlOutline *>( parent.internalPointer() );
+    if( !outline )
+        return false;
+
+    if( !outline->hasChildren() || outline->children().count() < ( row + count ) )
+        return false;
+
+    beginRemoveRows( parent, row, row + count -1 );
+    for( int i = 0; i < count - 1; i++ )
+            outline->mutableChildren().removeAt( row );
+    endRemoveRows();
+
+    saveOpml( m_rootOpmlUrl );
+
+    return true;
+}
+
 void
 OpmlDirectoryModel::saveOpml( const KUrl &saveLocation )
 {

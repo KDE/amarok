@@ -52,6 +52,7 @@ public:
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
     // OpmlDirectoryModel methods
     virtual void saveOpml( const KUrl &saveLocation );
