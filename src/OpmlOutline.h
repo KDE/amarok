@@ -23,6 +23,15 @@
 #include <QMap>
 #include <QString>
 
+enum OpmlNodeType
+{
+    InvalidNode,
+    UnknownNode,
+    RssUrlNode, //leaf node that link to an RSS
+    IncludeNode, //URL to an OPML file that will be loaded as a sub-tree upon expansion
+    RegularNode //plain sub-tree which can be represented as a folder.
+};
+
 class AMAROK_EXPORT OpmlOutline
 {
     public:
@@ -46,6 +55,8 @@ class AMAROK_EXPORT OpmlOutline
         void addChild( OpmlOutline *outline ) { m_children << outline; }
         void addChildren( QList<OpmlOutline *> outlineList )
                 { m_children << outlineList; }
+
+        OpmlNodeType opmlNodeType() const;
 
     private:
         OpmlOutline *m_parent;

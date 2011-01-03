@@ -28,15 +28,6 @@ class OpmlParser;
 class QAction;
 typedef QList<QAction *> QActionList;
 
-enum OpmlNodeType
-{
-    InvalidNode,
-    UnknownNode,
-    RssUrlNode, //leaf node that link to an RSS
-    IncludeNode, //URL to an OPML file that will be loaded as a sub-tree upon expansion
-    CategoryNode //plain sub-tree which can be represented as a folder.
-};
-
 class OpmlDirectoryModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -82,8 +73,6 @@ private slots:
     void slotOpmlWriterDone( int result );
 
 private:
-    OpmlNodeType opmlNodeType( const OpmlOutline *outline ) const;
-
     KUrl m_rootOpmlUrl;
     QList<OpmlOutline *> m_rootOutlines;
 

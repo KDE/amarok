@@ -165,7 +165,7 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
             return m_imageMap.contains( outline ) ? m_imageMap.value( outline ) : QVariant();
         case ActionRole:
         {
-            if( opmlNodeType( outline ) == CategoryNode ) //probably a folder
+            if( outline->opmlNodeType() == RegularNode ) //probably a folder
                 return QVariant::fromValue( QActionList() << m_addOpmlAction << m_addFolderAction );
         }
         default:
@@ -234,26 +234,7 @@ OpmlNodeType
 OpmlDirectoryModel::opmlNodeType( const QModelIndex &idx ) const
 {
     OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
-    return opmlNodeType( outline );
-}
-
-OpmlNodeType
-OpmlDirectoryModel::opmlNodeType( const OpmlOutline *outline ) const
-{
-    if( !outline || !outline->attributes().contains( "text" ) )
-        return InvalidNode;
-
-    if( !outline->attributes().contains( "type") )
-        return CategoryNode;
-
-    if( outline->attributes()["type"] == "rss" )
-        return RssUrlNode;
-
-    if( outline->attributes()["type"] == "include" )
-        return IncludeNode;
-
-    return UnknownNode;
-
+    return outline->opmlNodeType();
 }
 
 void
@@ -392,9 +373,9 @@ OpmlDirectoryModel::slotOpmlOutlineParsed( OpmlOutline *outline )
     endInsertRows();
 
     //TODO: begin image fetch
-    switch( opmlNodeType( outline ) )
+    switch( outline->opmlNodeType() )
     {
-        case CategoryNode:
+        case RegularNode:
             m_imageMap.insert( outline, KIcon( "folder" ).pixmap( 24, 24 ) ); break;
         case IncludeNode:
         {

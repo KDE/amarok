@@ -22,3 +22,22 @@ OpmlOutline::OpmlOutline( OpmlOutline *parent )
         , m_hasChildren( false )
 {
 }
+
+OpmlNodeType
+OpmlOutline::opmlNodeType() const
+{
+    if( !attributes().contains( "text" ) )
+        return InvalidNode;
+
+    if( !attributes().contains( "type") )
+        return RegularNode;
+
+    if( attributes()["type"] == "rss" )
+        return RssUrlNode;
+
+    if( attributes()["type"] == "include" )
+        return IncludeNode;
+
+    return UnknownNode;
+
+}
