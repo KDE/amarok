@@ -38,7 +38,6 @@ OpmlWriter::run()
     _x->writeStartElement( "opml" );
     _x->writeAttribute( "version", "2.0" );
     _x->writeStartElement( "head" );
-    //root outline is threated special, it's attributes will be the elements of <head>
     QMapIterator<QString, QString> ai( m_headerData ); //attributesIterator
     while( ai.hasNext() )
     {
@@ -57,7 +56,7 @@ void
 OpmlWriter::writeOutline( const OpmlOutline *outline )
 {
     bool hasChildren = outline->children().count() != 0;
-    if( hasChildren )
+    if( hasChildren && ( outline->opmlNodeType() != IncludeNode ) )
         _x->writeStartElement( "outline" );
     else
         _x->writeEmptyElement( "outline" );
@@ -68,7 +67,8 @@ OpmlWriter::writeOutline( const OpmlOutline *outline )
         _x->writeAttribute( ai.key(), ai.value() );
     }
 
-    if( hasChildren )
+    // children of expanded include nodes should not be saved.
+    if( hasChildren && ( outline->opmlNodeType() != IncludeNode ) )
     {
         foreach( const OpmlOutline *childOutline, outline->children() )
             writeOutline( childOutline );
