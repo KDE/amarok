@@ -282,6 +282,9 @@ OpmlDirectoryModel::slotAddOpmlAction()
     int newRow = m_rootOutlines.count();
     beginInsertRows( QModelIndex(), newRow, newRow );
     m_rootOutlines << outline;
+
+    //Folder icon with down-arrow emblem
+    m_imageMap.insert( outline, KIcon( "folder", 0, QStringList( "go-down" ) ).pixmap( 24, 24 ) );
     endInsertRows();
 
     saveOpml( m_rootOpmlUrl );
@@ -298,6 +301,7 @@ OpmlDirectoryModel::slotAddFolderAction()
 
     beginInsertRows( QModelIndex(), newRow, newRow );
     m_rootOutlines << outline;
+    m_imageMap.insert( outline, KIcon( "folder" ).pixmap( 24, 24 ) );
     endInsertRows();
 
     saveOpml( m_rootOpmlUrl );
@@ -388,6 +392,20 @@ OpmlDirectoryModel::slotOpmlOutlineParsed( OpmlOutline *outline )
     endInsertRows();
 
     //TODO: begin image fetch
+    switch( opmlNodeType( outline ) )
+    {
+        case CategoryNode:
+            m_imageMap.insert( outline, KIcon( "folder" ).pixmap( 24, 24 ) ); break;
+        case IncludeNode:
+        {
+            m_imageMap.insert( outline,
+                               KIcon( "folder", 0, QStringList( "go-down" ) ).pixmap( 24, 24 )
+                             );
+            break;
+        }
+        case RssUrlNode:
+        default: break;
+    }
 }
 
 void
