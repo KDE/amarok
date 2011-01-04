@@ -2,6 +2,7 @@
 Type=Service
 Name=Playdar Collection
 Name[ca]=Col·lecció del Playdar
+Name[ca@valencia]=Col·lecció del Playdar
 Name[da]=Playdar-samling
 Name[de]=Playdar-Sammlung
 Name[en_GB]=Playdar Collection
@@ -22,6 +23,7 @@ Name[x-test]=xxPlaydar Collectionxx
 Name[zh_TW]=Playdar 收藏
 Comment=Music that Playdar can find
 Comment[ca]=Música que el Playdar pot trobar
+Comment[ca@valencia]=Música que el Playdar pot trobar
 Comment[da]=Musik som Playdar kan finde
 Comment[de]=Von Playdar auffindbare Musik
 Comment[en_GB]=Music that Playdar can find
