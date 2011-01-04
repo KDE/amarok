@@ -300,29 +300,16 @@ bool
 PlaylistManager::save( Meta::TrackList tracks, const QString &name,
                        Playlists::UserPlaylistProvider *toProvider )
 {
-    AMAROK_DEPRECATED
-    // used by: Playlist::Widget::slotSaveCurrentPlaylist()
     //if toProvider is 0 use the default Playlists::UserPlaylistProvider (SQL)
     Playlists::UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
-    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr();
-    if( name.isEmpty() )
-    {
-        debug() << "Empty name of playlist, or editing now";
-        playlist = prov->save( tracks );
-        if( playlist.isNull() )
-            return false;
+    Playlists::PlaylistPtr playlist = prov->save( tracks, name );
+    if( playlist.isNull() )
+        return false;
 
-        AmarokUrl("amarok://navigate/playlists/user playlists").run();
-        emit( renamePlaylist( playlist ) );
-    }
-    else
-    {
-        debug() << "Playlist is being saved with name: " << name;
-        playlist = prov->save( tracks, name );
-        AmarokUrl("amarok://navigate/playlists/user playlists").run();
-    }
+    AmarokUrl("amarok://navigate/playlists/user playlists").run();
+    emit renamePlaylist( playlist );
 
-    return !playlist.isNull();
+    return true;
 }
 
 bool

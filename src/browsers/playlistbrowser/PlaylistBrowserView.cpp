@@ -71,13 +71,13 @@ PlaylistBrowserNS::PlaylistBrowserView::~PlaylistBrowserView()
 void
 PlaylistBrowserNS::PlaylistBrowserView::setModel( QAbstractItemModel *model )
 {
-    QAbstractItemModel *srcModel = static_cast<QAbstractProxyModel*>( model )->sourceModel();
-    if( qobject_cast<PlaylistsByProviderProxy*>( srcModel )
-        || qobject_cast<PlaylistsInFoldersProxy*>( srcModel ) )
-    {
-        connect( srcModel, SIGNAL( renameIndex( QModelIndex ) ), SLOT( edit( QModelIndex ) ) );
-    }
+    if( this->model() )
+        this->model()->disconnect();
+
     Amarok::PrettyTreeView::setModel( model );
+
+    connect( this->model(), SIGNAL(renameIndex( const QModelIndex & )),
+                 SLOT(edit( const QModelIndex &)) );
 }
 
 void

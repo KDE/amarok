@@ -41,7 +41,8 @@ PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     connect( m_deleteFolderAction, SIGNAL( triggered() ), this,
              SLOT( slotDeleteFolder() ) );
 
-    connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
+    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
+             SLOT(slotRenameIndex( const QModelIndex & )) );
 }
 
 PlaylistsInFoldersProxy::~PlaylistsInFoldersProxy()
@@ -101,7 +102,7 @@ PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &pare
 
         //is a playlist not in a folder
         QModelIndex childIdx = mapToSource( index( row, 0, m_rootNode ) );
-        result = m_model->removeRows( childIdx.row(), count, m_rootNode );
+        result = sourceModel()->removeRows( childIdx.row(), count, m_rootNode );
         if( result )
         {
             beginRemoveRows( parent, row, row + count - 1 );
@@ -118,7 +119,7 @@ PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &pare
             //individually remove all children of this group in the source model
             QModelIndex childIdx = mapToSource( index( i, 0, parent ) );
             //set success to false if removeRows returns false
-            result = m_model->removeRow( childIdx.row(), QModelIndex() ) ? result : false;
+            result = sourceModel()->removeRow( childIdx.row(), QModelIndex() ) ? result : false;
         }
         return result;
     }
@@ -126,7 +127,7 @@ PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &pare
     //removing a track from a playlist
     beginRemoveRows( parent, row, row + count - 1 );
     QModelIndex originalIdx = mapToSource( parent );
-    result = m_model->removeRows( row, count, originalIdx );
+    result = sourceModel()->removeRows( row, count, originalIdx );
     endRemoveRows();
 
     return result;
@@ -135,7 +136,7 @@ PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &pare
 QStringList
 PlaylistsInFoldersProxy::mimeTypes() const
 {
-    QStringList mimeTypes = m_model->mimeTypes();
+    QStringList mimeTypes = sourceModel()->mimeTypes();
     mimeTypes << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
     return mimeTypes;
 }
@@ -161,7 +162,7 @@ PlaylistsInFoldersProxy::mimeData( const QModelIndexList &indexes ) const
     }
 
     if( !sourceIndexes.isEmpty() )
-        return m_model->mimeData( sourceIndexes );
+        return sourceModel()->mimeData( sourceIndexes );
 
     return mime;
 }
@@ -234,7 +235,7 @@ PlaylistsInFoldersProxy::dropMimeData( const QMimeData *data, Qt::DropAction act
     else
     {
         QModelIndex sourceIndex = mapToSource( parent );
-        return m_model->dropMimeData( data, action, row, column,
+        return sourceModel()->dropMimeData( data, action, row, column,
                                sourceIndex );
     }
 
@@ -245,21 +246,34 @@ Qt::DropActions
 PlaylistsInFoldersProxy::supportedDropActions() const
 {
     //always add MoveAction because playlists can be put into a different group
-    return m_model->supportedDropActions() | Qt::MoveAction;
+    return sourceModel()->supportedDropActions() | Qt::MoveAction;
 }
 
 Qt::DropActions
 PlaylistsInFoldersProxy::supportedDragActions() const
 {
     //always add MoveAction because playlists can be put into a different group
-    return m_model->supportedDragActions() | Qt::MoveAction;
+    return sourceModel()->supportedDragActions() | Qt::MoveAction;
 }
 
 void
-PlaylistsInFoldersProxy::slotRename( QModelIndex sourceIdx )
+PlaylistsInFoldersProxy::setSourceModel( QAbstractItemModel *model )
 {
-    QModelIndex proxyIdx = mapFromSource( sourceIdx );
-    emit renameIndex( proxyIdx );
+    if( sourceModel() )
+        sourceModel()->disconnect();
+
+    QtGroupingProxy::setSourceModel( model );
+
+    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
+             SLOT(slotRenameIndex( const QModelIndex & )) );
+}
+
+void
+PlaylistsInFoldersProxy::slotRenameIndex( const QModelIndex &sourceIdx )
+{
+    QModelIndex idx = mapFromSource( sourceIdx );
+    if( idx.isValid() )
+        emit renameIndex( idx );
 }
 
 void

@@ -554,6 +554,9 @@ PlaylistBrowserModel::trackRemoved( Playlists::PlaylistPtr playlist, int positio
 void
 PlaylistBrowserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
 {
+    if( playlist->provider()->category() != m_playlistCategory )
+        return;
+
     //search index of this Playlist
     // HACK: matches first to match same name, but there could be
     // several playlists with the same name
@@ -568,6 +571,7 @@ PlaylistBrowserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
         return;
 
     QModelIndex idx = index( row, 0, QModelIndex() );
+    debug() << idx;
     emit( renameIndex( idx ) );
 }
 

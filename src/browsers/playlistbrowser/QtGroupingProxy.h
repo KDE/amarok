@@ -87,8 +87,6 @@ class QtGroupingProxy : public QAbstractProxyModel
         bool isGroup( const QModelIndex &index ) const;
         bool isAGroupSelected( const QModelIndexList& list ) const;
 
-        QAbstractItemModel *m_model;
-
         /** Maintains the group -> sourcemodel row mapping
           * The reason a QList<int> is use instead of a QMultiHash is that the values have to be
           * reordered when new rows are inserted.
