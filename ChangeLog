@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.4-Beta 2
   CHANGES:
+    * New Splash Screen by Tomasz Dudzik <madsheytan@gmail.com>
     * The "Playdar Collection" feature has been disabled until some technical 
       issues are resolved.
     * Fixed some broken radio stream URLs.
