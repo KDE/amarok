@@ -341,7 +341,6 @@ CollectionLocation::slotCopyOperationFinished()
 void
 CollectionLocation::slotRemoveOperationFinished()
 {
-    DEBUG_BLOCK
     emit finishRemove();
 }
 
@@ -360,7 +359,6 @@ CollectionLocation::slotShowDestinationDialogDone()
 void
 CollectionLocation::slotShowRemoveDialogDone()
 {
-    DEBUG_BLOCK
     emit startRemove();
 }
 

@@ -11,6 +11,7 @@ VERSION 2.4-Beta 2
     * Fixed some broken radio stream URLs.
 
   BUGFIXES:
+    * Leave all pending files in case of error/conflict during tracks moving. (BR 257739)
     * Fix crash when moving tracks between collections. (BR 253033)
     * Fixed issue with UMS Collection that made amarok to delete original track
       instead of newly copied one. (BR 238915)

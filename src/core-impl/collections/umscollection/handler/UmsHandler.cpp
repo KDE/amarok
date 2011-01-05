@@ -707,6 +707,8 @@ UmsHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bo
         m_files.insert( to.path(), destTrack );
         slotFinalizeTrackCopy( track );
     }
+    else
+        slotCopyTrackFailed( track );
 }
 
 void

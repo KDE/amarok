@@ -475,8 +475,7 @@ MediaDeviceHandler::copyNextTrackToDevice()
     if ( !m_tracksToCopy.isEmpty() )
     {
         // Pop the track off the front of the list
-        track = m_tracksToCopy.first();
-        m_tracksToCopy.removeFirst();
+        track = m_tracksToCopy.takeFirst();
 
         // Copy the track and check result
         if ( !privateCopyTrackToDevice( track ) )
