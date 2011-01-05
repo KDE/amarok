@@ -1,0 +1,502 @@
+/****************************************************************************************
+ * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+
+#include "EchoNestBias.h"
+
+#include "core/support/Debug.h"
+
+#include "TrackSet.h"
+#include "DynamicBiasWidgets.h"
+
+#include <QDomDocument>
+#include <QDomNode>
+#include <QDomElement>
+
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
+
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
+#include "core/collections/QueryMaker.h"
+#include "playlist/PlaylistModelStack.h"
+
+#include <kio/job.h>
+
+#include <KComboBox>
+#include <QFormLayout>
+
+
+
+QString
+Dynamic::EchoNestBiasFactory::i18nName() const
+{ return i18nc("Name of the \"EchoNest\" bias", "EchoNest similar artist"); }
+
+QString
+Dynamic::EchoNestBiasFactory::name() const
+{ return Dynamic::EchoNestBias::sName(); }
+
+QString
+Dynamic::EchoNestBiasFactory::i18nDescription() const
+{ return i18nc("Description of the \"EchoNest\" bias",
+                   "The \"EchoNest\" bias looks up tracks on echo nest and only adds simmilar tracks."); }
+
+Dynamic::BiasPtr
+Dynamic::EchoNestBiasFactory::createBias()
+{ return Dynamic::BiasPtr( new Dynamic::EchoNestBias() ); }
+
+Dynamic::BiasPtr
+Dynamic::EchoNestBiasFactory:: createBias( QXmlStreamReader *reader )
+{ return Dynamic::BiasPtr( new Dynamic::EchoNestBias( reader ) ); }
+
+
+
+// ----- EchoNestBias --------
+
+Dynamic::EchoNestBias::EchoNestBias()
+    : SimpleMatchBias()
+    , m_artistSuggestedQuery( 0 )
+    , m_match( PreviousTrack )
+{ }
+
+Dynamic::EchoNestBias::EchoNestBias( QXmlStreamReader *reader )
+    : SimpleMatchBias()
+    , m_match( PreviousTrack )
+{
+    while (!reader->atEnd()) {
+        reader->readNext();
+
+        if( reader->isStartElement() )
+        {
+            QStringRef name = reader->name();
+            if( name == "match" )
+                m_match = matchForName( reader->readElementText(QXmlStreamReader::SkipChildElements) );
+            else
+            {
+                debug()<<"Unexpected xml start element"<<reader->name()<<"in input";
+                reader->skipCurrentElement();
+            }
+        }
+        else if( reader->isEndElement() )
+        {
+            break;
+        }
+    }
+}
+
+void
+Dynamic::EchoNestBias::toXml( QXmlStreamWriter *writer ) const
+{
+    writer->writeTextElement( "match", nameForMatch( m_match ) );
+}
+
+QString
+Dynamic::EchoNestBias::sName()
+{
+    return QLatin1String( "echoNestBias" );
+}
+
+QString
+Dynamic::EchoNestBias::name() const
+{
+    return Dynamic::EchoNestBias::sName();
+}
+
+
+QWidget*
+Dynamic::EchoNestBias::widget( QWidget* parent )
+{
+    PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+    KComboBox *combo = new KComboBox( this );
+    combo->addItem( i18n( "Previous Track" ),
+                    nameForMatch( PreviousTrack ) );
+    combo->addItem( i18n( "Playlist" ),
+                    nameForMatch( Playlist ) );
+    connect( combo, SIGNAL( currentIndexChanged(int) ),
+             this, SLOT( selectionChanged( int ) ) );
+
+    bw->formLayout()->addRow( i18n( "Match:" ), combo );
+
+    return bw;
+}
+
+Dynamic::TrackSet
+Dynamic::EchoNestBias::matchingTracks( int position,
+                                       const Meta::TrackList& playlist,
+                                       int contextCount,
+                                       Dynamic::TrackCollectionPtr universe ) const
+{
+    Q_UNUSED( position );
+    Q_UNUSED( playlist );
+    Q_UNUSED( contextCount );
+    Q_UNUSED( universe );
+
+    // collect the artist
+    QStringList artists = currentArtists( position, playlist );
+    if( artists.isEmpty() )
+        return Dynamic::TrackSet( universe, true );
+
+    {
+        QMutexLocker locker( &m_mutex );
+        QString key = artists.join("|");
+        if( m_tracksValid && m_tracksMap.contains( key ) )
+            return m_tracksMap.value( key );
+    }
+
+    m_tracks = Dynamic::TrackSet( universe, false );
+    lookup( artists );
+
+    return Dynamic::TrackSet();
+}
+
+
+bool
+Dynamic::EchoNestBias::trackMatches( int position,
+                                     const Meta::TrackList& playlist,
+                                     int contextCount ) const
+{
+    Q_UNUSED( contextCount );
+
+    // collect the artist
+    QStringList artists = currentArtists( position, playlist );
+    if( artists.isEmpty() )
+        return false;
+
+    // the artist of this track
+    if( position < 0 || position > playlist.count() )
+        return false;
+
+    Meta::TrackPtr track = playlist[position];
+    Meta::ArtistPtr artist = track->artist();
+    if( !artist || artist->name().isEmpty() )
+        return false;
+
+    {
+        QMutexLocker locker( &m_mutex );
+        QString key = artists.join("|");
+        if( m_similarArtistMap.contains( key ) )
+            return m_similarArtistMap.value( key ).contains( artist->name() );
+        else
+            warning() << "didn't have artist suggestions saved for this artist:" << artist->name();
+    }
+    return false;
+}
+
+
+void
+Dynamic::EchoNestBias::invalidate()
+{
+    SimpleMatchBias::invalidate();
+    m_tracksMap.clear();
+}
+
+void
+Dynamic::EchoNestBias::updateFinished()
+{
+    // -- store away the result for future reference
+    QString key = m_currentArtists.join( "|" );
+    m_tracksMap.insert( key, m_tracks );
+    debug() << "saving found similar tracks to key:" << key;
+
+    SimpleMatchBias::updateFinished();
+}
+
+void
+Dynamic::EchoNestBias::lookup( const QStringList &artists ) const
+{
+    DEBUG_BLOCK;
+
+    m_currentArtists = artists; // save for sure
+
+    // -- for each artist look up the id
+    foreach( const QString &artist, artists )
+    {
+        if( !m_artistIds.contains( artist ) ) // don't have it yet
+        {
+            debug() << "searching for artistL" << artist;
+            QMap< QString, QString > params;
+
+            params[ "query" ] = artist;
+            params[ "exact" ] = 'Y';
+            params[ "sounds_like" ] = 'N'; // mutually exclusive with exact
+
+            KIO::StoredTransferJob* job = KIO::storedGet( createUrl( "search_artists", params ), KIO::NoReload, KIO::HideProgressInfo );
+            m_artistNameQueries[ job ] = artist;
+
+            connect( job, SIGNAL( result( KJob* ) ),
+                     this, SLOT( artistNameQueryDone( KJob* ) ) );
+
+            m_artistIds[artist] = "-1"; // mark as not being searched for
+        }
+    }
+}
+
+
+void
+Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
+{
+    DEBUG_BLOCK
+    KIO::StoredTransferJob* stjob = static_cast< KIO::StoredTransferJob* >( job );
+
+    if( !m_artistNameQueries.contains( stjob ) )
+    {
+        debug() << "job was deleted before the slot was called..wtf?";
+        return;
+    }
+
+    QStringList toQuery;
+
+    QDomDocument doc;
+    if( ! doc.setContent( stjob->data() ) )
+    {
+        debug() << "Got invalid XML from EchoNest on solo artist name query!";
+        return;
+    }
+
+    QDomNodeList artists = doc.elementsByTagName( "artist" );
+    if( artists.isEmpty() )
+    {
+        debug() << "got no artist for given name :-/";
+        return;
+    }
+    else
+    {
+        QDomNode artist = artists.at( 0 );
+        QString id = artist.firstChildElement( "id" ).text();
+        debug() << "got element ID:" << id;
+
+        if( id.isEmpty() )
+        {
+            debug() << "Got empty ID though :(";
+            return;
+        }
+
+        m_artistIds[ m_artistNameQueries[ stjob ] ] = id;
+
+        // check our map, see if there are any we are still waiting for. if not, do the query
+        foreach( const QString &result, m_artistIds )
+        {
+            if( result == "-1" ) // still waiting
+            {
+                debug() << "not done yet with query. Got"<< m_artistIds;
+                job->deleteLater();
+                return;
+            }
+        }
+        const QStringList keys = m_artistIds.keys();
+        foreach( const QString &key, keys )
+            toQuery << key;
+        // ok we're not, update our list and do it!
+    }
+
+
+    // now do our second query
+    QMultiMap< QString, QString > params;
+    foreach( const QString &name, toQuery )
+    {
+        params.insert("id", m_artistIds[ name ] );
+    }
+    params.insert( "rows", "30" );
+    m_artistSuggestedQuery = KIO::storedGet( createUrl( "get_similar", params ), KIO::NoReload, KIO::HideProgressInfo );
+    connect( m_artistSuggestedQuery, SIGNAL( result( KJob* ) ),
+             this, SLOT( artistSuggestedQueryDone( KJob* ) ) );
+    job->deleteLater();
+}
+
+void
+Dynamic::EchoNestBias::artistSuggestedQueryDone( KJob* job ) // slot
+{
+    DEBUG_BLOCK
+
+    if( job != m_artistSuggestedQuery )
+    {
+        debug() << "job was deleted from under us...wtf! blame the gerbils.";
+        return;
+    }
+
+    QMutexLocker locker( &m_mutex );
+
+    QDomDocument doc;
+    if( !doc.setContent( m_artistSuggestedQuery->data() ) )
+    {
+        debug() << "got invalid XML from EchoNest::get_similar!";
+        return;
+    }
+    QDomNodeList list = doc.elementsByTagName( "similar" );
+    if( list.size() != 1 )
+    {
+        debug() << "Got no similar artists! Bailing!";
+        return;
+    }
+    QDomElement similar = list.at( 0 ).toElement();
+
+    //debug() << "got similar artists:" << similar.values();
+
+    QDomNodeList rel = similar.childNodes();
+    for( int i = 0; i < rel.count(); i++ )
+    {
+        QDomNode n = rel.at( i );
+        QString artistname = n.firstChildElement( "name" ).text();
+        debug() << "Adding related artist:" << artistname;
+        m_qm->addFilter( Meta::valArtist, artistname, true, true );
+
+    }
+
+    newQuery();
+    job->deleteLater();
+}
+
+QStringList
+Dynamic::EchoNestBias::currentArtists( int position, const Meta::TrackList& playlist ) const
+{
+    QStringList result;
+
+    if( m_match == PreviousTrack )
+    {
+        if( position > 0 && position < playlist.count() - 1 )
+        {
+            Meta::ArtistPtr artist = playlist[ position-1 ]->artist();
+            if( artist && !artist->name().isEmpty() )
+                result.append( artist->name() );
+        }
+    }
+    else if( m_match == Playlist )
+    {
+        for( int i=0; i < position && i < playlist.count(); i++ )
+        {
+            Meta::ArtistPtr artist = playlist[i]->artist();
+            if( artist && !artist->name().isEmpty() )
+                result.append( artist->name() );
+        }
+    }
+
+    return result;
+}
+
+
+// this method shamelessly inspired by liblastfm/src/ws/ws.cpp
+KUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QString > params )
+{
+
+    params.insert( "api_key", "DD9P0OV9OYFH1LCAE" );
+    params.insert( "version", "3" );
+
+    debug() << "got param map:" << params;
+
+    KUrl url;
+    url.setScheme( "http" );
+    url.setHost( "developer.echonest.com" );
+    url.setPath( "/api/" + method );
+
+    // take care of the ID possibility  manually
+    // Qt setQueryItems doesn't encode a bunch of stuff, so we do it manually
+    QMapIterator<QString, QString> i( params );
+    while ( i.hasNext() ) {
+        i.next();
+        QByteArray const key = QUrl::toPercentEncoding( i.key() );
+        QByteArray const value = QUrl::toPercentEncoding( i.value() );
+        url.addEncodedQueryItem( key, value );
+    }
+
+    debug() << "created url for EchoNest request:" << url;
+
+    return url;
+}
+
+
+Dynamic::EchoNestBias::MatchType
+Dynamic::EchoNestBias::match() const
+{ return m_match; }
+
+void
+Dynamic::EchoNestBias::setMatch( Dynamic::EchoNestBias::MatchType value )
+{
+    m_match = value;
+    invalidate();
+    emit changed( BiasPtr(this) );
+}
+
+
+void
+Dynamic::EchoNestBias::selectionChanged( int which )
+{
+    if( QComboBox *box = qobject_cast<QComboBox*>(sender()) )
+        setMatch( matchForName( box->itemData( which ).toString() ) );
+}
+
+void
+Dynamic::EchoNestBias::newQuery() const
+{
+    DEBUG_BLOCK;
+
+    // ok, I need a new query maker
+    m_qm.reset( CollectionManager::instance()->queryMaker() );
+
+    QString key = m_currentArtists.join("|");
+    QStringList similar;
+    if( m_similarArtistMap.contains( key ) )
+    {
+        similar = m_similarArtistMap.value( key );
+        debug() << "got similar artists:" << similar.join(", ");
+    }
+    else
+    {
+        warning() << "Stored similar artists do not contain key"<<key<<"in EchoNestBias::newQuery";
+    }
+
+    m_qm->beginOr();
+    foreach( const QString &artistName, similar )
+    {
+        m_qm->addFilter( Meta::valArtist, artistName, true, true );
+
+    }
+    m_qm->endAndOr();
+
+    m_qm->setQueryType( Collections::QueryMaker::Custom );
+    m_qm->addReturnValue( Meta::valUniqueId );
+
+    connect( m_qm.data(), SIGNAL(newResultReady( QString, QStringList )),
+             this, SLOT(updateReady( QString, QStringList )) );
+    connect( m_qm.data(), SIGNAL(queryDone()),
+             this, SLOT(updateFinished()) );
+    m_qm.data()->run();
+}
+
+
+
+QString
+Dynamic::EchoNestBias::nameForMatch( Dynamic::EchoNestBias::MatchType match )
+{
+    switch( match )
+    {
+    case Dynamic::EchoNestBias::PreviousTrack: return "previous";
+    case Dynamic::EchoNestBias::Playlist:      return "playlist";
+    }
+    return QString();
+}
+
+Dynamic::EchoNestBias::MatchType
+Dynamic::EchoNestBias::matchForName( const QString &name )
+{
+    if( name == "previous" )      return PreviousTrack;
+    else if( name == "playlist" ) return Playlist;
+    else return PreviousTrack;
+}
+
+
+
+#include "EchoNestBias.moc"

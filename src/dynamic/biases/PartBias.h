@@ -22,15 +22,7 @@
 #define AMAROK_PARTBIAS_H
 
 #include "Bias.h"
-#include "TrackSet.h"
-
-#include <QObject>
-#include <QWidget>
-
-class QXmlStreamReader;
-class QXmlStreamWriter;
-
-// class MatchState; // a helper class to compute the needed maximum match
+#include "BiasFactory.h"
 
 namespace Dynamic
 {
@@ -89,8 +81,17 @@ namespace Dynamic
 
         private:
             Q_DISABLE_COPY(PartBias)
+    };
 
-            // friend class MatchState;
+
+    class AMAROK_EXPORT PartBiasFactory : public Dynamic::AbstractBiasFactory
+    {
+        public:
+            virtual QString i18nName() const;
+            virtual QString name() const;
+            virtual QString i18nDescription() const;
+            virtual BiasPtr createBias();
+            virtual BiasPtr createBias( QXmlStreamReader *reader );
     };
 
 }

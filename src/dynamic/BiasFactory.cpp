@@ -16,8 +16,10 @@
 
 #include "BiasFactory.h"
 #include "Bias.h"
-#include "PartBias.h"
-#include "TagMatchBias.h"
+#include "biases/AlbumPlayBias.h"
+#include "biases/PartBias.h"
+#include "biases/TagMatchBias.h"
+#include "biases/EchoNestBias.h"
 
 #define DEBUG_PREFIX "BiasFactory"
 
@@ -47,6 +49,7 @@ class RandomBiasFactory : public Dynamic::AbstractBiasFactory
     { return Dynamic::BiasPtr( new Dynamic::RandomBias( reader ) ); }
 };
 
+
 class UniqueBiasFactory : public Dynamic::AbstractBiasFactory
 {
     QString i18nName() const
@@ -66,6 +69,7 @@ class UniqueBiasFactory : public Dynamic::AbstractBiasFactory
     { return Dynamic::BiasPtr( new Dynamic::UniqueBias( reader ) ); }
 };
 
+
 class NotBiasFactory : public Dynamic::AbstractBiasFactory
 {
     QString i18nName() const
@@ -76,7 +80,7 @@ class NotBiasFactory : public Dynamic::AbstractBiasFactory
 
     QString i18nDescription() const
     { return i18nc("Description of the \"Not\" bias",
-                   "The \"Not\" bias adds tracks that do not match a sub bias."); }
+                   "The \"Not\" bias adds tracks that do not match any sub bias."); }
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::NotBias() ); }
@@ -84,8 +88,6 @@ class NotBiasFactory : public Dynamic::AbstractBiasFactory
     Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
     { return Dynamic::BiasPtr( new Dynamic::NotBias( reader ) ); }
 };
-
-
 
 
 class AndBiasFactory : public Dynamic::AbstractBiasFactory
@@ -127,47 +129,6 @@ class OrBiasFactory : public Dynamic::AbstractBiasFactory
     { return Dynamic::BiasPtr( new Dynamic::OrBias( reader ) ); }
 };
 
-class PartBiasFactory : public Dynamic::AbstractBiasFactory
-{
-    QString i18nName() const
-    { return i18nc("Name of the \"Part\" bias", "Part"); }
-
-    QString name() const
-    { return Dynamic::PartBias::sName(); }
-
-    QString i18nDescription() const
-    { return i18nc("Description of the \"Part\" bias",
-                   "The \"Part\" bias adds tracks they match at least one of the sub biases."); }
-
-    Dynamic::BiasPtr createBias()
-    { return Dynamic::BiasPtr( new Dynamic::PartBias() ); }
-
-    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
-    { return Dynamic::BiasPtr( new Dynamic::PartBias( reader ) ); }
-};
-
-
-class TagMatchBiasFactory : public Dynamic::AbstractBiasFactory
-{
-    QString i18nName() const
-    { return i18nc("Name of the \"TagMatch\" bias", "TagMatch"); }
-
-    QString name() const
-    { return Dynamic::TagMatchBias::sName(); }
-
-    QString i18nDescription() const
-    { return i18nc("Description of the \"TagMatch\" bias",
-                   "The \"TagMatch\" bias adds tracks that fulfill a specific condition."); }
-
-    Dynamic::BiasPtr createBias()
-    { return Dynamic::BiasPtr( new Dynamic::TagMatchBias() ); }
-
-    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
-    { return Dynamic::BiasPtr( new Dynamic::TagMatchBias( reader ) ); }
-};
-
-
-
 Dynamic::BiasFactory* Dynamic::BiasFactory::s_instance = 0;
 
 QList<Dynamic::AbstractBiasFactory*> Dynamic::BiasFactory::s_biasFactories = QList<Dynamic::AbstractBiasFactory*>();
@@ -178,13 +139,15 @@ Dynamic::BiasFactory::instance()
     if( !s_instance )
     {
         // --- build in biases
-        s_biasFactories.append( new TagMatchBiasFactory() );
-        s_biasFactories.append( new PartBiasFactory() );
+        s_biasFactories.append( new Dynamic::TagMatchBiasFactory() );
+        s_biasFactories.append( new Dynamic::PartBiasFactory() );
         s_biasFactories.append( new RandomBiasFactory() );
         s_biasFactories.append( new UniqueBiasFactory() );
         s_biasFactories.append( new NotBiasFactory() );
         s_biasFactories.append( new AndBiasFactory() );
         s_biasFactories.append( new OrBiasFactory() );
+        s_biasFactories.append( new Dynamic::AlbumPlayBiasFactory() );
+        s_biasFactories.append( new Dynamic::EchoNestBiasFactory() );
 
         s_instance = new BiasFactory( App::instance() );
     }

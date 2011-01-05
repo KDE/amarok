@@ -459,9 +459,6 @@ endif(KDEMULTIMEDIA_FOUND)
 #####################################################################
 set(libdynamic_SRCS
     dynamic/TrackSet.cpp
-    dynamic/Bias.cpp
-    dynamic/PartBias.cpp
-    dynamic/TagMatchBias.cpp
     dynamic/BiasFactory.cpp
     dynamic/BiasedPlaylist.cpp
     dynamic/BiasSolver.cpp
@@ -469,7 +466,11 @@ set(libdynamic_SRCS
     # dynamic/gsl/gauss.c
 
     # biases
-    # dynamic/biases/EchoNest.cpp
+    dynamic/Bias.cpp
+    dynamic/biases/AlbumPlayBias.cpp
+    dynamic/biases/PartBias.cpp
+    dynamic/biases/TagMatchBias.cpp
+    dynamic/biases/EchoNestBias.cpp
 )
 
 #####################################################################

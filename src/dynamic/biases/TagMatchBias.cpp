@@ -32,18 +32,96 @@
 
 #include <QDateTime>
 #include <QTimer>
-#include <QStandardItem>
-#include <QStandardItemModel>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
 
-Dynamic::TagMatchBias::TagMatchBias()
+QString
+Dynamic::TagMatchBiasFactory::i18nName() const
+{ return i18nc("Name of the \"TagMatch\" bias", "TagMatch"); }
+
+QString
+Dynamic::TagMatchBiasFactory::name() const
+{ return Dynamic::TagMatchBias::sName(); }
+
+QString
+Dynamic::TagMatchBiasFactory::i18nDescription() const
+{ return i18nc("Description of the \"TagMatch\" bias",
+                   "The \"TagMatch\" bias adds tracks that fulfill a specific condition."); }
+
+Dynamic::BiasPtr
+Dynamic::TagMatchBiasFactory::createBias()
+{ return Dynamic::BiasPtr( new Dynamic::TagMatchBias() ); }
+
+Dynamic::BiasPtr
+Dynamic::TagMatchBiasFactory:: createBias( QXmlStreamReader *reader )
+{ return Dynamic::BiasPtr( new Dynamic::TagMatchBias( reader ) ); }
+
+
+// ----- SimpleMatchBias --------
+
+Dynamic::SimpleMatchBias::SimpleMatchBias()
     : m_tracksValid( false )
 { }
 
+Dynamic::TrackSet
+Dynamic::SimpleMatchBias::matchingTracks( int position,
+                                       const Meta::TrackList& playlist,
+                                       int contextCount,
+                                       Dynamic::TrackCollectionPtr universe ) const
+{
+    Q_UNUSED( position );
+    Q_UNUSED( playlist );
+    Q_UNUSED( contextCount );
+
+    if( m_tracksValid )
+        return m_tracks;
+
+    m_tracks = Dynamic::TrackSet( universe, false );
+
+    QTimer::singleShot(0,
+                       const_cast<SimpleMatchBias*>(this),
+                       SLOT(newQuery())); // create the new query from my parent thread
+
+    return Dynamic::TrackSet();
+}
+
+void
+Dynamic::SimpleMatchBias::updateReady( QString collectionId, QStringList uids )
+{
+    Q_UNUSED( collectionId );
+    m_tracks.unite( uids );
+}
+
+void
+Dynamic::SimpleMatchBias::updateFinished()
+{
+    m_tracksValid = true;
+    m_qm.reset();
+    debug() << "SimpleMatchBias::"<<name()<<"updateFinished"<<m_tracks.trackCount();
+    emit resultReady( m_tracks );
+}
+
+void
+Dynamic::SimpleMatchBias::invalidate()
+{
+    m_tracksValid = false;
+    m_tracks = TrackSet();
+    // TODO: need to finish a running query
+    m_qm.reset();
+}
+
+
+
+
+// ----- TagMatchBias --------
+
+Dynamic::TagMatchBias::TagMatchBias()
+    : SimpleMatchBias()
+{ }
+
 Dynamic::TagMatchBias::TagMatchBias( QXmlStreamReader *reader )
-    : m_tracksValid( false )
+    : SimpleMatchBias()
 {
     while (!reader->atEnd()) {
         reader->readNext();
@@ -111,30 +189,6 @@ Dynamic::TagMatchBias::widget( QWidget* parent )
     return new PlaylistBrowserNS::TagMatchBiasWidget( this, parent );
 }
 
-Dynamic::TrackSet
-Dynamic::TagMatchBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist, int contextCount,
-                                       Dynamic::TrackCollectionPtr universe ) const
-{
-    DEBUG_BLOCK
-
-    Q_UNUSED( position );
-    Q_UNUSED( playlist );
-    Q_UNUSED( contextCount );
-    Q_UNUSED( universe );
-
-    if( m_tracksValid )
-        return m_tracks;
-
-    m_tracks = Dynamic::TrackSet( universe, false );
-
-    QTimer::singleShot(0,
-                       const_cast<TagMatchBias*>(this),
-                       SLOT(newQuery())); // create the new query from my parent thread
-
-    return Dynamic::TrackSet();
-}
-
 bool
 Dynamic::TagMatchBias::trackMatches( int position,
                                      const Meta::TrackList& playlist,
@@ -142,22 +196,6 @@ Dynamic::TagMatchBias::trackMatches( int position,
 {
     Q_UNUSED( contextCount );
     return matches( playlist.at(position) );
-}
-
-void
-Dynamic::TagMatchBias::updateReady( QString collectionId, QStringList uids )
-{
-    Q_UNUSED( collectionId );
-    m_tracks.unite( uids );
-}
-
-void
-Dynamic::TagMatchBias::updateFinished()
-{
-    m_tracksValid = true;
-    m_qm.reset();
-    debug() << "TagMatchBias::updateFinished" << m_tracks.trackCount();
-    emit resultReady( m_tracks );
 }
 
 MetaQueryWidget::Filter
@@ -173,15 +211,6 @@ Dynamic::TagMatchBias::setFilter( const MetaQueryWidget::Filter &filter)
     m_filter = filter;
     invalidate();
     emit changed( BiasPtr(this) );
-}
-
-void
-Dynamic::TagMatchBias::invalidate()
-{
-    m_tracksValid = false;
-    m_tracks = TrackSet();
-    // TODO: need to finish a running query
-    m_qm.reset();
 }
 
 void

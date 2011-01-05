@@ -21,7 +21,6 @@
 #define DEBUG_PREFIX "PartBias"
 
 #include "PartBias.h"
-#include "BiasFactory.h"
 
 #include "core/support/Debug.h"
 #include "DynamicBiasWidgets.h"
@@ -30,6 +29,31 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+
+#include <klocale.h>
+
+QString
+Dynamic::PartBiasFactory::i18nName() const
+{ return i18nc("Name of the \"Part\" bias", "Part"); }
+
+QString
+Dynamic::PartBiasFactory::name() const
+{ return Dynamic::PartBias::sName(); }
+
+QString
+Dynamic::PartBiasFactory::i18nDescription() const
+{ return i18nc("Description of the \"Part\" bias",
+                   "The \"Part\" bias adds tracks they match at least one of the sub biases."); }
+
+Dynamic::BiasPtr
+Dynamic::PartBiasFactory::createBias()
+{ return Dynamic::BiasPtr( new Dynamic::PartBias() ); }
+
+Dynamic::BiasPtr
+Dynamic::PartBiasFactory::createBias( QXmlStreamReader *reader )
+{ return Dynamic::BiasPtr( new Dynamic::PartBias( reader ) ); }
+
+
 
 
 /* Note:

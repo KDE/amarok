@@ -22,11 +22,53 @@
 #define AMAROK_METATAGBIAS_H
 
 #include "Bias.h"
+#include "BiasFactory.h"
 #include <widgets/MetaQueryWidget.h>
 
 namespace Dynamic
 {
-    class TagMatchBias : public AbstractBias
+    /** An abstract bias that will check matching tracks agains the results from a query maker.
+        You can use this base class for writing your own biases.
+    */
+    class SimpleMatchBias : public AbstractBias
+    {
+        Q_OBJECT
+
+        public:
+            SimpleMatchBias();
+
+            virtual TrackSet matchingTracks( int position,
+                                             const Meta::TrackList& playlist, int contextCount,
+                                             const TrackCollectionPtr universe ) const;
+        public slots:
+            virtual void invalidate();
+
+        protected slots:
+            /** Called when we get new uids from the query maker */
+            virtual void updateReady( QString collectionId, QStringList uids );
+
+            /** Called when the querymaker is finished */
+            virtual void updateFinished();
+
+            /** Creates a new query to get matching tracks. */
+            virtual void newQuery() const = 0;
+
+        protected:
+            MetaQueryWidget::Filter m_filter;
+
+            mutable QScopedPointer<Collections::QueryMaker> m_qm;
+
+            /** The result from the current query manager are buffered in the m_uids set. */
+            bool m_tracksValid;
+            mutable TrackSet m_tracks;
+
+        private:
+            Q_DISABLE_COPY(SimpleMatchBias)
+    };
+
+
+    /** A bias that matches tracks against a MetaQueryWidget filter. */
+    class TagMatchBias : public SimpleMatchBias
     {
         Q_OBJECT
 
@@ -41,10 +83,6 @@ namespace Dynamic
 
             virtual QWidget* widget( QWidget* parent = 0 );
 
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
-                                             const TrackCollectionPtr universe ) const;
-
             virtual bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
                                        int contextCount ) const;
@@ -52,36 +90,28 @@ namespace Dynamic
             MetaQueryWidget::Filter filter() const;
             void setFilter( const MetaQueryWidget::Filter &filter );
 
-        public slots:
-            virtual void invalidate();
-
         protected slots:
-            /** Called when we get new uids from the query maker */
-            void updateReady( QString collectionId, QStringList uids );
-
-            /** Called when the querymaker is finished */
-            void updateFinished();
-
-            /** Creates a new query to get matching tracks. */
-            void newQuery() const;
+            virtual void newQuery() const;
 
         protected:
-
             static QString nameForCondition( MetaQueryWidget::FilterCondition cond );
             static MetaQueryWidget::FilterCondition conditionForName( const QString &name );
 
             bool matches( const Meta::TrackPtr &track ) const;
 
-            MetaQueryWidget::Filter m_filter;
-
-            mutable QScopedPointer<Collections::QueryMaker> m_qm;
-
-            /** The result from the current query manager are buffered in the m_uids set. */
-            bool m_tracksValid;
-            mutable TrackSet m_tracks;
-
         private:
             Q_DISABLE_COPY(TagMatchBias)
+    };
+
+
+    class AMAROK_EXPORT TagMatchBiasFactory : public Dynamic::AbstractBiasFactory
+    {
+        public:
+            virtual QString i18nName() const;
+            virtual QString name() const;
+            virtual QString i18nDescription() const;
+            virtual BiasPtr createBias();
+            virtual BiasPtr createBias( QXmlStreamReader *reader );
     };
 
 }

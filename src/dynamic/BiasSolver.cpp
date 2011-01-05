@@ -212,6 +212,7 @@ void
 Dynamic::BiasSolver::simpleOptimize( SolverList *list )
 {
     TrackSet universeSet( m_trackCollection, true );
+    // TODO: don't optimize the tracks in order
     for( int i = m_context.count();
          i < m_context.count() + m_n && i < list->m_trackList.count(); i++ )
     {

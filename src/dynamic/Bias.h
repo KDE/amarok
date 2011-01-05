@@ -301,8 +301,8 @@ namespace Dynamic
             Q_DISABLE_COPY(OrBias)
     };
 
-    /** Actually this bias works more like a Nand bias. */
-    class NotBias : public AndBias
+    /** Actually this bias works more like a NOR bias. */
+    class NotBias : public OrBias
     {
         Q_OBJECT
 

@@ -104,6 +104,10 @@ namespace PlaylistBrowserNS
             */
             void setCustomWidget( const QString &label, QWidget* widget );
 
+            /** Direct access to the form layout for easy customization */
+            QFormLayout* formLayout()
+            { return m_layout; }
+
         protected slots:
             void factoriesChanged();
             void selectionChanged( int index );

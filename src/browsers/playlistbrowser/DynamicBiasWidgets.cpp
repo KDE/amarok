@@ -20,11 +20,10 @@
 
 #include "DynamicBiasWidgets.h"
 
-// #include "App.h"
 #include "Bias.h"
-#include "TagMatchBias.h"
-#include "PartBias.h"
 #include "BiasFactory.h"
+#include "biases/TagMatchBias.h"
+#include "biases/PartBias.h"
 #include "core/support/Debug.h"
 #include "SliderWidget.h"
 #include "SvgHandler.h"
@@ -56,7 +55,7 @@ PlaylistBrowserNS::BiasBoxWidget::BiasBoxWidget( Dynamic::BiasPtr bias, QWidget*
     , m_removeButton( 0 )
     , m_hover( false )
 {
-    // setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
+    setAutoFillBackground( true );
 
     m_mainLayout = new QHBoxLayout( this );
 
@@ -73,11 +72,7 @@ PlaylistBrowserNS::BiasBoxWidget::BiasBoxWidget( Dynamic::BiasPtr bias, QWidget*
 
     if( m_removeButton )
     {
-        m_mainLayout->addWidget( m_removeButton, 0/*, Qt::AlignLeft | Qt::AlignTop*/ );
-        /*
-        mainLayout->setStretchFactor( m_removeButton, 0 );
-        mainLayout->setAlignment( m_removeButton, Qt::AlignLeft | Qt::AlignTop );
-        */
+        m_mainLayout->addWidget( m_removeButton, 0 );
     }
 
     biasReplaced( Dynamic::BiasPtr(), bias );
@@ -333,26 +328,6 @@ PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias,
                  this, SLOT( biasWeightsChanged() ) );
     }
 
-    if( m_haveWeights )
-    {
-        /*
-           m_weightLabel = new QLabel( " 0%", frame );
-           m_weightSelection = new Amarok::Slider( Qt::Horizontal, 100, frame );
-           m_weightSelection->setToolTip(
-           i18n( "This controls what portion of the playlist should match the criteria" ) );
-
-           QHBoxLayout* sliderLayout = new QHBoxLayout();
-           sliderLayout->addWidget( m_weightSelection );
-           sliderLayout->addWidget( m_weightLabel );
-
-        m_weightSelection = new Amarok::Slider( Qt::Horizontal, 100, this );
-        m_weightSelection->setToolTip(
-                                      i18n( "This controls what portion of the playlist should match the criteria" ) );
-        m_layout->insertRow( 1, i18n( "Random Proportion:" ), m_weightSelection );
-
-           */
-    }
-
     // -- add an add button to add new widgets
     QHBoxLayout* buttonLayout = new QHBoxLayout();
 
@@ -382,14 +357,12 @@ PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias,
 void
 PlaylistBrowserNS::LevelBiasWidget::appendBias()
 {
-    m_abias->appendBias( Dynamic::BiasPtr( new Dynamic::RandomBias() ) );
+    m_abias->appendBias( Dynamic::BiasPtr( new Dynamic::TagMatchBias() ) );
 }
 
 void
 PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
 {
-    DEBUG_BLOCK;
-
     // special case for the PartBias. We hide the implicit random sub-bias
     bool specialRandomBias = m_haveWeights &&
         m_sliders.isEmpty() &&
@@ -516,12 +489,6 @@ PlaylistBrowserNS::TagMatchBiasWidget::TagMatchBiasWidget( Dynamic::TagMatchBias
 void
 PlaylistBrowserNS::TagMatchBiasWidget::syncControlsToBias()
 {
-    /*
-    int weight = (int)(m_gbias->weight() * 100.0);
-    m_weightSelection->setValue(weight);
-    weightChanged(weight); // the widget value might not have changed and thus the signal not fired
-    */
-
     m_queryWidget->setFilter( m_tbias->filter() );
 }
 
@@ -531,18 +498,5 @@ PlaylistBrowserNS::TagMatchBiasWidget::syncBiasToControls()
     m_tbias->setFilter( m_queryWidget->filter() );
 }
 
-    /*
-void
-PlaylistBrowserNS::TagMatchBiasWidget::weightChanged( int ival )
-{
-    m_weightLabel->setText( QString().sprintf( "%d%%", ival ) );
-
-    double fval = (double)ival / 100.0;
-    if( fval != m_gbias->weight() )
-    {
-        m_gbias->setWeight( fval );
-    }
-}
-    */
 
 #include "DynamicBiasWidgets.moc"

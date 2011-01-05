@@ -102,6 +102,20 @@ Dynamic::TrackSet::getRandomTrack() const
 }
 
 void
+Dynamic::TrackSet::unite( const Meta::TrackPtr& B )
+{
+    if( !m_collection )
+        return;
+
+    QString str = B->uidUrl();
+    if( !m_collection->m_ids.contains( str ) )
+        return;
+
+    int index = m_collection->m_ids.value( str );
+    m_bits.setBit( index );
+}
+
+void
 Dynamic::TrackSet::unite( const Dynamic::TrackSet& B )
 {
     m_bits |= B.m_bits;

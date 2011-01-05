@@ -534,11 +534,11 @@ Dynamic::OrBias::resultReceived( const Dynamic::TrackSet &tracks )
 // -------- NotBias ------
 
 Dynamic::NotBias::NotBias()
-    : AndBias()
+    : OrBias()
 { }
 
 Dynamic::NotBias::NotBias( QXmlStreamReader *reader )
-    : AndBias( reader )
+    : OrBias( reader )
 { }
 
 QString
@@ -584,13 +584,13 @@ Dynamic::NotBias::trackMatches( int position,
                                const Meta::TrackList& playlist,
                                int contextCount ) const
 {
-    return ! Dynamic::AndBias::trackMatches( position, playlist, contextCount );
+    return ! Dynamic::OrBias::trackMatches( position, playlist, contextCount );
 }
 
 double
 Dynamic::NotBias::energy( const Meta::TrackList& playlist, int contextCount ) const
 {
-    return 1.0 - Dynamic::AndBias::energy( playlist, contextCount );
+    return 1.0 - Dynamic::OrBias::energy( playlist, contextCount );
 }
 
 void

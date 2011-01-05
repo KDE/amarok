@@ -99,6 +99,7 @@ namespace Dynamic
             /** Returns the uids of a random track contains in this set */
             QString getRandomTrack() const;
 
+            void unite( const Meta::TrackPtr& );
             void unite( const TrackSet& );
             void unite( const QStringList& uids );
             void intersect( const TrackSet& );
