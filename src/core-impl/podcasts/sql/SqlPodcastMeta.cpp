@@ -657,6 +657,10 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     if( !episode->guid().isEmpty() && m_provider->possiblyContainsTrack( episode->guid() ) )
         return PodcastEpisodePtr::dynamicCast( m_provider->trackForUrl( episode->guid() ) );
 
+    //force episodes load.
+    if( !m_episodesLoaded )
+        loadEpisodes();
+
     SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
 
     //episodes are sorted on pubDate high to low
@@ -787,5 +791,7 @@ SqlPodcastChannel::loadEpisodes()
                 new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) ) );
         m_episodes <<  sqlEpisode;
     }
+
+    m_episodesLoaded = true;
 }
 
