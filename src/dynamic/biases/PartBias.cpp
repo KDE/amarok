@@ -34,7 +34,7 @@
 
 QString
 Dynamic::PartBiasFactory::i18nName() const
-{ return i18nc("Name of the \"Part\" bias", "Part"); }
+{ return i18nc("Name of the \"Part\" bias", "Partition"); }
 
 QString
 Dynamic::PartBiasFactory::name() const
@@ -227,8 +227,10 @@ debug() << "PartBias" << reader->name() << reader->isStartElement();
             Dynamic::BiasPtr bias( Dynamic::BiasFactory::fromXml( reader ) );
             if( bias )
             {
+                float weight = reader->attributes().value( "weight" ).toString().toFloat();
+                debug()<<"weight for"<<bias->name()<<"is"<<reader->attributes().value( "weight" ).toString();
                 appendBias( bias );
-                m_weights[ m_weights.count() - 1 ] = reader->attributes().value( "weight" ).toString().toFloat();
+                m_weights[ m_weights.count() - 1 ] = weight;
             }
             else
             {

@@ -199,39 +199,8 @@ PlaylistBrowserNS::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
         return;
 
     m_activeUnsaved = true;
-    emit dataChanged( index( m_activePlaylistIndex, 0, QModelIndex() ),
-                      index( m_activePlaylistIndex, 0, QModelIndex() ) );
-
-/*
-    // spawn an unmodified version, put it in the current slot,
-    // and add the modified version to the end
-    Dynamic::DynamicPlaylistPtr unmodified;
-
-    if( m_activePlaylist == m_defaultPlaylist )
-        unmodified = createDefaultPlaylist();
-    else
-        unmodified = Dynamic::BiasedPlaylist::fromXml( m_playlistElements[m_activePlaylist] );
-
-    if( !unmodified )
-    {
-        error() << "Can not parse biased playlist xml.";
-        return;
-    }
-
-
-    Dynamic::DynamicPlaylistPtr modified = m_playlistList[m_activePlaylist];
-
-
-    m_playlistList[m_activePlaylist] = unmodified;
-    m_playlistHash[unmodified->title()] = unmodified;
-
-    beginInsertRows( QModelIndex(), m_playlistList.size(), m_playlistList.size() );
-    m_playlistList.append( modified );
-
-
-    endInsertRows();
-
-    emit changeActive( m_playlistList.size() - 1 ); */
+    emit dataChanged( index( m_activePlaylistIndex, 0 ),
+                      index( m_activePlaylistIndex, 0 ) );
 }
 
 
@@ -240,12 +209,22 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
 {
     DEBUG_BLOCK
     int newIndex = playlistIndex( newTitle );
-    debug() << "saveActive" << newTitle << ":"<<newIndex;
+    debug() << "saveActive" << m_activePlaylistIndex << newTitle << ":"<<newIndex;
 
     // if it's unchanged and the same name.. dont do anything
     if( !m_activeUnsaved &&
         newIndex == m_activePlaylistIndex )
         return;
+
+    // overwrite the current playlist entry
+    if( newIndex == m_activePlaylistIndex )
+    {
+        savePlaylists();
+        m_activeUnsaved = false;
+        emit dataChanged( index( m_activePlaylistIndex, 0 ),
+                          index( m_activePlaylistIndex, 0 ) );
+        return;
+    }
 
     // overwriting an existing playlist entry
     if( newIndex >= 0 )
@@ -445,6 +424,8 @@ PlaylistBrowserNS::DynamicModel::removeActive()
     {
         loadPlaylists();
         m_activeUnsaved = false;
+        emit dataChanged( index( m_activePlaylistIndex, 0 ),
+                          index( m_activePlaylistIndex, 0 ) );
         return;
     }
 

@@ -213,8 +213,6 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::BiasPtr b, QWidget* parent )
     , m_bias( b )
     , m_customWidget( 0 )
 {
-    DEBUG_BLOCK
-
     m_layout = new QFormLayout();
     m_layout->setVerticalSpacing( 0 );
     m_layout->setFormAlignment( Qt::AlignLeft | Qt::AlignTop ); // so that all biases are left aligned
@@ -265,28 +263,28 @@ void
 PlaylistBrowserNS::BiasWidget::factoriesChanged()
 {
     m_biasSelection->clear();
+
     // -- add all the bias types to the list
     QList<Dynamic::AbstractBiasFactory*> factories = Dynamic::BiasFactory::factories();
-    debug() << "factories" << factories.count() << "my name:" << m_bias->name();
-    int currentIndex = 0;
     for( int i = 0; i <  factories.count(); i++ )
     {
         Dynamic::AbstractBiasFactory* factory = factories.at( i );
-    debug() << "factories::" << factory->name();
         m_biasSelection->addItem( factory->i18nName(), QVariant( factory->name() ) );
+
+        // -- set the current index if we have found our own factory
         if( m_bias && factory->name() == m_bias->name() )
-            currentIndex = i;
+        {
+            m_biasSelection->setCurrentIndex( i );
+            // while we are at it: set a tool tip
+            setToolTip( factory->i18nDescription() );
+        }
     }
-    m_biasSelection->setCurrentIndex( currentIndex );
 }
 
 void
 PlaylistBrowserNS::BiasWidget::selectionChanged( int index )
 {
-    DEBUG_BLOCK
     Q_ASSERT( m_biasSelection );
-
-    debug() << "selection changed to index: " << index;
 
     QString biasName = m_biasSelection->itemData( index ).toString();
     Dynamic::BiasPtr bias( Dynamic::BiasFactory::fromName( biasName ) );
@@ -296,7 +294,18 @@ PlaylistBrowserNS::BiasWidget::selectionChanged( int index )
         return;
     }
 
-    // TODO: keep the old sub-biases if possible e.g. between AND and OR bias
+    // -- if the old and the new bias are AndBias, try to rescue some of the sub-biases
+    Dynamic::AndBias *oldBias = qobject_cast<Dynamic::AndBias*>(m_bias.data());
+    Dynamic::AndBias *newBias = qobject_cast<Dynamic::AndBias*>(bias.data());
+    if( oldBias && newBias ) {
+        for( int i = 0; i < oldBias->biases().count(); i++ )
+        {
+            // skip the default random bias of the PartBias
+            if( i > 0 || !qobject_cast<Dynamic::PartBias*>(oldBias) )
+                newBias->appendBias( oldBias->biases()[i] );
+        }
+    }
+
     m_bias->replace( bias ); // tell the old bias it has just been replaced
 }
 

@@ -38,7 +38,7 @@
 
 QString
 Dynamic::TagMatchBiasFactory::i18nName() const
-{ return i18nc("Name of the \"TagMatch\" bias", "TagMatch"); }
+{ return i18nc("Name of the \"TagMatch\" bias", "Match meta tag"); }
 
 QString
 Dynamic::TagMatchBiasFactory::name() const

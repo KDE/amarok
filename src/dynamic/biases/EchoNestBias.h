@@ -78,6 +78,9 @@ namespace Dynamic
             virtual void invalidate();
 
         private slots:
+            /** Initiates a query for the artists.
+                Initiates lookups for the artist ids for m_currentArtists*/
+            void lookup() const;
             virtual void newQuery() const;
 
             virtual void updateFinished();
@@ -89,9 +92,6 @@ namespace Dynamic
         private:
             /** Returns the artists we should lookup */
             QStringList currentArtists( int position, const Meta::TrackList& playlist ) const;
-            /** Initiates a query for the artists. */
-            void lookup( const QStringList &artists ) const;
-
             static KUrl createUrl( QString method, QMultiMap< QString, QString > params );
             static QString nameForMatch( MatchType match );
             static MatchType matchForName( const QString &name );
@@ -100,14 +100,12 @@ namespace Dynamic
             mutable QStringList m_currentArtists;
             mutable QMap< KIO::StoredTransferJob*, QString> m_artistNameQueries;
             mutable KIO::StoredTransferJob* m_artistSuggestedQuery;
-            mutable QMutex m_mutex;
 
             MatchType m_match;
 
-            mutable QMap< QString, QString > m_artistIds;
-            // populated as queries come in
-            mutable QMap< QString, QSet< QByteArray > > m_savedArtists;
 
+            mutable QMutex m_mutex; // mutex protecting all of the below structures
+            mutable QMap< QString, QString > m_artistIds;
             mutable QMap< QString, QStringList> m_similarArtistMap;
             mutable QMap< QString, TrackSet> m_tracksMap;
 

@@ -335,9 +335,8 @@ namespace Dynamic
 
 
     /*
-    Other biases that we might want to do:
-    QuizPlayBias (last chacter of song title is first character of new song title)
-    AlbumPlayBias (new track is the next track in current album)
+       Other biases that we might want to do:
+       QuizPlayBias (last chacter of song title is first character of new song title)
     */
 
 }

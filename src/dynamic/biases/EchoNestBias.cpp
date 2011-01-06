@@ -27,17 +27,18 @@
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+#include <QTimer>
 
 #include "core/collections/Collection.h"
+#include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
-#include "core/collections/QueryMaker.h"
 #include "playlist/PlaylistModelStack.h"
 
 #include <kio/job.h>
 
-#include <KComboBox>
+#include <QComboBox>
 #include <QFormLayout>
 
 
@@ -121,7 +122,7 @@ QWidget*
 Dynamic::EchoNestBias::widget( QWidget* parent )
 {
     PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
-    KComboBox *combo = new KComboBox( this );
+    QComboBox *combo = new QComboBox();
     combo->addItem( i18n( "Previous Track" ),
                     nameForMatch( PreviousTrack ) );
     combo->addItem( i18n( "Playlist" ),
@@ -158,7 +159,10 @@ Dynamic::EchoNestBias::matchingTracks( int position,
     }
 
     m_tracks = Dynamic::TrackSet( universe, false );
-    lookup( artists );
+    m_currentArtists = artists;
+    QTimer::singleShot(0,
+                       const_cast<EchoNestBias*>(this),
+                       SLOT(lookup())); // create the new query from my parent thread
 
     return Dynamic::TrackSet();
 }
@@ -216,14 +220,12 @@ Dynamic::EchoNestBias::updateFinished()
 }
 
 void
-Dynamic::EchoNestBias::lookup( const QStringList &artists ) const
+Dynamic::EchoNestBias::lookup() const
 {
     DEBUG_BLOCK;
 
-    m_currentArtists = artists; // save for sure
-
     // -- for each artist look up the id
-    foreach( const QString &artist, artists )
+    foreach( const QString &artist, m_currentArtists )
     {
         if( !m_artistIds.contains( artist ) ) // don't have it yet
         {
@@ -328,8 +330,6 @@ Dynamic::EchoNestBias::artistSuggestedQueryDone( KJob* job ) // slot
         return;
     }
 
-    QMutexLocker locker( &m_mutex );
-
     QDomDocument doc;
     if( !doc.setContent( m_artistSuggestedQuery->data() ) )
     {
@@ -346,14 +346,18 @@ Dynamic::EchoNestBias::artistSuggestedQueryDone( KJob* job ) // slot
 
     //debug() << "got similar artists:" << similar.values();
 
+    QStringList similarArtists;
     QDomNodeList rel = similar.childNodes();
     for( int i = 0; i < rel.count(); i++ )
     {
         QDomNode n = rel.at( i );
-        QString artistname = n.firstChildElement( "name" ).text();
-        debug() << "Adding related artist:" << artistname;
-        m_qm->addFilter( Meta::valArtist, artistname, true, true );
+        similarArtists.append( n.firstChildElement( "name" ).text() );
+    }
 
+    {
+        QMutexLocker locker( &m_mutex );
+        QString key = m_currentArtists.join("|");
+        m_similarArtistMap.insert( key, similarArtists );
     }
 
     newQuery();
@@ -446,18 +450,23 @@ Dynamic::EchoNestBias::newQuery() const
     // ok, I need a new query maker
     m_qm.reset( CollectionManager::instance()->queryMaker() );
 
-    QString key = m_currentArtists.join("|");
+    // - get the similar artists
     QStringList similar;
-    if( m_similarArtistMap.contains( key ) )
     {
-        similar = m_similarArtistMap.value( key );
-        debug() << "got similar artists:" << similar.join(", ");
-    }
-    else
-    {
-        warning() << "Stored similar artists do not contain key"<<key<<"in EchoNestBias::newQuery";
+        QMutexLocker locker( &m_mutex );
+        QString key = m_currentArtists.join("|");
+        if( m_similarArtistMap.contains( key ) )
+        {
+            similar = m_similarArtistMap.value( key );
+            debug() << "got similar artists:" << similar.join(", ");
+        }
+        else
+        {
+            warning() << "Stored similar artists do not contain key"<<key<<"in EchoNestBias::newQuery";
+        }
     }
 
+    // - construct the query
     m_qm->beginOr();
     foreach( const QString &artistName, similar )
     {
@@ -473,9 +482,10 @@ Dynamic::EchoNestBias::newQuery() const
              this, SLOT(updateReady( QString, QStringList )) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
+
+    // - run the query
     m_qm.data()->run();
 }
-
 
 
 QString

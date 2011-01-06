@@ -28,7 +28,7 @@
 #include "DynamicBiasWidgets.h"
 #include "core/collections/QueryMaker.h"
 
-#include <KComboBox>
+#include <QComboBox>
 #include <QFormLayout>
 
 #include <QDateTime>
@@ -41,7 +41,7 @@
 
 QString
 Dynamic::AlbumPlayBiasFactory::i18nName() const
-{ return i18nc("Name of the \"AlbumPlay\" bias", "AlbumPlay"); }
+{ return i18nc("Name of the \"AlbumPlay\" bias", "Album play"); }
 
 QString
 Dynamic::AlbumPlayBiasFactory::name() const
@@ -112,7 +112,7 @@ QWidget*
 Dynamic::AlbumPlayBias::widget( QWidget* parent )
 {
     PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
-    KComboBox *combo = new KComboBox( this );
+    QComboBox *combo = new QComboBox();
     combo->addItem( i18n( "Directly follows" ),
                     nameForFollow( DirectlyFollow ) );
     combo->addItem( i18n( "Follows previous" ),
@@ -134,7 +134,7 @@ Dynamic::AlbumPlayBias::matchingTracks( int position,
 {
     Q_UNUSED( contextCount );
 
-    if( position <= 0 || playlist.count() <= position - 1 )
+    if( position < 1 || position >= playlist.count() )
         return Dynamic::TrackSet( universe, true );
 
     Meta::TrackPtr track = playlist[position-1];
@@ -143,14 +143,14 @@ Dynamic::AlbumPlayBias::matchingTracks( int position,
     if( !album )
         return Dynamic::TrackSet( universe, true );
 
-    TrackSet result( universe, false );
-
     Meta::TrackList albumTracks = album->tracks();
-    if( track == albumTracks.last() && m_follow != DontCare )
+    if( albumTracks.count() == 1 ||
+        (track == albumTracks.last() && m_follow != DontCare) )
         return Dynamic::TrackSet( universe, true );
 
     // we assume that the album tracks are sorted by cd and track number which
     // is at least true for the SqlCollection
+    TrackSet result( universe, false );
     if( m_follow == DirectlyFollow )
     {
         for( int i = 1; i < albumTracks.count(); i++ )
@@ -177,7 +177,7 @@ Dynamic::AlbumPlayBias::matchingTracks( int position,
         }
     }
 
-    return Dynamic::TrackSet();
+    return result;
 }
 
 bool

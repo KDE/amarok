@@ -48,6 +48,8 @@ namespace Dynamic
             virtual QString i18nName() const = 0;
 
             /** Returns an internal non-translatable name for this custom bias type.
+                This name must be unique over all biases and will also be used
+                when reading and writing a bias to xml.
              */
             virtual QString name() const = 0;
 
