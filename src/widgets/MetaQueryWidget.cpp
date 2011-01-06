@@ -55,11 +55,10 @@ TimeDistanceWidget::TimeDistanceWidget( QWidget *parent )
 
     m_unitSelection = new KComboBox(this);
     connect( m_timeEdit, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateComboBoxLabels(int)) );
-    m_unitSelection->addItem( i18np( "second", "seconds", 0 ) );
-    m_unitSelection->addItem( i18np( "minute", "minutes", 0 ) );
-    m_unitSelection->addItem( i18np( "hour", "hours", 0 ) );
-    m_unitSelection->addItem( i18np( "day", "days", 0 ) );
-    m_unitSelection->addItem( i18np( "month", "months", 0 ) );
+    for (int i = 0; i < 5; ++i) {
+        m_unitSelection->addItem( QString() );
+    }
+    slotUpdateComboBoxLabels( 0 );
 
     QHBoxLayout *hLayout = new QHBoxLayout(this);
     hLayout->setContentsMargins(0, 0, 0, 0);
