@@ -169,13 +169,15 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
 
 SqlCollection::~SqlCollection()
 {
-    delete m_registry;
+    if( m_scanManager )
+        m_scanManager->abort( "Amarok is closing" );
     delete m_albumCapabilityDelegate;
     delete m_artistCapabilityDelegate;
     delete m_trackCapabilityDelegate;
     delete m_collectionLocationFactory;
     delete m_queryMakerFactory;
     delete m_sqlStorage;
+    delete m_registry;
     delete m_mpm;
 }
 
