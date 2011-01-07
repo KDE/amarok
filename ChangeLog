@@ -3,7 +3,7 @@ Amarok ChangeLog
 (C) 2002-2010 the Amarok authors.
 
 
-VERSION 2.4-Beta 2
+VERSION 2.4.0
   CHANGES:
     * New Splash Screen by Tomasz Dudzik <madsheytan@gmail.com>
     * The "Playdar Collection" feature has been disabled until some technical 
@@ -21,7 +21,6 @@ VERSION 2.4-Beta 2
     * Fixed issue with the Organize Files Dialog that prevented presets from being
       loaded when in advanced mode. Patch by Philipp Schmidt <philschmidt@gmx.net>
       (BR 255325)
-
 
 
 VERSION 2.4-Beta 1
