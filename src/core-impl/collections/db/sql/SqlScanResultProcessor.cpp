@@ -301,8 +301,10 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
         Meta::ReplayGain_Album_Peak };
 
     for( int i=0; i<4; i++ )
-        if( !track->replayGain( modes[i] ) != 0 )
+    {
+        if( track->replayGain( modes[i] ) != 0.0 )
             metaTrack->setReplayGain( modes[i], track->replayGain( modes[i] ) );
+    }
 
     metaTrack->endMetaDataUpdate();
     metaTrack->setWriteFile( true );
