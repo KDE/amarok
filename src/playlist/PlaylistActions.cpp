@@ -464,9 +464,11 @@ Playlist::Actions::restoreDefaultPlaylist()
     // non-collection Tracks will not be loaded correctly.
     The::playlistManager();
 
-    Playlists::PlaylistFilePtr playlist =
-            Playlists::loadPlaylistFile( Amarok::defaultPlaylistPath() );
-    playlist->triggerTrackLoad(); //playlist track loading is on demand.
+    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Amarok::defaultPlaylistPath() );
+
+    if( playlist ) // This pointer will be 0 on first startup
+        playlist->triggerTrackLoad(); // playlist track loading is on demand
+
     if( playlist && playlist->tracks().count() > 0 )
     {
         Meta::TrackList tracks = playlist->tracks();
@@ -504,6 +506,7 @@ Playlist::Actions::restoreDefaultPlaylist()
         if( lastPlayingRow >= 0 )
             Playlist::ModelStack::instance()->bottom()->setActiveRow( lastPlayingRow );
     }
+
     //Check if we should load the first run jingle, since there is no saved playlist to load
     else if( AmarokConfig::playFirstRunJingle() )
     {
