@@ -24,7 +24,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QCheckBox" name="kcfg_ShowSplashscreen">
+       <widget class="QCheckBox" name="kcfg_ShowSplashScreen">
         <property name="toolTip">
          <string>Check to enable the splashscreen during Amarok startup.</string>
         </property>

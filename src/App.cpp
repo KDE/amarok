@@ -608,7 +608,7 @@ App::continueInit()
     Amarok::Components::applicationController()->start();
 
     KSplashScreen* splash = 0;
-    if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
+    if( AmarokConfig::showSplashScreen() && !isSessionRestored() )
     {
         QPixmap splashimg( KGlobal::dirs()->findResource( "data", "amarok/images/splash_screen.jpg" ) );
         splash = new KSplashScreen( splashimg, Qt::WindowStaysOnTopHint );
