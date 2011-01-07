@@ -149,7 +149,13 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 
     if( options & StartPlay )
     {
-        if( !The::engineController()->isPlaying() && !The::engineController()->isPaused() )
+        bool isDynamic = AmarokConfig::dynamicMode();
+        bool isPaused  = The::engineController()->isPaused();
+        bool isPlaying = The::engineController()->isPlaying();
+
+        // when not in dyanmic mode: start playing when paused
+        // when in dyanmic mode: do not start playing when paused
+        if( !isPlaying && (!isDynamic || (isDynamic && !isPaused)) )
             playNow = true;
     }
 
