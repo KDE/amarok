@@ -20,7 +20,6 @@
 
 #include "Bias.h"
 #include "BiasFactory.h"
-
 #include "TagMatchBias.h"
 
 #include <QMutex>
@@ -30,7 +29,6 @@ namespace KIO {
     class StoredTransferJob;
 }
 
-class KComboBox;
 class KJob;
 
 namespace Dynamic
@@ -53,6 +51,7 @@ namespace Dynamic
 
             EchoNestBias();
             EchoNestBias( QXmlStreamReader *reader );
+            ~EchoNestBias();
 
             void toXml( QXmlStreamWriter *writer ) const;
 
@@ -78,15 +77,14 @@ namespace Dynamic
             virtual void invalidate();
 
         private slots:
-            /** Initiates a query for the artists.
-                Initiates lookups for the artist ids for m_currentArtists*/
-            void lookup() const;
-            virtual void newQuery() const;
+            virtual void newQuery();
+            virtual void newSimilarArtistQuery();
+            virtual void newArtistIdQuery( const QString &artist );
 
+            void artistIdQueryDone( KJob* );
+            void similarArtistQueryDone( KJob* );
             virtual void updateFinished();
 
-            void artistNameQueryDone( KJob* );
-            void artistSuggestedQueryDone( KJob* );
             void selectionChanged( int );
 
         private:

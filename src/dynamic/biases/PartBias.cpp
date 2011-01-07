@@ -433,6 +433,9 @@ Dynamic::PartBias::changeBiasWeight( int biasNum, qreal value )
         }
     }
 
+    for( int i = 0; i < m_weights.count(); i++ )
+        debug() << "Weight"<<i<<":"<<m_weights[i];
+
     emit weightsChanged();
     if( !m_duringConstruction )
         emit changed( BiasPtr( this ) );

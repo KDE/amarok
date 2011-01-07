@@ -51,7 +51,7 @@ namespace Dynamic
             virtual void updateFinished();
 
             /** Creates a new query to get matching tracks. */
-            virtual void newQuery() const = 0;
+            virtual void newQuery() = 0;
 
         protected:
             MetaQueryWidget::Filter m_filter;
@@ -91,7 +91,7 @@ namespace Dynamic
             void setFilter( const MetaQueryWidget::Filter &filter );
 
         protected slots:
-            virtual void newQuery() const;
+            virtual void newQuery();
 
         protected:
             static QString nameForCondition( MetaQueryWidget::FilterCondition cond );

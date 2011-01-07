@@ -36,49 +36,33 @@
 #include <QTimeEdit>
 #include <QVBoxLayout>
 
-// class WeeklyTopBiasFactory
 #include <QSignalMapper>
 
-Dynamic::WeeklyTopBiasFactory::WeeklyTopBiasFactory()
-{
-
-}
-
-Dynamic::WeeklyTopBiasFactory::~WeeklyTopBiasFactory()
-{
-
-}
-
+QString
+Dynamic::WeeklyTopBiasFactory::i18nName() const
+{ return i18nc("Name of the \"WeeklyTop\" bias", "LastFM weekly top artist"); }
 
 QString
 Dynamic::WeeklyTopBiasFactory::name() const
-{
-    return i18n( "Weekly Top Artists" );
-}
+{ return Dynamic::WeeklyTopBias::sName(); }
 
 QString
-Dynamic::WeeklyTopBiasFactory::pluginName() const
-{
-    return "lastfm_weeklytop";
-}
+Dynamic::WeeklyTopBiasFactory::i18nDescription() const
+{ return i18nc("Description of the \"WeeklyTop\" bias",
+                   "The \"WeeklyTop\" bias adds tracks that are in the weekly top chart of LastFM."); }
 
-Dynamic::CustomBiasEntry*
-Dynamic::WeeklyTopBiasFactory::newCustomBiasEntry()
-{
-    return new Dynamic::WeeklyTopBias();
-}
+Dynamic::BiasPtr
+Dynamic::WeeklyTopBiasFactory::createBias()
+{ return Dynamic::BiasPtr( new Dynamic::WeeklyTopBias() ); }
 
-Dynamic::CustomBiasEntry*
-Dynamic::WeeklyTopBiasFactory::newCustomBiasEntry( QDomElement e )
-{
+Dynamic::BiasPtr
+Dynamic::WeeklyTopBiasFactory:: createBias( QXmlStreamReader *reader )
+{ return Dynamic::BiasPtr( new Dynamic::WeeklyTopBias( reader ) ); }
 
-    debug() << "weekly top created with:" << e;
-    uint from = e.firstChildElement( "from" ).attribute( "value" ).toUInt();
-    uint to = e.firstChildElement( "to" ).attribute( "value" ).toUInt();
-    return new Dynamic::WeeklyTopBias( from, to );
-}
 
-// CLASS WeeklyTopBias
+
+// ----- WeeklyTopBias --------
+
 
 Dynamic::WeeklyTopBias::WeeklyTopBias( uint from, uint to )
     : Dynamic::CustomBiasEntry()
@@ -101,7 +85,7 @@ Dynamic::WeeklyTopBias::WeeklyTopBias( uint from, uint to )
         m_weeklyChartData.insert( line.split( "#" )[ 0 ].toUInt(), line.split( "#" )[ 1 ].split( "^" )  );
     }
     file.close();
-   
+
     getPossibleRange();
 }
 
@@ -493,21 +477,6 @@ void Dynamic::WeeklyTopBias::saveDataToFile()
     }
     file.close();
 
-}
-
-
-// Class WeeklyTopBiasCollectionFilterCapability
-
-const QSet< QByteArray >&
-Dynamic::WeeklyTopBiasCollectionFilterCapability::propertySet()
-{
-    return m_bias->m_trackList;
-}
-
-double
-Dynamic::WeeklyTopBiasCollectionFilterCapability::weight() const
-{
-    return m_weight;
 }
 
 

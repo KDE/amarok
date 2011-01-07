@@ -27,14 +27,13 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 
-#include <QStandardItemModel>
+// #include <QStandardItemModel>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QLabel>
 
 #include <QScrollArea>
 #include <QCheckBox>
-#include <QListView>
 #include <QPushButton>
 #include <QToolButton>
 #include <QVBoxLayout>
@@ -124,11 +123,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     connect( DynamicModel::instance(), SIGNAL( activeChanged( int ) ),
             m_presetComboBox, SLOT(setCurrentIndex(int)) );
 
-    /*
-    connect( DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ),
-            SLOT(enableDynamicMode(bool)) );
-            */
-
     connect( m_presetComboBox, SIGNAL(currentIndexChanged( int ) ),
             this, SLOT(playlistSelectionChanged( int ) ) );
 
@@ -161,22 +155,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     connect( m_deleteButton, SIGNAL(clicked(bool)),
             DynamicModel::instance(), SLOT(removeActive()) );
-
-    /*
-    m_biasListView = new QTreeView( this );
-    m_biasListView->setFrameShape( QFrame::NoFrame );
-    m_biasListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    m_biasListView->setAlternatingRowColors( true );
-
-    m_biasModel = new QStandardItemModel( m_biasListView );
-    m_biasListView->setModel( m_biasModel );
-
-    connect( m_biasModel, SIGNAL(playlistModified(Dynamic::BiasedPlaylistPtr)),
-             DynamicModel::instance(), SLOT(playlistModified(Dynamic::BiasedPlaylistPtr)) );
-
-    m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
-    m_biasListView->setItemDelegate( m_biasDelegate );
-    */
 
     m_scroller = new QScrollArea( this );
     m_scroller->setWidgetResizable( true );

@@ -19,6 +19,7 @@
 #include "biases/AlbumPlayBias.h"
 #include "biases/PartBias.h"
 #include "biases/TagMatchBias.h"
+#include "biases/QuizPlayBias.h"
 #include "biases/EchoNestBias.h"
 
 #define DEBUG_PREFIX "BiasFactory"
@@ -147,6 +148,7 @@ Dynamic::BiasFactory::instance()
         s_biasFactories.append( new AndBiasFactory() );
         s_biasFactories.append( new OrBiasFactory() );
         s_biasFactories.append( new Dynamic::AlbumPlayBiasFactory() );
+        s_biasFactories.append( new Dynamic::QuizPlayBiasFactory() );
         s_biasFactories.append( new Dynamic::EchoNestBiasFactory() );
 
         s_instance = new BiasFactory( App::instance() );

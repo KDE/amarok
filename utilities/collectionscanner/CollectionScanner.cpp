@@ -375,7 +375,11 @@ CollectionScanner::Scanner::addDir( const QString& dir, QSet<QString>* entries )
 
     QDir d( dir );
     if( !d.exists() )
+    {
+        QTextStream stream( stderr );
+        stream << "Directory \""<<dir<<"\" does not exist." << endl;
         return;
+    }
 
     entries->insert( dir );
 

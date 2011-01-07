@@ -20,24 +20,18 @@
 
 #include "AlbumPlayBias.h"
 
-#include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 
 #include "TrackSet.h"
 #include "DynamicBiasWidgets.h"
-#include "core/collections/QueryMaker.h"
 
 #include <QComboBox>
 #include <QFormLayout>
 
-#include <QDateTime>
-#include <QTimer>
-#include <QStandardItem>
-#include <QStandardItemModel>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#include <klocale.h>
 
 QString
 Dynamic::AlbumPlayBiasFactory::i18nName() const

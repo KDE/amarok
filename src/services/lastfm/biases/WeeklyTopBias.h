@@ -17,8 +17,14 @@
 #ifndef WEEKLY_TOP_BIAS_H
 #define WEEKLY_TOP_BIAS_H
 
-#include "CustomBiasEntry.h"
-#include "CustomBiasEntryFactory.h"
+#include "dynamic/Bias.h"
+#include "dynamic/BiasFactory.h"
+#include "dynamic/biases/TagMatchBias.h"
+
+#include <QMutex>
+#include <QNetworkReply>
+
+class KJob;
 
 #include <QQueue>
 
@@ -29,117 +35,78 @@ class QDateTimeEdit;
 class QVBoxLayout;
 class QNetworkReply;
 
-/**
- *  This is a bias which allows the user to select a range of dates, and then
- *  adds to the playlist tracks/artists/albums that were on their last.fm top
- *  tracks during that time
- *
- */
-
-namespace Collections {
-    class Collection;
-}
-
 namespace Dynamic
 {
 
-class WeeklyTopBiasFactory : public CustomBiasEntryFactory
-{
-    public:
-        WeeklyTopBiasFactory();
-        ~WeeklyTopBiasFactory();
+    /**
+     *  This is a bias which allows the user to select a range of dates, and then
+     *  adds to the playlist tracks/artists/albums that were on their last.fm top
+     *  tracks during that time
+     *
+     */
 
-        virtual QString name() const;
-        virtual QString pluginName() const;
-        virtual CustomBiasEntry* newCustomBiasEntry();
-        virtual CustomBiasEntry* newCustomBiasEntry( QDomElement e );
-};
+    class WeeklyTopBias : public SimpleMatchBias
+    {
+        Q_OBJECT
 
-class WeeklyTopBias : public CustomBiasEntry
-{
-    Q_OBJECT
-public:
-    explicit WeeklyTopBias( uint from = 0, uint to = 0 );
-    ~WeeklyTopBias();
+        public:
+            explicit WeeklyTopBias( uint from = 0, uint to = 0 );
+            ~WeeklyTopBias();
 
+        Q_SIGNALS:
+            void doneFetching();
 
-    // reimplemented from CustomBiasEntry
-    virtual QString pluginName() const;
-    virtual QWidget* configWidget ( QWidget* parent );
+        private Q_SLOTS:
+            void fromDateChanged( const QDateTime& );
+            void toDateChanged( const QDateTime& );
 
-    virtual bool trackSatisfies ( const Meta::TrackPtr track );
-    virtual double numTracksThatSatisfy ( const Meta::TrackList& tracks );
+            void updateDB();
+            void saveDataToFile();
+            void rangeJobFinished();
 
-    virtual QDomElement xml( QDomDocument doc ) const;
+            void weeklyFetch( QObject* );
+            void fetchWeeklyData(uint from = 0, uint to = 0);
 
-    virtual bool hasCollectionFilterCapability();
-    virtual CollectionFilterCapability* collectionFilterCapability( double weight );
+            // querymaker
+            void updateReady( QString, QStringList );
 
-Q_SIGNALS:
-    void doneFetching();
-    
-private Q_SLOTS:
-    void fromDateChanged( const QDateTime& );
-    void toDateChanged( const QDateTime& );
+        private:
+            void getPossibleRange();
+            void update();
+            void fetchNextWeeks( int num = 5 );
 
-    void updateDB();
-    void saveDataToFile();
-    void rangeJobFinished();
+            QSet< QByteArray > m_trackList;
 
-    void weeklyFetch( QObject* );
-    void fetchWeeklyData(uint from = 0, uint to = 0);
+            QVBoxLayout* m_layout;
+            QDateTimeEdit* m_fromEdit;
+            QDateTimeEdit* m_toEdit;
 
-    // querymaker
-    void updateReady( QString, QStringList );
-    
-private:
-    void getPossibleRange();
-    void update();
-    void fetchNextWeeks( int num = 5 );
+            QList< uint > m_weeklyCharts;
+            QList< uint > m_weeklyChartsTo;
+            QHash< uint, QStringList > m_weeklyChartData;
+            QStringList m_currentArtistList;
 
-    QSet< QByteArray > m_trackList;
+            uint m_fromDate;
+            uint m_toDate;
 
-    QVBoxLayout* m_layout;
-    QDateTimeEdit* m_fromEdit;
-    QDateTimeEdit* m_toEdit;
+            // be able to warn the user
+            uint m_earliestDate;
+            QQueue< QMap<QString,QString> > m_fetchQueue;
+            QSignalMapper* m_fetching;
 
-    QList< uint > m_weeklyCharts;
-    QList< uint > m_weeklyChartsTo;
-    QHash< uint, QStringList > m_weeklyChartData;
-    QStringList m_currentArtistList;
-    
-    uint m_fromDate;
-    uint m_toDate;
+            QNetworkReply* m_rangeJob;
+            QNetworkReply* m_dataJob;
+    };
 
-    // be able to warn the user
-    uint m_earliestDate;
-    QQueue< QMap<QString,QString> > m_fetchQueue;
-    QSignalMapper* m_fetching;
-    
-    QNetworkReply* m_rangeJob;
-    QNetworkReply* m_dataJob;
-    Collections::Collection* m_collection;
-
-    friend class WeeklyTopBiasCollectionFilterCapability; // so it can report the property and weight
-};
-
-
-class WeeklyTopBiasCollectionFilterCapability : public Dynamic::CollectionFilterCapability
-{
-public:
-    WeeklyTopBiasCollectionFilterCapability ( WeeklyTopBias* bias, double weight ) : m_bias ( bias ), m_weight( weight ) {}
-
-    // re-implemented
-    virtual const QSet< QByteArray >& propertySet();
-    virtual double weight() const;
-
-
-private:
-    WeeklyTopBias* m_bias;
-    double m_weight;
-
-};
-
+    class WeeklyTopBiasFactory : public Dynamic::AbstractBiasFactory
+    {
+        public:
+            virtual QString i18nName() const;
+            virtual QString name() const;
+            virtual QString i18nDescription() const;
+            virtual BiasPtr createBias();
+            virtual BiasPtr createBias( QXmlStreamReader *reader );
+    };
 }
 
 #endif

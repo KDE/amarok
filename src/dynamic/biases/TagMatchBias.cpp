@@ -24,11 +24,11 @@
 
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
 
 #include "TrackSet.h"
 #include "DynamicBiasWidgets.h"
-#include "core/collections/QueryMaker.h"
 
 #include <QDateTime>
 #include <QTimer>
@@ -214,7 +214,7 @@ Dynamic::TagMatchBias::setFilter( const MetaQueryWidget::Filter &filter)
 }
 
 void
-Dynamic::TagMatchBias::newQuery() const
+Dynamic::TagMatchBias::newQuery()
 {
     DEBUG_BLOCK;
 
