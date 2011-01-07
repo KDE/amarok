@@ -265,20 +265,20 @@ QStringList
 TrackTracksTableCommitter::getValues( Meta::SqlTrack *track )
 {
     QStringList result;
-    result << nullNumber( track->m_urlId );
-    result << nullNumber( track->m_artist ?
+    result << QString::number( track->m_urlId );
+    result << QString::number( track->m_artist ?
             KSharedPtr<Meta::SqlArtist>::staticCast( track->m_artist )->id() :
             -1 );
-    result << nullNumber( track->m_album ?
+    result << QString::number( track->m_album ?
             KSharedPtr<Meta::SqlAlbum>::staticCast( track->m_album )->id() :
             -1 );
-    result << nullNumber( track->m_genre ?
+    result << QString::number( track->m_genre ?
             KSharedPtr<Meta::SqlGenre>::staticCast( track->m_genre )->id() :
             -1 );
-    result << nullNumber( track->m_composer ?
+    result << QString::number( track->m_composer ?
             KSharedPtr<Meta::SqlComposer>::staticCast( track->m_composer )->id() :
             -1 );
-    result << nullNumber( track->m_year ?
+    result << QString::number( track->m_year ?
             KSharedPtr<Meta::SqlYear>::staticCast( track->m_year )->id() :
             -1 );
     result << escape( track->m_title );
@@ -293,10 +293,10 @@ TrackTracksTableCommitter::getValues( Meta::SqlTrack *track )
     result << nullNumber( track->m_bpm );
     result << nullDate( track->m_createDate );
     result << nullDate( track->m_modifyDate );
-    result << nullNumber( track->m_albumGain );
-    result << nullNumber( track->m_albumPeakGain );
-    result << nullNumber( track->m_trackGain );
-    result << nullNumber( track->m_trackPeakGain );
+    result << QString::number( track->m_albumGain );
+    result << QString::number( track->m_albumPeakGain );
+    result << QString::number( track->m_trackGain );
+    result << QString::number( track->m_trackPeakGain );
     return result;
 }
 
@@ -332,7 +332,7 @@ QStringList
 TrackStatisticsTableCommitter::getValues( Meta::SqlTrack *track )
 {
     QStringList result;
-    result << nullNumber( track->m_urlId );
+    result << QString::number( track->m_urlId );
     result << nullDate( track->m_firstPlayed );
     result << nullDate( track->m_lastPlayed );
     result << nullNumber( track->m_score );
