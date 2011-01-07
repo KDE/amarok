@@ -146,11 +146,15 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     bool playNow = false;
     if( options & DirectPlay )
         playNow = true;
-    if( options & StartPlay )
-        if( !The::engineController()->isPlaying() )
-            playNow = true;
 
-    if ( playNow ) {
+    if( options & StartPlay )
+    {
+        if( !The::engineController()->isPlaying() && !The::engineController()->isPaused() )
+            playNow = true;
+    }
+
+    if( playNow )
+    {
         if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
              AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum )
             Actions::instance()->play();
