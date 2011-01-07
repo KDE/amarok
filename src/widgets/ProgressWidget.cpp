@@ -189,13 +189,8 @@ ProgressWidget::trackPlaying()
 void
 ProgressWidget::trackLengthChanged( qint64 milliseconds )
 {
-    DEBUG_BLOCK
-
-    debug() << "new length: " << milliseconds;
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( milliseconds );
-    m_slider->setEnabled( (milliseconds > 0) && The::engineController()->isSeekable() );
-    debug() << "slider enabled!";
 
     const int timeLength = Meta::msToPrettyTime( milliseconds ).length() + 1; // account for - in remaining time
     QFontMetrics tFm( m_timeLabelRight->font() );
@@ -217,9 +212,10 @@ ProgressWidget::trackLengthChanged( qint64 milliseconds )
 void
 ProgressWidget::trackPositionChanged( qint64 position )
 {
-    //debug() << "POSITION: " << position;
     m_slider->setSliderValue( position );
 
+    // update the enabled state. Phonon determines isSeekable somtimes too late.
+    m_slider->setEnabled( (m_slider->minimum() > 0) && The::engineController()->isSeekable() );
     if ( !m_slider->isEnabled() )
         drawTimeDisplay( position );
 }
