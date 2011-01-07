@@ -531,7 +531,7 @@ set(apg_SRCS
     playlistgenerator/constraints/PlaylistLength.cpp
     playlistgenerator/constraints/PreventDuplicates.cpp
     playlistgenerator/constraints/TagMatch.cpp
-    playlistgenerator/constraints/TagMatchComparer.cpp
+    playlistgenerator/constraints/TagMatchSupport.cpp
     playlistgenerator/constraints/TrackSpreader.cpp
 )
 

@@ -65,7 +65,7 @@ namespace ConstraintTypes {
 
         private slots:
             void setComparison( const int );
-            void setDuration( const qint64 );
+            void setDuration( const int );
             void setStrictness( const int );
 
         private:
@@ -91,11 +91,11 @@ namespace ConstraintTypes {
         Q_OBJECT
 
         public:
-            PlaylistDurationEditWidget( const qint64 duration, const int comparison, const int strictness );
+            PlaylistDurationEditWidget( const int, const int, const int );
 
         signals:
             void updated();
-            void durationChanged( const qint64 );
+            void durationChanged( const int );
             void comparisonChanged( const int );
             void strictnessChanged( const int );
 
