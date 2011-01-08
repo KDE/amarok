@@ -123,25 +123,41 @@ Downloader::init( QScriptContext* context, QScriptEngine* engine, bool stringRes
 AmarokDownloadHelper::AmarokDownloadHelper()
 {
     s_instance = this;
+    connect( The::networkAccessManager(), SIGNAL( requestRedirected( const KUrl&, const KUrl& ) ),
+             this, SLOT( requestRedirected( const KUrl&, const KUrl& ) ) );
 }
 
 void
 AmarokDownloadHelper::newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding )
 {
-    m_values[ url ] = obj;
-    m_engines[ url ] = engine;
     m_encodings[ url ] = encoding;
-    The::networkAccessManager()->getData( url, this,
-         SLOT(resultString(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    newDownload( url, engine, obj, SLOT( resultString( KUrl, QByteArray, NetworkAccessManagerProxy::Error) ) );
 }
 
 void
 AmarokDownloadHelper::newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj )
 {
+    newDownload( url, engine, obj, SLOT( resultData( KUrl, QByteArray, NetworkAccessManagerProxy::Error) ) );
+}
+
+void
+AmarokDownloadHelper::newDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot )
+{
     m_values[ url ] = obj;
     m_engines[ url ] = engine;
-    The::networkAccessManager()->getData( url, this,
-         SLOT(resultData(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+
+    The::networkAccessManager()->getData( url, this, slot );
+}
+
+void
+AmarokDownloadHelper::requestRedirected( const KUrl &sourceUrl, const KUrl &targetUrl )
+{
+    DEBUG_BLOCK
+
+    // Move all entries from "url" to "targetUrl".
+    updateUrl< QScriptEngine* >( m_engines, sourceUrl, targetUrl );
+    updateUrl< QScriptValue >( m_values, sourceUrl, targetUrl );
+    updateUrl< QString >( m_encodings, sourceUrl, targetUrl );
 }
 
 void

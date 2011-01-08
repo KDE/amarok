@@ -73,6 +73,8 @@ public:
 private slots:
     void resultString( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void resultData( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+
+    void requestRedirected( const KUrl &sourceUrl, const KUrl &targetUrl );
     
 private:
     QHash< KUrl, QScriptEngine* > m_engines;
@@ -80,6 +82,33 @@ private:
     QHash< KUrl, QString > m_encodings;
 
     void cleanUp( const KUrl &url );
+    void newDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot );
+
+    /**
+     * Template function which updates the given @p sourceUrl to the given
+     * @p targetUrl. All entries in the given hash will be copied.
+     * The old entries will be removed.
+     *
+     * @param hash The hash which contains all elements.
+     * @param sourceUrl The old URL (= the old key).
+     * @param targetUrl The new URL (= the new key).
+     */
+    template<typename T> void updateUrl( QHash< KUrl, T > &hash, const KUrl &sourceUrl, const KUrl &targetUrl )
+    {
+        // Get all entries with the source URL as key.
+        QList< T > data = hash.values( sourceUrl );
+
+        foreach( T entry, data )
+        {
+            // Copy each entry to a new one with the
+            // new URL as key.
+            hash[ targetUrl ] = entry;
+        }
+
+        // Remove all entries which are still pointing
+        // to the source URL.
+        hash.remove( sourceUrl );
+    };
 };
 
 #endif

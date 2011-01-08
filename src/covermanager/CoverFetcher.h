@@ -67,6 +67,9 @@ private slots:
     /// Cover found dialog is closed by the user
     void slotDialogFinished();
 
+    /// The fetch request was redirected.
+    void fetchRequestRedirected( QNetworkReply *oldReply, QNetworkReply *newReply );
+
 private:
     static CoverFetcher* s_instance;
     CoverFetcher();
