@@ -185,9 +185,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
       m_userName( username ),
       m_sessionKey( sessionKey ),
       m_userNameArray( 0 ),
-      m_sessionKeyArray( 0 ),
-      m_lastFmBiasFactory( 0 ),
-      m_weeklyTopBiasFactory( 0 )
+      m_sessionKeyArray( 0 )
 {
     DEBUG_BLOCK
 
@@ -209,8 +207,6 @@ LastFmService::~LastFmService()
 {
     DEBUG_BLOCK
 
-    delete m_lastFmBiasFactory;
-    delete m_weeklyTopBiasFactory;
     delete[] m_userNameArray;
     delete[] m_sessionKeyArray;
 
@@ -277,11 +273,8 @@ LastFmService::init()
     m_searchWidget->setVisible( false );
 
     // enable custom bias
-    m_lastFmBiasFactory = new Dynamic::LastFmBiasFactory();
-    Dynamic::CustomBias::registerNewBiasFactory( m_lastFmBiasFactory );
-
-    m_weeklyTopBiasFactory = new Dynamic::WeeklyTopBiasFactory();
-    Dynamic::CustomBias::registerNewBiasFactory( m_weeklyTopBiasFactory );
+    Dynamic::BiasFactory::instance()->registerNewBiasFactory( new Dynamic::LastFmBiasFactory() );
+    Dynamic::BiasFactory::instance()->registerNewBiasFactory( new Dynamic::WeeklyTopBiasFactory() );
 
     m_collection = new Collections::LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );

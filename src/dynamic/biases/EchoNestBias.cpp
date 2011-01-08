@@ -29,12 +29,10 @@
 #include <QXmlStreamWriter>
 #include <QTimer>
 
+#include "core/meta/Meta.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
-#include "core/meta/Meta.h"
-#include "playlist/PlaylistModelStack.h"
 
 #include <kio/job.h>
 
@@ -133,7 +131,7 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
                     nameForMatch( PreviousTrack ) );
     combo->addItem( i18n( "Playlist" ),
                     nameForMatch( Playlist ) );
-    switch( match )
+    switch( m_match )
     {
     case PreviousTrack: combo->setCurrentIndex(0); break;
     case Playlist:      combo->setCurrentIndex(1); break;
@@ -187,10 +185,10 @@ Dynamic::EchoNestBias::trackMatches( int position,
     // collect the artist
     QStringList artists = currentArtists( position, playlist );
     if( artists.isEmpty() )
-        return false;
+        return true;
 
     // the artist of this track
-    if( position < 0 || position > playlist.count() )
+    if( position < 0 || position >= playlist.count() )
         return false;
 
     Meta::TrackPtr track = playlist[position];
@@ -203,9 +201,8 @@ Dynamic::EchoNestBias::trackMatches( int position,
         QString key = artists.join("|");
         if( m_similarArtistMap.contains( key ) )
             return m_similarArtistMap.value( key ).contains( artist->name() );
-        else
-            warning() << "didn't have artist suggestions saved for this artist:" << artist->name();
     }
+    warning() << "didn't have artist suggestions saved for this artist:" << artist->name();
     return false;
 }
 

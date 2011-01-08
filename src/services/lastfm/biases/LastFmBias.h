@@ -41,11 +41,12 @@ namespace Dynamic
             enum MatchType
             {
                 SimilarArtist,
-                SimilarAlbum
+                SimilarTrack
             };
 
             LastFmBias();
             LastFmBias( QXmlStreamReader *reader );
+            ~LastFmBias();
 
             void toXml( QXmlStreamWriter *writer ) const;
 
@@ -80,7 +81,17 @@ namespace Dynamic
             void selectionChanged( int );
 
         private:
-            void saveDataToFile();
+            /** The pair is used for the tracks */
+            typedef QPair<QString, QString> TitleArtistPair;
+
+            static QString nameForMatch( MatchType match );
+            static MatchType matchForName( const QString &name );
+
+            void saveDataToFile() const;
+
+            void readSimilarArtists( QXmlStreamReader *reader );
+            TitleArtistPair readTrack( QXmlStreamReader *reader );
+            void readSimilarTracks( QXmlStreamReader *reader );
             void loadFromFile();
 
             mutable QString m_currentArtist;
@@ -90,11 +101,10 @@ namespace Dynamic
 
             MatchType m_match;
 
-
             mutable QMutex m_mutex; // mutex protecting all of the below structures
             mutable QMap< QString, QStringList> m_similarArtistMap;
-            mutable QMap< QString, QStringList> m_similarAlbumMap;
-            mutable QMap< QString, TrackSet> m_tracksMap;
+            mutable QMap< TitleArtistPair, QList<TitleArtistPair> > m_similarTrackMap;
+            mutable QMap< QString, TrackSet> m_tracksMap; // for artist AND album
 
         private:
             Q_DISABLE_COPY(LastFmBias)

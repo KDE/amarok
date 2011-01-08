@@ -118,11 +118,11 @@ Dynamic::QuizPlayBias::widget( QWidget* parent )
                     nameForFollow( ArtistToArtist ) );
     combo->addItem( i18n( "Album quiz" ),
                     nameForFollow( AlbumToAlbum ) );
-    switch( match )
+    switch( m_follow )
     {
-    case TitleToTitle:   comob->setCurrentIndex(0); break;
-    case ArtistToArtist: comob->setCurrentIndex(1); break;
-    case AlbumToAlbum:   comob->setCurrentIndex(2); break;
+    case TitleToTitle:   combo->setCurrentIndex(0); break;
+    case ArtistToArtist: combo->setCurrentIndex(1); break;
+    case AlbumToAlbum:   combo->setCurrentIndex(2); break;
     }
     connect( combo, SIGNAL( currentIndexChanged(int) ),
              this, SLOT( selectionChanged( int ) ) );

@@ -16,19 +16,33 @@
 
 #include "WeeklyTopBias.h"
 
-#include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "core/meta/Meta.h"
-#include "core/collections/QueryMaker.h"
 
-#include <lastfm/Artist>
-#include <lastfm/ws.h>
-#include <lastfm/XmlQuery>
+#include "TrackSet.h"
+#include "DynamicBiasWidgets.h"
+
+#include <QDomDocument>
+#include <QDomNode>
+#include <QDomElement>
+
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
+#include <QTimer>
+
+#include "core/meta/Meta.h"
+#include "core/collections/Collection.h"
+#include "core/collections/QueryMaker.h"
+#include "core-impl/collections/support/CollectionManager.h"
+
+#include "lastfm/Artist"
+#include "lastfm/ws.h"
+#include "lastfm/XmlQuery"
+
+#include <QComboBox>
+#include <QFormLayout>
 
 #include <QByteArray>
 #include <QDate>
-#include <QDomDocument>
 #include <QFrame>
 #include <QLabel>
 #include <QLineEdit>
@@ -37,6 +51,8 @@
 #include <QVBoxLayout>
 
 #include <QSignalMapper>
+
+
 
 QString
 Dynamic::WeeklyTopBiasFactory::i18nName() const
@@ -64,18 +80,19 @@ Dynamic::WeeklyTopBiasFactory:: createBias( QXmlStreamReader *reader )
 // ----- WeeklyTopBias --------
 
 
-Dynamic::WeeklyTopBias::WeeklyTopBias( uint from, uint to )
-    : Dynamic::CustomBiasEntry()
+Dynamic::WeeklyTopBias::WeeklyTopBias()
+    : SimpleMatchBias()
     , m_layout( 0 )
     , m_fromEdit( 0 )
     , m_toEdit( 0 )
-    , m_fromDate( from )
-    , m_toDate( to )
+    , m_fromDate()
+    , m_toDate()
     , m_fetching( 0 )
     , m_rangeJob( 0 )
     , m_dataJob( 0 )
 {
     debug() << "CREATING WEEKLY TOP BIAS with dates:" << m_fromDate << m_toDate;
+
     QFile file( Amarok::saveLocation() + "dynamic_lastfm_topweeklyartists.xml" );
     file.open( QIODevice::ReadOnly | QIODevice::Text );
     QTextStream in( &file );
@@ -143,19 +160,6 @@ Dynamic::WeeklyTopBias::configWidget( QWidget* parent )
     return frame;
 }
 
-bool
-Dynamic::WeeklyTopBias::trackSatisfies( const Meta::TrackPtr track )
-{
-    Q_UNUSED( track )
-    return false;
-}
-
-double
-Dynamic::WeeklyTopBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
-{
-    Q_UNUSED( tracks )
-    return 0;
-}
 
 QDomElement
 Dynamic::WeeklyTopBias::xml( QDomDocument doc ) const
@@ -173,20 +177,6 @@ Dynamic::WeeklyTopBias::xml( QDomDocument doc ) const
     e.appendChild( to );
 
     return e;
-}
-
-bool
-Dynamic::WeeklyTopBias::hasCollectionFilterCapability()
-{
-    return true;
-}
-
-Dynamic::CollectionFilterCapability*
-Dynamic::WeeklyTopBias::collectionFilterCapability( double weight )
-{
-
-    debug() << "returning new cfb with weight:" << weight;
-    return new Dynamic::WeeklyTopBiasCollectionFilterCapability( this, weight );
 }
 
 void

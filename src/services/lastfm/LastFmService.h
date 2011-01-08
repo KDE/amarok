@@ -41,11 +41,6 @@ namespace The
     LastFmService *lastFmService();
 }
 
-namespace Dynamic {
-    class LastFmBiasFactory;
-    class WeeklyTopBiasFactory;
-}
-
 class LastFmServiceFactory : public ServiceFactory
 {
     Q_OBJECT
@@ -132,9 +127,6 @@ private:
 
     char *m_userNameArray;
     char *m_sessionKeyArray;
-
-    Dynamic::LastFmBiasFactory* m_lastFmBiasFactory;
-    Dynamic::WeeklyTopBiasFactory* m_weeklyTopBiasFactory;
 
     QMap< QString, QNetworkReply* > m_jobs;
     static LastFmService *ms_service;
