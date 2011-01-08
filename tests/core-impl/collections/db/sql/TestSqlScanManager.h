@@ -59,6 +59,11 @@ private slots:
     void testScanDirectory();
 
     /**
+     * Check that duplicate uids are handled correctly
+     */
+    void testDuplicateUid();
+
+    /**
      * Check that detecting compilations works
      * Test also compilation/no compilation tags
      */
