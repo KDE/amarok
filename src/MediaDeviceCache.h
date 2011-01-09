@@ -49,6 +49,7 @@ class AMAROK_EXPORT MediaDeviceCache : public QObject
         const QStringList getAll() const { return m_type.keys(); }
         MediaDeviceCache::DeviceType deviceType( const QString &udi ) const;
         const QString deviceName( const QString &udi ) const;
+        const QString device( const QString & udi ) const;
         bool isGenericEnabled( const QString &udi ) const;
         const QString volumeMountPoint( const QString &udi ) const;
 

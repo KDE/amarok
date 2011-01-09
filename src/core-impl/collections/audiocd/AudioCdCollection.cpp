@@ -70,6 +70,7 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
     debug() << "Getting Audio CD info";
     AudioCdDeviceInfo *cdInfo = qobject_cast<AudioCdDeviceInfo *>( info );
     m_udi = cdInfo->udi();
+    m_device = cdInfo->device();
 
     readAudioCdSettings();
 
@@ -85,7 +86,10 @@ AudioCdCollection::~AudioCdCollection()
 KUrl
 AudioCdCollection::audiocdUrl( const QString & path ) const
 {
-    return KUrl( QString( "audiocd:/" ) + path );
+    if (m_device.isNull())
+        return KUrl( QString( "audiocd:/" + path ) );
+    else
+        return KUrl( QString( "audiocd:/%1?device=%2" ).arg( path ).arg( m_device ) );
 }
 
 

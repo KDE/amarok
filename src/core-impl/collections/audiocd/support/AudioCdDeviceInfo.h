@@ -23,13 +23,13 @@ class AudioCdDeviceInfo : public MediaDeviceInfo
 {
     Q_OBJECT
     public:
-        AudioCdDeviceInfo( QString mountpoint, QString udi );
+        AudioCdDeviceInfo( QString device, QString udi );
         ~AudioCdDeviceInfo();
 
-        QString mountpoint();
+        QString device();
 
     private:
-        QString m_mountpoint;
+        QString m_device;
 };
 
 #endif

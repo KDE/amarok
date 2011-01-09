@@ -55,9 +55,8 @@ AudioCdConnectionAssistant::identify( const QString& udi )
 MediaDeviceInfo*
 AudioCdConnectionAssistant::deviceInfo( const QString& udi )
 {
-    const QString mountpoint = MediaDeviceCache::instance()->volumeMountPoint(udi);
-
-    return new AudioCdDeviceInfo( mountpoint, udi );
+    const QString device = MediaDeviceCache::instance()->device(udi);
+    return new AudioCdDeviceInfo( device, udi );
 }
 
 #include "AudioCdConnectionAssistant.moc"

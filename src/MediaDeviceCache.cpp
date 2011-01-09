@@ -30,6 +30,7 @@
 #include <solid/portablemediaplayer.h>
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
+#include <solid/block.h>
 #include <solid/storagevolume.h>
 
 #include <QDir>
@@ -316,6 +317,28 @@ MediaDeviceCache::deviceName( const QString &udi ) const
         return m_name[udi];
     }
     return "ERR_NO_NAME"; //Should never happen!
+}
+
+const QString
+MediaDeviceCache::device( const QString &udi ) const
+{
+    DEBUG_BLOCK
+    Solid::Device device( udi );
+    Solid::Device parent( device.parent() );
+    if( !parent.isValid() )
+    {
+        debug() << udi << "has no parent, returning null string.";
+        return QString();
+    }
+
+    Solid::Block* sb = parent.as<Solid::Block>();
+    if( !sb  )
+    {
+        debug() << parent.udi() << "failed to convert to Block, returning null string.";
+        return QString();
+    }
+
+    return sb->device();
 }
 
 bool

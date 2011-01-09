@@ -117,6 +117,7 @@ private:
     QString m_cdName;
     QString m_discCddbId;
     QString m_udi;
+    QString m_device;
     mutable int m_encodingFormat;
 
     QString m_fileNamePattern;
