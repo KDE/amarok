@@ -22,7 +22,7 @@
 
 using namespace Meta;
 
-AudioCdTrack::AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const QString &url )
+AudioCdTrack::AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const KUrl &url )
     : Meta::Track()
     , m_collection( collection )
     , m_artist( 0 )
@@ -33,7 +33,7 @@ AudioCdTrack::AudioCdTrack( Collections::AudioCdCollection *collection, const QS
     , m_name( name)
     , m_length( 0 )
     , m_trackNumber( 0 )
-    , m_displayUrl( url )
+    , m_displayUrl( url.url() )
     , m_playableUrl( url )
 {
 }
@@ -59,7 +59,7 @@ AudioCdTrack::playableUrl() const
 QString
 AudioCdTrack::uidUrl() const
 {
-    return m_playableUrl;
+    return m_playableUrl.url();
 }
 
 QString
