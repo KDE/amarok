@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                     *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -27,7 +28,6 @@
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-#include <QTimer>
 
 #include "core/meta/Meta.h"
 #include "core/collections/Collection.h"
@@ -38,17 +38,10 @@
 #include "lastfm/ws.h"
 #include "lastfm/XmlQuery"
 
-#include <QComboBox>
+#include <QTimeEdit>
 #include <QFormLayout>
 
-#include <QByteArray>
-#include <QDate>
-#include <QFrame>
-#include <QLabel>
-#include <QLineEdit>
 #include <QNetworkReply>
-#include <QTimeEdit>
-#include <QVBoxLayout>
 
 #include <QSignalMapper>
 
@@ -82,133 +75,344 @@ Dynamic::WeeklyTopBiasFactory:: createBias( QXmlStreamReader *reader )
 
 Dynamic::WeeklyTopBias::WeeklyTopBias()
     : SimpleMatchBias()
-    , m_layout( 0 )
-    , m_fromEdit( 0 )
-    , m_toEdit( 0 )
-    , m_fromDate()
-    , m_toDate()
-    , m_fetching( 0 )
-    , m_rangeJob( 0 )
-    , m_dataJob( 0 )
+    , m_weeklyTimesJob( 0 )
 {
-    debug() << "CREATING WEEKLY TOP BIAS with dates:" << m_fromDate << m_toDate;
+    loadFromFile();
+}
 
-    QFile file( Amarok::saveLocation() + "dynamic_lastfm_topweeklyartists.xml" );
-    file.open( QIODevice::ReadOnly | QIODevice::Text );
-    QTextStream in( &file );
-    while( !in.atEnd() )
-    {
-        QString line = in.readLine();
-        m_weeklyChartData.insert( line.split( "#" )[ 0 ].toUInt(), line.split( "#" )[ 1 ].split( "^" )  );
+Dynamic::WeeklyTopBias::WeeklyTopBias( QXmlStreamReader *reader )
+    : SimpleMatchBias()
+    , m_weeklyTimesJob( 0 )
+{
+    loadFromFile();
+
+    while (!reader->atEnd()) {
+        reader->readNext();
+
+        if( reader->isStartElement() )
+        {
+            QStringRef name = reader->name();
+            if( name == "from" )
+                m_range.from = QDateTime::fromTime_t( reader->readElementText(QXmlStreamReader::SkipChildElements).toLong() );
+            if( name == "to" )
+                m_range.to = QDateTime::fromTime_t( reader->readElementText(QXmlStreamReader::SkipChildElements).toLong() );
+            else
+            {
+                debug()<<"Unexpected xml start element"<<reader->name()<<"in input";
+                reader->skipCurrentElement();
+            }
+        }
+        else if( reader->isEndElement() )
+        {
+            break;
+        }
     }
-    file.close();
-
-    getPossibleRange();
 }
 
 Dynamic::WeeklyTopBias::~WeeklyTopBias()
 {
-    delete m_fetching;
+}
+
+void
+Dynamic::WeeklyTopBias::toXml( QXmlStreamWriter *writer ) const
+{
+    writer->writeTextElement( "from", QString::number( m_range.from.toTime_t() ) );
+    writer->writeTextElement( "to",   QString::number( m_range.to.toTime_t() ) );
 }
 
 QString
-Dynamic::WeeklyTopBias::pluginName() const
+Dynamic::WeeklyTopBias::sName()
 {
     return "lastfm_weeklytop";
 }
 
+QString
+Dynamic::WeeklyTopBias::name() const
+{
+    return Dynamic::WeeklyTopBias::sName();
+}
+
 QWidget*
-Dynamic::WeeklyTopBias::configWidget( QWidget* parent )
+Dynamic::WeeklyTopBias::widget( QWidget* parent )
 {
-    DEBUG_BLOCK
+    PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
 
-    QFrame * frame = new QFrame( parent );
-    m_layout = new QVBoxLayout( frame );
+    QDateTimeEdit *fromEdit = new QDateTimeEdit( QDate::currentDate().addDays( -7 ) );
+    fromEdit->setMinimumDate( QDate::currentDate().addYears( -10 ) ); // 10 years ago is minimum for now
+    fromEdit->setMaximumDate( QDate::currentDate() );
+    fromEdit->setCalendarPopup( true );
+    if( m_range.from.isValid() )
+        fromEdit->setDateTime( m_range.from );
 
-    QLabel * label = new QLabel( i18n( "Play Top Artists From" ), frame );
-    label->setWordWrap( true );
-    label->setAlignment( Qt::AlignCenter );
-    m_layout->addWidget( label, Qt::AlignCenter );
+    bw->formLayout()->addRow( i18n( "from:" ), fromEdit );
 
-    m_fromEdit = new QDateTimeEdit( QDate::currentDate().addDays( -7 ) );
-    m_fromEdit->setMinimumDate( QDate::currentDate().addYears( -10 ) ); // 10 years ago is minimum for now
-    m_fromEdit->setMaximumDate( QDate::currentDate() );
-    m_fromEdit->setCalendarPopup( true );
-    if( m_fromDate > 0 )
-        m_fromEdit->setDateTime( QDateTime::fromTime_t( m_fromDate ) );
-    
-    m_layout->addWidget( m_fromEdit );
+    connect( fromEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ),
+             this, SLOT( fromDateChanged( const QDateTime& ) ) );
 
-    connect( m_fromEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ), this, SLOT( fromDateChanged( const QDateTime& ) ) );
 
-    QLabel * to = new QLabel( i18nc( "From one date to another, this text is in between", "to (will round to nearest week)" ), parent );
+    QDateTimeEdit *toEdit = new QDateTimeEdit( QDate::currentDate().addDays( -7 ) );
+    toEdit->setMinimumDate( QDate::currentDate().addYears( -10 ) ); // 10 years ago is minimum for now
+    toEdit->setMaximumDate( QDate::currentDate() );
+    toEdit->setCalendarPopup( true );
+    if( m_range.to.isValid() )
+        toEdit->setDateTime( m_range.to );
 
-    to->setAlignment( Qt::AlignCenter );
-    m_layout->addWidget( to, Qt::AlignCenter );
+    bw->formLayout()->addRow( i18n( "to:" ), toEdit );
 
-    m_toEdit =new QDateTimeEdit( QDate::currentDate().addDays( -7 ) );
-    m_toEdit->setMinimumDate( QDate::currentDate().addYears( -10 ) ); // 10 years ago is minimum for now
-    m_toEdit->setMaximumDate( QDate::currentDate() );
-    m_toEdit->setCalendarPopup( true );
-    if( m_toDate > 0 )
-        m_toEdit->setDateTime( QDateTime::fromTime_t( m_toDate ) );
-    
-    m_layout->addWidget( m_toEdit );
+    connect( toEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ),
+             this, SLOT( toDateChanged( const QDateTime& ) ) );
 
-    connect( m_toEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ), this, SLOT( toDateChanged( const QDateTime& ) ) );
 
-    return frame;
+    return bw;
 }
 
 
-QDomElement
-Dynamic::WeeklyTopBias::xml( QDomDocument doc ) const
+bool
+Dynamic::WeeklyTopBias::trackMatches( int position,
+                                   const Meta::TrackList& playlist,
+                                   int contextCount ) const
 {
-    QDomElement e = doc.createElement( "custombias" );
-    e.setAttribute( "type", "weeklytop" );
+    Q_UNUSED( contextCount );
 
-    QDomElement from = doc.createElement( "from" );
-    from.setAttribute( "value", QString::number( m_fromDate ) );
+    if( position < 0 || position >= playlist.count())
+        return false;
 
-    QDomElement to = doc.createElement( "to" );
-    to.setAttribute( "value", QString::number( m_toDate ) );
+    // - determine the current artist
+    Meta::TrackPtr currentTrack = playlist[position-1];
+    Meta::ArtistPtr currentArtist = currentTrack->artist();
+    QString currentArtistName = currentArtist ? currentArtist->name() : QString();
 
-    e.appendChild( from );
-    e.appendChild( to );
+    // - collect all the artists
+    QStringList artists;
+    bool weeksMissing = false;
 
-    return e;
+    uint fromTime = m_range.from.toTime_t();
+    uint toTime   = m_range.to.toTime_t();
+    uint lastWeekTime = 0;
+    foreach( uint weekTime, m_weeklyFromTimes )
+    {
+        if( weekTime > fromTime && weekTime < toTime && lastWeekTime )
+        {
+            if( m_weeklyArtistMap.contains( lastWeekTime ) )
+            {
+                artists.append( m_weeklyArtistMap.value( lastWeekTime ) );
+                debug() << "found already-saved data for week:" << lastWeekTime << m_weeklyArtistMap.value( lastWeekTime );
+            }
+            else
+            {
+                weeksMissing = true;
+            }
+        }
+
+       lastWeekTime = weekTime;
+    }
+
+    if( weeksMissing )
+        warning() << "didn't have a cached suggestions for weeks:" << m_range.from << "to" << m_range.to;
+
+    return artists.contains( currentArtistName );
 }
 
 void
-Dynamic::WeeklyTopBias::fromDateChanged( const QDateTime& d ) // SLOT
+Dynamic::WeeklyTopBias::newQuery()
 {
-    DEBUG_BLOCK
-    m_fromDate = d.toTime_t();
+    DEBUG_BLOCK;
 
-    update();
-    emit biasChanged();
+    // - check if we have week times
+    if( m_weeklyFromTimes.isEmpty() )
+    {
+        newWeeklyTimesQuery();
+        return; // not yet ready to do construct a query maker
+    }
+
+    // - collect all the artists
+    QStringList artists;
+    bool weeksMissing = false;
+
+    uint fromTime = m_range.from.toTime_t();
+    uint toTime   = m_range.to.toTime_t();
+    uint lastWeekTime = 0;
+    foreach( uint weekTime, m_weeklyFromTimes )
+    {
+        if( weekTime > fromTime && weekTime < toTime && lastWeekTime )
+        {
+            if( m_weeklyArtistMap.contains( lastWeekTime ) )
+            {
+                artists.append( m_weeklyArtistMap.value( lastWeekTime ) );
+                debug() << "found already-saved data for week:" << lastWeekTime << m_weeklyArtistMap.value( lastWeekTime );
+            }
+            else
+            {
+                weeksMissing = true;
+            }
+        }
+
+       lastWeekTime = weekTime;
+    }
+
+    if( weeksMissing )
+    {
+        newWeeklyArtistQuery();
+        return; // not yet ready to construct a query maker
+    }
+
+    // ok, I need a new query maker
+    m_qm.reset( CollectionManager::instance()->queryMaker() );
+
+    // - construct the query
+    m_qm->beginOr();
+    foreach( const QString &artist, artists )
+    {
+        debug() << "adding artist to query:" << artist;
+        m_qm->addFilter( Meta::valArtist, artist, true, true );
+    }
+    m_qm->endAndOr();
+
+    m_qm->setQueryType( Collections::QueryMaker::Custom );
+    m_qm->addReturnValue( Meta::valUniqueId );
+
+    connect( m_qm.data(), SIGNAL(newResultReady( QString, QStringList )),
+             this, SLOT(updateReady( QString, QStringList )) );
+    connect( m_qm.data(), SIGNAL(queryDone()),
+             this, SLOT(updateFinished()) );
+
+    // - run the query
+    m_qm.data()->run();
 }
 
 void
-Dynamic::WeeklyTopBias::toDateChanged( const QDateTime& d ) // SLOT
+Dynamic::WeeklyTopBias::newWeeklyTimesQuery()
 {
     DEBUG_BLOCK
 
-    m_toDate = d.toTime_t();
+    QMap< QString, QString > params;
+    params[ "method" ] = "user.getWeeklyChartList" ;
+    params[ "user" ] = lastfm::ws::Username;
 
-    update();
-    emit biasChanged();
+    m_weeklyTimesJob = lastfm::ws::get( params );
+
+    connect( m_weeklyTimesJob, SIGNAL( finished() ),
+             this, SLOT( weeklyTimesQueryFinished() ) );
 }
 
-void
-Dynamic::WeeklyTopBias::rangeJobFinished() // SLOT
+
+void Dynamic::WeeklyTopBias::newWeeklyArtistQuery()
 {
     DEBUG_BLOCK
-    if( !m_rangeJob )
+    debug() << "getting top artist info from" << m_range.from << "to" << m_range.to;
+
+    // - check if we have week times
+    if( m_weeklyFromTimes.isEmpty() )
+    {
+        newWeeklyTimesQuery();
+        return; // not yet ready to do construct a query maker
+    }
+
+    // fetch 5 at a time, so as to conform to lastfm api requirements
+    uint jobCount = m_weeklyArtistJobs.count();
+    if( jobCount >= 5 )
         return;
 
+    uint fromTime = m_range.from.toTime_t();
+    uint toTime   = m_range.to.toTime_t();
+    uint lastWeekTime = 0;
+    foreach( uint weekTime, m_weeklyFromTimes )
+    {
+        if( weekTime > fromTime && weekTime < toTime && lastWeekTime )
+        {
+            if( m_weeklyArtistMap.contains( lastWeekTime ) )
+            {
+                // we already have the data
+            }
+            else if( m_weeklyArtistJobs.contains( lastWeekTime ) )
+            {
+                // we already fetch the data
+            }
+            else
+            {
+                QMap< QString, QString > params;
+                params[ "method" ] = "user.getWeeklyArtistChart";
+                params[ "user" ] = lastfm::ws::Username;
+                params[ "from" ] = QString::number( lastWeekTime );
+                params[ "to" ] = QString::number( m_weeklyToTimes[m_weeklyFromTimes.indexOf(lastWeekTime)] );
+
+                QNetworkReply* reply = lastfm::ws::get( params );
+                connect( reply, SIGNAL( finished() ),
+                         this, SLOT( weeklyArtistQueryFinished() ) );
+
+                m_weeklyArtistJobs.insert( lastWeekTime, reply );
+
+                jobCount++;
+                if( jobCount >= 5 )
+                    return;
+            }
+        }
+
+       lastWeekTime = weekTime;
+    }
+}
+
+
+void
+Dynamic::WeeklyTopBias::weeklyArtistQueryFinished()
+{
+    DEBUG_BLOCK
+    QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
+
+    if( !reply ) {
+        warning() << "Failed to get qnetwork reply in finished slot.";
+        return;
+    }
+
+
+    try
+    {
+        lastfm::XmlQuery lfm( reply->readAll() );
+
+        // debug() << "got response:" << lfm;
+        QStringList artists;
+        for( int i = 0; i < lfm[ "weeklyartistchart" ].children( "artist" ).size(); i++ )
+        {
+            if( i == 12 ) // only up to 12 artist.
+                break;
+            lastfm::XmlQuery artist = lfm[ "weeklyartistchart" ].children( "artist" ).at( i );
+            artists.append( artist[ "name" ].text() );
+        }
+
+        uint week = QDomElement( lfm[ "weeklyartistchart" ] ).attribute( "from" ).toUInt();
+        m_weeklyArtistMap.insert( week, artists );
+        debug() << "got artists:" << artists << week;
+
+        if( m_weeklyArtistJobs.contains( week) )
+        {
+            m_weeklyArtistJobs.remove( week );
+        }
+        else
+        {
+            warning() << "Got a reply for a week"<<week<<"that was not requested.";
+            return;
+        }
+
+    } catch( lastfm::ws::ParseError& e )
+    {
+        debug() << "caught exception parsing weekly artist chart.";
+    }
+
+    reply->deleteLater();
+
+    saveDataToFile();
+    newQuery(); // try again to get the tracks
+}
+
+void
+Dynamic::WeeklyTopBias::weeklyTimesQueryFinished() // SLOT
+{
+    DEBUG_BLOCK
+    if( !m_weeklyTimesJob )
+        return; // argh. where does this come from
+
     QDomDocument doc;
-    if( !doc.setContent( m_rangeJob->readAll() ) )
+    if( !doc.setContent( m_weeklyTimesJob->readAll() ) )
     {
         debug() << "couldn't parse XML from rangeJob!";
         return;
@@ -221,61 +425,44 @@ Dynamic::WeeklyTopBias::rangeJobFinished() // SLOT
         return;
     }
 
-    m_earliestDate = nodes.at( 0 ).attributes().namedItem( "from" ).nodeValue().toUInt();
-
     for( int i = 0; i < nodes.size(); i++ )
     {
         QDomNode n = nodes.at( i );
-        m_weeklyCharts.append( n.attributes().namedItem( "from" ).nodeValue().toUInt() );
-        m_weeklyChartsTo.append( n.attributes().namedItem( "to" ).nodeValue().toUInt() );
+        m_weeklyFromTimes.append( n.attributes().namedItem( "from" ).nodeValue().toUInt() );
+        m_weeklyToTimes.append( n.attributes().namedItem( "to" ).nodeValue().toUInt() );
     }
-    
+
+    /*
+       m_earliestDate = m_weeklyFromTimes.first();
+
     debug() << "got earliest date:"  << QDateTime::fromTime_t( m_earliestDate ).toString();
     if( m_fromEdit )
         m_fromEdit->setMinimumDate( QDateTime::fromTime_t( m_earliestDate ).date() );
+    */
 
-    m_rangeJob->deleteLater();
+    m_weeklyTimesJob->deleteLater();
 
-    update();
+    newQuery(); // try again to get the tracks
 }
 
 void
-Dynamic::WeeklyTopBias::updateReady( QString collectionId, QStringList uids )
+Dynamic::WeeklyTopBias::fromDateChanged( const QDateTime& d ) // SLOT
 {
-    DEBUG_BLOCK
-    Q_UNUSED( collectionId );
-
-    const int protocolLength = QString( m_collection->uidUrlProtocol() + "://" ).length();
-
-//     debug() << "setting cache of top UIDs for selected date: to:" << uids;
-    m_trackList.clear();
-    m_trackList.reserve( uids.size() );
-
-    QByteArray uid;
-    foreach( const QString &uidString, uids )
-    {
-        uid = uidString.mid( protocolLength ).toAscii();
-        m_trackList.insert( uid );
-    }
-
+    m_range.from = d;
+    invalidate();
+    emit changed( BiasPtr( this ) );
 }
-
 
 void
-Dynamic::WeeklyTopBias::getPossibleRange()
+Dynamic::WeeklyTopBias::toDateChanged( const QDateTime& d ) // SLOT
 {
-    DEBUG_BLOCK
-
-    QMap< QString, QString > params;
-    params[ "method" ] = "user.getWeeklyChartList" ;
-    params[ "user" ] = lastfm::ws::Username;
-
-    m_rangeJob = lastfm::ws::get( params );
-
-    connect( m_rangeJob, SIGNAL( finished() ), this, SLOT( rangeJobFinished() ) );
-
+    m_range.to = d;
+    invalidate();
+    emit changed( BiasPtr( this ) );
 }
 
+
+/*
 
 void
 Dynamic::WeeklyTopBias::update()
@@ -295,175 +482,33 @@ Dynamic::WeeklyTopBias::update()
 
     fetchWeeklyData( m_fromDate, m_toDate );
 }
+*/
 
 
-void Dynamic::WeeklyTopBias::fetchWeeklyData(uint from, uint to)
+void
+Dynamic::WeeklyTopBias::loadFromFile()
 {
-    DEBUG_BLOCK
-    debug() << "getting top artist info from" << QDateTime::fromTime_t( from ) << "to" << QDateTime::fromTime_t( to );
-    // find first weekly chart that contains dateTime
-    int earliest = 0, last = 0;
-    debug() << "number of weekly charts:" << m_weeklyCharts.size();
-    for( int i = 0; i < m_weeklyCharts.size(); i++ )
+    QFile file( Amarok::saveLocation() + "dynamic_lastfm_topweeklyartists.xml" );
+    file.open( QIODevice::ReadOnly | QIODevice::Text );
+    QTextStream in( &file );
+    while( !in.atEnd() )
     {
-        if( earliest == 0 && m_weeklyCharts[ i ] > from )
-        {
-            earliest = m_weeklyCharts[ i - 1 ];
-//             debug() << "chose early boundary:" << i - 1;
-        }
-        if( last == 0 && m_weeklyCharts[ i ] > to )
-        {
-//             debug() << "chose late boundary:" << i - 1;
-            last = m_weeklyCharts[ i - 1];
-        }
+        QString line = in.readLine();
+        m_weeklyArtistMap.insert( line.split( "#" )[ 0 ].toUInt(), line.split( "#" )[ 1 ].split( "^" )  );
     }
-    if( last == 0 )
-        last = m_weeklyCharts[ m_weeklyCharts.size() - 1 ];
-
-    m_currentArtistList.clear();
-    m_trackList.clear();
-    debug() << "fetching charts with these ranges:" << QDateTime::fromTime_t( earliest ) << QDateTime::fromTime_t( last );
-
-
-    bool validFetch = false;
-    for( int i = m_weeklyCharts.indexOf( earliest ); i < m_weeklyCharts.indexOf( last ); i++ )
-    {
-        validFetch = true;
-        if( m_weeklyChartData.keys().contains( m_weeklyCharts[ i ] ) )
-        {
-            m_currentArtistList.append( m_weeklyChartData[ m_weeklyCharts[ i ] ] );
-            debug() << "found already-saved data for week:" << m_weeklyCharts[ i ] << m_weeklyChartData[ m_weeklyCharts[ i ] ];
-        } else
-        {
-            QMap< QString, QString > params;
-            params[ "method" ] = "user.getWeeklyArtistChart";
-            params[ "user" ] = lastfm::ws::Username;
-            params[ "from" ] = QString::number( m_weeklyCharts[ i ] );
-            params[ "to" ] = QString::number( m_weeklyChartsTo[ i ] );
-
-            m_fetchQueue.enqueue( params );
-        }
-
-    }
-
-    m_fetching = new QSignalMapper;
-    connect( m_fetching, SIGNAL( mapped(QObject*) ), this, SLOT( weeklyFetch( QObject* ) ) );
-    connect( this, SIGNAL( doneFetching() ), this, SLOT( updateDB() ) );
-    connect( this, SIGNAL( doneFetching() ), this, SLOT( saveDataToFile() ) );
-
-    // everything is stored, so we have all the data, finish immediately
-    if( m_fetchQueue.isEmpty() && validFetch )
-    {
-        updateDB();
-    } else
-    {
-        fetchNextWeeks();
-    }
-}
-
-void Dynamic::WeeklyTopBias::fetchNextWeeks( int num )
-{
-
-    // fetch 5 at a time, so as to conform to lastfm api requirements
-    for(int i = 0; i < num; i++)
-    {
-        if( m_fetchQueue.isEmpty() )
-        {
-            break;
-        }
-//         debug() << "queueing up weekly fetch job!";
-        QNetworkReply* res = lastfm::ws::get( m_fetchQueue.dequeue() );
-        connect( res, SIGNAL( finished() ), m_fetching, SLOT( map() ) );
-        m_fetching->setMapping( res, res );
-    }
-    
-}
-
-void Dynamic::WeeklyTopBias::weeklyFetch( QObject* reply )
-{
-    DEBUG_BLOCK
-    if( !reply || !dynamic_cast<QNetworkReply*>( reply ) ) {
-        debug() << "failed to get qnetwork reply in finished slot:" << reply;
-        return;
-    }
-    QNetworkReply* r = static_cast< QNetworkReply* >( reply );
-    
-    try
-    {
-        lastfm::XmlQuery lfm( r->readAll() );
-
-//         debug() << "got response:" << lfm;
-        QStringList artists;
-        for( int i = 0; i < lfm[ "weeklyartistchart" ].children( "artist" ).size(); i++ )
-        {
-            if( i == 12 )
-                break;
-            lastfm::XmlQuery artist = lfm[ "weeklyartistchart" ].children( "artist" ).at( i );
-            artists.append( artist[ "name" ].text() );
-        }
-        debug() << "got artists:" << artists << QDomElement( lfm[ "weeklyartistchart" ] ).attribute( "from" );
-        m_weeklyChartData.insert( QDomElement( lfm[ "weeklyartistchart" ] ).attribute( "from" ).toUInt(), artists );
-        m_currentArtistList.append( artists );
-    } catch( lastfm::ws::ParseError& e )
-    {
-        debug() << "caught exception parsing weekly artist chart.";
-    }
-
-    reply->deleteLater();
-    if( m_fetchQueue.isEmpty() )
-    {
-        emit doneFetching();
-    } else
-    {
-        fetchNextWeeks( 1 );
-    }
-    
+    file.close();
 }
 
 
-void Dynamic::WeeklyTopBias::updateDB()
-{
-    m_collection = CollectionManager::instance()->primaryCollection();
-    if( !m_collection )
-        return;
-    Collections::QueryMaker *qm = m_collection->queryMaker();
-
-    if( !qm ) // maybe this is during startup and we don't have a QM for some reason yet
-        return;
-
-    debug() << "setting up query";
-
-    qm->beginOr();
-    foreach( QString artist, m_currentArtistList )
-    {
-        qm->beginOr();
-        debug() << "adding artist to query:" << artist;
-        qm->addFilter( Meta::valArtist, artist, true, true );
-        qm->endAndOr();
-    }
-    qm->endAndOr();
-
-
-    qm->setQueryType( Collections::QueryMaker::Custom );
-    qm->addReturnValue( Meta::valUniqueId );
-    qm->orderByRandom(); // as to not affect the amortized time
-    qm->setAutoDelete( true );
-
-    connect( qm, SIGNAL( newResultReady( QString, QStringList ) ),
-             SLOT( updateReady( QString, QStringList ) ), Qt::DirectConnection );
-
-    qm->run();
-}
-
-
-void Dynamic::WeeklyTopBias::saveDataToFile()
+void
+Dynamic::WeeklyTopBias::saveDataToFile() const
 {
     QFile file( Amarok::saveLocation() + "dynamic_lastfm_topweeklyartists.xml" );
     file.open( QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text );
     QTextStream out( &file );
-    foreach( uint key, m_weeklyChartData.keys() )
+    foreach( uint key, m_weeklyArtistMap.keys() )
     {
-        out << key << "#" << m_weeklyChartData[ key ].join( "^" ) << endl;
+        out << key << "#" << m_weeklyArtistMap[ key ].join( "^" ) << endl;
     }
     file.close();
 

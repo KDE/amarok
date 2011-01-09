@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                     *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,18 +22,9 @@
 #include "dynamic/BiasFactory.h"
 #include "dynamic/biases/TagMatchBias.h"
 
-#include <QMutex>
 #include <QNetworkReply>
 
 class KJob;
-
-#include <QQueue>
-
-class QSignalMapper;
-class QByteArray;
-class QDate;
-class QDateTimeEdit;
-class QVBoxLayout;
 class QNetworkReply;
 
 namespace Dynamic
@@ -44,58 +36,62 @@ namespace Dynamic
      *  tracks during that time
      *
      */
-
     class WeeklyTopBias : public SimpleMatchBias
     {
         Q_OBJECT
 
         public:
-            explicit WeeklyTopBias( uint from = 0, uint to = 0 );
+            struct DateRange
+            {
+                QDateTime from;
+                QDateTime to;
+            };
+
+            WeeklyTopBias();
+            WeeklyTopBias( QXmlStreamReader *reader );
             ~WeeklyTopBias();
 
-        Q_SIGNALS:
-            void doneFetching();
+            void toXml( QXmlStreamWriter *writer ) const;
 
-        private Q_SLOTS:
+            static QString sName();
+            virtual QString name() const;
+
+            virtual QWidget* widget( QWidget* parent = 0 );
+
+            virtual bool trackMatches( int position,
+                                       const Meta::TrackList& playlist,
+                                       int contextCount ) const;
+
+
+            DateRange range() const;
+            void setRange( const DateRange &range );
+
+        private slots:
+            virtual void newQuery();
+            void newWeeklyTimesQuery();
+            void newWeeklyArtistQuery();
+
+            void weeklyTimesQueryFinished();
+            void weeklyArtistQueryFinished();
+
             void fromDateChanged( const QDateTime& );
             void toDateChanged( const QDateTime& );
 
-            void updateDB();
-            void saveDataToFile();
-            void rangeJobFinished();
-
-            void weeklyFetch( QObject* );
-            void fetchWeeklyData(uint from = 0, uint to = 0);
-
-            // querymaker
-            void updateReady( QString, QStringList );
-
         private:
-            void getPossibleRange();
-            void update();
-            void fetchNextWeeks( int num = 5 );
+            void loadFromFile();
+            void saveDataToFile() const;
 
-            QSet< QByteArray > m_trackList;
-
-            QVBoxLayout* m_layout;
-            QDateTimeEdit* m_fromEdit;
-            QDateTimeEdit* m_toEdit;
-
-            QList< uint > m_weeklyCharts;
-            QList< uint > m_weeklyChartsTo;
-            QHash< uint, QStringList > m_weeklyChartData;
-            QStringList m_currentArtistList;
-
-            uint m_fromDate;
-            uint m_toDate;
+            DateRange m_range;
 
             // be able to warn the user
             uint m_earliestDate;
-            QQueue< QMap<QString,QString> > m_fetchQueue;
-            QSignalMapper* m_fetching;
 
-            QNetworkReply* m_rangeJob;
-            QNetworkReply* m_dataJob;
+            QList< uint > m_weeklyFromTimes;
+            QList< uint > m_weeklyToTimes;
+            QHash< uint, QStringList > m_weeklyArtistMap;
+
+            QNetworkReply* m_weeklyTimesJob;
+            QHash< uint, QNetworkReply*> m_weeklyArtistJobs;
     };
 
     class WeeklyTopBiasFactory : public Dynamic::AbstractBiasFactory

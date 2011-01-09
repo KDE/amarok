@@ -254,6 +254,9 @@ Dynamic::QuizPlayBias::newQuery()
 {
     DEBUG_BLOCK;
 
+    // ok, I need a new query maker
+    m_qm.reset( CollectionManager::instance()->queryMaker() );
+
     uint field = 0;
     switch( m_follow )
     {
@@ -261,10 +264,8 @@ Dynamic::QuizPlayBias::newQuery()
     case Dynamic::QuizPlayBias::ArtistToArtist: field = Meta::valArtist;
     case Dynamic::QuizPlayBias::AlbumToAlbum:   field = Meta::valAlbum;
     }
-
-    // ok, I need a new query maker
-    m_qm.reset( CollectionManager::instance()->queryMaker() );
     m_qm->addFilter( field,  QString(m_currentCharacter), true, false );
+
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 

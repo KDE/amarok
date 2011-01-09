@@ -219,9 +219,6 @@ Dynamic::EchoNestBias::newQuery()
 {
     DEBUG_BLOCK;
 
-    // ok, I need a new query maker
-    m_qm.reset( CollectionManager::instance()->queryMaker() );
-
     // - get the similar artists
     QStringList similar;
     {
@@ -238,6 +235,9 @@ Dynamic::EchoNestBias::newQuery()
             return; // not yet ready to do construct a query maker
         }
     }
+
+    // ok, I need a new query maker
+    m_qm.reset( CollectionManager::instance()->queryMaker() );
 
     // - construct the query
     m_qm->beginOr();

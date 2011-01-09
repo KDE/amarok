@@ -230,7 +230,7 @@ Dynamic::LastFmBias::trackMatches( int position,
             if( currentArtistName.isEmpty() )
                 return false;
             if( m_similarArtistMap.contains( lastArtistName ) )
-                return m_similarArtistMap.value( lastArtist ).contains( currentArtistName );
+                return m_similarArtistMap.value( lastArtistName ).contains( currentArtistName );
         }
         else if( m_match == SimilarTrack )
         {
@@ -261,9 +261,6 @@ void
 Dynamic::LastFmBias::newQuery()
 {
     DEBUG_BLOCK;
-
-    // ok, I need a new query maker
-    m_qm.reset( CollectionManager::instance()->queryMaker() );
 
     // - get the similar things
     QStringList similarArtists;
@@ -298,6 +295,9 @@ Dynamic::LastFmBias::newQuery()
             }
         }
     }
+
+    // ok, I need a new query maker
+    m_qm.reset( CollectionManager::instance()->queryMaker() );
 
     // - construct the query
     m_qm->beginOr();
@@ -446,7 +446,7 @@ void Dynamic::LastFmBias::similarTrackQueryDone()
     m_trackQuery->deleteLater();
 
     TitleArtistPair key( m_currentTrack, m_currentArtist );
-    m_similarArtistMap.insert( key, similarTracks );
+    m_similarTrackMap.insert( key, similarTracks );
 
     saveDataToFile();
 
@@ -457,7 +457,7 @@ void Dynamic::LastFmBias::similarTrackQueryDone()
 
 
 void
-Dynamic::LastFmBias::saveDataToFile()
+Dynamic::LastFmBias::saveDataToFile() const
 {
     QFile file( Amarok::saveLocation() + "dynamic_lastfm_similar.xml" );
     if( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -474,7 +474,7 @@ Dynamic::LastFmBias::saveDataToFile()
     {
         writer.writeStartElement( QLatin1String("similarArtist") );
         writer.writeTextElement( QLatin1String("artist"), key );
-        foreach( const QString& name, m_similarArtistMap[ key ] )
+        foreach( const QString& name, m_similarArtistMap.value( key ) )
         {
             writer.writeTextElement( QLatin1String("similar"), name );
         }
@@ -490,7 +490,7 @@ Dynamic::LastFmBias::saveDataToFile()
         writer.writeTextElement( QLatin1String("artist"), key.second );
         writer.writeEndElement();
 
-        foreach( const TitleArtistPair& name, m_similarArtistMap[ key ] )
+        foreach( const TitleArtistPair& name, m_similarTrackMap.value( key ) )
         {
             writer.writeStartElement( QLatin1String("similar") );
             writer.writeTextElement( QLatin1String("title"), name.first );
@@ -519,7 +519,7 @@ Dynamic::LastFmBias::readSimilarArtists( QXmlStreamReader *reader )
             if( name == QLatin1String("artist") )
                 key = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == QLatin1String("similar") )
-                artist.append( reader->readElementText(QXmlStreamReader::SkipChildElements) );
+                artists.append( reader->readElementText(QXmlStreamReader::SkipChildElements) );
             else
                 reader->skipCurrentElement();
         }
@@ -532,7 +532,7 @@ Dynamic::LastFmBias::readSimilarArtists( QXmlStreamReader *reader )
     m_similarArtistMap.insert( key, artists );
 }
 
-TitleArtistPair
+Dynamic::LastFmBias::TitleArtistPair
 Dynamic::LastFmBias::readTrack( QXmlStreamReader *reader )
 {
     TitleArtistPair track;
@@ -590,8 +590,8 @@ Dynamic::LastFmBias::readSimilarTracks( QXmlStreamReader *reader )
 void
 Dynamic::LastFmBias::loadFromFile()
 {
-    m_similarArtistMap.clean();
-    m_similarTrackMap.clean();
+    m_similarArtistMap.clear();
+    m_similarTrackMap.clear();
 
     QFile file( Amarok::saveLocation() + "dynamic_lastfm_similar.xml" );
 
