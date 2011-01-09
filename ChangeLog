@@ -11,6 +11,7 @@ VERSION 2.4.0
     * Fixed some broken radio stream URLs.
 
   BUGFIXES:
+    * Fix crash on copying tracks between collection. (BR 261364)
     * Fix fetching of script data. BBC, Free Music Charts and others should work again.
       (BR 261839)
     * Actually show the Splash Screen by default, as it was meant to work.

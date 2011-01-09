@@ -192,12 +192,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
         metaTrack->setTitle( track->name() );
 
     if( track->album() )
-    {
         metaTrack->setAlbum( track->album()->name() );
-        // also copy over the album cover
-        if( track->album()->hasImage() && !metaTrack->album()->hasImage() )
-            metaTrack->album()->setImage( track->album()->image().toImage() );
-    }
 
     if( track->artist() )
         metaTrack->setArtist( track->artist()->name() );
@@ -260,6 +255,12 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
         metaTrack->addLabel( label );
 
     metaTrack->endMetaDataUpdate();
+
+    // Used to be updated after changes commit to prevent crash on NULL pointer access
+    // if metaTrack had no album.
+    if( track->album() && track->album()->hasImage() && !metaTrack->album()->hasImage() )
+        metaTrack->album()->setImage( track->album()->image().toImage() );
+
     metaTrack->setWriteFile( true );
 
     return true;
