@@ -5,7 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.4.0
   CHANGES:
-    * New Splash Screen by Tomasz Dudzik <madsheytan@gmail.com>
+    * New Splash Screen by Tomasz Dudzik <madsheytan@gmail.com>.
     * The "Playdar Collection" feature has been disabled until some technical 
       issues are resolved.
     * Fixed some broken radio stream URLs.
@@ -21,7 +21,7 @@ VERSION 2.4.0
     * Fixed issue with Audio CDs that do not provide CDDB information. Patch by
       Andriy Gapon <avg@icyb.net.ua>. (BR 257818)
     * Fixed issue with the Organize Files Dialog that prevented presets from being
-      loaded when in advanced mode. Patch by Philipp Schmidt <philschmidt@gmx.net>
+      loaded when in advanced mode. Patch by Philipp Schmidt <philschmidt@gmx.net>.
       (BR 255325)
 
 
