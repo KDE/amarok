@@ -21,6 +21,7 @@
 #ifndef AMAROK_DYNAMICBIASWIDGETS_H
 #define AMAROK_DYNAMICBIASWIDGETS_H
 
+#include "shared/amarok_export.h"
 #include "Bias.h"
 #include "widgets/MetaQueryWidget.h"
 
@@ -90,7 +91,7 @@ namespace PlaylistBrowserNS
             bool m_hover;
     };
 
-    class BiasWidget : public QWidget
+    class AMAROK_EXPORT BiasWidget : public QWidget
     {
         Q_OBJECT
 

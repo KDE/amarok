@@ -61,31 +61,19 @@ PlaylistBrowserNS::DynamicModel::~DynamicModel()
 Dynamic::DynamicPlaylist*
 PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
 {
-    DEBUG_BLOCK
-
-    if( index < 0 || index > m_playlists.count() )
+    if( index < 0 || index >= m_playlists.count() )
         return m_playlists[m_activePlaylistIndex];
 
     if( m_activePlaylistIndex == index )
         return m_playlists[m_activePlaylistIndex];
 
     m_activePlaylistIndex = index;
-    m_activeUnsaved = false;
-    savePlaylists();
+    if( m_activeUnsaved ) // undo the change
+        loadPlaylists();
 
     emit activeChanged( index );
 
     return m_playlists[m_activePlaylistIndex];
-
-    // The modified playlist is always the last one in the list,
-    // so remove it if there is one.
-//     if( m_activeUnsaved && index !=  m_playlistList.size()-1 )
-//     {
-//         beginRemoveRows( QModelIndex(), m_playlistList.size()-1, m_playlistList.size()-1 );
-//         m_playlistList.pop_back();
-//         m_activeUnsaved = false;
-//         endRemoveRows();
-//     }
 }
 
 Dynamic::DynamicPlaylist*
@@ -186,8 +174,6 @@ PlaylistBrowserNS::DynamicModel::columnCount( const QModelIndex& ) const
 void
 PlaylistBrowserNS::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
 {
-    DEBUG_BLOCK
-
     // this shouldn't happen
     if( p != activePlaylist() )
     {
@@ -207,7 +193,6 @@ PlaylistBrowserNS::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
 void
 PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
 {
-    DEBUG_BLOCK
     int newIndex = playlistIndex( newTitle );
     debug() << "saveActive" << m_activePlaylistIndex << newTitle << ":"<<newIndex;
 
@@ -220,7 +205,6 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
     if( newIndex == m_activePlaylistIndex )
     {
         savePlaylists();
-        m_activeUnsaved = false;
         emit dataChanged( index( m_activePlaylistIndex, 0 ),
                           index( m_activePlaylistIndex, 0 ) );
         return;
@@ -251,20 +235,18 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
     setActivePlaylist( m_playlists.count() - 1 );
 
     savePlaylists();
-    m_activeUnsaved = false;
 }
 
 void
 PlaylistBrowserNS::DynamicModel::savePlaylists()
 {
     savePlaylists( "dynamic.xml" );
+    saveCurrentPlaylists(); // need also save the current playlist so that after a crash we won't restore the old current playlist
 }
 
 bool
 PlaylistBrowserNS::DynamicModel::savePlaylists( const QString &filename )
 {
-    DEBUG_BLOCK
-
     QFile xmlFile( Amarok::saveLocation() + filename );
     if( !xmlFile.open( QIODevice::WriteOnly ) )
     {
@@ -289,6 +271,7 @@ PlaylistBrowserNS::DynamicModel::savePlaylists( const QString &filename )
     xmlWriter.writeEndElement();
     xmlWriter.writeEndDocument();
 
+    m_activeUnsaved = false;
     return true;
 }
 
@@ -301,15 +284,11 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
 bool
 PlaylistBrowserNS::DynamicModel::loadPlaylists( const QString &filename )
 {
-    DEBUG_BLOCK;
-
     // -- clear all the old playlists
+    beginResetModel();
     foreach( Dynamic::DynamicPlaylist* playlist, m_playlists )
-    {
         delete playlist;
-    }
     m_playlists.clear();
-    m_activePlaylistIndex = -1;
 
 
     // -- open the file
@@ -379,7 +358,11 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists( const QString &filename )
         return false;
     }
 
+    m_activeUnsaved = false;
     m_activePlaylistIndex = qBound( 0, m_activePlaylistIndex, m_playlists.count()-1 );
+
+    emit activeChanged( m_activePlaylistIndex );
+    endResetModel();
 
     return true;
 }
@@ -387,13 +370,23 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists( const QString &filename )
 void
 PlaylistBrowserNS::DynamicModel::initPlaylists()
 {
+    // -- clear all the old playlists
+    beginResetModel();
+    foreach( Dynamic::DynamicPlaylist* playlist, m_playlists )
+        delete playlist;
+    m_playlists.clear();
+
     // create the empty default random playlist
     Dynamic::BiasedPlaylist *playlist =  new Dynamic::BiasedPlaylist( this );
     connect( playlist, SIGNAL( changed( Dynamic::DynamicPlaylist* ) ),
              this, SLOT( playlistChanged( Dynamic::DynamicPlaylist* ) ) );
 
     m_playlists.append( playlist );
+    m_activeUnsaved = false;
     m_activePlaylistIndex = 0;
+
+    emit activeChanged( m_activePlaylistIndex );
+    endResetModel();
 }
 
 void
@@ -413,33 +406,25 @@ PlaylistBrowserNS::DynamicModel::loadCurrentPlaylists()
 void
 PlaylistBrowserNS::DynamicModel::removeActive()
 {
-    DEBUG_BLOCK
-
-    if( isActiveDefault() )
-        return;
-
     // if it's a modified but unsaved playlist so we just restore the unmodified
-    // version.
+    // version, "removing" the modified playlist but not the unmodified entry.
     if( m_activeUnsaved )
     {
+        int oldActive = m_activePlaylistIndex;
         loadPlaylists();
-        m_activeUnsaved = false;
-        emit dataChanged( index( m_activePlaylistIndex, 0 ),
-                          index( m_activePlaylistIndex, 0 ) );
+        setActivePlaylist( oldActive );
         return;
     }
 
-    beginRemoveRows( QModelIndex(), m_activePlaylistIndex, m_activePlaylistIndex );
+    if( isActiveDefault() ) // don't remove the default playlist
+        return;
 
+    setActivePlaylist( qBound(0, m_activePlaylistIndex--, m_playlists.count() - 2 ) );
+
+    beginRemoveRows( QModelIndex(), m_activePlaylistIndex, m_activePlaylistIndex );
     delete m_playlists[m_activePlaylistIndex];
     m_playlists.removeAt(m_activePlaylistIndex);
-    if( m_activePlaylistIndex > 0 )
-        setActivePlaylist( m_activePlaylistIndex-- );
-
-    savePlaylists();
-    saveCurrentPlaylists();
-
     endRemoveRows();
 
-    m_activeUnsaved = false;
+    savePlaylists();
 }

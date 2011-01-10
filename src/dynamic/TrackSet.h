@@ -19,6 +19,7 @@
 #ifndef AMAROK_TRACKSET_H
 #define AMAROK_TRACKSET_H
 
+#include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
 
 #include <QBitArray>
@@ -49,7 +50,7 @@ namespace Dynamic
     /** The TrackCollection stores all the uids that a TrackSet can contain.
         Usually the dynamic playlist queries all the uids before computing a playlist.
     */
-    class TrackCollection : public QSharedData
+    class AMAROK_EXPORT TrackCollection : public QSharedData
     {
         public:
             TrackCollection( const QStringList& uids );
@@ -71,7 +72,7 @@ namespace Dynamic
      * QSet is more space efficient for sparse sets, but set
      * operations generally aren't linear.
      */
-    class TrackSet
+    class AMAROK_EXPORT TrackSet
     {
         public:
             /** Creates a TrackSet that is outstanding */

@@ -631,6 +631,24 @@ Dynamic::LastFmBias::loadFromFile()
     }
 }
 
+Dynamic::LastFmBias::MatchType
+Dynamic::LastFmBias::match() const
+{ return m_match; }
+
+void
+Dynamic::LastFmBias::setMatch( Dynamic::LastFmBias::MatchType value )
+{
+    m_match = value;
+    invalidate();
+    emit changed( BiasPtr(this) );
+}
+
+void
+Dynamic::LastFmBias::selectionChanged( int which )
+{
+    if( QComboBox *box = qobject_cast<QComboBox*>(sender()) )
+        setMatch( matchForName( box->itemData( which ).toString() ) );
+}
 
 QString
 Dynamic::LastFmBias::nameForMatch( Dynamic::LastFmBias::MatchType match )

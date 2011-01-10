@@ -153,9 +153,13 @@ Dynamic::QuizPlayBias::matchingTracks( int position,
         lastData = Meta::DataPtr::staticCast<Meta::Album>(lastTrack->album());
 
     if( !lastData || lastData->name().isEmpty() )
+    {
+        debug() << "QuizPlay: no data for"<<lastTrack->name();
         return Dynamic::TrackSet( universe, true );
+    }
 
     m_currentCharacter = lastData->name()[lastData->name().length()-1].toLower();
+    debug() << "QuizPlay: data for"<<lastTrack->name()<<"is"<<m_currentCharacter;
 
     // -- look if we already buffered it
     if( m_tracksValid && m_characterTrackMap.contains( m_currentCharacter ) )
@@ -209,7 +213,7 @@ Dynamic::QuizPlayBias::trackMatches( int position,
     // -- now compare
     QString lastName = lastData->name();
     QString name = data->name();
-    return lastName[lastName.length()-1].toLower() == name[name.length()-1].toLower();
+    return lastName[lastName.length()-1].toLower() == name[0].toLower();
 }
 
 

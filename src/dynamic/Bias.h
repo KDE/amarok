@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
- * Copyright (c) 2010, 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010, 2011 Ralf Engels <ralf-engels@gmx.de>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,6 +21,7 @@
 #ifndef AMAROK_BIAS_H
 #define AMAROK_BIAS_H
 
+#include "shared/amarok_export.h"
 #include "TrackSet.h"
 
 #include <QObject>
@@ -49,7 +50,7 @@ namespace Dynamic
         All biases are shared to prevent problems when they are removed while the
         BiasSolver is running at the same time.
      */
-    class AbstractBias : public QObject, public QSharedData
+    class AMAROK_EXPORT AbstractBias : public QObject, public QSharedData
     {
         Q_OBJECT
 
@@ -153,7 +154,7 @@ namespace Dynamic
     };
 
     /** A bias that returns all the tracks in the universe as possible tracks */
-    class RandomBias : public AbstractBias
+    class AMAROK_EXPORT RandomBias : public AbstractBias
     {
         Q_OBJECT
 

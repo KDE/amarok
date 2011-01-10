@@ -211,8 +211,10 @@ void Dynamic::BiasSolver::run()
 void
 Dynamic::BiasSolver::simpleOptimize( SolverList *list )
 {
-    TrackSet universeSet( m_trackCollection, true );
+    DEBUG_BLOCK;
+
     // TODO: don't optimize the tracks in order
+    TrackSet universeSet( m_trackCollection, true );
     for( int i = m_context.count();
          i < m_context.count() + m_n && i < list->m_trackList.count(); i++ )
     {
@@ -228,6 +230,8 @@ Dynamic::BiasSolver::annealingOptimize( SolverList *list,
                                         int iterationLimit,
                                         bool updateStatus )
 {
+    DEBUG_BLOCK;
+
     /*
      * The process used here is called "simulated annealing". The basic idea is
      * that the playlist is randomly mutated one track at a time. Mutations that

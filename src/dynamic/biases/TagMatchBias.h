@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
- * Copyright (c) 2010, 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010, 2011 Ralf Engels <ralf-engels@gmx.de>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,6 +21,7 @@
 #ifndef AMAROK_METATAGBIAS_H
 #define AMAROK_METATAGBIAS_H
 
+#include "shared/amarok_export.h"
 #include "Bias.h"
 #include "BiasFactory.h"
 #include <widgets/MetaQueryWidget.h>
@@ -30,7 +31,7 @@ namespace Dynamic
     /** An abstract bias that will check matching tracks agains the results from a query maker.
         You can use this base class for writing your own biases.
     */
-    class SimpleMatchBias : public AbstractBias
+    class AMAROK_EXPORT SimpleMatchBias : public AbstractBias
     {
         Q_OBJECT
 
