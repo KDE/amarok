@@ -68,6 +68,9 @@ namespace Dynamic
             virtual void newQuery();
 
         protected:
+            /** A smart function to compute the last character in the string.
+                It ignores braces and CD texts. */
+            static QChar lastChar( const QString &str );
             static QString nameForFollow( FollowType match );
             static FollowType followForName( const QString &name );
 

@@ -33,6 +33,12 @@
 #include <QXmlStreamWriter>
 
 
+/* general note:
+   For the sake of this file we are handling a modified active playlist as
+   a different one.
+   So a modified default playlist is NOT regarded as a default playlist.
+*/
+
 PlaylistBrowserNS::DynamicModel* PlaylistBrowserNS::DynamicModel::s_instance = 0;
 
 PlaylistBrowserNS::DynamicModel*
@@ -61,10 +67,11 @@ PlaylistBrowserNS::DynamicModel::~DynamicModel()
 Dynamic::DynamicPlaylist*
 PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
 {
+    debug() << "DynamicModel::setActivePlaylist from"<<m_activePlaylistIndex << "to" << index << "unsaved?" << m_activeUnsaved;
     if( index < 0 || index >= m_playlists.count() )
         return m_playlists[m_activePlaylistIndex];
 
-    if( m_activePlaylistIndex == index )
+    if( m_activePlaylistIndex == index && !m_activeUnsaved )
         return m_playlists[m_activePlaylistIndex];
 
     m_activePlaylistIndex = index;
@@ -126,7 +133,8 @@ PlaylistBrowserNS::DynamicModel::isActiveUnsaved() const
 bool
 PlaylistBrowserNS::DynamicModel::isActiveDefault() const
 {
-    return m_activePlaylistIndex == defaultPlaylistIndex();
+    return (m_activePlaylistIndex == defaultPlaylistIndex()) &&
+        !m_activeUnsaved; // a modified list is in principle a different one
 }
 
 
@@ -419,12 +427,12 @@ PlaylistBrowserNS::DynamicModel::removeActive()
     if( isActiveDefault() ) // don't remove the default playlist
         return;
 
-    setActivePlaylist( qBound(0, m_activePlaylistIndex--, m_playlists.count() - 2 ) );
-
     beginRemoveRows( QModelIndex(), m_activePlaylistIndex, m_activePlaylistIndex );
     delete m_playlists[m_activePlaylistIndex];
     m_playlists.removeAt(m_activePlaylistIndex);
     endRemoveRows();
+
+    setActivePlaylist( qBound(0, m_activePlaylistIndex, m_playlists.count() - 1 ) );
 
     savePlaylists();
 }

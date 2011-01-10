@@ -64,9 +64,13 @@ Dynamic::QuizPlayBiasFactory::createBias( QXmlStreamReader *reader )
 
 
 Dynamic::QuizPlayBias::QuizPlayBias()
+    : SimpleMatchBias()
+    , m_follow( TitleToTitle )
 { }
 
 Dynamic::QuizPlayBias::QuizPlayBias( QXmlStreamReader *reader )
+    : SimpleMatchBias()
+    , m_follow( TitleToTitle )
 {
     while (!reader->atEnd()) {
         reader->readNext();
@@ -158,7 +162,7 @@ Dynamic::QuizPlayBias::matchingTracks( int position,
         return Dynamic::TrackSet( universe, true );
     }
 
-    m_currentCharacter = lastData->name()[lastData->name().length()-1].toLower();
+    m_currentCharacter = lastChar(lastData->name()).toLower();
     debug() << "QuizPlay: data for"<<lastTrack->name()<<"is"<<m_currentCharacter;
 
     // -- look if we already buffered it
@@ -213,7 +217,7 @@ Dynamic::QuizPlayBias::trackMatches( int position,
     // -- now compare
     QString lastName = lastData->name();
     QString name = data->name();
-    return lastName[lastName.length()-1].toLower() == name[0].toLower();
+    return lastChar( lastName ).toLower() == name[0].toLower();
 }
 
 
@@ -264,9 +268,9 @@ Dynamic::QuizPlayBias::newQuery()
     uint field = 0;
     switch( m_follow )
     {
-    case Dynamic::QuizPlayBias::TitleToTitle:   field = Meta::valTitle;
-    case Dynamic::QuizPlayBias::ArtistToArtist: field = Meta::valArtist;
-    case Dynamic::QuizPlayBias::AlbumToAlbum:   field = Meta::valAlbum;
+    case Dynamic::QuizPlayBias::TitleToTitle:   field = Meta::valTitle; break;
+    case Dynamic::QuizPlayBias::ArtistToArtist: field = Meta::valArtist; break;
+    case Dynamic::QuizPlayBias::AlbumToAlbum:   field = Meta::valAlbum; break;
     }
     m_qm->addFilter( field,  QString(m_currentCharacter), true, false );
 
@@ -280,6 +284,30 @@ Dynamic::QuizPlayBias::newQuery()
     m_qm.data()->run();
 }
 
+
+QChar
+Dynamic::QuizPlayBias::lastChar( const QString &str )
+{
+    int endIndex = str.length();
+    int index;
+
+    index = str.indexOf( '[' );
+    if( index > 0 && index < endIndex )
+        endIndex = index;
+
+    index = str.indexOf( '(' );
+    if( index > 0 && index < endIndex )
+        endIndex = index;
+
+    index = str.indexOf( QLatin1String(" cd"), Qt::CaseInsensitive );
+    if( index > 0 && index < endIndex )
+        endIndex = index;
+
+    if( endIndex > 0 )
+        return str[ endIndex - 1 ];
+
+    return QChar();
+}
 
 
 QString
