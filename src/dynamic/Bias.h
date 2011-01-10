@@ -237,8 +237,6 @@ namespace Dynamic
                                        const Meta::TrackList& playlist,
                                        int contextCount ) const;
 
-            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
-
             /** Appends a bias to this bias.
                 This object will take ownership of the bias and free it when destroyed.
             */
@@ -292,8 +290,6 @@ namespace Dynamic
             virtual bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
                                        int contextCount ) const;
-
-            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
 
         protected slots:
             virtual void resultReceived( const Dynamic::TrackSet &tracks );

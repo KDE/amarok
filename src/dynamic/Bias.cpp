@@ -345,21 +345,6 @@ Dynamic::AndBias::trackMatches( int position,
     return true;
 }
 
-double
-Dynamic::AndBias::energy( const Meta::TrackList& playlist, int contextCount ) const
-{
-    double result = 0.0;
-
-    foreach( Dynamic::BiasPtr bias, m_biases )
-    {
-        result = qMax( result, bias->energy( playlist, contextCount ) );
-        if( result >= 1.0 )
-            return result;
-    }
-    return result;
-}
-
-
 void
 Dynamic::AndBias::invalidate()
 {
@@ -503,20 +488,6 @@ Dynamic::OrBias::trackMatches( int position,
             return true;
     }
     return false;
-}
-
-double
-Dynamic::OrBias::energy( const Meta::TrackList& playlist, int contextCount ) const
-{
-    double result = 1.0;
-
-    foreach( Dynamic::BiasPtr bias, m_biases )
-    {
-        result = qMin( result, bias->energy( playlist, contextCount ) );
-        if( result <= 0.0 )
-            return result;
-    }
-    return result;
 }
 
 void
