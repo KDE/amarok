@@ -60,6 +60,21 @@ ScanResultProcessor::addDirectory( CollectionScanner::Directory *dir )
 void
 ScanResultProcessor::commit()
 {
+    // the default for albums with several artists is that it's a compilation
+    // however, some album names are unlikely to be a compilation
+    static QStringList nonCompilationAlbumNames;
+    if( nonCompilationAlbumNames.isEmpty() )
+    {
+        nonCompilationAlbumNames
+            << "" // don't throw together albums without name. At least not here
+            << "Best Of"
+            << "Anthology"
+            << "Hit collection"
+            << "Greatest Hits"
+            << "All Time Greatest Hits"
+            << "Live";
+    }
+
     // we are blocking the updated signal for maximum of one second.
     QDateTime blockedTime = QDateTime::currentDateTime();
     blockUpdates();
@@ -141,13 +156,7 @@ ScanResultProcessor::commit()
             CollectionScanner::Album *album = albums.at( i );
             // commit all albums with a track with the noCompilation flag
             if( album->isNoCompilation() ||
-
-            // or "Best Of" or "Anthology" those are unlikely to be compilations
-                (album->name().compare( QLatin1String( "Best Of" ), Qt::CaseInsensitive ) == 0 ||
-                 album->name().compare( QLatin1String( "Anthology" ), Qt::CaseInsensitive ) == 0 ||
-                 album->name().compare( QLatin1String( "Hit collection" ), Qt::CaseInsensitive ) == 0 ||
-                 album->name().compare( QLatin1String( "Greatest hits" ), Qt::CaseInsensitive ) == 0 )
-                 )
+                nonCompilationAlbumNames.contains( album->name(), Qt::CaseInsensitive ) )
                 commitAlbum( albums.takeAt( i ) );
         }
 
@@ -232,9 +241,20 @@ ScanResultProcessor::commitPlaylist( CollectionScanner::Playlist *playlist )
 CollectionScanner::Album*
 ScanResultProcessor::sortTrack( CollectionScanner::Track *track )
 {
+    // -- try to find a sensible album artist
     QString albumArtist( track->albumArtist() );
+
+    // - for classical tracks it's the composer
+    if( albumArtist.isEmpty() &&
+        (track->genre().compare( i18nc( "The genre name for classical music", "Classical" ), Qt::CaseInsensitive ) == 0 ||
+         track->genre().compare( QLatin1String( "Classical" ), Qt::CaseInsensitive ) == 0 ) )
+        albumArtist = ArtistHelper::realTrackArtist( track->composer() );
+
+    // - for "normal" tracks it's the track artist
     if( albumArtist.isEmpty() )
-        albumArtist = ArtistHelper::realTrackArtist( track->artist() );
+            albumArtist = ArtistHelper::realTrackArtist( track->artist() );
+
+    // - "Various Artists" is the same as no artist
     if( albumArtist.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) == 0 ||
         albumArtist.compare( QLatin1String( "Various Artists" ), Qt::CaseInsensitive ) == 0 )
         albumArtist.clear();
