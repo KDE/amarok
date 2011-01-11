@@ -215,7 +215,7 @@ ProgressWidget::trackPositionChanged( qint64 position )
     m_slider->setSliderValue( position );
 
     // update the enabled state. Phonon determines isSeekable somtimes too late.
-    m_slider->setEnabled( (m_slider->minimum() > 0) && The::engineController()->isSeekable() );
+    m_slider->setEnabled( (m_slider->maximum() > 0) && The::engineController()->isSeekable() );
     if ( !m_slider->isEnabled() )
         drawTimeDisplay( position );
 }
