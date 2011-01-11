@@ -248,6 +248,7 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
 void
 PlaylistBrowserNS::DynamicModel::savePlaylists()
 {
+    m_activeUnsaved = false;
     savePlaylists( "dynamic.xml" );
     saveCurrentPlaylists(); // need also save the current playlist so that after a crash we won't restore the old current playlist
 }
@@ -268,6 +269,8 @@ PlaylistBrowserNS::DynamicModel::savePlaylists( const QString &filename )
     xmlWriter.writeStartElement("biasedPlaylists");
     xmlWriter.writeAttribute("version", "2" );
     xmlWriter.writeAttribute("current", QString::number( m_activePlaylistIndex ) );
+    if( m_activeUnsaved )
+        xmlWriter.writeAttribute("unsaved", "1");
 
     foreach( Dynamic::DynamicPlaylist *playlist, m_playlists )
     {
@@ -279,7 +282,6 @@ PlaylistBrowserNS::DynamicModel::savePlaylists( const QString &filename )
     xmlWriter.writeEndElement();
     xmlWriter.writeEndDocument();
 
-    m_activeUnsaved = false;
     return true;
 }
 
@@ -323,6 +325,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists( const QString &filename )
     }
 
     m_activePlaylistIndex = xmlReader.attributes().value( "current" ).toString().toInt();
+    m_activeUnsaved = xmlReader.attributes().value( "unsaved" ).toString().toInt();
 
     while (!xmlReader.atEnd()) {
         xmlReader.readNext();
@@ -366,7 +369,6 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists( const QString &filename )
         return false;
     }
 
-    m_activeUnsaved = false;
     m_activePlaylistIndex = qBound( 0, m_activePlaylistIndex, m_playlists.count()-1 );
 
     emit activeChanged( m_activePlaylistIndex );
