@@ -2,11 +2,17 @@ Amarok ChangeLog
 ================
 (C) 2002-2011 the Amarok authors.
 
+
 VERISON 2.4.1
+  FEATURES:
+
+  CHANGES:
+
   BUGFIXES:
     * Fixed issue with TagDialog that make metadata fields stay editable if multiple
       streams opened. (BR 177400)
     * Fixed missing equel-sign ('=') in filter string of bookmarks. (BR 245759)
+
 
 VERSION 2.4.0
   CHANGES:
