@@ -2,6 +2,11 @@ Amarok ChangeLog
 ================
 (C) 2002-2010 the Amarok authors.
 
+VERISON 2.4.1
+  BUGFIXES:
+    * Fixed issue with TagDialog that make metadata fields stay editable if multiple
+      streams opened. (BR 177400)
+    * Fixed missing equel-sign ('=') in filter string of bookmarks. (BR 245759)
 
 VERSION 2.4.0
   CHANGES:
@@ -11,7 +16,6 @@ VERSION 2.4.0
     * Fixed some broken radio stream URLs.
 
   BUGFIXES:
-    * Fixed missing equel-sign ('=') in filter string of bookmarks. (BR 245759)
     * Fix crash on copying tracks between collection. (BR 261364)
     * Fix fetching of script data. BBC, Free Music Charts and others should work again.
       (BR 261839)

@@ -156,6 +156,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void setMultipleTracksMode();
         void setSingleTrackMode();
         void enableItems();
+        void setControlsAccessability();
         bool hasChanged();
         int changes();
         void storeTags();
