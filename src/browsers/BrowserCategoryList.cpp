@@ -124,7 +124,7 @@ BrowserCategoryList::addCategory( BrowserCategory * category )
     {
         m_proxyModel->sort( 0 );
     }
-
+    emit( viewChanged() );
 }
 
 
@@ -216,6 +216,7 @@ BrowserCategoryList::removeCategory( const QString &name )
         m_categoryListModel->removeCategory( category );
     delete category;
     m_categoryListView->reset();
+    emit( viewChanged() );
 }
 
 void BrowserCategoryList::slotSetFilterTimeout()

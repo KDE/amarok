@@ -9,6 +9,8 @@ VERISON 2.4.1
   CHANGES:
 
   BUGFIXES:
+    * Fixed issue when breadcrumbs stayed not updated after service insert/remove.
+      (BR 262780)
     * Fixed issue with TagDialog that make metadata fields stay editable if multiple
       streams opened. (BR 177400)
     * Fixed missing equel-sign ('=') in filter string of bookmarks. (BR 245759)
