@@ -55,6 +55,10 @@ Amarok::KNotificationBackend::KNotificationBackend()
 
     connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
              this, SLOT( trackPlaying() ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying() ) );
+    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
+             this, SLOT( trackPlaying() ) );
 
 }
 

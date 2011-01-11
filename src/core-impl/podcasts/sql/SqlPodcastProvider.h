@@ -85,7 +85,6 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void updateAll();
         void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );
-        void slotUpdated();
 
         void slotReadResult( PodcastReader *podcastReader );
         void downloadEpisode( Podcasts::SqlPodcastEpisodePtr episode );

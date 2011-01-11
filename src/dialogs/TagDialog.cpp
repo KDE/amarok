@@ -987,8 +987,6 @@ void TagDialog::readTags()
 {
     DEBUG_BLOCK
 
-    const bool local = m_currentTrack->playableUrl().isLocalFile();
-
     setWindowTitle( KDialog::makeStandardCaption( i18n("Track Details: %1 by %2",
                     m_currentTrack->name(),  m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString() ) ) );
 
@@ -1118,49 +1116,7 @@ void TagDialog::readTags()
 
     loadCover();
 
-    // enable only for editable files
-#define enableOrDisable( X ) \
-    ui->X->setEnabled( editable ); \
-    qobject_cast<KLineEdit*>(ui->X->lineEdit())->setClearButtonShown( editable )
-
-    const bool editable = m_currentTrack->hasCapabilityInterface( Capabilities::Capability::Editable );
-    ui->kLineEdit_title->setEnabled( editable );
-    ui->kLineEdit_title->setClearButtonShown( editable );
-
-    enableOrDisable( kComboBox_artist );
-    enableOrDisable( kComboBox_composer );
-    enableOrDisable( kComboBox_album );
-    enableOrDisable( kComboBox_genre );
-
-    ui->kLineEdit_Bpm->setEnabled( editable );
-    ui->kLineEdit_Bpm->setClearButtonShown( editable );
-
-#undef enableOrDisable
-    ui->qSpinBox_track->setEnabled( editable );
-    ui->qSpinBox_discNumber->setEnabled( editable );
-    ui->qSpinBox_year->setEnabled( editable );
-    ui->qPlainTextEdit_comment->setEnabled( editable );
-    ui->ratingWidget->setEnabled( true );
-    ui->qSpinBox_score->setEnabled( true );
-    ui->pushButton_guessTags->setEnabled( editable );
-    ui->pushButton_musicbrainz->setEnabled( editable );
-
-    if( local )
-    {
-        ui->pushButton_guessTags->show();
-        ui->pushButton_musicbrainz->show();
-    }
-    else
-    {
-       ui->pushButton_guessTags->hide();
-       ui->pushButton_musicbrainz->hide();
-    }
-
-    // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
-    if ( local )
-        m_path = m_currentTrack->playableUrl().directory();
-    else
-        ui->pushButton_open->setEnabled( false );
+    setControlsAccessability();
 
     ui->pushButton_ok->setEnabled( m_storedTags.count() > 0 || m_storedScores.count() > 0
                               || m_storedLyrics.count() > 0 || m_storedRatings.count() > 0
@@ -1384,8 +1340,60 @@ TagDialog::readMultipleTracks()
 
     ui->statisticsLabel->setText( statisticsText );
 
+    setControlsAccessability();
     // This will reset a wrongly enabled Ok button
     checkModified();
+}
+
+void
+TagDialog::setControlsAccessability()
+{
+    // enable only for editable files
+    const bool local = m_currentTrack->playableUrl().isLocalFile();
+    const bool editable = m_currentTrack->hasCapabilityInterface( Capabilities::Capability::Editable );
+
+#define enableOrDisable( X ) \
+    ui->X->setEnabled( editable ); \
+    qobject_cast<KLineEdit*>(ui->X->lineEdit())->setClearButtonShown( editable )
+
+    ui->kLineEdit_title->setEnabled( editable );
+    ui->kLineEdit_title->setClearButtonShown( editable );
+
+    enableOrDisable( kComboBox_artist );
+    enableOrDisable( kComboBox_albumArtist );
+    enableOrDisable( kComboBox_composer );
+    enableOrDisable( kComboBox_album );
+    enableOrDisable( kComboBox_genre );
+
+    ui->kLineEdit_Bpm->setEnabled( editable );
+    ui->kLineEdit_Bpm->setClearButtonShown( editable );
+
+#undef enableOrDisable
+    ui->qSpinBox_track->setEnabled( editable );
+    ui->qSpinBox_discNumber->setEnabled( editable );
+    ui->qSpinBox_year->setEnabled( editable );
+    ui->qPlainTextEdit_comment->setEnabled( editable );
+    ui->ratingWidget->setEnabled( true );
+    ui->qSpinBox_score->setEnabled( true );
+    ui->pushButton_guessTags->setEnabled( editable );
+    ui->pushButton_musicbrainz->setEnabled( editable );
+
+    if( local )
+    {
+        ui->pushButton_guessTags->show();
+        ui->pushButton_musicbrainz->show();
+    }
+    else
+    {
+       ui->pushButton_guessTags->hide();
+       ui->pushButton_musicbrainz->hide();
+    }
+
+    // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
+    if ( local )
+        m_path = m_currentTrack->playableUrl().directory();
+    else
+        ui->pushButton_open->setEnabled( false );
 }
 
 inline bool

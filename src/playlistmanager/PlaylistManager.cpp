@@ -123,10 +123,10 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider *provider, int categor
              SLOT(slotPlaylistRemoved( Playlists::PlaylistPtr )));
 
     if( newCategory )
-        emit( categoryAdded( category ) );
+        emit categoryAdded( category );
 
-    emit( providerAdded( provider, category ) );
-    emit( updated() );
+    emit providerAdded( provider, category );
+    emit updated( category );
 
     loadPlaylists( provider, category );
 }
@@ -180,8 +180,8 @@ PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
 
     m_providerMap.remove( provider->category(), provider );
 
-    emit( providerRemoved( provider, provider->category() ) );
-    emit( updated() );
+    emit providerRemoved( provider, provider->category() );
+    emit updated( provider->category() );
 }
 
 void
@@ -222,7 +222,7 @@ PlaylistManager::slotUpdated()
     //This is an expensive operation, the provider should use playlistAdded/Removed signals instead.
     removePlaylists( provider );
     loadPlaylists( provider, provider->category() );
-    emit( updated() );
+    emit updated( provider->category() );
 }
 
 void
@@ -300,29 +300,16 @@ bool
 PlaylistManager::save( Meta::TrackList tracks, const QString &name,
                        Playlists::UserPlaylistProvider *toProvider )
 {
-    AMAROK_DEPRECATED
-    // used by: Playlist::Widget::slotSaveCurrentPlaylist()
     //if toProvider is 0 use the default Playlists::UserPlaylistProvider (SQL)
     Playlists::UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
-    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr();
-    if( name.isEmpty() )
-    {
-        debug() << "Empty name of playlist, or editing now";
-        playlist = prov->save( tracks );
-        if( playlist.isNull() )
-            return false;
+    Playlists::PlaylistPtr playlist = prov->save( tracks, name );
+    if( playlist.isNull() )
+        return false;
 
-        AmarokUrl("amarok://navigate/playlists/user playlists").run();
-        emit( renamePlaylist( playlist ) );
-    }
-    else
-    {
-        debug() << "Playlist is being saved with name: " << name;
-        playlist = prov->save( tracks, name );
-        AmarokUrl("amarok://navigate/playlists/user playlists").run();
-    }
+    AmarokUrl("amarok://navigate/playlists/user playlists").run();
+    emit renamePlaylist( playlist );
 
-    return !playlist.isNull();
+    return true;
 }
 
 bool
@@ -359,7 +346,6 @@ PlaylistManager::rename( Playlists::PlaylistPtr playlist )
     {
         debug() << "Changing name from " << playlist->name() << " to " << newName.trimmed();
         provider->rename( playlist, newName.trimmed() );
-        emit( updated() );
     }
 }
 

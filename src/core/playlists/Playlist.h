@@ -93,8 +93,16 @@ namespace Playlists
               * be determined before loading them all.
               */
             virtual int trackCount() const { return -1; }
+
             /** returns all tracks in this playlist */
             virtual Meta::TrackList tracks() = 0;
+
+            /** Called to make a playlist load it's tracks in memory.
+              * This is used by PlaylistBrowserModel to do on-demand loading.
+              * It's recommended that this function starts a background task  in order not to block
+              * the GUI thread.
+              */
+            virtual void triggerTrackLoad() {}
 
             /** Add the track to a certain position in the playlist
              *  @arg position: place to add this track. The default value -1 appends to

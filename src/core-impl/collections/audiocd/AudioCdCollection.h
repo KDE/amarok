@@ -101,6 +101,9 @@ private slots:
 private:
     void readAudioCdSettings();
 
+    // Helper function to build the audiocd url.
+    KUrl audiocdUrl( const QString &path = "" ) const;
+
     /**
      * Clear collection and read the CD currently in the drive, adding Artist, Album,
      * Genre, Year and whatnot as detected by audiocd using CDDB.
@@ -114,6 +117,7 @@ private:
     QString m_cdName;
     QString m_discCddbId;
     QString m_udi;
+    QString m_device;
     mutable int m_encodingFormat;
 
     QString m_fileNamePattern;

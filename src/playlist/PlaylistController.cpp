@@ -146,15 +146,11 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     bool playNow = false;
     if( options & DirectPlay )
         playNow = true;
-
     if( options & StartPlay )
-    {
-        if( !The::engineController()->isPlaying() && !The::engineController()->isPaused() )
+        if( !The::engineController()->isPlaying() )
             playNow = true;
-    }
 
-    if( playNow )
-    {
+    if ( playNow ) {
         if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
              AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum )
             Actions::instance()->play();
@@ -172,6 +168,7 @@ Playlist::Controller::insertOptioned( Playlists::PlaylistPtr playlist, int optio
     if( !playlist )
         return;
 
+    playlist->triggerTrackLoad();
     insertOptioned( playlist->tracks(), options );
 }
 
@@ -229,6 +226,7 @@ void
 Playlist::Controller::insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist )
 {
     DEBUG_BLOCK
+    playlist->triggerTrackLoad();
     Meta::TrackList tl( playlist->tracks() );
     insertTracks( topModelRow, tl );
 }
@@ -240,6 +238,7 @@ Playlist::Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList 
     Meta::TrackList tl;
     foreach( Playlists::PlaylistPtr playlist, playlists )
     {
+        playlist->triggerTrackLoad();
         tl += playlist->tracks();
     }
     insertTracks( topModelRow, tl );
@@ -592,6 +591,7 @@ Playlist::Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
             Playlists::PlaylistPtr playlist = Playlists::expand( track ); //expand() can return 0 if the KIO job times out
             if( playlist )
             {
+                playlist->triggerTrackLoad(); //playlist track loading is on demand.
                 //since this is a playlist masqueurading as a single track, make a MultiTrack out of it:
                 if ( playlist->tracks().count() > 0 )
                     modifiedList << Meta::TrackPtr( new Meta::MultiTrack( playlist ) );

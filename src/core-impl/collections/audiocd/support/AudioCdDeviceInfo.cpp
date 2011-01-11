@@ -17,9 +17,9 @@
 #include "AudioCdDeviceInfo.h"
 #include "MediaDeviceInfo.h"
 
-AudioCdDeviceInfo::AudioCdDeviceInfo( QString mountpoint, QString udi )
+AudioCdDeviceInfo::AudioCdDeviceInfo( QString device, QString udi )
 : MediaDeviceInfo(),
-m_mountpoint( mountpoint )
+m_device( device )
 {
     m_udi = udi;
 }
@@ -29,9 +29,9 @@ AudioCdDeviceInfo::~AudioCdDeviceInfo()
 }
 
 QString
-AudioCdDeviceInfo::mountpoint()
+AudioCdDeviceInfo::device()
 {
-    return m_mountpoint;
+    return m_device;
 }
 
 #include "AudioCdDeviceInfo.moc"

@@ -176,10 +176,12 @@ Playlist::Actions::play()
 {
     DEBUG_BLOCK
 
-    if( 0 == m_nextTrackCandidate )
+    if ( m_nextTrackCandidate == 0 )
     {
         m_nextTrackCandidate = The::playlist()->activeId();
-        if( 0 == m_nextTrackCandidate )
+        // the queue has priority, and requestNextTrack() respects the queue.
+        // this is a bit of a hack because we "know" that all navigators will look at the queue first.
+        if ( !m_nextTrackCandidate || !m_navigator->queue().isEmpty() )
             m_nextTrackCandidate = m_navigator->requestNextTrack();
     }
 
@@ -450,16 +452,20 @@ Playlist::Actions::restoreDefaultPlaylist()
     The::playlistManager();
 
     Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Amarok::defaultPlaylistPath() );
-    if ( playlist && playlist->tracks().count() > 0 )
+
+    if( playlist ) // This pointer will be 0 on first startup
+        playlist->triggerTrackLoad(); // playlist track loading is on demand
+
+    if( playlist && playlist->tracks().count() > 0 )
     {
         Meta::TrackList tracks = playlist->tracks();
 
         QMutableListIterator<Meta::TrackPtr> i( tracks );
-        while ( i.hasNext() )
+        while( i.hasNext() )
         {
             i.next();
             Meta::TrackPtr track = i.value();
-            if ( ! track )
+            if( ! track )
                 i.remove();
             else if( Playlists::canExpand( track ) )
             {
@@ -468,6 +474,7 @@ Playlist::Actions::restoreDefaultPlaylist()
                 if( playlist )
                 {
                     i.remove();
+                    playlist->triggerTrackLoad(); //playlist track loading is on demand.
                     Meta::TrackList newtracks = playlist->tracks();
                     foreach( Meta::TrackPtr t, newtracks )
                         if( t )
@@ -486,6 +493,7 @@ Playlist::Actions::restoreDefaultPlaylist()
         if( lastPlayingRow >= 0 )
             Playlist::ModelStack::instance()->bottom()->setActiveRow( lastPlayingRow );
     }
+
     //Check if we should load the first run jingle, since there is no saved playlist to load
     else if( AmarokConfig::playFirstRunJingle() )
     {

@@ -68,9 +68,6 @@ class QtGroupingProxy : public QAbstractProxyModel
         void modelRowsInserted( const QModelIndex&, int, int );
         void modelRowsRemoved( const QModelIndex&, int, int );
 
-        void slotDeleteGroup();
-        void slotRenameGroup();
-
     protected:
         /** Maps an item to a group.
           * The return value is a list because an item can put in multiple groups.
@@ -89,8 +86,6 @@ class QtGroupingProxy : public QAbstractProxyModel
         
         bool isGroup( const QModelIndex &index ) const;
         bool isAGroupSelected( const QModelIndexList& list ) const;
-
-        QAbstractItemModel *m_model;
 
         /** Maintains the group -> sourcemodel row mapping
           * The reason a QList<int> is use instead of a QMultiHash is that the values have to be

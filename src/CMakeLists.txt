@@ -361,6 +361,7 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/DynamicCategory.cpp
     browsers/playlistbrowser/DynamicBiasDelegate.cpp
     browsers/playlistbrowser/DynamicBiasWidgets.cpp
+    browsers/playlistbrowser/PlaylistBrowserFilterProxy.cpp
     browsers/playlistbrowser/PlaylistBrowserModel.cpp
     browsers/playlistbrowser/PlaylistBrowserCategory.cpp
     browsers/playlistbrowser/QtGroupingProxy.cpp
@@ -531,7 +532,7 @@ set(apg_SRCS
     playlistgenerator/constraints/PlaylistLength.cpp
     playlistgenerator/constraints/PreventDuplicates.cpp
     playlistgenerator/constraints/TagMatch.cpp
-    playlistgenerator/constraints/TagMatchComparer.cpp
+    playlistgenerator/constraints/TagMatchSupport.cpp
     playlistgenerator/constraints/TrackSpreader.cpp
 )
 

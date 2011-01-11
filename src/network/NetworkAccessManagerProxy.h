@@ -55,6 +55,7 @@ public:
      * Gets the contents of the target @p url. It is a convenience wrapper
      * around QNetworkAccessManager::get() where the user supplies a
      * slot @p method to be called when the content is retrieved.
+     * NOTE: On redirects requestRedirected is emitted.
      *
      * @param url the url to get the content from.
      * @param receiver the receiver object to call @p method on.
@@ -68,10 +69,26 @@ public:
     int abortGet( const KUrl &url );
     int abortGet( const KUrl::List &urls );
 
+    /**
+     * Gets the URL to which a server redirects the request.
+     * An empty KUrl will be returned if the request was not redirected.
+     *
+     * @param reply The QNetworkReply which contains all information about
+     *              the reply from the server.
+     *
+     * @return The URL to which the server redirected the request or an empty
+     *         URL if there was no redirect.
+     */
+    KUrl getRedirectUrl( QNetworkReply *reply );
+
 #ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *networkAccessViewer();
     void setNetworkAccessViewer( NetworkAccessViewer *viewer );
 #endif // DEBUG_BUILD_TYPE
+
+Q_SIGNALS:
+    void requestRedirected( const KUrl &sourceUrl, const KUrl &targetUrl );
+    void requestRedirected( QNetworkReply* oldReply, QNetworkReply *newReply );
 
 public slots:
     void slotError( QObject *reply );

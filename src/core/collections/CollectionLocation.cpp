@@ -107,7 +107,6 @@ void
 CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination,
                                  const Transcoding::Configuration &configuration )
 {
-    debug() << "prepare copy"<<tracks.count()<<"tracks from"<<collection()->collectionId()<<"to"<<destination->collection()->collectionId();
     if( !destination->isWritable() )
     {
         Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
@@ -157,7 +156,6 @@ CollectionLocation::prepareMove( Meta::TrackPtr track, CollectionLocation *desti
 void
 CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination )
 {
-    debug() << "prepare move"<<tracks.count()<<"tracks from"<<collection()->collectionId()<<"to"<<(destination->collection()?destination->collection()->collectionId():"no destination. probably trash");
     DEBUG_BLOCK
     if( !destination->isWritable() )
     {
@@ -343,7 +341,6 @@ CollectionLocation::slotCopyOperationFinished()
 void
 CollectionLocation::slotRemoveOperationFinished()
 {
-    DEBUG_BLOCK
     emit finishRemove();
 }
 
@@ -362,7 +359,6 @@ CollectionLocation::slotShowDestinationDialogDone()
 void
 CollectionLocation::slotShowRemoveDialogDone()
 {
-    DEBUG_BLOCK
     emit startRemove();
 }
 

@@ -140,7 +140,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         void completePodcastDownloads();
 
     signals:
-        void updated();
+        void updated( int category );
         void categoryAdded( int category );
         void providerAdded( Playlists::PlaylistProvider *provider, int category );
         void providerRemoved( Playlists::PlaylistProvider *provider, int category );

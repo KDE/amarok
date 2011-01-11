@@ -484,10 +484,11 @@ CollectionManager::trackForUrl( const KUrl &url )
         }
     }
 
-    if( url.protocol() == "http" || url.protocol() == "mms" || url.protocol() == "smb" )
+    if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("mms") ||
+        url.protocol() == QLatin1String("smb") )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
-    if( url.protocol() == "file" && EngineController::canDecode( url ) )       
+    if( url.protocol() == QLatin1String("file") && EngineController::canDecode( url ) )       
         return Meta::TrackPtr( new MetaFile::Track( url ) );
 
     return Meta::TrackPtr( 0 );

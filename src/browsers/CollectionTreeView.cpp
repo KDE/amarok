@@ -726,7 +726,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
                                 bool removeSources, Transcoding::Configuration configuration ) const
 {
     DEBUG_BLOCK
-    if( !destination->isWritable() )
+    if( !destination || !destination->isWritable() )
     {
         warning() << "collection " << destination->prettyName() << " is not writable! Aborting";
         return;
@@ -1169,7 +1169,7 @@ void CollectionTreeView::slotMoveTracks()
     if( sender() )
     {
         if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
-            copyTracks( m_currentItems, m_currentCopyDestination[ action ], true );
+            copyTracks( m_currentItems, m_currentMoveDestination[ action ], true );
     }
 }
 

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * copyright (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
+ * Copyright (c) 2011 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,22 +14,30 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AUDIOCD_DEVICE_INFO_H
-#define AUDIOCD_DEVICE_INFO_H
+#include "PlaylistBrowserFilterProxy.h"
 
-#include "MediaDeviceInfo.h"
+#include "core/support/Debug.h"
 
-class AudioCdDeviceInfo : public MediaDeviceInfo
+PlaylistBrowserFilterProxy::PlaylistBrowserFilterProxy( QObject *parent ) :
+    QSortFilterProxyModel( parent )
 {
-    Q_OBJECT
-    public:
-        AudioCdDeviceInfo( QString device, QString udi );
-        ~AudioCdDeviceInfo();
+}
 
-        QString device();
+void
+PlaylistBrowserFilterProxy::setSourceModel( QAbstractItemModel *model )
+{
+    if( sourceModel() )
+        sourceModel()->disconnect();
 
-    private:
-        QString m_device;
-};
+    QSortFilterProxyModel::setSourceModel( model );
+    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
+             SLOT(slotRenameIndex( const QModelIndex & )) );
+}
 
-#endif
+void
+PlaylistBrowserFilterProxy::slotRenameIndex( const QModelIndex &sourceIdx )
+{
+    const QModelIndex &idx = mapFromSource( sourceIdx );
+    if( idx.isValid() )
+        emit renameIndex( idx );
+}

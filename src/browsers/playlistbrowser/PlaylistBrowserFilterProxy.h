@@ -1,5 +1,5 @@
 /****************************************************************************************
- * copyright (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
+ * Copyright (c) 2011 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,22 +14,30 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AUDIOCD_DEVICE_INFO_H
-#define AUDIOCD_DEVICE_INFO_H
+#ifndef PLAYLISTBROWSERFILTERPROXY_H
+#define PLAYLISTBROWSERFILTERPROXY_H
 
-#include "MediaDeviceInfo.h"
+#include <QSortFilterProxyModel>
 
-class AudioCdDeviceInfo : public MediaDeviceInfo
+class PlaylistBrowserFilterProxy : public QSortFilterProxyModel
 {
     Q_OBJECT
     public:
-        AudioCdDeviceInfo( QString device, QString udi );
-        ~AudioCdDeviceInfo();
+        /** simple reimplementation of QSortFilterProxyModel to allow editing call from down the
+         * modelstack.
+         */
+        explicit PlaylistBrowserFilterProxy( QObject *parent = 0 );
+        ~PlaylistBrowserFilterProxy() {}
 
-        QString device();
+        // QSortFilterProxyModel methods
+        virtual void setSourceModel( QAbstractItemModel *sourceModel );
 
-    private:
-        QString m_device;
+    signals:
+        void renameIndex( const QModelIndex &index );
+
+    private slots:
+        void slotRenameIndex( const QModelIndex &index );
+
 };
 
-#endif
+#endif // PLAYLISTBROWSERFILTERPROXY_H

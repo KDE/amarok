@@ -181,7 +181,7 @@ SqlPodcastProvider::loadPodcasts()
     }
     if( m_podcastImageFetcher )
         m_podcastImageFetcher->run();
-    emit( updated() );
+    emit updated();
 }
 
 SqlPodcastEpisodePtr
@@ -231,7 +231,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
             return episode;
 
     //The episode was found in the database but it's channel didn't have it in it's list.
-    //That probably is because it's beyond the purgecount limit.
+    //That probably is because it's beyond the purgecount limit or the tracks were not loaded yet.
     return SqlPodcastEpisodePtr( new SqlPodcastEpisode( dbResult.mid( 0, 14 ), channel ) );
 }
 
@@ -1049,7 +1049,6 @@ SqlPodcastProvider::deleteDownloadedEpisode( Podcasts::SqlPodcastEpisodePtr epis
     KIO::del( episode->localUrl(), KIO::HideProgressInfo );
 
     episode->setLocalUrl( KUrl() );
-    emit( updated() );
 }
 
 Podcasts::SqlPodcastChannelPtr
@@ -1238,7 +1237,9 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     QFile *tmpFile = createTmpFile( sqlEpisode );
     struct PodcastEpisodeDownload download = { sqlEpisode,
                                                tmpFile,
-                                               tmpFile->fileName(),
+    /* Unless a reidrect happens the filename from the enclosure is used. This is a potential source
+       of filename conflicts in downloadResult() */
+                                               KUrl( sqlEpisode->uidUrl() ).fileName(),
                                                false
                                              };
     m_downloadJobMap.insert( transferJob, download );
@@ -1361,7 +1362,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
     // NOTE: we need to emit because the KJobProgressBar relies on it to clean up
     job->kill( KJob::EmitResult );
     sqlEpisode->setLocalUrl( fileName );
-    emit( updated() );  // repaint icons
+    //TODO: repaint icons, probably with signal metadataUpdate()
     return true;
 }
 
@@ -1373,11 +1374,11 @@ SqlPodcastProvider::addData( KIO::Job *job, const QByteArray &data )
         return; // EOF
     }
 
-    struct PodcastEpisodeDownload download = m_downloadJobMap.value( job );
+    struct PodcastEpisodeDownload &download = m_downloadJobMap[job];
 
     // NOTE: if there is a tmpfile we are already downloading, no need to
     // checkEnclosureLocallyAvailable() on every data chunk. performance optimization.
-    if( download.finalNameReady )
+    if( !download.finalNameReady )
     {
         download.finalNameReady = true;
         if( checkEnclosureLocallyAvailable( job ) )
@@ -1402,12 +1403,6 @@ void
 SqlPodcastProvider::slotStatusBarSorryMessage( const QString &message )
 {
     The::statusBar()->longMessage( message, StatusBar::Sorry );
-}
-
-void
-SqlPodcastProvider::slotUpdated()
-{
-    emit updated();
 }
 
 void
@@ -1457,8 +1452,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
 
             if( sqlChannel->writeTags() )
                 sqlEpisode->writeTagsToFile();
-            //force an update so the icon can be updated in the PlaylistBrowser
-            emit( updated() );
+            //TODO: force a redraw of the view so the icon can be updated in the PlaylistBrowser
         }
         else
         {

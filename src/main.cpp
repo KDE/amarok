@@ -23,11 +23,12 @@
 #include <KCmdLineArgs>
 #include <KDebug>
 
+#include <csignal>
+
 //#define AMAROK_USE_DRKONQI
 
 extern AMAROK_EXPORT class KAboutData aboutData; //defined in App.cpp
 extern AMAROK_EXPORT class OcsData ocsData;
-
 
 int main( int argc, char *argv[] )
 {
@@ -208,6 +209,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Stefan Bogner"), ki18n("Loads of stuff"), "bochi@online.ms" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Tomasz Dudzik"), ki18n("Splash screen"), "madsheytan@gmail.com" );
+        ocsData.addCredit( QString(), aboutData.credits().last() );
 
     //Donors:
     ocsData.addDonor( "", KAboutPerson( ki18n( "Benoît AlK Zugmeyer" ), KLocalizedString(), "benoit@zugmeyer.com" ) );
@@ -221,7 +224,8 @@ int main( int argc, char *argv[] )
     ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Tell" ), KLocalizedString(), "robert.tell@gmx.net" ) );
     ocsData.addDonor( "", KAboutPerson( ki18n( "Ryan Rix" ), KLocalizedString(), "phrkonaleash@gmail.com" ) );
     ocsData.addDonor( "", KAboutPerson( ki18n( "Thomas Kahle" ), KLocalizedString(), "tom111@gmx.de" ) );
-    //Last update: 4/12/2010
+    ocsData.addDonor( "VBart", KAboutPerson( ki18n( "Valentin V. Bartenev" ), KLocalizedString(), "i@vbart.ru" ) );
+    //Last update: 11/1/2010
 
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
@@ -255,6 +259,12 @@ int main( int argc, char *argv[] )
             fprintf( stderr, "Amarok is already running!\n" );
         return 0;
     }
+
+    // Rewrite default SIGINT and SIGTERM handlers
+    // to make amarok save current playlists during forced
+    // application termination (logout, Ctr+C in console etc.)
+    signal( SIGINT, &QCoreApplication::exit );
+    signal( SIGTERM, &QCoreApplication::exit );
 
     App app;
     app.setUniqueInstance( startFlag == KUniqueApplication::NonUniqueInstance );

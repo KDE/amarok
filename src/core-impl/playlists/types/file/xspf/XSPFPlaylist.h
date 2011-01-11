@@ -74,8 +74,10 @@ public:
     virtual QString name() const { return title(); }
     virtual QString description() const;
 
-    /** returns all tracks in this playlist */
-    Meta::TrackList tracks();
+    virtual int trackCount() const;
+    virtual Meta::TrackList tracks();
+    virtual void triggerTrackLoad();
+
     virtual void addTrack( Meta::TrackPtr track, int position = -1 );
     virtual void removeTrack( int position );
 

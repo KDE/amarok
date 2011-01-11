@@ -192,12 +192,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
         metaTrack->setTitle( track->name() );
 
     if( track->album() )
-    {
         metaTrack->setAlbum( track->album()->name() );
-        // also copy over the album cover
-        if( track->album()->hasImage() && !metaTrack->album()->hasImage() )
-            metaTrack->album()->setImage( track->album()->image().toImage() );
-    }
 
     if( track->artist() )
         metaTrack->setArtist( track->artist()->name() );
@@ -260,6 +255,12 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
         metaTrack->addLabel( label );
 
     metaTrack->endMetaDataUpdate();
+
+    // Used to be updated after changes commit to prevent crash on NULL pointer access
+    // if metaTrack had no album.
+    if( track->album() && track->album()->hasImage() && !metaTrack->album()->hasImage() )
+        metaTrack->album()->setImage( track->album()->image().toImage() );
+
     metaTrack->setWriteFile( true );
 
     return true;
@@ -364,13 +365,17 @@ void
 SqlCollectionLocation::slotJobFinished( KJob *job )
 {
     DEBUG_BLOCK
+
+    Meta::TrackPtr track = m_jobs.value( job );
     if( job->error() )
     {
         //TODO: proper error handling
         warning() << "An error occurred when copying a file: " << job->errorString();
-        source()->transferError(m_jobs.value( job ), KIO::buildErrorString( job->error(), job->errorString() ) );
-        m_destinations.remove( m_jobs.value( job ) );
+        source()->transferError( track, KIO::buildErrorString( job->error(), job->errorString() ) );
+        m_destinations.remove( track );
     }
+    else
+        source()->transferSuccessful( track );
 
     m_jobs.remove( job );
     job->deleteLater();
@@ -381,21 +386,20 @@ void
 SqlCollectionLocation::slotRemoveJobFinished( KJob *job )
 {
     DEBUG_BLOCK
-    int error = job->error();
-    if( error != 0 && error != KIO::ERR_DOES_NOT_EXIST )
+    Meta::TrackPtr track = m_removejobs.value( job );
+    if( job->error() )
     {
         //TODO: proper error handling
-        debug() << "KIO::ERR_DOES_NOT_EXIST" << KIO::ERR_DOES_NOT_EXIST;
         warning() << "An error occurred when removing a file: " << job->errorString();
-        transferError(m_removejobs.value( job ), KIO::buildErrorString( job->error(), job->errorString() ) );
+        transferError( track, KIO::buildErrorString( job->error(), job->errorString() ) );
     }
     else
     {
         // Remove the track from the database
-        remove( m_removejobs.value( job ) );
+        remove( track );
 
         //we  assume that KIO works correctly...
-        transferSuccessful( m_removejobs.value( job ) );
+        transferSuccessful( track );
     }
 
     m_removejobs.remove( job );
@@ -420,13 +424,9 @@ void SqlCollectionLocation::slotTransferJobFinished( KJob* job )
     // that were successfully copied
     foreach( const Meta::TrackPtr &track, m_destinations.keys() )
     {
-        if( !QFileInfo( m_destinations[ track ] ).exists() )
-            m_destinations.remove( track );
+        if( QFile::exists( m_destinations[ track ] ) )
+            insert( track, m_destinations[ track ] );
         m_originalUrls[track] = track->playableUrl();
-        debug() << "inserting original url" << m_originalUrls[track];
-        // report successful transfer with the original url
-        source()->transferSuccessful( track );
-        insert( track, m_destinations[ track ] );
     }
     debug () << "m_originalUrls" << m_originalUrls;
     m_collection->scanManager()->unblockScan();
@@ -443,9 +443,7 @@ void SqlCollectionLocation::slotTransferJobAborted()
     // that were successfully copied
     foreach( const Meta::TrackPtr &track, m_destinations.keys() )
     {
-        if( !QFileInfo( m_destinations[ track ] ).exists() )
-            m_destinations.remove( track );
-        else
+        if( QFile::exists( m_destinations[ track ] ) )
             insert( track, m_destinations[ track ] ); // was already copied, so have to insert it in the db
         m_originalUrls[track] = track->playableUrl();
     }
@@ -548,8 +546,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
 
         if( src.equals( dest ) )
         {
-            debug() << "move to itself found";
-            source()->transferSuccessful( track );
+            warning() << "move to itself found: " << info.absoluteFilePath();
             m_transferjob->slotJobFinished( 0 );
             if( m_sources.isEmpty() )
                 return false;

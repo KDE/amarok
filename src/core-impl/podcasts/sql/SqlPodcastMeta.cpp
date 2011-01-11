@@ -478,6 +478,7 @@ SqlPodcastChannel::fromPlaylistPtr( Playlists::PlaylistPtr playlist )
 SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
                                             const QStringList &result )
     : Podcasts::PodcastChannel()
+    , m_episodesLoaded( false )
     , m_provider( provider )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
@@ -497,7 +498,6 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     m_purge = sqlStorage->boolTrue() == *(iter++);
     m_purgeCount = (*(iter++)).toInt();
     m_writeTags = sqlStorage->boolTrue() == *(iter++);
-    loadEpisodes();
 }
 
 SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
@@ -544,6 +544,35 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
 
         m_episodes << SqlPodcastEpisodePtr( sqlEpisode );
     }
+    m_episodesLoaded = true;
+}
+
+int
+SqlPodcastChannel::trackCount() const
+{
+    if( m_episodesLoaded )
+        return m_episodes.count();
+
+    QString query = "SELECT COUNT(id) FROM podcastepisodes WHERE channel = %1";
+
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    Q_ASSERT( sql );
+
+    QStringList results = sql->query( query.arg( m_dbId ) );
+    if( results.isEmpty() )
+    {
+        error() << "no results for COUNT query on playlist_tracks table!";
+        return -1;
+    }
+    int trackCount = results.first().toInt();
+    return m_purge ? qMin( m_purgeCount, trackCount ): trackCount;
+}
+
+void
+SqlPodcastChannel::triggerTrackLoad()
+{
+    if( !m_episodesLoaded )
+        loadEpisodes();
 }
 
 Playlists::PlaylistProvider *
@@ -628,6 +657,10 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     if( !episode->guid().isEmpty() && m_provider->possiblyContainsTrack( episode->guid() ) )
         return PodcastEpisodePtr::dynamicCast( m_provider->trackForUrl( episode->guid() ) );
 
+    //force episodes load.
+    if( !m_episodesLoaded )
+        loadEpisodes();
+
     SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
 
     //episodes are sorted on pubDate high to low
@@ -660,7 +693,6 @@ SqlPodcastChannel::applyPurge()
 
     while( m_episodes.count() > purgeCount() )
     {
-        debug() << "removing last episode from the list since we are limited to " << purgeCount();
         SqlPodcastEpisodePtr removedEpisode = m_episodes.takeLast();
         m_provider->deleteDownloadedEpisode( removedEpisode );
 
@@ -759,5 +791,7 @@ SqlPodcastChannel::loadEpisodes()
                 new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) ) );
         m_episodes <<  sqlEpisode;
     }
+
+    m_episodesLoaded = true;
 }
 

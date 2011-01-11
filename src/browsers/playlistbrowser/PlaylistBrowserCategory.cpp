@@ -26,6 +26,7 @@
 #include "PlaylistsInFoldersProxy.h"
 #include "PlaylistsByProviderProxy.h"
 #include "PlaylistTreeItemDelegate.h"
+#include "PlaylistBrowserFilterProxy.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "PlaylistBrowserView.h"
@@ -99,17 +100,16 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
     m_byFolderProxy = new PlaylistsInFoldersProxy( model );
 
-    QtGroupingProxy *filterSourceModel = toggleAction->isChecked()
-        ? static_cast<QtGroupingProxy*>(m_byFolderProxy)
-        : static_cast<QtGroupingProxy*>(m_byProviderProxy);
-    m_filterProxy = new QSortFilterProxyModel( this );
-    m_filterProxy->setSourceModel( filterSourceModel );
+    m_filterProxy = new PlaylistBrowserFilterProxy( this );
+    //no need to setModel on filterProxy since it will be done in toggleView anyway.
     m_filterProxy->setDynamicSortFilter( true );
     m_filterProxy->setFilterKeyColumn( PlaylistBrowserModel::ProviderColumn );
 
     m_playlistView = new PlaylistBrowserView( m_filterProxy, this );
     m_defaultItemDelegate = m_playlistView->itemDelegate();
     m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
+
+    toggleView( toggleAction->isChecked() );
 
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins( 0, 0, 0, 0 );
@@ -122,8 +122,6 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_playlistView->setDragEnabled( true );
     m_playlistView->setAcceptDrops( true );
     m_playlistView->setDropIndicatorShown( true );
-
-    toggleView( toggleAction->isChecked() );
 
     foreach( const Playlists::PlaylistProvider *provider,
              The::playlistManager()->providersForCategory( m_playlistCategory ) )
@@ -178,7 +176,6 @@ PlaylistBrowserCategory::toggleView( bool merged )
     if( merged )
     {
         m_filterProxy->setSourceModel( m_byFolderProxy );
-        m_playlistView->setModel( m_filterProxy );
         m_playlistView->setItemDelegate( m_defaultItemDelegate );
         m_playlistView->setRootIsDecorated( true );
         m_addFolderAction->setHelpText( m_addFolderAction->text() );
@@ -186,7 +183,6 @@ PlaylistBrowserCategory::toggleView( bool merged )
     else
     {
         m_filterProxy->setSourceModel( m_byProviderProxy );
-        m_playlistView->setModel( m_filterProxy );
         m_playlistView->setItemDelegate( m_byProviderDelegate );
         m_playlistView->setRootIsDecorated( false );
         m_addFolderAction->setHelpText( i18n( "Folders are only shown in <b>merged view</b>." ) );
@@ -301,7 +297,7 @@ PlaylistBrowserCategory::createNewFolder()
             folderCount = regex.cap( 1 ).toInt();
         groupName += QString( " (%1)" ).arg( folderCount + 1 );
     }
-    QModelIndex idx = m_byFolderProxy->createNewFolder( groupName );
+    QModelIndex idx = m_filterProxy->mapFromSource( m_byFolderProxy->createNewFolder( groupName ) );
     m_playlistView->setCurrentIndex( idx );
     m_playlistView->edit( idx );
 }

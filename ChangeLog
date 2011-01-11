@@ -1,15 +1,42 @@
 Amarok ChangeLog
 ================
-(C) 2002-2010 the Amarok authors.
+(C) 2002-2011 the Amarok authors.
 
 
-VERSION 2.4-Beta 2
+VERSION 2.4.1
+  FEATURES:
+
   CHANGES:
 
   BUGFIXES:
+    * Fixed issue when breadcrumbs stayed not updated after service insert/remove.
+      (BR 262780)
+    * Fixed issue with TagDialog that make metadata fields stay editable if multiple
+      streams opened. (BR 177400)
+    * Fixed missing equel-sign ('=') in filter string of bookmarks. (BR 245759)
+
+
+VERSION 2.4.0
+  CHANGES:
+    * New Splash Screen by Tomasz Dudzik <madsheytan@gmail.com>.
+    * The "Playdar Collection" feature has been disabled until some technical 
+      issues are resolved.
+    * Fixed some broken radio stream URLs.
+
+  BUGFIXES:
+    * Fix crash on copying tracks between collection. (BR 261364)
+    * Fix fetching of script data. BBC, Free Music Charts and others should work again.
+      (BR 261839)
+    * Actually show the Splash Screen by default, as it was meant to work.
+    * Leave all pending files in case of error/conflict during tracks moving. (BR 257739)
+    * Fix crash when moving tracks between collections. (BR 253033)
+    * Fixed issue with UMS Collection that made amarok to delete original track
+      instead of newly copied one. (BR 238915)
     * Fixed issue with Audio CDs that do not provide CDDB information. Patch by
       Andriy Gapon <avg@icyb.net.ua>. (BR 257818)
-
+    * Fixed issue with the Organize Files Dialog that prevented presets from being
+      loaded when in advanced mode. Patch by Philipp Schmidt <philschmidt@gmx.net>.
+      (BR 255325)
 
 
 VERSION 2.4-Beta 1

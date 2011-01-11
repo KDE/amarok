@@ -189,6 +189,38 @@ TestSqlScanManager::testScanDirectory()
 }
 
 void
+TestSqlScanManager::testDuplicateUid()
+{
+    Meta::FieldHash values;
+
+    // create two tracks with same uid
+    values.clear();
+    values.insert( Meta::valUniqueId, QVariant("c6c29f50279ab9523a0f44928bc1e96b") );
+    values.insert( Meta::valUrl, QVariant("track1.mp3") );
+    values.insert( Meta::valTitle, QVariant("Track 1") );
+    createTrack( values );
+
+    values.clear();
+    values.insert( Meta::valUniqueId, QVariant("c6c29f50279ab9523a0f44928bc1e96b") );
+    values.insert( Meta::valUrl, QVariant("track2.mp3") );
+    values.insert( Meta::valTitle, QVariant("Track 2") );
+    createTrack( values );
+
+    m_scanManager->requestFullScan();
+    waitScannerFinished();
+
+    // -- check the commit (the database needs to have been updated correctly)
+    m_collection->registry()->emptyCache();
+
+    Meta::AlbumPtr album;
+    album = m_collection->registry()->getAlbum( QString(), QString() );
+
+    QCOMPARE( album->tracks().count(), 1 );
+    QVERIFY( album->tracks().first()->name() == "Track 1" ||
+             album->tracks().first()->name() == "Track 2" );
+}
+
+void
 TestSqlScanManager::testCompilation()
 {
     createAlbum();

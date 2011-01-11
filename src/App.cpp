@@ -111,7 +111,7 @@ QStringList App::s_delayedAmarokUrls = QStringList();
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "Amarok" ), AMAROK_VERSION,
     ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
-    ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2010, The Amarok Development Squad" ),
+    ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2011, The Amarok Development Squad" ),
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
              ( "http://amarok.kde.org" ) );
 
@@ -608,7 +608,7 @@ App::continueInit()
     Amarok::Components::applicationController()->start();
 
     KSplashScreen* splash = 0;
-    if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
+    if( AmarokConfig::showSplashScreen() && !isSessionRestored() )
     {
         QPixmap splashimg( KGlobal::dirs()->findResource( "data", "amarok/images/splash_screen.jpg" ) );
         splash = new KSplashScreen( splashimg, Qt::WindowStaysOnTopHint );

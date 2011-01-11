@@ -52,9 +52,7 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     m_loadAction->setProperty( "popupdropper_svg_id", "load" );
     connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
 
-    connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()) );
-    connect( The::playlistManager(), SIGNAL( providerRemoved( Playlists::PlaylistProvider*, int ) ),
-             SLOT( slotUpdate() ) );
+    connect( The::playlistManager(), SIGNAL(updated( int )), SLOT(slotUpdate( int )) );
 
     connect( The::playlistManager(), SIGNAL( playlistAdded( Playlists::PlaylistPtr, int ) ),
              SLOT( slotPlaylistAdded( Playlists::PlaylistPtr,int ) ) );
@@ -244,7 +242,7 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
     {
         case ProviderColumn:
         {
-            if( role == Qt::DisplayRole )
+            if( role == Qt::DisplayRole || role == Qt::EditRole )
             {
                 Playlists::PlaylistProvider *provider = getProviderByName( value.toString() );
                 if( !provider )
@@ -322,6 +320,24 @@ PlaylistBrowserModel::parent( const QModelIndex &index ) const
     return QModelIndex();
 }
 
+bool
+PlaylistBrowserModel::hasChildren( const QModelIndex &parent ) const
+{
+    if( parent.column() > 0 )
+        return false;
+    if( !parent.isValid() )
+    {
+        return m_playlists.isEmpty();
+    }
+    else if( !IS_TRACK(parent) )
+    {
+        Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
+        return playlist->trackCount() != 0; //-1 might mean there are tracks, but not yet loaded.
+    }
+
+    return false;
+}
+
 int
 PlaylistBrowserModel::rowCount( const QModelIndex &parent ) const
 {
@@ -349,6 +365,44 @@ PlaylistBrowserModel::columnCount( const QModelIndex &parent ) const
 
     //for tracks
     return 1; //only name
+}
+
+bool
+PlaylistBrowserModel::canFetchMore( const QModelIndex &parent ) const
+{
+    if( parent.column() > 0 )
+        return false;
+
+    if( !parent.isValid() )
+    {
+        return false;
+    }
+    else if( !IS_TRACK(parent) )
+    {
+        Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
+        //TODO: imeplement incremental loading of tracks by checking for ==
+        if( playlist->trackCount() != playlist->tracks().count() )
+            return true; //tracks still need to be loaded.
+    }
+
+    return false;
+}
+
+void
+PlaylistBrowserModel::fetchMore ( const QModelIndex &parent )
+{
+    if( parent.column() > 0 )
+        return;
+
+    //TODO: load playlists dynamically from provider
+    if( !parent.isValid() )
+        return;
+
+    if( !IS_TRACK(parent) )
+    {
+        Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
+        playlist->triggerTrackLoad();
+    }
 }
 
 Qt::ItemFlags
@@ -500,6 +554,9 @@ PlaylistBrowserModel::trackRemoved( Playlists::PlaylistPtr playlist, int positio
 void
 PlaylistBrowserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
 {
+    if( playlist->provider()->category() != m_playlistCategory )
+        return;
+
     //search index of this Playlist
     // HACK: matches first to match same name, but there could be
     // several playlists with the same name
@@ -514,13 +571,17 @@ PlaylistBrowserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
         return;
 
     QModelIndex idx = index( row, 0, QModelIndex() );
+    debug() << idx;
     emit( renameIndex( idx ) );
 }
 
 void
-PlaylistBrowserModel::slotUpdate()
+PlaylistBrowserModel::slotUpdate( int category )
 {
-    emit layoutAboutToBeChanged();
+    if( category != m_playlistCategory )
+        return;
+
+    beginResetModel();
 
     foreach( Playlists::PlaylistPtr playlist, m_playlists )
         unsubscribeFrom( playlist );
@@ -528,7 +589,7 @@ PlaylistBrowserModel::slotUpdate()
     m_playlists.clear();
     m_playlists = loadPlaylists();
 
-    emit layoutChanged();
+    endResetModel();
 }
 
 Playlists::PlaylistList
@@ -626,7 +687,11 @@ PlaylistBrowserModel::tracksFromIndexes( const QModelIndexList &list ) const
         if( IS_TRACK(index) )
             tracks << trackFromIndex( index );
         else if( Playlists::PlaylistPtr playlist = playlistFromIndex( index ) )
+        {
+            //first trigger a load of the tracks or we'll end up with an empty list
+            playlist->triggerTrackLoad();
             tracks << playlist->tracks();
+        }
     }
     return tracks;
 }

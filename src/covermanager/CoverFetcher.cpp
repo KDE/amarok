@@ -66,6 +66,9 @@ CoverFetcher::CoverFetcher()
     connect( m_queue, SIGNAL(fetchUnitAdded(CoverFetchUnit::Ptr)),
                       SLOT(slotFetch(CoverFetchUnit::Ptr)) );
     s_instance = this;
+
+    connect( The::networkAccessManager(), SIGNAL( requestRedirected( QNetworkReply*, QNetworkReply* ) ),
+             this, SLOT( fetchRequestRedirected( QNetworkReply*, QNetworkReply* ) ) );
 }
 
 CoverFetcher::~CoverFetcher()
@@ -309,6 +312,32 @@ CoverFetcher::slotDialogFinished()
     }
 
     m_dialog.data()->delayedDestruct();
+}
+
+void
+CoverFetcher::fetchRequestRedirected( QNetworkReply *oldReply,
+                                      QNetworkReply *newReply )
+{
+    KUrl oldUrl = oldReply->request().url();
+    KUrl newUrl = newReply->request().url();
+
+    // Since we were redirected we have to check if the redirect
+    // was for one of our URLs and if the new URL is not handled
+    // already.
+    if( m_urls.contains( oldUrl ) && !m_urls.contains( newUrl ) )
+    {
+        // Get the unit for the old URL.
+        CoverFetchUnit::Ptr unit = m_urls.value( oldUrl );
+
+        // Add the unit with the new URL and remove the old one.
+        m_urls.insert( newUrl, unit );
+        m_urls.remove( oldUrl );
+
+        // If the unit is an interactive one we have to incidate that we're
+        // still fetching the cover.
+        if( unit->isInteractive() )
+            Amarok::Components::logger()->newProgressOperation( newReply, i18n( "Fetching Cover" ) );
+    }
 }
 
 void

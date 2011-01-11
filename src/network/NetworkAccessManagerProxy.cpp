@@ -66,38 +66,57 @@ public:
     {
         Q_Q( NetworkAccessManagerProxy );
         QNetworkReply *reply = static_cast<QNetworkReply*>( q->sender() );
+
         KUrl url = reply->request().url();
         QList<CallBackData*> callbacks = urlMap.values( url );
         QByteArray data = reply->readAll();
         data.detach(); // detach so the bytes are not deleted before methods are invoked
         foreach( const CallBackData *cb, callbacks )
         {
-            QByteArray sig = QMetaObject::normalizedSignature( cb->method );
-            sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
-                                // and let Qt's meta object system handle the rest.
-            if( cb->receiver )
-            {
-                bool success( false );
-                const QMetaObject *mo = cb->receiver.data()->metaObject();
-                int methodIndex = mo->indexOfSlot( sig );
-                if( methodIndex != -1 )
-                {
-                    Error err = { reply->error(), reply->errorString() };
-                    QMetaMethod method = mo->method( methodIndex );
-                    success = method.invoke( cb->receiver.data(),
-                                             cb->type,
-                                             Q_ARG( KUrl, reply->request().url() ),
-                                             Q_ARG( QByteArray, data ),
-                                             Q_ARG( NetworkAccessManagerProxy::Error, err ) );
-                }
+            // There may have been a redirect.
+            KUrl redirectUrl = q->getRedirectUrl( reply );
 
-                if( !success )
+            // Check if there's no redirect.
+            if( redirectUrl.isEmpty() )
+            {
+                QByteArray sig = QMetaObject::normalizedSignature( cb->method );
+                sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
+                                    // and let Qt's meta object system handle the rest.
+                if( cb->receiver )
                 {
-                    debug() << QString( "Failed to invoke method %1 of %2" )
-                        .arg( QString(sig) ).arg( mo->className() );
+                    bool success( false );
+                    const QMetaObject *mo = cb->receiver.data()->metaObject();
+                    int methodIndex = mo->indexOfSlot( sig );
+                    if( methodIndex != -1 )
+                    {
+                        Error err = { reply->error(), reply->errorString() };
+                        QMetaMethod method = mo->method( methodIndex );
+                        success = method.invoke( cb->receiver.data(),
+                                                cb->type,
+                                                Q_ARG( KUrl, reply->request().url() ),
+                                                Q_ARG( QByteArray, data ),
+                                                Q_ARG( NetworkAccessManagerProxy::Error, err ) );
+                    }
+
+                    if( !success )
+                    {
+                        debug() << QString( "Failed to invoke method %1 of %2" )
+                            .arg( QString(sig) ).arg( mo->className() );
+                    }
                 }
             }
+            else
+            {
+                debug() << "the server is redirecting the request to: " << redirectUrl;
+
+                // Let's try to fetch the data again, but this time from the new url.
+                QNetworkReply *newReply = q->getData( redirectUrl, cb->receiver.data(), cb->method, cb->type );
+
+                emit q->requestRedirected( url, redirectUrl );
+                emit q->requestRedirected( reply, newReply );
+            }
         }
+
         qDeleteAll( callbacks );
         urlMap.remove( url );
         reply->deleteLater();
@@ -207,6 +226,31 @@ NetworkAccessManagerProxy::abortGet( const KUrl &url )
     qDeleteAll( d->urlMap.values( url ) );
     int removed = d->urlMap.remove( url );
     return removed;
+}
+
+KUrl
+NetworkAccessManagerProxy::getRedirectUrl( QNetworkReply *reply )
+{
+    KUrl targetUrl;
+
+    // Get the original URL.
+    KUrl originalUrl = reply->request().url();
+
+    // Get the redirect attribute.
+    QVariant redirectAttribute = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+
+    // Get the redirect URL from the attribute.
+    KUrl redirectUrl = KUrl( redirectAttribute.toUrl() );
+
+    // If the redirect URL is valid and if it differs from the original
+    // URL then we return the redirect URL. Otherwise an empty URL will
+    // be returned.
+    if( !redirectUrl.isEmpty() && redirectUrl != originalUrl )
+    {
+        targetUrl = redirectUrl;
+    }
+
+    return targetUrl;
 }
 
 void

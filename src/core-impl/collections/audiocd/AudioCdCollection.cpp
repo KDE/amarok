@@ -70,6 +70,7 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
     debug() << "Getting Audio CD info";
     AudioCdDeviceInfo *cdInfo = qobject_cast<AudioCdDeviceInfo *>( info );
     m_udi = cdInfo->udi();
+    m_device = cdInfo->device();
 
     readAudioCdSettings();
 
@@ -81,12 +82,23 @@ AudioCdCollection::~AudioCdCollection()
 {
 }
 
+
+KUrl
+AudioCdCollection::audiocdUrl( const QString & path ) const
+{
+    if (m_device.isNull())
+        return KUrl( QString( "audiocd:/" + path ) );
+    else
+        return KUrl( QString( "audiocd:/%1?device=%2" ).arg( path ).arg( m_device ) );
+}
+
+
 void
 AudioCdCollection::readCd()
 {
     DEBUG_BLOCK
     //get the CDDB info file if possible.
-    KIO::ListJob *listJob = KIO::listRecursive( KUrl("audiocd:/"), KIO::HideProgressInfo, false );
+    KIO::ListJob *listJob = KIO::listRecursive( audiocdUrl(), KIO::HideProgressInfo, false );
     connect( listJob, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
              this, SLOT(audioCdEntries(KIO::Job*,KIO::UDSEntryList)) );
 }
@@ -109,7 +121,7 @@ AudioCdCollection::audioCdEntries( KIO::Job *job, const KIO::UDSEntryList &list 
             QString name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
             if( name.endsWith( QLatin1String(".txt") ) )
             {
-                KUrl url( QString( "audiocd:/%1" ).arg( name ) );
+                KUrl url =  audiocdUrl( name );
                 KIO::StoredTransferJob *tjob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
                 connect( tjob, SIGNAL(result(KJob*)), SLOT(infoFetchComplete(KJob*)) );
                 job->deleteLater();
@@ -257,7 +269,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
                 baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
 
                 //we hack the url so the engine controller knows what track on the CD to play..
-                QString baseUrl = "audiocd:/" + m_discCddbId + '/' + QString::number( i + 1 );
+                KUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i + 1 ) );
 
                 debug() << "Track Base File Name (after): " << baseFileName;
                 debug() << "Track url: " << baseUrl;
@@ -360,13 +372,13 @@ AudioCdCollection::copyableBasePath() const
     switch( m_encodingFormat )
     {
         case WAV:
-            return "audiocd:/";
+            return audiocdUrl().url();
         case FLAC:
-            return "audiocd:/FLAC/";
+            return audiocdUrl( "FLAC/" ).url();
         case OGG:
-            return "audiocd:/Ogg Vorbis/";
+            return audiocdUrl( "Ogg Vorbis/" ).url();
         case MP3:
-            return "audiocd:/MP3/";
+            return audiocdUrl( "MP3/" ).url();
     }
     return QString();
 }

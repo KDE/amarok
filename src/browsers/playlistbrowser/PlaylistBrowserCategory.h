@@ -32,6 +32,7 @@ class KToolBar;
 class PlaylistsInFoldersProxy;
 class PlaylistsByProviderProxy;
 class PlaylistTreeItemDelegate;
+class PlaylistBrowserFilterProxy;
 
 namespace Playlists {
     class PlaylistProvider;
@@ -92,7 +93,7 @@ private:
     QAbstractItemDelegate *m_defaultItemDelegate;
     PlaylistsInFoldersProxy *m_byFolderProxy;
     PlaylistsByProviderProxy *m_byProviderProxy;
-    QSortFilterProxyModel *m_filterProxy;
+    PlaylistBrowserFilterProxy *m_filterProxy;
 
     QString m_configGroup;
     int m_playlistCategory;

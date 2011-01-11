@@ -1054,20 +1054,20 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>kTabWidget</tabstop>
   <tabstop>kLineEdit_title</tabstop>
   <tabstop>kComboBox_artist</tabstop>
   <tabstop>kComboBox_composer</tabstop>
+  <tabstop>kComboBox_albumArtist</tabstop>
   <tabstop>kComboBox_album</tabstop>
   <tabstop>qSpinBox_discNumber</tabstop>
   <tabstop>kComboBox_genre</tabstop>
   <tabstop>kLineEdit_Bpm</tabstop>
   <tabstop>qSpinBox_track</tabstop>
   <tabstop>qSpinBox_year</tabstop>
+  <tabstop>pushButton_musicbrainz</tabstop>
   <tabstop>pushButton_guessTags</tabstop>
   <tabstop>kRichTextEdit_lyrics</tabstop>
   <tabstop>qSpinBox_score</tabstop>
-  <tabstop>ratingWidget</tabstop>
   <tabstop>kLineEdit_location</tabstop>
   <tabstop>pushButton_open</tabstop>
   <tabstop>pushButton_previous</tabstop>
@@ -1075,6 +1075,12 @@
   <tabstop>checkBox_perTrack</tabstop>
   <tabstop>pushButton_ok</tabstop>
   <tabstop>pushButton_cancel</tabstop>
+  <tabstop>qPlainTextEdit_comment</tabstop>
+  <tabstop>kTabWidget</tabstop>
+  <tabstop>kComboBox_label</tabstop>
+  <tabstop>addButton</tabstop>
+  <tabstop>removeButton</tabstop>
+  <tabstop>labelsList</tabstop>
  </tabstops>
  <includes>
   <include location="local">klineedit.h</include>

@@ -226,6 +226,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual KUrl uidUrl() const { return m_url; }
         virtual QString name() const { return title(); }
 
+        virtual int trackCount() const { return m_episodes.count(); }
         virtual Meta::TrackList tracks();
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
 

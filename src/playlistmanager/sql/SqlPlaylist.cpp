@@ -206,13 +206,41 @@ SqlPlaylist::saveTracks()
     }
 }
 
+int
+SqlPlaylist::trackCount() const
+{
+    if( m_tracksLoaded )
+      return m_tracks.count();
+
+    QString query = "SELECT COUNT(id) FROM playlist_tracks WHERE playlist_id=%1;";
+
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    Q_ASSERT( sql );
+
+    QStringList results = sql->query( query.arg( m_dbId ) );
+    debug() << results;
+    if( results.isEmpty() )
+    {
+        error() << "no results for COUNT query on playlist_tracks table!";
+        return -1;
+    }
+    int trackCount = results.first().toInt();
+    debug() << trackCount;
+    return trackCount;
+}
+
 Meta::TrackList
 SqlPlaylist::tracks()
 {
-    if ( !m_tracksLoaded )
-        loadTracks();
-
+    //only returns the already loaded tracks.
     return m_tracks;
+}
+
+void
+SqlPlaylist::triggerTrackLoad()
+{
+    if( !m_tracksLoaded )
+        loadTracks();
 }
 
 void
