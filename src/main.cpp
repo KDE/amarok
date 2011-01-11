@@ -224,7 +224,8 @@ int main( int argc, char *argv[] )
     ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Tell" ), KLocalizedString(), "robert.tell@gmx.net" ) );
     ocsData.addDonor( "", KAboutPerson( ki18n( "Ryan Rix" ), KLocalizedString(), "phrkonaleash@gmail.com" ) );
     ocsData.addDonor( "", KAboutPerson( ki18n( "Thomas Kahle" ), KLocalizedString(), "tom111@gmx.de" ) );
-    //Last update: 4/12/2010
+    ocsData.addDonor( "VBart", KAboutPerson( ki18n( "Valentin V. Bartenev" ), KLocalizedString(), "i@vbart.ru" ) );
+    //Last update: 11/1/2010
 
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
