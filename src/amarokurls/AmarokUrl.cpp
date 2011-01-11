@@ -124,32 +124,15 @@ bool AmarokUrl::run()
 
 QString AmarokUrl::url() const
 {
-    QString url = "amarok://";
-    url += m_command;
-    url += '/';
-    url += m_path;
+    QUrl url;
+    url.setScheme( "amarok" );
+    url.setHost( m_command );
+    url.setPath( m_path );
 
-    if ( url.endsWith( '/' ) )
-        url.chop( 1 );
+    foreach( const QString &argName, m_arguments.keys() )
+        url.addQueryItem( argName, m_arguments[argName] );
 
-    if( m_arguments.size() > 0 )
-    {
-    
-        url += '?';
-        const QStringList args = m_arguments.keys();
-        foreach( const QString &argName, args )
-        {
-            url += argName;
-            url += '=';
-            url += m_arguments.value( argName );
-            url += '&';
-        }
-        url.chop( 1 );
-    }
-
-    QUrl qUrl( url );
-
-    return QString( qUrl.toEncoded() );
+    return url.toEncoded();
 }
 
 bool AmarokUrl::saveToDb()

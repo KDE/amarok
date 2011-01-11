@@ -11,6 +11,7 @@ VERSION 2.4.0
     * Fixed some broken radio stream URLs.
 
   BUGFIXES:
+    * Fixed missing equel-sign ('=') in filter string of bookmarks. (BR 245759)
     * Fix crash on copying tracks between collection. (BR 261364)
     * Fix fetching of script data. BBC, Free Music Charts and others should work again.
       (BR 261839)
