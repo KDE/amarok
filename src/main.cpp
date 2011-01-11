@@ -209,6 +209,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Stefan Bogner"), ki18n("Loads of stuff"), "bochi@online.ms" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Tomasz Dudzik"), ki18n("Splash screen"), "madsheytan@gmail.com" );
+        ocsData.addCredit( QString(), aboutData.credits().last() );
 
     //Donors:
     ocsData.addDonor( "", KAboutPerson( ki18n( "Benoît AlK Zugmeyer" ), KLocalizedString(), "benoit@zugmeyer.com" ) );
