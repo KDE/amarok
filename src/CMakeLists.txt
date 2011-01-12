@@ -726,16 +726,14 @@ set(amaroklib_LIB_SRCS
     ../shared/FileType.cpp
 )
 
-if( BUILD_MYSQLE_COLLECTION )
-else( BUILD_MYSQLE_COLLECTION )
-        set(amaroklib_LIB_SRCS
-            ${amaroklib_LIB_SRCS}
-            MySqlServerTester.cpp
-           )
-        add_definitions(${MYSQL_CFLAGS})
-        include_directories(${MYSQL_INCLUDE_DIR})
-        target_link_libraries(amaroklib ${MYSQL_LIBS})
-endif( BUILD_MYSQLE_COLLECTION )
+if( NOT BUILD_MYSQLE_COLLECTION )
+    set(amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        MySqlServerTester.cpp
+    )
+    add_definitions(${MYSQL_CFLAGS})
+    include_directories(${MYSQL_INCLUDE_DIR})
+endif( NOT BUILD_MYSQLE_COLLECTION )
 
 if(KDE4_BUILD_TESTS)
     set(amaroklib_LIB_SRCS
@@ -917,10 +915,9 @@ if(KDE4_BUILD_TESTS)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
 endif()
 
-if( BUILD_MYSQLE_COLLECTION )
-else( BUILD_MYSQLE_COLLECTION )
+if( NOT BUILD_MYSQLE_COLLECTION )
     target_link_libraries(amaroklib ${MYSQL_LIBRARIES} ${ZLIB_LIBRARIES})
-endif( BUILD_MYSQLE_COLLECTION )
+endif( NOT BUILD_MYSQLE_COLLECTION )
 
 if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
