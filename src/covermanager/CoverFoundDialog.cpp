@@ -209,6 +209,9 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
         add( m_album->image(), data );
     m_view->setCurrentItem( m_view->item( 0 ) );
     updateGui();
+    
+    connect( The::networkAccessManager(), SIGNAL( requestRedirected( QNetworkReply*, QNetworkReply* ) ),
+             this, SLOT( fetchRequestRedirected( QNetworkReply*, QNetworkReply* ) ) );
 }
 
 CoverFoundDialog::~CoverFoundDialog()
@@ -446,12 +449,32 @@ void CoverFoundDialog::slotButtonClicked( int button )
     }
 }
 
+void CoverFoundDialog::fetchRequestRedirected( QNetworkReply *oldReply,
+                                               QNetworkReply *newReply )
+{
+    KUrl oldUrl = oldReply->request().url();
+    KUrl newUrl = newReply->request().url();
+
+    // Since we were redirected we have to check if the redirect
+    // was for one of our URLs and if the new URL is not handled
+    // already.
+    if( m_urls.contains( oldUrl ) && !m_urls.contains( newUrl ) )
+    {
+        // Get the unit for the old URL.
+        CoverFoundItem *item = m_urls.value( oldUrl );
+
+        // Add the unit with the new URL and remove the old one.
+        m_urls.insert( newUrl, item );
+        m_urls.remove( oldUrl );
+    }
+}
+
 void CoverFoundDialog::handleFetchResult( const KUrl &url, QByteArray data,
                                           NetworkAccessManagerProxy::Error e )
 {
     CoverFoundItem *item = m_urls.take( url );
     QPixmap pixmap;
-    if( e.code == QNetworkReply::NoError && pixmap.loadFromData( data ) )
+    if( item && e.code == QNetworkReply::NoError && pixmap.loadFromData( data ) )
     {
         item->setBigPix( pixmap );
         m_sideBar->setPixmap( pixmap );
