@@ -9,6 +9,7 @@ VERSION 2.4.1
   CHANGES:
 
   BUGFIXES:
+    * Fixed crash when trying to download a full size cover and the server redirects the request. (BR 262902)
     * Fixed issue when breadcrumbs stayed not updated after service insert/remove.
       (BR 262780)
     * Fixed issue with TagDialog that make metadata fields stay editable if multiple
