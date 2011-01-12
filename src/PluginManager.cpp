@@ -32,7 +32,7 @@
 #include <QFile>
 #include <QMetaEnum>
 
-const int Plugins::PluginManager::s_pluginFrameworkVersion = 59;
+const int Plugins::PluginManager::s_pluginFrameworkVersion = 60;
 Plugins::PluginManager* Plugins::PluginManager::s_instance = 0;
 
 Plugins::PluginManager*
