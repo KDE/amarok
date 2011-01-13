@@ -644,7 +644,6 @@ set(amaroklib_LIB_SRCS
     PluginManager.cpp
     ScriptManager.cpp
     ScriptUpdater.cpp
-    StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp
     TrayIcon.cpp
@@ -725,6 +724,7 @@ set(amaroklib_LIB_SRCS
     widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
     widgets/SliderWidget.cpp
+    widgets/StarManager.cpp
     widgets/TokenPool.cpp
     widgets/Token.cpp
     widgets/TokenWithLayout.cpp
