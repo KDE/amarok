@@ -106,6 +106,7 @@ class CueFileSupport
     };
 
      static CueFileItemMap loadCueFile( const KUrl &cuefile, const Meta::TrackPtr track );
+     static CueFileItemMap loadCueFile( const KUrl &cuefile, const KUrl &trackUrl, qint64 trackLen );
 
      /**
      * Used to locate a cue sheet for a local track.

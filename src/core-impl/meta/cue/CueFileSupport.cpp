@@ -35,7 +35,13 @@ using namespace MetaCue;
 * @author (C) 2005 by Martin Ehmke <ehmke@gmx.de>
 */
 
-CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, const Meta::TrackPtr track  )
+CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, const Meta::TrackPtr track )
+{
+    return loadCueFile( cuefile, track->playableUrl(), track->length() );
+}
+
+
+CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, const KUrl &trackUrl, qint64 trackLen )
 {
 
     DEBUG_BLOCK
@@ -200,7 +206,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, const Meta::Tra
                     if( fileFound )
                         break;
 
-                    fileFound = file.contains ( track->playableUrl().fileName(), Qt::CaseInsensitive );
+                    fileFound = file.contains ( trackUrl.fileName(), Qt::CaseInsensitive );
                     filesSection = true;
                 }
             }
@@ -220,8 +226,8 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, const Meta::Tra
         *  we can set the lenth for the last track after all the cue file was loaded into array.
         */
 
-        cueItems[index].setLength ( track->length() - index );
-        debug() << "Setting length of track " << cueItems[index].title() << " to " << track->length() - index << " msecs.";
+        cueItems[index].setLength ( trackLen - index );
+        debug() << "Setting length of track " << cueItems[index].title() << " to " << trackLen - index << " msecs.";
 
         return cueItems;
     }
