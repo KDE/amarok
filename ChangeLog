@@ -9,6 +9,9 @@ VERSION 2.4.1
   CHANGES:
 
   BUGFIXES:
+    * Fixed issues with multifiles cuesheet, when all tracks get metadata of last track
+      in cuesheet, and each file defined in sheet gets all tracks of this sheet.
+      (BR 262668) (BR 209341)
     * Fixed crash when trying to download a full size cover and the server redirects the request. (BR 262902)
     * Fixed issue when breadcrumbs stayed not updated after service insert/remove.
       (BR 262780)

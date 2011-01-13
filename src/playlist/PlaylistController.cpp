@@ -602,7 +602,7 @@ Playlist::Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
             KUrl cuesheet = MetaCue::CueFileSupport::locateCueSheet( track->playableUrl() );
             if( !cuesheet.isEmpty() )
             {
-                MetaCue::CueFileItemMap cueMap = MetaCue::CueFileSupport::loadCueFile( track );
+                MetaCue::CueFileItemMap cueMap = MetaCue::CueFileSupport::loadCueFile( cuesheet, track );
                 if( !cueMap.isEmpty() )
                 {
                     Meta::TrackList cueTracks = MetaCue::CueFileSupport::generateTimeCodeTracks( track, cueMap );

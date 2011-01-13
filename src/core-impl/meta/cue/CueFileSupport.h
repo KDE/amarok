@@ -104,11 +104,9 @@ class CueFileSupport
         TRACK_FOUND, // track found, index not yet found
         INDEX_FOUND
     };
-        
-     static CueFileItemMap loadCueFile( Meta::TrackPtr track );
 
-     static CueFileItemMap loadCueFile( const KUrl &cuefile, qint64 mediaLength );
-        
+     static CueFileItemMap loadCueFile( const KUrl &cuefile, const Meta::TrackPtr track );
+
      /**
      * Used to locate a cue sheet for a local track.
      * @return A KUrl containing the url for the cue sheet
