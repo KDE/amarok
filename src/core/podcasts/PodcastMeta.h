@@ -22,6 +22,8 @@
 #include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 
+// #include "covermanager/CoverCache.h"
+
 #include <KLocale>
 #include <KUrl>
 
@@ -240,13 +242,14 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual KUrl webLink() const { return m_webLink; }
         virtual bool hasImage() const { return !m_image.isNull(); }
         virtual KUrl imageUrl() const { return m_imageUrl; }
-        virtual QPixmap image() const { return QPixmap::fromImage(m_image); }
+        virtual QImage image() const { return m_image; }
         virtual QString copyright() { return m_copyright; }
         virtual QStringList labels() const { return m_labels; }
         virtual QDate subscribeDate() const { return m_subscribeDate; }
 
         virtual void setUrl( const KUrl &url ) { m_url = url; }
         virtual void setWebLink( const KUrl &link ) { m_webLink = link; }
+        // TODO: inform all albums with this channel of the changed image
         virtual void setImage( const QImage &image ) { m_image = image; }
         virtual void setImageUrl( const KUrl &imageUrl ) { m_imageUrl = imageUrl; }
         virtual void setCopyright( const QString &copyright ) { m_copyright = copyright; }
@@ -338,6 +341,15 @@ public:
         , episode( episode )
     {}
 
+    /* Its all a little bit stupid.
+       When the cannel image (and also the album image) changes the album get's no indication.
+       Also the CoverCache is not in amarokcorelib but in amaroklib.
+       Why the PodcastAlbum is the only one with a concrete implementation in amarokcorelib is another question.
+
+       virtual ~PodcastAlbum()
+       { CoverCache::invalidateAlbum( Meta::AlbumPtr(this) ); }
+    */
+
     bool isCompilation() const
     {
         return false;
@@ -369,9 +381,10 @@ public:
             return QString();
     }
 
-    QPixmap image( int size )
+    QImage image( int size ) const
     {
-        QPixmap image = episode->channel()->image();
+        // This is a little stupid. If Channel::setImage is called we don't emit a MetaDataChanged or invalidate the cache
+        QImage image = episode->channel()->image();
         return image.scaledToHeight( size );
     }
 

@@ -27,7 +27,6 @@
 
 #include <QFile>
 #include <QImage>
-#include <QApplication>
 
 #include <qtest_kde.h>
 
@@ -39,7 +38,6 @@ TestSqlAlbum::TestSqlAlbum()
     , m_storage( 0 )
     , m_tmpDir( 0 )
 {
-    m_app = new QApplication( 0, 0 ); // need an application for pixmaps
 }
 
 TestSqlAlbum::~TestSqlAlbum()

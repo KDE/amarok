@@ -25,7 +25,6 @@
 #include <QImage>
 #include <QList>
 #include <QObject>
-#include <QPixmap>
 #include <QStringList>
 
 #include <kio/job.h>
@@ -187,6 +186,7 @@ public:
     MetaProxy::Track::Private * const d;
 };
 
+/** TODO: what about MetaDataChanged? */
 class ProxyAlbum : public Meta::Album
 {
 public:
@@ -249,7 +249,7 @@ public:
             return name();
     }
 
-    QPixmap image( int size )
+    QImage image( int size )
     {
         if( d && d->realTrack ) {
             if ( d->realTrack->album() )

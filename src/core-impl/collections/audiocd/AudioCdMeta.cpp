@@ -19,6 +19,7 @@
 #include "AudioCdCollection.h"
 
 #include "core/support/Debug.h"
+#include "covermanager/CoverCache.h"
 
 using namespace Meta;
 
@@ -371,7 +372,7 @@ AudioCdAlbum::AudioCdAlbum( const QString &name )
 
 AudioCdAlbum::~AudioCdAlbum()
 {
-    //nothing to do
+    CoverCache::invalidateAlbum( this );
 }
 
 QString
@@ -405,20 +406,13 @@ AudioCdAlbum::tracks()
     return m_tracks;
 }
 
-QPixmap
-AudioCdAlbum::image( int size )
+QImage
+AudioCdAlbum::image( int size ) const
 {
     if ( m_cover.isNull() )
         return Meta::Album::image( size );
-
-    //only cache during session
-    if ( m_coverSizeMap.contains( size ) )
-         return m_coverSizeMap.value( size );
-
-    QPixmap scaled = QPixmap::fromImage(m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ));
-
-    m_coverSizeMap.insert( size, scaled );
-    return scaled;
+    else
+        return m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 }
 
 bool
@@ -431,6 +425,7 @@ void
 AudioCdAlbum::setImage( const QImage &image )
 {
     m_cover = image;
+    CoverCache::invalidateAlbum( this );
 }
 
 void

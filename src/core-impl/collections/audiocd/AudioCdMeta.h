@@ -168,7 +168,7 @@ class AudioCdAlbum : public Meta::Album
         virtual ArtistPtr albumArtist() const;
         virtual TrackList tracks();
 
-        virtual QPixmap image( int size = 1 );
+        virtual QImage image( int size = 0 ) const;
         virtual bool canUpdateImage() const;
         virtual void setImage( const QImage &image );
 
@@ -183,7 +183,6 @@ class AudioCdAlbum : public Meta::Album
         bool m_isCompilation;
         AudioCdArtistPtr m_albumArtist;
         QImage m_cover;
-        QMap<int, QPixmap> m_coverSizeMap;
 };
 
 class AudioCdGenre : public Meta::Genre

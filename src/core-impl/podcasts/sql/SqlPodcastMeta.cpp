@@ -513,7 +513,7 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
     m_subtitle = channel->subtitle();
     m_summary = channel->summary();
     m_author = channel->author();
-    
+
     // PodcastChannel
     m_url = channel->url();
     m_webLink = channel->webLink();
@@ -521,9 +521,9 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
     m_labels = channel->labels();
     m_subscribeDate = channel->subscribeDate();
     m_copyright = channel->copyright();
-    
+
     if( channel->hasImage() )
-        m_image = channel->image().toImage();
+        m_image = channel->image();
 
     //Default Settings
 

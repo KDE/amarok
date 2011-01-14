@@ -23,6 +23,8 @@
 #include "core/meta/Meta.h"
 #include "shared/amarok_export.h"
 
+#include <QStringList>
+
 namespace Capabilities
 {
 

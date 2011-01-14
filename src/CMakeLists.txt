@@ -634,6 +634,7 @@ set(amaroklib_LIB_SRCS
     core-impl/meta/timecode/TimecodeObserver.cpp
     core-impl/meta/timecode/TimecodeMeta.cpp
     core-impl/meta/timecode/TimecodeTrackProvider.cpp
+    covermanager/CoverCache.cpp
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
     covermanager/CoverFetchQueue.cpp

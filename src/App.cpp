@@ -25,6 +25,7 @@
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
 #include "ConfigDialog.h"
+#include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetcher.h"
 #include "dialogs/EqualizerDialog.h"
 #include "dbus/CollectionDBusHandler.h"
@@ -266,8 +267,9 @@ App::~App()
     Playlist::ModelStack::destroy();
     Playlist::Actions::destroy();
     PlaylistManager::destroy();
-    CollectionManager::destroy();
     CoverFetcher::destroy();
+    CoverCache::destroy();
+    CollectionManager::destroy();
     NetworkAccessManagerProxy::destroy();
 
     //this should be moved to App::quit() I guess

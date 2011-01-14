@@ -109,7 +109,9 @@ PlaylistBrowserNS::PodcastModel::icon( Podcasts::PodcastMetaCommon *pmc ) const
     Podcasts::PodcastChannel *channel = 0;
     Podcasts::PodcastEpisode *episode = 0;
     QStringList emblems;
-    
+
+    // I hope we are caching this icon somehow and not creating it every time new (Ralf)
+
     switch( pmc->podcastType() )
     {
         case Podcasts::ChannelType:
@@ -137,10 +139,11 @@ PlaylistBrowserNS::PodcastModel::icon( Podcasts::PodcastMetaCommon *pmc ) const
                 int y = 32 / 2 - size.height() / 2;
 
                 QPainter p( &pixmap );
-                p.drawPixmap( x, y, channel->image().scaled( size,
-                                                             Qt::KeepAspectRatio,
-                                                             Qt::SmoothTransformation ) );
-                
+                p.drawPixmap( x, y,
+                              QPixmap::fromImage( channel->image().scaled( size,
+                                                                           Qt::KeepAspectRatio,
+                                                                           Qt::SmoothTransformation ) ) );
+
                 // if it's a new episode draw the overlay:
                 if( !emblems.isEmpty() )
                 {

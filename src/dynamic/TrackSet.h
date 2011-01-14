@@ -22,6 +22,7 @@
 #include "core/meta/Meta.h"
 
 #include <QBitArray>
+#include <QStringList>
 
 namespace Dynamic
 {

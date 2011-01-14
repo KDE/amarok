@@ -589,7 +589,7 @@ TagDialog::loadCover()
 
     const int s = 100; // Image preview size
 
-    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image( s ) );
+    ui->pixmap_cover->setPixmap( QPixmap::fromImage( m_currentTrack->album()->image( s ) ) );
     QString artist = m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString();
     ui->pixmap_cover->setInformation( artist, m_currentTrack->album()->name() );
 

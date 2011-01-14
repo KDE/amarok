@@ -822,7 +822,7 @@ ProxyAlbum::hasImage( int size ) const
     return false;
 }
 
-QPixmap
+QImage
 ProxyAlbum::image( int size )
 {
     foreach( Meta::AlbumPtr album, m_albums )

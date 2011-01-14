@@ -58,7 +58,7 @@ public:
     /**
      * @returns the currently selected cover image
      */
-    const QPixmap image() const { return m_image; }
+    const QImage image() const { return m_image; }
 
     void setQueryPage( int page );
 
@@ -68,7 +68,7 @@ signals:
     void newCustomQuery( Meta::AlbumPtr album, const QString &query, int page );
 
 public slots:
-    void add( const QPixmap &cover,
+    void add( const QImage &cover,
               const CoverFetch::Metadata &metadata,
               const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
 
@@ -116,7 +116,7 @@ private:
     Meta::AlbumPtr m_album;           //!< Album associated with @ref m_unit;
     QAction *m_sortAction;            //!< Action to sort covers by size
     QList< int > m_sortSizes;         //!< List of sorted cover sizes used for indexing
-    QPixmap m_image;                  //!< Currently selected cover image
+    QImage m_image;                   //!< Currently selected cover image
     QString m_query;                  //!< Cache for the last entered custom query
     bool m_isSorted;                  //!< Are the covers sorted in the view?
     bool m_sortEnabled;               //!< Sort covers by size
@@ -160,19 +160,19 @@ private:
 class CoverFoundItem : public QListWidgetItem
 {
 public:
-    explicit CoverFoundItem( const QPixmap &cover,
+    explicit CoverFoundItem( const QImage &cover,
                              const CoverFetch::Metadata &data,
                              const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize,
                              QListWidget *parent = 0 );
     ~CoverFoundItem();
 
     const CoverFetch::Metadata metadata() const { return m_metadata; }
-    const QPixmap bigPix() const { return m_bigPix; }
-    const QPixmap thumb() const { return m_thumb; }
+    const QImage bigPix() const { return m_bigPix; }
+    const QImage thumb() const { return m_thumb; }
 
     bool hasBigPix() const { return !m_bigPix.isNull(); }
 
-    void setBigPix( const QPixmap &pixmap ) { m_bigPix = pixmap; }
+    void setBigPix( const QImage &image ) { m_bigPix = image; }
 
     bool operator==( const CoverFoundItem &other ) const;
     bool operator!=( const CoverFoundItem &other ) const;
@@ -181,8 +181,8 @@ private:
     void setCaption();
 
     CoverFetch::Metadata m_metadata;
-    QPixmap m_thumb;
-    QPixmap m_bigPix;
+    QImage m_thumb;
+    QImage m_bigPix;
 
     Q_DISABLE_COPY( CoverFoundItem )
 };

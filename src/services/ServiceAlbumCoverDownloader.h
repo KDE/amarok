@@ -106,7 +106,7 @@ public:
      * @param withShadow Unused.
      * @return The cover image or a default cover.
      */
-    virtual QPixmap image( int size = 1 ); //overridden from Meta::Album
+    virtual QImage image( int size = 0 ) const; //overridden from Meta::Album
 
 protected:
 
@@ -144,7 +144,7 @@ class ServiceAlbumCoverDownloader : public QObject
          * Start the download of the cover of a ServiceAlbumWithCover.
          * @param album The albumwhose cover should be downloaded.
          */
-        void downloadCover( Meta::ServiceAlbumWithCover * album );
+        void downloadCover( Meta::ServiceAlbumWithCover* album );
 
     private slots:
 
@@ -160,7 +160,7 @@ class ServiceAlbumCoverDownloader : public QObject
          */
         void coverDownloadCanceled( KJob * downloadJob );
     private:
-        ServiceAlbumWithCover * m_album;
+        QWeakPointer<ServiceAlbumWithCover> m_album;
         QString m_coverDownloadPath;
         KIO::FileCopyJob * m_albumDownloadJob;
         KTempDir * m_tempDir;

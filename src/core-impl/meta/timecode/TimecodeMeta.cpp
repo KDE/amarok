@@ -17,6 +17,7 @@
 #include "core-impl/meta/timecode/TimecodeMeta.h"
 
 #include "core/support/Debug.h"
+#include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "covermanager/CoverFetcher.h"
 #include "core/capabilities/ActionsCapability.h"
@@ -478,6 +479,7 @@ TimecodeAlbum::TimecodeAlbum( const QString & name )
 
 TimecodeAlbum::~ TimecodeAlbum()
 {
+    CoverCache::invalidateAlbum( this );
 }
 
 QString
@@ -508,20 +510,13 @@ TimecodeAlbum::tracks()
     return m_tracks;
 }
 
-QPixmap
-TimecodeAlbum::image( int size )
+QImage
+TimecodeAlbum::image( int size ) const
 {
-    if ( m_cover.isNull() )
+    if( m_cover.isNull() )
         return Meta::Album::image( size );
-
-    //only cache during session
-    if ( m_coverSizeMap.contains( size ) )
-         return m_coverSizeMap.value( size );
-
-    QPixmap scaled = QPixmap::fromImage(m_cover).scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-
-    m_coverSizeMap.insert( size, scaled );
-    return scaled;
+    else
+        return m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 }
 
 bool
@@ -534,6 +529,7 @@ void
 TimecodeAlbum::setImage( const QImage &image )
 {
     m_cover = image;
+    CoverCache::invalidateAlbum( this );
     notifyObservers();
 }
 

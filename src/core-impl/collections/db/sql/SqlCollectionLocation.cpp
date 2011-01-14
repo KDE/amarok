@@ -259,7 +259,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     // Used to be updated after changes commit to prevent crash on NULL pointer access
     // if metaTrack had no album.
     if( track->album() && track->album()->hasImage() && !metaTrack->album()->hasImage() )
-        metaTrack->album()->setImage( track->album()->image().toImage() );
+        metaTrack->album()->setImage( track->album()->image() );
 
     metaTrack->setWriteFile( true );
 

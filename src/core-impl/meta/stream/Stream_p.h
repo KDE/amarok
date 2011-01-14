@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
+#include "covermanager/CoverCache.h"
 #include "EngineController.h"
 
 #include <Phonon/Global>
@@ -150,6 +151,11 @@ public:
         , d( dptr )
     {}
 
+    ~StreamAlbum()
+    {
+        CoverCache::invalidateAlbum( this );
+    }
+
     bool isCompilation() const
     {
         return false;
@@ -182,32 +188,26 @@ public:
         return name();
     }
 
+    QImage image( int size ) const
+    {
+        if( m_cover.isNull() )
+            return Meta::Album::image( size );
+        else
+            return m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    }
+
     void setImage( const QImage &image )
     {
         m_cover = image;
+        CoverCache::invalidateAlbum( this );
     }
 
-    QPixmap image( int size )
-    {
-        if ( m_cover.isNull() )
-            return Meta::Album::image( size );
 
-        //only cache during session
-        if ( m_coverSizeMap.contains( size ) )
-            return m_coverSizeMap.value( size );
-
-        QPixmap scaled = QPixmap::fromImage(m_cover).scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-
-        m_coverSizeMap.insert( size, scaled );
-        return scaled;
-    }
- 
     bool operator==( const Meta::Album &other ) const {
         return name() == other.name();
     }
 
     MetaStream::Track::Private * const d;
-    QMap <int, QPixmap> m_coverSizeMap;
     QImage m_cover;
 };
 

@@ -20,6 +20,7 @@
 #include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
+#include "covermanager/CoverCache.h"
 
 #include <QDir>
 #include <QImage>
@@ -43,11 +44,12 @@ Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QStringList &resultRow
 
 Meta::ServiceAlbumWithCover::~ServiceAlbumWithCover()
 {
+    CoverCache::invalidateAlbum( this );
     delete m_coverDownloader;
 }
 
-QPixmap
-ServiceAlbumWithCover::image( int size )
+QImage
+ServiceAlbumWithCover::image( int size ) const
 {
     if( size > 1000 )
     {
@@ -74,18 +76,15 @@ ServiceAlbumWithCover::image( int size )
         size = 100;
     QString sizeKey = QString::number( size ) + '@';
 
-    QPixmap pixmap;
-
     if( QFile::exists( cacheCoverDir.filePath( sizeKey + coverName ) ) )
     {
-        pixmap = QPixmap( cacheCoverDir.filePath( sizeKey + coverName ) );
-        return pixmap;
+        return QImage( cacheCoverDir.filePath( sizeKey + coverName ) );
     }
     else if ( m_hasFetchedCover && !m_cover.isNull() )
     {
-        pixmap = QPixmap::fromImage(m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ));
-        pixmap.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
-        return pixmap;
+        QImage image( m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+        image.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
+        return image;
 
     }
     else if ( !m_isFetchingCover && !coverUrl().isEmpty() )
@@ -94,11 +93,10 @@ ServiceAlbumWithCover::image( int size )
 
         if ( m_coverDownloader == 0 )
             m_coverDownloader = new ServiceAlbumCoverDownloader();
-        m_coverDownloader->downloadCover( this );
-
+        m_coverDownloader->downloadCover( const_cast<ServiceAlbumWithCover*>(this) );
     }
 
-    return Album::image( size );
+    return Meta::Album::image( size );
 }
 
 void
@@ -107,6 +105,7 @@ ServiceAlbumWithCover::setImage( const QImage& image )
     m_cover = image;
     m_hasFetchedCover = true;
     m_isFetchingCover = false;
+    CoverCache::invalidateAlbum( this );
 
     notifyObservers();
 }
@@ -124,8 +123,7 @@ ServiceAlbumWithCover::imageDownloadCanceled() const
 ///////////////////////////////////////////////////////////////////////////////
 
 ServiceAlbumCoverDownloader::ServiceAlbumCoverDownloader()
-    : m_album( 0 )
-    , m_albumDownloadJob( 0 )
+    : m_albumDownloadJob( 0 )
 {
     m_tempDir = new KTempDir();
     m_tempDir->setAutoRemove( false );
@@ -137,7 +135,7 @@ ServiceAlbumCoverDownloader::~ServiceAlbumCoverDownloader()
 }
 
 void
-ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover * album )
+ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover *album )
 {
     m_album = album;
 
@@ -156,16 +154,16 @@ ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover * album )
 void
 ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 {
-
+    QSharedPointer<ServiceAlbumWithCover> album( m_album );
+    if( !album ) // album was removed in between
+        return;
 
     if( !downloadJob || !downloadJob->error() == 0 )
     {
         debug() << "Download Job failed!";
 
         //we could not download, so inform album
-        if( m_album )
-            m_album->imageDownloadCanceled();
-
+        album->imageDownloadCanceled();
         return;
     }
 
@@ -177,12 +175,11 @@ ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
     {
         debug() << "file not a valid image";
         //the file wasn't an image, so inform album
-        m_album->imageDownloadCanceled();
-
+        album->imageDownloadCanceled();
         return;
     }
 
-    m_album->setImage( cover );
+    album->setImage( cover );
 
     downloadJob->deleteLater();
 
@@ -195,8 +192,12 @@ ServiceAlbumCoverDownloader::coverDownloadCanceled( KJob *downloadJob )
     Q_UNUSED( downloadJob );
     DEBUG_BLOCK
 
+    QSharedPointer<ServiceAlbumWithCover> album( m_album );
+    if( !album ) // album was removed in between
+        return;
+
     debug() << "Cover download cancelled";
-    m_album->imageDownloadCanceled();
+    album->imageDownloadCanceled();
 }
 
 #include "ServiceAlbumCoverDownloader.moc"

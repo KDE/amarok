@@ -25,6 +25,7 @@
 #include "moodbar/MoodbarManager.h"
 #include "PaletteHandler.h"
 #include "SvgTinter.h"
+#include "covermanager/CoverCache.h"
 
 #include <KColorScheme>
 #include <KColorUtils>
@@ -248,7 +249,7 @@ SvgHandler::imageWithBorder( Meta::AlbumPtr album, int size, int borderWidth )
     const int imageSize = size - ( borderWidth * 2 );
     const QString &loc  = album->imageLocation( imageSize ).path( KUrl::LeaveTrailingSlash );
     const QString &key  = !loc.isEmpty() ? loc : album->name();
-    return addBordersToPixmap( album->image(imageSize), borderWidth, key );
+    return addBordersToPixmap( The::coverCache()->getCover( album, imageSize ), borderWidth, key );
 }
 
 QPixmap SvgHandler::addBordersToPixmap( const QPixmap &orgPixmap, int borderWidth, const QString &name, bool skipCache )

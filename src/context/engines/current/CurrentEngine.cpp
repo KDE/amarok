@@ -22,6 +22,7 @@
 #include "ContextView.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
+#include "covermanager/CoverCache.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -165,7 +166,7 @@ CurrentEngine::update( Meta::TrackPtr track )
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     data["current"] = trackInfo;
     Meta::AlbumPtr album = track->album();
-    data["albumart"] = QVariant( album ? album->image(m_coverWidth) : QPixmap() );
+    data["albumart"] = QVariant( album ? The::coverCache()->getCover( album, m_coverWidth) : QPixmap() );
 
     Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
     if( sic )

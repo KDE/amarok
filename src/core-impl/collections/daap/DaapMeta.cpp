@@ -402,25 +402,6 @@ DaapAlbum::tracks()
     return m_tracks;
 }
 
-QPixmap
-DaapAlbum::image( int size )
-{
-    return Meta::Album::image( size );
-}
-
-bool
-DaapAlbum::canUpdateImage() const
-{
-    return false;
-}
-
-void
-DaapAlbum::setImage( const QImage &image )
-{
-    Q_UNUSED(image);
-    //TODO
-}
-
 void
 DaapAlbum::addTrack( DaapTrackPtr track )
 {
