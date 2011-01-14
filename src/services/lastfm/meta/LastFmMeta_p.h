@@ -56,7 +56,7 @@ class Track::Private : public QObject
         QUrl trackPath;
         QUrl lastFmUri;
 
-        QPixmap albumArt;
+        QImage albumArt;
         QString artist;
         QString album;
         QString track;
@@ -113,7 +113,7 @@ class Track::Private : public QObject
             // need to reset other items
             albumUrl = "";
             trackUrl = "";
-            albumArt = QPixmap();
+            albumArt = QImage();
 
             if( newTrackInfo )
             {
@@ -180,15 +180,15 @@ class Track::Private : public QObject
                 {
                     img.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
 
-                    albumArt = QPixmap::fromImage( img );
+                    albumArt = img;
                 }
                 else
-                    albumArt = QPixmap();
+                    albumArt = QImage();
             }
             else
             {
                 //use default image
-                albumArt = QPixmap();
+                albumArt = QImage();
             }
             notifyObservers();
         }
@@ -254,7 +254,7 @@ public:
         return QString();
     }
 
-    QPixmap image( int size )
+    QImage image( int size ) const
     {
         if( !d || d->albumArt.isNull() )
         {
@@ -266,19 +266,19 @@ public:
                 size = 100;
             QString sizeKey = QString::number( size ) + '@';
 
-            QPixmap pixmap;
+            QImage image;
             QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
             if( cacheCoverDir.exists( sizeKey + "lastfm-default-cover.png" ) )
-                pixmap = QPixmap( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ) );
+                image = QImage( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ) );
             else
             {
-                QPixmap orgPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/lastfm-default-cover.png" ) ); //optimize this!
+                QImage orgImage = QImage( KStandardDirs::locate( "data", "amarok/images/lastfm-default-cover.png" ) ); //optimize this!
                 //scaled() does not change the original image but returns a scaled copy
-                pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-                pixmap.save( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ), "PNG" );
+                image = orgImage.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+                image.save( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ), "PNG" );
             }
 
-            return pixmap;
+            return image;
         }
 
 
