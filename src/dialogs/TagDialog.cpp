@@ -1468,24 +1468,30 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
         QVariantMap map( m_currentData );
 
         //do not nedlessly update everything, as theat wrecks havoc with grouping in the playlist....
+        // get the shared pointers now to ensure that they don't get freed
+        Meta::AlbumPtr album = track->album();
+        Meta::ArtistPtr artist = track->artist();
+        Meta::GenrePtr genre = track->genre();
+        Meta::ComposerPtr composer = track->composer();
+        Meta::YearPtr year = track->year();
 
         if ( ui->kLineEdit_title->text() != track->name() )
             map.insert( Meta::Field::TITLE, ui->kLineEdit_title->text() );
-        if ( !track->composer() || ui->kComboBox_composer->currentText() != track->composer()->name() )
+        if ( !composer || ui->kComboBox_composer->currentText() != composer->name() )
             map.insert( Meta::Field::COMPOSER, ui->kComboBox_composer->currentText() );
-        if ( !track->artist() || ui->kComboBox_artist->currentText() != track->artist()->name() )
+        if ( !artist || ui->kComboBox_artist->currentText() != artist->name() )
             map.insert( Meta::Field::ARTIST, ui->kComboBox_artist->currentText() );
-        if ( !track->album() || ui->kComboBox_album->currentText() != track->album()->name() )
+        if ( !album || ui->kComboBox_album->currentText() != album->name() )
             map.insert( Meta::Field::ALBUM, ui->kComboBox_album->currentText() );
-        if ( !track->album()->hasAlbumArtist() || ui->kComboBox_albumArtist->currentText() != track->album()->albumArtist()->name() )
+        if ( !album->hasAlbumArtist() || ui->kComboBox_albumArtist->currentText() != album->albumArtist()->name() )
             map.insert( Meta::Field::ALBUMARTIST, ui->kComboBox_albumArtist->currentText() );
         if ( ui->qPlainTextEdit_comment->toPlainText() != track->comment() )
             map.insert( Meta::Field::COMMENT, ui->qPlainTextEdit_comment->toPlainText() );
-        if ( !track->genre() || ui->kComboBox_genre->currentText() != track->genre()->name() )
+        if ( !genre || ui->kComboBox_genre->currentText() != genre->name() )
             map.insert( Meta::Field::GENRE, ui->kComboBox_genre->currentText() );
         if ( ui->qSpinBox_track->value() != track->trackNumber() )
             map.insert( Meta::Field::TRACKNUMBER, ui->qSpinBox_track->value() );
-        if ( !track->year() || QString::number( ui->qSpinBox_year->value() ) != track->year()->name() )
+        if ( !year || QString::number( ui->qSpinBox_year->value() ) != year->name() )
             map.insert( Meta::Field::YEAR, ui->qSpinBox_year->value() );
         if ( ui->qSpinBox_discNumber->value() != track->discNumber() )
             map.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
