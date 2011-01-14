@@ -9,6 +9,7 @@ VERSION 2.4.1
   CHANGES:
 
   BUGFIXES:
+    * Fixed issue with playlist tooltips that was shown independetly from "Show tooltip" option. (BR 263121)
     * Fixed issues with multifiles cuesheet, when all tracks get metadata of last track
       in cuesheet, and each file defined in sheet gets all tracks of this sheet.
       (BR 262668) (BR 209341)

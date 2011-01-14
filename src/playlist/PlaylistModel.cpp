@@ -55,6 +55,7 @@
 #include <typeinfo>
 
 bool Playlist::Model::s_tooltipColumns[NUM_COLUMNS];
+bool Playlist::Model::s_showToolTip;
 
 // ------- helper functions for the tooltip
 
@@ -186,6 +187,12 @@ Playlist::Model::setTooltipColumns( bool columns[] )
         s_tooltipColumns[i] = columns[i];
 }
 
+void
+Playlist::Model::enableToolTip( bool enable )
+{
+    s_showToolTip = enable;
+}
+
 QString
 Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
 {
@@ -273,7 +280,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     else if ( role == StopAfterTrackRole )
         return Actions::instance()->willStopAfterTrack( idAt( row ) );
 
-    else if ( role == Qt::ToolTipRole )
+    else if ( role == Qt::ToolTipRole && s_showToolTip )
         return tooltipFor( m_items.at( row )->track() );
 
     else if ( role == Qt::DisplayRole )
