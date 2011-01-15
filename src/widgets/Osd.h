@@ -21,17 +21,12 @@
 #include "core/meta/Meta.h"
 
 #include <QImage>
-#include <QList>
 #include <QPixmap>
 #include <QString>
 #include <QWidget> //baseclass
 
 #define OSD_WINDOW_OPACITY 0.74
 
-namespace Plasma
-{
-    class PanelSvg;
-}
 
 class OSDWidget : public QWidget
 {
@@ -77,7 +72,17 @@ class OSDWidget : public QWidget
         void setText( const QString &text ) { m_text = text; }
         void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
         void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); }
-        void setFontScale( int scale ) { m_fontScale = static_cast<double>(scale) / 100.0; }
+        void setFontScale( int scale ) {
+            double fontScale = static_cast<double>( scale ) / 100.0;
+
+            // update font, reuse old one
+            QFont newFont( font() );
+            newFont.setPointSizeF( defaultPointSize() * fontScale );
+            setFont( newFont );
+        }
+
+        // work-around to get default point size on this platform, Qt API does not offer this directly
+        static inline double defaultPointSize() { return QFont().pointSizeF(); }
 
     protected:
         virtual ~OSDWidget();
@@ -109,7 +114,6 @@ class OSDWidget : public QWidget
         QImage      m_cover;
         QPixmap     m_scaledCover;
         bool        m_paused;
-        double      m_fontScale;
 };
 
 
@@ -120,9 +124,9 @@ class OSDPreviewWidget : public OSDWidget
 public:
     OSDPreviewWidget( QWidget *parent );
 
-    int screen()    { return m_screen; }
-    int alignment() { return m_alignment; }
-    int y()         { return m_y; }
+    int screen() const    { return m_screen; }
+    int alignment() const { return m_alignment; }
+    int y() const         { return m_y; }
 
 public slots:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }

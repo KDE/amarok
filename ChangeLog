@@ -9,11 +9,16 @@ VERSION 2.4.1
   CHANGES:
 
   BUGFIXES:
-    * Fixed issue with playlist tooltips that was shown independetly from "Show tooltip" option. (BR 263121)
-    * Fixed issues with multifiles cuesheet, when all tracks get metadata of last track
+    * Fixed 'Scale Font' option in OSD options for OSD preview widget.
+      (BR 254029)
+    * Fixed issue with playlist tooltips that was shown independetly from
+      "Show tooltip" option. (BR 263121)
+    * Fixed issues with multifiles cuesheet, when all tracks get metadata of
+      last track
       in cuesheet, and each file defined in sheet gets all tracks of this sheet.
       (BR 262668) (BR 209341)
-    * Fixed crash when trying to download a full size cover and the server redirects the request. (BR 262902)
+    * Fixed crash when trying to download a full size cover and the server
+      redirects the request. (BR 262902)
     * Fixed issue when breadcrumbs stayed not updated after service insert/remove.
       (BR 262780)
     * Fixed issue with TagDialog that make metadata fields stay editable if multiple

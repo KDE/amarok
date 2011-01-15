@@ -63,7 +63,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_rating( 0 )
         , m_volume( 0 )
         , m_showVolume( false )
-        , m_fontScale( 1.15 )
 {
     Qt::WindowFlags flags;
     flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
@@ -80,6 +79,9 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
     unsetColors();
+
+    QFont font("sans-serif");
+    setFont(font);
 
     #ifdef Q_WS_X11
     KWindowSystem::setType( winId(), NET::Notification );
@@ -113,10 +115,6 @@ OSDWidget::show( const QString &text, QImage newImage )
     }
     else
         m_cover = Amarok::icon();
-
-    QFont f = QFont( "sans-serif" );
-    f.setPointSizeF( f.pointSizeF() * m_fontScale );
-    setFont( f );
 
     m_text = text;
     show();
@@ -299,8 +297,8 @@ OSDWidget::determineMetrics( const int M )
 void
 OSDWidget::paintEvent( QPaintEvent *e )
 {
-    int M = m_m;
-    QSize size = m_size;
+    const int& M = m_m;
+    const QSize& size = m_size;
 
     QPoint point;
     QRect rect( point, size );
@@ -381,6 +379,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
         p.drawImage( rect.topLeft() - QPoint( 5, 5 ), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
+    p.setFont( font() );
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
     //p.setPen( Qt::white ); // This too.
     p.drawText( rect, align, m_text );
