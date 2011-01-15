@@ -39,26 +39,30 @@ class CollectionWidget : public BrowserCategory
         ~CollectionWidget();
         static CollectionWidget *instance() { return s_instance; }
 
+
+        QString filter() const;
+
         /**
          * Apply a filter to the tree view.
          * @param filter The filter to apply.
          */
         void setFilter( const QString &filter );
-        virtual QString filter() const;
-        virtual QList<int> levels() const;
+
+        /** Return the current views selected levels */
+        QList<int> levels() const;
+
+        /** Set the current views selected levels */
+        void setLevels( const QList<int> &levels );
 
     public slots:
-        void customFilter( QAction * );
-        void sortByAlbum();
-        void sortByArtist();
+        void sortLevelSelected( QAction * );
         void sortByArtistAlbum();
+        void sortByAlbumArtist();
         void sortByGenreArtist();
         void sortByGenreArtistAlbum();
         void slotShowYears( bool checked );
         void slotShowTrackNumbers( bool checked );
         void slotShowCovers( bool checked );
-
-        void setLevels( const QList<int> &levels );
 
         void toggleView( bool merged );
 

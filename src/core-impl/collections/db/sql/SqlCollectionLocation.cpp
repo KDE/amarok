@@ -391,15 +391,20 @@ SqlCollectionLocation::slotRemoveJobFinished( KJob *job )
     {
         //TODO: proper error handling
         warning() << "An error occurred when removing a file: " << job->errorString();
-        transferError( track, KIO::buildErrorString( job->error(), job->errorString() ) );
     }
-    else
+
+    // -- remove the track from the database if it's gone
+    if( !QFile(track->playableUrl().path()).exists() )
     {
         // Remove the track from the database
         remove( track );
 
         //we  assume that KIO works correctly...
         transferSuccessful( track );
+    }
+    else
+    {
+        transferError( track, KIO::buildErrorString( job->error(), job->errorString() ) );
     }
 
     m_removejobs.remove( job );

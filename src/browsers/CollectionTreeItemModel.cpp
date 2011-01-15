@@ -64,6 +64,9 @@ CollectionTreeItemModel::~CollectionTreeItemModel()
 void
 CollectionTreeItemModel::setLevels( const QList<int> &levelType )
 {
+    if( m_levelType == levelType && m_rootItem )
+        return;
+
     m_levelType = levelType;
     delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
