@@ -7,6 +7,8 @@ VERSION 2.4.1
   FEATURES:
 
   CHANGES:
+    * Added missing tooltip for animation settings. Patch by Bhargav Mangipudi
+      <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
     * Fixed minor inconsistency in the Collection view. Patch by 

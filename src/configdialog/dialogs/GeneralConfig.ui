@@ -64,6 +64,12 @@
       </item>
       <item row="3" column="0">
        <widget class="QCheckBox" name="kcfg_AnimateAppletCollapse">
+       <property name="toolTip">
+         <string>Check to enable animations when context applets collapse.</string>
+       </property>
+       <property name="whatsThis">
+         <string>Check to enable animations when context applets collapse.</string>
+       </property>
         <property name="text">
          <string>Enable context applets collapse animations</string>
         </property>
