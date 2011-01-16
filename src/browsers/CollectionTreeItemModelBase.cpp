@@ -230,7 +230,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
                 {
                     int trackNum = track->trackNumber();
                     if( trackNum > 0 )
-                        name.prepend( QString("%1. ").arg(trackNum) );
+                        name.prepend( QString("%1 - ").arg(trackNum) );
                 }
 
                 // Check empty after track logic and before album logic
