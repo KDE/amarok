@@ -82,7 +82,7 @@ class OSDWidget : public QWidget
         }
 
         // work-around to get default point size on this platform, Qt API does not offer this directly
-        static inline double defaultPointSize() { return QFont().pointSizeF(); }
+        inline qreal defaultPointSize() { return QFont(font().family()).pointSizeF(); }
 
     protected:
         virtual ~OSDWidget();
