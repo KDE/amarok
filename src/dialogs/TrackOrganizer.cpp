@@ -104,7 +104,8 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
     if( !result.startsWith( '/' ) )
         result.prepend( "/" );
 
-   return result.replace( QRegExp( "/\\.*" ), "/" );
+    QFileInfo path( result );           // Used to polish path string. (e.g. remove '//')
+    return path.absoluteFilePath();
 }
 
 QString TrackOrganizer::cleanPath( const QString& component ) const
