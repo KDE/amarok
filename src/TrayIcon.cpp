@@ -296,9 +296,9 @@ Amarok::TrayIcon::updateMenu()
 
         m_separator = contextMenu()->addSeparator();
         // readd
+        contextMenu()->addAction( preferenceAction );
         contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
         contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
-        contextMenu()->addAction( preferenceAction );
     }
 }
 

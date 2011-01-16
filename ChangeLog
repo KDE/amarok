@@ -13,6 +13,7 @@ VERSION 2.4.1
       <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
+    * Fixed wrong "Configure amarok" action position in tray icon popup menu. (BR 263330)
     * Fixed minor inconsistency in the Collection view. Patch by 
       Bhargav Mangipudi <bhargav.1191@gmail.com>. (BR 260973)
     * Fixed potential crash with the Similar Artists applet. Thanks to 
