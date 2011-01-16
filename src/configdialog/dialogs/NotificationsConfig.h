@@ -23,7 +23,6 @@
 
 class OSDPreviewWidget;
 
-
 class NotificationsConfig : public ConfigDialogBase, public Ui_NotificationsConfig
 {
     Q_OBJECT

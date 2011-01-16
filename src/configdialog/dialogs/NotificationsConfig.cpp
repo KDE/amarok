@@ -33,6 +33,8 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
     m_osdPreview = new OSDPreviewWidget( this ); //must be child!!!
     m_osdPreview->setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     m_osdPreview->setOffset( AmarokConfig::osdYOffset() );
+    m_osdPreview->setFontScale( AmarokConfig::osdFontScaling() );
+    m_osdPreview->setTranslucent( AmarokConfig::osdUseTranslucency() );
 
     #ifdef Q_WS_MAC
         QCheckBox* growl = new QCheckBox( i18n( "Use Growl for notifications" ), this );
@@ -118,7 +120,7 @@ NotificationsConfig::updateSettings()
     DEBUG_BLOCK
 
     AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
-    AmarokConfig::setOsdYOffset( m_osdPreview->y() );
+    AmarokConfig::setOsdYOffset( m_osdPreview->offset() );
     AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
     //AmarokConfig::setOsdTextScaling( m_osdPreview->); //FIXME?
 
