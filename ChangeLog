@@ -9,6 +9,8 @@ VERSION 2.4.1
   CHANGES:
 
   BUGFIXES:
+    * Fixed potential crash with the Similar Artists applet. Thanks to 
+      Tuomas Nurmi <tuomas@norsumanageri.org> for the patch. (BR 263145)
     * Fixed 'Scale Font' option in OSD options for OSD preview widget.
       (BR 254029)
     * Fixed issue with playlist tooltips that was shown independetly from

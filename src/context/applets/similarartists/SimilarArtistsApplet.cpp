@@ -270,6 +270,8 @@ void
 SimilarArtistsApplet::queryForCurrentTrack()
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( !track )
+        return;
     if( Meta::ArtistPtr artist = track->artist() )
         queryArtist( artist->name() );
 }
