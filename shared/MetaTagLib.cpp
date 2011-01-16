@@ -948,7 +948,8 @@ replaceField( TagLib::FileRef fileref, const qint64 &field, const QVariant &valu
                 tValue = Qt4QStringToTString( QString::number( value.toInt() ) );
             }
 
-            if( field == Meta::valRating || field == Meta::valPlaycount )       //tName == "POPM"
+            // POPM gets its information from either Rating (if available) or playcount (if not)
+            if( field == Meta::valRating || field == Meta::valPlaycount )
             {
                 TagLib::ID3v2::PopularimeterFrame* popFrame = 0;
                 if( !tag->frameListMap()[tName].isEmpty() )
@@ -1168,10 +1169,10 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes )
     foreach( const qint64 field, changes.keys() )
     {
 #ifndef UTILITIES_BUILD
-        // depending on the configuration we might not want to write back statistics
+
+        // Statistics and scores are updated whenever you play a track, so we have a separate option for that.
         if( !AmarokConfig::writeBackStatistics() &&
             (field == Meta::valScore ||
-             field == Meta::valRating ||
              field == Meta::valFirstPlayed ||
              field == Meta::valLastPlayed ||
              field == Meta::valPlaycount) )

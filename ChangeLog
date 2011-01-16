@@ -7,6 +7,8 @@ VERSION 2.4.1
   FEATURES:
 
   CHANGES:
+    * Do not store track rating as tags in files. Patch by Alan Ezusti
+      <alan.ezust@gmail.com>. (BR 259117)
     * Added missing tooltip for animation settings. Patch by Bhargav Mangipudi
       <bhargav.1191@gmail.com>. (BR 248690)
 
