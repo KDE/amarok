@@ -3,7 +3,7 @@
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
  * Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>                             *
- * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010-2011 Ralf Engels <ralf-engels@gmx.de>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -37,8 +37,26 @@
 #include <KUrl>
 
 class ScannerJob;
+
+class QTimer;
 class QSharedMemory;
 
+class KDirWatch;
+
+/** The ScanManager manages the scanning and directory watching for a DatabaseCollection.
+
+    The scan manager will check the version of the amarokcollectionscanner application,
+    watch the collection directories using the KDirWatch and initiate the scanning.
+
+    For the scanning an external process with the scanner is started and the result
+    is handled in a seperate thread.
+
+    Notes for the method of checking for changes:
+    When Amarok is started we wait a minute (so that the scanner does not slow down
+    the application startup) and then we do a full incremental scan.
+    After that we use KDirWatch to track directory changes.
+    KDirWatch will not track changes to symbolic links!
+*/
 class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
 {
     Q_OBJECT
@@ -76,6 +94,14 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
          */
         virtual void requestIncrementalScan( const QString &directory = QString() );
 
+        /** Starts an incremental scan of the given directory after a short time.
+            The idea is that we wait until a directory is fully written before
+            starting to scan it. */
+        virtual void delayedIncrementalScan( const QString &directory = QString() );
+
+        /** Starts an incremental scan of the given directory of file's parent directory after a short time. */
+        virtual void delayedIncrementalScanParent( const QString &directory );
+
         /** Abort the request and all currently running scans. */
         virtual void abort( const QString &reason = QString() );
 
@@ -87,6 +113,11 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         void failed( QString message );
 
     private slots:
+        /** Adds the given directory to the list of directories for the next scan.
+            If an empty string is given it will add the whole list of collection folder.
+        */
+        void addDirToList( const QString &directory = QString() );
+
         /** Tries to start the scanner.
             Does nothing if scanning is currently blocked, if another scanner
             is running or if there is nothing to do.
@@ -96,10 +127,12 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         /** This slot is called once to check the scanner version.
             An error message is displayed if the versions don't match.
         */
-        void slotCheckScannerVersion();
+        void checkScannerVersion();
 
-        /** Slot is called when the check folder timer runs out. */
-        void slotWatchFolders();
+        /** Updates the m_watcher according to the current configuration settings.
+            This function is called frequently as we don't have a configuration changed signal
+        */
+        void checkForDirectoryChanges();
 
         /** Called when the scanner job has finished. */
         void slotJobDone();
@@ -116,6 +149,11 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         bool m_fullScanRequested;
         QSet<QString> m_scanDirsRequested;
         QIODevice *m_importRequested;
+
+        QTimer* m_checkDirsTimer;
+        QTimer* m_delayedScanTimer;
+        QSet<QString> m_oldWatchDirs;
+        KDirWatch *m_watcher;
 
         /**
            This mutex is protecting the variables:
