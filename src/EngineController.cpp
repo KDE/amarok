@@ -724,6 +724,8 @@ void
 EngineController::setMuted( bool mute ) //SLOT
 {
     m_audio.data()->setMuted( mute ); // toggle mute
+    if( !isMuted() )
+        setVolume( m_volume );
 
     AmarokConfig::setMuteState( mute );
     emit muteStateChanged( mute );
