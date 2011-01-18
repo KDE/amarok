@@ -121,7 +121,7 @@ namespace Meta {
         /** returns true if the album has a cover set */
         virtual bool hasImage( int size = 0 ) const;
         /** returns the cover of the album */
-        virtual QImage image( int size = 0 );
+        virtual QImage image( int size = 0 ) const;
         /** returns the image location on disk */
         virtual KUrl imageLocation( int size = 0 );
         /** returns the cover of the album with a nice border around it*/

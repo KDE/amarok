@@ -823,7 +823,7 @@ ProxyAlbum::hasImage( int size ) const
 }
 
 QImage
-ProxyAlbum::image( int size )
+ProxyAlbum::image( int size ) const
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
