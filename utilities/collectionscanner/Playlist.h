@@ -21,9 +21,8 @@
 #define COLLECTIONSCANNER_PLAYLIST_H
 
 #include <QString>
-
-class QXmlStreamReader;
-class QXmlStreamWriter;
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 namespace CollectionScanner
 {

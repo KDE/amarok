@@ -22,12 +22,12 @@
 
 #include <QString>
 #include <QDateTime>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 #include "shared/FileType.h"
 #include "shared/MetaReplayGain.h"
 
-class QXmlStreamReader;
-class QXmlStreamWriter;
 
 namespace CollectionScanner
 {

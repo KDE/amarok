@@ -32,6 +32,7 @@
 #include <QHash>
 #include <QSet>
 #include <QStringList>
+#include <QXmlStreamWriter>
 
 class QSharedMemory;
 
