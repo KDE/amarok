@@ -13,6 +13,8 @@ VERSION 2.4.1
       <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
+    * Fixed crash in the queue editor when trying to show already
+      removed items of the playlist. (BR 263308)
     * Fixed Mute button. (BR 253098)
     * Fixed issue with Organize collection, which made amarok remove newly copied tracks.
       (BR 263301)
