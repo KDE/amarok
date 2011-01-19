@@ -170,22 +170,6 @@ ProxyQueryMaker::orderByRandom()
 }
 
 QueryMaker*
-ProxyQueryMaker::includeCollection( const QString &collectionId )
-{
-    foreach( QueryMaker *b, m_builders )
-        b->includeCollection( collectionId );
-    return this;
-}
-
-QueryMaker*
-ProxyQueryMaker::excludeCollection( const QString &collectionId )
-{
-    foreach( QueryMaker *b, m_builders )
-        b->excludeCollection( collectionId );
-    return this;
-}
-
-QueryMaker*
 ProxyQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     foreach( QueryMaker *b, m_builders )

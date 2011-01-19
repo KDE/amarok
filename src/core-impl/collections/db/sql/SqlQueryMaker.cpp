@@ -82,8 +82,6 @@ struct SqlQueryMaker::Private
     QString queryMatch;
     QString queryFilter;
     QString queryOrderBy;
-    bool includedBuilder;
-    bool collectionRestriction;
     bool resultAsDataPtrs;
     bool withoutDuplicates;
     int maxResultSize;
@@ -113,8 +111,6 @@ SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
     , m_collection( collection )
     , d( new Private )
 {
-    d->includedBuilder = true;
-    d->collectionRestriction = false;
     d->worker = 0;
     d->queryType = QueryMaker::None;
     d->linkedTables = 0;
@@ -333,28 +329,6 @@ SqlQueryMaker::setQueryType( QueryType type )
     case QueryMaker::None:
         return this;
     }
-    return this;
-}
-
-QueryMaker*
-SqlQueryMaker::includeCollection( const QString &collectionId )
-{
-    if( !d->collectionRestriction )
-    {
-        d->includedBuilder = false;
-        d->collectionRestriction = true;
-    }
-    if( m_collection->collectionId() == collectionId )
-        d->includedBuilder = true;
-    return this;
-}
-
-QueryMaker*
-SqlQueryMaker::excludeCollection( const QString &collectionId )
-{
-    d->collectionRestriction = true;
-    if( m_collection->collectionId() == collectionId )
-        d->includedBuilder = false;
     return this;
 }
 

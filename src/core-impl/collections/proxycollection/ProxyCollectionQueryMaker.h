@@ -72,9 +72,6 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare );
         virtual QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare );
 
-        virtual QueryMaker* includeCollection( const QString &collectionId );
-        virtual QueryMaker* excludeCollection( const QString &collectionId );
-
         virtual QueryMaker* limitMaxResultSize( int size );
 
         virtual QueryMaker* beginAnd();

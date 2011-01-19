@@ -37,7 +37,6 @@ namespace Collections
     PlaydarQueryMaker::PlaydarQueryMaker( PlaydarCollection *collection )
     : m_queryType( QueryMaker::QueryType( None ) )
     , m_autoDelete( false )
-    , m_shouldQueryCollection( true )
     , m_activeQueryCount( 0 )
     , m_memoryQueryIsRunning( false )
     , m_collectionUpdated( false )
@@ -91,7 +90,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         
-        if( m_shouldQueryCollection && !m_filterMap.isEmpty() )
+        if( !m_filterMap.isEmpty() )
         {
             connect( m_controller.data(), SIGNAL( playdarError( Playdar::Controller::ErrorState ) ),
                      this, SLOT( slotPlaydarError( Playdar::Controller::ErrorState ) ) );
@@ -224,41 +223,7 @@ namespace Collections
         
         return this;
     }
-    
-    QueryMaker*
-    PlaydarQueryMaker::includeCollection( const QString &collectionId )
-    {
-        DEBUG_BLOCK
 
-        CurriedUnaryQMFunction< const QString& >::FunPtr funPtr = &QueryMaker::includeCollection;
-        CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const QString& >( funPtr, collectionId );
-        m_queryMakerFunctions.append( curriedFun );
-
-        (*curriedFun)( m_memoryQueryMaker.data() );
-        
-        if( m_collection.data()->collectionId() == collectionId )
-            m_shouldQueryCollection = true;
-        
-        return this;
-    }
-    
-    QueryMaker*
-    PlaydarQueryMaker::excludeCollection( const QString &collectionId )
-    {
-        DEBUG_BLOCK
-
-        CurriedUnaryQMFunction< const QString& >::FunPtr funPtr = &QueryMaker::excludeCollection;
-        CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const QString& >( funPtr, collectionId );
-        m_queryMakerFunctions.append( curriedFun );
-
-        (*curriedFun)( m_memoryQueryMaker.data() );
-        
-        if( m_collection.data()->collectionId() == collectionId )
-            m_shouldQueryCollection = false;
-        
-        return this;
-    }
-    
     QueryMaker*
     PlaydarQueryMaker::addMatch( const Meta::TrackPtr &track )
     {

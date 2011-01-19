@@ -281,30 +281,6 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::includeCollection( const QString &collectionId )
-{
-    Q_UNUSED( collectionId );
-  /*  if( !d->collectionRestriction )
-    {
-        d->includedBuilder = false;
-        d->collectionRestriction = true;
-    }
-    if( m_collection->collectionId() == collectionId )
-        d->includedBuilder = true;*/
-    return this;
-}
-
-QueryMaker*
-ServiceSqlQueryMaker::excludeCollection( const QString &collectionId )
-{
-     Q_UNUSED( collectionId );
-    /*d->collectionRestriction = true;
-    if( m_collection->collectionId() == collectionId )
-        d->includedBuilder = false;*/
-    return this;
-}
-
-QueryMaker*
 ServiceSqlQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
     //DEBUG_BLOCK

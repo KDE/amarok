@@ -200,29 +200,6 @@ XmlQueryWriter::orderByRandom()
 }
 
 QueryMaker*
-XmlQueryWriter::includeCollection( const QString &collectionId )
-{
-    QDomElement e = m_doc.createElement( "includeCollection" );
-    e.setAttribute( "id", collectionId );
-    m_element.appendChild( e );
-
-    m_qm->includeCollection( collectionId );
-    return this;
-}
-
-
-QueryMaker*
-XmlQueryWriter::excludeCollection( const QString &collectionId )
-{
-    QDomElement e = m_doc.createElement( "excludeElement" );
-    e.setAttribute( "id", collectionId );
-    m_element.appendChild( e );
-
-    m_qm->includeCollection( collectionId );
-    return this;
-}
-
-QueryMaker*
 XmlQueryWriter::addMatch( const Meta::TrackPtr &track )
 {
     m_qm->addMatch( track );

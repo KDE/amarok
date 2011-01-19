@@ -194,24 +194,6 @@ NepomukQueryMaker::setQueryType( QueryType type )
 }
 
 QueryMaker*
-NepomukQueryMaker::includeCollection( const QString &collectionId )
-{
-    // TODO:  Find out what it is for. Seems to do nothing in SqlCollection
-    debug() << "includeCollection()" << endl;
-	Q_UNUSED( collectionId )
-    return this;
-}
-
-QueryMaker*
-NepomukQueryMaker::excludeCollection( const QString &collectionId )
-{
-    // TODO:  Find out what it is for. Seems to do nothing in SqlCollection
-    debug() << "excludeCollection()" << endl;
-	Q_UNUSED( collectionId )
-	return this;
-}
-
-QueryMaker*
 NepomukQueryMaker::addMatch( const TrackPtr &track )
 {
     debug() << "addMatch(Track)" << endl;

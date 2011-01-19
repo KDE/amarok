@@ -61,9 +61,6 @@ public:
     virtual QueryMaker* orderBy ( qint64 value, bool descending = false );
     virtual QueryMaker* orderByRandom();
 
-    virtual QueryMaker* includeCollection ( const QString &collectionId );
-    virtual QueryMaker* excludeCollection ( const QString &collectionId );
-
     virtual QueryMaker* addMatch ( const Meta::TrackPtr &track );
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );

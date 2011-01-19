@@ -22,11 +22,7 @@
 #include "BiasedPlaylist.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core/collections/MetaQueryMaker.h"
 #include "core/support/Debug.h"
-#include "DynamicPlaylist.h"
-#include "core-impl/collections/support/XmlQueryReader.h"
-#include "core-impl/collections/support/XmlQueryWriter.h"
 
 #include <QFile>
 #include <QVariant>

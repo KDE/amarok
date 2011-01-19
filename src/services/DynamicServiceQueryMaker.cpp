@@ -53,18 +53,6 @@ QueryMaker * DynamicServiceQueryMaker::orderByRandom()
     return this;
 }
 
-QueryMaker * DynamicServiceQueryMaker::includeCollection(const QString & collectionId)
-{
-    Q_UNUSED( collectionId );
-    return this;
-}
-
-QueryMaker * DynamicServiceQueryMaker::excludeCollection(const QString & collectionId)
-{
-    Q_UNUSED( collectionId );
-    return this;
-}
-
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::TrackPtr & track)
 {
     DEBUG_BLOCK

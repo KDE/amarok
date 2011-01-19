@@ -22,8 +22,8 @@
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "EngineController.h"
+#include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
-#include "core/collections/MetaQueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
 #include <KIO/Job>
