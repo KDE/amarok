@@ -141,7 +141,8 @@ PlaylistBrowserNS::DynamicModel::isActiveDefault() const
 QVariant
 PlaylistBrowserNS::DynamicModel::data ( const QModelIndex & i, int role ) const
 {
-    if( !i.isValid() ) return QVariant();
+    if( !i.isValid() || i.row() < 0 || i.row() >= m_playlists.count())
+        return QVariant();
 
     QString title = m_playlists[ i.row() ]->title();
 

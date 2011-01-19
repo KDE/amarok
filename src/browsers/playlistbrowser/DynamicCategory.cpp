@@ -63,7 +63,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     bool enabled = AmarokConfig::dynamicMode();
 
-    setContentsMargins(0,0,0,0);
+    setContentsMargins( 0, 0, 0, 0 );
 
     KHBox* controls1Layout = new KHBox( this );
 
@@ -157,6 +157,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
             DynamicModel::instance(), SLOT(removeActive()) );
 
     m_scroller = new QScrollArea( this );
+    m_scroller->setContentsMargins( 0, 0, 0, 0 );
     m_scroller->setWidgetResizable( true );
 
     int index = DynamicModel::instance()->activePlaylistIndex();

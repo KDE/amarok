@@ -413,6 +413,8 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
                  this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
         connect( newBias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
                  this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+        connect( newBias.data(), SIGNAL( changed( Dynamic::BiasPtr ) ),
+                 this, SIGNAL( changed( Dynamic::BiasPtr ) ) );
 
         // we don't have an bias inserted signal
         emit biasRemoved( index );
