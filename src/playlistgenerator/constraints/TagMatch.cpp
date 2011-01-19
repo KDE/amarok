@@ -25,6 +25,7 @@
 #include "core/support/Debug.h"
 
 #include <KRandom>
+#include <KLocalizedString>
 
 #include <QtGlobal>
 
@@ -479,21 +480,21 @@ ConstraintTypes::TagMatch::valueToString() const
         if ( m_comparison != CompareDateWithin ) {
             return m_value.toDate().toString( Qt::ISODate );
         } else {
-            QString unit;
+            KLocalizedString unit;
             switch ( m_value.value<DateRange>().second ) {
                 case 0:
-                    unit = "days";
+                    unit = ki18np("%1 day", "%1 days");
                     break;
                 case 1:
-                    unit = "months";
+                    unit = ki18np("%1 month", "%1 months");
                     break;
                 case 2:
-                    unit = "years";
+                    unit = ki18np("%1 year", "%1 years");
                     break;
                 default:
                     break;
             }
-            return QString("%1 %2").arg( m_value.value<DateRange>().first ).arg( unit );
+            return unit.subs( m_value.value<DateRange>().first ).toString();
         }
     } else {
         return m_value.toString();
