@@ -398,7 +398,7 @@ ScannerJob::run()
                         processor->setType( ScanResultProcessor::PartialUpdateScan );
 
                     debug() << "ScannerJob: got count:" << m_reader.attributes().value( "count" ).toString().toInt();
-                    emit message( i18np("Found one direcory", "Found %1 directories",
+                    emit message( i18np("Found one directory", "Found %1 directories",
                                   m_reader.attributes().value( "count" ).toString()) );
                     emit totalSteps( this,
                                      m_reader.attributes().value( "count" ).toString().toInt() * 2);

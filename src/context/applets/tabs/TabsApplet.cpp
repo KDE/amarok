@@ -155,7 +155,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     {
         if( canAnimate() )
             setBusy( true );
-        setHeaderText( i18n( "Tabs: Fetching ..." ) );
+        setHeaderText( i18n( "Tabs: Fetching..." ) );
         updateInterface( FetchingState );
         return;
     }
