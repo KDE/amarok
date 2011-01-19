@@ -60,7 +60,7 @@ Dynamic::QuizPlayBiasFactory::createBias( QXmlStreamReader *reader )
 { return Dynamic::BiasPtr( new Dynamic::QuizPlayBias( reader ) ); }
 
 
-
+// Note: this whole bias does not work correctly for right-to-left languages.
 
 
 Dynamic::QuizPlayBias::QuizPlayBias()
@@ -302,6 +302,10 @@ Dynamic::QuizPlayBias::lastChar( const QString &str )
     index = str.indexOf( QLatin1String(" cd"), Qt::CaseInsensitive );
     if( index > 0 && index < endIndex )
         endIndex = index;
+
+    while( endIndex > 0 &&
+           (str[ endIndex - 1 ].isSpace() || str[ endIndex - 1 ].isPunct()) )
+        endIndex--;
 
     if( endIndex > 0 )
         return str[ endIndex - 1 ];

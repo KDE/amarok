@@ -276,6 +276,7 @@ Dynamic::LastFmBias::newQuery()
             }
             else
             {
+                locker.unlock();
                 newSimilarQuery();
                 return; // not yet ready to do construct a query maker
             }
@@ -290,6 +291,7 @@ Dynamic::LastFmBias::newQuery()
             }
             else
             {
+                locker.unlock();
                 newSimilarQuery();
                 return; // not yet ready to do construct a query maker
             }
