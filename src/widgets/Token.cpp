@@ -26,13 +26,13 @@
 
 #include "TokenDropTarget.h"
 
-Token * TokenFactory::createToken(const QString & text, const QString & iconName, int value, QWidget * parent)
+Token * TokenFactory::createToken(const QString & text, const QString & iconName, qint64 value, QWidget * parent)
 {
     return new Token( text, iconName, value, parent );
 }
 
 
-Token::Token( const QString &name, const QString &iconName, int value, QWidget *parent )
+Token::Token( const QString &name, const QString &iconName, qint64 value, QWidget *parent )
     : QWidget( parent )
     , m_name( name )
     , m_icon( KIcon( iconName ) )
@@ -76,7 +76,7 @@ Token::name() const
     return m_name;
 } 
 
-int
+qint64
 Token::value() const
 {
     return m_value;

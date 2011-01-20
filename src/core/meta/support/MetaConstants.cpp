@@ -22,7 +22,7 @@ QString Meta::nameForField( qint64 field )
     switch( field )
     {
     case 0:                    return "anything";
-    case Meta::valUrl:         return "url";
+    case Meta::valUrl:         return "filename";
     case Meta::valTitle:       return "title";
     case Meta::valArtist:      return "artist";
     case Meta::valAlbum:       return "album";
@@ -31,14 +31,14 @@ QString Meta::nameForField( qint64 field )
     case Meta::valYear:        return "year";
     case Meta::valComment:     return "comment";
     case Meta::valTrackNr:     return "tracknr";
-    case Meta::valDiscNr:      return "discnr";
+    case Meta::valDiscNr:      return "discnumber";
     case Meta::valBpm:         return "bpm";
     case Meta::valLength:      return "length";
     case Meta::valBitrate:     return "bitrate";
     case Meta::valSamplerate:  return "samplerate";
     case Meta::valFilesize:    return "filesize";
     case Meta::valFormat:      return "format";
-    case Meta::valCreateDate:  return "createdate";
+    case Meta::valCreateDate:  return "added";
     case Meta::valScore:       return "score";
     case Meta::valRating:      return "rating";
     case Meta::valFirstPlayed: return "firstplay";
@@ -54,14 +54,14 @@ QString Meta::nameForField( qint64 field )
     case Meta::valAlbumArtist: return "albumartist";
     case Meta::valLabel:       return "label";
     case Meta::valModified:    return "modifydate";
-    default:                   return "";
+    default:                   return QString();
     }
 }
 
 qint64 Meta::fieldForName( const QString &name )
 {
     if( name == "anything" ) return 0;
-    else if( name == "url" ) return Meta::valUrl;
+    else if( name == "filename" ) return Meta::valUrl;
     else if( name == "title" ) return Meta::valTitle;
     else if( name == "artist" ) return Meta::valArtist;
     else if( name == "album" ) return Meta::valAlbum;
@@ -69,15 +69,15 @@ qint64 Meta::fieldForName( const QString &name )
     else if( name == "composer" ) return Meta::valComposer;
     else if( name == "year" ) return Meta::valYear;
     else if( name == "comment" ) return Meta::valComment;
-    else if( name == "tracknr" ) return Meta::valTrackNr;
-    else if( name == "discnr" ) return Meta::valDiscNr;
+    else if( name == "tracknumber" ) return Meta::valTrackNr;
+    else if( name == "discnumber" ) return Meta::valDiscNr;
     else if( name == "bpm" ) return Meta::valBpm;
     else if( name == "length" ) return Meta::valLength;
     else if( name == "bitrate" ) return Meta::valBitrate;
     else if( name == "samplerate" ) return Meta::valSamplerate;
     else if( name == "filesize" ) return Meta::valFilesize;
     else if( name == "format" ) return Meta::valFormat;
-    else if( name == "createdate" ) return Meta::valCreateDate;
+    else if( name == "added" ) return Meta::valCreateDate;
     else if( name == "score" ) return Meta::valScore;
     else if( name == "rating" ) return Meta::valRating;
     else if( name == "firstplay" ) return Meta::valFirstPlayed;
@@ -102,37 +102,37 @@ QString Meta::i18nForField( qint64 field )
     {
     case 0:                    return i18nc("The field name in case nothing specific is selected e.g. in the automatic playlist generator", "anything");
     case Meta::valUrl:         return i18nc( "The name of the file this track is stored in", "filename" );
-    case Meta::valTitle:       return i18n("title");
-    case Meta::valArtist:      return i18n("artist name");
-    case Meta::valAlbum:       return i18n("album name");
-    case Meta::valGenre:       return i18n("genre");
-    case Meta::valComposer:    return i18n("composer");
-    case Meta::valYear:        return i18n("year");
-    case Meta::valComment:     return i18n("comment");
-    case Meta::valTrackNr:     return i18n("track number");
-    case Meta::valDiscNr:      return i18n("disc number");
-    case Meta::valBpm:         return i18n("bpm");
-    case Meta::valLength:      return i18n("length");
-    case Meta::valBitrate:     return i18n("bit rate");
-    case Meta::valSamplerate:  return i18n("sample rate");
-    case Meta::valFilesize:    return i18n("file size");
-    case Meta::valFormat:      return i18n("format");
-    case Meta::valCreateDate:  return i18n("added to collection");
-    case Meta::valScore:       return i18n("score");
-    case Meta::valRating:      return i18n("rating");
-    case Meta::valFirstPlayed: return i18n("first played");
-    case Meta::valLastPlayed:  return i18n("last played");
-    case Meta::valPlaycount:   return i18n("playcount");
-    case Meta::valUniqueId:    return i18n("unique id");
+    case Meta::valTitle:       return i18n("Title");
+    case Meta::valArtist:      return i18n("Artist Name");
+    case Meta::valAlbum:       return i18n("Album Name");
+    case Meta::valGenre:       return i18n("Genre");
+    case Meta::valComposer:    return i18n("Composer");
+    case Meta::valYear:        return i18n("Year");
+    case Meta::valComment:     return i18n("Comment");
+    case Meta::valTrackNr:     return i18n("Track Number");
+    case Meta::valDiscNr:      return i18n("Disc Number");
+    case Meta::valBpm:         return i18n("Bpm");
+    case Meta::valLength:      return i18n("Length");
+    case Meta::valBitrate:     return i18n("Bit Rate");
+    case Meta::valSamplerate:  return i18n("Sample Rate");
+    case Meta::valFilesize:    return i18n("File Size");
+    case Meta::valFormat:      return i18n("Format");
+    case Meta::valCreateDate:  return i18n("Added to Collection");
+    case Meta::valScore:       return i18n("Score");
+    case Meta::valRating:      return i18n("Rating");
+    case Meta::valFirstPlayed: return i18n("First Played");
+    case Meta::valLastPlayed:  return i18n("Last Played");
+    case Meta::valPlaycount:   return i18n("Playcount");
+    case Meta::valUniqueId:    return i18n("Unique Id");
 
     case Meta::valTrackGain:   return i18n("track gain");
     case Meta::valTrackGainPeak:   return i18n("track gain peak");
     case Meta::valAlbumGain:   return i18n("album gain");
     case Meta::valAlbumGainPeak:   return i18n("album gain peak");
 
-    case Meta::valAlbumArtist: return i18n("album artist name");
-    case Meta::valLabel:       return i18n("label");
-    case Meta::valModified:    return i18n("last modified");
+    case Meta::valAlbumArtist: return i18n("Album Artist Name");
+    case Meta::valLabel:       return i18n("Label");
+    case Meta::valModified:    return i18n("Last Modified");
     default:                   return QString();
     }
 }
@@ -163,8 +163,8 @@ QString Meta::shortI18nForField( qint64 field )
     case Meta::valCreateDate:  return i18nc("One word translation used in the collection filter", "added");
     case Meta::valScore:       return i18nc("One word translation used in the collection filter", "score");
     case Meta::valRating:      return i18nc("One word translation used in the collection filter", "rating");
-    case Meta::valFirstPlayed: return i18nc("One word translation used in the collection filter. First played time / access date", "first");
-    case Meta::valLastPlayed:  return i18nc("One word translation used in the collection filter. Last played time / access date", "last");
+    case Meta::valFirstPlayed: return i18nc("One word translation used in the collection filter. First played time / access date", "firstplay");
+    case Meta::valLastPlayed:  return i18nc("One word translation used in the collection filter. Last played time / access date", "lastplay");
     case Meta::valPlaycount:   return i18nc("One word translation used in the collection filter", "playcount");
     case Meta::valUniqueId:    return i18nc("One word translation used in the collection filter", "uniqueid");
 
@@ -265,12 +265,16 @@ QString Meta::iconForField( qint64 field )
     {
     case Meta::valUrl: return "filename-space-amarok";
     case Meta::valTitle: return "filename-title-amarok";
-    case Meta::valArtist: return "filename-artist-amarok";
+    case Meta::valArtist:
+    case Meta::valAlbumArtist: return "filename-artist-amarok";
     case Meta::valAlbum: return "filename-album-amarok";
     case Meta::valGenre: return "filename-genre-amarok";
     case Meta::valComposer: return "filename-composer-amarok";
-    case Meta::valYear: return "filename-year-amarok";
-    case Meta::valComment: return "filename-comment-amarok";
+    case Meta::valYear:
+    case Meta::valModified:
+    case Meta::valCreateDate: return "filename-year-amarok";
+    case Meta::valComment:
+    case Meta::valPlaycount: return "filename-comment-amarok";
     case Meta::valTrackNr: return "filename-track-amarok";
     case Meta::valDiscNr: return "filename-discnumber-amarok";
     case Meta::valBpm: return "filename-bpm-amarok";
@@ -280,10 +284,10 @@ QString Meta::iconForField( qint64 field )
     case Meta::valFormat: return "filename-filetype-amarok";
     case Meta::valScore: return "emblem-favorite";
     case Meta::valRating: return "rating";
+    case Meta::valFirstPlayed:
     case Meta::valLastPlayed: return "filename-last-played";
-    case Meta::valPlaycount: return "filename-comment-amarok";
     case Meta::valLabel: return "label-amarok";
-    case Meta::valAlbumArtist: return "amarok_artist";
+    case Meta::valFilesize: return "info-amarok";
     default: return QString();
     }
 }

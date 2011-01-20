@@ -31,7 +31,7 @@ class TokenFactory
 
 public:
     virtual ~TokenFactory() {}
-    virtual Token * createToken( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
+    virtual Token * createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 );
 };
 
 //Defines a part of a filename, drag&droppable in the TokenLayoutWidget bar from the TokenPool list.
@@ -41,12 +41,12 @@ class Token : public QWidget
 
     public:
 
-        explicit Token( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
+        explicit Token( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 );
 
         KIcon icon() const;
         QString iconName() const;
         QString name() const;
-        int value() const;
+        qint64 value() const;
         QColor textColor() const;
 
         void setTextColor( QColor textColor );
@@ -62,7 +62,7 @@ class Token : public QWidget
         QString     m_name;
         KIcon       m_icon;
         QString     m_iconName;
-        int         m_value;
+        qint64      m_value;
         QColor      m_textColor;
 
         QLabel      *m_iconContainer;

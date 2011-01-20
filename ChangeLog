@@ -7,6 +7,7 @@ VERSION 2.4.1
   FEATURES:
 
   CHANGES:
+    * Renewed FilterEditor dialog.
     * Changed tokens syntax in FileNameLayoutDialog (TagGuesser, OrginizeCollection dialogs)
       now tokens wrapped in percent signs (%token% instead of %token).
     * Added ability to guess tags from whole track path. (TagGuesser dialog)

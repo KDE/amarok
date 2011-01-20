@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2006 Giovanni Venturi <giovanni@kde-it.org>                            *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,196 +17,320 @@
 
 #define DEBUG_PREFIX "EditFilterDialog"
 
-#include "widgets/MetaQueryWidget.h"
 #include "EditFilterDialog.h"
 
 #include "amarokconfig.h"
+
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "widgets/TokenDropTarget.h"
+#include "Expression.h"
 
 #include <KGlobal>
 #include <KLocale>
 #include <KMessageBox>
+#include <QPushButton>
+
+#define OR_TOKEN Meta::valCustom  + 1
+#define AND_TOKEN Meta::valCustom + 2
+
+#define AND_TOKEN_CONSTRUCT new Token( i18n( "AND" ), "filename-and-amarok", AND_TOKEN )
+#define OR_TOKEN_CONSTRUCT new Token( i18n( "OR" ), "filename-divider", OR_TOKEN )
+#define SIMPLE_TEXT_CONSTRUCT new Token( i18n( "Simple text" ), "media-track-edit-amarok", 0 )
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     : KDialog( parent )
-    , m_appended( false )
-    , m_filterText( text )
+    , m_curToken( 0 )
+    , m_separator( " AND " )
 {
     setCaption( i18n( "Edit Filter" ) );
-    setButtons( User1|User2|Default|Ok|Cancel );
-    setDefaultButton( Cancel );
-    showButtonSeparator( true );
+    setButtons( KDialog::Reset | KDialog::Ok | KDialog::Cancel );
+
     m_ui.setupUi( mainWidget() );
     setMinimumSize( minimumSizeHint() );
 
-    // Redefine "Default" button
-    KGuiItem defaultButton( i18n("&Append"), "list-add" );
-    setButtonWhatsThis( Default, i18n( "<qt><p>By clicking here you can add the defined condition. The \"OK\" button will "
-                                        "close the dialog and apply the defined filter. With this button you can add more than "
-                                        "one condition to create a more complex filtering condition.</p></qt>" ) );
-    setButtonToolTip( Default, i18n( "Add this filter condition to the list" ) );
-    setButtonGuiItem( Default, defaultButton );
+    m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", m_ui.dtTokens );
+    m_dropTarget->setRowLimit( 1 );
+    m_dropTarget->layout()->setContentsMargins( 1, 1, 1, 1 );
 
-    // define "User1" button
-    KGuiItem user1Button( i18n("&Clear"), "list-remove" );
-    setButtonWhatsThis( User1, i18n( "<p>By clicking here you will clear the filter. If you intend to "
-                                     "undo the last appending just click on the \"Undo\" button.</p>" ) );
-    setButtonToolTip(User1, i18n( "Clear the filter" ) );
-    setButtonGuiItem( User1, user1Button );
+    QVBoxLayout *l = new QVBoxLayout( m_ui.dtTokens );
+    l->setContentsMargins( 0, 0, 0, 0 );
+    l->addWidget( m_dropTarget );
 
-    // define "User2" button
-    KGuiItem user2Button( i18nc("this \"undo\" will undo the last appended filter... be careful how you will translate it "
-       "to avoid two buttons (\"Cancel\" and \"Undo\") with same label in the same dialog", "&Undo"), "edit-undo" );
-    setButtonWhatsThis( User2, i18n( "<p>Clicking here will remove the last appended filter. "
-                "You cannot undo more than one action.</p>" ) );
-    setButtonToolTip( User2, i18n( "Remove last appended filter" ) );
-    setButtonGuiItem( User2, user2Button );
+    initTokenPool();
+    parseTextFilter( text );
+    updateMetaQueryWidgetView();
 
-    // check "select all words" as default
-    m_ui.filterActionGroupBox->setEnabled( !MetaQueryWidget::isNumeric( m_ui.attributeQuery->filter().field ) );
-    connect( m_ui.attributeQuery, SIGNAL(changed(const MetaQueryWidget::Filter&)), this, SLOT(slotAttributeChanged()) );
-    m_ui.matchAll->setChecked( true );
-
-    // you need to append at least one filter condition to specify if do
-    // an "AND" or an "OR" with the next condition if the filter is empty
-    //
-    if( m_filterText.isEmpty() )
-    {
-        m_ui.andButton->setEnabled( false );
-        m_ui.orButton->setEnabled( false );
-    }
-
-    // check "AND" condition as default
-    m_ui.andButton->setChecked( true );
-
-    connect( this, SIGNAL(okClicked()), this, SLOT(slotOk()) );
-    connect( this, SIGNAL(defaultClicked()) , this, SLOT(slotAppend()) );
-    connect( this, SIGNAL(user1Clicked()), this, SLOT(slotClear()) );
-    connect( this, SIGNAL(user2Clicked()), this, SLOT(slotUndo()) );
-
+    connect( m_ui.mqwAttributeEditor, SIGNAL( changed( const MetaQueryWidget::Filter & ) ),
+             SLOT( slotAttributeChanged( const MetaQueryWidget::Filter & ) ) );
+    connect( this, SIGNAL( resetClicked() ), SLOT( slotReset() ) );
+    connect( m_ui.cbInvert, SIGNAL( toggled( bool ) ),
+             SLOT( slotInvert( bool ) ) );
+    connect( m_ui.cbAndOr, SIGNAL( currentIndexChanged( QString ) ),
+             SLOT( slotSeparatorChange( QString ) ) );
+    connect( m_dropTarget, SIGNAL( focusReceived( QWidget * ) ),
+             SLOT( slotTokenSelected( QWidget * ) ) );
+    connect( m_dropTarget, SIGNAL( changed() ),
+             SLOT( slotTokenDropTargetChanged() ) );
 }
 
 EditFilterDialog::~EditFilterDialog()
 {
 }
 
-void EditFilterDialog::slotAttributeChanged()
+void
+EditFilterDialog::initTokenPool()
 {
-    // only enable the "match all words" radio on fields that can actually
-    // have several words.
-    m_ui.filterActionGroupBox->setEnabled( m_ui.attributeQuery->filter().field == 0 );
+
+    m_ui.tpTokenPool->addToken( SIMPLE_TEXT_CONSTRUCT );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valTitle ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valArtist ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valAlbumArtist ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valAlbum ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valGenre ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valComposer ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valComment ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valUrl ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valYear ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valTrackNr ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valDiscNr ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valBpm ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valLength ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valBitrate ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valSamplerate ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valFilesize ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valFormat ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valCreateDate ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valScore ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valRating ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valFirstPlayed ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valPlaycount ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valLabel ) );
+    m_ui.tpTokenPool->addToken( tokenForField( Meta::valModified ) );
+    m_ui.tpTokenPool->addToken( OR_TOKEN_CONSTRUCT );
+    m_ui.tpTokenPool->addToken( AND_TOKEN_CONSTRUCT );
 }
 
-void EditFilterDialog::slotAppend()
+Token *
+EditFilterDialog::tokenForField( const qint64 field )
 {
-    MetaQueryWidget::Filter filter = m_ui.attributeQuery->filter();
+    QString icon = Meta::iconForField( field );
+    QString text = Meta::i18nForField( field );
 
-    // now append the filter rule if not empty
-    if( filter.condition == MetaQueryWidget::Contains && filter.value.isEmpty() )
+    return new Token( text, icon, field );
+}
+
+void
+EditFilterDialog::slotAttributeChanged( const MetaQueryWidget::Filter &filter )
+{
+    if( m_curToken )
+        m_filters[m_curToken].filter = filter;
+
+    m_ui.label->setText( this->filter() );
+}
+
+void
+EditFilterDialog::slotInvert( bool checked )
+{
+    if( m_curToken )
+        m_filters[m_curToken].inverted = checked;
+
+    m_ui.label->setText( filter() );
+}
+
+void
+EditFilterDialog::slotSeparatorChange( const QString &separator )
+{
+    m_separator = " " + separator + " ";
+
+    m_ui.label->setText( filter() );
+}
+
+void
+EditFilterDialog::slotReset()
+{
+    m_curToken = 0;
+    m_filters.clear();
+    m_dropTarget->clear();
+    m_ui.cbAndOr->setCurrentIndex( 0 );
+
+    updateMetaQueryWidgetView();
+}
+
+void
+EditFilterDialog::accept()
+{
+    emit filterChanged( filter() );
+    KDialog::accept();
+}
+
+void
+EditFilterDialog::updateMetaQueryWidgetView()
+{
+    if( m_curToken )
     {
-        KMessageBox::sorry( 0, i18n("<p>Sorry but the filter rule cannot be set. The text field is empty. "
-                    "Please type something into it and retry.</p>"), i18n("Empty Text Field"));
-        return;
-    }
-
-    if( !m_appended )
-    {
-        // it's the first rule
-        m_appended = true;
-        m_ui.andButton->setEnabled( true );
-        m_ui.orButton->setEnabled( true );
-    }
-
-    m_previousFilterText = m_filterText;
-
-    bool invert = m_ui.invertButton->isChecked();
-    if( m_ui.matchNot->isEnabled() && m_ui.matchNot->isChecked())
-        invert = !invert;
-
-    if( filter.field == 0 /*simple search*/ )
-    {
-        QString line;
-
-        QStringList list = filter.value.split( ' ' );
-
-        // at least one word
-        if( m_ui.matchAny->isChecked() )
+        if( m_filters.contains( m_curToken ) )
         {
-            if( !invert )
-                line = list.join( " OR " );
-            else
-                line = list.join( " OR -" );
+            m_ui.mqwAttributeEditor->setFilter( m_filters[m_curToken].filter );
+            m_ui.cbInvert->setChecked( m_filters[m_curToken].inverted );
         }
-
-        // exactly the words
-        else if( m_ui.matchLiteral->isChecked() )
-            line = "\"" + filter.value + "\"";
-
-        // all the words
         else
         {
-            if( !invert )
-                line = list.join( " " );
-            else
-                line = list.join( " -" );
+            m_ui.mqwAttributeEditor->setField( m_curToken->value() );
+            m_ui.cbInvert->setChecked( false );
         }
-
-        m_filterText += ' ';
-        if( invert )
-            m_filterText += '-';
-        m_filterText += line;
     }
     else
     {
-        if( !m_filterText.isEmpty() )
+        m_ui.mqwAttributeEditor->setField( 0 );
+        m_ui.cbInvert->setChecked( false );
+    }
+
+    m_ui.mqwAttributeEditor->setEnabled( ( bool )m_curToken );
+    m_ui.cbInvert->setEnabled( ( bool )m_curToken );
+    m_ui.label->setText( filter() );
+}
+
+void
+EditFilterDialog::slotTokenSelected( QWidget *token )
+{
+    m_curToken = qobject_cast< Token *>( token );
+
+    if( m_curToken && m_curToken->value() > Meta::valCustom )   // OR / AND tokens case
+        m_curToken = 0;
+
+    updateMetaQueryWidgetView();
+}
+
+void
+EditFilterDialog::slotTokenDropTargetChanged()
+{
+    m_curToken = 0;
+    updateMetaQueryWidgetView();
+}
+
+QString
+EditFilterDialog::filter() const
+{
+    QString filterString;
+
+    if( !m_dropTarget->count() )
+        return filterString;
+
+    QList < Token *> tokens = m_dropTarget->drags();
+    bool join = false;
+    Filter filter;
+    foreach( Token *token, tokens )
+    {
+        if( token->value() == OR_TOKEN )
         {
-            m_filterText += ' ';
-            if( m_ui.orButton->isChecked() )
-                m_filterText += "OR ";
+            filterString.append( " OR " );
+            join = false;
+        }
+        else if( token->value() == AND_TOKEN )
+        {
+            filterString.append( " AND " );
+            join = false;
+        }
+        else if( m_filters.contains( token ) )
+        {
+            if( join )
+                filterString.append( m_separator );
+            filter = m_filters[token];
+            filterString.append( filter.filter.toString( filter.inverted ) );
+            join = true;
+        }
+    }
+
+    return filterString;
+}
+
+void
+EditFilterDialog::parseTextFilter( const QString &text )
+{
+    ParsedExpression parsed = ExpressionParser::parse ( text );
+    bool AND = false;
+    bool OR = false;
+    foreach( const or_list &orList, parsed )
+    {
+        if( AND )
+            m_dropTarget->insertToken( AND_TOKEN_CONSTRUCT );
+
+        OR = false;
+        foreach ( const expression_element &elem, orList )
+        {
+            if( OR )
+                m_dropTarget->insertToken( OR_TOKEN_CONSTRUCT );
+
+            Filter filter;
+            filter.filter.field = !elem.field.isEmpty() ? Meta::fieldForName( elem.field ) : 0;
+            if( filter.filter.field == Meta::valRating )
+                filter.filter.numValue = 2 * elem.text.toFloat();
+            else if( m_ui.mqwAttributeEditor->isDate( filter.filter.field ) )
+            {
+                quint64 today = QDateTime::currentDateTime().toTime_t();
+                bool invert = elem.text.startsWith( '-' );
+                QString strTime = elem.text.mid( invert, elem.text.length() - 1 - invert );
+                quint64 diff = strTime.toULongLong();
+                switch( elem.text[elem.text.length() - 1].toAscii() )
+                {
+                    case 'd':
+                        diff *= 24;
+                    case 'h':
+                        diff *= 60;
+                    case 'M':
+                        diff *= 60;
+                }
+
+                filter.filter.numValue = today - ( invert ? -diff : diff );
+            }
+            else if( m_ui.mqwAttributeEditor->isNumeric( filter.filter.field ) )
+                filter.filter.numValue = elem.text.toInt();
+
+            if( m_ui.mqwAttributeEditor->isNumeric( filter.filter.field ) )
+            {
+                switch( elem.match )
+                {
+                    case 0:
+                        filter.filter.condition = MetaQueryWidget::Equals;
+                        break;
+                    case 1:
+                        filter.filter.condition = MetaQueryWidget::LessThan;
+                        break;
+                    case 2:
+                        filter.filter.condition = MetaQueryWidget::GreaterThan;
+                        break;
+                }
+            }
+            else if( elem.text.startsWith( '*' ) )
+            {
+                filter.filter.condition = MetaQueryWidget::StartsWith;
+                filter.filter.value = elem.text.mid( 1 );
+            }
+            else if( elem.text.endsWith( '*' ) )
+            {
+                filter.filter.condition = MetaQueryWidget::EndsWith;
+                filter.filter.value = elem.text.mid( 0, elem.text.length() - 1 );
+            }
+            else
+            {
+                filter.filter.condition = MetaQueryWidget::Contains;
+                filter.filter.value = elem.text;
+            }
+
+            filter.inverted = elem.negate;
+
+            Token *nToken = filter.filter.field
+                            ? tokenForField( filter.filter.field )
+                            : SIMPLE_TEXT_CONSTRUCT;
+            m_dropTarget->insertToken( nToken );
+            m_filters.insert( nToken, filter );
+
+            OR = true;
         }
 
-        m_filterText += filter.toString( invert );
+        AND = true;
     }
-    emit filterChanged( m_filterText );
-}
-
-void EditFilterDialog::slotClear()
-{
-    m_previousFilterText = m_filterText;
-    m_filterText = "";
-
-    // no filter appended cause all cleared
-    m_appended = false;
-    m_ui.andButton->setEnabled( false );
-    m_ui.orButton->setEnabled( false );
-
-    emit filterChanged( m_filterText );
-}
-
-void EditFilterDialog::slotUndo()
-{
-    m_filterText = m_previousFilterText;
-    if (m_filterText.isEmpty())
-    {
-        // no filter appended cause all cleared
-        m_appended = false;
-        m_ui.andButton->setEnabled( false );
-        m_ui.orButton->setEnabled( false );
-    }
-    emit filterChanged( m_filterText );
-}
-
-void EditFilterDialog::slotOk() // SLOT
-{
-    // If there's a filter typed in but unadded, add it.
-    // This makes it easier to just add one condition - you only need to press OK.
-    MetaQueryWidget::Filter filter = m_ui.attributeQuery->filter();
-    if( !m_appended &&
-        (filter.condition != MetaQueryWidget::Contains || !filter.value.isEmpty()) )
-        slotAppend();
-
-    accept();
 }
 
 #include "EditFilterDialog.moc"

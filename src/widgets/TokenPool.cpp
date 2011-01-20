@@ -47,7 +47,7 @@ public:
         // and (eilided) text
         const int textFlags = Qt::AlignBottom | Qt::AlignHCenter | Qt::TextSingleLine | Qt::TextShowMnemonic;
         QString text = painter->fontMetrics().elidedText( index.data().toString(), Qt::ElideMiddle, rect.width(), textFlags );
-        painter->setPen( option.palette.color( QPalette::Text ) ); //TODO: Would be cool to have the Token textColor here but how?
+        painter->setPen( index.data( Qt::ForegroundRole ).value< QColor >() );
         painter->drawText( rect, textFlags, text );
 
     }
@@ -78,6 +78,7 @@ TokenPool::addToken( Token * token )
 {
 
     QListWidgetItem *item = new QListWidgetItem( token->icon().pixmap( 48, 48 ), token->name() );
+    item->setData( Qt::ForegroundRole, token->textColor() );
     item->setToolTip( "<font color=\"" + token->textColor().name() + "\">" + token->name() + "</font>" );
     addItem( item );
 
