@@ -7,6 +7,9 @@ VERSION 2.4.1
   FEATURES:
 
   CHANGES:
+    * Changed tokens syntax in FileNameLayoutDialog (TagGuesser, OrginizeCollection dialogs)
+      now tokens wrapped in percent signs (%token% instead of %token).
+    * Added ability to guess tags from whole track path. (TagGuesser dialog)
     * Use KDirWatch to watch changes to collection.
     * Do always store track rating as tags in files. Patch by Alan Ezusti
       <alan.ezust@gmail.com>. (BR 259117)

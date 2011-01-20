@@ -650,48 +650,53 @@ TagDialog::guessFromFilename() //SLOT
 
         if( guesser.guess() )
         {
-            QMap<QString,QString> Tags = guesser.tags();
-            
-            if( Tags.contains("title") )
-                ui->kLineEdit_title->setText( Tags["title"] );
+            QMap<qint64,QString> Tags = guesser.tags();
 
-            if( Tags.contains("artist") )
+            if( Tags.contains( Meta::valTitle ) )
+                ui->kLineEdit_title->setText( Tags[Meta::valTitle] );
+
+            if( Tags.contains( Meta::valArtist ) )
             {
                 cur = ui->kComboBox_artist->currentIndex();
-                ui->kComboBox_artist->setItemText( cur, Tags["artist"] );
+                ui->kComboBox_artist->setItemText( cur, Tags[Meta::valArtist] );
             }
 
-            if( Tags.contains("album") )
+            if( Tags.contains( Meta::valAlbum ) )
             {
                 cur = ui->kComboBox_album->currentIndex();
-                ui->kComboBox_album->setItemText( cur, Tags["album"] );
+                ui->kComboBox_album->setItemText( cur, Tags[Meta::valAlbum] );
             }
 
-            if( Tags.contains( "albumartist" ) )
+            if( Tags.contains( Meta::valAlbumArtist ) )
             {
                 cur = ui->kComboBox_albumArtist->currentIndex();
-                ui->kComboBox_albumArtist->setItemText( cur, Tags["albumartist"] );
+                ui->kComboBox_albumArtist->setItemText( cur, Tags[Meta::valAlbumArtist] );
             }
 
-            if( Tags.contains("track") )
-                ui->qSpinBox_track->setValue( Tags["track"].toInt() );
-            
-            if( Tags.contains("comment") )
-                ui->qPlainTextEdit_comment->setPlainText( Tags["comment"] );
-            
-            if( Tags.contains("year") )
-                ui->qSpinBox_year->setValue( Tags["year"].toInt() );
+            if( Tags.contains( Meta::valTrackNr ) )
+                ui->qSpinBox_track->setValue( Tags[Meta::valTrackNr].toInt() );
 
-            if( Tags.contains("composer") )
+            if( Tags.contains( Meta::valComment ) )
+                ui->qPlainTextEdit_comment->setPlainText( Tags[Meta::valComment] );
+
+            if( Tags.contains( Meta::valYear ) )
+                ui->qSpinBox_year->setValue( Tags[Meta::valYear].toInt() );
+
+            if( Tags.contains( Meta::valComposer ) )
             {
                 cur = ui->kComboBox_composer->currentIndex();
-                ui->kComboBox_composer->setItemText( cur, Tags["composer"] );
+                ui->kComboBox_composer->setItemText( cur, Tags[Meta::valComposer] );
             }
 
-            if( Tags.contains("genre") )
+            if( Tags.contains( Meta::valGenre ) )
             {
                 cur = ui->kComboBox_genre->currentIndex();
-                ui->kComboBox_genre->setItemText( cur, Tags["genre"] );
+                ui->kComboBox_genre->setItemText( cur, Tags[Meta::valGenre] );
+            }
+
+            if( Tags.contains( Meta::valDiscNr ) )
+            {
+                ui->qSpinBox_discNumber->setValue( Tags[Meta::valDiscNr].toInt() );
             }
         }
         else

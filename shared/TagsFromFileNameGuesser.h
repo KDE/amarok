@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (C) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,42 +14,45 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_METATAGLIB_H
-#define AMAROK_METATAGLIB_H
+
+#ifndef TAGSFROMFILENAMEGUESSER_H
+#define TAGSFROMFILENAMEGUESSER_H
 
 #ifndef UTILITIES_BUILD
     #include "amarok_export.h"
-    #include <QImage>
 #else
     #define AMAROK_EXPORT
 #endif
 
 #include "MetaValues.h"
-#include <QString>
 
-/* This file exists because we need to share the implementation between
- * amaroklib and amarokcollectionscanner (which doesn't link to amaroklib).
- */
 namespace Meta
 {
     namespace Tag
     {
+        namespace TagGuesser
+        {
+            /**
+            * Try to guess metadata from file name, using common filename
+            * templates, can't work with full file path.
+            * @arg fileName file name, if fileName contains full path, It will be
+            * truckated.
+            * @returns guessed metadata.
+            */
+            AMAROK_EXPORT Meta::FieldHash guessTags( const QString &fileName );
 
-        AMAROK_EXPORT Meta::FieldHash readTags( const QString &path, bool useCharsetDetector = true );
-
-        AMAROK_EXPORT void writeTags( const QString &path, const FieldHash &changes );
-
-#ifndef UTILITIES_BUILD
-        // the utilities don't need to handle images
-        AMAROK_EXPORT QImage embeddedCover( const QString &path );
-
-        /** This will write an embedded cover.
-            It will also overwrite existing covers (Front), so make sure the user knows what he get's.
-            ASF, ID3v2 and MP4 covers are supported.
-        */
-        AMAROK_EXPORT void setEmbeddedCover( const QString &path, const QImage &cover );
-#endif
+            /**
+            * Try to guess metadata from fil name,using specified scheme.
+            * @arg fileName file path
+            * @arg scheme is a regular exprassion with tokens.
+            * Available Tokens: %album%, %albumartist%, %artist%, %title%, %track%.
+            */
+            AMAROK_EXPORT Meta::FieldHash guessTagsByScheme( const QString &fileName,
+                                                             const QString &scheme,
+                                                             bool cutTrailingSpaces = true,
+                                                             bool convertUnderscores = true );
+        }
     }
 }
 
-#endif // AMAROK_METATAGLIB_H
+#endif // TAGSFROMFILENAMEGUESSER_H

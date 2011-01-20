@@ -203,7 +203,7 @@
     <entry key="Format Presets" type="StringList">
         <label>Format Presets</label>
         <whatsthis>A list of preset formats (token schemas).</whatsthis>
-        <default>Default#DELIM#%artist/%album/%track_-_%title#DELIM#selected</default>
+        <default>Default#DELIM#%artist%/%album%/%track%_-_%title%#DELIM#selected</default>
     </entry>
 </group>
 

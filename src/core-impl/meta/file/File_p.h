@@ -141,6 +141,8 @@ void Track::Private::readMetaData()
         m_data.artist = values.value(Meta::valArtist).toString();
     if( values.contains(Meta::valAlbum) )
         m_data.album = values.value(Meta::valAlbum).toString();
+    if( values.contains(Meta::valAlbumArtist) )
+        m_data.albumArtist = values.value(Meta::valAlbumArtist).toString();
     if( values.contains(Meta::valHasCover) )
         m_data.embeddedImage = values.value(Meta::valHasCover).toBool();
     if( values.contains(Meta::valComment) )

@@ -1,7 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
- * Copyright (c) 2010 Stefan Derkits <stefan@derkits.at>                                *
- * Copyright (c) 2010 Christian Wagner <christian.wagner86@gmx.at>                      *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,42 +14,36 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef SHARED_FILETYPE_H
-#define SHARED_FILETYPE_H
 
-#include <QStringList>
-#include <QString>
+#ifndef ASFTAGHELPER_H
+#define ASFTAGHELPER_H
 
-namespace Amarok
+#include "TagHelper.h"
+
+#include <taglib/asftag.h>
+
+namespace Meta
 {
+    namespace Tag
+    {
+        class AMAROK_EXPORT ASFTagHelper : public TagHelper
+        {
+            public:
+                ASFTagHelper( TagLib::ASF::Tag *tag, Amarok::FileType fileType );
 
-//New FileTypes must also be added to s_fileTypeStrings in FileType.cpp
-enum FileType
-{
-    Unknown     =  0,
-    Mp3         =  1,
-    Ogg         =  2,
-    Flac        =  3,
-    Mp4         =  4,
-    Wma         =  5,
-    Aiff        =  6,
-    Mpc         =  7,
-    TrueAudio   =  8,
-    Wav         =  9,
-    WavPack     = 10
-};
+                virtual Meta::FieldHash tags() const;
+                virtual bool setTags( const Meta::FieldHash &changes );
 
+#ifndef UTILITIES_BUILD
+                virtual bool hasEmbeddedCover() const;
+                virtual QImage embeddedCover() const;
+                virtual bool setEmbeddedCover(const QImage &cover);
+#endif  //UTILITIES_BUILD
 
-class FileTypeSupport
-{
-public:
-    static QString toString( Amarok::FileType ft );
-    static QStringList possibleFileTypes();
-    static Amarok::FileType fileType( const QString& extension );
-private:
-    static QStringList s_fileTypeStrings;
-};
-
+            private:
+                TagLib::ASF::Tag *m_tag;
+        };
+    }
 }
 
-#endif /* SHARED_FILETYPE_H */
+#endif // ASFTAGHELPER_H

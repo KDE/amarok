@@ -154,7 +154,7 @@ OrganizeCollectionDialog::buildFormatTip() const
     tooltip += "<ul>";
 
     for( QMap<QString, QString>::iterator it = args.begin(); it != args.end(); ++it )
-        tooltip += QString( "<li>%1 - %2" ).arg( it.value(), '%' + it.key() );
+        tooltip += QString( "<li>%1 - %2" ).arg( it.value(), '%' + it.key() + '%' );
 
     tooltip += "</ul>";
     tooltip += i18n( "If you surround sections of text that contain a token with curly-braces, "
@@ -169,7 +169,7 @@ OrganizeCollectionDialog::buildFormatString() const
 {
     if( m_filenameLayoutDialog->getParsableScheme().simplified().isEmpty() )
         return "";
-    return "%folder/" + m_filenameLayoutDialog->getParsableScheme() + ".%filetype";
+    return "%folder%/" + m_filenameLayoutDialog->getParsableScheme() + ".%filetype%";
 }
 
 QString

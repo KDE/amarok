@@ -33,20 +33,28 @@ QStringList FileTypeSupport::s_fileTypeStrings = QStringList()
         << QLatin1String( "ogg" )
         << QLatin1String( "flac" )
         << QLatin1String( "mp4" )
-        << QLatin1String( "wma" );
+        << QLatin1String( "wma" )
+        << QLatin1String( "aiff" )
+        << QLatin1String( "mpc" )
+        << QLatin1String( "tta" )
+        << QLatin1String( "wav" )
+        << QLatin1String( "wv" );
 
 
-QString FileTypeSupport::toString( Amarok::FileType ft )
+QString
+FileTypeSupport::toString( Amarok::FileType ft )
 {
     return s_fileTypeStrings.at( ft );
 }
 
-QStringList FileTypeSupport::possibleFileTypes()
+QStringList
+FileTypeSupport::possibleFileTypes()
 {
     return s_fileTypeStrings;
 }
 
-Amarok::FileType Amarok::FileTypeSupport::fileType( const QString& extension )
+Amarok::FileType
+Amarok::FileTypeSupport::fileType( const QString &extension )
 {
     QString ext = extension.toLower();
     for( int i = 1; i < s_fileTypeStrings.size(); i++ )

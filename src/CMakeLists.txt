@@ -273,6 +273,14 @@ set(libmetaimpl_SRCS
     core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
     ../shared/MetaReplayGain.cpp
     ../shared/MetaTagLib.cpp
+    ../shared/TagsFromFileNameGuesser.cpp
+    ../shared/tag_helpers/APETagHelper.cpp
+    ../shared/tag_helpers/ASFTagHelper.cpp
+    ../shared/tag_helpers/ID3v2TagHelper.cpp
+    ../shared/tag_helpers/MP4TagHelper.cpp
+    ../shared/tag_helpers/StringHelper.cpp
+    ../shared/tag_helpers/TagHelper.cpp
+    ../shared/tag_helpers/VorbisCommentTagHelper.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp

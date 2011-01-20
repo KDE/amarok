@@ -41,7 +41,7 @@ public:
     // the numbers following % obviously are not taken into account
     QString args( const QStringList& args ) const
     {
-        const QStringList text = (*this).split( QRegExp( "%\\d+" ), QString::KeepEmptyParts );
+        const QStringList text = (*this).split( QRegExp( "%\\d+%" ), QString::KeepEmptyParts );
 
         QList<QString>::ConstIterator itrText = text.constBegin();
         QList<QString>::ConstIterator itrArgs = args.constBegin();
@@ -64,7 +64,7 @@ public:
     // %something gets replaced by the value corresponding to key "something" in args
     QString namedArgs( const QMap<QString, QString> &args, bool opt=false ) const
     {
-        QRegExp rxArg( "%[a-zA-Z0-9]+" );
+        QRegExp rxArg( "%[a-zA-Z0-9]+%" );
 
         QString result;
         int start = 0;
@@ -73,7 +73,7 @@ public:
                 pos = rxArg.indexIn( *this, start ) )
         {
             int len = rxArg.matchedLength();
-            QString p = rxArg.capturedTexts()[0].mid(1, len-1);
+            QString p = rxArg.capturedTexts()[0].mid(1, len - 2);
 
             result += mid( start, pos-start );
             if( !args[p].isEmpty() )
@@ -93,7 +93,7 @@ public:
     // then replace everything within surrounding { } by an empty string
     QString namedOptArgs( const QMap<QString, QString> &args ) const
     {
-        QRegExp rxOptArg( "%[a-zA-Z0-9]+" );
+        QRegExp rxOptArg( "%[a-zA-Z0-9]+%" );
 
         QString result = *this;
         for( int pos = rxOptArg.indexIn( result );
@@ -136,7 +136,7 @@ public:
             if( bracketCount == 0 ) // syntax seems to be correct
                 rightMatchPos = i;
 
-            if( !args.contains( rxOptArg.capturedTexts()[0].mid( 1, len ) ) ) // remove section
+            if( !args.contains( rxOptArg.capturedTexts()[0].mid( 1, len - 2 ) ) ) // remove section
                 result.remove( leftMatchPos, rightMatchPos - leftMatchPos + 1 );
             else // we have a map entry
             {
@@ -148,7 +148,7 @@ public:
                     pos--;
                 }
 
-                result.replace( pos, len, args[ rxOptArg.capturedTexts()[0].mid( 1, len-1 ) ] );
+                result.replace( pos, len, args[ rxOptArg.capturedTexts()[0].mid( 1, len - 2 ) ] );
             }
         }
         return result;

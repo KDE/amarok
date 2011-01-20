@@ -35,9 +35,17 @@ set(amarokcollectionscanner_SRCS
     Track.cpp
     Playlist.cpp
     BatchFile.cpp
-    ../../shared/MetaTagLib.cpp
-    ../../shared/MetaReplayGain.cpp
     ../../shared/FileType.cpp
+    ../../shared/MetaReplayGain.cpp
+    ../../shared/MetaTagLib.cpp
+    ../../shared/TagsFromFileNameGuesser.cpp
+    ../../shared/tag_helpers/APETagHelper.cpp
+    ../../shared/tag_helpers/ASFTagHelper.cpp
+    ../../shared/tag_helpers/ID3v2TagHelper.cpp
+    ../../shared/tag_helpers/MP4TagHelper.cpp
+    ../../shared/tag_helpers/StringHelper.cpp
+    ../../shared/tag_helpers/TagHelper.cpp
+    ../../shared/tag_helpers/VorbisCommentTagHelper.cpp
 )
 
 add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS} ${taglib_filetype_resolver_SRCS})

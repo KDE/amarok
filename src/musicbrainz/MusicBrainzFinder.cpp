@@ -22,34 +22,12 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
 #include "MusicBrainzMeta.h"
+#include "TagsFromFileNameGuesser.h"
+
 #include <QAuthenticator>
 #include <QNetworkAccessManager>
 #include <QTimer>
 #include <threadweaver/ThreadWeaver.h>
-
-const QStringList tg_schemes( QStringList()
-    //01 Artist - Title.ext
-    << "^(%"+Meta::Field::TRACKNUMBER+"%)\\W*-?\\W*(%"+Meta::Field::ARTIST
-        +"%)\\W*-\\W*(%"+Meta::Field::TITLE+"%)\\.+(?:\\w{2,5})$"
-    //01 Title.ext
-    << "^(%"+Meta::Field::TRACKNUMBER+"%)\\W*-?\\W*(%"+Meta::Field::TITLE+"%)\\.+(?:\\w{2,5})$"
-    //Album - 01 - Artist - Title.ext
-    << "^(%"+Meta::Field::ALBUM+"%)\\W*-\\W*(%"
-        +Meta::Field::TRACKNUMBER+"%)\\W*-\\W*(%"+Meta::Field::ARTIST+"%)\\W*-\\W*(%"
-        +Meta::Field::TITLE+"%)\\.+(?:\\w{2,5})$"
-    //Artist - Album - 01 - Title.ext
-    << "^(%"+Meta::Field::ARTIST+"%)\\W*-\\W*(%"
-        +Meta::Field::ALBUM+"%)\\W*-\\W*(%"+Meta::Field::TRACKNUMBER+"%)\\W*-\\W*(%"
-        +Meta::Field::TITLE+"%)\\.+(?:\\w{2,5})$"
-    // Artist - Album - Title.ext
-    << "^(%"+Meta::Field::ARTIST+"%)\\W*-\\W*(%"
-        +Meta::Field::ALBUM+"%)\\W*-\\W*(%"
-        +Meta::Field::TITLE+"%)\\.+(?:\\w{2,5})$"
-    //Artist - Title.ext
-    << "^(%"+Meta::Field::ARTIST+"%)\\W*-\\W*(%"+Meta::Field::TITLE+"%)\\.+(?:\\w{2,5})$"
-    //Title.ext
-    << "^(%"+Meta::Field::TITLE+"%)\\.+(?:\\w{2,5})$"
-);
 
 /* Levenshtein distance algorithm implementation carefully pirated from wikibooks
  * (http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/Levenshtein_distance)
@@ -361,29 +339,27 @@ MusicBrainzFinder::guessMetadata( const Meta::TrackPtr &track )
     debug() << "Trying to guess metadata from filename: " << track->playableUrl().fileName().toLower();
     QVariantMap metadata;
 
-    if( track->name() == track->playableUrl().fileName() )
+    if( ( track->artist().isNull() || track->artist()->name().isEmpty() ) &&
+        ( track->album().isNull() || track->album()->name().isEmpty() ) )
     {
-            QRegExp rx;
-            QRegExp rxm( "%([\\w|\\:]+)%" );
-            QRegExp rxt( "(%[\\w|\\:]+%)" );
-            QRegExp spaces( "(^\\s+|\\s+$)" );
-            QStringList markers;
-
-            foreach( QString scheme, tg_schemes )
+        Meta::FieldHash tags = Meta::Tag::TagGuesser::guessTags( track->playableUrl().fileName() );
+        foreach( quint64 key, tags.keys() )
+            switch( key )
             {
-                markers.clear();
-                int pos = 0;
-                while( ( pos = rxm.indexIn( scheme, pos ) ) != -1 )
-                {
-                    markers << rxm.cap(1);
-                    pos += rxm.matchedLength();
-                }
-                rx.setPattern( scheme.replace( "%"+Meta::Field::TRACKNUMBER+"%", "\\d{1,2}" ).replace( rxt, ".+" ) );
-                if( !rx.exactMatch( track->playableUrl().fileName().toLower().replace( "_", " " ) ) )
-                    continue;
-                for( int i = 0; i < markers.count(); i++ )
-                    metadata.insert( markers[i], rx.cap( i+1 ).remove( spaces ) );
-                break;
+                case Meta::valAlbum:
+                    metadata.insert( Meta::Field::ALBUM, tags[key] );
+                    break;
+                case Meta::valAlbumArtist:
+                    metadata.insert( Meta::Field::ALBUMARTIST, tags[key] );
+                    break;
+                case Meta::valArtist:
+                    metadata.insert( Meta::Field::ARTIST, tags[key] );
+                    break;
+                case Meta::valTitle:
+                    metadata.insert( Meta::Field::TITLE, tags[key] );
+                    break;
+                case Meta::valTrackNr:
+                    metadata.insert( Meta::Field::TRACKNUMBER, tags[key] );
             }
     }
     else

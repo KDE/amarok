@@ -26,20 +26,20 @@
 
 static const QStringList typeElements = ( QStringList()
 << ""
-<< "%ignore"
-<< "%track"
-<< "%title"
-<< "%artist"
-<< "%composer"
-<< "%year"
-<< "%album"
-<< "%albumartist"
-<< "%comment"
-<< "%genre"
-<< "%filetype"
-<< "%folder"
-<< "%initial"
-<< "%discnumber"
+<< "%ignore%"
+<< "%track%"
+<< "%title%"
+<< "%artist%"
+<< "%composer%"
+<< "%year%"
+<< "%album%"
+<< "%albumartist%"
+<< "%comment%"
+<< "%genre%"
+<< "%filetype%"
+<< "%folder%"
+<< "%initial%"
+<< "%discnumber%"
 << " "
 << "/"
 << "."
@@ -47,6 +47,7 @@ static const QStringList typeElements = ( QStringList()
 << "_" );
 
 class TokenDropTarget;
+class QFileInfo;
 
 //Holds the TokenLayoutWidget and TokenPool and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
 class FilenameLayoutDialog
@@ -105,12 +106,13 @@ class FilenameLayoutDialog
         void editStateEnable( bool checked );
         void toggleAdvancedMode();
         void updatePreview();
-    
+
     private:
         void setAdvancedMode( bool isAdvanced );
         QString parsableScheme() const;
+        QString parsableFileName( const QFileInfo &fileInfo ) const;
         void inferScheme( const QString &scheme );
-        
+
         QString m_filename;                         //!< Filename to guess from
         bool m_isOrganizeCollection;
         bool m_advancedMode;
@@ -124,7 +126,7 @@ class FilenameLayoutDialog
         QColor m_color_AlbumArtist;
         QColor m_color_Comment;
         QColor m_color_Genre;
-        
+
         QList<QRadioButton*> m_caseEditRadioButtons;
 };
 
