@@ -143,7 +143,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     connect( m_charset  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
-    m_monitor->setToolTip(   i18n( "If selected, folders will automatically get rescanned\nwhen the content is modified,\ne.g. when a new file was added." ) );
+    m_monitor->setToolTip(   i18n( "If selected, the collection folders will be watched for changes.\nThe watcher will not notice changes behind symbolic links." ) );
     m_writeBack->setToolTip( i18n( "Write meta data changes (including 'stars' rating) back to the original file.\nYou can also prevent writing back by write protecting the file.\nThis might be a good idea if you are currently\nsharing those files via the Internet." ) );
     m_writeBackStatistics->setToolTip( i18n( "Write play-changing statistics (e.g. score, lastplayed, playcount)\nas tags back to the file." ) );
     m_writeBackCover->setToolTip( i18n( "Write changed covers back to the file.\nThis will replace existing embedded covers." ) );
