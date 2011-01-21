@@ -242,7 +242,7 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
     if( !sqlStorage )
         return false;
 
-    QString command = "SELECT title FROM podcastepisodes WHERE guid='%1' OR url='%1' "
+    QString command = "SELECT id FROM podcastepisodes WHERE guid='%1' OR url='%1' "
                       "OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
 
