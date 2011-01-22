@@ -36,7 +36,6 @@ class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
 
         virtual void run();
         virtual void abortQuery();
-        virtual int resultCount() const;
 
         virtual QueryMaker* setQueryType( QueryType type );
 

@@ -46,7 +46,6 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
 
         virtual void run();
         virtual void abortQuery();
-        virtual int resultCount() const;
 
         virtual QueryMaker* setQueryType( QueryType type );
 

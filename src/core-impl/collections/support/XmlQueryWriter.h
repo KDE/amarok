@@ -43,7 +43,6 @@ class XmlQueryWriter : public QueryMaker
 
         void run();
         void abortQuery();
-        int resultCount() const;
 
         QueryMaker* setQueryType( QueryType type );
         QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );

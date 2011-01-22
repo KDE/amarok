@@ -89,12 +89,6 @@ XmlQueryWriter::abortQuery()
 }
 
 
-int
-XmlQueryWriter::resultCount() const
-{
-    return m_qm->resultCount();
-}
-
 QueryMaker*
 XmlQueryWriter::setQueryType( QueryType type )
 {

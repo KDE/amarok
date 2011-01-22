@@ -129,15 +129,7 @@ namespace Collections
 
         m_controller.data()->disconnect( this );
     }
-    
-    int
-    PlaydarQueryMaker::resultCount() const
-    {
-        DEBUG_BLOCK
-        
-        return m_memoryQueryMaker.data()->resultCount();
-    }
-    
+
     QueryMaker*
     PlaydarQueryMaker::setQueryType( QueryType type )
     {

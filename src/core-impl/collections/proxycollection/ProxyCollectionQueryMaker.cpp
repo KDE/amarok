@@ -78,12 +78,6 @@ ProxyQueryMaker::abortQuery()
         b->abortQuery();
 }
 
-int
-ProxyQueryMaker::resultCount() const
-{
-    return 1;
-}
-
 QueryMaker*
 ProxyQueryMaker::setQueryType( QueryType type )
 {

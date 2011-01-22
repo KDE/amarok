@@ -93,12 +93,6 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual void abortQuery() = 0;
 
         /**
-            returns the number of times one of the newResultReady signals will be emitted
-            by the QueryMaker instance.
-         */
-        virtual int resultCount() const;
-
-        /**
          * Sets the type of objects the querymaker will query for.  These are mutually
          * exclusive.  The results of the query will be returned as objects of the
          * appropriate type, therefore it is necessary to connect the client to the
@@ -216,6 +210,11 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual int validFilterMask();
 
     signals:
+        /** newResultReady will be emitted every time new results from the query maker are received.
+            This signal can be emitted zero times (in case of no results) one (the usual case) or multiple times
+            (e.g. in case when the result is received in several batches).
+            The results will be terminated by a queryDone signal.
+        */
         void newResultReady( Meta::TrackList );
         void newResultReady( Meta::ArtistList );
         void newResultReady( Meta::AlbumList );
@@ -226,6 +225,8 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         void newResultReady( QStringList );
         void newResultReady( Meta::LabelList );
 
+        /** This signal is emitted after all the results have been submitted via zero or more newResultReady signals.
+        */
         void queryDone();
 };
 

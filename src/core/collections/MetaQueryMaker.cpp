@@ -83,17 +83,6 @@ MetaQueryMaker::abortQuery()
         b->abortQuery();
 }
 
-int
-MetaQueryMaker::resultCount() const
-{
-    int count = 0;
-    foreach( QueryMaker *b, builders )
-    {
-        count += b->resultCount();
-    }
-    return count;
-}
-
 QueryMaker*
 MetaQueryMaker::setQueryType( QueryType type )
 {
