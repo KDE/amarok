@@ -223,11 +223,6 @@ public:
         return Meta::TrackList();
     }
 
-    Meta::AlbumList albums()
-    {
-        return Meta::AlbumList();
-    }
-
     QString name() const
     {
         const QString artist = d.data()->m_data.artist;

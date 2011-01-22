@@ -330,8 +330,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlArtist : public Meta::Artist
 
         virtual Meta::TrackList tracks();
 
-        virtual Meta::AlbumList albums();
-
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
@@ -345,8 +343,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlArtist : public Meta::Artist
 
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
-        bool m_albumsLoaded;
-        Meta::AlbumList m_albums;
         QMutex m_mutex;
 
         friend class ::SqlRegistry; // needs to call notifyObservers

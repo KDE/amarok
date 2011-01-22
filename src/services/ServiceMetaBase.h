@@ -296,8 +296,6 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
 
         virtual TrackList tracks();
 
-        virtual AlbumList albums();
-
         virtual void processInfoOf( InfoParserBase * infoParser );
 
 

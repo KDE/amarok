@@ -42,8 +42,8 @@ using namespace Context;
 CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , m_coverWidth( 0 )
+    , m_lastQueryMaker( 0 )
 {
-    DEBUG_BLOCK
     Q_UNUSED( args )
 
     m_sources << QLatin1String("current") << QLatin1String("albums");
@@ -83,7 +83,7 @@ CurrentEngine::sourceRequestEvent( const QString& name )
     if( name == QLatin1String("current") )
         update( track );
     else if( name == QLatin1String("albums") )
-        track ? update(track->artist()) : setData(name, Plasma::DataEngine::Data());
+        track ? update(track->album()) : setData(name, Plasma::DataEngine::Data());
     else
         return false;
 
@@ -102,19 +102,18 @@ CurrentEngine::metadataChanged( Meta::TrackPtr track )
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     setData( "current", "current", trackInfo );
     if( track && m_requested.value( QLatin1String("albums") ) )
-        update( track->artist() );
+        update( track->album() );
 }
 
 void
 CurrentEngine::trackPlaying( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    if( m_recentAlbumsQm )
-        m_recentAlbumsQm.data()->abortQuery();
+    m_lastQueryMaker = 0;
     if( m_requested.value( QLatin1String("current") ) )
         update( track );
     if( track && m_requested.value( QLatin1String("albums") ) )
-        update( track->artist() );
+        update( track->album() );
 }
 
 void
@@ -134,34 +133,38 @@ CurrentEngine::stopped()
         setData( "albums", "headerText", QVariant( i18n( "Recently added albums" ) ) );
         m_albums.clear();
 
-        m_recentAlbumsQm = CollectionManager::instance()->queryMaker();
-        Collections::QueryMaker *qm = m_recentAlbumsQm.data();
-        if( qm )
-        {
-            qm->setAutoDelete( true );
-            qm->setQueryType( Collections::QueryMaker::Album );
-            qm->excludeFilter( Meta::valAlbum, QString(), true, true );
-            qm->orderBy( Meta::valCreateDate, true );
-            qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
+        Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
+        qm->setAutoDelete( true );
+        qm->setQueryType( Collections::QueryMaker::Album );
+        qm->excludeFilter( Meta::valAlbum, QString(), true, true );
+        qm->orderBy( Meta::valCreateDate, true );
+        qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
 
-            connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-                    SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-            connect( qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
+        connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
+                 SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
+        connect( qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
 
-            qm->run();
-        }
+        m_lastQueryMaker = qm;
+        qm->run();
     }
 }
 
 void
 CurrentEngine::update( Meta::TrackPtr track )
 {
-    if( !track )
-        return;
-    if( !m_requested.value( QLatin1String("current") ) )
+    if( !m_requested.value( QLatin1String("current") ) ||
+        track == m_currentTrack )
         return;
 
-    removeAllData( "current" );
+    m_currentTrack = track;
+
+    if( !track )
+    {
+        removeAllData( QLatin1String("current") );
+        return;
+    }
+
+    removeAllData( QLatin1String("current") );
     Plasma::DataEngine::Data data;
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     data["current"] = trackInfo;
@@ -187,63 +190,62 @@ CurrentEngine::update( Meta::TrackPtr track )
 }
 
 void
-CurrentEngine::update( Meta::ArtistPtr artist )
+CurrentEngine::update( Meta::AlbumPtr album )
 {
-    if( !m_requested.value( QLatin1String("albums") ) )
+    if( !m_requested.value( QLatin1String("albums") ) ||
+        album == m_currentAlbum )
         return;
 
-    if( !artist )
-        return;
+    m_currentAlbum = album;
+    m_lastQueryMaker = 0;
 
-    Meta::AlbumList albums = artist->albums();
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( (albums == m_albums) && (track == m_currentTrack) )
-    {
-        debug() << "albums list unchanged, not updating";
-        return;
-    }
-
-    m_albums.clear();
     removeAllData( QLatin1String("albums") );
-    setData( "albums", "headerText", QVariant( i18n( "Albums by %1", artist->name() ) ) );
     setData( "albums", "currentTrack", qVariantFromValue(track) );
-    m_currentTrack = track;
+    setData( "albums", "headerText", i18nc( "Header text for current album applet", "Albums" ) );
 
-    if( albums.isEmpty() )
+    if( !album )
+        return;
+
+    Meta::ArtistPtr artist = album->albumArtist();
+    if( !artist )
+        artist = track->artist();
+
+    if( artist && !artist->name().isEmpty() )
     {
-        //try searching the collection as we might be dealing with a non local track
+        setData( "albums", "headerText", QVariant( i18n( "Albums by %1", artist->name() ) ) );
+
+        // -- search the collection for albums with the same artist
+        m_albums.clear();
         Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
         qm->setAutoDelete( true );
+        qm->addFilter( Meta::valAlbumArtist, artist->name(), true, true );
+        qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
         qm->setQueryType( Collections::QueryMaker::Album );
-        qm->addMatch( artist );
 
         connect( qm, SIGNAL(newResultReady(QString, Meta::AlbumList)),
                  SLOT(resultReady(QString, Meta::AlbumList)), Qt::QueuedConnection );
         connect( qm, SIGNAL(queryDone()), SLOT(setupAlbumsData()) );
+
+        m_lastQueryMaker = qm;
         qm->run();
-    }
-    else
-    {
-        m_albums << albums;
-        setupAlbumsData();
     }
 }
 
 void
 CurrentEngine::setupAlbumsData()
 {
-    debug() << "setting up" << m_albums.count() << "albums";
-    setData( "albums", "albums", QVariant::fromValue( m_albums ) );
+    if( sender() == m_lastQueryMaker )
+        setData( "albums", "albums", QVariant::fromValue( m_albums ) );
 }
 
 void
 CurrentEngine::resultReady( const QString &collectionId, const Meta::AlbumList &albums )
 {
-    // DEBUG_BLOCK
     Q_UNUSED( collectionId )
 
-    m_albums.clear();
-    m_albums << albums;
+    if( sender() == m_lastQueryMaker )
+        m_albums << albums;
 }
 
 #include "CurrentEngine.moc"

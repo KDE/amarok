@@ -1377,7 +1377,6 @@ SqlArtist::SqlArtist( Collections::SqlCollection* collection, int id, const QStr
     ,m_id( id )
     ,m_name( name )
     ,m_tracksLoaded( false )
-    ,m_albumsLoaded( false )
 {
     Q_ASSERT( m_collection );
     Q_ASSERT( m_id > 0 );
@@ -1411,24 +1410,6 @@ SqlArtist::tracks()
     delete qm;
     m_tracksLoaded = true;
     return m_tracks;
-}
-
-AlbumList
-SqlArtist::albums()
-{
-    QMutexLocker locker( &m_mutex );
-    if( m_albumsLoaded )
-        return m_albums;
-
-    Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
-    qm->setQueryType( Collections::QueryMaker::Album );
-    qm->addMatch( Meta::ArtistPtr( this ) );
-    qm->setBlocking( true );
-    qm->run();
-    m_albums = qm->albums( m_collection->collectionId() );
-    delete qm;
-    m_albumsLoaded = true;
-    return m_albums;
 }
 
 bool

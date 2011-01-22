@@ -213,11 +213,6 @@ public:
         return Meta::TrackList();
     }
 
-    Meta::AlbumList albums()
-    {
-        return Meta::AlbumList();
-    }
-
     QString name() const
     {
         if( d )

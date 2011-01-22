@@ -39,8 +39,6 @@ class AMAROK_EXPORT DefaultArtist : public Meta::Artist
         virtual QString name() const { return i18nc( "The value is not known", "Unknown" ); }
 
         virtual TrackList tracks() { return TrackList(); }
-        virtual AlbumList albums() { return AlbumList(); }
-
 };
 
 class AMAROK_EXPORT DefaultAlbum : public Meta::Album

@@ -326,7 +326,6 @@ namespace Meta
     class AMAROK_CORE_EXPORT Artist : public MetaBase
     {
         Q_PROPERTY( TrackList tracks READ tracks )
-        Q_PROPERTY( AlbumList albums READ albums )
         public:
 
             virtual ~Artist() {}
@@ -335,9 +334,6 @@ namespace Meta
 
             /** returns all tracks by this artist */
             virtual TrackList tracks() = 0;
-
-            /** returns all albums by this artist */
-            virtual AlbumList albums() = 0;
 
             virtual bool operator==( const Meta::Artist &artist ) const;
 

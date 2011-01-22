@@ -300,8 +300,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS DatabaseArtist : public Meta::Artis
 
         virtual Meta::TrackList tracks();
 
-        virtual Meta::AlbumList albums();
-
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
@@ -315,8 +313,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS DatabaseArtist : public Meta::Artis
         int m_id;
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
-        bool m_albumsLoaded;
-        Meta::AlbumList m_albums;
         //QReadWriteLock does not support lock upgrades :(
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!

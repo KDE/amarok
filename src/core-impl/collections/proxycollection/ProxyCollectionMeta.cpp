@@ -1007,27 +1007,6 @@ ProxyArtist::tracks()
     return result;
 }
 
-Meta::AlbumList
-ProxyArtist::albums()
-{
-    QSet<ProxyAlbum*> albums;
-    foreach( Meta::ArtistPtr artist, m_artists )
-    {
-        Meta::AlbumList tmp = artist->albums();
-        foreach( const Meta::AlbumPtr &album, tmp )
-        {
-            albums.insert( m_collection->getAlbum( album ) );
-        }
-    }
-
-    Meta::AlbumList result;
-    foreach( ProxyAlbum *album, albums )
-    {
-        result.append( Meta::AlbumPtr( album ) );
-    }
-    return result;
-}
-
 bool
 ProxyArtist::hasCapabilityInterface(Capabilities::Capability::Type type ) const
 {

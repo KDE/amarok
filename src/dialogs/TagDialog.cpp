@@ -930,6 +930,10 @@ const QStringList TagDialog::statisticsData()
         data += i18n( "Tracks by this Artist" );
         data += QString::number( ret.count() );
 
+        /*
+        // Code disabled because Meta::Artist::albums was only used at
+        // one place
+
         // albums by this artist
         Meta::AlbumList albums = trackArtist->albums();
         ret.clear();
@@ -937,7 +941,8 @@ const QStringList TagDialog::statisticsData()
             ret.append( album->prettyName() );
         data += i18n( "Albums by this Artist" );
         data += QString::number( ret.count() );
-        
+        */
+
 /*
         // FIXME Code disabled because of crash with media devices.
         // @see: https://bugs.kde.org/show_bug.cgi?id=217143

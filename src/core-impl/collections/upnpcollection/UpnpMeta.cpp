@@ -370,13 +370,6 @@ UpnpArtist::tracks()
     return m_tracks;
 }
 
-AlbumList
-UpnpArtist::albums()
-{
-    //TODO
-    return m_albums;
-}
-
 void
 UpnpArtist::addTrack( UpnpTrackPtr track )
 {
@@ -387,12 +380,6 @@ void
 UpnpArtist::removeTrack( UpnpTrackPtr track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
-}
-
-void
-UpnpArtist::addAlbum( UpnpAlbumPtr album )
-{
-    m_albums.append( AlbumPtr::staticCast( album ) );
 }
 
 UpnpAlbum::UpnpAlbum( const QString &name )

@@ -149,17 +149,13 @@ class UpnpArtist : public Meta::Artist
 
         virtual TrackList tracks();
 
-        virtual AlbumList albums();
-
         //UpnpArtist specific methods
         void addTrack( UpnpTrackPtr track );
         void removeTrack( UpnpTrackPtr track );
-        void addAlbum( UpnpAlbumPtr album );
 
     private:
         QString m_name;
         TrackList m_tracks;
-        AlbumList m_albums;
 };
 
 class UpnpAlbum : public QObject, public Meta::Album

@@ -620,13 +620,6 @@ ServiceArtist::tracks()
     return m_tracks;
 }
 
-AlbumList
-ServiceArtist::albums()
-{
-    //TODO
-    return Meta::AlbumList();
-}
-
 void
 ServiceArtist::addTrack( TrackPtr track )
 {
