@@ -72,7 +72,6 @@ private:
     QHash< QString, bool > m_requested;
     Meta::AlbumList m_albums;
     Meta::TrackPtr m_currentTrack;
-    Meta::AlbumPtr m_currentAlbum;
     qint64 m_coverCacheKey;
     QVariantMap m_trackInfo;
 

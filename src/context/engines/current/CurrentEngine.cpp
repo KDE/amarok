@@ -203,13 +203,10 @@ CurrentEngine::update( Meta::TrackPtr track )
 void
 CurrentEngine::update( Meta::AlbumPtr album )
 {
-    if( !m_requested.value( QLatin1String("albums") ) ||
-        album == m_currentAlbum )
+    if( !m_requested.value( QLatin1String("albums") ) )
         return;
 
-    m_currentAlbum = album;
     m_lastQueryMaker = 0;
-
     Meta::TrackPtr track = The::engineController()->currentTrack();
     removeAllData( QLatin1String("albums") );
     setData( "albums", "currentTrack", qVariantFromValue(track) );
@@ -230,8 +227,8 @@ CurrentEngine::update( Meta::AlbumPtr album )
         m_albums.clear();
         Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
         qm->setAutoDelete( true );
-        qm->addFilter( Meta::valAlbumArtist, artist->name(), true, true );
-        qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
+        qm->addFilter( Meta::valArtist, artist->name(), true, true );
+        qm->setAlbumQueryMode( Collections::QueryMaker::AllAlbums );
         qm->setQueryType( Collections::QueryMaker::Album );
 
         connect( qm, SIGNAL(newResultReady(QString, Meta::AlbumList)),
