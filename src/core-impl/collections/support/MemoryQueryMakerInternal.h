@@ -63,7 +63,6 @@ public:
 
     void setMatchers( MemoryMatcher *matchers );
     void setFilters( MemoryFilter *filters );
-    void setRandomize( bool randomize );
     void setMaxSize( int maxSize );
     void setReturnAsDataPtrs( bool returnAsDataPtrs );
     void setType( QueryMaker::QueryType );
@@ -97,7 +96,6 @@ private:
     QWeakPointer<QObject> m_guard;
     MemoryMatcher *m_matchers;
     MemoryFilter *m_filters;
-    bool m_randomize;
     int m_maxSize;
     bool m_returnAsDataPtrs;
     Collections::QueryMaker::QueryType m_type;

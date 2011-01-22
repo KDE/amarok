@@ -209,20 +209,6 @@ namespace Collections
         
         return this;
     }
-    
-    QueryMaker*
-    PlaydarQueryMaker::orderByRandom()
-    {
-        DEBUG_BLOCK
-
-        CurriedZeroArityQMFunction::FunPtr funPtr = &QueryMaker::orderByRandom;
-        CurriedQMFunction *curriedFun = new CurriedZeroArityQMFunction( funPtr );
-        m_queryMakerFunctions.append( curriedFun );
-
-        (*curriedFun)( m_memoryQueryMaker.data() );
-        
-        return this;
-    }
 
     QueryMaker*
     PlaydarQueryMaker::addMatch( const Meta::TrackPtr &track )

@@ -188,18 +188,6 @@ XmlQueryWriter::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
-XmlQueryWriter::orderByRandom()
-{
-    QDomElement e = m_doc.createElement( "order" );
-    e.setAttribute( "value", "random" );
-    m_element.appendChild( e );
-
-    m_qm->orderByRandom();
-    return this;
-
-}
-
-QueryMaker*
 XmlQueryWriter::addMatch( const Meta::TrackPtr &track )
 {
     m_qm->addMatch( track );

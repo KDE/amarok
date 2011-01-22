@@ -74,7 +74,6 @@ struct MemoryQueryMaker::Private {
     QList<CustomReturnFunction*> returnFunctions;
     QList<CustomReturnValue*> returnValues;
     bool usingFilters;
-    bool randomize;
     KRandomSequence sequence;   //do not reset
     qint64 orderByField;
     bool orderDescending;
@@ -100,7 +99,6 @@ MemoryQueryMaker::MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QSt
     d->maxsize = -1;
     d->containerFilters.push( new AndContainerMemoryFilter() );
     d->usingFilters = false;
-    d->randomize = false;
     d->orderByField = 0;
     d->orderDescending = false;
     d->orderByNumberField = false;
@@ -139,7 +137,6 @@ MemoryQueryMaker::run()
         }
         qmi->setMatchers( d->matcher );
         d->matcher = 0; //will be deleted by MemoryQueryMakerInternal
-        qmi->setRandomize( d->randomize );
         qmi->setMaxSize( d->maxsize );
         qmi->setReturnAsDataPtrs( d->returnDataPtrs );
         qmi->setType( d->type );
@@ -297,13 +294,6 @@ MemoryQueryMaker::orderBy( qint64 value, bool descending )
         default:
             d->orderByNumberField = false;
     }
-    return this;
-}
-
-QueryMaker*
-MemoryQueryMaker::orderByRandom()
-{
-    d->randomize = true;
     return this;
 }
 

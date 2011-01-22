@@ -44,7 +44,6 @@ APG::ConstraintTester::ConstraintTester( Collections::Collection* c, ConstraintN
         debug() << "New ConstraintTester with serial number" << m_serialNumber;
         m_qm = c->queryMaker();
         m_qm->setQueryType( Collections::QueryMaker::Track );
-        m_qm->orderByRandom();
         // TODO: limit number of tracks returned
         connect( m_qm, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( receiveQueryMakerData( Meta::TrackList ) ), Qt::QueuedConnection );
         connect( m_qm, SIGNAL( queryDone() ), this, SLOT( receiveQueryMakerDone() ), Qt::QueuedConnection );

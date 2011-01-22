@@ -72,7 +72,6 @@ APG::ConstraintSolver::ConstraintSolver( ConstraintNode* r, int qualityFactor )
     if ( m_qm ) {
         debug() << "New ConstraintSolver with serial number" << m_serialNumber;
         m_qm->setQueryType( Collections::QueryMaker::Track );
-        m_qm->orderByRandom();
         connect( m_qm, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( receiveQueryMakerData( Meta::TrackList ) ), Qt::QueuedConnection );
         connect( m_qm, SIGNAL( queryDone() ), this, SLOT( receiveQueryMakerDone() ), Qt::QueuedConnection );
         m_constraintTreeRoot->initQueryMaker( m_qm );
@@ -254,7 +253,6 @@ APG::ConstraintSolver::receiveQueryMakerDone()
             connect( m_qm, SIGNAL( queryDone() ), this, SLOT( receiveQueryMakerDone() ), Qt::QueuedConnection );
 
             m_qm->setQueryType( Collections::QueryMaker::Track );
-            m_qm->orderByRandom();
             m_qm->run();
         }
     }

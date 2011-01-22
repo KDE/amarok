@@ -142,11 +142,6 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          * @return this
          */
         virtual QueryMaker* orderBy( qint64 value, bool descending = false ) = 0;
-        /**
-         * return results in a random order.
-         * @return this
-         */
-        virtual QueryMaker* orderByRandom() = 0;
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track ) = 0;
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist ) = 0;

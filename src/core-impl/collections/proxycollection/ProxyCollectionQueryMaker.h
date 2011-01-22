@@ -26,7 +26,6 @@
 #include <QMutex>
 #include <QSet>
 
-#include <KRandomSequence>
 #include <KSharedPtr>
 
 class CustomReturnFunction;
@@ -56,7 +55,6 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         virtual QueryMaker* addReturnValue( qint64 value);
         virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );
-        virtual QueryMaker* orderByRandom();
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
@@ -104,7 +102,6 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         int m_queryDoneCount;
         bool m_returnDataPointers;
         int m_maxResultSize;
-        bool m_randomize;
         QueryType m_queryType;
         bool m_orderDescending;
         qint64 m_orderField;
@@ -119,7 +116,6 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         QSet<KSharedPtr<Meta::ProxyComposer> > m_composers;
         QSet<KSharedPtr<Meta::ProxyYear> > m_years;
         QSet<KSharedPtr<Meta::ProxyLabel> > m_labels;
-        KRandomSequence m_sequence; //do not reset
         QList<CustomReturnFunction*> m_returnFunctions;
         QList<CustomReturnValue*> m_returnValues;
 

@@ -48,11 +48,6 @@ QueryMaker * DynamicServiceQueryMaker::orderBy(qint64 value, bool descending)
     return this;
 }
 
-QueryMaker * DynamicServiceQueryMaker::orderByRandom()
-{
-    return this;
-}
-
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::TrackPtr & track)
 {
     DEBUG_BLOCK

@@ -127,14 +127,6 @@ MetaQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
-MetaQueryMaker::orderByRandom()
-{
-    foreach( QueryMaker *b, builders )
-        b->orderByRandom();
-    return this;
-}
-
-QueryMaker*
 MetaQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     foreach( QueryMaker *b, builders )

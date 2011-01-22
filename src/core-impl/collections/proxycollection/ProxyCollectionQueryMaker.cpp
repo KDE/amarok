@@ -38,7 +38,6 @@ ProxyQueryMaker::ProxyQueryMaker( ProxyCollection *collection, const QList<Query
     , m_queryDoneCount( 0 )
     , m_returnDataPointers( false )
     , m_maxResultSize( -1 )
-    , m_randomize( false )
     , m_queryType( QueryMaker::None )
     , m_orderDescending( false )
     , m_orderField( 0 )
@@ -160,15 +159,6 @@ ProxyQueryMaker::orderBy( qint64 value, bool descending )
     }
     foreach( QueryMaker *b, m_builders )
         b->orderBy( value, descending );
-    return this;
-}
-
-QueryMaker*
-ProxyQueryMaker::orderByRandom()
-{
-    m_randomize = true;
-    foreach( QueryMaker *b, m_builders )
-        b->orderByRandom();
     return this;
 }
 
@@ -351,8 +341,6 @@ template <class PointerType>
 void ProxyQueryMaker::emitProperResult( const QList<PointerType>& list )
 {
    QList<PointerType> resultList = list;
-    if( m_randomize )
-        m_sequence.randomize<PointerType>( resultList );
 
     if ( m_maxResultSize >= 0 && resultList.count() > m_maxResultSize )
         resultList = resultList.mid( 0, m_maxResultSize );
@@ -399,10 +387,6 @@ ProxyQueryMaker::handleResult()
                         tracks = MemoryQueryMakerHelper::orderListByNumber( tracks, m_orderField, m_orderDescending );
                     else
                         tracks = MemoryQueryMakerHelper::orderListByString( tracks, m_orderField, m_orderDescending );
-                }
-                if( m_randomize )
-                {
-                    m_sequence.randomize<Meta::TrackPtr>( tracks );
                 }
 
                 int count = 0;

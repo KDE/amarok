@@ -495,13 +495,6 @@ ServiceSqlQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::orderByRandom()
-{
-    // TODO
-    return this;
-}
-
-QueryMaker*
 ServiceSqlQueryMaker::limitMaxResultSize( int size )
 {
     d->maxResultSize = size;

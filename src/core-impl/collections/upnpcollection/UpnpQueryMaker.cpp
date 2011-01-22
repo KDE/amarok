@@ -250,12 +250,6 @@ DEBUG_BLOCK
     return this;
 }
 
-QueryMaker* UpnpQueryMaker::orderByRandom()
-{
-DEBUG_BLOCK
-    return this;
-}
-
 QueryMaker* UpnpQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
 DEBUG_BLOCK

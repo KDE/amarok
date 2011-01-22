@@ -365,14 +365,6 @@ NepomukQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
-NepomukQueryMaker::orderByRandom()
-{
-    // lets see if they are random enough
-    m_queryOrderBy.clear();
-    return this;
-}
-
-QueryMaker*
 NepomukQueryMaker::limitMaxResultSize( int size )
 {
     debug() << "limitMaxResultSize()" << endl;

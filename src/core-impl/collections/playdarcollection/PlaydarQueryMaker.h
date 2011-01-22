@@ -54,7 +54,6 @@ namespace Collections
             QueryMaker* addReturnValue( qint64 value );
             QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
             QueryMaker* orderBy( qint64 value, bool descending = false );
-            QueryMaker* orderByRandom();
 
             QueryMaker* addMatch( const Meta::TrackPtr &track );
             QueryMaker* addMatch( const Meta::ArtistPtr &artist );

@@ -26,7 +26,6 @@
 
 #include <QSharedPointer>
 
-#include <KRandomSequence>
 #include <KSortableList>
 
 namespace Collections {
@@ -36,7 +35,6 @@ MemoryQueryMakerInternal::MemoryQueryMakerInternal( const QWeakPointer<MemoryCol
     , m_collection( collection )
     , m_matchers( 0 )
     , m_filters( 0 )
-    , m_randomize( false )
     , m_maxSize( 0 )
     , m_returnAsDataPtrs( false )
     , m_type( QueryMaker::None )
@@ -101,11 +99,6 @@ template <class PointerType>
 void MemoryQueryMakerInternal::emitProperResult( const QList<PointerType>& list )
 {
     QList<PointerType> resultList = list;
-    if( m_randomize )
-    {
-        KRandomSequence sequence;
-        sequence.randomize<PointerType>( resultList );
-    }
 
     if ( m_maxSize >= 0 && resultList.count() > m_maxSize )
         resultList = resultList.mid( 0, m_maxSize );
@@ -172,11 +165,6 @@ MemoryQueryMakerInternal::handleResult()
                         tracks = MemoryQueryMakerHelper::orderListByNumber( tracks, m_orderByField, m_orderDescending );
                     else
                         tracks = MemoryQueryMakerHelper::orderListByString( tracks, m_orderByField, m_orderDescending );
-                }
-                if( m_randomize )
-                {
-                    KRandomSequence sequence;
-                    sequence.randomize<Meta::TrackPtr>( tracks );
                 }
 
                 int count = 0;
@@ -464,11 +452,6 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
                     else
                         resultTracks = MemoryQueryMakerHelper::orderListByString( resultTracks, m_orderByField, m_orderDescending );
                 }
-                if( m_randomize )
-                {
-                    KRandomSequence sequence;
-                    sequence.randomize<Meta::TrackPtr>( resultTracks );
-                }
 
                 int count = 0;
                 foreach( const Meta::TrackPtr &track, resultTracks )
@@ -611,12 +594,6 @@ void
 MemoryQueryMakerInternal::setFilters( MemoryFilter *filters )
 {
     m_filters = filters;
-}
-
-void
-MemoryQueryMakerInternal::setRandomize( bool randomize )
-{
-    m_randomize = randomize;
 }
 
 void

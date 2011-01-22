@@ -103,16 +103,11 @@ XmlQueryReader::readQuery()
                 QStringRef fieldStr =  attr.value( "field" );
                 QStringRef valueStr =  attr.value( "value" );
 
-                if( valueStr == "random" )
-                    d->qm->orderByRandom();
-                else
-                {
-                    qint64 field = Meta::fieldForName( fieldStr.toString() );
-                    bool descending = valueStr == "descending";
+                qint64 field = Meta::fieldForName( fieldStr.toString() );
+                bool descending = valueStr == "descending";
 
-                    if( field != 0 )
-                        d->qm->orderBy( field, descending  );
-                }
+                if( field != 0 )
+                    d->qm->orderBy( field, descending  );
             }
             else if( name() == "returnResultAsDataPtrs" )
             {
