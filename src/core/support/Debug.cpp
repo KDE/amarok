@@ -30,6 +30,7 @@
 #include <QObject>
 
 #include <iostream>
+#include <unistd.h>
 
 // Define Application wide prefix
 #ifndef APP_PREFIX
