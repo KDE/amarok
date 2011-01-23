@@ -1,4 +1,4 @@
-/****************************************************************************************
+#/****************************************************************************************
  * Copyright (c) 2009 Simon Esneault <simon.esneault@gmail.com>                         *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -22,7 +22,7 @@
 #include "NetworkAccessManagerProxy.h"
 #include "PhotosInfo.h"
 
-class QXmlStreamReader;
+#include <QXmlStreamReader>
 
 using namespace Context;
 

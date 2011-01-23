@@ -24,9 +24,9 @@
 //Qt
 #include <QSharedData>
 #include <QString>
+#include <QXmlStreamReader>
 
 class SimilarArtist;
-class QXmlStreamReader;
 typedef KSharedPtr<SimilarArtist> SimilarArtistPtr;
 
 /**
