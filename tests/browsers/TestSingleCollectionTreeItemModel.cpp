@@ -120,7 +120,7 @@ TestSingleCollectionTreeItemModel::TestSingleCollectionTreeItemModel() : QObject
     qRegisterMetaType<Meta::ArtistList>();
     qRegisterMetaType<Meta::DataList>();
 
-    m_app = new QApplication( 0, 0 ); // need an application for pixmaps
+    m_app = new QApplication( KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() ); // need an application for pixmaps
 }
 
 TestSingleCollectionTreeItemModel::~TestSingleCollectionTreeItemModel()
