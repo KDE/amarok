@@ -527,3 +527,4 @@ MusicBrainzFinder::compileIDRequest( const QString &id )
 }
 
 #include "MusicBrainzFinder.moc"
+

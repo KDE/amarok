@@ -142,3 +142,4 @@ MusicBrainzTagger::progressStep()
 }
 
 #include "MusicBrainzTagger.moc"
+
