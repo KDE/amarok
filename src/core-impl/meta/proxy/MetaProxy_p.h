@@ -241,7 +241,7 @@ public:
             return name();
     }
 
-    QImage image( int size )
+    QImage image( int size ) const
     {
         if( d && d->realTrack ) {
             if ( d->realTrack->album() )
