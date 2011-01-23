@@ -962,7 +962,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
 kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
 
-INCLUDE(FindX11)
+find_package(X11)
 
 if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
