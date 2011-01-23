@@ -721,3 +721,4 @@ void MusicBrainzTagsView::openTrackPage()
 }
 
 #include "MusicBrainzTags.moc"
+
