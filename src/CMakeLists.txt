@@ -962,6 +962,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
 kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
 
+INCLUDE(FindX11)
+
 if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
     target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amarokcore amaroklib )
@@ -972,10 +974,13 @@ if(Q_WS_MAC)
     #the following line was copied from KDE4Macros.cmake. kde4_add_app_icon fails to actually copy the .icns file
     SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/amarok.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
+elseif(X11_FOUND)
+    kde4_add_executable(amarok ${amarok_SRCS})
+    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${X11_LIBRARIES} ${TAGLIB_LIBRARIES} ${TAGLIB-EXTRAS_LIBRARIES} )
+    install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
     kde4_add_executable(amarok ${amarok_SRCS})
     target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${TAGLIB_LIBRARIES} ${TAGLIB-EXTRAS_LIBRARIES} )
-
     install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif(Q_WS_MAC)
 

@@ -23,6 +23,12 @@
 #include <KCmdLineArgs>
 #include <KDebug>
 
+#include <qglobal.h>
+
+#ifdef Q_WS_X11
+    #include <X11/Xlib.h>
+#endif
+
 #include <csignal>
 
 //#define AMAROK_USE_DRKONQI
@@ -265,6 +271,11 @@ int main( int argc, char *argv[] )
     // application termination (logout, Ctr+C in console etc.)
     signal( SIGINT, &QCoreApplication::exit );
     signal( SIGTERM, &QCoreApplication::exit );
+
+    // This call is needed to prevent a crash on exit with Phonon-VLC and LibPulse
+#ifdef Q_WS_X11
+    XInitThreads();
+#endif
 
     App app;
     app.setUniqueInstance( startFlag == KUniqueApplication::NonUniqueInstance );
