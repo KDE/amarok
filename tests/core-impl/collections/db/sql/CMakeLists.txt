@@ -11,7 +11,7 @@ macro(add_database_test test_target test_sources)
     endif(APPLE)
 
 
-    kde4_add_unit_test( ${test_target} TESTNAME ${test_target} ${test_sources_internal} )
+    kde4_add_unit_test( ${test_target} TESTNAME ${test_target} ${test_sources} ${test_sources_internal} )
 
     if(APPLE)
         SET_TARGET_PROPERTIES(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
@@ -22,7 +22,7 @@ macro(add_database_test test_target test_sources)
     add_dependencies( ${test_target} amaroklib)
     add_dependencies( ${test_target} amarok-sqlcollection)
     if(NOT APPLE)
-        add_dependencies( ${test_target} amarok-mysqlecollection )
+        add_dependencies( ${test_target} amarok_collection-mysqlecollection )
     endif(NOT APPLE)
 
     target_link_libraries(${test_target}
@@ -43,7 +43,7 @@ macro(add_database_test test_target test_sources)
         ${GOOGLEMOCK_LIBRARIES})
 
     if(NOT APPLE)
-        target_link_libraries( ${test_target} amarok-mysqlecollection )
+        target_link_libraries( ${test_target} amarok_collection-mysqlecollection )
     endif(NOT APPLE)
 
 endmacro(add_database_test)
