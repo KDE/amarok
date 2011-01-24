@@ -1,5 +1,4 @@
 macro(add_database_test test_target test_sources)
-
     add_definitions(${MYSQL_CFLAGS})
 
     if(APPLE)
@@ -69,7 +68,7 @@ set( databaseupdatertest_SRCS
         TestDatabaseUpdater.cpp
     )
 
-add_database_test( testsqldatabaseupdater ${databaseupdatertest_SRCS} )
+add_database_test( testsqldatabaseupdater "${databaseupdatertest_SRCS}" )
 
 #-------------------------------- Test SqlAlbum -----------------------
 
@@ -77,7 +76,7 @@ set( testsqlalbum_SRCS
         TestSqlAlbum.cpp
     )
 
-add_database_test( testsqlalbum ${testsqlalbum_SRCS} )
+add_database_test( testsqlalbum "${testsqlalbum_SRCS}" )
 
 #-------------------------------- Test SqlArtist -----------------------
 
@@ -86,7 +85,7 @@ set( testsqlartist_SRCS
     )
 
 
-add_database_test( testsqlartist ${testsqlartist_SRCS} )
+add_database_test( testsqlartist "${testsqlartist_SRCS}" )
 #-------------------------------- Test SqlCollection -----------------------
 
 set( testsqlcollection_SRCS
@@ -94,7 +93,7 @@ set( testsqlcollection_SRCS
     )
 
 
-add_database_test( testsqlcollection ${testsqlcollection_SRCS} )
+add_database_test( testsqlcollection "${testsqlcollection_SRCS}" )
 
 #-------------------------------- Test SqlQueryMaker -----------------------
 
@@ -103,7 +102,7 @@ set( testsqlquerymaker_SRCS
     )
 
 
-add_database_test( testsqlquerymaker ${testsqlquerymaker_SRCS} )
+add_database_test( testsqlquerymaker "${testsqlquerymaker_SRCS}" )
 
 #-------------------------------- Test SqlScanManager -----------------------
 
@@ -111,7 +110,7 @@ set( testsqlscanmanager_SRCS
         TestSqlScanManager.cpp
     )
 
-add_database_test( testsqlscanmanager ${testsqlscanmanager_SRCS} )
+add_database_test( testsqlscanmanager "${testsqlscanmanager_SRCS}" )
 
 #-------------------------------- Test SqlTrack -----------------------
 
@@ -121,16 +120,17 @@ set( testsqltrack_SRCS
     )
 
 
-add_database_test( testsqltrack ${testsqltrack_SRCS} )
+add_database_test( testsqltrack "${testsqltrack_SRCS}" )
 
 #-------------------------------- Test SqlCollectionLocation -----------------------
 
 set( testsqlcollectionlocation_SRCS
         TestSqlCollectionLocation.cpp
+	${AMAROK_SOURCE_TREE}/core/interfaces/Logger.cpp
         ${AMAROK_SOURCE_TREE}/core-impl/logger/ProxyLogger.cpp
     )
 
-add_database_test( testsqlcollectionlocation ${testsqlcollectionlocation_SRCS} )
+add_database_test( testsqlcollectionlocation "${testsqlcollectionlocation_SRCS}" )
 
 if(NOT WIN32 AND NOT APPLE)
     target_link_libraries( testsqlcollectionlocation crypt pthread )
