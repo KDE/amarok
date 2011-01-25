@@ -26,9 +26,9 @@
 
 using namespace Meta::Tag;
 
-APETagHelper::APETagHelper( TagLib::APE::Tag* tag, Amarok::FileType fileType )
+APETagHelper::APETagHelper( TagLib::Tag *tag, TagLib::APE::Tag *apeTag, Amarok::FileType fileType )
             : TagHelper( tag, fileType )
-            , m_tag( tag )
+            , m_tag( apeTag )
 {
     m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "Album Artist" ) );
     m_fieldMap.insert( Meta::valBpm,         TagLib::String( "BPM" ) );

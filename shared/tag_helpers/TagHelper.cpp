@@ -61,23 +61,14 @@ Meta::FieldHash
 TagHelper::tags() const
 {
     Meta::FieldHash data;
-    TagLib::String str;
-    TagLib::uint nmbr;
 
-    if( !( str = m_tag->title() ).isEmpty() )
-        data.insert( Meta::valTitle, TStringToQString( str ) );
-    if( !( str = m_tag->artist() ).isEmpty() )
-        data.insert( Meta::valArtist, TStringToQString( str ) );
-    if( !( str = m_tag->album() ).isEmpty() )
-        data.insert( Meta::valAlbum, TStringToQString( str ) );
-    if( ( nmbr = m_tag->track() ) )
-        data.insert( Meta::valTrackNr, nmbr );
-    if( ( nmbr = m_tag->year() ) )
-        data.insert( Meta::valYear, nmbr );
-    if( !( str = m_tag->genre() ).isEmpty() )
-        data.insert( Meta::valGenre, TStringToQString( str ) );
-    if( !( str = m_tag->comment() ).isEmpty() )
-        data.insert( Meta::valComment, TStringToQString( str ) );
+    data.insert( Meta::valTitle,   TStringToQString( m_tag->title() ) );
+    data.insert( Meta::valArtist,  TStringToQString( m_tag->artist() ) );
+    data.insert( Meta::valAlbum,   TStringToQString( m_tag->album() ) );
+    data.insert( Meta::valTrackNr, m_tag->track() );
+    data.insert( Meta::valYear,    m_tag->year() );
+    data.insert( Meta::valGenre,   TStringToQString( m_tag->genre() ) );
+    data.insert( Meta::valComment, TStringToQString( m_tag->comment() ) );
 
     return data;
 }
@@ -119,7 +110,7 @@ TagHelper::setTags( const Meta::FieldHash &changes )
     }
     if( changes.contains( Meta::valComment ) )
     {
-        m_tag->setGenre( Qt4QStringToTString( changes.value( Meta::valGenre ).toString() ) );
+        m_tag->setComment( Qt4QStringToTString( changes.value( Meta::valComment ).toString() ) );
         modified = true;
     }
 
@@ -258,78 +249,78 @@ Meta::Tag::selectHelper( const TagLib::FileRef fileref, bool forceCreation )
     if( TagLib::MPEG::File *file = dynamic_cast< TagLib::MPEG::File * >( fileref.file() ) )
     {
         if( file->ID3v2Tag( forceCreation ) )
-            tagHelper = new ID3v2TagHelper( file->ID3v2Tag(), Amarok::Mp3 );
+            tagHelper = new ID3v2TagHelper( fileref.tag(), file->ID3v2Tag(), Amarok::Mp3 );
         else if( file->APETag() )
-            tagHelper = new APETagHelper( file->APETag(), Amarok::Mp3 );
+            tagHelper = new APETagHelper( fileref.tag(), file->APETag(), Amarok::Mp3 );
         else if( file->ID3v1Tag() )
-            tagHelper = new TagHelper( file->ID3v1Tag(), Amarok::Mp3 );
+            tagHelper = new TagHelper( fileref.tag(), Amarok::Mp3 );
     }
     else if( TagLib::Ogg::Vorbis::File *file = dynamic_cast< TagLib::Ogg::Vorbis::File * >( fileref.file() ) )
     {
         if( file->tag() )
-            tagHelper = new VorbisCommentTagHelper( file->tag(), Amarok::Ogg );
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Ogg );
     }
     else if( TagLib::Ogg::FLAC::File *file = dynamic_cast< TagLib::Ogg::FLAC::File * >( fileref.file() ) )
     {
         if( file->tag() )
-            tagHelper = new VorbisCommentTagHelper( file->tag(), Amarok::Ogg );
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Ogg );
     }
     else if( TagLib::Ogg::Speex::File *file = dynamic_cast< TagLib::Ogg::Speex::File * >( fileref.file() ) )
     {
         if( file->tag() )
-            tagHelper = new VorbisCommentTagHelper( file->tag(), Amarok::Ogg );
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Ogg );
     }
     else if( TagLib::FLAC::File *file = dynamic_cast< TagLib::FLAC::File * >( fileref.file() ) )
     {
         if( file->xiphComment() )
-            tagHelper = new VorbisCommentTagHelper( file->xiphComment(), Amarok::Flac );
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->xiphComment(), Amarok::Flac );
         else if( file->ID3v2Tag() )
-            tagHelper = new ID3v2TagHelper( file->ID3v2Tag(), Amarok::Flac );
+            tagHelper = new ID3v2TagHelper( fileref.tag(), file->ID3v2Tag(), Amarok::Flac );
         else if( file->ID3v1Tag() )
-            tagHelper = new TagHelper( file->ID3v1Tag(), Amarok::Flac );
+            tagHelper = new TagHelper( fileref.tag(), Amarok::Flac );
     }
     else if( TagLib::MP4::File *file = dynamic_cast< TagLib::MP4::File * >( fileref.file() ) )
     {
         TagLib::MP4::Tag *tag = dynamic_cast< TagLib::MP4::Tag * >( file->tag() );
         if( tag )
-            tagHelper = new MP4TagHelper( tag, Amarok::Mp4 );
+            tagHelper = new MP4TagHelper( fileref.tag(), tag, Amarok::Mp4 );
     }
     else if( TagLib::MPC::File *file = dynamic_cast< TagLib::MPC::File * >( fileref.file() ) )
     {
         if( file->APETag( forceCreation ) )
-            tagHelper = new APETagHelper( file->APETag(), Amarok::Mpc );
+            tagHelper = new APETagHelper( fileref.tag(), file->APETag(), Amarok::Mpc );
         else if( file->ID3v1Tag() )
-            tagHelper = new TagHelper( file->ID3v1Tag(), Amarok::Mpc );
+            tagHelper = new TagHelper( fileref.tag(), Amarok::Mpc );
     }
     else if( TagLib::RIFF::AIFF::File *file = dynamic_cast< TagLib::RIFF::AIFF::File * >( fileref.file() ) )
     {
         if( file->tag() )
-            tagHelper = new ID3v2TagHelper( file->tag(), Amarok::Aiff );
+            tagHelper = new ID3v2TagHelper( fileref.tag(), file->tag(), Amarok::Aiff );
     }
     else if( TagLib::RIFF::WAV::File *file = dynamic_cast< TagLib::RIFF::WAV::File * >( fileref.file() ) )
     {
         if( file->tag() )
-            tagHelper = new ID3v2TagHelper( file->tag(), Amarok::Wav );
+            tagHelper = new ID3v2TagHelper( fileref.tag(), file->tag(), Amarok::Wav );
     }
     else if( TagLib::ASF::File *file = dynamic_cast< TagLib::ASF::File * >( fileref.file() ) )
     {
         TagLib::ASF::Tag *tag = dynamic_cast< TagLib::ASF::Tag * >( file->tag() );
         if( tag )
-            tagHelper = new ASFTagHelper( tag, Amarok::Wma );
+            tagHelper = new ASFTagHelper( fileref.tag(), tag, Amarok::Wma );
     }
     else if( TagLib::TrueAudio::File *file = dynamic_cast< TagLib::TrueAudio::File * >( fileref.file() ) )
     {
         if( file->ID3v2Tag( forceCreation ) )
-            tagHelper = new ID3v2TagHelper( file->ID3v2Tag(), Amarok::TrueAudio );
+            tagHelper = new ID3v2TagHelper( fileref.tag(), file->ID3v2Tag(), Amarok::TrueAudio );
         else if( file->ID3v1Tag() )
-            tagHelper = new TagHelper( file->ID3v1Tag(), Amarok::TrueAudio );
+            tagHelper = new TagHelper( fileref.tag(), Amarok::TrueAudio );
     }
     else if( TagLib::WavPack::File *file = dynamic_cast< TagLib::WavPack::File * >( fileref.file() ) )
     {
         if( file->APETag( forceCreation ) )
-            tagHelper = new APETagHelper( file->APETag(), Amarok::WavPack );
+            tagHelper = new APETagHelper( fileref.tag(), file->APETag(), Amarok::WavPack );
         else if( file->ID3v1Tag() )
-            tagHelper = new TagHelper( file->ID3v1Tag(), Amarok::WavPack );
+            tagHelper = new TagHelper( fileref.tag(), Amarok::WavPack );
     }
 
     return tagHelper;

@@ -209,7 +209,8 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
     }
 
     //If tags doesn't contains title and artist, try to guess It from file name
-    if( !result.contains( Meta::valTitle ) && !result.contains( Meta::valArtist ) )
+    if( !result.contains( Meta::valTitle ) ||
+        result.value( Meta::valTitle ).toString().isEmpty() )
         result.unite( TagGuesser::guessTags( path ) );
 
     //we didn't set a FileType till now, let's look it up via FileExtension

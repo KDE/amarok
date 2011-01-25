@@ -28,7 +28,7 @@ namespace Meta
         class AMAROK_EXPORT APETagHelper : public TagHelper
         {
             public:
-                APETagHelper( TagLib::APE::Tag *tag, Amarok::FileType fileType );
+                APETagHelper( TagLib::Tag *tag, TagLib::APE::Tag *apeTag, Amarok::FileType fileType );
 
                 virtual Meta::FieldHash tags() const;
                 virtual bool setTags( const Meta::FieldHash &changes );

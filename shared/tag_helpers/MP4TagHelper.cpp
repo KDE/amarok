@@ -31,9 +31,9 @@
 
 using namespace Meta::Tag;
 
-MP4TagHelper::MP4TagHelper( TagLib::MP4::Tag* tag, Amarok::FileType fileType )
+MP4TagHelper::MP4TagHelper( TagLib::Tag *tag, TagLib::MP4::Tag *mp4Tag, Amarok::FileType fileType )
             : TagHelper( tag, fileType )
-            , m_tag( tag )
+            , m_tag( mp4Tag )
 {
     m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "aART" ) );
     m_fieldMap.insert( Meta::valBpm,         TagLib::String( "tmpo" ) );

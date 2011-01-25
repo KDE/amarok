@@ -189,9 +189,9 @@ ASFPicture::toByteVector() const
 
 #endif  //UTILITIES_BUILD
 
-ASFTagHelper::ASFTagHelper( TagLib::ASF::Tag* tag, Amarok::FileType fileType )
+ASFTagHelper::ASFTagHelper( TagLib::Tag *tag, TagLib::ASF::Tag *asfTag, Amarok::FileType fileType )
             : TagHelper( tag, fileType )
-            , m_tag( tag )
+            , m_tag( asfTag )
 {
     m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "WM/AlbumTitle" ) );
     m_fieldMap.insert( Meta::valBpm,         TagLib::String( "WM/BeatsPerMinute" ) );

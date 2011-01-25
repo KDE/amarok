@@ -28,7 +28,7 @@ namespace Meta
         class AMAROK_EXPORT ID3v2TagHelper : public TagHelper
         {
             public:
-                ID3v2TagHelper( TagLib::ID3v2::Tag *tag, Amarok::FileType fileType );
+                ID3v2TagHelper( TagLib::Tag *tag, TagLib::ID3v2::Tag *id3v2Tag, Amarok::FileType fileType );
 
                 virtual Meta::FieldHash tags() const;
                 virtual bool setTags( const Meta::FieldHash &changes );

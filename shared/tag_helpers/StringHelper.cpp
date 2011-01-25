@@ -23,14 +23,12 @@ void
 Meta::Tag::setCodec( QTextCodec *codec )
 {
     s_codec = codec;
-    //QTextCodec::setCodecForCStrings( s_codec );
 }
 
 void
 Meta::Tag::setCodecByName( QByteArray codecName )
 {
     s_codec = QTextCodec::codecForName( codecName );
-    //QTextCodec::setCodecForCStrings( s_codec );
 }
 
 TagLib::String

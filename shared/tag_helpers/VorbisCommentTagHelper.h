@@ -29,7 +29,7 @@ namespace Meta
         class AMAROK_EXPORT VorbisCommentTagHelper : public TagHelper
         {
             public:
-                VorbisCommentTagHelper( TagLib::Ogg::XiphComment *tag, Amarok::FileType fileType );
+                VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType );
 
                 virtual Meta::FieldHash tags() const;
                 virtual bool setTags( const Meta::FieldHash &changes );

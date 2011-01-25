@@ -38,9 +38,9 @@ const TagLib::ByteVector POPM_Frame = "POPM";
 
 using namespace Meta::Tag;
 
-ID3v2TagHelper::ID3v2TagHelper( TagLib::ID3v2::Tag* tag, Amarok::FileType fileType )
+ID3v2TagHelper::ID3v2TagHelper( TagLib::Tag *tag, TagLib::ID3v2::Tag *id3v2Tag, Amarok::FileType fileType )
               : TagHelper( tag, fileType )
-              , m_tag( tag )
+              , m_tag( id3v2Tag )
 {
     m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "TPE2" ) );
     m_fieldMap.insert( Meta::valBpm,         TagLib::String( "TBPM" ) );

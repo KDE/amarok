@@ -29,7 +29,7 @@ namespace Meta
         class AMAROK_EXPORT MP4TagHelper : public TagHelper
         {
             public:
-                MP4TagHelper( TagLib::MP4::Tag *tag, Amarok::FileType fileType );
+                MP4TagHelper( TagLib::Tag *tag, TagLib::MP4::Tag *mp4Tag, Amarok::FileType fileType );
 
                 virtual Meta::FieldHash tags() const;
                 virtual bool setTags( const Meta::FieldHash &changes );

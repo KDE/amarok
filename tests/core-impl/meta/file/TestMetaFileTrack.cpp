@@ -67,8 +67,8 @@ void TestMetaFileTrack::testNameAndSetTitle()
     QCOMPARE( m_track->name(), QString( "Platz 01" ) );
 
     m_track->setTitle( "" );
-    //when there is no title, we default to using the filename
-    QCOMPARE( m_track->name(), QString( m_tmpFileName ) );
+    //when there is no title, we default to using the filename without extension
+    QCOMPARE( m_track->name(), QString( "tempfile" ) );
 
     m_track->setTitle( "test" );
     QCOMPARE( m_track->name(), QString( "test" ) );
@@ -88,8 +88,8 @@ void TestMetaFileTrack::testPrettyName()
     QCOMPARE( m_track->prettyName(), QString( "Platz 01" ) );
 
     m_track->setTitle( "" );
-    //when there is no title, we default to using the filename
-    QCOMPARE( m_track->prettyName(), QString( m_tmpFileName ) );
+    //when there is no title, we default to using the filename without extension
+    QCOMPARE( m_track->prettyName(), QString( "tempfile" ) );
 
     m_track->setTitle( "test" );
     QCOMPARE( m_track->prettyName(), QString( "test" ) );
@@ -109,8 +109,8 @@ void TestMetaFileTrack::testFullPrettyName()
     QCOMPARE( m_track->fullPrettyName(), QString( "Platz 01" ) );
 
     m_track->setTitle( "" );
-    //when there is no title, we default to using the filename
-    QCOMPARE( m_track->fullPrettyName(), QString( m_tmpFileName ) );
+    //when there is no title, we default to using the filename without extension
+    QCOMPARE( m_track->fullPrettyName(), QString( "tempfile" ) );
 
     m_track->setTitle( "test" );
     QCOMPARE( m_track->fullPrettyName(), QString( "test" ) );

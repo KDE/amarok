@@ -29,7 +29,7 @@ namespace Meta
         class AMAROK_EXPORT ASFTagHelper : public TagHelper
         {
             public:
-                ASFTagHelper( TagLib::ASF::Tag *tag, Amarok::FileType fileType );
+                ASFTagHelper( TagLib::Tag *tag, TagLib::ASF::Tag *asfTag, Amarok::FileType fileType );
 
                 virtual Meta::FieldHash tags() const;
                 virtual bool setTags( const Meta::FieldHash &changes );

@@ -27,9 +27,9 @@
 
 using namespace Meta::Tag;
 
-VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Ogg::XiphComment* tag, Amarok::FileType fileType )
+VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType )
                       : TagHelper( tag, fileType )
-                      , m_tag( tag )
+                      , m_tag( commentsTag )
 {
     m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "ALBUMARTIST" ) );
     m_fieldMap.insert( Meta::valBpm,         TagLib::String( "BPM" ) );
