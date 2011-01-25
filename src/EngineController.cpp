@@ -997,7 +997,6 @@ EngineController::slotAboutToFinish()
         //there might not be any more tracks in the playlist...
         stop( true );
         The::playlistActions()->requestNextTrack();
-        slotFinished();
     }
     else if( m_currentTrack && m_currentTrack->playableUrl().url().startsWith( "audiocd:/" ) )
     {
