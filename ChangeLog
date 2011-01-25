@@ -18,6 +18,7 @@ VERSION 2.4.1
       <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
+    * Fixed CD copying functionality. (BR 264050)
     * Fixed CUE tracks playback order. (BR 263237)
     * Prevent crash on exit when using Phonon-VLC.
     * Fixed crash in the queue editor when trying to show already
