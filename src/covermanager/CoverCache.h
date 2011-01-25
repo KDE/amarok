@@ -32,14 +32,14 @@
     To solve this problem the CoverCache class provides a central repository for
     Album cover QPixmaps.
 */
-class CoverCache
+class AMAROK_EXPORT CoverCache
 {
     public:
         /** Returns the global CoverCache instance */
-        AMAROK_CORE_EXPORT static CoverCache* instance();
+        static CoverCache* instance();
 
         /** Destroys the global CoverCache instance */
-        AMAROK_CORE_EXPORT static void destroy();
+        static void destroy();
 
 
         /** Called each time an album cover has changed or is not longer valid.
@@ -48,7 +48,7 @@ class CoverCache
             Not doing so will leak a couple of bytes and in bad cases lead to old
             covers being returned.
         */
-        AMAROK_CORE_EXPORT static void invalidateAlbum( const Meta::Album* album );
+        static void invalidateAlbum( const Meta::Album* album );
 
         /** Returns the album cover image.
             Returns a default image if no specific album image could be found.
@@ -59,7 +59,7 @@ class CoverCache
             @param size is the maximum width or height of the resulting image.
             when size is <= 1, return the full size image
         */
-        AMAROK_CORE_EXPORT QPixmap getCover( const Meta::AlbumPtr &album, int size = 0 ) const;
+        QPixmap getCover( const Meta::AlbumPtr &album, int size = 0 ) const;
 
     private:
         static CoverCache* s_instance;
