@@ -332,6 +332,20 @@ Most people can leave this option enabled as it ensures copying to media devices
       <item>
        <layout class="QHBoxLayout">
         <item>
+	  <widget class="QPushButton" name="previewButton">
+          <property name="text">
+           <string>Preview</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="autoPreviewCheck">
+          <property name="text">
+           <string>Automatic Preview</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="spacer2_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -341,7 +355,7 @@ Most people can leave this option enabled as it ensures copying to media devices
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>347</width>
+            <width>150</width>
             <height>20</height>
            </size>
           </property>

@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.4.1
   FEATURES:
+    * New "Preview" feature for the Organize Collection dialog. Patch bye
+      Maximilian Güntner <maximilian.guentner@gmail.com>.
 
   CHANGES:
     * Renewed FilterEditor dialog.

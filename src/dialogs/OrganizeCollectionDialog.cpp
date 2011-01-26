@@ -93,9 +93,10 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
     ui->conflictLabel->setPalette( p );
 
+    connect( ui->previewButton , SIGNAL(clicked(bool)), SLOT(slotUpdatePreview()) );
+    connect( ui->autoPreviewCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     // to show the conflict error
     connect( ui->overwriteCheck, SIGNAL( stateChanged( int ) ), SLOT( slotUpdatePreview() ) );
-
     connect( ui->ignoreTheCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->spaceCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->asciiCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
@@ -283,7 +284,6 @@ void
 OrganizeCollectionDialog::init()
 {
     populateFormatList();
-    slotUpdatePreview();
 }
 
 void OrganizeCollectionDialog::populateFormatList()
@@ -343,7 +343,8 @@ OrganizeCollectionDialog::slotUpdatePreview()
     mTrackOrganizer->setReplaceSpaces( ui->spaceCheck->isChecked() );
     mTrackOrganizer->setReplace( ui->regexpEdit->text(), ui->replaceEdit->text() );
     mTrackOrganizer->setVfatSafe( ui->vfatCheck->isChecked() );
-    preview( buildFormatString() );
+    if(ui->autoPreviewCheck->isChecked() == true || QObject::sender() == ui->previewButton)
+        preview( buildFormatString() );
 }
 
 void
