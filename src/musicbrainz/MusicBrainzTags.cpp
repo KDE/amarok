@@ -317,6 +317,13 @@ bool
 MusciBrainzTagsItem::checked() const
 {
     QReadLocker lock( &m_dataLock );
+    if( m_data.isEmpty() )
+    {
+        foreach( MusciBrainzTagsItem *child, m_childItems )
+            if( child->checked() )
+                return true;
+        return false;
+    }
     return m_checked;
 }
 
@@ -453,6 +460,12 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
 
         return toolTip;
     }
+    else if( role == Qt::FontRole && item->parent() == m_rootItem )
+    {
+        QFont font;
+        font.setItalic( true );
+        return font;
+    }
 
     return QVariant();
 }
@@ -480,6 +493,8 @@ MusicBrainzTagsModel::headerData( int section, Qt::Orientation orientation, int 
 {
     if( orientation == Qt::Horizontal && role == Qt::DisplayRole )
         return m_rootItem->data( section );
+    else if( orientation == Qt::Horizontal && role == Qt::ToolTipRole && section == 0 )
+        return i18n( "Click here to choose best matches" );
 
     return QVariant();
 }
@@ -675,7 +690,8 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
     event->accept();
 }
 
-void MusicBrainzTagsView::openArtistPage()
+void
+MusicBrainzTagsView::openArtistPage()
 {
     if( !selectedIndexes().first().isValid() || !selectedIndexes().first().internalPointer() )
         return;
@@ -690,7 +706,8 @@ void MusicBrainzTagsView::openArtistPage()
     QDesktopServices::openUrl( url );
 }
 
-void MusicBrainzTagsView::openReleasePage()
+void
+MusicBrainzTagsView::openReleasePage()
 {
     if( !selectedIndexes().first().isValid() || !selectedIndexes().first().internalPointer() )
         return;
@@ -705,7 +722,8 @@ void MusicBrainzTagsView::openReleasePage()
     QDesktopServices::openUrl( url );
 }
 
-void MusicBrainzTagsView::openTrackPage()
+void
+MusicBrainzTagsView::openTrackPage()
 {
     if( !selectedIndexes().first().isValid() || !selectedIndexes().first().internalPointer() )
         return;
@@ -718,6 +736,45 @@ void MusicBrainzTagsView::openTrackPage()
                   .arg( data.value( MusicBrainz::TRACKID ).toString() );
 
     QDesktopServices::openUrl( url );
+}
+
+void
+MusicBrainzTagsView::collapseChosen()
+{
+    DEBUG_BLOCK
+
+    MusicBrainzTagsModel *model = static_cast< MusicBrainzTagsModel * >( this->model() );
+
+    if( !model )
+        return;
+
+    for( int i = 0; i < model->rowCount(); i++ )
+    {
+        QModelIndex index = model->index( i, 0 );
+        MusciBrainzTagsItem *item = static_cast< MusciBrainzTagsItem * >( index.internalPointer() );
+        if( item && item->checked() )
+            collapse( index );
+    }
+}
+
+
+void
+MusicBrainzTagsView::expandUnChosen()
+{
+    DEBUG_BLOCK
+
+    MusicBrainzTagsModel *model = static_cast< MusicBrainzTagsModel * >( this->model() );
+
+    if( !model )
+        return;
+
+    for( int i = 0; i < model->rowCount(); i++ )
+    {
+        QModelIndex index = model->index( i, 0 );
+        MusciBrainzTagsItem *item = static_cast< MusciBrainzTagsItem * >( index.internalPointer() );
+        if( item && !item->checked() )
+            expand( index );
+    }
 }
 
 #include "MusicBrainzTags.moc"
