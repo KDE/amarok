@@ -157,7 +157,6 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_writeBackStatistics->setEnabled( writeBack() );
     m_writeBackCover->setChecked( AmarokConfig::writeBackCover() );
     m_writeBackCover->setEnabled( writeBack() );
-    m_writeBackCover->setVisible( false ); // only for profi users
     m_charset->setChecked( AmarokConfig::useCharsetDetector() );
 
     // set the model _after_ constructing the checkboxes
