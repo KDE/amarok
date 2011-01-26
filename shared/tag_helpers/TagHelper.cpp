@@ -203,6 +203,9 @@ TagHelper::splitDiscNr( const QString &value ) const
 bool
 TagHelper::isValidUID( const QString &uid, const TagHelper::UIDType type ) const
 {
+    if( uid.length() >= 127 ) // the database can't handle longer uids
+        return false;
+
     QRegExp regexp( "^$" );
 
     if( type == UIDAFT )
