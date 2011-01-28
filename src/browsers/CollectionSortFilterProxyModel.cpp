@@ -77,23 +77,23 @@ CollectionSortFilterProxyModel::lessThanTrack( const QModelIndex &left, const QM
         return lessThanIndex( left, right );
     }
 
-    if( !AmarokConfig::showTrackNumbers() )
-        return lessThanIndex( left, right );
-
-    //First compare by disc number
-    if ( leftTrack->discNumber() < rightTrack->discNumber() )
-        return true;
-    else if( leftTrack->discNumber() == rightTrack->discNumber() )
+    if( AmarokConfig::showTrackNumbers() )
     {
-        //Disc #'s are equal, compare by track number
-        if( leftTrack->trackNumber() != 0 && rightTrack->trackNumber() != 0 )
-            return leftTrack->trackNumber() < rightTrack->trackNumber();
+        //First compare by disc number
+        if ( leftTrack->discNumber() < rightTrack->discNumber() )
+            return true;
+        if ( leftTrack->discNumber() > rightTrack->discNumber() )
+            return false;
 
-        //fallback to name sorting
-        return lessThanIndex( left, right );
+        //Disc #'s are equal, compare by track number
+        if( leftTrack->trackNumber() < rightTrack->trackNumber() )
+            return true;
+        if( leftTrack->trackNumber() > rightTrack->trackNumber() )
+            return false;
     }
-    // Right discNum > left discNum
-    return false;
+
+    //fallback to name sorting
+    return lessThanIndex( left, right );
 }
 
 bool
@@ -109,26 +109,19 @@ CollectionSortFilterProxyModel::lessThanAlbum( const QModelIndex &left, const QM
         return lessThanIndex( left, right );
     }
 
-    //First compare by year
-    bool ok = true;
-    int leftYear = albumYear( leftAlbum, &ok );
-    int rightYear = 0;
+    // compare by year
+    if( AmarokConfig::showYears() )
+    {
+        int leftYear = albumYear( leftAlbum );
+        int rightYear = albumYear( rightAlbum );
 
-    if( !AmarokConfig::showYears() )
-        ok = false;
-    
-    if( ok )
-        rightYear = albumYear( rightAlbum, &ok );
+        if( leftYear < rightYear )
+            return true; // left album is newer
+        if( leftYear > rightYear )
+            return false;
+    }
 
-    // compare if the years are valid numbers
-    if( ok && leftYear < rightYear )
-        return false; // left album is newer
-
-    // if the year conversions failed or the years are the same, compare by name
-    if( !ok || leftYear == rightYear )
-        return lessThanIndex( left, right );
-
-    return true; // left album is older
+    return lessThanIndex( left, right );
 }
 
 inline CollectionTreeItem*
@@ -138,16 +131,16 @@ CollectionSortFilterProxyModel::treeItem( const QModelIndex &index ) const
 }
 
 int
-CollectionSortFilterProxyModel::albumYear( Meta::AlbumPtr album, bool *ok ) const
+CollectionSortFilterProxyModel::albumYear( Meta::AlbumPtr album ) const
 {
-    int year = 0;
-    if( !album->tracks().isEmpty() )
+    Meta::TrackList tracks = album->tracks();
+    if( !tracks.isEmpty() )
     {
-        const Meta::TrackPtr track = album->tracks().at(0);
-        if( track && track->year() )
-            year = track->year()->prettyName().toInt( ok );
+        Meta::YearPtr year = tracks.first()->year();
+        if( year && (year->year() != 0) )
+            return year->year();
     }
-    return year;
+    return 0;
 }
 
 bool
