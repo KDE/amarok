@@ -35,7 +35,7 @@ CollectionSortFilterProxyModel::CollectionSortFilterProxyModel(  QObject * paren
     //NOTE: This does not work properly with our lazy loaded model.  Every time we get new data (usually around an expand)
     // the view scrolls to make the selected item visible.  This is probably a bug in qt,
     // but as the view appears to behave without it, I'm just disabling.
-//     setDynamicSortFilter( true );
+    // setDynamicSortFilter( true );
 }
 
 
@@ -56,24 +56,11 @@ CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelI
     CollectionTreeItem *leftItem = treeItem( left );
     CollectionTreeItem *rightItem = treeItem( right );
 
-    if( leftItem->level() == rightItem->level() )
-    {
-        if( leftItem->isTrackItem() && rightItem->isTrackItem() )
-            return lessThanTrack( left, right );
+    if( leftItem->isTrackItem() && rightItem->isTrackItem() )
+        return lessThanTrack( left, right );
 
-        if( leftItem->isAlbumItem() && rightItem->isAlbumItem() )
-            return lessThanAlbum( left, right );
-        
-        if( leftItem->isDataItem() && !leftItem->data() ) //left item is a various artists node
-            return true;
-        
-        if( rightItem->isDataItem() && !rightItem->data() ) //rightItem is a various artists node
-            return false;
-
-        if( !left.parent().isValid() && !right.parent().isValid() ) // collection items
-            return lessThanString( left.data( Qt::DisplayRole ).toString(),
-                                   right.data( Qt::DisplayRole ).toString() );
-    }
+    if( leftItem->isAlbumItem() && rightItem->isAlbumItem() )
+        return lessThanAlbum( left, right );
 
     return lessThanIndex( left, right );
 }
@@ -101,7 +88,7 @@ CollectionSortFilterProxyModel::lessThanTrack( const QModelIndex &left, const QM
         //Disc #'s are equal, compare by track number
         if( leftTrack->trackNumber() != 0 && rightTrack->trackNumber() != 0 )
             return leftTrack->trackNumber() < rightTrack->trackNumber();
-        
+
         //fallback to name sorting
         return lessThanIndex( left, right );
     }
@@ -169,11 +156,12 @@ CollectionSortFilterProxyModel::lessThanIndex( const QModelIndex &left, const QM
     // This should catch everything else
     QVariant leftData = left.data( CustomRoles::SortRole );
     QVariant rightData = right.data( CustomRoles::SortRole );
+
     if( leftData.canConvert( QVariant::String ) && rightData.canConvert( QVariant::String ) )
         return lessThanString( leftData.toString(), rightData.toString() );
-   
+
     warning() << "failed: an unexpected comparison was made between"<<left.data(Qt::DisplayRole)<<"and"<<right.data(Qt::DisplayRole);
-    
+
     //Just in case
     return QSortFilterProxyModel::lessThan( left, right );
 }
