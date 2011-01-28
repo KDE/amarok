@@ -130,7 +130,7 @@ CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection
     if ( d->collections.contains( collectionId ) )
         return;
 
-    //inserts new collection at the end. sort collection alphabetically?
+    //inserts new collection at the end.
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
     d->collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
     endInsertRows();

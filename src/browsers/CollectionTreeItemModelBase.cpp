@@ -254,7 +254,8 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         case Qt::ToolTipRole:
             {
                 QString name = album->prettyName();
-                if( AmarokConfig::showYears() )
+                // add years for named albums (if enabled)
+                if( AmarokConfig::showYears() && !album->name().isEmpty() )
                 {
                     Meta::TrackList tracks = album->tracks();
                     if( !tracks.isEmpty() )

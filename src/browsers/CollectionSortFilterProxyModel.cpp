@@ -56,6 +56,12 @@ CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelI
     CollectionTreeItem *leftItem = treeItem( left );
     CollectionTreeItem *rightItem = treeItem( right );
 
+    // various artists and no label items are always at the top
+    if( leftItem->isVariousArtistItem() || leftItem->isNoLabelItem() )
+        return true;
+    if( rightItem->isVariousArtistItem() || rightItem->isNoLabelItem() )
+        return false;
+
     if( leftItem->isTrackItem() && rightItem->isTrackItem() )
         return lessThanTrack( left, right );
 
@@ -133,6 +139,9 @@ CollectionSortFilterProxyModel::treeItem( const QModelIndex &index ) const
 int
 CollectionSortFilterProxyModel::albumYear( Meta::AlbumPtr album ) const
 {
+    if( album->name().isEmpty() ) // an unnamed album has no year
+        return 0;
+
     Meta::TrackList tracks = album->tracks();
     if( !tracks.isEmpty() )
     {
