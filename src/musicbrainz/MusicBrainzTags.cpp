@@ -466,6 +466,8 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
         font.setItalic( true );
         return font;
     }
+    else if( role == Qt::ForegroundRole && item->parent() != m_rootItem )
+        return QColor(  Qt::black );
 
     return QVariant();
 }
