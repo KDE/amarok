@@ -101,7 +101,6 @@ namespace Dynamic
 
             MatchType m_match;
 
-
             mutable QMutex m_mutex; // mutex protecting all of the below structures
             mutable QMap< QString, QString > m_artistIds;
             mutable QMap< QString, QStringList> m_similarArtistMap;

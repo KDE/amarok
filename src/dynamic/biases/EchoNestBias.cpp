@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2010, 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -70,6 +71,7 @@ Dynamic::EchoNestBias::EchoNestBias()
     : SimpleMatchBias()
     , m_artistSuggestedQuery( 0 )
     , m_match( PreviousTrack )
+    , m_mutex( QMutex::Recursive )
 { }
 
 Dynamic::EchoNestBias::EchoNestBias( QXmlStreamReader *reader )
