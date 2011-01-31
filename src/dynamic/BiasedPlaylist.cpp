@@ -18,6 +18,7 @@
 
 #define DEBUG_PREFIX "BiasedPlaylist"
 
+#include "BiasSolver.h"
 #include "BiasedPlaylist.h"
 #include "BiasFactory.h"
 
@@ -59,6 +60,7 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *pare
     : DynamicPlaylist( parent )
     , m_numRequested( 0 )
     , m_bias( 0 )
+    , m_solver( 0 )
 {
     // Make sure that the BiasedPlaylist instance gets destroyed when App destroys
     setParent( App::instance() );
@@ -111,9 +113,9 @@ Dynamic::BiasedPlaylist::requestAbort()
 {
     DEBUG_BLOCK
     if( m_solver ) {
-        m_solver.data()->requestAbort();
-        disconnect(m_solver.data(), 0, this, 0);
-        m_solver.clear();
+        disconnect( m_solver, 0, this, 0 );
+        m_solver->requestAbort();
+        m_solver = 0;
     }
 }
 
@@ -127,19 +129,19 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
     {
         debug() << "assigning new m_solver";
         m_solver = new BiasSolver( BUFFER_SIZE, m_bias, getContext() );
-        m_solver.data()->setAutoDelete(true);
-        connect( m_solver.data(), SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
-        connect( m_solver.data(), SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
+        m_solver->setAutoDelete( true );
+        connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
+        connect( m_solver, SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
 
         if( withStatusBar )
         {
-            The::statusBar()->newProgressOperation( m_solver.data(), i18n( "Generating playlist..." ) )
+            The::statusBar()->newProgressOperation( m_solver, i18n( "Generating playlist..." ) )
                 ->setAbortSlot( this, SLOT( requestAbort() ) );
 
-            connect( m_solver.data(), SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
+            connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
         }
 
-        ThreadWeaver::Weaver::instance()->enqueue( m_solver.data() );
+        ThreadWeaver::Weaver::instance()->enqueue( m_solver );
         debug() << "called prepareToRun";
     }
     else
@@ -177,7 +179,7 @@ Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPt
 void
 Dynamic::BiasedPlaylist::updateStatus( int progress )
 {
-    The::statusBar()->setProgress( m_solver.data(), progress );
+    The::statusBar()->setProgress( m_solver, progress );
 }
 
 void
@@ -247,25 +249,24 @@ Dynamic::BiasedPlaylist::solverFinished()
 {
     DEBUG_BLOCK
 
-    if( !m_solver )
+    if( m_solver != sender() )
         return;
 
-    The::statusBar()->endProgressOperation( m_solver.data() );
+    The::statusBar()->endProgressOperation( m_solver );
 
-    bool success = m_solver.data()->success();
+    bool success = m_solver->success();
     if( success )
     {
         QMutexLocker locker(&m_bufferMutex);
-        m_buffer.append( m_solver.data()->solution() );
+        m_buffer.append( m_solver->solution() );
     }
 
-    m_solver.data()->deleteLater();
+    disconnect( m_solver, 0, this, 0 );
+    m_solver = 0; // it's autodeleting...
 
     // empty collection just give up.
     if(m_buffer.isEmpty())
-    {
         m_numRequested = 0;
-    }
 
     handleRequest();
 }

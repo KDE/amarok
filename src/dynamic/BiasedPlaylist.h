@@ -20,7 +20,6 @@
 #define AMAROK_BIASEDPLAYLIST_H
 
 #include "Bias.h"
-#include "BiasSolver.h"
 #include "DynamicPlaylist.h"
 #include "core/meta/Meta.h"
 
@@ -33,6 +32,8 @@ class QXmlStreamReader;
 
 namespace Dynamic
 {
+    class BiasSolver;
+
     /** A concrete implementation of the DynamicPlaylist that uses a bias structure to determine new tracks.
     */
     class BiasedPlaylist : public DynamicPlaylist
@@ -75,8 +76,7 @@ namespace Dynamic
             int m_numRequested;
 
             BiasPtr m_bias;
-
-            QWeakPointer<BiasSolver> m_solver;
+            BiasSolver *m_solver;
 
             static const int BUFFER_SIZE;
     };
