@@ -16,6 +16,8 @@
 
 #include "BiasFactory.h"
 #include "Bias.h"
+#include "DynamicBiasWidgets.h"
+
 #include "biases/AlbumPlayBias.h"
 #include "biases/PartBias.h"
 #include "biases/TagMatchBias.h"
@@ -156,6 +158,90 @@ Dynamic::BiasFactory::instance()
     return s_instance;
 }
 
+
+
+// --------------- ReplacementBias -------------
+
+
+Dynamic::ReplacementBias::ReplacementBias( const QString &n )
+    : m_name( n )
+{
+    connect( BiasFactory::instance(), SIGNAL( changed() ), this, SLOT( factoryChanged() ) );
+}
+
+Dynamic::ReplacementBias::ReplacementBias( const QString &n, QXmlStreamReader *reader )
+    : m_name( n )
+{
+    // -- read the original bias data as one block
+    quint64 start = reader->characterOffset();
+    reader->skipCurrentElement();
+    quint64 end = reader->characterOffset();
+
+    QIODevice *device = reader->device();
+    if( device->isSequential() )
+    {
+        warning() << "Cannot read xml for bias"<<n<<"from sequential device.";
+        return;
+    }
+    device->seek( start );
+    m_html = device->read( end - start );
+
+debug() << "replacement bias for"<<n<<"is"<<m_html;
+
+    connect( BiasFactory::instance(), SIGNAL( changed() ), this, SLOT( factoryChanged() ) );
+}
+
+void
+Dynamic::ReplacementBias::toXml( QXmlStreamWriter *writer ) const
+{
+    Q_UNUSED( writer );
+    writer->device()->write( m_html.left( m_html.size() - m_name.length() - 3 ) );
+}
+
+QString
+Dynamic::ReplacementBias::sName()
+{
+    return QLatin1String( "replacementBias" );
+}
+
+QString
+Dynamic::ReplacementBias::name() const
+{
+    return m_name;
+}
+
+QWidget*
+Dynamic::ReplacementBias::widget( QWidget* parent )
+{
+    return new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+}
+
+void
+Dynamic::ReplacementBias::factoryChanged()
+{
+    DEBUG_BLOCK;
+
+    // -- search if there is a new factory with my name
+    foreach( AbstractBiasFactory* factory, BiasFactory::instance()->factories() )
+    {
+        if( factory->name() == m_name )
+        {
+            debug() << "Found new factory for" << m_name;
+
+            // -- replace myself with the new bias
+            QXmlStreamReader reader( m_html );
+
+            Dynamic::BiasPtr newBias( factory->createBias( &reader ) );
+            replace( newBias );
+            this->deleteLater();
+            return;
+        }
+    }
+}
+
+
+// ------------- BiasFactory --------------
+
 Dynamic::BiasFactory::BiasFactory( QObject *parent )
     : QObject( parent )
 { }
@@ -171,7 +257,7 @@ Dynamic::BiasFactory::fromXml( QXmlStreamReader *reader )
         if( name == fac->name() )
             return fac->createBias( reader );
     }
-    return BiasPtr();
+    return Dynamic::BiasPtr( new ReplacementBias( name.toString(), reader ) );
 }
 
 Dynamic::BiasPtr
@@ -183,7 +269,7 @@ Dynamic::BiasFactory::fromName( const QString &name )
         if( name == fac->name() )
             return fac->createBias();
     }
-    return BiasPtr();
+    return Dynamic::BiasPtr( new ReplacementBias( name ) );
 }
 
 void
