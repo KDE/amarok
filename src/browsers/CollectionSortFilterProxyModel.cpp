@@ -122,9 +122,9 @@ CollectionSortFilterProxyModel::lessThanAlbum( const QModelIndex &left, const QM
         int rightYear = albumYear( rightAlbum );
 
         if( leftYear < rightYear )
-            return true; // left album is newer
+            return false; // left album is newer
         if( leftYear > rightYear )
-            return false;
+            return true;
     }
 
     return lessThanIndex( left, right );
