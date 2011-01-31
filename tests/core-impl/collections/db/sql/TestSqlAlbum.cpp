@@ -41,9 +41,7 @@ TestSqlAlbum::TestSqlAlbum()
 }
 
 TestSqlAlbum::~TestSqlAlbum()
-{
-    delete m_app;
-}
+{ }
 
 void
 TestSqlAlbum::initTestCase()

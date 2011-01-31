@@ -21,7 +21,6 @@
 
 #include <KTempDir>
 
-class QApplication;
 class SqlStorage;
 class SqlRegistry;
 
@@ -60,7 +59,6 @@ private slots:
     void testUnsetCompilationWithMultipleArtists();
 
 private:
-    QApplication *m_app;
     Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
     KTempDir *m_tmpDir;
