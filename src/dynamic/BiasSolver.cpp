@@ -119,7 +119,7 @@ Dynamic::BiasSolver::BiasSolver( int n, Dynamic::BiasPtr bias, Meta::TrackList c
     , m_context(context)
     , m_abortRequested(false)
 {
-    // debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId();
+    debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId();
     getTrackCollection();
 
     connect( m_bias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
@@ -129,7 +129,7 @@ Dynamic::BiasSolver::BiasSolver( int n, Dynamic::BiasPtr bias, Meta::TrackList c
 
 Dynamic::BiasSolver::~BiasSolver()
 {
-    // debug() << "DESTROYING BiasSolver in thread:" << QThread::currentThreadId();
+    debug() << "DESTROYING BiasSolver in thread:" << QThread::currentThreadId();
 }
 
 
@@ -199,7 +199,7 @@ void Dynamic::BiasSolver::run()
     debug() << "got playlist with"<<playlist.energy();
     simpleOptimize( &playlist );
     debug() << "after simple optimize playlist with"<<playlist.energy();
-    while( playlist.energy() > epsilon() ) // the playlist is only slightly wrong
+    if( playlist.energy() > epsilon() && !m_abortRequested ) // the playlist is only slightly wrong
     {
         annealingOptimize( &playlist, SA_ITERATION_LIMIT, true );
     }
@@ -231,6 +231,8 @@ Dynamic::BiasSolver::annealingOptimize( SolverList *list,
                                         bool updateStatus )
 {
     DEBUG_BLOCK;
+
+    SolverList originalList = *list;
 
     /*
      * The process used here is called "simulated annealing". The basic idea is
@@ -283,6 +285,8 @@ Dynamic::BiasSolver::annealingOptimize( SolverList *list,
         if( !newTrack )
             continue;
 
+        debug() << "replacing"<<newPos<<list->m_trackList[newPos]->name()<<"with"<<newTrack->name();
+
         SolverList newList = *list;
         newList.setTrack( newPos, newTrack );
 
@@ -303,6 +307,10 @@ Dynamic::BiasSolver::annealingOptimize( SolverList *list,
             emit statusUpdate( progress >= 0 ? progress : 0 );
         }
     }
+
+    // -- use the original list if we made it worse
+    if( list->energy() > originalList.energy() )
+        *list = originalList;
 }
 
 void

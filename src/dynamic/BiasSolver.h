@@ -135,7 +135,7 @@ namespace Dynamic
 
         private:
             double epsilon() const
-            { return 0.05 * m_n; }
+            { return 0.05; }
 
             /** Returns the TrackSet of tracks fitting in the indicated position.
                 The function blocks until the result is received */
