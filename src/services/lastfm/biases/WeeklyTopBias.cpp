@@ -77,6 +77,8 @@ Dynamic::WeeklyTopBias::WeeklyTopBias()
     : SimpleMatchBias()
     , m_weeklyTimesJob( 0 )
 {
+    m_range.from = QDateTime::currentDateTime();
+    m_range.to = QDateTime::currentDateTime();
     loadFromFile();
 }
 
@@ -428,6 +430,10 @@ Dynamic::WeeklyTopBias::weeklyTimesQueryFinished() // SLOT
     for( int i = 0; i < nodes.size(); i++ )
     {
         QDomNode n = nodes.at( i );
+        m_weeklyFromTimes.append( n.attributes().namedItem( "from" ).nodeValue().toUInt() );
+        m_weeklyToTimes.append( n.attributes().namedItem( "to" ).nodeValue().toUInt() );
+
+        debug() << "weeklyTimesResult"<<i<<":"<<m_weeklyFromTimes.last()<<"to"<<m_weeklyToTimes.last();
         m_weeklyFromTimes.append( n.attributes().namedItem( "from" ).nodeValue().toUInt() );
         m_weeklyToTimes.append( n.attributes().namedItem( "to" ).nodeValue().toUInt() );
     }
