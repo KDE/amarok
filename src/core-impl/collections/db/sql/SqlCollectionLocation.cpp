@@ -200,7 +200,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     if( track->composer() )
         metaTrack->setComposer( track->composer()->name() );
 
-    if( !track->year() >= 0 )
+    if( track->year() > 0 )
         metaTrack->setYear( track->year() );
 
     if( track->genre() )
