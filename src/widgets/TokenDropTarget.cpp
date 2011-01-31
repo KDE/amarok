@@ -305,6 +305,8 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
     token->show();
     update(); // count changed
     emit changed();
+
+    token->setFocus( Qt::OtherFocusReason ); // select the new token right away
 }
 
 bool
