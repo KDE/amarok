@@ -388,7 +388,7 @@ SqlScanResultProcessor::cacheUrlsInit()
         int directoryId = res.at(i++).toInt();
         QString uid = res.at(i++);
 
-        if( !directoryId )
+        if( !directoryId && !rpath.isEmpty() )
         {
             warning() << "Found urls entry without directory. A phantom track. Removing"<<rpath;
             removeTrack( id, uid );
