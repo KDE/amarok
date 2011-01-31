@@ -29,6 +29,36 @@ class QXmlStreamWriter;
 
 namespace Dynamic
 {
+    /** A bias that will be used when a "real" bias could not be found.
+        This bias will listen to the BiasFactory and present a "stand in" bias
+        until a new factory with it's name becomes available.
+        This will allow services with a bias to be switched off without their
+        bias getting removed or otherwise corrupted.
+    */
+    class ReplacementBias : public RandomBias
+    {
+        Q_OBJECT
+
+        public:
+            ReplacementBias( const QString &n );
+            ReplacementBias( const QString &n, QXmlStreamReader *reader );
+
+            void toXml( QXmlStreamWriter *writer ) const;
+
+            static QString sName();
+            virtual QString name() const;
+
+            virtual QWidget* widget( QWidget* parent = 0 );
+
+        protected slots:
+                void factoryChanged();
+
+        private:
+                QString m_name;
+                QByteArray m_html;
+
+                Q_DISABLE_COPY(ReplacementBias)
+    };
 
     /**
      * The factory which creates bias entries on demand. As the user can create any number
