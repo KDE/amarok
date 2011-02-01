@@ -20,6 +20,8 @@ VERSION 2.4.1
       <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
+    * Fixed temporary podcast download filenames that were to long by using MD5 hash instead.
+      Thanks to Frank Steinmetzger for the patch. (BR 264813)
     * Fixed issue with absentee toolbar on clear run (without config files). (BR 259615)
     * Fixed CD copying functionality. (BR 264050)
     * Fixed CUE tracks playback order. (BR 263237)
