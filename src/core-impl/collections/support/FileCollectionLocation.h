@@ -47,7 +47,6 @@ class FileCollectionLocation : public CollectionLocation
 
         QMap<KJob*, Meta::TrackPtr> m_removejobs;
         Meta::TrackList m_removetracks;
-        bool m_removeEmptyDirs;
 };
 
 } //namespace Collections
