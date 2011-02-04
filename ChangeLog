@@ -20,6 +20,7 @@ VERSION 2.4.1
       <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
+    * Fixed crash when trying to load cover for track/album without artist. (BR 263256)
     * Fixed linking on Solaris 11 (and others?). (BR 264112)
     * Fixed temporary podcast download filenames that were to long by using MD5 hash instead.
       Thanks to Frank Steinmetzger for the patch. (BR 264813)
