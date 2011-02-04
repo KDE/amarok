@@ -23,6 +23,8 @@
 #include "DynamicPlaylist.h"
 #include "core/meta/Meta.h"
 
+#include "amarok_export.h" // we are exporting it for the tests
+
 #include <QObject>
 #include <QMutex>
 #include <QWeakPointer>
@@ -36,7 +38,7 @@ namespace Dynamic
 
     /** A concrete implementation of the DynamicPlaylist that uses a bias structure to determine new tracks.
     */
-    class BiasedPlaylist : public DynamicPlaylist
+    class AMAROK_EXPORT BiasedPlaylist : public DynamicPlaylist
     {
         Q_OBJECT
 

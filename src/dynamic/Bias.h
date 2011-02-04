@@ -185,7 +185,7 @@ namespace Dynamic
     };
 
     /** A bias that returns tracks that are not in the playlist already */
-    class UniqueBias : public AbstractBias
+    class AMAROK_EXPORT UniqueBias : public AbstractBias
     {
         Q_OBJECT
 
@@ -213,7 +213,7 @@ namespace Dynamic
             Q_DISABLE_COPY(UniqueBias)
     };
 
-    class AndBias : public AbstractBias
+    class AMAROK_EXPORT AndBias : public AbstractBias
     {
         Q_OBJECT
 
@@ -269,7 +269,7 @@ namespace Dynamic
             Q_DISABLE_COPY(AndBias)
     };
 
-    class OrBias : public AndBias
+    class AMAROK_EXPORT OrBias : public AndBias
     {
         Q_OBJECT
 
@@ -299,7 +299,7 @@ namespace Dynamic
     };
 
     /** Actually this bias works more like a NOR bias. */
-    class NotBias : public OrBias
+    class AMAROK_EXPORT NotBias : public OrBias
     {
         Q_OBJECT
 

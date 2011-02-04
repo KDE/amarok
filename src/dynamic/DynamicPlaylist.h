@@ -21,6 +21,8 @@
 
 #include "core/meta/Meta.h"
 
+#include "amarok_export.h" // we are exporting it for the tests
+
 class QXmlStreamReader;
 class QXmlStreamWriter;
 
@@ -30,7 +32,7 @@ namespace Dynamic {
     The DynamicPlaylist is used by the DynamicTrackNavigator.
     Currently the only implementation of this abstract class is the BiasedPlaylist.
 */
-class DynamicPlaylist : public QObject
+class AMAROK_EXPORT DynamicPlaylist : public QObject
 {
     Q_OBJECT
 

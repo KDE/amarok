@@ -21,6 +21,8 @@
 #include "BiasedPlaylist.h"
 #include "DynamicPlaylist.h"
 
+#include "amarok_export.h" // we are exporting it for the tests
+
 #include <QAbstractItemModel>
 #include <QList>
 #include <QMutex>
@@ -28,7 +30,7 @@
 
 namespace PlaylistBrowserNS {
 
-class DynamicModel : public QAbstractItemModel
+class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
 {
     Q_OBJECT
     public:
@@ -36,48 +38,49 @@ class DynamicModel : public QAbstractItemModel
 
         ~DynamicModel();
 
-        // void enable( bool enable );
-        void changePlaylist( int i );
-
-        QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+        // void changePlaylist( int i );
 
         /** Returns the currently active playlist.
             Don't free this pointer
         */
         Dynamic::DynamicPlaylist* activePlaylist();
         int activePlaylistIndex() const;
+
+        /** Find the playlist with name, make it active and return it */
+        Dynamic::DynamicPlaylist* setActivePlaylist( int );
+
         int defaultPlaylistIndex() const;
 
         int playlistIndex( const QString& ) const;
 
-        QModelIndex index ( int row, int column,
-                            const QModelIndex & parent = QModelIndex() ) const;
-
         bool isActiveUnsaved() const;
         bool isActiveDefault() const;
+
+        // --- QAbstractItemModel functions ---
+        QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+
+        QModelIndex index( int row, int column,
+                           const QModelIndex & parent = QModelIndex() ) const;
 
         QModelIndex parent ( const QModelIndex & index ) const;
 
         int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
         int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
-
-        /// find the playlist with name, make it active and return it
-        // Dynamic::DynamicPlaylist* setActivePlaylist( const QString& name );
-        Dynamic::DynamicPlaylist* setActivePlaylist( int );
+        // ---
 
         void saveCurrentPlaylists();
         void loadCurrentPlaylists();
 
     signals:
         void activeChanged( int index ); // active row changed
-        /*
-        void changeActive( int );  // request that active change
-        void enableDynamicMode( bool );
-        */
 
     public slots:
         void playlistChanged( Dynamic::DynamicPlaylist* );
+
+        /** Stores the active playlist under the given new title. */
         void saveActive( const QString& newTitle );
+
+        /** Removes the active playlist. */
         void removeActive();
 
     private:
