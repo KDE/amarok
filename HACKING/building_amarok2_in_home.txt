@@ -44,7 +44,7 @@ This document explains how to install Amarok 2 from git in your home directory -
 
 * Check out Amarok:
     cd $HOME/kde/src
-    git clone git://git.kde.org/amarok/amarok.git
+    git clone git://anongit.kde.org/amarok
 
 * Building:
     cd $HOME/kde/build/amarok
