@@ -20,7 +20,6 @@
 
 #include "amarokconfig.h"
 #include "EngineController.h"
-#include "ProgressWidget.h"
 
 #include <KGlobal>
 #include <KGlobalSettings>
@@ -35,15 +34,6 @@ TimeLabel::TimeLabel(QWidget* parent)
 {
     setFont( KGlobalSettings::fixedFont() );
     setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
-}
-
-void
-TimeLabel::mousePressEvent(QMouseEvent*)
-{
-    AmarokConfig::setLeftTimeDisplayRemaining( !AmarokConfig::leftTimeDisplayRemaining() );
-    ProgressWidget * progressWidget = dynamic_cast<ProgressWidget *>( parentWidget() );
-    if( progressWidget )
-        progressWidget->drawTimeDisplay( The::engineController()->trackPositionMs() );
 }
 
 QSize

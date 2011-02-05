@@ -16,6 +16,7 @@
 
 #include "ProgressWidget.h"
 
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "SliderWidget.h"
@@ -26,14 +27,14 @@
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
 
-#include <QHBoxLayout>
-
 #include <KLocale>
+
+#include <QHBoxLayout>
+#include <QMouseEvent>
 
 ProgressWidget::ProgressWidget( QWidget *parent )
         : QWidget( parent )
 {
-
     QHBoxLayout *box = new QHBoxLayout( this );
     setLayout( box );
     box->setMargin( 0 );
@@ -44,11 +45,11 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     m_slider->setMaximumSize( 600000, 20 );
 
     m_timeLabelLeft = new TimeLabel( this );
-    m_timeLabelLeft->setToolTip( i18n( "The amount of time elapsed in current song" ) );
 
     m_timeLabelRight = new TimeLabel( this );
-    m_timeLabelRight->setToolTip( i18n( "The amount of time remaining in current song" ) );
     m_timeLabelRight->setAlignment( Qt::AlignRight );
+
+    updateTimeLabelTooltips();
 
     m_timeLabelLeft->setShowTime( false );
     m_timeLabelLeft->setAlignment( Qt::AlignRight );
@@ -108,6 +109,16 @@ ProgressWidget::addBookmark( const QString &name, int milliSeconds, bool showPop
     DEBUG_BLOCK
     if ( m_slider )
         m_slider->drawTriangle( name, milliSeconds, showPopup );
+}
+
+void
+ProgressWidget::updateTimeLabelTooltips()
+{
+    TimeLabel *elapsedLabel = AmarokConfig::leftTimeDisplayRemaining() ? m_timeLabelRight : m_timeLabelLeft;
+    TimeLabel *remainingLabel = AmarokConfig::leftTimeDisplayRemaining() ? m_timeLabelLeft : m_timeLabelRight;
+
+    elapsedLabel->setToolTip( i18n( "The amount of time elapsed in current song" ) );
+    remainingLabel->setToolTip( i18n( "The amount of time remaining in current song" ) );
 }
 
 void
@@ -250,6 +261,21 @@ ProgressWidget::redrawBookmarks( const QString *BookmarkName )
             delete tcl;
         }
     }
+}
+
+void ProgressWidget::mousePressEvent(QMouseEvent* e)
+{
+    QWidget* widgetUnderCursor = childAt(e->pos());
+    if( widgetUnderCursor == m_timeLabelLeft ||
+        widgetUnderCursor == m_timeLabelRight )
+    {
+        // user clicked on one of the time labels, switch display
+        AmarokConfig::setLeftTimeDisplayRemaining( !AmarokConfig::leftTimeDisplayRemaining() );
+        drawTimeDisplay( The::engineController()->trackPositionMs() );
+        updateTimeLabelTooltips();
+    }
+
+    QWidget::mousePressEvent(e);
 }
 
 QSize ProgressWidget::sizeHint() const

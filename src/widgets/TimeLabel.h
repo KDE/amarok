@@ -36,7 +36,6 @@ public:
     void setText( const QString &text ); 
 
 protected:
-    virtual void mousePressEvent( QMouseEvent * );
     virtual QSize sizeHint() const;
 
 private:
