@@ -712,6 +712,7 @@ set(amaroklib_LIB_SRCS
     widgets/ComboBox.cpp
     widgets/LineEdit.cpp
     widgets/Osd.cpp
+    widgets/TimeLabel.cpp
     widgets/PixmapViewer.cpp
     widgets/PlayPauseButton.cpp
     widgets/PrettyTreeView.cpp

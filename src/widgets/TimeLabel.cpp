@@ -15,32 +15,62 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_TIMELABEL_H
-#define AMAROK_TIMELABEL_H
+
+#include "TimeLabel.h"
+
+#include "amarokconfig.h"
+#include "EngineController.h"
+#include "ProgressWidget.h"
+
+#include <KGlobal>
+#include <KGlobalSettings>
+#include <KLocale>
 
 #include <QLabel>
+#include <QFontMetrics>
+#include <QMouseEvent>
 
-class QMouseEvent;
-
-class TimeLabel : public QLabel
+TimeLabel::TimeLabel(QWidget* parent)
+    : QLabel( " 0:00:00 ", parent )
 {
-    Q_OBJECT
+    setFont( KGlobalSettings::fixedFont() );
+    setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+}
 
-public:
-    explicit TimeLabel( QWidget *parent );
+void
+TimeLabel::mousePressEvent(QMouseEvent*)
+{
+    AmarokConfig::setLeftTimeDisplayRemaining( !AmarokConfig::leftTimeDisplayRemaining() );
+    ProgressWidget * progressWidget = dynamic_cast<ProgressWidget *>( parentWidget() );
+    if( progressWidget )
+        progressWidget->drawTimeDisplay( The::engineController()->trackPositionMs() );
+}
 
-    bool showTime() const;
-    void setShowTime( bool showTime );
+QSize
+TimeLabel::sizeHint() const
+{
+    return fontMetrics().boundingRect( KGlobal::locale()->negativeSign() + KGlobal::locale()->formatTime( QTime( 0, 0, 0 ), true, true ) ).size();
+}
 
-    // hide base-class function
-    void setText( const QString &text ); 
+void
+TimeLabel::setShowTime(bool showTime) {
+    m_showTime = showTime;
+    if( !showTime )
+    {
+        QLabel::setText( "" );
+    }
+}
 
-protected:
-    virtual void mousePressEvent( QMouseEvent * );
-    virtual QSize sizeHint() const;
+bool TimeLabel::showTime() const
+{
+    return m_showTime;
+}
 
-private:
-    bool m_showTime;
-};
+void
+TimeLabel::setText(const QString& text)
+{
+    if( m_showTime )
+        QLabel::setText( text );
+}
 
-#endif /*AMAROK_TIMELABEL_H*/
+#include "TimeLabel.moc"
