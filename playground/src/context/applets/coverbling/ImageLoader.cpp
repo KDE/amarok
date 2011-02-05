@@ -105,7 +105,7 @@ QPixmap PlainImageLoader::GetPixmap(Meta::AlbumPtr iAlbum)
     QPixmap pixmap;
     if ( iAlbum->hasImage() )
     {
-        pixmap = iAlbum->image();
+		pixmap = QPixmap::fromImage(iAlbum->image());
     }
     else
     {
