@@ -20,6 +20,7 @@ VERSION 2.4.1
       <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
+    * Fixed "Configure Amarok..." disappearing in tray menu. (BR 258226)
     * Fixed crash when quitting Amarok. (BR 253676, BR 257407)
     * Fixed empty folders removeing after collection organization. (BR 190881)
     * Fixed crash when trying to load cover for track/album without artist. (BR 263256)

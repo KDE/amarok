@@ -241,8 +241,6 @@ Amarok::TrayIcon::slotScrollRequested( int delta, Qt::Orientation orientation )
     The::engineController()->increaseVolume( delta / Amarok::VOLUME_SENSITIVITY );
 }
 
-
-
 void
 Amarok::TrayIcon::updateMenu()
 {
@@ -261,31 +259,32 @@ Amarok::TrayIcon::updateMenu()
 
     delete m_separator.data();
 
-    if( !m_track )
-        return;
-
-    foreach( QAction *action, The::globalCurrentTrackActions()->actions() )
-        m_extraActions.append( action );
-
-    QScopedPointer<Capabilities::ActionsCapability> ac( m_track->create<Capabilities::ActionsCapability>() );
-    if( ac )
+    if( m_track )
     {
-        QList<QAction*> actions = ac->actions();
-        foreach( QAction *action, actions )
+        foreach( QAction *action, The::globalCurrentTrackActions()->actions() )
             m_extraActions.append( action );
+
+        QScopedPointer<Capabilities::ActionsCapability> ac( m_track->create<Capabilities::ActionsCapability>() );
+        if( ac )
+        {
+            QList<QAction*> actions = ac->actions();
+            foreach( QAction *action, actions )
+                m_extraActions.append( action );
+        }
+
+        QScopedPointer<Capabilities::BookmarkThisCapability> btc( m_track->create<Capabilities::BookmarkThisCapability>() );
+        if( btc )
+        {
+            m_extraActions.append( btc->bookmarkAction() );
+        }
     }
 
-    QScopedPointer<Capabilities::BookmarkThisCapability> btc( m_track->create<Capabilities::BookmarkThisCapability>() );
-    if( btc )
-    {
-        m_extraActions.append( btc->bookmarkAction() );
-    }
-
-    if ( m_extraActions.count() > 0 )
+    // second statement checks if the menu has already been populated (first startup), if not: do it
+    if( m_extraActions.count() > 0 ||
+        contextMenu()->actions().last() != actionCollection()->action( "file_quit" ) )
     {
         KActionCollection const *ac = Amarok::actionCollection();
         QAction *preferenceAction = ac->action( KStandardAction::name( KStandardAction::Preferences ) );
-
         // remove the 3 bottom items, so we can push them to the bottom again
         contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
         contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
