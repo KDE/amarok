@@ -45,6 +45,7 @@
 #include <QPoint>
 #include <QScrollBar>
 #include <QStandardItemModel>
+#include <QTimer>
 
 class LyricsAppletPrivate
 {

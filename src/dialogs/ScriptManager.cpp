@@ -25,12 +25,9 @@
 #include "ScriptManager.h"
 
 #include "core/support/Amarok.h"
-#include "AmarokProcess.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "Osd.h"
-#include "statusbar/StatusBar.h"
 #include "amarokconfig.h"
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "scriptengine/AmarokCollectionScript.h"
@@ -57,18 +54,14 @@
 #include <KLocale>
 #include <KMessageBox>
 #include <KNS3/DownloadDialog>
-#include <KProtocolManager>
 #include <KStandardDirs>
 #include <KTar>
 #include <KWindowSystem>
 
 #include <QFileInfo>
+#include <QTextDocument> // Qt::escape
 #include <QTimer>
 #include <QScriptEngine>
-#include <QTextDocument>
-
-#include <sys/stat.h>
-#include <sys/types.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // class ScriptManager
