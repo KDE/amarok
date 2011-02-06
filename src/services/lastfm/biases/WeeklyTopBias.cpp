@@ -140,7 +140,7 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
     PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
 
     QDateTimeEdit *fromEdit = new QDateTimeEdit( QDate::currentDate().addDays( -7 ) );
-    fromEdit->setMinimumDate( QDate::currentDate().addYears( -10 ) ); // 10 years ago is minimum for now
+    fromEdit->setMinimumDate( QDateTime::fromTime_t( 1111320001 ).date() ); // That's the first week in last fm
     fromEdit->setMaximumDate( QDate::currentDate() );
     fromEdit->setCalendarPopup( true );
     if( m_range.from.isValid() )
@@ -153,7 +153,7 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
 
 
     QDateTimeEdit *toEdit = new QDateTimeEdit( QDate::currentDate().addDays( -7 ) );
-    toEdit->setMinimumDate( QDate::currentDate().addYears( -10 ) ); // 10 years ago is minimum for now
+    toEdit->setMinimumDate( QDateTime::fromTime_t( 1111320001 ).date() ); // That's the first week in last fm
     toEdit->setMaximumDate( QDate::currentDate() );
     toEdit->setCalendarPopup( true );
     if( m_range.to.isValid() )
@@ -163,7 +163,6 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
 
     connect( toEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ),
              this, SLOT( toDateChanged( const QDateTime& ) ) );
-
 
     return bw;
 }
@@ -198,7 +197,7 @@ Dynamic::WeeklyTopBias::trackMatches( int position,
             if( m_weeklyArtistMap.contains( lastWeekTime ) )
             {
                 artists.append( m_weeklyArtistMap.value( lastWeekTime ) );
-                debug() << "found already-saved data for week:" << lastWeekTime << m_weeklyArtistMap.value( lastWeekTime );
+                // debug() << "found already-saved data for week:" << lastWeekTime << m_weeklyArtistMap.value( lastWeekTime );
             }
             else
             {
@@ -241,7 +240,7 @@ Dynamic::WeeklyTopBias::newQuery()
             if( m_weeklyArtistMap.contains( lastWeekTime ) )
             {
                 artists.append( m_weeklyArtistMap.value( lastWeekTime ) );
-                debug() << "found already-saved data for week:" << lastWeekTime << m_weeklyArtistMap.value( lastWeekTime );
+                // debug() << "found already-saved data for week:" << lastWeekTime << m_weeklyArtistMap.value( lastWeekTime );
             }
             else
             {
@@ -265,7 +264,7 @@ Dynamic::WeeklyTopBias::newQuery()
     m_qm->beginOr();
     foreach( const QString &artist, artists )
     {
-        debug() << "adding artist to query:" << artist;
+        // debug() << "adding artist to query:" << artist;
         m_qm->addFilter( Meta::valArtist, artist, true, true );
     }
     m_qm->endAndOr();
@@ -433,62 +432,39 @@ Dynamic::WeeklyTopBias::weeklyTimesQueryFinished() // SLOT
         m_weeklyFromTimes.append( n.attributes().namedItem( "from" ).nodeValue().toUInt() );
         m_weeklyToTimes.append( n.attributes().namedItem( "to" ).nodeValue().toUInt() );
 
-        debug() << "weeklyTimesResult"<<i<<":"<<m_weeklyFromTimes.last()<<"to"<<m_weeklyToTimes.last();
+        // debug() << "weeklyTimesResult"<<i<<":"<<m_weeklyFromTimes.last()<<"to"<<m_weeklyToTimes.last();
         m_weeklyFromTimes.append( n.attributes().namedItem( "from" ).nodeValue().toUInt() );
         m_weeklyToTimes.append( n.attributes().namedItem( "to" ).nodeValue().toUInt() );
     }
-
-    /*
-       m_earliestDate = m_weeklyFromTimes.first();
-
-    debug() << "got earliest date:"  << QDateTime::fromTime_t( m_earliestDate ).toString();
-    if( m_fromEdit )
-        m_fromEdit->setMinimumDate( QDateTime::fromTime_t( m_earliestDate ).date() );
-    */
 
     m_weeklyTimesJob->deleteLater();
 
     newQuery(); // try again to get the tracks
 }
 
+
 void
 Dynamic::WeeklyTopBias::fromDateChanged( const QDateTime& d ) // SLOT
 {
+    if( d > m_range.to )
+        return;
+
     m_range.from = d;
     invalidate();
     emit changed( BiasPtr( this ) );
 }
 
+
 void
 Dynamic::WeeklyTopBias::toDateChanged( const QDateTime& d ) // SLOT
 {
+    if( d < m_range.from )
+        return;
+
     m_range.to = d;
     invalidate();
     emit changed( BiasPtr( this ) );
 }
-
-
-/*
-
-void
-Dynamic::WeeklyTopBias::update()
-{
-    DEBUG_BLOCK
-    
-    debug() << m_fromDate << m_toDate;
-    if( m_fromDate >= m_toDate )
-    {
-        debug() << "Chose date limits that don't make sense! do nothing!";
-        return;
-    } else if( m_fromDate < m_earliestDate )
-    {
-        debug() << "User doesn't have history that goes back this far! rounding!";
-        m_fromDate = m_earliestDate;
-    }
-
-    fetchWeeklyData( m_fromDate, m_toDate );
-}
-*/
 
 
 void

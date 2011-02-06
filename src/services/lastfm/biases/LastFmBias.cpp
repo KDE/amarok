@@ -45,7 +45,7 @@
 
 QString
 Dynamic::LastFmBiasFactory::i18nName() const
-{ return i18nc("Name of the \"LastFm\" bias", "LastFM similar artist"); }
+{ return i18nc("Name of the \"LastFm\" similar bias", "LastFM similar"); }
 
 QString
 Dynamic::LastFmBiasFactory::name() const
@@ -54,7 +54,7 @@ Dynamic::LastFmBiasFactory::name() const
 QString
 Dynamic::LastFmBiasFactory::i18nDescription() const
 { return i18nc("Description of the \"LastFm\" bias",
-                   "The \"LastFm\" bias looks up tracks on echo nest and only adds similar tracks."); }
+                   "The \"LastFm\" similar bias looks up tracks on LastFM and only adds similar tracks."); }
 
 Dynamic::BiasPtr
 Dynamic::LastFmBiasFactory::createBias()
@@ -73,6 +73,7 @@ Dynamic::LastFmBias::LastFmBias()
     , m_artistQuery( 0 )
     , m_trackQuery( 0 )
     , m_match( SimilarArtist )
+    , m_mutex( QMutex::Recursive )
 {
     loadFromFile();
 }
@@ -82,6 +83,7 @@ Dynamic::LastFmBias::LastFmBias( QXmlStreamReader *reader )
     , m_artistQuery( 0 )
     , m_trackQuery( 0 )
     , m_match( SimilarArtist )
+    , m_mutex( QMutex::Recursive )
 {
     loadFromFile();
     while (!reader->atEnd()) {
