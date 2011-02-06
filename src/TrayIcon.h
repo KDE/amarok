@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>                         *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
- * Copyright (c) 2009,2010 Kevin Funk <krf@electrostorm.net>                            *
+ * Copyright (c) 2009-2011 Kevin Funk <krf@electrostorm.net>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,10 +19,10 @@
 #ifndef AMAROK_TRAYICON_H
 #define AMAROK_TRAYICON_H
 
+#include <KStatusNotifierItem> // baseclass
+
 #include "core/meta/Meta.h"
 #include "core/support/SmartPointerList.h"
-
-#include <KStatusNotifierItem> // baseclass
 
 #include <QAction>
 #include <QWeakPointer>
@@ -35,8 +35,6 @@ class TrayIcon : public KStatusNotifierItem
 
 public:
     TrayIcon( QObject *parent );
-
-    void setVisible( bool visible );
 
 private slots:
     void updateOverlayIcon();

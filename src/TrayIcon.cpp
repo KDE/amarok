@@ -3,7 +3,7 @@
  * Copyright (c) 2003 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2004 Enrico Ros <eros.kde@email.it>                                    *
  * Copyright (c) 2006 Ian Monroe <ian@monroe.nu>                                        *
- * Copyright (c) 2009,2010 Kevin Funk <krf@electrostorm.net>                            *
+ * Copyright (c) 2009-2011 Kevin Funk <krf@electrostorm.net>                            *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -68,15 +68,12 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
 
     PERF_LOG( "Initializing system tray icon" );
 
-    EngineController* const engine = The::engineController();
-
     setIconByName( "amarok" );
     updateOverlayIcon();
     updateToolTipIcon();
     updateMenu();
 
-    m_track = engine->currentTrack();
-
+    const EngineController* engine = The::engineController();
     connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
              this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
     connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
@@ -100,7 +97,8 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
              this, SLOT( updateOverlayIcon() ) );
 
 
-    connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ), SLOT( slotScrollRequested(int, Qt::Orientation) ) );
+    connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ),
+             SLOT( slotScrollRequested(int, Qt::Orientation) ) );
     connect( this, SIGNAL( secondaryActivateRequested( const QPoint & ) ),
              The::engineController(), SLOT( playPause() ) );
 }
