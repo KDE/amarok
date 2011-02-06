@@ -73,9 +73,14 @@ Dynamic::PartBiasFactory::createBias( QXmlStreamReader *reader )
 class MatchState
 {
     public:
+        /** Creates the matching
+            @param ignoreTrack a track number that should be ignored for matching. -1 if no track should be ignored.
+        */
         MatchState( const Dynamic::PartBias *bias,
+                    int ignoreTrack,
                     const Meta::TrackList& playlist, int contextCount )
             : m_bias( bias )
+            , m_ignoreDrain( ignoreTrack - contextCount )
             , m_playlist( playlist )
             , m_contextCount( contextCount )
             , m_sourceCount( bias->weights().count() )
@@ -88,11 +93,18 @@ class MatchState
             , m_drainSource( m_drainCount )
         {
             QList<qreal> weights = m_bias->weights();
-            for( int source = m_sourceCount-1; source >= 0; --source )
+
+            int assignedDrainCount = 0;
+            for( int source = 0; source < m_sourceCount-1; source++ )
             {
                 m_sourceCapacity[source] = qRound( weights[source] * m_drainCount );
-        debug() << "MatchState: bias"<<m_bias->biases()[source]->name()<<"should match"<<m_sourceCapacity[source]<<"of"<< m_drainCount << "tracks.";
+                assignedDrainCount += m_sourceCapacity[source];
+                // debug() << "MatchState: bias"<<m_bias->biases()[source]->name()<<"should match"<<m_sourceCapacity[source]<<"of"<< m_drainCount << "tracks.";
             }
+
+            // the last bias get's all the rest
+            if( m_sourceCount > 0 )
+                m_sourceCapacity[m_sourceCount - 1] = m_drainCount - assignedDrainCount;
 
             compute();
         }
@@ -128,6 +140,8 @@ class MatchState
 
                 for( int drain = 0; drain < m_drainCount; drain++ )
                 {
+                    if( m_ignoreDrain == drain )
+                        continue;
                     if( !m_edges[ source * m_drainCount + drain ] )
                         continue;
 
@@ -149,6 +163,8 @@ class MatchState
 
                         for( int drain2 = m_drainCount-1; drain2 >= 0; --drain2 )
                         {
+                            if( m_ignoreDrain == drain2 )
+                                continue;
                             if( m_drainFlow[drain2] == 0 )
                                 continue;
                             if( !m_edgesUsed[ source2 * m_drainCount + drain ] )
@@ -185,6 +201,7 @@ class MatchState
 
 
         const Dynamic::PartBias* const m_bias;
+        int m_ignoreDrain;
         const Meta::TrackList& m_playlist;
         int m_contextCount;
 
@@ -220,15 +237,13 @@ Dynamic::PartBias::PartBias( QXmlStreamReader *reader )
 
     while (!reader->atEnd()) {
         reader->readNext();
-debug() << "PartBias" << reader->name() << reader->isStartElement();
 
         if( reader->isStartElement() )
         {
+            float weight = reader->attributes().value( "weight" ).toString().toFloat();
             Dynamic::BiasPtr bias( Dynamic::BiasFactory::fromXml( reader ) );
             if( bias )
             {
-                float weight = reader->attributes().value( "weight" ).toString().toFloat();
-                debug()<<"weight for"<<bias->name()<<"is"<<reader->attributes().value( "weight" ).toString();
                 appendBias( bias );
                 m_weights[ m_weights.count() - 1 ] = weight;
             }
@@ -292,20 +307,9 @@ Dynamic::PartBias::matchingTracks( int position,
                                   Dynamic::TrackCollectionPtr universe ) const
 {
     // -- determine the current matching
-    MatchState state( this, playlist, contextCount );
+    MatchState state( this, position, playlist, contextCount );
 
-    // - remove the current matching for the position
-    int drain = position - contextCount;
-    if( drain < state.m_drainCount && state.m_drainFlow[drain] > 0 )
-    {
-        int source = state.m_drainSource[drain];
-
-        state.m_sourceFlow[source]--;
-        state.m_drainFlow[drain]--;
-        state.m_edgesUsed[ source * state.m_drainCount + drain ] = false;
-    }
-
-    // -- find all biases that is not fulfilled
+    // -- find all biases that are not fulfilled
     m_tracks = Dynamic::TrackSet( universe, false );
     m_outstandingMatches = 0;
 
@@ -340,7 +344,7 @@ Dynamic::PartBias::trackMatches( int position,
                                  const Meta::TrackList& playlist,
                                  int contextCount ) const
 {
-    MatchState state( this, playlist, contextCount );
+    MatchState state( this, -1, playlist, contextCount );
 
     return ( state.m_drainFlow[position - contextCount] >= 0 );
 }
@@ -348,7 +352,7 @@ Dynamic::PartBias::trackMatches( int position,
 double
 Dynamic::PartBias::energy( const Meta::TrackList& playlist, int contextCount ) const
 {
-    MatchState state( this, playlist, contextCount );
+    MatchState state( this, -1, playlist, contextCount );
 
     int matchCount = 0;
     for( int i = 0; i < state.m_drainCount; i++ )

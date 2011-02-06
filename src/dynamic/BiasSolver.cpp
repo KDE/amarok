@@ -114,12 +114,12 @@ namespace Dynamic
 
 
 Dynamic::BiasSolver::BiasSolver( int n, Dynamic::BiasPtr bias, Meta::TrackList context )
-    : m_n(n)
-    , m_bias(bias)
-    , m_context(context)
-    , m_abortRequested(false)
+    : m_n( n )
+    , m_bias( bias )
+    , m_context( context )
+    , m_abortRequested( false )
 {
-    debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId();
+    debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId() << "to get"<<n<<"tracks with"<<context.count()<<"context";
     getTrackCollection();
 
     connect( m_bias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
@@ -201,7 +201,15 @@ void Dynamic::BiasSolver::run()
     debug() << "after simple optimize playlist with"<<playlist.energy();
     if( playlist.energy() > epsilon() && !m_abortRequested ) // the playlist is only slightly wrong
     {
-        annealingOptimize( &playlist, SA_ITERATION_LIMIT, true );
+       // debug...
+       for( int i = m_context.count();
+            i < playlist.m_contextCount + m_n && i < playlist.m_trackList.count(); i++ )
+       {
+           if( !m_bias->trackMatches( i, playlist.m_trackList, playlist.m_contextCount ) )
+               debug() << "track" << playlist.m_trackList[i]->name() << "does not match";
+       }
+
+       annealingOptimize( &playlist, SA_ITERATION_LIMIT, true );
     }
 
     m_solution = playlist.m_trackList.mid( m_context.count() );
@@ -215,8 +223,8 @@ Dynamic::BiasSolver::simpleOptimize( SolverList *list )
 
     // TODO: don't optimize the tracks in order
     TrackSet universeSet( m_trackCollection, true );
-    for( int i = m_context.count();
-         i < m_context.count() + m_n && i < list->m_trackList.count(); i++ )
+    for( int i = list->m_contextCount;
+         i < list->m_contextCount + m_n && i < list->m_trackList.count(); i++ )
     {
         TrackSet set = matchingTracks( i, list->m_trackList );
         Meta::TrackPtr newTrack = getRandomTrack( set );

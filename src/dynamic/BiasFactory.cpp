@@ -32,6 +32,8 @@
 #include <QList>
 #include <QXmlStreamReader>
 
+#include <QLabel>
+#include <QFormLayout>
 
 class RandomBiasFactory : public Dynamic::AbstractBiasFactory
 {
@@ -213,7 +215,12 @@ Dynamic::ReplacementBias::name() const
 QWidget*
 Dynamic::ReplacementBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+    PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+
+    QLabel *label = new QLabel( m_name );
+    bw->formLayout()->addRow( i18n( "Replacement for:" ), label );
+
+    return bw;
 }
 
 void
@@ -233,7 +240,6 @@ Dynamic::ReplacementBias::factoryChanged()
 
             Dynamic::BiasPtr newBias( factory->createBias( &reader ) );
             replace( newBias );
-            this->deleteLater();
             return;
         }
     }

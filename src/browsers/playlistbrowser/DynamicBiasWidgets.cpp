@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
- * Copyright (c) 2010-2011 Ralf Engels <ralf-engels@gmx.de>                             *
+ * Copyright (c) 2010,2011 Ralf Engels <ralf-engels@gmx.de>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -58,6 +58,10 @@ PlaylistBrowserNS::BiasBoxWidget::BiasBoxWidget( Dynamic::BiasPtr bias, QWidget*
     setAutoFillBackground( true );
 
     m_mainLayout = new QHBoxLayout( this );
+    QMargins margins = m_mainLayout->contentsMargins();
+    margins.setLeft( 0 );
+    margins.setRight( 0 );
+    m_mainLayout->setContentsMargins( margins );
 
     // add a remove button if the bias is not in the first level.
     if( qobject_cast<BiasWidget*>(parentWidget()) )
@@ -140,23 +144,10 @@ PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent *event )
     else
         option.state &= ~QStyle::State_MouseOver;
 
-    /*
-    QPalette::ColorGroup cg;
-    if ((itemModel->flags(*it) & Qt::ItemIsEnabled) == 0) {
-        option.state &= ~QStyle::State_Enabled;
-        cg = QPalette::Disabled;
-    } else {
-        cg = QPalette::Normal;
-    }
-    option.palette.setCurrentColorGroup(cg);
-    */
-
     style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, &painter, this );
-
 
     // -- paint the fancy splitter line between the items just as the PrettyItemDelegate does
     painter.setRenderHint( QPainter::Antialiasing, true );
-    // body = The::svgHandler()->renderSvgWithDividers( "body", width(), height(), "body" );
     painter.drawPixmap( 0, 0,
                         The::svgHandler()->renderSvgWithDividers( "track", width(), height(), "track" ) );
 
@@ -214,15 +205,21 @@ PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::BiasPtr b, QWidget* parent )
     , m_customWidget( 0 )
 {
     m_layout = new QFormLayout();
-    m_layout->setVerticalSpacing( 0 );
+    // m_layout->setVerticalSpacing( 0 );
     m_layout->setFormAlignment( Qt::AlignLeft | Qt::AlignTop ); // so that all biases are left aligned
+
+    QMargins margins = m_layout->contentsMargins();
+    margins.setLeft( 0 );
+    margins.setRight( 0 );
+    m_layout->setContentsMargins( margins );
+
     // m_layout->setFieldGrowthPolicy( QFormLayout::AllNonFixedFieldsGrow );
 
     // connect( m_cbias, SIGNAL( biasChanged( Dynamic::Bias* ) ), this, SIGNAL( biasChanged( Dynamic::Bias* ) ) );
     m_biasSelection = new KComboBox( this );
     factoriesChanged();
 
-    m_layout->addRow( i18n( "Match Type:" ), m_biasSelection );
+    m_layout->addRow( i18nc("Bias selection label in bias view. Try to keep below 15 characters or abbreviate", "Match Type:" ), m_biasSelection );
 
     connect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
              this, SLOT( factoriesChanged() ) );
@@ -287,26 +284,34 @@ PlaylistBrowserNS::BiasWidget::selectionChanged( int index )
     Q_ASSERT( m_biasSelection );
 
     QString biasName = m_biasSelection->itemData( index ).toString();
-    Dynamic::BiasPtr bias( Dynamic::BiasFactory::fromName( biasName ) );
-    if( !bias )
+
+    Dynamic::BiasPtr oldBias( m_bias );
+    Dynamic::BiasPtr newBias( Dynamic::BiasFactory::fromName( biasName ) );
+    if( !newBias )
     {
         warning() << "Could not create bias with name:"<<biasName;
         return;
     }
 
-    // -- if the old and the new bias are AndBias, try to rescue some of the sub-biases
-    Dynamic::AndBias *oldBias = qobject_cast<Dynamic::AndBias*>(m_bias.data());
-    Dynamic::AndBias *newBias = qobject_cast<Dynamic::AndBias*>(bias.data());
-    if( oldBias && newBias ) {
-        for( int i = 0; i < oldBias->biases().count(); i++ )
+    m_bias->replace( newBias ); // tell the old bias it has just been replaced
+
+    // -- if the new bias is AndBias, try to add the old biase(s) into it
+    Dynamic::AndBias *oldABias = qobject_cast<Dynamic::AndBias*>(oldBias.data());
+    Dynamic::AndBias *newABias = qobject_cast<Dynamic::AndBias*>(newBias.data());
+    if( newABias ) {
+        if( oldABias ) {
+            for( int i = 0; i < oldABias->biases().count(); i++ )
+            {
+                // skip the default random bias of the PartBias
+                if( i > 0 || !qobject_cast<Dynamic::PartBias*>(oldABias) )
+                    newABias->appendBias( oldABias->biases()[i] );
+            }
+        }
+        else
         {
-            // skip the default random bias of the PartBias
-            if( i > 0 || !qobject_cast<Dynamic::PartBias*>(oldBias) )
-                newBias->appendBias( oldBias->biases()[i] );
+            newABias->appendBias( oldBias );
         }
     }
-
-    m_bias->replace( bias ); // tell the old bias it has just been replaced
 }
 
 // -------- LevelBiasWidget -----------
@@ -337,10 +342,15 @@ PlaylistBrowserNS::LevelBiasWidget::LevelBiasWidget( Dynamic::AndBias* bias,
                  this, SLOT( biasWeightsChanged() ) );
     }
 
+    QMargins margins = contentsMargins();
+    margins.setLeft( 0 ); // margin to the left of the add/remove buttons
+    margins.setRight( 0 );
+    setContentsMargins( margins );
+
     // -- add an add button to add new widgets
     QHBoxLayout* buttonLayout = new QHBoxLayout();
 
-    buttonLayout->addSpacing( style()->pixelMetric( QStyle::PM_LayoutLeftMargin ) );
+    // buttonLayout->addSpacing( style()->pixelMetric( QStyle::PM_LayoutLeftMargin ) );
 
     m_addButton = new QToolButton( this );
     m_addButton->setIcon( KIcon( "list-add-amarok" ) );
@@ -382,8 +392,11 @@ PlaylistBrowserNS::LevelBiasWidget::biasAppended( Dynamic::BiasPtr bias )
     if( m_haveWeights )
     {
         slider = new Amarok::Slider( Qt::Horizontal, 100, this );
+
         if( Dynamic::PartBias *pb = qobject_cast<Dynamic::PartBias*>(m_bias.data()) )
-            slider->setValue( pb->weights().last() * 100.0 );
+        {
+            slider->setValue( pb->weights()[ pb->biases().indexOf( bias ) ] * 100.0 );
+        }
 
         slider->setToolTip( i18n( "This controls what portion of the playlist should match the criteria" ) );
 
@@ -487,7 +500,7 @@ PlaylistBrowserNS::TagMatchBiasWidget::TagMatchBiasWidget( Dynamic::TagMatchBias
     m_queryWidget = new MetaQueryWidget( this );
     m_queryWidget->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
                                                QSizePolicy::Preferred ) );
-    m_layout->addRow( i18n( "Match:" ), m_queryWidget );
+    m_layout->addRow( i18nc("Tag Match Bias selection label in bias view. Try to keep below 15 characters or abbreviate", "Match:" ), m_queryWidget );
 
     syncControlsToBias();
 

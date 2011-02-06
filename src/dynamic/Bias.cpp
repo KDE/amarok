@@ -219,8 +219,8 @@ Dynamic::UniqueBias::trackMatches( int position,
 {
     Q_UNUSED( contextCount );
 
-    for( int j = 0; j < position; j++ )
-        if( playlist.at(position) == playlist.at(j) )
+    for( int i = 0; i < position; i++ )
+        if( playlist.at(position) == playlist.at(i) )
             return false;
     return true;
 }
@@ -242,7 +242,6 @@ Dynamic::AndBias::AndBias( QXmlStreamReader *reader )
 {
     while (!reader->atEnd()) {
         reader->readNext();
-debug() << "AndBias" << reader->name() << reader->isStartElement();
 
         if( reader->isStartElement() )
         {
@@ -318,13 +317,13 @@ debug() << "universe:" << universe.data();
         else
             m_tracks.intersect( tracks );
 
-    debug() << "AndBias::matchingTracks" << bias->name() << "tracks:"<<tracks.trackCount() << "outstanding?" << tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
+        //    debug() << "AndBias::matchingTracks" << bias->name() << "tracks:"<<tracks.trackCount() << "outstanding?" << tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
 
         if( m_tracks.isEmpty() )
             break;
     }
 
-    debug() << "AndBias::matchingTracks end: tracks:"<<m_tracks.trackCount() << "outstanding?" << m_tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
+    // debug() << "AndBias::matchingTracks end: tracks:"<<m_tracks.trackCount() << "outstanding?" << m_tracks.isOutstanding() << "numOUt:" << m_outstandingMatches;
 
     if( m_outstandingMatches > 0 )
         return Dynamic::TrackSet();
@@ -390,7 +389,7 @@ Dynamic::AndBias::resultReceived( const Dynamic::TrackSet &tracks )
 {
     m_tracks.intersect( tracks );
     --m_outstandingMatches;
-    debug() << "AndBias::resultReceived" << m_outstandingMatches << "tr" << m_tracks.trackCount();
+    // debug() << "AndBias::resultReceived" << m_outstandingMatches << "tr" << m_tracks.trackCount();
 
     if( m_outstandingMatches < 0 )
         warning() << "Received more results than expected.";
@@ -427,7 +426,8 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
         emit biasRemoved( index );
     }
 
-    if( !m_duringConstruction )
+    if( !m_duringConstruction &&
+        !qobject_cast<Dynamic::ReplacementBias*>(oldBias.data()) )
         emit changed( BiasPtr( this ) );
 }
 
