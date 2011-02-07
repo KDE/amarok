@@ -74,11 +74,8 @@ def amarok_2
     hash = Hash.new
     metadata = metadata.split("\n")
     metadata.each do |line|
-      key = line.split(": ")[0]
-      value = line.split(": ")[1]
-      if value.nil?
-        value = ""
-      end
+      key = line.partition(":")[0] # head
+      value = line.partition(":")[2].lstrip() # tail
       hash[key] = value 
     end
 
@@ -141,5 +138,3 @@ if $?.success?
 end
 
 exit( 1 ) # Abort if Amarok isn't running
-
-
