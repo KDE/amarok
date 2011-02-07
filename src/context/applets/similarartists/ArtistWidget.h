@@ -111,7 +111,6 @@ private:
     void fetchPhoto();       //!< Fetch the photo of the artist
     void fetchInfo();        //!< Fetch the artist info
     void fetchTopTrack();    //!< Fetch the artist'stop track
-    void queryArtist();      //!< Query collection about artist
 
     /**
      * Set the artist bio summary
@@ -263,7 +262,6 @@ private slots:
     /**
      * Get results from the query maker
      */
-    void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
     void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
 
     void updateInfo();

@@ -128,7 +128,6 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_navigateButton->setMaximumSize( QSizeF( 22, 22 ) );
     m_navigateButton->setIcon( KIcon( "edit-find" ) );
     m_navigateButton->setToolTip( i18n( "Show in Media Sources" ) );
-    m_navigateButton->hide();
     connect( m_navigateButton, SIGNAL(clicked()), this, SLOT(navigateToArtist()) );
     
     m_lastfmStationButton = new Plasma::PushButton( this );
@@ -191,7 +190,6 @@ ArtistWidget::updateInfo()
     fetchPhoto();
     fetchInfo();
     fetchTopTrack();
-    queryArtist();
 }
 
 ArtistWidget::~ArtistWidget()
@@ -396,26 +394,6 @@ ArtistWidget::parseTopTrack( const KUrl &url, QByteArray data, NetworkAccessMana
     setTopTrack( topTrack );
 }
 
-void
-ArtistWidget::queryArtist()
-{
-    // Figure out of this applet is present in the local collection,
-    // and show the "show in collection" button if so
-    m_navigateButton->hide();
-
-    Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
-    
-    qm->setQueryType( Collections::QueryMaker::Artist );
-    qm->addFilter( Meta::valArtist, m_nameLabel->text() );
-    qm->limitMaxResultSize( 1 );
-    qm->setAutoDelete( true );
-
-    connect( qm, SIGNAL(newResultReady(QString,Meta::ArtistList)),
-             SLOT(resultReady(QString,Meta::ArtistList)) );
-
-    qm->run();
-}
-
 SimilarArtistPtr
 ArtistWidget::artist() const
 {
@@ -601,14 +579,6 @@ ArtistWidget::addLastfmArtistStation()
     The::playlistController()->insertOptioned( lastfmtrack, Playlist::AppendAndPlay );
 }
 
-void
-ArtistWidget::resultReady( const QString &collectionId, const Meta::ArtistList &artists )
-{
-    Q_UNUSED( collectionId )
-    if( artists.length() > 0 )
-        m_navigateButton->show();
-}
-
 ArtistsListWidget::ArtistsListWidget( QGraphicsWidget *parent )
     : Plasma::ScrollWidget( parent )
     , m_separatorCount( 0 )
@@ -730,7 +700,6 @@ ArtistWidget::resultReady( const QString &collectionId, const Meta::TrackList &t
     if( !tracks.isEmpty() )
     {
         m_topTrack = tracks.first();
-        m_navigateButton->show();
         m_topTrackButton->show();
     }
 }
