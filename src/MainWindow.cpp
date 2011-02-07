@@ -107,7 +107,6 @@
 
 #define AMAROK_CAPTION I18N_NOOP( "Amarok" )
 
-extern KAboutData aboutData;
 extern OcsData ocsData;
 
 QWeakPointer<MainWindow> MainWindow::s_instance;
@@ -1123,7 +1122,7 @@ MainWindow::slotShowMenuBar()
 void
 MainWindow::showAbout()
 {
-    ExtendedAboutDialog dialog( &aboutData, &ocsData );
+    ExtendedAboutDialog dialog( KGlobal::mainComponent().aboutData(), &ocsData );
     dialog.exec();
 }
 

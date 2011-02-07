@@ -75,7 +75,7 @@
 #include <KIO/CopyJob>
 #include <KJob>
 #include <KJobUiDelegate>
-#include <KLocale>
+#include <KLocalizedString>
 #include <KMessageBox>
 #include <KShortcutsDialog>              //slotConfigShortcuts()
 #include <KStandardDirs>
@@ -108,14 +108,6 @@ extern void setupEventHandler_mac(long);
 #endif // DEBUG
 
 QStringList App::s_delayedAmarokUrls = QStringList();
-
-AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
-    ki18n( "Amarok" ), AMAROK_VERSION,
-    ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
-    ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2011, The Amarok Development Squad" ),
-    ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
-             ( "http://amarok.kde.org" ) );
-
 AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App()
@@ -425,14 +417,6 @@ App::handleCliArgs() //static
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
-
-void
-App::initCliArgs( int argc, char *argv[] )
-{
-    KCmdLineArgs::reset();
-    KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
-    initCliArgs();
-}
 
 void
 App::initCliArgs() //static

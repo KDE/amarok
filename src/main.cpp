@@ -33,11 +33,16 @@
 
 //#define AMAROK_USE_DRKONQI
 
-extern AMAROK_EXPORT class KAboutData aboutData; //defined in App.cpp
-extern AMAROK_EXPORT class OcsData ocsData;
-
 int main( int argc, char *argv[] )
 {
+    KAboutData aboutData(
+        "amarok", 0,
+        ki18n( "Amarok" ), AMAROK_VERSION,
+        ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
+        ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2011, The Amarok Development Squad" ),
+        ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
+        ( "http://amarok.kde.org" ) );
+
     //Authors
     aboutData.addAuthor( ki18n("Alejandro Wainzinger"),
             ki18n("Developer (xevix)"), "aikawarazuni@gmail.com", "http://awainzin-foss.blogspot.com" );
@@ -64,6 +69,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( ki18n("Téo Mrnjavac"),
             ki18n("Developer (Teo`)"), "teo@kde.org", "http://teom.wordpress.com/" );
 
+    extern OcsData ocsData;
     ocsData.addAuthor( "xevix", aboutData.authors().at( 0 ) );
     ocsData.addAuthor( "Stecchino", aboutData.authors().at( 1 ) );
     ocsData.addAuthor( QString(), aboutData.authors().at( 2 ) );
@@ -234,7 +240,7 @@ int main( int argc, char *argv[] )
     //Last update: 11/1/2010
 
     KCmdLineArgs::reset();
-    KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
+    KCmdLineArgs::init( argc, argv, &aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
 
     App::initCliArgs();
     KUniqueApplication::addCmdLineOptions();
