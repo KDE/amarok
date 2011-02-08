@@ -79,6 +79,27 @@ public:
         p->restore();
     }
 
+    void setScrollingText( const QString &str )
+    {
+        if( text != str )
+        {
+            doc.setHtml( str );
+            text = doc.toPlainText();
+            doc.clear();
+        }
+    }
+
+    void setText( const QString &str )
+    {
+        doc.setHtml( str );
+        text = doc.toPlainText();
+        textItem->setText( text );
+        if( animation )
+            animation.data()->stop();
+        doc.clear();
+
+    }
+
     qreal             width;          // box width
     qreal             delta;          // complete delta
     qreal             currentDelta;   // current delta
@@ -88,6 +109,7 @@ public:
     Plasma::FrameSvg *textBackground; // background svg for text
     QWeakPointer<QPropertyAnimation> animation; // scroll animation
     QGraphicsSimpleTextItem *textItem;
+    QTextDocument doc;
 
 private:
     TextScrollingWidget *const q_ptr;
@@ -119,12 +141,7 @@ void
 TextScrollingWidget::setScrollingText( const QString &text )
 {
     Q_D( TextScrollingWidget );
-    if( d->text != text )
-    {
-        QTextDocument doc;
-        doc.setHtml( text );
-        d->text = doc.toPlainText();
-    }
+    d->setScrollingText( text );
     updateGeometry();
 }
 
@@ -132,12 +149,7 @@ void
 TextScrollingWidget::setText( const QString &text )
 {
     Q_D( TextScrollingWidget );
-    QTextDocument doc;
-    doc.setHtml( text );
-    d->text = doc.toPlainText();
-    d->textItem->setText( d->text );
-    if( d->animation )
-        d->animation.data()->stop();
+    d->setText( text );
 }
 
 void
