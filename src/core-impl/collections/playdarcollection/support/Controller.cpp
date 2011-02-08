@@ -20,8 +20,8 @@
 
 #include "Query.h"
 #include "core/support/Debug.h"
-#include "external/JsonQt/lib/JsonToVariant.h"
-#include "external/JsonQt/lib/ParseException.h"
+
+#include <qjson/parser.h>
 
 #include <KUrl>
 #include <KIO/Job>
@@ -131,20 +131,15 @@ namespace Playdar {
         
         debug() << "Processing received JSON data...";
         KIO::StoredTransferJob* storedStatusJob = static_cast<KIO::StoredTransferJob*>( statusJob );
-        QString statusJsonData = storedStatusJob->data();
-        debug() << "Data received: " << statusJsonData;
         
         QVariant parsedStatusVariant;
-        try
+        
+        QJson::Parser parser;
+        bool ok;
+        parsedStatusVariant = parser.parse( storedStatusJob->data(),&ok );
+        if ( !ok )
         {
-            parsedStatusVariant = JsonQt::JsonToVariant::parse( statusJsonData );
-        }
-        catch( JsonQt::ParseException exception )
-        {
-            debug() << "JSonQt Exception: "
-                    << "got: " << exception.got()
-                    << ", expected: " << exception.expected()
-                    << ", remaining: " << exception.remaining();
+            debug() << "Error parsing JSON Data";
         }
         QVariantMap parsedStatus = parsedStatusVariant.toMap();
         
@@ -180,20 +175,14 @@ namespace Playdar {
         debug() << "Processing received JSON data...";
         KIO::StoredTransferJob* storedQueryJob =
             static_cast<KIO::StoredTransferJob*>( queryJob );
-        QString queryJsonData = storedQueryJob->data();
-        debug() << "Data received: " << queryJsonData;
         
         QVariant parsedQueryVariant;
-        try
+        QJson::Parser parser;
+        bool ok;
+        parsedQueryVariant = parser.parse( storedQueryJob->data(),&ok );
+        if ( !ok )
         {
-            parsedQueryVariant = JsonQt::JsonToVariant::parse( queryJsonData );
-        }
-        catch( JsonQt::ParseException exception )
-        {
-            debug() << "JSonQt Exception: "
-            << "got: " << exception.got()
-            << ", expected: " << exception.expected()
-            << ", remaining: " << exception.remaining();
+            debug() << "Error parsing JSON Data";
         }
         
         QVariantMap parsedQuery = parsedQueryVariant.toMap();
