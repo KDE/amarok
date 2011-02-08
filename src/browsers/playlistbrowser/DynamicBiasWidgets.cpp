@@ -311,6 +311,8 @@ PlaylistBrowserNS::BiasWidget::selectionChanged( int index )
         {
             newABias->appendBias( oldBias );
         }
+        // TODO: the and bias automatically adds a random bias that should be removed.
+        //       the part bias adds a random bias that should not be removed.
     }
 }
 

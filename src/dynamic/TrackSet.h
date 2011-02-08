@@ -94,8 +94,14 @@ namespace Dynamic
              */
             int trackCount() const;
 
+            /** True if none of the tracks are included in the set. */
             bool isEmpty() const;
+
+            /** True if all of the tracks are included in the set. */
             bool isFull() const;
+
+            /** Returns true if the uid is included in the set */
+            bool contains( const QString& uid ) const;
 
             /** Returns the uids of a random track contains in this set */
             QString getRandomTrack() const;

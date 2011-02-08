@@ -64,13 +64,26 @@ Dynamic::TrackSet::trackCount() const
 bool
 Dynamic::TrackSet::isEmpty() const
 {
-    return m_bits.isEmpty();
+    return m_bits.count(false) == m_bits.count();
 }
 
 bool
 Dynamic::TrackSet::isFull() const
 {
     return m_bits.count(true) == m_bits.count();
+}
+
+bool
+Dynamic::TrackSet::contains( const QString &uid ) const
+{
+    if( !m_collection )
+        return false;
+
+    if( !m_collection->m_ids.contains( uid ) )
+        return false;
+
+    int index = m_collection->m_ids.value( uid );
+    return m_bits.at( index );
 }
 
 QString

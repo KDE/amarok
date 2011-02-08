@@ -51,4 +51,13 @@ set( dynamicmodel_SRCS
 kde4_add_unit_test( testdynamicmodel TESTNAME testdynamicmodel ${dynamicmodel_SRCS} )
 link_database_test( testdynamicmodel )
 
+#------------------------------- TrackSet Test -------------------------------
+
+set( trackset_SRCS
+        TestTrackSet.cpp
+    )
+
+kde4_add_unit_test( testtrackset TESTNAME testtrackset ${trackset_SRCS} )
+link_database_test( testtrackset )
+
 
