@@ -70,6 +70,8 @@ namespace Dynamic
         private:
             void startSolver( bool withStatusBar = false );
             void handleRequest();
+
+            /** Returns all the tracks that will come before the newly generated ones. */
             Meta::TrackList getContext();
 
             Meta::TrackList m_buffer;

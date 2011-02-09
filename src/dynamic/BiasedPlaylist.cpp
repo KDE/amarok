@@ -277,14 +277,7 @@ Dynamic::BiasedPlaylist::solverFinished()
 Meta::TrackList
 Dynamic::BiasedPlaylist::getContext()
 {
-    Meta::TrackList context;
-
-    int i = qMax( 0, The::playlist()->activeRow() );
-
-    for( ; i < The::playlist()->qaim()->rowCount(); ++i )
-    {
-        context.append( The::playlist()->trackAt(i) );
-    }
+    Meta::TrackList context = The::playlist()->tracks();
 
     {
         QMutexLocker locker(&m_bufferMutex);
