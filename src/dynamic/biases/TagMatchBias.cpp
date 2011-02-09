@@ -326,7 +326,7 @@ Dynamic::TagMatchBias::matches( const Meta::TrackPtr &track ) const
     case MetaQueryWidget::OlderThan:
         return value.toLongLong() < m_filter.numValue + QDateTime::currentDateTime().toTime_t();
     case MetaQueryWidget::Contains:
-        return m_filter.value.contains( value.toString(), Qt::CaseInsensitive );
+        return value.toString().contains( m_filter.value, Qt::CaseInsensitive );
     default:
         ;// the other conditions are only for the advanced playlist generator
     }
