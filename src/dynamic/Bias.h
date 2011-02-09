@@ -280,9 +280,6 @@ namespace Dynamic
             static QString sName();
             virtual QString name() const;
 
-            // virtual QWidget* widget( QStandardItem* item, QWidget* parent = 0 );
-
-            /** Returns the tracks that would fit at the indicated position */
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
                                              const TrackCollectionPtr universe ) const;
@@ -310,9 +307,6 @@ namespace Dynamic
             static QString sName();
             virtual QString name() const;
 
-            // virtual QWidget* widget( QStandardItem* item, QWidget* parent = 0 );
-
-            /** Returns the tracks that would fit at the indicated position */
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
                                              const TrackCollectionPtr universe ) const;
@@ -329,12 +323,6 @@ namespace Dynamic
         private:
             Q_DISABLE_COPY(NotBias)
     };
-
-
-    /*
-       Other biases that we might want to do:
-       QuizPlayBias (last chacter of song title is first character of new song title)
-    */
 
 }
 

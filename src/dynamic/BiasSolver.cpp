@@ -175,7 +175,7 @@ void Dynamic::BiasSolver::run()
             debug() << "waiting for colleciton results";
             m_collectionResultsReady.wait( &m_collectionResultsMutex );
         }
-        debug() << "colleciton has" << m_trackCollection->count()<<"uids";
+        debug() << "collection has" << m_trackCollection->count()<<"uids";
     }
 
     /*
@@ -197,23 +197,18 @@ void Dynamic::BiasSolver::run()
     debug() << "generating playlist";
     SolverList playlist = generateInitialPlaylist();
     debug() << "got playlist with"<<playlist.energy();
+
+    // actually for now the simple optimize finds a perfect solution in many cases
     simpleOptimize( &playlist );
     debug() << "after simple optimize playlist with"<<playlist.energy();
+
     if( playlist.energy() > epsilon() && !m_abortRequested ) // the playlist is only slightly wrong
     {
-       // debug...
-       for( int i = m_context.count();
-            i < playlist.m_contextCount + m_n && i < playlist.m_trackList.count(); i++ )
-       {
-           if( !m_bias->trackMatches( i, playlist.m_trackList, playlist.m_contextCount ) )
-               debug() << "track" << playlist.m_trackList[i]->name() << "does not match";
-       }
-
-       annealingOptimize( &playlist, SA_ITERATION_LIMIT, true );
+        annealingOptimize( &playlist, SA_ITERATION_LIMIT, true );
     }
+    debug() << "Found solution with energy"<<playlist.energy();
 
     m_solution = playlist.m_trackList.mid( m_context.count() );
-    debug() << "Found solution with energy"<<playlist.energy();
 }
 
 void
@@ -221,10 +216,22 @@ Dynamic::BiasSolver::simpleOptimize( SolverList *list )
 {
     DEBUG_BLOCK;
 
-    // TODO: don't optimize the tracks in order
-    TrackSet universeSet( m_trackCollection, true );
-    for( int i = list->m_contextCount;
-         i < list->m_contextCount + m_n && i < list->m_trackList.count(); i++ )
+    // first set some random tracks
+    // this prevents the part bias from first fullfilling the easy conditions
+    for( int i = 0; i < m_n / 2; i++ )
+    {
+        // choose the mutation position
+        int newPos = (KRandom::random() % (list->m_trackList.count() - list->m_contextCount))
+            + list->m_contextCount;
+
+        TrackSet set = matchingTracks( newPos, list->m_trackList );
+        Meta::TrackPtr newTrack = getRandomTrack( set );
+        if( newTrack )
+            list->setTrack( newPos, newTrack );
+    }
+
+    // now go through the complete list again and try to fullfill all
+    for( int i = list->m_contextCount; i < list->m_trackList.count(); i++ )
     {
         TrackSet set = matchingTracks( i, list->m_trackList );
         Meta::TrackPtr newTrack = getRandomTrack( set );
