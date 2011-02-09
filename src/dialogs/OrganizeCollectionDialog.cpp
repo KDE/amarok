@@ -284,6 +284,7 @@ void
 OrganizeCollectionDialog::init()
 {
     populateFormatList();
+    slotUpdatePreview();
 }
 
 void OrganizeCollectionDialog::populateFormatList()
