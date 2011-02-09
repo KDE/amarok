@@ -83,10 +83,10 @@ ID3v2TagHelper::tags() const
                 if( identifier.isEmpty() )
                     continue;
 
-                if( frame->owner() == uidFieldName( UIDMusicBrainz ) && isValidUID( identifier, UIDMusicBrainz ) )
-                    data.insert( Meta::valUniqueId, identifier.prepend( "mb-" ) );
-                else if( frame->owner() == uidFieldName( UIDAFT ) && isValidUID( identifier, UIDAFT ) )
+                if( frame->owner() == uidFieldName( UIDAFT ) && isValidUID( identifier, UIDAFT ) )
                     data.insert( Meta::valUniqueId, identifier );
+                else if( frame->owner() == uidFieldName( UIDMusicBrainz ) && isValidUID( identifier, UIDMusicBrainz ) )
+                    data.insert( Meta::valUniqueId, identifier.prepend( "mb-" ) );
                 continue;
             }
             else if( field == Meta::valHasCover )
