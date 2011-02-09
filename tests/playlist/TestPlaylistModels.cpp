@@ -88,14 +88,20 @@ void TestPlaylistModels::initTestCase()
     metaMock->m_artist = new MockArtist( "Grumpy Grizzlies" );
     metaMock->m_album = new MockAlbum( "Nice Long Nap" );
     tracks << Meta::TrackPtr( metaMock );
-    
+
     QVariantMap map6;
-    map6.insert( Meta::Field::TITLE,  QString( "1 song to rule them all" ) );  
+    map6.insert( Meta::Field::TITLE,  QString( "1 song to rule them all" ) );
     metaMock = new MetaMock( map6 );
     metaMock->m_artist = new MockArtist( "Bonzai Bees" );
     metaMock->m_album = new MockAlbum( "Pretty Flowers" );
     tracks << Meta::TrackPtr( metaMock );
-      
+
+    QVariantMap map7;
+    map7.insert( Meta::Field::TITLE,  QString( "zz ambience sound" ) );
+    metaMock = new MetaMock( map7 );
+    // note: no artist, no album!
+    tracks << Meta::TrackPtr( metaMock );
+
     InsertCmdList insertCmds;
     int row = 0;
     foreach( Meta::TrackPtr t, tracks )
@@ -152,32 +158,35 @@ void TestPlaylistModels::testSorting()
     
     ModelStack::instance()->sortProxy()->updateSortMap( scheme2 );
     topModel->qaim()->revert();
-    
-    QCOMPARE( topModel->trackAt( 0 )->prettyName(), QString( "1 song to rule them all" ) );
-    QCOMPARE( topModel->trackAt( 1 )->prettyName(), QString( "Alphabet soup" ) );
-    QCOMPARE( topModel->trackAt( 2 )->prettyName(), QString( "Cool as honey" ) );
-    QCOMPARE( topModel->trackAt( 3 )->prettyName(), QString( "xTreme buzzing sound" ) );
-    QCOMPARE( topModel->trackAt( 4 )->prettyName(), QString( "23 hours is not enough" ) );
-    QCOMPARE( topModel->trackAt( 5 )->prettyName(), QString( "Zlick" ) );
-    
+
+    // the one without artist or album comes first
+    QCOMPARE( topModel->trackAt( 0 )->prettyName(), QString( "zz ambience sound" ) );
+    QCOMPARE( topModel->trackAt( 1 )->prettyName(), QString( "1 song to rule them all" ) );
+    QCOMPARE( topModel->trackAt( 2 )->prettyName(), QString( "Alphabet soup" ) );
+    QCOMPARE( topModel->trackAt( 3 )->prettyName(), QString( "Cool as honey" ) );
+    QCOMPARE( topModel->trackAt( 4 )->prettyName(), QString( "xTreme buzzing sound" ) );
+    QCOMPARE( topModel->trackAt( 5 )->prettyName(), QString( "23 hours is not enough" ) );
+    QCOMPARE( topModel->trackAt( 6 )->prettyName(), QString( "Zlick" ) );
+
     //reverse some stuff
     //******************************//
-    
+
     SortScheme scheme3 = SortScheme();
 
     scheme3.addLevel( SortLevel( internalColumnNames.indexOf( "Artist" ), Qt::AscendingOrder ) );
     scheme3.addLevel( SortLevel( internalColumnNames.indexOf( "Album" ), Qt::DescendingOrder ) );
     scheme3.addLevel( SortLevel( internalColumnNames.indexOf( "Title" ), Qt::AscendingOrder ) );
-      
+
     ModelStack::instance()->sortProxy()->updateSortMap( scheme3 );
     topModel->qaim()->revert();
-    
-    QCOMPARE( topModel->trackAt( 0 )->prettyName(), QString( "Alphabet soup" ) );
-    QCOMPARE( topModel->trackAt( 1 )->prettyName(), QString( "Cool as honey" ) );
-    QCOMPARE( topModel->trackAt( 2 )->prettyName(), QString( "xTreme buzzing sound" ) );
-    QCOMPARE( topModel->trackAt( 3 )->prettyName(), QString( "1 song to rule them all" ) );
-    QCOMPARE( topModel->trackAt( 4 )->prettyName(), QString( "23 hours is not enough" ) );
-    QCOMPARE( topModel->trackAt( 5 )->prettyName(), QString( "Zlick" ) );
+
+    QCOMPARE( topModel->trackAt( 0 )->prettyName(), QString( "zz ambience sound" ) );
+    QCOMPARE( topModel->trackAt( 1 )->prettyName(), QString( "Alphabet soup" ) );
+    QCOMPARE( topModel->trackAt( 2 )->prettyName(), QString( "Cool as honey" ) );
+    QCOMPARE( topModel->trackAt( 3 )->prettyName(), QString( "xTreme buzzing sound" ) );
+    QCOMPARE( topModel->trackAt( 4 )->prettyName(), QString( "1 song to rule them all" ) );
+    QCOMPARE( topModel->trackAt( 5 )->prettyName(), QString( "23 hours is not enough" ) );
+    QCOMPARE( topModel->trackAt( 6 )->prettyName(), QString( "Zlick" ) );
 }
 
 void TestPlaylistModels::testFiltering()
@@ -192,14 +201,14 @@ void TestPlaylistModels::testFiltering()
     ModelStack::instance()->filterProxy()->filterUpdated();
 
     AbstractModel * topModel = ModelStack::instance()->top();
-    
-    QCOMPARE( topModel->qaim()->rowCount(), 3 );
+
+    QCOMPARE( topModel->qaim()->rowCount(), 4 );
     QCOMPARE( topModel->trackAt( 0 )->prettyName(), QString( "xTreme buzzing sound" ) );
     QCOMPARE( topModel->trackAt( 1 )->prettyName(), QString( "Alphabet soup" ) );
     QCOMPARE( topModel->trackAt( 2 )->prettyName(), QString( "23 hours is not enough" ) );
-  
-   //TODO: More advanced filtering tests go here
-  
+    QCOMPARE( topModel->trackAt( 3 )->prettyName(), QString( "zz ambience sound" ) );
+    //TODO: More advanced filtering tests go here
+
 }
 
 void TestPlaylistModels::testSearching()

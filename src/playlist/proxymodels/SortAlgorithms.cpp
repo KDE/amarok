@@ -32,11 +32,10 @@ multilevelLessThan::setSortScheme( const SortScheme & scheme )
 bool
 multilevelLessThan::operator()( const QAbstractItemModel* sourceModel, int sourceModelRowA, int sourceModelRowB ) const
 {
-    bool decided = false;
-    bool verdict = false;    // Guaranteed to be overwritten
 
     for( int i = 0; i < m_scheme.length(); i++ )
     {
+        bool inverted = ( m_scheme.level( i ).order() == Qt::DescendingOrder );
         int currentCategory = m_scheme.level( i ).category();  //see enum Column in PlaylistDefines.h
 
         if( currentCategory == -1 ) //random
@@ -45,111 +44,100 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel, int sourc
             long randomSeqnumB = constantRandomSeqnumForRow( sourceModel, sourceModelRowB );
 
             if( randomSeqnumA < randomSeqnumB )
-            {   decided = true;  verdict = true;   }
-            else if( randomSeqnumA > randomSeqnumB )
-            {   decided = true;  verdict = false;   }
+                return !inverted;
+            else
+                return inverted;
         }
-        else
+
+        QModelIndex indexA = sourceModel->index( sourceModelRowA, currentCategory );
+        QModelIndex indexB = sourceModel->index( sourceModelRowB, currentCategory );
+
+        QVariant dataA = indexA.data( Qt::DisplayRole );
+        QVariant dataB = indexB.data( Qt::DisplayRole );
+        Meta::TrackPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>();
+        Meta::TrackPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>();
+
+        if( trackA && trackB )
         {
-            QModelIndex indexA = sourceModel->index( sourceModelRowA, currentCategory );
-            QModelIndex indexB = sourceModel->index( sourceModelRowB, currentCategory );
-
-            QVariant dataA = indexA.data();
-            QVariant dataB = indexB.data();
-
             //Handle "Last Played" as a special case because the time since last played is not
             //reported as an int in the data columns.
             //Also, the verdicts are inverted because I answer to the question about the time
             //since the track was played by comparing the absolute time when the track was last
             //played.
-            if( m_scheme.level( i ).category() == Playlist::LastPlayed )
+            if( currentCategory == Playlist::LastPlayed )
             {
-                Meta::TrackPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>();
-                Meta::TrackPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>();
-
                 if( trackA->lastPlayed() < trackB->lastPlayed() )
-                {   decided = true;  verdict = false;   }
+                    return inverted;
                 else if( trackA->lastPlayed() > trackB->lastPlayed() )
-                {   decided = true;  verdict = true;   }
+                    return !inverted;
             }
 
             //Handle Title, Album, Artist as special cases with Meta::MetaBase::sortableName().
             //This is necessary in order to have the same sort order policy regarding "The" in
             //both the playlist and the collection browser.
-            else if( m_scheme.level( i ).category() == Playlist::Title )
+            else if( currentCategory == Playlist::Title )
             {
-                Meta::TrackPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>();
-                Meta::TrackPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>();
-                QString trackAStr = trackA->sortableName().toLower();
-                QString trackBStr = trackB->sortableName().toLower();
+                dataA.setValue( trackA->sortableName() );
+                dataB.setValue( trackB->sortableName() );
+            }
+            else if( currentCategory == Playlist::Album )
+            {
+                Meta::AlbumPtr albumA = trackA->album();
+                if( albumA )
+                    dataA.setValue( albumA->sortableName() );
+                else
+                    dataA.clear();
 
-                if( trackAStr < trackBStr )
-                {   decided = true; verdict = true;    }
-                else if( trackAStr > trackBStr )
-                {   decided = true; verdict = false;     }
+                Meta::AlbumPtr albumB = trackB->album();
+                if( albumB )
+                    dataB.setValue( albumB->sortableName() );
+                else
+                    dataB.clear();
             }
-            else if( m_scheme.level( i ).category() == Playlist::Album )
+            else if( currentCategory == Playlist::Artist )
             {
-                Meta::AlbumPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>()->album();
-                Meta::AlbumPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>()->album();
-                QString trackAStr = trackA->sortableName().toLower();
-                QString trackBStr = trackB->sortableName().toLower();
+                Meta::ArtistPtr artistA = trackA->artist();
+                if( artistA )
+                    dataA.setValue( artistA->sortableName() );
+                else
+                    dataA.clear();
 
-                if( trackAStr < trackBStr )
-                {   decided = true; verdict = true;    }
-                else if( trackAStr > trackBStr )
-                {   decided = true; verdict = false;     }
-            }
-            else if( m_scheme.level( i ).category() == Playlist::Artist )
-            {
-                Meta::ArtistPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>()->artist();
-                Meta::ArtistPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>()->artist();
-                QString trackAStr = trackA->sortableName().toLower();
-                QString trackBStr = trackB->sortableName().toLower();
-
-                if( trackAStr < trackBStr )
-                {   decided = true; verdict = true;    }
-                else if( trackAStr > trackBStr )
-                {   decided = true; verdict = false;     }
-            }
-
-            //And now the comparison logic for ordinary columns.
-            else if( m_scheme.level( i ).isString() )
-            {
-                QString dataAStr = dataA.toString().toLower();
-                QString dataBStr = dataB.toString().toLower();
-                if( dataAStr < dataBStr )
-                {   decided = true;  verdict = true;   }
-                else if( dataAStr > dataBStr )
-                {   decided = true;  verdict = false;   }
-            }
-            else if( m_scheme.level( i ).isFloat() )
-            {
-                if( dataA.toDouble() < dataB.toDouble() )
-                {   decided = true;  verdict = true;   }
-                else if( dataA.toDouble() > dataB.toDouble() )
-                {   decided = true;  verdict = false;   }
-            }
-            else //if it's not a string ==> it's a number
-            {
-                if( dataA.toInt() < dataB.toInt() )
-                {   decided = true;  verdict = true;   }
-                else if( dataA.toInt() > dataB.toInt() )
-                {   decided = true;  verdict = false;   }
+                Meta::ArtistPtr artistB = trackB->artist();
+                if( artistB )
+                    dataB.setValue( artistB->sortableName() );
+                else
+                    dataB.clear();
             }
         }
 
-        if( m_scheme.level( i ).order() == Qt::DescendingOrder )
-            verdict = ( ! verdict );    // Reverse sort order
 
-        if ( decided )
-            break;
+        if( m_scheme.level( i ).isString() )
+        {
+            QString dataAStr = dataA.toString().toLower();
+            QString dataBStr = dataB.toString().toLower();
+            if( dataAStr < dataBStr )
+                return !inverted;
+            else if( dataAStr > dataBStr )
+                return inverted;
+        }
+        else if( m_scheme.level( i ).isFloat() )
+        {
+            if( dataA.toDouble() < dataB.toDouble() )
+                return !inverted;
+            else if( dataA.toDouble() > dataB.toDouble() )
+                return inverted;
+        }
+        else //if it's not a string ==> it's a number
+        {
+            if( dataA.toInt() < dataB.toInt() )
+                return !inverted;
+            else if( dataA.toInt() > dataB.toInt() )
+                return inverted;
+        }
     }
 
-    if ( ! decided )
-        verdict = (sourceModelRowA < sourceModelRowB);    // Tie breaker: order by row number
-
-    return verdict;
+    // Tie breaker: order by row number
+    return (sourceModelRowA < sourceModelRowB);
 }
 
 
