@@ -518,8 +518,10 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
 
         KUrl dest = m_destinations[ track ];
         dest.cleanPath();
-
         src.cleanPath();
+
+        bool hasMoodFile = QFile::exists( moodFile( src ).toLocalFile() );
+
         if( configuration.encoder() == Transcoding::NULL_CODEC )
             debug() << "copying from " << src << " to " << dest;
         else
@@ -548,6 +550,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         }
 
         KJob *job = 0;
+        KJob *moodJob = 0;
 
         if( src.equals( dest ) )
         {
@@ -561,6 +564,12 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         {
             debug() << "moving!";
             job = KIO::file_move( src, dest, -1, flags );
+            if( hasMoodFile )
+            {
+                KUrl moodSrc = moodFile( src );
+                KUrl moodDest = moodFile( dest );
+                moodJob = KIO::file_move( moodSrc, moodDest, -1, flags );
+            }
         }
         else
         {
@@ -577,12 +586,26 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
                 job = new Transcoding::Job( src, dest, configuration, this );
                 job->start();
             }
+
+            if( hasMoodFile )
+            {
+                KUrl moodSrc = moodFile( src );
+                KUrl moodDest = moodFile( dest );
+                moodJob = KIO::file_copy( moodSrc, moodDest, -1, flags );
+            }
         }
         if( job )   //just to be safe
         {
             connect( job, SIGNAL( result( KJob* ) ), SLOT( slotJobFinished( KJob* ) ) );
             connect( job, SIGNAL( result( KJob* ) ), m_transferjob, SLOT( slotJobFinished( KJob* ) ) );
             m_transferjob->addSubjob( job );
+
+            if( moodJob )
+            {
+                connect( moodJob, SIGNAL( result( KJob* ) ), m_transferjob, SLOT( slotJobFinished( KJob* ) ) );
+                m_transferjob->addSubjob( moodJob );
+            }
+
             QString name = track->prettyName();
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
@@ -607,6 +630,7 @@ bool SqlCollectionLocation::startNextRemoveJob()
         Meta::TrackPtr track = m_removetracks.takeFirst();
         // KUrl src = track->playableUrl();
         KUrl src = track->playableUrl();
+        KUrl srcMoodFile = moodFile( src );
 
         debug() << "isGoingToRemoveSources() " << isGoingToRemoveSources();
         if( isGoingToRemoveSources() && destination() ) // is organize operation?
@@ -625,6 +649,9 @@ bool SqlCollectionLocation::startNextRemoveJob()
         KIO::DeleteJob *job = KIO::del( src, KIO::HideProgressInfo );
         if( job )   //just to be safe
         {
+            if( QFile::exists( srcMoodFile.toLocalFile() ) )
+                KIO::del( srcMoodFile, KIO::HideProgressInfo );
+           
             connect( job, SIGNAL( result( KJob* ) ), SLOT( slotRemoveJobFinished( KJob* ) ) );
             QString name = track->prettyName();
             if( track->artist() )
@@ -639,6 +666,13 @@ bool SqlCollectionLocation::startNextRemoveJob()
     return false;
 }
 
+KUrl 
+SqlCollectionLocation::moodFile( const KUrl &track ) const
+{
+    KUrl moodPath = track;
+    moodPath.setFileName( "." + moodPath.fileName().replace( QRegExp( "(\\.\\w{2,5})$" ), ".mood" ) );
+    return moodPath;
+}
 
 TransferJob::TransferJob( SqlCollectionLocation * location, const Transcoding::Configuration & configuration )
     : KCompositeJob( 0 )
