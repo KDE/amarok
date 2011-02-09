@@ -358,7 +358,7 @@ Context::Applet::plasmaMessageHidden()
 {
     // Disconnect from the messageButtonPressed() signal so the next
     // dialog can be shown.
-    disconnect( SIGNAL( messageButtonPressed( MessageButton ) ) );
+    disconnect( MESSAGE_BUTTON_PRESSED_SIGNAL );
 
     // No dialog is shown anymore.
     m_isMessageShown = false;
@@ -391,8 +391,8 @@ Context::Applet::showMessage( const QString &message, const char *slot, const KI
         Plasma::MessageButtons plasmaYesNoButtons = Plasma::ButtonYes | Plasma::ButtonNo;
 
         // Connect Plasma's messageButtonPressed SIGNAL to the given slot.
-        connect( this, SIGNAL( messageButtonPressed( MessageButton ) ), slot );
-        connect( this, SIGNAL( messageButtonPressed( MessageButton ) ), SLOT( plasmaMessageHidden() ) );
+        connect( this, MESSAGE_BUTTON_PRESSED_SIGNAL, slot );
+        connect( this, MESSAGE_BUTTON_PRESSED_SIGNAL, SLOT( plasmaMessageHidden() ) );
 
         // Show a dialog and ask the user what to do.
         Plasma::Applet::showMessage( icon, message, plasmaYesNoButtons );

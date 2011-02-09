@@ -84,8 +84,15 @@ public:
     void _suggestionChosen( const QModelIndex &index );
     void _unsetCursor();
     void _trackDataChanged( Meta::TrackPtr );
-    void _lyricsChangedMessageButtonPressed( const MessageButton );
-    void _refetchMessageButtonPressed( const MessageButton );
+
+// FIXME: Remove this once amarok depends on KDE 4.6.
+#if KDE_IS_VERSION(4, 5, 80)
+    void _lyricsChangedMessageButtonPressed( const Plasma::MessageButton button );
+    void _refetchMessageButtonPressed( const Plasma::MessageButton button );
+#else
+    void _lyricsChangedMessageButtonPressed( const MessageButton button );
+    void _refetchMessageButtonPressed( const MessageButton button );
+#endif
 
     Plasma::IconWidget *saveIcon;
     Plasma::IconWidget *editIcon;
@@ -228,7 +235,12 @@ LyricsAppletPrivate::showUnsavedChangesWarning( Meta::TrackPtr newTrack )
     }
 
     // Show the warning message.
+// FIXME: Remove this once amarok depends on KDE 4.6.
+#if KDE_IS_VERSION(4, 5, 80)
+    q->showWarning( warningMessage, SLOT( _lyricsChangedMessageButtonPressed( Plasma::MessageButton ) ) );
+#else
     q->showWarning( warningMessage, SLOT( _lyricsChangedMessageButtonPressed( MessageButton ) ) );
+#endif
 
     // Make the contents readonly again.
     // Since the applet is now blocked the user can not enable this again.
@@ -236,8 +248,11 @@ LyricsAppletPrivate::showUnsavedChangesWarning( Meta::TrackPtr newTrack )
     setEditing( false );
 }
 
-void
-LyricsAppletPrivate::_refetchMessageButtonPressed( const MessageButton button )
+#if KDE_IS_VERSION(4, 5, 80)
+void LyricsAppletPrivate::_refetchMessageButtonPressed( const Plasma::MessageButton button )
+#else
+void LyricsAppletPrivate::_refetchMessageButtonPressed( const MessageButton button )
+#endif
 {
     // Check if the user pressed "Yes".
     if( button == Plasma::ButtonYes )
@@ -245,8 +260,11 @@ LyricsAppletPrivate::_refetchMessageButtonPressed( const MessageButton button )
         refetchLyrics();
 }
 
-void
-LyricsAppletPrivate::_lyricsChangedMessageButtonPressed( const MessageButton button )
+#if KDE_IS_VERSION(4, 5, 80)
+void LyricsAppletPrivate::_lyricsChangedMessageButtonPressed( const Plasma::MessageButton button )
+#else
+void LyricsAppletPrivate::_lyricsChangedMessageButtonPressed( const MessageButton button )
+#endif
 {
     // Check if the user pressed "Yes".
     if( button == Plasma::ButtonYes )
@@ -626,7 +644,13 @@ LyricsApplet::refreshLyrics()
     {
         // Ask the user if he really wants to refetch the lyrics.
         const QString text( i18nc( "@info", "Do you really want to refetch lyrics for this track? All changes you may have made will be lost.") );
+
+// FIXME: Remove this once amarok depends on KDE 4.6.
+#if KDE_IS_VERSION(4, 5, 80)
+        showWarning( text, SLOT( _refetchMessageButtonPressed( Plasma::MessageButton ) ) );
+#else
         showWarning( text, SLOT( _refetchMessageButtonPressed( MessageButton ) ) );
+#endif
     }
     else
     {

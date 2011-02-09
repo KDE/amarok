@@ -35,7 +35,16 @@ namespace Plasma
     class IconWidget;
 }
 
+// FIXME: Remove this once amarok depends on KDE 4.6.
+// It looks like API compatibility broke here:
+// https://projects.kde.org/projects/kde/kdelibs/repository/revisions/4eedd723a8f8bcb250b65d8f0a4aa3bd58f4ce20
+// as the signature of the SINGAL changed.
 using Plasma::MessageButton;
+#if KDE_IS_VERSION(4, 5, 80)
+#define MESSAGE_BUTTON_PRESSED_SIGNAL SIGNAL( messageButtonPressed( Plasma::MessageButton ) )
+#else
+#define MESSAGE_BUTTON_PRESSED_SIGNAL SIGNAL( messageButtonPressed( MessageButton ) )
+#endif
 
 namespace Context
 {
