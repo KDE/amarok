@@ -99,6 +99,7 @@ namespace Dynamic
 
             /** True if all of the tracks are included in the set. */
             bool isFull() const;
+            bool contains( const Meta::TrackPtr& ) const;
 
             /** Returns true if the uid is included in the set */
             bool contains( const QString& uid ) const;

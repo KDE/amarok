@@ -17,6 +17,7 @@
  ****************************************************************************************/
 
 #include "TrackSet.h"
+#include "core/support/Debug.h"
 
 #include <KRandom>
 
@@ -86,6 +87,17 @@ Dynamic::TrackSet::contains( const QString &uid ) const
     return m_bits.at( index );
 }
 
+bool
+Dynamic::TrackSet::contains( const Meta::TrackPtr& B ) const
+{
+    QString str = B->uidUrl();
+    if( !m_collection->m_ids.contains( str ) )
+        return false;
+
+    int index = m_collection->m_ids.value( str );
+    return m_bits.at( index );
+}
+
 QString
 Dynamic::TrackSet::getRandomTrack() const
 {
@@ -121,8 +133,10 @@ Dynamic::TrackSet::unite( const Meta::TrackPtr& B )
         return;
 
     QString str = B->uidUrl();
-    if( !m_collection->m_ids.contains( str ) )
+    if( !m_collection->m_ids.contains( str ) ) {
+        warning() << "TrackSet::subtract called for a track not even known to the collection. Track uid is"<<str<<"example from collection"<<m_collection->m_ids.keys().first();
         return;
+    }
 
     int index = m_collection->m_ids.value( str );
     m_bits.setBit( index );
@@ -182,8 +196,10 @@ Dynamic::TrackSet::subtract( const Meta::TrackPtr& B )
         return;
 
     QString str = B->uidUrl();
-    if( !m_collection->m_ids.contains( str ) )
+    if( !m_collection->m_ids.contains( str ) ) {
+        warning() << "TrackSet::subtract called for a track not even known to the collection. Track uid is"<<str<<"example from collection"<<m_collection->m_ids.keys().first();
         return;
+    }
 
     int index = m_collection->m_ids.value( str );
     m_bits.clearBit( index );
