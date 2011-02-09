@@ -116,7 +116,10 @@ class MatchState
                 m_sourceFlow[source] = 0;
 
             for( int drain = m_drainCount-1; drain >= 0; --drain )
+            {
                 m_drainFlow[drain] = 0;
+                m_drainSource[drain] = -1;
+            }
 
             // -- get all the edges
             Dynamic::BiasList biases = m_bias->biases();
@@ -165,7 +168,7 @@ class MatchState
                         {
                             if( m_ignoreDrain == drain2 )
                                 continue;
-                            if( m_drainFlow[drain2] == 0 )
+                            if( m_drainFlow[drain2] > 0 )
                                 continue;
                             if( !m_edgesUsed[ source2 * m_drainCount + drain ] )
                                 continue;
@@ -309,6 +312,8 @@ Dynamic::PartBias::matchingTracks( int position,
     // -- determine the current matching
     MatchState state( this, position, playlist, contextCount );
 
+    debug()<<"matching tracks for"<<position<<"pc"<<playlist.count()<<"context:"<<contextCount;
+
     // -- find all biases that are not fulfilled
     m_tracks = Dynamic::TrackSet( universe, false );
     m_outstandingMatches = 0;
@@ -316,7 +321,7 @@ Dynamic::PartBias::matchingTracks( int position,
     // note: the first source is the random bias so we are finished very fast if that happens
     for( int source = 0; source < state.m_sourceCount; source++ )
     {
-        debug() << "PartBias::matchingTracks: biase"<<m_biases[source]->name()<<"only matches"<<state.m_sourceFlow[source]<<"out of"<<state.m_sourceCapacity[source]<<"tracks.";
+        // debug() << "PartBias::matchingTracks: biase"<<m_biases[source]->name()<<"only matches"<<state.m_sourceFlow[source]<<"out of"<<state.m_sourceCapacity[source]<<"tracks.";
         if( state.m_sourceFlow[source] < state.m_sourceCapacity[source] )
         {
             Dynamic::TrackSet tracks = m_biases[source]->matchingTracks( position, playlist, contextCount, universe );
@@ -330,7 +335,6 @@ Dynamic::PartBias::matchingTracks( int position,
                 break;
         }
     }
-    debug() << "     returning"<<m_tracks.trackCount()<<"tracks" << m_outstandingMatches << m_tracks.isOutstanding();
 
     // -- return it's matching tracks
     if( m_outstandingMatches > 0 )
