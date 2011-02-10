@@ -69,3 +69,23 @@ PodcastProvider::toFeedUrl( const QString &urlString )
 
     return kurl;
 }
+
+Playlists::PlaylistPtr
+PodcastProvider::addPlaylist( Playlists::PlaylistPtr playlist )
+{
+    PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
+    if( channel.isNull() )
+        return Playlists::PlaylistPtr();
+
+    return Playlists::PlaylistPtr::dynamicCast( addChannel( channel ) );
+}
+
+Meta::TrackPtr
+PodcastProvider::addTrack( Meta::TrackPtr track )
+{
+    PodcastEpisodePtr episode = PodcastEpisodePtr::dynamicCast( track );
+    if( episode.isNull() )
+        return Meta::TrackPtr();
+
+    return Meta::TrackPtr::dynamicCast( addEpisode( episode ) );
+}
