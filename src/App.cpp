@@ -153,6 +153,8 @@ App::App()
     qRegisterMetaType<Meta::YearList>();
     qRegisterMetaType<Meta::LabelPtr>();
     qRegisterMetaType<Meta::LabelList>();
+    qRegisterMetaType<Playlists::PlaylistPtr>();
+    qRegisterMetaType<Playlists::PlaylistList>();
 
 
     //make sure we have enough cache space for all our crazy svg stuff

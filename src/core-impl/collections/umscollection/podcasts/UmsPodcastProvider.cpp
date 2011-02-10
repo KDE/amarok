@@ -74,7 +74,7 @@ UmsPodcastProvider::addChannel( PodcastChannelPtr channel )
     UmsPodcastChannelPtr umsChannel = UmsPodcastChannelPtr(
             new UmsPodcastChannel( channel, this ) );
     m_umsChannels << umsChannel;
-    emit( updated() );
+    emit( playlistAdded( Playlists::PlaylistPtr::dynamicCast( umsChannel ) ) );
     return PodcastChannelPtr::dynamicCast( umsChannel );
 }
 
@@ -309,7 +309,7 @@ UmsPodcastProvider::deleteJobComplete( KJob *job )
         {
             debug() << "channel is empty now, remove it";
             m_umsChannels.removeAll( umsChannel );
-            emit( updated() );
+            emit( playlistRemoved( Playlists::PlaylistPtr::dynamicCast( umsChannel ) ) );
         }
     }
 }
@@ -364,7 +364,7 @@ UmsPodcastProvider::slotDeleteChannels()
         }
 
         deleteEpisodes( umsChannel->m_umsEpisodes );
-        //slot deleteJobComplete() will emit updated once all tracks are gone.
+        //slot deleteJobComplete() will emit signal once all tracks are gone.
     }
 }
 
@@ -530,7 +530,7 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
         channel = UmsPodcastChannelPtr( new UmsPodcastChannel( this ) );
         channel->setTitle( metafileTrack->album()->name() );
         m_umsChannels << channel;
-        emit( updated() );
+        emit( playlistAdded( Playlists::PlaylistPtr::dynamicCast( channel ) ) );
     }
 
     if( episode.isNull() )
