@@ -46,6 +46,7 @@ public:
     void setSelected( bool selected );
     void setSelectedColor( QColor color );
     void setBackgroundColor( QColor color );
+    
     void updateHoverStatus();
     
     QRectF boundingRect() const;
@@ -71,7 +72,7 @@ private:
     QWeakPointer<QPropertyAnimation> m_hoverValueAnimation;
     bool                             m_selected;
     QColor                           m_selectedColor;
-    
+
     QWeakPointer<LabelOverlayButton> m_addLabelItem;
     QWeakPointer<LabelOverlayButton> m_removeLabelItem;
     QWeakPointer<LabelOverlayButton> m_listLabelItem;

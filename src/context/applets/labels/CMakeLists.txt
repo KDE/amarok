@@ -5,7 +5,7 @@ set(labels_SRCS LabelsApplet.cpp LabelGraphicsItem.cpp LabelOverlayButton.cpp)
 include_directories( ../..
                      ../../.. )
 
-kde4_add_ui_files( labels_SRCS labelsSettings.ui )
+kde4_add_ui_files( labels_SRCS labelsGeneralSettings.ui labelsBlacklistSettings.ui labelsReplacementSettings.ui )
 kde4_add_plugin(amarok_context_applet_labels ${labels_SRCS})
 if(APPLE)
    SET_TARGET_PROPERTIES(amarok_context_applet_labels PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")

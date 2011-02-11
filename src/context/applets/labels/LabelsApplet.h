@@ -22,7 +22,9 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 
-#include <ui_labelsSettings.h>
+#include <ui_labelsGeneralSettings.h>
+#include <ui_labelsBlacklistSettings.h>
+#include <ui_labelsReplacementSettings.h>
 
 #include <QWeakPointer>
 
@@ -91,6 +93,8 @@ private:
     QStringList             m_blacklist;
     QColor                  m_selectedColor;
     QColor                  m_backgroundColor;
+
+    QHash < QString, QString > m_replacementMap;
     
     bool                    m_stoppedstate;
     QString                 m_artist;
@@ -100,11 +104,16 @@ private:
     // if the user adds a label through the combobox, the animation should start at the combobox
     bool                    m_selfAdded;
     
-    Ui::labelsSettings      ui_Settings;
+    Ui::labelsGeneralSettings       ui_GeneralSettings;
+    Ui::labelsBlacklistSettings     ui_BlacklistSettings;
+    Ui::labelsReplacementSettings   ui_ReplacementSettings;
 
 private slots:
     void reload();
     void animationFinished();
+    void settingsResetColors();
+    void settingsAddReplacement();
+    void settingsRemoveReplacement();
 
 };
 
