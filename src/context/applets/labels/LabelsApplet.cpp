@@ -367,6 +367,7 @@ LabelsApplet::updateLabels()
             labelGraphics = new LabelGraphicsItem( it_final.key(), f_size, this );
             labelGraphics->setSelectedColor( m_selectedColor );
             labelGraphics->setBackgroundColor( m_backgroundColor );
+            labelGraphics->showBlacklistButton( !m_allLabels.contains(it_final.key()) );
             if( m_selfAdded )
             {
                 labelGraphics->setPos( m_addLabelProxy.data()->pos().x(), m_addLabelProxy.data()->pos().y() + m_addLabelProxy.data()->size().height()/2 - labelGraphics->boundingRect().height()/2 );

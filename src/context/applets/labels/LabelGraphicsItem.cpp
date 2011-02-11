@@ -143,6 +143,12 @@ LabelGraphicsItem::setBackgroundColor( QColor color )
 }
 
 void
+LabelGraphicsItem::showBlacklistButton( bool enabled )
+{
+    m_showBlacklistButton = enabled;
+}
+
+void
 LabelGraphicsItem::updateGeometry()
 {
     const QSizeF size = boundingRect().size();
@@ -161,7 +167,8 @@ LabelGraphicsItem::updateGeometry()
     delete painter;
     m_backgroundItem->setPixmap( pixmap );
 
-    int iconsCount = 3;
+//     int iconsCount = m_selected ? 2 : 3; // don't show the blacklist flag for selected labels
+    int iconsCount = m_showBlacklistButton ? 3 : 2;
     const int maxHeight = size.height() * 2 / 3;
     // minimum space between icnos is 2 pixels (number of spaces is iconsCount - 1)
     int maxWidth = ( size.width() - ( iconsCount - 1 ) * 2 ) / iconsCount;
