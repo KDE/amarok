@@ -17,6 +17,7 @@
 #include "TestDynamicModel.h"
 
 #include "dynamic/Bias.h"
+#include "dynamic/BiasedPlaylist.h"
 #include "browsers/playlistbrowser/DynamicModel.h"
 
 #include "core/support/Amarok.h"

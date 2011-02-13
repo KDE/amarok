@@ -26,8 +26,8 @@
 #include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
+#include "dynamic/BiasedPlaylist.h"
 
-// #include <QStandardItemModel>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QLabel>

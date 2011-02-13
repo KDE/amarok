@@ -18,7 +18,6 @@
 #ifndef DYNAMICMODEL_H
 #define DYNAMICMODEL_H
 
-#include "BiasedPlaylist.h"
 #include "DynamicPlaylist.h"
 
 #include "amarok_export.h" // we are exporting it for the tests
