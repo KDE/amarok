@@ -96,11 +96,11 @@ Dynamic::WeeklyTopBias::WeeklyTopBias( QXmlStreamReader *reader )
             QStringRef name = reader->name();
             if( name == "from" )
                 m_range.from = QDateTime::fromTime_t( reader->readElementText(QXmlStreamReader::SkipChildElements).toLong() );
-            if( name == "to" )
+            else if( name == "to" )
                 m_range.to = QDateTime::fromTime_t( reader->readElementText(QXmlStreamReader::SkipChildElements).toLong() );
             else
             {
-                debug()<<"Unexpected xml start element"<<reader->name()<<"in input";
+                debug()<<"Unexpected xml start element"<<name<<"in input";
                 reader->skipCurrentElement();
             }
         }
