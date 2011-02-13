@@ -262,6 +262,7 @@ PlaylistBrowserNS::BiasWidget::factoriesChanged()
     m_biasSelection->clear();
 
     // -- add all the bias types to the list
+    bool factoryFound = false;
     QList<Dynamic::AbstractBiasFactory*> factories = Dynamic::BiasFactory::factories();
     for( int i = 0; i <  factories.count(); i++ )
     {
@@ -271,10 +272,19 @@ PlaylistBrowserNS::BiasWidget::factoriesChanged()
         // -- set the current index if we have found our own factory
         if( m_bias && factory->name() == m_bias->name() )
         {
+            factoryFound = true;
             m_biasSelection->setCurrentIndex( i );
             // while we are at it: set a tool tip
             setToolTip( factory->i18nDescription() );
         }
+    }
+
+    // -- In cases of replacement bias
+    if( !factoryFound )
+    {
+        m_biasSelection->addItem( m_bias->name() );
+        m_biasSelection->setCurrentIndex( m_biasSelection->count() );
+        setToolTip( i18n( "Replacement for %1 bias" ).arg( m_bias->name() ) );
     }
 }
 
