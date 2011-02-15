@@ -35,17 +35,6 @@ namespace Plasma
     class IconWidget;
 }
 
-// FIXME: Remove this once amarok depends on KDE 4.6.
-// It looks like API compatibility broke here:
-// https://projects.kde.org/projects/kde/kdelibs/repository/revisions/4eedd723a8f8bcb250b65d8f0a4aa3bd58f4ce20
-// as the signature of the SINGAL changed.
-using Plasma::MessageButton;
-#if KDE_IS_VERSION(4, 5, 80)
-#define MESSAGE_BUTTON_PRESSED_SIGNAL SIGNAL( messageButtonPressed( Plasma::MessageButton ) )
-#else
-#define MESSAGE_BUTTON_PRESSED_SIGNAL SIGNAL( messageButtonPressed( MessageButton ) )
-#endif
-
 namespace Context
 {
 
@@ -164,17 +153,6 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
          */
         void showWarning( const QString &message, const char *slot );
 
-        /**
-         * Shows a message dialog which blocks access to the applet.
-         * This gives the user the message and a "Yes" and a "No" button.
-         * NOTE: Only one message/warning can be shown at a time.
-         *
-         * @param message The warning message.
-         * @param slot The slot which is called after either "Yes" or "No" has been clicked.
-         * @param icon The icon which will be shown.
-         */
-        void showMessage( const QString &message, const char *slot, const KIcon &icon );
-
     public Q_SLOTS:
         virtual void destroy();
 
@@ -211,13 +189,6 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         void paletteChanged( const QPalette & palette );
         void collapseAnimationFinished();
         void collapse( bool on );
-
-        /**
-         * A private slot used to cleanup internal things like
-         * signals/slots and the flag if a dialog is shown.
-         * This is needed to avoid duplicate code in the applets.
-         */
-        void plasmaMessageHidden();
 
     private:
         void cleanUpAndDelete();

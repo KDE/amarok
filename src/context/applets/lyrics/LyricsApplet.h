@@ -59,14 +59,8 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _suggestionChosen(const QModelIndex&) )
     Q_PRIVATE_SLOT( d_ptr, void _unsetCursor() )
     Q_PRIVATE_SLOT( d_ptr, void _trackDataChanged( Meta::TrackPtr ) )
-
-    Q_PRIVATE_SLOT( d_ptr, void _lyricsChangedMessageButtonPressed( const Plasma::MessageButton ) )
-    Q_PRIVATE_SLOT( d_ptr, void _refetchMessageButtonPressed( const Plasma::MessageButton ) )
-
-    // FIXME: Remove this once amarok depends on KDE 4.6.
-    // as the signature of the SINGAL changed.
-    Q_PRIVATE_SLOT( d_ptr, void _lyricsChangedMessageButtonPressed( const MessageButton ) )
-    Q_PRIVATE_SLOT( d_ptr, void _refetchMessageButtonPressed( const MessageButton ) )
+    Q_PRIVATE_SLOT( d_ptr, void _lyricsChangedMessageButtonPressed(const Plasma::MessageButton) )
+    Q_PRIVATE_SLOT( d_ptr, void _refetchMessageButtonPressed(const Plasma::MessageButton) )
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )
