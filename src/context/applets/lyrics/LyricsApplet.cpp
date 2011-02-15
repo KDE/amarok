@@ -133,6 +133,7 @@ LyricsAppletPrivate::setEditing( bool isEditing )
     QPalette::ColorRole bg = isEditing ? QPalette::AlternateBase : QPalette::Base;
     browser->nativeWidget()->viewport()->setBackgroundRole( bg );
     browser->nativeWidget()->setReadOnly( !isEditing );
+    browser->nativeWidget()->setCursorWidth( isEditing ? 1 : 0 );
 }
 
 void
@@ -514,6 +515,7 @@ LyricsApplet::init()
     browserWidget->setAutoFillBackground( false );
     browserWidget->setReadOnly( false );
     browserWidget->setWordWrapMode( QTextOption::WordWrap );
+    browserWidget->setCursorWidth( 0 );
     browserWidget->viewport()->setAutoFillBackground( true );
     browserWidget->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
     d->browser->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
