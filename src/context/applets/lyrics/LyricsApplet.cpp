@@ -480,26 +480,26 @@ LyricsApplet::init()
     d->editIcon = addLeftHeaderAction( editAction );
     connect( d->editIcon, SIGNAL(clicked()), this, SLOT(_editLyrics()) );
 
-    QAction* reloadAction = new QAction( this );
-    reloadAction->setIcon( KIcon( "view-refresh" ) );
-    reloadAction->setEnabled( true );
-    reloadAction->setText( i18n( "Reload Lyrics" ) );
-    d->reloadIcon = addLeftHeaderAction( reloadAction );
-    connect( d->reloadIcon, SIGNAL(clicked()), this, SLOT(refreshLyrics()) );
+    QAction* saveAction = new QAction( this );
+    saveAction->setIcon( KIcon( "document-save" ) );
+    saveAction->setEnabled( false );
+    saveAction->setText( i18n( "Save Lyrics" ) );
+    d->saveIcon = addLeftHeaderAction( saveAction );
+    connect( d->saveIcon, SIGNAL(clicked()), this, SLOT(_saveLyrics()) );
 
     QAction* closeAction = new QAction( this );
     closeAction->setIcon( KIcon( "document-close" ) );
     closeAction->setEnabled( false );
     closeAction->setText( i18n( "Close" ) );
-    d->closeIcon = addRightHeaderAction( closeAction );
+    d->closeIcon = addLeftHeaderAction( closeAction );
     connect( d->closeIcon, SIGNAL(clicked()), this, SLOT(_closeLyrics()) );
 
-    QAction* saveAction = new QAction( this );
-    saveAction->setIcon( KIcon( "document-save" ) );
-    saveAction->setEnabled( false );
-    saveAction->setText( i18n( "Save Lyrics" ) );
-    d->saveIcon = addRightHeaderAction( saveAction );
-    connect( d->saveIcon, SIGNAL(clicked()), this, SLOT(_saveLyrics()) );
+    QAction* reloadAction = new QAction( this );
+    reloadAction->setIcon( KIcon( "view-refresh" ) );
+    reloadAction->setEnabled( true );
+    reloadAction->setText( i18n( "Reload Lyrics" ) );
+    d->reloadIcon = addRightHeaderAction( reloadAction );
+    connect( d->reloadIcon, SIGNAL(clicked()), this, SLOT(refreshLyrics()) );
 
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
