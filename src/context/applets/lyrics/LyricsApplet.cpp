@@ -35,12 +35,15 @@
 
 #include <Plasma/Containment>
 #include <Plasma/IconWidget>
+#include <Plasma/Svg>
+#include <Plasma/SvgWidget>
 #include <Plasma/TextBrowser>
 #include <Plasma/TreeView>
 
 #include <QAction>
 #include <QLabel>
 #include <QGraphicsLinearLayout>
+#include <QGraphicsSceneResizeEvent>
 #include <QPainter>
 #include <QPoint>
 #include <QScrollBar>
@@ -58,6 +61,8 @@ public:
         , settingsIcon( 0 )
         , browser( 0 )
         , suggestView( 0 )
+        , topBorder( 0 )
+        , bottomBorder( 0 )
         , currentTrack( 0 )
         , hasLyrics( false )
         , isRichText( true )
@@ -96,6 +101,9 @@ public:
 
     Plasma::TextBrowser *browser;
     Plasma::TreeView    *suggestView;
+
+    Plasma::SvgWidget *topBorder;
+    Plasma::SvgWidget *bottomBorder;
 
     Ui::lyricsSettings ui_settings;
 
@@ -271,6 +279,21 @@ LyricsAppletPrivate::_editLyrics()
     if( !hasLyrics )
         clearLyrics();
 
+    Q_Q( LyricsApplet );
+    if( q->isCollapsed() )
+        q->setCollapseOff();
+
+    if( !browser->isVisible() )
+    {
+        browser->show();
+        suggestView->hide();
+        QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( q->layout() );
+        lo->removeItem( suggestView );
+        lo->addItem( browser );
+        topBorder->show();
+        bottomBorder->show();
+    }
+
     setEditing( true );
     determineActionIconsState();
     browser->nativeWidget()->ensureCursorVisible();
@@ -444,7 +467,6 @@ LyricsApplet::init()
 
     d->browser = new Plasma::TextBrowser( this );
     KTextBrowser *browserWidget = d->browser->nativeWidget();
-    browserWidget->setFrameShape( QFrame::StyledPanel );
     browserWidget->setOpenExternalLinks( true );
     browserWidget->setUndoRedoEnabled( true );
     browserWidget->setAutoFillBackground( false );
@@ -452,13 +474,12 @@ LyricsApplet::init()
     browserWidget->setWordWrapMode( QTextOption::WordWrap );
     browserWidget->viewport()->setAutoFillBackground( true );
     browserWidget->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
+    d->browser->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     d->browser->hide();
 
     d->suggestView = new Plasma::TreeView( this );
     d->suggestView->setModel( new QStandardItemModel( this ) );
     QTreeView *suggestTree = d->suggestView->nativeWidget();
-    suggestTree->setFrameShape( QFrame::StyledPanel );
-    suggestTree->setFrameShadow( QFrame::Sunken );
     suggestTree->setAttribute( Qt::WA_NoSystemBackground );
     suggestTree->setAlternatingRowColors( true );
     suggestTree->setAnimated( true );
@@ -469,6 +490,23 @@ LyricsApplet::init()
     suggestTree->setSortingEnabled( true );
     suggestTree->setUniformRowHeights( true );
     d->suggestView->hide();
+
+    Plasma::Svg *borderSvg = new Plasma::Svg( this );
+    borderSvg->setImagePath( "widgets/scrollwidget" );
+
+    d->topBorder = new Plasma::SvgWidget( this );
+    d->topBorder->setSvg( borderSvg );
+    d->topBorder->setElementID( "border-top" );
+    d->topBorder->setZValue( 900 );
+    d->topBorder->resize( -1, 10.0 );
+    d->topBorder->hide();
+
+    d->bottomBorder = new Plasma::SvgWidget( this );
+    d->bottomBorder->setSvg( borderSvg );
+    d->bottomBorder->setElementID( "border-bottom" );
+    d->bottomBorder->setZValue( 900 );
+    d->bottomBorder->resize( -1, 10.0 );
+    d->bottomBorder->hide();
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->addItem( m_header );
@@ -520,6 +558,7 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         return;
 
     unsetCursor();
+    bool showBorders = false;
     d->hasLyrics = false;
     d->showSuggestions = false;
     d->showBrowser = false;
@@ -562,6 +601,7 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
             .arg( i18n( "Lyrics" ) )
             .arg( data[ "html" ].toString().section( "<title>", 1, 1 ).section( "</title>", 0, 0 ) );
         d->showLyrics( data["html"].toString(), true );
+        showBorders = true;
         setCollapseOff();
     }
     else if( data.contains( "lyrics" ) )
@@ -573,6 +613,7 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
             .arg( i18n( "Lyrics" ) )
             .arg( lyrics[0].toString() ).arg( lyrics[1].toString() );
         d->showLyrics( lyrics[3].toString().trimmed(), false );
+        showBorders = true;
         setCollapseOff();
     }
     else if( data.contains( "notfound" ) )
@@ -593,6 +634,8 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     d->showBrowser     ? lo->addItem( d->browser )           : lo->removeItem( d->browser );
     d->showSuggestions ? d->suggestView->show()              : d->suggestView->hide();
     d->showBrowser     ? d->browser->show()                  : d->browser->hide();
+    showBorders        ? d->topBorder->show()                : d->topBorder->hide();
+    showBorders        ? d->bottomBorder->show()             : d->bottomBorder->hide();
 
     d->determineActionIconsState();
 }
@@ -687,6 +730,29 @@ LyricsApplet::keyPressEvent( QKeyEvent *e )
         }
     }
     Context::Applet::keyPressEvent( e );
+}
+
+void
+LyricsApplet::resizeEvent( QGraphicsSceneResizeEvent *event )
+{
+    QGraphicsWidget::resizeEvent( event );
+    Q_D( LyricsApplet );
+    Plasma::SvgWidget *top;
+    if( (top = d->topBorder) && top->isVisible() )
+    {
+        qreal newWidth = event->newSize().width();
+        if( !qFuzzyCompare(1 + newWidth, 1+ top->size().width()) )
+        {
+            Plasma::SvgWidget *bot = d->bottomBorder;
+            top->resize( newWidth, top->size().height() );
+            bot->resize( newWidth, bot->size().height() );
+            top->setPos( d->browser->pos() );
+            QRectF browserRect = d->browser->boundingRect();
+            QPointF bottomPoint = mapRectFromItem( d->browser, browserRect ).bottomLeft();
+            bottomPoint.ry() -= bot->size().height();
+            bot->setPos( bottomPoint );
+        }
+    }
 }
 
 #include "LyricsApplet.moc"

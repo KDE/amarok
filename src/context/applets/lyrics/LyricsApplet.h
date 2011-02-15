@@ -47,6 +47,7 @@ private slots:
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
     void keyPressEvent( QKeyEvent *e );
+    void resizeEvent( QGraphicsSceneResizeEvent *event );
 
 private:
     LyricsAppletPrivate *const d_ptr;
