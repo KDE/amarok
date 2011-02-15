@@ -8,6 +8,7 @@ VERSION 2.4.1
     * New "Preview" feature for the Organize Collection dialog. Patch by
       Maximilian Güntner <maximilian.guentner@gmail.com>.
     * String filtering in the albums applet.
+    * Ability to change text alignment in the lyrics applet.
 
   CHANGES:
     * Now all changes to Preset Formats in Organize Collection dialog get saved on close,

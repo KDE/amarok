@@ -55,6 +55,7 @@ private:
 
     Q_PRIVATE_SLOT( d_ptr, void _editLyrics() )
     Q_PRIVATE_SLOT( d_ptr, void _changeLyricsFont() )
+    Q_PRIVATE_SLOT( d_ptr, void _changeLyricsAlignment() )
     Q_PRIVATE_SLOT( d_ptr, void _closeLyrics() )
     Q_PRIVATE_SLOT( d_ptr, void _saveLyrics() )
     Q_PRIVATE_SLOT( d_ptr, void _suggestionChosen(const QModelIndex&) )

@@ -48,6 +48,7 @@
 #include <QPoint>
 #include <QScrollBar>
 #include <QStandardItemModel>
+#include <QTextBlock>
 #include <QTimer>
 
 class LyricsAppletPrivate
@@ -64,6 +65,7 @@ public:
         , topBorder( 0 )
         , bottomBorder( 0 )
         , currentTrack( 0 )
+        , alignment( Qt::AlignLeft )
         , hasLyrics( false )
         , isRichText( true )
         , showBrowser( false )
@@ -79,10 +81,12 @@ public:
     void showLyrics( const QString &text, bool isRichText );
     void showSuggested( const QVariantList &suggestions );
     void showUnsavedChangesWarning( Meta::TrackPtr );
+    void updateAlignment();
     const QString currentText();
 
     // private slots
     void _editLyrics();
+    void _changeLyricsAlignment();
     void _changeLyricsFont();
     void _closeLyrics();
     void _saveLyrics();
@@ -110,6 +114,8 @@ public:
     Meta::TrackPtr currentTrack;
     Meta::TrackPtr modifiedTrack;
     QString modifiedLyrics;
+
+    Qt::Alignment alignment;
 
     bool hasLyrics;
     bool isRichText;
@@ -147,6 +153,21 @@ LyricsAppletPrivate::clearLyrics()
 }
 
 void
+LyricsAppletPrivate::updateAlignment()
+{
+    QTextCursor it( browser->nativeWidget()->document()->firstBlock() );
+    if( !it.block().isValid() )
+        return;
+
+    do
+    {
+        QTextBlockFormat fmt = it.blockFormat();
+        fmt.setAlignment( alignment );
+        it.setBlockFormat( fmt );
+    } while ( it.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor) );
+}
+
+void
 LyricsAppletPrivate::showLyrics( const QString &text, bool isRichText )
 {
     DEBUG_BLOCK
@@ -155,6 +176,7 @@ LyricsAppletPrivate::showLyrics( const QString &text, bool isRichText )
         browser->nativeWidget()->setHtml( text );
     else
         browser->nativeWidget()->setPlainText( text );
+    updateAlignment();
     showSuggestions = false;
     showBrowser = true;
     determineActionIconsState();
@@ -264,6 +286,19 @@ void LyricsAppletPrivate::_lyricsChangedMessageButtonPressed( const Plasma::Mess
 }
 
 void
+LyricsAppletPrivate::_changeLyricsAlignment()
+{
+    if( ui_settings.alignLeft->isChecked() )
+        alignment = Qt::AlignLeft;
+    else if( ui_settings.alignCenter->isChecked() )
+        alignment = Qt::AlignCenter;
+    else if( ui_settings.alignRight->isChecked() )
+        alignment = Qt::AlignRight;
+    Amarok::config("Lyrics Applet").writeEntry( "Alignment", int(alignment) );
+    browser->setAlignment( alignment );
+}
+
+void
 LyricsAppletPrivate::_changeLyricsFont()
 {
     QFont font = ui_settings.fontChooser->font();
@@ -293,6 +328,11 @@ LyricsAppletPrivate::_editLyrics()
         topBorder->show();
         bottomBorder->show();
     }
+
+    Qt::Alignment savedAlignment = alignment;
+    alignment = Qt::AlignLeft;
+    updateAlignment();
+    alignment = savedAlignment;
 
     setEditing( true );
     determineActionIconsState();
@@ -324,6 +364,7 @@ LyricsAppletPrivate::_closeLyrics()
         clearLyrics();
     }
 
+    updateAlignment();
     setEditing( false );
     determineActionIconsState();
 }
@@ -347,6 +388,7 @@ LyricsAppletPrivate::_saveLyrics()
     }
 
     setEditing( false );
+    updateAlignment();
     determineActionIconsState();
 }
 
@@ -514,8 +556,11 @@ LyricsApplet::init()
     setLayout( layout );
 
     // Read config
+    const KConfigGroup &lyricsConfig = Amarok::config("Lyrics Applet");
+    d->alignment = Qt::Alignment( lyricsConfig.readEntry("Alignment", int(Qt::AlignLeft)) );
+
     QFont font;
-    if( font.fromString( Amarok::config("Lyrics Applet").readEntry("Font", QString()) ) )
+    if( font.fromString( lyricsConfig.readEntry("Font", QString()) ) )
         browserWidget->setFont( font );
 
     EngineController* engine = The::engineController();
@@ -690,11 +735,29 @@ LyricsApplet::createConfigurationInterface( KConfigDialog *parent )
     d->ui_settings.setupUi( settings );
     d->ui_settings.fontChooser->setFont( d->browser->nativeWidget()->currentFont() );
 
+    switch( d->alignment )
+    {
+    default:
+    case Qt::AlignLeft:
+        d->ui_settings.alignLeft->setChecked( true );
+        break;
+
+    case Qt::AlignRight:
+        d->ui_settings.alignRight->setChecked( true );
+        break;
+
+    case Qt::AlignCenter:
+        d->ui_settings.alignCenter->setChecked( true );
+        break;
+    }
+
     parent->enableButtonApply( true );
     parent->addPage( settings, i18n( "Lyrics Settings" ), "preferences-system" );
 
     connect( parent, SIGNAL(accepted()), this, SLOT(_changeLyricsFont()) );
+    connect( parent, SIGNAL(accepted()), this, SLOT(_changeLyricsAlignment()) );
     connect( parent, SIGNAL(applyClicked()), this, SLOT(_changeLyricsFont()) );
+    connect( parent, SIGNAL(applyClicked()), this, SLOT(_changeLyricsAlignment()) );
 }
 
 void
