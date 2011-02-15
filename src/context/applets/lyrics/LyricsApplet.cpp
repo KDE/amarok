@@ -67,7 +67,7 @@ public:
     ~LyricsAppletPrivate() {}
 
     // member functions
-    void setEditing( const bool isEditing );
+    void setEditing( bool isEditing );
     void determineActionIconsState();
     void clearLyrics();
     void refetchLyrics();
@@ -120,12 +120,11 @@ private:
 };
 
 void
-LyricsAppletPrivate::setEditing( const bool isEditing )
+LyricsAppletPrivate::setEditing( bool isEditing )
 {
+    QPalette::ColorRole bg = isEditing ? QPalette::AlternateBase : QPalette::Base;
+    browser->nativeWidget()->viewport()->setBackgroundRole( bg );
     browser->nativeWidget()->setReadOnly( !isEditing );
-    KTextBrowser *textBrowser = browser->nativeWidget();
-    QPalette::ColorRole bg = textBrowser->isReadOnly() ? QPalette::Base : QPalette::AlternateBase;
-    textBrowser->viewport()->setBackgroundRole( bg );
 }
 
 void
@@ -465,6 +464,7 @@ LyricsApplet::init()
     browserWidget->setOpenExternalLinks( true );
     browserWidget->setUndoRedoEnabled( true );
     browserWidget->setAutoFillBackground( false );
+    browserWidget->setReadOnly( false );
     browserWidget->setWordWrapMode( QTextOption::WordWrap );
     browserWidget->viewport()->setAutoFillBackground( true );
     browserWidget->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
@@ -507,7 +507,6 @@ LyricsApplet::init()
     // Update the palette.
     paletteChanged( The::paletteHandler()->palette() );
 
-    d->setEditing( false );
     d->determineActionIconsState();
     connectSource( "lyrics" );
 }
@@ -624,13 +623,14 @@ void
 LyricsApplet::paletteChanged( const QPalette &palette )
 {
     Q_D( LyricsApplet );
-    KTextBrowser *textBrowser = d->browser->nativeWidget();
-    QPalette::ColorRole bg = textBrowser->isReadOnly() ? QPalette::Base : QPalette::AlternateBase;
-    textBrowser->viewport()->setBackgroundRole( bg );
+    QPalette p = palette;
+    // set text color using app theme instead of plasma theme
+    p.setColor( QPalette::Text, qApp->palette().text().color() );
 
-    // Use the text-color from KDE's colorscheme as we're already using it's background color.
-    // Not using it might cause "conflicts" (where the text could become unreadable).
-    textBrowser->setTextColor( palette.text().color() );
+    KTextBrowser *browser = d->browser->nativeWidget();
+    QPalette::ColorRole bg = browser->isReadOnly() ? QPalette::Base : QPalette::AlternateBase;
+    browser->viewport()->setBackgroundRole( bg );
+    browser->setPalette( p );
 }
 
 void
