@@ -25,8 +25,8 @@
 
 #include <KLocale>
 
-#include <QDomDocument>
 #include <QGraphicsTextItem>
+#include <QXmlStreamReader>
 
 ////////////////////////////////////////////////////////////////
 //// CLASS LyricsObserver
@@ -113,87 +113,77 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     DEBUG_BLOCK
     Q_UNUSED( cached );
 
-    QDomDocument doc;
-    if( !doc.setContent( lyricsXML ) )
+    QXmlStreamReader xml( lyricsXML );
+    while( xml.readNextStartElement() )
     {
-        debug() << "could not read the xml of lyrics, malformed";
-        lyricsError( i18n("Lyrics data could not be parsed") );
-        // TODO: how about showing cached lyrics then?
-        return;
-    }
-
-    QString lyrics;
-
-    QDomElement el = doc.documentElement();
-
-    if ( el.tagName() == "suggestions" )
-    {
-        const QDomNodeList l = doc.elementsByTagName( "suggestion" );
-
-        debug() << "got suggestion list of length" << l.length();
-        if( l.length() ==0 )
+        if( xml.name() == QLatin1String("lyric") )
         {
-            sendLyricsMessage( "notfound", "notfound" );
-        }
-        else
-        {
-            QVariantList suggested;
-            for( int i = 0, len = l.length(); i < len; ++i )
-            {
-                const QString &url    = l.item( i ).toElement().attribute( "url" );
-                const QString &artist = l.item( i ).toElement().attribute( "artist" );
-                const QString &title  = l.item( i ).toElement().attribute( "title" );
-                suggested << ( QStringList() << title << artist << url );
-            }
-            sendNewSuggestions( suggested );
-        }
-    }
-    else
-    {
-        if( !The::engineController()->currentTrack() )
-            return;
-
-        lyrics = el.text();
-
-        // FIXME: lyrics != "Not found" will not work when the lyrics script displays i18n'ed
-        // error messages
-        if ( !isEmpty( lyrics ) &&
-              lyrics != "Not found" )
-        {
-            // overwrite cached lyrics (as either there were no lyircs available previously OR
-            // the user exlicitly agreed to overwrite the lyrics)
-            debug() << "setting cached lyrics...";
-            The::engineController()->currentTrack()->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
-        }
-        else if( !isEmpty( The::engineController()->currentTrack()->cachedLyrics() ) &&
-                  The::engineController()->currentTrack()->cachedLyrics() != "Not found" )
-        {
-            // we found nothing, so if we have cached lyrics, use it!
-            debug() << "using cached lyrics...";
-            lyrics = The::engineController()->currentTrack()->cachedLyrics();
-
-            if( isHtmlLyrics( lyrics ) )
-            {
-                //we have stored html lyrics, so use that directly
-                sendNewLyricsHtml( lyrics );
+            Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+            if( !currentTrack )
                 return;
+
+            QString lyrics( xml.readElementText() );
+            if( !isEmpty( lyrics ) )
+            {
+                // overwrite cached lyrics (as either there were no lyircs available previously OR
+                // the user exlicitly agreed to overwrite the lyrics)
+                debug() << "setting cached lyrics...";
+                currentTrack->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
             }
+            else if( !isEmpty( currentTrack->cachedLyrics() ) )
+            {
+                // we found nothing, so if we have cached lyrics, use it!
+                debug() << "using cached lyrics...";
+                lyrics = currentTrack->cachedLyrics();
+                if( isHtmlLyrics( lyrics ) )
+                {
+                    sendNewLyricsHtml( lyrics );
+                }
+                else
+                {
+                    QStringList lyricsData;
+                    lyricsData << currentTrack->name()
+                        << currentTrack->artist()->name()
+                        << QString() // TODO lyrics site
+                        << lyrics;
+                    sendNewLyrics( lyricsData );
+                }
+            }
+            return;
         }
-
-        // only continue if the given lyrics are not empty
-        if ( !isEmpty( lyrics ) )
+        else if( xml.name() == QLatin1String("suggestions") )
         {
-            // TODO: why don't we use currentTrack->prettyName() here?
-            const QString title = el.attribute( "title" );
+            QVariantList suggestions;
+            while( xml.readNextStartElement() )
+            {
+                if( xml.name() != QLatin1String("suggestion") )
+                    continue;
 
-            QStringList lyricsData;
-            lyricsData << title
-                << The::engineController()->currentTrack()->artist()->name()
-                << QString() // TODO lyrics site
-                << lyrics;
+                const QXmlStreamAttributes &a = xml.attributes();
 
-            sendNewLyrics( lyricsData );
+                QString artist = a.value( QLatin1String("artist") ).toString();
+                QString title = a.value( QLatin1String("title") ).toString();
+                QString url = a.value( QLatin1String("url") ).toString();
+
+                if( !url.isEmpty() )
+                    suggestions << ( QStringList() << title << artist << url );
+                xml.skipCurrentElement();
+            }
+
+            debug() << "got" << suggestions.size() << "suggestions";
+            if( suggestions.isEmpty() )
+                sendLyricsMessage( "notFound", "notfound" );
+            else
+                sendNewSuggestions( suggestions );
+            return;
         }
+        xml.skipCurrentElement();
+    }
+
+    if( xml.hasError() )
+    {
+        warning() << "errors occured during reading lyrics xml result:" << xml.errorString();
+        lyricsError( i18n("Lyrics data could not be parsed") );
     }
 }
 
