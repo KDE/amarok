@@ -155,15 +155,6 @@ SetCustomCoverAction::slotTriggered()
     dlg.setCaption( i18n("Select Cover Image File") );
     dlg.setInlinePreviewShown( true );
 
-    // TODO: auto error handling was disabled to allow entering an http address
-    // in the dialog (commit 8b192500da7d31e314ce04759233d78fe6ce57b9). Now with
-    // kde 4.4 and 4.3.3 this is no longer necessary (BR 197945).
-
-    // trueg: there could be another implementation of the file module which does not use KFileWidget!
-    if ( KFileWidget *fileWidget = dynamic_cast<KFileWidget*>( dlg.fileWidget() ) )
-        if ( KDirLister *dirLister = fileWidget->dirOperator()->dirLister() )
-            dirLister->setAutoErrorHandlingEnabled( false, qobject_cast<QWidget*>( parent() ) );
-
     dlg.exec();
     KUrl file = dlg.selectedUrl();
 
@@ -174,7 +165,6 @@ SetCustomCoverAction::slotTriggered()
         if( file.isLocalFile() )
         {
             image.load( file.path() );
-
         }
         else
         {
