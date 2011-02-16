@@ -78,11 +78,11 @@ public:
     void determineActionIconsState();
     void clearLyrics();
     void refetchLyrics();
-    void showLyrics( const QString &text, bool isRichText );
+    void showLyrics( const QString &text );
     void showSuggested( const QVariantList &suggestions );
     void showUnsavedChangesWarning( Meta::TrackPtr );
     void updateAlignment();
-    const QString currentText();
+    QString currentText() const;
 
     // private slots
     void _editLyrics();
@@ -169,7 +169,7 @@ LyricsAppletPrivate::updateAlignment()
 }
 
 void
-LyricsAppletPrivate::showLyrics( const QString &text, bool isRichText )
+LyricsAppletPrivate::showLyrics( const QString &text )
 {
     DEBUG_BLOCK
     clearLyrics();
@@ -216,8 +216,8 @@ LyricsAppletPrivate::showSuggested( const QVariantList &suggestions )
     showSuggestions = true;
 }
 
-const QString
-LyricsAppletPrivate::currentText()
+QString
+LyricsAppletPrivate::currentText() const
 {
     return isRichText ? browser->nativeWidget()->toHtml() : browser->nativeWidget()->toPlainText();
 }
@@ -284,6 +284,8 @@ void LyricsAppletPrivate::_lyricsChangedMessageButtonPressed( const Plasma::Mess
     if( button == Plasma::ButtonYes )
         // Update the lyrics of the track.
         modifiedTrack->setCachedLyrics( modifiedLyrics );
+
+    modifiedLyrics.clear();
 }
 
 void
@@ -355,7 +357,6 @@ LyricsAppletPrivate::_closeLyrics()
 
         vbar->setSliderPosition( savedPosition );
 
-        determineActionIconsState();
         showSuggestions = false;
         showBrowser = true;
         // emit sizeHintChanged(Qt::MaximumSize);
@@ -647,7 +648,7 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         titleText = QString( "%1: %2" )
             .arg( i18n( "Lyrics" ) )
             .arg( data[ "html" ].toString().section( "<title>", 1, 1 ).section( "</title>", 0, 0 ) );
-        d->showLyrics( data["html"].toString(), true );
+        d->showLyrics( data["html"].toString() );
         showBorders = true;
         setCollapseOff();
     }
@@ -658,8 +659,8 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         QVariantList lyrics  = data[ "lyrics" ].toList();
         titleText = QString( "%1: %2 - %3" )
             .arg( i18n( "Lyrics" ) )
-            .arg( lyrics[0].toString() ).arg( lyrics[1].toString() );
-        d->showLyrics( lyrics[3].toString().trimmed(), false );
+            .arg( lyrics.at(0).toString() ).arg( lyrics.at(1).toString() );
+        d->showLyrics( lyrics.at(3).toString().trimmed() );
         showBorders = true;
         setCollapseOff();
     }
@@ -670,7 +671,7 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     }
     else
     {
-        debug() << "should not be here";
+        warning() << "should not be here";
         return;
     }
 
