@@ -1,6 +1,6 @@
 project(context-currenttrack)
 
-set(lyrics_SRCS LyricsApplet.cpp )
+set(lyrics_SRCS LyricsApplet.cpp LyricsBrowser.cpp)
 
 include_directories( ../..
                      ../../.. )

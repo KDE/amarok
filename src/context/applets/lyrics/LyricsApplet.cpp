@@ -20,35 +20,28 @@
 #include "LyricsApplet.h"
 
 #include "EngineController.h"
-#include "PaletteHandler.h"
 #include "context/widgets/AppletHeader.h"
 #include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "dialogs/ScriptManager.h"
 #include "context/LyricsManager.h"
+#include "LyricsBrowser.h"
 
 #include <KConfigDialog>
-#include <KGlobalSettings>
-#include <KMessageBox>
 #include <KTextBrowser>
 
-#include <Plasma/Containment>
 #include <Plasma/IconWidget>
-#include <Plasma/Svg>
-#include <Plasma/SvgWidget>
 #include <Plasma/TextBrowser>
 #include <Plasma/TreeView>
 
 #include <QAction>
-#include <QLabel>
 #include <QGraphicsLinearLayout>
-#include <QGraphicsSceneResizeEvent>
 #include <QPainter>
 #include <QPoint>
 #include <QScrollBar>
 #include <QStandardItemModel>
-#include <QTextBlock>
+#include <QTreeView>
 #include <QTimer>
 
 class LyricsAppletPrivate
@@ -62,12 +55,9 @@ public:
         , settingsIcon( 0 )
         , browser( 0 )
         , suggestView( 0 )
-        , topBorder( 0 )
-        , bottomBorder( 0 )
         , currentTrack( 0 )
         , alignment( Qt::AlignLeft )
         , hasLyrics( false )
-        , isRichText( true )
         , showBrowser( false )
         , showSuggestions( false )
         , q_ptr( parent ) {}
@@ -76,13 +66,10 @@ public:
     // member functions
     void setEditing( bool isEditing );
     void determineActionIconsState();
-    void clearLyrics();
     void refetchLyrics();
     void showLyrics( const QString &text );
     void showSuggested( const QVariantList &suggestions );
     void showUnsavedChangesWarning( Meta::TrackPtr );
-    void updateAlignment();
-    QString currentText() const;
 
     // private slots
     void _editLyrics();
@@ -103,11 +90,8 @@ public:
     Plasma::IconWidget *closeIcon;
     Plasma::IconWidget *settingsIcon;
 
-    Plasma::TextBrowser *browser;
-    Plasma::TreeView    *suggestView;
-
-    Plasma::SvgWidget *topBorder;
-    Plasma::SvgWidget *bottomBorder;
+    LyricsBrowser      *browser;
+    Plasma::TreeView   *suggestView;
 
     Ui::lyricsSettings ui_settings;
 
@@ -118,7 +102,6 @@ public:
     Qt::Alignment alignment;
 
     bool hasLyrics;
-    bool isRichText;
     bool showBrowser;
     bool showSuggestions;
 
@@ -130,16 +113,13 @@ private:
 void
 LyricsAppletPrivate::setEditing( bool isEditing )
 {
-    QPalette::ColorRole bg = isEditing ? QPalette::AlternateBase : QPalette::Base;
-    browser->nativeWidget()->viewport()->setBackgroundRole( bg );
-    browser->nativeWidget()->setReadOnly( !isEditing );
-    browser->nativeWidget()->setCursorWidth( isEditing ? 1 : 0 );
+    browser->setReadOnly( !isEditing );
 }
 
 void
 LyricsAppletPrivate::determineActionIconsState()
 {
-    bool isEditing = !browser->nativeWidget()->isReadOnly();
+    bool isEditing = !browser->isReadOnly();
 
     editIcon->action()->setEnabled( !isEditing );
     closeIcon->action()->setEnabled( showBrowser & isEditing );
@@ -148,36 +128,11 @@ LyricsAppletPrivate::determineActionIconsState()
 }
 
 void
-LyricsAppletPrivate::clearLyrics()
-{
-    browser->nativeWidget()->clear();
-}
-
-void
-LyricsAppletPrivate::updateAlignment()
-{
-    QTextCursor it( browser->nativeWidget()->document()->firstBlock() );
-    if( !it.block().isValid() )
-        return;
-
-    do
-    {
-        QTextBlockFormat fmt = it.blockFormat();
-        fmt.setAlignment( alignment );
-        it.setBlockFormat( fmt );
-    } while ( it.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor) );
-}
-
-void
 LyricsAppletPrivate::showLyrics( const QString &text )
 {
     DEBUG_BLOCK
-    clearLyrics();
-    if( isRichText )
-        browser->nativeWidget()->setHtml( text );
-    else
-        browser->nativeWidget()->setPlainText( text );
-    updateAlignment();
+    browser->clear();
+    browser->setLyrics( text );
     showSuggestions = false;
     showBrowser = true;
     determineActionIconsState();
@@ -216,12 +171,6 @@ LyricsAppletPrivate::showSuggested( const QVariantList &suggestions )
     showSuggestions = true;
 }
 
-QString
-LyricsAppletPrivate::currentText() const
-{
-    return isRichText ? browser->nativeWidget()->toHtml() : browser->nativeWidget()->toPlainText();
-}
-
 void
 LyricsAppletPrivate::refetchLyrics()
 {
@@ -238,7 +187,7 @@ LyricsAppletPrivate::showUnsavedChangesWarning( Meta::TrackPtr newTrack )
     // Set the track which was modified and store the current
     // lyircs from the UI.
     modifiedTrack = currentTrack;
-    modifiedLyrics = currentText();
+    modifiedLyrics = browser->lyrics();
 
     QString artistName = modifiedTrack->artist() ? modifiedTrack->artist()->name() : i18nc( "Used if the current track has no artist.", "Unknown" );
     QString warningMessage;
@@ -315,7 +264,7 @@ void
 LyricsAppletPrivate::_editLyrics()
 {
     if( !hasLyrics )
-        clearLyrics();
+        browser->clear();
 
     Q_Q( LyricsApplet );
     if( q->isCollapsed() )
@@ -328,15 +277,9 @@ LyricsAppletPrivate::_editLyrics()
         QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( q->layout() );
         lo->removeItem( suggestView );
         lo->addItem( browser );
-        topBorder->show();
-        bottomBorder->show();
     }
 
-    Qt::Alignment savedAlignment = alignment;
-    alignment = Qt::AlignLeft;
-    updateAlignment();
-    alignment = savedAlignment;
-
+    browser->setAlignment( Qt::AlignLeft );
     setEditing( true );
     determineActionIconsState();
     browser->nativeWidget()->ensureCursorVisible();
@@ -350,11 +293,7 @@ LyricsAppletPrivate::_closeLyrics()
         QScrollBar *vbar = browser->nativeWidget()->verticalScrollBar();
         int savedPosition = vbar->isVisible() ? vbar->value() : vbar->minimum();
 
-        if( isRichText )
-            browser->nativeWidget()->setHtml( currentTrack->cachedLyrics() );
-        else
-            browser->nativeWidget()->setPlainText( currentTrack->cachedLyrics() );
-
+        browser->setLyrics( currentTrack->cachedLyrics() );
         vbar->setSliderPosition( savedPosition );
 
         showSuggestions = false;
@@ -363,11 +302,11 @@ LyricsAppletPrivate::_closeLyrics()
     }
     else
     {
-        clearLyrics();
+        browser->clear();
     }
 
-    updateAlignment();
     setEditing( false );
+    browser->setAlignment( alignment );
     determineActionIconsState();
 }
 
@@ -378,7 +317,7 @@ LyricsAppletPrivate::_saveLyrics()
     {
         if( !LyricsManager::self()->isEmpty( browser->nativeWidget()->toPlainText() ) )
         {
-            currentTrack->setCachedLyrics( currentText() );
+            currentTrack->setCachedLyrics( browser->lyrics() );
             hasLyrics = true;
         }
         else
@@ -390,7 +329,7 @@ LyricsAppletPrivate::_saveLyrics()
     }
 
     setEditing( false );
-    updateAlignment();
+    browser->setAlignment( alignment );
     determineActionIconsState();
 }
 
@@ -433,8 +372,8 @@ LyricsAppletPrivate::_trackDataChanged( Meta::TrackPtr track )
     // additionally is in edit mode) are different from the
     // lyrics of the track we have to show a warning.
     if( currentTrack &&
-        currentTrack->cachedLyrics() != currentText() &&
-        !browser->nativeWidget()->isReadOnly() )
+        currentTrack->cachedLyrics() != browser->lyrics() &&
+        !browser->isReadOnly() )
     {
         showUnsavedChangesWarning( track );
     }
@@ -509,16 +448,7 @@ LyricsApplet::init()
     d->settingsIcon = addRightHeaderAction( settingsAction );
     connect( d->settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
 
-    d->browser = new Plasma::TextBrowser( this );
-    KTextBrowser *browserWidget = d->browser->nativeWidget();
-    browserWidget->setOpenExternalLinks( true );
-    browserWidget->setUndoRedoEnabled( true );
-    browserWidget->setAutoFillBackground( false );
-    browserWidget->setReadOnly( false );
-    browserWidget->setWordWrapMode( QTextOption::WordWrap );
-    browserWidget->setCursorWidth( 0 );
-    browserWidget->viewport()->setAutoFillBackground( true );
-    browserWidget->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
+    d->browser = new LyricsBrowser( this );
     d->browser->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     d->browser->hide();
 
@@ -536,23 +466,6 @@ LyricsApplet::init()
     suggestTree->setUniformRowHeights( true );
     d->suggestView->hide();
 
-    Plasma::Svg *borderSvg = new Plasma::Svg( this );
-    borderSvg->setImagePath( "widgets/scrollwidget" );
-
-    d->topBorder = new Plasma::SvgWidget( this );
-    d->topBorder->setSvg( borderSvg );
-    d->topBorder->setElementID( "border-top" );
-    d->topBorder->setZValue( 900 );
-    d->topBorder->resize( -1, 10.0 );
-    d->topBorder->hide();
-
-    d->bottomBorder = new Plasma::SvgWidget( this );
-    d->bottomBorder->setSvg( borderSvg );
-    d->bottomBorder->setElementID( "border-bottom" );
-    d->bottomBorder->setZValue( 900 );
-    d->bottomBorder->resize( -1, 10.0 );
-    d->bottomBorder->hide();
-
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
     layout->addItem( m_header );
     layout->addItem( d->browser );
@@ -561,10 +474,11 @@ LyricsApplet::init()
     // Read config
     const KConfigGroup &lyricsConfig = Amarok::config("Lyrics Applet");
     d->alignment = Qt::Alignment( lyricsConfig.readEntry("Alignment", int(Qt::AlignLeft)) );
+    d->browser->setAlignment( d->alignment );
 
     QFont font;
     if( font.fromString( lyricsConfig.readEntry("Font", QString()) ) )
-        browserWidget->setFont( font );
+        d->browser->setFont( font );
 
     EngineController* engine = The::engineController();
 
@@ -572,10 +486,6 @@ LyricsApplet::init()
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ), this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
     connect( suggestTree, SIGNAL(activated(QModelIndex)), this, SLOT(_suggestionChosen(QModelIndex)) );
     connect( dataEngine("amarok-lyrics"), SIGNAL(sourceAdded(QString)), this, SLOT(connectSource(QString)) );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
-
-    // Update the palette.
-    paletteChanged( The::paletteHandler()->palette() );
 
     d->determineActionIconsState();
     connectSource( "lyrics" );
@@ -606,7 +516,6 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         return;
 
     unsetCursor();
-    bool showBorders = false;
     d->hasLyrics = false;
     d->showSuggestions = false;
     d->showBrowser = false;
@@ -644,24 +553,22 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     else if( data.contains( "html" ) )
     {
         d->hasLyrics = true;
-        d->isRichText = true;
+        d->browser->setRichText( true );
         titleText = QString( "%1: %2" )
             .arg( i18n( "Lyrics" ) )
             .arg( data[ "html" ].toString().section( "<title>", 1, 1 ).section( "</title>", 0, 0 ) );
         d->showLyrics( data["html"].toString() );
-        showBorders = true;
         setCollapseOff();
     }
     else if( data.contains( "lyrics" ) )
     {
         d->hasLyrics = true;
-        d->isRichText = false;
+        d->browser->setRichText( false );
         QVariantList lyrics  = data[ "lyrics" ].toList();
         titleText = QString( "%1: %2 - %3" )
             .arg( i18n( "Lyrics" ) )
             .arg( lyrics.at(0).toString() ).arg( lyrics.at(1).toString() );
         d->showLyrics( lyrics.at(3).toString().trimmed() );
-        showBorders = true;
         setCollapseOff();
     }
     else if( data.contains( "notfound" ) )
@@ -682,8 +589,6 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     d->showBrowser     ? lo->addItem( d->browser )           : lo->removeItem( d->browser );
     d->showSuggestions ? d->suggestView->show()              : d->suggestView->hide();
     d->showBrowser     ? d->browser->show()                  : d->browser->hide();
-    showBorders        ? d->topBorder->show()                : d->topBorder->hide();
-    showBorders        ? d->bottomBorder->show()             : d->bottomBorder->hide();
 
     d->determineActionIconsState();
 }
@@ -692,20 +597,6 @@ bool
 LyricsApplet::hasHeightForWidth() const
 {
     return false;
-}
-
-void
-LyricsApplet::paletteChanged( const QPalette &palette )
-{
-    Q_D( LyricsApplet );
-    QPalette p = palette;
-    // set text color using app theme instead of plasma theme
-    p.setColor( QPalette::Text, qApp->palette().text().color() );
-
-    KTextBrowser *browser = d->browser->nativeWidget();
-    QPalette::ColorRole bg = browser->isReadOnly() ? QPalette::Base : QPalette::AlternateBase;
-    browser->viewport()->setBackgroundRole( bg );
-    browser->setPalette( p );
 }
 
 void
@@ -796,29 +687,6 @@ LyricsApplet::keyPressEvent( QKeyEvent *e )
         }
     }
     Context::Applet::keyPressEvent( e );
-}
-
-void
-LyricsApplet::resizeEvent( QGraphicsSceneResizeEvent *event )
-{
-    QGraphicsWidget::resizeEvent( event );
-    Q_D( LyricsApplet );
-    Plasma::SvgWidget *top;
-    if( (top = d->topBorder) && top->isVisible() )
-    {
-        qreal newWidth = event->newSize().width();
-        if( !qFuzzyCompare(1 + newWidth, 1+ top->size().width()) )
-        {
-            Plasma::SvgWidget *bot = d->bottomBorder;
-            top->resize( newWidth, top->size().height() );
-            bot->resize( newWidth, bot->size().height() );
-            top->setPos( d->browser->pos() );
-            QRectF browserRect = d->browser->boundingRect();
-            QPointF bottomPoint = mapRectFromItem( d->browser, browserRect ).bottomLeft();
-            bottomPoint.ry() -= bot->size().height();
-            bot->setPos( bottomPoint );
-        }
-    }
 }
 
 #include "LyricsApplet.moc"

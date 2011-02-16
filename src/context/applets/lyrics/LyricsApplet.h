@@ -40,14 +40,10 @@ public slots:
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
     void refreshLyrics();
-    
-private slots:
-    void paletteChanged( const QPalette &palette );
 
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
     void keyPressEvent( QKeyEvent *e );
-    void resizeEvent( QGraphicsSceneResizeEvent *event );
 
 private:
     LyricsAppletPrivate *const d_ptr;
