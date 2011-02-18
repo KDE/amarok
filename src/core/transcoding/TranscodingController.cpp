@@ -47,6 +47,11 @@ Controller::Controller( QObject *parent )
     verifyAvailability->start();
 }
 
+Controller::~Controller()
+{
+    qDeleteAll( m_formats );
+}
+
 void
 Controller::onAvailabilityVerified( int exitCode, QProcess::ExitStatus exitStatus ) //SLOT
 {
