@@ -50,7 +50,6 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     : DynamicPlaylist( parent )
     , m_numRequested( 0 )
     , m_bias( 0 )
-    , m_solver( 0 )
 {
     m_title = i18nc( "Title for a default dynamic playlist. The default playlist only returns random tracks.", "Random" );
 
@@ -62,7 +61,6 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *pare
     : DynamicPlaylist( parent )
     , m_numRequested( 0 )
     , m_bias( 0 )
-    , m_solver( 0 )
 {
     // Make sure that the BiasedPlaylist instance gets destroyed when App destroys
     setParent( App::instance() );
@@ -115,8 +113,8 @@ Dynamic::BiasedPlaylist::requestAbort()
 {
     DEBUG_BLOCK
     if( m_solver ) {
+        m_solver->requestAbort();
         disconnect( m_solver, 0, this, 0 );
-        delete m_solver;
         m_solver = 0;
     }
 }
@@ -131,6 +129,7 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
     {
         debug() << "assigning new m_solver";
         m_solver = new BiasSolver( BUFFER_SIZE, m_bias, getContext() );
+        m_solver->setAutoDelete( true );
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
         connect( m_solver, SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
 
@@ -263,7 +262,6 @@ Dynamic::BiasedPlaylist::solverFinished()
     }
 
     disconnect( m_solver, 0, this, 0 );
-    delete m_solver;
     m_solver = 0;
 
     // empty collection just give up.

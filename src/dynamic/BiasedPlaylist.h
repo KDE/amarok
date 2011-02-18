@@ -27,7 +27,7 @@
 
 #include <QObject>
 #include <QMutex>
-#include <QWeakPointer>
+#include <QPointer>
 
 class QXmlStreamReader;
 class QXmlStreamReader;
@@ -80,7 +80,7 @@ namespace Dynamic
             int m_numRequested;
 
             BiasPtr m_bias;
-            BiasSolver *m_solver;
+            QPointer<BiasSolver> m_solver;
 
             static const int BUFFER_SIZE;
     };
