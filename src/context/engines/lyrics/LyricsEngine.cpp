@@ -98,7 +98,7 @@ bool LyricsEngine::testLyricsChanged( const QString& newLyrics,
         if ( hasPlainLyrics )
             // Previously we got plaintext lyrics -> compare them with
             // the new ones.
-            retVal = newLyrics != oldPlainLyrics[ 3 ];
+            retVal = newLyrics != oldPlainLyrics.value( 3 );
         else
             // There were no old lyrics -> if the new lyrics are
             // non-empty they have changed.
@@ -216,7 +216,7 @@ void LyricsEngine::update()
     }
 }
 
-void LyricsEngine::newLyrics( QStringList& lyrics )
+void LyricsEngine::newLyrics( const QStringList& lyrics )
 {
     DEBUG_BLOCK
 
@@ -225,7 +225,7 @@ void LyricsEngine::newLyrics( QStringList& lyrics )
     m_currentLyricsList = lyrics;
 }
 
-void LyricsEngine::newLyricsHtml( QString& lyrics )
+void LyricsEngine::newLyricsHtml( const QString& lyrics )
 {
     removeAllData( "lyrics" );
     setData( "lyrics", "html", lyrics );
@@ -241,7 +241,7 @@ void LyricsEngine::newSuggestions( const QVariantList &suggested )
     m_currentSuggestionsList = suggested;
 }
 
-void LyricsEngine::lyricsMessage( QString& key, QString &val )
+void LyricsEngine::lyricsMessage( const QString& key, const QString &val )
 {
     DEBUG_BLOCK
 

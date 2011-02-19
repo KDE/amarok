@@ -36,11 +36,11 @@ class AMAROK_EXPORT LyricsObserver
         /**
          *  A lyrics script has returned new plaintext lyrics.
          */
-        virtual void newLyrics( QStringList& lyrics ) { Q_UNUSED( lyrics ); }
+        virtual void newLyrics( const QStringList& lyrics ) { Q_UNUSED( lyrics ); }
         /**
          *  A lyrics script has returned new html lyrics.
          */
-        virtual void newLyricsHtml( QString& lyrics ) { Q_UNUSED( lyrics ); }
+        virtual void newLyricsHtml( const QString& lyrics ) { Q_UNUSED( lyrics ); }
         /**
          *  A lyrics script has returned a list of suggested URLs for correct lyrics.
          */
@@ -48,7 +48,7 @@ class AMAROK_EXPORT LyricsObserver
         /**
          *  A lyrics script has returned some generic message that they want to be displayed.
          */
-        virtual void lyricsMessage( QString& key, QString &val ) { Q_UNUSED( key ); Q_UNUSED( val ); }
+        virtual void lyricsMessage( const QString& key, const QString &val ) { Q_UNUSED( key ); Q_UNUSED( val ); }
 
     private:
         LyricsSubject *m_subject;

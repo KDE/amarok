@@ -42,10 +42,10 @@ public:
     QStringList sources() const;
 
     // reimplemented from LyricsObserver
-    void newLyrics( QStringList& lyrics );
-    void newLyricsHtml( QString& lyrics );
+    void newLyrics( const QStringList& lyrics );
+    void newLyricsHtml( const QString& lyrics );
     void newSuggestions( const QVariantList &suggest );
-    void lyricsMessage( QString& key, QString& val );
+    void lyricsMessage( const QString& key, const QString& val );
 
 protected:
     bool sourceRequestEvent( const QString& name );
