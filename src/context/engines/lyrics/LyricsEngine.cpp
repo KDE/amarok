@@ -173,11 +173,23 @@ void LyricsEngine::update()
         }
     }
 
+    const QString &lyrics = currentTrack->cachedLyrics();
+
     // Check if the title, the artist and the lyrics are still the same.
     if( title == m_title &&
         artist == m_artist &&
-        !testLyricsChanged( currentTrack->cachedLyrics(), m_currentLyrics, m_currentLyricsList ) )
+        !testLyricsChanged( lyrics, m_currentLyrics, m_currentLyricsList ) )
+    {
+        if( !lyrics.isEmpty() )
+        {
+            removeAllData( "lyrics" );
+            if( LyricsManager::self()->isHtmlLyrics( lyrics ) )
+                setData( "lyrics", "html", m_currentLyrics );
+            else
+                setData( "lyrics", "lyrics", m_currentLyricsList );
+        }
         return; // nothing changed
+    }
 
     // -- really need new lyrics
     m_title = title;
@@ -189,8 +201,6 @@ void LyricsEngine::update()
     m_currentLyrics.clear();
     m_currentLyricsList.clear();
     m_currentSuggestionsList.clear();
-
-    QString lyrics = currentTrack->cachedLyrics();
 
     // don't rely on caching for streams
     const bool cached = !LyricsManager::self()->isEmpty( lyrics ) &&
