@@ -545,15 +545,14 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         d->showLyrics( lyrics.at(3).toString().trimmed() );
         setCollapseOff();
     }
-    else if( data.contains( "notfound" ) )
+    else if( data.contains( "notfound" ) || data.contains( "notFound" ) )
     {
         titleText = i18n( "Lyrics: Not found" );
         setCollapseOn();
     }
     else
     {
-        warning() << "should not be here";
-        return;
+        warning() << "should not be here:" << data;
     }
 
     setHeaderText( titleText );
