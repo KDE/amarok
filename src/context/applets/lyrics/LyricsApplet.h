@@ -54,7 +54,7 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _changeLyricsAlignment() )
     Q_PRIVATE_SLOT( d_ptr, void _closeLyrics() )
     Q_PRIVATE_SLOT( d_ptr, void _saveLyrics() )
-    Q_PRIVATE_SLOT( d_ptr, void _suggestionChosen(const QModelIndex&) )
+    Q_PRIVATE_SLOT( d_ptr, void _suggestionChosen(LyricsSuggestion) )
     Q_PRIVATE_SLOT( d_ptr, void _unsetCursor() )
     Q_PRIVATE_SLOT( d_ptr, void _trackDataChanged( Meta::TrackPtr ) )
     Q_PRIVATE_SLOT( d_ptr, void _lyricsChangedMessageButtonPressed(const Plasma::MessageButton) )

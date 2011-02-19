@@ -27,6 +27,7 @@
 #include "dialogs/ScriptManager.h"
 #include "context/LyricsManager.h"
 #include "LyricsBrowser.h"
+#include "LyricsSuggestionsListWidget.h"
 
 #include <KConfigDialog>
 #include <KTextBrowser>
@@ -77,7 +78,7 @@ public:
     void _changeLyricsFont();
     void _closeLyrics();
     void _saveLyrics();
-    void _suggestionChosen( const QModelIndex &index );
+    void _suggestionChosen( const LyricsSuggestion &suggestion );
     void _unsetCursor();
     void _trackDataChanged( Meta::TrackPtr );
 
@@ -91,7 +92,7 @@ public:
     Plasma::IconWidget *settingsIcon;
 
     LyricsBrowser      *browser;
-    Plasma::TreeView   *suggestView;
+    LyricsSuggestionsListWidget *suggestView;
 
     Ui::lyricsSettings ui_settings;
 
@@ -145,29 +146,16 @@ LyricsAppletPrivate::showSuggested( const QVariantList &suggestions )
     closeIcon->action()->setEnabled( false );
     saveIcon->action()->setEnabled( false );
 
-    QStandardItemModel *model = qobject_cast<QStandardItemModel*>( suggestView->model() );
-    model->clear();
-    model->setHorizontalHeaderLabels( QStringList() << i18n("Title") << i18n("Artist") );
-    QStandardItem *parentItem = model->invisibleRootItem();
+    suggestView->clear();
     foreach( const QVariant &suggestion, suggestions )
     {
-        const QStringList &s  = suggestion.toStringList();
-        QStandardItem *title  = new QStandardItem( s.at(0) );
-        QStandardItem *artist = new QStandardItem( s.at(1) );
-        title->setToolTip( title->text() );
-        title->setEditable( false );
-        artist->setToolTip( artist->text() );
-        artist->setEditable( false );
-        const QString &url = s.at( 2 );
-        title->setData( url ); // url is set in the user role +1 of title
-        parentItem->appendRow( QList<QStandardItem*>() << title << artist );
+        QStringList s( suggestion.toStringList() );
+        QString title( s.at(0) );
+        QString artist( s.at(1) );
+        KUrl url( s.at(2) );
+        LyricsSuggestion suggestion = { url, title, artist };
+        suggestView->add( suggestion );
     }
-
-    Q_Q( LyricsApplet );
-    qreal width = q->size().width() - 2 * q->standardPadding();
-    QHeaderView *header = suggestView->nativeWidget()->header();
-    header->resizeSection( 0, width * 2 / 3 );
-    header->setStretchLastSection( true );
     showSuggestions = true;
 }
 
@@ -274,6 +262,7 @@ LyricsAppletPrivate::_editLyrics()
     {
         browser->show();
         suggestView->hide();
+        suggestView->clear();
         QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( q->layout() );
         lo->removeItem( suggestView );
         lo->addItem( browser );
@@ -334,25 +323,21 @@ LyricsAppletPrivate::_saveLyrics()
 }
 
 void
-LyricsAppletPrivate::_suggestionChosen( const QModelIndex &index )
+LyricsAppletPrivate::_suggestionChosen( const LyricsSuggestion &suggestion )
 {
     DEBUG_BLOCK
-    Q_Q( LyricsApplet );
-    if( !index.isValid() )
+    KUrl url = suggestion.url;
+    if( !url.isValid() )
         return;
 
-    int row = index.row();
-    QStandardItemModel *model = qobject_cast<QStandardItemModel*>( suggestView->model() );
-    const QString &title  = model->item( row, 0 )->text();
-    const QString &artist = model->item( row, 1 )->text();
-    const QString &url    = model->item( row, 0 )->data().toString();
-    if( !url.isEmpty() )
-    {
-        debug() << "clicked suggestion" << url;
-        ScriptManager::instance()->notifyFetchLyricsByUrl( artist, title, url );
-        suggestView->setCursor( Qt::BusyCursor );
-        QTimer::singleShot( 10000, q, SLOT(_unsetCursor()) );
-    }
+    QString title = suggestion.title;
+    QString artist = suggestion.artist;
+
+    Q_Q( LyricsApplet );
+    debug() << "clicked suggestion" << url;
+    ScriptManager::instance()->notifyFetchLyricsByUrl( artist, title, url.url() );
+    suggestView->setCursor( Qt::BusyCursor );
+    QTimer::singleShot( 10000, q, SLOT(_unsetCursor()) );
 }
 
 void
@@ -452,18 +437,7 @@ LyricsApplet::init()
     d->browser->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     d->browser->hide();
 
-    d->suggestView = new Plasma::TreeView( this );
-    d->suggestView->setModel( new QStandardItemModel( this ) );
-    QTreeView *suggestTree = d->suggestView->nativeWidget();
-    suggestTree->setAttribute( Qt::WA_NoSystemBackground );
-    suggestTree->setAlternatingRowColors( true );
-    suggestTree->setAnimated( true );
-    suggestTree->setRootIsDecorated( false );
-    suggestTree->setTextElideMode( Qt::ElideRight );
-    suggestTree->setSelectionBehavior( QAbstractItemView::SelectRows );
-    suggestTree->setSelectionMode( QAbstractItemView::SingleSelection );
-    suggestTree->setSortingEnabled( true );
-    suggestTree->setUniformRowHeights( true );
+    d->suggestView = new LyricsSuggestionsListWidget( this );
     d->suggestView->hide();
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
@@ -484,7 +458,7 @@ LyricsApplet::init()
 
     connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ), this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
-    connect( suggestTree, SIGNAL(activated(QModelIndex)), this, SLOT(_suggestionChosen(QModelIndex)) );
+    connect( d->suggestView, SIGNAL(selected(LyricsSuggestion)), SLOT(_suggestionChosen(LyricsSuggestion)) );
     connect( dataEngine("amarok-lyrics"), SIGNAL(sourceAdded(QString)), this, SLOT(connectSource(QString)) );
 
     d->determineActionIconsState();
@@ -587,8 +561,12 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( layout() );
     d->showSuggestions ? lo->insertItem( 1, d->suggestView ) : lo->removeItem( d->suggestView );
     d->showBrowser     ? lo->addItem( d->browser )           : lo->removeItem( d->browser );
-    d->showSuggestions ? d->suggestView->show()              : d->suggestView->hide();
-    d->showBrowser     ? d->browser->show()                  : d->browser->hide();
+
+    d->suggestView->setVisible( d->showSuggestions );
+    d->browser->setVisible( d->showBrowser );
+
+    if( !d->showSuggestions )
+        d->suggestView->clear();
 
     d->determineActionIconsState();
 }
