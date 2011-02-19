@@ -69,6 +69,7 @@ public:
 
         KUrl url = reply->request().url();
         QList<CallBackData*> callbacks = urlMap.values( url );
+        urlMap.remove( url );
         QByteArray data = reply->readAll();
         data.detach(); // detach so the bytes are not deleted before methods are invoked
         foreach( const CallBackData *cb, callbacks )
@@ -118,7 +119,6 @@ public:
         }
 
         qDeleteAll( callbacks );
-        urlMap.remove( url );
         reply->deleteLater();
     }
 
@@ -199,7 +199,7 @@ NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const ch
         return 0;
     }
 
-    QNetworkReply *r = d->urlMap.contains(url) ? d->urlMap.value(url)->reply.data() : get( QNetworkRequest(url) );
+    QNetworkReply *r = get( QNetworkRequest(url) );
     typedef NetworkAccessManagerProxyPrivate::CallBackData PrivateCallBackData;
     PrivateCallBackData *cbm = new PrivateCallBackData( receiver, r, method, type );
     d->urlMap.insert( url, cbm );
