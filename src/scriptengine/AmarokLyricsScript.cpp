@@ -39,7 +39,9 @@ AmarokLyricsScript::AmarokLyricsScript( QScriptEngine* scriptEngine )
     : QObject( kapp )
 {
     Q_UNUSED( scriptEngine )
-    connect( ScriptManager::instance(), SIGNAL( fetchLyrics( const QString&, const QString&, const QString& ) ), this, SIGNAL( fetchLyrics( const QString&, const QString&, const QString& ) ) );
+    connect( ScriptManager::instance(),
+             SIGNAL(fetchLyrics(QString, QString, QString)),
+             SIGNAL(fetchLyrics(QString, QString, QString)) );
 }
 
 AmarokLyricsScript::~AmarokLyricsScript()
