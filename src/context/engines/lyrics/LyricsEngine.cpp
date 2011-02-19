@@ -105,7 +105,7 @@ bool LyricsEngine::testLyricsChanged( const QString& newLyrics,
             retVal = !LyricsManager::self()->isEmpty( newLyrics );
     }
 
-    debug() << "compared lyrics are the same = " << retVal;
+    debug() << "compared lyrics are different:" << retVal;
 
     return retVal;
 }
