@@ -45,6 +45,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     : KDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
     , m_detailed( true )
+    , m_schemeModified( false )
+    , m_formatListModified( false )
 {
     Q_UNUSED( name )
 
@@ -93,6 +95,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
     ui->conflictLabel->setPalette( p );
 
+    ui->updatePresetButton->setEnabled( m_schemeModified );
+
     connect( ui->previewButton , SIGNAL(clicked(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->autoPreviewCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     // to show the conflict error
@@ -104,6 +108,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( m_filenameLayoutDialog, SIGNAL( schemeChanged() ), this, SLOT( slotUpdatePreview() ) );
 
+    connect( this, SIGNAL( finished(int) ), SLOT( slotSaveFormatList() ) );
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
              this, SLOT( slotUpdatePreview() ) );
@@ -111,6 +116,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
              this, SLOT( slotEnableOk( const QString & ) ) );
     connect( ui->addPresetButton, SIGNAL( clicked( bool ) ), this, SLOT( slotAddFormat() ) );
     connect( ui->removePresetButton, SIGNAL( clicked( bool ) ), this, SLOT( slotRemoveFormat() ) );
+    connect( ui->updatePresetButton, SIGNAL( clicked( bool ) ), this, SLOT( slotUpdateFormat() ) );
 
     slotEnableOk( ui->folderCombo->currentText() );
 
@@ -155,7 +161,7 @@ OrganizeCollectionDialog::buildFormatTip() const
     tooltip += "<ul>";
 
     for( QMap<QString, QString>::iterator it = args.begin(); it != args.end(); ++it )
-        tooltip += QString( "<li>%1 - %2" ).arg( it.value(), '%' + it.key() + '%' );
+        tooltip += QString( "<li>%1 - %%2%" ).arg( it.value(), it.key() );
 
     tooltip += "</ul>";
     tooltip += i18n( "If you surround sections of text that contain a token with curly-braces, "
@@ -313,8 +319,11 @@ void OrganizeCollectionDialog::populateFormatList()
     connect( ui->presetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotFormatPresetSelected( int ) ) );
 }
 
-void OrganizeCollectionDialog::saveFormatList()
+void OrganizeCollectionDialog::slotSaveFormatList()
 {
+    if( !m_formatListModified )
+        return;
+
     QStringList presets;
     int n = ui->presetCombo->count();
     int current_idx = ui->presetCombo->currentIndex();
@@ -337,21 +346,30 @@ void OrganizeCollectionDialog::saveFormatList()
 void
 OrganizeCollectionDialog::slotUpdatePreview()
 {
+    QString formatString = buildFormatString();
     mTrackOrganizer->setAsciiOnly( ui->asciiCheck->isChecked() );
     mTrackOrganizer->setFolderPrefix( ui->folderCombo->currentText() );
-    mTrackOrganizer->setFormatString( buildFormatString() );
+    mTrackOrganizer->setFormatString( formatString );
     mTrackOrganizer->setIgnoreThe( ui->ignoreTheCheck->isChecked() );
     mTrackOrganizer->setReplaceSpaces( ui->spaceCheck->isChecked() );
     mTrackOrganizer->setReplace( ui->regexpEdit->text(), ui->replaceEdit->text() );
     mTrackOrganizer->setVfatSafe( ui->vfatCheck->isChecked() );
-    if(ui->autoPreviewCheck->isChecked() == true || QObject::sender() == ui->previewButton)
-        preview( buildFormatString() );
+
+    if( ui->autoPreviewCheck->isChecked() == true || QObject::sender() == ui->previewButton )
+        preview( formatString );
+
+    int index = ui->presetCombo->currentIndex();
+    if( index != -1 )
+    {
+        m_schemeModified = m_filenameLayoutDialog->getParsableScheme() !=
+                           ui->presetCombo->itemData( index ).toString();
+        ui->updatePresetButton->setEnabled( m_schemeModified );
+    }
 }
 
 void
 OrganizeCollectionDialog::slotDialogAccepted()
 {
-    saveFormatList();
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     AmarokConfig::setIgnoreThe( ui->ignoreTheCheck->isChecked() );
     AmarokConfig::setReplaceSpace( ui->spaceCheck->isChecked() );
@@ -386,13 +404,26 @@ void OrganizeCollectionDialog::slotAddFormat()
     QString format = m_filenameLayoutDialog->getParsableScheme();
     ui->presetCombo->insertItem(0, name, format);
     ui->presetCombo->setCurrentIndex( 0 );
+    m_formatListModified = true;
 }
 
 void OrganizeCollectionDialog::slotRemoveFormat()
 {
     int idx = ui->presetCombo->currentIndex();
     ui->presetCombo->removeItem( idx );
+    m_formatListModified = true;
 }
+
+void
+OrganizeCollectionDialog::slotUpdateFormat()
+{
+    int idx = ui->presetCombo->currentIndex();
+    QString formatString = m_filenameLayoutDialog->getParsableScheme();
+    ui->presetCombo->setItemData( idx, formatString );
+    ui->updatePresetButton->setEnabled( m_schemeModified = false );
+    m_formatListModified = true;
+}
+
 
 
 #endif  //AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H

@@ -25,6 +25,7 @@ add_subdirectory( scripts )
 add_subdirectory( themes )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
+add_subdirectory( kconf_update )
 
 # if( STRIGI_FOUND )
     # add_subdirectory( strigi )

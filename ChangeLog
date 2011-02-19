@@ -9,6 +9,10 @@ VERSION 2.4.1
       Maximilian Güntner <maximilian.guentner@gmail.com>.
 
   CHANGES:
+    * Now all changes to Preset Formats in Organize Collection dialog get saved on close,
+      doesn't matter If dialog was accepted or rejected.
+    * Added "Update Preset" button to Organize Collection dialog, which updates currently
+      choosen scheme.
     * Renewed FilterEditor dialog.
     * Changed tokens syntax in FileNameLayoutDialog (TagGuesser, OrginizeCollection dialogs)
       now tokens wrapped in percent signs (%token% instead of %token).
