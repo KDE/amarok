@@ -144,7 +144,14 @@ MediaDeviceTrack::setUidUrl( const QString &newUidUrl ) const
 QString
 MediaDeviceTrack::prettyUrl() const
 {
-    return m_playableUrl.isLocalFile() ? m_playableUrl.toLocalFile() : QString( collection()->prettyName() + ": " + artist()->prettyName() + " - " + prettyName() );
+    if( m_playableUrl.isLocalFile() )
+        return m_playableUrl.toLocalFile();
+
+    QString artistName = artist()? artist()->prettyName() : i18n( "Unknown Artist" );
+    // Check name() to prevent infinite recursion
+    QString trackName = !name().isEmpty()? prettyName() : i18n( "Unknown track" );
+
+    return  QString( "%1: %2 - %3" ).arg( collection()->prettyName(), artistName, trackName );
 }
 
 bool
