@@ -27,6 +27,7 @@
 
 #include <QGraphicsTextItem>
 #include <QXmlStreamReader>
+#include <QTextDocument>
 
 ////////////////////////////////////////////////////////////////
 //// CLASS LyricsObserver
@@ -34,7 +35,9 @@
 
 LyricsObserver::LyricsObserver()
     : m_subject( 0 )
-{}
+{
+    qRegisterMetaType<LyricsData>("LyricsData");
+}
 
 LyricsObserver::LyricsObserver( LyricsSubject *s )
     : m_subject( s )
@@ -52,21 +55,12 @@ LyricsObserver::~LyricsObserver()
 //// CLASS LyricsSubject
 ///////////////////////////////////////////////////////////////
 
-void LyricsSubject::sendNewLyrics( QStringList lyrics )
+void LyricsSubject::sendNewLyrics( const LyricsData &lyrics )
 {
     DEBUG_BLOCK
     foreach( LyricsObserver* obs, m_observers )
     {
         obs->newLyrics( lyrics );
-    }
-}
-
-void LyricsSubject::sendNewLyricsHtml( QString lyrics )
-{
-    DEBUG_BLOCK
-    foreach( LyricsObserver* obs, m_observers )
-    {
-        obs->newLyricsHtml( lyrics );
     }
 }
 
@@ -79,7 +73,7 @@ void LyricsSubject::sendNewSuggestions( const QVariantList &sug )
     }
 }
 
-void LyricsSubject::sendLyricsMessage( QString key, QString val )
+void LyricsSubject::sendLyricsMessage( const QString &key, const QString &val )
 {
     DEBUG_BLOCK
     foreach( LyricsObserver* obs, m_observers )
@@ -135,19 +129,9 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
                 // we found nothing, so if we have cached lyrics, use it!
                 debug() << "using cached lyrics...";
                 lyrics = currentTrack->cachedLyrics();
-                if( isHtmlLyrics( lyrics ) )
-                {
-                    sendNewLyricsHtml( lyrics );
-                }
-                else
-                {
-                    QStringList lyricsData;
-                    lyricsData << currentTrack->name()
-                        << currentTrack->artist()->name()
-                        << QString() // TODO lyrics site
-                        << lyrics;
-                    sendNewLyrics( lyricsData );
-                }
+                QString artist = currentTrack->artist() ? currentTrack->artist()->name() : QString();
+                LyricsData data = { lyrics, currentTrack->name(), artist, KUrl() };
+                sendNewLyrics( data );
             }
             return;
         }
@@ -198,10 +182,11 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
     // be suggestions. this is for HTML display only
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( currentTrack &&
-        !isEmpty( lyricsHTML ) )
+    if( currentTrack && !isEmpty( lyricsHTML ) )
     {
-        sendNewLyricsHtml( lyricsHTML );
+        QString artist = currentTrack->artist() ? currentTrack->artist()->name() : QString();
+        LyricsData data = { lyricsHTML, currentTrack->name(), artist, KUrl() };
+        sendNewLyrics( data );
 
         // overwrite cached lyrics (as either there were no lyircs available previously OR
         // the user exlicitly agreed to overwrite the lyrics)
@@ -240,25 +225,11 @@ bool LyricsManager::showCached()
         // so we are showing a cached result
         debug() << "showing cached lyrics!";
 
-        if( isHtmlLyrics( currentTrack->cachedLyrics() ) )
-        {
-            //we have stored html lyrics, so use that directly
-            sendNewLyricsHtml( currentTrack->cachedLyrics() );
-            return true;
-        }
-        else
-        {
-            const QString title = currentTrack->prettyName();
-
-            QStringList lyricsData;
-            lyricsData << title
-                << currentTrack->artist()->name()
-                << QString() // TODO lyrics site
-                << currentTrack->cachedLyrics();
-
-            sendNewLyrics( lyricsData );
-            return true;
-        }
+        QString lyrics = currentTrack->cachedLyrics();
+        QString artist = currentTrack->artist() ? currentTrack->artist()->name() : QString();
+        LyricsData data = { lyrics, currentTrack->name(), artist, KUrl() };
+        sendNewLyrics( data );
+        return true;
     }
     return false;
 }
@@ -275,19 +246,12 @@ void LyricsManager::setLyricsForTrack( const QString &trackUrl, const QString &l
         debug() << QString("could not find a track for the given URL (%1) - ignoring.").arg( trackUrl );
 }
 
-bool LyricsManager::isHtmlLyrics( const QString &lyrics ) const
-{
-    // Check if the lyrics data contains "<html" (note the missing closing bracket,
-    // this ensures XHTML lyrics are recognized)
-    return lyrics.contains( "<html" , Qt::CaseInsensitive );
-}
-
 bool LyricsManager::isEmpty( const QString &lyrics ) const
 {
     QGraphicsTextItem testItem;
 
     // Set the text of the TextItem.
-    if( isHtmlLyrics( lyrics ) )
+    if( Qt::mightBeRichText( lyrics ) )
         testItem.setHtml( lyrics );
     else
         testItem.setPlainText( lyrics );

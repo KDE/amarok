@@ -19,12 +19,30 @@
 
 #include "amarok_export.h"
 
+#include <KUrl>
+
 #include <QStringList>
 #include <QList>
 #include <QString>
 #include <QVariant>
 
 class LyricsSubject;
+
+struct LyricsData
+{
+    QString text;
+    QString title;
+    QString artist;
+    KUrl site;
+
+    void clear()
+    {
+        text.clear();
+        title.clear();
+        artist.clear();
+        site.clear();
+    }
+};
 
 class AMAROK_EXPORT LyricsObserver
 {
@@ -34,13 +52,9 @@ class AMAROK_EXPORT LyricsObserver
         virtual ~LyricsObserver();
 
         /**
-         *  A lyrics script has returned new plaintext lyrics.
+         *  A lyrics script has returned new lyrics.
          */
-        virtual void newLyrics( const QStringList& lyrics ) { Q_UNUSED( lyrics ); }
-        /**
-         *  A lyrics script has returned new html lyrics.
-         */
-        virtual void newLyricsHtml( const QString& lyrics ) { Q_UNUSED( lyrics ); }
+        virtual void newLyrics( const LyricsData &lyrics ) { Q_UNUSED( lyrics ); }
         /**
          *  A lyrics script has returned a list of suggested URLs for correct lyrics.
          */
@@ -64,10 +78,9 @@ class LyricsSubject
         LyricsSubject() {}
         virtual ~LyricsSubject() {}
     
-        void sendNewLyrics( QStringList lyrics );
-        void sendNewLyricsHtml( QString lyrics );
+        void sendNewLyrics( const LyricsData &lyrics );
         void sendNewSuggestions( const QVariantList &suggestions );
-        void sendLyricsMessage( QString key, QString val );
+        void sendLyricsMessage( const QString &key, const QString &val );
     
     private:
         QList<LyricsObserver*> m_observers;
@@ -100,15 +113,6 @@ class AMAROK_EXPORT LyricsManager : public LyricsSubject
         void setLyricsForTrack( const QString &trackUrl, const QString &lyrics ) const;
 
         /**
-         * Tests if the given lyrics are Html or plain text.
-         *
-         * @param lyrics The lyrics which will be tested.
-         *
-         * @return true if the given lyrics are Html, otherwise false.
-         */
-        bool isHtmlLyrics( const QString &lyrics ) const;
-
-        /**
          * Tests if the given lyrics are empty.
          *
          * @param lyrics The lyrics which will be tested.
@@ -122,5 +126,7 @@ class AMAROK_EXPORT LyricsManager : public LyricsSubject
         
         static LyricsManager* s_self;
 };
+
+Q_DECLARE_METATYPE( LyricsData );
 
 #endif

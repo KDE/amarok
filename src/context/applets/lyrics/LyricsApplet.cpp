@@ -397,6 +397,7 @@ LyricsApplet::init()
     setCollapseHeight( m_header->height() );
     setMinimumHeight( collapseHeight() );
     setPreferredHeight( collapseHeight() );
+    setCollapseOn();
 
     QAction* editAction = new QAction( this );
     editAction->setIcon( KIcon( "document-edit" ) );
@@ -536,14 +537,29 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     }
     else if( data.contains( "lyrics" ) )
     {
-        d->hasLyrics = true;
-        d->browser->setRichText( false );
-        QVariantList lyrics  = data[ "lyrics" ].toList();
-        titleText = QString( "%1: %2 - %3" )
-            .arg( i18n( "Lyrics" ) )
-            .arg( lyrics.at(0).toString() ).arg( lyrics.at(1).toString() );
-        d->showLyrics( lyrics.at(3).toString().trimmed() );
-        setCollapseOff();
+        QVariant var = data.value( QLatin1String("lyrics") );
+        if( var.canConvert<LyricsData>() )
+        {
+            LyricsData lyrics = var.value<LyricsData>();
+            d->hasLyrics = true;
+            d->browser->setRichText( false );
+            QString trimmed = lyrics.text.trimmed();
+
+            if( trimmed != d->browser->lyrics() )
+            {
+                d->showLyrics( trimmed );
+            }
+            else // lyrics are the same, make sure browser is showing
+            {
+                d->showSuggestions = false;
+                d->showBrowser = true;
+            }
+
+            titleText = QString( "%1: %2 - %3" )
+                .arg( i18n( "Lyrics" ) )
+                .arg( lyrics.artist ).arg( lyrics.title );
+            setCollapseOff();
+        }
     }
     else if( data.contains( "notfound" ) || data.contains( "notFound" ) )
     {
@@ -553,6 +569,7 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     else
     {
         warning() << "should not be here:" << data;
+        titleText = headerText();
     }
 
     setHeaderText( titleText );

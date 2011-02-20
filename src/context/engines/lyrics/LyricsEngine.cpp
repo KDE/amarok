@@ -26,6 +26,7 @@
 #include "ScriptManager.h"
 
 #include <QTimer>
+#include <QTextDocument>
 
 using namespace Context;
 
@@ -51,63 +52,12 @@ QStringList LyricsEngine::sources() const
 
 bool LyricsEngine::sourceRequestEvent( const QString& name )
 {
-    if( name.contains( "previous lyrics" ) )
-    {
-        removeAllData( "lyrics" );
-        setData( "lyrics", "label", "previous Track Information" );
-        
-        if( m_prevLyricsList.size() == 0 || m_prevSuggestionsList.size() == 0 || m_prevLyrics.contains( "Unavailable" ) )
-            setData( "lyrics", "Unavailable" , "Unavailable" );
-
-        if( m_prevLyricsList.size() > 0 )
-            setData( "lyrics", "lyrics", m_prevLyricsList );
-
-        else if( !LyricsManager::self()->isEmpty( m_prevLyrics ) )
-            setData( "lyrics", "html", m_prevLyrics );
-
-        if( m_prevSuggestionsList.size() > 0 )
-            setData( "lyrics", "suggested", m_prevSuggestionsList );
-
-        return true;
-    }
     removeAllData( name );
     setData( name, QVariant());
     // in the case where we are resuming playback on startup. Need to be sure
     // the script manager is running and a lyrics script is loaded first.
     QTimer::singleShot( 0, this, SLOT(update()) );
     return true;
-}
-
-bool LyricsEngine::testLyricsChanged( const QString& newLyrics,
-                                      const QString& oldHtmlLyrics,
-                                      QStringList oldPlainLyrics ) const
-{
-    DEBUG_BLOCK
-
-    bool retVal = false;
-
-    if ( LyricsManager::self()->isHtmlLyrics( newLyrics ) )
-        // Compare the old HTML lyrics with the new lyrics.
-        retVal = newLyrics != oldHtmlLyrics;
-    else
-    {
-        // If the given oldPlainLyrics list has >= 3 items
-        // then plaintext lyrics were provided.
-        bool hasPlainLyrics = oldPlainLyrics.count() >= 3;
-
-        if ( hasPlainLyrics )
-            // Previously we got plaintext lyrics -> compare them with
-            // the new ones.
-            retVal = newLyrics != oldPlainLyrics.value( 3 );
-        else
-            // There were no old lyrics -> if the new lyrics are
-            // non-empty they have changed.
-            retVal = !LyricsManager::self()->isEmpty( newLyrics );
-    }
-
-    debug() << "compared lyrics are different:" << retVal;
-
-    return retVal;
 }
 
 void LyricsEngine::update()
@@ -124,34 +74,25 @@ void LyricsEngine::update()
     }
 
     // -- get current title and artist
-    QString title;
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    QString artist;
-    Meta::ArtistPtr currentArtist;
-    if( currentTrack )
-    {
-        title = currentTrack->name();
-        currentArtist = currentTrack->artist();
-        if( currentArtist )
-            artist = currentArtist->name();
-        debug() << "current track is" << title;
-    }
-    else
+    if( !currentTrack )
     {
         debug() << "no current track";
-        m_title.clear();
-        m_artist.clear();
-
+        m_prevLyrics.clear();
         removeAllData( "lyrics" );
-        setData( "lyrics", "stopped" ,"stopped" );
+        setData( "lyrics", "stopped", "stopped" );
         return;
     }
 
+    QString title = currentTrack->name();
+    QString artist = currentTrack->artist() ? currentTrack->artist()->name() : QString();
+
     // -- clean up title
-    if( title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-        title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
-    if( artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-        artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
+    const QString magnatunePreviewString = QLatin1String( "PREVIEW: buy it at www.magnatune.com" );
+    if( title.contains(magnatunePreviewString, Qt::CaseSensitive) )
+        title = title.remove( " (" + magnatunePreviewString + ")" );
+    if( artist.contains(magnatunePreviewString, Qt::CaseSensitive) )
+        artist = artist.remove( " (" + magnatunePreviewString + ")" );
 
     if( title.isEmpty() && currentTrack )
     {
@@ -159,87 +100,58 @@ void LyricsEngine::update()
            The fact that it often (but not always) has "artist name" together, can be bad,
            but at least the user will hopefully get nice suggestions. */
         QString prettyTitle = currentTrack->prettyName();
-        int h = prettyTitle.indexOf( '-' );
+        int h = prettyTitle.indexOf( QLatin1Char('-') );
         if ( h != -1 )
         {
-            title = prettyTitle.mid( h+1 ).trimmed();
-            if( title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-                title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
-            if( artist.isEmpty() ) {
+            title = prettyTitle.mid( h + 1 ).trimmed();
+            if( title.contains(magnatunePreviewString, Qt::CaseSensitive) )
+                title = title.remove( " (" + magnatunePreviewString + ")" );
+
+            if( artist.isEmpty() )
+            {
                 artist = prettyTitle.mid( 0, h ).trimmed();
-                if( artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-                    artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
+                if( artist.contains(magnatunePreviewString, Qt::CaseSensitive) )
+                    artist = artist.remove( " (" + magnatunePreviewString + ")" );
             }
         }
     }
 
-    const QString &lyrics = currentTrack->cachedLyrics();
+    LyricsData lyrics = { currentTrack->cachedLyrics(), title, artist, KUrl() };
 
     // Check if the title, the artist and the lyrics are still the same.
-    if( title == m_title &&
-        artist == m_artist &&
-        !testLyricsChanged( lyrics, m_currentLyrics, m_currentLyricsList ) )
+    if( !lyrics.text.isEmpty() && (lyrics.text == m_prevLyrics.text) )
     {
-        if( !lyrics.isEmpty() )
-        {
-            removeAllData( "lyrics" );
-            if( LyricsManager::self()->isHtmlLyrics( lyrics ) )
-                setData( "lyrics", "html", m_currentLyrics );
-            else
-                setData( "lyrics", "lyrics", m_currentLyricsList );
-        }
-        return; // nothing changed
+        debug() << "nothing changed:" << lyrics.title;
+        newLyrics( lyrics );
+        return;
     }
 
-    // -- really need new lyrics
-    m_title = title;
-    m_artist = artist;
-    m_prevLyrics = m_currentLyrics;
-    m_prevLyricsList = m_currentLyricsList;
-    m_prevSuggestionsList = m_currentSuggestionsList;
-
-    m_currentLyrics.clear();
-    m_currentLyricsList.clear();
-    m_currentSuggestionsList.clear();
-
     // don't rely on caching for streams
-    const bool cached = !LyricsManager::self()->isEmpty( lyrics ) &&
-                        !The::engineController()->isStream();
+    const bool cached = !LyricsManager::self()->isEmpty( lyrics.text )
+        && !The::engineController()->isStream();
 
     if( cached )
     {
-        if( LyricsManager::self()->isHtmlLyrics( lyrics ) )
-            newLyricsHtml( lyrics );
-        else
-        {
-            QStringList info;
-            info << m_title << m_artist << QString() <<  lyrics;
-            newLyrics( info );
-        }
+        newLyrics( lyrics );
     }
     else
     {
         // fetch by lyrics script
         removeAllData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
-        ScriptManager::instance()->notifyFetchLyrics( m_artist, m_title );
+        ScriptManager::instance()->notifyFetchLyrics( lyrics.artist, lyrics.title );
     }
 }
 
-void LyricsEngine::newLyrics( const QStringList& lyrics )
+void LyricsEngine::newLyrics( const LyricsData &lyrics )
 {
     DEBUG_BLOCK
 
+    QString key = Qt::mightBeRichText( lyrics.text ) ? QLatin1String( "html" )
+                                                     : QLatin1String( "lyrics" );
     removeAllData( "lyrics" );
-    setData( "lyrics", "lyrics", lyrics );
-    m_currentLyricsList = lyrics;
-}
-
-void LyricsEngine::newLyricsHtml( const QString& lyrics )
-{
-    removeAllData( "lyrics" );
-    setData( "lyrics", "html", lyrics );
-    m_currentLyrics = lyrics;
+    setData( "lyrics", key, QVariant::fromValue(lyrics) );
+    m_prevLyrics = lyrics;
 }
 
 void LyricsEngine::newSuggestions( const QVariantList &suggested )
@@ -248,7 +160,6 @@ void LyricsEngine::newSuggestions( const QVariantList &suggested )
     // each string is in "title - artist <url>" form
     removeAllData( "lyrics" );
     setData( "lyrics", "suggested", suggested );
-    m_currentSuggestionsList = suggested;
 }
 
 void LyricsEngine::lyricsMessage( const QString& key, const QString &val )

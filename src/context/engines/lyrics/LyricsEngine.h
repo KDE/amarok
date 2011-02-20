@@ -42,8 +42,7 @@ public:
     QStringList sources() const;
 
     // reimplemented from LyricsObserver
-    void newLyrics( const QStringList& lyrics );
-    void newLyricsHtml( const QString& lyrics );
+    void newLyrics( const LyricsData &lyrics );
     void newSuggestions( const QVariantList &suggest );
     void lyricsMessage( const QString& key, const QString& val );
 
@@ -54,28 +53,7 @@ private slots:
     void update();
 
 private:
-    /**
-      * Tests if the lyrics have changed.
-      *
-      * @param newLyrics The new lyrics.
-      * @param oldHtmlLyrics The old (unchanged) HTML lyrics.
-      * @param oldPlainLyrics The old plain lyrics (as provided by the LyricsEngine).
-      *
-      * @return true if the lyrics for the current track have changed, otherwise false.
-      */
-    bool testLyricsChanged( const QString& newLyrics,
-                            const QString& oldHtmlLyrics,
-                            QStringList oldPlainLyrics ) const;
-
-    // Cache the title/artist of the current track so we can check against
-    // metadata updates. We only want to update the lyrics if either the
-    // title or the artist change (but not other attributes like rating, score,
-    // composer etc).
-    QStringList m_currentLyricsList,m_prevLyricsList;
-    QVariantList m_currentSuggestionsList,m_prevSuggestionsList;
-    QString m_currentLyrics,m_prevLyrics;
-    QString m_title;
-    QString m_artist;
+    LyricsData m_prevLyrics;
 };
 
 K_EXPORT_AMAROK_DATAENGINE( lyrics, LyricsEngine )
