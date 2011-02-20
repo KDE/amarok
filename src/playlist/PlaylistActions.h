@@ -98,12 +98,6 @@ public:
     void setTrackToBeLast( quint64 id ) { m_trackToBeLast = id; }
     bool willStopAfterTrack( const quint64 id ) const { return m_trackToBeLast == id; }
 
-    /**
-     * Make sure that there are enough tracks in the current playlist
-     * if it is dynamic and the user removed tracks.
-     */
-    void normalizeDynamicPlaylist();
-
     // This shouldn't be in Actions, it doesn't make sense
     int queuePosition( quint64 id );
 
@@ -128,6 +122,13 @@ public slots:
     void queue( QList<int> rows );
     void dequeue( QList<int> rows );
     void restoreDefaultPlaylist();
+
+    /**
+     * Make sure that there are enough tracks in the current playlist
+     * if it is dynamic and the user removed tracks.
+     */
+    void normalizeDynamicPlaylist();
+
 
     /**
     * Repaint the playlist.

@@ -48,6 +48,7 @@
 #include <KIconLoader>
 
 #include <QAction>
+#include <QTimer>
 #include <QDate>
 #include <QStringList>
 #include <QTextDocument>
@@ -1072,8 +1073,12 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         m_activeRow = -1;
     }
 
-    //make sure that there are enough tracks if we just removed from a dynamic playlist.
-    Playlist::Actions::instance()->normalizeDynamicPlaylist();
+    // make sure that there are enough tracks if we just removed from a dynamic playlist.
+    // This call needs to be delayed or else we would mess up the undo queue
+    // BUG: 259675
+    // FIXME: removing the track and normalizing the playlist should be grouped together
+    //        so that an undo operation undos both.
+    QTimer::singleShot(0, Playlist::Actions::instance(), SLOT(normalizeDynamicPlaylist()));
 }
 
 
