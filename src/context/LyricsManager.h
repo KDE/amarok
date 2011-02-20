@@ -89,8 +89,6 @@ class LyricsSubject
 class AMAROK_EXPORT LyricsManager : public LyricsSubject
 {
     public:
-        LyricsManager() : LyricsSubject() { s_self = this; }
-    
         static LyricsManager* self() 
         { 
             if( !s_self )
@@ -122,6 +120,8 @@ class AMAROK_EXPORT LyricsManager : public LyricsSubject
         bool isEmpty( const QString &lyrics ) const;
 
     private:
+        LyricsManager() : LyricsSubject() { s_self = this; }
+
         bool showCached();
         
         static LyricsManager* s_self;
