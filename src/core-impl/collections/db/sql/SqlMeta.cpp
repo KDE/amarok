@@ -1241,7 +1241,7 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
 
         QString countQuery = "SELECT COUNT(*) FROM urls_labels WHERE url = %1 AND label = %2;";
         QStringList countRs = m_collection->sqlStorage()->query( countQuery.arg( QString::number( m_urlId ), QString::number( sqlLabel->id() ) ) );
-        if( countRs.first().toInt() == 0 )
+        if( !countRs.isEmpty() && countRs.first().toInt() == 0 )
         {
             QString insert = "INSERT INTO urls_labels(url,label) VALUES (%1,%2);";
             m_collection->sqlStorage()->insert( insert.arg( QString::number( m_urlId ), QString::number( sqlLabel->id() ) ), "urls_labels" );
