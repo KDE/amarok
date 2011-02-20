@@ -197,7 +197,7 @@ int MySqlStorage::insert( const QString& statement, const QString& /* table */ )
 }
 
 QString
-MySqlStorage::escape( QString text ) const
+MySqlStorage::escape( const QString &text ) const
 {
     if( !m_db )
     {

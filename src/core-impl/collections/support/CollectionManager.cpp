@@ -59,7 +59,7 @@ public:
 
     virtual int sqlDatabasePriority() const { return ( m_sqlStorage ? m_sqlStorage->sqlDatabasePriority() : 0 ); }
     virtual QString type() const  { return ( m_sqlStorage ? m_sqlStorage->type() : "SqlStorageWrapper" ); }
-    virtual QString escape( QString text ) const  { return ( m_sqlStorage ? m_sqlStorage->escape( text ) : text ); }
+    virtual QString escape( const QString &text ) const  { return ( m_sqlStorage ? m_sqlStorage->escape( text ) : text ); }
     virtual QStringList query( const QString &query )  { return ( m_sqlStorage ? m_sqlStorage->query( query ) : QStringList() ); }
     virtual int insert( const QString &statement, const QString &table )  { return ( m_sqlStorage ? m_sqlStorage->insert( statement, table ) : 0 ); }
     virtual QString boolTrue() const  { return ( m_sqlStorage ? m_sqlStorage->boolTrue() : "1" ); }

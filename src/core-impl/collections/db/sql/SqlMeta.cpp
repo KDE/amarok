@@ -1166,7 +1166,7 @@ SqlTrack::cachedLyrics() const
     QStringList result = m_collection->sqlStorage()->query( query );
     if( result.isEmpty() )
         return QString();
-    return result[0];
+    return result.first();
 }
 
 void
@@ -1180,7 +1180,7 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
     if( queryResult.isEmpty() )
         return;
 
-    if( queryResult[0].toInt() == 0 )
+    if( queryResult.first().toInt() == 0 )
     {
         QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( '%1', '%2' );" )
                             .arg( m_collection->sqlStorage()->escape( m_rpath ),
@@ -1678,7 +1678,7 @@ SqlAlbum::removeImage()
 
     if( !res.isEmpty() )
     {
-        int references = res[0].toInt();
+        int references = res.first().toInt();
 
         // If there are no more references to this particular image, then we should clean up
         if( references <= 0 )
@@ -1730,7 +1730,7 @@ SqlAlbum::unsetImageId() const
     // We already have the AMAROK_UNSET_MAGIC variable in the database
     if( !res.isEmpty() )
     {
-        m_unsetImageId = res[0].toInt();
+        m_unsetImageId = res.first().toInt();
     }
     else
     {
@@ -1886,7 +1886,7 @@ SqlAlbum::setImage( const QString &path )
         m_imageId = m_collection->sqlStorage()->insert( insert, "images" );
     }
     else
-        m_imageId = res[0].toInt();
+        m_imageId = res.first().toInt();
 
     if( m_imageId >= 0 )
     {

@@ -36,7 +36,7 @@ public:
 
     virtual QString type() const { return "RandomSqlStorageMock"; }
 
-    virtual QString escape( QString text ) const { return text; }
+    virtual QString escape( const QString &text ) const { return text; }
 
     virtual QStringList query( const QString &query );
     virtual int insert( const QString &statement, const QString &table );
@@ -73,7 +73,7 @@ public:
 
     virtual QString type() const { return "RandomSqlStorageMock"; }
 
-    virtual QString escape( QString text ) const { return text; }
+    virtual QString escape( const QString &text ) const { return text; }
 
     virtual QStringList query( const QString &query );
     virtual int insert( const QString &statement, const QString &table );
