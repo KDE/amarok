@@ -101,8 +101,10 @@ private:
     QString                 m_title;
     QString                 m_album;
 
-    // if the user adds a label through the combobox, the animation should start at the combobox
-    bool                    m_selfAdded;
+    // some information about the last label that the user interacted with so we can optimize the view
+    QString                 m_lastLabelName;        // the label name in order to find it if it got toggled
+    QSizeF                  m_lastLabelSize;        // if the user toggles a label it should be realigned because it's size will change
+    bool                    m_lastLabelBottomAdded; // if the user adds a label through the combobox the animation should start at the combobox
     
     Ui::labelsGeneralSettings       ui_GeneralSettings;
     Ui::labelsBlacklistSettings     ui_BlacklistSettings;

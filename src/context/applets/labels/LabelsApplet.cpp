@@ -41,12 +41,14 @@
 #include <QPropertyAnimation>
 
 
-#define LabelsAppletMaxLabelLength 40 // the maximum lenght of a label, if a label is longer don't show it
+#define LabelsAppletMaxLabelLength 40 // if a downloaded label is longer than this, don't show it
 
 
 LabelsApplet::LabelsApplet( QObject *parent, const QVariantList &args )
     : Context::Applet( parent, args ),
-    m_selfAdded( false )
+    m_lastLabelName( "" ),
+    m_lastLabelSize( QSizeF(0,0) ),
+    m_lastLabelBottomAdded( false )
 {
     setHasConfigurationInterface( true );
 }
@@ -358,6 +360,15 @@ LabelsApplet::updateLabels()
             {
                 labelGraphics = m_labelItems.at(i);
                 labelGraphics->setDeltaPointSize( f_size );
+                labelGraphics->setSelected( m_userLabels.contains( it_final.key() ) );
+                if( !m_lastLabelSize.isEmpty() && m_lastLabelName == m_labelItems.at(i)->text() )
+                {
+                    const qreal x = labelGraphics->pos().x() - ( labelGraphics->boundingRect().width()  - m_lastLabelSize.width()  ) / 2;
+                    const qreal y = labelGraphics->pos().y() - ( labelGraphics->boundingRect().height() - m_lastLabelSize.height() ) / 2;
+                    labelGraphics->setPos( x, y );
+                    m_lastLabelSize = QSizeF( 0, 0 );
+                    m_lastLabelName = "";
+                }
                 labelAnimation = m_labelAnimations.at(i);
                 break;
             }
@@ -368,10 +379,11 @@ LabelsApplet::updateLabels()
             labelGraphics->setSelectedColor( m_selectedColor );
             labelGraphics->setBackgroundColor( m_backgroundColor );
             labelGraphics->showBlacklistButton( !m_allLabels.contains(it_final.key()) );
-            if( m_selfAdded )
+            labelGraphics->setSelected( m_userLabels.contains( it_final.key() ) );
+            if( m_lastLabelBottomAdded )
             {
                 labelGraphics->setPos( m_addLabelProxy.data()->pos().x(), m_addLabelProxy.data()->pos().y() + m_addLabelProxy.data()->size().height()/2 - labelGraphics->boundingRect().height()/2 );
-                m_selfAdded = false;
+                m_lastLabelBottomAdded = false;
             }
             connect( labelGraphics, SIGNAL( toggled( const QString & ) ), this, SLOT( toggleLabel( const QString & ) ) );
             connect( labelGraphics, SIGNAL( list( const QString & ) ), this, SLOT( listLabel( const QString & ) ) );
@@ -383,14 +395,15 @@ LabelsApplet::updateLabels()
         }
         tempLabelItems.append( labelGraphics );
         tempLabelAnimations.append( labelAnimation );
-
-        labelGraphics->setSelected( m_userLabels.contains( it_final.key() ) );
     }
     // copy the temp list to the final list
     m_labelItems = tempLabelItems;
     m_labelAnimations = tempLabelAnimations;
-    
-    m_selfAdded = false; // should be unnecessary, but better safe than sorry
+
+    // should be unnecessary, but better safe than sorry
+    m_lastLabelName = "";
+    m_lastLabelSize = QSizeF( 0, 0 );
+    m_lastLabelBottomAdded = false;
 
     constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
 }
@@ -647,7 +660,17 @@ LabelsApplet::toggleLabel( const QString &label )
             break;
         }
     }
-    
+
+    for( int i=0; i<m_labelItems.count(); i++ )
+    {
+        if( m_labelItems.at(i)->text() == label )
+        {
+            m_lastLabelSize = m_labelItems.at(i)->boundingRect().size();
+            m_lastLabelName = label;
+            break;
+        }
+    }
+
     if( m_userLabels.contains( label ) )
     {
         track->removeLabel( labelPtr );
@@ -659,7 +682,7 @@ LabelsApplet::toggleLabel( const QString &label )
         track->addLabel( label );
         m_userLabels.append( label );
         debug() << "adding label: " << label;
-        m_selfAdded = true;
+        m_lastLabelBottomAdded = true;
     }
 
     if( !m_allLabels.contains( label ) )
