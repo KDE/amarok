@@ -40,6 +40,7 @@ LyricsBrowser::LyricsBrowser( QGraphicsWidget *parent )
     native->setReadOnly( false );
     native->setWordWrapMode( QTextOption::WordWrap );
     native->setCursorWidth( 0 );
+    native->document()->setDocumentMargin( 10 );
     native->viewport()->setAutoFillBackground( true );
     native->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
 
