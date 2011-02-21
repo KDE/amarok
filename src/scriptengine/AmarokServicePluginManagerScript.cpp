@@ -22,10 +22,9 @@
 
 namespace AmarokScript
 {
-    AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QScriptEngine* ScriptEngine )
-        : QObject( kapp )
+    AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QScriptEngine* scriptEngine )
+        : QObject( scriptEngine )
     {
-        Q_UNUSED( ScriptEngine );
     }
 
     AmarokServicePluginManagerScript::~AmarokServicePluginManagerScript()

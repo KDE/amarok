@@ -36,7 +36,7 @@ namespace AmarokScript
         Q_PROPERTY ( int fadeoutLength READ fadeoutLength WRITE setFadeoutLength )
 
         public:
-            AmarokEngineScript( QScriptEngine* ScriptEngine );
+            AmarokEngineScript( QScriptEngine* scriptEngine );
             ~AmarokEngineScript();
 
             enum PlayerStatus

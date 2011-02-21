@@ -26,9 +26,9 @@
 
 
 StreamItem::StreamItem( QScriptEngine *engine )
-    : m_year( 0 )
+    : QObject( engine )
+    , m_year( 0 )
 {
-    Q_UNUSED( engine );
 }
 
 StreamItem::~StreamItem()
@@ -150,8 +150,8 @@ void StreamItem::setCoverUrl( QString url )
 
 
 ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
-: QObject( kapp )
-, m_scriptEngine( engine )
+    : QObject( engine )
+    , m_scriptEngine( engine )
 {
     DEBUG_BLOCK
     m_scriptEngine = engine;

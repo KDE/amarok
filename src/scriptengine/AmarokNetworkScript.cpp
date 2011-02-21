@@ -25,10 +25,9 @@
 
 AmarokDownloadHelper *AmarokDownloadHelper::s_instance = 0;
 
-AmarokNetworkScript::AmarokNetworkScript( QScriptEngine* ScriptEngine )
-: QObject( kapp )
+AmarokNetworkScript::AmarokNetworkScript( QScriptEngine* scriptEngine )
+    : QObject( scriptEngine )
 {
-    Q_UNUSED( ScriptEngine );
 }
 
 AmarokNetworkScript::~AmarokNetworkScript()
@@ -38,8 +37,8 @@ AmarokNetworkScript::~AmarokNetworkScript()
 // Class Downloader
 
 Downloader::Downloader( QScriptEngine* engine )
-    : QObject( kapp ),
-    m_scriptEngine( engine )
+    : QObject( engine )
+    , m_scriptEngine( engine )
 {
     engine->setDefaultPrototype( qMetaTypeId<Downloader*>(), QScriptValue() );
     const QScriptValue stringCtor = engine->newFunction( stringDownloader_prototype_ctor );

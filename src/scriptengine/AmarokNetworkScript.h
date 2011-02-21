@@ -30,7 +30,7 @@ class AmarokNetworkScript : public QObject
     Q_OBJECT
 
     public:
-        AmarokNetworkScript( QScriptEngine* ScriptEngine );
+        AmarokNetworkScript( QScriptEngine* scriptEngine );
         ~AmarokNetworkScript();
 };
 

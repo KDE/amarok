@@ -26,10 +26,9 @@
 
 namespace AmarokScript
 {
-    AmarokCollectionScript::AmarokCollectionScript( QScriptEngine* ScriptEngine )
-        : QObject( kapp )
+    AmarokCollectionScript::AmarokCollectionScript( QScriptEngine* scriptEngine )
+        : QObject( scriptEngine )
     {
-        Q_UNUSED( ScriptEngine );
     }
 
     AmarokCollectionScript::~AmarokCollectionScript()

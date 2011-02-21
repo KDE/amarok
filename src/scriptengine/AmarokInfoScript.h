@@ -27,7 +27,7 @@ class InfoScript : public QObject
     Q_OBJECT
 
     public:
-        InfoScript( const KUrl& scriptUrl );
+        InfoScript( const KUrl& scriptUrl, QObject *parent );
     public slots:
         QString scriptPath() const;
         QString scriptConfigPath( const QString& name ) const;
@@ -42,8 +42,9 @@ class IconEnum : public QObject
 {
     Q_OBJECT
     Q_ENUMS( StdSizes )
+
     public:
-        IconEnum() : QObject() { }
+        IconEnum( QObject *parent ) : QObject(parent) {}
       enum StdSizes {
           Small=16,
           SmallMedium=22,

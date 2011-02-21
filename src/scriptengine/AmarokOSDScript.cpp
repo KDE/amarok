@@ -23,10 +23,9 @@
 
 namespace AmarokScript
 {
-    AmarokOSDScript::AmarokOSDScript( QScriptEngine* ScriptEngine )
-    : QObject( kapp )
+    AmarokOSDScript::AmarokOSDScript( QScriptEngine* scriptEngine )
+        : QObject( scriptEngine )
     {
-        Q_UNUSED( ScriptEngine );
     }
 
     AmarokOSDScript::~AmarokOSDScript()

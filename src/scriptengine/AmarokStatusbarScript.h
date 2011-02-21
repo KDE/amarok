@@ -30,7 +30,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokStatusbarScript( QScriptEngine* ScriptEngine );
+            AmarokStatusbarScript( QScriptEngine* scriptEngine );
             ~AmarokStatusbarScript();
 
         public slots:

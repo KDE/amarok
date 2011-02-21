@@ -27,11 +27,9 @@
 
 namespace AmarokScript
 {
-    AmarokEngineScript::AmarokEngineScript( QScriptEngine* ScriptEngine )
-        : QObject( kapp )
+    AmarokEngineScript::AmarokEngineScript( QScriptEngine* scriptEngine )
+        : QObject( scriptEngine )
     {
-        Q_UNUSED( ScriptEngine );
-
         EngineController *engine = The::engineController();
 
         connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),

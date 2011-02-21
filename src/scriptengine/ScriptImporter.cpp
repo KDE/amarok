@@ -25,11 +25,11 @@
 
 namespace AmarokScript
 {
-    ScriptImporter::ScriptImporter( QScriptEngine* scriptEngine, KUrl url )
-    : QObject( kapp )
-      , m_scriptUrl( url )
-      , m_scriptEngine( scriptEngine )
-    {  }
+    ScriptImporter::ScriptImporter( QScriptEngine* scriptEngine, const KUrl &url )
+        : QObject( scriptEngine )
+        , m_scriptUrl( url )
+        , m_scriptEngine( scriptEngine )
+    {}
 
     ScriptImporter::~ScriptImporter()
     {
@@ -39,9 +39,7 @@ namespace AmarokScript
     ScriptImporter::loadExtension( const QString& src )
     {
         DEBUG_BLOCK
-
         m_scriptEngine->importExtension( "amarok/" + src );
-
     }
 
     bool

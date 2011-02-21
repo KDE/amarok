@@ -16,37 +16,36 @@
 
 #include "AmarokScriptConfig.h"
 
-#include "App.h"
-
 #include <KConfigGroup>
+#include <KSharedConfig>
 #include <KGlobal>
 
 namespace AmarokScript
 {
-    AmarokScriptConfig::AmarokScriptConfig( const QString& name )
-        : QObject( kapp )
+    AmarokScriptConfig::AmarokScriptConfig( const QString& name, QObject *parent )
+        : QObject( parent )
         , m_name( name )
     {}
 
     AmarokScriptConfig::~AmarokScriptConfig()
     {}
 
-    QVariant AmarokScriptConfig::readConfig( QString name, QVariant defaultValue ) const
+    QVariant AmarokScriptConfig::readConfig( const QString &name, const QVariant &defaultValue ) const
     {
         return KGlobal::config()->group( m_name ).readEntry( name, defaultValue );
     }
 
-    QString AmarokScriptConfig::readConfig( QString name, QString defaultValue ) const
+    QString AmarokScriptConfig::readConfig( const QString &name, const QString &defaultValue ) const
     {
         return KGlobal::config()->group( m_name ).readEntry( name, defaultValue );
     }
 
-    void AmarokScriptConfig::writeConfig( QString name, QVariant content )
+    void AmarokScriptConfig::writeConfig( const QString &name, const QVariant &content )
     {
         KGlobal::config()->group( m_name ).writeEntry( name, content );
     }
 
-    void AmarokScriptConfig::writeConfig( QString name, QString content )
+    void AmarokScriptConfig::writeConfig( const QString &name, const QString &content )
     {
         KGlobal::config()->group( m_name ).writeEntry( name, content );
     }

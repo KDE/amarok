@@ -32,9 +32,8 @@
 
 namespace AmarokScript
 {
-    AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine* scriptEngine, QList<QObject*>* wrapperList )
-        : QObject( kapp )
-        , m_wrapperList( wrapperList )
+    AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine* scriptEngine )
+        : QObject( scriptEngine )
         , m_scriptEngine( scriptEngine )
     {
         connect( The::playlist()->qaim(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );

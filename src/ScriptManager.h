@@ -146,8 +146,6 @@ public:
     AmarokScript::AmarokScript*                     globalPtr;
     ScriptableServiceScript*                        servicePtr;
     QStringList                                     log;
-    QList<QObject*>                                 guiPtrList;
-    QList<QObject*>                                 wrapperList;
 };
 
 #endif /* AMAROK_SCRIPTMANAGER_H */

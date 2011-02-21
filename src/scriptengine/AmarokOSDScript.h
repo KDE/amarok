@@ -31,7 +31,7 @@ namespace AmarokScript
         Q_PROPERTY ( bool osdEnabled READ osdEnabled WRITE setOsdEnabled )
 
         public:
-            AmarokOSDScript( QScriptEngine* ScriptEngine );
+            AmarokOSDScript( QScriptEngine* scriptEngine );
             ~AmarokOSDScript();
 
         public slots:

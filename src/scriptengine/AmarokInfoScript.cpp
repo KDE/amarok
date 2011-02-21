@@ -22,8 +22,8 @@
 
 #include <KIconLoader>
 
-InfoScript::InfoScript( const KUrl& scriptUrl )
-    : QObject( 0 )
+InfoScript::InfoScript( const KUrl& scriptUrl, QObject *parent )
+    : QObject( parent )
     , m_scriptUrl( scriptUrl )
 { }
 

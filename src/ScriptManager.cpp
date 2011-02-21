@@ -361,10 +361,6 @@ ScriptManager::scriptFinished( const QString &name )
     }
 
     ScriptItem *item = m_scripts.value( name );
-    qDeleteAll( item->guiPtrList );
-    item->guiPtrList.clear();
-    qDeleteAll( item->wrapperList );
-    item->wrapperList.clear();
     item->log << QString( "%1 Script ended" ).arg( QTime::currentTime().toString() );
     delete item->engine;
     item->engine = 0;
@@ -462,85 +458,69 @@ ScriptManager::startScriptEngine( const QString &name )
     QScriptValue scriptObject;
 
     objectPtr = new AmarokScript::ScriptImporter( scriptEngine, item->url );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     scriptEngine->globalObject().setProperty( "Importer", scriptObject );
-    item->wrapperList.append( objectPtr );
 
-    item->globalPtr = new AmarokScript::AmarokScript( name );
-    m_global = scriptEngine->newQObject( item->globalPtr );
+    item->globalPtr = new AmarokScript::AmarokScript( name, scriptEngine );
+    m_global = scriptEngine->newQObject( item->globalPtr, QScriptEngine::AutoOwnership );
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
-    item->wrapperList.append( item->globalPtr );
 
-    objectPtr = new AmarokScript::AmarokScriptConfig( name );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    objectPtr = new AmarokScript::AmarokScriptConfig( name, scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "Script", scriptObject );
-    item->wrapperList.append( objectPtr );
 
-    objectPtr = new InfoScript( item->url );
-    QScriptValue infoContext = scriptEngine->newQObject( objectPtr );
+    objectPtr = new InfoScript( item->url, scriptEngine );
+    QScriptValue infoContext = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "Info", infoContext );
-    item->wrapperList.append( objectPtr );
     scriptObject = scriptEngine->newQMetaObject( &IconEnum::staticMetaObject );
     infoContext.setProperty( "IconSizes", scriptObject );
 
     item->servicePtr = new ScriptableServiceScript( scriptEngine );
 //    scriptObject = scriptEngine->newQObject( item->servicePtr );
 //    m_global.setProperty( "ScriptableServiceScript", scriptObject );
-    item->wrapperList.append( item->servicePtr );
 
     objectPtr = new StreamItem( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "StreamItem", scriptObject );
     scriptEngine->setDefaultPrototype( qMetaTypeId<StreamItem*>(), QScriptValue() );
-    item->wrapperList.append( objectPtr );
 
     objectPtr = new AmarokScript::AmarokLyricsScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "Lyrics", scriptObject );
-    item->wrapperList.append( objectPtr );
 
     objectPtr = new AmarokScript::AmarokServicePluginManagerScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "ServicePluginManager", scriptObject );
-    item->wrapperList.append( objectPtr );
 
     objectPtr = new AmarokScript::AmarokCollectionScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "Collection", scriptObject );
-    item->wrapperList.append( objectPtr );
 
     objectPtr = new AmarokScript::AmarokEngineScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "Engine", scriptObject );
-    item->wrapperList.append( objectPtr );
 
-    objectPtr = new AmarokScript::AmarokWindowScript( scriptEngine, &item->guiPtrList );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    objectPtr = new AmarokScript::AmarokWindowScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "Window", scriptObject );
-    item->wrapperList.append( objectPtr );
 
-    objectPtr = new AmarokScript::AmarokPlaylistScript( scriptEngine, &item->wrapperList );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    objectPtr = new AmarokScript::AmarokPlaylistScript( scriptEngine );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "Playlist", scriptObject );
-    item->wrapperList.append( objectPtr );
 
     objectPtr = new AmarokNetworkScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "Network", scriptObject );
-    item->wrapperList.append( objectPtr );
 
     objectPtr = new Downloader( scriptEngine );
-    item->wrapperList.append( objectPtr );
 
     objectPtr = new AmarokScript::AmarokStatusbarScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.property( "Window" ).setProperty( "Statusbar", scriptObject );
-    item->wrapperList.append( objectPtr );
 
     objectPtr = new AmarokScript::AmarokOSDScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr );
+    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.property( "Window" ).setProperty( "OSD", scriptObject );
-    item->wrapperList.append( objectPtr );
 
     scriptObject = scriptEngine->newObject();
     m_global.property( "Window" ).setProperty( "ToolsMenu", scriptObject );
@@ -548,10 +528,9 @@ ScriptManager::startScriptEngine( const QString &name )
     scriptObject = scriptEngine->newObject();
     m_global.property( "Window" ).setProperty( "SettingsMenu", scriptObject );
 
-    MetaTrackPrototype* trackProto = new MetaTrackPrototype();
+    MetaTrackPrototype* trackProto = new MetaTrackPrototype( this );
     scriptEngine->setDefaultPrototype( qMetaTypeId<Meta::TrackPtr>(),
-                                scriptEngine->newQObject( trackProto ) );
-    item->wrapperList.append( trackProto );
+                                       scriptEngine->newQObject(trackProto, QScriptEngine::AutoOwnership) );
 }
 
 ScriptItem::ScriptItem()
@@ -563,8 +542,6 @@ ScriptItem::ScriptItem()
 
 ScriptItem::~ScriptItem()
 {
-    qDeleteAll( guiPtrList );
-    qDeleteAll( wrapperList );
     delete engine;
 }
 
