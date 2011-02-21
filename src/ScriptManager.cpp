@@ -469,10 +469,10 @@ ScriptManager::startScriptEngine( const QString &name )
     scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "Script", scriptObject );
 
-    objectPtr = new InfoScript( item->url, scriptEngine );
+    objectPtr = new AmarokScript::InfoScript( item->url, scriptEngine );
     QScriptValue infoContext = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
     m_global.setProperty( "Info", infoContext );
-    scriptObject = scriptEngine->newQMetaObject( &IconEnum::staticMetaObject );
+    scriptObject = scriptEngine->newQMetaObject( &AmarokScript::IconEnum::staticMetaObject );
     infoContext.setProperty( "IconSizes", scriptObject );
 
     item->servicePtr = new ScriptableServiceScript( scriptEngine );

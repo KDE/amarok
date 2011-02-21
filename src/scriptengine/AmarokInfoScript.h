@@ -22,6 +22,8 @@
 #include <QObject>
 #include <KUrl>
 
+namespace AmarokScript {
+
 class InfoScript : public QObject
 {
     Q_OBJECT
@@ -54,5 +56,7 @@ class IconEnum : public QObject
           Enormous=128
       };
 };
+
+} // namespace AmarokScript
 
 #endif

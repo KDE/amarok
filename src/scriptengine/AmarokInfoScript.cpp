@@ -22,31 +22,32 @@
 
 #include <KIconLoader>
 
-InfoScript::InfoScript( const KUrl& scriptUrl, QObject *parent )
+AmarokScript::InfoScript::InfoScript( const KUrl& scriptUrl, QObject *parent )
     : QObject( parent )
     , m_scriptUrl( scriptUrl )
 { }
 
 QString
-InfoScript::version() const
+AmarokScript::InfoScript::version() const
 {
     return AMAROK_VERSION;
 }
 
 QString
-InfoScript::scriptPath() const
+AmarokScript::InfoScript::scriptPath() const
 {
     return m_scriptUrl.directory();
 }
 
 QString
-InfoScript::iconPath( const QString& name, int size ) const
+AmarokScript::InfoScript::iconPath( const QString& name, int size ) const
 {
     //if size was positive it would refer to KIconLoader::Group
-    return KIconLoader::global()->iconPath( name, -size ); 
+    return KIconLoader::global()->iconPath( name, -size );
 }
 
-QString InfoScript::scriptConfigPath( const QString& name ) const
+QString
+AmarokScript::InfoScript::scriptConfigPath( const QString& name ) const
 {
     return Amarok::saveLocation( "scripts/" + name );
 }
