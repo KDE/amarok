@@ -46,7 +46,6 @@
 
 LabelsApplet::LabelsApplet( QObject *parent, const QVariantList &args )
     : Context::Applet( parent, args ),
-    m_lastLabelName( "" ),
     m_lastLabelSize( QSizeF(0,0) ),
     m_lastLabelBottomAdded( false )
 {
@@ -367,7 +366,7 @@ LabelsApplet::updateLabels()
                     const qreal y = labelGraphics->pos().y() - ( labelGraphics->boundingRect().height() - m_lastLabelSize.height() ) / 2;
                     labelGraphics->setPos( x, y );
                     m_lastLabelSize = QSizeF( 0, 0 );
-                    m_lastLabelName = "";
+                    m_lastLabelName.clear();
                 }
                 labelAnimation = m_labelAnimations.at(i);
                 break;
@@ -401,7 +400,7 @@ LabelsApplet::updateLabels()
     m_labelAnimations = tempLabelAnimations;
 
     // should be unnecessary, but better safe than sorry
-    m_lastLabelName = "";
+    m_lastLabelName.clear();
     m_lastLabelSize = QSizeF( 0, 0 );
     m_lastLabelBottomAdded = false;
 
