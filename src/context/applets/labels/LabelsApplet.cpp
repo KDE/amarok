@@ -384,9 +384,9 @@ LabelsApplet::updateLabels()
                 labelGraphics->setPos( m_addLabelProxy.data()->pos().x(), m_addLabelProxy.data()->pos().y() + m_addLabelProxy.data()->size().height()/2 - labelGraphics->boundingRect().height()/2 );
                 m_lastLabelBottomAdded = false;
             }
-            connect( labelGraphics, SIGNAL( toggled( const QString & ) ), this, SLOT( toggleLabel( const QString & ) ) );
-            connect( labelGraphics, SIGNAL( list( const QString & ) ), this, SLOT( listLabel( const QString & ) ) );
-            connect( labelGraphics, SIGNAL( blacklisted( const QString & ) ), this, SLOT( blacklistLabel( const QString & ) ) );
+            connect( labelGraphics, SIGNAL(toggled(QString)), SLOT(toggleLabel(QString)) );
+            connect( labelGraphics, SIGNAL(list(QString)), SLOT(listLabel(QString)) );
+            connect( labelGraphics, SIGNAL(blacklisted(QString) ), SLOT(blacklistLabel(QString)) );
 
             labelAnimation = new QPropertyAnimation( labelGraphics, "pos" );
             labelAnimation->setEasingCurve( QEasingCurve::OutQuad );
