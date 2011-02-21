@@ -48,14 +48,13 @@ ProxyQueryMaker::ProxyQueryMaker( ProxyCollection *collection, const QList<Query
     foreach( QueryMaker *b, m_builders )
     {
         connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
-        //relay signals directly
-        connect( b, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( slotNewResultReady( QString, Meta::TrackList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), this, SLOT( slotNewResultReady( QString, Meta::ArtistList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SLOT( slotNewResultReady( QString, Meta::AlbumList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::GenreList ) ), this, SLOT( slotNewResultReady( QString, Meta::GenreList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), this, SLOT( slotNewResultReady( QString, Meta::ComposerList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::YearList ) ), this, SLOT( slotNewResultReady( QString, Meta::YearList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::LabelList ) ), this, SLOT( slotNewResultReady( QString, Meta::LabelList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( slotNewResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), this, SLOT( slotNewResultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SLOT( slotNewResultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::GenreList ) ), this, SLOT( slotNewResultReady( QString, Meta::GenreList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), this, SLOT( slotNewResultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::YearList ) ), this, SLOT( slotNewResultReady( QString, Meta::YearList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::LabelList ) ), this, SLOT( slotNewResultReady( QString, Meta::LabelList ) ), Qt::QueuedConnection );
     }
 }
 
@@ -131,27 +130,31 @@ ProxyQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 QueryMaker*
 ProxyQueryMaker::orderBy( qint64 value, bool descending )
 {
-    m_orderDescending = descending;
     m_orderField = value;
+    m_orderDescending = descending;
     //copied from MemoryQueryMaker. TODO: think of a sensible place to put this code
     switch( value )
     {
         case Meta::valYear:
-        case Meta::valDiscNr:
         case Meta::valTrackNr:
+        case Meta::valDiscNr:
+        case Meta::valBpm:
+        case Meta::valLength:
+        case Meta::valBitrate:
+        case Meta::valSamplerate:
+        case Meta::valFilesize:
+        case Meta::valFormat:
+        case Meta::valCreateDate:
         case Meta::valScore:
         case Meta::valRating:
+        case Meta::valFirstPlayed:
+        case Meta::valLastPlayed:
         case Meta::valPlaycount:
-        case Meta::valFilesize:
-        case Meta::valSamplerate:
-        case Meta::valBitrate:
-        case Meta::valLength:
+        case Meta::valModified:
         {
             m_orderByNumberField = true;
             break;
         }
-        //TODO: what about Meta::valFirstPlayed, Meta::valCreateDate or Meta::valLastPlayed??
-
         default:
             m_orderByNumberField = false;
     }
