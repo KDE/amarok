@@ -455,6 +455,7 @@ ScriptManager::startScriptEngine( const QString &name )
 {
     DEBUG_BLOCK
 
+    debug() << "start script engine:" << name;
     ScriptItem *item = m_scripts.value( name );
     QScriptEngine* scriptEngine = item->engine;
     QObject* objectPtr = 0;
