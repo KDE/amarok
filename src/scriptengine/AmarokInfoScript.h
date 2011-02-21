@@ -22,6 +22,8 @@
 #include <QObject>
 #include <KUrl>
 
+class QScriptEngine;
+
 namespace AmarokScript {
 
 class InfoScript : public QObject
@@ -29,7 +31,8 @@ class InfoScript : public QObject
     Q_OBJECT
 
     public:
-        InfoScript( const KUrl& scriptUrl, QObject *parent );
+        InfoScript( const KUrl& scriptUrl, QScriptEngine *engine );
+
     public slots:
         QString scriptPath() const;
         QString scriptConfigPath( const QString& name ) const;

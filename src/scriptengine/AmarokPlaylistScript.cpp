@@ -32,10 +32,12 @@
 
 namespace AmarokScript
 {
-    AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine* scriptEngine )
-        : QObject( scriptEngine )
-        , m_scriptEngine( scriptEngine )
+    AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine *engine )
+        : QObject( engine )
+        , m_scriptEngine( engine )
     {
+        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+        engine->globalObject().property( "Amarok" ).setProperty( "Playlist", scriptObject );
         connect( The::playlist()->qaim(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
         connect( The::playlist()->qaim(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
     }

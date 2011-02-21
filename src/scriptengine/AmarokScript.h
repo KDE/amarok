@@ -29,7 +29,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokScript( const QString& name, QObject *parent );
+            AmarokScript( const QString& name, QScriptEngine *engine );
             ~AmarokScript();
 
             void slotConfigured();

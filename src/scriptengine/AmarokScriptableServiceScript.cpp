@@ -29,6 +29,9 @@ StreamItem::StreamItem( QScriptEngine *engine )
     : QObject( engine )
     , m_year( 0 )
 {
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    engine->globalObject().property( "Amarok" ).setProperty( "StreamItem", scriptObject );
+    engine->setDefaultPrototype( qMetaTypeId<StreamItem*>(), QScriptValue() );
 }
 
 StreamItem::~StreamItem()

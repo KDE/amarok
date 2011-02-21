@@ -20,6 +20,7 @@
 
 #include <QObject>
 
+class QScriptEngine;
 class QByteArray;
 
 namespace AmarokScript
@@ -30,7 +31,7 @@ class AmarokLyricsScript : public QObject
     Q_OBJECT
 
 public:
-    AmarokLyricsScript( QObject *parent );
+    AmarokLyricsScript( QScriptEngine* scriptEngine );
     ~AmarokLyricsScript();
 
 public slots:

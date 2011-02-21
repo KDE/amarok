@@ -29,7 +29,10 @@ namespace AmarokScript
         : QObject( scriptEngine )
         , m_scriptUrl( url )
         , m_scriptEngine( scriptEngine )
-    {}
+    {
+        QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership );
+        scriptEngine->globalObject().setProperty( "Importer", scriptObject );
+    }
 
     ScriptImporter::~ScriptImporter()
     {

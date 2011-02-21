@@ -28,7 +28,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokScriptConfig( const QString& name, QObject *parent );
+            AmarokScriptConfig( const QString& name, QScriptEngine *engine );
             ~AmarokScriptConfig();
 
         public slots:

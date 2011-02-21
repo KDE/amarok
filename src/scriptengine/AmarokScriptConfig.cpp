@@ -20,12 +20,17 @@
 #include <KSharedConfig>
 #include <KGlobal>
 
+#include <QScriptEngine>
+
 namespace AmarokScript
 {
-    AmarokScriptConfig::AmarokScriptConfig( const QString& name, QObject *parent )
-        : QObject( parent )
+    AmarokScriptConfig::AmarokScriptConfig( const QString& name, QScriptEngine *engine )
+        : QObject( engine )
         , m_name( name )
-    {}
+    {
+        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+        engine->globalObject().property( "Amarok" ).setProperty( "Script", scriptObject );
+    }
 
     AmarokScriptConfig::~AmarokScriptConfig()
     {}

@@ -119,7 +119,6 @@ class AMAROK_EXPORT ScriptManager : public QObject
         /////////////////////////////////////////////////////////////////////////////////////
         static ScriptManager*  s_instance;
 
-        QScriptValue   m_global;
         bool           m_configChanged;
         QStringList    m_changedScripts;
 
@@ -143,7 +142,6 @@ public:
     bool                                            running;
     /** Currently being evaluated by the script engine */
     bool                                            evaluating;
-    AmarokScript::AmarokScript*                     globalPtr;
     ScriptableServiceScript*                        servicePtr;
     QStringList                                     log;
 };

@@ -30,6 +30,9 @@ namespace AmarokScript
     AmarokEngineScript::AmarokEngineScript( QScriptEngine* scriptEngine )
         : QObject( scriptEngine )
     {
+        QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership );
+        scriptEngine->globalObject().property( "Amarok" ).setProperty( "Engine", scriptObject );
+
         EngineController *engine = The::engineController();
 
         connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),

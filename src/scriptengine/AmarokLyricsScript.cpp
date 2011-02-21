@@ -29,15 +29,19 @@
 #include <KApplication>
 
 #include <QByteArray>
+#include <QScriptEngine>
+#include <QTextCodec>
 #include <QTextDocument>
 #include <QTextCodec>
 
 namespace AmarokScript
 {
 
-AmarokLyricsScript::AmarokLyricsScript( QObject *parent )
-    : QObject( parent )
+AmarokLyricsScript::AmarokLyricsScript( QScriptEngine *engine )
+    : QObject( engine )
 {
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    engine->globalObject().property( "Amarok" ).setProperty( "Lyrics", scriptObject );
     connect( ScriptManager::instance(),
              SIGNAL(fetchLyrics(QString, QString, QString)),
              SIGNAL(fetchLyrics(QString, QString, QString)) );

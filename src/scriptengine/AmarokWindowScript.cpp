@@ -34,6 +34,8 @@ namespace AmarokScript
         , m_settingsMenu( The::mainWindow()->SettingsMenu() )
         , m_scriptEngine( scriptEngine )
     {
+        QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership );
+        scriptEngine->globalObject().property( "Amarok" ).setProperty( "Window", scriptObject );
     }
 
     AmarokWindowScript::~AmarokWindowScript()

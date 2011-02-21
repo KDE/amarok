@@ -26,9 +26,11 @@
 
 namespace AmarokScript
 {
-    AmarokCollectionScript::AmarokCollectionScript( QScriptEngine* scriptEngine )
-        : QObject( scriptEngine )
+    AmarokCollectionScript::AmarokCollectionScript( QScriptEngine *engine )
+        : QObject( engine )
     {
+        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+        engine->globalObject().property( "Amarok" ).setProperty( "Collection", scriptObject );
     }
 
     AmarokCollectionScript::~AmarokCollectionScript()

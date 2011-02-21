@@ -21,11 +21,17 @@
 #include "core/support/Amarok.h"
 
 #include <KIconLoader>
+#include <QScriptEngine>
 
-AmarokScript::InfoScript::InfoScript( const KUrl& scriptUrl, QObject *parent )
-    : QObject( parent )
+AmarokScript::InfoScript::InfoScript( const KUrl& scriptUrl, QScriptEngine *engine )
+    : QObject( engine )
     , m_scriptUrl( scriptUrl )
-{ }
+{
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    engine->globalObject().property( "Amarok" ).setProperty( "Info", scriptObject );
+    QScriptValue iconEnumObject = engine->newQMetaObject( &AmarokScript::IconEnum::staticMetaObject );
+    scriptObject.setProperty( "IconSizes", iconEnumObject );
+}
 
 QString
 AmarokScript::InfoScript::version() const

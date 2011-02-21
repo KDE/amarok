@@ -24,12 +24,17 @@
 
 #include <KMessageBox>
 
+#include <QScriptEngine>
+
 namespace AmarokScript
 {
-    AmarokScript::AmarokScript( const QString& name, QObject *parent )
-        : QObject( parent )
+    AmarokScript::AmarokScript( const QString& name, QScriptEngine *engine )
+        : QObject( engine )
         , m_name( name )
-    {}
+    {
+        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+        engine->globalObject().setProperty( "Amarok", scriptObject );
+    }
 
     AmarokScript::~AmarokScript()
     {}

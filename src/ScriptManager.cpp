@@ -454,79 +454,41 @@ ScriptManager::startScriptEngine( const QString &name )
     debug() << "start script engine:" << name;
     ScriptItem *item = m_scripts.value( name );
     QScriptEngine* scriptEngine = item->engine;
-    QObject* objectPtr = 0;
-    QScriptValue scriptObject;
 
-    objectPtr = new AmarokScript::ScriptImporter( scriptEngine, item->url );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    scriptEngine->globalObject().setProperty( "Importer", scriptObject );
+    // first create the Amarok global script object
+    new AmarokScript::AmarokScript( name, scriptEngine );
 
-    item->globalPtr = new AmarokScript::AmarokScript( name, scriptEngine );
-    m_global = scriptEngine->newQObject( item->globalPtr, QScriptEngine::AutoOwnership );
-    scriptEngine->globalObject().setProperty( "Amarok", m_global );
+    // common utils
+    new AmarokScript::ScriptImporter( scriptEngine, item->url );
+    new AmarokScript::AmarokScriptConfig( name, scriptEngine );
+    new AmarokScript::InfoScript( item->url, scriptEngine );
+    new AmarokNetworkScript( scriptEngine );
+    new Downloader( scriptEngine );
 
-    objectPtr = new AmarokScript::AmarokScriptConfig( name, scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.setProperty( "Script", scriptObject );
+    // backend
+    new AmarokScript::AmarokCollectionScript( scriptEngine );
+    new AmarokScript::AmarokEngineScript( scriptEngine );
 
-    objectPtr = new AmarokScript::InfoScript( item->url, scriptEngine );
-    QScriptValue infoContext = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.setProperty( "Info", infoContext );
-    scriptObject = scriptEngine->newQMetaObject( &AmarokScript::IconEnum::staticMetaObject );
-    infoContext.setProperty( "IconSizes", scriptObject );
+    // UI
+    new AmarokScript::AmarokWindowScript( scriptEngine );
+    new AmarokScript::AmarokPlaylistScript( scriptEngine );
+    new AmarokScript::AmarokStatusbarScript( scriptEngine );
+    new AmarokScript::AmarokOSDScript( scriptEngine );
+    QScriptValue windowObject = scriptEngine->globalObject().property( "Amarok" ).property( "Window" );
+    windowObject.setProperty( "ToolsMenu", scriptEngine->newObject() );
+    windowObject.setProperty( "SettingsMenu", scriptEngine->newObject() );
 
-    item->servicePtr = new ScriptableServiceScript( scriptEngine );
-//    scriptObject = scriptEngine->newQObject( item->servicePtr );
-//    m_global.setProperty( "ScriptableServiceScript", scriptObject );
-
-    objectPtr = new StreamItem( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.setProperty( "StreamItem", scriptObject );
-    scriptEngine->setDefaultPrototype( qMetaTypeId<StreamItem*>(), QScriptValue() );
-
-    objectPtr = new AmarokScript::AmarokLyricsScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.setProperty( "Lyrics", scriptObject );
-
-    objectPtr = new AmarokScript::AmarokServicePluginManagerScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.setProperty( "ServicePluginManager", scriptObject );
-
-    objectPtr = new AmarokScript::AmarokCollectionScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.setProperty( "Collection", scriptObject );
-
-    objectPtr = new AmarokScript::AmarokEngineScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.setProperty( "Engine", scriptObject );
-
-    objectPtr = new AmarokScript::AmarokWindowScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.setProperty( "Window", scriptObject );
-
-    objectPtr = new AmarokScript::AmarokPlaylistScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.setProperty( "Playlist", scriptObject );
-
-    objectPtr = new AmarokNetworkScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.setProperty( "Network", scriptObject );
-
-    objectPtr = new Downloader( scriptEngine );
-
-    objectPtr = new AmarokScript::AmarokStatusbarScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.property( "Window" ).setProperty( "Statusbar", scriptObject );
-
-    objectPtr = new AmarokScript::AmarokOSDScript( scriptEngine );
-    scriptObject = scriptEngine->newQObject( objectPtr, QScriptEngine::AutoOwnership );
-    m_global.property( "Window" ).setProperty( "OSD", scriptObject );
-
-    scriptObject = scriptEngine->newObject();
-    m_global.property( "Window" ).setProperty( "ToolsMenu", scriptObject );
-
-    scriptObject = scriptEngine->newObject();
-    m_global.property( "Window" ).setProperty( "SettingsMenu", scriptObject );
+    const QString &category = item->info.category();
+    if( category == QLatin1String("Lyrics") )
+    {
+        new AmarokScript::AmarokLyricsScript( scriptEngine );
+    }
+    else if( category == QLatin1String("Scriptable Service") )
+    {
+        new StreamItem( scriptEngine );
+        item->servicePtr = new ScriptableServiceScript( scriptEngine );
+        new AmarokScript::AmarokServicePluginManagerScript( scriptEngine );
+    }
 
     MetaTrackPrototype* trackProto = new MetaTrackPrototype( this );
     scriptEngine->setDefaultPrototype( qMetaTypeId<Meta::TrackPtr>(),
@@ -536,7 +498,6 @@ ScriptManager::startScriptEngine( const QString &name )
 ScriptItem::ScriptItem()
     : engine( 0 )
     , running( false )
-    , globalPtr( 0 )
     , servicePtr( 0 )
 {}
 
