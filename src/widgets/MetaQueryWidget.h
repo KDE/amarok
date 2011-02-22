@@ -95,7 +95,7 @@ class MetaQueryWidget : public QWidget
         struct Filter
         {
             Filter()
-                : field( Meta::valArtist )
+                  : field( 0 )
                   , numValue( 0 )
                   , numValue2( 0 )
                   , condition( Contains )
