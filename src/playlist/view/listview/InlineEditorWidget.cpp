@@ -145,14 +145,13 @@ void InlineEditorWidget::createChildWidgets()
             QString text = textIndex.data( Qt::DisplayRole ).toString();
             m_orgValues.insert( value, text );
 
+            QWidget *widget = 0;
             //special case for painting the rating...
             if ( value == Rating )
             {
                 int rating = textIndex.data( Qt::DisplayRole ).toInt();
 
-                KRatingWidget * ratingWidget = new KRatingWidget( 0 );
-                rowWidget->addWidget( ratingWidget );
-                rowWidget->setStretchFactor( itemIndex, itemWidth );
+                KRatingWidget* ratingWidget = new KRatingWidget( 0 );
                 ratingWidget->setAlignment( element.alignment() );
                 ratingWidget->setRating( rating );
                 ratingWidget->setAttribute( Qt::WA_NoMousePropagation, true );
@@ -160,7 +159,7 @@ void InlineEditorWidget::createChildWidgets()
                 connect( ratingWidget, SIGNAL( ratingChanged( uint ) ), this, SLOT( ratingValueChanged() ) );
 
                 m_editorRoleMap.insert( ratingWidget, value );
-
+                widget = ratingWidget;
             }
             else if ( value == Divider )
             {
@@ -182,11 +181,11 @@ void InlineEditorWidget::createChildWidgets()
                 painter.drawPixmap( 0, 0, left );
                 painter.drawPixmap( 1, 0, right );
 
-                QLabel * dividerLabel = new QLabel( 0 );
-                rowWidget->addWidget( dividerLabel );
+                QLabel* dividerLabel = new QLabel( 0 );
                 dividerLabel->setPixmap( dividerPixmap );
                 dividerLabel->setAlignment( element.alignment() );
-                rowWidget->setStretchFactor( itemIndex, itemWidth );
+
+                widget = dividerLabel;
             }
             else if( value == Moodbar )
             {
@@ -199,50 +198,48 @@ void InlineEditorWidget::createChildWidgets()
 
                 Meta::TrackPtr track = m_index.data( TrackRole ).value<Meta::TrackPtr>();
 
+                QLabel* moodbarLabel = new QLabel( 0 );
+                moodbarLabel->setScaledContents( true );
                 if( The::moodbarManager()->hasMoodbar( track ) )
                 {
                     QPixmap moodbar = The::moodbarManager()->getMoodbar( track, itemWidth, rowHeight - 8 );
-
-                    QLabel * moodbarLabel = new QLabel( 0 );
-                    moodbarLabel->setScaledContents( true );
-                    rowWidget->addWidget( moodbarLabel );
                     moodbarLabel->setPixmap( moodbar );
-                    rowWidget->setStretchFactor( itemIndex, itemWidth );
                 }
+                widget = moodbarLabel;
             }
             else
             {
-                    QLineEdit * edit = new QLineEdit( text, 0 );
-                    rowWidget->addWidget( edit );
-                    rowWidget->setStretchFactor( itemIndex, itemWidth );
-                    edit->setFrame( false );
-                    edit->setAlignment( element.alignment() );
-                    edit->installEventFilter(this);
+                QLineEdit * edit = new QLineEdit( text, 0 );
+                edit->setFrame( false );
+                edit->setAlignment( element.alignment() );
+                edit->installEventFilter(this);
 
-                    // -- set font
-                    bool bold = element.bold();
-                    bool italic = element.italic();
-                    bool underline = element.underline();
+                // -- set font
+                bool bold = element.bold();
+                bool italic = element.italic();
+                bool underline = element.underline();
 
-                    QFont font = edit->font();
-                    font.setBold( bold );
-                    font.setItalic( italic );
-                    font.setUnderline( underline );
-                    edit->setFont( font );
+                QFont font = edit->font();
+                font.setBold( bold );
+                font.setItalic( italic );
+                font.setUnderline( underline );
+                edit->setFont( font );
 
-                    connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
+                connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
 
-                    //check if this is a column that is editable. If not, make the
-                    //line edit read only.
-                    if ( !editableColumns.contains( value ) )
-                    {
-                        edit->setReadOnly( true );
-                        edit->setDisabled( true );
-                    }
-
-                    m_editorRoleMap.insert( edit, value );
+                //check if this is a column that is editable. If not, make the
+                //line edit read only.
+                if ( !editableColumns.contains( value ) )
+                {
+                    edit->setReadOnly( true );
+                    edit->setDisabled( true );
+                }
+                m_editorRoleMap.insert( edit, value );
+                widget = edit;
             }
 
+            rowWidget->addWidget( widget );
+            rowWidget->setStretchFactor( itemIndex, itemWidth );
             itemIndex++;
         }
     }
