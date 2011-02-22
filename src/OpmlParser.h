@@ -70,6 +70,10 @@ public:
     bool read( const KUrl &url );
     bool read( QIODevice *device );
 
+    /** @return the URL of the OPML being parsed.
+    */
+    KUrl url() const { return m_url; }
+
     QMap<QString,QString> headerData() { return m_headerData; }
 
     /**

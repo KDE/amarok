@@ -27,6 +27,7 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "core/podcasts/PodcastProvider.h"
 #include "ServiceSqlRegistry.h"
+#include "widgets/SearchWidget.h"
 
 #include <KStandardDirs>
 #include <KTemporaryFile>
@@ -95,14 +96,18 @@ void OpmlDirectoryService::polish()
     //do not allow this content to get added to the playlist. At least not for now
     setPlayableTracks( false );
 
-    OpmlDirectoryView* view = new OpmlDirectoryView( this );
-    view->setHeaderHidden( true );
-    view->setFrameShape( QFrame::NoFrame );
-    view->setDragEnabled ( true );
-    view->setSortingEnabled( false );
-    view->setDragDropMode ( QAbstractItemView::DragOnly );
-    view->setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
-    setView( view );
+    //TODO: implement searching
+    m_searchWidget->setVisible( false );
+
+    OpmlDirectoryView* opmlView = new OpmlDirectoryView( this );
+    opmlView->setHeaderHidden( true );
+    opmlView->setFrameShape( QFrame::NoFrame );
+    opmlView->setDragEnabled ( true );
+    opmlView->setSortingEnabled( false );
+    opmlView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    opmlView->setDragDropMode ( QAbstractItemView::DragOnly );
+    opmlView->setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
+    setView( opmlView );
     KUrl opmlLocation( Amarok::saveLocation() );
     opmlLocation.addPath( "podcast_directory.opml" );
 
@@ -122,8 +127,7 @@ void OpmlDirectoryService::polish()
 
     setModel( new OpmlDirectoryModel( opmlLocation, this ) );
 
-    m_subscribeButton = new QPushButton();
-    m_subscribeButton->setParent( m_bottomPanel );
+    m_subscribeButton = new QPushButton( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
     m_subscribeButton->setObjectName( "subscribeButton" );
     m_subscribeButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
@@ -132,19 +136,36 @@ void OpmlDirectoryService::polish()
 
     connect( m_subscribeButton, SIGNAL( clicked() ), this, SLOT( subscribe() ) );
 
+    m_addOpmlButton = new QPushButton( m_bottomPanel );
+    m_addOpmlButton->setText( i18n( "Add OPML" ) );
+    m_addOpmlButton->setObjectName( "addOpmlButton" );
+    m_addOpmlButton->setIcon( KIcon( "list-add-amarok" ) );
+
+    connect( m_addOpmlButton, SIGNAL(clicked()), model(), SLOT(slotAddOpmlAction()) );
+
+    connect( view()->selectionModel(),
+             SIGNAL(selectionChanged( const QItemSelection &, const QItemSelection & )),
+             SLOT(slotSelectionChanged( const QItemSelection &, const QItemSelection & ))
+           );
+
     setInfoParser( new OpmlDirectoryInfoParser() );
 
     m_polished = true;
 }
 
-void OpmlDirectoryService::itemSelected( CollectionTreeItem * selectedItem )
+void
+OpmlDirectoryService::subscribe()
 {
-    DEBUG_BLOCK
-    return;
+    OpmlDirectoryModel * opmlModel = dynamic_cast<OpmlDirectoryModel *>( model() );
+    Q_ASSERT( opmlModel );
+    opmlModel->subscribe( view()->selectionModel()->selectedIndexes() );
 }
 
-void OpmlDirectoryService::subscribe()
+void
+OpmlDirectoryService::slotSelectionChanged( const QItemSelection &selected,
+                                            const QItemSelection &deselected )
 {
+    Q_UNUSED(selected)
+    Q_UNUSED(deselected)
+    m_subscribeButton->setEnabled( !view()->selectionModel()->selectedIndexes().isEmpty() );
 }
-
-#include "OpmlDirectoryService.moc"

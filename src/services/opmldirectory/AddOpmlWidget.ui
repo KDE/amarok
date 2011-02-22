@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>531</width>
+    <width>530</width>
     <height>117</height>
    </rect>
   </property>
@@ -23,6 +23,9 @@
    </size>
   </property>
   <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::ExpandingFieldsGrow</enum>
+   </property>
    <item row="0" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="sizeConstraint">
@@ -34,7 +37,7 @@
      <item>
       <widget class="QLabel" name="instructionsLabel">
        <property name="text">
-        <string>Add a local or remote OPML file to be included in the list.&lt;br/&gt;If the title field is left blank the title from the OPML will be used.</string>
+        <string>Add a local or remote OPML file to be included in the list.</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -83,7 +86,11 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="KLineEdit" name="titleEdit"/>
+    <widget class="KLineEdit" name="titleEdit">
+     <property name="placeholderText">
+      <string>If left blank the title from the OPML will be used.</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

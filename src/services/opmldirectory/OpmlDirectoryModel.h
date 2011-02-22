@@ -58,6 +58,9 @@ public:
     virtual void saveOpml( const KUrl &saveLocation );
     virtual OpmlNodeType opmlNodeType( const QModelIndex &idx ) const;
 
+    //TODO: extract these into OpmlPodcastDirectoryModel subclass
+    void subscribe( const QModelIndexList &indexes ) const;
+
 signals:
 
 public slots:
@@ -69,11 +72,14 @@ protected:
     virtual void fetchMore( const QModelIndex &parent );
 
 private slots:
+    void slotOpmlHeaderDone();
     void slotOpmlOutlineParsed( OpmlOutline * );
     void slotOpmlParsingDone();
     void slotOpmlWriterDone( int result );
 
 private:
+    QModelIndex addOutlineToModel( QModelIndex parentIdx, OpmlOutline *oultine );
+
     KUrl m_rootOpmlUrl;
     QList<OpmlOutline *> m_rootOutlines;
 
@@ -85,5 +91,7 @@ private:
 };
 
 Q_DECLARE_METATYPE(QActionList)
+//we store these in a QVariant for the addFolder and addOpml actions
+Q_DECLARE_METATYPE( QModelIndex )
 
 #endif // OPMLDIRECTORYMODEL_H

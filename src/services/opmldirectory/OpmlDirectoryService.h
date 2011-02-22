@@ -48,36 +48,30 @@ A service for displaying, previewing and downloading music from OpmlDirectory.co
 */
 class OpmlDirectoryService : public ServiceBase
 {
+    Q_OBJECT
+    public:
+        OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name,
+                              const QString &prettyName );
 
-Q_OBJECT
-public:
-    OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name, const QString &prettyName );
+        ~OpmlDirectoryService();
 
-    ~OpmlDirectoryService();
+        void polish();
 
-    void polish();
+        virtual Collections::Collection * collection() { return 0; }
 
-    virtual Collections::Collection * collection() { return 0; }
+    private slots:
+        void subscribe();
+        void slotSelectionChanged( const QItemSelection &, const QItemSelection & );
 
-private slots:
-    void subscribe();
+    private:
 
-    /**
-    * Checks if subscribe button should be enabled
-    * @param selection the new selection
-    */
-    void itemSelected( CollectionTreeItem *selectedItem );
+        QPushButton *m_addOpmlButton;
+        QPushButton *m_subscribeButton;
 
+        int m_currentCategoryId;
 
-private:
-
-    QPushButton *m_updateListButton;
-    QPushButton *m_subscribeButton;
-
-    int m_currentCategoryId;
-
-    int m_numberOfFeeds;
-    int m_numberOfCategories;
+        int m_numberOfFeeds;
+        int m_numberOfCategories;
 };
 
 #endif

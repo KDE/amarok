@@ -21,6 +21,9 @@
 #include "OpmlParser.h"
 #include "OpmlWriter.h"
 #include "core/support/Debug.h"
+//included to access defaultPodcasts()
+#include "playlistmanager/PlaylistManager.h"
+#include "core/podcasts/PodcastProvider.h"
 
 #include "ui_AddOpmlWidget.h"
 
@@ -166,7 +169,12 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
         case ActionRole:
         {
             if( outline->opmlNodeType() == RegularNode ) //probably a folder
+            {
+                //store the index the new item should get added to
+                m_addOpmlAction->setData( QVariant::fromValue( idx ) );
+                m_addFolderAction->setData( QVariant::fromValue( idx ) );
                 return QVariant::fromValue( QActionList() << m_addOpmlAction << m_addFolderAction );
+            }
         }
         default:
             return QVariant();
@@ -275,6 +283,13 @@ OpmlDirectoryModel::opmlNodeType( const QModelIndex &idx ) const
 void
 OpmlDirectoryModel::slotAddOpmlAction()
 {
+    QModelIndex parentIdx = QModelIndex();
+    QAction *action = qobject_cast<QAction *>( sender() );
+    if( action )
+    {
+        parentIdx = action->data().value<QModelIndex>();
+    }
+
     KDialog *dialog = new KDialog( The::mainWindow() );
     dialog->setCaption( i18n( "Add OPML" ) );
     dialog->setButtons( KDialog::Ok | KDialog::Cancel );
@@ -292,18 +307,21 @@ OpmlDirectoryModel::slotAddOpmlAction()
     debug() << QString( "creating a new OPML outline with url = %1 and title \"%2\"." ).arg( url, title );
     OpmlOutline *outline = new OpmlOutline();
     outline->addAttribute( "type", "include" );
-    outline->addAttribute( "text", title );
     outline->addAttribute( "url", url );
-
-    int newRow = m_rootOutlines.count();
-    beginInsertRows( QModelIndex(), newRow, newRow );
-    m_rootOutlines << outline;
+    if( !title.isEmpty() )
+        outline->addAttribute( "text", title );
 
     //Folder icon with down-arrow emblem
     m_imageMap.insert( outline, KIcon( "folder", 0, QStringList( "go-down" ) ).pixmap( 24, 24 ) );
-    endInsertRows();
 
-    saveOpml( m_rootOpmlUrl );
+    QModelIndex newIdx = addOutlineToModel( parentIdx, outline );
+    //TODO: force the view to expand the folder (parentIdx) so the new node is shown
+
+    //if the title is missing, start parsing the OPML so we can get it from the feed
+    if( outline->attributes().contains( "text" ) )
+        saveOpml( m_rootOpmlUrl );
+    else
+        fetchMore( newIdx ); //saves OPML after receiving the title.
 
     delete dialog;
 }
@@ -311,14 +329,19 @@ OpmlDirectoryModel::slotAddOpmlAction()
 void
 OpmlDirectoryModel::slotAddFolderAction()
 {
+    QModelIndex parentIdx = QModelIndex();
+    QAction *action = qobject_cast<QAction *>( sender() );
+    if( action )
+    {
+        parentIdx = action->data().value<QModelIndex>();
+    }
+
     OpmlOutline *outline = new OpmlOutline();
     outline->addAttribute( "text", i18n( "New Folder" ) );
-    int newRow = m_rootOutlines.count();
-
-    beginInsertRows( QModelIndex(), newRow, newRow );
-    m_rootOutlines << outline;
     m_imageMap.insert( outline, KIcon( "folder" ).pixmap( 24, 24 ) );
-    endInsertRows();
+
+    addOutlineToModel( parentIdx, outline );
+    //TODO: trigger edit of the new folder
 
     saveOpml( m_rootOpmlUrl );
 }
@@ -366,6 +389,7 @@ OpmlDirectoryModel::fetchMore( const QModelIndex &parent )
         return;
 
     OpmlParser *parser = new OpmlParser( urlToFetch );
+    connect( parser, SIGNAL(headerDone()), SLOT(slotOpmlHeaderDone()) );
     connect( parser, SIGNAL( outlineParsed( OpmlOutline * ) ),
              SLOT( slotOpmlOutlineParsed( OpmlOutline * ) ) );
     connect( parser, SIGNAL( doneParsing() ), SLOT( slotOpmlParsingDone() ) );
@@ -377,35 +401,38 @@ OpmlDirectoryModel::fetchMore( const QModelIndex &parent )
 }
 
 void
+OpmlDirectoryModel::slotOpmlHeaderDone()
+{
+    OpmlParser *parser = qobject_cast<OpmlParser *>( QObject::sender() );
+    QModelIndex idx = m_currentFetchingMap.value( parser );
+
+    if( !idx.isValid() ) //header data of the root not required.
+        return;
+
+    OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
+
+    if( !outline->attributes().contains("text") )
+    {
+        if( parser->headerData().contains( "title" ) )
+            outline->addAttribute( "text", parser->headerData()["title"] );
+        else
+            outline->addAttribute( "text", parser->url().fileName() );
+
+        //force a view update
+        emit dataChanged( idx, idx );
+
+        saveOpml( m_rootOpmlUrl );
+    }
+
+}
+
+void
 OpmlDirectoryModel::slotOpmlOutlineParsed( OpmlOutline *outline )
 {
     OpmlParser *parser = qobject_cast<OpmlParser *>( QObject::sender() );
     QModelIndex idx = m_currentFetchingMap.value( parser );
 
-    int beginRow = rowCount( idx );
-    beginInsertRows( idx, beginRow, beginRow );
-
-    //no reparenting required when the item is already parented.
-    if( outline->isRootItem() )
-    {
-        if( !idx.isValid() )
-        {
-            m_rootOutlines << outline;
-        }
-        else
-        {
-            //children need to be manually added to include outlines
-            OpmlOutline *parentOutline = static_cast<OpmlOutline *>( idx.internalPointer() );
-            if( !parentOutline )
-                return;
-
-            parentOutline->addChild( outline );
-            parentOutline->setHasChildren( true );
-            outline->setParent( parentOutline );
-        }
-    }
-
-    endInsertRows();
+    addOutlineToModel( idx, outline );
 
     //TODO: begin image fetch
     switch( outline->opmlNodeType() )
@@ -430,4 +457,54 @@ OpmlDirectoryModel::slotOpmlParsingDone()
     OpmlParser *parser = qobject_cast<OpmlParser *>( QObject::sender() );
     m_currentFetchingMap.remove( parser );
     parser->deleteLater();
+}
+
+void
+OpmlDirectoryModel::subscribe( const QModelIndexList &indexes ) const
+{
+    QList<OpmlOutline *> outlines;
+
+    foreach( const QModelIndex &idx, indexes )
+        outlines << static_cast<OpmlOutline *>( idx.internalPointer() );
+
+    foreach( const OpmlOutline *outline, outlines )
+    {
+        if( !outline )
+            continue;
+        if( outline->opmlNodeType() != RssUrlNode )
+            continue;
+        if( !outline->attributes().contains( "xmlUrl" ) )
+            continue;
+
+        KUrl url( outline->attributes()["xmlUrl"] );
+        The::playlistManager()->defaultPodcasts()->addPodcast( url );
+    }
+}
+
+QModelIndex
+OpmlDirectoryModel::addOutlineToModel( QModelIndex parentIdx, OpmlOutline *outline )
+{
+    int newRow = rowCount( parentIdx );
+    beginInsertRows( parentIdx, newRow, newRow );
+
+    //no reparenting required when the item is already parented.
+    if( outline->isRootItem() )
+    {
+        if( parentIdx.isValid() )
+        {
+            OpmlOutline * parentOutline = static_cast<OpmlOutline *>( parentIdx.internalPointer() );
+            Q_ASSERT(parentOutline);
+
+            outline->setParent( parentOutline );
+            parentOutline->addChild( outline );
+            parentOutline->setHasChildren( true );
+        }
+        else
+        {
+            m_rootOutlines << outline;
+        }
+    }
+    endInsertRows();
+
+    return index( newRow, 0, parentIdx );
 }

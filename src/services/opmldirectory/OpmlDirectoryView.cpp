@@ -60,3 +60,12 @@ OpmlDirectoryView::keyPressEvent( QKeyEvent *event )
      }
      Amarok::PrettyTreeView::keyPressEvent( event );
 }
+
+QItemSelectionModel::SelectionFlags
+OpmlDirectoryView::selectionCommand ( const QModelIndex &index, const QEvent *event ) const
+{
+    if( model()->hasChildren( index ) )
+        return QItemSelectionModel::ClearAndSelect;
+
+    return Amarok::PrettyTreeView::selectionCommand( index, event );
+}
