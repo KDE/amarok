@@ -711,6 +711,14 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
     if( !track )
         return;
 
+    // this does not require EditCapability
+    if(changeMap.contains(Rating))
+    {
+        int rating = changeMap.value(Rating).toInt();
+        track->setRating( rating );
+        changeMap.remove( Rating );
+    }
+
     QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
     if( !ec || !ec->isEditable() )
         return;
@@ -745,11 +753,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
                 ec->setGenre( value );
                 break;
             case Rating:
-                {
-                    int rating = value.toInt();
-                    track->setRating( rating );
-                    break;
-                }
+                break; // we've already set the rating, this even shouldn't be here
             case Title:
                 ec->setTitle( value );
                 break;
