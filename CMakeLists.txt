@@ -103,7 +103,7 @@ if( WITH_PLAYER )
 
     # QJson is required for the PlaydarCollection
     macro_optional_find_package(QJSON)
-    macro_log_feature( QJSON_FOUND "QJson" "Qt JSON Parser used for the Playdar Collection" "http://qjson.sourceforge.net/" TRUE "" "" )
+    macro_log_feature( QJSON_FOUND "QJson" "Qt JSON Parser used for the Playdar Collection" "http://qjson.sourceforge.net/" FALSE "" "" )
 
     # macro_optional_find_package(Strigi)
     # macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" FALSE "" "" )
