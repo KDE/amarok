@@ -154,7 +154,7 @@ SpectrumAnalyzerApplet::init()
         settingsAction->setVisible( true );
         settingsAction->setEnabled( true );
         settingsAction->setText( i18n( "Settings" ) );
-        m_settingsIcon = addAction( settingsAction );
+        m_settingsIcon = addAction( this, settingsAction, 16 );
         connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
 
         // Detach Icon
@@ -163,7 +163,7 @@ SpectrumAnalyzerApplet::init()
         detachAction->setVisible( true );
         detachAction->setEnabled( true );
         detachAction->setText( i18n( "Detach" ) );
-        m_detachIcon = addAction( detachAction );
+        m_detachIcon = addAction( this ,detachAction, 16 );
         connect( m_detachIcon, SIGNAL( activated() ), this, SLOT( toggleDetach() ) );
 
         // Fullscreen Icon
@@ -172,7 +172,7 @@ SpectrumAnalyzerApplet::init()
         fullscreenAction->setVisible( true );
         fullscreenAction->setEnabled( true );
         fullscreenAction->setText( i18n( "Fullscreen" ) );
-        m_fullscreenIcon = addAction( fullscreenAction );
+        m_fullscreenIcon = addAction( this, fullscreenAction, 16 );
         connect( m_fullscreenIcon, SIGNAL( activated() ), this, SLOT( toggleFullscreen() ) );
 
         // Power Icon
@@ -181,7 +181,7 @@ SpectrumAnalyzerApplet::init()
         stopAction->setVisible( true );
         stopAction->setEnabled( true );
         stopAction->setText( i18n( "Power" ) );
-        m_powerIcon = addAction( stopAction );
+        m_powerIcon = addAction( this, stopAction, 16 );
         connect( m_powerIcon, SIGNAL( activated() ), this, SLOT( togglePower() ) );
 
         // Switch Mode Icon
@@ -190,7 +190,7 @@ SpectrumAnalyzerApplet::init()
         modeAction->setVisible( true );
         modeAction->setEnabled( true );
         modeAction->setText( i18n( "Switch Mode" ) );
-        m_modeIcon = addAction( modeAction );
+        m_modeIcon = addAction( this, modeAction, 16 );
         connect( m_modeIcon, SIGNAL( activated() ), this, SLOT( nextMode() ) );
 
         KConfigGroup config = Amarok::config("Spectrum Analyzer Applet");
