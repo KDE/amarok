@@ -36,10 +36,10 @@ LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
 {
 
     EngineController* engine = The::engineController();
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
              this, SLOT( update() ), Qt::QueuedConnection );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( update() ), Qt::QueuedConnection );
+             this, SLOT( onTrackMetadataChanged( Meta::TrackPtr ) ), Qt::QueuedConnection );
 }
 
 QStringList LyricsEngine::sources() const
@@ -58,6 +58,18 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
     // the script manager is running and a lyrics script is loaded first.
     QTimer::singleShot( 0, this, SLOT(update()) );
     return true;
+}
+
+void LyricsEngine::onTrackMetadataChanged( Meta::TrackPtr track )
+{
+    QString artist = track->artist() ? track->artist()->name() : QString();
+    QString title = track->name();
+    if( (artist != m_prevTrackMetadata.artist) || (title != m_prevTrackMetadata.title) )
+    {
+        m_prevTrackMetadata.artist = artist;
+        m_prevTrackMetadata.title = title;
+        update();
+    }
 }
 
 void LyricsEngine::update()

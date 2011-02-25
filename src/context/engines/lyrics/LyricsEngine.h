@@ -51,9 +51,15 @@ protected:
 
 private slots:
     void update();
+    void onTrackMetadataChanged( Meta::TrackPtr track );
 
 private:
     LyricsData m_prevLyrics;
+
+    struct trackMetadata {
+        QString artist;
+        QString title;
+    } m_prevTrackMetadata;
 };
 
 K_EXPORT_AMAROK_DATAENGINE( lyrics, LyricsEngine )
