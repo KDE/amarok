@@ -34,6 +34,7 @@
 #include "SqlMeta.h"
 #include "transcoding/TranscodingJob.h"
 #include "core/transcoding/TranscodingController.h"
+#include <shared/MetaTagLib.h> // for getting the uid
 
 #include <QDir>
 #include <QFile>
@@ -171,9 +172,13 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, url );
     int directoryId = registry->getDirectory( QFileInfo(url).path() );
 
+    // -- the track uid (we can't use the original one from the old collection)
+    Meta::FieldHash fileTags = Meta::Tag::readTags( url );
+    QString uid = fileTags.value( Meta::valUniqueId ).toString();
+
     // -- the the track from the registry
     KSharedPtr<Meta::SqlTrack> metaTrack;
-    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrackFromUid( track->uidUrl() ) );
+    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrackFromUid( uid ) );
 
     if( metaTrack ) {
         warning() << "Location is inserting a file with the same uid as an already existing one.";
@@ -181,7 +186,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
         metaTrack->setUrl( deviceId, rpath, directoryId );
 
     } else {
-        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrack( deviceId, rpath, directoryId, track->uidUrl() ) );
+        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrack( deviceId, rpath, directoryId, uid ) );
     }
 
     // -- set the values
@@ -212,10 +217,11 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     /* we've already done this
     if( !track->path().isEmpty() )
         metaTrack->setUrl( track->path() );
-        */
 
+     and that too
     if( !track->uidUrl().isEmpty() )
-        metaTrack->setUidUrl( track->uidUrl() );
+        metaTrack->setUidUrl( uid );
+    */
 
     if( !track->bpm() >= 0 )
         metaTrack->setBpm( track->bpm() );
@@ -262,6 +268,11 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
         metaTrack->album()->setImage( track->album()->image() );
 
     metaTrack->setWriteFile( true );
+
+    // we have a first shot at the meta data (expecially ratings and playcounts from media
+    // collections) but we still need to trigger the collection scanner
+    // to get the album and other meta data correct.
+    m_collection->scanManager()->delayedIncrementalScan( QFileInfo(url).path() );
 
     return true;
 }

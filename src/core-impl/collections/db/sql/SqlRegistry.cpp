@@ -262,6 +262,7 @@ bool
 SqlRegistry::updateCachedUid( const QString &oldUid, const QString &newUid )
 {
     QMutexLocker locker( &m_trackMutex );
+    // TODO: improve uid handling
     if( m_uidMap.contains( newUid ) )
         warning() << "updating uid to an already existing uid.";
     else if( !m_uidMap.contains( oldUid ) )
@@ -316,7 +317,7 @@ SqlRegistry::removeTrack( int urlId, const QString uid )
     QString query = QString( "DELETE FROM tracks where url=%1;" ).arg( urlId );
     m_collection->sqlStorage()->query( query );
     // keep the urls and statistics entry in case a deleted track is restored later.
-    query = QString( "UPDATE urls SET deviceid=0, rpath="", directory=NULL WHERE id=%1;").arg( urlId );
+    query = QString( "UPDATE urls SET deviceid=0, rpath='', directory=NULL WHERE id=%1;").arg( urlId );
     m_collection->sqlStorage()->query( query );
     query = QString( "UPDATE statistics SET deleted=1 WHERE url=%1;").arg( urlId );
     m_collection->sqlStorage()->query( query );
