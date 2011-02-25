@@ -203,7 +203,7 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
                 Meta::Tag::setCodecByName( prober.encoding() );
         }
 
-        result.insert( Meta::valFiletype, tagHelper->fileType() );
+        result.insert( Meta::valFormat, tagHelper->fileType() );
         result.unite( tagHelper->tags() );
         delete tagHelper;
     }
@@ -214,10 +214,10 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
         result.unite( TagGuesser::guessTags( path ) );
 
     //we didn't set a FileType till now, let's look it up via FileExtension
-    if( !result.contains( Meta::valFiletype ) )
+    if( !result.contains( Meta::valFormat ) )
     {
         QString ext = path.mid( path.lastIndexOf( '.' ) + 1 );
-        result.insert( Meta::valFiletype, Amarok::FileTypeSupport::fileType( ext ) );
+        result.insert( Meta::valFormat, Amarok::FileTypeSupport::fileType( ext ) );
     }
 
     if( fileref.audioProperties() )

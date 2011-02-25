@@ -493,7 +493,7 @@ SqlTrack::setType( Amarok::FileType newType )
     QWriteLocker locker( &m_lock );
 
     if ( m_filetype != newType )
-        commitMetaDataChanges( Meta::valFiletype, int(newType) );
+        commitMetaDataChanges( Meta::valFormat, int(newType) );
 }
 
 qreal
@@ -810,8 +810,8 @@ SqlTrack::commitMetaDataChanges()
     KSharedPtr<SqlYear>     oldYear;
     KSharedPtr<SqlYear>     newYear;
 
-    if( m_cache.contains( Meta::valFiletype ) )
-        m_filetype = Amarok::FileType(m_cache.value( Meta::valFiletype ).toInt());
+    if( m_cache.contains( Meta::valFormat ) )
+        m_filetype = Amarok::FileType(m_cache.value( Meta::valFormat ).toInt());
     if( m_cache.contains( Meta::valTitle ) )
         m_title = m_cache.value( Meta::valTitle ).toString();
     if( m_cache.contains( Meta::valComment ) )

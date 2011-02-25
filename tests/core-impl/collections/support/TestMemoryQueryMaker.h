@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,6 +20,14 @@
 
 #include<QtTest/QTest>
 
+#include "core/meta/Meta.h"
+#include "core/collections/QueryMaker.h"
+
+#include "core-impl/collections/support/MemoryCollection.h"
+#include "core-impl/collections/support/MemoryFilter.h"
+#include "core-impl/collections/support/MemoryQueryMaker.h"
+
+
 class TestMemoryQueryMaker : public QObject
 {
     Q_OBJECT
@@ -26,6 +35,9 @@ public:
     TestMemoryQueryMaker();
 
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
+
     void testDeleteQueryMakerWhileQueryIsRunning();
     void testDeleteCollectionWhileQueryIsRunning();
 
@@ -33,6 +45,16 @@ private slots:
     void testStringMemoryFilterSpeedMatchBegin();
     void testStringMemoryFilterSpeedMatchEnd();
     void testStringMemoryFilterSpeedMatchAnywhere();
+
+    void testFilterTitle();
+    void testFilterRating();
+    void testFilterAnd();
+    void testFilterFormat();
+
+private:
+    Meta::TrackList executeQueryMaker( Collections::QueryMaker *qm );
+
+    QSharedPointer<Collections::MemoryCollection> m_mc;
 };
 
 #endif // TESTMEMORYQUERYMAKER_H

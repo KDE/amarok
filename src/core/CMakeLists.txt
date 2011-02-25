@@ -15,6 +15,7 @@ set(libcore_meta_SRCS
     meta/support/MetaUtility.cpp
     meta/support/MetaKeys.cpp
     meta/support/PrivateMetaRegistry.cpp
+    ../../shared/FileType.cpp
 )
 
 set(libcore_playlists_SRCS
