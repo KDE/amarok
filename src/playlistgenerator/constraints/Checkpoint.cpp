@@ -136,6 +136,9 @@ ConstraintTypes::Checkpoint::editWidget() const
 void
 ConstraintTypes::Checkpoint::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
+    if( !m_checkpointObject )
+        return;
+
     QDomElement c = doc.createElement( "constraint" );
     QDomText t = doc.createTextNode( getName() );
     c.appendChild( t );
