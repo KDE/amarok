@@ -58,9 +58,9 @@ ScanManager::ScanManager( Collections::DatabaseCollection *collection, QObject *
     , m_blockCount( 0 )
     , m_fullScanRequested( false )
     , m_importRequested( 0 )
+    , m_watcherJob( 0 )
     , m_checkDirsTimer( 0 )
     , m_delayedScanTimer( 0 )
-    , m_watcher( 0 )
     , m_mutex( QMutex::Recursive )
 {
     // -- check the scanner version timer
@@ -284,56 +284,25 @@ ScanManager::checkForDirectoryChanges()
 
     if( !AmarokConfig::monitorChanges() )
     {
-        if( m_watcher )
-            m_watcher->stopScan();
+        if( m_watcherJob )
+            m_watcherJob->setPaused( true );
         return;
     }
     else
     {
         // TODO: re-create the watcher if scanRecursively has changed
-        if( m_watcher )
+        if( m_watcherJob )
         {
-            if( m_watcher->isStopped() )
-                m_watcher->startScan( true );
+            m_watcherJob->setPaused( false );
         }
         else
         {
             // -- Check if directories changed while we didn't have a watcher
             requestIncrementalScan();
 
-            // -- create a new watcher
-            m_watcher = new KDirWatch( this );
-
-            connect( m_watcher, SIGNAL( dirty(const QString &) ),
-                     this, SLOT( delayedIncrementalScan(const QString &) ) );
-            connect( m_watcher, SIGNAL( created(const QString &) ),
-                     this, SLOT( delayedIncrementalScanParent(const QString &) ) );
-            connect( m_watcher, SIGNAL( deleted(const QString &) ),
-                     this, SLOT( delayedIncrementalScanParent(const QString &) ) );
-
-            m_watcher->startScan( false );
+            m_watcherJob = new DirWatchJob( this, m_collection );
+            ThreadWeaver::Weaver::instance()->enqueue( m_watcherJob );
         }
-
-        // -- update the KDirWatch with the current set of directories
-        QSet<QString> dirs = m_collection->mountPointManager()->collectionFolders().toSet();
-
-        // - add new
-        QSet<QString> newDirs = dirs - m_oldWatchDirs;
-        foreach( const QString& dir, newDirs )
-        {
-            m_watcher->addDir( dir,
-                               AmarokConfig::scanRecursively() ? KDirWatch::WatchSubDirs : KDirWatch::WatchDirOnly );
-        }
-
-        // - remove old
-        QSet<QString> removeDirs = m_oldWatchDirs - dirs;
-        foreach( const QString& dir, removeDirs )
-        {
-            m_watcher->removeDir( dir );
-        }
-
-        m_oldWatchDirs = dirs;
-
     }
 }
 
@@ -358,6 +327,67 @@ ScanManager::slotJobDone()
     QMutexLocker locker( &m_mutex );
     m_scanner->deleteLater();
     m_scanner = 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// class DirWatchJob
+///////////////////////////////////////////////////////////////////////////////
+
+DirWatchJob::DirWatchJob( QObject *parent, Collections::DatabaseCollection *collection )
+    : ThreadWeaver::Job( parent )
+    , m_collection( collection )
+{
+    DEBUG_BLOCK;
+
+    // -- create a new watcher
+    m_watcher = new KDirWatch( this );
+
+    connect( m_watcher, SIGNAL( dirty(const QString &) ),
+             parent, SLOT( delayedIncrementalScan(const QString &) ) );
+    connect( m_watcher, SIGNAL( created(const QString &) ),
+             parent, SLOT( delayedIncrementalScanParent(const QString &) ) );
+    connect( m_watcher, SIGNAL( deleted(const QString &) ),
+             parent, SLOT( delayedIncrementalScanParent(const QString &) ) );
+
+    m_watcher->startScan( false );
+}
+
+void
+DirWatchJob::run()
+{
+    DEBUG_BLOCK;
+
+    // -- update the KDirWatch with the current set of directories
+    QSet<QString> dirs = m_collection->mountPointManager()->collectionFolders().toSet();
+
+    // - add new
+    QSet<QString> newDirs = dirs - m_oldWatchDirs;
+    foreach( const QString& dir, newDirs )
+    {
+        m_watcher->addDir( dir,
+                           AmarokConfig::scanRecursively() ?
+                           KDirWatch::WatchSubDirs : KDirWatch::WatchDirOnly );
+    }
+
+    // - remove old
+    QSet<QString> removeDirs = m_oldWatchDirs - dirs;
+    foreach( const QString& dir, removeDirs )
+    {
+        m_watcher->removeDir( dir );
+    }
+
+    m_oldWatchDirs = dirs;
+}
+
+void
+DirWatchJob::setPaused( bool pause )
+{
+    DEBUG_BLOCK;
+
+    if( pause && !m_watcher->isStopped() )
+        m_watcher->stopScan();
+    else if( !pause && m_watcher->isStopped() )
+        m_watcher->startScan( true );
 }
 
 

@@ -36,6 +36,7 @@
 #include <threadweaver/Job.h>
 #include <KUrl>
 
+class DirWatchJob;
 class ScannerJob;
 
 class QTimer;
@@ -150,16 +151,35 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         QSet<QString> m_scanDirsRequested;
         QIODevice *m_importRequested;
 
+        DirWatchJob *m_watcherJob;
+
         QTimer* m_checkDirsTimer;
         QTimer* m_delayedScanTimer;
-        QSet<QString> m_oldWatchDirs;
-        KDirWatch *m_watcher;
-
         /**
            This mutex is protecting the variables:
            m_fullScanRequested, m_scanDirsRequested, m_importRequested, m_scanner
           */
         QMutex m_mutex;
+};
+
+/** This is the job only owns the KDirWatch and adds folders it.
+    This will prevent the directory adding from blocking the UI.
+*/
+class DirWatchJob : public ThreadWeaver::Job
+{
+    Q_OBJECT
+
+    public:
+        DirWatchJob( QObject *parent, Collections::DatabaseCollection *collection );
+
+        void run();
+        void setPaused( bool pause );
+
+    private:
+        Collections::DatabaseCollection *m_collection;
+
+        QSet<QString> m_oldWatchDirs;
+        KDirWatch *m_watcher;
 };
 
 /** This is the job that does all the hard work with scanning.
