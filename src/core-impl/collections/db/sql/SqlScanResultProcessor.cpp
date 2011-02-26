@@ -44,6 +44,9 @@ void
 SqlScanResultProcessor::commit()
 {
     DEBUG_BLOCK
+
+    m_collection->sqlStorage()->clearLastErrors();
+
     // -- fill the registry cache with all the tracks
     // count the non skipped directories to find out if we should buffer all tracks before committing.
     int nonSkippedDirectories = 0;
@@ -74,6 +77,8 @@ SqlScanResultProcessor::commit()
 
     // -- call the base implementation
     ScanResultProcessor::commit();
+
+    m_lastErrors.append( m_collection->sqlStorage()->getLastErrors() );
 }
 
 void
@@ -151,6 +156,8 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     if( uid.isEmpty() )
     {
         warning() << "got track with no unique id from the scanner, not adding";
+        m_lastErrors.append( QString("Not adding track %1 because it has no unique id").
+                             arg(track->path()) );
         return;
     }
     uid = m_collection->uidUrlProtocol() + "://" + uid;
@@ -161,6 +168,8 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     if( m_foundTracks.contains( uid ) )
     {
         warning() << "track"<<track->path()<<"with uid"<<uid<<"already committed. There seems to be a duplicate uid.";
+        m_lastErrors.append( QString("Track %1 with uid %2 already committed. There seems to be a duplicate uid.").
+                                     arg(track->path(), uid) );
         return;
     }
     m_foundTracks.insert( uid );

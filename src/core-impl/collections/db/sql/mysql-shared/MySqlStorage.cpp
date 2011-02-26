@@ -271,12 +271,29 @@ MySqlStorage::longTextColumnType() const
     return "TEXT";
 }
 
+QStringList
+MySqlStorage::getLastErrors() const
+{
+    QMutexLocker locker( &m_mutex );
+    return m_lastErrors;
+}
+
+void
+MySqlStorage::clearLastErrors()
+{
+    QMutexLocker locker( &m_mutex );
+    m_lastErrors.clear();
+}
+
 void
 MySqlStorage::reportError( const QString& message )
 {
     QMutexLocker locker( &m_mutex );
     QString errorMessage( "GREPME " + m_debugIdent + " query failed! (" + QString::number( mysql_errno( m_db ) ) + ") " + mysql_error( m_db ) + " on " + message );
     error() << errorMessage;
+
+    if( m_lastErrors.count() < 20 )
+        m_lastErrors.append( errorMessage );
 }
 
 

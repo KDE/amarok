@@ -143,6 +143,7 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         Collections::DatabaseCollection *m_collection;
 
         ScannerJob *m_scanner;
+        bool m_errorsReported;
 
         int m_restartCount;
         int m_blockCount;
@@ -209,6 +210,12 @@ class ScannerJob : public ThreadWeaver::Job
         void requestAbort();
         void requestAbort(const QString &reason);
 
+        /** Returns errors reported by the ScanResultProcessor.
+            Only valid after scanning was finished.
+        */
+        QStringList getLastErrors()
+        { return m_lastErrors; }
+
         /** Returns the path to the collection scanner */
         static QString scannerPath();
 
@@ -261,8 +268,9 @@ class ScannerJob : public ThreadWeaver::Job
 
         QXmlStreamReader m_reader;
 
-        QMutex m_mutex; // only protects m_abortRequested and the abort reason
+        QStringList m_lastErrors;
 
+        QMutex m_mutex; // only protects m_abortRequested and the abort reason
 };
 
 #endif

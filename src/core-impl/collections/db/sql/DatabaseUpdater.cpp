@@ -866,9 +866,19 @@ DatabaseUpdater::adminValue( const QString &key ) const
 {
     SqlStorage *storage = m_collection->sqlStorage();
 
-    QStringList values;
-    values = storage->query( QString( "SELECT version FROM admin WHERE component = '%1';").arg(storage->escape( key ) ) );
-    return values.isEmpty() ? 0 : values.first().toInt();
+    QStringList columns = storage->query(
+            QString( "SELECT column_name FROM INFORMATION_SCHEMA.columns "
+                     "WHERE table_name='admin'" ) );
+    if( columns.isEmpty() )
+        return 0; //no table with that name
+
+    QStringList values = storage->query(
+            QString( "SELECT version FROM admin WHERE component = '%1';")
+            .arg(storage->escape( key ) ) );
+    if( values.isEmpty() )
+        return 0;
+
+    return values.first().toInt();
 }
 
 void

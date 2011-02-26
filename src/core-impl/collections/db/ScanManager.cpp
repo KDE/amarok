@@ -38,6 +38,7 @@
 #include <QFileInfo>
 #include <QSharedMemory>
 
+#include "MainWindow.h"
 #include <KMessageBox>
 #include <KStandardDirs>
 #include <KDirWatch>
@@ -55,6 +56,7 @@ ScanManager::ScanManager( Collections::DatabaseCollection *collection, QObject *
     : QObject( parent )
     , m_collection( static_cast<Collections::SqlCollection*>( collection ) )
     , m_scanner( 0 )
+    , m_errorsReported( false )
     , m_blockCount( 0 )
     , m_fullScanRequested( false )
     , m_importRequested( 0 )
@@ -207,7 +209,6 @@ ScanManager::startScanner()
     if( pApp && pApp->isNonUniqueInstance() )
         warning() << "Running scanner from Amarok while another Amarok instance is also running is dangerous.";
 
-
     // -- create the scanner job
     if( m_importRequested )
     {
@@ -259,11 +260,13 @@ ScanManager::startScanner()
 void
 ScanManager::checkScannerVersion()
 {
+    DEBUG_BLOCK;
+
     if( !AmarokConfig::monitorChanges() )
         return;
 
+    // upps. that blocks. Hopefully the scanner starts fast
     QProcess scanner;
-
     scanner.start( ScannerJob::scannerPath(), QStringList( "--version" ) );
     scanner.waitForFinished();
 
@@ -309,15 +312,14 @@ ScanManager::checkForDirectoryChanges()
 void
 ScanManager::abort( const QString &reason )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( !reason.isEmpty() )
         debug() << "Abort scan: " << reason;
 
-    {
-        QMutexLocker locker( &m_mutex );
-        if( m_scanner )
-            m_scanner->requestAbort( reason );
+    if( m_scanner )
+        m_scanner->requestAbort( reason );
     // TODO: For testing it would be good to specify the scanner in the build directory
-    }
 }
 
 
@@ -325,8 +327,29 @@ void
 ScanManager::slotJobDone()
 {
     QMutexLocker locker( &m_mutex );
-    m_scanner->deleteLater();
-    m_scanner = 0;
+
+    if( m_scanner )
+    {
+        // -- error reporting
+        if( !m_errorsReported )
+        {
+            m_errorsReported = true;
+
+            if( !m_scanner->getLastErrors().isEmpty() )
+            {
+                KMessageBox::error( The::mainWindow(), //parent
+                                    i18n( "The collection scanner reported the following errors:\n"
+                                          "%1\n"
+                                          "In most cases this means that not all of your tracks "
+                                          "were imported.\n"
+                                          "Further errors will only be reported on the console." ).
+                                    arg(m_scanner->getLastErrors().join("\n")) );
+            }
+        }
+
+        m_scanner->deleteLater();
+        m_scanner = 0;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -581,6 +604,7 @@ ScannerJob::run()
 
     debug() << "ScannerJob finished";
 
+    m_lastErrors = processor->getLastErrors();
     delete processor;
     processor = 0;
 }

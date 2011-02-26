@@ -23,6 +23,9 @@
 #include <QString>
 #include <QStringList>
 
+/** The abstract SqlStorage engine
+    Only current implementations are in core-impl/collections/db/sql
+*/
 class SqlStorage
 {
 public:
@@ -52,6 +55,15 @@ public:
     virtual QString exactIndexableTextColumnType( int length = 324 ) const = 0;
     virtual QString longTextColumnType() const = 0;
     virtual QString randomFunc() const = 0;
+
+    /** Returns a list of the last sql errors.
+      The list might not include every one error if the number
+      is beyond a sensible limit.
+      */
+    virtual QStringList getLastErrors() const = 0;
+
+    /** Clears the list of the last errors. */
+    virtual void clearLastErrors() = 0;
 
 };
 

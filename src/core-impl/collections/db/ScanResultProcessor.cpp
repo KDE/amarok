@@ -207,6 +207,18 @@ ScanResultProcessor::rollback()
     // nothing to do
 }
 
+QStringList
+ScanResultProcessor::getLastErrors() const
+{
+    return m_lastErrors;
+}
+
+void
+ScanResultProcessor::clearLastErrors()
+{
+    m_lastErrors.clear();
+}
+
 void
 ScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory )
 {

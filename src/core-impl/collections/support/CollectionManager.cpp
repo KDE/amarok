@@ -47,6 +47,8 @@
 
 typedef QPair<Collections::Collection*, CollectionManager::CollectionStatus> CollectionPair;
 
+/** This wrapper will be used by the collection manager to present one static SqlStorage object even when the user switches the actual database.
+On the other hand nobody except the owning colleciton should hold a reference to the SqlStorage anyway. */
 class SqlStorageWrapper : public SqlStorage
 {
 public:
@@ -68,6 +70,11 @@ public:
     virtual QString exactIndexableTextColumnType( int length ) const { return ( m_sqlStorage ? m_sqlStorage->exactIndexableTextColumnType( length ) : "WRAPPER_NOT_IMPLEMENTED" ); };
     virtual QString longTextColumnType() const { return ( m_sqlStorage ? m_sqlStorage->longTextColumnType() : "WRAPPER_NOT_IMPLEMENTED" ); }
     virtual QString randomFunc() const { return ( m_sqlStorage ? m_sqlStorage->randomFunc() : "WRAPPER_NOT_IMPLEMENTED" ); }
+
+    virtual QStringList getLastErrors() const
+    { return m_sqlStorage ? m_sqlStorage->getLastErrors() : QStringList(); }
+    virtual void clearLastErrors()
+    { if( m_sqlStorage ) m_sqlStorage->clearLastErrors(); }
 
     void setSqlStorage( SqlStorage *sqlStorage ) { m_sqlStorage = sqlStorage; }
 private:
