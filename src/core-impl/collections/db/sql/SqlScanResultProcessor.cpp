@@ -407,10 +407,17 @@ SqlScanResultProcessor::cacheUrlsInit()
 }
 
 void
-SqlScanResultProcessor::cacheUrlsInsert( const UrlEntry &entry )
+SqlScanResultProcessor::cacheUrlsInsert( UrlEntry entry )
 {
     if( !m_urlsCache.contains( entry.id ) )
         cacheUrlsRemove( entry.id );
+
+    if( !entry.path.isEmpty() && m_urlsCachePath.contains( entry.path ) ) {
+        // no idea how this can happen, but we clean it up
+        debug() << "Duplicate path in database:"<<entry.path;
+        removeTrack( entry.id, entry.uid ); // this will not delete the statistics
+        entry.path.clear();
+    }
 
     m_urlsCache.insert( entry.id, entry );
     m_urlsCacheUid.insert( entry.uid, entry.id );

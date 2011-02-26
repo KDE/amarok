@@ -265,7 +265,7 @@ SqlRegistry::updateCachedUid( const QString &oldUid, const QString &newUid )
     // TODO: improve uid handling
     if( m_uidMap.contains( newUid ) )
         warning() << "updating uid to an already existing uid.";
-    else if( !m_uidMap.contains( oldUid ) )
+    else if( !oldUid.isEmpty() && !m_uidMap.contains( oldUid ) )
         warning() << "updating uid from a non existing uid.";
     else
     {
@@ -317,7 +317,12 @@ SqlRegistry::removeTrack( int urlId, const QString uid )
     QString query = QString( "DELETE FROM tracks where url=%1;" ).arg( urlId );
     m_collection->sqlStorage()->query( query );
     // keep the urls and statistics entry in case a deleted track is restored later.
-    query = QString( "UPDATE urls SET deviceid=0, rpath='', directory=NULL WHERE id=%1;").arg( urlId );
+    // however we need to change rpath so that it does not block new tracks
+    // (deviceid,rpath is a unique key)
+    // so we just write the uid into the path
+    query = QString( "UPDATE urls SET deviceid=0, rpath='%1', directory=NULL "
+                     "WHERE id=%2;").arg( m_collection->sqlStorage()->escape(uid),
+                                          urlId );
     m_collection->sqlStorage()->query( query );
     query = QString( "UPDATE statistics SET deleted=1 WHERE url=%1;").arg( urlId );
     m_collection->sqlStorage()->query( query );
