@@ -70,7 +70,7 @@ target_link_libraries(testdebug ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarok
 
 set( testexpression_SRCS
         TestExpression.cpp
-        ${AMAROK_SOURCE_TREE}/Expression.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/support/Expression.cpp
     )
 
 kde4_add_unit_test( testexpression  ${testexpression_SRCS} )

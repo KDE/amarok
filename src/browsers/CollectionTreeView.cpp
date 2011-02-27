@@ -27,6 +27,7 @@
 #include "core/collections/CollectionLocation.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/collections/support/TrashCollectionLocation.h"
+#include "core-impl/collections/support/TextualQueryFilter.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
@@ -1242,7 +1243,7 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
             }
             tmp = tmp->parent();
         }
-        m_treeModel->addFilters( qm );
+        Collections::addTextualFilter( qm, m_treeModel->currentFilter() );
         queryMakers.append( qm );
     }
     return new Collections::MetaQueryMaker( queryMakers );

@@ -318,6 +318,8 @@ set(collection_SRCS
     core-impl/collections/support/XmlQueryReader.cpp
     core-impl/collections/support/XmlQueryWriter.cpp
     core-impl/collections/support/FileCollectionLocation.cpp
+    core-impl/collections/support/Expression.cpp
+    core-impl/collections/support/TextualQueryFilter.cpp
 )
 
 #####################################################################
@@ -479,11 +481,12 @@ set(libdynamic_SRCS
     # biases
     dynamic/Bias.cpp
     dynamic/biases/AlbumPlayBias.cpp
-    dynamic/biases/PartBias.cpp
+    dynamic/biases/EchoNestBias.cpp
     dynamic/biases/IfElseBias.cpp
+    dynamic/biases/PartBias.cpp
     dynamic/biases/QuizPlayBias.cpp
     dynamic/biases/TagMatchBias.cpp
-    dynamic/biases/EchoNestBias.cpp
+    dynamic/biases/SearchQueryBias.cpp
 )
 
 #####################################################################
@@ -634,7 +637,6 @@ set(amaroklib_LIB_SRCS
     CaseConverter.cpp
     DirectoryLoader.cpp
     EngineController.cpp
-    Expression.cpp
     KNotificationBackend.cpp
     MainWindow.cpp
     MediaDeviceCache.cpp

@@ -25,13 +25,13 @@
 #include "core/collections/Collection.h"
 #include "CollectionTreeItem.h"
 #include "core/support/Debug.h"
-#include "Expression.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/collections/QueryMaker.h"
 #include "amarokconfig.h"
 #include "core/capabilities/EditCapability.h"
 #include "shared/FileType.h"
 #include "SvgHandler.h"
+#include "core-impl/collections/support/TextualQueryFilter.h"
 
 #include <KGlobalSettings>
 #include <KIcon>
@@ -445,7 +445,7 @@ CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) 
                     qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
                 tmpItem = tmpItem->parent();
             }
-            addFilters( qm );
+            Collections::addTextualFilter( qm, m_currentFilter );
             queries.append( qm );
         }
     }
@@ -584,7 +584,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
                  tmpItem->addMatch( qm );
             }
         }
-        addFilters( qm );
+        Collections::addTextualFilter( qm, m_currentFilter );
         qm->setReturnResultAsDataPtrs( true );
         connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
@@ -631,252 +631,6 @@ CollectionTreeItemModelBase::mapCategoryToQueryType( int levelType ) const
     }
 
     return type;
-}
-
-
-#define ADD_OR_EXCLUDE_FILTER( VALUE, FILTER, MATCHBEGIN, MATCHEND ) \
-            { if( elem.negate ) \
-                qm->excludeFilter( VALUE, FILTER, MATCHBEGIN, MATCHEND ); \
-            else \
-                qm->addFilter( VALUE, FILTER, MATCHBEGIN, MATCHEND ); }
-#define ADD_OR_EXCLUDE_NUMBER_FILTER( VALUE, FILTER, COMPARE ) \
-            { if( elem.negate ) \
-                qm->excludeNumberFilter( VALUE, FILTER, COMPARE ); \
-            else \
-                qm->addNumberFilter( VALUE, FILTER, COMPARE ); }
-
-void
-CollectionTreeItemModelBase::addDateFilter( qint64 field, Collections::QueryMaker::NumberComparison compare, const expression_element &elem, Collections::QueryMaker *qm ) const
-{
-    if( compare == Collections::QueryMaker::Equals )
-    {
-        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
-        if( dateCutOff > 0 )
-        {
-            ADD_OR_EXCLUDE_NUMBER_FILTER( field, dateCutOff, Collections::QueryMaker::GreaterThan );
-        }
-    }
-    else
-    {
-        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
-        if( compare == Collections::QueryMaker::GreaterThan )
-        {
-            qm->endAndOr();
-            qm->beginAnd();
-            compareAlt = Collections::QueryMaker::LessThan;
-            ADD_OR_EXCLUDE_NUMBER_FILTER( field, 0, compare );
-        }
-        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
-        ADD_OR_EXCLUDE_NUMBER_FILTER( field, time_t, compareAlt );
-    }
-}
-
-void
-CollectionTreeItemModelBase::addFilters( Collections::QueryMaker *qm ) const
-{
-    int validFilters = qm->validFilterMask();
-
-    ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
-    foreach( const or_list &orList, parsed )
-    {
-        qm->beginOr();
-
-        foreach ( const expression_element &elem, orList )
-        {
-            if( elem.negate )
-                qm->beginAnd();
-            else
-                qm->beginOr();
-
-            if ( elem.field.isEmpty() )
-            {
-                qm->beginOr();
-
-                if( ( validFilters & Collections::QueryMaker::TitleFilter ) )
-                    ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, false, false );
-                if( ( validFilters & Collections::QueryMaker::UrlFilter ) )
-                    ADD_OR_EXCLUDE_FILTER( Meta::valUrl, elem.text, false, false );
-                if( ( validFilters & Collections::QueryMaker::AlbumFilter ) )
-                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbum, elem.text, false, false );
-                if( ( validFilters & Collections::QueryMaker::ArtistFilter ) )
-                    ADD_OR_EXCLUDE_FILTER( Meta::valArtist, elem.text, false, false );
-                if( ( validFilters & Collections::QueryMaker::AlbumArtistFilter ) )
-                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbumArtist, elem.text, false, false );
-                if( ( validFilters & Collections::QueryMaker::ComposerFilter ) )
-                    ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, false, false );
-                if( ( validFilters & Collections::QueryMaker::GenreFilter ) )
-                    ADD_OR_EXCLUDE_FILTER( Meta::valGenre, elem.text, false, false );
-                if( ( validFilters & Collections::QueryMaker::YearFilter ) )
-                    ADD_OR_EXCLUDE_FILTER( Meta::valYear, elem.text, false, false );
-
-                ADD_OR_EXCLUDE_FILTER( Meta::valLabel, elem.text, false, false );
-
-                qm->endAndOr();
-            }
-            else
-            {
-                //get field values based on name
-                QString lcField = elem.field.toLower();
-                Collections::QueryMaker::NumberComparison compare = Collections::QueryMaker::Equals;
-                switch( elem.match )
-                {
-                    case expression_element::More:
-                        compare = Collections::QueryMaker::GreaterThan;
-                        break;
-                    case expression_element::Less:
-                        compare = Collections::QueryMaker::LessThan;
-                        break;
-                    case expression_element::Contains:
-                        compare = Collections::QueryMaker::Equals;
-                        break;
-                }
-
-                // TODO: Once we have MetaConstants.cpp use those functions here
-                if ( lcField.compare( "album", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valAlbum ), Qt::CaseInsensitive ) == 0 )
-                {
-                    if ( ( validFilters & Collections::QueryMaker::AlbumFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbum, elem.text, false, false );
-                }
-                else if ( lcField.compare( "artist", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valArtist ), Qt::CaseInsensitive ) == 0 )
-                {
-                    if ( ( validFilters & Collections::QueryMaker::ArtistFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valArtist, elem.text, false, false );
-                }
-                else if ( lcField.compare( "albumartist", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valAlbumArtist ), Qt::CaseInsensitive ) == 0 )
-                {
-                    if ( ( validFilters & Collections::QueryMaker::AlbumArtistFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbumArtist, elem.text, false, false );
-                }
-                else if ( lcField.compare( "genre", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valGenre ), Qt::CaseInsensitive ) == 0)
-                {
-                    if ( ( validFilters & Collections::QueryMaker::GenreFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valGenre, elem.text, false, false );
-                }
-                else if ( lcField.compare( "title", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valTitle ), Qt::CaseInsensitive ) == 0 )
-                {
-                    if ( ( validFilters & Collections::QueryMaker::TitleFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, false, false );
-                }
-                else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valComposer ), Qt::CaseInsensitive ) == 0 )
-                {
-                    if ( ( validFilters & Collections::QueryMaker::ComposerFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, false, false );
-                }
-                else if( lcField.compare( "label", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valLabel ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_FILTER( Meta::valLabel, elem.text, false, false );
-                }
-                else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valYear ), Qt::CaseInsensitive ) == 0)
-                {
-                    if ( ( validFilters & Collections::QueryMaker::YearFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valYear, elem.text.toInt(), compare );
-                }
-                else if ( lcField.compare( "bpm", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valBpm ), Qt::CaseInsensitive ) == 0)
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBpm, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "comment", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valComment ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_FILTER( Meta::valComment, elem.text, false, false );
-                }
-                else if( lcField.compare( "filename", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valUrl ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_FILTER( Meta::valUrl, elem.text, false, false );
-                }
-                else if( lcField.compare( "bitrate", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valBitrate ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBitrate, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "rating", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valRating ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valRating, elem.text.toFloat() * 2, compare );
-                }
-                else if( lcField.compare( "score", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valScore ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valScore, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "playcount", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valPlaycount ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valPlaycount, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "samplerate", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valSamplerate ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valSamplerate, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "length", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valLength ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLength, elem.text.toInt() * 1000, compare );
-                }
-                else if( lcField.compare( "filesize", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valFilesize ), Qt::CaseInsensitive ) == 0 )
-                {
-                    bool doubleOk( false );
-                    const double mbytes = elem.text.toDouble( &doubleOk ); // input in MBs
-                    if( !doubleOk )
-                    {
-                        qm->endAndOr();
-                        return;
-                    }
-
-                    /*
-                     * A special case is made for Equals (e.g. filesize:100), which actually filters
-                     * for anything beween 100 and 101MBs. Megabytes are used because for audio files
-                     * they are the most reasonable units for the user to deal with.
-                     */
-                    const qreal bytes = mbytes * 1024.0 * 1024.0;
-                    const qint64 mbFloor = qint64( qAbs(mbytes) );
-                    switch( compare )
-                    {
-                    case Collections::QueryMaker::Equals:
-                        qm->endAndOr();
-                        qm->beginAnd();
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, mbFloor * 1024 * 1024, Collections::QueryMaker::GreaterThan );
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, (mbFloor + 1) * 1024 * 1024, Collections::QueryMaker::LessThan );
-                        break;
-                    case Collections::QueryMaker::GreaterThan:
-                    case Collections::QueryMaker::LessThan:
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, bytes, compare );
-                        break;
-                    }
-                }
-                else if( lcField.compare( "format", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valFormat ), Qt::CaseInsensitive ) == 0 )
-                {
-                    // NOTE: possible keywords that could be considered: codec, filetype, etc.
-                    const QString &ftStr = elem.text;
-                    Amarok::FileType ft = Amarok::FileTypeSupport::fileType(ftStr);
-
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFormat, int(ft), compare );
-                }
-                else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valDiscNr ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valDiscNr, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "tracknumber", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valTrackNr ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valTrackNr, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "played", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valLastPlayed ), Qt::CaseInsensitive ) == 0 )
-                {
-                    addDateFilter( Meta::valLastPlayed, compare, elem, qm );
-                }
-                else if( lcField.compare( "first", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valFirstPlayed ), Qt::CaseInsensitive ) == 0 )
-                {
-                    addDateFilter( Meta::valFirstPlayed, compare, elem, qm );
-                }
-                else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valCreateDate ), Qt::CaseInsensitive ) == 0 )
-                {
-                    addDateFilter( Meta::valCreateDate, compare, elem, qm );
-                }
-                else if( lcField.compare( "modified", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valModified ), Qt::CaseInsensitive ) == 0 )
-                {
-                    addDateFilter( Meta::valModified, compare, elem, qm );
-                }
-            }
-            qm->endAndOr();
-#undef ADD_OR_EXCLUDE_FILTER
-#undef ADD_OR_EXCLUDE_NUMBER_FILTER
-        }
-        qm->endAndOr();
-    }
 }
 
 void
@@ -1183,7 +937,7 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     for( CollectionTreeItem *tmpItem = parent; tmpItem->parent(); tmpItem = tmpItem->parent() )
         tmpItem->addMatch( qm );
 
-    addFilters( qm );
+    Collections::addTextualFilter( qm, m_currentFilter );
     qm->setReturnResultAsDataPtrs( true );
     connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
@@ -1203,7 +957,7 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
     for( CollectionTreeItem *tmpItem = parent; tmpItem->parent(); tmpItem = tmpItem->parent() )
         tmpItem->addMatch( qm );
 
-    addFilters( qm );
+    Collections::addTextualFilter( qm, m_currentFilter );
     connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
     d->noLabelsQueries.insert( qm, parent );
@@ -1211,80 +965,6 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
     qm->run();
 }
 
-QDateTime
-CollectionTreeItemModelBase::semanticDateTimeParser( const QString &text ) const
-{
-    /* TODO: semanticDateTimeParser: has potential to extend and form a class of its own */
-
-    const QString lowerText = text.toLower();
-    const QDateTime curTime = QDateTime::currentDateTime();
-    QDateTime result;
-
-    if( text.at(0).isLetter() )
-    {
-        if( ( lowerText.compare( "today" ) == 0 ) || ( lowerText.compare( i18n( "today" ) ) == 0 ) )
-            result = curTime.addDays( -1 );
-        else if( ( lowerText.compare( "last week" ) == 0 ) || ( lowerText.compare( i18n( "last week" ) ) == 0 ) )
-            result = curTime.addDays( -7 );
-        else if( ( lowerText.compare( "last month" ) == 0 ) || ( lowerText.compare( i18n( "last month" ) ) == 0 ) )
-            result = curTime.addMonths( -1 );
-        else if( ( lowerText.compare( "two months ago" ) == 0 ) || ( lowerText.compare( i18n( "two months ago" ) ) == 0 ) )
-            result = curTime.addMonths( -2 );
-        else if( ( lowerText.compare( "three months ago" ) == 0 ) || ( lowerText.compare( i18n( "three months ago" ) ) == 0 ) )
-            result = curTime.addMonths( -3 );
-    }
-    else // first character is a number
-    {
-        // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
-        int years = 0, months = 0, weeks = 0, days = 0, secs = 0;
-        QString tmp;
-        for( int i = 0; i < text.length(); i++ )
-        {
-            QChar c = text.at( i );
-            if( c.isNumber() )
-            {
-                tmp += c;
-            }
-            else if( c == 'y' )
-            {
-                years = -tmp.toInt();
-                tmp.clear();
-            }
-            else if( c == 'm' )
-            {
-                months = -tmp.toInt();
-                tmp.clear();
-            }
-            else if( c == 'w' )
-            {
-                weeks = -tmp.toInt() * 7;
-                tmp.clear();
-            }
-            else if( c == 'd' )
-            {
-                days = -tmp.toInt();
-                break;
-            }
-            else if( c == 'h' )
-            {
-                secs = -tmp.toInt() * 60 * 60;
-                break;
-            }
-            else if( c == 'M' )
-            {
-                secs = -tmp.toInt() * 60;
-                break;
-            }
-            else if( c == 's' )
-            {
-                secs = -tmp.toInt();
-                break;
-            }
-        }
-        result = QDateTime::currentDateTime().addYears( years ).addMonths( months ).addDays( weeks ).addDays( days ).addSecs( secs );
-    }
-    return result;
-}
 
 void CollectionTreeItemModelBase::startAnimationTick()
 {
