@@ -95,11 +95,6 @@ class ScriptableServiceInternalArtist : public Meta::Artist, public ScriptableSe
             return Meta::TrackList();
         }
 
-        Meta::AlbumList albums()
-        {
-            return Meta::AlbumList();
-        }
-
         QString name() const
         {
             if( !m_name.isEmpty() )

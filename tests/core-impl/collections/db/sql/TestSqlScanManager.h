@@ -64,6 +64,12 @@ private slots:
     void testDuplicateUid();
 
     /**
+     * Check that very long uids don't produce wrong sql queries
+     */
+    void testLongUid();
+
+
+    /**
      * Check that detecting compilations works
      * Test also compilation/no compilation tags
      */

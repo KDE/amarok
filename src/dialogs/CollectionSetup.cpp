@@ -143,9 +143,9 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     connect( m_charset  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
-    m_monitor->setToolTip(   i18n( "If selected, folders will automatically get rescanned\nwhen the content is modified,\ne.g. when a new file was added." ) );
-    m_writeBack->setToolTip( i18n( "Write meta data changes back to the original file.\nYou can also prevent writing back by write protecting the file.\nThis might be a good idea if you are currently\nsharing those files via the internet." ) );
-    m_writeBackStatistics->setToolTip( i18n( "Write changed statistics (e.g. rating or playcount)\nback to the file." ) );
+    m_monitor->setToolTip(   i18n( "If selected, the collection folders will be watched for changes.\nThe watcher will not notice changes behind symbolic links." ) );
+    m_writeBack->setToolTip( i18n( "Write meta data changes (including 'stars' rating) back to the original file.\nYou can also prevent writing back by write protecting the file.\nThis might be a good idea if you are currently\nsharing those files via the Internet." ) );
+    m_writeBackStatistics->setToolTip( i18n( "Write play-changing statistics (e.g. score, lastplayed, playcount)\nas tags back to the file." ) );
     m_writeBackCover->setToolTip( i18n( "Write changed covers back to the file.\nThis will replace existing embedded covers." ) );
     m_charset->setToolTip(   i18n( "If selected, Amarok will use Mozilla's\nCharacter Set Detector to attempt to automatically guess the\ncharacter sets used in ID3 tags." ) );
 
@@ -157,7 +157,6 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_writeBackStatistics->setEnabled( writeBack() );
     m_writeBackCover->setChecked( AmarokConfig::writeBackCover() );
     m_writeBackCover->setEnabled( writeBack() );
-    m_writeBackCover->setVisible( false ); // only for profi users
     m_charset->setChecked( AmarokConfig::useCharsetDetector() );
 
     // set the model _after_ constructing the checkboxes

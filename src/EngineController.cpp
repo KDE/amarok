@@ -724,6 +724,8 @@ void
 EngineController::setMuted( bool mute ) //SLOT
 {
     m_audio.data()->setMuted( mute ); // toggle mute
+    if( !isMuted() )
+        setVolume( m_volume );
 
     AmarokConfig::setMuteState( mute );
     emit muteStateChanged( mute );
@@ -995,7 +997,6 @@ EngineController::slotAboutToFinish()
         //there might not be any more tracks in the playlist...
         stop( true );
         The::playlistActions()->requestNextTrack();
-        slotFinished();
     }
     else if( m_currentTrack && m_currentTrack->playableUrl().url().startsWith( "audiocd:/" ) )
     {
@@ -1015,10 +1016,6 @@ EngineController::slotFinished()
 
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
-        // TODO: what happens if (due to an error) the track never really played? You can't say trackFinished in such a case.
-        const qint64 pos = trackPositionMs();
-        const qint64 length = m_currentTrack->length();
-        m_currentTrack->finishedPlaying( double(pos)/double(length) );
         if( !m_nextTrack && m_nextUrl.isEmpty() )
             emit stopped( trackPositionMs(), m_currentTrack->length() );
         unsubscribeFrom( m_currentTrack );

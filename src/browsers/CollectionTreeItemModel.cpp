@@ -64,6 +64,9 @@ CollectionTreeItemModel::~CollectionTreeItemModel()
 void
 CollectionTreeItemModel::setLevels( const QList<int> &levelType )
 {
+    if( m_levelType == levelType && m_rootItem )
+        return;
+
     m_levelType = levelType;
     delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
@@ -130,7 +133,7 @@ CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection
     if ( d->collections.contains( collectionId ) )
         return;
 
-    //inserts new collection at the end. sort collection alphabetically?
+    //inserts new collection at the end.
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
     d->collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
     endInsertRows();

@@ -214,6 +214,7 @@ LastFmServiceSettings::settingsChanged()
     //with error reporting
 
     m_configDialog->testLogin->setText( i18n( "&Test Login" ) );
+    m_configDialog->testLogin->setEnabled( true );
 
     emit changed( true );
 }

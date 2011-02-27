@@ -417,24 +417,54 @@ void
 CollectionLocation::slotFinishRemove()
 {
     DEBUG_BLOCK
+
+    Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
     if( m_tracksWithError.size() > 0 )
     {
-        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->errorDeleting( this, m_tracksWithError.keys() );
         m_tracksWithError.clear();
     }
 
+    QStringList dirsToRemove;
     debug() << "remove finished updating";
     foreach( Meta::TrackPtr track, m_tracksSuccessfullyTransferred )
     {
         if(!track)
             continue;
 
+        if( track->playableUrl().isLocalFile() )
+            dirsToRemove.append( track->playableUrl().directory( KUrl::AppendTrailingSlash ) );
+
         QScopedPointer<Capabilities::UpdateCapability> uc( track->create<Capabilities::UpdateCapability>() );
         if(!uc)
             continue;
 
         uc->collectionUpdated();
+    }
+
+    if( !dirsToRemove.isEmpty() && delegate->deleteEmptyDirs( this ) )
+    {
+        debug() << "Removeing empty directories";
+        dirsToRemove.removeDuplicates();
+        dirsToRemove.sort();
+        while( !dirsToRemove.isEmpty() )
+        {
+            QDir dir( dirsToRemove.takeLast() );
+            if( !dir.exists() )
+                continue;
+
+            dir.setFilter( QDir::NoDotAndDotDot );
+            while( !dir.isRoot() && dir.count() == 0 )
+            {
+                const QString name = dir.dirName();
+                dir.cdUp();
+                if( !dir.rmdir( name ) )
+                {
+                    debug() << "Unable to remove " << name;
+                    break;
+                }
+            }
+        }
     }
 
     m_tracksSuccessfullyTransferred.clear();

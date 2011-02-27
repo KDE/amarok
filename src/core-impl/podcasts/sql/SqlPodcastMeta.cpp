@@ -513,7 +513,7 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
     m_subtitle = channel->subtitle();
     m_summary = channel->summary();
     m_author = channel->author();
-    
+
     // PodcastChannel
     m_url = channel->url();
     m_webLink = channel->webLink();
@@ -521,9 +521,9 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
     m_labels = channel->labels();
     m_subscribeDate = channel->subscribeDate();
     m_copyright = channel->copyright();
-    
+
     if( channel->hasImage() )
-        m_image = channel->image().toImage();
+        m_image = channel->image();
 
     //Default Settings
 
@@ -647,14 +647,19 @@ SqlPodcastChannel::setImageUrl( const KUrl &imageUrl )
 Podcasts::PodcastEpisodePtr
 SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
 {
-    DEBUG_BLOCK
-    debug() << "adding episode " << episode->title() << " to sqlchannel " << title();
-
     if( !m_provider )
         return PodcastEpisodePtr();
 
-    //check for guid and return the episode we might already have.
-    if( !episode->guid().isEmpty() && m_provider->possiblyContainsTrack( episode->guid() ) )
+    KUrl checkUrl;
+    //searched in the database for guid or enclosure url
+    if( !episode->guid().isEmpty() )
+        checkUrl = episode->guid();
+    else if( !episode->uidUrl().isEmpty() )
+        checkUrl = episode->uidUrl();
+    else
+        return PodcastEpisodePtr(); //noting to check for
+
+    if( m_provider->possiblyContainsTrack( checkUrl ) )
         return PodcastEpisodePtr::dynamicCast( m_provider->trackForUrl( episode->guid() ) );
 
     //force episodes load.

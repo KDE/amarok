@@ -32,6 +32,7 @@ namespace Amarok { class TimeSlider; }
 class ProgressWidget : public QWidget
 {
     Q_OBJECT
+
     public:
         ProgressWidget( QWidget* );
 
@@ -49,11 +50,16 @@ class ProgressWidget : public QWidget
         void trackLengthChanged( qint64 milliseconds );
         void trackPositionChanged( qint64 position );
 
+    protected:
+        virtual void mousePressEvent( QMouseEvent * );
+
     private slots:
         void addBookmark( const QString &name, int milliSeconds );
         void redrawBookmarks(const QString *BookmarkName = 0);
 
     private:
+        void updateTimeLabelTooltips();
+
         TimeLabel *m_timeLabelLeft;
         TimeLabel *m_timeLabelRight;
         Amarok::TimeSlider *m_slider;

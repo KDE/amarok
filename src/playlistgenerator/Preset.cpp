@@ -23,7 +23,6 @@
 #include "ConstraintSolver.h"
 #include "constraints/TrackSpreader.h"
 
-#include "core/collections/MetaQueryMaker.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistModelStack.h"

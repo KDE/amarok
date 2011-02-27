@@ -4,7 +4,7 @@
  * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
  * Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>                             *
- * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010-2011 Ralf Engels <ralf-engels@gmx.de>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -35,15 +35,20 @@
 #include <collectionscanner/BatchFile.h>
 #include <collectionscanner/Directory.h>
 
+#include <QFileInfo>
 #include <QSharedMemory>
 
+#include "MainWindow.h"
 #include <KMessageBox>
 #include <KStandardDirs>
+#include <KDirWatch>
 
 #include <threadweaver/ThreadWeaver.h>
 
 static const int MAX_RESTARTS = 40;
 static const int WATCH_INTERVAL = 60 * 1000; // = 60 seconds
+
+static const int DELAYED_SCAN_INTERVAL = 2 * 1000; // = 2 seconds
 
 static const int SHARED_MEMORY_SIZE = 1024 * 1024; // 1 MB shared memory
 
@@ -51,18 +56,27 @@ ScanManager::ScanManager( Collections::DatabaseCollection *collection, QObject *
     : QObject( parent )
     , m_collection( static_cast<Collections::SqlCollection*>( collection ) )
     , m_scanner( 0 )
+    , m_errorsReported( false )
     , m_blockCount( 0 )
     , m_fullScanRequested( false )
     , m_importRequested( 0 )
+    , m_watcherJob( 0 )
+    , m_checkDirsTimer( 0 )
+    , m_delayedScanTimer( 0 )
     , m_mutex( QMutex::Recursive )
 {
-   // Using QTimer, so that we won't block the GUI
-    QTimer::singleShot( WATCH_INTERVAL / 2, this, SLOT( slotCheckScannerVersion() ) );
+    // -- check the scanner version timer
+    QTimer::singleShot( WATCH_INTERVAL / 2, this, SLOT( checkScannerVersion() ) );
 
-   // -- rescan continuously
-    QTimer *watchFoldersTimer = new QTimer( this );
-    connect( watchFoldersTimer, SIGNAL( timeout() ), SLOT( slotWatchFolders() ) );
-    watchFoldersTimer->start( WATCH_INTERVAL );
+    // -- check the scanner configuration timer
+    m_checkDirsTimer = new QTimer( this );
+    connect( m_checkDirsTimer, SIGNAL( timeout() ), this, SLOT( checkForDirectoryChanges() ) );
+    m_checkDirsTimer->start( WATCH_INTERVAL );
+
+    // -- delayed scan timer
+    m_delayedScanTimer = new QTimer( this );
+    m_delayedScanTimer->setSingleShot( true );
+    connect( m_delayedScanTimer, SIGNAL( timeout() ), this, SLOT( startScanner() ) );
 }
 
 ScanManager::~ScanManager()
@@ -128,28 +142,54 @@ ScanManager::requestImport( QIODevice *input )
 }
 
 
-void ScanManager::requestIncrementalScan( const QString &directory )
+void
+ScanManager::requestIncrementalScan( const QString &directory )
 {
-    {
-        QMutexLocker locker( &m_mutex );
-
-        if( directory.isEmpty() )
-            m_scanDirsRequested.unite( m_collection->mountPointManager()->collectionFolders().toSet() );
-        else
-        {
-            if( m_collection->isDirInCollection( directory ) )
-                m_scanDirsRequested.insert( directory );
-            else
-            {
-                ; // the CollectionManager asks every collection for the scan. No harm done.
-            }
-        }
-    }
+    DEBUG_BLOCK;
+    addDirToList( directory );
     startScanner();
 }
 
 
-void ScanManager::startScanner()
+void
+ScanManager::delayedIncrementalScan( const QString &directory )
+{
+    DEBUG_BLOCK;
+    addDirToList( directory );
+    m_delayedScanTimer->start( DELAYED_SCAN_INTERVAL );
+}
+
+
+void
+ScanManager::delayedIncrementalScanParent( const QString &directory )
+{
+    DEBUG_BLOCK;
+    addDirToList( QFileInfo( directory ).path() );
+    m_delayedScanTimer->start( DELAYED_SCAN_INTERVAL );
+}
+
+
+void
+ScanManager::addDirToList( const QString &directory )
+{
+    QMutexLocker locker( &m_mutex );
+    debug() << "addDirToList for"<<directory;
+
+    if( directory.isEmpty() )
+        m_scanDirsRequested.unite( m_collection->mountPointManager()->collectionFolders().toSet() );
+    else
+    {
+        if( m_collection->isDirInCollection( directory ) )
+            m_scanDirsRequested.insert( directory );
+        else
+        {
+            ; // the CollectionManager asks every collection for the scan. No harm done.
+        }
+    }
+}
+
+void
+ScanManager::startScanner()
 {
     QMutexLocker locker( &m_mutex );
 
@@ -168,7 +208,6 @@ void ScanManager::startScanner()
     }
     if( pApp && pApp->isNonUniqueInstance() )
         warning() << "Running scanner from Amarok while another Amarok instance is also running is dangerous.";
-
 
     // -- create the scanner job
     if( m_importRequested )
@@ -219,13 +258,15 @@ void ScanManager::startScanner()
 }
 
 void
-ScanManager::slotCheckScannerVersion()
+ScanManager::checkScannerVersion()
 {
+    DEBUG_BLOCK;
+
     if( !AmarokConfig::monitorChanges() )
         return;
 
+    // upps. that blocks. Hopefully the scanner starts fast
     QProcess scanner;
-
     scanner.start( ScannerJob::scannerPath(), QStringList( "--version" ) );
     scanner.waitForFinished();
 
@@ -240,26 +281,45 @@ ScanManager::slotCheckScannerVersion()
 
 
 void
-ScanManager::slotWatchFolders()
+ScanManager::checkForDirectoryChanges()
 {
-    if( !AmarokConfig::monitorChanges() )
-        return;
+    DEBUG_BLOCK;
 
-    requestIncrementalScan();
+    if( !AmarokConfig::monitorChanges() )
+    {
+        if( m_watcherJob )
+            m_watcherJob->setPaused( true );
+        return;
+    }
+    else
+    {
+        // TODO: re-create the watcher if scanRecursively has changed
+        if( m_watcherJob )
+        {
+            m_watcherJob->setPaused( false );
+        }
+        else
+        {
+            // -- Check if directories changed while we didn't have a watcher
+            requestIncrementalScan();
+
+            m_watcherJob = new DirWatchJob( this, m_collection );
+            ThreadWeaver::Weaver::instance()->enqueue( m_watcherJob );
+        }
+    }
 }
 
 void
 ScanManager::abort( const QString &reason )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( !reason.isEmpty() )
         debug() << "Abort scan: " << reason;
 
-    {
-        QMutexLocker locker( &m_mutex );
-        if( m_scanner )
-            m_scanner->requestAbort( reason );
+    if( m_scanner )
+        m_scanner->requestAbort( reason );
     // TODO: For testing it would be good to specify the scanner in the build directory
-    }
 }
 
 
@@ -267,8 +327,90 @@ void
 ScanManager::slotJobDone()
 {
     QMutexLocker locker( &m_mutex );
-    m_scanner->deleteLater();
-    m_scanner = 0;
+
+    if( m_scanner )
+    {
+        // -- error reporting
+        if( !m_errorsReported )
+        {
+            m_errorsReported = true;
+
+            if( !m_scanner->getLastErrors().isEmpty() )
+            {
+                KMessageBox::error( The::mainWindow(), //parent
+                                    i18n( "The collection scanner reported the following errors:\n"
+                                          "%1\n"
+                                          "In most cases this means that not all of your tracks "
+                                          "were imported.\n"
+                                          "Further errors will only be reported on the console." ).
+                                    arg(m_scanner->getLastErrors().join("\n")) );
+            }
+        }
+
+        m_scanner->deleteLater();
+        m_scanner = 0;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// class DirWatchJob
+///////////////////////////////////////////////////////////////////////////////
+
+DirWatchJob::DirWatchJob( QObject *parent, Collections::DatabaseCollection *collection )
+    : ThreadWeaver::Job( parent )
+    , m_collection( collection )
+{
+    DEBUG_BLOCK;
+
+    // -- create a new watcher
+    m_watcher = new KDirWatch( this );
+
+    connect( m_watcher, SIGNAL( dirty(const QString &) ),
+             parent, SLOT( delayedIncrementalScan(const QString &) ) );
+    connect( m_watcher, SIGNAL( created(const QString &) ),
+             parent, SLOT( delayedIncrementalScanParent(const QString &) ) );
+    connect( m_watcher, SIGNAL( deleted(const QString &) ),
+             parent, SLOT( delayedIncrementalScanParent(const QString &) ) );
+
+    m_watcher->startScan( false );
+}
+
+void
+DirWatchJob::run()
+{
+    DEBUG_BLOCK;
+
+    // -- update the KDirWatch with the current set of directories
+    QSet<QString> dirs = m_collection->mountPointManager()->collectionFolders().toSet();
+
+    // - add new
+    QSet<QString> newDirs = dirs - m_oldWatchDirs;
+    foreach( const QString& dir, newDirs )
+    {
+        m_watcher->addDir( dir,
+                           AmarokConfig::scanRecursively() ?
+                           KDirWatch::WatchSubDirs : KDirWatch::WatchDirOnly );
+    }
+
+    // - remove old
+    QSet<QString> removeDirs = m_oldWatchDirs - dirs;
+    foreach( const QString& dir, removeDirs )
+    {
+        m_watcher->removeDir( dir );
+    }
+
+    m_oldWatchDirs = dirs;
+}
+
+void
+DirWatchJob::setPaused( bool pause )
+{
+    DEBUG_BLOCK;
+
+    if( pause && !m_watcher->isStopped() )
+        m_watcher->stopScan();
+    else if( !pause && m_watcher->isStopped() )
+        m_watcher->startScan( true );
 }
 
 
@@ -398,7 +540,7 @@ ScannerJob::run()
                         processor->setType( ScanResultProcessor::PartialUpdateScan );
 
                     debug() << "ScannerJob: got count:" << m_reader.attributes().value( "count" ).toString().toInt();
-                    emit message( i18np("Found one direcory", "Found %1 directories",
+                    emit message( i18np("Found one directory", "Found %1 directories",
                                   m_reader.attributes().value( "count" ).toString()) );
                     emit totalSteps( this,
                                      m_reader.attributes().value( "count" ).toString().toInt() * 2);
@@ -434,40 +576,35 @@ ScannerJob::run()
     } while( !finished &&
              (!m_reader.hasError() || m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError) );
 
+    if( m_scanner )
+    {
+        m_scanner->close();
+        m_scanner->waitForFinished(); // waits at most 3 seconds
+        delete m_scanner;
+        m_scanner = 0;
+    }
+
     if( m_abortRequested )
     {
         debug() << "Aborting ScanManager ScannerJob";
         emit failed( m_abortReason );
         processor->rollback();
-        if( m_scanner )
-        {
-            m_scanner->close();
-            m_scanner->waitForFinished(); // waits at most 3 seconds
-        }
     }
     else if( !finished && m_reader.hasError() )
     {
         warning() << "Aborting ScanManager ScannerJob with error"<<m_reader.errorString();
         emit failed( i18n("Aborting scanner with error: %1").arg( m_reader.errorString() ) );
         processor->rollback();
-        if( m_scanner )
-        {
-            m_scanner->close();
-            m_scanner->waitForFinished(); // waits at most 3 seconds
-        }
     }
     else
     {
         processor->commit();
         emit succeeded();
-        if( m_scanner )
-            m_scanner->waitForFinished(); // waits at most 3 seconds
     }
 
     debug() << "ScannerJob finished";
 
-    delete m_scanner;
-    m_scanner = 0;
+    m_lastErrors = processor->getLastErrors();
     delete processor;
     processor = 0;
 }

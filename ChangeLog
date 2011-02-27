@@ -5,15 +5,66 @@ Amarok ChangeLog
 
 VERSION 2.4.1
   FEATURES:
+    * New "Preview" feature for the Organize Collection dialog. Patch by
+      Maximilian Güntner <maximilian.guentner@gmail.com>.
 
   CHANGES:
+    * Now all changes to Preset Formats in Organize Collection dialog get saved on close,
+      doesn't matter If dialog was accepted or rejected.
+    * Added "Update Preset" button to Organize Collection dialog, which updates currently
+      choosen scheme.
+    * Renewed FilterEditor dialog.
+    * Changed tokens syntax in FileNameLayoutDialog (TagGuesser, OrginizeCollection dialogs)
+      now tokens wrapped in percent signs (%token% instead of %token).
+    * Added ability to guess tags from whole track path. (TagGuesser dialog)
+    * Use KDirWatch to watch changes to collection.
+    * Do always store track rating as tags in files. Patch by Alan Ezusti
+      <alan.ezust@gmail.com>. (BR 259117)
+    * Added missing tooltip for animation settings. Patch by Bhargav Mangipudi
+      <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
+    * Fixed track's statistics update in case of StopAfterCurrent playback mode
+      (prevent double statistics change). (BR 265654)
+    * Delete .mood files when tracks got removed from collection via Collection
+      view context menu, and move them to new destination during Organize Collection process.
+      (BR 261629)
+    * Fixed "Configure Amarok..." disappearing in tray menu. (BR 258226)
+    * Fixed crash when quitting Amarok. (BR 253676, BR 257407)
+    * Fixed empty folders removal after collection organization. (BR 190881)
+    * Fixed crash when trying to load cover for track/album without artist. (BR 263256)
+    * Fixed linking on Solaris 11 (and others?). (BR 264112)
+    * Fixed temporary podcast download filenames that were to long by using MD5 hash instead.
+      Thanks to Frank Steinmetzger for the patch. (BR 264813)
+    * Fixed issue with absentee toolbar on clear run (without config files). (BR 259615)
+    * Fixed CD copying functionality. (BR 264050)
+    * Fixed CUE tracks playback order. (BR 263237)
+    * Prevent crash on exit when using Phonon-VLC.
+    * Fixed crash in the queue editor when trying to show already
+      removed items of the playlist. (BR 263308)
+    * Fixed Mute button. (BR 253098)
+    * Fixed issue with Organize collection, which made amarok remove newly copied tracks.
+      (BR 263301)
+    * Fixed wrong "Configure amarok" action position in tray icon popup menu. (BR 263330)
+    * Fixed minor inconsistency in the Collection view. Patch by 
+      Bhargav Mangipudi <bhargav.1191@gmail.com>. (BR 260973)
+    * Fixed potential crash with the Similar Artists applet. Thanks to 
+      Tuomas Nurmi <tuomas@norsumanageri.org> for the patch. (BR 263145)
+    * Fixed 'Scale Font' option in OSD options for OSD preview widget.
+      (BR 254029)
+    * Fixed issue with playlist tooltips that was shown independetly from
+      "Show tooltip" option. (BR 263121)
+    * Fixed issues with multifiles cuesheet, when all tracks get metadata of
+      last track
+      in cuesheet, and each file defined in sheet gets all tracks of this sheet.
+      (BR 262668) (BR 209341)
+    * Fixed crash when trying to download a full size cover and the server
+      redirects the request. (BR 262902)
     * Fixed issue when breadcrumbs stayed not updated after service insert/remove.
       (BR 262780)
     * Fixed issue with TagDialog that make metadata fields stay editable if multiple
       streams opened. (BR 177400)
-    * Fixed missing equel-sign ('=') in filter string of bookmarks. (BR 245759)
+    * Fixed missing equals-sign ('=') in filter string of bookmarks. (BR 245759)
 
 
 VERSION 2.4.0

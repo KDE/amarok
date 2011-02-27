@@ -112,6 +112,7 @@ namespace Playlist
 
         private slots:
             void slotModelReset();
+            void slotRowsAboutToBeRemoved( const QModelIndex &parent, int start, int end );
 
         protected:
             /**

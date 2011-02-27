@@ -19,25 +19,34 @@
 #ifndef AMAROK_SCRIPTMANAGER_H
 #define AMAROK_SCRIPTMANAGER_H
 
-#include "shared/amarok_export.h"
-#include "scriptengine/AmarokScript.h"
-#include "scriptengine/AmarokScriptableServiceScript.h"
-#include "ScriptSelector.h"
-#include "ScriptUpdater.h"
-
 #include <KDialog>      //baseclass
 
+#include "shared/amarok_export.h"
+
+#include <KPluginInfo>
 #include <KUrl>
 
 #include <QList>
 #include <QMap>
 #include <QScriptValue>
+#include <QSemaphore>
+
+class ScriptableServiceScript;
+class ScriptUpdater;
+class ScriptSelector;
+
+namespace AmarokScript
+{
+    class AmarokScript;
+}
 
 class KArchiveDirectory;
 class KPluginInfo;
 class KPluginSelector;
+
+class QScriptContext;
 class QScriptEngine;
-class ScriptUpdater;
+class QSemaphore;
 
 class AMAROK_EXPORT ScriptManager : public KDialog
 {
@@ -168,5 +177,3 @@ class AMAROK_EXPORT ScriptManager : public KDialog
 };
 
 #endif /* AMAROK_SCRIPTMANAGER_H */
-
-

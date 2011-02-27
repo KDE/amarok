@@ -18,6 +18,7 @@
 
 #include "UpnpCollectionBase.h"
 #include "core/support/Debug.h"
+#include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "core/capabilities/ActionsCapability.h"
 
@@ -369,13 +370,6 @@ UpnpArtist::tracks()
     return m_tracks;
 }
 
-AlbumList
-UpnpArtist::albums()
-{
-    //TODO
-    return m_albums;
-}
-
 void
 UpnpArtist::addTrack( UpnpTrackPtr track )
 {
@@ -386,12 +380,6 @@ void
 UpnpArtist::removeTrack( UpnpTrackPtr track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
-}
-
-void
-UpnpArtist::addAlbum( UpnpAlbumPtr album )
-{
-    m_albums.append( AlbumPtr::staticCast( album ) );
 }
 
 UpnpAlbum::UpnpAlbum( const QString &name )
@@ -407,7 +395,7 @@ UpnpAlbum::UpnpAlbum( const QString &name )
 
 UpnpAlbum::~UpnpAlbum()
 {
-    //nothing to do
+    CoverCache::invalidateAlbum( this );
 }
 
 QString
@@ -447,21 +435,24 @@ UpnpAlbum::hasImage( int size ) const
     return m_albumArtUrl.isValid();
 }
 
-QPixmap
-UpnpAlbum::image( int size )
+QImage
+UpnpAlbum::image( int size ) const
 {
-    if( !m_pixmap.isNull() )
-        return size <= 0 ? m_pixmap : m_pixmap.scaled( size, size );
-
-    QString path;
-    if( m_albumArtUrl.isValid()
-        && KIO::NetAccess::download( m_albumArtUrl, path, NULL ) )
+    if( m_image.isNull() )
     {
-        m_pixmap = QPixmap( path );
-        return size <= 0 ? m_pixmap : m_pixmap.scaled( size, size );
+        QString path;
+        if( m_albumArtUrl.isValid()
+            && KIO::NetAccess::download( m_albumArtUrl, path, NULL ) )
+        {
+            m_image = QImage( path );
+            CoverCache::invalidateAlbum( this );
+        }
     }
 
-    return Meta::Album::image( size );
+    if( m_image.isNull() )
+        return Meta::Album::image( size );
+
+    return size <= 1 ? m_image : m_image.scaled( size, size );
 }
 
 KUrl

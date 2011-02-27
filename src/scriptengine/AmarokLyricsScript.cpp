@@ -29,6 +29,7 @@
 #include <KApplication>
 
 #include <QByteArray>
+#include <QTextCodec>
 #include <QTextDocument>
 
 namespace AmarokScript

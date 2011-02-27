@@ -34,6 +34,7 @@
 #include "SqlMeta.h"
 #include "transcoding/TranscodingJob.h"
 #include "core/transcoding/TranscodingController.h"
+#include <shared/MetaTagLib.h> // for getting the uid
 
 #include <QDir>
 #include <QFile>
@@ -171,9 +172,13 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, url );
     int directoryId = registry->getDirectory( QFileInfo(url).path() );
 
+    // -- the track uid (we can't use the original one from the old collection)
+    Meta::FieldHash fileTags = Meta::Tag::readTags( url );
+    QString uid = fileTags.value( Meta::valUniqueId ).toString();
+
     // -- the the track from the registry
     KSharedPtr<Meta::SqlTrack> metaTrack;
-    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrackFromUid( track->uidUrl() ) );
+    metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrackFromUid( uid ) );
 
     if( metaTrack ) {
         warning() << "Location is inserting a file with the same uid as an already existing one.";
@@ -181,7 +186,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
         metaTrack->setUrl( deviceId, rpath, directoryId );
 
     } else {
-        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrack( deviceId, rpath, directoryId, track->uidUrl() ) );
+        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrack( deviceId, rpath, directoryId, uid ) );
     }
 
     // -- set the values
@@ -200,7 +205,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     if( track->composer() )
         metaTrack->setComposer( track->composer()->name() );
 
-    if( !track->year() >= 0 )
+    if( track->year() > 0 )
         metaTrack->setYear( track->year() );
 
     if( track->genre() )
@@ -212,10 +217,11 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     /* we've already done this
     if( !track->path().isEmpty() )
         metaTrack->setUrl( track->path() );
-        */
 
+     and that too
     if( !track->uidUrl().isEmpty() )
-        metaTrack->setUidUrl( track->uidUrl() );
+        metaTrack->setUidUrl( uid );
+    */
 
     if( !track->bpm() >= 0 )
         metaTrack->setBpm( track->bpm() );
@@ -259,9 +265,14 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     // Used to be updated after changes commit to prevent crash on NULL pointer access
     // if metaTrack had no album.
     if( track->album() && track->album()->hasImage() && !metaTrack->album()->hasImage() )
-        metaTrack->album()->setImage( track->album()->image().toImage() );
+        metaTrack->album()->setImage( track->album()->image() );
 
     metaTrack->setWriteFile( true );
+
+    // we have a first shot at the meta data (expecially ratings and playcounts from media
+    // collections) but we still need to trigger the collection scanner
+    // to get the album and other meta data correct.
+    m_collection->scanManager()->delayedIncrementalScan( QFileInfo(url).path() );
 
     return true;
 }
@@ -391,15 +402,20 @@ SqlCollectionLocation::slotRemoveJobFinished( KJob *job )
     {
         //TODO: proper error handling
         warning() << "An error occurred when removing a file: " << job->errorString();
-        transferError( track, KIO::buildErrorString( job->error(), job->errorString() ) );
     }
-    else
+
+    // -- remove the track from the database if it's gone
+    if( !QFile(track->playableUrl().path()).exists() )
     {
         // Remove the track from the database
         remove( track );
 
         //we  assume that KIO works correctly...
         transferSuccessful( track );
+    }
+    else
+    {
+        transferError( track, KIO::buildErrorString( job->error(), job->errorString() ) );
     }
 
     m_removejobs.remove( job );
@@ -513,8 +529,10 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
 
         KUrl dest = m_destinations[ track ];
         dest.cleanPath();
-
         src.cleanPath();
+
+        bool hasMoodFile = QFile::exists( moodFile( src ).toLocalFile() );
+
         if( configuration.encoder() == Transcoding::NULL_CODEC )
             debug() << "copying from " << src << " to " << dest;
         else
@@ -543,6 +561,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         }
 
         KJob *job = 0;
+        KJob *moodJob = 0;
 
         if( src.equals( dest ) )
         {
@@ -556,6 +575,12 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         {
             debug() << "moving!";
             job = KIO::file_move( src, dest, -1, flags );
+            if( hasMoodFile )
+            {
+                KUrl moodSrc = moodFile( src );
+                KUrl moodDest = moodFile( dest );
+                moodJob = KIO::file_move( moodSrc, moodDest, -1, flags );
+            }
         }
         else
         {
@@ -572,12 +597,26 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
                 job = new Transcoding::Job( src, dest, configuration, this );
                 job->start();
             }
+
+            if( hasMoodFile )
+            {
+                KUrl moodSrc = moodFile( src );
+                KUrl moodDest = moodFile( dest );
+                moodJob = KIO::file_copy( moodSrc, moodDest, -1, flags );
+            }
         }
         if( job )   //just to be safe
         {
             connect( job, SIGNAL( result( KJob* ) ), SLOT( slotJobFinished( KJob* ) ) );
             connect( job, SIGNAL( result( KJob* ) ), m_transferjob, SLOT( slotJobFinished( KJob* ) ) );
             m_transferjob->addSubjob( job );
+
+            if( moodJob )
+            {
+                connect( moodJob, SIGNAL( result( KJob* ) ), m_transferjob, SLOT( slotJobFinished( KJob* ) ) );
+                m_transferjob->addSubjob( moodJob );
+            }
+
             QString name = track->prettyName();
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
@@ -602,6 +641,7 @@ bool SqlCollectionLocation::startNextRemoveJob()
         Meta::TrackPtr track = m_removetracks.takeFirst();
         // KUrl src = track->playableUrl();
         KUrl src = track->playableUrl();
+        KUrl srcMoodFile = moodFile( src );
 
         debug() << "isGoingToRemoveSources() " << isGoingToRemoveSources();
         if( isGoingToRemoveSources() && destination() ) // is organize operation?
@@ -620,6 +660,9 @@ bool SqlCollectionLocation::startNextRemoveJob()
         KIO::DeleteJob *job = KIO::del( src, KIO::HideProgressInfo );
         if( job )   //just to be safe
         {
+            if( QFile::exists( srcMoodFile.toLocalFile() ) )
+                KIO::del( srcMoodFile, KIO::HideProgressInfo );
+           
             connect( job, SIGNAL( result( KJob* ) ), SLOT( slotRemoveJobFinished( KJob* ) ) );
             QString name = track->prettyName();
             if( track->artist() )
@@ -634,6 +677,13 @@ bool SqlCollectionLocation::startNextRemoveJob()
     return false;
 }
 
+KUrl 
+SqlCollectionLocation::moodFile( const KUrl &track ) const
+{
+    KUrl moodPath = track;
+    moodPath.setFileName( "." + moodPath.fileName().replace( QRegExp( "(\\.\\w{2,5})$" ), ".mood" ) );
+    return moodPath;
+}
 
 TransferJob::TransferJob( SqlCollectionLocation * location, const Transcoding::Configuration & configuration )
     : KCompositeJob( 0 )

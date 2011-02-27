@@ -41,9 +41,14 @@
 #include <QPropertyAnimation>
 
 
+#define LabelsAppletMaxLabelLength 40 // if a downloaded label is longer than this, don't show it
+
+
 LabelsApplet::LabelsApplet( QObject *parent, const QVariantList &args )
     : Context::Applet( parent, args ),
-    m_selfAdded( false )
+    m_lastLabelName( "" ),
+    m_lastLabelSize( QSizeF(0,0) ),
+    m_lastLabelBottomAdded( false )
 {
     setHasConfigurationInterface( true );
 }
@@ -133,13 +138,27 @@ LabelsApplet::init()
     m_personalCount = config.readEntry( "PersonalCount", 70 );
     m_autoAdd = config.readEntry( "AutoAdd", false );
     m_minAutoAddCount = config.readEntry( "MinAutoAddCount", 60 );
+    m_selectedColor = config.readEntry( "SelectedColor", PaletteHandler::highlightColor( 2.0, 0.7 ) );
+    const QPalette pal;
+    m_backgroundColor = config.readEntry( "BackgroundColor", pal.color( QPalette::Base ) );
+
     m_matchArtist = config.readEntry( "MatchArtist", true );
     m_matchTitle = config.readEntry( "MatchTitle", true );
     m_matchAlbum = config.readEntry( "MatchAlbum", true );
     m_blacklist = config.readEntry( "Blacklist", QStringList() );
-    m_selectedColor = config.readEntry( "SelectedColor", PaletteHandler::highlightColor( 2.0, 0.7 ) );
-    const QPalette pal;
-    m_backgroundColor = config.readEntry( "BackgroundColor", pal.color( QPalette::Base ) );
+
+    const QStringList replacementList = config.readEntry( "ReplacementList", QStringList() );
+    foreach( const QString replacement, replacementList )
+    {
+        const QStringList parts = replacement.split( "|" );
+        QString label = parts.at(0);
+        label = label.replace( "%s", "|" );
+        label = label.replace( "%p", "%" );
+        QString replacement = parts.at(1);
+        replacement = replacement.replace( "%s", "|" );
+        replacement = replacement.replace( "%p", "%" );
+        m_replacementMap.insert( label, replacement );
+    }
 
     setStoppedState( true );
 
@@ -241,14 +260,18 @@ LabelsApplet::updateLabels()
     while( it_infos.hasNext() )
     {
         it_infos.next();
-        if( !finalLabelsMap.contains( it_infos.key() ) && it_infos.value().toInt() >= m_minCount && QString(it_infos.key()).length() <= 40 && !m_blacklist.contains( it_infos.key() )
+        if( !finalLabelsMap.contains( it_infos.key() )
+            && it_infos.value().toInt() >= m_minCount
+            && QString(it_infos.key()).length() <= LabelsAppletMaxLabelLength
+            && !m_blacklist.contains( it_infos.key() )
             && !( m_matchArtist && QString(it_infos.key()).toLower() == m_artist.toLower() )
             && !( m_matchTitle && QString(it_infos.key()).toLower() == m_title.toLower() )
             && !( m_matchAlbum && QString(it_infos.key()).toLower() == m_album.toLower() ) )
         {
             tempLabelsMap.insert( it_infos.key(), it_infos.value().toInt() );
         }
-        else if( finalLabelsMap.contains( it_infos.key() ) && it_infos.value().toInt() > finalLabelsMap[ it_infos.key() ] )
+        else if( finalLabelsMap.contains( it_infos.key() )
+            && it_infos.value().toInt() > finalLabelsMap[ it_infos.key() ] )
         {
             finalLabelsMap[ it_infos.key() ] = it_infos.value().toInt();
             webCounts += it_infos.value().toInt();
@@ -337,6 +360,15 @@ LabelsApplet::updateLabels()
             {
                 labelGraphics = m_labelItems.at(i);
                 labelGraphics->setDeltaPointSize( f_size );
+                labelGraphics->setSelected( m_userLabels.contains( it_final.key() ) );
+                if( !m_lastLabelSize.isEmpty() && m_lastLabelName == m_labelItems.at(i)->text() )
+                {
+                    const qreal x = labelGraphics->pos().x() - ( labelGraphics->boundingRect().width()  - m_lastLabelSize.width()  ) / 2;
+                    const qreal y = labelGraphics->pos().y() - ( labelGraphics->boundingRect().height() - m_lastLabelSize.height() ) / 2;
+                    labelGraphics->setPos( x, y );
+                    m_lastLabelSize = QSizeF( 0, 0 );
+                    m_lastLabelName = "";
+                }
                 labelAnimation = m_labelAnimations.at(i);
                 break;
             }
@@ -346,10 +378,12 @@ LabelsApplet::updateLabels()
             labelGraphics = new LabelGraphicsItem( it_final.key(), f_size, this );
             labelGraphics->setSelectedColor( m_selectedColor );
             labelGraphics->setBackgroundColor( m_backgroundColor );
-            if( m_selfAdded )
+            labelGraphics->showBlacklistButton( !m_allLabels.contains(it_final.key()) );
+            labelGraphics->setSelected( m_userLabels.contains( it_final.key() ) );
+            if( m_lastLabelBottomAdded )
             {
                 labelGraphics->setPos( m_addLabelProxy.data()->pos().x(), m_addLabelProxy.data()->pos().y() + m_addLabelProxy.data()->size().height()/2 - labelGraphics->boundingRect().height()/2 );
-                m_selfAdded = false;
+                m_lastLabelBottomAdded = false;
             }
             connect( labelGraphics, SIGNAL( toggled( const QString & ) ), this, SLOT( toggleLabel( const QString & ) ) );
             connect( labelGraphics, SIGNAL( list( const QString & ) ), this, SLOT( listLabel( const QString & ) ) );
@@ -361,14 +395,15 @@ LabelsApplet::updateLabels()
         }
         tempLabelItems.append( labelGraphics );
         tempLabelAnimations.append( labelAnimation );
-
-        labelGraphics->setSelected( m_userLabels.contains( it_final.key() ) );
     }
     // copy the temp list to the final list
     m_labelItems = tempLabelItems;
     m_labelAnimations = tempLabelAnimations;
-    
-    m_selfAdded = false; // should be unnecessary, but better safe than sorry
+
+    // should be unnecessary, but better safe than sorry
+    m_lastLabelName = "";
+    m_lastLabelSize = QSizeF( 0, 0 );
+    m_lastLabelBottomAdded = false;
 
     constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
 }
@@ -541,13 +576,41 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
 
             m_webLabels = data[ "web" ].toMap();
 
+            // rename/merge web labels if they are present in the replacement map
+            QMap < QString, QVariant >::iterator it = m_webLabels.begin();
+            while( it != m_webLabels.end() )
+            {
+                if( m_replacementMap.contains(it.key()) )
+                {
+                    const QString replacement = m_replacementMap.value( it.key() );
+                    if( m_webLabels.contains(replacement) ) // we have to merge
+                    {
+                        m_webLabels[replacement] = qMin( 100, it.value().toInt() + m_webLabels.value(replacement).toInt() );
+                        it = m_webLabels.erase( it );
+                    }
+                    else // just replace
+                    {
+                        const int count = it.value().toInt();
+                        it = m_webLabels.erase( it );
+                        m_webLabels.insert( replacement, count );
+                    }
+                }
+                else
+                {
+                    ++it;
+                }
+            }
+
+            // auto add labels if needed
             if( m_userLabels.isEmpty() && m_autoAdd )
             {
                 QMapIterator < QString, QVariant > it ( m_webLabels );
                 while( it.hasNext() )
                 {
                     it.next();
-                    if( it.value().toInt() >= m_minAutoAddCount && QString(it.key()).length() <= 40 && !m_blacklist.contains( it.key() )
+                    if( it.value().toInt() >= m_minAutoAddCount
+                        && QString(it.key()).length() <= LabelsAppletMaxLabelLength
+                        && !m_blacklist.contains( it.key() )
                         && !( m_matchArtist && QString(it.key()).toLower() == m_artist.toLower() )
                         && !( m_matchTitle && QString(it.key()).toLower() == m_title.toLower() )
                         && !( m_matchAlbum && QString(it.key()).toLower() == m_album.toLower() ) )
@@ -597,7 +660,17 @@ LabelsApplet::toggleLabel( const QString &label )
             break;
         }
     }
-    
+
+    for( int i=0; i<m_labelItems.count(); i++ )
+    {
+        if( m_labelItems.at(i)->text() == label )
+        {
+            m_lastLabelSize = m_labelItems.at(i)->boundingRect().size();
+            m_lastLabelName = label;
+            break;
+        }
+    }
+
     if( m_userLabels.contains( label ) )
     {
         track->removeLabel( labelPtr );
@@ -609,7 +682,7 @@ LabelsApplet::toggleLabel( const QString &label )
         track->addLabel( label );
         m_userLabels.append( label );
         debug() << "adding label: " << label;
-        m_selfAdded = true;
+        m_lastLabelBottomAdded = true;
     }
 
     if( !m_allLabels.contains( label ) )
@@ -655,22 +728,43 @@ LabelsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     DEBUG_BLOCK
     KConfigGroup configuration = config();
-    QWidget *settings = new QWidget;
-    ui_Settings.setupUi( settings );
+    QWidget *generalSettings = new QWidget;
+    ui_GeneralSettings.setupUi( generalSettings );
+    ui_GeneralSettings.resetColorsPushButton->setIcon( KIcon("fill-color") );
+    QWidget *blacklistSettings = new QWidget;
+    ui_BlacklistSettings.setupUi( blacklistSettings );
+    QWidget *replacementSettings = new QWidget;
+    ui_ReplacementSettings.setupUi( replacementSettings );
+    ui_ReplacementSettings.addPushButton->setIcon( KIcon("list-add") );
+    ui_ReplacementSettings.removePushButton->setIcon( KIcon("list-remove") );
 
-    parent->addPage( settings, i18n( "Labels Settings" ), "preferences-system");
+    parent->addPage( generalSettings, i18n( "General Settings" ), "preferences-system" );
+    parent->addPage( blacklistSettings, i18n( "Blacklist Settings" ), "flag-black" );
+    parent->addPage( replacementSettings, i18n( "Replacement Settings" ), "system-search" );
 
-    ui_Settings.minCountSpinBox->setValue( m_minCount );
-    ui_Settings.numLabelsSpinBox->setValue( m_numLabels );
-    ui_Settings.personalCountSpinBox->setValue( m_personalCount );
-    ui_Settings.autoAddCheckBox->setChecked( m_autoAdd );
-    ui_Settings.minAutoAddCountSpinBox->setValue( m_minAutoAddCount );
-    ui_Settings.matchArtistCheckBox->setChecked( m_matchArtist );
-    ui_Settings.matchTitleCheckBox->setChecked( m_matchTitle );
-    ui_Settings.matchAlbumCheckBox->setChecked( m_matchAlbum );
-    ui_Settings.blacklistEditListBox->insertStringList( m_blacklist );
-    ui_Settings.selectedColorButton->setColor( m_selectedColor );
-    ui_Settings.backgroundColorButton->setColor( m_backgroundColor );
+    ui_GeneralSettings.minCountSpinBox->setValue( m_minCount );
+    ui_GeneralSettings.numLabelsSpinBox->setValue( m_numLabels );
+    ui_GeneralSettings.personalCountSpinBox->setValue( m_personalCount );
+    ui_GeneralSettings.autoAddCheckBox->setChecked( m_autoAdd );
+    ui_GeneralSettings.minAutoAddCountSpinBox->setValue( m_minAutoAddCount );
+    ui_GeneralSettings.selectedColorButton->setColor( m_selectedColor );
+    ui_GeneralSettings.backgroundColorButton->setColor( m_backgroundColor );
+
+    ui_BlacklistSettings.matchArtistCheckBox->setChecked( m_matchArtist );
+    ui_BlacklistSettings.matchTitleCheckBox->setChecked( m_matchTitle );
+    ui_BlacklistSettings.matchAlbumCheckBox->setChecked( m_matchAlbum );
+    ui_BlacklistSettings.blacklistEditListBox->insertStringList( m_blacklist );
+
+    QHashIterator < QString, QString > it ( m_replacementMap );
+    while( it.hasNext() )
+    {
+        it.next();
+        new QTreeWidgetItem( ui_ReplacementSettings.replacementTreeWidget, QStringList() << it.key() << it.value() );
+    }
+
+    connect( ui_GeneralSettings.resetColorsPushButton, SIGNAL( clicked() ), this, SLOT( settingsResetColors()) );
+    connect( ui_ReplacementSettings.addPushButton, SIGNAL( clicked() ), this, SLOT( settingsAddReplacement()) );
+    connect( ui_ReplacementSettings.removePushButton, SIGNAL( clicked() ), this, SLOT( settingsRemoveReplacement()) );
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
 
@@ -680,29 +774,53 @@ LabelsApplet::saveSettings()
     DEBUG_BLOCK
     KConfigGroup config = Amarok::config("Labels Applet");
 
-    m_minCount = ui_Settings.minCountSpinBox->value();
-    m_numLabels = ui_Settings.numLabelsSpinBox->value();
-    m_personalCount = ui_Settings.personalCountSpinBox->value();
-    m_autoAdd = ui_Settings.autoAddCheckBox->checkState() == Qt::Checked;
-    m_minAutoAddCount = ui_Settings.minAutoAddCountSpinBox->value();
-    m_matchArtist = ui_Settings.matchArtistCheckBox->checkState() == Qt::Checked;
-    m_matchTitle = ui_Settings.matchTitleCheckBox->checkState() == Qt::Checked;
-    m_matchAlbum = ui_Settings.matchAlbumCheckBox->checkState() == Qt::Checked;
-    m_blacklist = ui_Settings.blacklistEditListBox->items();
-    m_selectedColor = ui_Settings.selectedColorButton->color();
-    m_backgroundColor = ui_Settings.backgroundColorButton->color();
+    m_minCount = ui_GeneralSettings.minCountSpinBox->value();
+    m_numLabels = ui_GeneralSettings.numLabelsSpinBox->value();
+    m_personalCount = ui_GeneralSettings.personalCountSpinBox->value();
+    m_autoAdd = ui_GeneralSettings.autoAddCheckBox->checkState() == Qt::Checked;
+    m_minAutoAddCount = ui_GeneralSettings.minAutoAddCountSpinBox->value();
+    m_selectedColor = ui_GeneralSettings.selectedColorButton->color();
+    m_backgroundColor = ui_GeneralSettings.backgroundColorButton->color();
+    
+    m_matchArtist = ui_BlacklistSettings.matchArtistCheckBox->checkState() == Qt::Checked;
+    m_matchTitle = ui_BlacklistSettings.matchTitleCheckBox->checkState() == Qt::Checked;
+    m_matchAlbum = ui_BlacklistSettings.matchAlbumCheckBox->checkState() == Qt::Checked;
+    m_blacklist = ui_BlacklistSettings.blacklistEditListBox->items();
+
+    m_replacementMap.clear();
+    for( int i=0; i<ui_ReplacementSettings.replacementTreeWidget->topLevelItemCount(); i++ )
+    {
+        QTreeWidgetItem *item = ui_ReplacementSettings.replacementTreeWidget->topLevelItem( i );
+        m_replacementMap.insert( item->text(0), item->text(1) );
+    }
     
     config.writeEntry( "NumLabels", m_numLabels );
     config.writeEntry( "MinCount", m_minCount );
     config.writeEntry( "PersonalCount", m_personalCount );
     config.writeEntry( "AutoAdd", m_autoAdd );
     config.writeEntry( "MinAutoAddCount", m_minAutoAddCount );
+    config.writeEntry( "SelectedColor", m_selectedColor );
+    config.writeEntry( "BackgroundColor", m_backgroundColor );
+    
     config.writeEntry( "MatchArtist", m_matchArtist );
     config.writeEntry( "MatchTitle", m_matchTitle );
     config.writeEntry( "MatchAlbum", m_matchAlbum );
     config.writeEntry( "Blacklist", m_blacklist );
-    config.writeEntry( "SelectedColor", m_selectedColor );
-    config.writeEntry( "BackgroundColor", m_backgroundColor );
+
+    QStringList replacementList;
+    QHashIterator < QString, QString > it ( m_replacementMap );
+    while( it.hasNext() )
+    {
+        it.next();
+        QString label = it.key();
+        label = label.replace( "%", "%p" );
+        label = label.replace( "|", "%s" );
+        QString replacement = it.value();
+        replacement = replacement.replace( "%", "%p" );
+        replacement = replacement.replace( "|", "%s" );
+        replacementList.append( label + "|" + replacement );
+    }
+    config.writeEntry( "ReplacementList", replacementList );
     
     for( int i=0; i<m_labelItems.count(); i++ )
     {
@@ -713,5 +831,41 @@ LabelsApplet::saveSettings()
     reload();
 }
 
+void
+LabelsApplet::settingsResetColors()
+{
+    ui_GeneralSettings.selectedColorButton->setColor( PaletteHandler::highlightColor( 2.0, 0.7 ) );
+    const QPalette pal;
+    ui_GeneralSettings.backgroundColorButton->setColor( pal.color( QPalette::Base ) );
+}
 
+void
+LabelsApplet::settingsAddReplacement()
+{
+    const QString label = ui_ReplacementSettings.labelLineEdit->text();
+    const QString replacement = ui_ReplacementSettings.replacementLineEdit->text();
+
+    if( label.isEmpty() || replacement.isEmpty() )
+        return;
+
+    new QTreeWidgetItem( ui_ReplacementSettings.replacementTreeWidget, QStringList() << label << replacement );
+    ui_ReplacementSettings.labelLineEdit->clear();
+    ui_ReplacementSettings.replacementLineEdit->clear();
+}
+
+void
+LabelsApplet::settingsRemoveReplacement()
+{
+    for( int i=0; i<ui_ReplacementSettings.replacementTreeWidget->topLevelItemCount(); i++ )
+    {
+        QTreeWidgetItem *item = ui_ReplacementSettings.replacementTreeWidget->topLevelItem( i );
+        if( item->isSelected() )
+        {
+            ui_ReplacementSettings.replacementTreeWidget->takeTopLevelItem( i );
+            i--;
+        }
+    }
+}
+
+    
 #include "LabelsApplet.moc"

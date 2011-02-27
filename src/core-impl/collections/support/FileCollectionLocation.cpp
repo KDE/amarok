@@ -75,27 +75,7 @@ FileCollectionLocation::remove( const Meta::TrackPtr &track )
         return false;
     }
 
-    debug() << "removing dirs for : " << track->playableUrl().path();
-    // the file should be removed already, so we can clean the dirs
-    bool removed = !QFile::exists( track->playableUrl().path()  );
-
-    if( m_removeEmptyDirs && removed)
-    {
-        QFileInfo file( track->playableUrl().path() );
-        QDir dir = file.dir();
-        dir.setFilter( QDir::NoDotAndDotDot );
-        while( !dir.isRoot() && dir.count() == 0 )
-        {
-            debug() << "attempting to rmdir << " << dir;
-            const QString name = dir.dirName();
-            dir.cdUp();
-            if( !dir.rmdir( name ) )
-                break;
-            else
-                debug() << "rmdir succeeded";
-        }
-    }
-    return removed;
+    return !QFile::exists( track->playableUrl().path()  );
 }
 void FileCollectionLocation::startRemoveJobs()
 {
@@ -159,10 +139,9 @@ void FileCollectionLocation::removeUrlsFromCollection(const Meta::TrackList& sou
 void FileCollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
-    m_removeEmptyDirs = delegate->deleteEmptyDirs( this );
     if( !isHidingRemoveConfirm() )
     {
+        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         const bool del = delegate->reallyDelete( this, tracks );
 
         if( !del )

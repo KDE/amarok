@@ -135,22 +135,6 @@ MetaQueryMaker::orderByRandom()
 }
 
 QueryMaker*
-MetaQueryMaker::includeCollection( const QString &collectionId )
-{
-    foreach( QueryMaker *b, builders )
-        b->includeCollection( collectionId );
-    return this;
-}
-
-QueryMaker*
-MetaQueryMaker::excludeCollection( const QString &collectionId )
-{
-    foreach( QueryMaker *b, builders )
-        b->excludeCollection( collectionId );
-    return this;
-}
-
-QueryMaker*
 MetaQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     foreach( QueryMaker *b, builders )

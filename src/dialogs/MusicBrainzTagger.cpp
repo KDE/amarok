@@ -25,6 +25,7 @@
 
 #include <KMessageBox>
 #include <QTimer>
+#include <QToolBar>
 
 MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
                                       QWidget *parent )
@@ -58,6 +59,17 @@ MusicBrainzTagger::init()
     DEBUG_BLOCK
     setButtons( KDialog::None );
     setAttribute( Qt::WA_DeleteOnClose );
+    setMinimumSize( 480, 300 );
+
+    if( m_tracks.count() > 1 )
+    {
+        QToolBar *toolBar = new QToolBar( this );
+        toolBar->addAction( i18n( "Expand All" ), ui->treeView_Result, SLOT( expandAll() ) );
+        toolBar->addAction( i18n( "Collapse All" ), ui->treeView_Result, SLOT( collapseAll() ) );
+        toolBar->addAction( i18n( "Expand Unchosen" ), ui->treeView_Result, SLOT( expandUnChosen() ) );
+        toolBar->addAction( i18n( "Collapse Chosen" ), ui->treeView_Result, SLOT( collapseChosen() ) );
+        ui->verticalLayout->insertWidget( 0, toolBar );
+    }
 
     ui->progressBar->hide();
 
@@ -75,8 +87,6 @@ MusicBrainzTagger::init()
     connect( mdns_finder, SIGNAL( progressStep() ), SLOT( progressStep() ) );
     connect( mdns_finder, SIGNAL( done() ), this, SLOT( mdnsSearchDone() ) );
 #endif
-    connect( mb_finder, SIGNAL( trackFound( const Meta::TrackPtr, const QVariantMap ) ),
-             SLOT( trackFound( const Meta::TrackPtr, const QVariantMap ) ) );
     connect( mb_finder, SIGNAL( done() ), SLOT( searchDone() ) );
     connect( mb_finder, SIGNAL( trackFound( const Meta::TrackPtr, const QVariantMap ) ),
              q_resultsModel, SLOT( addTrack( const Meta::TrackPtr, const QVariantMap ) ) );
@@ -122,6 +132,7 @@ MusicBrainzTagger::searchDone()
 #endif
     ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Expanding );
     ui->progressBar->hide();
+    ui->treeView_Result->header()->resizeSections( QHeaderView::ResizeToContents );
 }
 
 #ifdef HAVE_LIBOFA
@@ -142,3 +153,4 @@ MusicBrainzTagger::progressStep()
 }
 
 #include "MusicBrainzTagger.moc"
+

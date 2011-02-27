@@ -51,16 +51,15 @@ protected:
             {
                 setCursor( qobject_cast<QWidget*>(o), Qt::ClosedHandCursor );
                 return true; // don't propagate to parents
-//                 m_startPos = me->pos(); // not sure whether I like this...
-//             else if ( event->button() == Qt::MidButton ) // TODO: really kick item on mmbc?
             }
             return false;
         }
         else if ( e->type() == QEvent::MouseButtonRelease )
         {
-            if ( static_cast<QMouseEvent*>(e)->buttons() & Qt::LeftButton )
+            if ( !( static_cast<QMouseEvent*>(e)->buttons() & Qt::LeftButton ) )
             {
                 setCursor( qobject_cast<QWidget*>(o), Qt::OpenHandCursor );
+                emit static_cast<TokenDropTarget*>( parent() )->focusReceived( qobject_cast<QWidget*>(o) );
                 return true; // don't propagate to parents
             }
             return false;
@@ -306,6 +305,8 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
     token->show();
     update(); // count changed
     emit changed();
+
+    token->setFocus( Qt::OtherFocusReason ); // select the new token right away
 }
 
 bool
@@ -334,7 +335,7 @@ TokenDropTarget::eventFilter( QObject *o, QEvent *ev )
 
                 QString tokenName;
                 QString tokenIconName;
-                int tokenValue;
+                qint64 tokenValue;
                 dataStream >> tokenName;
                 dataStream >> tokenIconName;
                 dataStream >> tokenValue;

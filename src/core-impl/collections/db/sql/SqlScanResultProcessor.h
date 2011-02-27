@@ -99,7 +99,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
         };
 
         void cacheUrlsInit();
-        void cacheUrlsInsert( const UrlEntry &entry );
+        void cacheUrlsInsert( UrlEntry entry );
         void cacheUrlsRemove( int id );
 
         QHash<int, UrlEntry> m_urlsCache;

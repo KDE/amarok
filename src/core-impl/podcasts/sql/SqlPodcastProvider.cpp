@@ -35,6 +35,7 @@
 
 #include "ui_SqlPodcastProviderSettingsWidget.h"
 
+#include <KCodecs>
 #include <KLocale>
 #include <KFileDialog>
 #include <KIO/CopyJob>
@@ -242,7 +243,7 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
     if( !sqlStorage )
         return false;
 
-    QString command = "SELECT title FROM podcastepisodes WHERE guid='%1' OR url='%1' "
+    QString command = "SELECT id FROM podcastepisodes WHERE guid='%1' OR url='%1' "
                       "OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
 
@@ -1237,7 +1238,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     QFile *tmpFile = createTmpFile( sqlEpisode );
     struct PodcastEpisodeDownload download = { sqlEpisode,
                                                tmpFile,
-    /* Unless a reidrect happens the filename from the enclosure is used. This is a potential source
+    /* Unless a redirect happens the filename from the enclosure is used. This is a potential source
        of filename conflicts in downloadResult() */
                                                KUrl( sqlEpisode->uidUrl() ).fileName(),
                                                false
@@ -1321,6 +1322,7 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
 
     QDir dir( sqlChannel->saveLocation().toLocalFile() );
     dir.mkpath( "." );  // ensure that the path is there
+    //TODO: what if result is false?
 
     KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
     QString tempName;
@@ -1328,7 +1330,10 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
         tempName = QUrl::toPercentEncoding( sqlEpisode->guid() );
     else
         tempName = QUrl::toPercentEncoding( sqlEpisode->uidUrl() );
-    localUrl.addPath( tempName + PODCAST_TMP_POSTFIX );
+
+    QString tempNameMd5( KMD5( tempName.toUtf8() ).hexDigest() );
+
+    localUrl.addPath( tempNameMd5 + PODCAST_TMP_POSTFIX );
 
     return new QFile( localUrl.toLocalFile() );
 }

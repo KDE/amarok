@@ -742,6 +742,9 @@ MainToolbar::showEvent( QShowEvent *ev )
     connect ( The::playlist()->qaim(), SIGNAL( queueChanged() ),
               this, SLOT( updatePrevAndNext() ) );
 
+    connect ( The::playlistActions(), SIGNAL( navigatorChanged()),
+                 this, SLOT( updatePrevAndNext() ) );
+
     connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
               this, SLOT( updateBookmarks(const QString*) ) );
     connect ( The::amarokUrlHandler(), SIGNAL( timecodeAdded(const QString&, int) ),

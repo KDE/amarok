@@ -59,6 +59,15 @@ class AMAROK_CORE_EXPORT PodcastProvider : public Collections::TrackProvider, pu
 
         virtual Podcasts::PodcastChannelList channels() = 0;
 
+        virtual QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList )
+            { return QList<QAction *>(); }
+        virtual QList<QAction *> channelActions( Podcasts::PodcastChannelList )
+            { return QList<QAction *>(); }
+
+        //TODO: need to move this to SqlPodcastProvider since it's provider specific.
+        //perhaps use a more general transferprogress for playlists
+        virtual void completePodcastDownloads() = 0;
+
         // PlaylistProvider methods
         virtual QString prettyName() const = 0;
         virtual KIcon icon() const = 0;
@@ -67,11 +76,6 @@ class AMAROK_CORE_EXPORT PodcastProvider : public Collections::TrackProvider, pu
 
         virtual Playlists::PlaylistList playlists() = 0;
 
-        virtual QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList )
-            { return QList<QAction *>(); }
-        virtual QList<QAction *> channelActions( Podcasts::PodcastChannelList )
-            { return QList<QAction *>(); }
-
         virtual QList<QAction *> providerActions() { return QList<QAction *>(); }
         virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist )
                 { Q_UNUSED( playlist ) return QList<QAction *>(); }
@@ -79,9 +83,13 @@ class AMAROK_CORE_EXPORT PodcastProvider : public Collections::TrackProvider, pu
                                                   int trackIndex )
                 { Q_UNUSED( playlist) Q_UNUSED( trackIndex ) return QList<QAction *>(); }
 
-        //TODO: need to move this to SqlPodcastProvider since it's provider specific.
-        //perhaps use a more general transferprogress for playlists
-        virtual void completePodcastDownloads() = 0;
+        /** convenience function that downcast the argument to PodcastChannel and calls addChannel()
+          */
+        virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
+
+        /** convenience function that downcast the argument to PodcastEpisode and calls addEpisode()
+          */
+        virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
 };
 
 } //namespace Podcasts

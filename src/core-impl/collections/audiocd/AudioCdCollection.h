@@ -71,7 +71,7 @@ public:
     ~AudioCdCollection();
 
     QString encodingFormat() const;
-    QString copyableBasePath() const;
+    QString copyableFilePath( const QString &fileName ) const;
 
     void setEncodingFormat( int format ) const;
 

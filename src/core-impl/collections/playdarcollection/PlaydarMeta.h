@@ -21,7 +21,6 @@
 
 #include <QDateTime>
 #include <QList>
-#include <QPixmap>
 #include <QString>
 #include <QWeakPointer>
 
@@ -198,9 +197,9 @@ namespace Meta
             bool hasAlbumArtist() const;
             ArtistPtr albumArtist() const;
             TrackList tracks();
-            bool hasImage( int size = 1 ) const;
-            QPixmap image( int size = 1 );
-            KUrl imageLocation( int size = 1 );
+            bool hasImage( int size = 0 ) const;
+            QImage image( int size = 0 ) const;
+            KUrl imageLocation( int size = 0 );
             bool canUpdateImage() const;
             void setImage( const QImage &image );
             void removeImage();
@@ -216,11 +215,10 @@ namespace Meta
             bool m_isCompilation;
             ArtistPtr m_albumArtist;
             bool m_suppressImageAutoFetch;
-            bool m_triedToFetchCover;
-            QImage m_cover;
-            QMap< int, QPixmap > m_coverSizeMap;
+            mutable bool m_triedToFetchCover;
+            mutable QImage m_cover;
     };
-    
+
     class PlaydarComposer : public Composer
     {
         public:

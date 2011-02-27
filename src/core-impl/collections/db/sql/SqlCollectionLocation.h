@@ -112,6 +112,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
         void slotTransferJobAborted();
 
     private:
+        KUrl moodFile( const KUrl &track ) const;
         void migrateLabels( const QMap<Meta::TrackPtr, QString> &trackMap );
         bool startNextJob( const Transcoding::Configuration configuration );
         bool startNextRemoveJob();

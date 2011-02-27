@@ -31,7 +31,6 @@ NepomukArtist::NepomukArtist( NepomukCollection *collection, const QString &name
         : Artist()
         , m_collection( collection )
         , m_name( name )
-        , m_albumsLoaded( false )
 {
 }
 
@@ -47,35 +46,3 @@ NepomukArtist::tracks()
     return TrackList();
 }
 
-AlbumList
-NepomukArtist::albums()
-{
-    if( m_albumsLoaded )
-    {
-        return m_albums;
-    }
-    else if( m_collection )
-    {
-        NepomukQueryMaker *qm = static_cast<NepomukQueryMaker*>( m_collection->queryMaker() );
-        qm->setQueryType( QueryMaker::Album );
-        addMatchTo( qm );
-        qm->blocking( true );
-        qm->run();
-        m_albums = qm->albums( m_collection->collectionId() );
-        delete qm;
-        m_albumsLoaded = true;
-        return m_albums;
-    }
-    else
-    {
-        return AlbumList();
-    }
-}
-
-void
-NepomukArtist::emptyCache()
-{
-    // FIXME: add lock
-    m_albums.clear();
-    m_albumsLoaded = false;
-}

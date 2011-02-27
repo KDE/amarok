@@ -150,6 +150,7 @@ CollectionTreeItem::data( int role ) const
         {
         case Qt::DisplayRole:
         case CustomRoles::FilterRole:
+        case CustomRoles::SortRole:
             return m_parentCollection->prettyName();
         case Qt::DecorationRole:
             return m_parentCollection->icon();

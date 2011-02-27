@@ -31,8 +31,14 @@
 #include "SqlScanResultProcessor.h"
 #include "SvgHandler.h"
 
+#include "MainWindow.h"
+#include <KMessageBox>
+
 /*
  * #ifdef Q_OS_WIN32
+ *
+ * #include <QTimer>
+ *
  * class XesamCollectionBuilder
  * {
  * public:
@@ -43,14 +49,7 @@
  * #endif
  */
 
-#include <klocale.h>
-#include <KIcon>
-#include <KMessageBox> // TODO put the delete confirmation code somewhere else?
-
 #include "dialogs/OrganizeCollectionDialog.h"
-#include "MainWindow.h"
-
-#include <QTimer>
 
 namespace Collections {
 
@@ -165,6 +164,16 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     m_collectionLocationFactory = new SqlCollectionLocationFactoryImpl( this );
     m_queryMakerFactory = new DefaultSqlQueryMakerFactory( this );
     m_scanManager = new ScanManager( this, this );
+
+    // we need a UI-dialog service, but for now just output the messages
+    if( !storage->getLastErrors().isEmpty() )
+    {
+        KMessageBox::error( The::mainWindow(), //parent
+                            i18n( "The amarok database reported the following errors:\n"
+                                  "%1\n"
+                                  "In most cases you will need to resolve these errors before Amarok will run properly." ).
+                            arg(storage->getLastErrors().join("\n")) );
+    }
 }
 
 SqlCollection::~SqlCollection()

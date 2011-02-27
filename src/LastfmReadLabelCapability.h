@@ -21,6 +21,9 @@
 #include "core/meta/Meta.h"
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/ReadLabelCapability.h"
+
+#include <QStringList>
+
 class QNetworkReply;
 
 namespace Capabilities

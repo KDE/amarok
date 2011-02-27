@@ -202,13 +202,16 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     typedef CoverFetchArtPayload CFAP;
     const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
     if( !m_album->hasImage() )
-        m_sideBar->setPixmap( m_album->image(190) );
+        m_sideBar->setPixmap( QPixmap::fromImage( m_album->image(190 ) ) );
     else if( payload )
         add( m_album->image(), data, payload->imageSize() );
     else
         add( m_album->image(), data );
     m_view->setCurrentItem( m_view->item( 0 ) );
     updateGui();
+    
+    connect( The::networkAccessManager(), SIGNAL( requestRedirected( QNetworkReply*, QNetworkReply* ) ),
+             this, SLOT( fetchRequestRedirected( QNetworkReply*, QNetworkReply* ) ) );
 }
 
 CoverFoundDialog::~CoverFoundDialog()
@@ -227,7 +230,7 @@ void CoverFoundDialog::hideEvent( QHideEvent *event )
     event->accept();
 }
 
-void CoverFoundDialog::add( const QPixmap &cover,
+void CoverFoundDialog::add( const QImage &cover,
                             const CoverFetch::Metadata &metadata,
                             const CoverFetch::ImageSize imageSize )
 {
@@ -329,9 +332,9 @@ void CoverFoundDialog::currentItemChanged( QListWidgetItem *current, QListWidget
     if( !current )
         return;
     CoverFoundItem *it = static_cast< CoverFoundItem* >( current );
-    QPixmap pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
-    m_image = pixmap;
-    m_sideBar->setPixmap( pixmap, it->metadata() );
+    QImage image = it->hasBigPix() ? it->bigPix() : it->thumb();
+    m_image = image;
+    m_sideBar->setPixmap( QPixmap::fromImage(image), it->metadata() );
 }
 
 void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
@@ -401,14 +404,14 @@ void CoverFoundDialog::saveAs()
         return;
     }
 
-    const QPixmap &pixmap = item->bigPix();
+    const QImage &image = item->bigPix();
     const QString &ext = KMimeType::extractKnownExtension( saveUrl.path() ).toLower();
     if( ext == "jpg" || ext == "jpeg" )
-        pixmap.save( &saveFile, "JPG" );
+        image.save( &saveFile, "JPG" );
     else if( ext == "png" )
-        pixmap.save( &saveFile, "PNG" );
+        image.save( &saveFile, "PNG" );
     else
-        pixmap.save( &saveFile );
+        image.save( &saveFile );
 
     if( (saveFile.size() == 0) || !saveFile.finalize() )
     {
@@ -446,15 +449,35 @@ void CoverFoundDialog::slotButtonClicked( int button )
     }
 }
 
+void CoverFoundDialog::fetchRequestRedirected( QNetworkReply *oldReply,
+                                               QNetworkReply *newReply )
+{
+    KUrl oldUrl = oldReply->request().url();
+    KUrl newUrl = newReply->request().url();
+
+    // Since we were redirected we have to check if the redirect
+    // was for one of our URLs and if the new URL is not handled
+    // already.
+    if( m_urls.contains( oldUrl ) && !m_urls.contains( newUrl ) )
+    {
+        // Get the unit for the old URL.
+        CoverFoundItem *item = m_urls.value( oldUrl );
+
+        // Add the unit with the new URL and remove the old one.
+        m_urls.insert( newUrl, item );
+        m_urls.remove( oldUrl );
+    }
+}
+
 void CoverFoundDialog::handleFetchResult( const KUrl &url, QByteArray data,
                                           NetworkAccessManagerProxy::Error e )
 {
     CoverFoundItem *item = m_urls.take( url );
-    QPixmap pixmap;
-    if( e.code == QNetworkReply::NoError && pixmap.loadFromData( data ) )
+    QImage image;
+    if( item && e.code == QNetworkReply::NoError && image.loadFromData( data ) )
     {
-        item->setBigPix( pixmap );
-        m_sideBar->setPixmap( pixmap );
+        item->setBigPix( image );
+        m_sideBar->setPixmap( QPixmap::fromImage( image ) );
         m_dialog.data()->accept();
     }
     else
@@ -517,8 +540,8 @@ void CoverFoundDialog::display()
     if( !success )
         return;
 
-    const QPixmap &pixmap = item->hasBigPix() ? item->bigPix() : item->thumb();
-    QWeakPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, this );
+    const QImage &image = item->hasBigPix() ? item->bigPix() : item->thumb();
+    QWeakPointer<CoverViewDialog> dlg = new CoverViewDialog( image, this );
     dlg.data()->show();
     dlg.data()->raise();
     dlg.data()->activateWindow();
@@ -705,7 +728,7 @@ CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *paren
     m_tabs->addTab( metaArea, i18n( "Information" ) );
     m_tabs->addTab( m_notes, i18n( "Notes" ) );
     setMaximumWidth( 200 );
-    setPixmap( m_album->image( 190 ) );
+    setPixmap( QPixmap::fromImage( m_album->image( 190 ) ) );
     clear();
 }
 
@@ -849,7 +872,7 @@ void CoverFoundSideBar::clearMetaTable()
     }
 }
 
-CoverFoundItem::CoverFoundItem( const QPixmap &cover,
+CoverFoundItem::CoverFoundItem( const QImage &cover,
                                 const CoverFetch::Metadata &data,
                                 const CoverFetch::ImageSize imageSize,
                                 QListWidget *parent )
@@ -867,7 +890,7 @@ CoverFoundItem::CoverFoundItem( const QPixmap &cover,
         break;
     }
 
-    QPixmap scaledPix = cover.scaled( QSize( 120, 120 ), Qt::KeepAspectRatio );
+    QPixmap scaledPix = QPixmap::fromImage(cover.scaled( QSize( 120, 120 ), Qt::KeepAspectRatio ));
     QPixmap prettyPix = The::svgHandler()->addBordersToPixmap( scaledPix, 5, QString(), true );
     setSizeHint( QSize( 140, 150 ) );
     setIcon( prettyPix );

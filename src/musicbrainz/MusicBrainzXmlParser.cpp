@@ -218,7 +218,17 @@ MusicBrainzXmlParser::parseRelease( const QDomElement &e )
             elementName = dElement.tagName();
 
             if( elementName == "title" )
-                release.insert( Meta::Field::TITLE, dElement.text() );
+            {
+                QString releaseName = dElement.text();
+                QRegExp diskNrMatcher( "^.*\\(disc (\\d+).*\\)$" );
+                if( diskNrMatcher.exactMatch( releaseName ) )
+                {
+                    release.insert( Meta::Field::DISCNUMBER, diskNrMatcher.cap( 1 ) );
+                    //releaseName.truncate( releaseName.indexOf( "(disc " ) );
+                }
+
+                release.insert( Meta::Field::TITLE, releaseName.trimmed() );
+            }
             else if( elementName == "artist" )
             {
                 QString artistID = parseArtist( dElement );
@@ -343,12 +353,13 @@ MusicBrainzXmlParser::grabTrackByLength( const quint64 length )
     }
 
     QVariantMap track = chosenTrack.isEmpty() ? tracks.values().first() : tracks.value( chosenTrack );
-    QString release = track.value( MusicBrainz::RELEASELIST ).toStringList().first();
-    track.insert( MusicBrainz::RELEASEID, release );
-    track.insert( Meta::Field::ALBUM,
-                  releases.value( release ).value( Meta::Field::TITLE ).toString() );
+    QString releaseId = track.value( MusicBrainz::RELEASELIST ).toStringList().first();
+    QVariantMap release = releases.value( releaseId );
+    track.insert( MusicBrainz::RELEASEID, releaseId );
+    track.insert( Meta::Field::ALBUM, release.value( Meta::Field::TITLE ).toString() );
+    track.insert( Meta::Field::DISCNUMBER, release.value( Meta::Field::DISCNUMBER ).toInt() );
     track.insert( Meta::Field::TRACKNUMBER,
-                  track.value( MusicBrainz::TRACKOFFSET ).toMap().value( release ).toInt() );
+                  track.value( MusicBrainz::TRACKOFFSET ).toMap().value( releaseId ).toInt() );
     track.remove( MusicBrainz::RELEASELIST );
     track.remove( MusicBrainz::TRACKOFFSET );
     return track;
@@ -361,12 +372,13 @@ MusicBrainzXmlParser::grabTrackByID( const QString &ID )
         return QVariantMap();
 
     QVariantMap track = tracks.value( ID );
-    QString release = track.value( MusicBrainz::RELEASELIST ).toStringList().first();
-    track.insert( MusicBrainz::RELEASEID, release );
-    track.insert( Meta::Field::ALBUM,
-                  releases.value( release ).value( Meta::Field::TITLE ).toString() );
+    QString releaseId = track.value( MusicBrainz::RELEASELIST ).toStringList().first();
+    QVariantMap release = releases.value( releaseId );
+    track.insert( MusicBrainz::RELEASEID, releaseId );
+    track.insert( Meta::Field::ALBUM, release.value( Meta::Field::TITLE ).toString() );
+    track.insert( Meta::Field::DISCNUMBER, release.value( Meta::Field::DISCNUMBER ).toInt() );
     track.insert( Meta::Field::TRACKNUMBER,
-                  track.value( MusicBrainz::TRACKOFFSET ).toMap().value( release ).toInt() );
+                  track.value( MusicBrainz::TRACKOFFSET ).toMap().value( releaseId ).toInt() );
     track.remove( MusicBrainz::RELEASELIST );
     track.remove( MusicBrainz::TRACKOFFSET );
     return track;

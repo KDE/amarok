@@ -62,7 +62,7 @@ APG::PresetModel::PresetModel()
         : QAbstractListModel()
         , m_activePresetIndex( 0 )
 {
-    loadPresetsFromXml( Amarok::saveLocation() + "playlistgenerator.xml" );
+    loadPresetsFromXml( Amarok::saveLocation() + "playlistgenerator.xml", true );
 }
 
 APG::PresetModel::~PresetModel()
@@ -219,7 +219,7 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
 }
 
 void
-APG::PresetModel::loadPresetsFromXml( const QString& filename )
+APG::PresetModel::loadPresetsFromXml( const QString& filename, bool createDefaults )
 {
     QFile file( filename );
     if ( file.open( QIODevice::ReadOnly ) ) {
@@ -233,7 +233,7 @@ APG::PresetModel::loadPresetsFromXml( const QString& filename )
         }
         file.close();
     } else {
-        if ( !filename.contains( "playlistgenerator.xml" ) ) {
+        if ( !createDefaults ) {
             The::statusBar()->longMessage( i18n("%1 could not be opened for preset import", filename), StatusBar::Sorry );
         } else {
             QDomDocument document;

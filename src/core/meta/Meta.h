@@ -26,7 +26,6 @@
 #include <QList>
 #include <QMetaType>
 #include <QImage>
-#include <QPixmap>
 #include <QDateTime>
 #include <QSet>
 #include <QSharedData>
@@ -327,7 +326,6 @@ namespace Meta
     class AMAROK_CORE_EXPORT Artist : public MetaBase
     {
         Q_PROPERTY( TrackList tracks READ tracks )
-        Q_PROPERTY( AlbumList albums READ albums )
         public:
 
             virtual ~Artist() {}
@@ -336,9 +334,6 @@ namespace Meta
 
             /** returns all tracks by this artist */
             virtual TrackList tracks() = 0;
-
-            /** returns all albums by this artist */
-            virtual AlbumList albums() = 0;
 
             virtual bool operator==( const Meta::Artist &artist ) const;
 
@@ -384,10 +379,11 @@ namespace Meta
             virtual bool hasImage( int size = 0 ) const { Q_UNUSED( size ); return false; }
 
             /** Returns the image for the album, usually the cover image.
-                The default implementation returns the "nocover" image; proper cover image getter is
-                implemented in subclasses.
+                The default implementation returns an null image.
+                If you need a pixmap call The::coverCache()->getCover( album, size )
+                instead. That function also returns a "nocover" pixmap
             */
-            virtual QPixmap image( int size = 0 );
+            virtual QImage image( int size = 0 ) const;
 
             /** returns the image location on disk */
             virtual KUrl imageLocation( int size = 0 ) { Q_UNUSED( size ); return KUrl(); }
@@ -400,8 +396,10 @@ namespace Meta
                 Note: the parameter should not be a QPixmap as a pixmap can only be created reliable in a UI thread.
             */
             virtual void setImage( const QImage &image ) { Q_UNUSED( image ); }
+
             /** removes the album art */
             virtual void removeImage() { }
+
             /** don't automatically fetch artwork */
             virtual void setSuppressImageAutoFetch( const bool suppress ) { Q_UNUSED( suppress ); }
             /** should automatic artwork retrieval be suppressed? */

@@ -119,7 +119,7 @@ UpcomingEventsMapWidgetPrivate::createInfoString( const LastFmEventPtr &event ) 
 {
     QString name = event->name();
     if( event->isCancelled() )
-        name = i18nc( "@label:textbox Title for a cancelled upcoming event", "<s>%1</s> (Cancelled)", name );
+        name = i18nc( "@label:textbox Title for a canceled upcoming event", "<s>%1</s> (Canceled)", name );
 
     QStringList artists = event->artists();
     artists.removeDuplicates();

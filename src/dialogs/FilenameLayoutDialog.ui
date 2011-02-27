@@ -338,12 +338,6 @@ p, li { white-space: pre-wrap; }
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
           <property name="text">
            <string>Edit &amp;case</string>
           </property>
@@ -482,6 +476,48 @@ p, li { white-space: pre-wrap; }
           <property name="text">
            <string>Replace &amp;underscores with spaces</string>
           </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbUseFullPath">
+          <property name="text">
+           <string>Use full file path</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="hlNestingLevel" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QSpinBox" name="sbNestingLevel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>50</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_14">
+             <property name="text">
+              <string>Reduce directories nesting level</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
@@ -773,5 +809,22 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>cbUseFullPath</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>hlNestingLevel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>173</x>
+     <y>461</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>491</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,47 +14,37 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef JSONQT_JSON_RPC_ADAPTOR_PRIVATE_H
-#define JSONQT_JSON_RPC_ADAPTOR_PRIVATE_H
+#ifndef ID3V2TAGHELPER_H
+#define ID3V2TAGHELPER_H
 
-#include "JsonRpc.h"
+#include "TagHelper.h"
 
-#include <QMetaMethod>
-#include <QObject>
-#include <QStringList>
+#include <taglib/id3v2tag.h>
 
-namespace JsonQt
+namespace Meta
 {
-	class JsonRpcAdaptorPrivate : public QObject
-	{
-		Q_OBJECT
-		public:
-			JsonRpcAdaptorPrivate(QObject* adapt, QObject* parent);
-		signals:
-			void sendJson(const QString& json);
-		public slots:
-			void processJson(const QString& json);
-		private slots:
-			void requestReceived(const QVariant& id, const QString& method, const QVariant& parameters);
-		private:
-			struct ReturnData
-			{
-				bool succeeded;
-				int code;
-				QString message;
-				QVariant data;
-			};
+    namespace Tag
+    {
+        class AMAROK_EXPORT ID3v2TagHelper : public TagHelper
+        {
+            public:
+                ID3v2TagHelper( TagLib::Tag *tag, TagLib::ID3v2::Tag *id3v2Tag, Amarok::FileType fileType );
 
-			void populateServiceDescription();
-			QString getClassInfo(const char* name);
-			ReturnData invokeMethod(const QString& method, const QVariant& parameters);
+                virtual Meta::FieldHash tags() const;
+                virtual bool setTags( const Meta::FieldHash &changes );
 
-			QMap<QString, QMetaMethod> m_methods;
-			QMap<QString, QMap<QString, int> > m_parameterIndices;
-			QVariantMap m_serviceDescription;
-			JsonRpc m_jsonRpc;
-			QObject* m_adapted;
-	};
+                virtual TagLib::ByteVector render() const;
+
+#ifndef UTILITIES_BUILD
+                virtual bool hasEmbeddedCover() const;
+                virtual QImage embeddedCover() const;
+                virtual bool setEmbeddedCover( const QImage &cover );
+#endif  //UTILITIES_BUILD
+
+            private:
+                TagLib::ID3v2::Tag *m_tag;
+        };
+    }
 }
 
-#endif
+#endif // ID3V2TAGHELPER_H

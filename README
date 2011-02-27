@@ -88,6 +88,10 @@ Optional
       http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2
       http://github.com/mxcl/liblastfm/tree/master
 
+    * QJson 0.7 (or newer)
+      (Qt JSON Parser for the Playdar Collection)
+      http://qjson.sourceforge.net/
+
     * MySQL 5.0 (or newer) Server (external database support)
 
     * MusicBrainz-based audio fingerprint tag lookup requires:

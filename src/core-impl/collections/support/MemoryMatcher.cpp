@@ -102,8 +102,9 @@ TrackList ArtistMatcher::match( Collections::MemoryCollection *memColl )
     {
         case Collections::QueryMaker::AlbumOrTrackArtists:
         case Collections::QueryMaker::AlbumArtists:
-            foreach( AlbumPtr album, artist->albums() )
-                matchingTracks.append( album->tracks() );
+            foreach( AlbumPtr album, memColl->albumMap().values() )
+                if( album->albumArtist() == artist )
+                    matchingTracks.append( album->tracks() );
 
             if( m_queryMode != Collections::QueryMaker::AlbumOrTrackArtists )
                 break;

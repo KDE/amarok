@@ -30,8 +30,6 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
-#include <QPixmap>
-#include <QPixmap>
 
 namespace Capabilities {
     class AlbumCapabilityDelegate;
@@ -332,8 +330,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlArtist : public Meta::Artist
 
         virtual Meta::TrackList tracks();
 
-        virtual Meta::AlbumList albums();
-
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
@@ -347,8 +343,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlArtist : public Meta::Artist
 
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
-        bool m_albumsLoaded;
-        Meta::AlbumList m_albums;
         QMutex m_mutex;
 
         friend class ::SqlRegistry; // needs to call notifyObservers
@@ -399,13 +393,10 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
          *  Returns a default image if no specific album image could be found.
          *  In such a case it will start the cover fetcher.
          *
-         *  Note: as this function can create a pixmap it is not recommended to
-         *  call this function from outside the UI thread.
-         *
          *  @param size is the maximum width or height of the resulting image.
          *  when size is <= 1, return the full size image
          */
-        virtual QPixmap image( int size = 0 );
+        virtual QImage image( int size = 0 ) const;
 
         virtual KUrl imageLocation( int size = 0 );
         virtual void setImage( const QImage &image );
@@ -432,9 +423,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
         Collections::SqlCollection *sqlCollection() const { return m_collection; }
 
     private:
-        /** Cleans all images from this album cached in the QPixmapCache */
-        void clearPixmapCache();
-
         QByteArray md5sum( const QString& artist, const QString& album, const QString& file ) const;
 
         /** Returns a unique key for the album cover. */
@@ -484,8 +472,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
         mutable QString m_imagePath; // path read from the database
         mutable bool m_hasImage; // true if we have an original image
         mutable bool m_hasImageChecked; // true if hasImage was checked
-        QSet<QString> m_pixmapCacheIds; // all our image keys
-        bool m_pixmapCacheDirty; // true if we should remove our images from the cache
 
         mutable int m_unsetImageId; // this is the id of the unset magic value in the image sql database
         static const QString AMAROK_UNSET_MAGIC;

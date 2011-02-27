@@ -78,11 +78,7 @@ namespace Mpris1
 
         EngineController *engine = The::engineController();
 
-        connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-                 this, SLOT( slotStateChanged() ) );
-        connect( engine, SIGNAL( paused() ),
-                 this, SLOT( slotStateChanged() ) );
-        connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+        connect( engine, SIGNAL( playbackStateChanged() ),
                  this, SLOT( slotStateChanged() ) );
         connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
                  this, SLOT( slotTrackChanged( Meta::TrackPtr ) ) );

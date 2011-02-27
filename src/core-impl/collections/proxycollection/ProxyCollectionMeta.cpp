@@ -822,8 +822,8 @@ ProxyAlbum::hasImage( int size ) const
     return false;
 }
 
-QPixmap
-ProxyAlbum::image( int size )
+QImage
+ProxyAlbum::image( int size ) const
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -1003,27 +1003,6 @@ ProxyArtist::tracks()
     foreach( ProxyTrack *track, tracks )
     {
         result.append( Meta::TrackPtr( track ) );
-    }
-    return result;
-}
-
-Meta::AlbumList
-ProxyArtist::albums()
-{
-    QSet<ProxyAlbum*> albums;
-    foreach( Meta::ArtistPtr artist, m_artists )
-    {
-        Meta::AlbumList tmp = artist->albums();
-        foreach( const Meta::AlbumPtr &album, tmp )
-        {
-            albums.insert( m_collection->getAlbum( album ) );
-        }
-    }
-
-    Meta::AlbumList result;
-    foreach( ProxyAlbum *album, albums )
-    {
-        result.append( Meta::AlbumPtr( album ) );
     }
     return result;
 }

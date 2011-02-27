@@ -30,6 +30,7 @@
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
+#include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetcher.h"
 #include "core/collections/support/SqlStorage.h"
 
@@ -42,7 +43,6 @@
 #include <QReadLocker>
 #include <QWriteLocker>
 #include <QMutexLocker>
-#include <QPixmapCache>
 #include <QCryptographicHash>
 
 #include <KCodecs>
@@ -1241,7 +1241,7 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
 
         QString countQuery = "SELECT COUNT(*) FROM urls_labels WHERE url = %1 AND label = %2;";
         QStringList countRs = m_collection->sqlStorage()->query( countQuery.arg( QString::number( m_urlId ), QString::number( sqlLabel->id() ) ) );
-        if( countRs.first().toInt() == 0 )
+        if( !countRs.isEmpty() && countRs.first().toInt() == 0 )
         {
             QString insert = "INSERT INTO urls_labels(url,label) VALUES (%1,%2);";
             m_collection->sqlStorage()->insert( insert.arg( QString::number( m_urlId ), QString::number( sqlLabel->id() ) ), "urls_labels" );
@@ -1377,7 +1377,6 @@ SqlArtist::SqlArtist( Collections::SqlCollection* collection, int id, const QStr
     ,m_id( id )
     ,m_name( name )
     ,m_tracksLoaded( false )
-    ,m_albumsLoaded( false )
 {
     Q_ASSERT( m_collection );
     Q_ASSERT( m_id > 0 );
@@ -1413,24 +1412,6 @@ SqlArtist::tracks()
     return m_tracks;
 }
 
-AlbumList
-SqlArtist::albums()
-{
-    QMutexLocker locker( &m_mutex );
-    if( m_albumsLoaded )
-        return m_albums;
-
-    Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
-    qm->setQueryType( Collections::QueryMaker::Album );
-    qm->addMatch( Meta::ArtistPtr( this ) );
-    qm->setBlocking( true );
-    qm->run();
-    m_albums = qm->albums( m_collection->collectionId() );
-    delete qm;
-    m_albumsLoaded = true;
-    return m_albums;
-}
-
 bool
 SqlArtist::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
@@ -1458,7 +1439,6 @@ SqlAlbum::SqlAlbum( Collections::SqlCollection* collection, int id, const QStrin
     , m_imageId( -1 )
     , m_hasImage( false )
     , m_hasImageChecked( false )
-    , m_pixmapCacheDirty( false )
     , m_unsetImageId( -1 )
     , m_tracksLoaded( false )
     , m_suppressAutoFetch( false )
@@ -1470,23 +1450,7 @@ SqlAlbum::SqlAlbum( Collections::SqlCollection* collection, int id, const QStrin
 
 Meta::SqlAlbum::~SqlAlbum()
 {
-    // now it would be nice to clean up the unused pixmaps from the cache.
-    // however the destructor can be called from another thread and in such
-    // a case handling pixmaps is very dangerous.
-    // clearPixmapCache();
-}
-
-void
-SqlAlbum::clearPixmapCache()
-{
-    // debug() << "Cleaning pixmap cache for"<<m_name;
-    foreach( const QString &id, m_pixmapCacheIds )
-    {
-        QPixmapCache::remove( id );
-        // debug() << "SqlAlbum::image removing for"<<m_name << id;
-    }
-    m_pixmapCacheIds.clear();
-    m_pixmapCacheDirty = false;
+    CoverCache::invalidateAlbum( this );
 }
 
 void
@@ -1496,7 +1460,6 @@ SqlAlbum::invalidateCache()
     m_tracksLoaded = false;
     m_hasImage = false;
     m_hasImageChecked = false;
-    clearPixmapCache();
     m_tracks.clear();
 }
 
@@ -1561,25 +1524,13 @@ SqlAlbum::hasImage( int size ) const
     return m_hasImage;
 }
 
-QPixmap
-SqlAlbum::image( int size )
+QImage
+SqlAlbum::image( int size ) const
 {
     QMutexLocker locker( &m_mutex );
 
     if( !hasImage() )
         return Meta::Album::image( size );
-
-    // clean the pixmap cache here in the hope that ::image is only called from the UI thread
-    if( m_pixmapCacheDirty )
-        clearPixmapCache();
-
-    QPixmap pixmap;
-    // look in the memory pixmap cache
-    // large scale images are not stored in memory
-    QString cachedPixmapKey = QString::number(size) + "@cover:" + m_imagePath;
-
-    if( size > 1 && QPixmapCache::find( cachedPixmapKey, &pixmap ) )
-        return pixmap;
 
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
@@ -1593,16 +1544,10 @@ SqlAlbum::image( int size )
     // a image exists. just load it.
     if( !cachedImagePath.isEmpty() && QFile( cachedImagePath ).exists() )
     {
-        pixmap = QPixmap( cachedImagePath );
-        if( pixmap.isNull() )
+        QImage image( cachedImagePath );
+        if( image.isNull() )
             return Meta::Album::image( size );
-        if( size > 1)
-        {
-            if( QPixmapCache::insert( cachedPixmapKey, pixmap ) )
-                m_pixmapCacheIds.insert( cachedPixmapKey );
-        // debug() << "SqlAlbum::image adding1 for"<<m_name << cachedPixmapKey<<"from"<<cachedImagePath;
-        }
-        return pixmap;
+        return image;
     }
 
     // no cached scaled image exists. Have to create it
@@ -1630,14 +1575,7 @@ SqlAlbum::image( int size )
         image.save( cachedImagePath, "PNG" );
     }
 
-    pixmap = QPixmap::fromImage( image );
-    if( size > 1)
-    {
-        if( QPixmapCache::insert( cachedPixmapKey, pixmap ) )
-            m_pixmapCacheIds.insert( cachedPixmapKey );
-        // debug() << "SqlAlbum::image adding2 for"<<m_name << cachedPixmapKey<<"from"<<cachedImagePath;
-    }
-    return pixmap;
+    return image;
 }
 
 KUrl
@@ -1660,7 +1598,7 @@ SqlAlbum::imageLocation( int size )
     {
         // If we don't have the location, it's possible that we haven't tried to find the image yet
         // So, let's look for it and just ignore the result
-        QPixmap i = image( size );
+        QImage i = image( size );
         Q_UNUSED( i )
     }
 
@@ -1766,7 +1704,7 @@ SqlAlbum::removeImage()
                 debug() << "deleting cached image: " << image << " : " + ( r ? QString("ok") : QString("fail") );
             }
 
-            m_pixmapCacheDirty = true;
+            CoverCache::invalidateAlbum( this );
         }
     }
 
@@ -1959,7 +1897,7 @@ SqlAlbum::setImage( const QString &path )
         m_imagePath = imagePath;
         m_hasImage = true;
         m_hasImageChecked = true;
-        m_pixmapCacheDirty = true;
+        CoverCache::invalidateAlbum( this );
     }
 }
 

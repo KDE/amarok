@@ -148,9 +148,6 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          */
         virtual QueryMaker* orderByRandom() = 0;
 
-        virtual QueryMaker* includeCollection( const QString &collectionId ) = 0;
-        virtual QueryMaker* excludeCollection( const QString &collectionId ) = 0;
-
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track ) = 0;
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist ) = 0;
         virtual QueryMaker* addMatch( const Meta::AlbumPtr &album ) = 0;

@@ -253,20 +253,6 @@ DEBUG_BLOCK
     return this;
 }
 
-QueryMaker* UpnpQueryMaker::includeCollection( const QString &collectionId )
-{
-DEBUG_BLOCK
-    debug() << this << "Including collection" << collectionId;
-    return this;
-}
-
-QueryMaker* UpnpQueryMaker::excludeCollection( const QString &collectionId )
-{
-DEBUG_BLOCK
-    debug() << this << "Excluding collection" << collectionId;
-    return this;
-}
-
 QueryMaker* UpnpQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
 DEBUG_BLOCK

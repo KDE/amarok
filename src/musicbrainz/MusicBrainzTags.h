@@ -115,6 +115,10 @@ class MusicBrainzTagsView : public QTreeView
 
         ~MusicBrainzTagsView();
 
+    public slots:
+        void collapseChosen();
+        void expandUnChosen();
+
     protected:
         virtual void contextMenuEvent( QContextMenuEvent *event );
 

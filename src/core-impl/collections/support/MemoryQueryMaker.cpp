@@ -308,22 +308,6 @@ MemoryQueryMaker::orderByRandom()
 }
 
 QueryMaker*
-MemoryQueryMaker::includeCollection( const QString &collectionId )
-{
-    Q_UNUSED( collectionId );
-    //TODO stub
-    return this;
-}
-
-QueryMaker*
-MemoryQueryMaker::excludeCollection( const QString &collectionId )
-{
-    Q_UNUSED( collectionId );
-    //TODO stub
-    return this;
-}
-
-QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
     MemoryMatcher *trackMatcher = new TrackMatcher( track );

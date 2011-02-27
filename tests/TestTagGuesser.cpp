@@ -20,6 +20,7 @@
 #include "TestTagGuesser.h"
 
 #include "dialogs/TagGuesser.h"
+#include "MetaValues.h"
 
 #include <QMap>
 
@@ -45,13 +46,13 @@ void TestTagGuesser::cleanup()
 void TestTagGuesser::testStandard()
 {
   mTagGuesser->setFilename( "01 - Artist - Title.mp3" );
-  mTagGuesser->setSchema( "%track - %artist - %title" );
+  mTagGuesser->setSchema( "%track% - %artist% - %title%.%ignore%" );
   QVERIFY( mTagGuesser->guess() );
   
-  QMap<QString,QString> tags = mTagGuesser->tags();
-  QCOMPARE( tags["artist"], QString( "Artist" ) );
-  QCOMPARE( tags["title"], QString( "Title" ) );
-  QCOMPARE( tags["track"], QString( "01" ) );
+  QMap<qint64,QString> tags = mTagGuesser->tags();
+  QCOMPARE( tags[Meta::valArtist], QString( "Artist" ) );
+  QCOMPARE( tags[Meta::valTitle], QString( "Title" ) );
+  QCOMPARE( tags[Meta::valTrackNr], QString( "01" ) );
 }
 
 void TestTagGuesser::testDotInFilename()
@@ -59,11 +60,11 @@ void TestTagGuesser::testDotInFilename()
   // based off bug 225743
   // https://bugs.kde.org/show_bug.cgi?id=225743
   mTagGuesser->setFilename( "03.Moloko - Sing It back.mp3" );
-  mTagGuesser->setSchema( "%track.%artist - %title" );
+  mTagGuesser->setSchema( "%track%.%artist% - %title%.%ignore%" );
   QVERIFY( mTagGuesser->guess() );
   
-  QMap<QString,QString> tags = mTagGuesser->tags();
-  QCOMPARE( tags["artist"], QString( "Moloko" ) );
-  QCOMPARE( tags["title"], QString( "Sing It back" ) );
-  QCOMPARE( tags["track"], QString( "03" ) );
+  QMap<qint64,QString> tags = mTagGuesser->tags();
+  QCOMPARE( tags[Meta::valArtist], QString( "Moloko" ) );
+  QCOMPARE( tags[Meta::valTitle], QString( "Sing It back" ) );
+  QCOMPARE( tags[Meta::valTrackNr], QString( "03" ) );
 }

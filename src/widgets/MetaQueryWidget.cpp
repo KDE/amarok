@@ -230,8 +230,8 @@ MetaQueryWidget::makeFieldSelection()
         addIconItem( m_fieldSelection, Meta::valUrl );
         // note: what about directory?
         addIconItem( m_fieldSelection, Meta::valTitle );
-        // note: album artist is not handled here. could be added
         addIconItem( m_fieldSelection, Meta::valArtist );
+        addIconItem( m_fieldSelection, Meta::valAlbumArtist );
         addIconItem( m_fieldSelection, Meta::valAlbum );
         addIconItem( m_fieldSelection, Meta::valGenre );
         addIconItem( m_fieldSelection, Meta::valComposer );
@@ -266,15 +266,8 @@ MetaQueryWidget::fieldChanged( int i )
     if( m_settingFilter )
         return;
 
-    qint64 field = Contains;
-    if( m_fieldSelection->count() == 0 )
-    {
-        if( isNumeric( field ) )
-            m_filter.condition = Equals;
-        else if( !isNumeric( field ) )
-            m_filter.condition = Contains;
-    }
-    else if( i<0 || i>=m_fieldSelection->count() )
+    qint64 field;
+    if( i<0 || i>=m_fieldSelection->count() )
         field = m_fieldSelection->itemData( 0 ).toInt();
     else
         field = m_fieldSelection->itemData( i ).toInt();
@@ -295,6 +288,9 @@ MetaQueryWidget::fieldChanged( int i )
         m_filter.numValue = 0;
         m_filter.numValue2 = 0;
     }
+
+    if( field && !m_apgMode )
+        m_filter.condition = Equals;
 
     m_filter.field = field;
 
@@ -534,6 +530,7 @@ MetaQueryWidget::makeValueSelection()
         // We,re not going to populate this. There tends to be too many titles.
         makeGenericComboSelection( true, 0 );
     else if( field == Meta::valArtist ||
+        field == Meta::valAlbumArtist ||
         field == Meta::valAlbum ||
         field == Meta::valGenre ||
         field == Meta::valComposer )
@@ -1059,6 +1056,26 @@ QString MetaQueryWidget::Filter::toString( bool invert )
         }
     }
     return result;
+}
+
+bool
+MetaQueryWidget::isFieldSelectorHidden() const
+{
+    return m_fieldSelection->isHidden();
+}
+
+void
+MetaQueryWidget::setFieldSelectorHidden( const bool hidden )
+{
+    m_fieldSelection->setVisible( !hidden );
+}
+
+void
+MetaQueryWidget::setField( const qint64 field )
+{
+    m_filter = Filter();
+    int index = m_fieldSelection->findData( field );
+    m_fieldSelection->setCurrentIndex( index == -1 ? 0 : index );
 }
 
 #include "MetaQueryWidget.moc"

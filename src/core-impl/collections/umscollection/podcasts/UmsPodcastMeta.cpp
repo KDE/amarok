@@ -194,6 +194,10 @@ UmsPodcastChannel::UmsPodcastChannel( PodcastChannelPtr channel,
         : Podcasts::PodcastChannel( channel )
         , m_provider( provider )
 {
+    //Since we need to copy the tracks, make sure it's loaded.
+    //TODO: we might also need to subscribe to get trackAdded() when channel does async loading.
+    channel->triggerTrackLoad();
+
     foreach( PodcastEpisodePtr episode, channel->episodes() )
         addEpisode( episode );
 }
@@ -215,6 +219,8 @@ UmsPodcastChannel::addEpisode( PodcastEpisodePtr episode )
         return PodcastEpisodePtr();
 
     return m_provider->addEpisode( episode );
+    //track adding is asynchronous, provider will call addUmsEpisode once done.
+    //TODO: change this so track can show progress once playlist-inline-progress is implemented
 }
 
 void
@@ -231,6 +237,7 @@ UmsPodcastChannel::addUmsEpisode( UmsPodcastEpisodePtr umsEpisode )
     }
 
     m_umsEpisodes.insert( i, umsEpisode );
+    notifyObserversTrackAdded( Meta::TrackPtr::dynamicCast( umsEpisode ), i );
 }
 
 void

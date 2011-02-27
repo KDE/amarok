@@ -19,8 +19,8 @@
 #include "core/meta/Meta.h"
 #include "../PlaydarMeta.h"
 #include "core/support/Debug.h"
-#include "external/JsonQt/lib/JsonToVariant.h"
-#include "external/JsonQt/lib/ParseException.h"
+
+#include <qjson/parser.h>
 
 #include <KUrl>
 #include <KIO/Job>
@@ -134,20 +134,14 @@ namespace Playdar
         
         debug() << "Processing received JSON data...";
         KIO::StoredTransferJob* storedResultsJob = static_cast<KIO::StoredTransferJob*>( resultsJob );
-        QString resultsJsonData = storedResultsJob->data();
-        debug() << "Data received: " << resultsJsonData;
-        
+                
+        QJson::Parser parser;
+        bool ok;
         QVariant parsedResultsVariant;
-        try
+        parsedResultsVariant = parser.parse( storedResultsJob->data(),&ok );
+        if ( !ok )
         {
-            parsedResultsVariant = JsonQt::JsonToVariant::parse( resultsJsonData );
-        }
-        catch( JsonQt::ParseException exception )
-        {
-            debug() << "JSonQt Exception: "
-            << "got: " << exception.got()
-            << ", expected: " << exception.expected()
-            << ", remaining: " << exception.remaining();
+            debug() << "Error parsing JSON Data";
         }
         
         QVariantMap parsedResults = parsedResultsVariant.toMap();

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,43 +14,36 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef JSONQT_VARIANT_TO_JSON_H
-#define JSONQT_VARIANT_TO_JSON_H
 
-#include "JsonQtExport.h"
+#ifndef ASFTAGHELPER_H
+#define ASFTAGHELPER_H
 
-#include <QString>
-#include <QStringList>
-#include <QVariant>
+#include "TagHelper.h"
 
-namespace JsonQt
+#include <taglib/asftag.h>
+
+namespace Meta
 {
-	/** Class for converting QVariants into JSON structures.
-	 *
-	 * The following variant types are supported:
-	 * - QVariant::Bool
-	 * - QVariant::String
-	 * - QVariant::Double
-	 * - QVariant::Int
-	 * - QVariant::LongLong
-	 * - QVariant::UInt
-	 * - QVariant::ULongLong
-	 * - QVariant::Invalid
-	 * - QVariant::List             // JSON array
-	 * - QVariant::Map              // JSON object
-	 *
-	 * @author Fred Emmott <mail@fredemmott.co.uk>
-	 */
-	class JSONQT_EXPORT VariantToJson
-	{
-		public:
-			/// Parse a QVariant into JSON.
-			static QString parse(const QVariantMap& data);
-		private:
-			static QString parseElement(const QVariant& element);
-			static QString parseList(const QVariantList& list);
-			static QString parseStringList(const QStringList& list);
-	};
+    namespace Tag
+    {
+        class AMAROK_EXPORT ASFTagHelper : public TagHelper
+        {
+            public:
+                ASFTagHelper( TagLib::Tag *tag, TagLib::ASF::Tag *asfTag, Amarok::FileType fileType );
+
+                virtual Meta::FieldHash tags() const;
+                virtual bool setTags( const Meta::FieldHash &changes );
+
+#ifndef UTILITIES_BUILD
+                virtual bool hasEmbeddedCover() const;
+                virtual QImage embeddedCover() const;
+                virtual bool setEmbeddedCover(const QImage &cover);
+#endif  //UTILITIES_BUILD
+
+            private:
+                TagLib::ASF::Tag *m_tag;
+        };
+    }
 }
 
-#endif 
+#endif // ASFTAGHELPER_H

@@ -589,7 +589,7 @@ TagDialog::loadCover()
 
     const int s = 100; // Image preview size
 
-    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image( s ) );
+    ui->pixmap_cover->setPixmap( QPixmap::fromImage( m_currentTrack->album()->image( s ) ) );
     QString artist = m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString();
     ui->pixmap_cover->setInformation( artist, m_currentTrack->album()->name() );
 
@@ -650,48 +650,53 @@ TagDialog::guessFromFilename() //SLOT
 
         if( guesser.guess() )
         {
-            QMap<QString,QString> Tags = guesser.tags();
-            
-            if( Tags.contains("title") )
-                ui->kLineEdit_title->setText( Tags["title"] );
+            QMap<qint64,QString> Tags = guesser.tags();
 
-            if( Tags.contains("artist") )
+            if( Tags.contains( Meta::valTitle ) )
+                ui->kLineEdit_title->setText( Tags[Meta::valTitle] );
+
+            if( Tags.contains( Meta::valArtist ) )
             {
                 cur = ui->kComboBox_artist->currentIndex();
-                ui->kComboBox_artist->setItemText( cur, Tags["artist"] );
+                ui->kComboBox_artist->setItemText( cur, Tags[Meta::valArtist] );
             }
 
-            if( Tags.contains("album") )
+            if( Tags.contains( Meta::valAlbum ) )
             {
                 cur = ui->kComboBox_album->currentIndex();
-                ui->kComboBox_album->setItemText( cur, Tags["album"] );
+                ui->kComboBox_album->setItemText( cur, Tags[Meta::valAlbum] );
             }
 
-            if( Tags.contains( "albumartist" ) )
+            if( Tags.contains( Meta::valAlbumArtist ) )
             {
                 cur = ui->kComboBox_albumArtist->currentIndex();
-                ui->kComboBox_albumArtist->setItemText( cur, Tags["albumartist"] );
+                ui->kComboBox_albumArtist->setItemText( cur, Tags[Meta::valAlbumArtist] );
             }
 
-            if( Tags.contains("track") )
-                ui->qSpinBox_track->setValue( Tags["track"].toInt() );
-            
-            if( Tags.contains("comment") )
-                ui->qPlainTextEdit_comment->setPlainText( Tags["comment"] );
-            
-            if( Tags.contains("year") )
-                ui->qSpinBox_year->setValue( Tags["year"].toInt() );
+            if( Tags.contains( Meta::valTrackNr ) )
+                ui->qSpinBox_track->setValue( Tags[Meta::valTrackNr].toInt() );
 
-            if( Tags.contains("composer") )
+            if( Tags.contains( Meta::valComment ) )
+                ui->qPlainTextEdit_comment->setPlainText( Tags[Meta::valComment] );
+
+            if( Tags.contains( Meta::valYear ) )
+                ui->qSpinBox_year->setValue( Tags[Meta::valYear].toInt() );
+
+            if( Tags.contains( Meta::valComposer ) )
             {
                 cur = ui->kComboBox_composer->currentIndex();
-                ui->kComboBox_composer->setItemText( cur, Tags["composer"] );
+                ui->kComboBox_composer->setItemText( cur, Tags[Meta::valComposer] );
             }
 
-            if( Tags.contains("genre") )
+            if( Tags.contains( Meta::valGenre ) )
             {
                 cur = ui->kComboBox_genre->currentIndex();
-                ui->kComboBox_genre->setItemText( cur, Tags["genre"] );
+                ui->kComboBox_genre->setItemText( cur, Tags[Meta::valGenre] );
+            }
+
+            if( Tags.contains( Meta::valDiscNr ) )
+            {
+                ui->qSpinBox_discNumber->setValue( Tags[Meta::valDiscNr].toInt() );
             }
         }
         else
@@ -925,6 +930,10 @@ const QStringList TagDialog::statisticsData()
         data += i18n( "Tracks by this Artist" );
         data += QString::number( ret.count() );
 
+        /*
+        // Code disabled because Meta::Artist::albums was only used at
+        // one place
+
         // albums by this artist
         Meta::AlbumList albums = trackArtist->albums();
         ret.clear();
@@ -932,7 +941,8 @@ const QStringList TagDialog::statisticsData()
             ret.append( album->prettyName() );
         data += i18n( "Albums by this Artist" );
         data += QString::number( ret.count() );
-        
+        */
+
 /*
         // FIXME Code disabled because of crash with media devices.
         // @see: https://bugs.kde.org/show_bug.cgi?id=217143
@@ -1468,24 +1478,30 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
         QVariantMap map( m_currentData );
 
         //do not nedlessly update everything, as theat wrecks havoc with grouping in the playlist....
+        // get the shared pointers now to ensure that they don't get freed
+        Meta::AlbumPtr album = track->album();
+        Meta::ArtistPtr artist = track->artist();
+        Meta::GenrePtr genre = track->genre();
+        Meta::ComposerPtr composer = track->composer();
+        Meta::YearPtr year = track->year();
 
         if ( ui->kLineEdit_title->text() != track->name() )
             map.insert( Meta::Field::TITLE, ui->kLineEdit_title->text() );
-        if ( !track->composer() || ui->kComboBox_composer->currentText() != track->composer()->name() )
+        if ( !composer || ui->kComboBox_composer->currentText() != composer->name() )
             map.insert( Meta::Field::COMPOSER, ui->kComboBox_composer->currentText() );
-        if ( !track->artist() || ui->kComboBox_artist->currentText() != track->artist()->name() )
+        if ( !artist || ui->kComboBox_artist->currentText() != artist->name() )
             map.insert( Meta::Field::ARTIST, ui->kComboBox_artist->currentText() );
-        if ( !track->album() || ui->kComboBox_album->currentText() != track->album()->name() )
+        if ( !album || ui->kComboBox_album->currentText() != album->name() )
             map.insert( Meta::Field::ALBUM, ui->kComboBox_album->currentText() );
-        if ( !track->album()->hasAlbumArtist() || ui->kComboBox_albumArtist->currentText() != track->album()->albumArtist()->name() )
+        if ( !album->hasAlbumArtist() || ui->kComboBox_albumArtist->currentText() != album->albumArtist()->name() )
             map.insert( Meta::Field::ALBUMARTIST, ui->kComboBox_albumArtist->currentText() );
         if ( ui->qPlainTextEdit_comment->toPlainText() != track->comment() )
             map.insert( Meta::Field::COMMENT, ui->qPlainTextEdit_comment->toPlainText() );
-        if ( !track->genre() || ui->kComboBox_genre->currentText() != track->genre()->name() )
+        if ( !genre || ui->kComboBox_genre->currentText() != genre->name() )
             map.insert( Meta::Field::GENRE, ui->kComboBox_genre->currentText() );
         if ( ui->qSpinBox_track->value() != track->trackNumber() )
             map.insert( Meta::Field::TRACKNUMBER, ui->qSpinBox_track->value() );
-        if ( !track->year() || QString::number( ui->qSpinBox_year->value() ) != track->year()->name() )
+        if ( !year || QString::number( ui->qSpinBox_year->value() ) != year->name() )
             map.insert( Meta::Field::YEAR, ui->qSpinBox_year->value() );
         if ( ui->qSpinBox_discNumber->value() != track->discNumber() )
             map.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );

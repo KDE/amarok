@@ -44,6 +44,9 @@ void
 SqlScanResultProcessor::commit()
 {
     DEBUG_BLOCK
+
+    m_collection->sqlStorage()->clearLastErrors();
+
     // -- fill the registry cache with all the tracks
     // count the non skipped directories to find out if we should buffer all tracks before committing.
     int nonSkippedDirectories = 0;
@@ -74,6 +77,8 @@ SqlScanResultProcessor::commit()
 
     // -- call the base implementation
     ScanResultProcessor::commit();
+
+    m_lastErrors.append( m_collection->sqlStorage()->getLastErrors() );
 }
 
 void
@@ -151,6 +156,8 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     if( uid.isEmpty() )
     {
         warning() << "got track with no unique id from the scanner, not adding";
+        m_lastErrors.append( QString("Not adding track %1 because it has no unique id").
+                             arg(track->path()) );
         return;
     }
     uid = m_collection->uidUrlProtocol() + "://" + uid;
@@ -161,6 +168,8 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     if( m_foundTracks.contains( uid ) )
     {
         warning() << "track"<<track->path()<<"with uid"<<uid<<"already committed. There seems to be a duplicate uid.";
+        m_lastErrors.append( QString("Track %1 with uid %2 already committed. There seems to be a duplicate uid.").
+                                     arg(track->path(), uid) );
         return;
     }
     m_foundTracks.insert( uid );
@@ -388,6 +397,12 @@ SqlScanResultProcessor::cacheUrlsInit()
         int directoryId = res.at(i++).toInt();
         QString uid = res.at(i++);
 
+        if( !directoryId && !rpath.isEmpty() )
+        {
+            warning() << "Found urls entry without directory. A phantom track. Removing"<<rpath;
+            removeTrack( id, uid );
+        }
+
         QString path = m_collection->mountPointManager()->getAbsolutePath( deviceId, rpath );
 
         UrlEntry entry;
@@ -401,10 +416,17 @@ SqlScanResultProcessor::cacheUrlsInit()
 }
 
 void
-SqlScanResultProcessor::cacheUrlsInsert( const UrlEntry &entry )
+SqlScanResultProcessor::cacheUrlsInsert( UrlEntry entry )
 {
     if( !m_urlsCache.contains( entry.id ) )
         cacheUrlsRemove( entry.id );
+
+    if( !entry.path.isEmpty() && m_urlsCachePath.contains( entry.path ) ) {
+        // no idea how this can happen, but we clean it up
+        debug() << "Duplicate path in database:"<<entry.path;
+        removeTrack( entry.id, entry.uid ); // this will not delete the statistics
+        entry.path.clear();
+    }
 
     m_urlsCache.insert( entry.id, entry );
     m_urlsCacheUid.insert( entry.uid, entry.id );

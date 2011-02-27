@@ -222,7 +222,6 @@ MainWindow::init()
     m_mainToolbar.data()->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_mainToolbar.data()->setMovable ( true );
     addToolBar( Qt::TopToolBarArea, m_mainToolbar.data() );
-    m_mainToolbar.data()->hide();
 
     //create slim toolbar
     m_slimToolbar = new SlimToolbar( 0 );

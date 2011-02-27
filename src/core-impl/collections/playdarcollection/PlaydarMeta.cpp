@@ -20,6 +20,7 @@
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
 #include "covermanager/CoverFetcher.h"
+#include "covermanager/CoverCache.h"
 #include "PlaydarCollection.h"
 
 #include <QDateTime>
@@ -465,7 +466,7 @@ Meta::PlaydarAlbum::PlaydarAlbum( const QString &name )
 
 Meta::PlaydarAlbum::~PlaydarAlbum()
 {
-    //Do nothing...
+    CoverCache::invalidateAlbum( this );
 }
 
 bool
@@ -512,8 +513,8 @@ Meta::PlaydarAlbum::hasImage( int size ) const
         return false;
 }
 
-QPixmap
-Meta::PlaydarAlbum::image( int size )
+QImage
+Meta::PlaydarAlbum::image( int size ) const
 {
     if ( m_cover.isNull() )
     {
@@ -521,19 +522,13 @@ Meta::PlaydarAlbum::image( int size )
             !m_triedToFetchCover && AmarokConfig::autoGetCoverArt() )
         {
             m_triedToFetchCover = true;
-            CoverFetcher::instance()->queueAlbum( AlbumPtr(this) );
+            CoverFetcher::instance()->queueAlbum( Meta::AlbumPtr(const_cast<PlaydarAlbum*>(this)) );
         }
-        
+
         return Meta::Album::image( size );
     }
-    
-    if ( m_coverSizeMap.contains( size ) )
-        return m_coverSizeMap.value( size );
-    
-    QPixmap scaled = QPixmap::fromImage(m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ));
-    
-    m_coverSizeMap.insert( size, scaled );
-    return scaled;
+
+    return size <= 1 ? m_cover : m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 }
 
 KUrl
@@ -555,13 +550,14 @@ void
 Meta::PlaydarAlbum::setImage( const QImage &image )
 {
     m_cover = image;
+    CoverCache::invalidateAlbum( this );
 }
 
 void
 Meta::PlaydarAlbum::removeImage()
 {
-    m_coverSizeMap.clear();
     m_cover = QImage();
+    CoverCache::invalidateAlbum( this );
 }
 
 void

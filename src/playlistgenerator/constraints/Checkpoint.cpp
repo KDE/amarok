@@ -86,7 +86,7 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
     a = xmlelem.attributeNode( "trackurl" );
     if ( !a.isNull() ) {
         Meta::TrackPtr trk = CollectionManager::instance()->trackForUrl( KUrl( a.value() ) );
-        if ( trk != Meta::TrackPtr() ) {
+        if ( trk ) {
             if ( m_checkpointType == CheckpointAlbum ) {
                 m_checkpointObject = Meta::DataPtr::dynamicCast( trk->album() );
             } else if ( m_checkpointType == CheckpointArtist ) {
@@ -94,8 +94,8 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
             } else {
                 m_checkpointObject = Meta::DataPtr::dynamicCast( trk );
             }
+            debug() << "loaded" << m_checkpointObject->prettyName() << "from XML";
         }
-        debug() << "loaded" << m_checkpointObject->prettyName() << "from XML";
     }
 
     a = xmlelem.attributeNode( "strictness" );
@@ -136,6 +136,9 @@ ConstraintTypes::Checkpoint::editWidget() const
 void
 ConstraintTypes::Checkpoint::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
+    if( !m_checkpointObject )
+        return;
+
     QDomElement c = doc.createElement( "constraint" );
     QDomText t = doc.createTextNode( getName() );
     c.appendChild( t );

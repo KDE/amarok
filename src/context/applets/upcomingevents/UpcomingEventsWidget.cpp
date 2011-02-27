@@ -119,7 +119,7 @@ UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
 
     QString name = event->name();
     if( event->isCancelled() )
-        name = i18nc( "@label:textbox Title for a cancelled upcoming event", "<s>%1</s> (Cancelled)", name );
+        name = i18nc( "@label:textbox Title for a canceled upcoming event", "<s>%1</s> (Canceled)", name );
     setName( name );
     setDate( event->date() );
     setLocation( event->venue()->location );

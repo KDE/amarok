@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Frederick Emmott <mail@fredemmott.co.uk>                          *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,51 +14,32 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef JSONQT_PARSE_EXCEPTION_H
-#define JSONQT_PARSE_EXCEPTION_H
 
-#include "JsonQtExport.h"
+#ifndef VORBISCOMMENTTAGHELPER_H
+#define VORBISCOMMENTTAGHELPER_H
 
-#include <exception>
-#include <QChar>
-#include <QString>
+#include "TagHelper.h"
 
-namespace JsonQt
+#include <taglib/xiphcomment.h>
+
+namespace Meta
 {
-	/** Parsing exception class.
-	 * Raised whenever JsonQt can't pass something it's been given, for
-	 * whatever reason.
-	 */
-	class JSONQT_EXPORT ParseException : public std::exception
-	{
-		public:
-			/** Create a ParseException.
-			 * @param got is what was found in the string.
-			 * @param expected is what the parser was expecting.
-			 * @param remaining is what was left of the input.
-			 */
-			ParseException(
-				const QString& got,
-				const QString& expected,
-				const QString& remaining
-			) throw();
-			~ParseException() throw();
+    namespace Tag
+    {
+        class AMAROK_EXPORT VorbisCommentTagHelper : public TagHelper
+        {
+            public:
+                VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType );
 
-			/// A single string providing information on the
-			/// exception.
-			virtual const char* what() const throw();
+                virtual Meta::FieldHash tags() const;
+                virtual bool setTags( const Meta::FieldHash &changes );
 
-			/// What the parser found.
-			QString got();
-			/// What the parser was expecting.
-			QString expected();
-			/// The remaining unparsed input.
-			QString remaining();
-		private:
-			QString m_got;
-			QString m_expected;
-			QString m_remaining;
-	};
+                virtual TagLib::ByteVector render() const;
+
+            private:
+                TagLib::Ogg::XiphComment *m_tag;
+        };
+    }
 }
 
-#endif
+#endif // VORBISCOMMENTTAGHELPER_H

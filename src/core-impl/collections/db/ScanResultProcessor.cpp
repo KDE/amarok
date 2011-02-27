@@ -66,6 +66,7 @@ ScanResultProcessor::commit()
     if( nonCompilationAlbumNames.isEmpty() )
     {
         nonCompilationAlbumNames
+            << "" // don't throw together albums without name. At least not here
             << "Best Of"
             << "Anthology"
             << "Hit collection"
@@ -204,6 +205,18 @@ void
 ScanResultProcessor::rollback()
 {
     // nothing to do
+}
+
+QStringList
+ScanResultProcessor::getLastErrors() const
+{
+    return m_lastErrors;
+}
+
+void
+ScanResultProcessor::clearLastErrors()
+{
+    m_lastErrors.clear();
 }
 
 void

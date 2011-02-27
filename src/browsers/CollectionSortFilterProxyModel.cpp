@@ -35,7 +35,7 @@ CollectionSortFilterProxyModel::CollectionSortFilterProxyModel(  QObject * paren
     //NOTE: This does not work properly with our lazy loaded model.  Every time we get new data (usually around an expand)
     // the view scrolls to make the selected item visible.  This is probably a bug in qt,
     // but as the view appears to behave without it, I'm just disabling.
-//     setDynamicSortFilter( true );
+    // setDynamicSortFilter( true );
 }
 
 
@@ -56,24 +56,17 @@ CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelI
     CollectionTreeItem *leftItem = treeItem( left );
     CollectionTreeItem *rightItem = treeItem( right );
 
-    if( leftItem->level() == rightItem->level() )
-    {
-        if( leftItem->isTrackItem() && rightItem->isTrackItem() )
-            return lessThanTrack( left, right );
+    // various artists and no label items are always at the top
+    if( leftItem->isVariousArtistItem() || leftItem->isNoLabelItem() )
+        return true;
+    if( rightItem->isVariousArtistItem() || rightItem->isNoLabelItem() )
+        return false;
 
-        if( leftItem->isAlbumItem() && rightItem->isAlbumItem() )
-            return lessThanAlbum( left, right );
-        
-        if( leftItem->isDataItem() && !leftItem->data() ) //left item is a various artists node
-            return true;
-        
-        if( rightItem->isDataItem() && !rightItem->data() ) //rightItem is a various artists node
-            return false;
+    if( leftItem->isTrackItem() && rightItem->isTrackItem() )
+        return lessThanTrack( left, right );
 
-        if( !left.parent().isValid() && !right.parent().isValid() ) // collection items
-            return lessThanString( left.data( Qt::DisplayRole ).toString(),
-                                   right.data( Qt::DisplayRole ).toString() );
-    }
+    if( leftItem->isAlbumItem() && rightItem->isAlbumItem() )
+        return lessThanAlbum( left, right );
 
     return lessThanIndex( left, right );
 }
@@ -90,23 +83,23 @@ CollectionSortFilterProxyModel::lessThanTrack( const QModelIndex &left, const QM
         return lessThanIndex( left, right );
     }
 
-    if( !AmarokConfig::showTrackNumbers() )
-        return lessThanIndex( left, right );
-
-    //First compare by disc number
-    if ( leftTrack->discNumber() < rightTrack->discNumber() )
-        return true;
-    else if( leftTrack->discNumber() == rightTrack->discNumber() )
+    if( AmarokConfig::showTrackNumbers() )
     {
+        //First compare by disc number
+        if ( leftTrack->discNumber() < rightTrack->discNumber() )
+            return true;
+        if ( leftTrack->discNumber() > rightTrack->discNumber() )
+            return false;
+
         //Disc #'s are equal, compare by track number
-        if( leftTrack->trackNumber() != 0 && rightTrack->trackNumber() != 0 )
-            return leftTrack->trackNumber() < rightTrack->trackNumber();
-        
-        //fallback to name sorting
-        return lessThanIndex( left, right );
+        if( leftTrack->trackNumber() < rightTrack->trackNumber() )
+            return true;
+        if( leftTrack->trackNumber() > rightTrack->trackNumber() )
+            return false;
     }
-    // Right discNum > left discNum
-    return false;
+
+    //fallback to name sorting
+    return lessThanIndex( left, right );
 }
 
 bool
@@ -122,26 +115,19 @@ CollectionSortFilterProxyModel::lessThanAlbum( const QModelIndex &left, const QM
         return lessThanIndex( left, right );
     }
 
-    //First compare by year
-    bool ok = true;
-    int leftYear = albumYear( leftAlbum, &ok );
-    int rightYear = 0;
+    // compare by year
+    if( AmarokConfig::showYears() )
+    {
+        int leftYear = albumYear( leftAlbum );
+        int rightYear = albumYear( rightAlbum );
 
-    if( !AmarokConfig::showYears() )
-        ok = false;
-    
-    if( ok )
-        rightYear = albumYear( rightAlbum, &ok );
+        if( leftYear < rightYear )
+            return true; // left album is newer
+        if( leftYear > rightYear )
+            return false;
+    }
 
-    // compare if the years are valid numbers
-    if( ok && leftYear < rightYear )
-        return false; // left album is newer
-
-    // if the year conversions failed or the years are the same, compare by name
-    if( !ok || leftYear == rightYear )
-        return lessThanIndex( left, right );
-
-    return true; // left album is older
+    return lessThanIndex( left, right );
 }
 
 inline CollectionTreeItem*
@@ -151,16 +137,19 @@ CollectionSortFilterProxyModel::treeItem( const QModelIndex &index ) const
 }
 
 int
-CollectionSortFilterProxyModel::albumYear( Meta::AlbumPtr album, bool *ok ) const
+CollectionSortFilterProxyModel::albumYear( Meta::AlbumPtr album ) const
 {
-    int year = 0;
-    if( !album->tracks().isEmpty() )
+    if( album->name().isEmpty() ) // an unnamed album has no year
+        return 0;
+
+    Meta::TrackList tracks = album->tracks();
+    if( !tracks.isEmpty() )
     {
-        const Meta::TrackPtr track = album->tracks().at(0);
-        if( track && track->year() )
-            year = track->year()->prettyName().toInt( ok );
+        Meta::YearPtr year = tracks.first()->year();
+        if( year && (year->year() != 0) )
+            return year->year();
     }
-    return year;
+    return 0;
 }
 
 bool
@@ -169,11 +158,12 @@ CollectionSortFilterProxyModel::lessThanIndex( const QModelIndex &left, const QM
     // This should catch everything else
     QVariant leftData = left.data( CustomRoles::SortRole );
     QVariant rightData = right.data( CustomRoles::SortRole );
+
     if( leftData.canConvert( QVariant::String ) && rightData.canConvert( QVariant::String ) )
         return lessThanString( leftData.toString(), rightData.toString() );
-   
+
     warning() << "failed: an unexpected comparison was made between"<<left.data(Qt::DisplayRole)<<"and"<<right.data(Qt::DisplayRole);
-    
+
     //Just in case
     return QSortFilterProxyModel::lessThan( left, right );
 }

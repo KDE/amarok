@@ -18,14 +18,14 @@
 #define AMAROK_METATAGLIB_H
 
 #ifndef UTILITIES_BUILD
-#include "amarok_export.h"
+    #include "amarok_export.h"
+    #include <QImage>
 #else
-#define AMAROK_EXPORT
+    #define AMAROK_EXPORT
 #endif
 
 #include "MetaValues.h"
 #include <QString>
-#include <QImage>
 
 /* This file exists because we need to share the implementation between
  * amaroklib and amarokcollectionscanner (which doesn't link to amaroklib).
@@ -43,8 +43,9 @@ namespace Meta
         // the utilities don't need to handle images
         AMAROK_EXPORT QImage embeddedCover( const QString &path );
 
-        /** This will write an ID3v2 embedded cover.
-            It will also overwrite existing covers, so make sure the user knows what he get's.
+        /** This will write an embedded cover.
+            It will also overwrite existing covers (Front), so make sure the user knows what he get's.
+            ASF, ID3v2 and MP4 covers are supported.
         */
         AMAROK_EXPORT void setEmbeddedCover( const QString &path, const QImage &cover );
 #endif

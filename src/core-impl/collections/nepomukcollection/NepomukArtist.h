@@ -36,17 +36,9 @@ class NepomukArtist : public Artist
 
         virtual TrackList tracks();
 
-        virtual AlbumList albums();
-
-        // for plugin internal use only
-
-        void emptyCache();
-
     private:
         NepomukCollection *m_collection;
         QString m_name;
-        AlbumList m_albums;
-        bool m_albumsLoaded;
 };
 
 }

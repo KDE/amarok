@@ -48,6 +48,7 @@
 #include <KIconLoader>
 
 #include <QAction>
+#include <QTimer>
 #include <QDate>
 #include <QStringList>
 #include <QTextDocument>
@@ -55,6 +56,7 @@
 #include <typeinfo>
 
 bool Playlist::Model::s_tooltipColumns[NUM_COLUMNS];
+bool Playlist::Model::s_showToolTip;
 
 // ------- helper functions for the tooltip
 
@@ -186,6 +188,12 @@ Playlist::Model::setTooltipColumns( bool columns[] )
         s_tooltipColumns[i] = columns[i];
 }
 
+void
+Playlist::Model::enableToolTip( bool enable )
+{
+    s_showToolTip = enable;
+}
+
 QString
 Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
 {
@@ -273,7 +281,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     else if ( role == StopAfterTrackRole )
         return Actions::instance()->willStopAfterTrack( idAt( row ) );
 
-    else if ( role == Qt::ToolTipRole )
+    else if ( role == Qt::ToolTipRole && s_showToolTip )
         return tooltipFor( m_items.at( row )->track() );
 
     else if ( role == Qt::DisplayRole )
@@ -282,24 +290,24 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
         switch ( index.column() )
         {
             case PlaceHolder:
-                return QString();
+                break;
             case Album:
             {
                 if( album )
                     return album->name();
-                return QString();
+                break;
             }
             case AlbumArtist:
             {
                 if( album && album->albumArtist() )
                     return album->albumArtist()->name();
-                return QString();
+                break;
             }
             case Artist:
             {
                 if ( m_items.at( row )->track()->artist() )
                     return m_items.at( row )->track()->artist()->name();
-                return QString();
+                break;
             }
             case Bitrate:
             {
@@ -309,7 +317,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             {
                 if ( m_items.at( row )->track()->bpm() > 0.0 )
                     return QString::number( m_items.at( row )->track()->bpm() );
-                return QString();
+                break;
             }
             case Comment:
             {
@@ -319,32 +327,32 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             {
                 if ( m_items.at( row )->track()->composer() )
                     return m_items.at( row )->track()->composer()->name();
-                return QString();
+                break;
             }
             case CoverImage:
             {
                 if( album )
                     return The::svgHandler()->imageWithBorder( album, 100 ); //FIXME:size?
-                return QImage();
+                break;
             }
             case Directory:
             {
                 if ( m_items.at( row )->track()->playableUrl().isLocalFile() )
                     return m_items.at( row )->track()->playableUrl().directory();
-                else
-                    return QString();
+                break;
             }
             case DiscNumber:
             {
-                return m_items.at( row )->track()->discNumber();
+                if( m_items.at( row )->track()->discNumber() > 0 )
+                    return m_items.at( row )->track()->discNumber();
+                break;
             }
             case Filename:
             {
 
                 if ( m_items.at( row )->track()->playableUrl().isLocalFile() )
                     return m_items.at( row )->track()->playableUrl().fileName();
-                else
-                    return QString();
+                break;
             }
             case Filesize:
             {
@@ -354,7 +362,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             {
                 if ( m_items.at( row )->track()->genre() )
                     return m_items.at( row )->track()->genre()->name();
-                return QString();
+                break;
             }
             case GroupLength:
             {
@@ -376,7 +384,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                     }
                     return labelNames.join( ", " );
                 }
-                return QString();
+                break;
             }
             case LastPlayed:
             {
@@ -407,7 +415,9 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case SampleRate:
             {
-                return m_items.at( row )->track()->sampleRate();
+                if( m_items.at( row )->track()->sampleRate() > 0 )
+                    return m_items.at( row )->track()->sampleRate();
+                break;
             }
             case Score:
             {
@@ -460,7 +470,9 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case TrackNumber:
             {
-                return m_items.at( row )->track()->trackNumber();
+                if( m_items.at( row )->track()->trackNumber() > 0 )
+                    return m_items.at( row )->track()->trackNumber();
+                break;
             }
             case Type:
             {
@@ -468,12 +480,13 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Year:
             {
-                if ( m_items.at( row )->track()->year() )
-                    return m_items.at( row )->track()->year()->name();
-                return QString();
+                Meta::YearPtr year = m_items.at( row )->track()->year();
+                if( year && year->year() > 0 )
+                    return year->year();
+                break;
             }
             default:
-                return QString();
+                return QVariant(); // returning a variant instead of a string inside a variant is cheaper
 
         }
     }
@@ -1060,8 +1073,12 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         m_activeRow = -1;
     }
 
-    //make sure that there are enough tracks if we just removed from a dynamic playlist.
-    Playlist::Actions::instance()->normalizeDynamicPlaylist();
+    // make sure that there are enough tracks if we just removed from a dynamic playlist.
+    // This call needs to be delayed or else we would mess up the undo queue
+    // BUG: 259675
+    // FIXME: removing the track and normalizing the playlist should be grouped together
+    //        so that an undo operation undos both.
+    QTimer::singleShot(0, Playlist::Actions::instance(), SLOT(normalizeDynamicPlaylist()));
 }
 
 

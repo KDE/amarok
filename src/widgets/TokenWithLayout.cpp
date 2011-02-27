@@ -86,14 +86,14 @@ const QString ActionAlignLeftName = QLatin1String( "ActionAlignLeft" );
 const QString ActionAlignCenterName = QLatin1String( "ActionAlignCenter" );
 const QString ActionAlignRightName = QLatin1String( "ActionAlignRight" );
 
-Token * TokenWithLayoutFactory::createToken( const QString &text, const QString &iconName, int value, QWidget *parent )
+Token * TokenWithLayoutFactory::createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent )
 {
     return new TokenWithLayout( text, iconName, value, parent );
 }
 
 QWeakPointer<LayoutEditDialog> TokenWithLayout::m_dialog;
 
-TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, int value, QWidget *parent )
+TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, qint64 value, QWidget *parent )
     : Token( text, iconName, value, parent  )
     , m_width( 0.0 ), m_wrenchTimer( 0 )
 {

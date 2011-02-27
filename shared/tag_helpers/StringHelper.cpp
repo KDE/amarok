@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Frederick Emmott <mail@fredemmott.co.uk>                          *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,41 +14,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "JsonToProperties.h"
+#include "StringHelper.h"
+#include <QTextCodec>
 
-#include "JsonToVariant.h"
+static QTextCodec *s_codec = QTextCodec::codecForName( "UTF-8" );
 
-#include <QDebug>
-#include <QMetaObject>
-#include <QMetaProperty>
-
-namespace JsonQt
+void
+Meta::Tag::setCodec( QTextCodec *codec )
 {
-	JsonToProperties::JsonToProperties()
-	{
-	}
+    s_codec = codec;
+}
 
-	void JsonToProperties::parse(const QString& json, QObject* object)
-		throw(ParseException)
-	{
-		QVariantMap dataMap = JsonToVariant::parse(json).toMap();
+void
+Meta::Tag::setCodecByName( QByteArray codecName )
+{
+    s_codec = QTextCodec::codecForName( codecName );
+}
 
-		const QMetaObject* meta = object->metaObject();
-		for(
-			int i = 0;
-			i < meta->propertyCount();
-			++i
-		)
-		{
-			QMetaProperty property = meta->property(i);
-			if(dataMap.contains(property.name()))
-			{
-				QVariant data = dataMap[property.name()];
-				if(data.canConvert(property.type()))
-					property.write(object, data);
-				else
-					qDebug() << QObject::tr("Found property %1 with incompatible data type.").arg(property.name());
-			}
-		}
-	}
-};
+TagLib::String
+Meta::Tag::Qt4QStringToTString( const QString &str )
+{
+    return TagLib::String( str.trimmed().toUtf8().data(), TagLib::String::UTF8 );
+}
+
+QString
+Meta::Tag::TStringToQString( const TagLib::String &str )
+{
+    return s_codec->toUnicode( str.toCString( true ) ).trimmed();
+}

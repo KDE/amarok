@@ -38,15 +38,15 @@ CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
     createViewer( album->image(), parent );
 }
 
-CoverViewDialog::CoverViewDialog( const QPixmap &pixmap, QWidget *parent )
+CoverViewDialog::CoverViewDialog( const QImage &image, QWidget *parent )
     : QDialog( parent )
     , m_title( i18n( "Cover View" ) )
-    , m_size( pixmap.size() )
+    , m_size( image.size() )
     , m_zoom( 100 )
 {
     setAttribute( Qt::WA_DeleteOnClose );
     updateCaption();
-    createViewer( pixmap, parent );
+    createViewer( image, parent );
 }
 
 void
@@ -68,10 +68,10 @@ CoverViewDialog::zoomFactorChanged( qreal value )
 }
 
 void
-CoverViewDialog::createViewer( const QPixmap &pixmap, const QWidget *widget )
+CoverViewDialog::createViewer( const QImage &image, const QWidget *widget )
 {
     int screenNumber = KApplication::desktop()->screenNumber( widget );
-    PixmapViewer *pixmapViewer = new PixmapViewer( this, pixmap, screenNumber );
+    PixmapViewer *pixmapViewer = new PixmapViewer( this, QPixmap::fromImage(image), screenNumber );
     QHBoxLayout *layout = new QHBoxLayout( this );
     layout->addWidget( pixmapViewer );
     layout->setSizeConstraint( QLayout::SetFixedSize );
@@ -81,7 +81,7 @@ CoverViewDialog::createViewer( const QPixmap &pixmap, const QWidget *widget )
     qreal zoom = pixmapViewer->zoomFactor();
     zoomFactorChanged( zoom );
     QPoint topLeft = mapFromParent( widget->geometry().center() );
-    topLeft -= QPoint( pixmap.width() * zoom / 2, pixmap.height() * zoom / 2 );
+    topLeft -= QPoint( image.width() * zoom / 2, image.height() * zoom / 2 );
     move( topLeft );
     activateWindow();
     raise();

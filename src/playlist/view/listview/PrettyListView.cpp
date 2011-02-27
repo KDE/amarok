@@ -988,6 +988,7 @@ void Playlist::PrettyListView::playlistLayoutChanged()
         // excludeCover |= item.showCover();
     }
     Playlist::Model::setTooltipColumns( tooltipColumns );
+    Playlist::Model::enableToolTip( Playlist::LayoutManager::instance()->activeLayout().tooltips() );
 
     update();
 

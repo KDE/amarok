@@ -20,7 +20,6 @@
 #include "amarok_export.h"
 #include "config-amarok.h"
 
-#include <kdeversion.h>
 #include <KIO/AccessManager>
 #include <KUrl>
 

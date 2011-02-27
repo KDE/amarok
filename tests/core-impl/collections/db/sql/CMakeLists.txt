@@ -1,6 +1,16 @@
-macro(link_database_test test_target)
-
+macro(add_database_test test_target test_sources)
     add_definitions(${MYSQL_CFLAGS})
+
+    if(APPLE)
+    #one cannot link to plugins on OS X. As a workaround, add anything relevant that goes into the mysqle plugin to each test
+        set( test_sources_internal
+                ${test_sources}
+                ${AMAROK_SOURCE_TREE}/core-impl/collections/db/sql/mysql-shared/MySqlStorage.cpp
+                ${AMAROK_SOURCE_TREE}/core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.cpp )
+    endif(APPLE)
+
+
+    kde4_add_unit_test( ${test_target} TESTNAME ${test_target} ${test_sources} ${test_sources_internal} )
 
     if(APPLE)
         SET_TARGET_PROPERTIES(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
@@ -10,26 +20,32 @@ macro(link_database_test test_target)
     add_dependencies( ${test_target} amarokcore )
     add_dependencies( ${test_target} amaroklib)
     add_dependencies( ${test_target} amarok-sqlcollection)
-    add_dependencies( ${test_target} amarok_collection-mysqlecollection)
+    if(NOT APPLE)
+        add_dependencies( ${test_target} amarok_collection-mysqlecollection )
+    endif(NOT APPLE)
 
     target_link_libraries(${test_target}
         amarokcore
         amaroklib
         amarok-sqlcollection
-        amarok_collection-mysqlecollection
         ${KDE4_KDECORE_LIBS}
         ${KDE4_KIO_LIBS}
         ${KDE4_THREADWEAVER_LIBRARIES}
         ${KDE4_KDEUI_LIBS}
         ${QT_QTTEST_LIBRARY}
         ${QT_QTCORE_LIBRARY}
-        ${MYSQL_LIBRARIES}
+        ${MYSQL_EMBEDDED_LIBRARIES}
         ${CMAKE_DL_LIBS}
         ${TAGLIB-EXTRAS_LIBRARIES}
         ${TAGLIB_LIBRARIES}
-        ${ZLIB_LIBRARIES})
+        ${ZLIB_LIBRARIES}
+        ${GOOGLEMOCK_LIBRARIES})
 
-endmacro(link_database_test)
+    if(NOT APPLE)
+        target_link_libraries( ${test_target} amarok_collection-mysqlecollection )
+    endif(NOT APPLE)
+
+endmacro(add_database_test)
 
 
 include_directories(
@@ -52,8 +68,7 @@ set( databaseupdatertest_SRCS
         TestDatabaseUpdater.cpp
     )
 
-kde4_add_unit_test( testsqldatabaseupdater TESTNAME testsqldatabaseupdater ${databaseupdatertest_SRCS} )
-link_database_test( testsqldatabaseupdater )
+add_database_test( testsqldatabaseupdater "${databaseupdatertest_SRCS}" )
 
 #-------------------------------- Test SqlAlbum -----------------------
 
@@ -61,10 +76,7 @@ set( testsqlalbum_SRCS
         TestSqlAlbum.cpp
     )
 
-
-kde4_add_unit_test( testsqlalbum TESTNAME testsqlalbum ${testsqlalbum_SRCS} )
-
-link_database_test( testsqlalbum )
+add_database_test( testsqlalbum "${testsqlalbum_SRCS}" )
 
 #-------------------------------- Test SqlArtist -----------------------
 
@@ -73,9 +85,7 @@ set( testsqlartist_SRCS
     )
 
 
-kde4_add_unit_test( testsqlartist ${testsqlartist_SRCS} )
-
-link_database_test( testsqlartist )
+add_database_test( testsqlartist "${testsqlartist_SRCS}" )
 #-------------------------------- Test SqlCollection -----------------------
 
 set( testsqlcollection_SRCS
@@ -83,9 +93,7 @@ set( testsqlcollection_SRCS
     )
 
 
-kde4_add_unit_test( testsqlcollection ${testsqlcollection_SRCS} )
-
-link_database_test( testsqlcollection )
+add_database_test( testsqlcollection "${testsqlcollection_SRCS}" )
 
 #-------------------------------- Test SqlQueryMaker -----------------------
 
@@ -94,9 +102,7 @@ set( testsqlquerymaker_SRCS
     )
 
 
-kde4_add_unit_test( testsqlquerymaker ${testsqlquerymaker_SRCS} )
-
-link_database_test( testsqlquerymaker )
+add_database_test( testsqlquerymaker "${testsqlquerymaker_SRCS}" )
 
 #-------------------------------- Test SqlScanManager -----------------------
 
@@ -104,10 +110,7 @@ set( testsqlscanmanager_SRCS
         TestSqlScanManager.cpp
     )
 
-
-kde4_add_unit_test( testsqlscanmanager ${testsqlscanmanager_SRCS} )
-
-link_database_test( testsqlscanmanager )
+add_database_test( testsqlscanmanager "${testsqlscanmanager_SRCS}" )
 
 #-------------------------------- Test SqlTrack -----------------------
 
@@ -117,44 +120,17 @@ set( testsqltrack_SRCS
     )
 
 
-kde4_add_unit_test( testsqltrack ${testsqltrack_SRCS} )
-
-link_database_test( testsqltrack )
+add_database_test( testsqltrack "${testsqltrack_SRCS}" )
 
 #-------------------------------- Test SqlCollectionLocation -----------------------
 
 set( testsqlcollectionlocation_SRCS
         TestSqlCollectionLocation.cpp
+	${AMAROK_SOURCE_TREE}/core/interfaces/Logger.cpp
         ${AMAROK_SOURCE_TREE}/core-impl/logger/ProxyLogger.cpp
     )
 
-kde4_add_unit_test( testsqlcollectionlocation ${testsqlcollectionlocation_SRCS} )
-
-add_dependencies( testsqlcollectionlocation amarokconfig_h )
-add_dependencies( testsqlcollectionlocation amarokcore )
-add_dependencies( testsqlcollectionlocation amaroklib)
-add_dependencies( testsqlcollectionlocation amarok-sqlcollection)
-
-
-# order matters when linking to libmyslqd.a, so beware of reordering
-target_link_libraries( testsqlcollectionlocation
-        amarokcore
-        amaroklib
-        amarok-sqlcollection
-        amarok_collection-mysqlecollection
-        ${KDE4_KDECORE_LIBS}
-        ${KDE4_KIO_LIBS}
-        ${KDE4_KDEUI_LIBS}
-        ${KDE4_THREADWEAVER_LIBRARIES}
-        ${QT_QTTEST_LIBRARY}
-        ${QT_QTCORE_LIBRARY}
-        ${MYSQL_EMBEDDED_LIBRARIES}
-        ${CMAKE_DL_LIBS}
-        ${TAGLIB-EXTRAS_LIBRARIES}
-        ${TAGLIB_LIBRARIES}
-        ${ZLIB_LIBRARIES}
-        ${GOOGLEMOCK_LIBRARIES}
-        )
+add_database_test( testsqlcollectionlocation "${testsqlcollectionlocation_SRCS}" )
 
 if(NOT WIN32 AND NOT APPLE)
     target_link_libraries( testsqlcollectionlocation crypt pthread )

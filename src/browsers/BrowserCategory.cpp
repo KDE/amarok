@@ -29,20 +29,15 @@
 BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
     : KVBox( parent )
     , m_name( name )
-    , m_prettyName( QString() )
-    , m_shortDescription( QString() )
-    , m_longDescription( QString() )
     , m_parentList( 0 )
     , m_breadcrumb( 0 )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setFrameShape( QFrame::NoFrame );
-
 }
 
 BrowserCategory::~BrowserCategory()
 {
-    delete m_breadcrumb;
 }
 
 QString

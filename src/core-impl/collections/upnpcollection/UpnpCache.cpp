@@ -111,7 +111,6 @@ Meta::TrackPtr UpnpCache::getTrack( const KIO::UDSEntry &entry, bool refresh )
     album->setAlbumArtist( artist );
     album->addTrack( track );
     track->setAlbum( album );
-    artist->addAlbum( album );
     // album art
     if( ! album->imageLocation().isValid() )
         album->setAlbumArtUrl( entry.stringValue( KIO::UPNP_ALBUMART_URI ) );

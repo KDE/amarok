@@ -102,6 +102,7 @@ target_link_libraries(testsmartpointerlist ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBR
 
 set( testtagguesser_SRCS
         TestTagGuesser.cpp
+        ${CMAKE_SOURCE_DIR}/shared/TagsFromFileNameGuesser.cpp
         ${AMAROK_SOURCE_TREE}/dialogs/TagGuesser.cpp
     )
 

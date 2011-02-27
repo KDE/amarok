@@ -23,6 +23,7 @@
 // HACK: used to test disconnect
 #include "MediaDeviceMonitor.h"
 
+#include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "core/support/Debug.h"
 #include "SvgHandler.h"
@@ -143,7 +144,14 @@ MediaDeviceTrack::setUidUrl( const QString &newUidUrl ) const
 QString
 MediaDeviceTrack::prettyUrl() const
 {
-    return m_playableUrl.isLocalFile() ? m_playableUrl.toLocalFile() : QString( collection()->prettyName() + ": " + artist()->prettyName() + " - " + prettyName() );
+    if( m_playableUrl.isLocalFile() )
+        return m_playableUrl.toLocalFile();
+
+    QString artistName = artist()? artist()->prettyName() : i18n( "Unknown Artist" );
+    // Check name() to prevent infinite recursion
+    QString trackName = !name().isEmpty()? prettyName() : i18n( "Unknown track" );
+
+    return  QString( "%1: %2 - %3" ).arg( collection()->prettyName(), artistName, trackName );
 }
 
 bool
@@ -811,7 +819,7 @@ MediaDeviceAlbum::MediaDeviceAlbum( Collections::MediaDeviceCollection *collecti
 
 MediaDeviceAlbum::~MediaDeviceAlbum()
 {
-    //nothing to do
+    CoverCache::invalidateAlbum( this );
 }
 
 QString
@@ -860,34 +868,26 @@ MediaDeviceAlbum::hasImage( int size ) const
     return m_hasImage;
 }
 
-QPixmap
-MediaDeviceAlbum::image( int size )
+QImage
+MediaDeviceAlbum::image( int size ) const
 {
     if( m_name.isEmpty() || !m_hasImage )
         return Meta::Album::image( size );
 
+    if( m_image.isNull() && m_artworkCapability )
+    {
+        MediaDeviceTrackPtr track = MediaDeviceTrackPtr::dynamicCast( m_tracks.first() );
+        m_image = m_artworkCapability->getCover( track );
+        m_hasImage = m_image.isNull();
+        m_hasImageChecked = true;
+        CoverCache::invalidateAlbum( this );
+    }
+
     if( !m_image.isNull() )
     {
         if( !size )
-            return QPixmap::fromImage(m_image);
-        return QPixmap::fromImage(m_image).scaled( QSize( size, size ), Qt::KeepAspectRatio );
-    }
-    if( m_artworkCapability )
-    {
-        MediaDeviceTrackPtr track = MediaDeviceTrackPtr::dynamicCast( m_tracks.first() );
-        QImage cover = m_artworkCapability->getCover( track );
-
-        if( !cover.isNull() )
-        {
-            m_hasImage = true;
-            m_image = cover;
-            if( !size )
-                return QPixmap::fromImage(cover);
-            return QPixmap::fromImage(cover.scaled( QSize( size, size ), Qt::KeepAspectRatio ));
-        }
-        else
-            m_hasImage = false;
-        m_hasImageChecked = true;
+            return m_image;
+        return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
     }
     return Meta::Album::image( size );
 }
@@ -909,6 +909,7 @@ MediaDeviceAlbum::setImage( const QImage &image )
         m_image = image;
         m_hasImage = true;
         m_artworkCapability->setCover( MediaDeviceAlbumPtr( this ), image );
+        CoverCache::invalidateAlbum( this );
     }
 }
 
@@ -927,6 +928,7 @@ void
 MediaDeviceAlbum::removeImage()
 {
     Meta::Album::removeImage();
+    CoverCache::invalidateAlbum( this );
 }
 
 bool

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,22 +14,45 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "JsonRpcAdaptor.h"
-#include "JsonRpcAdaptorPrivate.h"
+#ifndef STRINGHELPER_H
+#define STRINGHELPER_H
 
-namespace JsonQt
+#ifndef UTILITIES_BUILD
+    #include "amarok_export.h"
+#else
+    #define AMAROK_EXPORT
+#endif
+
+#include <QString>
+#include <taglib/tstring.h>
+
+#ifdef Qt4QStringToTString
+    #undef Qt4QStringToTString
+#endif
+#ifdef TStringToQString
+    #undef TStringToQString
+#endif
+
+namespace Meta
 {
+    namespace Tag
+    {
+        /**
+         * Convert TString to QString, trimmes spaces in the begin and at the end
+         * and fixes encoding if needed.
+         */
+        AMAROK_EXPORT QString TStringToQString( const TagLib::String &str );
+        /**
+         * Convert QString to TString and trimmes spaces in the begin and at the end.
+         */
+        AMAROK_EXPORT TagLib::String Qt4QStringToTString( const QString &str );
+        /**
+         * Set codec for TStringToQString conversion.
+         */
+        AMAROK_EXPORT void setCodec( QTextCodec *codec );
+        AMAROK_EXPORT void setCodecByName( QByteArray codecName );
+    }
+}
 
-	JsonRpcAdaptor::JsonRpcAdaptor(QObject* adapt, QObject* parent)
-		:
-			QObject(parent),
-			d(new JsonRpcAdaptorPrivate(adapt, this))
-	{
-		connect(d, SIGNAL(sendJson(const QString&)), this, SIGNAL(sendJson(const QString&)));
-	}
 
-	void JsonRpcAdaptor::processJson(const QString& json)
-	{
-		d->processJson(json);
-	}
-};
+#endif // STRINGHELPER_H

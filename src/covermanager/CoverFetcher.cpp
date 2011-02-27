@@ -148,7 +148,7 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
     // show the dialog straight away if fetch is interactive
     if( !m_dialog && unit->isInteractive() )
     {
-        showCover( unit, QPixmap() );
+        showCover( unit, QImage() );
     }
     else if( urls.isEmpty() )
     {
@@ -252,17 +252,10 @@ CoverFetcher::handleCoverPayload( const CoverFetchUnit::Ptr &unit, const QByteAr
 
     if( unit->isInteractive() )
     {
-        QPixmap pixmap;
-#if QT_VERSION >= 0x040700
-        pixmap = QPixmap::fromImageReader( &reader );
-#else
         QImage image;
         if( reader.read( &image ) )
-            pixmap = QPixmap::fromImage( image );
-#endif
-        if( !pixmap.isNull() )
         {
-            showCover( unit, pixmap, metadata );
+            showCover( unit, image, metadata );
             m_queue->remove( unit );
             return;
         }
@@ -287,7 +280,7 @@ CoverFetcher::slotDialogFinished()
     switch( m_dialog.data()->result() )
     {
     case KDialog::Accepted:
-        m_selectedImages.insert( unit, m_dialog.data()->image().toImage() );
+        m_selectedImages.insert( unit, m_dialog.data()->image() );
         finish( unit );
         break;
 
@@ -342,7 +335,7 @@ CoverFetcher::fetchRequestRedirected( QNetworkReply *oldReply,
 
 void
 CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
-                         const QPixmap &cover,
+                         const QImage &cover,
                          const CoverFetch::Metadata &data )
 {
     if( !m_dialog )

@@ -107,6 +107,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         /** Set the columns that are displayed in the tooltip */
         static void setTooltipColumns( bool columns[] );
 
+        static void enableToolTip( bool enable );
+
     signals:
         void activeTrackChanged( quint64 );
         void queueChanged();
@@ -152,6 +154,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         int m_setStateOfItem_batchMaxRow;
 
         static bool s_tooltipColumns[NUM_COLUMNS];
+        static bool s_showToolTip;
 };
 
 } // namespace Playlist

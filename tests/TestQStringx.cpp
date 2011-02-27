@@ -83,16 +83,16 @@ void TestQStringx::testNamedArgs()
     m_testString = "test";
     QCOMPARE( m_testString.namedArgs( testArgs ) , QString( "test" ) );
 
-    m_testString = "artist: %artist";
+    m_testString = "artist: %artist%";
     QCOMPARE( m_testString.namedArgs( testArgs ) , QString( "artist: Pornophonique" ) );
 
-    m_testString = "artist: %artist - %album";
+    m_testString = "artist: %artist% - %album%";
     QCOMPARE( m_testString.namedArgs( testArgs ) , QString( "artist: Pornophonique - " ) );
 
     testArgs[ "album" ] = "8-Bit Lagerfeuer";
     QCOMPARE( m_testString.namedArgs( testArgs ) , QString( "artist: Pornophonique - 8-Bit Lagerfeuer" ) );
 
-    m_testString = "%artist: %artist - %album";
+    m_testString = "%artist%: %artist% - %album%";
     QCOMPARE( m_testString.namedArgs( testArgs ) , QString( "Pornophonique: Pornophonique - 8-Bit Lagerfeuer" ) );
 
     testArgs[ "year" ] = "2007";
@@ -109,63 +109,63 @@ void TestQStringx::testNamedOptArgs()
     m_testString = "test";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "test" ) );
 
-    m_testString = "%test";
+    m_testString = "%test%";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "" ) );
 
-    m_testString = "{ %test }";
+    m_testString = "{ %test% }";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "" ) );
 
-    m_testString = "test{%test}";
+    m_testString = "test{%test%}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "test" ) );
 
-    m_testString = "{test{%test}}";
+    m_testString = "{test{%test%}}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "{test}" ) );
 
-    m_testString = "%test{%test}";
+    m_testString = "%test%{%test%}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "" ) );
 
-    m_testString = "test%test ";
+    m_testString = "test%test% ";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "test " ) );
 
     testArgs[ "artist" ] = "All:My:Faults";
-    m_testString = "%artist";
+    m_testString = "%artist%";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults" ) );
 
-    m_testString = "{%test }{%artist}";
+    m_testString = "{%test% }{%artist%}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults" ) );
 
-    m_testString = "{%test {%artist}}";
+    m_testString = "{%test% {%artist%}}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "" ) );
 
-    m_testString = "{%artist {%test}}";
+    m_testString = "{%artist% {%test%}}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults " ) );
 
     testArgs[ "track" ] = "Some track";
-    m_testString = "{%test {%artist}}%track";
+    m_testString = "{%test% {%artist%}}%track%";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "Some track" ) );
 
-    m_testString = "{%artist {%track}} %test";
+    m_testString = "{%artist% {%track%}} %test%";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults Some track " ) );
 
     testArgs[ "test" ] = "";
-    m_testString = "{%test}";
+    m_testString = "{%test%}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "" ) );
 
-    m_testString = "before{%test}";
+    m_testString = "before{%test%}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "before" ) );
 
-    m_testString = "{%test}after";
+    m_testString = "{%test%}after";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "after" ) );
 
-    m_testString = "before{%test}after";
+    m_testString = "before{%test%}after";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "beforeafter" ) );
 
-    m_testString = "{%test }{%artist}";
+    m_testString = "{%test% }{%artist%}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( " All:My:Faults" ) );
 
-    m_testString = "{%test {%artist}}";
+    m_testString = "{%test% {%artist%}}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( " All:My:Faults" ) );
 
-    m_testString = "{%artist {%test}}";
+    m_testString = "{%artist% {%test%}}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults " ) );
 }

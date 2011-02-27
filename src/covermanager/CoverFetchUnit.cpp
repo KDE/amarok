@@ -25,6 +25,7 @@
 #include <QXmlStreamReader>
 
 #include "core/support/Debug.h"
+#include <KLocalizedString>
 
 /*
  * CoverFetchUnit
@@ -589,7 +590,9 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
     QSet<QString> artistSet;
     if( method() == "album.getinfo" )
     {
-        artistSet << normalize( album()->albumArtist()->name() );
+        artistSet << normalize( ( album() && album()->albumArtist() )
+                                ? album()->albumArtist()->name()
+                                : i18n( "Unknown Artist" ) );
     }
     else if( method() == "album.search" )
     {
@@ -598,7 +601,8 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
             const Meta::TrackList tracks = album()->tracks();
             QStringList artistNames( "Various Artists" );
             foreach( const Meta::TrackPtr &track, tracks )
-                artistNames << track->artist()->name();
+                artistNames << ( track->artist() ? track->artist()->name()
+                                                 : i18n( "Unknown Artist" ) );
             artistSet = normalize( artistNames ).toSet();
         }
     }

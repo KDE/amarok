@@ -23,11 +23,8 @@
 #include "core/support/Debug.h"
 #include "core/collections/QueryMaker.h"
 
-#include <QDir>
 #include <QImage>
-#include <QPixmapCache>
 
-#include <KStandardDirs>
 #include <KLocale>
 
 //Meta::Observer
@@ -457,35 +454,15 @@ Meta::Album::notifyObservers() const
     }
 }
 
-QPixmap
-Meta::Album::image( int size )
+/*
+ * This is the base class's image() function, which returns just an null image.
+ * Retrieval of the cover for the actual album is done by subclasses.
+ */
+QImage
+Meta::Album::image( int size ) const
 {
-    /*
-     * This is the base class's image() function, which returns "nocover" by default.
-     * Retrieval of the cover for the actual album is done by subclasses.
-     */
-    const QDir &cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-    if( size <= 1 )
-        size = 100;
-    const QString &noCoverKey = QString::number( size ) + "@nocover.png";
-
-    QPixmap pixmap;
-    // look in the memory pixmap cache
-    if( QPixmapCache::find( noCoverKey, &pixmap ) )
-        return pixmap;
-
-    if( cacheCoverDir.exists( noCoverKey ) )
-    {
-        pixmap.load( cacheCoverDir.filePath( noCoverKey ) );
-    }
-    else
-    {
-        const QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
-        pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        pixmap.save( cacheCoverDir.filePath( noCoverKey ), "PNG" );
-    }
-    QPixmapCache::insert( noCoverKey, pixmap );
-    return pixmap;
+    Q_UNUSED( size );
+    return QImage();
 }
 
 bool

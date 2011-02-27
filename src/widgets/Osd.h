@@ -21,17 +21,12 @@
 #include "core/meta/Meta.h"
 
 #include <QImage>
-#include <QList>
 #include <QPixmap>
 #include <QString>
 #include <QWidget> //baseclass
 
 #define OSD_WINDOW_OPACITY 0.74
 
-namespace Plasma
-{
-    class PanelSvg;
-}
 
 class OSDWidget : public QWidget
 {
@@ -40,14 +35,12 @@ class OSDWidget : public QWidget
     public:
         enum Alignment { Left, Middle, Center, Right };
 
-        explicit OSDWidget( QWidget *parent, const char *name = "osd" );
-
         /** resets the colours to defaults */
         void unsetColors();
 
-      public slots:
+    public slots:
         /** calls setText() then show(), after setting image if needed */
-        void show( const QString &text, QImage newImage = QImage() );
+        void show( const QString &text, const QImage &newImage = QImage() );
         void ratingChanged( const short rating );
         void ratingChanged( const QString& path, int rating );
         void volumeChanged( int volume );
@@ -64,23 +57,30 @@ class OSDWidget : public QWidget
          * To force an update call show();
          */
         void setDuration( int ms ) { m_duration = ms; }
-        void setTextColor( const QColor &color )
-        {
-            QPalette palette = this->palette();
-            palette.setColor( QPalette::Active, QPalette::WindowText, color );
-            setPalette(palette);
-        }
+        void setTextColor( const QColor &color );
+
+        inline int offset() const { return m_y; }
         void setOffset( int y ) { m_y = y; }
+
+        inline int alignment() const { return m_alignment; }
         void setAlignment( Alignment alignment ) { m_alignment = alignment; }
-        void setImage( const QImage &image ) { m_cover = image; }
+
+        inline int screen() const { return m_screen; }
         void setScreen( int screen );
+
+        void setPaused( bool paused ) { m_paused = paused; }
+        void setImage( const QImage &image ) { m_cover = image; }
         void setText( const QString &text ) { m_text = text; }
-        void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
+        void setRating( const short rating ) { m_rating = rating; }
         void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); }
-        void setFontScale( int scale ) { m_fontScale = static_cast<double>(scale) / 100.0; }
+        void setFontScale( int scale );
 
     protected:
+        explicit OSDWidget( QWidget *parent, const char *name = "osd" );
         virtual ~OSDWidget();
+
+        // work-around to get default point size on this platform, Qt API does not offer this directly
+        inline qreal defaultPointSize() const { return QFont(font().family()).pointSizeF(); }
 
         /** determine new size and position */
         QRect determineMetrics( const int marginMetric );
@@ -88,12 +88,13 @@ class OSDWidget : public QWidget
         // Reimplemented from QWidget
         virtual void paintEvent( QPaintEvent* );
         virtual void mousePressEvent( QMouseEvent* );
-        void resizeEvent( QResizeEvent *e );
+        virtual void resizeEvent( QResizeEvent *e );
         virtual bool event( QEvent* );
 
         /** distance from screen edge */
         static const int MARGIN = 15;
 
+    private:
         uint        m_m;
         QSize       m_size;
         int         m_duration;
@@ -109,7 +110,6 @@ class OSDWidget : public QWidget
         QImage      m_cover;
         QPixmap     m_scaledCover;
         bool        m_paused;
-        double      m_fontScale;
 };
 
 
@@ -120,22 +120,14 @@ class OSDPreviewWidget : public OSDWidget
 public:
     OSDPreviewWidget( QWidget *parent );
 
-    int screen()    { return m_screen; }
-    int alignment() { return m_alignment; }
-    int y()         { return m_y; }
-
 public slots:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }
     //void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
     void setFontScale( int scale ) { OSDWidget::setFontScale( scale ); doUpdate(); }
-    void setUseCustomColors( const bool use, const QColor &fg )
-    {
-        if( use ) OSDWidget::setTextColor( fg );
-        else      unsetColors();
-        doUpdate();
-    }
-    void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); doUpdate(); }
+    void setTranslucent( bool enabled ) { OSDWidget::setTranslucent( enabled );; doUpdate(); }
+
+    void setUseCustomColors( const bool use, const QColor &fg );
 
 private:
     inline void doUpdate() { if( !isHidden() ) show(); }
@@ -190,6 +182,7 @@ namespace Amarok
         ~OSD();
 
         static OSD* s_instance;
+
         Meta::TrackPtr m_currentTrack;
     };
 }

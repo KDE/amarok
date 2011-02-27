@@ -42,7 +42,7 @@ class CollectionSortFilterProxyModel : public QSortFilterProxyModel
         virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
     private:
-        int albumYear( Meta::AlbumPtr album, bool *ok = 0 ) const;
+        int albumYear( Meta::AlbumPtr album ) const;
         CollectionTreeItem* treeItem( const QModelIndex &index ) const;
         bool lessThanTrack( const QModelIndex &left, const QModelIndex &right ) const;
         bool lessThanAlbum( const QModelIndex &left, const QModelIndex &right ) const;

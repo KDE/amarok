@@ -43,9 +43,6 @@ class ServiceSqlQueryMaker : public QueryMaker
 
         virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
 
-        virtual QueryMaker* includeCollection( const QString &collectionId );
-        virtual QueryMaker* excludeCollection( const QString &collectionId );
-
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
         virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );

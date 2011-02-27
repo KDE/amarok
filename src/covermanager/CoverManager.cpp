@@ -864,10 +864,7 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
         m_artist = i18n( "No Artist" );
     setText( album->prettyName() );
 
-    const bool isSuppressing = album->suppressImageAutoFetch();
-    album->setSuppressImageAutoFetch( true );
-    setIcon( album->image( 100 ) );
-    album->setSuppressImageAutoFetch( isSuppressing );
+    loadCover();
 
     CoverManager::instance()->subscribeTo( album );
 }
@@ -886,7 +883,7 @@ CoverViewItem::loadCover()
 {
     const bool isSuppressing = m_albumPtr->suppressImageAutoFetch();
     m_albumPtr->setSuppressImageAutoFetch( true );
-    setIcon( m_albumPtr->image( 100 ) );
+    setIcon( QPixmap::fromImage( m_albumPtr->image( 100 ) ) );
     m_albumPtr->setSuppressImageAutoFetch( isSuppressing );
 }
 

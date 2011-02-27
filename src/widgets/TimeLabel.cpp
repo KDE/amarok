@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2005 Max Howell <max.howell@methylblue.com>                            *
+ * Copyright (c) 2011 Kevin Funk <krf@electrostorm.net>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,49 +15,52 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "VariantToJson.h"
-#include "JsonToVariant.h"
 
-#include <QtTest/QtTest>
+#include "TimeLabel.h"
 
-class VariantToJson : public QObject
+#include "amarokconfig.h"
+#include "EngineController.h"
+
+#include <KGlobal>
+#include <KGlobalSettings>
+#include <KLocale>
+
+#include <QLabel>
+#include <QFontMetrics>
+#include <QMouseEvent>
+
+TimeLabel::TimeLabel(QWidget* parent)
+    : QLabel( " 0:00:00 ", parent )
 {
-	Q_OBJECT
-	private slots:
-		void testFlat()
-		{
-			QVariantMap map;
-			map["string_foo"] = "foo";
-			map["bool_true"] = true;
-			map["int_42"] = 42;
-			map["double_pi"] = 3.14159;
+    setFont( KGlobalSettings::fixedFont() );
+    setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+}
 
-			QString json(JsonQt::VariantToJson::parse(map));
-			QCOMPARE(map, JsonQt::JsonToVariant::parse(json).toMap());
-		}
-		void testComplex()
-		{
-			QVariantMap map;
-			map["string_foo"] = "foo";
-			map["bool_true"] = true;
-			map["int_42"] = 42;
-			map["double_pi"] = 3.14159;
-			map["recurse"] = map;
-			QVariantList list;
-			list.append("zero");
-			list.append("one");
-			map["list"] = list;
+QSize
+TimeLabel::sizeHint() const
+{
+    return fontMetrics().boundingRect( KGlobal::locale()->negativeSign() + KGlobal::locale()->formatTime( QTime( 0, 0, 0 ), true, true ) ).size();
+}
 
-			QStringList list2;
-			for(int i = 0; i < 25; i++)
-				list2.append(QString("element").append(QString::number(i)));
-			map["list2"] = list2;
+void
+TimeLabel::setShowTime(bool showTime) {
+    m_showTime = showTime;
+    if( !showTime )
+    {
+        QLabel::setText( "" );
+    }
+}
 
-			QString json(JsonQt::VariantToJson::parse(map));
-			QCOMPARE(map, JsonQt::JsonToVariant::parse(json).toMap());
-		}
-};
+bool TimeLabel::showTime() const
+{
+    return m_showTime;
+}
 
-QTEST_MAIN(VariantToJson);
+void
+TimeLabel::setText(const QString& text)
+{
+    if( m_showTime )
+        QLabel::setText( text );
+}
 
-#include "moc_VariantToJson.cxx"
+#include "TimeLabel.moc"

@@ -141,7 +141,7 @@ void SetCustomCoverAction::init()
 void
 SetCustomCoverAction::slotTriggered()
 {
-    if( !m_albums.first() || m_albums.first()->tracks().isEmpty() )
+    if( m_albums.isEmpty() || m_albums.first()->tracks().isEmpty() )
         return;
 
     const QString& startPath = m_albums.first()->tracks().first()->playableUrl().directory();

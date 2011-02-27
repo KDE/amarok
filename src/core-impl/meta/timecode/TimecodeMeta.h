@@ -191,7 +191,7 @@ public:
     virtual ArtistPtr albumArtist() const;
     virtual TrackList tracks();
 
-    virtual QPixmap image( int size = 1 );
+    virtual QImage image( int size = 0 ) const;
     virtual bool canUpdateImage() const;
     virtual void setImage( const QImage &image );
 
@@ -215,7 +215,6 @@ private:
     TimecodeArtistPtr m_albumArtist;
 
     QImage m_cover;
-    QMap<int, QPixmap> m_coverSizeMap;
 
     QAction *m_separator;
     QAction *m_displayCoverAction;

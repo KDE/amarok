@@ -22,7 +22,9 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 
-#include <ui_labelsSettings.h>
+#include <ui_labelsGeneralSettings.h>
+#include <ui_labelsBlacklistSettings.h>
+#include <ui_labelsReplacementSettings.h>
 
 #include <QWeakPointer>
 
@@ -91,20 +93,29 @@ private:
     QStringList             m_blacklist;
     QColor                  m_selectedColor;
     QColor                  m_backgroundColor;
+
+    QHash < QString, QString > m_replacementMap;
     
     bool                    m_stoppedstate;
     QString                 m_artist;
     QString                 m_title;
     QString                 m_album;
 
-    // if the user adds a label through the combobox, the animation should start at the combobox
-    bool                    m_selfAdded;
+    // some information about the last label that the user interacted with so we can optimize the view
+    QString                 m_lastLabelName;        // the label name in order to find it if it got toggled
+    QSizeF                  m_lastLabelSize;        // if the user toggles a label it should be realigned because it's size will change
+    bool                    m_lastLabelBottomAdded; // if the user adds a label through the combobox the animation should start at the combobox
     
-    Ui::labelsSettings      ui_Settings;
+    Ui::labelsGeneralSettings       ui_GeneralSettings;
+    Ui::labelsBlacklistSettings     ui_BlacklistSettings;
+    Ui::labelsReplacementSettings   ui_ReplacementSettings;
 
 private slots:
     void reload();
     void animationFinished();
+    void settingsResetColors();
+    void settingsAddReplacement();
+    void settingsRemoveReplacement();
 
 };
 

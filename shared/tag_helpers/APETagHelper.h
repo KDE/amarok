@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Frederick Emmott <mail@fredemmott.co.uk>                          *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,29 +14,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ParseException.h"
+#ifndef APETAGHELPER_H
+#define APETAGHELPER_H
 
-// For QObject::tr
-#include <QObject>
+#include "TagHelper.h"
 
-namespace JsonQt
+#include <taglib/apetag.h>
+
+namespace Meta
 {
-	ParseException::ParseException(const QString& got, const QString& expected, const QString& remaining) throw()
-		:
-			m_got(got),
-			m_expected(expected),
-			m_remaining(remaining)
-	{
-	}
+    namespace Tag
+    {
+        class AMAROK_EXPORT APETagHelper : public TagHelper
+        {
+            public:
+                APETagHelper( TagLib::Tag *tag, TagLib::APE::Tag *apeTag, Amarok::FileType fileType );
 
-	ParseException::~ParseException() throw(){}
+                virtual Meta::FieldHash tags() const;
+                virtual bool setTags( const Meta::FieldHash &changes );
 
-	const char* ParseException::what() const throw()
-	{
-		return qPrintable(QObject::tr("A parsing error occurred:\n\tGot: '%1'\n\tExpected: '%2'\n\tAt: '%3'").arg(m_got).arg(m_expected).arg(m_remaining));
-	}
+                virtual TagLib::ByteVector render() const;
 
-	QString ParseException::got() { return m_got; }
-	QString ParseException::expected() { return m_expected; }
-	QString ParseException::remaining() { return m_remaining; }
+            private:
+                TagLib::APE::Tag *m_tag;
+        };
+    }
 }
+
+#endif // APETAGHELPER_H

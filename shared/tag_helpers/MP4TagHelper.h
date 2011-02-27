@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Frederick Emmott <mail@fredemmott.co.uk>                          *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,18 +14,36 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef JSONQT_EXPORT_H
-#define JSONQT_EXPORT_H
 
-#include <QtGlobal>
+#ifndef MP4TAGHELPER_H
+#define MP4TAGHELPER_H
 
-#ifndef JSONQT_EXPORT
-  #ifdef MAKING_JSONQT_DLL
-    #define JSONQT_EXPORT Q_DECL_EXPORT
-  #else
-    #define JSONQT_EXPORT Q_DECL_IMPORT
-  #endif
-#endif
-  
+#include "TagHelper.h"
 
-#endif
+#include <taglib/mp4tag.h>
+
+namespace Meta
+{
+    namespace Tag
+    {
+        class AMAROK_EXPORT MP4TagHelper : public TagHelper
+        {
+            public:
+                MP4TagHelper( TagLib::Tag *tag, TagLib::MP4::Tag *mp4Tag, Amarok::FileType fileType );
+
+                virtual Meta::FieldHash tags() const;
+                virtual bool setTags( const Meta::FieldHash &changes );
+
+#ifndef UTILITIES_BUILD
+                virtual bool hasEmbeddedCover() const;
+                virtual QImage embeddedCover() const;
+                virtual bool setEmbeddedCover( const QImage &cover );
+#endif  //UTILITIES_BUILD
+
+            private:
+                TagLib::MP4::Tag *m_tag;
+        };
+    }
+}
+
+#endif // MP4TAGHELPER_H

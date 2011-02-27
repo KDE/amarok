@@ -149,17 +149,13 @@ class UpnpArtist : public Meta::Artist
 
         virtual TrackList tracks();
 
-        virtual AlbumList albums();
-
         //UpnpArtist specific methods
         void addTrack( UpnpTrackPtr track );
         void removeTrack( UpnpTrackPtr track );
-        void addAlbum( UpnpAlbumPtr album );
 
     private:
         QString m_name;
         TrackList m_tracks;
-        AlbumList m_albums;
 };
 
 class UpnpAlbum : public QObject, public Meta::Album
@@ -176,9 +172,9 @@ class UpnpAlbum : public QObject, public Meta::Album
         virtual ArtistPtr albumArtist() const;
         virtual TrackList tracks();
 
-        virtual bool hasImage( int size = 1 ) const;
-        virtual QPixmap image( int size = 1 );
-        virtual KUrl imageLocation( int size = 1 );
+        virtual bool hasImage( int size = 0 ) const;
+        virtual QImage image( int size = 0 ) const;
+        virtual KUrl imageLocation( int size = 0 );
 
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
@@ -191,7 +187,7 @@ class UpnpAlbum : public QObject, public Meta::Album
 
     private:
         QString m_name;
-        QPixmap m_pixmap;
+        mutable QImage m_image;
         TrackList m_tracks;
         bool m_isCompilation;
         UpnpArtistPtr m_albumArtist;

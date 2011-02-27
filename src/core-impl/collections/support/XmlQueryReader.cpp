@@ -114,22 +114,6 @@ XmlQueryReader::readQuery()
                         d->qm->orderBy( field, descending  );
                 }
             }
-            else if( name() == "includeCollection" )
-            {
-                QStringRef id =  attributes().value( "id" );
-                if( !id.isEmpty() )
-                {
-                    d->qm->includeCollection( id.toString() );
-                }
-            }
-            else if( name() == "excludeCollection" )
-            {
-                QStringRef id =  attributes().value( "id" );
-                if( !id.isEmpty() )
-                {
-                    d->qm->excludeCollection( id.toString() );
-                }
-            }
             else if( name() == "returnResultAsDataPtrs" )
             {
                 d->qm->setReturnResultAsDataPtrs( true );

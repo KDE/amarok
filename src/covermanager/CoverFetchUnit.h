@@ -21,7 +21,8 @@
 
 #include <KSharedPtr>
 
-#include <QtCore/QXmlStreamReader>
+#include <QStringList>
+#include <QXmlStreamReader>
 
 class CoverFetchPayload;
 class CoverFetchSearchPayload;

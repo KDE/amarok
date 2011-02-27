@@ -35,34 +35,25 @@ using namespace MetaCue;
 * @author (C) 2005 by Martin Ehmke <ehmke@gmx.de>
 */
 
-CueFileItemMap CueFileSupport::loadCueFile( Meta::TrackPtr track )
+CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, const Meta::TrackPtr track )
 {
-
-    //attempt to find cue file, return empty map if not found or invalid
-    KUrl cuefile = locateCueSheet( track->playableUrl() );
-    if( cuefile.isEmpty() )
-    {
-        debug() << "No cue file found for track " << track->playableUrl();
-        return CueFileItemMap();
-    }
-
-    return loadCueFile( cuefile, track->length() );
+    return loadCueFile( cuefile, track->playableUrl(), track->length() );
 }
 
 
-CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, qint64 mediaLength  )
+CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, const KUrl &trackUrl, qint64 trackLen )
 {
 
     DEBUG_BLOCK
 
     CueFileItemMap cueItems;
-    
+
     debug() << "CUEFILE: " << cuefile.pathOrUrl();
     if ( QFile::exists ( cuefile.pathOrUrl() ) )
     {
         debug() << "  EXISTS!";
         QFile file ( cuefile.pathOrUrl() );
-        int track = 0;
+        int trackNr = 0;
         QString defaultArtist;
         QString defaultAlbum;
         QString artist;
@@ -71,6 +62,8 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, qint64 mediaLen
         long prevIndex = -1;
         bool index00Present = false;
         long index = -1;
+        bool filesSection = false;
+        bool fileFound = false;
 
         int mode = BEGIN;
         if ( file.open ( QIODevice::ReadOnly ) )
@@ -94,11 +87,16 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, qint64 mediaLen
                 if ( line.startsWith ( "title", Qt::CaseInsensitive ) )
                 {
                     title = line.mid ( 6 ).remove ( '"' );
-                    if ( mode == BEGIN )
+                    if ( mode == BEGIN && !filesSection )
                     {
                         defaultAlbum = title;
                         title.clear();
                         debug() << "Album: " << defaultAlbum;
+                    }
+                    else if( !fileFound )
+                    {
+                        title.clear();
+                        continue;
                     }
                     else
                         debug() << "Title: " << title;
@@ -107,17 +105,22 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, qint64 mediaLen
                 else if ( line.startsWith ( "performer", Qt::CaseInsensitive ) )
                 {
                     artist = line.mid ( 10 ).remove ( '"' );
-                    if ( mode == BEGIN )
+                    if ( mode == BEGIN && !filesSection  )
                     {
                         defaultArtist = artist;
                         artist.clear();
                         debug() << "Album Artist: " << defaultArtist;
                     }
+                    else if( !fileFound )
+                    {
+                        artist.clear();
+                        continue;
+                    }
                     else
                         debug() << "Artist: " << artist;
                 }
 
-                else if ( line.startsWith ( "track", Qt::CaseInsensitive ) )
+                else if ( line.startsWith ( "track", Qt::CaseInsensitive ) && fileFound )
                 {
                     if ( mode == TRACK_FOUND )
                     {
@@ -126,24 +129,24 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, qint64 mediaLen
                         debug() << "Mode is TRACK_FOUND, abort.";
                         return CueFileItemMap();
                     }
-                    if ( mode == INDEX_FOUND )
+                    else if ( mode == INDEX_FOUND )
                     {
                         if ( artist.isNull() )
                             artist = defaultArtist;
 
-                        debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << track << ")";
+                        debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << trackNr << ")";
                         // add previous entry to map
-                        cueItems.insert ( index, CueFileItem ( title, artist, defaultAlbum, track, index ) );
+                        cueItems.insert ( index, CueFileItem ( title, artist, defaultAlbum, trackNr, index ) );
                         prevIndex = index;
                         title.clear();
                         artist.clear();
-                        track  = 0;
+                        trackNr  = 0;
                     }
-                    track = line.section ( ' ',1,1 ).toInt();
-                    debug() << "Track: " << track;
+                    trackNr = line.section ( ' ',1,1 ).toInt();
+                    debug() << "Track: " << trackNr;
                     mode = TRACK_FOUND;
                 }
-                else if ( line.startsWith ( "index", Qt::CaseInsensitive ) )
+                else if ( line.startsWith ( "index", Qt::CaseInsensitive ) && fileFound  )
                 {
                     if ( mode == TRACK_FOUND )
                     {
@@ -197,14 +200,23 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, qint64 mediaLen
                     }
                     debug() << "index: " << index;
                 }
+                else if( line.startsWith ( "file", Qt::CaseInsensitive ) )
+                {
+                    QString file = line.mid ( 5 ).remove ( '"' );
+                    if( fileFound )
+                        break;
+
+                    fileFound = file.contains ( trackUrl.fileName(), Qt::CaseInsensitive );
+                    filesSection = true;
+                }
             }
 
             if ( artist.isNull() )
                 artist = defaultArtist;
 
-            debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << track << ")";
+            debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << trackNr << ")";
             // add previous entry to map
-            cueItems.insert ( index, CueFileItem ( title, artist, defaultAlbum, track, index ) );
+            cueItems.insert ( index, CueFileItem ( title, artist, defaultAlbum, trackNr, index ) );
             file.close();
         }
 
@@ -214,8 +226,8 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, qint64 mediaLen
         *  we can set the lenth for the last track after all the cue file was loaded into array.
         */
 
-        cueItems[index].setLength ( mediaLength - index );
-        debug() << "Setting length of track " << cueItems[index].title() << " to " << mediaLength - index << " msecs.";
+        cueItems[index].setLength ( trackLen - index );
+        debug() << "Setting length of track " << cueItems[index].title() << " to " << trackLen - index << " msecs.";
 
         return cueItems;
     }

@@ -24,6 +24,7 @@
 
 #include <QBitArray>
 #include <QString>
+#include <QStringList>
 #include <QSharedData>
 #include <QExplicitlySharedDataPointer>
 

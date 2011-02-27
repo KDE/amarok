@@ -23,11 +23,10 @@
 #include <QList>
 #include <QString>
 #include <QStringList>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 #include "Track.h"
-
-class QXmlStreamReader;
-class QXmlStreamWriter;
 
 namespace CollectionScanner
 {

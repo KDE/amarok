@@ -21,5 +21,8 @@ add_subdirectory( db )
 #    add_subdirectory(nepomukcollection)
 #endif (SOPRANO_FOUND AND NEPOMUK_FOUND)
 
-add_subdirectory( playdarcollection )
+# only build playdarcollection if QJson was found
+if( QJSON_FOUND )
+    add_subdirectory( playdarcollection )
+endif( QJSON_FOUND )
 add_subdirectory( upnpcollection )

@@ -326,8 +326,12 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
     else
         result = QString( data );
 
+    // extract tab title and data
     const QString title = subStringBetween( result, "<strong>", "</strong>");
-    QString tabs = subStringBetween( result, "<pre>", "</pre>" );
+    QRegExp regex = QRegExp( "<pre>.*</pre>", Qt::CaseInsensitive );
+    if( regex.indexIn( result ) == -1 )
+        return;
+    QString tabs = regex.cap();
     tabs.remove( "<span>", Qt::CaseInsensitive );
     tabs.remove( "</span>", Qt::CaseInsensitive );
 
@@ -441,8 +445,12 @@ TabsEngine::resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessMa
     else
         result = QString( data );
 
+    // extract tab title and data
     QString title = subStringBetween( result, "title\" content=\"", ". Accurate and free" );
-    QString tabs = subStringBetween( result, "<pre>", "</pre>" );
+    QRegExp regex = QRegExp( "<pre>.*</pre>", Qt::CaseInsensitive );
+    if( regex.indexIn( result ) == -1 )
+        return;
+    QString tabs = regex.cap();
     tabs.remove( "<span>", Qt::CaseInsensitive );
     tabs.remove( "</span>", Qt::CaseInsensitive );
 

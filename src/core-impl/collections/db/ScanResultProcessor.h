@@ -90,6 +90,15 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
         virtual void commit();
         virtual void rollback();
 
+        /** Returns a list of the last sql errors.
+            The list might not include every one error if the number
+            is beyond a sensible limit.
+        */
+        QStringList getLastErrors() const;
+
+        /** Clears the list of the last errors. */
+        void clearLastErrors();
+
     Q_SIGNALS:
         /** This signal is emitted after a directory was written to the database.
         */
@@ -130,6 +139,8 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
         QMultiHash<QString, CollectionScanner::Album*> m_albumNames;
 
         ScanType m_type;
+
+        QStringList m_lastErrors;
 };
 
 #endif

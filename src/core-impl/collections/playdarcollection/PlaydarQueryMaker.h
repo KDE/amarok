@@ -55,10 +55,7 @@ namespace Collections
             QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
             QueryMaker* orderBy( qint64 value, bool descending = false );
             QueryMaker* orderByRandom();
-            
-            QueryMaker* includeCollection( const QString &collectionId );
-            QueryMaker* excludeCollection( const QString &collectionId );
-            
+
             QueryMaker* addMatch( const Meta::TrackPtr &track );
             QueryMaker* addMatch( const Meta::ArtistPtr &artist );
             QueryMaker* addMatch( const Meta::AlbumPtr &album );
@@ -111,7 +108,6 @@ namespace Collections
         private:
             QueryType m_queryType;
             bool m_autoDelete;
-            bool m_shouldQueryCollection;
             int m_activeQueryCount;
             bool m_memoryQueryIsRunning;
             bool m_collectionUpdated;

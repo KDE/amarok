@@ -23,13 +23,13 @@
 #include <QString>
 #include <QList>
 #include <QHash>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 #include "Playlist.h"
 #include "Album.h"
 
 class QSettings;
-class QXmlStreamReader;
-class QXmlStreamWriter;
 
 namespace CollectionScanner
 {

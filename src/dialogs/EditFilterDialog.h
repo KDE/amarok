@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2006 Giovanni Venturi <giovanni@kde-it.org>                            *
  * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,10 +23,9 @@
 #include "ui_EditFilterDialog.h"
 
 #include <KDialog>
-
 #include <QList>
 
-class QWidget;
+class TokenDropTarget;
 
 class EditFilterDialog : public KDialog
 {
@@ -41,18 +41,32 @@ class EditFilterDialog : public KDialog
         void filterChanged( const QString &filter );
 
     private:
+        void initTokenPool();
+        Token *tokenForField( const qint64 field );
+        void parseTextFilter( const QString &text );
+        void updateMetaQueryWidgetView();
+
+        struct Filter
+        {
+            MetaQueryWidget::Filter filter;
+            bool inverted;
+        };
+
         Ui::EditFilterDialog m_ui;
+        TokenDropTarget *m_dropTarget;
+        Token *m_curToken;
+        QMap< Token *, Filter > m_filters;
 
-        bool m_appended;               // true if a filter appended
-        QString m_filterText;          // the resulting filter string
-        QString m_previousFilterText;  // the previous resulting filter string
+        QString m_separator;
 
-    protected slots:
-        virtual void slotAttributeChanged();
-        virtual void slotAppend();
-        virtual void slotClear();
-        virtual void slotUndo();
-        virtual void slotOk();
+    private slots:
+        void slotTokenSelected( QWidget *token );
+        void slotTokenDropTargetChanged();
+        void slotAttributeChanged( const MetaQueryWidget::Filter &filter );
+        void slotInvert( bool checked );
+        void slotSeparatorChange( const QString &separator );
+        void slotReset();
+        void accept();
 };
 
 #endif /* AMAROK_EDITFILTERDIALOG_H */

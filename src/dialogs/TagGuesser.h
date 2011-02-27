@@ -19,17 +19,17 @@
 
 #include <QMap>
 #include <QString>
-#include <QRegExp>
 
-#define album_color Qt::red
+#define album_color       Qt::red
 #define albumartist_color Qt::blue
-#define artist_color Qt::blue
-#define comment_color Qt::gray
-#define composer_color Qt::magenta
-#define genre_color Qt::cyan
-#define title_color Qt::green
-#define track_color Qt::yellow
-#define year_color Qt::darkRed
+#define artist_color      Qt::blue
+#define comment_color     Qt::gray
+#define composer_color    Qt::magenta
+#define genre_color       Qt::cyan
+#define title_color       Qt::green
+#define track_color       Qt::yellow
+#define discnr_color      Qt::yellow
+#define year_color        Qt::darkRed
 
 class TagGuesser
 {
@@ -41,13 +41,13 @@ class TagGuesser
         *   Sets the Filename to guess from
         *   @arg fileName Filename to guess from
         */
-        void setFilename( const QString fileName );
+        void setFilename( const QString &fileName );
 
         /**
         *   Sets the schema to guess from
         *   @arg schema schema to guess from
         */
-        void setSchema( const QString schema );
+        void setSchema( const QString &schema );
 
         /**
         *   Sets the case type
@@ -66,7 +66,7 @@ class TagGuesser
         *   @arg convertUnderscores should underscores be converted
         */
         void setConvertUnderscores( const bool convertUnderscores );
-        
+
         /**
         *   tries guessing tags from filename and options
         */
@@ -75,7 +75,7 @@ class TagGuesser
         /**
         *   @Returns a list of guessed Tags
         */
-        QMap<QString,QString> tags() { return m_tags; };
+        QMap<qint64,QString> tags() { return m_tags; };
 
         /**
         *   @Returns a colored version of the filename
@@ -84,14 +84,7 @@ class TagGuesser
 
     private:
 
-        struct TagStruct
-        {
-            QString type;                   //!< Type of the Tag (e.g. "artist")
-            QString tag;                    //!< Tag itself
-        };
-        
-        QMap<QString,QString> m_tags;       //!< Taglist (e.g. <"artist","some artist">
-        QMap<int,TagStruct> m_sortedTags;   //!< Taglist sorted after their occurence in the filename
+        QMap<qint64,QString> m_tags;        //!< Taglist (e.g. < Meta::valArtist,"some artist" >
         bool m_guessed;                     //!< Is true when guessing was done
         QString m_fileName;                 //!< Filename to be guessed from
         QString m_schema;                   //!< Schema after which should be guessed
@@ -105,28 +98,12 @@ class TagGuesser
         *   @arg type   case type to convert tag to
         *   @returns    the converted tag
         */
-        QString convertTagCaseType( QString tag, int type );
+        QString convertTagCaseType( const QString &tag, int type );
 
         /**
-        *   Converts all underscores in a filename to spaces
-        *   @arg filename the filename to be converted
-        *   @returns the converted filename
-        */
-        QString convertUnderscores( QString tag );
-
-        /**
-        *   Cuts trailing spaces from a tag
-        *   @arg tag    tag to be used
-        *   @returns    the tag without trailing spaces
-        */
-        QString cutTagTrailingSpaces( QString tag );
-
-        /**
-        *   Generates a regular expression from a given schema
-        *   @arg schema schema to generate expression from
-        *   @returns a regular expression
-        */
-        QString getRegExpFromSchema( QString schema );
+         * @Returns color name for specified metadata field
+         */
+        QString fieldColor( qint64 field );
 };
 
 #endif /* TAGGUESSER_H */

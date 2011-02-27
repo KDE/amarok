@@ -59,7 +59,8 @@ void TestCueFileSupport::testLocateCueFile()
 void TestCueFileSupport::testIso88591Cue()
 {
     KUrl testUrl = dataPath( "data/cue/testsheet01-iso8859-1.cue" );
-    CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, 48000 );
+    KUrl testTrackUrl = QString( "Die Toten Hosen - In aller Stille (2008).mp3" );
+    CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, testTrackUrl, 48000 );
 
     QCOMPARE( cueItemMap.size(), 14 );
     QCOMPARE( cueItemMap.value( cueItemMap.keys()[2] ).title(), QString( "Disco" ) );
@@ -69,7 +70,8 @@ void TestCueFileSupport::testIso88591Cue()
 void TestCueFileSupport::testUtf8Cue()
 {
     KUrl testUrl = dataPath( "data/cue/testsheet01-utf8.cue" );
-    CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, 48000 );
+    KUrl testTrackUrl = QString( "Die Toten Hosen - In aller Stille (2008).mp3" );
+    CueFileItemMap cueItemMap = CueFileSupport::loadCueFile( testUrl, testTrackUrl, 48000 );
 
     QCOMPARE( cueItemMap.size(), 14 );
     QCOMPARE( cueItemMap.value( cueItemMap.keys()[6] ).title(), QString( "Ertrinken" ) );

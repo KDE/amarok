@@ -36,20 +36,18 @@ class NepomukWorkerThread;
 class NepomukQueryMaker : public QueryMaker
 {
     Q_OBJECT
-    
+
 	public:
 	    NepomukQueryMaker(NepomukCollection *collection, Soprano::Model* model);
 	    virtual ~NepomukQueryMaker();
-	
+
 	    virtual void abortQuery();
 	    virtual void run();
-	
+
 	    virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
-	    
-        virtual QueryMaker* setQueryType( QueryType type );	
-	    virtual QueryMaker* includeCollection( const QString &collectionId );
-	    virtual QueryMaker* excludeCollection( const QString &collectionId );
-	
+
+            virtual QueryMaker* setQueryType( QueryType type );
+
 	    virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
 	    virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
 	    virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );

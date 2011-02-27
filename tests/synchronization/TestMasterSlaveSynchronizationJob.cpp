@@ -66,8 +66,9 @@ public:
         slotRemoveOperationFinished();
     }
 
-    void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources)
+    void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources, const Transcoding::Configuration& conf)
     {
+        Q_UNUSED( conf )
         trackCopyCount = sources.count();
         foreach( const Meta::TrackPtr &track, sources.keys() )
         {

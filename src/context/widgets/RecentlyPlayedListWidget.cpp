@@ -133,6 +133,7 @@ RecentlyPlayedListWidget::startQuery()
       ->setQueryType( Collections::QueryMaker::Track )
       ->excludeFilter( Meta::valTitle, QString(), true, true )
       ->orderBy( Meta::valLastPlayed, true )
+      ->excludeFilter( Meta::valLastPlayed, "2147483647" )
       ->limitMaxResultSize( 10 )
       ->run();
 }
