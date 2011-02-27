@@ -321,8 +321,9 @@ SqlRegistry::removeTrack( int urlId, const QString uid )
     // (deviceid,rpath is a unique key)
     // so we just write the uid into the path
     query = QString( "UPDATE urls SET deviceid=0, rpath='%1', directory=NULL "
-                     "WHERE id=%2;").arg( m_collection->sqlStorage()->escape(uid),
-                                          urlId );
+                     "WHERE id=%2;")
+        .arg( m_collection->sqlStorage()->escape(uid) )
+        .arg( urlId );
     m_collection->sqlStorage()->query( query );
     query = QString( "UPDATE statistics SET deleted=1 WHERE url=%1;").arg( urlId );
     m_collection->sqlStorage()->query( query );
