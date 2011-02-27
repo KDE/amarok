@@ -111,6 +111,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
     {
         setCollapseOn();
         m_albums.clear();
+        m_albumsView->clear();
         return;
     }
 
