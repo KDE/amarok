@@ -19,6 +19,7 @@
 #include "DynamicBiasWidgets.h"
 
 #include "biases/AlbumPlayBias.h"
+#include "biases/IfElseBias.h"
 #include "biases/PartBias.h"
 #include "biases/TagMatchBias.h"
 #include "biases/QuizPlayBias.h"
@@ -145,6 +146,7 @@ Dynamic::BiasFactory::instance()
     {
         // --- build in biases
         s_biasFactories.append( new Dynamic::TagMatchBiasFactory() );
+        s_biasFactories.append( new Dynamic::IfElseBiasFactory() );
         s_biasFactories.append( new Dynamic::PartBiasFactory() );
         s_biasFactories.append( new RandomBiasFactory() );
         s_biasFactories.append( new UniqueBiasFactory() );

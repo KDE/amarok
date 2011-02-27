@@ -479,6 +479,7 @@ set(libdynamic_SRCS
     dynamic/Bias.cpp
     dynamic/biases/AlbumPlayBias.cpp
     dynamic/biases/PartBias.cpp
+    dynamic/biases/IfElseBias.cpp
     dynamic/biases/QuizPlayBias.cpp
     dynamic/biases/TagMatchBias.cpp
     dynamic/biases/EchoNestBias.cpp
