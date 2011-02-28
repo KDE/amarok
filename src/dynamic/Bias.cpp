@@ -29,6 +29,8 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#include <klocale.h>
+
 // -------- AbstractBias -------------
 
 Dynamic::AbstractBias::AbstractBias()
@@ -123,6 +125,11 @@ Dynamic::RandomBias::name() const
     return Dynamic::RandomBias::sName();
 }
 
+QString
+Dynamic::RandomBias::toString() const
+{
+    return i18nc("Random bias representation", "Random songs");
+}
 
 QWidget*
 Dynamic::RandomBias::widget( QWidget* parent )
@@ -191,6 +198,11 @@ Dynamic::UniqueBias::name() const
     return Dynamic::UniqueBias::sName();
 }
 
+QString
+Dynamic::UniqueBias::toString() const
+{
+    return i18nc("Unique bias representation", "All songs currently not in the list");
+}
 
 QWidget*
 Dynamic::UniqueBias::widget( QWidget* parent )
@@ -289,6 +301,12 @@ QString
 Dynamic::AndBias::name() const
 {
     return Dynamic::AndBias::sName();
+}
+
+QString
+Dynamic::AndBias::toString() const
+{
+    return i18nc("And bias representation", "And");
 }
 
 
@@ -453,6 +471,12 @@ Dynamic::OrBias::name() const
     return Dynamic::OrBias::sName();
 }
 
+QString
+Dynamic::OrBias::toString() const
+{
+    return i18nc("Or bias representation", "Or");
+}
+
 Dynamic::TrackSet
 Dynamic::OrBias::matchingTracks( int position,
                                  const Meta::TrackList& playlist, int contextCount,
@@ -524,6 +548,12 @@ QString
 Dynamic::NotBias::name() const
 {
     return Dynamic::NotBias::sName();
+}
+
+QString
+Dynamic::NotBias::toString() const
+{
+    return i18nc("Not bias representation", "Not");
 }
 
 Dynamic::TrackSet

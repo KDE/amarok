@@ -923,7 +923,7 @@ QString MetaQueryWidget::Filter::fieldToString() const
     return Meta::shortI18nForField( field );
 }
 
-QString MetaQueryWidget::Filter::toString( bool invert )
+QString MetaQueryWidget::Filter::toString( bool invert ) const
 {
     // this member is called when there is a keyword that needs numeric attributes
     QString strField = fieldToString();

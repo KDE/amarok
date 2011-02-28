@@ -131,6 +131,22 @@ Dynamic::LastFmBias::name() const
     return Dynamic::LastFmBias::sName();
 }
 
+QString
+Dynamic::LastFmBias::toString() const
+{
+    switch( m_match )
+    {
+    case SimilarTrack:
+        return i18nc("LastFm bias representation",
+                     "Similar to the previous track (as reported by LastFm)");
+    case SimilarArtist:
+        return i18nc("LastFm bias representation",
+                     "Similar to the previous artist (as reported by LastFm)");
+    }
+    return QString();
+}
+
+
 QWidget*
 Dynamic::LastFmBias::widget( QWidget* parent )
 {

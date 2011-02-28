@@ -123,6 +123,20 @@ Dynamic::EchoNestBias::name() const
     return Dynamic::EchoNestBias::sName();
 }
 
+QString
+Dynamic::EchoNestBias::toString() const
+{
+    switch( m_match )
+    {
+    case PreviousTrack:
+        return i18nc("EchoNest bias representation",
+                     "Similar to the previous track (as reported by EchoNest)");
+    case Playlist:
+        return i18nc("EchoNest bias representation",
+                     "Similar any track in the current playlist (as reported by EchoNest)");
+    }
+    return QString();
+}
 
 QWidget*
 Dynamic::EchoNestBias::widget( QWidget* parent )

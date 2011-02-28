@@ -292,6 +292,13 @@ Dynamic::PartBias::name() const
     return Dynamic::PartBias::sName();
 }
 
+QString
+Dynamic::PartBias::toString() const
+{
+    return i18nc("Part bias representation", "Partition");
+}
+
+
 QWidget*
 Dynamic::PartBias::widget( QWidget* parent )
 {

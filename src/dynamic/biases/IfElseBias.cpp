@@ -80,6 +80,12 @@ Dynamic::IfElseBias::name() const
     return Dynamic::IfElseBias::sName();
 }
 
+QString
+Dynamic::IfElseBias::toString() const
+{
+    return i18nc("IfElse bias representation", "If");
+}
+
 Dynamic::TrackSet
 Dynamic::IfElseBias::matchingTracks( int position,
                                      const Meta::TrackList& playlist,

@@ -79,6 +79,9 @@ namespace Dynamic
             /** The same as sName just not static */
             virtual QString name() const;
 
+            /** The textual representation of this bias (localized) */
+            virtual QString toString() const = 0;
+
             /** Create a widget appropriate for editing the bias.
             */
             virtual QWidget* widget( QWidget* parent = 0 );
@@ -167,6 +170,7 @@ namespace Dynamic
 
             static QString sName();
             virtual QString name() const;
+            virtual QString toString() const;
 
             virtual QWidget* widget( QWidget* parent = 0 );
 
@@ -198,6 +202,7 @@ namespace Dynamic
 
             static QString sName();
             virtual QString name() const;
+            virtual QString toString() const;
 
             virtual QWidget* widget( QWidget* parent = 0 );
 
@@ -226,6 +231,7 @@ namespace Dynamic
 
             static QString sName();
             virtual QString name() const;
+            virtual QString toString() const;
 
             virtual QWidget* widget( QWidget* parent = 0 );
 
@@ -279,6 +285,7 @@ namespace Dynamic
 
             static QString sName();
             virtual QString name() const;
+            virtual QString toString() const;
 
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
@@ -306,6 +313,7 @@ namespace Dynamic
 
             static QString sName();
             virtual QString name() const;
+            virtual QString toString() const;
 
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,

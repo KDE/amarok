@@ -182,6 +182,11 @@ Dynamic::TagMatchBias::name() const
     return Dynamic::TagMatchBias::sName();
 }
 
+QString
+Dynamic::TagMatchBias::toString() const
+{
+    return m_filter.toString();
+}
 
 QWidget*
 Dynamic::TagMatchBias::widget( QWidget* parent )

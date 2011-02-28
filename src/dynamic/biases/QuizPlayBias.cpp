@@ -111,6 +111,24 @@ Dynamic::QuizPlayBias::name() const
     return Dynamic::QuizPlayBias::sName();
 }
 
+QString
+Dynamic::QuizPlayBias::toString() const
+{
+    switch( m_follow )
+    {
+    case TitleToTitle:
+        return i18nc("QuizPlay bias representation",
+                     "Tracks whose title start with a character the last track ended with");
+    case ArtistToArtist:
+        return i18nc("QuizPlay bias representation",
+                     "Tracks whose artist name start with a character the last track ended with");
+    case AlbumToAlbum:
+        return i18nc("QuizPlay bias representation",
+                     "Tracks whose album name start with a character the last track ended with");
+    }
+    return QString();
+}
+
 QWidget*
 Dynamic::QuizPlayBias::widget( QWidget* parent )
 {

@@ -134,6 +134,15 @@ Dynamic::WeeklyTopBias::name() const
     return Dynamic::WeeklyTopBias::sName();
 }
 
+QString
+Dynamic::WeeklyTopBias::toString() const
+{
+    return i18nc("WeeklyTopBias bias representation",
+                 "Tracks from the LastFM top lists from %1 to %2")
+        .arg( m_range.from.toString() )
+        .arg( m_range.to.toString() );
+}
+
 QWidget*
 Dynamic::WeeklyTopBias::widget( QWidget* parent )
 {
