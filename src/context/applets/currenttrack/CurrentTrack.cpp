@@ -319,14 +319,14 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         return;
     }
 
-    if( m_view != Playing )
-        setView( Playing );
-
-    const QPixmap cover = data[ "albumart" ].value<QPixmap>();
+    const QPixmap &cover = data[ "albumart" ].value<QPixmap>();
     const QVariantMap &currentInfo = data[ QLatin1String("current") ].toMap();
     bool updateCover = ( m_coverKey != cover.cacheKey() );
     if( (m_currentInfo == currentInfo) && !updateCover )
         return;
+
+    if( m_view != Playing )
+        setView( Playing );
 
     QString title = currentInfo.value( Meta::Field::TITLE ).toString();
     QString artist = currentInfo.value( Meta::Field::ARTIST ).toString();

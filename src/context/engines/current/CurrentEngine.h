@@ -73,6 +73,8 @@ private:
     Meta::AlbumList m_albums;
     Meta::TrackPtr m_currentTrack;
     Meta::AlbumPtr m_currentAlbum;
+    qint64 m_coverCacheKey;
+    QVariantMap m_trackInfo;
 
     /** The address of the query maker used for the albums query.
         This is only used to check if the query results are from the latest started query maker.
