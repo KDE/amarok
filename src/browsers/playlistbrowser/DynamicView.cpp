@@ -19,6 +19,7 @@
 #define DEBUG_PREFIX "DynamicView"
 
 #include "DynamicView.h"
+#include "DynamicBiasWidgets.h"
 
 #include "core/support/Debug.h"
 #include "dynamic/Bias.h"
@@ -73,6 +74,75 @@ PlaylistBrowserNS::DynamicView::~DynamicView()
 }
 
 void
+PlaylistBrowserNS::DynamicView::addToSelected()
+{
+    DEBUG_BLOCK;
+}
+
+void
+PlaylistBrowserNS::DynamicView::cloneSelected()
+{
+    DEBUG_BLOCK;
+}
+
+void
+PlaylistBrowserNS::DynamicView::editSelected()
+{
+    DEBUG_BLOCK;
+
+    QModelIndexList indexes = selectionModel()->selectedIndexes();
+
+    if( indexes.isEmpty() )
+        return;
+
+    QVariant v = model()->data( indexes.first(), Dynamic::DynamicModel::PlaylistRole );
+    if( v.isValid() )
+    {
+        Dynamic::DynamicPlaylist* playlist = qobject_cast<Dynamic::DynamicPlaylist*>(v.value<QObject*>() );
+        edit( indexes.first() ); // call the normal editor
+        return;
+    }
+
+    v = model()->data( indexes.first(), Dynamic::DynamicModel::BiasRole );
+    if( v.isValid() )
+    {
+        Dynamic::AbstractBias* bias = qobject_cast<Dynamic::AbstractBias*>(v.value<QObject*>() );
+        PlaylistBrowserNS::BiasDialog dialog( Dynamic::BiasPtr(bias), this);
+        dialog.exec();
+        return;
+    }
+}
+
+void
+PlaylistBrowserNS::DynamicView::removeSelected()
+{
+    DEBUG_BLOCK;
+
+    QModelIndexList indexes = selectionModel()->selectedIndexes();
+
+    if( indexes.isEmpty() )
+        return;
+
+    Dynamic::DynamicModel::instance()->removeAt( indexes.first() );
+}
+
+void
+PlaylistBrowserNS::DynamicView::keyPressEvent( QKeyEvent *event )
+{
+    switch( event->key() )
+    {
+        case Qt::Key_Delete:
+            removeSelected();
+            return;
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+            editSelected();
+            return;
+    }
+    Amarok::PrettyTreeView::keyPressEvent( event );
+}
+
+void
 PlaylistBrowserNS::DynamicView::mousePressEvent( QMouseEvent *event )
 {
     const QModelIndex index = indexAt( event->pos() );
@@ -104,34 +174,6 @@ PlaylistBrowserNS::DynamicView::mousePressEvent( QMouseEvent *event )
     // on the fold marker but not on the item itself. Required here to
     // enable dragging.
     Amarok::PrettyTreeView::mousePressEvent( event );
-}
-
-QAction *
-PlaylistBrowserNS::DynamicView::decoratorActionAt( const QModelIndex &idx, const QPoint pos )
-{
-    /*
-    const int actionCount =
-        idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
-    if( actionCount > 0 )
-    {
-        const QRect rect = PlaylistTreeItemDelegate::actionsRect( idx );
-        if( rect.contains( pos ) )
-        {
-            QVariantList variantList =
-                    idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).toList();
-            if( variantList.isEmpty() )
-                return 0;
-
-            QActionList actions = variantList.first().value<QActionList>();
-            int indexOfAction = ( pos.x() - rect.left() ) /
-                                PlaylistTreeItemDelegate::delegateActionIconWidth();
-            if( indexOfAction >= actions.count() )
-                return 0;
-            return actions.value( indexOfAction );
-        }
-    }
-    */
-    return 0;
 }
 
 void
@@ -202,8 +244,7 @@ PlaylistBrowserNS::DynamicView::mouseDoubleClickEvent( QMouseEvent *event )
         v = model()->data( index, Dynamic::DynamicModel::BiasRole );
         if( v.isValid() )
         {
-            debug() << "edit bias";
-            // model->setActivePlaylist( model->playlistIndex( static_cast<DynamicPlaylist*>(v.toObject() ) ) );
+            editSelected();
             event->accept();
             return;
         }
@@ -262,36 +303,6 @@ PlaylistBrowserNS::DynamicView::startDrag( Qt::DropActions supportedActions )
 }
 
 void
-PlaylistBrowserNS::DynamicView::keyPressEvent( QKeyEvent *event )
-{
-    switch( event->key() )
-    {
-        case Qt::Key_Delete:
-        {
-            /*
-            QModelIndexList indices = selectedIndexes();
-            QActionList actions = actionsFor( indices );
-
-            if( actions.isEmpty() )
-            {
-                debug() <<"No actions !";
-                return;
-            }
-            foreach( QAction *actn, actions )
-                if( actn )
-                    if( actn->objectName() == "deleteAction" )
-                    {
-                        actn->trigger();
-                        actn->setData( QVariant() );
-                    }
-            return;
-            */
-        }
-     }
-     Amarok::PrettyTreeView::keyPressEvent( event );
-}
-
-void
 PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
@@ -305,18 +316,43 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
     if( v.isValid() )
     {
         Dynamic::DynamicPlaylist* playlist = qobject_cast<Dynamic::DynamicPlaylist*>(v.value<QObject*>() );
-        actions.append( new KAction( KIcon( "media-remove-amarok" ), i18n( "&Delete" ), this ) );
-        actions.append( new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename..." ), this ) );
-        actions.append( new KAction( i18n( "&Add new Bias" ), this ) );
+        QAction* action;
+
+        action = new KAction( KIcon( "media-remove-amarok" ), i18n( "&Delete" ), this );
+        connect( action, SIGNAL( triggered(bool) ), this, SLOT( removeSelected() ) );
+        actions.append( action );
+
+        action = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename..." ), this );
+        connect( action, SIGNAL( triggered(bool) ), this, SLOT( editSelected() ) );
+        actions.append( action );
+
+        action = new KAction( i18n( "&Add new Bias" ), this );
+        connect( action, SIGNAL( triggered(bool) ), this, SLOT( addToSelected() ) );
+        actions.append( action );
     }
 
-    // if the click was on a playlist
+    // if the click was on a bias
     v = model()->data( index, Dynamic::DynamicModel::BiasRole );
     if( v.isValid() )
     {
         Dynamic::AbstractBias* bias = qobject_cast<Dynamic::AbstractBias*>(v.value<QObject*>() );
-        actions.append( new KAction( i18n( "&Edit" ), this ) );
-        actions.append( new KAction( KIcon( "remove-amarok" ), i18n( "&Delete" ), this ) );
+        Dynamic::AndBias* aBias = qobject_cast<Dynamic::AndBias*>(v.value<QObject*>() );
+        QAction* action;
+
+        action = new KAction( i18n( "&Edit" ), this );
+        connect( action, SIGNAL( triggered(bool) ), this, SLOT( editSelected() ) );
+        actions.append( action );
+
+        if( aBias )
+        {
+            action = new KAction( i18n( "&Add new Bias" ), this );
+            connect( action, SIGNAL( triggered(bool) ), this, SLOT( addToSelected() ) );
+            actions.append( action );
+        }
+
+        action = new KAction( KIcon( "remove-amarok" ), i18n( "&Delete" ), this );
+        connect( action, SIGNAL( triggered(bool) ), this, SLOT( removeSelected() ) );
+        actions.append( action );
     }
 
     if( actions.isEmpty() )
@@ -330,54 +366,6 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
     }
 
     menu.exec( mapToGlobal( event->pos() ) );
-
-    /*
-    //We keep the items that the actions need to be applied to in the actions private data.
-    //Clear the data from all actions now that the context menu has executed.
-    foreach( QAction *action, actions )
-        action->setData( QVariant() );
-        */
-}
-
-bool
-PlaylistBrowserNS::DynamicView::viewportEvent( QEvent *event )
-{
-    if( event->type() == QEvent::ToolTip )
-    {
-        QHelpEvent *helpEvent = static_cast<QHelpEvent *>( event );
-        const QModelIndex &index = indexAt( helpEvent->pos() );
-        if( !rootIsDecorated() && !index.parent().isValid() )
-        {
-            QAction *action = decoratorActionAt( index, helpEvent->pos() );
-            if( action )
-            {
-                QToolTip::showText( helpEvent->globalPos(), action->toolTip() );
-                return true;
-            }
-        }
-    }
-
-    return Amarok::PrettyTreeView::viewportEvent( event );
-}
-
-QList<QAction *>
-PlaylistBrowserNS::DynamicView::actionsFor( QModelIndexList indexes )
-{
-    QList<QAction *> actions;
-    /*
-    foreach( QModelIndex idx, indexes )
-    {
-        QActionList idxActions =
-            idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
-        //only add unique actions model is responsible for making them unique
-        foreach( QAction *action, idxActions )
-        {
-            if( !actions.contains( action ) )
-                actions << action;
-        }
-    }
-    */
-    return actions;
 }
 
 #include "DynamicView.moc"

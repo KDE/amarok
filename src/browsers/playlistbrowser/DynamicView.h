@@ -41,6 +41,12 @@ public:
 signals:
     void currentItemChanged( const QModelIndex &current );
 
+public slots:
+    void addToSelected();
+    void cloneSelected();
+    void editSelected();
+    void removeSelected();
+
 protected:
     virtual void keyPressEvent( QKeyEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
@@ -50,12 +56,8 @@ protected:
     virtual void startDrag( Qt::DropActions supportedActions );
 
     virtual void contextMenuEvent( QContextMenuEvent* event );
-    virtual bool viewportEvent( QEvent *event );
 
 private:
-    QAction *decoratorActionAt( const QModelIndex &idx, const QPoint position );
-    QList<QAction *> actionsFor( QModelIndexList indexes );
-
     PopupDropper* m_pd;
 
     bool m_ongoingDrag;

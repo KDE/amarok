@@ -38,9 +38,9 @@
 #include "lastfm/ws.h"
 #include "lastfm/XmlQuery"
 
+#include <QLabel>
 #include <QComboBox>
-#include <QFormLayout>
-
+#include <QVBoxLayout>
 
 
 QString
@@ -150,11 +150,15 @@ Dynamic::LastFmBias::toString() const
 QWidget*
 Dynamic::LastFmBias::widget( QWidget* parent )
 {
-    PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+    QWidget *widget = new QWidget( parent );
+    QVBoxLayout *layout = new QVBoxLayout( widget );
+
+    QLabel *label = new QLabel( i18n( "LastFM thinks the track is similar to" ) );
+
     QComboBox *combo = new QComboBox();
-    combo->addItem( i18n( "Similar to previous artist" ),
+    combo->addItem( i18n( "the previous artist" ),
                     nameForMatch( SimilarArtist ) );
-    combo->addItem( i18n( "Similar to previous track" ),
+    combo->addItem( i18n( "the previous track" ),
                     nameForMatch( SimilarTrack ) );
     switch( m_match )
     {
@@ -163,11 +167,11 @@ Dynamic::LastFmBias::widget( QWidget* parent )
     }
     connect( combo, SIGNAL( currentIndexChanged(int) ),
              this, SLOT( selectionChanged( int ) ) );
+    label->setBuddy( combo );
+    layout->addWidget( label );
+    layout->addWidget( combo );
 
-
-    bw->formLayout()->addRow( i18n( "Match:" ), combo );
-
-    return bw;
+    return widget;
 }
 
 Dynamic::TrackSet

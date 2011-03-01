@@ -19,6 +19,7 @@
 #ifndef DYNAMICMODEL_H
 #define DYNAMICMODEL_H
 
+#include "Bias.h"
 #include "DynamicPlaylist.h"
 
 #include "amarok_export.h" // we are exporting it for the tests
@@ -59,19 +60,22 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         /** Find the playlist with name, make it active and return it */
         Dynamic::DynamicPlaylist* setActivePlaylist( int );
 
-        int defaultPlaylistIndex() const;
-
         int playlistIndex( Dynamic::DynamicPlaylist* playlist ) const;
 
+        /** Inserts a playlist at the given index.
+            If the playlist is already in the model it will be moved
+            to the position
+        */
+        QModelIndex insertPlaylist( int index, Dynamic::DynamicPlaylist* playlist );
+
         bool isActiveUnsaved() const;
-        bool isActiveDefault() const;
 
         // --- QAbstractItemModel functions ---
-        QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+        QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
         QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const;
         QModelIndex parent(const QModelIndex& index) const;
-        int rowCount( const QModelIndex & parent = QModelIndex() ) const;
-        int columnCount( const QModelIndex & parent = QModelIndex() ) const;
+        int rowCount( const QModelIndex& parent = QModelIndex() ) const;
+        int columnCount( const QModelIndex& parent = QModelIndex() ) const;
         // ---
 
         void saveCurrentPlaylists();
@@ -86,13 +90,22 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         /** Stores the active playlist under the given new title. */
         void saveActive( const QString& newTitle );
 
-        /** Removes the active playlist. */
-        void removeActive();
+        /** Removes the playlist or bias at the given index. */
+        void removeAt( const QModelIndex& index );
+
+        /** Clone the playlist or bias at the given index. */
+        QModelIndex cloneAt( const QModelIndex& index );
+
+        /** Creates a new playlist and returns the index to it. */
+        QModelIndex newPlaylist();
 
     private:
         // two functions to search for parents
         QModelIndex parent( Dynamic::BiasedPlaylist* list, Dynamic::AbstractBias* bias ) const;
         QModelIndex parent( Dynamic::AbstractBias* parent, Dynamic::AbstractBias* bias ) const;
+
+        Dynamic::BiasedPlaylist* cloneList( Dynamic::BiasedPlaylist* list );
+        Dynamic::BiasPtr cloneBias( Dynamic::AbstractBias* bias );
 
         void savePlaylists();
         void loadPlaylists();
@@ -105,10 +118,7 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
 
         int m_activePlaylistIndex;
 
-        /** Contains all the dynamic playlists.
-            The first playlist is always the default one so we always have
-            at least one playlist.
-        */
+        /** Contains all the dynamic playlists.  */
         QList<Dynamic::DynamicPlaylist*> m_playlists;
 
         bool m_activeUnsaved;

@@ -61,32 +61,11 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
 
     setContentsMargins( 0, 0, 0, 0 );
 
-    KHBox* controls1Layout = new KHBox( this );
-
-    m_onOffCheckbox = new QCheckBox( controls1Layout );
-    m_onOffCheckbox->setIcon( KIcon( "dynamic-amarok" ) );
-    m_onOffCheckbox->setText( i18nc( "Turn dynamic mode on", "On" ) );
-    m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
-    m_onOffCheckbox->setCheckable( true );
-    m_onOffCheckbox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
-    QObject::connect( m_onOffCheckbox, SIGNAL( toggled( bool ) ),
-                      The::playlistActions(), SLOT( enableDynamicMode( bool ) ) );
-
-    m_repopulateButton = new QPushButton( controls1Layout );
-    m_repopulateButton->setText( i18n("Repopulate") );
-    m_repopulateButton->setToolTip( i18n("Replace the upcoming tracks with fresh ones.") );
-    m_repopulateButton->setIcon( KIcon( "view-refresh-amarok" ) );
-    m_repopulateButton->setEnabled( enabled );
-    m_repopulateButton->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    QObject::connect( m_repopulateButton, SIGNAL( clicked(bool) ), The::playlistActions(), SLOT( repopulateDynamicPlaylist() ) );
-
-
-    new KSeparator( Qt::Horizontal, this );
-
-
     KHBox* controls2Layout = new KHBox( this );
 
-    new QLabel( i18n( "Previous:" ), controls2Layout );
+    QLabel *label;
+    label = new QLabel( i18n( "Previous:" ), controls2Layout );
+    label->setAlignment( Qt::AlignRight );
 
     m_previous = new QSpinBox( controls2Layout );
     m_previous->setMinimum( 0 );
@@ -94,7 +73,8 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_previous->setValue( AmarokConfig::previousTracks() );
     QObject::connect( m_previous, SIGNAL( valueChanged( int ) ), this, SLOT( setPreviousTracks( int ) ) );
 
-    new QLabel( i18n( "Upcoming:" ), controls2Layout );
+    label = new QLabel( i18n( "Upcoming:" ), controls2Layout );
+    label->setAlignment( Qt::AlignRight );
 
     m_upcoming = new QSpinBox( controls2Layout );
     m_upcoming->setMinimum( 1 );
@@ -111,6 +91,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
 
     KHBox* presetLayout = new KHBox( this );
     KToolBar* presetToolbar = new KToolBar( presetLayout );
+    presetToolbar->setIconSize( QSize( 22, 22 ) );
 
     presetToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     presetToolbar->setMovable( false );
@@ -122,14 +103,18 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_addButton->setIcon( KIcon( "list-add-amarok" ) );
     m_addButton->setToolTip( i18n( "Add new a new preset" ) );
     presetToolbar->addWidget( m_addButton );
-    connect( m_addButton, SIGNAL( clicked( bool ) ), SLOT( add() ) );
 
     m_cloneButton   = new QToolButton( presetToolbar );
     m_cloneButton->setText( i18n("Clone") );
-    m_cloneButton->setIcon( KIcon( "list-clone-amarok" ) );
+    m_cloneButton->setIcon( KIcon( "list-add-amarok" ) );
     m_cloneButton->setToolTip( i18n( "Clone the selected preset" ) );
     presetToolbar->addWidget( m_cloneButton );
-    connect( m_cloneButton, SIGNAL( clicked( bool ) ), SLOT( clone() ) );
+
+    m_editButton   = new QToolButton( presetToolbar );
+    m_editButton->setText( i18n("Edit") );
+    m_editButton->setIcon( KIcon( "document-properties-amarok" ) );
+    m_editButton->setToolTip( i18n( "Edit the selected preset or bias" ) );
+    presetToolbar->addWidget( m_editButton );
 
     m_deleteButton = new QToolButton( presetToolbar );
     m_deleteButton->setText( i18n("Delete") );
@@ -137,15 +122,38 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_deleteButton->setIcon( KIcon( "edit-delete-amarok" ) );
     m_deleteButton->setToolTip( i18n( "Delete the selected preset") );
     presetToolbar->addWidget( m_deleteButton );
-    connect( m_deleteButton, SIGNAL(clicked(bool)),
-            Dynamic::DynamicModel::instance(), SLOT(removeActive()) );
+
+    m_onOffCheckbox = new QCheckBox( presetLayout );
+    m_onOffCheckbox->setIcon( KIcon( "dynamic-amarok" ) );
+    m_onOffCheckbox->setText( i18nc( "Turn dynamic mode on", "On" ) );
+    m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
+    m_onOffCheckbox->setCheckable( true );
+    // m_onOffCheckbox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+    QObject::connect( m_onOffCheckbox, SIGNAL( toggled( bool ) ),
+                      The::playlistActions(), SLOT( enableDynamicMode( bool ) ) );
+
+    m_repopulateButton = new QPushButton( presetLayout );
+    m_repopulateButton->setText( i18n("Repopulate") );
+    m_repopulateButton->setToolTip( i18n("Replace the upcoming tracks with fresh ones.") );
+    m_repopulateButton->setIcon( KIcon( "view-refresh-amarok" ) );
+    m_repopulateButton->setEnabled( enabled );
+    // m_repopulateButton->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
+    QObject::connect( m_repopulateButton, SIGNAL( clicked(bool) ), The::playlistActions(), SLOT( repopulateDynamicPlaylist() ) );
+
 
     // -- the tree view
 
     m_tree = new DynamicView( this );
+    connect( m_tree->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection) ),
+             this, SLOT(selectionChanged()) );
 
-    m_onOffCheckbox->setChecked( AmarokConfig::dynamicMode() );
-    m_repopulateButton->setEnabled( AmarokConfig::dynamicMode() );
+    connect( m_addButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( addToSelected() ) );
+    connect( m_cloneButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( cloneSelected() ) );
+    connect( m_editButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( editSelected() ) );
+    connect( m_deleteButton, SIGNAL(clicked(bool)), m_tree, SLOT(removeSelected()) );
+
+    navigatorChanged();
+    selectionChanged();
 
     connect( The::playlistActions(), SIGNAL(navigatorChanged()),
              this, SLOT(navigatorChanged()) );
@@ -163,6 +171,46 @@ PlaylistBrowserNS::DynamicCategory::navigatorChanged()
     m_onOffCheckbox->setChecked( AmarokConfig::dynamicMode() );
     m_repopulateButton->setEnabled( AmarokConfig::dynamicMode() );
 }
+
+void
+PlaylistBrowserNS::DynamicCategory::selectionChanged()
+{
+    DEBUG_BLOCK;
+
+    QModelIndexList indexes = m_tree->selectionModel()->selectedIndexes();
+
+    if( indexes.isEmpty() )
+    {
+        m_addButton->setEnabled( true );
+        m_cloneButton->setEnabled( false );
+        m_editButton->setEnabled( false );
+        m_deleteButton->setEnabled( false );
+        return;
+    }
+
+    QVariant v = m_tree->model()->data( indexes.first(), Dynamic::DynamicModel::PlaylistRole );
+    if( v.isValid() )
+    {
+        Dynamic::DynamicPlaylist* playlist = qobject_cast<Dynamic::DynamicPlaylist*>(v.value<QObject*>() );
+        m_addButton->setEnabled( true );
+        m_cloneButton->setEnabled( true );
+        m_editButton->setEnabled( true );
+        m_deleteButton->setEnabled( true );
+        return;
+    }
+
+    v = m_tree->model()->data( indexes.first(), Dynamic::DynamicModel::BiasRole );
+    if( v.isValid() )
+    {
+        Dynamic::AbstractBias* bias = qobject_cast<Dynamic::AbstractBias*>(v.value<QObject*>() );
+        m_addButton->setEnabled( true );
+        m_cloneButton->setEnabled( false );
+        m_editButton->setEnabled( true );
+        m_deleteButton->setEnabled( false ); // TODO
+        return;
+    }
+}
+
 
 void
 PlaylistBrowserNS::DynamicCategory::playlistCleared() // SLOT
@@ -185,30 +233,6 @@ PlaylistBrowserNS::DynamicCategory::setPreviousTracks( int n ) // SLOT
 }
 
 void
-PlaylistBrowserNS::DynamicCategory::playlistSelectionChanged( int index )
-{
-    DEBUG_BLOCK
-    Dynamic::BiasedPlaylist* playlist = qobject_cast<Dynamic::BiasedPlaylist*>(Dynamic::DynamicModel::instance()->setActivePlaylist( index ));
-
-    if( !playlist )
-        return;
-
-    if( Dynamic::DynamicModel::instance()->isActiveDefault() )
-        m_deleteButton->setEnabled( false );
-    else
-        m_deleteButton->setEnabled( true );
-
-
-    if( !Dynamic::DynamicModel::instance()->isActiveUnsaved() )
-    {
-        AmarokConfig::setLastDynamicMode( playlist->title() );
-        AmarokConfig::self()->writeConfig();
-    }
-
-    debug() << "Changing biased playlist to: " << playlist->title();
-}
-
-void
 PlaylistBrowserNS::DynamicCategory::save()
 {
     bool ok;
@@ -222,8 +246,8 @@ PlaylistBrowserNS::DynamicCategory::save()
 
     // TODO: write a custom dialog to prevent this from happening in the first
     // place
-    Dynamic::DynamicModel* model = Dynamic::DynamicModel::instance();
     /*
+    Dynamic::DynamicModel* model = Dynamic::DynamicModel::instance();
     if( model->playlistIndex( title ) == model->defaultPlaylistIndex() )
     {
         QMessageBox::warning( this, i18n( "Warning" ),

@@ -28,8 +28,9 @@
 #include "TrackSet.h"
 #include "DynamicBiasWidgets.h"
 
+#include <QLabel>
 #include <QComboBox>
-#include <QFormLayout>
+#include <QVBoxLayout>
 
 #include <QTimer>
 #include <QXmlStreamReader>
@@ -118,13 +119,13 @@ Dynamic::QuizPlayBias::toString() const
     {
     case TitleToTitle:
         return i18nc("QuizPlay bias representation",
-                     "Tracks whose title start with a character the last track ended with");
+                     "Tracks whose title start with a\n character the last track ended with");
     case ArtistToArtist:
         return i18nc("QuizPlay bias representation",
-                     "Tracks whose artist name start with a character the last track ended with");
+                     "Tracks whose artist name start\n with a character the last track ended with");
     case AlbumToAlbum:
         return i18nc("QuizPlay bias representation",
-                     "Tracks whose album name start with a character the last track ended with");
+                     "Tracks whose album name start\n with a character the last track ended with");
     }
     return QString();
 }
@@ -132,13 +133,19 @@ Dynamic::QuizPlayBias::toString() const
 QWidget*
 Dynamic::QuizPlayBias::widget( QWidget* parent )
 {
-    PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+    QWidget *widget = new QWidget( parent );
+    QVBoxLayout *layout = new QVBoxLayout( widget );
+
+    QLabel *label = new QLabel( i18n( "Last character of the previous song is\n"
+                                      "the first character of the next song" ) );
+    layout->addWidget( label );
+
     QComboBox *combo = new QComboBox();
-    combo->addItem( i18n( "Title quiz" ),
+    combo->addItem( i18n( "of the track title (Title quiz)" ),
                     nameForFollow( TitleToTitle ) );
-    combo->addItem( i18n( "Artist quiz" ),
+    combo->addItem( i18n( "of the artist (Artist quiz)" ),
                     nameForFollow( ArtistToArtist ) );
-    combo->addItem( i18n( "Album quiz" ),
+    combo->addItem( i18n( "of the album name (Album quiz)" ),
                     nameForFollow( AlbumToAlbum ) );
     switch( m_follow )
     {
@@ -148,10 +155,9 @@ Dynamic::QuizPlayBias::widget( QWidget* parent )
     }
     connect( combo, SIGNAL( currentIndexChanged(int) ),
              this, SLOT( selectionChanged( int ) ) );
+    layout->addWidget( combo );
 
-    bw->formLayout()->addRow( i18n( "Quiz type:" ), combo );
-
-    return bw;
+    return widget;
 }
 
 Dynamic::TrackSet

@@ -124,20 +124,23 @@ Dynamic::AlbumPlayBias::toString() const
 QWidget*
 Dynamic::AlbumPlayBias::widget( QWidget* parent )
 {
-    PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
-    QComboBox *combo = new QComboBox();
-    combo->addItem( i18n( "Directly follows" ),
+    QComboBox *combo = new QComboBox( parent );
+    combo->addItem( i18n( "Track directly follows previous track in album" ),
                     nameForFollow( DirectlyFollow ) );
-    combo->addItem( i18n( "Follows previous" ),
+    combo->addItem( i18n( "Track comes after previous track in album" ),
                     nameForFollow( Follow ) );
-    combo->addItem( i18n( "Same album" ),
+    combo->addItem( i18n( "Track is in the same album as previous track" ),
                     nameForFollow( DontCare ) );
+    switch( m_follow )
+    {
+    case DirectlyFollow: combo->setCurrentIndex(0); break;
+    case Follow:         combo->setCurrentIndex(0); break;
+    case DontCare:       combo->setCurrentIndex(0); break;
+    }
     connect( combo, SIGNAL( currentIndexChanged(int) ),
              this, SLOT( selectionChanged( int ) ) );
 
-    bw->formLayout()->addRow( i18n( "Order:" ), combo );
-
-    return bw;
+    return combo;
 }
 
 Dynamic::TrackSet

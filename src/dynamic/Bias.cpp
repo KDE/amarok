@@ -62,7 +62,8 @@ Dynamic::AbstractBias::name() const
 QWidget*
 Dynamic::AbstractBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+    Q_UNUSED( parent );
+    return 0;
 }
 
 void
@@ -134,7 +135,8 @@ Dynamic::RandomBias::toString() const
 QWidget*
 Dynamic::RandomBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+    Q_UNUSED( parent );
+    return 0;
 }
 
 Dynamic::TrackSet
@@ -201,13 +203,14 @@ Dynamic::UniqueBias::name() const
 QString
 Dynamic::UniqueBias::toString() const
 {
-    return i18nc("Unique bias representation", "All songs currently not in the list");
+    return i18nc("Unique bias representation", "Only once in the current playlist");
 }
 
 QWidget*
 Dynamic::UniqueBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+    Q_UNUSED( parent );
+    return 0;
 }
 
 Dynamic::TrackSet
@@ -306,14 +309,15 @@ Dynamic::AndBias::name() const
 QString
 Dynamic::AndBias::toString() const
 {
-    return i18nc("And bias representation", "And");
+    return i18nc("And bias representation", "Match all");
 }
 
 
 QWidget*
 Dynamic::AndBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::LevelBiasWidget( this, false, parent );
+    Q_UNUSED( parent );
+    return 0;
 }
 
 Dynamic::TrackSet
@@ -474,7 +478,7 @@ Dynamic::OrBias::name() const
 QString
 Dynamic::OrBias::toString() const
 {
-    return i18nc("Or bias representation", "Or");
+    return i18nc("Or bias representation", "Match any");
 }
 
 Dynamic::TrackSet

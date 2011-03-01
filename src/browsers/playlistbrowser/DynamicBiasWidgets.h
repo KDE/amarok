@@ -25,9 +25,9 @@
 #include "Bias.h"
 #include "widgets/MetaQueryWidget.h"
 
-#include <QWidget>
+#include <QDialog>
 
-class QFormLayout;
+class QGridLayout;
 class QLabel;
 class QSlider;
 class QToolButton;
@@ -41,6 +41,7 @@ namespace Amarok
 
 namespace Dynamic
 {
+    class PartBias;
     class TagMatchBias;
 }
 
@@ -48,91 +49,40 @@ namespace PlaylistBrowserNS
 {
     class BiasWidget;
 
-    /** This widget encapsulates the real bias widgets and exchanges them if needed.
-        Also this widget will display a "list like" background.
+    /** A dialog that contains the widget from a bias and allows to edit it.
     */
-    class BiasBoxWidget : public QWidget
+    class BiasDialog : public QDialog
     {
         Q_OBJECT
 
         public:
-            BiasBoxWidget( Dynamic::BiasPtr bias, QWidget* parent = 0 );
-            virtual ~BiasBoxWidget() {}
-
-            void setRemovable( bool );
-
-            BiasWidget* biasWidget()
-            {
-                return qobject_cast<BiasWidget*>(m_biasWidget);
-            }
-
-        protected slots:
-            void biasRemoved();
-            void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
-
-        protected:
-            /** Returns a row number for this bias.
-                Used to display the alternate background for the widgets and
-                it's not really the row number but instead something that looks
-                good. */
-            int rowNumber() const;
-
-            // void resizeEvent( QResizeEvent* );
-            void paintEvent( QPaintEvent *event );
-            void enterEvent ( QEvent *event );
-            void leaveEvent ( QEvent *event );
-
-            QHBoxLayout* m_mainLayout;
-            Dynamic::BiasPtr m_bias;
-            QWidget *m_biasWidget;
-
-        private:
-            QToolButton* m_removeButton;
-            bool m_hover;
-    };
-
-    class AMAROK_EXPORT BiasWidget : public QWidget
-    {
-        Q_OBJECT
-
-        public:
-            BiasWidget( Dynamic::BiasPtr bias, QWidget* parent = 0 );
-
-            /** Set's a widget that is handled as part of the bias widget.
-                Example: The weight slider in case the bias is inside a
-                PartBias.
-                The widget will belong to this object afterwards.
-            */
-            void setCustomWidget( const QString &label, QWidget* widget );
-
-            /** Direct access to the form layout for easy customization */
-            QFormLayout* formLayout()
-            { return m_layout; }
+            BiasDialog( Dynamic::BiasPtr bias, QWidget* parent = 0 );
+            virtual ~BiasDialog() {}
 
         protected slots:
             void factoriesChanged();
             void selectionChanged( int index );
+            void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
 
         protected:
-            Dynamic::BiasPtr m_bias;
-            QWidget* m_customWidget;
-            KComboBox* m_biasSelection;
 
-            /** This is where sub-classes are added */
-            QFormLayout* m_layout;
+            QVBoxLayout* m_mainLayout;
+
+            KComboBox* m_biasSelection;
+            QWidget *m_descriptionLabel;
+            QWidget *m_biasWidget;
+
+            Dynamic::BiasPtr m_bias;
     };
 
-    /** A bias that has sub biases like the AndBias or PartBias */
-    class LevelBiasWidget : public BiasWidget
+
+    /** The widget for the PartBias */
+    class PartBiasWidget : public QWidget
     {
         Q_OBJECT
 
         public:
-            LevelBiasWidget( Dynamic::AndBias* bias, bool haveWeights,
-                             QWidget* parent = 0 );
-
-            QList<BiasBoxWidget*> widgets() const
-            { return m_widgets; }
+            PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent = 0 );
 
         signals:
             void biasWeightChanged( int biasNum, qreal value );
@@ -147,25 +97,19 @@ namespace PlaylistBrowserNS
             void biasWeightsChanged();
 
         protected:
-            /** calls setRemovable() for all sub-widgets */
-            void correctRemovability();
-
-            bool m_haveWeights;
-
             /** True if we just handle a signal. Used to protect agains recursion */
             bool m_inSignal;
 
-            Dynamic::AndBias* m_abias;
+            Dynamic::PartBias* m_bias;
 
-            QSlider *m_weightSelection;
-            QList<BiasBoxWidget*> m_widgets;
+            QGridLayout* m_layout;
+
             QList<QSlider*> m_sliders;
-
-            QToolButton* m_addButton;
+            QList<QWidget*> m_widgets;
     };
 
 
-    class TagMatchBiasWidget : public BiasWidget
+    class TagMatchBiasWidget : public QWidget
     {
         Q_OBJECT
 
@@ -177,11 +121,9 @@ namespace PlaylistBrowserNS
             void syncBiasToControls();
 
         private:
-            Amarok::Slider*  m_scaleSelection;
-            QLabel*          m_scaleLabel;
             MetaQueryWidget* m_queryWidget;
 
-            Dynamic::TagMatchBias* m_tbias;
+            Dynamic::TagMatchBias* m_bias;
     };
 
 }

@@ -37,9 +37,9 @@
 
 #include <kio/job.h>
 
+#include <QLabel>
 #include <QComboBox>
-#include <QFormLayout>
-
+#include <QVBoxLayout>
 
 
 QString
@@ -141,11 +141,15 @@ Dynamic::EchoNestBias::toString() const
 QWidget*
 Dynamic::EchoNestBias::widget( QWidget* parent )
 {
-    PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+    QWidget *widget = new QWidget( parent );
+    QVBoxLayout *layout = new QVBoxLayout( widget );
+
+    QLabel *label = new QLabel( i18n( "Echo nest thinks the track is similar to" ) );
+
     QComboBox *combo = new QComboBox();
-    combo->addItem( i18n( "Previous Track" ),
+    combo->addItem( i18n( "the previous Track" ),
                     nameForMatch( PreviousTrack ) );
-    combo->addItem( i18n( "Playlist" ),
+    combo->addItem( i18n( "one of the tracks in the current playlist" ),
                     nameForMatch( Playlist ) );
     switch( m_match )
     {
@@ -154,11 +158,11 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
     }
     connect( combo, SIGNAL( currentIndexChanged(int) ),
              this, SLOT( selectionChanged( int ) ) );
+    label->setBuddy( combo );
+    layout->addWidget( label );
+    layout->addWidget( combo );
 
-
-    bw->formLayout()->addRow( i18n( "Match:" ), combo );
-
-    return bw;
+    return widget;
 }
 
 Dynamic::TrackSet

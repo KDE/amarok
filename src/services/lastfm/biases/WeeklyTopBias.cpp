@@ -38,13 +38,11 @@
 #include "lastfm/ws.h"
 #include "lastfm/XmlQuery"
 
-#include <QTimeEdit>
-#include <QFormLayout>
-
 #include <QNetworkReply>
 
-#include <QSignalMapper>
-
+#include <QLabel>
+#include <QTimeEdit>
+#include <QVBoxLayout>
 
 
 QString
@@ -146,8 +144,10 @@ Dynamic::WeeklyTopBias::toString() const
 QWidget*
 Dynamic::WeeklyTopBias::widget( QWidget* parent )
 {
-    PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+    QWidget *widget = new QWidget( parent );
+    QVBoxLayout *layout = new QVBoxLayout( widget );
 
+    QLabel *label = new QLabel( i18nc( "in WeeklyTopBias. Label for the date widget", "from:" ) );
     QDateTimeEdit *fromEdit = new QDateTimeEdit( QDate::currentDate().addDays( -7 ) );
     fromEdit->setMinimumDate( QDateTime::fromTime_t( 1111320001 ).date() ); // That's the first week in last fm
     fromEdit->setMaximumDate( QDate::currentDate() );
@@ -155,12 +155,13 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
     if( m_range.from.isValid() )
         fromEdit->setDateTime( m_range.from );
 
-    bw->formLayout()->addRow( i18n( "from:" ), fromEdit );
-
     connect( fromEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ),
              this, SLOT( fromDateChanged( const QDateTime& ) ) );
+    label->setBuddy( fromEdit );
+    layout->addWidget( label );
+    layout->addWidget( fromEdit );
 
-
+    label = new QLabel( i18nc( "in WeeklyTopBias. Label for the date widget", "to:" ) );
     QDateTimeEdit *toEdit = new QDateTimeEdit( QDate::currentDate().addDays( -7 ) );
     toEdit->setMinimumDate( QDateTime::fromTime_t( 1111320001 ).date() ); // That's the first week in last fm
     toEdit->setMaximumDate( QDate::currentDate() );
@@ -168,12 +169,13 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
     if( m_range.to.isValid() )
         toEdit->setDateTime( m_range.to );
 
-    bw->formLayout()->addRow( i18n( "to:" ), toEdit );
-
     connect( toEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ),
              this, SLOT( toDateChanged( const QDateTime& ) ) );
+    label->setBuddy( toEdit );
+    layout->addWidget( label );
+    layout->addWidget( toEdit );
 
-    return bw;
+    return widget;
 }
 
 

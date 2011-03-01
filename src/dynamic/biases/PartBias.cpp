@@ -302,7 +302,7 @@ Dynamic::PartBias::toString() const
 QWidget*
 Dynamic::PartBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::LevelBiasWidget( this, true, parent );
+    return new PlaylistBrowserNS::PartBiasWidget( this, parent );
 }
 
 QList<qreal>

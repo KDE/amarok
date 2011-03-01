@@ -43,7 +43,7 @@ namespace PlaylistBrowserNS {
 
         private slots:
             void navigatorChanged();
-            void playlistSelectionChanged( int index );
+            void selectionChanged();
             void save();
             void playlistCleared();
             void setUpcomingTracks( int );
@@ -57,6 +57,7 @@ namespace PlaylistBrowserNS {
 
             QToolButton *m_addButton;
             QToolButton *m_cloneButton;
+            QToolButton *m_editButton;
             QToolButton *m_deleteButton;
             DynamicView *m_tree;
 

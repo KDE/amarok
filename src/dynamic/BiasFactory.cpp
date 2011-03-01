@@ -217,12 +217,9 @@ Dynamic::ReplacementBias::name() const
 QWidget*
 Dynamic::ReplacementBias::widget( QWidget* parent )
 {
-    PlaylistBrowserNS::BiasWidget *bw = new PlaylistBrowserNS::BiasWidget( BiasPtr(this), parent );
+    QLabel *label = new QLabel( i18n( "Replacement for bias %1" ).arg( m_name ), parent );
 
-    QLabel *label = new QLabel( m_name );
-    bw->formLayout()->addRow( i18n( "Replacement for:" ), label );
-
-    return bw;
+    return label;
 }
 
 void
