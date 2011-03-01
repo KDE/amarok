@@ -42,6 +42,7 @@ signals:
     void currentItemChanged( const QModelIndex &current );
 
 public slots:
+    void addPlaylist();
     void addToSelected();
     void cloneSelected();
     void editSelected();

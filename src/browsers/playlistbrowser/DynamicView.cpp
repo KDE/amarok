@@ -74,6 +74,14 @@ PlaylistBrowserNS::DynamicView::~DynamicView()
 }
 
 void
+PlaylistBrowserNS::DynamicView::addPlaylist()
+{
+    DEBUG_BLOCK;
+    QModelIndex newIndex = Dynamic::DynamicModel::instance()->newPlaylist();
+    selectionModel()->select( newIndex, QItemSelectionModel::ClearAndSelect );
+}
+
+void
 PlaylistBrowserNS::DynamicView::addToSelected()
 {
     DEBUG_BLOCK;
@@ -83,6 +91,12 @@ void
 PlaylistBrowserNS::DynamicView::cloneSelected()
 {
     DEBUG_BLOCK;
+    QModelIndexList indexes = selectionModel()->selectedIndexes();
+    if( indexes.isEmpty() )
+        return;
+
+    QModelIndex newIndex = Dynamic::DynamicModel::instance()->cloneAt( indexes.first() );
+    selectionModel()->select( newIndex, QItemSelectionModel::ClearAndSelect );
 }
 
 void
@@ -91,7 +105,6 @@ PlaylistBrowserNS::DynamicView::editSelected()
     DEBUG_BLOCK;
 
     QModelIndexList indexes = selectionModel()->selectedIndexes();
-
     if( indexes.isEmpty() )
         return;
 

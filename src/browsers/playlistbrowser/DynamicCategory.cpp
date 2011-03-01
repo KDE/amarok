@@ -147,7 +147,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     connect( m_tree->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection) ),
              this, SLOT(selectionChanged()) );
 
-    connect( m_addButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( addToSelected() ) );
+    connect( m_addButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( addPlaylist() ) );
     connect( m_cloneButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( cloneSelected() ) );
     connect( m_editButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( editSelected() ) );
     connect( m_deleteButton, SIGNAL(clicked(bool)), m_tree, SLOT(removeSelected()) );
