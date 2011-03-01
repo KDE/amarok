@@ -242,6 +242,29 @@ Playlist::Actions::back()
     requestPrevTrack();
 }
 
+
+void
+Playlist::Actions::enableDynamicMode( bool enable )
+{
+    if( AmarokConfig::dynamicMode() == enable )
+        return;
+
+    AmarokConfig::setDynamicMode( enable );
+    // TODO: turn off other incompatible modes
+    // TODO: should we restore the state of other modes?
+    AmarokConfig::self()->writeConfig();
+
+    //if the playlist is empty, repopulate while we are at it:
+    if( enable )
+    {
+        if ( Playlist::ModelStack::instance()->bottom()->rowCount() == 0 )
+            repopulateDynamicPlaylist();
+    }
+
+    playlistModeChanged();
+}
+
+
 void
 Playlist::Actions::playlistModeChanged()
 {

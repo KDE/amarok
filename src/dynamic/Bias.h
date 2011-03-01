@@ -55,12 +55,6 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            // role used for the model
-            enum Roles
-            {
-                WidgetRole = 0xf00d
-            };
-
             AbstractBias();
             virtual ~AbstractBias();
 
@@ -218,6 +212,10 @@ namespace Dynamic
             Q_DISABLE_COPY(UniqueBias)
     };
 
+    /** An and bias
+        The And Bias currently serves as a base class for all biases
+        with children.
+    */
     class AMAROK_EXPORT AndBias : public AbstractBias
     {
         Q_OBJECT

@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
  * Copyright (c) 2009-2010 Leo Franchi <lfranchi@kde.org>                               *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -24,15 +25,25 @@
 
 #include <QAbstractItemModel>
 #include <QList>
-#include <QMutex>
 #include <QString>
 
-namespace PlaylistBrowserNS {
+namespace Dynamic {
+
+class BiasedPlaylist;
+class AbstractBias;
 
 class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
 {
     Q_OBJECT
     public:
+        // role used for the model
+        enum Roles
+        {
+            WidgetRole = 0xf00d,
+            PlaylistRole = 0xf00e,
+            BiasRole = 0xf00f
+        };
+
         static DynamicModel* instance();
 
         ~DynamicModel();
@@ -42,7 +53,7 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         /** Returns the currently active playlist.
             Don't free this pointer
         */
-        Dynamic::DynamicPlaylist* activePlaylist();
+        Dynamic::DynamicPlaylist* activePlaylist() const;
         int activePlaylistIndex() const;
 
         /** Find the playlist with name, make it active and return it */
@@ -50,21 +61,17 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
 
         int defaultPlaylistIndex() const;
 
-        int playlistIndex( const QString& ) const;
+        int playlistIndex( Dynamic::DynamicPlaylist* playlist ) const;
 
         bool isActiveUnsaved() const;
         bool isActiveDefault() const;
 
         // --- QAbstractItemModel functions ---
         QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
-
-        QModelIndex index( int row, int column,
-                           const QModelIndex & parent = QModelIndex() ) const;
-
-        QModelIndex parent ( const QModelIndex & index ) const;
-
-        int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
-        int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
+        QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const;
+        QModelIndex parent(const QModelIndex& index) const;
+        int rowCount( const QModelIndex & parent = QModelIndex() ) const;
+        int columnCount( const QModelIndex & parent = QModelIndex() ) const;
         // ---
 
         void saveCurrentPlaylists();
@@ -83,6 +90,10 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         void removeActive();
 
     private:
+        // two functions to search for parents
+        QModelIndex parent( Dynamic::BiasedPlaylist* list, Dynamic::AbstractBias* bias ) const;
+        QModelIndex parent( Dynamic::AbstractBias* parent, Dynamic::AbstractBias* bias ) const;
+
         void savePlaylists();
         void loadPlaylists();
         bool savePlaylists( const QString &filename );

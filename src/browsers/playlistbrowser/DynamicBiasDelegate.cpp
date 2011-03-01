@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,23 +18,27 @@
  ****************************************************************************************/
 
 #include "DynamicBiasDelegate.h"
+#include "dynamic/DynamicModel.h"
 
-#include "App.h"
-#include "core/support/Debug.h"
+// #include "App.h"
 #include "Bias.h"
-#include "DynamicBiasWidgets.h"
+// #include "core/support/Debug.h"
 
 #include <QPainter>
 
 PlaylistBrowserNS::DynamicBiasDelegate::DynamicBiasDelegate( QWidget* parent )
-    : QAbstractItemDelegate( parent )
+    : QStyledItemDelegate( parent )
 {}
 
 void
-PlaylistBrowserNS::DynamicBiasDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+PlaylistBrowserNS::DynamicBiasDelegate::paint ( QPainter* painter,
+                                                const QStyleOptionViewItem& option,
+                                                const QModelIndex& index ) const
 {
-    //Q_UNUSED(painter)
+    QStyledItemDelegate::paint( painter, option, index );
+    return;
 
+    /*
     QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
 
     QRect rect( option.rect );
@@ -41,16 +46,24 @@ PlaylistBrowserNS::DynamicBiasDelegate::paint ( QPainter * painter, const QStyle
     QWidget* widget = qvariant_cast<QWidget*>( index.data( Dynamic::AbstractBias::WidgetRole ) ); 
     widget->setGeometry( rect );
     widget->show();
+    */
 }
 
 
 
 QSize
-PlaylistBrowserNS::DynamicBiasDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+PlaylistBrowserNS::DynamicBiasDelegate::sizeHint( const QStyleOptionViewItem& option,
+                                                  const QModelIndex& index ) const
 {
     Q_UNUSED( option )
 
+    if( index.data( Dynamic::DynamicModel::PlaylistRole ).toBool() )
+        return QStyledItemDelegate::sizeHint( option, index );
+
+    /*
     QWidget* widget = qvariant_cast<QWidget*>( index.data( Dynamic::AbstractBias::WidgetRole ) );
     return widget->sizeHint();
+    */
+    return QSize();
 }
 

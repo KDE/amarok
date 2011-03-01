@@ -18,7 +18,7 @@
 
 #include "dynamic/Bias.h"
 #include "dynamic/BiasedPlaylist.h"
-#include "browsers/playlistbrowser/DynamicModel.h"
+#include "dynamic/DynamicModel.h"
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
@@ -56,7 +56,7 @@ TestDynamicModel::cleanup()
 void
 TestDynamicModel::testData()
 {
-    PlaylistBrowserNS::DynamicModel *model = PlaylistBrowserNS::DynamicModel::instance();
+    Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
 
     // load from the empty directory
     model->loadCurrentPlaylists();
@@ -75,7 +75,7 @@ TestDynamicModel::testPlaylistIndex()
 void
 TestDynamicModel::testSaveActive()
 {
-    PlaylistBrowserNS::DynamicModel *model = PlaylistBrowserNS::DynamicModel::instance();
+    Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
 
     // load from the empty directory
     model->loadCurrentPlaylists();
@@ -145,7 +145,7 @@ TestDynamicModel::testSaveActive()
 void
 TestDynamicModel::testRemoveActive()
 {
-    PlaylistBrowserNS::DynamicModel *model = PlaylistBrowserNS::DynamicModel::instance();
+    Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
 
     // load from the empty directory
     model->loadCurrentPlaylists();

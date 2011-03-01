@@ -102,6 +102,25 @@ Dynamic::AlbumPlayBias::name() const
     return Dynamic::AlbumPlayBias::sName();
 }
 
+QString
+Dynamic::AlbumPlayBias::toString() const
+{
+    switch( m_follow )
+    {
+    case DirectlyFollow:
+        return i18nc("AlbumPlay bias representation",
+                     "The next track from the album");
+    case Follow:
+        return i18nc("AlbumPlay bias representation",
+                     "Any later track from the album");
+    case DontCare:
+        return i18nc("AlbumPlay bias representation",
+                     "Tracks from the same album");
+    }
+    return QString();
+}
+
+
 QWidget*
 Dynamic::AlbumPlayBias::widget( QWidget* parent )
 {

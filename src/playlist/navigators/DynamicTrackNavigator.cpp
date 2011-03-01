@@ -22,7 +22,7 @@
 
 #include "core/support/Debug.h"
 #include "dynamic/DynamicPlaylist.h"
-#include "DynamicModel.h"
+#include "dynamic/DynamicModel.h"
 #include "DynamicPlaylist.h"
 #include "core/meta/Meta.h"
 #include "amarokconfig.h"
@@ -34,7 +34,7 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator()
     connect( m_model->qaim(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
     connect( m_model->qaim(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
 
-    connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( activeChanged( int ) ),
+    connect( Dynamic::DynamicModel::instance(), SIGNAL( activeChanged( int ) ),
              SLOT( activePlaylistChanged() ) );
     activePlaylistChanged();
 }
@@ -80,7 +80,7 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
     DEBUG_BLOCK
 
     Dynamic::DynamicPlaylist *newPlaylist =
-        PlaylistBrowserNS::DynamicModel::instance()->activePlaylist();
+        Dynamic::DynamicModel::instance()->activePlaylist();
 
     if( newPlaylist == m_playlist )
         return;

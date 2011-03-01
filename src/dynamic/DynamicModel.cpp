@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
  * Copyright (c) 2009-2010 Leo Franchi <lfranchi@kde.org>                               *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -35,10 +36,10 @@
    So a modified default playlist is NOT regarded as a default playlist.
 */
 
-PlaylistBrowserNS::DynamicModel* PlaylistBrowserNS::DynamicModel::s_instance = 0;
+Dynamic::DynamicModel* Dynamic::DynamicModel::s_instance = 0;
 
-PlaylistBrowserNS::DynamicModel*
-PlaylistBrowserNS::DynamicModel::instance()
+Dynamic::DynamicModel*
+Dynamic::DynamicModel::instance()
 {
     if( s_instance == 0 ) s_instance = new DynamicModel();
 
@@ -47,7 +48,7 @@ PlaylistBrowserNS::DynamicModel::instance()
 
 
 
-PlaylistBrowserNS::DynamicModel::DynamicModel()
+Dynamic::DynamicModel::DynamicModel()
     : QAbstractItemModel()
     , m_activeUnsaved( false )
 {
@@ -55,13 +56,13 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
 }
 
 
-PlaylistBrowserNS::DynamicModel::~DynamicModel()
+Dynamic::DynamicModel::~DynamicModel()
 {
     saveCurrentPlaylists();
 }
 
 Dynamic::DynamicPlaylist*
-PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
+Dynamic::DynamicModel::setActivePlaylist( int index )
 {
     debug() << "DynamicModel::setActivePlaylist from"<<m_activePlaylistIndex << "to" << index << "unsaved?" << m_activeUnsaved;
     if( index < 0 || index >= m_playlists.count() )
@@ -80,104 +81,246 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
 }
 
 Dynamic::DynamicPlaylist*
-PlaylistBrowserNS::DynamicModel::activePlaylist()
+Dynamic::DynamicModel::activePlaylist() const
 {
     return m_playlists[m_activePlaylistIndex];
 }
 
 int
-PlaylistBrowserNS::DynamicModel::activePlaylistIndex() const
+Dynamic::DynamicModel::activePlaylistIndex() const
 {
     return m_activePlaylistIndex;
 }
 
 int
-PlaylistBrowserNS::DynamicModel::defaultPlaylistIndex() const
+Dynamic::DynamicModel::defaultPlaylistIndex() const
 {
     return 0;
 }
 
 
 int
-PlaylistBrowserNS::DynamicModel::playlistIndex( const QString& title ) const
+Dynamic::DynamicModel::playlistIndex( Dynamic::DynamicPlaylist* playlist ) const
 {
-    for( int i = 0; i < m_playlists.count(); ++i )
-    {
-        if( m_playlists[ i ]->title() == title )
-            return i;
-    }
-
-    return -1;
-}
-
-
-QModelIndex
-PlaylistBrowserNS::DynamicModel::index( int row, int column, const QModelIndex& parent ) const
-{
-    Q_UNUSED(parent)
-    if( rowCount() <= row ) return QModelIndex();
-
-    return createIndex( row, column, 0 /*Dynamic::BiasedPlaylist::nameFromXml( m_playlistElements[ row ] ) */ );
+    return m_playlists.indexOf( playlist );
 }
 
 bool
-PlaylistBrowserNS::DynamicModel::isActiveUnsaved() const
+Dynamic::DynamicModel::isActiveUnsaved() const
 {
     return m_activeUnsaved;
 }
 
 bool
-PlaylistBrowserNS::DynamicModel::isActiveDefault() const
+Dynamic::DynamicModel::isActiveDefault() const
 {
     return (m_activePlaylistIndex == defaultPlaylistIndex()) &&
         !m_activeUnsaved; // a modified list is in principle a different one
 }
 
 
+
+// ok. the item model stuff is a little bit complicate
+// let's just pull it though and use Standard items the next time
+
 QVariant
-PlaylistBrowserNS::DynamicModel::data ( const QModelIndex & i, int role ) const
+Dynamic::DynamicModel::data ( const QModelIndex& i, int role ) const
 {
-    if( !i.isValid() || i.row() < 0 || i.row() >= m_playlists.count())
+    if( !i.isValid() )
         return QVariant();
 
-    QString title = m_playlists[ i.row() ]->title();
+    int row = i.row();
+    int column = i.column();
+    if( row < 0 || column != 0 )
+        return QVariant();
 
-    switch( role )
+    QObject* o = static_cast<QObject*>(i.internalPointer());
+    BiasedPlaylist* indexPlaylist = qobject_cast<BiasedPlaylist*>(o);
+    AbstractBias* indexBias = qobject_cast<Dynamic::AbstractBias*>(o);
+
+    // level 1
+    if( indexPlaylist )
     {
+        QString title = indexPlaylist->title();
+
+        switch( role )
+        {
         case Qt::DisplayRole:
-        case Qt::EditRole:
             if( i.row() == m_activePlaylistIndex && m_activeUnsaved )
                 return QString( i18n( "%1 (modified) ", title ) );
             else
                 return title;
+
+        case Qt::EditRole:
+            return title;
+
+        case Qt::DecorationRole:
+            if( activePlaylist() == indexPlaylist )
+                return KIcon( "amarok_playlist" );
+            else
+                return KIcon( "amarok_clear" );
+
+        case PlaylistRole:
+            return QVariant::fromValue<QObject*>( indexPlaylist );
+
         default:
             return QVariant();
+        }
+    }
+    // level > 1
+    else if( indexBias )
+    {
+        switch( role )
+        {
+        case Qt::DisplayRole:
+            return indexBias->toString();
+
+        case BiasRole:
+            return QVariant::fromValue<QObject*>( indexBias );
+
+        default:
+            return QVariant();
+        }
+    }
+    // level 0
+    else
+    {
+        return QVariant();
+    }
+}
+
+// note to our indices: the internal pointer points to the object behind the index (not to it's parent)
+// row is the row number inside the parent.
+
+QModelIndex
+Dynamic::DynamicModel::index( int row, int column, const QModelIndex& parent ) const
+{
+    //ensure sanity of parameters
+    //we are a tree model, there are no columns
+    if( row < 0 || column != 0 )
+        return QModelIndex();
+
+    QObject* o = static_cast<QObject*>(parent.internalPointer());
+    BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o);
+    AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o);
+
+    // level 1
+    if( parentPlaylist )
+    {
+        if( row >= 1 )
+            return QModelIndex();
+        else
+            return createIndex( row, column, parentPlaylist->bias().data() );
+    }
+    // level > 1
+    else if( parentBias )
+    {
+        if( row >= parentBias->biases().count() )
+            return QModelIndex();
+        else
+            return createIndex( row, column, parentBias->biases().at( row ).data() );
+    }
+    // level 0
+    else
+    {
+        if( row >= m_playlists.count() )
+            return QModelIndex();
+        else
+            return createIndex( row, column, m_playlists.at( row ) );
     }
 }
 
 QModelIndex
-PlaylistBrowserNS::DynamicModel::parent( const QModelIndex& i ) const
+Dynamic::DynamicModel::parent( BiasedPlaylist* list, AbstractBias* bias ) const
 {
-    Q_UNUSED(i)
+    if( list->bias() == bias )
+        return createIndex( m_playlists.indexOf( list ), 0, list );
+    return parent( list->bias().data(), bias );
+}
+
+QModelIndex
+Dynamic::DynamicModel::parent( AbstractBias* parent, AbstractBias* bias ) const
+{
+    Dynamic::AndBias* andBias = qobject_cast<Dynamic::AndBias*>(parent);
+    if( !andBias )
+        return QModelIndex();
+
+    for( int i = 0; i < andBias->biases().count(); i++ )
+    {
+        AbstractBias* child = andBias->biases().at( i ).data();
+        if( child == bias )
+            return createIndex( i, 0, andBias );
+        QModelIndex res = this->parent( child, bias );
+        if( res.isValid() )
+            return res;
+    }
+    return QModelIndex();
+}
+
+QModelIndex
+Dynamic::DynamicModel::parent(const QModelIndex& index) const
+{
+    if( !index.isValid() )
+        return QModelIndex();
+
+    QObject* o = static_cast<QObject*>(index.internalPointer());
+    BiasedPlaylist* indexPlaylist = qobject_cast<BiasedPlaylist*>(o);
+    AbstractBias* indexBias = qobject_cast<AbstractBias*>(o);
+
+    if( indexPlaylist )
+        return createIndex(0, 0, 0);
+    else if( indexBias )
+    {
+        // search for the parent
+        foreach( DynamicPlaylist* list, m_playlists )
+        {
+            QModelIndex res = parent( qobject_cast<BiasedPlaylist*>(list), indexBias );
+            if( res.isValid() )
+                return res;
+        }
+    }
     return QModelIndex();
 }
 
 int
-PlaylistBrowserNS::DynamicModel::rowCount( const QModelIndex& ) const
+Dynamic::DynamicModel::rowCount(const QModelIndex& parent) const
 {
-    return m_playlists.size();
+    QObject* o = static_cast<QObject*>(parent.internalPointer());
+    BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o);
+    AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o);
+    AbstractBias* bias = qobject_cast<Dynamic::AbstractBias*>(o);
+
+    // level 1
+    if( parentPlaylist )
+    {
+        return 1;
+    }
+    // level > 1
+    else if( parentBias )
+    {
+        return parentBias->biases().count();
+    }
+    // for all other biases that are no And-Bias
+    else if( bias )
+    {
+        return 0;
+    }
+    // level 0
+    else
+    {
+        return m_playlists.count();
+    }
 }
 
-
 int
-PlaylistBrowserNS::DynamicModel::columnCount( const QModelIndex& ) const
+Dynamic::DynamicModel::columnCount(const QModelIndex & parent) const
 {
+    Q_UNUSED( parent )
     return 1;
 }
 
-
 void
-PlaylistBrowserNS::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
+Dynamic::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
 {
     // this shouldn't happen
     if( p != activePlaylist() )
@@ -196,9 +339,9 @@ PlaylistBrowserNS::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
 
 
 void
-PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
+Dynamic::DynamicModel::saveActive( const QString& newTitle )
 {
-    int newIndex = playlistIndex( newTitle );
+    int newIndex = -1; // playlistIndex( newTitle );
     debug() << "saveActive" << m_activePlaylistIndex << newTitle << ":"<<newIndex;
 
     // if it's unchanged and the same name.. dont do anything
@@ -243,7 +386,7 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
 }
 
 void
-PlaylistBrowserNS::DynamicModel::savePlaylists()
+Dynamic::DynamicModel::savePlaylists()
 {
     m_activeUnsaved = false;
     savePlaylists( "dynamic.xml" );
@@ -251,7 +394,7 @@ PlaylistBrowserNS::DynamicModel::savePlaylists()
 }
 
 bool
-PlaylistBrowserNS::DynamicModel::savePlaylists( const QString &filename )
+Dynamic::DynamicModel::savePlaylists( const QString &filename )
 {
     QFile xmlFile( Amarok::saveLocation() + filename );
     if( !xmlFile.open( QIODevice::WriteOnly ) )
@@ -283,13 +426,13 @@ PlaylistBrowserNS::DynamicModel::savePlaylists( const QString &filename )
 }
 
 void
-PlaylistBrowserNS::DynamicModel::loadPlaylists()
+Dynamic::DynamicModel::loadPlaylists()
 {
     loadPlaylists( "dynamic.xml" );
 }
 
 bool
-PlaylistBrowserNS::DynamicModel::loadPlaylists( const QString &filename )
+Dynamic::DynamicModel::loadPlaylists( const QString &filename )
 {
     // -- clear all the old playlists
     beginResetModel();
@@ -375,7 +518,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists( const QString &filename )
 }
 
 void
-PlaylistBrowserNS::DynamicModel::initPlaylists()
+Dynamic::DynamicModel::initPlaylists()
 {
     // -- clear all the old playlists
     beginResetModel();
@@ -397,13 +540,13 @@ PlaylistBrowserNS::DynamicModel::initPlaylists()
 }
 
 void
-PlaylistBrowserNS::DynamicModel::saveCurrentPlaylists()
+Dynamic::DynamicModel::saveCurrentPlaylists()
 {
     savePlaylists( "dynamic_current.xml" );
 }
 
 void
-PlaylistBrowserNS::DynamicModel::loadCurrentPlaylists()
+Dynamic::DynamicModel::loadCurrentPlaylists()
 {
     if( !loadPlaylists( "dynamic_current.xml" ) )
         loadPlaylists( "dynamic.xml" );
@@ -411,7 +554,7 @@ PlaylistBrowserNS::DynamicModel::loadCurrentPlaylists()
 
 
 void
-PlaylistBrowserNS::DynamicModel::removeActive()
+Dynamic::DynamicModel::removeActive()
 {
     // if it's a modified but unsaved playlist so we just restore the unmodified
     // version, "removing" the modified playlist but not the unmodified entry.

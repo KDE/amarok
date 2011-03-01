@@ -366,10 +366,10 @@ set(libpodcasts_SRCS
 #####################################################################
 set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/APGCategory.cpp
-    browsers/playlistbrowser/DynamicModel.cpp
     browsers/playlistbrowser/DynamicCategory.cpp
     browsers/playlistbrowser/DynamicBiasDelegate.cpp
     browsers/playlistbrowser/DynamicBiasWidgets.cpp
+    browsers/playlistbrowser/DynamicView.cpp
     browsers/playlistbrowser/PlaylistBrowserFilterProxy.cpp
     browsers/playlistbrowser/PlaylistBrowserModel.cpp
     browsers/playlistbrowser/PlaylistBrowserCategory.cpp
@@ -473,6 +473,7 @@ set(libdynamic_SRCS
     dynamic/BiasedPlaylist.cpp
     dynamic/BiasSolver.cpp
     dynamic/DynamicPlaylist.cpp
+    dynamic/DynamicModel.cpp
     # dynamic/gsl/gauss.c
 
     # biases
