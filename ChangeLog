@@ -9,6 +9,8 @@ VERSION 2.4.1
       Maximilian Güntner <maximilian.guentner@gmail.com>.
     * String filtering in the albums applet.
     * Ability to change text alignment in the lyrics applet.
+    * gpodder.net Service, a Podcast Directory displaying the most used Tags
+      from gpodder.net & the top Podcasts of these Tags
 
   CHANGES:
     * Now all changes to Preset Formats in Organize Collection dialog get saved on close,
