@@ -5,6 +5,7 @@ For every commit:
 * Is there a feature request, bug report or review request associated with it? (Please close them with the commit message.)
 * Does it introduce new dependencies?
 * Does it add new strings? Is Amarok in string freeze?
+* Has it been added to the changelog?
 
 Additionally for commits introducing new features:
 * Does it fit Amarok's vision or at least not work against it?
