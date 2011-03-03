@@ -22,6 +22,7 @@
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "OpmlDirectoryInfoParser.h"
+#include "OpmlDirectoryFilterProxy.h"
 #include "OpmlDirectoryModel.h"
 #include "OpmlDirectoryView.h"
 #include "playlistmanager/PlaylistManager.h"
@@ -90,14 +91,11 @@ OpmlDirectoryService::~OpmlDirectoryService()
 void OpmlDirectoryService::polish()
 {
     generateWidgetInfo();
-    if ( m_polished )
+    if( m_polished )
         return;
 
     //do not allow this content to get added to the playlist. At least not for now
     setPlayableTracks( false );
-
-    //TODO: implement searching
-    m_searchWidget->setVisible( false );
 
     OpmlDirectoryView* opmlView = new OpmlDirectoryView( this );
     opmlView->setHeaderHidden( true );
@@ -125,7 +123,13 @@ void OpmlDirectoryService::polish()
         }
     }
 
-    setModel( new OpmlDirectoryModel( opmlLocation, this ) );
+    m_proxyModel = new OpmlDirectoryFilterProxy( this );
+    m_proxyModel->setDynamicSortFilter( true );
+
+    m_opmlModel = new OpmlDirectoryModel( opmlLocation, this );
+    m_proxyModel->setSourceModel( m_opmlModel );
+
+    setModel( m_proxyModel );
 
     m_subscribeButton = new QPushButton( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
@@ -141,7 +145,7 @@ void OpmlDirectoryService::polish()
     m_addOpmlButton->setObjectName( "addOpmlButton" );
     m_addOpmlButton->setIcon( KIcon( "list-add-amarok" ) );
 
-    connect( m_addOpmlButton, SIGNAL(clicked()), model(), SLOT(slotAddOpmlAction()) );
+    connect( m_addOpmlButton, SIGNAL(clicked()), m_opmlModel, SLOT(slotAddOpmlAction()) );
 
     connect( view()->selectionModel(),
              SIGNAL(selectionChanged( const QItemSelection &, const QItemSelection & )),
@@ -150,15 +154,35 @@ void OpmlDirectoryService::polish()
 
     setInfoParser( new OpmlDirectoryInfoParser() );
 
+    m_searchWidget->setup( this );
+
     m_polished = true;
+}
+
+// Filter slots
+void
+OpmlDirectoryService::slotSetFilterTimeout()
+{
+    m_proxyModel->setFilterWildcard( m_searchWidget->currentText() );
+}
+
+void
+OpmlDirectoryService::slotFilterNow()
+{
+
+}
+
+void
+OpmlDirectoryService::setFocus()
+{
+
 }
 
 void
 OpmlDirectoryService::subscribe()
 {
-    OpmlDirectoryModel * opmlModel = dynamic_cast<OpmlDirectoryModel *>( model() );
-    Q_ASSERT( opmlModel );
-    opmlModel->subscribe( view()->selectionModel()->selectedIndexes() );
+    Q_ASSERT( m_opmlModel );
+    m_opmlModel->subscribe( view()->selectionModel()->selectedIndexes() );
 }
 
 void

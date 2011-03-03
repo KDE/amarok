@@ -27,6 +27,7 @@
 #include <kio/jobclasses.h>
 
 class OpmlOutline;
+class OpmlDirectoryModel;
 
 class OpmlDirectoryServiceFactory: public ServiceFactory
 {
@@ -59,11 +60,19 @@ class OpmlDirectoryService : public ServiceBase
 
         virtual Collections::Collection * collection() { return 0; }
 
+    public slots:
+        // filter slots
+        void slotSetFilterTimeout();
+        void slotFilterNow();
+        void setFocus();
+
     private slots:
         void subscribe();
         void slotSelectionChanged( const QItemSelection &, const QItemSelection & );
 
     private:
+        OpmlDirectoryModel *m_opmlModel;
+        QSortFilterProxyModel *m_proxyModel;
 
         QPushButton *m_addOpmlButton;
         QPushButton *m_subscribeButton;
