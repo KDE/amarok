@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2006-2007 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2011 Peter C. Ndikuwera <pndiku@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,23 +14,40 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
+#define DEBUG_PREFIX "NfsDeviceHandler"
  
 #include "NfsDeviceHandler.h"
 
 AMAROK_EXPORT_PLUGIN( NfsDeviceHandlerFactory )
 
 #include "core/support/Debug.h"
+#include "core/collections/support/SqlStorage.h"
 
-#include <KConfig>
-#include <KUrl>
+#include <kconfig.h>
+#include <kurl.h>
+#include <kmountpoint.h>
+#include <solid/storagevolume.h>
+#include <solid/storageaccess.h>
 
-NfsDeviceHandler::NfsDeviceHandler( int deviceId, QString server, QString dir, QString mountPoint )
+NfsDeviceHandler::NfsDeviceHandler( int deviceId, const QString &server, const QString &share, const QString &mountPoint, const QString &udi )
+    : DeviceHandler()
+    , m_deviceID( deviceId )
+    , m_server( server )
+    , m_share( share )
+    , m_mountPoint( mountPoint )
+    , m_udi( udi )
+{
+  DEBUG_BLOCK
+}
+
+NfsDeviceHandler::NfsDeviceHandler( int deviceId, const QString &mountPoint, const QString &udi )
     : DeviceHandler()
     , m_deviceID( deviceId )
     , m_mountPoint( mountPoint )
-    , m_server( server )
-    , m_dir( dir )
+    , m_udi( udi )
 {
+  DEBUG_BLOCK
 }
 
 NfsDeviceHandler::~NfsDeviceHandler()
@@ -55,58 +73,66 @@ NfsDeviceHandler::getDeviceID()
     return m_deviceID;
 }
 
-const QString &
-NfsDeviceHandler::getDevicePath() const
+const QString &NfsDeviceHandler::getDevicePath() const
 {
     return m_mountPoint;
 }
 
-void
-NfsDeviceHandler::getURL( KUrl &absolutePath, const KUrl &relativePath )
+void NfsDeviceHandler::getURL( KUrl &absolutePath, const KUrl &relativePath )
 {
     absolutePath.setPath( m_mountPoint );
     absolutePath.addPath( relativePath.path() );
     absolutePath.cleanPath();
 }
 
-void
-NfsDeviceHandler::getPlayableURL( KUrl &absolutePath, const KUrl &relativePath )
+void NfsDeviceHandler::getPlayableURL( KUrl &absolutePath, const KUrl &relativePath )
 {
     getURL( absolutePath, relativePath );
 }
 
-bool
-NfsDeviceHandler::deviceIsMedium( const Medium * m ) const
+bool NfsDeviceHandler::deviceMatchesUdi( const QString &udi ) const
 {
-    return m->deviceNode() == m_server + ':' + m_dir;
+  return m_udi == udi;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // class NfsDeviceHandlerFactory
 ///////////////////////////////////////////////////////////////////////////////
 
-QString
-NfsDeviceHandlerFactory::type( ) const
+QString NfsDeviceHandlerFactory::type( ) const
 {
     return "nfs";
 }
 
-bool
-NfsDeviceHandlerFactory::canCreateFromMedium( ) const
+bool NfsDeviceHandlerFactory::canCreateFromMedium( ) const
 {
     return true;
 }
 
-bool
-NfsDeviceHandlerFactory::canCreateFromConfig( ) const
+bool NfsDeviceHandlerFactory::canCreateFromConfig( ) const
 {
     return false;
 }
 
-bool
-NfsDeviceHandlerFactory::canHandle( const Medium * m ) const
+bool NfsDeviceHandlerFactory::canHandle( const Solid::Device &device ) const
 {
-    return m && m->fsType() == "nfs" && m->isMounted();
+    DEBUG_BLOCK
+
+    const Solid::StorageAccess *access = device.as<Solid::StorageAccess>();
+ 
+    if( !access || access->filePath().isEmpty() )
+    {
+        debug() << "Device not accessible";
+        return false;
+    }
+
+    // find mount point
+    KMountPoint::Ptr m = KMountPoint::currentMountPoints().findByPath( access->filePath() );
+
+    if ( m && m->mountType() == "nfs" )
+      return true;
+
+    return false;
 }
 
 NfsDeviceHandlerFactory::NfsDeviceHandlerFactory( )
@@ -118,17 +144,38 @@ NfsDeviceHandlerFactory::~NfsDeviceHandlerFactory( )
 }
 
 DeviceHandler *
-NfsDeviceHandlerFactory::createHandler( KSharedConfigPtr ) const
+NfsDeviceHandlerFactory::createHandler( KSharedConfigPtr, SqlStorage* ) const
 {
     return 0;
 }
 
 DeviceHandler *
-NfsDeviceHandlerFactory::createHandler( const Medium * m ) const
+NfsDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, SqlStorage *s ) const
 {
-    SqlStorage *s = CollectionManager::instance()->sqlStorage();
-    QString server = m->deviceNode().section( ':', 0, 0 );
-    QString share = m->deviceNode().section( ':', 1, 1 );
+    DEBUG_BLOCK
+    if( !s )
+    {
+        debug() << "!s, returning 0";
+        return 0;
+    }
+
+    const Solid::StorageAccess *access = device.as<Solid::StorageAccess>();
+    if( !access )
+    {
+        debug() << "Device isn't valid, can't create a handler";
+        return 0;
+    }
+    if( access->filePath().isEmpty() )
+    {
+        debug() << "not mounted, can't do anything";
+        return 0; // It's not mounted, we can't do anything.
+    }
+
+    // find mount point
+    KMountPoint::Ptr m = KMountPoint::currentMountPoints().findByPath( access->filePath() );
+
+    QString server = m->mountedFrom().section( ':', 0, 0 );
+    QString share = m->mountedFrom().section( ':', 1, 1 );
     QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint "
                                          "FROM devices WHERE type = 'nfs' "
                                          "AND servername = '%1' AND sharename = '%2';" )
@@ -141,7 +188,7 @@ NfsDeviceHandlerFactory::createHandler( const Medium * m ) const
                            "id = %1;" )
                            .arg( ids[0] )
                            .arg( s->escape( m->mountPoint() ) ) );
-        return new NfsDeviceHandler( ids[0].toInt(), server, share, m->mountPoint() );
+        return new NfsDeviceHandler( ids[0].toInt(), server, share, m->mountPoint(), udi );
     }
     else
     {
@@ -158,7 +205,7 @@ NfsDeviceHandlerFactory::createHandler( const Medium * m ) const
             return 0;
         }
         debug() << "Created new NFS device with ID " << id << " , server " << server << " ,share " << share;
-        return new NfsDeviceHandler( id, server, share, m->mountPoint() );
+        return new NfsDeviceHandler( id, server, share, m->mountPoint(), udi );
     }
 }
 
