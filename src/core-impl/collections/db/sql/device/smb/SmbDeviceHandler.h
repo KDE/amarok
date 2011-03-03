@@ -23,7 +23,7 @@
 class SmbDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
-    SmbDeviceHandlerFactory();
+    SmbDeviceHandlerFactory( QObject *parent, const QVariantList &args );
     virtual ~SmbDeviceHandlerFactory();
 
     virtual bool canHandle( const Solid::Device &device ) const;
@@ -37,6 +37,8 @@ public:
     virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const;
 
     virtual QString type() const;
+
+    virtual void init();
 };
 
 /**

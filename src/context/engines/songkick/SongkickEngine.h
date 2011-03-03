@@ -69,6 +69,6 @@ private:
     
 };
 
-K_EXPORT_AMAROK_DATAENGINE( songkick, SongkickEngine )
+AMAROK_EXPORT_DATAENGINE( songkick, SongkickEngine )
 
 #endif

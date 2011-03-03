@@ -132,6 +132,8 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         bool haveEmbeddedMysql() { return m_haveEmbeddedMysql; }
 
+        void init( const QList<Plugins::PluginFactory*> &factories );
+
     public slots:
         void startFullScan();
         void startIncrementalScan( const QString &directory = QString() );
@@ -161,15 +163,13 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
     private:
         static CollectionManager* s_instance;
-        void loadServices( const KService::List &services );
+        void loadPlugins( const QList<Collections::CollectionFactory*> &factories );
         CollectionManager();
         ~CollectionManager();
 
         // Disable copy constructor and assignment
         CollectionManager( const CollectionManager& );
         CollectionManager& operator= ( const CollectionManager& );
-
-        void init();
 
         //used for related artists query
         QSet<QString>    m_artistNameSet;

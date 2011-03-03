@@ -17,10 +17,16 @@
 #ifndef AMAROK_SERVICEPLUGINMANAGER_H
 #define AMAROK_SERVICEPLUGINMANAGER_H
 
-#include "ServiceBase.h"
-#include "ServiceBrowser.h"
-
 #include <QObject>
+#include <QStringList>
+#include <QSet>
+
+class ServiceBase;
+class ServiceBrowser;
+class ServiceFactory;
+namespace Plugins {
+    class PluginFactory;
+}
 
 /**
 A class to keep track of available service plugins and load them as needed
@@ -29,52 +35,34 @@ A class to keep track of available service plugins and load them as needed
 */
 class ServicePluginManager : public QObject
 {
-
     Q_OBJECT
+    Q_PROPERTY( ServiceBrowser* browser READ browser WRITE setBrowser )
 
 public:
-    static ServicePluginManager * instance();
-
+    ServicePluginManager( QObject *parent = 0 );
     ~ServicePluginManager();
 
+    ServiceBrowser *browser() const;
     void setBrowser( ServiceBrowser * browser );
-
-    /**
-     * Collects the factories of all services that can be loaded
-     */
-    void collect();
 
     /**
      * Load any services that are configured to be loaded
      */
-    void init();
+    void init( const QList<Plugins::PluginFactory*> &factories );
 
-    /**
-     * The service settings has been changed... add, remove or reset any affected services
-     */
-    void settingsChanged();
-
-    void settingsChanged( const QString &pluginName );
-
-    void checkEnabledStates();
-
-    QMap< QString, ServiceFactory* > factories();
+    void checkEnabledStates( const QList<Plugins::PluginFactory*> &factories );
 
 public slots:
-
-    QStringList loadedServices();
-    QStringList loadedServiceNames();
+    QStringList loadedServices() const;
+    QStringList loadedServiceNames() const;
     QString serviceDescription( const QString &service );
     QString serviceMessages( const QString &service );
     QString sendMessage( const QString &service, const QString &message );
 
 private:
-    ServicePluginManager();
+    void initFactory( ServiceFactory *factory );
 
-    static ServicePluginManager * m_instance;
-    ServiceBrowser * m_serviceBrowser;
-    QMap< QString, ServiceFactory* > m_factories;
-    QStringList m_loadedServices;
+    ServiceBrowser *m_serviceBrowser;
 
 private slots:
     void slotNewService( ServiceBase *newService);

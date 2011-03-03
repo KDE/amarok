@@ -29,7 +29,11 @@ class MySqlServerCollectionFactory : public Collections::CollectionFactory
     Q_OBJECT
 
     public:
-        MySqlServerCollectionFactory( QObject *parent, const QVariantList & /*args*/ ) { setParent( parent ); }
+        MySqlServerCollectionFactory( QObject *parent, const QVariantList &args )
+            : Collections::CollectionFactory( parent, args )
+        {
+            m_info = KPluginInfo( "amarok_collection-mysqlservercollection.desktop", "services" );
+        }
         virtual ~MySqlServerCollectionFactory() {}
 
         virtual void init();

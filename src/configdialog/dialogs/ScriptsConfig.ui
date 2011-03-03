@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>Peter Zhou and Ian Monroe</author>
+ <class>ScriptsConfig</class>
+ <widget class="QWidget" name="ScriptsConfig">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>397</width>
+    <height>48</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="ScriptSelector" name="scriptSelector" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="kcfg_AutoUpdateScripts">
+       <property name="toolTip">
+        <string>Automatically download and install updates for the built-in scripts from the Amarok website if available</string>
+       </property>
+       <property name="whatsThis">
+        <string>Automatically download and install updates for the built-in scripts from the Amarok website if available</string>
+       </property>
+       <property name="text">
+        <string>Automatically update built-in scripts</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="manageButton">
+       <property name="toolTip">
+        <string>Browse, install, and uninstall scripts</string>
+       </property>
+       <property name="text">
+        <string>Manage Scripts</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="0"/>
+ <layoutfunction spacing="KDialog::spacingHint"/>
+ <customwidgets>
+  <customwidget>
+   <class>ScriptSelector</class>
+   <extends>QWidget</extends>
+   <header>ScriptSelector.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

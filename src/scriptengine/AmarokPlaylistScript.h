@@ -34,7 +34,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokPlaylistScript( QScriptEngine* ScriptEngine, QList<QObject*>* wrapperList );
+            AmarokPlaylistScript( QScriptEngine* ScriptEngine );
             ~AmarokPlaylistScript();
 
         public slots:
@@ -66,7 +66,6 @@ namespace AmarokScript
             void slotTrackRemoved( const QModelIndex&, int start, int end );
 
         private:
-            QList<QObject*>* m_wrapperList;
             QScriptEngine* m_scriptEngine;
     };
 }

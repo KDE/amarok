@@ -35,7 +35,15 @@
 
 #include <KLocale>
 
-AMAROK_EXPORT_PLUGIN( AmpacheServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( ampache, AmpacheServiceFactory )
+
+AmpacheServiceFactory::AmpacheServiceFactory( QObject *parent, const QVariantList &args )
+    : ServiceFactory( parent, args )
+{
+    KPluginInfo pluginInfo( "amarok_service_ampache.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    m_info = pluginInfo;
+}
 
 void AmpacheServiceFactory::init()
 {
@@ -59,14 +67,6 @@ QString
 AmpacheServiceFactory::name()
 {
     return "Ampache";
-}
-
-KPluginInfo
-AmpacheServiceFactory::info()
-{
-    KPluginInfo pluginInfo( "amarok_service_ampache.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    return pluginInfo;
 }
 
 KConfigGroup

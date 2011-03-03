@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Service
+Icon=server-database
 Name=MySQLe Collection
 Name[bg]=Колекция MySQLe
 Name[ca]=Col·lecció MySQLe
@@ -97,10 +98,9 @@ Comment[wa]=Tchôke-divins di ramexhnêye pos Amarok
 Comment[x-test]=xxCollection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的收藏插件
 Comment[zh_TW]=Amarok 的收藏外掛程式
+NoDisplay=true
 
 ServiceTypes=Amarok/Plugin
-
-X-KDE-Library=amarok_collection-mysqlecollection
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com
@@ -109,3 +109,12 @@ X-KDE-Amarok-name=mysqle-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
+
+X-KDE-PluginInfo-Author=Maximilian Kossick
+X-KDE-PluginInfo-Email=maximilian.kossick@googlemail.com
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Collection
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-Name=amarok_collection-mysqlecollection
+X-KDE-Library=amarok_collection-mysqlecollection

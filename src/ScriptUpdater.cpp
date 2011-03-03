@@ -17,22 +17,19 @@
 #define DEBUG_PREFIX "ScriptUpdater"
 
 #include "ScriptUpdater.h"
-#include "amarokconfig.h"
 
 #include "core/support/Debug.h"
 
 #include <KIO/Job>
-#include <KIO/NetAccess>
 #include <KPluginInfo>
 #include <KStandardDirs>
 #include <KTar>
 
-#include <QTimer>
+#include <QDir>
 #include <QFileInfo>
-
 #include <QtCrypto>
 
-ScriptUpdater::ScriptUpdater() : QObject()
+ScriptUpdater::ScriptUpdater( QObject *parent ) : QObject( parent )
 {
 }
 
@@ -50,13 +47,6 @@ void
 ScriptUpdater::updateScript()
 {
     DEBUG_BLOCK
-
-    // cancel immediately if auto updating is disabled
-    if( !AmarokConfig::autoUpdateScripts() )
-    {
-        emit finished( m_scriptPath );
-        return;
-    }
 
     // 1a. detect currently installed version
     QFileInfo info( m_scriptPath );
@@ -82,7 +72,7 @@ ScriptUpdater::updateScript()
     QRegExp rxname( "amarok/scripts/(.+)/main.js" );
     rxname.indexIn( m_fileName );
     m_scriptname = rxname.cap( 1 );
-    
+
     // 2. check if there are updates: get 'version' file from server
     KUrl versionUrl( updateBaseUrl );
     versionUrl.addPath( m_scriptname );
@@ -251,16 +241,16 @@ ScriptUpdater::isNewer( const QString & update, const QString & installed )
         // read current number, or use 0 if it isn't present (so that "2" == "2.0" == "2.0.0.0.0.0" == "2...0")
         int up = ( ( uList.length() > i && ( !uList[i].isEmpty() ) ) ? uList[i].toInt() : 0 );
         int in = ( ( iList.length() > i && ( !iList[i].isEmpty() ) ) ? iList[i].toInt() : 0 );
-        if ( up > in ) 
-	{
+        if ( up > in )
+        {
             return true;
-        } 
-	else if ( up < in ) 
-	{
+        }
+        else if ( up < in )
+        {
             return false;
-        } 
-	else 
-	{
+        }
+        else
+        {
             // both strings are equal up to this point -> look at the next pair of numbers
             i++;
         }
@@ -268,4 +258,3 @@ ScriptUpdater::isNewer( const QString & update, const QString & installed )
     // if we reach this point, both versions are considered equal
     return false;
 }
-

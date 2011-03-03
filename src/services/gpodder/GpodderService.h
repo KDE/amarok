@@ -37,7 +37,7 @@ class GpodderServiceFactory : public ServiceFactory
     Q_OBJECT
 
 public:
-    GpodderServiceFactory() {}
+    GpodderServiceFactory( QObject *parent, const QVariantList &args );
     virtual ~GpodderServiceFactory() {}
 
     virtual void init();

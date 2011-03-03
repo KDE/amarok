@@ -60,7 +60,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
     Q_PROPERTY( double bpm READ bpm ) // setter not yet available in Meta::Track
 
     public:
-        MetaTrackPrototype();
+        MetaTrackPrototype( QObject *parent );
         ~MetaTrackPrototype();
     public slots:
         QScriptValue imagePixmap( int size ) const;
@@ -98,13 +98,13 @@ MetaTrackPrototype : public QObject, protected QScriptable
         void setRating( int rating );
         void setTrackNumber( int number );
         void setDiscNumber( int number );
-        void setAlbum( QString album );
-        void setArtist( QString artist );
-        void setComposer( QString composer );
-        void setGenre( QString genre );
+        void setAlbum( const QString &album );
+        void setArtist( const QString &artist );
+        void setComposer( const QString &composer );
+        void setGenre( const QString &genre );
         void setYear( int year );
-        void setComment( QString comment );
-        void setLyrics( QString lyrics );
+        void setComment( const QString &comment );
+        void setLyrics( const QString &lyrics );
         void setTitle( const QString& name );
         void setImageUrl( const QString& imageUrl );
 };

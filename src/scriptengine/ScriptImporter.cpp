@@ -25,11 +25,14 @@
 
 namespace AmarokScript
 {
-    ScriptImporter::ScriptImporter( QScriptEngine* scriptEngine, KUrl url )
-    : QObject( kapp )
-      , m_scriptUrl( url )
-      , m_scriptEngine( scriptEngine )
-    {  }
+    ScriptImporter::ScriptImporter( QScriptEngine* scriptEngine, const KUrl &url )
+        : QObject( scriptEngine )
+        , m_scriptUrl( url )
+        , m_scriptEngine( scriptEngine )
+    {
+        QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership );
+        scriptEngine->globalObject().setProperty( "Importer", scriptObject );
+    }
 
     ScriptImporter::~ScriptImporter()
     {
@@ -39,9 +42,7 @@ namespace AmarokScript
     ScriptImporter::loadExtension( const QString& src )
     {
         DEBUG_BLOCK
-
         m_scriptEngine->importExtension( "amarok/" + src );
-
     }
 
     bool

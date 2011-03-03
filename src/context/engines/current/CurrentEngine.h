@@ -85,6 +85,6 @@ private slots:
     void setupAlbumsData();
 };
 
-K_EXPORT_AMAROK_DATAENGINE( current, CurrentEngine )
+AMAROK_EXPORT_DATAENGINE( current, CurrentEngine )
 
 #endif

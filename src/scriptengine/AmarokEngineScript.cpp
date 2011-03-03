@@ -27,10 +27,11 @@
 
 namespace AmarokScript
 {
-    AmarokEngineScript::AmarokEngineScript( QScriptEngine* ScriptEngine )
-        : QObject( kapp )
+    AmarokEngineScript::AmarokEngineScript( QScriptEngine* scriptEngine )
+        : QObject( scriptEngine )
     {
-        Q_UNUSED( ScriptEngine );
+        QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership );
+        scriptEngine->globalObject().property( "Amarok" ).setProperty( "Engine", scriptObject );
 
         EngineController *engine = The::engineController();
 

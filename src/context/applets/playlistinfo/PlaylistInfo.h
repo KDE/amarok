@@ -74,6 +74,6 @@ private:
 
 };
 
-K_EXPORT_AMAROK_APPLET( playlistinfo, PlaylistInfo )
+AMAROK_EXPORT_APPLET( playlistinfo, PlaylistInfo )
 
 #endif

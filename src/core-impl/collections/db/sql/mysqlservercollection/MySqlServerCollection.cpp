@@ -39,6 +39,7 @@ MySqlServerCollectionFactory::init()
     SqlCollectionFactory fac;
     SqlStorage *storage = new MySqlServerStorage();
     SqlCollection *collection = fac.createSqlCollection( "localCollection", i18n( "Local Collection" ), storage );
+    m_initialized = true;
 
     emit newCollection( collection );
 }

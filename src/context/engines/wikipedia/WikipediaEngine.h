@@ -63,7 +63,7 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _stopped() )
 };
 
-K_EXPORT_AMAROK_DATAENGINE( wikipedia, WikipediaEngine )
+AMAROK_EXPORT_DATAENGINE( wikipedia, WikipediaEngine )
 
 #endif
 

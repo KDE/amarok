@@ -7,22 +7,22 @@ include_directories(
 
 ########### next target ###############
 
-set(amarok_smb-device_PART_SRCS SmbDeviceHandler.cpp )
+set(amarok_device_smb_PART_SRCS SmbDeviceHandler.cpp )
 
-kde4_add_plugin(amarok_smb-device 
-${amarok_smb-device_PART_SRCS})
+kde4_add_plugin(amarok_device_smb
+${amarok_device_smb_PART_SRCS})
 
-target_link_libraries(amarok_smb-device
+target_link_libraries(amarok_device_smb
     amarok-sqlcollection
     amaroklib
     amarokcore
     ${KDE4_KDECORE_LIBS}
     ${KDE4_SOLID_LIBS} )
 
-install(TARGETS amarok_smb-device DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(TARGETS amarok_device_smb DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-install(FILES  amarok_smb-device.desktop  DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES  amarok_device_smb.desktop  DESTINATION ${SERVICES_INSTALL_DIR})
 

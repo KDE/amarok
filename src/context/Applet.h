@@ -209,7 +209,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(Plasma::MessageButtons)
 /**
  * Register an applet when it is contained in a loadable module
  */
-#define K_EXPORT_AMAROK_APPLET(libname, classname) \
+#define AMAROK_EXPORT_APPLET(libname, classname) \
 K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
 K_EXPORT_PLUGIN(factory("amarok_context_applet_" #libname))\
 K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)

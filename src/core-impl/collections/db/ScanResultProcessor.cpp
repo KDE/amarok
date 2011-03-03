@@ -23,7 +23,7 @@
 #include "DatabaseCollection.h"
 #include "DatabaseMeta.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "sql/MountPointManager.h"
+#include "MountPointManager.h"
 
 // include files from the collection scanner utility
 #include <collectionscanner/Directory.h>

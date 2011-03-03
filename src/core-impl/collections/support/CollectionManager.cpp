@@ -20,16 +20,16 @@
 
 #include "core/support/Debug.h"
 
-#include "EngineController.h"
 #include "core/capabilities/CollectionScanCapability.h"
 #include "core/collections/Collection.h"
 #include "core/collections/MetaQueryMaker.h"
 #include "core/collections/support/SqlStorage.h"
-#include "core/plugins/PluginManager.h"
 #include "core/support/SmartPointerList.h"
 #include "core-impl/meta/file/File.h"
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
+#include "EngineController.h"
+#include "PluginManager.h"
 
 #include <QList>
 #include <QMetaEnum>
@@ -37,7 +37,6 @@
 #include <QPair>
 #include <QTimer>
 
-#include <KBuildSycocaProgressDialog>
 #include <KConfigGroup>
 #include <KMessageBox>
 #include <KPluginLoader>
@@ -114,14 +113,14 @@ CollectionManager::CollectionManager()
     : QObject()
     , d( new Private )
 {
+    DEBUG_BLOCK
+    setObjectName( "CollectionManager" );
     qRegisterMetaType<SqlStorage *>( "SqlStorage*" );
     d->sqlDatabase = 0;
     d->primaryCollection = 0;
     d->sqlStorageWrapper = new SqlStorageWrapper();
     s_instance = this;
     m_haveEmbeddedMysql = false;
-
-    init();
 }
 
 CollectionManager::~CollectionManager()
@@ -137,13 +136,11 @@ CollectionManager::~CollectionManager()
     d->trackProviders.clear();
     qDeleteAll( d->managedCollections );
     qDeleteAll( d->factories );
-
-
     delete d;
 }
 
 void
-CollectionManager::init()
+CollectionManager::init( const QList<Plugins::PluginFactory*> &factories )
 {
     DEBUG_BLOCK
 
@@ -152,89 +149,66 @@ CollectionManager::init()
     m_timecodeTrackProvider = new TimecodeTrackProvider();
     addTrackProvider( m_timecodeTrackProvider );
 
-    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
-    debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
-
-    if( plugins.isEmpty() )
-    {
-        debug() << "No Amarok plugins found, running kbuildsycoca4.";
-        KBuildSycocaProgressDialog::rebuildKSycoca( 0 );
-
-        plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
-        debug() << "Second attempt: Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
-
-        if( plugins.isEmpty() )
-        {
-            KMessageBox::error( 0, i18n(
-                    "<p>Amarok could not find any collection plugins. "
-                    "It is possible that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
-                    "$ cd /path/to/amarok/source-code/<br>"
-                    "$ su -c \"make uninstall\"<br>"
-                    "$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>"
-                    "$ kbuildsycoca4 --noincremental<br>"
-                    "$ amarok</pre>"
-                    "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
-            // don't use QApplication::exit, as the eventloop may not have started yet
-            std::exit( EXIT_SUCCESS );
-        }
-    }
-
-    KService::List orderedPlugins;
+    QList<Collections::CollectionFactory*> orderdFactories;
     const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
-    foreach( const KService::Ptr &service, plugins )
+    foreach( Plugins::PluginFactory *pFactory, factories )
     {
-        const QString name = service->property( "X-KDE-Amarok-name" ).toString();
-        if( name == "mysqlserver-collection" )
+        using namespace Collections;
+        CollectionFactory *factory = qobject_cast<CollectionFactory*>( pFactory );
+        if( !factory )
+            continue;
+
+        const QString name = factory->info().pluginName();
+        if( name == QLatin1String("mysqlserver-collection") )
         {
             if( useMySqlServer )
-                orderedPlugins.prepend( service );
+                orderdFactories.prepend( factory );
         }
-        else if( name == "mysqle-collection" )
+        else if( name == QLatin1String("mysqle-collection") )
         {
             if( !useMySqlServer )
-                orderedPlugins.prepend( service );
+                orderdFactories.prepend( factory );
         }
         else
         {
-            orderedPlugins.append( service );
+            orderdFactories.append( factory );
         }
     }
-    loadServices( orderedPlugins );
+    loadPlugins( orderdFactories );
 }
 
 void
-CollectionManager::loadServices( const KService::List &services )
+CollectionManager::loadPlugins( const QList<Collections::CollectionFactory*> &factories )
 {
     DEBUG_BLOCK
-    foreach( const KService::Ptr &service, services )
+    foreach( Collections::CollectionFactory *factory, factories )
     {
-        const QString name( service->property( "X-KDE-Amarok-name" ).toString() );
-        KPluginLoader loader( *( service.constData() ) );
-        KPluginFactory *pluginFactory = loader.factory();
-        if( pluginFactory )
+        if( !factory )
+            continue;
+
+        const KPluginInfo info = factory->info();
+        const QString name = info.pluginName();
+        const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
+
+        bool essential = false;
+        if( (useMySqlServer && (name == QLatin1String("mysqlserver-collection"))) ||
+            (!useMySqlServer && (name == QLatin1String("mysqle-collection"))) )
         {
-            Collections::CollectionFactory* factory( 0 );
-            if( (factory = pluginFactory->create<Collections::CollectionFactory>( this )) )
-            {
-                connect( factory, SIGNAL(newCollection(Collections::Collection*)),
-                         this, SLOT(slotNewCollection(Collections::Collection*)) );
-                d->factories.append( factory );
-                debug() << "Initialising" << name;
-                factory->init();
-                if( name == "mysqle-collection" )
-                    m_haveEmbeddedMysql = true;
-            }
-            else
-            {
-                debug() << QString( "Plugin '%1' has wrong factory class: %2" )
-                                             .arg( name, loader.errorString() );
-            }
+            essential = true;
         }
-        else
-        {
-            warning() << QString( "Failed to get factory '%1' from KPluginLoader: %2" )
-                                                     .arg( name, loader.errorString() );
-        }
+
+        bool enabledByDefault = info.isPluginEnabledByDefault();
+        bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
+        if( !enabled && !essential )
+            continue;
+
+        connect( factory, SIGNAL(newCollection(Collections::Collection*)),
+                 this, SLOT(slotNewCollection(Collections::Collection*)) );
+        d->factories.append( factory );
+        debug() << "initializing" << name;
+        factory->init();
+        if( name == QLatin1String("mysqle-collection") )
+            m_haveEmbeddedMysql = true;
     }
 }
 

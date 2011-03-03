@@ -101,8 +101,6 @@ Comment[zh_TW]=聆聽並下載由獨立藝人所上傳的音樂
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=amarok_service_jamendo
-
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
 X-KDE-Amarok-framework-version=60

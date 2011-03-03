@@ -24,10 +24,10 @@
 #include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "dialogs/ScriptManager.h"
 #include "context/LyricsManager.h"
 #include "LyricsBrowser.h"
 #include "LyricsSuggestionsListWidget.h"
+#include "ScriptManager.h"
 
 #include <KConfigDialog>
 #include <KTextBrowser>
@@ -42,7 +42,6 @@
 #include <QPoint>
 #include <QScrollBar>
 #include <QStandardItemModel>
-#include <QTreeView>
 #include <QTimer>
 
 class LyricsAppletPrivate

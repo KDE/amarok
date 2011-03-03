@@ -18,12 +18,6 @@
 
 #include <config-amarok.h>
 
-#include "core/support/Amarok.h"
-#include "amarokconfig.h"
-#include "amarokurls/AmarokUrl.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetcher.h"
@@ -31,33 +25,43 @@
 #include "dbus/CollectionDBusHandler.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
-#include "firstruntutorial/FirstRunTutorial.h"
 #include "KNotificationBackend.h"
-#include "core/capabilities/SourceInfoCapability.h"
-#include "core/meta/support/MetaConstants.h"
-#include "core/meta/Meta.h"
-#include "core/meta/support/MetaUtility.h"
-#include "core/transcoding/TranscodingController.h"
-#include "network/NetworkAccessManagerProxy.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
-#include "dbus/mpris1/PlayerHandler.h"
+#include "PluginManager.h"
+#include "ScriptManager.h"
+#include "TrayIcon.h"
+#include "amarokconfig.h"
+#include "amarokurls/AmarokUrl.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core/capabilities/SourceInfoCapability.h"
+#include "core/interfaces/Logger.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaConstants.h"
+#include "core/meta/support/MetaUtility.h"
 #include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistFormat.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModelStack.h"
-#include "playlist/PlaylistController.h"
-#include "playlistmanager/PlaylistManager.h"
-#include "core/plugins/PluginManager.h"
 #include "core/podcasts/PodcastProvider.h"
+#include "core/support/Amarok.h"
+#include "core/support/Components.h"
+#include "core/support/Debug.h"
+#include "core/transcoding/TranscodingController.h"
+#include "covermanager/CoverFetcher.h"
+#include "dbus/CollectionDBusHandler.h"
+#include "dbus/mpris1/PlayerHandler.h"
 #include "dbus/mpris1/RootHandler.h"
-#include "ScriptManager.h"
-#include "statemanagement/ApplicationController.h"
-#include "statemanagement/DefaultApplicationController.h"
 #include "dbus/mpris1/TrackListHandler.h"
 #include "dbus/mpris2/Mpris2DBusHandler.h"
-#include "TrayIcon.h"
+#include "dialogs/EqualizerDialog.h"
+#include "firstruntutorial/FirstRunTutorial.h"
+#include "network/NetworkAccessManagerProxy.h"
+#include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
+#include "playlistmanager/PlaylistManager.h"
+#include "statemanagement/ApplicationController.h"
+#include "statemanagement/DefaultApplicationController.h"
 
 
 #ifdef NO_MYSQL_EMBEDDED
@@ -265,6 +269,7 @@ App::~App()
     CoverCache::destroy();
     CollectionManager::destroy();
     NetworkAccessManagerProxy::destroy();
+    Plugins::PluginManager::destroy();
 
     //this should be moved to App::quit() I guess
     Amarok::Components::applicationController()->shutdown();
@@ -723,17 +728,14 @@ App::continueInit()
 
 void App::slotConfigAmarok( const QString& page )
 {
-    Amarok2ConfigDialog* dialog = static_cast<Amarok2ConfigDialog*>( KConfigDialog::exists( "settings" ) );
-
+    KConfigDialog *dialog = KConfigDialog::exists( "settings" );
     if( !dialog )
     {
         //KConfigDialog didn't find an instance of this dialog, so lets create it :
         dialog = new Amarok2ConfigDialog( mainWindow(), "settings", AmarokConfig::self() );
-
-        connect( dialog, SIGNAL( settingsChanged( const QString& ) ), SLOT( applySettings() ) );
+        connect( dialog, SIGNAL(settingsChanged(QString)), SLOT(applySettings()) );
     }
-
-    dialog->show( page );
+    static_cast<Amarok2ConfigDialog*>( dialog )->show( page );
 }
 
 void App::slotConfigShortcuts()

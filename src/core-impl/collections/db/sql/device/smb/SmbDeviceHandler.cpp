@@ -19,7 +19,7 @@
  
 #include "SmbDeviceHandler.h"
 
-AMAROK_EXPORT_PLUGIN( SmbDeviceHandlerFactory )
+AMAROK_EXPORT_DEVICE_PLUGIN( smb, SmbDeviceHandlerFactory )
 
 #include "core/support/Debug.h"
 #include "core/collections/support/SqlStorage.h"
@@ -104,6 +104,11 @@ QString SmbDeviceHandlerFactory::type( ) const
     return "smb";
 }
 
+void SmbDeviceHandlerFactory::init()
+{
+    m_initialized = true;
+}
+
 bool SmbDeviceHandlerFactory::canCreateFromMedium( ) const
 {
     return true;
@@ -135,8 +140,12 @@ bool SmbDeviceHandlerFactory::canHandle( const Solid::Device &device ) const
     return false;
 }
 
-SmbDeviceHandlerFactory::SmbDeviceHandlerFactory( )
+SmbDeviceHandlerFactory::SmbDeviceHandlerFactory( QObject *parent, const QVariantList &args )
+    : DeviceHandlerFactory( parent, args )
 {
+    KPluginInfo pluginInfo( "amarok_device_smb.desktop", "services" );
+    pluginInfo.setConfig( Amarok::config("Device_MassiveStorage") );
+    m_info = pluginInfo;
 }
 
 SmbDeviceHandlerFactory::~SmbDeviceHandlerFactory( )

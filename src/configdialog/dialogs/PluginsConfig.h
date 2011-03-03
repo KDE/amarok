@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Martin Aumueller <aumuell@reserv.at>                              *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,6 +14,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-// this is only to get the PluginConfig.moc into libamarok
-#include "core/plugins/PluginConfig.h"
-#include "PluginConfig.moc"
+#ifndef AMAROK_PLUGINSCONFIG_H
+#define AMAROK_PLUGINSCONFIG_H
+
+#include "ConfigDialogBase.h"
+
+class KPluginSelector;
+
+/**
+  * A widget that allows configuration of plugins
+  */
+class PluginsConfig : public ConfigDialogBase
+{
+    Q_OBJECT
+
+public:
+    PluginsConfig( QWidget *parent );
+    virtual ~PluginsConfig();
+
+    virtual void updateSettings();
+    virtual bool hasChanged();
+    virtual bool isDefault();
+
+public slots:
+    void slotConfigChanged( bool changed );
+
+private:
+    bool m_configChanged;
+    KPluginSelector *m_selector;
+};
+
+#endif // AMAROK_PLUGINSCONFIG_H

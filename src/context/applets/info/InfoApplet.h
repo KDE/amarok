@@ -54,6 +54,6 @@ private:
     static QString s_defaultHtml;
 };
 
-K_EXPORT_AMAROK_APPLET( info, InfoApplet )
+AMAROK_EXPORT_APPLET( info, InfoApplet )
 
 #endif

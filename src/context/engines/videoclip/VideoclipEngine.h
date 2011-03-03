@@ -179,7 +179,7 @@ private:
 };
 
 Q_DECLARE_METATYPE ( VideoInfo * )
-K_EXPORT_AMAROK_DATAENGINE( videoclip, VideoclipEngine )
+AMAROK_EXPORT_DATAENGINE( videoclip, VideoclipEngine )
 
 #endif
 

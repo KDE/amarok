@@ -22,8 +22,8 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "statusbar/StatusBar.h"
 #include "core/collections/support/SqlStorage.h"
+#include "statusbar/StatusBar.h"
 
 //solid stuff
 #include <solid/predicate.h>
@@ -42,10 +42,17 @@
 #include <QStringList>
 #include <QTimer>
 
+DeviceHandlerFactory::DeviceHandlerFactory( QObject *parent, const QVariantList &args )
+    : Plugins::PluginFactory( parent, args )
+{
+    m_type = Plugins::PluginFactory::Device;
+}
+
 MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
     : QObject( parent )
     , m_storage( storage )
 {
+    DEBUG_BLOCK
     setObjectName( "MountPointManager" );
 
     if ( !Amarok::config( "Collection" ).readEntry( "DynamicCollection", true ) )
@@ -56,8 +63,6 @@ MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
 
     connect( MediaDeviceCache::instance(), SIGNAL( deviceAdded( QString ) ), SLOT( deviceAdded( QString ) ) );
     connect( MediaDeviceCache::instance(), SIGNAL( deviceRemoved( QString ) ), SLOT( deviceRemoved( QString ) ) );
-
-    init();
 
 //     SqlStorage *collDB = CollectionManager::instance()->sqlStorage();
 
@@ -79,7 +84,7 @@ MountPointManager::~MountPointManager()
     m_handlerMapMutex.lock();
     foreach( DeviceHandler *dh, m_handlerMap )
         delete dh;
-    
+
     while( !m_mediumFactories.isEmpty() )
         delete m_mediumFactories.takeFirst();
     while( !m_remoteFactories.isEmpty() )
@@ -89,27 +94,29 @@ MountPointManager::~MountPointManager()
 
 
 void
-MountPointManager::init()
+MountPointManager::loadDevicePlugins( const QList<Plugins::PluginFactory*> &factories )
 {
     DEBUG_BLOCK
-    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'device'" );
-    debug() << "Received [" << QString::number( plugins.count() ) << "] device plugin offers";
-    oldForeachType( KService::List, plugins )
+    foreach( Plugins::PluginFactory *pFactory, factories )
     {
-        Plugins::Plugin *plugin = Plugins::PluginManager::createFromService( *it );
-        if( plugin )
-        {
-            DeviceHandlerFactory *factory = static_cast<DeviceHandlerFactory*>( plugin );
-            if ( factory->canCreateFromMedium() )
-                m_mediumFactories.append( factory );
-            else if (factory->canCreateFromConfig() )
-                m_remoteFactories.append( factory );
-            else
-                //FIXME max: better error message
-                debug() << "Unknown DeviceHandlerFactory";
-        }
-        else
-            debug() << "Plugin could not be loaded";
+        DeviceHandlerFactory *factory = qobject_cast<DeviceHandlerFactory*>( pFactory );
+        if( !factory )
+            continue;
+
+        KPluginInfo info = factory->info();
+        QString name = info.pluginName();
+        bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", info.isPluginEnabledByDefault() );
+        if( !enabled )
+            continue;
+
+        debug() << "initializing:" << name;
+        factory->init();
+        if( factory->canCreateFromMedium() )
+            m_mediumFactories.append( factory );
+        else if (factory->canCreateFromConfig() )
+            m_remoteFactories.append( factory );
+        else //FIXME max: better error message
+            debug() << "Unknown DeviceHandlerFactory";
 
         Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageAccess );
         QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
@@ -361,7 +368,7 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
     typedef QMap<int, QStringList> FolderMap;
     KConfigGroup folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
-    
+
     foreach( const QString &folder, folders )
     {
         int id = getIdForUrl( folder );

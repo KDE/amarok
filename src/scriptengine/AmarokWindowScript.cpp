@@ -28,13 +28,14 @@
 
 namespace AmarokScript
 {
-    AmarokWindowScript::AmarokWindowScript( QScriptEngine* ScriptEngine, QList<QObject*>* guiPtrList )
-    : QObject( kapp )
+    AmarokWindowScript::AmarokWindowScript( QScriptEngine* scriptEngine )
+        : QObject( scriptEngine )
+        , m_toolsMenu( The::mainWindow()->ToolsMenu() )
+        , m_settingsMenu( The::mainWindow()->SettingsMenu() )
+        , m_scriptEngine( scriptEngine )
     {
-        m_toolsMenu = The::mainWindow()->ToolsMenu();
-        m_settingsMenu = The::mainWindow()->SettingsMenu();
-        m_ScriptEngine = ScriptEngine;
-        m_guiPtrList = guiPtrList;
+        QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership );
+        scriptEngine->globalObject().property( "Amarok" ).setProperty( "Window", scriptObject );
     }
 
     AmarokWindowScript::~AmarokWindowScript()
@@ -49,7 +50,7 @@ namespace AmarokScript
     void AmarokWindowScript::addToolsSeparator()
     {
         QAction* action = m_toolsMenu.data()->addSeparator();
-        m_guiPtrList->append( action );
+        m_guiPtrList.append( action );
     }
 
     bool AmarokWindowScript::addSettingsMenu( QString id, QString menuTitle, QString icon )
@@ -60,7 +61,7 @@ namespace AmarokScript
     void AmarokWindowScript::addSettingsSeparator()
     {
         QAction* action = m_settingsMenu.data()->addSeparator();
-        m_guiPtrList->append( action );
+        m_guiPtrList.append( action );
     }
 
     bool AmarokWindowScript::addMenuAction( QWeakPointer<KMenu> menu, QString id, QString menuTitle, QString menuProperty, QString icon )
@@ -73,7 +74,7 @@ namespace AmarokScript
 
         if ( !ac->action( id ) )
         {
-            KAction *action = new KAction( KIcon( icon ), menuTitle, The::mainWindow() );
+            KAction *action = new KAction( KIcon( icon ), menuTitle, this );
             ac->addAction( id, action );
 
             // don't forget to read the shortcut settings from the config file so
@@ -83,10 +84,10 @@ namespace AmarokScript
             // add the action to the given menu
             menu.data()->addAction( ac->action( id ) );
 
-            m_guiPtrList->append( action );
+            m_guiPtrList.append( action );
 
-            QScriptValue newMenu = m_ScriptEngine->newQObject( action );
-            m_ScriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( menuProperty ).setProperty( id, newMenu );
+            QScriptValue newMenu = m_scriptEngine->newQObject( action );
+            m_scriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( menuProperty ).setProperty( id, newMenu );
         }
         else
         {

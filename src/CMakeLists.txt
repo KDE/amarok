@@ -188,7 +188,9 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/GeneralConfig.cpp
     configdialog/dialogs/NotificationsConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
-    configdialog/dialogs/ServiceConfig.cpp
+    configdialog/dialogs/PluginsConfig.cpp
+    configdialog/dialogs/ScriptsConfig.cpp
+    configdialog/dialogs/ScriptSelector.cpp
     configdialog/dialogs/DatabaseConfig.cpp
 )
 
@@ -198,6 +200,7 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/NotificationsConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
     configdialog/dialogs/DatabaseConfig.ui
+    configdialog/dialogs/ScriptsConfig.ui
 )
 
 set(libbrowserframework_SRCS
@@ -636,6 +639,10 @@ set(amaroklib_LIB_SRCS
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
+    MountPointManager.cpp
+    PluginManager.cpp
+    ScriptManager.cpp
+    ScriptUpdater.cpp
     StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp
@@ -668,9 +675,6 @@ set(amaroklib_LIB_SRCS
     dialogs/MusicBrainzTagger.cpp
     dialogs/OrganizeCollectionDialog.cpp
     dialogs/TrackOrganizer.cpp
-    dialogs/ScriptSelector.cpp
-    dialogs/ScriptManager.cpp
-    dialogs/ScriptUpdater.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
     dialogs/LabelListModel.cpp
@@ -882,7 +886,6 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/EditFilterDialog.ui
     dialogs/EqualizerDialog.ui
     dialogs/MusicBrainzTagger.ui
-    dialogs/ScriptManagerBase.ui
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
     dialogs/OrganizeCollectionDialogBase.ui

@@ -33,8 +33,10 @@
 #include <QLabel>
 
 
-ServiceFactory::ServiceFactory() : m_initialized( false )
+ServiceFactory::ServiceFactory( QObject *parent, const QVariantList &args )
+    : Plugins::PluginFactory( parent, args )
 {
+    m_type = Plugins::PluginFactory::Service;
     CollectionManager::instance()->addTrackProvider( this );
 }
 

@@ -38,7 +38,15 @@
 #include <mygpo-qt/ApiRequest.h>
 #include <mygpo-qt/Podcast.h>
 
-AMAROK_EXPORT_PLUGIN( GpodderServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( gpodder, GpodderServiceFactory )
+
+GpodderServiceFactory::GpodderServiceFactory( QObject *parent, const QVariantList &args )
+    : ServiceFactory( parent, args )
+{
+    KPluginInfo pluginInfo(  "amarok_service_gpodder.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    m_info = pluginInfo;
+}
 
 void GpodderServiceFactory::init()
 {

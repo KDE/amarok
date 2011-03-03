@@ -27,7 +27,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokCollectionScript( QScriptEngine* ScriptEngine );
+            AmarokCollectionScript( QScriptEngine* scriptEngine );
             ~AmarokCollectionScript();
 
         public slots:

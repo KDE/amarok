@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,40 +14,35 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core/plugins/Plugin.h"
+#include "core/support/PluginFactory.h"
 
-namespace Plugins {
-
-
-Plugin::Plugin()
-{}
-
-
-Plugin::~Plugin()
-{}
-
-
-void
-Plugin::addPluginProperty( const QString& key, const QString& value )
+Plugins::PluginFactory::PluginFactory( QObject *parent, const QVariantList &args )
+    : QObject( parent )
+    , m_initialized( false )
+    , m_type( Unknown )
 {
-    m_properties[key.toLower()] = value;
+    Q_UNUSED( args )
 }
 
+Plugins::PluginFactory::~PluginFactory()
+{}
 
-QString
-Plugin::pluginProperty( const QString& key )
+KPluginInfo
+Plugins::PluginFactory::info() const
 {
-    if ( m_properties.find( key.toLower() ) == m_properties.end() )
-        return "false";
-
-    return m_properties[key.toLower()];
+    return m_info;
 }
 
+Plugins::PluginFactory::Type
+Plugins::PluginFactory::pluginType() const
+{
+    return m_type;
+}
 
 bool
-Plugin::hasPluginProperty( const QString& key )
+Plugins::PluginFactory::isInitialized() const
 {
-    return m_properties.find( key.toLower() ) != m_properties.end();
+    return m_initialized;
 }
 
-}
+#include "PluginFactory.moc"

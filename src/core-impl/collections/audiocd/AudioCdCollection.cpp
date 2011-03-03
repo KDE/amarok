@@ -53,12 +53,10 @@ using namespace Collections;
 AMAROK_EXPORT_COLLECTION( AudioCdCollectionFactory, audiocdcollection )
 
 AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVariantList &args )
-    : MediaDeviceCollectionFactory<AudioCdCollection>( new AudioCdConnectionAssistant() )
+    : MediaDeviceCollectionFactory<AudioCdCollection>( parent, args, new AudioCdConnectionAssistant() )
 {
-    setParent( parent );
-    Q_UNUSED( args );
+    m_info = KPluginInfo( "amarok_collection-audiocdcollection.desktop", "services" );
 }
-
 
 AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
    : MediaDeviceCollection()

@@ -26,7 +26,7 @@ class SqlStorage;
 class MassStorageDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
-    MassStorageDeviceHandlerFactory();
+    MassStorageDeviceHandlerFactory( QObject *parent, const QVariantList &args );
     virtual ~MassStorageDeviceHandlerFactory();
 
     virtual bool canHandle( const Solid::Device &device ) const;
@@ -40,6 +40,8 @@ public:
     virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const;
 
     virtual QString type() const;
+
+    virtual void init();
 
 private:
     bool excludedFilesystem( const QString &fstype ) const;

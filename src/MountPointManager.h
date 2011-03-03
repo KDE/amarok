@@ -18,12 +18,12 @@
 #define AMAROK_MOUNTPOINTMANAGER_H
 
 #include "core/support/Amarok.h"
-#include "amarok_sqlcollection_export.h"
-#include "core/plugins/Plugin.h"
-#include "core/plugins/PluginManager.h"
+#include "core/support/PluginFactory.h"
+#include "shared/amarok_export.h"
 
 #include <KConfigGroup>
 #include <KUrl>
+#include <KPluginInfo>
 #include <solid/device.h>
 #include <threadweaver/Job.h>
 
@@ -39,10 +39,12 @@ typedef QList<int> IdList;
 typedef QList<DeviceHandlerFactory*> FactoryList;
 typedef QMap<int, DeviceHandler*> HandlerMap;
 
-class AMAROK_SQLCOLLECTION_EXPORT DeviceHandlerFactory : public Plugins::Plugin
+class AMAROK_EXPORT DeviceHandlerFactory : public Plugins::PluginFactory
 {
+    Q_OBJECT
+
 public:
-    DeviceHandlerFactory() {}
+    DeviceHandlerFactory( QObject *parent, const QVariantList &args );
     virtual ~DeviceHandlerFactory() {}
 
     /**
@@ -77,14 +79,13 @@ public:
      * @return a QString describing the type of the DeviceHandler
      */
     virtual QString type() const = 0;
-
 };
 
 /**
  *
  *
  */
-class AMAROK_SQLCOLLECTION_EXPORT DeviceHandler
+class AMAROK_EXPORT DeviceHandler
 {
 public:
     DeviceHandler() {}
@@ -140,7 +141,7 @@ public:
 /**
  *	@author Maximilian Kossick <maximilian.kossick@googlemail.com>
  */
-class AMAROK_SQLCOLLECTION_EXPORT MountPointManager : public QObject
+class AMAROK_EXPORT MountPointManager : public QObject
 {
     Q_OBJECT
 
@@ -188,6 +189,8 @@ public:
     virtual QStringList collectionFolders() const;
     virtual void setCollectionFolders( const QStringList &folders );
 
+    void loadDevicePlugins( const QList<Plugins::PluginFactory*> &factories );
+
 public slots:
 //     void mediumAdded( const Medium *m );
 //     /**
@@ -217,7 +220,6 @@ private:
      * @return true if the medium is mounted, false otherwise
      */
     bool isMounted ( const int deviceId ) const;
-    void init();
 
     SqlStorage *m_storage;
     /**
@@ -248,5 +250,10 @@ private:
     void updateStatistics();
     void updateLabels();
 };
+
+#define AMAROK_EXPORT_DEVICE_PLUGIN(libname, classname) \
+K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
+K_EXPORT_PLUGIN(factory("amarok_device_" #libname))\
+
 
 #endif

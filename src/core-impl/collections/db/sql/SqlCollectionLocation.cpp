@@ -29,7 +29,7 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core-impl/collections/db/ScanManager.h"
-#include "core-impl/collections/db/sql/MountPointManager.h"
+#include "MountPointManager.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
 #include "transcoding/TranscodingJob.h"

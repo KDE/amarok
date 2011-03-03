@@ -27,7 +27,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokServicePluginManagerScript( QScriptEngine* ScriptEngine );
+            AmarokServicePluginManagerScript( QScriptEngine* scriptEngine );
             ~AmarokServicePluginManagerScript();
 
         public slots:

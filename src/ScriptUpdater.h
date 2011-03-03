@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2009 Jakob Kummerow <jakob.kummerow@gmail.com>                         *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,45 +13,50 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef SERVICECONFIGSCREEN_H
-#define SERVICECONFIGSCREEN_H
 
-#include "ConfigDialogBase.h"
-#include "services/ServicePluginManager.h"
+#ifndef AMAROK_SCRIPTUPDATER_H
+#define AMAROK_SCRIPTUPDATER_H
 
-#include <KPluginSelector>
+#include "shared/ScriptUpdaterStatic.h"
 
+#include <QTemporaryFile>
 
-/**
-A widget that allows configuration of services
+class KJob;
 
-	@author 
-*/
-class ServiceConfig : public ConfigDialogBase
+class ScriptUpdater : public QObject
 {
+
     Q_OBJECT
-            
-public:
-    ServiceConfig( QWidget * parent );
 
-    ~ServiceConfig();
+    public:
+        explicit ScriptUpdater( QObject *parent );
+        virtual ~ScriptUpdater();
+        void setScriptPath( const QString& scriptPath );
 
-    virtual void updateSettings();
-    virtual bool hasChanged();
-    virtual bool isDefault();
+    public slots:
+        void updateScript();
 
-public slots:
+    signals:
+        void finished( const QString &scriptPath );
 
-    void slotConfigChanged( bool changed );
-    void slotConfigComitted( const QByteArray & name );
+    /*protected:
+        virtual void run();*/
 
-private:
-    ServicePluginManager * m_servicePluginManager;
-    KPluginSelector * m_serviceSelector;
+    private slots:
+        void phase2( KJob * job );
+        void phase3( KJob * job );
+        void phase4( KJob * job );
 
-    bool m_configChanged;
-    QStringList m_changedServices;
+    private:
+
+        bool isNewer(const QString & update, const QString & installed);
+
+        QString m_scriptPath;
+
+        // dynamically collected information about the script
+        QString m_scriptname, m_scriptversion, m_fileName;
+        QTemporaryFile m_archiveFile, m_sigFile, m_versionFile;
+
 };
 
-#endif
+#endif // AMAROK_SCRIPTUPDATER_H

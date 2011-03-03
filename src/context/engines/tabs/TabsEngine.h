@@ -156,6 +156,6 @@ class TabsEngine : public DataEngine
 };
 
 Q_DECLARE_METATYPE ( TabsInfo * )
-K_EXPORT_AMAROK_DATAENGINE( tabs, TabsEngine )
+AMAROK_EXPORT_DATAENGINE( tabs, TabsEngine )
 
 #endif

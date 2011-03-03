@@ -51,12 +51,11 @@ class LastFmServiceFactory : public ServiceFactory
     Q_OBJECT
 
 public:
-    LastFmServiceFactory() {}
+    LastFmServiceFactory( QObject *parent, const QVariantList &args );
     virtual ~LastFmServiceFactory() {}
 
     virtual void init();
     virtual QString name();
-    virtual KPluginInfo info();
     virtual KConfigGroup config();
 
     virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.protocol() == "lastfm"; }

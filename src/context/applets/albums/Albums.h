@@ -87,6 +87,6 @@ private:
     Plasma::IconWidget *m_closeIcon;
 };
 
-K_EXPORT_AMAROK_APPLET( albums, Albums )
+AMAROK_EXPORT_APPLET( albums, Albums )
 
 #endif

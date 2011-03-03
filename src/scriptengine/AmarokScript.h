@@ -29,42 +29,42 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokScript( const QString& name );
+            AmarokScript( const QString& name, QScriptEngine *engine );
             ~AmarokScript();
 
             void slotConfigured();
 
         public slots:
             /** Shuts down Amarok completely. */
-            void        quitAmarok();
+            void quitAmarok();
 
             /** 
              * Print debug output to the shell. Only printed if amarok is started with --debug.
              * @text The text to print.
              */
-            void        debug( const QString& text ) const;
+            void debug( const QString& text ) const;
 
             /**
               * Show an information dialog in Amarok.
               * @text The text to display.
               * @type Type of the dialog. See KMessageBox docs.
               */
-            int         alert( const QString& text, const QString& type = "information" ) const;
+            int alert( const QString& text, const QString& type = "information" ) const;
 
             /** Signals Amarok that this script has ended. */
-            void        end();
+            void end();
 
             /**
               * Start another Amarok script.
               * @name Name of the script to start.
               */
-            bool        runScript( const QString& name ) const;
+            bool runScript( const QString& name ) const;
 
             /**
               * Stop another Amarok script.
               * @name Name of the script to stop.
               */
-            bool        stopScript( const QString& name ) const;
+            bool stopScript( const QString& name ) const;
 
             QStringList listRunningScripts() const;
 

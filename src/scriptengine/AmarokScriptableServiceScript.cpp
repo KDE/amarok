@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AmarokScriptableServiceScript"
+
 #include "AmarokScriptableServiceScript.h"
 
 #include "App.h"
@@ -24,9 +26,12 @@
 
 
 StreamItem::StreamItem( QScriptEngine *engine )
-    : m_year( 0 )
+    : QObject( engine )
+    , m_year( 0 )
 {
-    Q_UNUSED( engine );
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    engine->globalObject().property( "Amarok" ).setProperty( "StreamItem", scriptObject );
+    engine->setDefaultPrototype( qMetaTypeId<StreamItem*>(), QScriptValue() );
 }
 
 StreamItem::~StreamItem()
@@ -148,8 +153,8 @@ void StreamItem::setCoverUrl( QString url )
 
 
 ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
-: QObject( kapp )
-, m_scriptEngine( engine )
+    : QObject( engine )
+    , m_scriptEngine( engine )
 {
     DEBUG_BLOCK
     m_scriptEngine = engine;
@@ -179,7 +184,7 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QS
         error() << "The name of the scriptable script should be the same with the one in the script.spec file!";
         return engine->undefinedValue();
     }
-    QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts[serviceName].servicePtr );
+    QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts.value(serviceName)->servicePtr );
     engine->globalObject().setProperty( "ScriptableServiceScript", obj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
     return engine->undefinedValue();

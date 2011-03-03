@@ -19,36 +19,24 @@
 #ifndef AMAROK_SCRIPTMANAGER_H
 #define AMAROK_SCRIPTMANAGER_H
 
-#include <KDialog>      //baseclass
-
 #include "shared/amarok_export.h"
 
 #include <KPluginInfo>
 #include <KUrl>
 
-#include <QList>
-#include <QMap>
 #include <QScriptValue>
 #include <QSemaphore>
 
+class ScriptItem;
 class ScriptableServiceScript;
-class ScriptUpdater;
-class ScriptSelector;
-
-namespace AmarokScript
-{
+namespace AmarokScript {
     class AmarokScript;
 }
 
-class KArchiveDirectory;
-class KPluginInfo;
-class KPluginSelector;
-
 class QScriptContext;
 class QScriptEngine;
-class QSemaphore;
 
-class AMAROK_EXPORT ScriptManager : public KDialog
+class AMAROK_EXPORT ScriptManager : public QObject
 {
     Q_OBJECT
 
@@ -58,7 +46,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog
 
         /**
          * Runs the script with the given name.
-         * @param name The name of the script.
+         * @param name The pluginName of the script.
          * @return True if successful.
          */
         bool runScript( const QString& name, bool silent = false );
@@ -69,6 +57,10 @@ class AMAROK_EXPORT ScriptManager : public KDialog
          * @return True if successful.
          */
         bool stopScript( const QString& name );
+
+        void configChanged( bool changed );
+
+        KPluginInfo::List scripts( const QString &category );
 
         /** Returns a list of all currently running scripts. Used by the DCOP handler. */
         QStringList listRunningScripts();
@@ -84,29 +76,17 @@ class AMAROK_EXPORT ScriptManager : public KDialog
         /** Notifies any running lyric scripts to fetch desired lyric from given URL */
         void notifyFetchLyricsByUrl( const QString& artist, const QString& title, const QString& url );
 
-        void ServiceScriptPopulate( QString name, int level, int parent_id, QString callbackString, QString filter );
+        void ServiceScriptPopulate( const QString &name,
+                                    int level,
+                                    int parent_id,
+                                    const QString &callbackString,
+                                    const QString &filter );
 
-        void ServiceScriptRequestInfo( QString name, int level, QString callbackString );
+        void ServiceScriptRequestInfo( const QString &name, int level, const QString &callbackString );
 
-        void ServiceScriptCustomize( QString name );
+        void ServiceScriptCustomize( const QString &name );
 
-        struct ScriptItem {
-            KPluginInfo                                     info;
-            QScriptEngine*                                  engine;
-            KUrl                                            url;
-            /** Currently activated in the Script Manager */
-            bool                                            running;
-            /** Currently being evaluated by the script engine */
-            bool                                            evaluating;
-            AmarokScript::AmarokScript*                     globalPtr;
-            ScriptableServiceScript*                        servicePtr;
-            QString                                         log;
-            QList<QObject*>                                 guiPtrList;
-            QList<QObject*>                                 wrapperList;
-            ScriptItem() : engine( 0 ), running( false ), globalPtr( 0 ), servicePtr( 0 ) {}
-        };
-
-        typedef QMap<QString, ScriptItem> ScriptMap;
+        typedef QHash<QString, ScriptItem*> ScriptMap;
         ScriptMap      m_scripts;
         QString        m_lyricsScript;
 
@@ -116,42 +96,21 @@ class AMAROK_EXPORT ScriptManager : public KDialog
         void lyricsScriptStarted();
 
     private slots:
-        bool slotInstallScript( const QString& path = QString() );
-        void slotRetrieveScript();
-        void slotUninstallScript();
-        bool slotRunScript( QString name, bool silent = false );
-        void slotStopScript( QString name );
-        //emmit when start/stop button is clicked
-        void slotConfigChanged( bool changed );
-        //emmit when configuration button is clicked
-        void slotConfigComitted( const QByteArray & name );
-        void scriptFinished( QString name );
+        bool slotRunScript( const QString &name, bool silent = false );
+        void slotStopScript( const QString &name );
+        void scriptFinished( const QString &name );
 
         /** Finds installed scripts, updates them, and loads them */
         void updateAllScripts();
-        void updaterFinished( QString scriptPath );
-        void slotUpdateSettingChanged( bool enabled );
-
-       /**
-        * MOCKUP: This dialog shows a warning, if a script stalls,
-        * and allows the user to terminate this script.
-        * Purpose: Getting around upcoming string freeze, then implementing fully.
-        */
-        void showScriptStalledDialog();
+        void updaterFinished( const QString &scriptPath );
 
     private:
-        explicit ScriptManager( QWidget* parent );
+        explicit ScriptManager( QObject* parent );
         virtual ~ScriptManager();
-
-        /** Finds all loaded scripts and adds them to the listview */
-        void findScripts();
 
         bool loadScript( const QString& path ); //return false if loadScript failed.
 
-        /** Copies the file permissions from the tarball and loads the script */
-        void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );
-
-        void startScriptEngine( QString name);
+        void startScriptEngine( const QString &name);
 
         static QScriptValue ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine );
         static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
@@ -159,21 +118,32 @@ class AMAROK_EXPORT ScriptManager : public KDialog
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
         static ScriptManager*  s_instance;
-        ScriptSelector*        m_scriptSelector;
-        bool                   m_installSuccess;
 
-        QScriptValue   m_global;
         bool           m_configChanged;
         QStringList    m_changedScripts;
 
         // count returning ScriptUpdaters in a thread-safe way
         QSemaphore     m_updateSemaphore;
-        // this is actually an array. The ScriptUpdaters must live longer than the
-        // method that creates them, so they're class members
-        ScriptUpdater* m_updaters;
         // memorize how many scripts were found and tried to be updated
         int            m_nScripts;
 
+};
+
+class ScriptItem
+{
+public:
+    ScriptItem();
+    ~ScriptItem();
+
+    KPluginInfo                                     info;
+    QScriptEngine*                                  engine;
+    KUrl                                            url;
+    /** Currently activated in the Script Manager */
+    bool                                            running;
+    /** Currently being evaluated by the script engine */
+    bool                                            evaluating;
+    ScriptableServiceScript*                        servicePtr;
+    QStringList                                     log;
 };
 
 #endif /* AMAROK_SCRIPTMANAGER_H */

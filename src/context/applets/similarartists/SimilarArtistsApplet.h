@@ -136,6 +136,6 @@ private slots:
     void showArtistBio( const QString &name );
 };
 
-K_EXPORT_AMAROK_APPLET( similarArtists, SimilarArtistsApplet )
+AMAROK_EXPORT_APPLET( similarArtists, SimilarArtistsApplet )
 
 #endif // SIMILARARTISTSAPPLET_H

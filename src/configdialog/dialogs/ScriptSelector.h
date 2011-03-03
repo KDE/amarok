@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Jakob Kummerow <jakob.kummerow@gmail.com>                         *
+ * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,51 +14,35 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_SCRIPTUPDATER_H
-#define AMAROK_SCRIPTUPDATER_H
+#ifndef SCRIPTSELECTOR_H
+#define SCRIPTSELECTOR_H
 
-#include <string.h>
+#include <KCategorizedView>
+#include <KPluginSelector>
+#include <ksharedconfig.h>
+#include <KPluginInfo>
 
-#include "shared/ScriptUpdaterStatic.h"
-
-#include <KIO/Job>
-
-#include <QTemporaryFile>
-
-class ScriptUpdater : public QObject
+class ScriptSelector : public KPluginSelector
 {
-
     Q_OBJECT
 
     public:
-        explicit ScriptUpdater();
-        virtual ~ScriptUpdater();
-        void setScriptPath( const QString& scriptPath );
+        ScriptSelector( QWidget * parent );
 
-    public slots:
-        void updateScript();
+        ~ScriptSelector();
+        QString currentItem();
 
-    signals:
-        void finished( QString scriptPath );
-
-    /*protected:
-        virtual void run();*/
-
-    private slots:
-        void phase2( KJob * job );
-        void phase3( KJob * job );
-        void phase4( KJob * job );
+        void addScripts(const QList<KPluginInfo> &pluginInfoList,
+                     PluginLoadMethod pluginLoadMethod = ReadConfigFile,
+                     const QString &categoryName = QString(),
+                     const QString &categoryKey = QString(),
+                     const KSharedConfig::Ptr &config = KSharedConfig::Ptr());
 
     private:
-
-        bool isNewer(const QString & update, const QString & installed);
-        
-        QString m_scriptPath;
-
-        // dynamically collected information about the script
-        QString m_scriptname, m_scriptversion, m_fileName;
-        QTemporaryFile m_archiveFile, m_sigFile, m_versionFile;
+        KCategorizedView*          m_listView;
+        QMap<int, QString>         m_scripts;
+        int                        scriptCount;
 
 };
 
-#endif // AMAROK_SCRIPTUPDATER_H
+#endif

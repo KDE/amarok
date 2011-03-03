@@ -18,7 +18,7 @@
 #define SQLMOUNTPOINTMANAGERMOCK_H
 
 #include <core-impl/collections/db/sql/SqlCollection.h>
-#include <core-impl/collections/db/sql/MountPointManager.h>
+#include <MountPointManager.h>
 
 #include <QMap>
 #include <QString>

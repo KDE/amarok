@@ -97,6 +97,6 @@ private:
     QStringList m_keywords;
 };
 
-K_EXPORT_AMAROK_DATAENGINE( photos, PhotosEngine )
+AMAROK_EXPORT_DATAENGINE( photos, PhotosEngine )
 
 #endif

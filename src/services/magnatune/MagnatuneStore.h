@@ -44,12 +44,11 @@ class MagnatuneServiceFactory : public ServiceFactory
     Q_OBJECT
 
     public:
-        MagnatuneServiceFactory() {}
+        MagnatuneServiceFactory( QObject *parent, const QVariantList &args );
         virtual ~MagnatuneServiceFactory() {}
 
         virtual void init();
         virtual QString name();
-        virtual KPluginInfo info();
         virtual KConfigGroup config();
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.url().contains( "magnatune.com", Qt::CaseInsensitive ); }

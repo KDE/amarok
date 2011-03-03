@@ -25,7 +25,7 @@
 #include "core/support/Debug.h"
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/db/ScanManager.h"
-#include "core-impl/collections/db/sql/MountPointManager.h"
+#include "MountPointManager.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
 #include "SqlScanResultProcessor.h"
