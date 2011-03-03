@@ -1,0 +1,16 @@
+The following checklist is supposed to help you make sure you don't forget anything important in a commit.
+
+For every commit:
+* Does it conform to Amarok's coding style?
+* Is there a feature request, bug report or review request associated with it? (Please close them with the commit message.)
+* Does it introduce new dependencies?
+* Does it add new strings? Is Amarok in string freeze?
+
+Additionally for commits introducing new features:
+* Does it fit Amarok's vision or at least not work against it?
+* Who will maintain the code?
+* Is Amarok in feature freeze?
+* Do existing regression tests still pass?
+* Are new tests needed?
+* Has it been reviewed by a usability person?
+* Does user documentation exist?
