@@ -30,7 +30,7 @@
 #include <solid/device.h>
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>
-#include <solid/storagevolume.h>
+#include <solid/storageaccess.h>
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
@@ -111,7 +111,7 @@ MountPointManager::init()
         else
             debug() << "Plugin could not be loaded";
 
-        Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageVolume );
+        Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageAccess );
         QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
         foreach( const Solid::Device &device, devices )
             createHandlerFromDevice( device, device.udi() );
@@ -435,7 +435,7 @@ void
 MountPointManager::deviceAdded( const QString &udi )
 {
     DEBUG_BLOCK
-    Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageVolume );
+    Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageAccess );
     QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
     //Looking for a specific udi in predicate seems flaky/buggy; the foreach loop barely
     //takes any time, so just be safe

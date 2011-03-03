@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.4.1
   FEATURES:
+    * Remote NFS & SMB/CIFS collections now work! (BR 249760, BR 232976, 
+      BR 171213, BR 187692)
     * New "Preview" feature for the Organize Collection dialog. Patch by
       Maximilian Güntner <maximilian.guentner@gmail.com>.
     * String filtering in the albums applet.

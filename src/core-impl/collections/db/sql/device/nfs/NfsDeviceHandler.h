@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2006-2007 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2011 Peter C. Ndikuwera <pndiku@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -25,26 +26,28 @@ public:
     NfsDeviceHandlerFactory();
     virtual ~NfsDeviceHandlerFactory();
 
-    virtual bool canHandle( const Medium* m ) const;
+    virtual bool canHandle( const Solid::Device &device ) const;
 
     virtual bool canCreateFromMedium() const;
 
-    virtual DeviceHandler* createHandler( const Medium* m ) const;
+    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &uuid, SqlStorage *s ) const;
 
     virtual bool canCreateFromConfig() const;
 
-    virtual DeviceHandler* createHandler( KSharedConfigPtr c ) const;
+    virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const;
 
     virtual QString type() const;
 };
 
 /**
-	@author Maximilian Kossick <maximilian.kossick@googlemail.com>
+    @author Maximilian Kossick <maximilian.kossick@googlemail.com>
 */
 class NfsDeviceHandler : public DeviceHandler
 {
 public:
-    NfsDeviceHandler(int deviceId, QString server, QString dir, QString mountPoint );
+    NfsDeviceHandler();
+    NfsDeviceHandler(int deviceId, const QString &mountPoint, const QString &udi );
+    NfsDeviceHandler(int deviceId, const QString &server, const QString &share, const QString &mountPoint, const QString &udi );
 
     virtual ~NfsDeviceHandler();
 
@@ -54,14 +57,15 @@ public:
     virtual const QString &getDevicePath() const;
     virtual void getURL( KUrl &absolutePath, const KUrl &relativePath );
     virtual void getPlayableURL( KUrl &absolutePath, const KUrl &relativePath );
-    virtual bool deviceIsMedium( const Medium *m ) const;
+    virtual bool deviceMatchesUdi( const QString &udi ) const;
 
 private:
 
     int m_deviceID;
-    const QString m_mountPoint;
     QString m_server;
-    QString m_dir;
+    QString m_share;
+    const QString m_mountPoint;
+    QString m_udi;
 
 };
 

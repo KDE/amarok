@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2006-2007 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2011 Peter C. Ndikuwera <pndiku@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,24 +14,40 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
+#define DEBUG_PREFIX "SmbDeviceHandler"
  
 #include "SmbDeviceHandler.h"
 
 AMAROK_EXPORT_PLUGIN( SmbDeviceHandlerFactory )
 
 #include "core/support/Debug.h"
+#include "core/collections/support/SqlStorage.h"
 
-#include <KConfig>
-#include <KUrl>
+#include <kconfig.h>
+#include <kurl.h>
+#include <kmountpoint.h>
+#include <solid/storagevolume.h>
+#include <solid/storageaccess.h>
 
+SmbDeviceHandler::SmbDeviceHandler( int deviceId, const QString &server, const QString &share, const QString &mountPoint, const QString &udi )
+    : DeviceHandler()
+    , m_deviceID( deviceId )
+    , m_server( server )
+    , m_share( share )
+    , m_mountPoint( mountPoint )
+    , m_udi( udi )
+{
+  DEBUG_BLOCK
+}
 
-SmbDeviceHandler::SmbDeviceHandler( int deviceId, QString server, QString dir, QString mountPoint )
+SmbDeviceHandler::SmbDeviceHandler( int deviceId, const QString &mountPoint, const QString &udi )
     : DeviceHandler()
     , m_deviceID( deviceId )
     , m_mountPoint( mountPoint )
-    , m_server( server )
-    , m_dir( dir )
+    , m_udi( udi )
 {
+  DEBUG_BLOCK
 }
 
 SmbDeviceHandler::~SmbDeviceHandler()
@@ -56,60 +73,66 @@ SmbDeviceHandler::getDeviceID()
     return m_deviceID;
 }
 
-const QString &
-SmbDeviceHandler::getDevicePath() const
+const QString &SmbDeviceHandler::getDevicePath() const
 {
     return m_mountPoint;
 }
 
-void
-SmbDeviceHandler::getURL( KUrl &absolutePath, const KUrl &relativePath )
+void SmbDeviceHandler::getURL( KUrl &absolutePath, const KUrl &relativePath )
 {
     absolutePath.setPath( m_mountPoint );
     absolutePath.addPath( relativePath.path() );
     absolutePath.cleanPath();
 }
 
-void
-SmbDeviceHandler::getPlayableURL( KUrl &absolutePath, const KUrl &relativePath )
+void SmbDeviceHandler::getPlayableURL( KUrl &absolutePath, const KUrl &relativePath )
 {
     getURL( absolutePath, relativePath );
 }
 
-bool
-SmbDeviceHandler::deviceIsMedium( const Medium * m ) const
+bool SmbDeviceHandler::deviceMatchesUdi( const QString &udi ) const
 {
-    return m->deviceNode() == m_server + ':' + m_dir;
+  return m_udi == udi;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // class SmbDeviceHandlerFactory
 ///////////////////////////////////////////////////////////////////////////////
 
-QString
-SmbDeviceHandlerFactory::type( ) const
+QString SmbDeviceHandlerFactory::type( ) const
 {
     return "smb";
 }
 
-bool
-SmbDeviceHandlerFactory::canCreateFromMedium( ) const
+bool SmbDeviceHandlerFactory::canCreateFromMedium( ) const
 {
     return true;
 }
 
-bool
-SmbDeviceHandlerFactory::canCreateFromConfig( ) const
+bool SmbDeviceHandlerFactory::canCreateFromConfig( ) const
 {
     return false;
 }
 
-bool
-SmbDeviceHandlerFactory::canHandle( const Medium * m ) const
+bool SmbDeviceHandlerFactory::canHandle( const Solid::Device &device ) const
 {
-    return m && ( m->fsType().find( "smb" ) != -1 ||
-                  m->fsType().find( "cifs" ) != -1 )
-		&& m->isMounted();
+    DEBUG_BLOCK
+
+    const Solid::StorageAccess *access = device.as<Solid::StorageAccess>();
+ 
+    if( !access || access->filePath().isEmpty() )
+    {
+        debug() << "Device not accessible";
+        return false;
+    }
+
+    // find mount point
+    KMountPoint::Ptr m = KMountPoint::currentMountPoints().findByPath( access->filePath() );
+
+    if ( m && (m->mountType() == "smb" || m->mountType() == "cifs") )
+      return true;
+
+    return false;
 }
 
 SmbDeviceHandlerFactory::SmbDeviceHandlerFactory( )
@@ -121,17 +144,38 @@ SmbDeviceHandlerFactory::~SmbDeviceHandlerFactory( )
 }
 
 DeviceHandler *
-SmbDeviceHandlerFactory::createHandler( KSharedConfigPtr ) const
+SmbDeviceHandlerFactory::createHandler( KSharedConfigPtr, SqlStorage* ) const
 {
     return 0;
 }
 
 DeviceHandler *
-SmbDeviceHandlerFactory::createHandler( const Medium * m ) const
+SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, SqlStorage *s ) const
 {
-    SqlStorage *s = CollectionManager::instance()->sqlStorage();
-    QString server = m->deviceNode().section( '/', 2, 2 );
-    QString share = m->deviceNode().section( '/', 3, 3 );
+    DEBUG_BLOCK
+    if( !s )
+    {
+        debug() << "!s, returning 0";
+        return 0;
+    }
+
+    const Solid::StorageAccess *access = device.as<Solid::StorageAccess>();
+    if( !access )
+    {
+        debug() << "Device isn't valid, can't create a handler";
+        return 0;
+    }
+    if( access->filePath().isEmpty() )
+    {
+        debug() << "not mounted, can't do anything";
+        return 0; // It's not mounted, we can't do anything.
+    }
+
+    // find out the mount type of this...
+    KMountPoint::Ptr m = KMountPoint::currentMountPoints().findByPath( access->filePath() );
+
+    QString server = m->mountedFrom().section( '/', 2, 2 );
+    QString share = m->mountedFrom().section( '/', 3, 3 );
     QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint "
                                          "FROM devices WHERE type = 'smb' "
                                          "AND servername = '%1' AND sharename = '%2';" )
@@ -144,7 +188,7 @@ SmbDeviceHandlerFactory::createHandler( const Medium * m ) const
                            "id = %1;" )
                            .arg( ids[0] )
                            .arg( s->escape( m->mountPoint() ) ) );
-        return new SmbDeviceHandler( ids[0].toInt(), server, share, m->mountPoint() );
+        return new SmbDeviceHandler( ids[0].toInt(), server, share, m->mountPoint(), udi );
     }
     else
     {
@@ -161,7 +205,7 @@ SmbDeviceHandlerFactory::createHandler( const Medium * m ) const
             return 0;
         }
         debug() << "Created new SMB device with ID " << id << " , server " << server << " ,share " << share;
-        return new SmbDeviceHandler( id, server, share, m->mountPoint() );
+        return new SmbDeviceHandler( id, server, share, m->mountPoint(), udi );
     }
 }
 
