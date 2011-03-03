@@ -129,10 +129,16 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
                 // we found nothing, so if we have cached lyrics, use it!
                 debug() << "using cached lyrics...";
                 lyrics = currentTrack->cachedLyrics();
-                QString artist = currentTrack->artist() ? currentTrack->artist()->name() : QString();
-                LyricsData data = { lyrics, currentTrack->name(), artist, KUrl() };
-                sendNewLyrics( data );
             }
+            else
+            {
+                lyricsError( i18n("Retrieved lyrics is empty") );
+                return;
+            }
+
+            QString artist = currentTrack->artist() ? currentTrack->artist()->name() : QString();
+            LyricsData data = { lyrics, currentTrack->name(), artist, KUrl() };
+            sendNewLyrics( data );
             return;
         }
         else if( xml.name() == QLatin1String("suggestions") )
