@@ -62,14 +62,9 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
 
 void LyricsEngine::onTrackMetadataChanged( Meta::TrackPtr track )
 {
-    QString artist = track->artist() ? track->artist()->name() : QString();
-    QString title = track->name();
-    if( (artist != m_prevTrackMetadata.artist) || (title != m_prevTrackMetadata.title) )
-    {
-        m_prevTrackMetadata.artist = artist;
-        m_prevTrackMetadata.title = title;
+    DEBUG_BLOCK
+    if( track->cachedLyrics().isEmpty() )
         update();
-    }
 }
 
 void LyricsEngine::update()
