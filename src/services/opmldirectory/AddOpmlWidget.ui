@@ -83,7 +83,11 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="KLineEdit" name="titleEdit"/>
+    <widget class="KLineEdit" name="titleEdit">
+     <property name="clickMessage">
+      <string>If left blank the title from the OPML will be used.</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
