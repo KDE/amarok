@@ -298,6 +298,14 @@ OpmlDirectoryModel::slotAddOpmlAction()
     widget.setupUi( opmlAddWidget );
     widget.urlEdit->setMode( KFile::File );
     dialog->setMainWidget( opmlAddWidget );
+    QString placeHolderText = i18n( "If left blank the title from the OPML will be used." );
+#if QT_VERSION >= 0x040700
+    widget.titleEdit->setPlaceholderText( placeHolderText );
+#else
+    //placeHolderText only supported since Qt 4.7
+    QLabel *placeHolderLabel = new QLabel( placeHolderText, opmlAddWidget );
+    widget.formLayout->addWidget( placeHolderLabel );
+#endif
 
     if( dialog->exec() != QDialog::Accepted )
         return;
