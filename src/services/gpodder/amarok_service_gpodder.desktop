@@ -3,7 +3,15 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-gpodder-amarok
 Name=gpodder.net
+Name[pt]=gpodder.net
+Name[sv]=gpodder.net
+Name[uk]=gpodder.net
+Name[x-test]=xxgpodder.netxx
 Comment=Podcast Service
+Comment[pt]=Serviço de 'Podcasts'
+Comment[sv]=Podsändningstjänst
+Comment[uk]=Служба трансляцій
+Comment[x-test]=xxPodcast Servicexx
 
 ServiceTypes=Amarok/Plugin
 
