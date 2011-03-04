@@ -297,7 +297,7 @@ SqlPodcastProvider::providerActions()
         m_providerActions << configureAction;
 
         QAction *exportOpmlAction = new QAction( KIcon( "document-export" ),
-                                                 i18n( "&Export to subscriptions to OPML file" ),
+                                                 i18n( "&Export subscriptions to OPML file" ),
                                                  this
                                                );
         connect( exportOpmlAction, SIGNAL(triggered()), SLOT(slotExportOpml()) );
