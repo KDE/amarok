@@ -82,7 +82,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
     }
 
     setenv( "MYSQL_HOME", storagePath.toAscii().data(), 1 );
-    if( mysql_server_init( 0 , 0, 0 ) != 0 )
+    char *args[] = { "amarok" };
+    if( mysql_library_init( 1 , args, 0 ) != 0 )
     {
         error() << "MySQL library initialization failed.";
         reportError( "init" );
