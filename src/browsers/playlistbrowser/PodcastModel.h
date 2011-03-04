@@ -28,8 +28,6 @@
 #include <QPersistentModelIndex>
 #include <QVariant>
 
-class OpmlOutline;
-
 namespace PlaylistBrowserNS {
 
 enum {
@@ -77,16 +75,12 @@ class PodcastModel : public PlaylistBrowserModel
             return Qt::MoveAction | Qt::CopyAction;
         }
 
-        void importOpml( const KUrl &url );
-
     public slots:
         void addPodcast();
         void refreshPodcasts();
 
     private slots:
         void slotSetNew( bool newState );
-        void slotOpmlOutlineParsed( OpmlOutline* );
-        void slotOpmlParsingDone();
 
     protected:
         virtual QActionList actionsFor( const QModelIndex &idx ) const;

@@ -16,6 +16,7 @@
 
 #include "OpmlDirectoryService.h"
 
+#include "amarokurls/AmarokUrlHandler.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
@@ -78,6 +79,8 @@ OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent,
     KIconLoader loader;
     setImagePath( loader.iconPath( "view-services-opml-amarok", -128, true ) );
     
+    The::amarokUrlHandler()->registerRunner( this, command() );
+
     m_serviceready = true;
     emit( ready() );
 }
@@ -151,6 +154,35 @@ void OpmlDirectoryService::polish()
     setInfoParser( new OpmlDirectoryInfoParser() );
 
     m_polished = true;
+}
+
+QString
+OpmlDirectoryService::command() const
+{
+    return "service-podcastdirectory";
+}
+
+QString
+OpmlDirectoryService::prettyCommand() const
+{
+    return i18n( "Add an OPML file to the list." );
+}
+
+bool
+OpmlDirectoryService::run( AmarokUrl url )
+{
+    //make sure this category is shown.
+    AmarokUrl( "amarok://navigate/internet/OpmlDirectory" ).run();
+    if( url.path() == QLatin1String( "addOpml" ) )
+    {
+        OpmlDirectoryModel *opmlModel = qobject_cast<OpmlDirectoryModel *>( model() );
+        Q_ASSERT_X(opmlModel, "OpmlDirectoryService::run()", "fix if a proxy is used");
+
+        opmlModel->slotAddOpmlAction();
+        return true;
+    }
+
+    return false;
 }
 
 void

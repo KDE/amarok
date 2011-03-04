@@ -18,7 +18,6 @@
 
 #include "AmarokMimeData.h"
 #include "core/support/Debug.h"
-#include "OpmlParser.h"
 #include "core/podcasts/PodcastMeta.h"
 #include "core/podcasts/PodcastImageFetcher.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
@@ -388,55 +387,6 @@ PlaylistBrowserNS::PodcastModel::refreshPodcasts()
         if( podcastProvider )
             podcastProvider->updateAll();
     }
-}
-
-void
-PlaylistBrowserNS::PodcastModel::importOpml( const KUrl &url )
-{
-    if( !url.isValid() )
-        return;
-
-    debug() << "Importing OPML file from " << url;
-
-    OpmlParser *parser = new OpmlParser( url );
-    connect( parser, SIGNAL( outlineParsed( OpmlOutline * ) ),
-             SLOT( slotOpmlOutlineParsed( OpmlOutline * ) ) );
-    connect( parser, SIGNAL( doneParsing() ), SLOT( slotOpmlParsingDone() ) );
-
-    ThreadWeaver::Weaver::instance()->enqueue( parser );
-}
-
-void
-PlaylistBrowserNS::PodcastModel::slotOpmlOutlineParsed( OpmlOutline *outline )
-{
-    if( !outline )
-        return;
-
-    if( outline->hasChildren() )
-        return; //TODO grouping handling once PodcastCategory has it.
-
-    if( outline->attributes().contains( "xmlUrl" ) )
-    {
-        KUrl url( outline->attributes().value( "xmlUrl" ).trimmed() );
-        if( !url.isValid() )
-        {
-            debug() << "OPML outline contained an invalid url: " << url;
-            return; //TODO signal invalid feed to user
-        }
-
-        //TODO: handle multiple providers
-        Podcasts::PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
-        if( podcastProvider )
-            podcastProvider->addPodcast( url );
-    }
-}
-
-void
-PlaylistBrowserNS::PodcastModel::slotOpmlParsingDone()
-{
-    debug() << "Done parsing OPML file";
-    //TODO: print number of imported channels
-    sender()->deleteLater();
 }
 
 QActionList

@@ -18,6 +18,7 @@
 #define OPMLDIRECTORYSERVICE_H
 
 
+#include "amarokurls/AmarokUrlRunnerBase.h"
 #include "../ServiceBase.h"
 #include "OpmlDirectoryDatabaseHandler.h"
 #include "ServiceSqlCollection.h"
@@ -46,7 +47,7 @@ A service for displaying, previewing and downloading music from OpmlDirectory.co
 
 	@author 
 */
-class OpmlDirectoryService : public ServiceBase
+class OpmlDirectoryService : public ServiceBase, public AmarokUrlRunnerBase
 {
     Q_OBJECT
     public:
@@ -58,6 +59,12 @@ class OpmlDirectoryService : public ServiceBase
         void polish();
 
         virtual Collections::Collection * collection() { return 0; }
+
+        /* UrlRunnerBase methods */
+        virtual QString command() const;
+        virtual QString prettyCommand() const;
+        virtual bool run( AmarokUrl url );
+        virtual KIcon icon() const { return KIcon( "view-services-opml-amarok" ); }
 
     private slots:
         void subscribe();
