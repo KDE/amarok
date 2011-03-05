@@ -81,9 +81,14 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         dir.mkpath( "." );
     }
 
-    setenv( "MYSQL_HOME", storagePath.toAscii().data(), 1 );
-    char *args[] = { "amarok" };
-    if( mysql_library_init( 1 , args, 0 ) != 0 )
+    //this method doesn't seem to work with mysql 5.5.9:
+    //setenv( "MYSQL_HOME", storagePath.toAscii().data(), 1 );
+    QByteArray defaultsFileOption( "--defaults-file=" );
+    defaultsFileOption.append( defaultsFile.toAscii() );
+    debug() << "defaultsFile" <<    defaultsFile;
+    static char *server_options[] = { "amarok", defaultsFileOption.data() };
+    static char *server_groups[] = { "embedded", NULL };
+    if( mysql_library_init( 2 , server_options, server_groups ) != 0 )
     {
         error() << "MySQL library initialization failed.";
         reportError( "init" );
