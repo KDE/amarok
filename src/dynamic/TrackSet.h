@@ -79,6 +79,8 @@ namespace Dynamic
             /** Creates a TrackSet that is outstanding */
             TrackSet();
 
+            TrackSet( const TrackSet& other );
+
             /** Creates a TrackSet that represents the whole universe.
                 All tracks are included.
             */
