@@ -69,7 +69,7 @@ namespace PlaylistBrowserNS
             QVBoxLayout* m_mainLayout;
 
             KComboBox* m_biasSelection;
-            QWidget *m_descriptionLabel;
+            QLabel *m_descriptionLabel;
             QWidget *m_biasWidget;
 
             Dynamic::BiasPtr m_bias;

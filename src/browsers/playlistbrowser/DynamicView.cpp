@@ -331,11 +331,11 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         Dynamic::DynamicPlaylist* playlist = qobject_cast<Dynamic::DynamicPlaylist*>(v.value<QObject*>() );
         QAction* action;
 
-        action = new KAction( KIcon( "media-remove-amarok" ), i18n( "&Delete" ), this );
+        action = new KAction( KIcon( "media-remove-amarok" ), i18n( "&Delete playlist" ), this );
         connect( action, SIGNAL( triggered(bool) ), this, SLOT( removeSelected() ) );
         actions.append( action );
 
-        action = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename..." ), this );
+        action = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename playlist" ), this );
         connect( action, SIGNAL( triggered(bool) ), this, SLOT( editSelected() ) );
         actions.append( action );
 
@@ -352,18 +352,18 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         Dynamic::AndBias* aBias = qobject_cast<Dynamic::AndBias*>(v.value<QObject*>() );
         QAction* action;
 
-        action = new KAction( i18n( "&Edit" ), this );
+        action = new KAction( i18n( "&Edit bias..." ), this );
         connect( action, SIGNAL( triggered(bool) ), this, SLOT( editSelected() ) );
         actions.append( action );
 
         if( aBias )
         {
-            action = new KAction( i18n( "&Add new Bias" ), this );
+            action = new KAction( i18n( "&Add new bias" ), this );
             connect( action, SIGNAL( triggered(bool) ), this, SLOT( addToSelected() ) );
             actions.append( action );
         }
 
-        action = new KAction( KIcon( "remove-amarok" ), i18n( "&Delete" ), this );
+        action = new KAction( KIcon( "remove-amarok" ), i18n( "&Delete bias" ), this );
         connect( action, SIGNAL( triggered(bool) ), this, SLOT( removeSelected() ) );
         actions.append( action );
     }

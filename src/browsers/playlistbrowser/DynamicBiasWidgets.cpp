@@ -47,22 +47,17 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
     , m_biasWidget( 0 )
     , m_bias( bias )
 {
+    setWindowTitle( i18nc( "Bias dialog window title", "Edit bias" ) );
     m_mainLayout = new QVBoxLayout( this );
 
     // -- the bias selection combo
     QLabel* selectionLabel = new QLabel( i18nc("Bias selection label in bias view.", "Match Type:" ) );
     m_biasSelection = new KComboBox( this );
-    factoriesChanged();
-    connect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
-             this, SLOT( factoriesChanged() ) );
-
-    connect( m_biasSelection, SIGNAL( activated( int ) ),
-             this, SLOT( selectionChanged( int ) ) );
-
     QHBoxLayout *selectionLayout = new QHBoxLayout();
     selectionLabel->setBuddy( m_biasSelection );
     selectionLayout->addWidget( selectionLabel );
     selectionLayout->addWidget( m_biasSelection );
+    selectionLayout->addStretch( 1 );
     m_mainLayout->addLayout( selectionLayout );
 
     // -- bias itself
@@ -76,15 +71,24 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
     QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
     m_mainLayout->addWidget( buttonBox );
 
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-
+    factoriesChanged();
     biasReplaced( Dynamic::BiasPtr(), bias );
+
+    connect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
+             this, SLOT( factoriesChanged() ) );
+    connect( m_biasSelection, SIGNAL( activated( int ) ),
+             this, SLOT( selectionChanged( int ) ) );
+    connect(buttonBox, SIGNAL(accepted()),
+            this, SLOT(accept()));
 }
 
 void
 PlaylistBrowserNS::BiasDialog::factoriesChanged()
 {
     m_biasSelection->clear();
+
+    disconnect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
+                this, SLOT( factoriesChanged() ) );
 
     // -- add all the bias types to the list
     bool factoryFound = false;
@@ -99,8 +103,7 @@ PlaylistBrowserNS::BiasDialog::factoriesChanged()
         {
             factoryFound = true;
             m_biasSelection->setCurrentIndex( i );
-            // while we are at it: set a tool tip
-            setToolTip( factory->i18nDescription() );
+            m_descriptionLabel->setText( factory->i18nDescription() );
         }
     }
 
@@ -109,8 +112,13 @@ PlaylistBrowserNS::BiasDialog::factoriesChanged()
     {
         m_biasSelection->addItem( m_bias->name() );
         m_biasSelection->setCurrentIndex( m_biasSelection->count() );
-        setToolTip( i18n( "Replacement for %1 bias" ).arg( m_bias->name() ) );
+        m_descriptionLabel->setText( i18n( "This bias is a replacement for another bias\n"
+                                         "which is currently not loaded or deactivated.\n"
+                                         "The original bias name was %1." ).arg( m_bias->name() ) );
     }
+
+    connect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
+             this, SLOT( factoriesChanged() ) );
 }
 
 void
@@ -175,6 +183,8 @@ PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::
 
     m_mainLayout->takeAt( 2 );
     m_mainLayout->insertWidget( 2, m_biasWidget );
+
+    factoriesChanged(); // update the bias description and select the new combo entry
 }
 
 
