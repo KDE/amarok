@@ -251,15 +251,14 @@ void
 Collections::addDateFilter( qint64 field, Collections::QueryMaker::NumberComparison compare,
                             bool negate, const QString &text, Collections::QueryMaker *qm )
 {
-
     const uint date = semanticDateTimeParser( text ).toTime_t();
     if( date == 0 )
         return;
 
-    uint day = 24 * 60 * 60;
-
     if( compare == Collections::QueryMaker::Equals )
     {
+        // equal means, on the same day
+        uint day = 24 * 60 * 60;
         if( negate )
         {
             qm->excludeNumberFilter( field, date - day, Collections::QueryMaker::GreaterThan );
@@ -270,28 +269,21 @@ Collections::addDateFilter( qint64 field, Collections::QueryMaker::NumberCompari
             qm->addNumberFilter( field, date - day, Collections::QueryMaker::GreaterThan );
             qm->addNumberFilter( field, date + day, Collections::QueryMaker::LessThan );
         }
+    }
+    // note: for historic reasons the conditions for dates are inverted.
+    else if( compare == Collections::QueryMaker::LessThan )
+    {
+        if( negate )
+            qm->excludeNumberFilter( field, date, Collections::QueryMaker::GreaterThan );
+        else
+            qm->addNumberFilter( field, date, Collections::QueryMaker::GreaterThan );
     }
     else if( compare == Collections::QueryMaker::GreaterThan )
     {
         if( negate )
-        {
-            qm->excludeNumberFilter( field, date - day, Collections::QueryMaker::GreaterThan );
-        }
+            qm->excludeNumberFilter( field, date, Collections::QueryMaker::LessThan );
         else
-        {
-            qm->addNumberFilter( field, date - day, Collections::QueryMaker::GreaterThan );
-        }
-    }
-    else if( compare == Collections::QueryMaker::LessThan )
-    {
-        if( negate )
-        {
-            qm->excludeNumberFilter( field, date + day, Collections::QueryMaker::LessThan );
-        }
-        else
-        {
-            qm->addNumberFilter( field, date + day, Collections::QueryMaker::LessThan );
-        }
+            qm->addNumberFilter( field, date, Collections::QueryMaker::LessThan );
     }
 }
 
