@@ -20,8 +20,9 @@
 
 #include "Bias.h"
 #include "BiasFactory.h"
-#include "core/support/Amarok.h"
 #include "BiasedPlaylist.h"
+#include "biases/SearchQueryBias.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
 #include "playlist/PlaylistActions.h"
@@ -147,8 +148,6 @@ Dynamic::DynamicModel::insertPlaylist( int index, Dynamic::DynamicPlaylist* play
              this, SLOT( playlistChanged( Dynamic::DynamicPlaylist* ) ) );
 
     endInsertRows();
-
-    savePlaylists();
 
     return this->index( index, 0 );
 }
@@ -472,7 +471,10 @@ QModelIndex
 Dynamic::DynamicModel::newPlaylist()
 {
     Dynamic::BiasedPlaylist *playlist = new Dynamic::BiasedPlaylist( this );
+    Dynamic::BiasPtr bias( new Dynamic::SearchQueryBias() );
     playlist->setTitle( i18n("New playlist") );
+    playlist->bias()->replace( bias );
+
     insertPlaylist( m_playlists.count(), playlist );
     return index( m_playlists.count() - 1, 0 );
 }
