@@ -22,6 +22,7 @@
 #include "biases/IfElseBias.h"
 #include "biases/PartBias.h"
 #include "biases/TagMatchBias.h"
+#include "biases/SearchQueryBias.h"
 #include "biases/QuizPlayBias.h"
 #include "biases/EchoNestBias.h"
 
@@ -46,7 +47,8 @@ class RandomBiasFactory : public Dynamic::AbstractBiasFactory
 
     QString i18nDescription() const
     { return i18nc("Description of the random bias",
-                   "The random bias adds random tracks from the whole collection without any bias."); }
+                   "The random bias adds random tracks from the\n"
+                   "whole collection without any bias."); }
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::RandomBias() ); }
@@ -66,7 +68,9 @@ class UniqueBiasFactory : public Dynamic::AbstractBiasFactory
 
     QString i18nDescription() const
     { return i18nc("Description of the unique bias",
-                   "The unique bias adds matches tracks that are not already in the playlist effectively preventing duplicates."); }
+                   "The unique bias adds matches tracks that are\n"
+                   "not already in the playlist effectively\n"
+                   "preventing duplicates."); }
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::UniqueBias() ); }
@@ -86,7 +90,8 @@ class NotBiasFactory : public Dynamic::AbstractBiasFactory
 
     QString i18nDescription() const
     { return i18nc("Description of the \"Not\" bias",
-                   "The \"Not\" bias adds tracks that do not match any sub bias."); }
+                   "The \"Not\" bias adds tracks that do not\n"
+                   "match any sub bias."); }
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::NotBias() ); }
@@ -106,7 +111,8 @@ class AndBiasFactory : public Dynamic::AbstractBiasFactory
 
     QString i18nDescription() const
     { return i18nc("Description of the \"And\" bias",
-                   "The \"And\" bias adds tracks that match all of the sub biases at the same time."); }
+                   "The \"And\" bias adds tracks that match all\n"
+                   "of the sub biases at the same time."); }
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::AndBias() ); }
@@ -126,7 +132,8 @@ class OrBiasFactory : public Dynamic::AbstractBiasFactory
 
     QString i18nDescription() const
     { return i18nc("Description of the \"Or\" bias",
-                   "The \"Or\" bias adds tracks that match at least one of the sub biases at the same time."); }
+                   "The \"Or\" bias adds tracks that match at\n"
+                   "least one of the sub biases at the same time."); }
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::OrBias() ); }
@@ -145,14 +152,15 @@ Dynamic::BiasFactory::instance()
     if( !s_instance )
     {
         // --- build in biases
-        s_biasFactories.append( new Dynamic::TagMatchBiasFactory() );
-        s_biasFactories.append( new Dynamic::IfElseBiasFactory() );
+        s_biasFactories.append( new Dynamic::SearchQueryBiasFactory() );
         s_biasFactories.append( new Dynamic::PartBiasFactory() );
-        s_biasFactories.append( new RandomBiasFactory() );
         s_biasFactories.append( new UniqueBiasFactory() );
+        s_biasFactories.append( new RandomBiasFactory() );
         s_biasFactories.append( new NotBiasFactory() );
         s_biasFactories.append( new AndBiasFactory() );
         s_biasFactories.append( new OrBiasFactory() );
+        s_biasFactories.append( new Dynamic::IfElseBiasFactory() );
+        s_biasFactories.append( new Dynamic::TagMatchBiasFactory() );
         s_biasFactories.append( new Dynamic::AlbumPlayBiasFactory() );
         s_biasFactories.append( new Dynamic::QuizPlayBiasFactory() );
         s_biasFactories.append( new Dynamic::EchoNestBiasFactory() );
