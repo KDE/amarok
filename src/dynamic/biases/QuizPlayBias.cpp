@@ -182,12 +182,12 @@ Dynamic::QuizPlayBias::matchingTracks( int position,
 
     if( !lastData || lastData->name().isEmpty() )
     {
-        debug() << "QuizPlay: no data for"<<lastTrack->name();
+        // debug() << "QuizPlay: no data for"<<lastTrack->name();
         return Dynamic::TrackSet( universe, true );
     }
 
     m_currentCharacter = lastChar(lastData->name()).toLower();
-    debug() << "QuizPlay: data for"<<lastTrack->name()<<"is"<<m_currentCharacter;
+    // debug() << "QuizPlay: data for"<<lastTrack->name()<<"is"<<m_currentCharacter;
 
     // -- look if we already buffered it
     if( m_tracksValid && m_characterTrackMap.contains( m_currentCharacter ) )
@@ -284,8 +284,6 @@ Dynamic::QuizPlayBias::selectionChanged( int which )
 void
 Dynamic::QuizPlayBias::newQuery()
 {
-    DEBUG_BLOCK;
-
     // ok, I need a new query maker
     m_qm.reset( CollectionManager::instance()->queryMaker() );
 
