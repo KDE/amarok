@@ -52,13 +52,13 @@ namespace PlaylistBrowserNS {
         private:
             void saveOnExit();
 
-            QCheckBox *m_onOffCheckbox;
-            QPushButton *m_repopulateButton;
-
             QToolButton *m_addButton;
             QToolButton *m_cloneButton;
             QToolButton *m_editButton;
             QToolButton *m_deleteButton;
+            QToolButton *m_onOffButton;
+            QPushButton *m_repopulateButton;
+
             DynamicView *m_tree;
 
             QSpinBox *m_previous, *m_upcoming;

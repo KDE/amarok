@@ -65,7 +65,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
 
     QLabel *label;
     label = new QLabel( i18n( "Previous:" ), controls2Layout );
-    label->setAlignment( Qt::AlignRight );
+    label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
     m_previous = new QSpinBox( controls2Layout );
     m_previous->setMinimum( 0 );
@@ -74,7 +74,8 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     QObject::connect( m_previous, SIGNAL( valueChanged( int ) ), this, SLOT( setPreviousTracks( int ) ) );
 
     label = new QLabel( i18n( "Upcoming:" ), controls2Layout );
-    label->setAlignment( Qt::AlignRight );
+    // label->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+    label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
     m_upcoming = new QSpinBox( controls2Layout );
     m_upcoming->setMinimum( 1 );
@@ -98,39 +99,38 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     presetToolbar->setFloatable( false );
     presetToolbar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
 
+    m_onOffButton = new QToolButton( presetToolbar );
+    m_onOffButton->setText( i18nc( "Turn dynamic mode on", "On ") );
+    m_onOffButton->setEnabled( true );
+    m_onOffButton->setCheckable( true );
+    m_onOffButton->setIcon( KIcon( "dynamic-amarok" ) );
+    m_onOffButton->setToolTip( i18n( "Turn dynamic mode on." ) );
+    presetToolbar->addWidget( m_onOffButton );
+
     m_addButton   = new QToolButton( presetToolbar );
     m_addButton->setText( i18n("Add") );
     m_addButton->setIcon( KIcon( "list-add-amarok" ) );
-    m_addButton->setToolTip( i18n( "Add new a new preset" ) );
+    m_addButton->setToolTip( i18n( "Add new a new playlist" ) );
     presetToolbar->addWidget( m_addButton );
 
     m_cloneButton   = new QToolButton( presetToolbar );
     m_cloneButton->setText( i18n("Clone") );
     m_cloneButton->setIcon( KIcon( "list-add-amarok" ) );
-    m_cloneButton->setToolTip( i18n( "Clone the selected preset" ) );
+    m_cloneButton->setToolTip( i18n( "Clone the slected playlist" ) );
     presetToolbar->addWidget( m_cloneButton );
 
     m_editButton   = new QToolButton( presetToolbar );
     m_editButton->setText( i18n("Edit") );
     m_editButton->setIcon( KIcon( "document-properties-amarok" ) );
-    m_editButton->setToolTip( i18n( "Edit the selected preset or bias" ) );
+    m_editButton->setToolTip( i18n( "Edit the selected playlist or bias" ) );
     presetToolbar->addWidget( m_editButton );
 
     m_deleteButton = new QToolButton( presetToolbar );
     m_deleteButton->setText( i18n("Delete") );
     m_deleteButton->setEnabled( false );
     m_deleteButton->setIcon( KIcon( "edit-delete-amarok" ) );
-    m_deleteButton->setToolTip( i18n( "Delete the selected preset") );
+    m_deleteButton->setToolTip( i18n( "Delete the selected playlist or bias") );
     presetToolbar->addWidget( m_deleteButton );
-
-    m_onOffCheckbox = new QCheckBox( presetLayout );
-    m_onOffCheckbox->setIcon( KIcon( "dynamic-amarok" ) );
-    m_onOffCheckbox->setText( i18nc( "Turn dynamic mode on", "On" ) );
-    m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
-    m_onOffCheckbox->setCheckable( true );
-    // m_onOffCheckbox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
-    QObject::connect( m_onOffCheckbox, SIGNAL( toggled( bool ) ),
-                      The::playlistActions(), SLOT( enableDynamicMode( bool ) ) );
 
     m_repopulateButton = new QPushButton( presetLayout );
     m_repopulateButton->setText( i18n("Repopulate") );
@@ -146,6 +146,8 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_tree = new DynamicView( this );
     connect( m_tree->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection) ),
              this, SLOT(selectionChanged()) );
+
+    connect( m_onOffButton, SIGNAL( toggled( bool ) ), The::playlistActions(), SLOT( enableDynamicMode( bool ) ) );
 
     connect( m_addButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( addPlaylist() ) );
     connect( m_cloneButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( cloneSelected() ) );
@@ -168,7 +170,7 @@ PlaylistBrowserNS::DynamicCategory::~DynamicCategory()
 void
 PlaylistBrowserNS::DynamicCategory::navigatorChanged()
 {
-    m_onOffCheckbox->setChecked( AmarokConfig::dynamicMode() );
+    m_onOffButton->setChecked( AmarokConfig::dynamicMode() );
     m_repopulateButton->setEnabled( AmarokConfig::dynamicMode() );
 }
 
