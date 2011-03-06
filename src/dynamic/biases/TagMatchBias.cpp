@@ -102,6 +102,18 @@ Dynamic::SimpleMatchBias::updateFinished()
     emit resultReady( m_tracks );
 }
 
+bool
+Dynamic::SimpleMatchBias::trackMatches( int position,
+                                    const Meta::TrackList& playlist,
+                                    int contextCount ) const
+{
+    Q_UNUSED( contextCount );
+    if( m_tracksValid )
+        return m_tracks.contains( playlist.at(position) );
+    return true; // we should have already received the tracks before some-one calls trackMatches
+}
+
+
 void
 Dynamic::SimpleMatchBias::invalidate()
 {
@@ -110,8 +122,6 @@ Dynamic::SimpleMatchBias::invalidate()
     // TODO: need to finish a running query
     m_qm.reset();
 }
-
-
 
 
 // ----- TagMatchBias --------
@@ -200,7 +210,10 @@ Dynamic::TagMatchBias::trackMatches( int position,
                                      int contextCount ) const
 {
     Q_UNUSED( contextCount );
-    return matches( playlist.at(position) );
+    if( m_tracksValid )
+        return m_tracks.contains( playlist.at(position) );
+    else
+        return matches( playlist.at(position) );
 }
 
 MetaQueryWidget::Filter

@@ -22,6 +22,7 @@
 
 #include "Bias.h"
 #include "BiasFactory.h"
+#include "biases/SearchQueryBias.h"
 
 #include "core/support/Debug.h"
 #include "DynamicBiasWidgets.h"
@@ -203,7 +204,8 @@ Dynamic::UniqueBias::name() const
 QString
 Dynamic::UniqueBias::toString() const
 {
-    return i18nc("Unique bias representation", "Only once in the current playlist");
+    return i18nc("Unique bias representation",
+                 "Only once in the current playlist");
 }
 
 QWidget*
@@ -243,11 +245,15 @@ Dynamic::UniqueBias::trackMatches( int position,
 
 // -------- AndBias ------
 
-Dynamic::AndBias::AndBias()
+Dynamic::AndBias::AndBias( bool empty )
     : m_duringConstruction( true )
 {
-    // add one bias to start with
-    appendBias( BiasPtr( new Dynamic::RandomBias() ) );
+    // add two biases to start with
+    if( !empty )
+    {
+        appendBias( BiasPtr( new Dynamic::SearchQueryBias() ) );
+        appendBias( BiasPtr( new Dynamic::SearchQueryBias( "genre:Pop" ) ) );
+    }
 
     m_duringConstruction = false;
 }
@@ -455,8 +461,8 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
 
 // -------- OrBias ------
 
-Dynamic::OrBias::OrBias()
-    : AndBias()
+Dynamic::OrBias::OrBias( bool empty )
+    : AndBias( empty )
 { }
 
 Dynamic::OrBias::OrBias( QXmlStreamReader *reader )
@@ -534,8 +540,8 @@ Dynamic::OrBias::resultReceived( const Dynamic::TrackSet &tracks )
 
 // -------- NotBias ------
 
-Dynamic::NotBias::NotBias()
-    : OrBias()
+Dynamic::NotBias::NotBias( bool empty )
+    : OrBias( empty )
 { }
 
 Dynamic::NotBias::NotBias( QXmlStreamReader *reader )

@@ -41,6 +41,11 @@ namespace Dynamic
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
                                              const TrackCollectionPtr universe ) const;
+
+            virtual bool trackMatches( int position,
+                                       const Meta::TrackList& playlist,
+                                       int contextCount ) const;
+
         public slots:
             virtual void invalidate();
 

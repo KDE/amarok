@@ -221,7 +221,10 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            AndBias();
+            /** Create a new And bias.
+                @param empty If true, then the newly created bias will not have a set of example sub-biases.
+            */
+            AndBias( bool empty = false );
             AndBias( QXmlStreamReader *reader );
             virtual ~AndBias();
 
@@ -278,7 +281,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            OrBias();
+            OrBias( bool empty = false );
             OrBias( QXmlStreamReader *reader );
 
             static QString sName();
@@ -306,7 +309,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            NotBias();
+            NotBias( bool empty = false );
             NotBias( QXmlStreamReader *reader );
 
             static QString sName();
