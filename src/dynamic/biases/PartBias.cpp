@@ -220,23 +220,22 @@ class MatchState
 };
 
 
-Dynamic::PartBias::PartBias()
-    : AndBias()
+Dynamic::PartBias::PartBias( bool empty )
+    : AndBias( empty )
 {
     m_duringConstruction = true;
 
-    m_weights.append( 1.0 );
+    // add weights for already existing biases
+    for( int i = 0; i < biases().count(); i++ )
+        m_weights.append( 1.0 / biases().count() );
 
     m_duringConstruction = false;
 }
 
 Dynamic::PartBias::PartBias( QXmlStreamReader *reader )
-    : AndBias()
+    : AndBias( true )
 {
     m_duringConstruction = true;
-
-    // the weight of the implicite random bias
-    m_weights.append( reader->attributes().value("weight").toString().toFloat() );
 
     while (!reader->atEnd()) {
         reader->readNext();
@@ -268,10 +267,7 @@ Dynamic::PartBias::PartBias( QXmlStreamReader *reader )
 void
 Dynamic::PartBias::toXml( QXmlStreamWriter *writer ) const
 {
-    // the weight of the implicite random bias
-    writer->writeAttribute( "weight", QString::number(m_weights[0]) );
-
-    for( int i = 1; i < m_biases.count(); i++ )
+    for( int i = 0; i < m_biases.count(); i++ )
     {
         writer->writeStartElement( m_biases[i]->name() );
         writer->writeAttribute( "weight", QString::number(m_weights[i]) );
@@ -325,7 +321,6 @@ Dynamic::PartBias::matchingTracks( int position,
     m_tracks = Dynamic::TrackSet( universe, false );
     m_outstandingMatches = 0;
 
-    // note: the first source is the random bias so we are finished very fast if that happens
     for( int source = 0; source < state.m_sourceCount; source++ )
     {
         // debug() << "PartBias::matchingTracks: biase"<<m_biases[source]->name()<<"only matches"<<state.m_sourceFlow[source]<<"out of"<<state.m_sourceCapacity[source]<<"tracks.";
