@@ -139,9 +139,24 @@ Plugins::PluginManager::plugins( const QString &category )
 Plugins::PluginFactory*
 Plugins::PluginManager::createFactory( const KPluginInfo &plugin )
 {
-    QString name = plugin.pluginName();
-    bool enabledByDefault = plugin.isPluginEnabledByDefault();
-    bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
+    const QString name = plugin.pluginName();
+    const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
+    bool enabled = false;
+    if( name == QLatin1String("amarok_collection-mysqlservercollection") )
+    {
+        if( useMySqlServer )
+            enabled = true;
+    }
+    else if( name == QLatin1String("amarok_collection-mysqlecollection") )
+    {
+        if( !useMySqlServer )
+            enabled = true;
+    }
+    else
+    {
+        const bool enabledByDefault = plugin.isPluginEnabledByDefault();
+        enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
+    }
     if( !enabled )
         return 0;
 
