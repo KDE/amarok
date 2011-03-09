@@ -50,7 +50,8 @@ Dynamic::QuizPlayBiasFactory::name() const
 QString
 Dynamic::QuizPlayBiasFactory::i18nDescription() const
 { return i18nc("Description of the \"QuizPlay\" bias",
-                   "The \"QuizPlay\" bias adds tracks that start with a character the last track ended with."); }
+               "The \"QuizPlay\" bias adds tracks that start\n"
+               "with a character the last track ended with."); }
 
 Dynamic::BiasPtr
 Dynamic::QuizPlayBiasFactory::createBias()

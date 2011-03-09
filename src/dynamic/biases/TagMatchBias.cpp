@@ -47,7 +47,8 @@ Dynamic::TagMatchBiasFactory::name() const
 QString
 Dynamic::TagMatchBiasFactory::i18nDescription() const
 { return i18nc("Description of the \"TagMatch\" bias",
-                   "The \"TagMatch\" bias adds tracks that fulfill a specific condition."); }
+                   "The \"TagMatch\" bias adds tracks that\n"
+                   "fulfill a specific condition."); }
 
 Dynamic::BiasPtr
 Dynamic::TagMatchBiasFactory::createBias()
