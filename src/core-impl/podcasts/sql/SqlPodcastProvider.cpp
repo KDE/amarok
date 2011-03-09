@@ -621,6 +621,9 @@ SqlPodcastProvider::configureProvider()
             startTimer();
         else
             m_updateTimer->stop();
+
+        m_baseDownloadDir = settings.m_baseDirUrl->url();
+        //TODO: ask user if existing directories need to be moved.
     }
 
     delete m_providerSettingsDialog;
