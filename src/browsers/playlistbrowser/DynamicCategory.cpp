@@ -108,15 +108,15 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     presetToolbar->addWidget( m_onOffButton );
 
     m_addButton   = new QToolButton( presetToolbar );
-    m_addButton->setText( i18n("Add") );
-    m_addButton->setIcon( KIcon( "list-add-amarok" ) );
-    m_addButton->setToolTip( i18n( "Add new a new playlist" ) );
+    m_addButton->setText( i18n("New") );
+    m_addButton->setIcon( KIcon( "document-new" ) );
+    m_addButton->setToolTip( i18n( "New playlist" ) );
     presetToolbar->addWidget( m_addButton );
 
     m_cloneButton   = new QToolButton( presetToolbar );
-    m_cloneButton->setText( i18n("Clone") );
-    m_cloneButton->setIcon( KIcon( "list-add-amarok" ) );
-    m_cloneButton->setToolTip( i18n( "Clone the slected playlist" ) );
+    m_cloneButton->setText( i18n("Copy") );
+    m_cloneButton->setIcon( KIcon( "edit-copy" ) );
+    m_cloneButton->setToolTip( i18n( "Copy the selected playlist or bias" ) );
     presetToolbar->addWidget( m_cloneButton );
 
     m_editButton   = new QToolButton( presetToolbar );
@@ -128,7 +128,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_deleteButton = new QToolButton( presetToolbar );
     m_deleteButton->setText( i18n("Delete") );
     m_deleteButton->setEnabled( false );
-    m_deleteButton->setIcon( KIcon( "edit-delete-amarok" ) );
+    m_deleteButton->setIcon( KIcon( "edit-delete" ) );
     m_deleteButton->setToolTip( i18n( "Delete the selected playlist or bias") );
     presetToolbar->addWidget( m_deleteButton );
 

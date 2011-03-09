@@ -40,9 +40,12 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         // role used for the model
         enum Roles
         {
-            WidgetRole = 0xf00d,
+            // WidgetRole = 0xf00d,
             PlaylistRole = 0xf00e,
-            BiasRole = 0xf00f
+            BiasRole = 0xf00f,
+
+            BiasPercentage = 0xf010, // for sub-biases underneath a part bias
+            BiasOperation = 0xf011   // for sub-biases underneath a and-bias
         };
 
         static DynamicModel* instance();
@@ -68,15 +71,27 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         */
         QModelIndex insertPlaylist( int index, Dynamic::DynamicPlaylist* playlist );
 
-        bool isActiveUnsaved() const;
+        Qt::DropActions supportedDropActions() const;
 
         // --- QAbstractItemModel functions ---
         QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
+        bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
+        Qt::ItemFlags flags( const QModelIndex& index ) const;
         QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const;
         QModelIndex parent(const QModelIndex& index) const;
         int rowCount( const QModelIndex& parent = QModelIndex() ) const;
         int columnCount( const QModelIndex& parent = QModelIndex() ) const;
         // ---
+
+        /** Returns the index for the bias
+            @return Returns an invalid index if the bias is not in the model.
+        */
+        QModelIndex index( Dynamic::AbstractBias* bias ) const;
+
+        /** Returns the index for the playlist
+            @return Returns an invalid index if the playlist is not in the model.
+        */
+        QModelIndex index( Dynamic::DynamicPlaylist* playlist ) const;
 
         void saveCurrentPlaylists();
         void loadCurrentPlaylists();
@@ -85,11 +100,6 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         void activeChanged( int index ); // active row changed
 
     public slots:
-        void playlistChanged( Dynamic::DynamicPlaylist* );
-
-        /** Stores the active playlist under the given new title. */
-        void saveActive( const QString& newTitle );
-
         /** Removes the playlist or bias at the given index. */
         void removeAt( const QModelIndex& index );
 
@@ -107,6 +117,17 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         Dynamic::BiasedPlaylist* cloneList( Dynamic::BiasedPlaylist* list );
         Dynamic::BiasPtr cloneBias( Dynamic::AbstractBias* bias );
 
+        void playlistChanged( Dynamic::DynamicPlaylist* playlist );
+        void biasChanged( Dynamic::AbstractBias* bias );
+
+        void beginRemoveBias( Dynamic::BiasedPlaylist* parent );
+        void beginRemoveBias( Dynamic::AbstractBias* parent, int index );
+        void endRemoveBias();
+
+        void beginInsertBias( Dynamic::BiasedPlaylist* parent );
+        void beginInsertBias( Dynamic::AbstractBias* parent, int index );
+        void endInsertBias();
+
         void savePlaylists();
         void loadPlaylists();
         bool savePlaylists( const QString &filename );
@@ -121,7 +142,9 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         /** Contains all the dynamic playlists.  */
         QList<Dynamic::DynamicPlaylist*> m_playlists;
 
-        bool m_activeUnsaved;
+        friend class Dynamic::DynamicPlaylist;
+        friend class Dynamic::BiasedPlaylist;
+        friend class Dynamic::AndBias;
 };
 
 }

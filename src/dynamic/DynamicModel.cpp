@@ -21,6 +21,9 @@
 #include "Bias.h"
 #include "BiasFactory.h"
 #include "BiasedPlaylist.h"
+#include "biases/AlbumPlayBias.h"
+#include "biases/IfElseBias.h"
+#include "biases/PartBias.h"
 #include "biases/SearchQueryBias.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
@@ -47,18 +50,18 @@ Dynamic::DynamicModel* Dynamic::DynamicModel::s_instance = 0;
 Dynamic::DynamicModel*
 Dynamic::DynamicModel::instance()
 {
-    if( s_instance == 0 ) s_instance = new DynamicModel();
-
+    if( !s_instance )
+    {
+        s_instance = new DynamicModel();
+        s_instance->loadCurrentPlaylists();
+    }
     return s_instance;
 }
 
 
-
 Dynamic::DynamicModel::DynamicModel()
     : QAbstractItemModel()
-    , m_activeUnsaved( false )
 {
-    loadCurrentPlaylists();
 }
 
 
@@ -70,12 +73,10 @@ Dynamic::DynamicModel::~DynamicModel()
 Dynamic::DynamicPlaylist*
 Dynamic::DynamicModel::setActivePlaylist( int index )
 {
-    debug() << "DynamicModel::setActivePlaylist from"<<m_activePlaylistIndex << "to" << index << "unsaved?" << m_activeUnsaved;
-
     if( index < 0 || index >= m_playlists.count() )
         return m_playlists[m_activePlaylistIndex];
 
-    if( m_activePlaylistIndex == index && !m_activeUnsaved )
+    if( m_activePlaylistIndex == index )
         return m_playlists[m_activePlaylistIndex];
 
     emit dataChanged( this->index( m_activePlaylistIndex, 0 ),
@@ -83,10 +84,6 @@ Dynamic::DynamicModel::setActivePlaylist( int index )
     m_activePlaylistIndex = index;
     emit dataChanged( this->index( m_activePlaylistIndex, 0 ),
                       this->index( m_activePlaylistIndex, 0 ) );
-
-    // TODO
-    if( m_activeUnsaved ) // undo the change
-        loadPlaylists();
 
     emit activeChanged( index );
 
@@ -134,6 +131,11 @@ Dynamic::DynamicModel::insertPlaylist( int index, Dynamic::DynamicPlaylist* play
             m_activePlaylistIndex--;
     }
 
+    if( index < 0 )
+        index = 0;
+    if( index > m_playlists.count() )
+        index = m_playlists.count();
+
     // -- insert it at the new position
     beginInsertRows( QModelIndex(), index, index );
 
@@ -144,22 +146,26 @@ Dynamic::DynamicModel::insertPlaylist( int index, Dynamic::DynamicPlaylist* play
         m_activePlaylistIndex = index;
 
     m_playlists.insert( index, playlist );
-    connect( playlist, SIGNAL( changed( Dynamic::DynamicPlaylist* ) ),
-             this, SLOT( playlistChanged( Dynamic::DynamicPlaylist* ) ) );
 
     endInsertRows();
+
+    debug() << "insertPlaylist at"<<index<<"count"<<m_playlists.count();
 
     return this->index( index, 0 );
 }
 
-bool
-Dynamic::DynamicModel::isActiveUnsaved() const
+Qt::DropActions
+Dynamic::DynamicModel::supportedDropActions() const
 {
-    return m_activeUnsaved;
+    return Qt::CopyAction | Qt::MoveAction;
 }
 
 // ok. the item model stuff is a little bit complicate
 // let's just pull it though and use Standard items the next time
+// see http://doc.qt.nokia.com/4.7/itemviews-simpletreemodel.html
+
+// note to our indices: the internal pointer points to the object behind the index (not to it's parent)
+// row is the row number inside the parent.
 
 QVariant
 Dynamic::DynamicModel::data ( const QModelIndex& i, int role ) const
@@ -184,10 +190,7 @@ Dynamic::DynamicModel::data ( const QModelIndex& i, int role ) const
         switch( role )
         {
         case Qt::DisplayRole:
-            if( i.row() == m_activePlaylistIndex && m_activeUnsaved )
-                return QString( i18n( "%1 (modified) ", title ) );
-            else
-                return title;
+            return title;
 
         case Qt::EditRole:
             return title;
@@ -211,7 +214,8 @@ Dynamic::DynamicModel::data ( const QModelIndex& i, int role ) const
         switch( role )
         {
         case Qt::DisplayRole:
-            return indexBias->toString();
+            return QVariant(indexBias->toString());
+            // return QVariant(QString("and: ")+indexBias->toString());
 
         case Qt::ToolTipRole:
             {
@@ -239,8 +243,70 @@ Dynamic::DynamicModel::data ( const QModelIndex& i, int role ) const
     }
 }
 
-// note to our indices: the internal pointer points to the object behind the index (not to it's parent)
-// row is the row number inside the parent.
+bool
+Dynamic::DynamicModel::setData( const QModelIndex& index, const QVariant& value, int role )
+{
+    if( !index.isValid() )
+        return false;
+
+    int row = index.row();
+    int column = index.column();
+    if( row < 0 || column != 0 )
+        return false;
+
+    QObject* o = static_cast<QObject*>(index.internalPointer());
+    BiasedPlaylist* indexPlaylist = qobject_cast<BiasedPlaylist*>(o);
+    // AbstractBias* indexBias = qobject_cast<Dynamic::AbstractBias*>(o);
+
+    // level 1
+    if( indexPlaylist )
+    {
+        switch( role )
+        {
+        case Qt::EditRole:
+            indexPlaylist->setTitle( value.toString() );
+            return true;
+
+        default:
+            return false;
+        }
+    }
+
+    return false;
+}
+
+
+Qt::ItemFlags
+Dynamic::DynamicModel::flags( const QModelIndex& index ) const
+{
+    if( !index.isValid() )
+        return Qt::NoItemFlags;
+
+    int row = index.row();
+    int column = index.column();
+    if( row < 0 || column != 0 )
+        return Qt::NoItemFlags;
+
+    QObject* o = static_cast<QObject*>(index.internalPointer());
+    BiasedPlaylist* indexPlaylist = qobject_cast<BiasedPlaylist*>(o);
+    AbstractBias* indexBias = qobject_cast<Dynamic::AbstractBias*>(o);
+
+    // level 1
+    if( indexPlaylist )
+    {
+        return Qt::ItemIsSelectable | Qt::ItemIsEditable |
+            Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled |
+            Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
+    }
+    // level > 1
+    else if( indexBias )
+    {
+        return Qt::ItemIsSelectable | /* Qt::ItemIsEditable | */
+            Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled |
+            Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
+    }
+    return Qt::NoItemFlags;
+}
 
 QModelIndex
 Dynamic::DynamicModel::index( int row, int column, const QModelIndex& parent ) const
@@ -318,7 +384,7 @@ Dynamic::DynamicModel::parent(const QModelIndex& index) const
     AbstractBias* indexBias = qobject_cast<AbstractBias*>(o);
 
     if( indexPlaylist )
-        return createIndex(0, 0, 0);
+        return QModelIndex(); // abstract root
     else if( indexBias )
     {
         // search for the parent
@@ -369,23 +435,46 @@ Dynamic::DynamicModel::columnCount(const QModelIndex & parent) const
     return 1;
 }
 
-void
-Dynamic::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
+QModelIndex
+Dynamic::DynamicModel::index( Dynamic::AbstractBias* bias ) const
 {
-    // this shouldn't happen
-    // TODO
-    if( p != activePlaylist() )
+    QModelIndex res;
+
+    // search for the parent
+    foreach( DynamicPlaylist* list, m_playlists )
     {
-        error() << "Non-active playlist changed somehow. where did it come from!?";
-        return;
+        res = parent( qobject_cast<BiasedPlaylist*>(list), bias );
+        if( res.isValid() )
+            break;
     }
 
-    if( m_activeUnsaved )
-        return;
+    if( !res.isValid() )
+        return res;
 
-    m_activeUnsaved = true;
-    emit dataChanged( index( m_activePlaylistIndex, 0 ),
-                      index( m_activePlaylistIndex, 0 ) );
+    QObject* o = static_cast<QObject*>(res.internalPointer());
+    BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o);
+    AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o);
+
+    // level 1
+    if( parentPlaylist )
+    {
+        return createIndex( 0, 0, bias );
+    }
+    // level > 1
+    else if( parentBias )
+    {
+        return createIndex( parentBias->biases().indexOf( Dynamic::BiasPtr(bias) ), 0, bias );
+    }
+    else
+    {
+        return QModelIndex();
+    }
+}
+
+QModelIndex
+Dynamic::DynamicModel::index( Dynamic::DynamicPlaylist* playlist ) const
+{
+    return createIndex( playlistIndex( playlist ), 0, playlist );
 }
 
 void
@@ -396,37 +485,49 @@ Dynamic::DynamicModel::removeAt( const QModelIndex& index )
 
     QObject* o = static_cast<QObject*>(index.internalPointer());
     BiasedPlaylist* indexPlaylist = qobject_cast<BiasedPlaylist*>(o);
+    AbstractBias* indexBias = qobject_cast<Dynamic::AbstractBias*>(o);
 
-    if( !indexPlaylist || !m_playlists.contains( indexPlaylist ) )
-        return;
-
-    int i = playlistIndex( indexPlaylist );
-
-    /*
-    // if it's a modified but unsaved playlist so we just restore the unmodified
-    // version, "removing" the modified playlist but not the unmodified entry.
-    if( m_activeUnsaved )
+    // remove a playlist
+    if( indexPlaylist )
     {
-        int oldActive = m_activePlaylistIndex;
-        loadPlaylists();
-        setActivePlaylist( oldActive );
-        return;
+        if( !indexPlaylist || !m_playlists.contains( indexPlaylist ) )
+            return;
+
+        int i = playlistIndex( indexPlaylist );
+
+        beginRemoveRows( QModelIndex(), i, i );
+        m_playlists.removeAt(i);
+        endRemoveRows();
+
+        delete indexPlaylist;
+
+        if( m_playlists.isEmpty() )
+        {
+            The::playlistActions()->enableDynamicMode( false );
+            m_activePlaylistIndex = 0;
+        }
+        else
+        {
+            setActivePlaylist( qBound(0, m_activePlaylistIndex, m_playlists.count() - 1 ) );
+        }
     }
-    */
-
-    beginRemoveRows( QModelIndex(), i, i );
-    delete m_playlists[i];
-    m_playlists.removeAt(i);
-    endRemoveRows();
-
-    if( m_playlists.isEmpty() )
+    // remove a bias
+    else if( indexBias )
     {
-        The::playlistActions()->enableDynamicMode( false );
-        m_activePlaylistIndex = 0;
-    }
-    else
-    {
-        setActivePlaylist( qBound(0, m_activePlaylistIndex, m_playlists.count() - 1 ) );
+        QModelIndex parentIndex = parent( index );
+
+        QObject* o2 = static_cast<QObject*>(parentIndex.internalPointer());
+        BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o2);
+        AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o2);
+
+        if( parentPlaylist )
+        {
+            // can't remove a bias directly under a playlist
+        }
+        else if( parentBias )
+        {
+            indexBias->replace( Dynamic::BiasPtr() ); // replace by nothing
+        }
     }
 
     savePlaylists();
@@ -436,6 +537,8 @@ Dynamic::DynamicModel::removeAt( const QModelIndex& index )
 QModelIndex
 Dynamic::DynamicModel::cloneAt( const QModelIndex& index )
 {
+    DEBUG_BLOCK;
+
     QObject* o = static_cast<QObject*>(index.internalPointer());
     BiasedPlaylist* indexPlaylist = qobject_cast<BiasedPlaylist*>(o);
     AbstractBias* indexBias = qobject_cast<Dynamic::AbstractBias*>(o);
@@ -446,15 +549,14 @@ Dynamic::DynamicModel::cloneAt( const QModelIndex& index )
     }
     else if( indexBias )
     {
-        QModelIndex parentIndex = parent( index );
-
-        QObject* o2 = static_cast<QObject*>(index.internalPointer());
+        QModelIndex parentIndex = index.parent();
+        QObject* o2 = static_cast<QObject*>(parentIndex.internalPointer());
         BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o2);
         AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o2);
 
         if( parentPlaylist )
         {
-            // need a new and bias
+            // need a new AND bias
         }
         else if( parentBias )
         {
@@ -475,11 +577,11 @@ Dynamic::DynamicModel::newPlaylist()
     playlist->setTitle( i18n("New playlist") );
     playlist->bias()->replace( bias );
 
-    insertPlaylist( m_playlists.count(), playlist );
-    return index( m_playlists.count() - 1, 0 );
+    return insertPlaylist( m_playlists.count(), playlist );
 }
 
 
+/*
 void
 Dynamic::DynamicModel::saveActive( const QString& newTitle )
 {
@@ -526,11 +628,11 @@ Dynamic::DynamicModel::saveActive( const QString& newTitle )
 
     savePlaylists();
 }
+*/
 
 void
 Dynamic::DynamicModel::savePlaylists()
 {
-    m_activeUnsaved = false;
     savePlaylists( "dynamic.xml" );
     saveCurrentPlaylists(); // need also save the current playlist so that after a crash we won't restore the old current playlist
 }
@@ -551,8 +653,6 @@ Dynamic::DynamicModel::savePlaylists( const QString &filename )
     xmlWriter.writeStartElement("biasedPlaylists");
     xmlWriter.writeAttribute("version", "2" );
     xmlWriter.writeAttribute("current", QString::number( m_activePlaylistIndex ) );
-    if( m_activeUnsaved )
-        xmlWriter.writeAttribute("unsaved", "1");
 
     foreach( Dynamic::DynamicPlaylist *playlist, m_playlists )
     {
@@ -607,7 +707,6 @@ Dynamic::DynamicModel::loadPlaylists( const QString &filename )
     }
 
     m_activePlaylistIndex = xmlReader.attributes().value( "current" ).toString().toInt();
-    m_activeUnsaved = xmlReader.attributes().value( "unsaved" ).toString().toInt();
 
     while (!xmlReader.atEnd()) {
         xmlReader.readNext();
@@ -630,7 +729,7 @@ Dynamic::DynamicModel::loadPlaylists( const QString &filename )
             }
             else
             {
-                qDebug() << "Unexpected xml start element"<<name<<"in input";
+                debug() << "Unexpected xml start element"<<name<<"in input";
                 xmlReader.skipCurrentElement();
             }
         }
@@ -665,11 +764,32 @@ Dynamic::DynamicModel::initPlaylists()
         delete playlist;
     m_playlists.clear();
 
-    // create the empty default random playlist
-    Dynamic::BiasedPlaylist *playlist =  new Dynamic::BiasedPlaylist( this );
+    Dynamic::BiasedPlaylist *playlist;
+
+    // create the empty default random playlists
+    playlist = new Dynamic::BiasedPlaylist( this );
     insertPlaylist( 0, playlist );
 
-    m_activeUnsaved = false;
+    playlist = new Dynamic::BiasedPlaylist( this );
+    playlist->setTitle( "Rock and Pop" );
+    playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( "genre:Rock OR genre:Pop" ) ) );
+    insertPlaylist( 1, playlist );
+
+    playlist = new Dynamic::BiasedPlaylist( this );
+    playlist->setTitle( "Album play" );
+    Dynamic::IfElseBias *ifElse = new Dynamic::IfElseBias( true );
+    playlist->bias()->replace( Dynamic::BiasPtr( ifElse ) );
+    ifElse->appendBias( Dynamic::BiasPtr( new Dynamic::AlbumPlayBias() ) );
+    ifElse->appendBias( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( "tracknr:1" ) ) );
+    insertPlaylist( 2, playlist );
+
+    playlist = new Dynamic::BiasedPlaylist( this );
+    playlist->setTitle( "Rating" );
+    Dynamic::PartBias *part = new Dynamic::PartBias( true );
+    playlist->bias()->replace( Dynamic::BiasPtr( part ) );
+    // TODO
+    insertPlaylist( 3, playlist );
+
     m_activePlaylistIndex = 0;
 
     emit activeChanged( m_activePlaylistIndex );
@@ -712,6 +832,63 @@ Dynamic::DynamicModel::cloneBias( Dynamic::AbstractBias* bias )
     xmlReader.readNext();
     return Dynamic::BiasFactory::fromXml( &xmlReader );
 }
+
+void
+Dynamic::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
+{
+    DEBUG_BLOCK;
+    QModelIndex index = this->index( p );
+    emit dataChanged( index, index );
+}
+
+void
+Dynamic::DynamicModel::biasChanged( Dynamic::AbstractBias* b )
+{
+    QModelIndex index = this->index( b );
+    emit dataChanged( index, index );
+}
+
+void
+Dynamic::DynamicModel::beginRemoveBias( Dynamic::BiasedPlaylist* parent )
+{
+    QModelIndex index = this->index( parent );
+    beginRemoveRows( index, 0, 0 );
+}
+
+void
+Dynamic::DynamicModel::beginRemoveBias( Dynamic::AbstractBias* parent, int index )
+{
+    QModelIndex parentIndex = this->index( parent );
+    beginRemoveRows( parentIndex, index, index );
+}
+
+void
+Dynamic::DynamicModel::endRemoveBias()
+{
+    endRemoveRows();
+}
+
+void
+Dynamic::DynamicModel::beginInsertBias( Dynamic::BiasedPlaylist* parent )
+{
+    QModelIndex index = this->index( parent );
+    beginInsertRows( index, 0, 0 );
+}
+
+
+void
+Dynamic::DynamicModel::beginInsertBias( Dynamic::AbstractBias* parent, int index )
+{
+    QModelIndex parentIndex = this->index( parent );
+    beginInsertRows( parentIndex, index, index );
+}
+
+void
+Dynamic::DynamicModel::endInsertBias()
+{
+    endInsertRows();
+}
+
 
 void
 Dynamic::DynamicModel::saveCurrentPlaylists()

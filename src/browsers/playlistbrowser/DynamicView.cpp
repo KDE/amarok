@@ -19,6 +19,7 @@
 #define DEBUG_PREFIX "DynamicView"
 
 #include "DynamicView.h"
+#include "DynamicBiasDelegate.h"
 #include "DynamicBiasWidgets.h"
 
 #include "core/support/Debug.h"
@@ -32,7 +33,6 @@
 #include "context/popupdropper/libpud/PopupDropper.h"
 
 #include "PaletteHandler.h"
-// #include "SvgHandler.h"
 
 #include <klocale.h>
 
@@ -48,18 +48,17 @@
 
 PlaylistBrowserNS::DynamicView::DynamicView( QWidget *parent )
     : Amarok::PrettyTreeView( parent )
-    , m_pd( 0 )
-    , m_ongoingDrag( false )
-    , m_dragMutex()
     , m_expandToggledWhenPressed( false )
 {
     DEBUG_BLOCK
     setHeaderHidden( true );
     setSelectionMode( QAbstractItemView::SingleSelection );
     setModel( Dynamic::DynamicModel::instance() );
+    setItemDelegate( new PlaylistBrowserNS::DynamicBiasDelegate(this) );
 
     setSelectionBehavior( QAbstractItemView::SelectItems );
-    setDragDropMode( QAbstractItemView::DragDrop );
+    // setDragDropMode( QAbstractItemView::DragDrop ); Maybe later...
+    setDragDropMode(QAbstractItemView::InternalMove);
     setAcceptDrops( true );
 
     setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
@@ -203,13 +202,6 @@ PlaylistBrowserNS::DynamicView::mouseReleaseEvent( QMouseEvent *event )
             action->trigger();
     }
 
-    if( m_pd )
-    {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
-        m_pd->hide();
-        m_pd = 0;
-    }
-
     if( !m_expandToggledWhenPressed &&
         event->button() != Amarok::contextMouseButton() &&
         event->modifiers() == Qt::NoModifier &&
@@ -267,55 +259,6 @@ PlaylistBrowserNS::DynamicView::mouseDoubleClickEvent( QMouseEvent *event )
 }
 
 void
-PlaylistBrowserNS::DynamicView::startDrag( Qt::DropActions supportedActions )
-{
-    /*
-    //Waah? when a parent item is dragged, startDrag is called a bunch of times
-    m_dragMutex.lock();
-    if( m_ongoingDrag )
-    {
-        m_dragMutex.unlock();
-        return;
-    }
-    m_ongoingDrag = true;
-    m_dragMutex.unlock();
-
-    if( !m_pd )
-        m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
-
-    QList<QAction *> actions;
-
-    if( m_pd && m_pd->isHidden() )
-    {
-        actions = actionsFor( selectedIndexes() );
-
-        foreach( QAction *action, actions )
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
-
-        m_pd->show();
-    }
-
-    QTreeView::startDrag( supportedActions );
-    debug() << "After the drag!";
-
-    //We keep the items that the actions need to be applied to in the actions private data.
-    //Clear the data from all actions now that the PUD has executed.
-    foreach( QAction *action, actions )
-        action->setData( QVariant() );
-
-    if( m_pd )
-    {
-        debug() << "clearing PUD";
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
-        m_pd->hide();
-    }
-    m_dragMutex.lock();
-    m_ongoingDrag = false;
-    m_dragMutex.unlock();
-    */
-}
-
-void
 PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
@@ -362,6 +305,10 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
             connect( action, SIGNAL( triggered(bool) ), this, SLOT( addToSelected() ) );
             actions.append( action );
         }
+
+        action = new KAction( KIcon( "action-edit" ), i18n( "&Clone bias" ), this );
+        connect( action, SIGNAL( triggered(bool) ), this, SLOT( cloneSelected() ) );
+        actions.append( action );
 
         action = new KAction( KIcon( "remove-amarok" ), i18n( "&Delete bias" ), this );
         connect( action, SIGNAL( triggered(bool) ), this, SLOT( removeSelected() ) );

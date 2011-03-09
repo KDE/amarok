@@ -26,11 +26,9 @@
 #include "biases/PartBias.h"
 #include "core/support/Debug.h"
 #include "SliderWidget.h"
-#include "SvgHandler.h"
 #include "widgets/MetaQueryWidget.h"
 
 #include <QLabel>
-#include <QSlider>
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -43,6 +41,7 @@
 PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* parent )
     : QDialog( parent )
     , m_mainLayout( 0 )
+    , m_biasLayout( 0 )
     , m_descriptionLabel( 0 )
     , m_biasWidget( 0 )
     , m_bias( bias )
@@ -52,7 +51,7 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
 
     // -- the bias selection combo
     QLabel* selectionLabel = new QLabel( i18nc("Bias selection label in bias view.", "Match Type:" ) );
-    m_biasSelection = new KComboBox( this );
+    m_biasSelection = new KComboBox();
     QHBoxLayout *selectionLayout = new QHBoxLayout();
     selectionLabel->setBuddy( m_biasSelection );
     selectionLayout->addWidget( selectionLabel );
@@ -64,8 +63,8 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
     m_descriptionLabel = new QLabel( "" );
     m_mainLayout->addWidget( m_descriptionLabel );
 
-    m_biasWidget = new QWidget();
-    m_mainLayout->addWidget( m_biasWidget );
+    m_biasLayout = new QVBoxLayout();
+    m_mainLayout->addLayout( m_biasLayout );
 
     // -- button box
     QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
@@ -81,6 +80,9 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
     connect(buttonBox, SIGNAL(accepted()),
             this, SLOT(accept()));
 }
+
+PlaylistBrowserNS::BiasDialog::~BiasDialog()
+{ }
 
 void
 PlaylistBrowserNS::BiasDialog::factoriesChanged()
@@ -124,6 +126,7 @@ PlaylistBrowserNS::BiasDialog::factoriesChanged()
 void
 PlaylistBrowserNS::BiasDialog::selectionChanged( int index )
 {
+    DEBUG_BLOCK;
     Q_ASSERT( m_biasSelection );
 
     QString biasName = m_biasSelection->itemData( index ).toString();
@@ -136,7 +139,9 @@ PlaylistBrowserNS::BiasDialog::selectionChanged( int index )
         return;
     }
 
+debug() << "replace bias" << oldBias->toString() << "with" << newBias->toString();
     m_bias->replace( newBias ); // tell the old bias it has just been replaced
+debug() << "replaced";
 
     // -- if the new bias is AndBias, try to add the old biase(s) into it
     Dynamic::AndBias *oldABias = qobject_cast<Dynamic::AndBias*>(oldBias.data());
@@ -166,6 +171,7 @@ PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::
 
     if( m_biasWidget )
     {
+        m_biasLayout->removeWidget( m_biasWidget );
         m_biasWidget->deleteLater();
         m_biasWidget = 0;
     }
@@ -180,9 +186,7 @@ PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::
     m_biasWidget = newBias->widget( 0 );
     if( !m_biasWidget )
         m_biasWidget = new QLabel( i18n("This bias has no settings") );
-
-    m_mainLayout->takeAt( 2 );
-    m_mainLayout->insertWidget( 2, m_biasWidget );
+    m_biasLayout->addWidget( m_biasWidget );
 
     factoriesChanged(); // update the bias description and select the new combo entry
 }
@@ -205,8 +209,6 @@ PlaylistBrowserNS::PartBiasWidget::PartBiasWidget( Dynamic::PartBias* bias, QWid
     connect( bias, SIGNAL( biasMoved( int, int ) ),
              this, SLOT( biasMoved( int, int ) ) );
 
-    connect( this, SIGNAL( biasWeightChanged( int, qreal ) ),
-             bias, SLOT( changeBiasWeight( int, qreal ) ) );
     connect( bias, SIGNAL( weightsChanged() ),
              this, SLOT( biasWeightsChanged() ) );
 
@@ -231,15 +233,17 @@ PlaylistBrowserNS::PartBiasWidget::biasAppended( Dynamic::BiasPtr bias )
     int index = m_bias->biases().indexOf( bias );
 
     Amarok::Slider* slider = 0;
-    slider = new Amarok::Slider( Qt::Horizontal, 100, this );
+    slider = new Amarok::Slider( Qt::Horizontal, 100 );
     slider->setValue( m_bias->weights()[ m_bias->biases().indexOf( bias ) ] * 100.0 );
     slider->setToolTip( i18n( "This controls what portion of the playlist should match the criteria" ) );
     connect( slider, SIGNAL(valueChanged(int)), SLOT(sliderValueChanged(int)) );
-    m_layout->addWidget( slider, index, 0 );
-
-    // -- add the widget (with slider)
 
     QLabel* label = new QLabel( bias->toString() );
+
+    m_sliders.append( slider );
+    m_widgets.append( label );
+    // -- add the widget (with slider)
+    m_layout->addWidget( slider, index, 0 );
     m_layout->addWidget( label, index, 1 );
 }
 
@@ -248,8 +252,8 @@ PlaylistBrowserNS::PartBiasWidget::biasRemoved( int pos )
 {
     m_layout->takeAt( pos * 2 );
     m_layout->takeAt( pos * 2 );
-    m_sliders.takeAt( pos );
-    m_widgets.takeAt( pos );
+    m_sliders.takeAt( pos )->deleteLater();
+    m_widgets.takeAt( pos )->deleteLater();
 }
 
 void
@@ -272,6 +276,7 @@ PlaylistBrowserNS::PartBiasWidget::biasMoved( int from, int to )
 void
 PlaylistBrowserNS::PartBiasWidget::sliderValueChanged( int val )
 {
+    DEBUG_BLOCK;
     // protect agains recursion
     if( m_inSignal )
         return;
@@ -279,13 +284,14 @@ PlaylistBrowserNS::PartBiasWidget::sliderValueChanged( int val )
     for( int i = 0; i < m_sliders.count(); i++ )
     {
         if( m_sliders.at(i) == sender() )
-            emit biasWeightChanged( i, qreal(val) / 100.0 );
+            m_bias->changeBiasWeight( i, qreal(val) / 100.0 );
     }
 }
 
 void
 PlaylistBrowserNS::PartBiasWidget::biasWeightsChanged()
 {
+    DEBUG_BLOCK;
     // protect agains recursion
     if( m_inSignal )
         return;

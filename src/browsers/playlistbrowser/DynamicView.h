@@ -54,15 +54,10 @@ protected:
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
     virtual void mouseMoveEvent( QMouseEvent *event );
-    virtual void startDrag( Qt::DropActions supportedActions );
 
     virtual void contextMenuEvent( QContextMenuEvent* event );
 
 private:
-    PopupDropper* m_pd;
-
-    bool m_ongoingDrag;
-    QMutex m_dragMutex;
     bool m_expandToggledWhenPressed;
 };
 

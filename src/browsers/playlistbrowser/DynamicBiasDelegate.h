@@ -24,18 +24,30 @@
 
 namespace PlaylistBrowserNS
 {
-    class DynamicBiasDelegate : public QStyledItemDelegate
-    {
-        public:
-            DynamicBiasDelegate( QWidget* parent = 0 );
 
-            void paint( QPainter* painter,
-                        const QStyleOptionViewItem& option,
+class DynamicBiasDelegate : public QStyledItemDelegate
+{
+    public:
+        DynamicBiasDelegate( QWidget* parent = 0 );
+        ~DynamicBiasDelegate();
+
+        void paint( QPainter* painter,
+                    const QStyleOptionViewItem& option,
+                    const QModelIndex& index ) const;
+
+        QSize sizeHint( const QStyleOptionViewItem& option,
                         const QModelIndex& index ) const;
+    private:
+      QFont m_bigFont;
+      QFont m_normalFont;
+      QFont m_smallFont;
 
-            QSize sizeHint( const QStyleOptionViewItem& option,
-                            const QModelIndex& index ) const;
-    };
+      QFontMetrics *m_bigFm;
+      QFontMetrics *m_normalFm;
+      QFontMetrics *m_smallFm;
+
+};
+
 }
 
 #endif

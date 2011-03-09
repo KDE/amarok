@@ -22,11 +22,13 @@
 
 #include "Bias.h"
 #include "BiasFactory.h"
+#include "DynamicModel.h"
 #include "biases/SearchQueryBias.h"
 
 #include "core/support/Debug.h"
 #include "DynamicBiasWidgets.h"
 
+#include <QPainter>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
@@ -39,7 +41,7 @@ Dynamic::AbstractBias::AbstractBias()
 
 Dynamic::AbstractBias::~AbstractBias()
 {
-    debug() << "destroying bias" << this << this->name();
+    debug() << "destroying bias" << this;
 }
 
 void
@@ -65,6 +67,14 @@ Dynamic::AbstractBias::widget( QWidget* parent )
 {
     Q_UNUSED( parent );
     return 0;
+}
+
+void
+Dynamic::AbstractBias::paintOperator( QPainter* painter, const QRect& rect, Dynamic::AbstractBias* bias )
+{
+    Q_UNUSED( painter );
+    Q_UNUSED( rect );
+    Q_UNUSED( bias );
 }
 
 void
@@ -326,6 +336,15 @@ Dynamic::AndBias::widget( QWidget* parent )
     return 0;
 }
 
+void
+Dynamic::AndBias::paintOperator( QPainter* painter, const QRect& rect, Dynamic::AbstractBias* bias )
+{
+    if( m_biases.indexOf( Dynamic::BiasPtr(bias) ) > 0 )
+    {
+        painter->drawText( rect, Qt::AlignLeft, i18nc("Prefix for AndBias. Shown in front of a bias in the dynamic playlist view", "and" ) );
+    }
+}
+
 Dynamic::TrackSet
 Dynamic::AndBias::matchingTracks( int position,
                                   const Meta::TrackList& playlist, int contextCount,
@@ -385,13 +404,19 @@ Dynamic::AndBias::invalidate()
 void
 Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
 {
+    bool inModel = DynamicModel::instance()->index( this ).isValid();
+    if( inModel )
+        DynamicModel::instance()->beginInsertBias( this, m_biases.count() );
     m_biases.append( bias );
+    if( inModel )
+        DynamicModel::instance()->endInsertBias();
+
     connect( bias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
              this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
     connect( bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
              this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
     connect( bias.data(), SIGNAL( changed( Dynamic::BiasPtr ) ),
-             this, SIGNAL( changed( Dynamic::BiasPtr ) ) );
+             this, SLOT( biasChanged( Dynamic::BiasPtr ) ) );
     emit biasAppended( bias );
 
     // creating a shared pointer and destructing it just afterwards would
@@ -404,6 +429,7 @@ Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
 void
 Dynamic::AndBias::moveBias( int from, int to )
 {
+    // TODO: emit model changes
     m_biases.insert( to, m_biases.takeAt( from ) );
     emit biasMoved( from, to );
 
@@ -428,14 +454,21 @@ Dynamic::AndBias::resultReceived( const Dynamic::TrackSet &tracks )
 void
 Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
 {
+    DEBUG_BLOCK;
     int index = m_biases.indexOf( oldBias );
     Q_ASSERT( index >= 0 );
 
     disconnect( oldBias.data(), 0, this, 0 );
+    bool inModel = DynamicModel::instance()->index( this ).isValid();
+    if( inModel )
+        DynamicModel::instance()->beginRemoveBias( this, index );
+    m_biases.removeAt( index );
+    if( inModel )
+        DynamicModel::instance()->endRemoveBias();
+    emit biasRemoved( index );
 
     if( newBias )
     {
-        m_biases[ index ] = newBias;
         connect( newBias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
                  this,  SLOT( resultReceived( const Dynamic::TrackSet & ) ) );
         connect( newBias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
@@ -443,20 +476,29 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
         connect( newBias.data(), SIGNAL( changed( Dynamic::BiasPtr ) ),
                  this, SIGNAL( changed( Dynamic::BiasPtr ) ) );
 
+        if( inModel )
+            DynamicModel::instance()->beginInsertBias( this, index );
+        m_biases.insert( index, newBias );
+        if( inModel )
+            DynamicModel::instance()->endInsertBias();
+
         // we don't have an bias inserted signal
-        emit biasRemoved( index );
         emit biasAppended( newBias );
         emit biasMoved( m_biases.count()-1, index );
-    }
-    else
-    {
-        m_biases.removeAt( index );
-        emit biasRemoved( index );
     }
 
     if( !m_duringConstruction &&
         !qobject_cast<Dynamic::ReplacementBias*>(oldBias.data()) )
         emit changed( BiasPtr( this ) );
+}
+
+void
+Dynamic::AndBias::biasChanged( Dynamic::BiasPtr bias )
+{
+    emit changed( BiasPtr( this ) );
+    bool inModel = DynamicModel::instance()->index( this ).isValid();
+    if( inModel )
+        DynamicModel::instance()->biasChanged( bias.data() );
 }
 
 // -------- OrBias ------
@@ -480,6 +522,16 @@ Dynamic::OrBias::name() const
 {
     return Dynamic::OrBias::sName();
 }
+
+void
+Dynamic::OrBias::paintOperator( QPainter* painter, const QRect& rect, Dynamic::AbstractBias* bias )
+{
+    if( m_biases.indexOf( Dynamic::BiasPtr(bias) ) > 0 )
+    {
+        painter->drawText( rect, Qt::AlignLeft, i18nc("Prefix for OrBias. Shown in front of a bias in the dynamic playlist view", "or" ) );
+    }
+}
+
 
 QString
 Dynamic::OrBias::toString() const

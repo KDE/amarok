@@ -25,10 +25,12 @@
 #include "TrackSet.h"
 
 #include <QObject>
+#include <QRect>
 #include <QWidget>
 #include <QSharedData>
 #include <QExplicitlySharedDataPointer>
 
+class QPainter;
 class QXmlStreamReader;
 class QXmlStreamWriter;
 
@@ -79,6 +81,9 @@ namespace Dynamic
             /** Create a widget appropriate for editing the bias.
             */
             virtual QWidget* widget( QWidget* parent = 0 );
+
+            /** Paints an operator (like "and" or a progress bar") in front of a bias item */
+            virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
             /** Returns the tracks that would fit at the indicated position.
                 The function can also return an "outstanding" Track set and return
@@ -235,6 +240,7 @@ namespace Dynamic
             virtual QString toString() const;
 
             virtual QWidget* widget( QWidget* parent = 0 );
+            virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
@@ -262,8 +268,9 @@ namespace Dynamic
             virtual void invalidate();
 
         protected slots:
-            virtual void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
             virtual void resultReceived( const Dynamic::TrackSet &tracks );
+            virtual void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
+            virtual void biasChanged( Dynamic::BiasPtr bias );
 
         protected:
             bool m_duringConstruction; // protect against accidentially freeing this bias by creating a BiasPtr
@@ -287,6 +294,8 @@ namespace Dynamic
             static QString sName();
             virtual QString name() const;
             virtual QString toString() const;
+
+            virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,

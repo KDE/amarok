@@ -18,6 +18,7 @@
  ****************************************************************************************/
 
 #include "DynamicPlaylist.h"
+#include "DynamicModel.h"
 
 Dynamic::DynamicPlaylist::DynamicPlaylist( QObject *parent )
     : QObject( parent )
@@ -38,6 +39,11 @@ QString Dynamic::DynamicPlaylist::title() const
 { return m_title; }
 
 void Dynamic::DynamicPlaylist::setTitle( QString title )
-{ m_title = title; }
+{
+    m_title = title;
+    bool inModel = DynamicModel::instance()->index( this ).isValid();
+    if( inModel )
+        DynamicModel::instance()->playlistChanged( this );
+}
 
 

@@ -31,15 +31,9 @@ private slots:
 
     void testData();
     void testPlaylistIndex();
+    void testSlots();
     void testSaveActive();
     void testRemoveActive();
-
-private:
-    /*
-    Collections::SqlCollection *m_collection;
-    SqlMountPointManagerMock *m_mpm;
-    SqlStorage *m_storage;
-    */
 };
 
 #endif

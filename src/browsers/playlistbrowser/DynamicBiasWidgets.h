@@ -57,7 +57,7 @@ namespace PlaylistBrowserNS
 
         public:
             BiasDialog( Dynamic::BiasPtr bias, QWidget* parent = 0 );
-            virtual ~BiasDialog() {}
+            virtual ~BiasDialog();
 
         protected slots:
             void factoriesChanged();
@@ -67,6 +67,7 @@ namespace PlaylistBrowserNS
         protected:
 
             QVBoxLayout* m_mainLayout;
+            QVBoxLayout* m_biasLayout;
 
             KComboBox* m_biasSelection;
             QLabel *m_descriptionLabel;
@@ -83,9 +84,6 @@ namespace PlaylistBrowserNS
 
         public:
             PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent = 0 );
-
-        signals:
-            void biasWeightChanged( int biasNum, qreal value );
 
         protected slots:
             void appendBias();

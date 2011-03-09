@@ -21,6 +21,7 @@
 #include "BiasSolver.h"
 #include "BiasedPlaylist.h"
 #include "BiasFactory.h"
+#include "DynamicModel.h"
 
 #include "amarokconfig.h"
 #include "App.h"
@@ -62,9 +63,6 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *pare
     , m_numRequested( 0 )
     , m_bias( 0 )
 {
-    // Make sure that the BiasedPlaylist instance gets destroyed when App destroys
-    setParent( App::instance() );
-
     while (!reader->atEnd()) {
         reader->readNext();
 
@@ -156,15 +154,33 @@ Dynamic::BiasedPlaylist::biasChanged()
     m_buffer.clear();
 
     emit changed( this );
+    bool inModel = DynamicModel::instance()->index( this ).isValid();
+    if( inModel )
+        DynamicModel::instance()->biasChanged( m_bias.data() );
 }
 
 void
 Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
 {
+    DEBUG_BLOCK;
+
+    bool inModel = DynamicModel::instance()->index( this ).isValid();
     if( m_bias )
+    {
         disconnect( m_bias.data(), 0, this, 0 );
 
+        if( inModel )
+            Dynamic::DynamicModel::instance()->beginRemoveBias( this );
+        m_bias = 0;
+        if( inModel )
+            Dynamic::DynamicModel::instance()->endRemoveBias();
+    }
+
+    if( inModel )
+        Dynamic::DynamicModel::instance()->beginInsertBias( this );
     m_bias = newBias;
+    if( inModel )
+        Dynamic::DynamicModel::instance()->endInsertBias();
 
     connect( m_bias.data(), SIGNAL( changed( Dynamic::BiasPtr ) ),
              this, SLOT( biasChanged() ) );
