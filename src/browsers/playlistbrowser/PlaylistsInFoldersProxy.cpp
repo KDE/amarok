@@ -300,7 +300,7 @@ PlaylistsInFoldersProxy::slotRenameFolder()
     if( action == 0 )
         return;
 
-    QModelIndexList indexes = action->data().value<QModelIndexList>();
+    QPersistentModelIndexList indexes = action->data().value<QPersistentModelIndexList>();
 
     if( indexes.isEmpty() )
         return;
