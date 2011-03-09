@@ -255,18 +255,8 @@ Dynamic::UniqueBias::trackMatches( int position,
 
 // -------- AndBias ------
 
-Dynamic::AndBias::AndBias( bool empty )
-    : m_duringConstruction( true )
-{
-    // add two biases to start with
-    if( !empty )
-    {
-        appendBias( BiasPtr( new Dynamic::SearchQueryBias() ) );
-        appendBias( BiasPtr( new Dynamic::SearchQueryBias( "genre:Pop" ) ) );
-    }
-
-    m_duringConstruction = false;
-}
+Dynamic::AndBias::AndBias()
+{ }
 
 Dynamic::AndBias::AndBias( QXmlStreamReader *reader )
     : m_duringConstruction( true )
@@ -503,8 +493,8 @@ Dynamic::AndBias::biasChanged( Dynamic::BiasPtr bias )
 
 // -------- OrBias ------
 
-Dynamic::OrBias::OrBias( bool empty )
-    : AndBias( empty )
+Dynamic::OrBias::OrBias()
+    : AndBias()
 { }
 
 Dynamic::OrBias::OrBias( QXmlStreamReader *reader )
@@ -592,8 +582,8 @@ Dynamic::OrBias::resultReceived( const Dynamic::TrackSet &tracks )
 
 // -------- NotBias ------
 
-Dynamic::NotBias::NotBias( bool empty )
-    : OrBias( empty )
+Dynamic::NotBias::NotBias()
+    : OrBias()
 { }
 
 Dynamic::NotBias::NotBias( QXmlStreamReader *reader )

@@ -221,8 +221,8 @@ class MatchState
 };
 
 
-Dynamic::PartBias::PartBias( bool empty )
-    : AndBias( empty )
+Dynamic::PartBias::PartBias()
+    : AndBias()
 {
     m_duringConstruction = true;
 
@@ -234,7 +234,7 @@ Dynamic::PartBias::PartBias( bool empty )
 }
 
 Dynamic::PartBias::PartBias( QXmlStreamReader *reader )
-    : AndBias( true )
+    : AndBias()
 {
     m_duringConstruction = true;
 

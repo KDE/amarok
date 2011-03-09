@@ -556,7 +556,13 @@ Dynamic::DynamicModel::cloneAt( const QModelIndex& index )
 
         if( parentPlaylist )
         {
+            Dynamic::BiasPtr b( indexBias ); // ensure that the bias does not get freed
             // need a new AND bias
+            parentBias = new Dynamic::AndBias();
+            indexBias->replace( Dynamic::BiasPtr( parentBias ) );
+            parentBias->appendBias( b );
+            parentBias->appendBias( cloneBias( indexBias ) );
+            return this->index( parentBias->biases().count()-1, 0, parentIndex );
         }
         else if( parentBias )
         {
@@ -777,7 +783,7 @@ Dynamic::DynamicModel::initPlaylists()
 
     playlist = new Dynamic::BiasedPlaylist( this );
     playlist->setTitle( "Album play" );
-    Dynamic::IfElseBias *ifElse = new Dynamic::IfElseBias( true );
+    Dynamic::IfElseBias *ifElse = new Dynamic::IfElseBias();
     playlist->bias()->replace( Dynamic::BiasPtr( ifElse ) );
     ifElse->appendBias( Dynamic::BiasPtr( new Dynamic::AlbumPlayBias() ) );
     ifElse->appendBias( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( "tracknr:1" ) ) );
@@ -785,7 +791,7 @@ Dynamic::DynamicModel::initPlaylists()
 
     playlist = new Dynamic::BiasedPlaylist( this );
     playlist->setTitle( "Rating" );
-    Dynamic::PartBias *part = new Dynamic::PartBias( true );
+    Dynamic::PartBias *part = new Dynamic::PartBias();
     playlist->bias()->replace( Dynamic::BiasPtr( part ) );
     // TODO
     insertPlaylist( 3, playlist );

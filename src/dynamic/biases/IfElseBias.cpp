@@ -53,12 +53,12 @@ Dynamic::IfElseBiasFactory::createBias( QXmlStreamReader *reader )
 { return Dynamic::BiasPtr( new Dynamic::IfElseBias( reader ) ); }
 
 
-Dynamic::IfElseBias::IfElseBias( bool empty )
-    : OrBias( empty )
+Dynamic::IfElseBias::IfElseBias()
+    : OrBias()
 { }
 
 Dynamic::IfElseBias::IfElseBias( QXmlStreamReader *reader )
-    : OrBias(reader)
+    : OrBias( reader )
 { }
 
 void

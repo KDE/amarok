@@ -36,7 +36,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            IfElseBias( bool empty = false );
+            IfElseBias();
             IfElseBias( QXmlStreamReader *reader );
 
             virtual void toXml( QXmlStreamWriter *writer ) const;

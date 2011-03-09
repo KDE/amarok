@@ -188,7 +188,6 @@ TestDynamicModel::testSlots()
     // -- cloneAt with bias
     playlistIndex = model->index( 1, 0 );
 
-    qDebug() << "playlistName:"<< model->data( playlistIndex ).toString();
     biasIndex = model->index( 0, 0, playlistIndex );
     subBiasIndex = model->index( 0, 0, biasIndex );
     QCOMPARE( model->rowCount( biasIndex ), 1 );

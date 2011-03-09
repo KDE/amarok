@@ -38,7 +38,7 @@ namespace Dynamic
             /** Create a new part bias.
                 @param empty If true, then the newly created bias will not have a set of example sub-biases.
             */
-            PartBias( bool empty = false );
+            PartBias();
             PartBias( QXmlStreamReader *reader );
 
             virtual void toXml( QXmlStreamWriter *writer ) const;
