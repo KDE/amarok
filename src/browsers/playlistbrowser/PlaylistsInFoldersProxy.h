@@ -24,6 +24,8 @@
 
 class QAction;
 
+typedef QList<QPersistentModelIndex> QPersistentModelIndexList;
+
 class PlaylistsInFoldersProxy : public QtGroupingProxy
 {
     Q_OBJECT
@@ -67,5 +69,7 @@ class PlaylistsInFoldersProxy : public QtGroupingProxy
         QAction *m_renameFolderAction;
         QAction *m_deleteFolderAction;
 };
+
+Q_DECLARE_METATYPE(QPersistentModelIndexList);
 
 #endif //PLAYLISTSINFOLDERSPROXY_H

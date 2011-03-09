@@ -38,6 +38,7 @@ PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ),
                                         i18n( "&Delete Folder" ), this );
     m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
+    m_deleteFolderAction->setObjectName( "deleteAction" );
     connect( m_deleteFolderAction, SIGNAL( triggered() ), this,
              SLOT( slotDeleteFolder() ) );
 
@@ -70,9 +71,12 @@ PlaylistsInFoldersProxy::data( const QModelIndex &idx, int role ) const
     {
         //wheter we use the list from m_deleteFolderAction or m_renameFolderAction does not matter
         //they are the same anyway
-        QModelIndexList actionList = m_deleteFolderAction->data().value<QModelIndexList>();
+        QPersistentModelIndexList actionList =
+                m_deleteFolderAction->data().value<QPersistentModelIndexList>();
 
-        actionList << idx;
+        //make a persistant modelindex since the location of the groups can change while executing
+        //actions.
+        actionList << QPersistentModelIndex( idx );
         QVariant value = QVariant::fromValue( actionList );
         m_deleteFolderAction->setData( value );
         m_renameFolderAction->setData( value );
@@ -283,7 +287,7 @@ PlaylistsInFoldersProxy::slotDeleteFolder()
     if( action == 0 )
         return;
 
-    QModelIndexList indexes = action->data().value<QModelIndexList>();
+    QPersistentModelIndexList indexes = action->data().value<QPersistentModelIndexList>();
 
     foreach( const QModelIndex &groupIdx, indexes )
         deleteFolder( groupIdx );
@@ -324,7 +328,6 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
     if( childCount > 0 )
         removeRows( 0, childCount, groupIdx );
     removeGroup( groupIdx );
-    buildTree();
 }
 
 QModelIndex
