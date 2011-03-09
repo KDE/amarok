@@ -48,6 +48,7 @@ namespace Dynamic
             virtual QString toString() const;
 
             virtual QWidget* widget( QWidget* parent = 0 );
+            virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,

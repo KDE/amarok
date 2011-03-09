@@ -1,7 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
- * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
- * Copyright (c) 2010,2011 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,6 +24,7 @@
 #include "DynamicBiasWidgets.h"
 
 #include <QtGlobal> // for qRound
+#include <QPainter>
 #include <QXmlStreamReader>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -54,8 +53,8 @@ Dynamic::IfElseBiasFactory::createBias( QXmlStreamReader *reader )
 { return Dynamic::BiasPtr( new Dynamic::IfElseBias( reader ) ); }
 
 
-Dynamic::IfElseBias::IfElseBias()
-    : OrBias()
+Dynamic::IfElseBias::IfElseBias( bool empty )
+    : OrBias( empty )
 { }
 
 Dynamic::IfElseBias::IfElseBias( QXmlStreamReader *reader )
@@ -84,6 +83,15 @@ QString
 Dynamic::IfElseBias::toString() const
 {
     return i18nc("IfElse bias representation", "If");
+}
+
+void
+Dynamic::IfElseBias::paintOperator( QPainter* painter, const QRect& rect, Dynamic::AbstractBias* bias )
+{
+    if( m_biases.indexOf( Dynamic::BiasPtr(bias) ) == 0 )
+        painter->drawText( rect, Qt::AlignLeft, i18nc("Prefix for IfElseBias. Shown in front of a bias in the dynamic playlist view", "if" ) );
+    else
+        painter->drawText( rect, Qt::AlignLeft, i18nc("Prefix for IfElseBias. Shown in front of a bias in the dynamic playlist view", "else" ) );
 }
 
 Dynamic::TrackSet

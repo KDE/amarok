@@ -36,7 +36,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            IfElseBias();
+            IfElseBias( bool empty = false );
             IfElseBias( QXmlStreamReader *reader );
 
             virtual void toXml( QXmlStreamWriter *writer ) const;
@@ -44,6 +44,8 @@ namespace Dynamic
             static QString sName();
             virtual QString name() const;
             virtual QString toString() const;
+
+            virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist,

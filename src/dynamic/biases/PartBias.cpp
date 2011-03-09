@@ -1,7 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
- * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
- * Copyright (c) 2010,2011 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,6 +24,9 @@
 #include "DynamicBiasWidgets.h"
 
 #include <QtGlobal> // for qRound
+#include <QApplication>
+#include <QStyle>
+#include <QStyleOption>
 #include <QXmlStreamReader>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -299,6 +300,22 @@ QWidget*
 Dynamic::PartBias::widget( QWidget* parent )
 {
     return new PlaylistBrowserNS::PartBiasWidget( this, parent );
+}
+
+void
+Dynamic::PartBias::paintOperator( QPainter* painter, const QRect& rect, Dynamic::AbstractBias* bias )
+{
+    int index = m_biases.indexOf( Dynamic::BiasPtr(bias) );
+    if( index < 0 )
+        return;
+
+    QStyleOptionProgressBar progressBarOption;
+    progressBarOption.rect = rect;
+    progressBarOption.minimum = 0;
+    progressBarOption.maximum = 100;
+    progressBarOption.progress = m_weights[index] * 100.0;
+
+    QApplication::style()->drawControl(QStyle::CE_ProgressBar, &progressBarOption, painter);
 }
 
 QList<qreal>
