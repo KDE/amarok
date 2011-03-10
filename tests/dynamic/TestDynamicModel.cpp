@@ -185,14 +185,17 @@ TestDynamicModel::testSlots()
     QCOMPARE( model->rowCount( biasIndex ), 1 );
     QCOMPARE( model->rowCount(), 3 ); // only the bias was removed
 
-    // -- cloneAt with bias
+    // -- cloneAt with level 2 bias
     playlistIndex = model->index( 1, 0 );
 
     biasIndex = model->index( 0, 0, playlistIndex );
     subBiasIndex = model->index( 0, 0, biasIndex );
     QCOMPARE( model->rowCount( biasIndex ), 1 );
 
-    model->cloneAt(subBiasIndex);
+    QModelIndex resultIndex = model->cloneAt(subBiasIndex);
+    QCOMPARE( resultIndex.row(), 1 );
+    qDebug() << "resultIndex" << resultIndex.parent() <<"should be"<<biasIndex;
+    QCOMPARE( resultIndex.parent(), biasIndex );
 
     QCOMPARE( spy3.count(), 1 );
     args1 = spy3.takeFirst();
@@ -211,8 +214,11 @@ TestDynamicModel::testSlots()
     QCOMPARE( spy3.count(), 0 );
 
     QCOMPARE( model->rowCount(), 3 );
-    model->newPlaylist();
+    resultIndex = model->newPlaylist();
     QCOMPARE( model->rowCount(), 4 );
+
+    QCOMPARE( resultIndex.row(), 3 );
+    QCOMPARE( resultIndex.parent(), QModelIndex() );
 
     QCOMPARE( spy1.count(), 0 );
     QCOMPARE( spy3.count(), 1 );
@@ -225,10 +231,15 @@ TestDynamicModel::testSlots()
     spy4.takeFirst();
 
     // -- cloneAt with playlist
-    QCOMPARE( model->rowCount(), 4 );
     playlistIndex = model->index( 1, 0 );
-    model->cloneAt(playlistIndex);
+
+    QCOMPARE( model->rowCount(), 4 );
+    resultIndex = model->cloneAt(playlistIndex);
     QCOMPARE( model->rowCount(), 5 );
+
+    QCOMPARE( resultIndex.row(), 4 );
+    QCOMPARE( resultIndex.parent(), QModelIndex() );
+    QCOMPARE( model->rowCount( resultIndex ), 1 );
 
     QCOMPARE( spy3.count(), 1 );
     args1 = spy3.takeFirst();

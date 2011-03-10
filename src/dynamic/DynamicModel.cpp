@@ -550,9 +550,12 @@ Dynamic::DynamicModel::cloneAt( const QModelIndex& index )
     else if( indexBias )
     {
         QModelIndex parentIndex = index.parent();
+        qDebug() << "index: "<<index<<"parent index: "<<parentIndex;
         QObject* o2 = static_cast<QObject*>(parentIndex.internalPointer());
         BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o2);
         AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o2);
+
+        Dynamic::BiasPtr clonedBias = cloneBias( indexBias );
 
         if( parentPlaylist )
         {
@@ -561,13 +564,13 @@ Dynamic::DynamicModel::cloneAt( const QModelIndex& index )
             parentBias = new Dynamic::AndBias();
             indexBias->replace( Dynamic::BiasPtr( parentBias ) );
             parentBias->appendBias( b );
-            parentBias->appendBias( cloneBias( indexBias ) );
-            return this->index( parentBias->biases().count()-1, 0, parentIndex );
+            parentBias->appendBias( clonedBias );
+            return this->index( clonedBias.data() );
         }
         else if( parentBias )
         {
-            parentBias->appendBias( cloneBias( indexBias ) );
-            return this->index( parentBias->biases().count()-1, 0, parentIndex );
+            parentBias->appendBias( clonedBias );
+            return this->index( clonedBias.data() );
         }
     }
 

@@ -150,17 +150,13 @@ debug() << "replaced";
         if( oldABias ) {
             for( int i = 0; i < oldABias->biases().count(); i++ )
             {
-                // skip the default random bias of the PartBias
-                if( i > 0 || !qobject_cast<Dynamic::PartBias*>(oldABias) )
-                    newABias->appendBias( oldABias->biases()[i] );
+                newABias->appendBias( oldABias->biases()[i] );
             }
         }
         else
         {
             newABias->appendBias( oldBias );
         }
-        // TODO: the and bias automatically adds a random bias that should be removed.
-        //       the part bias adds a random bias that should not be removed.
     }
 }
 
