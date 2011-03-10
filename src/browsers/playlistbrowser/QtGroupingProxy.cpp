@@ -627,7 +627,6 @@ QtGroupingProxy::addEmptyGroup( const RowData &data )
 bool
 QtGroupingProxy::removeGroup( const QModelIndex &idx )
 {
-    //TODO:unset this groups value from the childrens grouped column
     beginRemoveRows( idx.parent(), idx.row(), idx.row() );
     m_groupHash.remove( idx.row() );
     m_groupMaps.removeAt( idx.row() );
@@ -700,9 +699,21 @@ QtGroupingProxy::modelRowsRemoved( const QModelIndex &parent, int start, int end
 {
     if( parent == m_rootNode )
     {
-        //rebuild tree, reseting the view
-        //TODO: don't rebuild but remove from
-        buildTree();
+        //do this separate for each row
+        for( int i = start; i <= end; i++ )
+        {
+            foreach( int groupIndex, m_groupHash.keys() )
+            {
+                int rowIndex = m_groupHash[groupIndex].indexOf( i );
+                if( rowIndex == -1 )
+                    continue;
+                QModelIndex proxyParent = index( groupIndex, 0 );
+                beginRemoveRows( proxyParent, rowIndex, rowIndex );
+                m_groupHash[groupIndex].removeAt( rowIndex );
+                endRemoveRows();
+            }
+        }
+
         return;
     }
 

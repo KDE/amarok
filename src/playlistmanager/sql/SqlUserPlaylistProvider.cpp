@@ -108,8 +108,27 @@ SqlUserPlaylistProvider::slotDelete()
     //only one playlist can be selected at this point
     Playlists::SqlPlaylistList playlists = action->data().value<Playlists::SqlPlaylistList>();
 
-    if( playlists.count() > 0 )
-        deleteSqlPlaylists( playlists );
+    if( playlists.count() == 0 )
+        return;
+
+    if( !m_debug )
+    {
+        KDialog dialog;
+        dialog.setCaption( i18n( "Confirm Delete" ) );
+        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+        QLabel label( i18np( "Are you sure you want to delete this playlist?",
+                             "Are you sure you want to delete these %1 playlists?",
+                             playlists.count() )
+                      , &dialog
+                    );
+        //TODO:include a text area with all the names of the playlists
+        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from database." ) );
+        dialog.setMainWidget( &label );
+        if( dialog.exec() != QDialog::Accepted )
+            return;
+    }
+
+    deleteSqlPlaylists( playlists );
 }
 
 void
@@ -246,22 +265,7 @@ SqlUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistList )
 bool
 SqlUserPlaylistProvider::deleteSqlPlaylists( Playlists::SqlPlaylistList playlistList )
 {
-    if( !m_debug )
-    {
-        KDialog dialog;
-        dialog.setCaption( i18n( "Confirm Delete" ) );
-        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-        QLabel label( i18np( "Are you sure you want to delete this playlist?",
-                             "Are you sure you want to delete these %1 playlists?",
-                             playlistList.count() )
-                      , &dialog
-                    );
-        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from database." ) );
-        dialog.setMainWidget( &label );
-        if( dialog.exec() != QDialog::Accepted )
-            return false;
-    }
-
+    //this delete is not confirmed, has to be done by the slot connected to the delete action.
     foreach( Playlists::SqlPlaylistPtr sqlPlaylist, playlistList )
     {
         if( sqlPlaylist )

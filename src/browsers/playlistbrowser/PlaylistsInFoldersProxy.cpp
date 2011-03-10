@@ -23,8 +23,11 @@
 #include "UserPlaylistModel.h"
 #include "playlist/PlaylistModelStack.h"
 
+#include <KDialog>
 #include <KIcon>
 #include <KInputDialog>
+
+#include <QLabel>
 
 PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::LabelColumn )
@@ -120,7 +123,6 @@ PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &pare
         result = true;
         for( int i = row; i < row + count; i++ )
         {
-            //individually remove all children of this group in the source model
             QModelIndex childIdx = mapToSource( index( i, 0, parent ) );
             //set success to false if removeRows returns false
             result = sourceModel()->removeRow( childIdx.row(), QModelIndex() ) ? result : false;
@@ -326,7 +328,21 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
 {
     int childCount = rowCount( groupIdx );
     if( childCount > 0 )
+    {
+        KDialog dialog;
+        dialog.setCaption( i18n( "Confirm Delete" ) );
+        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+        QLabel label( i18n( "Are you sure you want to delete this folder and it's contents?" )
+                      , &dialog
+                    );
+        //TODO:include a text area with all the names of the playlists
+        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete folder." ) );
+        dialog.setMainWidget( &label );
+        if( dialog.exec() != QDialog::Accepted )
+            return;
+
         removeRows( 0, childCount, groupIdx );
+    }
     removeGroup( groupIdx );
 }
 
