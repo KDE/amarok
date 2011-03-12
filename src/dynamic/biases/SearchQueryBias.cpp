@@ -147,8 +147,8 @@ Dynamic::SearchQueryBias::widget( QWidget* parent )
     QLabel *label = new QLabel( i18n("Unique songs") );
     label->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
     label->setBuddy( box );
-    hLayout->addWidget( box );
-    hLayout->addWidget( label );
+    hLayout->addWidget( box, 0 );
+    hLayout->addWidget( label, 1 );
     layout->addLayout( hLayout );
 
     KLineEdit *edit = new KLineEdit( m_filter );

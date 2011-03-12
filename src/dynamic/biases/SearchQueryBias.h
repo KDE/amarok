@@ -37,7 +37,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            SearchQueryBias( QString filter = QString("genre: Rock") );
+            SearchQueryBias( QString filter = QString("genre:Rock") );
 
             virtual void fromXml( QXmlStreamReader *reader );
             virtual void toXml( QXmlStreamWriter *writer ) const;
