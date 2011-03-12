@@ -33,6 +33,12 @@
 #include <solid/block.h>
 #include <solid/storagevolume.h>
 
+#include <kdeversion.h>
+
+#if KDE_IS_VERSION(4,4,99)
+#include <kmountpoint.h>
+#endif
+
 #include <QDir>
 #include <QFile>
 #include <QList>
@@ -50,6 +56,10 @@ MediaDeviceCache::MediaDeviceCache() : QObject()
              this, SLOT( slotAddSolidDevice( const QString & ) ) );
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString & ) ),
              this, SLOT( slotRemoveSolidDevice( const QString & ) ) );
+    connect(&m_timer, SIGNAL(timeout()), this, SLOT(slotTimeout()));
+
+    m_timer.setSingleShot(true);
+    m_timer.start(1000);
 }
 
 MediaDeviceCache::~MediaDeviceCache()
@@ -102,9 +112,11 @@ MediaDeviceCache::refreshCache()
             {
                 m_type[device.udi()] = MediaDeviceCache::SolidVolumeType;
                 m_name[device.udi()] = ssa->filePath();
+                m_accessibility[ device.udi() ] = true;
             }
             else
             {
+                m_accessibility[ device.udi() ] = false;
                 debug() << "Solid device is not accessible, will wait until it is to consider it added.";
             }
         }
@@ -268,6 +280,46 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
     }
     debug() << "Odd, got a deviceRemoved at udi " << udi << " but it did not seem to exist in the first place...";
     emit deviceRemoved( udi );
+}
+
+void MediaDeviceCache::slotTimeout()
+{
+#if KDE_IS_VERSION(4,4,99)
+    KMountPoint::List possibleMountList = KMountPoint::possibleMountPoints();
+    KMountPoint::List currentMountList = KMountPoint::currentMountPoints();
+    QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageAccess );
+
+    for (KMountPoint::List::iterator it = possibleMountList.begin(); it != possibleMountList.end(); ++it) {
+        if ((*it)->mountType() == "nfs" || (*it)->mountType() == "smb") {
+            QString path = (*it)->mountPoint();
+            bool mounted = false;
+            QString udi = QString();
+
+            foreach( const Solid::Device &device, deviceList )
+            {
+                const Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
+                if( ssa && path == ssa->filePath())
+                    udi = device.udi();
+            }
+
+            for (KMountPoint::List::iterator it2 = currentMountList.begin(); it2 != currentMountList.end(); ++it2) {
+                if (((*it2)->mountType() == "nfs" || (*it2)->mountType() == "smb") &&
+                        (*it)->mountPoint() == (*it2)->mountPoint() ) {
+                    mounted = true;
+                    break;
+                }
+            }
+
+            if ( m_accessibility[udi] != mounted ) {
+                m_accessibility[udi] = mounted;
+                slotAccessibilityChanged( mounted, udi);
+            }
+        }
+    }
+#endif
+
+    m_timer.setSingleShot(true);
+    m_timer.start(1000);
 }
 
 void
