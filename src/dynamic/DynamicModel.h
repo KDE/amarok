@@ -28,6 +28,8 @@
 #include <QList>
 #include <QString>
 
+class TestDynamicModel;
+
 namespace Dynamic {
 
 class BiasedPlaylist;
@@ -71,6 +73,10 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         */
         QModelIndex insertPlaylist( int index, Dynamic::DynamicPlaylist* playlist );
 
+        /** Inserts a bias at the given index.
+        */
+        QModelIndex insertBias( int row, const QModelIndex &parentIndex, Dynamic::BiasPtr bias );
+
         Qt::DropActions supportedDropActions() const;
 
         // --- QAbstractItemModel functions ---
@@ -81,12 +87,19 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         QModelIndex parent(const QModelIndex& index) const;
         int rowCount( const QModelIndex& parent = QModelIndex() ) const;
         int columnCount( const QModelIndex& parent = QModelIndex() ) const;
+
+        QStringList mimeTypes() const;
+        QMimeData* mimeData(const QModelIndexList &indexes) const;
+        bool dropMimeData(const QMimeData *data,
+                          Qt::DropAction action,
+                          int row, int column, const QModelIndex &parent);
+
         // ---
 
         /** Returns the index for the bias
             @return Returns an invalid index if the bias is not in the model.
         */
-        QModelIndex index( Dynamic::AbstractBias* bias ) const;
+        QModelIndex index( Dynamic::BiasPtr bias ) const;
 
         /** Returns the index for the playlist
             @return Returns an invalid index if the playlist is not in the model.
@@ -95,6 +108,9 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
 
         void saveCurrentPlaylists();
         void loadCurrentPlaylists();
+
+        /** Returns a representation of the whole model for debugging */
+        QString toString();
 
     signals:
         void activeChanged( int index ); // active row changed
@@ -111,21 +127,27 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
 
     private:
         // two functions to search for parents
-        QModelIndex parent( Dynamic::BiasedPlaylist* list, Dynamic::AbstractBias* bias ) const;
-        QModelIndex parent( Dynamic::AbstractBias* parent, Dynamic::AbstractBias* bias ) const;
+        QModelIndex parent( int row, Dynamic::BiasedPlaylist* list, Dynamic::BiasPtr bias ) const;
+        QModelIndex parent( int row, Dynamic::BiasPtr parent, Dynamic::BiasPtr bias ) const;
+
+        /** Writes the index to the data stream */
+        void serializeIndex( QDataStream *stream, const QModelIndex& index ) const;
+
+        /** Gets an index from the data stream */
+        QModelIndex unserializeIndex( QDataStream *stream ) const;
 
         Dynamic::BiasedPlaylist* cloneList( Dynamic::BiasedPlaylist* list );
-        Dynamic::BiasPtr cloneBias( Dynamic::AbstractBias* bias );
+        Dynamic::BiasPtr cloneBias( Dynamic::BiasPtr bias );
 
         void playlistChanged( Dynamic::DynamicPlaylist* playlist );
-        void biasChanged( Dynamic::AbstractBias* bias );
+        void biasChanged( Dynamic::BiasPtr bias );
 
         void beginRemoveBias( Dynamic::BiasedPlaylist* parent );
-        void beginRemoveBias( Dynamic::AbstractBias* parent, int index );
+        void beginRemoveBias( Dynamic::BiasPtr parent, int index );
         void endRemoveBias();
 
         void beginInsertBias( Dynamic::BiasedPlaylist* parent );
-        void beginInsertBias( Dynamic::AbstractBias* parent, int index );
+        void beginInsertBias( Dynamic::BiasPtr parent, int index );
         void endInsertBias();
 
         void savePlaylists();
@@ -145,6 +167,8 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         friend class Dynamic::DynamicPlaylist;
         friend class Dynamic::BiasedPlaylist;
         friend class Dynamic::AndBias;
+
+        friend class ::TestDynamicModel;
 };
 
 }

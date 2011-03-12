@@ -150,13 +150,13 @@ void
 Dynamic::BiasedPlaylist::biasChanged()
 {
     DEBUG_BLOCK;
-    QMutexLocker locker(&m_bufferMutex);
+    QMutexLocker locker( &m_bufferMutex );
     m_buffer.clear();
 
     emit changed( this );
     bool inModel = DynamicModel::instance()->index( this ).isValid();
     if( inModel )
-        DynamicModel::instance()->biasChanged( m_bias.data() );
+        DynamicModel::instance()->biasChanged( m_bias );
 }
 
 void

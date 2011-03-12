@@ -60,6 +60,9 @@ namespace Dynamic
             AbstractBias();
             virtual ~AbstractBias();
 
+            /** Reads the contensts of this object from an xml stream */
+            virtual void fromXml( QXmlStreamReader *reader );
+
             /** Writes the contents of this object to an xml stream.
                 Only the content is writen and no enclosing tags.
                 This is done to make it mirror the constructor which does not read those
@@ -148,7 +151,10 @@ namespace Dynamic
             */
             virtual void invalidate();
 
-            /** Call this function when this bias should be replaced by a new one. */
+            /** Call this function when this bias should be replaced by a new one.
+                @param newBias The bias that replaces this bias. If you give
+                an empty BiasPrt as argument the bias will be removed.
+            */
             virtual void replace( Dynamic::BiasPtr newBias );
 
         protected:
@@ -165,7 +171,8 @@ namespace Dynamic
             RandomBias( QXmlStreamReader *reader );
             virtual ~RandomBias();
 
-            void toXml( QXmlStreamWriter *writer ) const;
+            virtual void fromXml( QXmlStreamReader *reader );
+            virtual void toXml( QXmlStreamWriter *writer ) const;
 
             static QString sName();
             virtual QString name() const;

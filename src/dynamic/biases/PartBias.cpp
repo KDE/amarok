@@ -391,6 +391,7 @@ void
 Dynamic::PartBias::appendBias( Dynamic::BiasPtr bias )
 {
     m_weights.append( qreal(0.0) );
+    changeBiasWeight( 0, m_weights.at(0) ); // fix the weights to 1.0 again.
     AndBias::appendBias( bias );
 }
 

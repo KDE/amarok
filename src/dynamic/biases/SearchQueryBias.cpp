@@ -73,6 +73,7 @@ Dynamic::SearchQueryBias::SearchQueryBias( QString filter )
 Dynamic::SearchQueryBias::SearchQueryBias( QXmlStreamReader *reader )
     : SimpleMatchBias()
 {
+    DEBUG_BLOCK;
     m_unique = reader->attributes().value( "unique" ).toString().toInt();
 
     while (!reader->atEnd()) {

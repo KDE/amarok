@@ -17,6 +17,7 @@
 #ifndef TESTDYNAMICMODEL_H
 #define TESTDYNAMICMODEL_H
 
+#include <QModelIndex>
 #include <QtTest/QTest>
 
 class TestDynamicModel : public QObject
@@ -32,8 +33,13 @@ private slots:
     void testData();
     void testPlaylistIndex();
     void testSlots();
+    void testSerializeIndex();
+    void testDnD();
     void testSaveActive();
     void testRemoveActive();
+
+private:
+    QModelIndex serializeUnserialize( const QModelIndex& index );
 };
 
 #endif

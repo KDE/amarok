@@ -35,6 +35,8 @@
 #include <QFile>
 #include <QBuffer>
 #include <QByteArray>
+#include <QDataStream>
+#include <QMimeData>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
@@ -111,6 +113,7 @@ Dynamic::DynamicModel::playlistIndex( Dynamic::DynamicPlaylist* playlist ) const
 QModelIndex
 Dynamic::DynamicModel::insertPlaylist( int index, Dynamic::DynamicPlaylist* playlist )
 {
+DEBUG_BLOCK;
     if( !playlist )
         return QModelIndex();
 
@@ -149,15 +152,46 @@ Dynamic::DynamicModel::insertPlaylist( int index, Dynamic::DynamicPlaylist* play
 
     endInsertRows();
 
-    debug() << "insertPlaylist at"<<index<<"count"<<m_playlists.count();
-
     return this->index( index, 0 );
 }
+
+QModelIndex
+Dynamic::DynamicModel::insertBias( int row, const QModelIndex &parentIndex, Dynamic::BiasPtr bias )
+{
+DEBUG_BLOCK;
+    Q_ASSERT( !index( bias ).isValid() ); // the bias is not already in our lists
+
+    QObject* o = static_cast<QObject*>(parentIndex.internalPointer());
+    BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o);
+    AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o);
+
+    debug() << "insert bias" << bias->toString() << "at" << parentIndex << row;
+
+
+    if( parentPlaylist )
+    {
+        // need a new AND bias
+        parentBias = new Dynamic::AndBias();
+        Dynamic::BiasPtr b( parentPlaylist->bias() ); // ensure that the bias does not get freed
+        parentPlaylist->bias()->replace( Dynamic::BiasPtr( parentBias ) );
+        parentBias->appendBias( b );
+        parentBias->appendBias( bias );
+    }
+    else if( parentBias )
+    {
+        parentBias->appendBias( bias );
+        if( row >= 0 )
+            parentBias->moveBias( parentBias->biases().count()-1, row );
+    }
+    return this->index( bias );
+}
+
 
 Qt::DropActions
 Dynamic::DynamicModel::supportedDropActions() const
 {
-    return Qt::CopyAction | Qt::MoveAction;
+    return Qt::MoveAction;
+    // return Qt::CopyAction | Qt::MoveAction;
 }
 
 // ok. the item model stuff is a little bit complicate
@@ -279,13 +313,15 @@ Dynamic::DynamicModel::setData( const QModelIndex& index, const QVariant& value,
 Qt::ItemFlags
 Dynamic::DynamicModel::flags( const QModelIndex& index ) const
 {
+    Qt::ItemFlags defaultFlags = Qt::ItemIsDropEnabled;
+
     if( !index.isValid() )
-        return Qt::NoItemFlags;
+        return defaultFlags;
 
     int row = index.row();
     int column = index.column();
     if( row < 0 || column != 0 )
-        return Qt::NoItemFlags;
+        return defaultFlags;
 
     QObject* o = static_cast<QObject*>(index.internalPointer());
     BiasedPlaylist* indexPlaylist = qobject_cast<BiasedPlaylist*>(o);
@@ -305,7 +341,8 @@ Dynamic::DynamicModel::flags( const QModelIndex& index ) const
             Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled |
             Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
     }
-    return Qt::NoItemFlags;
+
+    return defaultFlags;
 }
 
 QModelIndex
@@ -347,26 +384,26 @@ Dynamic::DynamicModel::index( int row, int column, const QModelIndex& parent ) c
 }
 
 QModelIndex
-Dynamic::DynamicModel::parent( BiasedPlaylist* list, AbstractBias* bias ) const
+Dynamic::DynamicModel::parent( int row, BiasedPlaylist* list, BiasPtr bias ) const
 {
     if( list->bias() == bias )
-        return createIndex( m_playlists.indexOf( list ), 0, list );
-    return parent( list->bias().data(), bias );
+        return createIndex( row, 0, list );
+    return parent( 0, list->bias(), bias );
 }
 
 QModelIndex
-Dynamic::DynamicModel::parent( AbstractBias* parent, AbstractBias* bias ) const
+Dynamic::DynamicModel::parent( int row, BiasPtr parent, BiasPtr bias ) const
 {
-    Dynamic::AndBias* andBias = qobject_cast<Dynamic::AndBias*>(parent);
+    Dynamic::AndBias* andBias = qobject_cast<Dynamic::AndBias*>(parent.data());
     if( !andBias )
         return QModelIndex();
 
     for( int i = 0; i < andBias->biases().count(); i++ )
     {
-        AbstractBias* child = andBias->biases().at( i ).data();
+        Dynamic::BiasPtr child = andBias->biases().at( i );
         if( child == bias )
-            return createIndex( i, 0, andBias );
-        QModelIndex res = this->parent( child, bias );
+            return createIndex( row, 0, andBias );
+        QModelIndex res = this->parent( i, child, bias );
         if( res.isValid() )
             return res;
     }
@@ -379,18 +416,18 @@ Dynamic::DynamicModel::parent(const QModelIndex& index) const
     if( !index.isValid() )
         return QModelIndex();
 
-    QObject* o = static_cast<QObject*>(index.internalPointer());
+    QObject* o = static_cast<QObject*>( index.internalPointer() );
     BiasedPlaylist* indexPlaylist = qobject_cast<BiasedPlaylist*>(o);
-    AbstractBias* indexBias = qobject_cast<AbstractBias*>(o);
+    BiasPtr indexBias( qobject_cast<AbstractBias*>(o) );
 
     if( indexPlaylist )
         return QModelIndex(); // abstract root
     else if( indexBias )
     {
         // search for the parent
-        foreach( DynamicPlaylist* list, m_playlists )
+        for( int i = 0; i < m_playlists.count(); i++ )
         {
-            QModelIndex res = parent( qobject_cast<BiasedPlaylist*>(list), indexBias );
+            QModelIndex res = parent( i, qobject_cast<BiasedPlaylist*>(m_playlists[i]), indexBias );
             if( res.isValid() )
                 return res;
         }
@@ -435,15 +472,124 @@ Dynamic::DynamicModel::columnCount(const QModelIndex & parent) const
     return 1;
 }
 
+QStringList
+Dynamic::DynamicModel::mimeTypes() const
+{
+    QStringList types;
+    types << "application/amarok.biasModel.index";
+    return types;
+}
+
+QMimeData*
+Dynamic::DynamicModel::mimeData(const QModelIndexList &indexes) const
+{
+    // note: we only use the first index
+
+    if( indexes.isEmpty() )
+        return new QMimeData();
+
+    QModelIndex index = indexes.first();
+    if( !index.isValid() )
+        return new QMimeData();
+
+    // store the index in the mime data
+    QByteArray bytes;
+    QDataStream stream( &bytes, QIODevice::WriteOnly );
+    serializeIndex( &stream, index );
+    QMimeData *mimeData = new QMimeData();
+    mimeData->setData("application/amarok.biasModel.index", bytes);
+    return mimeData;
+}
+
+bool
+Dynamic::DynamicModel::dropMimeData(const QMimeData *data,
+                                    Qt::DropAction action,
+                                    int row, int column, const QModelIndex &_parent)
+{
+    QModelIndex parent = _parent;
+
+    if( action == Qt::IgnoreAction )
+        return true;
+
+debug() << "dropMimeData";
+
+    if( data->hasFormat("application/amarok.biasModel.index") )
+    {
+        // get the source index from the mime data
+        QByteArray bytes = data->data("application/amarok.biasModel.index");
+        QDataStream stream( &bytes, QIODevice::ReadOnly );
+        QModelIndex index = unserializeIndex( &stream );
+
+debug() << "dropMimeData at index" << index;
+
+        if( !index.isValid() )
+            return false;
+
+        QObject* o = static_cast<QObject*>(index.internalPointer());
+        BiasedPlaylist* indexPlaylist = qobject_cast<BiasedPlaylist*>(o);
+        BiasPtr indexBias( qobject_cast<Dynamic::AbstractBias*>(o) );
+
+        // in case of moving or inserting a playlist, we
+        // move to the top level
+        if( indexPlaylist )
+        {
+            while( parent.isValid() )
+            {
+                row = parent.row();
+                column = parent.column();
+                parent = parent.parent();
+            }
+        }
+
+debug() << "dropMimeData action" << action;
+
+        // -- insert
+        if( action == Qt::CopyAction )
+        {
+            // -- playlist
+            if( indexPlaylist )
+            {
+                insertPlaylist( row, cloneList( indexPlaylist ) );
+                return true;
+            }
+            // -- bias
+            else if( indexBias )
+            {
+                insertBias( row, parent, cloneBias( indexBias ) );
+                return true;
+            }
+        }
+        else if( action == Qt::MoveAction )
+        {
+            // -- playlist
+            if( indexPlaylist )
+            {
+                insertPlaylist( row, indexPlaylist );
+                return true;
+            }
+            // -- bias
+            else if( indexBias )
+            {
+                indexBias->replace( Dynamic::BiasPtr() );
+                insertBias( row, parent, Dynamic::BiasPtr(indexBias) );
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+
 QModelIndex
-Dynamic::DynamicModel::index( Dynamic::AbstractBias* bias ) const
+Dynamic::DynamicModel::index( Dynamic::BiasPtr bias ) const
 {
     QModelIndex res;
 
     // search for the parent
-    foreach( DynamicPlaylist* list, m_playlists )
+    for( int i = 0; i < m_playlists.count(); i++ )
     {
-        res = parent( qobject_cast<BiasedPlaylist*>(list), bias );
+        res = parent( i, qobject_cast<BiasedPlaylist*>(m_playlists[i]), bias );
         if( res.isValid() )
             break;
     }
@@ -458,12 +604,12 @@ Dynamic::DynamicModel::index( Dynamic::AbstractBias* bias ) const
     // level 1
     if( parentPlaylist )
     {
-        return createIndex( 0, 0, bias );
+        return createIndex( 0, 0, bias.data() );
     }
     // level > 1
     else if( parentBias )
     {
-        return createIndex( parentBias->biases().indexOf( Dynamic::BiasPtr(bias) ), 0, bias );
+        return createIndex( parentBias->biases().indexOf( bias ), 0, bias.data() );
     }
     else
     {
@@ -476,6 +622,7 @@ Dynamic::DynamicModel::index( Dynamic::DynamicPlaylist* playlist ) const
 {
     return createIndex( playlistIndex( playlist ), 0, playlist );
 }
+
 
 void
 Dynamic::DynamicModel::removeAt( const QModelIndex& index )
@@ -541,7 +688,7 @@ Dynamic::DynamicModel::cloneAt( const QModelIndex& index )
 
     QObject* o = static_cast<QObject*>(index.internalPointer());
     BiasedPlaylist* indexPlaylist = qobject_cast<BiasedPlaylist*>(o);
-    AbstractBias* indexBias = qobject_cast<Dynamic::AbstractBias*>(o);
+    BiasPtr indexBias( qobject_cast<Dynamic::AbstractBias*>(o) );
 
     if( indexPlaylist )
     {
@@ -549,29 +696,7 @@ Dynamic::DynamicModel::cloneAt( const QModelIndex& index )
     }
     else if( indexBias )
     {
-        QModelIndex parentIndex = index.parent();
-        qDebug() << "index: "<<index<<"parent index: "<<parentIndex;
-        QObject* o2 = static_cast<QObject*>(parentIndex.internalPointer());
-        BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o2);
-        AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o2);
-
-        Dynamic::BiasPtr clonedBias = cloneBias( indexBias );
-
-        if( parentPlaylist )
-        {
-            Dynamic::BiasPtr b( indexBias ); // ensure that the bias does not get freed
-            // need a new AND bias
-            parentBias = new Dynamic::AndBias();
-            indexBias->replace( Dynamic::BiasPtr( parentBias ) );
-            parentBias->appendBias( b );
-            parentBias->appendBias( clonedBias );
-            return this->index( clonedBias.data() );
-        }
-        else if( parentBias )
-        {
-            parentBias->appendBias( clonedBias );
-            return this->index( clonedBias.data() );
-        }
+        return insertBias( -1, index.parent(), cloneBias( indexBias ) );
     }
 
     return QModelIndex();
@@ -805,6 +930,37 @@ Dynamic::DynamicModel::initPlaylists()
     endResetModel();
 }
 
+void
+Dynamic::DynamicModel::serializeIndex( QDataStream *stream, const QModelIndex& index ) const
+{
+    QList<int> rows;
+    QModelIndex current = index;
+    while( current.isValid() )
+    {
+        rows.prepend( current.row() );
+        current = current.parent();
+    }
+
+    foreach( int row, rows )
+        *stream << row;
+    *stream << -1;
+}
+
+QModelIndex
+Dynamic::DynamicModel::unserializeIndex( QDataStream *stream ) const
+{
+    QModelIndex result;
+    do
+    {
+        int row;
+        *stream >> row;
+        if( row < 0 )
+            break;
+        result = index( row, 0, result );
+    } while( result.isValid() );
+    return result;
+}
+
 Dynamic::BiasedPlaylist*
 Dynamic::DynamicModel::cloneList( Dynamic::BiasedPlaylist* list )
 {
@@ -823,7 +979,7 @@ Dynamic::DynamicModel::cloneList( Dynamic::BiasedPlaylist* list )
 }
 
 Dynamic::BiasPtr
-Dynamic::DynamicModel::cloneBias( Dynamic::AbstractBias* bias )
+Dynamic::DynamicModel::cloneBias( Dynamic::BiasPtr bias )
 {
     QByteArray bytes;
     QBuffer buffer( &bytes, 0 );
@@ -838,7 +994,8 @@ Dynamic::DynamicModel::cloneBias( Dynamic::AbstractBias* bias )
     // and read a new list
     buffer.seek( 0 );
     QXmlStreamReader xmlReader( &buffer );
-    xmlReader.readNext();
+    while( !xmlReader.isStartElement() )
+        xmlReader.readNext();
     return Dynamic::BiasFactory::fromXml( &xmlReader );
 }
 
@@ -851,7 +1008,7 @@ Dynamic::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
 }
 
 void
-Dynamic::DynamicModel::biasChanged( Dynamic::AbstractBias* b )
+Dynamic::DynamicModel::biasChanged( Dynamic::BiasPtr b )
 {
     QModelIndex index = this->index( b );
     emit dataChanged( index, index );
@@ -865,7 +1022,7 @@ Dynamic::DynamicModel::beginRemoveBias( Dynamic::BiasedPlaylist* parent )
 }
 
 void
-Dynamic::DynamicModel::beginRemoveBias( Dynamic::AbstractBias* parent, int index )
+Dynamic::DynamicModel::beginRemoveBias( Dynamic::BiasPtr parent, int index )
 {
     QModelIndex parentIndex = this->index( parent );
     beginRemoveRows( parentIndex, index, index );
@@ -886,7 +1043,7 @@ Dynamic::DynamicModel::beginInsertBias( Dynamic::BiasedPlaylist* parent )
 
 
 void
-Dynamic::DynamicModel::beginInsertBias( Dynamic::AbstractBias* parent, int index )
+Dynamic::DynamicModel::beginInsertBias( Dynamic::BiasPtr parent, int index )
 {
     QModelIndex parentIndex = this->index( parent );
     beginInsertRows( parentIndex, index, index );
@@ -912,4 +1069,33 @@ Dynamic::DynamicModel::loadCurrentPlaylists()
         loadPlaylists( "dynamic.xml" );
 }
 
+
+// --- debug methods
+
+static QString
+biasToString( Dynamic::BiasPtr bias, int level )
+{
+    QString result;
+    result += QString(" ").repeated(level) + bias->toString() + " " + QString::number(ulong(bias.data()), 16) + "\n";
+    if( Dynamic::AndBias* aBias = qobject_cast<Dynamic::AndBias*>(bias.data()) )
+    {
+        foreach( Dynamic::BiasPtr bias2, aBias->biases() )
+            result += biasToString( bias2, level + 1 );
+    }
+    return result;
+}
+
+QString
+Dynamic::DynamicModel::toString()
+{
+    QString result;
+
+    foreach( Dynamic::DynamicPlaylist* playlist, m_playlists )
+    {
+        result += playlist->title() + " " + QString::number(ulong(playlist), 16) + "\n";
+        if( Dynamic::BiasedPlaylist* bPlaylist = qobject_cast<Dynamic::BiasedPlaylist*>(playlist ) )
+            result += biasToString( bPlaylist->bias(), 1 );
+    }
+    return result;
+}
 

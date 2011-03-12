@@ -41,7 +41,7 @@ Dynamic::AbstractBias::AbstractBias()
 
 Dynamic::AbstractBias::~AbstractBias()
 {
-    debug() << "destroying bias" << this;
+    qDebug() << "destroying bias" << this;
 }
 
 void
@@ -394,9 +394,10 @@ Dynamic::AndBias::invalidate()
 void
 Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
 {
-    bool inModel = DynamicModel::instance()->index( this ).isValid();
+    BiasPtr thisPtr( this );
+    bool inModel = DynamicModel::instance()->index( thisPtr ).isValid();
     if( inModel )
-        DynamicModel::instance()->beginInsertBias( this, m_biases.count() );
+        DynamicModel::instance()->beginInsertBias( thisPtr, m_biases.count() );
     m_biases.append( bias );
     if( inModel )
         DynamicModel::instance()->endInsertBias();
@@ -413,7 +414,7 @@ Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
     // also destruct this object.
     // so we give the object creating this bias a chance to increment the refcount
     if( !m_duringConstruction )
-        emit changed( BiasPtr( this ) );
+        emit changed( thisPtr );
 }
 
 void
@@ -445,13 +446,14 @@ void
 Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
 {
     DEBUG_BLOCK;
+    BiasPtr thisPtr( this );
     int index = m_biases.indexOf( oldBias );
     Q_ASSERT( index >= 0 );
 
     disconnect( oldBias.data(), 0, this, 0 );
-    bool inModel = DynamicModel::instance()->index( this ).isValid();
+    bool inModel = DynamicModel::instance()->index( thisPtr ).isValid();
     if( inModel )
-        DynamicModel::instance()->beginRemoveBias( this, index );
+        DynamicModel::instance()->beginRemoveBias( thisPtr, index );
     m_biases.removeAt( index );
     if( inModel )
         DynamicModel::instance()->endRemoveBias();
@@ -467,7 +469,7 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
                  this, SIGNAL( changed( Dynamic::BiasPtr ) ) );
 
         if( inModel )
-            DynamicModel::instance()->beginInsertBias( this, index );
+            DynamicModel::instance()->beginInsertBias( thisPtr, index );
         m_biases.insert( index, newBias );
         if( inModel )
             DynamicModel::instance()->endInsertBias();
@@ -479,16 +481,17 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
 
     if( !m_duringConstruction &&
         !qobject_cast<Dynamic::ReplacementBias*>(oldBias.data()) )
-        emit changed( BiasPtr( this ) );
+        emit changed( thisPtr );
 }
 
 void
 Dynamic::AndBias::biasChanged( Dynamic::BiasPtr bias )
 {
-    emit changed( BiasPtr( this ) );
-    bool inModel = DynamicModel::instance()->index( this ).isValid();
+    BiasPtr thisPtr( this );
+    emit changed( thisPtr );
+    bool inModel = DynamicModel::instance()->index( thisPtr ).isValid();
     if( inModel )
-        DynamicModel::instance()->biasChanged( bias.data() );
+        DynamicModel::instance()->biasChanged( bias );
 }
 
 // -------- OrBias ------

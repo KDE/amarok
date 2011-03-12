@@ -23,6 +23,8 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
+#include <QByteArray>
+#include <QDataStream>
 #include <QDebug>
 
 #include <QSignalSpy>
@@ -104,7 +106,7 @@ TestDynamicModel::testPlaylistIndex()
     // -- albumplay playlist with bias structure
     playlistIndex = model->index( 2, 0 );
     biasIndex = model->index( 0, 0, playlistIndex );
-    QModelIndex subBiasIndex = model->index( 0, 0, biasIndex );
+    QModelIndex subBiasIndex = model->index( 1, 0, biasIndex );
 
     QCOMPARE( model->rowCount( playlistIndex ), 1 );
     QCOMPARE( model->rowCount( biasIndex ), 2 );
@@ -122,11 +124,12 @@ TestDynamicModel::testPlaylistIndex()
 
     Dynamic::BiasPtr bias = qobject_cast<Dynamic::BiasedPlaylist*>(playlist)->bias();
     biasIndex = model->index( 0, 0, playlistIndex );
-    QCOMPARE( model->index( bias.data() ), biasIndex );
+    qDebug() << model->index( bias ) << "=" << biasIndex;
+    QCOMPARE( model->index( bias ), biasIndex );
 
     Dynamic::BiasPtr subBias = qobject_cast<Dynamic::AndBias*>(bias.data())->biases().at(0);
     subBiasIndex = model->index( 0, 0, biasIndex );
-    QCOMPARE( model->index( subBias.data() ), subBiasIndex );
+    QCOMPARE( model->index( subBias ), subBiasIndex );
 }
 
 void
@@ -175,6 +178,7 @@ TestDynamicModel::testSlots()
     QCOMPARE( spy1.count(), 1 );
     QCOMPARE( spy3.count(), 0 );
     args1 = spy1.takeFirst();
+    QCOMPARE( args1.count(), 3 );
     QVERIFY( args1.value(0).canConvert<QModelIndex>() );
     QCOMPARE( args1.value(0).value<QModelIndex>(), biasIndex );
     QCOMPARE( args1.value(1).toInt(), 0 );
@@ -194,7 +198,6 @@ TestDynamicModel::testSlots()
 
     QModelIndex resultIndex = model->cloneAt(subBiasIndex);
     QCOMPARE( resultIndex.row(), 1 );
-    qDebug() << "resultIndex" << resultIndex.parent() <<"should be"<<biasIndex;
     QCOMPARE( resultIndex.parent(), biasIndex );
 
     QCOMPARE( spy3.count(), 1 );
@@ -249,6 +252,80 @@ TestDynamicModel::testSlots()
     QCOMPARE( args1.value(2).toInt(), 4 );
     QCOMPARE( spy4.count(), 1 );
     spy4.takeFirst();
+}
+
+QModelIndex
+TestDynamicModel::serializeUnserialize( const QModelIndex& index )
+{
+    Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
+
+    QByteArray bytes;
+    QDataStream stream( &bytes, QIODevice::WriteOnly );
+    model->serializeIndex( &stream, index );
+
+    QDataStream stream2( &bytes, QIODevice::ReadOnly );
+    return model->unserializeIndex( &stream2 );
+}
+
+void
+TestDynamicModel::testSerializeIndex()
+{
+    Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
+
+    // load from the empty directory
+    model->loadCurrentPlaylists();
+
+    QModelIndex playlistIndex = model->index( 2, 0 );
+    QModelIndex biasIndex = model->index( 0, 0, playlistIndex );
+    QModelIndex subBiasIndex = model->index( 0, 0, biasIndex );
+
+    QCOMPARE( QModelIndex(), serializeUnserialize( QModelIndex() ) );
+    QCOMPARE( biasIndex, serializeUnserialize( biasIndex ) );
+    QCOMPARE( subBiasIndex, serializeUnserialize( subBiasIndex ) );
+}
+
+void
+TestDynamicModel::testDnD()
+{
+    Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
+
+    // load from the empty directory
+    model->loadCurrentPlaylists();
+
+    // -- copy a playlist
+    QModelIndex playlistIndex = model->index( 2, 0 );
+    QModelIndexList indexes;
+    indexes << playlistIndex;
+    int oldRowCount = model->rowCount();
+    QString oldName = model->data( playlistIndex ).toString();
+    QMimeData* data = model->mimeData( indexes );
+    QVERIFY( model->dropMimeData( data, Qt::CopyAction, 0, 0, QModelIndex() ) );
+
+    QCOMPARE( model->rowCount(), oldRowCount + 1 );
+    playlistIndex = model->index( 0, 0 );
+    QCOMPARE( oldName, model->data( playlistIndex ).toString() );
+    delete data;
+
+    // -- move a playlist (to the end)
+    playlistIndex = model->index( 0, 0 );
+    indexes.clear();
+    indexes << playlistIndex;
+
+    oldRowCount = model->rowCount();
+    oldName = model->data( playlistIndex ).toString();
+    data = model->mimeData( indexes );
+    QVERIFY( model->dropMimeData( data, Qt::MoveAction, oldRowCount, 0, QModelIndex() ) );
+
+    QCOMPARE( model->rowCount(), oldRowCount );
+    playlistIndex = model->index( oldRowCount - 1, 0 );
+    QCOMPARE( oldName, model->data( playlistIndex ).toString() );
+    delete data;
+
+
+
+    // -- copy a bias
+    QModelIndex biasIndex = model->index( 0, 0, playlistIndex );
+    QModelIndex subBiasIndex = model->index( 0, 0, biasIndex );
 
 }
 
