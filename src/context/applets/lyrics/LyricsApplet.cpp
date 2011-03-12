@@ -60,6 +60,7 @@ public:
         , hasLyrics( false )
         , showBrowser( false )
         , showSuggestions( false )
+        , isShowingUnsavedWarning( false )
         , q_ptr( parent ) {}
     ~LyricsAppletPrivate() {}
 
@@ -104,6 +105,7 @@ public:
     bool hasLyrics;
     bool showBrowser;
     bool showSuggestions;
+    bool isShowingUnsavedWarning;
 
 private:
     LyricsApplet *const q_ptr;
@@ -202,6 +204,8 @@ LyricsAppletPrivate::showUnsavedChangesWarning( Meta::TrackPtr newTrack )
     // Since the applet is now blocked the user can not enable this again.
     // Thus we can make sure that we won't overwrite modifiedTrack.
     setEditing( false );
+
+    isShowingUnsavedWarning = false;
 }
 
 void LyricsAppletPrivate::_refetchMessageButtonPressed( const Plasma::MessageButton button )
@@ -355,10 +359,11 @@ LyricsAppletPrivate::_trackDataChanged( Meta::TrackPtr track )
     // If the lyrics currently shown in the browser (which
     // additionally is in edit mode) are different from the
     // lyrics of the track we have to show a warning.
-    if( currentTrack &&
-        currentTrack->cachedLyrics() != browser->lyrics() &&
-        !browser->isReadOnly() )
+    if( !isShowingUnsavedWarning && currentTrack &&
+        (currentTrack->cachedLyrics() != browser->lyrics()) &&
+        !browser->isReadOnly()  )
     {
+        isShowingUnsavedWarning = true;
         showUnsavedChangesWarning( track );
     }
 
