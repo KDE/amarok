@@ -50,11 +50,6 @@ Dynamic::BiasPtr
 Dynamic::PartBiasFactory::createBias()
 { return Dynamic::BiasPtr( new Dynamic::PartBias() ); }
 
-Dynamic::BiasPtr
-Dynamic::PartBiasFactory::createBias( QXmlStreamReader *reader )
-{ return Dynamic::BiasPtr( new Dynamic::PartBias( reader ) ); }
-
-
 
 
 /* Note:
@@ -224,20 +219,14 @@ class MatchState
 Dynamic::PartBias::PartBias()
     : AndBias()
 {
-    m_duringConstruction = true;
-
     // add weights for already existing biases
     for( int i = 0; i < biases().count(); i++ )
         m_weights.append( 1.0 / biases().count() );
-
-    m_duringConstruction = false;
 }
 
-Dynamic::PartBias::PartBias( QXmlStreamReader *reader )
-    : AndBias()
+void
+Dynamic::PartBias::fromXml( QXmlStreamReader *reader )
 {
-    m_duringConstruction = true;
-
     while (!reader->atEnd()) {
         reader->readNext();
 
@@ -261,8 +250,6 @@ Dynamic::PartBias::PartBias( QXmlStreamReader *reader )
             break;
         }
     }
-
-    m_duringConstruction = false;
 }
 
 void
@@ -465,8 +452,7 @@ Dynamic::PartBias::changeBiasWeight( int biasNum, qreal value )
         debug() << "Weight"<<i<<":"<<m_weights[i];
 
     emit weightsChanged();
-    if( !m_duringConstruction )
-        emit changed( BiasPtr( this ) );
+    emit changed( BiasPtr( this ) );
 }
 
 void

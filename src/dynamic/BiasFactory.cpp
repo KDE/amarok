@@ -37,6 +37,15 @@
 #include <QLabel>
 #include <QFormLayout>
 
+
+Dynamic::BiasPtr
+Dynamic::AbstractBiasFactory::createFromXml( QXmlStreamReader *reader )
+{
+    Dynamic::BiasPtr bias( createBias() );
+    bias->fromXml( reader );
+    return bias;
+}
+
 class RandomBiasFactory : public Dynamic::AbstractBiasFactory
 {
     QString i18nName() const
@@ -52,9 +61,6 @@ class RandomBiasFactory : public Dynamic::AbstractBiasFactory
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::RandomBias() ); }
-
-    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
-    { return Dynamic::BiasPtr( new Dynamic::RandomBias( reader ) ); }
 };
 
 
@@ -74,9 +80,6 @@ class UniqueBiasFactory : public Dynamic::AbstractBiasFactory
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::UniqueBias() ); }
-
-    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
-    { return Dynamic::BiasPtr( new Dynamic::UniqueBias( reader ) ); }
 };
 
 
@@ -95,9 +98,6 @@ class NotBiasFactory : public Dynamic::AbstractBiasFactory
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::NotBias() ); }
-
-    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
-    { return Dynamic::BiasPtr( new Dynamic::NotBias( reader ) ); }
 };
 
 
@@ -116,9 +116,6 @@ class AndBiasFactory : public Dynamic::AbstractBiasFactory
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::AndBias() ); }
-
-    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
-    { return Dynamic::BiasPtr( new Dynamic::AndBias( reader ) ); }
 };
 
 
@@ -137,9 +134,6 @@ class OrBiasFactory : public Dynamic::AbstractBiasFactory
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::OrBias() ); }
-
-    Dynamic::BiasPtr createBias( QXmlStreamReader *reader )
-    { return Dynamic::BiasPtr( new Dynamic::OrBias( reader ) ); }
 };
 
 Dynamic::BiasFactory* Dynamic::BiasFactory::s_instance = 0;
@@ -245,7 +239,7 @@ Dynamic::ReplacementBias::factoryChanged()
             // -- replace myself with the new bias
             QXmlStreamReader reader( m_html );
 
-            Dynamic::BiasPtr newBias( factory->createBias( &reader ) );
+            Dynamic::BiasPtr newBias( factory->createFromXml( &reader ) );
             replace( newBias );
             return;
         }
@@ -268,7 +262,7 @@ Dynamic::BiasFactory::fromXml( QXmlStreamReader *reader )
     foreach( Dynamic::AbstractBiasFactory* fac, s_biasFactories )
     {
         if( name == fac->name() )
-            return fac->createBias( reader );
+            return fac->createFromXml( reader );
     }
     return Dynamic::BiasPtr( new ReplacementBias( name.toString(), reader ) );
 }

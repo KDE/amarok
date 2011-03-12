@@ -59,11 +59,6 @@ Dynamic::BiasPtr
 Dynamic::EchoNestBiasFactory::createBias()
 { return Dynamic::BiasPtr( new Dynamic::EchoNestBias() ); }
 
-Dynamic::BiasPtr
-Dynamic::EchoNestBiasFactory:: createBias( QXmlStreamReader *reader )
-{ return Dynamic::BiasPtr( new Dynamic::EchoNestBias( reader ) ); }
-
-
 
 // ----- EchoNestBias --------
 
@@ -74,10 +69,13 @@ Dynamic::EchoNestBias::EchoNestBias()
     , m_mutex( QMutex::Recursive )
 { }
 
-Dynamic::EchoNestBias::EchoNestBias( QXmlStreamReader *reader )
-    : SimpleMatchBias()
-    , m_artistSuggestedQuery( 0 )
-    , m_match( PreviousTrack )
+Dynamic::EchoNestBias::~EchoNestBias()
+{
+    // TODO: kill all running queries
+}
+
+void
+Dynamic::EchoNestBias::fromXml( QXmlStreamReader *reader )
 {
     while (!reader->atEnd()) {
         reader->readNext();
@@ -98,11 +96,6 @@ Dynamic::EchoNestBias::EchoNestBias( QXmlStreamReader *reader )
             break;
         }
     }
-}
-
-Dynamic::EchoNestBias::~EchoNestBias()
-{
-    // TODO: kill all running queries
 }
 
 void

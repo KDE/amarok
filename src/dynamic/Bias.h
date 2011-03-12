@@ -168,11 +168,7 @@ namespace Dynamic
 
         public:
             RandomBias();
-            RandomBias( QXmlStreamReader *reader );
             virtual ~RandomBias();
-
-            virtual void fromXml( QXmlStreamReader *reader );
-            virtual void toXml( QXmlStreamWriter *writer ) const;
 
             static QString sName();
             virtual QString name() const;
@@ -201,10 +197,7 @@ namespace Dynamic
 
         public:
             UniqueBias();
-            UniqueBias( QXmlStreamReader *reader );
             virtual ~UniqueBias();
-
-            void toXml( QXmlStreamWriter *writer ) const;
 
             static QString sName();
             virtual QString name() const;
@@ -237,10 +230,10 @@ namespace Dynamic
                 @param empty If true, then the newly created bias will not have a set of example sub-biases.
             */
             AndBias();
-            AndBias( QXmlStreamReader *reader );
             virtual ~AndBias();
 
-            void toXml( QXmlStreamWriter *writer ) const;
+            virtual void fromXml( QXmlStreamReader *reader );
+            virtual void toXml( QXmlStreamWriter *writer ) const;
 
             static QString sName();
             virtual QString name() const;
@@ -280,7 +273,6 @@ namespace Dynamic
             virtual void biasChanged( Dynamic::BiasPtr bias );
 
         protected:
-            bool m_duringConstruction; // protect against accidentially freeing this bias by creating a BiasPtr
             BiasList m_biases;
 
             mutable TrackSet m_tracks;
@@ -296,7 +288,6 @@ namespace Dynamic
 
         public:
             OrBias();
-            OrBias( QXmlStreamReader *reader );
 
             static QString sName();
             virtual QString name() const;
@@ -326,7 +317,6 @@ namespace Dynamic
 
         public:
             NotBias();
-            NotBias( QXmlStreamReader *reader );
 
             static QString sName();
             virtual QString name() const;

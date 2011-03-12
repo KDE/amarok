@@ -54,10 +54,6 @@ Dynamic::BiasPtr
 Dynamic::TagMatchBiasFactory::createBias()
 { return Dynamic::BiasPtr( new Dynamic::TagMatchBias() ); }
 
-Dynamic::BiasPtr
-Dynamic::TagMatchBiasFactory:: createBias( QXmlStreamReader *reader )
-{ return Dynamic::BiasPtr( new Dynamic::TagMatchBias( reader ) ); }
-
 
 // ----- SimpleMatchBias --------
 
@@ -131,8 +127,8 @@ Dynamic::TagMatchBias::TagMatchBias()
     : SimpleMatchBias()
 { }
 
-Dynamic::TagMatchBias::TagMatchBias( QXmlStreamReader *reader )
-    : SimpleMatchBias()
+void
+Dynamic::TagMatchBias::fromXml( QXmlStreamReader *reader )
 {
     while (!reader->atEnd()) {
         reader->readNext();

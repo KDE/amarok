@@ -38,9 +38,9 @@ namespace Dynamic
 
         public:
             SearchQueryBias( QString filter = QString("genre: Rock") );
-            SearchQueryBias( QXmlStreamReader *reader );
 
-            void toXml( QXmlStreamWriter *writer ) const;
+            virtual void fromXml( QXmlStreamReader *reader );
+            virtual void toXml( QXmlStreamWriter *writer ) const;
 
             static QString sName();
             virtual QString name() const;
@@ -87,7 +87,6 @@ namespace Dynamic
             virtual QString name() const;
             virtual QString i18nDescription() const;
             virtual BiasPtr createBias();
-            virtual BiasPtr createBias( QXmlStreamReader *reader );
     };
 
 }

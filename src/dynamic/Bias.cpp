@@ -41,8 +41,15 @@ Dynamic::AbstractBias::AbstractBias()
 
 Dynamic::AbstractBias::~AbstractBias()
 {
-    qDebug() << "destroying bias" << this;
+    // debug() << "destroying bias" << this;
 }
+
+void
+Dynamic::AbstractBias::fromXml( QXmlStreamReader *reader )
+{
+    reader->skipCurrentElement();
+}
+
 
 void
 Dynamic::AbstractBias::toXml( QXmlStreamWriter *writer ) const
@@ -111,19 +118,8 @@ Dynamic::AbstractBias::energy( const Meta::TrackList& playlist, int contextCount
 Dynamic::RandomBias::RandomBias()
 { }
 
-Dynamic::RandomBias::RandomBias( QXmlStreamReader *reader )
-{
-    reader->skipCurrentElement();
-}
-
 Dynamic::RandomBias::~RandomBias()
 { }
-
-void
-Dynamic::RandomBias::toXml( QXmlStreamWriter *writer ) const
-{
-    Q_UNUSED( writer );
-}
 
 QString
 Dynamic::RandomBias::sName()
@@ -185,19 +181,8 @@ Dynamic::RandomBias::energy( const Meta::TrackList& playlist, int contextCount )
 Dynamic::UniqueBias::UniqueBias()
 { }
 
-Dynamic::UniqueBias::UniqueBias( QXmlStreamReader *reader )
-{
-    reader->skipCurrentElement();
-}
-
 Dynamic::UniqueBias::~UniqueBias()
 { }
-
-void
-Dynamic::UniqueBias::toXml( QXmlStreamWriter *writer ) const
-{
-    Q_UNUSED( writer );
-}
 
 QString
 Dynamic::UniqueBias::sName()
@@ -258,8 +243,11 @@ Dynamic::UniqueBias::trackMatches( int position,
 Dynamic::AndBias::AndBias()
 { }
 
-Dynamic::AndBias::AndBias( QXmlStreamReader *reader )
-    : m_duringConstruction( true )
+Dynamic::AndBias::~AndBias()
+{ }
+
+void
+Dynamic::AndBias::fromXml( QXmlStreamReader *reader )
 {
     while (!reader->atEnd()) {
         reader->readNext();
@@ -282,12 +270,7 @@ Dynamic::AndBias::AndBias( QXmlStreamReader *reader )
             break;
         }
     }
-
-    m_duringConstruction = false;
 }
-
-Dynamic::AndBias::~AndBias()
-{ }
 
 void
 Dynamic::AndBias::toXml( QXmlStreamWriter *writer ) const
@@ -413,8 +396,7 @@ Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
     // creating a shared pointer and destructing it just afterwards would
     // also destruct this object.
     // so we give the object creating this bias a chance to increment the refcount
-    if( !m_duringConstruction )
-        emit changed( thisPtr );
+    emit changed( thisPtr );
 }
 
 void
@@ -423,9 +405,7 @@ Dynamic::AndBias::moveBias( int from, int to )
     // TODO: emit model changes
     m_biases.insert( to, m_biases.takeAt( from ) );
     emit biasMoved( from, to );
-
-    if( !m_duringConstruction )
-        emit changed( BiasPtr( this ) );
+    emit changed( BiasPtr( this ) );
 }
 
 
@@ -479,9 +459,7 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
         emit biasMoved( m_biases.count()-1, index );
     }
 
-    if( !m_duringConstruction &&
-        !qobject_cast<Dynamic::ReplacementBias*>(oldBias.data()) )
-        emit changed( thisPtr );
+    emit changed( thisPtr );
 }
 
 void
@@ -498,10 +476,6 @@ Dynamic::AndBias::biasChanged( Dynamic::BiasPtr bias )
 
 Dynamic::OrBias::OrBias()
     : AndBias()
-{ }
-
-Dynamic::OrBias::OrBias( QXmlStreamReader *reader )
-    : AndBias( reader )
 { }
 
 QString
@@ -587,10 +561,6 @@ Dynamic::OrBias::resultReceived( const Dynamic::TrackSet &tracks )
 
 Dynamic::NotBias::NotBias()
     : OrBias()
-{ }
-
-Dynamic::NotBias::NotBias( QXmlStreamReader *reader )
-    : OrBias( reader )
 { }
 
 QString

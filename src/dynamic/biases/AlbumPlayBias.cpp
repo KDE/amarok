@@ -50,18 +50,14 @@ Dynamic::BiasPtr
 Dynamic::AlbumPlayBiasFactory::createBias()
 { return Dynamic::BiasPtr( new Dynamic::AlbumPlayBias() ); }
 
-Dynamic::BiasPtr
-Dynamic::AlbumPlayBiasFactory::createBias( QXmlStreamReader *reader )
-{ return Dynamic::BiasPtr( new Dynamic::AlbumPlayBias( reader ) ); }
-
-
 
 
 
 Dynamic::AlbumPlayBias::AlbumPlayBias()
 { }
 
-Dynamic::AlbumPlayBias::AlbumPlayBias( QXmlStreamReader *reader )
+void
+Dynamic::AlbumPlayBias::fromXml( QXmlStreamReader *reader )
 {
     while (!reader->atEnd()) {
         reader->readNext();

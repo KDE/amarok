@@ -39,8 +39,8 @@ namespace Dynamic
                 @param empty If true, then the newly created bias will not have a set of example sub-biases.
             */
             PartBias();
-            PartBias( QXmlStreamReader *reader );
 
+            virtual void fromXml( QXmlStreamReader *reader );
             virtual void toXml( QXmlStreamWriter *writer ) const;
 
             static QString sName();
@@ -96,7 +96,6 @@ namespace Dynamic
             virtual QString name() const;
             virtual QString i18nDescription() const;
             virtual BiasPtr createBias();
-            virtual BiasPtr createBias( QXmlStreamReader *reader );
     };
 
 }

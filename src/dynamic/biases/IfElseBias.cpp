@@ -48,24 +48,12 @@ Dynamic::BiasPtr
 Dynamic::IfElseBiasFactory::createBias()
 { return Dynamic::BiasPtr( new Dynamic::IfElseBias() ); }
 
-Dynamic::BiasPtr
-Dynamic::IfElseBiasFactory::createBias( QXmlStreamReader *reader )
-{ return Dynamic::BiasPtr( new Dynamic::IfElseBias( reader ) ); }
+
 
 
 Dynamic::IfElseBias::IfElseBias()
     : OrBias()
 { }
-
-Dynamic::IfElseBias::IfElseBias( QXmlStreamReader *reader )
-    : OrBias( reader )
-{ }
-
-void
-Dynamic::IfElseBias::toXml( QXmlStreamWriter *writer ) const
-{
-    OrBias::toXml( writer );
-}
 
 QString
 Dynamic::IfElseBias::sName()

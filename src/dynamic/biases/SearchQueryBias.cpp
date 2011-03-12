@@ -57,11 +57,6 @@ Dynamic::BiasPtr
 Dynamic::SearchQueryBiasFactory::createBias()
 { return Dynamic::BiasPtr( new Dynamic::SearchQueryBias() ); }
 
-Dynamic::BiasPtr
-Dynamic::SearchQueryBiasFactory:: createBias( QXmlStreamReader *reader )
-{ return Dynamic::BiasPtr( new Dynamic::SearchQueryBias( reader ) ); }
-
-
 // ----- SearchQueryBias --------
 
 Dynamic::SearchQueryBias::SearchQueryBias( QString filter )
@@ -70,8 +65,8 @@ Dynamic::SearchQueryBias::SearchQueryBias( QString filter )
     , m_filter( filter )
 { }
 
-Dynamic::SearchQueryBias::SearchQueryBias( QXmlStreamReader *reader )
-    : SimpleMatchBias()
+void
+Dynamic::SearchQueryBias::fromXml( QXmlStreamReader *reader )
 {
     DEBUG_BLOCK;
     m_unique = reader->attributes().value( "unique" ).toString().toInt();
@@ -95,67 +90,6 @@ Dynamic::SearchQueryBias::SearchQueryBias( QXmlStreamReader *reader )
             break;
         }
     }
-}
-
-Dynamic::TrackSet
-Dynamic::SearchQueryBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist,
-                                       int contextCount,
-                                       Dynamic::TrackCollectionPtr universe ) const
-{
-    m_existingTracks.clear();
-    if( m_unique )
-    {
-        for( int i = 0; i < position; i++ )
-            m_existingTracks.append( playlist.at(i)->uidUrl() );
-    }
-
-    if( m_tracksValid )
-    {
-        Dynamic::TrackSet tracks( m_tracks );
-        tracks.subtract( m_existingTracks );
-        return tracks;
-    }
-    else
-        return Dynamic::SimpleMatchBias::matchingTracks( position,
-                                                         playlist,
-                                                         contextCount,
-                                                         universe );
-}
-
-void
-Dynamic::SearchQueryBias::updateFinished()
-{
-    m_tracksValid = true;
-    m_qm.reset();
-
-    if( m_unique && !m_existingTracks.isEmpty() )
-    {
-        Dynamic::TrackSet tracks( m_tracks );
-        tracks.subtract( m_existingTracks );
-        emit resultReady( tracks );
-    }
-    else
-        emit resultReady( m_tracks );
-}
-
-bool
-Dynamic::SearchQueryBias::trackMatches( int position,
-                                        const Meta::TrackList& playlist,
-                                        int contextCount ) const
-{
-    Q_UNUSED( contextCount );
-
-    if( m_unique )
-    {
-        for( int i = 0; i < position; i++ )
-            if( playlist.at( i ) == playlist.at( position ) )
-                return false;
-    }
-
-    return Dynamic::SimpleMatchBias::trackMatches( position,
-                                                   playlist,
-                                                   contextCount );
 }
 
 void
@@ -228,6 +162,68 @@ Dynamic::SearchQueryBias::widget( QWidget* parent )
 
     return widget;
 }
+
+Dynamic::TrackSet
+Dynamic::SearchQueryBias::matchingTracks( int position,
+                                       const Meta::TrackList& playlist,
+                                       int contextCount,
+                                       Dynamic::TrackCollectionPtr universe ) const
+{
+    m_existingTracks.clear();
+    if( m_unique )
+    {
+        for( int i = 0; i < position; i++ )
+            m_existingTracks.append( playlist.at(i)->uidUrl() );
+    }
+
+    if( m_tracksValid )
+    {
+        Dynamic::TrackSet tracks( m_tracks );
+        tracks.subtract( m_existingTracks );
+        return tracks;
+    }
+    else
+        return Dynamic::SimpleMatchBias::matchingTracks( position,
+                                                         playlist,
+                                                         contextCount,
+                                                         universe );
+}
+
+void
+Dynamic::SearchQueryBias::updateFinished()
+{
+    m_tracksValid = true;
+    m_qm.reset();
+
+    if( m_unique && !m_existingTracks.isEmpty() )
+    {
+        Dynamic::TrackSet tracks( m_tracks );
+        tracks.subtract( m_existingTracks );
+        emit resultReady( tracks );
+    }
+    else
+        emit resultReady( m_tracks );
+}
+
+bool
+Dynamic::SearchQueryBias::trackMatches( int position,
+                                        const Meta::TrackList& playlist,
+                                        int contextCount ) const
+{
+    Q_UNUSED( contextCount );
+
+    if( m_unique )
+    {
+        for( int i = 0; i < position; i++ )
+            if( playlist.at( i ) == playlist.at( position ) )
+                return false;
+    }
+
+    return Dynamic::SimpleMatchBias::trackMatches( position,
+                                                   playlist,
+                                                   contextCount );
+}
+
 
 bool
 Dynamic::SearchQueryBias::unique() const

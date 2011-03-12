@@ -57,10 +57,6 @@ Dynamic::BiasPtr
 Dynamic::QuizPlayBiasFactory::createBias()
 { return Dynamic::BiasPtr( new Dynamic::QuizPlayBias() ); }
 
-Dynamic::BiasPtr
-Dynamic::QuizPlayBiasFactory::createBias( QXmlStreamReader *reader )
-{ return Dynamic::BiasPtr( new Dynamic::QuizPlayBias( reader ) ); }
-
 
 // Note: this whole bias does not work correctly for right-to-left languages.
 
@@ -70,9 +66,8 @@ Dynamic::QuizPlayBias::QuizPlayBias()
     , m_follow( TitleToTitle )
 { }
 
-Dynamic::QuizPlayBias::QuizPlayBias( QXmlStreamReader *reader )
-    : SimpleMatchBias()
-    , m_follow( TitleToTitle )
+void
+Dynamic::QuizPlayBias::fromXml( QXmlStreamReader *reader )
 {
     while (!reader->atEnd()) {
         reader->readNext();

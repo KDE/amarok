@@ -92,7 +92,7 @@ namespace Dynamic
 
             /** Creates a new custom bias from xml data
              */
-            virtual BiasPtr createBias( QXmlStreamReader *reader ) = 0;
+            virtual BiasPtr createFromXml( QXmlStreamReader *reader );
     };
 
     class AMAROK_EXPORT BiasFactory : public QObject

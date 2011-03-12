@@ -60,10 +60,6 @@ Dynamic::BiasPtr
 Dynamic::LastFmBiasFactory::createBias()
 { return Dynamic::BiasPtr( new Dynamic::LastFmBias() ); }
 
-Dynamic::BiasPtr
-Dynamic::LastFmBiasFactory:: createBias( QXmlStreamReader *reader )
-{ return Dynamic::BiasPtr( new Dynamic::LastFmBias( reader ) ); }
-
 
 
 // ----- LastFmBias --------
@@ -78,12 +74,13 @@ Dynamic::LastFmBias::LastFmBias()
     loadFromFile();
 }
 
-Dynamic::LastFmBias::LastFmBias( QXmlStreamReader *reader )
-    : SimpleMatchBias()
-    , m_artistQuery( 0 )
-    , m_trackQuery( 0 )
-    , m_match( SimilarArtist )
-    , m_mutex( QMutex::Recursive )
+Dynamic::LastFmBias::~LastFmBias()
+{
+    // TODO: kill all running queries
+}
+
+void
+Dynamic::LastFmBias::fromXml( QXmlStreamReader *reader )
 {
     loadFromFile();
     while (!reader->atEnd()) {
@@ -106,12 +103,6 @@ Dynamic::LastFmBias::LastFmBias( QXmlStreamReader *reader )
         }
     }
 }
-
-Dynamic::LastFmBias::~LastFmBias()
-{
-    // TODO: kill all running queries
-}
-
 
 void
 Dynamic::LastFmBias::toXml( QXmlStreamWriter *writer ) const

@@ -62,11 +62,6 @@ Dynamic::BiasPtr
 Dynamic::WeeklyTopBiasFactory::createBias()
 { return Dynamic::BiasPtr( new Dynamic::WeeklyTopBias() ); }
 
-Dynamic::BiasPtr
-Dynamic::WeeklyTopBiasFactory:: createBias( QXmlStreamReader *reader )
-{ return Dynamic::BiasPtr( new Dynamic::WeeklyTopBias( reader ) ); }
-
-
 
 // ----- WeeklyTopBias --------
 
@@ -80,9 +75,12 @@ Dynamic::WeeklyTopBias::WeeklyTopBias()
     loadFromFile();
 }
 
-Dynamic::WeeklyTopBias::WeeklyTopBias( QXmlStreamReader *reader )
-    : SimpleMatchBias()
-    , m_weeklyTimesJob( 0 )
+Dynamic::WeeklyTopBias::~WeeklyTopBias()
+{ }
+
+
+void
+Dynamic::WeeklyTopBias::fromXml( QXmlStreamReader *reader )
 {
     loadFromFile();
 
@@ -107,10 +105,6 @@ Dynamic::WeeklyTopBias::WeeklyTopBias( QXmlStreamReader *reader )
             break;
         }
     }
-}
-
-Dynamic::WeeklyTopBias::~WeeklyTopBias()
-{
 }
 
 void
