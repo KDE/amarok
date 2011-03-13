@@ -134,6 +134,7 @@ CurrentEngine::stopped()
     {
         removeAllData( "current" );
         setData( "current", "notrack", i18n( "No track playing") );
+        m_currentTrack.clear();
     }
 
     if( m_requested.value( QLatin1String("albums") ) )
