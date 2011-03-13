@@ -137,6 +137,7 @@ void LyricsEngine::update()
     {
         debug() << "nothing changed:" << lyrics.title;
         newLyrics( lyrics );
+        m_isUpdateInProgress = false;
         return;
     }
 
