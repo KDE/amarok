@@ -369,7 +369,7 @@ TagDialog::accept() //SLOT
 inline void
 TagDialog::openPressed() //SLOT
 {
-    new KRun( m_path, this );
+    new KRun( QFileInfo( m_path ).dir().absolutePath(), this );
 }
 
 
