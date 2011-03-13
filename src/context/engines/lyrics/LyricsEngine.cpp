@@ -33,12 +33,13 @@ using namespace Context;
 LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
     , LyricsObserver( LyricsManager::self() )
+    , m_isUpdateInProgress( false )
 {
 
     EngineController* engine = The::engineController();
     connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
              this, SLOT( update() ), Qt::QueuedConnection );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+    connect( engine, SIGNAL( currentMetadataChanged( Meta::TrackPtr ) ),
              this, SLOT( onTrackMetadataChanged( Meta::TrackPtr ) ), Qt::QueuedConnection );
 }
 
@@ -70,6 +71,10 @@ void LyricsEngine::onTrackMetadataChanged( Meta::TrackPtr track )
 void LyricsEngine::update()
 {
     DEBUG_BLOCK
+    if( m_isUpdateInProgress )
+        return;
+
+    m_isUpdateInProgress = true;
     if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
     {
         debug() << "no lyrics script running";
@@ -77,6 +82,7 @@ void LyricsEngine::update()
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
         disconnect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), this, 0 );
         connect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), SLOT(update()) );
+        m_isUpdateInProgress = false;
         return;
     }
 
@@ -88,6 +94,7 @@ void LyricsEngine::update()
         m_prevLyrics.clear();
         removeAllData( "lyrics" );
         setData( "lyrics", "stopped", "stopped" );
+        m_isUpdateInProgress = false;
         return;
     }
 
@@ -148,6 +155,7 @@ void LyricsEngine::update()
         setData( "lyrics", "fetching", "fetching" );
         ScriptManager::instance()->notifyFetchLyrics( lyrics.artist, lyrics.title );
     }
+    m_isUpdateInProgress = false;
 }
 
 void LyricsEngine::newLyrics( const LyricsData &lyrics )

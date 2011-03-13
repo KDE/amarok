@@ -55,6 +55,7 @@ private slots:
 
 private:
     LyricsData m_prevLyrics;
+    bool m_isUpdateInProgress;
 
     struct trackMetadata {
         QString artist;
