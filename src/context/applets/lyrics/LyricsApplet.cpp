@@ -529,24 +529,16 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         d->showSuggested( suggested );
         setCollapseOff();
     }
-    else if( data.contains( "html" ) )
+    else if( data.contains( "html" ) || data.contains( "lyrics" ) )
     {
-        d->hasLyrics = true;
-        d->browser->setRichText( true );
-        titleText = QString( "%1: %2" )
-            .arg( i18n( "Lyrics" ) )
-            .arg( data[ "html" ].toString().section( "<title>", 1, 1 ).section( "</title>", 0, 0 ) );
-        d->showLyrics( data["html"].toString() );
-        setCollapseOff();
-    }
-    else if( data.contains( "lyrics" ) )
-    {
-        QVariant var = data.value( QLatin1String("lyrics") );
+        const bool isHtml = data.contains( QLatin1String("html") );
+        const QString key = isHtml ? QLatin1String("html") : QLatin1String("lyrics");
+        const QVariant var = data.value( key );
         if( var.canConvert<LyricsData>() )
         {
-            LyricsData lyrics = var.value<LyricsData>();
             d->hasLyrics = true;
-            d->browser->setRichText( false );
+            d->browser->setRichText( isHtml );
+            LyricsData lyrics = var.value<LyricsData>();
             QString trimmed = lyrics.text.trimmed();
 
             if( trimmed != d->browser->lyrics() )
