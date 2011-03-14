@@ -75,7 +75,6 @@ LyricsSuggestionItem::LyricsSuggestionItem( const LyricsSuggestion &suggestion, 
     titleLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     titleProxy->setWidget( titleLabel );
     QFont font = titleLabel->font();
-    font.setPointSize( font.pointSize() + 2 );
     font.setBold( true );
     titleLabel->setFont( font );
 
