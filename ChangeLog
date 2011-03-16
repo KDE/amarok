@@ -34,6 +34,8 @@ VERSION 2.4.1
       <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
+    * Fixed translation issue in MagnatuneSignupDialog. 
+      Patch by Burkhard Lueck (lueck@hube-lueck.de) (BR: 239019)
     * Fixed crash on loading unsupported format playlist. (BR: 265378)
     * Ask delete confirmation for all contents of folder at once instead of each individually.
       Affects "Saved Playlists" and "Podcasts" (BR 246117)
