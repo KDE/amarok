@@ -174,7 +174,7 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
                            "id = %1;" )
                            .arg( ids[0] )
                            .arg( s->escape( volumeAccess->filePath() ) ) );
-        return new MassStorageDeviceHandler( ids[0].toInt(), volumeAccess->filePath(), volume->uuid() );
+        return new MassStorageDeviceHandler( ids[0].toInt(), volumeAccess->filePath(), udi );
     }
     else
     {
