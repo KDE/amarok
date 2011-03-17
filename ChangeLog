@@ -82,6 +82,8 @@ VERSION 2.4.1
     * Fixed issue with TagDialog that make metadata fields stay editable if multiple
       streams opened. (BR 177400)
     * Fixed missing equals-sign ('=') in filter string of bookmarks. (BR 245759)
+    * Fixed reporting of playback status for MPRIS (both versions).
+      (BR 268282)
 
 
 VERSION 2.4.0
