@@ -123,7 +123,7 @@ if( WITH_PLAYER )
     
     ##gpodder Service
     macro_optional_find_package(Libmygpo-qt)
-    macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable godder.net service" "http://stefan.derkits.at/files/libmygpo-qt/libmygpo-qt.1.0.0.tar.gz" FALSE "1.0.0" "" )
+    macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable gpodder.net service" "http://stefan.derkits.at/files/libmygpo-qt/libmygpo-qt.1.0.0.tar.gz" FALSE "1.0.0" "" )
     macro_bool_to_01( LIBMYGPO_QT_FOUND HAVE_LIBMYGPOQT )
 
     if( WITH_IPOD )
