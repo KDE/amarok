@@ -23,8 +23,11 @@
 #include "UserPlaylistModel.h"
 #include "playlist/PlaylistModelStack.h"
 
+#include <KDialog>
 #include <KIcon>
 #include <KInputDialog>
+
+#include <QLabel>
 
 PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::LabelColumn )
@@ -38,6 +41,7 @@ PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ),
                                         i18n( "&Delete Folder" ), this );
     m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
+    m_deleteFolderAction->setObjectName( "deleteAction" );
     connect( m_deleteFolderAction, SIGNAL( triggered() ), this,
              SLOT( slotDeleteFolder() ) );
 
@@ -70,9 +74,12 @@ PlaylistsInFoldersProxy::data( const QModelIndex &idx, int role ) const
     {
         //wheter we use the list from m_deleteFolderAction or m_renameFolderAction does not matter
         //they are the same anyway
-        QModelIndexList actionList = m_deleteFolderAction->data().value<QModelIndexList>();
+        QPersistentModelIndexList actionList =
+                m_deleteFolderAction->data().value<QPersistentModelIndexList>();
 
-        actionList << idx;
+        //make a persistant modelindex since the location of the groups can change while executing
+        //actions.
+        actionList << QPersistentModelIndex( idx );
         QVariant value = QVariant::fromValue( actionList );
         m_deleteFolderAction->setData( value );
         m_renameFolderAction->setData( value );
@@ -116,7 +123,6 @@ PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &pare
         result = true;
         for( int i = row; i < row + count; i++ )
         {
-            //individually remove all children of this group in the source model
             QModelIndex childIdx = mapToSource( index( i, 0, parent ) );
             //set success to false if removeRows returns false
             result = sourceModel()->removeRow( childIdx.row(), QModelIndex() ) ? result : false;
@@ -283,7 +289,7 @@ PlaylistsInFoldersProxy::slotDeleteFolder()
     if( action == 0 )
         return;
 
-    QModelIndexList indexes = action->data().value<QModelIndexList>();
+    QPersistentModelIndexList indexes = action->data().value<QPersistentModelIndexList>();
 
     foreach( const QModelIndex &groupIdx, indexes )
         deleteFolder( groupIdx );
@@ -296,7 +302,7 @@ PlaylistsInFoldersProxy::slotRenameFolder()
     if( action == 0 )
         return;
 
-    QModelIndexList indexes = action->data().value<QModelIndexList>();
+    QPersistentModelIndexList indexes = action->data().value<QPersistentModelIndexList>();
 
     if( indexes.isEmpty() )
         return;
@@ -322,9 +328,22 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
 {
     int childCount = rowCount( groupIdx );
     if( childCount > 0 )
+    {
+        KDialog dialog;
+        dialog.setCaption( i18n( "Confirm Delete" ) );
+        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+        QLabel label( i18n( "Are you sure you want to delete this folder and it's contents?" )
+                      , &dialog
+                    );
+        //TODO:include a text area with all the names of the playlists
+        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete folder." ) );
+        dialog.setMainWidget( &label );
+        if( dialog.exec() != QDialog::Accepted )
+            return;
+
         removeRows( 0, childCount, groupIdx );
+    }
     removeGroup( groupIdx );
-    buildTree();
 }
 
 QModelIndex

@@ -150,7 +150,6 @@ CollectionManager::init( const QList<Plugins::PluginFactory*> &factories )
     addTrackProvider( m_timecodeTrackProvider );
 
     QList<Collections::CollectionFactory*> orderdFactories;
-    const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
     foreach( Plugins::PluginFactory *pFactory, factories )
     {
         using namespace Collections;
@@ -159,15 +158,9 @@ CollectionManager::init( const QList<Plugins::PluginFactory*> &factories )
             continue;
 
         const QString name = factory->info().pluginName();
-        if( name == QLatin1String("mysqlserver-collection") )
+        if( name == QLatin1String("amarok_collection-mysqlservercollection") || name == QLatin1String("amarok_collection-mysqlecollection") )
         {
-            if( useMySqlServer )
-                orderdFactories.prepend( factory );
-        }
-        else if( name == QLatin1String("mysqle-collection") )
-        {
-            if( !useMySqlServer )
-                orderdFactories.prepend( factory );
+            orderdFactories.prepend( factory );
         }
         else
         {
@@ -191,8 +184,8 @@ CollectionManager::loadPlugins( const QList<Collections::CollectionFactory*> &fa
         const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
 
         bool essential = false;
-        if( (useMySqlServer && (name == QLatin1String("mysqlserver-collection"))) ||
-            (!useMySqlServer && (name == QLatin1String("mysqle-collection"))) )
+        if( (useMySqlServer && (name == QLatin1String("amarok_collection-mysqlservercollection"))) ||
+            (!useMySqlServer && (name == QLatin1String("amarok_collection-mysqlecollection"))) )
         {
             essential = true;
         }
@@ -207,7 +200,7 @@ CollectionManager::loadPlugins( const QList<Collections::CollectionFactory*> &fa
         d->factories.append( factory );
         debug() << "initializing" << name;
         factory->init();
-        if( name == QLatin1String("mysqle-collection") )
+        if( name == QLatin1String("amarok_collection-mysqlecollection") )
             m_haveEmbeddedMysql = true;
     }
 }

@@ -87,9 +87,11 @@ DirectoryLoader::init( const QList<KUrl>& urls )
             if( Playlists::isPlaylist( kurl ) )
             {
                 Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( kurl );
-                playlist->triggerTrackLoad(); //playlist track loading is on demand.
                 if( playlist )
+                {
+                    playlist->triggerTrackLoad(); //playlist track loading is on demand.
                     m_tracks << playlist->tracks();
+                }
             }
             else
             {

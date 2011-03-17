@@ -47,7 +47,7 @@ temp = str.scan( /const int Plugins::PluginManager::s_pluginFrameworkVersion = [
 
 print "Bumping the plugin framework version to: #{@version}"
 
-str.sub!( /static const int PluginFrameworkVersion = [0-9]*;/, "static const int PluginFrameworkVersion = #{@version};" )
+str.sub!( /const int Plugins::PluginManager::s_pluginFrameworkVersion = [0-9]*;/, "const int Plugins::PluginManager::s_pluginFrameworkVersion = #{@version};" )
 file << str
 file.close()
 

@@ -327,20 +327,6 @@ PlaylistFileProvider::deletePlaylists( Playlists::PlaylistList playlists )
 bool
 PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistFiles )
 {
-    DEBUG_BLOCK
-    KDialog dialog;
-    dialog.setCaption( i18n( "Confirm Delete" ) );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-    QLabel label( i18np( "Are you sure you want to delete this playlist?",
-                         "Are you sure you want to delete these %1 playlist files?",
-                         playlistFiles.count() )
-                    , &dialog
-                  );
-    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
-    dialog.setMainWidget( &label );
-    if( dialog.exec() != QDialog::Accepted )
-        return false;
-
     foreach( Playlists::PlaylistFilePtr playlistFile, playlistFiles )
     {
         m_playlists.removeAll( playlistFile );
@@ -425,7 +411,21 @@ PlaylistFileProvider::slotDelete()
     //only one playlist can be selected at this point
     Playlists::PlaylistFileList playlists = action->data().value<Playlists::PlaylistFileList>();
 
-    if( playlists.count() > 0 )
+    if( playlists.count() == 0 )
+        return;
+
+    KDialog dialog;
+    dialog.setCaption( i18n( "Confirm Delete" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QLabel label( i18np( "Are you sure you want to delete this playlist?",
+                         "Are you sure you want to delete these %1 playlist files?",
+                         playlists.count() )
+                    , &dialog
+                  );
+    //TODO:include a text area with all the names of the playlists
+    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
+    dialog.setMainWidget( &label );
+    if( dialog.exec() == QDialog::Accepted )
         deletePlaylistFiles( playlists );
 }
 

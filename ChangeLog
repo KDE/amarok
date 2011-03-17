@@ -34,6 +34,11 @@ VERSION 2.4.1
       <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
+    * Fixed translation issue in MagnatuneSignupDialog. 
+      Patch by Burkhard Lueck (lueck@hube-lueck.de) (BR: 239019)
+    * Fixed crash on loading unsupported format playlist. (BR: 265378)
+    * Ask delete confirmation for all contents of folder at once instead of each individually.
+      Affects "Saved Playlists" and "Podcasts" (BR 246117)
     * Fixed unreadable text in lyrics applet in kde 4.6. (BR 265311)
     * Fixed tag dialog crash when sorting by genre and then changing tags.
     * Fixed track's statistics update in case of StopAfterCurrent playback mode
@@ -77,6 +82,8 @@ VERSION 2.4.1
     * Fixed issue with TagDialog that make metadata fields stay editable if multiple
       streams opened. (BR 177400)
     * Fixed missing equals-sign ('=') in filter string of bookmarks. (BR 245759)
+    * Fixed reporting of playback status for MPRIS (both versions).
+      (BR 268282)
 
 
 VERSION 2.4.0
