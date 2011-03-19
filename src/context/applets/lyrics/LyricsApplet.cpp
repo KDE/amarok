@@ -124,8 +124,8 @@ LyricsAppletPrivate::determineActionIconsState()
     bool isEditing = !browser->isReadOnly();
 
     editIcon->action()->setEnabled( !isEditing );
-    closeIcon->action()->setEnabled( showBrowser & isEditing );
-    saveIcon->action()->setEnabled( showBrowser & isEditing );
+    closeIcon->action()->setEnabled( isEditing );
+    saveIcon->action()->setEnabled( isEditing );
     reloadIcon->action()->setEnabled( !isEditing );
 }
 
