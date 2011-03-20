@@ -4,6 +4,12 @@ Amarok ChangeLog
 
 VERSION 2.4.1
   BUGFIXES:
+    * Fixed detection of ipod devices.
+    * Fixed crash when the lyrics applet was removed and re-added while a
+      track was playing and the user pressed "ESC".
+    * Fixed cached lyrics were not displayed if no lyrics script was running.
+    * Fixed lyrics changes in the TagDialog were not "synchronized" to the
+      lyrics applet.
     * Fixed reporting of playback status for MPRIS (both versions).
       (BR 268282)
 
@@ -39,12 +45,6 @@ VERSION 2.4.1-Beta 1
       <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
-    * Fixed detection of ipod devices.
-    * Fixed crash when the lyrics applet was removed and re-added while a
-      track was playing and the user pressed "ESC".
-    * Fixed cached lyrics were not displayed if no lyrics script was running.
-    * Fixed lyrics changes in the TagDialog were not "synchronized" to the
-      lyrics applet.
     * Fixed translation issue in MagnatuneSignupDialog. 
       Patch by Burkhard Lueck (lueck@hube-lueck.de) (BR: 239019)
     * Fixed crash on loading unsupported format playlist. (BR: 265378)
