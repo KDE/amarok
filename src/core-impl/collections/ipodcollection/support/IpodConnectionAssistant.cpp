@@ -30,6 +30,17 @@ IpodConnectionAssistant::~IpodConnectionAssistant()
 {
 }
 
+
+static bool
+device_identify( Solid::Device* device)
+{
+    return device && device->isValid() && device->vendor().contains("apple", Qt::CaseInsensitive) &&
+        ( device->product().startsWith("iPod")
+       || device->product().startsWith("iPhone")
+       || device->product().startsWith("iPad") );
+}
+
+
 bool
 IpodConnectionAssistant::identify( const QString& udi )
 {
@@ -64,10 +75,13 @@ IpodConnectionAssistant::identify( const QString& udi )
     }
 
     /* if iPod or iPhone found, return true */
+    if (device_identify(&device))
+        return true;
+    /* due to kde Solid, we might actually see a partition, and the parent device can actually be
+        really recognized */
 
-    return device.product().startsWith("iPod")
-       || device.product().startsWith("iPhone")
-       || device.product().startsWith("iPad");
+    Solid::Device deviceParent = Solid::Device( device.parentUdi() );
+    return device_identify(&deviceParent);
 }
 
 
