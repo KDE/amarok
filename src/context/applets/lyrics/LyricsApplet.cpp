@@ -285,11 +285,8 @@ LyricsAppletPrivate::_closeLyrics()
         QScrollBar *vbar = browser->nativeWidget()->verticalScrollBar();
         int savedPosition = vbar->isVisible() ? vbar->value() : vbar->minimum();
 
-        browser->setLyrics( currentTrack->cachedLyrics() );
+        showLyrics( currentTrack->cachedLyrics() );
         vbar->setSliderPosition( savedPosition );
-
-        showSuggestions = false;
-        showBrowser = true;
         // emit sizeHintChanged(Qt::MaximumSize);
     }
     else
@@ -465,6 +462,10 @@ LyricsApplet::init()
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ), this, SLOT( _trackDataChanged( Meta::TrackPtr ) ) );
     connect( d->suggestView, SIGNAL(selected(LyricsSuggestion)), SLOT(_suggestionChosen(LyricsSuggestion)) );
     connect( dataEngine("amarok-lyrics"), SIGNAL(sourceAdded(QString)), this, SLOT(connectSource(QString)) );
+
+    // This is needed as a track might be playing when the lyrics applet
+    // is added to the ContextView.
+    d->_trackDataChanged( engine->currentTrack() );
 
     d->determineActionIconsState();
     connectSource( "lyrics" );

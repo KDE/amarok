@@ -37,9 +37,9 @@ LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
 {
 
     EngineController* engine = The::engineController();
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
              this, SLOT( update() ), Qt::QueuedConnection );
-    connect( engine, SIGNAL( currentMetadataChanged( Meta::TrackPtr ) ),
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
              this, SLOT( onTrackMetadataChanged( Meta::TrackPtr ) ), Qt::QueuedConnection );
 }
 
@@ -64,27 +64,20 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
 void LyricsEngine::onTrackMetadataChanged( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    if( track->cachedLyrics().isEmpty() )
+
+    // Only update if the lyrics have changed.
+    if( m_prevLyrics.text != track->cachedLyrics() )
         update();
 }
 
 void LyricsEngine::update()
 {
     DEBUG_BLOCK
+
     if( m_isUpdateInProgress )
         return;
 
     m_isUpdateInProgress = true;
-    if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
-    {
-        debug() << "no lyrics script running";
-        removeAllData( "lyrics" );
-        setData( "lyrics", "noscriptrunning", "noscriptrunning" );
-        disconnect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), this, 0 );
-        connect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), SLOT(update()) );
-        m_isUpdateInProgress = false;
-        return;
-    }
 
     // -- get current title and artist
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
@@ -151,6 +144,18 @@ void LyricsEngine::update()
     }
     else
     {
+        // no lyrics, and no lyrics script!
+        if( !ScriptManager::instance()->lyricsScriptRunning() )
+        {
+            debug() << "no lyrics script running";
+            removeAllData( "lyrics" );
+            setData( "lyrics", "noscriptrunning", "noscriptrunning" );
+            disconnect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), this, 0 );
+            connect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), SLOT(update()) );
+            m_isUpdateInProgress = false;
+            return;
+        }
+
         // fetch by lyrics script
         removeAllData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
