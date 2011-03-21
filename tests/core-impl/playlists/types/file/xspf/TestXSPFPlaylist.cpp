@@ -72,10 +72,9 @@ void TestXSPFPlaylist::initTestCase()
 
 void TestXSPFPlaylist::cleanupTestCase()
 {
-  
+    QFile::remove( KStandardDirs::locateLocal( "tmp", "test.xspf" ) );
     delete m_testPlaylist1;
 }
-
 
 void TestXSPFPlaylist::testSetAndGetName()
 {
