@@ -314,10 +314,7 @@ EditFilterDialog::parseTextFilter( const QString &text )
             }
             else
             {
-                if( filter.filter.field )
-                    filter.filter.condition = MetaQueryWidget::Equals;
-                else
-                    filter.filter.condition = MetaQueryWidget::Contains;
+                filter.filter.condition = MetaQueryWidget::Contains;
                 filter.filter.value = elem.text;
             }
 

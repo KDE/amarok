@@ -266,8 +266,15 @@ MetaQueryWidget::fieldChanged( int i )
     if( m_settingFilter )
         return;
 
-    qint64 field;
-    if( i<0 || i>=m_fieldSelection->count() )
+    qint64 field = Contains;
+    if( m_fieldSelection->count() == 0 )
+    {
+        if( isNumeric( field ) )
+            m_filter.condition = Equals;
+        else if( !isNumeric( field ) )
+            m_filter.condition = Contains;
+    }
+    else if( i<0 || i>=m_fieldSelection->count() )
         field = m_fieldSelection->itemData( 0 ).toInt();
     else
         field = m_fieldSelection->itemData( i ).toInt();
@@ -288,9 +295,6 @@ MetaQueryWidget::fieldChanged( int i )
         m_filter.numValue = 0;
         m_filter.numValue2 = 0;
     }
-
-    if( field && !m_apgMode )
-        m_filter.condition = Equals;
 
     m_filter.field = field;
 
