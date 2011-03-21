@@ -17,6 +17,7 @@
 #include "SearchWidget.h"
 #include "EditFilterDialog.h"
 
+#include <QAction>
 #include <QToolBar>
 #include <QVBoxLayout>
 

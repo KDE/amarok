@@ -19,12 +19,14 @@
 
 #include "EditFilterDialog.h"
 
+#include "ui_EditFilterDialog.h"
+
 #include "amarokconfig.h"
 
+#include "Expression.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "widgets/TokenDropTarget.h"
-#include "Expression.h"
 
 #include <KGlobal>
 #include <KLocale>
@@ -40,20 +42,21 @@
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     : KDialog( parent )
+    , m_ui( new Ui::EditFilterDialog )
     , m_curToken( 0 )
     , m_separator( " AND " )
 {
     setCaption( i18n( "Edit Filter" ) );
     setButtons( KDialog::Reset | KDialog::Ok | KDialog::Cancel );
 
-    m_ui.setupUi( mainWidget() );
+    m_ui->setupUi( mainWidget() );
     setMinimumSize( minimumSizeHint() );
 
-    m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", m_ui.dtTokens );
+    m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", m_ui->dtTokens );
     m_dropTarget->setRowLimit( 1 );
     m_dropTarget->layout()->setContentsMargins( 1, 1, 1, 1 );
 
-    QVBoxLayout *l = new QVBoxLayout( m_ui.dtTokens );
+    QVBoxLayout *l = new QVBoxLayout( m_ui->dtTokens );
     l->setContentsMargins( 0, 0, 0, 0 );
     l->addWidget( m_dropTarget );
 
@@ -61,12 +64,12 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     parseTextFilter( text );
     updateMetaQueryWidgetView();
 
-    connect( m_ui.mqwAttributeEditor, SIGNAL( changed( const MetaQueryWidget::Filter & ) ),
+    connect( m_ui->mqwAttributeEditor, SIGNAL( changed( const MetaQueryWidget::Filter & ) ),
              SLOT( slotAttributeChanged( const MetaQueryWidget::Filter & ) ) );
     connect( this, SIGNAL( resetClicked() ), SLOT( slotReset() ) );
-    connect( m_ui.cbInvert, SIGNAL( toggled( bool ) ),
+    connect( m_ui->cbInvert, SIGNAL( toggled( bool ) ),
              SLOT( slotInvert( bool ) ) );
-    connect( m_ui.cbAndOr, SIGNAL( currentIndexChanged( QString ) ),
+    connect( m_ui->cbAndOr, SIGNAL( currentIndexChanged( QString ) ),
              SLOT( slotSeparatorChange( QString ) ) );
     connect( m_dropTarget, SIGNAL( focusReceived( QWidget * ) ),
              SLOT( slotTokenSelected( QWidget * ) ) );
@@ -76,39 +79,40 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
 
 EditFilterDialog::~EditFilterDialog()
 {
+    delete m_ui;
 }
 
 void
 EditFilterDialog::initTokenPool()
 {
 
-    m_ui.tpTokenPool->addToken( SIMPLE_TEXT_CONSTRUCT );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valTitle ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valArtist ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valAlbumArtist ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valAlbum ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valGenre ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valComposer ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valComment ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valUrl ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valYear ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valTrackNr ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valDiscNr ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valBpm ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valLength ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valBitrate ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valSamplerate ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valFilesize ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valFormat ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valCreateDate ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valScore ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valRating ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valFirstPlayed ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valPlaycount ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valLabel ) );
-    m_ui.tpTokenPool->addToken( tokenForField( Meta::valModified ) );
-    m_ui.tpTokenPool->addToken( OR_TOKEN_CONSTRUCT );
-    m_ui.tpTokenPool->addToken( AND_TOKEN_CONSTRUCT );
+    m_ui->tpTokenPool->addToken( SIMPLE_TEXT_CONSTRUCT );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valTitle ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valArtist ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valAlbumArtist ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valAlbum ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valGenre ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valComposer ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valComment ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valUrl ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valYear ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valTrackNr ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valDiscNr ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valBpm ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valLength ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valBitrate ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valSamplerate ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valFilesize ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valFormat ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valCreateDate ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valScore ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valRating ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valFirstPlayed ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valPlaycount ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valLabel ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valModified ) );
+    m_ui->tpTokenPool->addToken( OR_TOKEN_CONSTRUCT );
+    m_ui->tpTokenPool->addToken( AND_TOKEN_CONSTRUCT );
 }
 
 Token *
@@ -126,7 +130,7 @@ EditFilterDialog::slotAttributeChanged( const MetaQueryWidget::Filter &filter )
     if( m_curToken )
         m_filters[m_curToken].filter = filter;
 
-    m_ui.label->setText( this->filter() );
+    m_ui->label->setText( this->filter() );
 }
 
 void
@@ -135,15 +139,15 @@ EditFilterDialog::slotInvert( bool checked )
     if( m_curToken )
         m_filters[m_curToken].inverted = checked;
 
-    m_ui.label->setText( filter() );
+    m_ui->label->setText( filter() );
 }
 
 void
 EditFilterDialog::slotSeparatorChange( const QString &separator )
 {
-    m_separator = " " + separator + " ";
+    m_separator = QString( " %1 " ).arg( separator );
 
-    m_ui.label->setText( filter() );
+    m_ui->label->setText( filter() );
 }
 
 void
@@ -152,7 +156,7 @@ EditFilterDialog::slotReset()
     m_curToken = 0;
     m_filters.clear();
     m_dropTarget->clear();
-    m_ui.cbAndOr->setCurrentIndex( 0 );
+    m_ui->cbAndOr->setCurrentIndex( 0 );
 
     updateMetaQueryWidgetView();
 }
@@ -171,24 +175,24 @@ EditFilterDialog::updateMetaQueryWidgetView()
     {
         if( m_filters.contains( m_curToken ) )
         {
-            m_ui.mqwAttributeEditor->setFilter( m_filters[m_curToken].filter );
-            m_ui.cbInvert->setChecked( m_filters[m_curToken].inverted );
+            m_ui->mqwAttributeEditor->setFilter( m_filters[m_curToken].filter );
+            m_ui->cbInvert->setChecked( m_filters[m_curToken].inverted );
         }
         else
         {
-            m_ui.mqwAttributeEditor->setField( m_curToken->value() );
-            m_ui.cbInvert->setChecked( false );
+            m_ui->mqwAttributeEditor->setField( m_curToken->value() );
+            m_ui->cbInvert->setChecked( false );
         }
     }
     else
     {
-        m_ui.mqwAttributeEditor->setField( 0 );
-        m_ui.cbInvert->setChecked( false );
+        m_ui->mqwAttributeEditor->setField( 0 );
+        m_ui->cbInvert->setChecked( false );
     }
 
-    m_ui.mqwAttributeEditor->setEnabled( ( bool )m_curToken );
-    m_ui.cbInvert->setEnabled( ( bool )m_curToken );
-    m_ui.label->setText( filter() );
+    m_ui->mqwAttributeEditor->setEnabled( ( bool )m_curToken );
+    m_ui->cbInvert->setEnabled( ( bool )m_curToken );
+    m_ui->label->setText( filter() );
 }
 
 void
@@ -266,7 +270,7 @@ EditFilterDialog::parseTextFilter( const QString &text )
             filter.filter.field = !elem.field.isEmpty() ? Meta::fieldForName( elem.field ) : 0;
             if( filter.filter.field == Meta::valRating )
                 filter.filter.numValue = 2 * elem.text.toFloat();
-            else if( m_ui.mqwAttributeEditor->isDate( filter.filter.field ) )
+            else if( m_ui->mqwAttributeEditor->isDate( filter.filter.field ) )
             {
                 quint64 today = QDateTime::currentDateTime().toTime_t();
                 bool invert = elem.text.startsWith( '-' );
@@ -284,10 +288,10 @@ EditFilterDialog::parseTextFilter( const QString &text )
 
                 filter.filter.numValue = today - ( invert ? -diff : diff );
             }
-            else if( m_ui.mqwAttributeEditor->isNumeric( filter.filter.field ) )
+            else if( m_ui->mqwAttributeEditor->isNumeric( filter.filter.field ) )
                 filter.filter.numValue = elem.text.toInt();
 
-            if( m_ui.mqwAttributeEditor->isNumeric( filter.filter.field ) )
+            if( m_ui->mqwAttributeEditor->isNumeric( filter.filter.field ) )
             {
                 switch( elem.match )
                 {
@@ -301,16 +305,6 @@ EditFilterDialog::parseTextFilter( const QString &text )
                         filter.filter.condition = MetaQueryWidget::GreaterThan;
                         break;
                 }
-            }
-            else if( elem.text.startsWith( '*' ) )
-            {
-                filter.filter.condition = MetaQueryWidget::StartsWith;
-                filter.filter.value = elem.text.mid( 1 );
-            }
-            else if( elem.text.endsWith( '*' ) )
-            {
-                filter.filter.condition = MetaQueryWidget::EndsWith;
-                filter.filter.value = elem.text.mid( 0, elem.text.length() - 1 );
             }
             else
             {
