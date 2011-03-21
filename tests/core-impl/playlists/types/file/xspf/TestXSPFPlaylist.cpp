@@ -98,6 +98,7 @@ void TestXSPFPlaylist::prettyName()
 
 void TestXSPFPlaylist::testSetAndGetTracks()
 {
+    m_testPlaylist1->triggerTrackLoad();
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
 
     QCOMPARE( tracklist.size(), 23 );
