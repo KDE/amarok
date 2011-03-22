@@ -889,11 +889,11 @@ DatabaseUpdater::deleteAllRedundant( const QString &type )
     const QString tablename = type + 's';
     if( type == "artist" )
         storage->query( QString( "DELETE FROM artists "
-                                 "WHERE id NOT IN ( SELECT artist FROM tracks ) AND "
-                                 "id NOT IN ( SELECT artist FROM albums )") );
+                                 "WHERE id NOT IN ( SELECT artist FROM tracks WHERE artist IS NOT NULL ) AND "
+                                 "id NOT IN ( SELECT artist FROM albums WHERE artist IS NOT NULL )") );
     else
         storage->query( QString( "DELETE FROM %1 "
-                                 "WHERE id NOT IN ( SELECT %2 FROM tracks )" ).
+                                 "WHERE id NOT IN ( SELECT %2 FROM tracks WHERE %2 IS NOT NULL )" ).
                         arg( tablename, type ) );
 }
 
