@@ -134,7 +134,7 @@ bool NfsDeviceHandlerFactory::canHandle( const Solid::Device &device ) const
     // find mount point
     KMountPoint::Ptr m = KMountPoint::currentMountPoints().findByPath( access->filePath() );
 
-    if ( m && m->mountType() == "nfs" )
+    if ( m && ( m->mountType() == "nfs" || m->mountType() == "nfs4" ))
       return true;
 
     return false;
