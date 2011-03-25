@@ -48,6 +48,10 @@ public slots:
     void editSelected();
     void removeSelected();
 
+protected slots:
+    void expandRecursive(const QModelIndex &index);
+    void collapseRecursive(const QModelIndex &index);
+
 protected:
     virtual void keyPressEvent( QKeyEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );

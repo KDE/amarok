@@ -68,6 +68,12 @@ PlaylistBrowserNS::DynamicView::DynamicView( QWidget *parent )
         setAnimated( true );
 
     The::paletteHandler()->updateItemView( this );
+
+    // -- expanding the playlist should expand the whole tree
+    connect( this, SIGNAL( expanded(const QModelIndex &) ),
+             this, SLOT( expandRecursive( const QModelIndex & ) ) );
+    connect( this, SIGNAL( collapsed(const QModelIndex &) ),
+             this, SLOT( collapseRecursive( const QModelIndex & ) ) );
 }
 
 PlaylistBrowserNS::DynamicView::~DynamicView()
@@ -144,6 +150,21 @@ PlaylistBrowserNS::DynamicView::removeSelected()
 
     Dynamic::DynamicModel::instance()->removeAt( indexes.first() );
 }
+
+void
+PlaylistBrowserNS::DynamicView::expandRecursive(const QModelIndex &index)
+{
+    for( int i = 0; i < index.model()->rowCount( index ); i++ )
+        expand( index.model()->index( i, 0, index ) );
+}
+
+void
+PlaylistBrowserNS::DynamicView::collapseRecursive(const QModelIndex &index)
+{
+    for( int i = 0; i < index.model()->rowCount( index ); i++ )
+        collapse( index.model()->index( i, 0, index ) );
+}
+
 
 void
 PlaylistBrowserNS::DynamicView::keyPressEvent( QKeyEvent *event )
