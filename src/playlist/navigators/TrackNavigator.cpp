@@ -37,7 +37,9 @@ Playlist::TrackNavigator::TrackNavigator()
     //   Ignore SIGNAL dataChanged: we don't need to know when a playlist item changes.
     //   Ignore SIGNAL layoutChanged: we don't need to know when rows are moved around.
     connect( m_model->qaim(), SIGNAL( modelReset() ), this, SLOT( slotModelReset() ) );
-    connect( m_model->qaim(), SIGNAL( rowsAboutToBeRemoved( QModelIndex, int, int ) ), this, SLOT( slotRowsAboutToBeRemoved( QModelIndex, int, int ) ) );
+    connect( Playlist::ModelStack::instance()->bottom(),
+             SIGNAL( rowsAboutToBeRemoved( QModelIndex, int, int ) ),
+             SLOT( slotRowsAboutToBeRemoved( QModelIndex, int, int ) ) );
     //   Ignore SIGNAL rowsInserted.
 }
 
@@ -114,7 +116,7 @@ Playlist::TrackNavigator::slotRowsAboutToBeRemoved(const QModelIndex& parent, in
 
     for ( int row = start; row <= end; ++row )
     {
-        const quint64 itemId = m_model->idAt( row );
+        const quint64 itemId = Playlist::ModelStack::instance()->bottom()->idAt( row );
         m_queue.removeAll( itemId );
     }
 }
