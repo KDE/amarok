@@ -303,7 +303,7 @@ void MediaDeviceCache::slotTimeout()
             }
 
             for (KMountPoint::List::iterator it2 = currentMountList.begin(); it2 != currentMountList.end(); ++it2) {
-                if (((*it2)->mountType() == "nfs" || (*it2)->mountType() == "smb") &&
+                if (((*it2)->mountType() == "nfs" || (*it)->mountType() == "nfs4" || (*it2)->mountType() == "smb") &&
                         (*it)->mountPoint() == (*it2)->mountPoint() ) {
                     mounted = true;
                     break;
