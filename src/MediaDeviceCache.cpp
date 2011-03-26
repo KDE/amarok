@@ -290,7 +290,7 @@ void MediaDeviceCache::slotTimeout()
     QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageAccess );
 
     for (KMountPoint::List::iterator it = possibleMountList.begin(); it != possibleMountList.end(); ++it) {
-        if ((*it)->mountType() == "nfs" || (*it)->mountType() == "smb") {
+        if ((*it)->mountType() == "nfs" || (*it)->mountType() == "nfs4" || (*it)->mountType() == "smb") {
             QString path = (*it)->mountPoint();
             bool mounted = false;
             QString udi = QString();
