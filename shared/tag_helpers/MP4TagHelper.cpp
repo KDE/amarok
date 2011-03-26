@@ -167,7 +167,7 @@ MP4TagHelper::embeddedCover() const
                     coverToUse = &(*cover);
         }
 
-    if( coverToUse->data().size() >= maxSize )
+    if( coverToUse && coverToUse->data().size() >= maxSize )
         return QImage::fromData( ( uchar * ) coverToUse->data().data(), coverToUse->data().size() );
 
     return QImage();
