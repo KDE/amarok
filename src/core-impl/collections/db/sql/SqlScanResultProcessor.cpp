@@ -327,8 +327,19 @@ SqlScanResultProcessor::deleteDeletedDirectories()
 {
     SqlStorage *storage = m_collection->sqlStorage();
 
-    // -- get all directories
-    QString query = QString( "SELECT id FROM directories;" );
+    // -- get a list of all mounted device ids
+    QList<int> idList = m_collection->mountPointManager()->getMountedDeviceIds();
+    QString deviceIds;
+    foreach( int id, idList )
+    {
+        if ( !deviceIds.isEmpty() ) deviceIds += ',';
+        deviceIds += QString::number( id );
+    }
+
+    // -- get all (mounted) directories
+    QString query = QString( "SELECT id FROM directories "
+                             "WHERE deviceid IN (%1);").arg( deviceIds );
+
     QStringList res = storage->query( query );
 
     // -- check if the have been found during the scan
@@ -385,16 +396,8 @@ void
 SqlScanResultProcessor::cacheUrlsInit()
 {
     SqlStorage *storage = m_collection->sqlStorage();
-    QList<int> idList = m_collection->mountPointManager()->getMountedDeviceIds();
-    QString deviceIds;
 
-    foreach( int id, idList )
-    {
-        if ( !deviceIds.isEmpty() ) deviceIds += ',';
-        deviceIds += QString::number( id );
-    }
-
-    QString query = QString( "SELECT id, deviceid, rpath, directory, uniqueid FROM urls WHERE deviceid IN (%1);").arg( deviceIds );
+    QString query = QString( "SELECT id, deviceid, rpath, directory, uniqueid FROM urls;");
     QStringList res = storage->query( query );
 
     for( int i = 0; i < res.count(); )

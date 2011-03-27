@@ -851,7 +851,7 @@ SqlQueryMaker::buildQuery()
     query += " FROM ";
     query += d->queryFrom;
 
-    //dynamic collection
+    // dynamic collection (only mounted file systems are considered)
     if( (d->linkedTables & Private::URLS_TAB) && m_collection->mountPointManager() )
     {
         query += " WHERE 1 ";
