@@ -295,7 +295,7 @@ PlaylistBrowserNS::PartBiasWidget::biasWeightsChanged()
     m_inSignal = true;
 
     QList<qreal> weights = m_bias->weights();
-    for( int i = 0; i < weights.count(); i++ )
+    for( int i = 0; i < weights.count() && i < m_sliders.count(); i++ )
         m_sliders.at(i)->setValue( weights.at(i) * 100.0 );
 
     m_inSignal = false;

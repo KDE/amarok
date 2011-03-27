@@ -512,6 +512,7 @@ Dynamic::DynamicModel::dropMimeData(const QMimeData *data,
         return true;
 
 debug() << "dropMimeData";
+debug() << toString();
 
     if( data->hasFormat("application/amarok.biasModel.index") )
     {
@@ -520,7 +521,7 @@ debug() << "dropMimeData";
         QDataStream stream( &bytes, QIODevice::ReadOnly );
         QModelIndex index = unserializeIndex( &stream );
 
-debug() << "dropMimeData at index" << index;
+debug() << "dropMimeData at index" << index << row;
 
         if( !index.isValid() )
             return false;
