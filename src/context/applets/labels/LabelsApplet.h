@@ -119,6 +119,6 @@ private slots:
 
 };
 
-K_EXPORT_AMAROK_APPLET( labels, LabelsApplet )
+AMAROK_EXPORT_APPLET( labels, LabelsApplet )
 
 #endif

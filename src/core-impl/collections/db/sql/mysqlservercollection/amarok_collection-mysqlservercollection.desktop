@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Service
+Icon=network-server-database
 Name=MySQLServer Collection
 Name[bg]=Колекция MySQLServer
 Name[ca]=Col·lecció MySQLServer
@@ -12,6 +13,7 @@ Name[en_GB]=MySQLServer Collection
 Name[es]=Colección MySQLServer
 Name[et]=MySQLServeri kogu
 Name[fi]=MySQLServer-kokoelma
+Name[gl]=Colección MySQLServer
 Name[hu]=MySQLServer-gyűjtemény
 Name[is]=MySQL safn
 Name[it]=Collezione MySQLServer
@@ -97,15 +99,23 @@ Comment[wa]=Tchôke-divins di ramexhnêye pos Amarok
 Comment[x-test]=xxCollection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的收藏插件
 Comment[zh_TW]=Amarok 的收藏外掛程式
+NoDisplay=true
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=amarok_collection-mysqlservercollection
-
 X-KDE-Amarok-authors=Jeff Mitchell
 X-KDE-Amarok-email=mitchell@kde.org
-X-KDE-Amarok-framework-version=60
+X-KDE-Amarok-framework-version=61
 X-KDE-Amarok-name=mysqlserver-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
+
+X-KDE-PluginInfo-Author=Jeff Mitchell
+X-KDE-PluginInfo-Email=mitchell@kde.org
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Collection
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-Name=amarok_collection-mysqlservercollection
+X-KDE-Library=amarok_collection-mysqlservercollection

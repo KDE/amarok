@@ -4,11 +4,33 @@ Amarok ChangeLog
 
 
 VERSION 2.4.1
+  BUGFIXES:
+    * Fixed detection of iPod devices.
+    * Fixed crash when the lyrics applet was removed and re-added while a
+      track was playing and the user pressed "ESC".
+    * Fixed cached lyrics were not displayed if no lyrics script was running.
+    * Fixed lyrics changes in the TagDialog were not "synchronized" to the
+      lyrics applet.
+    * Fixed reporting of playback status for MPRIS (both versions).
+      (BR 268282)
+
+
+VERSION 2.4.1-Beta 1
   FEATURES:
+    * Remote NFS & SMB/CIFS collections now work! (BR 249760, BR 232976, 
+      BR 171213, BR 187692)
     * New "Preview" feature for the Organize Collection dialog. Patch by
       Maximilian Güntner <maximilian.guentner@gmail.com>.
+    * String filtering in the albums applet.
+    * Ability to change text alignment in the lyrics applet.
+    * gpodder.net Service, a Podcast Directory displaying the most used Tags
+      from gpodder.net & the top Podcasts of these Tags
 
   CHANGES:
+    * The podcast directory service is now based on incremental parsing of OPML without
+      caching in the database.
+    * Plugins can now be optionally enabled in the config dialog.
+    * Script selector is moved from the menubar to the config dialog.
     * Now all changes to Preset Formats in Organize Collection dialog get saved on close,
       doesn't matter If dialog was accepted or rejected.
     * Added "Update Preset" button to Organize Collection dialog, which updates currently
@@ -24,6 +46,13 @@ VERSION 2.4.1
       <bhargav.1191@gmail.com>. (BR 248690)
 
   BUGFIXES:
+    * Fixed translation issue in MagnatuneSignupDialog. 
+      Patch by Burkhard Lueck (lueck@hube-lueck.de) (BR: 239019)
+    * Fixed crash on loading unsupported format playlist. (BR: 265378)
+    * Ask delete confirmation for all contents of folder at once instead of each individually.
+      Affects "Saved Playlists" and "Podcasts" (BR 246117)
+    * Fixed unreadable text in lyrics applet in kde 4.6. (BR 265311)
+    * Fixed tag dialog crash when sorting by genre and then changing tags.
     * Fixed track's statistics update in case of StopAfterCurrent playback mode
       (prevent double statistics change). (BR 265654)
     * Delete .mood files when tracks got removed from collection via Collection

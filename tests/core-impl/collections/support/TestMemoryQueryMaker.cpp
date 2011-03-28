@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,16 +17,10 @@
 
 #include "TestMemoryQueryMaker.h"
 
-#include "core/support/Debug.h"
-
-#include "core/collections/QueryMaker.h"
-#include "core/meta/Meta.h"
-#include "core-impl/collections/support/MemoryCollection.h"
-#include "core-impl/collections/support/MemoryQueryMaker.h"
-#include "core-impl/collections/support/MemoryFilter.h"
-
 #include "mocks/MetaMock.h"
 #include "mocks/MockTrack.h"
+
+#include "shared/FileType.h"
 
 #include <QVariantMap>
 #include <QSharedPointer>
@@ -50,6 +45,51 @@ TestMemoryQueryMaker::TestMemoryQueryMaker()
     qRegisterMetaType<Meta::TrackList>();
     qRegisterMetaType<Meta::AlbumList>();
     qRegisterMetaType<Meta::ArtistList>();
+}
+
+void
+TestMemoryQueryMaker::initTestCase()
+{
+    // prepare a memory collection with some test data
+    m_mc = QSharedPointer<Collections::MemoryCollection>( new Collections::MemoryCollection() );
+
+    MetaMock *track;
+
+    QVariantMap map;
+    map.insert( Meta::Field::UNIQUEID,  "1" );
+    map.insert( Meta::Field::TITLE,  "Skater Boy" );
+    map.insert( Meta::Field::RATING, 3 );
+//    map.insert( Meta::Field::TYPE, int(Amarok::Mp3) );
+    map.insert( Meta::Field::TRACKNUMBER, 3 );
+    track = new MetaMock( map );
+    track->m_artist = new MockArtist("Avril Lavigne");
+    track->m_album = new MockAlbum("Let Go");
+    m_mc->addTrack( Meta::TrackPtr( track ) );
+
+    map.insert( Meta::Field::UNIQUEID,  "2" );
+    map.insert( Meta::Field::TITLE,  "Substitute" );
+    map.insert( Meta::Field::RATING, 4 );
+ //   map.insert( Meta::Field::TYPE, int(Amarok::Ogg) );
+    map.insert( Meta::Field::TRACKNUMBER, 1 );
+    track = new MetaMock( map );
+    track->m_artist = new MockArtist("Clout" );
+    track->m_album = new MockAlbum("Substitute" );
+    m_mc->addTrack( Meta::TrackPtr( track ) );
+
+    map.insert( Meta::Field::UNIQUEID,  "3" );
+    map.insert( Meta::Field::TITLE,  "I Say A Little Prayer" );
+    map.insert( Meta::Field::RATING, 2 );
+  //  map.insert( Meta::Field::TYPE, int(Amarok::Wma) );
+    map.insert( Meta::Field::TRACKNUMBER, 1 );
+    map.insert( Meta::Field::DISCNUMBER, 2 );
+    track = new MetaMock( map );
+    track->m_artist = new MockArtist("The Bosshoss" );
+    track->m_album = new MockAlbum("Rodeo Radio" );
+    m_mc->addTrack( Meta::TrackPtr( track ) );
+}
+
+void TestMemoryQueryMaker::cleanupTestCase()
+{
 }
 
 void
@@ -149,3 +189,111 @@ TestMemoryQueryMaker::testStringMemoryFilterSpeedMatchAnywhere()
         filter4.filterMatches( Meta::TrackPtr() );
     }
 }
+
+Meta::TrackList
+TestMemoryQueryMaker::executeQueryMaker( Collections::QueryMaker *qm )
+{
+    QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
+    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(QString,Meta::TrackList)));
+
+    qm->setQueryType( Collections::QueryMaker::Track );
+    qm->run();
+
+    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+
+    if( resultSpy1.count() != 1 ) return Meta::TrackList();
+    if( doneSpy1.count() != 1 ) return Meta::TrackList();
+
+    QList<QVariant> args1 = resultSpy1.takeFirst();
+    if( !args1.value(1).canConvert<Meta::TrackList>() ) return Meta::TrackList();
+
+    delete qm;
+
+    return args1.value(1).value<Meta::TrackList>();
+}
+
+
+void
+TestMemoryQueryMaker::testFilterTitle()
+{
+    Meta::TrackList tracks;
+
+    // -- just get all the tracks
+    Collections::MemoryQueryMaker *qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    tracks = executeQueryMaker( qm );
+    QCOMPARE( tracks.count(), 3 );
+
+    // -- filter for title
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm->addFilter( Meta::valTitle, "Skater", true, false );
+    tracks = executeQueryMaker( qm );
+    QCOMPARE( tracks.count(), 1 );
+    QCOMPARE( tracks.first()->name(), QString("Skater Boy" ) );
+
+    // -- filter for album
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm->addFilter( Meta::valAlbum, "S", false, false );
+    tracks = executeQueryMaker( qm );
+    QCOMPARE( tracks.count(), 1 );
+    QCOMPARE( tracks.first()->name(), QString("Substitute" ) );
+
+    // -- filter for artist
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm->addFilter( Meta::valArtist, "Lavigne", false, true );
+    tracks = executeQueryMaker( qm );
+    QCOMPARE( tracks.count(), 1 );
+    QCOMPARE( tracks.first()->name(), QString("Skater Boy" ) );
+}
+
+void
+TestMemoryQueryMaker::testFilterRating()
+{
+    Meta::TrackList tracks;
+    Collections::MemoryQueryMaker *qm = 0;
+
+    // -- filter for Rating
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm->addNumberFilter( Meta::valRating, 3, Collections::QueryMaker::Equals );
+    tracks = executeQueryMaker( qm );
+    QCOMPARE( tracks.count(), 1 );
+    QCOMPARE( tracks.first()->name(), QString("Skater Boy" ) );
+
+    // -- filter for Rating
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm->addNumberFilter( Meta::valRating, 4, Collections::QueryMaker::LessThan );
+    tracks = executeQueryMaker( qm );
+    QCOMPARE( tracks.count(), 2 );
+}
+
+void
+TestMemoryQueryMaker::testFilterAnd()
+{
+    Meta::TrackList tracks;
+    Collections::MemoryQueryMaker *qm = 0;
+
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm->beginAnd();
+    qm->addNumberFilter( Meta::valTrackNr, 1, Collections::QueryMaker::Equals );
+    qm->addFilter( Meta::valAlbum, "o", false, false );
+    qm->endAndOr();
+    tracks = executeQueryMaker( qm );
+    QCOMPARE( tracks.count(), 1 );
+    QCOMPARE( tracks.first()->album()->name(), QString("Rodeo Radio" ) );
+}
+
+void
+TestMemoryQueryMaker::testFilterFormat()
+{
+    Meta::TrackList tracks;
+    Collections::MemoryQueryMaker *qm = 0;
+
+    // -- filter for title
+    qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
+    qm->addNumberFilter( Meta::valFormat,
+                         int(Amarok::Mp3),
+                         Collections::QueryMaker::Equals );
+    tracks = executeQueryMaker( qm );
+    QCOMPARE( tracks.count(), 0 );
+}
+
+

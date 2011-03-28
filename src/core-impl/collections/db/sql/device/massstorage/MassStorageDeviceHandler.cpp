@@ -18,16 +18,16 @@
 
 #include "MassStorageDeviceHandler.h"
 
-AMAROK_EXPORT_PLUGIN( MassStorageDeviceHandlerFactory )
-
 #include "core/support/Debug.h"
 #include "core/collections/support/SqlStorage.h"
+#include "PluginManager.h"
 
 #include <kconfig.h>
 #include <kurl.h>
 #include <solid/storagevolume.h>
 #include <solid/storageaccess.h>
 
+AMAROK_EXPORT_DEVICE_PLUGIN( massstorage, MassStorageDeviceHandlerFactory )
 
 MassStorageDeviceHandler::MassStorageDeviceHandler(): DeviceHandler()
 {
@@ -122,12 +122,21 @@ bool MassStorageDeviceHandlerFactory::canHandle( const Solid::Device &device ) c
            && !volume->isIgnored() && !excludedFilesystem( volume->fsType() );
 }
 
-MassStorageDeviceHandlerFactory::MassStorageDeviceHandlerFactory( )
+MassStorageDeviceHandlerFactory::MassStorageDeviceHandlerFactory( QObject *parent, const QVariantList &args )
+    : DeviceHandlerFactory( parent, args )
 {
+    KPluginInfo pluginInfo( "amarok_device_massstorage.desktop", "services" );
+    pluginInfo.setConfig( Amarok::config("Device_MassiveStorage") );
+    m_info = pluginInfo;
 }
 
 MassStorageDeviceHandlerFactory::~MassStorageDeviceHandlerFactory( )
 {
+}
+
+void MassStorageDeviceHandlerFactory::init()
+{
+    m_initialized = true;
 }
 
 DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( KSharedConfigPtr, SqlStorage* ) const
@@ -165,7 +174,7 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
                            "id = %1;" )
                            .arg( ids[0] )
                            .arg( s->escape( volumeAccess->filePath() ) ) );
-        return new MassStorageDeviceHandler( ids[0].toInt(), volumeAccess->filePath(), volume->uuid() );
+        return new MassStorageDeviceHandler( ids[0].toInt(), volumeAccess->filePath(), udi );
     }
     else
     {

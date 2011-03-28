@@ -36,18 +36,18 @@ if not Dir::getwd().split( "/" ).last() == "amarok"
 end
 
 
-# Bump PluginFrameworkVersion in Amarok.h
-file = File.new( "src/core/plugins/Plugin.h", File::RDWR )
+# Bump s_pluginFrameworkVersion in PluginManager.h
+file = File.new( "src/PluginManager.cpp", File::RDWR )
 str = file.read()
 file.rewind()
 file.truncate( 0 )
-temp = str.scan( /static const int PluginFrameworkVersion = [0-9]*;/ )
+temp = str.scan( /const int Plugins::PluginManager::s_pluginFrameworkVersion = [0-9]*;/ )
 @version = temp.join().scan( /[0-9]*/ ).join().to_i()
 @version = @version + 1
 
 print "Bumping the plugin framework version to: #{@version}"
 
-str.sub!( /static const int PluginFrameworkVersion = [0-9]*;/, "static const int PluginFrameworkVersion = #{@version};" )
+str.sub!( /const int Plugins::PluginManager::s_pluginFrameworkVersion = [0-9]*;/, "const int Plugins::PluginManager::s_pluginFrameworkVersion = #{@version};" )
 file << str
 file.close()
 

@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Service
+Icon=media-flash-smart-media
 Name=MTP Collection
 Name[be]=Калекцыя MTP
 Name[bg]=Колекция MTP
@@ -17,7 +18,6 @@ Name[eu]=MTP bilduma
 Name[fi]=MTP-kokoelma
 Name[fr]=Collection MTP
 Name[ga]=Bailiúchán MTP
-Name[gl]=Colección MTP
 Name[he]=אוסף MTP
 Name[hne]=एमटीपी संग्रह
 Name[hu]=MTP-gyűjtemény
@@ -70,7 +70,6 @@ Comment[eu]=Amarok-en MTP bilduma plugin-a
 Comment[fi]=Amarokin MTP-kokoelmaliitännäinen
 Comment[fr]=Module de collection MTP pour Amarok
 Comment[ga]=Breiseán bailiúchán MTP le haghaidh Amarok
-Comment[gl]=Extensión de colección MTP para Amarok
 Comment[he]=תוסף אוסף MTP ל־Amarok
 Comment[hne]=अमाराक बर एमटीपी संग्रह प्लगइन
 Comment[hu]=MTP-gyűjteményt megvalósító bővítőmodul az Amarokhoz
@@ -109,12 +108,19 @@ Comment[zh_TW]=Amarok 的 MTP 收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=amarok_collection-mtpcollection
-
 X-KDE-Amarok-authors=Alejandro Wainzinger
 X-KDE-Amarok-email=aikawarazuni@gmail.com
-X-KDE-Amarok-framework-version=60
+X-KDE-Amarok-framework-version=61
 X-KDE-Amarok-name=mtp-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
+
+X-KDE-PluginInfo-Author=Alejandro Wainzinger
+X-KDE-PluginInfo-Email=aikawarazuni@gmail.com
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Collection
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-Name=amarok_collection-mtpcollection
+X-KDE-Library=amarok_collection-mtpcollection

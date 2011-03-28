@@ -56,7 +56,7 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
     public:
         /** The scan mode.
             In general a full scan will consider the information read from the disk
-            as being superiour to the one in the database.
+            as being superior to the one in the database.
             The full scan will overwrite existing album covers and statistics.
 
             An update scan is a scan done automatically by Amarok. I will check

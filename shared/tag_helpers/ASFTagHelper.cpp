@@ -256,7 +256,10 @@ ASFTagHelper::tags() const
         else if( it->first == uidFieldName( UIDAFT ) && isValidUID( strValue, UIDAFT ) )
             data.insert( Meta::valUniqueId, strValue );
         else if( it->first == uidFieldName( UIDMusicBrainz ) && isValidUID( strValue, UIDMusicBrainz ) )
-            data.insert( Meta::valUniqueId, strValue.prepend( "mb-" ) );
+        {
+            if( !data.contains( Meta::valUniqueId ) ) // we prefere AFT uids
+                data.insert( Meta::valUniqueId, strValue.prepend( "mb-" ) );
+        }
     }
 
     return data;

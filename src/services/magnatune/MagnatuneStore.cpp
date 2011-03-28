@@ -50,11 +50,19 @@
 
 #include <typeinfo>
 
-AMAROK_EXPORT_PLUGIN( MagnatuneServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( magnatunestore, MagnatuneServiceFactory )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // class MagnatuneServiceFactory
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+MagnatuneServiceFactory::MagnatuneServiceFactory( QObject *parent, const QVariantList &args )
+    : ServiceFactory( parent, args )
+{
+    KPluginInfo pluginInfo( "amarok_service_magnatunestore.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    m_info = pluginInfo;
+}
 
 void MagnatuneServiceFactory::init()
 {
@@ -68,13 +76,6 @@ void MagnatuneServiceFactory::init()
 QString MagnatuneServiceFactory::name()
 {
     return "Magnatune.com";
-}
-
-KPluginInfo MagnatuneServiceFactory::info()
-{
-    KPluginInfo pluginInfo( "amarok_service_magnatunestore.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    return pluginInfo;
 }
 
 KConfigGroup MagnatuneServiceFactory::config()

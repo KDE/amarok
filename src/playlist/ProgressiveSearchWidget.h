@@ -58,12 +58,12 @@ public:
      */
     ~ProgressiveSearchWidget();
 
-    QString currentFilter() { return m_searchEdit->text(); }
+    QString currentFilter() const { return m_searchEdit->text(); }
 
     void focusInputLine();
     void setCurrentFilter( const QString filterExpr ) { m_searchEdit->setText( filterExpr ); }
 
-    bool onlyMatches() { return m_showOnlyMatches; }
+    bool onlyMatches() const { return m_showOnlyMatches; }
 
 signals:
     /**

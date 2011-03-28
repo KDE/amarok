@@ -93,6 +93,6 @@ private:
 
 };
 
-K_EXPORT_AMAROK_DATAENGINE( labels, LabelsEngine )
+AMAROK_EXPORT_DATAENGINE( labels, LabelsEngine )
 #endif
 

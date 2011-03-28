@@ -235,6 +235,11 @@ SimilarArtistsApplet::showArtistBio( const QString &name )
     tb->nativeWidget()->setOpenExternalLinks( true );
     tb->nativeWidget()->setAutoFormatting( QTextEdit::AutoAll );
     tb->nativeWidget()->viewport()->setAutoFillBackground( true );
+    tb->nativeWidget()->viewport()->setBackgroundRole( QPalette::AlternateBase );
+
+    QPalette p = tb->palette();
+    p.setColor( QPalette::Text, qApp->palette().text().color() );
+    tb->setPalette( p );
 
     QString bio = widget->fullBio();
     KDateTime pub = widget->bioPublished();

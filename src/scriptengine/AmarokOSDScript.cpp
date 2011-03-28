@@ -23,10 +23,12 @@
 
 namespace AmarokScript
 {
-    AmarokOSDScript::AmarokOSDScript( QScriptEngine* ScriptEngine )
-    : QObject( kapp )
+    AmarokOSDScript::AmarokOSDScript( QScriptEngine *engine )
+        : QObject( engine )
     {
-        Q_UNUSED( ScriptEngine );
+        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+        QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
+        windowObject.setProperty( "OSD", scriptObject );
     }
 
     AmarokOSDScript::~AmarokOSDScript()

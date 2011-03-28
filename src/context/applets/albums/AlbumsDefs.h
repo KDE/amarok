@@ -27,12 +27,11 @@ enum AlbumsModelItemTypes
 
 enum AlbumsModelCustomRoles
 {
-    AlbumCompilationRole = Qt::UserRole + 1,
+    NameRole = Qt::UserRole + 1,
+    AlbumCompilationRole,
     AlbumMaxTrackNumberRole,
-    AlbumNameRole,
     AlbumLengthRole,
     AlbumYearRole,
-    TrackNameRole,
     TrackArtistRole,
     TrackNumberRole,
     TrackLengthRole

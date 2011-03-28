@@ -122,6 +122,7 @@ AlbumsView::AlbumsView( QGraphicsWidget *parent )
     m_proxyModel->setSortLocaleAware( true );
     m_proxyModel->setDynamicSortFilter( true );
     m_proxyModel->setSourceModel( m_model );
+    m_proxyModel->setFilterRole( NameRole );
     m_treeView->setModel( m_proxyModel );
 
     QScrollBar *treeScrollBar = m_treeView->verticalScrollBar();
@@ -167,6 +168,18 @@ AlbumsView::scrollTo( QStandardItem *album )
 {
     const QModelIndex &proxyIndex = m_proxyModel->mapFromSource( album->index() );
     m_treeView->scrollTo( proxyIndex, QAbstractItemView::EnsureVisible );
+}
+
+QString
+AlbumsView::filterPattern() const
+{
+    return m_proxyModel->filterRegExp().pattern();
+}
+
+void
+AlbumsView::setFilterPattern( const QString &pattern )
+{
+    m_proxyModel->setFilterRegExp( QRegExp(pattern, Qt::CaseInsensitive) );
 }
 
 void
@@ -467,7 +480,7 @@ AlbumsItemDelegate::drawAlbumText( QPainter *p, const QStyleOptionViewItemV4 &vo
     p->setClipRect( textRect );
     applyCommonStyle( p, vopt );
 
-    QString name = index.data( AlbumNameRole ).toString();
+    QString name = index.data( NameRole ).toString();
     int year     = index.data( AlbumYearRole ).toInt();
 
     QStringList texts;
@@ -495,7 +508,7 @@ AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vo
 
     int trackDigitCount = index.data( AlbumMaxTrackNumberRole ).toString().length();
     bool isCompilation = index.data( AlbumCompilationRole ).toBool();
-    const QString &name = index.data( TrackNameRole ).toString();
+    const QString &name = index.data( NameRole ).toString();
     const QString &artist = index.data( TrackArtistRole ).toString();
     QString length = " (" + Meta::msToPrettyTime( index.data( TrackLengthRole ).toInt() ) + ')';
     QString number = index.data( TrackNumberRole ).toString() + ". ";

@@ -87,7 +87,7 @@ class TabsApplet : public Context::Applet
         Ui::TabsSettings ui_Settings;
 };
 
-K_EXPORT_AMAROK_APPLET( tabs, TabsApplet )
+AMAROK_EXPORT_APPLET( tabs, TabsApplet )
 Q_DECLARE_METATYPE ( TabsInfo *)
 
 #endif /* Tabs_APPLET_H */

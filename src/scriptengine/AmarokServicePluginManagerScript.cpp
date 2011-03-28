@@ -16,17 +16,17 @@
 
 #include "AmarokServicePluginManagerScript.h"
 
-#include "services/ServicePluginManager.h"
-
 #include "App.h"
-
+#include "PluginManager.h"
+#include "services/ServicePluginManager.h"
 
 namespace AmarokScript
 {
-    AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QScriptEngine* ScriptEngine )
-    : QObject( kapp )
+    AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QScriptEngine *engine )
+        : QObject( engine )
     {
-        Q_UNUSED( ScriptEngine );
+        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+        engine->globalObject().property( "Amarok" ).setProperty( "ServicePluginManager", scriptObject );
     }
 
     AmarokServicePluginManagerScript::~AmarokServicePluginManagerScript()
@@ -35,30 +35,29 @@ namespace AmarokScript
 
     QStringList AmarokServicePluginManagerScript::loadedServices()
     {
-        return ServicePluginManager::instance()->loadedServices();
+        return The::pluginManager()->servicePluginManager()->loadedServices();
     }
 
     QStringList AmarokServicePluginManagerScript::loadedServiceNames()
     {
-        return ServicePluginManager::instance()->loadedServiceNames();
+        return The::pluginManager()->servicePluginManager()->loadedServiceNames();
     }
 
     QString AmarokServicePluginManagerScript::serviceDescription( const QString &service )
     {
-        return ServicePluginManager::instance()->serviceDescription( service );
+        return The::pluginManager()->servicePluginManager()->serviceDescription( service );
     }
 
     QString AmarokServicePluginManagerScript::serviceMessages( const QString &service )
     {
-        return ServicePluginManager::instance()->serviceMessages( service );
+        return The::pluginManager()->servicePluginManager()->serviceMessages( service );
     }
 
     QString AmarokServicePluginManagerScript::sendMessage( const QString &service, const QString &message )
     {
-        return ServicePluginManager::instance()->sendMessage( service, message );
+        return The::pluginManager()->servicePluginManager()->sendMessage( service, message );
     }
 
 }
 
 #include "AmarokServicePluginManagerScript.moc"
-

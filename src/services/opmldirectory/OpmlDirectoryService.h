@@ -18,6 +18,7 @@
 #define OPMLDIRECTORYSERVICE_H
 
 
+#include "amarokurls/AmarokUrlRunnerBase.h"
 #include "../ServiceBase.h"
 #include "OpmlDirectoryDatabaseHandler.h"
 #include "ServiceSqlCollection.h"
@@ -33,12 +34,11 @@ class OpmlDirectoryServiceFactory: public ServiceFactory
     Q_OBJECT
 
     public:
-        OpmlDirectoryServiceFactory() {}
+        OpmlDirectoryServiceFactory( QObject *parent, const QVariantList &args );
         virtual ~OpmlDirectoryServiceFactory() {}
 
         virtual void init();
         virtual QString name();
-        virtual KPluginInfo info();
         virtual KConfigGroup config();
 };
 
@@ -47,52 +47,38 @@ A service for displaying, previewing and downloading music from OpmlDirectory.co
 
 	@author 
 */
-class OpmlDirectoryService : public ServiceBase
+class OpmlDirectoryService : public ServiceBase, public AmarokUrlRunnerBase
 {
+    Q_OBJECT
+    public:
+        OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name,
+                              const QString &prettyName );
 
-Q_OBJECT
-public:
-    OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name, const QString &prettyName );
+        ~OpmlDirectoryService();
 
-    ~OpmlDirectoryService();
+        void polish();
 
-    void polish();
+        virtual Collections::Collection * collection() { return 0; }
 
-    virtual Collections::Collection * collection() { return m_collection; }
+        /* UrlRunnerBase methods */
+        virtual QString command() const;
+        virtual QString prettyCommand() const;
+        virtual bool run( AmarokUrl url );
+        virtual KIcon icon() const { return KIcon( "view-services-opml-amarok" ); }
 
-private slots:
+    private slots:
+        void subscribe();
+        void slotSelectionChanged( const QItemSelection &, const QItemSelection & );
 
-    void updateButtonClicked();
-    void subscribe();
-    void listDownloadComplete( KJob* downloadJob);
-    void listDownloadCancelled();
-    void doneParsing();
-    void outlineParsed( OpmlOutline *outline );
-    void countTransaction();
+    private:
 
-    /**
-    * Checks if subscribe button should be enabled
-    * @param selection the new selection
-    */
-    void itemSelected( CollectionTreeItem * selectedItem );
+        QPushButton *m_addOpmlButton;
+        QPushButton *m_subscribeButton;
 
+        int m_currentCategoryId;
 
-private:
-
-    QPushButton *m_updateListButton;
-    QPushButton *m_subscribeButton;
-    KIO::FileCopyJob * m_listDownloadJob;
-    OpmlDirectoryDatabaseHandler * m_dbHandler;
-    Collections::ServiceSqlCollection * m_collection;
-    Meta::OpmlDirectoryFeed * m_currentFeed;
-    QString m_tempFileName;
-    int m_currentCategoryId;
-
-    int m_numberOfFeeds;
-    int m_numberOfCategories;
-
-    int n_numberOfTransactions;
-    int n_maxNumberOfTransactions;
+        int m_numberOfFeeds;
+        int m_numberOfCategories;
 };
 
 #endif

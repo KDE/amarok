@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Service
+Icon=network-server
 Name=UPnP Collection
 Name[be]=Калекцыя UPnP
 Name[bg]=Колекция UPnP
@@ -17,7 +18,6 @@ Name[eu]=UPnP bilduma
 Name[fi]=UPnP-kokoelma
 Name[fr]=Collection UPnP
 Name[ga]=Bailiúchán UpnP
-Name[gl]=Colección UPnP
 Name[he]=אוסף UPnP
 Name[hne]=यूपीएनपी संग्रह
 Name[hu]=UPnP-gyűjtemény
@@ -70,7 +70,6 @@ Comment[eu]=Amarok-en UPnP bilduma plugin-a
 Comment[fi]=Amarokin UPnP-kokoelmaliitännäinen
 Comment[fr]=Module de collection UPnP pour Amarok
 Comment[ga]=Breiseán bailiúchán UPnP le haghaidh Amarok
-Comment[gl]=Extensión de colección UPnP para Amarok
 Comment[he]=תוסף אוסף UPnP ל־Amarok
 Comment[hne]=अमाराक बर यूपीएनपी संग्रह प्लगइन
 Comment[hu]=UPnP-gyűjteményt megvalósító bővítőmodul az Amarokhoz
@@ -109,12 +108,19 @@ Comment[zh_TW]=Amarok 的 UPnP 收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=amarok_collection-upnpcollection
-
 X-KDE-Amarok-authors=Nikhil Marathe
 X-KDE-Amarok-email=nsm.nikhil@gmail.com
-X-KDE-Amarok-framework-version=60
+X-KDE-Amarok-framework-version=61
 X-KDE-Amarok-name=upnp-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
+
+X-KDE-PluginInfo-Author=Nikhil Marathe
+X-KDE-PluginInfo-Email=nsm.nikhil@gmail.com
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Collection
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=false
+X-KDE-PluginInfo-Name=amarok_collection-upnpcollection
+X-KDE-Library=amarok_collection-upnpcollection

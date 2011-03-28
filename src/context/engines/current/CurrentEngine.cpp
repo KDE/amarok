@@ -42,6 +42,7 @@ using namespace Context;
 CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , m_coverWidth( 0 )
+    , m_coverCacheKey( 0 )
     , m_lastQueryMaker( 0 )
 {
     Q_UNUSED( args )
@@ -93,16 +94,26 @@ CurrentEngine::sourceRequestEvent( const QString& name )
 void
 CurrentEngine::metadataChanged( Meta::AlbumPtr album )
 {
-    setData( "current", "albumart", album->image( m_coverWidth ) );
+    QImage cover = album->image( m_coverWidth );
+    qint64 coverCacheKey = cover.cacheKey();
+    if( m_coverCacheKey != coverCacheKey )
+    {
+        m_coverCacheKey = coverCacheKey;
+        setData( "current", "albumart", cover );
+    }
 }
 
 void
 CurrentEngine::metadataChanged( Meta::TrackPtr track )
 {
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
-    setData( "current", "current", trackInfo );
-    if( track && m_requested.value( QLatin1String("albums") ) )
-        update( track->album() );
+    if( m_trackInfo != trackInfo )
+    {
+        m_trackInfo = trackInfo;
+        setData( "current", "current", trackInfo );
+        if( track && m_requested.value( QLatin1String("albums") ) )
+            update( track->album() );
+    }
 }
 
 void
@@ -123,6 +134,7 @@ CurrentEngine::stopped()
     {
         removeAllData( "current" );
         setData( "current", "notrack", i18n( "No track playing") );
+        m_currentTrack.clear();
     }
 
     if( m_requested.value( QLatin1String("albums") ) )
@@ -192,13 +204,10 @@ CurrentEngine::update( Meta::TrackPtr track )
 void
 CurrentEngine::update( Meta::AlbumPtr album )
 {
-    if( !m_requested.value( QLatin1String("albums") ) ||
-        album == m_currentAlbum )
+    if( !m_requested.value( QLatin1String("albums") ) )
         return;
 
-    m_currentAlbum = album;
     m_lastQueryMaker = 0;
-
     Meta::TrackPtr track = The::engineController()->currentTrack();
     removeAllData( QLatin1String("albums") );
     setData( "albums", "currentTrack", qVariantFromValue(track) );
@@ -219,8 +228,8 @@ CurrentEngine::update( Meta::AlbumPtr album )
         m_albums.clear();
         Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
         qm->setAutoDelete( true );
-        qm->addFilter( Meta::valAlbumArtist, artist->name(), true, true );
-        qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
+        qm->addFilter( Meta::valArtist, artist->name(), true, true );
+        qm->setAlbumQueryMode( Collections::QueryMaker::AllAlbums );
         qm->setQueryType( Collections::QueryMaker::Album );
 
         connect( qm, SIGNAL(newResultReady(QString, Meta::AlbumList)),

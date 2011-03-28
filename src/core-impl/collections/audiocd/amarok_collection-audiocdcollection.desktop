@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Service
+Icon=media-optical-audio
 Name=AudioCd Collection
 Name[bg]=Колекция с компактдискове
 Name[ca]=Col·lecció de CD d'àudio
@@ -12,6 +13,7 @@ Name[en_GB]=AudioCd Collection
 Name[es]=Colección de Cd de audio
 Name[et]=Heli-CD kogu
 Name[fi]=Musiikki-cd-kokoelma
+Name[gl]=Colección de CD de son
 Name[hu]=Hang-CD-gyűjtemény
 Name[is]=AudioCd safn
 Name[it]=Collezione CD audio
@@ -55,6 +57,7 @@ Comment[en_GB]=AudioCd collection plugin for Amarok
 Comment[es]=Complemento de colección de Cd de audio para Amarok
 Comment[et]=Amaroki heli-CD kogu plugin
 Comment[fi]=Musiikki-cd-kokoelmaliitännäinen
+Comment[gl]=Engadido de colección de CD de son para Amarok
 Comment[hu]=Hang-CD-gyűjteményt megvalósító bővítőmodul az Amarokhoz
 Comment[is]=AudioCd safníforrit fyrir Amarok
 Comment[it]=Estensione CD audio della collezione di Amarok
@@ -89,12 +92,19 @@ Comment[zh_TW]=Amarok 的音效 CD 收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=amarok_collection-audiocdcollection
-
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=60
+X-KDE-Amarok-framework-version=61
 X-KDE-Amarok-name=audiocd-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
+
+X-KDE-PluginInfo-Author=Nikolaja Hald Nielsen
+X-KDE-PluginInfo-Email=nhnFreespirit@gmail.com
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Collection
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-Name=amarok_collection-audiocdcollection
+X-KDE-Library=amarok_collection-audiocdcollection

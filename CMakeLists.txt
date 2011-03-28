@@ -120,6 +120,11 @@ if( WITH_PLAYER )
         macro_log_feature( LIBOFA_FOUND "libofa" "Enable MusicDNS service" "http://code.google.com/p/musicip-libofa/" FALSE "0.9.x" "" )
         macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
     endif( FFMPEG_FOUND )
+    
+    ##gpodder Service
+    macro_optional_find_package(Libmygpo-qt)
+    macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable gpodder.net service" "http://wiki.gpodder.org/wiki/Libmygpo-qt" FALSE "1.0.2" "" )
+    macro_bool_to_01( LIBMYGPO_QT_FOUND HAVE_LIBMYGPOQT )
 
     if( WITH_IPOD )
         find_package(Ipod)
@@ -160,8 +165,8 @@ if( WITH_PLAYER )
     if( WITH_IPOD OR WITH_MP3Tunes )
     find_package(GObject)
     macro_log_feature( GOBJECT_FOUND "gobject" "Required by libgpod and mp3tunes." "http://www.gtk.org" FALSE "2.x" "" )
-	find_package(GLIB2)
-	macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
+    find_package(GLIB2)
+    macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
     endif( WITH_IPOD OR WITH_MP3Tunes )
 
     #These two are currently unused

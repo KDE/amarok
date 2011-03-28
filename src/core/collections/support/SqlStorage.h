@@ -36,7 +36,7 @@ public:
 
     virtual QString type() const = 0;
 
-    virtual QString escape( QString text ) const = 0;
+    virtual QString escape( const QString &text ) const = 0;
 
     virtual QStringList query( const QString &query ) = 0;
     virtual int insert( const QString &statement, const QString &table ) = 0;

@@ -69,7 +69,7 @@ class LabelListModel : public QAbstractListModel
         /**
         * @returns List of labels
         */
-        QStringList Labels();
+        QStringList labels();
 
     private:
         QStringList m_labels;

@@ -3,6 +3,7 @@
  * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>                         *
  * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -27,6 +28,7 @@
 #include "LabelListModel.h"
 
 #include "core/meta/Meta.h"
+#include "core/collections/MetaQueryMaker.h"
 
 #include <khtml_part.h>
 #include <KDialog>
@@ -44,10 +46,6 @@ namespace Ui
     class TagDialogBase;
 }
 
-namespace Collections {
-    class QueryMaker;
-}
-
 class QComboBox;
 
 class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
@@ -56,17 +54,12 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
 
     public:
 
-        enum Changes { NOCHANGE=0, SCORECHANGED=1, TAGSCHANGED=2, LYRICSCHANGED=4, RATINGCHANGED=8, LABELSCHANGED=16 };
-        enum Tabs { SUMMARYTAB, TAGSTAB, LYRICSTAB, STATSTAB, LABELSTAB };
+        enum Tabs { SUMMARYTAB, TAGSTAB, LYRICSTAB, LABELSTAB };
 
         explicit TagDialog( const Meta::TrackList &tracks, QWidget *parent = 0 );
         explicit TagDialog( Meta::TrackPtr track, QWidget *parent = 0 );
         explicit TagDialog( Collections::QueryMaker *qm );
         ~TagDialog();
-
-        void setTab( int id );
-
-        friend class TagSelect;
 
         // inherited from Meta::Observer
         using Observer::metadataChanged;
@@ -81,8 +74,8 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void openPressed();
         void previousTrack();
         void nextTrack();
-        void perTrack();
-        void checkModified();
+        void perTrack( bool );
+        void checkChanged();
 
         /**
         *   removes selected label from list
@@ -95,7 +88,6 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void addLabelPressed();
 
         void showCoverMenu( const QPoint &pos );
-        void loadCover();
 
         /**
         *   Shows FileNameLayoutDialog to guess tags from filename
@@ -104,6 +96,11 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
 
         void musicbrainzTagger();
         void musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap > result );
+
+        /** Safely adds a track to m_tracks.
+            Ensures that tracks are not added twice.
+        */
+        void addTrack( Meta::TrackPtr &track );
 
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
         void queryDone();
@@ -118,20 +115,6 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void resultReady( const QString &collectionId, const Meta::LabelList &labels );
         void dataQueryDone();
 
-        //individual item-specific slots, so we know which have been changed by the user
-        // useful when editing multiple tracks and we can't compare against the tag itself
-        void composerModified();
-        void artistModified();
-        void albumModified();
-        void albumArtistModified();
-        void genreModified();
-        void bpmModified();
-        void ratingModified();
-        void yearModified();
-        void scoreModified();
-        void commentModified();
-        void discNumberModified();
-
         /**
         * Updates Add label button
         */
@@ -142,87 +125,104 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         */
         void labelSelected();
 
-        /**
-        *   Updates track label list
-        */
-        void trackLabelsFetched( QStringList labels );
-
     private:
-        void init();
-        void setCurrentTrack( Meta::TrackPtr track );
-        void startDataQuery();
-        void readTags();
-        void readMultipleTracks();
-        void setMultipleTracksMode();
-        void setSingleTrackMode();
-        void enableItems();
+        /** Sets some further properties and connects all the signals */
+        void initUi();
+
+        /** Set's the current track to the number.
+            Will check agains invalid numbers, so the caller does not have to do that.
+        */
+        void setCurrentTrack( int num );
+
+        /** Start a query maker for the given query type */
+        void startDataQuery( Collections::QueryMaker::QueryType type, const char* signal, const char* slot );
+
+        /** Start queries for artists, albums, composers, genres and labels to fill out the combo boxes */
+        void startDataQueries();
+
+        /** Sets the tags in the UI, cleaning unset tags */
+        void setTagsToUi( const QVariantMap &tags );
+
+        /** Sets the tags in the UI, cleaning unset tags depending on m_perTrack */
+        void setTagsToUi();
+
+        /** Gets the changed tags from the UI */
+        QVariantMap getTagsFromUi( const QVariantMap &tags ) const;
+
+        /** Gets all the needed tags (just the one that we display or edit) from the track */
+        QVariantMap getTagsFromTrack( const Meta::TrackPtr &track ) const;
+
+        /** Gets a summary of all the tags from m_tracks */
+        QVariantMap getTagsFromMultipleTracks() const;
+
+        /** Overwrites all values in the stored tags with the new ones. Tags not in "tags" map are left unchanged. */
+        void setTagsToTrack( const Meta::TrackPtr &track, const QVariantMap &tags );
+
+        /** Overwrites all values in the stored tags with the new ones.
+            Tags not in "tags" map are left unchanged.
+            Exception are labels which are not set.
+        */
+        void setTagsToMultipleTracks( QVariantMap tags );
+
+        /** Smartly writes back tags data depending on m_perTrack */
+        void setTagsToTrack();
+
+        /** Sets the UI to edit either one or the complete list of tracks.
+            Don't forget to save the old ui values and set the new tags afterwards.
+        */
+        void setPerTrack( bool isEnabled );
+
+        void updateButtons();
+        void updateCover();
         void setControlsAccessability();
-        bool hasChanged();
-        int changes();
-        void storeTags();
-        void storeTags( const Meta::TrackPtr &track );
-        void storeTags( const Meta::TrackPtr &track, int changes, const QVariantMap &data );
 
         /**
         * Stores changes to labels for a specific track
         * @arg track Track to store the labels to
-        * @arg removedlabels Labels to be removed from track
-        * @arg newlabels Labels to be added to track
+        * @arg labels The new set of labels for the track
         */
-        void storeLabels( Meta::TrackPtr track, const QStringList &removedlabels, const QStringList &newlabels );
+        void saveLabels( Meta::TrackPtr track, const QStringList &labels );
 
-        /**
-        * Loads labels from a specific track to edit gui
-        * @arg track Track to load labels for
+        /** Writes all the tags to all the tracks.
+            This finally updates the Meta::Tracks
         */
-        void loadLabels( Meta::TrackPtr track );
-
-        void loadTags( const Meta::TrackPtr &track );
-        void loadLyrics( const Meta::TrackPtr &track );
-        QVariantMap dataForTrack( const Meta::TrackPtr &track );
-        double scoreForTrack( const Meta::TrackPtr &track );
-        int ratingForTrack( const Meta::TrackPtr &track );
-
-        /**
-        * @returns Labels for a specific track
-        * @arg track Track to load labels for
-        */
-        QStringList labelsForTrack( Meta::TrackPtr track );
-        
-        QString lyricsForTrack( const Meta::TrackPtr &track );
         void saveTags();
+
         /**
         * Returns "Unknown" if the value is null or not known
         * Otherwise returns the string
         */
-        const QString unknownSafe( const QString & );
-        const QStringList statisticsData();
-        void applyToAllTracks();
+        const QString unknownSafe( const QString &s ) const;
+        const QString unknownSafe( int i ) const;
 
         const QStringList filenameSchemes();
 
         void selectOrInsertText( const QString &text, QComboBox *comboBox );
 
-        QString m_lyrics;
-        bool m_perTrack;
-        QMap<Meta::TrackPtr, QVariantMap > m_storedTags;
-        QMap<Meta::TrackPtr, double> m_storedScores;
-        QMap<Meta::TrackPtr, int> m_storedRatings;
-        QMap<Meta::TrackPtr, QString> m_storedLyrics;
-        QString m_path;
-        QString m_currentCover;
-        LabelListModel *m_labelModel;               //!< Model MVC Class for Track label list
-        QStringList m_newLabels;                    //!< List of added labels
-        QStringList m_removedLabels;                //!< List of removed labels
-        QStringList m_labels;                       //!< List of track labels
+        QString m_path; // the directory of the current track/tracks
 
-        //2.0 stuff
+        LabelListModel *m_labelModel; //!< Model MVC Class for Track label list
+
+        bool m_perTrack;
         Meta::TrackList m_tracks;
         Meta::TrackPtr m_currentTrack;
-        QListIterator<Meta::TrackPtr > m_trackIterator;
-        QMap< QString, bool > m_fieldEdited;
-        QVariantMap m_currentData;
+        int m_currentTrackNum;
+
+        /** True if m_storedTags contains changed.
+            The pushButton_ok will be activated if this one is true and the UI
+            has further changes
+        */
+        bool m_changed;
+
+        /** The tags for the tracks.
+            If the tags are edited then this structure is updated when switching
+            between single and multiple mode or when pressing the save button.
+        */
+        QMap<Meta::TrackPtr, QVariantMap > m_storedTags;
+
+        // the query maker to get the tracks to be edited
         Collections::QueryMaker *m_queryMaker;
+
         QSet<QString> m_artists;
         QSet<QString> m_albums;
         QSet<QString> m_albumArtists;
@@ -231,7 +231,6 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QSet<QString> m_allLabels; //! all labels known to currently active collections, used for autocompletion
 
         Ui::TagDialogBase *ui;
-
 };
 
 

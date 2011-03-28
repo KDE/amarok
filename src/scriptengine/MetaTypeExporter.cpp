@@ -29,7 +29,8 @@ if( ec ) \
     ec->endMetaDataUpdate(); \
 }
 
-MetaTrackPrototype::MetaTrackPrototype()
+MetaTrackPrototype::MetaTrackPrototype( QObject *parent )
+    : QObject( parent )
 {
 }
 
@@ -260,25 +261,25 @@ MetaTrackPrototype::setDiscNumber( int number )
 }
 
 void
-MetaTrackPrototype::setAlbum( QString album )
+MetaTrackPrototype::setAlbum( const QString &album )
 {
     GET_TRACK_EC( ec->setAlbum( album ) )
 }
 
 void
-MetaTrackPrototype::setArtist( QString artist )
+MetaTrackPrototype::setArtist( const QString &artist )
 {
     GET_TRACK_EC( ec->setArtist( artist ) )
 }
 
 void
-MetaTrackPrototype::setComposer( QString composer )
+MetaTrackPrototype::setComposer( const QString &composer )
 {
     GET_TRACK_EC( ec->setComposer( composer ) )
 }
 
 void
-MetaTrackPrototype::setGenre( QString genre )
+MetaTrackPrototype::setGenre( const QString &genre )
 {
     GET_TRACK_EC( ec->setGenre( genre ) )
 }
@@ -290,16 +291,17 @@ MetaTrackPrototype::setYear( int year )
 }
 
 void
-MetaTrackPrototype::setComment( QString comment )
+MetaTrackPrototype::setComment( const QString &comment )
 {
     GET_TRACK_EC( ec->setComment( comment ) )
 }
 
 void
-MetaTrackPrototype::setLyrics( QString lyrics )
+MetaTrackPrototype::setLyrics( const QString &lyrics )
 {
     GET_TRACK
-    if ( track ) track->setCachedLyrics( lyrics );
+    if( track )
+        track->setCachedLyrics( lyrics );
 }
 
 void
@@ -312,7 +314,8 @@ void
 MetaTrackPrototype::setImageUrl( const QString& imageUrl )
 {
     GET_TRACK
-    if ( track && track->album() ) track->album()->setImage( QImage(imageUrl) );
+    if( track && track->album() )
+        track->album()->setImage( QImage(imageUrl) );
 }
 
 #undef GET_TRACK

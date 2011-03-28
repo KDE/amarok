@@ -87,7 +87,10 @@ MP4TagHelper::tags() const
         else if( it->first == uidFieldName( UIDAFT ) && isValidUID( value, UIDAFT ) )
             data.insert( Meta::valUniqueId, value );
         else if( it->first == uidFieldName( UIDMusicBrainz ) && isValidUID( value, UIDMusicBrainz ) )
-            data.insert( Meta::valUniqueId, value.prepend( "mb-" ) );
+        {
+            if( !data.contains( Meta::valUniqueId ) ) // we prefere AFT uids
+                data.insert( Meta::valUniqueId, value.prepend( "mb-" ) );
+        }
     }
 
     return data;
@@ -167,7 +170,7 @@ MP4TagHelper::embeddedCover() const
                     coverToUse = &(*cover);
         }
 
-    if( coverToUse->data().size() >= maxSize )
+    if( coverToUse && coverToUse->data().size() >= maxSize )
         return QImage::fromData( ( uchar * ) coverToUse->data().data(), coverToUse->data().size() );
 
     return QImage();

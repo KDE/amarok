@@ -26,16 +26,17 @@
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
+#include <KMessageBox>
+#include <KServiceTypeTrader>
 #include <Plasma/IconWidget>
 #include <Plasma/Theme>
 
 #include <QGraphicsLayout>
 #include <QGraphicsScene>
 #include <QFontMetrics>
+#include <QMetaMethod>
 #include <QPainter>
 #include <QPropertyAnimation>
-
-#include <KServiceTypeTrader>
 
 namespace Context
 {
@@ -48,7 +49,6 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     , m_heightCollapseOff( 0 )
     , m_header( 0 )
     , m_transient( 0 )
-    , m_isMessageShown( false )
     , m_standardPadding( 6.0 )
 {
     setBackgroundHints( NoBackground );
@@ -353,17 +353,6 @@ Context::Applet::paletteChanged( const QPalette & palette )
     Q_UNUSED( palette )
 }
 
-void
-Context::Applet::plasmaMessageHidden()
-{
-    // Disconnect from the messageButtonPressed() signal so the next
-    // dialog can be shown.
-    disconnect( MESSAGE_BUTTON_PRESSED_SIGNAL );
-
-    // No dialog is shown anymore.
-    m_isMessageShown = false;
-}
-
 bool Context::Applet::canAnimate()
 {
     return m_canAnimate;
@@ -372,31 +361,14 @@ bool Context::Applet::canAnimate()
 void
 Context::Applet::showWarning( const QString &message, const char *slot )
 {
-    // Show a message with the "warning" icon.
-    showMessage( message, slot, KIcon( "dialog-warning" ) );
-}
-
-void
-Context::Applet::showMessage( const QString &message, const char *slot, const KIcon &icon )
-{
-    DEBUG_BLOCK
-
-    // Only show the message if none is shown yet.
-    if( !m_isMessageShown )
-    {
-        // Make sure no one else can show a dialog.
-        m_isMessageShown = true;
-
-        // Get the "Yes" and "No" buttons.
-        Plasma::MessageButtons plasmaYesNoButtons = Plasma::ButtonYes | Plasma::ButtonNo;
-
-        // Connect Plasma's messageButtonPressed SIGNAL to the given slot.
-        connect( this, MESSAGE_BUTTON_PRESSED_SIGNAL, slot );
-        connect( this, MESSAGE_BUTTON_PRESSED_SIGNAL, SLOT( plasmaMessageHidden() ) );
-
-        // Show a dialog and ask the user what to do.
-        Plasma::Applet::showMessage( icon, message, plasmaYesNoButtons );
-    }
+    int ret = KMessageBox::warningYesNo( 0, message );
+    Plasma::MessageButton button = (ret == KMessageBox::Yes) ? Plasma::ButtonYes : Plasma::ButtonNo;
+    QByteArray sig = QMetaObject::normalizedSignature( slot );
+    sig.remove( 0, 1 ); // remove method type
+    QMetaMethod me = metaObject()->method( metaObject()->indexOfSlot(sig) );
+    QGenericArgument arg1 = Q_ARG( const Plasma::MessageButton, button );
+    if( !me.invoke( this, arg1 ) )
+        warning() << "invoking failed:" << sig;
 }
 
 #include "Applet.moc"

@@ -23,9 +23,15 @@
 #include "context/DataEngine.h"
 #include "core/meta/Meta.h"
 
+#include <QGraphicsLinearLayout>
+
 class AlbumsView;
+class KLineEdit;
 namespace Collections {
     class Collection;
+}
+namespace Plasma {
+    class IconWidget;
 }
 
 class Albums : public Context::Applet
@@ -41,12 +47,16 @@ public slots:
 
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
+    void keyPressEvent( QKeyEvent *event );
 
 private slots:
     void collectionDataChanged( Collections::Collection *collection );
     void saveConfiguration();
     void setRecentCount( int val );
     void setRightAlignLength( int state );
+    void showFilterBar();
+    void closeFilterBar();
+    void filterTextChanged( const QString &text );
 
 private:
     int m_recentCount;
@@ -54,8 +64,29 @@ private:
     AlbumsView *m_albumsView;
     Meta::AlbumList m_albums;
     Meta::TrackPtr m_currentTrack;
+    Plasma::IconWidget *m_filterIcon;
 };
 
-K_EXPORT_AMAROK_APPLET( albums, Albums )
+class AlbumsFilterBar : public QGraphicsWidget
+{
+    Q_OBJECT
+
+public:
+    AlbumsFilterBar( QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0 );
+    ~AlbumsFilterBar() {}
+
+    bool eventFilter( QObject *obj, QEvent *e );
+    void focusEditor();
+
+signals:
+    void closeRequested();
+    void filterTextChanged( const QString &text );
+
+private:
+    KLineEdit *m_editor;
+    Plasma::IconWidget *m_closeIcon;
+};
+
+AMAROK_EXPORT_APPLET( albums, Albums )
 
 #endif

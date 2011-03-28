@@ -40,6 +40,7 @@ class AMAROK_CORE_EXPORT Controller : public QObject
     Q_OBJECT
 public:
     Controller( QObject *parent = 0 );
+    ~Controller();
 
     const QList< Format * > & availableFormats() const { return m_availableFormats; }
     const QList< Format * > & allFormats() const { return m_formats; }

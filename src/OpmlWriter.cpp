@@ -19,9 +19,12 @@
 
 #include <KUrl>
 
-OpmlWriter::OpmlWriter( const OpmlOutline *rootOutline, QIODevice *device )
+OpmlWriter::OpmlWriter( const QList<OpmlOutline *> rootOutlines,
+                        const QMap<QString,QString> headerData,
+                        QIODevice *device )
     : ThreadWeaver::Job()
-    , m_rootOutline( rootOutline )
+    , m_rootOutlines( rootOutlines )
+    , m_headerData( headerData )
 {
     m_xmlWriter = new QXmlStreamWriter( device );
 }
@@ -35,8 +38,7 @@ OpmlWriter::run()
     _x->writeStartElement( "opml" );
     _x->writeAttribute( "version", "2.0" );
     _x->writeStartElement( "head" );
-    //root outline is threated special, it's attributes will be the elements of <head>
-    QMapIterator<QString, QString> ai( m_rootOutline->attributes() ); //attributesIterator
+    QMapIterator<QString, QString> ai( m_headerData ); //attributesIterator
     while( ai.hasNext() )
     {
         ai.next();
@@ -44,7 +46,7 @@ OpmlWriter::run()
     }
     _x->writeEndElement(); // head
     _x->writeStartElement( "body" );
-    foreach( const OpmlOutline *childOutline, m_rootOutline->children() )
+    foreach( const OpmlOutline *childOutline, m_rootOutlines )
         writeOutline( childOutline );
     _x->writeEndDocument(); //implicitly closes all open tags (opml & body)
     emit result( 0 );
@@ -54,7 +56,7 @@ void
 OpmlWriter::writeOutline( const OpmlOutline *outline )
 {
     bool hasChildren = outline->children().count() != 0;
-    if( hasChildren )
+    if( hasChildren && ( outline->opmlNodeType() != IncludeNode ) )
         _x->writeStartElement( "outline" );
     else
         _x->writeEmptyElement( "outline" );
@@ -65,7 +67,8 @@ OpmlWriter::writeOutline( const OpmlOutline *outline )
         _x->writeAttribute( ai.key(), ai.value() );
     }
 
-    if( hasChildren )
+    // children of expanded include nodes should not be saved.
+    if( hasChildren && ( outline->opmlNodeType() != IncludeNode ) )
     {
         foreach( const OpmlOutline *childOutline, outline->children() )
             writeOutline( childOutline );

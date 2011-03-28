@@ -46,7 +46,6 @@
 
 LabelsApplet::LabelsApplet( QObject *parent, const QVariantList &args )
     : Context::Applet( parent, args ),
-    m_lastLabelName( "" ),
     m_lastLabelSize( QSizeF(0,0) ),
     m_lastLabelBottomAdded( false )
 {
@@ -367,7 +366,7 @@ LabelsApplet::updateLabels()
                     const qreal y = labelGraphics->pos().y() - ( labelGraphics->boundingRect().height() - m_lastLabelSize.height() ) / 2;
                     labelGraphics->setPos( x, y );
                     m_lastLabelSize = QSizeF( 0, 0 );
-                    m_lastLabelName = "";
+                    m_lastLabelName.clear();
                 }
                 labelAnimation = m_labelAnimations.at(i);
                 break;
@@ -385,9 +384,9 @@ LabelsApplet::updateLabels()
                 labelGraphics->setPos( m_addLabelProxy.data()->pos().x(), m_addLabelProxy.data()->pos().y() + m_addLabelProxy.data()->size().height()/2 - labelGraphics->boundingRect().height()/2 );
                 m_lastLabelBottomAdded = false;
             }
-            connect( labelGraphics, SIGNAL( toggled( const QString & ) ), this, SLOT( toggleLabel( const QString & ) ) );
-            connect( labelGraphics, SIGNAL( list( const QString & ) ), this, SLOT( listLabel( const QString & ) ) );
-            connect( labelGraphics, SIGNAL( blacklisted( const QString & ) ), this, SLOT( blacklistLabel( const QString & ) ) );
+            connect( labelGraphics, SIGNAL(toggled(QString)), SLOT(toggleLabel(QString)) );
+            connect( labelGraphics, SIGNAL(list(QString)), SLOT(listLabel(QString)) );
+            connect( labelGraphics, SIGNAL(blacklisted(QString) ), SLOT(blacklistLabel(QString)) );
 
             labelAnimation = new QPropertyAnimation( labelGraphics, "pos" );
             labelAnimation->setEasingCurve( QEasingCurve::OutQuad );
@@ -401,7 +400,7 @@ LabelsApplet::updateLabels()
     m_labelAnimations = tempLabelAnimations;
 
     // should be unnecessary, but better safe than sorry
-    m_lastLabelName = "";
+    m_lastLabelName.clear();
     m_lastLabelSize = QSizeF( 0, 0 );
     m_lastLabelBottomAdded = false;
 

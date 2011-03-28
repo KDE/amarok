@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "core/meta/support/MetaConstants.h"
+#include "shared/FileType.h"
 #include <klocalizedstring.h>
 
 QString Meta::nameForField( qint64 field )
@@ -332,7 +333,8 @@ QVariant Meta::valueForField( qint64 field, Meta::TrackPtr track )
     case Meta::valBitrate:     return track->bitrate();
     case Meta::valSamplerate:  return track->sampleRate();
     case Meta::valFilesize:    return track->filesize();
-    case Meta::valFormat:      return track->type(); // this is a string
+    case Meta::valFormat:      return int(Amarok::FileTypeSupport::fileType(track->type()));
+
     case Meta::valCreateDate:  return track->createDate();
     case Meta::valScore:       return track->score();
     case Meta::valRating:      return track->rating();

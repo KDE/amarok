@@ -84,12 +84,7 @@ class MetaQueryWidget : public QWidget
             LessThan     =  2,
             Between      =  3,
             OlderThan    =  4,
-            Contains     =  5, // this is the string comparison
-            // only for the advanced playlist generator
-            Within       =  6,
-            Matches      =  7,
-            StartsWith   =  8,
-            EndsWith     =  9
+            Contains     =  5
         };
 
         struct Filter
@@ -126,11 +121,6 @@ class MetaQueryWidget : public QWidget
         /** Returns the current filter value.
          */
         Filter filter() const;
-
-        /** Set the automatic playlist generator mode.
-            The widget will show a little different set of conditions.
-        */
-        void setAPGMode( bool value );
 
         /** Returns true if the given field is a numeric field */
         static bool isNumeric( qint64 field );
@@ -198,7 +188,6 @@ class MetaQueryWidget : public QWidget
 
         bool m_onlyNumeric;
         bool m_noCondition;
-        bool m_apgMode;
 
         bool m_settingFilter; // if set to true we are just setting the filter
 

@@ -483,6 +483,10 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
     if( action == Qt::IgnoreAction )
         return true;
 
+    //drop on track is not possible
+    if( IS_TRACK(parent) )
+        return false;
+
     const AmarokMimeData* amarokMime = dynamic_cast<const AmarokMimeData*>( data );
     if( !amarokMime )
         return false;
@@ -511,11 +515,10 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
             return false;
 
         Meta::TrackList tracks = amarokMime->tracks();
-        bool allAdded = true;
         foreach( Meta::TrackPtr track, tracks )
-            /*allAdded = */playlist->addTrack( track, row )/* ? allAdded : false*/;
+            playlist->addTrack( track, row );
 
-        return allAdded;
+        return true;
     }
 
     return false;

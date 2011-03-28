@@ -1,13 +1,5 @@
-[KNewStuff2]
-ProvidersUrl=http://download.kde.org/khotnewstuff/amarokscripts2-providers.xml
-Checksumpolicy=ifpossible
-SignaturePolicy=ifpossible
-Uncompress=always
-TargetDir=amarok/scripts
-
 [KNewStuff3]
 ProvidersUrl=http://download.kde.org/ocs/providers.xml
 Categories=Amarok 2.0 Script
 Uncompress=always
 TargetDir=amarok/scripts
-

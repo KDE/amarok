@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Mp3tunesService"
+
 #include "Mp3tunesService.h"
 
 #include "browsers/SingleCollectionTreeItemModel.h"
@@ -29,38 +31,43 @@
 
 #include <QRegExp>
 
-AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( mp3tunes, Mp3tunesServiceFactory )
+
+Mp3tunesServiceFactory::Mp3tunesServiceFactory( QObject *parent, const QVariantList &args )
+    : ServiceFactory( parent, args )
+{
+    KPluginInfo pluginInfo(  "amarok_service_mp3tunes.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    m_info = pluginInfo;
+}
 
 void Mp3tunesServiceFactory::init()
 {
-    Mp3tunesConfig config;
-
-    //The user activated the service, but didn't fill the email/password? Don't start it.
-    if ( config.email().isEmpty() || config.password().isEmpty() )
-        return;
-    
-    ServiceBase* service = new Mp3tunesService( this, "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled() );
-    m_activeServices << service;
-    m_initialized = true;
-    connect( service, SIGNAL( ready() ), this, SLOT( slotServiceReady() ) );
-    emit newService( service );
-    
+    DEBUG_BLOCK
+    ServiceBase *service = createService();
+    if( service )
+    {
+        m_activeServices << service;
+        m_initialized = true;
+        connect( service, SIGNAL( ready() ), this, SLOT( slotServiceReady() ) );
+        emit newService( service );
+    }
 }
 
+ServiceBase* Mp3tunesServiceFactory::createService()
+{
+    Mp3tunesConfig config;
+    //The user activated the service, but didn't fill the email/password? Don't start it.
+    // if( config.email().isEmpty() || config.password().isEmpty() )
+        // return 0;
+    ServiceBase* service = new Mp3tunesService( this, "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled() );
+    return service;
+}
 
 QString Mp3tunesServiceFactory::name()
 {
     return "MP3tunes.com";
 }
-
-
-KPluginInfo Mp3tunesServiceFactory::info()
-{
-    KPluginInfo pluginInfo(  "amarok_service_mp3tunes.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    return pluginInfo;
-}
-
 
 KConfigGroup Mp3tunesServiceFactory::config()
 {

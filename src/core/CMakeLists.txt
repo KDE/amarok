@@ -5,12 +5,6 @@ include_directories(
     ${QT_INCLUDES}
 )
 
-set(libcore_plugin_SRCS
-    plugins/Plugin.cpp
-    plugins/PluginManager.cpp
-    plugins/PluginConfig.cpp
-)
-
 set(libcore_interfaces_SRCS
     interfaces/Logger.cpp
 )
@@ -21,6 +15,7 @@ set(libcore_meta_SRCS
     meta/support/MetaUtility.cpp
     meta/support/MetaKeys.cpp
     meta/support/PrivateMetaRegistry.cpp
+    ../../shared/FileType.cpp
 )
 
 set(libcore_playlists_SRCS
@@ -74,6 +69,7 @@ set(libcore_support_SRCS
     support/Amarok.cpp
     support/Components.cpp
     support/SmartPointerList.cpp
+    support/PluginFactory.cpp
     support/Debug.cpp
 )
 
@@ -94,7 +90,6 @@ set(libcore_transcoding_SRCS
 # LIBCORE
 #####################################################################
 set(libcore_LIB_SRCS
-    ${libcore_plugin_SRCS}
     ${libcore_podcasts_SRCS}
     ${libcore_interfaces_SRCS}
     ${libcore_collection_SRCS}

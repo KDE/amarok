@@ -86,7 +86,10 @@ ID3v2TagHelper::tags() const
                 if( frame->owner() == uidFieldName( UIDAFT ) && isValidUID( identifier, UIDAFT ) )
                     data.insert( Meta::valUniqueId, identifier );
                 else if( frame->owner() == uidFieldName( UIDMusicBrainz ) && isValidUID( identifier, UIDMusicBrainz ) )
-                    data.insert( Meta::valUniqueId, identifier.prepend( "mb-" ) );
+                {
+                    if( !data.contains( Meta::valUniqueId ) ) // we prefere AFT uids
+                        data.insert( Meta::valUniqueId, identifier.prepend( "mb-" ) );
+                }
                 continue;
             }
             else if( field == Meta::valHasCover )

@@ -27,7 +27,7 @@
 #include <QTimer>
 #include <QXmlStreamReader>
 
-K_EXPORT_AMAROK_DATAENGINE( similarArtists, SimilarArtistsEngine )
+AMAROK_EXPORT_DATAENGINE( similarArtists, SimilarArtistsEngine )
 
 using namespace Context;
 

@@ -70,6 +70,6 @@ class PhotosApplet : public Context::Applet
         Plasma::IconWidget      *m_settingsIcon;
 };
 
-K_EXPORT_AMAROK_APPLET( photos, PhotosApplet )
+AMAROK_EXPORT_APPLET( photos, PhotosApplet )
 
 #endif /* Photos_APPLET_H */

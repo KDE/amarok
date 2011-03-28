@@ -36,7 +36,7 @@ CoverCache* CoverCache::s_instance = 0;
 CoverCache*
 CoverCache::instance()
 {
-    return s_instance ? s_instance : new CoverCache();
+    return s_instance ? s_instance : (s_instance =  new CoverCache());
 }
 
 void CoverCache::destroy()
@@ -82,11 +82,11 @@ CoverCache::getCover( const Meta::AlbumPtr &album, int size ) const
     if( size > 1 ) // full size covers are not cached
     {
         QReadLocker locker( &m_lock );
-        if( m_keys.contains( album.data() ) )
+        const CoverKeys &allKeys = m_keys.value( album.data() );
+        if( !allKeys.isEmpty() )
         {
-            const CoverKeys &allKeys = m_keys[ album.data() ];
-            if( allKeys.contains( size ) &&
-                QPixmapCache::find( allKeys.value( size ), &pixmap ) )
+            QPixmapCache::Key key = allKeys.value( size );
+            if( key != QPixmapCache::Key() && QPixmapCache::find( key, &pixmap ) )
                 return pixmap;
         }
     }

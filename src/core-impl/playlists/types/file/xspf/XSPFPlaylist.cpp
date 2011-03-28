@@ -286,6 +286,9 @@ XSPFPlaylist::triggerTrackLoad()
 void
 XSPFPlaylist::addTrack( Meta::TrackPtr track, int position )
 {
+    if( !m_tracksLoaded )
+        triggerTrackLoad();
+
     Meta::TrackList trackList = tracks();
     int trackPos = position < 0 ? trackList.count() : position;
     if( trackPos > trackList.count() )

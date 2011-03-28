@@ -58,7 +58,6 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
         Amarok::TrayIcon* trayIcon() const { return m_tray; }
         static void handleCliArgs();
-        static void initCliArgs( int argc, char *argv[] );
         static void initCliArgs();
 
         static int mainThreadId;

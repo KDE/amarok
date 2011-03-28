@@ -20,6 +20,7 @@
 
 #include "PodcastCategory.h"
 
+#include "amarokurls/AmarokUrl.h"
 #include "App.h"
 #include "browsers/InfoProxy.h"
 #include "core/support/Debug.h"
@@ -269,20 +270,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
 void
 PodcastCategory::slotImportOpml()
 {
-    DEBUG_BLOCK
-    KUrl url = KUrlRequesterDialog::getUrl( QString(), this
-                                            , i18n( "Select OPML file to import" )
-                                            );
-    if( !url.isEmpty() )
-    {
-        // user entered something and pressed OK
-        The::podcastModel()->importOpml( url );
-    }
-    else
-    {
-        // user entered nothing or pressed Cancel
-        debug() << "invalid input or cancel";
-    }
+    AmarokUrl( "amarok://service-podcastdirectory/addOpml" ).run();
 }
 
 #include "PodcastCategory.moc"

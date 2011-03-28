@@ -24,12 +24,22 @@
 
 #include <QXmlStreamWriter>
 
-class OpmlWriter : public ThreadWeaver::Job
+class AMAROK_EXPORT OpmlWriter : public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
-        OpmlWriter( const OpmlOutline *rootOutline, QIODevice *device );
+        /** OpmlWriter will write the OPML outline objects as XML text.
+          * @arg rootOutlines the <body> of the OPML
+          * @arg headerData these fields are put in the <head> of the OPML
+          * @arg device QIODevice to write to
+          * The children of IncludeNodes will not be written. Remove the type="include" attribute
+          * from the include node to force a save of those child nodes.
+          */
+        OpmlWriter( const QList<OpmlOutline *> rootOutlines,
+                    const QMap<QString,QString> headerData,
+                    QIODevice *device );
 
+        void setHeaderData( const QMap<QString,QString> data ) { m_headerData = data; }
         /**
          * The function that starts the actual work. Inherited from ThreadWeaver::Job
          * Note the work is performed in a separate thread
@@ -47,7 +57,9 @@ class OpmlWriter : public ThreadWeaver::Job
 
     private:
         void writeOutline( const OpmlOutline *outline );
-        const OpmlOutline *m_rootOutline;
+        QList<OpmlOutline *> m_rootOutlines;
+        QMap<QString,QString> m_headerData;
+
         KUrl m_fileUrl;
         QXmlStreamWriter *m_xmlWriter;
 };

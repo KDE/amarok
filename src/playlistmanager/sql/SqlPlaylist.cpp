@@ -210,7 +210,7 @@ int
 SqlPlaylist::trackCount() const
 {
     if( m_tracksLoaded )
-      return m_tracks.count();
+        return m_tracks.count();
 
     QString query = "SELECT COUNT(id) FROM playlist_tracks WHERE playlist_id=%1;";
 
@@ -225,7 +225,6 @@ SqlPlaylist::trackCount() const
         return -1;
     }
     int trackCount = results.first().toInt();
-    debug() << trackCount;
     return trackCount;
 }
 
@@ -246,6 +245,9 @@ SqlPlaylist::triggerTrackLoad()
 void
 SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
 {
+    if( !m_tracksLoaded )
+        loadTracks();
+
     int insertAt = (position == -1) ? m_tracks.count() : position;
     subscribeTo( track ); //keep track of metadata changes.
     m_tracks.insert( insertAt, track );
@@ -256,6 +258,9 @@ SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
 void
 SqlPlaylist::removeTrack( int position )
 {
+    if( !m_tracksLoaded )
+        loadTracks();
+
     if( position < 0 || position >= m_tracks.size() )
         return;
     Meta::TrackPtr track = m_tracks.takeAt( position );
@@ -267,6 +272,9 @@ SqlPlaylist::removeTrack( int position )
 void
 SqlPlaylist::metadataChanged( Meta::TrackPtr track )
 {
+    if( !m_tracksLoaded )
+        loadTracks();
+
     //When AFT detects a moved file it will update the track and make it signal it's observers.
     if( !m_tracks.contains( track ) )
     {

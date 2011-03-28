@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2006-2007 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2011 Peter C. Ndikuwera <pndiku@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
-
+ 
 #ifndef SMBDEVICEHANDLER_H
 #define SMBDEVICEHANDLER_H
 
@@ -22,29 +23,33 @@
 class SmbDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
-    SmbDeviceHandlerFactory();
+    SmbDeviceHandlerFactory( QObject *parent, const QVariantList &args );
     virtual ~SmbDeviceHandlerFactory();
 
     virtual bool canHandle( const Solid::Device &device ) const;
 
     virtual bool canCreateFromMedium() const;
 
-    virtual DeviceHandler* createHandler( const Solid::Device &volume, const QString &udi ) const;
+    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &uuid, SqlStorage *s ) const;
 
     virtual bool canCreateFromConfig() const;
 
-    virtual DeviceHandler* createHandler( KSharedConfigPtr c ) const;
+    virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const;
 
     virtual QString type() const;
+
+    virtual void init();
 };
 
 /**
-	@author Maximilian Kossick <maximilian.kossick@googlemail.com>
+    @author Maximilian Kossick <maximilian.kossick@googlemail.com>
 */
 class SmbDeviceHandler : public DeviceHandler
 {
 public:
-    SmbDeviceHandler(int deviceId, QString server, QString dir, QString mountPoint );
+    SmbDeviceHandler();
+    SmbDeviceHandler(int deviceId, const QString &mountPoint, const QString &udi );
+    SmbDeviceHandler(int deviceId, const QString &server, const QString &share, const QString &mountPoint, const QString &udi );
 
     virtual ~SmbDeviceHandler();
 
@@ -59,9 +64,10 @@ public:
 private:
 
     int m_deviceID;
-    const QString m_mountPoint;
     QString m_server;
-    QString m_dir;
+    QString m_share;
+    const QString m_mountPoint;
+    QString m_udi;
 
 };
 

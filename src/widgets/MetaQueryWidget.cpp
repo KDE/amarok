@@ -133,7 +133,6 @@ MetaQueryWidget::MetaQueryWidget( QWidget* parent, bool onlyNumeric, bool noCond
     : QWidget( parent )
     , m_onlyNumeric( onlyNumeric )
     , m_noCondition( noCondition )
-    , m_apgMode( false )
     , m_settingFilter( false )
     , m_andLabel(0)
     , m_compareSelection(0)
@@ -182,14 +181,6 @@ MetaQueryWidget::filter() const
         f.numValue2 = qMax(m_filter.numValue, m_filter.numValue2) + 1;
     }
     return m_filter;
-}
-
-void
-MetaQueryWidget::setAPGMode( bool value )
-{
-    m_apgMode = value;
-    makeValueSelection();
-    setValueSelection();
 }
 
 void
@@ -266,8 +257,15 @@ MetaQueryWidget::fieldChanged( int i )
     if( m_settingFilter )
         return;
 
-    qint64 field;
-    if( i<0 || i>=m_fieldSelection->count() )
+    qint64 field = 0;
+    if( m_fieldSelection->count() == 0 )
+    {
+        if( isNumeric( field ) )
+            m_filter.condition = Equals;
+        else if( !isNumeric( field ) )
+            m_filter.condition = Contains;
+    }
+    else if( i<0 || i>=m_fieldSelection->count() )
         field = m_fieldSelection->itemData( 0 ).toInt();
     else
         field = m_fieldSelection->itemData( i ).toInt();
@@ -288,9 +286,6 @@ MetaQueryWidget::fieldChanged( int i )
         m_filter.numValue = 0;
         m_filter.numValue2 = 0;
     }
-
-    if( field && !m_apgMode )
-        m_filter.condition = Equals;
 
     m_filter.field = field;
 
@@ -472,13 +467,9 @@ MetaQueryWidget::makeCompareSelection()
         m_compareSelection->addItem( conditionToString( Equals, true ), (int)Equals );
         m_compareSelection->addItem( conditionToString( LessThan, true ), (int)LessThan );
         m_compareSelection->addItem( conditionToString( GreaterThan, true ), (int)GreaterThan );
-        if( !m_apgMode )
-        {
-            m_compareSelection->addItem( conditionToString( Between, true ), (int)Between );
-            m_compareSelection->addItem( conditionToString( OlderThan, true ), (int)OlderThan );
-        }
-        else
-            m_compareSelection->addItem( conditionToString( Within, true ), (int)Within );
+        
+        m_compareSelection->addItem( conditionToString( Between, true ), (int)Between );
+        m_compareSelection->addItem( conditionToString( OlderThan, true ), (int)OlderThan );
     }
     else if( isNumeric(field) )
     {
@@ -486,20 +477,10 @@ MetaQueryWidget::makeCompareSelection()
         m_compareSelection->addItem( conditionToString( Equals ), (int)Equals );
         m_compareSelection->addItem( conditionToString( LessThan ), (int)LessThan );
         m_compareSelection->addItem( conditionToString( GreaterThan ), (int)GreaterThan );
-        if( !m_apgMode )
-            m_compareSelection->addItem( conditionToString( Between ), (int)Between );
+        m_compareSelection->addItem( conditionToString( Between ), (int)Between );
     }
     else
-    {
-        if( !m_apgMode )
-            return; // no compare selection for text fields
-
-        m_compareSelection = new KComboBox();
-        m_compareSelection->addItem( conditionToString( Contains ), (int)Contains );
-        m_compareSelection->addItem( conditionToString( Matches ), (int)Matches );
-        m_compareSelection->addItem( conditionToString( StartsWith ), (int)StartsWith );
-        m_compareSelection->addItem( conditionToString( EndsWith ), (int)EndsWith );
-    }
+        return;
 
     // -- select the correct entry (even if the condition is not one of the selection)
     int index = m_compareSelection->findData( int(m_filter.condition) );
@@ -785,8 +766,7 @@ MetaQueryWidget::makeGenericNumberSelection( int min, int max, int def, const QS
 void
 MetaQueryWidget::makeDateTimeSelection()
 {
-    if( m_filter.condition != OlderThan &&
-        m_filter.condition != Within )
+    if( m_filter.condition != OlderThan )
     {
         KDateCombo* dateSelection = new KDateCombo();
         QDateTime dt;
@@ -829,7 +809,8 @@ MetaQueryWidget::makeDateTimeSelection()
 }
 
 
-bool MetaQueryWidget::isNumeric( qint64 field )
+bool
+MetaQueryWidget::isNumeric( qint64 field )
 {
     switch( field )
     {
@@ -855,7 +836,8 @@ bool MetaQueryWidget::isNumeric( qint64 field )
     }
 }
 
-bool MetaQueryWidget::isDate( qint64 field )
+bool
+MetaQueryWidget::isDate( qint64 field )
 {
     switch( field )
     {
@@ -869,7 +851,8 @@ bool MetaQueryWidget::isDate( qint64 field )
     }
 }
 
-QString MetaQueryWidget::conditionToString( FilterCondition condition, bool isDate )
+QString
+MetaQueryWidget::conditionToString( FilterCondition condition, bool isDate )
 {
     if( isDate )
     {
@@ -885,8 +868,6 @@ QString MetaQueryWidget::conditionToString( FilterCondition condition, bool isDa
             return i18nc( "The date is between the given fixed dates", "between" );
         case OlderThan:
             return i18nc( "The date lies before the given time interval", "older than" );
-        case Within:
-            return i18nc( "The date lies after the given time interval", "within" );
         default:
             ; // fall through
         }
@@ -905,12 +886,6 @@ QString MetaQueryWidget::conditionToString( FilterCondition condition, bool isDa
             return i18nc( "a numerical tag (like year or track number) is between two values", "between" );
         case Contains:
             return i18nc("an alphabetical tag (like title or artist name) contains some string", "contains");
-        case Matches:
-            return i18nc("an alphabetical tag (like title or artist name) equals some string","matches");
-        case StartsWith:
-            return i18nc("an alphabetical tag (like title or artist name) starts with some string","starts with");
-        case EndsWith:
-            return i18nc("an alphabetical tag (like title or artist name) ends with some string","ends with");
         default:
             ; // fall through
         }
@@ -918,7 +893,8 @@ QString MetaQueryWidget::conditionToString( FilterCondition condition, bool isDa
     return QString( i18n("unknown comparison") );
 }
 
-QString MetaQueryWidget::Filter::fieldToString() const
+QString
+MetaQueryWidget::Filter::fieldToString() const
 {
     return Meta::shortI18nForField( field );
 }
@@ -926,7 +902,6 @@ QString MetaQueryWidget::Filter::fieldToString() const
 QString MetaQueryWidget::Filter::toString( bool invert ) const
 {
     // this member is called when there is a keyword that needs numeric attributes
-    QString strField = fieldToString();
     QString strValue1 = value;
     QString strValue2 = value;
 
@@ -953,12 +928,14 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
     }
 
     QString result;
+    if( field )
+        result = fieldToString() + ':';
 
     switch( condition )
     {
     case Equals:
         {
-            result = strField + ":" + strValue1;
+            result += strValue1;
             if( invert )
                 result.prepend( QChar('-') );
             break;
@@ -966,7 +943,7 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
 
     case GreaterThan:
         {
-            result = strField + ":>" + strValue1;
+            result += '>' + strValue1;
             if( invert )
                 result.prepend( QChar('-') );
             break;
@@ -974,7 +951,7 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
 
     case LessThan:
         {
-            result = strField + ":<" + strValue1;
+            result +='<' + strValue1;
             if( invert )
                 result.prepend( QChar('-') );
             break;
@@ -983,14 +960,13 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
     case Between:
         {
             if( invert )
-                result = strField + ":<" + strValue1 + " OR " + strField + ":>" + strValue2;
+                result = QString( "%1<%2 OR %1>%3" ).arg( result, strValue1, strValue2 );
             else
-                result = strField + ":>" + strValue1 + " " + strField + ":<" + strValue2;
+                result = QString( "%1>%2 AND %1<%3" ).arg( result, strValue1, strValue2 );
             break;
         }
 
     case OlderThan:
-    case Within:
         {
             // a human readable time..
             int unit = 0;
@@ -1018,9 +994,9 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
                 strUnit = 'd';
 
             if( condition == OlderThan )
-                result = strField + ":>" + QString::number(val) + strUnit;
+                result += '>' + QString::number(val) + strUnit;
             else
-                result = strField + ":<" + QString::number(val) + strUnit;
+                result += '<' + QString::number(val) + strUnit;
             if( invert )
                 result.prepend( QChar('-') );
             break;
@@ -1028,33 +1004,13 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
 
     case Contains:
         {
-            result = value;
-            if( invert )
-                result.prepend( QChar('-') );
-            break;
-        }
-    case Matches:
-        {
-            result = '"'+value+'"';
-            if( invert )
-                result.prepend( QChar('-') );
-            break;
-        }
-    case StartsWith:
-        {
-            result = '"'+value+"*\"";
-            if( invert )
-                result.prepend( QChar('-') );
-            break;
-        }
-    case EndsWith:
-        {
-            result = "\"*"+value+'"';
+            result += QString( "\"%1\"" ).arg( value );
             if( invert )
                 result.prepend( QChar('-') );
             break;
         }
     }
+
     return result;
 }
 

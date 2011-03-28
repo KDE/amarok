@@ -42,42 +42,27 @@ public:
     QStringList sources() const;
 
     // reimplemented from LyricsObserver
-    void newLyrics( QStringList& lyrics );
-    void newLyricsHtml( QString& lyrics );
+    void newLyrics( const LyricsData &lyrics );
     void newSuggestions( const QVariantList &suggest );
-    void lyricsMessage( QString& key, QString& val );
+    void lyricsMessage( const QString& key, const QString& val );
 
 protected:
     bool sourceRequestEvent( const QString& name );
 
 private slots:
     void update();
+    void onTrackMetadataChanged( Meta::TrackPtr track );
 
 private:
-    /**
-      * Tests if the lyrics have changed.
-      *
-      * @param newLyrics The new lyrics.
-      * @param oldHtmlLyrics The old (unchanged) HTML lyrics.
-      * @param oldPlainLyrics The old plain lyrics (as provided by the LyricsEngine).
-      *
-      * @return true if the lyrics for the current track have changed, otherwise false.
-      */
-    bool testLyricsChanged( const QString& newLyrics,
-                            const QString& oldHtmlLyrics,
-                            QStringList oldPlainLyrics ) const;
+    LyricsData m_prevLyrics;
+    bool m_isUpdateInProgress;
 
-    // Cache the title/artist of the current track so we can check against
-    // metadata updates. We only want to update the lyrics if either the
-    // title or the artist change (but not other attributes like rating, score,
-    // composer etc).
-    QStringList m_currentLyricsList,m_prevLyricsList;
-    QVariantList m_currentSuggestionsList,m_prevSuggestionsList;
-    QString m_currentLyrics,m_prevLyrics;
-    QString m_title;
-    QString m_artist;
+    struct trackMetadata {
+        QString artist;
+        QString title;
+    } m_prevTrackMetadata;
 };
 
-K_EXPORT_AMAROK_DATAENGINE( lyrics, LyricsEngine )
+AMAROK_EXPORT_DATAENGINE( lyrics, LyricsEngine )
 
 #endif

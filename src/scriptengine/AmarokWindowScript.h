@@ -32,7 +32,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokWindowScript( QScriptEngine* ScriptEngine, QList<QObject*>* guiPtrList );
+            AmarokWindowScript( QScriptEngine* scriptEngine );
             ~AmarokWindowScript();
 
         public slots:
@@ -58,8 +58,8 @@ namespace AmarokScript
 
             QWeakPointer<KMenu> m_toolsMenu;
             QWeakPointer<KMenu> m_settingsMenu;
-            QScriptEngine*   m_ScriptEngine;
-            QList<QObject*>* m_guiPtrList;
+            QScriptEngine*   m_scriptEngine;
+            QList<QObject*> m_guiPtrList;
 
     };
 }

@@ -33,8 +33,10 @@
 #include <QLabel>
 
 
-ServiceFactory::ServiceFactory() : m_initialized( false )
+ServiceFactory::ServiceFactory( QObject *parent, const QVariantList &args )
+    : Plugins::PluginFactory( parent, args )
 {
+    m_type = Plugins::PluginFactory::Service;
     CollectionManager::instance()->addTrackProvider( this );
 }
 
@@ -139,6 +141,9 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
 
     m_menubar = new KMenuBar( m_topPanel );
+    // Make sure we do not expose this menubar outside to ensure it does not
+    // replace the main menubar when Amarok is used with Plasma Menubar
+    m_menubar->setNativeMenuBar( false );
     m_filterMenu = m_menubar->addMenu( i18n( "Group By" ) );
 
     m_menubar->hide();

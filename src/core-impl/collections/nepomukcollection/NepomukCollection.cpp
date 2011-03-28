@@ -41,7 +41,7 @@
 #include <Soprano/Vocabulary/Xesam>
 
 
-AMAROK_EXPORT_PLUGIN( NepomukCollectionFactory )
+AMAROK_EXPORT_PLUGIN( amarok_collection-nepomukcollection, NepomukCollectionFactory )
 
 // CollectionFactory
 

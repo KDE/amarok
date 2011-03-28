@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Service
+Icon=network-workgroup
 Name=Playdar Collection
 Name[ca]=Col·lecció del Playdar
 Name[ca@valencia]=Col·lecció del Playdar
@@ -8,6 +9,7 @@ Name[de]=Playdar-Sammlung
 Name[en_GB]=Playdar Collection
 Name[es]=Colección de Playdar
 Name[et]=Playdari kogu
+Name[gl]=Colección de Playdar
 Name[it]=Collezione Playdar
 Name[ja]=Playdar コレクション
 Name[km]=សម្រាំង Playdar
@@ -29,6 +31,7 @@ Comment[de]=Von Playdar auffindbare Musik
 Comment[en_GB]=Music that Playdar can find
 Comment[es]=Música que puede encontrar Playdar
 Comment[et]=Muusika, mida Playdar suudab leida
+Comment[gl]=Música que pode atopar Playdar
 Comment[it]=Musica che Playdar può trovare
 Comment[ja]=Playdar が見つけることのできる音楽
 Comment[km]=តន្ត្រី​ដែល​ Playdar អាច​រក​ឃើញ
@@ -45,12 +48,19 @@ Comment[zh_TW]=Playdar 可以找到的音樂
 
 ServiceTypes=Amarok/Plugin-disabled
 
-X-KDE-Library=amarok_collection-playdarcollection
-
 X-KDE-Amarok-authors=Andrew Coder
 X-KDE-Amarok-email=andrew.coder@gmail.com
-X-KDE-Amarok-framework-version=60
+X-KDE-Amarok-framework-version=61
 X-KDE-Amarok-name=playdar-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
+
+X-KDE-PluginInfo-Author=Andrew Coder
+X-KDE-PluginInfo-Email=andrew.coder@gmail.com
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Collection
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=false
+X-KDE-PluginInfo-Name=amarok_collection-playdarcollection
+X-KDE-Library=amarok_collection-playdarcollection

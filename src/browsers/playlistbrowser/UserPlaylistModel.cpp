@@ -166,36 +166,14 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
 {
     Q_UNUSED( column )
 
-    if( action == Qt::IgnoreAction )
+    //let the base class handle the regular actions.
+    if( PlaylistBrowserModel::dropMimeData( data, action, row, column, parent ) )
         return true;
-
-    //drop on track is not possible
-    if( IS_TRACK(parent) )
-            return false;
-
-    if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
-    {
-        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
-        if( !dragList )
-            return false;
-
-        int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
-        Playlists::PlaylistPtr playlist = m_playlists.value( playlistRow );
-        if( playlist )
-        {
-            int insertAt = (row == -1) ? playlist->tracks().count() : row;
-            foreach( Meta::TrackPtr track, dragList->tracks() )
-                playlist->addTrack( track, insertAt++ );
-        }
-        return !playlist.isNull();
-    }
 
     if( data->hasUrls() )
     {
-        bool success = true;
         foreach( const QUrl &url, data->urls() )
-            success = The::playlistManager()->import( url.toString() ) ? success : false;
-        return success;
+            The::playlistManager()->import( url.toString() );
     }
 
     return false;

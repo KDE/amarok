@@ -69,7 +69,10 @@ VorbisCommentTagHelper::tags() const
         else if( it->first == uidFieldName( UIDAFT ) && isValidUID( value, UIDAFT ) )
             data.insert( Meta::valUniqueId, value );
         else if( it->first == uidFieldName( UIDMusicBrainz ) && isValidUID( value, UIDMusicBrainz ) )
-            data.insert( Meta::valUniqueId, value.prepend( "mb-" ) );
+        {
+            if( !data.contains( Meta::valUniqueId ) ) // we prefere AFT uids
+                data.insert( Meta::valUniqueId, value.prepend( "mb-" ) );
+        }
     }
 
     return data;

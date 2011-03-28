@@ -28,15 +28,15 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokScriptConfig( const QString& name );
+            AmarokScriptConfig( const QString& name, QScriptEngine *engine );
             ~AmarokScriptConfig();
 
         public slots:
-            QVariant readConfig( QString name, QVariant defaultValue ) const;
-            QString readConfig( QString name, QString defaultValue ) const;
+            QVariant readConfig( const QString &name, const QVariant &defaultValue ) const;
+            QString readConfig( const QString &name, const QString &defaultValue ) const;
 
-            void writeConfig( QString name, QVariant content );
-            void writeConfig( QString name, QString content );
+            void writeConfig( const QString &name, const QVariant &content );
+            void writeConfig( const QString &name, const QString &content );
 
         private:
             QString m_name;

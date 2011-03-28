@@ -1,24 +1,24 @@
-
 add_subdirectory( icons )
 
 ########### install files ###############
 
-install(
-        FILES
+install(FILES
         FilenameLayoutDialogHint.png
         amarok_icon.svg
         default-theme-clean.svg
         emblem-default.png
         emblem-jamendo.png
-	emblem-jamendo-scalable.svgz
+        emblem-jamendo-scalable.svgz
         emblem-lastfm.png
-	emblem-lastfm-scalable.svg
+        emblem-lastfm-scalable.svg
+        emblem-gpodder.png
+    emblem-gpodder-scalable.svgz
         emblem-magnatune.png
         emblem-mp3tunes.png
         emblem-ampache.png
-	emblem-ampache-scalable.svgz
+        emblem-ampache-scalable.svgz
         emblem-scripted.png
-	emblem-scripted-scalable.svgz
+        emblem-scripted-scalable.svgz
         lastfm-default-cover.png
         loading1.png
         loading2.png
@@ -56,7 +56,7 @@ install(
         hover_info_playlists.png
         hover_info_user_playlists.png
         hover_info_podcasts.png
-	opendesktop-22.png
+        opendesktop-22.png
 
         emblem-delicious.png
         emblem-digg.png
@@ -70,10 +70,10 @@ install(
         emblem-wikipedia.png
         emblem-xing.png
 
-	likeback_like.png
-	likeback_dislike.png
-	likeback_bug.png
-	likeback_feature.png
+        likeback_like.png
+        likeback_dislike.png
+        likeback_bug.png
+        likeback_feature.png
 
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )

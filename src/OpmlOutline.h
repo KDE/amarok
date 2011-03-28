@@ -23,6 +23,15 @@
 #include <QMap>
 #include <QString>
 
+enum OpmlNodeType
+{
+    InvalidNode,
+    UnknownNode,
+    RssUrlNode, //leaf node that link to an RSS
+    IncludeNode, //URL to an OPML file that will be loaded as a sub-tree upon expansion
+    RegularNode //plain sub-tree which can be represented as a folder.
+};
+
 class AMAROK_EXPORT OpmlOutline
 {
     public:
@@ -30,18 +39,27 @@ class AMAROK_EXPORT OpmlOutline
         ~OpmlOutline() {}
 
         OpmlOutline *parent() const { return m_parent; }
+        void setParent( OpmlOutline *parent ) { m_parent = parent; }
         bool isRootItem() const { return m_parent == 0; }
 
         QMap<QString,QString> attributes() const { return m_attributes; }
+
+        /** @return a modifiable reference to the attributes */
+        QMap<QString,QString> &mutableAttributes() { return m_attributes; }
         void addAttribute( const QString &key, const QString &value )
                 { m_attributes.insert( key, value ); }
 
         QList<OpmlOutline *> children() const { return m_children; }
+
+        /** @return a modifiable reference to the children */
+        QList<OpmlOutline *> &mutableChildren() { return m_children; }
         void setHasChildren( bool hasChildren ) { m_hasChildren = hasChildren; }
         bool hasChildren() const { return m_hasChildren; }
         void addChild( OpmlOutline *outline ) { m_children << outline; }
         void addChildren( QList<OpmlOutline *> outlineList )
                 { m_children << outlineList; }
+
+        OpmlNodeType opmlNodeType() const;
 
     private:
         OpmlOutline *m_parent;

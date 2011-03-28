@@ -18,7 +18,6 @@
 #define AMAROK_PLAYLISTPROVIDER_H
 
 #include "shared/amarok_export.h"
-#include "core/plugins/Plugin.h"
 #include "core/playlists/Playlist.h"
 
 #include <QString>
@@ -28,11 +27,12 @@ class KIcon;
 
 namespace Playlists {
 
-class AMAROK_CORE_EXPORT PlaylistProvider : public QObject, public Plugins::Plugin
+class AMAROK_CORE_EXPORT PlaylistProvider : public QObject
 {
     Q_OBJECT
 
     public:
+        PlaylistProvider( QObject *parent = 0 ) : QObject( parent ) {}
         virtual ~PlaylistProvider() {}
 
         /**

@@ -25,10 +25,11 @@
 
 AmarokDownloadHelper *AmarokDownloadHelper::s_instance = 0;
 
-AmarokNetworkScript::AmarokNetworkScript( QScriptEngine* ScriptEngine )
-: QObject( kapp )
+AmarokNetworkScript::AmarokNetworkScript( QScriptEngine *engine )
+    : QObject( engine )
 {
-    Q_UNUSED( ScriptEngine );
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    engine->globalObject().property( "Amarok" ).setProperty( "Network", scriptObject );
 }
 
 AmarokNetworkScript::~AmarokNetworkScript()
@@ -38,8 +39,8 @@ AmarokNetworkScript::~AmarokNetworkScript()
 // Class Downloader
 
 Downloader::Downloader( QScriptEngine* engine )
-    : QObject( kapp ),
-    m_scriptEngine( engine )
+    : QObject( engine )
+    , m_scriptEngine( engine )
 {
     engine->setDefaultPrototype( qMetaTypeId<Downloader*>(), QScriptValue() );
     const QScriptValue stringCtor = engine->newFunction( stringDownloader_prototype_ctor );
@@ -123,21 +124,21 @@ Downloader::init( QScriptContext* context, QScriptEngine* engine, bool stringRes
 AmarokDownloadHelper::AmarokDownloadHelper()
 {
     s_instance = this;
-    connect( The::networkAccessManager(), SIGNAL( requestRedirected( const KUrl&, const KUrl& ) ),
-             this, SLOT( requestRedirected( const KUrl&, const KUrl& ) ) );
+    connect( The::networkAccessManager(), SIGNAL(requestRedirected(KUrl, KUrl)),
+             this, SLOT(requestRedirected(KUrl, KUrl)) );
 }
 
 void
 AmarokDownloadHelper::newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding )
 {
     m_encodings[ url ] = encoding;
-    newDownload( url, engine, obj, SLOT( resultString( KUrl, QByteArray, NetworkAccessManagerProxy::Error) ) );
+    newDownload( url, engine, obj, SLOT(resultString(KUrl, QByteArray, NetworkAccessManagerProxy::Error)) );
 }
 
 void
 AmarokDownloadHelper::newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj )
 {
-    newDownload( url, engine, obj, SLOT( resultData( KUrl, QByteArray, NetworkAccessManagerProxy::Error) ) );
+    newDownload( url, engine, obj, SLOT(resultData(KUrl, QByteArray, NetworkAccessManagerProxy::Error)) );
 }
 
 void
@@ -167,10 +168,10 @@ AmarokDownloadHelper::resultData( const KUrl &url, QByteArray data, NetworkAcces
         return;
 
     if( e.code != QNetworkReply::NoError )
-        debug() << "Error fetching data:" << e.description;
+        warning() << "Error fetching data:" << e.description;
 
-    QScriptValue obj = m_values[ url ];
-    QScriptEngine* engine = m_engines[ url ];
+    QScriptValue obj = m_values.value( url );
+    QScriptEngine* engine = m_engines.value( url );
     cleanUp( url );
     
     // now send the data to the associated script object
@@ -199,11 +200,11 @@ AmarokDownloadHelper::resultString( const KUrl &url, QByteArray data, NetworkAcc
         return;
 
     if( e.code != QNetworkReply::NoError )
-        debug() << "Error fetching string:" << e.description;
+        warning() << "Error fetching string:" << e.description;
 
-    QScriptValue obj = m_values[ url ];
-    QScriptEngine* engine = m_engines[ url ];
-    QString encoding = m_encodings[ url ];
+    QScriptValue obj = m_values.value( url );
+    QScriptEngine* engine = m_engines.value( url );
+    QString encoding = m_encodings.value( url );
     cleanUp( url );
 
     QString str;

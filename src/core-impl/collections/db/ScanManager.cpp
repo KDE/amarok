@@ -23,13 +23,13 @@
 
 #include "core-impl/collections/db/ScanManager.h"
 
-#include "amarokconfig.h"
 #include "App.h"
+#include "MountPointManager.h"
 #include "ScanResultProcessor.h"
-#include "sql/SqlCollection.h"
-#include "sql/MountPointManager.h"
-#include "statusbar/StatusBar.h"
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
+#include "sql/SqlCollection.h"
+#include "statusbar/StatusBar.h"
 
 // include files from the collection scanner utility
 #include <collectionscanner/BatchFile.h>
@@ -745,7 +745,7 @@ ScannerJob::getKnownDirs()
 {
     QList< QPair<QString, uint> > result;
 
-    // -- get all mount points
+    // -- get all (mounted) mount points
     QList<int> idlist = m_collection->mountPointManager()->getMountedDeviceIds();
 
     //expects a stringlist in order deviceid, dir, changedate

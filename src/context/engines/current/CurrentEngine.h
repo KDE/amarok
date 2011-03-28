@@ -72,7 +72,8 @@ private:
     QHash< QString, bool > m_requested;
     Meta::AlbumList m_albums;
     Meta::TrackPtr m_currentTrack;
-    Meta::AlbumPtr m_currentAlbum;
+    qint64 m_coverCacheKey;
+    QVariantMap m_trackInfo;
 
     /** The address of the query maker used for the albums query.
         This is only used to check if the query results are from the latest started query maker.
@@ -84,6 +85,6 @@ private slots:
     void setupAlbumsData();
 };
 
-K_EXPORT_AMAROK_DATAENGINE( current, CurrentEngine )
+AMAROK_EXPORT_DATAENGINE( current, CurrentEngine )
 
 #endif

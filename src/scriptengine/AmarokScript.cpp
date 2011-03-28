@@ -24,12 +24,17 @@
 
 #include <KMessageBox>
 
+#include <QScriptEngine>
+
 namespace AmarokScript
 {
-    AmarokScript::AmarokScript( const QString& name )
-        : QObject( kapp )
+    AmarokScript::AmarokScript( const QString& name, QScriptEngine *engine )
+        : QObject( engine )
         , m_name( name )
-    {}
+    {
+        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+        engine->globalObject().setProperty( "Amarok", scriptObject );
+    }
 
     AmarokScript::~AmarokScript()
     {}
@@ -47,30 +52,30 @@ namespace AmarokScript
     int AmarokScript::alert( const QString& text, const QString& type ) const
     {
         //Ok = 1, Cancel = 2, Yes = 3, No = 4, Continue = 5
-        if ( type == "error" )
+        if( type == "error" )
         {
             KMessageBox::error( 0, text );
             return -1;
         }
-        else if ( type == "sorry" )
+        else if( type == "sorry" )
         {
             KMessageBox::sorry( 0, text );
             return -1;
         }
-        else if ( type == "information" )
+        else if( type == "information" )
         {
             KMessageBox::information( 0, text );
             return -1;
         }
-        else if ( type == "questionYesNo" )
+        else if( type == "questionYesNo" )
             return KMessageBox::questionYesNo( 0, text );
-        else if ( type == "questionYesNoCancel" )
+        else if( type == "questionYesNoCancel" )
             return KMessageBox::questionYesNo( 0, text );
-        else if ( type == "warningYesNo" )
+        else if( type == "warningYesNo" )
             return KMessageBox::warningYesNo( 0, text );
-        else if ( type == "warningContinueCancel" )
+        else if( type == "warningContinueCancel" )
             return KMessageBox::warningContinueCancel( 0, text );
-        else if ( type == "warningYesNoCancel" )
+        else if( type == "warningYesNoCancel" )
             return KMessageBox::warningYesNoCancel( 0, text );
 
         warning() << "alert type not found!";

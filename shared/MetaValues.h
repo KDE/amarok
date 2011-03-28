@@ -54,7 +54,7 @@ namespace Meta
     static const qint64 valBitrate      = 1LL << 12;
     static const qint64 valSamplerate   = 1LL << 13;
     static const qint64 valFilesize     = 1LL << 14;
-    static const qint64 valFormat       = 1LL << 15;
+    static const qint64 valFormat       = 1LL << 15; // the file type a numeric value
     static const qint64 valCreateDate   = 1LL << 16;
     //statistics
     static const qint64 valScore        = 1LL << 17;
@@ -77,7 +77,6 @@ namespace Meta
     // TODO: support for queryMaker
     static const qint64 valCompilation  = 1LL << 40;
     static const qint64 valHasCover     = (1LL << 40) + 1;
-    static const qint64 valFiletype     = (1LL << 40) + 2;
 
     // start for custom numbers
     static const qint64 valCustom       = 1LL << 60;

@@ -30,7 +30,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            ScriptImporter( QScriptEngine* ScriptEngine, KUrl url );
+            ScriptImporter( QScriptEngine* ScriptEngine, const KUrl &url );
             ~ScriptImporter();
 
         public slots:

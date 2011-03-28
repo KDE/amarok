@@ -19,27 +19,31 @@
 
 #include "AmarokLyricsScript.h"
 
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "LyricsManager.h"
-#include "core/meta/Meta.h"
 #include "ScriptManager.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <KApplication>
 
 #include <QByteArray>
+#include <QScriptEngine>
 #include <QTextCodec>
 #include <QTextDocument>
 
 namespace AmarokScript
 {
 
-AmarokLyricsScript::AmarokLyricsScript( QScriptEngine* scriptEngine )
-    : QObject( kapp )
+AmarokLyricsScript::AmarokLyricsScript( QScriptEngine *engine )
+    : QObject( engine )
 {
-    Q_UNUSED( scriptEngine )
-    connect( ScriptManager::instance(), SIGNAL( fetchLyrics( const QString&, const QString&, const QString& ) ), this, SIGNAL( fetchLyrics( const QString&, const QString&, const QString& ) ) );
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    engine->globalObject().property( "Amarok" ).setProperty( "Lyrics", scriptObject );
+    connect( ScriptManager::instance(),
+             SIGNAL(fetchLyrics(QString, QString, QString)),
+             SIGNAL(fetchLyrics(QString, QString, QString)) );
 }
 
 AmarokLyricsScript::~AmarokLyricsScript()

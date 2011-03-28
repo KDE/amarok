@@ -20,10 +20,16 @@
 #define AMAROK_EDITFILTERDIALOG_H
 
 #include "core/meta/Meta.h"
-#include "ui_EditFilterDialog.h"
+#include "widgets/MetaQueryWidget.h"
+#include "widgets/TokenPool.h"
 
 #include <KDialog>
 #include <QList>
+
+namespace Ui
+{
+    class EditFilterDialog;
+}
 
 class TokenDropTarget;
 
@@ -40,6 +46,15 @@ class EditFilterDialog : public KDialog
     signals:
         void filterChanged( const QString &filter );
 
+    private slots:
+        void slotTokenSelected( QWidget *token );
+        void slotTokenDropTargetChanged();
+        void slotAttributeChanged( const MetaQueryWidget::Filter &filter );
+        void slotInvert( bool checked );
+        void slotSeparatorChange( const QString &separator );
+        void slotReset();
+        void accept();
+
     private:
         void initTokenPool();
         Token *tokenForField( const qint64 field );
@@ -52,21 +67,12 @@ class EditFilterDialog : public KDialog
             bool inverted;
         };
 
-        Ui::EditFilterDialog m_ui;
+        Ui::EditFilterDialog *m_ui;
         TokenDropTarget *m_dropTarget;
         Token *m_curToken;
         QMap< Token *, Filter > m_filters;
 
         QString m_separator;
-
-    private slots:
-        void slotTokenSelected( QWidget *token );
-        void slotTokenDropTargetChanged();
-        void slotAttributeChanged( const MetaQueryWidget::Filter &filter );
-        void slotInvert( bool checked );
-        void slotSeparatorChange( const QString &separator );
-        void slotReset();
-        void accept();
 };
 
 #endif /* AMAROK_EDITFILTERDIALOG_H */

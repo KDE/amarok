@@ -38,7 +38,6 @@
 #include <Osd.h>
 
 
-extern KAboutData aboutData;
 extern OcsData ocsData;
 
 namespace Amarok
@@ -148,7 +147,7 @@ KMenu*
 Menu::helpMenu( QWidget *parent ) //STATIC
 {
     if ( s_helpMenu == 0 )
-        s_helpMenu = new KHelpMenu( parent, &aboutData, Amarok::actionCollection() );
+        s_helpMenu = new KHelpMenu( parent, KGlobal::mainComponent().aboutData(), Amarok::actionCollection() );
 
     KMenu* menu = s_helpMenu->menu();
 

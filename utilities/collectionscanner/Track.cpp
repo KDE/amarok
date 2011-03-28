@@ -77,8 +77,8 @@ CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directo
         m_uniqueid = values.value(Meta::valUniqueId).toString();
     m_path = path;
     m_rpath = QDir::current().relativeFilePath( path );
-    if( values.contains(Meta::valFiletype) )
-        m_filetype = Amarok::FileType(values.value(Meta::valFiletype).toInt());
+    if( values.contains(Meta::valFormat) )
+        m_filetype = Amarok::FileType(values.value(Meta::valFormat).toInt());
     if( values.contains(Meta::valTitle) )
         m_title = values.value(Meta::valTitle).toString();
     if( values.contains(Meta::valArtist) )
