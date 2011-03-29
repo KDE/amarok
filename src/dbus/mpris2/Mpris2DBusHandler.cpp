@@ -157,7 +157,11 @@ namespace Amarok
 
     QString Mpris2DBusHandler::DesktopEntry() const
     {
-        return "amarok";
+        // Amarok desktop file is installed in $prefix/share/applications/kde4/
+        // rather than in $prefix/share/applications. The standard way to
+        // represent this dir is with a "kde4-" prefix. See:
+        // http://standards.freedesktop.org/menu-spec/1.0/go01.html#term-desktop-file-id
+        return "kde4-amarok";
     }
 
     QStringList Mpris2DBusHandler::SupportedUriSchemes() const
