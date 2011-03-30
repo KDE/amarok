@@ -40,21 +40,6 @@ GpodderServiceModel::~GpodderServiceModel()
     delete rootItem;
 }
 
-//Qt::ItemFlags GpodderServiceModel::flags( const QModelIndex &idx ) const
-//{
-//	DEBUG_BLOCK
-//    if( !idx.isValid() )
-//        return Qt::ItemIsDropEnabled;
-//
-//    GpodderTreeItem *treeItem = static_cast<GpodderTreeItem *>( idx.internalPointer() );
-//    if( treeItem ) //probably a folder
-//        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled
-//                | Qt::ItemIsDropEnabled;
-//
-//    return QAbstractItemModel::flags( idx );
-//}
-
-
 QModelIndex GpodderServiceModel::index( int row, int column, const QModelIndex &parent ) const
 {
     DEBUG_BLOCK
@@ -266,8 +251,8 @@ void GpodderServiceModel::fetchMore( const QModelIndex &parent )
         mygpo::PodcastListPtr podcasts = m_request.podcastsOfTag( s_numberItemsToLoad, tagTreeItem->tag()->tag() );
         GpodderPodcastRequestHandler *podcastRequestHandler = new GpodderPodcastRequestHandler( podcasts, parent, this );
         connect( podcasts.data(), SIGNAL( finished() ), podcastRequestHandler, SLOT( finished() ) );
-        connect( podcasts.data(), SIGNAL( requestError( QNetworkReply::NetworkError ) ), podcastRequestHandler, SLOT( topTagsRequestError( QNetworkReply::NetworkError ) ) );
-        connect( podcasts.data(), SIGNAL( parseError() ), podcastRequestHandler, SLOT( topTagsParseError() ) );
+        connect( podcasts.data(), SIGNAL( requestError( QNetworkReply::NetworkError ) ), podcastRequestHandler, SLOT( requestError( QNetworkReply::NetworkError ) ) );
+        connect( podcasts.data(), SIGNAL( parseError() ), podcastRequestHandler, SLOT( parseError() ) );
     }
 
 }
