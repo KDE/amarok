@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.4.1
   BUGFIXES:
+    * Fix song scrobbling if It was paused. (BR: 267477)
     * Screen escape characters in MusicBrainz request string. (BR: 269455)
     * Fixed detection of iPod devices.
     * Fixed crash when the lyrics applet was removed and re-added while a

@@ -551,8 +551,7 @@ EngineController::stop( bool forceInstant ) //SLOT
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
-        m_currentTrack = 0;
-        emit trackChanged( Meta::TrackPtr( 0 ) );
+
         m_currentTrack = 0;
         m_currentAlbum = 0;
         emit trackChanged( m_currentTrack );

@@ -59,7 +59,8 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
              this, SLOT( stopped( qint64, qint64 ) ) );
     connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),
              this, SLOT( trackPositionChanged( qint64, bool ) ) );
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+    //Use trackChanged instead of trackPlaying to prevent reset of current track after Unpausing.
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
              this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
              this, SLOT( trackMetadataChanged( Meta::TrackPtr ) ) );
@@ -161,7 +162,6 @@ ScrobblerAdapter::stopped( qint64 finalPosition, qint64 trackLength )
 
     trackPositionChanged( finalPosition, false );
     checkScrobble();
-    resetVariables();
 }
 
 
