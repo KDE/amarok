@@ -1230,7 +1230,7 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
     {
         Collections::QueryMaker *qm = item->queryMaker();
         CollectionTreeItem *tmp = item;
-        while( tmp->isDataItem() )
+        while( tmp->isDataItem() || tmp->isVariousArtistItem() )
         {
             if( tmp->isVariousArtistItem() )
                 qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
