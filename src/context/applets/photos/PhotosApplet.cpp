@@ -128,8 +128,11 @@ void
 PhotosApplet::photoAdded()
 {
     setBusy( false );
-    setHeaderText( i18nc( "@title:window Number of photos of artist", "%1 Photos: %2",
-                          m_widget->count(), m_currentArtist ) );
+    setHeaderText( i18ncp( "@title:window Number of photos of artist",
+                           "1 Photo: %2",
+                           "%1 Photos: %2",
+                           m_widget->count(),
+                           m_currentArtist ) );
 }
 
 void

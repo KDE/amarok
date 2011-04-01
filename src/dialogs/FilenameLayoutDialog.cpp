@@ -267,7 +267,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     if( !m_isOrganizeCollection )
     {
         tokenPool->addToken( new Token( i18n( "Ignore" ), "filename-ignore-amarok", Ignore ) );
-        syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
+        syntaxLabel->setText( i18nc("Please do not translate the %foo% words as they define a syntax used internally by a parser to describe a filename.",
                                     // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme:<br> \
                                      <font color=\"%1\">%track%</font>, <font color=\"%2\">%title%</font>, \
@@ -285,7 +285,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         Token *filetypeToken = new Token( i18n( "File type" ), "filename-filetype-amarok", FileType );
         tokenPool->addToken( filetypeToken );
         tokenPool->addToken( new Token( i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber ) );
-        syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
+        syntaxLabel->setText( i18nc("Please do not translate the %foo% words as they define a syntax used internally by a parser to describe a filename.",
                                     // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \
                                      <br>%track%, %title%, %artist%, %composer%, %year%, %album%, %albumartist%, %comment%, %genre%, %initial%, %folder%, %filetype%, %discnumber%." ) );

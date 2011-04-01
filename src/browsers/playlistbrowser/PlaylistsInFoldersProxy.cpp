@@ -332,7 +332,7 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
         KDialog dialog;
         dialog.setCaption( i18n( "Confirm Delete" ) );
         dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-        QLabel label( i18n( "Are you sure you want to delete this folder and it's contents?" )
+        QLabel label( i18n( "Are you sure you want to delete this folder and its contents?" )
                       , &dialog
                     );
         //TODO:include a text area with all the names of the playlists
