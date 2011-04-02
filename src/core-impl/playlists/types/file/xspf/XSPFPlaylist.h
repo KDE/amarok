@@ -126,7 +126,7 @@ public:
     /** Changes both the filename and the title in XML */
     void setName( const QString &name );
     bool load( QTextStream &stream ) { return loadXSPF( stream ); }
-    /** save to location, relative is unused since XSPF mandates absolute paths */
+    /** save to location */
     bool save( const KUrl &location, bool relative );
 
     void setQueue( const QList<int> &queue );
@@ -134,6 +134,7 @@ public:
 
 private:
     XSPFTrackList trackList();
+    QString trackLocation( Meta::TrackPtr &track );
     bool loadXSPF( QTextStream& );
     bool m_tracksLoaded;
     //cache for the tracklist since a tracks() is a called *a lot*.
@@ -141,6 +142,8 @@ private:
 
     KUrl m_url;
     bool m_autoAppendAfterLoad;
+    bool m_relativePaths;
+    bool m_saveLock;
 };
 
 }
