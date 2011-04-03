@@ -258,14 +258,7 @@ MetaQueryWidget::fieldChanged( int i )
         return;
 
     qint64 field = 0;
-    if( m_fieldSelection->count() == 0 )
-    {
-        if( isNumeric( field ) )
-            m_filter.condition = Equals;
-        else if( !isNumeric( field ) )
-            m_filter.condition = Contains;
-    }
-    else if( i<0 || i>=m_fieldSelection->count() )
+    if( i<0 || i>=m_fieldSelection->count() )
         field = m_fieldSelection->itemData( 0 ).toInt();
     else
         field = m_fieldSelection->itemData( i ).toInt();
@@ -273,9 +266,15 @@ MetaQueryWidget::fieldChanged( int i )
     if( m_filter.field == field )
         return; // nothing to do
 
-    // -- if the field was changed, reset the values (but not always)
+    // -- reset the value and the condition if the new filter has another type
     if( isNumeric( m_filter.field ) != isNumeric( field ) )
+    {
         m_filter.value.clear();
+        if( isNumeric( field ) )
+            m_filter.condition = Equals;
+        else
+            m_filter.condition = Contains;
+    }
     if( !isDate( m_filter.field ) && isDate( field ) )
     {
         m_filter.numValue = QDateTime::currentDateTime().toTime_t();
