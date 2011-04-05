@@ -557,22 +557,16 @@ void CoverFoundDialog::processQuery( const QString &input )
 {
     const bool inputEmpty( input.isEmpty() );
     const bool mQueryEmpty( m_query.isEmpty() );
-    bool incrementPage( false );
 
     QString q;
     if( inputEmpty && !mQueryEmpty )
     {
         q = m_query;
-        incrementPage = true;
     }
     else if( !inputEmpty || !mQueryEmpty )
     {
         q = input;
-        if( m_query == input )
-        {
-            incrementPage = true;
-        }
-        else
+        if( m_query != input )
         {
             m_query = input;
             m_queryPage = 0;
