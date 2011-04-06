@@ -473,10 +473,16 @@ OpmlDirectoryModel::subscribe( const QModelIndexList &indexes ) const
             continue;
         if( outline->opmlNodeType() != RssUrlNode )
             continue;
-        if( !outline->attributes().contains( "xmlUrl" ) )
+
+        KUrl url;
+        if( outline->attributes().contains( "xmlUrl" ) )
+            url = KUrl( outline->attributes()["xmlUrl"] );
+        else if( outline->attributes().contains( "url" ) )
+            url = KUrl( outline->attributes()["url"] );
+
+        if( url.isEmpty() )
             continue;
 
-        KUrl url( outline->attributes()["xmlUrl"] );
         The::playlistManager()->defaultPodcasts()->addPodcast( url );
     }
 }
