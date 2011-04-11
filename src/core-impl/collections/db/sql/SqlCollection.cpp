@@ -179,7 +179,7 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
 SqlCollection::~SqlCollection()
 {
     if( m_scanManager )
-        m_scanManager->abort( "Amarok is closing" );
+        m_scanManager->blockScan();
     delete m_albumCapabilityDelegate;
     delete m_artistCapabilityDelegate;
     delete m_trackCapabilityDelegate;

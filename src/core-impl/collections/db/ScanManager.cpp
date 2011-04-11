@@ -81,7 +81,7 @@ ScanManager::ScanManager( Collections::DatabaseCollection *collection, QObject *
 
 ScanManager::~ScanManager()
 {
-    abort();
+    blockScan();
     // actually we should wait for the abort to be finished.
     delete m_importRequested;
 }

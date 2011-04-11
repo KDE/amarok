@@ -103,7 +103,10 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         /** Starts an incremental scan of the given directory of file's parent directory after a short time. */
         virtual void delayedIncrementalScanParent( const QString &directory );
 
-        /** Abort the request and all currently running scans. */
+        /** Abort the request and all currently running scans.
+            Note: this function does not block further scans, so better call blockScan if you want to stop
+            scanning for a while.
+        */
         virtual void abort( const QString &reason = QString() );
 
     signals:
