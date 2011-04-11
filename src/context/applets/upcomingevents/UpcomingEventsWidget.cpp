@@ -67,17 +67,20 @@ UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
 
     QGraphicsLinearLayout *buttonsLayout = new QGraphicsLinearLayout( Qt::Horizontal );
     buttonsLayout->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
-    QPointF geo( event->venue()->location->longitude, event->venue()->location->latitude );
-    if( !geo.isNull() )
+    if( event && event->venue() && event->venue()->location )
     {
-        m_mapButton = new Plasma::PushButton( this );
-        m_mapButton->setMaximumSize( QSizeF( 22, 22 ) );
-        m_mapButton->setIcon( KIcon("edit-find") ); // TODO: a map icon would be nice
-        m_mapButton->setToolTip( i18n( "View map" ) );
-        buttonsLayout->addItem( m_mapButton );
+        QPointF geo( event->venue()->location->longitude, event->venue()->location->latitude );
+        if( !geo.isNull() )
+        {
+            m_mapButton = new Plasma::PushButton( this );
+            m_mapButton->setMaximumSize( QSizeF( 22, 22 ) );
+            m_mapButton->setIcon( KIcon("edit-find") ); // TODO: a map icon would be nice
+            m_mapButton->setToolTip( i18n( "View map" ) );
+            buttonsLayout->addItem( m_mapButton );
+        }
     }
 
-    if( event->url().isValid() )
+    if( event && event->url().isValid() )
     {
         m_urlButton = new Plasma::PushButton( this );
         m_urlButton->setMaximumSize( QSizeF( 22, 22 ) );
