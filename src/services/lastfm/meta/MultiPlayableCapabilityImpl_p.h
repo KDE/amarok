@@ -18,6 +18,7 @@
 #define AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 
 #include "core/support/Debug.h"
+#include "MainWindow.h"
 #include "LastFmMeta.h"
 #include "core/meta/Meta.h"
 #include "core/capabilities/MultiPlayableCapability.h"

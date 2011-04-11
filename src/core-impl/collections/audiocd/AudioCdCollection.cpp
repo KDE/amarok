@@ -19,6 +19,7 @@
 
 #include "AudioCdCollection.h"
 
+#include "MainWindow.h"
 #include "amarokconfig.h"
 #include "AudioCdCollectionLocation.h"
 #include "AudioCdMeta.h"
