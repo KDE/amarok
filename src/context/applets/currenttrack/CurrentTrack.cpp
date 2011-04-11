@@ -258,7 +258,8 @@ CurrentTrack::mousePressEvent( QGraphicsSceneMouseEvent *event )
         if( item == m_albumCover->graphicsItem() )
         {
             Meta::AlbumPtr album = The::engineController()->currentTrack()->album();
-            ( new CoverViewDialog( album, The::mainWindow() ) )->show();
+            if( album )
+                ( new CoverViewDialog( album, The::mainWindow() ) )->show();
             return;
         }
     }
