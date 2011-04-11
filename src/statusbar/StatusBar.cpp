@@ -150,25 +150,6 @@ StatusBar::StatusBar( QWidget * parent )
     qRegisterMetaType<MessageType>( "MessageType" );
     connect( this, SIGNAL( signalLongMessage( const QString &, MessageType ) ), SLOT( slotLongMessage( const QString &, MessageType ) ), Qt::QueuedConnection );
 
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    // Ignore The::playlist() layoutChanged: rows moving around does not change the total playlist length.
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( modelReset() ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-
-    updateTotalPlaylistLength();
-
-    EngineController *engine = The::engineController();
-
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( trackMetadataChanged( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
-    connect( engine, SIGNAL( paused() ),
-             this, SLOT( paused() ) );
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
-
     Amarok::Logger *logger = Amarok::Components::logger();
     ProxyLogger *proxy = qobject_cast<ProxyLogger*>( logger );
     if( proxy )
@@ -193,6 +174,28 @@ StatusBar::~StatusBar()
     m_progressBar = 0;
 
     s_instance = 0;
+}
+
+void StatusBar::connectPlaylist()
+{
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    // Ignore The::playlist() layoutChanged: rows moving around does not change the total playlist length.
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( modelReset() ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+
+    updateTotalPlaylistLength();
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( trackMetadataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( paused() ),
+             this, SLOT( paused() ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
 }
 
 ProgressBar * StatusBar::newProgressOperation( QObject * owner, const QString & description )

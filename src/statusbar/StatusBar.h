@@ -19,7 +19,6 @@
 #ifndef AMAROK_STATUS_BAR_H
 #define AMAROK_STATUS_BAR_H
 
-#include "MainWindow.h"
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "statusbar/CompoundProgressBar.h"
@@ -34,6 +33,7 @@
 #define POPUP_MESSAGE_DURATION 5000
 
 class QNetworkReply;
+class MainWindow;
 class StatusBar;
 
 namespace The
@@ -55,9 +55,6 @@ class AMAROK_EXPORT StatusBar : public KStatusBar
 
 public:
     enum MessageType { Information, Question, Sorry, Warning, Error, ShowAgainCheckBox, None, OperationCompleted };
-
-    StatusBar( QWidget * parent );
-    ~StatusBar();
 
     static StatusBar* instance() { return s_instance; }
 
@@ -149,6 +146,19 @@ protected slots:
     void hideLongMessage();
 
 private:
+    /** StatusBar is a singleton and there should be only one */
+    StatusBar( QWidget * parent );
+
+    ~StatusBar();
+
+    /** Connects the status bar to the playlist and the engine controller.
+        By implication the playlist and the engine controller will be created if not
+        already existing.
+    */
+    void connectPlaylist();
+
+    friend class MainWindow;
+
     void updateInfo( Meta::TrackPtr track );
 
     CompoundProgressBar * m_progressBar;
