@@ -349,7 +349,7 @@ QVariant Meta::valueForField( qint64 field, Meta::TrackPtr track )
     case Meta::valAlbumGain:   return "album gain";
     case Meta::valAlbumGainPeak:   return "album gain peak";
 
-    case Meta::valAlbumArtist: return track->album() ?
+    case Meta::valAlbumArtist: return (track->album() && track->album()->albumArtist()) ?
                                QVariant(track->album()->albumArtist()->name()) : QVariant();
     case Meta::valLabel:
       {
