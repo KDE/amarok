@@ -106,9 +106,6 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         */
         QModelIndex index( Dynamic::DynamicPlaylist* playlist ) const;
 
-        void saveCurrentPlaylists();
-        void loadCurrentPlaylists();
-
         /** Returns a representation of the whole model for debugging */
         QString toString();
 
@@ -116,6 +113,12 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         void activeChanged( int index ); // active row changed
 
     public slots:
+        /** Saves all playlists to disk */
+        void savePlaylists();
+
+        /** Loads the last saved playlists form disk */
+        void loadPlaylists();
+
         /** Removes the playlist or bias at the given index. */
         void removeAt( const QModelIndex& index );
 
@@ -150,8 +153,6 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         void beginInsertBias( Dynamic::BiasPtr parent, int index );
         void endInsertBias();
 
-        void savePlaylists();
-        void loadPlaylists();
         bool savePlaylists( const QString &filename );
         bool loadPlaylists( const QString &filename );
         void initPlaylists();

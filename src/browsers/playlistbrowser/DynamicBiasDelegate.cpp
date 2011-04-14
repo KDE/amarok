@@ -66,7 +66,7 @@ PlaylistBrowserNS::DynamicBiasDelegate::paint( QPainter* painter,
     const int width = option.rect.size().width();
     const int height = option.rect.size().height();
 
-    if( playlist )
+    if( playlist && false)
     {
         const QPoint topLeft = option.rect.topLeft();
         const QPoint bottomRight = option.rect.bottomRight();
@@ -267,7 +267,7 @@ PlaylistBrowserNS::DynamicBiasDelegate::sizeHint( const QStyleOptionViewItem& op
 
     QSize size = QStyledItemDelegate::sizeHint( option, index );
 
-    if( !playlist )
+    if( true || !playlist )
         return size;
 
     const int iconWidth = 32;

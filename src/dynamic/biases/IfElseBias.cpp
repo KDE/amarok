@@ -77,9 +77,13 @@ void
 Dynamic::IfElseBias::paintOperator( QPainter* painter, const QRect& rect, Dynamic::AbstractBias* bias )
 {
     if( m_biases.indexOf( Dynamic::BiasPtr(bias) ) == 0 )
-        painter->drawText( rect, Qt::AlignLeft, i18nc("Prefix for IfElseBias. Shown in front of a bias in the dynamic playlist view", "if" ) );
+        painter->drawText( rect.adjusted(2, 0, -2, 0),
+                           Qt::AlignRight,
+                           i18nc("Prefix for IfElseBias. Shown in front of a bias in the dynamic playlist view", "if" ) );
     else
-        painter->drawText( rect, Qt::AlignLeft, i18nc("Prefix for IfElseBias. Shown in front of a bias in the dynamic playlist view", "else" ) );
+        painter->drawText( rect.adjusted(2, 0, -2, 0),
+                           Qt::AlignRight,
+                           i18nc("Prefix for IfElseBias. Shown in front of a bias in the dynamic playlist view", "else" ) );
 }
 
 Dynamic::TrackSet

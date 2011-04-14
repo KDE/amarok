@@ -163,9 +163,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
 
 
 PlaylistBrowserNS::DynamicCategory::~DynamicCategory()
-{
-    saveOnExit();
-}
+{ }
 
 void
 PlaylistBrowserNS::DynamicCategory::navigatorChanged()
@@ -193,7 +191,6 @@ PlaylistBrowserNS::DynamicCategory::selectionChanged()
     QVariant v = m_tree->model()->data( indexes.first(), Dynamic::DynamicModel::PlaylistRole );
     if( v.isValid() )
     {
-        Dynamic::DynamicPlaylist* playlist = qobject_cast<Dynamic::DynamicPlaylist*>(v.value<QObject*>() );
         m_addButton->setEnabled( true );
         m_cloneButton->setEnabled( true );
         m_editButton->setEnabled( true );
@@ -204,7 +201,6 @@ PlaylistBrowserNS::DynamicCategory::selectionChanged()
     v = m_tree->model()->data( indexes.first(), Dynamic::DynamicModel::BiasRole );
     if( v.isValid() )
     {
-        Dynamic::AbstractBias* bias = qobject_cast<Dynamic::AbstractBias*>(v.value<QObject*>() );
         m_addButton->setEnabled( true );
         m_cloneButton->setEnabled( false );
         m_editButton->setEnabled( true );
@@ -260,14 +256,6 @@ PlaylistBrowserNS::DynamicCategory::save()
     model->saveActive( title );
     playlistSelectionChanged( model->playlistIndex( title ) );
     */
-}
-
-void
-PlaylistBrowserNS::DynamicCategory::saveOnExit()
-{
-    DEBUG_BLOCK
-
-    Dynamic::DynamicModel::instance()->saveCurrentPlaylists();
 }
 
 #include "DynamicCategory.moc"

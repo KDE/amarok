@@ -67,7 +67,7 @@ TestDynamicModel::testData()
     Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
 
     // load from the empty directory
-    model->loadCurrentPlaylists();
+    model->loadPlaylists();
 
     // now we should have the four default playlists
     QModelIndex playlistIndex = model->index( 0, 0 );
@@ -88,7 +88,7 @@ TestDynamicModel::testPlaylistIndex()
     Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
 
     // load from the empty directory
-    model->loadCurrentPlaylists();
+    model->loadPlaylists();
 
     // now we should have the four default playlists
     QCOMPARE( model->rowCount(), 4 );
@@ -138,7 +138,7 @@ TestDynamicModel::testSlots()
     Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
 
     // load from the empty directory
-    model->loadCurrentPlaylists();
+    model->loadPlaylists();
 
     QSignalSpy spy1( model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)) );
     QSignalSpy spy2( model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)) );
@@ -273,7 +273,7 @@ TestDynamicModel::testSerializeIndex()
     Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
 
     // load from the empty directory
-    model->loadCurrentPlaylists();
+    model->loadPlaylists();
 
     QModelIndex playlistIndex = model->index( 2, 0 );
     QModelIndex biasIndex = model->index( 0, 0, playlistIndex );
@@ -290,7 +290,7 @@ TestDynamicModel::testDnD()
     Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
 
     // load from the empty directory
-    model->loadCurrentPlaylists();
+    model->loadPlaylists();
 
     // -- copy a playlist
     QModelIndex playlistIndex = model->index( 2, 0 );
@@ -335,7 +335,7 @@ TestDynamicModel::testSaveActive()
     Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
 
     // load from the empty directory
-    model->loadCurrentPlaylists();
+    model->loadPlaylists();
 
     // now we should have the default playlist
     // QCOMPARE( model->isActiveUnsaved(), false );
@@ -352,11 +352,11 @@ TestDynamicModel::testSaveActive()
     // QVERIFY( model->data( model->index(0, 0) ).toString() != QString("Random") );
 
     // saving and loading the playlist does not change the state
-    model->saveCurrentPlaylists();
+    model->savePlaylists();
     // QCOMPARE( model->isActiveUnsaved(), true );
     QCOMPARE( model->activePlaylistIndex(), 0 );
 
-    model->loadCurrentPlaylists();
+    model->loadPlaylists();
     // QCOMPARE( model->isActiveUnsaved(), true );
     QCOMPARE( model->activePlaylistIndex(), 0 );
 
@@ -405,7 +405,7 @@ TestDynamicModel::testRemoveActive()
     Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
 
     // load from the empty directory
-    model->loadCurrentPlaylists();
+    model->loadPlaylists();
 
     // create three new playlists
     // model->saveActive( "New Playlist" );

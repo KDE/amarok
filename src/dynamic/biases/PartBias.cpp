@@ -297,7 +297,7 @@ Dynamic::PartBias::paintOperator( QPainter* painter, const QRect& rect, Dynamic:
         return;
 
     QStyleOptionProgressBar progressBarOption;
-    progressBarOption.rect = rect;
+    progressBarOption.rect = rect.adjusted( 2, 2, -2, -2 );
     progressBarOption.minimum = 0;
     progressBarOption.maximum = 100;
     progressBarOption.progress = m_weights[index] * 100.0;

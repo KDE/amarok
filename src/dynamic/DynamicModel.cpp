@@ -55,7 +55,7 @@ Dynamic::DynamicModel::instance()
     if( !s_instance )
     {
         s_instance = new DynamicModel();
-        s_instance->loadCurrentPlaylists();
+        s_instance->loadPlaylists();
     }
     return s_instance;
 }
@@ -63,13 +63,11 @@ Dynamic::DynamicModel::instance()
 
 Dynamic::DynamicModel::DynamicModel()
     : QAbstractItemModel()
-{
-}
-
+{ }
 
 Dynamic::DynamicModel::~DynamicModel()
 {
-    saveCurrentPlaylists();
+    savePlaylists();
 }
 
 Dynamic::DynamicPlaylist*
@@ -88,6 +86,7 @@ Dynamic::DynamicModel::setActivePlaylist( int index )
                       this->index( m_activePlaylistIndex, 0 ) );
 
     emit activeChanged( index );
+    savePlaylists(); // save in between to prevent loosing too much in case of a crash
 
     return m_playlists[m_activePlaylistIndex];
 }
@@ -164,9 +163,9 @@ DEBUG_BLOCK;
     QObject* o = static_cast<QObject*>(parentIndex.internalPointer());
     BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o);
     AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o);
+    AbstractBias* aBias = qobject_cast<Dynamic::AbstractBias*>(o);
 
     debug() << "insert bias" << bias->toString() << "at" << parentIndex << row;
-
 
     if( parentPlaylist )
     {
@@ -182,6 +181,11 @@ DEBUG_BLOCK;
         parentBias->appendBias( bias );
         if( row >= 0 )
             parentBias->moveBias( parentBias->biases().count()-1, row );
+    }
+    else if( aBias )
+    {
+        // insert the bias after
+        return insertBias( parentIndex.row(), parentIndex.parent(), bias );
     }
     return this->index( bias );
 }
@@ -234,6 +238,16 @@ Dynamic::DynamicModel::data ( const QModelIndex& i, int role ) const
                 return KIcon( "amarok_playlist" );
             else
                 return KIcon( "amarok_playlist_clear" );
+
+        case Qt::FontRole:
+            {
+                QFont font = QFont();
+                if( activePlaylist() == indexPlaylist )
+                    font.setBold( true );
+                else
+                    font.setBold( false );
+                return font;
+            }
 
         case PlaylistRole:
             return QVariant::fromValue<QObject*>( indexPlaylist );
@@ -626,6 +640,18 @@ Dynamic::DynamicModel::index( Dynamic::DynamicPlaylist* playlist ) const
 
 
 void
+Dynamic::DynamicModel::savePlaylists()
+{
+    savePlaylists( "dynamic.xml" );
+}
+
+void
+Dynamic::DynamicModel::loadPlaylists()
+{
+    loadPlaylists( "dynamic.xml" );
+}
+
+void
 Dynamic::DynamicModel::removeAt( const QModelIndex& index )
 {
     if( !index.isValid() )
@@ -765,13 +791,6 @@ Dynamic::DynamicModel::saveActive( const QString& newTitle )
 }
 */
 
-void
-Dynamic::DynamicModel::savePlaylists()
-{
-    savePlaylists( "dynamic.xml" );
-    saveCurrentPlaylists(); // need also save the current playlist so that after a crash we won't restore the old current playlist
-}
-
 bool
 Dynamic::DynamicModel::savePlaylists( const QString &filename )
 {
@@ -800,12 +819,6 @@ Dynamic::DynamicModel::savePlaylists( const QString &filename )
     xmlWriter.writeEndDocument();
 
     return true;
-}
-
-void
-Dynamic::DynamicModel::loadPlaylists()
-{
-    loadPlaylists( "dynamic.xml" );
 }
 
 bool
@@ -1056,19 +1069,6 @@ Dynamic::DynamicModel::endInsertBias()
     endInsertRows();
 }
 
-
-void
-Dynamic::DynamicModel::saveCurrentPlaylists()
-{
-    savePlaylists( "dynamic_current.xml" );
-}
-
-void
-Dynamic::DynamicModel::loadCurrentPlaylists()
-{
-    if( !loadPlaylists( "dynamic_current.xml" ) )
-        loadPlaylists( "dynamic.xml" );
-}
 
 
 // --- debug methods

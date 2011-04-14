@@ -50,8 +50,6 @@ namespace PlaylistBrowserNS {
             void setPreviousTracks( int );
 
         private:
-            void saveOnExit();
-
             QToolButton *m_addButton;
             QToolButton *m_cloneButton;
             QToolButton *m_editButton;
