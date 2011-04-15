@@ -471,8 +471,6 @@ OpmlDirectoryModel::subscribe( const QModelIndexList &indexes ) const
     {
         if( !outline )
             continue;
-        if( outline->opmlNodeType() != RssUrlNode )
-            continue;
 
         KUrl url;
         if( outline->attributes().contains( "xmlUrl" ) )
