@@ -350,7 +350,7 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
             item->tabType  = tabType;
             item->title    = title;
             item->tabs     = tabs;
-            item->source   = "UltimateGuitar";
+            item->source   = "Ultimate-Guitar";
 
             m_tabs << item;
         }
@@ -470,7 +470,7 @@ TabsEngine::resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessMa
             item->tabType  = tabType;
             item->title    = title;
             item->tabs     = tabs;
-            item->source   = "fretplay";
+            item->source   = "Fretplay";
 
             m_tabs << item;
         }
