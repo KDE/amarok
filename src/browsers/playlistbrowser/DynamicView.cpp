@@ -302,16 +302,20 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         Dynamic::DynamicPlaylist* playlist = qobject_cast<Dynamic::DynamicPlaylist*>(v.value<QObject*>() );
         QAction* action;
 
-        action = new KAction( KIcon( "edit-delete" ), i18n( "&Delete playlist" ), this );
-        connect( action, SIGNAL( triggered(bool) ), this, SLOT( removeSelected() ) );
-        actions.append( action );
-
         action = new KAction( KIcon( "document-properties-amarok" ), i18n( "&Rename playlist" ), this );
         connect( action, SIGNAL( triggered(bool) ), this, SLOT( editSelected() ) );
         actions.append( action );
 
         action = new KAction( KIcon( "document-new" ), i18n( "&Add new Bias" ), this );
         connect( action, SIGNAL( triggered(bool) ), this, SLOT( addToSelected() ) );
+        actions.append( action );
+
+        action = new KAction( KIcon( "edit-copy" ), i18n( "&Clone Playlist" ), this );
+        connect( action, SIGNAL( triggered(bool) ), this, SLOT( cloneSelected() ) );
+        actions.append( action );
+
+        action = new KAction( KIcon( "edit-delete" ), i18n( "&Delete playlist" ), this );
+        connect( action, SIGNAL( triggered(bool) ), this, SLOT( removeSelected() ) );
         actions.append( action );
     }
 
@@ -338,9 +342,16 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         connect( action, SIGNAL( triggered(bool) ), this, SLOT( cloneSelected() ) );
         actions.append( action );
 
-        action = new KAction( KIcon( "edit-delete" ), i18n( "&Delete bias" ), this );
-        connect( action, SIGNAL( triggered(bool) ), this, SLOT( removeSelected() ) );
-        actions.append( action );
+        // don't allow deleting a top bias unless it'a an and-bias containing at least one
+        // other bias
+        QModelIndex parentIndex = index.parent();
+        QVariant parentV = model()->data( index, Dynamic::DynamicModel::PlaylistRole );
+        if( !parentV.isValid() || (aBias && aBias->biases().count() > 0) )
+        {
+            action = new KAction( KIcon( "edit-delete" ), i18n( "&Delete bias" ), this );
+            connect( action, SIGNAL( triggered(bool) ), this, SLOT( removeSelected() ) );
+            actions.append( action );
+        }
     }
 
     if( actions.isEmpty() )
