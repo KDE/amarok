@@ -190,32 +190,6 @@ namespace Dynamic
             Q_DISABLE_COPY(RandomBias)
     };
 
-    /** A bias that returns tracks that are not in the playlist already */
-    class AMAROK_EXPORT UniqueBias : public AbstractBias
-    {
-        Q_OBJECT
-
-        public:
-            UniqueBias();
-            virtual ~UniqueBias();
-
-            static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
-
-            virtual QWidget* widget( QWidget* parent = 0 );
-
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
-                                             const TrackCollectionPtr universe ) const;
-
-            virtual bool trackMatches( int position,
-                                       const Meta::TrackList& playlist,
-                                       int contextCount ) const;
-
-        private:
-            Q_DISABLE_COPY(UniqueBias)
-    };
 
     /** An and bias
         The And Bias currently serves as a base class for all biases

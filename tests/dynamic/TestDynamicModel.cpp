@@ -346,7 +346,7 @@ TestDynamicModel::testSaveActive()
 
     // change the default playlist
     Dynamic::BiasedPlaylist* playlist = qobject_cast<Dynamic::BiasedPlaylist*>(model->activePlaylist());
-    playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::UniqueBias() ) );
+    playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::AndBias() ) );
 
     // QCOMPARE( model->isActiveUnsaved(), true );
     // QVERIFY( model->data( model->index(0, 0) ).toString() != QString("Random") );
@@ -383,7 +383,7 @@ TestDynamicModel::testSaveActive()
     // change the default playlist again
     // model->setActivePlaylist( model->defaultPlaylistIndex() );
     playlist = qobject_cast<Dynamic::BiasedPlaylist*>(model->activePlaylist());
-    playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::UniqueBias() ) );
+    playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::AndBias() ) );
 
     // QCOMPARE( model->isActiveUnsaved(), true );
 

@@ -20,13 +20,15 @@
 #define DEBUG_PREFIX "BiasSolver"
 
 #include "BiasSolver.h"
+#include "TrackSet.h"
+
+#include "amarokconfig.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaConstants.h"
-#include "TrackSet.h"
 
 #include <cmath>
-#include <typeinfo>
+// #include <typeinfo>
 
 #include <QHash>
 #include <QMutexLocker>
@@ -49,7 +51,6 @@ const int    Dynamic::BiasSolver::SA_ITERATION_LIMIT     = 1000;
 const double Dynamic::BiasSolver::SA_INITIAL_TEMPERATURE = 0.28;
 const double Dynamic::BiasSolver::SA_COOLING_RATE        = 0.82;
 const int    Dynamic::BiasSolver::SA_GIVE_UP_LIMIT       = 250;
-
 
 namespace Dynamic
 {
@@ -101,6 +102,18 @@ namespace Dynamic
             return m_energy;
         }
 
+        /** Retuns a TrackSet with all the tracks in this SolverList excluding the track at position */
+        Dynamic::TrackSet withoutDuplicates( int position,
+                                             const Dynamic::TrackSet& oldSet ) const
+        {
+            Dynamic::TrackSet result = Dynamic::TrackSet( oldSet );
+            for( int i = 0; i < m_trackList.count(); i++ )
+                if( i != position )
+                    result.subtract( m_trackList[i] );
+
+            return result;
+        }
+
         Meta::TrackList m_trackList;
         int m_contextCount; // the number of tracks belonging to the context
         BiasPtr m_bias;
@@ -120,6 +133,9 @@ Dynamic::BiasSolver::BiasSolver( int n, Dynamic::BiasPtr bias, Meta::TrackList c
     , m_abortRequested( false )
 {
     debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId() << "to get"<<n<<"tracks with"<<context.count()<<"context";
+
+    m_allowDuplicates = AmarokConfig::dynamicDuplicates();
+
     getTrackCollection();
 
     connect( m_bias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
@@ -225,7 +241,11 @@ Dynamic::BiasSolver::simpleOptimize( SolverList *list )
             + list->m_contextCount;
 
         TrackSet set = matchingTracks( newPos, list->m_trackList );
-        Meta::TrackPtr newTrack = getRandomTrack( set );
+        Meta::TrackPtr newTrack;
+        if( !m_allowDuplicates )
+            newTrack = getRandomTrack( list->withoutDuplicates( newPos, set ) );
+        else
+            newTrack = getRandomTrack( set );
         if( newTrack )
             list->setTrack( newPos, newTrack );
     }
@@ -234,7 +254,11 @@ Dynamic::BiasSolver::simpleOptimize( SolverList *list )
     for( int i = list->m_contextCount; i < list->m_trackList.count(); i++ )
     {
         TrackSet set = matchingTracks( i, list->m_trackList );
-        Meta::TrackPtr newTrack = getRandomTrack( set );
+        Meta::TrackPtr newTrack;
+        if( !m_allowDuplicates )
+            newTrack = getRandomTrack( list->withoutDuplicates( i, set ) );
+        else
+            newTrack = getRandomTrack( set );
         if( newTrack )
             list->setTrack( i, newTrack );
     }
@@ -292,10 +316,18 @@ Dynamic::BiasSolver::annealingOptimize( SolverList *list,
         if( iterationLimit % 4 )
         {
             TrackSet set = matchingTracks( newPos, list->m_trackList );
-            newTrack = getRandomTrack( set );
+            if( !m_allowDuplicates )
+                newTrack = getRandomTrack( list->withoutDuplicates( newPos, set ) );
+            else
+                newTrack = getRandomTrack( set );
         }
         else
-            newTrack = getRandomTrack( universeSet );
+        {
+            if( !m_allowDuplicates )
+                newTrack = getRandomTrack( list->withoutDuplicates( newPos, universeSet ) );
+            else
+                newTrack = getRandomTrack( universeSet );
+        }
 
         if( !newTrack )
             continue;
@@ -525,7 +557,12 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
     TrackSet universeSet( m_trackCollection, true );
     while( result.m_trackList.count() < m_context.count() + m_n )
     {
-        result.appendTrack( getRandomTrack( universeSet ) );
+        Meta::TrackPtr newTrack;
+        if( !m_allowDuplicates )
+            newTrack = getRandomTrack( result.withoutDuplicates( -1, universeSet ) );
+        else
+            newTrack = getRandomTrack( universeSet );
+        result.appendTrack( newTrack );
     }
 
     debug() << "generated random playlist with"<<result.m_trackList.count()<<"tracks";

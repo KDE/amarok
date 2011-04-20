@@ -64,25 +64,6 @@ class RandomBiasFactory : public Dynamic::AbstractBiasFactory
 };
 
 
-class UniqueBiasFactory : public Dynamic::AbstractBiasFactory
-{
-    QString i18nName() const
-    { return i18nc("Name of the unique bias", "Unique"); }
-
-    QString name() const
-    { return Dynamic::UniqueBias::sName(); }
-
-    QString i18nDescription() const
-    { return i18nc("Description of the unique bias",
-                   "The unique bias adds matches tracks that are\n"
-                   "not already in the playlist effectively\n"
-                   "preventing duplicates."); }
-
-    Dynamic::BiasPtr createBias()
-    { return Dynamic::BiasPtr( new Dynamic::UniqueBias() ); }
-};
-
-
 class NotBiasFactory : public Dynamic::AbstractBiasFactory
 {
     QString i18nName() const
@@ -147,12 +128,11 @@ Dynamic::BiasFactory::instance()
     {
         // --- build in biases
         s_biasFactories.append( new Dynamic::SearchQueryBiasFactory() );
-        s_biasFactories.append( new Dynamic::PartBiasFactory() );
-        s_biasFactories.append( new UniqueBiasFactory() );
         s_biasFactories.append( new RandomBiasFactory() );
-        s_biasFactories.append( new NotBiasFactory() );
         s_biasFactories.append( new AndBiasFactory() );
         s_biasFactories.append( new OrBiasFactory() );
+        s_biasFactories.append( new NotBiasFactory() );
+        s_biasFactories.append( new Dynamic::PartBiasFactory() );
         s_biasFactories.append( new Dynamic::IfElseBiasFactory() );
         s_biasFactories.append( new Dynamic::TagMatchBiasFactory() );
         s_biasFactories.append( new Dynamic::AlbumPlayBiasFactory() );

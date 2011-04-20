@@ -176,67 +176,6 @@ Dynamic::RandomBias::energy( const Meta::TrackList& playlist, int contextCount )
     return 0.0;
 }
 
-// -------- UniqueBias ------
-
-Dynamic::UniqueBias::UniqueBias()
-{ }
-
-Dynamic::UniqueBias::~UniqueBias()
-{ }
-
-QString
-Dynamic::UniqueBias::sName()
-{
-    return QLatin1String( "uniqueBias" );
-}
-
-QString
-Dynamic::UniqueBias::name() const
-{
-    return Dynamic::UniqueBias::sName();
-}
-
-QString
-Dynamic::UniqueBias::toString() const
-{
-    return i18nc("Unique bias representation",
-                 "Only once in the current playlist");
-}
-
-QWidget*
-Dynamic::UniqueBias::widget( QWidget* parent )
-{
-    Q_UNUSED( parent );
-    return 0;
-}
-
-Dynamic::TrackSet
-Dynamic::UniqueBias::matchingTracks( int position,
-                                  const Meta::TrackList& playlist, int contextCount,
-                                  Dynamic::TrackCollectionPtr universe ) const
-{
-    Q_UNUSED( contextCount );
-
-    Dynamic::TrackSet result = Dynamic::TrackSet( universe, true );
-    for( int i = 0; i < position; i++ )
-        result.subtract( playlist.at(i) );
-
-    return result;
-}
-
-bool
-Dynamic::UniqueBias::trackMatches( int position,
-                                   const Meta::TrackList& playlist,
-                                   int contextCount ) const
-{
-    Q_UNUSED( contextCount );
-
-    for( int i = 0; i < position; i++ )
-        if( playlist.at(position) == playlist.at(i) )
-            return false;
-    return true;
-}
-
 
 // -------- AndBias ------
 

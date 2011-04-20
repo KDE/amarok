@@ -101,25 +101,26 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_onOffButton = new QToolButton( presetToolbar );
     m_onOffButton->setText( i18nc( "Turn dynamic mode on", "On ") );
-    m_onOffButton->setEnabled( true );
     m_onOffButton->setCheckable( true );
     m_onOffButton->setIcon( KIcon( "dynamic-amarok" ) );
     m_onOffButton->setToolTip( i18n( "Turn dynamic mode on." ) );
     presetToolbar->addWidget( m_onOffButton );
 
-    m_addButton   = new QToolButton( presetToolbar );
+    m_duplicateButton = new QToolButton( presetToolbar );
+    m_duplicateButton->setText( i18n("Duplicates") );
+    m_duplicateButton->setCheckable( true );
+    m_duplicateButton->setChecked( allowDuplicates() );
+    m_duplicateButton->setIcon( KIcon( "edit-copy" ) );
+    m_duplicateButton->setToolTip( i18n( "Allow duplicate songs in result" ) );
+    presetToolbar->addWidget( m_duplicateButton );
+
+    m_addButton = new QToolButton( presetToolbar );
     m_addButton->setText( i18n("New") );
     m_addButton->setIcon( KIcon( "document-new" ) );
     m_addButton->setToolTip( i18n( "New playlist" ) );
     presetToolbar->addWidget( m_addButton );
 
-    m_cloneButton   = new QToolButton( presetToolbar );
-    m_cloneButton->setText( i18n("Copy") );
-    m_cloneButton->setIcon( KIcon( "edit-copy" ) );
-    m_cloneButton->setToolTip( i18n( "Copy the selected playlist or bias" ) );
-    presetToolbar->addWidget( m_cloneButton );
-
-    m_editButton   = new QToolButton( presetToolbar );
+    m_editButton = new QToolButton( presetToolbar );
     m_editButton->setText( i18n("Edit") );
     m_editButton->setIcon( KIcon( "document-properties-amarok" ) );
     m_editButton->setToolTip( i18n( "Edit the selected playlist or bias" ) );
@@ -148,9 +149,9 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
              this, SLOT(selectionChanged()) );
 
     connect( m_onOffButton, SIGNAL( toggled( bool ) ), The::playlistActions(), SLOT( enableDynamicMode( bool ) ) );
+    connect( m_duplicateButton, SIGNAL( toggled( bool ) ), this, SLOT( setAllowDuplicates( bool ) ) );
 
     connect( m_addButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( addPlaylist() ) );
-    connect( m_cloneButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( cloneSelected() ) );
     connect( m_editButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( editSelected() ) );
     connect( m_deleteButton, SIGNAL(clicked(bool)), m_tree, SLOT(removeSelected()) );
 
@@ -182,7 +183,6 @@ PlaylistBrowserNS::DynamicCategory::selectionChanged()
     if( indexes.isEmpty() )
     {
         m_addButton->setEnabled( true );
-        m_cloneButton->setEnabled( false );
         m_editButton->setEnabled( false );
         m_deleteButton->setEnabled( false );
         return;
@@ -192,7 +192,6 @@ PlaylistBrowserNS::DynamicCategory::selectionChanged()
     if( v.isValid() )
     {
         m_addButton->setEnabled( true );
-        m_cloneButton->setEnabled( true );
         m_editButton->setEnabled( true );
         m_deleteButton->setEnabled( true );
         return;
@@ -202,11 +201,16 @@ PlaylistBrowserNS::DynamicCategory::selectionChanged()
     if( v.isValid() )
     {
         m_addButton->setEnabled( true );
-        m_cloneButton->setEnabled( false );
         m_editButton->setEnabled( true );
         m_deleteButton->setEnabled( false ); // TODO
         return;
     }
+}
+
+bool
+PlaylistBrowserNS::DynamicCategory::allowDuplicates() const
+{
+    return AmarokConfig::dynamicDuplicates();
 }
 
 
@@ -231,32 +235,17 @@ PlaylistBrowserNS::DynamicCategory::setPreviousTracks( int n ) // SLOT
 }
 
 void
-PlaylistBrowserNS::DynamicCategory::save()
+PlaylistBrowserNS::DynamicCategory::setAllowDuplicates( bool value ) // SLOT
 {
-    bool ok;
-    QString title =
-        QInputDialog::getText( this, i18n("Playlist Name"),
-                               i18n("Enter a name for the playlist:"),
-                               QLineEdit::Normal,
-                               Dynamic::DynamicModel::instance()->activePlaylist()->title(),
-                               &ok );
-    if( !ok ) return;
-
-    // TODO: write a custom dialog to prevent this from happening in the first
-    // place
-    /*
-    Dynamic::DynamicModel* model = Dynamic::DynamicModel::instance();
-    if( model->playlistIndex( title ) == model->defaultPlaylistIndex() )
-    {
-        QMessageBox::warning( this, i18n( "Warning" ),
-                              i18n( "Cannot overwrite the random playlist." ) );
+    if( AmarokConfig::dynamicDuplicates() == value )
         return;
-    }
 
-    model->saveActive( title );
-    playlistSelectionChanged( model->playlistIndex( title ) );
-    */
+    AmarokConfig::setDynamicDuplicates( value );
+    AmarokConfig::self()->writeConfig();
+
+    m_duplicateButton->setChecked( value );
 }
+
 
 #include "DynamicCategory.moc"
 

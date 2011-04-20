@@ -41,20 +41,23 @@ namespace PlaylistBrowserNS {
             DynamicCategory( QWidget* parent );
             ~DynamicCategory();
 
+            bool allowDuplicates() const;
+
         private slots:
             void navigatorChanged();
             void selectionChanged();
-            void save();
             void playlistCleared();
             void setUpcomingTracks( int );
             void setPreviousTracks( int );
 
+            void setAllowDuplicates( bool value );
+
         private:
+            QToolButton *m_onOffButton;
+            QToolButton *m_duplicateButton;
             QToolButton *m_addButton;
-            QToolButton *m_cloneButton;
             QToolButton *m_editButton;
             QToolButton *m_deleteButton;
-            QToolButton *m_onOffButton;
             QPushButton *m_repopulateButton;
 
             DynamicView *m_tree;

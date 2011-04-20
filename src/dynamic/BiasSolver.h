@@ -216,9 +216,12 @@ namespace Dynamic
 
             mutable QMutex m_collectionResultsMutex;
             mutable QWaitCondition m_collectionResultsReady;
+
             /** All uids of all the tracks in the collection */
             QStringList m_collectionUids;
             TrackCollectionPtr m_trackCollection;
+
+            bool m_allowDuplicates;
 
 
             // GENETIC ALGORITHM CONSTANTS
