@@ -144,6 +144,10 @@ EngineController::initializePhonon()
 
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
+
+    // Enable zeitgeist support on linux
+    m_media.data()->setProperty("PlaybackTracking", true);
+
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
     m_path = Phonon::createPath( m_media.data(), m_audio.data() );
