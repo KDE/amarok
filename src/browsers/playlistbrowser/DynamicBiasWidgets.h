@@ -23,10 +23,10 @@
 
 #include "shared/amarok_export.h"
 #include "Bias.h"
-#include "widgets/MetaQueryWidget.h"
 
 #include <QDialog>
 
+class QVBoxLayout;
 class QGridLayout;
 class QLabel;
 class QSlider;
@@ -42,7 +42,6 @@ namespace Amarok
 namespace Dynamic
 {
     class PartBias;
-    class TagMatchBias;
 }
 
 namespace PlaylistBrowserNS
@@ -105,25 +104,6 @@ namespace PlaylistBrowserNS
             QList<QSlider*> m_sliders;
             QList<QWidget*> m_widgets;
     };
-
-
-    class TagMatchBiasWidget : public QWidget
-    {
-        Q_OBJECT
-
-        public:
-            TagMatchBiasWidget( Dynamic::TagMatchBias* bias, QWidget* parent = 0 );
-
-        private slots:
-            void syncControlsToBias();
-            void syncBiasToControls();
-
-        private:
-            MetaQueryWidget* m_queryWidget;
-
-            Dynamic::TagMatchBias* m_bias;
-    };
-
 }
 
 #endif

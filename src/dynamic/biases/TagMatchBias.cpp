@@ -35,6 +35,10 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#include <QHBoxLayout>
+#include <QCheckBox>
+#include <QLabel>
+
 
 QString
 Dynamic::TagMatchBiasFactory::i18nName() const
@@ -59,7 +63,40 @@ Dynamic::TagMatchBiasFactory::createBias()
 
 Dynamic::SimpleMatchBias::SimpleMatchBias()
     : m_tracksValid( false )
+    , m_invert( false )
 { }
+
+void
+Dynamic::SimpleMatchBias::fromXml( QXmlStreamReader *reader )
+{
+    m_invert = reader->attributes().value( "invert" ).toString().toInt();
+}
+
+void
+Dynamic::SimpleMatchBias::toXml( QXmlStreamWriter *writer ) const
+{
+    if( m_invert )
+        writer->writeAttribute("invert", "1");
+}
+
+bool
+Dynamic::SimpleMatchBias::isInvert() const
+{
+    return m_invert;
+}
+
+void
+Dynamic::SimpleMatchBias::setInvert( bool value )
+{
+    DEBUG_BLOCK;
+    if( value == m_invert )
+        return;
+
+    m_invert = value;
+    // setting "invert" does not invalidate the search results invalidate();
+    emit changed( BiasPtr(this) );
+}
+
 
 Dynamic::TrackSet
 Dynamic::SimpleMatchBias::matchingTracks( int position,
@@ -74,7 +111,7 @@ Dynamic::SimpleMatchBias::matchingTracks( int position,
     if( m_tracksValid )
         return m_tracks;
 
-    m_tracks = Dynamic::TrackSet( universe, false );
+    m_tracks = Dynamic::TrackSet( universe, m_invert );
 
     QTimer::singleShot(0,
                        const_cast<SimpleMatchBias*>(this),
@@ -87,7 +124,10 @@ void
 Dynamic::SimpleMatchBias::updateReady( QString collectionId, QStringList uids )
 {
     Q_UNUSED( collectionId );
-    m_tracks.unite( uids );
+    if( m_invert )
+        m_tracks.subtract( uids );
+    else
+        m_tracks.unite( uids );
 }
 
 void
@@ -101,8 +141,8 @@ Dynamic::SimpleMatchBias::updateFinished()
 
 bool
 Dynamic::SimpleMatchBias::trackMatches( int position,
-                                    const Meta::TrackList& playlist,
-                                    int contextCount ) const
+                                        const Meta::TrackList& playlist,
+                                        int contextCount ) const
 {
     Q_UNUSED( contextCount );
     if( m_tracksValid )
@@ -120,6 +160,48 @@ Dynamic::SimpleMatchBias::invalidate()
     m_qm.reset();
 }
 
+// ---------- TagMatchBias --------
+
+
+Dynamic::TagMatchBiasWidget::TagMatchBiasWidget( Dynamic::TagMatchBias* bias,
+                                                           QWidget* parent )
+    : QWidget( parent )
+    , m_bias( bias )
+{
+    QHBoxLayout *layout = new QHBoxLayout( this );
+    m_invertBox = new QCheckBox();
+    QLabel *label = new QLabel( i18n("Invert condition") );
+    label->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+    label->setBuddy( m_invertBox );
+    layout->addWidget( m_invertBox, 0 );
+    layout->addWidget( label, 1 );
+
+    m_queryWidget = new MetaQueryWidget();
+    layout->addWidget( m_queryWidget );
+
+    syncControlsToBias();
+
+    connect( m_invertBox, SIGNAL(checked(bool)),
+             SLOT(syncBiasToControls()));
+    connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)),
+             SLOT(syncBiasToControls()));
+}
+
+void
+Dynamic::TagMatchBiasWidget::syncControlsToBias()
+{
+    m_queryWidget->setFilter( m_bias->filter() );
+    m_invertBox->setChecked( m_bias->isInvert() );
+}
+
+void
+Dynamic::TagMatchBiasWidget::syncBiasToControls()
+{
+    m_bias->setFilter( m_queryWidget->filter() );
+    m_bias->setInvert( m_invertBox->isChecked() );
+}
+
+
 
 // ----- TagMatchBias --------
 
@@ -130,6 +212,7 @@ Dynamic::TagMatchBias::TagMatchBias()
 void
 Dynamic::TagMatchBias::fromXml( QXmlStreamReader *reader )
 {
+    SimpleMatchBias::fromXml( reader );
     while (!reader->atEnd()) {
         reader->readNext();
 
@@ -162,6 +245,7 @@ Dynamic::TagMatchBias::fromXml( QXmlStreamReader *reader )
 void
 Dynamic::TagMatchBias::toXml( QXmlStreamWriter *writer ) const
 {
+    SimpleMatchBias::toXml( writer );
     writer->writeTextElement( "field", Meta::playlistNameForField( m_filter.field ) );
 
     if( m_filter.isNumeric() )
@@ -192,13 +276,17 @@ Dynamic::TagMatchBias::name() const
 QString
 Dynamic::TagMatchBias::toString() const
 {
-    return m_filter.toString();
+    if( m_invert )
+        return i18nc("Inverted condition in tag match bias",
+                     "Not %1").arg( m_filter.toString() );
+    else
+        return m_filter.toString();
 }
 
 QWidget*
 Dynamic::TagMatchBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::TagMatchBiasWidget( this, parent );
+    return new Dynamic::TagMatchBiasWidget( this, parent );
 }
 
 bool
@@ -327,25 +415,35 @@ Dynamic::TagMatchBias::matches( const Meta::TrackPtr &track ) const
 {
     QVariant value = Meta::valueForField( m_filter.field, track );
 
+    bool result = false;
     switch( m_filter.condition )
     {
     case MetaQueryWidget::Equals:
-        return value.toLongLong() == m_filter.numValue;
+        result = value.toLongLong() == m_filter.numValue;
+        break;
     case MetaQueryWidget::GreaterThan:
-        return value.toLongLong() > m_filter.numValue;
+        result = value.toLongLong() > m_filter.numValue;
+        break;
     case MetaQueryWidget::LessThan:
-        return value.toLongLong() < m_filter.numValue;
+        result = value.toLongLong() < m_filter.numValue;
+        break;
     case MetaQueryWidget::Between:
-        return value.toLongLong() > m_filter.numValue &&
-               value.toLongLong() < m_filter.numValue2;
+        result = value.toLongLong() > m_filter.numValue &&
+            value.toLongLong() < m_filter.numValue2;
+        break;
     case MetaQueryWidget::OlderThan:
-        return value.toLongLong() < m_filter.numValue + QDateTime::currentDateTime().toTime_t();
+        result = value.toLongLong() < m_filter.numValue + QDateTime::currentDateTime().toTime_t();
+        break;
     case MetaQueryWidget::Contains:
-        return value.toString().contains( m_filter.value, Qt::CaseInsensitive );
+        result = value.toString().contains( m_filter.value, Qt::CaseInsensitive );
+        break;
     default:
         ;// the other conditions are only for the advanced playlist generator
     }
-    return false;
+    if( m_invert )
+        return !result;
+    else
+        return result;
 }
 
 #include "TagMatchBias.moc"

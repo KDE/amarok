@@ -24,10 +24,17 @@
 #include "shared/amarok_export.h"
 #include "Bias.h"
 #include "BiasFactory.h"
+
 #include <widgets/MetaQueryWidget.h>
+
+class QWidget;
+class QCheckBox;
 
 namespace Dynamic
 {
+
+    class TagMatchBias;
+
     /** An abstract bias that will check matching tracks agains the results from a query maker.
         You can use this base class for writing your own biases.
     */
@@ -38,6 +45,9 @@ namespace Dynamic
         public:
             SimpleMatchBias();
 
+            virtual void fromXml( QXmlStreamReader *reader );
+            virtual void toXml( QXmlStreamWriter *writer ) const;
+
             virtual TrackSet matchingTracks( int position,
                                              const Meta::TrackList& playlist, int contextCount,
                                              const TrackCollectionPtr universe ) const;
@@ -45,6 +55,10 @@ namespace Dynamic
             virtual bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
                                        int contextCount ) const;
+
+            /** Is the result inverted (e.g. does NOT contain) */
+            bool isInvert() const;
+            void setInvert( bool value );
 
         public slots:
             virtual void invalidate();
@@ -68,8 +82,30 @@ namespace Dynamic
             bool m_tracksValid;
             mutable TrackSet m_tracks;
 
+            /** The results are reported inverted (tracks that not match) */
+            bool m_invert;
+
         private:
             Q_DISABLE_COPY(SimpleMatchBias)
+    };
+
+    /** A bias widget for the TagMatchBias */
+    class TagMatchBiasWidget : public QWidget
+    {
+        Q_OBJECT
+
+        public:
+            TagMatchBiasWidget( Dynamic::TagMatchBias* bias, QWidget* parent = 0 );
+
+        private slots:
+            void syncControlsToBias();
+            void syncBiasToControls();
+
+        private:
+            QCheckBox* m_invertBox;
+            MetaQueryWidget* m_queryWidget;
+
+            Dynamic::TagMatchBias* m_bias;
     };
 
 
@@ -93,6 +129,7 @@ namespace Dynamic
             virtual bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
                                        int contextCount ) const;
+
 
             MetaQueryWidget::Filter filter() const;
             void setFilter( const MetaQueryWidget::Filter &filter );

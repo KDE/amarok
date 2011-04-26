@@ -28,9 +28,6 @@ namespace Dynamic
 {
 
     /** A bias that accepts a query string from the search bar.
-        This query would be straight forward SimpleMatchBias except
-        that I added the "unique" track functionality.
-        This adds a lot complexity to it.
     */
     class SearchQueryBias : public SimpleMatchBias
     {
@@ -48,29 +45,15 @@ namespace Dynamic
 
             virtual QWidget* widget( QWidget* parent = 0 );
 
-            Dynamic::TrackSet matchingTracks( int position,
-                                              const Meta::TrackList& playlist,
-                                              int contextCount,
-                                              Dynamic::TrackCollectionPtr universe ) const;
-
-            void updateFinished();
-
-            bool trackMatches( int position,
-                               const Meta::TrackList& playlist,
-                               int contextCount ) const;
-
-            bool unique() const;
             QString filter() const;
 
         public slots:
-            void setUnique( bool value );
             void setFilter( const QString &filter );
 
         protected slots:
             virtual void newQuery();
 
         private:
-            bool m_unique;
             QString m_filter;
 
             // tracks before the position at the last "matchingTracks" call

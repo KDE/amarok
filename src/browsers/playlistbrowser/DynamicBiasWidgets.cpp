@@ -302,42 +302,4 @@ PlaylistBrowserNS::PartBiasWidget::biasWeightsChanged()
 }
 
 
-// ---------- TagMatchBias --------
-
-
-PlaylistBrowserNS::TagMatchBiasWidget::TagMatchBiasWidget( Dynamic::TagMatchBias* bias,
-                                                           QWidget* parent )
-    : QWidget( parent )
-    , m_bias( bias )
-{
-    QHBoxLayout *layout = new QHBoxLayout( this );
-    m_queryWidget = new MetaQueryWidget();
-    /*
-    m_queryWidget->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
-                                               QSizePolicy::Preferred ) );
-
-    layout->addRow( i18nc("Tag Match Bias selection label in bias view. Try to keep below 15 characters or abbreviate", "Match:" ), m_queryWidget );
-
-*/
-    syncControlsToBias();
-
-    connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)),
-             SLOT(syncBiasToControls()));
-
-    layout->addWidget( m_queryWidget );
-}
-
-void
-PlaylistBrowserNS::TagMatchBiasWidget::syncControlsToBias()
-{
-    m_queryWidget->setFilter( m_bias->filter() );
-}
-
-void
-PlaylistBrowserNS::TagMatchBiasWidget::syncBiasToControls()
-{
-    m_bias->setFilter( m_queryWidget->filter() );
-}
-
-
 #include "DynamicBiasWidgets.moc"

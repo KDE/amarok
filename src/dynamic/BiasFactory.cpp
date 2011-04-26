@@ -64,24 +64,6 @@ class RandomBiasFactory : public Dynamic::AbstractBiasFactory
 };
 
 
-class NotBiasFactory : public Dynamic::AbstractBiasFactory
-{
-    QString i18nName() const
-    { return i18nc("Name of the \"Not\" bias", "Not"); }
-
-    QString name() const
-    { return Dynamic::NotBias::sName(); }
-
-    QString i18nDescription() const
-    { return i18nc("Description of the \"Not\" bias",
-                   "The \"Not\" bias adds tracks that do not\n"
-                   "match any sub bias."); }
-
-    Dynamic::BiasPtr createBias()
-    { return Dynamic::BiasPtr( new Dynamic::NotBias() ); }
-};
-
-
 class AndBiasFactory : public Dynamic::AbstractBiasFactory
 {
     QString i18nName() const
@@ -131,7 +113,6 @@ Dynamic::BiasFactory::instance()
         s_biasFactories.append( new RandomBiasFactory() );
         s_biasFactories.append( new AndBiasFactory() );
         s_biasFactories.append( new OrBiasFactory() );
-        s_biasFactories.append( new NotBiasFactory() );
         s_biasFactories.append( new Dynamic::PartBiasFactory() );
         s_biasFactories.append( new Dynamic::IfElseBiasFactory() );
         s_biasFactories.append( new Dynamic::TagMatchBiasFactory() );

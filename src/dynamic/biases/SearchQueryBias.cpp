@@ -61,7 +61,6 @@ Dynamic::SearchQueryBiasFactory::createBias()
 
 Dynamic::SearchQueryBias::SearchQueryBias( QString filter )
     : SimpleMatchBias()
-    , m_unique( true )
     , m_filter( filter )
 { }
 
@@ -69,7 +68,6 @@ void
 Dynamic::SearchQueryBias::fromXml( QXmlStreamReader *reader )
 {
     DEBUG_BLOCK;
-    m_unique = reader->attributes().value( "unique" ).toString().toInt();
 
     while (!reader->atEnd()) {
         reader->readNext();
@@ -95,8 +93,6 @@ Dynamic::SearchQueryBias::fromXml( QXmlStreamReader *reader )
 void
 Dynamic::SearchQueryBias::toXml( QXmlStreamWriter *writer ) const
 {
-    if( m_unique )
-        writer->writeAttribute("unique", "1");
     writer->writeTextElement( "filter", m_filter );
 }
 
@@ -116,23 +112,11 @@ QString
 Dynamic::SearchQueryBias::toString() const
 {
     if( m_filter.isEmpty() )
-    {
-        if( m_unique )
-            return i18nc("Unique bias representation",
-                         "Only once in the current playlist");
-        else
-            return i18nc("Random bias representation",
-                         "Random songs");
-    }
+        return i18nc("Random bias representation",
+                     "Random songs");
     else
-    {
-        if( m_unique )
-            return i18nc("SearchQuery bias representation",
-                         "Unique search for: %1").arg( m_filter );
-        else
-            return i18nc("SearchQuery bias representation",
-                         "Search for: %1").arg( m_filter );
-    }
+        return i18nc("SearchQuery bias representation",
+                     "Search for: %1").arg( m_filter );
 }
 
 QWidget*
@@ -141,106 +125,13 @@ Dynamic::SearchQueryBias::widget( QWidget* parent )
     QWidget *widget = new QWidget( parent );
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
-    QHBoxLayout *hLayout = new QHBoxLayout();
-    QCheckBox *box = new QCheckBox();
-    box->setChecked( unique() );
-    QLabel *label = new QLabel( i18n("Unique songs") );
-    label->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
-    label->setBuddy( box );
-    hLayout->addWidget( box, 0 );
-    hLayout->addWidget( label, 1 );
-    layout->addLayout( hLayout );
-
     KLineEdit *edit = new KLineEdit( m_filter );
     layout->addWidget( edit );
 
-    connect( box, SIGNAL( toggled( bool ) ),
-             this, SLOT( setUnique( bool ) ) );
     connect( edit, SIGNAL( textChanged( const QString& ) ),
              this, SLOT( setFilter( const QString& ) ) );
 
-
     return widget;
-}
-
-Dynamic::TrackSet
-Dynamic::SearchQueryBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist,
-                                       int contextCount,
-                                       Dynamic::TrackCollectionPtr universe ) const
-{
-    m_existingTracks.clear();
-    if( m_unique )
-    {
-        for( int i = 0; i < position; i++ )
-            m_existingTracks.append( playlist.at(i)->uidUrl() );
-    }
-
-    if( m_tracksValid )
-    {
-        Dynamic::TrackSet tracks( m_tracks );
-        tracks.subtract( m_existingTracks );
-        return tracks;
-    }
-    else
-        return Dynamic::SimpleMatchBias::matchingTracks( position,
-                                                         playlist,
-                                                         contextCount,
-                                                         universe );
-}
-
-void
-Dynamic::SearchQueryBias::updateFinished()
-{
-    m_tracksValid = true;
-    m_qm.reset();
-
-    if( m_unique && !m_existingTracks.isEmpty() )
-    {
-        Dynamic::TrackSet tracks( m_tracks );
-        tracks.subtract( m_existingTracks );
-        emit resultReady( tracks );
-    }
-    else
-        emit resultReady( m_tracks );
-}
-
-bool
-Dynamic::SearchQueryBias::trackMatches( int position,
-                                        const Meta::TrackList& playlist,
-                                        int contextCount ) const
-{
-    Q_UNUSED( contextCount );
-
-    if( m_unique )
-    {
-        for( int i = 0; i < position; i++ )
-            if( playlist.at( i ) == playlist.at( position ) )
-                return false;
-    }
-
-    return Dynamic::SimpleMatchBias::trackMatches( position,
-                                                   playlist,
-                                                   contextCount );
-}
-
-
-bool
-Dynamic::SearchQueryBias::unique() const
-{
-    return m_unique;
-}
-
-void
-Dynamic::SearchQueryBias::setUnique( bool value )
-{
-    DEBUG_BLOCK;
-    if( value == m_unique )
-        return;
-
-    m_unique = value;
-    // setting "unique" does not invalidate the search results invalidate();
-    emit changed( BiasPtr(this) );
 }
 
 QString

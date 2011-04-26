@@ -284,35 +284,6 @@ namespace Dynamic
             Q_DISABLE_COPY(OrBias)
     };
 
-    /** Actually this bias works more like a NOR bias. */
-    class AMAROK_EXPORT NotBias : public OrBias
-    {
-        Q_OBJECT
-
-        public:
-            NotBias();
-
-            static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
-
-            virtual TrackSet matchingTracks( int position,
-                                             const Meta::TrackList& playlist, int contextCount,
-                                             const TrackCollectionPtr universe ) const;
-
-            virtual bool trackMatches( int position,
-                                       const Meta::TrackList& playlist,
-                                       int contextCount ) const;
-
-            virtual double energy( const Meta::TrackList& playlist, int contextCount ) const;
-
-        protected slots:
-            virtual void resultReceived( const Dynamic::TrackSet &tracks );
-
-        private:
-            Q_DISABLE_COPY(NotBias)
-    };
-
 }
 
 Q_DECLARE_METATYPE( Dynamic::BiasPtr )
