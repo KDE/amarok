@@ -295,6 +295,9 @@ QString Meta::iconForField( qint64 field )
 
 QVariant Meta::valueForField( qint64 field, Meta::TrackPtr track )
 {
+    if( !track )
+        return QVariant();
+
     switch( field )
     {
     case 0:
