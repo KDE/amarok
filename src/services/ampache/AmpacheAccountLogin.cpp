@@ -107,7 +107,7 @@ AmpacheAccountLogin::reauthenticate()
     
     m_xmlVersionUrl = KUrl( versionString );
     The::networkAccessManager()->getData( m_xmlVersionUrl, this,
-                                          SLOT(authenticate(KUrl,QByteArray,QNetworkReply::NetworkError)) );
+                                          SLOT(authenticate(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
