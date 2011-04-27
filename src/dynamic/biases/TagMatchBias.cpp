@@ -168,20 +168,23 @@ Dynamic::TagMatchBiasWidget::TagMatchBiasWidget( Dynamic::TagMatchBias* bias,
     : QWidget( parent )
     , m_bias( bias )
 {
-    QHBoxLayout *layout = new QHBoxLayout( this );
+    QVBoxLayout *layout = new QVBoxLayout( this );
+
+    QHBoxLayout *invertLayout = new QHBoxLayout();
     m_invertBox = new QCheckBox();
     QLabel *label = new QLabel( i18n("Invert condition") );
     label->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
     label->setBuddy( m_invertBox );
-    layout->addWidget( m_invertBox, 0 );
-    layout->addWidget( label, 1 );
+    invertLayout->addWidget( m_invertBox, 0 );
+    invertLayout->addWidget( label, 1 );
+    layout->addLayout(invertLayout);
 
     m_queryWidget = new MetaQueryWidget();
     layout->addWidget( m_queryWidget );
 
     syncControlsToBias();
 
-    connect( m_invertBox, SIGNAL(checked(bool)),
+    connect( m_invertBox, SIGNAL(toggled(bool)),
              SLOT(syncBiasToControls()));
     connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)),
              SLOT(syncBiasToControls()));
@@ -276,7 +279,7 @@ Dynamic::TagMatchBias::name() const
 QString
 Dynamic::TagMatchBias::toString() const
 {
-    if( m_invert )
+    if( isInvert() )
         return i18nc("Inverted condition in tag match bias",
                      "Not %1").arg( m_filter.toString() );
     else
