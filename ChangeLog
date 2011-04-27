@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.4.1
   BUGFIXES:
+    * Fixed crash on saving playlist on ineligible device. (BR 266899)
     * Fixed Photos applet crash on track metadata change. (BR 265395)
     * Fixed crash on local collection search. (BR 270949)
     * Fixed crash during iPod track removal. (BR 253088)
@@ -12,8 +13,8 @@ VERSION 2.4.1
     * Fixed incorrect handling of "Various Artists" node by Collection Browser,
       now selection of this node returns "Various Artists" tracks instead of
       whole collection. (BR: 263255, BR: 269717)
-    * Fixed song scrobbling if It was paused. (BR: 267477)
-    * Screen escape characters in MusicBrainz request string. (BR: 269455)
+    * Fixed song scrobbling if It was paused. (BR 267477)
+    * Screen escape characters in MusicBrainz request string. (BR 269455)
     * Fixed detection of iPod devices.
     * Fixed crash when the lyrics applet was removed and re-added while a
       track was playing and the user pressed "ESC".
