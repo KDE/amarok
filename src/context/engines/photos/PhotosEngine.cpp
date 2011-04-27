@@ -115,7 +115,7 @@ PhotosEngine::sourceRequestEvent( const QString& name )
 void
 PhotosEngine::metadataChanged( Meta::TrackPtr track )
 {
-    const bool hasChanged = track->artist()->name() != m_artist;
+    const bool hasChanged = !track->artist() || track->artist()->name() != m_artist;
     if ( hasChanged )
         update();
 }

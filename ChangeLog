@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.4.1
   BUGFIXES:
+    * Fixed Photos applet crash on track metadata change. (BR 265395)
     * Fixed crash on local collection search. (BR 270949)
     * Fixed crash during iPod track removal. (BR 253088)
     * Relative paths support for XSPF playlists. (BR 264147)
