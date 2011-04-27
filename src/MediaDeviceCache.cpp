@@ -193,12 +193,6 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
         m_type[udi] = MediaDeviceCache::SolidAudioCdType;
         m_name[udi] = device.vendor() + " - " + device.product();
     }
-    else if( device.as<Solid::StorageDrive>() )
-    {
-        debug() << "device is a Storage drive, still need a volume";
-        m_type[udi] = MediaDeviceCache::SolidGenericType;
-        m_name[udi] = device.vendor() + " - " + device.product();
-    }
     else if( ssa )
     {
         debug() << "volume is generic storage";
@@ -219,6 +213,12 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
             return;
         }
     }
+    else if( device.as<Solid::StorageDrive>() )
+    {
+        debug() << "device is a Storage drive, still need a volume";
+        m_type[udi] = MediaDeviceCache::SolidGenericType;
+        m_name[udi] = device.vendor() + " - " + device.product();
+    }
     else if( device.as<Solid::PortableMediaPlayer>() )
     {
         debug() << "device is a PMP";
@@ -230,8 +230,8 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
         const QMap<QString, QVariant> properties = generic->allProperties();
         // iPods touch 3G (and maybe upper) do not have AFC capabilities. 
         // Due to the return, iPod Touch are not known as media device and the code which execute the ifuse command is then not called!
-	if ( !device.product().contains("iPod") )
-	{
+        if ( !device.product().contains("iPod") )
+        {
             if( !properties.contains("info.capabilities") )
             {
                 debug() << "udi " << udi << " does not describe a portable media player or storage volume";
@@ -244,7 +244,7 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
                 debug() << "udi " << udi << " does not describe a portable media player or storage volume";
                 return;
             }
-	}
+        }
 
         debug() << "udi" << udi << "is AFC cabable (Apple mobile device)";
         m_type[udi] = MediaDeviceCache::SolidGenericType;
