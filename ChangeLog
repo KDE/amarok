@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.4.1
   BUGFIXES:
+    * Fix crash during iPod track removal. (BR 253088)
     * Relative paths support for XSPF playlists. (BR 264147)
     * Fix incorrect handling of "Various Artists" node by Collection Browser,
       now selection of this node returns "Various Artists" tracks instead of
