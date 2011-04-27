@@ -1408,6 +1408,10 @@ void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
 
 void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item )
 {
+    // also all the children will be deleted
+    foreach( CollectionTreeItem *child, item->children() )
+        itemAboutToBeDeleted( child );
+
     if( !d->runningQueries.contains( item ) )
         return;
     //replace this hack with QWeakPointer as soon as we depend on Qt 4.6
