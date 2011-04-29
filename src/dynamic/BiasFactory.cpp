@@ -177,6 +177,12 @@ Dynamic::ReplacementBias::name() const
     return m_name;
 }
 
+QString
+Dynamic::ReplacementBias::toString() const
+{
+    return i18n( "Replacement for bias %1" ).arg( m_name );
+}
+
 QWidget*
 Dynamic::ReplacementBias::widget( QWidget* parent )
 {
