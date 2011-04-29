@@ -18,6 +18,8 @@
 
 #include "DynamicModel.h"
 
+#include "App.h"
+
 #include "Bias.h"
 #include "BiasFactory.h"
 #include "BiasedPlaylist.h"
@@ -54,15 +56,15 @@ Dynamic::DynamicModel::instance()
 {
     if( !s_instance )
     {
-        s_instance = new DynamicModel();
+        s_instance = new DynamicModel( App::instance() );
         s_instance->loadPlaylists();
     }
     return s_instance;
 }
 
 
-Dynamic::DynamicModel::DynamicModel()
-    : QAbstractItemModel()
+Dynamic::DynamicModel::DynamicModel(QObject* parent)
+    : QAbstractItemModel( parent )
 { }
 
 Dynamic::DynamicModel::~DynamicModel()
@@ -112,7 +114,6 @@ Dynamic::DynamicModel::playlistIndex( Dynamic::DynamicPlaylist* playlist ) const
 QModelIndex
 Dynamic::DynamicModel::insertPlaylist( int index, Dynamic::DynamicPlaylist* playlist )
 {
-DEBUG_BLOCK;
     if( !playlist )
         return QModelIndex();
 
@@ -157,7 +158,6 @@ DEBUG_BLOCK;
 QModelIndex
 Dynamic::DynamicModel::insertBias( int row, const QModelIndex &parentIndex, Dynamic::BiasPtr bias )
 {
-DEBUG_BLOCK;
     Q_ASSERT( !index( bias ).isValid() ); // the bias is not already in our lists
 
     QObject* o = static_cast<QObject*>(parentIndex.internalPointer());
@@ -169,12 +169,20 @@ DEBUG_BLOCK;
 
     if( parentPlaylist )
     {
-        // need a new AND bias
-        parentBias = new Dynamic::AndBias();
-        Dynamic::BiasPtr b( parentPlaylist->bias() ); // ensure that the bias does not get freed
-        parentPlaylist->bias()->replace( Dynamic::BiasPtr( parentBias ) );
-        parentBias->appendBias( b );
-        parentBias->appendBias( bias );
+        // already have an AND bias
+        if( parentPlaylist && qobject_cast<Dynamic::AndBias*>(parentPlaylist->bias().data()) )
+        {
+            return insertBias( 0, index( parentPlaylist->bias() ), parentPlaylist->bias() );
+        }
+        else
+        {
+            // need a new AND bias
+            parentBias = new Dynamic::AndBias();
+            Dynamic::BiasPtr b( parentPlaylist->bias() ); // ensure that the bias does not get freed
+            parentPlaylist->bias()->replace( Dynamic::BiasPtr( parentBias ) );
+            parentBias->appendBias( b );
+            parentBias->appendBias( bias );
+        }
     }
     else if( parentBias )
     {
@@ -206,7 +214,7 @@ Dynamic::DynamicModel::supportedDropActions() const
 // row is the row number inside the parent.
 
 QVariant
-Dynamic::DynamicModel::data ( const QModelIndex& i, int role ) const
+Dynamic::DynamicModel::data( const QModelIndex& i, int role ) const
 {
     if( !i.isValid() )
         return QVariant();
@@ -694,10 +702,20 @@ Dynamic::DynamicModel::removeAt( const QModelIndex& index )
         BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o2);
         AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o2);
 
+        // parent of the bias is a playlist
         if( parentPlaylist )
         {
-            // can't remove a bias directly under a playlist
+            // a playlist always needs a bias, so we can only remove this one
+            // if we can come up with a replacement
+            AndBias* andBias = qobject_cast<Dynamic::AndBias*>(indexBias);
+            if( andBias && !andBias->biases().isEmpty() )
+                andBias->replace( andBias->biases().first() ); // replace by the first sub-bias
+            else
+            {
+                ; // can't remove the last bias directly under a playlist
+            }
         }
+        // parent of the bias is another bias
         else if( parentBias )
         {
             indexBias->replace( Dynamic::BiasPtr() ); // replace by nothing
@@ -742,58 +760,11 @@ Dynamic::DynamicModel::newPlaylist()
 }
 
 
-/*
-void
-Dynamic::DynamicModel::saveActive( const QString& newTitle )
-{
-    int newIndex = -1; // playlistIndex( newTitle );
-    debug() << "saveActive" << m_activePlaylistIndex << newTitle << ":"<<newIndex;
-
-    // if it's unchanged and the same name.. dont do anything
-    if( !m_activeUnsaved &&
-        newIndex == m_activePlaylistIndex )
-        return;
-
-    // overwrite the current playlist entry
-    if( newIndex == m_activePlaylistIndex )
-    {
-        savePlaylists();
-        emit dataChanged( index( m_activePlaylistIndex, 0 ),
-                          index( m_activePlaylistIndex, 0 ) );
-        return;
-    }
-
-    // overwriting an existing playlist entry
-    if( newIndex >= 0 )
-    {
-        beginRemoveRows( QModelIndex(), newIndex, newIndex );
-        // should be safe to delete the entry, as it's not the active playlist
-        delete m_playlists.takeAt( newIndex );
-        endRemoveRows();
-        savePlaylists();
-    }
-
-    // copy the modified playlist away;
-    Dynamic::DynamicPlaylist *newPl = m_playlists.takeAt( m_activePlaylistIndex );
-    newPl->setTitle( newTitle );
-
-    // load the old playlist with the unmodified entries
-    loadPlaylists();
-
-    // add the new entry at the end
-    beginInsertRows( QModelIndex(), m_playlists.count(), m_playlists.count() );
-    m_playlists.append( newPl );
-    endInsertRows();
-
-    setActivePlaylist( m_playlists.count() - 1 );
-
-    savePlaylists();
-}
-*/
-
 bool
 Dynamic::DynamicModel::savePlaylists( const QString &filename )
 {
+    DEBUG_BLOCK;
+
     QFile xmlFile( Amarok::saveLocation() + filename );
     if( !xmlFile.open( QIODevice::WriteOnly ) )
     {
