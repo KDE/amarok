@@ -24,8 +24,42 @@
 #include "Bias.h"
 #include "BiasFactory.h"
 
+#include <QList>
+class QGridLayout;
+class QSlider;
+class QWidget;
+
 namespace Dynamic
 {
+    class PartBias;
+
+    /** The widget for the PartBias */
+    class PartBiasWidget : public QWidget
+    {
+        Q_OBJECT
+
+        public:
+            PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent = 0 );
+
+        protected slots:
+            void biasAppended( Dynamic::BiasPtr bias );
+            void biasRemoved( int pos );
+            void biasMoved( int from, int to );
+
+            void sliderValueChanged( int val );
+            void biasWeightsChanged();
+
+        protected:
+            /** True if we just handle a signal. Used to protect agains recursion */
+            bool m_inSignal;
+
+            Dynamic::PartBias* m_bias;
+
+            QGridLayout* m_layout;
+
+            QList<QSlider*> m_sliders;
+            QList<QWidget*> m_widgets;
+    };
 
     /** The part bias will ensure that tracks are fulfilling all the sub-biases according to it's weights.
         The bias has an implicit random sub-bias

@@ -31,6 +31,12 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#include "SliderWidget.h"
+#include <QGridLayout>
+#include <QSlider>
+#include <QWidget>
+#include <QLabel>
+
 #include <klocale.h>
 
 QString
@@ -215,6 +221,115 @@ class MatchState
         QVector<int> m_drainSource; // the source currently used by the drain
 };
 
+// -------- PartBiasWidget -----------
+
+Dynamic::PartBiasWidget::PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent )
+    : QWidget( parent )
+    , m_inSignal( false )
+    , m_bias( bias )
+{
+    connect( bias, SIGNAL( biasAppended( Dynamic::BiasPtr ) ),
+             this, SLOT( biasAppended( Dynamic::BiasPtr ) ) );
+
+    connect( bias, SIGNAL( biasRemoved( int ) ),
+             this, SLOT( biasRemoved( int ) ) );
+
+    connect( bias, SIGNAL( biasMoved( int, int ) ),
+             this, SLOT( biasMoved( int, int ) ) );
+
+    connect( bias, SIGNAL( weightsChanged() ),
+             this, SLOT( biasWeightsChanged() ) );
+
+    m_layout = new QGridLayout( this );
+
+    // -- add all sub-bias widgets
+    foreach( Dynamic::BiasPtr bias, m_bias->biases() )
+    {
+        biasAppended( bias );
+    }
+}
+
+void
+Dynamic::PartBiasWidget::biasAppended( Dynamic::BiasPtr bias )
+{
+    int index = m_bias->biases().indexOf( bias );
+
+    Amarok::Slider* slider = 0;
+    slider = new Amarok::Slider( Qt::Horizontal, 100 );
+    slider->setValue( m_bias->weights()[ m_bias->biases().indexOf( bias ) ] * 100.0 );
+    slider->setToolTip( i18n( "This controls what portion of the playlist should match the criteria" ) );
+    connect( slider, SIGNAL(valueChanged(int)), SLOT(sliderValueChanged(int)) );
+
+    QLabel* label = new QLabel( bias->toString() );
+
+    m_sliders.append( slider );
+    m_widgets.append( label );
+    // -- add the widget (with slider)
+    m_layout->addWidget( slider, index, 0 );
+    m_layout->addWidget( label, index, 1 );
+}
+
+void
+Dynamic::PartBiasWidget::biasRemoved( int pos )
+{
+    m_layout->takeAt( pos * 2 );
+    m_layout->takeAt( pos * 2 );
+    m_sliders.takeAt( pos )->deleteLater();
+    m_widgets.takeAt( pos )->deleteLater();
+}
+
+void
+Dynamic::PartBiasWidget::biasMoved( int from, int to )
+{
+    QSlider* slider = m_sliders.takeAt( from );
+    m_sliders.insert( to, slider );
+
+    QWidget* widget = m_widgets.takeAt( from );
+    m_widgets.insert( to, widget );
+
+    // -- move the item in the layout
+    // TODO
+    /*
+    m_layout->insertWidget( to * 2, slider );
+    m_layout->insertWidget( to * 2 + 1, widget );
+    */
+}
+
+void
+Dynamic::PartBiasWidget::sliderValueChanged( int val )
+{
+    DEBUG_BLOCK;
+    // protect agains recursion
+    if( m_inSignal )
+        return;
+
+    for( int i = 0; i < m_sliders.count(); i++ )
+    {
+        if( m_sliders.at(i) == sender() )
+            m_bias->changeBiasWeight( i, qreal(val) / 100.0 );
+    }
+}
+
+void
+Dynamic::PartBiasWidget::biasWeightsChanged()
+{
+    DEBUG_BLOCK;
+    // protect agains recursion
+    if( m_inSignal )
+        return;
+
+    m_inSignal = true;
+
+    QList<qreal> weights = m_bias->weights();
+    for( int i = 0; i < weights.count() && i < m_sliders.count(); i++ )
+        m_sliders.at(i)->setValue( weights.at(i) * 100.0 );
+
+    m_inSignal = false;
+}
+
+
+
+// ----------- PartBias ----------------
 
 Dynamic::PartBias::PartBias()
     : AndBias()
@@ -286,7 +401,7 @@ Dynamic::PartBias::toString() const
 QWidget*
 Dynamic::PartBias::widget( QWidget* parent )
 {
-    return new PlaylistBrowserNS::PartBiasWidget( this, parent );
+    return new Dynamic::PartBiasWidget( this, parent );
 }
 
 void

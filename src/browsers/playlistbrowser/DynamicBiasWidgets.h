@@ -27,22 +27,8 @@
 #include <QDialog>
 
 class QVBoxLayout;
-class QGridLayout;
 class QLabel;
-class QSlider;
-class QToolButton;
 class KComboBox;
-class QEvent;
-
-namespace Amarok
-{
-    class Slider;
-}
-
-namespace Dynamic
-{
-    class PartBias;
-}
 
 namespace PlaylistBrowserNS
 {
@@ -75,35 +61,6 @@ namespace PlaylistBrowserNS
             Dynamic::BiasPtr m_bias;
     };
 
-
-    /** The widget for the PartBias */
-    class PartBiasWidget : public QWidget
-    {
-        Q_OBJECT
-
-        public:
-            PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent = 0 );
-
-        protected slots:
-            void appendBias();
-            void biasAppended( Dynamic::BiasPtr bias );
-            void biasRemoved( int pos );
-            void biasMoved( int from, int to );
-
-            void sliderValueChanged( int val );
-            void biasWeightsChanged();
-
-        protected:
-            /** True if we just handle a signal. Used to protect agains recursion */
-            bool m_inSignal;
-
-            Dynamic::PartBias* m_bias;
-
-            QGridLayout* m_layout;
-
-            QList<QSlider*> m_sliders;
-            QList<QWidget*> m_widgets;
-    };
 }
 
 #endif
