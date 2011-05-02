@@ -871,12 +871,12 @@ MediaDeviceAlbum::hasImage( int size ) const
 QImage
 MediaDeviceAlbum::image( int size ) const
 {
-    if( m_name.isEmpty() || !m_hasImage )
+    if( m_name.isEmpty() || !m_hasImage || m_tracks.isEmpty() )
         return Meta::Album::image( size );
 
     if( m_image.isNull() && m_artworkCapability )
     {
-        MediaDeviceTrackPtr track = MediaDeviceTrackPtr::dynamicCast( m_tracks.first() );
+        MediaDeviceTrackPtr track = MediaDeviceTrackPtr::staticCast( m_tracks.first() );
         m_image = m_artworkCapability->getCover( track );
         m_hasImage = m_image.isNull();
         m_hasImageChecked = true;

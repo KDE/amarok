@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>508</width>
+    <width>506</width>
     <height>65</height>
    </rect>
   </property>
@@ -57,7 +57,7 @@
       <string extracomment="automatic updates turned off">disabled</string>
      </property>
      <property name="prefix">
-      <string extracomment="prefix to update interval in minutes">every </string>
+      <string notr="true" extracomment="prefix to update interval in minutes">every </string>
      </property>
      <property name="minimum">
       <number>0</number>

@@ -638,8 +638,7 @@ MediaDeviceHandler::removeNextTrackFromDevice()
     {
         // Pop the track off the front of the list
 
-        track = m_tracksToDelete.first();
-        m_tracksToDelete.removeFirst();
+        track = m_tracksToDelete.takeFirst();
 
         // Remove the track
 

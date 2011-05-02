@@ -177,7 +177,11 @@ ConstraintTypes::TagMatch::toXml( QDomDocument& doc, QDomElement& elem ) const
 QString
 ConstraintTypes::TagMatch::getName() const
 {
-    QString v( i18n("Match tag:%1 %2 %3 %4") );
+    QString v( i18nc( "%1 = empty string or \"not\"; "
+                      "%2 = a metadata field, like \"title\" or \"artist name\"; "
+                      "%3 = a predicate, can be equals, starts with, ends with or contains; "
+                      "%4 = a string to match; "
+                      "Example: Match tag: not title contains \"foo\"", "Match tag:%1 %2 %3 %4") );
     v = v.arg( ( m_invert ? i18n(" not") : "" ), m_fieldsModel->pretty_name_of( m_field ), comparisonToString() );
     if ( m_field == "rating" ) {
         double r = m_value.toDouble() / 2.0;

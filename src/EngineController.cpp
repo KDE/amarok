@@ -144,6 +144,10 @@ EngineController::initializePhonon()
 
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
+
+    // Enable zeitgeist support on linux
+    m_media.data()->setProperty("PlaybackTracking", true);
+
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
     m_path = Phonon::createPath( m_media.data(), m_audio.data() );
@@ -551,8 +555,7 @@ EngineController::stop( bool forceInstant ) //SLOT
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
-        m_currentTrack = 0;
-        emit trackChanged( Meta::TrackPtr( 0 ) );
+
         m_currentTrack = 0;
         m_currentAlbum = 0;
         emit trackChanged( m_currentTrack );

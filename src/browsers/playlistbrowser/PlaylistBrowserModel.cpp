@@ -557,7 +557,7 @@ PlaylistBrowserModel::trackRemoved( Playlists::PlaylistPtr playlist, int positio
 void
 PlaylistBrowserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
 {
-    if( playlist->provider()->category() != m_playlistCategory )
+    if( !playlist->provider() || playlist->provider()->category() != m_playlistCategory )
         return;
 
     //search index of this Playlist

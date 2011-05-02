@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>598</width>
-    <height>426</height>
+    <width>596</width>
+    <height>424</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="rootLayout">
@@ -223,7 +223,7 @@
            <item>
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>Scale Font:</string>
+              <string>Font scale:</string>
              </property>
             </widget>
            </item>

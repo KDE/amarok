@@ -259,6 +259,10 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     Meta::LabelList labels = track->labels();
     foreach( Meta::LabelPtr label, labels )
         metaTrack->addLabel( label );
+    
+    Amarok::FileType fileType = Amarok::FileTypeSupport::fileType( track->type() );
+    if( fileType != Amarok::Unknown )
+        metaTrack->setType( fileType );
 
     metaTrack->endMetaDataUpdate();
 

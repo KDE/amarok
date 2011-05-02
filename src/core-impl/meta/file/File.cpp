@@ -188,6 +188,7 @@ Track::Track( const KUrl &url )
     d->readMetaData();
     d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( d ) );
     d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( d ) );
+    d->albumArtist = Meta::ArtistPtr( new MetaFile::FileArtist( d, true ) );
     d->genre = Meta::GenrePtr( new MetaFile::FileGenre( d ) );
     d->composer = Meta::ComposerPtr( new MetaFile::FileComposer( d ) );
     d->year = Meta::YearPtr( new MetaFile::FileYear( d ) );

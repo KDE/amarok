@@ -350,7 +350,7 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
             item->tabType  = tabType;
             item->title    = title;
             item->tabs     = tabs;
-            item->source   = "UltimateGuitar";
+            item->source   = "Ultimate-Guitar";
 
             m_tabs << item;
         }
@@ -470,7 +470,7 @@ TabsEngine::resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessMa
             item->tabType  = tabType;
             item->title    = title;
             item->tabs     = tabs;
-            item->source   = "fretplay";
+            item->source   = "Fretplay";
 
             m_tabs << item;
         }
@@ -597,12 +597,12 @@ TabsEngine::defineTitleSearchCriteria( const QString &title )
         titles << searchTitle.remove( "The ", Qt::CaseInsensitive );
 
     // remove anything like (live), (demo-tape), ...
-    QRegExp regex = QRegExp( "\\s*\\([A-Za-z0-9\\s]*\\)", Qt::CaseInsensitive );
+    QRegExp regex = QRegExp( "\\s*\\(.*\\)", Qt::CaseInsensitive );
     if( regex.indexIn( searchTitle ) > 0 )
         titles << searchTitle.remove( regex );
 
     // remove anything like [xxxx].
-    regex = QRegExp( "\\s*\\[[A-Za-z0-9\\s]*\\]", Qt::CaseInsensitive );
+    regex = QRegExp( "\\s*\\[.*\\]", Qt::CaseInsensitive );
     if( regex.indexIn( searchTitle ) > 0 )
         titles << searchTitle.remove( regex );
 

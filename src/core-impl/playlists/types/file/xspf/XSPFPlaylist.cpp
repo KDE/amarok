@@ -51,6 +51,8 @@ namespace Playlists
 XSPFPlaylist::XSPFPlaylist()
     : QDomDocument()
     , m_tracksLoaded( false )
+    , m_relativePaths( false )
+    , m_saveLock( false )
 {
     QDomElement root = createElement( "playlist" );
 
@@ -67,6 +69,8 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
     , m_tracksLoaded( false )
     , m_url( url )
     , m_autoAppendAfterLoad( autoAppend )
+    , m_relativePaths( false )
+    , m_saveLock( false )
 {
     //check if file is local or remote
     if ( m_url.isLocalFile() )
@@ -91,6 +95,8 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
 
 XSPFPlaylist::XSPFPlaylist( Meta::TrackList tracks )
     : QDomDocument()
+    , m_relativePaths( false )
+    , m_saveLock( false )
 {
     QDomElement root = createElement( "playlist" );
 
@@ -123,12 +129,25 @@ XSPFPlaylist::description() const
 bool
 XSPFPlaylist::save( const KUrl &location, bool relative )
 {
-    Q_UNUSED( relative );
-
     m_url = location;
     //if the location is a directory append the name of this playlist.
     if( m_url.fileName( KUrl::ObeyTrailingSlash ).isNull() )
         m_url.setFileName( name() );
+    
+    if( relative )
+    {
+        m_relativePaths = true;
+        m_saveLock = true;
+        setTrackList( tracks(), false );
+        m_saveLock = false;
+    }
+    else if( m_relativePaths )
+    {
+        m_relativePaths = false;
+        m_saveLock = true;
+        setTrackList( tracks(), false );
+        m_saveLock = false;
+    }
 
     QFile file;
 
@@ -663,7 +682,21 @@ XSPFPlaylist::trackList()
             while( !subSubNode.isNull() )
             {
                 if( subSubNode.nodeName() == "location" )
-                    track.location = subSubNode.firstChild().nodeValue();
+                {
+                    QString path = QUrl::fromPercentEncoding( subSubNode.firstChild().nodeValue().toAscii() );
+                    path.replace( '\\', '/' );
+
+                    KUrl url = path;
+                    if( url.isRelative() )
+                    {
+                        m_relativePaths = true;
+                        url = m_url.directory();
+                        url.addPath( path );
+                        url.cleanPath();
+                    }
+
+                    track.location = url;
+                }
                 else if( subSubNode.nodeName() == "title" )
                     track.title = subSubNode.firstChild().nodeValue();
                 else if( subSubNode.nodeName() == "creator" )
@@ -756,11 +789,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
             subNode.appendChild( X ); \
         }
 
-        if ( !track->playableUrl().url().isEmpty() )
-            APPENDNODE( location, track->playableUrl().url() )
-        else
-            APPENDNODE( location, track->uidUrl() )
-
+        APPENDNODE( location, trackLocation( track ) )
         APPENDNODE( identifier, track->uidUrl() )
 
         Capabilities::StreamInfoCapability *streamInfo = track->create<Capabilities::StreamInfoCapability>();
@@ -805,7 +834,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
         documentElement().replaceChild( node, documentElement().namedItem( "trackList" ) );
 
     //write changes to file directly if we know where.
-    if( !m_url.isEmpty() )
+    if( !m_url.isEmpty() && !m_saveLock )
         save( m_url, false );
 }
 
@@ -899,6 +928,20 @@ XSPFPlaylist::setName( const QString &name )
     }
     //setTitle will save if there is a url.
     setTitle( name );
+}
+
+QString 
+XSPFPlaylist::trackLocation( Meta::TrackPtr &track )
+{
+    KUrl path = track->playableUrl();
+    if( path.isEmpty() )
+        return track->uidUrl();
+    
+    if( !m_relativePaths || m_url.isEmpty() || !path.isLocalFile() || !m_url.isLocalFile() )
+        return path.url();
+
+    QDir playlistDir( m_url.directory() );
+    return QUrl::toPercentEncoding( playlistDir.relativeFilePath( path.path() ), "/" );
 }
 
 } //namespace Playlists

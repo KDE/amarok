@@ -1151,16 +1151,23 @@ void CollectionTreeView::slotCopyTracks()
         {
             Transcoding::Configuration configuration = Transcoding::Configuration();
 
-            if( !Amarok::Components::transcodingController()->availableFormats().isEmpty() )
+            Collections::Collection *destCollection = m_currentCopyDestination[ action ];
+
+            if( destCollection->uidUrlProtocol() == "amarok-sqltrackuid" ) //we can only transcode to a SqlCollection for now
             {
-                Transcoding::AssistantDialog dialog( this );
-                if( dialog.exec() )
-                    configuration = dialog.configuration();
+                if( !Amarok::Components::transcodingController()->availableFormats().isEmpty() )
+                {
+                    Transcoding::AssistantDialog dialog( this );
+                    if( dialog.exec() )
+                        configuration = dialog.configuration();
+                }
+                else
+                    debug() << "FFmpeg is not installed or does not support any of the required formats.";
             }
             else
-                debug() << "FFmpeg is not installed or does not support any of the required formats.";
+                debug() << "The destination collection does not support transcoding.";
 
-            copyTracks( m_currentItems, m_currentCopyDestination[ action ], false, configuration );
+            copyTracks( m_currentItems, destCollection, false, configuration );
         }
     }
 }
@@ -1231,7 +1238,7 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
     {
         Collections::QueryMaker *qm = item->queryMaker();
         CollectionTreeItem *tmp = item;
-        while( tmp->isDataItem() )
+        while( tmp->isDataItem() || tmp->isVariousArtistItem() )
         {
             if( tmp->isVariousArtistItem() )
                 qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );

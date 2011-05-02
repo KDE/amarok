@@ -292,7 +292,7 @@ APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
     setSelection( ps->title() + ".xml" );
     setOperationMode( KFileDialog::Saving );
     setKeepLocation( true );
-    setCaption( i18n("Export `%1' preset", ps->title() ) );
+    setCaption( i18n( "Export \"%1\" preset", ps->title() ) );
     connect( this, SIGNAL( okClicked() ), this, SLOT( recvAccept() ) );
 }
 
