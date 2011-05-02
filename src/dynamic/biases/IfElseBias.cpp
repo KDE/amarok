@@ -42,7 +42,7 @@ Dynamic::IfElseBiasFactory::name() const
 QString
 Dynamic::IfElseBiasFactory::i18nDescription() const
 { return i18nc("Description of the \"IfElse\" bias",
-                   "The \"IfElse\" bias adds tracks they match at least one of the sub biases but it will only check the second sub-bias if the first doesn't return any results."); }
+                   "The \"IfElse\" bias adds tracks they match at least one of the sub biases. It will only check the second sub-bias if the first doesn't return any results."); }
 
 Dynamic::BiasPtr
 Dynamic::IfElseBiasFactory::createBias()
@@ -70,17 +70,13 @@ Dynamic::IfElseBias::name() const
 QString
 Dynamic::IfElseBias::toString() const
 {
-    return i18nc("IfElse bias representation", "If");
+    return i18nc("IfElse bias representation", "Match all sequentially");
 }
 
 void
 Dynamic::IfElseBias::paintOperator( QPainter* painter, const QRect& rect, Dynamic::AbstractBias* bias )
 {
-    if( m_biases.indexOf( Dynamic::BiasPtr(bias) ) == 0 )
-        painter->drawText( rect.adjusted(2, 0, -2, 0),
-                           Qt::AlignRight,
-                           i18nc("Prefix for IfElseBias. Shown in front of a bias in the dynamic playlist view", "if" ) );
-    else
+    if( m_biases.indexOf( Dynamic::BiasPtr(bias) ) > 0 )
         painter->drawText( rect.adjusted(2, 0, -2, 0),
                            Qt::AlignRight,
                            i18nc("Prefix for IfElseBias. Shown in front of a bias in the dynamic playlist view", "else" ) );
