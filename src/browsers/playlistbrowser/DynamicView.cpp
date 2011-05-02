@@ -183,81 +183,6 @@ PlaylistBrowserNS::DynamicView::keyPressEvent( QKeyEvent *event )
 }
 
 void
-PlaylistBrowserNS::DynamicView::mousePressEvent( QMouseEvent *event )
-{
-    const QModelIndex index = indexAt( event->pos() );
-    if( !index.isValid() )
-    {
-        event->accept();
-        return;
-    }
-
-    /*
-    // HACK: provider elements hide the root decorations
-    // Don't bother checking actions for the others.
-    if( !rootIsDecorated() && !index.parent().isValid() )
-    {
-        const int actionCount =
-            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
-        if( actionCount > 0 )
-        {
-            const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
-            if( rect.contains( event->pos() ) )
-                return;
-        }
-    }
-
-    bool prevExpandState = isExpanded( index );
-    */
-
-    // This will toggle the expansion of the current item when clicking
-    // on the fold marker but not on the item itself. Required here to
-    // enable dragging.
-    Amarok::PrettyTreeView::mousePressEvent( event );
-}
-
-void
-PlaylistBrowserNS::DynamicView::mouseReleaseEvent( QMouseEvent *event )
-{
-    /*
-    const QModelIndex index = indexAt( event->pos() );
-    // HACK: provider elements hide the root decorations
-    // Don't bother checking actions for the others.
-    if( !rootIsDecorated() && !index.parent().isValid() )
-    {
-        QAction *action = decoratorActionAt( index, event->pos() );
-        if( action )
-            action->trigger();
-    }
-
-    if( !m_expandToggledWhenPressed &&
-        event->button() != Amarok::contextMouseButton() &&
-        event->modifiers() == Qt::NoModifier &&
-        KGlobalSettings::singleClick() &&
-        model()->hasChildren( index ) )
-    {
-        m_expandToggledWhenPressed = !m_expandToggledWhenPressed;
-        setCurrentIndex( index );
-        setExpanded( index, !isExpanded( index ) );
-        event->accept();
-        return;
-    }
-    */
-    Amarok::PrettyTreeView::mouseReleaseEvent( event );
-}
-
-void
-PlaylistBrowserNS::DynamicView::mouseMoveEvent( QMouseEvent *event )
-{
-    if( event->buttons() || event->modifiers() )
-    {
-        Amarok::PrettyTreeView::mouseMoveEvent( event );
-        return;
-    }
-    event->accept();
-}
-
-void
 PlaylistBrowserNS::DynamicView::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
@@ -331,13 +256,6 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         connect( action, SIGNAL( triggered(bool) ), this, SLOT( editSelected() ) );
         actions.append( action );
 
-        if( aBias )
-        {
-            action = new KAction( KIcon( "document-new" ), i18n( "&Add new bias" ), this );
-            connect( action, SIGNAL( triggered(bool) ), this, SLOT( addToSelected() ) );
-            actions.append( action );
-        }
-
         action = new KAction( KIcon( "edit-copy" ), i18n( "&Clone bias" ), this );
         connect( action, SIGNAL( triggered(bool) ), this, SLOT( cloneSelected() ) );
         actions.append( action );
@@ -345,11 +263,18 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         // don't allow deleting a top bias unless it'a an and-bias containing at least one
         // other bias
         QModelIndex parentIndex = index.parent();
-        QVariant parentV = model()->data( index, Dynamic::DynamicModel::PlaylistRole );
+        QVariant parentV = model()->data( parentIndex, Dynamic::DynamicModel::PlaylistRole );
         if( !parentV.isValid() || (aBias && aBias->biases().count() > 0) )
         {
             action = new KAction( KIcon( "edit-delete" ), i18n( "&Delete bias" ), this );
             connect( action, SIGNAL( triggered(bool) ), this, SLOT( removeSelected() ) );
+            actions.append( action );
+        }
+
+        if( aBias )
+        {
+            action = new KAction( KIcon( "document-new" ), i18n( "&Add new bias" ), this );
+            connect( action, SIGNAL( triggered(bool) ), this, SLOT( addToSelected() ) );
             actions.append( action );
         }
     }

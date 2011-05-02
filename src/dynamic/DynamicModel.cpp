@@ -159,8 +159,6 @@ Dynamic::DynamicModel::insertPlaylist( int index, Dynamic::DynamicPlaylist* play
 QModelIndex
 Dynamic::DynamicModel::insertBias( int row, const QModelIndex &parentIndex, Dynamic::BiasPtr bias )
 {
-    Q_ASSERT( !index( bias ).isValid() ); // the bias is not already in our lists
-
     QObject* o = static_cast<QObject*>(parentIndex.internalPointer());
     BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o);
     AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o);
@@ -360,9 +358,20 @@ Dynamic::DynamicModel::flags( const QModelIndex& index ) const
     // level > 1
     else if( indexBias )
     {
-        return Qt::ItemIsSelectable | /* Qt::ItemIsEditable | */
-            Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled |
-            Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
+        QModelIndex parentIndex = parent( index );
+        QObject* o2 = static_cast<QObject*>(parentIndex.internalPointer());
+        BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o2);
+
+        // level 2
+        if( parentPlaylist ) // you can't drag all the biases away from a playlist
+            return Qt::ItemIsSelectable | /* Qt::ItemIsEditable | */
+                /* Qt::ItemIsDragEnabled | */ Qt::ItemIsDropEnabled |
+                Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
+        // level > 2
+        else
+            return Qt::ItemIsSelectable | /* Qt::ItemIsEditable | */
+                Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled |
+                Qt::ItemIsUserCheckable | Qt::ItemIsEnabled;
     }
 
     return defaultFlags;
@@ -559,7 +568,7 @@ debug() << "dropMimeData at index" << index << row;
         {
             while( parent.isValid() )
             {
-                row = parent.row();
+                row = parent.row() + 1;
                 column = parent.column();
                 parent = parent.parent();
             }

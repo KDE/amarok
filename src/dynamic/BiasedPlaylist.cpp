@@ -164,6 +164,9 @@ Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPt
 {
     DEBUG_BLOCK;
 
+    if( oldBias && !newBias ) // don't move the last bias away from this playlist without replacement
+        return;
+
     bool inModel = DynamicModel::instance()->index( this ).isValid();
     if( m_bias )
     {
