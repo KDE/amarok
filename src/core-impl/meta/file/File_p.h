@@ -95,6 +95,7 @@ public:
         , batchUpdate( false )
         , album()
         , artist()
+        , albumArtist()
         , provider( 0 )
         , track( t )
     {}
@@ -104,6 +105,7 @@ public:
     bool batchUpdate;
     Meta::AlbumPtr album;
     Meta::ArtistPtr artist;
+    Meta::ArtistPtr albumArtist;
     Meta::GenrePtr genre;
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
@@ -213,9 +215,10 @@ void Track::Private::readMetaData()
 class FileArtist : public Meta::Artist
 {
 public:
-    FileArtist( MetaFile::Track::Private *dptr )
+    FileArtist( MetaFile::Track::Private *dptr, bool isAlbumArtist = false )
         : Meta::Artist()
         , d( dptr )
+        , m_isAlbumArtist( isAlbumArtist )
     {}
 
     Meta::TrackList tracks()
@@ -225,7 +228,8 @@ public:
 
     QString name() const
     {
-        const QString artist = d.data()->m_data.artist;
+        const QString artist = m_isAlbumArtist ? d.data()->m_data.albumArtist
+                                               : d.data()->m_data.artist;
         return artist;
     }
 
@@ -234,6 +238,7 @@ public:
     }
 
     QWeakPointer<MetaFile::Track::Private> const d;
+    const bool m_isAlbumArtist;
 };
 
 class FileAlbum : public Meta::Album
@@ -251,12 +256,12 @@ public:
 
     bool hasAlbumArtist() const
     {
-        return false;
+        return !d.data()->albumArtist->name().isEmpty();
     }
 
     Meta::ArtistPtr albumArtist() const
     {
-        return Meta::ArtistPtr();
+        return d.data()->albumArtist;
     }
 
     Meta::TrackList tracks()
