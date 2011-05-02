@@ -27,6 +27,7 @@
 #include "biases/IfElseBias.h"
 #include "biases/PartBias.h"
 #include "biases/SearchQueryBias.h"
+#include "biases/TagMatchBias.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
@@ -885,15 +886,19 @@ Dynamic::DynamicModel::initPlaylists()
 
     Dynamic::BiasedPlaylist *playlist;
 
-    // create the empty default random playlists
+    // -- create the empty default random playlists
+
+    // - first one rantom playlist
     playlist = new Dynamic::BiasedPlaylist( this );
     insertPlaylist( 0, playlist );
 
+    // - a playlist demonstrating the SearchQueryBias
     playlist = new Dynamic::BiasedPlaylist( this );
     playlist->setTitle( "Rock and Pop" );
     playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( "genre:Rock OR genre:Pop" ) ) );
     insertPlaylist( 1, playlist );
 
+    // - a complex playlist demonstrating AlbumPlay and IfElse
     playlist = new Dynamic::BiasedPlaylist( this );
     playlist->setTitle( "Album play" );
     Dynamic::IfElseBias *ifElse = new Dynamic::IfElseBias();
@@ -902,12 +907,35 @@ Dynamic::DynamicModel::initPlaylists()
     ifElse->appendBias( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( "tracknr:1" ) ) );
     insertPlaylist( 2, playlist );
 
+    // - a complex playlist demonstrating PartBias and TagMatchBias
     playlist = new Dynamic::BiasedPlaylist( this );
     playlist->setTitle( "Rating" );
     Dynamic::PartBias *part = new Dynamic::PartBias();
     playlist->bias()->replace( Dynamic::BiasPtr( part ) );
-    // TODO
+
+    part->appendBias( Dynamic::BiasPtr( new Dynamic::RandomBias() ) );
+
+    MetaQueryWidget::Filter ratingFilter;
+    ratingFilter.field = Meta::valRating;
+    ratingFilter.numValue = 5;
+    ratingFilter.condition = MetaQueryWidget::GreaterThan;
+
+    Dynamic::TagMatchBias* ratingBias1 = new Dynamic::TagMatchBias();
+    Dynamic::BiasPtr ratingBias1Ptr( ratingBias1 );
+    ratingBias1->setFilter( ratingFilter );
+    part->appendBias( ratingBias1Ptr );
+
+    ratingFilter.numValue = 8;
+    Dynamic::TagMatchBias* ratingBias2 = new Dynamic::TagMatchBias();
+    Dynamic::BiasPtr ratingBias2Ptr( ratingBias2 );
+    ratingBias2->setFilter( ratingFilter );
+    part->appendBias( ratingBias2Ptr );
+
+    part->changeBiasWeight( 2, 0.2 );
+    part->changeBiasWeight( 1, 0.5 );
+
     insertPlaylist( 3, playlist );
+
 
     m_activePlaylistIndex = 0;
 
