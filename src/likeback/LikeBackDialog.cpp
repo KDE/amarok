@@ -152,7 +152,7 @@ QString LikeBackDialog::introductionText()
         if( acceptedLocales.count() == 1 )
         {
             languagesMessage = i18nc( "Feedback dialog text, message with one accepted language for the comments",
-                                      "Please, write it in <b>%1</b> (you may want to use an <a href=\"%3\">online translation tool</a> for this).<br/>",
+                                      "Please, write it in <b>%1</b> (you may want to use an <a href=\"%2\">online translation tool</a> for this).<br/>",
                                       acceptedLocales.first(),
                                       translationTool );
         }
