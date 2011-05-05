@@ -29,7 +29,7 @@
 #include <QMutex>
 #include <QPointer>
 
-class QXmlStreamReader;
+class QXmlStreamWriter;
 class QXmlStreamReader;
 
 namespace Dynamic
@@ -68,7 +68,8 @@ namespace Dynamic
             void updateStatus( int progress );
 
         private:
-            void startSolver( bool withStatusBar = false );
+            /** Starts the BiasSolver (if not already running) and requests a couple of new tracks. */
+            void startSolver();
             void handleRequest();
 
             /** Returns all the tracks that will come before the newly generated ones. */
@@ -79,13 +80,14 @@ namespace Dynamic
 
             int m_numRequested;
 
+            /** The bias this playlist uses */
             BiasPtr m_bias;
+
+            /** A currently running BiasSolver */
             QPointer<BiasSolver> m_solver;
 
             static const int BUFFER_SIZE;
     };
-
-    // typedef KSharedPtr<BiasedPlaylist> BiasedPlaylistPtr;
 }
 
 // Q_DECLARE_METATYPE( Dynamic::BiasedPlaylistPtr )

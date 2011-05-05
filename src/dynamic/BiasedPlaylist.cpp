@@ -118,7 +118,7 @@ Dynamic::BiasedPlaylist::requestAbort()
 }
 
 void
-Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
+Dynamic::BiasedPlaylist::startSolver()
 {
     DEBUG_BLOCK
     debug() << "BiasedPlaylist in:" << QThread::currentThreadId();
@@ -131,7 +131,7 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
         connect( m_solver, SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
 
-        if( withStatusBar )
+        if( The::statusBar() )
         {
             The::statusBar()->newProgressOperation( m_solver, i18n( "Generating playlist..." ) )
                 ->setAbortSlot( this, SLOT( requestAbort() ) );
@@ -198,7 +198,8 @@ Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPt
 void
 Dynamic::BiasedPlaylist::updateStatus( int progress )
 {
-    The::statusBar()->setProgress( m_solver, progress );
+    if( The::statusBar() )
+        The::statusBar()->setProgress( m_solver, progress );
 }
 
 void
@@ -226,7 +227,7 @@ Dynamic::BiasedPlaylist::repopulate()
         }
 
         if( m_numRequested > 0 )
-            startSolver( true );
+            startSolver();
     }
 }
 
@@ -258,7 +259,7 @@ Dynamic::BiasedPlaylist::handleRequest()
     {
         locker.unlock();
         // otherwise, we ran out of buffer
-        startSolver( true );
+        startSolver();
     }
 }
 
@@ -271,7 +272,8 @@ Dynamic::BiasedPlaylist::solverFinished()
     if( m_solver != sender() )
         return;
 
-    The::statusBar()->endProgressOperation( m_solver );
+    if( The::statusBar() )
+        The::statusBar()->endProgressOperation( m_solver );
 
     bool success = m_solver->success();
     if( success )
