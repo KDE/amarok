@@ -162,6 +162,7 @@ void
 Dynamic::ReplacementBias::toXml( QXmlStreamWriter *writer ) const
 {
     Q_UNUSED( writer );
+    writer->writeComment("Replacement"); // we need to force the closing of the bias start tag
     writer->device()->write( m_html.left( m_html.size() - m_name.length() - 3 ) );
 }
 
