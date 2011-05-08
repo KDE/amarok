@@ -10,6 +10,7 @@ X-KDE-ParentComponents=amarok_service_ampache
 
 Name=Ampache Service Config
 Name[bg]=Настройване на Ampache
+Name[bs]=Postavke za Ampache servis
 Name[ca]=Configuració del servei Ampache
 Name[ca@valencia]=Configuració del servei Ampache
 Name[cs]=Konfigurace služby Ampache
@@ -61,6 +62,7 @@ Name[zh_CN]=Ampache 服务配置
 Name[zh_TW]=Ampache 服務設定
 Comment=Sets up the ampache server(s) to connect to
 Comment[bg]=Настройване на ampache сървър/и
+Comment[bs]=Određuje Ampačeve servere za povezivanje
 Comment[ca]=Defineix el servidor(s) Ampache al que connectar
 Comment[ca@valencia]=Defineix el servidor(s) Ampache al que connectar
 Comment[da]=Sætter de Ampache-servere op, der skal forbindes til
