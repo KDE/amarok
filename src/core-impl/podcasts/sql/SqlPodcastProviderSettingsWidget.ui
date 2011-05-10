@@ -54,7 +54,7 @@
       <enum>QAbstractSpinBox::PlusMinus</enum>
      </property>
      <property name="specialValueText">
-      <string extracomment="automatic updates turned off">disabled</string>
+      <string comment="automatic updates turned off">disabled</string>
      </property>
      <property name="prefix">
       <string notr="true" extracomment="prefix to update interval in minutes">every </string>
