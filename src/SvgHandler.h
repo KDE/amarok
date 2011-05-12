@@ -22,9 +22,9 @@
 class QStyleOptionSlider;
 
 #include "amarok_export.h"
+#include "ImageCache.h"
 #include "core/meta/Meta.h"
 
-#include <KPixmapCache>
 #include <QReadWriteLock>
 #include <QSvgRenderer>
 
@@ -154,7 +154,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
         QColor calcDarkColor(const QColor &color) const;
         bool lowThreshold(const QColor &color) const;
 
-        KPixmapCache * m_cache;
+        ImageCache * m_cache;
 
         QHash<QString,QSvgRenderer*> m_renderers;
         QReadWriteLock m_lock;

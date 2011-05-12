@@ -27,6 +27,7 @@
 #include "EngineController.h"
 #include "KNotificationBackend.h"
 #include "Osd.h"
+#include "ImageCache.h"
 #include "PlaybackConfig.h"
 #include "PluginManager.h"
 #include "ScriptManager.h"
@@ -87,7 +88,6 @@
 #include <QByteArray>
 #include <QDesktopServices>
 #include <QFile>
-#include <KPixmapCache>
 #include <QStringList>
 #include <QTextDocument>                // for Qt::escape()
 #include <QTimer>                       //showHyperThreadingWarning()
@@ -154,8 +154,7 @@ App::App()
 
 
     //make sure we have enough cache space for all our crazy svg stuff
-    KPixmapCache cache( "Amarok-pixmaps" );
-    cache.setCacheLimit ( 20 * 1024 );
+    ImageCache cache( "Amarok-pixmaps", 20 * 1024 );
 
 #ifdef Q_WS_MAC
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp

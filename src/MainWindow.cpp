@@ -31,6 +31,7 @@
 #include "KNotificationBackend.h"
 #include "Osd.h"
 #include "PaletteHandler.h"
+#include "ImageCache.h"
 #include "amarokconfig.h"
 #include "aboutdialog/OcsData.h"
 #include "amarokurls/AmarokUrlHandler.h"
@@ -76,7 +77,6 @@
 #include <KLocale>
 #include <KMenu>
 #include <KMenuBar>
-#include <KPixmapCache>
 #include <KBugReport>
 #include <KStandardAction>
 #include <KStandardDirs>
@@ -1123,7 +1123,7 @@ MainWindow::paletteChange( const QPalette & oldPalette )
 {
     Q_UNUSED( oldPalette )
 
-    KPixmapCache cache( "Amarok-pixmaps" );
+    ImageCache cache( "Amarok-pixmaps", 10 * 1024 );
     cache.discard();
     The::paletteHandler()->setPalette( palette() );
 }
