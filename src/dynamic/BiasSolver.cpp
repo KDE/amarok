@@ -108,7 +108,7 @@ namespace Dynamic
         {
             Dynamic::TrackSet result = Dynamic::TrackSet( oldSet );
             for( int i = 0; i < m_trackList.count(); i++ )
-                if( i != position )
+                if( i != position && m_trackList[i] )
                     result.subtract( m_trackList[i] );
 
             return result;

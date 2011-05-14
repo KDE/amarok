@@ -95,6 +95,11 @@ Dynamic::TrackSet::contains( const QString &uid ) const
 bool
 Dynamic::TrackSet::contains( const Meta::TrackPtr& B ) const
 {
+    if( !m_collection )
+        return false;
+    if( !B )
+        return false;
+
     QString str = B->uidUrl();
     if( !m_collection->m_ids.contains( str ) )
         return false;
@@ -135,6 +140,8 @@ void
 Dynamic::TrackSet::unite( const Meta::TrackPtr& B )
 {
     if( !m_collection )
+        return;
+    if( !B )
         return;
 
     QString str = B->uidUrl();
@@ -198,6 +205,8 @@ void
 Dynamic::TrackSet::subtract( const Meta::TrackPtr& B )
 {
     if( !m_collection )
+        return;
+    if( !B )
         return;
 
     QString str = B->uidUrl();
