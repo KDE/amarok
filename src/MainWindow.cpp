@@ -31,7 +31,6 @@
 #include "KNotificationBackend.h"
 #include "Osd.h"
 #include "PaletteHandler.h"
-#include "ImageCache.h"
 #include "amarokconfig.h"
 #include "aboutdialog/OcsData.h"
 #include "amarokurls/AmarokUrlHandler.h"
@@ -1123,8 +1122,6 @@ MainWindow::paletteChange( const QPalette & oldPalette )
 {
     Q_UNUSED( oldPalette )
 
-    ImageCache cache( "Amarok-pixmaps", 10 * 1024 );
-    cache.discard();
     The::paletteHandler()->setPalette( palette() );
 }
 

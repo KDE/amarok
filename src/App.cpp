@@ -27,7 +27,6 @@
 #include "EngineController.h"
 #include "KNotificationBackend.h"
 #include "Osd.h"
-#include "ImageCache.h"
 #include "PlaybackConfig.h"
 #include "PluginManager.h"
 #include "ScriptManager.h"
@@ -152,9 +151,6 @@ App::App()
     qRegisterMetaType<Playlists::PlaylistPtr>();
     qRegisterMetaType<Playlists::PlaylistList>();
 
-
-    //make sure we have enough cache space for all our crazy svg stuff
-    ImageCache cache( "Amarok-pixmaps", 20 * 1024 );
 
 #ifdef Q_WS_MAC
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp
