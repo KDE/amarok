@@ -1080,6 +1080,7 @@ MainWindow::createMenus()
     helpMenu->insertAction( helpMenu->actions().at( 5 ),
                             Amarok::actionCollection()->action( "likeBackShowIcons" ) );
 
+    m_menubar.data()->addSeparator();
     m_menubar.data()->addMenu( helpMenu );
 }
 
