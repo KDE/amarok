@@ -3,6 +3,16 @@ Amarok ChangeLog
 (C) 2002-2011 the Amarok authors.
 
 
+VERSION 2.4.2-Beta 1
+  CHANGES:
+    * Use KImageCache if possible (kdelibs 4.5.0 and later), which should
+      reduce the number of cache-related crashes.
+
+  BUGFIXES:
+    * Fixed double-clicking in collection using left-handed mouse setting.
+      (BR 272360)
+
+
 VERSION 2.4.1
   BUGFIXES:
     * Fixed crash on saving playlist on ineligible device. (BR 266899)

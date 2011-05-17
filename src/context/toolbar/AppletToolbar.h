@@ -64,7 +64,6 @@ class AppletToolbar : public QGraphicsWidget
         void appletAddedToToolbar( Plasma::Applet* applet, int loc );
         void moveApplet( Plasma::Applet*, int, int );
         void configModeToggled();
-        void installApplets();
         void hideAppletExplorer();
         void showAppletExplorer();
         

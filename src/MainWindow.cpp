@@ -76,7 +76,6 @@
 #include <KLocale>
 #include <KMenu>
 #include <KMenuBar>
-#include <KPixmapCache>
 #include <KBugReport>
 #include <KStandardAction>
 #include <KStandardDirs>
@@ -1081,6 +1080,7 @@ MainWindow::createMenus()
     helpMenu->insertAction( helpMenu->actions().at( 5 ),
                             Amarok::actionCollection()->action( "likeBackShowIcons" ) );
 
+    m_menubar.data()->addSeparator();
     m_menubar.data()->addMenu( helpMenu );
 }
 
@@ -1123,8 +1123,6 @@ MainWindow::paletteChange( const QPalette & oldPalette )
 {
     Q_UNUSED( oldPalette )
 
-    KPixmapCache cache( "Amarok-pixmaps" );
-    cache.discard();
     The::paletteHandler()->setPalette( palette() );
 }
 

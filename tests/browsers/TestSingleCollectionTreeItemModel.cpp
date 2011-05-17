@@ -41,7 +41,7 @@ using ::testing::Return;
 using ::testing::AnyNumber;
 using ::testing::_;
 
-QTEST_KDEMAIN_CORE( TestSingleCollectionTreeItemModel )
+QTEST_KDEMAIN( TestSingleCollectionTreeItemModel, GUI )
 
 void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackName, const QString &artistName, const QString &albumName )
 {
@@ -53,6 +53,9 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + "_" + artistName + "_" + albumName ) );
     EXPECT_CALL( *track, isPlayable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( KUrl( '/' + track->uidUrl() ) ) );
+    EXPECT_CALL( *track, composer() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ComposerPtr() ) );
+    EXPECT_CALL( *track, genre() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::GenrePtr() ) );
+    EXPECT_CALL( *track, year() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::YearPtr() ) );
     coll->mc->addTrack( trackPtr );
 
     Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName );
@@ -109,6 +112,7 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     artistTracks << trackPtr;
     EXPECT_CALL( *artist, tracks() ).Times( AnyNumber() ).WillRepeatedly( Return( artistTracks ) );
     EXPECT_CALL( *track, artist() ).Times( AnyNumber() ).WillRepeatedly( Return( artistPtr ) );
+    EXPECT_CALL( *album, albumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( artistPtr ) );
 }
 
 TestSingleCollectionTreeItemModel::TestSingleCollectionTreeItemModel() : QObject()
@@ -119,13 +123,10 @@ TestSingleCollectionTreeItemModel::TestSingleCollectionTreeItemModel() : QObject
     qRegisterMetaType<Meta::AlbumList>();
     qRegisterMetaType<Meta::ArtistList>();
     qRegisterMetaType<Meta::DataList>();
-
-    m_app = new QApplication( KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() ); // need an application for pixmaps
 }
 
 TestSingleCollectionTreeItemModel::~TestSingleCollectionTreeItemModel()
 {
-    delete m_app;
 }
 
 void
@@ -154,8 +155,6 @@ TestSingleCollectionTreeItemModel::testAddNewArtist()
 
     loadChildren( model, QModelIndex() );
 
-    QTest::qWait( 30 );
-
     QCOMPARE( model->rowCount( QModelIndex() ), 1 );
 
     {
@@ -168,8 +167,6 @@ TestSingleCollectionTreeItemModel::testAddNewArtist()
     model->slotFilter();
 
     loadChildren( model, QModelIndex() );
-
-    QTest::qWait( 30 );
 
     QCOMPARE( model->rowCount( QModelIndex() ), 2 );
 
@@ -205,8 +202,6 @@ TestSingleCollectionTreeItemModel::testRemoveArtist()
 
     loadChildren( model, QModelIndex() );
 
-    QTest::qWait( 30 );
-
     QCOMPARE( model->rowCount( QModelIndex() ), 2 );
 
     {
@@ -230,8 +225,6 @@ TestSingleCollectionTreeItemModel::testRemoveArtist()
     model->slotFilter();
 
     loadChildren( model, QModelIndex() );
-
-    QTest::qWait( 30 );
 
     QCOMPARE( model->rowCount( QModelIndex() ), 1 );
 
@@ -257,7 +250,6 @@ TestSingleCollectionTreeItemModel::testAddTrack()
     SingleCollectionTreeItemModel *model = new SingleCollectionTreeItemModel( coll, levels );
 
     loadChildren( model, QModelIndex() );
-    QTest::qWait( 30 );
 
     QCOMPARE( model->rowCount( QModelIndex() ), 2 );
 
@@ -327,14 +319,11 @@ TestSingleCollectionTreeItemModel::testAddTrackWithFilter()
     addMockTrack( coll, "track1", "artist1", "album1" );
 
     QList<int> levels;
-    levels<< CategoryId::Artist << CategoryId::Album;
+    levels << CategoryId::Artist << CategoryId::Album;
 
     SingleCollectionTreeItemModel *model = new SingleCollectionTreeItemModel( coll, levels );
 
     loadChildren( model, QModelIndex() );
-
-    QTest::qWait( 100 ); // note: increasing this count makes the test less likely to fail. Somehow it still fails sometimes.
-
     QCOMPARE( model->rowCount( QModelIndex() ), 1 );
 
     {
@@ -343,16 +332,15 @@ TestSingleCollectionTreeItemModel::testAddTrackWithFilter()
     }
 
     addMockTrack( coll, "track2", "artist2", "album2" );
-
     model->setCurrentFilter( "track2" );
-
     model->slotFilter();
-
-    QTest::qWait( 30 );
-
     loadChildren( model, QModelIndex() );
-
     QCOMPARE( model->rowCount( QModelIndex() ), 1 );
+
+    model->setCurrentFilter( QString() );
+    model->slotFilter();
+    loadChildren( model, QModelIndex() );
+    QCOMPARE( model->rowCount( QModelIndex() ), 2 );
 
     QModelIndex idx1 = model->index( 0, 0, QModelIndex() );
     QCOMPARE( model->data( idx1, Qt::DisplayRole ).toString(), QString( "artist2" ) );

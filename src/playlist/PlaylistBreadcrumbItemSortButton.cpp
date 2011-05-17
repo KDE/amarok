@@ -113,7 +113,6 @@ BreadcrumbItemSortButton::drawHoverBackground( QPainter *painter )
     const bool isHovered = isDisplayHintEnabled( HoverHint );
     if( isHovered )
     {
-        QColor backgroundColor = palette().color(QPalette::Highlight);
         QStyleOptionViewItemV4 option;
         option.initFrom(this);
         option.state = QStyle::State_Enabled | QStyle::State_MouseOver;

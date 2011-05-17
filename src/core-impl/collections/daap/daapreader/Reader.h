@@ -72,7 +72,7 @@ namespace Daap
             QString host() const { return m_host; }
             quint16 port() const { return m_port; }
 
-            bool parseSongList( const QByteArray &data );
+            bool parseSongList( const QByteArray &data, bool set_collection = false);
         public slots:
             void logoutRequest(int, bool );
             void loginHeaderReceived( const QHttpResponseHeader& resp );
@@ -93,9 +93,10 @@ namespace Daap
             * @param raw stream of DAAP reply
             * @param containerLength length of the container (or entire result) being analyzed
             */
-            static Map parse( QDataStream &raw, uint containerLength, bool first = false );
+            static Map parse( QDataStream &raw);
             static void addElement( Map &parentMap, char* tag, QVariant element ); //!< supporter function for parse
             static quint32 getTagAndLength( QDataStream &raw, char tag[5] );
+            static QVariant readTagData(QDataStream &, char[5], quint32);
             void addTrack( const QString& itemId, const QString& title, const QString& artist, const QString& composer,
                            const QString& commment, const QString& album, const QString& genre, int year,
                            const QString& format, qint32 trackNumber, qint32 songTime );
