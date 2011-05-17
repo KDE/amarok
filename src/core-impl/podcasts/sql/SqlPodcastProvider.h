@@ -147,6 +147,8 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         /** remove the episodes in the list from the filesystem */
         void deleteDownloadedEpisodes( Podcasts::SqlPodcastEpisodeList &episodes );
 
+        void moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr channel );
+
         /** Removes a podcast from the list. Will ask for confirmation to delete the episodes
           * as well
           */

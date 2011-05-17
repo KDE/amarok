@@ -90,7 +90,7 @@ SqlPodcastProvider::SqlPodcastProvider()
                                .readEntry( "Maximum Simultaneous Downloads", 4 );
     m_maxConcurrentUpdates = Amarok::config( "Podcasts" )
                              .readEntry( "Maximum Simultaneous Updates", 4 );
-    m_baseDownloadDir = Amarok::config( "Podcasts" ).readEntry( "Base Downlaod Directory",
+    m_baseDownloadDir = Amarok::config( "Podcasts" ).readEntry( "Base Download Directory",
                                                            Amarok::saveLocation( "podcasts" ) );
 
     QStringList values;
@@ -622,9 +622,47 @@ SqlPodcastProvider::configureProvider()
             startTimer();
         else
             m_updateTimer->stop();
+        KUrl adjustedNewPath = settings.m_baseDirUrl->url();
+        adjustedNewPath.adjustPath( KUrl::RemoveTrailingSlash );
+        if( adjustedNewPath != m_baseDownloadDir )
+        {
+            m_baseDownloadDir = adjustedNewPath;
+            Amarok::config( "Podcasts" ).writeEntry( "Base Download Directory", m_baseDownloadDir );
+            if( !m_channels.isEmpty() )
+            {
+                //TODO: check if there actually are downloaded episodes
+                KDialog moveAllDialog;
+                moveAllDialog.setCaption( i18n( "Move Podcasts" ) );
 
-        m_baseDownloadDir = settings.m_baseDirUrl->url();
-        //TODO: ask user if existing directories need to be moved.
+                KVBox *vbox = new KVBox( &moveAllDialog );
+
+                QString question( i18n( "Do you want to move all downloaded episodes to the "
+                                       "new location?") );
+                QLabel *label = new QLabel( question, vbox );
+                label->setWordWrap( true );
+                label->setMaximumWidth( 400 );
+
+                moveAllDialog.setMainWidget( vbox );
+                moveAllDialog.setButtons( KDialog::Yes | KDialog::No );
+
+                if( moveAllDialog.exec() == KDialog::Yes )
+                {
+                    foreach( SqlPodcastChannelPtr sqlChannel, m_channels )
+                    {
+                        KUrl oldSaveLocation = sqlChannel->saveLocation();
+                        KUrl newSaveLocation = m_baseDownloadDir;
+                        newSaveLocation.addPath( oldSaveLocation.fileName() );
+                        sqlChannel->setSaveLocation( newSaveLocation );
+                        debug() << newSaveLocation.path();
+                        moveDownloadedEpisodes( sqlChannel );
+
+                        if( !QDir().rmdir( oldSaveLocation.toLocalFile() ) )
+                                debug() << "Could not remove old directory "
+                                        << oldSaveLocation.toLocalFile();
+                    }
+                }
+            }
+        }
     }
 
     delete m_providerSettingsDialog;
@@ -727,29 +765,7 @@ SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel 
 
     if( oldSaveLocation != sqlChannel->saveLocation() )
     {
-        debug() << QString( "We need to move downloaded episodes of \"%1\" to %2" )
-                .arg( sqlChannel->title() )
-                .arg( sqlChannel->saveLocation().prettyUrl() );
-
-        KUrl::List filesToMove;
-        foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
-        {
-            if( !episode->localUrl().isEmpty() )
-            {
-                KUrl newLocation = sqlChannel->saveLocation();
-                QDir dir( newLocation.toLocalFile() );
-                dir.mkpath( "." );
-
-                newLocation.addPath( episode->localUrl().fileName() );
-                debug() << "Moving from " << episode->localUrl() << " to " << newLocation;
-                KIO::Job *moveJob = KIO::move( episode->localUrl(), newLocation,
-                                               KIO::HideProgressInfo );
-                //wait until job is finished.
-                if( KIO::NetAccess::synchronousRun( moveJob, The::mainWindow() ) )
-                    episode->setLocalUrl( newLocation );
-            }
-        }
-
+        moveDownloadedEpisodes( sqlChannel );
         if( !QDir().rmdir( oldSaveLocation.toLocalFile() ) )
             debug() << "Could not remove old directory " << oldSaveLocation.toLocalFile();
     }
@@ -918,6 +934,33 @@ SqlPodcastProvider::deleteDownloadedEpisodes( Podcasts::SqlPodcastEpisodeList &e
 {
     foreach( Podcasts::SqlPodcastEpisodePtr episode, episodes )
         deleteDownloadedEpisode( episode );
+}
+
+void
+SqlPodcastProvider::moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr sqlChannel )
+{
+    debug() << QString( "We need to move downloaded episodes of \"%1\" to %2" )
+            .arg( sqlChannel->title() )
+            .arg( sqlChannel->saveLocation().prettyUrl() );
+
+    KUrl::List filesToMove;
+    foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
+    {
+        if( !episode->localUrl().isEmpty() )
+        {
+            KUrl newLocation = sqlChannel->saveLocation();
+            QDir dir( newLocation.toLocalFile() );
+            dir.mkpath( "." );
+
+            newLocation.addPath( episode->localUrl().fileName() );
+            debug() << "Moving from " << episode->localUrl() << " to " << newLocation;
+            KIO::Job *moveJob = KIO::move( episode->localUrl(), newLocation,
+                                           KIO::HideProgressInfo );
+            //wait until job is finished.
+            if( KIO::NetAccess::synchronousRun( moveJob, The::mainWindow() ) )
+                episode->setLocalUrl( newLocation );
+        }
+    }
 }
 
 void
