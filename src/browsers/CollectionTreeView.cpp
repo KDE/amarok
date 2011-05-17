@@ -309,7 +309,7 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         return;
     }
 
-    if( event->button() != Amarok::contextMouseButton() &&
+    if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         (KGlobalSettings::singleClick() || !model()->hasChildren( index )) )
     {
@@ -365,7 +365,7 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     }
 
     if( !m_expandToggledWhenPressed &&
-        event->button() != Amarok::contextMouseButton() &&
+        event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         KGlobalSettings::singleClick() &&
         model()->hasChildren( index ) )

@@ -486,12 +486,6 @@ void PopupDropperItem::reposTextItem()
         return;
     }
 
-    int rightside;
-    if( !d->pd || d->pd->viewSize().width() == 0 )
-        rightside = sceneBoundingRect().width();
-    else
-        rightside = d->pd->viewSize().width();
-    
     int offsetPos = d->horizontalOffset + d->textOffset + d->svgElementRect.width();
     d->textItem->setPos(
             ( d->orientation == PopupDropperItem::Left
@@ -539,18 +533,18 @@ void PopupDropperItem::reposHoverFillRects()
 
     //qDebug() << "\n\nPUDItem boundingRect().width() = " << boundingRect().width();
     qreal startx, starty, endx, endy, item_center;
-    int rightside;
-        if( !d->pd || d->pd->viewSize().width() == 0 )
-            rightside = sceneBoundingRect().width();
-        else
-            rightside = d->pd->viewSize().width();
     //int rightside = d->borderRectItem ? d->borderRectItem->boundingRect().width() : boundingRect().width();
     if( d->orientation == PopupDropperItem::Left )
-        startx = d->horizontalOffset 
-                 - d->hoverIndicatorRectWidth
-                 - ( 2  * d->hoverIndicatorRectItem->pen().width() );
+    {
+        startx = d->horizontalOffset
+                - d->hoverIndicatorRectWidth
+                - ( 2  * d->hoverIndicatorRectItem->pen().width() );
+    }
     else
     {
+        int rightside = (!d->pd || d->pd->viewSize().width() == 0 )
+                ? sceneBoundingRect().width()
+                : d->pd->viewSize().width();
         //qDebug() << "right side = " << rightside;
         startx = rightside - d->horizontalOffset
                  + d->hoverIndicatorRectWidth

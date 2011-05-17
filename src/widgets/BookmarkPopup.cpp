@@ -22,7 +22,6 @@
 
 
 #include <KLocale>
-#include <KPixmapCache>
 
 #include <QPainter>
 #include <QHBoxLayout>

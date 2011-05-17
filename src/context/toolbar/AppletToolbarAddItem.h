@@ -46,7 +46,6 @@ class AppletToolbarAddItem : public AppletToolbarBase
         
     signals:
         void addApplet( const QString&, AppletToolbarAddItem*  );
-        void installApplets();
         void hideAppletExplorer();
         void showAppletExplorer();
         

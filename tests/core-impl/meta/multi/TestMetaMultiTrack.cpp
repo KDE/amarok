@@ -48,9 +48,10 @@ void TestMetaMultiTrack::initTestCase()
     QVERIFY( file.exists() );
     const QString filePath = file.absoluteFilePath();
     Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( Playlists::loadPlaylistFile( filePath ) );
-
-    if( !playlist )
-        QVERIFY( false ); // no playlist -> no test. that's life ;)
+    QVERIFY( playlist ); // no playlist -> no test. that's life ;)
+    playlist->triggerTrackLoad();
+    QCOMPARE( playlist->name(), QString("test.pls") );
+    QCOMPARE( playlist->trackCount(), 4 );
 
     m_testMultiTrack = new Meta::MultiTrack( playlist );
 }
@@ -59,7 +60,6 @@ void TestMetaMultiTrack::cleanupTestCase()
 {
     delete m_testMultiTrack;
 }
-
 
 void TestMetaMultiTrack::testFirst()
 {

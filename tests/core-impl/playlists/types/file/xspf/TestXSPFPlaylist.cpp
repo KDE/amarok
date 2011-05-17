@@ -72,10 +72,9 @@ void TestXSPFPlaylist::initTestCase()
 
 void TestXSPFPlaylist::cleanupTestCase()
 {
-  
+    QFile::remove( KStandardDirs::locateLocal( "tmp", "test.xspf" ) );
     delete m_testPlaylist1;
 }
-
 
 void TestXSPFPlaylist::testSetAndGetName()
 {
@@ -98,6 +97,7 @@ void TestXSPFPlaylist::prettyName()
 
 void TestXSPFPlaylist::testSetAndGetTracks()
 {
+    m_testPlaylist1->triggerTrackLoad();
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
 
     QCOMPARE( tracklist.size(), 23 );

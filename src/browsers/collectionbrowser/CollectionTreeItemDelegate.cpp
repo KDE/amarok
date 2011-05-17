@@ -71,7 +71,6 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 
     const bool isRTL = QApplication::isRightToLeft();
     const QPoint topLeft = option.rect.topLeft();
-    const QPoint bottomRight = option.rect.bottomRight();
     const int width = m_view->viewport()->size().width() - 4;
     const int height = sizeHint( option, index ).height();
     const int iconWidth = 32;

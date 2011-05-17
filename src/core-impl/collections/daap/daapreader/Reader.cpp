@@ -231,7 +231,7 @@ Reader::loginFinished( int /* id */, bool error )
         return;
     }
     QDataStream raw( http->results() );
-    Map loginResults = parse( raw, 0, true );
+    Map loginResults = parse( raw );
     debug() << "list size is " << loginResults["mlog"].toList().size();
     if( loginResults["mlog"].toList().size() == 0 )
         return;
@@ -258,7 +258,7 @@ Reader::updateFinished( int /*id*/, bool error )
     }
 
     QDataStream raw( http->results() );
-    Map updateResults = parse( raw, 0, true );
+    Map updateResults = parse( raw );
     if( updateResults["mupd"].toList().isEmpty() )
         return; //error
     if( updateResults["mupd"].toList()[0].toMap()["musr"].toList().isEmpty() )
@@ -282,7 +282,7 @@ Reader::databaseIdFinished( int /*id*/, bool error )
     }
 
     QDataStream raw( http->results() );
-    Map dbIdResults = parse( raw, 0, true );
+    Map dbIdResults = parse( raw );
     m_databaseId = QString::number( dbIdResults["avdb"].toList()[0].toMap()["mlcl"].toList()[0].toMap()["mlit"].toList()[0].toMap()["miid"].toList()[0].toInt() );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( songListFinished( int, bool ) ) );
     http->getDaap( QString("/databases/%1/items?type=music&meta=dmap.itemid,dmap.itemname,daap.songformat,daap.songartist,daap.songalbum,daap.songtime,daap.songtracknumber,daap.songcomment,daap.songyear,daap.songgenre&%2")
@@ -308,7 +308,7 @@ Reader::songListFinished( int /*id*/, bool error )
 }
 
 bool
-Reader::parseSongList( const QByteArray &data )
+Reader::parseSongList( const QByteArray &data, bool set_collection )
 {
     // The original implementation used parse(), which uses addElement() and
     // makes heavy usage of QMaps and QList which hurts performance very badly.
@@ -322,7 +322,6 @@ Reader::parseSongList( const QByteArray &data )
     QDataStream raw( data );
 
     // Cache for music data
-    uint index = 0;
     QString itemId;
     QString format;
     QString title;
@@ -337,115 +336,69 @@ Reader::parseSongList( const QByteArray &data )
 
     while( !raw.atEnd() )
     {
-        char tag[5];
-        quint32 tagLength = getTagAndLength( raw, tag );
+        char rawTag[5];
+        quint32 tagLength = getTagAndLength( raw, rawTag );
+
         if( tagLength == 0 )
-        {
-            index += 8;
             continue;
-        }
-        switch( s_codes[tag].type )
+
+        QVariant tagData = readTagData( raw, rawTag, tagLength );
+
+        if( !tagData.isValid() )
+            continue;
+
+        QString tag = QString( rawTag );
+
+        if( s_codes[tag].type == CONTAINER )
         {
-            case CHAR:
-            {
-                qint8 charData;
-                raw >> charData; DEBUGTAG( charData )
-                break;
-            }
-            case SHORT:
-            {
-                qint16 shortData;
-                raw >> shortData; DEBUGTAG( shortData )
-                if ( QString( tag ) == "astn" )
-                    trackNumber = shortData;
-                else if ( QString( tag ) == "asyr" )
-                     year = shortData;
-                break;
-            }
-            case LONG:
-            {
-                qint32 longData;
-                raw >> longData; DEBUGTAG( longData )
-                if ( QString( tag ) == "miid" )
-                    itemId = QString::number( longData );
-                if ( QString( tag ) == "astm" )
-                    songTime = longData;
-                break;
-            }
-            case LONGLONG:
-            {
-                qint64 longlongData;
-                raw >> longlongData; DEBUGTAG( longlongData )
-                break;
-            }
-            case STRING:
-            {
-                QByteArray stringData(tagLength, ' ');
-                raw.readRawData( stringData.data(), tagLength ); DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
-                if ( QString( tag ) == "asfm" )
-                     format = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "minm" )
-                     title = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "asal" )
-                     album = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "asar" )
-                     artist = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "ascp" )
-                     composer = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "ascm" )
-                     comment = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "asgn" )
-                     genre = QString::fromUtf8( stringData, tagLength );
-                break;
-            }
-            case DATE:
-            {
-                qint64 dateData;
-                QDateTime date;
-                raw >> dateData; DEBUGTAG( dateData )
-                date.setTime_t(dateData);
-                break;
-            }
-            case DVERSION:
-            {
-                qint16 major;
-                qint8 minor;
-                qint8 patchLevel;
-                raw >> major >> minor >> patchLevel; DEBUGTAG( patchLevel )
-                break;
-            }
-            case CONTAINER:
-            {
-                if ( QString( tag ) == "mlit" )
-                    addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
-                break;
-            }
-            default:
-            {
-                warning() << tag << " does not work";
-                break;
-            }
+             parseSongList( tagData.toByteArray() );
+             continue;
         }
-        index += tagLength + 8;
+
+        if( tag == "astn" )
+            trackNumber = tagData.toInt();
+        else if( tag == "asyr" )
+            year = tagData.toInt();
+        else if( tag == "miid" )
+            itemId = tagData.toString();
+        else if(tag == "astm" )
+            songTime = tagData.toInt();
+        else if( tag== "asfm" )
+            format = tagData.toString();
+        else if( tag == "minm" )
+            title = tagData.toString();
+        else if( tag == "asal" )
+            album = tagData.toString();
+        else if( tag == "asar" )
+            artist = tagData.toString();
+        else if( tag == "ascp" )
+            composer = tagData.toString();
+        else if( tag == "ascm" )
+            comment = tagData.toString();
+        else if( tag == "asgn" )
+            genre = tagData.toString();
     }
 
-    addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
+    if( !itemId.isEmpty() )
+        addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
 
-    m_memColl->memoryCollection()->acquireWriteLock();
-    m_memColl->memoryCollection()->setTrackMap( m_trackMap );
-    m_memColl->memoryCollection()->setArtistMap( m_artistMap );
-    m_memColl->memoryCollection()->setAlbumMap( m_albumMap );
-    m_memColl->memoryCollection()->setGenreMap( m_genreMap );
-    m_memColl->memoryCollection()->setComposerMap( m_composerMap );
-    m_memColl->memoryCollection()->setYearMap( m_yearMap );
-    m_memColl->memoryCollection()->releaseLock();
-    m_trackMap.clear();
-    m_artistMap.clear();
-    m_albumMap.clear();
-    m_genreMap.clear();
-    m_composerMap.clear();
-    m_yearMap.clear();
-
+    if( set_collection )
+    {
+        m_memColl->memoryCollection()->acquireWriteLock();
+        m_memColl->memoryCollection()->setTrackMap( m_trackMap );
+        m_memColl->memoryCollection()->setArtistMap( m_artistMap );
+        m_memColl->memoryCollection()->setAlbumMap( m_albumMap );
+        m_memColl->memoryCollection()->setGenreMap( m_genreMap );
+        m_memColl->memoryCollection()->setComposerMap( m_composerMap );
+        m_memColl->memoryCollection()->setYearMap( m_yearMap );
+        m_memColl->memoryCollection()->releaseLock();
+        m_trackMap.clear();
+        m_artistMap.clear();
+        m_albumMap.clear();
+        m_genreMap.clear();
+        m_composerMap.clear();
+        m_yearMap.clear();
+    }
     return true;
 }
 
@@ -529,8 +482,99 @@ Reader::getTagAndLength( QDataStream &raw, char tag[5] )
     return tagLength;
 }
 
+QVariant
+Reader::readTagData( QDataStream &raw, char *tag, quint32 tagLength)
+{
+    /**
+    * Consume tagLength bytes of data from the stream and convert it to the
+    * proper type, while making sure that datalength/datatype mismatches are handled properly
+    */
+
+    QVariant ret = QVariant();
+
+    if ( tagLength == 0 )
+        return ret;
+
+#define READ_DATA(var) \
+    DEBUGTAG( var ) \
+    if( sizeof(var) != tagLength ) { \
+        warning() << "Bad tag data length: " << tag << ":" << tagLength; \
+        raw.skipRawData(tagLength); \
+        break; \
+    } else { \
+        raw >> var ; \
+        ret = QVariant(var); \
+    }
+    switch( s_codes[tag].type )
+    {
+        case CHAR:
+        {
+            qint8 charData;
+            READ_DATA( charData )
+            break;
+        }
+        case SHORT:
+        {
+            qint16 shortData;
+            READ_DATA( shortData )
+            break;
+        }
+        case LONG:
+        {
+            qint32 longData;
+            READ_DATA( longData );
+            break;
+        }
+        case LONGLONG:
+        {
+            qint64 longlongData;
+            READ_DATA( longlongData );
+            break;
+        }
+        case STRING:
+        {
+            QByteArray stringData( tagLength, ' ' );
+            raw.readRawData( stringData.data(), tagLength );
+            ret = QVariant(QString::fromUtf8( stringData, tagLength ));
+            DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
+            break;
+        }
+        case DATE:
+        {
+            qint64 dateData;
+            READ_DATA( dateData )
+            QDateTime date;
+            date.setTime_t( dateData );
+            ret = QVariant( date );
+            break;
+        }
+        case DVERSION:
+        {
+            qint32 verData;
+            READ_DATA( verData )
+            QString version( "%1.%2.%3" );
+            version.arg( verData >> 16, (verData >> 8) & 0xFF, verData & 0xFF);
+            ret = QVariant( version );
+            break;
+        }
+        case CONTAINER:
+        {
+            QByteArray containerData( tagLength, ' ' );
+            raw.readRawData( containerData.data(), tagLength );
+            ret = QVariant( containerData );
+            break;
+        }
+        default:
+            warning() << "Tag " << tag << " has unhandled type." << endl;
+            raw.skipRawData(tagLength);
+            break;
+    }
+#undef READ_DATA
+    return ret;
+}
+
 Map
-Reader::parse( QDataStream &raw, uint containerLength, bool first )
+Reader::parse( QDataStream &raw )
 {
     DEBUG_BLOCK
     /**
@@ -540,85 +584,24 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
      * 8-      Data    The data contained within the chunk
      **/
     Map childMap;
-    uint index = 0;
-    while( (first ? !raw.atEnd() : ( index < containerLength ) ) )
+    while( !raw.atEnd() )
     {
         char tag[5];
         quint32 tagLength = getTagAndLength( raw, tag );
         if( tagLength == 0 )
-        {
-            index += 8;
             continue;
-        }
-        switch( s_codes[tag].type )
+
+        QVariant tagData = readTagData(raw, tag, tagLength);
+        if( !tagData.isValid() )
+            continue;
+
+        if( s_codes[tag].type == CONTAINER )
         {
-            case CHAR:
-            {
-                qint8 charData;
-                raw >> charData; DEBUGTAG( charData )
-                addElement( childMap, tag, QVariant( static_cast<int>(charData) ) );
-                break;
-            }
-            case SHORT:
-            {
-                qint16 shortData;
-                raw >> shortData; DEBUGTAG( shortData )
-                addElement( childMap, tag, QVariant( static_cast<int>(shortData) ) );
-                break;
-            }
-            case LONG:
-            {
-                qint32 longData;
-                raw >> longData; DEBUGTAG( longData )
-                addElement( childMap, tag, QVariant( longData ) );
-                break;
-            }
-            case LONGLONG:
-            {
-                qint64 longlongData;
-                raw >> longlongData; DEBUGTAG( longlongData )
-                addElement( childMap, tag, QVariant( longlongData ) );
-                break;
-            }
-            case STRING:
-            {
-                QByteArray stringData(tagLength, ' ');
-                raw.readRawData( stringData.data(), tagLength ); DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
-                addElement( childMap, tag, QVariant( QString::fromUtf8( stringData, tagLength ) ) );
-                break;
-            }
-            case DATE:
-            {
-                qint64 dateData;
-                QDateTime date;
-                raw >> dateData; DEBUGTAG( dateData )
-                date.setTime_t(dateData);
-                addElement( childMap, tag, QVariant( date ) );
-                break;
-            }
-            case DVERSION:
-            {
-                qint16 major;
-                qint8 minor;
-                qint8 patchLevel;
-                raw >> major >> minor >> patchLevel; DEBUGTAG( patchLevel )
-                QString version("%1.%2.%3");
-                version.arg(major, minor, patchLevel);
-                addElement( childMap, tag, QVariant(version) );
-            }
-            case CONTAINER:
-            {
-                DEBUGTAG( 11 )
-                addElement( childMap, tag, QVariant( parse( raw, tagLength ) ) );
-                break;
-            }
-            default:
-            {
-                warning() << tag << " does not work";
-                break;
-            }
+            QDataStream substream( tagData.toByteArray() );
+            addElement( childMap, tag, QVariant( parse( substream ) ) );
         }
-        index += tagLength + 8;
+        else
+            addElement( childMap, tag, tagData );
     }
     return childMap;
 }
@@ -671,7 +654,7 @@ WorkerThread::success() const
 void
 WorkerThread::run()
 {
-    m_success = m_reader->parseSongList( m_data );
+    m_success = m_reader->parseSongList( m_data, true );
 }
 
 #include "Reader.moc"

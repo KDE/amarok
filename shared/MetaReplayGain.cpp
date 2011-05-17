@@ -28,6 +28,7 @@
 #include <tstring.h>
 #include <textidentificationframe.h>
 #include <apetag.h>
+#include <fileref.h>
 #include <flacfile.h>
 #include <id3v2tag.h>
 #include <mpcfile.h>
@@ -272,7 +273,7 @@ static Meta::ReplayGainTagMap readMP4Tags( TagLib::MP4::Tag *tag )
 #endif 
 
 Meta::ReplayGainTagMap
-Meta::readReplayGainTags( TagLib::FileRef fileref )
+Meta::readReplayGainTags( const TagLib::FileRef &fileref )
 {
     Meta::ReplayGainTagMap map;
     // NB: we can't get replay gain info from MPC files, since it's stored in some magic place
