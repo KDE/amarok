@@ -86,7 +86,8 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          * Add a PlaylistProvider that contains Playlists of a category defined
          * in the PlaylistCategory enum.
          * @arg provider a PlaylistProvider
-         * @arg category a default Category from the PlaylistManager::PlaylistCategory enum or a custom one registered before with registerCustomCategory.
+         * @arg category a default Category from the PlaylistManager::PlaylistCategory enum or a
+         * custom one registered before with registerCustomCategory.
          */
         void addProvider( Playlists::PlaylistProvider * provider, int category );
 
@@ -94,7 +95,6 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          * Remove a PlaylistProvider.
          * @arg provider a PlaylistProvider
          */
-
         void removeProvider( Playlists::PlaylistProvider * provider );
 
         Playlists::PlaylistProvider * playlistProvider( int category, QString name );
@@ -102,9 +102,11 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         void downloadPlaylist( const KUrl & path, const Playlists::PlaylistFilePtr playlist );
 
         /**
-        *   Saves a list of tracks to a new SQL playlist. Used in the Playlist save button.
+        *   Saves a list of tracks to a new playlist. Used in the Playlist save button.
         *   @arg tracks list of tracks to save
         *   @arg name name of playlist to save
+        *   @arg toProvider If 0 (default) will save to the default UserPlaylistProvider
+        *   @see defaultUserPlaylists
         */
         bool save( Meta::TrackList tracks, const QString &name = QString(),
                    Playlists::UserPlaylistProvider *toProvider = 0 );
@@ -123,7 +125,8 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         Playlists::UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; }
 
         /**
-         *  Retrieves the provider owning the given playlist
+         *  Retrieves the provider owning the given playlist.
+         *  Will only return multiple providers if this is a synced playlist
          *  @arg playlist the playlist whose provider we want
          */
         QList<Playlists::PlaylistProvider*>
