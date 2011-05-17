@@ -68,6 +68,7 @@ class ToolbarView : public QGraphicsView
         void appletAdded( Plasma::Applet*, int);
         void refreshOverlays();
         void recreateOverlays();
+        void installApplets();
         void refreshSycoca();
     
     private:

@@ -69,18 +69,7 @@ public:
     SelectionType currentSelection;
     QUrl wikiCurrentUrl;
     QStringList preferredLangs;
-    struct TrackMetadata
-    {
-        QString artist;
-        QString album;
-        QString track;
-        void clear()
-        {
-            artist.clear();
-            album.clear();
-            track.clear();
-        }
-    } m_previousTrackMetadata;
+    Meta::TrackPtr currentTrack;
     bool useMobileVersion;
 
     Plasma::DataContainer *dataContainer;
@@ -216,7 +205,6 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
     data[QLatin1String("url")] = QUrl(url);
     q->removeData( QLatin1String("wikipedia"), QLatin1String("busy") );
 
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( !currentTrack )
         return;
 
@@ -474,38 +462,38 @@ WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
 void
 WikipediaEnginePrivate::_checkRequireUpdate( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
     if( !track )
         return;
 
-    bool updateNeeded(false);
+    Meta::DataPtr oldData;
+    QString newName;
 
     switch( currentSelection )
     {
     case WikipediaEnginePrivate::Artist:
         if( track->artist() )
-            updateNeeded = track->artist()->name() != m_previousTrackMetadata.artist;
+            newName = track->artist()->name();
+        if( currentTrack )
+            oldData = currentTrack->artist().data();
         break;
 
     case WikipediaEnginePrivate::Album:
         if( track->album() )
-            updateNeeded = track->album()->name() != m_previousTrackMetadata.album;
+            newName = track->album()->name();
+        if( currentTrack )
+            oldData = currentTrack->album().data();
         break;
 
     case WikipediaEnginePrivate::Track:
-        updateNeeded = track->name() != m_previousTrackMetadata.track;
+        newName = track->name();
+        if( currentTrack )
+            oldData = currentTrack.data();
         break;
     }
 
-    if( updateNeeded )
+    if( (oldData ? oldData->name() : QString()) != newName )
     {
-        m_previousTrackMetadata.clear();
-        if( track->artist() )
-            m_previousTrackMetadata.artist = track->artist()->name();
-        if( track->album() )
-            m_previousTrackMetadata.album = track->album()->name();
-        m_previousTrackMetadata.track = track->name();
-
+        currentTrack = track;
         urls.clear();
         updateEngine();
     }
@@ -519,7 +507,7 @@ WikipediaEnginePrivate::_stopped()
     dataContainer->removeAllData();
     dataContainer->setData( "stopped", 1 );
     q->scheduleSourcesUpdated();
-    m_previousTrackMetadata.clear();
+    currentTrack.clear();
 }
 
 void
@@ -608,10 +596,8 @@ WikipediaEnginePrivate::fetchListing( const QString &title, const QString &hostL
 void
 WikipediaEnginePrivate::updateEngine()
 {
-    DEBUG_BLOCK
     Q_Q( WikipediaEngine );
 
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( !currentTrack )
         return;
 
@@ -913,6 +899,8 @@ WikipediaEngine::init()
              this, SLOT(_dataContainerUpdated(QString,Plasma::DataEngine::Data)) );
 
     EngineController *engine = The::engineController();
+
+    d->currentTrack = engine->currentTrack();
 
     connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
              this, SLOT( _checkRequireUpdate( Meta::TrackPtr ) ) );

@@ -197,6 +197,12 @@ namespace Amarok
         QApplication::restoreOverrideCursor();
     }
 
+    Qt::MouseButton contextMouseButton()
+    {
+        const int handed = KGlobalSettings::mouseSettings().handed;
+        return ( handed == KGlobalSettings::KMouseSettings::RightHanded ) ? Qt::RightButton : Qt::LeftButton;
+    }
+
     QString saveLocation( const QString &directory )
     {
         globalDirsMutex.lock();

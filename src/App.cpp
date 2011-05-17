@@ -87,6 +87,7 @@
 #include <QByteArray>
 #include <QDesktopServices>
 #include <QFile>
+#include <KPixmapCache>
 #include <QStringList>
 #include <QTextDocument>                // for Qt::escape()
 #include <QTimer>                       //showHyperThreadingWarning()
@@ -151,6 +152,10 @@ App::App()
     qRegisterMetaType<Playlists::PlaylistPtr>();
     qRegisterMetaType<Playlists::PlaylistList>();
 
+
+    //make sure we have enough cache space for all our crazy svg stuff
+    KPixmapCache cache( "Amarok-pixmaps" );
+    cache.setCacheLimit ( 20 * 1024 );
 
 #ifdef Q_WS_MAC
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp

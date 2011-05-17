@@ -289,6 +289,7 @@ IpodHandler::init()
     GError *err = 0;
     QString initError = i18n( "iPod was not initialized:" );
     QString initErrorCaption = i18n( "iPod Initialization Failed" );
+    bool wasInitialized = false;
 
     // First attempt to parse the database
 
@@ -435,6 +436,7 @@ IpodHandler::init()
             {
                 KMessageBox::information( 0, i18n( "The iPod was successfully initialized." ), i18n( "iPod Initialized" ) );
                 debug() << "iPod was initialized";
+                wasInitialized = true;
                 m_success = true;
             }
         }

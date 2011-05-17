@@ -20,7 +20,8 @@
 
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
-#include "ImageCache.h"
+
+#include "KPixmapCache"
 
 #include <QColor>
 #include <QObject>
@@ -67,7 +68,7 @@ private:
     QMap<Meta::TrackPtr, QString> m_moodFileMap;
     QMap<Meta::TrackPtr, MoodbarColorList> m_moodDataMap;
 
-    ImageCache * m_cache;
+    KPixmapCache * m_cache;
 
     int m_lastPaintMode;
 };

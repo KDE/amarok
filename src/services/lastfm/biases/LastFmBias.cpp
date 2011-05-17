@@ -275,10 +275,7 @@ Dynamic::LastFmBias::artistQueryDone() // slot
     collectionUpdated(); // force an update
     emit doneFetching();
     m_qm->run();
-
-    // clean up
     m_artistQuery->deleteLater();
-    m_artistQuery = 0;
 }
 
 void Dynamic::LastFmBias::trackQueryDone()
@@ -349,10 +346,7 @@ void Dynamic::LastFmBias::trackQueryDone()
     collectionUpdated(); // force an update
     m_qm->run();
     emit doneFetching();
-
-    // clean up
     m_trackQuery->deleteLater();
-    m_trackQuery = 0;
 }
 
 

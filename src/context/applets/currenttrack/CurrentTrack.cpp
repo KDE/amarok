@@ -251,7 +251,7 @@ CurrentTrack::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     if( !m_isStopped
         && event->modifiers() == Qt::NoModifier
-        && event->button() == Qt::LeftButton )
+        && event->button() != Amarok::contextMouseButton() )
     {
         QGraphicsView *view = scene()->views().first();
         QGraphicsItem *item = view->itemAt( view->mapFromScene(event->scenePos()) );

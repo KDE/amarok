@@ -22,6 +22,7 @@
 #include "toolbar/AppletToolbar.h"
 #include "toolbar/AppletToolbarAppletItem.h"
 
+#include <knewstuff2/engine.h>
 #include <kfiledialog.h>
 #include <kstandarddirs.h>
 #include <plasma/applet.h>
@@ -66,6 +67,7 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
     m_toolbar.data()->setPos( TOOLBAR_X_OFFSET, 0 );
 
    connect( m_toolbar.data(), SIGNAL( configModeToggled() ), this, SLOT( toggleConfigMode() ) );
+   connect( m_toolbar.data(), SIGNAL( installApplets() ), this, SLOT( installApplets() ) );
    connect( m_toolbar.data(), SIGNAL( hideAppletExplorer() ), this, SIGNAL( hideAppletExplorer() ) );
    connect( m_toolbar.data(), SIGNAL( showAppletExplorer() ), this, SIGNAL( showAppletExplorer() ) );
 
@@ -252,12 +254,29 @@ Context::ToolbarView::recreateOverlays()
 }
 
 void
+Context::ToolbarView::installApplets()
+{
+    DEBUG_BLOCK
+
+    KNS::Engine engine(0);
+    if (engine.init("amarokapplets.knsrc")) {
+        KNS::Entry::List entries = engine.downloadDialogModal(this);
+    }
+    
+    // give it some time to run, but not too long
+    QTimer::singleShot( 0, this, SLOT( refreshSycoca() ) );
+}
+
+void
 Context::ToolbarView::refreshSycoca()
 {
+
     QDBusInterface dbus("org.kde.kded", "/kbuildsycoca", "org.kde.kbuildsycoca");
     dbus.call(QDBus::Block, "recreate");
 
     recreateOverlays();
+
 }
+
 
 #include "ToolbarView.moc"

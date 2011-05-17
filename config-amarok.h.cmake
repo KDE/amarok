@@ -47,6 +47,3 @@
 
 /* Whether cmake build type is debug */
 #cmakedefine DEBUG_BUILD_TYPE
-
-/* Whether we have KImageCache */
-#cmakedefine HAVE_KIMAGECACHE 1

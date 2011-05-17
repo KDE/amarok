@@ -20,9 +20,8 @@
 
 #include <QMap>
 
-namespace TagLib {
-    class FileRef;
-}
+// Taglib
+#include <fileref.h>
 
 /* This file exists (rather than putting the method in MetaUtility.h and
  * MetaUtility.cpp) because we need to share the implementation between
@@ -45,9 +44,9 @@ namespace Meta
      */
 #ifndef UTILITIES_BUILD
 #include "amarok_export.h"
-    AMAROK_EXPORT ReplayGainTagMap readReplayGainTags( const TagLib::FileRef &fileref );
+    AMAROK_EXPORT ReplayGainTagMap readReplayGainTags( TagLib::FileRef fileref );
 #else
-    ReplayGainTagMap readReplayGainTags( const TagLib::FileRef &fileref );
+    ReplayGainTagMap readReplayGainTags( TagLib::FileRef fileref );
 #endif
 }
 

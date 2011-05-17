@@ -544,13 +544,12 @@ void
 CoverFetchArtPayload::prepareGoogleUrls()
 {
     // code based on Audex CDDA Extractor
-    QRegExp rx( "<a\\shref=\"(\\/imgres\\?imgurl=[^\"]+)\">[\\s\\n]*<img\\ssrc=\"([^\\s>]+)\"[^>]+>[\\s\\n]*</a>" );
-    rx.setCaseSensitivity( Qt::CaseInsensitive );
+    const QString filter = "a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?\\,\\(\\)\\~\\!";
+    QRegExp rx( "<a\\shref=(\\/imgres\\?imgurl=[" + filter + "]+)>[\\s\\n]*<img\\ssrc=([" + filter + "]+).*>[\\s\\n]*</a>" );
     rx.setMinimal( true );
 
     int pos = 0;
-    QString html = m_xml.replace( QLatin1String("&amp;"), QLatin1String("&") );
-
+    QString html = m_xml;
     while( ( (pos = rx.indexIn( html, pos ) ) != -1 ) )
     {
         KUrl url( "http://www.google.com" + rx.cap( 1 ) );

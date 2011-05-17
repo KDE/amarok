@@ -156,7 +156,7 @@ BreadcrumbItemButton::drawHoverBackground(QPainter* painter)
 
     if( isHovered )
     {
-        // QColor backgroundColor = palette().color(QPalette::Highlight);
+        QColor backgroundColor = palette().color(QPalette::Highlight);
         // TODO: the backgroundColor should be applied to the style
         QStyleOptionViewItemV4 option;
         option.initFrom(this);

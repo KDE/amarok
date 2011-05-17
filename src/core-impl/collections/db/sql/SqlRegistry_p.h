@@ -36,7 +36,6 @@ class AbstractTrackTableCommitter
           The id will be updated.
           */
         void commit( const QList<Meta::SqlTrackPtr> &tracks );
-        virtual ~AbstractTrackTableCommitter() {}
 
     protected:
         virtual QString tableName() = 0;
@@ -57,9 +56,6 @@ class AbstractTrackTableCommitter
 
 class TrackUrlsTableCommitter: public AbstractTrackTableCommitter
 {
-    public:
-        virtual ~TrackUrlsTableCommitter() {}
-
     protected:
         virtual QString tableName();
         virtual int getId( Meta::SqlTrack *track );
@@ -70,9 +66,6 @@ class TrackUrlsTableCommitter: public AbstractTrackTableCommitter
 
 class TrackTracksTableCommitter: public AbstractTrackTableCommitter
 {
-    public:
-        virtual ~TrackTracksTableCommitter() {}
-
     protected:
         virtual QString tableName();
         virtual int getId( Meta::SqlTrack *track );
@@ -83,9 +76,6 @@ class TrackTracksTableCommitter: public AbstractTrackTableCommitter
 
 class TrackStatisticsTableCommitter: public AbstractTrackTableCommitter
 {
-    public:
-        virtual ~TrackStatisticsTableCommitter() {}
-
     protected:
         virtual QString tableName();
         virtual int getId( Meta::SqlTrack *track );

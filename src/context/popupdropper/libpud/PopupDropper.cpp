@@ -191,7 +191,7 @@ void PopupDropperPrivate::deleteTimerFinished() //SLOT
 
 void PopupDropperPrivate::reposItems()
 {
-    qreal partitionsize, my_min, my_max;
+    qreal partitionsize, my_min, my_max, vert_center, item_min;
     //qDebug() << "allItems.size() = " << allItems.size();
     int counter = 0;
     for( int i = 0; i < allItems.size(); i++ )
@@ -202,6 +202,7 @@ void PopupDropperPrivate::reposItems()
         my_min = ( counter * partitionsize ) + verticalmargin;
         my_max = ( ( counter + 1 ) * partitionsize ) - verticalmargin;
         //qDebug() << "my_min = " << my_min << ", my_max = " << my_max;
+        vert_center = ( ( my_max - my_min ) / 2 ) + my_min; //gives us our center line...now center the item around it
         PopupDropperItem* pItem = dynamic_cast<PopupDropperItem*>( allItems.at( i ) );
         QGraphicsLineItem* qglItem = 0;
         if( pItem )
@@ -210,6 +211,8 @@ void PopupDropperPrivate::reposItems()
             //qDebug() << "item " << i << " is a PDI ";
             //If the svgElementRect is too high, resize it to fit
             pItem->svgElementRect().setHeight( my_max - my_min - ( 2 * verticalmargin ) );
+            item_min = vert_center - ( pItem->svgElementRect().height() / 2 );
+            //qDebug() << "vert_center = " << vert_center << ", ited->min = " << item_min;
             pItem->setPos( 0, my_min );
             pItem->borderRectItem()->setRect( 0 - pItem->borderWidth(), 0, scene->width() + 2*pItem->borderWidth(), my_max - my_min );
             pItem->scaleAndReposSvgItem();

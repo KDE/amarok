@@ -79,9 +79,6 @@ if( WITH_PLAYER )
 
     macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.4.0" "" )
 
-    macro_ensure_version( "4.5.0" ${KDE_VERSION} KDE_HAS_KIMAGECACHE )
-    macro_bool_to_01( KDE_HAS_KIMAGECACHE HAVE_KIMAGECACHE )
-
     find_package( QtScriptQtBindings REQUIRED )
     macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" TRUE "" "" )
 

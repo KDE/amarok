@@ -105,9 +105,6 @@ namespace Amarok
         connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
                  this, SLOT( updatePlaylistProperties() ) );
 
-        connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-                 this, SLOT( updateTrackProperties() ) );
-
         connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),
                  this, SLOT( trackPositionChanged( qint64, bool ) ) );
         connect( engine, SIGNAL( seekableChanged( bool ) ),

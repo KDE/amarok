@@ -57,7 +57,7 @@ namespace The
 }
 
 MoodbarManager::MoodbarManager()
-    : m_cache( new ImageCache( "Amarok-moodbars", 10 * 1024 ) )
+    : m_cache( new KPixmapCache( "Amarok-moodbars" ) )
     , m_lastPaintMode( 0 )
 {
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );

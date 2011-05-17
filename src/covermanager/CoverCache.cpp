@@ -18,13 +18,15 @@
 
 #include "core/support/Amarok.h"
 
-#include <QDir>
-#include <QImage>
-#include <QMutexLocker>
-#include <QPixmapCache>
 #include <QReadWriteLock>
 #include <QReadLocker>
 #include <QWriteLocker>
+#include <QMutexLocker>
+#include <QPixmapCache>
+
+#include <QDir>
+#include <QImage>
+#include <QPixmapCache>
 
 #include <KStandardDirs>
 #include <KLocale>
