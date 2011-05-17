@@ -150,7 +150,7 @@ MusicDNSAudioDecoder::run()
 
         audioStream = -1;
         for(i = 0; i < ( int )pFormatCtx->nb_streams; i++ )
-            if( pFormatCtx->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO )
+            if( pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO )
             {
                 audioStream = i;
                 break;
@@ -198,7 +198,7 @@ MusicDNSAudioDecoder::run()
                     }
 
                     outSize = bufferSize;
-                    decoderRet = avcodec_decode_audio2( pCodecCtx, ( qint16 * )buffer, &outSize, tmpPacket.data, tmpPacket.size );
+                    decoderRet = avcodec_decode_audio3( pCodecCtx, ( qint16 * )buffer, &outSize, &tmpPacket );
                     if( decoderRet < 0 )
                     {
                         debug() << "Error while decoding.";

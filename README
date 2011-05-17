@@ -95,7 +95,7 @@ Optional
     * MySQL 5.0 (or newer) Server (external database support)
 
     * MusicBrainz-based audio fingerprint tag lookup requires:
-      * FFmpeg 0.5.0 (or newer) - http://ffmpeg.org/
+      * FFmpeg 0.6.0 (or newer) - http://ffmpeg.org/
         * libavcodec & libavformat specifically
       * LibOFA - http://code.google.com/p/musicip-libofa/
       

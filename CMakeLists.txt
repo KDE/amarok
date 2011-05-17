@@ -113,7 +113,7 @@ if( WITH_PLAYER )
     macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
     macro_optional_find_package( FFmpeg )
-    macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.5" "" )
+    macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.6" "" )
 
     if( FFMPEG_FOUND )
         macro_optional_find_package(LibOFA)
