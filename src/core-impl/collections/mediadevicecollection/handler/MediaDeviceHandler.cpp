@@ -85,6 +85,7 @@ MediaDeviceHandler::slotDeletingHandler()
     DEBUG_BLOCK
     if( m_provider )
         The::playlistManager()->removeProvider( m_provider );
+    m_memColl = NULL;
 }
 
 void
@@ -855,6 +856,10 @@ MediaDeviceHandler::privateParseTracks()
 
         m_rcb->nextTrackToParse();
 
+        // FIXME: should we return true or false?
+        if (!m_memColl)
+            return true;
+
         MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
 
         m_rcb->setAssociateTrack( track );
@@ -1300,7 +1305,8 @@ ParseWorkerThread::run()
 void
 ParseWorkerThread::slotDoneSuccess( ThreadWeaver::Job* )
 {
-    m_handler->m_memColl->emitCollectionReady();
+    if (m_handler->m_memColl)
+        m_handler->m_memColl->emitCollectionReady();
 }
 
 // CopyWorkerThread
