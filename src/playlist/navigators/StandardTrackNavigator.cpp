@@ -30,6 +30,7 @@
 Playlist::StandardTrackNavigator::StandardTrackNavigator()
 {
     m_repeatPlaylist = ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist );
+    m_onlyQueue = ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::OnlyQueue );
 }
 
 quint64
@@ -86,6 +87,9 @@ Playlist::StandardTrackNavigator::chooseNextTrack( bool repeatPlaylist )
 {
     if( !m_queue.isEmpty() )
         return m_queue.first();
+
+    if( m_onlyQueue )
+        return 0;
 
     int nextRow = m_model->activeRow() + 1;    // 'activeRow()' may be -1.
 

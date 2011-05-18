@@ -40,6 +40,10 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     m_standardNavigatorAction->setCheckable( true );
     //action->setIcon( true );
 
+    m_onlyQueueNavigatorAction = navigatorActions->addAction( i18n( "Only Queue" ) );
+    m_onlyQueueNavigatorAction->setIcon( KIcon( "media-standard-track-progression-amarok" ) );
+    m_onlyQueueNavigatorAction->setCheckable( true );
+
     QAction * action = new QAction( parent );
     action->setSeparator( true );
     navigatorActions->addAction( action );
@@ -90,6 +94,11 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     //make sure the correct entry is selected from start:
     switch( AmarokConfig::trackProgression() )
     {
+        case AmarokConfig::EnumTrackProgression::OnlyQueue:
+            m_onlyQueueNavigatorAction->setChecked( true );
+            setIcon( m_onlyQueueNavigatorAction->icon() );
+            break;
+
         case AmarokConfig::EnumTrackProgression::RepeatTrack:
             m_repeatTrackNavigatorAction->setChecked( true );
             setIcon( m_repeatTrackNavigatorAction->icon() );
@@ -160,6 +169,11 @@ void NavigatorConfigAction::setActiveNavigator( QAction *navigatorAction )
         AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::Normal );
         setIcon( m_standardNavigatorAction->icon() );
     }
+    else if ( navigatorAction == m_onlyQueueNavigatorAction )
+    {
+        AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::OnlyQueue );
+        setIcon( m_onlyQueueNavigatorAction->icon() );
+    }
     else if ( navigatorAction == m_repeatTrackNavigatorAction )
     {
         AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RepeatTrack );
@@ -214,6 +228,11 @@ void NavigatorConfigAction::navigatorChanged()
 {
     switch( AmarokConfig::trackProgression() )
     {
+        case AmarokConfig::EnumTrackProgression::OnlyQueue:
+            m_onlyQueueNavigatorAction->setChecked( true );
+            setIcon( m_onlyQueueNavigatorAction->icon() );
+            break;
+
         case AmarokConfig::EnumTrackProgression::RepeatTrack:
             m_repeatTrackNavigatorAction->setChecked( true );
             setIcon( m_repeatTrackNavigatorAction->icon() );

@@ -35,6 +35,7 @@
         <whatsthis>Determines how amarok will progress through the tracks in the playlist</whatsthis>
         <choices>
             <choice name="Normal"></choice>
+            <choice name="OnlyQueue"></choice>
             <choice name="RepeatTrack"></choice>
             <choice name="RepeatAlbum"></choice>
             <choice name="RepeatPlaylist"></choice>

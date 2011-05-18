@@ -51,6 +51,7 @@ protected slots:
 private:
 
     QAction * m_standardNavigatorAction;
+    QAction * m_onlyQueueNavigatorAction;
     QAction * m_repeatTrackNavigatorAction;
     QAction * m_repeatAlbumNavigatorAction;
     QAction * m_repeatPlaylistNavigatorAction;

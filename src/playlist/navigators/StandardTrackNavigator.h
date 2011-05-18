@@ -49,6 +49,8 @@ namespace Playlist
 
             // repeat the entire playlist when we've reached the end
             bool m_repeatPlaylist;
+            // only play items explicitely queued
+            bool m_onlyQueue;
     };
 
 }

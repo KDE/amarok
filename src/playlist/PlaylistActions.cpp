@@ -314,8 +314,9 @@ Playlist::Actions::playlistModeChanged()
             m_navigator = new RandomAlbumNavigator();
             break;
 
-        //repeat playlist, standard and fallback are all the normal navigator.
+        //repeat playlist, standard, only queue and fallback are all the normal navigator.
         case AmarokConfig::EnumTrackProgression::RepeatPlaylist:
+        case AmarokConfig::EnumTrackProgression::OnlyQueue:
         case AmarokConfig::EnumTrackProgression::Normal:
         default:
             m_navigator = new StandardTrackNavigator();

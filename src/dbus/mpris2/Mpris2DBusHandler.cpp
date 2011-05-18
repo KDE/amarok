@@ -349,6 +349,7 @@ namespace Amarok
         switch( AmarokConfig::trackProgression() )
         {
             case AmarokConfig::EnumTrackProgression::Normal:
+            case AmarokConfig::EnumTrackProgression::OnlyQueue:
             case AmarokConfig::EnumTrackProgression::RandomTrack:
             case AmarokConfig::EnumTrackProgression::RandomAlbum:
                 loopStatus = "None";
