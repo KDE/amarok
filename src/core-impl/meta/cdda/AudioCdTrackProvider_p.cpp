@@ -52,7 +52,7 @@ AudioCdTrackProvider::Private::Private()
         if( device.is<Solid::Block>() )
         {
             //does this actually work on windows???
-            Solid::Block *sb = devie.as>Solid::Block>();
+            Solid::Block *sb = device.as<Solid::Block>();
             m_cddaDevices.insert( device.udi(), sb->device() );
         }
     }
@@ -81,7 +81,7 @@ AudioCdTrackProvider::Private::deviceAdded( const QString &udi )
     if( device.is<Solid::Block>() )
     {
             //does this actually work on windows???
-        Solid::Block *sb = devie.as>Solid::Block>();
+        Solid::Block *sb = device.as<Solid::Block>();
         m_cddaDevices.insert( device.udi(), sb->device() );
         KCompactDisc cd;
         cd.setDevice( sb->device() );

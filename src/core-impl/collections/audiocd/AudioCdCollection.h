@@ -103,6 +103,7 @@ private:
 
     // Helper function to build the audiocd url.
     KUrl audiocdUrl( const QString &path = "" ) const;
+    qint64 trackLength( int i ) const;
 
     /**
      * Clear collection and read the CD currently in the drive, adding Artist, Album,

@@ -83,6 +83,7 @@ EngineController::EngineController()
     , m_playWhenFetched( true )
     , m_volume( 0 )
     , m_currentIsAudioCd( false )
+    , m_currentAudioCdTrack( 0 )
     , m_ignoreVolumeChangeAction ( false )
     , m_ignoreVolumeChangeObserve ( false )
     , m_tickInterval( 0 )
@@ -460,6 +461,15 @@ EngineController::playUrl( const KUrl &url, uint offset )
         QString trackNumberString = url.url();
         trackNumberString = trackNumberString.remove( "audiocd:/" );
 
+        const QString devicePrefix( "?device=" );
+        QString device("");
+        if (trackNumberString.contains(devicePrefix))
+        {
+            int pos = trackNumberString.indexOf( devicePrefix );
+            device = trackNumberString.mid( pos + devicePrefix.size() );
+            trackNumberString = trackNumberString.left( pos );
+        }
+
         QStringList parts = trackNumberString.split( '/' );
 
         if ( parts.count() != 2 )
@@ -479,25 +489,27 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
         int trackNumber = parts.at( 1 ).toInt();
 
-        debug() << "3.2.1...";
+        debug() << "Old device: " << m_media.data()->currentSource().deviceName();
 
         Phonon::MediaSource::Type type = m_media.data()->currentSource().type();
-        if( type != Phonon::MediaSource::Disc )
+        if( type != Phonon::MediaSource::Disc || m_media.data()->currentSource().deviceName() != device )
         {
             m_media.data()->clear();
-            m_media.data()->setCurrentSource( Phonon::Cd );
+            debug() << "New device: " << device;
+            m_media.data()->setCurrentSource( Phonon::MediaSource( Phonon::Cd, device ) );
         }
 
-        debug() << "boom?";
+        debug() << "Track: " << trackNumber;
+        m_currentAudioCdTrack = trackNumber;
         m_controller.data()->setCurrentTitle( trackNumber );
         debug() << "no boom?";
 
         if( type == Phonon::MediaSource::Disc )
         {
-            // The track has changed but the slot will not be called,
-            // because it's still the same media source, which means
+            // The track has changed but the slot may not be called,
+            // because it may be still the same media source, which means
             // we need to do it explicitly.
-            slotNewTrackPlaying( Phonon::Cd );
+            slotNewTrackPlaying( m_media.data()->currentSource() );
         }
 
         //reconnect it
@@ -1306,9 +1318,10 @@ EngineController::slotSeekableChanged( bool seekable )
 void EngineController::slotTitleChanged( int titleNumber )
 {
     DEBUG_BLOCK
-    Q_UNUSED( titleNumber );
-
-    slotAboutToFinish();
+    if ( titleNumber != m_currentAudioCdTrack )
+    {
+        slotAboutToFinish();
+    }
 }
 
 void EngineController::slotVolumeChanged( qreal newVolume )

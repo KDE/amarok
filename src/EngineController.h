@@ -553,6 +553,7 @@ private:
     bool m_playWhenFetched;
     int m_volume;
     bool m_currentIsAudioCd;
+    int m_currentAudioCdTrack;
 
     QList<QVariantMap> m_metaDataHistory; // against metadata spam
 
