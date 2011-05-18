@@ -225,11 +225,25 @@ void LikeBackDialog::slotButtonClicked( int buttonId )
     {
         emailAddress = emailAddressEdit_->text();
 
-        // lame-ass way to check if the e-mail address is valid:
-        if( !emailAddress.contains( QRegExp( "^[A-Z0-9._%\\-]+@(?:[A-Z0-9\\-]+\\.)+[A-Z]{2,4}$", Qt::CaseInsensitive ) ) )
+        // Improved regular expressions copied from Markus Sipilä
+        // At first check for "normal" email addresses.
+        if( !emailAddress.contains( QRegExp( "^[a-z0-9_\\+-]+(\\.[a-z0-9_\\+-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*\\.([a-z]{2,4})$", Qt::CaseInsensitive ) ) )
         {
-            KMessageBox::error( this, i18n( "The email address you have entered is not valid, and cannot be used: '%1'", emailAddress ) );
-            return;
+            // If that fails, check for more "exotic" (but valid!) addresses.
+            if( !emailAddress.contains( QRegExp( "^[a-z0-9,!#\\$%&'\\*\\+/=\\?\\^_`\\{\\|}~-]+(\\.[a-z0-9,!#\\$%&'\\*\\+/=\\?\\^_`\\{\\|}~-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*\\.([a-z]{2,})$", Qt::CaseInsensitive ) ) )
+            {
+                // If both checks fail, show an error message.
+                KMessageBox::error( this, i18n( "The email address you have entered is not valid, and cannot be used: '%1'", emailAddress ) );
+                return;
+            }
+            else // If it's an exotic mail address...
+            {
+                // ... ask for a recheck
+                if( KMessageBox::warningContinueCancel( this, i18n("Please double check your email address for errors, because it appears to be an exotic one.\n%1", emailAddress ) ) == KMessageBox::Cancel )
+                {
+                    return;
+                }
+            }
         }
 
         m_likeBack->setEmailAddress( emailAddress, true );
