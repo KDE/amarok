@@ -896,7 +896,7 @@ CollectionTreeItemModelBase::queryDone()
         item = d->noLabelsQueries.take( qm );
 
     if( item )
-        d->runningQueries.remove( item );
+        d->runningQueries.remove( item, qm );
 
     //reset icon for this item
     if( item && item != m_rootItem )
@@ -1304,7 +1304,7 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
 
     //trigger an update of all items being populated at the moment;
 
-    QList< CollectionTreeItem * > items = d->runningQueries.keys();
+    QList< CollectionTreeItem * > items = d->runningQueries.uniqueKeys();
     foreach ( CollectionTreeItem* item, items  )
     {
         if( item == m_rootItem )
@@ -1415,19 +1415,16 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
     if( !d->runningQueries.contains( item ) )
         return;
     //replace this hack with QWeakPointer as soon as we depend on Qt 4.6
-    Collections::QueryMaker *qm = d->runningQueries.take( item );
-    if( qm )
+    foreach(Collections::QueryMaker *qm, d->runningQueries.values( item ))
     {
-
         d->childQueries.remove( qm );
         d->compilationQueries.remove( qm );
         d->noLabelsQueries.remove( qm );
-        //we still need to disconnect the qm below
-    }
-    if( qm )
-    {
+        d->runningQueries.remove(item, qm);
+
         //Disconnect all signals from the QueryMaker so we do not get notified about the results
         qm->disconnect();
+        qm->abortQuery();
         //Nuke it
         qm->deleteLater();
     }

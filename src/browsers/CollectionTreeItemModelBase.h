@@ -170,7 +170,7 @@ class CollectionTreeItemModelBase::Private
     QHash<Collections::QueryMaker* , CollectionTreeItem* > childQueries;
     QHash<Collections::QueryMaker* , CollectionTreeItem* > compilationQueries;
     QHash<Collections::QueryMaker* , CollectionTreeItem* > noLabelsQueries;
-    QHash<CollectionTreeItem*, Collections::QueryMaker*>   runningQueries;
+    QMultiHash<CollectionTreeItem*, Collections::QueryMaker*> runningQueries;
     int rowHeight;
 };
 
