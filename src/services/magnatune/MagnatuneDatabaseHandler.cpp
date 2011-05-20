@@ -126,6 +126,7 @@ MagnatuneDatabaseHandler::destroyDatabase( )
     result = sqlDb->query( "DROP TABLE magnatune_moods;" );
 
 
+    /* that would only work for db2/oracle. Other databases connect the index to the table (which we just dropped)
     result = sqlDb->query( "DROP INDEX magnatune_tracks_artist_id;");
     result = sqlDb->query( "DROP INDEX magnatune_tracks_album_id;");
     result = sqlDb->query( "DROP INDEX magnatune_album_name;");
@@ -133,6 +134,7 @@ MagnatuneDatabaseHandler::destroyDatabase( )
     result = sqlDb->query( "DROP INDEX magnatune_artist_name;");
     result = sqlDb->query( "DROP INDEX magnatune_genre_album_id;");
     result = sqlDb->query( "DROP INDEX magnatune_genre_name;");
+    */
 
    /* if ( sqlDb->type() == DbConnection::postgresql )
     {
