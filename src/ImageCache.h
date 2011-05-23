@@ -18,7 +18,7 @@
 
 #include "config-amarok.h"
 
-#if HAVE_KIMAGECACHE
+#ifdef HAVE_KIMAGECACHE
 #include <KImageCache>
 #else
 #include <KPixmapCache>
@@ -42,14 +42,14 @@ class ImageCache
 {
     public:
         inline ImageCache( const QString &cacheName, int defaultSize )
-#if HAVE_KIMAGECACHE
+#ifdef HAVE_KIMAGECACHE
             : m_cache( new KImageCache( cacheName, defaultSize ) )
 #else
             : m_cache( new KPixmapCache( cacheName ) )
 #endif
         {
-#if !HAVE_KIMAGECACHE
-            m_cache->setCacheLimit( 10 * 1024 );
+#ifndef HAVE_KIMAGECACHE
+            m_cache->setCacheLimit( defaultSize );
 #endif
         }
 
@@ -60,7 +60,7 @@ class ImageCache
 
         inline void setPixmapCaching(bool enable)
         {
-#if HAVE_KIMAGECACHE
+#ifdef HAVE_KIMAGECACHE
             return m_cache->setPixmapCaching(enable);
 #else
             return m_cache->setUseQPixmapCache(enable);
@@ -69,7 +69,7 @@ class ImageCache
 
         inline bool pixmapCaching() const
         {
-#if HAVE_KIMAGECACHE
+#ifdef HAVE_KIMAGECACHE
             return m_cache->pixmapCaching();
 #else
             return m_cache->useQPixmapCache();
@@ -78,7 +78,7 @@ class ImageCache
 
         inline bool find(const QString &key, QPixmap &pixmap)
         {
-#if HAVE_KIMAGECACHE
+#ifdef HAVE_KIMAGECACHE
             return m_cache->findPixmap( key, &pixmap );
 #else
             return m_cache->find( key, pixmap );
@@ -87,10 +87,11 @@ class ImageCache
 
         inline bool insert(const QString &key, const QPixmap &pixmap)
         {
-#if HAVE_KIMAGECACHE
+#ifdef HAVE_KIMAGECACHE
             return m_cache->insertPixmap( key, pixmap );
 #else
-            return m_cache->insert( key, pixmap );
+            m_cache->insert( key, pixmap );
+            return true;
 #endif
         }
 
@@ -101,7 +102,7 @@ class ImageCache
 
         inline void discard()
         {
-#if HAVE_KIMAGECACHE
+#ifdef HAVE_KIMAGECACHE
             m_cache->clear();
 #else
             m_cache->discard();
@@ -109,7 +110,7 @@ class ImageCache
         }
 
     private:
-#if HAVE_KIMAGECACHE
+#ifdef HAVE_KIMAGECACHE
         KImageCache * m_cache;
 #else
         KPixmapCache * m_cache;
