@@ -83,7 +83,6 @@ signals:
     void newResultReady( Meta::GenreList );
     void newResultReady( Meta::ComposerList );
     void newResultReady( Meta::YearList );
-    void newResultReady( Meta::DataList );
     void newResultReady( QStringList );
     void newResultReady( Meta::LabelList );
 

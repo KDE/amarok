@@ -35,7 +35,6 @@ struct Mp3tunesServiceQueryMaker::Private {
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
     QueryType type;
     int maxsize;
-    bool returnDataPtrs;
 };
 
 
@@ -51,7 +50,6 @@ Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesServiceCollection 
 
     d->type = Private::NONE;
     d->maxsize = -1;
-    d->returnDataPtrs = false;
 }
 
 Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesLocker * locker, const QString &sessionId, Mp3tunesServiceCollection * collection  )
@@ -66,19 +64,11 @@ Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesLocker * locker, c
 
     d->type = Private::NONE;
     d->maxsize = -1;
-    d->returnDataPtrs = false;
 }
 
 Mp3tunesServiceQueryMaker::~Mp3tunesServiceQueryMaker()
 {
     delete d;
-}
-
-QueryMaker*
-Mp3tunesServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    d->returnDataPtrs = resultAsDataPtrs;
-    return this;
 }
 
 void Mp3tunesServiceQueryMaker::run()
@@ -170,20 +160,6 @@ QueryMaker * Mp3tunesServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
     return this;
 }
 
-template<class PointerType, class ListType>
-void Mp3tunesServiceQueryMaker::emitProperResult( const ListType& list )
-{
-    if ( d->returnDataPtrs ) {
-        Meta::DataList data;
-        foreach( PointerType p, list )
-            data << Meta::DataPtr::staticCast( p );
-
-        emit newResultReady( data );
-    }
-    else
-        emit newResultReady( list );
-}
-
 void Mp3tunesServiceQueryMaker::handleResult()
 {
     DEBUG_BLOCK
@@ -194,9 +170,9 @@ void Mp3tunesServiceQueryMaker::handleResult( const Meta::ArtistList & artists )
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && artists.count() > d->maxsize ) {
-        emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists.mid( 0, d->maxsize ) );
+        emit newResultReady( artists.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists );
+        emit newResultReady( artists );
     }
 }
 
@@ -205,9 +181,9 @@ void Mp3tunesServiceQueryMaker::handleResult( const Meta::AlbumList &albums )
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && albums.count() > d->maxsize ) {
-        emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums.mid( 0, d->maxsize ) );
+        emit newResultReady( albums.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums );
+        emit newResultReady( albums );
     }
 }
 
@@ -216,9 +192,9 @@ void Mp3tunesServiceQueryMaker::handleResult(const Meta::TrackList & tracks)
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && tracks.count() > d->maxsize ) {
-        emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks.mid( 0, d->maxsize ) );
+        emit newResultReady( tracks.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks );
+        emit newResultReady( tracks );
     }
 }
 

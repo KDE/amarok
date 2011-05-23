@@ -109,10 +109,6 @@ XmlQueryReader::readQuery()
                 if( field != 0 )
                     d->qm->orderBy( field, descending  );
             }
-            else if( name() == "returnResultAsDataPtrs" )
-            {
-                d->qm->setReturnResultAsDataPtrs( true );
-            }
             else if( name() == "limit" )
             {
                 QStringRef value = attributes().value( "value" );

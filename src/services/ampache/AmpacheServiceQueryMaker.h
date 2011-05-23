@@ -42,19 +42,11 @@ public:
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
 
-    virtual QueryMaker* setReturnResultAsDataPtrs ( bool resultAsDataPtrs );
-
     virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
     virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare );
 
     virtual int validFilterMask();
     virtual QueryMaker* limitMaxResultSize( int size );
-
-    //Methods "borrowed" from MemoryQueryMaker
-    void handleResult();
-    void handleResult( const Meta::TrackList &tracks );
-    void handleResult( const Meta::ArtistList &artists );
-    void handleResult( const Meta::AlbumList &albums );
 
     void fetchArtists();
     void fetchAlbums();

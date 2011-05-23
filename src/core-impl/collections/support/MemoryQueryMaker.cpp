@@ -138,7 +138,6 @@ MemoryQueryMaker::run()
         qmi->setMatchers( d->matcher );
         d->matcher = 0; //will be deleted by MemoryQueryMakerInternal
         qmi->setMaxSize( d->maxsize );
-        qmi->setReturnAsDataPtrs( d->returnDataPtrs );
         qmi->setType( d->type );
         qmi->setCustomReturnFunctions( d->returnFunctions );
         d->returnFunctions.clear(); //will be deleted by MemoryQueryMakerInternal
@@ -232,13 +231,6 @@ MemoryQueryMaker::setQueryType( QueryType type )
     case QueryMaker::None:
         return this;
     }
-    return this;
-}
-
-QueryMaker*
-MemoryQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    d->returnDataPtrs = resultAsDataPtrs;
     return this;
 }
 

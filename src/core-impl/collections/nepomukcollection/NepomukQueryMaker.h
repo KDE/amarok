@@ -44,8 +44,6 @@ class NepomukQueryMaker : public QueryMaker
 	    virtual void abortQuery();
 	    virtual void run();
 
-	    virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
-
             virtual QueryMaker* setQueryType( QueryType type );
 
 	    virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
@@ -111,7 +109,6 @@ class NepomukQueryMaker : public QueryMaker
         QueryType m_queryType;
         QString m_queryMatch;
         QString m_queryFilter;
-        bool m_resultAsDataPtrs;
         NepomukWorkerThread *m_worker;
         NepomukCollection *m_collection;
         Soprano::Model *m_model;

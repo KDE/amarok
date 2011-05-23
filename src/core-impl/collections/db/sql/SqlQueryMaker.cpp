@@ -82,7 +82,6 @@ struct SqlQueryMaker::Private
     QString queryMatch;
     QString queryFilter;
     QString queryOrderBy;
-    bool resultAsDataPtrs;
     bool withoutDuplicates;
     int maxResultSize;
     AlbumQueryMode albumMode;
@@ -93,7 +92,6 @@ struct SqlQueryMaker::Private
     QStack<bool> andStack;
 
     QStringList blockingCustomData;
-    Meta::DataList blockingData;
     Meta::TrackList blockingTracks;
     Meta::AlbumList blockingAlbums;
     Meta::ArtistList blockingArtists;
@@ -114,7 +112,6 @@ SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
     d->worker = 0;
     d->queryType = QueryMaker::None;
     d->linkedTables = 0;
-    d->resultAsDataPtrs = false;
     d->withoutDuplicates = false;
     d->albumMode = AllAlbums;
     d->artistMode = TrackArtists;
@@ -147,18 +144,6 @@ SqlQueryMaker::abortQuery()
     }
 }
 
-QueryMaker*
-SqlQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    // we need the unchanged resulttype in the blocking result methods so prevent
-    // reseting result type without reseting the QM
-    if ( d->blocking && d->used )
-        return this;
-
-    d->resultAsDataPtrs = resultAsDataPtrs;
-    return this;
-}
-
 void
 SqlQueryMaker::run()
 {
@@ -178,8 +163,6 @@ SqlQueryMaker::run()
         SqlQueryMakerInternal *qmi = new SqlQueryMakerInternal( m_collection );
         qmi->setQuery( query() );
         qmi->setQueryType( d->queryType );
-        qmi->setResultAsDataPtrs( d->resultAsDataPtrs );
-
 
         if ( !d->blocking )
         {
@@ -189,7 +172,6 @@ SqlQueryMaker::run()
             connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SIGNAL(newResultReady(Meta::ComposerList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(Meta::YearList)),     SIGNAL(newResultReady(Meta::YearList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(Meta::TrackList)),    SIGNAL(newResultReady(Meta::TrackList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::DataList)),     SIGNAL(newResultReady(Meta::DataList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(QStringList)),        SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(Meta::LabelList)),    SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
             d->worker = new SqlWorkerThread( qmi );
@@ -204,7 +186,6 @@ SqlQueryMaker::run()
             connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SLOT(blockingNewResultReady(Meta::ComposerList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(Meta::YearList)),     SLOT(blockingNewResultReady(Meta::YearList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(Meta::TrackList)),    SLOT(blockingNewResultReady(Meta::TrackList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::DataList)),     SLOT(blockingNewResultReady(Meta::DataList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(QStringList)),        SLOT(blockingNewResultReady(QStringList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(Meta::LabelList)),    SLOT(blockingNewResultReady(Meta::LabelList)), Qt::DirectConnection );
             qmi->run();
@@ -935,12 +916,6 @@ SqlQueryMaker::collectionIds() const
     return list;
 }
 
-Meta::DataList
-SqlQueryMaker::data() const
-{
-    return d->blockingData;
-}
-
 Meta::TrackList
 SqlQueryMaker::tracks() const
 {
@@ -1166,12 +1141,6 @@ void
 SqlQueryMaker::blockingNewResultReady(const Meta::TrackList &tracks)
 {
     d->blockingTracks = tracks;
-}
-
-void
-SqlQueryMaker::blockingNewResultReady(const Meta::DataList &data)
-{
-    d->blockingData = data;
 }
 
 void

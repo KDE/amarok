@@ -18,6 +18,7 @@
 #define TESTSQLQUERYMAKER_H
 
 #include <QtTest/QTest>
+#include <core/collections/QueryMaker.h>
 
 #include <KTempDir>
 
@@ -26,6 +27,7 @@ class SqlMountPointManagerMock;
 
 namespace Collections {
     class SqlCollection;
+    class SqlQueryMaker;
 }
 
 class TestSqlQueryMaker : public QObject
@@ -56,7 +58,6 @@ private slots:
     void testAsyncComposerQuery();
     void testAsyncAlbumQuery();
     void testAsyncYearQuery();
-    void testAsyncTrackDataQuery();
     void testAsyncCustomQuery();
 
     void testFilter();
@@ -89,6 +90,9 @@ private slots:
     void testLabelQueryMode();
 
 private:
+    void checkResultCount( Collections::SqlQueryMaker* qm,
+                           Collections::QueryMaker::QueryType type, int count );
+
     Collections::SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpm;
     SqlStorage *m_storage;

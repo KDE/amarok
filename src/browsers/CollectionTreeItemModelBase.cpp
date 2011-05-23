@@ -585,11 +585,8 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
             }
         }
         Collections::addTextualFilter( qm, m_currentFilter );
-        qm->setReturnResultAsDataPtrs( true );
-        connect( qm, SIGNAL( newResultReady( Meta::DataList ) ), SLOT( newResultReady( Meta::DataList ) ), Qt::QueuedConnection );
-        connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+        addQueryMaker( parent, qm );
         d->childQueries.insert( qm, parent );
-        d->runningQueries.insert( parent, qm );
         qm->run();
 
         //some very quick queries may be done so fast that the loading
@@ -634,6 +631,22 @@ CollectionTreeItemModelBase::mapCategoryToQueryType( int levelType ) const
 }
 
 void
+CollectionTreeItemModelBase::addQueryMaker( CollectionTreeItem* item,
+                                            Collections::QueryMaker *qm ) const
+{
+    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( newResultReady( Meta::TrackList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::ArtistList ) ), SLOT( newResultReady( Meta::ArtistList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ), SLOT( newResultReady( Meta::AlbumList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::GenreList ) ), SLOT( newResultReady( Meta::GenreList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::ComposerList ) ), SLOT( newResultReady( Meta::ComposerList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::YearList ) ), SLOT( newResultReady( Meta::YearList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::LabelList ) ), SLOT( newResultReady( Meta::LabelList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+    d->runningQueries.insert( item, qm );
+}
+
+
+void
 CollectionTreeItemModelBase::queryDone()
 {
     DEBUG_BLOCK
@@ -665,6 +678,62 @@ CollectionTreeItemModelBase::queryDone()
         m_timeLine->stop();
     }
     qm->deleteLater();
+}
+
+// TODO
+
+/** Small helper function to convert a list of e.g. tracks to a list of DataPtr */
+template<class PointerType, class ListType>
+static Meta::DataList
+convertToDataList( const ListType& list )
+{
+    Meta::DataList data;
+    foreach( PointerType p, list )
+        data << Meta::DataPtr::staticCast( p );
+
+    return data;
+}
+
+void
+CollectionTreeItemModelBase::newResultReady( Meta::TrackList res )
+{
+    newResultReady( convertToDataList<Meta::TrackPtr, Meta::TrackList>( res ) );
+}
+
+void
+CollectionTreeItemModelBase::newResultReady( Meta::ArtistList res )
+{
+    newResultReady( convertToDataList<Meta::ArtistPtr, Meta::ArtistList>( res ) );
+}
+
+void
+CollectionTreeItemModelBase::newResultReady( Meta::AlbumList res )
+{
+    newResultReady( convertToDataList<Meta::AlbumPtr, Meta::AlbumList>( res ) );
+}
+
+void
+CollectionTreeItemModelBase::newResultReady( Meta::GenreList res )
+{
+    newResultReady( convertToDataList<Meta::GenrePtr, Meta::GenreList>( res ) );
+}
+
+void
+CollectionTreeItemModelBase::newResultReady( Meta::ComposerList res )
+{
+    newResultReady( convertToDataList<Meta::ComposerPtr, Meta::ComposerList>( res ) );
+}
+
+void
+CollectionTreeItemModelBase::newResultReady( Meta::YearList res )
+{
+    newResultReady( convertToDataList<Meta::YearPtr, Meta::YearList>( res ) );
+}
+
+void
+CollectionTreeItemModelBase::newResultReady( Meta::LabelList res )
+{
+    newResultReady( convertToDataList<Meta::LabelPtr, Meta::LabelList>( res ) );
 }
 
 void
@@ -936,11 +1005,8 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
         tmpItem->addMatch( qm );
 
     Collections::addTextualFilter( qm, m_currentFilter );
-    qm->setReturnResultAsDataPtrs( true );
-    connect( qm, SIGNAL( newResultReady( Meta::DataList ) ), SLOT( newResultReady( Meta::DataList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+    addQueryMaker( parent, qm );
     d->compilationQueries.insert( qm, parent );
-    d->runningQueries.insert( parent, qm );
     qm->run();
 }
 
@@ -951,15 +1017,12 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
     Collections::QueryMaker *qm = parent->queryMaker();
     qm->setQueryType( queryType );
     qm->setLabelQueryMode( Collections::QueryMaker::OnlyWithoutLabels );
-    qm->setReturnResultAsDataPtrs( true );
     for( CollectionTreeItem *tmpItem = parent; tmpItem->parent(); tmpItem = tmpItem->parent() )
         tmpItem->addMatch( qm );
 
     Collections::addTextualFilter( qm, m_currentFilter );
-    connect( qm, SIGNAL( newResultReady( Meta::DataList ) ), SLOT( newResultReady( Meta::DataList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
+    addQueryMaker( parent, qm );
     d->noLabelsQueries.insert( qm, parent );
-    d->runningQueries.insert( parent, qm );
     qm->run();
 }
 

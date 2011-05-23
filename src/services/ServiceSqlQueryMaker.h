@@ -41,8 +41,6 @@ class ServiceSqlQueryMaker : public QueryMaker
 
         virtual QueryMaker* setQueryType( QueryType type );
 
-        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
-
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
         virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );

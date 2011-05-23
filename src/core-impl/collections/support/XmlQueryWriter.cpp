@@ -143,17 +143,6 @@ XmlQueryWriter::setQueryType( QueryType type )
 }
 
 QueryMaker*
-XmlQueryWriter::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    QDomElement e = m_doc.createElement( "returnResultsAsDataPairs" );
-    m_element.appendChild( e );
-
-    m_qm->setReturnResultAsDataPtrs( resultAsDataPtrs );
-    return this;
-}
-
-
-QueryMaker*
 XmlQueryWriter::addReturnValue( qint64 value )
 {
     // TODO

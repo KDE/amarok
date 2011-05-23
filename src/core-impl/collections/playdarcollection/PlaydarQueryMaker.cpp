@@ -145,21 +145,7 @@ namespace Collections
         
         return this;
     }
-    
-    QueryMaker*
-    PlaydarQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-    {
-        DEBUG_BLOCK
 
-        CurriedUnaryQMFunction< bool >::FunPtr funPtr = &QueryMaker::setReturnResultAsDataPtrs;
-        CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< bool >( funPtr, resultAsDataPtrs );
-        m_queryMakerFunctions.append( curriedFun );
-
-        (*curriedFun)( m_memoryQueryMaker.data() );
-        
-        return this;
-    }
-    
     QueryMaker*
     PlaydarQueryMaker::addReturnValue( qint64 value )
     {

@@ -58,8 +58,6 @@ public:
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
 
-    virtual QueryMaker* setReturnResultAsDataPtrs ( bool resultAsDataPtrs );
-
     virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 
     virtual int validFilterMask();

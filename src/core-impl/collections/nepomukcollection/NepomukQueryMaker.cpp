@@ -85,7 +85,6 @@ NepomukQueryMaker::NepomukQueryMaker(NepomukCollection *collection
     m_worker = 0;
     m_used=false;
     m_queryType = None;
-    this->m_resultAsDataPtrs = false;
     m_queryOrderBy.clear();
     m_queryLimit = 0;
     m_blocking = false;
@@ -130,20 +129,6 @@ NepomukQueryMaker::run()
 
     }
     m_used = true;
-}
-
-QueryMaker*
-NepomukQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    debug() << "setReturnResultAsDataPtrs()" << resultAsDataPtrs << endl;
-
-    // we need the unchanged resulttype in the blocking result methods so prevent
-    // reseting result type without reseting the QM
-    if ( m_used )
-        return this;
-    
-    this->m_resultAsDataPtrs = resultAsDataPtrs;
-    return this;
 }
 
 QueryMaker*
@@ -462,7 +447,7 @@ QStringList
 Meta::DataList
 NepomukQueryMaker::data( const QString &id ) const
 {
-    if ( m_blocking && m_used && m_resultAsDataPtrs && m_collection->collectionId() == id )
+    if ( m_blocking && m_used && m_collection->collectionId() == id )
         return m_data;
     else
         return Meta::DataList();
@@ -605,17 +590,14 @@ NepomukQueryMaker::buildQuery()
     return query;
 }
 
-// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
-// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
+// The macro below will emit the proper result signal. It'll call the
 // signal that takes the list of the specific class.
 
 #define emitOrStoreProperResult( PointerType, list ) { \
-            if ( m_resultAsDataPtrs || m_blocking ) { \
+            if ( m_blocking ) { \
                 foreach( PointerType p, list ) { \
                     m_data << DataPtr::staticCast( p ); \
                 } \
-                if ( !m_blocking ) \
-                    emit newResultReady( m_collection->collectionId(), m_data ); \
             } \
             else { \
                 emit newResultReady( m_collection->collectionId(), list ); \

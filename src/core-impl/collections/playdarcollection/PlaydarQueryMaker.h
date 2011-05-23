@@ -48,7 +48,6 @@ namespace Collections
             void abortQuery();
 
             QueryMaker* setQueryType( QueryType type );
-            QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
             QueryMaker* addReturnValue( qint64 value );
             QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
             QueryMaker* orderBy( qint64 value, bool descending = false );
@@ -87,7 +86,6 @@ namespace Collections
             void newResultReady( Meta::GenreList );
             void newResultReady( Meta::ComposerList );
             void newResultReady( Meta::YearList );
-            void newResultReady( Meta::DataList );
             void newResultReady( QStringList );
             void newResultReady( Meta::LabelList );
 

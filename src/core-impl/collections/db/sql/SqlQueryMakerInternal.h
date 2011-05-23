@@ -47,7 +47,6 @@ signals:
     void newResultReady( Meta::GenreList );
     void newResultReady( Meta::ComposerList );
     void newResultReady( Meta::YearList );
-    void newResultReady( Meta::DataList );
     void newResultReady( QStringList );
     void newResultReady( Meta::LabelList );
 
@@ -63,7 +62,6 @@ private:
 
 private:
     QWeakPointer<SqlCollection> m_collection;
-    bool m_resultAsDataPtrs;
     QueryMaker::QueryType m_queryType;
     QString m_query;
 

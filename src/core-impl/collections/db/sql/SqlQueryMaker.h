@@ -40,8 +40,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
 
         virtual QueryMaker* setQueryType( QueryType type );
 
-        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
-
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
         virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
@@ -80,7 +78,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
 
         QStringList collectionIds() const;
 
-        Meta::DataList data() const;
         Meta::TrackList tracks() const;
         Meta::AlbumList albums() const;
         Meta::ArtistList artists() const;
@@ -110,7 +107,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
         void blockingNewResultReady( const Meta::ComposerList &composers );
         void blockingNewResultReady( const Meta::YearList &years );
         void blockingNewResultReady( const Meta::TrackList &tracks );
-        void blockingNewResultReady( const Meta::DataList &data );
         void blockingNewResultReady( const Meta::LabelList &labels );
 
     private:

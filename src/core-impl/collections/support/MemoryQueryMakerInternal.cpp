@@ -36,7 +36,6 @@ MemoryQueryMakerInternal::MemoryQueryMakerInternal( const QWeakPointer<MemoryCol
     , m_matchers( 0 )
     , m_filters( 0 )
     , m_maxSize( 0 )
-    , m_returnAsDataPtrs( false )
     , m_type( QueryMaker::None )
     , m_albumQueryMode( QueryMaker::AllAlbums )
     , m_artistQueryMode( QueryMaker::TrackArtists )
@@ -103,16 +102,7 @@ void MemoryQueryMakerInternal::emitProperResult( const QList<PointerType>& list 
     if ( m_maxSize >= 0 && resultList.count() > m_maxSize )
         resultList = resultList.mid( 0, m_maxSize );
 
-    if( m_returnAsDataPtrs )
-    {
-        Meta::DataList data;
-        foreach( PointerType p, resultList )
-            data << Meta::DataPtr::staticCast( p );
-
-        emit newResultReady( data );
-    }
-    else
-        emit newResultReady( list );
+    emit newResultReady( list );
 }
 
 template<typename T>
@@ -600,12 +590,6 @@ void
 MemoryQueryMakerInternal::setMaxSize( int maxSize )
 {
     m_maxSize = maxSize;
-}
-
-void
-MemoryQueryMakerInternal::setReturnAsDataPtrs( bool returnAsDataPtrs )
-{
-    m_returnAsDataPtrs = returnAsDataPtrs;
 }
 
 void

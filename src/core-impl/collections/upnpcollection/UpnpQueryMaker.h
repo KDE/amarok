@@ -53,7 +53,6 @@ class UpnpQueryMaker : public QueryMaker
         void abortQuery() ;
 
         QueryMaker* setQueryType( QueryType type ) ;
-        QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs ) ;
         QueryMaker* addReturnValue( qint64 value ) ;
         QueryMaker* addReturnFunction( ReturnFunction function, qint64 value ) ;
         QueryMaker* orderBy( qint64 value, bool descending = false ) ;
@@ -93,7 +92,6 @@ class UpnpQueryMaker : public QueryMaker
         void newResultReady( Meta::GenreList );
         void newResultReady( Meta::ComposerList );
         void newResultReady( Meta::YearList );
-        void newResultReady( Meta::DataList );
         void newResultReady( QStringList );
         void newResultReady( Meta::LabelList );
 
@@ -104,7 +102,6 @@ class UpnpQueryMaker : public QueryMaker
         void handleArtists( Meta::ArtistList );
         void handleAlbums( Meta::AlbumList );
         void handleTracks( Meta::TrackList );
-        void handleCustom( const KIO::UDSEntryList &list );
 
     private:
         /*

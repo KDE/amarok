@@ -45,7 +45,6 @@ class XmlQueryWriter : public QueryMaker
         void abortQuery();
 
         QueryMaker* setQueryType( QueryType type );
-        QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
 
         QueryMaker* addReturnValue( qint64 value );
         QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );

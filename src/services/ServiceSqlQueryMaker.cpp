@@ -80,7 +80,6 @@ struct ServiceSqlQueryMaker::Private
     //bool collectionRestriction;
     AlbumQueryMode albumMode;
     ArtistQueryMode artistMode;
-    bool returnDataPtrs;
     bool withoutDuplicates;
     int maxResultSize;
     ServiceSqlWorkerThread *worker;
@@ -101,7 +100,6 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
     d->queryType = Private::NONE;
     d->linkedTables = 0;
     d->artistMode = TrackArtists;
-    d->returnDataPtrs = false;
     d->withoutDuplicates = false;
     d->maxResultSize = -1;
     d->andStack.push( true );
@@ -118,13 +116,6 @@ ServiceSqlQueryMaker::abortQuery()
 {
     if( d->worker )
         d->worker->requestAbort();
-}
-
-QueryMaker*
-ServiceSqlQueryMaker::setReturnResultAsDataPtrs( bool returnDataPtrs )
-{
-    d->returnDataPtrs = returnDataPtrs;
-    return this;
 }
 
 void
@@ -603,10 +594,6 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
             break;
         }
     }
-    else if( d->returnDataPtrs )
-    {
-        emit newResultReady( Meta::DataList() );
-    }
     else
     {
         switch( d->queryType ) {
@@ -679,20 +666,6 @@ ServiceSqlQueryMaker::nameForValue( qint64 value )
     }
 }
 
-template<class PointerType, class ListType>
-void ServiceSqlQueryMaker::emitProperResult( const ListType& list )
-{
-    if ( d->returnDataPtrs ) {
-        Meta::DataList data;
-        foreach( PointerType p, list )
-            data << Meta::DataPtr::staticCast( p );
-
-        emit newResultReady( data );
-    }
-    else
-        emit newResultReady( list );
-}
-
 void
 ServiceSqlQueryMaker::handleTracks( const QStringList &result )
 {
@@ -713,7 +686,7 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
         tracks.append( trackptr );
     }
 
-    emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks );
+    emit newResultReady( tracks );
 }
 
 void
@@ -728,7 +701,7 @@ ServiceSqlQueryMaker::handleArtists( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         artists.append( m_registry->getArtist( row ) );
     }
-    emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists );
+    emit newResultReady( artists );
 }
 
 void
@@ -743,7 +716,7 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         albums.append( m_registry->getAlbum( row ) );
     }
-    emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums );
+    emit newResultReady( albums );
 }
 
 void
@@ -758,7 +731,7 @@ ServiceSqlQueryMaker::handleGenres( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         genres.append( m_registry->getGenre( row ) );
     }
-    emitProperResult<Meta::GenrePtr, Meta::GenreList>( genres );
+    emit newResultReady( genres );
 }
 
 /*void
@@ -772,7 +745,7 @@ ServiceSqlQueryMaker::handleComposers( const QStringList &result )
         QString id = iter.next();
         composers.append( reg->getComposer( name, id.toInt() ) );
     }
-    emitProperResult<Meta::ComposerPtr, Meta::ComposerList>( composers );
+    emit newResultReady( composers );
 }
 
 void
@@ -786,7 +759,7 @@ ServiceSqlQueryMaker::handleYears( const QStringList &result )
         QString id = iter.next();
         years.append( reg->getYear( name, id.toInt() ) );
     }
-    emitProperResult<Meta::YearPtr, Meta::YearList>( years );
+    emit newResultReady( years );
 }*/
 
 QString

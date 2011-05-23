@@ -43,8 +43,6 @@ Q_DECLARE_METATYPE( Collections::QueryMaker::LabelQueryMode )
 
 TestSqlQueryMaker::TestSqlQueryMaker()
 {
-    qRegisterMetaType<Meta::DataPtr>();
-    qRegisterMetaType<Meta::DataList>();
     qRegisterMetaType<Meta::TrackPtr>();
     qRegisterMetaType<Meta::TrackList>();
     qRegisterMetaType<Meta::AlbumPtr>();
@@ -542,45 +540,6 @@ TestSqlQueryMaker::testAsyncYearQuery()
 }
 
 void
-TestSqlQueryMaker::testAsyncTrackDataQuery()
-{
-    Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
-    qm->setQueryType( Collections::QueryMaker::Track );
-    qm->setReturnResultAsDataPtrs( true );
-    QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(Meta::DataList)));
-
-    qm->run();
-
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
-
-    QCOMPARE( resultSpy1.count(), 1 );
-    QList<QVariant> args1 = resultSpy1.takeFirst();
-    QVERIFY( args1.value(0).canConvert<Meta::DataList>() );
-    QCOMPARE( args1.value(0).value<Meta::DataList>().count(), 6 );
-    QCOMPARE( doneSpy1.count(), 1);
-
-    delete qm;
-
-    qm = new Collections::SqlQueryMaker( m_collection );
-    qm->setQueryType( Collections::QueryMaker::Track );
-    qm->setReturnResultAsDataPtrs( true );
-    QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(Meta::DataList)));
-    qm->addFilter( Meta::valTitle, "foo" ); //should result in no match
-
-    qm->run();
-
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
-
-    QCOMPARE( resultSpy2.count(), 1 );
-    QList<QVariant> args2 = resultSpy2.takeFirst();
-    QVERIFY( args2.value(0).canConvert<Meta::DataList>() );
-    QCOMPARE( args2.value(0).value<Meta::DataList>().count(), 0 );
-    QCOMPARE( doneSpy2.count(), 1);
-}
-
-void
 TestSqlQueryMaker::testAsyncCustomQuery()
 {
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
@@ -664,6 +623,22 @@ TestSqlQueryMaker::testFilter_data()
 }
 
 void
+TestSqlQueryMaker::checkResultCount( Collections::SqlQueryMaker* qm,
+                                     Collections::QueryMaker::QueryType type, int count ) {
+    switch( type ) {
+    case QueryMaker::Track: QCOMPARE( qm->tracks().count(), count ); break;
+    case QueryMaker::Artist: QCOMPARE( qm->artists().count(), count ); break;
+    case QueryMaker::Album: QCOMPARE( qm->albums().count(), count ); break;
+    case QueryMaker::Genre: QCOMPARE( qm->genres().count(), count ); break;
+    case QueryMaker::Composer: QCOMPARE( qm->composers().count(), count ); break;
+    case QueryMaker::Year: QCOMPARE( qm->years().count(), count ); break;
+    case QueryMaker::Label: QCOMPARE( qm->labels().count(), count ); break;
+    default:
+        ; // do nothing
+    }
+}
+
+void
 TestSqlQueryMaker::testFilter()
 {
     QFETCH( Collections::QueryMaker::QueryType, type );
@@ -676,52 +651,13 @@ TestSqlQueryMaker::testFilter()
     Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( type );
-    qm.setReturnResultAsDataPtrs( true );
 
     qm.addFilter( value, filter, matchBeginning, matchEnd );
 
     qm.run();
 
-    QCOMPARE( qm.data().count(), count );
+    checkResultCount( &qm, type, count );
 }
-
-#define PointerToDataList( t ) { \
-    Meta::DataList data; \
-    data.append( Meta::DataPtr::staticCast( t ) ); \
-    return data; \
-}
-
-Meta::DataList asList( const Meta::TrackPtr &track )
-{
-    PointerToDataList( track );
-}
-
-Meta::DataList asList( const Meta::ArtistPtr &artist )
-{
-    PointerToDataList( artist );
-}
-
-Meta::DataList asList( const Meta::AlbumPtr &album )
-{
-    PointerToDataList( album );
-}
-
-Meta::DataList asList( const Meta::GenrePtr &genre )
-{
-    PointerToDataList( genre );
-}
-
-Meta::DataList asList( const Meta::ComposerPtr &composer )
-{
-    PointerToDataList( composer );
-}
-
-Meta::DataList asList( const Meta::YearPtr &year )
-{
-    PointerToDataList( year );
-}
-
-#undef PointerToDataList
 
 void
 TestSqlQueryMaker::testDynamicCollection()
@@ -828,7 +764,6 @@ TestSqlQueryMaker::testSpecialCharacters()
     Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( Collections::QueryMaker::Track );
-    qm.setReturnResultAsDataPtrs( true );
     qm.addFilter( Meta::valTitle, filter, !like, !like );
 
     qm.run();
@@ -836,7 +771,7 @@ TestSqlQueryMaker::testSpecialCharacters()
     m_storage->query( "DELETE FROM urls WHERE id = 999;" );
     m_storage->query( "DELETE FROM tracks WHERE id = 999;" );
 
-    QCOMPARE( qm.data().count(), 1 );
+    QCOMPARE( qm.tracks().count(), 1 );
 }
 
 void
@@ -874,7 +809,6 @@ TestSqlQueryMaker::testNumberFilter()
     Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
     qm.setQueryType( type );
-    qm.setReturnResultAsDataPtrs( true );
 
     if( exclude )
         qm.excludeNumberFilter( value, filter, comparison );
@@ -883,7 +817,7 @@ TestSqlQueryMaker::testNumberFilter()
 
     qm.run();
 
-    QCOMPARE( qm.data().count(), count );
+    checkResultCount( &qm, type, count );
 }
 
 void
@@ -970,13 +904,12 @@ TestSqlQueryMaker::testQueryTypesWithLabelMatching()
     Meta::LabelPtr labelA = m_collection->registry()->getLabel( "labelA" );
     Collections::SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setReturnResultAsDataPtrs( true );
     qm.setQueryType( type );
     qm.addMatch( labelB );
     qm.addMatch( labelA );
     qm.run();
 
-    QCOMPARE( qm.data().count(), result );
+    checkResultCount( &qm, type, result );
 }
 
 void
@@ -1081,14 +1014,12 @@ TestSqlQueryMaker::testLabelQueryMode()
 
     SqlQueryMaker qm( m_collection );
     qm.setBlocking( true );
-    qm.setReturnResultAsDataPtrs( true );
     qm.setQueryType( type );
     qm.setAlbumQueryMode( albumMode );
     qm.setLabelQueryMode( labelMode );
     qm.run();
 
-    QCOMPARE( qm.data().count(), result );
-
+    checkResultCount( &qm, type, result );
 }
 
 #include "TestSqlQueryMaker.moc"

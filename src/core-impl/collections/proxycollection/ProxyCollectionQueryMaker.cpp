@@ -36,7 +36,6 @@ ProxyQueryMaker::ProxyQueryMaker( ProxyCollection *collection, const QList<Query
     , m_collection( collection )
     , m_builders( queryMakers )
     , m_queryDoneCount( 0 )
-    , m_returnDataPointers( false )
     , m_maxResultSize( -1 )
     , m_queryType( QueryMaker::None )
     , m_orderDescending( false )
@@ -245,15 +244,6 @@ ProxyQueryMaker::addMatch( const Meta::LabelPtr &label )
 }
 
 QueryMaker*
-ProxyQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    //no point in forwarding this call
-    //just let all m_builders return the actual type, then we do not have to cast to subtypes here
-    m_returnDataPointers = resultAsDataPtrs;
-    return this;
-}
-
-QueryMaker*
 ProxyQueryMaker::limitMaxResultSize( int size )
 {
     //forward the call so the m_builders do not have to do work
@@ -339,16 +329,7 @@ void ProxyQueryMaker::emitProperResult( const QList<PointerType>& list )
     if ( m_maxResultSize >= 0 && resultList.count() > m_maxResultSize )
         resultList = resultList.mid( 0, m_maxResultSize );
 
-    if( m_returnDataPointers )
-    {
-        Meta::DataList data;
-        foreach( PointerType p, resultList )
-            data << Meta::DataPtr::staticCast( p );
-
-        emit newResultReady( data );
-    }
-    else
-        emit newResultReady( list );
+    emit newResultReady( list );
 }
 
 void

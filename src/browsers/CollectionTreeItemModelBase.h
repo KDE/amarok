@@ -93,6 +93,10 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         QString currentFilter() const
         { return m_currentFilter; }
 
+        /** Adds the query maker to the running queries and connects the slots */
+        void addQueryMaker( CollectionTreeItem* item,
+                            Collections::QueryMaker *qm ) const;
+
         void setCurrentFilter( const QString &filter );
 
         void itemAboutToBeDeleted( CollectionTreeItem *item );
@@ -103,6 +107,13 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
     public slots:
         virtual void queryDone();
+        void newResultReady( Meta::TrackList );
+        void newResultReady( Meta::ArtistList );
+        void newResultReady( Meta::AlbumList );
+        void newResultReady( Meta::GenreList );
+        void newResultReady( Meta::ComposerList );
+        void newResultReady( Meta::YearList );
+        void newResultReady( Meta::LabelList );
         virtual void newResultReady( Meta::DataList data );
 
         void slotFilter();

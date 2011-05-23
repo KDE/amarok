@@ -33,11 +33,6 @@ public:
 
     virtual void run();
     virtual void abortQuery();
-
-    virtual QueryMaker *setReturnResultAsDataPtrs( bool resultAsDataPtrs );
-
-private:
-    bool m_resultAsDataPtrs;
 };
 
 } //namespace Collections

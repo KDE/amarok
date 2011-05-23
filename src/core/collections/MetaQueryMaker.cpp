@@ -204,14 +204,6 @@ MetaQueryMaker::addMatch( const Meta::LabelPtr &label )
 }
 
 QueryMaker*
-MetaQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    foreach( QueryMaker *b, builders )
-        b->setReturnResultAsDataPtrs( resultAsDataPtrs );
-    return this;
-}
-
-QueryMaker*
 MetaQueryMaker::limitMaxResultSize( int size )
 {
     foreach( QueryMaker *b, builders )

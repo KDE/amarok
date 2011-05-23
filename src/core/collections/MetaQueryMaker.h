@@ -39,8 +39,6 @@ class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
 
         virtual QueryMaker* setQueryType( QueryType type );
 
-        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
-
         virtual QueryMaker* addReturnValue( qint64 value);
         virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );

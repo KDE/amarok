@@ -19,31 +19,21 @@
 using namespace Collections;
 
 LastFmServiceQueryMaker::LastFmServiceQueryMaker( LastFmServiceCollection *collection )
-    : m_resultAsDataPtrs( false )
 {
     Q_UNUSED( collection );
 }
-
 
 LastFmServiceQueryMaker::~LastFmServiceQueryMaker()
 {
 }
 
-void 
+void
 LastFmServiceQueryMaker::run()
 {
 }
-    
 
-void 
+void
 LastFmServiceQueryMaker::abortQuery()
 {
 }
 
-
-QueryMaker*
-LastFmServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    m_resultAsDataPtrs = resultAsDataPtrs;
-    return this;
-}

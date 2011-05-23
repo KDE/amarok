@@ -34,7 +34,6 @@ struct ScriptableServiceQueryMaker::Private {
     QueryType type;
     QueryType closestParent;
     int maxsize;
-    bool returnDataPtrs;
     QString callbackString;
     int parentId;
     AlbumQueryMode albumMode;
@@ -55,7 +54,6 @@ ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceColle
     d->type = Private::NONE;
     d->closestParent = Private::NONE;
     d->maxsize = -1;
-    d->returnDataPtrs = false;
     d->parentId = -1;
     d->albumMode = AllAlbums;
 }
@@ -65,12 +63,6 @@ ScriptableServiceQueryMaker::~ScriptableServiceQueryMaker()
     delete d;
 }
 
-
-Collections::QueryMaker* ScriptableServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    d->returnDataPtrs = resultAsDataPtrs;
-    return this;
-}
 
 void ScriptableServiceQueryMaker::run()
 {
@@ -195,19 +187,6 @@ QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::AlbumPtr & album
     return this;
 }
 
-template<class PointerType, class ListType>
-void ScriptableServiceQueryMaker::emitProperResult( const ListType& list )
-{
-    if ( d->returnDataPtrs ) {
-        Meta::DataList data;
-        foreach( PointerType p, list )
-            data << Meta::DataPtr::staticCast( p );
-
-        emit newResultReady( data );
-    }
-    else
-        emit newResultReady( list );
-}
 
 void ScriptableServiceQueryMaker::handleResult()
 {
@@ -217,34 +196,34 @@ void ScriptableServiceQueryMaker::handleResult()
 void ScriptableServiceQueryMaker::handleResult( const Meta::GenreList & genres )
 {
     if ( d->maxsize >= 0 && genres.count() > d->maxsize )
-        emitProperResult<Meta::GenrePtr, Meta::GenreList>( genres.mid( 0, d->maxsize ) );
+        emit newResultReady( genres.mid( 0, d->maxsize ) );
     else
-        emitProperResult<Meta::GenrePtr, Meta::GenreList>( genres );
+        emit newResultReady( genres );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::AlbumList & albums )
 {
     if ( d->maxsize >= 0 && albums.count() > d->maxsize )
-        emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums.mid( 0, d->maxsize ) );
+        emit newResultReady( albums.mid( 0, d->maxsize ) );
     else
-        emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums );
+        emit newResultReady( albums );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::ArtistList & artists )
 {
     if ( d->maxsize >= 0 && artists.count() > d->maxsize )
-        emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists.mid( 0, d->maxsize ) );
+        emit newResultReady( artists.mid( 0, d->maxsize ) );
     else
-        emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists );
+        emit newResultReady( artists );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList & tracks )
 {
     debug() << "Emitting " << tracks.count() << " tracks";
     if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
-        emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks.mid( 0, d->maxsize ) );
+        emit newResultReady( tracks.mid( 0, d->maxsize ) );
     else
-        emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks );
+        emit newResultReady( tracks );
 }
 
 
