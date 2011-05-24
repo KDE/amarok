@@ -521,7 +521,9 @@ AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vo
     QFontMetrics fm( vopt.fontMetrics );
 
     int numberFillWidth = boldFm.width( QChar('0') ) * ( trackDigitCount - number.length() + 2 );
-    int numberRectWidth = numberFillWidth + boldFm.width( number ) + 2;
+    int numberRectWidth = 0;
+    if( number != QLatin1String("0. ") )
+        numberRectWidth = numberFillWidth + boldFm.width( number ) + 2;
     int lengthRectWidth = boldFm.width( length );
     int availableWidth = vopt.rect.width() - numberRectWidth - lengthRectWidth;
     if( availableWidth < fm.width( middle ) )
@@ -558,8 +560,10 @@ AlbumsItemDelegate::drawTrackText( QPainter *p, const QStyleOptionViewItemV4 &vo
         textRect = QRect( numberRect.topRight(), QSize( textRectWidth, vopt.rect.height() ) );
         lengthRect = QRect( textRect.topRight(), QSize( lengthRectWidth, vopt.rect.height() ) );
     }
+
+    if( number != QLatin1String("0. ") )
+        p->drawText( numberRect, Qt::AlignRight | Qt::AlignVCenter, number );
     p->drawText( textRect, Qt::AlignVCenter, middle );
-    p->drawText( numberRect, Qt::AlignRight | Qt::AlignVCenter, number );
     p->drawText( lengthRect, m_lengthAlignment | Qt::AlignVCenter, length );
     p->restore();
 }
