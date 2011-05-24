@@ -132,6 +132,7 @@ MusicBrainzTagger::searchDone()
 #endif
     ui->horizontalSpacer->changeSize( 0, 0, QSizePolicy::Expanding );
     ui->progressBar->hide();
+    ui->treeView_Result->expandAll();
     ui->treeView_Result->header()->resizeSections( QHeaderView::ResizeToContents );
 }
 
