@@ -327,7 +327,7 @@ PlaylistBrowserModel::hasChildren( const QModelIndex &parent ) const
         return false;
     if( !parent.isValid() )
     {
-        return m_playlists.isEmpty();
+        return !m_playlists.isEmpty();
     }
     else if( !IS_TRACK(parent) )
     {
