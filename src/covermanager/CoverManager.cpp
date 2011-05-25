@@ -34,7 +34,7 @@
 #include "CoverFetchingActions.h"
 #include <config-amarok.h>
 #include "PixmapViewer.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "widgets/LineEdit.h"
 
 #include <KApplication>
@@ -596,13 +596,11 @@ CoverManager::loadCover( const QString &artist, const QString &album )
 void
 CoverManager::playSelectedAlbums()
 {
-    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-    Collections::QueryMaker *qm = coll->queryMaker();
+    // -- get all the track from the selected items
+    Meta::TrackList tracks;
     foreach( CoverViewItem *item, selectedItems() )
-    {
-        qm->addMatch( item->albumPtr() );
-    }
-    The::playlistController()->insertOptioned( qm, Playlist::AppendAndPlay );
+        tracks.append( item->albumPtr()->tracks() );
+    The::playlistController()->insertOptioned( tracks, Playlist::AppendAndPlay );
 }
 
 QList<CoverViewItem*>

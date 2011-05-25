@@ -1286,6 +1286,7 @@ MainWindow::playAudioCd()
 
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
 
+    // Search a non-empty MemoryCollection with the id: AudioCd
     foreach( Collections::Collection *collection, collections )
     {
         if( collection->collectionId() == "AudioCd" )
@@ -1304,11 +1305,7 @@ MainWindow::playAudioCd()
 
             The::engineController()->stop( true );
             The::playlistController()->clear();
-
-            Collections::QueryMaker * qm = collection->queryMaker();
-            qm->setQueryType( Collections::QueryMaker::Track );
-            The::playlistController()->insertOptioned( qm, Playlist::DirectPlay );
-
+            The::playlistController()->insertOptioned( cdColl->trackMap().values(), Playlist::DirectPlay );
             m_waitingForCd = false;
             return true;
         }

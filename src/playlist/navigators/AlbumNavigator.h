@@ -50,7 +50,7 @@ namespace Playlist
             /**
              * The album of an item. Opaque key for bookkeeping.
              */
-            AlbumId albumForItem( quint64 item );
+            AlbumId albumForItem( const quint64 &item );
 
             /**
              * Empty notification callback for child classes: new albums have been inserted.

@@ -25,7 +25,7 @@
 
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "statusbar/StatusBar.h"
 
 #include <QDomElement>

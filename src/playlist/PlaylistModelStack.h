@@ -17,7 +17,6 @@
 #ifndef AMAROK_PLAYLISTMODELSTACK_H
 #define AMAROK_PLAYLISTMODELSTACK_H
 
-#include "PlaylistController.h"
 #include "proxymodels/AbstractModel.h"
 #include "PlaylistModel.h"
 #include "proxymodels/SortFilterProxy.h"
@@ -30,10 +29,11 @@
 // * 3 proxies which modify the rows: SortFilterProxy==>SearchProxy==>GroupingProxy
 // * 1 or more views, such as Playlist::PrettyListView.
 // At any time a view should ONLY talk to the topmost proxy model, exposed by Playlist::
-// ModelStack::instance()->top(). External classes that talk to the playlist should only
-// talk to The::playlist() which returns Playlist::ModelStack::instance()->top(), and
+// ModelStack::instance()->groupingProxy() or The::playlist() for short.
+// External classes that talk to the playlist should only talk to The::playlist(),
 // exceptionally to Playlist::ModelStack::instance()->bottom() if they really really need
 // the source model.
+//
 // Each playlist model implements the interface defined in Playlist::AbstractModel.
 // Each playlist proxy is a subclass od QSortFilterProxyModel through Playlist::ProxyBase,
 // and uses the default implementations of AbstractModel methods defined in ProxyBase.
@@ -68,15 +68,12 @@ public:
     static void destroy();
 
     /**
-     * Use the 'top()' model unless you have a specific need for a lower model.
+     * Use the 'The::playlist()' model unless you have a specific need for a lower model.
      */
-    Playlist::AbstractModel *top();
     GroupingProxy           *groupingProxy();
     SortFilterProxy         *sortProxy();
     SortFilterProxy         *filterProxy();
     Playlist::Model         *bottom();
-
-    Controller *controller();
 
 private:
     /**
@@ -95,8 +92,6 @@ private:
     SearchProxy     *m_search;
     SortFilterProxy *m_sortfilter;
     Model           *m_model;
-
-    Controller      *m_controller;
 };
 
 }   //namespace Playlist
@@ -104,7 +99,6 @@ private:
 namespace The
 {
     AMAROK_EXPORT Playlist::AbstractModel* playlist();
-    AMAROK_EXPORT Playlist::Controller* playlistController();
 }
 
 #endif  //AMAROK_PLAYLISTMODELSTACK_H

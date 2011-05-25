@@ -118,7 +118,7 @@ void TestPlaylistModels::initTestCase()
     Model * model = ModelStack::instance()->bottom();
     model->insertTracksCommand( insertCmds );
     
-    AbstractModel * topModel = ModelStack::instance()->top();
+    AbstractModel * topModel = The::playlist();
     
     QCOMPARE( topModel->trackAt( 3 )->prettyName(), QString( "Zlick" ) );
 }
@@ -135,7 +135,7 @@ void TestPlaylistModels::testSorting()
     scheme.addLevel( SortLevel( internalColumnNames.indexOf( "Title" ), Qt::AscendingOrder ) );
     ModelStack::instance()->sortProxy()->updateSortMap( scheme );
     
-    AbstractModel * topModel = ModelStack::instance()->top();
+    AbstractModel * topModel = The::playlist();
     
     QCOMPARE( topModel->trackAt( 0 )->prettyName(), QString( "1 song to rule them all" ) );
     QCOMPARE( topModel->trackAt( 1 )->prettyName(), QString( "23 hours is not enough" ) );
@@ -200,7 +200,7 @@ void TestPlaylistModels::testFiltering()
     ModelStack::instance()->filterProxy()->find( "ou" );
     ModelStack::instance()->filterProxy()->filterUpdated();
 
-    AbstractModel * topModel = ModelStack::instance()->top();
+    AbstractModel * topModel = The::playlist();
 
     QCOMPARE( topModel->qaim()->rowCount(), 4 );
     QCOMPARE( topModel->trackAt( 0 )->prettyName(), QString( "xTreme buzzing sound" ) );

@@ -20,7 +20,7 @@
 
 #include "AmarokMimeData.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "core/support/Debug.h"
 
 #include <KIcon>

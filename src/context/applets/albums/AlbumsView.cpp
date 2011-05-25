@@ -27,7 +27,7 @@
 #include "core/capabilities/ActionsCapability.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
 #include <KAction>

@@ -88,7 +88,7 @@ Playlist::AlbumNavigator::notifyItemsRemoved( const QSet<quint64> &removedItems 
 }
 
 Playlist::AlbumNavigator::AlbumId
-Playlist::AlbumNavigator::albumForItem( quint64 item )
+Playlist::AlbumNavigator::albumForItem( const quint64 &item )
 {
     if ( m_albumForItem.contains( item ) )
         return m_albumForItem.value( item );
@@ -113,7 +113,8 @@ bool
 Playlist::AlbumNavigator::itemLessThan( const quint64 &item1, const quint64 &item2 )
 {
     // Somewhat nasty to hard-code the model like this, but 'qStableSort()' doesn't give us a way to pass 'm_model'.
-    AbstractModel *model = Playlist::ModelStack::instance()->top();
+
+    AbstractModel *model = The::playlist();
 
     Meta::TrackPtr track1 = model->trackForId( item1 );
     Meta::TrackPtr track2 = model->trackForId( item2 );

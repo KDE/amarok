@@ -59,7 +59,7 @@ bool PlayUrlRunner::run ( AmarokUrl url )
 
     The::engineController()->play ( track, pos );
 
-    Playlist::AbstractModel *model = Playlist::ModelStack::instance()->top();
+    Playlist::AbstractModel *model = The::playlist();
 
     int row = model->firstRowForTrack( track );
     if( row != -1 )

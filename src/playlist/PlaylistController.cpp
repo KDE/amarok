@@ -43,8 +43,38 @@
 #include <QAction>
 #include <typeinfo>
 
-Playlist::Controller::Controller( AbstractModel* bottomModel, AbstractModel* topModel, QObject* parent )
-        : QObject( parent )
+
+namespace The
+{
+    AMAROK_EXPORT Playlist::Controller* playlistController()
+    {
+        return Playlist::Controller::instance();
+    }
+}
+
+
+Playlist::Controller* Playlist::Controller::s_instance = 0;
+
+Playlist::Controller*
+Playlist::Controller::instance()
+{
+    if( s_instance == 0 )
+        s_instance = new Controller();
+    return s_instance;
+}
+
+void
+Playlist::Controller::destroy()
+{
+    if( s_instance )
+    {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
+
+Playlist::Controller::Controller()
+        : QObject()
         , m_undoStack( new QUndoStack( this ) )
 {
     DEBUG_BLOCK
@@ -53,8 +83,10 @@ Playlist::Controller::Controller( AbstractModel* bottomModel, AbstractModel* top
     //Playlist::ModelStack::instance->top() or simply The::playlist().
     //This is an exception, because we handle the presence of tracks in the bottom model,
     //so we get a pointer to the bottom model and use it with great care.
-    m_bottomModel = bottomModel;
-    m_topModel = topModel;
+    // TODO: get these values only when we really need them to loosen up the
+    // coupling between Controller and Model
+    m_bottomModel = Playlist::ModelStack::instance()->bottom();
+    m_topModel = The::playlist();
 
     m_undoStack->setUndoLimit( 20 );
     connect( m_undoStack, SIGNAL( canRedoChanged( bool ) ), this, SIGNAL( canRedoChanged( bool ) ) );
@@ -192,17 +224,6 @@ Playlist::Controller::insertOptioned( Playlists::PlaylistList list, int options 
 }
 
 void
-Playlist::Controller::insertOptioned( Collections::QueryMaker *qm, int options )
-{
-    DEBUG_BLOCK
-    qm->setQueryType( Collections::QueryMaker::Track );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
-    m_optionedQueryMap.insert( qm, options );
-    qm->run();
-}
-
-void
 Playlist::Controller::insertOptioned( QList<KUrl>& urls, int options )
 {
     DirectoryLoader* dl = new DirectoryLoader(); //dl handles memory management
@@ -252,17 +273,6 @@ Playlist::Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList 
         tl += playlist->tracks();
     }
     insertTracks( topModelRow, tl );
-}
-
-void
-Playlist::Controller::insertTracks( int row, Collections::QueryMaker *qm )
-{
-    DEBUG_BLOCK
-    qm->setQueryType( Collections::QueryMaker::Track );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
-    m_queryMap.insert( qm, row );
-    qm->run();
 }
 
 void
@@ -504,42 +514,6 @@ Playlist::Controller::clear()
 /**************************************************
  * Private Functions
  **************************************************/
-
-void
-Playlist::Controller::newResultReady( const QString&, const Meta::TrackList& tracks )
-{
-    DEBUG_BLOCK
-
-    Collections::QueryMaker *qm = dynamic_cast<Collections::QueryMaker*>( sender() );
-    if( qm )
-    {
-        m_queryMakerTrackResults[qm] += tracks;
-    }
-}
-
-void
-Playlist::Controller::queryDone()
-{
-    DEBUG_BLOCK
-
-    Collections::QueryMaker *qm = dynamic_cast<Collections::QueryMaker*>( sender() );
-    if( qm )
-    {
-        qStableSort( m_queryMakerTrackResults[qm].begin(), m_queryMakerTrackResults[qm].end(), Meta::Track::lessThan );
-        if( m_queryMap.contains( qm ) )
-        {
-            insertTracks( m_queryMap.value( qm ), m_queryMakerTrackResults.value( qm ) );
-            m_queryMap.remove( qm );
-        }
-        else if( m_optionedQueryMap.contains( qm ) )
-        {
-            insertOptioned( m_queryMakerTrackResults.value( qm ), m_optionedQueryMap.value( qm ) );
-            m_optionedQueryMap.remove( qm );
-        }
-        m_queryMakerTrackResults.remove( qm );
-        qm->deleteLater();
-    }
-}
 
 void
 Playlist::Controller::slotFinishDirectoryLoader( const Meta::TrackList& tracks )

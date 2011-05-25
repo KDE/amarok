@@ -25,12 +25,7 @@ namespace The
 {
     AMAROK_EXPORT Playlist::AbstractModel* playlist()
     {
-        return Playlist::ModelStack::instance()->top();
-    }
-
-    AMAROK_EXPORT Playlist::Controller* playlistController()
-    {
-        return Playlist::ModelStack::instance()->controller();
+        return Playlist::ModelStack::instance()->groupingProxy();
     }
 }
 
@@ -65,25 +60,14 @@ ModelStack::ModelStack()
     m_sortfilter = new SortFilterProxy( m_model, this );
     m_search = new SearchProxy( m_sortfilter, this );
     m_grouping = new GroupingProxy( m_search, this );
-
-    m_controller = new Controller( m_model, m_grouping, this );
 }
 
 ModelStack::~ModelStack()
 {
-    // Delete everything in reverse order of the constructor.
-    delete m_controller;
-
     delete m_grouping;
     delete m_search;
     delete m_sortfilter;
     delete m_model;
-}
-
-Playlist::AbstractModel *
-ModelStack::top()
-{
-    return m_grouping;
 }
 
 GroupingProxy *
@@ -108,12 +92,6 @@ Playlist::Model *
 ModelStack::bottom()
 {
     return m_model;
-}
-
-Controller *
-ModelStack::controller()
-{
-    return m_controller;
 }
 
 }   //namespace Playlist

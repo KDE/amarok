@@ -42,6 +42,7 @@
 
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 
 #include "widgets/AnimatedLabelStack.h"
 #include "widgets/PlayPauseButton.h"
@@ -736,6 +737,11 @@ MainToolbar::showEvent( QShowEvent *ev )
     connect( engine, SIGNAL( muteStateChanged( bool ) ),
              this, SLOT( muteStateChanged( bool ) ) );
 
+    // We need the three changed signals:
+    // 1. the playlist changes (PlaylistController)
+    // 2. the sorting of the playlist changed (Playlist)
+    // 3. The navigator changed to e.g. dynamic mode (PlaylistActions)
+
     connect ( The::playlistController(), SIGNAL( changed()),
               this, SLOT( updatePrevAndNext() ) );
 
@@ -768,7 +774,7 @@ MainToolbar::hideEvent( QHideEvent *ev )
     disconnect ( The::playlistController(), SIGNAL( changed()),
                  this, SLOT( updatePrevAndNext() ) );
 
-    disconnect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( queueChanged() ),
+    disconnect ( The::playlist()->qaim(), SIGNAL( queueChanged() ),
                  this, SLOT( updatePrevAndNext() ) );
 
     disconnect ( The::playlistActions(), SIGNAL( navigatorChanged()),

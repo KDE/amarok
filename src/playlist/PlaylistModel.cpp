@@ -38,7 +38,7 @@
 #include "core/meta/support/MetaUtility.h"
 #include "PlaylistColumnNames.h"
 #include "PlaylistActions.h"
-#include "PlaylistModelStack.h"
+#include "PlaylistController.h"
 #include "PlaylistItem.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "UndoCommands.h"

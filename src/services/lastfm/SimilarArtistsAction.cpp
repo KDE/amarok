@@ -15,7 +15,7 @@
  ****************************************************************************************/
 
 #include "SimilarArtistsAction.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "SvgHandler.h"
 

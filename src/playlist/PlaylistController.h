@@ -30,10 +30,6 @@
 
 class QUndoStack;
 
-namespace Collections {
-    class QueryMaker;
-}
-
 namespace Playlist
 {
 class AbstractModel;
@@ -52,13 +48,26 @@ enum AddOptions
     LoadAndPlayImmediately = Replace | DirectPlay   ///< replace and begin playing of new item
 };
 
+/** The Playlist::Controller allows to add, remove or otherwise change tracks to the playlist.
+    Instead of directly talking to The::Playlist or PlaylistModelStack this object
+    should be used. It will take care of correctly placing the tracks (even
+    if the playlist is sorted) and will handle undo and redo operations.
+*/
 class AMAROK_EXPORT Controller : public QObject
 {
     Q_OBJECT
-
 public:
-    Controller( AbstractModel* bottomModel, AbstractModel* topModel, QObject* parent = 0 );
-    ~Controller();
+
+    /**
+     * Accessor for the singleton pattern.
+     * @return a pointer to the only instance of Playlist::Controller.
+     */
+    static Controller *instance();
+
+    /**
+     * Singleton destructor.
+     */
+    static void destroy();
 
 public slots:
     /**
@@ -80,7 +89,6 @@ public slots:
     void insertOptioned( Meta::TrackList list, int options );
     void insertOptioned( Playlists::PlaylistPtr playlist, int options );
     void insertOptioned( Playlists::PlaylistList list, int options );
-    void insertOptioned( Collections::QueryMaker *qm, int options );
     void insertOptioned( QList<KUrl>& urls, int options );
 
     /**
@@ -93,7 +101,6 @@ public slots:
     void insertTracks( int topModelRow, Meta::TrackList list );
     void insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist );
     void insertPlaylists( int topModelRow, Playlists::PlaylistList playlists );
-    void insertTracks( int topModelRow, Collections::QueryMaker *qm );
     void insertUrls( int topModelRow, const QList<KUrl>& urls );
 
     /**
@@ -169,11 +176,15 @@ signals:
     void replacingPlaylist();
 
 private slots:
-    void newResultReady( const QString&, const Meta::TrackList& );
-    void queryDone();
     void slotFinishDirectoryLoader( const Meta::TrackList& );
 
 private:
+    Controller();
+
+    ~Controller();
+
+    static Controller *s_instance;       //!< Instance member.
+
     /**
      * Converts a row number in 'm_topModel' to a row in 'm_bottomModel', for purposes of
      * insert. This is not useful for remove/move.
@@ -193,11 +204,12 @@ private:
     AbstractModel* m_bottomModel;
 
     QUndoStack* m_undoStack;
-
-    QHash<Collections::QueryMaker*, int> m_queryMap;         //!< maps queries to the row where the results should be inserted
-    QHash<Collections::QueryMaker*, int> m_optionedQueryMap; //!< maps queries to the options to be used when inserting the result
-    QHash<Collections::QueryMaker*, Meta::TrackList> m_queryMakerTrackResults;
 };
+}
+
+namespace The
+{
+    AMAROK_EXPORT Playlist::Controller* playlistController();
 }
 
 #endif

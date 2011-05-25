@@ -42,6 +42,7 @@
 #include "navigators/StandardTrackNavigator.h"
 #include "navigators/FavoredRandomTrackNavigator.h"
 #include "PlaylistModelStack.h"
+#include "PlaylistController.h"
 #include "playlist/PlaylistDock.h"
 #include "playlistmanager/PlaylistManager.h"
 

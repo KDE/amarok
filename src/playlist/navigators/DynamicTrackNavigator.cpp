@@ -26,7 +26,7 @@
 #include "DynamicPlaylist.h"
 #include "core/meta/Meta.h"
 #include "amarokconfig.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator()
     : m_playlist( 0 )

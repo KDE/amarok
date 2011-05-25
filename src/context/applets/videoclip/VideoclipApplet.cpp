@@ -31,7 +31,7 @@
 #include "context/ContextView.h"
 #include "context/Svg.h"
 #include "context/widgets/RatingWidget.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "SvgHandler.h"
 #include "widgets/AppletHeader.h"
 

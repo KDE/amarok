@@ -28,7 +28,7 @@
 #include "EngineController.h"
 #include "FileView.h"
 #include "MimeTypeFilterProxyModel.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
 
 #include <KAction>

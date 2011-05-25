@@ -257,6 +257,7 @@ App::~App()
     //mainWindow()->deleteBrowsers();
     delete mainWindow();
 
+    Playlist::Controller::destroy();
     Playlist::ModelStack::destroy();
     Playlist::Actions::destroy();
     PlaylistManager::destroy();

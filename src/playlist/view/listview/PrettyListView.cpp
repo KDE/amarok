@@ -43,6 +43,7 @@
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "playlist/view/PlaylistViewCommon.h"
 #include "playlist/PlaylistDefines.h"
 #include "PopupDropperFactory.h"

@@ -31,7 +31,7 @@
 
 Playlist::TrackNavigator::TrackNavigator()
 {
-    m_model = Playlist::ModelStack::instance()->top();
+    m_model = The::playlist();
 
     // Connect to the QAbstractItemModel signals of the source model.
     //   Ignore SIGNAL dataChanged: we don't need to know when a playlist item changes.
