@@ -152,9 +152,6 @@ namespace Amarok
     bool favorRatings();
     bool favorLastPlay();
 
-    void setDynamicPlaylist( const QString& title );  // defined in browsers/playlistbrowser/DynamicModel.cpp
-    void enableDynamicMode( bool enable );
-
     /**
      * Removes accents from the string
      * @param path The original path.

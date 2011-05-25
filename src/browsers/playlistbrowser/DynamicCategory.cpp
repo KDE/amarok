@@ -2,6 +2,7 @@
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
  * Copyright (c) 2009-2010 Leo Franchi <lfranchi@kde.org>                               *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2010-2011 Ralf Engels <ralf-engels@gmx.de>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,22 +18,26 @@
  ****************************************************************************************/
 
 #include "DynamicCategory.h"
+#include "DynamicView.h"
 
-#include "core/support/Amarok.h"
-#include "CustomBias.h"
-#include "core/support/Debug.h"
-#include "DynamicModel.h"
-#include "DynamicBiasDelegate.h"
-#include "DynamicBiasModel.h"
-#include "dynamic/biases/EchoNest.h"
+#include "DynamicBiasWidgets.h"
 #include "amarokconfig.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
-#include "PaletteHandler.h"
+#include "dynamic/DynamicModel.h"
+#include "dynamic/BiasedPlaylist.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QLabel>
+
+#include <QCheckBox>
+#include <QPushButton>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QSpinBox>
 
 #include <KHBox>
 #include <KIcon>
@@ -41,14 +46,8 @@
 #include <KToolBar>
 
 
-namespace PlaylistBrowserNS {
-
-
-DynamicCategory::DynamicCategory( QWidget* parent )
+PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     : BrowserCategory( "dynamic category", parent )
-    , m_biasListView( 0 )
-    , m_biasModel( 0 )
-    , m_biasDelegate( 0 )
 {
     setPrettyName( i18n( "Dynamic Playlists" ) );
     setShortDescription( i18n( "Dynamically updating parameter based playlists" ) );
@@ -60,35 +59,13 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     bool enabled = AmarokConfig::dynamicMode();
 
-    setContentsMargins(0,0,0,0);
-
-    
-    KHBox* controls1Layout = new KHBox( this );
-
-    m_onOffCheckbox = new QCheckBox( controls1Layout );
-    m_onOffCheckbox->setIcon( KIcon( "dynamic-amarok" ) );
-    m_onOffCheckbox->setText( i18nc( "Turn dynamic mode on", "On" ) );
-    m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
-    m_onOffCheckbox->setCheckable( true );
-    m_onOffCheckbox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
-    QObject::connect( m_onOffCheckbox, SIGNAL( toggled( bool ) ), this, SLOT( OnOff ( bool ) ) );
-
-    m_repopulateButton = new QPushButton( controls1Layout );
-    m_repopulateButton->setText( i18n("Repopulate") );
-    m_repopulateButton->setToolTip( i18n("Replace the upcoming tracks with fresh ones.") );
-    m_repopulateButton->setIcon( KIcon( "view-refresh-amarok" ) );
-    m_repopulateButton->setEnabled( enabled );
-    m_repopulateButton->setSizePolicy( 
-    QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    QObject::connect( m_repopulateButton, SIGNAL( clicked(bool) ), The::playlistActions(), SLOT( repopulateDynamicPlaylist() ) );
-            
-
-    new KSeparator( Qt::Horizontal, this );
-
+    setContentsMargins( 0, 0, 0, 0 );
 
     KHBox* controls2Layout = new KHBox( this );
 
-    new QLabel( i18n( "Previous:" ), controls2Layout );
+    QLabel *label;
+    label = new QLabel( i18n( "Previous:" ), controls2Layout );
+    label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
     m_previous = new QSpinBox( controls2Layout );
     m_previous->setMinimum( 0 );
@@ -96,7 +73,9 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_previous->setValue( AmarokConfig::previousTracks() );
     QObject::connect( m_previous, SIGNAL( valueChanged( int ) ), this, SLOT( setPreviousTracks( int ) ) );
 
-    new QLabel( i18n( "Upcoming:" ), controls2Layout );
+    label = new QLabel( i18n( "Upcoming:" ), controls2Layout );
+    // label->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+    label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
     m_upcoming = new QSpinBox( controls2Layout );
     m_upcoming->setMinimum( 1 );
@@ -107,250 +86,166 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ) );
     QObject::connect( (const QObject*)Amarok::actionCollection()->action( "disable_dynamic" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ), Qt::DirectConnection );
-    
 
+
+    // -- the tool bar
 
     KHBox* presetLayout = new KHBox( this );
-
-
-    QLabel* presetLabel = new QLabel( i18n( "Playlist:" ), presetLayout );
-
-    m_presetComboBox = new KComboBox( presetLayout );
-    DynamicModel::instance()->loadPlaylists();
-    m_presetComboBox->setModel( DynamicModel::instance() );
-    
-    connect( DynamicModel::instance(), SIGNAL( changeActive( int ) ),
-            m_presetComboBox, SLOT(setCurrentIndex(int)) );
-
-    connect( DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ),
-            SLOT(enableDynamicMode(bool)) );
-
-    connect( m_presetComboBox, SIGNAL(currentIndexChanged( int ) ),
-            this, SLOT(playlistSelectionChanged( int ) ) );
-
-    presetLabel->setBuddy( m_presetComboBox );
-
-    presetLayout->setStretchFactor( m_presetComboBox, 1 );
-
-
-
     KToolBar* presetToolbar = new KToolBar( presetLayout );
+    presetToolbar->setIconSize( QSize( 22, 22 ) );
+
     presetToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     presetToolbar->setMovable( false );
     presetToolbar->setFloatable( false );
     presetToolbar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
-    m_saveButton   = new QToolButton( presetToolbar );
-    //m_saveButton->setText( i18n("Save") );
-    m_saveButton->setIcon( KIcon( "document-save-amarok" ) );
-    m_saveButton->setToolTip( i18n( "Save the preset." ) );
-    presetToolbar->addWidget( m_saveButton );
 
-    connect( m_saveButton, SIGNAL( clicked( bool ) ), SLOT( save() ) );
+    m_onOffButton = new QToolButton( presetToolbar );
+    m_onOffButton->setText( i18nc( "Turn dynamic mode on", "On ") );
+    m_onOffButton->setCheckable( true );
+    m_onOffButton->setIcon( KIcon( "dynamic-amarok" ) );
+    m_onOffButton->setToolTip( i18n( "Turn dynamic mode on." ) );
+    presetToolbar->addWidget( m_onOffButton );
 
+    m_duplicateButton = new QToolButton( presetToolbar );
+    m_duplicateButton->setText( i18n("Duplicates") );
+    m_duplicateButton->setCheckable( true );
+    m_duplicateButton->setChecked( allowDuplicates() );
+    m_duplicateButton->setIcon( KIcon( "edit-copy" ) );
+    m_duplicateButton->setToolTip( i18n( "Allow duplicate songs in result" ) );
+    presetToolbar->addWidget( m_duplicateButton );
+
+    m_addButton = new QToolButton( presetToolbar );
+    m_addButton->setText( i18n("New") );
+    m_addButton->setIcon( KIcon( "document-new" ) );
+    m_addButton->setToolTip( i18n( "New playlist" ) );
+    presetToolbar->addWidget( m_addButton );
+
+    m_editButton = new QToolButton( presetToolbar );
+    m_editButton->setText( i18n("Edit") );
+    m_editButton->setIcon( KIcon( "document-properties-amarok" ) );
+    m_editButton->setToolTip( i18n( "Edit the selected playlist or bias" ) );
+    presetToolbar->addWidget( m_editButton );
 
     m_deleteButton = new QToolButton( presetToolbar );
-    //m_deleteButton->setText( i18n("Delete") );
+    m_deleteButton->setText( i18n("Delete") );
     m_deleteButton->setEnabled( false );
-    m_deleteButton->setIcon( KIcon( "edit-delete-amarok" ) );
-    m_deleteButton->setToolTip( i18n( "Delete the preset.") );
+    m_deleteButton->setIcon( KIcon( "edit-delete" ) );
+    m_deleteButton->setToolTip( i18n( "Delete the selected playlist or bias") );
     presetToolbar->addWidget( m_deleteButton );
 
-    connect( m_deleteButton, SIGNAL(clicked(bool)),
-            DynamicModel::instance(), SLOT(removeActive()) );
-        
+    m_repopulateButton = new QPushButton( presetLayout );
+    m_repopulateButton->setText( i18n("Repopulate") );
+    m_repopulateButton->setToolTip( i18n("Replace the upcoming tracks with fresh ones.") );
+    m_repopulateButton->setIcon( KIcon( "view-refresh-amarok" ) );
+    m_repopulateButton->setEnabled( enabled );
+    // m_repopulateButton->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
+    QObject::connect( m_repopulateButton, SIGNAL( clicked(bool) ), The::playlistActions(), SLOT( repopulateDynamicPlaylist() ) );
 
-    m_biasListView = new QListView( this );
-    m_biasListView->setFrameShape( QFrame::NoFrame );
-    m_biasListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    m_biasListView->setAlternatingRowColors( true );
 
-    The::paletteHandler()->updateItemView( m_biasListView );
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
+    // -- the tree view
 
-    m_biasModel = new DynamicBiasModel( m_biasListView );
-    m_biasListView->setModel( m_biasModel );
+    m_tree = new DynamicView( this );
+    connect( m_tree->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection) ),
+             this, SLOT(selectionChanged()) );
 
-    connect( m_biasModel, SIGNAL(playlistModified(Dynamic::BiasedPlaylistPtr)),
-             DynamicModel::instance(), SLOT(playlistModified(Dynamic::BiasedPlaylistPtr)) );
+    connect( m_onOffButton, SIGNAL( toggled( bool ) ), The::playlistActions(), SLOT( enableDynamicMode( bool ) ) );
+    connect( m_duplicateButton, SIGNAL( toggled( bool ) ), this, SLOT( setAllowDuplicates( bool ) ) );
 
-    m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
-    m_biasListView->setItemDelegate( m_biasDelegate );
+    connect( m_addButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( addPlaylist() ) );
+    connect( m_editButton, SIGNAL( clicked( bool ) ), m_tree, SLOT( editSelected() ) );
+    connect( m_deleteButton, SIGNAL(clicked(bool)), m_tree, SLOT(removeSelected()) );
 
-    int index = DynamicModel::instance()->activePlaylistIndex();
+    navigatorChanged();
+    selectionChanged();
 
-    debug() << "Setting index: " << index;
-    if( index >= 0 )
-    {
-        m_presetComboBox->setCurrentIndex( index );
-        playlistSelectionChanged( index );
-    }
-    else
-    {
-        m_presetComboBox->setCurrentIndex( 0 );
-        playlistSelectionChanged( 0 );
-    }
-
-    m_onOffCheckbox->setChecked( AmarokConfig::dynamicMode() );
-
-    /// HERE WE ADD ALL GENERAL CUSTOM BIASES
-    m_echoNestBiasFactory = new Dynamic::EchoNestBiasFactory;
-    Dynamic::CustomBias::registerNewBiasFactory( m_echoNestBiasFactory );
+    connect( The::playlistActions(), SIGNAL(navigatorChanged()),
+             this, SLOT(navigatorChanged()) );
 }
 
 
-DynamicCategory::~DynamicCategory()
-{
-    saveOnExit();
-    delete m_echoNestBiasFactory;
-}
-
+PlaylistBrowserNS::DynamicCategory::~DynamicCategory()
+{ }
 
 void
-DynamicCategory::enableDynamicMode( bool enable )
+PlaylistBrowserNS::DynamicCategory::navigatorChanged()
 {
-    if( AmarokConfig::dynamicMode() == enable )
+    m_onOffButton->setChecked( AmarokConfig::dynamicMode() );
+    m_repopulateButton->setEnabled( AmarokConfig::dynamicMode() );
+}
+
+void
+PlaylistBrowserNS::DynamicCategory::selectionChanged()
+{
+    DEBUG_BLOCK;
+
+    QModelIndexList indexes = m_tree->selectionModel()->selectedIndexes();
+
+    if( indexes.isEmpty() )
+    {
+        m_addButton->setEnabled( true );
+        m_editButton->setEnabled( false );
+        m_deleteButton->setEnabled( false );
         return;
+    }
 
-    if( enable )
-        On();
-    else
-        Off();
-}
-
-void
-DynamicCategory::OnOff( bool checked )
-{
-    if( checked )
-        On();
-    else
-        Off();
-}
-
-
-void
-DynamicCategory::On()
-{
-    AmarokConfig::setDynamicMode( true );
-    // TODO: turn off other incompatible modes
-    AmarokConfig::self()->writeConfig();
-    m_repopulateButton->setEnabled( true );
-    The::playlistActions()->playlistModeChanged();
-
-    //if the playlist is empty, repopulate while we are at it:
-
-    DynamicModel::instance()->enable( true );
-    if ( Playlist::ModelStack::instance()->bottom()->rowCount() == 0 )
-        The::playlistActions()->repopulateDynamicPlaylist();
-}
-
-void
-DynamicCategory::Off()
-{
-    AmarokConfig::setDynamicMode( false );
-    // TODO: should we restore the state of other modes?
-    AmarokConfig::self()->writeConfig();
-    DynamicModel::instance()->enable( false );
-    m_repopulateButton->setEnabled( false );
-    The::playlistActions()->playlistModeChanged();
-}
-
-void
-DynamicCategory::playlistCleared() // SLOT
-{
-    // we have a whole method here b/c we  don't want to do any extra work on each clear press
-    if( AmarokConfig::dynamicMode() ) // only do anything if dynamic mode was on
+    QVariant v = m_tree->model()->data( indexes.first(), Dynamic::DynamicModel::PlaylistRole );
+    if( v.isValid() )
     {
-        AmarokConfig::setDynamicMode( false );
-        // TODO: should we restore the state of other modes?
-        AmarokConfig::self()->writeConfig();
-        m_repopulateButton->setEnabled( false );
-        m_onOffCheckbox->setChecked( false );
-        The::playlistActions()->playlistModeChanged();
+        m_addButton->setEnabled( true );
+        m_editButton->setEnabled( true );
+        m_deleteButton->setEnabled( true );
+        return;
+    }
+
+    v = m_tree->model()->data( indexes.first(), Dynamic::DynamicModel::BiasRole );
+    if( v.isValid() )
+    {
+        m_addButton->setEnabled( true );
+        m_editButton->setEnabled( true );
+        m_deleteButton->setEnabled( false ); // TODO
+        return;
     }
 }
 
+bool
+PlaylistBrowserNS::DynamicCategory::allowDuplicates() const
+{
+    return AmarokConfig::dynamicDuplicates();
+}
+
+
 void
-DynamicCategory::setUpcomingTracks( int n ) // SLOT
+PlaylistBrowserNS::DynamicCategory::playlistCleared() // SLOT
+{
+    The::playlistActions()->enableDynamicMode( false );
+}
+
+void
+PlaylistBrowserNS::DynamicCategory::setUpcomingTracks( int n ) // SLOT
 {
     if( n >= 1 )
         AmarokConfig::setUpcomingTracks( n );
 }
 
 void
-DynamicCategory::setPreviousTracks( int n ) // SLOT
+PlaylistBrowserNS::DynamicCategory::setPreviousTracks( int n ) // SLOT
 {
     if( n >= 0 )
         AmarokConfig::setPreviousTracks( n );
 }
 
 void
-DynamicCategory::playlistSelectionChanged( int index )
+PlaylistBrowserNS::DynamicCategory::setAllowDuplicates( bool value ) // SLOT
 {
-    DEBUG_BLOCK
-    Dynamic::DynamicPlaylistPtr playlist =
-        DynamicModel::instance()->setActivePlaylist( index );
-
-    if( !playlist )
+    if( AmarokConfig::dynamicDuplicates() == value )
         return;
 
-    if( DynamicModel::instance()->isActiveDefault() )
-        m_deleteButton->setEnabled( false );
-    else
-        m_deleteButton->setEnabled( true );
+    AmarokConfig::setDynamicDuplicates( value );
+    AmarokConfig::self()->writeConfig();
 
-
-    if( !DynamicModel::instance()->isActiveUnsaved() )
-    {
-        AmarokConfig::setLastDynamicMode( playlist->title() );
-        AmarokConfig::self()->writeConfig();
-    }
-
-
-    m_biasModel->setPlaylist( playlist );
-
-    debug() << "Changing biased playlist to: " << playlist->title();
+    m_duplicateButton->setChecked( value );
 }
 
-void
-DynamicCategory::save()
-{
-    bool ok;
-    QString title =
-        QInputDialog::getText( this, i18n("Playlist Name"),
-                               i18n("Enter a name for the playlist:"),
-                               QLineEdit::Normal,
-                               DynamicModel::instance()->activePlaylist()->title(),
-                               &ok );
-    if( !ok ) return;
-
-    // TODO: write a custom dialog to prevent this from happening in the first
-    // place
-    if( title == DynamicModel::instance()->defaultPlaylistName() )
-    {
-        QMessageBox::warning( this, i18n( "Warning" ), i18n( "Cannot overwrite the random playlist." ) );
-        return;
-    }
-
-    DynamicModel::instance()->saveActive( title );
-    playlistSelectionChanged( DynamicModel::instance()->playlistIndex( title ) );
-}
-
-void
-DynamicCategory::saveOnExit()
-{
-    DEBUG_BLOCK
-
-    DynamicModel::instance()->saveCurrent();
-}
-
-} // namespace
-
-void PlaylistBrowserNS::DynamicCategory::newPalette(const QPalette & palette)
-{
-    Q_UNUSED( palette )
-    The::paletteHandler()->updateItemView( m_biasListView );
-    m_biasListView->reset();
-}
 
 #include "DynamicCategory.moc"
 

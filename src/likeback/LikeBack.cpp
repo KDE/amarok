@@ -143,7 +143,8 @@ quint16 LikeBack::hostPort()
 void LikeBack::disableBar()
 {
     d->disabledCount++;
-    d->bar->setBarVisible( d->bar && d->disabledCount > 0 );
+    if( d->bar )
+        d->bar->setBarVisible( d->disabledCount <= 0 );
 }
 
 
@@ -159,7 +160,8 @@ void LikeBack::enableBar()
     }
 #endif
 
-    d->bar->setBarVisible( d->bar && d->disabledCount <= 0 );
+    if( d->bar )
+        d->bar->setBarVisible( d->disabledCount <= 0 );
 }
 
 

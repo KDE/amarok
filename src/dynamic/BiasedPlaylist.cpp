@@ -18,17 +18,21 @@
 
 #define DEBUG_PREFIX "BiasedPlaylist"
 
+#include "BiasSolver.h"
 #include "BiasedPlaylist.h"
+#include "BiasFactory.h"
+#include "DynamicModel.h"
 
 #include "amarokconfig.h"
 #include "App.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "DynamicModel.h"
-#include "core/collections/MetaQueryMaker.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistModelStack.h" // for The::playlist
 #include "statusbar/StatusBar.h"
+
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 #include <threadweaver/ThreadWeaver.h>
 #include <QThread>
@@ -43,108 +47,99 @@
 // Pick your poison...
 const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 50;
 
-
-Dynamic::BiasedPlaylist*
-Dynamic::BiasedPlaylist::fromXml( QDomElement e )
-{
-    if( e.tagName() != "playlist" )
-        return 0;
-
-    QString title = e.attribute( "title" );
-    QList<Dynamic::Bias*> biases;
-
-    for( int j = 0; j < e.childNodes().size(); ++j )
-    {
-        if( !e.childNodes().at(j).isElement() )
-            continue;
-
-        QDomElement e2 = e.childNodes().at(j).toElement();
-        if( e2.tagName() == "bias" )
-            biases.append( Dynamic::Bias::fromXml( e2 ) );
-    }
-
-    return new Dynamic::BiasedPlaylist( title, biases );
-}
-
-QString
-Dynamic::BiasedPlaylist::nameFromXml( QDomElement e )
-{
-    if( e.tagName() != "playlist" )
-        return 0;
-
-    return e.attribute( "title" );
-}
-
-
-Dynamic::BiasedPlaylist::BiasedPlaylist( QString title, QList<Bias*> biases, Collections::Collection* collection )
-    : DynamicPlaylist(collection)
+Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
+    : DynamicPlaylist( parent )
     , m_numRequested( 0 )
-    , m_biases( biases )
+    , m_bias( 0 )
 {
-    setTitle( title );
+    m_title = i18nc( "Title for a default dynamic playlist. The default playlist only returns random tracks.", "Random" );
 
-    // Make sure that the BiasedPlaylist instance gets destroyed when App destroys
-    setParent( App::instance() );
+    BiasPtr biasPtr( BiasPtr( new Dynamic::RandomBias() ) );
+    biasReplaced( BiasPtr(), biasPtr );
 }
 
+Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *parent )
+    : DynamicPlaylist( parent )
+    , m_numRequested( 0 )
+    , m_bias( 0 )
+{
+    while (!reader->atEnd()) {
+        reader->readNext();
+
+        if( reader->isStartElement() )
+        {
+            QStringRef name = reader->name();
+            if( name == "title" )
+                m_title = reader->readElementText(QXmlStreamReader::SkipChildElements);
+            else
+            {
+                BiasPtr biasPtr( Dynamic::BiasFactory::fromXml( reader ) );
+                if( biasPtr )
+                {
+                    biasReplaced( BiasPtr(), biasPtr );
+                }
+                else
+                {
+                    debug()<<"Unexpected xml start element"<<reader->name()<<"in input";
+                    reader->skipCurrentElement();
+                }
+            }
+        }
+        else if( reader->isEndElement() )
+        {
+            break;
+        }
+    }
+}
 
 Dynamic::BiasedPlaylist::~BiasedPlaylist()
 {
-    DEBUG_BLOCK
-
     requestAbort();
 }
 
-QDomElement
-Dynamic::BiasedPlaylist::xml() const
+void
+Dynamic::BiasedPlaylist::toXml( QXmlStreamWriter *writer ) const
 {
-    QDomDocument doc;
-    QDomElement e = doc.createElement( "playlist" );
-    e.setAttribute( "title", m_title );
-
-    foreach( Bias* b, m_biases )
-    {
-        e.appendChild( b->xml() );
-    }
-
-    return e;
+    writer->writeTextElement( "title", m_title );
+    writer->writeStartElement( m_bias->name() );
+    m_bias->toXml( writer );
+    writer->writeEndElement();
 }
 
 void
 Dynamic::BiasedPlaylist::requestAbort()
 {
+    DEBUG_BLOCK
     if( m_solver ) {
-        m_solver.data()->requestAbort();
-        disconnect(m_solver.data(), 0, this, 0);
-        m_solver.clear();
+        m_solver->requestAbort();
+        disconnect( m_solver, 0, this, 0 );
+        m_solver = 0;
     }
 }
 
 void
-Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
+Dynamic::BiasedPlaylist::startSolver()
 {
     DEBUG_BLOCK
     debug() << "BiasedPlaylist in:" << QThread::currentThreadId();
 
     if( !m_solver )
     {
-        BiasSolver::setUniverseCollection( m_collection );
         debug() << "assigning new m_solver";
+        m_solver = new BiasSolver( BUFFER_SIZE, m_bias, getContext() );
+        m_solver->setAutoDelete( true );
+        connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
+        connect( m_solver, SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
 
-        m_solver = new BiasSolver( BUFFER_SIZE, m_biases, getContext() );
-        m_solver.data()->setAutoDelete(true);
-        connect( m_solver.data(), SIGNAL(readyToRun()), SLOT(solverReady()) );
-        connect( m_solver.data(), SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
-        connect( m_solver.data(), SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
-
-        if( withStatusBar )
+        if( The::statusBar() )
         {
-            The::statusBar()->newProgressOperation( m_solver.data(), i18n( "Generating playlist..." ) );
+            The::statusBar()->newProgressOperation( m_solver, i18n( "Generating playlist..." ) )
+                ->setAbortSlot( this, SLOT( requestAbort() ) );
 
-            connect( m_solver.data(), SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
+            connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
         }
 
-        m_solver.data()->prepareToRun();
+        ThreadWeaver::Weaver::instance()->enqueue( m_solver );
         debug() << "called prepareToRun";
     }
     else
@@ -152,18 +147,59 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 }
 
 void
-Dynamic::BiasedPlaylist::solverReady()
+Dynamic::BiasedPlaylist::biasChanged()
 {
-    debug() << "ENQUEUEING new m_solver!" << m_solver;
-    if( m_solver )
-        ThreadWeaver::Weaver::instance()->enqueue( m_solver.data() );
+    DEBUG_BLOCK;
+    QMutexLocker locker( &m_bufferMutex );
+    m_buffer.clear();
+
+    emit changed( this );
+    bool inModel = DynamicModel::instance()->index( this ).isValid();
+    if( inModel )
+        DynamicModel::instance()->biasChanged( m_bias );
+}
+
+void
+Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
+{
+    DEBUG_BLOCK;
+
+    if( oldBias && !newBias ) // don't move the last bias away from this playlist without replacement
+        return;
+
+    bool inModel = DynamicModel::instance()->index( this ).isValid();
+    if( m_bias )
+    {
+        disconnect( m_bias.data(), 0, this, 0 );
+
+        if( inModel )
+            Dynamic::DynamicModel::instance()->beginRemoveBias( this );
+        m_bias = 0;
+        if( inModel )
+            Dynamic::DynamicModel::instance()->endRemoveBias();
+    }
+
+    if( inModel )
+        Dynamic::DynamicModel::instance()->beginInsertBias( this );
+    m_bias = newBias;
+    if( inModel )
+        Dynamic::DynamicModel::instance()->endInsertBias();
+
+    connect( m_bias.data(), SIGNAL( changed( Dynamic::BiasPtr ) ),
+             this, SLOT( biasChanged() ) );
+    connect( m_bias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+             this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+
+    if( oldBias ) // don't emit a changed during construction
+        biasChanged();
 }
 
 
 void
 Dynamic::BiasedPlaylist::updateStatus( int progress )
 {
-    The::statusBar()->setProgress( m_solver.data(), progress );
+    if( The::statusBar() )
+        The::statusBar()->setProgress( m_solver, progress );
 }
 
 void
@@ -179,42 +215,26 @@ Dynamic::BiasedPlaylist::requestTracks( int n )
 }
 
 void
-Dynamic::BiasedPlaylist::recalculate()
+Dynamic::BiasedPlaylist::repopulate()
 {
     DEBUG_BLOCK
-    if ( AmarokConfig::dynamicMode() && !m_solver ) {
+    debug() << "repopulate" << AmarokConfig::dynamicMode() << "solver?" << m_solver << "requested:" << m_numRequested;
+    if( AmarokConfig::dynamicMode() && !m_solver )
+    {
         {
             QMutexLocker locker(&m_bufferMutex);
             m_buffer.clear();
         }
 
         if( m_numRequested > 0 )
-            startSolver( true );
+            startSolver();
     }
 }
 
-void
-Dynamic::BiasedPlaylist::invalidate()
+Dynamic::BiasPtr
+Dynamic::BiasedPlaylist::bias() const
 {
-    DEBUG_BLOCK
-     if ( AmarokConfig::dynamicMode() )
-     {
-         BiasSolver::outdateUniverse();
-         if( m_active )
-            recalculate();
-     }
-}
-
-QList<Dynamic::Bias*>&
-Dynamic::BiasedPlaylist::biases()
-{
-    return m_biases;
-}
-
-const QList<Dynamic::Bias*>&
-Dynamic::BiasedPlaylist::biases() const
-{
-    return m_biases;
+    return m_bias;
 }
 
 void
@@ -239,7 +259,7 @@ Dynamic::BiasedPlaylist::handleRequest()
     {
         locker.unlock();
         // otherwise, we ran out of buffer
-        startSolver( true );
+        startSolver();
     }
 }
 
@@ -249,25 +269,25 @@ Dynamic::BiasedPlaylist::solverFinished()
 {
     DEBUG_BLOCK
 
-    if( !m_solver )
+    if( m_solver != sender() )
         return;
 
-    The::statusBar()->endProgressOperation( m_solver.data() );
+    if( The::statusBar() )
+        The::statusBar()->endProgressOperation( m_solver );
 
-    bool success = m_solver.data()->success();
+    bool success = m_solver->success();
     if( success )
     {
         QMutexLocker locker(&m_bufferMutex);
-        m_buffer.append( m_solver.data()->solution() );
+        m_buffer.append( m_solver->solution() );
     }
 
-    m_solver.data()->deleteLater();
+    disconnect( m_solver, 0, this, 0 );
+    m_solver = 0;
 
     // empty collection just give up.
     if(m_buffer.isEmpty())
-    {
         m_numRequested = 0;
-    }
 
     handleRequest();
 }
@@ -276,14 +296,7 @@ Dynamic::BiasedPlaylist::solverFinished()
 Meta::TrackList
 Dynamic::BiasedPlaylist::getContext()
 {
-    Meta::TrackList context;
-
-    int i = qMax( 0, The::playlist()->activeRow() );
-
-    for( ; i < The::playlist()->qaim()->rowCount(); ++i )
-    {
-        context.append( The::playlist()->trackAt(i) );
-    }
+    Meta::TrackList context = The::playlist()->tracks();
 
     {
         QMutexLocker locker(&m_bufferMutex);

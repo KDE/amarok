@@ -21,59 +21,56 @@
 
 #include "core/meta/Meta.h"
 
-#include <QDomElement>
-#include <QSharedData>
+#include "amarok_export.h" // we are exporting it for the tests
 
+class QXmlStreamReader;
+class QXmlStreamWriter;
 
 namespace Dynamic {
 
-/**
- * Provides a basis for dynamic playlists which operate like a stream
- * of tracks, rather than a list.
- **/
-class DynamicPlaylist : public QObject, public QSharedData
+/** Provides a basis for dynamic playlists.
+    The DynamicPlaylist is used by the DynamicTrackNavigator.
+    Currently the only implementation of this abstract class is the BiasedPlaylist.
+*/
+class AMAROK_EXPORT DynamicPlaylist : public QObject
 {
     Q_OBJECT
 
     public:
-        DynamicPlaylist( Collections::Collection* coll = 0 );
-
+        DynamicPlaylist( QObject *parent = 0 );
+        DynamicPlaylist( QXmlStreamReader *reader, QObject *parent = 0 );
         virtual ~DynamicPlaylist();
 
-        virtual QDomElement xml() const;
+        virtual void toXml( QXmlStreamWriter *writer ) const = 0;
 
         virtual void requestTracks(int) = 0;
 
         QString title() const;
-
         void setTitle( QString );
-        virtual void setActive(bool active);
-        
-        virtual void requestAbort() {}
 
     signals:
         void tracksReady( Meta::TrackList );
 
+        /** Emitted when this playlist has been modified in some way.
+            The DynamicModel will listen to it to detect if it needs to save it.
+        */
+        void changed( Dynamic::DynamicPlaylist* playlist );
+
+
     public slots:
-        virtual void recalculate();
-        virtual void invalidate();
-        
+        /** Start recalculating all tracks after the currently played track */
+        virtual void repopulate();
+
+        /** Aborts the current playlist generation operation */
+        virtual void requestAbort()
+        {}
+
     protected:
         Collections::Collection* m_collection;
         QString m_title;
-        bool m_active;
 };
 
-
-typedef KSharedPtr<DynamicPlaylist> DynamicPlaylistPtr;
-typedef QList<DynamicPlaylistPtr> DynamicPlaylistList;
-
-
-
 }
-
-Q_DECLARE_METATYPE( Dynamic::DynamicPlaylistPtr )
-Q_DECLARE_METATYPE( Dynamic::DynamicPlaylistList )
 
 #endif
 

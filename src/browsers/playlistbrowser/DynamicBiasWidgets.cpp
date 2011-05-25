@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2010,2011 Ralf Engels <ralf-engels@gmx.de>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,300 +20,167 @@
 
 #include "DynamicBiasWidgets.h"
 
-#include "App.h"
 #include "Bias.h"
-#include "BiasedPlaylist.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "BiasFactory.h"
 #include "core/support/Debug.h"
-#include "DynamicPlaylist.h"
-#include "DynamicBiasModel.h"
-#include "DynamicModel.h"
-#include "SliderWidget.h"
-#include "SvgHandler.h"
-#include "widgets/MetaQueryWidget.h"
-#include "widgets/kdatecombo.h"
 
-#include <typeinfo>
-
-#include <QFormLayout>
-#include <QHBoxLayout>
 #include <QLabel>
-#include <QListView>
-#include <QPaintEvent>
-#include <QPainter>
-#include <QSpinBox>
-#include <QTimeEdit>
-#include <QToolButton>
+#include <QDialogButtonBox>
+#include <QGridLayout>
+#include <QHBoxLayout>
 
 #include <KComboBox>
-#include <KIcon>
-#include <KVBox>
 #include <klocale.h>
 
-PlaylistBrowserNS::BiasBoxWidget::BiasBoxWidget( QWidget* parent )
-    : QWidget( parent ), m_alternate(false)
+PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* parent )
+    : QDialog( parent )
+    , m_mainLayout( 0 )
+    , m_biasLayout( 0 )
+    , m_descriptionLabel( 0 )
+    , m_biasWidget( 0 )
+    , m_bias( bias )
 {
+    setWindowTitle( i18nc( "Bias dialog window title", "Edit bias" ) );
+    m_mainLayout = new QVBoxLayout( this );
+
+    // -- the bias selection combo
+    QLabel* selectionLabel = new QLabel( i18nc("Bias selection label in bias view.", "Match Type:" ) );
+    m_biasSelection = new KComboBox();
+    QHBoxLayout *selectionLayout = new QHBoxLayout();
+    selectionLabel->setBuddy( m_biasSelection );
+    selectionLayout->addWidget( selectionLabel );
+    selectionLayout->addWidget( m_biasSelection );
+    selectionLayout->addStretch( 1 );
+    m_mainLayout->addLayout( selectionLayout );
+
+    // -- bias itself
+    m_descriptionLabel = new QLabel( "" );
+    m_mainLayout->addWidget( m_descriptionLabel );
+
+    m_biasLayout = new QVBoxLayout();
+    m_mainLayout->addLayout( m_biasLayout );
+
+    // -- button box
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+    m_mainLayout->addWidget( buttonBox );
+
+    factoriesChanged();
+    biasReplaced( Dynamic::BiasPtr(), bias );
+
+    connect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
+             this, SLOT( factoriesChanged() ) );
+    connect( m_biasSelection, SIGNAL( activated( int ) ),
+             this, SLOT( selectionChanged( int ) ) );
+    connect(buttonBox, SIGNAL(accepted()),
+            this, SLOT(accept()));
 }
 
+PlaylistBrowserNS::BiasDialog::~BiasDialog()
+{ }
+
 void
-PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
+PlaylistBrowserNS::BiasDialog::factoriesChanged()
 {
-    Q_UNUSED(e)
+    m_biasSelection->clear();
 
+    disconnect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
+                this, SLOT( factoriesChanged() ) );
 
-    // is it showing ?
-    QListView* parentList = dynamic_cast<QListView*>(parent());
-    if( parentList )
+    // -- add all the bias types to the list
+    bool factoryFound = false;
+    QList<Dynamic::AbstractBiasFactory*> factories = Dynamic::BiasFactory::factories();
+    for( int i = 0; i <  factories.count(); i++ )
     {
-        PlaylistBrowserNS::DynamicBiasModel* model =
-            dynamic_cast<PlaylistBrowserNS::DynamicBiasModel*>( parentList->model() );
-        if( model )
+        Dynamic::AbstractBiasFactory* factory = factories.at( i );
+        m_biasSelection->addItem( factory->i18nName(), QVariant( factory->name() ) );
+
+        // -- set the current index if we have found our own factory
+        if( m_bias && factory->name() == m_bias->name() )
         {
-            QRect rect = parentList->visualRect( model->indexOf( this ) );
-            if( rect.x() < 0 || rect.y() < 0 || rect.height() < height() )
-            {
-                hide();
-                return;
-            }
+            factoryFound = true;
+            m_biasSelection->setCurrentIndex( i );
+            m_descriptionLabel->setText( factory->i18nDescription() );
         }
     }
 
-    QPainter painter(this);
-    painter.setRenderHint( QPainter::Antialiasing, true );
-
-    QPixmap body;
-
-    body = The::svgHandler()->renderSvgWithDividers( "body", width(), height(), "body" );
-
-    painter.drawPixmap( 0, 0, body );
-
-    painter.end();
-}
-
-void
-PlaylistBrowserNS::BiasBoxWidget::resizeEvent( QResizeEvent* )
-{
-    emit widgetChanged( this );
-}
-
-
-
-PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( const QString& caption, const QString& description, QWidget* parent )
-    : BiasBoxWidget( parent )
-    , m_addButton( new QToolButton( this ) )
-{
-    DEBUG_BLOCK
-
-    QHBoxLayout* mainLayout = new QHBoxLayout( this );
-    m_addButton->setIcon( KIcon( "list-add-amarok" ) );
-    m_addButton->setToolTip( i18n( "Add a new bias." ) );
-    connect( m_addButton, SIGNAL( clicked() ), SLOT( slotClicked() ) );
-
-    QLabel* descLabel = new QLabel( QString("<b>%1</b><br>%2").arg(caption, description), this );
-    descLabel->setAlignment( Qt::AlignCenter );
-    descLabel->setWordWrap( true );
-
-    mainLayout->addWidget( m_addButton );
-    mainLayout->setStretchFactor( m_addButton, 0 );
-    mainLayout->setAlignment( m_addButton, Qt::AlignLeft | Qt::AlignVCenter );
-    mainLayout->addWidget( descLabel );
-    mainLayout->setStretchFactor( descLabel, 1 );
-
-    setLayout( mainLayout );
-}
-
-// TODO: For some reason this only works with double-click. Also, mouseReleaseEvent() doesn't work at all. Don't know why.
-void
-PlaylistBrowserNS::BiasAddWidget::mousePressEvent( QMouseEvent* event )
-{
-    DEBUG_BLOCK
-
-    slotClicked();
-
-    BiasBoxWidget::mousePressEvent( event );
-}
-
-void
-PlaylistBrowserNS::BiasAddWidget::slotClicked()
-{
-    DEBUG_BLOCK
-
-    emit addBias();
-}
-
-
-
-
-PlaylistBrowserNS::BiasWidget::BiasWidget( Dynamic::Bias* b, QWidget* parent )
-    : BiasBoxWidget( parent )
-    , m_bias(b)
-{
-    DEBUG_BLOCK
-
-    QHBoxLayout* mainLayout = new QHBoxLayout( this );
-
-    QToolButton* removeButton = new QToolButton( this );
-    removeButton->setIcon( KIcon( "list-remove-amarok" ) );
-    removeButton->setToolTip( i18n( "Remove this bias." ) );
-    connect( removeButton, SIGNAL( clicked() ), SLOT( biasRemoved() ), Qt::QueuedConnection );
-
-    mainLayout->addWidget( removeButton );
-    mainLayout->setStretchFactor( removeButton, 0 );
-    mainLayout->setAlignment( removeButton, Qt::AlignLeft | Qt::AlignVCenter );
-
-    setLayout( mainLayout );
-}
-
-void
-PlaylistBrowserNS::BiasWidget::biasRemoved()
-{
-    emit biasRemoved( m_bias );
-}
-
-
-PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
-        Dynamic::GlobalBias* bias, QWidget* parent )
-    : BiasWidget( bias, parent )
-    , m_gbias( bias )
-{
-    QFrame *frame = new QFrame( this );
-    QFormLayout *layout = new QFormLayout( frame );
-
-    m_weightLabel = new QLabel( " 0%", frame );
-    m_weightSelection = new Amarok::Slider( Qt::Horizontal, 100, frame );
-    m_weightSelection->setToolTip(
-            i18n( "This controls what portion of the playlist should match the criteria" ) );
-
-    QHBoxLayout* sliderLayout = new QHBoxLayout();
-    sliderLayout->addWidget( m_weightSelection );
-    sliderLayout->addWidget( m_weightLabel );
-
-    m_queryWidget = new MetaQueryWidget( frame );
-    m_queryWidget->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
-                                               QSizePolicy::Preferred ) );
-    layout->addRow( i18n( "Proportion:" ), sliderLayout );
-    layout->addRow( i18n( "Match:" ), m_queryWidget );
-
-    syncControlsToBias();
-
-    connect( m_weightSelection, SIGNAL(valueChanged(int)),
-             SLOT(weightChanged(int)) );
-    connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)),
-             SLOT(syncBiasToControls()));
-
-    this->layout()->addWidget( frame );
-}
-
-PlaylistBrowserNS::BiasGlobalWidget::~BiasGlobalWidget()
-{
-}
-
-void
-PlaylistBrowserNS::BiasGlobalWidget::syncControlsToBias()
-{
-    int weight = (int)(m_gbias->weight() * 100.0);
-    m_weightSelection->setValue(weight);
-    weightChanged(weight); // the widget value might not have changed and thus the signal not fired
-
-    m_queryWidget->setFilter( m_gbias->filter() );
-}
-
-void
-PlaylistBrowserNS::BiasGlobalWidget::syncBiasToControls()
-{
-    m_gbias->setFilter( m_queryWidget->filter() );
-    m_gbias->setActive( true );
-
-    emit biasChanged( m_gbias );
-}
-
-void
-PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
-{
-    m_weightLabel->setText( QString().sprintf( "%d%%", ival ) );
-
-    double fval = (double)ival / 100.0;
-    if( fval != m_gbias->weight() )
+    // -- In cases of replacement bias
+    if( !factoryFound )
     {
-        m_gbias->setWeight( fval );
+        m_biasSelection->addItem( m_bias->name() );
+        m_biasSelection->setCurrentIndex( m_biasSelection->count() - 1 );
+        m_descriptionLabel->setText( i18n( "This bias is a replacement for another bias\n"
+                                         "which is currently not loaded or deactivated.\n"
+                                         "The original bias name was %1." ).arg( m_bias->name() ) );
+    }
 
-        emit biasChanged( m_gbias );
+    connect( Dynamic::BiasFactory::instance(), SIGNAL( changed() ),
+             this, SLOT( factoriesChanged() ) );
+}
+
+void
+PlaylistBrowserNS::BiasDialog::selectionChanged( int index )
+{
+    DEBUG_BLOCK;
+    Q_ASSERT( m_biasSelection );
+
+    QString biasName = m_biasSelection->itemData( index ).toString();
+
+    Dynamic::BiasPtr oldBias( m_bias );
+    Dynamic::BiasPtr newBias( Dynamic::BiasFactory::fromName( biasName ) );
+    if( !newBias )
+    {
+        warning() << "Could not create bias with name:"<<biasName;
+        return;
+    }
+
+debug() << "replace bias" << oldBias->toString() << "with" << newBias->toString();
+    m_bias->replace( newBias ); // tell the old bias it has just been replaced
+debug() << "replaced";
+
+    // -- if the new bias is AndBias, try to add the old biase(s) into it
+    Dynamic::AndBias *oldABias = qobject_cast<Dynamic::AndBias*>(oldBias.data());
+    Dynamic::AndBias *newABias = qobject_cast<Dynamic::AndBias*>(newBias.data());
+    if( newABias ) {
+        if( oldABias ) {
+            for( int i = 0; i < oldABias->biases().count(); i++ )
+            {
+                newABias->appendBias( oldABias->biases()[i] );
+            }
+        }
+        else
+        {
+            newABias->appendBias( oldBias );
+        }
     }
 }
 
-
-
-PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias, QWidget* parent )
-    : BiasWidget( bias, parent )
-    , m_nbias(bias)
-{
-    QFrame *frame = new QFrame( this );
-    QFormLayout *layout = new QFormLayout( frame );
-    frame->setLayout( layout );
-
-    m_scaleLabel = new QLabel( " 0%", frame );
-    m_scaleSelection = new Amarok::Slider( Qt::Horizontal, 100, frame );
-    m_scaleSelection->setToolTip(
-            i18n( "This controls how strictly to match the given value." ) );
-    QHBoxLayout* sliderLayout = new QHBoxLayout();
-    sliderLayout->addWidget( m_scaleSelection );
-    sliderLayout->addWidget( m_scaleLabel );
-
-    m_queryWidget = new MetaQueryWidget( frame, true, true );
-    layout->addRow( i18n( "Strictness:" ), sliderLayout );
-    layout->addRow( i18n( "Match:" ), m_queryWidget );
-
-    syncControlsToBias();
-
-    connect( m_scaleSelection, SIGNAL(valueChanged(int)),
-             SLOT(scaleChanged(int)) );
-    connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)),
-             SLOT(syncBiasToControls()));
-
-
-    this->layout()->addWidget( frame );
-}
-
 void
-PlaylistBrowserNS::BiasNormalWidget::syncControlsToBias()
+PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
 {
-    int scale = (int)(m_nbias->scale() * 100.0);
-    m_scaleSelection->setValue(scale);
-    scaleChanged(scale); // the widget value might not have changed and thus the signal not fired
+    Q_UNUSED( oldBias );
 
-    MetaQueryWidget::Filter filter;
-    filter.field    = m_nbias->field();
-    filter.numValue = m_nbias->value();
-
-    m_queryWidget->setFilter( filter );
-
-    filter = m_queryWidget->filter();
-}
-
-void
-PlaylistBrowserNS::BiasNormalWidget::syncBiasToControls()
-{
-    m_nbias->setField( m_queryWidget->filter().field );
-    m_nbias->setValue( m_queryWidget->filter().numValue );
-    m_nbias->setScale( m_scaleSelection->value() / 100.0 );
-    m_nbias->setActive( true );
-
-    emit biasChanged( m_nbias );
-}
-
-void
-PlaylistBrowserNS::BiasNormalWidget::scaleChanged( int ival )
-{
-    m_scaleLabel->setText( QString().sprintf( "%d%%", ival ) );
-
-    double fval = (double)ival / 100.0;
-    if( fval != m_nbias->scale() )
+    if( m_biasWidget )
     {
-        m_nbias->setScale( fval );
-
-        emit biasChanged( m_nbias );
+        m_biasLayout->removeWidget( m_biasWidget );
+        m_biasWidget->deleteLater();
+        m_biasWidget = 0;
     }
+
+    m_bias = newBias;
+    if( !newBias )
+        return;
+
+    connect( newBias.data(), SIGNAL( replaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ),
+             this, SLOT( biasReplaced( Dynamic::BiasPtr, Dynamic::BiasPtr ) ) );
+
+    m_biasWidget = newBias->widget( 0 );
+    if( !m_biasWidget )
+        m_biasWidget = new QLabel( i18n("This bias has no settings") );
+    m_biasLayout->addWidget( m_biasWidget );
+
+    factoriesChanged(); // update the bias description and select the new combo entry
 }
+
+
 
 #include "DynamicBiasWidgets.moc"
-

@@ -1,5 +1,8 @@
 /****************************************************************************************
- * Copyright (c) 2009, 2010 Leo Franchi <lfranchi@kde.org>                              *
+ * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,47 +17,32 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef DYNAMIC_CUSTOM_BIAS_ENTRY_WIDGET_H
-#define DYNAMIC_CUSTOM_BIAS_ENTRY_WIDGET_H
+#ifndef TEXTUALQUERYFILTER_H
+#define TEXTUALQUERYFILTER_H
 
 #include "amarok_export.h"
-#include "DynamicBiasWidgets.h"
 
-namespace Dynamic
+#include "core/meta/Meta.h"
+#include "core/collections/QueryMaker.h"
+#include "CollectionTreeItem.h"
+
+#include <QAbstractItemModel>
+#include <QDateTime>
+
+namespace Collections
 {
+    /** Adds a conditions to the query maker specified in the filter.
+        This is the engine behind the search field.
+    */
+    void addTextualFilter( Collections::QueryMaker *qm, const QString &filter );
 
-class CustomBias;
+    void addDateFilter( qint64 field, Collections::QueryMaker::NumberComparison compare,
+                        bool negate, const QString &text, Collections::QueryMaker *qm );
 
-// this should not be subclassed by implementing biases. this will call the widget() function
-// of the CustomBiasEntry set on the CustomBias.
-class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
-{
-    Q_OBJECT
-    public:
-        explicit CustomBiasEntryWidget( CustomBias* bias, QWidget* parent = 0 );
-
-    signals:
-        void weightChangedInt( int );
-
-    public slots:
-        void refreshBiasFactories();
-
-    private slots:
-        void selectionChanged( int index );
-        void weightChanged( int amount );
-
-    private:
-        void setCurrentLoadedBiasWidget();
-
-        CustomBias* m_cbias;
-        QWidget* m_currentConfig;
-
-        QGridLayout* m_layout;
-        Amarok::Slider* m_weightSelection;
-        QLabel*         m_weightLabel;
-        QLabel*         m_withLabel;
-        KComboBox*      m_fieldSelection;
-};
+    /** Returns a QDateTime from a text.
+        e.g. converts "today" to the current date.
+    */
+    QDateTime semanticDateTimeParser( const QString &text );
 
 }
 

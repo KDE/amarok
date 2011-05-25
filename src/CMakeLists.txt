@@ -321,6 +321,8 @@ set(collection_SRCS
     core-impl/collections/support/XmlQueryReader.cpp
     core-impl/collections/support/XmlQueryWriter.cpp
     core-impl/collections/support/FileCollectionLocation.cpp
+    core-impl/collections/support/Expression.cpp
+    core-impl/collections/support/TextualQueryFilter.cpp
 )
 
 #####################################################################
@@ -369,11 +371,10 @@ set(libpodcasts_SRCS
 #####################################################################
 set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/APGCategory.cpp
-    browsers/playlistbrowser/DynamicModel.cpp
     browsers/playlistbrowser/DynamicCategory.cpp
     browsers/playlistbrowser/DynamicBiasDelegate.cpp
-    browsers/playlistbrowser/DynamicBiasModel.cpp
     browsers/playlistbrowser/DynamicBiasWidgets.cpp
+    browsers/playlistbrowser/DynamicView.cpp
     browsers/playlistbrowser/PlaylistBrowserFilterProxy.cpp
     browsers/playlistbrowser/PlaylistBrowserModel.cpp
     browsers/playlistbrowser/PlaylistBrowserCategory.cpp
@@ -472,18 +473,22 @@ endif(KDEMULTIMEDIA_FOUND)
 # DYNAMIC
 #####################################################################
 set(libdynamic_SRCS
-    dynamic/Bias.cpp
+    dynamic/TrackSet.cpp
+    dynamic/BiasFactory.cpp
     dynamic/BiasedPlaylist.cpp
     dynamic/BiasSolver.cpp
-    dynamic/CustomBias.cpp
-    dynamic/CustomBiasEntry.cpp
-    dynamic/CustomBiasEntryWidget.cpp
     dynamic/DynamicPlaylist.cpp
-    dynamic/TrackSet.cpp
-    dynamic/gsl/gauss.c
+    dynamic/DynamicModel.cpp
 
     # biases
-    dynamic/biases/EchoNest.cpp
+    dynamic/Bias.cpp
+    dynamic/biases/AlbumPlayBias.cpp
+    dynamic/biases/EchoNestBias.cpp
+    dynamic/biases/IfElseBias.cpp
+    dynamic/biases/PartBias.cpp
+    dynamic/biases/QuizPlayBias.cpp
+    dynamic/biases/TagMatchBias.cpp
+    dynamic/biases/SearchQueryBias.cpp
 )
 
 #####################################################################
@@ -634,7 +639,6 @@ set(amaroklib_LIB_SRCS
     CaseConverter.cpp
     DirectoryLoader.cpp
     EngineController.cpp
-    Expression.cpp
     KNotificationBackend.cpp
     MainWindow.cpp
     MediaDeviceCache.cpp

@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,13 +20,15 @@
 #define DEBUG_PREFIX "BiasSolver"
 
 #include "BiasSolver.h"
+#include "TrackSet.h"
+
+#include "amarokconfig.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaConstants.h"
-#include "TrackSet.h"
 
 #include <cmath>
-#include <typeinfo>
+// #include <typeinfo>
 
 #include <QHash>
 #include <QMutexLocker>
@@ -49,58 +52,100 @@ const double Dynamic::BiasSolver::SA_INITIAL_TEMPERATURE = 0.28;
 const double Dynamic::BiasSolver::SA_COOLING_RATE        = 0.82;
 const int    Dynamic::BiasSolver::SA_GIVE_UP_LIMIT       = 250;
 
-
-
-QList<QByteArray> Dynamic::BiasSolver::s_universe;
-QMutex            Dynamic::BiasSolver::s_universeMutex;
-Collections::QueryMaker*       Dynamic::BiasSolver::s_universeQuery = 0;
-Collections::Collection*       Dynamic::BiasSolver::s_universeCollection = 0;
-bool              Dynamic::BiasSolver::s_universeOutdated = true;
-unsigned int      Dynamic::BiasSolver::s_uidUrlProtocolPrefixLength = 0;
-
-
-
-/*
- * A playlist/energy pair, used by ga_optimize to sort lists of playlists by
- * their energy.
- */
 namespace Dynamic
 {
-    struct TrackListEnergyPair
+    class SolverList
     {
-        TrackListEnergyPair( Meta::TrackList trackList, double energy )
-            : trackList(trackList), energy(energy) {}
+        public:
 
-        bool operator<( const TrackListEnergyPair& x ) const { return energy < x.energy; }
+        SolverList( Meta::TrackList trackList,
+                    int contextCount,
+                    BiasPtr bias )
+            : m_trackList(trackList)
+            , m_contextCount( contextCount )
+            , m_bias( bias )
+            , m_energyValid( false )
+        {}
 
-        Meta::TrackList trackList;
-        double energy;
+        void appendTrack( Meta::TrackPtr track )
+        {
+            m_trackList.append( track );
+            m_energyValid = false;
+        }
+
+        void setTrack( int pos, Meta::TrackPtr track )
+        {
+            m_trackList.replace( pos, track );
+            m_energyValid = false;
+        }
+
+        bool operator<( const SolverList& x ) const
+        { return energy() < x.energy(); }
+
+        SolverList &operator=( const SolverList& x )
+        {
+            m_trackList = x.m_trackList;
+            m_energyValid = x.m_energyValid;
+            m_energy = x.m_energy;
+            m_contextCount = x.m_contextCount;
+
+            return *this;
+        }
+
+        double energy() const
+        {
+            if( !m_energyValid )
+            {
+                m_energy = m_bias->energy( m_trackList, m_contextCount );
+                m_energyValid = true;
+            }
+            return m_energy;
+        }
+
+        /** Retuns a TrackSet with all the tracks in this SolverList excluding the track at position */
+        Dynamic::TrackSet withoutDuplicates( int position,
+                                             const Dynamic::TrackSet& oldSet ) const
+        {
+            Dynamic::TrackSet result = Dynamic::TrackSet( oldSet );
+            for( int i = 0; i < m_trackList.count(); i++ )
+                if( i != position && m_trackList[i] )
+                    result.subtract( m_trackList[i] );
+
+            return result;
+        }
+
+        Meta::TrackList m_trackList;
+        int m_contextCount; // the number of tracks belonging to the context
+        BiasPtr m_bias;
+
+    private:
+        mutable bool m_energyValid;
+        mutable double m_energy;
     };
 }
 
 
 
-Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, Meta::TrackList context )
-    : m_biases(biases)
-    , m_n(n)
-    , m_context(context)
-    , m_epsilon( 1.0 / (double)n )
-    , m_pendingBiasUpdates(0)
-    , m_abortRequested(false)
+Dynamic::BiasSolver::BiasSolver( int n, Dynamic::BiasPtr bias, Meta::TrackList context )
+    : m_n( n )
+    , m_bias( bias )
+    , m_context( context )
+    , m_abortRequested( false )
 {
-    // debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId();
-    int i = m_biases.size();
-    while( i-- )
-    {
-        m_biasEnergy.append( 0.0 );
-        m_biasMutationEnergy.append( 0.0 );
-    }
+    debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId() << "to get"<<n<<"tracks with"<<context.count()<<"context";
+
+    m_allowDuplicates = AmarokConfig::dynamicDuplicates();
+
+    getTrackCollection();
+
+    connect( m_bias.data(), SIGNAL( resultReady( const Dynamic::TrackSet & ) ),
+             this,  SLOT( biasResultReady( const Dynamic::TrackSet & ) ) );
 }
 
 
 Dynamic::BiasSolver::~BiasSolver()
 {
-    // debug() << "DESTROYING BiasSolver in thread:" << QThread::currentThreadId();
+    debug() << "DESTROYING BiasSolver in thread:" << QThread::currentThreadId();
 }
 
 
@@ -131,49 +176,23 @@ Dynamic::BiasSolver::setAutoDelete( bool autoDelete )
     }
 }
 
-void Dynamic::BiasSolver::prepareToRun()
-{
-    DEBUG_BLOCK
-
-    // update biases
-    CollectionDependantBias* cb;
-    foreach( Bias* b, m_biases )
-    {
-        if( (cb = dynamic_cast<CollectionDependantBias*>( b ) ) )
-        {
-            if( cb->needsUpdating() )
-            {
-                connect( cb, SIGNAL(biasUpdated(CollectionDependantBias*)),
-                        SLOT(biasUpdated()), Qt::DirectConnection );
-                cb->update();
-                m_pendingBiasUpdates++;
-            }
-        }
-    }
-
-    // nothing to update
-    if( !m_pendingBiasUpdates && !s_universeOutdated )
-    {
-        if (!m_abortRequested)
-            emit readyToRun();
-        else
-            emit failed(0);
-        return;
-    }
-
-
-    // update universe
-
-    if( s_universeOutdated )
-        updateUniverse();
-}
 
 void Dynamic::BiasSolver::run()
 {
     DEBUG_BLOCK
 
     debug() << "BiasSolver::run in thread:" << QThread::currentThreadId();
-    computeFeasibleFilters();
+
+    // wait until we get the track collection
+    {
+        QMutexLocker locker( &m_collectionResultsMutex );
+        if( !m_trackCollection )
+        {
+            debug() << "waiting for colleciton results";
+            m_collectionResultsReady.wait( &m_collectionResultsMutex );
+        }
+        debug() << "collection has" << m_trackCollection->count()<<"uids";
+    }
 
     /*
      * Two stage solver: Run ga_optimize and feed it's result into sa_optimize.
@@ -191,19 +210,69 @@ void Dynamic::BiasSolver::run()
      */
     //Meta::TrackList playlist = ga_optimize( GA_ITERATION_LIMIT, true );
 
-    Meta::TrackList playlist = generateInitialPlaylist();
-    if( playlist.isEmpty() )
-        return;
+    debug() << "generating playlist";
+    SolverList playlist = generateInitialPlaylist();
+    debug() << "got playlist with"<<playlist.energy();
 
-    sa_optimize( playlist, SA_ITERATION_LIMIT, true );
+    // actually for now the simple optimize finds a perfect solution in many cases
+    simpleOptimize( &playlist );
+    debug() << "after simple optimize playlist with"<<playlist.energy();
 
-    m_solution = playlist;
+    if( playlist.energy() > epsilon() && !m_abortRequested ) // the playlist is only slightly wrong
+    {
+        annealingOptimize( &playlist, SA_ITERATION_LIMIT, true );
+    }
+    debug() << "Found solution with energy"<<playlist.energy();
+
+    m_solution = playlist.m_trackList.mid( m_context.count() );
 }
 
+void
+Dynamic::BiasSolver::simpleOptimize( SolverList *list )
+{
+    DEBUG_BLOCK;
+
+    // first set some random tracks
+    // this prevents the part bias from first fullfilling the easy conditions
+    for( int i = 0; i < m_n / 2; i++ )
+    {
+        // choose the mutation position
+        int newPos = (KRandom::random() % (list->m_trackList.count() - list->m_contextCount))
+            + list->m_contextCount;
+
+        TrackSet set = matchingTracks( newPos, list->m_trackList );
+        Meta::TrackPtr newTrack;
+        if( !m_allowDuplicates )
+            newTrack = getRandomTrack( list->withoutDuplicates( newPos, set ) );
+        else
+            newTrack = getRandomTrack( set );
+        if( newTrack )
+            list->setTrack( newPos, newTrack );
+    }
+
+    // now go through the complete list again and try to fullfill all
+    for( int i = list->m_contextCount; i < list->m_trackList.count(); i++ )
+    {
+        TrackSet set = matchingTracks( i, list->m_trackList );
+        Meta::TrackPtr newTrack;
+        if( !m_allowDuplicates )
+            newTrack = getRandomTrack( list->withoutDuplicates( i, set ) );
+        else
+            newTrack = getRandomTrack( set );
+        if( newTrack )
+            list->setTrack( i, newTrack );
+    }
+}
 
 void
-Dynamic::BiasSolver::sa_optimize( Meta::TrackList& playlist, int i, bool updateStatus )
+Dynamic::BiasSolver::annealingOptimize( SolverList *list,
+                                        int iterationLimit,
+                                        bool updateStatus )
 {
+    DEBUG_BLOCK;
+
+    SolverList originalList = *list;
+
     /*
      * The process used here is called "simulated annealing". The basic idea is
      * that the playlist is randomly mutated one track at a time. Mutations that
@@ -218,67 +287,88 @@ Dynamic::BiasSolver::sa_optimize( Meta::TrackList& playlist, int i, bool updateS
      * on the internet or your local library.
      */
 
-    double E = energy( playlist );
     double T = SA_INITIAL_TEMPERATURE;
+    TrackSet universeSet( m_trackCollection, true );
 
-    Meta::TrackPtr mutation;
-    double prevE = 0.0;
+    double oldEnergy = 0.0;
     int giveUpCount = 0;
-    while( i-- && E >= m_epsilon && !m_abortRequested )
+    while( iterationLimit-- && list->energy() >= epsilon() && !m_abortRequested )
     {
         // if the energy hasn't changed in SA_GIVE_UP_LIMIT iterations, we give
         // up and bail out.
-        if( prevE == E )
+        if( oldEnergy == list->energy() )
             giveUpCount++;
         else
         {
-            prevE = E;
+            oldEnergy = list->energy();
             giveUpCount = 0;
         }
 
         if( giveUpCount >= SA_GIVE_UP_LIMIT )
             break;
 
-
-        // get a random mutation track.
-        mutation = getMutation();
-
-        if( !mutation )
-            break;
-
         // choose the mutation position
-        int mutationPos = KRandom::random() % playlist.size();
+        int newPos = (KRandom::random() % (list->m_trackList.count() - list->m_contextCount))
+            + list->m_contextCount;
 
-        double mutationE = recalculateEnergy( playlist, mutation, mutationPos );
+        // choose a matching track or a random one. Prefere matching
+        Meta::TrackPtr newTrack;
+        if( iterationLimit % 4 )
+        {
+            TrackSet set = matchingTracks( newPos, list->m_trackList );
+            if( !m_allowDuplicates )
+                newTrack = getRandomTrack( list->withoutDuplicates( newPos, set ) );
+            else
+                newTrack = getRandomTrack( set );
+        }
+        else
+        {
+            if( !m_allowDuplicates )
+                newTrack = getRandomTrack( list->withoutDuplicates( newPos, universeSet ) );
+            else
+                newTrack = getRandomTrack( universeSet );
+        }
 
+        if( !newTrack )
+            continue;
 
-        double p = 1.0 / ( 1.0 + exp( (mutationE - E)  / T ) );
+        debug() << "replacing"<<newPos<<list->m_trackList[newPos]->name()<<"with"<<newTrack->name();
+
+        SolverList newList = *list;
+        newList.setTrack( newPos, newTrack );
+
+        double p = 1.0 / ( 1.0 + exp( (newList.energy() - list->energy()) / list->m_trackList.count()  / T ) );
         double r = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
 
         // accept the mutation ?
         if( r <= p )
-        {
-            playlist[ mutationPos ] = mutation;
-            E = mutationE;
-            m_biasEnergy = m_biasMutationEnergy;
-        }
+            *list = newList;
 
         // cool the temperature
         T *= SA_COOLING_RATE;
 
-        
-        if( updateStatus && i % 100 == 0 )
+        if( updateStatus && iterationLimit % 100 == 0 )
         {
-            debug() << "SA: E = " << E;
-            int progress = (int)(100.0 * (1.0 - E));
+            debug() << "SA: E = " << list->energy();
+            int progress = (int)(100.0 * (1.0 - list->energy()));
             emit statusUpdate( progress >= 0 ? progress : 0 );
         }
     }
+
+    // -- use the original list if we made it worse
+    if( list->energy() > originalList.energy() )
+        *list = originalList;
 }
 
-Meta::TrackList
-Dynamic::BiasSolver::ga_optimize( int iterationLimit, bool updateStatus )
+void
+Dynamic::BiasSolver::geneticOptimize( SolverList *list,
+                                      int iterationLimit,
+                                      bool updateStatus )
 {
+    Q_UNUSED( list );
+    Q_UNUSED( iterationLimit );
+    Q_UNUSED( updateStatus );
+
     /**
      * Here we attempt to produce an optimal playlist using a genetic algorithm.
      * The basic steps:
@@ -293,10 +383,11 @@ Dynamic::BiasSolver::ga_optimize( int iterationLimit, bool updateStatus )
      *   4. The worst playlists in the population are thrown out and replaced
      *      with the new offspring.
      */
+#if 0
 
     // 1.  Generate initial population
-    QList<TrackListEnergyPair> population;
-    Meta::TrackList playlist;
+    QList<SolverList> population;
+    SolverList playlist;
     while( population.size() < GA_POPULATION_SIZE )
     {
         // TODO: OPTIMIZATION: most of the time spend solving now is spent
@@ -314,12 +405,12 @@ Dynamic::BiasSolver::ga_optimize( int iterationLimit, bool updateStatus )
             return Meta::TrackList();
         }
 
-        double plEnergy = energy( playlist );
+        double plEnergy = playlist->energy();
 
-        if( plEnergy < m_epsilon ) // no need to continue if we already found an optimal playlist
+        if( plEnergy < epsilon() ) // no need to continue if we already found an optimal playlist
             return playlist;
 
-        population.append( TrackListEnergyPair( playlist, plEnergy ) );
+        population.append( playlist );
     }
 
     qSort( population ); // sort the population by energy.
@@ -329,7 +420,7 @@ Dynamic::BiasSolver::ga_optimize( int iterationLimit, bool updateStatus )
     int giveUpCount = 0;
     int i = iterationLimit;
     QList<int> matingPopulation;
-    while( i-- && population.first().energy >= m_epsilon && !m_abortRequested )
+    while( i-- && population.first().energy >= epsilon() && !m_abortRequested )
     {
         // Sometime the optimal playlist can't have an energy of 0.0, or the
         // algorithm just gets stuck. So if the energy hasn't changed after
@@ -430,7 +521,7 @@ Dynamic::BiasSolver::ga_optimize( int iterationLimit, bool updateStatus )
         {
             // TODO: try introducing mutations to the offspring here.
 
-            population[j--] = TrackListEnergyPair( p, energy(p) );
+            population[j--] = SolverList( p, energy(p) );
         }
 
         qSort( population ); // sort playlists by energy
@@ -438,45 +529,8 @@ Dynamic::BiasSolver::ga_optimize( int iterationLimit, bool updateStatus )
 
 
     // select the best solution
-    playlist = population.first().trackList;
-    energy( playlist ); // (we have to recalculate, so m_biasEnergy gets set correctly.) 
-
-    return playlist;
-}
-
-
-
-QList<int>
-Dynamic::BiasSolver::generateMatingPopulation( const QList<TrackListEnergyPair>& population )
-{
-    /**
-     * Used by the reproduction phase of each iteration of the ge_optimize, this
-     * algorithm chooses the subset of the population that will be used to
-     * produce offspring. The technique used here is called "stochastic
-     * universal sampling".
-     */
-
-    double sum = 0.0;
-    foreach( const TrackListEnergyPair &p, population )
-        sum += 1.0 - p.energy;
-
-    double p = 
-        (1.0/(double)GA_MATING_POPULATION_SIZE) *
-        ((double)KRandom::random() / (((double)RAND_MAX) + 1.0));
-
-    QList<int> matingPopulation;
-    for( int i = 0; i < population.size() && matingPopulation.size() < GA_MATING_POPULATION_SIZE; ++i )
-    {
-        if( p <= (1.0 - population[i].energy)/sum )
-        {
-            matingPopulation.append( i );
-            p += 1.0/(double)GA_MATING_POPULATION_SIZE;
-        }
-
-        p -= (1.0 - population[i].energy)/sum;
-    }
-
-    return matingPopulation;
+    *list = population.first();
+#endif
 }
 
 
@@ -486,236 +540,33 @@ Meta::TrackList Dynamic::BiasSolver::solution()
 }
 
 
-void
-Dynamic::BiasSolver::biasUpdated()
-{
-    DEBUG_BLOCK
-
-    if( m_pendingBiasUpdates <= 0 )
-        return;
-
-    if( --m_pendingBiasUpdates == 0 && !s_universeOutdated ) {
-        if (!m_abortRequested)
-            emit readyToRun();
-        else
-            emit failed(0);
-    }
-}
-
-
-
-double Dynamic::BiasSolver::energy( const Meta::TrackList& playlist )
-{
-    int activeBiases = 0;
-    double sum = 0.0;
-    for( int i = 0; i < m_biases.size(); ++i )
-    {
-        if( m_biases[i]->active() )
-        {
-            m_biasEnergy[i] = m_biases[i]->energy( playlist, m_context );
-            sum += qAbs( m_biasEnergy[i]  );
-            activeBiases++;
-        }
-    }
-
-    return sum / (double)activeBiases;
-}
-
-
-double Dynamic::BiasSolver::recalculateEnergy( const Meta::TrackList& playlist, Meta::TrackPtr mutation, int mutationPos )
-{
-    int activeBiases = 0;
-    double sum = 0.0;
-    for( int i = 0; i < m_biases.size(); ++i )
-    {
-        if( m_biases[i]->active() )
-        {
-            m_biasMutationEnergy[i] = 
-                m_biases[i]->reevaluate( 
-                        m_biasEnergy[i], playlist, mutation, 
-                        mutationPos, m_context );
-            sum += qAbs( m_biasMutationEnergy[i] );
-            activeBiases++;
-        }
-    }
-
-    return sum / (double)activeBiases;
-}
-
-
-Meta::TrackList
+Dynamic::SolverList
 Dynamic::BiasSolver::generateInitialPlaylist() const
 {
-    DEBUG_BLOCK
-
-    /*
-     * Playlist generation is NP-Hard, but the subset of playlist generation
-     * that consists of just global, proportional biases can be solved in linear
-     * time (to be precise, O(m*n), where m is the number of biases, and n is
-     * the size of the playlist to generate.  Here we do that. Since we rely on
-     * random mutations, and the subset of the proportional bias may be very
-     * small, solving it otherwise could be potentially very slow. 
-     *
-     * Note that this is just a heuristic for the system as whole. We cross our
-     * fingers a bit and assume it is mostly composed of global biases.
-     *
-     * The Algorithm:
-     * (I invented this, but it seems like something that would already exist. If
-     * anyone knows what this is called, please let me know. --DCJ)
-     *
-     * We start with a collection of proportional biases, those with
-     * with a [0,1] proportion p_i and a subset of the universe, S_i.
-     *
-     * We build up a playlist one track at a time.  For each bias we must make a
-     * decision: is the track in the set S_i, or not in the set S_i. So the
-     * algorithm can be thought of as working its way down a tree:
-     *
-     *                              In S_0?
-     *                               /   \
-     *                            (yes) (no)
-     *                             /      \
-     *                         In S_1?   In S_1? 
-     *                          /  \     /  \
-     *                        ... ...  ...  ...
-     *
-     * In this way we find a subset from which to choose a random track so it
-     * will satisfy the biases. We start with S = U (the universe set), then at
-     * each step, if we decide the track is in S_i, we set "S := S intersect
-     * S_i", on the other hand, if we decide the track is not in S_i, we take "S
-     * := S subtract S_i". Once we get to the bottom of the tree, S is a subset
-     * from which we choose a random track.
-     *
-     * Ok, but how do we decide if the track is in or not in a set S_i? We use
-     * the proportions (p_i) and decide at random. If p_0 = 0.4, there is a 0.4
-     * chance the we decide the track is in S_0, and a 0.6 chance it is not.
-     *
-     * This chance changes obviously.
-     * It is: songsToPick - songsAlreadyPicked / songsStillNeedsPicking
-     * Where songsToPick is the original weight * m_n
-     *
-     * There are a couple of other caveats (such as producing reasonable
-     * playlists when given infeasible systems of biases, e.g. 100% Radiohead,
-     * AND 100% Bob Dylan), that you can read on to learn about.
-     *
-     */
-
-    Meta::TrackList playlist;
+    SolverList result( m_context, m_context.count(), m_bias );
 
     // Empty collection
-    if( s_universe.isEmpty() )
+    if( m_trackCollection->count() == 0 )
     {
         debug() << "Empty collection when trying to generate initial playlist...";
-        return Meta::TrackList();
+        return result;
     }
 
-    // No feasible global biases so we just pick random tracks
-    if( m_feasibleCollectionFilters.size() == 0 )
+    // just create a simple playlist by adding random tracks to the end.
+
+    TrackSet universeSet( m_trackCollection, true );
+    while( result.m_trackList.count() < m_context.count() + m_n )
     {
-        int n = m_n;
-        while( n-- )
-        {
-            Meta::TrackPtr track = getRandomTrack( TrackSet(s_universe) );
-            if( !track )
-                break;
-            playlist.append( track );
-        }
-
-        debug() << "No collection filters, returning random initial playlist";
-        return playlist;
+        Meta::TrackPtr newTrack;
+        if( !m_allowDuplicates )
+            newTrack = getRandomTrack( result.withoutDuplicates( -1, universeSet ) );
+        else
+            newTrack = getRandomTrack( universeSet );
+        result.appendTrack( newTrack );
     }
 
-    int *addedSongsForFilter = new int[m_feasibleCollectionFilters.size()];
-    for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
-        addedSongsForFilter[i] = 0;
-
-    // We use this array of indexes to randomize the order the biases are looked
-    // at. That way we get reasonable results when the system is infeasible.
-    // That is, specifying 100% of two mutually exclusive artists, will get you
-    // about 50% of each.
-    QList<int> indexes;
-    for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
-        indexes.append( i );
-
-
-    int n = m_n;
-    while( n-- && !m_abortRequested )
-    {
-        // Randomize the order.
-        int m = m_feasibleCollectionFilters.size();
-        while( m > 1 )
-        {
-            int k = KRandom::random() % m;
-            --m;
-            indexes.swap( m, k );
-        }
-
-        // For each bias, we must make a decision whether the track being chosen
-        // should belong to it or not. This is simply a probabilistic choice
-        // based on the current weight.
-
-        // The bit array represents the choice made at each branch.
-        QBitArray branches( m_feasibleCollectionFilters.size(), 0x0 );
-
-        Dynamic::TrackSet currentSet(s_universe);
-
-        for( int _i = 0; _i < m_feasibleCollectionFilters.size(); ++_i )
-        {
-            int i = indexes[_i];
-
-            Dynamic::TrackSet newSet = currentSet;
-
-            // Decide whether we should 'accept' or 'reject' a bias.
-            double decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
-            double currentWeight = (m_feasibleCollectionFilters[i]->weight() * m_n - addedSongsForFilter[i]) / (double)(n+1);
-
-            // debug() << "decider is set to:" << decider << "currentWeight is:" << currentWeight;
-            if( decider < currentWeight )
-            {
-                // debug() << "chose track from bias";
-                branches.setBit( i, true );
-                newSet.intersect( m_feasibleCollectionFilterSets[i] );
-            }
-            else
-            {
-                // debug() << "bias NOT chosen.";
-                branches.setBit( i, false );
-                newSet.subtract( m_feasibleCollectionFilterSets[i] );
-            }
-
-            // Now we have to make sure our decision doesn't land us with an
-            // empty set. If that's the case, we have to choose the other
-            // branch, even if it does defy the probability. (This is how we
-            // deal with infeasible systems.)
-            //debug() << "after set intersection/subtraction, R has size:" << R.size();
-
-            if( newSet.trackCount() == 0 ) {
-                // debug() << "bias would result in empty set. reverting decision";
-                branches.toggleBit( i );
-            }
-            else
-            {
-                currentSet = newSet;
-                if( branches[i] )
-                    addedSongsForFilter[i]++;
-            }
-        }
-
-        // this should never happen
-        if( currentSet.trackCount() == 0 )
-        {
-            error() << "BiasSolver assumption failed.";
-            continue;
-        }
-
-        // choose a track at random from our final subset
-        Meta::TrackPtr track = getRandomTrack(currentSet);
-        if( !track )
-            break;
-        playlist.append( track );
-    }
-    delete[] addedSongsForFilter;
-
-    return playlist;
+    debug() << "generated random playlist with"<<result.m_trackList.count()<<"tracks";
+    return result;
 }
 
 Meta::TrackPtr
@@ -729,7 +580,7 @@ Dynamic::BiasSolver::getRandomTrack( const TrackSet& subset ) const
     // this is really dumb, but we sometimes end up with uids that don't point to anything
     int giveup = 50;
     while( giveup-- && !track )
-        track = trackForUid( subset.getRandomTrack(s_universe) );
+        track = trackForUid( subset.getRandomTrack() );
 
     if( track )
     {
@@ -743,185 +594,79 @@ Dynamic::BiasSolver::getRandomTrack( const TrackSet& subset ) const
 }
 
 Meta::TrackPtr
-Dynamic::BiasSolver::getMutation()
+Dynamic::BiasSolver::trackForUid( const QString& uid ) const
 {
-    if( m_mutationPool.isEmpty() )
-    {
-        m_mutationPool = generateInitialPlaylist();
-    }
-
-    if( m_mutationPool.isEmpty() )
-        return Meta::TrackPtr();
-    else
-        return m_mutationPool.takeLast();
-}
-
-Meta::TrackPtr
-Dynamic::BiasSolver::trackForUid( const QByteArray& uid ) const
-{
-    const KUrl url = QString( s_universeCollection->uidUrlProtocol() + "://" + uid );
-    Meta::TrackPtr track = s_universeCollection->trackForUrl( url );
-    // try the same without the protocol
-    if( !track )
-         track = s_universeCollection->trackForUrl( KUrl(uid) );
+    const KUrl url( uid );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
     if( !track )
-        warning() << "trackForUid returned no track for "<<uid<<"with protocol: "<< s_universeCollection->uidUrlProtocol();
+        warning() << "trackForUid returned no track for "<<uid;
     return track;
 }
 
 
-void
-Dynamic::BiasSolver::computeFeasibleFilters()
-{
-    DEBUG_BLOCK
-    foreach( Dynamic::Bias* b, m_biases )
-    {
-        if( b->hasCollectionFilterCapability() )
-        {
-            debug() << "Got a bias which says it wants to filter from collection.";
-            Dynamic::CollectionFilterCapability* fc = b->collectionFilterCapability();
-            if( fc )
-            {
-                debug() << "and got a proper collectionfiltercapability from it";
-                debug() << "property size: " << fc->propertySet().size();
+// ---- getting the matchingTracks ----
 
-                // if the bias is infeasible (i.e. size = 0), just ignore it
-                if( fc->propertySet().size() == 0 )
-                {
-                    debug() << "infeasible bias detected"; // ugly but we're using the higher cast as they don't share a root parent
-                    b->setActive(false);
-                    delete fc;
-                }
-                else
-                {
-                    m_feasibleCollectionFilters.append( fc );
-                    m_feasibleCollectionFilterSets.append( TrackSet( s_universe, fc->propertySet() ) );
-                }
-            }
-        }
-    }
+void
+Dynamic::BiasSolver::biasResultReady( const Dynamic::TrackSet &set )
+{
+    DEBUG_BLOCK;
+    QMutexLocker locker( &m_biasResultsMutex );
+    m_tracks = set;
+    m_biasResultsReady.wakeAll();
 }
 
-void
-Dynamic::BiasSolver::updateUniverse()
+Dynamic::TrackSet
+Dynamic::BiasSolver::matchingTracks( int position, const Meta::TrackList& playlist ) const
 {
-    DEBUG_BLOCK
+    QMutexLocker locker( &m_biasResultsMutex );
+    m_tracks = m_bias->matchingTracks( position, playlist, m_context.count(), m_trackCollection );
+    if( m_tracks.isOutstanding() )
+        m_biasResultsReady.wait( &m_biasResultsMutex );
 
-    disconnect( CollectionManager::instance(), SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)), this, SLOT(updateUniverse()) );
+    debug() << "BiasSolver::matchingTracks returns"<<m_tracks.trackCount()<<"of"<<m_trackCollection->count()<<"tracks.";
 
-    /* TODO: Using multiple collections.
-     * One problem with just using MetaQueryMaker is that we can't store uids as
-     * QByteArrays unless we keep separate lists for each collection. If we do
-     * keep separate lists, we have to do some extra kung-fu when generating
-     * random tracks to decide which list to choose from.
-     *
-     * We could just deal with the extra memory usage and store them as uid-url
-     * strings, but when I first wrote this, I don't this there was a general
-     * function to get a track from a uid-url.
-     */
-
-    QMutexLocker locker( &s_universeMutex );
-
-    if( !s_universeOutdated )
-        return;
-
-    if( !s_universeQuery )
-    {
-        if( !s_universeCollection )
-            s_universeCollection = CollectionManager::instance()->primaryCollection();
-        if( !s_universeCollection ) // WTF we really can't get a primarycollection?
-        {                           //  whenever a collection is added lets check again, so we catch the loading of the primary colletion
-            connect( CollectionManager::instance(), SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)), this, SLOT(updateUniverse()) );
-            return;
-        }
-        
-        s_universeQuery = s_universeCollection->queryMaker();
-        s_universeQuery->setAutoDelete( true );
-        s_universeQuery->setQueryType( Collections::QueryMaker::Custom );
-        s_universeQuery->addReturnValue( Meta::valUniqueId );
-    }
-
-    s_uidUrlProtocolPrefixLength = QString( s_universeCollection->uidUrlProtocol() + "://" ).length();
-
-    connect( s_universeQuery, SIGNAL(newResultReady( QString, QStringList )),
-            SLOT(universeResults( QString, QStringList )), Qt::DirectConnection );
-    connect( s_universeQuery, SIGNAL(queryDone()),
-            SLOT(universeUpdated()), Qt::DirectConnection );
-
-    s_universe.clear();
-    s_universeQuery->run();
+    return m_tracks;
 }
 
 
+// ---- getting the TrackCollection ----
+
 void
-Dynamic::BiasSolver::universeResults( QString collectionId, QStringList uids )
+Dynamic::BiasSolver::trackCollectionResultsReady( QString collectionId, QStringList uids )
 {
-    DEBUG_BLOCK
-    Q_UNUSED(collectionId)
-
-    QMutexLocker locker( &s_universeMutex );
-
-    QByteArray uid;
-    foreach( const QString &uidString, uids )
-    {
-        if ( uidString.isEmpty() )
-            continue;
-
-        // for some reason we sometimes get uids without the protocol part
-        if( uidString.at( s_uidUrlProtocolPrefixLength - 1 ) != '/' )
-            uid = uidString.toAscii();
-        else
-            uid = uidString.mid( s_uidUrlProtocolPrefixLength ).toAscii();
-
-        if( !uid.isEmpty() )
-            s_universe += uid;
-    }
+    Q_UNUSED( collectionId );
+    m_collectionUids.append( uids );
 }
 
 void
-Dynamic::BiasSolver::universeUpdated()
+Dynamic::BiasSolver::trackCollectionDone()
 {
-    DEBUG_BLOCK
-    QMutexLocker locker( &s_universeMutex );
+    QMutexLocker locker( &m_collectionResultsMutex );
 
-    s_universeOutdated = false;
-    s_universeQuery = 0;
+    m_trackCollection = TrackCollectionPtr( new TrackCollection( m_collectionUids ) );
+    m_collectionUids.clear();
 
-    if( m_pendingBiasUpdates == 0 ) {
-        emit(readyToRun());
-        if (m_abortRequested)
-            deleteLater();
-    }
+    m_collectionResultsReady.wakeAll();
 }
 
 void
-Dynamic::BiasSolver::outdateUniverse()
+Dynamic::BiasSolver::getTrackCollection()
 {
-    QMutexLocker locker( &s_universeMutex );
-    s_universeOutdated = true;
+    // get all the unique ids from the collection manager
+    Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
+    qm->setQueryType( Collections::QueryMaker::Custom );
+    qm->addReturnValue( Meta::valUniqueId );
+    qm->setAutoDelete( true );
+
+    connect( qm, SIGNAL(newResultReady( QString, QStringList )),
+             this, SLOT(trackCollectionResultsReady( QString, QStringList )),
+             Qt::DirectConnection );
+    connect( qm, SIGNAL(queryDone()),
+             this, SLOT(trackCollectionDone()),
+             Qt::DirectConnection );
+
+    qm->run();
 }
 
-void
-Dynamic::BiasSolver::setUniverseCollection( Collections::Collection* coll )
-{
-    QMutexLocker locker( &s_universeMutex );
-
-    if( coll != s_universeCollection )
-    {
-        s_universeCollection = coll;
-        s_universeOutdated = true;
-
-        // stop the running query
-        disconnect( s_universeQuery, 0, 0, 0);
-        s_universeQuery = 0; // (we set autodelete) this will get set on update
-    }
-}
-
-const QList<QByteArray>&
-Dynamic::BiasSolver::universe()
-{
-    QMutexLocker locker( &s_universeMutex );
-    return s_universe;
-}
 

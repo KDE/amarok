@@ -117,7 +117,11 @@ public slots:
     void play( const quint64 id, bool now = true );
     void next();
     void back();
-    void playlistModeChanged(); //!< Changes the tracknavigator
+    void enableDynamicMode( bool enable );
+
+    /** Changes the tracknavigator depending on the current configuration */
+    void playlistModeChanged();
+
     void repopulateDynamicPlaylist();
     void queue( QList<int> rows );
     void dequeue( QList<int> rows );

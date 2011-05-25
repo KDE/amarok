@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,113 +18,108 @@
 #ifndef LASTFM_BIAS_H
 #define LASTFM_BIAS_H
 
-#include "CustomBiasEntry.h"
-#include "CustomBiasEntryFactory.h"
+#include "dynamic/Bias.h"
+#include "dynamic/BiasFactory.h"
+#include "dynamic/biases/TagMatchBias.h"
 
+#include <QMutex>
 #include <QNetworkReply>
 
-/**
- *  This is a bias which adds the suggested songs to the playlist.
- *
- */
-
-class KComboBox;
-
-namespace Collections
-{
-    class Collection;
-    class QueryMaker;
-}
+class KJob;
 
 namespace Dynamic
 {
 
-class LastFmBiasFactory : public CustomBiasEntryFactory
-{
-    public:
-        LastFmBiasFactory();
-        ~LastFmBiasFactory();
+    /** This is a bias which adds the suggested songs to the playlist. */
+    class LastFmBias : public SimpleMatchBias
+    {
+        Q_OBJECT
 
-        virtual QString name() const;
-        virtual QString pluginName() const;
-        virtual CustomBiasEntry* newCustomBiasEntry();
-        virtual CustomBiasEntry* newCustomBiasEntry( QDomElement e );
-};
+        public:
 
-// this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
-class LastFmBias : public CustomBiasEntry
-{
-    Q_OBJECT
-public:
-    LastFmBias( bool similarArtists );
-    virtual ~LastFmBias();
+            /** The tracks that are used for the matching */
+            enum MatchType
+            {
+                SimilarArtist,
+                SimilarTrack
+            };
 
-    // reimplemented from CustomBiasEntry
-    virtual QString pluginName() const;
-    virtual QWidget* configWidget ( QWidget* parent );
+            LastFmBias();
+            ~LastFmBias();
 
-    virtual bool trackSatisfies ( const Meta::TrackPtr track );
-    virtual double numTracksThatSatisfy ( const Meta::TrackList& tracks );
+            virtual void fromXml( QXmlStreamReader *reader );
+            virtual void toXml( QXmlStreamWriter *writer ) const;
 
-    virtual QDomElement xml( QDomDocument doc ) const;
+            static QString sName();
+            virtual QString name() const;
+            virtual QString toString() const;
 
-    virtual bool hasCollectionFilterCapability();
-    virtual CollectionFilterCapability* collectionFilterCapability( double weight );
+            virtual QWidget* widget( QWidget* parent = 0 );
 
-    void update();
+            virtual Dynamic::TrackSet matchingTracks( int position,
+                                                      const Meta::TrackList& playlist,
+                                                      int contextCount,
+                                                      Dynamic::TrackCollectionPtr universe ) const;
 
-Q_SIGNALS:
-    void doneFetching();
-
-private Q_SLOTS:
-    void artistQueryDone();
-    void trackQueryDone();
-    void updateBias();
-    void artistUpdateReady ( QString collectionId, QStringList );
-    void trackUpdateReady ( QString collectionId, QStringList );
-    void updateFinished();
-    void collectionUpdated();
-    void activated( int index );
-    void saveDataToFile();
-
-private:
-    void addData( QString collectionId, QStringList uids, const QString& index, QMap< QString, QSet< QByteArray > >& storage );
-    void loadFromFile();
-    bool m_similarArtists;
-    QString m_currentArtist;
-    QString m_currentTrack;
-    QNetworkReply* m_artistQuery;
-    QNetworkReply* m_trackQuery;
-    Collections::QueryMaker* m_qm; // stored so it can be refreshed
-    // if the collection changes
-    Collections::Collection* m_collection; // null => all queryable collections
-    bool m_needsUpdating;
-    QMutex m_mutex;
-
-    KComboBox* m_combo;
-    QMap< QString, QSet< QByteArray > > m_savedArtists; // populated as queries come in
-    QMap< QString, QSet< QByteArray > > m_savedTracks; // populated as queries come in
-    // we do some caching here so multiple
-    // queries of the same artist are cheap
-    friend class LastFmBiasCollectionFilterCapability; // so it can report the property and weight
-};
+            virtual bool trackMatches( int position,
+                                       const Meta::TrackList& playlist,
+                                       int contextCount ) const;
 
 
-class LastFmBiasCollectionFilterCapability : public Dynamic::CollectionFilterCapability
-{
-public:
-    LastFmBiasCollectionFilterCapability ( LastFmBias* bias, double weight ) : m_bias ( bias ), m_weight( weight ) {}
+            MatchType match() const;
+            void setMatch( MatchType value );
 
-    // re-implemented
-    virtual const QSet<QByteArray>& propertySet();
-    virtual double weight() const;
+        public slots:
+            virtual void invalidate();
+
+        private slots:
+            virtual void newQuery();
+            virtual void newSimilarQuery();
+
+            void similarArtistQueryDone();
+            void similarTrackQueryDone();
+
+            void selectionChanged( int );
+
+        private:
+            /** The pair is used for the tracks */
+            typedef QPair<QString, QString> TitleArtistPair;
+
+            static QString nameForMatch( MatchType match );
+            static MatchType matchForName( const QString &name );
+
+            void saveDataToFile() const;
+
+            void readSimilarArtists( QXmlStreamReader *reader );
+            TitleArtistPair readTrack( QXmlStreamReader *reader );
+            void readSimilarTracks( QXmlStreamReader *reader );
+            void loadFromFile();
+
+            mutable QString m_currentArtist;
+            mutable QString m_currentTrack;
+            QNetworkReply* m_artistQuery;
+            QNetworkReply* m_trackQuery;
+
+            MatchType m_match;
+
+            mutable QMutex m_mutex; // mutex protecting all of the below structures
+            mutable QMap< QString, QStringList> m_similarArtistMap;
+            mutable QMap< TitleArtistPair, QList<TitleArtistPair> > m_similarTrackMap;
+            mutable QMap< QString, TrackSet> m_tracksMap; // for artist AND album
+
+        private:
+            Q_DISABLE_COPY(LastFmBias)
+    };
 
 
-private:
-    LastFmBias* m_bias;
-    double m_weight;
-
-};
+    class LastFmBiasFactory : public Dynamic::AbstractBiasFactory
+    {
+        public:
+            virtual QString i18nName() const;
+            virtual QString name() const;
+            virtual QString i18nDescription() const;
+            virtual BiasPtr createBias();
+    };
 
 }
 

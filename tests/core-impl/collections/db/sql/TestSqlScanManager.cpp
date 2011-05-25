@@ -592,10 +592,12 @@ TestSqlScanManager::testMove()
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
     QCOMPARE( album->tracks().count(), 9 );
     QVERIFY( !album->isCompilation() );
-
-    // --- move one track
     track = album->tracks().first();
     QCOMPARE( track->trackNumber(), 1 );
+    QDateTime createDate = track->createDate();
+    QDateTime modifyDate = track->modifyDate();
+
+    // --- move one track
     static_cast<Meta::SqlTrack*>(track.data())->setFirstPlayed( aDate );
     const QString targetPath = m_tmpCollectionDir->name() + "moved.mp3";
     QVERIFY( QFile::rename( track->playableUrl().path(), targetPath ) );
@@ -604,9 +606,10 @@ TestSqlScanManager::testMove()
     waitScannerFinished();
 
     // -- check that the track is moved
+    QVERIFY( createDate == track->createDate() ); // create date should not have changed
+    QVERIFY( modifyDate == track->modifyDate() ); // we just changed the track. it should have changed
     QCOMPARE( track->firstPlayed(), aDate );
     QCOMPARE( track->playableUrl().path(), targetPath );
-
 
     // --- move a directory
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );

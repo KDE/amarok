@@ -17,45 +17,49 @@
  ****************************************************************************************/
 
 #include "TrackSet.h"
+#include "core/support/Debug.h"
 
 #include <KRandom>
 
-Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe)
-    : m_bits( universe.size() )
+Dynamic::TrackCollection::TrackCollection( const QStringList& uids )
 {
-    m_bits.fill( true );
+    m_uids = uids;
+    for( int i = 0; i < m_uids.count(); i++ )
+        m_ids.insert( m_uids[i], i );
 }
 
-Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe,
-                             const QList<QByteArray>& uidList )
-    : m_bits( universe.size() )
+int
+Dynamic::TrackCollection::count() const
 {
-    foreach( const QByteArray &t, uidList )
-    {
-        int i = universe.indexOf( t );
-        if( i != -1 )
-            m_bits.setBit( i );
-    }
+    return m_uids.count();
 }
 
-Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe,
-                              const QSet<QByteArray>& uidSet )
-    : m_bits( universe.size() )
-{
-    foreach( const QByteArray &t, uidSet )
-    {
-        int i = universe.indexOf( t );
-        if( i != -1 )
-            m_bits.setBit( i );
-    }
-}
+Dynamic::TrackSet::TrackSet()
+    : m_bits()
+    , m_collection( 0 )
+{ }
+
+Dynamic::TrackSet::TrackSet( const TrackSet& other )
+    : m_bits( other.m_bits )
+    , m_collection( other.m_collection )
+{ }
+
+Dynamic::TrackSet::TrackSet( const Dynamic::TrackCollectionPtr collection, bool value )
+    : m_bits( collection->count(), value )
+    , m_collection( collection )
+{}
 
 void
-Dynamic::TrackSet::reset()
+Dynamic::TrackSet::reset( bool value )
 {
-    m_bits.clear();
+    m_bits.fill( value );
 }
 
+bool
+Dynamic::TrackSet::isOutstanding() const
+{
+    return !m_collection;
+}
 
 int
 Dynamic::TrackSet::trackCount() const
@@ -63,27 +67,56 @@ Dynamic::TrackSet::trackCount() const
     return m_bits.count(true);
 }
 
-void
-Dynamic::TrackSet::intersect( const Dynamic::TrackSet& B )
+bool
+Dynamic::TrackSet::isEmpty() const
 {
-    m_bits &= B.m_bits;
+    return m_bits.count(false) == m_bits.count();
 }
 
-void
-Dynamic::TrackSet::subtract( const Dynamic::TrackSet& B )
+bool
+Dynamic::TrackSet::isFull() const
 {
-    m_bits |= B.m_bits;
-    m_bits ^= B.m_bits;
+    return m_bits.count(true) == m_bits.count();
 }
 
-QByteArray
-Dynamic::TrackSet::getRandomTrack( const QList<QByteArray>& universe ) const
+bool
+Dynamic::TrackSet::contains( const QString &uid ) const
 {
-    Q_ASSERT( universe.size() == m_bits.size() );
+    if( !m_collection )
+        return false;
+
+    if( !m_collection->m_ids.contains( uid ) )
+        return false;
+
+    int index = m_collection->m_ids.value( uid );
+    return m_bits.at( index );
+}
+
+bool
+Dynamic::TrackSet::contains( const Meta::TrackPtr& B ) const
+{
+    if( !m_collection )
+        return false;
+    if( !B )
+        return false;
+
+    QString str = B->uidUrl();
+    if( !m_collection->m_ids.contains( str ) )
+        return false;
+
+    int index = m_collection->m_ids.value( str );
+    return m_bits.at( index );
+}
+
+QString
+Dynamic::TrackSet::getRandomTrack() const
+{
+    if( !m_collection )
+        return QString();
 
     int count = trackCount();
     if( count == 0 )
-        return QByteArray();
+        return QString();
 
     // stupid that I have to go through the set like this...
     int trackNr = KRandom::random() % count;
@@ -95,13 +128,120 @@ Dynamic::TrackSet::getRandomTrack( const QList<QByteArray>& universe ) const
                 trackNr--;
             else
             {
-                return universe.at(i);
+                return m_collection->m_uids.at(i);
             }
         }
     }
 
-    return QByteArray();
+    return QString();
 }
+
+void
+Dynamic::TrackSet::unite( const Meta::TrackPtr& B )
+{
+    if( !m_collection )
+        return;
+    if( !B )
+        return;
+
+    QString str = B->uidUrl();
+    if( !m_collection->m_ids.contains( str ) ) {
+        warning() << "TrackSet::subtract called for a track not even known to the collection. Track uid is"<<str<<"example from collection"<<m_collection->m_ids.keys().first();
+        return;
+    }
+
+    int index = m_collection->m_ids.value( str );
+    m_bits.setBit( index );
+}
+
+void
+Dynamic::TrackSet::unite( const Dynamic::TrackSet& B )
+{
+    m_bits |= B.m_bits;
+}
+
+void
+Dynamic::TrackSet::unite( const QStringList& B )
+{
+    if( !m_collection )
+        return;
+
+    foreach( const QString &str, B )
+    {
+        if( !m_collection->m_ids.contains( str ) )
+            continue;
+
+        int index = m_collection->m_ids.value( str );
+        m_bits.setBit( index );
+    }
+}
+
+void
+Dynamic::TrackSet::intersect( const Dynamic::TrackSet& B )
+{
+    m_bits &= B.m_bits;
+}
+
+void
+Dynamic::TrackSet::intersect( const QStringList& B )
+{
+    if( !m_collection )
+        return;
+
+    QBitArray bBits( m_bits.count() );
+    foreach( const QString &str, B )
+    {
+        if( !m_collection->m_ids.contains( str ) )
+            continue;
+
+        int index = m_collection->m_ids.value( str );
+        bBits.setBit( index );
+    }
+
+    m_bits &= bBits;
+}
+
+void
+Dynamic::TrackSet::subtract( const Meta::TrackPtr& B )
+{
+    if( !m_collection )
+        return;
+    if( !B )
+        return;
+
+    QString str = B->uidUrl();
+    if( !m_collection->m_ids.contains( str ) ) {
+        warning() << "TrackSet::subtract called for a track not even known to the collection. Track uid is"<<str<<"example from collection"<<m_collection->m_ids.keys().first();
+        return;
+    }
+
+    int index = m_collection->m_ids.value( str );
+    m_bits.clearBit( index );
+}
+
+void
+Dynamic::TrackSet::subtract( const Dynamic::TrackSet& B )
+{
+    m_bits |= B.m_bits;
+    m_bits ^= B.m_bits;
+}
+
+void
+Dynamic::TrackSet::subtract( const QStringList& B )
+{
+    if( !m_collection )
+        return;
+
+    foreach( const QString &str, B )
+    {
+        if( !m_collection->m_ids.contains( str ) )
+            continue;
+
+        int index = m_collection->m_ids.value( str );
+        m_bits.clearBit( index );
+    }
+}
+
 
 
 
@@ -109,6 +249,7 @@ Dynamic::TrackSet&
 Dynamic::TrackSet::operator=( const Dynamic::TrackSet& B )
 {
     m_bits = B.m_bits;
+    m_collection = B.m_collection;
     return *this;
 }
 

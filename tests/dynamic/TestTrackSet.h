@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,12 +14,35 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "CustomBiasEntry.h"
+#ifndef TESTDYNAMICMODEL_H
+#define TESTDYNAMICMODEL_H
 
-#include "core/support/Debug.h"
+#include "dynamic/TrackSet.h"
 
-// CLASS CustomBiasEntry
-Dynamic::CustomBiasEntry::CustomBiasEntry()
+#include <QtTest/QTest>
+
+class TestTrackSet : public QObject
 {
+    Q_OBJECT
+public:
+    TestTrackSet();
 
-}
+private slots:
+    void init();
+    void cleanup();
+
+    void testOutstanding();
+
+    void testEmptyFull();
+
+    void testUnite();
+    void testIntersect();
+    void testSubtract();
+
+    void testEqual();
+
+private:
+    Dynamic::TrackCollectionPtr m_trackCollection;
+};
+
+#endif

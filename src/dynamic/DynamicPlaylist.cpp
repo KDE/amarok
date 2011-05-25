@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,55 +18,32 @@
  ****************************************************************************************/
 
 #include "DynamicPlaylist.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "DynamicModel.h"
 
-
-
-Dynamic::DynamicPlaylist::DynamicPlaylist( Collections::Collection* coll )
-     : m_collection(coll), m_active(true)
+Dynamic::DynamicPlaylist::DynamicPlaylist( QObject *parent )
+    : QObject( parent )
 {
-    if( !m_collection )
-    {
-        m_collection = CollectionManager::instance()->primaryCollection();
-        connect( m_collection, SIGNAL(updated()), this, SLOT(invalidate()) );
-    }
 }
 
 Dynamic::DynamicPlaylist::~DynamicPlaylist()
 {
 }
 
-QDomElement
-Dynamic::DynamicPlaylist::xml() const
-{
-    // unsaveable by default.
-    return QDomElement();
-}
-
-
 void
-Dynamic::DynamicPlaylist::recalculate()
+Dynamic::DynamicPlaylist::repopulate()
 {
     // do nothing by default
 }
 
+QString Dynamic::DynamicPlaylist::title() const
+{ return m_title; }
 
-void
-Dynamic::DynamicPlaylist::invalidate()
+void Dynamic::DynamicPlaylist::setTitle( QString title )
 {
-    // do nothing by default
+    m_title = title;
+    bool inModel = DynamicModel::instance()->index( this ).isValid();
+    if( inModel )
+        DynamicModel::instance()->playlistChanged( this );
 }
-
-
-void
-Dynamic::DynamicPlaylist::setActive(bool active)
-{
-    m_active = active;
-}
-
-
-QString Dynamic::DynamicPlaylist::title() const     { return m_title; }
-
-void Dynamic::DynamicPlaylist::setTitle( QString title )        { m_title = title; }
 
 

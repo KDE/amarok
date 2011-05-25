@@ -20,49 +20,59 @@
 #define AMAROK_BIASEDPLAYLIST_H
 
 #include "Bias.h"
-#include "BiasSolver.h"
 #include "DynamicPlaylist.h"
 #include "core/meta/Meta.h"
 
-#include <QDomElement>
-#include <QObject>
-#include <QWeakPointer>
+#include "amarok_export.h" // we are exporting it for the tests
 
+#include <QObject>
+#include <QMutex>
+#include <QPointer>
+
+class QXmlStreamWriter;
+class QXmlStreamReader;
 
 namespace Dynamic
 {
-    class BiasedPlaylist : public DynamicPlaylist
+    class BiasSolver;
+
+    /** A concrete implementation of the DynamicPlaylist that uses a bias structure to determine new tracks.
+    */
+    class AMAROK_EXPORT BiasedPlaylist : public DynamicPlaylist
     {
         Q_OBJECT
 
         public:
-            static BiasedPlaylist* fromXml( QDomElement );
-            static QString nameFromXml( QDomElement );
+            /** Creates a new random playlist */
+            BiasedPlaylist( QObject *parent = 0 );
 
-            BiasedPlaylist( QString title, QList<Bias*>, Collections::Collection* m_collection = 0 );
+            /** Creates a new playlist from an xml stream */
+            BiasedPlaylist( QXmlStreamReader *reader, QObject *parent = 0 );
+
             ~BiasedPlaylist();
 
-            QDomElement xml() const;
+            void toXml( QXmlStreamWriter *writer ) const;
 
             void requestTracks(int);
 
-            QList<Bias*>& biases();
-            const QList<Bias*>& biases() const;
-
-            void requestAbort();
+            BiasPtr bias() const;
 
         public slots:
-            virtual void recalculate();       
-            virtual void invalidate();
+            virtual void repopulate();
+            virtual void requestAbort();
 
         private slots:
-            void solverReady();
             void solverFinished();
+            void biasChanged();
+            void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
             void updateStatus( int progress );
 
         private:
-            void startSolver( bool withStatusBar = false );
+            /** Starts the BiasSolver (if not already running) and requests a couple of new tracks. */
+            void startSolver();
             void handleRequest();
+
+            /** Returns all the tracks that will come before the newly generated ones. */
             Meta::TrackList getContext();
 
             Meta::TrackList m_buffer;
@@ -70,17 +80,17 @@ namespace Dynamic
 
             int m_numRequested;
 
-            QList<Bias*> m_biases;
+            /** The bias this playlist uses */
+            BiasPtr m_bias;
 
-            QWeakPointer<BiasSolver> m_solver;
+            /** A currently running BiasSolver */
+            QPointer<BiasSolver> m_solver;
 
             static const int BUFFER_SIZE;
     };
-
-    typedef KSharedPtr<BiasedPlaylist> BiasedPlaylistPtr;
 }
 
-Q_DECLARE_METATYPE( Dynamic::BiasedPlaylistPtr )
+// Q_DECLARE_METATYPE( Dynamic::BiasedPlaylistPtr )
 
 #endif
 

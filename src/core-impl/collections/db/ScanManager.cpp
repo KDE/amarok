@@ -549,7 +549,7 @@ ScannerJob::run()
                 {
                     CollectionScanner::Directory *dir = new CollectionScanner::Directory( &m_reader );
                     processor->addDirectory( dir );
-                    debug() << "ScannerJob: run:"<<count<<"current path"<<dir->rpath();
+                    // debug() << "ScannerJob: run:"<<count<<"current path"<<dir->rpath();
                     count++;
 
                     emit message( i18n("Got directory \"%1\" from scanner.").arg( dir->rpath() ) );
@@ -646,7 +646,6 @@ ScannerJob::directoryProcessed()
 bool
 ScannerJob::createScannerProcess( bool restart )
 {
-    DEBUG_BLOCK;
     Q_ASSERT( !m_scanner );
 
     if( m_abortRequested )
@@ -687,7 +686,6 @@ ScannerJob::createScannerProcess( bool restart )
 
     *m_scanner << "--batch" << m_batchfilePath;
 
-    debug() << "starting scanner now:";
     m_scanner->start();
     return m_scanner->waitForStarted( -1 );
 }
@@ -696,8 +694,6 @@ ScannerJob::createScannerProcess( bool restart )
 bool
 ScannerJob::tryRestart()
 {
-    DEBUG_BLOCK;
-
     if( m_scanner->exitStatus() == QProcess::NormalExit )
         return false; // all shiny. no need to restart
 
@@ -719,8 +715,6 @@ ScannerJob::tryRestart()
 void
 ScannerJob::getScannerOutput()
 {
-    DEBUG_BLOCK;
-
     if( !m_scanner->waitForReadyRead( -1 ) )
         return;
     m_incompleteTagBuffer += m_scanner->readAll();

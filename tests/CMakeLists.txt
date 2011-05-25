@@ -21,6 +21,7 @@ add_subdirectory( browsers )
 add_subdirectory( context )
 add_subdirectory( core )
 add_subdirectory( core-impl )
+add_subdirectory( dynamic )
 add_subdirectory( playlist )
 add_subdirectory( playlistmanager )
 add_subdirectory( timecode )
@@ -69,7 +70,7 @@ target_link_libraries(testdebug ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarok
 
 set( testexpression_SRCS
         TestExpression.cpp
-        ${AMAROK_SOURCE_TREE}/Expression.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/support/Expression.cpp
     )
 
 kde4_add_unit_test( testexpression  ${testexpression_SRCS} )

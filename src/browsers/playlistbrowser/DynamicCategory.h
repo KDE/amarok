@@ -21,22 +21,15 @@
 
 #include "browsers/BrowserCategory.h"
 
-#include <QCheckBox>
-#include <QListView>
-#include <QPushButton>
-#include <QToolButton>
-#include <QVBoxLayout>
-#include <QSpinBox>
-
-#include <KComboBox>
-
-namespace Dynamic {
-    class EchoNestBiasFactory;
-}
+class QCheckBox;
+class QPushButton;
+class QToolButton;
+class QStandardItemModel;
+class QSpinBox;
 
 namespace PlaylistBrowserNS {
 
-    class DynamicBiasModel;
+    class DynamicView;
     class DynamicBiasDelegate;
 
     /**
@@ -48,39 +41,28 @@ namespace PlaylistBrowserNS {
             DynamicCategory( QWidget* parent );
             ~DynamicCategory();
 
-        protected slots:
-            void newPalette( const QPalette & palette );
+            bool allowDuplicates() const;
 
         private slots:
-            void OnOff(bool);
-            void enableDynamicMode( bool enable );
-            void playlistSelectionChanged( int index );
-            void save();
+            void navigatorChanged();
+            void selectionChanged();
             void playlistCleared();
             void setUpcomingTracks( int );
             void setPreviousTracks( int );
-            
-        private:
-            void On();
-            void Off();
 
-            void saveOnExit();
-            
-            QCheckBox *m_onOffCheckbox;
+            void setAllowDuplicates( bool value );
+
+        private:
+            QToolButton *m_onOffButton;
+            QToolButton *m_duplicateButton;
+            QToolButton *m_addButton;
+            QToolButton *m_editButton;
+            QToolButton *m_deleteButton;
             QPushButton *m_repopulateButton;
 
-            KComboBox *m_presetComboBox;
-
-            QToolButton *m_saveButton;
-            QToolButton *m_deleteButton;
-            QListView   *m_biasListView;
-            DynamicBiasModel *m_biasModel;
-            DynamicBiasDelegate *m_biasDelegate;
+            DynamicView *m_tree;
 
             QSpinBox *m_previous, *m_upcoming;
-
-            // custom biases
-            Dynamic::EchoNestBiasFactory *m_echoNestBiasFactory;
     };
 
 }

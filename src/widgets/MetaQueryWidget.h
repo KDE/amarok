@@ -103,7 +103,7 @@ class MetaQueryWidget : public QWidget
             /** Returns a textual representation of the filter.
              *  Used for the edit filter dialog (or for debugging)
              */
-            QString toString( bool invert = false );
+            QString toString( bool invert = false ) const;
 
             bool isNumeric() const
             { return MetaQueryWidget::isNumeric(field); }

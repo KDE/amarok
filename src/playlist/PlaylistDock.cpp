@@ -25,7 +25,6 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "core/support/Debug.h"
-#include "DynamicModel.h"
 #include "layouts/LayoutManager.h"
 #include "MainWindow.h"
 #include "navigators/NavigatorConfigAction.h"
@@ -36,6 +35,7 @@
 #include "PlaylistModelStack.h"
 #include "PlaylistQueueEditor.h"
 #include "ProgressiveSearchWidget.h"
+#include "playlist/PlaylistActions.h"
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "widgets/HorizontalDivider.h"
 
@@ -92,8 +92,8 @@ Playlist::Dock::polish()
     m_searchWidget = new Playlist::ProgressiveSearchWidget( m_mainWidget );
 
     // show visual indication of dynamic playlists  being enabled
-    connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ),
-             SLOT( showDynamicHint( bool ) ) );
+    connect( The::playlistActions(), SIGNAL( navigatorChanged() ),
+             SLOT( showDynamicHint() ) );
     m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), m_mainWidget );
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
     m_dynamicHintWidget->setStyleSheet(
@@ -105,7 +105,7 @@ Playlist::Dock::polish()
     dynamicHintWidgetFont.setPointSize( dynamicHintWidgetFont.pointSize() + 1 );
     m_dynamicHintWidget->setFont( dynamicHintWidgetFont );
 
-    showDynamicHint( AmarokConfig::dynamicMode() );
+    showDynamicHint();
 
     paletteChanged( App::instance()->palette() );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ),
@@ -308,11 +308,11 @@ Playlist::Dock::showActiveTrack()
 }
 
 void
-Playlist::Dock::showDynamicHint( bool enabled ) // slot
+Playlist::Dock::showDynamicHint() // slot
 {
     DEBUG_BLOCK
 
-    if( enabled )
+    if( AmarokConfig::dynamicMode() )
         m_dynamicHintWidget->show();
     else
         m_dynamicHintWidget->hide();
