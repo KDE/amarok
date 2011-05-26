@@ -175,7 +175,7 @@ PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::
 
     m_biasWidget = newBias->widget( 0 );
     if( !m_biasWidget )
-        m_biasWidget = new QLabel( i18n("This bias has no settings") );
+        m_biasWidget = new QLabel( i18n("This bias has no settings.") );
     m_biasLayout->addWidget( m_biasWidget );
 
     factoriesChanged(); // update the bias description and select the new combo entry
