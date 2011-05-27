@@ -28,7 +28,6 @@
 #include "core/meta/support/MetaConstants.h"
 
 #include <cmath>
-// #include <typeinfo>
 
 #include <QHash>
 #include <QMutexLocker>
@@ -41,92 +40,80 @@
  * optimize this optimization program. They are very sensitive. Be careful */
 #include <threadweaver/Thread.h>
 
-const int    Dynamic::BiasSolver::GA_ITERATION_LIMIT         = 70;
-const int    Dynamic::BiasSolver::GA_POPULATION_SIZE         = 15;
-const int    Dynamic::BiasSolver::GA_MATING_POPULATION_SIZE  = 5;
-const double Dynamic::BiasSolver::GA_MUTATION_PROBABILITY    = 0.05;
-const int    Dynamic::BiasSolver::GA_GIVE_UP_LIMIT           = 10;
-
-const int    Dynamic::BiasSolver::SA_ITERATION_LIMIT     = 1000;
-const double Dynamic::BiasSolver::SA_INITIAL_TEMPERATURE = 0.28;
-const double Dynamic::BiasSolver::SA_COOLING_RATE        = 0.82;
-const int    Dynamic::BiasSolver::SA_GIVE_UP_LIMIT       = 250;
-
 namespace Dynamic
 {
-    class SolverList
+
+const int    BiasSolver::GA_ITERATION_LIMIT         = 70;
+const int    BiasSolver::GA_POPULATION_SIZE         = 15;
+const int    BiasSolver::GA_MATING_POPULATION_SIZE  = 5;
+const double BiasSolver::GA_MUTATION_PROBABILITY    = 0.05;
+const int    BiasSolver::GA_GIVE_UP_LIMIT           = 10;
+
+const int    BiasSolver::SA_ITERATION_LIMIT     = 1000;
+const double BiasSolver::SA_INITIAL_TEMPERATURE = 0.28;
+const double BiasSolver::SA_COOLING_RATE        = 0.82;
+const int    BiasSolver::SA_GIVE_UP_LIMIT       = 250;
+
+class SolverList
+{
+    public:
+
+    SolverList( Meta::TrackList trackList,
+                int contextCount,
+                BiasPtr bias )
+        : m_trackList(trackList)
+        , m_contextCount( contextCount )
+        , m_bias( bias )
+        , m_energyValid( false )
+    {}
+
+    void appendTrack( Meta::TrackPtr track )
     {
-        public:
+        m_trackList.append( track );
+        m_energyValid = false;
+    }
 
-        SolverList( Meta::TrackList trackList,
-                    int contextCount,
-                    BiasPtr bias )
-            : m_trackList(trackList)
-            , m_contextCount( contextCount )
-            , m_bias( bias )
-            , m_energyValid( false )
-        {}
+    void setTrack( int pos, Meta::TrackPtr track )
+    {
+        m_trackList.replace( pos, track );
+        m_energyValid = false;
+    }
 
-        void appendTrack( Meta::TrackPtr track )
+    bool operator<( const SolverList& x ) const
+    { return energy() < x.energy(); }
+
+    SolverList &operator=( const SolverList& x )
+    {
+        m_trackList = x.m_trackList;
+        m_energyValid = x.m_energyValid;
+        m_energy = x.m_energy;
+        m_contextCount = x.m_contextCount;
+
+        return *this;
+    }
+
+    double energy() const
+    {
+        if( !m_energyValid )
         {
-            m_trackList.append( track );
-            m_energyValid = false;
+            m_energy = m_bias->energy( m_trackList, m_contextCount );
+            m_energyValid = true;
         }
+        return m_energy;
+    }
 
-        void setTrack( int pos, Meta::TrackPtr track )
-        {
-            m_trackList.replace( pos, track );
-            m_energyValid = false;
-        }
+    Meta::TrackList m_trackList;
+    int m_contextCount; // the number of tracks belonging to the context
+    BiasPtr m_bias;
 
-        bool operator<( const SolverList& x ) const
-        { return energy() < x.energy(); }
-
-        SolverList &operator=( const SolverList& x )
-        {
-            m_trackList = x.m_trackList;
-            m_energyValid = x.m_energyValid;
-            m_energy = x.m_energy;
-            m_contextCount = x.m_contextCount;
-
-            return *this;
-        }
-
-        double energy() const
-        {
-            if( !m_energyValid )
-            {
-                m_energy = m_bias->energy( m_trackList, m_contextCount );
-                m_energyValid = true;
-            }
-            return m_energy;
-        }
-
-        /** Retuns a TrackSet with all the tracks in this SolverList excluding the track at position */
-        Dynamic::TrackSet withoutDuplicates( int position,
-                                             const Dynamic::TrackSet& oldSet ) const
-        {
-            Dynamic::TrackSet result = Dynamic::TrackSet( oldSet );
-            for( int i = 0; i < m_trackList.count(); i++ )
-                if( i != position && m_trackList[i] )
-                    result.subtract( m_trackList[i] );
-
-            return result;
-        }
-
-        Meta::TrackList m_trackList;
-        int m_contextCount; // the number of tracks belonging to the context
-        BiasPtr m_bias;
-
-    private:
-        mutable bool m_energyValid;
-        mutable double m_energy;
-    };
-}
+private:
+    mutable bool m_energyValid;
+    mutable double m_energy;
+};
 
 
 
-Dynamic::BiasSolver::BiasSolver( int n, Dynamic::BiasPtr bias, Meta::TrackList context )
+BiasSolver::BiasSolver( int n, BiasPtr bias, Meta::TrackList context )
     : m_n( n )
     , m_bias( bias )
     , m_context( context )
@@ -143,26 +130,26 @@ Dynamic::BiasSolver::BiasSolver( int n, Dynamic::BiasPtr bias, Meta::TrackList c
 }
 
 
-Dynamic::BiasSolver::~BiasSolver()
+BiasSolver::~BiasSolver()
 {
     debug() << "DESTROYING BiasSolver in thread:" << QThread::currentThreadId();
 }
 
 
 void
-Dynamic::BiasSolver::requestAbort()
+BiasSolver::requestAbort()
 {
     m_abortRequested = true;
 }
 
 bool
-Dynamic::BiasSolver::success() const
+BiasSolver::success() const
 {
     return !m_abortRequested;
 }
 
 void
-Dynamic::BiasSolver::setAutoDelete( bool autoDelete )
+BiasSolver::setAutoDelete( bool autoDelete )
 {
     if( autoDelete )
     {
@@ -177,7 +164,8 @@ Dynamic::BiasSolver::setAutoDelete( bool autoDelete )
 }
 
 
-void Dynamic::BiasSolver::run()
+void
+BiasSolver::run()
 {
     DEBUG_BLOCK
 
@@ -188,7 +176,7 @@ void Dynamic::BiasSolver::run()
         QMutexLocker locker( &m_collectionResultsMutex );
         if( !m_trackCollection )
         {
-            debug() << "waiting for colleciton results";
+            debug() << "waiting for collection results";
             m_collectionResultsReady.wait( &m_collectionResultsMutex );
         }
         debug() << "collection has" << m_trackCollection->count()<<"uids";
@@ -228,7 +216,7 @@ void Dynamic::BiasSolver::run()
 }
 
 void
-Dynamic::BiasSolver::simpleOptimize( SolverList *list )
+BiasSolver::simpleOptimize( SolverList *list )
 {
     DEBUG_BLOCK;
 
@@ -241,33 +229,33 @@ Dynamic::BiasSolver::simpleOptimize( SolverList *list )
             + list->m_contextCount;
 
         TrackSet set = matchingTracks( newPos, list->m_trackList );
-        Meta::TrackPtr newTrack;
         if( !m_allowDuplicates )
-            newTrack = getRandomTrack( list->withoutDuplicates( newPos, set ) );
-        else
-            newTrack = getRandomTrack( set );
+            set = withoutDuplicate( newPos, list->m_trackList, set, false );
+
+        Meta::TrackPtr newTrack;
+        newTrack = getRandomTrack( set );
         if( newTrack )
             list->setTrack( newPos, newTrack );
     }
 
     // now go through the complete list again and try to fullfill all
-    for( int i = list->m_contextCount; i < list->m_trackList.count(); i++ )
+    for( int newPos = list->m_contextCount; newPos < list->m_trackList.count(); newPos++ )
     {
-        TrackSet set = matchingTracks( i, list->m_trackList );
-        Meta::TrackPtr newTrack;
+        TrackSet set = matchingTracks( newPos, list->m_trackList );
         if( !m_allowDuplicates )
-            newTrack = getRandomTrack( list->withoutDuplicates( i, set ) );
-        else
-            newTrack = getRandomTrack( set );
+            set = withoutDuplicate( newPos, list->m_trackList, set, true );
+
+        Meta::TrackPtr newTrack;
+        newTrack = getRandomTrack( set );
         if( newTrack )
-            list->setTrack( i, newTrack );
+            list->setTrack( newPos, newTrack );
     }
 }
 
 void
-Dynamic::BiasSolver::annealingOptimize( SolverList *list,
-                                        int iterationLimit,
-                                        bool updateStatus )
+BiasSolver::annealingOptimize( SolverList *list,
+                               int iterationLimit,
+                               bool updateStatus )
 {
     DEBUG_BLOCK;
 
@@ -317,14 +305,13 @@ Dynamic::BiasSolver::annealingOptimize( SolverList *list,
         {
             TrackSet set = matchingTracks( newPos, list->m_trackList );
             if( !m_allowDuplicates )
-                newTrack = getRandomTrack( list->withoutDuplicates( newPos, set ) );
-            else
-                newTrack = getRandomTrack( set );
+                set = withoutDuplicate( newPos, list->m_trackList, set, false );
+            newTrack = getRandomTrack( set );
         }
         else
         {
             if( !m_allowDuplicates )
-                newTrack = getRandomTrack( list->withoutDuplicates( newPos, universeSet ) );
+                newTrack = getRandomTrack( withoutDuplicate( newPos, list->m_trackList, universeSet, false ) );
             else
                 newTrack = getRandomTrack( universeSet );
         }
@@ -332,7 +319,7 @@ Dynamic::BiasSolver::annealingOptimize( SolverList *list,
         if( !newTrack )
             continue;
 
-        debug() << "replacing"<<newPos<<list->m_trackList[newPos]->name()<<"with"<<newTrack->name();
+        // debug() << "replacing"<<newPos<<list->m_trackList[newPos]->name()<<"with"<<newTrack->name();
 
         SolverList newList = *list;
         newList.setTrack( newPos, newTrack );
@@ -361,9 +348,9 @@ Dynamic::BiasSolver::annealingOptimize( SolverList *list,
 }
 
 void
-Dynamic::BiasSolver::geneticOptimize( SolverList *list,
-                                      int iterationLimit,
-                                      bool updateStatus )
+BiasSolver::geneticOptimize( SolverList *list,
+                             int iterationLimit,
+                             bool updateStatus )
 {
     Q_UNUSED( list );
     Q_UNUSED( iterationLimit );
@@ -534,14 +521,15 @@ Dynamic::BiasSolver::geneticOptimize( SolverList *list,
 }
 
 
-Meta::TrackList Dynamic::BiasSolver::solution()
+Meta::TrackList
+BiasSolver::solution()
 {
     return m_solution;
 }
 
 
-Dynamic::SolverList
-Dynamic::BiasSolver::generateInitialPlaylist() const
+SolverList
+BiasSolver::generateInitialPlaylist() const
 {
     SolverList result( m_context, m_context.count(), m_bias );
 
@@ -559,7 +547,7 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
     {
         Meta::TrackPtr newTrack;
         if( !m_allowDuplicates )
-            newTrack = getRandomTrack( result.withoutDuplicates( -1, universeSet ) );
+            newTrack = getRandomTrack( withoutDuplicate( -1, result.m_trackList, universeSet, false ) );
         else
             newTrack = getRandomTrack( universeSet );
         result.appendTrack( newTrack );
@@ -570,7 +558,7 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
 }
 
 Meta::TrackPtr
-Dynamic::BiasSolver::getRandomTrack( const TrackSet& subset ) const
+BiasSolver::getRandomTrack( const TrackSet& subset ) const
 {
     if( subset.trackCount() == 0 )
         return Meta::TrackPtr();
@@ -582,19 +570,14 @@ Dynamic::BiasSolver::getRandomTrack( const TrackSet& subset ) const
     while( giveup-- && !track )
         track = trackForUid( subset.getRandomTrack() );
 
-    if( track )
-    {
-        // if( track->artist() )
-            // debug() << "track selected:" << track->name() << track->artist()->name();
-    }
-    else
+    if( !track )
         error() << "track is 0 in BiasSolver::getRandomTrack()";
 
     return track;
 }
 
 Meta::TrackPtr
-Dynamic::BiasSolver::trackForUid( const QString& uid ) const
+BiasSolver::trackForUid( const QString& uid ) const
 {
     const KUrl url( uid );
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
@@ -608,16 +591,15 @@ Dynamic::BiasSolver::trackForUid( const QString& uid ) const
 // ---- getting the matchingTracks ----
 
 void
-Dynamic::BiasSolver::biasResultReady( const Dynamic::TrackSet &set )
+BiasSolver::biasResultReady( const TrackSet &set )
 {
-    DEBUG_BLOCK;
     QMutexLocker locker( &m_biasResultsMutex );
     m_tracks = set;
     m_biasResultsReady.wakeAll();
 }
 
-Dynamic::TrackSet
-Dynamic::BiasSolver::matchingTracks( int position, const Meta::TrackList& playlist ) const
+TrackSet
+BiasSolver::matchingTracks( int position, const Meta::TrackList& playlist ) const
 {
     QMutexLocker locker( &m_biasResultsMutex );
     m_tracks = m_bias->matchingTracks( position, playlist, m_context.count(), m_trackCollection );
@@ -629,18 +611,31 @@ Dynamic::BiasSolver::matchingTracks( int position, const Meta::TrackList& playli
     return m_tracks;
 }
 
+Dynamic::TrackSet
+BiasSolver::withoutDuplicate( int position, const Meta::TrackList& playlist,
+                              const Dynamic::TrackSet& oldSet,
+                              bool onlyBackwards )
+{
+    Dynamic::TrackSet result = Dynamic::TrackSet( oldSet );
+    for( int i = 0; i < (onlyBackwards ? position : playlist.count()); i++ )
+        if( i != position && playlist[i] )
+            result.subtract( playlist[i] );
+
+    return result;
+}
+
 
 // ---- getting the TrackCollection ----
 
 void
-Dynamic::BiasSolver::trackCollectionResultsReady( QString collectionId, QStringList uids )
+BiasSolver::trackCollectionResultsReady( QString collectionId, QStringList uids )
 {
     Q_UNUSED( collectionId );
     m_collectionUids.append( uids );
 }
 
 void
-Dynamic::BiasSolver::trackCollectionDone()
+BiasSolver::trackCollectionDone()
 {
     QMutexLocker locker( &m_collectionResultsMutex );
 
@@ -651,7 +646,7 @@ Dynamic::BiasSolver::trackCollectionDone()
 }
 
 void
-Dynamic::BiasSolver::getTrackCollection()
+BiasSolver::getTrackCollection()
 {
     // get all the unique ids from the collection manager
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
@@ -669,4 +664,5 @@ Dynamic::BiasSolver::getTrackCollection()
     qm->run();
 }
 
+}
 

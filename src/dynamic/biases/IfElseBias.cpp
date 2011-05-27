@@ -20,8 +20,9 @@
 
 #include "IfElseBias.h"
 
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
-#include "DynamicBiasWidgets.h"
+// #include "DynamicBiasWidgets.h"
 
 #include <QtGlobal> // for qRound
 #include <QPainter>
@@ -88,6 +89,7 @@ Dynamic::IfElseBias::matchingTracks( int position,
                                      int contextCount,
                                      Dynamic::TrackCollectionPtr universe ) const
 {
+    // store the parameters in case we need to request additional matching tracks later
     m_position = position;
     m_playlist = playlist;
     m_contextCount = contextCount;
@@ -104,8 +106,13 @@ Dynamic::IfElseBias::matchingTracks( int position,
             m_outstandingMatches++;
             return m_tracks;
         }
-        else if( !m_tracks.isEmpty() )
-            return m_tracks;
+        else
+        {
+            removeDuplicate();
+            if( !m_tracks.isEmpty() ) {
+                return m_tracks;
+            }
+        }
     }
 
     return m_tracks;
@@ -117,7 +124,8 @@ Dynamic::IfElseBias::resultReceived( const Dynamic::TrackSet &tracks )
     m_tracks = tracks;
     --m_outstandingMatches;
 
-    // we got some tracks
+    // we got some tracks result
+    removeDuplicate();
     if( !m_tracks.isEmpty() )
     {
         emit resultReady( m_tracks );
@@ -147,13 +155,28 @@ Dynamic::IfElseBias::resultReceived( const Dynamic::TrackSet &tracks )
             m_outstandingMatches++;
             return; // wait for the next results
         }
-        else if( !m_tracks.isEmpty() )
+        else
         {
-            emit resultReady( m_tracks );
-            return;
+            removeDuplicate();
+            if( !m_tracks.isEmpty() ) {
+                emit resultReady( m_tracks );
+                return;
+            }
         }
     }
     emit resultReady( m_tracks );
+}
+
+// we need to eliminate duplicates now to have a propper check for an empty result
+void
+Dynamic::IfElseBias::removeDuplicate() const
+{
+    if( AmarokConfig::dynamicDuplicates() )
+        return;
+
+    for( int i = 0; i < m_position; i++ )
+        if( m_playlist[i] )
+            m_tracks.subtract( m_playlist[i] );
 }
 
 #include "IfElseBias.moc"

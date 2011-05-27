@@ -201,6 +201,17 @@ namespace Dynamic
              */
             QList<int> generateMatingPopulation( const QList<SolverList>& );
 
+            /** Returns a TrackSet with all duplicates removed (except the one at "position")
+                This helper function can be used in special cases if needed and
+                AmarokConfig::dynamicDuplicates() == false
+                Normally the BiasSolver will call it at for the top most bias.
+                @param onlyBackwards if true it will not consider tracks after "position"
+            */
+            static TrackSet withoutDuplicate( int position,
+                                              const Meta::TrackList& playlist,
+                                              const Dynamic::TrackSet& oldSet,
+                                              bool onlyBackwards = true );
+
             int m_n;                    //!< size of playlist to generate
             Dynamic::BiasPtr m_bias; // bias used to determine tracks. not owned by solver
             Meta::TrackList m_context;  //!< tracks that precede the playlist

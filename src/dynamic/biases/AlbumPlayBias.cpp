@@ -147,18 +147,18 @@ Dynamic::AlbumPlayBias::matchingTracks( int position,
     Q_UNUSED( contextCount );
 
     if( position < 1 || position >= playlist.count() )
-        return Dynamic::TrackSet( universe, true );
+        return Dynamic::TrackSet( universe, false );
 
     Meta::TrackPtr track = playlist[position-1];
     Meta::AlbumPtr album = track->album();
 
     if( !album )
-        return Dynamic::TrackSet( universe, true );
+        return Dynamic::TrackSet( universe, false );
 
     Meta::TrackList albumTracks = album->tracks();
     if( albumTracks.count() == 1 ||
         (track == albumTracks.last() && m_follow != DontCare) )
-        return Dynamic::TrackSet( universe, true );
+        return Dynamic::TrackSet( universe, false );
 
     // we assume that the album tracks are sorted by cd and track number which
     // is at least true for the SqlCollection
@@ -208,11 +208,11 @@ Dynamic::AlbumPlayBias::trackMatches( int position,
     Meta::AlbumPtr currentAlbum = currentTrack->album();
 
     if( !album )
-        return true;
+        return false;
 
     Meta::TrackList albumTracks = album->tracks();
     if( track == albumTracks.last() && m_follow != DontCare )
-        return true;
+        return false;
 
     // we assume that the album tracks are sorted by cd and track number which
     // is at least true for the SqlCollection

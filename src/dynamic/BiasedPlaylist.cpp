@@ -149,7 +149,6 @@ Dynamic::BiasedPlaylist::startSolver()
 void
 Dynamic::BiasedPlaylist::biasChanged()
 {
-    DEBUG_BLOCK;
     QMutexLocker locker( &m_bufferMutex );
     m_buffer.clear();
 
@@ -162,8 +161,6 @@ Dynamic::BiasedPlaylist::biasChanged()
 void
 Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
 {
-    DEBUG_BLOCK;
-
     if( oldBias && !newBias ) // don't move the last bias away from this playlist without replacement
         return;
 

@@ -74,6 +74,8 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         QModelIndex insertPlaylist( int index, Dynamic::DynamicPlaylist* playlist );
 
         /** Inserts a bias at the given index.
+            The bias must not be part of a model. When in doubt call bias->replace(BiasPtr())
+            to remove the bias from it's current position.
         */
         QModelIndex insertBias( int row, const QModelIndex &parentIndex, Dynamic::BiasPtr bias );
 
@@ -142,6 +144,10 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         Dynamic::BiasedPlaylist* cloneList( Dynamic::BiasedPlaylist* list );
         Dynamic::BiasPtr cloneBias( Dynamic::BiasPtr bias );
 
+        // -- model change signals ---
+        // The following functions are called by the biases to
+        // notify the model about changes.
+
         void playlistChanged( Dynamic::DynamicPlaylist* playlist );
         void biasChanged( Dynamic::BiasPtr bias );
 
@@ -152,6 +158,11 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         void beginInsertBias( Dynamic::BiasedPlaylist* parent );
         void beginInsertBias( Dynamic::BiasPtr parent, int index );
         void endInsertBias();
+
+        void beginMoveBias( Dynamic::BiasPtr parent, int from, int to );
+        void endMoveBias();
+
+        // ----
 
         bool savePlaylists( const QString &filename );
         bool loadPlaylists( const QString &filename );

@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "DynamicModel"
+
 #include "DynamicModel.h"
 
 #include "App.h"
@@ -164,6 +166,20 @@ Dynamic::DynamicModel::insertBias( int row, const QModelIndex &parentIndex, Dyna
     AndBias* parentBias = qobject_cast<Dynamic::AndBias*>(o);
     AbstractBias* aBias = qobject_cast<Dynamic::AbstractBias*>(o);
 
+    // Add something directly to the top
+    if( !parentIndex.isValid() )
+    {
+        if( row >= 0 && row < m_playlists.count() )
+        {
+            o = m_playlists[row];
+            parentPlaylist = qobject_cast<BiasedPlaylist*>(o);
+        }
+        else
+        {
+            return QModelIndex();
+        }
+    }
+
     debug() << "insert bias" << bias->toString() << "at" << parentIndex << row;
 
     if( parentPlaylist )
@@ -171,7 +187,7 @@ Dynamic::DynamicModel::insertBias( int row, const QModelIndex &parentIndex, Dyna
         // already have an AND bias
         if( parentPlaylist && qobject_cast<Dynamic::AndBias*>(parentPlaylist->bias().data()) )
         {
-            return insertBias( 0, index( parentPlaylist->bias() ), parentPlaylist->bias() );
+            return insertBias( 0, index( parentPlaylist->bias() ), bias );
         }
         else
         {
@@ -186,8 +202,7 @@ Dynamic::DynamicModel::insertBias( int row, const QModelIndex &parentIndex, Dyna
     else if( parentBias )
     {
         parentBias->appendBias( bias );
-        if( row >= 0 )
-            parentBias->moveBias( parentBias->biases().count()-1, row );
+        parentBias->moveBias( parentBias->biases().count()-1, row );
     }
     else if( aBias )
     {
@@ -811,7 +826,6 @@ Dynamic::DynamicModel::loadPlaylists( const QString &filename )
         delete playlist;
     m_playlists.clear();
 
-
     // -- open the file
     QFile xmlFile( Amarok::saveLocation() + filename );
     if( !xmlFile.open( QIODevice::ReadOnly ) )
@@ -827,15 +841,15 @@ Dynamic::DynamicModel::loadPlaylists( const QString &filename )
     xmlReader.readNextStartElement();
     if( xmlReader.atEnd() ||
         !xmlReader.isStartElement() ||
-        xmlReader.name() != "biasedPlaylists" ||
-        xmlReader.attributes().value( "version" ) != "2" )
+        xmlReader.name() != QLatin1String("biasedPlaylists") ||
+        xmlReader.attributes().value( QLatin1String("version") ) != QLatin1String("2") )
     {
         error() << "Playlist file" << xmlFile.fileName() << "is invalid or has wrong version";
         initPlaylists();
         return false;
     }
 
-    m_activePlaylistIndex = xmlReader.attributes().value( "current" ).toString().toInt();
+    int newPlaylistIndex = xmlReader.attributes().value( QLatin1String("current") ).toString().toInt();
 
     while (!xmlReader.atEnd()) {
         xmlReader.readNext();
@@ -843,7 +857,7 @@ Dynamic::DynamicModel::loadPlaylists( const QString &filename )
         if( xmlReader.isStartElement() )
         {
             QStringRef name = xmlReader.name();
-            if( name == "playlist" )
+            if( name == QLatin1String("playlist") )
             {
                 Dynamic::BiasedPlaylist *playlist =  new Dynamic::BiasedPlaylist( &xmlReader, this );
                 if( playlist->bias() )
@@ -876,7 +890,7 @@ Dynamic::DynamicModel::loadPlaylists( const QString &filename )
         return false;
     }
 
-    m_activePlaylistIndex = qBound( 0, m_activePlaylistIndex, m_playlists.count()-1 );
+    m_activePlaylistIndex = qBound( 0, newPlaylistIndex, m_playlists.count()-1 );
 
     emit activeChanged( m_activePlaylistIndex );
     endResetModel();
@@ -913,7 +927,7 @@ Dynamic::DynamicModel::initPlaylists()
     Dynamic::IfElseBias *ifElse = new Dynamic::IfElseBias();
     playlist->bias()->replace( Dynamic::BiasPtr( ifElse ) );
     ifElse->appendBias( Dynamic::BiasPtr( new Dynamic::AlbumPlayBias() ) );
-    ifElse->appendBias( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( "tracknr:1" ) ) );
+    ifElse->appendBias( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( "tracknumber:1" ) ) );
     insertPlaylist( 2, playlist );
 
     // - a complex playlist demonstrating PartBias and TagMatchBias
@@ -1077,6 +1091,18 @@ Dynamic::DynamicModel::endInsertBias()
     endInsertRows();
 }
 
+void
+Dynamic::DynamicModel::beginMoveBias( Dynamic::BiasPtr parent, int from, int to )
+{
+    QModelIndex parentIndex = this->index( parent );
+    beginMoveRows( parentIndex, from, from, parentIndex, to );
+}
+
+void
+Dynamic::DynamicModel::endMoveBias()
+{
+    endMoveRows();
+}
 
 
 // --- debug methods

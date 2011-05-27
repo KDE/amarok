@@ -156,9 +156,6 @@ namespace Dynamic
                 an empty BiasPrt as argument the bias will be removed.
             */
             virtual void replace( Dynamic::BiasPtr newBias );
-
-        protected:
-            /** Recursively set's the row number of the bias returning the next number */
     };
 
     /** A bias that returns all the tracks in the universe as possible tracks */

@@ -112,7 +112,6 @@ Dynamic::AbstractBias::energy( const Meta::TrackList& playlist, int contextCount
     return 1.0 - (double(matchCount) / (playlist.count() - contextCount));
 }
 
-
 // -------- RandomBias ------
 
 Dynamic::RandomBias::RandomBias()
@@ -318,6 +317,12 @@ Dynamic::AndBias::invalidate()
 void
 Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
 {
+    bool newInModel = DynamicModel::instance()->index( bias ).isValid();
+    if (newInModel) {
+        warning() << "Argh, the old bias "<<bias->toString()<<"is still in a model";
+        return;
+    }
+
     BiasPtr thisPtr( this );
     bool inModel = DynamicModel::instance()->index( thisPtr ).isValid();
     if( inModel )
@@ -343,8 +348,17 @@ Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
 void
 Dynamic::AndBias::moveBias( int from, int to )
 {
-    // TODO: emit model changes
+    if( from == to )
+        return;
+
+    BiasPtr thisPtr( this );
+    bool inModel = DynamicModel::instance()->index( thisPtr ).isValid();
+    if( inModel )
+        DynamicModel::instance()->beginMoveBias( thisPtr, from, to );
     m_biases.insert( to, m_biases.takeAt( from ) );
+    if( inModel )
+        DynamicModel::instance()->endMoveBias();
+
     emit biasMoved( from, to );
     emit changed( BiasPtr( this ) );
 }
@@ -355,7 +369,6 @@ Dynamic::AndBias::resultReceived( const Dynamic::TrackSet &tracks )
 {
     m_tracks.intersect( tracks );
     --m_outstandingMatches;
-    // debug() << "AndBias::resultReceived" << m_outstandingMatches << "tr" << m_tracks.trackCount();
 
     if( m_outstandingMatches < 0 )
         warning() << "Received more results than expected.";

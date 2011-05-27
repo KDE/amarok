@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
- * Copyright (c) 2010, 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010, 2011 Ralf Engels <ralf-engels@gmx.de>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -28,8 +28,8 @@ namespace Dynamic
 {
 
     /** The if-else bias works like an or bias.
-        If the first sub-bias doesn't return a valid result it
-        will go to the second sub-bias and so on.
+        If the first sub-bias doesn't return a valid result it will go to the second
+        sub-bias and so on.
     */
     class IfElseBias : public OrBias
     {
@@ -52,6 +52,11 @@ namespace Dynamic
             virtual void resultReceived( const Dynamic::TrackSet &tracks );
 
         private:
+            /** Removes duplicate tracks from m_tracks
+                Removes duplicate tracks (depending on m_position, m_playlist and
+                AmarokConfig::dynamicDuplicates()) from m_tracks
+            */
+            void removeDuplicate() const;
 
             // buffered by matchingTracks
             mutable int m_position;
