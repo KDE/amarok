@@ -350,6 +350,10 @@ Dynamic::AndBias::moveBias( int from, int to )
 {
     if( from == to )
         return;
+    if( from < 0 || from >= m_biases.count() )
+        return;
+    if( to < 0 || to >= m_biases.count() )
+        return;
 
     BiasPtr thisPtr( this );
     bool inModel = DynamicModel::instance()->index( thisPtr ).isValid();
