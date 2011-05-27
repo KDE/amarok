@@ -152,7 +152,7 @@ LastFmServiceFactory::createLastFmService()
 //     if ( config.username().isEmpty() || config.password().isEmpty() )
 //         return 0;
 
-    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.sessionKey(), config.scrobble(), config.fetchSimilar() );
+    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.sessionKey(), config.scrobble(), config.fetchSimilar(), config.scrobbleComposer() );
     return service;
 }
 
@@ -170,7 +170,7 @@ LastFmServiceFactory::config()
 }
 
 
-LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString& sessionKey, bool scrobble, bool fetchSimilar )
+LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString& sessionKey, bool scrobble, bool fetchSimilar, bool scrobbleComposer )
     : ServiceBase( name, parent, false ),
       m_inited( false),
       m_scrobble( scrobble ),
@@ -182,6 +182,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
       m_userinfo( 0 ),
       m_userName( username ),
       m_sessionKey( sessionKey ),
+      m_scrobbleComposer( scrobbleComposer ),
       m_userNameArray( 0 ),
       m_sessionKeyArray( 0 )
 {

@@ -66,6 +66,7 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
     connect( m_configDialog->kcfg_ScrobblerPassword, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect( m_configDialog->kcfg_SubmitPlayedSongs, SIGNAL( stateChanged( int ) ), this, SLOT( settingsChanged() ) );
     connect( m_configDialog->kcfg_RetrieveSimilarArtists, SIGNAL( stateChanged( int ) ), this, SLOT( settingsChanged() ) );
+    connect( m_configDialog->kcfg_ScrobbleComposer, SIGNAL( stateChanged( int ) ), this, SLOT( settingsChanged() ) );
     connect( m_configDialog->testLogin, SIGNAL( clicked() ), this, SLOT( testLogin() ) );
 
     load();
@@ -84,6 +85,7 @@ LastFmServiceSettings::save()
     m_config.setPassword( m_configDialog->kcfg_ScrobblerPassword->text() );
     m_config.setScrobble( m_configDialog->kcfg_SubmitPlayedSongs->isChecked() );
     m_config.setFetchSimilar( m_configDialog->kcfg_RetrieveSimilarArtists->isChecked() );
+    m_config.setScrobbleComposer( m_configDialog->kcfg_ScrobbleComposer->isChecked() );
     m_config.save();
 
     KCModule::save();
@@ -188,6 +190,7 @@ LastFmServiceSettings::load()
     m_configDialog->kcfg_ScrobblerPassword->setText( m_config.password() );
     m_configDialog->kcfg_SubmitPlayedSongs->setChecked( m_config.scrobble() );
     m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( m_config.fetchSimilar() );
+    m_configDialog->kcfg_ScrobbleComposer->setChecked( m_config.scrobbleComposer() );
 
     if( !m_config.username().isEmpty() && !m_config.password().isEmpty() )
         m_configDialog->kcfg_SubmitPlayedSongs->setEnabled( true );
@@ -204,6 +207,7 @@ LastFmServiceSettings::defaults()
     // By default this checkboxes is:
     m_configDialog->kcfg_SubmitPlayedSongs->setChecked( false );
     m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( false );
+    m_configDialog->kcfg_ScrobbleComposer->setChecked( false );
 }
 
 

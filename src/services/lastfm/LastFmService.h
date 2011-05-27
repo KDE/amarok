@@ -68,7 +68,7 @@ class LastFmService : public ServiceBase
     Q_OBJECT
 
 public:
-    LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString &sessionKey, bool scrobble, bool fetchSimilar );
+    LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString &sessionKey, bool scrobble, bool fetchSimilar, bool scrobbleComposer );
     virtual ~LastFmService();
 
     virtual void polish();
@@ -123,6 +123,7 @@ private:
     QString m_playcount;
     QPixmap m_avatar;
     bool m_subscriber;
+    bool m_scrobbleComposer;
 
     char *m_userNameArray;
     char *m_sessionKeyArray;

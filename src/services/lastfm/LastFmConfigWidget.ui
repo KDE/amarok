@@ -139,6 +139,16 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0" >
+       <widget class="QCheckBox" name="kcfg_ScrobbleComposer" >
+        <property name="text" >
+         <string>&amp;Use composer data if available in last.fm as artist</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

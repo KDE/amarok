@@ -56,6 +56,9 @@ public:
     bool fetchSimilar() { return m_fetchSimilar; }
     void setFetchSimilar( bool fetchSimilar ) { m_fetchSimilar = fetchSimilar; }
 
+    bool scrobbleComposer() { return m_scrobbleComposer; }
+    void setScrobbleComposer( bool scrobbleComposer ) { m_scrobbleComposer = scrobbleComposer; }
+
 private slots:
     void textDialogYes();
     void textDialogNo();
@@ -68,6 +71,7 @@ private:
     QString m_sessionKey;
     bool m_scrobble;
     bool m_fetchSimilar;
+    bool m_scrobbleComposer;
 
     KDialog* m_askDiag;
     KWallet::Wallet* m_wallet;

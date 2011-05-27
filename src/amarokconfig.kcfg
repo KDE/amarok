@@ -497,6 +497,11 @@
         <whatsthis>The password to use for connecting to Audioscrobbler</whatsthis>
         <default/>
     </entry>
+    <entry key="ScrobbleComposer" type="Bool">
+        <label>Send composer data</label>
+        <whatsthis>Use composer data in last.fm as artist</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="RetrieveSimilarArtists" type="Bool">
         <label>Retrieve similar artists</label>
         <whatsthis>Whether similar songs are retrieved from Audioscrobbler</whatsthis>

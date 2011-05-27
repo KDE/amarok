@@ -18,6 +18,7 @@
 #define DEBUG_PREFIX "lastfm"
 
 #include "ScrobblerAdapter.h"
+#include "LastFmServiceConfig.h"
 #include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
@@ -79,6 +80,8 @@ ScrobblerAdapter::trackPlaying( Meta::TrackPtr track )
     if( track )
     {
         m_lastSaved = m_lastPosition; // HACK engineController is broken :(
+
+        LastFmServiceConfig config;
     
         debug() << "track type:" << track->type();
         const bool isRadio = ( track->type() == "stream/lastfm" );
@@ -89,7 +92,10 @@ ScrobblerAdapter::trackPlaying( Meta::TrackPtr track )
         
         m_current.setTitle( track->name() );
         m_current.setDuration( track->length() / 1000 );
-        if( track->artist() )
+        debug() << "scrobbleComposer: " << config.scrobbleComposer();
+        if( track->composer() && config.scrobbleComposer() )
+            m_current.setArtist( track->composer()->name() );
+        else if( track->artist() )
             m_current.setArtist( track->artist()->name() );
         if( track->album() )
             m_current.setAlbum( track->album()->name() );
@@ -127,11 +133,13 @@ void
 ScrobblerAdapter::trackMetadataChanged( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
+    LastFmServiceConfig config;
 
     // if we are listening to a stream, take the new metadata as a "new track" and, if we have enough info, save it for scrobbling
     if( track &&
         ( track->type() == "stream" && ( !track->name().isEmpty() 
-          && track->artist() ) ) ) // got a stream, and it has enough info to be a new track
+          && ( track->artist() || ( track->composer() && config.scrobbleComposer() ) ) ) ) )
+        // got a stream, and it has enough info to be a new track
     {
         // don't use checkScrobble as we don't need to check timestamps, it is a stream
         debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.title();
@@ -141,7 +149,11 @@ ScrobblerAdapter::trackMetadataChanged( Meta::TrackPtr track )
         resetVariables();
                     
         m_current.setTitle( track->name() );
-        m_current.setArtist( track->artist()->name() );
+        m_current.setArtist(
+              track->composer() && config.scrobbleComposer()
+            ? track->composer()->name()
+            : track->artist()->name()
+        );
         m_current.stamp();
         
         m_current.setSource( lastfm::Track::NonPersonalisedBroadcast );
@@ -215,9 +227,13 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
 
     if( track )
     {
+        LastFmServiceConfig config;
+
         lastfm::MutableTrack trackInfo;
         trackInfo.setTitle( track->name() );
-        if( track->artist() )
+        if( track->composer() && config.scrobbleComposer() )
+            trackInfo.setArtist( track->composer()->name() );
+        else if( track->artist() )
             trackInfo.setArtist( track->artist()->name() );
         if( track->album() )
             trackInfo.setAlbum( track->album()->name() );

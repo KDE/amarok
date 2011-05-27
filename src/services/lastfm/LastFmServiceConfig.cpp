@@ -89,6 +89,7 @@ LastFmServiceConfig::load()
     m_sessionKey = config.readEntry( "sessionKey", QString() );
     m_scrobble = config.readEntry( "scrobble", true );
     m_fetchSimilar = config.readEntry( "fetchSimilar", true );
+    m_scrobbleComposer = config.readEntry( "scrobbleComposer", true );
 }
 
 
@@ -100,6 +101,7 @@ void LastFmServiceConfig::save()
     config.writeEntry( "sessionKey", m_sessionKey );
     config.writeEntry( "scrobble", m_scrobble );
     config.writeEntry( "fetchSimilar", m_fetchSimilar );
+    config.writeEntry( "scrobbleComposer", m_scrobbleComposer );
 
     if ( !m_wallet && config.readEntry( "ignoreWallet", QString() ) != "yes" )
         askAboutMissingKWallet();
@@ -159,6 +161,7 @@ LastFmServiceConfig::reset()
     m_sessionKey = "";
     m_scrobble = false;
     m_fetchSimilar = false;
+    m_scrobbleComposer = false;
 }
 
 
