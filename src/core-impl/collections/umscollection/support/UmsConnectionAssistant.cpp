@@ -50,6 +50,12 @@ UmsConnectionAssistant::identify( const QString& udi )
     parentDevice = device.parent();
     Solid::StorageDrive *drive = parentDevice.as<Solid::StorageDrive>();
 
+    /* some portable media players are not partitioned
+     *
+     * i.e. the StorageDrive and the StorageVolume are the same device */
+    if( !drive )
+        drive = device.as<Solid::StorageDrive>();
+
     /* going until we reach a vendor */
 /*
     while ( device.isValid() )
