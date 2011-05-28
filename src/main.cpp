@@ -64,6 +64,8 @@ int main( int argc, char *argv[] )
             ki18n("Developer (maxx_k)"), "maximilian.kossick@gmail.com" );
     aboutData.addAuthor( ki18n("Nikolaj Hald 'Also very hot' Nielsen"),
             ki18n("Developer (nhn)"), "nhn@kde.org", "http://amarok.kde.org/blog/categories/18-freespirit" );
+    aboutData.addAuthor( ki18n("Rick W. Chen"),
+            ki18n("Developer (stuffcorpse)"), "stuffcorpse@archlinux.us" );
     aboutData.addAuthor( ki18n("Seb 'Surfin' down under' Ruiz"),
             ki18n("Developer (sebr)"), "ruiz@kde.org", "http://www.sebruiz.net" );
     aboutData.addAuthor( ki18n("Téo Mrnjavac"),
@@ -80,8 +82,9 @@ int main( int argc, char *argv[] )
     ocsData.addAuthor( "MarkKretschmann", aboutData.authors().at( 7 ) );
     ocsData.addAuthor( QString(), aboutData.authors().at( 8 ) );
     ocsData.addAuthor( "nhnFreespirit", aboutData.authors().at( 9 ) );
-    ocsData.addAuthor( "seb", aboutData.authors().at( 10 ) );
-    ocsData.addAuthor( "teom", aboutData.authors().at( 11 ) );
+    ocsData.addAuthor( "stuffcorpse", aboutData.authors().at( 10 ) );
+    ocsData.addAuthor( "seb", aboutData.authors().at( 11 ) );
+    ocsData.addAuthor( "teom", aboutData.authors().at( 12 ) );
 
     //Contributors
     aboutData.addCredit( ki18n("Alex Merry"), ki18n("Developer, Replay Gain support"), "kde@randomguy3.me.uk" );
@@ -139,8 +142,6 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Peter Zhou Lei"), ki18n("Scripting interface"), "peterzhoulei@gmail.com" );
         ocsData.addCredit( "peterzl", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Rick W. Chen"), ki18n("Cover fetcher"), "stuffcorpse@archlinux.us" );
-        ocsData.addCredit( "stuffcorpse", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Scott Wheeler"), ki18n("TagLib & ktrm code"), "wheeler@kde.org" );
         ocsData.addCredit( "wheels", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Shane King"), ki18n("Patches & Windows porting (shakes)"), "kde@dontletsstart.com" );
