@@ -89,7 +89,7 @@ LastFmServiceConfig::load()
     m_sessionKey = config.readEntry( "sessionKey", QString() );
     m_scrobble = config.readEntry( "scrobble", true );
     m_fetchSimilar = config.readEntry( "fetchSimilar", true );
-    m_scrobbleComposer = config.readEntry( "scrobbleComposer", true );
+    m_scrobbleComposer = config.readEntry( "scrobbleComposer", false );
 }
 
 
