@@ -391,10 +391,10 @@ LyricsAppletPrivate::_trackDataChanged( Meta::TrackPtr track )
 void
 LyricsAppletPrivate::_trackPositionChanged( qint64 position, bool userSeek )
 {
-    Q_UNUSED(userSeek);
+    Q_UNUSED( userSeek );
     EngineController* engine = The::engineController();
     QScrollBar *vbar = browser->nativeWidget()->verticalScrollBar();
-    if (engine->trackPositionMs() != 0 &&  !vbar->isSliderDown() && autoScroll)
+    if( engine->trackPositionMs() != 0 &&  !vbar->isSliderDown() && autoScroll )
     {
         vbar->setSliderPosition( (int)((((double)position/(double)engine->trackLength()))*vbar->maximum()) );
     }
