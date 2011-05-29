@@ -4,6 +4,10 @@ Amarok ChangeLog
 
 
 VERSION 2.4.2-Beta 1
+  FEATURES:
+    * Automatic scrolling in playlist applet (Thanks to Jan Gerrit Marker)
+    * Option to scrobble composer as artist to Last.fm (Thanks to Nicholas Wilson)
+
   CHANGES:
     * Easier to understand Dynamic playlists
     * Now Amarok requires ffmpeg-0.6 or newer. 
