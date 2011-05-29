@@ -63,6 +63,8 @@ public:
         , showBrowser( false )
         , showSuggestions( false )
         , isShowingUnsavedWarning( false )
+        , userAutoScrollOffset( 0 )
+        , oldSliderPosition( 0 )
         , q_ptr( parent ) {}
     ~LyricsAppletPrivate() {}
 
@@ -112,6 +114,8 @@ public:
     bool autoScroll;
     bool showSuggestions;
     bool isShowingUnsavedWarning;
+    int  userAutoScrollOffset;
+    int  oldSliderPosition;
 
 private:
     LyricsApplet *const q_ptr;
@@ -334,7 +338,7 @@ LyricsAppletPrivate::_toggleAutoScroll()
 {
     Q_Q( LyricsApplet );
     Plasma::IconWidget *icon = qobject_cast<Plasma::IconWidget*>(q->sender());
-    if ( icon )
+    if( icon )
     {
         autoScroll = !autoScroll;
         icon->setPressed( autoScroll );
@@ -372,6 +376,9 @@ LyricsAppletPrivate::_trackDataChanged( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
+    userAutoScrollOffset = 0;
+    oldSliderPosition = 0;
+
     // Check if we previously had a track.
     // If the lyrics currently shown in the browser (which
     // additionally is in edit mode) are different from the
@@ -396,7 +403,9 @@ LyricsAppletPrivate::_trackPositionChanged( qint64 position, bool userSeek )
     QScrollBar *vbar = browser->nativeWidget()->verticalScrollBar();
     if( engine->trackPositionMs() != 0 &&  !vbar->isSliderDown() && autoScroll )
     {
-        vbar->setSliderPosition( (int)((((double)position/(double)engine->trackLength()))*vbar->maximum()) );
+        userAutoScrollOffset = userAutoScrollOffset + vbar->value() - oldSliderPosition;
+        oldSliderPosition = (int)((((double)position/(double)engine->trackLength()))*vbar->maximum()) + userAutoScrollOffset;
+        vbar->setSliderPosition( oldSliderPosition );
     }
 }
 
