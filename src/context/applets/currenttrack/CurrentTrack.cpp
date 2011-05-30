@@ -609,8 +609,8 @@ CurrentTrack::settingsAccepted()
     config.writeEntry( "ShowEditTrackAction", m_showEditTrackDetailsAction );
     config.writeEntry( "ShowFindInSourceAction", m_showFindInSourceAction );
 
-    Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "current" );
-    dataUpdated( QLatin1String("current"), data );
+    clearTrackActions();
+    setupLayoutActions( The::engineController()->currentTrack() );
 }
 
 void
