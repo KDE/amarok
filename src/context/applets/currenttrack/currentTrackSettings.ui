@@ -42,7 +42,7 @@
       <item>
        <widget class="QCheckBox" name="findInSourceCheckBox">
         <property name="text">
-         <string>Show In Media Sources</string>
+         <string>Show in Media Sources</string>
         </property>
        </widget>
       </item>
