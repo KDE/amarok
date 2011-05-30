@@ -163,8 +163,8 @@ Dynamic::SearchQueryBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady( QString, QStringList )),
-             this, SLOT(updateReady( QString, QStringList )) );
+    connect( m_qm.data(), SIGNAL(newResultReady( QStringList )),
+             this, SLOT(updateReady( QStringList )) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
     m_qm.data()->run();

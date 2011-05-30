@@ -134,8 +134,8 @@ CoverManager::CoverManager( QWidget *parent )
     qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
     qm->orderBy( Meta::valArtist );
 
-    connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
-             this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
+    connect( qm, SIGNAL( newResultReady( Meta::ArtistList ) ),
+             this, SLOT( slotArtistQueryResult( Meta::ArtistList ) ) );
 
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotContinueConstruction() ) );
 
@@ -143,10 +143,9 @@ CoverManager::CoverManager( QWidget *parent )
 }
 
 void
-CoverManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList artists ) //SLOT
+CoverManager::slotArtistQueryResult( Meta::ArtistList artists ) //SLOT
 {
     DEBUG_BLOCK
-    Q_UNUSED( collectionId );
     foreach( Meta::ArtistPtr artist, artists )
         m_artistList << artist;
 }
@@ -370,8 +369,8 @@ CoverManager::slotArtistSelected() //SLOT
     qm->excludeFilter( Meta::valAlbum, QString(), true, true );
     qm->endAndOr();
 
-    connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-             this, SLOT( slotAlbumQueryResult( QString, Meta::AlbumList ) ) );
+    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ),
+             this, SLOT( slotAlbumQueryResult( Meta::AlbumList ) ) );
 
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotArtistQueryDone() ) );
 
@@ -379,9 +378,8 @@ CoverManager::slotArtistSelected() //SLOT
 }
 
 void
-CoverManager::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums ) //SLOT
+CoverManager::slotAlbumQueryResult( Meta::AlbumList albums ) //SLOT
 {
-    Q_UNUSED( collectionId );
     m_albumList = albums;
 }
 

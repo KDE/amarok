@@ -81,7 +81,7 @@ private:
     Collections::QueryMaker *m_lastQueryMaker;
 
 private slots:
-    void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
+    void resultReady( const Meta::AlbumList &albums );
     void setupAlbumsData();
 };
 

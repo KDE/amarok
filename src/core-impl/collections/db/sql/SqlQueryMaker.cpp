@@ -183,30 +183,30 @@ SqlQueryMaker::run()
 
         if ( !d->blocking )
         {
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::AlbumList)), SIGNAL(newResultReady(QString,Meta::AlbumList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::ArtistList)), SIGNAL(newResultReady(QString,Meta::ArtistList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::GenreList)), SIGNAL(newResultReady(QString,Meta::GenreList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::ComposerList)), SIGNAL(newResultReady(QString,Meta::ComposerList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::YearList)), SIGNAL(newResultReady(QString,Meta::YearList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::TrackList)), SIGNAL(newResultReady(QString,Meta::TrackList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::DataList)), SIGNAL(newResultReady(QString,Meta::DataList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,QStringList)), SIGNAL(newResultReady(QString,QStringList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::LabelList)), SIGNAL(newResultReady(QString,Meta::LabelList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::AlbumList)),    SIGNAL(newResultReady(Meta::AlbumList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::ArtistList)),   SIGNAL(newResultReady(Meta::ArtistList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::GenreList)),    SIGNAL(newResultReady(Meta::GenreList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SIGNAL(newResultReady(Meta::ComposerList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::YearList)),     SIGNAL(newResultReady(Meta::YearList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::TrackList)),    SIGNAL(newResultReady(Meta::TrackList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::DataList)),     SIGNAL(newResultReady(Meta::DataList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(QStringList)),        SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::LabelList)),    SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
             d->worker = new SqlWorkerThread( qmi );
             connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
             ThreadWeaver::Weaver::instance()->enqueue( d->worker );
         }
         else //use it blocking
         {
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::AlbumList)), SLOT(blockingNewResultReady(QString,Meta::AlbumList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::ArtistList)), SLOT(blockingNewResultReady(QString,Meta::ArtistList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::GenreList)), SLOT(blockingNewResultReady(QString,Meta::GenreList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::ComposerList)), SLOT(blockingNewResultReady(QString,Meta::ComposerList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::YearList)), SLOT(blockingNewResultReady(QString,Meta::YearList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::TrackList)), SLOT(blockingNewResultReady(QString,Meta::TrackList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::DataList)), SLOT(blockingNewResultReady(QString,Meta::DataList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,QStringList)), SLOT(blockingNewResultReady(QString,QStringList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QString,Meta::LabelList)), SLOT(blockingNewResultReady(QString,Meta::LabelList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::AlbumList)),    SLOT(blockingNewResultReady(Meta::AlbumList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::ArtistList)),   SLOT(blockingNewResultReady(Meta::ArtistList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::GenreList)),    SLOT(blockingNewResultReady(Meta::GenreList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SLOT(blockingNewResultReady(Meta::ComposerList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::YearList)),     SLOT(blockingNewResultReady(Meta::YearList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::TrackList)),    SLOT(blockingNewResultReady(Meta::TrackList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::DataList)),     SLOT(blockingNewResultReady(Meta::DataList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(QStringList)),        SLOT(blockingNewResultReady(QStringList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(Meta::LabelList)),    SLOT(blockingNewResultReady(Meta::LabelList)), Qt::DirectConnection );
             qmi->run();
             delete qmi;
         }
@@ -943,58 +943,50 @@ SqlQueryMaker::collectionIds() const
 }
 
 Meta::DataList
-SqlQueryMaker::data( const QString &id ) const
+SqlQueryMaker::data() const
 {
-    Q_UNUSED( id );
     return d->blockingData;
 }
 
 Meta::TrackList
-SqlQueryMaker::tracks( const QString &id ) const
+SqlQueryMaker::tracks() const
 {
-    Q_UNUSED( id );
     return d->blockingTracks;
 }
 
 Meta::AlbumList
-SqlQueryMaker::albums( const QString &id ) const
+SqlQueryMaker::albums() const
 {
-    Q_UNUSED( id );
     return d->blockingAlbums;
 }
 
 Meta::ArtistList
-SqlQueryMaker::artists( const QString &id ) const
+SqlQueryMaker::artists() const
 {
-    Q_UNUSED( id );
     return d->blockingArtists;
 }
 
 Meta::GenreList
-SqlQueryMaker::genres( const QString &id ) const
+SqlQueryMaker::genres() const
 {
-    Q_UNUSED( id );
     return d->blockingGenres;
 }
 
 Meta::ComposerList
-SqlQueryMaker::composers( const QString &id ) const
+SqlQueryMaker::composers() const
 {
-    Q_UNUSED( id );
     return d->blockingComposers;
 }
 
 Meta::YearList
-SqlQueryMaker::years( const QString &id ) const
+SqlQueryMaker::years() const
 {
-    Q_UNUSED( id );
     return d->blockingYears;
 }
 
 QStringList
-SqlQueryMaker::customData( const QString &id ) const
+SqlQueryMaker::customData() const
 {
-    Q_UNUSED( id );
     return d->blockingCustomData;
 }
 
@@ -1148,65 +1140,56 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const QString &id, const Meta::AlbumList &albums)
+SqlQueryMaker::blockingNewResultReady(const Meta::AlbumList &albums)
 {
-    Q_UNUSED( id );
     d->blockingAlbums = albums;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const QString &id, const Meta::ArtistList &artists)
+SqlQueryMaker::blockingNewResultReady(const Meta::ArtistList &artists)
 {
-    Q_UNUSED( id );
     d->blockingArtists = artists;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const QString &id, const Meta::GenreList &genres)
+SqlQueryMaker::blockingNewResultReady(const Meta::GenreList &genres)
 {
-    Q_UNUSED( id );
     d->blockingGenres = genres;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const QString &id, const Meta::ComposerList &composers)
+SqlQueryMaker::blockingNewResultReady(const Meta::ComposerList &composers)
 {
-    Q_UNUSED( id );
     d->blockingComposers = composers;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const QString &id, const Meta::YearList &years)
+SqlQueryMaker::blockingNewResultReady(const Meta::YearList &years)
 {
-    Q_UNUSED( id );
     d->blockingYears = years;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const QString &id, const Meta::TrackList &tracks)
+SqlQueryMaker::blockingNewResultReady(const Meta::TrackList &tracks)
 {
-    Q_UNUSED( id );
     d->blockingTracks = tracks;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const QString &id, const Meta::DataList &data)
+SqlQueryMaker::blockingNewResultReady(const Meta::DataList &data)
 {
-    Q_UNUSED( id );
     d->blockingData = data;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const QString &id, const QStringList &customData)
+SqlQueryMaker::blockingNewResultReady(const QStringList &customData)
 {
-    Q_UNUSED( id );
     d->blockingCustomData = customData;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady( const QString &id, const Meta::LabelList &labels )
+SqlQueryMaker::blockingNewResultReady(const Meta::LabelList &labels )
 {
-    Q_UNUSED( id );
     d->blockingLabels = labels;
 }
 

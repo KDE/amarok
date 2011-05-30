@@ -116,10 +116,10 @@ void MemoryQueryMakerInternal::emitProperResult( const QList<PointerType>& list 
         foreach( PointerType p, resultList )
             data << Meta::DataPtr::staticCast( p );
 
-        emit newResultReady( m_collectionId, data );
+        emit newResultReady( data );
     }
     else
-        emit newResultReady( m_collectionId, list );
+        emit newResultReady( list );
 }
 
 template<typename T>
@@ -192,7 +192,7 @@ MemoryQueryMakerInternal::handleResult()
                     count++;
                 }
             }
-            emit newResultReady( m_collectionId, result );
+            emit newResultReady( result );
             break;
         }
         case QueryMaker::Track :
@@ -483,7 +483,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
                     count++;
                 }
             }
-            emit newResultReady( m_collectionId, result );
+            emit newResultReady( result );
             break;
         }
         case QueryMaker::Track :

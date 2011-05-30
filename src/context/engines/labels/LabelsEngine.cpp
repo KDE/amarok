@@ -76,8 +76,8 @@ LabelsEngine::sourceRequestEvent( const QString &name )
         qm->setQueryType( Collections::QueryMaker::Label );
         m_allLabels.clear();
 
-        connect( qm, SIGNAL( newResultReady( QString, Meta::LabelList ) ),
-                SLOT( resultReady( QString, Meta::LabelList ) ), Qt::QueuedConnection );
+        connect( qm, SIGNAL( newResultReady( Meta::LabelList ) ),
+                SLOT( resultReady( Meta::LabelList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
 
         qm->run();
@@ -89,10 +89,8 @@ LabelsEngine::sourceRequestEvent( const QString &name )
 }
 
 void
-LabelsEngine::resultReady( const QString &collectionId, const Meta::LabelList &labels )
+LabelsEngine::resultReady( const Meta::LabelList &labels )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::LabelPtr &label, labels )
     {
         if( !label->name().isEmpty() )

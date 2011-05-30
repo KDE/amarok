@@ -65,7 +65,7 @@ namespace Dynamic
 
         protected slots:
             /** Called when we get new uids from the query maker */
-            virtual void updateReady( QString collectionId, QStringList uids );
+            virtual void updateReady( QStringList uids );
 
             /** Called when the querymaker is finished */
             virtual void updateFinished();

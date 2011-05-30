@@ -161,7 +161,7 @@ class MetaQueryWidget : public QWidget
         void numValueTimeDistanceChanged();
         void numValueFormatChanged( int );
 
-        void populateComboBox( QString collectionId, QStringList );
+        void populateComboBox( QStringList );
         void comboBoxPopulated();
 
     private:

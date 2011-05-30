@@ -81,14 +81,14 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
 
         QStringList collectionIds() const;
 
-        Meta::DataList data( const QString &id = QString() ) const;
-        Meta::TrackList tracks( const QString &id = QString() ) const;
-        Meta::AlbumList albums( const QString &id = QString() ) const;
-        Meta::ArtistList artists( const QString &id = QString() ) const;
-        Meta::GenreList genres( const QString &id = QString() ) const;
-        Meta::ComposerList composers( const QString &id = QString() ) const;
-        Meta::YearList years( const QString &id = QString() ) const;
-        QStringList customData( const QString &id = QString() ) const;
+        Meta::DataList data() const;
+        Meta::TrackList tracks() const;
+        Meta::AlbumList albums() const;
+        Meta::ArtistList artists() const;
+        Meta::GenreList genres() const;
+        Meta::ComposerList composers() const;
+        Meta::YearList years() const;
+        QStringList customData() const;
         Meta::LabelList labels() const;
 
     protected:
@@ -104,15 +104,15 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
 
     public slots:
         void done( ThreadWeaver::Job * job );
-        void blockingNewResultReady( const QString &id, const QStringList &customData );
-        void blockingNewResultReady( const QString &id, const Meta::AlbumList &albums );
-        void blockingNewResultReady( const QString &id, const Meta::ArtistList &artists );
-        void blockingNewResultReady( const QString &id, const Meta::GenreList &genres );
-        void blockingNewResultReady( const QString &id, const Meta::ComposerList &composers );
-        void blockingNewResultReady( const QString &id, const Meta::YearList &years );
-        void blockingNewResultReady( const QString &id, const Meta::TrackList &tracks );
-        void blockingNewResultReady( const QString &id, const Meta::DataList &data );
-        void blockingNewResultReady( const QString &id, const Meta::LabelList &labels );
+        void blockingNewResultReady( const QStringList &customData );
+        void blockingNewResultReady( const Meta::AlbumList &albums );
+        void blockingNewResultReady( const Meta::ArtistList &artists );
+        void blockingNewResultReady( const Meta::GenreList &genres );
+        void blockingNewResultReady( const Meta::ComposerList &composers );
+        void blockingNewResultReady( const Meta::YearList &years );
+        void blockingNewResultReady( const Meta::TrackList &tracks );
+        void blockingNewResultReady( const Meta::DataList &data );
+        void blockingNewResultReady( const Meta::LabelList &labels );
 
     private:
 

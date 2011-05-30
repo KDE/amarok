@@ -41,8 +41,8 @@ class DBusQueryHelper : public QObject
         DBusQueryHelper( QObject *parent, Collections::QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible );
         
     private slots:
-        void slotResultReady( const QString &collectionId, const Meta::TrackList &tracks );
-        
+        void slotResultReady( const Meta::TrackList &tracks );
+
         void slotQueryDone();
 
         void abortQuery();

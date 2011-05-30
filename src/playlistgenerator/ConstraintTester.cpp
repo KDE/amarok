@@ -46,7 +46,7 @@ APG::ConstraintTester::ConstraintTester( Collections::Collection* c, ConstraintN
         m_qm->setQueryType( Collections::QueryMaker::Track );
         m_qm->orderByRandom();
         // TODO: limit number of tracks returned
-        connect( m_qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( receiveQueryMakerData( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+        connect( m_qm, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( receiveQueryMakerData( Meta::TrackList ) ), Qt::QueuedConnection );
         connect( m_qm, SIGNAL( queryDone() ), this, SLOT( receiveQueryMakerDone() ), Qt::QueuedConnection );
         m_qm->run();
     } else {
@@ -115,9 +115,8 @@ APG::ConstraintTester::run()
 }
 
 void
-APG::ConstraintTester::receiveQueryMakerData( QString collId, Meta::TrackList results )
+APG::ConstraintTester::receiveQueryMakerData( Meta::TrackList results )
 {
-    Q_UNUSED( collId );
     m_domainMutex.lock();
     m_domain += results;
     m_domainMutex.unlock();

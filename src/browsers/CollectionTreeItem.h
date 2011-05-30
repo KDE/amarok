@@ -113,7 +113,7 @@ class CollectionTreeItem : public QObject
         void dataUpdated();
 
     private slots:
-        void tracksCounted( QString collectionId, QStringList res );
+        void tracksCounted( QStringList res );
         void collectionUpdated();
 
     private:

@@ -51,13 +51,13 @@ CoverBling::CoverBling( QWidget* parent )
     qm->setQueryType( QueryMaker::Album );
     qm->limitMaxResultSize( 10 );
 
-    connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SLOT( queryResult( QString, Meta::AlbumList ) ) );
+    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SLOT( queryResult( Meta::AlbumList ) ) );
 
     qm->run();
 }
 
 void
-CoverBling::queryResult( QString collectionId, Meta::AlbumList albums )
+CoverBling::queryResult( Meta::AlbumList albums )
 {
     foreach( Meta::AlbumPtr album, albums )
         m_covers << album->image();

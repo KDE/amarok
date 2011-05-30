@@ -203,10 +203,10 @@ void ScriptableServiceQueryMaker::emitProperResult( const ListType& list )
         foreach( PointerType p, list )
             data << Meta::DataPtr::staticCast( p );
 
-        emit newResultReady( m_collection->collectionId(), data );
+        emit newResultReady( data );
     }
     else
-        emit newResultReady( m_collection->collectionId(), list );
+        emit newResultReady( list );
 }
 
 void ScriptableServiceQueryMaker::handleResult()

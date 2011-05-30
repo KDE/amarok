@@ -582,7 +582,7 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
     {
         switch( d->queryType ) {
         /*case Private::CUSTOM:
-            emit newResultReady( m_collection->collectionId(), result );
+            emit newResultReady( result );
             break;*/
         case Private::TRACK:
             handleTracks( result );
@@ -612,34 +612,34 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
     }
     else if( d->returnDataPtrs )
     {
-        emit newResultReady( m_collection->collectionId(), Meta::DataList() );
+        emit newResultReady( Meta::DataList() );
     }
     else
     {
         switch( d->queryType ) {
             case QueryMaker::Custom:
-                emit newResultReady( m_collection->collectionId(), QStringList() );
+                emit newResultReady( QStringList() );
                 break;
             case QueryMaker::Track:
-                emit newResultReady( m_collection->collectionId(), Meta::TrackList() );
+                emit newResultReady( Meta::TrackList() );
                 break;
             case QueryMaker::Artist:
-                emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
+                emit newResultReady( Meta::ArtistList() );
                 break;
             case QueryMaker::Album:
-                emit newResultReady( m_collection->collectionId(), Meta::AlbumList() );
+                emit newResultReady( Meta::AlbumList() );
                 break;
             case QueryMaker::AlbumArtist:
-                emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
+                emit newResultReady( Meta::ArtistList() );
                 break;
             case QueryMaker::Genre:
-                emit newResultReady( m_collection->collectionId(), Meta::GenreList() );
+                emit newResultReady( Meta::GenreList() );
                 break;
             case QueryMaker::Composer:
-                emit newResultReady( m_collection->collectionId(), Meta::ComposerList() );
+                emit newResultReady( Meta::ComposerList() );
                 break;
             case QueryMaker::Year:
-                emit newResultReady( m_collection->collectionId(), Meta::YearList() );
+                emit newResultReady( Meta::YearList() );
                 break;
 
         case QueryMaker::None:
@@ -694,10 +694,10 @@ void ServiceSqlQueryMaker::emitProperResult( const ListType& list )
         foreach( PointerType p, list )
             data << Meta::DataPtr::staticCast( p );
 
-        emit newResultReady( m_collection->collectionId(), data );
+        emit newResultReady( data );
     }
     else
-        emit newResultReady( m_collection->collectionId(), list );
+        emit newResultReady( list );
 }
 
 void

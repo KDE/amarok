@@ -262,7 +262,7 @@ private slots:
     /**
      * Get results from the query maker
      */
-    void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+    void resultReady( const Meta::TrackList &tracks );
 
     void updateInfo();
 };

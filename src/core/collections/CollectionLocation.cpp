@@ -139,7 +139,7 @@ CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation
     m_transcodingConfiguration = configuration;
     m_removeSources = false;
     m_isRemoveAction = false;
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
+    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( resultReady( Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
@@ -186,7 +186,7 @@ CollectionLocation::prepareMove( Collections::QueryMaker *qm, CollectionLocation
     m_destination = destination;
     m_isRemoveAction = false;
     m_removeSources = true;
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
+    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( resultReady( Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
@@ -222,7 +222,7 @@ CollectionLocation::prepareRemove( Collections::QueryMaker *qm )
     m_isRemoveAction = true;
     m_removeSources = false;
 
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
+    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( resultReady( Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
@@ -480,10 +480,8 @@ CollectionLocation::slotAborted()
 }
 
 void
-CollectionLocation::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
+CollectionLocation::resultReady( const Meta::TrackList &tracks )
 {
-    DEBUG_BLOCK
-    Q_UNUSED( collectionId )
     m_sourceTracks << tracks;
 }
 

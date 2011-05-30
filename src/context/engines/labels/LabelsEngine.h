@@ -58,7 +58,7 @@ private slots:
      */
     void resultLastFm( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
-    void resultReady( const QString &collectionId, const Meta::LabelList &labels );
+    void resultReady( const Meta::LabelList &labels );
     void dataQueryDone();
 
     void timeout();

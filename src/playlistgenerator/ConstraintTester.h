@@ -58,7 +58,7 @@ namespace APG {
             void run(); // from ThreadWeaver::Job
 
         private slots:
-            void receiveQueryMakerData( QString, Meta::TrackList );
+            void receiveQueryMakerData( Meta::TrackList );
             void receiveQueryMakerDone();
 
         private:

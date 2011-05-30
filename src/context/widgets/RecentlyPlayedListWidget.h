@@ -38,7 +38,7 @@ public:
     void addTrack( const Meta::TrackPtr &track );
 
 private slots:
-    void tracksReturned( QString id, Meta::TrackList );
+    void tracksReturned( Meta::TrackList );
     void trackChanged( Meta::TrackPtr track );
     void setupTracksData();
 

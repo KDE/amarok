@@ -155,15 +155,15 @@ MemoryQueryMaker::run()
         qmi->setOrderByField( d->orderByField );
         qmi->setCollectionId( d->collectionId );
 
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::AlbumList)), SIGNAL(newResultReady(QString,Meta::AlbumList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::ArtistList)), SIGNAL(newResultReady(QString,Meta::ArtistList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::GenreList)), SIGNAL(newResultReady(QString,Meta::GenreList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::ComposerList)), SIGNAL(newResultReady(QString,Meta::ComposerList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::YearList)), SIGNAL(newResultReady(QString,Meta::YearList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::TrackList)), SIGNAL(newResultReady(QString,Meta::TrackList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::DataList)), SIGNAL(newResultReady(QString,Meta::DataList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,QStringList)), SIGNAL(newResultReady(QString,QStringList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::LabelList)), SIGNAL(newResultReady(QString,Meta::LabelList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::AlbumList)), SIGNAL(newResultReady(Meta::AlbumList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::ArtistList)), SIGNAL(newResultReady(Meta::ArtistList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::GenreList)), SIGNAL(newResultReady(Meta::GenreList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SIGNAL(newResultReady(Meta::ComposerList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::YearList)), SIGNAL(newResultReady(Meta::YearList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::DataList)), SIGNAL(newResultReady(Meta::DataList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(QStringList)), SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::LabelList)), SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
 
         d->job = new QueryJob( qmi );
         connect( d->job, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( done( ThreadWeaver::Job * ) ) );

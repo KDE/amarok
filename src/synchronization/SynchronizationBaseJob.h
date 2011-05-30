@@ -64,11 +64,11 @@ class SynchronizationBaseJob : public QObject
         virtual void synchronize();
 
     private slots:
-        void slotResultReady( const QString &id, const Meta::TrackList &artists );
-        void slotResultReady( const QString &id, const Meta::AlbumList &albums );
-        void slotResultReady( const QString &id, const Meta::ArtistList &tracks );
+        void slotResultReady( const Meta::TrackList &artists );
+        void slotResultReady( const Meta::AlbumList &albums );
+        void slotResultReady( const Meta::ArtistList &tracks );
         void slotQueryDone();
-        void slotSyncTracks( const QString &id, const Meta::TrackList &tracks );
+        void slotSyncTracks( const Meta::TrackList &tracks );
         void slotSyncQueryDone();
 
         void timeout();
@@ -99,6 +99,9 @@ class SynchronizationBaseJob : public QObject
         int m_currentResultCount;
         Collections::Collection *m_collectionA;
         Collections::Collection *m_collectionB;
+
+        /** All the query makers we created and the collection they belong to. */
+        QHash<Collections::QueryMaker*, Collections::Collection*> m_queryMakers;
 
         QSet<QString> m_artistsA;
         QSet<QString> m_artistsB;

@@ -35,14 +35,14 @@ XmlQueryWriter::XmlQueryWriter( QueryMaker* qm, QDomDocument doc )
     m_element.appendChild( m_filterElement );
 
     // connect up the signals
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SIGNAL( newResultReady( QString, Meta::TrackList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), this, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::GenreList ) ), this, SIGNAL( newResultReady( QString, Meta::GenreList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), this, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::YearList ) ), this, SIGNAL( newResultReady( QString, Meta::YearList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, QStringList ) ), this, SIGNAL( newResultReady( QString, QStringList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), this, SIGNAL( newResultReady( QString, Meta::DataList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::TrackList ) ),    this, SIGNAL( newResultReady( Meta::TrackList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::ArtistList ) ),   this, SIGNAL( newResultReady( Meta::ArtistList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::AlbumList ) ),    this, SIGNAL( newResultReady( Meta::AlbumList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::GenreList ) ),    this, SIGNAL( newResultReady( Meta::GenreList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::ComposerList ) ), this, SIGNAL( newResultReady( Meta::ComposerList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::YearList ) ),     this, SIGNAL( newResultReady( Meta::YearList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( QStringList ) ),        this, SIGNAL( newResultReady( QStringList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::DataList ) ),     this, SIGNAL( newResultReady( Meta::DataList ) ), Qt::DirectConnection );
     connect( m_qm, SIGNAL( queryDone() ), this, SIGNAL( queryDone() ) );
 }
 

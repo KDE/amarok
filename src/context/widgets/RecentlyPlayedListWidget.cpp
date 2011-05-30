@@ -125,8 +125,8 @@ RecentlyPlayedListWidget::startQuery()
     clear();
 
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
-    connect( qm, SIGNAL(newResultReady(QString, Meta::TrackList)),
-             this, SLOT(tracksReturned(QString, Meta::TrackList)) );
+    connect( qm, SIGNAL(newResultReady( Meta::TrackList)),
+             this, SLOT(tracksReturned( Meta::TrackList)) );
     connect( qm, SIGNAL(queryDone()), SLOT(setupTracksData()) );
 
     qm->setAutoDelete( true )
@@ -161,9 +161,8 @@ RecentlyPlayedListWidget::clear()
 }
 
 void
-RecentlyPlayedListWidget::tracksReturned( QString id, Meta::TrackList tracks )
+RecentlyPlayedListWidget::tracksReturned( Meta::TrackList tracks )
 {
-    Q_UNUSED( id );
     m_recentTracks << tracks;
 }
 

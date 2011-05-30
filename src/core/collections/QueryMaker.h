@@ -102,13 +102,13 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          * Sets the type of objects the querymaker will query for.  These are mutually
          * exclusive.  The results of the query will be returned as objects of the
          * appropriate type, therefore it is necessary to connect the client to the
-         * newResultReady( QString, Meta::Type ) signal (unless you are after Meta::Data
+         * newResultReady( Meta::Type ) signal (unless you are after Meta::Data
          * pointers, see setReturnResultAsDataPtrs( bool ) for details.
          *
          * if you set QueryType custom, this starts a custom query. Unlike other query types, you have to set up the return
          * values yourself using addReturnValue( qint64 ) and addReturnFunction(). The results will
          * be returned as a QStringList. Threfore you have to connect to the
-         * newResultReady( QString, QStringList ) signal to receive the results. Calling
+         * newResultReady( QStringList ) signal to receive the results. Calling
          * setReturnResultAsDataPtrs( bool ) has no effect when using a custom query.
          * @return this
          */
@@ -117,7 +117,7 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
             sets the QueryMaker instance to return Meta::Data objects instead of the actual type.
             In some cases it can be useful to ignore the actual type of the result and just work with
             the method provided by Meta::Data. Calling this method with resultAsDataPtrs = true causes
-            the QueryMaker instance to emit the newResultReady( QString, Meta::DataList ) signal
+            the QueryMaker instance to emit the newResultReady( Meta::DataList ) signal
             for all query types (except a custom query). Calling the method with resultAsDataPtrs = false
             switches back to the normal behaviour.
 
@@ -221,15 +221,15 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual int validFilterMask();
 
     signals:
-        void newResultReady( QString collectionId, Meta::TrackList );
-        void newResultReady( QString collectionId, Meta::ArtistList );
-        void newResultReady( QString collectionId, Meta::AlbumList );
-        void newResultReady( QString collectionId, Meta::GenreList );
-        void newResultReady( QString collectionId, Meta::ComposerList );
-        void newResultReady( QString collectionId, Meta::YearList );
-        void newResultReady( QString collectionId, Meta::DataList );
-        void newResultReady( QString collectionId, QStringList );
-        void newResultReady( QString collectionId, Meta::LabelList );
+        void newResultReady( Meta::TrackList );
+        void newResultReady( Meta::ArtistList );
+        void newResultReady( Meta::AlbumList );
+        void newResultReady( Meta::GenreList );
+        void newResultReady( Meta::ComposerList );
+        void newResultReady( Meta::YearList );
+        void newResultReady( Meta::DataList );
+        void newResultReady( QStringList );
+        void newResultReady( Meta::LabelList );
 
         void queryDone();
 };

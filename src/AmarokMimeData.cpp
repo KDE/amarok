@@ -367,16 +367,15 @@ AmarokMimeData::startQueries()
     foreach( Collections::QueryMaker *qm, d->queryMakers )
     {
         qm->setQueryType( Collections::QueryMaker::Track );
-        connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( newResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+        connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( newResultReady( Meta::TrackList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ), Qt::QueuedConnection );
         qm->run();
     }
 }
 
 void
-AmarokMimeData::newResultReady( const QString &collectionId, const Meta::TrackList &tracks )
+AmarokMimeData::newResultReady( const Meta::TrackList &tracks )
 {
-    Q_UNUSED( collectionId )
     Collections::QueryMaker *qm = dynamic_cast<Collections::QueryMaker*>( sender() );
     if( qm )
     {

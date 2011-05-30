@@ -564,8 +564,8 @@ MetaQueryWidget::makeGenericComboSelection( bool editable, Collections::QueryMak
     if( populateQuery != 0 )
     {
         m_runningQueries.insert(populateQuery, QWeakPointer<KComboBox>(combo));
-        connect( populateQuery, SIGNAL(newResultReady(QString,QStringList)),
-                SLOT(populateComboBox(QString,QStringList)) );
+        connect( populateQuery, SIGNAL(newResultReady(QStringList)),
+                SLOT(populateComboBox(QStringList)) );
         connect( populateQuery, SIGNAL(queryDone()),
                 SLOT(comboBoxPopulated()) );
 
@@ -593,10 +593,8 @@ MetaQueryWidget::makeMetaComboSelection( qint64 field )
 }
 
 void
-MetaQueryWidget::populateComboBox( QString collectionId, QStringList results )
+MetaQueryWidget::populateComboBox( QStringList results )
 {
-    Q_UNUSED(collectionId);
-
     QObject* query = sender();
     if( !query )
         return;

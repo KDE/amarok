@@ -38,10 +38,10 @@ namespace Collections {
                 foreach( PointerType p, list ) { \
                     data << Meta::DataPtr::staticCast( p ); \
                 } \
-                //emit newResultReady( m_collection->collectionId(), data ); \
+                //emit newResultReady( data ); \
             } \
             else { \
-                //emit newResultReady( m_collection->collectionId(), list ); \
+                //emit newResultReady( list ); \
             } \
     } while ( 0 )*/
 
@@ -50,13 +50,13 @@ do {\
     foreach( PointerType##Ptr p, list ) \
         m_cacheEntries << Meta::DataPtr::staticCast( p ); \
     if ( m_asDataPtrs ) { \
-        emit newResultReady( m_collection->collectionId(), m_cacheEntries ); \
+        emit newResultReady( m_cacheEntries ); \
     } \
     else { \
         PointerType##List list; \
         foreach( Meta::DataPtr ptr, m_cacheEntries ) \
             list << PointerType##Ptr::staticCast( ptr ); \
-        emit newResultReady( m_collection->collectionId(), list ); \
+        emit newResultReady( list ); \
     } \
 } while( 0 )
 
@@ -128,15 +128,15 @@ DEBUG_BLOCK
     // we don't deal with compilations
     else if( m_queryType == Album && m_albumMode == OnlyCompilations ) {
         // we don't support any other attribute
-        emit newResultReady( m_collection->collectionId(), Meta::TrackList() );
-        emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
-        emit newResultReady( m_collection->collectionId(), Meta::AlbumList() );
-        emit newResultReady( m_collection->collectionId(), Meta::GenreList() );
-        emit newResultReady( m_collection->collectionId(), Meta::ComposerList() );
-        emit newResultReady( m_collection->collectionId(), Meta::YearList() );
-        emit newResultReady( m_collection->collectionId(), Meta::DataList() );
-        emit newResultReady( m_collection->collectionId(), QStringList() );
-        emit newResultReady( m_collection->collectionId(), Meta::LabelList() );
+        emit newResultReady( Meta::TrackList() );
+        emit newResultReady( Meta::ArtistList() );
+        emit newResultReady( Meta::AlbumList() );
+        emit newResultReady( Meta::GenreList() );
+        emit newResultReady( Meta::ComposerList() );
+        emit newResultReady( Meta::YearList() );
+        emit newResultReady( Meta::DataList() );
+        emit newResultReady( QStringList() );
+        emit newResultReady( Meta::LabelList() );
         emit queryDone();
         return;
     }
@@ -170,15 +170,15 @@ DEBUG_BLOCK
              default:
                  debug() << this << "Default case: Query type";
                  // we don't support any other attribute
-                 emit newResultReady( m_collection->collectionId(), Meta::TrackList() );
-                 emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
-                 emit newResultReady( m_collection->collectionId(), Meta::AlbumList() );
-                 emit newResultReady( m_collection->collectionId(), Meta::GenreList() );
-                 emit newResultReady( m_collection->collectionId(), Meta::ComposerList() );
-                 emit newResultReady( m_collection->collectionId(), Meta::YearList() );
-                 emit newResultReady( m_collection->collectionId(), Meta::DataList() );
-                 emit newResultReady( m_collection->collectionId(), QStringList() );
-                 emit newResultReady( m_collection->collectionId(), Meta::LabelList() );
+                 emit newResultReady( Meta::TrackList() );
+                 emit newResultReady( Meta::ArtistList() );
+                 emit newResultReady( Meta::AlbumList() );
+                 emit newResultReady( Meta::GenreList() );
+                 emit newResultReady( Meta::ComposerList() );
+                 emit newResultReady( Meta::YearList() );
+                 emit newResultReady( Meta::DataList() );
+                 emit newResultReady( QStringList() );
+                 emit newResultReady( Meta::LabelList() );
                  emit queryDone();
                  return;
         }
@@ -466,7 +466,7 @@ void UpnpQueryMaker::handleCustom( const KIO::UDSEntryList& list )
         Q_ASSERT( !list.empty() );
         QString count = list.first().stringValue( KIO::UDSEntry::UDS_NAME );
         m_collection->setProperty( "numberOfTracks", count.toUInt() );
-        emit newResultReady( m_collection->collectionId(), QStringList( count ) );
+        emit newResultReady( QStringList( count ) );
     }
 }
 
@@ -482,11 +482,11 @@ DEBUG_BLOCK
         fake->setYear( Meta::UpnpYearPtr( new Meta::UpnpYear( 2010 ) ) );
         Meta::DataPtr ptr( fake );
         ret << ptr;
-        //emit newResultReady( m_collection->collectionId(), ret );
+        //emit newResultReady( ret );
     }
 
     if ( m_asDataPtrs ) {
-        emit newResultReady( m_collection->collectionId(), m_cacheEntries );
+        emit newResultReady( m_cacheEntries );
     }
     else {
         switch( m_queryType ) {
@@ -495,7 +495,7 @@ DEBUG_BLOCK
                 Meta::ArtistList list;
                 foreach( Meta::DataPtr ptr, m_cacheEntries )
                     list << Meta::ArtistPtr::staticCast( ptr );
-                emit newResultReady( m_collection->collectionId(), list );
+                emit newResultReady( list );
                 break;
             }
 
@@ -504,7 +504,7 @@ DEBUG_BLOCK
                 Meta::AlbumList list;
                 foreach( Meta::DataPtr ptr, m_cacheEntries )
                     list << Meta::AlbumPtr::staticCast( ptr );
-                emit newResultReady( m_collection->collectionId(), list );
+                emit newResultReady( list );
                 break;
             }
 
@@ -513,7 +513,7 @@ DEBUG_BLOCK
                 Meta::TrackList list;
                 foreach( Meta::DataPtr ptr, m_cacheEntries )
                     list << Meta::TrackPtr::staticCast( ptr );
-                emit newResultReady( m_collection->collectionId(), list );
+                emit newResultReady( list );
                 break;
             }
         }

@@ -57,8 +57,8 @@ private slots:
 
     void suggestedSongsArtistQueryResult( Meta::ArtistList artists );
     void relatedArtistsQueryResult( Meta::ArtistList artists );
-    void artistQueryResult( QString collectionId, Meta::TrackList );
-    
+    void artistQueryResult( Meta::TrackList );
+
 private:
     void updateEvents();
     void updateCurrent();

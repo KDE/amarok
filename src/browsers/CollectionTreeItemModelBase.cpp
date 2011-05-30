@@ -586,7 +586,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
         }
         Collections::addTextualFilter( qm, m_currentFilter );
         qm->setReturnResultAsDataPtrs( true );
-        connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
+        connect( qm, SIGNAL( newResultReady( Meta::DataList ) ), SLOT( newResultReady( Meta::DataList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
         d->childQueries.insert( qm, parent );
         d->runningQueries.insert( parent, qm );
@@ -668,10 +668,8 @@ CollectionTreeItemModelBase::queryDone()
 }
 
 void
-CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::DataList data)
+CollectionTreeItemModelBase::newResultReady( Meta::DataList data )
 {
-    Q_UNUSED( collectionId )
-
     //if we are expanding an item, we'll find the sender in childQueries
     //otherwise we are filtering all collections
     Collections::QueryMaker *qm = qobject_cast<Collections::QueryMaker*>( sender() );
@@ -939,7 +937,7 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
 
     Collections::addTextualFilter( qm, m_currentFilter );
     qm->setReturnResultAsDataPtrs( true );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::DataList ) ), SLOT( newResultReady( Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
     d->compilationQueries.insert( qm, parent );
     d->runningQueries.insert( parent, qm );
@@ -958,7 +956,7 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
         tmpItem->addMatch( qm );
 
     Collections::addTextualFilter( qm, m_currentFilter );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::DataList ) ), SLOT( newResultReady( Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
     d->noLabelsQueries.insert( qm, parent );
     d->runningQueries.insert( parent, qm );

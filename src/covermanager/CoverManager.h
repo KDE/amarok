@@ -75,11 +75,11 @@ class CoverManager : public KDialog, public Meta::Observer
         enum View { AllAlbums = 0, AlbumsWithCover, AlbumsWithoutCover };
 
     private slots:
-        void slotArtistQueryResult( QString collectionId, Meta::ArtistList artists );
+        void slotArtistQueryResult( Meta::ArtistList artists );
         void slotContinueConstruction();
 
         void slotArtistSelected();
-        void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums );
+        void slotAlbumQueryResult( Meta::AlbumList albums );
         void slotAlbumFilterTriggered( QAction *action );
         void slotArtistQueryDone();
         void coverItemClicked( QListWidgetItem *item );

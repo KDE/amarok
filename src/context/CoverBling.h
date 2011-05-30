@@ -38,8 +38,8 @@ class CoverBling : public QGLWidget
         GLuint objectAtPosition( const QPoint& pos );
 
     private slots:
-        void queryResult( QString collectionId, Meta::AlbumList albums );
-        
+        void queryResult( Meta::AlbumList albums );
+
     private:
         QList<QPixmap> m_covers;
         QList<GLuint> m_textureIds;

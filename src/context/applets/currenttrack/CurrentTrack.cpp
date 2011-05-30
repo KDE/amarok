@@ -619,12 +619,12 @@ CurrentTrack::queryCollection()
     Collections::QueryMaker *qmTracks = CollectionManager::instance()->queryMaker();
     Collections::QueryMaker *qmAlbums = CollectionManager::instance()->queryMaker();
     Collections::QueryMaker *qmGenres = CollectionManager::instance()->queryMaker();
-    connect( qmTracks, SIGNAL(newResultReady(QString, QStringList)),
-             this, SLOT(tracksCounted(QString, QStringList)) );
-    connect( qmAlbums, SIGNAL(newResultReady(QString, QStringList)),
-             this, SLOT(albumsCounted(QString, QStringList)) );
-    connect( qmGenres, SIGNAL(newResultReady(QString, QStringList)),
-             this, SLOT(genresCounted(QString, QStringList)) );
+    connect( qmTracks, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(tracksCounted(QStringList)) );
+    connect( qmAlbums, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(albumsCounted(QStringList)) );
+    connect( qmGenres, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(genresCounted(QStringList)) );
 
     qmTracks->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
@@ -643,25 +643,22 @@ CurrentTrack::queryCollection()
 }
 
 void
-CurrentTrack::tracksCounted( QString id, QStringList results )
+CurrentTrack::tracksCounted( QStringList results )
 {
-    Q_UNUSED( id );
     m_trackCount = !results.isEmpty() ? results.first().toInt() : 0;
     update();
 }
 
 void
-CurrentTrack::albumsCounted( QString id, QStringList results )
+CurrentTrack::albumsCounted( QStringList results )
 {
-    Q_UNUSED( id );
     m_albumCount = !results.isEmpty() ? results.first().toInt() : 0;
     update();
 }
 
 void
-CurrentTrack::genresCounted( QString id, QStringList results )
+CurrentTrack::genresCounted( QStringList results )
 {
-    Q_UNUSED( id );
     m_genreCount = !results.isEmpty() ? results.first().toInt() : 0;
     update();
 }

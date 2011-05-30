@@ -319,7 +319,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void slotStartRemove();
         void slotFinishRemove();
         void slotAborted();
-        void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+        void resultReady( const Meta::TrackList &tracks );
         void queryDone();
 
     private:

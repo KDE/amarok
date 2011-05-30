@@ -101,17 +101,17 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         */
         void addTrack( Meta::TrackPtr &track );
 
-        void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+        void resultReady( const Meta::TrackList &tracks );
         void queryDone();
 
-        void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
-        void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
-        void resultReady( const QString &collectionId, const Meta::ComposerList &composers );
-        void resultReady( const QString &collectionId, const Meta::GenreList &genres );
+        void resultReady( const Meta::AlbumList &albums );
+        void resultReady( const Meta::ArtistList &artists );
+        void resultReady( const Meta::ComposerList &composers );
+        void resultReady( const Meta::GenreList &genres );
         /**
         *   Updates global label list by querying all collections for all existing labels.
         */
-        void resultReady( const QString &collectionId, const Meta::LabelList &labels );
+        void resultReady( const Meta::LabelList &labels );
         void dataQueryDone();
 
         /**

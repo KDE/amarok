@@ -1398,7 +1398,7 @@ SqlArtist::tracks()
     qm->addMatch( Meta::ArtistPtr( this ) );
     qm->setBlocking( true );
     qm->run();
-    m_tracks = qm->tracks( m_collection->collectionId() );
+    m_tracks = qm->tracks();
     delete qm;
     m_tracksLoaded = true;
     return m_tracks;
@@ -1470,7 +1470,7 @@ SqlAlbum::tracks()
     qm->orderBy( Meta::valTitle );
     qm->setBlocking( true );
     qm->run();
-    m_tracks = qm->tracks( m_collection->collectionId() );
+    m_tracks = qm->tracks();
     delete qm;
     m_tracksLoaded = true;
     return m_tracks;
@@ -2019,7 +2019,7 @@ SqlComposer::tracks()
         qm->addMatch( Meta::ComposerPtr( this ) );
         qm->setBlocking( true );
         qm->run();
-        m_tracks = qm->tracks( m_collection->collectionId() );
+        m_tracks = qm->tracks();
         delete qm;
         m_tracksLoaded = true;
         return m_tracks;
@@ -2060,7 +2060,7 @@ SqlGenre::tracks()
     qm->addMatch( Meta::GenrePtr( this ) );
     qm->setBlocking( true );
     qm->run();
-    m_tracks = qm->tracks( m_collection->collectionId() );
+    m_tracks = qm->tracks();
     delete qm;
     m_tracksLoaded = true;
     return m_tracks;
@@ -2098,7 +2098,7 @@ SqlYear::tracks()
     qm->addMatch( Meta::YearPtr( this ) );
     qm->setBlocking( true );
     qm->run();
-    m_tracks = qm->tracks( m_collection->collectionId() );
+    m_tracks = qm->tracks();
     delete qm;
     m_tracksLoaded = true;
     return m_tracks;

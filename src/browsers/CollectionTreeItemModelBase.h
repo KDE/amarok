@@ -103,7 +103,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
     public slots:
         virtual void queryDone();
-        virtual void newResultReady( const QString &collectionId, Meta::DataList data );
+        virtual void newResultReady( Meta::DataList data );
 
         void slotFilter();
 

@@ -329,8 +329,8 @@ FastForwardWorker::trySmartMatch( const QString url, const QString title, const 
 
     connect( trackQueryMaker, SIGNAL( queryDone() ), SLOT( queryDone() ),
              Qt::QueuedConnection );
-    connect( trackQueryMaker, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
-             SLOT( resultReady( QString, Meta::TrackList ) ),
+    connect( trackQueryMaker, SIGNAL( newResultReady( Meta::TrackList ) ),
+             SLOT( resultReady( Meta::TrackList ) ),
              Qt::QueuedConnection );
     trackQueryMaker->run();
 
@@ -531,10 +531,8 @@ FastForwardWorker::importArtwork()
 }
 
 void
-FastForwardWorker::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
+FastForwardWorker::resultReady( const Meta::TrackList &tracks )
 {
-    Q_UNUSED( collectionId )
-
     m_matchTracks << tracks;
 }
 

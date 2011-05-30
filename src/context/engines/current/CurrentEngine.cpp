@@ -152,8 +152,8 @@ CurrentEngine::stopped()
         qm->orderBy( Meta::valCreateDate, true );
         qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
 
-        connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-                 SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
+        connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ),
+                 SLOT( resultReady( Meta::AlbumList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
 
         m_lastQueryMaker = qm;
@@ -232,8 +232,8 @@ CurrentEngine::update( Meta::AlbumPtr album )
         qm->setAlbumQueryMode( Collections::QueryMaker::AllAlbums );
         qm->setQueryType( Collections::QueryMaker::Album );
 
-        connect( qm, SIGNAL(newResultReady(QString, Meta::AlbumList)),
-                 SLOT(resultReady(QString, Meta::AlbumList)), Qt::QueuedConnection );
+        connect( qm, SIGNAL(newResultReady( Meta::AlbumList)),
+                 SLOT(resultReady( Meta::AlbumList)), Qt::QueuedConnection );
         connect( qm, SIGNAL(queryDone()), SLOT(setupAlbumsData()) );
 
         m_lastQueryMaker = qm;
@@ -249,10 +249,8 @@ CurrentEngine::setupAlbumsData()
 }
 
 void
-CurrentEngine::resultReady( const QString &collectionId, const Meta::AlbumList &albums )
+CurrentEngine::resultReady( const Meta::AlbumList &albums )
 {
-    Q_UNUSED( collectionId )
-
     if( sender() == m_lastQueryMaker )
         m_albums << albums;
 }

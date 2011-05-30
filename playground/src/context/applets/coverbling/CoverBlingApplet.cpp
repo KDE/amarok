@@ -96,8 +96,8 @@ CoverBlingApplet::init()
     qm->setQueryType( Collections::QueryMaker::Album );
     qm->orderBy( Meta::valArtist );
 
-    connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-             this, SLOT( slotAlbumQueryResult( QString, Meta::AlbumList ) ) );
+    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ),
+             this, SLOT( slotAlbumQueryResult( Meta::AlbumList ) ) );
 	qm->run();
 
     m_label = new QGraphicsSimpleTextItem( this );
@@ -178,10 +178,9 @@ CoverBlingApplet::~CoverBlingApplet()
     delete m_editsearch;
 }
 
-void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums ) //SLOT
+void CoverBlingApplet::slotAlbumQueryResult( Meta::AlbumList albums ) //SLOT
 {
     DEBUG_BLOCK
-    Q_UNUSED( collectionId );
     m_pictureflow->fillAlbums( albums );
    
     connect( m_pictureflow, SIGNAL( centerIndexChanged( int ) ), this, SLOT( slideChanged( int ) ) );

@@ -33,7 +33,7 @@ DBusQueryHelper::DBusQueryHelper( QObject *parent, Collections::QueryMaker *qm, 
 {
     qm->setAutoDelete( true );
     qm->setQueryType( Collections::QueryMaker::Track );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( slotResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( slotResultReady( Meta::TrackList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
     qm->run();
 
@@ -42,9 +42,8 @@ DBusQueryHelper::DBusQueryHelper( QObject *parent, Collections::QueryMaker *qm, 
 }
 
 void
-DBusQueryHelper::slotResultReady( const QString &collectionId, const Meta::TrackList &tracks )
+DBusQueryHelper::slotResultReady( const Meta::TrackList &tracks )
 {
-    Q_UNUSED( collectionId );
     foreach( const Meta::TrackPtr &track, tracks )
     {
         if( m_mprisCompatibleResult )

@@ -72,6 +72,7 @@ SynchronizationBaseJob::createQueryMaker( Collections::Collection *collection )
     //TODO: apply filters. This allows us to only sync a subset of a collection
     Collections::QueryMaker *qm = collection->queryMaker();
     qm->setAutoDelete( true );
+    m_queryMakers.insert( qm, collection );
     return qm;
 }
 
@@ -103,13 +104,12 @@ SynchronizationBaseJob::timeout()
 void
 SynchronizationBaseJob::slotQueryDone()
 {
-    DEBUG_BLOCK
-    if( m_currentResultCount != 2 )
-    {
+    DEBUG_BLOCK;
+    m_currentResultCount += 1;
+    if( m_currentResultCount < 2 )
         return;
-    }
-
     m_currentResultCount = 0;
+
     m_timer.stop();
     switch( m_state )
     {
@@ -148,7 +148,7 @@ SynchronizationBaseJob::setupArtistQuery( Collections::Collection *coll )
     Collections::QueryMaker *qm = createQueryMaker( coll );
     qm->setQueryType( Collections::QueryMaker::Artist );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), this, SLOT( slotResultReady(QString,Meta::ArtistList) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::ArtistList ) ), this, SLOT( slotResultReady(Meta::ArtistList) ), Qt::QueuedConnection );
     return qm;
 }
 
@@ -158,7 +158,7 @@ SynchronizationBaseJob::setupAlbumQuery( Collections::Collection *coll )
     Collections::QueryMaker *qm = createQueryMaker( coll );
     qm->setQueryType( Collections::QueryMaker::Album );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SLOT( slotResultReady(QString,Meta::AlbumList) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SLOT( slotResultReady(Meta::AlbumList) ), Qt::QueuedConnection );
     return qm;
 }
 
@@ -168,29 +168,28 @@ SynchronizationBaseJob::setupTrackQuery( Collections::Collection *coll )
     Collections::QueryMaker *qm = createQueryMaker( coll );
     qm->setQueryType( Collections::QueryMaker::Track );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( slotResultReady(QString,Meta::TrackList) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( slotResultReady(Meta::TrackList) ), Qt::QueuedConnection );
     return qm;
 }
 
 void
-SynchronizationBaseJob::slotResultReady( const QString &id, const Meta::ArtistList &artists )
+SynchronizationBaseJob::slotResultReady( const Meta::ArtistList &artists )
 {
-    DEBUG_BLOCK
+    DEBUG_BLOCK;
+    Collections::Collection *senderColl = m_queryMakers.value( qobject_cast<Collections::QueryMaker*>(sender()) );
     QSet<QString> artistSet;
     foreach( const Meta::ArtistPtr &artist, artists )
     {
         if( artist )
             artistSet.insert( artist->name() );
     }
-    if( id == m_collectionA->collectionId() )
+    if( senderColl == m_collectionA )
     {
-        m_currentResultCount += 1;
-        m_artistsA = artistSet;
+        m_artistsA.unite( artistSet );
     }
-    else if( id == m_collectionB->collectionId() )
+    else if( senderColl == m_collectionB )
     {
-        m_currentResultCount += 1;
-        m_artistsB = artistSet;
+        m_artistsB.unite( artistSet );
     }
     else
     {
@@ -199,23 +198,22 @@ SynchronizationBaseJob::slotResultReady( const QString &id, const Meta::ArtistLi
 }
 
 void
-SynchronizationBaseJob::slotResultReady( const QString &id, const Meta::AlbumList &albums )
+SynchronizationBaseJob::slotResultReady( const Meta::AlbumList &albums )
 {
     DEBUG_BLOCK
+    Collections::Collection *senderColl = m_queryMakers.value( qobject_cast<Collections::QueryMaker*>(sender()) );
     QSet<Meta::AlbumKey> albumSet;
     foreach( const Meta::AlbumPtr &albumPtr, albums )
     {
         albumSet.insert( Meta::AlbumKey( albumPtr ) );
     }
-    if( id == m_collectionA->collectionId() )
+    if( senderColl == m_collectionA )
     {
-        m_currentResultCount += 1;
-        m_albumsA = albumSet;
+        m_albumsA.unite( albumSet );
     }
-    else if( id == m_collectionB->collectionId() )
+    else if( senderColl == m_collectionB )
     {
-        m_currentResultCount += 1;
-        m_albumsB = albumSet;
+        m_albumsB.unite( albumSet );
     }
     else
     {
@@ -224,10 +222,11 @@ SynchronizationBaseJob::slotResultReady( const QString &id, const Meta::AlbumLis
 }
 
 void
-SynchronizationBaseJob::slotResultReady( const QString &id, const Meta::TrackList &tracks )
+SynchronizationBaseJob::slotResultReady( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    if( id == m_collectionA->collectionId() )
+    Collections::Collection *senderColl = m_queryMakers.value( qobject_cast<Collections::QueryMaker*>(sender()) );
+    if( senderColl == m_collectionA )
     {
 
         foreach( const Meta::TrackPtr &track, tracks )
@@ -236,9 +235,8 @@ SynchronizationBaseJob::slotResultReady( const QString &id, const Meta::TrackLis
             m_tracksA.insert( key );
             m_keyToTrackA.insert( key, track );
         }
-        m_currentResultCount += 1;
     }
-    else if( id == m_collectionB->collectionId() )
+    else if( senderColl == m_collectionB )
     {
         foreach( const Meta::TrackPtr &track, tracks )
         {
@@ -246,7 +244,6 @@ SynchronizationBaseJob::slotResultReady( const QString &id, const Meta::TrackLis
             m_tracksB.insert( key );
             m_keyToTrackB.insert( key, track );
         }
-        m_currentResultCount += 1;
     }
     else
     {
@@ -445,8 +442,8 @@ SynchronizationBaseJob::handleTrackResult()
     }
     qmA->endAndOr();
     qmB->endAndOr();
-    connect( qmA, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( slotSyncTracks( QString, Meta::TrackList ) ) );
-    connect( qmB, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( slotSyncTracks( QString, Meta::TrackList ) ) );
+    connect( qmA, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( slotSyncTracks( Meta::TrackList ) ) );
+    connect( qmB, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( slotSyncTracks( Meta::TrackList ) ) );
     connect( qmA, SIGNAL( queryDone() ), this, SLOT( slotSyncQueryDone() ) );
     connect( qmB, SIGNAL( queryDone() ), this, SLOT( slotSyncQueryDone() ) );
     m_timer.start();
@@ -475,36 +472,34 @@ SynchronizationBaseJob::handleTrackResult()
 }
 
 void
-SynchronizationBaseJob::slotSyncTracks( const QString &id, const Meta::TrackList &tracks )
+SynchronizationBaseJob::slotSyncTracks( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    if( id == m_collectionA->collectionId() )
+    Collections::Collection *senderColl = m_queryMakers.value( qobject_cast<Collections::QueryMaker*>(sender()) );
+    if( senderColl == m_collectionA )
     {
-        m_currentResultCount += 1;
         m_trackResultOnlyInA << tracks;
     }
-    else if( id == m_collectionB->collectionId() )
+    else if( senderColl == m_collectionB )
     {
-        m_currentResultCount += 1;
         m_trackResultOnlyInB << tracks;
     }
     else
     {
         //huh?
-        debug() << "received data from unknown collection: " << id;
+        debug() << "received data from unknown collection";
     }
 }
 
 void
 SynchronizationBaseJob::slotSyncQueryDone()
 {
-    DEBUG_BLOCK
-    if( m_currentResultCount != 2 )
-    {
+    DEBUG_BLOCK;
+    m_currentResultCount += 1;
+    if( m_currentResultCount < 2 )
         return;
-    }
-
     m_currentResultCount = 0;
+
     m_timer.stop();
     if( m_state == Syncing )
     {

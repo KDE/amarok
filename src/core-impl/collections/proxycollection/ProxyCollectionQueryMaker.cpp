@@ -48,13 +48,13 @@ ProxyQueryMaker::ProxyQueryMaker( ProxyCollection *collection, const QList<Query
     foreach( QueryMaker *b, m_builders )
     {
         connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
-        connect( b, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( slotNewResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), this, SLOT( slotNewResultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SLOT( slotNewResultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::GenreList ) ), this, SLOT( slotNewResultReady( QString, Meta::GenreList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), this, SLOT( slotNewResultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::YearList ) ), this, SLOT( slotNewResultReady( QString, Meta::YearList ) ), Qt::QueuedConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::LabelList ) ), this, SLOT( slotNewResultReady( QString, Meta::LabelList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( slotNewResultReady( Meta::TrackList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::ArtistList ) ), this, SLOT( slotNewResultReady( Meta::ArtistList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SLOT( slotNewResultReady( Meta::AlbumList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::GenreList ) ), this, SLOT( slotNewResultReady( Meta::GenreList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::ComposerList ) ), this, SLOT( slotNewResultReady( Meta::ComposerList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::YearList ) ), this, SLOT( slotNewResultReady( Meta::YearList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::LabelList ) ), this, SLOT( slotNewResultReady( Meta::LabelList ) ), Qt::QueuedConnection );
     }
 }
 
@@ -363,10 +363,10 @@ void ProxyQueryMaker::emitProperResult( const QList<PointerType>& list )
         foreach( PointerType p, resultList )
             data << Meta::DataPtr::staticCast( p );
 
-        emit newResultReady( m_collection->collectionId(), data );
+        emit newResultReady( data );
     }
     else
-        emit newResultReady( m_collection->collectionId(), list );
+        emit newResultReady( list );
 }
 
 void
@@ -418,7 +418,7 @@ ProxyQueryMaker::handleResult()
                     count++;
                 }
             }
-            emit newResultReady( m_collection->collectionId(), result );
+            emit newResultReady( result );
             break;
         }
         case QueryMaker::Track :
@@ -534,10 +534,8 @@ ProxyQueryMaker::handleResult()
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::TrackList &tracks )
+ProxyQueryMaker::slotNewResultReady( const Meta::TrackList &tracks )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::TrackPtr &track, tracks )
     {
         m_tracks.insert( KSharedPtr<Meta::ProxyTrack>( m_collection->getTrack( track ) ) );
@@ -545,10 +543,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Tr
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::ArtistList &artists )
+ProxyQueryMaker::slotNewResultReady( const Meta::ArtistList &artists )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::ArtistPtr &artist, artists )
     {
         m_artists.insert( KSharedPtr<Meta::ProxyArtist>( m_collection->getArtist( artist ) ) );
@@ -556,10 +552,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ar
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::AlbumList &albums )
+ProxyQueryMaker::slotNewResultReady( const Meta::AlbumList &albums )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::AlbumPtr &album, albums )
     {
         m_albums.insert( KSharedPtr<Meta::ProxyAlbum>( m_collection->getAlbum( album ) ) );
@@ -567,10 +561,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Al
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::GenreList &genres )
+ProxyQueryMaker::slotNewResultReady( const Meta::GenreList &genres )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::GenrePtr &genre, genres )
     {
         m_genres.insert( KSharedPtr<Meta::ProxyGenre>( m_collection->getGenre( genre ) ) );
@@ -578,10 +570,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ge
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::ComposerList &composers )
+ProxyQueryMaker::slotNewResultReady( const Meta::ComposerList &composers )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::ComposerPtr &composer, composers )
     {
         m_composers.insert( KSharedPtr<Meta::ProxyComposer>( m_collection->getComposer( composer ) ) );
@@ -589,10 +579,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Co
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::YearList &years )
+ProxyQueryMaker::slotNewResultReady( const Meta::YearList &years )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::YearPtr &year, years )
     {
         m_years.insert( KSharedPtr<Meta::ProxyYear>( m_collection->getYear( year ) ) );
@@ -600,10 +588,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ye
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::LabelList &labels )
+ProxyQueryMaker::slotNewResultReady( const Meta::LabelList &labels )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::LabelPtr &label, labels )
     {
         m_labels.insert( KSharedPtr<Meta::ProxyLabel>( m_collection->getLabel( label ) ) );

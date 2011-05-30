@@ -90,13 +90,13 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
 
     private slots:
         void slotQueryDone();
-        void slotNewResultReady( const QString &collectionId, const Meta::TrackList &tracks );
-        void slotNewResultReady( const QString &collectionId, const Meta::ArtistList &artists );
-        void slotNewResultReady( const QString &collectionId, const Meta::AlbumList &albums );
-        void slotNewResultReady( const QString &collectionId, const Meta::GenreList &genres );
-        void slotNewResultReady( const QString &collectionId, const Meta::ComposerList &composers );
-        void slotNewResultReady( const QString &collectionId, const Meta::YearList &years );
-        void slotNewResultReady( const QString &collectionId, const Meta::LabelList &labels );
+        void slotNewResultReady( const Meta::TrackList &tracks );
+        void slotNewResultReady( const Meta::ArtistList &artists );
+        void slotNewResultReady( const Meta::AlbumList &albums );
+        void slotNewResultReady( const Meta::GenreList &genres );
+        void slotNewResultReady( const Meta::ComposerList &composers );
+        void slotNewResultReady( const Meta::YearList &years );
+        void slotNewResultReady( const Meta::LabelList &labels );
 
     private:
         ProxyCollection *m_collection;

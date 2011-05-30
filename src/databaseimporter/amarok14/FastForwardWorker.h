@@ -82,7 +82,7 @@ class FastForwardWorker : public ThreadWeaver::Job
         void trackMatchMultiple( Meta::TrackList, QString );
 
     private slots:
-        void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+        void resultReady( const Meta::TrackList &tracks );
         void queryDone();
 
     private:

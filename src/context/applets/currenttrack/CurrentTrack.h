@@ -65,9 +65,9 @@ private slots:
     void paletteChanged( const QPalette &palette );
     void settingsAccepted();
     void coverDropped( const QPixmap &cover );
-    void tracksCounted( QString id, QStringList results );
-    void albumsCounted( QString id, QStringList results );
-    void genresCounted( QString id, QStringList results );
+    void tracksCounted( QStringList results );
+    void albumsCounted( QStringList results );
+    void genresCounted( QStringList results );
     void findInSource( const QString &name );
     void queryCollection();
     void editTrack();

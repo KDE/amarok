@@ -194,7 +194,7 @@ Meta::TrackList
 TestMemoryQueryMaker::executeQueryMaker( Collections::QueryMaker *qm )
 {
     QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(QString,Meta::TrackList)));
+    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(Meta::TrackList)));
 
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->run();
@@ -205,11 +205,11 @@ TestMemoryQueryMaker::executeQueryMaker( Collections::QueryMaker *qm )
     if( doneSpy1.count() != 1 ) return Meta::TrackList();
 
     QList<QVariant> args1 = resultSpy1.takeFirst();
-    if( !args1.value(1).canConvert<Meta::TrackList>() ) return Meta::TrackList();
+    if( !args1.value(0).canConvert<Meta::TrackList>() ) return Meta::TrackList();
 
     delete qm;
 
-    return args1.value(1).value<Meta::TrackList>();
+    return args1.value(0).value<Meta::TrackList>();
 }
 
 

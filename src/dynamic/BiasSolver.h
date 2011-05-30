@@ -129,7 +129,7 @@ namespace Dynamic
         private slots:
             void biasResultReady( const Dynamic::TrackSet &set );
 
-            void trackCollectionResultsReady( QString collectionId, QStringList );
+            void trackCollectionResultsReady( QStringList );
             void trackCollectionDone();
 
 

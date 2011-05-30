@@ -82,18 +82,18 @@ namespace Collections
             QueryMaker* setAutoDelete( bool autoDelete );
             
             int validFilterMask();
-            
+
         signals:
-            void newResultReady( QString collectionId, Meta::TrackList );
-            void newResultReady( QString collectionId, Meta::ArtistList );
-            void newResultReady( QString collectionId, Meta::AlbumList );
-            void newResultReady( QString collectionId, Meta::GenreList );
-            void newResultReady( QString collectionId, Meta::ComposerList );
-            void newResultReady( QString collectionId, Meta::YearList );
-            void newResultReady( QString collectionId, Meta::DataList );
-            void newResultReady( QString collectionId, QStringList );
-            void newResultReady( QString collectionId, Meta::LabelList );
-            
+            void newResultReady( Meta::TrackList );
+            void newResultReady( Meta::ArtistList );
+            void newResultReady( Meta::AlbumList );
+            void newResultReady( Meta::GenreList );
+            void newResultReady( Meta::ComposerList );
+            void newResultReady( Meta::YearList );
+            void newResultReady( Meta::DataList );
+            void newResultReady( QStringList );
+            void newResultReady( Meta::LabelList );
+
             void queryDone();
 
             void playdarError( Playdar::Controller::ErrorState );

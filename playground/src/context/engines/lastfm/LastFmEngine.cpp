@@ -141,7 +141,7 @@ LastFmEngine::suggestedSongsArtistQueryResult( Meta::ArtistList artists ) //SLOT
     foreach( Meta::ArtistPtr artist, artists )
         qm->addFilter( Meta::valArtist, artist->name() );
 
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( artistQueryResult( QString, Meta::TrackList ) ) );
+    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( artistQueryResult( Meta::TrackList ) ) );
 
     qm->run();
 }
@@ -159,9 +159,8 @@ LastFmEngine::relatedArtistsQueryResult( Meta::ArtistList artists ) //SLOT
 }
 
 void
-LastFmEngine::artistQueryResult( QString collectionId, Meta::TrackList tracks )
+LastFmEngine::artistQueryResult( Meta::TrackList tracks )
 {
-    Q_UNUSED( collectionId );
     if( !tracks.empty() )
     {
         foreach( Meta::TrackPtr track, tracks ) // we iterate through each song + song info

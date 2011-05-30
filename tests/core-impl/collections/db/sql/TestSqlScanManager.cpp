@@ -896,7 +896,7 @@ TestSqlScanManager::testLargeInsert()
     qm->setQueryType( Collections::QueryMaker::Track );
     qm->setBlocking( true );
     qm->run();
-    Meta::TrackList tracks = qm->tracks( m_collection->collectionId() );
+    Meta::TrackList tracks = qm->tracks();
     delete qm;
 
     for( int i = 0; i < trackCount; i++ )

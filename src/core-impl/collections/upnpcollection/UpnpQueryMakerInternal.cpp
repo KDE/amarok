@@ -141,7 +141,7 @@ void UpnpQueryMakerInternal::slotDone( KJob *job )
     job->deleteLater();
 
     if( m_jobCount <= 0 ) {
-        //emit newResultReady( m_collection->collectionId(), list );
+        //emit newResultReady( list );
         debug() << "ALL JOBS DONE< TERMINATING THIS QM" << this;
         emit done();
     }
@@ -160,7 +160,7 @@ void UpnpQueryMakerInternal::slotStatDone( KJob *job )
     }
     sj->deleteLater();
     if( m_jobCount <= 0 ) {
-        //emit newResultReady( m_collection->collectionId(), list );
+        //emit newResultReady( list );
         debug() << "ALL JOBS DONE< TERMINATING THIS QM" << this;
         emit done();
     }

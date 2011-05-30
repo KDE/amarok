@@ -628,9 +628,8 @@ BiasSolver::withoutDuplicate( int position, const Meta::TrackList& playlist,
 // ---- getting the TrackCollection ----
 
 void
-BiasSolver::trackCollectionResultsReady( QString collectionId, QStringList uids )
+BiasSolver::trackCollectionResultsReady( QStringList uids )
 {
-    Q_UNUSED( collectionId );
     m_collectionUids.append( uids );
 }
 
@@ -654,8 +653,8 @@ BiasSolver::getTrackCollection()
     qm->addReturnValue( Meta::valUniqueId );
     qm->setAutoDelete( true );
 
-    connect( qm, SIGNAL(newResultReady( QString, QStringList )),
-             this, SLOT(trackCollectionResultsReady( QString, QStringList )),
+    connect( qm, SIGNAL(newResultReady( QStringList )),
+             this, SLOT(trackCollectionResultsReady( QStringList )),
              Qt::DirectConnection );
     connect( qm, SIGNAL(queryDone()),
              this, SLOT(trackCollectionDone()),
