@@ -126,7 +126,7 @@ Dynamic::EchoNestBias::toString() const
                      "Similar to the previous track (as reported by EchoNest)");
     case Playlist:
         return i18nc("EchoNest bias representation",
-                     "Similar any track in the current playlist (as reported by EchoNest)");
+                     "Similar to any track in the current playlist (as reported by EchoNest)");
     }
     return QString();
 }
