@@ -10,8 +10,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>501</width>
-    <height>254</height>
+    <width>527</width>
+    <height>305</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -226,6 +226,31 @@
       </spacer>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="m_filenameLayoutConfigWidgetButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>240</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Episode Filename Configuration</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

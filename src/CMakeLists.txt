@@ -364,6 +364,7 @@ set(libpodcasts_SRCS
     core-impl/podcasts/sql/SqlPodcastMeta.cpp
     core-impl/podcasts/sql/SqlPodcastProvider.cpp
     core-impl/podcasts/sql/PodcastSettingsDialog.cpp
+    core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp
 )
 
 #####################################################################
@@ -898,6 +899,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     playlist/layouts/PlaylistLayoutEditDialog.ui
     core-impl/podcasts/sql/PodcastSettingsBase.ui
     core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui
+    core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 

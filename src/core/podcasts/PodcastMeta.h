@@ -292,7 +292,6 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         PodcastChannel::FetchType m_fetchType; //'download when available' or 'stream or download on demand'
         bool m_purge; //remove old episodes?
         int m_purgeCount; //how many episodes do we keep on disk?
-
         PodcastEpisodeList m_episodes;
 };
 

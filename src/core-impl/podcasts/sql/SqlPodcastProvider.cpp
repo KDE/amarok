@@ -33,6 +33,7 @@
 #include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
 #include "OpmlWriter.h"
+#include "QStringx.h"
 
 #include "ui_SqlPodcastProviderSettingsWidget.h"
 
@@ -52,10 +53,11 @@
 #include <QDir>
 #include <QTimer>
 #include <QCheckBox>
+#include <QMap>
 
 using namespace Podcasts;
 
-static const int PODCAST_DB_VERSION = 4;
+static const int PODCAST_DB_VERSION = 5;
 static const QString key( "AMAROK_PODCAST" );
 static const QString PODCAST_TMP_POSTFIX( ".tmp" );
 
@@ -168,9 +170,9 @@ SqlPodcastProvider::loadPodcasts()
 
     QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image"
         ", description, copyright, directory, labels, subscribedate, autoscan, fetchtype"
-        ", haspurge, purgecount, writetags FROM podcastchannels;" );
+        ", haspurge, purgecount, writetags, filenamelayout FROM podcastchannels;" );
 
-    int rowLength = 15;
+    int rowLength = 16;
     for( int i = 0; i < results.size(); i += rowLength )
     {
         QStringList channelResult = results.mid( i, rowLength );
@@ -1496,7 +1498,43 @@ SqlPodcastProvider::downloadResult( KJob *job )
             return;
         }
 
-        QString finalName = sqlChannel->saveLocation().toLocalFile(KUrl::AddTrailingSlash )
+        Amarok::QStringx filenameLayout = Amarok::QStringx( sqlChannel->filenameLayout() );
+        QMap<QString,QString> layoutmap;
+        QString sequenceNumber;
+
+        if( sqlEpisode->artist() )
+            layoutmap.insert( "artist", sqlEpisode->artist()->prettyName() );
+
+        layoutmap.insert( "title", sqlEpisode->title() );
+
+        if( sqlEpisode->genre() )
+            layoutmap.insert( "genre", sqlEpisode->genre()->prettyName() );
+
+        if( sqlEpisode->year() )
+            layoutmap.insert( "year", sqlEpisode->year()->prettyName() );
+
+        if( sqlEpisode->composer() )
+            layoutmap.insert( "composer", sqlEpisode->composer()->prettyName() );
+
+        layoutmap.insert( "pubdate", sqlEpisode->pubDate().toString() );
+
+        sequenceNumber.sprintf( "%.6d", sqlEpisode->sequenceNumber() );
+        layoutmap.insert( "number", sequenceNumber );
+
+        if( sqlEpisode->album() )
+            layoutmap.insert( "album", sqlEpisode->album()->prettyName() );
+
+        if( !filenameLayout.isEmpty() &&
+                Amarok::QStringx::compare( filenameLayout, "%default%", Qt::CaseInsensitive ) )
+        {
+            filenameLayout = filenameLayout.namedArgs( layoutmap );
+            //add the file extension to the filename
+            filenameLayout.append( QString( "." ) );
+            filenameLayout.append( sqlEpisode->type() );
+            download.fileName = QString( filenameLayout );
+        }
+
+        QString finalName = sqlChannel->saveLocation().toLocalFile( KUrl::AddTrailingSlash )
                             + download.fileName;
         if( tmpFile->rename( finalName ) )
         {
@@ -1553,7 +1591,7 @@ SqlPodcastProvider::createTables() const
                                 ",subscribedate " + sqlStorage->textColumnType() +
                                 ",autoscan BOOL, fetchtype INTEGER"
                                 ",haspurge BOOL, purgecount INTEGER"
-                                ",writetags BOOL ) ENGINE = MyISAM;" ) );
+                                ",writetags BOOL, filenamelayout VARCHAR(1024) ) ENGINE = MyISAM;" ) );
 
     sqlStorage->query( QString( "CREATE TABLE podcastepisodes ("
                                 "id " + sqlStorage->idType() +
@@ -1655,6 +1693,15 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
         QString setWriteTagsQuery = QString( "UPDATE podcastchannels SET writetags=" +
                                              sqlStorage->boolTrue() +
                                              " WHERE 1;" );
+        sqlStorage->query( setWriteTagsQuery );
+    }
+
+    if(fromVersion < 5 && toVersion == 5 )
+    {
+        QString updateChannelQuery = QString ( "ALTER TABLE podcastchannels"
+                                               " ADD filenamelayout VARCHAR(1024);" );
+        sqlStorage->query( updateChannelQuery );
+        QString setWriteTagsQuery = QString( "UPDATE podcastchannels SET filenamelayout='%default%'" );
         sqlStorage->query( setWriteTagsQuery );
     }
 

@@ -16,6 +16,7 @@
 
 #include "PodcastSettingsDialog.h"
 #include "ui_PodcastSettingsBase.h"
+#include "PodcastFilenameLayoutConfigDialog.h"
 
 #include "core/support/Debug.h"
 
@@ -88,6 +89,7 @@ PodcastSettingsDialog::init()
     connect( m_ps->m_purgeCheck, SIGNAL(clicked()), SLOT(checkModified()) );
     connect( m_ps->m_purgeCountSpinBox, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
     connect( m_ps->m_writeTagsCheck, SIGNAL(clicked()), SLOT(checkModified()) );
+    connect( m_ps->m_filenameLayoutConfigWidgetButton, SIGNAL(clicked()), SLOT(launchFilenameLayoutConfigDialog()) );
 
     connect( this, SIGNAL(applyClicked()), this ,SLOT(slotApply()) );
     connect( this, SIGNAL(okClicked()), this, SLOT(slotApply()) );
@@ -150,6 +152,13 @@ bool PodcastSettingsDialog::configure()
 {
     return exec() == QDialog::Accepted;
 }
+
+void PodcastSettingsDialog::launchFilenameLayoutConfigDialog()
+{
+    PodcastFilenameLayoutConfigDialog pflcDialog( m_channel, this );
+    pflcDialog.configure();
+}
+
 
 #include "PodcastSettingsDialog.moc"
 

@@ -102,6 +102,7 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         virtual int trackCount() const;
         virtual Meta::TrackList tracks() {
             return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes ); }
+        virtual QString filenameLayout() const { return m_filenameLayout; }
         virtual void triggerTrackLoad();
         virtual Playlists::PlaylistProvider *provider() const;
 
@@ -117,6 +118,8 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         virtual QImage image() const { return m_image; }
         virtual KUrl imageUrl() const { return m_imageUrl; }
         virtual void setImageUrl( const KUrl &imageUrl );
+        virtual void setFilenameLayout( const QString &filenameLayout ) { m_filenameLayout = filenameLayout; }
+
 
         PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
 
@@ -141,6 +144,7 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
 
         SqlPodcastEpisodeList m_episodes;
         SqlPodcastProvider *m_provider;
+        QString m_filenameLayout; //specifies filename layout for episodes
 };
 
 } //namespace Podcasts

@@ -41,6 +41,7 @@ class PodcastSettingsDialog : public KDialog
         void checkModified();
         void slotApply();
         void slotFeedUrlClicked( const QString &url );
+        void launchFilenameLayoutConfigDialog();
 
     private:
         void init();

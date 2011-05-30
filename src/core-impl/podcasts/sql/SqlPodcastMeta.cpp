@@ -498,6 +498,7 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     m_purge = sqlStorage->boolTrue() == *(iter++);
     m_purgeCount = (*(iter++)).toInt();
     m_writeTags = sqlStorage->boolTrue() == *(iter++);
+    m_filenameLayout = *(iter++);
 }
 
 SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
@@ -505,6 +506,7 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
     : Podcasts::PodcastChannel()
     , m_dbId( 0 )
     , m_provider( provider )
+    , m_filenameLayout( "%default%" )
 {
     // PodcastMetaCommon
     m_title = channel->title();
@@ -717,13 +719,13 @@ SqlPodcastChannel::updateInDb()
     #define escape(x) sqlStorage->escape(x)
     QString insert = "INSERT INTO podcastchannels("
     "url,title,weblink,image,description,copyright,directory,labels,"
-    "subscribedate,autoscan,fetchtype,haspurge,purgecount,writetags) "
-    "VALUES ( '%1','%2','%3','%4','%5','%6','%7','%8','%9',%10,%11,%12,%13,%14 );";
+    "subscribedate,autoscan,fetchtype,haspurge,purgecount,writetags,filenamelayout) "
+    "VALUES ( '%1','%2','%3','%4','%5','%6','%7','%8','%9',%10,%11,%12,%13,%14,'%15' );";
 
     QString update = "UPDATE podcastchannels SET url='%1',title='%2'"
     ",weblink='%3',image='%4',description='%5',copyright='%6',directory='%7'"
     ",labels='%8',subscribedate='%9',autoscan=%10,fetchtype=%11,haspurge=%12,"
-    "purgecount=%13, writetags=%14 WHERE id=%15;";
+    "purgecount=%13, writetags=%14, filenamelayout='%15' WHERE id=%16;";
     //if we don't have a database ID yet we should insert;
     QString command = m_dbId ? update : insert;
 
@@ -741,6 +743,7 @@ SqlPodcastChannel::updateInDb()
     command = command.arg( m_purge ? boolTrue : boolFalse ); //%12
     command = command.arg( QString::number(m_purgeCount) ); //%13
     command = command.arg( m_writeTags ? boolTrue : boolFalse ); //%14
+    command = command.arg( escape(m_filenameLayout) ); //%15
 
     if( m_dbId )
         sqlStorage->query( command.arg( m_dbId ) );
