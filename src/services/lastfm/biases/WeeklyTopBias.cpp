@@ -56,7 +56,7 @@ Dynamic::WeeklyTopBiasFactory::name() const
 QString
 Dynamic::WeeklyTopBiasFactory::i18nDescription() const
 { return i18nc("Description of the \"WeeklyTop\" bias",
-                   "The \"WeeklyTop\" bias adds tracks that are in the weekly top chart of LastFM."); }
+                   "The \"WeeklyTop\" bias adds tracks that are in the weekly top chart of Last.fm."); }
 
 Dynamic::BiasPtr
 Dynamic::WeeklyTopBiasFactory::createBias()
@@ -130,7 +130,7 @@ QString
 Dynamic::WeeklyTopBias::toString() const
 {
     return i18nc("WeeklyTopBias bias representation",
-                 "Tracks from the LastFM top lists from %1 to %2")
+                 "Tracks from the Last.fm top lists from %1 to %2")
         .arg( m_range.from.toString() )
         .arg( m_range.to.toString() );
 }

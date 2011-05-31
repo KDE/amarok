@@ -45,7 +45,7 @@
 
 QString
 Dynamic::LastFmBiasFactory::i18nName() const
-{ return i18nc("Name of the \"LastFm\" similar bias", "LastFM similar"); }
+{ return i18nc("Name of the \"Last.fm\" similar bias", "Last.fm similar"); }
 
 QString
 Dynamic::LastFmBiasFactory::name() const
@@ -53,8 +53,8 @@ Dynamic::LastFmBiasFactory::name() const
 
 QString
 Dynamic::LastFmBiasFactory::i18nDescription() const
-{ return i18nc("Description of the \"LastFm\" bias",
-                   "The \"LastFm\" similar bias looks up tracks on LastFM and only adds similar tracks."); }
+{ return i18nc("Description of the \"Last.fm\" bias",
+                   "The \"Last.fm\" similar bias looks up tracks on Last.fm and only adds similar tracks."); }
 
 Dynamic::BiasPtr
 Dynamic::LastFmBiasFactory::createBias()
@@ -128,11 +128,11 @@ Dynamic::LastFmBias::toString() const
     switch( m_match )
     {
     case SimilarTrack:
-        return i18nc("LastFm bias representation",
-                     "Similar to the previous track (as reported by LastFm)");
+        return i18nc("Last.fm bias representation",
+                     "Similar to the previous track (as reported by Last.fm)");
     case SimilarArtist:
-        return i18nc("LastFm bias representation",
-                     "Similar to the previous artist (as reported by LastFm)");
+        return i18nc("Last.fm bias representation",
+                     "Similar to the previous artist (as reported by Last.fm)");
     }
     return QString();
 }
