@@ -226,9 +226,9 @@ ASFTagHelper::tags() const
             if( field == Meta::valBpm || field == Meta::valPlaycount )
                 data.insert( field, value.toUInt() );
             else if( field == Meta::valRating )
-                data.insert( field, qreal( value.toUInt() ) / 10.0 );
+                data.insert( field, qRound( strValue.toFloat() * 10.0 ) );
             else if( field == Meta::valScore )
-                data.insert( field, qreal( value.toUInt() ) / 100.0 );
+                data.insert( field, strValue.toFloat() * 100.0 );
             else if( field == Meta::valDiscNr )
                 data.insert( field, value.toUInt() );
             else if( field == Meta::valCompilation )
@@ -279,9 +279,14 @@ ASFTagHelper::setTags( const Meta::FieldHash &changes )
         {
             if( key == Meta::valHasCover )
                 continue;
-            else if( key == Meta::valBpm || key == Meta::valDiscNr ||
-                key == Meta::valPlaycount || key == Meta::valRating ||
-                key == Meta::valScore )
+            // http://gitorious.org/~jefferai/xdg-specs/jefferais-xdg-specs/blobs/mediaspecs/specifications/FMPSpecs/specification.txt sais that mp4 tags should be saved as strings
+            if( key == Meta::valHasCover )
+                continue;
+            else if( key == Meta::valRating )
+                m_tag->setAttribute( field, TagLib::ASF::Attribute( Qt4QStringToTString( QString::number( value.toFloat() / 10.0 ) ) ) );
+            else if( key == Meta::valScore )
+                m_tag->setAttribute( field, TagLib::ASF::Attribute( Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) ) ) );
+            else if( key == Meta::valBpm || key == Meta::valDiscNr )
                 m_tag->setAttribute( field, TagLib::ASF::Attribute( value.toUInt() ) );
             else if( key == Meta::valCompilation )
                 m_tag->setAttribute( field, TagLib::ASF::Attribute( value.toBool() ) );

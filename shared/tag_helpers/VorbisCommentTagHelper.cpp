@@ -63,6 +63,10 @@ VorbisCommentTagHelper::tags() const
                 if( ( disc = splitDiscNr( value ).first ) )
                     data.insert( field, disc );
             }
+            else if( field == Meta::valRating )
+                data.insert( field, qRound( value.toFloat() * 10.0 ) );
+            else if( field == Meta::valScore )
+                data.insert( field, value.toFloat() * 100.0 );
             else
                 data.insert( field, value );
         }

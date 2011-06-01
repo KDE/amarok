@@ -51,10 +51,17 @@ APETagHelper::tags() const
     TagLib::APE::ItemListMap map =  m_tag->itemListMap();
     for( TagLib::APE::ItemListMap::ConstIterator it = map.begin(); it != map.end(); ++it )
     {
-        quint64 field;
+        qint64 field;
         QString value = TStringToQString( it->second.toString() );
         if( ( field = fieldName( it->first ) ) )
-            data.insert( field, value );
+        {
+            if( field == Meta::valRating )
+                data.insert( field, qRound( value.toFloat() * 10.0 ) );
+            else if( field == Meta::valScore )
+                data.insert( field, value.toFloat() * 100.0 );
+            else
+                data.insert( field, value );
+        }
         else if( it->first == uidFieldName( UIDAFT ) && isValidUID( value, UIDAFT ) )
             data.insert( Meta::valUniqueId, value );
         else if( it->first == uidFieldName( UIDMusicBrainz ) && isValidUID( value, UIDMusicBrainz ) )

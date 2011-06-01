@@ -140,7 +140,7 @@ ID3v2TagHelper::tags() const
             {
                 // FMPS tags have precedence
                 if( !data.contains( Meta::valRating ) && frame->rating() != 0 )
-                    data.insert( Meta::valRating, qreal( frame->rating() ) / 256.0 );
+                    data.insert( Meta::valRating, qRound( frame->rating() / 256.0 * 10.0 ) );
                 if( !data.contains( Meta::valPlaycount ) && frame->counter() < 10000 )
                     data.insert( Meta::valPlaycount, frame->counter() );
             }
@@ -160,10 +160,10 @@ ID3v2TagHelper::tags() const
             {
                 QString value = TStringToQString( fields[1] );
 
-                if( fields[0] == fmpsFieldName( FMPSScore ) )
-                    data.insert( Meta::valScore, value.toFloat() );
-                else if( fields[0] == fmpsFieldName( FMPSRating ) )
-                    data.insert( Meta::valRating, value.toFloat() );
+                if( fields[0] == fmpsFieldName( FMPSRating ) )
+                    data.insert( Meta::valRating, qRound( value.toFloat() * 10.0 ) );
+                else if( fields[0] == fmpsFieldName( FMPSScore ) )
+                    data.insert( Meta::valScore, value.toFloat() * 100.0 );
                 else if( fields[0] == fmpsFieldName( FMPSPlayCount ) )
                     data.insert( Meta::valPlaycount, value.toFloat() );
             }
@@ -250,15 +250,15 @@ ID3v2TagHelper::setTags( const Meta::FieldHash &changes )
             TagLib::String description;
             TagLib::String tValue;
 
-            if( key == Meta::valScore )
-            {
-                description = fmpsFieldName( FMPSScore );
-                tValue = Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) );
-            }
-            else if( key == Meta::valRating )
+            if( key == Meta::valRating )
             {
                 description = fmpsFieldName( FMPSRating );
                 tValue = Qt4QStringToTString( QString::number( value.toFloat() / 10.0 ) );
+            }
+            else if( key == Meta::valScore )
+            {
+                description = fmpsFieldName( FMPSScore );
+                tValue = Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) );
             }
             else if( key == Meta::valPlaycount )
             {
@@ -279,7 +279,7 @@ ID3v2TagHelper::setTags( const Meta::FieldHash &changes )
                 }
 
                 if( key == Meta::valRating )
-                    popFrame->setRating( value.toInt() / 10.0 * 255 );
+                    popFrame->setRating( qBound(0, int(qRound(value.toDouble() / 10.0 * 256)), 255) );
                 else
                     popFrame->setCounter( value.toInt() );
 

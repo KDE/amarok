@@ -267,11 +267,11 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
 
     if( (m_type == FullScan || metaTrack->score() == 0) &&
         track->score() >= 0 )
-        metaTrack->setScore( track->score() * 100.0 );
+        metaTrack->setScore( track->score() );
 
     if( (m_type == FullScan || metaTrack->rating() == 0.0) &&
         track->rating() >= 0 )
-        metaTrack->setRating( track->rating() * 10.0 );
+        metaTrack->setRating( track->rating() );
 
     if( (m_type == FullScan || metaTrack->length() == 0) &&
         track->length() >= 0 )

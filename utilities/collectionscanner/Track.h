@@ -96,10 +96,10 @@ public:
 
     qreal replayGain( Meta::ReplayGainTag mode ) const;
 
-    /** Rating is a value from 0.0 to 1.0 inclusive */
+    /** Rating is a value from 0.0 to 10.0 inclusive */
     qreal rating() const;
 
-    /** Score is a value from 0.0 to 1.0 inclusive */
+    /** Score is a value from 0.0 to 100.0 inclusive */
     qreal score() const;
 
     int playcount() const;

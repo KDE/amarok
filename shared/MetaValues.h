@@ -57,8 +57,8 @@ namespace Meta
     static const qint64 valFormat       = 1LL << 15; // the file type a numeric value
     static const qint64 valCreateDate   = 1LL << 16;
     //statistics
-    static const qint64 valScore        = 1LL << 17;
-    static const qint64 valRating       = 1LL << 18;
+    static const qint64 valScore        = 1LL << 17; // value 0 to 100
+    static const qint64 valRating       = 1LL << 18; // value 0 to 10 (inclusive)
     static const qint64 valFirstPlayed  = 1LL << 19;
     static const qint64 valLastPlayed   = 1LL << 20;
     static const qint64 valPlaycount    = 1LL << 21;

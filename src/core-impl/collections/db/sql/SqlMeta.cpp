@@ -540,6 +540,7 @@ SqlTrack::setScore( double newScore )
 {
     QWriteLocker locker( &m_lock );
 
+    newScore = qBound( double(0), newScore, double(100) );
     if( qAbs( newScore - m_score ) > 0.001 ) // we don't commit for minimal changes
         commitMetaDataChanges( Meta::valScore, newScore );
 }
@@ -556,6 +557,7 @@ SqlTrack::setRating( int newRating )
 {
     QWriteLocker locker( &m_lock );
 
+    newRating = qBound( 0, newRating, 10 );
     if( newRating != m_rating )
         commitMetaDataChanges( Meta::valRating, newRating );
 }

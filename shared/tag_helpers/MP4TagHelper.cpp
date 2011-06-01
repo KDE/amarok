@@ -61,17 +61,7 @@ MP4TagHelper::tags() const
         QString value = TStringToQString( it->second.toStringList().toString( '\n' ) );
         if( ( field = fieldName( it->first ) ) )
         {
-            if( field == Meta::valBpm || field == Meta::valPlaycount )
-                data.insert( field, it->second.toInt() );
-            else if( field == Meta::valRating )
-                data.insert( field, qreal( it->second.toInt() ) / 10.0 );
-            else if( field == Meta::valScore )
-                data.insert( field, qreal( it->second.toInt() ) / 100.0 );
-            else if( field == Meta::valCompilation )
-                data.insert( field, it->second.toBool() );
-            else if( field == Meta::valDiscNr )
-                data.insert( field, it->second.toIntPair().first );
-            else if( field == Meta::valHasCover )
+            if( field == Meta::valHasCover )
             {
                 TagLib::MP4::CoverArtList coverList = it->second.toCoverArtList();
                 for( TagLib::MP4::CoverArtList::ConstIterator it = coverList.begin(); it != coverList.end(); ++it )
@@ -81,6 +71,22 @@ MP4TagHelper::tags() const
                         break;
                     }
             }
+
+            // http://gitorious.org/~jefferai/xdg-specs/jefferais-xdg-specs/blobs/mediaspecs/specifications/FMPSpecs/specification.txt sais that mp4 tags should be saved as strings
+            else if( field == Meta::valPlaycount )
+                data.insert( field, value.toInt() );
+            else if( field == Meta::valRating )
+                data.insert( field, qRound( value.toFloat() * 10.0 ) );
+            else if( field == Meta::valScore )
+                data.insert( field, value.toFloat() * 100.0 );
+
+            else if( field == Meta::valBpm )
+                data.insert( field, it->second.toInt() );
+            else if( field == Meta::valDiscNr )
+                data.insert( field, it->second.toIntPair().first );
+
+            else if( field == Meta::valCompilation )
+                data.insert( field, it->second.toBool() );
             else
                 data.insert( field, value );
         }
@@ -108,11 +114,14 @@ MP4TagHelper::setTags( const Meta::FieldHash &changes )
 
         if( !field.isNull() && !field.isEmpty() )
         {
+            // http://gitorious.org/~jefferai/xdg-specs/jefferais-xdg-specs/blobs/mediaspecs/specifications/FMPSpecs/specification.txt sais that mp4 tags should be saved as strings
             if( key == Meta::valHasCover )
                 continue;
-            else if( key == Meta::valBpm || key == Meta::valDiscNr ||
-                key == Meta::valPlaycount || key == Meta::valRating ||
-                key == Meta::valScore )
+            else if( key == Meta::valRating )
+                m_tag->itemListMap()[field] = TagLib::StringList( Qt4QStringToTString( QString::number( value.toFloat() / 10.0 ) ) );
+            else if( key == Meta::valScore )
+                m_tag->itemListMap()[field] = TagLib::StringList( Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) ) );
+            else if( key == Meta::valBpm || key == Meta::valDiscNr )
                 m_tag->itemListMap()[field] = TagLib::MP4::Item( value.toInt(), 0 );
             else if( key == Meta::valCompilation )
                 m_tag->itemListMap()[field] = TagLib::MP4::Item( value.toBool() );
