@@ -209,10 +209,12 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
         out.setCodec( "UTF-8" );
         xmldoc.save( out, 2, QDomNode::EncodingFromTextStream );
         if ( !filename.contains( "playlistgenerator.xml" ) ) {
-            The::statusBar()->longMessage( i18n("Preset exported to %1", filename), StatusBar::Information );
+            if( The::statusBar() )
+                The::statusBar()->longMessage( i18n("Preset exported to %1", filename), StatusBar::Information );
         }
     } else {
-        The::statusBar()->longMessage( i18n("Preset could not be exported to %1", filename), StatusBar::Sorry );
+        if( The::statusBar() )
+            The::statusBar()->longMessage( i18n("Preset could not be exported to %1", filename), StatusBar::Sorry );
         error() << "Can not write presets to " << filename;
     }
     qDeleteAll( nodes );
