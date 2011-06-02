@@ -708,7 +708,7 @@ set(amaroklib_LIB_SRCS
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/CoverLabel.cpp
-    widgets/hintlineedit.cpp
+    widgets/HintLineEdit.cpp
     widgets/kdatecombo.cpp
     widgets/kratingpainter.cpp
     widgets/kratingwidget.cpp

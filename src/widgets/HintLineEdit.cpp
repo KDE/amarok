@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "hintlineedit.h"
+#include "HintLineEdit.h"
 
 #include <kvbox.h>
 
@@ -74,4 +74,4 @@ HintLineEdit::parent()
     return m_vbox->parent();
 }
 
-#include "hintlineedit.moc"
+#include "HintLineEdit.moc"

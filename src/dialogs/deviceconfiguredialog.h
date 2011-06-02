@@ -18,16 +18,13 @@
 #ifndef DEVICECONFIGUREDIALOG_H
 #define DEVICECONFIGUREDIALOG_H
 
-#include "hintlineedit.h"
-#include "MediaDevice.h"
-
 #include <kdialog.h>
 
-#include <QCheckBox>
-#include <QRadioButton>
-
-
+class HintLineEdit;
+class MediaDevice;
 class Medium;
+class QCheckBox;
+class QRadioButton;
 
 /**
     @author Jeff Mitchell <kde-dev@emailgoeshere.com>
