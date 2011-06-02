@@ -61,8 +61,10 @@ CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
 void
 CoverBlingApplet::init()
 {
+	// Call the base implementation.
+    Context::Applet::init();
     setBackgroundHints( Plasma::Applet::NoBackground );
-    resize( -1, 400 );
+
     m_fullsize = false;
 
 	KConfigGroup config = Amarok::config( "CoverBling Applet" );
@@ -74,7 +76,6 @@ CoverBlingApplet::init()
         m_reflectionEffect = PictureFlow::PlainReflection;
     else if ( reflectioneffect == 2 )
         m_reflectionEffect = PictureFlow::BlurredReflection;
-
     m_autojump = config.readEntry( "AutoJump", false );
     m_animatejump = config.readEntry( "AnimateJump", true );
     m_layout = new QGraphicsProxyWidget( this );
@@ -82,7 +83,7 @@ CoverBlingApplet::init()
 	//bool setting_opengl = config.readEntry( "OpenGL", false );
 	//if (QGLFormat::hasOpenGL() && setting_opengl) m_openGL = true;
 	
-    m_pictureflow = new PhotoBrowser(0,m_openGL);
+ 	m_pictureflow = new PhotoBrowser(0,m_openGL);
     m_layout->setWidget( m_pictureflow );
 	
     m_pictureflow->setRenderHints( QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform );
@@ -155,11 +156,12 @@ CoverBlingApplet::init()
 
     m_initrandompos = config.readEntry( "RandomPos", false );
 
-    EngineController *engine = The::engineController();
     if ( m_autojump )
+    {
+	EngineController *engine = The::engineController();
     	connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             	this, SLOT( jumpToPlaying() ) );
-    constraintsEvent();
+        	this, SLOT( jumpToPlaying() ) );
+    }
 }
 
 CoverBlingApplet::~CoverBlingApplet()
@@ -180,9 +182,8 @@ void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumLi
 {
     DEBUG_BLOCK
     Q_UNUSED( collectionId );
-
     m_pictureflow->fillAlbums( albums );
-
+   
     connect( m_pictureflow, SIGNAL( centerIndexChanged( int ) ), this, SLOT( slideChanged( int ) ) );
     connect( m_pictureflow, SIGNAL( doubleClicked( int ) ), this, SLOT( appendAlbum( int ) ) );
     connect( m_blingtofirst, SIGNAL( clicked() ), this, SLOT( skipToFirst() ) );
@@ -206,6 +207,7 @@ void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumLi
            m_pictureflow->skipToSlide( initial_pos );
         slideChanged( initial_pos );
 	}
+	constraintsEvent();
 }
 
 void CoverBlingApplet::slideChanged( int islideindex )
@@ -262,7 +264,7 @@ void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
         slideSize.setWidth( m_coversize );
         slideSize.setHeight( m_coversize );
     }
-
+	setMinimumHeight( 2 * m_coversize ); 
     m_pictureflow->setSlideSize( slideSize );
     m_pictureflow->setReflectionEffect( m_reflectionEffect );
     m_pictureflow->setAnimationTime( 10 );
@@ -287,7 +289,7 @@ void CoverBlingApplet::toggleFullscreen()
 {
     if ( m_fullsize )
     {
-        resize( -1, 400 );
+        resize( -1, -1 );
     }
     else
     {
@@ -296,7 +298,7 @@ void CoverBlingApplet::toggleFullscreen()
         {
             //    QRect rect = desktop->screenGeometry();
             //    resize(rect.width(),rect.height());
-            resize( -1, -1 );
+            resize( -1, 2 * m_coversize );
         }
     }
     updateConstraints();

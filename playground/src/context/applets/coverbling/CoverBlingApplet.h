@@ -89,6 +89,6 @@ class CoverBlingApplet : public Context::Applet
         bool m_initrandompos;
 };
 
-K_EXPORT_AMAROK_APPLET( coverbling, CoverBlingApplet )
+AMAROK_EXPORT_APPLET( coverbling, CoverBlingApplet )
 
 #endif /* COVERBLING_APPLET_H */
