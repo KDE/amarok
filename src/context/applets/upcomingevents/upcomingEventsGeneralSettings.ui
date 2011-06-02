@@ -46,16 +46,9 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="groupVenueLabel">
-     <property name="text">
-      <string>Group venue events:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
     <widget class="QCheckBox" name="groupVenueCheckBox">
      <property name="text">
-      <string>Enabled</string>
+      <string>&amp;Group venue events</string>
      </property>
     </widget>
    </item>
