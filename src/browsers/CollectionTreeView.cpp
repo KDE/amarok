@@ -178,9 +178,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
         return;
     }
 
-    QAction separator( this );
-    separator.setSeparator( true );
-
     QModelIndexList indices = selectedIndexes();
 
     // if previously selected indices do not contain the index of the item
@@ -213,17 +210,19 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
             m_currentItems.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
     }
 
-    QActionList actions = createBasicActions( indices );
-    actions += &separator;
-
     KMenu menu( this );
 
     // Destroy the menu when the model is reset (collection update), so that we don't operate on invalid data.
     // see BUG 190056
     connect( m_treeModel, SIGNAL( modelReset() ), &menu, SLOT( deleteLater() ) );
 
-    foreach( QAction *action, actions )
+    // create basic actions
+    QActionList actions = createBasicActions( indices );
+    foreach( QAction *action, actions ) {
         menu.addAction( action );
+    }
+    menu.addSeparator();
+    actions.clear();
 
     QActionList customActions = createCustomActions( indices );
     KMenu menuCustom( i18n( "Album" )  );
@@ -288,6 +287,13 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     if( !m_currentRemoveDestination.empty() )
     {
         menu.addActions( m_currentRemoveDestination.keys() );
+    }
+
+    // add extended actions
+    menu.addSeparator();
+    actions += createExtendedActions( indices );
+    foreach( QAction *action, actions ) {
+        menu.addAction( action );
     }
 
     menu.exec( event->globalPos() );
@@ -868,13 +874,6 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
 
     if( !indices.isEmpty() )
     {
-        if ( m_editAction == 0 )
-        {
-            m_editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
-            setProperty( "popupdropper_svg_id", "edit" );
-            connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
-        }
-        actions.append( m_editAction );
 
         {   //keep the scope of item minimal
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
@@ -933,6 +932,14 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                 }
             }
         }
+
+        if ( m_editAction == 0 )
+        {
+            m_editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
+            setProperty( "popupdropper_svg_id", "edit" );
+            connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
+        }
+        actions.append( m_editAction );
     }
     else
         debug() << "invalid index or null internalPointer";
