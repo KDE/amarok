@@ -47,7 +47,7 @@
 
 QString
 Dynamic::WeeklyTopBiasFactory::i18nName() const
-{ return i18nc("Name of the \"WeeklyTop\" bias", "LastFM weekly top artist"); }
+{ return i18nc("Name of the \"WeeklyTop\" bias", "Last.fm weekly top artist"); }
 
 QString
 Dynamic::WeeklyTopBiasFactory::name() const

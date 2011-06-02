@@ -144,7 +144,7 @@ Dynamic::LastFmBias::widget( QWidget* parent )
     QWidget *widget = new QWidget( parent );
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
-    QLabel *label = new QLabel( i18n( "LastFM thinks the track is similar to" ) );
+    QLabel *label = new QLabel( i18n( "Last.fm thinks the track is similar to" ) );
 
     QComboBox *combo = new QComboBox();
     combo->addItem( i18n( "the previous artist" ),
