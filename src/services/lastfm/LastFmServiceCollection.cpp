@@ -138,7 +138,7 @@ LastFmServiceCollection::collectionId() const
 QString
 LastFmServiceCollection::prettyName() const
 {
-    return i18n( "last.fm" );
+    return i18n( "Last.fm" );
 }
 
 void LastFmServiceCollection::slotAddNeighboursLoved()

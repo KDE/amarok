@@ -499,7 +499,7 @@
     </entry>
     <entry key="ScrobbleComposer" type="Bool">
         <label>Send composer data</label>
-        <whatsthis>Use composer data in last.fm as artist</whatsthis>
+        <whatsthis>Use composer data in Last.fm as artist</whatsthis>
         <default>false</default>
     </entry>
     <entry key="RetrieveSimilarArtists" type="Bool">
@@ -532,7 +532,7 @@
     </entry>
     <entry key="SyncStats" type="Bool">
         <label>Sync stats</label>
-        <whatsthis>Whether Amarok statistics should be synchronized with play count/ratings on device and whether tracks played should be submitted to last.fm.</whatsthis>
+        <whatsthis>Whether Amarok statistics should be synchronized with play count/ratings on device and whether tracks played should be submitted to Last.fm.</whatsthis>
     </entry>
 </group>
 
