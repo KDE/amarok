@@ -154,8 +154,11 @@ StatusBar::StatusBar( QWidget * parent )
         warning() << "Was not able to register statusbar as logger";
     }
 
+    // init
     if( AmarokConfig::resumePlayback() )
-        m_currentTrack = The::engineController()->currentTrack();
+        trackPlaying( The::engineController()->currentTrack() );
+    else
+        stopped();
 }
 
 
@@ -287,7 +290,7 @@ void StatusBar::trackMetadataChanged( Meta::TrackPtr track )
 void
 StatusBar::stopped()
 {
-    m_nowPlayingLabel->setText( QString() );
+    m_nowPlayingLabel->setText( i18n( "No track playing" ) );
     m_nowPlayingEmblem->hide();
 }
 
