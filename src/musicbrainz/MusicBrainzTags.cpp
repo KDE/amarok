@@ -444,17 +444,17 @@ MusicBrainzTagsModel::data( const QModelIndex &index, int role ) const
         if( item->dataContains( MusicBrainz::MUSICBRAINZ ) &&
             item->dataContains( MusicBrainz::MUSICDNS ) )
         {
-            toolTip += i18n( "MusicBrainz match ratio: %1%" )
-                       .arg( 100 * item->dataValue( MusicBrainz::MUSICBRAINZ ).toFloat() );
-            toolTip += "\n" + i18n( "MusicDNS match ratio: %1%" )
-                              .arg( 100 * item->dataValue( MusicBrainz::MUSICDNS ).toFloat() );
+            toolTip += i18n( "MusicBrainz match ratio: %1%",
+                             100 * item->dataValue( MusicBrainz::MUSICBRAINZ ).toFloat() );
+            toolTip += "\n" + i18n( "MusicDNS match ratio: %1%",
+                                    100 * item->dataValue( MusicBrainz::MUSICDNS ).toFloat() );
         }
         else if( item->dataContains( MusicBrainz::MUSICBRAINZ ) )
-            toolTip += i18n( "MusicBrainz match ratio: %1%" )
-                       .arg( 100 * item->dataValue( MusicBrainz::SIMILARITY ).toFloat() );
+            toolTip += i18n( "MusicBrainz match ratio: %1%",
+                             100 * item->dataValue( MusicBrainz::SIMILARITY ).toFloat() );
         else if( item->dataContains( MusicBrainz::MUSICDNS ) )
-            toolTip += i18n( "MusicDNS match ratio: %1%" )
-                       .arg( 100 * item->dataValue( MusicBrainz::SIMILARITY ).toFloat() );
+            toolTip += i18n( "MusicDNS match ratio: %1%",
+                             100 * item->dataValue( MusicBrainz::SIMILARITY ).toFloat() );
         else
             return QVariant();
 

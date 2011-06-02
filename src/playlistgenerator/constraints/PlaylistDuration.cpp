@@ -122,8 +122,9 @@ ConstraintTypes::PlaylistDuration::toXml( QDomDocument& doc, QDomElement& elem )
 QString
 ConstraintTypes::PlaylistDuration::getName() const
 {
-    QString v( i18n("Playlist duration: %1 %2") );
-    return v.arg( comparisonToString() ).arg( QTime().addMSecs( m_duration ).toString( "H:mm:ss" ) );
+    return i18n("Playlist duration: %1 %2",
+                comparisonToString(),
+                QTime().addMSecs( m_duration ).toString( "H:mm:ss" ));
 }
 
 Collections::QueryMaker*

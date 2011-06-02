@@ -995,9 +995,7 @@ SqlPodcastProvider::confirmUnsubscribe( Podcasts::SqlPodcastChannelPtr channel )
 
     KVBox *vbox = new KVBox( &unsubscribeDialog );
 
-    QString question( i18n( "Do you really want to unsubscribe from ") + "\"" );
-    question += channel->title();
-    question += "\"?";
+    QString question( i18n( "Do you really want to unsubscribe from \"%1\"?", channel->title() ) );
     QLabel *label = new QLabel( question, vbox );
     label->setWordWrap( true );
     label->setMaximumWidth( 400 );

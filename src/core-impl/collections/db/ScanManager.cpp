@@ -552,7 +552,7 @@ ScannerJob::run()
                     // debug() << "ScannerJob: run:"<<count<<"current path"<<dir->rpath();
                     count++;
 
-                    emit message( i18n("Got directory \"%1\" from scanner.").arg( dir->rpath() ) );
+                    emit message( i18n( "Got directory \"%1\" from scanner.", dir->rpath() ) );
                     emit step( this );
                 }
                 else
@@ -593,7 +593,7 @@ ScannerJob::run()
     else if( !finished && m_reader.hasError() )
     {
         warning() << "Aborting ScanManager ScannerJob with error"<<m_reader.errorString();
-        emit failed( i18n("Aborting scanner with error: %1").arg( m_reader.errorString() ) );
+        emit failed( i18n( "Aborting scanner with error: %1", m_reader.errorString() ) );
         processor->rollback();
     }
     else

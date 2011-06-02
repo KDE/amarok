@@ -823,7 +823,7 @@ Playlist::Model::generatePlaylistName() const
     {
         return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
                       the parentheses",
-                      "Empty Playlist (%1)").arg( datePart );
+                      "Empty Playlist (%1)", datePart );
     }
 
     bool singleArtist = true;
@@ -851,7 +851,7 @@ Playlist::Model::generatePlaylistName() const
         ( !artist && !album ) )
         return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
                       the parentheses",
-                      "Various Tracks (%1)" ).arg( datePart );
+                      "Various Tracks (%1)", datePart );
 
     if( singleArtist )
     {
@@ -875,8 +875,8 @@ Playlist::Model::generatePlaylistName() const
     else
         albumPart = i18n( "Various Albums" );
 
-    return i18nc( "A saved playlist titled <artist> - <album>", "%1 - %2")
-            .arg( artistPart, albumPart );
+    return i18nc( "A saved playlist titled <artist> - <album>", "%1 - %2",
+                  artistPart, albumPart );
 
 }
 

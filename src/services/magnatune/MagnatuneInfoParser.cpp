@@ -72,7 +72,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
     // Nikolaj, FYI: either the thumbnails aren't working, or they aren't getting through the proxy here.  That would be odd, however, as the database and
     // all HTML are coming through the proxy
     //infoHtml += "<br><br>" + i18n( "Genre: ");// + magnatuneAlbum->
-    infoHtml += "<br>" + i18n( "Release Year: ") + QString::number( magnatuneAlbum->launchYear() );
+    infoHtml += "<br>" + i18n( "Release Year: %1", QString::number( magnatuneAlbum->launchYear() ) );
 
     if ( !magnatuneAlbum->description().isEmpty() ) {
 

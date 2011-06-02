@@ -198,7 +198,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
                     m_tabsView->showTab( tabsItem );
 
                     // update artist and title in the headerlabel
-                    setHeaderText( i18nc( "Guitar tablature", "Tabs : %1 - %2", titleName, artistName ) );
+                    setHeaderText( i18nc( "Guitar tablature", "Tabs: %1 - %2", titleName, artistName ) );
                     updateInterface( TabState );
                     tabFound = true;
                 }

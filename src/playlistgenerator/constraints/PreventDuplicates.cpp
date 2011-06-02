@@ -98,14 +98,13 @@ ConstraintTypes::PreventDuplicates::toXml( QDomDocument& doc, QDomElement& elem 
 QString
 ConstraintTypes::PreventDuplicates::getName() const
 {
-    QString v( i18n("Prevent duplicate %1") );
     switch ( m_field ) {
         case DupeTrack:
-            return v.arg( i18n("tracks") );
+            return i18n("Prevent duplicate tracks");
         case DupeArtist:
-            return v.arg( i18n("artists") );
+            return i18n("Prevent duplicate artists");
         case DupeAlbum:
-            return v.arg( i18n("albums") );
+            return i18n("Prevent duplicate albums");
     }
     return QString();
 }

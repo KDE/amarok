@@ -185,7 +185,7 @@ ConstraintTypes::Checkpoint::getName() const
             if ( t == Meta::TrackPtr() ) {
                 name = name.arg( i18n("unassigned") );
             } else {
-                name = name.arg( i18n("\"%1\" (track) by %2") ).arg( t->prettyName() ).arg( t->artist()->prettyName() );
+                name = name.arg( i18n("\"%1\" (track) by %2", t->prettyName(), t->artist()->prettyName() ) );
             }
             break;
         case CheckpointAlbum:
@@ -194,9 +194,9 @@ ConstraintTypes::Checkpoint::getName() const
                 name = name.arg( i18n("unassigned") );
             } else {
                 if ( l->hasAlbumArtist() ) {
-                    name = name.arg( i18n("\"%1\" (album) by %2") ).arg( l->prettyName() ).arg( l->albumArtist()->prettyName() );
+                    name = name.arg( i18n("\"%1\" (album) by %2", l->prettyName(), l->albumArtist()->prettyName() ) );
                 } else {
-                    name = name.arg( i18n("\"%1\" (album)") ).arg( l->prettyName() );
+                    name = name.arg( i18n("\"%1\" (album)", l->prettyName() ) );
                 }
             }
             break;
@@ -205,7 +205,7 @@ ConstraintTypes::Checkpoint::getName() const
             if ( r == Meta::ArtistPtr() ) {
                 name = name.arg( i18n("unassigned") );
             } else {
-                name = name.arg( i18n("\"%1\" (artist)") ).arg( r->prettyName() );
+                name = name.arg( i18n("\"%1\" (artist)", r->prettyName() ) );
             }
             break;
     }

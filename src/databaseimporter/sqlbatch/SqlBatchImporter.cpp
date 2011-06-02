@@ -69,7 +69,7 @@ SqlBatchImporter::import()
                 numStarted++;
             } else {
                 debug() << "could not open";
-                emit importError( i18n("Could not open file \"%1\".").arg( m_config->inputFilePath() ) );
+                emit importError( i18n( "Could not open file \"%1\".", m_config->inputFilePath() ) );
                 delete file;
             }
         }

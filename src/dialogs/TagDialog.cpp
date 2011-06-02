@@ -790,7 +790,7 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
                 if( !m_currentTrack->artist()->name().isEmpty() )
                     niceTitle = i18n( "<b>%1</b> by <b>%2</b>", curTrackName,  curArtistName );
                 else
-                    niceTitle = QString( "<b>%1</b>").arg( curTrackName );
+                    niceTitle = i18n( "<b>%1</b>", curTrackName );
             }
             else
                 niceTitle = curTrackPretName;

@@ -60,7 +60,7 @@ SyncedPlaylist::description() const
         if( playlist && playlist->provider() )
             providerNames << playlist->provider()->prettyName();
     }
-    return i18n( "Synchronized on: %1" ).arg( providerNames.join( ", " ) );
+    return i18n( "Synchronized on: %1", providerNames.join( ", " ) );
 }
 
 TrackList

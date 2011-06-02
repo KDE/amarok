@@ -605,9 +605,7 @@ LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
                 d->showBrowser = true;
             }
 
-            titleText = QString( "%1: %2 - %3" )
-                .arg( i18n( "Lyrics" ) )
-                .arg( lyrics.artist ).arg( lyrics.title );
+            titleText = i18nc( "Lyrics: <artist> - <title>", "Lyrics: %1 - %2", lyrics.artist, lyrics.title );
             setCollapseOff();
         }
     }

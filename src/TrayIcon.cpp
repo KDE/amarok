@@ -143,14 +143,14 @@ Amarok::TrayIcon::updateToolTip()
         }
         else
         {
-            volume = QString( "%1%" ).arg( The::engineController()->volume() );
+            volume = i18n( "%1%", The::engineController()->volume() );
         }
-        tooltip << QString("<i>%1: %2</i>").arg( i18n( "Volume" ) ).arg( volume );
+        tooltip << i18n( "<i>Volume: %1</i>", volume );
 
         const float score = m_track->score();
         if( score > 0.f )
         {
-            tooltip << QString( "%1: %2" ).arg( i18n( "Score" ) ).arg( QString::number( score, 'f', 2 ) );
+            tooltip << i18n( "Score: %1", QString::number( score, 'f', 2 ) );
         }
 
         const int rating = m_track->rating();
@@ -168,17 +168,17 @@ Amarok::TrayIcon::updateToolTip()
                         .arg( QFontMetrics( QToolTip::font() ).height() )
                         .arg( QFontMetrics( QToolTip::font() ).height() );
 
-            tooltip << QString( "%1: %2" ).arg( i18n( "Rating" ) ).arg( stars );
+            tooltip << i18n( "Rating: %1", stars );
         }
 
         const int count = m_track->playCount();
         if( count > 0 )
         {
-            tooltip << QString( "%1: %2" ).arg( i18n( "Play count" ) ).arg( QString::number( count ) );
+            tooltip << i18n( "Play count: %1", count );
         }
 
         const QDateTime lastPlayed = m_track->lastPlayed();
-        tooltip << QString( "%1: %2" ).arg( i18n( "Last played" ) ).arg( Amarok::verboseTimeSince( lastPlayed ) );
+        tooltip << i18n( "Last played: %1", Amarok::verboseTimeSince( lastPlayed ) );
 
         setToolTipSubTitle( tooltip.join("<br>") );
     }

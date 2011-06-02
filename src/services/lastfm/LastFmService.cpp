@@ -450,7 +450,7 @@ LastFmService::updateProfileInfo()
 {
     if( m_userinfo )
     {
-        m_userinfo->setText( i18n( "Username: ") + Qt::escape( m_userName ) );
+        m_userinfo->setText( i18n( "Username: %1", Qt::escape( m_userName ) ) );
     }
 
     if( m_profile && !m_playcount.isEmpty() )

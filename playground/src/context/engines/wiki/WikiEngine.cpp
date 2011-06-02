@@ -96,7 +96,7 @@ bool WikiEngine::sourceRequestEvent( const QString& name )
             m_wikiCurrentUrl = tokens.at( 2 ) + QString( ":" ) + tokens.at( 3 );
 
             removeSource( "wikipedia-web" );
-            setData("wikipedia-web", "message", i18n("Fetching Content..") );
+            setData("wikipedia-web", "message", i18n("Fetching Content...") );
             m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
             connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
             return true;
@@ -275,7 +275,7 @@ void WikiEngine :: updateArtistInfo()
                 setData( sourceName, "title", currentTrack->artist()->prettyName() );
             }
     }
-    setData(sourceName, "message", i18n("Fetching Content..") );
+    setData(sourceName, "message", i18n("Fetching Content...") );
     m_artistJob = KIO::storedGet( m_artistUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_artistJob, SIGNAL( result( KJob* ) ), SLOT( artistResult( KJob* ) ) );
     
@@ -421,7 +421,7 @@ void WikiEngine :: updateAlbumInfo()
          setData( sourceName, "label", "Album" );
          setData( sourceName, "title", currentTrack->album()->prettyName() );
     }
-     setData(sourceName, "message", i18n("Fetching Content..") );
+     setData(sourceName, "message", i18n("Fetching Content...") );
     m_albumJob = KIO::storedGet( m_albumUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_albumJob, SIGNAL( result( KJob* ) ), SLOT( albumResult( KJob* ) ) );
 }
@@ -542,7 +542,7 @@ void WikiEngine :: updateTitleInfo()
     
     setData( sourceName, "label", "Title" );
     setData( sourceName, "title", currentTrack->prettyName() );
-    setData(sourceName, "message", i18n("Fetching Content..") );
+    setData(sourceName, "message", i18n("Fetching Content...") );
     m_titleJob = KIO::storedGet( m_titleUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_titleJob, SIGNAL( result( KJob* ) ), SLOT( titleResult( KJob* ) ) );
     
@@ -902,7 +902,7 @@ void WikiEngine :: reloadAlbumInfo()
          setData( sourceName, "title", currentTrack->album()->prettyName() );
     }
 
-    setData(sourceName, "message", i18n("Fetching Content..") );
+    setData(sourceName, "message", i18n("Fetching Content...") );
     m_albumJob = KIO::storedGet( m_albumUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_albumJob, SIGNAL( result( KJob* ) ), SLOT( albumResult( KJob* ) ) );
     
@@ -923,7 +923,7 @@ void WikiEngine :: reloadArtistInfo()
                 setData( sourceName, "title", currentTrack->artist()->prettyName() );
             }
     
-    setData(sourceName, "message", i18n("Fetching Content..") );
+    setData(sourceName, "message", i18n("Fetching Content...") );
     m_artistJob = KIO::storedGet( m_artistUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_artistJob, SIGNAL( result( KJob* ) ), SLOT( artistResult( KJob* ) ) );
 }
@@ -940,7 +940,7 @@ void WikiEngine :: reloadTitleInfo()
     setData( sourceName, "label", "Title" );
     setData( sourceName, "title", currentTrack ->prettyName() );
 
-     setData(sourceName, "message", i18n("Fetching Content..") );
+     setData(sourceName, "message", i18n("Fetching Content...") );
     m_titleJob = KIO::storedGet( m_titleUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_titleJob, SIGNAL( result( KJob* ) ), SLOT( titleResult( KJob* ) ) );
 }
