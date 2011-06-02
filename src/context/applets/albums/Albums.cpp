@@ -62,7 +62,7 @@ void Albums::init()
     Context::Applet::init();
 
     enableHeader( true );
-    setHeaderText( i18n( "Recently added albums" ) );
+    setHeaderText( i18n( "Recently Added Albums" ) );
 
     setCollapseOffHeight( -1 );
     setCollapseHeight( m_header->height() );

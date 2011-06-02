@@ -114,7 +114,7 @@ void
 PhotosApplet::stopped()
 {
     DEBUG_BLOCK
-    setHeaderText( i18n( "Photos: No track playing" ) );
+    setHeaderText( i18n( "Photos: No Track Playing" ) );
     m_widget->clear();
     m_widget->hide();
     setBusy( false );

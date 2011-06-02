@@ -167,7 +167,7 @@ TabsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& da
     else if( data.contains( "state" ) && state.contains( "noTabs") )
     {
         // no tabs for the current track
-        setHeaderText( i18nc( "Guitar tablature", "No tabs for %1 by %2", titleName, artistName ) );
+        setHeaderText( i18nc( "Guitar tablature", "No Tabs for %1 by %2", titleName, artistName ) );
         updateInterface( NoTabsState );
         return;
     }

@@ -142,7 +142,7 @@ CurrentEngine::stopped()
         removeAllData( "albums" );
 
         // Collect data for the recently added albums
-        setData( "albums", "headerText", QVariant( i18n( "Recently added albums" ) ) );
+        setData( "albums", "headerText", QVariant( i18n( "Recently Added Albums" ) ) );
         m_albums.clear();
 
         Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
