@@ -445,7 +445,7 @@ CurrentTrack::drawStatsTexts( QPainter *const p, const QRect &contentsRect )
 {
     const qreal leftEdge       = m_ratingWidget->boundingRect().right() + standardPadding();
     const qreal maxTextWidth   = contentsRect.right() - standardPadding() * 2 - leftEdge;
-    const QString column1Label = m_isStopped ? i18n( "Tracks" ) : i18n( "Play count" );
+    const QString column1Label = m_isStopped ? i18n( "Tracks" ) : i18n( "Play Count" );
     const QString column2Label = m_isStopped ? i18n( "Albums" ) : i18n( "Score" );
     const QString column3Label = m_isStopped ? i18n( "Genres" ) : i18n( "Last Played" );
 
