@@ -17,27 +17,24 @@
 #ifndef COLLECTIONTREEVIEW_H
 #define COLLECTIONTREEVIEW_H
 
-#include "CollectionSortFilterProxyModel.h"
-#include "playlist/PlaylistController.h"
-#include "core/meta/Meta.h"
-#include "core/transcoding/TranscodingConfiguration.h"
 #include "widgets/PrettyTreeView.h"
 
+#include "core/meta/Meta.h"
+#include "playlist/PlaylistController.h"
+#include "core/transcoding/TranscodingController.h"
 
 #include <QModelIndex>
 #include <QMutex>
-#include <QPoint>
 #include <QSet>
-#include <QSortFilterProxyModel>
 #include <QTimer>
 
-class QSortFilterProxyModel;
+class AmarokMimeData;
 class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
 class CollectionTreeItem;
 class PopupDropper;
 class QAction;
-class AmarokMimeData;
+class QSortFilterProxyModel;
 
 typedef QList<QAction *> QActionList;
 
@@ -46,14 +43,14 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         Q_OBJECT
 
     public:
-        CollectionTreeView( QWidget *parent = 0 );
+        explicit CollectionTreeView( QWidget *parent = 0 );
         ~CollectionTreeView();
 
         QSortFilterProxyModel* filterModel() const;
 
         AMAROK_EXPORT void setLevels( const QList<int> &levels );
         QList<int> levels() const;
-        
+
         void setLevel( int level, int type );
 
         void setModel( QAbstractItemModel *model );
@@ -87,7 +84,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotExpandIndex( const QModelIndex &index );
 
         void slotCheckAutoExpand();
-        
+
         void slotPlayChildTracks();
         void slotAppendChildTracks();
         void slotQueueChildTracks();

@@ -46,6 +46,7 @@
 #include <QMetaEnum>
 #include <QMetaObject>
 #include <QRect>
+#include <QSortFilterProxyModel>
 #include <QStackedWidget>
 #include <QToolBar>
 #include <QToolButton>

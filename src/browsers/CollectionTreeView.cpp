@@ -26,6 +26,7 @@
 #include "AmarokMimeData.h"
 #include "core/collections/CollectionLocation.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "CollectionSortFilterProxyModel.h"
 #include "core-impl/collections/support/TrashCollectionLocation.h"
 #include "core-impl/collections/support/TextualQueryFilter.h"
 #include "browsers/CollectionTreeItem.h"
@@ -36,7 +37,6 @@
 #include "core/collections/MetaQueryMaker.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/ActionsCapability.h"
-#include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
@@ -45,12 +45,6 @@
 #include "SvgHandler.h"
 #include "TagDialog.h"
 #include "transcoding/TranscodingAssistantDialog.h"
-#include "src/core/transcoding/TranscodingController.h"
-
-#include <QContextMenuEvent>
-#include <QHash>
-#include <QMouseEvent>
-#include <QSet>
 
 #include <KAction>
 #include <KGlobalSettings>
@@ -58,6 +52,11 @@
 #include <KComboBox>
 #include <KMenu>
 #include <KMessageBox> // NOTE: for delete dialog, will move to CollectionCapability later
+
+#include <QContextMenuEvent>
+#include <QHash>
+#include <QMouseEvent>
+#include <QSortFilterProxyModel>
 
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : Amarok::PrettyTreeView( parent )
@@ -216,7 +215,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 
     QActionList actions = createBasicActions( indices );
     actions += &separator;
-    actions += createExtendedActions( indices );
 
     KMenu menu( this );
 

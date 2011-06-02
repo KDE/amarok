@@ -24,7 +24,7 @@
 
 #include <QAction>
 #include <QContextMenuEvent>
-
+#include <QSortFilterProxyModel>
 
 
 ServiceCollectionTreeView::ServiceCollectionTreeView( QWidget *parent )
