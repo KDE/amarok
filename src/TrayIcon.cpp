@@ -174,7 +174,7 @@ Amarok::TrayIcon::updateToolTip()
         const int count = m_track->playCount();
         if( count > 0 )
         {
-            tooltip << QString( "%1: %2" ).arg( i18n( "Play Count" ) ).arg( QString::number( count ) );
+            tooltip << QString( "%1: %2" ).arg( i18n( "Play count" ) ).arg( QString::number( count ) );
         }
 
         const QDateTime lastPlayed = m_track->lastPlayed();
