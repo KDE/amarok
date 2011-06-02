@@ -166,9 +166,6 @@ private:
     KHBox * m_nowPlayingWidget;
     KSqueezedTextLabel * m_nowPlayingLabel;
     QLabel * m_nowPlayingEmblem;
-    QFrame *m_separator;
-
-    QLabel * m_playlistLengthLabel;
 
     QList<QString> m_shortMessageQue;
 
@@ -179,7 +176,6 @@ private:
 
 private slots:
     void slotLongMessage( const QString &text, MessageType type = Information );
-    void updateTotalPlaylistLength();
 };
 
 Q_DECLARE_METATYPE( StatusBar::MessageType )

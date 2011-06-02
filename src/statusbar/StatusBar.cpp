@@ -24,7 +24,6 @@
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "LongMessageWidget.h"
-#include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
@@ -136,12 +135,6 @@ StatusBar::StatusBar( QWidget * parent )
     m_nowPlayingEmblem = new QLabel( m_nowPlayingWidget );
     m_nowPlayingEmblem->setFixedSize( 16, 16 );
 
-    m_separator = new QFrame( m_nowPlayingWidget );
-    m_separator->setFrameShape( QFrame::VLine );
-
-    m_playlistLengthLabel = new QLabel( m_nowPlayingWidget);
-    m_playlistLengthLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
-
     QWidget * spacer = new QWidget( m_nowPlayingWidget );
     spacer->setFixedWidth( 3 );
 
@@ -178,14 +171,6 @@ StatusBar::~StatusBar()
 
 void StatusBar::connectPlaylist()
 {
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    // Ignore The::playlist() layoutChanged: rows moving around does not change the total playlist length.
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( modelReset() ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-
-    updateTotalPlaylistLength();
-
     EngineController *engine = The::engineController();
 
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
@@ -366,71 +351,6 @@ void StatusBar::slotLongMessage( const QString & text, MessageType type ) //SLOT
 void StatusBar::hideLongMessage()
 {
     sender()->deleteLater();
-}
-
-void
-StatusBar::updateTotalPlaylistLength() //SLOT
-{
-    DEBUG_BLOCK
-
-    const quint64 totalLength = The::playlist()->totalLength();
-    const int trackCount = The::playlist()->qaim()->rowCount();
-
-    if( totalLength > 0 && trackCount > 0 )
-    {
-        const QString prettyTotalLength = Meta::msToPrettyTime( totalLength );
-        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time",
-                                                "%1 track (%2)", "%1 tracks (%2)",
-                                                trackCount, prettyTotalLength ) );
-        m_playlistLengthLabel->show();
-
-        quint64 queuedTotalLength( 0 );
-        quint64 queuedTotalSize( 0 );
-        int queuedCount( 0 );
-
-        for( int i = 0; i < trackCount; ++i )
-        {
-            if( The::playlist()->queuePositionOfRow( i ) != 0 )
-            {
-                queuedTotalLength += The::playlist()->trackAt( i )->length();
-                queuedTotalSize += The::playlist()->trackAt( i )->filesize();
-                ++queuedCount;
-            }
-        }
-
-        const quint64 totalSize = The::playlist()->totalSize();
-        const QString prettyTotalSize = Meta::prettyFilesize( totalSize );
-        const QString prettyQueuedTotalLength = Meta::msToPrettyTime( queuedTotalLength );
-        const QString prettyQueuedTotalSize   = Meta::prettyFilesize( queuedTotalSize );
-
-        QString tooltipLabel;
-        if( queuedCount > 0 && queuedTotalLength > 0 )
-        {
-            tooltipLabel = i18n( "Total playlist size: %1", prettyTotalSize )       + '\n'
-                         + i18n( "Queue size: %1",          prettyQueuedTotalSize ) + '\n'
-                         + i18n( "Queue length: %1",        prettyQueuedTotalLength );
-        }
-        else
-        {
-            tooltipLabel = i18n( "Total playlist size: %1", prettyTotalSize );
-        }
-
-        m_playlistLengthLabel->setToolTip( tooltipLabel );
-        m_separator->show();
-    }
-    else if( ( totalLength == 0 ) && ( trackCount > 0 ) )
-    {
-        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
-        m_playlistLengthLabel->show();
-        m_playlistLengthLabel->setToolTip( 0 );
-        m_separator->show();
-    }
-    else // Total Length will not be > 0 if trackCount is 0, so we can ignore it
-    {
-        // TotalLength = 0 and trackCount = 0;
-        m_playlistLengthLabel->hide();
-        m_separator->hide();
-    }
 }
 
 #include "StatusBar.moc"

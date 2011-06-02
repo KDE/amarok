@@ -31,6 +31,7 @@
 #include "PaletteHandler.h"
 #include "PlaylistController.h"
 #include "PlaylistDefines.h"
+#include "PlaylistInfoWidget.h"
 #include "PlaylistManager.h"
 #include "PlaylistModelStack.h"
 #include "PlaylistQueueEditor.h"
@@ -41,7 +42,9 @@
 
 #include <KActionMenu>
 #include <KToolBarSpacerAction>
+#include <KVBox>
 
+#include <QLabel>
 #include <QHBoxLayout>
 
 Playlist::Dock::Dock( QWidget* parent )
@@ -152,7 +155,8 @@ Playlist::Dock::polish()
 
     ModelStack::instance(); //This also creates the Controller.
 
-    { // START Playlist toolbar
+    { // START: Playlist toolbar
+        // action toolbar
         KHBox *barBox = new KHBox( m_mainWidget );
         barBox->setMargin( 0 );
         barBox->setContentsMargins( 0, 0, 0, 0 );
@@ -164,9 +168,7 @@ Playlist::Dock::polish()
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setMovable( false );
 
-        plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
-        plBar->addSeparator();
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ),
                                               i18n("&Save Current Playlist"), m_mainWidget );
@@ -209,9 +211,12 @@ Playlist::Dock::polish()
 
         QAction *queueEditAction = Amarok::actionCollection()->action( "playlist_edit_queue" );
         plBar->addAction( queueEditAction );
-        plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
         connect( queueEditAction, SIGNAL( triggered( bool ) ),
                  SLOT( slotEditQueue() ) );
+        plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
+
+        // label widget
+        new PlaylistInfoWidget( barBox );
     } // END Playlist Toolbar
 
     // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.

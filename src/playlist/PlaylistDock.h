@@ -23,14 +23,12 @@
 #include "view/listview/PrettyListView.h"
 #include "widgets/AmarokDockWidget.h"
 
-#include <KVBox>
-
-#include <QComboBox>
-#include <QLabel>
 #include <QWeakPointer>
 
 class KActionCollection;
 class KActionMenu;
+class KVBox;
+class QLabel;
 class QWidget;
 class PlaylistQueueEditor;
 
