@@ -78,6 +78,7 @@ void
 Playlist::Dock::polish()
 {
     DEBUG_BLOCK
+
     m_mainWidget = new KVBox( this );
     setWidget( m_mainWidget );
     m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
@@ -149,24 +150,22 @@ Playlist::Dock::polish()
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( m_playlistView );
 
-    KHBox *barBox = new KHBox( m_mainWidget );
-    barBox->setMargin( 0 );
-    barBox->setContentsMargins( 0, 0, 0, 0 );
-
-    // Use QToolBar instead of KToolBar, see bug 228390
-    QToolBar *plBar = new QToolBar( barBox );
-    plBar->setFixedHeight( 30 );
-    plBar->setObjectName( "PlaylistToolBar" );
-
     ModelStack::instance(); //This also creates the Controller.
 
     { // START Playlist toolbar
+        KHBox *barBox = new KHBox( m_mainWidget );
+        barBox->setMargin( 0 );
+        barBox->setContentsMargins( 0, 0, 0, 0 );
+
+        // Use QToolBar instead of KToolBar, see bug 228390
+        QToolBar *plBar = new QToolBar( barBox );
+        plBar->setFixedHeight( 30 );
+        plBar->setObjectName( "PlaylistToolBar" );
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setMovable( false );
+
         plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
-
         plBar->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
-
         plBar->addSeparator();
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ),
