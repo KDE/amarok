@@ -201,30 +201,34 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     int currentIndex = m_appletList.size();
     for( int count = currentIndex, i = index; i < count; ++i )
     {
-        Context::Applet *item  = qobject_cast<Context::Applet*>( m_appletList.at( i ) );
+        Plasma::Applet *item  = m_appletList.at( i );
         const qreal remainingH = size().height() - height;
         const qreal preferredH = item->effectiveSizeHint( Qt::PreferredSize ).height();
         const qreal minimumH   = item->effectiveSizeHint( Qt::MinimumSize ).height();
         const qreal maximumH   = item->effectiveSizeHint( Qt::MaximumSize ).height();
-        const bool wantSpace   = (item->collapseOffHeight() < 0) && (maximumH > remainingH);
 
-        if( (preferredH > remainingH) || (wantSpace && !item->isCollapsed() ) )
-        {
-            bool show = ( minimumH <= remainingH );
-            currentIndex = i;
-            item->setVisible( show );
-            if( show )
+        Context::Applet *applet = qobject_cast<Context::Applet*>( item );
+        if( applet ) {
+            const bool wantSpace = (applet->collapseOffHeight() < 0) && (maximumH > remainingH);
+
+            if( (preferredH > remainingH) || (wantSpace && !applet->isCollapsed() ) )
             {
-                m_layout->addItem( item );
-                if( wantSpace  )
+                bool show = ( minimumH <= remainingH );
+                currentIndex = i;
+                applet->setVisible( show );
+                if( show )
                 {
-                    item->resize( size().width(), remainingH );
-                    m_layout->setStretchFactor( item, 10000 );
+                    m_layout->addItem( applet );
+                    if( wantSpace  )
+                    {
+                        applet->resize( size().width(), remainingH );
+                        m_layout->setStretchFactor( applet, 10000 );
+                    }
+                    applet->update();
+                    ++currentIndex;
                 }
-                item->update();
-                ++currentIndex;
+                break;
             }
-            break;
         }
 
         height += preferredH;
@@ -236,10 +240,9 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     // remove and hide all other applets
     for( int i = currentIndex; i < m_appletList.count(); ++i )
     {
-        QGraphicsLayoutItem *item = m_appletList.at( i );
-        Plasma::Applet *applet = static_cast<Plasma::Applet*>( item );
-        m_layout->removeItem( applet );
-        applet->hide();
+        Plasma::Applet *item = m_appletList.at( i );
+        m_layout->removeItem( item );
+        item->hide();
     }
 
     m_layout->addItem( m_dummyWidget );
