@@ -245,13 +245,13 @@ void Albums::createConfigurationInterface( KConfigDialog *parent )
     spinBox->setValue( m_recentCount );
     connect( spinBox, SIGNAL(valueChanged(int)), SLOT(setRecentCount(int)) );
 
-    QCheckBox *checkBox = new QCheckBox( i18n( "Enabled" ) );
+    QCheckBox *checkBox = new QCheckBox( i18n( "Right align track lengths" ) );
     checkBox->setCheckState( m_rightAlignLength ? Qt::Checked : Qt::Unchecked );
     connect( checkBox, SIGNAL(stateChanged(int)), SLOT(setRightAlignLength(int)) );
 
     QFormLayout *formLayout = new QFormLayout;
     formLayout->addRow( i18n("Number of recently added albums:"), spinBox );
-    formLayout->addRow( i18n("Right align track lengths:"), checkBox );
+    formLayout->addRow( checkBox );
 
     QWidget *config = new QWidget;
     config->setLayout( formLayout );
