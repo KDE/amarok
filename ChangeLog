@@ -11,6 +11,7 @@ VERSION 2.4.2-Beta 1
     * Option to scrobble composer as artist to Last.fm (Thanks to Nicholas Wilson)
 
   CHANGES:
+    * Removed the add button in the context toolbar. Applet explorer is opened on config.
     * Easier to understand Dynamic playlists
     * Now Amarok requires ffmpeg-0.6 or newer. 
     * Use KImageCache if possible (kdelibs 4.5.0 and later), which should

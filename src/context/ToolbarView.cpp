@@ -215,7 +215,6 @@ Context::ToolbarView::appletAdded( Plasma::Applet* applet, int loc )
 void
 Context::ToolbarView::refreshOverlays()
 {
-    m_toolbar.data()->refreshAddIcons();
 }
 
 void

@@ -56,8 +56,7 @@ class AppletToolbar : public QGraphicsWidget
         bool configEnabled() const;
         
         void appletRemoved( Plasma::Applet* applet );
-        
-        void refreshAddIcons();
+
     signals:
         void showApplet( Plasma::Applet* );
         void addAppletToContainment( const QString& pluginName, int loc );
@@ -94,7 +93,6 @@ class AppletToolbar : public QGraphicsWidget
         QGraphicsLinearLayout* m_appletLayout;
                 
         Containment* m_cont;
-        AppletToolbarAddItem* m_addItem;
         AppletToolbarConfigItem* m_configItem;
 };
 
