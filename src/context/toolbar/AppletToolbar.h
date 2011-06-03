@@ -49,10 +49,10 @@ class AppletToolbar : public QGraphicsWidget
         AppletToolbar( QGraphicsItem* parent = 0 );
         ~AppletToolbar();
         
-        virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
+        virtual void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
         
         QSizePolicy sizePolicy () const;  
-        QGraphicsLinearLayout* appletLayout();
+        QGraphicsLinearLayout* appletLayout() const;
         bool configEnabled() const;
         
         void appletRemoved( Plasma::Applet* applet );
@@ -65,19 +65,12 @@ class AppletToolbar : public QGraphicsWidget
         void configModeToggled();
         void hideAppletExplorer();
         void showAppletExplorer();
-        
-    protected:
-        // reimplemented dfrom QGraphicsWidget
-        virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
-        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
 
-        void mousePressEvent( QGraphicsSceneMouseEvent *event );
-        
-    /*    virtual void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
-        virtual void dragMoveEvent( QGraphicsSceneDragDropEvent *event );
-        virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event );
-        virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
-        */
+    protected:
+        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
+        virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
+        virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+
     private slots:
         void appletAdded( Plasma::Applet*, int );
         void toggleConfigMode();

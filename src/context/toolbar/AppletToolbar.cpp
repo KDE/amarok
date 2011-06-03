@@ -100,7 +100,7 @@ Context::AppletToolbar::configEnabled() const
 }
 
 QGraphicsLinearLayout* 
-Context::AppletToolbar::appletLayout()
+Context::AppletToolbar::appletLayout() const
 {
     return m_appletLayout;
 }

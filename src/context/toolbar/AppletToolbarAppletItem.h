@@ -19,14 +19,10 @@
 #ifndef AMAROK_APPLET_TOOLBAR_APPLET_ITEM_H
 #define AMAROK_APPLET_TOOLBAR_APPLET_ITEM_H
 
-#include <QWeakPointer>
-#include <QGraphicsWidget>
 #include "AppletToolbarBase.h"
 
-class QStyleOptionGraphicsItem;
-class QPainter;
-class QGraphicsSceneMouseEvent;
-class QGraphicsTextItem;
+#include <QWeakPointer>
+
 class QPropertyAnimation;
 class QPalette;
 

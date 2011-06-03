@@ -19,7 +19,6 @@
 #include "AppletToolbarAppletItem.h"
 
 #include "core/support/Amarok.h"
-#include "App.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
@@ -29,7 +28,6 @@
 #include <KIcon>
 
 #include <QAction>
-#include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsTextItem>
