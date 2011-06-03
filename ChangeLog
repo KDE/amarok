@@ -18,6 +18,8 @@ VERSION 2.4.2-Beta 1
       reduce the number of cache-related crashes.
 
   BUGFIXES:
+    * Fixed crash for invalid scripts trying to be stopped by the manager.
+      (BR 268917)
     * Fixed collection menu items ordering. (BR 207007)
     * Fixed top level podcast location setting. (BR 263736)
     * Fixed double-clicking in collection using left-handed mouse setting.

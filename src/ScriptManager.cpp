@@ -287,8 +287,14 @@ void
 ScriptManager::slotStopScript( const QString &name )
 {
     DEBUG_BLOCK
-    //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
+
     ScriptItem *item = m_scripts.value( name );
+    if( !item->engine ) {
+        warning() << "Script has no script engine attached:" << name;
+        return;
+    }
+
+    //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
     if( item->engine->isEvaluating() )
     {
         item->engine->abortEvaluation();
