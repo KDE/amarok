@@ -20,6 +20,7 @@
 
 #include "BrowserBreadcrumbWidget.h"
 #include "BrowserCategoryList.h"
+#include "statusbar/CompoundProgressBar.h"
 #include "widgets/AmarokDockWidget.h"
 
 #include <KVBox>
@@ -50,7 +51,7 @@ private:
     BrowserBreadcrumbWidget *m_breadcrumbWidget;
     QWeakPointer<BrowserCategoryList> m_categoryList;
     KVBox *m_mainWidget;
-    QWidget *m_progressWidget;
+    QFrame *m_progressFrame;
 };
 
 #endif

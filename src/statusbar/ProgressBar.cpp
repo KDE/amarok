@@ -24,44 +24,48 @@
 #include <KIcon>
 #include <KLocale>
 
-ProgressBar::ProgressBar( QWidget * parent )
+ProgressBar::ProgressBar( QWidget *parent )
         : QFrame( parent )
 {
-    QHBoxLayout *box = new QHBoxLayout( this );
+
+    QVBoxLayout *box = new QVBoxLayout( this );
     box->setMargin( 0 );
-    box->setSpacing( 0 );
+    box->setSpacing( 5 );
 
-    m_descriptionLabel = new QLabel( this );
-    m_descriptionLabel->setMinimumWidth( 50 );
-    //m_descriptionLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    box->addWidget( m_descriptionLabel );
+    QFrame *descriptionFrame = new QFrame( this );
+    QHBoxLayout *descriptionLayout = new QHBoxLayout( this );
+    descriptionLayout->setMargin( 0 );
+    descriptionLayout->setSpacing( 2 );
 
-    KHBox *progressBox = new KHBox( this );
-
-    m_extraButtonSpace = new KHBox( progressBox );
+    m_extraButtonSpace = new KHBox( descriptionFrame );
     m_extraButtonSpace->setSpacing( 0 );
     m_extraButtonSpace->setMargin( 0 );
+    descriptionLayout->addWidget( m_extraButtonSpace );
+    descriptionLayout->setAlignment( m_extraButtonSpace, Qt::AlignLeft );
 
-    m_cancelButton = new QToolButton( progressBox );
+    m_descriptionLabel = new QLabel( this );
+    m_descriptionLabel->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    descriptionLayout->addWidget( m_descriptionLabel );
+
+    m_cancelButton = new QToolButton( descriptionFrame );
     m_cancelButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
     m_cancelButton->setToolTip( i18n( "Abort" ) );
     m_cancelButton->setEnabled( false );
+    descriptionLayout->addWidget( m_cancelButton );
+    descriptionLayout->setAlignment( m_cancelButton, Qt::AlignRight );
 
-    m_progressBar = new QProgressBar( progressBox );
+    descriptionFrame->setLayout( descriptionLayout );
+
+    box->addWidget( descriptionFrame );
+    box->setAlignment( descriptionFrame, Qt::AlignTop );
+
+    m_progressBar = new QProgressBar( this );
     m_progressBar->setMinimum( 0 );
     m_progressBar->setMaximum( 100 );
-    m_progressBar->setMinimumWidth( 200 );
-    m_progressBar->setMaximumWidth( 300 );
+    m_progressBar->setFixedHeight( 5 );
     m_progressBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-
-    box->addWidget( progressBox );
-    box->setAlignment( progressBox, Qt::AlignRight );
-
-    // Fix multiple progressbars using all available vertical space
-    const int contentHeight = QFontMetrics( m_descriptionLabel->font() ).height();
-    const int barHeight = contentHeight + 6;
-    setFixedHeight( barHeight );
-    m_progressBar->setFixedHeight( barHeight - 4 );
+    m_progressBar->setTextVisible( false );
+    box->addWidget( m_progressBar, 0, Qt::AlignBottom );
 
     setLayout( box );
 }

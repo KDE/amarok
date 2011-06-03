@@ -135,11 +135,10 @@ MainWindow::MainWindow()
 
     PERF_LOG( "Set Status Bar" )
     StatusBar* statusBar = new StatusBar( this );
-    setStatusBar( statusBar );
     PERF_LOG( "Created Status Bar" )
 
     /* The PluginManager needs to be loaded before the playlist model
-    * (which gets started by "statusBar::conectPlaylist" below so that it can handle any
+    * (which gets started by "statusBar::connectPlaylist" below so that it can handle any
     * tracks in the saved playlist that are associated with services. Eg, if
     * the playlist has a Magnatune track in it when Amarok is closed, then the
     * Magnatune service needs to be initialized before the playlist is loaded
@@ -147,10 +146,6 @@ MainWindow::MainWindow()
     PERF_LOG( "Instantiate Plugin Manager" )
     The::pluginManager();
     PERF_LOG( "Started Plugin Manager instance" )
-
-    PERF_LOG( "Connect Status Bar" )
-    statusBar->connectPlaylist();
-    PERF_LOG( "Connected Status Bar" )
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
 //     kapp->setTopWidget( this );

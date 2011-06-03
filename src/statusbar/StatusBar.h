@@ -127,52 +127,37 @@ public slots:
      * Uses the return value from sender() to determine the owner of
      * the progress bar in question
      */
-
     void endProgressOperation( QObject *owner )
     {
         m_progressBar->endProgressOperation( owner );
     }
 
+    /** Required to put the progressbar inline (BrowserDock)
+      * @returns the compound progressbar instance
+      */
+    CompoundProgressBar *compoundProgressBar() { return m_progressBar; }
+
 protected:
 
 protected slots:
-    void stopped();
-    void paused();
-    void trackPlaying( Meta::TrackPtr track );
-    void trackMetadataChanged( Meta::TrackPtr track );
-
     void hideProgress();
     void nextShortMessage();
     void hideLongMessage();
 
 private:
     /** StatusBar is a singleton and there should be only one */
-    StatusBar( QWidget * parent );
+    StatusBar( QWidget *parent );
 
     ~StatusBar();
 
-    /** Connects the status bar to the playlist and the engine controller.
-        By implication the playlist and the engine controller will be created if not
-        already existing.
-    */
-    void connectPlaylist();
-
     friend class MainWindow;
 
-    void updateInfo( Meta::TrackPtr track );
-
-    CompoundProgressBar * m_progressBar;
-
-    KHBox * m_nowPlayingWidget;
-    KSqueezedTextLabel * m_nowPlayingLabel;
-    QLabel * m_nowPlayingEmblem;
+    CompoundProgressBar *m_progressBar;
 
     QList<QString> m_shortMessageQue;
 
     bool m_busy;
     QTimer * m_shortMessageTimer;
-
-    Meta::TrackPtr m_currentTrack;
 
 private slots:
     void slotLongMessage( const QString &text, MessageType type = Information );

@@ -22,6 +22,7 @@
 #include "core/support/Debug.h"
 #include "widgets/HorizontalDivider.h"
 #include "PaletteHandler.h"
+#include "statusbar/StatusBar.h"
 
 #include <KAction>
 #include <KIcon>
@@ -44,8 +45,17 @@ BrowserDock::BrowserDock( QWidget * parent )
     new HorizontalDivider( m_mainWidget );
     m_categoryList = new BrowserCategoryList( m_mainWidget, "root list" );
     m_breadcrumbWidget->setRootList( m_categoryList.data() );
-    m_progressWidget = new QWidget( m_mainWidget );
-    m_progressWidget->setFixedHeight( 30 );
+    m_progressFrame = new QFrame( m_mainWidget );
+    m_progressFrame->setAutoFillBackground( true );
+    m_progressFrame->setFixedHeight( 30 );
+    QHBoxLayout *layout = new QHBoxLayout( m_progressFrame );
+    layout->setMargin( 0 );
+    layout->setSpacing( 0 );
+    CompoundProgressBar *progressBar = The::statusBar()->compoundProgressBar();
+    progressBar->setParent( m_progressFrame );
+    layout->addWidget( progressBar );
+    m_progressFrame->setLayout( layout );
+
     ensurePolish();
 }
 
@@ -76,7 +86,7 @@ void BrowserDock::polish()
              SLOT(  paletteChanged( const QPalette &  ) ) );
 }
 
-BrowserCategoryList * BrowserDock::list() const
+BrowserCategoryList *BrowserDock::list() const
 {
     return m_categoryList.data();
 }
@@ -97,10 +107,11 @@ BrowserDock::home()
 void
 BrowserDock::paletteChanged( const QPalette& palette )
 {
-    m_progressWidget->setStyleSheet(
-                QString( "QWidget { background-color: %1; color: %2; border-radius: 3px; }" )
-                        .arg( PaletteHandler::highlightColor().name() )
-                        .arg( palette.highlightedText().color().name() ) );
+    m_progressFrame->setStyleSheet(
+                QString( "background-color: %1; color: %2; border-radius: 3px;" )
+                        .arg( PaletteHandler::alternateBackgroundColor().name() )
+                        .arg( palette.highlightedText().color().name() )
+                );
 }
 
 #include "BrowserDock.moc"
