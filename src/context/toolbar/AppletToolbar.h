@@ -86,9 +86,8 @@ class AppletToolbar : public QGraphicsWidget
         void newAddItem( int loc );
         
         qreal m_width;    
-        
+
         bool m_configMode;
-        QList< AppletToolbarAddItem* > m_configAddIcons;
         
         QGraphicsLinearLayout* m_appletLayout;
                 

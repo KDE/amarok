@@ -192,17 +192,9 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
             if( appletItem )
                 appletItem->setConfigEnabled( false );
         }
-        
-        // remove all the config stuff
-        foreach( AppletToolbarAddItem* item, m_configAddIcons )
-        {
-            m_appletLayout->removeItem( item );
-            item->deleteLater();
-        }
-        m_configAddIcons.clear();
-        
+
         m_configMode = false;
-        
+
         emit hideAppletExplorer();
     }
     emit configModeToggled();
