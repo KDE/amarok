@@ -17,6 +17,7 @@
  
 #include "BrowserDock.h"
 
+#include "App.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "widgets/HorizontalDivider.h"
@@ -24,6 +25,8 @@
 #include <KAction>
 #include <KIcon>
 #include <KLocale>
+
+#include <QWidget>
 
 BrowserDock::BrowserDock( QWidget * parent )
     : AmarokDockWidget( i18n( "&Media Sources" ), parent )
@@ -40,9 +43,10 @@ BrowserDock::BrowserDock( QWidget * parent )
     new HorizontalDivider( m_mainWidget );
     m_categoryList = new BrowserCategoryList( m_mainWidget, "root list" );
     m_breadcrumbWidget->setRootList( m_categoryList.data() );
+    m_progressWidget = new QWidget( m_mainWidget );
+    m_progressWidget->setFixedHeight( 30 );
     ensurePolish();
 }
-
 
 BrowserDock::~BrowserDock()
 {}
@@ -65,6 +69,10 @@ void BrowserDock::polish()
     Amarok::actionCollection()->addAction( "browser_previous", action );
     connect( action, SIGNAL( triggered( bool ) ), m_categoryList.data(), SLOT( back() ) );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_Left ) );
+
+    paletteChanged( App::instance()->palette() );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ),
+             SLOT(  paletteChanged( const QPalette &  ) ) );
 }
 
 BrowserCategoryList * BrowserDock::list() const
@@ -83,6 +91,15 @@ BrowserDock::home()
 {
     DEBUG_BLOCK
     m_categoryList.data()->home();
+}
+
+void
+BrowserDock::paletteChanged( const QPalette& palette )
+{
+    m_progressWidget->setStyleSheet(
+                QString( "QWidget { background-color: %1; color: %2; border-radius: 3px; }" )
+                        .arg( PaletteHandler::highlightColor().name() )
+                        .arg( palette.highlightedText().color().name() ) );
 }
 
 #include "BrowserDock.moc"

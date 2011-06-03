@@ -44,11 +44,13 @@ public:
 
 private slots:
     void home();
+    void paletteChanged( const QPalette& palette );
 
 private:
-    BrowserBreadcrumbWidget * m_breadcrumbWidget;
+    BrowserBreadcrumbWidget *m_breadcrumbWidget;
     QWeakPointer<BrowserCategoryList> m_categoryList;
-    KVBox * m_mainWidget;
+    KVBox *m_mainWidget;
+    QWidget *m_progressWidget;
 };
 
 #endif

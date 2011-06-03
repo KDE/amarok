@@ -76,13 +76,13 @@ private:
     KActionCollection *m_saveActions;
     QWeakPointer<PlaylistQueueEditor> m_playlistQueueEditor;
 
-    PrettyListView* m_playlistView;
-    ProgressiveSearchWidget * m_searchWidget;
-    SortWidget * m_sortWidget;
-    QLabel* m_dynamicHintWidget;
+    PrettyListView *m_playlistView;
+    ProgressiveSearchWidget *m_searchWidget;
+    SortWidget *m_sortWidget;
+    QLabel *m_dynamicHintWidget;
 
-    KVBox * m_mainWidget;
-
+    KVBox *m_mainWidget;
+    KHBox *m_barBox;
 };
 }
 

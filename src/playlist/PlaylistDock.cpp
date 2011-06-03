@@ -49,6 +49,7 @@
 
 Playlist::Dock::Dock( QWidget* parent )
     : AmarokDockWidget( i18n( "&Playlist" ), parent )
+    , m_barBox( 0 )
 {
     DEBUG_BLOCK
 
@@ -113,7 +114,7 @@ Playlist::Dock::polish()
 
     paletteChanged( App::instance()->palette() );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ),
-             SLOT(  paletteChanged( const QPalette &  ) ) );
+             SLOT( paletteChanged( const QPalette &  ) ) );
 
     QWidget * layoutHolder = new QWidget( m_mainWidget );
 
@@ -157,12 +158,17 @@ Playlist::Dock::polish()
 
     { // START: Playlist toolbar
         // action toolbar
-        KHBox *barBox = new KHBox( m_mainWidget );
-        barBox->setMargin( 0 );
-        barBox->setContentsMargins( 0, 0, 0, 0 );
+        m_barBox = new KHBox( m_mainWidget );
+        m_barBox->setMargin( 0 );
+        m_barBox->setContentsMargins( 0, 0, 0, 0 );
+        m_barBox->setStyleSheet(
+                        QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
+                        .arg( PaletteHandler::highlightColor().name() )
+                        .arg( The::paletteHandler()->palette().highlightedText().color().name() )
+                    );
 
         // Use QToolBar instead of KToolBar, see bug 228390
-        QToolBar *plBar = new QToolBar( barBox );
+        QToolBar *plBar = new QToolBar( m_barBox );
         plBar->setFixedHeight( 30 );
         plBar->setObjectName( "PlaylistToolBar" );
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
@@ -216,7 +222,7 @@ Playlist::Dock::polish()
         plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
 
         // label widget
-        new PlaylistInfoWidget( barBox );
+        new PlaylistInfoWidget( m_barBox );
     } // END Playlist Toolbar
 
     // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.
@@ -235,10 +241,16 @@ Playlist::Dock::sizeHint() const
 void
 Playlist::Dock::paletteChanged( const QPalette& palette )
 {
-    m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; color: %2; } " )
+    m_dynamicHintWidget->setStyleSheet(
+                QString( "QLabel { background-color: %1; color: %2; ; border-radius: 3px; } " )
                                         .arg( PaletteHandler::highlightColor().name() )
                                         .arg( palette.highlightedText().color().name() )
                                         );
+    if( m_barBox )
+        m_barBox->setStyleSheet(
+                    QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
+                                        .arg( PaletteHandler::highlightColor().name() )
+                                        .arg( palette.highlightedText().color().name() ) );
 }
 
 void
