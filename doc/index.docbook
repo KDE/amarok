@@ -1,0 +1,1135 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % English "INCLUDE">
+]>
+<book lang="&language;">
+<bookinfo>
+<title>The &amarok; Handbook</title>
+<authorgroup>
+<author>
+<personname>
+    <firstname>This documentation was converted from the &kde; UserBase <ulink url=" http://userbase.kde.org/Amarok">&amarok;</ulink> page.</firstname>
+<surname></surname>
+</personname>
+    </author>
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
+    </authorgroup>
+<legalnotice>&FDLNotice;</legalnotice>
+<date>2011-05-31</date>
+    <releaseinfo>&kde; SC 4.6</releaseinfo>
+<abstract>
+<para>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including &Linux;, MacOS and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.4.</para>
+    </abstract>
+<keywordset>
+ <keyword>KDE</keyword>
+ <keyword>multimedia</keyword>
+ <keyword>player</keyword>
+ <keyword>audio</keyword>
+ <keyword>ogg</keyword>
+ <keyword>mp3</keyword>
+ <keyword>wav</keyword>
+ <keyword>music</keyword>
+ <keyword>sound</keyword>
+</keywordset>
+</bookinfo>
+<!--userbase <timestamp>2011-05-22T05:48:00Z</timestamp>-->
+
+<!--userbase-content-->
+<chapter id="interface"><title>Interface</title> 
+<para>&amarok; sports a three-pane interface by default.
+</para>
+<sect1 id="the-left-pane-media-sources"><title>The left pane (Media Sources)</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-home.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>The <emphasis>Media Sources</emphasis> pane on the left is the place where you access your local collection as well as other services: <guilabel>Local Music</guilabel> on top, which is the primary interface to your local collection and connected media such as mp3 players and &CD;s. There is a section for all <guilabel>Internet Services</guilabel> that you have enabled. Here, you can browse listings of radio stations and podcasts; listen/subscribe to them, interact with your <ulink url="http://www.last.fm">last.fm</ulink> account, purchase music from online stores such as <guilabel>Magnatune</guilabel> and download independent artists' music from <guilabel>Jamendo</guilabel> and more.  The <guilabel>Playlists</guilabel> section allows you to create and manage <emphasis>Dynamic Playlists</emphasis>, access your <emphasis>Saved Playlists</emphasis> as well as the <emphasis>Automatic Playlist Generator</emphasis>. The <guilabel>Files</guilabel> section displays an integrated file browser and the <guilabel>Podcasts</guilabel> section will let you access your podcast subscriptions.
+</para>
+</sect1>
+<sect1 id="the-central-pane-context-view"><title>The central pane (Context View)</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-context.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>This is where all the information is displayed. The central pane contains 3 applets that dynamically change to display context information about the track that is currently playing. You can see the rating, score and play count of the <emphasis>Current Track</emphasis> applet or the last played tracks if nothing is playing, the <emphasis>Lyrics</emphasis> of the song and the <emphasis><ulink url="http://www.wikipedia.org">Wikipedia</ulink></emphasis> page on the artist. More applets can be added, removed or rearranged using the <emphasis>Applet Bar</emphasis> at the bottom of the pane.
+</para>
+</sect1>
+<sect1 id="the-right-pane-playlist-view"><title>The right pane (Playlist View)</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&amarok; has the most configurable playlist of any music player in existence. It puts the power in your hands to shape the playlist any way you see fit. To start you off, there are three pre-configured playlist layouts that you can use as starting points to create the layout that fits your flow the best. You can generate playlist dynamically with various bias or use the Automatic Playlist Generator, shuffle, play at random or repeat, queue tracks and save the existing playlists for later use.
+</para>
+</sect1>
+</chapter>
+<chapter id="features"><title>Features</title> 
+<sect1 id="music-playback"><title>Music Playback</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokfull.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&amarok; can support most popular formats for music files. The actual list of formats is dependent on the codecs and audio backend in use on your system. There's also support for traditional playlists &mdash; you can create, save and load all the playlists you want.
+</para>
+</sect1>
+<sect1 id="device-support"><title>Device Support</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&amarok; offers support for a great variety of Media devices such as <guilabel>iPods</guilabel>, <ulink url="http://en.wikipedia.org/wiki/Media_Transfer_Protocol"><guilabel>MTP</guilabel></ulink> and <ulink url="http://en.wikipedia.org/wiki/USB_mass_storage_device_class"><guilabel>UMS</guilabel></ulink> devices.
+</para>
+<para> 
+</para>
+<para>The button <guilabel>Merge View</guilabel> at the top of the collection lets you merge collections.  This means songs from your local collection, audio &CD;, mp3-player and so on will be shown in one unified collection.  It is a toggle switch so you can easily revert to showing the separate sources.
+</para>
+</sect1>
+<sect1 id="configurable-context-view"><title>Configurable Context View</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Context-applets-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>The <emphasis>Context view</emphasis>, the centerpiece attraction in &amarok;, can automatically fetch contextual information about the currently playing song (such as album art, lyrics or <ulink url="http://www.wikipedia.org">Wikipedia</ulink> information) from the Internet and display them. This is one of the unique features of the &amarok; series.
+</para>
+</sect1>
+<sect1 id="more-internet-services"><title>More Internet Services</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_-_internet_services.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&amarok; opens the gateway to a rich multimedia experience on the Internet.  
+</para>
+<itemizedlist>
+<listitem><para>Sporting interfaces to services such as <emphasis>Ampache music servers</emphasis> and <emphasis>mp3tunes lockers</emphasis>, it allows you to listen to your music from anywhere in the world.  
+</para></listitem>
+<listitem><para>You can sample and buy music from <guilabel>Magnatune</guilabel>.  
+</para></listitem>
+<listitem><para>Using the <guilabel>Jamendo</guilabel> service, you can listen to and download music from independent artists who can be supported by your donations.  
+</para></listitem>
+<listitem><para>With integrated <ulink url="http://www.last.fm">last.fm</ulink> functionality, you can <emphasis>scrobble</emphasis> your tracks, use <ulink url="http://www.last.fm">last.fm</ulink> features like statistics, charts and subscribers can listen to radio streams customized to your music taste &mdash; all from &amarok;.
+</para></listitem>
+</itemizedlist>
+<para> 
+</para>
+<para>And that is just the beginning &mdash; you can add even more Internet services using the <guilabel>Script Manager</guilabel>.
+</para>
+</sect1>
+<sect1 id="script-manager"><title>Script Manager</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Scripts are add-ons that allow you to extend &amarok;&rsquo;s functionality in innovative ways.  Using the <guilabel>Script Manager</guilabel>, you can manage these scripts in that it allows you to install/remove or enable/disable scripts you already have.  You can also use the <guilabel>Get More Scripts</guilabel> feature to download new scripts submitted by other users.
+</para>
+</sect1>
+<sect1 id="cover-manager"><title>Cover Manager</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>You can browse through your music collection using the nifty <guilabel>Cover Manager</guilabel> that displays the album art, download covers from various sources or let &amarok; check automatically for covers in the Internet.
+</para>
+</sect1>
+<sect1 id="rating-and-scoring"><title>Rating and scoring</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>You can show your love for the songs by rating them. &amarok; supports <guilabel>&frac12;&sdot;&#10025;</guilabel> ratings, too. In addition, &amarok; can calculate a score (a sort of guessed rating) depending on metrics such as how often you listen to or skip a song.
+</para>
+</sect1>
+<sect1 id="pop-up-dropper"><title>Pop-Up Dropper</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Pud-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>This is an innovative interface that offers contextual options (such as the ones you see in a <emphasis>right-click menu</emphasis>) that you can <quote>drop</quote> a song into. Grab a track and see the Pop-Up Dropper appear in the context view pane!
+</para>
+</sect1>
+<sect1 id="configurable-playlist-view"><title>Configurable Playlist View</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>The currently loaded playlist is highly configurable and can show information about the songs in any form you like. If you are used to the <guilabel>Spreadsheet View</guilabel> found in &amarok;&nbsp;1.x series and other music players, you can have that, too!  The <guilabel>Playlist View</guilabel> also allows you to save or export the current playlist.
+</para>
+</sect1>
+<sect1 id="dynamic-playlists"><title>Dynamic Playlists</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&amarok; allows you to create weighted random playlists that adhere to various criteria exactly (<guilabel>Proportional bias</guilabel>) or approximately (<guilabel>Fuzzy bias</guilabel>).  For example, you can create a playlist that will be randomly populated by songs that are rated more than 3 stars and are approximately from around the year 1967!
+</para>
+</sect1>
+<sect1 id="replay-gain-support"><title>Replay Gain Support</title> 
+<para>&amarok; supports replay <emphasis>gain tag</emphasis> information embedded in files and automatically adjusts the overall volume of the song to a common level.
+</para>
+<para>Rediscover your music!
+</para>
+</sect1>
+</chapter>
+<chapter id="hints-tips-and-faqs"><title>Hints, Tips and FAQs</title> 
+<para>If you find that most of your music is recognized by &amarok;, but some folders are not properly picked up, open a console and type
+</para>
+<para><userinput>touch <replaceable>folder</replaceable></userinput> 
+</para>
+<para>where <replaceable>folder</replaceable> is the path to the folder that has the problem. Then select <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure &amarok;</guimenuitem></menuchoice> in <guimenu>&amarok;</guimenu> main window menu, and open <menuchoice><guimenu>Collection</guimenu><guimenuitem>Rescan Collection</guimenuitem></menuchoice> page. Your folder should be visible again now.
+</para>
+</chapter>
+<chapter id="more-information"><title>More Information</title> 
+<itemizedlist>
+<listitem><para><ulink url="http://amarok.kde.org/">&amarok; Homepage</ulink>
+</para></listitem>
+<listitem><para><ulink url="http://forum.kde.org/viewforum.php?f=127">&amarok; Forum</ulink>
+</para></listitem>
+</itemizedlist>
+<para>Congratulations on installing &amarok;, the most advanced music discovery software available. &amarok; will help you explore your music, and enjoy it as never before. Also, you can tour different sources of music, radio stations and audio books online. In this guide, we'll show you how to let &amarok; find your collection, play it for you, and also how to use &amarok; to find things online. We'll assume that you know nothing about &amarok;, but do know how to use menus, a mouse, and your keyboard.
+</para>
+</chapter>
+<chapter id="getting-started"><title>Getting started</title>
+<sect1 id="starting-amarok"><title>Starting &amarok;</title>
+<para>If you already know your way around your operating system, you probably also know how to start &amarok;, and you can <link linkend="first-time">continue</link>. Else, continue reading.
+</para>
+<sect2 id="from-plasma"><title>From &plasma;</title>
+<para>If you are running the <ulink url="http://userbase.kde.org/Special:mylanguage/Plasma">&plasma; Workspace</ulink>, you can start &amarok; by either:
+</para>
+<itemizedlist>
+<listitem><para>pressing on <ulink url="http://userbase.kde.org/Special:mylanguage/Kickoff">&kickoff;</ulink> and then <menuchoice><guimenu>Multimedia</guimenu><guimenuitem>&amarok;</guimenuitem></menuchoice>.
+</para></listitem>
+<listitem><para>invoking <ulink url="http://userbase.kde.org/Special:mylanguage/KRunner">&krunner;</ulink> (<keycombo>&Alt;<keycap>F2</keycap></keycombo> by default), enter <userinput>amarok</userinput> and then pressiing &Enter;.
+</para></listitem>
+</itemizedlist>
+</sect2>
+<sect2 id="from-the-file-manager"><title>From the file manager</title> 
+<para>Open a multimedia file that &amarok; is known to play.</para>
+</sect2>
+</sect1>
+<sect1 id="first-time"><title>First Time</title>
+<para>The first time you use &amarok;, a First Start dialog boxwill come up asking you to specify where your music is located. If you have a music folder already <ulink url="help:/kcontrol/paths/index.html">configured in your system</ulink>, &amarok; should detect it and ask you to use it:
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Firstruncollection2.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot></para>
+<para>If you select <guilabel>No</guilabel> in this dialog, you will be presented with another one which allows you to select your music folder:</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Configurecollection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>See <link linkend="setting-up-a-collection">Setting Up a Collection</link>
+</para>
+<para>Once you have selected the folder where your music is, &amarok; will scan the folder and sub-folders, creating the collection. Depending on the number of tracks and the speed of the location this can take some time.
+</para>
+</sect1>
+<sect1 id="closing-amarok"><title>Closing &amarok;</title>
+<para>If you want to close &amarok;:
+</para>
+<itemizedlist>
+<listitem><para>Type <keycombo>&Ctrl;<keycap>Q</keycap></keycombo> when you are in the &amarok; window, or
+</para></listitem>
+<listitem><para>Select the <guilabel>Quit</guilabel> option in the &amarok; menu, or
+</para></listitem>
+<listitem><para>Right-click on the blue wolf icon in the <emphasis>System Tray</emphasis> at the bottom of your screen. You will be presented with the following:
+</para></listitem>
+</itemizedlist>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokrightmenu.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>If you close the &amarok; window by clicking <emphasis>Close</emphasis> on the window border, &amarok; will continue to run in the background and only show the blue wolf icon in the <emphasis>System Tray</emphasis>:
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amaroksystray.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>If you log out of your session or shut down your computer without quitting &amarok;, some of your settings will not be saved.
+</para>
+</sect1>
+</chapter>
+<chapter id="the-amarok-window"><title>The Amarok window</title> 
+<para>The &amarok; window is designed to let you rediscover your music. So, it gives you as much information about your music as possible. While many users will enjoy the default layout, it is fully customizable.</para>
+<sect1 id="default-layout-of-the-amarok-window"><title>Default layout of the Amarok window</title> 
+<para>Upon installation, &amarok; will look like this:</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="AmarokNew2.4.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>Amarok 2.4, newly installed</phrase>
+    </textobject>
+    <caption>
+      <para>Amarok 2.4, newly installed</para>
+    </caption>
+  </mediaobject>
+</screenshot></para>
+<para>The &amarok; window has four main parts:</para>
+<orderedlist>
+<listitem><para>under the top-level menus is the <emphasis>Toolbar</emphasis> which lies above three panes:
+</para></listitem>
+<listitem><para>your <emphasis>Media Sources</emphasis> (music collection and other media) in the left pane, 
+</para></listitem>
+<listitem><para>the <emphasis>Context</emphasis> pane in the center, and
+</para></listitem>
+<listitem><para>the <emphasis>Playlist</emphasis> in the right-hand pane.
+</para></listitem>
+</orderedlist>
+</sect1>
+<sect1 id="using-the-amarok-window-to-manage-and-play-your-music"><title>Using the &amarok; window to manage and play your music</title>
+<para>Playing music using &amarok; usually takes two steps:
+</para>
+<orderedlist>
+<listitem><para>Create a playlist by selecting some of the tracks in your collection, which you will find listed in the <emphasis>Media Sources</emphasis> pane, and send your music to the <emphasis>Playlist</emphasis> pane.
+</para></listitem>
+<listitem><para>Play the music in your playlist, using the <emphasis>Playlist</emphasis> pane and/or the <emphasis>Toolbar</emphasis>.
+</para></listitem>
+</orderedlist>
+<para>Also, you may want to transfer some of your music to a mobile music player, such as an iPod. The next sections will explain how.</para>
+</sect1>
+</chapter>
+<chapter id="the-music-collection"><title>The Music Collection</title>
+<sect1 id="the-media-sources-pane"><title>The Media Sources pane</title>
+<para>The <emphasis>Media Sources</emphasis> pane is the place where you browse and display your complete collection of music. This includes the tracks on your local hard disk, as well as those on any external devices or media connected to your computer, such as audio &CD;, USB devices, media players, network disks or Internet sources.
+</para>
+</sect1>
+<sect1 id="setting-up-a-collection"><title>Setting up a collection</title>
+<para>Do you have music tracks in mp3, ogg or FLAC format on your computer? Begin by telling &amarok; where to find those files, so it can begin creating your collection. In the top-level menu: <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure &amarok;</guimenuitem></menuchoice>.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.4.1ConfigureDialogCollection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>Configure Collection Dialog, as of version 2.4.1</phrase>
+    </textobject>
+    <caption>
+      <para>Configure Collection Dialog, as of version 2.4.1</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>A tree-view of your Home folder is shown above. Click the check box where your music is stored; usually ~/Music. Then choose <guilabel>Fully Rescan Entire Collection</guilabel>. This will take some time, so don't be alarmed if &amarok; seems slow for a while. Once the scan is complete, it's best to quit &amarok; using the top-level &amarok; menu, or <keycombo>&Ctrl;<keycap>Q</keycap></keycombo>, and then restart it. Your newly-added music should show up under the <emphasis>Local Collection</emphasis> section.
+</para>
+</sect1>
+<sect1 id="adding-media-devices-to-the-collection"><title>Adding Media Devices to the Collection</title>
+<para>Underneath the search bar near the top of the <emphasis>Media Sources</emphasis> pane you see the different devices and/or content categories within the <emphasis>Content Browser</emphasis>. If you insert an Audio CD in the CD drive it will appear in the <emphasis>Media Sources</emphasis> pane, along with media players, thumb drives, and other USB devices. After an external device has been mounted, it will show automatically within the <emphasis>Media Sources</emphasis> pane.</para>
+<para>Below is a screenshot showing three connected sources with music: Audio CD, mp3 player, and the <emphasis>Local Collection</emphasis>.</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Mediasources.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="ripping-a-cd-into-the-collection"><title>Ripping a &CD; into the collection</title>
+<para>If you don't have any music files on your computer, it's easy to <emphasis>rip</emphasis> them (copy the tracks from your &CD;s to your collection). Just pop in a &CD;, and right-click on the banner of the &CD; device in the <emphasis>Content Browser</emphasis> to play, or copy to your collection, which will <emphasis>rip</emphasis> and <emphasis>tag</emphasis> your tracks (see image below). If you copy music from an audio &CD; to your <emphasis>Local Collection</emphasis>, the <emphasis>message bar</emphasis> at the bottom of the &amarok; window will indicate that it is busy copying. The ripping may take several minutes. Once the rip is complete, the message in the <emphasis>message bar</emphasis> disappears and the music appears in the content browser of your <emphasis>Local Collection</emphasis>. If the ripped music does not appear in your <emphasis>Media Sources</emphasis> pane it's best to quit &amarok; from the &amarok; top-level menu, or <keycombo>&Ctrl;<keycap>Q</keycap></keycombo>, and then restart it. Now you should see it in your collection. The screenshot below shows how you move tracks from your audio &CD;, iPod or other device to your collection, using the context (right-click) menu.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokripcd.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>In the above context menu, you can also see the choice to <guilabel>Edit Track Details</guilabel>. Use this option if you have a track that needs a tag edited. This becomes important when you rip music to .WAV format, losing some of the tags. If quite a bit of your collection needs tagging, consider dedicated tagging software, such as
+</para>
+<itemizedlist>
+<listitem><para><ulink url="http://musicbrainz.org/doc/PicardTagger">Picard</ulink>
+</para></listitem>
+<listitem><para><ulink url="http://easytag.sourceforge.net">EasyTag</ulink>
+</para></listitem>
+<listitem><para><ulink url="http://kid3.sourceforge.net">Kid3</ulink>
+</para></listitem>
+</itemizedlist>
+<para>Correct tagging is important to help &amarok; show your tracks in the appropriate albums and proper sort order. Learn more about <link linkend="tags">ripping and tagging</link>.
+</para>
+</sect1>
+<sect1 id="accessing-other-media-sources"><title>Accessing other media sources</title>
+<para>You might have wondered why the <emphasis>Media Sources</emphasis> pane is not called the 'Collections' pane. &amarok; gives you access to much more music than just your collection &mdash; Internet shops, audio books, podcasts, music files stored outside your collection, and previously stored playlists. The &amarok; <emphasis>breadcrumb navigation</emphasis> is the key to all of this. The starting icon for the breadcrumb navigation is the home folder icon at the extreme top left of the <emphasis>Media Sources</emphasis> pane. This icon expands and contracts as you browse through the <emphasis>Media Sources</emphasis> pane, allowing you to easily navigate your collection by clicking your desired folder in the breadcrumb bar.</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokbreadcrumb.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>If you click the &amarok; home folder you see the <emphasis>Media Sources</emphasis> pane on the left below, containing icons to available resources. If you click the Files icon (left image below, second item from the bottom), you will see something similar to the image on the right, below. Notice how the breadcrumb bar expands and how the content of the selected folder is shown in the <emphasis>Media Sources</emphasis> pane (right image below). Clicking the <guilabel>&gt;</guilabel> symbols among the breadcrumbs allows you to view the folders available at that level of the folder structure. The &amarok; file browser gives you access to your entire file system, even outside your Local Collection.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-home.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+    <caption>
+      <para>Media Sources pane</para>
+    </caption>
+  </mediaobject>
+</screenshot> 
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-files.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+    <caption>
+      <para>Files icon clicked</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>The functions of the icons in the &amarok; Home folder (left above) are:
+</para>
+<para>
+<table>
+  <title>Icons in the Home Folder</title>
+  <tgroup cols="3">
+  <tbody>
+  <row>
+    <entry>
+      <para>Icon</para>
+    </entry>
+    <entry>
+      <para>Name</para>
+    </entry>
+    <entry>
+      <para>Action</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi32-action-collection-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para><guilabel>Local Music</guilabel></para>
+    </entry>
+    <entry>
+      <para>Your &amarok; collection</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Applications-internet.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para><guilabel>Internet</guilabel></para>
+    </entry>
+    <entry>
+      <para>Internet shops such as Magnatune, Jamendo and Last.fm. First configure your Internet resources in:<menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure &amarok;</guimenuitem></menuchoice></para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="View-media-playlist.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para><guilabel>Playlists</guilabel></para>
+    </entry>
+    <entry>
+      <para>Saved playlists &mdash; see also <link linkend="playlists">Playlists</link>. Also playlists on media devices.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Folder-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para><guilabel>Files</guilabel></para>
+    </entry>
+    <entry>
+      <para>Your file system</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-podcast-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para><guilabel>Podcasts</guilabel></para>
+    </entry>
+    <entry>
+      <para>Access to Podcasts via RSS feed</para>
+    </entry>
+  </row>
+</tbody>
+  </tgroup>
+</table>
+</para>
+<para>Clicking the Local Music icon above or on the Local Music folder in the Breadcrumbs bar returns you to your collection, showing you a list of all the available resources, artists, albums and tracks that you have previously defined as part of your collection. The Breadcrumbs bar indicates that you are viewing your Local Music.
+</para>
+</sect1>
+<sect1 id="streams-and-podcasts"><title>Streams and Podcasts</title>
+<para>There are two ways to listen to streams. If you have a favorite station, get the stream &URL; and add it: <menuchoice><guimenu>Playlist</guimenu><guimenuitem>Add Stream</guimenuitem></menuchoice>. You'll be able to find it again in <emphasis>Playlists</emphasis>, as a <emphasis>Saved Playlist</emphasis>. Otherwise, browse through the scripts available in our <emphasis>Script Manager</emphasis> (<menuchoice><guimenu>Tools</guimenu><guimenuitem>Script Manager</guimenuitem></menuchoice>). There are some excellent collections available, which will show up in the <emphasis>Internet</emphasis> section of your <emphasis>Media</emphasis> pane.
+</para>
+<para>Podcasts have their own section in the <emphasis>Media</emphasis> pane, above. If you have an RSS or Atom feed &URL;, click the green <guilabel>+</guilabel> and add it there. If you have an OPML file to import, that choice is available also. Use the context (<keycap>right-click</keycap>) menus to <guilabel>Add to playlist</guilabel>, <guilabel>Configure</guilabel>, <guilabel>Remove Subscription</guilabel>, <guilabel>Update Channel</guilabel>, or mark an episode as <emphasis>New</emphasis>. If you are interested in browsing through a large collection of podcasts, check out the <emphasis>Podcast Directory</emphasis> available through the <emphasis>Script Manager</emphasis>, referred to above.
+</para>
+</sect1>
+<sect1 id="using-the-content-browser"><title>Using the Content Browser</title>
+<para>The hard disk of your computer, audio &CD;s, external devices and the Internet are the basic resources for your collection. After your collection has been set up, it is likely that your collection will hold a large number of albums and tracks, much more than can be shown on a single window. 
+</para>
+<para>How to change the display of your collection, below:
+</para>
+<sect2 id="hiding-or-expanding-information"><title>Hiding or expanding information</title>
+<para>The area of the <emphasis>Media Sources</emphasis> pane below the search bar is called the <emphasis>Content Browser</emphasis>. Three media sources are indicated in the image of a Content Browser below: &CD;, Local Collection and a Media Player:
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Cd_collection_sansa.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Clicking the banner for a device (the blue bar for the Sansa above) shows or hides the content of that device. The direction of the green arrow on the right indicates whether the contents for that device is hidden or shown. The content on a particular device can, in turn, be hidden or shown using the same principle, clicking on the appropriate artist or album. A <guilabel>-</guilabel> symbol on the left of an artist or an album indicates that the contents has been expanded. A <guilabel>+</guilabel> symbol indicates more contents for that category is available / currently hidden. In the image above, the information for <emphasis>Mike Oldfield - The Songs of Distant Earth</emphasis> &CD; has been expanded, showing the individual tracks. On the other hand, the albums and tracks in the <emphasis>Local Collection</emphasis> are hidden. By clicking these <guilabel>+</guilabel> or <guilabel>-</guilabel> symbols you also can expand or hide information.
+</para>
+</sect2>
+<sect2 id="changing-the-order-of-tracks-and-albums"><title>Changing the order of tracks and albums</title>
+<para>The order in which tracks are sorted in the <emphasis>Content Browser</emphasis> can be customised by using the <emphasis>Sort Options</emphasis> button at the top of the <emphasis>Media Sources</emphasis> pane: 
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Preferences-other.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>The sort order is indicated on the top left of the <emphasis>Media Sources</emphasis> pane, just below the <emphasis>Search</emphasis> text box. The default order is <emphasis>Artist / Year - Album</emphasis>. The display order of the <emphasis>Content Browser</emphasis> can be temporarily switched between the user-defined sort order (described above) and a <emphasis>Merged view</emphasis> in which which artists are listed alphabetically, no matter on which media the music is stored. To toggle the <emphasis>Merged view</emphasis>,click the <emphasis>Merge icon</emphasis> at the top right-hand of the <emphasis>Media Sources</emphasis> pane:
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="View-list-tree.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>To search your collection, type your search term into the search bar at the top of the <emphasis>Local Music</emphasis> section. Not only can you search by artist, album or track name, but any part. You might create a nice playlist by searching for <replaceable>winter</replaceable>, for instance, or merely find a track when you only remember one word of the title. You can also search by rating, playcount, even filetype. See <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AdvancedFeatures/SearchInCollection">Search in Collection</ulink> for more details.
+</para>
+</sect2>
+<sect2 id="deleting-items-from-the-collection"><title>Deleting items from the collection</title>
+<para><warning><para>Use this option with care; the tracks will be deleted from your hard drive, not sent to the Trash.</para></warning>
+</para>
+<para>You can delete any item from your collection by right-clicking on it and choosing the bottom item <guilabel>Delete Tracks</guilabel>. A confirmation dialog will appear, preventing the accidental deletion of any tracks. More than one item can be selected with <keycombo>&Ctrl;<keycap>click</keycap></keycombo>. 
+</para>
+</sect2>
+</sect1>
+</chapter>
+<chapter id="playlists"><title>Playlists</title>
+<sect1 id="the-playlist-pane"><title>The Playlist pane</title>
+<para>Now that &amarok; has scanned your collection of music, you want to listen to it. So use the <emphasis>Playlist</emphasis> pane to create a playlist containing the selection of tracks you want. This is where you play your music, streams, or podcasts.</para>
+<para>You can sort your playlist by title, album, artist, genre and many others. For instance you can sort your tracks by year first, then by artist and so on.</para>
+<para>The search box lets you search or filter your tracks. The two big gray arrows at the top of the <emphasis>Playlist</emphasis> lets you skip to the next or previous track containing the letters you have chosen. The wrench to the right lets you filter your tracks by artist, album, &etc;</para>
+<para>The layout of the <emphasis>Playlist</emphasis> can be changed through the top-level menu: <menuchoice><guimenu>Playlist</guimenu><guimenuitem>Playlist Layouts</guimenuitem></menuchoice>.</para>
+</sect1>
+<sect1 id="adding-music-to-a-playlist"><title>Adding music to a playlist</title>
+<para>There are four ways to add music to the playlist.</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_addtoplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<orderedlist>
+<listitem><para>Choose some of your music in the content browser and drag it to the right. If you drag it over the <emphasis>Context</emphasis> pane you will see the <emphasis>Pop-Up Dropper</emphasis>, also known as <emphasis>PUD</emphasis>. The image above shows PUD in action. PUD provides three options: <guilabel>Add to Playlist</guilabel>, <guilabel>Replace Playlist</guilabel>, and <guilabel>More...</guilabel>. The option highlighted in the gray area (<guilabel>Add to Playlist</guilabel> in this image) is the active one. Dropping the album there adds it to the playlist in the <emphasis>Playlist</emphasis> pane.  Choose one of the other options to do something else with your selection.  Dragging it over <guilabel>More...</guilabel> brings up a new menu of choices in <emphasis>PUD</emphasis>.
+</para></listitem>
+<listitem><para>Drag your selection all the way onto the <emphasis>Playlist</emphasis> pane on the right-hand side of the &amarok; screen.
+</para></listitem>
+<listitem><para><keycap>Double-click</keycap> the album/track you wish to transfer to the playlist.
+</para></listitem>
+<listitem><para><keycap>Right-click</keycap> the album or track.  In your right-click menu, you will find similar choices. The image below shows the context menu that appears after an item has been right-clicked. Select <guilabel>Add to Playlist</guilabel>.
+</para></listitem>
+</orderedlist>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_addtoplaylist1.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="using-the-toolbar"><title>Using the Toolbar</title>
+<para>The <emphasis>Toolbar</emphasis> at the top of the &amarok; screen provides a simple interface to control the playing of music in the playlist. Click the round icon on the left to start your music playing, and click it again to pause. On the right is the volume and mute control: click on the center of the icon to mute. Use your mouse scroll wheel to control the volume, or drag/click your mouse on the outside ring of the volume icon. Once a track or stream begins to play, the <emphasis>artist</emphasis>/<emphasis>album name</emphasis>/<emphasis>track title</emphasis> slowly alternates in bold in the center. On the right is the next track, which you can click to start it playing immediately. Once a track has played it will be on the left, so you can click on the title to go back to it. The progress bar in the middle of the <emphasis>Toolbar</emphasis> indicates the time elapsed (left hand) and time remaining (right hand) for the track that is currently playing. If you'd rather see a more traditional toolbar, you can select <guilabel>Slim Toolbar</guilabel> from the <guilabel>View</guilabel> menu.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Controlamarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="manipulating-playlists"><title>Manipulating playlists</title>
+<para>You may want to delete albums or tracks from your playlist, rearrange the displayed items for each track or rearrange the display order of tracks.</para>
+<sect2 id="removing-a-track"><title>Removing a track</title>
+<para>You can remove any track or album from your playlist by:
+</para>
+<orderedlist>
+<listitem><para><keycap>Right-click</keycap> on the item in the playlist and choose the option <guilabel>Remove from playlist</guilabel>.
+</para></listitem>
+<listitem><para>Drag the item to be deleted over the <emphasis>Context</emphasis> pane to activate PUD. Several options will appear over the <emphasis>Context</emphasis> pane. Drag the item to the area marked <guilabel>Delete from playlist</guilabel>. See the image below that shows a track being dragged onto the <guilabel>Remove</guilabel> option in PUD.
+</para></listitem>
+<listitem><para>Selecting the track or tracks and use your <keycap>Delete</keycap> key. Multiple tracks can be selected using &Shift; or &Ctrl;.
+</para></listitem>
+</orderedlist>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-removefromplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>You can undo your delete by pressing <keycombo>&Ctrl;<keycap>Z</keycap></keycombo> or by clicking the appropriate arrow in the <emphasis>Playlist Toolbar</emphasis> at the bottom of the <emphasis>Playlist pane</emphasis> (see below).
+</para>
+</sect2>
+<sect2 id="using-the-playlist-tools-at-the-bottom"><title>Using the Playlist tools at the bottom</title>
+<para>At the bottom of the Playlist pane are seven icons:
+</para>
+<para>
+<table>
+  <title>Icons of the Playlist Pane</title>
+  <tgroup cols="2">
+  <tbody>
+  <row>
+    <entry>
+      <para>Icon</para>
+    </entry>
+    <entry>
+      <para>Action</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-clear-playlist-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para>Clear playlist of all albums and tracks</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Document-save.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para>Save your playlist. If you do not rename it, savesthe date as a name.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Edit-undo.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para>Undo your last edit to playlist</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Edit-redo.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para>Redo your last undo to playlist</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-music-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para>Highlight the track currently playing. Useful for long playlists</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para>Set the play mode: repeat tracks, random order, prefer rarely played, &etc;</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para>Set the play mode: repeat tracks, random order, prefer rarely played, &etc;</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-edit-playlist-queue.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para>Edit the playlist queue; tracks played first before the playlist resumes.</para>
+    </entry>
+  </row>
+</tbody>
+  </tgroup>
+</table>
+</para>
+<para>These buttons provide convenient alternatives to several keyboard actions.
+</para>
+</sect2>
+</sect1>
+<sect1 id="saving-and-retrieving-your-favourite-playlists"><title>Saving and retrieving your favourite playlists</title>
+<para>The disk icon (shown in the table above), at the bottom of your <emphasis>Playlist pane</emphasis>, allows you to save the current &amarok; playlist. This enables you to recall a particular selection of music from your collection at any time. Playlists only contain pointers to the music you selected, not the music itself. So if your playlist is pointing to music on an external device, it must be connected and mounted, otherwise the music cannot be played.  There are three places to store playlists:
+</para>
+<orderedlist>
+<listitem><para>outside &amarok; on your computer file system,
+</para></listitem>
+<listitem><para>in your &amarok; playlist database
+</para></listitem>
+<listitem><para>on an portable media device. 
+</para></listitem>
+</orderedlist>
+<para>Clicking the disk icon at the bottom of the <emphasis>Playlist</emphasis> pane stores your playlist in the &amarok; playlist database. To save to disk, click and hold, then scroll to that choice.</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.4.1SavePlaylistChoices.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>Click and hold, scroll to save playlist</phrase>
+    </textobject>
+    <caption>
+      <para>Click and hold, scroll to save playlist</para>
+    </caption>
+  </mediaobject>
+</screenshot></para>
+<para>By default, your saved playlist has a name composed of the date and time when you saved it (see image below). Right-click the playlist name to rename it. Right-clicking on a playlist name also allows you to add it to your existing playlist in the <emphasis>Playlist</emphasis> pane, or to replace your existing playlist.</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-renameplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+</chapter>
+<chapter id="the-context-view"><title>The Context View</title>
+<para>The power of &amarok; is in the <emphasis>Context</emphasis> pane (in the center of the default &amarok; window), where you can install various <emphasis>applets</emphasis> to help you enjoy and explore your music. Most of this additional information is obtained from the Internet, so a connection is important to get the most out of your <emphasis>Context</emphasis> pane. By default, three <emphasis>applets</emphasis> are preset: <emphasis>Current Track</emphasis>, <emphasis>Lyrics</emphasis> and <emphasis>Wikipedia</emphasis>.
+</para>
+<sect1 id="default-layout"><title>Default layout</title>
+<para>The default <emphasis>Context</emphasis> pane searches for the lyrics of the song you are playing. If it finds the lyrics, it displays this in the bottom half of the Context pane, while the top banner of the <emphasis>Context</emphasis> pane displays the album cover and track information for the current music. Sometimes lyrics are not available, because they may not be stored in an appropriate resource on the Internet. In addition, the track information for the current track needs to be <link linkend="tags">tagged</link> correctly for lyrics to be found. If lyrics are not found, this can be due to various reasons, amongst them wrong informations in the Internet sources like incorrect numbering system of the tracks within the album, and the mis-representation of unusual text, such as when the title of a track should contain characters with a circumflex, cedille or accent (ê,ç,à), but does not.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-context.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="customizing-the-context-pane"><title>Customizing the Context pane</title>
+<para>At the bottom of the <emphasis>Context</emphasis> pane are three buttons for the default applets. On the right of these buttons you see a wrench, clicking on it will show a red <guilabel>X</guilabel> allowing you to remove these applets. Click the green <guilabel>+</guilabel> to add more display options (see image below). Drag the labeled buttons to re-order the applets you have, and click the wrench again to fix your selections.</para>
+<para>This makes the <emphasis>Context</emphasis> pane extremely flexible, maximizing the possibility of a custom display that fits your preferences. More <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AmarokWindow/ContextPane">here</ulink>.</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-contextadd.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+</chapter>
+<chapter id="how-to-deal-with-problems"><title>How to deal with problems</title>
+<sect1 id="some-of-the-music-is-being-rapidly-skipped-over"><title>Some of the music is being rapidly skipped over</title>
+<para>You may not have installed the necessary <emphasis>codecs.</emphasis> More about that here <ulink url="http://userbase.kde.org/Amarok/Manual/FAQ#What_media_types_does_Amarok_support.3F">FAQ: What Media Types Does &amarok; Support</ulink>. Please refer to your distribution.
+</para>
+</sect1>
+<sect1 id="after-my-ipod-has-been-mounted-it-is-not-shown-in-the-content-browser"><title>After my iPod has been mounted, it is not shown in the Content Browser</title>
+<para>This should not happen. Check that the device has been properly mounted. Simply typing <userinput>mount</userinput> in a console will show you all mounted devices.
+</para>
+</sect1>
+<sect1 id="amarok-cannot-see-the-predefined-playlists-on-my-portable-music-player"><title>&amarok; cannot see the predefined playlists on my portable music player</title>
+<para>Wait for the next version of &amarok;.
+</para>
+</sect1>
+<sect1 id="after-i-have-updated-my-collection-the-additions-are-not-shown-in-the-content-browser"><title>After I have updated my collection, the additions are not shown in the Content Browser</title>
+<para>From the top-level menu <menuchoice><guimenu>Tools</guimenu><guimenuitem>Update Collection</guimenuitem></menuchoice>. If they don't show up, quit &amarok; from the <guilabel>Amarok</guilabel> menu, or use <keycombo>&Ctrl;<keycap>Q</keycap></keycombo> to quit. Once you restart &amarok;, your collection should show your updates.
+</para>
+</sect1>
+<sect1 id="amarok-cannot-find-the-lyrics-of-the-songs-that-i-play"><title>&amarok; cannot find the lyrics of the songs that I play</title>
+<para>Possibilities:
+</para>
+<orderedlist>
+<listitem><para>The lyrics are not available in the sites checked on the Internet. You may wish to add more sites via the script menu (before 2.4.1: <menuchoice><guimenu>Tools</guimenu><guimenuitem>Script Manager</guimenuitem></menuchoice>, 2.4.1 on: <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Scripts</guimenuitem></menuchoice>).
+</para></listitem>
+<listitem><para>The track numbering system within an album in your collection is not correct.
+</para></listitem>
+<listitem><para>The title of your song contains special characters with a cedille, accent, &etc; that do not show in your track title; therefore the lyrics script applet cannot find a match for your title. Check your tags and track numbering system with a tagger such as <ulink url="http://musicbrainz.org/doc/MusicBrainz_Picard">Picard</ulink>.
+</para></listitem>
+</orderedlist>
+</sect1>
+<sect1 id="my-question-isnt-answered-here"><title>My question isn't answered here</title>
+<para>More complex issues are covered in the <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual">Manual</ulink>, including <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/TroubleshootingAndCommonProblems">Troubleshooting and Common Problems</ulink>, and the <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ">Amarok FAQ</ulink>.
+</para>
+</sect1>
+</chapter>
+<chapter id="glossary"><title>GLOSSARY</title>
+<sect1 id="breadcrumbs"><title>Breadcrumbs</title>
+<para>This is a way of navigating a hierarchical file structure; on &amarok; near the top of the <emphasis>Media Sources</emphasis> pane. Starting at the Home folder level, it shows how deep one has navigated into the file system. When you have gone to a particular place in the file system, you will see all folders at a higher level. In &amarok; the <guilabel>&gt;</guilabel> links between folder levels allow you to find out what alternative folders are available at a particular level. The breadcrumbs are an efficient mechanism to navigate the whole file system on your computer.
+</para>
+</sect1>
+<sect1 id="collection"><title>Collection</title>
+<para>All the sound files that &amarok; has compiled in the database. Your collection may vary in size and composition of music tracks, depending which external devices (such as audio &CD;s or portable players with music) are connected and mounted on your computer.
+</para>
+</sect1>
+<sect1 id="content-browser"><title>Content Browser</title>
+<para>This is the central part of the <emphasis>Media Sources</emphasis> pane that allows you to list the music that you have in your collection. The Content browser allows you to select the sort order of your track lists as well as the detail in which you wish to see your music. 
+</para>
+</sect1>
+<sect1 id="playlist"><title>Playlist</title>
+<para>A selection of tracks from your collection that you wish to play. Some portable music players have predefined playlists that are likely to differ from your &amarok; playlists.
+</para>
+</sect1>
+<sect1 id="script5"><title>Script</title> 
+<para>&amarok; plugin to extend functionality. Scripts are available from <menuchoice><guimenu>Tools</guimenu><guimenuitem>Script Manager</guimenuitem></menuchoice> before 2.4.1; from 2.4.1 on: <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Scripts</guimenuitem></menuchoice>. Add more lyrics sources, more streaming stations, save covers to your album folders, burn CDs from playlists, &etc;</para>
+</sect1>
+<sect1 id="scrobble"><title>Scrobble</title>
+<para>To scrobble a track means that as you listen to it, the title of the track and artist are sent to a Web site such as <emphasis>Last.fm</emphasis>, where the information is added to your profile.</para>
+</sect1>
+<sect1 id="stream-streaming"><title>Stream, streaming</title>
+<para>Like 20th-century radio stations, Internet radio stations send out <quote>streams</quote> of content. One can find music, news, commentary and opinion. Many streams can be accessed through &amarok;, either through scripts such as Cool Streams, or individually added by menu (<menuchoice><guimenu>Playlist</guimenu><guimenuitem>Add Stream</guimenuitem></menuchoice>).
+</para>
+</sect1>
+<sect1 id="tags"><title>Tags</title>
+<para>The information about each of the tracks you listen to, &eg; album name, track title, composer, artist, year, &etc; There is a standard called ID3 for including this information on audio &CD;s. You can edit the tags of individual tracks within &amarok; if the file permissions are correct.
+</para>
+</sect1>
+</chapter>
+<!--userbase-content-->
+<chapter id="credits">
+<title>Credits and License</title>
+    <para>
+Documentation Copyright see the UserBase 
+    <ulink url="http://userbase.kde.org/index.php?title=Amarok&amp;action=history">&amarok; page history</ulink></para>
+    <!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+&underFDL;
+</chapter>
+&documentation.index;
+</book>
