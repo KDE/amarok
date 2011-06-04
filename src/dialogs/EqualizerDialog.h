@@ -39,6 +39,10 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
 
          static void showOnce();
 
+        static QStringList eqDefaultPresetsList();
+        static QStringList eqDefaultTranslatedPresetsList();
+        static QList<int> eqCfgGetPresetVal ( QString mPresetName );
+
     private Q_SLOTS:
         void eqUpdateUI( int index );
         void eqPresetChanged( int index );
@@ -64,7 +68,6 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         bool eqCfgRestorePreset( QString mPresetName );
         void eqCfgSetPresetVal( QString & mPresetName, QList<int> & mPresetValues);
         void eqRememberOriginalSettings();
-        QList<int> eqCfgGetPresetVal ( QString mPresetName );
         QStringList eqGlobalList();
 
         static EqualizerDialog *s_instance;

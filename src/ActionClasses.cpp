@@ -36,6 +36,7 @@
 #include <KLocale>
 #include <KToolBar>
 #include <Osd.h>
+#include <EqualizerDialog.h>
 
 
 extern OcsData ocsData;
@@ -389,7 +390,7 @@ EqualizerAction::eqGlobalList()
 {
     // Prepare a global list with duplicates removed
     QStringList mGlobalList;
-    mGlobalList += AmarokConfig::defEqualizerPresetsNames();
+    mGlobalList += EqualizerDialog::eqDefaultPresetsList();
     foreach( const QString &mUsrName, AmarokConfig::equalizerPresetsNames() )
     {
         if( mGlobalList.indexOf( mUsrName ) < 0 )
@@ -405,15 +406,7 @@ EqualizerAction::eqCfgGetPresetVal( int mPresetNo )
     if( mPresetNo > eqGlobalList().count() ||  mPresetNo < 0 )
         return mPresetVal;
     QString mPresetName = eqGlobalList().at(mPresetNo);
-    int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
-    int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
-
-    if( idUsr >= 0 )
-        mPresetVal = AmarokConfig::equalizerPresestValues().mid( idUsr*11,11 );
-    else if( idDef >= 0)
-        mPresetVal = AmarokConfig::defEqualizerPresestValues().mid( idDef*11,11 );
-
-    return mPresetVal;
+    return EqualizerDialog::eqCfgGetPresetVal(mPresetName);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
