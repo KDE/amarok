@@ -18,7 +18,7 @@ VERSION 2.4.2-Beta 1
       reduce the number of cache-related crashes.
 
   BUGFIXES:
-    * Made preset names translatable. (BR 263596)
+    * Made equalizer preset names translatable. (BR 263596)
     * Fixed runtime error reporting of scripts. (BR 207409)
     * Fixed "Happy" moodbar theme. (BR 264432)
     * Fixed crash for invalid scripts trying to be stopped by the manager.
