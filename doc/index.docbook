@@ -315,7 +315,7 @@
 <itemizedlist>
 <listitem><para>pressing on <ulink url="http://userbase.kde.org/Special:mylanguage/Kickoff">&kickoff;</ulink> and then <menuchoice><guimenu>Multimedia</guimenu><guimenuitem>&amarok;</guimenuitem></menuchoice>.
 </para></listitem>
-<listitem><para>invoking <ulink url="http://userbase.kde.org/Special:mylanguage/KRunner">&krunner;</ulink> (<keycombo>&Alt;<keycap>F2</keycap></keycombo> by default), enter <userinput>amarok</userinput> and then pressiing &Enter;.
+<listitem><para>invoking <ulink url="http://userbase.kde.org/Special:mylanguage/KRunner">&krunner;</ulink> (<keycombo>&Alt;<keycap>F2</keycap></keycombo> by default), enter <userinput>amarok</userinput> and then pressing &Enter;.
 </para></listitem>
 </itemizedlist>
 </sect2>
@@ -324,7 +324,7 @@
 </sect2>
 </sect1>
 <sect1 id="first-time"><title>First Time</title>
-<para>The first time you use &amarok;, a First Start dialog boxwill come up asking you to specify where your music is located. If you have a music folder already <ulink url="help:/kcontrol/paths/index.html">configured in your system</ulink>, &amarok; should detect it and ask you to use it:
+<para>The first time you use &amarok;, a First Start dialog box will come up asking you to specify where your music is located. If you have a music folder already <ulink url="help:/kcontrol/paths/index.html">configured in your system</ulink>, &amarok; should detect it and ask you to use it:
 </para>
 <para>
 <screenshot>
@@ -880,7 +880,7 @@
       </para>
     </entry>
     <entry>
-      <para>Save your playlist. If you do not rename it, savesthe date as a name.</para>
+      <para>Save your playlist. If you do not rename it, saves the date as a name.</para>
     </entry>
   </row>
     <row>
