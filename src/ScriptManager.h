@@ -60,16 +60,18 @@ class AMAROK_EXPORT ScriptManager : public QObject
 
         void configChanged( bool changed );
 
-        KPluginInfo::List scripts( const QString &category );
+        KPluginInfo::List scripts( const QString &category ) const;
 
         /** Returns a list of all currently running scripts. Used by the DCOP handler. */
-        QStringList listRunningScripts();
+        QStringList listRunningScripts() const;
 
         /** Returns the path of the spec file of the given script */
-        QString specForScript( const QString& name );
+        QString specForScript( const QString& name ) const;
 
         /** Returns whether or not there is a lyrics script running */
-        bool lyricsScriptRunning();
+        bool lyricsScriptRunning() const;
+
+        QString scriptNameForEngine( const QScriptEngine *engine ) const;
 
         /** Notifies any running lyric scripts to fetch lyrics */
         void notifyFetchLyrics( const QString& artist, const QString& title );
@@ -99,6 +101,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
         bool slotRunScript( const QString &name, bool silent = false );
         void slotStopScript( const QString &name );
         void scriptFinished( const QString &name );
+        void handleException( const QScriptValue &value );
 
         /** Finds installed scripts, updates them, and loads them */
         void updateAllScripts();
@@ -108,12 +111,14 @@ class AMAROK_EXPORT ScriptManager : public QObject
         explicit ScriptManager( QObject* parent );
         virtual ~ScriptManager();
 
-        bool loadScript( const QString& path ); //return false if loadScript failed.
+        /// \return false if loadScript failed.
+        bool loadScript( const QString& path ); 
 
-        void startScriptEngine( const QString &name);
+        void startScriptEngine( const QString &name );
 
         static QScriptValue ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine );
         static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
+
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////

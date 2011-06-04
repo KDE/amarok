@@ -26,6 +26,7 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core/interfaces/Logger.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
 #include "services/scriptable/ScriptableServiceManager.h"
@@ -118,7 +119,7 @@ ScriptManager::stopScript( const QString& name )
 }
 
 QStringList
-ScriptManager::listRunningScripts()
+ScriptManager::listRunningScripts() const
 {
     QStringList runningScripts;
     foreach( const ScriptItem *item, m_scripts )
@@ -130,7 +131,7 @@ ScriptManager::listRunningScripts()
 }
 
 QString
-ScriptManager::specForScript( const QString& name )
+ScriptManager::specForScript( const QString& name ) const
 {
     if( !m_scripts.contains( name ) )
         return QString();
@@ -140,7 +141,7 @@ ScriptManager::specForScript( const QString& name )
 }
 
 bool
-ScriptManager::lyricsScriptRunning()
+ScriptManager::lyricsScriptRunning() const
 {
     return !m_lyricsScript.isEmpty();
 }
@@ -237,6 +238,10 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
     const KUrl url = item->url;
     //load the wrapper classes
     item->engine = new QScriptEngine( this );
+    connect(item->engine,
+            SIGNAL(signalHandlerException(QScriptValue)),
+            SLOT(handleException(QScriptValue)));
+
     startScriptEngine( name );
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
@@ -281,6 +286,18 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
         slotStopScript( name );
 
     return true;
+}
+
+void ScriptManager::handleException(const QScriptValue& value)
+{
+    DEBUG_BLOCK
+
+    QScriptEngine * engine = value.engine();
+    if (!engine)
+        return;
+
+    Amarok::Components::logger()->longMessage( i18n( "Script error reported by: %1\n%2" )
+            .arg( scriptNameForEngine( engine ), value.toString() ), Amarok::Logger::Error );
 }
 
 void
@@ -441,7 +458,7 @@ ScriptManager::loadScript( const QString& path )
 }
 
 KPluginInfo::List
-ScriptManager::scripts( const QString &category )
+ScriptManager::scripts( const QString &category ) const
 {
     KPluginInfo::List scripts;
     foreach( const ScriptItem *script, m_scripts )
@@ -450,6 +467,17 @@ ScriptManager::scripts( const QString &category )
             scripts << script->info;
     }
     return scripts;
+}
+
+QString ScriptManager::scriptNameForEngine(const QScriptEngine* engine) const
+{
+    foreach( const QString& name, m_scripts.keys() ) {
+        ScriptItem *script = m_scripts[name];
+        if (script->engine == engine)
+            return name;
+    }
+
+    return QString();
 }
 
 void
