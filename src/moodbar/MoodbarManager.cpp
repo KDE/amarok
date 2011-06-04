@@ -331,7 +331,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
             rangeStart = 0;
             rangeDelta = 359;
             sat        = 150;
-            val        = 200;
+            val        = 250;
             break;
 
         default: // Default (system colours)
