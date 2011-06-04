@@ -372,41 +372,21 @@ EqualizerAction::newList() //SLOT
     }
     setEnabled( true );
     setToolTip( QString() );
-    setItems( QStringList() << i18nc( "Equalizer state, as in, disabled", "&Off" ) << eqGlobalList() );
+    setItems( QStringList() << i18nc( "Equalizer state, as in, disabled", "&Off" ) << EqualizerPresets::eqGlobalList() );
 }
 
 void
 EqualizerAction::actTrigg( int index ) //SLOT
 {
-    if( The::engineController()->isEqSupported() )
-    {
-        AmarokConfig::setEqualizerGains( eqCfgGetPresetVal( index - 1 ) );
-        The::engineController()->eqUpdate();
-    }
-}
+    if( !The::engineController()->isEqSupported() )
+        return;
 
-QStringList
-EqualizerAction::eqGlobalList()
-{
-    // Prepare a global list with duplicates removed
-    QStringList mGlobalList;
-    mGlobalList += EqualizerDialog::eqDefaultPresetsList();
-    foreach( const QString &mUsrName, AmarokConfig::equalizerPresetsNames() )
-    {
-        if( mGlobalList.indexOf( mUsrName ) < 0 )
-            mGlobalList.append( mUsrName );
-    }
-    return mGlobalList;
-}
+    const QString presetName = EqualizerPresets::eqGlobalList().at( index - 1 );
+    if (presetName.isEmpty())
+        return;
 
-QList<int>
-EqualizerAction::eqCfgGetPresetVal( int mPresetNo )
-{
-    QList<int> mPresetVal;
-    if( mPresetNo > eqGlobalList().count() ||  mPresetNo < 0 )
-        return mPresetVal;
-    QString mPresetName = eqGlobalList().at(mPresetNo);
-    return EqualizerDialog::eqCfgGetPresetVal(mPresetName);
+    AmarokConfig::setEqualizerGains( EqualizerPresets::eqCfgGetPresetVal( presetName ) );
+    The::engineController()->eqUpdate();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

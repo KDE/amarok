@@ -137,10 +137,6 @@ namespace Amarok
 
         private slots:
             void actTrigg( int index );
-
-        private:
-            QStringList eqGlobalList();
-            QList<int> eqCfgGetPresetVal( int mPresetNo );
     };
 
     class BurnMenu : public KMenu

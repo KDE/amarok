@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2004-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
+ * Copyright (c) 2011 Kevin Funk <krf@electrostorm.net>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,60 +15,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef EQUALIZERDIALOG_H
-#define EQUALIZERDIALOG_H
+#ifndef EQUALIZERPRESETS_H
+#define EQUALIZERPRESETS_H
 
-#include "ui_EqualizerDialog.h"
+#include <QList>
+#include <QStringList>
 
-#include <equalizer/EqualizerPresets.h>
-
-#include <KDialog>
-
-class EqualizerDialog;
-
-namespace The {
-    EqualizerDialog* equalizer();
-}
-
-class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
+class EqualizerPresets
 {
-    Q_OBJECT
-    friend EqualizerDialog* The::equalizer();
+public:
+    EqualizerPresets();
+    virtual ~EqualizerPresets();
 
-    public:
-        static EqualizerDialog * instance();
-        ~EqualizerDialog();
+    static QStringList eqDefaultPresetsList();
+    static QStringList eqDefaultTranslatedPresetsList();
 
-        static void showOnce();;
+    static QStringList eqGlobalList();
 
-    private Q_SLOTS:
-        void eqUpdateUI( int index );
-        void eqPresetChanged( int index );
-        void eqBandsChanged();
-        void eqSavePreset();
-        void eqDeletePreset();
-        void eqRestorePreset();
-        void eqRestoreOriginalSettings();
+    static QList<int> eqCfgGetPresetVal( const QString &presetName );
 
-    private:
-        EqualizerDialog();
-
-        double mValueScale;
-        QVector<QSlider*> mBands;
-        QVector<QLabel*> mBandsValues;
-        QVector<QLabel*> mBandsLabels;
-        QList<int> mOriginalGains;
-        QString mOriginalPreset;
-
-        EqualizerPresets mPresets;
-
-        void eqSetupUI();
-        void eqUpdateToolTips();
-        void eqUpdateLabels( QList<int> & mEqGains );
-        void eqRememberOriginalSettings();
-
-        static EqualizerDialog *s_instance;
+    bool eqCfgDeletePreset( const QString &presetName );
+    bool eqCfgRestorePreset( const QString &presetName );
+    void eqCfgSetPresetVal( const QString &presetName, const QList<int> &presetValues );
 };
 
-
-#endif // EQUALIZERDIALOG_H
+#endif // EQUALIZERPRESETS_H
