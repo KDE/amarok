@@ -447,8 +447,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
     m_media.data()->stop();
     resetFadeout();
 
-    debug() << "URL: " << url.url();
-    debug() << "offset: " << offset;
+    debug() << "URL: " << url << url.url();
+    debug() << "Offset: " << offset;
 
     if ( url.url().startsWith( "audiocd:/" ) )
     {

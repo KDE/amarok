@@ -486,20 +486,26 @@ void
 VideoclipApplet::appendPlayVideoClip( VideoInfo *info )
 {
     DEBUG_BLOCK
-    QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
-    if ( button )
-    {
-        QStringList lst = button->text().split(" | ");
 
-        MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
-        tra->setTitle( info->title );
-        tra->setAlbum( info->source );
-        tra->setArtist( info->artist );
-        tra->album()->setImage( info->cover.toImage() );
-        Meta::TrackPtr track( tra );
-        //append to the playlist the newly retrieved
-        The::playlistController()->insertOptioned( track, Playlist::AppendAndPlayImmediately );
-    }
+    QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
+    if ( !button )
+        return;
+
+    const QStringList lst = button->text().split(" | ");
+
+    debug() << "  Artist:" << info->artist;
+    debug() << "  Title :" << info->title;
+    debug() << "  Album :" << info->source;
+    debug() << "  Link  :" << info->videolink;
+
+    MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
+    tra->setTitle( info->title );
+    tra->setAlbum( info->source );
+    tra->setArtist( info->artist );
+    tra->album()->setImage( info->cover.toImage() );
+    Meta::TrackPtr track( tra );
+    //append to the playlist the newly retrieved
+    The::playlistController()->insertOptioned( track, Playlist::AppendAndPlayImmediately );
 }
 
 void
