@@ -459,7 +459,6 @@ EqualizerDialog::eqDefaultPresetsList()
             << "Dance"
             << "Full Bass"
             << "Full Treble"
-            << "Full Bass"
             << "Treble"
             << "Laptop/Headphones"
             << "Large Hall"
