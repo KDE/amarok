@@ -60,7 +60,7 @@ LikeBack::LikeBack( Button buttons, bool showBarByDefault, KConfig *config, cons
     d->showBarByDefault = showBarByDefault;
 
     // Initialize properties (2/2) [Needs aboutData to be set]:
-    d->showBar = userWantsToShowBar();
+    d->showBar = d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
 
     // Initialize the button-bar:
     d->bar = new LikeBackBar( this );
@@ -161,7 +161,10 @@ void LikeBack::enableBar()
 #endif
 
     if( d->bar )
-        d->bar->setBarVisible( d->disabledCount <= 0 );
+        d->bar->setBarVisible( d->disabledCount <= 0 && userWantsToShowBar() );
+#ifdef DEBUG_LIKEBACK
+        debug() << "User wants to show feedback bar: " << userWantsToShowBar() << " " << d->disabledCount;
+#endif
 }
 
 
@@ -176,11 +179,8 @@ bool LikeBack::enabledBar()
 void LikeBack::execCommentDialog( Button type, const QString &initialComment, const QString &windowPath, const QString &context )
 {
     LikeBackDialog *dialog = new LikeBackDialog( type, initialComment, windowPath, context, this );
-    if( userWantsToShowBar() )
-    {
-        disableBar();
-        connect( dialog, SIGNAL( destroyed( QObject* ) ), this, SLOT( enableBar() ) );
-    }
+    disableBar();
+    connect( dialog, SIGNAL( finished() ), this, SLOT( enableBar() ) );
     dialog->show();
 }
 
@@ -241,7 +241,7 @@ bool LikeBack::userWantsToShowBar()
     // it's very annoying to have the bar reappearing everytime.
     // return d->config.readEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), d->showBarByDefault );
 
-    return d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
+    return d->showBar;
 }
 
 
