@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2003-2005 Max Howell <max.howell@methylblue.com>
     Copyright (c) 2007-2009 Mark Kretschmann <kretschmann@kde.org>
-    Copyright (c) 2010 Kevin Funk <krf@electrostorm.net>
+    Copyright (c) 2010-2011 Kevin Funk <krf@electrostorm.net>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,41 @@
 #include <kdebug.h>
 
 #include <QMutex>
+
+// BEGIN: DEBUG_ASSERT
+/**
+ * Debug helper to write "soft" assertions with escape statements more easily
+ * If the assertions fails, a
+ *
+ * \author Kevin Funk
+ * \sa http://qt.gitorious.org/qt-creator/qt-creator/blobs/master/src/libs/utils/qtcassert.h
+ *
+ * (pseudo code)
+ * \code
+ * bool someMethod() {
+ *   if (!pointer)
+ *     qWarning() << "Warning pointer is null, aborting";
+ *     return false;
+ *   (...)
+ *   return someBoolean;
+ * }
+ * \endcode
+ *
+ * (replace by)
+ * \code
+ * bool someMethod() {
+ *   DEBUG_ASSERT(pointer, return false)
+ *   (...)
+ *   return someBoolean;
+ * }
+ * \endcode
+ */
+#define DEBUG_ASSERT(cond, action) \
+    if(cond){}else{debug()<<"ASSERTION " #cond " FAILED AT " __FILE__ ":" DEBUG_ASSERT_STRINGIFY(__LINE__);action;}
+
+#define DEBUG_ASSERT_STRINGIFY_INTERNAL(x) #x
+#define DEBUG_ASSERT_STRINGIFY(x) DEBUG_ASSERT_STRINGIFY_INTERNAL(x)
+// END__: DEBUG_ASSERT
 
 #if QT_VERSION >= 0x040700
 # include <QElapsedTimer>

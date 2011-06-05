@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2003-2005 Max Howell <max.howell@methylblue.com>
     Copyright (c) 2007-2009 Mark Kretschmann <kretschmann@kde.org>
-    Copyright (c) 2010 Kevin Funk <krf@electrostorm.net>
+    Copyright (c) 2010-2011 Kevin Funk <krf@electrostorm.net>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
