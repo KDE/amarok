@@ -9,6 +9,7 @@ VERSION 2.4.2-Beta 1
       Sandeep Raghuraman. (BR 155075)
     * Automatic scrolling in lyrics applet (Thanks to Jan Gerrit Marker)
     * Option to scrobble composer as artist to Last.fm (Thanks to Nicholas Wilson)
+    * Option to hide the OSD if another window is taking the full screen
 
   CHANGES:
     * Removed the add button in the context toolbar. Applet explorer is opened on config.
