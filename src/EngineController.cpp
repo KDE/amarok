@@ -1145,7 +1145,8 @@ void
 EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldState ) //SLOT
 {
     DEBUG_BLOCK
-    const int maxErrors = 5;
+
+    static const int maxErrors = 5;
     static int errorCount = 0;
 
     // Sanity checks:
@@ -1168,6 +1169,9 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
         errorCount++;
         if ( errorCount >= maxErrors )
         {
+            // reset error count
+            errorCount = 0;
+
             Amarok::Components::logger()->longMessage( i18n( "Too many errors encountered in playlist. Playback stopped." ), Amarok::Logger::Warning );
             error() << "Stopping playlist.";
         }
