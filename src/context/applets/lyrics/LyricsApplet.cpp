@@ -272,6 +272,10 @@ LyricsAppletPrivate::_editLyrics()
     if( q->isCollapsed() )
         q->setCollapseOff();
 
+    // disable autoscroll when starting editing
+    if (autoScroll)
+        _toggleAutoScroll();
+
     if( !browser->isVisible() )
     {
         browser->show();
