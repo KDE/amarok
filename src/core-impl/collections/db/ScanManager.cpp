@@ -175,8 +175,11 @@ ScanManager::addDirToList( const QString &directory )
     QMutexLocker locker( &m_mutex );
     debug() << "addDirToList for"<<directory;
 
-    if( directory.isEmpty() )
+    if( directory.isEmpty() ) {
+        DEBUG_ASSERT(m_collection, return)
+        DEBUG_ASSERT(m_collection->mountPointManager(), return)
         m_scanDirsRequested.unite( m_collection->mountPointManager()->collectionFolders().toSet() );
+    }
     else
     {
         if( m_collection->isDirInCollection( directory ) )

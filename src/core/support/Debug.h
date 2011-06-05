@@ -59,7 +59,8 @@
  * \endcode
  */
 #define DEBUG_ASSERT(cond, action) \
-    if(cond){}else{debug()<<"ASSERTION " #cond " FAILED AT " __FILE__ ":" DEBUG_ASSERT_STRINGIFY(__LINE__);action;}
+    if(cond){}else{warning()<< \
+        "ASSERTION " #cond " FAILED AT " __FILE__ ":" DEBUG_ASSERT_STRINGIFY(__LINE__);action;}
 
 #define DEBUG_ASSERT_STRINGIFY_INTERNAL(x) #x
 #define DEBUG_ASSERT_STRINGIFY(x) DEBUG_ASSERT_STRINGIFY_INTERNAL(x)
