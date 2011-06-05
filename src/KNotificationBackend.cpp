@@ -22,6 +22,7 @@
 #include "EngineController.h"
 
 #include <KLocale>
+#include <KWindowSystem>
 
 #include <QTimer>
 
@@ -78,6 +79,16 @@ bool
 Amarok::KNotificationBackend::isEnabled() const
 {
     return m_enabled;
+}
+
+bool
+Amarok::KNotificationBackend::isFullscreenWindowActive() const
+{
+    // Get information of the active window.
+    KWindowInfo activeWindowInfo = KWindowSystem::windowInfo( KWindowSystem::activeWindow(), NET::WMState );
+
+    // Check if it is running in fullscreen mode.
+    return activeWindowInfo.hasState( NET::FullScreen );
 }
 
 void

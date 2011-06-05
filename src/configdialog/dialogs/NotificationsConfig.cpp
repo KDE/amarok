@@ -52,18 +52,18 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
     for( int i = 0; i < numScreens; i++ )
         kcfg_OsdScreen->addItem( QString::number( i ) );
 
-    connect( kcfg_OsdTextColor,       SIGNAL( changed( const QColor& ) ),
-             m_osdPreview,            SLOT( setTextColor(const QColor& ) ) );
-    connect( kcfg_OsdUseCustomColors, SIGNAL( toggled( bool ) ),
-             this,                    SLOT( useCustomColorsToggled( bool ) ) );
-    connect( kcfg_OsdScreen,          SIGNAL( activated( int ) ),
-             m_osdPreview,            SLOT( setScreen( int ) ) );
-    connect( kcfg_OsdEnabled,         SIGNAL( toggled( bool ) ),
-             m_osdPreview,            SLOT( setVisible( bool ) ) );
-    connect( kcfg_OsdUseTranslucency, SIGNAL( toggled( bool ) ),
-             m_osdPreview,            SLOT( setTranslucent( bool ) ) );
-    connect( kcfg_OsdFontScaling,     SIGNAL( valueChanged( int ) ),
-             m_osdPreview,            SLOT( setFontScale( int ) ) );
+    connect( kcfg_OsdTextColor,        SIGNAL( changed( const QColor& ) ),
+             m_osdPreview,             SLOT( setTextColor(const QColor& ) ) );
+    connect( kcfg_OsdUseCustomColors,  SIGNAL( toggled( bool ) ),
+             this,                     SLOT( useCustomColorsToggled( bool ) ) );
+    connect( kcfg_OsdScreen,           SIGNAL( activated( int ) ),
+             m_osdPreview,             SLOT( setScreen( int ) ) );
+    connect( kcfg_OsdEnabled,          SIGNAL( toggled( bool ) ),
+             m_osdPreview,             SLOT( setVisible( bool ) ) );
+    connect( kcfg_OsdUseTranslucency,  SIGNAL( toggled( bool ) ),
+             m_osdPreview,             SLOT( setTranslucent( bool ) ) );
+    connect( kcfg_OsdFontScaling,      SIGNAL( valueChanged( int ) ),
+             m_osdPreview,             SLOT( setFontScale( int ) ) );
 
     /*
     Amarok::QStringx text = i18n(

@@ -386,6 +386,11 @@
         </choices>
         <default>Middle</default>
     </entry>
+    <entry key="OsdHideOnFullscreen" type="Bool">
+        <label>Don't show when a fullscreen application is active</label>
+        <whatsthis>Do not show the tooltip if another application is focused and running in fullscreen mode.</whatsthis>
+        <default>false</default>
+    </entry>
 
 </group>
 

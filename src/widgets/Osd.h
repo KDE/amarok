@@ -46,7 +46,7 @@ class OSDWidget : public QWidget
         void volumeChanged( int volume );
 
         /** reimplemented, shows the OSD */
-        virtual void show() { QWidget::show(); };
+        virtual void show();
         virtual void setVisible( bool visible );
 
         /**
@@ -74,6 +74,7 @@ class OSDWidget : public QWidget
         void setRating( const short rating ) { m_rating = rating; }
         void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); }
         void setFontScale( int scale );
+        void setHideWhenFullscreenWindowIsActive( bool hide );
 
     protected:
         explicit OSDWidget( QWidget *parent, const char *name = "osd" );
@@ -84,6 +85,14 @@ class OSDWidget : public QWidget
 
         /** determine new size and position */
         QRect determineMetrics( const int marginMetric );
+
+        /**
+         * @short Checks if the OSD is temporary disabled.
+         * This is usually the case if the OSD should not be shown
+         * if a fullscreen application is active (@see m_hideWhenFullscreenWindowIsActive)
+         * (where the OSD could steal focus).
+         */
+        bool isTemporaryDisabled();
 
         // Reimplemented from QWidget
         virtual void paintEvent( QPaintEvent* );
@@ -110,6 +119,7 @@ class OSDWidget : public QWidget
         QImage      m_cover;
         QPixmap     m_scaledCover;
         bool        m_paused;
+        bool        m_hideWhenFullscreenWindowIsActive;
 };
 
 

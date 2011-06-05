@@ -35,6 +35,11 @@ public:
     void setEnabled(bool enabled);
     bool isEnabled() const;
 
+    /**
+     * Checks if a fullscreen window is currently active.
+     */
+    bool isFullscreenWindowActive() const;
+
 public Q_SLOTS:
     void showCurrentTrack();
 
