@@ -824,7 +824,6 @@ SqlRegistry::emptyCache()
          && ( hasComposer = m_composerMutex.tryLock() )
          && ( hasLabel = m_labelMutex.tryLock() ) )
     {
-        DEBUG_BLOCK
         #define mapCached( Cache, Key, Map, Res ) \
         Cache[Key] = qMakePair( Map.count(), Res.join(QLatin1String(" ")).toInt() );
 
@@ -919,8 +918,6 @@ SqlRegistry::emptyCache()
                 debug() << QString( "%1: %2" ).arg( i.key(), 8 ).arg( text ).toLocal8Bit().constData();
             }
         }
-        else
-            debug() << "Cache unchanged";
     }
 
     //make sure to unlock all necessary locks
