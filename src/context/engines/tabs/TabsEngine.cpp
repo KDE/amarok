@@ -327,7 +327,8 @@ TabsEngine::resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAc
         result = QString( data );
 
     // extract tab title and data
-    const QString title = subStringBetween( result, "<strong>", "</strong>");
+    const QString title = subStringBetween( result, "<strong>", "</strong>" );
+    result.remove( subStringBetween( result, "<div class=\"dn\">", "</div>" ) );
     QRegExp regex = QRegExp( "<pre>.*</pre>", Qt::CaseInsensitive );
     if( regex.indexIn( result ) == -1 )
         return;
