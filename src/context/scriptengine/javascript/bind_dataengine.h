@@ -26,11 +26,13 @@
 
 using namespace Plasma;
 
-#if !KDE_IS_VERSION(4, 4, 76)
+#if !KDE_IS_VERSION(4, 4, 76) 
 Q_DECLARE_METATYPE(DataEngine*)
 #endif
+#if !KDE_VERSION(4, 6, 80)
 Q_DECLARE_METATYPE(Service*)
 Q_DECLARE_METATYPE(ServiceJob*)
+#endif
 Q_DECLARE_METATYPE(QVariant)
 Q_DECLARE_METATYPE(DataEngine::Dict)
 Q_DECLARE_METATYPE(DataEngine::Data)
