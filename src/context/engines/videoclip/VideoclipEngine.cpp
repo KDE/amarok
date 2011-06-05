@@ -92,6 +92,9 @@ VideoclipEngine::message( const ContextState& state )
 void
 VideoclipEngine::metadataChanged( Meta::TrackPtr track )
 {
+    if (!track)
+        return;
+
     const bool hasChanged = track->name() != m_title || track->artist()->name() != m_artist;
     if ( hasChanged )
         update();
