@@ -60,8 +60,6 @@ class AMAROK_EXPORT App : public KUniqueApplication
         static void handleCliArgs();
         static void initCliArgs();
 
-        static int mainThreadId;
-
         virtual int newInstance();
 
         inline MainWindow *mainWindow() const { return m_mainWindow.data(); }

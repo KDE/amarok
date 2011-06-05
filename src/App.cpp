@@ -92,8 +92,6 @@
 #include <QTimer>                       //showHyperThreadingWarning()
 #include <QtDBus/QtDBus>
 
-int App::mainThreadId = 0;
-
 #ifdef Q_WS_MAC
 #include <CoreFoundation/CoreFoundation.h>
 extern void setupEventHandler_mac(SRefCon);
