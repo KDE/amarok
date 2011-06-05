@@ -518,6 +518,7 @@ set(scriptengine_SRCS
     scriptengine/AmarokScriptableServiceScript.cpp
     scriptengine/AmarokServicePluginManagerScript.cpp
     scriptengine/AmarokEngineScript.cpp
+    scriptengine/AmarokKNotifyScript.cpp
     scriptengine/AmarokOSDScript.cpp
     scriptengine/AmarokPlaylistScript.cpp
     scriptengine/AmarokStatusbarScript.cpp

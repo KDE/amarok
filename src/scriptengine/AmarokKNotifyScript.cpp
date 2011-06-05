@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009-2011 Kevin Funk <krf@electrostorm.net>                            *
+ * Copyright (c) 2011 Kevin Funk <krf@electrostorm.net>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,55 +14,55 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_KNOTIFICATIONBACKEND_H
-#define AMAROK_KNOTIFICATIONBACKEND_H
+#include "AmarokKNotifyScript.h"
 
-#include <KNotification>
+#include "amarokconfig.h"
+#include "App.h"
+#include "KNotificationBackend.h"
 
-namespace Amarok {
+#define kNotify Amarok::KNotificationBackend::instance()
 
-/**
- * Class for accessing KNotify in KDE
- **/
-class KNotificationBackend : public QObject
+namespace AmarokScript
 {
-    Q_OBJECT
+    
+AmarokKNotifyScript::AmarokKNotifyScript( QScriptEngine *engine )
+    : QObject( engine )
+{
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
+    windowObject.setProperty( "KNotify", scriptObject );
+}
 
-public:
-    static KNotificationBackend* instance();
-    static void destroy();
+AmarokKNotifyScript::~AmarokKNotifyScript()
+{
+}
 
-    void setEnabled(bool enabled);
-    bool isEnabled() const;
+bool AmarokKNotifyScript::kNotifyEnabled()
+{
+    return AmarokConfig::kNotifyEnabled();
+}
 
-    /**
-     * Checks if a fullscreen window is currently active.
-     */
-    bool isFullscreenWindowActive() const;
+void AmarokKNotifyScript::setKNotifyEnabled(bool enable)
+{
+    AmarokConfig::setKNotifyEnabled(enable);
+}
 
-public Q_SLOTS:
-    void show( const QString& title, const QString& body, const QPixmap& pixmap = QPixmap() );
-    void showCurrentTrack( bool force = false );
+void AmarokKNotifyScript::show(const QString& title, const QString& body)
+{
+    show( title, body, QPixmap() );
+}
 
-protected:
+void AmarokKNotifyScript::show(const QString& title, const QString& body, const QPixmap& pixmap)
+{
+    kNotify->show(title, body, pixmap);
+}
 
-private slots:
-    void trackPlaying();
-    void notificationClosed();
 
-private:
-    KNotificationBackend();
-    ~KNotificationBackend();
-
-    static KNotificationBackend *s_instance;
-
-    KNotification* m_notify;
-
-    bool m_enabled;
-
-    QTimer *m_timer;
-};
+void AmarokKNotifyScript::showCurrentTrack()
+{
+    kNotify->showCurrentTrack( true );
+}
 
 }
 
-#endif
+#include "AmarokKNotifyScript.moc"

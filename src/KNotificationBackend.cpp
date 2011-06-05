@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                                 *
+ * Copyright (c) 2009-2011 Kevin Funk <krf@electrostorm.net>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,6 +21,7 @@
 #include "SvgHandler.h"
 #include "EngineController.h"
 
+#include <KIcon>
 #include <KLocale>
 #include <KWindowSystem>
 
@@ -107,10 +108,23 @@ Amarok::KNotificationBackend::trackPlaying()
     m_timer->start( 3000 ); // Wait some time to display the correct cover and also to check if phonon really managed to play the track
 }
 
-void
-Amarok::KNotificationBackend::showCurrentTrack() // slot
+void Amarok::KNotificationBackend::show(const QString& title, const QString& body, const QPixmap& pixmap)
 {
-    if( !m_enabled )
+    QPixmap icon;
+    if (pixmap.isNull()) {
+        KIconLoader loader;
+        icon = loader.loadIcon( QString("amarok"), KIconLoader::Desktop );
+    }
+    else
+        icon = pixmap;
+
+    KNotification::event( KNotification::Notification , title, body, icon );
+}
+
+void
+Amarok::KNotificationBackend::showCurrentTrack( bool force ) // slot
+{
+    if( !force && !m_enabled )
         return;
 
     EngineController *engine = The::engineController();

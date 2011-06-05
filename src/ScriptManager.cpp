@@ -34,6 +34,7 @@
 #include "scriptengine/AmarokScriptConfig.h"
 #include "scriptengine/AmarokEngineScript.h"
 #include "scriptengine/AmarokInfoScript.h"
+#include "scriptengine/AmarokKNotifyScript.h"
 #include "scriptengine/AmarokLyricsScript.h"
 #include "scriptengine/AmarokNetworkScript.h"
 #include "scriptengine/AmarokOSDScript.h"
@@ -507,6 +508,7 @@ ScriptManager::startScriptEngine( const QString &name )
     new AmarokScript::AmarokWindowScript( scriptEngine );
     new AmarokScript::AmarokPlaylistScript( scriptEngine );
     new AmarokScript::AmarokStatusbarScript( scriptEngine );
+    new AmarokScript::AmarokKNotifyScript( scriptEngine );
     new AmarokScript::AmarokOSDScript( scriptEngine );
     QScriptValue windowObject = scriptEngine->globalObject().property( "Amarok" ).property( "Window" );
     windowObject.setProperty( "ToolsMenu", scriptEngine->newObject() );

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009-2011 Kevin Funk <krf@electrostorm.net>                            *
+ * Copyright (c) 2011 Kevin Funk <krf@electrostorm.net>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,53 +14,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_KNOTIFICATIONBACKEND_H
-#define AMAROK_KNOTIFICATIONBACKEND_H
+#ifndef AMAROK_KNOTIFY_SCRIPT_H
+#define AMAROK_KNOTIFY_SCRIPT_H
 
-#include <KNotification>
+#include <QObject>
+#include <QPixmap>
+#include <QtScript>
 
-namespace Amarok {
+namespace AmarokScript
+{
 
-/**
- * Class for accessing KNotify in KDE
- **/
-class KNotificationBackend : public QObject
+class AmarokKNotifyScript : public QObject
 {
     Q_OBJECT
 
-public:
-    static KNotificationBackend* instance();
-    static void destroy();
+    Q_PROPERTY ( bool kNotifyEnabled READ kNotifyEnabled WRITE setKNotifyEnabled )
 
-    void setEnabled(bool enabled);
-    bool isEnabled() const;
+    public:
+        AmarokKNotifyScript( QScriptEngine* scriptEngine );
+        ~AmarokKNotifyScript();
 
-    /**
-     * Checks if a fullscreen window is currently active.
-     */
-    bool isFullscreenWindowActive() const;
+    public slots:
+        void showCurrentTrack();
+        void show(const QString &title, const QString &body);
+        void show(const QString &title, const QString &body, const QPixmap &pixmap);
 
-public Q_SLOTS:
-    void show( const QString& title, const QString& body, const QPixmap& pixmap = QPixmap() );
-    void showCurrentTrack( bool force = false );
-
-protected:
-
-private slots:
-    void trackPlaying();
-    void notificationClosed();
-
-private:
-    KNotificationBackend();
-    ~KNotificationBackend();
-
-    static KNotificationBackend *s_instance;
-
-    KNotification* m_notify;
-
-    bool m_enabled;
-
-    QTimer *m_timer;
+    private:
+        void setKNotifyEnabled( bool enable );
+        bool kNotifyEnabled();
 };
 
 }
