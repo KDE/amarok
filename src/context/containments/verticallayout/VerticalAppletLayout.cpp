@@ -171,7 +171,7 @@ Context::VerticalAppletLayout::showAtIndex( int index )
 {
     if( (index < 0) || (index > m_appletList.size() - 1) )
         return;
-    if( m_appletList.isEmpty() || !m_appletList.at( index ) )
+    if( m_appletList.isEmpty() || !m_appletList.value( index ) )
         return;
 
     setGeometry( scene()->sceneRect() );
