@@ -55,25 +55,33 @@
 
 #include <typeinfo>
 
+#define TOOLTIP_STATIC_LINEBREAK 50
+
 bool Playlist::Model::s_tooltipColumns[NUM_COLUMNS];
 bool Playlist::Model::s_showToolTip;
 
 // ------- helper functions for the tooltip
 
+static bool
+fitsInOneLineHTML(const QString& text)
+{
+    // The size of the normal, standard line
+    const int lnSize = TOOLTIP_STATIC_LINEBREAK;
+    return (text.size() <= lnSize);
+}
+
 static QString
 breakLongLinesHTML(const QString& text)
 {
     // Now let's break up long lines so that the tooltip doesn't become hideously large
-
-    // The size of the normal, standard line
-    const int lnSize = 50;
-    if (text.size() <= lnSize)
+    if (fitsInOneLineHTML(text))
     {
         // If the text is not too long, return it as it is
         return text;
     }
     else
     {
+        const int lnSize = TOOLTIP_STATIC_LINEBREAK;
         QString textInLines;
 
         QStringList words = text.trimmed().split(' ');
@@ -229,8 +237,12 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
     if( s_tooltipColumns[Playlist::Year] && year && year->year() > 0 )
         text += HTMLLine( Playlist::Year, year->year() );
 
-    if( s_tooltipColumns[Playlist::Comment])
-        text += HTMLLine( Playlist::Comment, track->comment() );
+    if( s_tooltipColumns[Playlist::Comment]) {
+        if ( !(fitsInOneLineHTML( track->comment() ) ) )
+            text += HTMLLine( Playlist::Comment, i18n( "(...)" ) );
+        else
+            text += HTMLLine( Playlist::Comment, track->comment() );
+    }
 
     if( s_tooltipColumns[Playlist::Score] )
         text += HTMLLine( Playlist::Score, track->score() );
