@@ -35,7 +35,7 @@ that really makes playlist handling easy.
 ==============
 
 Required
-    * KDE-Libs 4.4 + KDE-Base-runtime 4.4 (or newer)
+    * KDE-Libs 4.4 + KDE-Base-runtime 4.4(oxygen-icons) (or newer)
       http://www.kde.org
 
     * Qt 4.6 (or newer)
