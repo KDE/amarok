@@ -153,9 +153,7 @@ EqualizerDialog::eqSetupUI()
              SLOT( eqUpdateUI( int ) ) );
     // Ask engine for maximum gain value and compute scale to display values
     mValueScale = The::engineController()->eqMaxGain();
-    QString mlblText;
-    mlblText = QString::number( mValueScale, 'f', 1 );
-    mlblText.append( QString( "\ndB" ) );
+    QString mlblText = i18n( "%0\ndB" ).arg( QString::number( mValueScale, 'f', 1 ) );
     eqMaxEq->setText( QString("+") + mlblText );
     eqMinEq->setText( QString("-") + mlblText );
     // Ask engine for band frequencies and set labels
@@ -163,7 +161,8 @@ EqualizerDialog::eqSetupUI()
     QStringListIterator i( meqBandFrq );
     foreach( QLabel* mLabel, mBandsLabels )
         mLabel-> setText( i.hasNext() ?  i.next() : "N/A" );
-    mBandsLabels.first()->setText( mBandsLabels.first()->text() + QString( "\ndB" ) );
+
+    mBandsLabels.first()->setText( i18n( "%0\ndB" ).arg( mBandsLabels.first()->text() ) );
     // Set initial preset to current with signal blocking to prevent circular loops
     eqPresets->blockSignals( true );
     eqPresets->addItem( i18nc( "Equalizer state, as in, disabled", "Off" ) );

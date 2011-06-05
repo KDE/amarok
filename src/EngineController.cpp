@@ -876,11 +876,11 @@ EngineController::eqBandsFreq() const
         {
             if( rx.cap( 0 ).toInt() < 1000 )
             {
-                mBandsFreq << QString( rx.cap( 0 )).append( "\nHz" );
+                mBandsFreq << i18n( "%0\nHz" ).arg( rx.cap( 0 ) );
             }
             else
             {
-                mBandsFreq << QString::number( rx.cap( 0 ).toInt()/1000 ).append( "\nkHz" );
+                mBandsFreq << i18n( "%0\nkHz" ).arg( QString::number( rx.cap( 0 ).toInt()/1000 ) );
             }
         }
     }
