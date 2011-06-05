@@ -342,12 +342,11 @@ LyricsAppletPrivate::_toggleAutoScroll()
 {
     Q_Q( LyricsApplet );
     Plasma::IconWidget *icon = qobject_cast<Plasma::IconWidget*>(q->sender());
-    if( icon )
-    {
-        autoScroll = !autoScroll;
-        icon->setPressed( autoScroll );
-        Amarok::config("Lyrics Applet").writeEntry( "AutoScroll", autoScroll );
-    }
+    DEBUG_ASSERT( icon, return ) // that should not happen
+
+    autoScroll = !autoScroll;
+    icon->setPressed( autoScroll );
+    Amarok::config( "Lyrics Applet" ).writeEntry( "AutoScroll", autoScroll );
 }
 
 void
