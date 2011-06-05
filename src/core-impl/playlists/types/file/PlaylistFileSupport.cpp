@@ -108,7 +108,7 @@ loadPlaylistFile( const KUrl &url )
         KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite | KIO::HideProgressInfo );
 
         if( The::statusBar() )
-            QMetaObject::invokeMethod( The::statusBar(), "newProgressJobOperation",
+            QMetaObject::invokeMethod( The::statusBar(), "newProgressOperation",
                                        Qt::QueuedConnection,
                                        Q_ARG(QObject*, job),
                                        Q_ARG(QString, i18n("Downloading remote playlist" ) ) );
