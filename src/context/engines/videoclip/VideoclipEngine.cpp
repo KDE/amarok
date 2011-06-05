@@ -108,58 +108,56 @@ void VideoclipEngine::update()
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if ( !currentTrack || !currentTrack->artist() )
         return;
-    else
-    {
-        if ( !currentTrack )
-            return;
 
-        // SORT of hack. Do not search if the current playing is a video from youtube etc !!!
-        if ( currentTrack->prettyUrl().contains( "http://www.youtube.com/" ) || currentTrack->prettyUrl().contains( "http://www.dailymotion.com/" ) )
-            return;
+    if ( !currentTrack )
+        return;
 
-        unsubscribeFrom( m_currentTrack );
-        m_currentTrack = currentTrack;
-        subscribeTo( currentTrack );
+    // SORT of hack. Do not search if the current playing is a video from youtube etc !!!
+    if ( currentTrack->prettyUrl().contains( "http://www.youtube.com/" ) || currentTrack->prettyUrl().contains( "http://www.dailymotion.com/" ) )
+        return;
 
-        // Save artist and title
-        m_title = currentTrack->name();
-        m_artist = currentTrack->artist()->name();
-        m_length = currentTrack->length() / 1000;
+    unsubscribeFrom( m_currentTrack );
+    m_currentTrack = currentTrack;
+    subscribeTo( currentTrack );
 
-        // Clean stuff
-        foreach ( VideoInfo *info, m_video )
-            delete info;
+    // Save artist and title
+    m_title = currentTrack->name();
+    m_artist = currentTrack->artist()->name();
+    m_length = currentTrack->length() / 1000;
 
-        m_nbYoutube=m_nbDailymotion=m_nbVimeo=-1;
+    // Clean stuff
+    foreach ( VideoInfo *info, m_video )
+        delete info;
 
-        removeAllData( "videoclip" );
-        m_video.clear();
+    m_nbYoutube=m_nbDailymotion=m_nbVimeo=-1;
 
-        // Show the information
-        setData( "videoclip", "message", "Fetching" );
+    removeAllData( "videoclip" );
+    m_video.clear();
 
-        // Query youtube, order by relevance, 10 max
-        // Youtube : http://gdata.youtube.com/feeds/videos?q=ARTIST TITLE&orderby=relevance&max-results=7
-        KUrl youtubeUrl( QString("http://gdata.youtube.com/feeds/videos?q=%1 %2").arg(m_artist).arg(m_title) + QString( "&orderby=relevance&max-results=")+ QString().setNum( m_nbVidsPerService ) );
-        m_youtubeUrl = youtubeUrl;
-        The::networkAccessManager()->getData( youtubeUrl, this,
-             SLOT(resultYoutube(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    // Show the information
+    setData( "videoclip", "message", "Fetching" );
 
-        // Query dailymotion, order by rating
-        // Dailymotion : http://www.dailymotion.com/rss/rated/search/ARTIST TITLE
-        KUrl dailyUrl( QString("http://www.dailymotion.com/rss/rated/search/%1 %2").arg(m_artist).arg(m_title) );
-        m_dailyUrl = dailyUrl;
-        The::networkAccessManager()->getData( dailyUrl, this,
-             SLOT(resultDailymotion(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    // Query youtube, order by relevance, 10 max
+    // Youtube : http://gdata.youtube.com/feeds/videos?q=ARTIST TITLE&orderby=relevance&max-results=7
+    KUrl youtubeUrl( QString("http://gdata.youtube.com/feeds/videos?q=%1 %2").arg(m_artist).arg(m_title) + QString( "&orderby=relevance&max-results=")+ QString().setNum( m_nbVidsPerService ) );
+    m_youtubeUrl = youtubeUrl;
+    The::networkAccessManager()->getData( youtubeUrl, this,
+            SLOT(resultYoutube(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
-        // Query vimeo
-        // Vimeo : http://vimeo.com/videos/search:ARTIST TITLE
-        KUrl vimeoUrl( QString("http://vimeo.com/videos/search:%1 %2").arg(m_artist).arg(m_title) );
-        m_vimeoUrl = vimeoUrl;
-        debug() << "Vimeo query url:" << vimeoUrl;
-        The::networkAccessManager()->getData( vimeoUrl, this,
-             SLOT(resultVimeo(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-    }
+    // Query dailymotion, order by rating
+    // Dailymotion : http://www.dailymotion.com/rss/rated/search/ARTIST TITLE
+    KUrl dailyUrl( QString("http://www.dailymotion.com/rss/rated/search/%1 %2").arg(m_artist).arg(m_title) );
+    m_dailyUrl = dailyUrl;
+    The::networkAccessManager()->getData( dailyUrl, this,
+            SLOT(resultDailymotion(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+
+    // Query vimeo
+    // Vimeo : http://vimeo.com/videos/search:ARTIST TITLE
+    KUrl vimeoUrl( QString("http://vimeo.com/videos/search:%1 %2").arg(m_artist).arg(m_title) );
+    m_vimeoUrl = vimeoUrl;
+    debug() << "Vimeo query url:" << vimeoUrl;
+    The::networkAccessManager()->getData( vimeoUrl, this,
+            SLOT(resultVimeo(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 bool VideoclipEngine::isVideoInfoValid( VideoInfo *item )
