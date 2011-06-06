@@ -141,7 +141,7 @@ void BrowserCategory::setImagePath( const QString & path )
     m_imagePath = path;
 }
 
-QString BrowserCategory::imagePath()
+QString BrowserCategory::imagePath() const
 {
     return m_imagePath;
 }

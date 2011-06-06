@@ -27,6 +27,7 @@
 #include "core/capabilities/UpdateCapability.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
+#include "PaletteHandler.h"
 #include "Theme.h"
 
 #include <Plasma/IconWidget>

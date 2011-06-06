@@ -46,6 +46,7 @@
 #include <KVBox>
 
 #include <QLabel>
+#include <QToolBar>
 #include <QHBoxLayout>
 
 Playlist::Dock::Dock( QWidget* parent )

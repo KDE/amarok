@@ -24,7 +24,8 @@
 namespace PlaylistBrowserNS {
 
     /* Playlist Browser toolbox item for the Automatic Playlist Generator */
-    class APGCategory : public BrowserCategory {
+    class APGCategory : public BrowserCategory
+    {
         Q_OBJECT
 
         public:

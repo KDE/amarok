@@ -18,9 +18,9 @@
 
 #include "PlaylistBrowserCategory.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
+#include "PlaylistBrowserModel.h"
 #include "playlist/PlaylistModel.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PlaylistsInFoldersProxy.h"
@@ -28,36 +28,26 @@
 #include "PlaylistTreeItemDelegate.h"
 #include "PlaylistBrowserFilterProxy.h"
 #include "SvgHandler.h"
-#include "statusbar/StatusBar.h"
 #include "PlaylistBrowserView.h"
 
-#include <KAction>
 #include <KActionMenu>
-#include <KButtonGroup>
-#include <KIcon>
-#include <KLineEdit>
 #include <KConfigGroup>
-#include <QButtonGroup>
-#include <QCheckBox>
-#include <QGridLayout>
-#include <QHeaderView>
-#include <QLabel>
+#include <KIcon>
 #include <KStandardDirs>
+#include <KToolBar>
+
+#include <QHeaderView>
 #include <QToolBar>
-#include <QTreeView>
-#include <QVBoxLayout>
 
 #include <typeinfo>
-
-#include "PlaylistBrowserModel.h"
 
 using namespace PlaylistBrowserNS;
 
 QString PlaylistBrowserCategory::s_mergeViewKey( "Merged View" );
 
 PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
-                                                  QString categoryName,
-                                                  QString configGroup,
+                                                  const QString &categoryName,
+                                                  const QString &configGroup,
                                                   PlaylistBrowserModel *model,
                                                   QWidget *parent ) :
     BrowserCategory( categoryName, parent ),

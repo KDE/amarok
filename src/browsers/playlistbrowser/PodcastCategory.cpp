@@ -25,6 +25,7 @@
 #include "browsers/InfoProxy.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
+#include "PaletteHandler.h"
 #include "PodcastModel.h"
 #include "PlaylistBrowserView.h"
 
@@ -37,6 +38,7 @@
 #include <KUrlRequesterDialog>
 #include <KGlobal>
 #include <KLocale>
+#include <KToolBar>
 
 namespace The
 {

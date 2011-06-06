@@ -248,7 +248,7 @@ FileBrowser::polish()
 }
 
 QString
-FileBrowser::currentDir()
+FileBrowser::currentDir() const
 {
     if( d->showingPlaces )
         return "places:";

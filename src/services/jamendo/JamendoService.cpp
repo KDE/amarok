@@ -35,6 +35,7 @@
 #include <KTemporaryFile>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QToolBar>
 #include <QToolButton>
 
 #include <typeinfo>

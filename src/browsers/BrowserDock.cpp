@@ -21,6 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "widgets/HorizontalDivider.h"
+#include "PaletteHandler.h"
 
 #include <KAction>
 #include <KIcon>

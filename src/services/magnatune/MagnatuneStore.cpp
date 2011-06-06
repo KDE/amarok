@@ -46,6 +46,7 @@
 
 #include <QDateTime>
 #include <QMenu>
+#include <QToolBar>
 #include <QToolButton>
 
 #include <typeinfo>

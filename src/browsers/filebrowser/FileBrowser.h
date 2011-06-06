@@ -21,16 +21,19 @@
 
 #include <KUrl>
 
+class QModelIndex;
+
 class FileBrowser : public BrowserCategory
 {
     Q_OBJECT
+
 public:
     FileBrowser( const char * name, QWidget *parent );
     ~FileBrowser();
 
     virtual void setupAddItems();
     virtual void polish();
-    
+
     virtual QString prettyName() const;
 
     /**
@@ -41,7 +44,7 @@ public:
     /**
      * Return the path of the currently shown dir.
      */
-    QString currentDir();
+    QString currentDir() const;
 
 protected slots:
     void itemActivated( const QModelIndex &index );

@@ -23,6 +23,8 @@
 
 #include <kglobal.h>
 
+#include <QPainter>
+
 
 namespace The {
     static PaletteHandler* s_PaletteHandler_instance = 0;
