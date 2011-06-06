@@ -145,7 +145,7 @@ CollectionTreeItem::data( int role ) const
     }
     else if( m_parentCollection )
     {
-        static const QString counting = i18n( "Counting" );
+        static const QString counting = i18n( "Counting..." );
         switch( role )
         {
         case Qt::DisplayRole:
