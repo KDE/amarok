@@ -13,6 +13,8 @@ VERSION 2.4.2-Beta 1
     * Option to hide the OSD if another window is taking the full screen
 
   CHANGES:
+    * General user interface cleanup (addition of browser widget backgrounds,
+      etc.)
     * Removed the add button in the context toolbar. Applet explorer is opened on config.
     * Easier to understand Dynamic playlists
     * Now Amarok requires ffmpeg-0.6 or newer. 
