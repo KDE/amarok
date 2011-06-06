@@ -65,6 +65,11 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_playlistCategory( playlistCategory )
 {
     setContentsMargins( 0, 0, 0, 0 );
+
+    // set background
+    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_user_playlists.png");
+    setBackgroundImage( bgImage );
+
     m_toolBar = new KToolBar( this, false, false );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 

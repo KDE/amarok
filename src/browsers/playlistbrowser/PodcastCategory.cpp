@@ -85,6 +85,10 @@ PodcastCategory::PodcastCategory( QWidget *parent )
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
 
+    // set background
+    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_podcasts.png");
+    setBackgroundImage( bgImage );
+
     QAction *addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"),
                                              m_toolBar );
     addPodcastAction->setPriority( QAction::NormalPriority );

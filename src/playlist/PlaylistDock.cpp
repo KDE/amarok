@@ -41,6 +41,7 @@
 #include "widgets/HorizontalDivider.h"
 
 #include <KActionMenu>
+#include <KStandardDirs>
 #include <KToolBarSpacerAction>
 #include <KVBox>
 

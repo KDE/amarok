@@ -57,6 +57,10 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_dynamic_playlists.png" ) );
 
+    // set background
+    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_dynamic_playlists.png");
+    setBackgroundImage( bgImage );
+
     bool enabled = AmarokConfig::dynamicMode();
 
     setContentsMargins( 0, 0, 0, 0 );

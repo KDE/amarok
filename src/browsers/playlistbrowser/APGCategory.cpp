@@ -26,6 +26,7 @@
 
 #include <KIcon>
 #include <KLocale>
+#include <KStandardDirs>
 
 #include <QAction>
 #include <QHBoxLayout>
@@ -40,6 +41,10 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
     setPrettyName( i18n( "Automated Playlist Generator" ) );
     setShortDescription( i18n("Create playlists by specifying criteria") );
     setIcon( KIcon( "playlist-generator" ) );
+
+    // set background
+    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_dynamic_playlists.png");
+    setBackgroundImage( bgImage );
 
     setLongDescription( i18n("Create playlists by specifying criteria") );
 

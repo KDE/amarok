@@ -145,6 +145,10 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and CDs." ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_collections.png" ) );
 
+    // set background
+    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_collections.png");
+    setBackgroundImage( bgImage );
+
     KHBox *hbox = new KHBox( this );
     d->searchWidget = new SearchWidget( hbox );
     d->searchWidget->setClickMessage( i18n( "Search collection" ) );

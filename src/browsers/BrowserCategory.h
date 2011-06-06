@@ -107,6 +107,13 @@ public:
     QIcon icon() const;
 
     /**
+     * Set the background image of this browser widget
+     *
+     * \param path Fully qualified path (e.g. looked up with KStandardDirs::locate)
+     */
+    void setBackgroundImage( const QString &path );
+
+    /**
      * Set the path of the imaged used in the presentation of this category.
      * @param path The path of the image to use.
      */
@@ -138,7 +145,6 @@ public:
     void clearAdditionalItems();
 
     QList<BrowserBreadcrumbItem *> additionalItems();
-
 
 public slots:
     void activate();

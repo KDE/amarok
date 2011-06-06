@@ -23,7 +23,6 @@
 
 #include "ToolBar.h"
 
-#include <QVBoxLayout>
 #include <QWidget>
 
 BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
@@ -92,6 +91,25 @@ QIcon
 BrowserCategory::icon() const
 {
     return m_icon;
+}
+
+void
+BrowserCategory::setBackgroundImage(const QString& path)
+{
+    if ( path.isEmpty() || !KUrl(path).isLocalFile() ) {
+        setStyleSheet( QString() );
+        return;
+    }
+
+    // Hack alert: Use the class name of the most derived object (using polymorphism) for CSS
+    // This is required to limit the style to this specific class only (avoiding cascading)
+    // \sa http://doc.qt.nokia.com/latest/stylesheet-syntax.html#widgets-inside-c-namespaces
+    const QString escapedClassName = QString( metaObject()->className() ).replace( "::", "--" );
+    setStyleSheet( QString("%1 { background-image: url(\"%2\"); \
+            background-repeat: no-repeat; \
+            background-attachment: fixed; \
+            background-position: center; }").arg( escapedClassName, path )
+    );
 }
 
 void BrowserCategory::setParentList( BrowserCategoryList * parent )
