@@ -196,12 +196,19 @@ DatabaseImporterDialog::importedTrack( Meta::TrackPtr track )
     if( !track ) return;
 
     QString text;
-    if( !track->album() || track->album()->name().isEmpty() )
-        text = i18nc( "Track has been imported, format: Artist - Track", 
-                      "Imported <b>%1 - %2</b>", track->artist()->name(), track->name() );
+    Meta::ArtistPtr artist = track->artist();
+    Meta::AlbumPtr album = track->album();
+
+    if( !artist || artist->name().isEmpty() )
+        text = i18nc( "Track has been imported, format: Track",
+                      "Imported <b>%1</b>", track->name() );
+    else if( !album || album->name().isEmpty() )
+        text = i18nc( "Track has been imported, format: Artist - Track",
+                      "Imported <b>%1 - %2</b>", artist->name(), track->name() );
     else
-        text = i18nc( "Track has been imported, format: Artist - Track (Album)", 
-                      "Imported <b>%1 - %2 (%3)</b>", track->artist()->name(), track->name(), track->album()->name() );
+        text = i18nc( "Track has been imported, format: Artist - Track (Album)",
+                      "Imported <b>%1 - %2 (%3)</b>", artist->name(), track->name(), album->name() );
+
     m_results->appendHtml( text );
 }
 
@@ -218,13 +225,19 @@ void DatabaseImporterDialog::matchedTrack( Meta::TrackPtr track, QString oldUrl 
     if( !track ) return;
 
     QString text;
+    Meta::ArtistPtr artist = track->artist();
+    Meta::AlbumPtr album = track->album();
+
     //TODO: help text; also check wording with imported; unify?
-    if( !track->album() || track->album()->name().isEmpty() )
+    if( !artist || artist->name().isEmpty() )
+        text = i18nc( "Track has been imported by tags, format: Track, from Url, to Url",
+                      "Imported <b><font color='green'>%1</font></b><br/>&nbsp;&nbsp;from %2<br/>&nbsp;&nbsp;to %3", track->name(), oldUrl, track->prettyUrl() );
+    else if( !album || album->name().isEmpty() )
         text = i18nc( "Track has been imported by tags, format: Artist - Track, from Url, to Url",
-                      "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from %3<br/>&nbsp;&nbsp;to %4", track->artist()->name(), track->name(), oldUrl, track->prettyUrl() );
+                      "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from %3<br/>&nbsp;&nbsp;to %4", artist->name(), track->name(), oldUrl, track->prettyUrl() );
     else
         text = i18nc( "Track has been imported by tags, format: Artist - Track (Album), from Url, to Url",
-                      "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;from %4<br/>&nbsp;&nbsp;to %5", track->artist()->name(), track->name(), track->album()->name(), oldUrl, track->prettyUrl() );
+                      "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;from %4<br/>&nbsp;&nbsp;to %5", artist->name(), track->name(), album->name(), oldUrl, track->prettyUrl() );
 
     m_results->appendHtml( text );
 }
