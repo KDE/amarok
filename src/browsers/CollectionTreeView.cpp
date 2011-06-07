@@ -85,7 +85,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 #endif
 
-    setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
+    setDragDropMode( QAbstractItemView::DragDrop ); // implement drop when time allows
 
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
         setAnimated( true );

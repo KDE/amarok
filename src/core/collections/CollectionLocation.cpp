@@ -96,7 +96,7 @@ void
 CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination,
                                  const Transcoding::Configuration &configuration )
 {
-    debug() << "prepare copy 1 track from"<<collection()->collectionId()<<"to"<<destination->collection()->collectionId();
+    Q_ASSERT(destination);
     Meta::TrackList list;
     list.append( track );
     prepareCopy( list, destination, configuration );
