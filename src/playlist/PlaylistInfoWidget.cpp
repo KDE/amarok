@@ -23,20 +23,28 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
-PlaylistInfoWidget::PlaylistInfoWidget(QWidget* parent, Qt::WindowFlags f)
-    : QWidget(parent)
-    , m_playlistLengthLabel(new QLabel(this))
+PlaylistInfoWidget::PlaylistInfoWidget( QWidget *parent, Qt::WindowFlags f )
+    : QWidget( parent )
+    , m_playlistLengthLabel( new QLabel( this ) )
 {
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    Q_UNUSED(f);
+    connect( Playlist::ModelStack::instance()->bottom(),
+            SIGNAL(dataChanged( const QModelIndex&, const QModelIndex& )),
+            SLOT(updateTotalPlaylistLength()) );
     // Ignore The::playlist() layoutChanged: rows moving around does not change the total playlist length.
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( modelReset() ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL(modelReset()),
+            SLOT(updateTotalPlaylistLength()) );
+    connect( Playlist::ModelStack::instance()->bottom(),
+            SIGNAL(rowsInserted( const QModelIndex &, int, int )),
+            SLOT(updateTotalPlaylistLength()) );
+    connect( Playlist::ModelStack::instance()->bottom(),
+            SIGNAL(rowsRemoved( const QModelIndex&, int, int )),
+            SLOT(updateTotalPlaylistLength()) );
 
-    QHBoxLayout* hbox = new QHBoxLayout;
-    setLayout(hbox);
+    QHBoxLayout *hbox = new QHBoxLayout;
+    setLayout( hbox );
 
-    hbox->addWidget(m_playlistLengthLabel);
+    hbox->addWidget( m_playlistLengthLabel );
 
     updateTotalPlaylistLength();
 }
@@ -96,7 +104,8 @@ PlaylistInfoWidget::updateTotalPlaylistLength() //SLOT
     }
     else if( ( totalLength == 0 ) && ( trackCount > 0 ) )
     {
-        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
+        m_playlistLengthLabel->setText(
+                    i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
         m_playlistLengthLabel->show();
         m_playlistLengthLabel->setToolTip( 0 );
     }
