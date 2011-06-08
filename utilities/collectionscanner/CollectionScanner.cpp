@@ -26,6 +26,7 @@
 #include "Track.h"
 #include "BatchFile.h"
 
+#include "config-amarok.h"
 #include "shared/Version.h"  // for AMAROK_VERSION
 
 #include <QTimer>
@@ -44,12 +45,6 @@
 #include <QDataStream>
 #include <QBuffer>
 #include <QDebug>
-
-#include <audiblefiletyperesolver.h>
-#include <realmediafiletyperesolver.h>
-#include "shared/taglib_filetype_resolvers/asffiletyperesolver.h"
-#include "shared/taglib_filetype_resolvers/mp4filetyperesolver.h"
-#include "shared/taglib_filetype_resolvers/wavfiletyperesolver.h"
 
 int
 main( int argc, char *argv[] )
@@ -233,12 +228,6 @@ CollectionScanner::Scanner::Scanner( int &argc, char **argv )
         if( QThread::currentThread() )
             QThread::currentThread()->setPriority( QThread::IdlePriority );
     }
-
-    TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new WAVFileTypeResolver);
 }
 
 
@@ -341,7 +330,7 @@ CollectionScanner::Scanner::doJob() //SLOT
         if( m_incremental )
             xmlWriter.writeAttribute("incremental", QString());
         // write some information into the file and close previous tag
-        xmlWriter.writeComment("Created by amarokcollectionscanner "AMAROK_VERSION"on"+QDateTime::currentDateTime().toString());
+        xmlWriter.writeComment("Created by amarokcollectionscanner "AMAROK_VERSION" on "+QDateTime::currentDateTime().toString());
         xmlFile.flush();
     }
 

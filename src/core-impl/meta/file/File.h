@@ -19,8 +19,6 @@
 
 #include "core/meta/Meta.h"
 
-#include <fileref.h>
-
 namespace MetaFile
 {
     class Track;
@@ -104,8 +102,6 @@ namespace MetaFile
 
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
-
-            static TagLib::FileRef getFileRef( const KUrl &url );
 
             virtual QImage getEmbeddedCover() const;
 

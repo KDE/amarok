@@ -1,10 +1,11 @@
+
+if( TAGLIB_FOUND )
 include_directories( ../
                      ${QT_INCLUDES}             
                      ${TAGLIB_INCLUDES}         
-                     ${TAGLIB-EXTRAS_INCLUDES}
                    )                            
 
-add_definitions(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
+add_definitions(${TAGLIB_CFLAGS})
 
 set(amarok_afttagger_SRCS
     SafeFileSaver.cpp
@@ -12,6 +13,12 @@ set(amarok_afttagger_SRCS
 )
 
 add_executable(amarok_afttagger ${amarok_afttagger_SRCS} )
+
+if( TAGLIB-EXTRAS_FOUND )
+    include_directories(${TAGLIB-EXTRAS_INCLUDES})
+    add_definitions(${TAGLIB-EXTRAS_CFLAGS})
+    target_link_libraries(amarok_afttagger ${TAGLIB-EXTRAS_LIBRARIES})
+endif( TAGLIB-EXTRAS_FOUND )
 
 target_link_libraries(amarok_afttagger
                         ${QT_QTCORE_LIBRARY}
@@ -26,4 +33,6 @@ if(APPLE)
 else(APPLE)
     install(TARGETS amarok_afttagger RUNTIME DESTINATION ${BIN_INSTALL_DIR} )
 endif(APPLE)
+
+endif( TAGLIB_FOUND )
 

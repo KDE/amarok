@@ -13,35 +13,43 @@ option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recomm
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
 
+# --------- taglib --------
+# building without taglib is stupid, but it's possible
+
 set(TAGLIB_MIN_VERSION "1.6")
-find_package(Taglib REQUIRED)
+find_package(Taglib)
 
-# Check if TagLib is built with ASF and MP4 support
-include(CheckCXXSourceCompiles)
-set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
-set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
+if(TAGLIB_FOUND)
+    # Check if TagLib is built with ASF and MP4 support
+    include(CheckCXXSourceCompiles)
+    set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
+    set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
 
-check_cxx_source_compiles("#include <asftag.h>
-int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
-if( NOT TAGLIB_ASF_FOUND )
-    message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
-endif( NOT TAGLIB_ASF_FOUND )
+    check_cxx_source_compiles("#include <asftag.h>
+    int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
+    if( NOT TAGLIB_ASF_FOUND )
+        message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
+    endif( NOT TAGLIB_ASF_FOUND )
 
-check_cxx_source_compiles("#include <mp4tag.h>
-int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
-if( NOT TAGLIB_MP4_FOUND )
-    message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
-endif( NOT TAGLIB_MP4_FOUND )
+    check_cxx_source_compiles("#include <mp4tag.h>
+    int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
+    if( NOT TAGLIB_MP4_FOUND )
+        message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
+    endif( NOT TAGLIB_MP4_FOUND )
 
-set(CMAKE_REQUIRED_INCLUDES)
-set(CMAKE_REQUIRED_LIBRARIES)
+    set(CMAKE_REQUIRED_INCLUDES)
+    set(CMAKE_REQUIRED_LIBRARIES)
 
-set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
-find_package(Taglib-Extras REQUIRED)
+    set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
+    find_package(Taglib-Extras)
+    set(TAGLIB_EXTRAS_FOUND ${TAGLIB-EXTRAS_FOUND}) # we need a c-compatible name for the include file
 
-include(CheckTagLibFileName)
+    include(CheckTagLibFileName)
 
-check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
+    check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
+endif()
+
+# --------------------------
 
 # Figure out problems inside KAboutData before re-enabling
 #execute_process( COMMAND "git" "describe" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} RESULT_VARIABLE GIT_OUTPUT_VALUE OUTPUT_VARIABLE CURRENT_GIT_VERSION )
@@ -187,7 +195,7 @@ if( WITH_PLAYER )
 
     configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
-    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
+    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES})
 
     if( KDE4_BUILD_TESTS AND NOT WIN32 )
         ENABLE_TESTING()
@@ -209,7 +217,7 @@ else( WITH_PLAYER )
     find_package( Qt4 REQUIRED )
     set( CMAKE_INCLUDE_CURRENT_DIR ON )
     add_definitions(${QT_DEFINITIONS})
-    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${TAGLIB_INCLUDES})
+    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 endif( WITH_PLAYER )
 

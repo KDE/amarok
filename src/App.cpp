@@ -92,13 +92,6 @@
 #include <QTimer>                       //showHyperThreadingWarning()
 #include <QtDBus/QtDBus>
 
-#include "shared/taglib_filetype_resolvers/asffiletyperesolver.h"
-#include "shared/taglib_filetype_resolvers/mimefiletyperesolver.h"
-#include "shared/taglib_filetype_resolvers/mp4filetyperesolver.h"
-#include "shared/taglib_filetype_resolvers/wavfiletyperesolver.h"
-#include <audiblefiletyperesolver.h>
-#include <realmediafiletyperesolver.h>
-
 int App::mainThreadId = 0;
 
 #ifdef Q_WS_MAC
@@ -122,15 +115,6 @@ App::App()
 
     // required for last.fm plugin to grab app version
     setApplicationVersion( AMAROK_VERSION );
-
-    PERF_LOG( "Registering taglib plugins" )
-    TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new WAVFileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new MimeFileTypeResolver);
-    PERF_LOG( "Done Registering taglib plugins" )
 
     qRegisterMetaType<Meta::DataPtr>();
     qRegisterMetaType<Meta::DataList>();
@@ -467,54 +451,6 @@ App::initCliArgs() //static
 // METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-#include <id3v1tag.h>
-#include <tbytevector.h>
-#include <QTextCodec>
-#include <KGlobal>
-
-//this class is only used in this module, so I figured I may as well define it
-//here and save creating another header/source file combination
-
-// Local version of taglib's QStringToTString macro. It is here, because taglib's one is
-// not Qt3Support clean (uses QString::utf8()). Once taglib will be clean of qt3support
-// it is safe to use QStringToTString again
-#define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
-
-class ID3v1StringHandler : public TagLib::ID3v1::StringHandler
-{
-    QTextCodec *m_codec;
-
-    virtual TagLib::String parse( const TagLib::ByteVector &data ) const
-    {
-        return Qt4QStringToTString( m_codec->toUnicode( data.data(), data.size() ) );
-    }
-
-    virtual TagLib::ByteVector render( const TagLib::String &ts ) const
-    {
-        const QByteArray qcs = m_codec->fromUnicode( TStringToQString(ts) );
-        return TagLib::ByteVector( qcs, (uint) qcs.length() );
-    }
-
-public:
-    ID3v1StringHandler( int codecIndex )
-            : m_codec( QTextCodec::codecForName( QTextCodec::availableCodecs().at( codecIndex ) ) )
-    {
-        debug() << "codec: " << m_codec;
-        debug() << "codec-name: " << m_codec->name();
-    }
-
-    ID3v1StringHandler( QTextCodec *codec )
-            : m_codec( codec )
-    {
-        debug() << "codec: " << m_codec;
-        debug() << "codec-name: " << m_codec->name();
-    }
-
-    virtual ~ID3v1StringHandler()
-    {}
-};
-
-#undef Qt4QStringToTString
 
 //SLOT
 void App::applySettings( bool firstTime )

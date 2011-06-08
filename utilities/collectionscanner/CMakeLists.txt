@@ -3,20 +3,7 @@ include_directories( ../
                      ${CMAKE_SOURCE_DIR}
                      ${QT_INCLUDES}
                      ${KDE4_KDECORE_LIBS}
-                     ${TAGLIB_INCLUDES}
-                     ${TAGLIB-EXTRAS_INCLUDES}
                    )
-
-add_definitions(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
-
-#####################################################################
-# TagLib File Type Resolvers
-#####################################################################
-set( taglib_filetype_resolver_SRCS
-    ../../shared/taglib_filetype_resolvers/wavfiletyperesolver.cpp
-    ../../shared/taglib_filetype_resolvers/mp4filetyperesolver.cpp
-    ../../shared/taglib_filetype_resolvers/asffiletyperesolver.cpp
-)
 
 ########### next target ###############
 
@@ -36,19 +23,36 @@ set(amarokcollectionscanner_SRCS
     Playlist.cpp
     BatchFile.cpp
     ../../shared/FileType.cpp
-    ../../shared/MetaReplayGain.cpp
     ../../shared/MetaTagLib.cpp
     ../../shared/TagsFromFileNameGuesser.cpp
-    ../../shared/tag_helpers/APETagHelper.cpp
-    ../../shared/tag_helpers/ASFTagHelper.cpp
-    ../../shared/tag_helpers/ID3v2TagHelper.cpp
-    ../../shared/tag_helpers/MP4TagHelper.cpp
-    ../../shared/tag_helpers/StringHelper.cpp
-    ../../shared/tag_helpers/TagHelper.cpp
-    ../../shared/tag_helpers/VorbisCommentTagHelper.cpp
 )
+if( TAGLIB_FOUND )
+    set(amarokcollectionscanner_SRCS
+        ${amarokcollectionscanner_SRCS}
+        ../../shared/FileTypeResolver.cpp
+        ../../shared/MetaReplayGain.cpp
+        ../../shared/tag_helpers/APETagHelper.cpp
+        ../../shared/tag_helpers/ASFTagHelper.cpp
+        ../../shared/tag_helpers/ID3v2TagHelper.cpp
+        ../../shared/tag_helpers/MP4TagHelper.cpp
+        ../../shared/tag_helpers/StringHelper.cpp
+        ../../shared/tag_helpers/TagHelper.cpp
+        ../../shared/tag_helpers/VorbisCommentTagHelper.cpp
+    )
+endif( TAGLIB_FOUND )
 
-add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS} ${taglib_filetype_resolver_SRCS})
+add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
+
+if( TAGLIB_FOUND )
+    include_directories(${TAGLIB_INCLUDES})
+    add_definitions(${TAGLIB_CFLAGS})
+    target_link_libraries(amarokcollectionscanner ${TAGLIB_LIBRARIES})
+endif( TAGLIB_FOUND )
+if( TAGLIB-EXTRAS_FOUND )
+    include_directories(${TAGLIB-EXTRAS_INCLUDES})
+    add_definitions(${TAGLIB-EXTRAS_CFLAGS})
+    target_link_libraries(amarokcollectionscanner ${TAGLIB-EXTRAS_LIBRARIES})
+endif( TAGLIB-EXTRAS_FOUND )
 
 target_link_libraries(amarokcollectionscanner 
                       ${QT_QTGUI_LIBRARY} # required on Solaris, see bug 264112
@@ -56,8 +60,6 @@ target_link_libraries(amarokcollectionscanner
                       ${QT_QTXML_LIBRARY}
                       ${QT_QTDBUS_LIBRARY}
                       ${KDE4_KDECORE_LIBRARY}
-                      ${TAGLIB_LIBRARIES}
-                      ${TAGLIB-EXTRAS_LIBRARIES}
                       )
 
 if(APPLE)

@@ -36,8 +36,6 @@ macro(add_database_test test_target test_sources)
         ${QT_QTCORE_LIBRARY}
         ${MYSQL_EMBEDDED_LIBRARIES}
         ${CMAKE_DL_LIBS}
-        ${TAGLIB-EXTRAS_LIBRARIES}
-        ${TAGLIB_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${GOOGLEMOCK_LIBRARIES})
 

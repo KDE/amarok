@@ -8,8 +8,6 @@ include_directories(
     ${KDE4_INCLUDE_DIR}
     # ${STRIGI_INCLUDE_DIR}
     ${QT_INCLUDES}
-    ${TAGLIB_INCLUDES}
-    ${TAGLIB-EXTRAS_INCLUDES}
 )
 
 # if (NOT WIN32)
@@ -55,8 +53,6 @@ target_link_libraries(amarok-sqlcollection
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTCORE_LIBRARY}
     ${QT_QTGUI_LIBRARY}
-    ${TAGLIB-EXTRAS_LIBRARIES}
-    ${TAGLIB_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     amarokcore
     amaroklib

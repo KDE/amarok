@@ -22,12 +22,6 @@
 #ifndef COLLECTIONSCANNER_H
 #define COLLECTIONSCANNER_H
 
-/*
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-*/
-
 #include <QCoreApplication>
 #include <QHash>
 #include <QSet>

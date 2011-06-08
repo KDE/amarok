@@ -21,8 +21,8 @@ macro(link_database_test test_target)
         ${QT_QTCORE_LIBRARY}
         ${MYSQL_LIBRARIES}
         ${CMAKE_DL_LIBS}
-        ${TAGLIB-EXTRAS_LIBRARIES}
-        ${TAGLIB_LIBRARIES}
+#        ${TAGLIB-EXTRAS_LIBRARIES}
+#        ${TAGLIB_LIBRARIES}
         ${ZLIB_LIBRARIES})
 
 endmacro(link_database_test)

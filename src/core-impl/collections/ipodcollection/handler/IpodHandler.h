@@ -22,10 +22,6 @@
 #ifndef IPODHANDLER_H
 #define IPODHANDLER_H
 
-// Taglib includes
-#include <audioproperties.h>
-#include <fileref.h>
-
 /* CMake check for GDKPIXBUF */
 #include <config-gdk.h>
 

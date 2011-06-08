@@ -3,8 +3,6 @@ add_definitions(-DQT_USE_FAST_CONCATENATION)
 add_definitions(-DQT_USE_FAST_OPERATOR_PLUS)
 add_definitions(-DQT_STRICT_ITERATORS)
 
-add_definitions(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
-
 if(APPLE)
     set(mac_SRCS
         app_mac.cpp
@@ -65,8 +63,6 @@ include_directories(
     transcoding
     widgets
     ${KDE4_INCLUDE_DIR}
-    ${TAGLIB-EXTRAS_INCLUDE_DIR}
-    ${TAGLIB-EXTRAS_INCLUDES}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
     ${QCA2_INCLUDE_DIR}
@@ -275,16 +271,8 @@ set(libstatusbar_SRCS
 #####################################################################
 set(libmetaimpl_SRCS
     core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
-    ../shared/MetaReplayGain.cpp
     ../shared/MetaTagLib.cpp
     ../shared/TagsFromFileNameGuesser.cpp
-    ../shared/tag_helpers/APETagHelper.cpp
-    ../shared/tag_helpers/ASFTagHelper.cpp
-    ../shared/tag_helpers/ID3v2TagHelper.cpp
-    ../shared/tag_helpers/MP4TagHelper.cpp
-    ../shared/tag_helpers/StringHelper.cpp
-    ../shared/tag_helpers/TagHelper.cpp
-    ../shared/tag_helpers/VorbisCommentTagHelper.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp
@@ -302,6 +290,21 @@ set(libmetaimpl_SRCS
     core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
     core-impl/statistics/providers/tag/TagStatisticsProvider.cpp
 )
+
+if( TAGLIB_FOUND )
+    set(libmetaimpl_SRCS
+        ${libmetaimpl_SRCS}
+        ../shared/MetaReplayGain.cpp
+        ../shared/FileTypeResolver.cpp
+        ../shared/tag_helpers/APETagHelper.cpp
+        ../shared/tag_helpers/ASFTagHelper.cpp
+        ../shared/tag_helpers/ID3v2TagHelper.cpp
+        ../shared/tag_helpers/MP4TagHelper.cpp
+        ../shared/tag_helpers/StringHelper.cpp
+        ../shared/tag_helpers/TagHelper.cpp
+        ../shared/tag_helpers/VorbisCommentTagHelper.cpp
+    )
+endif( TAGLIB_FOUND )
 
 #####################################################################
 # COLLECTION
@@ -585,16 +588,6 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 
 #####################################################################
-# RESOLVERS
-#####################################################################
-set(taglib_filetype_resolver_SRCS
-    ../shared/taglib_filetype_resolvers/asffiletyperesolver.cpp
-    ../shared/taglib_filetype_resolvers/mp4filetyperesolver.cpp
-    ../shared/taglib_filetype_resolvers/wavfiletyperesolver.cpp
-    ../shared/taglib_filetype_resolvers/mimefiletyperesolver.cpp
-)
-
-#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -626,7 +619,6 @@ set(amaroklib_LIB_SRCS
     ${scriptengine_SRCS}
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
-    ${taglib_filetype_resolver_SRCS}
     ${libsynchronization_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
@@ -919,8 +911,6 @@ target_link_libraries(amaroklib
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${KDE4_THREADWEAVER_LIBRARIES}
-    ${TAGLIB_LIBRARIES}
-    ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
@@ -932,6 +922,18 @@ target_link_libraries(amaroklib
     amarokocsclient
     amarok-transcoding
 )
+
+if( TAGLIB_FOUND )
+    include_directories(${TAGLIB_INCLUDES})
+    add_definitions(${TAGLIB_CFLAGS})
+    target_link_libraries(amaroklib ${TAGLIB_LIBRARIES})
+endif( TAGLIB_FOUND )
+if( TAGLIB-EXTRAS_FOUND )
+    include_directories(${TAGLIB-EXTRAS_INCLUDES})
+    add_definitions(${TAGLIB-EXTRAS_CFLAGS})
+    target_link_libraries(amaroklib ${TAGLIB-EXTRAS_LIBRARIES})
+endif( TAGLIB-EXTRAS_FOUND )
+
 
 if(KDE4_BUILD_TESTS)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
@@ -989,11 +991,11 @@ if(Q_WS_MAC)
     install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 elseif(X11_FOUND)
     kde4_add_executable(amarok ${amarok_SRCS})
-    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${X11_LIBRARIES} ${TAGLIB_LIBRARIES} ${TAGLIB-EXTRAS_LIBRARIES} )
+    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${X11_LIBRARIES})
     install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
     kde4_add_executable(amarok ${amarok_SRCS})
-    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${TAGLIB_LIBRARIES} ${TAGLIB-EXTRAS_LIBRARIES} )
+    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib)
     install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif(Q_WS_MAC)
 

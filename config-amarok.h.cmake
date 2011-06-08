@@ -22,16 +22,16 @@
 /* #undef HAVE_SYSTEMS_H */
 
 /* have TagLib */
-#cmakedefine HAVE_TAGLIB 1
-
-/* MySql database support enabled */
-#cmakedefine USE_MYSQL 1
-
-/* Whether taglib exposes filenames as TagLib::FileName type */
-#cmakedefine HAVE_TAGLIB_FILENAME 1
+#cmakedefine TAGLIB_FOUND 1
 
 /* Whether TagLib::FileName is a struct supporting wide characters or just a typedef */
 #cmakedefine COMPLEX_TAGLIB_FILENAME 1
+
+/* have TagLib-Extras */
+#cmakedefine TAGLIB_EXTRAS_FOUND 1
+
+/* MySql database support enabled */
+#cmakedefine USE_MYSQL 1
 
 /* The Git version being compiled, if any. undef means not running from Git. */
 #cmakedefine CURRENT_GIT_VERSION ${CURRENT_GIT_VERSION}
