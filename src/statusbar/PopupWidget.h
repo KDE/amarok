@@ -19,11 +19,10 @@
 
 #include <KVBox>
 
-
 class PopupWidget : public KVBox
 {
 public:
-    explicit PopupWidget( QWidget * anchor, const QString &name = QString() );
+    explicit PopupWidget( QWidget *anchor, const QString &name = QString() );
     ~PopupWidget();
 
     void reposition();

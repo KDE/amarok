@@ -21,7 +21,7 @@
 #include "core/support/Debug.h"
 
 
-PopupWidget::PopupWidget( QWidget * anchor, const QString &name )
+PopupWidget::PopupWidget( QWidget *anchor, const QString &name )
         : KVBox( The::mainWindow() )
         , m_anchor( anchor )
 {

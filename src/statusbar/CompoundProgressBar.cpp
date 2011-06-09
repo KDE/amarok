@@ -117,6 +117,14 @@ void CompoundProgressBar::setProgressStatus( const QObject *owner, const QString
     m_progressMap.value( owner )->setDescription( text );
 }
 
+void CompoundProgressBar::setParent( QWidget *parent )
+{
+    delete m_progressDetailsWidget;
+    m_progressDetailsWidget = new PopupWidget( parent );
+
+    ProgressBar::setParent( parent );
+}
+
 void CompoundProgressBar::childPercentageChanged()
 {
     progressBar()->setValue( calcCompoundPercentage() );
@@ -182,7 +190,7 @@ int CompoundProgressBar::calcCompoundPercentage()
     int count = m_progressMap.count();
     int total = 0;
 
-    foreach( ProgressBar * currentBar, m_progressMap )
+    foreach( ProgressBar *currentBar, m_progressMap )
         total += currentBar->percentage();
 
     return count == 0 ? 0 : total / count;
@@ -192,7 +200,7 @@ void CompoundProgressBar::cancelAll()
 {
     DEBUG_BLOCK
 
-    foreach( ProgressBar * currentBar, m_progressMap )
+    foreach( ProgressBar *currentBar, m_progressMap )
         currentBar->cancel();
 }
 
@@ -201,7 +209,7 @@ void CompoundProgressBar::showDetails()
     DEBUG_BLOCK
     m_progressDetailsWidget->raise();
 
-    //Hack to make sure it has the right heigh first time it is shown...
+    //Hack to make sure it has the right height first time it is shown...
     m_progressDetailsWidget->setFixedHeight( m_progressMap.values().at( 0 )->height() * m_progressMap.count() + 8 );
     m_progressDetailsWidget->reposition();
     m_progressDetailsWidget->show();

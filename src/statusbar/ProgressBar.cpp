@@ -27,6 +27,8 @@
 ProgressBar::ProgressBar( QWidget *parent )
         : QFrame( parent )
 {
+    setFixedHeight( 30 );
+    setContentsMargins( 0, 0, 0, 4 );
 
     QVBoxLayout *box = new QVBoxLayout( this );
     box->setMargin( 0 );
@@ -44,8 +46,8 @@ ProgressBar::ProgressBar( QWidget *parent )
     descriptionLayout->setAlignment( m_extraButtonSpace, Qt::AlignLeft );
 
     m_descriptionLabel = new QLabel( this );
-    m_descriptionLabel->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     descriptionLayout->addWidget( m_descriptionLabel );
+    descriptionLayout->setAlignment( m_descriptionLabel, Qt::AlignLeft );
 
     m_cancelButton = new QToolButton( descriptionFrame );
     m_cancelButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
@@ -65,7 +67,8 @@ ProgressBar::ProgressBar( QWidget *parent )
     m_progressBar->setFixedHeight( 5 );
     m_progressBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_progressBar->setTextVisible( false );
-    box->addWidget( m_progressBar, 0, Qt::AlignBottom );
+    box->addWidget( m_progressBar );
+    box->setAlignment( m_progressBar, Qt::AlignBottom );
 
     setLayout( box );
 }
@@ -76,22 +79,18 @@ ProgressBar::~ProgressBar()
 }
 
 void
-ProgressBar::setDescription( const QString & description )
+ProgressBar::setDescription( const QString &description )
 {
     m_descriptionLabel->setText( description );
 
 }
 
 ProgressBar *
-ProgressBar::setAbortSlot( QObject * receiver, const char * slot, Qt::ConnectionType type )
+ProgressBar::setAbortSlot( QObject *receiver, const char *slot, Qt::ConnectionType type )
 {
-    // DEBUG_BLOCK
-    // debug() << "Setting abort slot for " << m_descriptionLabel->text();
     cancelButton()->setEnabled( true );
-    // debug() << "connecting to " << slot;
     connect( this, SIGNAL( cancelled() ), receiver, slot, type );
     connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancel() ) );
-
 
     return this;
 }
@@ -122,9 +121,9 @@ void ProgressBar::delayedDone()
 
 int ProgressBar::percentage()
 {
-    if ( m_progressBar->maximum() == 100 )
+    if( m_progressBar->maximum() == 100 )
         return m_progressBar->value();
-    return ( int )((( float ) m_progressBar->value() / ( float ) m_progressBar->maximum() ) * 100.0 );
+    return (int)( ( (float) m_progressBar->value() / (float)m_progressBar->maximum() ) * 100.0 );
 }
 
 

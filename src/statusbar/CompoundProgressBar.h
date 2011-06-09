@@ -32,16 +32,19 @@ class AMAROK_EXPORT CompoundProgressBar : public ProgressBar
 {
     Q_OBJECT
 public:
-    CompoundProgressBar( QWidget * parent );
+    CompoundProgressBar( QWidget *parent );
 
     ~CompoundProgressBar();
 
-    void addProgressBar( ProgressBar * progressBar, QObject *owner );
+    void addProgressBar( ProgressBar *progressBar, QObject *owner );
 
     void incrementProgress( const QObject *owner );
     void setProgressTotalSteps( const QObject *owner, int value );
     void setProgressStatus( const QObject *owner, const QString &text );
     void setProgress( const QObject *owner, int steps );
+
+    /* reimplemented from QWidget for correct positioning of progressDetailsWidget */
+    virtual void setParent( QWidget *parent );
 
 public slots:
     void endProgressOperation( QObject *owner );
@@ -54,8 +57,8 @@ protected slots:
     void toggleDetails();
 
     void childPercentageChanged( );
-    void childBarCancelled( ProgressBar * progressBar );
-    void childBarComplete( ProgressBar * progressBar );
+    void childBarCancelled( ProgressBar *progressBar );
+    void childBarComplete( ProgressBar *progressBar );
 
     void slotObjectDestroyed( QObject *object );
 
@@ -70,9 +73,9 @@ private:
 
     QMap< const QObject *, ProgressBar *> m_progressMap;
 
-    QToolButton * m_showDetailsButton;
+    QToolButton *m_showDetailsButton;
 
-    PopupWidget * m_progressDetailsWidget;
+    PopupWidget *m_progressDetailsWidget;
 };
 
 #endif

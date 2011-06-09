@@ -59,9 +59,9 @@ class AMAROK_EXPORT ProgressBar : public QFrame
         void delayedDone();
 
     signals:
-        void cancelled( ProgressBar* );
+        void cancelled( ProgressBar * );
         void cancelled();
-        void complete( ProgressBar* );
+        void complete( ProgressBar * );
         void percentageChanged( int );
 
     private:

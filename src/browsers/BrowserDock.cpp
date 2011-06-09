@@ -45,6 +45,7 @@ BrowserDock::BrowserDock( QWidget * parent )
     new HorizontalDivider( m_mainWidget );
     m_categoryList = new BrowserCategoryList( m_mainWidget, "root list" );
     m_breadcrumbWidget->setRootList( m_categoryList.data() );
+
     m_progressFrame = new QFrame( m_mainWidget );
     m_progressFrame->setAutoFillBackground( true );
     m_progressFrame->setFixedHeight( 30 );
@@ -52,6 +53,7 @@ BrowserDock::BrowserDock( QWidget * parent )
     layout->setMargin( 0 );
     layout->setSpacing( 0 );
     CompoundProgressBar *progressBar = The::statusBar()->compoundProgressBar();
+    //TODO: anchor to main widget
     progressBar->setParent( m_progressFrame );
     layout->addWidget( progressBar );
     m_progressFrame->setLayout( layout );
