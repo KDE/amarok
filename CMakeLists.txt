@@ -90,8 +90,8 @@ if( WITH_PLAYER )
     macro_ensure_version( "4.5.0" ${KDE_VERSION} KDE_HAS_KIMAGECACHE )
     macro_bool_to_01( KDE_HAS_KIMAGECACHE HAVE_KIMAGECACHE )
 
-    find_package( QtScriptQtBindings REQUIRED )
-    macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" TRUE "" "" )
+    find_package( QtScriptQtBindings )
+    macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" FALSE "" "" )
 
     add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 

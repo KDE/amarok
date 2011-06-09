@@ -30,6 +30,9 @@
 /* have TagLib-Extras */
 #cmakedefine TAGLIB_EXTRAS_FOUND 1
 
+/* have Qt bindings */
+#cmakedefine QTSCRIPTQTBINDINGS_FOUND 1
+
 /* MySql database support enabled */
 #cmakedefine USE_MYSQL 1
 

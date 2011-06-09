@@ -16,6 +16,8 @@
 
 #include "ScriptImporter.h"
 
+#include "config-amarok.h"
+
 #include "App.h"
 #include "core/support/Debug.h"
 
@@ -51,7 +53,9 @@ namespace AmarokScript
         DEBUG_BLOCK
         debug() << "importing qt bindings " << binding;
         QSet<QString> allowedBindings;
+#ifdef QTSCRIPTQTBINDINGS_FOUND
         allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
+#endif
         if( allowedBindings.contains( binding ) )
         {
             if( !m_importedBindings.contains( binding ) )
