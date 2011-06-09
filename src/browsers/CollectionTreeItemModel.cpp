@@ -27,9 +27,10 @@
 #include "core/support/Amarok.h"
 #include "core/collections/Collection.h"
 #include "core/collections/CollectionLocation.h"
+#include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core/collections/QueryMaker.h"
+#include "core-impl/collections/support/FileCollectionLocation.h"
 
 #include <KLocale>
 
@@ -144,10 +145,20 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
 
     foreach( const Collections::Collection *sourceCollection, collectionTrackMap.uniqueKeys() )
     {
-        Collections::CollectionLocation *sourceLocation = sourceCollection->location();
-        Q_ASSERT(sourceLocation);
+        Collections::CollectionLocation *sourceLocation;
+        if( sourceCollection )
+        {
+            sourceLocation = sourceCollection->location();
+            Q_ASSERT(sourceLocation);
+        }
+        else
+        {
+            sourceLocation = new Collections::FileCollectionLocation();
+        }
+
         if( sourceLocation == targetLocation )
-            return true; //continue;
+            continue;
+
         if( action == Qt::CopyAction )
         {
             sourceLocation->prepareCopy( collectionTrackMap.values( sourceCollection ),
