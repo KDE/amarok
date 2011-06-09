@@ -62,7 +62,7 @@ X-KDE-Submenu[uk]=Amarok
 X-KDE-Submenu[wa]=Amarok
 X-KDE-Submenu[x-test]=xxAmarokxx
 X-KDE-Submenu[zh_CN]=Amarok
-X-KDE-Submenu[zh_TW]=影音播放_Amarok
+X-KDE-Submenu[zh_TW]=Amarok
 
 [Desktop Action appendToPlaylist]
 Name=Append to Playlist
