@@ -1161,12 +1161,6 @@ MainWindow::activeBrowserName()
         return QString();
 }
 
-PlaylistBrowserNS::PlaylistBrowser *
-MainWindow::playlistBrowser()
-{
-    return m_playlistBrowser;
-}
-
 void
 MainWindow::setLayoutLocked( bool locked )
 {

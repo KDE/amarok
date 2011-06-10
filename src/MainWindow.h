@@ -102,7 +102,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         QString activeBrowserName();
 
         CollectionWidget * collectionBrowser();
-        PlaylistBrowserNS::PlaylistBrowser * playlistBrowser();
 
         bool isLayoutLocked() const;
 
