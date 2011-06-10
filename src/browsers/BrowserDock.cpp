@@ -110,9 +110,9 @@ void
 BrowserDock::paletteChanged( const QPalette& palette )
 {
     m_progressFrame->setStyleSheet(
-                QString( "background-color: %1; color: %2; border-radius: 3px;" )
+                QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
                         .arg( PaletteHandler::alternateBackgroundColor().name() )
-                        .arg( palette.highlightedText().color().name() )
+                        .arg( The::paletteHandler()->palette().highlightedText().color().name() )
                 );
 }
 

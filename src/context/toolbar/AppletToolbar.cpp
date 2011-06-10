@@ -70,7 +70,7 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     painter->setRenderHint( QPainter::Antialiasing );
     painter->save();
 
-    QColor col = PaletteHandler::highlightColor();
+    QColor col = PaletteHandler::alternateBackgroundColor();
     qreal radius = 6;
 
     QPainterPath outline;

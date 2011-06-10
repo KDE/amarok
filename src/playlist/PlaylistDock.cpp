@@ -105,7 +105,7 @@ Playlist::Dock::polish()
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
     m_dynamicHintWidget->setStyleSheet(
             QString( "QLabel { background-color: %1; color: %2; border-radius: 3px; } " )
-                    .arg( PaletteHandler::highlightColor().name() )
+                    .arg( PaletteHandler::alternateBackgroundColor().name() )
                     .arg( The::paletteHandler()->palette().highlightedText().color().name() )
             );
     QFont dynamicHintWidgetFont = m_dynamicHintWidget->font();
@@ -165,7 +165,7 @@ Playlist::Dock::polish()
         m_barBox->setContentsMargins( 0, 0, 0, 0 );
         m_barBox->setStyleSheet(
                         QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
-                        .arg( PaletteHandler::highlightColor().name() )
+                        .arg( PaletteHandler::alternateBackgroundColor().name() )
                         .arg( The::paletteHandler()->palette().highlightedText().color().name() )
                     );
 
@@ -241,17 +241,17 @@ Playlist::Dock::sizeHint() const
 
 
 void
-Playlist::Dock::paletteChanged( const QPalette& palette )
+Playlist::Dock::paletteChanged( const QPalette &palette )
 {
     m_dynamicHintWidget->setStyleSheet(
                 QString( "QLabel { background-color: %1; color: %2; ; border-radius: 3px; } " )
-                                        .arg( PaletteHandler::highlightColor().name() )
-                                        .arg( palette.highlightedText().color().name() )
-                                        );
+                                .arg( PaletteHandler::PaletteHandler::highlightColor().name() )
+                                .arg( palette.highlightedText().color().name() )
+                        );
     if( m_barBox )
         m_barBox->setStyleSheet(
                     QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
-                                        .arg( PaletteHandler::highlightColor().name() )
+                                        .arg( PaletteHandler::alternateBackgroundColor().name() )
                                         .arg( palette.highlightedText().color().name() ) );
 }
 
