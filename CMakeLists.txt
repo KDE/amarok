@@ -109,8 +109,8 @@ if( WITH_PLAYER )
     macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
 
     # QCA2 is required for the Script Updater
-    find_package(QCA2 REQUIRED)
-    macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" TRUE "" "" )
+    find_package(QCA2)
+    macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" FALSE "" "" )
 
     # QJson is required for the PlaydarCollection
     macro_optional_find_package(QJSON)

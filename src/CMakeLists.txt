@@ -67,7 +67,6 @@ include_directories(
     ${KDE4_INCLUDE_DIR}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
-    ${QCA2_INCLUDE_DIR}
 )
 
 if ( KDEMULTIMEDIA_FOUND )
@@ -916,7 +915,6 @@ target_link_libraries(amaroklib
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
-    ${QCA2_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
@@ -935,6 +933,11 @@ if( TAGLIB-EXTRAS_FOUND )
     add_definitions(${TAGLIB-EXTRAS_CFLAGS})
     target_link_libraries(amaroklib ${TAGLIB-EXTRAS_LIBRARIES})
 endif( TAGLIB-EXTRAS_FOUND )
+
+if( QCA2_FOUND )
+    include_directories( ${QCA2_INCLUDE_DIR} )
+    target_link_libraries(amaroklib ${QCA2_LIBRARIES})
+endif( QCA2_FOUND )
 
 
 if(KDE4_BUILD_TESTS)

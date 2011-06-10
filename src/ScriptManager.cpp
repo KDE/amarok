@@ -29,6 +29,7 @@
 #include "core/interfaces/Logger.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
+#include "config-amarok.h" // for the compile flags
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "scriptengine/AmarokCollectionScript.h"
 #include "scriptengine/AmarokScriptConfig.h"
@@ -168,7 +169,8 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& artist, const QString& tit
 void
 ScriptManager::updateAllScripts() // SLOT
 {
-
+// note: we can't update scripts without the QtCryptoArchitecture, so don't even try
+#ifdef QCA2_FOUND
     DEBUG_BLOCK
     // find all scripts (both in $KDEHOME and /usr)
     QStringList foundScripts = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js",
@@ -210,6 +212,7 @@ ScriptManager::updateAllScripts() // SLOT
         }
         configChanged( true );
     }
+#endif
 }
 
 void

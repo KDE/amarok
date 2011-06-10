@@ -27,7 +27,10 @@
 
 #include <QDir>
 #include <QFileInfo>
+
+#ifdef QCA2_FOUND
 #include <QtCrypto>
+#endif
 
 ScriptUpdater::ScriptUpdater( QObject *parent ) : QObject( parent )
 {
@@ -151,6 +154,7 @@ ScriptUpdater::phase4( KJob * job )
     }
 
     // 5. compare the signature to the archive's hash
+#ifdef QCA2_FOUND
     QCA::Initializer init;
     QCA::ConvertResult conversionResult;
     QCA::PublicKey pubkey = QCA::PublicKey::fromPEM( publicKey, &conversionResult );
@@ -199,6 +203,11 @@ ScriptUpdater::phase4( KJob * job )
         return;
     }
     debug() << m_scriptname << ": Signature matches. Performing update now.";
+
+#else
+    debug() << m_scriptname << ": Amarok build without QtCrypto. Cannot verify signature";
+    return;
+#endif
 
     // 6. everything OK, perform the update by extracting the archive
     KTar archive( m_archiveFile.fileName() );
