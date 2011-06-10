@@ -251,7 +251,7 @@ MainWindow::init()
 
     PERF_LOG( "Loaded default contextScene" )
 
-    setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks );
+    setDockOptions( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks | QMainWindow::VerticalTabs );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
