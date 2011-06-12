@@ -35,6 +35,8 @@
 #include "NetworkProgressBar.h"
 
 #include <QNetworkReply>
+#include <QLabel>
+#include <QFrame>
 #include <QVariant>
 
 #include <cmath>
@@ -113,8 +115,16 @@ StatusBar::StatusBar( QWidget *parent )
 {
     s_instance = this;
 
-    addWidget( m_progressBar, 1 );
+    m_progressArea = new QFrame( this );
+    m_progressArea->setLayout( new QVBoxLayout( m_progressArea ) );
+
+    m_progressArea->layout()->addWidget( m_progressBar );
     m_progressBar->hide();
+
+    m_messageLabel = new QLabel( m_progressBar );
+    m_messageLabel->setAlignment( Qt::AlignCenter );
+    m_progressArea->layout()->addWidget( m_messageLabel );
+    m_messageLabel->hide();
 
     connect( m_progressBar, SIGNAL( allDone() ), this, SLOT( hideProgress() ) );
 
@@ -203,7 +213,7 @@ void StatusBar::shortMessage( const QString &text )
     if( !m_busy )
     {
         //not busy, so show right away
-        showMessage( text );
+        showMessageInProgressArea( text );
         m_shortMessageTimer->start( SHORT_MESSAGE_DURATION );
     }
     else
@@ -227,12 +237,12 @@ void StatusBar::nextShortMessage()
     if( m_shortMessageQue.count() > 0 )
     {
         m_busy = true;
-        showMessage( m_shortMessageQue.takeFirst() );
+        showMessageInProgressArea( m_shortMessageQue.takeFirst() );
         m_shortMessageTimer->start( SHORT_MESSAGE_DURATION );
     }
     else
     {
-        clearMessage();
+        clearMessageInProgressArea();
         m_busy = false;
     }
 }
@@ -258,6 +268,21 @@ void StatusBar::slotLongMessage( const QString &text, MessageType type ) //SLOT
 void StatusBar::hideLongMessage()
 {
     sender()->deleteLater();
+}
+
+void
+StatusBar::showMessageInProgressArea( const QString &message )
+{
+    m_busy = true;
+    m_messageLabel->setText( message );
+    m_messageLabel->show();
+}
+
+void
+StatusBar::clearMessageInProgressArea()
+{
+    m_busy = false;
+    m_messageLabel->hide();
 }
 
 #include "StatusBar.moc"

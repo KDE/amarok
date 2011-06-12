@@ -137,6 +137,8 @@ public slots:
       */
     CompoundProgressBar *compoundProgressBar() { return m_progressBar; }
 
+    QFrame *progressArea() { return m_progressArea; }
+
 protected:
 
 protected slots:
@@ -150,13 +152,19 @@ private:
 
     ~StatusBar();
 
+    void showMessageInProgressArea( const QString &message );
+    void clearMessageInProgressArea();
+
     friend class MainWindow;
 
+    QFrame *m_progressArea;
     CompoundProgressBar *m_progressBar;
+    QLabel *m_messageLabel;
 
     QList<QString> m_shortMessageQue;
 
     bool m_busy;
+
     QTimer * m_shortMessageTimer;
 
 private slots:

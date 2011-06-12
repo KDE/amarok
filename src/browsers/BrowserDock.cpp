@@ -46,17 +46,13 @@ BrowserDock::BrowserDock( QWidget * parent )
     m_categoryList = new BrowserCategoryList( m_mainWidget, "root list" );
     m_breadcrumbWidget->setRootList( m_categoryList.data() );
 
-    m_progressFrame = new QFrame( m_mainWidget );
+    //HACK: keep the progressArea in it's place at the bottom
+    QWidget *container = new QWidget( m_mainWidget );
+    container->setLayout( new QVBoxLayout( container ) );
+    m_progressFrame = The::statusBar()->progressArea();
     m_progressFrame->setAutoFillBackground( true );
     m_progressFrame->setFixedHeight( 30 );
-    QHBoxLayout *layout = new QHBoxLayout( m_progressFrame );
-    layout->setMargin( 0 );
-    layout->setSpacing( 0 );
-    CompoundProgressBar *progressBar = The::statusBar()->compoundProgressBar();
-    //TODO: anchor to main widget
-    progressBar->setParent( m_progressFrame );
-    layout->addWidget( progressBar );
-    m_progressFrame->setLayout( layout );
+    container->layout()->addWidget( m_progressFrame );
 
     ensurePolish();
 }
