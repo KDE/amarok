@@ -311,7 +311,11 @@ Context::Applet::collapse( bool on )
     connect( pan, SIGNAL(finished()), SLOT(collapseAnimationFinished()) );
     m_animation = pan;
     pan->setDirection( QAbstractAnimation::Forward );
+
     ContextView *v = static_cast<ContextView*>( view() );
+    // Plasma::Applet::view() might return 0, if the widget is not yet constructed, etc.
+    // \sa https://bugs.kde.org/show_bug.cgi?id=258741
+    DEBUG_ASSERT(v, return)
     v->addCollapseAnimation( pan );
 }
 

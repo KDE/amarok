@@ -24,6 +24,8 @@ VERSION 2.4.2-Beta 1
       reduce the number of cache-related crashes.
 
   BUGFIXES:
+    * Avoid crash in ContextView when accessing Plasma::Applet::view().
+      (BR 258741)
     * Fixed playlist tooltip getting too tall for multiline comments. (BR 256038)
     * Made equalizer keywords (dB,kHz,...) translatable. (BR 263572)
     * Made equalizer preset names translatable. (BR 263596)
