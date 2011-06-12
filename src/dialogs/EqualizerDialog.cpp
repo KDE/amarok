@@ -174,6 +174,8 @@ EqualizerDialog::eqSetupUI()
 void
 EqualizerDialog::eqPresetChanged( int index ) //SLOT
 {
+    DEBUG_BLOCK
+
     if( index < 0 )
         return;
     // new settings
@@ -187,6 +189,8 @@ EqualizerDialog::eqPresetChanged( int index ) //SLOT
 void
 EqualizerDialog::eqBandsChanged() //SLOT
 {
+    DEBUG_BLOCK
+
     // update values from sliders
     QList<int> eqGains;
     foreach( QSlider* mSlider, mBands )
@@ -272,6 +276,8 @@ EqualizerDialog::eqDeletePreset() //SLOT
 void
 EqualizerDialog::eqRestorePreset() //SLOT
 {
+    DEBUG_BLOCK
+
     const QString mPresetSelected = eqPresets->currentText();
     if( !mPresets.eqCfgRestorePreset( mPresetSelected ) )
     {
@@ -291,6 +297,8 @@ EqualizerDialog::eqRestorePreset() //SLOT
 void
 EqualizerDialog::eqSavePreset() //SLOT
 {
+    DEBUG_BLOCK
+
     QString mPresetSelected = eqPresets->currentText();
     if( mPresetSelected == QLatin1String( "Manual" ) )
     {

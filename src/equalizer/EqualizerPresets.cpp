@@ -18,6 +18,7 @@
 #include "EqualizerPresets.h"
 
 #include "amarokconfig.h"
+#include "core/support/Debug.h"
 
 #include <KLocale>
 
@@ -179,11 +180,16 @@ EqualizerPresets::eqCfgRestorePreset( const QString &presetName )
 void
 EqualizerPresets::eqCfgSetPresetVal( const QString &presetName, const QList<int> &presetValues)
 {
+    DEBUG_BLOCK
+
+    debug() << "Preset:" << presetName << presetValues;
+
     // Idea is to insert new values into user list
     // if preset exist on the list - replace it values
     const int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( presetName );
     QStringList mNewNames = AmarokConfig::equalizerPresetsNames();
     QList<int> mNewValues = AmarokConfig::equalizerPresestValues();
+    debug() << "Old preset found:" << (idUsr >= 0);
 
     if( idUsr < 0 )
     {
