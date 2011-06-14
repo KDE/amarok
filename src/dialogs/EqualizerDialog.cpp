@@ -164,10 +164,7 @@ EqualizerDialog::eqSetupUI()
 
     mBandsLabels.first()->setText( i18n( "%0\ndB" ).arg( mBandsLabels.first()->text() ) );
     // Set initial preset to current with signal blocking to prevent circular loops
-    eqPresets->blockSignals( true );
-    eqPresets->addItem( i18nc( "Equalizer state, as in, disabled", "Off" ) );
-    eqPresets->addItems( mPresets.eqGlobalList() );
-    eqPresets->blockSignals( false );
+    eqRepopulateUi();
     eqUpdateUI( AmarokConfig::equalizerMode() );
 }
 
@@ -252,17 +249,23 @@ EqualizerDialog::eqUpdateUI( int index ) // SLOT
 }
 
 void
+EqualizerDialog::eqRepopulateUi()
+{
+    eqPresets->blockSignals( true );
+    eqPresets->clear();
+    eqPresets->addItem( i18nc( "Equalizer state, as in, disabled", "Off" ) );
+    eqPresets->addItems( mPresets.eqGlobalList() );
+    eqPresets->blockSignals( false );
+    static_cast<Amarok::EqualizerAction*>( Amarok::actionCollection()->action( "equalizer_mode") )->newList();
+}
+
+void
 EqualizerDialog::eqDeletePreset() //SLOT
 {
     QString mPresetSelected = eqPresets->currentText();
     if( mPresets.eqCfgDeletePreset( mPresetSelected ) )
     {
-        eqPresets->blockSignals( true );
-        eqPresets->clear();
-        eqPresets->addItem( i18nc( "Equalizer state, as in, disabled", "Off" ) );
-        eqPresets->addItems( mPresets.eqGlobalList() );
-        eqPresets->blockSignals( false );
-        static_cast<Amarok::EqualizerAction*>( Amarok::actionCollection()->action( "equalizer_mode") )->newList();
+        eqRepopulateUi();
         eqPresets->setCurrentIndex( 1 );
     }
     else
@@ -313,12 +316,7 @@ EqualizerDialog::eqSavePreset() //SLOT
     foreach( QSlider* mSlider, mBands )
         eqGains << mSlider->value();
     mPresets.eqCfgSetPresetVal( mPresetSelected, eqGains );
-    eqPresets->blockSignals( true );
-    eqPresets->clear();
-    eqPresets->addItem( i18nc( "Equalizer state, as in, disabled", "Off" ) );
-    eqPresets->addItems( mPresets.eqGlobalList() );
-    ( (Amarok::EqualizerAction*) Amarok::actionCollection()->action( "equalizer_mode") )->newList();
-    eqPresets->blockSignals( false );
+    eqRepopulateUi();
     eqPresets->setCurrentIndex( eqPresets->findText( mPresetSelected ) );
 }
 

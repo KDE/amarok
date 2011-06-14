@@ -45,6 +45,8 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         void eqUpdateUI( int index );
         void eqPresetChanged( int index );
         void eqBandsChanged();
+        void eqRepopulateUi();
+
         void eqSavePreset();
         void eqDeletePreset();
         void eqRestorePreset();
