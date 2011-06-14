@@ -374,11 +374,6 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
                 || ( tempTrack->composer()->name() != track->composer()->name() )
                 || ( tempTrack->year()->name() != track->year()->name() ) )
             {
-                debug() << "Same title, but other tags differ, not a dupe";
-                //debug() << "Source track:   " << "Artist: " << track->artist()->name() << " Album: " << track->album()->name() << " Genre: " << track->genre()->name() <<
-                //" Composer: " << track->composer()->name() << " Year: " << track->year()->name();
-                //debug() << "Candidate dupe: " << "Artist: " << tempTrack->artist()->name() << " Album: " << tempTrack->album()->name() << " Genre: " << tempTrack->genre()->name() <<
-                //" Composer: " << tempTrack->composer()->name() << " Year: " << tempTrack->year()->name();
                 continue;
             }
 
