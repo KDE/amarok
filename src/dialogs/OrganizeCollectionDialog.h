@@ -78,7 +78,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
 
         Ui::OrganizeCollectionDialogBase *ui;
         FilenameLayoutDialog *m_filenameLayoutDialog;
-        TrackOrganizer *mTrackOrganizer;
+        TrackOrganizer *m_trackOrganizer;
         bool m_detailed;
         Meta::TrackList m_allTracks;
         QString m_targetFileExtension;

@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
-    <height>481</height>
+    <width>690</width>
+    <height>471</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -315,40 +315,63 @@ Most people can leave this option enabled as it ensures copying to media devices
      <property name="title">
       <string>Destination Preview</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QTableWidget" name="previewTableWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>640</width>
+          <height>220</height>
+         </size>
+        </property>
         <property name="horizontalScrollMode">
          <enum>QAbstractItemView::ScrollPerPixel</enum>
         </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>100</number>
+        </attribute>
         <attribute name="verticalHeaderVisible">
          <bool>false</bool>
         </attribute>
         <column>
          <property name="text">
-          <string>Original</string>
+          <string>Preview</string>
+         </property>
+         <property name="textAlignment">
+          <set>AlignHCenter|AlignVCenter|AlignCenter</set>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>Preview</string>
+          <string>Original</string>
+         </property>
+         <property name="textAlignment">
+          <set>AlignLeft|AlignVCenter</set>
          </property>
         </column>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QPushButton" name="previewButton">
-          <property name="text">
-           <string>Preview</string>
+         <widget class="QLabel" name="conflictLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="autoPreviewCheck">
           <property name="text">
-           <string>Automatic Preview</string>
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -367,22 +390,6 @@ Most people can leave this option enabled as it ensures copying to media devices
            </size>
           </property>
          </spacer>
-        </item>
-        <item>
-         <widget class="QLabel" name="conflictLabel">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
         </item>
         <item>
          <widget class="QCheckBox" name="overwriteCheck">
