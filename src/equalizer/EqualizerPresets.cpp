@@ -102,7 +102,7 @@ EqualizerPresets::eqDefaultTranslatedPresetsList()
     strings << i18n( "Reggae" );
     strings << i18n( "Rock" );
     strings << i18n( "Soft" );
-    strings << i18n( "SkaFOOBAR" );
+    strings << i18n( "Ska" );
     strings << i18n( "Soft Rock" );
     strings << i18n( "Techno");
     strings << i18n( "Zero" );
