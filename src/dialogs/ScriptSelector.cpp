@@ -22,43 +22,45 @@
 #include <KLineEdit>
 
 ScriptSelector::ScriptSelector( QWidget * parent )
- : KPluginSelector( parent )
+    : KPluginSelector( parent )
+    , m_scriptCount( 0 )
 {
-    KLineEdit* lineEdit;
-    lineEdit = this->findChild<KLineEdit*>();
-
+    KLineEdit* lineEdit = this->findChild<KLineEdit*>();
     if( lineEdit )
         lineEdit->setClickMessage( i18n( "Search Scripts" ) );
 
     m_listView = this->findChild<KCategorizedView*>();
-    scriptCount = 0;
 }
 
 ScriptSelector::~ScriptSelector()
 {}
 
-void ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList, PluginLoadMethod pluginLoadMethod, const QString &categoryName, const QString &categoryKey, const KSharedConfig::Ptr &config )
+void ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList,
+                                 PluginLoadMethod pluginLoadMethod,
+                                 const QString &categoryName,
+                                 const QString &categoryKey,
+                                 const KSharedConfig::Ptr &config )
 {
     DEBUG_BLOCK
 
     addPlugins( pluginInfoList, pluginLoadMethod, categoryName, categoryKey, config );
     foreach( const KPluginInfo &plugin, pluginInfoList )
     {
-        scriptCount++;
-        m_scripts[scriptCount] = plugin.name();
+        m_scriptCount++;
+        m_scripts[m_scriptCount] = plugin.name();
     }
 }
 
-QString ScriptSelector::currentItem()
+QString ScriptSelector::currentItem() const
 {
     DEBUG_BLOCK
 
-    QItemSelectionModel *SelModel = m_listView->selectionModel();
-    const QModelIndexList SelIndexes = SelModel->selectedIndexes();
+    QItemSelectionModel *selModel = m_listView->selectionModel();
+    const QModelIndexList selIndexes = selModel->selectedIndexes();
 
-    if( !SelIndexes.isEmpty() )
+    if( !selIndexes.isEmpty() )
     {
-        QModelIndex currentIndex = SelIndexes[0];
+        QModelIndex currentIndex = selIndexes[0];
         if( currentIndex.isValid() )
         {
             debug() << "row: " << currentIndex.row() + 1; //the index start from 1

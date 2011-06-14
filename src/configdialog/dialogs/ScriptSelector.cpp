@@ -31,7 +31,7 @@ ScriptSelector::ScriptSelector( QWidget * parent )
         lineEdit->setClickMessage( i18n( "Search Scripts" ) );
 
     m_listView = this->findChild<KCategorizedView*>();
-    scriptCount = 0;
+    m_scriptCount = 0;
 }
 
 ScriptSelector::~ScriptSelector()
@@ -44,8 +44,8 @@ void ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList, Plugi
     addPlugins( pluginInfoList, pluginLoadMethod, categoryName, categoryKey, config );
     foreach( const KPluginInfo &plugin, pluginInfoList )
     {
-        scriptCount++;
-        m_scripts[scriptCount] = plugin.pluginName();
+        m_scriptCount++;
+        m_scripts[m_scriptCount] = plugin.pluginName();
     }
 }
 

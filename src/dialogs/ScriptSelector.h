@@ -28,9 +28,9 @@ class ScriptSelector : public KPluginSelector
 
     public:
         ScriptSelector( QWidget * parent );
-
         ~ScriptSelector();
-        QString currentItem();
+
+        QString currentItem() const;
 
         void addScripts(const QList<KPluginInfo> &pluginInfoList,
                      PluginLoadMethod pluginLoadMethod = ReadConfigFile,
@@ -41,7 +41,7 @@ class ScriptSelector : public KPluginSelector
     private:
         KCategorizedView*          m_listView;
         QMap<int, QString>         m_scripts;
-        int                        scriptCount;
+        int                        m_scriptCount;
 
 };
 

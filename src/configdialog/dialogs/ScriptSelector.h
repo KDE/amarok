@@ -41,7 +41,7 @@ class ScriptSelector : public KPluginSelector
     private:
         KCategorizedView*          m_listView;
         QMap<int, QString>         m_scripts;
-        int                        scriptCount;
+        int                        m_scriptCount;
 
 };
 
