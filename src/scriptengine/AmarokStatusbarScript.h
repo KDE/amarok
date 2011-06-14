@@ -32,12 +32,7 @@ namespace AmarokScript
             ~AmarokStatusbarScript();
 
         public slots:
-            /*void setMainText( const QString &text );
-            void setMainTextIcon( QPixmap icon );
-            void hideMainTextIcon();
-            void resetMainText();*/
             void longMessage( const QString &text );
-            //void shortLongMessage( const QString &_short, const QString &_long );
             void shortMessage( const QString &text );
     };
 }
