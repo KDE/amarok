@@ -44,19 +44,16 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         explicit OrganizeCollectionDialog( const Meta::TrackList &tracks,
                                            const QStringList &folders,
                                            const QString &targetExtension = QString(),
-                                           QWidget *parent=0,
-                                           const char *name=0,
-                                           bool modal=true,
-                                           const QString &caption=QString(),
-                                           QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel );
+                                           QWidget *parent = 0,
+                                           const char *name = 0,
+                                           bool modal = true,
+                                           const QString &caption = QString(),
+                                           QFlags<KDialog::ButtonCode> buttonMask = Ok|Cancel );
 
         ~OrganizeCollectionDialog();
 
         QMap<Meta::TrackPtr, QString> getDestinations();
         bool overwriteDestinations() const;
-
-    signals:
-        void updatePreview(QString);
 
     public slots:
         void slotUpdatePreview();
@@ -75,7 +72,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         void toggleDetails();
         void preview( const QString &format );
         void update( int dummy );
-        void update( const QString & dummy );
+        void update( const QString &dummy );
         void init();
         void populateFormatList();
 
