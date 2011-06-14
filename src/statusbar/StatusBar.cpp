@@ -261,6 +261,8 @@ void StatusBar::slotLongMessage( const QString &text, MessageType type ) //SLOT
 {
     DEBUG_BLOCK
 
+    debug() << "Text:" << text;
+
     LongMessageWidget *message = new LongMessageWidget( this, text, type );
     connect( message, SIGNAL( closed() ), this, SLOT( hideLongMessage() ) );
 }

@@ -17,8 +17,6 @@
 #ifndef AMAROK_STATUSBAR_SCRIPT_H
 #define AMAROK_STATUSBAR_SCRIPT_H
 
-#include "statusbar/StatusBar.h"
-
 #include <QObject>
 #include <QtScript>
 
@@ -41,9 +39,6 @@ namespace AmarokScript
             void longMessage( const QString &text );
             //void shortLongMessage( const QString &_short, const QString &_long );
             void shortMessage( const QString &text );
-//TODO: implement progressbar
-        private:
-
     };
 }
 
