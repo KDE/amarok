@@ -177,7 +177,7 @@ EqualizerDialog::eqPresetChanged( int index ) //SLOT
         return;
     // new settings
     AmarokConfig::setEqualizerMode( index );
-    AmarokConfig::setEqualizerGains( mPresets.eqCfgGetPresetVal( eqPresets->currentText() ) );
+    AmarokConfig::setEqualizerGains( mPresets.eqCfgGetPresetVal( eqSelectedPresetName() ) );
     The::engineController()->eqUpdate();
     // update controls
     eqUpdateUI( index );
@@ -254,7 +254,7 @@ EqualizerDialog::eqRepopulateUi()
     eqPresets->blockSignals( true );
     eqPresets->clear();
     eqPresets->addItem( i18nc( "Equalizer state, as in, disabled", "Off" ) );
-    eqPresets->addItems( mPresets.eqGlobalList() );
+    eqPresets->addItems( mPresets.eqGlobalTranslatedList() );
     eqPresets->blockSignals( false );
     static_cast<Amarok::EqualizerAction*>( Amarok::actionCollection()->action( "equalizer_mode") )->newList();
 }
@@ -262,7 +262,7 @@ EqualizerDialog::eqRepopulateUi()
 void
 EqualizerDialog::eqDeletePreset() //SLOT
 {
-    QString mPresetSelected = eqPresets->currentText();
+    QString mPresetSelected = eqSelectedPresetName();
     if( mPresets.eqCfgDeletePreset( mPresetSelected ) )
     {
         eqRepopulateUi();
@@ -276,12 +276,23 @@ EqualizerDialog::eqDeletePreset() //SLOT
     }
 }
 
+QString
+EqualizerDialog::eqSelectedPresetName() const
+{
+    const int index = eqPresets->currentIndex();
+    if (index < 0)
+        return QString();
+
+    // use offset by one since the first entry ("Off") is not part of the global list
+    return mPresets.eqGlobalList().at(index - 1);
+}
+
 void
 EqualizerDialog::eqRestorePreset() //SLOT
 {
     DEBUG_BLOCK
 
-    const QString mPresetSelected = eqPresets->currentText();
+    const QString mPresetSelected = eqSelectedPresetName();
     if( !mPresets.eqCfgRestorePreset( mPresetSelected ) )
     {
         KMessageBox::detailedSorry( 0, i18n( "Cannot restore this preset" ),
@@ -291,7 +302,7 @@ EqualizerDialog::eqRestorePreset() //SLOT
     }
     // new settings
     ///AmarokConfig::setEqualizerMode( eqPresets->currentIndex() );
-    AmarokConfig::setEqualizerGains( mPresets.eqCfgGetPresetVal( eqPresets->currentText() ) );
+    AmarokConfig::setEqualizerGains( mPresets.eqCfgGetPresetVal( mPresetSelected ) );
     The::engineController()->eqUpdate();
     // update controls
     eqUpdateUI( eqPresets->currentIndex() );
@@ -302,8 +313,9 @@ EqualizerDialog::eqSavePreset() //SLOT
 {
     DEBUG_BLOCK
 
-    QString mPresetSelected = eqPresets->currentText();
-    if( mPresetSelected == QLatin1String( "Manual" ) )
+    const QString mPresetSelected = eqSelectedPresetName();
+    const QString mPresetName = eqPresets->currentText();
+    if( mPresetSelected == QLatin1String( "Manual" ) && mPresetName == QLatin1String("Manual") )
     {
         KMessageBox::detailedSorry( 0, i18n( "Cannot save this preset" ),
                                        i18n( "Preset 'Manual' is reserved for momentary settings.\n\
@@ -315,9 +327,9 @@ EqualizerDialog::eqSavePreset() //SLOT
     QList<int> eqGains;
     foreach( QSlider* mSlider, mBands )
         eqGains << mSlider->value();
-    mPresets.eqCfgSetPresetVal( mPresetSelected, eqGains );
+    mPresets.eqCfgSetPresetVal( mPresetName, eqGains );
     eqRepopulateUi();
-    eqPresets->setCurrentIndex( eqPresets->findText( mPresetSelected ) );
+    eqPresets->setCurrentIndex( eqPresets->findText( mPresetName ) );
 }
 
 namespace The {

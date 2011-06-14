@@ -372,7 +372,7 @@ EqualizerAction::newList() //SLOT
     }
     setEnabled( true );
     setToolTip( QString() );
-    setItems( QStringList() << i18nc( "Equalizer state, as in, disabled", "&Off" ) << EqualizerPresets::eqGlobalList() );
+    setItems( QStringList() << i18nc( "Equalizer state, as in, disabled", "&Off" ) << EqualizerPresets::eqGlobalTranslatedList() );
 }
 
 void

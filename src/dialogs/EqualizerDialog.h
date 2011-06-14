@@ -39,6 +39,8 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         static EqualizerDialog * instance();
         ~EqualizerDialog();
 
+        QString eqSelectedPresetName() const;
+
         static void showOnce();;
 
     private Q_SLOTS:

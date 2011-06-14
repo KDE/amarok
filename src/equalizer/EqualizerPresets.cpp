@@ -102,13 +102,20 @@ EqualizerPresets::eqDefaultTranslatedPresetsList()
     strings << i18n( "Reggae" );
     strings << i18n( "Rock" );
     strings << i18n( "Soft" );
-    strings << i18n( "Ska" );
+    strings << i18n( "SkaFOOBAR" );
     strings << i18n( "Soft Rock" );
     strings << i18n( "Techno");
     strings << i18n( "Zero" );
     return strings;
 }
 
+QStringList
+EqualizerPresets::eqGlobalTranslatedList()
+{
+    QStringList globalTranslatedList = eqDefaultTranslatedPresetsList();
+    globalTranslatedList += eqUserList();
+    return globalTranslatedList;
+}
 
 QStringList
 EqualizerPresets::eqGlobalList()
@@ -118,12 +125,22 @@ EqualizerPresets::eqGlobalList()
     // then user list is filtered to omit duplicates from default preset list
     QStringList mGlobalList;
     mGlobalList += EqualizerPresets::eqDefaultPresetsList();
+    mGlobalList += eqUserList();
+    return mGlobalList;
+}
+
+QStringList
+EqualizerPresets::eqUserList()
+{
+    QStringList defaultList = EqualizerPresets::eqDefaultPresetsList();
+
+    QStringList userList;
     foreach( const QString &mUsrName, AmarokConfig::equalizerPresetsNames() )
     {
-        if( mGlobalList.indexOf( mUsrName ) < 0 )
-            mGlobalList.append( mUsrName );
+        if( defaultList.indexOf( mUsrName ) < 0 )
+            userList.append( mUsrName );
     }
-    return mGlobalList;
+    return userList;
 }
 
 // Equalizer preset management helper functions

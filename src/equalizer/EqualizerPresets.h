@@ -27,16 +27,20 @@ public:
     EqualizerPresets();
     virtual ~EqualizerPresets();
 
-    static QStringList eqDefaultPresetsList();
-    static QStringList eqDefaultTranslatedPresetsList();
-
+    static QStringList eqGlobalTranslatedList();
     static QStringList eqGlobalList();
+    static QStringList eqUserList();
 
     static QList<int> eqCfgGetPresetVal( const QString &presetName );
 
     bool eqCfgDeletePreset( const QString &presetName );
     bool eqCfgRestorePreset( const QString &presetName );
     void eqCfgSetPresetVal( const QString &presetName, const QList<int> &presetValues );
+
+private:
+    static QStringList eqDefaultPresetsList();
+    static QStringList eqDefaultTranslatedPresetsList();
+
 };
 
 #endif // EQUALIZERPRESETS_H
