@@ -123,6 +123,7 @@ StatusBar::StatusBar( QWidget *parent )
 
     m_messageLabel = new QLabel( m_progressBar );
     m_messageLabel->setAlignment( Qt::AlignCenter );
+    m_messageLabel->setWordWrap( true );
     m_progressArea->layout()->addWidget( m_messageLabel );
     m_messageLabel->hide();
 

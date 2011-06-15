@@ -32,34 +32,29 @@ ProgressBar::ProgressBar( QWidget *parent )
 
     QVBoxLayout *box = new QVBoxLayout( this );
     box->setMargin( 0 );
-    box->setSpacing( 5 );
+    box->setSpacing( 3 );
 
-    QFrame *descriptionFrame = new QFrame( this );
     QHBoxLayout *descriptionLayout = new QHBoxLayout( this );
     descriptionLayout->setMargin( 0 );
     descriptionLayout->setSpacing( 2 );
 
-    m_extraButtonSpace = new KHBox( descriptionFrame );
-    m_extraButtonSpace->setSpacing( 0 );
-    m_extraButtonSpace->setMargin( 0 );
-    descriptionLayout->addWidget( m_extraButtonSpace );
-    descriptionLayout->setAlignment( m_extraButtonSpace, Qt::AlignLeft );
-
     m_descriptionLabel = new QLabel( this );
-    descriptionLayout->addWidget( m_descriptionLabel );
-    descriptionLayout->setAlignment( m_descriptionLabel, Qt::AlignLeft );
+    m_descriptionLabel->setWordWrap( true );
+    //add with stretchfactor 1 so it takes up more space then the cancel button
+    descriptionLayout->addWidget( m_descriptionLabel, 1 );
 
-    m_cancelButton = new QToolButton( descriptionFrame );
+    m_cancelButton = new QToolButton( this );
     m_cancelButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
     m_cancelButton->setToolTip( i18n( "Abort" ) );
-    m_cancelButton->setEnabled( false );
+    m_cancelButton->setHidden( true );
+    m_cancelButton->setFixedWidth( 16 );
+    m_cancelButton->setFixedHeight( 16 );
+    m_cancelButton->setAutoFillBackground( false );
+    m_cancelButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     descriptionLayout->addWidget( m_cancelButton );
     descriptionLayout->setAlignment( m_cancelButton, Qt::AlignRight );
 
-    descriptionFrame->setLayout( descriptionLayout );
-
-    box->addWidget( descriptionFrame );
-    box->setAlignment( descriptionFrame, Qt::AlignTop );
+    box->addLayout( descriptionLayout );
 
     m_progressBar = new QProgressBar( this );
     m_progressBar->setMinimum( 0 );
@@ -88,7 +83,7 @@ ProgressBar::setDescription( const QString &description )
 ProgressBar *
 ProgressBar::setAbortSlot( QObject *receiver, const char *slot, Qt::ConnectionType type )
 {
-    cancelButton()->setEnabled( true );
+    cancelButton()->setHidden( false );
     connect( this, SIGNAL( cancelled() ), receiver, slot, type );
     connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancel() ) );
 

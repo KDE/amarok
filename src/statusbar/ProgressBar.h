@@ -46,7 +46,6 @@ class AMAROK_EXPORT ProgressBar : public QFrame
         QToolButton *cancelButton() { return m_cancelButton; }
         QProgressBar *progressBar() { return m_progressBar;  }
         QLabel *descriptionLabel()  { return m_descriptionLabel; }
-        KHBox* extrabuttonSpace()   { return m_extraButtonSpace; }
 
         int maximum()               { return  m_progressBar->maximum(); }
         void setMaximum( int max )  { m_progressBar->setMaximum( max ); }
@@ -68,7 +67,6 @@ class AMAROK_EXPORT ProgressBar : public QFrame
         QToolButton *m_cancelButton;
         QProgressBar *m_progressBar;
         QLabel *m_descriptionLabel;
-        KHBox *m_extraButtonSpace;
 };
 
 #endif

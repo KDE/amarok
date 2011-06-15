@@ -26,7 +26,7 @@
 CompoundProgressBar::CompoundProgressBar( QWidget *parent )
         : ProgressBar( parent )
 {
-    m_showDetailsButton = new QToolButton( extrabuttonSpace() );
+    m_showDetailsButton = new QToolButton();
     m_showDetailsButton->setIcon( KIcon( "arrow-up-double-amarok" ) );
 
     m_progressDetailsWidget = new PopupWidget( parent );
@@ -72,7 +72,7 @@ void CompoundProgressBar::addProgressBar( ProgressBar *childBar, QObject *owner 
         cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
     }
 
-    cancelButton()->setEnabled( true );
+    cancelButton()->setHidden( false );
 
     handleDetailsButton();
 }
