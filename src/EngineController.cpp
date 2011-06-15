@@ -265,6 +265,9 @@ EngineController::supportedMimeTypes()
     // Add whitelist hacks
     mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
 
+    if( mimeTable.contains( "audio/x-flac" ) )
+        mimeTable << "audio/flac";
+
     // We special case this, as otherwise the users would hate us
     if( ( !mimeTable.contains( "audio/mp3" ) && !mimeTable.contains( "audio/x-mp3" ) ) && !installDistroCodec() )
     {
