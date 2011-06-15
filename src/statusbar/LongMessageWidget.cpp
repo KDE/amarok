@@ -36,8 +36,7 @@ LongMessageWidget::LongMessageWidget( QWidget *anchor, const QString &message,
     DEBUG_BLOCK
     Q_UNUSED( type )
 
-    setFrameStyle( QFrame::Panel | QFrame::Sunken );
-    setFrameShape( QFrame::StyledPanel );
+    setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
 
     setContentsMargins( 4, 4, 4, 4 );
 
