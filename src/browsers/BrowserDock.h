@@ -35,7 +35,7 @@ class BrowserDock : public AmarokDockWidget
     Q_OBJECT
 
 public:
-    BrowserDock( QWidget * parent );
+    BrowserDock( QWidget *parent );
 
     ~BrowserDock();
 
@@ -45,7 +45,7 @@ public:
 
 private slots:
     void home();
-    void paletteChanged( const QPalette& palette );
+    void paletteChanged( const QPalette &palette );
 
 private:
     BrowserBreadcrumbWidget *m_breadcrumbWidget;

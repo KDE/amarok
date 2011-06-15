@@ -41,15 +41,16 @@ class AMAROK_EXPORT ProgressBar : public QFrame
         ~ProgressBar();
 
         void setDescription( const QString &description );
-        ProgressBar *setAbortSlot( QObject *receiver, const char *slot, Qt::ConnectionType type = Qt::AutoConnection );
+        ProgressBar *setAbortSlot( QObject *receiver, const char *slot,
+                                  Qt::ConnectionType type = Qt::AutoConnection );
 
         QToolButton *cancelButton() { return m_cancelButton; }
         QProgressBar *progressBar() { return m_progressBar;  }
-        QLabel *descriptionLabel()  { return m_descriptionLabel; }
+        QLabel *descriptionLabel() { return m_descriptionLabel; }
 
-        int maximum()               { return  m_progressBar->maximum(); }
-        void setMaximum( int max )  { m_progressBar->setMaximum( max ); }
-        int value()                 { return m_progressBar->value(); }
+        int maximum() { return  m_progressBar->maximum(); }
+        void setMaximum( int max ) { m_progressBar->setMaximum( max ); }
+        int value() { return m_progressBar->value(); }
         void setValue( int value );
         int percentage();
 

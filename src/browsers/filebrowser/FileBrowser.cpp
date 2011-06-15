@@ -61,7 +61,9 @@ FileBrowser::Private::Private( FileBrowser *parent )
 
     upAction = KStandardAction::up( q, SLOT(up()), topHBox );
     homeAction = KStandardAction::home( q, SLOT(home()), topHBox );
-    placesAction = new KAction( KIcon( "folder-remote" ), i18nc( "Show Dolphin Places the user configured", "Places" ), topHBox );
+    placesAction = new KAction( KIcon( "folder-remote" ),
+                               i18nc( "Show Dolphin Places the user configured", "Places" ),
+                               topHBox );
 
     navigationToolbar->addAction( backAction );
     navigationToolbar->addAction( forwardAction );
@@ -111,7 +113,6 @@ QStringList
 FileBrowser::Private::siblingsForDir( const QString &path )
 {
     // includes the dir itself
-    // debug() << "path: " << path;
     QStringList siblings;
     QDir dir( path );
     if( !dir.isRoot() )
@@ -166,11 +167,15 @@ FileBrowser::Private::slotSaveHeaderState()
     }
 }
 
-FileBrowser::FileBrowser( const char * name, QWidget *parent )
+FileBrowser::FileBrowser( const char *name, QWidget *parent )
     : BrowserCategory( name, parent )
     , d( new FileBrowser::Private( this ) )
 {
-    setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, regardless of whether these files are part of your local collection. You can then add these files to the playlist as well as perform basic file operations." ) );
+    setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, " \
+                        "regardless of whether these files are part of your local collection. " \
+                        "You can then add these files to the playlist as well as perform basic "\
+                        "file operations." )
+                       );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
 
     // set background
@@ -185,7 +190,8 @@ FileBrowser::initView()
 {
     d->kdirModel = new DirBrowserModel( this );
 
-    d->mimeFilterProxyModel = new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
+    d->mimeFilterProxyModel =
+            new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
     d->mimeFilterProxyModel->setSourceModel( d->kdirModel );
     d->mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
@@ -204,7 +210,10 @@ FileBrowser::initView()
 
     for( int i = 0, columns = d->fileView->model()->columnCount(); i < columns ; ++i )
     {
-        QAction *action = new QAction( d->fileView->model()->headerData( i, Qt::Horizontal ).toString(), d->fileView->header() );
+        QAction *action =
+                new QAction( d->fileView->model()->headerData( i, Qt::Horizontal ).toString(),
+                             d->fileView->header()
+                           );
         d->fileView->header()->addAction( action );
         d->columnActions.append( action );
         action->setCheckable( true );
@@ -214,12 +223,17 @@ FileBrowser::initView()
     }
 
     connect( d->fileView->header(), SIGNAL(geometriesChanged()), this, SLOT(slotSaveHeaderState()) );
-    connect( d->fileView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
+    connect( d->fileView, SIGNAL(activated( const QModelIndex & )),
+                          SLOT(itemActivated( const QModelIndex & )) );
     if( !KGlobalSettings::singleClick() )
-        connect( d->fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
+    {
+        connect( d->fileView, SIGNAL(doubleClicked( const QModelIndex & )),
+                              SLOT(itemActivated( const QModelIndex & ))
+               );
+    }
 
-    connect( d->placesAction, SIGNAL( triggered( bool) ), this, SLOT( showPlaces() ) );
-    connect( &d->filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
+    connect( d->placesAction, SIGNAL(triggered( bool)), this, SLOT(showPlaces()) );
+    connect( &d->filterTimer, SIGNAL(timeout()), this, SLOT(slotFilterNow()) );
 }
 
 FileBrowser::~FileBrowser()
@@ -243,7 +257,6 @@ FileBrowser::toggleColumn( bool toggled )
 void
 FileBrowser::polish()
 {
-    DEBUG_BLOCK
     setupAddItems();
 }
 
@@ -261,11 +274,8 @@ FileBrowser::currentDir() const
 void
 FileBrowser::itemActivated( const QModelIndex &index )
 {
-    DEBUG_BLOCK
-
     if( d->showingPlaces )
     {
-        debug() << "place activated!";
         QString placesUrl = index.data( KFilePlacesModel::UrlRole  ).value<QString>();
 
         if( !placesUrl.isEmpty() )
@@ -308,12 +318,8 @@ FileBrowser::itemActivated( const QModelIndex &index )
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         KUrl filePath = file.url();
 
-        debug() << "activated url: " << filePath.url();
-        debug() << "filename: " << filePath.fileName();
-
         if( file.isDir() )
         {
-            debug() << "setting root path to: " << filePath.path();
             d->backStack.push( d->currentPath );
             setDir( filePath );
         }
@@ -353,11 +359,9 @@ FileBrowser::slotFilterNow()
 void
 FileBrowser::addItemActivated( const QString &callbackString )
 {
-    DEBUG_BLOCK
     if( callbackString.isEmpty() )
         return;
 
-    debug() << "callback: " << callbackString;
     d->kdirModel->dirLister()->openUrl( KUrl( callbackString ) );
     d->backStack.push( d->currentPath );
     d->currentPath = KUrl(callbackString);
@@ -369,15 +373,11 @@ FileBrowser::addItemActivated( const QString &callbackString )
 void
 FileBrowser::setupAddItems()
 {
-    DEBUG_BLOCK
     clearAdditionalItems();
-
-    debug() << "current path" << d->currentPath;
 
     if( d->currentPath.isLocalFile() )
     {
         const QString localPath = d->currentPath.toLocalFile();
-        debug() << "local path" << localPath;
         QStringList parts;
         QString partialPath;
 
@@ -389,15 +389,15 @@ FileBrowser::setupAddItems()
             int idx = localPath.indexOf( QDir::homePath() ) + QDir::homePath().size();
             // everything after the homedir e.g., Music/Prince
             QString everything_else = localPath.mid( idx );
-            debug() << "everything else" << everything_else;
             // replace parts with everything else
             parts = everything_else.split( QDir::separator() ) ;
-            debug() << "parts" << parts;
             partialPath = QDir::homePath();
 
             // Add the [Home]
             QStringList siblings = d->siblingsForDir( QDir::homePath() );
-            addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Home" ), siblings, QDir::homePath(), this ) );
+            addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Home" ), siblings,
+                                                         QDir::homePath(), this )
+                             );
         }
         else
         {
@@ -420,8 +420,13 @@ FileBrowser::setupAddItems()
         const QString proto = d->currentPath.protocol();
         const QString authority = d->currentPath.authority();
         const QString protoAuthority = QString( "%1://%2" ).arg( proto, authority );
-        addAdditionalItem( new BrowserBreadcrumbItem( proto + QLatin1Char(':'), QStringList(), proto + QLatin1String("://"), this ) );
-        addAdditionalItem( new BrowserBreadcrumbItem( authority, QStringList(), protoAuthority, this ) );
+        addAdditionalItem( new BrowserBreadcrumbItem( proto + QLatin1Char(':'),
+                                                      QStringList(), proto + QLatin1String("://"),
+                                                      this )
+                         );
+        addAdditionalItem( new BrowserBreadcrumbItem( authority, QStringList(), protoAuthority,
+                                                     this )
+                         );
         QStringList parts = d->currentPath.path().split( QLatin1Char('/'), QString::SkipEmptyParts );
         QString partialPath = protoAuthority;
         foreach( const QString &part, parts )
@@ -435,8 +440,6 @@ FileBrowser::setupAddItems()
 void
 FileBrowser::reActivate()
 {
-    DEBUG_BLOCK
-
     //go to root:
     d->kdirModel->dirLister()->openUrl( KUrl( QDir::rootPath() ) );
     d->currentPath = KUrl( QDir::rootPath() );
@@ -503,9 +506,6 @@ FileBrowser::forward()
 void
 FileBrowser::up()
 {
-    DEBUG_BLOCK
-    debug() << "current dir: " << d->currentPath;
-
     if( d->showingPlaces )
     {
         //apparently, the root level of "places" counts as a valid dir. If we are here, make the
@@ -532,13 +532,16 @@ FileBrowser::showPlaces()
     {
         d->placesModel = new FilePlacesModel( this );
         d->placesModel->setObjectName( "PLACESMODEL");
-        connect( d->placesModel, SIGNAL( setupDone( const QModelIndex &, bool ) ), this, SLOT( setupDone( const QModelIndex &, bool ) ) );
+        connect( d->placesModel, SIGNAL(setupDone( const QModelIndex &, bool )),
+                                 SLOT(setupDone( const QModelIndex &, bool )) );
     }
 
     clearAdditionalItems();
 
     QStringList siblings;
-    addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Places" ), siblings, QDir::homePath(), this ) );
+    addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Places" ), siblings, QDir::homePath(),
+                                                  this )
+                     );
     d->showingPlaces = true;
     d->fileView->setModel( d->placesModel );
     d->fileView->setSelectionMode( QAbstractItemView::SingleSelection );
@@ -549,7 +552,6 @@ FileBrowser::showPlaces()
 void
 FileBrowser::setupDone( const QModelIndex & index, bool success )
 {
-    DEBUG_BLOCK
     if( success )
     {
         QString placesUrl = index.data( KFilePlacesModel::UrlRole  ).value<QString>();

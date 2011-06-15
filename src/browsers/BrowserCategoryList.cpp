@@ -19,9 +19,9 @@
 #include "BrowserCategoryList.h"
 
 #include "App.h"
-#include "core/support/Debug.h"
 #include "BrowserCategoryListDelegate.h"
 #include "context/ContextView.h"
+#include "core/support/Debug.h"
 #include "InfoProxy.h"
 #include "PaletteHandler.h"
 #include "widgets/PrettyTreeView.h"
@@ -32,8 +32,7 @@
 
 #include <QFile>
 
-
-BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name, bool sort )
+BrowserCategoryList::BrowserCategoryList( QWidget *parent, const QString &name, bool sort )
     : BrowserCategory( name, parent )
     , m_currentCategory( 0 )
     , m_categoryListModel( new BrowserCategoryListModel() )
@@ -42,24 +41,23 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name,
     setObjectName( name );
     setParent( parent );
 
-    debug() << "BrowserCategoryList named " << name << " starting...";
-
     m_searchWidget = new SearchWidget( this, this, false );
     m_searchWidget->setClickMessage( i18n( "Filter Music Sources" ) );
 
     m_filterTimer.setSingleShot( true );
-    connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
+    connect( &m_filterTimer, SIGNAL(timeout()), this, SLOT(slotFilterNow()) );
 
     m_categoryListView = new Amarok::PrettyTreeView( this );
 #ifdef Q_WS_MAC
-    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerItem ); // for some bizarre reason w/ some styles on mac
-    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerItem ); // per-pixel scrolling is slower than per-item
+    // for some bizarre reason w/ some styles on mac
+    // per-pixel scrolling is slower than per-item
+    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerItem );
+    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerItem );
 #else
-    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
-    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
+    // Scrolling per item is really not smooth and looks terrible
+    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 #endif
-
-
 
     m_categoryListView->setFrameShape( QFrame::NoFrame );
 
@@ -77,15 +75,16 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name,
 
     if( sort )
     {
-        debug() << "We are sorting!!";
         m_proxyModel->setSortRole( Qt::DisplayRole );
         m_categoryListView->setSortingEnabled( true );
         m_categoryListView->sortByColumn( 0 );
     }
 
-    connect( m_categoryListView, SIGNAL(activated(const QModelIndex&)), this, SLOT(categoryActivated(const QModelIndex&)) );
+    connect( m_categoryListView, SIGNAL(activated(const QModelIndex &)),
+            SLOT(categoryActivated(const QModelIndex &)) );
 
-    connect( m_categoryListView, SIGNAL( entered( const QModelIndex & ) ), this, SLOT( categoryEntered( const QModelIndex & ) ) );
+    connect( m_categoryListView, SIGNAL(entered( const QModelIndex &) ),
+            SLOT(categoryEntered( const QModelIndex &) ) );
 
     The::paletteHandler()->updateItemView( m_categoryListView );
 
@@ -94,7 +93,6 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name,
 
 BrowserCategoryList::~BrowserCategoryList()
 {
-    // DEBUG_BLOCK
     qDeleteAll( m_categories.values() );
     delete m_categoryListView;
     delete m_categoryListModel;

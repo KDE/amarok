@@ -152,8 +152,6 @@ StatusBar::StatusBar( QWidget *parent )
 
 StatusBar::~StatusBar()
 {
-    DEBUG_BLOCK
-
     delete m_progressBar;
     m_progressBar = 0;
 
@@ -250,8 +248,6 @@ void StatusBar::nextShortMessage()
 
 void StatusBar::longMessage( const QString &text, MessageType type )
 {
-    DEBUG_BLOCK
-
     // The purpose of this emit is to make the operation thread safe. If this
     // method is called from a non-GUI thread, the "emit" relays it over the
     // event loop to the GUI thread, so that we can safely create widgets.
@@ -260,10 +256,6 @@ void StatusBar::longMessage( const QString &text, MessageType type )
 
 void StatusBar::slotLongMessage( const QString &text, MessageType type ) //SLOT
 {
-    DEBUG_BLOCK
-
-    debug() << "Text:" << text;
-
     LongMessageWidget *message = new LongMessageWidget( this, text, type );
     connect( message, SIGNAL( closed() ), this, SLOT( hideLongMessage() ) );
 }

@@ -58,7 +58,7 @@ class FileView : public Amarok::PrettyTreeView
     Q_OBJECT
 
 public:
-    FileView( QWidget * parent );
+    FileView( QWidget *parent );
 
 protected slots:
 
@@ -68,8 +68,8 @@ protected slots:
     void slotPrepareMoveTracks();
     void slotPrepareCopyTracks();
     void slotPrepareTranscodeTracks();
-    void slotMoveTracks( const Meta::TrackList& tracks );
-    void slotCopyTracks( const Meta::TrackList& tracks );
+    void slotMoveTracks( const Meta::TrackList &tracks );
+    void slotCopyTracks( const Meta::TrackList &tracks );
     void slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
 
 
@@ -89,19 +89,19 @@ private slots:
 private:
     Meta::TrackList tracksForEdit() const;
 
-    QAction * m_appendAction;
-    QAction * m_loadAction;
-    QAction * m_editAction;
-    QAction * m_separator1;
-    QAction * m_deleteAction;
+    QAction *m_appendAction;
+    QAction *m_loadAction;
+    QAction *m_editAction;
+    QAction *m_separator1;
+    QAction *m_deleteAction;
 
-    PopupDropper* m_pd;
+    PopupDropper *m_pd;
     QMutex m_dragMutex;
     bool m_ongoingDrag;
     bool m_moveActivated;
     bool m_copyActivated;
-    CollectionAction* m_moveAction;
-    CollectionAction* m_copyAction;
+    CollectionAction *m_moveAction;
+    CollectionAction *m_copyAction;
     QPersistentModelIndex m_lastSelectedIndex;
 };
 

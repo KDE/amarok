@@ -47,7 +47,7 @@ class BrowserCategoryList : public BrowserCategory
         * @param parent The parent widget.
         * @param name The name of this widget.
         */
-        BrowserCategoryList( QWidget *parent, const QString& name, bool sort = false );
+        BrowserCategoryList( QWidget *parent, const QString &name, bool sort = false );
 
         /**
          * Destructor.
@@ -90,7 +90,7 @@ class BrowserCategoryList : public BrowserCategory
          */
         QString navigate( const QString &target );
 
-        void activate( BrowserCategory * category );
+        void activate( BrowserCategory *category );
 
         QString path();
 
@@ -123,7 +123,7 @@ class BrowserCategoryList : public BrowserCategory
 
     private:
         SearchWidget *m_searchWidget;
-        QTreeView    *m_categoryListView;
+        QTreeView *m_categoryListView;
 
         QMap<QString, BrowserCategory *> m_categories;
         BrowserCategory *m_currentCategory;
@@ -138,7 +138,7 @@ class BrowserCategoryList : public BrowserCategory
         
         QString m_infoHtmlTemplate;
 
-        bool    m_sorting;
+        bool m_sorting;
 
     private slots:
         /**
@@ -148,13 +148,12 @@ class BrowserCategoryList : public BrowserCategory
          */
         void categoryActivated( const QModelIndex &index );
 
-        void categoryEntered ( const QModelIndex & index );
+        void categoryEntered( const QModelIndex &index );
 
         void slotSetFilterTimeout();
         void slotFilterNow();
 
         QString css();
-
 };
 
 

@@ -30,7 +30,7 @@
 
 #include <QWidget>
 
-BrowserDock::BrowserDock( QWidget * parent )
+BrowserDock::BrowserDock( QWidget *parent )
     : AmarokDockWidget( i18n( "&Media Sources" ), parent )
 {
     DEBUG_BLOCK
@@ -74,14 +74,15 @@ void BrowserDock::polish()
     m_mainWidget->setFrameShape( QFrame::NoFrame );
 
     // Keyboard shortcut for going back one level
-    KAction *action = new KAction( KIcon( "go-previous" ), i18n( "Previous Browser" ), m_mainWidget );
+    KAction *action = new KAction( KIcon( "go-previous" ), i18n( "Previous Browser" ),
+                                  m_mainWidget );
     Amarok::actionCollection()->addAction( "browser_previous", action );
-    connect( action, SIGNAL( triggered( bool ) ), m_categoryList.data(), SLOT( back() ) );
+    connect( action, SIGNAL(triggered( bool )), m_categoryList.data(), SLOT(back()) );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_Left ) );
 
     paletteChanged( App::instance()->palette() );
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ),
-             SLOT(  paletteChanged( const QPalette &  ) ) );
+    connect( The::paletteHandler(), SIGNAL(newPalette( const QPalette & )),
+             SLOT(paletteChanged( const QPalette & )) );
 }
 
 BrowserCategoryList *BrowserDock::list() const
@@ -90,7 +91,7 @@ BrowserCategoryList *BrowserDock::list() const
 }
 
 void
-BrowserDock::navigate( const QString & target )
+BrowserDock::navigate( const QString &target )
 {
     m_categoryList.data()->navigate( target );
 }
@@ -98,13 +99,13 @@ BrowserDock::navigate( const QString & target )
 void
 BrowserDock::home()
 {
-    DEBUG_BLOCK
     m_categoryList.data()->home();
 }
 
 void
-BrowserDock::paletteChanged( const QPalette& palette )
+BrowserDock::paletteChanged( const QPalette &palette )
 {
+    Q_UNUSED(palette); //palette is accessible via PaletteHandler
     m_progressFrame->setStyleSheet(
                 QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
                         .arg( PaletteHandler::alternateBackgroundColor().name() )

@@ -210,7 +210,8 @@ void CompoundProgressBar::showDetails()
     m_progressDetailsWidget->raise();
 
     //Hack to make sure it has the right height first time it is shown...
-    m_progressDetailsWidget->setFixedHeight( m_progressMap.values().at( 0 )->height() * m_progressMap.count() + 8 );
+    m_progressDetailsWidget->setFixedHeight(
+                m_progressMap.values().at( 0 )->height() * m_progressMap.count() + 8 );
     m_progressDetailsWidget->reposition();
     m_progressDetailsWidget->show();
 
@@ -239,4 +240,3 @@ void CompoundProgressBar::handleDetailsButton()
     else
         m_showDetailsButton->hide();
 }
-

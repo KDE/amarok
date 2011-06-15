@@ -74,7 +74,7 @@ public slots:
      * @see incrementProgress( QObject* )
      * @see setProgressStatus( const QObject*, const QString& )
      */
-    ProgressBar *newProgressOperation( QObject *owner, const QString & description );
+    ProgressBar *newProgressOperation( QObject *owner, const QString &description );
 
     /**
      * Monitor progress for a KIO::Job, very handy.
@@ -165,7 +165,7 @@ private:
 
     bool m_busy;
 
-    QTimer * m_shortMessageTimer;
+    QTimer *m_shortMessageTimer;
 
 private slots:
     void slotLongMessage( const QString &text, MessageType type = Information );

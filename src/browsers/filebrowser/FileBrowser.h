@@ -28,7 +28,7 @@ class FileBrowser : public BrowserCategory
     Q_OBJECT
 
 public:
-    FileBrowser( const char * name, QWidget *parent );
+    FileBrowser( const char *name, QWidget *parent );
     ~FileBrowser();
 
     virtual void setupAddItems();
@@ -61,7 +61,7 @@ protected slots:
      * file view.
      * @param toggled the visibility state of a column in the context menu.
      */
-    void toggleColumn( bool toggled);
+    void toggleColumn( bool toggled );
 
     /**
      * Go backward in history
@@ -94,7 +94,7 @@ protected slots:
      * @param index the index that we tried to setup
      * @param success did the setup succeed?
      */
-    void setupDone( const QModelIndex & index, bool success );    
+    void setupDone( const QModelIndex &index, bool success );
 
 private slots:
     void initView();
