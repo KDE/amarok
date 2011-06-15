@@ -26,13 +26,9 @@
 CompoundProgressBar::CompoundProgressBar( QWidget *parent )
         : ProgressBar( parent )
 {
-    m_showDetailsButton = new QToolButton();
-    m_showDetailsButton->setIcon( KIcon( "arrow-up-double-amarok" ) );
-
     m_progressDetailsWidget = new PopupWidget( parent );
     m_progressDetailsWidget->hide();
-    
-    connect( m_showDetailsButton, SIGNAL( clicked() ), this, SLOT( toggleDetails() ) );
+
     connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancelAll() ) );
 }
 
@@ -68,13 +64,11 @@ void CompoundProgressBar::addProgressBar( ProgressBar *childBar, QObject *owner 
     }
     else
     {
-        setDescription( i18n( "Multiple background tasks running" ) );
+        setDescription( i18n( "Multiple background tasks running (click to show)" ) );
         cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
     }
 
     cancelButton()->setHidden( false );
-
-    handleDetailsButton();
 }
 
 void CompoundProgressBar::endProgressOperation( QObject *owner )
@@ -101,6 +95,22 @@ void CompoundProgressBar::setProgress( const QObject *owner, int steps )
     m_progressMap.value( owner )->setValue( steps );
 }
 
+void
+CompoundProgressBar::mousePressEvent( QMouseEvent *event )
+{
+    if( m_progressDetailsWidget->isHidden() )
+    {
+        if( m_progressMap.count() )
+            showDetails();
+    }
+    else
+    {
+        hideDetails();
+    }
+
+    event->accept();
+}
+
 void CompoundProgressBar::setProgressTotalSteps( const QObject *owner, int value )
 {
     if( !m_progressMap.contains( owner ) )
@@ -108,6 +118,16 @@ void CompoundProgressBar::setProgressTotalSteps( const QObject *owner, int value
 
     m_progressMap.value( owner )->setMaximum( value );
 }
+
+void CompoundProgressBar::setParent( QWidget *parent )
+{
+    delete m_progressDetailsWidget;
+    m_progressDetailsWidget = new PopupWidget( parent );
+    m_progressDetailsWidget->hide();
+
+    ProgressBar::setParent( parent );
+}
+
 
 void CompoundProgressBar::setProgressStatus( const QObject *owner, const QString &text )
 {
@@ -117,14 +137,6 @@ void CompoundProgressBar::setProgressStatus( const QObject *owner, const QString
     m_progressMap.value( owner )->setDescription( text );
 }
 
-void CompoundProgressBar::setParent( QWidget *parent )
-{
-    delete m_progressDetailsWidget;
-    m_progressDetailsWidget = new PopupWidget( parent );
-
-    ProgressBar::setParent( parent );
-}
-
 void CompoundProgressBar::childPercentageChanged()
 {
     progressBar()->setValue( calcCompoundPercentage() );
@@ -132,7 +144,6 @@ void CompoundProgressBar::childPercentageChanged()
 
 void CompoundProgressBar::childBarCancelled( ProgressBar *childBar )
 {
-    DEBUG_BLOCK
     childBarFinished( childBar );
 }
 
@@ -198,15 +209,12 @@ int CompoundProgressBar::calcCompoundPercentage()
 
 void CompoundProgressBar::cancelAll()
 {
-    DEBUG_BLOCK
-
     foreach( ProgressBar *currentBar, m_progressMap )
         currentBar->cancel();
 }
 
 void CompoundProgressBar::showDetails()
 {
-    DEBUG_BLOCK
     m_progressDetailsWidget->raise();
 
     //Hack to make sure it has the right height first time it is shown...
@@ -214,15 +222,11 @@ void CompoundProgressBar::showDetails()
                 m_progressMap.values().at( 0 )->height() * m_progressMap.count() + 8 );
     m_progressDetailsWidget->reposition();
     m_progressDetailsWidget->show();
-
-    m_showDetailsButton->setIcon( KIcon( "arrow-down-double-amarok" ) );
 }
 
 void CompoundProgressBar::hideDetails()
 {
     m_progressDetailsWidget->hide();
-    m_showDetailsButton->setIcon( KIcon( "arrow-up-double-amarok" ) );
-    handleDetailsButton();
 }
 
 void CompoundProgressBar::toggleDetails()
@@ -231,12 +235,4 @@ void CompoundProgressBar::toggleDetails()
         hideDetails();
     else
         showDetails();
-}
-
-void CompoundProgressBar::handleDetailsButton()
-{
-    if( m_progressMap.count() > 1 )    
-        m_showDetailsButton->show();
-    else
-        m_showDetailsButton->hide();
 }

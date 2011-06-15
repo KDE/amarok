@@ -22,6 +22,7 @@
 
 #include <QList>
 #include <QMap>
+#include <QMouseEvent>
 
 /**
  * A progress bar that wraps a number of simple progress bars and displays their 
@@ -46,6 +47,9 @@ public:
     /* reimplemented from QWidget for correct positioning of progressDetailsWidget */
     virtual void setParent( QWidget *parent );
 
+    /* reimplemented from QWidget to open/close the details widget */
+    virtual void mousePressEvent( QMouseEvent *event );
+
 public slots:
     void endProgressOperation( QObject *owner );
 
@@ -66,15 +70,11 @@ private:
     void showDetails();
     void hideDetails();
 
-    void handleDetailsButton();
     void childBarFinished( ProgressBar *bar );
 
     int calcCompoundPercentage();
 
     QMap< const QObject *, ProgressBar *> m_progressMap;
-
-    QToolButton *m_showDetailsButton;
-
     PopupWidget *m_progressDetailsWidget;
 };
 

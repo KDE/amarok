@@ -134,6 +134,7 @@ MainWindow::MainWindow()
     PERF_LOG( "Started Collection Manager instance" )
 
     PERF_LOG( "Set Status Bar" )
+    //TODO: remove once BrowserDock completely implements Amarok::Logger with extended features
     StatusBar* statusBar = new StatusBar( this );
     PERF_LOG( "Created Status Bar" )
 
