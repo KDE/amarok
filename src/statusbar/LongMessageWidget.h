@@ -24,30 +24,23 @@
 
 class CountdownFrame : public QFrame
 {
-
 public:
-    CountdownFrame( QWidget * parent = 0 );
+    CountdownFrame( QWidget *parent = 0 );
     void setFilledRatio( float filled ); // 0 to 1
 
-    virtual void paintEvent( QPaintEvent * e );
+    virtual void paintEvent( QPaintEvent *e );
 
 protected:
-
     float m_filled;
-
 };
 
-
-/**
-A widget for displaying a long message as an overlay
-
-	@author
+/** A widget for displaying a long message as an overlay
 */
 class LongMessageWidget : public PopupWidget
 {
     Q_OBJECT
 public:
-    LongMessageWidget( QWidget * anchor, const QString & message, StatusBar::MessageType type );
+    LongMessageWidget( QWidget *anchor, const QString &message, StatusBar::MessageType type );
 
     ~LongMessageWidget();
 
@@ -55,19 +48,16 @@ signals:
     void closed();
 
 protected:
-
-    void timerEvent( QTimerEvent* );
+    void timerEvent( QTimerEvent * );
 
 private slots:
-
     void close();
 
 private:
-
-    CountdownFrame  * m_countdownFrame;
-    int      m_counter;
-    int      m_timeout;
-    int      m_timerId;
+    CountdownFrame *m_countdownFrame;
+    int m_counter;
+    int m_timeout;
+    int m_timerId;
 
 };
 

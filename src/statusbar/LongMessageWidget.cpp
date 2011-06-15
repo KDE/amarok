@@ -27,7 +27,8 @@
 #include <QToolTip>
 
 
-LongMessageWidget::LongMessageWidget( QWidget * anchor, const QString & message, StatusBar::MessageType type )
+LongMessageWidget::LongMessageWidget( QWidget *anchor, const QString &message,
+                                     StatusBar::MessageType type )
         : PopupWidget( anchor )
         , m_counter( 0 )
         , m_timeout( 6000 )
@@ -47,10 +48,7 @@ LongMessageWidget::LongMessageWidget( QWidget * anchor, const QString & message,
     QPalette p = QToolTip::palette();
     setPalette( p );
 
-    KHBox *hbox;
-    QLabel *alabel;
-
-    hbox = new KHBox( this );
+    KHBox *hbox = new KHBox( this );
     layout()->addWidget( hbox );
 
     hbox->setSpacing( 12 );
@@ -63,26 +61,16 @@ LongMessageWidget::LongMessageWidget( QWidget * anchor, const QString & message,
     pal.setColor( m_countdownFrame->foregroundRole(), p.dark().color() );
     m_countdownFrame->setPalette( pal );
 
-    /*  label = new QLabel( this );
-        label->setObjectName( "image" );
-        hbox->addWidget( label );
-    */
-    //QLabel *alabel;
-    alabel = new QLabel( message, hbox );
-    //alabel->setBackgroundRole( QPalette::Highlight );
-    //alabel->setParent( this );
+    QLabel *alabel = new QLabel( message, hbox );
     alabel->setWordWrap( true );
     alabel->setObjectName( "label" );
     alabel->setTextFormat( Qt::RichText );
     alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
     alabel->setPalette( p );
 
-    //m_layout->addWidget( alabel );
-
     hbox = new KHBox( this );
     layout()->addWidget( hbox );
 
-    //hbox->addItem( new QSpacerItem( hbox, 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
     KPushButton *button = new KPushButton( KStandardGuiItem::close(), hbox );
     button->setObjectName( "closeButton" );
     connect( button, SIGNAL( clicked() ), SLOT( close() ) );
@@ -104,7 +92,7 @@ void LongMessageWidget::close()
 
 void LongMessageWidget::timerEvent( QTimerEvent* )
 {
-    if ( !m_timeout )
+    if( !m_timeout )
     {
         killTimer( m_timerId );
         return;
@@ -112,16 +100,16 @@ void LongMessageWidget::timerEvent( QTimerEvent* )
 
     CountdownFrame *&h = m_countdownFrame;
 
-    if ( m_counter < h->height() - 3 )
+    if( m_counter < h->height() - 3 )
     {
         h->setFilledRatio(( float ) m_counter / ( float ) h->height() );
         h->repaint();
     }
 
-    if ( !testAttribute( Qt::WA_UnderMouse ) )
+    if( !testAttribute( Qt::WA_UnderMouse ) )
         m_counter++;
 
-    if ( m_counter > h->height() )
+    if( m_counter > h->height() )
     {
         killTimer( m_timerId );
         h->setFilledRatio( 1 );
@@ -135,14 +123,13 @@ void LongMessageWidget::timerEvent( QTimerEvent* )
     }
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 // class CountdownFrame 
 //////////////////////////////////////////////////////////////////////////////
 
-CountdownFrame::CountdownFrame( QWidget * parent )
+CountdownFrame::CountdownFrame( QWidget *parent )
         : QFrame( parent )
-        , m_filled(0.0)
+        , m_filled( 0.0 )
 {}
 
 void CountdownFrame::setFilledRatio( float filled )
@@ -150,17 +137,16 @@ void CountdownFrame::setFilledRatio( float filled )
     m_filled = filled;
 }
 
-void CountdownFrame::paintEvent( QPaintEvent * e )
+void CountdownFrame::paintEvent( QPaintEvent *e )
 {
     QFrame::paintEvent( e );
 
     QPalette p = palette();
     p.setCurrentColorGroup( QPalette::Active );
-    //QPainter( this ).fillRect( 2, (int)m_filled * height(), width() - 4, static_cast<int>(height() - m_filled * height()), p.highlight() );
 
-    QPainter( this ).fillRect( 2, m_filled * height() , width() - 4, height() - ( m_filled * height() ) , p.highlight() );
+    QPainter( this ).fillRect( 2, m_filled * height() , width() - 4, height()
+                               - ( m_filled * height() ) , p.highlight()
+                             );
 }
 
-
 #include "LongMessageWidget.moc"
-
