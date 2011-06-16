@@ -78,11 +78,11 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     boldFont.setBold( true );
     QVBoxLayout *l1 = new QVBoxLayout( this );
     QHBoxLayout *l2 = new QHBoxLayout;
-    l2->addWidget( m_prefix = new HintingLineEdit( "[prefix]", this ) );
+    l2->addWidget( m_prefix = new HintingLineEdit( i18nc( "placeholder for a prefix", "[prefix]" ), this ) );
     m_prefix->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     l2->addWidget( m_element = new QLabel( this ) );
     m_element->setFont( boldFont );
-    l2->addWidget( m_suffix = new HintingLineEdit( "[suffix]", this ) );
+    l2->addWidget( m_suffix = new HintingLineEdit( i18nc( "placeholder for a suffix", "[suffix]" ), this ) );
     l1->addLayout( l2 );
 
     QFrame *line = new QFrame( this );
