@@ -104,7 +104,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     presetToolbar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
 
     m_onOffButton = new QToolButton( presetToolbar );
-    m_onOffButton->setText( i18nc( "Turn dynamic mode on", "On ") );
+    m_onOffButton->setText( i18nc( "Turn dynamic mode on", "On") );
     m_onOffButton->setCheckable( true );
     m_onOffButton->setIcon( KIcon( "dynamic-amarok" ) );
     m_onOffButton->setToolTip( i18n( "Turn dynamic mode on." ) );
