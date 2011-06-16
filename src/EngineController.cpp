@@ -43,7 +43,6 @@
 #include "playlist/PlaylistActions.h"
 
 #include <KFileItem>
-#include <KIO/Job>
 #include <KMessageBox>
 #include <KRun>
 #include <KServiceTypeTrader>

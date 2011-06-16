@@ -37,7 +37,6 @@
 
 class QTimer;
 
-namespace KIO { class Job; }
 namespace Capabilities { class MultiPlayableCapability; class MultiSourceCapability; }
 namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect; }
 
