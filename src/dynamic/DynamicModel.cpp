@@ -778,7 +778,7 @@ Dynamic::DynamicModel::newPlaylist()
 {
     Dynamic::BiasedPlaylist *playlist = new Dynamic::BiasedPlaylist( this );
     Dynamic::BiasPtr bias( new Dynamic::SearchQueryBias() );
-    playlist->setTitle( i18n("New playlist") );
+    playlist->setTitle( i18nc( "Default name for new playlists", "New playlist") );
     playlist->bias()->replace( bias );
 
     return insertPlaylist( m_playlists.count(), playlist );
