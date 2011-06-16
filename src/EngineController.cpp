@@ -53,9 +53,7 @@
 #include <Phonon/VolumeFaderEffect>
 
 #include <QTextDocument>
-#include <QTimer>
-
-#include <cmath>
+#include <QtCore/qmath.h>
 
 namespace The {
     EngineController* engineController() { return EngineController::instance(); }
@@ -849,7 +847,7 @@ EngineController::eqMaxGain() const
    if( mEqPar.isEmpty() )
        return 100.0;
    double mScale;
-   mScale = ( fabs(mEqPar.at(0).maximumValue().toDouble() ) +  fabs( mEqPar.at(0).minimumValue().toDouble() ) );
+   mScale = ( qAbs(mEqPar.at(0).maximumValue().toDouble() ) +  qAbs( mEqPar.at(0).minimumValue().toDouble() ) );
    mScale /= 2.0;
    return mScale;
 }
@@ -913,7 +911,7 @@ EngineController::eqUpdate() //SLOT
         foreach( const Phonon::EffectParameter &mParam, mEqPar )
         {
             scaledVal = mEqParNewIt.hasNext() ? mEqParNewIt.next() : 0;
-            scaledVal *= ( fabs(mParam.maximumValue().toDouble() ) +  fabs( mParam.minimumValue().toDouble() ) );
+            scaledVal *= ( qAbs(mParam.maximumValue().toDouble() ) +  qAbs( mParam.minimumValue().toDouble() ) );
             scaledVal /= 200.0;
             m_equalizer.data()->setParameterValue( mParam, scaledVal );
         }
@@ -1123,8 +1121,8 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         debug() << "Using gain of" << gain << "with relative peak of" << peak;
         // we calculate the volume change ourselves, because m_preamp.data()->setVolumeDecibel is
         // a little confused about minus signs
-        m_preamp.data()->setVolume( exp( gain * log10over20 ) );
-        m_preamp.data()->fadeTo( exp( gain * log10over20 ), 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
+        m_preamp.data()->setVolume( qExp( gain * log10over20 ) );
+        m_preamp.data()->fadeTo( qExp( gain * log10over20 ), 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
     }
     else if( m_preamp )
     {

@@ -24,7 +24,6 @@
 #include "core/capabilities/BoundedPlaybackCapability.h"
 #include "core/meta/Meta.h"
 
-#include <QMap>
 #include <QMutex>
 #include <QObject>
 #include <QWeakPointer>
