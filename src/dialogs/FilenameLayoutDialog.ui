@@ -492,6 +492,13 @@ p, li { white-space: pre-wrap; }
          <widget class="QWidget" name="hlNestingLevel" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
+            <widget class="QLabel" name="label_14">
+             <property name="text">
+              <string>Reduce directories nesting level to:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QSpinBox" name="sbNestingLevel">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -507,13 +514,6 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_14">
-             <property name="text">
-              <string>Reduce directories nesting level</string>
              </property>
             </widget>
            </item>
