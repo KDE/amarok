@@ -258,7 +258,7 @@
          <item row="5" column="0">
           <widget class="QCheckBox" name="kcfg_OsdHideOnFullscreen">
            <property name="toolTip">
-            <string>Do not show the tooltip if another application is focused and running in fullscreen mode.</string>
+            <string>Do not show the On-Screen-Display if another application is focused and running in fullscreen mode.</string>
            </property>
            <property name="text">
             <string>Don't show when a fullscreen application is active</string>
