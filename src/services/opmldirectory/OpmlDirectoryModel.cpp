@@ -291,7 +291,7 @@ OpmlDirectoryModel::slotAddOpmlAction()
     }
 
     KDialog *dialog = new KDialog( The::mainWindow() );
-    dialog->setCaption( i18n( "Add OPML" ) );
+    dialog->setCaption( i18nc( "Heading of Add OPML dialog", "Add OPML" ) );
     dialog->setButtons( KDialog::Ok | KDialog::Cancel );
     QWidget *opmlAddWidget = new QWidget( dialog );
     Ui::AddOpmlWidget widget;
