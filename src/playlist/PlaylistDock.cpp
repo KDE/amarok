@@ -176,11 +176,17 @@ Playlist::Dock::polish()
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setMovable( false );
 
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
+        KActionMenu *playlistMenu = new KActionMenu( KIcon( "amarok_playlist" ),
+                                                     i18n( "&Playlist" ), m_mainWidget );
+        playlistMenu->setDelayed(false);
+
+        playlistMenu->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ),
                                               i18n("&Save Current Playlist"), m_mainWidget );
+
         m_saveActions = new KActionCollection( m_mainWidget );
+
         connect( m_savePlaylistMenu, SIGNAL( triggered( bool ) ),
                  SLOT( slotSaveCurrentPlaylist() ) );
         foreach( Playlists::PlaylistProvider *provider, The::playlistManager()->providersForCategory(
@@ -198,18 +204,18 @@ Playlist::Dock::polish()
                  SLOT( playlistProviderRemoved( Playlists::PlaylistProvider *, int ) )
                  );
 
-        plBar->addAction( m_savePlaylistMenu );
+        playlistMenu->addAction( m_savePlaylistMenu );
 
-        plBar->addSeparator();
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
-        plBar->addSeparator();
-
-        plBar->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
-        plBar->addSeparator();
+        playlistMenu->addSeparator();
+        playlistMenu->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
+        playlistMenu->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
+        plBar->addAction( playlistMenu );
 
         NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( m_mainWidget );
         plBar->addAction( navigatorConfig );
+        plBar->addSeparator();
+
+        plBar->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
         plBar->addSeparator();
 
         QToolButton *toolButton =
