@@ -917,13 +917,13 @@ Dynamic::DynamicModel::initPlaylists()
 
     // - a playlist demonstrating the SearchQueryBias
     playlist = new Dynamic::BiasedPlaylist( this );
-    playlist->setTitle( "Rock and Pop" );
+    playlist->setTitle( i18n("Rock and Pop") );
     playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( "genre:Rock OR genre:Pop" ) ) );
     insertPlaylist( 1, playlist );
 
     // - a complex playlist demonstrating AlbumPlay and IfElse
     playlist = new Dynamic::BiasedPlaylist( this );
-    playlist->setTitle( "Album play" );
+    playlist->setTitle( i18n("Album play") );
     Dynamic::IfElseBias *ifElse = new Dynamic::IfElseBias();
     playlist->bias()->replace( Dynamic::BiasPtr( ifElse ) );
     ifElse->appendBias( Dynamic::BiasPtr( new Dynamic::AlbumPlayBias() ) );
@@ -932,7 +932,7 @@ Dynamic::DynamicModel::initPlaylists()
 
     // - a complex playlist demonstrating PartBias and TagMatchBias
     playlist = new Dynamic::BiasedPlaylist( this );
-    playlist->setTitle( "Rating" );
+    playlist->setTitle( i18n("Rating") );
     Dynamic::PartBias *part = new Dynamic::PartBias();
     playlist->bias()->replace( Dynamic::BiasPtr( part ) );
 
