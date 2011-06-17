@@ -205,7 +205,7 @@ Playlist::Dock::polish()
         playlistActions->addAction( m_savePlaylistMenu );
 
         playlistActions->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
-        playlistActions->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
+        //redo action can be accessed from menu > Playlist
 
         playlistActions->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
 
@@ -217,7 +217,7 @@ Playlist::Dock::polish()
 
         plBar->addCollapsibleActions( playlistActions );
 
-        NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( m_mainWidget );
+        NavigatorConfigAction *navigatorConfig = new NavigatorConfigAction( m_mainWidget );
         plBar->addAction( navigatorConfig );
 
         QToolButton *toolButton =

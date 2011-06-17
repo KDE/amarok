@@ -15,6 +15,9 @@ VERSION 2.4.2-Beta 1
     * Option to hide the OSD if another window is taking the full screen
 
   CHANGES:
+    * Removed the redo action from the playlist toolbar to make it less wide.
+    * Made some playlist toolbar actions collapse into a menu button for use on
+      small screens.
     * Removed the statusbar. Moved progress messages to the Media Sources dock.
     * Removed the preview button and checkbox from the organize collection dialog.
     * General user interface cleanup (addition of browser widget backgrounds,
