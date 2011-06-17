@@ -33,14 +33,18 @@
 BrowserDock::BrowserDock( QWidget *parent )
     : AmarokDockWidget( i18n( "&Media Sources" ), parent )
 {
-    DEBUG_BLOCK
-
     setObjectName( "Media Sources dock" );
     setAllowedAreas( Qt::AllDockWidgetAreas );
 
     //we have to create this here as it is used when setting up the
-    //categories (unless of couse we move that to polish as well...)
+    //categories (unless of course we move that to polish as well...)
     m_mainWidget = new KVBox( this );
+    setWidget( m_mainWidget );
+    m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
+    m_mainWidget->setFrameShape( QFrame::NoFrame );
+    m_mainWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
+    m_mainWidget->setFocus( Qt::ActiveWindowFocusReason );
+
     m_breadcrumbWidget = new BrowserBreadcrumbWidget( m_mainWidget );
     new HorizontalDivider( m_mainWidget );
     m_categoryList = new BrowserCategoryList( m_mainWidget, "root list" );
@@ -49,6 +53,8 @@ BrowserDock::BrowserDock( QWidget *parent )
     //HACK: keep the progressArea in it's place at the bottom
     QWidget *container = new QWidget( m_mainWidget );
     container->setLayout( new QVBoxLayout( container ) );
+    container->layout()->setContentsMargins( 0, 0, 0, 0 );
+    container->layout()->setSpacing( 0 );
     m_progressFrame = The::statusBar()->progressArea();
     m_progressFrame->setAutoFillBackground( true );
     m_progressFrame->setFixedHeight( 30 );
@@ -62,16 +68,11 @@ BrowserDock::~BrowserDock()
 
 void BrowserDock::polish()
 {
-    DEBUG_BLOCK
-    setWidget( m_mainWidget );
-
     m_categoryList.data()->setIcon( KIcon( "user-home" ) );
 
     m_categoryList.data()->setMinimumSize( 100, 300 );
 
     connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
-
-    m_mainWidget->setFrameShape( QFrame::NoFrame );
 
     // Keyboard shortcut for going back one level
     KAction *action = new KAction( KIcon( "go-previous" ), i18n( "Previous Browser" ),
