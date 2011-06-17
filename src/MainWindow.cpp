@@ -237,6 +237,9 @@ MainWindow::init()
     PERF_LOG( "Create Playlist" )
     m_playlistDock = new Playlist::Dock( this );
     m_playlistDock.data()->installEventFilter( this );
+    //HACK, need to connect after because of order in MainWindow()
+    connect( Amarok::actionCollection()->action( "playlist_edit_queue" ),
+             SIGNAL( triggered( bool ) ), m_playlistDock.data(), SLOT( slotEditQueue() ) );
     PERF_LOG( "Playlist created" )
 
     PERF_LOG( "Creating ContextWidget" )
@@ -717,8 +720,11 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( clear() ) );
     ac->addAction( "playlist_clear", action );
 
-    action = new KAction( KIcon( "format-list-ordered" ), i18nc( "edit play queue of playlist", "Edit &Queue" ), this );
-    ac->addAction( "playlist_edit_queue", action );
+    action = new KAction( KIcon( "format-list-ordered" ),
+                          i18nc( "edit play queue of playlist", "Edit &Queue" ), this );
+    //Qt::META+Qt::Key_Q is taken by Plasma as a global
+    action->setShortcut( KShortcut( Qt::META + Qt::Key_U ) );
+    ac->addAction( "playlist_edit_queue", action );;
 
     action = new KAction( i18nc( "Remove duplicate and dead (unplayable) tracks from the playlist", "Re&move Duplicates" ), this );
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( removeDeadAndDuplicates() ) );
@@ -1021,6 +1027,7 @@ MainWindow::createMenus()
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_clear") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_remove_dead_and_duplicates") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_layout") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_edit_queue") );
     //END Playlist menu
 
     //BEGIN Tools menu

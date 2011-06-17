@@ -15,6 +15,8 @@ VERSION 2.4.2-Beta 1
     * Option to hide the OSD if another window is taking the full screen
 
   CHANGES:
+    * Moved the queue-editor action to the main menu under playlist to save space.
+      Queue editor now has a shortcut: Meta+U.
     * Removed the redo action from the playlist toolbar to make it less wide.
     * Made some playlist toolbar actions collapse into a menu button for use on
       small screens.

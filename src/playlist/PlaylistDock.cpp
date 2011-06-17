@@ -209,12 +209,6 @@ Playlist::Dock::polish()
 
         playlistActions->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
 
-        QAction *queueEditAction = Amarok::actionCollection()->action( "playlist_edit_queue" );
-        connect( queueEditAction, SIGNAL( triggered( bool ) ),
-                 SLOT( slotEditQueue() ) );
-
-        playlistActions->addAction( queueEditAction );
-
         plBar->addCollapsibleActions( playlistActions );
 
         NavigatorConfigAction *navigatorConfig = new NavigatorConfigAction( m_mainWidget );
