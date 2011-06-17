@@ -424,6 +424,7 @@ set(libplaylist_SRCS
     playlist/PlaylistViewUrlGenerator.cpp
     playlist/PlaylistViewUrlRunner.cpp
     playlist/PlaylistDock.cpp
+    playlist/PlaylistToolBar.cpp
     playlist/ProgressiveSearchWidget.cpp
     playlist/UndoCommands.cpp
     playlist/layouts/LayoutEditDialog.cpp

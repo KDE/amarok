@@ -74,6 +74,7 @@ private slots:
 private:
     KActionMenu *m_savePlaylistMenu;
     KActionCollection *m_saveActions;
+
     QWeakPointer<PlaylistQueueEditor> m_playlistQueueEditor;
 
     PrettyListView *m_playlistView;

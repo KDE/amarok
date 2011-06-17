@@ -35,6 +35,7 @@
 #include "PlaylistManager.h"
 #include "PlaylistModelStack.h"
 #include "PlaylistQueueEditor.h"
+#include "PlaylistToolBar.h"
 #include "ProgressiveSearchWidget.h"
 #include "playlist/PlaylistActions.h"
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
@@ -170,17 +171,14 @@ Playlist::Dock::polish()
                     );
 
         // Use QToolBar instead of KToolBar, see bug 228390
-        QToolBar *plBar = new QToolBar( m_barBox );
+        ToolBar *plBar = new ToolBar( m_barBox );
         plBar->setFixedHeight( 30 );
-        plBar->setObjectName( "PlaylistToolBar" );
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setMovable( false );
 
-        KActionMenu *playlistMenu = new KActionMenu( KIcon( "amarok_playlist" ),
-                                                     i18n( "&Playlist" ), m_mainWidget );
-        playlistMenu->setDelayed(false);
 
-        playlistMenu->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
+        QActionGroup *playlistActions = new QActionGroup( m_mainWidget );
+        playlistActions->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ),
                                               i18n("&Save Current Playlist"), m_mainWidget );
@@ -204,18 +202,17 @@ Playlist::Dock::polish()
                  SLOT( playlistProviderRemoved( Playlists::PlaylistProvider *, int ) )
                  );
 
-        playlistMenu->addAction( m_savePlaylistMenu );
+        playlistActions->addAction( m_savePlaylistMenu );
 
-        playlistMenu->addSeparator();
-        playlistMenu->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
-        playlistMenu->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
-        plBar->addAction( playlistMenu );
+        playlistActions->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
+        playlistActions->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
+
+        playlistActions->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
+
+        plBar->addCollapsibleActions( playlistActions );
 
         NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( m_mainWidget );
         plBar->addAction( navigatorConfig );
-        plBar->addSeparator();
-
-        plBar->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
         plBar->addSeparator();
 
         QToolButton *toolButton =
