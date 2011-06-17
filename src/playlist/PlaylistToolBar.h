@@ -38,7 +38,7 @@ public:
       * Constructor.
       * @param parent a pointer to the parent widget.
       */
-    explicit ToolBar( QWidget *parent = 0 );
+    explicit ToolBar( QWidget *parent );
 
     /**
       * Adds a list of actions which are either placed at the beginning of the toolbar, or

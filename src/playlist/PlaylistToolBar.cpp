@@ -31,11 +31,11 @@ ToolBar::ToolBar( QWidget *parent ) :
 {
     setObjectName( "PlaylistToolBar" );
 
-    m_collapsibleActions = new QActionGroup( this ); //needs to exist before adding any
+    m_collapsibleActions = new QActionGroup( parent ); //needs to exist before adding any
                                                      //other action to the toolbar
 
     m_playlistOperationsMenu = new KActionMenu( KIcon( "amarok_playlist" ),
-                                                 i18n( "&Playlist" ), this );
+                                                i18n( "&Playlist" ), parent );
     m_playlistOperationsMenu->setDelayed( false );
     m_playlistOperationsMenu->setVisible( false );
 
