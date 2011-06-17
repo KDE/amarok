@@ -25,6 +25,10 @@
 namespace PlaylistBrowserNS
 {
 
+/** A special delegate for the dynamic playlists.
+    It will paint an additional operator hint in front of a bias.
+    e.g. a small progress bar or a "If" text.
+*/
 class DynamicBiasDelegate : public QStyledItemDelegate
 {
     public:
@@ -35,14 +39,10 @@ class DynamicBiasDelegate : public QStyledItemDelegate
                     const QStyleOptionViewItem& option,
                     const QModelIndex& index ) const;
 
-        QSize sizeHint( const QStyleOptionViewItem& option,
-                        const QModelIndex& index ) const;
     private:
-      QFont m_bigFont;
       QFont m_normalFont;
       QFont m_smallFont;
 
-      QFontMetrics *m_bigFm;
       QFontMetrics *m_normalFm;
       QFontMetrics *m_smallFm;
 

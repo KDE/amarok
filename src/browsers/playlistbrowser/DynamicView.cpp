@@ -225,6 +225,7 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
     if( v.isValid() )
     {
         Dynamic::DynamicPlaylist* playlist = qobject_cast<Dynamic::DynamicPlaylist*>(v.value<QObject*>() );
+        Q_UNUSED( playlist );
         QAction* action;
 
         action = new KAction( KIcon( "document-properties-amarok" ), i18n( "&Rename playlist" ), this );
@@ -249,6 +250,7 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
     if( v.isValid() )
     {
         Dynamic::AbstractBias* bias = qobject_cast<Dynamic::AbstractBias*>(v.value<QObject*>() );
+        Q_UNUSED( bias );
         Dynamic::AndBias* aBias = qobject_cast<Dynamic::AndBias*>(v.value<QObject*>() );
         QAction* action;
 
