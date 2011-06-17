@@ -42,7 +42,7 @@ Context::AppletToolbarBase::paint( QPainter* painter, const QStyleOptionGraphics
     QColor bottomColor = topColor;
     topColor.setAlpha( 200 );
     bottomColor.setAlpha( 100 );
-    qreal radius = 6;
+    qreal radius = 3;
     qreal boundWidth = boundingRect().width();
     qreal boundHeight = boundingRect().height();
 

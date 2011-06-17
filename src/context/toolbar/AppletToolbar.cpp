@@ -71,7 +71,7 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     painter->save();
 
     QColor col = PaletteHandler::alternateBackgroundColor();
-    qreal radius = 6;
+    qreal radius = 3;
 
     QPainterPath outline;
     outline.addRoundedRect( boundingRect(), radius, radius );
