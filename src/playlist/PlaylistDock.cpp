@@ -206,21 +206,22 @@ Playlist::Dock::polish()
 
         playlistActions->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
 
+        QAction *queueEditAction = Amarok::actionCollection()->action( "playlist_edit_queue" );
+        connect( queueEditAction, SIGNAL( triggered( bool ) ),
+                 SLOT( slotEditQueue() ) );
+
+        playlistActions->addAction( queueEditAction );
+
         plBar->addCollapsibleActions( playlistActions );
 
         NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( m_mainWidget );
         plBar->addAction( navigatorConfig );
-        plBar->addSeparator();
 
         QToolButton *toolButton =
                 qobject_cast<QToolButton*>(plBar->widgetForAction( navigatorConfig ) );
         if( toolButton )
             toolButton->setPopupMode( QToolButton::InstantPopup );
 
-        QAction *queueEditAction = Amarok::actionCollection()->action( "playlist_edit_queue" );
-        plBar->addAction( queueEditAction );
-        connect( queueEditAction, SIGNAL( triggered( bool ) ),
-                 SLOT( slotEditQueue() ) );
         plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
 
         // label widget

@@ -72,9 +72,9 @@ private:
     {
         int limitWidth;
         if( m_collapsed )
-            limitWidth = (actions().count() + m_collapsibleActions->actions().count() -1)*26;
+            limitWidth = (actions().count() + m_collapsibleActions->actions().count() -1)*27;
         else
-            limitWidth = (actions().count() -1)*26;
+            limitWidth = (actions().count() -1)*27;
         return limitWidth;
     }
 
