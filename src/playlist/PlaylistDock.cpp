@@ -204,6 +204,9 @@ Playlist::Dock::polish()
 
         playlistActions->addAction( m_savePlaylistMenu );
 
+        playlistActions->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
+        playlistActions->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
+
         playlistActions->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
 
         QAction *queueEditAction = Amarok::actionCollection()->action( "playlist_edit_queue" );
