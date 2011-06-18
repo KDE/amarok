@@ -231,7 +231,8 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
                         maxPossibleScore += 12;
                     }
 
-                    if( release.isEmpty() && track.contains( MusicBrainz::RELEASELIST) )
+                    if( release.isEmpty() && track.contains( MusicBrainz::RELEASELIST ) &&
+                        !track.value( MusicBrainz::RELEASELIST ).toStringList().isEmpty() )
                         release = track.value( MusicBrainz::RELEASELIST ).toStringList().first();
 
                     if( !release.isEmpty() )
