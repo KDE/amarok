@@ -300,7 +300,6 @@ protected slots:
     void slotCopyNextTrackFailed( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
     void slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
 
-    void slotCopyTrackJobsDone( ThreadWeaver::Job* job );
     void slotFinalizeTrackCopy( const Meta::TrackPtr & track );
     void slotCopyTrackFailed( const Meta::TrackPtr & track );
     void slotFinalizeTrackRemove( const Meta::TrackPtr & track );

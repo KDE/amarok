@@ -1011,21 +1011,16 @@ MediaDeviceHandler::enqueueNextCopyThread()
         // Copy the track
         ThreadWeaver::Weaver::instance()->enqueue(  new CopyWorkerThread( track,  this ) );
     }
-}
+    else
+    {
+	// Finish the progress bar
+	emit incrementProgress();
+	emit endProgressOperation( this );
 
-void
-MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
-{
-    Q_UNUSED( job )
-    // TODO: some error checking showing tracks that could not be copied
-
-    // Finish the progress bar
-    emit incrementProgress();
-    emit endProgressOperation( this );
-
-    // Inform CollectionLocation that copying is done
-    m_isCopying = false;
-    emit copyTracksDone( true );
+	// Inform CollectionLocation that copying is done
+	m_isCopying = false;
+	emit copyTracksDone( true );
+    }
 }
 
 float
