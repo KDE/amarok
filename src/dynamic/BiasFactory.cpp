@@ -75,7 +75,7 @@ class AndBiasFactory : public Dynamic::AbstractBiasFactory
     QString i18nDescription() const
     { return i18nc("Description of the \"And\" bias",
                    "The \"And\" bias adds tracks that match all\n"
-                   "of the sub biases at the same time."); }
+                   "of the sub biases."); }
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::AndBias() ); }
@@ -93,7 +93,7 @@ class OrBiasFactory : public Dynamic::AbstractBiasFactory
     QString i18nDescription() const
     { return i18nc("Description of the \"Or\" bias",
                    "The \"Or\" bias adds tracks that match at\n"
-                   "least one of the sub biases at the same time."); }
+                   "least one of the sub biases."); }
 
     Dynamic::BiasPtr createBias()
     { return Dynamic::BiasPtr( new Dynamic::OrBias() ); }

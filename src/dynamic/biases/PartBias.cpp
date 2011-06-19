@@ -50,7 +50,7 @@ Dynamic::PartBiasFactory::name() const
 QString
 Dynamic::PartBiasFactory::i18nDescription() const
 { return i18nc("Description of the \"Part\" bias",
-                   "The \"Part\" bias adds tracks that match at least one of the sub biases."); }
+                   "The \"Part\" bias fills parts of the playlist from different sub-biases."); }
 
 Dynamic::BiasPtr
 Dynamic::PartBiasFactory::createBias()
