@@ -13,15 +13,13 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "BrowserCategory.h"
 
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
 
 #include "core/support/Debug.h"
-
-#include "ToolBar.h"
 
 #include <QWidget>
 

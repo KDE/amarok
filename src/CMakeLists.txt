@@ -728,7 +728,6 @@ set(amaroklib_LIB_SRCS
     widgets/TokenPool.cpp
     widgets/Token.cpp
     widgets/TokenWithLayout.cpp
-    widgets/VolumeWidget.cpp
     widgets/VolumeDial.cpp
     widgets/Splitter.cpp
     widgets/TrackActionButton.cpp
