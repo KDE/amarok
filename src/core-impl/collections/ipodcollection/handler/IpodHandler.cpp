@@ -1614,26 +1614,34 @@ IpodHandler::libGetBpm( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_itdbtrackhash[ track ]->BPM;
 }
+
 int
 IpodHandler::libGetFileSize( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_itdbtrackhash[ track ]->size;
 }
+
 int
 IpodHandler::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_itdbtrackhash[ track ]->playcount;
 }
+
 QDateTime
 IpodHandler::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QDateTime::fromTime_t(m_itdbtrackhash[ track ]->time_played);
+    time_t time_played = m_itdbtrackhash[ track ]->time_played;
+    if( time_played == 0 )
+        return QDateTime();  // 0 means "no last played time", so return invalid QDateTime
+    return QDateTime::fromTime_t( time_played );
 }
+
 int
 IpodHandler::libGetRating( const Meta::MediaDeviceTrackPtr &track )
 {
     return ( m_itdbtrackhash[ track ]->rating / ITDB_RATING_STEP * 2 );
 }
+
 QString
 IpodHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
 {
@@ -1776,8 +1784,12 @@ IpodHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
 void
 IpodHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed)
 {
-    Q_UNUSED( track )
-    Q_UNUSED( lastplayed )
+    if( lastplayed.isValid() )
+        m_itdbtrackhash[ track ]->time_played = lastplayed.toTime_t();
+    else
+        /* invalid QDateTime returns (unsigned) -1 which is not what we want: */
+        m_itdbtrackhash[ track ]->time_played = 0;
+    setDatabaseChanged();
 }
 void
 IpodHandler::libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )
