@@ -210,13 +210,22 @@ M3UPlaylist::save( const KUrl &location, bool relative )
             stream << titles[i];
             stream << '\n';
         }
-        if (url.protocol() == "file" ) {
-            if ( relative ) {
-                const QFileInfo fi(file);
-                stream << KUrl::relativePath(fi.path(), url.path());
-            } else
+        if( url.protocol() == "file" )
+        {
+            if( relative )
+            {
+                const QFileInfo fi( file );
+                QString relativePath = KUrl::relativePath( fi.path(), url.path() );
+                relativePath.remove( 0, 2 ); //remove "./"
+                stream << relativePath;
+            }
+            else
+            {
                 stream << url.path();
-        } else {
+            }
+        }
+        else
+        {
             stream << url.url();
         }
         stream << "\n";

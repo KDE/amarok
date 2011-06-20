@@ -804,7 +804,7 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 }
 
 bool
-Playlist::Model::exportPlaylist( const QString &path ) const
+Playlist::Model::exportPlaylist( const QString &path, bool relative ) const
 {
     // check queue state
     QQueue<quint64> queueIds = The::playlistActions()->queue();
@@ -812,7 +812,7 @@ Playlist::Model::exportPlaylist( const QString &path ) const
     foreach( quint64 id, queueIds ) {
       queued << rowForId( id );
     }
-    return Playlists::exportPlaylistFile( tracks(), path, queued );
+    return Playlists::exportPlaylistFile( tracks(), path, relative, queued );
 }
 
 Meta::TrackList

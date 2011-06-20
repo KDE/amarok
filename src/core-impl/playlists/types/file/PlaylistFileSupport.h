@@ -33,8 +33,9 @@ class QFile;
 namespace Playlists
 {
     AMAROK_EXPORT PlaylistFilePtr loadPlaylistFile( const KUrl &url );
-    bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path );
-    bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<int> &queued );
+
+    bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bool relative = false,
+                             const QList<int> &queued = QList<int>() );
 
     /* HACK:
      * the next two functions are needed to support some services that have no other way

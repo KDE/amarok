@@ -56,7 +56,7 @@ public:
     virtual bool containsTrack( const Meta::TrackPtr track ) const;
     virtual int currentSearchFields();
     virtual QString currentSearchTerm();
-    virtual bool exportPlaylist( const QString &path ) const;
+    virtual bool exportPlaylist( const QString &path, bool relative = false ) const;
     virtual void filterUpdated();
     virtual int find( const QString &searchTerm, int searchFields );
     virtual int findNext( const QString &searchTerm, int selectedRow, int searchFields );

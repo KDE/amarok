@@ -75,7 +75,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
         Meta::TrackPtr activeTrack() const;
         bool containsTrack( const Meta::TrackPtr track ) const;
-        virtual bool exportPlaylist( const QString &path ) const;
+        virtual bool exportPlaylist( const QString &path, bool relative = false ) const;
         int firstRowForTrack( const Meta::TrackPtr track ) const;
         quint64 idAt( const int row ) const;
         bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }

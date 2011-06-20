@@ -131,8 +131,9 @@ public:
     /**
      * Saves a playlist to a specified location.
      * @param path the path of the playlist file, as chosen by a FileDialog in MainWindow.
+     * @param relative use relative paths. Defaults to false, uses absolute paths.
      */
-    virtual bool exportPlaylist( const QString &path ) const = 0;
+    virtual bool exportPlaylist( const QString &path, bool relative = false ) const = 0;
 
     /**
      * Notify FilterProxy that the search term of searched fields has changed. Since this
