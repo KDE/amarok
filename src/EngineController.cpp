@@ -25,7 +25,6 @@
 #include "EngineController.h"
 
 #include "MainWindow.h"
-#include "MediaDeviceMonitor.h"
 #include "amarokconfig.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
