@@ -199,6 +199,7 @@ void
 CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection )
 {
     DEBUG_BLOCK
+
     if ( !newCollection )
         return;
 
@@ -207,6 +208,8 @@ CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection
     QString collectionId = newCollection->collectionId();
     if ( d->collections.contains( collectionId ) )
         return;
+
+    debug() << "Added collection id:" << collectionId;
 
     //inserts new collection at the end.
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
@@ -220,6 +223,10 @@ CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection
 void
 CollectionTreeItemModel::collectionRemoved( const QString &collectionId )
 {
+    DEBUG_BLOCK
+
+    debug() << "Removed collection id:" << collectionId;
+
     int count = m_rootItem->childCount();
     for( int i = 0; i < count; i++ )
     {
