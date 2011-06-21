@@ -33,14 +33,14 @@
 // BEGIN: DEBUG_ASSERT
 /**
  * Debug helper to write "soft" assertions with escape statements more easily
- * If the assertions fails, a
+ * If the assertions fails, a warning is printed containing the position
+ * (file and line number) of the assert and the second parameter is evaluated.
  *
- * \author Kevin Funk
- * \sa http://qt.gitorious.org/qt-creator/qt-creator/blobs/master/src/libs/utils/qtcassert.h
+ * Usage: DEBUG_ASSERT(assertion, statement)
  *
- * (pseudo code)
+ * (pseudo code *without* DEBUG_ASSERT)
  * \code
- * bool someMethod() {
+ * bool someMethod(T* pointer) {
  *   if (!pointer)
  *     qWarning() << "Warning pointer is null, aborting";
  *     return false;
@@ -49,14 +49,17 @@
  * }
  * \endcode
  *
- * (replace by)
+ * (may be replaced by)
  * \code
- * bool someMethod() {
+ * bool someMethod(T* pointer) {
  *   DEBUG_ASSERT(pointer, return false)
  *   (...)
  *   return someBoolean;
  * }
  * \endcode
+ *
+ * \author Kevin Funk
+ * \sa http://qt.gitorious.org/qt-creator/qt-creator/blobs/master/src/libs/utils/qtcassert.h
  */
 #define DEBUG_ASSERT(cond, action) \
     if(cond){}else{warning()<< \
