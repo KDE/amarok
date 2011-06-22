@@ -119,6 +119,7 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack
     destTrack->setDiscNumber( srcTrack->discNumber() );
     destTrack->setBitrate( srcTrack->bitrate() );
     destTrack->setSamplerate( srcTrack->sampleRate() );
+    destTrack->setBpm( srcTrack->bpm() );
     destTrack->setFileSize( srcTrack->filesize() );
     destTrack->setPlayCount( srcTrack->playCount() );
     destTrack->setLastPlayed( srcTrack->lastPlayed() );
@@ -163,7 +164,7 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     m_wc->libSetDiscNumber( destTrack, srcTrack->discNumber() ); Debug::stamp();
     m_wc->libSetBitrate( destTrack, srcTrack->bitrate() ); Debug::stamp();
     m_wc->libSetSamplerate( destTrack, srcTrack->sampleRate() ); Debug::stamp();
-    //libSetBpm( destTrack, srcTrack->bpm() );
+    m_wc->libSetBpm( destTrack, srcTrack->bpm() ); Debug::stamp();
     m_wc->libSetFileSize( destTrack, srcTrack->filesize() ); Debug::stamp();
     m_wc->libSetPlayCount( destTrack, srcTrack->playCount() ); Debug::stamp();
     m_wc->libSetLastPlayed( destTrack, srcTrack->lastPlayed() ); Debug::stamp();
