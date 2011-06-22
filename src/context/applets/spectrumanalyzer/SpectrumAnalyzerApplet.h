@@ -191,6 +191,6 @@ class SpectrumAnalyzerApplet: public Context::Applet
 };
 
 Q_DECLARE_METATYPE ( QVector< qint16 > )
-K_EXPORT_AMAROK_APPLET( spectrumanalyzer, SpectrumAnalyzerApplet )
+AMAROK_EXPORT_APPLET( spectrumanalyzer, SpectrumAnalyzerApplet )
 
 #endif

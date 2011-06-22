@@ -19,6 +19,7 @@
 #include <qgraphicslinearlayout.h>
 
 #include "EngineController.h"
+#include "PaletteHandler.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "App.h"

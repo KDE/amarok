@@ -90,6 +90,6 @@ class SpectrumAnalyzerEngine : public Context::DataEngine, public ContextObserve
 };
 
 Q_DECLARE_METATYPE ( QVector< qint16 > )
-K_EXPORT_AMAROK_DATAENGINE( spectrumanalyzer, SpectrumAnalyzerEngine )
+AMAROK_EXPORT_DATAENGINE( spectrumanalyzer, SpectrumAnalyzerEngine )
 
 #endif
