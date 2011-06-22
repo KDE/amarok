@@ -43,14 +43,18 @@ A very simple model to hold the available categories
 class BrowserCategoryListModel : public QAbstractListModel
 {
 public:
-    BrowserCategoryListModel();
+    BrowserCategoryListModel( QObject *parent = 0 );
     ~BrowserCategoryListModel();
 
     int rowCount( const QModelIndex & parent = QModelIndex() ) const;
     QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
-    void addCategory( BrowserCategory * category );
-    void removeCategory( BrowserCategory * category );
+    /**
+     * Adds a new sub-category to this list.
+     * This object will take ownership of the new category.
+     */
+    void addCategory( BrowserCategory* category );
+    void removeCategory( BrowserCategory* category );
 
 private:
     QList<BrowserCategory*> m_categories;

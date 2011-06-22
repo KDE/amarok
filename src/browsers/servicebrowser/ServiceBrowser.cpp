@@ -29,14 +29,14 @@ ServiceBrowser * ServiceBrowser::s_instance = 0;
 ServiceBrowser * ServiceBrowser::instance()
 {
     if ( s_instance == 0 )
-        s_instance = new ServiceBrowser( 0, "internet" );
+        s_instance = new ServiceBrowser( "internet" );
 
     return s_instance;
 }
 
 
-ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
-    : BrowserCategoryList( parent, name, true )
+ServiceBrowser::ServiceBrowser( const QString& name, QWidget* parent )
+    : BrowserCategoryList( name, parent, true )
     , m_usingContextView( false )
 {
     debug() << "ServiceBrowser starting...";

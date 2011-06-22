@@ -49,7 +49,7 @@ BrowserDock::BrowserDock( QWidget *parent )
 
     m_breadcrumbWidget = new BrowserBreadcrumbWidget( m_mainWidget );
     new HorizontalDivider( m_mainWidget );
-    m_categoryList = new BrowserCategoryList( m_mainWidget, "root list" );
+    m_categoryList = new BrowserCategoryList( "root list", m_mainWidget );
     m_breadcrumbWidget->setRootList( m_categoryList.data() );
 
     m_progressArea = new BrowserMessageArea( m_mainWidget );

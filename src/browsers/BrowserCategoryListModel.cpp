@@ -18,13 +18,14 @@
 #include "BrowserCategory.h"
 #include "core/support/Debug.h"
 
-BrowserCategoryListModel::BrowserCategoryListModel()
- : QAbstractListModel()
+BrowserCategoryListModel::BrowserCategoryListModel( QObject* parent )
+ : QAbstractListModel( parent )
 {
 }
 
 BrowserCategoryListModel::~BrowserCategoryListModel()
 {
+    qDeleteAll( m_categories );
 }
 
 int

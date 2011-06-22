@@ -97,7 +97,7 @@ ServicePluginManager::checkEnabledStates( const QList<Plugins::PluginFactory*> &
         else if( !enabledInConfig && isLastActive )
         {
             foreach( ServiceBase * service, factory->activeServices() )
-                m_serviceBrowser->removeCategory( service->name() );
+                m_serviceBrowser->removeCategory( service );
             factory->clearActiveServices();
         }
     }
@@ -127,7 +127,7 @@ ServicePluginManager::slotRemoveService( ServiceBase *removedService )
 {
     DEBUG_BLOCK
     debug() << "removed service:" << removedService->name();
-    m_serviceBrowser->removeCategory( removedService->name() );
+    m_serviceBrowser->removeCategory( removedService );
 }
 
 QStringList

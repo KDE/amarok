@@ -30,13 +30,9 @@
 #include <QList>
 #include <QString>
 
-PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
- : BrowserCategoryList( parent, name )
+PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const QString &name, QWidget *parent )
+ : BrowserCategoryList( name, parent )
 {
-    DEBUG_BLOCK
-
-    setObjectName( name );
-
     setMargin( 0 );
     setContentsMargins(0,0,0,0);
 

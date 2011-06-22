@@ -29,6 +29,7 @@ BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
     , m_parentList( 0 )
     , m_breadcrumb( 0 )
 {
+    setObjectName( name );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setFrameShape( QFrame::NoFrame );
 }
@@ -124,7 +125,7 @@ void BrowserCategory::activate()
 {
     DEBUG_BLOCK
     if ( parentList() )
-        parentList()->activate( this );
+        parentList()->setActiveCategory( this );
 }
 
 BrowserBreadcrumbItem * BrowserCategory::breadcrumb()

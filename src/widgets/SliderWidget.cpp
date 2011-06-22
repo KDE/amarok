@@ -40,6 +40,8 @@
 #include <QContextMenuEvent>
 #include <QFontMetrics>
 #include <QMenu>
+#include <QStyle>
+#include <QStyleOption>
 #include <QPainter>
 
 

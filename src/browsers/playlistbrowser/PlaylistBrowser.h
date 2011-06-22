@@ -34,7 +34,7 @@ class PlaylistBrowser : public BrowserCategoryList
 {
     Q_OBJECT
     public:
-        PlaylistBrowser( const char *name, QWidget *parent );
+        PlaylistBrowser( const QString &name, QWidget *parent = 0 );
         ~PlaylistBrowser();
 
 
