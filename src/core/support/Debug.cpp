@@ -141,7 +141,7 @@ void Debug::setColoredDebug( bool enable )
     s_debugColorsEnabled = enable;
 }
 
-kdbgstream Debug::dbgstream( DebugLevel level )
+QDebug Debug::dbgstream( DebugLevel level )
 {
     if( !debugEnabled() )
         return kDebugDevNull();
@@ -154,7 +154,7 @@ kdbgstream Debug::dbgstream( DebugLevel level )
     if ( level > KDEBUG_INFO )
         text.append( ' ' + reverseColorize( toString(level), toColor( level ) ) );
 
-    return kdbgstream( QtDebugMsg ) << qPrintable( text );
+    return QDebug( QtDebugMsg ) << qPrintable( text );
 }
 
 void Debug::perfLog( const QString &message, const QString &func )
