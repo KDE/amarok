@@ -28,6 +28,11 @@
 
 #include <kdebug.h>
 
+//kdbgstream is just a typedef anyway...
+#ifdef KDE_NO_DEPRECATED
+typedef QDebug kdbgstream;
+#endif //KDE_NO_DEPRECATED
+
 #include <QMutex>
 
 // BEGIN: DEBUG_ASSERT
