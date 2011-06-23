@@ -153,7 +153,7 @@ EngineController::initializePhonon()
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
     m_dataPath = Phonon::createPath( m_media.data(), m_audioDataOutput.data() );
-    m_path = Phonon::createPath( m_audioDataOutput.data(), m_audio.data() );
+    m_path = Phonon::createPath( m_media.data(), m_audio.data() );
 
     m_controller = new Phonon::MediaController( m_media.data() );
 
