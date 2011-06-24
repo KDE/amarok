@@ -131,14 +131,14 @@ namespace Debug
         KDEBUG_FATAL = 3
     };
 
-    AMAROK_CORE_EXPORT kdbgstream dbgstream( DebugLevel level = KDEBUG_INFO );
+    AMAROK_CORE_EXPORT QDebug dbgstream( DebugLevel level = KDEBUG_INFO );
     AMAROK_CORE_EXPORT bool debugEnabled();
     AMAROK_CORE_EXPORT bool debugColorEnabled();
     AMAROK_CORE_EXPORT void setDebugEnabled( bool enable );
     AMAROK_CORE_EXPORT void setColoredDebug( bool enable );
     AMAROK_CORE_EXPORT QString indent();
 
-    static inline kdbgstream dbgstreamwrapper( DebugLevel level ) {
+    static inline QDebug dbgstreamwrapper( DebugLevel level ) {
 #ifdef DEBUG_PREFIX
         return dbgstream( level ) << AMAROK_PREFIX;
 #else
@@ -146,10 +146,10 @@ namespace Debug
 #endif
     }
 
-    static inline kdbgstream debug()   { return dbgstreamwrapper( KDEBUG_INFO ); }
-    static inline kdbgstream warning() { return dbgstreamwrapper( KDEBUG_WARN ); }
-    static inline kdbgstream error()   { return dbgstreamwrapper( KDEBUG_ERROR ); }
-    static inline kdbgstream fatal()   { return dbgstreamwrapper( KDEBUG_FATAL ); }
+    static inline QDebug debug()   { return dbgstreamwrapper( KDEBUG_INFO ); }
+    static inline QDebug warning() { return dbgstreamwrapper( KDEBUG_WARN ); }
+    static inline QDebug error()   { return dbgstreamwrapper( KDEBUG_ERROR ); }
+    static inline QDebug fatal()   { return dbgstreamwrapper( KDEBUG_FATAL ); }
 
     AMAROK_CORE_EXPORT void perfLog( const QString &message, const QString &func );
 }

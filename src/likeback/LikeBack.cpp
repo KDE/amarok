@@ -331,7 +331,7 @@ void LikeBack::showInformationMessage()
     {
         bugPhrase = i18nc( "Welcome dialog text, explanation for the bug button",
                            "If you experience an improper behavior in the application, just click on "
-                           "the bug icon in the top-right corner of the window and follow the instructions"
+                           "the bug icon in the top-right corner of the window and follow the instructions "
                            "to submit a bug report." );
     }
 
