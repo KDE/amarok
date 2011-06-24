@@ -19,21 +19,22 @@
 
 #include "FileView.h"
 
-#include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/collections/support/FileCollectionLocation.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/FileCollectionLocation.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core/interfaces/Logger.h"
+#include "core/playlists/PlaylistFormat.h"
+#include "core/support/Debug.h"
 #include "dialogs/TagDialog.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "core/playlists/PlaylistFormat.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistController.h"
 #include "PopupDropperFactory.h"
-#include "statusbar/StatusBar.h"
+
 #include "SvgHandler.h"
 #include "src/transcoding/TranscodingJob.h"
 #include "src/transcoding/TranscodingAssistantDialog.h"
@@ -612,7 +613,7 @@ FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers 
     {
         QString statusText = i18ncp( "@info:status", "Moving to trash: 1 file",
                                      "Moving to trash: %1 files", urls.count() );
-        The::statusBar()->newProgressOperation( job, statusText );
+        Amarok::Components::logger()->newProgressOperation( job, statusText );
     }
 }
 

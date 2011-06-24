@@ -52,6 +52,7 @@ public:
 
 public slots:
     void endProgressOperation( QObject *owner );
+    void slotIncrementProgress();
 
 signals:
     void allDone();

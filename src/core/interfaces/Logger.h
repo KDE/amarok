@@ -34,10 +34,8 @@ namespace Amarok
       *
       * The class name is up for discussion btw.
       */
-    class AMAROK_CORE_EXPORT Logger : public QObject
+    class AMAROK_CORE_EXPORT Logger
     {
-        Q_OBJECT
-        Q_ENUMS( MessageType )
     public:
 
         enum MessageType { Information, Warning, Error };
@@ -74,6 +72,26 @@ namespace Amarok
         virtual void newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj = 0, const char *slot = 0, Qt::ConnectionType type = Qt::AutoConnection ) = 0;
 
         /**
+         * Informs the user about the progress of a generic QObject
+         *
+         * @param sender The object sending the required signals. This sender must emit singals
+         *        incrementProgress() and endProgressOperation() and optionally totalSteps().
+         * @param text An additional text that will be part of the notification
+         * @param maximum The maximum value of the progess operation
+         * @param obj The object that will be called if the user cancels the network request. If not
+         *        set, the progress will not be cancellable
+         * @param slot The slot on the given object that will be called if the user cancels the
+         *             network request. No slot will be called if not set.
+         * The signal will be emitted from the GUI thread. The receiver may not make assumptions
+         * about the sender
+         * @param type The Qt connection type to use for the connection to the receiving slot.
+         *             Defaults to Qt::AutoConnection
+         */
+        virtual void newProgressOperation( QObject *sender, const QString &text, int maximum = 100,
+                                           QObject *obj = 0, const char *slot = 0,
+                                           Qt::ConnectionType type = Qt::AutoConnection ) = 0;
+
+        /**
           * Sends a notification to the user.
           * This method will send a notification containing the given text to the user.
           *
@@ -90,8 +108,5 @@ namespace Amarok
         virtual void longMessage( const QString &text, MessageType type = Information ) = 0;
     };
 }
-
-
-Q_DECLARE_METATYPE( Amarok::Logger * )
 
 #endif

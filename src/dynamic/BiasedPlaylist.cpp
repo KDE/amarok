@@ -25,11 +25,13 @@
 
 #include "amarokconfig.h"
 #include "App.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModelStack.h" // for The::playlist
-#include "statusbar/StatusBar.h"
+
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -131,13 +133,11 @@ Dynamic::BiasedPlaylist::startSolver()
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)), SLOT(solverFinished()) );
         connect( m_solver, SIGNAL(failed(ThreadWeaver::Job*)), SLOT(solverFinished()) );
 
-        if( The::statusBar() )
-        {
-            The::statusBar()->newProgressOperation( m_solver, i18n( "Generating playlist..." ) )
-                ->setAbortSlot( this, SLOT( requestAbort() ) );
+        Amarok::Components::logger()->newProgressOperation( m_solver,
+                                                            i18n( "Generating playlist..." ), 100,
+                                                            this, SLOT(requestAbort()) );
 
-            connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
-        }
+        connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
 
         ThreadWeaver::Weaver::instance()->enqueue( m_solver );
         debug() << "called prepareToRun";
@@ -195,8 +195,7 @@ Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPt
 void
 Dynamic::BiasedPlaylist::updateStatus( int progress )
 {
-    if( The::statusBar() )
-        The::statusBar()->setProgress( m_solver, progress );
+    emit totalSteps( progress );
 }
 
 void
@@ -269,8 +268,7 @@ Dynamic::BiasedPlaylist::solverFinished()
     if( m_solver != sender() )
         return;
 
-    if( The::statusBar() )
-        The::statusBar()->endProgressOperation( m_solver );
+    emit endProgressOperation( m_solver );
 
     bool success = m_solver->success();
     if( success )

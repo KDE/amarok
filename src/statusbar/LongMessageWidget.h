@@ -18,9 +18,8 @@
 #ifndef LONGMESSAGEWIDGET_H
 #define LONGMESSAGEWIDGET_H
 
-
 #include "PopupWidget.h"
-#include "StatusBar.h"
+#include "core/interfaces/Logger.h"
 
 class CountdownFrame : public QFrame
 {
@@ -40,7 +39,7 @@ class LongMessageWidget : public PopupWidget
 {
     Q_OBJECT
 public:
-    LongMessageWidget( QWidget *anchor, const QString &message, StatusBar::MessageType type );
+    LongMessageWidget( QWidget *anchor, const QString &message, Amarok::Logger::MessageType type );
 
     ~LongMessageWidget();
 

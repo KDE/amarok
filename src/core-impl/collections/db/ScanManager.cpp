@@ -27,9 +27,11 @@
 #include "MountPointManager.h"
 #include "ScanResultProcessor.h"
 #include "amarokconfig.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "sql/SqlCollection.h"
-#include "statusbar/StatusBar.h"
+
 
 // include files from the collection scanner utility
 #include <collectionscanner/BatchFile.h>
@@ -237,24 +239,12 @@ ScanManager::startScanner()
         m_scanDirsRequested.clear();
     }
 
-    // - connect the status bar
-    if( The::statusBar() )
-    {
-        The::statusBar()->newProgressOperation( m_scanner, i18n( "Scanning music" ) )
-            ->setAbortSlot( this, SLOT( abort() ) );
-
-        connect( m_scanner, SIGNAL( totalSteps(const QObject*, int) ),
-                 The::statusBar(), SLOT( setProgressTotalSteps(const QObject*, int) ),
-                 Qt::QueuedConnection );
-        connect( m_scanner, SIGNAL( step(const QObject*) ),
-                 The::statusBar(), SLOT( incrementProgress(const QObject*) ),
-                 Qt::QueuedConnection );
-    }
+    Amarok::Components::logger()->newProgressOperation( m_scanner, i18n( "Scanning music" ),
+                                                            100, this, SLOT(abort()) );
 
     // - enqueue it.
     connect( m_scanner, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     connect( m_scanner, SIGNAL( message( QString ) ), this, SIGNAL( message( QString ) ) );
-    connect( m_scanner, SIGNAL( succeeded() ), this, SIGNAL( succeeded() ) );
     connect( m_scanner, SIGNAL( failed( QString ) ), this, SIGNAL( failed( QString ) ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_scanner );
 
@@ -545,8 +535,7 @@ ScannerJob::run()
                     debug() << "ScannerJob: got count:" << m_reader.attributes().value( "count" ).toString().toInt();
                     emit message( i18np("Found one directory", "Found %1 directories",
                                   m_reader.attributes().value( "count" ).toString()) );
-                    emit totalSteps( this,
-                                     m_reader.attributes().value( "count" ).toString().toInt() * 2);
+                    emit totalSteps( m_reader.attributes().value( "count" ).toString().toInt() * 2 );
                 }
                 else if( name == "directory" )
                 {
@@ -556,7 +545,7 @@ ScannerJob::run()
                     count++;
 
                     emit message( i18n( "Got directory \"%1\" from scanner.", dir->rpath() ) );
-                    emit step( this );
+                    emit incrementProgress();
                 }
                 else
                 {
@@ -602,7 +591,7 @@ ScannerJob::run()
     else
     {
         processor->commit();
-        emit succeeded();
+        emit endProgressOperation( this );
     }
 
     debug() << "ScannerJob finished";
@@ -642,7 +631,7 @@ ScannerJob::scannerPath()
 void
 ScannerJob::directoryProcessed()
 {
-    emit step( this );
+    emit incrementProgress();
 }
 
 

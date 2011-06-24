@@ -16,11 +16,12 @@
 
 #include "MagnatuneDownloadHandler.h"
 
+#include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "MagnatuneDatabaseHandler.h"
 #include "MagnatuneConfig.h"
-#include "statusbar/StatusBar.h"
 
 #include <KMessageBox>
 #include <ktempdir.h>
@@ -67,8 +68,6 @@ void MagnatuneDownloadHandler::downloadAlbum( MagnatuneAlbum * album )
 
 void MagnatuneDownloadHandler::membershipDownload( int membershipType, const QString &username, const QString &password )
 {
-    DEBUG_BLOCK
-
     QString type;
     if( membershipType == MagnatuneConfig::STREAM )
         type = "stream";
@@ -80,10 +79,9 @@ void MagnatuneDownloadHandler::membershipDownload( int membershipType, const QSt
     m_membershipDownload = true;
 
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_resultDownloadJob, i18n( "Processing download" ) );
+    Amarok::Components::logger()->newProgressOperation( m_resultDownloadJob,
+                                                        i18n( "Processing download" ) );
     connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
-
-    
 }
 
 void MagnatuneDownloadHandler::xmlDownloadComplete( KJob * downloadJob )

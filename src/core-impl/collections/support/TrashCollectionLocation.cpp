@@ -19,9 +19,10 @@
 #include "TrashCollectionLocation.h"
 
 #include "core/collections/CollectionLocationDelegate.h"
+#include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "statusbar/StatusBar.h"
+
 
 #include <KIO/CopyJob>
 #include <KLocale>
@@ -97,7 +98,7 @@ TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> 
             if( max == 0 && !tracks.isEmpty() )
                 name += " ...";
         }
-        The::statusBar()->newProgressOperation( job, i18n( "Moving to trash: %1", name ) );
+        Amarok::Components::logger()->newProgressOperation( job, i18n( "Moving to trash: %1", name ) );
     }
 }
 

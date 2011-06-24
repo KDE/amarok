@@ -59,7 +59,6 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "PodcastCategory.h"
 #include "services/scriptable/ScriptableService.h"
-#include "statusbar/StatusBar.h"
 #include "toolbar/SlimToolbar.h"
 #include "toolbar/MainToolbar.h"
 #include "SvgHandler.h"
@@ -133,11 +132,6 @@ MainWindow::MainWindow()
     CollectionManager::instance();
     PERF_LOG( "Started Collection Manager instance" )
 
-    PERF_LOG( "Set Status Bar" )
-    //TODO: remove once BrowserDock completely implements Amarok::Logger with extended features
-    StatusBar* statusBar = new StatusBar( this );
-    PERF_LOG( "Created Status Bar" )
-
     /* The PluginManager needs to be loaded before the playlist model
     * (which gets started by "statusBar::connectPlaylist" below so that it can handle any
     * tracks in the saved playlist that are associated with services. Eg, if
@@ -194,7 +188,6 @@ MainWindow::~MainWindow()
 #ifdef DEBUG_BUILD_TYPE
     delete m_networkViewer.data();
 #endif // DEBUG_BUILD_TYPE
-    delete The::statusBar();
     delete The::svgHandler();
     delete The::paletteHandler();
 }

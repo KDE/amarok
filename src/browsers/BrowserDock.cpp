@@ -18,11 +18,13 @@
 #include "BrowserDock.h"
 
 #include "App.h"
+#include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "widgets/HorizontalDivider.h"
+#include "core-impl/logger/ProxyLogger.h"
 #include "PaletteHandler.h"
-#include "statusbar/StatusBar.h"
+#include "widgets/HorizontalDivider.h"
 
 #include <KAction>
 #include <KIcon>
@@ -50,15 +52,16 @@ BrowserDock::BrowserDock( QWidget *parent )
     m_categoryList = new BrowserCategoryList( m_mainWidget, "root list" );
     m_breadcrumbWidget->setRootList( m_categoryList.data() );
 
-    //HACK: keep the progressArea in it's place at the bottom
-    QWidget *container = new QWidget( m_mainWidget );
-    container->setLayout( new QVBoxLayout( container ) );
-    container->layout()->setContentsMargins( 0, 0, 0, 0 );
-    container->layout()->setSpacing( 0 );
-    m_progressFrame = The::statusBar()->progressArea();
-    m_progressFrame->setAutoFillBackground( true );
-    m_progressFrame->setFixedHeight( 30 );
-    container->layout()->addWidget( m_progressFrame );
+    m_progressArea = new BrowserMessageArea( m_mainWidget );
+    m_progressArea->setAutoFillBackground( true );
+    m_progressArea->setFixedHeight( 30 );
+
+    Amarok::Logger *logger = Amarok::Components::logger();
+    ProxyLogger *proxy = dynamic_cast<ProxyLogger *>( logger );
+    if( proxy )
+        proxy->setLogger( m_progressArea );
+    else
+        error() << "Was not able to register BrowserDock as logger";
 
     ensurePolish();
 }
@@ -107,7 +110,7 @@ void
 BrowserDock::paletteChanged( const QPalette &palette )
 {
     Q_UNUSED(palette); //palette is accessible via PaletteHandler
-    m_progressFrame->setStyleSheet(
+    m_progressArea->setStyleSheet(
                 QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
                         .arg( PaletteHandler::alternateBackgroundColor().name() )
                         .arg( The::paletteHandler()->palette().highlightedText().color().name() )

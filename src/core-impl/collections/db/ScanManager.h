@@ -225,13 +225,13 @@ class ScannerJob : public ThreadWeaver::Job
     // note: since this job doesn't have it's own event queue all signals and slots
     // go through the UI event queue
     Q_SIGNALS:
-        void totalSteps( const QObject *o, int totalSteps );
-        void step( const QObject *o );
+        void endProgressOperation( QObject * );
+        void incrementProgress();
+        void totalSteps( int totalSteps );
 
         /** This are status messages that the scanner emits frequently */
         void message( QString message );
 
-        void succeeded();
         void failed( QString message );
         // and the ThreadWeaver::Job also emits done
 

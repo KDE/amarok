@@ -1171,7 +1171,10 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
             // reset error count
             errorCount = 0;
 
-            Amarok::Components::logger()->longMessage( i18n( "Too many errors encountered in playlist. Playback stopped." ), Amarok::Logger::Warning );
+            Amarok::Components::logger()->longMessage(
+                            i18n( "Too many errors encountered in playlist. Playback stopped." ),
+                            Amarok::Logger::Warning
+                        );
             error() << "Stopping playlist.";
         }
         else

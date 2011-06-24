@@ -49,6 +49,7 @@
 #include <QMap>
 #include <QMultiMap>
 #include <QMutex>
+#include <QTimer>
 
 namespace Solid {
     class StorageAccess;

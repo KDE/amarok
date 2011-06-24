@@ -23,7 +23,7 @@
 #include "DaapCollection.h"
 #include "DaapMeta.h"
 #include "core/support/Debug.h"
-#include "statusbar/StatusBar.h"
+
 
 #include <QByteArray>
 #include <QDateTime>

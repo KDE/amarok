@@ -17,13 +17,15 @@
  ****************************************************************************************/
 
 #include "core/playlists/PlaylistFormat.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Amarok.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/support/Debug.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
-#include "statusbar/StatusBar.h"
+
 #include "amarokconfig.h"
 
 
@@ -72,8 +74,8 @@ loadPlaylistFile( const KUrl &url )
         {
             debug() << "could not read file " << url.path();
 
-            if( The::statusBar() )
-                The::statusBar()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
+            Amarok::Components::logger()->longMessage(
+                        i18n( "Cannot read playlist (%1).", url.url() ) );
 
             return Playlists::PlaylistFilePtr( 0 );
         }
@@ -90,10 +92,9 @@ loadPlaylistFile( const KUrl &url )
         tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
         if( !tempFile.open() )
         {
-            if( The::statusBar() )
-                QMetaObject::invokeMethod( The::statusBar(), "longMessage",
-                                           Qt::QueuedConnection,
-                                           Q_ARG(QString, i18n( "Could not create a temporary file to download playlist.") ) );
+            //longMessage is thread-safe
+            Amarok::Components::logger()->longMessage(
+                        i18n( "Could not create a temporary file to download playlist.") );
 
             return Playlists::PlaylistFilePtr( 0 ); //error
         }
@@ -105,13 +106,11 @@ loadPlaylistFile( const KUrl &url )
         // using KTemporary.close() is not enough here
         tempFile.remove();
         #endif
-        KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite | KIO::HideProgressInfo );
+        KIO::FileCopyJob *job = KIO::file_copy( url , KUrl( tempFileName ), 0774 ,
+                                                KIO::Overwrite | KIO::HideProgressInfo );
 
-        if( The::statusBar() )
-            QMetaObject::invokeMethod( The::statusBar(), "newProgressOperation",
-                                       Qt::QueuedConnection,
-                                       Q_ARG(QObject*, job),
-                                       Q_ARG(QString, i18n("Downloading remote playlist" ) ) );
+        Amarok::Components::logger()->newProgressOperation( job,
+                                                            i18n("Downloading remote playlist" ) );
 
         qRegisterMetaType<KIO::filesize_t>("KIO::filesize_t"); // this is needed or else job->exec asserts
 

@@ -26,7 +26,6 @@ ProxyLogger::ProxyLogger()
         , m_initComplete( false )
         , m_timer( 0 )
 {
-    qRegisterMetaType<Logger *>( "Amarok::Logger*" );
     //ensure that the object livs in the GUI thread
     if( thread() == QCoreApplication::instance()->thread() )
     {
@@ -77,7 +76,7 @@ ProxyLogger::setLogger( Amarok::Logger *logger )
     startTimer();
 }
 
-Amarok::Logger*
+Amarok::Logger *
 ProxyLogger::logger() const
 {
     return m_logger;
@@ -118,7 +117,7 @@ ProxyLogger::newProgressOperation( KJob *job, const QString &text, QObject *obj,
     ProgressData data;
     data.job = job;
     data.text = text;
-    data.object = obj;
+    data.cancelObject = obj;
     data.slot = slot;
     data.type = type;
     m_progressQueue.enqueue( data );
@@ -132,7 +131,23 @@ ProxyLogger::newProgressOperation( QNetworkReply *reply, const QString &text, QO
     ProgressData data;
     data.reply = reply;
     data.text = text;
-    data.object = obj;
+    data.cancelObject = obj;
+    data.slot = slot;
+    data.type = type;
+    m_progressQueue.enqueue( data );
+    startTimer();
+}
+
+void
+ProxyLogger::newProgressOperation( QObject *sender, const QString &text, int maximum, QObject *obj,
+                                   const char *slot, Qt::ConnectionType type )
+{
+    QMutexLocker locker( &m_lock );
+    ProgressData data;
+    data.sender = sender;
+    data.text = text;
+    data.maximum = maximum;
+    data.cancelObject = obj;
     data.slot = slot;
     data.type = type;
     m_progressQueue.enqueue( data );
@@ -143,28 +158,36 @@ void
 ProxyLogger::forwardNotifications()
 {
     QMutexLocker locker( &m_lock );
-    if( m_logger )
+    if( !m_logger )
+        return; //can't do anything before m_logger is created.
+
+    while( !m_shortMessageQueue.isEmpty() )
     {
-        while( !m_shortMessageQueue.isEmpty() )
+        m_logger->shortMessage( m_shortMessageQueue.dequeue() );
+    }
+    while( !m_longMessageQueue.isEmpty() )
+    {
+        LongMessage msg = m_longMessageQueue.dequeue();
+        m_logger->longMessage( msg.first, msg.second );
+    }
+    while( !m_progressQueue.isEmpty() )
+    {
+        ProgressData d = m_progressQueue.dequeue();
+        if( d.job )
         {
-            m_logger->shortMessage( m_shortMessageQueue.dequeue() );
+            m_logger->newProgressOperation( d.job.data(), d.text, d.cancelObject.data(),
+                                            d.cancelObject.data() ? d.slot : 0 , d.type );
         }
-        while( !m_longMessageQueue.isEmpty() )
+        else if( d.reply )
         {
-            LongMessage msg = m_longMessageQueue.dequeue();
-            m_logger->longMessage( msg.first, msg.second );
+            m_logger->newProgressOperation( d.reply.data(), d.text, d.cancelObject.data(),
+                                            d.cancelObject.data() ? d.slot : 0 , d.type );
         }
-        while( !m_progressQueue.isEmpty() )
+        else if( d.sender )
         {
-            ProgressData d = m_progressQueue.dequeue();
-            if( d.job )
-            {
-                m_logger->newProgressOperation( d.job.data(), d.text, d.object.data(), d.object.data() ? d.slot : 0 , d.type );
-            }
-            else if( d.reply )
-            {
-                m_logger->newProgressOperation( d.reply.data(), d.text, d.object.data(), d.object.data() ? d.slot : 0 , d.type );
-            }
+            m_logger->newProgressOperation( d.sender.data(), d.text, d.maximum,
+                                            d.cancelObject.data(),
+                                            d.cancelObject.data() ? d.slot : 0 , d.type );
         }
     }
 }

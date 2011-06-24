@@ -21,7 +21,6 @@
 #include "MediaDeviceCollection.h"
 #include "MediaDeviceHandler.h"
 //#include "MediaDeviceMeta.h"
-#include "../../statusbar/StatusBar.h"
 #include "MediaDeviceCache.h" // for collection refresh hack
 
 #include "dialogs/OrganizeCollectionDialog.h"

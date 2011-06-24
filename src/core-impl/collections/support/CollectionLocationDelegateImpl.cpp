@@ -17,9 +17,9 @@
 
 #include "CollectionLocationDelegateImpl.h"
 
+#include "core/interfaces/Logger.h"
 #include "core/collections/CollectionLocation.h"
-
-#include "statusbar/StatusBar.h"
+#include "core/support/Components.h"
 
 #include <KLocale>
 #include <KMessageBox>
@@ -106,7 +106,9 @@ void CollectionLocationDelegateImpl::errorDeleting( CollectionLocation* loc, con
 void CollectionLocationDelegateImpl::notWriteable(CollectionLocation* loc) const
 {
     Q_UNUSED( loc )
-    The::statusBar()->longMessage( i18n( "The collection does not have enough free space available or is not writeable." ), StatusBar::Error );
+    Amarok::Components::logger()->longMessage(
+            i18n( "The collection does not have enough free space available or is not writeable." ),
+            Amarok::Logger::Error );
 }
 
 bool CollectionLocationDelegateImpl::deleteEmptyDirs( CollectionLocation* loc ) const

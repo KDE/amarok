@@ -21,7 +21,7 @@
 #include "core/support/Debug.h"
 #include "core/interfaces/Logger.h"
 #include "MagnatuneMeta.h"
-#include "statusbar/StatusBar.h"
+
 
 #include <KLocale>
 #include <KZip>

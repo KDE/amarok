@@ -23,10 +23,12 @@
 #include "ConstraintSolver.h"
 #include "constraints/TrackSpreader.h"
 
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistController.h"
-#include "statusbar/StatusBar.h"
+
 
 #include <QDomElement>
 #include <threadweaver/ThreadWeaver.h>
@@ -124,10 +126,13 @@ void APG::Preset::queueSolver() {
     emit lock( true );
 
     ConstraintSolver* s = static_cast<ConstraintSolver*>( sender() );
-    The::statusBar()->newProgressOperation( s, i18n("Generating a new playlist") )->setAbortSlot( s, SLOT( requestAbort() ) );
-    connect( s, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ) );
-    connect( s, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( solverFinished( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
-    The::statusBar()->setProgressTotalSteps( s, s->iterationCount() );
+    Amarok::Components::logger()->newProgressOperation( s, i18n("Generating a new playlist"), 100,
+                                                        s, SLOT(requestAbort()) );
+
+    //TODO: port to Amarok::Logger signals
+//    connect( s, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ) );
+//    connect( s, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( solverFinished( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+//    Amarok::Components::logger()->setProgressTotalSteps( s, s->iterationCount() );
 
     m_constraintTreeRoot->addChild( ConstraintTypes::TrackSpreader::createNew( m_constraintTreeRoot ), 0 ); // private mandatory constraint
 
@@ -140,11 +145,15 @@ APG::Preset::solverFinished( ThreadWeaver::Job* job )
     m_constraintTreeRoot->removeChild( 0 ); // remove the TrackSpreader
 
     ConstraintSolver* solver = static_cast<ConstraintSolver*>( job );
-    The::statusBar()->endProgressOperation( solver );
+    emit endProgressOperation( solver );
     if ( job->success() ) {
         debug() << "Solver" << solver->serial() << "finished successfully";
         if ( solver->finalSatisfaction() < solver->satisfactionThreshold() ) {
-            The::statusBar()->longMessage( i18n("The playlist generator created a playlist which does not meet all of your constraints.  If you are not satisfied with the results, try loosening or removing some constraints and then generating a new playlist.") );
+            Amarok::Components::logger()->longMessage(
+                        i18n("The playlist generator created a playlist which does not meet all " \
+                             "of your constraints.  If you are not satisfied with the results, " \
+                             "try loosening or removing some constraints and then generating a " \
+                             "new playlist.") );
         }
         The::playlistController()->insertOptioned( solver->getSolution() , Playlist::Replace );
     } else {

@@ -63,6 +63,8 @@ class UpnpBrowseCollection : public UpnpCollectionBase
 
   signals:
     void incrementProgress();
+    void totalSteps( int );
+    void endProgressOperation( QObject * );
 
   public slots:
     virtual void startFullScan();

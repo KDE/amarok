@@ -34,10 +34,12 @@ typedef QPair<QString, Amarok::Logger::MessageType> LongMessage;
 
 struct ProgressData
 {
+    QWeakPointer<QObject> sender;
     QWeakPointer<KJob> job;
     QWeakPointer<QNetworkReply> reply;
     QString text;
-    QWeakPointer<QObject> object;
+    int maximum;
+    QWeakPointer<QObject> cancelObject;
     const char *slot;
     Qt::ConnectionType type;
 };
@@ -52,7 +54,7 @@ using namespace Amarok;
   * the notifications until another logger becomes available.
   *
   */
-class ProxyLogger : public Logger
+class ProxyLogger : public QObject, public Logger
 {
     Q_OBJECT
     Q_PROPERTY( Logger* logger
@@ -69,8 +71,15 @@ public:
 public slots:
     virtual void shortMessage( const QString &text );
     virtual void longMessage( const QString &text, MessageType type );
-    virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj = 0, const char *slot = 0, Qt::ConnectionType type = Qt::AutoConnection );
-    virtual void newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj = 0, const char *slot = 0, Qt::ConnectionType type = Qt::AutoConnection );
+    virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj = 0,
+                                       const char *slot = 0,
+                                       Qt::ConnectionType type = Qt::AutoConnection );
+    virtual void newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj = 0,
+                                       const char *slot = 0,
+                                       Qt::ConnectionType type = Qt::AutoConnection );
+    virtual void newProgressOperation( QObject *sender, const QString &text, int maximum = 100,
+                                       QObject *obj = 0, const char *slot = 0,
+                                       Qt::ConnectionType type = Qt::AutoConnection );
 
     /**
       * Set the real logger.
@@ -97,4 +106,5 @@ private:
     QQueue<ProgressData> m_progressQueue; //!< temporary storage for notifications that have not been forwarded yet
 };
 
+Q_DECLARE_METATYPE(ProxyLogger *)
 #endif

@@ -19,7 +19,7 @@
 #include "UpnpSearchCollection.h"
 
 #include "core/support/Debug.h"
-#include "statusbar/StatusBar.h"
+
 #include "UpnpQueryMaker.h"
 #include "UpnpMeta.h"
 #include "UpnpCache.h"

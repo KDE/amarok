@@ -18,9 +18,11 @@
 
 #include "UpnpBrowseCollection.h"
 
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "MemoryQueryMaker.h"
-#include "statusbar/StatusBar.h"
+
 #include "UpnpMemoryQueryMaker.h"
 #include "UpnpQueryMaker.h"
 #include "UpnpMeta.h"
@@ -113,12 +115,9 @@ UpnpBrowseCollection::startFullScan()
 
     // TODO probably set abort slot
     // TODO figure out what to do with the total steps
-    if( The::statusBar() )
-        The::statusBar()->newProgressOperation( this, i18n( "Scanning %1", prettyName() ) );
+    Amarok::Components::logger()->newProgressOperation( this, i18n( "Scanning %1", prettyName() ) );
 
     startIncrementalScan( "/" );
-
-    connect( this, SIGNAL(incrementProgress()), The::statusBar(), SLOT(incrementProgress()), Qt::QueuedConnection );
 
     m_fullScanInProgress = true;
     m_fullScanTimer = new QTimer( this );
@@ -165,8 +164,7 @@ UpnpBrowseCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
             createTrack( entry, sj->url().prettyUrl() );
         }
         count++;
-        if( The::statusBar() )
-            The::statusBar()->setProgressTotalSteps( this, count );
+        emit totalSteps( count );
         emit incrementProgress();
     }
     updateMemoryCollection();
@@ -205,16 +203,18 @@ void
 UpnpBrowseCollection::done( KJob *job )
 {
 DEBUG_BLOCK
-    if( job->error() ) {
-        The::statusBar()->longMessage( i18n("UPnP Error: %1", job->errorString() ), StatusBar::Error );
+    if( job->error() )
+    {
+        Amarok::Components::logger()->longMessage( i18n("UPnP Error: %1", job->errorString() ),
+                                                   Amarok::Logger::Error );
         return;
     }
     updateMemoryCollection();
-    if( m_fullScanInProgress ) {
+    if( m_fullScanInProgress )
+    {
         m_fullScanTimer->stop();
         m_fullScanInProgress = false;
-        if( The::statusBar() )
-            The::statusBar()->endProgressOperation( this );
+        emit endProgressOperation( this );
         debug() << "Full Scan done";
     }
 

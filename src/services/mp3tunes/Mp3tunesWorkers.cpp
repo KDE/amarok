@@ -16,9 +16,10 @@
 
 #include "Mp3tunesWorkers.h"
 
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "Mp3tunesMeta.h"
-#include "statusbar/StatusBar.h"
 
 #include <KLocale>
 #include <QStringList>
@@ -236,14 +237,14 @@ Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStrin
     m_locker = locker;
     m_tracklist = tracklist;
 
-    The::statusBar()->newProgressOperation( this, i18n( "Upload to MP3tunes Initiated" ) )->setMaximum( m_tracklist.count() );
-    connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
+    Amarok::Components::logger()->newProgressOperation( this, i18n( "Upload to MP3tunes Initiated" ), m_tracklist.count() );
+    //TODO: port to Amarok::Logger signals
+//    connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
 }
 
 Mp3tunesSimpleUploader::~Mp3tunesSimpleUploader()
 {
-    DEBUG_BLOCK
-    The::statusBar()->endProgressOperation( this );
+    emit endProgressOperation( this );
 }
 
 void Mp3tunesSimpleUploader::run()
@@ -262,7 +263,8 @@ void Mp3tunesSimpleUploader::run()
     foreach(const QString &track, m_tracklist) {
         QString msg = i18n( "Uploading Track %1/%2", progress, m_tracklist.count() );
         debug() << msg;
-        The::statusBar()->setProgressStatus( this, msg );
+        //TODO: port to Amarok::Logger signals
+//        Amarok::Components::logger()->setProgressStatus( this, msg );
         emit ( incrementProgress() );
         debug() << "Uploading: " << track;
 

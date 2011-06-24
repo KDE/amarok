@@ -21,11 +21,12 @@
 #include "DaapCollection.h"
 
 #include "amarokconfig.h"
-#include "DaapMeta.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "DaapMeta.h"
 #include "MemoryQueryMaker.h"
 #include "Reader.h"
-#include "statusbar/StatusBar.h"
 
 #include <QStringList>
 #include <QTimer>
@@ -99,7 +100,9 @@ DaapCollectionFactory::connectToManualServers()
             
         QString host = current.first();
         quint16 port = current.last().toUShort();
-        The::statusBar()->longMessage( i18n( "Loading remote collection from host %1", host), StatusBar::Information );
+        Amarok::Components::logger()->longMessage(
+                    i18n( "Loading remote collection from host %1", host),
+                    Amarok::Logger::Information );
 
         int lookup_id = QHostInfo::lookupHost( host, this, SLOT( resolvedManualServerIp(QHostInfo)));
         m_lookupHash.insert( lookup_id, port );

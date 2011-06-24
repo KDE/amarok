@@ -209,6 +209,7 @@ set(libbrowserframework_SRCS
     browsers/BrowserCategoryListModel.cpp
     browsers/BrowserCategoryListSortFilterProxyModel.cpp
     browsers/BrowserDock.cpp
+    browsers/BrowserMessageArea.cpp
     browsers/CollectionSortFilterProxyModel.cpp
     browsers/CollectionTreeItem.cpp
     browsers/CollectionTreeItemModel.cpp
@@ -257,7 +258,6 @@ set(libsynchronization_SRCS
 # STATUSBAR
 #####################################################################
 set(libstatusbar_SRCS
-    statusbar/StatusBar.cpp
     statusbar/ProgressBar.cpp
     statusbar/KJobProgressBar.cpp
     statusbar/NetworkProgressBar.cpp

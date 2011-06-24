@@ -22,10 +22,12 @@
 #include "PresetEditDialog.h"
 
 #include "amarokconfig.h"
+#include "core/interfaces/Logger.h"
 #include "core/collections/Collection.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "statusbar/StatusBar.h"
+
 
 #include <KFileDialog>
 #include <KUrl>
@@ -208,13 +210,16 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
         QTextStream out( &file );
         out.setCodec( "UTF-8" );
         xmldoc.save( out, 2, QDomNode::EncodingFromTextStream );
-        if ( !filename.contains( "playlistgenerator.xml" ) ) {
-            if( The::statusBar() )
-                The::statusBar()->longMessage( i18n("Preset exported to %1", filename), StatusBar::Information );
+        if( !filename.contains( "playlistgenerator.xml" ) )
+        {
+            Amarok::Components::logger()->longMessage( i18n("Preset exported to %1", filename),
+                                                       Amarok::Logger::Information );
         }
-    } else {
-        if( The::statusBar() )
-            The::statusBar()->longMessage( i18n("Preset could not be exported to %1", filename), StatusBar::Sorry );
+    }
+    else
+    {
+        Amarok::Components::logger()->longMessage(
+                    i18n("Preset could not be exported to %1", filename), Amarok::Logger::Error );
         error() << "Can not write presets to " << filename;
     }
     qDeleteAll( nodes );
@@ -231,12 +236,16 @@ APG::PresetModel::loadPresetsFromXml( const QString& filename, bool createDefaul
             parseXmlToPresets( document );
         } else {
             error() << "Failed to read" << filename;
-            The::statusBar()->longMessage( i18n("Presets could not be imported from %1", filename), StatusBar::Sorry );
+            Amarok::Components::logger()->longMessage(
+                        i18n("Presets could not be imported from %1", filename),
+                        Amarok::Logger::Error );
         }
         file.close();
     } else {
         if ( !createDefaults ) {
-            The::statusBar()->longMessage( i18n("%1 could not be opened for preset import", filename), StatusBar::Sorry );
+            Amarok::Components::logger()->longMessage(
+                        i18n("%1 could not be opened for preset import", filename),
+                        Amarok::Logger::Error );
         } else {
             QDomDocument document;
             QString translatedPresetExamples( presetExamples.arg(

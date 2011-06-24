@@ -116,7 +116,10 @@ void LayoutManager::updateCurrentLayout( const PlaylistLayout &layout )
         }
 
 
-        Amarok::Components::logger()->longMessage( i18n( "Current layout '%1' is read only. Creating a new layout '%2' with your changes and setting this as active", m_activeLayout, newLayoutName ) );
+        Amarok::Components::logger()->longMessage( i18n( "Current layout '%1' is read only. " \
+                    "Creating a new layout '%2' with your changes and setting this as active",
+                                                         m_activeLayout, newLayoutName )
+                                                 );
 
         addUserLayout( newLayoutName, layout );
         setActiveLayout( newLayoutName );

@@ -79,6 +79,12 @@ void CompoundProgressBar::endProgressOperation( QObject *owner )
     childBarComplete( m_progressMap.value( owner ) );
 }
 
+void
+CompoundProgressBar::slotIncrementProgress()
+{
+    incrementProgress( sender() );
+}
+
 void CompoundProgressBar::incrementProgress( const QObject *owner )
 {
     if( !m_progressMap.contains( owner ) )
@@ -189,7 +195,7 @@ void CompoundProgressBar::childBarFinished( ProgressBar *bar )
     }
     else
     {
-        setDescription( i18n( "Multiple background tasks running" ) );
+        setDescription( i18n( "Multiple background tasks running (click to show)" ) );
         cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
     }
 

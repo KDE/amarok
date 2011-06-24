@@ -57,6 +57,10 @@ namespace Dynamic
 
             BiasPtr bias() const;
 
+        signals:
+            void totalSteps( int );
+            void endProgressOperation( QObject * );
+
         public slots:
             virtual void repopulate();
             virtual void requestAbort();

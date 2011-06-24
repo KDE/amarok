@@ -17,12 +17,13 @@
 #ifndef AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 #define AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "LastFmMeta.h"
 #include "core/meta/Meta.h"
 #include "core/capabilities/MultiPlayableCapability.h"
-#include "StatusBar.h"
 
 #include <lastfm/Track>
 #include <lastfm/RadioTuner>
@@ -106,9 +107,14 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
         {
             if( e == lastfm::ws::SubscribersOnly || e == lastfm::ws::AuthenticationFailed )
             {   // last.fm is returning an AuthenticationFailed message when the user is not a subscriber, even if the credentials are OK
-                The::statusBar()->shortMessage( i18n( "To listen to this stream you need to be a paying Last.Fm subscriber. All the other Last.Fm features are unaffected." ) );
-            } else {
-                The::statusBar()->shortMessage( i18n( "Error starting track from Last.Fm radio" )   );
+                Amarok::Components::logger()->shortMessage(
+                    i18n( "To listen to this stream you need to be a paying Last.Fm subscriber. " \
+                          "All the other Last.Fm features are unaffected." ) );
+            }
+            else
+            {
+                Amarok::Components::logger()->shortMessage(
+                            i18n( "Error starting track from Last.Fm radio" ) );
             }
         }
 

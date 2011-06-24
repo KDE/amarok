@@ -22,6 +22,8 @@
 
 #include "MediaDeviceHandlerCapability.h"
 
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "playlist/MediaDeviceUserPlaylistProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 
@@ -63,12 +65,8 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     DEBUG_BLOCK
 
     connect( m_memColl, SIGNAL( deletingCollection() ),
-             this,      SLOT( slotDeletingHandler() ), Qt::QueuedConnection );
+             this, SLOT( slotDeletingHandler() ), Qt::QueuedConnection );
 
-    connect( this, SIGNAL( incrementProgress() ),
-             The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
-    connect( this, SIGNAL(endProgressOperation(QObject*)),
-             The::statusBar(), SLOT(endProgressOperation(QObject*)));
     connect( this, SIGNAL( databaseWritten(bool)),
              this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
 }
@@ -435,12 +433,10 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     // Set up progress bar
 
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Transferring Tracks to Device" ) );
-
-    m_statusbar->setMaximum( m_tracksToCopy.size() );
+    Amarok::Components::logger()->newProgressOperation( this,
+            i18n( "Transferring Tracks to Device" ), m_tracksToCopy.size() );
 
     // prepare to copy
-
     m_wcb->prepareToCopy();
 
     m_numTracksToCopy = m_tracksToCopy.count();
@@ -479,11 +475,12 @@ MediaDeviceHandler::copyNextTrackToDevice()
 
         if ( m_copyFailed )
         {
-            The::statusBar()->shortMessage( i18np( "%1 track failed to copy to the device",
-                                                   "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
+            Amarok::Components::logger()->shortMessage(
+                        i18np( "%1 track failed to copy to the device",
+                               "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
-        // clear maps/hashes used
 
+        // clear maps/hashes used
         m_tracksCopying.clear();
         m_trackSrcDst.clear();
         m_tracksFailed.clear();
@@ -612,10 +609,9 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
     m_tracksToDelete = tracks;
 
     // Set up statusbar for deletion operation
-
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18np( "Removing Track from Device", "Removing Tracks from Device", tracks.size() ) );
-
-    m_statusbar->setMaximum( tracks.size() );
+    Amarok::Components::logger()->newProgressOperation( this,
+            i18np( "Removing Track from Device", "Removing Tracks from Device", tracks.size() ),
+            tracks.size() );
 
     m_wcb->prepareToDelete();
 
@@ -694,7 +690,8 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
         /*
         if( m_tracksFailed.size() > 0 )
         {
-            The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
+            Amarok::Components::logger()->shortMessage(
+                        i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         */
         m_wcb->endTrackRemove();

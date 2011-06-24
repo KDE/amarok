@@ -17,7 +17,8 @@
 #include "Mp3tunesServiceCollectionLocation.h"
 
 #include "Mp3tunesWorkers.h"
-#include "statusbar/StatusBar.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
@@ -83,7 +84,7 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
         }
     }
     if( !error.isEmpty() )
-        The::statusBar()->longMessage( error );
+        Amarok::Components::logger()->longMessage( error );
     Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader( m_collection->locker(), urls );
     connect( uploadWorker, SIGNAL( uploadComplete() ), this, SLOT( slotCopyOperationFinished() ) );
     ThreadWeaver::Weaver::instance()->enqueue( uploadWorker );

@@ -23,7 +23,6 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/collections/support/SqlStorage.h"
-#include "statusbar/StatusBar.h"
 
 //solid stuff
 #include <solid/predicate.h>

@@ -186,6 +186,7 @@ class Mp3tunesSimpleUploader : public ThreadWeaver::Job
     signals:
         void uploadComplete();
         void incrementProgress();
+        void endProgressOperation( QObject * );
 
     private slots:
         void completeJob();
