@@ -30,7 +30,6 @@
 
 #include <KPluginInfo>
 #include <KVBox>
-#include <khtml_part.h>
 
 #include <QAbstractItemModel>
 #include <QPushButton>

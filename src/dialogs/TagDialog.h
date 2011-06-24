@@ -30,7 +30,6 @@
 #include "core/meta/Meta.h"
 #include "core/collections/MetaQueryMaker.h"
 
-#include <khtml_part.h>
 #include <KDialog>
 
 #include <QDateTime>

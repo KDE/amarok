@@ -25,7 +25,13 @@ set(libampache_account_login_SRCS
     AmpacheAccountLogin.cpp
     sha256/sha256.cpp)
 kde4_add_library(ampache_account_login SHARED ${libampache_account_login_SRCS})
-target_link_libraries(ampache_account_login amaroklib amarokcore ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS})
+target_link_libraries(ampache_account_login
+    amaroklib
+    amarokcore
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
+    ${KDE4_KIO_LIBS}
+)
 install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### next target ###############
@@ -53,6 +59,7 @@ install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KIO_LIBS}
             ${KDE4_THREADWEAVER_LIBRARIES}
+            ${QT_QTXML_LIBRARY}
         )
         if( LIBLASTFM_FOUND )
             target_link_libraries(amarok_service_ampache

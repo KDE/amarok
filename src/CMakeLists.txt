@@ -903,7 +903,6 @@ kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 target_link_libraries(amaroklib
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KFILE_LIBS}
-    ${KDE4_KHTML_LIBS}
     ${KDE4_KNEWSTUFF3_LIBS}
     ${KDE4_KNOTIFYCONFIG_LIBS}
     ${KDE4_KUTILS_LIBS}
@@ -913,7 +912,6 @@ target_link_libraries(amaroklib
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
-    ${QT_QTWEBKIT_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
