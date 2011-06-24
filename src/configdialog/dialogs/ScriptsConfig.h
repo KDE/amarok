@@ -20,7 +20,6 @@
 #include "ConfigDialogBase.h"
 
 class ScriptSelector;
-class KArchiveDirectory;
 
 /**
   * A widget that allows configuration of scripts

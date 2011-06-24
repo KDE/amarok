@@ -28,10 +28,7 @@
 #include <KMessageBox>
 #include <KPluginInfo>
 #include <KPluginSelector>
-#include <KTar>
 #include <KNS3/DownloadDialog>
-
-#include <QVBoxLayout>
 
 ScriptsConfig::ScriptsConfig( QWidget *parent )
     : ConfigDialogBase( parent )
