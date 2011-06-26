@@ -390,6 +390,8 @@ Meta::secToPrettyTime( int seconds )
 {
     if( seconds < 60 * 60 ) // one hour
         return QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is below 1 hour see QTime documentation.", "m:ss" ) );
+    else if( seconds >= 86400 ) // one day
+        return  QDateTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 day or above see QDateTime documentation.", "d:hh:mm:ss" ) );
     else
         return QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 hour or above see QTime documentation.", "h:mm:ss" ) );
 }
