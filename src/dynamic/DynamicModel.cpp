@@ -932,7 +932,7 @@ Dynamic::DynamicModel::initPlaylists()
 
     // - a complex playlist demonstrating PartBias and TagMatchBias
     playlist = new Dynamic::BiasedPlaylist( this );
-    playlist->setTitle( i18n("Rating") );
+    playlist->setTitle( i18nc( "Name of a dynamic playlist", "Rating" ) );
     Dynamic::PartBias *part = new Dynamic::PartBias();
     playlist->bias()->replace( Dynamic::BiasPtr( part ) );
 
