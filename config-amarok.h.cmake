@@ -30,6 +30,9 @@
 /* have TagLib-Extras */
 #cmakedefine TAGLIB_EXTRAS_FOUND 1
 
+/* have module file format support in TagLib */
+#cmakedefine TAGLIB_MOD_FOUND 1
+
 /* have QtCrypto the Qt crypto architecture */
 #cmakedefine QCA2_FOUND 1
 
