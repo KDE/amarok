@@ -85,19 +85,16 @@ BrowserBreadcrumbWidget::~BrowserBreadcrumbWidget()
 void
 BrowserBreadcrumbWidget::clearCrumbs()
 {
-    //these items will get deleted by their BrowserCategory, so set parent to 0
-    //or they will get double deleted, causing a crash
     foreach( BrowserBreadcrumbItem *item, m_items )
     {
         item->hide();
-        item->setParent( 0 );
+        item->deleteLater();
     }
     m_items.clear();
 
     //if we have a final menu button, also delete it.
     delete m_childMenuButton;
     m_childMenuButton = 0;
-    
 }
 
 void

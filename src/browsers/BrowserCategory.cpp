@@ -130,9 +130,7 @@ void BrowserCategory::activate()
 
 BrowserBreadcrumbItem * BrowserCategory::breadcrumb()
 {
-    if ( m_breadcrumb == 0 )
-        m_breadcrumb = new BrowserBreadcrumbItem( this );
-    return m_breadcrumb;
+    return new BrowserBreadcrumbItem( this );
 }
 
 void BrowserCategory::setImagePath( const QString & path )

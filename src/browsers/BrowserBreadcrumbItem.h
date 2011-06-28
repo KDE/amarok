@@ -25,6 +25,8 @@ class BreadcrumbItemMenuButton;
 
 /**
  *  A widget representing a single "breadcrumb" item
+ *  It has a mainButton and optionally a menuButton
+ *
  *  @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 
@@ -32,15 +34,13 @@ class BrowserBreadcrumbItem : public KHBox
 {
     Q_OBJECT
 public:
-    BrowserBreadcrumbItem( BrowserCategory * category );
+    BrowserBreadcrumbItem( BrowserCategory* category, QWidget* parent = 0 );
 
     /**
      * Overloaded constructor for creating breadcrumb items not bound to a particular BrowserCategory
      */
-    BrowserBreadcrumbItem( const QString &name, const QStringList &childItems, const QString &callback, BrowserCategory * handler );
+    BrowserBreadcrumbItem( const QString &name, const QStringList &childItems, const QString &callback, BrowserCategory * handler, QWidget* parent = 0 );
 
-    bool isAddItem() { return m_category == 0; }
-    
     ~BrowserBreadcrumbItem();
 
     void setActive( bool active );
@@ -52,20 +52,18 @@ public:
 signals:
 
     void activated( const QString &callback );
-    
+
 protected slots:
     void updateSizePolicy();
     void activate();
     void activateSibling();
 
 private:
-    BrowserCategory          *m_category;
     BreadcrumbItemMenuButton *m_menuButton;
     BreadcrumbItemButton     *m_mainButton;
 
     QString m_callback;
     int m_nominalWidth;
-    
 };
 
 #endif

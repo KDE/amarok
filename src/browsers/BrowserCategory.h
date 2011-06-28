@@ -127,7 +127,13 @@ public:
     BrowserCategoryList * parentList() const;
     void setParentList( BrowserCategoryList * parent );
 
-    BrowserBreadcrumbItem * breadcrumb();
+    /**
+     * Returns an item that will be added to the breadcrumb widget
+     * if this category is selected.
+     *
+     * The caller will have to free the returned item.
+     */
+    BrowserBreadcrumbItem* breadcrumb();
 
     virtual void polish() {}
     virtual void setupAddItems() {}

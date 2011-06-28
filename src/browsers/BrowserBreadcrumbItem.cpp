@@ -26,9 +26,8 @@
 #include <QDir>
 #include <QMenu>
 
-BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
-    : KHBox( 0 )
-    , m_category( category )
+BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory* category, QWidget* parent )
+    : KHBox( parent )
     , m_menuButton( 0 )
 {
     //figure out if we want to add a menu to this item. A menu allows you to select
@@ -37,7 +36,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     //wrong when using it...)
 
     BrowserCategoryList * parentList = category->parentList();
-    if ( parentList )
+    if( parentList )
     {
         m_menuButton = new BreadcrumbItemMenuButton( this );
         QMenu *menu = new QMenu( 0 );
@@ -49,7 +48,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
         foreach( const QString &siblingName, siblingNames )
         {
             //no point in adding ourselves to this menu
-            if ( siblingName == m_category->name() )
+            if ( siblingName == category->name() )
                 continue;
             
             BrowserCategory *siblingCategory = siblingMap.value( siblingName );
@@ -92,9 +91,8 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     updateSizePolicy();
 }
 
-BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QStringList &childItems, const QString &callback, BrowserCategory * handler )
-    : KHBox( 0 )
-    , m_category( 0 )
+BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QStringList &childItems, const QString &callback, BrowserCategory * handler, QWidget* parent )
+    : KHBox( parent )
     , m_menuButton( 0 )
     , m_callback( callback )
 {
