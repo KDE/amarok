@@ -56,7 +56,6 @@ namespace Solid {
 }
 
 class QString;
-class QMutex;
 
 namespace Collections {
     class IpodCollection;
@@ -204,14 +203,6 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual void prepareToDelete();
 
     private:
-        enum FileType
-        {
-            mp3,
-            ogg,
-            flac,
-            mp4
-        };
-
         /// Functions for ReadCapability
         virtual void prepareToParseTracks();
         virtual bool isEndOfParseTracksList();
@@ -331,8 +322,6 @@ class IpodHandler : public Meta::MediaDeviceHandler
         QMap<Meta::TrackPtr, KUrl> m_trackdesturl; // keeps track of destination url for new tracks, mapped from source track
 
         QMap<KUrl, Meta::TrackPtr> m_tracksdeleting; // associates source url to track of source url being deleted
-
-        Itdb_Track       *m_libtrack;
 
         /* Ipod Connection */
         bool    m_autoConnect;

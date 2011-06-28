@@ -37,7 +37,7 @@ if(IPOD_FOUND AND WITH_IPOD)
     handler/capabilities/IpodArtworkCapability.cpp
     handler/capabilities/IpodPlaylistCapability.cpp
     handler/capabilities/IpodReadCapability.cpp
-    handler/capabilities/IpodWriteCapability.cpp	
+    handler/capabilities/IpodWriteCapability.cpp
     support/IpodDeviceInfo.cpp
     support/IpodConnectionAssistant.cpp
   )

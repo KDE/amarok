@@ -94,7 +94,6 @@ IpodHandler::IpodHandler( Collections::IpodCollection *mc, const IpodDeviceInfo 
     , m_currplaylistlist( 0 )
     , m_currplaylist( 0 )
     , m_jobcounter( 0 )
-    , m_libtrack( 0 )
     , m_autoConnect( false )
     , m_name()
     , m_deviceInfo( deviceInfo )
