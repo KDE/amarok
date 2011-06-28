@@ -577,7 +577,8 @@ Dynamic::PartBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newB
     if( !newBias )
     {
         m_weights.takeAt(index);
-        changeBiasWeight( 0, m_weights.at(0) ); // fix the weights to 1.0 again.
+        if( !m_weights.isEmpty() )
+            changeBiasWeight( 0, m_weights.at(0) ); // fix the weights to 1.0 again.
     }
 
     AndBias::biasReplaced( oldBias, newBias );
