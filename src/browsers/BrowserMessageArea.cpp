@@ -83,6 +83,7 @@ BrowserMessageArea::newProgressOperation( KJob *job, const QString &text, QObjec
     newBar->setDescription( text );
     connect( job, SIGNAL(destroyed( QObject * )), newBar,
              SLOT(endProgressOperation( QObject * )) );
+    newBar->setAbortSlot( obj, slot, type );
     m_progressBar->addProgressBar( newBar, job );
     m_progressBar->show();
 
@@ -96,8 +97,9 @@ BrowserMessageArea::newProgressOperation( QNetworkReply *reply, const QString &t
     NetworkProgressBar *newBar = new NetworkProgressBar( 0, reply );
     newBar->setDescription( text );
     newBar->setAbortSlot( reply, SLOT(deleteLater()) );
-    connect( reply, SIGNAL(destroyed( QObject * )), m_progressBar,
+    connect( reply, SIGNAL(destroyed( QObject * )), newBar,
              SLOT(endProgressOperation( QObject * )) );
+    newBar->setAbortSlot( obj, slot, type );
     m_progressBar->addProgressBar( newBar, reply );
     m_progressBar->show();
 
@@ -110,6 +112,7 @@ BrowserMessageArea::newProgressOperation( QObject *sender, const QString &text, 
 {
     ProgressBar *newBar = new ProgressBar( 0 );
     newBar->setDescription( text );
+    newBar->setMaximum( maximum );
     connect( sender, SIGNAL(destroyed( QObject * )), m_progressBar,
              SLOT(endProgressOperation( QObject * )) );
     connect( sender, SIGNAL(endProgressOperation( QObject * )), m_progressBar,
@@ -117,6 +120,7 @@ BrowserMessageArea::newProgressOperation( QObject *sender, const QString &text, 
     connect( sender, SIGNAL(incrementProgress()), m_progressBar,
              SLOT(slotIncrementProgress()) );
     connect( sender, SIGNAL(totalSteps( int )), newBar, SLOT(slotTotalSteps( int )) );
+    newBar->setAbortSlot( obj, slot, type );
     m_progressBar->addProgressBar( newBar, sender );
     m_progressBar->show();
 
