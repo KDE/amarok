@@ -103,7 +103,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     DEBUG_BLOCK
     //initTopPanel( );
 
-    setShortDescription( i18n( "\"Fair trade\" online music store." ) );
+    setShortDescription( i18n( "\"Fair trade\" online music store" ) );
     setIcon( KIcon( "view-services-magnatune-amarok" ) );
 
     // xgettext: no-c-format
