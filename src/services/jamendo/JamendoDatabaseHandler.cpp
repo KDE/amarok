@@ -179,15 +179,20 @@ JamendoDatabaseHandler::insertAlbum( ServiceAlbum *album )
 {
     JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album );
 
-    QString queryString;
+    QString queryString, popularity;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+
+    popularity = QString::number( jAlbum->popularity() );
+    if( popularity == "nan" ) // sometimes this seems to happen, I don't know why
+        popularity = "0";
+
     queryString = "INSERT INTO jamendo_albums ( id, name, description, "
                   "popularity, cover_url, launch_year, genre, "
                   "artist_id, mp3_torrent_url, ogg_torrent_url ) VALUES ( "
                   + QString::number( jAlbum->id() ) + ", '"
                   + sqlDb->escape(  jAlbum->name() ) + "', '"
                   + sqlDb->escape( jAlbum->description() )+ "', "
-                  + QString::number( jAlbum->popularity() ) + ", '"
+                  + popularity + ", '"
                   + sqlDb->escape( jAlbum->coverUrl() )+ "', "
                   + QString::number( jAlbum->launchYear() ) + ", '"
                   + sqlDb->escape( jAlbum->genre() )+ "', "

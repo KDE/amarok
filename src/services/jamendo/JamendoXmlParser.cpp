@@ -207,7 +207,7 @@ JamendoXmlParser::readConfigFile( const QString &filename )
 
 
     m_dbHandler->commit(); //complete transaction
-    //as genres are jsut user tags, remove any that are not applied to at least 10 albums to weed out the worst crap
+    //as genres are just user tags, remove any that are not applied to at least 10 albums to weed out the worst crap
     //perhaps make this a config option
     m_dbHandler->trimGenres( 10 );
 
