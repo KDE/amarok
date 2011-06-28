@@ -20,7 +20,7 @@ VERSION 2.4.2-Beta 1
     * Removed the redo action from the playlist toolbar to make it less wide.
     * Made some playlist toolbar actions collapse into a menu button for use on
       small screens.
-    * Removed the statusbar. Moved progress messages to the Media Sources dock.
+    * Removed the statusbar. Moved progress info & messages to the Media Sources dock.
     * Removed the preview button and checkbox from the organize collection dialog.
     * General user interface cleanup (addition of browser widget backgrounds,
       etc.)
@@ -31,6 +31,7 @@ VERSION 2.4.2-Beta 1
       reduce the number of cache-related crashes.
 
   BUGFIXES:
+    * Fixed a crash in the equalizer dialog when selecting "Off".
     * Fix finalization of track copy process to media device collections. (BR238912)
       Patch by Tommaso Falchi Delitala.
     * Fixed crash on MusicBrainz search. (BR 274956)
