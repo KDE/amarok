@@ -280,11 +280,11 @@ QString
 EqualizerDialog::eqSelectedPresetName() const
 {
     const int index = eqPresets->currentIndex();
-    if (index < 0)
+    if( index <= 0 )
         return QString();
 
     // use offset by one since the first entry ("Off") is not part of the global list
-    return mPresets.eqGlobalList().at(index - 1);
+    return mPresets.eqGlobalList().at( index - 1 );
 }
 
 void
