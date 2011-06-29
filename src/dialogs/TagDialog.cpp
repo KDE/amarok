@@ -369,7 +369,7 @@ TagDialog::accept() //SLOT
 inline void
 TagDialog::openPressed() //SLOT
 {
-    new KRun( QFileInfo( m_path ).dir().absolutePath(), this );
+    new KRun( QFileInfo( m_path ).absolutePath(), this );
 }
 
 
@@ -647,7 +647,7 @@ void TagDialog::initUi()
 void
 TagDialog::setCurrentTrack( int num )
 {
-    if( num<0 || num>=m_tracks.count() )
+    if( num < 0 || num >= m_tracks.count() )
         return;
 
     if( m_currentTrack ) // even in multiple tracks mode we don't want to write back
@@ -671,7 +671,8 @@ TagDialog::setCurrentTrack( int num )
 }
 
 void
-TagDialog::startDataQuery( Collections::QueryMaker::QueryType type, const char* signal, const char* slot )
+TagDialog::startDataQuery( Collections::QueryMaker::QueryType type, const char *signal,
+                           const char *slot )
 {
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     qm->setQueryType( type );
@@ -859,17 +860,19 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
     setControlsAccessability();
 
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
-    if( !tags.value( Meta::Field::URL ).toString().isEmpty() )
+    KUrl url = tags.value( Meta::Field::URL ).toString();
+    //pathOrUrl will give localpath or proper url for remote.
+    ui->kLineEdit_location->setText( url.pathOrUrl() );
+    if( url.isLocalFile() )
     {
-        //all files are local & have the same Directory
-        m_path = tags.value( Meta::Field::URL ).toString();
         ui->locationLabel->show();
         ui->kLineEdit_location->show();
+        m_path = url.directory();
         ui->pushButton_open->setEnabled( true );
-        ui->kLineEdit_location->setText( m_path );
     }
     else
     {
+        m_path = QString();
         ui->pushButton_open->setEnabled( false );
     }
 
