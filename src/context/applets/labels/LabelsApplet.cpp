@@ -154,10 +154,10 @@ LabelsApplet::init()
         QString label = parts.at(0);
         label = label.replace( "%s", "|" );
         label = label.replace( "%p", "%" );
-        QString replacement = parts.at(1);
-        replacement = replacement.replace( "%s", "|" );
-        replacement = replacement.replace( "%p", "%" );
-        m_replacementMap.insert( label, replacement );
+        QString replacementValue = parts.at(1);
+        replacementValue = replacementValue.replace( "%s", "|" );
+        replacementValue = replacementValue.replace( "%p", "%" );
+        m_replacementMap.insert( label, replacementValue );
     }
 
     setStoppedState( true );

@@ -165,8 +165,8 @@ LyricsAppletPrivate::showSuggested( const QVariantList &suggestions )
         QString title( s.at(0) );
         QString artist( s.at(1) );
         KUrl url( s.at(2) );
-        LyricsSuggestion suggestion = { url, title, artist };
-        suggestView->add( suggestion );
+        LyricsSuggestion lyricsSuggestion = { url, title, artist };
+        suggestView->add( lyricsSuggestion );
     }
     showSuggestions = true;
 }

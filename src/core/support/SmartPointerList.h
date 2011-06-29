@@ -168,7 +168,7 @@ public:
     using QList<T*>::back;
     using QList<T*>::constBegin;
     using QList<T*>::constEnd;
-    using QList<T*>::const_iterator;
+    using typename QList<T*>::const_iterator;
     using QList<T*>::contains;
     using QList<T*>::count;
     using QList<T*>::empty;
