@@ -23,8 +23,8 @@
 #include <QStringList>
 #include <QIcon>
 
-typedef QMap<int, QVariant> IndexData;
-typedef QMap<int, IndexData> RowData;
+typedef QMap<int, QVariant> ItemData;
+typedef QMap<int, ItemData> RowData;
 
 
 class QtGroupingProxy : public QAbstractProxyModel
@@ -66,7 +66,9 @@ class QtGroupingProxy : public QAbstractProxyModel
     private slots:
         void modelDataChanged( const QModelIndex&, const QModelIndex& );
         void modelRowsInserted( const QModelIndex&, int, int );
+        void modelRowsAboutToBeInserted( const QModelIndex &, int ,int );
         void modelRowsRemoved( const QModelIndex&, int, int );
+        void modelRowsAboutToBeRemoved( const QModelIndex &, int ,int );
 
     protected:
         /** Maps an item to a group.

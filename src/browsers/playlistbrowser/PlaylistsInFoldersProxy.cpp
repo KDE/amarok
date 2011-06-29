@@ -350,7 +350,7 @@ QModelIndex
 PlaylistsInFoldersProxy::createNewFolder( const QString &groupName )
 {
     RowData data;
-    IndexData roleData;
+    ItemData roleData;
     roleData.insert( Qt::DisplayRole, groupName );
     roleData.insert( Qt::DecorationRole, QVariant( KIcon( "folder" ) ) );
     roleData.insert( Qt::EditRole, groupName );
