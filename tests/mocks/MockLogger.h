@@ -36,12 +36,17 @@ namespace Amarok
             ON_CALL( *this, longMessage( _, _ ) ).WillByDefault( Return() );
             ON_CALL( *this, newProgressOperation( An<KJob*>(), _, _, _, _ ) ).WillByDefault( Return() );
             ON_CALL( *this, newProgressOperation( An<QNetworkReply*>(), _, _, _, _ ) ).WillByDefault( Return() );
+            ON_CALL( *this, newProgressOperation( An<QObject *>(), _, _, _, _, _ ) ).WillByDefault( Return() );
         }
 
         MOCK_METHOD1( shortMessage, void( const QString& ) );
         MOCK_METHOD2( longMessage, void( const QString&, Amarok::Logger::MessageType ) );
-        MOCK_METHOD5( newProgressOperation, void( KJob*, const QString&, QObject*, const char*, Qt::ConnectionType ) );
-        MOCK_METHOD5( newProgressOperation, void( QNetworkReply*, const QString&, QObject*, const char*, Qt::ConnectionType ) );
+        MOCK_METHOD5( newProgressOperation, void( KJob*, const QString&, QObject*, const char*,
+                                                  Qt::ConnectionType ) );
+        MOCK_METHOD5( newProgressOperation, void( QNetworkReply*, const QString&, QObject*,
+                                                  const char*, Qt::ConnectionType ) );
+        MOCK_METHOD6( newProgressOperation, void( QObject *, const QString&, int, QObject*,
+                                                  const char*, Qt::ConnectionType ) );
     };
 }
 
