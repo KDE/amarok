@@ -729,7 +729,6 @@ set(amaroklib_LIB_SRCS
     widgets/Token.cpp
     widgets/TokenWithLayout.cpp
     widgets/VolumeDial.cpp
-    widgets/Splitter.cpp
     widgets/TrackActionButton.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp

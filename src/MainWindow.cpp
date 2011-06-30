@@ -63,7 +63,6 @@
 #include "toolbar/MainToolbar.h"
 #include "SvgHandler.h"
 #include "PluginManager.h"
-#include "widgets/Splitter.h"
 //#include "mediabrowser.h"
 
 #include <KAction>          //m_actionCollection
