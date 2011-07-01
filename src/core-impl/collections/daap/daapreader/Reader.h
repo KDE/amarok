@@ -37,7 +37,7 @@ namespace Daap
 {
     typedef QMap<QString, QVariant>    Map;
 
-    enum ContentTypes { INVALID = 0, CHAR = 1, SHORT = 2, LONG = 5, LONGLONG = 7,
+    enum ContentTypes { INVALID = 0, CHAR = 1, SHORT = 3, LONG = 5, LONGLONG = 7,
                         STRING = 9, DATE = 10, DVERSION = 11, CONTAINER = 12 };
 
     struct Code
@@ -75,6 +75,7 @@ namespace Daap
             bool parseSongList( const QByteArray &data, bool set_collection = false);
         public slots:
             void logoutRequest(int, bool );
+            void contentCodesReceived( int id , bool error );
             void loginHeaderReceived( const QHttpResponseHeader& resp );
             void loginFinished( int id , bool error );
             void updateFinished( int id , bool error );
@@ -93,15 +94,15 @@ namespace Daap
             * @param raw stream of DAAP reply
             * @param containerLength length of the container (or entire result) being analyzed
             */
-            static Map parse( QDataStream &raw);
+            Map parse( QDataStream &raw);
             static void addElement( Map &parentMap, char* tag, QVariant element ); //!< supporter function for parse
             static quint32 getTagAndLength( QDataStream &raw, char tag[5] );
-            static QVariant readTagData(QDataStream &, char[5], quint32);
+            QVariant readTagData(QDataStream &, char[5], quint32);
             void addTrack( const QString& itemId, const QString& title, const QString& artist, const QString& composer,
                            const QString& commment, const QString& album, const QString& genre, int year,
                            const QString& format, qint32 trackNumber, qint32 songTime );
 
-            static QMap<QString, Code> s_codes;
+            QMap<QString, Code> m_codes;
 
             Collections::DaapCollection *m_memColl;
             QString m_host;
