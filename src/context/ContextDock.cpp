@@ -31,11 +31,7 @@ ContextDock::ContextDock( QWidget *parent )
 {
     setObjectName( "Context dock" );
     setAllowedAreas( Qt::AllDockWidgetAreas );
-}
-
-void ContextDock::polish()
-{
-    DEBUG_BLOCK
+    setMinimumWidth( 50 );
 
     m_mainWidget = new KVBox( this );
     m_mainWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -48,6 +44,11 @@ void ContextDock::polish()
             this, SLOT( createContextView( Plasma::Containment* ) ) );
 
     m_corona.data()->loadDefaultSetup(); // this method adds our containment to the scene
+}
+
+void ContextDock::polish()
+{
+    DEBUG_BLOCK
 }
 
 

@@ -13,7 +13,7 @@
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 if(NOT WIN32)
-    find_program(MYSQLCONFIG_EXECUTABLE NAMES mysql_config PATHS ${BIN_INSTALL_DIR} ~/usr/bin /usr/local/bin)
+    find_program(MYSQLCONFIG_EXECUTABLE NAMES mysql_config mysql_config5 PATHS ${BIN_INSTALL_DIR} ~/usr/bin /usr/local/bin)
 endif(NOT WIN32)
 
 if(MYSQLCONFIG_EXECUTABLE)

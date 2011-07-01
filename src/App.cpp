@@ -96,7 +96,7 @@ int App::mainThreadId = 0;
 
 #ifdef Q_WS_MAC
 #include <CoreFoundation/CoreFoundation.h>
-extern void setupEventHandler_mac(long);
+extern void setupEventHandler_mac(SRefCon);
 #endif
 
 #ifdef DEBUG
@@ -179,7 +179,7 @@ App::App()
         }
     }
 
-    setupEventHandler_mac((long)this);
+    setupEventHandler_mac(this);
 #endif
 
     PERF_LOG( "Done App ctor" )

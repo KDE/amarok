@@ -88,7 +88,7 @@ macCallbackUrlHandler( const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*
 }
 
 void
-setupEventHandler_mac(long handlerRef)
+setupEventHandler_mac(SRefCon handlerRef)
 {
     appleEventProcessorUPP = AEEventHandlerUPP(appleEventProcessor);
     AEInstallEventHandler(kCoreEventClass, kAEReopenApplication, appleEventProcessorUPP, handlerRef, true);

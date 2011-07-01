@@ -87,7 +87,6 @@
 #include <QDesktopWidget>
 #include <QDockWidget>
 #include <QList>
-#include <QSizeGrip>
 #include <QStyle>
 #include <QVBoxLayout>
 
@@ -123,7 +122,6 @@ MainWindow::MainWindow()
     s_instance = this;
 
 #ifdef Q_WS_MAC
-    QSizeGrip* grip = new QSizeGrip( this );
     GrowlInterface* growl = new GrowlInterface( qApp->applicationName() );
 #endif
 
@@ -183,7 +181,6 @@ MainWindow::~MainWindow()
     //save currently active category
     Amarok::config().writeEntry( "Browser Path", m_browserDock.data()->list()->path() );
 
-    //delete m_splitter;
 #ifdef DEBUG_BUILD_TYPE
     delete m_networkViewer.data();
 #endif // DEBUG_BUILD_TYPE
@@ -968,19 +965,17 @@ MainWindow::setRating( int n )
 void
 MainWindow::createMenus()
 {
+    m_menubar = menuBar();
+
     //BEGIN Actions menu
-    KMenu *actionsMenu;
+    KMenu *actionsMenu = new KMenu( m_menubar.data() );
 #ifdef Q_WS_MAC
-    m_menubar = new QMenuBar( 0 );  // Fixes menubar in OS X
-    actionsMenu = new KMenu( m_menubar.data() );
     // Add these functions to the dock icon menu in OS X
     //extern void qt_mac_set_dock_menu(QMenu *);
     //qt_mac_set_dock_menu(actionsMenu);
     // Change to avoid duplicate menu titles in OS X
     actionsMenu->setTitle( i18n("&Music") );
 #else
-    m_menubar = menuBar();
-    actionsMenu = new KMenu( m_menubar.data() );
     actionsMenu->setTitle( i18n("&Amarok") );
 #endif
     actionsMenu->addAction( Amarok::actionCollection()->action("playlist_playmedia") );
