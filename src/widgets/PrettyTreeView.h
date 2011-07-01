@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef AMAROK_PRETTYTREEVIEW_H
 #define AMAROK_PRETTYTREEVIEW_H
 
@@ -21,27 +21,28 @@
 
 #include <QTreeView>
 
+namespace Amarok
+{
+
 /**
     A utility QTreeView subcass that handles drawing nice, svg themed, rows and palette changes
     @author: Nikolaj Hald Nielsen <nhn@kde.org>
 */
-
-namespace Amarok
+class AMAROK_EXPORT PrettyTreeView : public QTreeView
 {
-    class AMAROK_EXPORT PrettyTreeView : public QTreeView
-    {
-        Q_OBJECT
+    Q_OBJECT
 
-        public:
-            PrettyTreeView( QWidget *parent = 0 );
-            virtual ~PrettyTreeView();
+public:
+    PrettyTreeView( QWidget *parent = 0 );
+    virtual ~PrettyTreeView();
 
-        protected:
-            virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+protected:
+    virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
-        protected slots:
-            virtual void newPalette( const QPalette & palette );
-    };
+protected slots:
+    virtual void newPalette( const QPalette & palette );
+};
+
 }
 
 #endif
