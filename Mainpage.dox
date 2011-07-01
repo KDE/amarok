@@ -1,0 +1,14 @@
+/** @mainpage The Amarok Source Code Documentation
+
+This is the developer online reference for the Amarok music player.
+
+@licences
+@gpl
+
+*/
+
+// DOXYGEN_SET_PROJECT_NAME = Amarok
+// DOXYGEN_SET_INPUT = @topdir@/src
+// DOXYGEN_SET_RECURSIVE = YES
+
+// vim:ts=4:sw=4:expandtab:filetype=doxygen
