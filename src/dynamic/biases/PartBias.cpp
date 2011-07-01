@@ -342,6 +342,8 @@ Dynamic::PartBias::PartBias()
 void
 Dynamic::PartBias::fromXml( QXmlStreamReader *reader )
 {
+    QList<qreal> weights; // we have to add all biases before we can set their weights
+
     while (!reader->atEnd()) {
         reader->readNext();
 
@@ -352,7 +354,7 @@ Dynamic::PartBias::fromXml( QXmlStreamReader *reader )
             if( bias )
             {
                 appendBias( bias );
-                m_weights[ m_weights.count() - 1 ] = weight;
+                weights.append( weight );
             }
             else
             {
@@ -365,6 +367,8 @@ Dynamic::PartBias::fromXml( QXmlStreamReader *reader )
             break;
         }
     }
+
+    m_weights = weights;
 }
 
 void
@@ -431,37 +435,64 @@ Dynamic::PartBias::matchingTracks( int position,
                                   const Meta::TrackList& playlist, int contextCount,
                                   Dynamic::TrackCollectionPtr universe ) const
 {
+    // store the parameters in case we need to request additional matching tracks later
+    m_position = position;
+    m_playlist = playlist;
+    m_contextCount = contextCount;
+    m_universe = universe;
+
+    m_tracks = Dynamic::TrackSet();
+    m_matchingTracks.resize( m_biases.length() );
+
+    // get the matching tracks from all sub-biases
+    for( int i = 0; i < m_biases.length(); ++i )
+        m_matchingTracks[i] = m_biases[i]->matchingTracks( position, playlist, contextCount, universe );
+    updateResults();
+
+    return m_tracks;
+}
+
+void
+Dynamic::PartBias::updateResults() const
+{
+    // -- first check if we have valid tracks from all sub-biases
+    foreach( const Dynamic::TrackSet &tracks, m_matchingTracks )
+        if( tracks.isOutstanding() )
+            return;
+
     // -- determine the current matching
-    MatchState state( this, position, playlist, contextCount );
+    MatchState state( this, m_position, m_playlist, m_contextCount );
 
-    debug()<<"matching tracks for"<<position<<"pc"<<playlist.count()<<"context:"<<contextCount;
+    // debug()<<"compute matching tracks for"<<m_position<<"pc"<<m_playlist.count()<<"context:"<<m_contextCount;
 
-    // -- find all biases that are not fulfilled
-    m_tracks = Dynamic::TrackSet( universe, false );
-    m_outstandingMatches = 0;
-
+    // -- add all the tracks that have not fullfilled their capacity
+    m_tracks = Dynamic::TrackSet( m_universe, false );
     for( int source = 0; source < state.m_sourceCount; source++ )
     {
-        // debug() << "PartBias::matchingTracks: biase"<<m_biases[source]->name()<<"only matches"<<state.m_sourceFlow[source]<<"out of"<<state.m_sourceCapacity[source]<<"tracks.";
+        // debug() << "PartBias::matchingTracks: biase"<<m_biases[source]->toString()<<"matches"<<state.m_sourceFlow[source]<<"out of"<<state.m_sourceCapacity[source]<<"tracks.";
         if( state.m_sourceFlow[source] < state.m_sourceCapacity[source] )
-        {
-            Dynamic::TrackSet tracks = m_biases[source]->matchingTracks( position, playlist, contextCount, universe );
+            m_tracks.unite( m_matchingTracks[source] );
+    }
+}
 
-            if( tracks.isOutstanding() )
-                m_outstandingMatches++;
-            else
-                m_tracks.unite( tracks );
-
-            if( m_tracks.isFull() )
-                break;
-        }
+void
+Dynamic::PartBias::resultReceived( const Dynamic::TrackSet &tracks )
+{
+    int index = m_biases.indexOf(Dynamic::BiasPtr(qobject_cast<Dynamic::AbstractBias*>(sender())));
+    if( index < 0 ) {
+        warning() << "Got results from a bias that I don't have.";
+        return;
+    }
+    if( !m_tracks.isOutstanding() ) {
+        warning() << "currently in resultReceived but we already have a solution";
+        return;
     }
 
-    // -- return it's matching tracks
-    if( m_outstandingMatches > 0 )
-        return Dynamic::TrackSet();
-    else
-        return m_tracks;
+    m_matchingTracks[index] = tracks;
+    updateResults();
+
+    if( !m_tracks.isOutstanding() )
+        emit resultReady( m_tracks );
 }
 
 bool
@@ -492,6 +523,7 @@ Dynamic::PartBias::energy( const Meta::TrackList& playlist, int contextCount ) c
 void
 Dynamic::PartBias::appendBias( Dynamic::BiasPtr bias )
 {
+    DEBUG_BLOCK;
     m_weights.append( qreal(0.0) );
     changeBiasWeight( 0, m_weights.at(0) ); // fix the weights to 1.0 again.
     AndBias::appendBias( bias );
@@ -500,6 +532,7 @@ Dynamic::PartBias::appendBias( Dynamic::BiasPtr bias )
 void
 Dynamic::PartBias::moveBias( int from, int to )
 {
+    DEBUG_BLOCK;
     m_weights.insert( to, m_weights.takeAt( from ) );
     AndBias::moveBias( from, to );
 }
@@ -507,6 +540,7 @@ Dynamic::PartBias::moveBias( int from, int to )
 void
 Dynamic::PartBias::changeBiasWeight( int biasNum, qreal value )
 {
+    DEBUG_BLOCK;
     Q_ASSERT( biasNum >= 0 && biasNum < m_weights.count() );
 
     // the weights should sum up to 1.0
@@ -573,10 +607,11 @@ Dynamic::PartBias::changeBiasWeight( int biasNum, qreal value )
 void
 Dynamic::PartBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
 {
+    DEBUG_BLOCK;
     int index = m_biases.indexOf( oldBias );
     if( !newBias )
     {
-        m_weights.takeAt(index);
+        m_weights.takeAt( index );
         if( !m_weights.isEmpty() )
             changeBiasWeight( 0, m_weights.at(0) ); // fix the weights to 1.0 again.
     }

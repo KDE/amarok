@@ -25,6 +25,7 @@
 #include "BiasFactory.h"
 
 #include <QList>
+#include <QVector>
 class QGridLayout;
 class QSlider;
 class QWidget;
@@ -104,10 +105,10 @@ namespace Dynamic
             virtual void moveBias( int from, int to );
 
         public slots:
+            void resultReceived( const Dynamic::TrackSet &tracks );
+
             /** The overall weight has changed */
             void changeBiasWeight( int biasNum, qreal value );
-
-            // virtual void resultReceived( const Dynamic::TrackSet &tracks );
 
         signals:
             /** The overall weight has changed */
@@ -115,10 +116,20 @@ namespace Dynamic
 
         protected slots:
             virtual void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
-        protected:
-            QList<qreal> m_weights;
 
         private:
+            /** Using the data from m_matchingTracks it tries to compute a valid m_tracks */
+            void updateResults() const; // only changes mutables
+
+            QList<qreal> m_weights;
+            mutable QVector<Dynamic::TrackSet> m_matchingTracks;
+
+            // buffered by matchingTracks
+            mutable int m_position;
+            mutable Meta::TrackList m_playlist;
+            mutable int m_contextCount;
+            mutable Dynamic::TrackCollectionPtr m_universe;
+
             Q_DISABLE_COPY(PartBias)
     };
 
