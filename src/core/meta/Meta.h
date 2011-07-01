@@ -385,7 +385,10 @@ namespace Meta
             */
             virtual QImage image( int size = 0 ) const;
 
-            /** returns the image location on disk */
+            /** Returns the image location on disk.
+                The mpris interface is using this information for notifications so
+                it better is a local file url.
+            */
             virtual KUrl imageLocation( int size = 0 ) { Q_UNUSED( size ); return KUrl(); }
 
             /** Returns true if it is possible to update the cover of the album */
