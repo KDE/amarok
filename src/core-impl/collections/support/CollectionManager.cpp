@@ -365,7 +365,7 @@ CollectionManager::slotRemoveCollection()
             }
         }
         emit collectionRemoved( collection->collectionId() );
-        QTimer::singleShot( 0, collection, SLOT( deleteLater() ) );
+        QTimer::singleShot( 500, collection, SLOT( deleteLater() ) ); // give the tree some time to update itself until we really delete the collection pointers.
     }
 }
 
