@@ -35,7 +35,9 @@ class Amarok2ConfigDialog : public KConfigDialog
 
     public slots:
         /**
-         * Shows the config dialog and sets the current page to @page (class name of the dialog).
+         * Shows the config dialog and sets the current page to "page"
+         *
+         * @param page (class name of the dialog).
          */
         void show( QString page );
 
