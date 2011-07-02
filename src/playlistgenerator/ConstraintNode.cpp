@@ -28,7 +28,7 @@ ConstraintNode::ConstraintNode( ConstraintNode* p ) : QObject( p ) {
 
 ConstraintNode::~ConstraintNode()
 {
-    debug() << "destroying constraint at" << (void*)this << "that has parent" << (void*)QObject::parent();
+    // debug() << "destroying constraint at" << (void*)this << "that has parent" << (void*)QObject::parent();
     qDeleteAll( m_children );
 }
 
