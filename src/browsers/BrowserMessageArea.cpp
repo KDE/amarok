@@ -81,7 +81,7 @@ BrowserMessageArea::newProgressOperation( KJob *job, const QString &text, QObjec
 {
     KJobProgressBar *newBar = new KJobProgressBar( 0, job );
     newBar->setDescription( text );
-    connect( job, SIGNAL(destroyed( QObject * )), newBar,
+    connect( job, SIGNAL(destroyed( QObject * )), m_progressBar,
              SLOT(endProgressOperation( QObject * )) );
     newBar->setAbortSlot( obj, slot, type );
     m_progressBar->addProgressBar( newBar, job );
@@ -97,7 +97,7 @@ BrowserMessageArea::newProgressOperation( QNetworkReply *reply, const QString &t
     NetworkProgressBar *newBar = new NetworkProgressBar( 0, reply );
     newBar->setDescription( text );
     newBar->setAbortSlot( reply, SLOT(deleteLater()) );
-    connect( reply, SIGNAL(destroyed( QObject * )), newBar,
+    connect( reply, SIGNAL(destroyed( QObject * )), m_progressBar,
              SLOT(endProgressOperation( QObject * )) );
     newBar->setAbortSlot( obj, slot, type );
     m_progressBar->addProgressBar( newBar, reply );
