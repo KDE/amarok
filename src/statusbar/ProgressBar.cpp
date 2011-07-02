@@ -30,20 +30,20 @@ ProgressBar::ProgressBar( QWidget *parent )
     setFixedHeight( 30 );
     setContentsMargins( 0, 0, 0, 4 );
 
-    QVBoxLayout *box = new QVBoxLayout( this );
+    QVBoxLayout *box = new QVBoxLayout;
     box->setMargin( 0 );
     box->setSpacing( 3 );
 
-    QHBoxLayout *descriptionLayout = new QHBoxLayout( this );
+    QHBoxLayout *descriptionLayout = new QHBoxLayout;
     descriptionLayout->setMargin( 0 );
     descriptionLayout->setSpacing( 2 );
 
-    m_descriptionLabel = new QLabel( this );
+    m_descriptionLabel = new QLabel;
     m_descriptionLabel->setWordWrap( true );
     //add with stretchfactor 1 so it takes up more space then the cancel button
     descriptionLayout->addWidget( m_descriptionLabel, 1 );
 
-    m_cancelButton = new QToolButton( this );
+    m_cancelButton = new QToolButton;
     m_cancelButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
     m_cancelButton->setToolTip( i18n( "Abort" ) );
     m_cancelButton->setHidden( true );
@@ -56,7 +56,7 @@ ProgressBar::ProgressBar( QWidget *parent )
 
     box->addLayout( descriptionLayout );
 
-    m_progressBar = new QProgressBar( this );
+    m_progressBar = new QProgressBar;
     m_progressBar->setMinimum( 0 );
     m_progressBar->setMaximum( 100 );
     m_progressBar->setFixedHeight( 5 );
