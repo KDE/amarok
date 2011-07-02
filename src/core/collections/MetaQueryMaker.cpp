@@ -36,7 +36,6 @@ MetaQueryMaker::MetaQueryMaker( const QList<Collections::Collection*> &collectio
         connect( b, SIGNAL( newResultReady( Meta::ComposerList ) ), this, SIGNAL( newResultReady( Meta::ComposerList ) ), Qt::DirectConnection );
         connect( b, SIGNAL( newResultReady( Meta::YearList ) ), this, SIGNAL( newResultReady( Meta::YearList ) ), Qt::DirectConnection );
         connect( b, SIGNAL( newResultReady( QStringList ) ), this, SIGNAL( newResultReady( QStringList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::DataList ) ), this, SIGNAL( newResultReady( Meta::DataList ) ), Qt::DirectConnection );
         connect( b, SIGNAL( newResultReady( Meta::LabelList)), this, SIGNAL( newResultReady( Meta::LabelList)), Qt::DirectConnection );
     }
 }
@@ -58,7 +57,6 @@ MetaQueryMaker::MetaQueryMaker( const QList<QueryMaker*> &queryMakers )
         connect( b, SIGNAL( newResultReady( Meta::ComposerList ) ), this, SIGNAL( newResultReady( Meta::ComposerList ) ), Qt::DirectConnection );
         connect( b, SIGNAL( newResultReady( Meta::YearList ) ), this, SIGNAL( newResultReady( Meta::YearList ) ), Qt::DirectConnection );
         connect( b, SIGNAL( newResultReady( QStringList ) ), this, SIGNAL( newResultReady( QStringList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( Meta::DataList ) ), this, SIGNAL( newResultReady( Meta::DataList ) ), Qt::DirectConnection );
         connect( b, SIGNAL(newResultReady( Meta::LabelList)), this, SIGNAL(newResultReady( Meta::LabelList)), Qt::DirectConnection );
     }
 }
