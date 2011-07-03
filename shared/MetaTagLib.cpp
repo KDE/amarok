@@ -335,6 +335,7 @@ Meta::Tag::writeTags( const QString &path, const FieldHash &changes )
         data.remove( Meta::valLastPlayed );
         data.remove( Meta::valPlaycount );
         data.remove( Meta::valScore );
+        data.remove( Meta::valRating );
     }
 #endif
 
