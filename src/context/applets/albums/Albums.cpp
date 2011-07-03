@@ -163,6 +163,11 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
     foreach( Meta::AlbumPtr albumPtr, albums )
     {
+        // do not show all tracks without an album from the collection, this takes ages
+        // TODO: show all tracks from this artist that are not part of an album
+        if( albumPtr->name().isEmpty() )
+            continue;
+
         Meta::TrackList tracks = albumPtr->tracks();
         if( tracks.isEmpty() )
             continue;
