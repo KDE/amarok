@@ -220,6 +220,9 @@ BiasSolver::simpleOptimize( SolverList *list )
 {
     DEBUG_BLOCK;
 
+    if( list->m_trackList.count() <= list->m_contextCount )
+        return; // nothing to optimize. All tracks are in the context
+
     // first set some random tracks
     // this prevents the part bias from first fullfilling the easy conditions
     for( int i = 0; i < m_n / 2; i++ )
@@ -258,6 +261,9 @@ BiasSolver::annealingOptimize( SolverList *list,
                                bool updateStatus )
 {
     DEBUG_BLOCK;
+
+    if( list->m_trackList.count() <= list->m_contextCount )
+        return; // nothing to optimize. All tracks are in the context
 
     SolverList originalList = *list;
 
