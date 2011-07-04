@@ -109,7 +109,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=62
+X-KDE-Amarok-framework-version=63
 X-KDE-Amarok-name=AmpacheService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100
