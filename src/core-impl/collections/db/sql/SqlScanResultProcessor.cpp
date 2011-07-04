@@ -300,8 +300,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
         track->disc() >= 0 )
         metaTrack->setDiscNumber( track->disc() );
 
-    if( m_type == FullScan &&
-        track->playcount() >= 0 )
+    if( m_type == FullScan && track->playcount() >= metaTrack->playCount() )
         metaTrack->setPlayCount( track->playcount() );
 
 
