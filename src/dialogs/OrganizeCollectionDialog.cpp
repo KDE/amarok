@@ -238,6 +238,7 @@ OrganizeCollectionDialog::preview( const QString &format )
         //new path preview in the 1st column
         QPalette p = ui->previewTableWidget->palette();
         QTableWidgetItem *item = new QTableWidgetItem( newPath );
+        KColorScheme::adjustBackground(p, KColorScheme::NegativeBackground);
         if( info.exists() )
             item->setBackgroundColor( p.color( QPalette::Base ) );
         ui->previewTableWidget->setItem( i, 0, item );
@@ -245,9 +246,6 @@ OrganizeCollectionDialog::preview( const QString &format )
         //original in the second column
         item = new QTableWidgetItem( originalPath );
         ui->previewTableWidget->setItem( i, 1, item );
-        KColorScheme::adjustBackground(p, KColorScheme::NegativeBackground);
-        if( info.exists() )
-            item->setBackgroundColor( p.color( QPalette::Base ) );
 
         ++i;
     }
