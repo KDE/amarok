@@ -477,9 +477,7 @@ UmsHandler::collectionActions()
             connect( m_parseAction, SIGNAL( triggered() ), this, SLOT( parseTracks() ) );
         }
 
-        //if already parsed no need to add this.
-        if( !m_parsed )
-            actions.append( m_parseAction );
+        actions << m_parseAction;
     }
     
     if( !m_configureAction )
