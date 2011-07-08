@@ -57,9 +57,9 @@ CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelI
     CollectionTreeItem *rightItem = treeItem( right );
 
     // various artists and no label items are always at the top
-    if( leftItem->isVariousArtistItem() || leftItem->isNoLabelItem() )
+    if( !leftItem || leftItem->isVariousArtistItem() || leftItem->isNoLabelItem() )
         return true;
-    if( rightItem->isVariousArtistItem() || rightItem->isNoLabelItem() )
+    if( !rightItem || rightItem->isVariousArtistItem() || rightItem->isNoLabelItem() )
         return false;
 
     if( leftItem->isTrackItem() && rightItem->isTrackItem() )
