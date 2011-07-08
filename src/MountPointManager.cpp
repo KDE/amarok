@@ -221,7 +221,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
                 absolutePath.setPath( lastMountPoint.first() );
                 absolutePath.addPath( rpath.path() );
                 absolutePath.cleanPath();
-                debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path();
+                //debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path();
             }
         }
     }
