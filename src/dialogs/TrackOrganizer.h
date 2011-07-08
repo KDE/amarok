@@ -81,24 +81,30 @@ public:
      */
     void setTargetFileExtension( const QString &fileExtension );
     
-
     /**
      * Get the list of processed destinations
      * Only call after setting all the appropriate options
      * @see setFormatString
+     * @arg batchSize How many to return this run of the function. If 0 (default) will calculate the
+     * complete list. This function can return a shorter list at the end of the results list.
+     * Over consecutive runs of this function the same number of results as the length of the
+     * tracklist passed in the constructor will be returned.
      */
-    QMap<Meta::TrackPtr, QString> getDestinations();
+    QMap<Meta::TrackPtr, QString> getDestinations( unsigned int batchSize = 0 );
+
+signals:
+    void finished();
 
 private:
     QString buildDestination( const QString &format, const Meta::TrackPtr &track ) const;
     QString cleanPath( const QString &component ) const;
 
-
     Meta::TrackList m_allTracks;
-    QString m_format;
-    QString m_folderPrefix;
+    int m_trackOffset;
 
     //options
+    QString m_format;
+    QString m_folderPrefix;
     bool m_IgnoreThe;
     bool m_AsciiOnly;
     bool m_UnderscoresNotSpaces;

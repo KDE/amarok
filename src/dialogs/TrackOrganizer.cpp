@@ -28,6 +28,7 @@
 TrackOrganizer::TrackOrganizer( const Meta::TrackList &tracks, QObject* parent )
     : QObject( parent )
     , m_allTracks( tracks )
+    , m_trackOffset( 0 )
     , m_IgnoreThe( false )
     , m_AsciiOnly( false )
     , m_UnderscoresNotSpaces( false )
@@ -133,54 +134,98 @@ QString TrackOrganizer::cleanPath( const QString& component ) const
     return result;
 }
 
-QMap< Meta::TrackPtr, QString > TrackOrganizer::getDestinations()
+QMap< Meta::TrackPtr, QString > TrackOrganizer::getDestinations( unsigned int batchSize )
 {
     QMap<Meta::TrackPtr, QString> destinations;
-    foreach( const Meta::TrackPtr &track, m_allTracks )
+
+    int newOffset = m_trackOffset + batchSize;
+    //don't go out of bounds in the for loop
+    if( newOffset >= m_allTracks.count() )
+        newOffset = m_allTracks.count() - 1;
+
+    if( batchSize == 0 )
     {
+        m_trackOffset = 0;
+        newOffset = m_allTracks.count();
+    }
+
+    for( ; m_trackOffset < newOffset ; m_trackOffset++ )
+    {
+        Meta::TrackPtr track = m_allTracks.value( m_trackOffset );
         if( track )
             destinations.insert( track, buildDestination( m_format, track ) );
     }
+
+    if( m_trackOffset == m_allTracks.count() - 1 )
+    {
+        emit finished();
+        m_trackOffset = 0;
+    }
+
     return destinations;
 }
 
 void TrackOrganizer::setFormatString( const QString& format )
 {
+    if( m_format != format )
+        m_trackOffset = 0;
+
     m_format = format;
 }
 
 void TrackOrganizer::setFolderPrefix(const QString& prefix)
 {
+    if( m_folderPrefix != prefix )
+        m_trackOffset = 0;
+
     m_folderPrefix = prefix;
 }
 
 void TrackOrganizer::setAsciiOnly(bool flag)
 {
+    if( m_AsciiOnly != flag )
+        m_trackOffset = 0;
+
     m_AsciiOnly = flag;
 }
 
 void TrackOrganizer::setIgnoreThe(bool flag)
 {
+    if( m_IgnoreThe != flag )
+        m_trackOffset = 0;
+
     m_IgnoreThe = flag;
 }
 
 void TrackOrganizer::setReplaceSpaces(bool flag)
 {
+    if( m_UnderscoresNotSpaces != flag )
+        m_trackOffset = 0;
+
     m_UnderscoresNotSpaces = flag;
 }
 
 void TrackOrganizer::setVfatSafe(bool flag)
 {
+    if( m_vfatSafe != flag )
+        m_trackOffset = 0;
+
     m_vfatSafe = flag;
 }
 
 void TrackOrganizer::setReplace(const QString& regex, const QString& string)
 {
+    if( m_regexPattern != regex || m_replaceString != string )
+        m_trackOffset = 0;
+
     m_regexPattern = regex;
     m_replaceString = string;
 }
 
 void TrackOrganizer::setTargetFileExtension( const QString &fileExtension )
 {
+    if( m_targetFileExtension != fileExtension )
+        m_trackOffset = 0;
+
     m_targetFileExtension = fileExtension;
 }

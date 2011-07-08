@@ -45,9 +45,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
                                                     QFlags<KDialog::ButtonCode> buttonMask )
     : KDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
+    , m_trackOrganizerDone( false )
     , m_detailed( true )
     , m_schemeModified( false )
     , m_formatListModified( false )
+    , m_conflict( false )
 {
     Q_UNUSED( name )
 
@@ -57,7 +59,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     showButtonSeparator( true );
     m_targetFileExtension = targetExtension;
 
-    if ( tracks.size() > 0 )
+    if( tracks.size() > 0 )
     {
         m_allTracks = tracks;
     }
@@ -69,10 +71,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->setupUi( mainContainer );
 
     m_trackOrganizer = new TrackOrganizer( m_allTracks, this );
-    m_filenameLayoutDialog = new FilenameLayoutDialog( mainContainer, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
-//    m_filenameLayoutDialog->hide();
-    connect( this, SIGNAL( accepted() ),
-             m_filenameLayoutDialog, SLOT( onAccept() ) );
+    connect( m_trackOrganizer, SIGNAL(finished()), SLOT(slotOrganizerFinished()) );
+    //TODO: s/1/enum/g
+    //", 1" means isOrganizeCollection ==> doesn't show Options frame
+    m_filenameLayoutDialog = new FilenameLayoutDialog( mainContainer, 1 );
+    connect( this, SIGNAL( accepted() ),  m_filenameLayoutDialog, SLOT( onAccept() ) );
     ui->verticalLayout->insertWidget( 1, m_filenameLayoutDialog );
     ui->ignoreTheCheck->show();
 
@@ -96,33 +99,25 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
     ui->conflictLabel->setPalette( p );
 
-    QTimer *updatePreviewTimer = new QTimer( this );
-    updatePreviewTimer->setSingleShot( true );
-    updatePreviewTimer->setInterval( 2000 );
-    connect( updatePreviewTimer, SIGNAL(timeout()), SLOT(slotUpdatePreview()) );
-    //schedule first run next iteration of eventloop (will not block UI)
-    updatePreviewTimer->start();
-
     // to show the conflict error
-    connect( ui->overwriteCheck, SIGNAL( stateChanged( int ) ), SLOT( slotUpdatePreview() ) );
+    connect( ui->overwriteCheck, SIGNAL(stateChanged( int )), SLOT(slotUpdatePreview()) );
     connect( ui->ignoreTheCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->spaceCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->asciiCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
-    connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
-    //only start calculating preview after timeout.
-    connect( m_filenameLayoutDialog, SIGNAL( schemeChanged() ), updatePreviewTimer,
-            SLOT( start() ) );
+    connect( ui->spaceCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
+    connect( ui->asciiCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
+    connect( ui->vfatCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
+    connect( ui->regexpEdit, SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
+    connect( ui->replaceEdit, SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
+    connect( ui->folderCombo, SIGNAL(currentIndexChanged( const QString & )),
+             SLOT(slotUpdatePreview()) );
+    connect( m_filenameLayoutDialog, SIGNAL(schemeChanged()), SLOT(slotUpdatePreview()) );
 
-    connect( this, SIGNAL( finished(int) ), SLOT( slotSaveFormatList() ) );
-    connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
-    connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
-             this, SLOT( slotUpdatePreview() ) );
-    connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
-             this, SLOT( slotEnableOk( const QString & ) ) );
-    connect( ui->addPresetButton, SIGNAL( clicked( bool ) ), this, SLOT( slotAddFormat() ) );
-    connect( ui->removePresetButton, SIGNAL( clicked( bool ) ), this, SLOT( slotRemoveFormat() ) );
-    connect( ui->updatePresetButton, SIGNAL( clicked( bool ) ), this, SLOT( slotUpdateFormat() ) );
+    connect( this, SIGNAL(finished(int)), SLOT(slotSaveFormatList()) );
+    connect( this, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
+    connect( ui->folderCombo, SIGNAL(currentIndexChanged( const QString & )),
+             SLOT(slotEnableOk( const QString & )) );
+    connect( ui->addPresetButton, SIGNAL(clicked( bool )), SLOT(slotAddFormat()) );
+    connect( ui->removePresetButton, SIGNAL(clicked( bool )), SLOT(slotRemoveFormat()) );
+    connect( ui->updatePresetButton, SIGNAL(clicked( bool )), SLOT(slotUpdateFormat()) );
 
     slotEnableOk( ui->folderCombo->currentText() );
 
@@ -131,7 +126,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
 {
-    DEBUG_BLOCK
+    QApplication::restoreOverrideCursor();
 
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     delete ui;
@@ -208,57 +203,6 @@ OrganizeCollectionDialog::commonPrefix( const QStringList &list ) const
     }
     return option;
 
-}
-
-void
-OrganizeCollectionDialog::preview( const QString &format )
-{
-    ui->previewTableWidget->clearContents();
-    bool conflict = false;
-
-    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-    m_trackOrganizer->setFormatString( format );
-    m_trackOrganizer->setTargetFileExtension( m_targetFileExtension );
-    QMap<Meta::TrackPtr, QString> dests = m_trackOrganizer->getDestinations();
-    ui->previewTableWidget->setRowCount( dests.count() );
-    QMapIterator<Meta::TrackPtr, QString> it( dests );
-    int i = 0;
-    while( it.hasNext() )
-    {
-        it.next();
-        Meta::TrackPtr track = it.key();
-
-        QString originalPath = track->prettyUrl();
-        QString newPath = it.value();
-
-        QFileInfo info( newPath );
-        if( !conflict  && info.exists() )
-            conflict = true;
-
-        //new path preview in the 1st column
-        QPalette p = ui->previewTableWidget->palette();
-        QTableWidgetItem *item = new QTableWidgetItem( newPath );
-        KColorScheme::adjustBackground(p, KColorScheme::NegativeBackground);
-        if( info.exists() )
-            item->setBackgroundColor( p.color( QPalette::Base ) );
-        ui->previewTableWidget->setItem( i, 0, item );
-
-        //original in the second column
-        item = new QTableWidgetItem( originalPath );
-        ui->previewTableWidget->setItem( i, 1, item );
-
-        ++i;
-    }
-    QApplication::restoreOverrideCursor();
-    if( conflict )
-    {
-        if( ui->overwriteCheck->isChecked() )
-            ui->conflictLabel->setText( i18n( "There is a filename conflict, existing files will be overwritten." ) );
-        else
-            ui->conflictLabel->setText( i18n( "There is a filename conflict, existing files will not be changed." ) );
-    }
-    else
-        ui->conflictLabel->setText(""); // we clear the text instead of hiding it to retain the layout spacing
 }
 
 void
@@ -340,19 +284,77 @@ OrganizeCollectionDialog::slotUpdatePreview()
     m_trackOrganizer->setAsciiOnly( ui->asciiCheck->isChecked() );
     m_trackOrganizer->setFolderPrefix( ui->folderCombo->currentText() );
     m_trackOrganizer->setFormatString( formatString );
+    m_trackOrganizer->setTargetFileExtension( m_targetFileExtension );
     m_trackOrganizer->setIgnoreThe( ui->ignoreTheCheck->isChecked() );
     m_trackOrganizer->setReplaceSpaces( ui->spaceCheck->isChecked() );
     m_trackOrganizer->setReplace( ui->regexpEdit->text(), ui->replaceEdit->text() );
     m_trackOrganizer->setVfatSafe( ui->vfatCheck->isChecked() );
 
-    preview( formatString );
+    //empty the table, not only it's contents
+    ui->previewTableWidget->setRowCount( 0 );
+    m_conflict = false;
+    m_trackOrganizerDone = false;
 
-    int index = ui->presetCombo->currentIndex();
-    if( index != -1 )
+    QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
+
+    previewNextBatch();
+}
+
+void
+OrganizeCollectionDialog::previewNextBatch() //private slot
+{
+    QMap<Meta::TrackPtr, QString> dests = m_trackOrganizer->getDestinations( 10 );
+    QMapIterator<Meta::TrackPtr, QString> it( dests );
+    while( it.hasNext() )
     {
-        m_schemeModified = ( m_filenameLayoutDialog->getParsableScheme() !=
-                           ui->presetCombo->itemData( index ).toString() );
+        it.next();
+        Meta::TrackPtr track = it.key();
+
+        QString originalPath = track->prettyUrl();
+        QString newPath = it.value();
+
+        int newRow = ui->previewTableWidget->rowCount();
+        ui->previewTableWidget->insertRow( newRow );
+
+        //new path preview in the 1st column
+        QPalette p = ui->previewTableWidget->palette();
+        QTableWidgetItem *item = new QTableWidgetItem( newPath );
+        KColorScheme::adjustBackground( p, KColorScheme::NegativeBackground );
+        if( QFileInfo( newPath ).exists() )
+        {
+            item->setBackgroundColor( p.color( QPalette::Base ) );
+            m_conflict = true;
+        }
+        ui->previewTableWidget->setItem( newRow, 0, item );
+
+        //original in the second column
+        item = new QTableWidgetItem( originalPath );
+        ui->previewTableWidget->setItem( newRow, 1, item );
     }
+
+    if( m_conflict )
+    {
+        if( ui->overwriteCheck->isChecked() )
+            ui->conflictLabel->setText( i18n( "There is a filename conflict, existing files will be overwritten." ) );
+        else
+            ui->conflictLabel->setText( i18n( "There is a filename conflict, existing files will not be changed." ) );
+    }
+    else
+        ui->conflictLabel->setText(""); // we clear the text instead of hiding it to retain the layout spacing
+
+    //non-blocking way of updating the preview table.
+    if( !m_trackOrganizerDone )
+        QTimer::singleShot( 0, this, SLOT(previewNextBatch()) );
+}
+
+/** WARNING: this slot *has* to be connected with a Qt::DirectConnection to avoid overrun in
+  * previewNextBatch()
+  */
+void
+OrganizeCollectionDialog::slotOrganizerFinished()
+{
+    m_trackOrganizerDone = true;
+    QApplication::restoreOverrideCursor();
 }
 
 void
@@ -408,7 +410,7 @@ OrganizeCollectionDialog::slotUpdateFormat()
     int idx = ui->presetCombo->currentIndex();
     QString formatString = m_filenameLayoutDialog->getParsableScheme();
     ui->presetCombo->setItemData( idx, formatString );
-    ui->updatePresetButton->setEnabled( m_schemeModified = false );
+    ui->updatePresetButton->setEnabled( false );
     m_formatListModified = true;
 }
 
