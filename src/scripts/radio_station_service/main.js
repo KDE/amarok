@@ -39,7 +39,6 @@ var stationArray = new Array (
     new Station( "Digitally Imported - Chillout [Chill-Out]",           "http://di.fm/mp3/classictechno.pls" ),
     new Station( "Digitally Imported - Classic Techno [Techno]",        "http://di.fm/mp3/classictechno.pls" ),
     new Station( "Digitally Imported - Trance [Trance]",                "http://di.fm/mp3/trance.pls" ),
-    new Station( "Evolved.fm [Techno/Trance]",                          "http://www.evolved.fm/evolved.m3u" ),
     new Station( "Frequence 3 [Pop]",                                   "http://streams.frequence3.net/hd-mp3.m3u" ),
     new Station( "Kohina [Computer-Music]",                             "http://la.campus.ltu.se:8000/stream.ogg.m3u" ),
     new Station( "Mostly Classical [Classical]",                        "http://www.sky.fm/mp3/classical.pls" ),
