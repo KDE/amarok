@@ -316,7 +316,7 @@ static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_ob
 
 }
 
-static request_t* mp3tunes_locker_api_generate_request(mp3tunes_locker_object_t *obj, int server, char* path, const char* first_name, ...) {
+static request_t* mp3tunes_locker_api_generate_request(mp3tunes_locker_object_t *obj, int server, const char* path, const char* first_name, ...) {
     va_list argp;
     request_t *request;
     va_start(argp, first_name);

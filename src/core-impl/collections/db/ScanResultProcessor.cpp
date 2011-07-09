@@ -272,9 +272,9 @@ ScanResultProcessor::sortTrack( CollectionScanner::Track *track )
         albumArtist.clear();
 
     if( track->album().isEmpty() && albumArtist.isEmpty() )
-        return false;
-    else
-        return sortTrack( track, track->album(), albumArtist );
+        return 0;
+
+    return sortTrack( track, track->album(), albumArtist );
 }
 
 /** This will just put the tracks into an album.
