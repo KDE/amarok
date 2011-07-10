@@ -32,7 +32,7 @@ target_link_libraries(
     amaroklib
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_KDEUI_LIBS}
-    ${KDE4_KPARTS_LIBS}
+    ${KDE4_KIO_LIBS}
     ${KDE4_SOLID_LIBS}
 )
 

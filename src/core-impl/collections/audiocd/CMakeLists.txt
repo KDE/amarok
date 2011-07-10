@@ -31,9 +31,7 @@ target_link_libraries(
     amarok_collection-audiocdcollection
     amarokcore
     amaroklib
-    amarokpud
     ${KDE4_THREADWEAVER_LIBRARIES}
-    ${KDE4_KDNSSD_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_KUTILS_LIBS}
     ${KDE4_SOLID_LIBRARY}

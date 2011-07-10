@@ -15,10 +15,8 @@ endif(APPLE)
 target_link_libraries(amarok_context_applet_info
     amarokcore
     amaroklib
-    ${KDE4_KDEWEBKIT_LIBS}
-    ${KDE4_KIO_LIBS}
     ${KDE4_PLASMA_LIBS}
-    ${QT_QTWEBKIT_LIBRARY}
+    ${KDE4_KDEWEBKIT_LIBS}
     )
 
 install(TARGETS amarok_context_applet_info DESTINATION ${PLUGIN_INSTALL_DIR})
