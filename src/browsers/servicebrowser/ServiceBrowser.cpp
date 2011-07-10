@@ -17,10 +17,6 @@
 #include "ServiceBrowser.h"
 
 #include "core/support/Debug.h"
-#include "context/ContextView.h"
-#include "PaletteHandler.h"
-#include "widgets/PrettyTreeView.h"
-#include "browsers/InfoProxy.h"
 
 #include <KStandardDirs>
 

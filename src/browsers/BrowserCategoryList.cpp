@@ -166,6 +166,8 @@ BrowserCategoryList::addCategory( BrowserCategory *category )
     if ( childList )
         connect( childList, SIGNAL( viewChanged() ), this, SLOT( childViewChanged() ) );
 
+    category->polish(); // service categories do an additional construction in polish
+
     if( m_sorting )
     {
         m_proxyModel->sort( 0 );
