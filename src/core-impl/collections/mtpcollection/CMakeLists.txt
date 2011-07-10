@@ -23,35 +23,36 @@ if (MTP_FOUND)
 
 ########### next target ###############
 
-	set(amarok_collection-mtpcollection_PART_SRCS
-	MtpCollection.cpp
-	handler/MtpHandler.cpp
-	handler/capabilities/MtpPlaylistCapability.cpp
-	handler/capabilities/MtpReadCapability.cpp
-	handler/capabilities/MtpWriteCapability.cpp	
-	support/MtpDeviceInfo.cpp
-	support/MtpConnectionAssistant.cpp)
-	kde4_add_plugin(amarok_collection-mtpcollection ${amarok_collection-mtpcollection_PART_SRCS})
+set(amarok_collection-mtpcollection_PART_SRCS
+    MtpCollection.cpp
+    handler/MtpHandler.cpp
+    handler/capabilities/MtpPlaylistCapability.cpp
+    handler/capabilities/MtpReadCapability.cpp
+    handler/capabilities/MtpWriteCapability.cpp
+    support/MtpDeviceInfo.cpp
+    support/MtpConnectionAssistant.cpp
+)
+kde4_add_plugin(amarok_collection-mtpcollection ${amarok_collection-mtpcollection_PART_SRCS})
 
-	target_link_libraries(amarok_collection-mtpcollection
-        amarokcore
-        amaroklib 
-        amarokpud
-        ${KDE4_KDECORE_LIBS}
-        ${KDE4_KIO_LIBS}
-        ${KDE4_KDEUI_LIBS}
-        ${KDE4_SOLID_LIBRARY}
-        ${KDE4_THREADWEAVER_LIBRARIES}
-        ${QT_QTGUI_LIBRARY}
-        ${GLIB2_LIBRARIES}
-        ${MTP_LIBRARIES}
-    )
+target_link_libraries(amarok_collection-mtpcollection
+    amarokcore
+    amaroklib
+    amarokpud
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KIO_LIBS}
+    ${KDE4_KDEUI_LIBS}
+    ${KDE4_SOLID_LIBRARY}
+    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${QT_QTGUI_LIBRARY}
+    ${GLIB2_LIBRARIES}
+    ${MTP_LIBRARIES}
+)
 
-	install(TARGETS amarok_collection-mtpcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(TARGETS amarok_collection-mtpcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
-	########### install files ###############
+########### install files ###############
 
-	install( FILES amarok_collection-mtpcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install( FILES amarok_collection-mtpcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
 endif (MTP_FOUND)
