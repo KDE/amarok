@@ -2,8 +2,11 @@ Amarok ChangeLog
 ================
 (C) 2002-2011 the Amarok authors.
 
+Version 2.4.2
+  BUGFIXES:
+    * Don't block the UI while calculating the filename previews. (BR 233196)
 
-VERSION 2.4.2
+VERSION 2.4.2-Beta 1
   FEATURES:
     * Made Amarok compile with the Clang LLVM frontend.
     * Enable drag and drop on collections to copy/move within Local Music and
@@ -33,7 +36,6 @@ VERSION 2.4.2
       reduce the number of cache-related crashes.
 
   BUGFIXES:
-    * Don't block the UI while calculating the filename previews. (BR 233196)
     * Don't let the album applet freeze Amarok for ages on track change. (BR260810, BR277021)
     * Fixed cover fetching from Google Images. (BR 275265)
     * Fixed a crash in the equalizer dialog when selecting "Off".
