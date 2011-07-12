@@ -5,7 +5,7 @@ Amarok ChangeLog
 Version 2.4.2
   BUGFIXES:
     * Don't block the UI while calculating the filename previews. (BR 233196)
-    * Make M3U playlist files editable from Saved Playlists. (BR 245963)
+    * Make M3U & PLS playlist files editable from Saved Playlists. (BR 245963)
 
 VERSION 2.4.2-Beta 1
   FEATURES:

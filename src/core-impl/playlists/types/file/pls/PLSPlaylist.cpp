@@ -113,6 +113,38 @@ PLSPlaylist::triggerTrackLoad()
     }
 }
 
+void
+PLSPlaylist::addTrack( Meta::TrackPtr track, int position )
+{
+    if( !m_tracksLoaded )
+        triggerTrackLoad();
+
+    int trackPos = position < 0 ? m_tracks.count() : position;
+    if( trackPos > m_tracks.count() )
+        trackPos = m_tracks.count();
+    m_tracks.insert( trackPos, track );
+    //set in case no track was in the playlist before
+    m_tracksLoaded = true;
+
+    notifyObserversTrackAdded( track, trackPos );
+
+    if( !m_url.isEmpty() )
+        saveLater();
+}
+
+void
+PLSPlaylist::removeTrack( int position )
+{
+    if( position < 0 || position >= m_tracks.count() )
+        return;
+    m_tracks.removeAt( position );
+
+    notifyObserversTrackRemoved( position );
+
+    if( !m_url.isEmpty() )
+        saveLater();
+}
+
 bool
 PLSPlaylist::loadPls( QTextStream &stream )
 {
