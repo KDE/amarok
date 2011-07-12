@@ -319,7 +319,7 @@ XSPFPlaylist::addTrack( Meta::TrackPtr track, int position )
     //set in case no track was in the playlist before
     m_tracksLoaded = true;
 
-    notifyObserversTrackAdded( track, position );
+    notifyObserversTrackAdded( track, trackPos );
 }
 
 void
