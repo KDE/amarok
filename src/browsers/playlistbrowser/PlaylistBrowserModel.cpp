@@ -516,7 +516,7 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
 
         Meta::TrackList tracks = amarokMime->tracks();
         foreach( Meta::TrackPtr track, tracks )
-            playlist->addTrack( track, row );
+            playlist->addTrack( track, row++ );
 
         return true;
     }
