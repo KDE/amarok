@@ -19,10 +19,11 @@
 #define _PREFIX "M3UPlaylist"
 
 #include "core/support/Amarok.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "PlaylistManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "playlistmanager/file/PlaylistFileProvider.h"
+#include "PlaylistManager.h"
 
 #include <KMimeType>
 #include <KUrl>
@@ -111,6 +112,50 @@ M3UPlaylist::triggerTrackLoad()
     {
         The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
     }
+}
+
+void
+M3UPlaylist::addTrack( Meta::TrackPtr track, int position )
+{
+    if( !m_tracksLoaded )
+        triggerTrackLoad();
+
+    int trackPos = position < 0 ? m_tracks.count() : position;
+    if( trackPos > m_tracks.count() )
+        trackPos = m_tracks.count();
+    m_tracks.insert( trackPos, track );
+    //set in case no track was in the playlist before
+    m_tracksLoaded = true;
+
+    notifyObserversTrackAdded( track, trackPos );
+
+    if( !m_url.isEmpty() )
+        saveLater();
+}
+
+void
+M3UPlaylist::removeTrack( int position )
+{
+    if( position < 0 || position >= m_tracks.count() )
+        return;
+    m_tracks.removeAt( position );
+
+    notifyObserversTrackRemoved( position );
+
+    if( !m_url.isEmpty() )
+        saveLater();
+}
+
+void
+M3UPlaylist::saveLater()
+{
+    if( !m_provider )
+        return;
+    PlaylistFileProvider *playlistFileProvider =
+            qobject_cast<PlaylistFileProvider *>( m_provider );
+    if( !playlistFileProvider )
+        return;
+    playlistFileProvider->saveLater( PlaylistFilePtr( this ) );
 }
 
 bool

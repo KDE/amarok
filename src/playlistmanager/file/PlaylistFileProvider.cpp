@@ -35,6 +35,7 @@
 #include <QAction>
 #include <QLabel>
 #include <QString>
+#include <QTimer>
 
 //For removing multiple tracks from different playlists with one QAction
 typedef QMultiMap<Playlists::PlaylistPtr, Meta::TrackPtr> PlaylistTrackMap;
@@ -51,6 +52,7 @@ PlaylistFileProvider::PlaylistFileProvider()
  , m_renameAction( 0 )
  , m_deleteAction( 0 )
  , m_removeTrackAction( 0 )
+ , m_saveLaterTimer( 0 )
 {
     //playlists are lazy loaded
 }
@@ -399,6 +401,39 @@ PlaylistFileProvider::loadPlaylists()
     }
 
     m_playlistsLoaded = true;
+}
+
+void
+PlaylistFileProvider::saveLater( Playlists::PlaylistFilePtr playlist )
+{
+    //WARNING: this assumes the playlistfile uses it's m_url for uidUrl
+    if( playlist->uidUrl().isEmpty() )
+        return;
+
+    if( !m_saveLaterPlaylists.contains( playlist ) )
+        m_saveLaterPlaylists << playlist;
+
+    if( !m_saveLaterTimer )
+    {
+        m_saveLaterTimer = new QTimer( this );
+        m_saveLaterTimer->setSingleShot( true );
+        m_saveLaterTimer->setInterval( 0 );
+        connect( m_saveLaterTimer, SIGNAL(timeout()), SLOT(slotSaveLater()) );
+    }
+
+    m_saveLaterTimer->start();
+}
+
+void
+PlaylistFileProvider::slotSaveLater() //SLOT
+{
+    foreach( Playlists::PlaylistFilePtr playlist, m_saveLaterPlaylists )
+    {
+        KUrl url = playlist->uidUrl();
+        playlist->save( url, true ); //TODO: read relative type when loading
+    }
+
+    m_saveLaterPlaylists.clear();
 }
 
 void
