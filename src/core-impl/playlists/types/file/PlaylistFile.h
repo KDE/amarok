@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2009-2011 Bart Cerneels <bart.cerneels@kde.org>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -60,6 +60,11 @@ namespace Playlists
             virtual PlaylistProvider *provider() const { return m_provider; }
 
         protected:
+            /** Schedule this playlist file to be saved on the next iteration of the mainloop.
+              * Useful in addTrack() and removeTrack() functions.
+              */
+            void saveLater();
+
             PlaylistProvider *m_provider;
             QStringList m_groups;
     };

@@ -146,18 +146,6 @@ M3UPlaylist::removeTrack( int position )
         saveLater();
 }
 
-void
-M3UPlaylist::saveLater()
-{
-    if( !m_provider )
-        return;
-    PlaylistFileProvider *playlistFileProvider =
-            qobject_cast<PlaylistFileProvider *>( m_provider );
-    if( !playlistFileProvider )
-        return;
-    playlistFileProvider->saveLater( PlaylistFilePtr( this ) );
-}
-
 bool
 M3UPlaylist::loadM3u( QTextStream &stream )
 {

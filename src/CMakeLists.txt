@@ -288,6 +288,7 @@ set(libmetaimpl_SRCS
     core-impl/meta/cue/CueFileSupport.cpp
     core-impl/meta/proxy/MetaProxy.cpp
     core-impl/meta/stream/Stream.cpp
+    core-impl/playlists/types/file/PlaylistFile.cpp
     core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
     core-impl/statistics/providers/tag/TagStatisticsProvider.cpp
 )

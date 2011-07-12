@@ -72,7 +72,6 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
         bool load( QTextStream &stream ) { return loadM3u( stream ); }
 
     private:
-        void saveLater();
         bool loadM3u( QTextStream &stream );
 
         KUrl m_url;
