@@ -1,12 +1,46 @@
 /** @mainpage The Amarok Source Code Documentation
 
+<p>
 This is the developer online reference for the Amarok music player.
 
-@licences
-@gpl
+To follow or get involved with the development of Amarok,
+join the <a href="https://mail.kde.org/mailman/listinfo/amarok-devel">amarok-devel mailing list</a>.
+
+Instructions for building a development version of KDE can be found in the
+<a href="http://techbase.kde.org/Getting_Started">getting started</a> section
+of the <a href="http://techbase.kde.org">KDE Techbase</a>.
+</p>
+
+@maintainers
+Amarok does not have clear maintainers of any part of the codebase. You are welcome to work on any part of it provided  you coordinate with others working in that part. <br/>
+If you need to contact someone about a particular part it is best to contact the developer mailing list at amarok-devel@kde.org or the assignee of the corresponding component on http://bugs.kde.org directly.
+
+@authors
+<!--
+    To update the authors list, use the following:
+    $ cat AUTHORS | sed 's#<#\\<#' | sed 's#>#\\><br/>#'
+-->
+Alejandro Wainzinger \<aikawarazuni@gmail.com\><br/>
+Bart Cerneels \<bart.cerneels@kde.org\><br/>
+Dan Meltzer \<hydrogen@notyetimplemented.com\><br/>
+Ian Monroe \<ian@monroe.nu\><br/>
+Jeff Mitchell \<mitchell@kde.org\><br/>
+Leo Franchi \<lfranchi@kde.org\><br/>
+Lydia Pintscher \<lydia@kde.org\><br/>
+Mark Kretschmann \<kretschmann@kde.org\><br/>
+Maximilian Kossick \<maximilian.kossick@gmail.com\><br/>
+Nikolaj Hald Nielsen \<nhnfreespirit@gmail.com\><br/>
+Rick W. Chen \<stuffcorpse@archlinux.us\><br/>
+Seb Ruiz \<ruiz@kde.org\><br/>
+Téo Mrnjavac \<teo@kde.org\><br/>
+
+@licenses
+@gpl (if not stated otherwise in the source file)
+
 
 */
 
-// DOXYGEN_SET_PROJECT_NAME = Amarok
+// DOXYGEN_NAME = Amarok
+// DOXYGEN_ENABLE = YES
 
 // vim:ts=4:sw=4:expandtab:filetype=doxygen
