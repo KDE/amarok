@@ -281,7 +281,7 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
 
     // get and parse the result
     const QString result( data );
-    const QString resultsTable = subStringBetween( result, "class=\"tresults\">", "</table>" );
+    const QString resultsTable = subStringBetween( result, "class=\"tresults\"", "</table>" );
     if( !resultsTable.isEmpty() )
     {
         const QStringList results = resultsTable.split( "</tr>" );
