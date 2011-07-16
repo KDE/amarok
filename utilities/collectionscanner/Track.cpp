@@ -61,6 +61,9 @@ CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directo
    , m_score( -1.0 )
    , m_playcount( -1.0 )
 {
+    static const int MAX_SENSIBLE_LENGTH = 1023; // the maximum length for normal strings.
+    // in corner cases a longer string might cause problems see BUG:276894
+
     // for the unit test.
     // in a debug build a file called "crash_amarok_here.ogg" will crash the collection
     // scanner
@@ -82,11 +85,11 @@ CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directo
     if( values.contains(Meta::valTitle) )
         m_title = values.value(Meta::valTitle).toString();
     if( values.contains(Meta::valArtist) )
-        m_artist = values.value(Meta::valArtist).toString();
+        m_artist = values.value(Meta::valArtist).toString().left(MAX_SENSIBLE_LENGTH);
     if( values.contains(Meta::valAlbum) )
-        m_album = values.value(Meta::valAlbum).toString();
+        m_album = values.value(Meta::valAlbum).toString().left(MAX_SENSIBLE_LENGTH);
     if( values.contains( Meta::valAlbumArtist ) )
-        m_albumArtist = values.value( Meta::valAlbumArtist ).toString();
+        m_albumArtist = values.value( Meta::valAlbumArtist ).toString().left(MAX_SENSIBLE_LENGTH);
     if( values.contains(Meta::valCompilation) )
     {
         m_compilation = values.value(Meta::valCompilation).toBool();
@@ -97,7 +100,7 @@ CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directo
     if( values.contains(Meta::valComment) )
         m_comment = values.value(Meta::valComment).toString();
     if( values.contains(Meta::valGenre) )
-        m_genre = values.value(Meta::valGenre).toString();
+        m_genre = values.value(Meta::valGenre).toString().left(MAX_SENSIBLE_LENGTH);
     if( values.contains(Meta::valYear) )
         m_year = values.value(Meta::valYear).toInt();
     if( values.contains(Meta::valDiscNr) )
@@ -129,7 +132,7 @@ CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directo
         m_uniqueid = m_uniqueid.mid(1);
 
     if( values.contains(Meta::valComposer) )
-        m_composer = values.value(Meta::valComposer).toString();
+        m_composer = values.value(Meta::valComposer).toString().left(MAX_SENSIBLE_LENGTH);
 
     if( values.contains(Meta::valRating) )
         m_rating = values.value(Meta::valRating).toReal();
