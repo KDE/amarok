@@ -117,11 +117,15 @@ Dynamic::DynamicModel::playlistIndex( Dynamic::DynamicPlaylist* playlist ) const
 QModelIndex
 Dynamic::DynamicModel::insertPlaylist( int index, Dynamic::DynamicPlaylist* playlist )
 {
+    DEBUG_BLOCK;
     if( !playlist )
         return QModelIndex();
 
+debug() << "insert playlist before"<<toString();
     int oldIndex = playlistIndex( playlist );
     bool wasActive = (oldIndex == m_activePlaylistIndex);
+
+debug() << "OldIndex: "<<oldIndex<<"was active"<<wasActive<<"to Str"<<playlist->title();
 
     // -- remove the playlist if it was already in our model
     if( oldIndex >= 0 )
@@ -155,6 +159,7 @@ Dynamic::DynamicModel::insertPlaylist( int index, Dynamic::DynamicPlaylist* play
 
     endInsertRows();
 
+debug() << "insert playlist after"<<toString();
     return this->index( index, 0 );
 }
 
@@ -1006,11 +1011,15 @@ Dynamic::DynamicModel::cloneList( Dynamic::BiasedPlaylist* list )
 
     // write the list
     QXmlStreamWriter xmlWriter( &buffer );
+    xmlWriter.writeStartElement( QLatin1String("playlist") );
     list->toXml( &xmlWriter );
+    xmlWriter.writeEndElement();
 
     // and read a new list
     buffer.seek( 0 );
     QXmlStreamReader xmlReader( &buffer );
+    while( !xmlReader.isStartElement() )
+        xmlReader.readNext();
     return new Dynamic::BiasedPlaylist( &xmlReader, this );
 }
 
