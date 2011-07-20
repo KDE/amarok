@@ -290,6 +290,7 @@ Context::Applet::collapse( bool on )
     if( finalHeight == size().height() )
         return;
 
+    prepareGeometryChange();
     if( !AmarokConfig::animateAppletCollapse() )
     {
         setPreferredHeight( finalHeight );
