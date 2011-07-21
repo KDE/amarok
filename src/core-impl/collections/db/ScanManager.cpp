@@ -27,8 +27,6 @@
 #include "MountPointManager.h"
 #include "ScanResultProcessor.h"
 #include "amarokconfig.h"
-#include "core/interfaces/Logger.h"
-#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "sql/SqlCollection.h"
 
@@ -239,15 +237,12 @@ ScanManager::startScanner()
         m_scanDirsRequested.clear();
     }
 
-    Amarok::Components::logger()->newProgressOperation( m_scanner, i18n( "Scanning music" ),
-                                                            100, this, SLOT(abort()) );
-
     // - enqueue it.
     connect( m_scanner, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     connect( m_scanner, SIGNAL( message( QString ) ), this, SIGNAL( message( QString ) ) );
     connect( m_scanner, SIGNAL( failed( QString ) ), this, SIGNAL( failed( QString ) ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_scanner );
-
+    emit scanStarted( m_scanner );
 }
 
 void

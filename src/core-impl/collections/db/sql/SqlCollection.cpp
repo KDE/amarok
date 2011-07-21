@@ -164,6 +164,7 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     m_collectionLocationFactory = new SqlCollectionLocationFactoryImpl( this );
     m_queryMakerFactory = new DefaultSqlQueryMakerFactory( this );
     m_scanManager = new ScanManager( this, this );
+    connect( m_scanManager, SIGNAL(scanStarted(ScannerJob*)), SLOT(slotScanStarted(ScannerJob*)) );
 
     // we need a UI-dialog service, but for now just output the messages
     if( !storage->getLastErrors().isEmpty() )
@@ -313,6 +314,24 @@ SqlCollection::collectionUpdated()
     }
 }
 
+void
+SqlCollection::slotScanStarted( ScannerJob *job )
+{
+    if( !job )
+    {
+        warning() << "job is invalid";
+        return;
+    }
+
+    if( Amarok::Components::logger() )
+    {
+        Amarok::Components::logger()->newProgressOperation( job,
+                                                            i18n( "Scanning music" ),
+                                                            100,
+                                                            m_scanManager,
+                                                            SLOT(abort()) );
+    }
+}
 
 void
 SqlCollection::removeCollection()

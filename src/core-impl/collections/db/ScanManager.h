@@ -116,6 +116,8 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         void succeeded();
         void failed( QString message );
 
+        void scanStarted( ScannerJob *job );
+
     private slots:
         /** Adds the given directory to the list of directories for the next scan.
             If an empty string is given it will add the whole list of collection folder.

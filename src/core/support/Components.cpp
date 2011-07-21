@@ -25,6 +25,7 @@ public:
         : collectionManager( 0 )
         , engineController( 0 )
         , sqlStorage( 0 )
+        , logger( 0 )
         , applicationController( 0 )
         , collectionLocationDelegate( 0 )
         , transcodingController( 0 )
@@ -49,7 +50,6 @@ K_GLOBAL_STATIC( ComponentsPrivate, d )
 Type \
 Amarok::Components::getter() \
 { \
-    Q_ASSERT( d->getter ); \
     return d->getter ; \
 } \
 Type \

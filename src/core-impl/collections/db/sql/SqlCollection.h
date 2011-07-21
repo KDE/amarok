@@ -147,6 +147,8 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
          */
         void dumpDatabaseContent();
 
+        void slotScanStarted( ScannerJob *job );
+
     private slots:
         // void initXesam();
         void slotDeviceAdded( int id );

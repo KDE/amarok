@@ -40,6 +40,7 @@ namespace Capabilities {
 }
 
 class ScanManager;
+class ScannerJob;
 class XesamCollectionBuilder;
 
 namespace Collections {
@@ -117,6 +118,8 @@ class AMAROK_DATABASECOLLECTION_EXPORT DatabaseCollection : public Collections::
          *  in the users homedirectory.
          */
         virtual void dumpDatabaseContent() = 0;
+
+        virtual void slotScanStarted( ScannerJob *job ) = 0;
 
     private:
         ScanManager *m_scanManager;
