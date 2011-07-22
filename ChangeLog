@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 Version 2.5.0-Beta 1
   FEATURES:
+    * Enable dropping tracks on empty area in Saved Playlists to create new
+      playlist.
     * Addded a "create new playlist" action in the empty space of the Saved
       Playlists. (BR202725)
     * Add new type of optional tokens in format string (Collection Organizer)

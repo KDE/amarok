@@ -94,7 +94,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         Meta::TrackPtr trackAt( int row ) const;
         Meta::TrackPtr trackForId( const quint64 id ) const;
         virtual Meta::TrackList tracks() const;
-        virtual QString generatePlaylistName() const;
 
         // Inherited from Meta::Observer
         using Observer::metadataChanged;

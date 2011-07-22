@@ -18,6 +18,8 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
+#include "core/meta/Meta.h"
+
 #include "shared/amarok_export.h"
 #include "shared/Version.h"
 
@@ -185,6 +187,12 @@ namespace Amarok
      * @param reverse if true, The Eagles -> Eagles, The. If false, Eagles, The -> The Eagles
      */
     AMAROK_CORE_EXPORT void manipulateThe( QString &str, bool reverse );
+
+    /**
+      * Return a playlist name based on the artist and album info of the tracks or a string
+      * containing the creation date.
+      */
+    AMAROK_CORE_EXPORT QString generatePlaylistName( const Meta::TrackList tracks );
 
     /**
      * Creates a semi-transparent Amarok logo for suitable for painting.

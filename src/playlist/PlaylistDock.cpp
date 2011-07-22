@@ -299,9 +299,8 @@ Playlist::Dock::slotSaveCurrentPlaylist()
             action->data().value< QWeakPointer<Playlists::UserPlaylistProvider> >();
     Playlists::UserPlaylistProvider* provider = pointer.data();
 
-    The::playlistManager()->save( The::playlist()->tracks(),
-                                  Playlist::ModelStack::instance()->bottom()->generatePlaylistName(),
-                                  provider );
+    const Meta::TrackList tracks = The::playlist()->tracks();
+    The::playlistManager()->save( tracks, Amarok::generatePlaylistName( tracks ), provider );
 }
 
 void

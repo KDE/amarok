@@ -159,6 +159,76 @@ namespace Amarok
         str.truncate( newLen );
     }
 
+    QString generatePlaylistName( const Meta::TrackList tracks )
+    {
+        QString datePart = KGlobal::locale()->formatDateTime( QDateTime::currentDateTime(),
+                                                              KLocale::ShortDate, true );
+        if( tracks.count() == 0 )
+        {
+            return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
+                          the parentheses",
+                          "Empty Playlist (%1)", datePart );
+        }
+
+        bool singleArtist = true;
+        bool singleAlbum = true;
+
+        Meta::ArtistPtr artist = tracks.first()->artist();
+        Meta::AlbumPtr album = tracks.first()->album();
+
+        QString artistPart;
+        QString albumPart;
+
+        foreach( const Meta::TrackPtr track, tracks )
+        {
+            if( artist != track->artist() )
+                singleArtist = false;
+
+            if( album != track->album() )
+                singleAlbum = false;
+
+            if ( !singleArtist && !singleAlbum )
+                break;
+        }
+
+        if( ( !singleArtist && !singleAlbum ) ||
+            ( !artist && !album ) )
+            return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
+                          the parentheses",
+                          "Various Tracks (%1)", datePart );
+
+        if( singleArtist )
+        {
+            if( artist )
+                artistPart = artist->prettyName();
+            else
+                artistPart = i18n( "Unknown Artist(s)" );
+        }
+        else if( album && album->hasAlbumArtist() && singleAlbum )
+        {
+            artistPart = album->albumArtist()->prettyName();
+        }
+        else
+        {
+            artistPart = i18n( "Various Artists" );
+        }
+
+        if( singleAlbum )
+        {
+            if( album )
+                albumPart = album->prettyName();
+            else
+                albumPart = i18n( "Unknown Album(s)" );
+        }
+        else
+        {
+            albumPart = i18n( "Various Albums" );
+        }
+
+        return i18nc( "A saved playlist titled <artist> - <album>", "%1 - %2",
+                      artistPart, albumPart );
+    }
+
    KActionCollection* actionCollection()  // TODO: constify?
     {
         if( !actionCollectionObject )

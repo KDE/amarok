@@ -21,6 +21,7 @@
 #include "AmarokMimeData.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModel.h"
 #include "core/support/Debug.h"
 
 #include <KIcon>
@@ -481,17 +482,26 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
     }
     else if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
-        debug() << "Dropped track on " << parent << " at row: " << row;
-
-        Playlists::PlaylistPtr playlist = playlistFromIndex( parent );
-        if( !playlist )
-            return false;
-
         Meta::TrackList tracks = amarokMime->tracks();
-        foreach( Meta::TrackPtr track, tracks )
-            playlist->addTrack( track, row++ );
+        if( !parent.isValid() && row == -1 )
+        {
+            debug() << "Dropped tracks on empty area: create new playlist";
+            //TODO: use Playlist::Model::generatePlaylistName()
+            The::playlistManager()->save( tracks, Amarok::generatePlaylistName( tracks ) );
+        }
+        else
+        {
+            debug() << "Dropped track on " << parent << " at row: " << row;
 
-        return true;
+            Playlists::PlaylistPtr playlist = playlistFromIndex( parent );
+            if( !playlist )
+                return false;
+
+            foreach( Meta::TrackPtr track, tracks )
+                playlist->addTrack( track, row++ );
+
+            return true;
+        }
     }
 
     return false;
