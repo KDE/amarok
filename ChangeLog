@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 Version 2.4.2
   BUGFIXES:
+    * Fix detection of smartphones in USB storage mode. (BR 277685)
     * Fix crashes on expanding a newly cloned dynamic playlist (BR 277750)
     * Don't block the UI while calculating the filename previews. (BR 233196)
     * Make M3U & PLS playlist files editable from Saved Playlists. (BR 245963)
