@@ -182,6 +182,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
       m_userinfo( 0 ),
       m_userName( username ),
       m_sessionKey( sessionKey ),
+      m_password( password ),
       m_scrobbleComposer( scrobbleComposer ),
       m_userNameArray( 0 ),
       m_sessionKeyArray( 0 )
@@ -221,9 +222,6 @@ LastFmService::~LastFmService()
 void
 LastFmService::init()
 {
-    LastFmServiceConfig config;
-    const QString password = config.password();
-    const QString sessionKey = config.sessionKey();
     // set the global static Lastfm::Ws stuff
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
@@ -237,10 +235,10 @@ LastFmService::init()
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
-    const QString authToken = md5( QString( "%1%2" ).arg( m_userName ).arg( md5( password.toUtf8() ) ).toUtf8() );
+    const QString authToken = md5( QString( "%1%2" ).arg( m_userName ).arg( md5( m_password.toUtf8() ) ).toUtf8() );
 
     // now authenticate w/ last.fm and get our session key if we don't have one
-    if( sessionKey.isEmpty() )
+    if( m_sessionKey.isEmpty() )
     {
         debug() << "got no saved session key, authenticating with last.fm";
         QMap<QString, QString> query;
@@ -254,9 +252,8 @@ LastFmService::init()
     } else
     {
         debug() << "using saved sessionkey from last.fm";
-        m_sessionKeyArray = qstrdup( sessionKey.toLatin1().data() );
+        m_sessionKeyArray = qstrdup( m_sessionKey.toLatin1().data() );
         lastfm::ws::SessionKey = m_sessionKeyArray;
-        m_sessionKey = sessionKey;
 
         if( m_scrobble )
             m_scrobbler = new ScrobblerAdapter( this, "ark" );

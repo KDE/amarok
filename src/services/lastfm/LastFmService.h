@@ -116,6 +116,7 @@ private:
 
     QString m_userName;
     QString m_sessionKey;
+    QString m_password;
     QString m_station;
     QString m_age;
     QString m_gender;
