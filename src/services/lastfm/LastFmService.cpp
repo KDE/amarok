@@ -459,23 +459,6 @@ LastFmService::updateProfileInfo()
 void
 LastFmService::polish()
 {
-    if( !m_inited )
-    {
-        KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );
-        dlg.setPrompt( i18n( "Enter login information for Last.fm" ) );
-        if( !dlg.exec() )
-            return; //the user canceled
-
-            m_userName = dlg.username();
-        const QString password = dlg.password();
-        if( password.isEmpty() || m_userName.isEmpty() )
-            return; // We can't create the service if we don't get the details..
-        LastFmServiceConfig config;
-        config.setPassword( password );
-        config.setUsername( m_userName );
-        config.save();
-        init();
-    }
     if( !m_polished )
     {
         LastFmTreeView* view = new LastFmTreeView( this );
