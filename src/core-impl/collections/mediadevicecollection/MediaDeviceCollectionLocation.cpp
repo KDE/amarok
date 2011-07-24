@@ -52,7 +52,7 @@ MediaDeviceCollectionLocation::prettyLocation() const
 }
 
 // NOTE: must be overridden by child class if
-// it is writeable
+// it is writable
 bool
 MediaDeviceCollectionLocation::isWritable() const
 {

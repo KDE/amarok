@@ -85,10 +85,10 @@ SqlCollectionLocation::isWritable() const
     // TODO: This function is also called when removing files to check
     //  if the tracks can be removed. In such a case we should not check the space
 
-    // The collection is writeable if there exists a path that has more than
+    // The collection is writable if there exists a path that has more than
     // 500 MB free space.
     bool path_exists_with_space = false;
-    bool path_exists_writeable = false;
+    bool path_exists_writable = false;
     QStringList folders = actualLocation();
     foreach(QString path, folders)
     {
@@ -108,11 +108,11 @@ SqlCollectionLocation::isWritable() const
 
         QFileInfo info( path );
         if( info.isWritable() )
-            path_exists_writeable = true;
-	debug() << "\tpath_exists_writeable" << path_exists_writeable;
+            path_exists_writable = true;
+	debug() << "\tpath_exists_writable" << path_exists_writable;
 	debug() << "\tpath_exists_with_space" << path_exists_with_space;
     }
-    return path_exists_with_space && path_exists_writeable;
+    return path_exists_with_space && path_exists_writable;
 }
 
 bool
@@ -331,7 +331,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
 
         // since bad things happen when drives become totally full
 	// we make sure there is at least ~500MB left
-        // finally, ensure the path is writeable
+        // finally, ensure the path is writable
         debug() << ( freeSpace - transferSize );
         if( ( freeSpace - transferSize ) > 1024*1024*500 && info.isWritable() )
             available_folders << path;
