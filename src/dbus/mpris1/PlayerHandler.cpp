@@ -227,7 +227,7 @@ namespace Mpris1
 
     void PlayerHandler::Backward( int time )
     {
-        if( time > 0 && The::engineController()->isStopped() )
+        if( time > 0 && !The::engineController()->isStopped() )
             The::engineController()->seek( The::engineController()->trackPosition() * 1000 - time );
     }
 
