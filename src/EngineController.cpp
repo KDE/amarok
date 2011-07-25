@@ -961,6 +961,7 @@ EngineController::slotTick( qint64 position )
     }
     else
     {
+        m_lastTickPosition = position;
         emit trackPositionChanged( static_cast<long>( position ), false ); //it expects milliseconds
     }
 }
@@ -1380,7 +1381,7 @@ bool EngineController::isPlayingAudioCd()
     return m_currentIsAudioCd;
 }
 
-QString EngineController::prettyNowPlaying() const
+QString EngineController::prettyNowPlaying( bool progress ) const
 {
     Meta::TrackPtr track = currentTrack();
 
@@ -1417,7 +1418,10 @@ QString EngineController::prettyNowPlaying() const
 
         if ( track->length() > 0 ) {
             QString length = Qt::escape( Meta::msToPrettyTime( track->length() ) );
-            title += " (" + length + ')';
+            title += " (";
+            if ( progress )
+                    title+= Qt::escape( Meta::msToPrettyTime( m_lastTickPosition ) ) + "/";
+            title += length + ")";
         }
 
         return title;

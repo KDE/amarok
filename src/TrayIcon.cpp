@@ -96,6 +96,9 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     connect( engine, SIGNAL( playbackStateChanged() ),
              this, SLOT( updateOverlayIcon() ) );
 
+    connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),
+                 this, SLOT( updateToolTipTitle() ) );
+
 
     connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ),
              SLOT( slotScrollRequested(int, Qt::Orientation) ) );
@@ -132,7 +135,7 @@ Amarok::TrayIcon::updateToolTip()
 {
     if( m_track )
     {
-        setToolTipTitle( The::engineController()->prettyNowPlaying() );
+        setToolTipTitle( The::engineController()->prettyNowPlaying( true ) );
 
         QStringList tooltip;
 
@@ -185,8 +188,18 @@ Amarok::TrayIcon::updateToolTip()
     else
     {
         setToolTipTitle( KCmdLineArgs::aboutData()->programName() );
-        setToolTipSubTitle( The::engineController()->prettyNowPlaying() );
+        setToolTipSubTitle( The::engineController()->prettyNowPlaying( true ) );
     }
+}
+
+void Amarok::TrayIcon::updateToolTipTitle()
+{
+    // quick update of the prettyNowPlaying only, rather than the full tooltip, for timestamp advancing
+    if( m_track )
+        setToolTipTitle( The::engineController()->prettyNowPlaying( true ) );
+    else
+        setToolTipSubTitle( The::engineController()->prettyNowPlaying( true ) );
+
 }
 
 void

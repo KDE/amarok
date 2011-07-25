@@ -40,6 +40,7 @@ private slots:
     void updateOverlayIcon();
     void updateToolTipIcon();
     void updateToolTip();
+    void updateToolTipTitle();
     void updateMenu();
 
     void trackPlaying( Meta::TrackPtr track );
