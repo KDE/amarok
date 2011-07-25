@@ -56,28 +56,29 @@ LabelGraphicsItem::LabelGraphicsItem( const QString &text, qreal deltaPointSize,
     m_backgroundBlurEffect->setBlurRadius( 4.0 );
     m_backgroundItem->setGraphicsEffect( m_backgroundBlurEffect );
 
-    KIconLoader *iconLoader = new KIconLoader();
+    {
+    KIconLoader iconLoader;
     m_addLabelItem = new LabelOverlayButton( this );
     m_addLabelItem.data()->setZValue( 20 );
-    m_addLabelItem.data()->setPixmap( iconLoader->loadIcon( "list-add", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
+    m_addLabelItem.data()->setPixmap( iconLoader.loadIcon( "list-add", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
     m_addLabelItem.data()->setToolTip( i18n( "Add label" ) );
     m_addLabelItem.data()->setOpacity( 0.0 );
     m_removeLabelItem = new LabelOverlayButton( this );
     m_removeLabelItem.data()->setZValue( 20 );
-    m_removeLabelItem.data()->setPixmap( iconLoader->loadIcon( "list-remove", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
+    m_removeLabelItem.data()->setPixmap( iconLoader.loadIcon( "list-remove", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
     m_removeLabelItem.data()->setToolTip( i18n( "Remove label" ) );
     m_removeLabelItem.data()->setOpacity( 0.0 );
     m_listLabelItem = new LabelOverlayButton( this );
     m_listLabelItem.data()->setZValue( 20 );
-    m_listLabelItem.data()->setPixmap( iconLoader->loadIcon( "edit-find", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
+    m_listLabelItem.data()->setPixmap( iconLoader.loadIcon( "edit-find", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
     m_listLabelItem.data()->setToolTip( i18n( "Show in Media Sources" ) );
     m_listLabelItem.data()->setOpacity( 0.0 );
     m_blacklistLabelItem = new LabelOverlayButton( this );
     m_blacklistLabelItem.data()->setZValue( 20 );
-    m_blacklistLabelItem.data()->setPixmap( iconLoader->loadIcon( "flag-black", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
+    m_blacklistLabelItem.data()->setPixmap( iconLoader.loadIcon( "flag-black", KIconLoader::NoGroup, KIconLoader::SizeSmallMedium ) );
     m_blacklistLabelItem.data()->setToolTip( i18n( "Add to blacklist" ) );
     m_blacklistLabelItem.data()->setOpacity( 0.0 );
-    delete iconLoader;
+    }
 
     m_addLabelAnimation = new QPropertyAnimation( m_addLabelItem.data(), "opacity", this );
     m_addLabelAnimation.data()->setEasingCurve( QEasingCurve::InOutQuad );
@@ -159,12 +160,13 @@ LabelGraphicsItem::updateGeometry()
 
     QPixmap pixmap( size.width(), size.height() );
     pixmap.fill( Qt::transparent );
-    QPainter *painter = new QPainter( &pixmap );
-    painter->setRenderHint( QPainter::Antialiasing );
-    painter->setPen( QPen(m_backgroundColor) );
-    painter->setBrush( QBrush(m_backgroundColor) );
-    painter->drawRoundedRect( QRectF(2,2,size.width()-4,size.height()-4), radius, radius );
-    delete painter;
+    {
+        QPainter painter( &pixmap );
+        painter.setRenderHint( QPainter::Antialiasing );
+        painter.setPen( QPen(m_backgroundColor) );
+        painter.setBrush( QBrush(m_backgroundColor) );
+        painter.drawRoundedRect( QRectF(2,2,size.width()-4,size.height()-4), radius, radius );
+    }
     m_backgroundItem->setPixmap( pixmap );
 
 //     int iconsCount = m_selected ? 2 : 3; // don't show the blacklist flag for selected labels
