@@ -1039,13 +1039,13 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
             delitems.append(item);
             m_items.removeAll( item );
             m_itemIds.remove( item->id() );
+            // update totals here so they're right when endRemoveRows() called
+            m_totalLength -= track->length();
+            m_totalSize -= track->filesize();
             endRemoveRows();
         } else {
             error() << "tried to delete a non-existent item:" << rc.first->prettyName() << rc.second;
         }
-
-        m_totalLength -= track->length();
-        m_totalSize -= track->filesize();
 
         // -- unsubscribe
         if( !containsTrack( track ) ) // check against same track two times in playlist
