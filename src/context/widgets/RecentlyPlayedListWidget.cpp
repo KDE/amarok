@@ -152,6 +152,7 @@ RecentlyPlayedListWidget::trackChanged( Meta::TrackPtr track )
 void
 RecentlyPlayedListWidget::clear()
 {
+    prepareGeometryChange();
     int count = m_layout->count();
     while( --count >= 0 )
         removeItem( m_layout->itemAt( 0 ) );

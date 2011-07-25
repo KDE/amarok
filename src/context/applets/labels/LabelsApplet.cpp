@@ -229,6 +229,7 @@ LabelsApplet::animationFinished()
         }
     }
     
+    prepareGeometryChange();
     for( int i=0; i<m_labelAnimationsToDelete.count(); i++ )
     {
         if( QObject::sender() == m_labelAnimationsToDelete.at(i) )

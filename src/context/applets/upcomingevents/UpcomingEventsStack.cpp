@@ -84,6 +84,7 @@ UpcomingEventsStack::count() const
 void
 UpcomingEventsStack::clear()
 {
+    prepareGeometryChange();
     Q_D( UpcomingEventsStack );
     int itemCount = d->layout->count();
     while( --itemCount >= 0 )

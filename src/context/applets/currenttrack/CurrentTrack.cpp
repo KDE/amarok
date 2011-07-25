@@ -554,6 +554,7 @@ CurrentTrack::drawSourceEmblem( QPainter *const p, const QRect &contentsRect )
 void
 CurrentTrack::clearTrackActions()
 {
+    prepareGeometryChange();
     int actionCount = m_actionsLayout->count();
     while( --actionCount >= 0 )
     {
