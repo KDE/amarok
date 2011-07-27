@@ -2,6 +2,7 @@
 Type=Service
 Icon=network-workgroup
 Name=Playdar Collection
+Name[bg]=Колекция Playdar
 Name[bs]=Playdar kolekcija
 Name[ca]=Col·lecció del Playdar
 Name[ca@valencia]=Col·lecció del Playdar
@@ -35,6 +36,7 @@ Name[uk]=Збірка Playdar
 Name[x-test]=xxPlaydar Collectionxx
 Name[zh_TW]=Playdar 收藏
 Comment=Music that Playdar can find
+Comment[bg]=Музика откривана с Playdar
 Comment[bs]=Muzika koju Playdar može pronaći
 Comment[ca]=Música que el Playdar pot trobar
 Comment[ca@valencia]=Música que el Playdar pot trobar
