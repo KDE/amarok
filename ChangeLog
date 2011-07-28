@@ -2,7 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2011 the Amarok authors.
 
-Version 2.4.2
+Version 2.4.3
   BUGFIXES:
     * Fix KWallet auth requests on every track change. (BR 278177)
     * Display correct values for pretty times (playlist length) > 1 day.
@@ -13,6 +13,9 @@ Version 2.4.2
     * Fix crashes on expanding a newly cloned dynamic playlist (BR 277750)
     * Don't block the UI while calculating the filename previews. (BR 233196)
     * Make M3U & PLS playlist files editable from Saved Playlists. (BR 245963)
+
+Version 2.4.2
+    * This version number was skipped.
 
 VERSION 2.4.2-Beta 1
   FEATURES:
