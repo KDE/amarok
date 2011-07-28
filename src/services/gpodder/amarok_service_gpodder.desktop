@@ -69,7 +69,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Stefan Derkits, Christian Wagner, Felix Winter
 X-KDE-Amarok-email=stefan@derkits.at, christian.wagner86@gmx.at, ixos01@gmail.com
-X-KDE-Amarok-framework-version=64
+X-KDE-Amarok-framework-version=65
 X-KDE-Amarok-name=gpodderService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

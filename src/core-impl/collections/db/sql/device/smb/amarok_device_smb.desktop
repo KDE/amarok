@@ -113,7 +113,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Maximilian Kossick, Peter C. Ndikuwera
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com, pndiku@gmail.com
-X-KDE-Amarok-framework-version=64
+X-KDE-Amarok-framework-version=65
 X-KDE-Amarok-name=smb-device
 X-KDE-Amarok-plugintype=device
 X-KDE-Amarok-rank=100
