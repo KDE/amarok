@@ -109,6 +109,7 @@ EngineController::~EngineController()
 
     delete m_media.data();
     delete m_audio.data();
+    delete m_audioDataOutput.data();
 }
 
 void
@@ -133,9 +134,11 @@ EngineController::initializePhonon()
     DEBUG_BLOCK
 
     m_path.disconnect();
+    m_dataPath.disconnect();
     delete m_media.data();
     delete m_controller.data();
     delete m_audio.data();
+    delete m_audioDataOutput.data();
     delete m_preamp.data();
     delete m_equalizer.data();
 
@@ -146,7 +149,10 @@ EngineController::initializePhonon()
     m_media.data()->setProperty("PlaybackTracking", true);
 
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
+    m_audioDataOutput = new Phonon::AudioDataOutput( this );
+    m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
+    m_dataPath = Phonon::createPath( m_media.data(), m_audioDataOutput.data() );
     m_path = Phonon::createPath( m_media.data(), m_audio.data() );
 
     m_controller = new Phonon::MediaController( m_media.data() );
@@ -190,9 +196,9 @@ EngineController::initializePhonon()
     connect( m_media.data(), SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
     connect( m_media.data(), SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ), SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
     connect( m_media.data(), SIGNAL( seekableChanged( bool ) ), SLOT( slotSeekableChanged( bool ) ) );
-
     connect( m_audio.data(), SIGNAL( volumeChanged( qreal ) ), SLOT( slotVolumeChanged( qreal ) ) );
     connect( m_audio.data(), SIGNAL( mutedChanged( bool ) ), SLOT( slotMutedChanged( bool ) ) );
+    connect( m_audioDataOutput.data(), SIGNAL(dataReady(const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> >&)), this, SIGNAL(audioDataReady(const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> >&)));
 
     connect( m_controller.data(), SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
 
@@ -896,6 +902,9 @@ EngineController::eqUpdate() //SLOT
     if( AmarokConfig::equalizerMode() <= 0 )
     {
         // Remove effect from path
+//         if( m_path.effects().indexOf( m_equalizer.data() ) != -1 )
+//             m_path.removeEffect( m_equalizer.data() );
+
         if( m_path.effects().indexOf( m_equalizer.data() ) != -1 )
             m_path.removeEffect( m_equalizer.data() );
     }

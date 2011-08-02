@@ -6,6 +6,7 @@ add_subdirectory( videoclip )
 add_subdirectory( photos )
 add_subdirectory( labels )
 add_subdirectory( tabs )
+add_subdirectory( spectrumanalyzer )
 #add_subdirectory( songkick )
 
 if(LIBLASTFM_FOUND)
