@@ -68,7 +68,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_playCount( 0 )
     , m_trackCount( 0 )
     , m_albumCount( 0 )
-    , m_genreCount( 0 )
+    , m_artistCount( 0 )
     , m_isStopped( true )
     , m_coverKey( 0 )
     , m_view( Stopped )
@@ -447,7 +447,7 @@ CurrentTrack::drawStatsTexts( QPainter *const p, const QRect &contentsRect )
     const qreal maxTextWidth   = contentsRect.right() - standardPadding() * 2 - leftEdge;
     const QString column1Label = m_isStopped ? i18n( "Tracks" ) : i18n( "Play Count" );
     const QString column2Label = m_isStopped ? i18n( "Albums" ) : i18n( "Score" );
-    const QString column3Label = m_isStopped ? i18n( "Genres" ) : i18n( "Last Played" );
+    const QString column3Label = m_isStopped ? i18n( "Artists" ) : i18n( "Last Played" );
 
     //Align labels taking into account the string widths for each label
     QFontMetricsF fm( font() );
@@ -509,7 +509,7 @@ CurrentTrack::drawStatsTexts( QPainter *const p, const QRect &contentsRect )
     rect.moveLeft( rect.topLeft().x() + maxTextWidth * prevFactor );
 
     const QString column3Stat = ( m_isStopped )
-        ? QString::number( m_genreCount )
+        ? QString::number( m_artistCount )
         : fm.elidedText( Amarok::verboseTimeSince(m_lastPlayed), Qt::ElideRight, rect.width() );
     p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, column3Stat );
 
@@ -618,27 +618,25 @@ CurrentTrack::queryCollection()
 {
     Collections::QueryMaker *qmTracks = CollectionManager::instance()->queryMaker();
     Collections::QueryMaker *qmAlbums = CollectionManager::instance()->queryMaker();
-    Collections::QueryMaker *qmGenres = CollectionManager::instance()->queryMaker();
+    Collections::QueryMaker *qmArtists = CollectionManager::instance()->queryMaker();
     connect( qmTracks, SIGNAL(newResultReady(QStringList)),
              this, SLOT(tracksCounted(QStringList)) );
     connect( qmAlbums, SIGNAL(newResultReady(QStringList)),
              this, SLOT(albumsCounted(QStringList)) );
-    connect( qmGenres, SIGNAL(newResultReady(QStringList)),
-             this, SLOT(genresCounted(QStringList)) );
+    connect( qmArtists, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(artistsCounted(QStringList)) );
 
     qmTracks->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
       ->addReturnFunction( Collections::QueryMaker::Count, Meta::valUrl )
       ->run();
-    /* TODO: These don't work since not implemented in SqlQueryMaker::linkedTables()
-      */
     qmAlbums->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
       ->addReturnFunction( Collections::QueryMaker::Count, Meta::valAlbum )
       ->run();
-    qmGenres->setAutoDelete( true )
+    qmArtists->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
-      ->addReturnFunction( Collections::QueryMaker::Count, Meta::valGenre )
+      ->addReturnFunction( Collections::QueryMaker::Count, Meta::valArtist )
       ->run();
 }
 
@@ -657,9 +655,9 @@ CurrentTrack::albumsCounted( QStringList results )
 }
 
 void
-CurrentTrack::genresCounted( QStringList results )
+CurrentTrack::artistsCounted( QStringList results )
 {
-    m_genreCount = !results.isEmpty() ? results.first().toInt() : 0;
+    m_artistCount = !results.isEmpty() ? results.first().toInt() : 0;
     update();
 }
 

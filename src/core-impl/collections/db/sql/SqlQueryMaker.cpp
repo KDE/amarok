@@ -765,6 +765,15 @@ SqlQueryMaker::linkTables()
                         d->linkedTables ^= Private::URLS_TAB;
                     break;
                 }
+                case Meta::valArtist:
+               {
+                    d->queryFrom += " artists";
+                    if( d->linkedTables & Private::ARTIST_TAB )
+                        d->linkedTables ^= Private::ARTIST_TAB;
+                    if( d->linkedTables & Private::URLS_TAB )
+                        d->linkedTables ^= Private::URLS_TAB;
+                    break;
+                }
                 case Meta::valGenre:
                 {
                     d->queryFrom += " genres";

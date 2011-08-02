@@ -67,7 +67,7 @@ private slots:
     void coverDropped( const QPixmap &cover );
     void tracksCounted( QStringList results );
     void albumsCounted( QStringList results );
-    void genresCounted( QStringList results );
+    void artistsCounted( QStringList results );
     void findInSource( const QString &name );
     void queryCollection();
     void editTrack();
@@ -121,7 +121,7 @@ private:
     int m_playCount;
     int m_trackCount;
     int m_albumCount;
-    int m_genreCount;
+    int m_artistCount;
     QDateTime m_lastPlayed;
     QString m_sourceEmblemPath;
     bool m_isStopped;

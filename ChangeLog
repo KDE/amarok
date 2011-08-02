@@ -6,6 +6,9 @@ Version 2.4.4-Beta 1
   FEATURES:
     * Display current timestamp in tray tooltip. (BR 278445)
 
+  CHANGES:
+    * Current track applet: show number of artists instead of genres. (BR 261077)
+
 Version 2.4.3
   BUGFIXES:
     * Fix KWallet auth requests on every track change. (BR 278177)
