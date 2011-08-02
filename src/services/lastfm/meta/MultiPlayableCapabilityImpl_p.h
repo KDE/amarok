@@ -108,13 +108,13 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
             if( e == lastfm::ws::SubscribersOnly || e == lastfm::ws::AuthenticationFailed )
             {   // last.fm is returning an AuthenticationFailed message when the user is not a subscriber, even if the credentials are OK
                 Amarok::Components::logger()->shortMessage(
-                    i18n( "To listen to this stream you need to be a paying Last.Fm subscriber. " \
-                          "All the other Last.Fm features are unaffected." ) );
+                    i18n( "To listen to this stream you need to be a paying Last.fm subscriber. " \
+                          "All the other Last.fm features are unaffected." ) );
             }
             else
             {
                 Amarok::Components::logger()->shortMessage(
-                            i18n( "Error starting track from Last.Fm radio" ) );
+                            i18n( "Error starting track from Last.fm radio" ) );
             }
         }
 
