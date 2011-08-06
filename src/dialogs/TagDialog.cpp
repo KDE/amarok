@@ -568,13 +568,6 @@ void TagDialog::initUi()
     ui->addButton->setEnabled( false );
     ui->removeButton->setEnabled( false );
 
-    // looks better to have a blank label than 0, we can't do this in
-    // the UI file due to bug in Designer
-    ui->qSpinBox_track->setSpecialValueText( " " );
-    ui->qSpinBox_year->setSpecialValueText( " " );
-    ui->qSpinBox_score->setSpecialValueText( " " );
-    ui->qSpinBox_discNumber->setSpecialValueText( " " );
-
     // set an icon for the open-in-konqui button
     ui->pushButton_open->setIcon( KIcon( "folder-amarok" ) );
 
