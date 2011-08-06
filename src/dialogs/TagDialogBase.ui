@@ -28,7 +28,7 @@
      <item>
       <widget class="KTabWidget" name="kTabWidget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="currentPage" stdset="0">
         <number>4</number>
@@ -351,14 +351,11 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="specialValueText">
-              <string/>
+             <property name="keyboardTracking">
+              <bool>false</bool>
              </property>
              <property name="maximum">
               <number>100</number>
-             </property>
-             <property name="value">
-              <number>0</number>
              </property>
             </widget>
            </item>
@@ -730,14 +727,11 @@
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
-           <property name="specialValueText">
-            <string/>
+           <property name="keyboardTracking">
+            <bool>false</bool>
            </property>
            <property name="maximum">
             <number>3000</number>
-           </property>
-           <property name="value">
-            <number>0</number>
            </property>
           </widget>
          </item>
@@ -806,14 +800,11 @@
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
-           <property name="specialValueText">
-            <string/>
+           <property name="keyboardTracking">
+            <bool>false</bool>
            </property>
            <property name="maximum">
             <number>3000</number>
-           </property>
-           <property name="value">
-            <number>0</number>
            </property>
           </widget>
          </item>
@@ -844,14 +835,11 @@
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
-           <property name="specialValueText">
-            <string/>
+           <property name="keyboardTracking">
+            <bool>false</bool>
            </property>
            <property name="maximum">
             <number>3000</number>
-           </property>
-           <property name="value">
-            <number>0</number>
            </property>
           </widget>
          </item>
