@@ -9,6 +9,13 @@ Version 2.4.4-Beta 1
   CHANGES:
     * Current track applet: show number of artists instead of genres. (BR 261077)
 
+  BUGFIXES:
+    * Fixed issue with TagDialog that brought to messed up digits order in numerical
+      fields (year, track, disk, score). (BR 277279)
+    * Made possible to store empty TagDialog's numerical fields. (BR 278921)
+    * Fixed issue with TagDialog's "Open Destination" button, now It opens
+      correct directory instead of parent. (BR 279147)
+
 Version 2.4.3
   BUGFIXES:
     * Fix KWallet auth requests on every track change. (BR 278177)
