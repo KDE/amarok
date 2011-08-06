@@ -855,7 +855,7 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
     {
         ui->locationLabel->show();
         ui->kLineEdit_location->show();
-        m_path = url.directory();
+        m_path = url.directory( KUrl::AppendTrailingSlash );
         ui->pushButton_open->setEnabled( true );
     }
     else
