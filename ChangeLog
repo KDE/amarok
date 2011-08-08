@@ -4,6 +4,9 @@ Amarok ChangeLog
 
 Version 2.6-Beta 1
   FEATURES:
+    * album artist (if differs from artist), BPM, labels, last played time and
+      bitrate are now shown in playlist track tooltip (if not already displayed
+      in playlist)
 
   CHANGES:
     * libgpod requirement raised from 0.7.0 to 0.7.93 for better maintainability.
