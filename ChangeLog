@@ -10,6 +10,7 @@ Version 2.4.4-Beta 1
     * Current track applet: show number of artists instead of genres. (BR 261077)
 
   BUGFIXES:
+    * Work around a Qt bug that crashed Amarok in various situations. (BR 207382, BR 269227)
     * Fixed issue with TagDialog that brought to messed up digits order in numerical
       fields (year, track, disk, score). (BR 277279)
     * Made possible to store empty TagDialog's numerical fields. (BR 278921)

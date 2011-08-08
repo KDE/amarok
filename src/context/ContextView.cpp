@@ -54,7 +54,8 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
 
     s_self = this;
 
-    scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
+    // using QGraphicsScene::BspTreeIndex leads to crashes in some Qt versions
+    scene()->setItemIndexMethod( QGraphicsScene::NoIndex );
     //TODO: Figure out a way to use rubberband and ScrollHandDrag
     //setDragMode( QGraphicsView::RubberBandDrag );
     setTransformationAnchor( QGraphicsView::NoAnchor );
