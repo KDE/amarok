@@ -48,7 +48,7 @@ function Librivox()
 
     Amarok.debug ("creating service...");
     //Amarok.debug ("html: " + html );
-    ScriptableServiceScript.call( this, "Librivox.org", 3, "Search for books from Librivox", html, true );
+    ScriptableServiceScript.call( this, "Librivox.org", 3, "Search for free audio books from Librivox", html, true );
 
     Amarok.debug ("done creating service!");
 }

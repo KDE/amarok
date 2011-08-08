@@ -59,7 +59,7 @@ namespace Playdar
             /** @return Track title used in query */
             QString title() const;
             /**
-             * @return @c true A track has recieved a 1.00 score
+             * @return @c true A track has received a 1.00 score
              * @return @c false No track has a 1.00 score
              */
             bool isSolved() const;
@@ -112,7 +112,7 @@ namespace Playdar
             QString m_title;
             bool m_solved;
             
-            bool m_recievedFirstResults;
+            bool m_receivedFirstResults;
             
             Meta::PlaydarTrackList m_trackList;
     };

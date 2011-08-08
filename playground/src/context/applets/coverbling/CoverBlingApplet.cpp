@@ -30,6 +30,7 @@
 #include "context/widgets/RatingWidget.h"
 #include "playlist/PlaylistModelStack.h"
 #include "SearchBarTextItem.h"
+#include "playlist/PlaylistController.h"
 // KDE
 #include <KAction>
 #include <KColorScheme>

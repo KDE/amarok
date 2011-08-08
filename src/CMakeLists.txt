@@ -703,6 +703,7 @@ set(amaroklib_LIB_SRCS
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
+    widgets/ClearSpinBox.cpp
     widgets/CoverLabel.cpp
     widgets/HintLineEdit.cpp
     widgets/kdatecombo.cpp

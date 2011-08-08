@@ -1,7 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>                         *
- * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
- * Copyright (c) 2009-2011 Kevin Funk <krf@electrostorm.net>                            *
+ * Copyright (c) 2011 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,48 +14,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_TRAYICON_H
-#define AMAROK_TRAYICON_H
 
-#include <KStatusNotifierItem> // baseclass
+#include "ClearSpinBox.h"
 
-#include "core/meta/Meta.h"
-#include "core/support/SmartPointerList.h"
-
-#include <QAction>
-#include <QWeakPointer>
-
-namespace Amarok {
-
-class TrayIcon : public KStatusNotifierItem
+ClearSpinBox::ClearSpinBox( QWidget* parent )
+            : QSpinBox( parent )
 {
-    Q_OBJECT
-
-public:
-    TrayIcon( QObject *parent );
-
-private slots:
-    void updateOverlayIcon();
-    void updateToolTipIcon();
-    void updateToolTip();
-    void updateToolTipTitle();
-    void updateMenu();
-
-    void trackPlaying( Meta::TrackPtr track );
-    void stopped();
-    void paused();
-    void metadataChanged( Meta::TrackPtr track );
-    void metadataChanged( Meta::AlbumPtr album );
-
-    void slotScrollRequested( int delta, Qt::Orientation orientation );
-
-private:
-    Meta::TrackPtr m_track;
-
-    SmartPointerList<QAction> m_extraActions;
-    QWeakPointer<QAction> m_separator;
-};
-
 }
 
-#endif // AMAROK_TRAYICON_H
+QValidator::State
+ClearSpinBox::validate( QString &input, int &pos ) const
+{
+    return input.isEmpty() ? QValidator::Acceptable : QSpinBox::validate( input, pos );
+}
+
+int
+ClearSpinBox::valueFromText( const QString &text ) const
+{
+    return text.isEmpty() ? minimum() : QSpinBox::valueFromText( text );
+}
+
+QString
+ClearSpinBox::textFromValue( int val ) const
+{
+    return ( val == minimum() ) ? QString() : QSpinBox::textFromValue( val );
+}
+

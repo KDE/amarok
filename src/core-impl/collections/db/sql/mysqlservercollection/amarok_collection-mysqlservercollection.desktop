@@ -109,7 +109,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Jeff Mitchell
 X-KDE-Amarok-email=mitchell@kde.org
-X-KDE-Amarok-framework-version=63
+X-KDE-Amarok-framework-version=65
 X-KDE-Amarok-name=mysqlserver-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

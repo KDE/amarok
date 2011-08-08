@@ -397,10 +397,15 @@ Meta::secToPrettyTime( int seconds )
 {
     if( seconds < 60 * 60 ) // one hour
         return QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is below 1 hour see QTime documentation.", "m:ss" ) );
-    else if( seconds >= 86400 ) // one day
-        return  QDateTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 day or above see QDateTime documentation.", "d:hh:mm:ss" ) );
-    else
-        return QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 hour or above see QTime documentation.", "h:mm:ss" ) );
+    // split days off for manual formatting (QTime doesn't work properly > 1 day,
+    // QDateTime isn't suitable as it thinks it's a date)
+    int days = seconds / 86400;
+    seconds %= 86400;
+    QString reply = "";
+    if ( days > 0 )
+        reply += i18ncp("number of days with spacing for the pretty time", "%1 day, ", "%1 days, ", days);
+    reply += QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 hour or above see QTime documentation.", "h:mm:ss" ) );
+    return reply;
 }
 
 QString

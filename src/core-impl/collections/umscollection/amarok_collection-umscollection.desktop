@@ -49,7 +49,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Alejandro Wainzinger
 X-KDE-Amarok-email=aikawarazuni@gmail.com
-X-KDE-Amarok-framework-version=63
+X-KDE-Amarok-framework-version=65
 X-KDE-Amarok-name=ums-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

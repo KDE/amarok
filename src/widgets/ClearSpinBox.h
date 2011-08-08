@@ -1,7 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>                         *
- * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
- * Copyright (c) 2009-2011 Kevin Funk <krf@electrostorm.net>                            *
+ * Copyright (c) 2011 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,48 +14,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_TRAYICON_H
-#define AMAROK_TRAYICON_H
 
-#include <KStatusNotifierItem> // baseclass
+#ifndef CLEARSPINBOX_H
+#define CLEARSPINBOX_H
 
-#include "core/meta/Meta.h"
-#include "core/support/SmartPointerList.h"
+#include <QSpinBox>
 
-#include <QAction>
-#include <QWeakPointer>
 
-namespace Amarok {
-
-class TrayIcon : public KStatusNotifierItem
+class ClearSpinBox : public QSpinBox
 {
-    Q_OBJECT
+    public:
+        ClearSpinBox( QWidget* parent = 0 );
 
-public:
-    TrayIcon( QObject *parent );
-
-private slots:
-    void updateOverlayIcon();
-    void updateToolTipIcon();
-    void updateToolTip();
-    void updateToolTipTitle();
-    void updateMenu();
-
-    void trackPlaying( Meta::TrackPtr track );
-    void stopped();
-    void paused();
-    void metadataChanged( Meta::TrackPtr track );
-    void metadataChanged( Meta::AlbumPtr album );
-
-    void slotScrollRequested( int delta, Qt::Orientation orientation );
-
-private:
-    Meta::TrackPtr m_track;
-
-    SmartPointerList<QAction> m_extraActions;
-    QWeakPointer<QAction> m_separator;
+    protected:
+        virtual QValidator::State validate( QString &input, int &pos ) const;
+        virtual int valueFromText( const QString& text ) const;
+        virtual QString textFromValue( int val ) const;
 };
 
-}
-
-#endif // AMAROK_TRAYICON_H
+#endif // CLEARSPINBOX_H

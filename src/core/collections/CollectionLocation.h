@@ -40,7 +40,7 @@ namespace Collections {
     - call prepareCopy or prepareMove on the source CollectionLocation
     - forget about the rest of the workflow
 
-    Implementations which are writeable must reimplement the following methods
+    Implementations which are writable must reimplement the following methods
     - prettyLocation()
     - isWritable()
     - remove( Meta::Track )
@@ -133,13 +133,13 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual QStringList actualLocation() const;
 
         /**
-            Returns whether the collection location is writeable or not. For example, a
+            Returns whether the collection location is writable or not. For example, a
             local collection or an ipod collection would return true, a daap collection
             or a service collection false. The value returned by this method indicates
             if it is possible to copy tracks to the collection, and if it is generally
             possible to remove/delete files from the collection.
-            @return @c true if the collection location is writeable
-            @return @c false if the collection location is not writeable
+            @return @c true if the collection location is writable
+            @return @c false if the collection location is not writable
         */
         virtual bool isWritable() const;
 
@@ -244,7 +244,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
         /**
             this method is called on the destination. reimplement it if your implementation
-            is writeable. you must call slotCopyOperationFinished() when you are done copying
+            is writable. you must call slotCopyOperationFinished() when you are done copying
             the files.
         */
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
@@ -252,7 +252,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
 
         /**
            this method is called on the collection you want to remove tracks from.  it must
-           be reimplemented if your collection is writeable and you wish to implement
+           be reimplemented if your collection is writable and you wish to implement
            removing tracks
         */
 

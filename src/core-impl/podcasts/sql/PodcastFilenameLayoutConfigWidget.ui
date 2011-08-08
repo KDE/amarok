@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+ <author>Sandeep Raghuraman</author>
  <class>PodcastFilenameLayoutConfigWidget</class>
  <widget class="QWidget" name="PodcastFilenameLayoutConfigWidget">
   <property name="windowModality">

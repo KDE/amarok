@@ -184,7 +184,6 @@ Icon=amarok
 # Add container formats here
 MimeType=video/x-ms-asf;application/ogg;
 NoDisplay=true
-X-DocPath=amarok/index.html
 X-KDE-Keywords=music,podcast
 X-KDE-Protocols=http
 Terminal=false

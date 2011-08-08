@@ -95,8 +95,8 @@ void CollectionLocationDelegateImpl::errorDeleting( CollectionLocation* loc, con
     foreach( Meta::TrackPtr track, tracks )
         files << track->prettyUrl();
 
-    const QString text( i18ncp( "@info", "There was a problem and this track could not be removed. Make sure the directory is writeable.",
-                                "There was a problem and %1 tracks could not be removed. Make sure the directory is writeable.", files.count() ) );
+    const QString text( i18ncp( "@info", "There was a problem and this track could not be removed. Make sure the directory is writable.",
+                                "There was a problem and %1 tracks could not be removed. Make sure the directory is writable.", files.count() ) );
                                 KMessageBox::informationList(0,
                                                              text,
                                                              files,
@@ -107,7 +107,7 @@ void CollectionLocationDelegateImpl::notWriteable(CollectionLocation* loc) const
 {
     Q_UNUSED( loc )
     Amarok::Components::logger()->longMessage(
-            i18n( "The collection does not have enough free space available or is not writeable." ),
+            i18n( "The collection does not have enough free space available or is not writable." ),
             Amarok::Logger::Error );
 }
 

@@ -568,7 +568,7 @@ Dynamic::PartBias::changeBiasWeight( int biasNum, qreal value )
     if( biasNum != 0 )
     {
         qreal oldV = m_weights.at(0);
-        qreal newV = qBound( qreal( 0.0 ), 1.0 - (sum - oldV), qreal( 1.0 ) );
+        qreal newV = qBound<qreal>( qreal( 0.0 ), 1.0 - (sum - oldV), qreal( 1.0 ) );
         m_weights[0] = newV;
 
         sum = sum - oldV + newV;

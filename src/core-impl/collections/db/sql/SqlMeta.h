@@ -93,7 +93,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
 
         /** true if there is a collection and the file exists on disk */
         virtual bool isPlayable() const;
-        /** true if there is a collection, the file exists on disk and is writeable */
+        /** true if there is a collection, the file exists on disk and is writable */
         virtual bool isEditable() const;
 
         virtual Meta::AlbumPtr album() const;

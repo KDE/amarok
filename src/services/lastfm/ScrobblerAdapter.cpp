@@ -81,8 +81,6 @@ ScrobblerAdapter::trackPlaying( Meta::TrackPtr track )
     {
         m_lastSaved = m_lastPosition; // HACK engineController is broken :(
 
-        LastFmServiceConfig config;
-    
         debug() << "track type:" << track->type();
         const bool isRadio = ( track->type() == "stream/lastfm" );
         
@@ -92,8 +90,8 @@ ScrobblerAdapter::trackPlaying( Meta::TrackPtr track )
         
         m_current.setTitle( track->name() );
         m_current.setDuration( track->length() / 1000 );
-        debug() << "scrobbleComposer: " << config.scrobbleComposer();
-        if( track->composer() && config.scrobbleComposer() )
+        debug() << "scrobbleComposer: " << scrobbleComposer();
+        if( track->composer() && scrobbleComposer() )
             m_current.setArtist( track->composer()->name() );
         else if( track->artist() )
             m_current.setArtist( track->artist()->name() );
@@ -133,12 +131,10 @@ void
 ScrobblerAdapter::trackMetadataChanged( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    LastFmServiceConfig config;
-
     // if we are listening to a stream, take the new metadata as a "new track" and, if we have enough info, save it for scrobbling
     if( track &&
         ( track->type() == "stream" && ( !track->name().isEmpty() 
-          && ( track->artist() || ( track->composer() && config.scrobbleComposer() ) ) ) ) )
+          && ( track->artist() || ( track->composer() && scrobbleComposer() ) ) ) ) )
         // got a stream, and it has enough info to be a new track
     {
         // don't use checkScrobble as we don't need to check timestamps, it is a stream
@@ -150,12 +146,12 @@ ScrobblerAdapter::trackMetadataChanged( Meta::TrackPtr track )
                     
         m_current.setTitle( track->name() );
         m_current.setArtist(
-              track->composer() && config.scrobbleComposer()
+              track->composer() && scrobbleComposer()
             ? track->composer()->name()
             : track->artist()->name()
         );
         m_current.stamp();
-        
+
         m_current.setSource( lastfm::Track::NonPersonalisedBroadcast );
 
         if( !m_current.isNull() )
@@ -227,11 +223,9 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
 
     if( track )
     {
-        LastFmServiceConfig config;
-
         lastfm::MutableTrack trackInfo;
         trackInfo.setTitle( track->name() );
-        if( track->composer() && config.scrobbleComposer() )
+        if( track->composer() && scrobbleComposer() )
             trackInfo.setArtist( track->composer()->name() );
         else if( track->artist() )
             trackInfo.setArtist( track->artist()->name() );
@@ -279,4 +273,11 @@ ScrobblerAdapter::checkScrobble()
         m_scrobbler->submit();
     }
     resetVariables();
+}
+
+bool
+ScrobblerAdapter::scrobbleComposer()
+{
+    KConfigGroup config = KGlobal::config()->group( LastFmServiceConfig::configSectionName() );
+    return config.readEntry( "scrobbleComposer", false );
 }

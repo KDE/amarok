@@ -42,7 +42,7 @@ unless FileTest.directory?( destination )
 end
 
 unless FileTest.writable_real?( destination )
-    system("dcop", "amarok", "playlist", "popupMessage", "Error: Destination directory not writeable.")
+    system("dcop", "amarok", "playlist", "popupMessage", "Error: Destination directory not writable.")
     exit( 1 )
 end
 

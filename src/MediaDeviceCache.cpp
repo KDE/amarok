@@ -180,13 +180,6 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
 
     Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
 
-
-    if( m_type.contains( udi ) )
-    {
-        debug() << "Duplicate UDI trying to be added: " << udi;
-        return;
-    }
-
     if ( opt && opt->availableContent() & Solid::OpticalDisc::Audio )
     {
         debug() << "device is an Audio CD";
@@ -213,13 +206,13 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
             return;
         }
     }
-    else if( device.as<Solid::StorageDrive>() )
+    else if( device.is<Solid::StorageDrive>() )
     {
         debug() << "device is a Storage drive, still need a volume";
         m_type[udi] = MediaDeviceCache::SolidGenericType;
         m_name[udi] = device.vendor() + " - " + device.product();
     }
-    else if( device.as<Solid::PortableMediaPlayer>() )
+    else if( device.is<Solid::PortableMediaPlayer>() )
     {
         debug() << "device is a PMP";
         m_type[udi] = MediaDeviceCache::SolidPMPType;

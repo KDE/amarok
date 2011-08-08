@@ -205,8 +205,9 @@ public:
 
     /**
      * @return QString with a pretty name for the current track
+     * @param whether to include the playing progress (default false)
      */
-    QString prettyNowPlaying() const;
+    QString prettyNowPlaying( bool progress = false ) const;
 
 public slots:
     /**

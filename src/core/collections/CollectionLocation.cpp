@@ -273,7 +273,7 @@ CollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sour
                                           const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
-    //reimplement in implementations which are writeable
+    //reimplement in implementations which are writable
     Q_UNUSED( sources )
     Q_UNUSED( configuration )
     slotCopyOperationFinished();
@@ -283,7 +283,7 @@ void
 CollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources )
 {
     DEBUG_BLOCK
-    //reimplement in implementations which are writeable
+    //reimplement in implementations which are writable
     Q_UNUSED( sources )
     slotRemoveOperationFinished();
 }

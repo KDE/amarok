@@ -529,7 +529,7 @@ UpcomingEventsApplet::viewCalendar()
     UpcomingEventsStackItem *stackItem = m_stack->create( QLatin1String("calendar") );
     UpcomingEventsCalendarWidget *calendar = new UpcomingEventsCalendarWidget( stackItem );
     stackItem->setIcon( KIcon( "view-calendar" ) );
-    stackItem->setTitle( i18n( "Events Calender" ) );
+    stackItem->setTitle( i18n( "Events Calendar" ) );
     stackItem->setWidget( calendar );
     stackItem->setMinimumWidth( 50 );
     stackItem->showCloseButton();

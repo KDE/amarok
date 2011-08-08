@@ -42,14 +42,14 @@ namespace Playdar
     , m_album( QString( "" ) )
     , m_title( QString( "" ) )
     , m_solved( false )
-    , m_recievedFirstResults( false )
+    , m_receivedFirstResults( false )
     , m_trackList( )
     {
         DEBUG_BLOCK
         
         if( m_waitForSolution )
         {
-            m_recievedFirstResults = true;
+            m_receivedFirstResults = true;
             m_controller.data()->getResultsLongPoll( this );
         }
         else
@@ -159,7 +159,7 @@ namespace Playdar
         }
         if( parsedResults.value( "qid" ) != m_qid )
         {
-            debug() << "A query recieved the wrong results from Playdar...";
+            debug() << "A query received the wrong results from Playdar...";
             emit playdarError( Playdar::Controller::ErrorState( 5 ) );
             return;
         }
@@ -216,14 +216,14 @@ namespace Playdar
             emit newTrackAdded( aTrack );
         }
         
-        if( m_recievedFirstResults || m_solved )
+        if( m_receivedFirstResults || m_solved )
         {
-            m_recievedFirstResults = true;
+            m_receivedFirstResults = true;
             emit queryDone( this, m_trackList );
         }
         else
         {
-            m_recievedFirstResults = true;
+            m_receivedFirstResults = true;
             m_controller.data()->getResultsLongPoll( this );
         }
     }
