@@ -1,7 +1,5 @@
 [Desktop Entry]
 Name=Spectrum-Analyzer
-Name[de]=Spektrum-Analysator
-Name[en_GB]=Spectrum-Analyser
 Type=Service
 Icon=spectrum-analyzer-amarok
 ServiceTypes=Plasma/Applet

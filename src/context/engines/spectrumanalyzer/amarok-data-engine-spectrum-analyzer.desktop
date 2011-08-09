@@ -1,7 +1,5 @@
 [Desktop Entry]
 Name=Spectrum Analyzer Data Engine
-Name[de]=VSpectrum Analysator-Datenmodul
-Name[en_GB]=Spectrum Analyzer Data Engine
 
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
