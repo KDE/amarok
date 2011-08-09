@@ -61,7 +61,7 @@ SpectrumAnalyzerApplet::SpectrumAnalyzerApplet( QObject* parent, const QVariantL
 
         if( !context->isValid() )
         {
-            m_glErrorText = i18n( "Could not create an OpenGL redering context." );
+            m_glErrorText = i18n( "Could not create an OpenGL rendering context." );
         }
         else if( !context->format().sampleBuffers() )
         {
@@ -376,7 +376,7 @@ SpectrumAnalyzerApplet::constraintsEvent( Plasma::Constraints constraints )
             else
             {
                 m_glError = true;
-                m_glErrorText = "Could not recreate an OpenGL redering context.";
+                m_glErrorText = "Could not recreate an OpenGL rendering context.";
             }
         }
     }

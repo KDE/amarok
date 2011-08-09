@@ -143,7 +143,7 @@ class SpectrumAnalyzerApplet: public Context::Applet
         bool                                                            m_detached;             //!< Is the render OpenGL window detached
         bool                                                            m_power;                //!< Applet power status
         bool                                                            m_fullscreen;           //!< are we in fullscreen mode
-        bool                                                            m_cutLowFrequencys;     //!< whether or not low frequencys should be excluded
+        bool                                                            m_cutLowFrequencys;     //!< whether or not low frequencies should be excluded
 
         /**
         *   Does a Fast Fourier Transformation on the Audio Data
