@@ -1,5 +1,8 @@
 [Desktop Entry]
 Name=Spectrum-Analyzer
+Name[sv]=Spektrumanalysator
+Name[uk]=Аналізатор спектра
+Name[x-test]=xxSpectrum-Analyzerxx
 Type=Service
 Icon=spectrum-analyzer-amarok
 ServiceTypes=Plasma/Applet

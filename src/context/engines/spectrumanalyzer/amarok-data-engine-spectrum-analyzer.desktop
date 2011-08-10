@@ -1,5 +1,8 @@
 [Desktop Entry]
 Name=Spectrum Analyzer Data Engine
+Name[sv]=Datagränssnitt för spektrumanalysator
+Name[uk]=Рушій даних аналізатора спектра
+Name[x-test]=xxSpectrum Analyzer Data Enginexx
 
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
