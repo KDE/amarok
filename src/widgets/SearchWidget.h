@@ -21,6 +21,7 @@
 #include "ComboBox.h"
 
 #include <QWidget>
+#include <QTimer>
 
 class QToolBar;
 class KPushButton;
@@ -31,18 +32,19 @@ class AMAROK_EXPORT SearchWidget : public QWidget
 {
     Q_OBJECT
     public:
+        /** Creates a search widget.
+            @param advanced If true generates a button that opens a edit filter dialog.
+        */
         explicit SearchWidget( QWidget *parent, bool advanced = true );
-        SearchWidget( QWidget *parent, QWidget *caller, bool advanced = true  );
 
         QString currentText() const { return m_sw->currentText(); }
         Amarok::ComboBox *comboBox() { return m_sw; }
-        void setup( QObject* caller );
         void setSearchString( const QString &searchString );
 
-        QToolBar * toolBar();
+        QToolBar* toolBar();
 
         void showAdvancedButton( bool show );
-        
+
         /**
          * Sets the string that will be visible when the ComboBox's edit text is empty.
          * @param message the string that will be visible when the ComboBox's edit text is empty.
@@ -50,20 +52,26 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         void setClickMessage( const QString &message );
 
     signals:
-        void filterNow();
+        /** Emitted when the filter value was changed.
+            Note: This signal might be delayed while the user is typing
+        */
+        void filterChanged( const QString &filter );
 
     private slots:
+        void resetFilterTimeout();
+        void filterNow();
+        void advanceFocus();
+
         void addCompletion( const QString &text );
         void onComboItemActivated( int index );
         void slotShowFilterEditor();
         void slotFilterEditorFinished( int result );
 
     private:
-        void init( QWidget *parent, bool advanced );
-
         Amarok::ComboBox *m_sw;
         QAction          *m_filterAction;
         QToolBar         *m_toolBar;
+        QTimer            m_filterTimer;
 };
 
 #endif

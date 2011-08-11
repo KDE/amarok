@@ -116,6 +116,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void newResultReady( Meta::LabelList );
         virtual void newResultReady( Meta::DataList data );
 
+        /** Apply the current filter */
         void slotFilter();
 
         void slotCollapsed( const QModelIndex &index );

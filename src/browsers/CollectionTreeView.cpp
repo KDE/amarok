@@ -100,8 +100,6 @@ void CollectionTreeView::setModel( QAbstractItemModel * model )
     if( !m_treeModel )
         return;
 
-    m_filterTimer.setSingleShot( true );
-    connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
     connect( m_treeModel, SIGNAL( allQueriesFinished() ), SLOT( slotCheckAutoExpand() ));
     connect( m_treeModel, SIGNAL(expandIndex(QModelIndex)), SLOT(slotExpandIndex(QModelIndex)) );
 
@@ -589,19 +587,6 @@ void CollectionTreeView::selectionChanged(const QItemSelection & selected, const
 }
 
 void
-CollectionTreeView::slotSetFilterTimeout()
-{
-    KComboBox *comboBox = qobject_cast<KComboBox*>( sender() );
-    if( comboBox )
-    {
-        if( m_treeModel )
-            m_treeModel->setCurrentFilter( comboBox->currentText() );
-        m_filterTimer.stop();
-        m_filterTimer.start( 500 );
-    }
-}
-
-void
 CollectionTreeView::slotCollapsed( const QModelIndex &index )
 {
     if( !m_treeModel )
@@ -833,14 +818,16 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
     (void)new TagDialog( qm ); //the dialog will show itself automatically as soon as it is ready
 }
 
-void CollectionTreeView::slotFilterNow()
+void
+CollectionTreeView::slotSetFilter( const QString &filter )
 {
+    DEBUG_BLOCK;
     if( m_treeModel )
-        m_treeModel->slotFilter();
-    setFocus( Qt::OtherFocusReason );
+        m_treeModel->setCurrentFilter( filter );
 }
 
-QActionList CollectionTreeView::createBasicActions( const QModelIndexList & indices )
+QActionList
+CollectionTreeView::createBasicActions( const QModelIndexList & indices )
 {
     QActionList actions;
 

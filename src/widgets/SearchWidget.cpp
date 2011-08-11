@@ -16,13 +16,15 @@
 
 #include "SearchWidget.h"
 #include "EditFilterDialog.h"
+#include "core/support/Debug.h"
+
+#include <KLocale>
 
 #include <QAction>
 #include <QToolBar>
 #include <QVBoxLayout>
 
 #include <KIcon>
-#include <KLocale>
 #include <KLineEdit>
 #include <KHBox>
 #include <KPushButton>
@@ -33,34 +35,6 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     , m_sw( 0 )
     , m_filterAction( 0 )
 {
-    init( parent, advanced );
-}
-
-SearchWidget::SearchWidget( QWidget *parent, QWidget *caller, bool advanced )
-    : QWidget( parent )
-    , m_sw( 0 )
-    , m_filterAction( 0 )
-{
-    init( parent, advanced );
-    setup( caller );
-}
-
-void
-SearchWidget::setup( QObject* caller )
-{
-    connect( m_sw, SIGNAL( editTextChanged( const QString & ) ), caller,
-             SLOT( slotSetFilterTimeout() ) );
-    connect( this, SIGNAL( filterNow() ), caller,
-             SLOT( slotFilterNow() ) );
-    connect( m_sw, SIGNAL( returnPressed() ), caller, SLOT( slotFilterNow() ) );
-    connect( m_sw, SIGNAL( downPressed() ), caller, SLOT( setFocus() ) );
-}
-
-///Private
-void
-SearchWidget::init( QWidget *parent, bool advanced )
-{
-    Q_UNUSED( parent )
     setContentsMargins( 0, 0, 0, 0 );
     KHBox *searchBox = new KHBox( this );
     searchBox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
@@ -74,6 +48,10 @@ SearchWidget::init( QWidget *parent, bool advanced )
     m_sw->addItem( KStandardGuiItem::find().icon(), QString() );
     connect( m_sw, SIGNAL(returnPressed(const QString&)), SLOT(addCompletion(const QString&)) );
     connect( m_sw, SIGNAL(activated(int)), SLOT(onComboItemActivated(int)));
+    connect( m_sw, SIGNAL(editTextChanged( const QString & )), SLOT( resetFilterTimeout() ) );
+    connect( m_sw, SIGNAL(returnPressed()), SLOT( filterNow() ) );
+    connect( m_sw, SIGNAL(returnPressed() ), SLOT( advanceFocus() ) );
+    connect( m_sw, SIGNAL(downPressed() ), SLOT( advanceFocus() ) );
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( searchBox );
@@ -91,13 +69,37 @@ SearchWidget::init( QWidget *parent, bool advanced )
 
         connect ( m_filterAction, SIGNAL( triggered() ), this, SLOT( slotShowFilterEditor() ) );
     }
+
+    m_filterTimer.setSingleShot( true );
+    connect( &m_filterTimer, SIGNAL( timeout() ), SLOT( filterNow() ) );
 }
 
 void
 SearchWidget::setSearchString( const QString &searchString )
 {
-    m_sw->setEditText( searchString );
-    emit filterNow();
+    if( searchString != currentText() ) {
+        m_sw->setEditText( searchString );
+        filterNow();
+    }
+}
+
+void
+SearchWidget::resetFilterTimeout()
+{
+    m_filterTimer.stop();
+    m_filterTimer.start( 500 );
+}
+
+void
+SearchWidget::filterNow()
+{
+    emit filterChanged( m_sw->currentText() );
+}
+
+void
+SearchWidget::advanceFocus()
+{
+    focusNextChild();
 }
 
 void

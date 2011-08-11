@@ -66,9 +66,6 @@ class CollectionWidget : public BrowserCategory
 
         void toggleView( bool merged );
 
-    private slots:
-        void init();
-
     private:
         class Private;
         Private *const d;

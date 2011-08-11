@@ -38,6 +38,7 @@
 #include <Plasma/Theme>
 
 #include <QAction>
+#include <QTimer>
 #include <QDesktopServices>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsView>

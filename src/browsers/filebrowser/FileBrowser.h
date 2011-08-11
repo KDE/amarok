@@ -48,9 +48,6 @@ public:
 
 protected slots:
     void itemActivated( const QModelIndex &index );
-    
-    void slotSetFilterTimeout();
-    void slotFilterNow();
 
     void addItemActivated( const QString &callback );
 

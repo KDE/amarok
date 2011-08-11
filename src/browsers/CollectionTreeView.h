@@ -26,7 +26,6 @@
 #include <QModelIndex>
 #include <QMutex>
 #include <QSet>
-#include <QTimer>
 
 class AmarokMimeData;
 class CollectionSortFilterProxyModel;
@@ -59,14 +58,9 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
 
     public slots:
-        void slotSetFilterTimeout();
+        void slotSetFilter( const QString &filter );
 
         void playChildTracksSlot( Meta::TrackList list );
-
-        /**
-         * Bypass the filter timeout if we really need to start filtering *now*
-         */
-        void slotFilterNow();
 
     protected:
         void contextMenuEvent( QContextMenuEvent *event );
@@ -123,7 +117,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModelBase *m_treeModel;
-        QTimer m_filterTimer;
         PopupDropper* m_pd;
         QAction* m_appendAction;
         QAction* m_loadAction;

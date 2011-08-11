@@ -149,9 +149,9 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     m_menubar->hide();
 
     m_searchWidget = new SearchWidget( m_topPanel );
-    if ( m_contentView )
-        m_searchWidget->setup( m_contentView );
-
+    if( m_contentView )
+        connect( m_searchWidget, SIGNAL( filterChanged( const QString & ) ),
+                 m_contentView, SLOT( slotSetFilter( const QString & ) ) );
 }
 
 ServiceBase::~ServiceBase()

@@ -149,37 +149,30 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_collections.png");
     setBackgroundImage( bgImage );
 
+    // --- the box for the UI elements.
     KHBox *hbox = new KHBox( this );
-    d->searchWidget = new SearchWidget( hbox );
-    d->searchWidget->setClickMessage( i18n( "Search collection" ) );
     d->stack = new QStackedWidget( this );
 
-    QTimer::singleShot( 0, this, SLOT(init()) );
-}
-
-CollectionWidget::~CollectionWidget()
-{
-    delete d;
-}
-
-void
-CollectionWidget::init()
-{
-    DEBUG_BLOCK
-    PERF_LOG( "Begin init" );
-
+    // -- read the view level settings from the configuration
     QList<int>levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
     if ( levels.isEmpty() )
         levels << CategoryId::Artist << CategoryId::Album;
 
+    // -- read the current view mode from the configuration
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
     const QString &value = Amarok::config( "Collection Browser" ).readEntry( "View Mode" );
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
     enumValue == -1 ? d->viewMode = NormalCollections : d->viewMode = (ViewMode) enumValue;
 
-    d->stack->setFrameShape( QFrame::NoFrame );
-    d->stack->addWidget( d->view( d->viewMode ) );
+    ViewMode viewMode = NormalCollections;
+    if( enumValue != -1 )
+       viewMode = (ViewMode) enumValue;
+
+
+    // -- the search widget
+    d->searchWidget = new SearchWidget( hbox );
+    d->searchWidget->setClickMessage( i18n( "Search collection" ) );
 
     // Filter presets. UserRole is used to store the actual syntax.
     KComboBox *combo = d->searchWidget->comboBox();
@@ -305,6 +298,12 @@ CollectionWidget::init()
     setLevels( levels );
 }
 
+CollectionWidget::~CollectionWidget()
+{
+    delete d;
+}
+
+
 void
 CollectionWidget::sortLevelSelected( QAction *action )
 {
@@ -426,7 +425,8 @@ void CollectionWidget::toggleView( bool merged )
         d->searchWidget->disconnect( oldView );
 
     CollectionBrowserTreeView *newView = d->view( newMode );
-    d->searchWidget->setup( newView );
+    connect( d->searchWidget, SIGNAL( filterChanged( const QString & ) ),
+             newView, SLOT( slotSetFilter( const QString & ) ) );
     if( d->stack->indexOf( newView ) == -1 )
         d->stack->addWidget( newView );
     d->stack->setCurrentWidget( newView );
@@ -436,7 +436,6 @@ void CollectionWidget::toggleView( bool merged )
         typedef CollectionTreeItemModelBase CTIMB;
         CTIMB *model = qobject_cast<CTIMB*>( newView->filterModel()->sourceModel() );
         model->setCurrentFilter( filter );
-        newView->slotFilterNow();
     }
 
     d->viewMode = newMode;

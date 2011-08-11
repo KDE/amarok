@@ -1058,6 +1058,7 @@ void
 CollectionTreeItemModelBase::setCurrentFilter( const QString &filter )
 {
     m_currentFilter = filter;
+    slotFilter();
 }
 
 void

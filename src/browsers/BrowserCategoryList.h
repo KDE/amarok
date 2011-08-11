@@ -22,7 +22,6 @@
 #include "BrowserCategoryListModel.h"
 #include "BrowserCategoryListSortFilterProxyModel.h"
 
-#include <QTimer>
 #include <QMap>
 
 class BrowserCategoryListDelegate;
@@ -85,15 +84,13 @@ class BrowserCategoryList : public BrowserCategory
 
         QString path();
 
-        virtual QString filter() const;
-        virtual void setFilter( const QString &filter );
-
         BrowserCategory *activeCategoryRecursive();
 
     signals:
         void viewChanged();
 
     public slots:
+
         /**
          * Add a category.
          * This category will take ownership of the new sub-category.
@@ -120,6 +117,10 @@ class BrowserCategoryList : public BrowserCategory
 
         void childViewChanged();
 
+    private slots:
+        /** Sets the current filter value and updates the content */
+        virtual void setFilter( const QString &filter );
+
     private:
 
         SearchWidget *m_searchWidget;
@@ -131,10 +132,6 @@ class BrowserCategoryList : public BrowserCategory
         BrowserCategoryListModel *m_categoryListModel;
         BrowserCategoryListSortFilterProxyModel* m_proxyModel;
         BrowserCategoryListDelegate *m_delegate;
-
-        QTimer m_filterTimer;
-
-        QString m_currentFilter;
 
         QString m_infoHtmlTemplate;
 
@@ -149,9 +146,6 @@ class BrowserCategoryList : public BrowserCategory
         void categoryActivated( const QModelIndex &index );
 
         void categoryEntered( const QModelIndex &index );
-
-        void slotSetFilterTimeout();
-        void slotFilterNow();
 
         QString css();
 };
