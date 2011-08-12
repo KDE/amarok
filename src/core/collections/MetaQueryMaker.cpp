@@ -29,6 +29,10 @@ MetaQueryMaker::MetaQueryMaker( const QList<Collections::Collection*> &collectio
         builders.append( b );
         connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
         //relay signals directly
+        // actually this is wrong. We would need to combine the results
+        // to prevent duplicate album name results.
+        // On the other hand we need duplicate AlbumPtr results.
+        // Summary: be carefull when using this class. (Ralf)
         connect( b, SIGNAL( newResultReady( Meta::TrackList ) ), this, SIGNAL( newResultReady( Meta::TrackList ) ), Qt::DirectConnection );
         connect( b, SIGNAL( newResultReady( Meta::ArtistList ) ), this, SIGNAL( newResultReady( Meta::ArtistList ) ), Qt::DirectConnection );
         connect( b, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SIGNAL( newResultReady( Meta::AlbumList ) ), Qt::DirectConnection );
@@ -105,6 +109,8 @@ MetaQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
     return this;
 }
 
+/* Ok. That doesn't work. First connecting the signals directly and then
+   doing "orderBy" directly */
 QueryMaker*
 MetaQueryMaker::orderBy( qint64 value, bool descending )
 {

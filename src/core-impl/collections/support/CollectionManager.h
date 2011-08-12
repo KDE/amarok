@@ -51,6 +51,9 @@ class AMAROK_EXPORT CollectionManager : public QObject
         static CollectionManager * instance();
         static void destroy();
 
+        /**
+         * Returns a query maker that queries ALL the collections
+         */
         Collections::QueryMaker * queryMaker() const;
 
         /**

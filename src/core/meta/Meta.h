@@ -346,6 +346,21 @@ namespace Meta
             mutable QString m_sortableName;
     };
 
+    /** Represents an album.
+        Most collections do not store a specific album object. Instead an album
+        is just a property of a track, a container containing one or more tracks.
+
+        Collections should proved an album for every track as the collection browser
+        will, depending on the setting, only display tracks inside albums.
+
+        For all albums in a compilation the pair album-title/album-artist should
+        be unique as this pair is used as a key in several places.
+
+        Albums without an artist are called compilations.
+        Albums without a title but with an artist should contain all singles of
+         the specific artist.
+        There should be one album without title and artist for all the rest.
+    */
     class AMAROK_CORE_EXPORT Album : public MetaBase
     {
         Q_PROPERTY( bool compilation READ isCompilation )
