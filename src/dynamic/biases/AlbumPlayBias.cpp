@@ -207,7 +207,7 @@ Dynamic::AlbumPlayBias::trackMatches( int position,
     Meta::TrackPtr currentTrack = playlist[position];
     Meta::AlbumPtr currentAlbum = currentTrack->album();
 
-    if( !album )
+    if( !album || album->tracks().isEmpty() )
         return false;
 
     Meta::TrackList albumTracks = album->tracks();
