@@ -546,7 +546,7 @@ CollectionScanner::Scanner::displayHelp( const QString &error )
         "-s, --restart           : After a crash, restart the scanner in its last position\n"
         "    --idlepriority      : Run at idle priority\n"
         "    --sharedmemory <key> : A shared memory segment to be used for restarting a scan\n"
-        "    --newer <path>      : Only scan directories if modification time is new than <path>\n"
+        "    --newer <path>      : Only scan directories if modification time is newer than <path>\n"
         "                          Only useful in incremental scan mode\n"
         "    --batch <path>      : Add the directories from the batch xml file\n"
         "                          batch file format should look like this:\n"
