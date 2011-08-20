@@ -421,43 +421,16 @@ TagDialog::guessFromFilename() //SLOT
     FilenameLayoutDialog widget( &dialog );
     widget.setFileName( m_currentTrack->playableUrl().path() );
     dialog.setMainWidget( &widget );
-    connect( &dialog, SIGNAL( accepted() ), &widget, SLOT( onAccept() ) );
 
-    const int dcode = dialog.exec();
-
-    QString schemeFromDialog; //note to self: see where to put it from an old revision
-    debug() << "FilenameLayoutDialog finished.";
-    if( dcode == KDialog::Accepted )
-        schemeFromDialog = widget.getParsableScheme();
-    else
-        debug() << "WARNING: Have not received a new scheme from FilenameLayoutDialog";
-
-    debug() << "I have " << schemeFromDialog << " as filename scheme to use.";
-    //legacy tagguesserconfigdialog code follows, needed to make everything hackishly work
-    //probably not the best solution
-    QStringList schemes;    //now, this is really bad: the old TagGuesser code requires a QStringList of schemes to work on, and by default uses the first one.
-                            //It was done like this because the user could pick from a list of default and previously used schemes. I'm just adding my scheme as the first in the list.
-                            //So there's a bunch of rotting unused code but I suggest leaving it like this for now so we can rollback to the old dialog if I don't manage to fix the
-                            //new one before 2.0.
-    schemes += schemeFromDialog;
-
-
-    if( schemeFromDialog.isEmpty() )
+    if( dialog.exec() == KDialog::Accepted )
     {
-        //FIXME: remove this before release
+        widget.onAccept();
 
-        debug()<<"No filename scheme to extract tags from. Please choose a filename scheme to describe the layout of the filename(s) to extract the tags.";
-    }
-    else
-    {
-    //here starts the old guessFromFilename() code
         int cur = 0;
 
-        QFileInfo fi( m_currentTrack->playableUrl().path() );
-
         TagGuesser guesser;
-        guesser.setFilename( fi.fileName() );
-        guesser.setSchema( schemeFromDialog );
+        guesser.setFilename( widget.getParsableFileName() );
+        guesser.setSchema( widget.getParsableScheme() );
         guesser.setCaseType( widget.getCaseOptions() );
         guesser.setConvertUnderscores( widget.getUnderscoreOptions() );
         guesser.setCutTrailingSpaces( widget.getWhitespaceOptions() );

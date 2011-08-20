@@ -41,7 +41,7 @@ TagGuesser::setFilename( const QString &fileName )
 void
 TagGuesser::setSchema( const QString &schema )
 {
-    m_schema = QString( schema ).replace( ".", "\\." );
+    m_schema = schema;
 }
 
 // sets case type to convert tags into
@@ -72,6 +72,7 @@ TagGuesser::guess()
     m_guessed = false;
     if( !m_fileName.isEmpty() && !m_schema.isEmpty() )
     {
+        debug() << "Guessing tags from file name '" << m_fileName << "', using schema '" << m_schema << "'.";
         Meta::FieldHash tags = Meta::Tag::TagGuesser::guessTagsByScheme( m_fileName, m_schema,
                                                                          m_cutTrailingSpaces,
                                                                          m_convertUnderscores );

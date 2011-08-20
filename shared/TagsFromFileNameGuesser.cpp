@@ -96,8 +96,13 @@ Meta::Tag::TagGuesser::guessTagsByScheme( const QString &fileName, const QString
     QString m_scheme = scheme;
 
     QList< qint64 > tokens = parseTokens( m_scheme );
-
-    rx.setPattern( m_scheme.replace( m_digitalFields, "(\\d+)" )
+    
+    // Screen all special symbols
+    QRegExp escape( "([~!\\^&*()\\-+\\[\\]{}\\\\:\"?\\.])" );
+    QRegExp spaces( "(\\s+)" );
+    rx.setPattern( m_scheme.replace( escape,"\\\\1" )
+                           .replace( spaces, "\\s+" )
+                           .replace( m_digitalFields, "(\\d+)" )
                            .replace( m_literalFields, "(.+)" )
                            .replace( "%ignore%", "(?:.+)" ) );
 

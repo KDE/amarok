@@ -85,6 +85,7 @@ class FilenameLayoutDialog
 
         AMAROK_EXPORT explicit FilenameLayoutDialog( QWidget *parent = 0, bool isOrganizeCollection = 0 ); // Could I have exported the whole class? I don't see how
         AMAROK_EXPORT QString getParsableScheme();
+        AMAROK_EXPORT QString getParsableFileName();
         int getCaseOptions();
         bool getWhitespaceOptions();
         bool getUnderscoreOptions();
@@ -107,14 +108,25 @@ class FilenameLayoutDialog
         void toggleAdvancedMode();
         void updatePreview();
 
+        void slotFormatPresetSelected( int );
+        void slotAddFormat();
+        void slotRemoveFormat();
+        void slotUpdateFormat();
+        void slotSaveFormatList();
+
     private:
+        void initOrganizeCollection();
+        void initTagGuesser();
         void setAdvancedMode( bool isAdvanced );
         QString parsableScheme() const;
         QString parsableFileName( const QFileInfo &fileInfo ) const;
         void inferScheme( const QString &scheme );
+        void populateFormatList();
 
+        QString m_configCategory;
         QString m_filename;                         //!< Filename to guess from
         bool m_isOrganizeCollection;
+        bool m_formatListModified;
         bool m_advancedMode;
         TokenDropTarget *m_dropTarget;
         QColor m_color_Track;

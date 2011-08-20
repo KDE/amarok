@@ -60,12 +60,6 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         void slotDialogAccepted();
 
     private slots:
-        void slotFormatPresetSelected( int );
-        void slotAddFormat();
-        void slotRemoveFormat();
-        void slotUpdateFormat();
-        void slotSaveFormatList();
-
         void previewNextBatch();
         void slotOrganizerFinished();
 
@@ -77,7 +71,6 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         void update( int dummy );
         void update( const QString &dummy );
         void init();
-        void populateFormatList();
 
         Ui::OrganizeCollectionDialogBase *ui;
         FilenameLayoutDialog *m_filenameLayoutDialog;
@@ -87,7 +80,6 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         Meta::TrackList m_allTracks;
         QString m_targetFileExtension;
         bool m_schemeModified;
-        bool m_formatListModified;
 
         bool m_conflict;
 
