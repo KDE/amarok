@@ -55,6 +55,11 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
     m_appletLayout->setContentsMargins( 3, 3, 3, 3 );
     m_appletLayout->setSpacing( 4 );
 
+    m_configItem = new AppletToolbarConfigItem( this );
+    connect( m_configItem, SIGNAL( triggered() ), this, SLOT( toggleConfigMode() ) );
+    m_appletLayout->addItem( m_configItem );
+    m_appletLayout->setAlignment( m_configItem, Qt::AlignRight );
+    m_appletLayout->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 }
 
 Context::AppletToolbar::~AppletToolbar()
@@ -143,31 +148,13 @@ Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
     DEBUG_BLOCK
 
     debug() << "inserting applet icon in position" << loc;
-    if( !m_configItem )
-    {
-        m_configItem = new AppletToolbarConfigItem( this );
-        connect( m_configItem, SIGNAL( triggered() ), this, SLOT( toggleConfigMode() ) );
-        m_appletLayout->addItem( m_configItem );
-        m_appletLayout->setAlignment( m_configItem, Qt::AlignRight );
-    }
+    Context::AppletToolbarAppletItem* item = new Context::AppletToolbarAppletItem( this, applet );
+    item->setConfigEnabled( m_configMode );
+    connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ),
+             this, SIGNAL( showApplet( Plasma::Applet* ) ) );
 
-    if( m_configMode )
-    {
-        Context::AppletToolbarAppletItem* item = new Context::AppletToolbarAppletItem( this, applet );
-        item->setConfigEnabled( true );
-        connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ),
-                 this, SIGNAL( showApplet( Plasma::Applet* ) ) );
-
-        // add the item
-        m_appletLayout->insertItem( loc, item );
-    }
-    else
-    {
-        Context::AppletToolbarAppletItem* item = new Context::AppletToolbarAppletItem( this, applet );
-        connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ),
-                 this, SIGNAL( showApplet( Plasma::Applet* ) ) );
-        m_appletLayout->insertItem( loc, item );
-    }
+    // add the item
+    m_appletLayout->insertItem( loc, item );
 
     // notifications for others who need to know when the layout is done adding the applet
     emit appletAddedToToolbar( applet, loc );
