@@ -66,11 +66,6 @@ private slots:
     void subscribe();
     void itemSelected( CollectionTreeItem *selectedItem );
 
-    // filter slots
-    void slotSetFilterTimeout();
-    void slotFilterNow();
-    void setFocus();
-
 private:
     void init();
     void polish();

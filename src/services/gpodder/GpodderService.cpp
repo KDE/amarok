@@ -184,8 +184,9 @@ void GpodderService::polish()
 
 
 
+    connect( m_searchWidget, SIGNAL( filterChanged( const QString & ) ),
+             m_proxyModel, SLOT( setFilterWildcard( const QString & ) ) );
 
-    m_searchWidget->setup( this );
     m_polished = true;
 }
 
@@ -194,23 +195,6 @@ void GpodderService::itemSelected( CollectionTreeItem * selectedItem )
     Q_UNUSED( selectedItem )
     DEBUG_BLOCK
     return;
-}
-
-// Filter slots
-void GpodderService::slotSetFilterTimeout()
-{
-    
-    m_proxyModel->setFilterWildcard( m_searchWidget->currentText() );
-}
-
-void GpodderService::slotFilterNow()
-{
-
-}
-
-void GpodderService::setFocus()
-{
-
 }
 
 void GpodderService::subscribe()
