@@ -141,7 +141,7 @@ QMap< Meta::TrackPtr, QString > TrackOrganizer::getDestinations( unsigned int ba
     int newOffset = m_trackOffset + batchSize;
     //don't go out of bounds in the for loop
     if( newOffset >= m_allTracks.count() )
-        newOffset = m_allTracks.count() - 1;
+        newOffset = m_allTracks.count();
 
     if( batchSize == 0 )
     {
@@ -156,7 +156,7 @@ QMap< Meta::TrackPtr, QString > TrackOrganizer::getDestinations( unsigned int ba
             destinations.insert( track, buildDestination( m_format, track ) );
     }
 
-    if( m_trackOffset == m_allTracks.count() - 1 )
+    if( m_trackOffset == m_allTracks.count() )
     {
         emit finished();
         m_trackOffset = 0;

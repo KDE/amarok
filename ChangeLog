@@ -12,6 +12,7 @@ Version 2.4.4-Beta 1
     * Current track applet: show number of artists instead of genres. (BR 261077)
 
   BUGFIXES:
+    * Fixed off-by-one error in organize collection dialog.
     * Fixed issue that made TagGuesser dialog to forget setings. (BR 280288)
     * Fixed tags guessing from full file path. (BR 264302)
     * Work around a Qt bug that crashed Amarok in various situations. (BR 207382, BR 269227)
