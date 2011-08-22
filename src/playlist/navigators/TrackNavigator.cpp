@@ -54,9 +54,11 @@ Playlist::TrackNavigator::queueId( const quint64 id )
 void
 Playlist::TrackNavigator::queueIds( const QList<quint64> &ids )
 {
+    Meta::TrackPtr track;
     foreach( quint64 id, ids )
     {
-        if( !m_queue.contains( id ) )
+        track = m_model->trackForId( id );
+        if( !m_queue.contains( id ) && track->isPlayable() )
             m_queue.enqueue( id );
     }
 }

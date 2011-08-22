@@ -3,6 +3,7 @@
  * Copyright (c) 2008-2009 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
+ * Copyright (c) 2011 Sandeep Raghuraman <sandy.8925@gmail.com>                         *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -503,12 +504,31 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
                     painter->drawPixmap( currentItemX, rowOffsetY + 4, moodbar );
                 }
             }
+            //actual playlist item text is drawn here
             else
             {
+                //TODO: get rid of passing TrackPtr as data, use custom role instead
+                Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
                 QString text = textIndex.data( Qt::DisplayRole ).toString();
                 text = element.prefix() + text + element.suffix();
                 text = QFontMetricsF( font ).elidedText( text, Qt::ElideRight, itemWidth );
-                painter->drawText( currentItemX, rowOffsetY, itemWidth, rowHeight, alignment, text );
+
+                //if the track can't be played, it should be grayed out to show that it is unavailable
+                if( !track->isPlayable() )
+                {
+                    painter->save();
+                    QPen grayPen = painter->pen();
+                    grayPen.setColor( QColor( 127, 127, 127 ) );
+                    painter->setPen( grayPen );
+                    painter->drawText( currentItemX, rowOffsetY, itemWidth, rowHeight, alignment,
+                                       text );
+                    painter->restore();
+                }
+                else
+                {
+                    painter->drawText( currentItemX, rowOffsetY, itemWidth, rowHeight, alignment,
+                                       text );
+                }
             }
             currentItemX += itemWidth;
         }

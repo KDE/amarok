@@ -17,6 +17,7 @@
 #include "AmpacheMeta.h"
 #include "core/support/Debug.h"
 
+#include <Solid/Networking>
 
 using namespace Meta;
 
@@ -49,3 +50,11 @@ QList< QAction * > Meta::AmpacheTrack::currentTrackActions()
     return actions;
 }
 
+bool
+AmpacheTrack::isPlayable() const
+{
+    if( Solid::Networking::status() != Solid::Networking::Connected )
+        return true;
+
+    return false;
+}

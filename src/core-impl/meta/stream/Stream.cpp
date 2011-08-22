@@ -21,6 +21,8 @@
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
 
+#include <Solid/Networking>
+
 #include <QWeakPointer>
 #include <QString>
 
@@ -93,7 +95,9 @@ Track::uidUrl() const
 bool
 Track::isPlayable() const
 {
-    //simple implementation, check Internet connectivity or ping server?
+    if( Solid::Networking::status() != Solid::Networking::Connected )
+        return false;
+
     return true;
 }
 

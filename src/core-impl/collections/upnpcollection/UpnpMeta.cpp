@@ -22,6 +22,7 @@
 #include "covermanager/CoverFetchingActions.h"
 #include "core/capabilities/ActionsCapability.h"
 
+#include <Solid/Networking>
 
 #include <QAction>
 
@@ -73,6 +74,9 @@ UpnpTrack::prettyUrl() const
 bool
 UpnpTrack::isPlayable() const
 {
+    if( Solid::Networking::status() != Solid::Networking::Connected )
+        return false;
+
     return true;
 }
 

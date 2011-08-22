@@ -36,6 +36,7 @@
 #include <KLocale>
 #include <KSharedPtr>
 #include <KStandardDirs>
+#include <Solid/Networking>
 
 #include <QWeakPointer>
 #include <QUrl>
@@ -178,7 +179,9 @@ Track::uidUrl() const
 bool
 Track::isPlayable() const
 {
-    //we could check connectivity here...
+    if( Solid::Networking::status() != Solid::Networking::Connected )
+        return false;
+
     return !d->trackPath.isEmpty();
 }
 

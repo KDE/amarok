@@ -8,6 +8,7 @@ Version 2.4.4-Beta 1
     * Display current timestamp in tray tooltip. (BR 278445)
 
   CHANGES:
+    * Mark unplayble tracks in the playlist. Patch by Sandeep Raghuraman. (BR 263640)
     * Current track applet: show number of artists instead of genres. (BR 261077)
 
   BUGFIXES:

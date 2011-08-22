@@ -46,6 +46,7 @@ public:
     virtual QString sourceDescription() { return "The Ampache music server project: http://Ampache.org"; }
     virtual QPixmap emblem()  { return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-ampache.png" ) );  }
     virtual QString scalableEmblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-ampache-scalable.svgz" );  }
+    virtual bool isPlayable() const;
 
     virtual QList< QAction *> currentTrackActions();
 

@@ -157,7 +157,12 @@ MediaDeviceTrack::prettyUrl() const
 bool
 MediaDeviceTrack::isPlayable() const
 {
-    return true;
+    KUrl trackUrl = playableUrl();
+    QFileInfo trackFileInfo = QFileInfo( trackUrl.pathOrUrl() );
+    if( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() )
+        return true;
+
+    return false;
 }
 
 bool

@@ -72,7 +72,13 @@ AudioCdTrack::prettyUrl() const
 bool
 AudioCdTrack::isPlayable() const
 {
-    return true;
+    KUrl trackUrl = playableUrl();
+    QFileInfo trackFileInfo = QFileInfo( trackUrl.toLocalFile() );
+    //track can be played only if it's readable
+    if( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() )
+        return true;
+
+    return false;
 }
 
 bool

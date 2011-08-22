@@ -4,6 +4,7 @@
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
+ * Copyright (c) 2011 Sandeep Raghuraman <sandy.8925@gmail.com>                         *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -91,13 +92,37 @@ Playlist::StandardTrackNavigator::chooseNextTrack( bool repeatPlaylist )
     if( m_onlyQueue )
         return 0;
 
-    int nextRow = m_model->activeRow() + 1;    // 'activeRow()' may be -1.
+    Meta::TrackPtr track;
+    bool playableTrackFound = false;
+    int nextRow;
 
-    if( nextRow >= m_model->qaim()->rowCount() )
-        if( repeatPlaylist )
-            nextRow = 0;    // This row is still invalid if 'rowCount() == 0'.
+    //search for a playable track in order from right after the currently active track till the end
+    for( nextRow = m_model->activeRow() + 1  ; nextRow < m_model->qaim()->rowCount() ; nextRow++ ) // 'activeRow()' may be -1.
+    {
+        track = m_model->trackAt(nextRow);
+        if( track->isPlayable() )
+        {
+            playableTrackFound = true;
+            break;
+        }
+    }
 
-    if( m_model->rowExists( nextRow ) )
+    //if no playable track was found and the playlist needs to be repeated, search from top of playlist till currently active track
+    if( !playableTrackFound && repeatPlaylist )
+    {
+        //nextRow=0; This row is still invalid if 'rowCount() == 0'.
+        for( nextRow = 0 ; nextRow < m_model->activeRow() ; nextRow++)
+        {
+            track = m_model->trackAt( nextRow );
+            if( track->isPlayable() )
+            {
+                playableTrackFound = true;
+                break;
+            }
+        }
+    }
+
+    if( playableTrackFound && m_model->rowExists( nextRow ) )
         return m_model->idAt( nextRow );
     else
         return 0;

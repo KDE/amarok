@@ -29,6 +29,7 @@ target_link_libraries(amarok_collection-daapcollection
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_KDNSSD_LIBS}
     ${QT_QTNETWORK_LIBRARY}
+    ${KDE4_SOLID_LIBS}
 )
 
 if(APPLE)

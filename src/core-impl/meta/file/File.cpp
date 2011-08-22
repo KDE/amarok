@@ -35,6 +35,7 @@
 #include "amarokurls/PlayUrlRunner.h"
 
 #include <QAction>
+#include <QFileInfo>
 #include <QList>
 #include <QWeakPointer>
 #include <QString>
@@ -253,7 +254,12 @@ Track::setUidUrl( const QString &newUid ) const
 bool
 Track::isPlayable() const
 {
-    //simple implementation, check Internet connectivity or ping server?
+    KUrl trackUrl = playableUrl();
+    QFileInfo trackFileInfo = QFileInfo( trackUrl.pathOrUrl() );
+
+    if( !( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() ) )
+            return false;
+
     return true;
 }
 

@@ -60,6 +60,7 @@ install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS
             ${KDE4_KIO_LIBS}
             ${KDE4_THREADWEAVER_LIBRARIES}
             ${QT_QTXML_LIBRARY}
+            ${KDE4_SOLID_LIBS}
         )
         if( LIBLASTFM_FOUND )
             target_link_libraries(amarok_service_ampache
