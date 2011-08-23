@@ -12,6 +12,7 @@ Version 2.4.4-Beta 1
     * Current track applet: show number of artists instead of genres. (BR 261077)
 
   BUGFIXES:
+    * Fix errors in the saved playlists view when removing a playlist. (BR 273358)
     * Fixed issue where the Context View wrench was not created when the
       Context View had no applets. (BR 280382)
     * Fixed off-by-one error in organize collection dialog.

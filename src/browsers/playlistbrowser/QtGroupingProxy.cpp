@@ -742,18 +742,32 @@ QtGroupingProxy::modelRowsRemoved( const QModelIndex &parent, int start, int end
 {
     if( parent == m_rootNode )
     {
-        //do this separate for each row
+        //TODO: can be optimised by iterating over m_groupHash and checking start <= r < end
+
+        //rather than increasing i we change the stored sourceRows in-place and reuse argument start
+        //X-times (where X = end - start).
         for( int i = start; i <= end; i++ )
         {
             foreach( int groupIndex, m_groupHash.keys() )
             {
-                int rowIndex = m_groupHash[groupIndex].indexOf( i );
-                if( rowIndex == -1 )
-                    continue;
-                QModelIndex proxyParent = index( groupIndex, 0 );
-                beginRemoveRows( proxyParent, rowIndex, rowIndex );
-                m_groupHash[groupIndex].removeAt( rowIndex );
-                endRemoveRows();
+                //has to be a modifiable reference for remove and replace operations
+                QList<int> &groupList = m_groupHash[groupIndex];
+                int rowIndex = groupList.indexOf( start );
+                if( rowIndex != -1 )
+                {
+                    QModelIndex proxyParent = index( groupIndex, 0 );
+                    beginRemoveRows( proxyParent, rowIndex, rowIndex );
+                    groupList.removeAt( rowIndex );
+                }
+                //Now decrement all source rows that are after the removed row
+                for( int j = 0; j < groupList.count(); j++ )
+                {
+                    int sourceRow = groupList.at( j );
+                    if( sourceRow > start )
+                        groupList.replace( j, sourceRow-1 );
+                }
+                if( rowIndex != -1)
+                    endRemoveRows(); //end remove operation only after group was updated.
             }
         }
 

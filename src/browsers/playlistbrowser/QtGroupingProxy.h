@@ -91,7 +91,8 @@ class QtGroupingProxy : public QAbstractProxyModel
 
         /** Maintains the group -> sourcemodel row mapping
           * The reason a QList<int> is use instead of a QMultiHash is that the values have to be
-          * reordered when new rows are inserted.
+          * reordered when rows are inserted or removed.
+          * TODO:use some auto-incrementing container class (steveire's?) for the list
           */
         QHash<quint32, QList<int> > m_groupHash;
         /** The data cache of the groups.
