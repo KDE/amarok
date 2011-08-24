@@ -114,9 +114,6 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
             break;
         }
     }
-    //for normal items (not root node) an empty list here means it's supposed to go in root.
-    if( idx != m_rootNode && rowDataList.isEmpty() )
-        rowDataList << RowData();
 
     return rowDataList;
 }
@@ -179,13 +176,18 @@ QtGroupingProxy::addSourceRow( const QModelIndex &idx )
 
     QList<RowData> groupData = belongsTo( idx );
 
+    //an empty list here means it's supposed to go in root.
     if( groupData.isEmpty() )
+    {
         updatedGroups << -1;
+        if( !m_groupHash.keys().contains( -1 ) )
+            m_groupHash.insert( -1, QList<int>() ); //add an empty placeholder
+    }
 
     //an item can be in multiple groups
     foreach( RowData data, groupData )
     {
-        int groupIndex = -1;
+        int updatedGroup = -1;
         if( !data.isEmpty() )
         {
 //            qDebug() << QString("index %1 belongs to group %2").arg( row )
@@ -201,54 +203,54 @@ QtGroupingProxy::addSourceRow( const QModelIndex &idx )
                 }
             }
 
-            groupIndex = m_groupMaps.indexOf( data );
+            updatedGroup = m_groupMaps.indexOf( data );
             //-1 means not found
-            if( groupIndex == -1 )
+            if( updatedGroup == -1 )
             {
                 //new groups are added to the end of the existing list
                 m_groupMaps << data;
-                groupIndex = m_groupMaps.count() - 1;
+                updatedGroup = m_groupMaps.count() - 1;
             }
+
+            if( !m_groupHash.keys().contains( updatedGroup ) )
+                m_groupHash.insert( updatedGroup, QList<int>() ); //add an empty placeholder
         }
 
-        if( !updatedGroups.contains( groupIndex ) )
-            updatedGroups << groupIndex;
+        if( !updatedGroups.contains( updatedGroup ) )
+            updatedGroups << updatedGroup;
     }
 
-    foreach( int updatedGroup, updatedGroups )
+
+    //update m_groupHash to the new source-model layout (one row added)
+    QMutableHashIterator<quint32, QList<int> > i( m_groupHash );
+    while( i.hasNext() )
     {
-        //it's possible it's a new group, QHash will create it for us with this call:
-        m_groupHash[updatedGroup];
-
-        //update the groupHash to the new source-model layout (one row added)
-        QMutableHashIterator<quint32, QList<int> > i( m_groupHash );
-        while( i.hasNext() )
+        i.next();
+        QList<int> &groupList = i.value();
+        int insertedProxyRow = groupList.count();
+        for( ; insertedProxyRow > 0 ; insertedProxyRow-- )
         {
-            i.next();
-            QList<int> &groupList = i.value();
-            int insertedProxyRow = groupList.count();
-            for( ; insertedProxyRow > 0 ; insertedProxyRow-- )
+            int &rowValue = groupList[insertedProxyRow-1];
+            if( idx.row() <= rowValue )
             {
-                int &rowValue = groupList[insertedProxyRow-1];
-                if( idx.row() <= rowValue )
-                {
-                    //increment the rows that come after the new row since they moved one place up.
-                    rowValue++;
-                }
-                else
-                {
-                    break;
-                }
+                //increment the rows that come after the new row since they moved one place up.
+                rowValue++;
             }
-            //the row needs to be added to this group
-            if( i.key() == (quint32)updatedGroup )
+            else
             {
-                beginInsertRows( index( updatedGroup ), insertedProxyRow, insertedProxyRow );
-                groupList.insert( insertedProxyRow, idx.row() );
-                endInsertRows();
+                break;
             }
         }
+
+        if( updatedGroups.contains( i.key() ) )
+        {
+            //the row needs to be added to this group
+            beginInsertRows( index( i.key() ), insertedProxyRow, insertedProxyRow );
+            groupList.insert( insertedProxyRow, idx.row() );
+            endInsertRows();
+        }
     }
+
     return updatedGroups;
 }
 
