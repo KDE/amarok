@@ -230,6 +230,7 @@ endif( WITH_UTILITIES )
 
 if( WITH_PLAYGROUND )
     add_subdirectory( playground )
+    message(STATUS "Included playground subdirectory in configuration")
 endif( WITH_PLAYGROUND )
 
 include(CTest)
