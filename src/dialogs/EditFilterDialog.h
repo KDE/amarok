@@ -51,7 +51,7 @@ class EditFilterDialog : public KDialog
         void slotTokenDropTargetChanged();
         void slotAttributeChanged( const MetaQueryWidget::Filter &filter );
         void slotInvert( bool checked );
-        void slotSeparatorChange( const QString &separator );
+        void slotSeparatorChange( int index );
         void slotReset();
         void accept();
 

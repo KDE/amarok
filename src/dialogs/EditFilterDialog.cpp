@@ -69,8 +69,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     connect( this, SIGNAL( resetClicked() ), SLOT( slotReset() ) );
     connect( m_ui->cbInvert, SIGNAL( toggled( bool ) ),
              SLOT( slotInvert( bool ) ) );
-    connect( m_ui->cbAndOr, SIGNAL( currentIndexChanged( QString ) ),
-             SLOT( slotSeparatorChange( QString ) ) );
+    connect( m_ui->cbAndOr, SIGNAL( currentIndexChanged( int ) ),
+             SLOT( slotSeparatorChange( int ) ) );
     connect( m_dropTarget, SIGNAL( focusReceived( QWidget * ) ),
              SLOT( slotTokenSelected( QWidget * ) ) );
     connect( m_dropTarget, SIGNAL( changed() ),
@@ -143,9 +143,14 @@ EditFilterDialog::slotInvert( bool checked )
 }
 
 void
-EditFilterDialog::slotSeparatorChange( const QString &separator )
+EditFilterDialog::slotSeparatorChange( int index )
 {
-    m_separator = QString( " %1 " ).arg( separator );
+    // this depends on the order of combobox entries in EditFilterDialog.ui
+    // but fixes Bug 279559
+    if( index == 0 )
+        m_separator = QString( " AND " );
+    else
+        m_separator = QString( " OR " );
 
     m_ui->label->setText( filter() );
 }
