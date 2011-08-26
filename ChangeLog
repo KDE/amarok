@@ -6,6 +6,7 @@ Version 2.4.4-Beta 1
   FEATURES:
     * Made possible to make presets for TagGuesser. (BR 264632)
     * Display current timestamp in tray tooltip. (BR 278445)
+    * Auto-save the playlist so that it is not lost if Amarok crashes.
 
   CHANGES:
     * Mark unplayble tracks in the playlist. Patch by Sandeep Raghuraman. (BR 263640)

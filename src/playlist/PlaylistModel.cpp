@@ -164,8 +164,24 @@ Playlist::Model::Model( QObject *parent )
         , m_totalLength( 0 )
         , m_totalSize( 0 )
         , m_setStateOfItem_batchMinRow( -1 )
+        , m_saveStateTimer( new QTimer(this) )
 {
     DEBUG_BLOCK
+
+    m_saveStateTimer->setInterval( 5000 );
+    m_saveStateTimer->setSingleShot( true );
+    connect( m_saveStateTimer, SIGNAL(timeout()),
+             this, SLOT(saveState()) );
+    connect( this, SIGNAL(modelReset()),
+             this, SLOT(queueSaveState()) );
+    connect( this, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+             this, SLOT(queueSaveState()) );
+    connect( this, SIGNAL(rowsInserted(QModelIndex,int,int)),
+             this, SLOT(queueSaveState()) );
+    connect( this, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
+             this, SLOT(queueSaveState()) );
+    connect( this, SIGNAL(rowsRemoved(QModelIndex,int,int)),
+             this, SLOT(queueSaveState()) );
 }
 
 Playlist::Model::~Model()
@@ -176,6 +192,19 @@ Playlist::Model::~Model()
     exportPlaylist( Amarok::defaultPlaylistPath() );
 
     qDeleteAll( m_items );
+}
+
+void
+Playlist::Model::saveState()
+{
+    exportPlaylist( Amarok::defaultPlaylistPath() );
+}
+
+void
+Playlist::Model::queueSaveState()
+{
+    if ( !m_saveStateTimer->isActive() )
+        m_saveStateTimer->start();
 }
 
 QVariant

@@ -116,6 +116,10 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
     protected:
         int rowForItem( Item *item ) const { return m_items.indexOf( item ); }
 
+    private slots:
+        void saveState();
+        void queueSaveState();
+
     private:
         QString tooltipFor( Meta::TrackPtr track ) const;
 
@@ -155,6 +159,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
         static bool s_tooltipColumns[NUM_COLUMNS];
         static bool s_showToolTip;
+
+        QTimer *m_saveStateTimer;
 };
 
 } // namespace Playlist
