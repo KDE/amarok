@@ -2,6 +2,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=CoverGrid
+Name[nl]=CoverGrid
+Name[pt]=Grelha de Capas
+Name[uk]=CoverGrid
+Name[x-test]=xxCoverGridxx
 Type=Service
 ServiceTypes=Plasma/Applet
 
