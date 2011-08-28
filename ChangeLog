@@ -13,6 +13,7 @@ Version 2.4.4-Beta 1
     * Current track applet: show number of artists instead of genres. (BR 261077)
 
   BUGFIXES:
+    * Use regular MusicBrainz search for tracks with MBID. (BR 280857)
     * Always use English AND/OR in Collection Filter even if translations are
       in effect. (BR 279559)
     * Fix errors in the saved playlists view when removing a playlist. (BR 273358)

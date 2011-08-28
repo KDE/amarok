@@ -59,7 +59,6 @@ class MusicBrainzFinder : public QObject
         QNetworkRequest compileRequest( const Meta::TrackPtr &track );
         QNetworkRequest compileReleaseRequest( const QString &releasId );
         QNetworkRequest compilePUIDRequest( const QString &puid );
-        QNetworkRequest compileIDRequest( const QString &id );
 
         void checkDone();
 

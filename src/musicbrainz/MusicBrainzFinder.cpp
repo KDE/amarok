@@ -97,18 +97,8 @@ MusicBrainzFinder::lookUpByPUID( const Meta::TrackPtr &track, const QString &pui
 void
 MusicBrainzFinder::run( const Meta::TrackList &tracks )
 {
-    QRegExp mb_trackId( "^amarok-\\w+://mb-(\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12})$" );
     foreach( Meta::TrackPtr track, tracks )
-    {
-        if( !track->uidUrl().isEmpty() )
-            if( mb_trackId.exactMatch( track->uidUrl() ) )
-            {
-                debug() << "Track " << track->fullPrettyName() << " already contains MusicBrainz Track ID.";
-                m_requests.append( qMakePair( track, compileIDRequest( mb_trackId.cap( 1 ) ) ) );
-                continue;
-            }
         m_requests.append( qMakePair( track, compileRequest( track ) ) );
-    }
 
     _timer->start();
 }
@@ -499,27 +489,6 @@ MusicBrainzFinder::compilePUIDRequest( const QString &puid )
     url.setPath( mb_pathPrefix+"/track/" );
     url.addQueryItem( "type", "xml" );
     url.addQueryItem( "puid", puid );
-
-    QNetworkRequest req( url );
-    req.setRawHeader( "User-Agent" , "Amarok" );
-    req.setRawHeader( "Connection", "Keep-Alive" );
-
-    if( !_timer->isActive() )
-        _timer->start();
-
-    return req;
-}
-
-QNetworkRequest
-MusicBrainzFinder::compileIDRequest( const QString &id )
-{
-    QUrl url;
-    url.setScheme( "http" );
-    url.setHost( mb_host );
-    url.setPort( mb_port );
-    url.setPath( mb_pathPrefix+"/track/"+ id );
-    url.addQueryItem( "type", "xml" );
-    url.addQueryItem( "inc", "artist+releases" );
 
     QNetworkRequest req( url );
     req.setRawHeader( "User-Agent" , "Amarok" );
