@@ -32,6 +32,7 @@ target_link_libraries(amarok_context_applet_upcomingEvents
     ${KDE4_PLASMA_LIBS}
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KDEWEBKIT_LIBS}
+    ${QT_QTWEBKIT_LIBRARY}
 )
 
 install(TARGETS amarok_context_applet_upcomingEvents DESTINATION ${PLUGIN_INSTALL_DIR})

@@ -19,6 +19,7 @@ target_link_libraries(amarok_context_applet_wikipedia
     ${KDE4_PLASMA_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_KDEWEBKIT_LIBS}
+    ${QT_QTWEBKIT_LIBRARY}
 )
 
 install(TARGETS amarok_context_applet_wikipedia DESTINATION ${PLUGIN_INSTALL_DIR})
