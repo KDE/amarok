@@ -18,6 +18,9 @@ target_link_libraries(amarok_context_applet_info
     ${KDE4_PLASMA_LIBS}
     ${KDE4_KDEWEBKIT_LIBS}
     )
+if("${KDE_VERSION}" VERSION_LESS "4.7.0")
+    target_link_libraries(amarok_context_applet_info ${QT_QTWEBKIT_LIBRARY})
+endif()
 
 install(TARGETS amarok_context_applet_info DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-context-applet-info.desktop DESTINATION ${SERVICES_INSTALL_DIR})
