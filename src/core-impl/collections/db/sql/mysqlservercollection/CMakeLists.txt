@@ -1,5 +1,6 @@
 #build-time only dependency in XesamDbus.h
 #remove at some point
+remove_definitions(-DMAKE_AMAROK_DATABASECOLLECTION_LIB)
 
 add_definitions(${MYSQL_CFLAGS})
 

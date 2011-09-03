@@ -28,7 +28,11 @@
 
 #include <QObject>
 
+#ifdef MAKE_AMPACHE_ACCOUNT_LOGIN_LIB
 #define AMPACHE_ACCOUNT_EXPORT KDE_EXPORT
+#else
+#define AMPACHE_ACCOUNT_EXPORT KDE_IMPORT
+#endif
 
 class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
 {

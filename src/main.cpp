@@ -32,6 +32,7 @@
 #include <csignal>
 
 //#define AMAROK_USE_DRKONQI
+AMAROK_EXPORT OcsData ocsData;
 
 int main( int argc, char *argv[] )
 {

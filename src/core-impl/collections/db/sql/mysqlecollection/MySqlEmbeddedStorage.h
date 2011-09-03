@@ -25,7 +25,8 @@
 /**
  * Implements a MySqlCollection using a MySQL Embedded Server
  */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS MySqlEmbeddedStorage : public MySqlStorage
+
+class MySqlEmbeddedStorage : public MySqlStorage
 {
     public:
         /** Creates a new SqlStorage.

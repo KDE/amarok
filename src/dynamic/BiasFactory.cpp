@@ -30,6 +30,7 @@
 
 #include "App.h"
 #include "core/support/Debug.h"
+#include "core/collections/QueryMaker.h"
 
 #include <QList>
 #include <QXmlStreamReader>

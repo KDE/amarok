@@ -72,7 +72,9 @@ UpnpSearchCollection::queryMaker()
 Meta::TrackPtr
 UpnpSearchCollection::trackForUrl( const KUrl &url )
 {
+#ifdef __GNUC__
     #warning Implement track for url
+#endif
     // TODO FIXME how to do this?
     debug() << "Requested track " << url;
     return Collection::trackForUrl( url );

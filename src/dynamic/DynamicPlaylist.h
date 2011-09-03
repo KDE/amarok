@@ -20,6 +20,7 @@
 #define AMAROK_DYNAMICPLAYLIST_H
 
 #include "core/meta/Meta.h"
+#include "core/collections/QueryMaker.h"
 
 #include "amarok_export.h" // we are exporting it for the tests
 

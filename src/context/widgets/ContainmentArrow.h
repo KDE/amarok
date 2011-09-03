@@ -50,7 +50,7 @@ namespace Context {
 
 class SvgRenderJob;
 
-class AMAROK_EXPORT ContainmentArrow : public QGraphicsWidget
+class ContainmentArrow : public QGraphicsWidget
 {
     Q_OBJECT
     Q_INTERFACES( QGraphicsItem )

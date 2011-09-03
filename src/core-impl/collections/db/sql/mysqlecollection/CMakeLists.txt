@@ -19,6 +19,7 @@ set(amarok_collection-mysqlecollection_PART_SRCS
     MySqlEmbeddedStorage.cpp
  )
 
+remove_definitions(-DMAKE_AMAROK_DATABASECOLLECTION_LIB)
 kde4_add_plugin(amarok_collection-mysqlecollection ${amarok_collection-mysqlecollection_PART_SRCS})
 
 STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN "${CMAKE_SHARED_LINKER_FLAGS}")
