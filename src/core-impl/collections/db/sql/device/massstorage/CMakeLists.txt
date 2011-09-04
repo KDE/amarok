@@ -1,6 +1,4 @@
 include_directories(
-    ${Amarok_SOURCE_DIR}/src/plugin
-    ${Amarok_SOURCE_DIR}/src/collection/sqlcollection
     ${KDE4_INCLUDE_DIR}
     ${QT_INCLUDES}
     )

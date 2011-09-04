@@ -2,7 +2,6 @@
 include_directories( ../
                      ${CMAKE_SOURCE_DIR}
                      ${QT_INCLUDES}
-                     ${KDE4_KDECORE_LIBS}
                    )
 
 ########### next target ###############

@@ -1,7 +1,5 @@
 
 include_directories(
-    .
-    ${Amarok_SOURCE_DIR}/transcoding
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/utilities
     ${CMAKE_BINARY_DIR}/src

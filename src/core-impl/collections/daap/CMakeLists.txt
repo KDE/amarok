@@ -1,9 +1,7 @@
 include_directories( ../..
-    ../../collection
     ${CMAKE_BINARY_DIR}/src
     ${AMAROK_COLLECTION_SUPPORT_DIR}
     daapreader
-    /daapreader/authentication
     ${KDE4_INCLUDE_DIR}
     ${QT_INCLUDES} )
 

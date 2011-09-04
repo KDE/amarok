@@ -41,7 +41,6 @@ include_directories(
     browsers/
     browsers/playlistbrowser
     browsers/servicebrowser
-    browsers/servicebrowser/scriptableservice
     core-impl/collections
     core-impl/collections/support
     core-impl/collections/mediadevicecollection
@@ -63,7 +62,6 @@ include_directories(
     playlistmanager
     statusbar
     synchronization
-    timecode
     transcoding
     widgets
     ${KDE4_INCLUDE_DIR}

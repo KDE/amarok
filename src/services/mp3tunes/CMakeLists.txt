@@ -5,7 +5,6 @@ if(LIBXML2_FOUND AND CURL_FOUND)
             ../
             ../../
             ../../core-impl/collections
-            ../../servicebrowser
             ../../statusbar
             ./libmp3tunes
             ./harmonydaemon

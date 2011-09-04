@@ -2,7 +2,6 @@
             ../
             ../..
             ../../core-impl/collections
-            ../../servicebrowser
             ../../statusbar
             ${CMAKE_CURRENT_BINARY_DIR}/../../..
             ${KDE4_INCLUDE_DIR}

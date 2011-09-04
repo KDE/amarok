@@ -7,7 +7,6 @@ if(IPOD_FOUND AND WITH_IPOD)
 
   include_directories( ../..
     ../../collections
-    ../../metadata/audible
     ../mediadevicecollection
     ../mediadevicecollection/support
     ../mediadevicecollection/handler

@@ -1,10 +1,8 @@
 project(context-vertical-containment)
 
-include_directories( toolbar
-		     ../../..
+include_directories( ../../..
                      ../..
-                     ..
-                     ../plasma )
+                     .. )
 
 set(context_SRCS 
 	VerticalToolbarContainment.cpp 

@@ -1,5 +1,4 @@
 include_directories( ../..
-   ../../collection
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
    ${KDE4_INCLUDE_DIR}
