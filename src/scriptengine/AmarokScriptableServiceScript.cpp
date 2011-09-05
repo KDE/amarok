@@ -223,7 +223,7 @@ void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_
 
 /*
     QScriptValueList args;
-    args << QScriptValue( m_scriptEngine, level ) << QScriptValue( m_scriptEngine, callbackData ) << QScriptValue( m_scriptEngine, filter );
+    args << m_scriptEngine->toScriptValue( level ) << m_scriptEngine->toScriptValue( callbackData ) << m_scriptEngine->toScriptValue( filter );
     ScriptManager::instance()->m_script[serviceName].serviceContext.thisObject().property( "prototype" ).property( "populate" ).call( QScriptValue(), args );
 	
     The::scriptableServiceManager()->donePopulating( name, parent_id );

@@ -68,7 +68,7 @@ Downloader::dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngin
     else
     {
         context->throwError( i18nc("do not translate 'DataDownloader' or 'qt.core'", "qt.core must be loaded to use DataDownloader" ) );
-        return QScriptValue( engine, false );
+        return engine->toScriptValue( false );
     }
 }
 
@@ -234,7 +234,7 @@ AmarokDownloadHelper::resultString( const KUrl &url, QByteArray data, NetworkAcc
     }
 
     QScriptValueList args;
-    args << QScriptValue( engine, str );
+    args << engine->toScriptValue( str );
     obj.call( obj, args );
 }
 
