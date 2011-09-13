@@ -34,6 +34,7 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     : QWidget( parent )
     , m_sw( 0 )
     , m_filterAction( 0 )
+    , m_timeout( 500 )
 {
     setContentsMargins( 0, 0, 0, 0 );
     KHBox *searchBox = new KHBox( this );
@@ -86,13 +87,13 @@ SearchWidget::setSearchString( const QString &searchString )
 void
 SearchWidget::resetFilterTimeout()
 {
-    m_filterTimer.stop();
-    m_filterTimer.start( 500 );
+    m_filterTimer.start( m_timeout );
 }
 
 void
 SearchWidget::filterNow()
 {
+    m_filterTimer.stop();
     emit filterChanged( m_sw->currentText() );
 }
 
@@ -176,6 +177,11 @@ void SearchWidget::setClickMessage( const QString &message )
 {
     KLineEdit *edit = qobject_cast<KLineEdit*>( m_sw->lineEdit() );
     edit->setClickMessage( message );
+}
+
+void SearchWidget::setTimeout( quint16 newTimeout )
+{
+    m_timeout = newTimeout;
 }
 
 #include "SearchWidget.moc"

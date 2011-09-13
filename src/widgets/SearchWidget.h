@@ -40,6 +40,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         QString currentText() const { return m_sw->currentText(); }
         Amarok::ComboBox *comboBox() { return m_sw; }
         void setSearchString( const QString &searchString );
+        void setTimeout( quint16 newTimeout );
 
         QToolBar* toolBar();
 
@@ -72,6 +73,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         QAction          *m_filterAction;
         QToolBar         *m_toolBar;
         QTimer            m_filterTimer;
+        quint16           m_timeout;
 };
 
 #endif
