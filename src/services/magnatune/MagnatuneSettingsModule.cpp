@@ -29,12 +29,12 @@
 
 
 K_PLUGIN_FACTORY( MagnatuneSettingsFactory, registerPlugin<MagnatuneSettingsModule>(); )
-K_EXPORT_PLUGIN( MagnatuneSettingsFactory( "kcm_amarok_mp3tunes" ) )
+K_EXPORT_PLUGIN( MagnatuneSettingsFactory( "kcm_amarok_magnatunestore" ) )
 
 MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVariantList &args )
     : KCModule( MagnatuneSettingsFactory::componentData(), parent, args )
 {
-    kDebug( 14310 ) << "Creating Mp3tunes config object";
+    kDebug( 14310 ) << "Creating Magnatune config object";
 
     QVBoxLayout* l = new QVBoxLayout( this );
     QWidget *w = new QWidget;
