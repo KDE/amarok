@@ -10,6 +10,7 @@ Name[pt_BR]=Analisador de Espectro
 Name[sv]=Spektrumanalysator
 Name[uk]=Аналізатор спектра
 Name[x-test]=xxSpectrum-Analyzerxx
+Name[zh_TW]=光譜分析器
 Type=Service
 Icon=spectrum-analyzer-amarok
 ServiceTypes=Plasma/Applet

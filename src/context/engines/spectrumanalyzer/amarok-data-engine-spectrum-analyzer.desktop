@@ -10,6 +10,7 @@ Name[pt_BR]=Mecanismo de dados do Analisador de Espectro
 Name[sv]=Datagränssnitt för spektrumanalysator
 Name[uk]=Рушій даних аналізатора спектра
 Name[x-test]=xxSpectrum Analyzer Data Enginexx
+Name[zh_TW]=光譜分析器資料引擎
 
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service

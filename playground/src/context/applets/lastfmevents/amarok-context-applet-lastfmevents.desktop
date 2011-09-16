@@ -12,6 +12,7 @@ Name[ru]=События Last.fm
 Name[sv]=Evenemang från Last.fm
 Name[uk]=Події Last.fm
 Name[x-test]=xxLast.fm Eventsxx
+Name[zh_TW]=Last.fm 事件
 Type=Service
 ServiceTypes=Plasma/Applet
 

@@ -10,6 +10,7 @@ Name[pt_BR]=Grade de capas
 Name[sv]=Omslagsrutnät
 Name[uk]=CoverGrid
 Name[x-test]=xxCoverGridxx
+Name[zh_TW]=CoverGrid
 Type=Service
 ServiceTypes=Plasma/Applet
 
