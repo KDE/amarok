@@ -44,13 +44,17 @@ namespace Meta
             /**
             * Try to guess metadata from fil name,using specified scheme.
             * @arg fileName file path
-            * @arg scheme is a regular exprassion with tokens.
+            * @arg scheme is a regular exprassion with tokens
+            * @arg cutTrailingSpaces - if true - force guesser to cut trailing spaces
+            * @arg convertUnderscores - if true - force guesser too replace all underscores with spaces
+            * @arg isRegExp - if true - prevents guesser from screening special symbols
             * Available Tokens: %album%, %albumartist%, %artist%, %title%, %track%.
             */
             AMAROK_EXPORT Meta::FieldHash guessTagsByScheme( const QString &fileName,
                                                              const QString &scheme,
                                                              bool cutTrailingSpaces = true,
-                                                             bool convertUnderscores = true );
+                                                             bool convertUnderscores = true,
+                                                             bool isRegExp = false );
         }
     }
 }
