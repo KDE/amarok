@@ -68,12 +68,6 @@ class TabsEngine : public DataEngine
         void resultUltimateGuitarTab( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
         /**
-        *   handling of tab data search results from fretplay.com
-        */
-        void resultFretplaySearch( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-        void resultFretplayTab( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-
-        /**
         *   This method will send the info to the applet and order them if every jobs are finished
         */
         void resultFinalize();
@@ -94,11 +88,6 @@ class TabsEngine : public DataEngine
          *   starts a tab search at ultimateguitar.com
          */
         void queryUltimateGuitar( const QString &artist, const QString &title );
-
-        /**
-         *   starts a tab search at fretplay.com
-         */
-        void queryFretplay( const QString &artist, const QString &title );
 
         /**
          * The currently playing track
