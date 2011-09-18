@@ -464,10 +464,19 @@ void
 WikipediaAppletPrivate::_pageLoadStarted()
 {
     Q_Q( WikipediaApplet );
-    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget;
-    proxy->setWidget( new QProgressBar );
+
+    // create a proxy widget for displaying the webview load status in form of a progress bar
+
+    // if the proxyWidget still exists, re-use the existing object
+    if ( proxyWidget )
+        return;
+
+    proxyWidget = new QGraphicsProxyWidget;
+    proxyWidget->setWidget( new QProgressBar );
+
+    // add proxy widget to layout
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( q->layout() );
-    lo->addItem( proxy );
+    lo->addItem( proxyWidget );
     lo->activate();
     QObject::connect( webView, SIGNAL(loadProgress(int)), q, SLOT(_pageLoadProgress(int)) );
 }
@@ -475,11 +484,13 @@ WikipediaAppletPrivate::_pageLoadStarted()
 void
 WikipediaAppletPrivate::_pageLoadProgress( int progress )
 {
+    DEBUG_BLOCK
     Q_Q( WikipediaApplet );
-    QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( q->layout() );
-    QGraphicsProxyWidget *proxy = static_cast<QGraphicsProxyWidget*>( lo->itemAt( lo->count() - 1 ) );
-    QString kbytes = QString::number( webView->page()->totalBytes() / 1024 );
-    QProgressBar *pbar = static_cast<QProgressBar*>( proxy->widget() );
+    DEBUG_ASSERT(proxyWidget, return)
+
+    const QString kbytes = QString::number( webView->page()->totalBytes() / 1024 );
+
+    QProgressBar *pbar = qobject_cast<QProgressBar*>( proxyWidget->widget() );
     pbar->setFormat( QString( "%1kB : %p%" ).arg( kbytes ) );
     pbar->setValue( progress );
 }
@@ -487,13 +498,19 @@ WikipediaAppletPrivate::_pageLoadProgress( int progress )
 void
 WikipediaAppletPrivate::_pageLoadFinished( bool ok )
 {
+    DEBUG_BLOCK
     Q_UNUSED( ok )
     Q_Q( WikipediaApplet );
+
+    // remove proxy widget from layout again, delete it
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( q->layout() );
-    QGraphicsProxyWidget *proxy = static_cast<QGraphicsProxyWidget*>( lo->itemAt( lo->count() - 1 ) );
-    lo->removeItem( proxy );
+    lo->removeItem( proxyWidget );
     lo->activate();
-    proxy->deleteLater();
+
+    // disconnect (so that we don't get any further progress signalling) and delete widget
+    QObject::disconnect( webView, SIGNAL(loadProgress(int)), q, SLOT(_pageLoadProgress(int)) );
+    proxyWidget->deleteLater();
+    proxyWidget = 0;
 }
 
 void
