@@ -239,7 +239,7 @@ Most people can leave this option enabled as it ensures copying to media devices
         <property name="minimumSize">
          <size>
           <width>640</width>
-          <height>220</height>
+          <height>100</height>
          </size>
         </property>
         <property name="horizontalScrollMode">
