@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,7 +21,6 @@
 #include "playlistgenerator/Constraint.h"
 #include "playlistgenerator/ConstraintFactory.h"
 
-#include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -31,6 +30,7 @@
 
 #include <QtGlobal>
 
+#include <algorithm>
 #include <climits>
 #include <math.h>
 
@@ -68,8 +68,7 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
         , m_position( 0 )
         , m_strictness( 1.0 )
         , m_checkpointType( CheckpointTrack )
-        , m_handler( 0 )
-        , m_tracker( 0 )
+        , m_matcher( 0 )
 {
     DEBUG_BLOCK
     QDomAttr a;
@@ -98,6 +97,8 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
         }
     }
 
+    setCheckpoint( m_checkpointObject );
+
     a = xmlelem.attributeNode( "strictness" );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
@@ -109,8 +110,7 @@ ConstraintTypes::Checkpoint::Checkpoint( ConstraintNode* p )
         , m_position( 0 )
         , m_strictness( 1.0 )
         , m_checkpointType( CheckpointTrack )
-        , m_handler( 0 )
-        , m_tracker( 0 )
+        , m_matcher( 0 )
 {
     DEBUG_BLOCK
     debug() << "new default Checkpoint";
@@ -118,8 +118,7 @@ ConstraintTypes::Checkpoint::Checkpoint( ConstraintNode* p )
 
 ConstraintTypes::Checkpoint::~Checkpoint()
 {
-    delete m_handler;
-    delete m_tracker;
+    delete m_matcher;
 }
 
 
@@ -213,153 +212,77 @@ ConstraintTypes::Checkpoint::getName() const
     return name;
 }
 
-Collections::QueryMaker*
-ConstraintTypes::Checkpoint::initQueryMaker( Collections::QueryMaker* qm ) const
-{
-    return qm;
-}
-
 double
-ConstraintTypes::Checkpoint::satisfaction( const Meta::TrackList& tl )
+ConstraintTypes::Checkpoint::satisfaction( const Meta::TrackList& tl ) const
 {
-    delete m_handler;
-    delete m_tracker;
-
-    Meta::TrackPtr t;
-    Meta::ArtistPtr a;
-    Meta::AlbumPtr l;
-    switch ( m_checkpointType ) {
-        case CheckpointTrack:
-            t = Meta::TrackPtr::dynamicCast( m_checkpointObject );
-            m_handler = new TrackMatcher( t );
-            break;
-        case CheckpointArtist:
-            a = Meta::ArtistPtr::dynamicCast( m_checkpointObject );
-            m_handler = new ArtistMatcher( a );
-            break;
-        case CheckpointAlbum:
-            l = Meta::AlbumPtr::dynamicCast( m_checkpointObject );
-            m_handler = new AlbumMatcher( l );
-            break;
+    // What are the ending time boundaries of each track in this playlist?
+    qint64 start = 0;
+    QList< qint64 > boundaries;
+    foreach ( const Meta::TrackPtr t, tl ) {
+        boundaries << ( start += t->length() );
     }
-    m_tracker = new BoundaryTracker( tl );
 
-    m_distance = findDistanceFor( tl, m_tracker );
-
-    return penalty( m_distance );
+    // Is the playlist long enough to contain the checkpoint?
+    if ( boundaries.last() < m_position ) {
+        return 0.0; // no, it does not
+    }
+    
+    // Where are the appropriate tracks in this playlist?
+    QList<int> locs = m_matcher->find( tl );
+    if ( locs.size() < 1 ) {
+        return 0.0; // none found
+    } else {
+        qint64 best = boundaries.last(); // the length of the playlist is the upper bound for distances
+        foreach ( int i, locs ) {
+            qint64 start = ( i>0 )?boundaries.at( i-1 ):0;
+            qint64 end = boundaries.at( i );
+            if ( (start <= m_position) && ( end >= m_position ) ) {
+                // checkpoint position has a match flanking it
+                return 1.0;
+            } else if ( end < m_position ) {
+                // appropriate track is before the checkpoint
+                best = (best < (m_position - end))?best:(m_position - end);
+            } else if ( start > m_position ) {
+                // appropriate track is after the checkpoint
+                best = (best < (start - m_position))?best:(start - m_position);
+            } else {
+                warning() << "WTF JUST HAPPENED?" << m_position << "(" << start << "," << end << ")";
+            }
+        }
+        return penalty( best );
+    }
+    
+    warning() << "Improper exit condition";
+    return 0.0;
 }
 
 double
-ConstraintTypes::Checkpoint::deltaS_insert( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i ) const
+ConstraintTypes::Checkpoint::penalty( const qint64 d ) const
 {
-    BoundaryTracker* newBT = m_tracker->cloneAndInsert( t, i );
-    qint64 newDist = findDistanceFor( tl, newBT );
-    delete newBT;
-    return penalty( newDist ) - penalty( m_distance );
+    return exp( d / ( -( 120000.0 * ( 1.0 + ( 8.0 * m_strictness ) ) ) ) );
 }
 
-double
-ConstraintTypes::Checkpoint::deltaS_replace( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i ) const
-{
-    BoundaryTracker* newBT = m_tracker->cloneAndReplace( t, i );
-    qint64 newDist = findDistanceFor( tl, newBT );
-    delete newBT;
-    return penalty( newDist ) - penalty( m_distance );
-}
-
-double
-ConstraintTypes::Checkpoint::deltaS_delete( const Meta::TrackList& tl, const int i ) const
-{
-    BoundaryTracker* newBT = m_tracker->cloneAndDelete( i );
-    qint64 newDist = findDistanceFor( tl, newBT );
-    delete newBT;
-    return penalty( newDist ) - penalty( m_distance );
-}
-
-double
-ConstraintTypes::Checkpoint::deltaS_swap( const Meta::TrackList& tl, const int i, const int j ) const
-{
-    BoundaryTracker* newBT = m_tracker->cloneAndSwap( i, j );
-    qint64 newDist = findDistanceFor( tl, newBT );
-    delete newBT;
-    return penalty( newDist ) - penalty( m_distance );
-}
-
-void
-ConstraintTypes::Checkpoint::insertTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i )
-{
-    m_tracker->insertTrack( t, i );
-    m_distance = findDistanceFor( tl, m_tracker );
-}
-
-void
-ConstraintTypes::Checkpoint::replaceTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i )
-{
-    m_tracker->replaceTrack( t, i );
-    m_distance = findDistanceFor( tl, m_tracker );
-}
-
-void
-ConstraintTypes::Checkpoint::deleteTrack( const Meta::TrackList& tl, const int i )
-{
-    m_tracker->deleteTrack( i );
-    m_distance = findDistanceFor( tl, m_tracker );
-}
-
-void
-ConstraintTypes::Checkpoint::swapTracks( const Meta::TrackList& tl, const int i, const int j )
-{
-    m_tracker->swapTracks( i, j );
-    m_distance = findDistanceFor( tl, m_tracker );
-}
-
-int
+quint32
 ConstraintTypes::Checkpoint::suggestInitialPlaylistSize() const
 {
-    return static_cast<int>( m_position / 300000 ) + 1;
-}
-
-ConstraintNode::Vote*
-ConstraintTypes::Checkpoint::vote( const Meta::TrackList& playlist, const Meta::TrackList& domain ) const
-{
-    Q_UNUSED( playlist )
-    if ( m_distance == 0 )
-        return 0;
-
-    ConstraintNode::Vote* v = new ConstraintNode::Vote();
-
-    // TODO: possible future optimization
-    Checkpoint::BoundaryTracker* tracker = new Checkpoint::BoundaryTracker( playlist );
-    v->place = tracker->indexAtTime( m_position );
-
-    if ( v->place == playlist.length() ) {
-        v->operation = OperationInsert;
-        v->track = m_handler->suggest( domain );
-        return v;
-    }
-
-    QList<int> possibilities = m_handler->find( playlist );
-    if ( possibilities.length() > 0 ) {
-        v->operation = OperationSwap;
-        v->other = possibilities.at( KRandom::random() % possibilities.length() );
-
-        // not really sure why this is necessary -- the m_distance check above seems not to work
-        if ( v->place == v->other )
-            return 0;
-    } else {
-        v->operation = OperationReplace;
-        v->track = m_handler->suggest( domain );
-    }
-
-    delete tracker;
-
-    return v;
+    return static_cast<quint32>( m_position / 300000 ) + 1;
 }
 
 void
-ConstraintTypes::Checkpoint::audit(const Meta::TrackList& tl ) const
+ConstraintTypes::Checkpoint::audit( const Meta::TrackList& tl ) const
 {
-    m_tracker->audit( tl );
+    qint64 position = 0;
+    foreach ( Meta::TrackPtr t, tl ) {
+        qint64 start = position;
+        qint64 end = ( position += t->length() );
+        QStringList out;
+        out << t->prettyName();
+        if ( m_matcher->match( t ) )
+            out << "MATCHES";
+        if ( ( start <= m_position ) && ( end >= m_position ) )
+            out << "[checkpoint is here]";
+        debug() << out.join(" ");
+    }
 }
 
 void
@@ -380,87 +303,104 @@ ConstraintTypes::Checkpoint::setCheckpoint( const Meta::DataPtr& data )
     if ( data == Meta::DataPtr() )
         return;
 
+    delete m_matcher;
     if ( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( data ) ) {
         m_checkpointType = CheckpointTrack;
+        m_matcher = new TrackMatcher( track );
         debug() << "setting checkpoint track:" << track->prettyName();
     } else if ( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( data ) ) {
         m_checkpointType = CheckpointAlbum;
+        m_matcher = new AlbumMatcher( album );
         debug() << "setting checkpoint album:" << album->prettyName();
     } else if ( Meta::ArtistPtr artist = Meta::ArtistPtr::dynamicCast( data ) ) {
         debug() << "setting checkpoint artist:" << artist->prettyName();
+        m_matcher = new ArtistMatcher( artist );
         m_checkpointType = CheckpointArtist;
     }
+
     m_checkpointObject = data;
     emit dataChanged();
 }
 
-qint64
-ConstraintTypes::Checkpoint::findDistanceFor( const Meta::TrackList& tl, const BoundaryTracker* const tracker ) const
+/******************************
+ * Track Matcher              *
+ ******************************/
+ConstraintTypes::Checkpoint::TrackMatcher::TrackMatcher( const Meta::TrackPtr& t )
+    : m_trackToMatch( t )
 {
-    QList<int> matchPostitions = m_handler->find( tl );
-
-    // case: playlist does not contain the necessary track; return "infinite" distance
-    if ( matchPostitions.length() == 0 ) {
-        return static_cast<qint64>(LLONG_MAX);
-    }
-
-    int targetPosition = tracker->indexAtTime( m_position );
-
-    // case: track is in the correct position
-    if ( matchPostitions.contains( targetPosition ) ) {
-        return 0;
-    }
-
-    // case: only one appropriate track is in the playlist, but it's in the wrong place
-    if ( matchPostitions.length() == 1 ) {
-        int pos = matchPostitions.first();
-        QPair<qint64,qint64> bounds = tracker->getBoundariesAt( pos );
-        if ( pos > targetPosition ) {
-            return bounds.first - m_position;
-        } else if ( pos < targetPosition ) {
-            return m_position - bounds.second;
-        } else { // this really shouldn't happen, but worth double-checking
-            return 0;
-        }
-    }
-
-    // cases: target position is before or after all of the appropriate tracks
-    if ( matchPostitions.first() > targetPosition ) {
-        QPair<qint64,qint64> bounds = tracker->getBoundariesAt( matchPostitions.first() );
-        return bounds.first - m_position;
-    }
-
-    if ( matchPostitions.last() < targetPosition ) {
-        QPair<qint64,qint64> bounds = tracker->getBoundariesAt( matchPostitions.last() );
-        return m_position - bounds.second;
-    }
-
-    // case: target position is between two of the possible matches
-    for ( int i = 1; i < matchPostitions.length(); i++ ) {
-        int below = matchPostitions.at( i - 1 );
-        int above = matchPostitions.at( i );
-        if ( ( below < targetPosition ) && ( above > targetPosition ) ) {
-            QPair<qint64, qint64> lowBounds = tracker->getBoundariesAt( below );
-            qint64 lowDelta = m_position - lowBounds.second;
-
-            QPair<qint64, qint64> hiBounds = tracker->getBoundariesAt( above );
-            qint64 hiDelta = hiBounds.first - m_position;
-
-            return ( lowDelta < hiDelta ) ? lowDelta : hiDelta;
-        }
-    }
-
-    warning() << "the satisfaction routine failed to handle its input correctly";
-    return static_cast<qint64>(LLONG_MAX);
 }
 
-double
-ConstraintTypes::Checkpoint::penalty( const qint64 d ) const
+QList<int>
+ConstraintTypes::Checkpoint::TrackMatcher::find( const Meta::TrackList& tl ) const
 {
-    if ( d == static_cast<qint64>(LLONG_MAX) )
-        return 0.0;
-    else
-        return exp( d / ( -( 120000.0 * ( 1.0 + ( 8.0 * m_strictness ) ) ) ) );
+    QList<int> positions;
+    for ( int i = 0; i < tl.length(); i++ ) {
+        if ( tl.at( i ) == m_trackToMatch ) {
+            positions << i;
+        }
+    }
+
+    return positions;
+}
+
+bool
+ConstraintTypes::Checkpoint::TrackMatcher::match( const Meta::TrackPtr& t ) const
+{
+    return ( t == m_trackToMatch );
+}
+
+/******************************
+ * Artist Matcher             *
+ ******************************/
+ConstraintTypes::Checkpoint::ArtistMatcher::ArtistMatcher( const Meta::ArtistPtr& a )
+    : m_artistToMatch( a )
+{
+}
+
+QList<int>
+ConstraintTypes::Checkpoint::ArtistMatcher::find( const Meta::TrackList& tl ) const
+{
+    QList<int> positions;
+    for ( int i = 0; i < tl.length(); i++ ) {
+        if ( tl.at( i )->artist() == m_artistToMatch ) {
+            positions << i;
+        }
+    }
+
+    return positions;
+}
+
+bool
+ConstraintTypes::Checkpoint::ArtistMatcher::match( const Meta::TrackPtr& t ) const
+{
+    return ( t->artist() == m_artistToMatch );
+}
+
+/******************************
+ * Album Matcher              *
+ ******************************/
+ConstraintTypes::Checkpoint::AlbumMatcher::AlbumMatcher( const Meta::AlbumPtr& l )
+    : m_albumToMatch( l )
+{
+}
+
+QList<int>
+ConstraintTypes::Checkpoint::AlbumMatcher::find( const Meta::TrackList& tl ) const
+{
+    QList<int> positions;
+    for ( int i = 0; i < tl.length(); i++ ) {
+        if ( tl.at( i )->album() == m_albumToMatch ) {
+            positions << i;
+        }
+    }
+
+    return positions;
+}
+
+bool
+ConstraintTypes::Checkpoint::AlbumMatcher::match( const Meta::TrackPtr& t ) const
+{
+    return ( t->album() == m_albumToMatch );
 }
 
 /******************************

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,10 +26,6 @@
 class ConstraintFactoryEntry;
 class QWidget;
 
-namespace Collections {
-    class QueryMaker;
-}
-
 namespace ConstraintTypes {
 
     /* This constraint derives its name from the fact that it specifies the
@@ -50,18 +46,8 @@ namespace ConstraintTypes {
 
             virtual QString getName() const;
 
-            virtual Collections::QueryMaker* initQueryMaker( Collections::QueryMaker* ) const;
-            virtual double satisfaction( const Meta::TrackList& );
-            virtual double deltaS_insert( const Meta::TrackList&, const Meta::TrackPtr, const int ) const;
-            virtual double deltaS_replace( const Meta::TrackList&, const Meta::TrackPtr, const int ) const;
-            virtual double deltaS_delete( const Meta::TrackList&, const int ) const;
-            virtual double deltaS_swap( const Meta::TrackList&, const int, const int ) const;
-            virtual void insertTrack( const Meta::TrackList&, const Meta::TrackPtr, const int );
-            virtual void replaceTrack( const Meta::TrackList&, const Meta::TrackPtr, const int );
-            virtual void deleteTrack( const Meta::TrackList&, const int );
-            virtual void swapTracks( const Meta::TrackList&, const int, const int );
-            virtual int suggestInitialPlaylistSize() const;
-            ConstraintNode::Vote* vote( const Meta::TrackList&, const Meta::TrackList& ) const;
+            virtual double satisfaction( const Meta::TrackList& ) const;
+            virtual quint32 suggestInitialPlaylistSize() const;
 
         private slots:
             void setComparison( const int );
@@ -73,7 +59,7 @@ namespace ConstraintTypes {
             PlaylistLength( ConstraintNode* );
 
             // constraint parameters
-            int m_length;
+            quint32 m_length;
             int m_comparison;
             double m_strictness;
 
@@ -81,11 +67,7 @@ namespace ConstraintTypes {
             QString comparisonToString() const;
 
             // internal mathematical functions
-            double penalty( const int ) const;
             double transformLength( const int ) const;
-
-            // internal mathematical state data
-            int m_totalLength;
     };
 
     class PlaylistLengthEditWidget : public QWidget {

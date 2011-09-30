@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -112,14 +112,8 @@ ConstraintNode::where_is( const ConstraintNode* n ) const
     return m_children.indexOf( x );
 }
 
-int
+quint32
 ConstraintNode::suggestInitialPlaylistSize() const
-{
-    return -1;
-}
-
-ConstraintNode::Vote*
-ConstraintNode::vote( const Meta::TrackList&, const Meta::TrackList& ) const
 {
     return 0;
 }

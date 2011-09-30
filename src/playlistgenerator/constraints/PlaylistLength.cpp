@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,7 +21,6 @@
 #include "playlistgenerator/Constraint.h"
 #include "playlistgenerator/ConstraintFactory.h"
 
-#include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
 
 #include <KRandom>
@@ -123,78 +122,25 @@ ConstraintTypes::PlaylistLength::getName() const
     return v;
 }
 
-Collections::QueryMaker*
-ConstraintTypes::PlaylistLength::initQueryMaker( Collections::QueryMaker* qm ) const
-{
-    return qm;
-}
-
 double
-ConstraintTypes::PlaylistLength::satisfaction( const Meta::TrackList& tl )
+ConstraintTypes::PlaylistLength::satisfaction( const Meta::TrackList& tl ) const
 {
-    m_totalLength = tl.size();
-    return penalty( m_totalLength );
+    quint32 l = static_cast<quint32>( tl.size() );
+    if ( m_comparison == CompareNumEquals ) {
+        return ( l == m_length ) ? 1.0 : transformLength( abs( l - m_length ) );
+    } else if ( m_comparison == CompareNumGreaterThan ) {
+        return ( l > m_length ) ? 1.0 : transformLength( m_length - l );
+    } else if ( m_comparison == CompareNumLessThan ) {
+        return ( l < m_length ) ? 1.0 : transformLength( l - m_length );
+    } else {
+        return 0.0;
+    }
 }
 
-double
-ConstraintTypes::PlaylistLength::deltaS_insert( const Meta::TrackList&, const Meta::TrackPtr t, const int ) const
-{
-    Q_UNUSED( t )
-    return penalty( m_totalLength + 1 ) - penalty( m_totalLength );
-}
-
-double
-ConstraintTypes::PlaylistLength::deltaS_replace( const Meta::TrackList&, const Meta::TrackPtr, const int ) const
-{
-    return 0.0;
-}
-
-double
-ConstraintTypes::PlaylistLength::deltaS_delete( const Meta::TrackList&, const int ) const
-{
-    return penalty( m_totalLength - 1 ) - penalty( m_totalLength );
-}
-
-double
-ConstraintTypes::PlaylistLength::deltaS_swap( const Meta::TrackList&, const int, const int ) const
-{
-    return 0.0;
-}
-
-void
-ConstraintTypes::PlaylistLength::insertTrack( const Meta::TrackList&, const Meta::TrackPtr, const int )
-{
-    m_totalLength++;
-}
-
-void
-ConstraintTypes::PlaylistLength::replaceTrack( const Meta::TrackList&, const Meta::TrackPtr, const int ) {}
-
-void
-ConstraintTypes::PlaylistLength::deleteTrack( const Meta::TrackList&, const int )
-{
-    m_totalLength--;
-}
-
-void
-ConstraintTypes::PlaylistLength::swapTracks( const Meta::TrackList&, const int, const int ) {}
-
-int
+quint32
 ConstraintTypes::PlaylistLength::suggestInitialPlaylistSize() const
 {
     return m_length;
-}
-
-ConstraintNode::Vote*
-ConstraintTypes::PlaylistLength::vote( const Meta::TrackList& playlist, const Meta::TrackList& domain ) const
-{
-    Q_UNUSED( domain )
-    Q_UNUSED( playlist )
-    ConstraintNode::Vote* v = 0;
-
-    //FIXME: needs to vote for addition or removal as appropriate
-
-    return v;
 }
 
 QString
@@ -208,20 +154,6 @@ ConstraintTypes::PlaylistLength::comparisonToString() const
         return QString( i18n("less than") );
     } else {
         return QString( i18n("unknown comparison") );
-    }
-}
-
-double
-ConstraintTypes::PlaylistLength::penalty( const int l ) const
-{
-    if ( m_comparison == CompareNumEquals ) {
-        return ( l == m_length ) ? 1.0 : transformLength( abs( l - m_length ) );
-    } else if ( m_comparison == CompareNumGreaterThan ) {
-        return ( l > m_length ) ? 1.0 : transformLength( m_length - l );
-    } else if ( m_comparison == CompareNumLessThan ) {
-        return ( l < m_length ) ? 1.0 : transformLength( l - m_length );
-    } else {
-        return 0.0;
     }
 }
 
@@ -243,7 +175,7 @@ ConstraintTypes::PlaylistLength::setComparison( const int c )
 void
 ConstraintTypes::PlaylistLength::setLength( const int l )
 {
-    m_length = l;
+    m_length = static_cast<quint32>(l);
     emit dataChanged();
 }
 

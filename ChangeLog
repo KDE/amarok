@@ -12,6 +12,10 @@ Version 2.4.4-Beta 1
     * Auto-save the playlist so that it is not lost if Amarok crashes.
 
   CHANGES:
+    * Total rewrite of Automated Playlist Generator algorithm.  New algorithm
+      is far less complicated and crash-prone, but at the cost of taking
+      longer to converge when the constraint tree is complicated. (BR 240927,
+      BR 240301)
     * Added local podcasts are automatically subscribed in gpodder.net.
     * Removed local podcasts are automatically unsubscribed from gpodder.net.
     * GPodder Service automatically subscribes all local podcasts into gpodder.net when the login is

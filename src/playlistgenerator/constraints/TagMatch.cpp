@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -307,111 +307,16 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
 }
 
 double
-ConstraintTypes::TagMatch::satisfaction( const Meta::TrackList& tl )
+ConstraintTypes::TagMatch::satisfaction( const Meta::TrackList& tl ) const
 {
-    m_satisfaction = 0.0;
+    double satisfaction = 0.0;
     foreach( Meta::TrackPtr t, tl ) {
         if ( matches( t ) ) {
-            m_satisfaction += 1.0;
+            satisfaction += 1.0;
         }
     }
-    m_satisfaction /= ( double )tl.size();
-    return m_satisfaction;
-}
-
-double
-ConstraintTypes::TagMatch::deltaS_insert( const Meta::TrackList& tl, const Meta::TrackPtr t, const int ) const
-{
-    double s = m_satisfaction * tl.size();
-    if ( matches( t ) ) {
-        s += 1.0;
-    }
-    return s / ( double )( tl.size() + 1 ) - m_satisfaction;
-}
-
-double
-ConstraintTypes::TagMatch::deltaS_replace( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i ) const
-{
-    bool oldT = matches( tl.at( i ) );
-    bool newT = matches( t );
-    if ( !( oldT ^ newT ) ) {
-        return 0.0;
-    } else if ( newT ) {
-        return 1.0 / ( double )tl.size();
-    } else if ( oldT ) {
-        return -1.0 / ( double )tl.size();
-    } else {
-        return 0.0;
-    }
-}
-
-double
-ConstraintTypes::TagMatch::deltaS_delete( const Meta::TrackList& tl, const int i ) const
-{
-    double s = m_satisfaction * tl.size();
-    if ( matches( tl.at( i ) ) ) {
-        s -= 1.0;
-    }
-    return s / ( double )( tl.size() - 1 ) - m_satisfaction;
-}
-
-double
-ConstraintTypes::TagMatch::deltaS_swap( const Meta::TrackList&, const int, const int ) const
-{
-    return 0.0;
-}
-
-void
-ConstraintTypes::TagMatch::insertTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i )
-{
-    m_satisfaction += deltaS_insert( tl, t, i );
-}
-
-void
-ConstraintTypes::TagMatch::replaceTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i )
-{
-    m_satisfaction += deltaS_replace( tl, t, i );
-}
-
-void
-ConstraintTypes::TagMatch::deleteTrack( const Meta::TrackList& tl, const int i )
-{
-    m_satisfaction += deltaS_delete( tl, i );
-}
-
-void
-ConstraintTypes::TagMatch::swapTracks( const Meta::TrackList&, const int, const int ) {}
-
-ConstraintNode::Vote*
-ConstraintTypes::TagMatch::vote( const Meta::TrackList& playlist, const Meta::TrackList& domain ) const
-{
-    ConstraintNode::Vote* v = new ConstraintNode::Vote();
-    v->operation = ConstraintNode::OperationReplace;
-    v->place = -1;
-    v->track = Meta::TrackPtr();
-
-    // find a non-matching track in the playlist
-    for ( int i = 0; i < playlist.length() ; i++ ) {
-        if ( !matches( playlist.at( i ) ) ) {
-            v->place = i;
-            break;
-        }
-    }
-    if ( v->place < 0 ) {
-        delete v;
-        return 0;
-    }
-
-    // replace it with a track from the domain that matches
-    for ( int i = 0; i < 100; i++ ) {
-        v->track = domain.at( KRandom::random() % domain.size() );
-        if ( matches( v->track ) ) {
-            return v;
-        }
-    }
-
-    delete v;
-    return 0;
+    satisfaction /= ( double )tl.size();
+    return satisfaction;
 }
 
 void

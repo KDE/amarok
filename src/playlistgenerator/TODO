@@ -1,11 +1,11 @@
 Backend:
+- make the QualityFactor in the ConstraintSolver work again
 - replace values in constraints with Qt properties, and use properties for saving/loading
   from XML, and put XML in Constraint superclass
-- monitor APG patent: US 11/994425
 
 Constraints:
-- fix preventduplicates: the delta functions are kinda broken
 - last.fm or echonest similar artists constraint
+- specify file size of playlist (BR 283618)
 
 GUI:
 - context menu for APGCategory

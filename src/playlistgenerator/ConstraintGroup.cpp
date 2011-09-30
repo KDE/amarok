@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -147,16 +147,14 @@ ConstraintGroup::initQueryMaker( Collections::QueryMaker* qm ) const
 }
 
 double
-ConstraintGroup::satisfaction( const Meta::TrackList& l )
+ConstraintGroup::satisfaction( const Meta::TrackList& l ) const
 {
     // shortcut if the playlist is empty
     if ( l.size() <= 0 ) {
-        m_satisfaction = 1.0;
         return 1.0;
     }
 
     if ( m_children.isEmpty() ) {
-        m_satisfaction = 1.0;
         return 1.0;
     }
 
@@ -166,13 +164,12 @@ ConstraintGroup::satisfaction( const Meta::TrackList& l )
     } else if ( m_matchtype == MatchAll ) {
         s = 1.0;
     } else {
-        m_satisfaction = 1.0;
         return 1.0;
     }
 
-    m_childSatisfactions.clear();
-    m_constraintMatchTypes.clear();
+    QHash<int,int> constraintMatchTypes;
 
+    // TODO: there's got to be a more efficient way of handling interdependent constraints
     for ( int i = 0; i < m_children.size(); i++ ) {
         ConstraintNode* child = m_children[i];
         double chS = child->satisfaction( l );
@@ -181,265 +178,34 @@ ConstraintGroup::satisfaction( const Meta::TrackList& l )
         } else if ( m_matchtype == MatchAll ) {
             s = qMin( s, chS );
         }
-        m_childSatisfactions.append( chS );
 
         // prepare for proper handling of non-independent constraints
-        // TODO: this should be moved out of the satisfaction function, and into some kind of "child satisfaction has changed" slot
         ConstraintTypes::MatchingConstraint* cge = dynamic_cast<ConstraintTypes::MatchingConstraint*>( child );
         if ( cge ) {
-            m_constraintMatchTypes.insertMulti( cge->constraintMatchType(), i );
+            constraintMatchTypes.insertMulti( cge->constraintMatchType(), i );
         }
     }
 
     // remove the independent constraints from the hash
-    foreach( int key, m_constraintMatchTypes.uniqueKeys() ) {
-        QList<int> vals = m_constraintMatchTypes.values( key );
+    foreach( int key, constraintMatchTypes.uniqueKeys() ) {
+        QList<int> vals = constraintMatchTypes.values( key );
         if ( vals.size() <= 1 ) {
-            m_constraintMatchTypes.remove( key );
+            constraintMatchTypes.remove( key );
         }
     }
 
-    m_satisfaction = combineNonIndependentConstraints( l, s );
-    return m_satisfaction;
+    return combineInterdependentConstraints( l, s, constraintMatchTypes );
 }
 
-double
-ConstraintGroup::deltaS_insert( const Meta::TrackList& tl, const Meta::TrackPtr t, const int idx ) const
-{
-    double newS;
-    if ( m_matchtype == MatchAny ) {
-        newS = 0.0;
-    } else if ( m_matchtype == MatchAll ) {
-        newS = 1.0;
-    } else {
-        return 0.0;
-    }
-
-    for ( int i = 0; i < m_children.size(); i++ ) {
-        ConstraintNode* child = m_children.at( i );
-        double chS = m_childSatisfactions.at( i ) + child->deltaS_insert( tl, t, idx );
-        if ( m_matchtype == MatchAny ) {
-            newS = qMax( newS, chS );
-        } else if ( m_matchtype == MatchAll ) {
-            newS = qMin( newS, chS );
-        }
-    }
-
-    Meta::TrackList newTl( tl );
-    newTl.insert( idx, t );
-    double d = combineNonIndependentConstraints( newTl, newS ) - m_satisfaction;
-    return d;
-}
-
-double
-ConstraintGroup::deltaS_replace( const Meta::TrackList& tl, const Meta::TrackPtr t, const int place ) const
-{
-    double newS;
-    if ( m_matchtype == MatchAny ) {
-        newS = 0.0;
-    } else if ( m_matchtype == MatchAll ) {
-        newS = 1.0;
-    } else {
-        return 0.0;
-    }
-
-    for ( int i = 0; i < m_children.size(); i++ ) {
-        ConstraintNode* child = m_children.at( i );
-        double chS = m_childSatisfactions.at( i ) + child->deltaS_replace( tl, t, place );
-        if ( m_matchtype == MatchAny ) {
-            newS = qMax( newS, chS );
-        } else if ( m_matchtype == MatchAll ) {
-            newS = qMin( newS, chS );
-        }
-    }
-
-    Meta::TrackList newTl( tl );
-    newTl.replace( place, t );
-    double d = combineNonIndependentConstraints( newTl, newS ) - m_satisfaction;
-    return d;
-}
-
-double
-ConstraintGroup::deltaS_delete( const Meta::TrackList& tl, const int place ) const
-{
-    double newS;
-    if ( m_matchtype == MatchAny ) {
-        newS = 0.0;
-    } else if ( m_matchtype == MatchAll ) {
-        newS = 1.0;
-    } else {
-        return 0.0;
-    }
-
-    for ( int i = 0; i < m_children.size(); i++ ) {
-        ConstraintNode* child = m_children.at( i );
-        double chS = m_childSatisfactions.at( i ) + child->deltaS_delete( tl, place );
-        if ( m_matchtype == MatchAny ) {
-            newS = qMax( newS, chS );
-        } else if ( m_matchtype == MatchAll ) {
-            newS = qMin( newS, chS );
-        }
-    }
-
-    Meta::TrackList newTl( tl );
-    newTl.removeAt( place );
-    double d = combineNonIndependentConstraints( newTl, newS ) - m_satisfaction;
-    return d;
-}
-
-double
-ConstraintGroup::deltaS_swap( const Meta::TrackList& tl, const int place, const int other ) const
-{
-    double newS;
-    if ( m_matchtype == MatchAny ) {
-        newS = 0.0;
-    } else if ( m_matchtype == MatchAll ) {
-        newS = 1.0;
-    } else {
-        return 0.0;
-    }
-
-    for ( int i = 0; i < m_children.size(); i++ ) {
-        ConstraintNode* child = m_children.at( i );
-        double chS = m_childSatisfactions.at( i ) + child->deltaS_swap( tl, place, other );
-        if ( m_matchtype == MatchAny ) {
-            newS = qMax( newS, chS );
-        } else if ( m_matchtype == MatchAll ) {
-            newS = qMin( newS, chS );
-        }
-    }
-
-    Meta::TrackList newTl( tl );
-    newTl.swap( place, other );
-    double d = combineNonIndependentConstraints( newTl, newS ) - m_satisfaction;
-    return d;
-}
-
-void
-ConstraintGroup::insertTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int place )
-{
-    double newS;
-    if ( m_matchtype == MatchAny ) {
-        newS = 0.0;
-    } else if ( m_matchtype == MatchAll ) {
-        newS = 1.0;
-    } else {
-        return;
-    }
-
-    for ( int i = 0; i < m_children.size(); i++ ) {
-        ConstraintNode* child = m_children.at( i );
-        m_childSatisfactions[i] += child->deltaS_insert( tl, t, place );
-        child->insertTrack( tl, t, place );
-        double chS = m_childSatisfactions[i];
-        if ( m_matchtype == MatchAny ) {
-            newS = qMax( newS, chS );
-        } else if ( m_matchtype == MatchAll ) {
-            newS = qMin( newS, chS );
-        }
-    }
-
-    Meta::TrackList newTl( tl );
-    newTl.insert( place, t );
-    m_satisfaction = combineNonIndependentConstraints( newTl, newS );
-}
-
-void
-ConstraintGroup::replaceTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int place )
-{
-    double newS;
-    if ( m_matchtype == MatchAny ) {
-        newS = 0.0;
-    } else if ( m_matchtype == MatchAll ) {
-        newS = 1.0;
-    } else {
-        return;
-    }
-
-    for ( int i = 0; i < m_children.size(); i++ ) {
-        ConstraintNode* child = m_children.at( i );
-        m_childSatisfactions[i] += child->deltaS_replace( tl, t, place );
-        child->replaceTrack( tl, t, place );
-        double chS = m_childSatisfactions[i];
-        if ( m_matchtype == MatchAny ) {
-            newS = qMax( newS, chS );
-        } else if ( m_matchtype == MatchAll ) {
-            newS = qMin( newS, chS );
-        }
-    }
-
-    Meta::TrackList newTl( tl );
-    newTl.replace( place, t );
-    m_satisfaction = combineNonIndependentConstraints( newTl, newS );
-}
-
-void
-ConstraintGroup::deleteTrack( const Meta::TrackList& tl, const int place )
-{
-    double newS;
-    if ( m_matchtype == MatchAny ) {
-        newS = 0.0;
-    } else if ( m_matchtype == MatchAll ) {
-        newS = 1.0;
-    } else {
-        return;
-    }
-
-    for ( int i = 0; i < m_children.size(); i++ ) {
-        ConstraintNode* child = m_children.at( i );
-        m_childSatisfactions[i] += child->deltaS_delete( tl, place );
-        child->deleteTrack( tl, place );
-        double chS = m_childSatisfactions[i];
-        if ( m_matchtype == MatchAny ) {
-            newS = qMax( newS, chS );
-        } else if ( m_matchtype == MatchAll ) {
-            newS = qMin( newS, chS );
-        }
-    }
-
-    Meta::TrackList newTl( tl );
-    newTl.removeAt( place );
-    m_satisfaction = combineNonIndependentConstraints( newTl, newS );
-}
-
-void
-ConstraintGroup::swapTracks( const Meta::TrackList& tl, const int place, const int other )
-{
-    double newS;
-    if ( m_matchtype == MatchAny ) {
-        newS = 0.0;
-    } else if ( m_matchtype == MatchAll ) {
-        newS = 1.0;
-    } else {
-        return;
-    }
-
-    for ( int i = 0; i < m_children.size(); i++ ) {
-        ConstraintNode* child = m_children.at( i );
-        m_childSatisfactions[i] += child->deltaS_swap( tl, place, other );
-        child->swapTracks( tl, place, other );
-        double chS = m_childSatisfactions[i];
-        if ( m_matchtype == MatchAny ) {
-            newS = qMax( newS, chS );
-        } else if ( m_matchtype == MatchAll ) {
-            newS = qMin( newS, chS );
-        }
-    }
-
-    Meta::TrackList newTl( tl );
-    newTl.swap( place, other );
-    m_satisfaction = combineNonIndependentConstraints( newTl, newS );
-}
-
-int
+quint32
 ConstraintGroup::suggestInitialPlaylistSize() const
 {
-    int s = 0;
-    int c = 0;
+    quint32 s = 0;
+    quint32 c = 0;
     foreach( ConstraintNode* child, m_children ) {
-        int r = child->suggestInitialPlaylistSize();
-        if ( r >= 0 ) {
-            s += r;
+        quint32 x = child->suggestInitialPlaylistSize();
+        if ( x > 0 ) {
+            s += x;
             c++;
         }
     }
@@ -448,23 +214,6 @@ ConstraintGroup::suggestInitialPlaylistSize() const
     } else {
         return 0;
     }
-}
-
-ConstraintNode::Vote*
-ConstraintGroup::vote( const Meta::TrackList& playlist, const Meta::TrackList& domain ) const
-{
-    ConstraintNode* worstNode = 0;
-    double worstSatisfaction = 2.0;
-    for ( int i = 0; i < m_children.size(); i++ ) {
-        if ( m_childSatisfactions.at( i ) < worstSatisfaction ) {
-            worstSatisfaction = m_childSatisfactions.at( i );
-            worstNode = m_children.at( i );
-        }
-    }
-    if ( worstNode != 0 )
-        return worstNode->vote( playlist, domain );
-    else
-        return 0;
 }
 
 #ifndef KDE_NO_DEBUG_OUTPUT
@@ -478,12 +227,12 @@ ConstraintGroup::audit( const Meta::TrackList& tl ) const
 #endif
 
 double
-ConstraintGroup::combineNonIndependentConstraints( const Meta::TrackList& l, const double s ) const
+ConstraintGroup::combineInterdependentConstraints( const Meta::TrackList& l, const double s, const QHash<int,int>& cmt ) const
 {
-    /* Handle non-independent constraints properly.
+    /* Handle interdependent constraints properly.
      * See constraints/Matching.h for a description of why this is necessary. */
-    foreach( int key, m_constraintMatchTypes.uniqueKeys() ) {
-        QList<int> vals = m_constraintMatchTypes.values( key );
+    foreach( int key, cmt.uniqueKeys() ) {
+        QList<int> vals = cmt.values( key );
         // set up the blank matching array
         QBitArray m;
         if ( m_matchtype == MatchAny ) {

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -40,26 +40,17 @@ class ConstraintGroup : public ConstraintNode {
     public:
         enum MatchType { MatchAny, MatchAll };
 
-        static ConstraintGroup* createFromXml(QDomElement&, ConstraintNode*); // Potential Factory restriction
-        static ConstraintGroup* createNew(ConstraintNode*); // Potential Factory restriction
+        static ConstraintGroup* createFromXml( QDomElement&, ConstraintNode* );
+        static ConstraintGroup* createNew( ConstraintNode* );
 
         virtual QString getName() const;
         virtual int getNodeType() const { return ConstraintNode::ConstraintGroupType; }
         virtual QWidget* editWidget() const;
-        virtual void toXml(QDomDocument&, QDomElement&) const;
+        virtual void toXml( QDomDocument&, QDomElement& ) const;
 
-        virtual Collections::QueryMaker* initQueryMaker(Collections::QueryMaker*) const;
-        virtual double satisfaction(const Meta::TrackList&);
-        virtual double deltaS_insert(const Meta::TrackList&, const Meta::TrackPtr, const int) const;
-        virtual double deltaS_replace(const Meta::TrackList&, const Meta::TrackPtr, const int) const;
-        virtual double deltaS_delete(const Meta::TrackList&, const int) const;
-        virtual double deltaS_swap(const Meta::TrackList&, const int, const int) const;
-        virtual void insertTrack(const Meta::TrackList&, const Meta::TrackPtr, const int);
-        virtual void replaceTrack(const Meta::TrackList&, const Meta::TrackPtr, const int);
-        virtual void deleteTrack(const Meta::TrackList&, const int);
-        virtual void swapTracks(const Meta::TrackList&, const int, const int);
-        virtual int suggestInitialPlaylistSize() const;
-        virtual ConstraintNode::Vote* vote( const Meta::TrackList&, const Meta::TrackList& ) const;
+        virtual Collections::QueryMaker* initQueryMaker( Collections::QueryMaker* ) const;
+        virtual double satisfaction( const Meta::TrackList& ) const;
+        virtual quint32 suggestInitialPlaylistSize() const;
 
 #ifndef KDE_NO_DEBUG_OUTPUT
         virtual void audit(const Meta::TrackList&) const;
@@ -77,12 +68,7 @@ class ConstraintGroup : public ConstraintNode {
         MatchType m_matchtype;
 
         // internal mathematical functions
-        double combineNonIndependentConstraints(const Meta::TrackList&, const double) const;
-
-        // internal state variables
-        double m_satisfaction;
-        QList<double> m_childSatisfactions;
-        QHash<int, int> m_constraintMatchTypes;
+        double combineInterdependentConstraints( const Meta::TrackList&, const double, const QHash<int,int>& ) const;
 };
 
 class ConstraintGroupEditWidget : public QWidget {

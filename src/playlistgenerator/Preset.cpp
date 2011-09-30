@@ -142,7 +142,7 @@ APG::Preset::solverFinished( ThreadWeaver::Job* job )
     ConstraintSolver* solver = static_cast<ConstraintSolver*>( job );
     if ( job->success() ) {
         debug() << "Solver" << solver->serial() << "finished successfully";
-        if ( solver->finalSatisfaction() < solver->satisfactionThreshold() ) {
+        if ( !solver->satisfied() ) {
             Amarok::Components::logger()->longMessage(
                         i18n("The playlist generator created a playlist which does not meet all " \
                              "of your constraints.  If you are not satisfied with the results, " \

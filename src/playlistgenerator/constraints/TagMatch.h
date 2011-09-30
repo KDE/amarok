@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -68,17 +68,7 @@ namespace ConstraintTypes {
             virtual QString getName() const;
 
             virtual Collections::QueryMaker* initQueryMaker(Collections::QueryMaker*) const;
-            virtual double satisfaction(const Meta::TrackList&);
-            virtual double deltaS_insert(const Meta::TrackList&, const Meta::TrackPtr, const int) const;
-            virtual double deltaS_replace(const Meta::TrackList&, const Meta::TrackPtr, const int) const;
-            virtual double deltaS_delete(const Meta::TrackList&, const int) const;
-            virtual double deltaS_swap(const Meta::TrackList&, const int, const int) const;
-            virtual void insertTrack(const Meta::TrackList&, const Meta::TrackPtr, const int);
-            virtual void replaceTrack(const Meta::TrackList&, const Meta::TrackPtr, const int);
-            virtual void deleteTrack(const Meta::TrackList&, const int);
-            virtual void swapTracks(const Meta::TrackList&, const int, const int);
-
-            virtual ConstraintNode::Vote* vote( const Meta::TrackList&, const Meta::TrackList& ) const;
+            virtual double satisfaction(const Meta::TrackList&) const;
 
 #ifndef KDE_NO_DEBUG_OUTPUT
             virtual void audit( const Meta::TrackList& ) const;
@@ -110,9 +100,6 @@ namespace ConstraintTypes {
             // convenience classes
             const Comparer* const m_comparer;
             const TagMatchFieldsModel* const m_fieldsModel;
-
-            // internal state data
-            double m_satisfaction;
 
             // convenience functions
             QString comparisonToString() const;

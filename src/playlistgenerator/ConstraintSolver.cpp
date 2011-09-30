@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -34,32 +34,29 @@
 #include <QStringList>
 #include <QTimer>
 #include <threadweaver/ThreadWeaver.h>
+
+#include <algorithm> // STL algorithms
 #include <cmath>
 #include <typeinfo>
 
 const int APG::ConstraintSolver::QUALITY_RANGE = 10;
 
 APG::ConstraintSolver::ConstraintSolver( ConstraintNode* r, int qualityFactor )
-        : m_constraintTreeRoot( r )
+        : m_satisfactionThreshold( 0.95 )
+        , m_finalSatisfaction( 0.0 )
+        , m_constraintTreeRoot( r )
         , m_domainReductionFailed( false )
         , m_readyToRun( false )
         , m_abortRequested( false )
-        , m_playlistEntropy( 0.0 )
-        , m_finalSatisfaction( 0.0 )
+        , m_maxGenerations( 100 )
+        , m_populationSize( 40 )
+        , m_minPlaylistSize( 4 )
+        , m_suggestedPlaylistSize( 15 )
+        , m_maxPlaylistSize( 100 )
 {
+    Q_UNUSED( qualityFactor); // FIXME
+
     m_serialNumber = KRandom::random();
-
-    // TODO: really adjust according to qualityFactor
-    double x = (double)qualityFactor/(double)QUALITY_RANGE;
-    debug() << "Constraint Solver quality factor:" << x;
-    m_satisfactionThreshold = 0.80 + 0.15*x;
-    m_qualityFactor = 1.0 + 5.0*x;
-    m_maxCoolingIterations = 200 + static_cast<int>( 600.0*x );
-    m_maxMutationIterations = 20 + static_cast<int>( 50.0*x );
-    m_maxSwapIterations = 20 + static_cast<int>( 50.0*x );
-
-    m_minPlaylistSize = 1;
-    m_maxPlaylistSize = 1000;
 
     if ( !m_constraintTreeRoot ) {
         error() << "No constraint tree was passed to the solver.  Aborting.";
@@ -98,16 +95,10 @@ APG::ConstraintSolver::getSolution() const
     return m_solvedPlaylist;
 }
 
-double
-APG::ConstraintSolver::finalSatisfaction() const
+bool
+APG::ConstraintSolver::satisfied() const
 {
-    return m_finalSatisfaction;
-}
-
-double
-APG::ConstraintSolver::satisfactionThreshold() const
-{
-    return m_satisfactionThreshold;
+    return m_finalSatisfaction > m_satisfactionThreshold;
 }
 
 bool
@@ -152,71 +143,49 @@ APG::ConstraintSolver::run()
     if ( m_domain.empty() ) {
         debug() << "The QueryMaker returned no tracks";
         return;
+    } else {
+        debug() << "Domain has" << m_domain.size() << "tracks";
     }
 
     debug() << "Running ConstraintSolver" << m_serialNumber;
 
-    // set up a random initial playlist
-    int pls = m_constraintTreeRoot->suggestInitialPlaylistSize();
-    if ( pls > 0 ) {
-        m_solvedPlaylist += m_domain.mid( 0, pls );
-    } else {
-        m_solvedPlaylist += m_domain.mid( 0, 30 );
+    quint32 sips = m_constraintTreeRoot->suggestInitialPlaylistSize();
+    if ( ( sips >= m_minPlaylistSize ) && ( sips <= m_maxPlaylistSize ) ) {
+        m_suggestedPlaylistSize = sips;
     }
+    
+    emit totalSteps( m_maxGenerations );
 
-    emit totalSteps( m_maxCoolingIterations );
-
-    // SIMULATED ANNEALING LOOP
-    int cooliter = 0;
-    double satisfaction = m_constraintTreeRoot->satisfaction( m_solvedPlaylist );
-    double temperature = m_qualityFactor * ( 1.0 - satisfaction );
-    while ( ( satisfaction < m_satisfactionThreshold ) && ( cooliter++ < m_maxCoolingIterations ) && ( !m_abortRequested ) ) {
-        if ( ( cooliter % 25 ) == 0 ) {
-            debug() << "step" << cooliter << "satisfaction" << satisfaction << "temperature" << temperature << "entropy" << m_playlistEntropy;
-        }
-
-        int mutationiter = 0;
-        while ( ( satisfaction < m_satisfactionThreshold ) && ( mutationiter++ < m_maxMutationIterations ) && ( !m_abortRequested ) ) {
-            if ( ( KRandom::random() % 10 ) < 8 ) // TODO: vary voting weight according to satisfaction
-                satisfaction += mutateRandom( temperature );
-            else
-                satisfaction += mutateByVote( temperature );
-        }
-
-        int swapiter = 0;
-        while ( ( satisfaction < m_satisfactionThreshold ) && ( swapiter++ < m_maxSwapIterations ) && ( !m_abortRequested ) ) {
-            satisfaction += improveBySwapping();
-        }
-
-        // internal safety check
-        // failure means that (at least) one of constraints has incorrect math in the delta functions or the internal state update functions
-        double oldsatisfaction = satisfaction;
-        satisfaction = m_constraintTreeRoot->satisfaction( m_solvedPlaylist );
-        if ( fabs( oldsatisfaction - satisfaction ) > 1e-9 ) {
-            warning() << "satisfaction disparity! expected:" << oldsatisfaction << "but true:" << satisfaction;
-        }
-
-        // cool the temperature
-        if ( m_playlistEntropy > 0.0 ) {
-            temperature = m_qualityFactor * (( 1.0 - satisfaction ) / m_playlistEntropy );
+    // GENETIC ALGORITHM LOOP
+    Population population;
+    quint32 generation = 0;
+    Meta::TrackList* best = NULL;
+    while ( !m_abortRequested && ( generation < m_maxGenerations ) ) {
+        fill_population( population );
+        best = find_best( population );
+        if ( population.value( best ) < m_satisfactionThreshold ) {
+            select_population( population, best );
+            mutate_population( population );
+            generation++;
+            emit incrementProgress();
         } else {
-            temperature = m_qualityFactor * ( 1.0 - satisfaction );
+            break;
         }
-
-        emit incrementProgress();
     }
+    debug() << "solution at" << (void*)(best);
+    
+    m_solvedPlaylist = best->mid( 0 );
+    m_finalSatisfaction = m_constraintTreeRoot->satisfaction( m_solvedPlaylist );
 
 #ifndef KDE_NO_DEBUG_OUTPUT
     m_constraintTreeRoot->audit( m_solvedPlaylist );
 #endif
 
-    if ( !m_abortRequested ) {
-        debug() << "ConstraintSolver" << m_serialNumber << "finished with satisfaction" << satisfaction;
-        m_finalSatisfaction = satisfaction;
-    } else {
-        debug() << "ConstraintSolver" << m_serialNumber << "aborted";
-        m_finalSatisfaction = 0.0;
-        m_solvedPlaylist.clear();
+    /* clean up */
+    Population::iterator it = population.begin();
+    while ( it != population.end() ) {
+        delete it.key();
+        it = population.erase( it );
     }
 
     emit endProgressOperation( this );
@@ -238,8 +207,7 @@ APG::ConstraintSolver::receiveQueryMakerDone()
 
     if (( m_domain.size() > 0 ) || m_domainReductionFailed ) {
         if ( m_domain.size() <= 0 ) {
-            Amarok::Components::logger()->shortMessage(
-                    i18n("The playlist generator failed to load any tracks from the collection.") );
+            Amarok::Components::logger()->shortMessage( i18n("The playlist generator failed to load any tracks from the collection.") );
         }
         m_readyToRun = true;
         emit readyToRun();
@@ -262,156 +230,185 @@ APG::ConstraintSolver::receiveQueryMakerDone()
     }
 }
 
+void
+APG::ConstraintSolver::fill_population( Population& population )
+{
+    for ( int i = population.size(); quint32(i) < m_populationSize; i++ ) {
+        Meta::TrackList* tl = new Meta::TrackList( sample( m_domain, playlist_size() ) );
+        double s = m_constraintTreeRoot->satisfaction( (*tl) );
+        population.insert( tl, s );
+    }
+}
+
+Meta::TrackList* APG::ConstraintSolver::find_best(const APG::ConstraintSolver::Population& population ) const
+{
+    Population::const_iterator it = std::max_element( population.constBegin(), population.constEnd(), &pop_comp );
+    return it.key();
+}
+
+void
+APG::ConstraintSolver::select_population( APG::ConstraintSolver::Population& population, Meta::TrackList* best )
+{
+    Population::Iterator it = population.begin();
+    while ( it != population.end() ) {
+        if ( it.key() == best ) {
+            ++it;// Always keep the best solution, no matter how bad it is
+        }
+        
+        if ( select( it.value() ) ) {
+            ++it;
+        } else {
+            delete it.key();
+            it = population.erase( it );
+        }
+    }
+}
+
+void
+APG::ConstraintSolver::mutate_population( APG::ConstraintSolver::Population& population )
+{
+    if ( population.size() < 1 )
+        return;
+    
+    const double mutantPercentage = 0.35; // TODO: tune this parameter
+    
+    QList<Meta::TrackList*> parents( population.keys() );
+    int maxMutants = (int)( mutantPercentage * (double)(m_populationSize) );
+    for ( int i = parents.size(); i < maxMutants; i++ ) {
+        int idx = KRandom::random() % parents.size();
+        Meta::TrackList* child = new Meta::TrackList( *(parents.at( idx )) );
+        int op = KRandom::random() % 5;
+        int s = child->size();
+        switch (op) {
+            case 0:
+                child->removeAt( KRandom::random() % s );
+            case 1:
+                child->insert( KRandom::random() % ( s + 1 ), random_track_from_domain() );
+            case 2:
+                child->replace( KRandom::random() % s, random_track_from_domain() );
+            case 3:
+                child->swap( KRandom::random() % s, KRandom::random() % s );
+            case 4:
+                child = crossover( child, parents.at( KRandom::random() % parents.size() ) );
+            default:
+                (void)0; // effectively a no-op. the default is here so that the compiler doesn't complain about missing default in switch
+        }
+        population.insert( child, m_constraintTreeRoot->satisfaction( *child ) );
+    }
+    return;
+}
+
+Meta::TrackList*
+APG::ConstraintSolver::crossover( Meta::TrackList* top, Meta::TrackList* bot ) const
+{
+    const double crossoverPt = 0.5; // TODO: choose different values
+
+    int topV = (int)( crossoverPt * (double)top->size() );
+    int botV = (int)( crossoverPt * (double)bot->size() );
+
+    Meta::TrackList* newlist = new Meta::TrackList( top->mid( 0, topV ) );
+    newlist->append( bot->mid( botV ) );
+
+    delete top;
+    return newlist;
+}
+
+bool
+APG::ConstraintSolver::pop_comp( double a, double b )
+{
+    return ( a < b );
+}
+
 Meta::TrackPtr
-APG::ConstraintSolver::randomTrackFromDomain() const
+APG::ConstraintSolver::random_track_from_domain() const
 {
     return m_domain.at( KRandom::random() % m_domain.size() );
 }
 
-double
-APG::ConstraintSolver::mutateRandom( const double temperature )
+Meta::TrackList
+APG::ConstraintSolver::sample( Meta::TrackList domain, const int sampleSize ) const
 {
-    int op = KRandom::random() % 3;
-    Meta::TrackPtr t = randomTrackFromDomain();
-    int place = 0;
-    double satisfactionDelta = 0.0;
-    bool changeFailed = false;
-    // Test the change
-    switch ( op ) {
-        case 0:
-            if ( m_solvedPlaylist.size() < m_maxPlaylistSize ) {
-                place = KRandom::random() % ( m_solvedPlaylist.size() + 1 );
-                satisfactionDelta = m_constraintTreeRoot->deltaS_insert( m_solvedPlaylist, t, place );
-            } else {
-                changeFailed = true;
-            }
-            break;
-        case 1:
-            place = KRandom::random() % ( m_solvedPlaylist.size() );
-            satisfactionDelta = m_constraintTreeRoot->deltaS_replace( m_solvedPlaylist, t, place );
-            break;
-        case 2:
-            if ( m_solvedPlaylist.size() > m_minPlaylistSize ) {
-                place = KRandom::random() % ( m_solvedPlaylist.size() );
-                satisfactionDelta = m_constraintTreeRoot->deltaS_delete( m_solvedPlaylist, place );
-            } else {
-                changeFailed = true;
-            }
-            break;
-    }
+    std::random_shuffle( domain.begin(), domain.end() );
+    return domain.mid( 0, sampleSize );
+}
 
-    if ( changeFailed ) {
-        return 0.0;
-    }
+quint32
+APG::ConstraintSolver::playlist_size() const
+{
+    quint32 size = 0;
+    do {
+        size = rng_poisson( (double)m_suggestedPlaylistSize );
+    } while ( ( size < m_minPlaylistSize ) || ( size > m_maxPlaylistSize ) );
+    return size;
+}
 
-    // test if it's acceptable
-    double decisionFactor = ( double )KRandom::random() / ( double )RAND_MAX;
-    double acceptance = qMin( 1.0, exp( satisfactionDelta / temperature ) );
+bool
+APG::ConstraintSolver::select( const double satisfaction ) const
+{
+    double x = (double)KRandom::random()/(double)RAND_MAX;
+    const double scale = -30.0; // TODO: make adjustable
+    return ( x < 1.0 / ( 1.0 + exp( scale * (satisfaction-0.8) ) ) );
+}
 
-    // make the change if it's acceptable
-    if ( decisionFactor < acceptance ) {
-        switch ( op ) {
-        case ConstraintNode::OperationInsert:
-            m_constraintTreeRoot->insertTrack( m_solvedPlaylist, t, place );
-            m_solvedPlaylist.insert( place, t );
-            break;
-        case ConstraintNode::OperationReplace:
-            m_constraintTreeRoot->replaceTrack( m_solvedPlaylist, t, place );
-            m_solvedPlaylist.replace( place, t );
-            break;
-        case ConstraintNode::OperationDelete:
-            m_constraintTreeRoot->deleteTrack( m_solvedPlaylist, place );
-            m_solvedPlaylist.removeAt( place );
-            break;
+void
+APG::ConstraintSolver::dump_population( const Population& population ) const
+{
+    DEBUG_BLOCK
+    for ( Population::ConstIterator it = population.constBegin(); it != population.constEnd(); ++it ) {
+        Meta::TrackList* tl = it.key();
+        debug() << "at" << (void*)(tl) << "satisfaction:" << it.value();
+        foreach ( Meta::TrackPtr t, (*tl) ) {
+            debug() << "\ttrack:" << t->prettyName();
         }
-        m_playlistEntropy -= log( acceptance );
-        return satisfactionDelta;
-    } else {
-        return 0.0;
     }
 }
 
 double
-APG::ConstraintSolver::mutateByVote( const double temperature )
+APG::ConstraintSolver::rng_gaussian( const double mu, const double sigma ) const
 {
-    ConstraintNode::Vote* vote = m_constraintTreeRoot->vote( m_solvedPlaylist, m_domain );
-    if ( vote == 0 )
-        return 0.0;
+    /* adapted from randist/gauss.c in GNU Scientific Library 1.14 */
+    double u, v, x, y, Q;
+    const double  s =  0.449871;
+    const double  t = -0.386595;
+    const double  a =  0.19600;
+    const double  b =  0.25472;
+    const double r1 =  0.27597;
+    const double r2 =  0.27846;
 
-    // perform the operation chosen by voting
-    bool changeFailed = false;
-    double satisfactionDelta = 0.0;
-    switch ( vote->operation ) {
-        case ConstraintNode::OperationInsert:
-            if ( m_solvedPlaylist.size() < m_maxPlaylistSize ) {
-                satisfactionDelta = m_constraintTreeRoot->deltaS_insert( m_solvedPlaylist, vote->track, vote->place );
-            } else {
-                changeFailed = true;
-            }
-            break;
-        case ConstraintNode::OperationReplace:
-            satisfactionDelta = m_constraintTreeRoot->deltaS_replace( m_solvedPlaylist, vote->track, vote->place );
-            break;
-        case ConstraintNode::OperationDelete:
-            if ( m_solvedPlaylist.size() > m_minPlaylistSize ) {
-                satisfactionDelta = m_constraintTreeRoot->deltaS_delete( m_solvedPlaylist, vote->place );
-            } else {
-                changeFailed = true;
-            }
-            break;
-        case ConstraintNode::OperationSwap:
-            satisfactionDelta = m_constraintTreeRoot->deltaS_swap( m_solvedPlaylist, vote->place, vote->other );
-            break;
+    do {
+        u = 1 - rng_uniform();
+        v = ( rng_uniform() - 0.5 ) * 1.7156;
+        x = u - s;
+        y = fabs (v) - t;
+        Q = x * x + y * (a * y - b * x);
+    } while (Q >= r1 && (Q > r2 || v * v > -4 * u * u * log (u)));
+
+    return mu + ( sigma * (v / u) );
+}
+
+quint32
+APG::ConstraintSolver::rng_poisson( const double mu ) const
+{
+    if ( mu >= 25.0 ) {
+        double v = rng_gaussian( mu, sqrt( mu ) );
+        return ( v < 0.0 ) ? 0 : (quint32)v;
     }
 
-    if ( changeFailed )
-        return 0.0;
+    const double emu = exp( -mu );
+    double prod = 1.0;
+    quint32 k = 0;
 
-    // test if it's acceptable
-    double decisionFactor = ( double )KRandom::random() / ( double )RAND_MAX;
-    double acceptance = qMin( 1.0, exp( satisfactionDelta / temperature ) );
-
-    // make the change if it's acceptable
-    if ( decisionFactor < acceptance ) {
-        switch ( vote->operation ) {
-            case ConstraintNode::OperationInsert:
-                m_constraintTreeRoot->insertTrack( m_solvedPlaylist, vote->track, vote->place );
-                m_solvedPlaylist.insert( vote->place, vote->track );
-                break;
-            case ConstraintNode::OperationReplace:
-                m_constraintTreeRoot->replaceTrack( m_solvedPlaylist, vote->track, vote->place );
-                m_solvedPlaylist.replace( vote->place, vote->track );
-                break;
-            case ConstraintNode::OperationDelete:
-                m_constraintTreeRoot->deleteTrack( m_solvedPlaylist, vote->place );
-                m_solvedPlaylist.removeAt( vote->place );
-                break;
-            case ConstraintNode::OperationSwap:
-                m_constraintTreeRoot->swapTracks( m_solvedPlaylist, vote->place, vote->other );
-                m_solvedPlaylist.swap( vote->place, vote->other );
-                break;
-        }
-        m_playlistEntropy -= log( acceptance );
-        return satisfactionDelta;
-    } else {
-        return 0.0;
+    do {
+        prod *= rng_uniform();
+        k++;
     }
+    while ( prod > emu );
+
+    return k - 1;
 }
 
 double
-APG::ConstraintSolver::improveBySwapping()
+APG::ConstraintSolver::rng_uniform() const
 {
-    int i = KRandom::random() % ( m_solvedPlaylist.size() );
-    int j = KRandom::random() % ( m_solvedPlaylist.size() );
-    if ( m_solvedPlaylist[i] == m_solvedPlaylist[j] ) {
-        return 0.0;
-    }
-
-    double satisfactionDelta = m_constraintTreeRoot->deltaS_swap( m_solvedPlaylist, i, j );
-    if ( satisfactionDelta >= 0.0 ) {
-        m_constraintTreeRoot->swapTracks( m_solvedPlaylist, i, j );
-        m_solvedPlaylist.swap( i, j );
-        return satisfactionDelta;
-    }
-    return 0.0;
+    return ( (double)KRandom::random() / (double)(RAND_MAX) );
 }

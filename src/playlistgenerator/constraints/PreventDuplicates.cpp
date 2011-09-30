@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,11 +20,11 @@
 #include "playlistgenerator/Constraint.h"
 #include "playlistgenerator/ConstraintFactory.h"
 
-#include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 
 #include <QtGlobal>
+#include <QSet>
 
 #include <math.h>
 
@@ -57,7 +57,6 @@ ConstraintTypes::PreventDuplicates::registerMe()
 
 ConstraintTypes::PreventDuplicates::PreventDuplicates( QDomElement& xmlelem, ConstraintNode* p )
         : Constraint( p )
-        , m_counterPtr( 0 )
 {
     DEBUG_BLOCK
     QDomAttr a;
@@ -72,7 +71,6 @@ ConstraintTypes::PreventDuplicates::PreventDuplicates( QDomElement& xmlelem, Con
 ConstraintTypes::PreventDuplicates::PreventDuplicates( ConstraintNode* p )
         : Constraint( p )
         , m_field( DupeTrack )
-        , m_counterPtr( 0 )
 {
     DEBUG_BLOCK
     debug() << "new default PreventDuplicates";
@@ -109,101 +107,91 @@ ConstraintTypes::PreventDuplicates::getName() const
     return QString();
 }
 
-Collections::QueryMaker*
-ConstraintTypes::PreventDuplicates::initQueryMaker( Collections::QueryMaker* qm ) const
-{
-    return qm;
-}
-
 double
-ConstraintTypes::PreventDuplicates::satisfaction( const Meta::TrackList& tl )
+ConstraintTypes::PreventDuplicates::satisfaction( const Meta::TrackList& tl ) const
 {
-    delete m_counterPtr;
-
+    int d = 0;
+    QSet<Meta::TrackPtr> tracks;
+    QSet<Meta::AlbumPtr> albums;
+    QSet<Meta::ArtistPtr> artists;
     switch ( m_field ) {
         case DupeTrack:
-            m_counterPtr = new TrackDuplicateCounter( tl );
-            break;
-        case DupeArtist:
-            m_counterPtr = new ArtistDuplicateCounter( tl );
+            foreach( Meta::TrackPtr t, tl ) {
+                if ( tracks.contains(t) ) {
+                    d++;
+                } else {
+                    tracks.insert(t);
+                }
+            }
             break;
         case DupeAlbum:
-            m_counterPtr = new AlbumDuplicateCounter( tl );
+            foreach( Meta::TrackPtr t, tl ) {
+                if ( albums.contains(t->album()) ) {
+                    d++;
+                } else {
+                    albums.insert(t->album());
+                }
+            }
+            break;
+        case DupeArtist:
+            foreach( Meta::TrackPtr t, tl ) {
+                if ( artists.contains(t->artist()) ) {
+                    d++;
+                } else {
+                    artists.insert(t->artist());
+                }
+            }
             break;
     }
-
-    m_dupeCount = m_counterPtr->count();
-    return penalty( m_dupeCount );
-}
-
-double
-ConstraintTypes::PreventDuplicates::deltaS_insert( const Meta::TrackList&, const Meta::TrackPtr t, const int ) const
-{
-    int newcount = m_dupeCount + m_counterPtr->insertionDelta( t );
-    return penalty( newcount ) - penalty( m_dupeCount );
-}
-
-double
-ConstraintTypes::PreventDuplicates::deltaS_replace( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i ) const
-{
-    int newcount = m_dupeCount + m_counterPtr->insertionDelta( t ) + m_counterPtr->deletionDelta( tl.at( i ) );
-    return penalty( newcount ) - penalty( m_dupeCount );
-}
-
-double
-ConstraintTypes::PreventDuplicates::deltaS_delete( const Meta::TrackList& tl, const int i ) const
-{
-    int newcount = m_dupeCount + m_counterPtr->deletionDelta( tl.at( i ) );
-    return penalty( newcount ) - penalty( m_dupeCount );
-}
-
-double
-ConstraintTypes::PreventDuplicates::deltaS_swap( const Meta::TrackList&, const int, const int ) const
-{
-    return 0.0;
-}
-
-void
-ConstraintTypes::PreventDuplicates::insertTrack( const Meta::TrackList&, const Meta::TrackPtr t, const int )
-{
-    m_counterPtr->insertTrack( t );
-    m_dupeCount = m_counterPtr->count();
-}
-
-void
-ConstraintTypes::PreventDuplicates::replaceTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i )
-{
-    m_counterPtr->deleteTrack( tl.at( i ) );
-    m_counterPtr->insertTrack( t );
-    m_dupeCount = m_counterPtr->count();
-}
-
-void
-ConstraintTypes::PreventDuplicates::deleteTrack( const Meta::TrackList& tl, const int i )
-{
-    m_counterPtr->deleteTrack( tl.at( i ) );
-    m_dupeCount = m_counterPtr->count();
-}
-
-void
-ConstraintTypes::PreventDuplicates::swapTracks( const Meta::TrackList&, const int, const int )
-{
-}
-
-ConstraintNode::Vote*
-ConstraintTypes::PreventDuplicates::vote( const Meta::TrackList&, const Meta::TrackList& ) const
-{
-    ConstraintNode::Vote* v = 0;
-
-    // TODO: voting for a delete or replace is probably useful, but not yet implemented
-
-    return v;
+            
+    return exp( (double)d / -3.0 );
 }
 
 #ifndef KDE_NO_DEBUG_OUTPUT
 void
-ConstraintTypes::PreventDuplicates::audit( const Meta::TrackList& ) const
+ConstraintTypes::PreventDuplicates::audit( const Meta::TrackList& tl ) const
 {
+    QHash<Meta::TrackPtr, int> tracks;
+    QHash<Meta::AlbumPtr, int> albums;
+    QHash<Meta::ArtistPtr, int> artists;
+    switch ( m_field ) {
+        case DupeTrack:
+            foreach( Meta::TrackPtr t, tl ) {
+                if ( tracks.contains(t) ) {
+                    tracks.insert(t, tracks.value(t) + 1);
+                } else {
+                    tracks.insert(t, 0);
+                }
+            }
+            foreach( Meta::TrackPtr t, tracks.keys() ) {
+                debug() << t->prettyName() << ": " << tracks.value(t);
+            }
+            break;
+        case DupeAlbum:
+            foreach( Meta::TrackPtr t, tl ) {
+                if ( albums.contains( t->album() ) ) {
+                    albums.insert( t->album(), albums.value(t->album()) + 1 );
+                } else {
+                    albums.insert( t->album(), 0 );
+                }
+            }
+            foreach( Meta::AlbumPtr a, albums.keys() ) {
+                debug() << a->prettyName() << ": " << albums.value(a);
+            }
+            break;
+        case DupeArtist:
+            foreach( Meta::TrackPtr t, tl ) {
+                if ( artists.contains( t->artist() ) ) {
+                    artists.insert( t->artist(), artists.value(t->artist()) + 1 );
+                } else {
+                    artists.insert( t->artist(), 0 );
+                }
+            }
+            foreach( Meta::ArtistPtr a, artists.keys() ) {
+                debug() << a->prettyName() << ": " << artists.value(a);
+            }
+            break;
+    }
 }
 #endif
 
@@ -214,242 +202,6 @@ ConstraintTypes::PreventDuplicates::setField( const int c )
     emit dataChanged();
 }
 
-double
-ConstraintTypes::PreventDuplicates::penalty( const int d ) const
-{
-    return exp( (double)d / -3.0 );
-}
-
-/******************************
- * ABC for duplicate counts   *
- ******************************/
-
-ConstraintTypes::PreventDuplicates::DuplicateCounter::DuplicateCounter() : m_duplicateCount( 0 )
-{
-}
-
-// track duplicates
-ConstraintTypes::PreventDuplicates::TrackDuplicateCounter::TrackDuplicateCounter( const Meta::TrackList& tl )
-            : PreventDuplicates::DuplicateCounter()
-{
-    foreach ( const Meta::TrackPtr& t, tl ) {
-        if ( m_trackCounts.contains(t) ) {
-            m_duplicateCount++;
-            m_trackCounts[t]++;
-        } else {
-            m_trackCounts.insert( t, 1 );
-        }
-    }
-}
-
-int
-ConstraintTypes::PreventDuplicates::TrackDuplicateCounter::insertionDelta( const Meta::TrackPtr t ) const
-{
-    if ( m_trackCounts.contains(t) && ( m_trackCounts.value(t) > 0 ) )
-        return 1;
-    else
-        return 0;
-}
-
-int
-ConstraintTypes::PreventDuplicates::TrackDuplicateCounter::deletionDelta( const Meta::TrackPtr t ) const
-{
-    if ( m_trackCounts.contains(t) && ( m_trackCounts.value(t) > 1 ) )
-        return -1;
-    else
-        return 0;
-}
-
-void
-ConstraintTypes::PreventDuplicates::TrackDuplicateCounter::insertTrack( const Meta::TrackPtr t )
-{
-    if ( m_trackCounts.contains(t) ) {
-        if ( m_trackCounts.value(t) > 0 )
-            m_duplicateCount++;
-        m_trackCounts[t]++;
-    } else {
-        m_trackCounts.insert( t, 1 );
-    }
-}
-
-void
-ConstraintTypes::PreventDuplicates::TrackDuplicateCounter::deleteTrack( const Meta::TrackPtr t )
-{
-    if ( m_trackCounts.value(t) > 1)
-        m_duplicateCount--;
-
-    m_trackCounts[t]--;
-}
-
-int
-ConstraintTypes::PreventDuplicates::TrackDuplicateCounter::trackCount( const Meta::TrackPtr t ) const
-{
-    return m_trackCounts.value( t );
-}
-
-// album duplicates
-ConstraintTypes::PreventDuplicates::AlbumDuplicateCounter::AlbumDuplicateCounter( const Meta::TrackList& tl )
-            : PreventDuplicates::DuplicateCounter()
-{
-    foreach ( const Meta::TrackPtr& t, tl ) {
-        Meta::AlbumPtr a = t->album();
-        if ( a == Meta::AlbumPtr() )
-            continue;
-
-        if ( m_albumCounts.contains(a) ) {
-            m_duplicateCount++;
-            m_albumCounts[a]++;
-        } else {
-            m_albumCounts.insert( a, 1 );
-        }
-    }
-}
-
-int
-ConstraintTypes::PreventDuplicates::AlbumDuplicateCounter::insertionDelta( const Meta::TrackPtr t ) const
-{
-    Meta::AlbumPtr a = t->album();
-    if ( a == Meta::AlbumPtr() )
-        return 0;
-
-    if ( m_albumCounts.contains(a) && ( m_albumCounts.value(a) > 0 ) )
-        return 1;
-    else
-        return 0;
-}
-
-int
-ConstraintTypes::PreventDuplicates::AlbumDuplicateCounter::deletionDelta( const Meta::TrackPtr t ) const
-{
-    Meta::AlbumPtr a = t->album();
-    if ( a == Meta::AlbumPtr() )
-        return 0;
-
-    if ( m_albumCounts.contains(a) && ( m_albumCounts.value(a) > 1 ) )
-        return -1;
-    else
-        return 0;
-}
-
-void
-ConstraintTypes::PreventDuplicates::AlbumDuplicateCounter::insertTrack( const Meta::TrackPtr t )
-{
-    Meta::AlbumPtr a = t->album();
-    if ( a == Meta::AlbumPtr() )
-        return;
-
-    if ( m_albumCounts.contains(a) ) {
-        if ( m_albumCounts.value(a) > 0 )
-            m_duplicateCount++;
-        m_albumCounts[a]++;
-    } else {
-        m_albumCounts.insert( a, 1 );
-    }
-}
-
-void
-ConstraintTypes::PreventDuplicates::AlbumDuplicateCounter::deleteTrack( const Meta::TrackPtr t )
-{
-    Meta::AlbumPtr a = t->album();
-    if ( a == Meta::AlbumPtr() )
-        return;
-
-    if ( m_albumCounts.value(a) > 1)
-        m_duplicateCount--;
-
-    m_albumCounts[a]--;
-}
-
-int
-ConstraintTypes::PreventDuplicates::AlbumDuplicateCounter::trackCount( const Meta::TrackPtr t ) const
-{
-    if ( t->album() == Meta::AlbumPtr() )
-        return 0;
-
-    return m_albumCounts.value( t->album() );
-}
-
-// artist duplicates
-ConstraintTypes::PreventDuplicates::ArtistDuplicateCounter::ArtistDuplicateCounter( const Meta::TrackList& tl )
-            : PreventDuplicates::DuplicateCounter()
-{
-    foreach ( const Meta::TrackPtr& t, tl ) {
-        Meta::ArtistPtr a = t->artist();
-        if ( a == Meta::ArtistPtr() )
-            continue;
-
-        if ( m_artistCounts.contains(a) ) {
-            m_duplicateCount++;
-            m_artistCounts[a]++;
-        } else {
-            m_artistCounts.insert( a, 1 );
-        }
-    }
-}
-
-int
-ConstraintTypes::PreventDuplicates::ArtistDuplicateCounter::insertionDelta( const Meta::TrackPtr t ) const
-{
-    Meta::ArtistPtr a = t->artist();
-    if ( a == Meta::ArtistPtr() )
-        return 0;
-
-    if ( m_artistCounts.contains(a) && ( m_artistCounts.value(a) > 0 ) )
-        return 1;
-    else
-        return 0;
-}
-
-int
-ConstraintTypes::PreventDuplicates::ArtistDuplicateCounter::deletionDelta( const Meta::TrackPtr t ) const
-{
-    Meta::ArtistPtr a = t->artist();
-    if ( a == Meta::ArtistPtr() )
-        return 0;
-
-    if ( m_artistCounts.contains(a) && ( m_artistCounts.value(a) > 1 ) )
-        return -1;
-    else
-        return 0;
-}
-
-void
-ConstraintTypes::PreventDuplicates::ArtistDuplicateCounter::insertTrack( const Meta::TrackPtr t )
-{
-    Meta::ArtistPtr a = t->artist();
-    if ( a == Meta::ArtistPtr() )
-        return;
-
-    if ( m_artistCounts.contains(a) ) {
-        if ( m_artistCounts.value(a) > 0 )
-            m_duplicateCount++;
-        m_artistCounts[a]++;
-    } else {
-        m_artistCounts.insert( a, 1 );
-    }
-}
-
-void
-ConstraintTypes::PreventDuplicates::ArtistDuplicateCounter::deleteTrack( const Meta::TrackPtr t )
-{
-    Meta::ArtistPtr a = t->artist();
-    if ( a == Meta::ArtistPtr() )
-        return;
-
-    if ( m_artistCounts.value(a) > 1)
-        m_duplicateCount--;
-
-    m_artistCounts[a]--;
-}
-
-int
-ConstraintTypes::PreventDuplicates::ArtistDuplicateCounter::trackCount( const Meta::TrackPtr t ) const
-{
-    if ( t->artist() == Meta::ArtistPtr() )
-        return 0;
-
-    return m_artistCounts.value( t->artist() );
-}
 
 /******************************
  * Edit Widget                *

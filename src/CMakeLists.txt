@@ -544,15 +544,12 @@ set(apg_SRCS
     playlistgenerator/ConstraintFactory.cpp
     playlistgenerator/ConstraintNode.cpp
     playlistgenerator/ConstraintSolver.cpp
-    playlistgenerator/ConstraintTester.cpp
-    playlistgenerator/ConstraintTestWrapper.cpp
     playlistgenerator/Preset.cpp
     playlistgenerator/PresetEditDialog.cpp
     playlistgenerator/PresetModel.cpp
     playlistgenerator/TreeController.cpp
     playlistgenerator/TreeModel.cpp
     playlistgenerator/constraints/Checkpoint.cpp
-    playlistgenerator/constraints/CheckpointSupport.cpp
     playlistgenerator/constraints/Matching.cpp
     playlistgenerator/constraints/PlaylistDuration.cpp
     playlistgenerator/constraints/PlaylistLength.cpp
