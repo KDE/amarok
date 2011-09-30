@@ -334,6 +334,7 @@ set(collection_SRCS
 # SCANNER
 #####################################################################
 set( scanner_SRCS
+    scanner/GenericScanManager.cpp
     ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Album.cpp
     ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/BatchFile.cpp
     ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Directory.cpp
