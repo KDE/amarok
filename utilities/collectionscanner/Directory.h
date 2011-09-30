@@ -29,6 +29,12 @@
 #include "Playlist.h"
 #include "Album.h"
 
+#ifndef UTILITIES_BUILD
+    #include "amarok_export.h"
+#else
+    #define AMAROK_EXPORT
+#endif
+
 class QSettings;
 
 namespace CollectionScanner
@@ -41,7 +47,7 @@ class ScanningState;
  * @class Directory
  * @short Represents a scanned directory and it's contents
  */
-class Directory
+class AMAROK_EXPORT Directory
 {
 public:
 #ifdef UTILITIES_BUILD

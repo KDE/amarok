@@ -28,6 +28,11 @@
 #include "shared/FileType.h"
 #include "shared/MetaReplayGain.h"
 
+#ifndef UTILITIES_BUILD
+    #include "amarok_export.h"
+#else
+    #define AMAROK_EXPORT
+#endif
 
 namespace CollectionScanner
 {
@@ -39,7 +44,7 @@ class Directory;
    @short Represents a scanned track
    An empty QString or a negative int means that the value is unset.
  */
-class Track
+class AMAROK_EXPORT Track
 {
 public:
     /** Reads a track from the given path */

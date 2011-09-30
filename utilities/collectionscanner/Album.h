@@ -28,6 +28,12 @@
 
 #include "Track.h"
 
+#ifndef UTILITIES_BUILD
+    #include "amarok_export.h"
+#else
+    #define AMAROK_EXPORT
+#endif
+
 namespace CollectionScanner
 {
 
@@ -36,7 +42,7 @@ namespace CollectionScanner
     @short Represents a scanned album and it's contents
     @author Ralf Engels <ralf-engels@gmx.de>
 */
-class Album
+class AMAROK_EXPORT Album
 {
 public:
     Album();

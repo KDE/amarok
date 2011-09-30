@@ -24,6 +24,12 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#ifndef UTILITIES_BUILD
+    #include "amarok_export.h"
+#else
+    #define AMAROK_EXPORT
+#endif
+
 namespace CollectionScanner
 {
 
@@ -32,7 +38,7 @@ namespace CollectionScanner
  * @short Represents a playlist
  */
 
-class Playlist
+class AMAROK_EXPORT Playlist
 {
 public:
     Playlist( const QString &path );

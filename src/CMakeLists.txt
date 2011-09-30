@@ -331,10 +331,19 @@ set(collection_SRCS
 )
 
 #####################################################################
+# SCANNER
+#####################################################################
+set( scanner_SRCS
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Album.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/BatchFile.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Directory.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Playlist.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Track.cpp
+)
+
+#####################################################################
 # CONTEXT
 #####################################################################
-#
-
 set( libcontextview_SRCS
     context/Applet.cpp
     context/Containment.cpp
@@ -610,6 +619,7 @@ set(amaroklib_LIB_SRCS
     ${core_interfaces_SRCS}
     ${apg_SRCS}
     ${collection_SRCS}
+    ${scanner_SRCS}
     ${mac_SRCS}
     ${network_access_SRCS}
     ${libplaylistbrowser_SRCS}

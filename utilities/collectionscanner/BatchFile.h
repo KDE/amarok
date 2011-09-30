@@ -25,6 +25,11 @@
 #include <QPair>
 #include <QList>
 
+#ifndef UTILITIES_BUILD
+    #include "amarok_export.h"
+#else
+    #define AMAROK_EXPORT
+#endif
 
 namespace CollectionScanner
 {
@@ -35,7 +40,7 @@ namespace CollectionScanner
  * @short This class can be used to read and write batch files for the collection scanner.
  */
 
-class BatchFile
+class AMAROK_EXPORT BatchFile
 {
 public:
     /** Constructs and empty BatchFile */
