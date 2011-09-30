@@ -164,6 +164,8 @@ APG::ConstraintSolver::run()
         m_solvedPlaylist += m_domain.mid( 0, 30 );
     }
 
+    emit totalSteps( m_maxCoolingIterations );
+
     // SIMULATED ANNEALING LOOP
     int cooliter = 0;
     double satisfaction = m_constraintTreeRoot->satisfaction( m_solvedPlaylist );
@@ -216,6 +218,8 @@ APG::ConstraintSolver::run()
         m_finalSatisfaction = 0.0;
         m_solvedPlaylist.clear();
     }
+
+    emit endProgressOperation( this );
 }
 
 void

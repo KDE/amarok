@@ -53,7 +53,6 @@ namespace APG {
 
         signals:
             void lock( bool );
-            void endProgressOperation( QObject * );
 
         private slots:
             void queueSolver();

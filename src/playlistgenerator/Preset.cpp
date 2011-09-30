@@ -126,13 +126,8 @@ void APG::Preset::queueSolver() {
     emit lock( true );
 
     ConstraintSolver* s = static_cast<ConstraintSolver*>( sender() );
-    Amarok::Components::logger()->newProgressOperation( s, i18n("Generating a new playlist"), 100,
-                                                        s, SLOT(requestAbort()) );
-
-    //TODO: port to Amarok::Logger signals
-//    connect( s, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ) );
-//    connect( s, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( solverFinished( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
-//    Amarok::Components::logger()->setProgressTotalSteps( s, s->iterationCount() );
+    Amarok::Components::logger()->newProgressOperation( s, i18n("Generating a new playlist"), s->iterationCount(), s, SLOT(requestAbort()) );
+    connect( s, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( solverFinished( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
 
     m_constraintTreeRoot->addChild( ConstraintTypes::TrackSpreader::createNew( m_constraintTreeRoot ), 0 ); // private mandatory constraint
 
@@ -145,7 +140,6 @@ APG::Preset::solverFinished( ThreadWeaver::Job* job )
     m_constraintTreeRoot->removeChild( 0 ); // remove the TrackSpreader
 
     ConstraintSolver* solver = static_cast<ConstraintSolver*>( job );
-    emit endProgressOperation( solver );
     if ( job->success() ) {
         debug() << "Solver" << solver->serial() << "finished successfully";
         if ( solver->finalSatisfaction() < solver->satisfactionThreshold() ) {

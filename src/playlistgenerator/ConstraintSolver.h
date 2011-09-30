@@ -55,6 +55,8 @@ namespace APG {
         signals:
             void readyToRun();
             void incrementProgress();
+            void totalSteps( int );
+            void endProgressOperation( QObject* );
 
         protected:
             void run(); // from ThreadWeaver::Job
