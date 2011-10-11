@@ -126,7 +126,7 @@ void APG::Preset::queueSolver() {
     emit lock( true );
 
     ConstraintSolver* s = static_cast<ConstraintSolver*>( sender() );
-    Amarok::Components::logger()->newProgressOperation( s, i18n("Generating a new playlist"), s->iterationCount(), s, SLOT(requestAbort()) );
+    Amarok::Components::logger()->newProgressOperation( s, i18n("Generating a new playlist"), s->iterationCount(), s, SLOT(requestAbort()), Qt::QueuedConnection );
     connect( s, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( solverFinished( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
 
     m_constraintTreeRoot->addChild( ConstraintTypes::TrackSpreader::createNew( m_constraintTreeRoot ), 0 ); // private mandatory constraint
