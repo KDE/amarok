@@ -155,6 +155,13 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
              this, SLOT( slotRemoveFormat() ) );
     connect( updatePresetButton, SIGNAL( clicked( bool ) ),
              this, SLOT( slotUpdateFormat() ) );
+
+    connect( spaceCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
+    connect( ignoreTheCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
+    connect( vfatCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
+    connect( asciiCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
+    connect( regexpEdit, SIGNAL(editingFinished()), SIGNAL(schemeChanged()) );
+    connect( replaceEdit, SIGNAL(editingFinished()), SIGNAL(schemeChanged()) );
 }
 
 //Stores the configuration when the dialog is accepted.

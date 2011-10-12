@@ -76,7 +76,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     m_filenameLayoutDialog = new FilenameLayoutDialog( mainContainer, 1 );
     connect( this, SIGNAL( accepted() ),  m_filenameLayoutDialog, SLOT( onAccept() ) );
     ui->verticalLayout->insertWidget( 1, m_filenameLayoutDialog );
-    ui->ignoreTheCheck->show();
 
     ui->folderCombo->insertItems( 0, folders );
     if( ui->folderCombo->contains( AmarokConfig::organizeDirectory() ) )
@@ -85,12 +84,12 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
         ui->folderCombo->setCurrentIndex( 0 ); //TODO possible bug: assumes folder list is not empty.
 
     ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
-    ui->spaceCheck->setChecked( AmarokConfig::replaceSpace() );
-    ui->ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
-    ui->vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
-    ui->asciiCheck->setChecked( AmarokConfig::asciiOnly() );
-    ui->regexpEdit->setText( AmarokConfig::replacementRegexp() );
-    ui->replaceEdit->setText( AmarokConfig::replacementString() );
+    m_filenameLayoutDialog->setReplaceSpaces( AmarokConfig::replaceSpace() );
+    m_filenameLayoutDialog->setIgnoreThe( AmarokConfig::ignoreThe() );
+    m_filenameLayoutDialog->setVfatCompatible( AmarokConfig::vfatCompatible() );
+    m_filenameLayoutDialog->setAsciiOnly( AmarokConfig::asciiOnly() );
+    m_filenameLayoutDialog->setRegexpText( AmarokConfig::replacementRegexp() );
+    m_filenameLayoutDialog->setReplaceText( AmarokConfig::replacementString() );
 
     ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
     ui->conflictLabel->setText("");
@@ -99,13 +98,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->conflictLabel->setPalette( p );
 
     // to show the conflict error
-    connect( ui->overwriteCheck, SIGNAL(stateChanged( int )), SLOT(slotUpdatePreview()) );
-    connect( ui->ignoreTheCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->spaceCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->asciiCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->vfatCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->regexpEdit, SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
-    connect( ui->replaceEdit, SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
+    connect( ui->overwriteCheck, SIGNAL(stateChanged( int )),
+             SLOT(slotUpdatePreview()) );
     connect( ui->folderCombo, SIGNAL(currentIndexChanged( const QString & )),
              SLOT(slotUpdatePreview()) );
     connect( m_filenameLayoutDialog, SIGNAL(schemeChanged()), SLOT(slotUpdatePreview()) );
@@ -226,14 +220,15 @@ void
 OrganizeCollectionDialog::slotUpdatePreview()
 {
     QString formatString = buildFormatString();
-    m_trackOrganizer->setAsciiOnly( ui->asciiCheck->isChecked() );
+    m_trackOrganizer->setAsciiOnly( m_filenameLayoutDialog->asciiOnly() );
     m_trackOrganizer->setFolderPrefix( ui->folderCombo->currentText() );
     m_trackOrganizer->setFormatString( formatString );
     m_trackOrganizer->setTargetFileExtension( m_targetFileExtension );
-    m_trackOrganizer->setIgnoreThe( ui->ignoreTheCheck->isChecked() );
-    m_trackOrganizer->setReplaceSpaces( ui->spaceCheck->isChecked() );
-    m_trackOrganizer->setReplace( ui->regexpEdit->text(), ui->replaceEdit->text() );
-    m_trackOrganizer->setVfatSafe( ui->vfatCheck->isChecked() );
+    m_trackOrganizer->setIgnoreThe( m_filenameLayoutDialog->ignoreThe() );
+    m_trackOrganizer->setReplaceSpaces( m_filenameLayoutDialog->replaceSpaces() );
+    m_trackOrganizer->setReplace( m_filenameLayoutDialog->regexpText(),
+                                  m_filenameLayoutDialog->replaceText() );
+    m_trackOrganizer->setVfatSafe( m_filenameLayoutDialog->vfatCompatible() );
 
     //empty the table, not only it's contents
     ui->previewTableWidget->setRowCount( 0 );
@@ -306,12 +301,12 @@ void
 OrganizeCollectionDialog::slotDialogAccepted()
 {
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
-    AmarokConfig::setIgnoreThe( ui->ignoreTheCheck->isChecked() );
-    AmarokConfig::setReplaceSpace( ui->spaceCheck->isChecked() );
-    AmarokConfig::setVfatCompatible( ui->vfatCheck->isChecked() );
-    AmarokConfig::setAsciiOnly( ui->asciiCheck->isChecked() );
-    AmarokConfig::setReplacementRegexp( ui->regexpEdit->text() );
-    AmarokConfig::setReplacementString( ui->replaceEdit->text() );
+    AmarokConfig::setIgnoreThe( m_filenameLayoutDialog->ignoreThe() );
+    AmarokConfig::setReplaceSpace( m_filenameLayoutDialog->replaceSpaces() );
+    AmarokConfig::setVfatCompatible( m_filenameLayoutDialog->vfatCompatible() );
+    AmarokConfig::setAsciiOnly( m_filenameLayoutDialog->asciiOnly() );
+    AmarokConfig::setReplacementRegexp( m_filenameLayoutDialog->regexpText() );
+    AmarokConfig::setReplacementString( m_filenameLayoutDialog->replaceText() );
 
     m_filenameLayoutDialog->onAccept();
 }
