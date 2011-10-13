@@ -29,7 +29,7 @@
  * format string.
  * @author Casey Link
  */
-class TrackOrganizer : public QObject
+class AMAROK_EXPORT TrackOrganizer : public QObject
 {
     Q_OBJECT
 public:

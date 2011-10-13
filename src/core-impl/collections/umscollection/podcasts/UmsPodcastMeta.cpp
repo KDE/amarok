@@ -16,7 +16,10 @@
 
 #include "UmsPodcastMeta.h"
 
+#include "core/support/Debug.h"
+
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+
 #include "UmsPodcastProvider.h"
 
 using namespace Podcasts;

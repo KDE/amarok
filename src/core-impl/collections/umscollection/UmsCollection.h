@@ -17,54 +17,155 @@
 #ifndef UMSCOLLECTION_H
 #define UMSCOLLECTION_H
 
-#include "UmsHandler.h"
+#include <core/collections/Collection.h>
+#include <core-impl/collections/support/MemoryCollection.h>
+#include <utilities/collectionscanner/Directory.h>
 
-#include "MediaDeviceCollection.h"
-#include "core/support/Debug.h"
-
+#include <KDirWatch>
 #include <KIcon>
+
+#include <solid/device.h>
 
 #include <QtGlobal>
 
-class MediaDeviceInfo;
+using namespace Collections;
 
-namespace Collections {
+class GenericScanManager;
+
+class UmsPodcastProvider;
 
 class UmsCollection;
 
-class UmsCollectionFactory : public MediaDeviceCollectionFactory<UmsCollection>
+class UmsCollectionLocation;
+
+class UmsCollectionFactory : public CollectionFactory
 {
     Q_OBJECT
 
     public:
         UmsCollectionFactory( QObject *parent, const QVariantList &args );
         virtual ~UmsCollectionFactory();
+
+        virtual void init();
+
+    signals:
+        void newCollection( Collections::Collection *newCollection );
+
+    private slots:
+        void slotAddSolidDevice( const QString & );
+        void slotRemoveSolidDevice( const QString & );
+
+    private:
+        bool m_initialized;
+
+        //maps device udi to active UMS collections
+        QMap<QString, UmsCollection *> m_umsCollectionMap;
 };
 
-class UmsCollection : public MediaDeviceCollection
+class UmsCollection : public Collection
 {
     Q_OBJECT
 
     public:
         // inherited methods
 
-        UmsCollection( MediaDeviceInfo* info );
+        UmsCollection( Solid::Device device );
         virtual ~UmsCollection();
 
+        /* TrackProvider methods */
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;
-        virtual KIcon icon() const { return KIcon("drive-removable-media-usb-pendrive"); };
+        /* Collection methods */
+        virtual QueryMaker *queryMaker();
+        virtual bool isDirInCollection( const QString &path );
+        virtual QString uidUrlProtocol() const;
 
-        // HACK: this function will be deleted later
-        //void writeDatabase() { m_handler->writeDatabase(); }
+        virtual QString collectionId() const { return m_device.udi(); }
+        virtual QString prettyName() const;
+        virtual KIcon icon() const;
+
+        virtual bool hasCapacity() const;
+        virtual float usedCapacity() const;
+        virtual float totalCapacity() const;
+
+        virtual CollectionLocation *location() const;
+
+        virtual bool isWritable() const;
+        virtual bool isOrganizable() const;
+
+        /* Capability-related methods */
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability *createCapabilityInterface(
+                Capabilities::Capability::Type type );
+
+        /* own methods */
+        const KUrl &musicPath() const { return m_musicPath; }
+        const KUrl &podcastPath() const { return m_podcastPath; }
+
+        KUrl organizedUrl( Meta::TrackPtr track ) const;
+
+        QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
+
+    signals:
+        void remove();
+        void updated();
+
+    public slots:
+        void slotDeviceRemoved();
+        void slotTrackAdded( KUrl trackLocation );
+        void slotConnectionUpdated();
+
+    private slots:
+        void slotAccessibilityChanged( bool accessible, const QString &udi );
+
+        void slotParseTracks();
+        void slotConfigure();
+        void slotEject();
+
+        void slotDirectoryScanned( CollectionScanner::Directory *dir );
 
     private:
-        QString m_mountPoint;
-};
+        void init();
 
-} //namespace Collections
+        //static variables relating to the on-disk configuration file
+        static QString s_settingsFileName;
+        static QString s_musicFolderKey;
+        static QString s_musicFilenameSchemeKey;
+        static QString s_vfatSafeKey;
+        static QString s_asciiOnlyKey;
+        static QString s_ignoreTheKey;
+        static QString s_replaceSpacesKey;
+        static QString s_regexTextKey;
+        static QString s_replaceTextKey;
+        static QString s_podcastFolderKey;
+        static QString s_autoConnectKey;
+
+        Solid::Device m_device;
+        QSharedPointer<MemoryCollection> m_mc;
+
+        bool m_autoConnect;
+        QString m_mountPoint;
+        KUrl m_musicPath;
+        KUrl m_podcastPath;
+        QString m_musicFilenameScheme;
+        bool m_vfatSafe;
+        bool m_asciiOnly;
+        bool m_ignoreThe;
+        bool m_replaceSpaces;
+        QString m_regexText;
+        QString m_replaceText;
+
+        GenericScanManager *m_scanManager;
+        KDirWatch m_watcher;
+
+        QStringList m_supportedMimeTypes;
+
+        UmsPodcastProvider *m_podcastProvider;
+
+        QAction *m_parseAction;
+        QAction *m_configureAction;
+        QAction *m_ejectAction;
+};
 
 #endif

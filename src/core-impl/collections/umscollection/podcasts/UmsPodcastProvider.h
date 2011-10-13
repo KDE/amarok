@@ -18,7 +18,6 @@
 #define UMSPODCASTPROVIDER_H
 
 #include "core/podcasts/PodcastProvider.h"
-#include "UmsHandler.h"
 #include "UmsPodcastMeta.h"
 
 class KJob;
@@ -29,7 +28,7 @@ class UmsPodcastProvider : public PodcastProvider
 {
     Q_OBJECT
     public:
-        UmsPodcastProvider( Meta::UmsHandler *handler, KUrl scanDirectory );
+        UmsPodcastProvider( KUrl scanDirectory );
         ~UmsPodcastProvider();
 
         UmsPodcastEpisodePtr addFile( MetaFile::TrackPtr metafileTrack );
@@ -85,10 +84,8 @@ class UmsPodcastProvider : public PodcastProvider
         void slotCopyComplete( KJob *job );
 
     private:
-
         void deleteEpisodes( UmsPodcastEpisodeList umsEpisodes );
 
-        Meta::UmsHandler *m_handler;
         KUrl m_scanDirectory;
         QStringList m_dirList;
 

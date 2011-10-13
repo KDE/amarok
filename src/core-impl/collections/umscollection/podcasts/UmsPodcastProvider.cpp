@@ -19,17 +19,20 @@
 #include <KDialog>
 #include <KIO/DeleteJob>
 #include <KIO/FileCopyJob>
+#include <KIO/Job>
 #include <KMimeType>
 
+#include <QAction>
 #include <QDirIterator>
+#include <QLabel>
 #include <QListWidget>
 #include <QObject>
+#include <QVBoxLayout>
 
 using namespace Podcasts;
 
-UmsPodcastProvider::UmsPodcastProvider( Meta::UmsHandler *handler, KUrl scanDirectory )
-        : m_handler( handler )
-        , m_scanDirectory( scanDirectory )
+UmsPodcastProvider::UmsPodcastProvider( KUrl scanDirectory )
+        : m_scanDirectory( scanDirectory )
         , m_deleteEpisodeAction( 0 )
         , m_deleteChannelAction( 0 )
 {
@@ -152,7 +155,7 @@ UmsPodcastProvider::configureChannel( PodcastChannelPtr channel )
 QString
 UmsPodcastProvider::prettyName() const
 {
-    return i18nc( "Podcasts on a media device", "Podcasts on %1", m_handler->prettyName() );
+    return i18nc( "Podcasts on a media device", "Podcasts on %1", QString("TODO: replace me") );
 }
 
 KIcon
@@ -267,7 +270,7 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
     layout->addWidget( &label );
     layout->addWidget( &listWidget );
     dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from %1.",
-                                             m_handler->prettyName() ) );
+                                             QString("TODO: replace me") ) );
 
     dialog.setMainWidget( widget );
     if( dialog.exec() != QDialog::Accepted )
@@ -467,15 +470,15 @@ UmsPodcastProvider::addPath( const QString &path )
     }
     else if( info.isFile() )
     {
-        foreach( const QString &mimetype, m_handler->mimetypes() )
-        {
-            if( mime->is( mimetype ) )
-            {
+//        foreach( const QString &mimetype, m_handler->mimetypes() )
+//        {
+//            if( mime->is( mimetype ) )
+//            {
                 addFile( MetaFile::TrackPtr( new MetaFile::Track(
                         KUrl( info.canonicalFilePath() ) ) ) );
                 return 2;
-            }
-        }
+//            }
+//        }
     }
 
     return 0;
