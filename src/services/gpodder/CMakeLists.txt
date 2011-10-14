@@ -22,8 +22,11 @@ include_directories(
 
         set(amarok_service_gpodder_PART_SRCS
             GpodderService.cpp
+            GpodderServiceConfig.cpp
             GpodderServiceModel.cpp
             GpodderServiceView.cpp
+            GpodderProvider.cpp
+            GpodderPodcastMeta.cpp
             GpodderTreeItem.cpp
             GpodderPodcastTreeItem.cpp
             GpodderTagTreeItem.cpp
@@ -51,4 +54,27 @@ include_directories(
 
          install( TARGETS amarok_service_gpodder DESTINATION ${PLUGIN_INSTALL_DIR} )
 
+         set(kcm_amarok_service_gpodder_PART_SRCS
+            GpodderServiceSettings.cpp
+            GpodderServiceConfig.cpp
+         )
+
+         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
+
+         kde4_add_ui_files( kcm_amarok_service_gpodder_PART_SRCS GpodderConfigWidget.ui )
+
+         kde4_add_plugin( kcm_amarok_service_gpodder ${kcm_amarok_service_gpodder_PART_SRCS} )
+
+         target_link_libraries( kcm_amarok_service_gpodder
+            amarokcore
+            amaroklib
+            ${LIBMYGPO_QT_LIBRARY}
+            ${KDE4_KDEUI_LIBS}
+            ${KDE4_KUTILS_LIBS}
+            ${KDE4_KIO_LIBS}
+            ${QT_QTNETWORK_LIBRARY} )
+
+         install(TARGETS kcm_amarok_service_gpodder  DESTINATION ${PLUGIN_INSTALL_DIR})
+
          install( FILES amarok_service_gpodder.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+         install( FILES amarok_service_gpodder_config.desktop DESTINATION ${SERVICES_INSTALL_DIR} )

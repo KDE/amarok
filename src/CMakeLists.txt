@@ -407,6 +407,7 @@ set(libplaylistmanager_SRCS
     playlistmanager/sql/SqlPlaylist.cpp
     playlistmanager/sql/SqlPlaylistGroup.cpp
     playlistmanager/SyncedPlaylist.cpp
+    playlistmanager/SyncedPodcast.cpp
     playlistmanager/SyncRelationStorage.cpp
 )
 
@@ -773,6 +774,11 @@ if(KDE4_BUILD_TESTS)
         ../tests/timecode/
     )
 endif()
+
+if( LIBMYGPO_QT_FOUND )
+    set( EXTRA_LIBS ${LIBMYGPO_QT_LIBRARY} )
+    include_directories(     ${LIBMYGPO_QT_INCLUDE_DIR}  ${LIBMYGPO_QT_INCLUDE_DIR}/../ )
+endif( LIBMYGPO_QT_FOUND )
 
 if( LIBLASTFM_FOUND )
     set(amaroklib_LIB_SRCS

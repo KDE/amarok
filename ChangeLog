@@ -4,11 +4,18 @@ Amarok ChangeLog
 
 Version 2.4.4-Beta 1
   FEATURES:
+    * Podcast subscription synchronisation and podcast status synchronisation with Gpodder service.
+    * Possibility to browse through podcasts suggested by gpodder.net and through gpodder.net top
+      recommended podcasts.
     * Made possible to make presets for TagGuesser. (BR 264632)
     * Display current timestamp in tray tooltip. (BR 278445)
     * Auto-save the playlist so that it is not lost if Amarok crashes.
 
   CHANGES:
+    * Added local podcasts are automatically subscribed in gpodder.net.
+    * Removed local podcasts are automatically unsubscribed from gpodder.net.
+    * GPodder Service automatically subscribes all local podcasts into gpodder.net when the login is
+    successfull.
     * Improved the playlist synchronisation feature.
     * Make possible to get count tracks before the XSPF file is fully loaded.
     * Mark unplayble tracks in the playlist. Patch by Sandeep Raghuraman. (BR 263640)

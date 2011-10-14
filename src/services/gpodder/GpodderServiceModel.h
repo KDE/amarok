@@ -50,17 +50,29 @@ private slots:
     void topTagsParseError();
     void insertTagList();
 
+    void topPodcastsRequestError( QNetworkReply::NetworkError error );
+    void topPodcastsParseError();
+
+    void suggestedPodcastsRequestError( QNetworkReply::NetworkError error );
+    void suggestedPodcastsParseError();
+
+    void requestTopTags();
+    void requestTopPodcasts();
+    void requestSuggestedPodcasts();
+
 protected:
     virtual bool canFetchMore( const QModelIndex &parent ) const;
     virtual void fetchMore( const QModelIndex &parent );
 
 private:
     GpodderTreeItem *rootItem;
+    GpodderTreeItem *topTagsItem;
+    GpodderTreeItem *topPodcastsItem;
+    GpodderTreeItem *suggestedPodcastsItem;
     // The gpodder.net topTags
     mygpo::TagListPtr topTags;
     // true if the topTagsRequest has finished and all Top Tags are loaded
     mygpo::ApiRequest m_request;
-
 };
 
 #endif /* GPODDERSERVICEMODEL_H_ */

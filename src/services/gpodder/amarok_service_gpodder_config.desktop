@@ -1,0 +1,12 @@
+[Desktop Entry]
+Icon=view-services-gpodder-amarok
+Type=Service
+ServiceTypes=Amarok/Plugin
+X-KDE-ServiceTypes=KCModule
+
+X-KDE-Library=kcm_amarok_service_gpodder
+X-KDE-ParentApp=amarok_service_gpodder
+X-KDE-ParentComponents=amarok_service_gpodder
+
+Name=gpodder.net Service Config
+Comment=Configure gpodder.net Credentials

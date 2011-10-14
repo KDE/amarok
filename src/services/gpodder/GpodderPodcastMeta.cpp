@@ -2,6 +2,7 @@
  * Copyright (c) 2011 Stefan Derkits <stefan@derkits.at>                                *
  * Copyright (c) 2011 Christian Wagner <christian.wagner86@gmx.at>                      *
  * Copyright (c) 2011 Felix Winter <ixos01@gmail.com>                                   *
+ * Copyright (c) 2011 Lucas Lira Gomes <x8lucas8x@gmail.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,45 +17,47 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef GPODDERTREEITEM_H_
-#define GPODDERTREEITEM_H_
+#define DEBUG_PREFIX "GpodderPodcastMeta"
 
-#include <mygpo-qt/ApiRequest.h>
-#include <mygpo-qt/TagList.h>
+#include "GpodderPodcastMeta.h"
+#include "GpodderProvider.h"
 
-#include <QVariant>
-#include <QList>
-#include <QModelIndex>
+using namespace Podcasts;
 
-class GpodderServiceModel;
-
-class GpodderTreeItem : public QObject
+Podcasts::GpodderPodcastChannel::GpodderPodcastChannel( GpodderProvider *provider )
+    : PodcastChannel()
+    , m_provider( provider )
 {
-    Q_OBJECT
-public:
-    GpodderTreeItem( GpodderTreeItem *parent = 0, QString name = "" );
-    virtual ~GpodderTreeItem();
+}
 
-    void appendChild( GpodderTreeItem *child );
+Podcasts::GpodderPodcastChannel::GpodderPodcastChannel( GpodderProvider *provider,
+                                                        PodcastChannelPtr channel )
+    : PodcastChannel( channel )
+    , m_provider( provider )
+{
+}
 
-    GpodderTreeItem *child( int row );
-    int childCount() const;
-    void setHasChildren( bool hasChildren );
-    bool hasChildren() const;
+Podcasts::GpodderPodcastChannel::GpodderPodcastChannel( GpodderProvider *provider,
+                                                        mygpo::PodcastPtr channel )
+    : PodcastChannel()
+    , m_provider( provider )
+{
+    setUrl( channel->url() );
+    setWebLink( channel->website() );
+    setImageUrl( channel->logoUrl() );
+    setDescription( channel->description() );
+    setTitle( channel->title() );
+}
 
-    GpodderTreeItem *parent() const;
-    bool isRoot() const;
+Playlists::PlaylistProvider *
+Podcasts::GpodderPodcastChannel::provider() const
+{
+    return dynamic_cast<Playlists::PlaylistProvider *>( m_provider );
+}
 
 
-    virtual QVariant displayData() const;
-
-    virtual void appendTags( mygpo::TagListPtr tags );
-    virtual void appendPodcasts( mygpo::PodcastListPtr podcasts );
-private:
-    QList<GpodderTreeItem *> m_childItems;
-    GpodderTreeItem *m_parentItem;
-    QString m_name;
-    bool m_hasChildren;
-};
-
-#endif /* GPODDERTREEITEM_H_ */
+KUrl
+Podcasts::GpodderPodcastChannel::uidUrl() const
+{
+    return QString( "amarok-gpodder://%1" ).arg( url().url() );
+}

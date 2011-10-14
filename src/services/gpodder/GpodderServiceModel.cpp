@@ -17,22 +17,35 @@
  ****************************************************************************************/
 
 #include "GpodderServiceModel.h"
+#include "GpodderServiceSettings.h"
 #include "GpodderTagTreeItem.h"
 #include "GpodderPodcastTreeItem.h"
-#include <QList>
-#include <QEventLoop>
-
 #include "core/support/Debug.h"
 #include "GpodderPodcastRequestHandler.h"
+
+#include <QList>
+#include <QEventLoop>
+#include <QTimer>
 
 #define INITIAL_TOPTAGS_LOADED 100
 static const int s_numberItemsToLoad = 100;
 
 using namespace mygpo;
 
-GpodderServiceModel::GpodderServiceModel( QObject *parent ) : QAbstractItemModel( parent ), m_request( The::networkAccessManager() )
+GpodderServiceModel::GpodderServiceModel( QObject *parent )
+    : QAbstractItemModel( parent )
+    , m_request( The::networkAccessManager() )
 {
-    rootItem = new GpodderTreeItem();
+    rootItem = new GpodderTreeItem( );
+
+    topTagsItem = new GpodderTreeItem( rootItem, "Top Tags" );
+    rootItem->appendChild( topTagsItem );
+
+    topPodcastsItem = new GpodderTreeItem( rootItem, "Top Podcasts" );
+    rootItem->appendChild( topPodcastsItem );
+
+    suggestedPodcastsItem = new GpodderTreeItem( rootItem, "Suggested Podcasts" );
+    rootItem->appendChild( suggestedPodcastsItem );
 }
 
 GpodderServiceModel::~GpodderServiceModel()
@@ -40,10 +53,9 @@ GpodderServiceModel::~GpodderServiceModel()
     delete rootItem;
 }
 
-QModelIndex GpodderServiceModel::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex
+GpodderServiceModel::index( int row, int column, const QModelIndex &parent ) const
 {
-    DEBUG_BLOCK
-
     if( !hasIndex( row, column, parent ) )
         return QModelIndex();
 
@@ -52,7 +64,7 @@ QModelIndex GpodderServiceModel::index( int row, int column, const QModelIndex &
     if( !parent.isValid() )
         parentItem = rootItem;
     else
-        parentItem = static_cast<GpodderTreeItem*>( parent.internalPointer() );
+        parentItem = static_cast<GpodderTreeItem *>( parent.internalPointer() );
 
     if( parentItem == 0 )
         return QModelIndex();
@@ -64,14 +76,13 @@ QModelIndex GpodderServiceModel::index( int row, int column, const QModelIndex &
         return QModelIndex();
 }
 
-QModelIndex GpodderServiceModel::parent( const QModelIndex &index ) const
+QModelIndex
+GpodderServiceModel::parent( const QModelIndex &index ) const
 {
-    DEBUG_BLOCK
-
     if( !index.isValid() )
         return QModelIndex();
 
-    GpodderTreeItem *childItem = static_cast<GpodderTreeItem*>( index.internalPointer() );
+    GpodderTreeItem *childItem = static_cast<GpodderTreeItem *>( index.internalPointer() );
 
     if( childItem == 0 || childItem->isRoot() )
         return QModelIndex();
@@ -79,9 +90,7 @@ QModelIndex GpodderServiceModel::parent( const QModelIndex &index ) const
     GpodderTreeItem *parentItem = childItem->parent();
 
     if( parentItem == 0 )
-    {
         return QModelIndex();
-    }
 
     int childIndex;
     if( parentItem->isRoot() )
@@ -92,10 +101,9 @@ QModelIndex GpodderServiceModel::parent( const QModelIndex &index ) const
     return createIndex( childIndex, 0, parentItem );
 }
 
-int GpodderServiceModel::rowCount( const QModelIndex &parent ) const
+int
+GpodderServiceModel::rowCount( const QModelIndex &parent ) const
 {
-    DEBUG_BLOCK
-
     GpodderTreeItem *parentItem;
 
     if( !parent.isValid() )
@@ -103,7 +111,7 @@ int GpodderServiceModel::rowCount( const QModelIndex &parent ) const
         return rootItem->childCount();
     }
 
-    parentItem = static_cast<GpodderTreeItem*>( parent.internalPointer() );
+    parentItem = static_cast<GpodderTreeItem *>( parent.internalPointer() );
 
     if( parentItem == 0 )
         return 0;
@@ -111,18 +119,16 @@ int GpodderServiceModel::rowCount( const QModelIndex &parent ) const
     return parentItem->childCount();
 }
 
-int GpodderServiceModel::columnCount( const QModelIndex &parent ) const
+int
+GpodderServiceModel::columnCount( const QModelIndex &parent ) const
 {
-    DEBUG_BLOCK
-
     Q_UNUSED( parent )
     return 1;
 }
 
-QVariant GpodderServiceModel::data( const QModelIndex &index, int role ) const
+QVariant
+GpodderServiceModel::data( const QModelIndex &index, int role ) const
 {
-    DEBUG_BLOCK
-
     if( !index.isValid() )
         return QVariant();
 
@@ -138,29 +144,80 @@ QVariant GpodderServiceModel::data( const QModelIndex &index, int role ) const
     return item->displayData();
 }
 
-void GpodderServiceModel::insertTagList()
+void
+GpodderServiceModel::insertTagList()
 {
-    DEBUG_BLOCK
-
     if( rootItem != 0 )
     {
-        beginInsertRows( QModelIndex(), 0, topTags->list().count() - 1 );
-        rootItem->appendTags( topTags );
+        beginInsertRows( createIndex( 0,0, topTagsItem), 0, topTags->list().count() - 1 );
+        topTagsItem->appendTags( topTags );
         endInsertRows();
     }
 }
 
-void GpodderServiceModel::topTagsRequestError( QNetworkReply::NetworkError error )
+void
+GpodderServiceModel::topTagsRequestError( QNetworkReply::NetworkError error )
 {
+    DEBUG_BLOCK
+
     debug() << "Error in TopTags request: " << error;
+
+    QTimer::singleShot( 20 * 1000, this, SLOT( requestTopTags() ) );
 }
 
-void GpodderServiceModel::topTagsParseError()
+void
+GpodderServiceModel::topTagsParseError()
 {
+    DEBUG_BLOCK
+
     debug() << "Error while parsing TopTags";
+
+    QTimer::singleShot( 20 * 1000, this, SLOT( requestTopTags() ) );
 }
 
-void GpodderServiceModel::insertPodcastList( mygpo::PodcastListPtr podcasts, const QModelIndex & parentItem )
+void
+GpodderServiceModel::topPodcastsRequestError( QNetworkReply::NetworkError error )
+{
+    DEBUG_BLOCK
+
+    debug() << "Error in TopPodcasts request: " << error;
+
+    QTimer::singleShot( 20 * 1000, this, SLOT( requestTopPodcasts() ) );
+}
+
+void
+GpodderServiceModel::topPodcastsParseError()
+{
+    DEBUG_BLOCK
+
+    debug() << "Error while parsing TopPodcasts";
+
+    QTimer::singleShot( 20 * 1000, this, SLOT( requestTopPodcasts() ) );
+}
+
+void
+GpodderServiceModel::suggestedPodcastsRequestError( QNetworkReply::NetworkError error )
+{
+    DEBUG_BLOCK
+
+    debug() << "Error in suggestedPodcasts request: " << error;
+
+    QTimer::singleShot( 20 * 1000, this, SLOT( requestSuggestedPodcasts() ) );
+}
+
+void
+GpodderServiceModel::suggestedPodcastsParseError()
+{
+    DEBUG_BLOCK
+
+    debug() << "Error while parsing suggestedPodcasts";
+
+    QTimer::singleShot( 20 * 1000, this, SLOT( requestSuggestedPodcasts() ) );
+}
+
+void
+GpodderServiceModel::insertPodcastList( mygpo::PodcastListPtr podcasts,
+                                        const QModelIndex &parentItem )
 {
     DEBUG_BLOCK
 
@@ -177,10 +234,9 @@ void GpodderServiceModel::insertPodcastList( mygpo::PodcastListPtr podcasts, con
     emit layoutChanged();
 }
 
-bool GpodderServiceModel::hasChildren( const QModelIndex &parent ) const
+bool
+GpodderServiceModel::hasChildren( const QModelIndex &parent ) const
 {
-    DEBUG_BLOCK
-
     if( !parent.isValid() )
         return true;
 
@@ -202,10 +258,9 @@ bool GpodderServiceModel::hasChildren( const QModelIndex &parent ) const
     }
 }
 
-bool GpodderServiceModel::canFetchMore( const QModelIndex &parent ) const
+bool
+GpodderServiceModel::canFetchMore( const QModelIndex &parent ) const
 {
-    DEBUG_BLOCK
-
     // root item
     if( !parent.isValid() )
     {
@@ -228,32 +283,86 @@ bool GpodderServiceModel::canFetchMore( const QModelIndex &parent ) const
     return false;
 }
 
-void GpodderServiceModel::fetchMore( const QModelIndex &parent )
+void
+GpodderServiceModel::fetchMore( const QModelIndex &parent )
 {
-    DEBUG_BLOCK
-
     // root item
     if( !parent.isValid() )
     {
-        topTags = m_request.topTags( s_numberItemsToLoad );
-        rootItem->setHasChildren( true );
-        connect( topTags.data(), SIGNAL( finished() ), this, SLOT( insertTagList() ) );
-        connect( topTags.data(), SIGNAL( requestError( QNetworkReply::NetworkError ) ), SLOT( topTagsRequestError( QNetworkReply::NetworkError ) ) );
-        connect( topTags.data(), SIGNAL( parseError() ), SLOT( topTagsParseError() ) );
+        requestTopTags();
+        requestTopPodcasts();
+        requestSuggestedPodcasts();
     }
 
-    // TagTreeItem
     GpodderTreeItem *treeItem = static_cast<GpodderTreeItem *>( parent.internalPointer() );
 
+    // TagTreeItem
     if( GpodderTagTreeItem *tagTreeItem = qobject_cast<GpodderTagTreeItem*>( treeItem ) )
     {
+        rootItem->setHasChildren( true );
         tagTreeItem->setHasChildren( true );
-        mygpo::PodcastListPtr podcasts = m_request.podcastsOfTag( s_numberItemsToLoad, tagTreeItem->tag()->tag() );
-        GpodderPodcastRequestHandler *podcastRequestHandler = new GpodderPodcastRequestHandler( podcasts, parent, this );
-        connect( podcasts.data(), SIGNAL( finished() ), podcastRequestHandler, SLOT( finished() ) );
-        connect( podcasts.data(), SIGNAL( requestError( QNetworkReply::NetworkError ) ), podcastRequestHandler, SLOT( requestError( QNetworkReply::NetworkError ) ) );
-        connect( podcasts.data(), SIGNAL( parseError() ), podcastRequestHandler, SLOT( parseError() ) );
+
+        mygpo::PodcastListPtr podcasts =
+                m_request.podcastsOfTag( s_numberItemsToLoad, tagTreeItem->tag()->tag() );
+        GpodderPodcastRequestHandler *podcastRequestHandler =
+                new GpodderPodcastRequestHandler( podcasts, parent, this );
+        connect( podcasts.data(), SIGNAL(finished()), podcastRequestHandler, SLOT(finished()) );
+        connect( podcasts.data(), SIGNAL(requestError( QNetworkReply::NetworkError )),
+                 podcastRequestHandler, SLOT(requestError( QNetworkReply::NetworkError )) );
+        connect( podcasts.data(), SIGNAL(parseError()), podcastRequestHandler, SLOT(parseError()) );
     }
 
 }
 
+void
+GpodderServiceModel::requestTopTags()
+{
+    rootItem->setHasChildren( true );
+
+    topTags = m_request.topTags( s_numberItemsToLoad );
+    connect( topTags.data(), SIGNAL( finished() ), this, SLOT( insertTagList() ) );
+    connect( topTags.data(), SIGNAL( requestError( QNetworkReply::NetworkError ) ), SLOT( topTagsRequestError( QNetworkReply::NetworkError ) ) );
+    connect( topTags.data(), SIGNAL( parseError() ), SLOT( topTagsParseError() ) );
+}
+
+void
+GpodderServiceModel::requestTopPodcasts()
+{
+    rootItem->setHasChildren( true );
+
+    mygpo::PodcastListPtr topPodcasts = m_request.toplist( s_numberItemsToLoad );
+    GpodderPodcastRequestHandler *podcastRequestHandler1 = new GpodderPodcastRequestHandler( topPodcasts, createIndex( 0,0, topPodcastsItem ), this );
+    connect( topPodcasts.data(), SIGNAL( finished() ), podcastRequestHandler1, SLOT( finished() ) );
+    connect( topPodcasts.data(), SIGNAL( requestError( QNetworkReply::NetworkError ) ), SLOT( topPodcastsRequestError( QNetworkReply::NetworkError ) ) );
+    connect( topPodcasts.data(), SIGNAL( parseError() ), SLOT( topPodcastsParseError() ) );
+}
+
+void
+GpodderServiceModel::requestSuggestedPodcasts()
+{
+    GpodderServiceConfig config;
+
+    if ( config.enableProvider() )
+    {
+        if ( ( !config.username().isEmpty() ) && ( !config.password().isEmpty() ) )
+        {
+            rootItem->setHasChildren( true );
+
+            mygpo::ApiRequest suggestionsRequest( config.username(), config.password(),
+                                                  new QNetworkAccessManager( this ) );
+
+            mygpo::PodcastListPtr topSuggestions =
+                    suggestionsRequest.suggestions( s_numberItemsToLoad );
+            GpodderPodcastRequestHandler *podcastRequestHandler2 = new GpodderPodcastRequestHandler(
+                        topSuggestions, createIndex( 0,0, suggestedPodcastsItem ), this );
+            connect( topSuggestions.data(), SIGNAL(finished()),
+                     podcastRequestHandler2, SLOT(finished()) );
+            connect( topSuggestions.data(), SIGNAL(requestError( QNetworkReply::NetworkError )),
+                     SLOT(suggestedPodcastsRequestError( QNetworkReply::NetworkError )) );
+            connect( topSuggestions.data(), SIGNAL(parseError()),
+                     SLOT(suggestedPodcastsParseError()) );
+        }
+        else
+            QTimer::singleShot( 5000, this, SLOT(requestSuggestedPodcasts()) );
+    }
+}

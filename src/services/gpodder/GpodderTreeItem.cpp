@@ -21,9 +21,12 @@
 #include "GpodderPodcastTreeItem.h"
 #include "GpodderTagTreeItem.h"
 
-GpodderTreeItem::GpodderTreeItem( GpodderTreeItem *parent ) : QObject( parent ), m_parentItem( parent ), m_hasChildren( false )
+GpodderTreeItem::GpodderTreeItem( GpodderTreeItem *parent, QString name )
+    : QObject( parent )
+    , m_parentItem( parent )
+    , m_name( name )
+    , m_hasChildren( false )
 {
-
 }
 
 GpodderTreeItem::~GpodderTreeItem()
@@ -31,47 +34,56 @@ GpodderTreeItem::~GpodderTreeItem()
     qDeleteAll( m_childItems );
 }
 
-void GpodderTreeItem::appendChild( GpodderTreeItem *item )
+void
+GpodderTreeItem::appendChild( GpodderTreeItem *item )
 {
     m_childItems.append( item );
 }
 
-GpodderTreeItem *GpodderTreeItem::child( int row )
+GpodderTreeItem *
+GpodderTreeItem::child( int row )
 {
     return m_childItems.value( row );
 }
 
-bool GpodderTreeItem::hasChildren() const
+bool
+GpodderTreeItem::hasChildren() const
 {
     return m_hasChildren;
 }
 
-void GpodderTreeItem::setHasChildren( bool hasChildren )
+void
+GpodderTreeItem::setHasChildren( bool hasChildren )
 {
     m_hasChildren = hasChildren;
 }
 
-int GpodderTreeItem::childCount() const
+int
+GpodderTreeItem::childCount() const
 {
     return m_childItems.count();
 }
 
-GpodderTreeItem *GpodderTreeItem::parent() const
+GpodderTreeItem *
+GpodderTreeItem::parent() const
 {
     return m_parentItem;
 }
 
-QVariant GpodderTreeItem::displayData() const
+QVariant
+GpodderTreeItem::displayData() const
 {
-    return QVariant();
+    return m_name;
 }
 
-bool GpodderTreeItem::isRoot() const
+bool
+GpodderTreeItem::isRoot() const
 {
     return ( m_parentItem == 0 );
 }
 
-void GpodderTreeItem::appendTags( mygpo::TagListPtr tags )
+void
+GpodderTreeItem::appendTags( mygpo::TagListPtr tags )
 {
     foreach( mygpo::TagPtr tag, tags->list() )
     {
@@ -80,7 +92,8 @@ void GpodderTreeItem::appendTags( mygpo::TagListPtr tags )
     }
 }
 
-void GpodderTreeItem::appendPodcasts( mygpo::PodcastListPtr podcasts )
+void
+GpodderTreeItem::appendPodcasts( mygpo::PodcastListPtr podcasts )
 {
     foreach( mygpo::PodcastPtr podcast, podcasts->list() )
     {
