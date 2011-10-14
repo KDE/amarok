@@ -58,6 +58,8 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
              SLOT( slotPlaylistAdded( Playlists::PlaylistPtr,int ) ) );
     connect( The::playlistManager(), SIGNAL( playlistRemoved( Playlists::PlaylistPtr, int ) ),
              SLOT( slotPlaylistRemoved( Playlists::PlaylistPtr,int ) ) );
+    connect( The::playlistManager(), SIGNAL(playlistUpdated( Playlists::PlaylistPtr, int )),
+             SLOT(slotPlaylistUpdated( Playlists::PlaylistPtr, int )) );
 
     connect( The::playlistManager(), SIGNAL(renamePlaylist( Playlists::PlaylistPtr )),
              SLOT(slotRenamePlaylist( Playlists::PlaylistPtr )) );
@@ -235,6 +237,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
 bool
 PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
+
     if( !idx.isValid() )
         return false;
 
@@ -262,13 +265,22 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
                 else
                 {
                     Playlists::PlaylistPtr playlist = playlistFromIndex( idx );
-                    if( !playlist )
+                    if( !playlist || ( playlist->provider() == provider ) )
                         return false;
+
+                    foreach( Playlists::PlaylistPtr tempPlaylist , provider->playlists() )
+                    {
+                        if ( tempPlaylist->name() == playlist->name() )
+                            return false;
+                    }
+
                     debug() << QString( "Copy playlist \"%1\" to \"%2\"." )
                             .arg( playlist->prettyName() ).arg( provider->prettyName() );
+
                     return !provider->addPlaylist( playlist ).isNull();
                 }
             }
+
             //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
             //TODO: implement setItemData()
             return true;
@@ -278,6 +290,7 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
             debug() << "changing group of item " << idx.internalId() << " to " << value.toString();
             Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setGroups( value.toStringList() );
+
             return true;
         }
     }
@@ -498,10 +511,7 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
         foreach( Playlists::PlaylistPtr playlist, playlists )
         {
             if( !m_playlists.contains( playlist ) )
-            {
-                debug() << "unknown playlist dragged in: " << playlist->prettyName();
-                debug() << "TODO: start synchronization";
-            }
+                debug() << "Unknown playlist dragged in: " << playlist->prettyName();
         }
 
         return true;
@@ -672,13 +682,39 @@ PlaylistBrowserModel::slotPlaylistRemoved( Playlists::PlaylistPtr playlist, int 
     int position = m_playlists.indexOf( playlist );
     if( position == -1 )
     {
-        error() << "signal removed playlist not in m_playlists";
+        error() << "signal received for removed playlist not in m_playlists";
         return;
     }
 
     beginRemoveRows( QModelIndex(), position, position );
     m_playlists.removeAt( position );
     endRemoveRows();
+}
+
+void
+PlaylistBrowserModel::slotPlaylistUpdated( Playlists::PlaylistPtr playlist, int category )
+{
+    if( category != m_playlistCategory )
+        return;
+
+    int position = m_playlists.indexOf( playlist );
+    if( position == -1 )
+    {
+        error() << "signal received for updated playlist not in m_playlists";
+        return;
+    }
+
+    //TODO: this should work by signaling a change in the model data, but QtGroupingProxy doesn't
+    //work like that ATM
+//    const QModelIndex &idx = index( position, 0 );
+//    emit dataChanged( idx, idx );
+
+    //HACK: remove and readd so QtGroupingProxy can put it in the correct groups.
+    beginRemoveRows( QModelIndex(), position, position );
+    endRemoveRows();
+
+    beginInsertRows( QModelIndex(), position, position );
+    endInsertRows();
 }
 
 Meta::TrackList

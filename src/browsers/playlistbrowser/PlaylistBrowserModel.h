@@ -115,6 +115,7 @@ class PlaylistBrowserModel : public QAbstractItemModel,
         void slotAppend();
         void slotPlaylistAdded( Playlists::PlaylistPtr playlist, int category );
         void slotPlaylistRemoved( Playlists::PlaylistPtr playlist, int category );
+        void slotPlaylistUpdated( Playlists::PlaylistPtr playlist, int category );
 
     private:
         int m_playlistCategory;

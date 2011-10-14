@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2011 Lucas Lira Gomes <x8lucas8x@gmail.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,6 +19,8 @@
 
 #include <src/playlistmanager/SyncRelationStorage.h>
 
+#include <QMap>
+
 class KConfigGroup;
 
 class KConfigSyncRelStore : public SyncRelationStorage
@@ -25,10 +28,12 @@ class KConfigSyncRelStore : public SyncRelationStorage
 public:
     KConfigSyncRelStore();
 
-    ~KConfigSyncRelStore();
+    virtual ~KConfigSyncRelStore();
 
-    virtual bool shouldBeSynced( Playlists::PlaylistPtr playlist );
-    virtual SyncedPlaylistPtr asSyncedPlaylist( Playlists::PlaylistPtr playlist );
+    virtual void addSync( const Playlists::PlaylistPtr master, const Playlists::PlaylistPtr slave );
+    virtual bool hasToSync( Playlists::PlaylistPtr master, Playlists::PlaylistPtr slave ) const;
+    virtual SyncedPlaylistPtr asSyncedPlaylist( const Playlists::PlaylistPtr playlist );
+
 private:
     KConfigGroup syncedPlaylistsConfig() const;
 

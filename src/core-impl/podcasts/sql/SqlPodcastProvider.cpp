@@ -536,6 +536,10 @@ SqlPodcastProvider::addChannel( Podcasts::PodcastChannelPtr channel )
     Podcasts::SqlPodcastChannelPtr sqlChannel =
             SqlPodcastChannelPtr( new Podcasts::SqlPodcastChannel( this, channel ) );
     m_channels <<  sqlChannel;
+
+    if( sqlChannel->episodes().count() == 0 )
+        updateSqlChannel( sqlChannel );
+
     emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( sqlChannel ) );
     return Podcasts::PodcastChannelPtr::dynamicCast( sqlChannel );
 }

@@ -59,6 +59,7 @@ class PodcastModel : public PlaylistBrowserModel
         static PodcastModel *instance();
         static void destroy();
 
+        /* QAbstractItemModel methods */
         virtual QVariant data(const QModelIndex &index, int role) const;
         virtual bool setData( const QModelIndex &index, const QVariant &value,
                               int role = Qt::EditRole );
@@ -104,6 +105,11 @@ class PodcastModel : public PlaylistBrowserModel
         static Meta::TrackList
         podcastEpisodesToTracks(
             Podcasts::PodcastEpisodeList episodes );
+
+        //TODO: get rid of these 2 functions used as a HACK to get to master data.
+        //Use correct accessors in SyncedPodcast instead.
+        Playlists::PlaylistPtr getPlaylist( Playlists::PlaylistPtr playlist ) const;
+        Playlists::Playlist* getPlaylist( Playlists::Playlist* playlist ) const;
 
         bool isOnDisk( Podcasts::PodcastMetaCommon *pmc ) const;
         QVariant icon( Podcasts::PodcastMetaCommon *pmc ) const;

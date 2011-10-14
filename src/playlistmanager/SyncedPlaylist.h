@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2011 Lucas Lira Gomes <x8lucas8x@gmail.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,6 +20,9 @@
 
 #include <src/core/playlists/Playlist.h>
 
+/** A synchronized playlist that will try to get the attached slaves into the same state as the
+  * master. The first playlist attached (through constructor or addPlaylist()) is the master.
+  */
 class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObserver
 {
     public:
@@ -57,6 +61,9 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual void removePlaylistsFrom( Playlists::PlaylistProvider *provider );
 
         virtual Playlists::PlaylistList playlists() const { return m_playlists; }
+
+        virtual Playlists::PlaylistPtr master() const;
+        virtual Playlists::PlaylistList slaves() const;
 
     protected:
 

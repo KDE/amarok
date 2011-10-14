@@ -143,7 +143,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChann
     }
 }
 
-// XXX: why do PodcastMetaCommon and PodcastEpisode not have an apropriate copy constructor?
+//TODO: why do PodcastMetaCommon and PodcastEpisode not have an apropriate copy constructor?
 SqlPodcastEpisode::SqlPodcastEpisode( Podcasts::PodcastEpisodePtr episode )
     : Podcasts::PodcastEpisode()
     , m_dbId( 0 )
@@ -154,6 +154,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( Podcasts::PodcastEpisodePtr episode )
     {
         debug() << "BUG: creating SqlEpisode but not an sqlChannel!!!";
         debug() <<  episode->channel()->title();
+        debug() <<  m_channel->title();
     }
 
     // PodcastMetaCommon
@@ -163,7 +164,53 @@ SqlPodcastEpisode::SqlPodcastEpisode( Podcasts::PodcastEpisodePtr episode )
     m_subtitle = episode->subtitle();
     m_summary = episode->summary();
     m_author = episode->author();
-    
+
+    // PodcastEpisode
+    m_guid = episode->guid();
+    m_url = KUrl( episode->uidUrl() );
+    m_localUrl = episode->localUrl();
+    m_mimeType = episode->mimeType();
+    m_pubDate = episode->pubDate();
+    m_duration = episode->duration();
+    m_fileSize = episode->filesize();
+    m_sequenceNumber = episode->sequenceNumber();
+    m_isNew = episode->isNew();
+
+    // The album, artist, composer, genre and year fields
+    // contain proxy objects with internal references to this.
+    // These proxies are created by Podcasts::PodcastEpisode(), so
+    // these fields don't have to be set here.
+
+    //commit to the database
+    updateInDb();
+
+    if( !m_localUrl.isEmpty() && QFileInfo( m_localUrl.toLocalFile() ).exists() )
+    {
+        m_localFile = new MetaFile::Track( m_localUrl );
+    }
+}
+
+SqlPodcastEpisode::SqlPodcastEpisode( PodcastChannelPtr channel, Podcasts::PodcastEpisodePtr episode )
+    : Podcasts::PodcastEpisode()
+    , m_dbId( 0 )
+{
+    m_channel = SqlPodcastChannelPtr::dynamicCast( channel );
+
+    if( !m_channel && episode->channel() )
+    {
+        debug() << "BUG: creating SqlEpisode but not an sqlChannel!!!";
+        debug() <<  episode->channel()->title();
+        debug() <<  m_channel->title();
+    }
+
+    // PodcastMetaCommon
+    m_title = episode->title();
+    m_description = episode->description();
+    m_keywords = episode->keywords();
+    m_subtitle = episode->subtitle();
+    m_summary = episode->summary();
+    m_author = episode->author();
+
     // PodcastEpisode
     m_guid = episode->guid();
     m_url = KUrl( episode->uidUrl() );
@@ -566,6 +613,7 @@ SqlPodcastChannel::trackCount() const
         error() << "no results for COUNT query on playlist_tracks table!";
         return -1;
     }
+
     int trackCount = results.first().toInt();
     return m_purge ? qMin( m_purgeCount, trackCount ): trackCount;
 }
@@ -668,7 +716,13 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     if( !m_episodesLoaded )
         loadEpisodes();
 
-    SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
+    SqlPodcastEpisodePtr sqlEpisode;
+
+    if (SqlPodcastEpisodePtr::dynamicCast( episode ))
+        sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
+    else
+        sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( PodcastChannelPtr(this) , episode ) );
+
 
     //episodes are sorted on pubDate high to low
     int i;
@@ -801,5 +855,36 @@ SqlPodcastChannel::loadEpisodes()
     }
 
     m_episodesLoaded = true;
+}
+
+Meta::TrackList Podcasts::SqlPodcastChannel::tracks()
+{
+    //If you do not load before, m_episodes
+    //can be empty before usage.
+    triggerTrackLoad();
+
+    return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes );
+}
+
+void Podcasts::SqlPodcastChannel::syncTrackStatus( int position, Meta::TrackPtr otherTrack )
+{
+    Q_UNUSED( position );
+
+    Podcasts::PodcastEpisodePtr master =
+            Podcasts::PodcastEpisodePtr::dynamicCast( otherTrack );
+
+    if ( master )
+    {
+        this->setName( master->channel()->name() );
+        this->setTitle( master->channel()->title() );
+        this->setUrl( master->channel()->url() );
+    }
+}
+
+void Podcasts::SqlPodcastChannel::addTrack(Meta::TrackPtr track, int position)
+{
+    Q_UNUSED(position);
+
+    addEpisode( Podcasts::PodcastEpisodePtr::dynamicCast( track ) );
 }
 

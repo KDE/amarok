@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007-2010 Bart Cerneels <bart.cerneels@kde.org>                        *
+ * Copyright (c) 2007-2011 Bart Cerneels <bart.cerneels@kde.org>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,6 +20,13 @@
 #include <QIcon>
 #include <QInputDialog>
 
+/*!
+    \class QtGroupingProxy
+    \brief The QtGroupingProxy class will group source model rows by adding a new top tree-level.
+    The source model can be flat or tree organized, but only the original top level rows are used
+    for determining the grouping.
+    \ingroup model-view
+*/
 
 QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNode, int groupedColumn )
     : QAbstractProxyModel()
@@ -33,9 +40,8 @@ QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNod
         SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
         this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) )
     );
-    connect( sourceModel(),
-        SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this,
-        SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
+    connect( sourceModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
+             SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
     connect( sourceModel(), SIGNAL(rowsAboutToBeInserted( const QModelIndex &, int ,int )),
              SLOT(modelRowsAboutToBeInserted( const QModelIndex &, int ,int )));
     connect( sourceModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
@@ -77,8 +83,8 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
     QList<RowData> rowDataList;
 
     //get all the data for this index from the model
-    ItemData indexData = sourceModel()->itemData( idx );
-    QMapIterator<int, QVariant> i( indexData );
+    ItemData itemData = sourceModel()->itemData( idx );
+    QMapIterator<int, QVariant> i( itemData );
     while( i.hasNext() )
     {
         i.next();
@@ -100,7 +106,8 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
                 indexData.insert( role, list.value( i ) );
                 rowData.insert( 0, indexData );
                 //for the grouped column the data should not be gathered from the children
-                //this will allow filtering on the content of this column with a QSFP
+                //this will allow filtering on the content of this column with a
+                //QSortFilterProxyModel
                 rowData.insert( m_groupedColumn, indexData );
                 rowDataList.insert( i, rowData );
             }
@@ -109,7 +116,7 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
         {
             //it's just a normal item. Copy all the data and break this loop.
             RowData rowData;
-            rowData.insert( 0, indexData );
+            rowData.insert( 0, itemData );
             rowDataList << rowData;
             break;
         }
@@ -256,7 +263,7 @@ QtGroupingProxy::addSourceRow( const QModelIndex &idx )
 
 /** Each ModelIndex has in it's internalId a position in the parentCreateList.
   * struct ParentCreate are the instructions to recreate the parent index.
-  * It contains the row number and the postion in this list of the grandfather.
+  * It contains the proxy row number of the parent and the postion in this list of the grandfather.
   * This function creates the ParentCreate structs and saves them in a list.
   */
 int
@@ -276,6 +283,14 @@ QtGroupingProxy::indexOfParentCreate( const QModelIndex &parent ) const
     pc.parentCreateIndex = parent.internalId();
     pc.row = parent.row();
     m_parentCreateList << pc;
+
+    //dumpParentCreateList();
+//    qDebug() << QString( "m_parentCreateList: (%1)" ).arg( m_parentCreateList.size() );
+//    for( int i = 0 ; i < m_parentCreateList.size() ; i++ )
+//    {
+//        qDebug() << i << " : " << m_parentCreateList[i].parentCreateIndex <<
+//                 " | " << m_parentCreateList[i].row;
+//    }
 
     return m_parentCreateList.size() - 1;
 }
@@ -344,7 +359,7 @@ QtGroupingProxy::rowCount( const QModelIndex &index ) const
 }
 
 int
-QtGroupingProxy::columnCount( const QModelIndex& index ) const
+QtGroupingProxy::columnCount( const QModelIndex &index ) const
 {
     if( !index.isValid() )
         return sourceModel()->columnCount( m_rootNode );
@@ -729,9 +744,28 @@ QtGroupingProxy::modelRowsInserted( const QModelIndex &parent, int start, int en
 void
 QtGroupingProxy::modelRowsAboutToBeRemoved( const QModelIndex &parent, int start, int end )
 {
-    if( parent != m_rootNode )
+    if( parent == m_rootNode )
     {
-        //an item will be added to an original index, remap and pass it on
+        foreach( int groupIndex, m_groupHash.keys() )
+        {
+            QModelIndex proxyParent = index( groupIndex, 0 );
+            QList<int> &groupList = m_groupHash[groupIndex];
+            foreach( int originalRow, groupList )
+            {
+                if( originalRow >= start && originalRow <= end )
+                {
+                    int proxyRow = groupList.indexOf( originalRow );
+                    if( groupIndex == -1 ) //adjust for non-grouped (root level) original items
+                        proxyRow += m_groupMaps.count();
+                    //TODO: optimize for continues original rows in the same group
+                    beginRemoveRows( proxyParent, proxyRow, proxyRow );
+                }
+            }
+        }
+    }
+    else
+    {
+        //child item(s) of an original item will be removed, remap and pass it on
 //        qDebug() << parent;
         QModelIndex proxyParent = mapFromSource( parent );
 //        qDebug() << proxyParent;
@@ -758,7 +792,6 @@ QtGroupingProxy::modelRowsRemoved( const QModelIndex &parent, int start, int end
                 if( rowIndex != -1 )
                 {
                     QModelIndex proxyParent = index( groupIndex, 0 );
-                    beginRemoveRows( proxyParent, rowIndex, rowIndex );
                     groupList.removeAt( rowIndex );
                 }
                 //Now decrement all source rows that are after the removed row
@@ -783,6 +816,7 @@ QtGroupingProxy::modelRowsRemoved( const QModelIndex &parent, int start, int end
 void
 QtGroupingProxy::modelDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight )
 {
+    //TODO: need to look in the groupedColumn and see if it changed and changed grouping accordingly
     QModelIndex proxyTopLeft = mapFromSource( topLeft );
     if( !proxyTopLeft.isValid() )
         return;

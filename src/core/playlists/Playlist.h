@@ -115,6 +115,13 @@ namespace Playlists
             /** Remove track at the specified position */
             virtual void removeTrack( int position ) { Q_UNUSED(position); }
 
+            /** Sync track status between two tracks. This is only
+             * useful for podcasts providers and some other exotic
+             * playlists providers.
+             */
+            virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack )
+                    { Q_UNUSED(position); Q_UNUSED(otherTrack); }
+
             virtual void subscribe( PlaylistObserver *observer )
                     { if( observer ) m_observers.insert( observer ); }
             virtual void unsubscribe( PlaylistObserver *observer )

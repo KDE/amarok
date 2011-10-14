@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2011 Lucas Lira Gomes <x8lucas8x@gmail.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -89,17 +90,25 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          * @arg category a default Category from the PlaylistManager::PlaylistCategory enum or a
          * custom one registered before with registerCustomCategory.
          */
-        void addProvider( Playlists::PlaylistProvider * provider, int category );
+        void addProvider( Playlists::PlaylistProvider *provider, int category );
+
+        /**
+         * Do all the work necessary to sync playlists, including the
+         * SyncedPlaylist creation and more. This sync is persistent.
+         * @arg playlist of the master playlist
+         * @arg playlist of the slave playlist
+         */
+        void setupSync( const Playlists::PlaylistPtr master, const Playlists::PlaylistPtr slave );
 
         /**
          * Remove a PlaylistProvider.
          * @arg provider a PlaylistProvider
          */
-        void removeProvider( Playlists::PlaylistProvider * provider );
+        void removeProvider( Playlists::PlaylistProvider *provider );
 
-        Playlists::PlaylistProvider * playlistProvider( int category, QString name );
+        Playlists::PlaylistProvider *playlistProvider( int category, QString name );
 
-        void downloadPlaylist( const KUrl & path, const Playlists::PlaylistFilePtr playlist );
+        void downloadPlaylist( const KUrl &path, const Playlists::PlaylistFilePtr playlist );
 
         /**
         *   Saves a list of tracks to a new playlist. Used in the Playlist save button.
@@ -122,7 +131,8 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         bool deletePlaylists( Playlists::PlaylistList playlistlist );
 
         Podcasts::PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; }
-        Playlists::UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; }
+        Playlists::UserPlaylistProvider *defaultUserPlaylists()
+                { return m_defaultUserPlaylistProvider; }
 
         /**
          *  Retrieves the provider owning the given playlist.
@@ -149,6 +159,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         void providerRemoved( Playlists::PlaylistProvider *provider, int category );
         void playlistAdded( Playlists::PlaylistPtr playlist, int category );
         void playlistRemoved( Playlists::PlaylistPtr playlist, int category );
+        void playlistUpdated( Playlists::PlaylistPtr playlist, int category );
 
         void renamePlaylist( Playlists::PlaylistPtr playlist );
 
@@ -157,6 +168,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         void slotPlaylistAdded( Playlists::PlaylistPtr playlist );
         void slotPlaylistRemoved( Playlists::PlaylistPtr playlist );
         void downloadComplete( KJob *job );
+        void slotSyncNeeded();
 
     private:
         void loadPlaylists( Playlists::PlaylistProvider *provider, int category );
@@ -170,8 +182,9 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         ~PlaylistManager();
 
         SyncRelationStorage *m_syncRelStore;
+        QList<SyncedPlaylistPtr> m_syncNeeded;
 
-        bool shouldBeSynced( Playlists::PlaylistPtr playlist );
+        bool hasToSync( Playlists::PlaylistPtr master, Playlists::PlaylistPtr slave );
 
         Podcasts::PodcastProvider *m_defaultPodcastProvider;
         Playlists::UserPlaylistProvider *m_defaultUserPlaylistProvider;

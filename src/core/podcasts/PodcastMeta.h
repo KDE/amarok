@@ -153,6 +153,8 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual QString cachedLyrics() const { return QString(); }
         virtual void setCachedLyrics( const QString &lyrics ) { Q_UNUSED( lyrics ); }
 
+        virtual bool operator==( const Meta::Track &track ) const;
+
         //PodcastMetaCommon methods
         int podcastType() { return EpisodeType; }
 
@@ -231,7 +233,6 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual int trackCount() const { return m_episodes.count(); }
         virtual Meta::TrackList tracks();
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
-
         //PodcastMetaCommon methods
         int podcastType() { return ChannelType; }
         //override this since it's ambigous in PodcastMetaCommon and Playlist

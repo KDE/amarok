@@ -77,6 +77,20 @@ PodcastEpisode::PodcastEpisode( PodcastEpisodePtr episode,
     m_url = episode->uidUrl();
 }
 
+bool
+PodcastEpisode::operator==( const Meta::Track &track ) const
+{
+
+    return      (
+                ( this->uidUrl() == track.uidUrl() ) &&
+                ( this->length() == track.length() ) &&
+                ( this->prettyName() == track.prettyName() ) &&
+                ( this->bitrate() == track.bitrate() ) &&
+                ( this->bpm() == track.bpm() )
+
+                );
+}
+
 PodcastChannel::PodcastChannel( PodcastChannelPtr channel )
 {
     m_author = channel->author();
