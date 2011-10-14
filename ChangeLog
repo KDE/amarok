@@ -9,8 +9,10 @@ Version 2.4.4-Beta 1
     * Auto-save the playlist so that it is not lost if Amarok crashes.
 
   CHANGES:
+    * Make possible to get count tracks before the XSPF file is fully loaded.
     * Mark unplayble tracks in the playlist. Patch by Sandeep Raghuraman. (BR 263640)
     * Current track applet: show number of artists instead of genres. (BR 261077)
+
 
   BUGFIXES:
     * Automated Playlist Generator doesn't freeze anymore when it finishes.

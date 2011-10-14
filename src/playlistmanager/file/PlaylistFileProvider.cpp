@@ -26,6 +26,7 @@
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "playlist/PlaylistModelStack.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <KDialog>
 #include <KInputDialog>
@@ -298,6 +299,7 @@ PlaylistFileProvider::import( const KUrl &path )
     if( !playlistFile )
         return false;
     playlistFile->setProvider( this );
+
     m_playlists << playlistFile;
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;
@@ -375,6 +377,7 @@ PlaylistFileProvider::loadPlaylists()
             playlist->setGroups( groups.split( ',',  QString::SkipEmptyParts ) );
 
         m_playlists << playlist;
+        emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( playlist ) );
     }
 
     //also add all files in the $KDEHOME/share/apps/amarok/playlists
@@ -398,6 +401,7 @@ PlaylistFileProvider::loadPlaylists()
         playlist->setProvider( this );
 
         m_playlists << playlist;
+        emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( playlist ) );
     }
 
     m_playlistsLoaded = true;
