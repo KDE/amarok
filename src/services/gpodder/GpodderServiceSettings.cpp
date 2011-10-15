@@ -165,7 +165,7 @@ GpodderServiceSettings::onError( QNetworkReply::NetworkError code )
     else
     {
         KMessageBox::error( this,
-            i18n( "Unable to connect to godder.net service or other Error occured." ),
+            i18n( "Unable to connect to godder.net service or other error occurred." ),
                             i18n( "Failed" ) );
 
         m_configDialog->testLogin->setText( i18n( "Test Login" ) );
