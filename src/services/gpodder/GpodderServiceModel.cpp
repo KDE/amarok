@@ -27,7 +27,6 @@
 #include <QEventLoop>
 #include <QTimer>
 
-#define INITIAL_TOPTAGS_LOADED 100
 static const int s_numberItemsToLoad = 100;
 
 using namespace mygpo;

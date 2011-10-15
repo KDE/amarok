@@ -118,7 +118,6 @@ private slots:
     void urlResolveFinished( KJob * );
 
 private:
-    QNetworkAccessManager *m_nam;
     ApiRequest m_apiRequest;
     const QString m_username;
     PodcastChannelList m_channels;
