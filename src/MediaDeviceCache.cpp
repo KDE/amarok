@@ -35,9 +35,7 @@
 
 #include <kdeversion.h>
 
-#if KDE_IS_VERSION(4,4,99)
 #include <kmountpoint.h>
-#endif
 
 #include <QDir>
 #include <QFile>
@@ -277,7 +275,6 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
 
 void MediaDeviceCache::slotTimeout()
 {
-#if KDE_IS_VERSION(4,4,99)
     KMountPoint::List possibleMountList = KMountPoint::possibleMountPoints();
     KMountPoint::List currentMountList = KMountPoint::currentMountPoints();
     QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageAccess );
@@ -310,7 +307,6 @@ void MediaDeviceCache::slotTimeout()
             }
         }
     }
-#endif
 
     m_timer.setSingleShot(true);
     m_timer.start(1000);

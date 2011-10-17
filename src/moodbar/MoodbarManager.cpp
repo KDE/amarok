@@ -57,7 +57,7 @@ namespace The
 }
 
 MoodbarManager::MoodbarManager()
-    : m_cache( new ImageCache( "Amarok-moodbars", 10 * 1024 ) )
+    : m_cache( new KImageCache( "Amarok-moodbars", 10 * 1024 ) )
     , m_lastPaintMode( 0 )
 {
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
@@ -145,7 +145,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
     if( m_lastPaintMode != AmarokConfig::moodbarPaintStyle() )
     {
         m_lastPaintMode = AmarokConfig::moodbarPaintStyle();
-        m_cache->discard();
+        m_cache->clear();
         m_moodDataMap.clear();
         emit moodbarStyleChanged();
     }
@@ -155,7 +155,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
     const QString pixmapKey = QString( "mood:%1-%2x%3%4" ).arg( track->uidUrl() ).arg(width).arg(height).arg( rtl?"r":"" );
     QPixmap moodbar;
     
-    if( m_cache->find( pixmapKey, moodbar ) )
+    if( m_cache->findPixmap( pixmapKey, &moodbar ) )
         return moodbar;
         
     //No? Ok, then create it reusing as much info as possible
@@ -189,7 +189,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
         return moodbar;
 
     moodbar = drawMoodbar( data, width, height, rtl );
-    m_cache->insert( pixmapKey, moodbar );
+    m_cache->insertPixmap( pixmapKey, moodbar );
     
     return moodbar;
 }
@@ -514,7 +514,7 @@ void MoodbarManager::paletteChanged( const QPalette &palette )
     const int paintStyle = AmarokConfig::moodbarPaintStyle();
     if( paintStyle == 0 ) // system default colour
     {
-        m_cache->discard();
+        m_cache->clear();
         m_moodDataMap.clear();
     }
 }

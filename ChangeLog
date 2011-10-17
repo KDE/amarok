@@ -13,6 +13,7 @@ Version 2.4.4-Beta 1
     * Auto-save the playlist so that it is not lost if Amarok crashes.
 
   CHANGES:
+    * Depend on KDE 4.6 - various bugs were caused by older versions.
     * Total rewrite of Automated Playlist Generator algorithm.  New algorithm
       is far less complicated and crash-prone, but at the cost of taking
       longer to converge when the constraint tree is complicated. (BR 240927,

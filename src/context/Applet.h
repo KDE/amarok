@@ -201,11 +201,6 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 
 } // Context namespace
 
-// Fix Plasma::MessageButtons in the 4.4 branch.
-#if !KDE_IS_VERSION(4, 4, 80)
-Q_DECLARE_OPERATORS_FOR_FLAGS(Plasma::MessageButtons)
-#endif
-
 /**
  * Register an applet when it is contained in a loadable module
  */
