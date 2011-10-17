@@ -1,4 +1,4 @@
- Amarok - the audio player for KDE
+Amarok - the audio player for KDE
 ===================================
 
 There are many media players around these days, it's true. What's missing from most
@@ -35,7 +35,7 @@ that really makes playlist handling easy.
 ==============
 
 Required
-    * KDE-Libs 4.4 + KDE-Base-runtime 4.4(oxygen-icons) (or newer)
+    * KDE-Libs 4.6 + KDE-Base-runtime 4.6(oxygen-icons) (or newer)
       http://www.kde.org
 
     * Qt 4.6 (or newer)
@@ -71,7 +71,7 @@ Optional
         (For artwork support)
         http://library.gnome.org/devel/gdk-pixbuf/stable/
 
-    * libmtp 1.0.0
+    * libmtp 1.0.0 (or newer)
       (MTP device support)
       http://libmtp.sourceforge.net/
 
@@ -101,7 +101,6 @@ Optional
       
     * gpodder.net Podcast Service
       * libmygpo-qt 1.0 (or newer)
-
 
     * Transcoding requires (at runtime):
       * FFmpeg 0.6.0 (or newer) - http://ffmpeg.org/
