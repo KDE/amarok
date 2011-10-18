@@ -43,7 +43,6 @@ K_EXPORT_PLUGIN( GpodderServiceSettingsFactory( "kcm_amarok_gpodder" ) )
 
 GpodderServiceSettings::GpodderServiceSettings( QWidget *parent, const QVariantList &args )
         : KCModule( GpodderServiceSettingsFactory::componentData(), parent, args ),
-          m_nam( new QNetworkAccessManager( this ) ),
           m_enableProvider( false ),
           m_createDevice( 0 )
 {
@@ -74,7 +73,6 @@ GpodderServiceSettings::save()
 {
     m_config.setUsername( m_configDialog->kcfg_GpodderUsername->text() );
     m_config.setPassword( m_configDialog->kcfg_GpodderPassword->text() );
-    m_config.setSynchronise( true );
     m_config.setEnableProvider( m_enableProvider );
 
     m_config.save();
@@ -90,7 +88,7 @@ GpodderServiceSettings::testLogin()
     m_configDialog->testLogin->setText( i18n( "Testing..." ) );
 
     mygpo::ApiRequest api( m_configDialog->kcfg_GpodderUsername->text(),
-                           m_configDialog->kcfg_GpodderPassword->text(), m_nam );
+                           m_configDialog->kcfg_GpodderPassword->text(), The::networkAccessManager() );
     m_devices = api.listDevices( m_configDialog->kcfg_GpodderUsername->text() );
 
     connect( m_devices.data(), SIGNAL(finished()), SLOT(finished()) );
@@ -124,7 +122,7 @@ GpodderServiceSettings::finished()
     if( !deviceExists )
     {
         mygpo::ApiRequest api( m_configDialog->kcfg_GpodderUsername->text(),
-                               m_configDialog->kcfg_GpodderPassword->text(), m_nam );
+                               m_configDialog->kcfg_GpodderPassword->text(), The::networkAccessManager() );
 
         m_createDevice = api.renameDevice( m_configDialog->kcfg_GpodderUsername->text(),
                                            QLatin1String("amarok"),

@@ -32,7 +32,7 @@ class GpodderServiceModel: public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    explicit GpodderServiceModel( QObject *parent = 0 );
+    explicit GpodderServiceModel( mygpo::ApiRequest *request, QObject *parent = 0 );
     virtual ~GpodderServiceModel();
 
     // QAbstractItemModel methods
@@ -65,14 +65,14 @@ protected:
     virtual void fetchMore( const QModelIndex &parent );
 
 private:
-    GpodderTreeItem *rootItem;
-    GpodderTreeItem *topTagsItem;
-    GpodderTreeItem *topPodcastsItem;
-    GpodderTreeItem *suggestedPodcastsItem;
+    GpodderTreeItem *m_rootItem;
+    GpodderTreeItem *m_topTagsItem;
+    GpodderTreeItem *m_topPodcastsItem;
+    GpodderTreeItem *m_suggestedPodcastsItem;
     // The gpodder.net topTags
-    mygpo::TagListPtr topTags;
+    mygpo::TagListPtr m_topTags;
     // true if the topTagsRequest has finished and all Top Tags are loaded
-    mygpo::ApiRequest m_request;
+    mygpo::ApiRequest *m_request;
 };
 
 #endif /* GPODDERSERVICEMODEL_H_ */

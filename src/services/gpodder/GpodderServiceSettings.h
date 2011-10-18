@@ -57,7 +57,6 @@ private slots:
     void settingsChanged();
 
 private:
-    QNetworkAccessManager *m_nam;
     Ui::GpodderConfigWidget *m_configDialog;
     GpodderServiceConfig m_config;
 

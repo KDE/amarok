@@ -48,7 +48,7 @@ class GpodderProvider : public PodcastProvider
 {
     Q_OBJECT
 public:
-    GpodderProvider( const QString &username, const QString &password );
+    GpodderProvider( const QString& username, ApiRequest *apiRequest );
     ~GpodderProvider();
 
     bool possiblyContainsTrack( const KUrl &url ) const;
@@ -118,7 +118,7 @@ private slots:
     void urlResolveFinished( KJob * );
 
 private:
-    ApiRequest m_apiRequest;
+    ApiRequest *m_apiRequest;
     const QString m_username;
     PodcastChannelList m_channels;
     KIO::TransferJob *m_resolveUrlJob;

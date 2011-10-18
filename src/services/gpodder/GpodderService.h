@@ -71,11 +71,13 @@ private:
     void init();
     void polish();
 
-    void enableGpodderProvider( const QString &username, const QString &password );
+    void enableGpodderProvider( const QString &username );
 
     virtual Collections::Collection *collection() { return 0; }
 
     bool m_inited;
+
+    mygpo::ApiRequest *m_apiRequest;
 
     Podcasts::GpodderProvider *m_podcastProvider;
 

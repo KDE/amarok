@@ -139,6 +139,8 @@ GpodderService::~GpodderService()
     DEBUG_BLOCK
 
     delete m_podcastProvider;
+
+    delete m_apiRequest;
 }
 
 //This Method should only contain the most necessary things for initilazing the Service
@@ -147,8 +149,12 @@ GpodderService::init()
 {
     GpodderServiceConfig config;
 
-    if( config.enableProvider() )
-        enableGpodderProvider( config.username(), config.password() );
+    if( config.enableProvider() ) {
+        m_apiRequest = new mygpo::ApiRequest( config.username(), config.password(), The::networkAccessManager() );
+        enableGpodderProvider( config.username() );
+    }
+    else
+        m_apiRequest = new mygpo::ApiRequest( The::networkAccessManager() );
 
     m_serviceready = true;
     m_inited = true;
@@ -182,7 +188,7 @@ GpodderService::polish()
 
     setView( view );
 
-    GpodderServiceModel *sourceModel = new GpodderServiceModel( this );
+    GpodderServiceModel *sourceModel = new GpodderServiceModel( m_apiRequest, this );
 
     m_proxyModel = new GpodderSortFilterProxyModel( this );
     m_proxyModel->setDynamicSortFilter( true );
@@ -233,12 +239,12 @@ GpodderService::subscribe()
 }
 
 void
-GpodderService::enableGpodderProvider(const QString &username, const QString &password)
+GpodderService::enableGpodderProvider( const QString &username )
 {
     DEBUG_BLOCK
 
     debug() << "enabling GpodderProvider";
 
     delete m_podcastProvider;
-    m_podcastProvider = new Podcasts::GpodderProvider( username, password );
+    m_podcastProvider = new Podcasts::GpodderProvider( username, m_apiRequest );
 }

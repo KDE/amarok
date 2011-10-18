@@ -43,8 +43,8 @@ static const QString s_deviceName = "amarok";
 
 using namespace Podcasts;
 
-GpodderProvider::GpodderProvider( const QString &username, const QString &password )
-    : m_apiRequest( username, password, The::networkAccessManager() )
+GpodderProvider::GpodderProvider( const QString& username, ApiRequest *apiRequest )
+    : m_apiRequest( apiRequest )
     , m_username( username )
     , m_channels()
     , m_addRemoveResult()
@@ -98,7 +98,7 @@ GpodderProvider::~GpodderProvider()
     //Send remaining subscriptions changes
     if( !m_removeList.isEmpty() || !m_addList.isEmpty() )
     {
-        m_addRemoveResult = m_apiRequest.addRemoveSubscriptions( m_username, s_deviceName, m_addList,
+        m_addRemoveResult = m_apiRequest->addRemoveSubscriptions( m_username, s_deviceName, m_addList,
                                                                  m_removeList );
         m_addList.clear();
         m_removeList.clear();
@@ -108,7 +108,7 @@ GpodderProvider::~GpodderProvider()
     if( !m_uploadEpisodeStatusMap.isEmpty() )
     {
         m_episodeActionsResult =
-                m_apiRequest.uploadEpisodeActions( m_username, m_uploadEpisodeStatusMap.values() );
+                m_apiRequest->uploadEpisodeActions( m_username, m_uploadEpisodeStatusMap.values() );
         m_uploadEpisodeStatusMap.clear();
     }
 
@@ -434,7 +434,7 @@ GpodderProvider::synchronizeStatus()
     if( !m_uploadEpisodeStatusMap.isEmpty() )
     {
         m_episodeActionsResult =
-                m_apiRequest.uploadEpisodeActions( m_username, m_uploadEpisodeStatusMap.values() );
+                m_apiRequest->uploadEpisodeActions( m_username, m_uploadEpisodeStatusMap.values() );
 
         //Only clear m_episodeStatusList if the synchronisation with gpodder.net really worked
         connect( m_episodeActionsResult.data(), SIGNAL( finished() ), this,
@@ -472,7 +472,7 @@ GpodderProvider::synchronizeSubscriptions()
     if( !m_removeList.isEmpty() || !m_addList.isEmpty() )
     {
         m_addRemoveResult =
-                m_apiRequest.addRemoveSubscriptions( m_username, s_deviceName, m_addList, m_removeList );
+                m_apiRequest->addRemoveSubscriptions( m_username, s_deviceName, m_addList, m_removeList );
 
         //Only clear m_addList and m_removeList if the synchronisation with gpodder.net really worked
         connect( m_addRemoveResult.data(), SIGNAL( finished() ), this,
@@ -791,7 +791,7 @@ GpodderProvider::updateLocalPodcasts( const QList<QPair<QUrl,QUrl> > updatedUrls
 void
 GpodderProvider::requestDeviceUpdates()
 {
-    m_deviceUpdatesResult = m_apiRequest.deviceUpdates( m_username, s_deviceName, 0 );
+    m_deviceUpdatesResult = m_apiRequest->deviceUpdates( m_username, s_deviceName, 0 );
 
     connect( m_deviceUpdatesResult.data(), SIGNAL( finished() ), SLOT( deviceUpdatesFinished() ) );
     connect( m_deviceUpdatesResult.data(), SIGNAL( requestError( QNetworkReply::NetworkError ) ),
@@ -809,7 +809,7 @@ GpodderProvider::requestEpisodeActionsInCascade()
     if( !m_channelsToRequestActions.isEmpty() )
     {
         QUrl url = m_channelsToRequestActions.head();
-        m_episodeActionListResult = m_apiRequest.episodeActionsByPodcast( m_username, url.toString(), true );
+        m_episodeActionListResult = m_apiRequest->episodeActionsByPodcast( m_username, url.toString(), true );
         debug() << "Requesting actions for " << url.toString();
         connect( m_episodeActionListResult.data(), SIGNAL(finished()),
                  SLOT(episodeActionsInCascadeFinished()) );
