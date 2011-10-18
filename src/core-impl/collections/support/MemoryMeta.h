@@ -29,12 +29,7 @@ namespace MemoryMeta {
 class Base
 {
     public:
-        Base( QString name, Meta::TrackPtr track )
-        {
-            m_name = name;
-            m_tracks << track;
-        }
-
+        Base( QString name ) : m_name( name ) {}
         virtual ~Base() {}
 
         virtual QString name() const { return m_name; }
@@ -49,7 +44,7 @@ class Base
 class Artist : public Meta::Artist, public Base
 {
     public:
-        Artist( Meta::TrackPtr track ) : Base( track->artist()->name(), track ) {}
+        Artist( QString name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
@@ -60,7 +55,7 @@ class Artist : public Meta::Artist, public Base
 class Album : public Meta::Album, public Base
 {
     public:
-        Album( Meta::TrackPtr track ) : Base( track->album()->name(), track ) {}
+        Album( QString name ) : Base( name ), m_isCompilation( false ) {}
 
         virtual QString name() const { return Base::name(); }
 
@@ -69,6 +64,8 @@ class Album : public Meta::Album, public Base
         virtual bool hasAlbumArtist() const { return !m_albumArtist.isNull(); }
         virtual Meta::ArtistPtr albumArtist() const { return m_albumArtist; }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
+
+        void setAlbumArtist( Meta::ArtistPtr artist ) { m_albumArtist = artist; }
 
     protected:
         virtual void notifyObservers() const {}
@@ -81,7 +78,7 @@ class Album : public Meta::Album, public Base
 class Composer : public Meta::Composer, public Base
 {
     public:
-        Composer( Meta::TrackPtr track ) : Base( track->album()->name(), track ) {}
+        Composer( QString name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
 
@@ -90,16 +87,12 @@ class Composer : public Meta::Composer, public Base
 
     protected:
         virtual void notifyObservers() const {}
-
-    private:
-        QString m_name;
-        Meta::TrackList m_tracks;
 };
 
 class Genre : public Meta::Genre, public Base
 {
     public:
-        Genre( Meta::TrackPtr track ) : Base( track->genre()->name(), track ) {}
+        Genre( QString name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
 
@@ -108,16 +101,12 @@ class Genre : public Meta::Genre, public Base
 
     protected:
         virtual void notifyObservers() const {}
-
-    private:
-        QString m_name;
-        Meta::TrackList m_tracks;
 };
 
 class Year : public Meta::Year, public Base
 {
     public:
-        Year( Meta::TrackPtr track ) : Base( track->year()->name(), track ) {}
+        Year( QString name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
 
@@ -126,10 +115,87 @@ class Year : public Meta::Year, public Base
 
     protected:
         virtual void notifyObservers() const {}
+};
+
+class Track : public Meta::Track
+{
+    public:
+        Track( Meta::TrackPtr originalTrack )
+            : m_track( originalTrack )
+            , m_album( 0 )
+            , m_artist( 0 )
+            , m_composer( 0 )
+            , m_genre( 0 )
+            , m_year( 0 )
+        {}
+
+        /* Meta::Track virtual methods */
+        virtual QString name() const { return m_track->name(); }
+
+        virtual KUrl playableUrl() const { return m_track->playableUrl(); }
+        virtual QString prettyUrl() const { return m_track->prettyUrl(); }
+        virtual QString uidUrl() const { return m_track->uidUrl(); }
+        virtual bool isPlayable() const { return m_track->isPlayable(); }
+
+        //these functions return the proxy track values
+        virtual Meta::AlbumPtr album() const { return m_album; }
+        virtual Meta::ArtistPtr artist() const { return m_artist; }
+        virtual Meta::ComposerPtr composer() const { return m_composer; }
+        virtual Meta::GenrePtr genre() const { return m_genre; }
+        virtual Meta::YearPtr year() const { return m_year; }
+
+        //TODO:implement labels
+        virtual Meta::LabelList labels() const { return Meta::LabelList(); }
+        virtual qreal bpm() const { return m_track->bpm(); }
+        virtual QString comment() const { return m_track->comment(); }
+        virtual double score() const { return m_track->score(); }
+        virtual void setScore( double newScore ) { m_track->setScore( newScore ); }
+        virtual int rating() const { return m_track->rating(); }
+        virtual void setRating( int newRating ) { m_track->setRating( newRating ); }
+        virtual qint64 length() const { return m_track->length(); }
+        virtual int filesize() const { return m_track->filesize(); }
+        virtual int sampleRate() const { return m_track->sampleRate(); }
+        virtual int bitrate() const { return m_track->bitrate(); }
+        virtual QDateTime createDate() const { return m_track->createDate(); }
+        virtual QDateTime modifyDate() const { return m_track->modifyDate(); }
+        virtual int trackNumber() const { return m_track->trackNumber(); }
+        virtual int discNumber() const { return m_track->discNumber(); }
+        virtual QDateTime lastPlayed() const { return m_track->lastPlayed(); }
+        virtual QDateTime firstPlayed() const { return m_track->firstPlayed(); }
+        virtual int playCount() const { return m_track->playCount(); }
+
+        virtual qreal replayGain( Meta::ReplayGainTag mode ) const
+                { return m_track->replayGain( mode ); }
+        virtual QString type() const { return m_track->type(); }
+
+        virtual void prepareToPlay() { m_track->prepareToPlay(); }
+        virtual void finishedPlaying( double fraction ) { m_track->finishedPlaying( fraction ); }
+
+        virtual bool inCollection() const { return m_track->inCollection(); }
+        virtual Collections::Collection *collection() const { return m_track->collection(); }
+
+        virtual QString cachedLyrics() const { return m_track->cachedLyrics(); }
+        virtual void setCachedLyrics( const QString &lyrics ) { m_track->setCachedLyrics( lyrics ); }
+
+        //TODO: implement labels
+        virtual void addLabel( const QString &label ) { Q_UNUSED( label ) }
+        virtual void addLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
+        virtual void removeLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
+
+        /* MemoryMeta::Track methods */
+        void setAlbum( Meta::AlbumPtr album ) { m_album = album; }
+        void setArtist( Meta::ArtistPtr artist ) { m_artist = artist; }
+        void setComposer( Meta::ComposerPtr composer ) { m_composer = composer; }
+        void setGenre( Meta::GenrePtr genre ) { m_genre = genre; }
+        void setYear( Meta::YearPtr year ) { m_year = year; }
 
     private:
-        QString m_name;
-        Meta::TrackList m_tracks;
+        Meta::TrackPtr m_track;
+        Meta::AlbumPtr m_album;
+        Meta::ArtistPtr m_artist;
+        Meta::ComposerPtr m_composer;
+        Meta::GenrePtr m_genre;
+        Meta::YearPtr m_year;
 };
 
 class MapAdder
@@ -145,16 +211,23 @@ class MapAdder
 
         void addTrack( Meta::TrackPtr track )
         {
-            m_mc->addTrack( track );
+            Track *memoryTrack = new Track( track );
+            Meta::TrackPtr metaTrackPtr =
+                    Meta::TrackPtr( static_cast<Meta::Track *>( memoryTrack ) );
 
             ArtistMap artistMap = m_mc->artistMap();
             if( !track->artist().isNull() && !track->artist()->name().isEmpty() )
             {
                 QString artistName = track->artist()->name();
-                if( !artistMap.keys().contains( artistName ) )
-                    artistMap.insert( artistName, Meta::ArtistPtr( new Artist( track ) ) );
-                else
-                    static_cast<Artist *>( artistMap[artistName].data() )->addTrack( track );
+                Meta::ArtistPtr artist = artistMap.value( artistName );
+                if( artist.isNull() )
+                {
+                    artist = Meta::ArtistPtr( new Artist( artistName ) );
+                    artistMap.insert( artistName, artist );
+                }
+
+                static_cast<Artist *>( artist.data() )->addTrack( metaTrackPtr );
+                memoryTrack->setArtist( artist );
             }
             m_mc->setArtistMap( artistMap );
 
@@ -162,10 +235,17 @@ class MapAdder
             if( !track->album().isNull() && !track->album()->name().isEmpty() )
             {
                 QString albumName = track->album()->name();
-                if( !albumMap.keys().contains( albumName ) )
-                    albumMap.insert( albumName, Meta::AlbumPtr( new Album( track ) ) );
-                else
-                    static_cast<Album *>( albumMap[albumName].data() )->addTrack( track );
+                Meta::AlbumPtr album = albumMap.value( albumName );
+                if( album.isNull() )
+                {
+                    album = Meta::AlbumPtr( new Album( albumName ) );
+                    albumMap.insert( albumName, album );
+                }
+
+                Album *memoryAlbum = static_cast<Album *>( album.data() );
+                memoryAlbum->addTrack( metaTrackPtr );
+                memoryAlbum->setAlbumArtist( metaTrackPtr->artist() );
+                memoryTrack->setAlbum( album );
             }
             m_mc->setAlbumMap( albumMap );
 
@@ -173,10 +253,14 @@ class MapAdder
             if( !track->genre().isNull() && !track->genre()->name().isEmpty() )
             {
                 QString genreName = track->genre()->name();
-                if( !genreMap.keys().contains( genreName ) )
-                    genreMap.insert( genreName, Meta::GenrePtr( new Genre( track ) ) );
-                else
-                    static_cast<Genre *>( genreMap[genreName].data() )->addTrack( track );
+                Meta::GenrePtr genre = genreMap.value( genreName );
+                if( genre.isNull() )
+                {
+                    genre = Meta::GenrePtr( new Genre( genreName ) );
+                    genreMap.insert( genreName, genre );
+                }
+                static_cast<Genre *>( genre.data() )->addTrack( metaTrackPtr );
+                memoryTrack->setGenre( genre );
             }
             m_mc->setGenreMap( genreMap );
 
@@ -184,24 +268,34 @@ class MapAdder
             if( !track->composer().isNull() && !track->composer()->name().isEmpty() )
             {
                 QString composerName = track->composer()->name();
-                if( !composerMap.keys().contains( composerName ) )
-                    composerMap.insert( composerName, Meta::ComposerPtr( new Composer( track ) ) );
-                else
-                    static_cast<Composer *>( composerMap[composerName].data() )->addTrack( track );
+                Meta::ComposerPtr composer = composerMap.value( composerName );
+                if( composer.isNull() )
+                {
+                    composer = Meta::ComposerPtr( new Composer( composerName ) );
+                    composerMap.insert( composerName, composer );
+                }
+
+                static_cast<Composer *>( composer.data() )->addTrack( metaTrackPtr );
+                memoryTrack->setComposer( composer );
             }
             m_mc->setComposerMap( composerMap );
 
             YearMap yearMap = m_mc->yearMap();
             if( !track->year().isNull() && !track->year()->name().isEmpty() )
             {
-                int year = track->year()->name().toInt();
-                if( !yearMap.keys().contains( year ) )
-                    yearMap.insert( year, Meta::YearPtr( new Year( track ) ) );
-                else
-                    static_cast<Year *>( yearMap[year].data() )->addTrack( track );
+                int year = track->year()->year();
+                Meta::YearPtr yearPtr = yearMap.value( year );
+                if( yearPtr.isNull() )
+                {
+                    yearPtr = Meta::YearPtr( new Year( QString::number( year ) ) );
+                    yearMap.insert( year, yearPtr );
+                }
+                static_cast<Year *>( yearPtr.data() )->addTrack( metaTrackPtr );
+                memoryTrack->setYear( yearPtr );
             }
             m_mc->setYearMap( yearMap );
 
+            m_mc->addTrack( metaTrackPtr );
             //TODO:labels
         }
 
