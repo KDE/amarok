@@ -132,7 +132,6 @@ class IpodHandler : public Meta::MediaDeviceHandler
     public slots:
         virtual void writeDatabase();
 
-        void slotInitializeIpod();
         void slotStaleOrphaned();
         void slotSyncArtwork();
 

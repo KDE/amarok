@@ -543,26 +543,6 @@ IpodHandler::collectionActions()
 }
 
 void
-IpodHandler::slotInitializeIpod()
-{
-    const QString text( i18n( "Do you really want to initialize this iPod? Its database will be cleared of all information, but the files will not be deleted." ) );
-
-    const bool init = KMessageBox::warningContinueCancel(0,
-                                                         text,
-                                                         i18n("Initialize iPod") ) == KMessageBox::Continue;
-    if( init )
-    {
-        const bool success = initializeIpod();
-
-        if ( success )
-            Amarok::Components::logger()->shortMessage( i18n( "The iPod has been initialized" ) );
-        else
-            Amarok::Components::logger()->shortMessage(
-                        i18n( "The iPod was unable to be initialized" ) );
-    }
-}
-
-void
 IpodHandler::slotStaleOrphaned()
 {
     DEBUG_BLOCK
