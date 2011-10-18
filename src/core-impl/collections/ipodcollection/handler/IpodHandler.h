@@ -373,20 +373,11 @@ class IpodHandler : public Meta::MediaDeviceHandler
         void fileTransferred( KJob *job );
         void fileDeleted( KJob *job );
 
-        void slotDBWriteFailed( ThreadWeaver::Job* job );
-        void slotDBWriteSucceeded( ThreadWeaver::Job* job );
-
-        void slotStaleFailed( ThreadWeaver::Job* job );
-        void slotStaleSucceeded( ThreadWeaver::Job* job );
-
-        void slotOrphanedFailed( ThreadWeaver::Job* job );
-        void slotOrphanedSucceeded( ThreadWeaver::Job* job );
-
-        void slotAddOrphanedFailed( ThreadWeaver::Job* job );
-        void slotAddOrphanedSucceeded( ThreadWeaver::Job* job );
-
-        void slotSyncArtworkFailed( ThreadWeaver::Job *job );
-        void slotSyncArtworkSucceeded( ThreadWeaver::Job *job );
+        void slotDBWriteDone( ThreadWeaver::Job* job );
+        void slotStaleDone( ThreadWeaver::Job* job );
+        void slotOrphanedDone( ThreadWeaver::Job* job );
+        void slotAddOrphanedDone( ThreadWeaver::Job* job );
+        void slotSyncArtworkDone( ThreadWeaver::Job *job );
 
         void slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed );
 
