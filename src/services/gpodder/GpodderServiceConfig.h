@@ -53,9 +53,6 @@ public:
     bool enableProvider() { return m_enableProvider; }
     void setEnableProvider( bool enableProvider ) { m_enableProvider = enableProvider; }
 
-    bool synchronise() { return m_synchronise; }
-    void setSynchronise( bool synchronise ) { m_synchronise = synchronise; }
-
 private slots:
     void textDialogYes();
     void textDialogNo();
