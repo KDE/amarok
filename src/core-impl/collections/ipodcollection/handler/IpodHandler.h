@@ -117,6 +117,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         friend class OrphanedWorkerThread;
         friend class AddOrphanedWorkerThread;
         friend class SyncArtworkWorkerThread;
+        friend class DBWorkerThread;
 
         /// Ipod-Specific Methods
         QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
@@ -125,11 +126,11 @@ class IpodHandler : public Meta::MediaDeviceHandler
         void setMountPoint( const QString &mp ) { m_mountPoint = mp; }
 #endif
 
-        // NOTE: do not use writeITunesDB,
-        // use the threaded writeDatabase
-        bool writeITunesDB( bool threaded = false );
-
     public slots:
+        /**
+         * Schedule a job that writes iTunes database onto iPod if database was changed.
+         * Returns immediately. @see setDatabaseChanged()
+         */
         virtual void writeDatabase();
 
         void slotStaleOrphaned();
@@ -137,10 +138,6 @@ class IpodHandler : public Meta::MediaDeviceHandler
 
     protected:
         /// Functions for PlaylistCapability
-        /**
-         * Writes to the device's database if it has one, otherwise
-         * simply calls slotDatabaseWritten to continue the workflow.
-         */
         virtual void prepareToParsePlaylists();
         virtual bool isEndOfParsePlaylistsList();
         virtual void prepareToParseNextPlaylist();
@@ -261,6 +258,15 @@ class IpodHandler : public Meta::MediaDeviceHandler
         bool initializeIpod();
 
         bool removeDBTrack( Itdb_Track *track );
+
+        /**
+         * Low-level worker method that actually calls libgpod to physically write iTunes
+         * database onto iPod. Skips any writes if setDatabaseChanged() was not called
+         * previously
+         *
+         * @return true if database was successfully written, false otherwise
+         */
+        bool writeDatabaseWorker();
 
         /* libgpod Information Extraction Methods */
 

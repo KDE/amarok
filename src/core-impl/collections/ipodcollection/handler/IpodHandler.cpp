@@ -123,7 +123,7 @@ IpodHandler::~IpodHandler()
     delete m_tempdir;
     // Write to DB before closing, for ratings updates etc.
     debug() << "Cleaning up Ipod Database";
-    writeITunesDB( false );
+    writeDatabaseWorker();
     if ( m_itdb )
         itdb_free( m_itdb );
 
@@ -742,7 +742,7 @@ IpodHandler::initializeIpod()
     // initializing a device is rare, and requires focus
     // to minimize possible error
     // TODO: database methods abstraction needed
-    if( !writeITunesDB( false ) )
+    if( !writeDatabaseWorker() )
        return false;
 
     return true;
@@ -1015,70 +1015,46 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 }
 
 bool
-IpodHandler::writeITunesDB( bool threaded )
+IpodHandler::writeDatabaseWorker()
 {
     DEBUG_BLOCK
 
-    QMutexLocker locker( &m_dbLocker );
     if( !m_itdb )
         return false;
-
-    if( m_dbChanged )
+    if( !m_dbChanged )
     {
-        bool ok = false;
-        if( !threaded )
-        {
-            if( !m_itdb )
-                return false;
-
-            ok = true;
-            GError *error = 0;
-            if ( !itdb_write (m_itdb, &error) )
-            {   /* an error occurred */
-                if(error)
-                {
-                    if (error->message)
-                        debug() << "itdb_write error: " << error->message;
-                    else
-                        debug() << "itdb_write error: error->message == 0!";
-                    g_error_free (error);
-                }
-                error = 0;
-                ok = false;
-            }
-
-            if( m_isShuffle )
-            {
-                /* write shuffle data */
-                if (!itdb_shuffle_write (m_itdb, &error))
-                {   /* an error occurred */
-                    if(error)
-                    {
-                        if (error->message)
-                            debug() << "itdb_shuffle_write error: " << error->message;
-                        else
-                            debug() << "itdb_shuffle_write error: error->message == 0!";
-                        g_error_free (error);
-                    }
-                    error = 0;
-                    ok = false;
-                }
-            }
-            // Kill status bar only once DB is written
-            //emit databaseWritten( this );
-        }
-
-        if( ok )
-            m_dbChanged = false;
-        else
-            debug() << "Failed to write iPod database";
-
-        return ok;
+        debug() << "Database was not changed, will not flush";
+        return false;
     }
 
-    debug() << "Database was not changed, will not flush";
+    GError *error = 0;
 
-    return false;
+    QMutexLocker locker( &m_dbLocker );
+    /* from NEWS file of libgpod 0.7.93:
+     * * automatically call itdb_shuffle_write when itdb_write is called if needed.
+     */
+    if ( !itdb_write (m_itdb, &error) )
+    {   /* if an error occurred */
+        QString errorText;
+        if(error)
+        {
+            if (error->message)
+                errorText = i18nc( "%1: error message from libgpod",
+                                   "Failed to write iTunes database onto iPod: %1",
+                                   error->message );
+            else
+                errorText = i18n( "Failed to write iTunes database onto iPod. "
+                                  "Additonally, libgpod failed to tell us what problem "
+                                  "caused it. (error->message = 0)" );
+            g_error_free (error);
+        }
+        else
+            errorText = i18n( "Failed to write iTunes database onto iPod. Additonally, "
+                              "libgpod failed to tell us what problem caused it. (error = 0)" );
+        Amarok::Components::logger()->longMessage( errorText, Amarok::Logger::Error );
+        return false;
+    }
+    return true;
 }
 
 QString
@@ -1144,7 +1120,7 @@ IpodHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrac
 void
 IpodHandler::writeDatabase()
 {
-    disconnect( this, SIGNAL( removeTracksDone() ), 0, 0 );
+    disconnect( this, SIGNAL( removeTracksDone() ), 0, 0 );  // TODO: why this is here???
     ThreadWeaver::Weaver::instance()->enqueue( new DBWorkerThread( this ) );
 }
 
@@ -2341,7 +2317,7 @@ DBWorkerThread::DBWorkerThread( IpodHandler* handler )
 void
 DBWorkerThread::run()
 {
-    m_success = m_handler->writeITunesDB( false );
+    m_success = m_handler->writeDatabaseWorker();
 }
 
 // stale
