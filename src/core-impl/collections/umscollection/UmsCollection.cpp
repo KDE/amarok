@@ -143,6 +143,7 @@ UmsCollection::UmsCollection( Solid::Device device )
     : Collection()
     , m_device( device )
     , m_mc( new MemoryCollection() )
+    , m_autoConnect( false )
     , m_vfatSafe( true )
     , m_asciiOnly( false )
     , m_ignoreThe( false )
@@ -174,7 +175,7 @@ UmsCollection::init()
 
     m_parseAction = new QAction( KIcon( "checkbox" ), i18n(  "&Use as Collection" ), this );
     m_parseAction->setProperty( "popupdropper_svg_id", "edit" );
-    connect( m_parseAction, SIGNAL( triggered() ), this, SLOT( parseTracks() ) );
+    connect( m_parseAction, SIGNAL( triggered() ), this, SLOT( slotParseTracks() ) );
 
     m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Disconnect Device" ),
                                  const_cast<UmsCollection*>( this ) );
@@ -559,6 +560,10 @@ UmsCollection::slotConfigure()
         {
             QTextStream s( &settingsFile );
             QString keyValuePair( "%1=%2\n" );
+
+#define TRUE_FALSE(x) x ? "true" : "false"
+            s << keyValuePair.arg( s_autoConnectKey, TRUE_FALSE(m_autoConnect) );
+
             if( !m_musicPath.isEmpty() )
             {
                 s << keyValuePair.arg( s_musicFolderKey, KUrl::relativePath( m_mountPoint,
@@ -570,7 +575,6 @@ UmsCollection::slotConfigure()
                 s << keyValuePair.arg( s_musicFilenameSchemeKey, m_musicFilenameScheme );
             }
 
-#define TRUE_FALSE(x) x ? "true" : "false"
             s << keyValuePair.arg( s_vfatSafeKey, TRUE_FALSE(m_vfatSafe) );
             s << keyValuePair.arg( s_asciiOnlyKey, TRUE_FALSE(m_asciiOnly) );
             s << keyValuePair.arg( s_ignoreTheKey, TRUE_FALSE(m_ignoreThe) );
@@ -583,9 +587,6 @@ UmsCollection::slotConfigure()
                 s << keyValuePair.arg( s_podcastFolderKey, KUrl::relativePath( m_mountPoint,
                     m_podcastPath.toLocalFile() ) );
             }
-
-            if( m_autoConnect )
-                s << keyValuePair.arg( s_autoConnectKey, "true" );
 
             settingsFile.close();
         }
