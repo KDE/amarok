@@ -216,83 +216,77 @@ class MapAdder
                     Meta::TrackPtr( static_cast<Meta::Track *>( memoryTrack ) );
 
             ArtistMap artistMap = m_mc->artistMap();
-            if( !track->artist().isNull() && !track->artist()->name().isEmpty() )
-            {
-                QString artistName = track->artist()->name();
-                Meta::ArtistPtr artist = artistMap.value( artistName );
-                if( artist.isNull() )
-                {
-                    artist = Meta::ArtistPtr( new Artist( artistName ) );
-                    artistMap.insert( artistName, artist );
-                }
 
-                static_cast<Artist *>( artist.data() )->addTrack( metaTrackPtr );
-                memoryTrack->setArtist( artist );
+            QString artistName = track->artist().isNull() ? QString() : track->artist()->name();
+            Meta::ArtistPtr artist = artistMap.value( artistName );
+            if( artist.isNull() )
+            {
+                artist = Meta::ArtistPtr( new Artist( artistName ) );
+                artistMap.insert( artistName, artist );
             }
+
+            static_cast<Artist *>( artist.data() )->addTrack( metaTrackPtr );
+            memoryTrack->setArtist( artist );
+
             m_mc->setArtistMap( artistMap );
 
             AlbumMap albumMap = m_mc->albumMap();
-            if( !track->album().isNull() && !track->album()->name().isEmpty() )
+            QString albumName = track->album().isNull() ? QString() : track->album()->name();
+            Meta::AlbumPtr album = albumMap.value( albumName );
+            if( album.isNull() )
             {
-                QString albumName = track->album()->name();
-                Meta::AlbumPtr album = albumMap.value( albumName );
-                if( album.isNull() )
-                {
-                    album = Meta::AlbumPtr( new Album( albumName ) );
-                    albumMap.insert( albumName, album );
-                }
-
-                Album *memoryAlbum = static_cast<Album *>( album.data() );
-                memoryAlbum->addTrack( metaTrackPtr );
-                memoryAlbum->setAlbumArtist( metaTrackPtr->artist() );
-                memoryTrack->setAlbum( album );
+                album = Meta::AlbumPtr( new Album( albumName ) );
+                albumMap.insert( albumName, album );
             }
+
+            Album *memoryAlbum = static_cast<Album *>( album.data() );
+            memoryAlbum->addTrack( metaTrackPtr );
+            memoryAlbum->setAlbumArtist( metaTrackPtr->artist() );
+            memoryTrack->setAlbum( album );
+
             m_mc->setAlbumMap( albumMap );
 
             GenreMap genreMap = m_mc->genreMap();
-            if( !track->genre().isNull() && !track->genre()->name().isEmpty() )
+
+            QString genreName = track->genre().isNull() ? QString() : track->genre()->name();
+            Meta::GenrePtr genre = genreMap.value( genreName );
+            if( genre.isNull() )
             {
-                QString genreName = track->genre()->name();
-                Meta::GenrePtr genre = genreMap.value( genreName );
-                if( genre.isNull() )
-                {
-                    genre = Meta::GenrePtr( new Genre( genreName ) );
-                    genreMap.insert( genreName, genre );
-                }
-                static_cast<Genre *>( genre.data() )->addTrack( metaTrackPtr );
-                memoryTrack->setGenre( genre );
+                genre = Meta::GenrePtr( new Genre( genreName ) );
+                genreMap.insert( genreName, genre );
             }
+            static_cast<Genre *>( genre.data() )->addTrack( metaTrackPtr );
+            memoryTrack->setGenre( genre );
+
             m_mc->setGenreMap( genreMap );
 
             ComposerMap composerMap = m_mc->composerMap();
-            if( !track->composer().isNull() && !track->composer()->name().isEmpty() )
-            {
-                QString composerName = track->composer()->name();
-                Meta::ComposerPtr composer = composerMap.value( composerName );
-                if( composer.isNull() )
-                {
-                    composer = Meta::ComposerPtr( new Composer( composerName ) );
-                    composerMap.insert( composerName, composer );
-                }
 
-                static_cast<Composer *>( composer.data() )->addTrack( metaTrackPtr );
-                memoryTrack->setComposer( composer );
+            QString composerName = track->composer().isNull() ? QString() : track->composer()->name();
+            Meta::ComposerPtr composer = composerMap.value( composerName );
+            if( composer.isNull() )
+            {
+                composer = Meta::ComposerPtr( new Composer( composerName ) );
+                composerMap.insert( composerName, composer );
             }
+
+            static_cast<Composer *>( composer.data() )->addTrack( metaTrackPtr );
+            memoryTrack->setComposer( composer );
+
             m_mc->setComposerMap( composerMap );
 
             YearMap yearMap = m_mc->yearMap();
-            if( !track->year().isNull() && !track->year()->name().isEmpty() )
+
+            int year = track->year().isNull() ? 0 : track->year()->year();
+            Meta::YearPtr yearPtr = yearMap.value( year );
+            if( yearPtr.isNull() )
             {
-                int year = track->year()->year();
-                Meta::YearPtr yearPtr = yearMap.value( year );
-                if( yearPtr.isNull() )
-                {
-                    yearPtr = Meta::YearPtr( new Year( QString::number( year ) ) );
-                    yearMap.insert( year, yearPtr );
-                }
-                static_cast<Year *>( yearPtr.data() )->addTrack( metaTrackPtr );
-                memoryTrack->setYear( yearPtr );
+                yearPtr = Meta::YearPtr( new Year( year ? QString::number( year ) : QString() ) );
+                yearMap.insert( year, yearPtr );
             }
+            static_cast<Year *>( yearPtr.data() )->addTrack( metaTrackPtr );
+            memoryTrack->setYear( yearPtr );
+
             m_mc->setYearMap( yearMap );
 
             m_mc->addTrack( metaTrackPtr );
