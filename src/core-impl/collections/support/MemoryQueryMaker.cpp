@@ -157,7 +157,6 @@ MemoryQueryMaker::run()
         connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SIGNAL(newResultReady(Meta::ComposerList)), Qt::DirectConnection );
         connect( qmi, SIGNAL(newResultReady(Meta::YearList)), SIGNAL(newResultReady(Meta::YearList)), Qt::DirectConnection );
         connect( qmi, SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::DataList)), SIGNAL(newResultReady(Meta::DataList)), Qt::DirectConnection );
         connect( qmi, SIGNAL(newResultReady(QStringList)), SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
         connect( qmi, SIGNAL(newResultReady(Meta::LabelList)), SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
 
