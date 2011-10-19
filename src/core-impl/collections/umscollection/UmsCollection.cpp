@@ -434,14 +434,9 @@ UmsCollection::slotTrackAdded( KUrl location )
 }
 
 void
-UmsCollection::slotConnectionUpdated()
-{
-    emit collectionUpdated();
-}
-
-void
 UmsCollection::slotAccessibilityChanged( bool accessible, const QString &udi )
 {
+    Q_UNUSED(udi)
     if( accessible )
         init();
     else
@@ -453,10 +448,13 @@ void
 UmsCollection::slotParseTracks()
 {
     if( !m_scanManager )
+    {
         m_scanManager = new GenericScanManager( this );
+        connect( m_scanManager, SIGNAL(directoryScanned( CollectionScanner::Directory * )),
+                SLOT(slotDirectoryScanned(CollectionScanner::Directory*)) );
+        connect( m_scanManager, SIGNAL(succeeded()), SIGNAL(updated()) );
+    }
 
-    connect( m_scanManager, SIGNAL(directoryScanned( CollectionScanner::Directory * )),
-             SLOT(slotDirectoryScanned(CollectionScanner::Directory*)) );
     m_scanManager->requestFullScan( QList<KUrl>() << m_musicPath );
 }
 
@@ -620,6 +618,5 @@ UmsCollection::slotDirectoryScanned( CollectionScanner::Directory *dir )
         slotTrackAdded( scannerTrack->path() );
     }
 
-    collectionUpdated();
     //TODO: read playlists
 }

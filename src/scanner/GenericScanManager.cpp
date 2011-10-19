@@ -139,6 +139,9 @@ GenericScanManager::slotJobDone()
         return;
 
     //TODO: reported error handling
+    //if( errors )
+    // emit failed()
+    emit succeeded();
 
     m_scannerJob->deleteLater();
     m_scannerJob = 0;

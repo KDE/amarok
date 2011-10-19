@@ -107,14 +107,9 @@ class UmsCollection : public Collection
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
-    signals:
-        void remove();
-        void updated();
-
     public slots:
         void slotDeviceRemoved();
         void slotTrackAdded( KUrl trackLocation );
-        void slotConnectionUpdated();
 
     private slots:
         void slotAccessibilityChanged( bool accessible, const QString &udi );
