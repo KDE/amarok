@@ -143,6 +143,7 @@ UmsCollection::UmsCollection( Solid::Device device )
     : Collection()
     , m_device( device )
     , m_mc( new MemoryCollection() )
+    , m_initialized( false )
     , m_autoConnect( false )
     , m_vfatSafe( true )
     , m_asciiOnly( false )
@@ -156,17 +157,6 @@ UmsCollection::UmsCollection( Solid::Device device )
     Solid::StorageAccess *storageAccess = m_device.as<Solid::StorageAccess>();
     connect( storageAccess, SIGNAL(accessibilityChanged( bool, QString )),
              SLOT(slotAccessibilityChanged( bool, QString )) );
-
-    if( storageAccess->isAccessible() )
-        init();
-}
-
-void
-UmsCollection::init()
-{
-    Solid::StorageAccess *storageAccess = m_device.as<Solid::StorageAccess>();
-    m_mountPoint = storageAccess->filePath();
-    debug() << "Mounted at: " << m_mountPoint;
 
     m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure %1", prettyName() ),
                 this );
@@ -182,6 +172,23 @@ UmsCollection::init()
     m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
     connect( m_ejectAction, SIGNAL( triggered() ), SLOT( slotEject() ) );
 
+    if( storageAccess->isAccessible() )
+        init();
+}
+
+UmsCollection::~UmsCollection()
+{
+    DEBUG_BLOCK
+}
+
+void
+UmsCollection::init()
+{
+    Solid::StorageAccess *storageAccess = m_device.as<Solid::StorageAccess>();
+    m_mountPoint = storageAccess->filePath();
+    debug() << "Mounted at: " << m_mountPoint;
+
+    //read .is_audio_player from filesystem
     KUrl playerFilePath( m_mountPoint );
     playerFilePath.addPath( s_settingsFileName );
     QFile playerFile( playerFilePath.toLocalFile() );
@@ -264,13 +271,17 @@ UmsCollection::init()
         }
     }
 
+    m_initialized = true;
+
     if( m_autoConnect )
         slotParseTracks();
 }
 
-UmsCollection::~UmsCollection()
+void
+UmsCollection::deInit()
 {
-    DEBUG_BLOCK
+    m_initialized = false;
+    m_mc.clear();
 }
 
 bool
@@ -382,7 +393,7 @@ UmsCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) con
     }
 }
 
-Capabilities::Capability*
+Capabilities::Capability *
 UmsCollection::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
@@ -390,9 +401,12 @@ UmsCollection::createCapabilityInterface( Capabilities::Capability::Type type )
         case Capabilities::Capability::Actions:
         {
             QList< QAction* > actions;
-            actions << m_parseAction;
-            actions << m_configureAction;
-            actions << m_ejectAction;
+            if( m_initialized )
+            {
+                actions << m_parseAction;
+                actions << m_configureAction;
+                actions << m_ejectAction;
+            }
             return new Capabilities::ActionsCapability( actions );
         }
         default:
@@ -440,8 +454,7 @@ UmsCollection::slotAccessibilityChanged( bool accessible, const QString &udi )
     if( accessible )
         init();
     else
-        //TODO: de-init so the entry remains valid
-        emit remove();
+        deInit();
 }
 
 void

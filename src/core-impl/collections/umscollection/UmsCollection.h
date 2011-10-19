@@ -121,7 +121,10 @@ class UmsCollection : public Collection
         void slotDirectoryScanned( CollectionScanner::Directory *dir );
 
     private:
+        /** enable the collection after the volume got mounted */
         void init();
+        /** disable the collection, but don't remove it yet so it stays in the collection view */
+        void deInit();
 
         //static variables relating to the on-disk configuration file
         static QString s_settingsFileName;
@@ -138,6 +141,7 @@ class UmsCollection : public Collection
 
         Solid::Device m_device;
         QSharedPointer<MemoryCollection> m_mc;
+        bool m_initialized;
 
         bool m_autoConnect;
         QString m_mountPoint;
