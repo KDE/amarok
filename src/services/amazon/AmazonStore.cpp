@@ -137,13 +137,14 @@ void AmazonStore::initTopPanel()
     m_searchWidget->setTimeout( 3000 );
     m_searchWidget->showAdvancedButton( false );
 
-    m_searchSelectionBox = new QComboBox;
-    m_searchSelectionBox->setToolTip( i18n( "Select kind of items to search for" ) );
-    m_searchSelectionBox->insertItem( 0, i18nc( "search for all types of items in the Amazon store", "all items" ) );
-    m_searchSelectionBox->insertItem( 1, i18n( "albums" ) );
-    m_searchSelectionBox->insertItem( 2, i18n( "songs" ) );
+    // not yet supported by the API and won't be for some time
+//    m_searchSelectionBox = new QComboBox;
+//    m_searchSelectionBox->setToolTip( i18n( "Select kind of items to search for" ) );
+//    m_searchSelectionBox->insertItem( 0, i18nc( "search for all types of items in the Amazon store", "all items" ) );
+//    m_searchSelectionBox->insertItem( 1, i18n( "albums" ) );
+//    m_searchSelectionBox->insertItem( 2, i18n( "songs" ) );
 
-    m_searchWidget->toolBar()->addWidget( m_searchSelectionBox );
+//    m_searchWidget->toolBar()->addWidget( m_searchSelectionBox );
 
     m_resultpageSpinBox = new QSpinBox;
     m_resultpageSpinBox->setMinimum( 1 );

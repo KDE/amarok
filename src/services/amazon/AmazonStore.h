@@ -105,7 +105,7 @@ private:
     QPushButton* m_viewCartButton;
     QPushButton* m_checkoutButton;
 
-    QComboBox* m_searchSelectionBox;
+    //QComboBox* m_searchSelectionBox;
     QSpinBox* m_resultpageSpinBox;
 
     AmazonItemTreeView* m_itemView;
