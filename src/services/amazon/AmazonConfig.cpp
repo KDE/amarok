@@ -43,7 +43,10 @@ void AmazonConfig::destroy()
     mutex.lock();
 
     if( m_instance )
-        m_instance->~AmazonConfig();
+    {
+        delete m_instance;
+        m_instance = 0;
+    }
 
     mutex.unlock();
 }
