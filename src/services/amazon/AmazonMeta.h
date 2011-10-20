@@ -30,6 +30,7 @@
 
 #include <QtGlobal>
 
+class AmazonStore;
 
 namespace Meta
 {
