@@ -33,7 +33,10 @@ AmazonCart* AmazonCart::instance()
 void AmazonCart::destroy()
 {
     if( m_instance )
-        m_instance->~AmazonCart();
+    {
+        delete m_instance;
+        m_instance = 0;
+    }
 }
 
 AmazonCart::~AmazonCart()
