@@ -174,8 +174,8 @@ class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, publ
     signals:
         void remove();
 
-        /** This signal is send when the collection has changed.
-         *  This signal is send when the collection more than can be detected by
+        /** This signal is sent when the collection has changed.
+         *  This signal is sent when the collection more than can be detected by
          *  Meta::metaDataChanged.
          *  This is e.g. a new song was added, an old one removed, new device added, ...
          *

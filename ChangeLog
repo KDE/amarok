@@ -2,8 +2,9 @@ Amarok ChangeLog
 ================
 (C) 2002-2011 the Amarok authors.
 
-Version 2.4.4-Beta 1
+Version 2.5.0-Beta 1
   FEATURES:
+    * Music store based on the Amazon catalogue
     * Podcast subscription synchronisation and podcast status synchronisation
       with Gpodder service.
     * Possibility to browse through podcasts suggested by gpodder.net and

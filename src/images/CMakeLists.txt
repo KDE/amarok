@@ -6,13 +6,14 @@ install(FILES
         FilenameLayoutDialogHint.png
         amarok_icon.svg
         default-theme-clean.svg
+        emblem-amazon.png
         emblem-default.png
         emblem-jamendo.png
         emblem-jamendo-scalable.svgz
         emblem-lastfm.png
         emblem-lastfm-scalable.svg
         emblem-gpodder.png
-    emblem-gpodder-scalable.svgz
+        emblem-gpodder-scalable.svgz
         emblem-magnatune.png
         emblem-mp3tunes.png
         emblem-ampache.png

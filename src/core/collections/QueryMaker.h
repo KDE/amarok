@@ -210,6 +210,7 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         void newResultReady( Meta::YearList );
         void newResultReady( QStringList );
         void newResultReady( Meta::LabelList );
+        void newResultReady( Meta::DataList );
 
         /** This signal is emitted after all the results have been submitted via zero or more newResultReady signals.
         */

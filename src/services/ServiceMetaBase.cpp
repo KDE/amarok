@@ -576,12 +576,9 @@ ServiceArtist::ServiceArtist(const QStringList & resultRow)
     , BookmarkThisProvider()
     , m_tracks()
 {
-
     m_id = resultRow[0].toInt();
     m_name = resultRow[1];
     m_description = resultRow[2];
-
-
 }
 
 ServiceArtist::~ServiceArtist()

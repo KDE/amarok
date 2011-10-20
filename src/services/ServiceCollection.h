@@ -73,9 +73,9 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
         //Override some stuff to be able to hande id mappings
 
         void addTrack( Meta::TrackPtr trackPtr );
-        void addArtist( Meta::ArtistPtr artistPtr);
-        void addAlbum ( Meta::AlbumPtr albumPtr );
-        void addGenre( Meta::GenrePtr genrePtr);
+        void addArtist( Meta::ArtistPtr artistPtr );
+        void addAlbum( Meta::AlbumPtr albumPtr );
+        void addGenre( Meta::GenrePtr genrePtr );
 
         //TODO:
         //void setTrackMap( TrackMap map ) { m_trackMap = map; }

@@ -641,6 +641,7 @@ CollectionTreeItemModelBase::addQueryMaker( CollectionTreeItem* item,
     connect( qm, SIGNAL( newResultReady( Meta::ComposerList ) ), SLOT( newResultReady( Meta::ComposerList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( newResultReady( Meta::YearList ) ), SLOT( newResultReady( Meta::YearList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( newResultReady( Meta::LabelList ) ), SLOT( newResultReady( Meta::LabelList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::DataList ) ), SLOT( newResultReady( Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
     d->runningQueries.insert( item, qm );
 }

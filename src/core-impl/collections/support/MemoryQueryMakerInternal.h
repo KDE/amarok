@@ -85,6 +85,7 @@ signals:
     void newResultReady( Meta::YearList );
     void newResultReady( QStringList );
     void newResultReady( Meta::LabelList );
+    void newResultReady( Meta::DataList );
 
 private:
     template <class PointerType>
