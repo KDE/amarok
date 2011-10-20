@@ -153,7 +153,7 @@ void AmazonStore::initTopPanel()
 
     m_searchWidget->toolBar()->addSeparator();
 
-    connect( m_resultpageSpinBox, SIGNAL( valueChanged( int i ) ), this, SLOT( newSpinBoxSearchRequest( int i ) ) );
+    connect( m_resultpageSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( newSpinBoxSearchRequest( int ) ) );
     // TODO: Action to open the config dialog
 }
 
