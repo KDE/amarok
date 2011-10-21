@@ -3,7 +3,6 @@ include_directories(
     ../../
     ../../core-impl/collections
     ../../core-impl/collections/support
-    ../../servicebrowser
     ../../statusbar
     ${CMAKE_CURRENT_BINARY_DIR}/../../..
     ${KDE4_INCLUDE_DIR}
