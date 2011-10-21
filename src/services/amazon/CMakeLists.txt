@@ -25,6 +25,7 @@ set( amarok_service_amazonstore_PART_SRCS
     AmazonParser.cpp
     AmazonMeta.cpp
     AmazonStore.cpp
+    AmazonUrlRunner.cpp
 )
 
 kde4_add_ui_files( amarok_service_amazonstore_PART_SRCS

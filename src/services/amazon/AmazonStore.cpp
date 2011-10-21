@@ -22,7 +22,9 @@
 #include "AmazonMeta.h"
 #include "AmazonParser.h"
 #include "AmazonStore.h"
+#include "AmazonUrlRunner.h"
 
+#include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core/interfaces/Logger.h"
@@ -124,10 +126,9 @@ void AmazonStore::polish()
 
         connect( m_itemView, SIGNAL( itemSelected( QModelIndex ) ), this, SLOT( itemSelected( QModelIndex ) ) );
 
-        // TODO for later versions:
-        // add the Amazon URL runner
-        // AmazonRunner * runner = new AmazonUrlRunner();
-        // connect URL runner signals to AmazonStore slots
+        AmazonUrlRunner *runner = new AmazonUrlRunner();
+        connect( runner, SIGNAL( search( const QString ) ), this, SLOT( newSearchRequest( QString) ) );
+        The::amarokUrlHandler()->registerRunner( runner, runner->command() );
     }
 }
 
@@ -155,7 +156,6 @@ void AmazonStore::initTopPanel()
     m_searchWidget->toolBar()->addSeparator();
 
     connect( m_resultpageSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( newSpinBoxSearchRequest( int ) ) );
-    // TODO: Action to open the config dialog
 }
 
 void AmazonStore::initView()

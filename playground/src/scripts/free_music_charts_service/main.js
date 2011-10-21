@@ -123,7 +123,7 @@ function fmcTracksXmlParser( url ) {
 
   // for each show...
   for ( ; i < shows.length(); i++ ) {
-    Amarok.debug( "found a show..." );
+    /* Amarok.debug( "found a show..." ); */
     tempShow = shows.at( i );
     j        = tempShow.firstChildElement( "songcount" ).text();
     title    = tempShow.firstChildElement( "title" ).text();
@@ -258,8 +258,13 @@ function onPopulate( level, callbackData, filter ) {
       item.infoHtml = item.infoHtml + "<a style=\"text-decoration:none;\"";
       item.infoHtml = item.infoHtml + "href=\"amarok://navigate/internet%2FJamendo.com?filter=artist%3A%22";
       item.infoHtml = item.infoHtml + songArtistTitle[0] + "%22&levels=artist-album\">";
-      item.infoHtml = item.infoHtml + songArtistTitle[0] + " on Jamendo</a></center>";
-      item.infoHtml = item.infoHtml + "</div></div>";
+      item.infoHtml = item.infoHtml + songArtistTitle[0] + " on Jamendo</a><br/>";
+
+      item.infoHtml = item.infoHtml + "<a style=\"text-decoration:none;\"";
+      item.infoHtml = item.infoHtml + "href=\"amarok://navigate/internet%2FMP3%20Music%20Store?filter=%22";
+      item.infoHtml = item.infoHtml + songArtistTitle[0] + "%22\">";
+      item.infoHtml = item.infoHtml + songArtistTitle[0] + " on Amazon</a><br/>";
+      item.infoHtml = item.infoHtml + "</center></div></div>";
 
       elt = elt.nextSiblingElement( "song" );
       if( addAll || isFilterMatch( item.itemName ) )
@@ -284,7 +289,7 @@ function onVote() {
 
 /* checks weather a show contains a match for the current filter */
 function containsFilterMatch( id ) {
-  Amarok.debug( "FMC: containsFilterMatch" );
+  /* Amarok.debug( "FMC: containsFilterMatch" ); */
 
   if( currentFilter == "" ) // no filter -> matches everywhere
     return true;
@@ -329,7 +334,7 @@ function containsFilterMatch( id ) {
 
 /* checks weather a song matches a filter */
 function isFilterMatch( itemName ) {
-  Amarok.debug( "FMC: isFilterMatch" );
+  /* Amarok.debug( "FMC: isFilterMatch" ); */
   var itemNameLowerCase = itemName.toLowerCase();
 
   if( ( currentFilter != "" ) && ( itemNameLowerCase.indexOf( currentFilter ) == -1 ) )
