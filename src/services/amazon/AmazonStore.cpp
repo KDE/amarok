@@ -89,7 +89,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     setShortDescription( i18n( "Access the Amazon MP3 Store directly from Amarok" ) );
     setIcon( KIcon( "view-services-amazon-amarok" ) );
 
-    // used in Info applet
+    // used in info applet
     setLongDescription( i18n( "This plugin allows searching and purchasing songs and albums from the Amazon MP3 store. Amarok gets a share of the profits made by this service." ) );
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_amazon.png" ) );
@@ -251,7 +251,7 @@ void AmazonStore::addToCart()
     }
 
     AmazonCart::instance()->add( asin, price, name );
-    Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>The item <em>%1</em> has been added to your shopping cart.", name ) );
+    Amarok::Components::logger()->shortMessage( i18n( "<em>%1</em> has been added to your shopping cart.", name ) );
     m_checkoutButton->setEnabled( true );
 }
 
@@ -333,7 +333,6 @@ void AmazonStore::newSpinBoxSearchRequest( int i )
 
 void AmazonStore::createRequestUrl( QString request )
 {
-    // TODO enhance this method to allow searching for tracks/albums only and to get futher result pages
     DEBUG_BLOCK
     QString urlString;
     QString pageValue;
