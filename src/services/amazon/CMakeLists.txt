@@ -23,12 +23,14 @@ set( amarok_service_amazonstore_PART_SRCS
     AmazonItemTreeView.cpp
     AmazonParser.cpp
     AmazonMeta.cpp
+    AmazonShoppingCartDialog.cpp
     AmazonStore.cpp
     AmazonUrlRunner.cpp
 )
 
 kde4_add_ui_files( amarok_service_amazonstore_PART_SRCS
     AmazonConfigWidget.ui
+    AmazonShoppingCartDialog.ui
 )
 
 kde4_add_plugin( amarok_service_amazonstore ${amarok_service_amazonstore_PART_SRCS} )

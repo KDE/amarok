@@ -1,7 +1,5 @@
 /****************************************************************************************
  * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
- * The Amazon store in based upon the Magnatune store in Amarok,                        *
- * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,39 +14,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAZONCART_H
-#define AMAZONCART_H
+#include "Amazon.h"
+#include "AmazonCart.h"
+#include "AmazonShoppingCartDialog.h"
 
-#include "AmazonCartItem.h"
+#include "ui_AmazonShoppingCartDialog.h"
 
-#include <QtGlobal>
-
-#include <QString>
-#include <QStringList>
-#include <QUrl>
-
-
-/* Singleton representing the Amazon shopping cart. */
-
-class AmazonCart : public QList<AmazonCartItem>
+AmazonShoppingCartDialog::AmazonShoppingCartDialog(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::AmazonShoppingCartDialog)
 {
-public:
-    static AmazonCart* instance();
-    static void destroy();
+    ui->setupUi( this );
 
-    void add( QString asin, QString price, QString name );
-    void clear();
-    QStringList list();
-    QString price();
-    void remove( QString asin );
-    QUrl checkoutUrl();
+    m_model = new QStringListModel;
+    m_model->setStringList( AmazonCart::instance()->list() );
+    ui->listView->setModel( m_model );
+    ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonCart::instance()->price() ) ) );
+}
 
-private:
-    AmazonCart();
-    ~AmazonCart();
-
-    static AmazonCart* m_instance;
-    quint64 m_price;
-};
-
-#endif // AMAZONCART_H
+AmazonShoppingCartDialog::~AmazonShoppingCartDialog()
+{
+    delete ui;
+}

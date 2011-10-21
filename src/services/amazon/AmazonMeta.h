@@ -56,7 +56,6 @@ public:
 
     virtual void setPrice( const QString price );
     virtual QString price() const;
-    virtual QString prettyPrice() const;
 
     virtual QList< QAction *> customActions();
 

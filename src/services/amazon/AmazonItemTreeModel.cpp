@@ -14,6 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "Amazon.h"
 #include "AmazonItemTreeModel.h"
 #include "AmazonMeta.h"
 
@@ -97,7 +98,7 @@ QVariant AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
             else if( index.column() == 1 ) // price
             {
                 if( m_collection->albumById( id ) )
-                    return dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( id ).data() )->prettyPrice();
+                    return Amazon::prettyPrice( dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( id ).data() )->price() );
             }
         }
         else // track map
@@ -118,7 +119,7 @@ QVariant AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
             else if( index.column() == 1 ) // price
             {
                 if( m_collection->trackById( id ) )
-                    return dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() )->prettyPrice();
+                    return Amazon::prettyPrice( dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() )->price() );
             }
         }
     }

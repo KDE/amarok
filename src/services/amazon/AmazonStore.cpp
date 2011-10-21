@@ -21,6 +21,7 @@
 #include "AmazonConfig.h"
 #include "AmazonMeta.h"
 #include "AmazonParser.h"
+#include "AmazonShoppingCartDialog.h"
 #include "AmazonStore.h"
 #include "AmazonUrlRunner.h"
 
@@ -171,7 +172,7 @@ void AmazonStore::initView()
     bottomPanelLayout->setParent( this );
 
     m_addToCartButton = new QPushButton;
-    m_addToCartButton->setText( i18nc( "Add selected item to your shopping cart", "Add" ) );
+    m_addToCartButton->setText( i18nc( "Add selected item to your shopping cart", "Add to Cart" ) );
     m_addToCartButton->setToolTip( i18n( "Add selected item to your shopping cart" ) );
     m_addToCartButton->setEnabled( false );
     m_addToCartButton->setObjectName( "addToCartButton" );
@@ -257,6 +258,8 @@ void AmazonStore::addToCart()
 
 void AmazonStore::viewCart()
 {
+    AmazonShoppingCartDialog cartDialog( this );
+    cartDialog.exec();
 }
 
 void AmazonStore::checkout()

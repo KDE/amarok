@@ -61,9 +61,22 @@ void AmazonCart::clear()
     m_price = 0;
 }
 
-quint64 AmazonCart::price()
+QStringList AmazonCart::list()
 {
-    return m_price;
+    QStringList result;
+
+    for( int i = 0; i < size(); i++ )
+    {
+        result.append( at( i ).prettyName() + " (" + Amazon::prettyPrice( at( i ).price() ) +")" );
+    }
+
+    return result;
+}
+
+QString AmazonCart::price()
+{
+    QString price;
+    return price.setNum( m_price );
 }
 
 void AmazonCart::remove( QString asin )

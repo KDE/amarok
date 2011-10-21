@@ -23,11 +23,47 @@
 #ifndef AMAZON_H
 #define AMAZON_H
 
+#include "AmazonConfig.h"
+
+#include <QString>
+
+#include <KGlobal>
+#include <KLocale>
+
 // API documentation: http://www.mp3-music-store.de/api.html
 #define MP3_MUSIC_STORE_HOST "http://www.mp3-music-store.de/?"
 #define MP3_MUSIC_STORE_KEY "27274503cb405cb1929f353fc507f09c"
 
 // Example search:
 // http://www.mp3-music-store.de/?apikey=27274503cb405cb1929f353fc507f09c&method=Search&Player=amarok&Location=de&Text=Shearer
+
+namespace Amazon
+{
+inline QString prettyPrice( QString price )
+{
+    if( price.toInt() == 0 )
+        return price;
+
+    QString country = AmazonConfig::instance()->country();
+    QString value;
+
+    // determine human readable value
+    if( country == "de" || country == "fr" || country == "com" || country == "co.uk" )
+        value.setNum( price.toDouble() / 100 );
+    else if( country == "co.jp" )
+        value.setNum( price.toInt() );
+
+    if( country == "de" || country == "fr" )
+        return KGlobal::locale()->formatMoney( value.toFloat(), "€" , 2 );
+    if( country == "co.uk" )
+        return KGlobal::locale()->formatMoney( value.toFloat(), "£" , 2 );
+    if( country == "com" )
+        return KGlobal::locale()->formatMoney( value.toFloat(), "$" , 2 );
+    if( country == "co.jp" )
+        return KGlobal::locale()->formatMoney( value.toFloat(), "¥" , 0 );
+
+    return QString();
+}
+}
 
 #endif // AMAZON_H

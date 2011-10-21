@@ -18,7 +18,6 @@
 
 #include "AmazonActions.h"
 #include "AmazonCart.h"
-#include "AmazonConfig.h"
 #include "AmazonMeta.h"
 
 #include <KStandardDirs>
@@ -118,31 +117,6 @@ QString Meta::AmazonItem::price() const
     return m_price;
 }
 
-QString Meta::AmazonItem::prettyPrice() const
-{
-    if( m_price.toInt() == 0 )
-        return m_price;
-
-    QString country = AmazonConfig::instance()->country();
-    QString value;
-
-    // determine human readable value
-    if( country == "de" || country == "fr" || country == "com" || country == "co.uk" )
-        value.setNum( m_price.toDouble() / 100 );
-    else if( country == "co.jp" )
-        value.setNum( m_price.toInt() );
-
-    if( country == "de" || country == "fr" )
-        return KGlobal::locale()->formatMoney( value.toFloat(), "€" , 2 );
-    if( country == "co.uk" )
-        return KGlobal::locale()->formatMoney( value.toFloat(), "£" , 2 );
-    if( country == "com" )
-        return KGlobal::locale()->formatMoney( value.toFloat(), "$" , 2 );
-    if( country == "co.jp" )
-        return KGlobal::locale()->formatMoney( value.toFloat(), "¥" , 0 );
-
-    return QString();
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // class AmazonTrack
