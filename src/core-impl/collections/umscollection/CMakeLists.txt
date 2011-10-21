@@ -1,6 +1,5 @@
 include_directories( ../..
   ../../collections
-  ../../metadata/audible
   podcasts
   ${CMAKE_BINARY_DIR}/src
   ${AMAROK_COLLECTION_SUPPORT_DIR}
