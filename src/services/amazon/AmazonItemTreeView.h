@@ -19,6 +19,7 @@
 
 #include "widgets/PrettyTreeView.h"
 
+#include <QContextMenuEvent>
 #include <QModelIndex>
 #include <QTreeView>
 
@@ -31,16 +32,19 @@ class AmazonItemTreeView : public Amarok::PrettyTreeView
 public:
     AmazonItemTreeView( QWidget *parent = 0 );
 
+    void contextMenuEvent( QContextMenuEvent *event );
     void startDrag( Qt::DropActions supportedActions );
     void mouseDoubleClickEvent( QMouseEvent *event );
 
 protected slots:
     virtual void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
+    void addToCartAction();
 
 private:
     PopupDropper* m_pd;
 
 signals:
+    void addToCart();
     void itemDoubleClicked( QModelIndex index );
     void itemSelected( QModelIndex item );
 };

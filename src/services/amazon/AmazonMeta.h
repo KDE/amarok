@@ -114,7 +114,7 @@ public:
 // class AmazonTrack
 ///////////////////////////////////////////////////////////////////////////////
 
-class AmazonTrack  : public ServiceTrack, public AmazonItem
+class AmazonTrack : public ServiceTrack, public AmazonItem
 {
 public:
     AmazonTrack( const QStringList & resultRow );

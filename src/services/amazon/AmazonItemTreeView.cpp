@@ -26,11 +26,32 @@
 
 #include <QMouseEvent>
 
+#include <KMenu>
+
 // TODO: context menu actions, enable drag and drop to playlist
 
 AmazonItemTreeView::AmazonItemTreeView( QWidget *parent ) :
     Amarok::PrettyTreeView( parent )
 {
+}
+
+void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
+{
+    QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        event->accept();
+        return;
+    }
+
+    KMenu menu( this );
+
+    QAction addToCartAction( QString( i18n( "Add to Cart" ) ), &menu );
+    menu.addAction( &addToCartAction );
+    connect( &addToCartAction, SIGNAL( triggered() ), this, SLOT( addToCartAction() ) );
+
+    event->accept();
+    menu.exec( event->globalPos() );
 }
 
 void AmazonItemTreeView::mouseDoubleClickEvent( QMouseEvent *event )
@@ -88,4 +109,9 @@ void AmazonItemTreeView::selectionChanged( const QItemSelection &selected, const
         return;
 
     emit( itemSelected( indexes[0] ) ); // emit the QModelIndex
+}
+
+void AmazonItemTreeView::addToCartAction()
+{
+    emit addToCart();
 }

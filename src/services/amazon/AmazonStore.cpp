@@ -198,9 +198,13 @@ void AmazonStore::initView()
     //m_downloadAlbumButton->setIcon( KIcon( "checkoutButton-amarok" ) );
 
     connect( m_addToCartButton, SIGNAL( clicked() ), this, SLOT( addToCart() ) );
+    connect( m_itemView, SIGNAL( addToCart() ), this, SLOT( addToCart() ) );
     connect( m_viewCartButton, SIGNAL( clicked() ), this, SLOT( viewCart() ) );
     connect( m_checkoutButton, SIGNAL( clicked() ), this, SLOT( checkout() ) );
 }
+
+
+/* public slots */
 
 void AmazonStore::itemDoubleClicked( QModelIndex index )
 {
@@ -237,9 +241,6 @@ void AmazonStore::itemSelected( QModelIndex index )
     m_addToCartButton->setEnabled( true );
     m_selectedIndex = index;
 }
-
-
-/* public slots */
 
 void AmazonStore::addToCart()
 {
