@@ -20,6 +20,7 @@
 
 #include "CurrentTrack.h"
 
+#include "amarokurls/AmarokUrl.h"
 #include "core/support/Amarok.h"
 #include "App.h"
 #include "core/support/Debug.h"
@@ -810,6 +811,10 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("artist") );
             m_customActions << act;
+
+            act = new QAction( KIcon("view-services-amazon-amarok"), i18n("Search for Artist in the MP3 Music Store"), this );
+            connect( act, SIGNAL(triggered()), this, SLOT(findInStore()) );
+            m_customActions << act;
         }
         if( composer && !composer->name().isEmpty() && (composer->name() != i18n("Unknown Composer")) )
         {
@@ -863,6 +868,14 @@ CurrentTrack::findInSource( const QString &name )
         fis->findInSource( FindInSourceCapability::Genre );
     else if( name == QLatin1String("year") )
         fis->findInSource( FindInSourceCapability::Year );
+}
+
+void
+CurrentTrack::findInStore()
+{
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    AmarokUrl url( "amarok://navigate/internet/MP3%20Music%20Store/?filter=%22" + track.data()->artist().data()->name() + "%22" );
+    url.run();
 }
 
 void

@@ -69,6 +69,7 @@ private slots:
     void albumsCounted( QStringList results );
     void artistsCounted( QStringList results );
     void findInSource( const QString &name );
+    void findInStore();
     void queryCollection();
     void editTrack();
 
