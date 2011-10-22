@@ -24,6 +24,8 @@ set( amarok_service_amazonstore_PART_SRCS
     AmazonParser.cpp
     AmazonMeta.cpp
     AmazonShoppingCartDialog.cpp
+    AmazonShoppingCartModel.cpp
+    AmazonShoppingCartView.cpp
     AmazonStore.cpp
     AmazonUrlRunner.cpp
 )

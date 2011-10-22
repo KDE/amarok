@@ -20,6 +20,8 @@
 #include "AmazonCart.h"
 #include "AmazonConfig.h"
 
+#include <QDebug>
+
 AmazonCart* AmazonCart::m_instance = 0;
 
 AmazonCart* AmazonCart::instance()
@@ -61,7 +63,7 @@ void AmazonCart::clear()
     m_price = 0;
 }
 
-QStringList AmazonCart::list()
+QStringList AmazonCart::stringList()
 {
     QStringList result;
 
@@ -79,10 +81,13 @@ QString AmazonCart::price()
     return price.setNum( m_price );
 }
 
-void AmazonCart::remove( QString asin )
+void AmazonCart::remove( int pos )
 {
-//    m_price = m_price - value( asin );
-//    QList::remove( asin );
+    if( pos < 0 || pos >= size()  ) // not valid
+        return;
+
+    m_price = m_price - at( pos ).price().toInt();
+    QList::removeAt( pos );
 }
 
 QUrl AmazonCart::checkoutUrl()

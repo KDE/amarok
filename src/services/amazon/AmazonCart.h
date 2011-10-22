@@ -38,9 +38,9 @@ public:
 
     void add( QString asin, QString price, QString name );
     void clear();
-    QStringList list();
+    QStringList stringList();
     QString price();
-    void remove( QString asin );
+    void remove( int pos );
     QUrl checkoutUrl();
 
 private:

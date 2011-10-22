@@ -26,8 +26,8 @@ AmazonShoppingCartDialog::AmazonShoppingCartDialog(QWidget *parent) :
 {
     ui->setupUi( this );
 
-    m_model = new QStringListModel;
-    m_model->setStringList( AmazonCart::instance()->list() );
+    m_model = new AmazonShoppingCartModel;
+    m_model->setStringList( AmazonCart::instance()->stringList() );
     ui->listView->setModel( m_model );
     ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonCart::instance()->price() ) ) );
 }

@@ -29,6 +29,8 @@ class AmazonItemTreeView : public Amarok::PrettyTreeView
     Q_OBJECT
 
 public:
+    AmazonItemTreeView( QWidget *parent = 0 );
+
     void startDrag( Qt::DropActions supportedActions );
     void mouseDoubleClickEvent( QMouseEvent *event );
 
@@ -39,6 +41,7 @@ private:
     PopupDropper* m_pd;
 
 signals:
+    void itemDoubleClicked( QModelIndex index );
     void itemSelected( QModelIndex item );
 };
 

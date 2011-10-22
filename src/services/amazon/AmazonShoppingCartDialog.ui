@@ -24,7 +24,14 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QListView" name="listView"/>
+     <widget class="AmazonShoppingCartView" name="listView">
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QLabel" name="cartValueLabel">
@@ -45,9 +52,14 @@
     </item>
    </layout>
   </widget>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>cartValueLabel</zorder>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AmazonShoppingCartView</class>
+   <extends>QListView</extends>
+   <header>AmazonShoppingCartView.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

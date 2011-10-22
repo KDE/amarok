@@ -26,13 +26,17 @@
 
 #include <QMouseEvent>
 
-// TODO: context menu actions, enable drag and drop to playlist, handle double click on item
+// TODO: context menu actions, enable drag and drop to playlist
+
+AmazonItemTreeView::AmazonItemTreeView( QWidget *parent ) :
+    Amarok::PrettyTreeView( parent )
+{
+}
 
 void AmazonItemTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
     // for tracks: append them to the playlist
     // for albums: query for the album
-
     if( event->button() == Qt::MidButton )
     {
         event->accept();
@@ -40,20 +44,13 @@ void AmazonItemTreeView::mouseDoubleClickEvent( QMouseEvent *event )
     }
 
     QModelIndex index = indexAt( event->pos() );
-    if( !index.isValid() )
+    if( index.isValid() )
     {
         event->accept();
+        emit itemDoubleClicked( index );
         return;
     }
 
-    if( event->button() == Qt::LeftButton && event->modifiers() == Qt::NoModifier )
-    {
-        //CollectionTreeItem *item = getItemFromIndex( index );
-        //playChildTracks( item, Playlist::AppendAndPlay );
-        event->accept();
-        return;
-    }
-    //Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
 void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
