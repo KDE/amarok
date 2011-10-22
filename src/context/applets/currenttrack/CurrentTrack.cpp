@@ -874,7 +874,7 @@ void
 CurrentTrack::findInStore()
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    AmarokUrl url( "amarok://navigate/internet/MP3%20Music%20Store/?filter=%22" + track.data()->artist().data()->name() + "%22" );
+    AmarokUrl url( "amarok://navigate/internet/MP3%20Music%20Store/?filter=\"" + track.data()->artist().data()->name() + "\"" );
     url.run();
 }
 
