@@ -301,7 +301,8 @@ void AmazonStore::newSearchRequest( const QString request )
         KCM.setWindowTitle( i18n( "Select your Amazon locale - Amarok" ) );
         KCM.addModule( KCModuleInfo( QString( "amarok_service_amazonstore_config.desktop" ) ) );
         KCM.setButtons( KCMultiDialog::Ok | KCMultiDialog::Cancel );
-        KCM.resize( 5, 5 ); // HACK but works
+        KCM.setMinimumSize( QSize( 350, 200 ) );
+        KCM.resize( 350, 200 );
         KCM.exec();
         return;
     }
