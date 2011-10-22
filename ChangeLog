@@ -31,6 +31,8 @@ Version 2.5.0-Beta 1
 
 
   BUGFIXES:
+    * iPhone 3G (and perhaps later models) should be correctly recognized by
+      Amarok now. (BR 281738)
     * Automated Playlist Generator doesn't freeze anymore when it finishes.
       (BR 277865)
     * Use regular MusicBrainz search for tracks with MBID. (BR 280857)
