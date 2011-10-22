@@ -14,28 +14,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAZONSHOPPINGCARTDIALOG_H
-#define AMAZONSHOPPINGCARTDIALOG_H
+#ifndef AMAZONSHOPPINGCARTMODEL_H
+#define AMAZONSHOPPINGCARTMODEL_H
 
-#include "AmazonShoppingCartModel.h"
+#include <QStringListModel>
 
-#include <QDialog>
-
-namespace Ui {
-    class AmazonShoppingCartDialog;
-}
-
-class AmazonShoppingCartDialog : public QDialog
+class AmazonShoppingCartModel : public QStringListModel
 {
-    Q_OBJECT
-
 public:
-    explicit AmazonShoppingCartDialog( QWidget *parent = 0 );
-    ~AmazonShoppingCartDialog();
+    AmazonShoppingCartModel();
 
-private:
-    Ui::AmazonShoppingCartDialog *ui;
-    AmazonShoppingCartModel *m_model;
+    virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 };
 
-#endif // AMAZONSHOPPINGCARTDIALOG_H
+#endif // AMAZONSHOPPINGCARTMODEL_H

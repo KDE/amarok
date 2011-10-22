@@ -14,28 +14,21 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAZONSHOPPINGCARTDIALOG_H
-#define AMAZONSHOPPINGCARTDIALOG_H
-
+#include "AmazonCart.h"
 #include "AmazonShoppingCartModel.h"
 
-#include <QDialog>
+#include <QDebug>
 
-namespace Ui {
-    class AmazonShoppingCartDialog;
+AmazonShoppingCartModel::AmazonShoppingCartModel()
+{
 }
 
-class AmazonShoppingCartDialog : public QDialog
+bool AmazonShoppingCartModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-    Q_OBJECT
+    Q_UNUSED( count)
+    beginRemoveRows( parent, row, 1 ); // we can only select one item
+    AmazonCart::instance()->remove( row );
+    endRemoveRows();
 
-public:
-    explicit AmazonShoppingCartDialog( QWidget *parent = 0 );
-    ~AmazonShoppingCartDialog();
-
-private:
-    Ui::AmazonShoppingCartDialog *ui;
-    AmazonShoppingCartModel *m_model;
-};
-
-#endif // AMAZONSHOPPINGCARTDIALOG_H
+    return true;
+}

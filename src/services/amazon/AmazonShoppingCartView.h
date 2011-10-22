@@ -14,28 +14,24 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAZONSHOPPINGCARTDIALOG_H
-#define AMAZONSHOPPINGCARTDIALOG_H
+#ifndef AMAZONSHOPPINGCARTVIEW_H
+#define AMAZONSHOPPINGCARTVIEW_H
 
-#include "AmazonShoppingCartModel.h"
+#include <QKeyEvent>
+#include <QListView>
 
-#include <QDialog>
-
-namespace Ui {
-    class AmazonShoppingCartDialog;
-}
-
-class AmazonShoppingCartDialog : public QDialog
+class AmazonShoppingCartView : public QListView
 {
     Q_OBJECT
-
 public:
-    explicit AmazonShoppingCartDialog( QWidget *parent = 0 );
-    ~AmazonShoppingCartDialog();
+    explicit AmazonShoppingCartView( QWidget *parent = 0 );
 
-private:
-    Ui::AmazonShoppingCartDialog *ui;
-    AmazonShoppingCartModel *m_model;
+    void keyPressEvent( QKeyEvent *event );
+
+signals:
+
+public slots:
+
 };
 
-#endif // AMAZONSHOPPINGCARTDIALOG_H
+#endif // AMAZONSHOPPINGCARTVIEW_H
