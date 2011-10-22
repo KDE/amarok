@@ -14,6 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "AmazonItemTreeModel.h"
 #include "AmazonItemTreeView.h"
 
 #include "AmarokMimeData.h"
@@ -45,13 +46,37 @@ void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
     }
 
     KMenu menu( this );
+    QList< QAction * > actions;
 
-    QAction addToCartAction( QString( i18n( "Add to Cart" ) ), &menu );
-    menu.addAction( &addToCartAction );
-    connect( &addToCartAction, SIGNAL( triggered() ), this, SLOT( addToCartAction() ) );
+    QAction *addToCartAction = new QAction( QString( i18n( "Add to Cart" ) ), &menu );
+    actions.append( addToCartAction );
+    connect( addToCartAction, SIGNAL( triggered() ), this, SLOT( addToCartAction() ) );
 
+    AmazonItemTreeModel *amazonModel;
+    amazonModel = dynamic_cast<AmazonItemTreeModel*>( model() );
+
+    if( !amazonModel )
+    {
+        menu.exec( actions, event->globalPos() );
+        event->accept();
+        return;
+    }
+
+    if( amazonModel->isAlbum( index ) )
+    {
+        QAction *getDetailsAction = new QAction( QString( i18n( "Details..." ) ), &menu );
+        actions.append( getDetailsAction );
+        connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
+    }
+    else // track
+    {
+        QAction *addToPlaylistAction = new QAction( QString( i18n( "Add Preview to Playlist" ) ), &menu );
+        actions.append( addToPlaylistAction );
+        connect( addToPlaylistAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
+    }
+
+    menu.exec( actions, event->globalPos() );
     event->accept();
-    menu.exec( event->globalPos() );
 }
 
 void AmazonItemTreeView::mouseDoubleClickEvent( QMouseEvent *event )
@@ -69,7 +94,6 @@ void AmazonItemTreeView::mouseDoubleClickEvent( QMouseEvent *event )
     {
         event->accept();
         emit itemDoubleClicked( index );
-        return;
     }
 
 }
@@ -114,4 +138,14 @@ void AmazonItemTreeView::selectionChanged( const QItemSelection &selected, const
 void AmazonItemTreeView::addToCartAction()
 {
     emit addToCart();
+}
+
+void AmazonItemTreeView::itemActivatedAction()
+{
+    QModelIndexList indexes = selectedIndexes();
+
+    if( indexes.count() < 1 )
+        return;
+
+    emit itemDoubleClicked( indexes[0] ); // same behaviour
 }

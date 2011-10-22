@@ -33,6 +33,7 @@ public:
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
     QVariant data( const QModelIndex &index, int role ) const;
     void collectionChanged();
+    bool isAlbum( const QModelIndex &index ) const;
 
 private:
     Collections::AmazonCollection* m_collection;

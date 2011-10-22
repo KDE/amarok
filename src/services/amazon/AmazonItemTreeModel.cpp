@@ -144,3 +144,11 @@ void AmazonItemTreeModel::collectionChanged()
 {
     reset();
 }
+
+bool AmazonItemTreeModel::isAlbum( const QModelIndex &index ) const
+{
+    if( index.row() < m_collection->albumIDMap()->size() ) // album
+        return true;
+    else
+        return false;
+}

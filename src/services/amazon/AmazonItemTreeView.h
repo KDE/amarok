@@ -39,6 +39,7 @@ public:
 protected slots:
     virtual void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
     void addToCartAction();
+    void itemActivatedAction();
 
 private:
     PopupDropper* m_pd;
