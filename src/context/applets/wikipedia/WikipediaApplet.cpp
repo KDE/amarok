@@ -111,6 +111,7 @@ WikipediaAppletPrivate::setUrl( const QUrl &url )
     webView->settings()->resetFontSize( QWebSettings::MinimumLogicalFontSize );
     webView->settings()->resetFontSize( QWebSettings::DefaultFontSize );
     webView->settings()->resetFontSize( QWebSettings::DefaultFixedFontSize );
+    webView->settings()->resetFontFamily( QWebSettings::StandardFont );
     webView->setUrl( url );
     currentUrl = url;
     dataContainer->removeAllData();
@@ -323,6 +324,7 @@ WikipediaAppletPrivate::_updateWebFonts()
     webSettings->setFontSize( QWebSettings::DefaultFixedFontSize, qRound(fixedFontSize) );
     webSettings->setFontSize( QWebSettings::DefaultFontSize, qRound(generalFontSize) );
     webSettings->setFontSize( QWebSettings::MinimumFontSize, qRound(minimumFontSize) );
+    webSettings->setFontFamily( QWebSettings::StandardFont, KGlobalSettings::generalFont().family() );
 }
 
 void
