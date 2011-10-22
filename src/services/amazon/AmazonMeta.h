@@ -126,8 +126,6 @@ public:
     virtual bool isBookmarkable() const { return true; }
     virtual QString collectionName() const { return "Amazon"; }
     virtual bool simpleFiltering() const { return false; }
-
-    void setAlbumPtr( Meta::AlbumPtr album );
 };
 
 } // namespace Meta

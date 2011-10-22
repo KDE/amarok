@@ -146,11 +146,6 @@ QPixmap Meta::AmazonTrack::emblem()
     return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-amazon.png" ) );
 }
 
-void Meta::AmazonTrack::setAlbumPtr( Meta::AlbumPtr album )
-{
-    ServiceTrack::setAlbumPtr( album );
-}
-
 QString Meta::AmazonTrack::sourceDescription()
 {
     return i18n( "Snippet taken from the Amazon MP3 store" );
@@ -176,8 +171,6 @@ TrackPtr AmazonMetaFactory::createTrack( const QStringList &rows )
 {
     AmazonTrack* track = new AmazonTrack( rows );
 
-    //track->setUidUrl( url );
-
     return TrackPtr( track );
 }
 
@@ -185,7 +178,6 @@ TrackPtr AmazonMetaFactory::createTrack( const QStringList &rows )
 AlbumPtr AmazonMetaFactory::createAlbum( const QStringList &rows )
 {
     AmazonAlbum* album = new AmazonAlbum( rows );
-
     album->setSourceName( "Amazon" );
 
     return AlbumPtr( album );

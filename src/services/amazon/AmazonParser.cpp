@@ -114,7 +114,16 @@ void AmazonParser::run()
         trackID.setNum( m_collection->trackIDMap()->size() + 1 );
         playableUrl = "http://www.amazon." + AmazonConfig::instance()->country() + "/gp/dmusic/get_sample_url.html?ASIN=" + trackAsin;
         results << trackID << songTitle << "1" << "30000" << playableUrl << albumID << artistID << price << trackAsin;
-        m_collection->addTrack( m_factory->createTrack( results ) );
+
+        Meta::TrackPtr trackPtr = m_factory->createTrack( results );
+
+        if( trackPtr )
+        {
+            dynamic_cast<Meta::AmazonTrack*>( trackPtr.data() )->setAlbumPtr( m_collection->albumById( albumID.toInt() ) );
+            dynamic_cast<Meta::AmazonTrack*>( trackPtr.data() )->setArtist( m_collection->artistById( artistID.toInt() ) );
+        }
+
+        m_collection->addTrack( trackPtr );
         m_collection->trackIDMap()->insert( trackAsin, trackID.toInt() );
         results.clear();
     }
