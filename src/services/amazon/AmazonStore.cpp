@@ -29,6 +29,7 @@
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core/interfaces/Logger.h"
+#include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
 
 #include <QDesktopServices>
@@ -126,6 +127,7 @@ void AmazonStore::polish()
         initView();
 
         connect( m_itemView, SIGNAL( itemSelected( QModelIndex ) ), this, SLOT( itemSelected( QModelIndex ) ) );
+        connect( m_itemView, SIGNAL( itemDoubleClicked( QModelIndex ) ), this, SLOT( itemDoubleClicked( QModelIndex ) ) );
 
         AmazonUrlRunner *runner = new AmazonUrlRunner();
         connect( runner, SIGNAL( search( const QString ) ), this, SLOT( newSearchRequest( QString) ) );
@@ -138,15 +140,6 @@ void AmazonStore::initTopPanel()
 {
     m_searchWidget->setTimeout( 3000 );
     m_searchWidget->showAdvancedButton( false );
-
-    // not yet supported by the API and won't be for some time
-//    m_searchSelectionBox = new QComboBox;
-//    m_searchSelectionBox->setToolTip( i18n( "Select kind of items to search for" ) );
-//    m_searchSelectionBox->insertItem( 0, i18nc( "search for all types of items in the Amazon store", "all items" ) );
-//    m_searchSelectionBox->insertItem( 1, i18n( "albums" ) );
-//    m_searchSelectionBox->insertItem( 2, i18n( "songs" ) );
-
-//    m_searchWidget->toolBar()->addWidget( m_searchSelectionBox );
 
     m_resultpageSpinBox = new QSpinBox;
     m_resultpageSpinBox->setMinimum( 1 );
@@ -161,7 +154,7 @@ void AmazonStore::initTopPanel()
 
 void AmazonStore::initView()
 {
-    m_itemView = new AmazonItemTreeView;
+    m_itemView = new AmazonItemTreeView( this );
     m_itemModel = new AmazonItemTreeModel( m_collection );
     m_itemView->setParent( this );
     m_itemView->setRootIsDecorated( false ); // items cannot be expanded
@@ -207,6 +200,36 @@ void AmazonStore::initView()
     connect( m_addToCartButton, SIGNAL( clicked() ), this, SLOT( addToCart() ) );
     connect( m_viewCartButton, SIGNAL( clicked() ), this, SLOT( viewCart() ) );
     connect( m_checkoutButton, SIGNAL( clicked() ), this, SLOT( checkout() ) );
+}
+
+void AmazonStore::itemDoubleClicked( QModelIndex index )
+{
+    if( index.row() < m_collection->albumIDMap()->size() ) // it's an album
+    {
+        Meta::AmazonAlbum* album;
+        // row == albumId
+        album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( m_selectedIndex.row() + 1 ).data() );
+
+        if( !album )
+            return;
+
+        QString name = m_collection->artistById( album->artistId() )->name() + " - " + album->name();
+        m_searchWidget->setSearchString( name );
+    }
+    else // track
+    {
+        Meta::AmazonTrack* track;
+        int id = index.row() - m_collection->albumIDMap()->size();
+        // row == albumId
+        track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id + 1 ).data() );
+
+        if( !track )
+            return;
+
+        Meta::TrackPtr trackPtr( track );
+
+        The::playlistController()->instance()->insertOptioned( trackPtr, Playlist::Append );
+    }
 }
 
 void AmazonStore::itemSelected( QModelIndex index )

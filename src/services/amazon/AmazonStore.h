@@ -80,6 +80,7 @@ public slots:
     void viewCart();
     void checkout();
 
+    void itemDoubleClicked( QModelIndex index );
     void itemSelected( QModelIndex index );
 
     void newSearchRequest( const QString request );
@@ -105,7 +106,6 @@ private:
     QPushButton* m_viewCartButton;
     QPushButton* m_checkoutButton;
 
-    //QComboBox* m_searchSelectionBox;
     QSpinBox* m_resultpageSpinBox;
 
     AmazonItemTreeView* m_itemView;
