@@ -14,9 +14,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "AmazonShoppingCartDialog.h"
+
 #include "Amazon.h"
 #include "AmazonCart.h"
-#include "AmazonShoppingCartDialog.h"
 
 #include "ui_AmazonShoppingCartDialog.h"
 

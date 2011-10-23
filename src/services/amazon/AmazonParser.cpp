@@ -14,8 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "AmazonConfig.h"
 #include "AmazonParser.h"
+
+#include "AmazonConfig.h"
 
 #include "core/support/Debug.h"
 

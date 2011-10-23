@@ -16,13 +16,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "AmazonStore.h"
+
 #include "Amazon.h"
 #include "AmazonCart.h"
 #include "AmazonConfig.h"
 #include "AmazonMeta.h"
 #include "AmazonParser.h"
 #include "AmazonShoppingCartDialog.h"
-#include "AmazonStore.h"
 #include "AmazonUrlRunner.h"
 
 #include "amarokurls/AmarokUrlHandler.h"

@@ -14,8 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Amazon.h"
 #include "AmazonItemTreeModel.h"
+
+#include "Amazon.h"
 #include "AmazonMeta.h"
 
 #include "klocalizedstring.h"

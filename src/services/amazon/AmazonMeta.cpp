@@ -16,9 +16,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "AmazonMeta.h"
+
 #include "AmazonActions.h"
 #include "AmazonCart.h"
-#include "AmazonMeta.h"
 
 #include <KStandardDirs>
 #include "klocalizedstring.h"

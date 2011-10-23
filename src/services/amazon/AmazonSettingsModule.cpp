@@ -16,10 +16,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "AmazonSettingsModule.h"
+
 #include "AmazonCart.h"
 #include "AmazonCollection.h"
 #include "AmazonConfig.h"
-#include "AmazonSettingsModule.h"
 #include "AmazonMeta.h"
 
 #include "ui_AmazonConfigWidget.h"

@@ -16,8 +16,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Amazon.h"
 #include "AmazonCart.h"
+
+#include "Amazon.h"
 #include "AmazonConfig.h"
 
 #include <QDebug>
