@@ -31,8 +31,6 @@
 
 #include <KMenu>
 
-// TODO: enable drag and drop to playlist
-
 AmazonItemTreeView::AmazonItemTreeView( QWidget *parent ) :
     Amarok::PrettyTreeView( parent )
     , m_pd( 0 )
@@ -104,7 +102,6 @@ void AmazonItemTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void AmazonItemTreeView::mousePressEvent( QMouseEvent *event )
 {
-    qDebug() << "mousePressEvent";
     const QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
     {
@@ -117,7 +114,6 @@ void AmazonItemTreeView::mousePressEvent( QMouseEvent *event )
 
 void AmazonItemTreeView::mouseMoveEvent( QMouseEvent *event )
 {
-    qDebug() << "mouseMoveEvent";
     const QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
     {
@@ -136,7 +132,6 @@ void AmazonItemTreeView::mouseMoveEvent( QMouseEvent *event )
 
 void AmazonItemTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
-    qDebug() << "mouseReleaseEvent";
     if( m_pd )
     {
         m_pd->hide();
@@ -149,23 +144,16 @@ void AmazonItemTreeView::mouseReleaseEvent( QMouseEvent *event )
 
 void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
 {
-    // TODO: WIP
     DEBUG_BLOCK
-    qDebug() << "startDrag";
     QModelIndexList indices = selectedIndexes();
     if( indices.isEmpty() )
         return;
 
-    qDebug() << "m_pd?";
     if( !m_pd )
-    {
-        qDebug() << "!m_pd!";
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
-    }
 
     if( m_pd && m_pd->isHidden() )
     {
-        qDebug() << "m_pd and isHidden";
         QActionList actions;
 
         QAction *addToCartAction = new QAction( QString( i18n( "Add to Cart" ) ), this );
@@ -174,14 +162,33 @@ void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
 
         m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 0 ) ) );
 
+        AmazonItemTreeModel *amazonModel;
+        amazonModel = dynamic_cast<AmazonItemTreeModel*>( model() );
+
+        if( !amazonModel )
+            return;
+
+        if( amazonModel->isAlbum( indices.at( 0 ) ) )
+        {
+            QAction *getDetailsAction = new QAction( QString( i18n( "Load Details..." ) ), this );
+            actions.append( getDetailsAction );
+            connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
+            m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 1 ) ) );
+        }
+        else // track
+        {
+            QAction *addToPlaylistAction = new QAction( QString( i18n( "Add Preview to Playlist" ) ), this );
+            actions.append( addToPlaylistAction );
+            connect( addToPlaylistAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
+            m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 1 ) ) );
+        }
+
         m_pd->show();
-        qDebug() << "should show up now";
     }
     QTreeView::startDrag( supportedActions );
 
     if( m_pd )
     {
-        debug() << "clearing PUD";
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
         m_pd->hide();
     }
