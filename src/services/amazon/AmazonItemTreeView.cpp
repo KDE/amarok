@@ -27,6 +27,7 @@
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 
+#include <QHeaderView>
 #include <QMouseEvent>
 
 #include <KIcon>
@@ -196,6 +197,14 @@ void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
     }
 }
 
+void AmazonItemTreeView::dataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight )
+{
+    QTreeView::dataChanged( topLeft, bottomRight );
+
+    header()->setResizeMode ( 1, QHeaderView::ResizeToContents );
+    header()->setResizeMode ( 0, QHeaderView::Stretch );
+}
+
 void AmazonItemTreeView::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
     QTreeView::selectionChanged( selected, deselected ); // to avoid repainting problems
@@ -220,4 +229,13 @@ void AmazonItemTreeView::itemActivatedAction()
         return;
 
     emit itemDoubleClicked( indexes[0] ); // same behaviour as double click
+}
+
+void AmazonItemTreeView::setModel( QAbstractItemModel *model )
+{
+    Amarok::PrettyTreeView::setModel( model );
+
+    header()->setStretchLastSection ( false );
+
+    connect( model, SIGNAL( dataChanged( const QModelIndex, const QModelIndex ) ), this, SLOT( dataChanged( const QModelIndex, const QModelIndex ) ) );
 }

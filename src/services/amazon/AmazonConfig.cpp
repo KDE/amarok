@@ -25,10 +25,10 @@
 #include <KGlobal>
 
 AmazonConfig* AmazonConfig::m_instance = 0;
-static QMutex mutex;
 
 AmazonConfig* AmazonConfig::instance()
 {
+    QMutex mutex;
     mutex.lock();
 
     if( !m_instance )
@@ -40,6 +40,7 @@ AmazonConfig* AmazonConfig::instance()
 
 void AmazonConfig::destroy()
 {
+    QMutex mutex;
     mutex.lock();
 
     if( m_instance )

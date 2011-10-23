@@ -35,6 +35,8 @@ class AmazonItemTreeView : public Amarok::PrettyTreeView
 public:
     AmazonItemTreeView( QWidget *parent = 0 );
 
+    void setModel( QAbstractItemModel *model );
+
 protected:
     void contextMenuEvent( QContextMenuEvent *event );
     void startDrag( Qt::DropActions supportedActions );
@@ -44,6 +46,7 @@ protected:
     void mouseReleaseEvent( QMouseEvent *event );
 
 protected slots:
+    void dataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight );
     virtual void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void addToCartAction();
     void itemActivatedAction();

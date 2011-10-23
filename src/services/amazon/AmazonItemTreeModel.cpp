@@ -143,11 +143,13 @@ QVariant AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
 
 Qt::ItemFlags AmazonItemTreeModel::flags( const QModelIndex &index ) const
 {
+    Q_UNUSED( index )
     return ( Qt::ItemIsDragEnabled | Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 }
 
 void AmazonItemTreeModel::collectionChanged()
 {
+    emit dataChanged( QModelIndex(), QModelIndex() );
     reset();
 }
 
