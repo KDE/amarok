@@ -272,7 +272,6 @@ namespace Mpris1
     void PlayerHandler::slotTrackChanged( Meta::TrackPtr track )
     {
         emit TrackChange( GetTrackMetadata( track ) );
-        updateStatus();
     }
 
     void PlayerHandler::slotStateChanged()
