@@ -29,7 +29,6 @@
 
 #include <QComboBox>
 #include <QModelIndex>
-#include <QMutex>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QString>
@@ -87,7 +86,7 @@ public slots:
     void newSpinBoxSearchRequest( int i );
 
 private:
-    void createRequestUrl( const QString request );
+    QUrl createRequestUrl( const QString request );
     void initTopPanel();
     void initView();
 
@@ -96,10 +95,6 @@ private:
     Collections::AmazonCollection* m_collection;
 
     ServiceSqlRegistry* m_registry;
-
-    QUrl m_requestUrl;
-    QString m_tempFileName;
-    KIO::FileCopyJob* m_requestJob;
 
     QPushButton* m_addToCartButton;
     QPushButton* m_removeFromCartButton;
@@ -112,8 +107,6 @@ private:
     AmazonItemTreeModel* m_itemModel;
 
     QModelIndex m_selectedIndex;
-
-    QMutex m_ApiMutex;
 
 private slots:
     void parseReply( KJob* requestJob );

@@ -201,8 +201,8 @@ void AmazonItemTreeView::dataChanged( const QModelIndex &topLeft, const QModelIn
 {
     QTreeView::dataChanged( topLeft, bottomRight );
 
-    header()->setResizeMode ( 1, QHeaderView::ResizeToContents );
-    header()->setResizeMode ( 0, QHeaderView::Stretch );
+    header()->setResizeMode( 1, QHeaderView::ResizeToContents );
+    header()->setResizeMode( 0, QHeaderView::Stretch );
 }
 
 void AmazonItemTreeView::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )

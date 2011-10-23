@@ -38,6 +38,7 @@
 #include <QTemporaryFile>
 #include <QToolBar>
 
+#include "kio/jobclasses.h"
 #include <KCMultiDialog>
 #include <KStandardDirs>
 #include "klocalizedstring.h"
@@ -293,24 +294,20 @@ void AmazonStore::checkout()
     debug() << url;
     m_checkoutButton->setEnabled( false );
 
-    m_ApiMutex.lock();
     QTemporaryFile tempFile;
     tempFile.setAutoRemove( false );  // file must be removed later-> parser
 
     if( !tempFile.open() )
     {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to write temporary file." ) );
+        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to write temporary file. :-(" ) );
         m_checkoutButton->setEnabled( true );
-        m_ApiMutex.unlock();
         return;
     }
 
-    m_tempFileName = tempFile.fileName();
+    KIO::FileCopyJob *requestJob = KIO::file_copy( url, KUrl( tempFile.fileName() ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
-    m_requestJob = KIO::file_copy( url, KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-
-    connect( m_requestJob, SIGNAL( result( KJob * ) ), this, SLOT( openCheckoutUrl( KJob * ) ) );
-    m_requestJob->start();
+    connect( requestJob, SIGNAL( result( KJob * ) ), this, SLOT( openCheckoutUrl( KJob * ) ) );
+    requestJob->start();
 }
 
 void AmazonStore::newSearchRequest( const QString request )
@@ -332,24 +329,21 @@ void AmazonStore::newSearchRequest( const QString request )
 
     // create request fetcher thread
     debug() << "Amazon: newSearchRequest: " << request;
-    createRequestUrl( request );
+    QUrl requestUrl = createRequestUrl( request );
 
     QTemporaryFile tempFile;
     tempFile.setAutoRemove( false );  // file must be removed later -> AmazonParser does it
 
     if( !tempFile.open() )
     {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to write temporary file." ) );
+        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to write temporary file. :-(" ) );
         return;
     }
 
-    m_ApiMutex.lock();
-    m_tempFileName = tempFile.fileName();
+    KIO::FileCopyJob *requestJob = KIO::file_copy( requestUrl, KUrl( tempFile.fileName() ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
-    m_requestJob = KIO::file_copy( m_requestUrl, KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-
-    connect( m_requestJob, SIGNAL( result( KJob * ) ), this, SLOT( parseReply( KJob * ) ) );
-    m_requestJob->start();
+    connect( requestJob, SIGNAL( result( KJob * ) ), this, SLOT( parseReply( KJob * ) ) );
+    requestJob->start();
 }
 
 void AmazonStore::newSpinBoxSearchRequest( int i )
@@ -358,7 +352,7 @@ void AmazonStore::newSpinBoxSearchRequest( int i )
     newSearchRequest( m_searchWidget->currentText() );
 }
 
-void AmazonStore::createRequestUrl( QString request )
+QUrl AmazonStore::createRequestUrl( QString request )
 {
     DEBUG_BLOCK
     QString urlString;
@@ -374,8 +368,9 @@ void AmazonStore::createRequestUrl( QString request )
     urlString += request.toUtf8().toBase64();
     urlString += "&Page=";
     urlString += pageValue;
-    m_requestUrl.setUrl( urlString );
-    debug() << m_requestUrl;
+    debug() << urlString;
+
+    return QUrl( urlString );
 }
 
 void AmazonStore::parseReply( KJob* requestJob )
@@ -386,17 +381,22 @@ void AmazonStore::parseReply( KJob* requestJob )
         Amarok::Components::logger()->shortMessage( i18n( "Error: Querying MP3 Music Store database failed. :-("  ) );
         debug() << requestJob->errorString();
         requestJob->deleteLater();
-        m_ApiMutex.unlock();
         return;
     }
 
-    requestJob->deleteLater();
+    QString tempFileName;
+    KIO::FileCopyJob *job = dynamic_cast<KIO::FileCopyJob*>( requestJob );
+
+    if( job )
+        tempFileName = job->destUrl().toLocalFile();
 
     // create parser thread
-    AmazonParser *parser = new AmazonParser( m_tempFileName, m_collection, m_metaFactory );
+    AmazonParser *parser = new AmazonParser( tempFileName, m_collection, m_metaFactory );
     connect( parser, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( parsingDone( ThreadWeaver::Job* ) ) );
     connect( parser, SIGNAL( failed( ThreadWeaver::Job* ) ), this, SLOT( parsingFailed( ThreadWeaver::Job* ) ) );
     ThreadWeaver::Weaver::instance()->enqueue( parser );
+
+    requestJob->deleteLater();
 }
 
 void AmazonStore::parsingDone( ThreadWeaver::Job* parserJob )
@@ -405,29 +405,34 @@ void AmazonStore::parsingDone( ThreadWeaver::Job* parserJob )
     m_itemModel->collectionChanged();
     m_itemView->setModel( m_itemModel );
     m_addToCartButton->setEnabled( false );
-    m_ApiMutex.unlock();
 }
 
 void AmazonStore::parsingFailed( ThreadWeaver::Job* parserJob )
 {
     Q_UNUSED( parserJob )
-    m_ApiMutex.unlock();
+    Amarok::Components::logger()->shortMessage( i18n( "Error: Received an invalid reply. :-(" ) );
 }
 
 void AmazonStore::openCheckoutUrl( KJob* requestJob )
 {
     // very short document, we can parse it in the main thread
     QDomDocument responseDocument;
-    QFile responseFile( m_tempFileName );
+
+    QString tempFileName;
+    KIO::FileCopyJob *job = dynamic_cast<KIO::FileCopyJob*>( requestJob );
+
+    if( job )
+        tempFileName = job->destUrl().toLocalFile();
+
+    QFile responseFile( tempFileName );
 
     if( !responseFile.open( QIODevice::ReadOnly ) )
     {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to open temporary file." ) );
+        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to open temporary file. :-(" ) );
 
         m_checkoutButton->setEnabled( true );
         requestJob->deleteLater();
-        QFile::remove( m_tempFileName );
-        m_ApiMutex.unlock();
+        QFile::remove( tempFileName );
         return;
     }
 
@@ -442,12 +447,11 @@ void AmazonStore::openCheckoutUrl( KJob* requestJob )
         debug() << "Message:" << errorMsg;
         debug() << "Line:" << errorLine;
         debug() << "Column:" << errorColumn;
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to parse temporary file." ) );
+        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to parse temporary file. :-(" ) );
 
         m_checkoutButton->setEnabled( true );
         requestJob->deleteLater();
-        QFile::remove( m_tempFileName );
-        m_ApiMutex.unlock();
+        QFile::remove( tempFileName );
         return;
     }
 
@@ -461,7 +465,6 @@ void AmazonStore::openCheckoutUrl( KJob* requestJob )
     QDesktopServices::openUrl( url );
 
     requestJob->deleteLater();
-    QFile::remove( m_tempFileName );
+    QFile::remove( tempFileName );
     AmazonCart::instance()->clear();
-    m_ApiMutex.unlock();
 }
