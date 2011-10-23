@@ -1,5 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,6 +21,7 @@
 
 #include "widgets/PrettyTreeView.h"
 
+#include <QAction>
 #include <QContextMenuEvent>
 #include <QModelIndex>
 #include <QTreeView>
@@ -32,23 +35,28 @@ class AmazonItemTreeView : public Amarok::PrettyTreeView
 public:
     AmazonItemTreeView( QWidget *parent = 0 );
 
+protected:
     void contextMenuEvent( QContextMenuEvent *event );
     void startDrag( Qt::DropActions supportedActions );
     void mouseDoubleClickEvent( QMouseEvent *event );
+    void mouseMoveEvent( QMouseEvent *event );
+    void mousePressEvent( QMouseEvent *event );
+    void mouseReleaseEvent( QMouseEvent *event );
 
 protected slots:
-    virtual void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
+    virtual void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void addToCartAction();
     void itemActivatedAction();
 
 private:
-    PopupDropper* m_pd;
+    PopupDropper *m_pd;
+
+    QAction* createAddToCartAction();
 
 signals:
     void addToCart();
     void itemDoubleClicked( QModelIndex index );
     void itemSelected( QModelIndex item );
 };
-
 
 #endif // AMAZONITEMTREEVIEW_H

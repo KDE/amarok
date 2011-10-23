@@ -1,5 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -29,11 +31,13 @@
 
 #include <KMenu>
 
-// TODO: context menu actions, enable drag and drop to playlist
+// TODO: enable drag and drop to playlist
 
 AmazonItemTreeView::AmazonItemTreeView( QWidget *parent ) :
     Amarok::PrettyTreeView( parent )
+    , m_pd( 0 )
 {
+    setDragDropMode( QAbstractItemView::DragOnly );
 }
 
 void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
@@ -98,31 +102,90 @@ void AmazonItemTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 }
 
+void AmazonItemTreeView::mousePressEvent( QMouseEvent *event )
+{
+    qDebug() << "mousePressEvent";
+    const QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        event->accept();
+        return;
+    }
+
+    Amarok::PrettyTreeView::mousePressEvent( event );
+}
+
+void AmazonItemTreeView::mouseMoveEvent( QMouseEvent *event )
+{
+    qDebug() << "mouseMoveEvent";
+    const QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        event->accept();
+        return;
+    }
+
+    // pass event to parent widget
+    if( event->buttons() || event->modifiers() )
+    {
+        Amarok::PrettyTreeView::mouseMoveEvent( event );
+        return;
+    }
+    event->accept();
+}
+
+void AmazonItemTreeView::mouseReleaseEvent( QMouseEvent *event )
+{
+    qDebug() << "mouseReleaseEvent";
+    if( m_pd )
+    {
+        m_pd->hide();
+        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
+        m_pd = 0;
+    }
+
+    Amarok::PrettyTreeView::mouseReleaseEvent( event );
+}
+
 void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
 {
     // TODO: WIP
     DEBUG_BLOCK
+    qDebug() << "startDrag";
     QModelIndexList indices = selectedIndexes();
     if( indices.isEmpty() )
         return;
 
+    qDebug() << "m_pd?";
     if( !m_pd )
+    {
+        qDebug() << "!m_pd!";
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
+    }
 
     if( m_pd && m_pd->isHidden() )
     {
+        qDebug() << "m_pd and isHidden";
+        QActionList actions;
+
+        QAction *addToCartAction = new QAction( QString( i18n( "Add to Cart" ) ), this );
+        actions.append( addToCartAction );
+        connect( addToCartAction, SIGNAL( triggered() ), this, SLOT( addToCartAction() ) );
+
+        m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 0 ) ) );
+
+        m_pd->show();
+        qDebug() << "should show up now";
+    }
+    QTreeView::startDrag( supportedActions );
+
+    if( m_pd )
+    {
+        debug() << "clearing PUD";
+        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        m_pd->hide();
     }
 }
-
-//CollectionTreeItem* AmazonItemTreeView::getItemFromIndex( QModelIndex &index )
-//{
-//    if( !index.isValid() )
-//    {
-//        return 0;
-//    }
-
-//    return static_cast<CollectionTreeItem*>( filteredIndex.internalPointer() );
-//}
 
 void AmazonItemTreeView::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
@@ -147,5 +210,5 @@ void AmazonItemTreeView::itemActivatedAction()
     if( indexes.count() < 1 )
         return;
 
-    emit itemDoubleClicked( indexes[0] ); // same behaviour
+    emit itemDoubleClicked( indexes[0] ); // same behaviour as double click
 }

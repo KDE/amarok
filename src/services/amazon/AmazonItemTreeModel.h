@@ -28,6 +28,8 @@ class AmazonItemTreeModel : public QAbstractTableModel
 public:
     AmazonItemTreeModel( Collections::AmazonCollection* collection );
 
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
     int rowCount( const QModelIndex &parent ) const;
     int columnCount( const QModelIndex &parent ) const;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
