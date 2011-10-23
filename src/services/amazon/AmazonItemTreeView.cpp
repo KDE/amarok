@@ -29,6 +29,7 @@
 
 #include <QMouseEvent>
 
+#include <KIcon>
 #include <KMenu>
 
 AmazonItemTreeView::AmazonItemTreeView( QWidget *parent ) :
@@ -72,7 +73,7 @@ void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
     }
     else // track
     {
-        QAction *addToPlaylistAction = new QAction( QString( i18n( "Add Preview to Playlist" ) ), &menu );
+        QAction *addToPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ), QString( i18n( "Add Preview to Playlist" ) ), &menu );
         actions.append( addToPlaylistAction );
         connect( addToPlaylistAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
     }
@@ -177,7 +178,8 @@ void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
         }
         else // track
         {
-            QAction *addToPlaylistAction = new QAction( QString( i18n( "Add Preview to Playlist" ) ), this );
+            QAction *addToPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ), QString( i18n( "Add Preview to Playlist" ) ), this );
+            addToPlaylistAction->setProperty( "popupdropper_svg_id", "append" );
             actions.append( addToPlaylistAction );
             connect( addToPlaylistAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
             m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 1 ) ) );
