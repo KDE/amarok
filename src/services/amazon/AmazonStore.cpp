@@ -110,6 +110,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     connect( m_searchWidget, SIGNAL( filterChanged( const QString ) ), this, SLOT( newSearchRequest( const QString ) ) );
 
     emit( ready() );
+    newSearchRequest( QString() ); // to get some default content
 }
 
 AmazonStore::~AmazonStore()
