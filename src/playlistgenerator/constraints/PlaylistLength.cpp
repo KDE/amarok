@@ -127,7 +127,7 @@ ConstraintTypes::PlaylistLength::satisfaction( const Meta::TrackList& tl ) const
 {
     quint32 l = static_cast<quint32>( tl.size() );
     if ( m_comparison == CompareNumEquals ) {
-        return ( l == m_length ) ? 1.0 : transformLength( abs( l - m_length ) );
+        return ( l == m_length ) ? 1.0 : transformLength( qAbs( l - m_length ) );
     } else if ( m_comparison == CompareNumGreaterThan ) {
         return ( l > m_length ) ? 1.0 : transformLength( m_length - l );
     } else if ( m_comparison == CompareNumLessThan ) {
