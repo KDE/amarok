@@ -18,7 +18,6 @@
 
 #include "AmazonMeta.h"
 
-#include "AmazonActions.h"
 #include "AmazonCart.h"
 
 #include <KStandardDirs>
@@ -81,21 +80,6 @@ Meta::AmazonArtist::AmazonArtist( const QStringList & resultRow )
 void Meta::AmazonItem::addToCart()
 {
     //AmazonCart::instance()->add( m_asin, m_price );
-}
-
-QList< QAction * > Meta::AmazonItem::customActions()
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-
-    if ( !m_addToCartAction ) {
-        QString actionLabel = i18n( "Amazon: &Add item to cart" );
-        m_addToCartAction = new AmazonAddToCartAction( actionLabel, this );
-    }
-
-    actions.append( m_addToCartAction );
-
-    return actions;
 }
 
 void Meta::AmazonItem::setAsin( QString asin )

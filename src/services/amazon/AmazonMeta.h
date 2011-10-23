@@ -57,8 +57,6 @@ public:
     virtual void setPrice( const QString price );
     virtual QString price() const;
 
-    virtual QList< QAction *> customActions();
-
     virtual bool isBookmarkable() const { return true; }
     virtual QString collectionName() const { return "Amazon"; }
 
