@@ -318,8 +318,6 @@ void AmazonStore::newSearchRequest( const QString request )
 
     if( AmazonConfig::instance()->country().isEmpty() )
     {
-        Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>You have to select your country  before you can search for items in your local Amazon store." ) );
-
         KCMultiDialog KCM;
 
         KCM.setWindowTitle( i18n( "Select your Amazon locale - Amarok" ) );

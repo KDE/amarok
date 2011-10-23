@@ -64,7 +64,7 @@ void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     if( amazonModel->isAlbum( index ) )
     {
-        QAction *getDetailsAction = new QAction( QString( i18n( "Details..." ) ), &menu );
+        QAction *getDetailsAction = new QAction( QString( i18n( "Load Details..." ) ), &menu );
         actions.append( getDetailsAction );
         connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
     }
