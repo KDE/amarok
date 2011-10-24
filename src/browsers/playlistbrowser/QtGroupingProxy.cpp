@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <QIcon>
 #include <QInputDialog>
+#include <QTimer>
 
 /*!
     \class QtGroupingProxy
@@ -64,7 +65,7 @@ void
 QtGroupingProxy::setGroupedColumn( int groupedColumn )
 {
     m_groupedColumn = groupedColumn;
-    buildTree();
+    QTimer::singleShot( 0, this , SLOT(buildTree()) );
 }
 
 /** Maps to what groups the source row belongs by returning the data of those groups.
