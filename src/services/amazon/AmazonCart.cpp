@@ -70,7 +70,7 @@ QStringList AmazonCart::stringList()
 
     for( int i = 0; i < size(); i++ )
     {
-        result.append( at( i ).prettyName() + " (" + Amazon::prettyPrice( at( i ).price() ) +")" );
+        result.append( at( i ).prettyName() + " (" + Amazon::prettyPrice( at( i ).price() ) + ')' );
     }
 
     return result;

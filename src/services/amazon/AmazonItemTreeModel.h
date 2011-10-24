@@ -36,6 +36,8 @@ public:
     QVariant data( const QModelIndex &index, int role ) const;
     void collectionChanged();
     bool isAlbum( const QModelIndex &index ) const;
+    virtual QStringList mimeTypes() const;
+    virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
 private:
     Collections::AmazonCollection* m_collection;

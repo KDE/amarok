@@ -19,6 +19,8 @@
 #include "Amazon.h"
 #include "AmazonMeta.h"
 
+#include "AmarokMimeData.h"
+
 #include "klocalizedstring.h"
 #include <klocale.h>
 
@@ -159,4 +161,33 @@ bool AmazonItemTreeModel::isAlbum( const QModelIndex &index ) const
         return true;
     else
         return false;
+}
+
+QStringList AmazonItemTreeModel::mimeTypes() const
+{
+    QStringList types;
+    types << AmarokMimeData::TRACK_MIME;
+    return types;
+}
+
+QMimeData* AmazonItemTreeModel::mimeData( const QModelIndexList &indices ) const
+{
+    if( indices.isEmpty() )
+        return 0;
+
+    Meta::TrackList tracks;
+
+    if( indices[0].row() < m_collection->albumIDMap()->size() ) // album
+    {
+        return new QMimeData;
+    }
+    else // track
+    {
+        int id = indices[0].row() - m_collection->albumIDMap()->size() + 1;
+        tracks.append( m_collection->trackById( id ) );
+    }
+
+    AmarokMimeData *mimeData = new AmarokMimeData();
+    mimeData->setTracks( tracks );
+    return mimeData;
 }
