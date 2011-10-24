@@ -36,7 +36,7 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
         QList<QModelIndex> decodeMimeRows( QByteArray data, QAbstractItemModel *model ) const;
         static const QString AMAROK_PROVIDERPROXY_INDEXES;
 
-        PlaylistsByProviderProxy( QAbstractItemModel *model, int column );
+        PlaylistsByProviderProxy( QAbstractItemModel *model, int column, int playlistCategory );
         ~PlaylistsByProviderProxy() {}
 
         /* QtGroupingProxy methods */
@@ -64,11 +64,14 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
         void renameIndex( const QModelIndex &idx );
 
     protected slots:
+        //re-implemented to add empty providers
         virtual void buildTree();
 
     private slots:
         void slotRenameIndex( const QModelIndex &index );
 
+    private:
+        int m_playlistCategory;
 };
 
 #endif // PLAYLISTSBYPROVIDERPROXY_H

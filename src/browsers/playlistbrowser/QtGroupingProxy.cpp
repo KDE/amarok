@@ -145,23 +145,6 @@ QtGroupingProxy::buildTree()
     //don't clear the data maps since most of it will probably be needed again.
     m_parentCreateList.clear();
 
-    //first load empty groups from the rootnode.
-    QModelIndex rootGroupedIndex =
-            sourceModel()->index( m_rootNode.row(), m_groupedColumn, m_rootNode.parent() );
-    if( rootGroupedIndex.column() == m_groupedColumn )
-    {
-        QList<RowData> groupData = belongsTo( rootGroupedIndex );
-        foreach( RowData rowData , groupData )
-        {
-            // qDebug() << rowData;
-            if( rowData.contains( 0 ) && rowData[0].contains( Qt::DisplayRole ) )
-            {
-                // qDebug() << "Creating empty group: " << rowData[0][Qt::DisplayRole].toString();
-                m_groupMaps << rowData;
-            }
-        }
-    }
-
     int max = sourceModel()->rowCount( m_rootNode );
     //qDebug() << QString("building tree with %1 leafs.").arg( max );
     //WARNING: these have to be added in order because the addToGroups function is optimized for

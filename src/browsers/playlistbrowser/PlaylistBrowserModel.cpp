@@ -70,46 +70,6 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
 QVariant
 PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
 {
-    //Special negative index to support empty provider groups (PlaylistsByProviderProxy)
-    if( index.row() == -1 && index.column() == PlaylistBrowserModel::ProviderColumn )
-    {
-        QVariantList displayList;
-        QVariantList iconList;
-        QVariantList playlistCountList;
-        QVariantList providerActionsCountList;
-        QVariantList providerActionsList;
-        QVariantList providerByLineList;
-
-        //get data from empty providers
-        PlaylistProviderList providerList =
-                The::playlistManager()->providersForCategory( m_playlistCategory );
-        foreach( Playlists::PlaylistProvider *provider, providerList )
-        {
-            if( provider && ( provider->playlistCount() > 0 || provider->playlists().count() > 0 ) )
-                continue;
-
-            displayList << provider->prettyName();
-            iconList << provider->icon();
-            playlistCountList << provider->playlists().count();
-            providerActionsCountList << provider->providerActions().count();
-            providerActionsList <<  QVariant::fromValue( provider->providerActions() );
-            //TODO: after string freeze possibly add a string indicating it's empty.
-            providerByLineList << QString();
-        }
-
-        switch( role )
-        {
-            case Qt::DisplayRole:
-            case DescriptionRole:
-            case Qt::ToolTipRole: return displayList;
-            case Qt::DecorationRole: return iconList;
-            case PlaylistBrowserModel::ActionCountRole: return providerActionsCountList;
-            case PlaylistBrowserModel::ActionRole: return providerActionsList;
-            case PlaylistBrowserModel::ByLineRole: return providerByLineList;
-            case Qt::EditRole: return QVariant();
-        }
-    }
-
     if( !index.isValid() )
         return QVariant();
 

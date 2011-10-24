@@ -92,7 +92,8 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
 
     m_toolBar->addSeparator();
 
-    m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
+    m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn,
+                                                      m_playlistCategory );
     m_byFolderProxy = new PlaylistsInFoldersProxy( model );
 
     m_filterProxy = new PlaylistBrowserFilterProxy( this );
