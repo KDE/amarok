@@ -54,6 +54,7 @@ class CollectionWidget : public BrowserCategory
         /** Set the current views selected levels */
         void setLevels( const QList<int> &levels );
 
+        void focusInputLine();
     public slots:
         void sortLevelSelected( QAction * );
         void sortByArtistAlbum();

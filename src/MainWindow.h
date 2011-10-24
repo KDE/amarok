@@ -143,7 +143,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
-        void slotJumpTo();
+        void slotFocusPlaylistSearch();
+        void slotFocusCollectionSearch();
 #ifdef DEBUG_BUILD_TYPE
         void showNetworkRequestViewer();
 #endif // DEBUG_BUILD_TYPE

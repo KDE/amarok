@@ -305,6 +305,12 @@ CollectionWidget::~CollectionWidget()
 
 
 void
+CollectionWidget::focusInputLine()
+{
+    return d->searchWidget->comboBox()->setFocus();
+}
+
+void
 CollectionWidget::sortLevelSelected( QAction *action )
 {
     Q_UNUSED( action );

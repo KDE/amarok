@@ -585,11 +585,19 @@ MainWindow::slotAddStream() //SLOT
 }
 
 void
-MainWindow::slotJumpTo() // slot
+MainWindow::slotFocusPlaylistSearch()
 {
-    DEBUG_BLOCK
-
+    showDock( AmarokDockPlaylist );  // ensure that the dock is visible if tabbed
     m_playlistDock.data()->searchWidget()->focusInputLine();
+}
+
+void
+MainWindow::slotFocusCollectionSearch()
+{
+    // ensure collection browser is activated within navigation dock:
+    browserDock()->list()->navigate( QString("collections") );
+    showDock( AmarokDockNavigation );  // ensure that the dock is visible if tabbed
+    m_collectionBrowser->focusInputLine();
 }
 
 #ifdef DEBUG_BUILD_TYPE
@@ -827,10 +835,15 @@ MainWindow::createActions()
     action->setShortcut( KShortcut( Qt::CTRL + Qt::SHIFT + Qt::Key_F ) );
     connect( action, SIGNAL( triggered() ), SLOT( slotFullScreen() ) );
 
-    action = new KAction( i18n( "Jump to" ), this );
-    ac->addAction( "jumpTo", action );
+    action = new KAction( i18n( "Search playlist" ), this );
+    ac->addAction( "searchPlaylist", action );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_J ) );
-    connect( action, SIGNAL( triggered() ), SLOT( slotJumpTo() ) );
+    connect( action, SIGNAL( triggered() ), SLOT( slotFocusPlaylistSearch()) );
+
+    action = new KAction( i18n( "Search collection" ), this );
+    ac->addAction( "searchCollection", action );
+    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_F ) );
+    connect( action, SIGNAL( triggered() ), SLOT( slotFocusCollectionSearch()) );
 
     action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
     ac->addAction( "show_active_track", action );
