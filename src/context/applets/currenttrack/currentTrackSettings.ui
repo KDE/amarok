@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>180</width>
+    <width>184</width>
     <height>156</height>
    </rect>
   </property>
@@ -36,13 +36,6 @@
        <widget class="QCheckBox" name="editTrackDetailsCheckBox">
         <property name="text">
          <string>Edit Track Details</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="findInSourceCheckBox">
-        <property name="text">
-         <string>Show in Media Sources</string>
         </property>
        </widget>
       </item>

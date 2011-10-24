@@ -134,7 +134,6 @@ private:
 
     Ui::currentTrackSettings ui_Settings;
     bool m_showEditTrackDetailsAction;
-    bool m_showFindInSourceAction;
     const int m_albumWidth;
 };
 
