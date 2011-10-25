@@ -266,8 +266,10 @@ WikipediaAppletPrivate::_paletteChanged( const QPalette &palette )
     {
         // transparent background
         QPalette newPalette( palette );
-        newPalette.setBrush( QPalette::Base, QColor::fromRgbF(0, 0, 0, 0) );
+        newPalette.setBrush( QPalette::Base, Qt::transparent );
         webView->page()->setPalette( newPalette );
+        webView->setPalette( newPalette );
+        webView->setAttribute( Qt::WA_OpaquePaintEvent, false );
 
         QString contents = QString( file.readAll() );
         contents.replace( "/*{text_color}*/", palette.text().color().name() );
@@ -487,7 +489,6 @@ void
 WikipediaAppletPrivate::_pageLoadProgress( int progress )
 {
     DEBUG_BLOCK
-    Q_Q( WikipediaApplet );
     DEBUG_ASSERT(proxyWidget, return)
 
     const QString kbytes = QString::number( webView->page()->totalBytes() / 1024 );
@@ -568,7 +569,6 @@ WikipediaApplet::init()
     d->webView->page()->settings()->setAttribute( QWebSettings::PrivateBrowsingEnabled, true );
     QWebSettings::globalSettings()->setAttribute( QWebSettings::DnsPrefetchEnabled, true );
     d->webView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    d->webView->setAttribute( Qt::WA_OpaquePaintEvent, true );
     d->_updateWebFonts();
     connect( KGlobalSettings::self(), SIGNAL(appearanceChanged()), SLOT(_updateWebFonts()) );
 
