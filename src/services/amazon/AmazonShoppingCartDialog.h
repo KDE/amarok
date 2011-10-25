@@ -33,6 +33,9 @@ public:
     explicit AmazonShoppingCartDialog( QWidget *parent = 0 );
     ~AmazonShoppingCartDialog();
 
+public slots:
+    void contentsChanged();
+
 private:
     Ui::AmazonShoppingCartDialog *ui;
     AmazonShoppingCartModel *m_model;

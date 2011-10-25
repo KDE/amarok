@@ -18,18 +18,18 @@
 
 #include "AmazonCart.h"
 
-#include <QDebug>
-
 AmazonShoppingCartModel::AmazonShoppingCartModel()
 {
 }
 
 bool AmazonShoppingCartModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-    Q_UNUSED( count)
+    Q_UNUSED( count )
     beginRemoveRows( parent, row, 1 ); // we can only select one item
     AmazonCart::instance()->remove( row );
     endRemoveRows();
+
+    emit contentsChanged();
 
     return true;
 }

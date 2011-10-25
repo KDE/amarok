@@ -235,7 +235,7 @@ void AmazonItemTreeView::setModel( QAbstractItemModel *model )
 {
     Amarok::PrettyTreeView::setModel( model );
 
-    header()->setStretchLastSection ( false );
+    header()->setStretchLastSection( false );
 
     connect( model, SIGNAL( dataChanged( const QModelIndex, const QModelIndex ) ), this, SLOT( dataChanged( const QModelIndex, const QModelIndex ) ) );
 }

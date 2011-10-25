@@ -21,9 +21,9 @@
 
 #include "ui_AmazonShoppingCartDialog.h"
 
-AmazonShoppingCartDialog::AmazonShoppingCartDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::AmazonShoppingCartDialog)
+AmazonShoppingCartDialog::AmazonShoppingCartDialog( QWidget *parent ) :
+    QDialog( parent ),
+    ui( new Ui::AmazonShoppingCartDialog )
 {
     ui->setupUi( this );
 
@@ -31,9 +31,18 @@ AmazonShoppingCartDialog::AmazonShoppingCartDialog(QWidget *parent) :
     m_model->setStringList( AmazonCart::instance()->stringList() );
     ui->listView->setModel( m_model );
     ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonCart::instance()->price() ) ) );
+
+    connect( m_model, SIGNAL( contentsChanged() ), this, SLOT( contentsChanged() ) );
 }
 
 AmazonShoppingCartDialog::~AmazonShoppingCartDialog()
 {
     delete ui;
+}
+
+void AmazonShoppingCartDialog::contentsChanged()
+{
+    ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonCart::instance()->price() ) ) );
+    m_model->setStringList( AmazonCart::instance()->stringList() ); // HACK, but works
+    ui->listView->setModel( m_model );
 }

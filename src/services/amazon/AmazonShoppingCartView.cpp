@@ -19,6 +19,8 @@
 AmazonShoppingCartView::AmazonShoppingCartView( QWidget *parent ) :
     QListView( parent )
 {
+    setAlternatingRowColors( true );
+    setUniformItemSizes( true );
 }
 
 void AmazonShoppingCartView::keyPressEvent( QKeyEvent *event )

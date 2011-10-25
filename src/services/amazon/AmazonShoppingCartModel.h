@@ -21,10 +21,15 @@
 
 class AmazonShoppingCartModel : public QStringListModel
 {
+    Q_OBJECT
+
 public:
     AmazonShoppingCartModel();
 
     virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
+
+signals:
+    void contentsChanged();
 };
 
 #endif // AMAZONSHOPPINGCARTMODEL_H
