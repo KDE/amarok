@@ -1654,13 +1654,6 @@ IpodHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
     return KUrl(mountPoint() + (QString( m_itdbtrackhash[ track ]->ipod_path ).split( ':' ).join( "/" )));
 }
 
-bool
-IpodHandler::libIsCompilation( const Meta::MediaDeviceTrackPtr &track )
-{
-    // libgpod says: True if set to 0x1, false if set to 0x0.
-    return m_itdbtrackhash[ track ]->compilation != 0x0;
-}
-
 float
 IpodHandler::usedCapacity() const
 {
@@ -1881,13 +1874,6 @@ IpodHandler::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta
        m_files.insert(key, m_itdbtrackhash[ destTrack ] );
     debug() << "on iPod: " << m_itdbtrackhash[ destTrack ]->ipod_path;
     setDatabaseChanged();
-}
-
-void
-IpodHandler::libSetIsCompilation( MediaDeviceTrackPtr &track, bool isCompilation )
-{
-    // libgpod says: True if set to 0x1, false if set to 0x0.
-    m_itdbtrackhash[ track ]->compilation = isCompilation ? 0x1 : 0x0;
 }
 
 void

@@ -20,5 +20,4 @@ Handler::ReadCapability::~ReadCapability()
 {
     // nothing to do here
 }
-
 #include "ReadCapability.moc"

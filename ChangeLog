@@ -4,8 +4,6 @@ Amarok ChangeLog
 
 Version 2.5.0-Beta 1
   FEATURES:
-    * Compilations are properly marked as such when transferring music
-      to/from iPods. (BR 207880)
     * Ctrl+F now activates collection browser and focuses the seach collection
       bar. (BR 257381)
     * Music store based on the Amazon catalogue

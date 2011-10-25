@@ -175,12 +175,6 @@ IpodReadCapability::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->libGetPlayableUrl( track );
 }
 
-bool
-IpodReadCapability::libIsCompilation( const Meta::MediaDeviceTrackPtr &track )
-{
-    return m_handler->libIsCompilation( track );
-}
-
 float
 IpodReadCapability::usedCapacity() const
 {

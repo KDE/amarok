@@ -195,7 +195,6 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
         virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
         virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
-        virtual void libSetIsCompilation( Meta::MediaDeviceTrackPtr &track, bool isCompilation );
 
         virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &image );
         virtual void libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString &path );
@@ -240,7 +239,6 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
         virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
-        virtual bool    libIsCompilation( const Meta::MediaDeviceTrackPtr &track );
         virtual QImage  libGetCoverArt( const Meta::MediaDeviceTrackPtr &track );
 
         virtual float usedCapacity() const;
