@@ -41,6 +41,8 @@ public:
 
 private:
     Collections::AmazonCollection* m_collection;
+
+    QString prettyNameByIndex( const QModelIndex &index ) const;
 };
 
 #endif // AMAZONITEMTREEMODEL_H

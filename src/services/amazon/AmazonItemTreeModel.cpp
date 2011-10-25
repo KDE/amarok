@@ -88,16 +88,8 @@ QVariant AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
             id = index.row() + 1; // collection IDs start with 1
 
             if( index.column() == 0 ) // name
-            {
-                if( m_collection->albumById( id ) )
-                {
-                    QString prettyName;
-                    int artistId = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( id ).data() )->artistId();
-                    prettyName = m_collection->artistById( artistId )->name();
-                    prettyName = prettyName + " - " + m_collection->albumById( id )->name();
-                    return prettyName;
-                }
-            }
+                return prettyNameByIndex( index );
+
             else if( index.column() == 1 ) // price
             {
                 if( m_collection->albumById( id ) )
@@ -109,16 +101,8 @@ QVariant AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
             id = index.row() - m_collection->albumIDMap()->size() + 1;
 
             if( index.column() == 0 ) // name
-            {
-                if( m_collection->trackById( id ) )
-                {
-                    QString prettyName;
-                    int artistId = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() )->artistId();
-                    prettyName = m_collection->artistById( artistId )->name();
-                    prettyName = prettyName + " - " + m_collection->trackById( id )->name();
-                    return prettyName;
-                }
-            }
+                return prettyNameByIndex( index );
+
             else if( index.column() == 1 ) // price
             {
                 if( m_collection->trackById( id ) )
@@ -140,28 +124,7 @@ QVariant AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
         }
     }
     else if( role == Qt::ToolTipRole )
-    {
-        if( index.row() < m_collection->albumIDMap()->size() ) // album
-        {
-            id = index.row() + 1; // collection IDs start with 1
-
-            QString prettyName;
-            int artistId = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() )->artistId();
-            prettyName = m_collection->artistById( artistId )->name();
-            prettyName = prettyName + " - " + m_collection->trackById( id )->name();
-            return prettyName;
-        }
-        else // track
-        {
-            id = index.row() - m_collection->albumIDMap()->size() + 1;
-
-            QString prettyName;
-            int artistId = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() )->artistId();
-            prettyName = m_collection->artistById( artistId )->name();
-            prettyName = prettyName + " - " + m_collection->trackById( id )->name();
-            return prettyName;
-        }
-    }
+        return prettyNameByIndex( index );
 
     return QVariant();
 }
@@ -213,4 +176,29 @@ QMimeData* AmazonItemTreeModel::mimeData( const QModelIndexList &indices ) const
     AmarokMimeData *mimeData = new AmarokMimeData();
     mimeData->setTracks( tracks );
     return mimeData;
+}
+
+QString AmazonItemTreeModel::prettyNameByIndex( const QModelIndex &index ) const
+{
+    QString prettyName;
+    int id;
+
+    if( index.row() < m_collection->albumIDMap()->size() ) // album
+    {
+        id = index.row() + 1; // collection IDs start with 1
+
+        int artistId = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( id ).data() )->artistId();
+        prettyName = m_collection->artistById( artistId )->name();
+        prettyName = prettyName + " - " + m_collection->albumById( id )->name();
+    }
+    else // track
+    {
+        id = index.row() - m_collection->albumIDMap()->size() + 1;
+
+        int artistId = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() )->artistId();
+        prettyName = m_collection->artistById( artistId )->name();
+        prettyName = prettyName + " - " + m_collection->trackById( id )->name();
+    }
+
+    return prettyName;
 }
