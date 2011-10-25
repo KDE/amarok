@@ -165,10 +165,10 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
     enumValue == -1 ? d->viewMode = NormalCollections : d->viewMode = (ViewMode) enumValue;
 
+    // FIXME Variable viewMode is never used. What was the intention?
     ViewMode viewMode = NormalCollections;
     if( enumValue != -1 )
        viewMode = (ViewMode) enumValue;
-
 
     // -- the search widget
     d->searchWidget = new SearchWidget( hbox );
