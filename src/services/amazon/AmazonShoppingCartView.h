@@ -27,6 +27,12 @@ public:
     explicit AmazonShoppingCartView( QWidget *parent = 0 );
 
     void keyPressEvent( QKeyEvent *event );
+
+protected:
+    void contextMenuEvent( QContextMenuEvent *event );
+
+protected slots:
+    void removeFromCartAction();
 };
 
 #endif // AMAZONSHOPPINGCARTVIEW_H

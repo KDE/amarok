@@ -16,6 +16,10 @@
 
 #include "AmazonShoppingCartView.h"
 
+#include "klocalizedstring.h"
+
+#include <KMenu>
+
 AmazonShoppingCartView::AmazonShoppingCartView( QWidget *parent ) :
     QListView( parent )
 {
@@ -38,4 +42,33 @@ void AmazonShoppingCartView::keyPressEvent( QKeyEvent *event )
     }
 
     QListView::keyPressEvent( event );
+}
+
+void AmazonShoppingCartView::contextMenuEvent( QContextMenuEvent *event )
+{
+    QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        event->accept();
+        return;
+    }
+
+    KMenu menu( this );
+    QList< QAction * > actions;
+
+    QAction *removeFromCartAction = new QAction( QString( i18n( "Remove from Cart" ) ), &menu );
+    actions.append( removeFromCartAction );
+    connect( removeFromCartAction, SIGNAL( triggered() ), this, SLOT( removeFromCartAction() ) );
+
+    menu.exec( actions, event->globalPos() );
+    event->accept();
+}
+
+void AmazonShoppingCartView::removeFromCartAction()
+{
+    QModelIndex index = currentIndex();
+    int row = index.row();
+    int count = 1;
+
+    model()->removeRows( row, count, index );
 }
