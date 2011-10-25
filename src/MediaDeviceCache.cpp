@@ -221,7 +221,11 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
         const QMap<QString, QVariant> properties = generic->allProperties();
         /* At least iPod touch 3G and iPhone 3G do not advertise AFC (Apple File
          * Connection) capabilities. Therefore we have to white-list them so that they are
-         * still recognised ad iPods */
+         * still recognised ad iPods
+         *
+         * @see IpodConnectionAssistant::identify() for a quirk that is currently also
+         * needed for proper identification of iPhone-like devices.
+         */
         if ( !device.product().contains("iPod") && !device.product().contains("iPhone"))
         {
             if( !properties.contains("info.capabilities") )

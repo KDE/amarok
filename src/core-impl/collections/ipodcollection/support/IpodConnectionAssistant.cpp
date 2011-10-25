@@ -26,64 +26,95 @@
 #include <solid/device.h>
 #include <solid/portablemediaplayer.h>
 
+
 IpodConnectionAssistant::~IpodConnectionAssistant()
 {
 }
 
-
+/**
+ * @brief Return true if device is identified as iPod-compatible using product and vendor.
+ *
+ * @param device Solid device to identify
+ * @return true if the device is iPod-like, false if it cannot be proved.
+ **/
 static bool
-device_identify( Solid::Device* device)
+deviceIsRootIpodDevice( const Solid::Device &device )
 {
-    return device && device->isValid() && device->vendor().contains("apple", Qt::CaseInsensitive) &&
-        ( device->product().startsWith("iPod")
-       || device->product().startsWith("iPhone")
-       || device->product().startsWith("iPad") );
+    if( !device.isValid() )
+        return false;
+    if( !device.vendor().contains( "Apple", Qt::CaseInsensitive ) )
+        return false;
+    return device.product().startsWith( "iPod" )
+        || device.product().startsWith( "iPhone" )
+        || device.product().startsWith( "iPad" );
 }
 
+/**
+ * @brief Returns true if device is identified as iPod-compatible using
+ * PortableMediaPlayer interface.
+ *
+ * @param device Solid device to identify
+ * @return true if the device is iPod-like, false if it cannot be proved.
+ **/
+static bool
+deviceIsPMPIpodDevice( const Solid::Device &device )
+{
+    /* This should be the one and only way to identify iPod-likes, but as of KDE 4.7.2,
+     * solid does not attach PortableMediaPlayer to iPods at all and its
+     * PortableMediaPlayer implementations is just a stub. This would also need
+     * media-device-info package to be installed.
+     */
+    const Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
+    if( !pmp )
+        return false;
+
+    debug() << "Device supported PMP protocols:" << pmp->supportedProtocols();
+    return pmp->supportedProtocols().contains( "ipod", Qt::CaseInsensitive );
+}
 
 bool
-IpodConnectionAssistant::identify( const QString& udi )
+IpodConnectionAssistant::identify( const QString &udi )
 {
     DEBUG_BLOCK
+    Solid::Device device( udi );
 
-    Solid::Device device;
-
-    device = Solid::Device(udi);
-
-    /* going until we reach a vendor, e.g. Apple */
-    while ( device.isValid() && device.vendor().isEmpty() )
+    /* Start with device to identify, opportunistically try to identify it as
+     * iPod-compatible. If found not, try its parent. Repeat until parent device is
+     * valid.
+     *
+     * This method DOES return false positives for iPod-like devices which are itself
+     * storage drives, but not storage volumes (such as sdc). This is needed for
+     * iPhone-like devices that have extra code to mount them in IpodHandler. IpodHandler
+     * gracefully fails in case this is old-school iPod, so this shouldn't hurt, only side
+     * effect is that other connection assistant are not tried for these false-identified
+     * devices. It would be of course great if iPhone-like devices could be distinguished
+     * right here - KDE's Solid should be able to help us with it in future, but as of
+     * KDE 4.7.2 it tells us nothing.
+     *
+     * @see MediaDeviceCache::slotAddSolidDevice() for a quirk that is currently also
+     * needed for proper identification of iPhone-like devices.
+     */
+    while ( device.isValid() )
     {
-        device = Solid::Device( device.parentUdi() );
+        if( deviceIsPMPIpodDevice( device ) )
+        {
+            debug() << "Device" << device.udi() << "identified iPod-like using "
+                       "PortableMediaPlayer interface";
+            return true;
+        }
+        if( deviceIsRootIpodDevice( device ) )
+        {
+            debug() << "Device" << device.udi() << "identified iPod-like using "
+                       "vendor and product name";
+            return true;
+        }
+
+        debug() << "Device" << device.udi() << "not identified iPod-like, trying parent device";
+        device = device.parent();
     }
-
-    Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
-
-    debug() << "Device udi: " << udi;
-    debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
-    debug() << "Mount point: " << MediaDeviceCache::instance()->volumeMountPoint(udi);
-
-    if ( device.isValid() )
-    {
-        debug() << "vendor: " << device.vendor() << ", product: " << device.product();
-    }
-
-    if( pmp )
-    {
-        debug() <<  "Supported protocols: " << pmp->supportedProtocols();
-        debug() << "Supported drivers: " << pmp->supportedDrivers();
-        return pmp->supportedProtocols().contains( "ipod" );
-    }
-
-    /* if iPod or iPhone found, return true */
-    if (device_identify(&device))
-        return true;
-    /* due to kde Solid, we might actually see a partition, and the parent device can actually be
-        really recognized */
-
-    Solid::Device deviceParent = Solid::Device( device.parentUdi() );
-    return device_identify(&deviceParent);
+    debug() << "Device" << device.udi() << "is invalid, returning false. (i.e. was not iPod-like)";
+    return false;
 }
-
 
 MediaDeviceInfo*
 IpodConnectionAssistant::deviceInfo( const QString& udi )
