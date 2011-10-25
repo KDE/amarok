@@ -16,6 +16,7 @@ Version 2.5.0-Beta 1
     * Auto-save the playlist so that it is not lost if Amarok crashes.
 
   CHANGES:
+    * Removed the confusing ability to edit the navigation breadcrumb.
     * BPM is now read from/saved to media devices (e.g. iPod).
     * Track last played date and time is now correctly read from/saved to iPods.
     * Depend on KDE 4.6 - various bugs were caused by older versions.

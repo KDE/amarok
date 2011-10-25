@@ -75,13 +75,8 @@ public slots:
      */
     void updateBreadcrumbs();
 
-    void editUpdated();
-
 protected:
     virtual void resizeEvent( QResizeEvent * event );
-    virtual void mousePressEvent( QMouseEvent * event );
-
-    virtual bool eventFilter( QObject *obj, QEvent *ev );
 
 private:
     
@@ -109,7 +104,6 @@ private:
     KHBox * m_breadcrumbArea;
     KHBox * m_editArea;
 
-    KLineEdit * m_pathEdit;
     KPushButton * m_goButton;
     
     BreadcrumbItemMenuButton * m_childMenuButton;
