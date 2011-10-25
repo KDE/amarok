@@ -139,6 +139,29 @@ QVariant AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
                 return KIcon( "media-album-track" );
         }
     }
+    else if( role == Qt::ToolTipRole )
+    {
+        if( index.row() < m_collection->albumIDMap()->size() ) // album
+        {
+            id = index.row() + 1; // collection IDs start with 1
+
+            QString prettyName;
+            int artistId = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() )->artistId();
+            prettyName = m_collection->artistById( artistId )->name();
+            prettyName = prettyName + " - " + m_collection->trackById( id )->name();
+            return prettyName;
+        }
+        else // track
+        {
+            id = index.row() - m_collection->albumIDMap()->size() + 1;
+
+            QString prettyName;
+            int artistId = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() )->artistId();
+            prettyName = m_collection->artistById( artistId )->name();
+            prettyName = prettyName + " - " + m_collection->trackById( id )->name();
+            return prettyName;
+        }
+    }
 
     return QVariant();
 }
