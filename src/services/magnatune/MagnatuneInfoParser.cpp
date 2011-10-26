@@ -341,7 +341,7 @@ MagnatuneInfoParser::createArtistLinks( const QString &page )
         //replace in the artist amarok url
 
         QString replaceString = "<!--ARTIST_TOKEN-->" + artist + "<!--/ARTIST_TOKEN-->";
-        QString artistLink = "<a href='amarok://navigate/internet/Magnatune.com?filter=artist:%22" + artist + "%22&levels=artist-album'>" + artist + "</a>";
+        QString artistLink = "<a href='amarok://navigate/internet/Magnatune.com?filter=artist:%22" + AmarokUrl::escape( artist ) + "%22&levels=artist-album'>" + artist + "</a>";
 
         debug() << "replacing " <<  replaceString << " with " << artistLink;
         returnPage = returnPage.replace( replaceString, artistLink );

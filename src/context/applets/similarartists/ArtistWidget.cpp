@@ -567,7 +567,7 @@ ArtistWidget::navigateToArtist()
     AmarokUrl url;
     url.setCommand( "navigate" );
     url.setPath( "collections" );
-    url.appendArg( "filter", "artist:\"" + m_artist->name() + "\"" );
+    url.appendArg( "filter", "artist:\"" + AmarokUrl::escape( m_artist->name() ) + '\"' );
     url.run();
 }
 

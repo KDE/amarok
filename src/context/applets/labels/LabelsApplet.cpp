@@ -706,7 +706,7 @@ LabelsApplet::toggleLabel( const QString &label )
 void
 LabelsApplet::listLabel( const QString &label )
 {
-    AmarokUrl bookmark( "amarok://navigate/collections?filter=label:%22" + label + "%22" );
+    AmarokUrl bookmark( "amarok://navigate/collections?filter=label:%22" + AmarokUrl::escape( label ) + "%22" );
     bookmark.run();
 }
 
