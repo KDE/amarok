@@ -234,9 +234,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         void setAlbumArtist( MediaDeviceArtistPtr artist );
 
     private:
-        Collections::MediaDeviceCollection *m_collection;
-
-        Handler::ArtworkCapability *m_artworkCapability;
+        QWeakPointer<Collections::MediaDeviceCollection> m_collection;
+        QWeakPointer<Handler::ArtworkCapability> m_artworkCapability;
 
         QString         m_name;
         TrackList       m_tracks;

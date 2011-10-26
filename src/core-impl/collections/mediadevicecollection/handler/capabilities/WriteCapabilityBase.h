@@ -29,6 +29,7 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapabilityBase : public Handler::Capabil
     Q_OBJECT
 
     public:
+        WriteCapabilityBase( QObject *parent ) : Capability( parent ) {}
         virtual ~WriteCapabilityBase();
 
         /**

@@ -39,6 +39,13 @@ namespace Handler
                         , Podcast = 5 // can read/write podcasts
                       };
 
+            /**
+             * @param parent should be set to associated MediaDeviceHandler, then
+             * individual Capabilities have a guarantee that their handler exists for
+             * whole their lifetime. (because Capabilities get deleted along their
+             * handler then) This also ensures proper memory management.
+             */
+            Capability( QObject *parent ) : QObject( parent ) {}
             virtual ~Capability();
 
     };

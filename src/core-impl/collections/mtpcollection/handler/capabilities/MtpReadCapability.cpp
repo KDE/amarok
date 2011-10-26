@@ -22,7 +22,7 @@ using namespace Handler;
 
 
 MtpReadCapability::MtpReadCapability( Meta::MtpHandler *handler )
-    : Handler::ReadCapability()
+    : Handler::ReadCapability( handler )
     , m_handler( handler )
 {}
 

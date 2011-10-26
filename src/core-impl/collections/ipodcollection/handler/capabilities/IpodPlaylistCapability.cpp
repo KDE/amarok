@@ -20,7 +20,7 @@
 using namespace Handler;
 
 IpodPlaylistCapability::IpodPlaylistCapability( Meta::IpodHandler *handler )
-    : Handler::PlaylistCapability()
+    : Handler::PlaylistCapability( handler )
     , m_handler( handler )
 {
 }

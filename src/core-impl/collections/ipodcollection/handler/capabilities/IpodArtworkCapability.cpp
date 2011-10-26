@@ -20,7 +20,7 @@
 using namespace Handler;
 
 IpodArtworkCapability::IpodArtworkCapability( Meta::IpodHandler *handler )
-    : ArtworkCapability()
+    : ArtworkCapability( handler )
     , m_handler( handler )
 {
 }

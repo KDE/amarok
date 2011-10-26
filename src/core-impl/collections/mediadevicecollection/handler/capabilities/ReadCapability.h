@@ -31,6 +31,7 @@ class MEDIADEVICECOLLECTION_EXPORT ReadCapability : public Handler::ReadCapabili
     Q_OBJECT
 
     public:
+        ReadCapability( QObject *parent ) : ReadCapabilityBase( parent ) {}
         virtual ~ReadCapability();
 
         /* Parsing of Tracks on Device */

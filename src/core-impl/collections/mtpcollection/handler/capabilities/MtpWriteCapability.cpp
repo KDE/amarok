@@ -20,7 +20,7 @@
 using namespace Handler;
 
 MtpWriteCapability::MtpWriteCapability( Meta::MtpHandler *handler )
-        : Handler::WriteCapability()
+        : Handler::WriteCapability( handler )
         , m_handler( handler )
 {
 }

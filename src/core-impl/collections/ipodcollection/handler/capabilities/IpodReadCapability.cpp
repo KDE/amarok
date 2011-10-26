@@ -20,7 +20,7 @@
 using namespace Handler;
 
 IpodReadCapability::IpodReadCapability( Meta::IpodHandler *handler )
-        : Handler::ReadCapability()
+        : Handler::ReadCapability( handler )
         , m_handler( handler )
 {
 }

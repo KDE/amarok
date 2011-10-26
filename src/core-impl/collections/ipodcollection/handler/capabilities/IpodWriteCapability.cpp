@@ -20,7 +20,7 @@
 using namespace Handler;
 
 IpodWriteCapability::IpodWriteCapability( Meta::IpodHandler *handler )
-        : Handler::WriteCapability()
+        : Handler::WriteCapability( handler )
         , m_handler( handler )
 {
 }

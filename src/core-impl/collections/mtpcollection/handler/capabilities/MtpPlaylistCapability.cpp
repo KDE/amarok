@@ -20,7 +20,7 @@
 using namespace Handler;
 
 MtpPlaylistCapability::MtpPlaylistCapability( Meta::MtpHandler *handler )
-        : Handler::PlaylistCapability()
+        : Handler::PlaylistCapability( handler )
         , m_handler( handler )
 {
 }

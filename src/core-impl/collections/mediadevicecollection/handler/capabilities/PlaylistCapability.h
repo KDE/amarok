@@ -27,8 +27,9 @@ namespace Handler
     class MEDIADEVICECOLLECTION_EXPORT PlaylistCapability : public Handler::Capability
     {
         Q_OBJECT
-    
+
         public:
+            PlaylistCapability( QObject *parent ) : Capability( parent ) {}
             virtual ~PlaylistCapability();
 
             /// Parsing of Tracks in Playlists on Device
