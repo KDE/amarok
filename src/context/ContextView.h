@@ -38,6 +38,7 @@
 #include <QMouseEvent>
 #include <QGraphicsView>
 #include <QQueue>
+#include <QWeakPointer>
 
 class QPixmap;
 class ContextUrlRunner;
@@ -90,10 +91,6 @@ public:
     */
     QStringList currentAppletNames();
 
-    /**
-        Adds a collapse animation
-        This object will take ownership of the animation.
-    */
     void addCollapseAnimation( QAbstractAnimation *anim );
 
 public slots:
@@ -132,10 +129,10 @@ private:
 
     ContextUrlRunner * m_urlRunner;
 
-    AppletExplorer *m_appletExplorer;
-    QParallelAnimationGroup *m_collapseAnimations;
-    QQueue<QAbstractAnimation*> m_queuedAnimations;
-    QTimer *m_collapseGroupTimer;
+    QWeakPointer<AppletExplorer> m_appletExplorer;
+    QWeakPointer<QParallelAnimationGroup> m_collapseAnimations;
+    QQueue< QWeakPointer<QAbstractAnimation> > m_queuedAnimations;
+    QWeakPointer<QTimer> m_collapseGroupTimer;
 };
 
 } // Context namespace
