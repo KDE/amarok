@@ -222,7 +222,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         virtual bool canUpdateImage() const;
         virtual void setImage( const QImage &image );
         virtual void setImagePath( const QString &path );
-        virtual void removeImage();
 
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
@@ -240,7 +239,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         QString         m_name;
         TrackList       m_tracks;
         bool            m_isCompilation;
-        mutable bool    m_hasImage;
+        mutable bool    m_hasImagePossibility;
         mutable bool    m_hasImageChecked;
         mutable QImage  m_image;
         MediaDeviceArtistPtr   m_albumArtist;

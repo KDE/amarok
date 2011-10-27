@@ -812,7 +812,7 @@ MediaDeviceAlbum::MediaDeviceAlbum( Collections::MediaDeviceCollection *collecti
     , m_name( name )
     , m_tracks()
     , m_isCompilation( false )
-    , m_hasImage( true ) // assume it has a cover until proven otherwise
+    , m_hasImagePossibility( true ) // assume it has a cover until proven otherwise
     , m_hasImageChecked( false )
     , m_image( QImage() )
     , m_albumArtist( 0 )
@@ -869,21 +869,21 @@ MediaDeviceAlbum::hasImage( int size ) const
     Q_UNUSED( size )
 
     if( !m_hasImageChecked )
-        m_hasImage = ! const_cast<MediaDeviceAlbum*>( this )->image().isNull();
-    return m_hasImage;
+        m_hasImagePossibility = ! const_cast<MediaDeviceAlbum*>( this )->image().isNull();
+    return m_hasImagePossibility;
 }
 
 QImage
 MediaDeviceAlbum::image( int size ) const
 {
-    if( m_name.isEmpty() || !m_hasImage || m_tracks.isEmpty() )
+    if( m_name.isEmpty() || !m_hasImagePossibility || m_tracks.isEmpty() )
         return Meta::Album::image( size );
 
     if( m_image.isNull() && m_artworkCapability )
     {
         MediaDeviceTrackPtr track = MediaDeviceTrackPtr::staticCast( m_tracks.first() );
         m_image = m_artworkCapability.data()->getCover( track );
-        m_hasImage = m_image.isNull();
+        m_hasImagePossibility = !m_image.isNull();
         m_hasImageChecked = true;
         CoverCache::invalidateAlbum( this );
     }
@@ -905,14 +905,15 @@ MediaDeviceAlbum::canUpdateImage() const
     return false;
 }
 
-// TODO: forward setImage calls to handler
 void
 MediaDeviceAlbum::setImage( const QImage &image )
 {
     if( m_artworkCapability && m_artworkCapability.data()->canUpdateCover() )
     {
-        m_image = image;
-        m_hasImage = true;
+        // reset to initial values, let next call to image() re-fetch it
+        m_hasImagePossibility = true;
+        m_hasImageChecked = false;
+
         m_artworkCapability.data()->setCover( MediaDeviceAlbumPtr( this ), image );
         CoverCache::invalidateAlbum( this );
     }
@@ -923,17 +924,13 @@ MediaDeviceAlbum::setImagePath( const QString &path )
 {
     if( m_artworkCapability && m_artworkCapability.data()->canUpdateCover() )
     {
-        m_hasImage = true;
-        m_artworkCapability.data()->setCoverPath( MediaDeviceAlbumPtr( this ), path );
-    }
-}
+        // reset to initial values, let next call to image() re-fetch it
+        m_hasImagePossibility = true;
+        m_hasImageChecked = false;
 
-// TODO: forward call to handler to remove image, etc.
-void
-MediaDeviceAlbum::removeImage()
-{
-    Meta::Album::removeImage();
-    CoverCache::invalidateAlbum( this );
+        m_artworkCapability.data()->setCoverPath( MediaDeviceAlbumPtr( this ), path );
+        CoverCache::invalidateAlbum( this );
+    }
 }
 
 bool
@@ -958,9 +955,10 @@ MediaDeviceAlbum::createCapabilityInterface( Capabilities::Capability::Type type
             QList<QAction*> actions;
             if( m_collection && canUpdateImage() )
             {
+                /* none of media device implementations can currently unset cover,
+                 * so it would only confuse user to see "Unset Cover" action. */
                 QAction *separator          = new QAction( m_collection.data() );
                 QAction *displayCoverAction = new DisplayCoverAction( m_collection.data(), AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
-                QAction *unsetCoverAction   = new UnsetCoverAction( m_collection.data(), AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
 
                 separator->setSeparator( true );
 
@@ -971,9 +969,7 @@ MediaDeviceAlbum::createCapabilityInterface( Capabilities::Capability::Type type
                 if( !hasImage() )
                 {
                     displayCoverAction->setEnabled( false );
-                    unsetCoverAction->setEnabled( false );
                 }
-                actions.append( unsetCoverAction );
             }
             return new Capabilities::ActionsCapability( actions );
         }
