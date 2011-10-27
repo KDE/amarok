@@ -35,6 +35,7 @@
 #include "core/meta/support/MetaUtility.h"
 #include "MainWindow.h"
 #include "PaletteHandler.h"
+#include "PluginManager.h"
 #include "SvgHandler.h"
 #include "context/widgets/RatingWidget.h"
 #include "context/widgets/TextScrollingWidget.h"
@@ -808,9 +809,21 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("artist") );
             m_customActions << act;
 
-            act = new QAction( KIcon("view-services-amazon-amarok"), i18n("Search for Artist in the MP3 Music Store"), this );
-            connect( act, SIGNAL(triggered()), this, SLOT(findInStore()) );
-            m_customActions << act;
+            KPluginInfo::List services = The::pluginManager()->plugins( QLatin1String("Service") );
+            foreach( const KPluginInfo &service, services )
+            {
+                if( service.pluginName() == QLatin1String("amarok_service_amazonstore") )
+                {
+                    if( service.isPluginEnabled() )
+                    {
+                        act = new QAction( KIcon("view-services-amazon-amarok"),
+                                           i18n("Search for Artist in the MP3 Music Store"), this );
+                        connect( act, SIGNAL(triggered()), this, SLOT(findInStore()) );
+                        m_customActions << act;
+                    }
+                    break;
+                }
+            }
         }
         if( composer && !composer->name().isEmpty() && (composer->name() != i18n("Unknown Composer")) )
         {
