@@ -220,6 +220,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
         return Playlists::PlaylistPtr();
     }
 
+    //FIXME: extention guessing fails with playlist names with a '.' in them
     Playlists::PlaylistFormat format = m_defaultFormat;
     QString ext = Amarok::extension( path.fileName() );
     if( ext.isEmpty() )
