@@ -235,14 +235,6 @@ PlaylistBrowserCategory::createProviderButton( const Playlists::PlaylistProvider
     else if( m_providerActions.count() == 1 )
         m_providerActions.values().first()->setEnabled( true );
 
-    //Hide empty providers when added
-    if( provider->playlistCount() == 0 )
-    {
-        providerToggle->setChecked( false );
-        //ensure the provider is actually filtered out.
-        slotToggleProviderButton();
-    }
-
     m_providerActions.insert( provider, providerToggle );
 }
 

@@ -279,6 +279,8 @@ PlaylistsByProviderProxy::buildTree()
         itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ByLineRole, QString() );
         RowData rowData;
         rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::PlaylistItemColumn, itemData );
+        //Provider column is used for filtering.
+        rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ProviderColumn, itemData );
         m_groupMaps << rowData;
     }
 
