@@ -45,6 +45,8 @@ signals:
     void currentItemChanged( const QModelIndex &current );
 
 protected:
+    //TODO:re-implement QWidget::dragEnterEvent() to show drop-not-allowed indicator
+
     virtual void keyPressEvent( QKeyEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
