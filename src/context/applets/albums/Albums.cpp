@@ -215,7 +215,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
             {
                 const TrackItem *item = items.first();
                 QStandardItem *discItem( 0 );
-                if( numberOfDiscs > 0 )
+                if( numberOfDiscs > 1 )
                 {
                     discItem = new QStandardItem( i18n("Disc %1", item->track()->discNumber()) );
                     albumItem->setChild( childRow++, discItem );
