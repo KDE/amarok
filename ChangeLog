@@ -18,6 +18,7 @@ Version 2.5.0-Beta 1
     * Auto-save the playlist so that it is not lost if Amarok crashes.
 
   CHANGES:
+    * Removed never-working right-mouse-button action to unset iPod album cover.
     * Removed the confusing ability to edit the navigation breadcrumb.
     * BPM is now read from/saved to media devices (e.g. iPod).
     * Track last played date and time is now correctly read from/saved to iPods.
@@ -37,6 +38,9 @@ Version 2.5.0-Beta 1
 
 
   BUGFIXES:
+    * Fixed iPod album covers not displayed in collection browser. (BR 263268)
+    * Do not crash when iPod is removed but some iPod tracks are still in
+      playlist. (BR 245852)
     * Fixed several potential AmarokUrl related crashes.
     * Rework iPod identification so that it is more reliable (BR 263288)
     * iPhone 3G (and perhaps later models) should be correctly recognized by
