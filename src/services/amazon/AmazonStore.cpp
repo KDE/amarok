@@ -179,7 +179,7 @@ void AmazonStore::initView()
     m_viewCartButton->setText( i18nc( "View your shopping cart contents", "View Cart" ) );
     m_viewCartButton->setToolTip( i18n( "View your shopping cart contents" ) );
     m_viewCartButton->setEnabled( true );
-    m_viewCartButton->setObjectName( "viewCartButtonButton" );
+    m_viewCartButton->setObjectName( "viewCartButton" );
     m_viewCartButton->setParent( bottomPanelLayout );
     //m_downloadAlbumButton->setIcon( KIcon( "viewCartButton-amarok" ) );
 
@@ -187,7 +187,7 @@ void AmazonStore::initView()
     m_checkoutButton->setText( i18nc( "Checkout your shopping cart", "Checkout" ) );
     m_checkoutButton->setToolTip( i18n( "Checkout your shopping cart" ) );
     m_checkoutButton->setEnabled( false );
-    m_checkoutButton->setObjectName( "checkoutButtonButton" );
+    m_checkoutButton->setObjectName( "checkoutButton" );
     m_checkoutButton->setParent( bottomPanelLayout );
     //m_downloadAlbumButton->setIcon( KIcon( "checkoutButton-amarok" ) );
 
