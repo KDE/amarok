@@ -54,7 +54,7 @@ void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     QAction *addToCartAction = new QAction( QString( i18n( "Add to Cart" ) ), &menu );
     actions.append( addToCartAction );
-    connect( addToCartAction, SIGNAL( triggered() ), this, SLOT( addToCartAction() ) );
+    connect( addToCartAction, SIGNAL( triggered() ), this, SIGNAL( addToCart() ) );
 
     AmazonItemTreeModel *amazonModel;
     amazonModel = dynamic_cast<AmazonItemTreeModel*>( model() );
@@ -160,7 +160,7 @@ void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
 
         QAction *addToCartAction = new QAction( QString( i18n( "Add to Cart" ) ), this );
         actions.append( addToCartAction );
-        connect( addToCartAction, SIGNAL( triggered() ), this, SLOT( addToCartAction() ) );
+        connect( addToCartAction, SIGNAL( triggered() ), this, SIGNAL( addToCart() ) );
 
         m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 0 ) ) );
 
@@ -214,11 +214,6 @@ void AmazonItemTreeView::selectionChanged( const QItemSelection &selected, const
         return;
 
     emit( itemSelected( indexes[0] ) ); // emit the QModelIndex
-}
-
-void AmazonItemTreeView::addToCartAction()
-{
-    emit addToCart();
 }
 
 void AmazonItemTreeView::itemActivatedAction()

@@ -48,7 +48,6 @@ protected:
 protected slots:
     void dataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight );
     virtual void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-    void addToCartAction();
     void itemActivatedAction();
 
 private:
