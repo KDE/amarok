@@ -29,20 +29,23 @@ public:
     AmazonItemTreeModel( Collections::AmazonCollection* collection );
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-
+    int hiddenAlbums() const;
     int rowCount( const QModelIndex &parent ) const;
     int columnCount( const QModelIndex &parent ) const;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
     QVariant data( const QModelIndex &index, int role ) const;
-    void collectionChanged();
     bool isAlbum( const QModelIndex &index ) const;
     virtual QStringList mimeTypes() const;
     virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
 private:
     Collections::AmazonCollection* m_collection;
+    int m_hiddenAlbums;
 
     QString prettyNameByIndex( const QModelIndex &index ) const;
+
+private slots:
+    void collectionChanged();
 };
 
 #endif // AMAZONITEMTREEMODEL_H

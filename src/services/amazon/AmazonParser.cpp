@@ -62,6 +62,7 @@ void AmazonParser::run()
         debug() << "Line:" << errorLine;
         debug() << "Column:" << errorColumn;
         emit( failed( this ) );
+        // let's keep the temp file in case of an error
         //QFile::remove( m_tempFileName );
         return;
     }
@@ -133,7 +134,7 @@ void AmazonParser::run()
     m_collection->emitUpdated();
     QFile::remove( m_tempFileName );
     responseFile.close();
-    emit( done( this ) );
+    // ThreadWeaver::Job automatically emits the done( this ) signal
 }
 
 int AmazonParser::addArtistToCollection( QString artistName, QString description )

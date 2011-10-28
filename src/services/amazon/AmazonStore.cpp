@@ -175,15 +175,6 @@ void AmazonStore::initView()
     m_addToCartButton->setParent( bottomPanelLayout );
     //m_downloadAlbumButton->setIcon( KIcon( "addToCart-amarok" ) );
 
-    // TODO move this to the shopping cart gui. it makes no sense in the browser, as the to-be-removed tracks might no longer show up there
-//    m_removeFromCartButton = new QPushButton;
-//    m_removeFromCartButton->setText( i18nc( "Remove selected item from your shopping cart", "Remove" ) );
-//    m_removeFromCartButton->setToolTip( i18n( "Remove selected item from your shopping cart" ) );
-//    m_removeFromCartButton->setEnabled( false );
-//    m_removeFromCartButton->setObjectName( "removeFromCartButton" );
-//    m_removeFromCartButton->setParent( bottomPanelLayout );
-//    //m_downloadAlbumButton->setIcon( KIcon( "removeFromCartButton-amarok" ) );
-
     m_viewCartButton = new QPushButton;
     m_viewCartButton->setText( i18nc( "View your shopping cart contents", "View Cart" ) );
     m_viewCartButton->setToolTip( i18n( "View your shopping cart contents" ) );
@@ -211,7 +202,7 @@ void AmazonStore::initView()
 
 void AmazonStore::itemDoubleClicked( QModelIndex index )
 {
-    if( index.row() < m_collection->albumIDMap()->size() ) // it's an album
+    if( index.row() < m_collection->albumIDMap()->size() - m_itemModel->hiddenAlbums() ) // it's an album
     {
         Meta::AmazonAlbum* album;
         // row == albumId
@@ -226,7 +217,7 @@ void AmazonStore::itemDoubleClicked( QModelIndex index )
     else // track
     {
         Meta::AmazonTrack* track;
-        int id = index.row() - m_collection->albumIDMap()->size();
+        int id = index.row() - m_collection->albumIDMap()->size() + m_itemModel->hiddenAlbums() ;
         // row == albumId
         track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id + 1 ).data() );
 
@@ -250,7 +241,7 @@ void AmazonStore::addToCart()
     QString asin, name, price;
 
     // get item from collection
-    if( m_selectedIndex.row() < m_collection->albumIDMap()->size() ) // it's an album
+    if( m_selectedIndex.row() < m_collection->albumIDMap()->size() - m_itemModel->hiddenAlbums() ) // it's an album
     {
         Meta::AmazonAlbum* album;
         // row == albumId
@@ -266,7 +257,7 @@ void AmazonStore::addToCart()
     else // track
     {
         Meta::AmazonTrack* track;
-        int id = m_selectedIndex.row() - m_collection->albumIDMap()->size();
+        int id = m_selectedIndex.row() - m_collection->albumIDMap()->size() + m_itemModel->hiddenAlbums();
         // row == albumId
         track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id + 1 ).data() );
 
@@ -379,7 +370,7 @@ void AmazonStore::parseReply( KJob* requestJob )
     DEBUG_BLOCK
     if( requestJob->error() )
     {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Querying MP3 Music Store database failed. :-("  ) );
+        Amarok::Components::logger()->shortMessage( i18n( "Error: Querying MP3 Music Store database failed. :-(" ) );
         debug() << requestJob->errorString();
         requestJob->deleteLater();
         return;
@@ -403,8 +394,7 @@ void AmazonStore::parseReply( KJob* requestJob )
 void AmazonStore::parsingDone( ThreadWeaver::Job* parserJob )
 {
     Q_UNUSED( parserJob )
-    m_itemModel->collectionChanged();
-    m_itemView->setModel( m_itemModel );
+    // model has been reset now, we no longer have a valid selection
     m_addToCartButton->setEnabled( false );
 }
 

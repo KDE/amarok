@@ -199,8 +199,8 @@ void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
 
 void AmazonItemTreeView::dataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight )
 {
-    QTreeView::dataChanged( topLeft, bottomRight );
-
+    Q_UNUSED( topLeft )
+    Q_UNUSED( bottomRight )
     header()->setResizeMode( 1, QHeaderView::ResizeToContents );
     header()->setResizeMode( 0, QHeaderView::Stretch );
 }
@@ -234,8 +234,5 @@ void AmazonItemTreeView::itemActivatedAction()
 void AmazonItemTreeView::setModel( QAbstractItemModel *model )
 {
     Amarok::PrettyTreeView::setModel( model );
-
     header()->setStretchLastSection( false );
-
-    connect( model, SIGNAL( dataChanged( const QModelIndex, const QModelIndex ) ), this, SLOT( dataChanged( const QModelIndex, const QModelIndex ) ) );
 }
