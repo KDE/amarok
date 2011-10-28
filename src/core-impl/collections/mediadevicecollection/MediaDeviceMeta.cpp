@@ -19,10 +19,6 @@
 #include "MediaDeviceHandler.h"
 
 #include "handler/capabilities/ArtworkCapability.h"
-
-// HACK: used to test disconnect
-#include "MediaDeviceMonitor.h"
-
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "core/support/Debug.h"
@@ -147,11 +143,12 @@ MediaDeviceTrack::prettyUrl() const
     if( m_playableUrl.isLocalFile() )
         return m_playableUrl.toLocalFile();
 
+    QString collName = m_collection ? m_collection.data()->prettyName() : i18n( "Unknown Collection" );
     QString artistName = artist()? artist()->prettyName() : i18n( "Unknown Artist" );
     // Check name() to prevent infinite recursion
     QString trackName = !name().isEmpty()? prettyName() : i18n( "Unknown track" );
 
-    return  QString( "%1: %2 - %3" ).arg( collection()->prettyName(), artistName, trackName );
+    return  QString( "%1: %2 - %3" ).arg( collName, artistName, trackName );
 }
 
 bool
@@ -168,8 +165,9 @@ MediaDeviceTrack::isPlayable() const
 bool
 MediaDeviceTrack::isEditable() const
 {
-    // TODO: Should only be true if disk mounted read/write, implement check later
-    return true;
+    if( m_collection )
+        return m_collection.data()->isWritable();
+    return false;
 }
 
 AlbumPtr
@@ -254,7 +252,6 @@ MediaDeviceTrack::setFileSize( int newFileSize )
 int
 MediaDeviceTrack::filesize() const
 {
-    // TODO: NYI, seems to cause crashing on transferring tracks to mediadevice
     return m_filesize;
 }
 
@@ -398,14 +395,15 @@ MediaDeviceTrack::collection() const
 bool
 MediaDeviceTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
+    if( !m_collection || !m_collection.data()->isWritable() )
+        return false;
+
     switch( type )
     {
         case Capabilities::Capability::Editable:
-            return m_collection ? m_collection.data()->isWritable() : false;
-
+            return true;
         case Capabilities::Capability::Updatable:
-            return m_collection ? m_collection.data()->isWritable() : false;
-
+            return true;
         default:
             return false;
     }
@@ -414,13 +412,15 @@ MediaDeviceTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) 
 Capabilities::Capability*
 MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
+    if( !m_collection || !m_collection.data()->isWritable() )
+        return false;
+
     switch( type )
     {
         case Capabilities::Capability::Editable:
             return new EditCapabilityMediaDevice( this );
         case Capabilities::Capability::Updatable:
             return new UpdateCapabilityMediaDevice( m_collection.data() );
-
         default:
             return 0;
     }
@@ -429,6 +429,9 @@ MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type
 void
 MediaDeviceTrack::setAlbum( const QString &newAlbum )
 {
+    if( !m_collection )
+        return;
+
     MediaDeviceAlbumPtr albumPtr;
     MediaDeviceTrackPtr track( this );
     AlbumMap albumMap = m_collection.data()->memoryCollection()->albumMap();
@@ -473,7 +476,8 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
 void
 MediaDeviceTrack::setAlbumArtist( const QString &newAlbumArtist )
 {
-    DEBUG_BLOCK
+    if( !m_collection )
+        return;
 
     if( m_album.isNull() || newAlbumArtist.isEmpty() )
         return;
@@ -508,7 +512,8 @@ MediaDeviceTrack::setAlbumArtist( const QString &newAlbumArtist )
 void
 MediaDeviceTrack::setArtist( const QString &newArtist )
 {
-    DEBUG_BLOCK
+    if( !m_collection )
+        return;
 
     MediaDeviceArtistPtr artistPtr;
     MediaDeviceTrackPtr track( this );
@@ -554,7 +559,8 @@ MediaDeviceTrack::setArtist( const QString &newArtist )
 void
 MediaDeviceTrack::setGenre( const QString &newGenre )
 {
-    DEBUG_BLOCK
+    if( !m_collection )
+        return;
 
     MediaDeviceGenrePtr genrePtr;
     MediaDeviceTrackPtr track( this );
@@ -600,7 +606,8 @@ MediaDeviceTrack::setGenre( const QString &newGenre )
 void
 MediaDeviceTrack::setComposer( const QString &newComposer )
 {
-    DEBUG_BLOCK
+    if( !m_collection )
+        return;
 
     MediaDeviceComposerPtr composerPtr;
     MediaDeviceTrackPtr track( this );
@@ -646,7 +653,8 @@ MediaDeviceTrack::setComposer( const QString &newComposer )
 void
 MediaDeviceTrack::setYear( int newYear )
 {
-    DEBUG_BLOCK
+    if( !m_collection )
+        return;
 
     MediaDeviceYearPtr yearPtr;
     MediaDeviceTrackPtr track( this );

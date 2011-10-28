@@ -16,6 +16,16 @@
 
 #include "MediaDeviceHandlerCapability.h"
 
+Handler::Capability::Capability( QObject *parent )
+    : QObject()
+{
+    /* we may be created in non-gui or non-eventloop thread. Let's move ourselves into
+     * parent's thread so that we can be children. */
+    if( thread() != parent->thread() )
+        moveToThread( parent->thread() );
+    setParent( parent );
+}
+
 Handler::Capability::~Capability()
 {
     //nothing to do
