@@ -34,7 +34,9 @@ Meta::Tag::setCodecByName( QByteArray codecName )
 TagLib::String
 Meta::Tag::Qt4QStringToTString( const QString &str )
 {
-    return TagLib::String( str.trimmed().toUtf8().data(), TagLib::String::UTF8 );
+    // Declare new var to prevent double call of trimmed func
+    QString val = str.trimmed();
+    return val.isEmpty() ? TagLib::String::null : TagLib::String( val.toUtf8().data(), TagLib::String::UTF8 );
 }
 
 QString
