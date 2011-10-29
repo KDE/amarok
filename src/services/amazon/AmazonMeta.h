@@ -60,9 +60,6 @@ public:
     virtual bool isBookmarkable() const { return true; }
     virtual QString collectionName() const { return "Amazon"; }
 
-public slots:
-    void addToCart();
-
 private:
     QAction* m_addToCartAction;
     QString m_asin;

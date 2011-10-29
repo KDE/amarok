@@ -39,8 +39,24 @@ protected:
     virtual void run();
 
 private:
+    /**
+    * Adds an artist to the collection if it does not yet exist. In any case it returns the ID of the artist.
+    * @param artist name of the artist to add.
+    * @param description description of the artist to add.
+    */
     int addArtistToCollection( QString artist, QString description );
+
+    /**
+    * Adds an album to the collection if it does not yet exist. In any case it returns the ID of the album.
+    * @param albumTitle name of the album to add.
+    * @param descritpion description of the album to add.
+    * @param artistID ID of the artist this album belongs to.
+    * @param price price of the album.
+    * @param imgUrl url of a cover image.
+    * @param albumAsin the ASIN for this album in the Amazon store.
+    */
     int addAlbumToCollection( QString albumTitle, QString description, QString artistID, QString price, QString imgUrl, QString albumAsin );
+
     Collections::AmazonCollection* m_collection;
     QString m_tempFileName;
     QDomDocument *m_responseDocument;

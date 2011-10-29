@@ -46,12 +46,14 @@ Meta::AmazonAlbum::AmazonAlbum( const QStringList & resultRow )
     setAsin( resultRow[6] );
 }
 
-void Meta::AmazonAlbum::setCoverUrl( const QString & coverUrl )
+void
+Meta::AmazonAlbum::setCoverUrl( const QString & coverUrl )
 {
     m_coverUrl = coverUrl;
 }
 
-QString Meta::AmazonAlbum::coverUrl() const
+QString
+Meta::AmazonAlbum::coverUrl() const
 {
     return m_coverUrl;
 }
@@ -77,27 +79,26 @@ Meta::AmazonArtist::AmazonArtist( const QStringList & resultRow )
 // class AmazonItem
 ///////////////////////////////////////////////////////////////////////////////
 
-void Meta::AmazonItem::addToCart()
-{
-    //AmazonCart::instance()->add( m_asin, m_price );
-}
-
-void Meta::AmazonItem::setAsin( QString asin )
+void
+Meta::AmazonItem::setAsin( QString asin )
 {
     m_asin = asin;
 }
 
-QString Meta::AmazonItem::asin() const
+QString
+Meta::AmazonItem::asin() const
 {
     return m_asin;
 }
 
-void Meta::AmazonItem::setPrice( const QString price )
+void
+Meta::AmazonItem::setPrice( const QString price )
 {
     m_price = price;
 }
 
-QString Meta::AmazonItem::price() const
+QString
+Meta::AmazonItem::price() const
 {
     return m_price;
 }
@@ -126,17 +127,20 @@ Meta::AmazonTrack::AmazonTrack( const QStringList & resultRow )
     setAsin( resultRow[8] );
 }
 
-QPixmap Meta::AmazonTrack::emblem()
+QPixmap
+Meta::AmazonTrack::emblem()
 {
     return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-amazon.png" ) );
 }
 
-QString Meta::AmazonTrack::sourceDescription()
+QString
+Meta::AmazonTrack::sourceDescription()
 {
     return i18n( "Snippet taken from the Amazon MP3 store" );
 }
 
-QString Meta::AmazonTrack::sourceName()
+QString
+Meta::AmazonTrack::sourceName()
 {
     return "Amazon";
 }
@@ -152,7 +156,8 @@ AmazonMetaFactory::AmazonMetaFactory( const QString &dbPrefix, AmazonStore* stor
 {}
 
 
-TrackPtr AmazonMetaFactory::createTrack( const QStringList &rows )
+TrackPtr
+AmazonMetaFactory::createTrack( const QStringList &rows )
 {
     AmazonTrack* track = new AmazonTrack( rows );
 
@@ -160,7 +165,8 @@ TrackPtr AmazonMetaFactory::createTrack( const QStringList &rows )
 }
 
 
-AlbumPtr AmazonMetaFactory::createAlbum( const QStringList &rows )
+AlbumPtr
+AmazonMetaFactory::createAlbum( const QStringList &rows )
 {
     AmazonAlbum* album = new AmazonAlbum( rows );
     album->setSourceName( "Amazon" );
@@ -169,7 +175,8 @@ AlbumPtr AmazonMetaFactory::createAlbum( const QStringList &rows )
 }
 
 
-ArtistPtr AmazonMetaFactory::createArtist( const QStringList &rows )
+ArtistPtr
+AmazonMetaFactory::createArtist( const QStringList &rows )
 {
     AmazonArtist* artist = new AmazonArtist( rows );
     artist->setSourceName( "Amazon" );

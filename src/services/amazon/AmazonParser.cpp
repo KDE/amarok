@@ -34,7 +34,8 @@ AmazonParser::~AmazonParser()
 {
 }
 
-void AmazonParser::run()
+void
+AmazonParser::run()
 {
     DEBUG_BLOCK
     debug() << "AmazonParser::run: " << m_tempFileName;
@@ -137,7 +138,11 @@ void AmazonParser::run()
     // ThreadWeaver::Job automatically emits the done( this ) signal
 }
 
-int AmazonParser::addArtistToCollection( QString artistName, QString description )
+
+/* private */
+
+int
+AmazonParser::addArtistToCollection( QString artistName, QString description )
 {
     QStringList results;
     QString artistID;
@@ -154,7 +159,8 @@ int AmazonParser::addArtistToCollection( QString artistName, QString description
     return m_collection->artistIDMap()->value( artistName );
 }
 
-int AmazonParser::addAlbumToCollection( QString albumTitle, QString description, QString artistID, QString price, QString imgUrl, QString albumAsin )
+int
+AmazonParser::addAlbumToCollection( QString albumTitle, QString description, QString artistID, QString price, QString imgUrl, QString albumAsin )
 {
     QStringList results;
     QString albumID;
@@ -185,5 +191,6 @@ int AmazonParser::addAlbumToCollection( QString albumTitle, QString description,
         }
     }
 
+    // return album ID
     return m_collection->albumIDMap()->value( albumAsin );
 }
