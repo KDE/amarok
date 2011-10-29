@@ -27,10 +27,35 @@ public:
     static AmazonConfig* instance();
     static void destroy();
 
+    /**
+    * Returns the domain for the store we want to interact with.
+    * France: fr
+    * Germany: de
+    * Japan: co.jp
+    * United Kingdom: co.uk
+    * United States: com
+    */
     QString country() const;
+
+    /**
+    * Sets the domain for the store we want to interact with.
+    * @param country the domain to set.
+    * France: fr
+    * Germany: de
+    * Japan: co.jp
+    * United Kingdom: co.uk
+    * United States: com
+    */
     void setCountry( QString country );
 
+    /**
+    * Load current settings from disc.
+    */
     void load();
+
+    /**
+    * Save current settings to disc.
+    */
     void save();
 
 private:

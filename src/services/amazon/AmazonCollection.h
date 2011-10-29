@@ -27,9 +27,28 @@ class AmazonCollection : public Collections::ServiceCollection
 {
 public:
     AmazonCollection( ServiceBase * service, const QString &id, const QString &prettyName );
+
+    /**
+    * Returns a pointer to the artist -> ID map.
+    * The artist consists if the artist name.
+    */
     QMap<QString, int> *artistIDMap();
+
+    /**
+    * Returns a pointer to the album -> ID map.
+    * The album is represented by the album ASIN.
+    */
     QMap<QString, int> *albumIDMap();
+
+    /**
+    * Returns a pointer to the track -> ID map.
+    * The track is represented by the track ASIN.
+    */
     QMap<QString, int> *trackIDMap();
+
+    /**
+    * Clears the collection from any content.
+    */
     void clear();
 
 private:

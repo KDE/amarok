@@ -38,7 +38,8 @@ AmazonConfig* AmazonConfig::instance()
     return m_instance;
 }
 
-void AmazonConfig::destroy()
+void
+AmazonConfig::destroy()
 {
     QMutex mutex;
     mutex.lock();
@@ -61,27 +62,32 @@ AmazonConfig::~AmazonConfig()
 {
 }
 
-QString AmazonConfig::country() const
+QString
+AmazonConfig::country() const
 {
     // TODO/HACK: due to some reason the local value is not always up2date, so let's reload it every time
+    // reason: we use this class in another lib, the KCM module, too. so there are two instances, actually...
     KConfigGroup config = KGlobal::config()->group( "Service_Amazon" );
     return config.readEntry( "country", QString() );
     // return m_country;
 }
 
-void AmazonConfig::setCountry( QString country )
+void
+AmazonConfig::setCountry( QString country )
 {
     m_country = country;
     save();
 }
 
-void AmazonConfig::load()
+void
+AmazonConfig::load()
 {
     KConfigGroup config = KGlobal::config()->group( "Service_Amazon" );
     m_country = config.readEntry( "country", QString() );
 }
 
-void AmazonConfig::save()
+void
+AmazonConfig::save()
 {
     KConfigGroup config = KGlobal::config()->group( "Service_Amazon" );
     config.writeEntry( "country", m_country );

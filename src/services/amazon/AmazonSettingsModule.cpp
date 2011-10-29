@@ -51,7 +51,8 @@ AmazonSettingsModule::~AmazonSettingsModule()
 {
 }
 
-void AmazonSettingsModule::save()
+void
+AmazonSettingsModule::save()
 {
     switch( m_configDialog->countrySelectionComboBox->currentIndex() )
     {
@@ -83,7 +84,8 @@ void AmazonSettingsModule::save()
     KCModule::save();
 }
 
-void AmazonSettingsModule::load()
+void
+AmazonSettingsModule::load()
 {
     int index = -1;
     QString text = AmazonConfig::instance()->country();
@@ -105,11 +107,13 @@ void AmazonSettingsModule::load()
     KCModule::load();
 }
 
-void AmazonSettingsModule::defaults()
+void
+AmazonSettingsModule::defaults()
 {
 }
 
-void AmazonSettingsModule::settingsChanged()
+void
+AmazonSettingsModule::settingsChanged()
 {
     // TODO: clear cart and collection, as they are no longer valid
     emit changed( true );
