@@ -36,11 +36,35 @@ public:
     static AmazonCart* instance();
     static void destroy();
 
+    /**
+    * Adds an item to the cart.
+    */
     void add( QString asin, QString price, QString name );
+
+    /**
+    * Empties the cart.
+    */
     void clear();
+
+    /**
+    * Returns the list of items in the cart.
+    */
     QStringList stringList();
+
+    /**
+    * Returns the total price of all items in the cart.
+    */
     QString price();
+
+    /**
+    * Removes an item from the cart.
+    * @param pos position of the item.
+    */
     void remove( int pos );
+
+    /**
+    * Returns the URL required to check the items in the cart out.
+    */
     QUrl checkoutUrl();
 
 private:

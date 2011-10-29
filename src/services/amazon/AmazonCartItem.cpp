@@ -23,17 +23,20 @@ AmazonCartItem::AmazonCartItem( QString asin, QString price, QString prettyName 
     m_price = price;
 }
 
-QString AmazonCartItem::asin() const
+QString
+AmazonCartItem::asin() const
 {
     return m_asin;
 }
 
-QString AmazonCartItem::prettyName() const
+QString
+AmazonCartItem::prettyName() const
 {
     return m_prettyName;
 }
 
-QString AmazonCartItem::price() const
+QString
+AmazonCartItem::price() const
 {
     return m_price;
 }

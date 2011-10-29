@@ -33,7 +33,8 @@ AmazonCart* AmazonCart::instance()
     return m_instance;
 }
 
-void AmazonCart::destroy()
+void
+AmazonCart::destroy()
 {
     if( m_instance )
     {
@@ -51,20 +52,23 @@ AmazonCart::AmazonCart()
     m_price = 0;
 }
 
-void AmazonCart::add( QString asin, QString price, QString name )
+void
+AmazonCart::add( QString asin, QString price, QString name )
 {
     AmazonCartItem item( asin, price, name );
     m_price = m_price + price.toInt();
     insert( size(), item );
 }
 
-void AmazonCart::clear()
+void
+AmazonCart::clear()
 {
     QList<AmazonCartItem>::clear();
     m_price = 0;
 }
 
-QStringList AmazonCart::stringList()
+QStringList
+AmazonCart::stringList()
 {
     QStringList result;
 
@@ -76,13 +80,15 @@ QStringList AmazonCart::stringList()
     return result;
 }
 
-QString AmazonCart::price()
+QString
+AmazonCart::price()
 {
     QString price;
     return price.setNum( m_price );
 }
 
-void AmazonCart::remove( int pos )
+void
+AmazonCart::remove( int pos )
 {
     if( pos < 0 || pos >= size()  ) // not valid
         return;
@@ -91,7 +97,8 @@ void AmazonCart::remove( int pos )
     QList<AmazonCartItem>::removeAt( pos );
 }
 
-QUrl AmazonCart::checkoutUrl()
+QUrl
+AmazonCart::checkoutUrl()
 {
     if( isEmpty() ) // we don't create empty carts
         return QUrl();
@@ -111,8 +118,6 @@ QUrl AmazonCart::checkoutUrl()
         url += "&ASINs[]=";
         url += at( i ).asin();
     }
-
-    // http://www.mp3-music-store.de/index.php?apikey=27274503cb405cb1929f353fc507f09c&method=CreateCart&Location=de&Player=amarok&ASINs[]=B003MJQB9A&ASINs[]=B0049B5GKU
 
     return QUrl( url );
 }

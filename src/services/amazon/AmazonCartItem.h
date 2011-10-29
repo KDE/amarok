@@ -23,8 +23,20 @@ class AmazonCartItem
 {
 public:
     AmazonCartItem( QString asin, QString price, QString prettyName );
+
+    /**
+    * Returns the Amazon internal ID of the item.
+    */
     QString asin() const;
+
+    /**
+    * Returns the pretty name of the item.
+    */
     QString prettyName() const;
+
+    /**
+    * Returns the price of the item.
+    */
     QString price() const;
 
 private:
