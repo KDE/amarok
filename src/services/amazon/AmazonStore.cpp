@@ -57,7 +57,8 @@ AmazonServiceFactory::AmazonServiceFactory( QObject *parent, const QVariantList 
     m_info = pluginInfo;
 }
 
-void AmazonServiceFactory::init()
+void
+AmazonServiceFactory::init()
 {
     DEBUG_BLOCK
     AmazonStore* service = new AmazonStore( this, "MP3 Music Store" );
@@ -66,12 +67,14 @@ void AmazonServiceFactory::init()
     emit newService( service );
 }
 
-QString AmazonServiceFactory::name()
+QString
+AmazonServiceFactory::name()
 {
     return "Amazon";
 }
 
-KConfigGroup AmazonServiceFactory::config()
+KConfigGroup
+AmazonServiceFactory::config()
 {
     return Amarok::config( "Service_Amazon" );
 }
@@ -119,7 +122,8 @@ AmazonStore::~AmazonStore()
     delete m_collection;
 }
 
-void AmazonStore::polish()
+void
+AmazonStore::polish()
 {
     DEBUG_BLOCK;
 
@@ -139,7 +143,8 @@ void AmazonStore::polish()
 }
 
 
-void AmazonStore::initTopPanel()
+void
+AmazonStore::initTopPanel()
 {
     m_searchWidget->setTimeout( 3000 );
     m_searchWidget->showAdvancedButton( false );
@@ -155,7 +160,8 @@ void AmazonStore::initTopPanel()
     connect( m_resultpageSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( newSpinBoxSearchRequest( int ) ) );
 }
 
-void AmazonStore::initView()
+void
+AmazonStore::initView()
 {
     m_itemView = new AmazonItemTreeView( this );
     m_itemModel = new AmazonItemTreeModel( m_collection );
@@ -200,8 +206,12 @@ void AmazonStore::initView()
 
 /* public slots */
 
-void AmazonStore::itemDoubleClicked( QModelIndex index )
+void
+AmazonStore::itemDoubleClicked( QModelIndex index )
 {
+    // for albums: search for the album name to get details about it
+    // for tracks: add it to the playlist
+
     if( index.row() < m_collection->albumIDMap()->size() - m_itemModel->hiddenAlbums() ) // it's an album
     {
         Meta::AmazonAlbum* album;
@@ -230,13 +240,15 @@ void AmazonStore::itemDoubleClicked( QModelIndex index )
     }
 }
 
-void AmazonStore::itemSelected( QModelIndex index )
+void
+AmazonStore::itemSelected( QModelIndex index )
 {
     m_addToCartButton->setEnabled( true );
     m_selectedIndex = index;
 }
 
-void AmazonStore::addToCart()
+void
+AmazonStore::addToCart()
 {
     QString asin, name, price;
 
@@ -274,20 +286,22 @@ void AmazonStore::addToCart()
     m_checkoutButton->setEnabled( true );
 }
 
-void AmazonStore::viewCart()
+void
+AmazonStore::viewCart()
 {
     AmazonShoppingCartDialog cartDialog( this, this );
     cartDialog.exec();
 }
 
-void AmazonStore::checkout()
+void
+AmazonStore::checkout()
 {
     QUrl url = AmazonCart::instance()->checkoutUrl();
     debug() << url;
     m_checkoutButton->setEnabled( false );
 
     QTemporaryFile tempFile;
-    tempFile.setAutoRemove( false );  // file must be removed later-> parser
+    tempFile.setAutoRemove( false );  // file must be removed later -> parser does it
 
     if( !tempFile.open() )
     {
@@ -302,10 +316,12 @@ void AmazonStore::checkout()
     requestJob->start();
 }
 
-void AmazonStore::newSearchRequest( const QString request )
+void
+AmazonStore::newSearchRequest( const QString request )
 {
     DEBUG_BLOCK
 
+    // make sure we know where to search
     if( AmazonConfig::instance()->country().isEmpty() )
     {
         KCMultiDialog KCM;
@@ -338,13 +354,15 @@ void AmazonStore::newSearchRequest( const QString request )
     requestJob->start();
 }
 
-void AmazonStore::newSpinBoxSearchRequest( int i )
+void
+AmazonStore::newSpinBoxSearchRequest( int i )
 {
     Q_UNUSED( i )
     newSearchRequest( m_searchWidget->currentText() );
 }
 
-QUrl AmazonStore::createRequestUrl( QString request )
+QUrl
+AmazonStore::createRequestUrl( QString request )
 {
     DEBUG_BLOCK
     QString urlString;
@@ -365,7 +383,8 @@ QUrl AmazonStore::createRequestUrl( QString request )
     return QUrl( urlString );
 }
 
-void AmazonStore::parseReply( KJob* requestJob )
+void
+AmazonStore::parseReply( KJob* requestJob )
 {
     DEBUG_BLOCK
     if( requestJob->error() )
@@ -391,20 +410,23 @@ void AmazonStore::parseReply( KJob* requestJob )
     requestJob->deleteLater();
 }
 
-void AmazonStore::parsingDone( ThreadWeaver::Job* parserJob )
+void
+AmazonStore::parsingDone( ThreadWeaver::Job* parserJob )
 {
     Q_UNUSED( parserJob )
     // model has been reset now, we no longer have a valid selection
     m_addToCartButton->setEnabled( false );
 }
 
-void AmazonStore::parsingFailed( ThreadWeaver::Job* parserJob )
+void
+AmazonStore::parsingFailed( ThreadWeaver::Job* parserJob )
 {
     Q_UNUSED( parserJob )
     Amarok::Components::logger()->shortMessage( i18n( "Error: Received an invalid reply. :-(" ) );
 }
 
-void AmazonStore::openCheckoutUrl( KJob* requestJob )
+void
+AmazonStore::openCheckoutUrl( KJob* requestJob )
 {
     // very short document, we can parse it in the main thread
     QDomDocument responseDocument;
@@ -431,6 +453,7 @@ void AmazonStore::openCheckoutUrl( KJob* requestJob )
     int errorLine;
     int errorColumn;
 
+    // verify it is valid
     if( !responseDocument.setContent( &responseFile, false, &errorMsg, &errorLine, &errorColumn ) ) // parse error
     {
         debug() << responseDocument.toString();

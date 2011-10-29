@@ -74,20 +74,58 @@ public:
     void polish();
 
 public slots:
-    // cart handling
+    /**
+    * Adds the currently selected item to the cart.
+    */
     void addToCart();
+
+    /**
+    * Shows a dialog with the cart contents.
+    */
     void viewCart();
+
+    /**
+    * Checks the none-empty cart out.
+    */
     void checkout();
 
+    /**
+    * React to a double click on an item.
+    */
     void itemDoubleClicked( QModelIndex index );
+
+    /**
+    * Activates buttons required to interact with the currently selected item.
+    */
     void itemSelected( QModelIndex index );
 
+    /**
+    * The user requested us to query the service.
+    * @param request string to search for.
+    */
     void newSearchRequest( const QString request );
+
+    /**
+    * The user wants to go to another page of search results.
+    * @param i page to go to.
+    */
     void newSpinBoxSearchRequest( int i );
 
 private:
+    /**
+    * Helper function. Creates a valid request URL for the Amazon service.
+    * @param request string to search for.
+    */
     QUrl createRequestUrl( const QString request );
+
+    /**
+    * Inits the top part of the Amazon store browser view with its widgets.
+    */
     void initTopPanel();
+
+    /**
+    * Inits the Amazon store browser view with its widgets.
+    */
     void initView();
 
     AmazonMetaFactory* m_metaFactory;
@@ -109,9 +147,24 @@ private:
     QModelIndex m_selectedIndex;
 
 private slots:
+    /**
+    * Parse the API reply XML document.
+    */
     void parseReply( KJob* requestJob );
+
+    /**
+    * Clean up after parsing the API reply XML document, update collection.
+    */
     void parsingDone( ThreadWeaver::Job* parserJob );
+
+    /**
+    * Clean up after parsing the API reply XML document.
+    */
     void parsingFailed( ThreadWeaver::Job* parserJob );
+
+    /**
+    * Opens the shopping cart with the cart items in the default browser.
+    */
     void openCheckoutUrl( KJob* requestJob );
 };
 

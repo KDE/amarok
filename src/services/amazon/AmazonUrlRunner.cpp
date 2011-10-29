@@ -29,22 +29,26 @@ AmazonUrlRunner::~AmazonUrlRunner()
 {
 }
 
-QString AmazonUrlRunner::command() const
+QString
+AmazonUrlRunner::command() const
 {
     return "service-amazonstore";
 }
 
-QString AmazonUrlRunner::prettyCommand() const
+QString
+AmazonUrlRunner::prettyCommand() const
 {
     return i18nc( "A type of command that triggers an action in the integrated MP3 Music Store service", "Amazon" );
 }
 
-KIcon AmazonUrlRunner::icon() const
+KIcon
+AmazonUrlRunner::icon() const
 {
     return KIcon( "view-services-amazon-amarok" );
 }
 
-bool AmazonUrlRunner::run( AmarokUrl url )
+bool
+AmazonUrlRunner::run( AmarokUrl url )
 {
     DEBUG_BLOCK
     if( !url.isNull() )
