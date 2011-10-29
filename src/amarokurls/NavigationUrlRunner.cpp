@@ -115,7 +115,7 @@ NavigationUrlRunner::run( AmarokUrl url )
     }
 
     if ( args.keys().contains( "filter" ) )
-        active->setFilter( args.value( "filter" ) );
+        active->setFilter( QUrl::fromPercentEncoding(args.value( "filter" ).toUtf8()) );
 
     The::mainWindow()->showDock( MainWindow::AmarokDockNavigation );
 
