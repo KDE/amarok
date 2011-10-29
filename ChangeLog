@@ -38,6 +38,8 @@ Version 2.5.0-Beta 1
 
 
   BUGFIXES:
+    * Prevent crash on getting cover from MP4 files. Patch by Charles Reiss.
+      (BR 283675)
     * Prevent several potential and one real media device crash. (BR 284838)
     * Fixed iPod album covers not displayed in collection browser. (BR 263268)
     * Do not crash when iPod is removed but some iPod tracks are still in

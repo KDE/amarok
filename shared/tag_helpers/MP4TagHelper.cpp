@@ -168,7 +168,8 @@ MP4TagHelper::embeddedCover() const
     TagLib::MP4::ItemListMap map = m_tag->itemListMap();
     TagLib::String name = fieldName( Meta::valHasCover );
 
-    TagLib::MP4::CoverArt *coverToUse = NULL;
+    TagLib::ByteVector coverData;
+    bool foundCover = false;
     quint64 maxSize = 1024;
     for( TagLib::MP4::ItemListMap::ConstIterator it = map.begin(); it != map.end(); ++it )
         if( it->first == name )
@@ -176,13 +177,14 @@ MP4TagHelper::embeddedCover() const
             TagLib::MP4::CoverArtList coverList = it->second.toCoverArtList();
             for( TagLib::MP4::CoverArtList::Iterator cover = coverList.begin(); cover != coverList.end(); ++cover )
                 if( cover->data().size() > maxSize )
-                    coverToUse = &(*cover);
+                {
+                    maxSize = cover->data().size();
+                    foundCover = true;
+                    coverData = cover->data();
+                }
         }
 
-    if( coverToUse && coverToUse->data().size() >= maxSize )
-        return QImage::fromData( ( uchar * ) coverToUse->data().data(), coverToUse->data().size() );
-
-    return QImage();
+    return foundCover ? QImage::fromData( ( uchar * ) coverData.data(), coverData.size() ) : QImage();
 }
 
 bool
