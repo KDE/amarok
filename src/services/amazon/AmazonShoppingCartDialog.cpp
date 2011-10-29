@@ -21,9 +21,10 @@
 
 #include "ui_AmazonShoppingCartDialog.h"
 
-AmazonShoppingCartDialog::AmazonShoppingCartDialog( QWidget *parent ) :
+AmazonShoppingCartDialog::AmazonShoppingCartDialog( QWidget *parent, AmazonStore *store ) :
     QDialog( parent ),
-    ui( new Ui::AmazonShoppingCartDialog )
+    ui( new Ui::AmazonShoppingCartDialog ),
+    m_store( store )
 {
     ui->setupUi( this );
 
@@ -32,6 +33,13 @@ AmazonShoppingCartDialog::AmazonShoppingCartDialog( QWidget *parent ) :
     ui->listView->setModel( m_model );
     ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonCart::instance()->price() ) ) );
 
+    if( AmazonCart::instance()->isEmpty() )
+        ui->checkoutButton->setEnabled( false );
+    else
+        ui->checkoutButton->setEnabled( true );
+
+    connect( ui->checkoutButton, SIGNAL( clicked() ), m_store, SLOT( checkout() ) );
+    connect( ui->checkoutButton, SIGNAL( clicked() ), this, SLOT( accept() ) );
     connect( m_model, SIGNAL( contentsChanged() ), this, SLOT( contentsChanged() ) );
 }
 
@@ -40,9 +48,22 @@ AmazonShoppingCartDialog::~AmazonShoppingCartDialog()
     delete ui;
 }
 
-void AmazonShoppingCartDialog::contentsChanged()
+
+/* public slots */
+
+void
+AmazonShoppingCartDialog::contentsChanged()
 {
+    // update price
     ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonCart::instance()->price() ) ) );
+
+    // update view
     m_model->setStringList( AmazonCart::instance()->stringList() ); // HACK, but works
     ui->listView->setModel( m_model );
+
+    // update button status
+    if( AmazonCart::instance()->isEmpty() )
+        ui->checkoutButton->setEnabled( false );
+    else
+        ui->checkoutButton->setEnabled( true );
 }

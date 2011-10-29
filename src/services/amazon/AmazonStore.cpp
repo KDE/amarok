@@ -276,7 +276,7 @@ void AmazonStore::addToCart()
 
 void AmazonStore::viewCart()
 {
-    AmazonShoppingCartDialog cartDialog( this );
+    AmazonShoppingCartDialog cartDialog( this, this );
     cartDialog.exec();
 }
 

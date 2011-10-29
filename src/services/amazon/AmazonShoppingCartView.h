@@ -26,10 +26,18 @@ class AmazonShoppingCartView : public QListView
 public:
     explicit AmazonShoppingCartView( QWidget *parent = 0 );
 
-    void keyPressEvent( QKeyEvent *event );
+    /**
+     * Reimplemented from QAbstractItemView.
+     * Catches DEL key presses to remove items from the view.
+     */
+    virtual void keyPressEvent( QKeyEvent *event );
 
 protected:
-    void contextMenuEvent( QContextMenuEvent *event );
+    /**
+     * Reimplemented from QAbstractScrollArea.
+     * Shows a context menu for items in the view.
+     */
+    virtual void contextMenuEvent( QContextMenuEvent *event );
 
 protected slots:
     void removeFromCartAction();

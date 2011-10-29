@@ -22,7 +22,8 @@ AmazonShoppingCartModel::AmazonShoppingCartModel()
 {
 }
 
-bool AmazonShoppingCartModel::removeRows( int row, int count, const QModelIndex &parent )
+bool
+AmazonShoppingCartModel::removeRows( int row, int count, const QModelIndex &parent )
 {
     Q_UNUSED( count )
     beginRemoveRows( parent, row, 1 ); // we can only select one item

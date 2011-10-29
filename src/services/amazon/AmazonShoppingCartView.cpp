@@ -27,7 +27,8 @@ AmazonShoppingCartView::AmazonShoppingCartView( QWidget *parent ) :
     setUniformItemSizes( true );
 }
 
-void AmazonShoppingCartView::keyPressEvent( QKeyEvent *event )
+void
+AmazonShoppingCartView::keyPressEvent( QKeyEvent *event )
 {
     if( event->key() == Qt::Key_Delete )
     {
@@ -44,7 +45,11 @@ void AmazonShoppingCartView::keyPressEvent( QKeyEvent *event )
     QListView::keyPressEvent( event );
 }
 
-void AmazonShoppingCartView::contextMenuEvent( QContextMenuEvent *event )
+
+/* protected */
+
+void
+AmazonShoppingCartView::contextMenuEvent( QContextMenuEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
@@ -64,7 +69,11 @@ void AmazonShoppingCartView::contextMenuEvent( QContextMenuEvent *event )
     event->accept();
 }
 
-void AmazonShoppingCartView::removeFromCartAction()
+
+/* protected slots */
+
+void
+AmazonShoppingCartView::removeFromCartAction()
 {
     QModelIndex index = currentIndex();
     int row = index.row();

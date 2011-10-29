@@ -26,7 +26,8 @@ class AmazonShoppingCartModel : public QStringListModel
 public:
     AmazonShoppingCartModel();
 
-    virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
+    // reimplemented from QStringListModel
+    virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
 signals:
     void contentsChanged();

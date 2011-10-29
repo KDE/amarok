@@ -18,6 +18,7 @@
 #define AMAZONSHOPPINGCARTDIALOG_H
 
 #include "AmazonShoppingCartModel.h"
+#include "AmazonStore.h"
 
 #include <QDialog>
 
@@ -30,7 +31,7 @@ class AmazonShoppingCartDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AmazonShoppingCartDialog( QWidget *parent = 0 );
+    explicit AmazonShoppingCartDialog( QWidget *parent = 0, AmazonStore *store = 0 );
     ~AmazonShoppingCartDialog();
 
 public slots:
@@ -39,6 +40,7 @@ public slots:
 private:
     Ui::AmazonShoppingCartDialog *ui;
     AmazonShoppingCartModel *m_model;
+    AmazonStore *m_store;
 };
 
 #endif // AMAZONSHOPPINGCARTDIALOG_H
