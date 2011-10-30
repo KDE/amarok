@@ -173,6 +173,9 @@ namespace Amarok
 
     QStringList Mpris2DBusHandler::SupportedMimeTypes() const
     {
+        // FIXME: this is likely to change when
+        // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal
+        // is emitted (and so a propertiesChanged D-Bus signal should be emitted)
         return The::engineController()->supportedMimeTypes();
     }
 

@@ -65,6 +65,8 @@ Version 2.5.0-Beta 1
     * Made possible to store empty TagDialog's numerical fields. (BR 278921)
     * Fixed issue with TagDialog's "Open Destination" button, now It opens
       correct directory instead of parent. (BR 279147)
+    * Fix SupportedMimeTypes method on the MPRIS2 D-Bus interface, so that it
+      no longer appends duplicate entries on every call.
 
 Version 2.4.3
   BUGFIXES:

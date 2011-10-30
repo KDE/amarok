@@ -238,11 +238,13 @@ EngineController::canDecode( const KUrl &url ) //static
     if( !item.isLocalFile() )
         return true;
 
-    // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
+    // Phonon::BackendCapabilities::isMimeTypeAvailable is too simplistic for our purposes
+    // FIXME: this variable should be updated when
+    // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal is emitted
     static QStringList mimeTable = supportedMimeTypes();
 
     const KMimeType::Ptr mimeType = item.mimeTypePtr();
-    
+
     bool valid = false;
     foreach( const QString &type, mimeTable )
     {
@@ -257,26 +259,38 @@ EngineController::canDecode( const KUrl &url ) //static
 }
 
 QStringList
-EngineController::supportedMimeTypes()
+EngineController::supportedMimeTypes() //static
 {
     //NOTE this function must be thread-safe
+
     // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
-    static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive ) +
-                                   Phonon::BackendCapabilities::availableMimeTypes().filter( "video/", Qt::CaseInsensitive );
+    static QRegExp avFilter( "^(audio|video)/", Qt::CaseInsensitive );
+    // NB: we can't make this static, as we edit it later in the method; however, this method
+    //     should not be called too often.
+    QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
 
     // Add whitelist hacks
-    mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
 
-    if( mimeTable.contains( "audio/x-flac" ) )
+    // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
+    if( !mimeTable.contains( "audio/x-m4b" ) )
+        mimeTable << "audio/x-m4b";
+
+    // technically, "audio/flac" is not a valid mimetype (not on IANA list), but some things expect it
+    if( mimeTable.contains( "audio/x-flac" ) && !mimeTable.contains( "audio/flac" ) )
         mimeTable << "audio/flac";
 
     // We special case this, as otherwise the users would hate us
-    if( ( !mimeTable.contains( "audio/mp3" ) && !mimeTable.contains( "audio/x-mp3" ) ) && !installDistroCodec() )
+    // Again, "audio/mp3" is not a valid mimetype, but is widely used
+    // (the proper one is "audio/mpeg", but that is also for .mp1 and .mp2 files)
+    if( !mimeTable.contains( "audio/mp3" ) && !mimeTable.contains( "audio/x-mp3" ) )
     {
-        Amarok::Components::logger()->longMessage(
-                i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
-                      "the installation of the backend that phonon uses.</p>"
-                      "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), Amarok::Logger::Error );
+        if ( !installDistroCodec() )
+        {
+            Amarok::Components::logger()->longMessage(
+                    i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
+                          "the installation of the backend that phonon uses.</p>"
+                          "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), Amarok::Logger::Error );
+        }
         mimeTable << "audio/mp3" << "audio/x-mp3";
     }
 
