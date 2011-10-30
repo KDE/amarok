@@ -48,6 +48,9 @@ ContextView* ContextView::s_self = 0;
 ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWidget* parent )
     : Plasma::View( cont, parent )
     , m_curState( Home )
+    , m_appletExplorer(0)
+    , m_collapseAnimations(0)
+    , m_collapseGroupTimer(0)
 {
     Q_UNUSED( corona )
     DEBUG_BLOCK
@@ -89,12 +92,12 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
 
     m_collapseAnimations = new QParallelAnimationGroup( this );
-    connect( m_collapseAnimations.data(), SIGNAL(finished()),
+    connect( m_collapseAnimations, SIGNAL(finished()),
              this, SLOT(slotCollapseAnimationsFinished()) );
 
     m_collapseGroupTimer = new QTimer( this );
-    m_collapseGroupTimer.data()->setSingleShot( true );
-    connect( m_collapseGroupTimer.data(), SIGNAL(timeout()), SLOT(slotStartCollapseAnimations()) );
+    m_collapseGroupTimer->setSingleShot( true );
+    connect( m_collapseGroupTimer, SIGNAL(timeout()), SLOT(slotStartCollapseAnimations()) );
 
     EngineController* const engine = The::engineController();
 
@@ -122,6 +125,8 @@ ContextView::~ContextView()
         while( Plasma::DataEngineManager::self()->engine( engine )->isValid() )
             Plasma::DataEngineManager::self()->unloadEngine( engine );
     }
+
+    qDeleteAll( m_queuedAnimations );
 
     clear( m_curState );
     //this should be done to prevent a crash on exit
@@ -237,65 +242,46 @@ ContextView::addCollapseAnimation( QAbstractAnimation *anim )
         return;
     }
 
-    QParallelAnimationGroup *group = m_collapseAnimations.data();
-    if( group && group->state() == QAbstractAnimation::Running )
+    if( m_collapseAnimations->state() == QAbstractAnimation::Running ||
+        m_collapseGroupTimer->isActive() )
     {
         m_queuedAnimations.enqueue( anim );
-        return;
-    }
-
-    QTimer *timer( 0 );
-    if( m_collapseGroupTimer )
-        timer = m_collapseGroupTimer.data();
-
-    if( group && timer && !timer->isActive() )
-    {
-        group->addAnimation( anim );
-        timer->start( 0 );
     }
     else
     {
-        m_queuedAnimations.enqueue( anim );
+        m_collapseAnimations->addAnimation( anim );
+        m_collapseGroupTimer->start( 0 );
     }
 }
 
 void
 ContextView::slotCollapseAnimationsFinished()
 {
-    QTimer *timer = m_collapseGroupTimer.data();
-    if( timer )
-        timer->stop();
-
-    QParallelAnimationGroup *group = m_collapseAnimations.data();
-    if( group )
-        group->clear();
+    m_collapseGroupTimer->stop();
+    m_collapseAnimations->clear();
 
     while( !m_queuedAnimations.isEmpty() )
     {
-        if( QWeakPointer<QAbstractAnimation> anim = m_queuedAnimations.dequeue() )
-        {
-            if( group )
-                group->addAnimation( anim.data() );
-        }
+        if( QAbstractAnimation *anim = m_queuedAnimations.dequeue() )
+            m_collapseAnimations->addAnimation( anim );
     }
 
-    if( group && (group->animationCount() > 0) )
-        timer->start( 0 );
+    if( m_collapseAnimations->animationCount() > 0 )
+        m_collapseGroupTimer->start( 0 );
 }
 
 void
 ContextView::slotStartCollapseAnimations()
 {
-    QParallelAnimationGroup *group = m_collapseAnimations.data();
-    if( group && (group->animationCount() > 0) )
-        group->start( QAbstractAnimation::KeepWhenStopped );
+    if( m_collapseAnimations->animationCount() > 0 )
+        m_collapseAnimations->start( QAbstractAnimation::KeepWhenStopped );
 }
 
 void
 ContextView::hideAppletExplorer()
 {
     if( m_appletExplorer )
-        m_appletExplorer.data()->hide();
+        m_appletExplorer->hide();
 }
 
 void
@@ -305,20 +291,20 @@ ContextView::showAppletExplorer()
     {
         Context::Containment *cont = qobject_cast<Context::Containment*>( containment() );
         m_appletExplorer = new AppletExplorer( cont );
-        m_appletExplorer.data()->setContainment( cont );
-        m_appletExplorer.data()->setZValue( m_appletExplorer.data()->zValue() + 1000 );
-        m_appletExplorer.data()->setFlag( QGraphicsItem::ItemIsSelectable );
+        m_appletExplorer->setContainment( cont );
+        m_appletExplorer->setZValue( m_appletExplorer->zValue() + 1000 );
+        m_appletExplorer->setFlag( QGraphicsItem::ItemIsSelectable );
 
-        connect( m_appletExplorer.data(), SIGNAL(addAppletToContainment(QString, const int)),
+        connect( m_appletExplorer, SIGNAL(addAppletToContainment(QString, const int)),
                  cont, SLOT(addApplet(QString, const int)) );
-        connect( m_appletExplorer.data(), SIGNAL(appletExplorerHid()), SIGNAL(appletExplorerHid()) );
-        connect( m_appletExplorer.data(), SIGNAL(geometryChanged()), SLOT(slotPositionAppletExplorer()) );
+        connect( m_appletExplorer, SIGNAL(appletExplorerHid()), SIGNAL(appletExplorerHid()) );
+        connect( m_appletExplorer, SIGNAL(geometryChanged()), SLOT(slotPositionAppletExplorer()) );
 
-        qreal height = m_appletExplorer.data()->effectiveSizeHint( Qt::PreferredSize ).height();
-        m_appletExplorer.data()->resize( rect().width() - 2, height );
-        m_appletExplorer.data()->setPos( 0, rect().height() - height - 2 );
+        qreal height = m_appletExplorer->effectiveSizeHint( Qt::PreferredSize ).height();
+        m_appletExplorer->resize( rect().width() - 2, height );
+        m_appletExplorer->setPos( 0, rect().height() - height - 2 );
     }
-    m_appletExplorer.data()->show();
+    m_appletExplorer->show();
 }
 
 void
@@ -326,8 +312,8 @@ ContextView::slotPositionAppletExplorer()
 {
     if( !m_appletExplorer )
         return;
-    qreal height = m_appletExplorer.data()->effectiveSizeHint( Qt::PreferredSize ).height();
-    m_appletExplorer.data()->setPos( 0, rect().height() - height - 2 );
+    qreal height = m_appletExplorer->effectiveSizeHint( Qt::PreferredSize ).height();
+    m_appletExplorer->setPos( 0, rect().height() - height - 2 );
 }
 
 
@@ -351,9 +337,9 @@ ContextView::resizeEvent( QResizeEvent* event )
 
     if( m_appletExplorer )
     {
-        qreal height = m_appletExplorer.data()->effectiveSizeHint( Qt::PreferredSize ).height();
-        m_appletExplorer.data()->resize( rect.width() - 2, height );
-        m_appletExplorer.data()->setPos( 0, rect.height() - height - 2 );
+        qreal height = m_appletExplorer->effectiveSizeHint( Qt::PreferredSize ).height();
+        m_appletExplorer->resize( rect.width() - 2, height );
+        m_appletExplorer->setPos( 0, rect.height() - height - 2 );
     }
 }
 
