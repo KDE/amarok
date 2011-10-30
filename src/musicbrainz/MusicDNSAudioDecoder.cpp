@@ -121,9 +121,9 @@ void
 MusicDNSAudioDecoder::run()
 {
     DecodedAudioData data;
-    AVFormatContext *pFormatCtx;
-    AVCodecContext *pCodecCtx;
-    AVCodec *pCodec;
+    AVFormatContext *pFormatCtx = NULL;
+    AVCodecContext *pCodecCtx = NULL;
+    AVCodec *pCodec = NULL;
     AVPacket packet, tmpPacket;
     int audioStream, decoderRet, outSize, i, j;
     qint8 *buffer = new qint8[AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
@@ -135,15 +135,16 @@ MusicDNSAudioDecoder::run()
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
+        //TODO replace with "avformat_open_input" since av_open_input_file is deprecated
         if( av_open_input_file( &pFormatCtx, ( const char * )track->playableUrl().toLocalFile().toAscii(), NULL, 0, NULL ) )
         {
-            debug() << "Unable to open input file: " << track->playableUrl().toLocalFile();
+            warning() << QLatin1String( "Unable to open input file: " ) + track->playableUrl().toLocalFile();
             continue;
         }
 
         if( av_find_stream_info( pFormatCtx ) < 0 )
         {
-            debug() << "Unable to find stream info in " << track->playableUrl().toLocalFile();
+            warning() << QLatin1String( "Unable to find stream info: " ) + track->playableUrl().toLocalFile();
             av_close_input_file( pFormatCtx );
             continue;
         }
@@ -158,7 +159,7 @@ MusicDNSAudioDecoder::run()
 
         if( audioStream == -1 )
         {
-            debug() << "Unable to find audio stream in " << track->playableUrl().toLocalFile();
+            warning() << QLatin1String( "Unable to find stream: " ) + track->playableUrl().toLocalFile();
             av_close_input_file( pFormatCtx );
             continue;
         }
@@ -167,14 +168,22 @@ MusicDNSAudioDecoder::run()
         pCodec = avcodec_find_decoder( pCodecCtx->codec_id );
         if( pCodec == NULL )
         {
-            debug() << "Unable to find codec for " << track->playableUrl().toLocalFile();
+            warning() << QLatin1String( "Unable to find codec for " ) + track->playableUrl().toLocalFile();
             av_close_input_file( pFormatCtx );
             continue;
         }
 
         if( avcodec_open( pCodecCtx, pCodec ) < 0 )
         {
-            debug() << "Unable to open codec " << pCodec->name;
+            warning() << QLatin1String( "Unable to open codec " ) + track->playableUrl().toLocalFile();
+            av_close_input_file( pFormatCtx );
+            continue;
+        }
+
+        if( !( pCodecCtx->sample_rate && pCodecCtx->channels ) )
+        {
+            warning() << QLatin1String( "Ivalid codec context, file might be corrupted: " ) + track->playableUrl().toLocalFile();
+            avcodec_close( pCodecCtx );
             av_close_input_file( pFormatCtx );
             continue;
         }
@@ -183,7 +192,7 @@ MusicDNSAudioDecoder::run()
         data.setChannels( ( pCodecCtx->channels > 1 )? 1 : 0 );
 
         bool isOk = true;
-        while( av_read_frame( pFormatCtx, &packet ) >= 0 && isOk )
+        while( !av_read_frame( pFormatCtx, &packet ) && isOk )
         {
             if( packet.stream_index == audioStream )
             {
@@ -199,9 +208,9 @@ MusicDNSAudioDecoder::run()
 
                     outSize = bufferSize;
                     decoderRet = avcodec_decode_audio3( pCodecCtx, ( qint16 * )buffer, &outSize, &tmpPacket );
-                    if( decoderRet < 0 )
+                    if( decoderRet <= 0 )
                     {
-                        debug() << "Error while decoding.";
+                        warning() << "Error while decoding.";
                         isOk = false;
                         break;
                     }
@@ -238,10 +247,8 @@ MusicDNSAudioDecoder::run()
             emit trackDecoded( track, fingerprint );
         }
         else
-        {
-            debug() << "Some error occurred during fingerprint generation, probably track is too short: "
-                       << track->playableUrl().toLocalFile();
-        }
+            warning() << QLatin1String( "Some error occurred during fingerprint generation, probably track is too short: " ) +
+                         track->playableUrl().toLocalFile();
 
         avcodec_close( pCodecCtx );
         av_close_input_file( pFormatCtx );

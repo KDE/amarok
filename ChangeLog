@@ -38,6 +38,7 @@ Version 2.5.0-Beta 1
 
 
   BUGFIXES:
+    * Fixed crash on decodeing currupted media during MusicDNS search. (BR 284895)
     * Prevent crash on getting cover from MP4 files. Patch by Charles Reiss.
       (BR 283675)
     * Prevent several potential and one real media device crash. (BR 284838)
