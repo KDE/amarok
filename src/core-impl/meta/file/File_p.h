@@ -205,8 +205,9 @@ void Track::Private::readMetaData()
         m_data.title = url.fileName();
     }
 
-    if( m_data.artist.isEmpty() && !m_data.albumArtist.isEmpty() )
-        m_data.artist = m_data.albumArtist;
+//    Disabled because of BUG 281283
+//    if( m_data.artist.isEmpty() && !m_data.albumArtist.isEmpty() )
+//        m_data.artist = m_data.albumArtist;
 
 }
 

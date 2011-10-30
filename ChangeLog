@@ -44,6 +44,7 @@ Version 2.5.0-Beta 1
 
 
   BUGFIXES:
+    * Do not use Album Artist as Artist for files without Artist metadata. (BR 281283)
     * Fixed crash on decodeing currupted media during MusicDNS search. (BR 284895)
     * Prevent crash on getting cover from MP4 files. Patch by Charles Reiss.
       (BR 283675)
