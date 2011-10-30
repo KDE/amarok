@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004 Shintaro Matsuoka <shin@shoegazed.org>                            *
  * Copyright (c) 2006 Martin Aumueller <aumuell@reserv.at>                              *
+ * Copyright (c) 2011 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -30,129 +31,44 @@ namespace Amarok
 class QStringx : public QString
 {
 public:
-    QStringx() {}
-    QStringx( QChar ch ) : QString( ch ) {}
-    QStringx( const QString& s ) : QString( s ) {}
-    QStringx( const QByteArray& ba ) : QString( ba ) {}
-    QStringx( const QChar* unicode, uint length ) : QString( unicode, length ) {}
-    QStringx( const char* str ) : QString( str ) {}
-    virtual ~QStringx() {}
+    QStringx();
+    QStringx( QChar ch );
+    QStringx( const QString &s );
+    QStringx( const QByteArray &ba );
+    QStringx( const QChar *unicode, uint length );
+    QStringx( const char *str );
+    virtual ~QStringx();
 
     // the numbers following % obviously are not taken into account
-    QString args( const QStringList& args ) const
-    {
-        const QStringList text = (*this).split( QRegExp( "%\\d+" ), QString::KeepEmptyParts );
-
-        QList<QString>::ConstIterator itrText = text.constBegin();
-        QList<QString>::ConstIterator itrArgs = args.constBegin();
-        QList<QString>::ConstIterator endText = text.constEnd();
-        QList<QString>::ConstIterator endArgs = args.constEnd();
-        QString merged = (*itrText);
-        ++itrText;
-        while( itrText != endText && itrArgs != endArgs )
-        {
-            merged += (*itrArgs) + (*itrText);
-            ++itrText;
-            ++itrArgs;
-        }
-
-        Q_ASSERT( itrText == text.end() || itrArgs == args.end() );
-
-        return merged;
-    }
+    QString args( const QStringList& args ) const;
 
     // %something% gets replaced by the value corresponding to key "something" in args
-    QString namedArgs( const QMap<QString, QString> &args, bool opt=false ) const
-    {
-        QRegExp rxArg( "%[a-zA-Z0-9]+%" );
-
-        QString result;
-        int start = 0;
-        for( int pos = rxArg.indexIn( *this );
-                pos != -1;
-                pos = rxArg.indexIn( *this, start ) )
-        {
-            int len = rxArg.matchedLength();
-            QString p = rxArg.capturedTexts()[0].mid(1, len - 2);
-
-            result += mid( start, pos-start );
-            if( !args[p].isEmpty() )
-                result += args[p];
-            else if( opt )
-                return QString();
-
-            start = pos + len;
-        }
-        result += mid( start );
-
-        return result;
-    }
+    // if opt is true: return empty string if it has empty tokens
+    QString namedArgs( const QMap<QString, QString> &args, bool opt = false ) const;
 
     // %something% gets replaced by the value corresponding to key "something" in args,
     // however, if key "something" is not available,
     // then replace everything within surrounding { } by an empty string
-    QString namedOptArgs( const QMap<QString, QString> &args ) const
+    QString namedOptArgs( const QMap<QString, QString> &args ) const;
+
+private:
+    enum CharType
     {
-        QRegExp rxOptArg( "%[a-zA-Z0-9]+%" );
-
-        QString result = *this;
-        for( int pos = rxOptArg.indexIn( result );
-                pos != -1;
-                pos = rxOptArg.indexIn( result ) )
-        {
-            int len = rxOptArg.matchedLength();
-
-            // get bracket positions
-            int leftMatchPos = pos;
-            int rightMatchPos = pos + len - 1;
-            int bracketCount = 1;
-            int i = leftMatchPos;
-
-            // find position of matching '{' on the left side
-            while( ( i > 0 ) && ( bracketCount != 0 ) )
-            {
-                i--;
-                if( result.at( i ) == '{' )
-                    bracketCount--;
-                else if( result.at( i ) == '}' )
-                    bracketCount++;
-            }
-
-            if( bracketCount == 0 ) // syntax seems to be correct
-                leftMatchPos = i;
-
-            bracketCount = 1;
-            i = rightMatchPos;
-            // find position of matching '}' on the right side
-            while( ( i < result.size()-1 ) && ( bracketCount != 0 ) )
-            {
-                i++;
-                if( result.at( i ) == '}' )
-                    bracketCount--;
-                else if( result.at( i ) == '{' )
-                    bracketCount++;
-            }
-
-            if( bracketCount == 0 ) // syntax seems to be correct
-                rightMatchPos = i;
-
-            if( !args.contains( rxOptArg.capturedTexts()[0].mid( 1, len - 2 ) ) ) // remove section
-                result.remove( leftMatchPos, rightMatchPos - leftMatchPos + 1 );
-            else // we have a map entry
-            {
-                if( result.at( rightMatchPos ) == '}' )
-                    result.remove( rightMatchPos, 1 );
-                if( result.at( leftMatchPos ) == '{' )
-                {
-                    result.remove( leftMatchPos, 1 );
-                    pos--;
-                }
-
-                result.replace( pos, len, args[ rxOptArg.capturedTexts()[0].mid( 1, len - 2 ) ] );
-            }
-        }
-        return result;
-    }
+        CTRegular,
+        CTToken,
+        CTBraceOpen,
+        CTBraceClose,
+        CTBracketOpen,
+        CTBracketSeparator,
+        CTBracketClose,
+        CTNone
+    };
+        
+    CharType testChar( int *pos ) const;
+    QString parseToken( int *pos, const QMap<QString, QString> &dict ) const;
+    QString parseBraces( int *pos, const QMap<QString, QString> &dict ) const;
+    QString parseBrackets( int *pos, const QMap<QString, QString> &dict ) const;
+    QString parse( int *pos, const QMap<QString, QString> &dict ) const;
 };
 
 } // namespace Amarok

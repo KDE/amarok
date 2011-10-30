@@ -4,6 +4,12 @@ Amarok ChangeLog
 
 Version 2.5.0-Beta 1
   FEATURES:
+    * Add new type of optional tokens in format string (Collection Organizer) - 
+      "[]" square brackets. Syntax: [%token%: any formatted string], or Its
+      short format: [%token%]. If you specified replacement string (string after
+      colon ":" ) empty token will be replaced with this string (replacement can
+      also include tokens and optional tokens); If no replacement defined default value
+      will be used ( e.g. Unknown artist for %artist%). (BR 264874)
     * Compilations are properly marked as such when transferring music
       to/from iPods. (BR 207880)
     * Ctrl+F now activates collection browser and focuses the seach collection

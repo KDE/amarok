@@ -70,18 +70,18 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
     //been ported yet. Do they need to be?
     //Bpm,Directory,Bitrate,SampleRate,Mood
     args["folder"] = m_folderPrefix;
-    args["title"] = cleanPath( track->prettyName() );
-    args["composer"] = track->composer() ? cleanPath( track->composer()->prettyName() ) : QString();
+    args["title"] = cleanPath( track->name() );
+    args["composer"] = track->composer() ? cleanPath( track->composer()->name() ) : QString();
 
     // if year == 0 then we don't want include it
-    QString year = track->year() ? cleanPath( track->year()->prettyName() ) : QString();
+    QString year = track->year() ? cleanPath( track->year()->name() ) : QString();
     args["year"] = year.localeAwareCompare( "0" ) == 0 ? QString() : year;
-    args["album"] = track->album() ? cleanPath( track->album()->prettyName() ) : QString();
+    args["album"] = track->album() ? cleanPath( track->album()->name() ) : QString();
 
     if( track->discNumber() )
         args["discnumber"] = QString::number( track->discNumber() );
 
-    args["genre"] = track->genre() ? cleanPath( track->genre()->prettyName() ) : QString();
+    args["genre"] = track->genre() ? cleanPath( track->genre()->name() ) : QString();
     args["comment"] = cleanPath( track->comment() );
     args["artist"] = artist;
     args["albumartist"] = albumartist;
@@ -99,6 +99,20 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
         QString trackNum = QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
         args["track"] = trackNum;
     }
+
+    // Fill up default empty values for StringX formater
+    // TODO make this values changeable by user
+    args["default_album"]           = i18n( "Unknown album" );
+    args["default_albumartist"]     = i18n( "Unknown artist" );
+    args["default_artist"]          = args["albumartist"];
+    args["default_thealbumartist"]  = args["albumartist"];
+    args["default_theartist"]       = args["albumartist"];
+    args["default_comment"]         = i18n( "No comments" );
+    args["default_composer"]        = i18n( "Unknown composer" );
+    args["default_discnumber"]      = i18n( "Unknown disc number" );
+    args["default_genre"]           = i18n( "Unknown genre" );
+    args["default_title"]           = i18n( "Unknown title" );
+    args["default_year"]            = i18n( "Unknown year" );
 
     Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );

@@ -652,6 +652,7 @@ set(amaroklib_LIB_SRCS
     MediaDeviceMonitor.cpp
     MountPointManager.cpp
     PluginManager.cpp
+    QStringx.cpp
     ScriptManager.cpp
     ScriptUpdater.cpp
     SvgHandler.cpp

@@ -81,6 +81,7 @@ target_link_libraries(testexpression ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
 
 set( testqstringx_SRCS
         TestQStringx.cpp
+        ${AMAROK_SOURCE_TREE}/QStringx.cpp
     )
 
 kde4_add_unit_test( testqstringx  ${testqstringx_SRCS} )
@@ -116,6 +117,7 @@ set( testtrackorganizer_SRCS
         TestTrackOrganizer.cpp
         ${AMAROK_SOURCE_TREE}/dialogs/TrackOrganizer.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/QStringx.cpp
     )
 
 kde4_add_unit_test( testtrackorganizer  ${testtrackorganizer_SRCS} )
