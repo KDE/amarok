@@ -4,12 +4,8 @@ Amarok ChangeLog
 
 Version 2.5.0-Beta 1
   FEATURES:
-    * Add new type of optional tokens in format string (Collection Organizer) - 
-      "[]" square brackets. Syntax: [%token%: any formatted string], or Its
-      short format: [%token%]. If you specified replacement string (string after
-      colon ":" ) empty token will be replaced with this string (replacement can
-      also include tokens and optional tokens); If no replacement defined default value
-      will be used ( e.g. Unknown artist for %artist%). (BR 264874)
+    * Add new type of optional tokens in format string (Collection Organizer)
+      (BR 264874)
     * Compilations are properly marked as such when transferring music
       to/from iPods. (BR 207880)
     * Ctrl+F now activates collection browser and focuses the seach collection
@@ -42,8 +38,9 @@ Version 2.5.0-Beta 1
     * Mark unplayble tracks in the playlist. Patch by Sandeep Raghuraman. (BR 263640)
     * Current track applet: show number of artists instead of genres. (BR 261077)
 
-
   BUGFIXES:
+    * Fix SupportedMimeTypes method on the MPRIS2 D-Bus interface, so that it
+      no longer appends duplicate entries on every call.
     * Do not use Album Artist as Artist for files without Artist metadata. (BR 281283)
     * Fixed crash on decodeing currupted media during MusicDNS search. (BR 284895)
     * Prevent crash on getting cover from MP4 files. Patch by Charles Reiss.
@@ -73,8 +70,6 @@ Version 2.5.0-Beta 1
     * Made possible to store empty TagDialog's numerical fields. (BR 278921)
     * Fixed issue with TagDialog's "Open Destination" button, now It opens
       correct directory instead of parent. (BR 279147)
-    * Fix SupportedMimeTypes method on the MPRIS2 D-Bus interface, so that it
-      no longer appends duplicate entries on every call.
 
 Version 2.4.3
   BUGFIXES:
