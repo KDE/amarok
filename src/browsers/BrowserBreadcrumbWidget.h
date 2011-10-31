@@ -98,13 +98,7 @@ private:
 
     QList<BrowserBreadcrumbItem *> m_items;
     QWidget * m_spacer;
-
-    QStackedWidget * m_widgetStack;
-
     KHBox * m_breadcrumbArea;
-    KHBox * m_editArea;
-
-    KPushButton * m_goButton;
     
     BreadcrumbItemMenuButton * m_childMenuButton;
 

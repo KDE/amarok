@@ -41,30 +41,10 @@ BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
     setContentsMargins( 3, 0, 3, 0 );
     setSpacing( 0 );
 
-    m_widgetStack = new QStackedWidget( this );
-    m_widgetStack->setContentsMargins( 0, 0, 0, 0 );
-
-    m_breadcrumbArea = new KHBox( 0 );
+    m_breadcrumbArea = new KHBox( this );
     m_breadcrumbArea->setContentsMargins( 0, 0, 0, 0 );
     m_breadcrumbArea->setSpacing( 0 );
     setStretchFactor( m_breadcrumbArea, 10 );
-
-    m_editArea = new KHBox( 0 );
-    m_editArea->setContentsMargins( 0, 0, 0, 0 );
-    m_editArea->setSpacing( 0 );
-    setStretchFactor( m_editArea, 10 );
-
-    m_goButton = new KPushButton( KIcon( "dialog-ok" ), QString(), m_editArea );
-    m_goButton->setToolTip( i18n( "Click For Location Navigation" ) ); //String stolen from Dolphin! :-)
-    m_goButton->setFixedSize( 20, 20 );
-    m_goButton->setFlat( true );
-    
-    connect( m_goButton, SIGNAL( clicked( bool ) ), this, SLOT( editUpdated() ) );
-
-    m_widgetStack->addWidget( m_breadcrumbArea );
-    m_widgetStack->addWidget( m_editArea );
-
-    m_widgetStack->setCurrentIndex( 0 );
 
     new BreadcrumbUrlMenuButton( "navigate", this );
 
