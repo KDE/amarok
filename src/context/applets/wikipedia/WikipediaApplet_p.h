@@ -230,7 +230,8 @@ protected:
     {
         if( obj == page()->parent() )
         {
-            if( event->type() == QEvent::KeyPress )
+            if( event->type() == QEvent::KeyPress ||
+                event->type() == QEvent::ShortcutOverride )
             {
                 QKeyEvent *keyEvent = static_cast<QKeyEvent*>( event );
                 keyPressEvent( keyEvent );

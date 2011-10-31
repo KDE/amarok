@@ -45,6 +45,8 @@ Version 2.5.0-Beta 1
     * Current track applet: show number of artists instead of genres. (BR 261077)
 
   BUGFIXES:
+    * Fixed Wikipedia search field not accepting space character or cursor
+      keys. (BR 266591)
     * Fix SupportedMimeTypes method on the MPRIS2 D-Bus interface, so that it
       no longer appends duplicate entries on every call.
     * Do not use Album Artist as Artist for files without Artist metadata. (BR 281283)
