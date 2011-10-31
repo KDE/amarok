@@ -488,7 +488,6 @@ WikipediaAppletPrivate::_pageLoadStarted()
 void
 WikipediaAppletPrivate::_pageLoadProgress( int progress )
 {
-    DEBUG_BLOCK
     DEBUG_ASSERT(proxyWidget, return)
 
     const QString kbytes = QString::number( webView->page()->totalBytes() / 1024 );
@@ -501,7 +500,6 @@ WikipediaAppletPrivate::_pageLoadProgress( int progress )
 void
 WikipediaAppletPrivate::_pageLoadFinished( bool ok )
 {
-    DEBUG_BLOCK
     Q_UNUSED( ok )
     Q_Q( WikipediaApplet );
 
