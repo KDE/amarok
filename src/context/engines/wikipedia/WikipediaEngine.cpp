@@ -535,8 +535,7 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
         host.prepend( ".m" );
         host.prepend( urlPrefix );
         pageUrl.setHost( host );
-        pageUrl.setPath( QLatin1String("/wiki") );
-        pageUrl.addQueryItem( QLatin1String("search"), title );
+        pageUrl.setPath( QString("/wiki/%1").arg(title) );
         DataEngine::Data data;
         data[QLatin1String("sourceUrl")] = pageUrl;
         q->removeAllData( QLatin1String("wikipedia") );
