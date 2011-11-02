@@ -6,6 +6,8 @@ Doxyfile
 *.patch
 *.rej
 *.orig
+*.moc
+*_automoc.cpp
 
 # CMake
 CMakeCache.txt
