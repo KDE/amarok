@@ -79,7 +79,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1right.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -115,7 +115,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1ipod.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -184,7 +184,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1scriptmanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -201,7 +201,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1covermanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -218,7 +218,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1rating.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -252,7 +252,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1pleditor.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -269,7 +269,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1dynamicplaylist.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -409,7 +409,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="AmarokNew2.4.png" format="PNG"/>
+      <imagedata fileref="AmarokNew2_4.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Amarok 2.4, newly installed</phrase>
@@ -456,7 +456,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.4.1ConfigureDialogCollection.png" format="PNG"/>
+      <imagedata fileref="Amarok2_4_1ConfigureDialogCollection.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Configure Collection Dialog, as of version 2.4.1</phrase>
@@ -992,7 +992,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.4.1SavePlaylistChoices.png" format="PNG"/>
+      <imagedata fileref="Amarok2_4_1SavePlaylistChoices.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Click and hold, scroll to save playlist</phrase>
