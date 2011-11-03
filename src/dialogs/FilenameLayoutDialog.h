@@ -113,6 +113,8 @@ class AMAROK_EXPORT FilenameLayoutDialog
         QString replaceText() const { return replaceEdit->text(); }
         void setReplaceText( const QString &text ) { replaceEdit->setText( text ); }
 
+        void setformatPresetVisible( bool visible ) { formatPresetWidget->setVisible( visible ); }
+
     public slots:
         void onAccept();
 
