@@ -37,8 +37,8 @@ CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Met
 
     // NOTE: taken from SqlCollection
     // TODO put the delete confirmation code somewhere else?
-    const QString text( i18ncp( "@info", "Do you really want to delete this track? It will be removed from disk as well as your collection.",
-                                "Do you really want to delete these %1 tracks? They will be removed from disk as well as your collection.", tracks.count() ) );
+    const QString text( i18ncp( "@info", "Do you really want to delete this track? It will be removed from your collection.",
+                                "Do you really want to delete these %1 tracks? They will be removed from your collection.", tracks.count() ) );
     const bool del = KMessageBox::warningContinueCancelList(0,
                                                      text,
                                                      files,
@@ -59,9 +59,9 @@ CollectionLocationDelegateImpl::reallyTrash( CollectionLocation *loc, const Meta
 
     const QString text( i18ncp( "@info",
                                 "Do you really want to move this track to the trash? "
-                                "It will be removed from disk as well as your collection.",
+                                "It will be removed from your collection.",
                                 "Do you really want to move these %1 tracks to the trash? "
-                                "They will be removed from disk as well as your collection.",
+                                "They will be removed from your collection.",
                                 tracks.count() ) );
     const bool rm = KMessageBox::warningContinueCancelList(
                                 0,
