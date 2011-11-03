@@ -37,6 +37,7 @@
 #include <plasma/dataenginemanager.h>
 
 #include <QParallelAnimationGroup>
+#include <QSequentialAnimationGroup>
 #include <QWheelEvent>
 
 namespace Context
@@ -91,6 +92,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     m_urlRunner = new ContextUrlRunner();
     The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
 
+    m_queuedAnimations = new QSequentialAnimationGroup( this );
     m_collapseAnimations = new QParallelAnimationGroup( this );
     connect( m_collapseAnimations, SIGNAL(finished()),
              this, SLOT(slotCollapseAnimationsFinished()) );
@@ -125,8 +127,6 @@ ContextView::~ContextView()
         while( Plasma::DataEngineManager::self()->engine( engine )->isValid() )
             Plasma::DataEngineManager::self()->unloadEngine( engine );
     }
-
-    qDeleteAll( m_queuedAnimations );
 
     clear( m_curState );
     //this should be done to prevent a crash on exit
@@ -245,7 +245,7 @@ ContextView::addCollapseAnimation( QAbstractAnimation *anim )
     if( m_collapseAnimations->state() == QAbstractAnimation::Running ||
         m_collapseGroupTimer->isActive() )
     {
-        m_queuedAnimations.enqueue( anim );
+        m_queuedAnimations->addAnimation( anim );
     }
     else
     {
@@ -260,9 +260,9 @@ ContextView::slotCollapseAnimationsFinished()
     m_collapseGroupTimer->stop();
     m_collapseAnimations->clear();
 
-    while( !m_queuedAnimations.isEmpty() )
+    while( m_queuedAnimations->animationCount() > 0 )
     {
-        if( QAbstractAnimation *anim = m_queuedAnimations.dequeue() )
+        if( QAbstractAnimation *anim = m_queuedAnimations->takeAnimation(0) )
             m_collapseAnimations->addAnimation( anim );
     }
 

@@ -134,7 +134,7 @@ private:
 
     AppletExplorer *m_appletExplorer;
     QParallelAnimationGroup *m_collapseAnimations;
-    QQueue<QAbstractAnimation*> m_queuedAnimations;
+    QAnimationGroup *m_queuedAnimations;
     QTimer *m_collapseGroupTimer;
 };
 
