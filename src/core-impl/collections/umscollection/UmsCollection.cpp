@@ -282,6 +282,8 @@ UmsCollection::deInit()
 {
     m_initialized = false;
     m_mc.clear();
+
+    emit updated();
 }
 
 bool
