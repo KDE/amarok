@@ -139,6 +139,8 @@ private:
     QPushButton* m_viewCartButton;
     QPushButton* m_checkoutButton;
 
+    QString m_lastSearch;
+
     QSpinBox* m_resultpageSpinBox;
 
     AmazonItemTreeView* m_itemView;

@@ -107,6 +107,8 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     setPlayableTracks( true );
     m_serviceready = true;
 
+    m_lastSearch = QString();
+
     // add the collection, exclude it from global queries
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
 
@@ -274,6 +276,14 @@ AmazonStore::newSearchRequest( const QString request )
         // if the user selects a country we continue our quest for search results
         if( !(KCM.exec() == QDialog::Accepted) )
             return;
+    }
+
+    if( m_lastSearch != request )
+    {
+        // we start by showing the first result page
+        m_lastSearch = request;
+        m_resultpageSpinBox->setValue( 1 );
+
     }
 
     // create request fetcher thread
