@@ -270,8 +270,7 @@ AmazonStore::newSearchRequest( const QString request )
         KCM.setWindowTitle( i18n( "Select your Amazon locale - Amarok" ) );
         KCM.addModule( KCModuleInfo( QString( "amarok_service_amazonstore_config.desktop" ) ) );
         KCM.setButtons( KCMultiDialog::Ok | KCMultiDialog::Cancel );
-        KCM.setMinimumSize( QSize( 350, 200 ) );
-        KCM.resize( 350, 200 );
+        KCM.resize( 400, 200 );
 
         // if the user selects a country we continue our quest for search results
         if( !(KCM.exec() == QDialog::Accepted) )
@@ -283,7 +282,6 @@ AmazonStore::newSearchRequest( const QString request )
         // we start by showing the first result page
         m_lastSearch = request;
         m_resultpageSpinBox->setValue( 1 );
-
     }
 
     // create request fetcher thread
