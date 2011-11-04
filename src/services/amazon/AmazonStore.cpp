@@ -331,8 +331,10 @@ AmazonStore::newSearchRequest( const QString request )
         KCM.setButtons( KCMultiDialog::Ok | KCMultiDialog::Cancel );
         KCM.setMinimumSize( QSize( 350, 200 ) );
         KCM.resize( 350, 200 );
-        KCM.exec();
-        return;
+
+        // if the user selects a country we continue our quest for search results
+        if( !(KCM.exec() == QDialog::Accepted) )
+            return;
     }
 
     // create request fetcher thread
