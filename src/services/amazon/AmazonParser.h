@@ -35,6 +35,10 @@ public:
     AmazonParser( QString tempFileName, Collections::AmazonCollection* collection, AmazonMetaFactory* factory );
     ~AmazonParser();
 
+    // Reimplemented from ThreadWeaver::Job.
+    // The parser can fail e.g. for invalid replies, network failures, etc.
+    virtual bool success() const;
+
 protected:
     virtual void run();
 
@@ -61,6 +65,7 @@ private:
     QString m_tempFileName;
     QDomDocument *m_responseDocument;
     AmazonMetaFactory *m_factory;
+    bool m_success;
 };
 
 

@@ -28,11 +28,22 @@ AmazonParser::AmazonParser( QString tempFileName, Collections::AmazonCollection*
     m_tempFileName = tempFileName;
     m_collection = collection;
     m_factory = factory;
+
+    m_success = true;
 }
 
 AmazonParser::~AmazonParser()
 {
 }
+
+bool
+AmazonParser::success() const
+{
+    return m_success;
+}
+
+
+/* protected */
 
 void
 AmazonParser::run()
@@ -62,7 +73,7 @@ AmazonParser::run()
         debug() << "Message:" << errorMsg;
         debug() << "Line:" << errorLine;
         debug() << "Column:" << errorColumn;
-        emit( failed( this ) );
+        m_success = false;
         // let's keep the temp file in case of an error
         //QFile::remove( m_tempFileName );
         return;
