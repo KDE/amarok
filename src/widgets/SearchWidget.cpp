@@ -202,7 +202,8 @@ SearchWidget::setTimeout( quint16 newTimeout )
 void
 SearchWidget::searchEnded()
 {
-    m_runningSearches--;
+    if( m_runningSearches > 0 ) // just to be sure...
+        m_runningSearches--;
 
     // stop the animation
     if( m_runningSearches == 0 )
