@@ -198,7 +198,7 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
 
         map["xesam:autoRating"] = track->score();
 
-        map["xseam:comment"] = QStringList() << track->comment();
+        map["xesam:comment"] = QStringList() << track->comment();
 
         if( track->composer() )
             map["xesam:composer"] = QStringList() << track->composer()->name();

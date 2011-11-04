@@ -50,7 +50,8 @@ static QString activeMprisTrackId()
     if( id > 0 )
         return QString( "%1/Track/%2" ).arg( MPRIS2_OBJECT_PATH ).arg( id );
     else
-        return QString();
+        // dropped out of the playlist
+        return QString( "%1/OrphanTrack" ).arg( MPRIS2_OBJECT_PATH );
 }
 
 enum Status { Playing, Paused, Stopped };
@@ -441,6 +442,8 @@ namespace Amarok
         }
         else
         {
+            // FIXME: activeMprisTrackId changes when the current track is put in or removed from
+            //        the playlist...
             QVariantMap metaData = Meta::Field::mpris20MapFromTrack( currentTrack );
             metaData["mpris:trackid"] = activeMprisTrackId();
 
