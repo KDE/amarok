@@ -143,109 +143,7 @@ AmazonStore::polish()
 }
 
 
-void
-AmazonStore::initTopPanel()
-{
-    m_searchWidget->setTimeout( 1500 );
-    m_searchWidget->showAdvancedButton( false );
-
-    m_resultpageSpinBox = new QSpinBox;
-    m_resultpageSpinBox->setMinimum( 1 );
-    m_resultpageSpinBox->setToolTip( i18n( "Select results page to show" ) );
-
-    m_searchWidget->toolBar()->addWidget( m_resultpageSpinBox );
-
-    m_searchWidget->toolBar()->addSeparator();
-
-    connect( m_resultpageSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( newSpinBoxSearchRequest( int ) ) );
-}
-
-void
-AmazonStore::initView()
-{
-    m_itemView = new AmazonItemTreeView( this );
-    m_itemModel = new AmazonItemTreeModel( m_collection );
-    m_itemView->setParent( this );
-    m_itemView->setRootIsDecorated( false ); // items cannot be expanded
-    m_itemView->setUniformRowHeights( true ); // for perf reasons
-    m_itemView->setModel( m_itemModel );
-
-    KHBox* bottomPanelLayout = new KHBox;
-    bottomPanelLayout->setParent( this );
-
-    m_addToCartButton = new QPushButton;
-    m_addToCartButton->setText( i18nc( "Add selected item to your shopping cart", "Add to Cart" ) );
-    m_addToCartButton->setToolTip( i18n( "Add selected item to your shopping cart" ) );
-    m_addToCartButton->setEnabled( false );
-    m_addToCartButton->setObjectName( "addToCartButton" );
-    m_addToCartButton->setParent( bottomPanelLayout );
-    //m_downloadAlbumButton->setIcon( KIcon( "addToCart-amarok" ) );
-
-    m_viewCartButton = new QPushButton;
-    m_viewCartButton->setText( i18nc( "View your shopping cart contents", "View Cart" ) );
-    m_viewCartButton->setToolTip( i18n( "View your shopping cart contents" ) );
-    m_viewCartButton->setEnabled( true );
-    m_viewCartButton->setObjectName( "viewCartButton" );
-    m_viewCartButton->setParent( bottomPanelLayout );
-    //m_downloadAlbumButton->setIcon( KIcon( "viewCartButton-amarok" ) );
-
-    m_checkoutButton = new QPushButton;
-    m_checkoutButton->setText( i18nc( "Checkout your shopping cart", "Checkout" ) );
-    m_checkoutButton->setToolTip( i18n( "Checkout your shopping cart" ) );
-    m_checkoutButton->setEnabled( false );
-    m_checkoutButton->setObjectName( "checkoutButton" );
-    m_checkoutButton->setParent( bottomPanelLayout );
-    //m_downloadAlbumButton->setIcon( KIcon( "checkoutButton-amarok" ) );
-
-    connect( m_addToCartButton, SIGNAL( clicked() ), this, SLOT( addToCart() ) );
-    connect( m_itemView, SIGNAL( addToCart() ), this, SLOT( addToCart() ) );
-    connect( m_viewCartButton, SIGNAL( clicked() ), this, SLOT( viewCart() ) );
-    connect( m_checkoutButton, SIGNAL( clicked() ), this, SLOT( checkout() ) );
-}
-
-
 /* public slots */
-
-void
-AmazonStore::itemDoubleClicked( QModelIndex index )
-{
-    // for albums: search for the album name to get details about it
-    // for tracks: add it to the playlist
-
-    if( index.row() < m_collection->albumIDMap()->size() - m_itemModel->hiddenAlbums() ) // it's an album
-    {
-        Meta::AmazonAlbum* album;
-        // row == albumId
-        album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( m_selectedIndex.row() + 1 ).data() );
-
-        if( !album )
-            return;
-
-        QString name = m_collection->artistById( album->artistId() )->name() + " - " + album->name();
-        m_searchWidget->setSearchString( name );
-    }
-    else // track
-    {
-        Meta::AmazonTrack* track;
-        int id = index.row() - m_collection->albumIDMap()->size() + m_itemModel->hiddenAlbums() ;
-        // row == albumId
-        track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id + 1 ).data() );
-
-        if( !track )
-            return;
-
-        Meta::TrackPtr trackPtr( track );
-
-        The::playlistController()->instance()->insertOptioned( trackPtr, Playlist::Append );
-    }
-}
-
-void
-AmazonStore::itemSelected( QModelIndex index )
-{
-    m_addToCartButton->setEnabled( true );
-    m_selectedIndex = index;
-}
 
 void
 AmazonStore::addToCart()
@@ -317,6 +215,47 @@ AmazonStore::checkout()
 }
 
 void
+AmazonStore::itemDoubleClicked( QModelIndex index )
+{
+    // for albums: search for the album name to get details about it
+    // for tracks: add it to the playlist
+
+    if( index.row() < m_collection->albumIDMap()->size() - m_itemModel->hiddenAlbums() ) // it's an album
+    {
+        Meta::AmazonAlbum* album;
+        // row == albumId
+        album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( m_selectedIndex.row() + 1 ).data() );
+
+        if( !album )
+            return;
+
+        QString name = m_collection->artistById( album->artistId() )->name() + " - " + album->name();
+        m_searchWidget->setSearchString( name );
+    }
+    else // track
+    {
+        Meta::AmazonTrack* track;
+        int id = index.row() - m_collection->albumIDMap()->size() + m_itemModel->hiddenAlbums() ;
+        // row == albumId
+        track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id + 1 ).data() );
+
+        if( !track )
+            return;
+
+        Meta::TrackPtr trackPtr( track );
+
+        The::playlistController()->instance()->insertOptioned( trackPtr, Playlist::Append );
+    }
+}
+
+void
+AmazonStore::itemSelected( QModelIndex index )
+{
+    m_addToCartButton->setEnabled( true );
+    m_selectedIndex = index;
+}
+
+void
 AmazonStore::newSearchRequest( const QString request )
 {
     DEBUG_BLOCK
@@ -364,6 +303,9 @@ AmazonStore::newSpinBoxSearchRequest( int i )
     newSearchRequest( m_searchWidget->currentText() );
 }
 
+
+/* private */
+
 QUrl
 AmazonStore::createRequestUrl( QString request )
 {
@@ -385,6 +327,68 @@ AmazonStore::createRequestUrl( QString request )
 
     return QUrl( urlString );
 }
+
+void
+AmazonStore::initTopPanel()
+{
+    m_searchWidget->setTimeout( 1500 );
+    m_searchWidget->showAdvancedButton( false );
+
+    m_resultpageSpinBox = new QSpinBox;
+    m_resultpageSpinBox->setMinimum( 1 );
+    m_resultpageSpinBox->setToolTip( i18n( "Select results page to show" ) );
+
+    m_searchWidget->toolBar()->addWidget( m_resultpageSpinBox );
+
+    m_searchWidget->toolBar()->addSeparator();
+
+    connect( m_resultpageSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( newSpinBoxSearchRequest( int ) ) );
+}
+
+void
+AmazonStore::initView()
+{
+    m_itemView = new AmazonItemTreeView( this );
+    m_itemModel = new AmazonItemTreeModel( m_collection );
+    m_itemView->setParent( this );
+    m_itemView->setRootIsDecorated( false ); // items cannot be expanded
+    m_itemView->setUniformRowHeights( true ); // for perf reasons
+    m_itemView->setModel( m_itemModel );
+
+    KHBox* bottomPanelLayout = new KHBox;
+    bottomPanelLayout->setParent( this );
+
+    m_addToCartButton = new QPushButton;
+    m_addToCartButton->setText( i18nc( "Add selected item to your shopping cart", "Add to Cart" ) );
+    m_addToCartButton->setToolTip( i18n( "Add selected item to your shopping cart" ) );
+    m_addToCartButton->setEnabled( false );
+    m_addToCartButton->setObjectName( "addToCartButton" );
+    m_addToCartButton->setParent( bottomPanelLayout );
+    //m_downloadAlbumButton->setIcon( KIcon( "addToCart-amarok" ) );
+
+    m_viewCartButton = new QPushButton;
+    m_viewCartButton->setText( i18nc( "View your shopping cart contents", "View Cart" ) );
+    m_viewCartButton->setToolTip( i18n( "View your shopping cart contents" ) );
+    m_viewCartButton->setEnabled( true );
+    m_viewCartButton->setObjectName( "viewCartButton" );
+    m_viewCartButton->setParent( bottomPanelLayout );
+    //m_downloadAlbumButton->setIcon( KIcon( "viewCartButton-amarok" ) );
+
+    m_checkoutButton = new QPushButton;
+    m_checkoutButton->setText( i18nc( "Checkout your shopping cart", "Checkout" ) );
+    m_checkoutButton->setToolTip( i18n( "Checkout your shopping cart" ) );
+    m_checkoutButton->setEnabled( false );
+    m_checkoutButton->setObjectName( "checkoutButton" );
+    m_checkoutButton->setParent( bottomPanelLayout );
+    //m_downloadAlbumButton->setIcon( KIcon( "checkoutButton-amarok" ) );
+
+    connect( m_addToCartButton, SIGNAL( clicked() ), this, SLOT( addToCart() ) );
+    connect( m_itemView, SIGNAL( addToCart() ), this, SLOT( addToCart() ) );
+    connect( m_viewCartButton, SIGNAL( clicked() ), this, SLOT( viewCart() ) );
+    connect( m_checkoutButton, SIGNAL( clicked() ), this, SLOT( checkout() ) );
+}
+
+/* private slots */
 
 void
 AmazonStore::parseReply( KJob* requestJob )
