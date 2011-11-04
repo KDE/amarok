@@ -68,6 +68,7 @@ Dynamic::DynamicModel::instance()
 
 Dynamic::DynamicModel::DynamicModel(QObject* parent)
     : QAbstractItemModel( parent )
+    , m_activePlaylistIndex( 0 )
 { }
 
 Dynamic::DynamicModel::~DynamicModel()
