@@ -175,12 +175,12 @@ GenericScannerJob::GenericScannerJob( QObject *parent, QIODevice *input )
 GenericScannerJob::GenericScannerJob( QObject *parent, QStringList scanDirsRequested,
                                       bool recursive, bool detectCharset )
     : ThreadWeaver::Job( parent )
+    , m_scanDirsRequested( scanDirsRequested )
     , m_input( 0 )
     , m_abortRequested( false )
+    , m_scannerStateMemory( 0 )
     , m_recursive( recursive )
     , m_charsetDetect( detectCharset )
-    , m_scanDirsRequested( scanDirsRequested )
-    , m_scannerStateMemory( 0 )
 {
 }
 
