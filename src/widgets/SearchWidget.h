@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
+ * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -40,6 +41,11 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         QString currentText() const { return m_sw->currentText(); }
         Amarok::ComboBox *comboBox() { return m_sw; }
         void setSearchString( const QString &searchString );
+
+        /**
+         * Sets the timout length after which the filterChanged() signal will be fired automatically.
+         * @param newTimeout timeout in milliseconds.
+         */
         void setTimeout( quint16 newTimeout );
 
         QToolBar* toolBar();
@@ -51,6 +57,22 @@ class AMAROK_EXPORT SearchWidget : public QWidget
          * @param message the string that will be visible when the ComboBox's edit text is empty.
          */
         void setClickMessage( const QString &message );
+
+    public slots:
+        /**
+         * Tells the widget that a search operation has ended. As a consequence the progress
+         * animation will be changed back to a search icon iff no other search operation is
+         * in progress.
+         */
+        void searchEnded();
+
+        /**
+         * Tells the widget that a search operation has started. As a consequence the "search"
+         * icon changes to a progress animation.
+         * Note: You can call this slot several times if you ahve several search operations
+         * simultaneously. The widget has an internal counter to track them.
+         */
+        void searchStarted();
 
     signals:
         /** Emitted when the filter value was changed.
@@ -64,6 +86,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         void advanceFocus();
 
         void addCompletion( const QString &text );
+        void nextAnimationTick();
         void onComboItemActivated( int index );
         void slotShowFilterEditor();
         void slotFilterEditorFinished( int result );
@@ -72,8 +95,11 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         Amarok::ComboBox *m_sw;
         QAction          *m_filterAction;
         QToolBar         *m_toolBar;
+        QTimer            m_animationTimer;
         QTimer            m_filterTimer;
         quint16           m_timeout;
+        bool              m_currentFrame;
+        unsigned int      m_runningSearches;
 };
 
 #endif

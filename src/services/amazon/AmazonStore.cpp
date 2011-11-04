@@ -137,7 +137,7 @@ AmazonStore::polish()
         connect( m_itemView, SIGNAL( itemDoubleClicked( QModelIndex ) ), this, SLOT( itemDoubleClicked( QModelIndex ) ) );
 
         AmazonUrlRunner *runner = new AmazonUrlRunner();
-        connect( runner, SIGNAL( search( const QString ) ), this, SLOT( newSearchRequest( QString) ) );
+        connect( runner, SIGNAL( search( const QString ) ), this, SLOT( newSearchRequest( QString ) ) );
         The::amarokUrlHandler()->registerRunner( runner, runner->command() );
     }
 }
@@ -146,7 +146,7 @@ AmazonStore::polish()
 void
 AmazonStore::initTopPanel()
 {
-    m_searchWidget->setTimeout( 3000 );
+    m_searchWidget->setTimeout( 1500 );
     m_searchWidget->showAdvancedButton( false );
 
     m_resultpageSpinBox = new QSpinBox;
@@ -348,6 +348,7 @@ AmazonStore::newSearchRequest( const QString request )
         return;
     }
 
+    m_searchWidget->searchStarted();
     KIO::FileCopyJob *requestJob = KIO::file_copy( requestUrl, KUrl( tempFile.fileName() ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
     connect( requestJob, SIGNAL( result( KJob * ) ), this, SLOT( parseReply( KJob * ) ) );
@@ -392,6 +393,7 @@ AmazonStore::parseReply( KJob* requestJob )
         Amarok::Components::logger()->shortMessage( i18n( "Error: Querying MP3 Music Store database failed. :-(" ) );
         debug() << requestJob->errorString();
         requestJob->deleteLater();
+        m_searchWidget->searchEnded();
         return;
     }
 
@@ -416,6 +418,7 @@ AmazonStore::parsingDone( ThreadWeaver::Job* parserJob )
     Q_UNUSED( parserJob )
     // model has been reset now, we no longer have a valid selection
     m_addToCartButton->setEnabled( false );
+    m_searchWidget->searchEnded();
 }
 
 void
@@ -423,6 +426,7 @@ AmazonStore::parsingFailed( ThreadWeaver::Job* parserJob )
 {
     Q_UNUSED( parserJob )
     Amarok::Components::logger()->shortMessage( i18n( "Error: Received an invalid reply. :-(" ) );
+    m_searchWidget->searchEnded();
 }
 
 void
