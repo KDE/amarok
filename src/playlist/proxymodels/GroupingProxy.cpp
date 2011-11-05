@@ -295,7 +295,13 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
 
         case 0: //Album
             if( track1 && track1->album() && track2 && track2->album() )
-                return ( *track1->album().data() ) == ( *track2->album().data() ) && ( track1->discNumber() == track2->discNumber() );
+            {
+                // don't group albums without name
+                if( track1->album()->prettyName().isEmpty() || track2->album()->prettyName().isEmpty() )
+                    return false;
+                else
+                    return ( *track1->album().data() ) == ( *track2->album().data() ) && ( track1->discNumber() == track2->discNumber() );
+            }
         case 1: //Artist
             if( track1 && track1->artist() && track2 && track2->artist() )
                 return ( *track1->artist().data() ) == ( *track2->artist().data() );
