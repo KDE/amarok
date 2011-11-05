@@ -107,6 +107,10 @@
         <label>Whether to automatically attempt to fetch cover art as needed</label>
         <default>false</default>
     </entry>
+    <entry key="ShowBrowserBackgroundImage" type="Bool">
+        <label>Whether to show background images in the browser pane</label>
+        <default>true</default>
+    </entry>
     <entry key="AutoScrollPlaylist" type="Bool">
         <label>Automatically scroll the playlist to make the currently playing song visible</label>
         <default>true</default>

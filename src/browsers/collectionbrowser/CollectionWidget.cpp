@@ -22,6 +22,7 @@
 
 #include "CollectionWidget.h"
 
+#include "amarokconfig.h"
 #include "CollectionTreeItemModel.h"
 #include "CollectionTreeItemModelBase.h"
 #include "CollectionTreeItemDelegate.h"
@@ -146,8 +147,8 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_collections.png" ) );
 
     // set background
-    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_collections.png");
-    setBackgroundImage( bgImage );
+    if( AmarokConfig::showBrowserBackgroundImage() )
+        setBackgroundImage( imagePath() );
 
     // --- the box for the UI elements.
     KHBox *hbox = new KHBox( this );

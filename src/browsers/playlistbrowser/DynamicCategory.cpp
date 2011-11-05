@@ -20,6 +20,7 @@
 #include "DynamicCategory.h"
 #include "DynamicView.h"
 
+#include "amarokconfig.h"
 #include "DynamicBiasWidgets.h"
 #include "amarokconfig.h"
 #include "core/support/Amarok.h"
@@ -58,8 +59,8 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_dynamic_playlists.png" ) );
 
     // set background
-    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_dynamic_playlists.png");
-    setBackgroundImage( bgImage );
+    if( AmarokConfig::showBrowserBackgroundImage() )
+        setBackgroundImage( imagePath() );
 
     bool enabled = AmarokConfig::dynamicMode();
 

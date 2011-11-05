@@ -18,6 +18,7 @@
 
 #include "PlaylistBrowserCategory.h"
 
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 #include "PlaylistBrowserModel.h"
@@ -55,10 +56,11 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_playlistCategory( playlistCategory )
 {
     setContentsMargins( 0, 0, 0, 0 );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
 
     // set background
-    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_user_playlists.png");
-    setBackgroundImage( bgImage );
+    if( AmarokConfig::showBrowserBackgroundImage() )
+        setBackgroundImage( imagePath() );
 
     m_toolBar = new KToolBar( this, false, false );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );

@@ -41,8 +41,8 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
     setIcon( KIcon( "playlist-generator" ) );
 
     // set background
-    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_dynamic_playlists.png");
-    setBackgroundImage( bgImage );
+    if( AmarokConfig::showBrowserBackgroundImage() )
+        setBackgroundImage( imagePath() );
 
     setLongDescription( i18n("Create playlists by specifying criteria") );
 

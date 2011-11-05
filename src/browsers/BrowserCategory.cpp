@@ -16,6 +16,8 @@
 
 #include "BrowserCategory.h"
 
+#include "App.h"
+#include "amarokconfig.h"
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
 
@@ -32,6 +34,7 @@ BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
     setObjectName( name );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setFrameShape( QFrame::NoFrame );
+    connect( App::instance(), SIGNAL(settingsChanged()), SLOT(slotSettingsChanged()) );
 }
 
 BrowserCategory::~BrowserCategory()
@@ -109,6 +112,11 @@ BrowserCategory::setBackgroundImage(const QString& path)
             background-attachment: fixed; \
             background-position: center; }").arg( escapedClassName, path )
     );
+}
+
+void BrowserCategory::slotSettingsChanged()
+{
+    setBackgroundImage( AmarokConfig::showBrowserBackgroundImage() ? m_imagePath : QString() );
 }
 
 void BrowserCategory::setParentList( BrowserCategoryList * parent )

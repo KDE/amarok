@@ -20,6 +20,7 @@
 
 #include "PodcastCategory.h"
 
+#include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "App.h"
 #include "browsers/InfoProxy.h"
@@ -88,8 +89,8 @@ PodcastCategory::PodcastCategory( QWidget *parent )
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
 
     // set background
-    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_podcasts.png");
-    setBackgroundImage( bgImage );
+    if( AmarokConfig::showBrowserBackgroundImage() )
+        setBackgroundImage( imagePath() );
 
     QAction *addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"),
                                              m_toolBar );

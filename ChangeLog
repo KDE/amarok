@@ -26,6 +26,7 @@ Version 2.5.0-Beta 1
     * Auto-save the playlist so that it is not lost if Amarok crashes.
 
   CHANGES:
+    * Browser widget backgrounds can now be enabled/disabled.
     * Playlist: Don't group albums without name. (BR 243344)
     * Make delete confirmation dialog text less confusing. Patch by Gilles Habran.
       (BR 263693)

@@ -22,6 +22,7 @@
 #include "FileBrowser_p.h"
 #include "FileBrowser_p.moc"
 
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
@@ -178,8 +179,8 @@ FileBrowser::FileBrowser( const char *name, QWidget *parent )
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
 
     // set background
-    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_files.png");
-    setBackgroundImage( bgImage );
+    if( AmarokConfig::showBrowserBackgroundImage() )
+        setBackgroundImage( imagePath() );
 
     QTimer::singleShot( 0, this, SLOT(initView()) );
 }
