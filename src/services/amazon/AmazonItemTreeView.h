@@ -54,6 +54,8 @@ private:
     PopupDropper *m_pd;
 
     QAction* createAddToCartAction();
+    QAction* createAddToPlaylistAction();
+    QAction* createDetailsAction();
 
 signals:
     void addToCart();

@@ -43,6 +43,7 @@ AmazonItemTreeView::AmazonItemTreeView( QWidget *parent ) :
 void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
+
     if( !index.isValid() )
     {
         event->accept();
@@ -51,10 +52,6 @@ void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     KMenu menu( this );
     QList< QAction * > actions;
-
-    QAction *addToCartAction = new QAction( QString( i18n( "Add to Cart" ) ), &menu );
-    actions.append( addToCartAction );
-    connect( addToCartAction, SIGNAL( triggered() ), this, SIGNAL( addToCart() ) );
 
     AmazonItemTreeModel *amazonModel;
     amazonModel = dynamic_cast<AmazonItemTreeModel*>( model() );
@@ -67,17 +64,11 @@ void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
     }
 
     if( amazonModel->isAlbum( index ) )
-    {
-        QAction *getDetailsAction = new QAction( QString( i18n( "Load Details..." ) ), &menu );
-        actions.append( getDetailsAction );
-        connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
-    }
+        actions.append( createDetailsAction() );
     else // track
-    {
-        QAction *addToPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ), QString( i18n( "Add Preview to Playlist" ) ), &menu );
-        actions.prepend( addToPlaylistAction ); // this should be the first action
-        connect( addToPlaylistAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
-    }
+        actions.append( createAddToPlaylistAction() ); // this should be the first action
+
+    actions.append( createAddToCartAction() );
 
     menu.exec( actions, event->globalPos() );
     event->accept();
@@ -156,8 +147,6 @@ void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd && m_pd->isHidden() )
     {
-        QActionList actions;
-
         AmazonItemTreeModel *amazonModel;
         amazonModel = dynamic_cast<AmazonItemTreeModel*>( model() );
 
@@ -166,27 +155,23 @@ void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
 
         if( amazonModel->isAlbum( indices.at( 0 ) ) )
         {
-            QAction *getDetailsAction = new QAction( QString( i18n( "Load Details..." ) ), this );
-            actions.append( getDetailsAction );
-            connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
-            m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 0 ) ) );
+            QAction *detailsAction = createDetailsAction();
+            // TODO: add correct icon here
+            // detailsAction->setProperty( "popupdropper_svg_id", "load" );
+            m_pd->addItem( The::popupDropperFactory()->createItem( detailsAction ) );
         }
         else // track
         {
-            QAction *addToPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ), QString( i18n( "Add Preview to Playlist" ) ), this );
+            QAction *addToPlaylistAction = createAddToPlaylistAction();
             addToPlaylistAction->setProperty( "popupdropper_svg_id", "append" );
-            actions.append( addToPlaylistAction );
-            connect( addToPlaylistAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
-            m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 0 ) ) );
+            m_pd->addItem( The::popupDropperFactory()->createItem( addToPlaylistAction ) );
         }
 
-        QAction *addToCartAction = new QAction( QString( i18n( "Add to Cart" ) ), this );
-        actions.append( addToCartAction );
-        connect( addToCartAction, SIGNAL( triggered() ), this, SIGNAL( addToCart() ) );
-        m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 1 ) ) );
+        m_pd->addItem( The::popupDropperFactory()->createItem( createAddToCartAction() ) );
 
         m_pd->show();
     }
+
     QTreeView::startDrag( supportedActions );
 
     if( m_pd )
@@ -229,4 +214,35 @@ void AmazonItemTreeView::setModel( QAbstractItemModel *model )
 {
     Amarok::PrettyTreeView::setModel( model );
     header()->setStretchLastSection( false );
+}
+
+// private
+
+QAction*
+AmazonItemTreeView::createAddToCartAction()
+{
+    // TODO: add correct icon here
+    QAction *addToCartAction = new QAction( QString( i18n( "Add to Cart" ) ), this );
+    connect( addToCartAction, SIGNAL( triggered() ), this, SIGNAL( addToCart() ) );
+
+    return addToCartAction;
+}
+
+QAction*
+AmazonItemTreeView::createAddToPlaylistAction()
+{
+    QAction *addToPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ), QString( i18n( "Add Preview to Playlist" ) ), this );
+    connect( addToPlaylistAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
+
+    return addToPlaylistAction;
+}
+
+QAction*
+AmazonItemTreeView::createDetailsAction()
+{
+    // TODO: add correct icon here
+    QAction *getDetailsAction = new QAction( QString( i18n( "Load Details..." ) ), this );
+    connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
+
+    return getDetailsAction;
 }
