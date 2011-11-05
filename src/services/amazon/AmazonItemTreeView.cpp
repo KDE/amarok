@@ -40,7 +40,19 @@ AmazonItemTreeView::AmazonItemTreeView( QWidget *parent ) :
     setDragDropMode( QAbstractItemView::DragOnly );
 }
 
-void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
+
+void
+AmazonItemTreeView::setModel( QAbstractItemModel *model )
+{
+    Amarok::PrettyTreeView::setModel( model );
+    header()->setStretchLastSection( false );
+}
+
+
+// protected
+
+void
+AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
 
@@ -74,7 +86,8 @@ void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
     event->accept();
 }
 
-void AmazonItemTreeView::mouseDoubleClickEvent( QMouseEvent *event )
+void
+AmazonItemTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
     // for tracks: append them to the playlist
     // for albums: query for the album
@@ -93,7 +106,8 @@ void AmazonItemTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 }
 
-void AmazonItemTreeView::mousePressEvent( QMouseEvent *event )
+void
+AmazonItemTreeView::mousePressEvent( QMouseEvent *event )
 {
     const QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
@@ -105,7 +119,8 @@ void AmazonItemTreeView::mousePressEvent( QMouseEvent *event )
     Amarok::PrettyTreeView::mousePressEvent( event );
 }
 
-void AmazonItemTreeView::mouseMoveEvent( QMouseEvent *event )
+void
+AmazonItemTreeView::mouseMoveEvent( QMouseEvent *event )
 {
     const QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
@@ -123,7 +138,8 @@ void AmazonItemTreeView::mouseMoveEvent( QMouseEvent *event )
     event->accept();
 }
 
-void AmazonItemTreeView::mouseReleaseEvent( QMouseEvent *event )
+void
+AmazonItemTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
     if( m_pd )
     {
@@ -135,7 +151,8 @@ void AmazonItemTreeView::mouseReleaseEvent( QMouseEvent *event )
     Amarok::PrettyTreeView::mouseReleaseEvent( event );
 }
 
-void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
+void
+AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
 {
     DEBUG_BLOCK
     QModelIndexList indices = selectedIndexes();
@@ -181,7 +198,11 @@ void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
     }
 }
 
-void AmazonItemTreeView::dataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight )
+
+// protected slots
+
+void
+AmazonItemTreeView::dataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight )
 {
     Q_UNUSED( topLeft )
     Q_UNUSED( bottomRight )
@@ -189,7 +210,8 @@ void AmazonItemTreeView::dataChanged( const QModelIndex &topLeft, const QModelIn
     header()->setResizeMode( 0, QHeaderView::Stretch );
 }
 
-void AmazonItemTreeView::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+void
+AmazonItemTreeView::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
     QTreeView::selectionChanged( selected, deselected ); // to avoid repainting problems
     QModelIndexList indexes = selected.indexes();
@@ -200,7 +222,8 @@ void AmazonItemTreeView::selectionChanged( const QItemSelection &selected, const
     emit( itemSelected( indexes[0] ) ); // emit the QModelIndex
 }
 
-void AmazonItemTreeView::itemActivatedAction()
+void
+AmazonItemTreeView::itemActivatedAction()
 {
     QModelIndexList indexes = selectedIndexes();
 
@@ -210,11 +233,6 @@ void AmazonItemTreeView::itemActivatedAction()
     emit itemDoubleClicked( indexes[0] ); // same behaviour as double click
 }
 
-void AmazonItemTreeView::setModel( QAbstractItemModel *model )
-{
-    Amarok::PrettyTreeView::setModel( model );
-    header()->setStretchLastSection( false );
-}
 
 // private
 
