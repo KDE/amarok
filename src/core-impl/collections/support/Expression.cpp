@@ -63,7 +63,7 @@ void ExpressionParser::parseChar( const QChar &c )
         handleMinus( c );
     else if( c == ':' )
         handleColon( c );
-    else if( c == '>' || c == '<' )
+    else if( c == '=' || c == '>' || c == '<' )
         handleMod( c );
     else if( c == '"' )
         handleQuote( c );
@@ -104,7 +104,12 @@ void ExpressionParser::handleMod( const QChar &c )
 {
     if( m_state == ExpectMod )
     {
-        m_element.match = ( c == '>' ) ? expression_element::More : expression_element::Less;
+        if( c == '=' )
+            m_element.match = expression_element::Equals;
+        else if( c == '>' )
+            m_element.match = expression_element::More;
+        else if( c == '<' )
+            m_element.match = expression_element::Less;
         m_state = ExpectText;
     }
     else

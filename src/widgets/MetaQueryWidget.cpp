@@ -463,23 +463,27 @@ MetaQueryWidget::makeCompareSelection()
     else if( isDate(field) )
     {
         m_compareSelection = new KComboBox();
-        m_compareSelection->addItem( conditionToString( Equals, true ), (int)Equals );
-        m_compareSelection->addItem( conditionToString( LessThan, true ), (int)LessThan );
-        m_compareSelection->addItem( conditionToString( GreaterThan, true ), (int)GreaterThan );
-        
-        m_compareSelection->addItem( conditionToString( Between, true ), (int)Between );
-        m_compareSelection->addItem( conditionToString( OlderThan, true ), (int)OlderThan );
+        m_compareSelection->addItem( conditionToString( Equals, field ), (int)Equals );
+        m_compareSelection->addItem( conditionToString( LessThan, field ), (int)LessThan );
+        m_compareSelection->addItem( conditionToString( GreaterThan, field ), (int)GreaterThan );
+
+        m_compareSelection->addItem( conditionToString( Between, field ), (int)Between );
+        m_compareSelection->addItem( conditionToString( OlderThan, field ), (int)OlderThan );
     }
     else if( isNumeric(field) )
     {
         m_compareSelection = new KComboBox();
-        m_compareSelection->addItem( conditionToString( Equals ), (int)Equals );
-        m_compareSelection->addItem( conditionToString( LessThan ), (int)LessThan );
-        m_compareSelection->addItem( conditionToString( GreaterThan ), (int)GreaterThan );
-        m_compareSelection->addItem( conditionToString( Between ), (int)Between );
+        m_compareSelection->addItem( conditionToString( Equals, field ), (int)Equals );
+        m_compareSelection->addItem( conditionToString( LessThan, field ), (int)LessThan );
+        m_compareSelection->addItem( conditionToString( GreaterThan, field ), (int)GreaterThan );
+        m_compareSelection->addItem( conditionToString( Between, field ), (int)Between );
     }
     else
-        return;
+    {
+        m_compareSelection = new KComboBox();
+        m_compareSelection->addItem( conditionToString( Contains, field ), (int)Contains );
+        m_compareSelection->addItem( conditionToString( Equals, field ), (int)Equals );
+    }
 
     // -- select the correct entry (even if the condition is not one of the selection)
     int index = m_compareSelection->findData( int(m_filter.condition) );
@@ -632,7 +636,7 @@ MetaQueryWidget::makeFormatComboSelection()
     {
         combo->addItem(filetypes.at(listpos),listpos);
     }
-    
+
     int index = m_fieldSelection->findData( (int)m_filter.numValue );
     combo->setCurrentIndex( index == -1 ? 0 : index );
 
@@ -849,9 +853,9 @@ MetaQueryWidget::isDate( qint64 field )
 }
 
 QString
-MetaQueryWidget::conditionToString( FilterCondition condition, bool isDate )
+MetaQueryWidget::conditionToString( FilterCondition condition, qint64 field )
 {
-    if( isDate )
+    if( isDate(field) )
     {
         switch( condition )
         {
@@ -869,7 +873,7 @@ MetaQueryWidget::conditionToString( FilterCondition condition, bool isDate )
             ; // fall through
         }
     }
-    else
+    else if( isNumeric(field) )
     {
         switch( condition )
         {
@@ -881,6 +885,16 @@ MetaQueryWidget::conditionToString( FilterCondition condition, bool isDate )
             return i18n("greater than");
         case Between:
             return i18nc( "a numerical tag (like year or track number) is between two values", "between" );
+        default:
+            ; // fall through
+        }
+    }
+    else
+    {
+        switch( condition )
+        {
+        case Equals:
+            return i18nc("an alphabetical tag (like title or artist name) equals some string","equals");
         case Contains:
             return i18nc("an alphabetical tag (like title or artist name) contains some string", "contains");
         default:
@@ -932,7 +946,10 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
     {
     case Equals:
         {
-            result += strValue1;
+            if( MetaQueryWidget::isNumeric(field) )
+                result += strValue1;
+            else
+                result += '=' + QString( "\"%1\"" ).arg( value );
             if( invert )
                 result.prepend( QChar('-') );
             break;

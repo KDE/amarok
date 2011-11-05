@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 Version 2.5.0-Beta 1
   FEATURES:
+    * New "equals" match in collection filter - e.g. label:=pop finds songs
+      with label "pop" but not songs with label "electro pop". (BR 260004)
     * Enable dropping tracks on empty area in Saved Playlists to create new
       playlist.
     * Addded a "create new playlist" action in the empty space of the Saved

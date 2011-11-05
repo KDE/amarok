@@ -101,40 +101,42 @@ Collections::addTextualFilter( Collections::QueryMaker *qm, const QString &filte
                         break;
                 }
 
+                const bool matchEqual = ( elem.match == expression_element::Equals );
+
                 // TODO: Once we have MetaConstants.cpp use those functions here
                 if ( lcField.compare( "album", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valAlbum ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & Collections::QueryMaker::AlbumFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbum, elem.text, false, false );
+                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbum, elem.text, matchEqual, matchEqual );
                 }
                 else if ( lcField.compare( "artist", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valArtist ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & Collections::QueryMaker::ArtistFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valArtist, elem.text, false, false );
+                    ADD_OR_EXCLUDE_FILTER( Meta::valArtist, elem.text, matchEqual, matchEqual );
                 }
                 else if ( lcField.compare( "albumartist", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valAlbumArtist ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & Collections::QueryMaker::AlbumArtistFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbumArtist, elem.text, false, false );
+                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbumArtist, elem.text, matchEqual, matchEqual );
                 }
                 else if ( lcField.compare( "genre", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valGenre ), Qt::CaseInsensitive ) == 0)
                 {
                     if ( ( validFilters & Collections::QueryMaker::GenreFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valGenre, elem.text, false, false );
+                    ADD_OR_EXCLUDE_FILTER( Meta::valGenre, elem.text, matchEqual, matchEqual );
                 }
                 else if ( lcField.compare( "title", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valTitle ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & Collections::QueryMaker::TitleFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, false, false );
+                    ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, matchEqual, matchEqual );
                 }
                 else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valComposer ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & Collections::QueryMaker::ComposerFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, false, false );
+                    ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, matchEqual, matchEqual );
                 }
                 else if( lcField.compare( "label", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valLabel ), Qt::CaseInsensitive ) == 0 )
                 {
-                    ADD_OR_EXCLUDE_FILTER( Meta::valLabel, elem.text, false, false );
+                    ADD_OR_EXCLUDE_FILTER( Meta::valLabel, elem.text, matchEqual, matchEqual );
                 }
                 else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valYear ), Qt::CaseInsensitive ) == 0)
                 {
@@ -147,7 +149,7 @@ Collections::addTextualFilter( Collections::QueryMaker *qm, const QString &filte
                 }
                 else if( lcField.compare( "comment", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valComment ), Qt::CaseInsensitive ) == 0 )
                 {
-                    ADD_OR_EXCLUDE_FILTER( Meta::valComment, elem.text, false, false );
+                    ADD_OR_EXCLUDE_FILTER( Meta::valComment, elem.text, matchEqual, matchEqual );
                 }
                 else if( lcField.compare( "filename", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valUrl ), Qt::CaseInsensitive ) == 0 )
                 {

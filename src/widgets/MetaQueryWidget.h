@@ -129,9 +129,9 @@ class MetaQueryWidget : public QWidget
         static bool isDate( qint64 field );
 
         /** Returns a localized text of the condition.
-            @param isDate True if the condition is meant for a date (as it has slightly different texts)
+            @param field Needed in order to test whether the field is a date, numeric or a string since the texts differ slightly
         */
-        static QString conditionToString( FilterCondition condition, bool isDate = false );
+        static QString conditionToString( FilterCondition condition, qint64 field );
 
 
     public slots:

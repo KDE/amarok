@@ -300,20 +300,28 @@ EditFilterDialog::parseTextFilter( const QString &text )
             {
                 switch( elem.match )
                 {
-                    case 0:
+                    case expression_element::Equals:
                         filter.filter.condition = MetaQueryWidget::Equals;
                         break;
-                    case 1:
+                    case expression_element::Less:
                         filter.filter.condition = MetaQueryWidget::LessThan;
                         break;
-                    case 2:
+                    case expression_element::More:
                         filter.filter.condition = MetaQueryWidget::GreaterThan;
                         break;
                 }
             }
             else
             {
-                filter.filter.condition = MetaQueryWidget::Contains;
+                switch( elem.match )
+                {
+                    case expression_element::Contains:
+                        filter.filter.condition = MetaQueryWidget::Contains;
+                        break;
+                    case expression_element::Equals:
+                        filter.filter.condition = MetaQueryWidget::Equals;
+                        break;
+                }
                 filter.filter.value = elem.text;
             }
 

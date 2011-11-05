@@ -25,7 +25,7 @@ struct expression_element
     QString field;
     QString text;
     bool negate: 1;
-    enum { Contains, Less, More } match: 2;
+    enum { Contains, Equals, Less, More } match: 2;
     expression_element(): negate( false ), match( Contains ) { }
 };
 typedef QList<expression_element> or_list;
