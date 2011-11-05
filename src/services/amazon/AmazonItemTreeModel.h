@@ -28,20 +28,36 @@ class AmazonItemTreeModel : public QAbstractTableModel
 public:
     AmazonItemTreeModel( Collections::AmazonCollection* collection );
 
+    // Reimplemented from QAbstractItemModel
+    virtual int columnCount( const QModelIndex &parent ) const;
+    virtual QVariant data( const QModelIndex &index, int role ) const;
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-    int hiddenAlbums() const;
-    int rowCount( const QModelIndex &parent ) const;
-    int columnCount( const QModelIndex &parent ) const;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
-    QVariant data( const QModelIndex &index, int role ) const;
-    bool isAlbum( const QModelIndex &index ) const;
-    virtual QStringList mimeTypes() const;
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
     virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
+    virtual QStringList mimeTypes() const;
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    /**
+    * Returns the number of albums without price. These should be hidden in the view.
+    */
+    int hiddenAlbums() const;
+
+    /**
+    * Checks if the item at the specified index is an album or not.
+    * @param index the QModelIndex to check.
+    * @return true if album, false if track.
+    */
+    bool isAlbum( const QModelIndex &index ) const;
 
 private:
     Collections::AmazonCollection* m_collection;
     int m_hiddenAlbums;
 
+    /**
+    * Helper function. Returns the pretty name for the item at the specified index.
+    * @param index the QModelIndex to generate the pretty name from.
+    * @return pretty name of the item at the specified index.
+    */
     QString prettyNameByIndex( const QModelIndex &index ) const;
 
 private slots:

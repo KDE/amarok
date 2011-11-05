@@ -32,52 +32,15 @@ AmazonItemTreeModel::AmazonItemTreeModel( Collections::AmazonCollection* collect
     connect( m_collection, SIGNAL( updated() ), this, SLOT( collectionChanged() ) );
 }
 
-int AmazonItemTreeModel::rowCount( const QModelIndex &parent ) const
-{
-    Q_UNUSED( parent );
-    if( !m_collection )
-        return 0;
-
-    return m_collection->albumIDMap()->size() + m_collection->trackIDMap()->size() - m_hiddenAlbums;
-}
-
-int AmazonItemTreeModel::columnCount( const QModelIndex &parent ) const
+int
+AmazonItemTreeModel::columnCount( const QModelIndex &parent ) const
 {
     Q_UNUSED( parent );
     return 2; // name and price
 }
 
-QVariant AmazonItemTreeModel::headerData( int section, Qt::Orientation orientation, int role ) const
-{
-    if( orientation == Qt::Horizontal ) // column headers
-    {
-        if( role == Qt::DisplayRole ) // text
-        {
-            switch( section )
-            {
-                case 0:
-                    return i18n( "Name" );
-                    break;
-                case 1:
-                    return i18n( "Price" );
-                    break;
-                default:
-                    return QVariant(); // should not happen
-            }
-        }
-        else if( role == Qt::DecorationRole ) //icon
-        {
-            // TODO
-        }
-    }
-
-    else if( orientation == Qt::Vertical ) // row headers
-        return QVariant();
-
-    return QVariant();
-}
-
-QVariant AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
+QVariant
+AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
 {
     if( !index.isValid() )
         return QVariant();
@@ -132,28 +95,46 @@ QVariant AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 }
 
-Qt::ItemFlags AmazonItemTreeModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags
+AmazonItemTreeModel::flags( const QModelIndex &index ) const
 {
     Q_UNUSED( index )
     return ( Qt::ItemIsDragEnabled | Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 }
 
-bool AmazonItemTreeModel::isAlbum( const QModelIndex &index ) const
+QVariant
+AmazonItemTreeModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-    if( index.row() < m_collection->albumIDMap()->size() - m_hiddenAlbums ) // album
-        return true;
-    else
-        return false;
+    if( orientation == Qt::Horizontal ) // column headers
+    {
+        if( role == Qt::DisplayRole ) // text
+        {
+            switch( section )
+            {
+                case 0:
+                    return i18n( "Name" );
+                    break;
+                case 1:
+                    return i18n( "Price" );
+                    break;
+                default:
+                    return QVariant(); // should not happen
+            }
+        }
+        else if( role == Qt::DecorationRole ) //icon
+        {
+            // TODO
+        }
+    }
+
+    else if( orientation == Qt::Vertical ) // row headers
+        return QVariant();
+
+    return QVariant();
 }
 
-QStringList AmazonItemTreeModel::mimeTypes() const
-{
-    QStringList types;
-    types << AmarokMimeData::TRACK_MIME;
-    return types;
-}
-
-QMimeData* AmazonItemTreeModel::mimeData( const QModelIndexList &indices ) const
+QMimeData*
+AmazonItemTreeModel::mimeData( const QModelIndexList &indices ) const
 {
     if( indices.isEmpty() )
         return 0;
@@ -175,7 +156,44 @@ QMimeData* AmazonItemTreeModel::mimeData( const QModelIndexList &indices ) const
     return mimeData;
 }
 
-QString AmazonItemTreeModel::prettyNameByIndex( const QModelIndex &index ) const
+QStringList
+AmazonItemTreeModel::mimeTypes() const
+{
+    QStringList types;
+    types << AmarokMimeData::TRACK_MIME;
+    return types;
+}
+
+int
+AmazonItemTreeModel::rowCount( const QModelIndex &parent ) const
+{
+    Q_UNUSED( parent );
+    if( !m_collection )
+        return 0;
+
+    return m_collection->albumIDMap()->size() + m_collection->trackIDMap()->size() - m_hiddenAlbums;
+}
+
+bool
+AmazonItemTreeModel::isAlbum( const QModelIndex &index ) const
+{
+    if( index.row() < m_collection->albumIDMap()->size() - m_hiddenAlbums ) // album
+        return true;
+    else
+        return false;
+}
+
+int
+AmazonItemTreeModel::hiddenAlbums() const
+{
+    return m_hiddenAlbums;
+}
+
+
+// private
+
+QString
+AmazonItemTreeModel::prettyNameByIndex( const QModelIndex &index ) const
 {
     QString prettyName;
     int id;
@@ -200,14 +218,11 @@ QString AmazonItemTreeModel::prettyNameByIndex( const QModelIndex &index ) const
     return prettyName;
 }
 
-int AmazonItemTreeModel::hiddenAlbums() const
-{
-    return m_hiddenAlbums;
-}
-
 
 // private slots
-void AmazonItemTreeModel::collectionChanged()
+
+void
+AmazonItemTreeModel::collectionChanged()
 {
     // the following calculation dramatically changes the model
     emit beginResetModel();
