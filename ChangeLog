@@ -48,6 +48,7 @@ Version 2.5.0-Beta 1
     * Current track applet: show number of artists instead of genres. (BR 261077)
 
   BUGFIXES:
+    * Fixed collection browser tracks grouping after switching to Merged View. (BR 277015)
     * Prefer track artist to album artist in Albums applet fiter. (BR 266682)
     * Fix the Metadata property of the MPRIS2 interface
     * Fixed Wikipedia search field not accepting space character or cursor

@@ -54,6 +54,9 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
     updateHeaderText();
     m_expandedItems.clear();
     m_expandedSpecialNodes.clear();
+    d->runningQueries.clear();
+    d->childQueries.clear();
+    d->compilationQueries.clear();
     reset(); //resets the whole model, as the data changed
 }
 
