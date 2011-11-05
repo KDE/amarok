@@ -75,7 +75,7 @@ void AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
     else // track
     {
         QAction *addToPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ), QString( i18n( "Add Preview to Playlist" ) ), &menu );
-        actions.append( addToPlaylistAction );
+        actions.prepend( addToPlaylistAction ); // this should be the first action
         connect( addToPlaylistAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
     }
 
@@ -158,12 +158,6 @@ void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
     {
         QActionList actions;
 
-        QAction *addToCartAction = new QAction( QString( i18n( "Add to Cart" ) ), this );
-        actions.append( addToCartAction );
-        connect( addToCartAction, SIGNAL( triggered() ), this, SIGNAL( addToCart() ) );
-
-        m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 0 ) ) );
-
         AmazonItemTreeModel *amazonModel;
         amazonModel = dynamic_cast<AmazonItemTreeModel*>( model() );
 
@@ -175,7 +169,7 @@ void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
             QAction *getDetailsAction = new QAction( QString( i18n( "Load Details..." ) ), this );
             actions.append( getDetailsAction );
             connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
-            m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 1 ) ) );
+            m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 0 ) ) );
         }
         else // track
         {
@@ -183,8 +177,13 @@ void AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
             addToPlaylistAction->setProperty( "popupdropper_svg_id", "append" );
             actions.append( addToPlaylistAction );
             connect( addToPlaylistAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
-            m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 1 ) ) );
+            m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 0 ) ) );
         }
+
+        QAction *addToCartAction = new QAction( QString( i18n( "Add to Cart" ) ), this );
+        actions.append( addToCartAction );
+        connect( addToCartAction, SIGNAL( triggered() ), this, SIGNAL( addToCart() ) );
+        m_pd->addItem( The::popupDropperFactory()->createItem( actions.at( 1 ) ) );
 
         m_pd->show();
     }
