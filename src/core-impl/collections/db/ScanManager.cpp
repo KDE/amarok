@@ -509,7 +509,7 @@ ScannerJob::run()
             break;
 
         // -- scan as many directory tags as we added to the data
-        while( !m_reader.atEnd() )
+        while( !m_reader.atEnd() && !m_abortRequested )
         {
             m_reader.readNext();
             if( m_reader.hasError() )
@@ -573,18 +573,21 @@ ScannerJob::run()
 
     if( m_abortRequested )
     {
+        QMutexLocker locker( &m_mutex );
         debug() << "Aborting ScanManager ScannerJob";
         emit failed( m_abortReason );
         processor->rollback();
     }
     else if( !finished && m_reader.hasError() )
     {
+        QMutexLocker locker( &m_mutex );
         warning() << "Aborting ScanManager ScannerJob with error"<<m_reader.errorString();
         emit failed( i18n( "Aborting scanner with error: %1", m_reader.errorString() ) );
         processor->rollback();
     }
     else
     {
+        QMutexLocker locker( &m_mutex );
         processor->commit();
         emit endProgressOperation( this );
     }

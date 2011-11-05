@@ -262,7 +262,7 @@ class ScannerJob : public ThreadWeaver::Job
         QScopedPointer< QIODevice > m_input;
 
         int m_restartCount;
-        bool m_abortRequested;
+        volatile bool m_abortRequested;
         QString m_abortReason;
         QString m_incompleteTagBuffer; // strings received via addNewXmlData but not terminated by either a </directory> or a </scanner>
 
