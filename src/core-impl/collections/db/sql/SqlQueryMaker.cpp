@@ -1112,7 +1112,7 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
     }
     else
     {
-        return QString( " = '%1' " ).arg( escape( text ) );
+        return QString( " = '%1' COLLATE utf8_unicode_ci " ).arg( escape( text ) );
     }
 }
 
