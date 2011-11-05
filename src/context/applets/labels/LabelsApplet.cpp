@@ -90,7 +90,7 @@ LabelsApplet::init()
     // Create the title label
     enableHeader( true );
     setHeaderText( i18n( "Labels" ) );
-    
+
     setCollapseHeight( m_header->height() );
     setMinimumHeight( collapseHeight() );
 
@@ -172,7 +172,7 @@ LabelsApplet::setStoppedState( bool stopped )
 {
     if( stopped == m_stoppedstate )
         return;
-    
+
     m_stoppedstate = stopped;
 
     m_userLabels.clear();
@@ -217,7 +217,7 @@ LabelsApplet::animationFinished()
 {
     if( QObject::sender() == 0 )
         return;
-    
+
     for( int i=0; i<m_labelAnimations.count(); i++ )
     {
         if( QObject::sender() == m_labelAnimations.at(i) )
@@ -228,7 +228,7 @@ LabelsApplet::animationFinished()
             return;
         }
     }
-    
+
     prepareGeometryChange();
     for( int i=0; i<m_labelAnimationsToDelete.count(); i++ )
     {
@@ -333,7 +333,7 @@ LabelsApplet::updateLabels()
             i--;
         }
     }
-    
+
     // and finally create the LabelGraphicsItems
     // add them to a temp list first, so they are in the same order as the final label items map (sorted alphabetically)
     QList < LabelGraphicsItem * > tempLabelItems;
@@ -342,7 +342,7 @@ LabelsApplet::updateLabels()
     while( it_final.hasNext() )
     {
         it_final.next();
-        
+
         if( it_final.key().isEmpty() ) // empty labels don't make sense but they cause a freeze
             continue;
 
@@ -350,7 +350,7 @@ LabelsApplet::updateLabels()
         int adjustedCount = qualityFactor * it_final.value();
         if( m_userLabels.contains( it_final.key() ) && adjustedCount < m_personalCount )
             adjustedCount = m_personalCount;
-        
+
         const qreal f_size = qMax( adjustedCount / 10.0 - 5.0, -2.0 );
 
         LabelGraphicsItem *labelGraphics = 0;
@@ -510,7 +510,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
         setStoppedState( false );
     else if( data.contains( "state" ) && data["state"].toString().contains("stopped") )
         setStoppedState( true );
-    
+
     if( data.contains( "message" ) && data["message"].toString().contains("fetching") )
     {
         m_titleText = i18n( "Labels: Fetching..." );
@@ -533,7 +533,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
 
     if( data.contains( "artist" ) )
         m_artist = data[ "artist" ].toString();
-    
+
     if( data.contains( "title" ) )
         m_title = data[ "title" ].toString();
 
@@ -564,7 +564,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
                 updateLabels();
         }
     }
-    
+
     if( data.contains( "web" ) )
     {
 //         debug() << "new web labels:" << QStringList(data[ "web" ].toMap().keys()).join(", ");
@@ -646,13 +646,13 @@ LabelsApplet::toggleLabel( const QString &label )
 
     if( label.isEmpty() )
         return;
-    
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
-    
+
     Meta::LabelPtr labelPtr;
-    
+
     foreach( const Meta::LabelPtr &labelIt, track->labels() )
     {
         if( label == labelIt->name() )
@@ -690,14 +690,14 @@ LabelsApplet::toggleLabel( const QString &label )
     {
         m_allLabels.append( label );
         m_allLabels.sort();
-        
+
         const QString saveText = m_addLabel.data()->lineEdit()->text();
         m_addLabel.data()->clear();
         m_addLabel.data()->insertItems( 0, m_allLabels );
         m_addLabel.data()->completionObject()->setItems( m_allLabels );
         m_addLabel.data()->lineEdit()->setText( saveText );
     }
-    
+
     // usuallay the engine keeps track of label changes of the playing track
     // (except if the lables get auto added, this is why we have to keep m_userLabels up to date)
     // but it doesn't work alway, so we update
@@ -707,7 +707,7 @@ LabelsApplet::toggleLabel( const QString &label )
 void
 LabelsApplet::listLabel( const QString &label )
 {
-    AmarokUrl bookmark( "amarok://navigate/collections?filter=label:%22" + AmarokUrl::escape( label ) + "%22" );
+    AmarokUrl bookmark( "amarok://navigate/collections?filter=label:" + AmarokUrl::escape( "=" ) + "%22" + AmarokUrl::escape( label ) + "%22" );
     bookmark.run();
 }
 
@@ -782,7 +782,7 @@ LabelsApplet::saveSettings()
     m_minAutoAddCount = ui_GeneralSettings.minAutoAddCountSpinBox->value();
     m_selectedColor = ui_GeneralSettings.selectedColorButton->color();
     m_backgroundColor = ui_GeneralSettings.backgroundColorButton->color();
-    
+
     m_matchArtist = ui_BlacklistSettings.matchArtistCheckBox->checkState() == Qt::Checked;
     m_matchTitle = ui_BlacklistSettings.matchTitleCheckBox->checkState() == Qt::Checked;
     m_matchAlbum = ui_BlacklistSettings.matchAlbumCheckBox->checkState() == Qt::Checked;
@@ -794,7 +794,7 @@ LabelsApplet::saveSettings()
         QTreeWidgetItem *item = ui_ReplacementSettings.replacementTreeWidget->topLevelItem( i );
         m_replacementMap.insert( item->text(0), item->text(1) );
     }
-    
+
     config.writeEntry( "NumLabels", m_numLabels );
     config.writeEntry( "MinCount", m_minCount );
     config.writeEntry( "PersonalCount", m_personalCount );
@@ -802,7 +802,7 @@ LabelsApplet::saveSettings()
     config.writeEntry( "MinAutoAddCount", m_minAutoAddCount );
     config.writeEntry( "SelectedColor", m_selectedColor );
     config.writeEntry( "BackgroundColor", m_backgroundColor );
-    
+
     config.writeEntry( "MatchArtist", m_matchArtist );
     config.writeEntry( "MatchTitle", m_matchTitle );
     config.writeEntry( "MatchAlbum", m_matchAlbum );
@@ -822,7 +822,7 @@ LabelsApplet::saveSettings()
         replacementList.append( label + "|" + replacement );
     }
     config.writeEntry( "ReplacementList", replacementList );
-    
+
     for( int i=0; i<m_labelItems.count(); i++ )
     {
         m_labelItems.at(i)->setSelectedColor( m_selectedColor );
@@ -868,5 +868,5 @@ LabelsApplet::settingsRemoveReplacement()
     }
 }
 
-    
+
 #include "LabelsApplet.moc"
