@@ -216,9 +216,12 @@ CurrentEngine::update( Meta::AlbumPtr album )
     if( !album )
         return;
 
-    Meta::ArtistPtr artist = album->albumArtist();
+    Meta::ArtistPtr artist = track->artist();
+
+    // Prefer track artist to album artist BUG: 266682
     if( !artist )
-        artist = track->artist();
+        artist = album->albumArtist();
+    
 
     if( artist && !artist->name().isEmpty() )
     {
