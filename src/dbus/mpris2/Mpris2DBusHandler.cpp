@@ -35,6 +35,7 @@
 
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QDBusObjectPath>
 
 #include <KAboutData>
 #include <KCmdLineArgs>
@@ -445,7 +446,7 @@ namespace Amarok
             // FIXME: activeMprisTrackId changes when the current track is put in or removed from
             //        the playlist...
             QVariantMap metaData = Meta::Field::mpris20MapFromTrack( currentTrack );
-            metaData["mpris:trackid"] = activeMprisTrackId();
+            metaData["mpris:trackid"] = QVariant::fromValue<QDBusObjectPath>(QDBusObjectPath(activeMprisTrackId()));
 
             setPropertyInternal( "CanPlay", true );
             // Phonon doesn't actually tell us whether the media is pausable,
