@@ -71,6 +71,7 @@ private:
     QStringList m_sources;
     QHash< QString, bool > m_requested;
     Meta::AlbumList m_albums;
+    Plasma::DataEngine::Data m_albumData;
     Meta::TrackPtr m_currentTrack;
     qint64 m_coverCacheKey;
     QVariantMap m_trackInfo;

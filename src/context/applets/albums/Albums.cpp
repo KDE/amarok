@@ -132,6 +132,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
     if( name != QLatin1String("albums") )
         return;
 
+    DEBUG_BLOCK
     Meta::AlbumList albums = data[ "albums" ].value<Meta::AlbumList>();
     Meta::TrackPtr track = data[ "currentTrack" ].value<Meta::TrackPtr>();
     QString headerText = data[ "headerText" ].toString();
@@ -146,6 +147,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
     if( albums.isEmpty() )
     {
+        debug() << "received albums is empty";
         setCollapseOn();
         m_albums.clear();
         m_albumsView->clear();
@@ -154,7 +156,6 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
     setCollapseOff();
 
-    DEBUG_BLOCK
     m_albums = albums;
     m_currentTrack = track;
     m_albumsView->clear();

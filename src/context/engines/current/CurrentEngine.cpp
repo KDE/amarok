@@ -140,6 +140,7 @@ CurrentEngine::stopped()
     if( m_requested.value( QLatin1String("albums") ) )
     {
         removeAllData( "albums" );
+        m_albumData.clear();
 
         // Collect data for the recently added albums
         setData( "albums", "headerText", QVariant( i18n( "Recently Added Albums" ) ) );
@@ -168,15 +169,13 @@ CurrentEngine::update( Meta::TrackPtr track )
         track == m_currentTrack )
         return;
 
+    DEBUG_BLOCK
     m_currentTrack = track;
+    removeAllData( QLatin1String("current") );
 
     if( !track )
-    {
-        removeAllData( QLatin1String("current") );
         return;
-    }
 
-    removeAllData( QLatin1String("current") );
     Plasma::DataEngine::Data data;
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     data["current"] = trackInfo;
@@ -207,11 +206,9 @@ CurrentEngine::update( Meta::AlbumPtr album )
     if( !m_requested.value( QLatin1String("albums") ) )
         return;
 
+    DEBUG_BLOCK
     m_lastQueryMaker = 0;
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    removeAllData( QLatin1String("albums") );
-    setData( "albums", "currentTrack", qVariantFromValue(track) );
-    setData( "albums", "headerText", i18nc( "Header text for current album applet", "Albums" ) );
 
     if( !album )
         return;
@@ -222,13 +219,14 @@ CurrentEngine::update( Meta::AlbumPtr album )
     if( !artist )
         artist = album->albumArtist();
     
-
     if( artist && !artist->name().isEmpty() )
     {
-        setData( "albums", "headerText", QVariant( i18n( "Albums by %1", artist->name() ) ) );
+        m_albums.clear();
+        m_albumData.clear();
+        m_albumData[ QLatin1String("currentTrack") ] = qVariantFromValue( track );
+        m_albumData[ QLatin1String("headerText") ] = QVariant( i18n( "Albums by %1", artist->name() ) );
 
         // -- search the collection for albums with the same artist
-        m_albums.clear();
         Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
         qm->setAutoDelete( true );
         qm->addFilter( Meta::valArtist, artist->name(), true, true );
@@ -242,13 +240,24 @@ CurrentEngine::update( Meta::AlbumPtr album )
         m_lastQueryMaker = qm;
         qm->run();
     }
+    else
+    {
+        removeAllData( QLatin1String("albums") );
+        setData( QLatin1String("albums"), QLatin1String("headerText"),
+                 i18nc( "Header text for current album applet", "Albums" ) );
+    }
 }
 
 void
 CurrentEngine::setupAlbumsData()
 {
+    DEBUG_BLOCK
     if( sender() == m_lastQueryMaker )
-        setData( "albums", "albums", QVariant::fromValue( m_albums ) );
+    {
+        debug() << "setting up" << m_albums.count() << "albums";
+        m_albumData[ QLatin1String("albums") ] = QVariant::fromValue( m_albums );
+        setData( QLatin1String("albums"), m_albumData );
+    }
 }
 
 void
