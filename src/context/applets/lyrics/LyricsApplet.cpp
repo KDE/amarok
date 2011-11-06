@@ -387,8 +387,8 @@ LyricsAppletPrivate::_trackDataChanged( Meta::TrackPtr track )
     // additionally is in edit mode) are different from the
     // lyrics of the track we have to show a warning.
     if( !isShowingUnsavedWarning && currentTrack &&
-        (currentTrack->cachedLyrics() != browser->lyrics()) &&
-        !browser->isReadOnly()  )
+        !browser->isReadOnly() &&
+        (currentTrack->cachedLyrics() != browser->lyrics()) )
     {
         isShowingUnsavedWarning = true;
         showUnsavedChangesWarning( track );
