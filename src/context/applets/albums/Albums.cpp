@@ -294,7 +294,12 @@ void Albums::saveConfiguration()
 {
     Amarok::config("Albums Applet").writeEntry( "RecentlyAdded", QString::number( m_recentCount ) );
     Amarok::config("Albums Applet").writeEntry( "RightAlignLength", m_rightAlignLength );
-    updateData();
+
+    // clear to force an update
+    m_albums.clear();
+
+    Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "albums" );
+    dataUpdated( QLatin1String("albums"), data );
 }
 
 void Albums::collectionDataChanged( Collections::Collection *collection )
@@ -302,15 +307,6 @@ void Albums::collectionDataChanged( Collections::Collection *collection )
     Q_UNUSED( collection )
 
     DEBUG_BLOCK
-}
-
-void Albums::updateData()
-{
-    // clear to force an update
-    m_albums.clear();
-
-    Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "albums" );
-    dataUpdated( QLatin1String("albums"), data );
 }
 
 AlbumsFilterBar::AlbumsFilterBar( QGraphicsItem *parent, Qt::WindowFlags wFlags )

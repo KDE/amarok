@@ -50,7 +50,6 @@ protected:
     void keyPressEvent( QKeyEvent *event );
 
 private slots:
-    void updateData();
     void collectionDataChanged( Collections::Collection *collection );
     void saveConfiguration();
     void setRecentCount( int val );
