@@ -124,8 +124,9 @@ Plugins::PluginManager::checkPluginEnabledStates()
     KPluginInfo::List newlyEnabledList;
     foreach( const KPluginInfo::List &plugins, m_pluginInfos )
     {
-        foreach( const KPluginInfo &plugin, plugins )
+        foreach( KPluginInfo plugin, plugins )
         {
+            plugin.load( Amarok::config(QLatin1String("Plugins")) ); // load enabled state of plugin
             QString name = plugin.pluginName();
             bool enabled = plugin.isPluginEnabled();
             if( !enabled || m_factoryCreated.value(name) )
@@ -221,12 +222,14 @@ Plugins::PluginManager::findAllPlugins()
     QString query = QString::fromLatin1( "[X-KDE-Amarok-framework-version] == %1"
                                          "and [X-KDE-Amarok-rank] > 0" ).arg( s_pluginFrameworkVersion );
 
+    KConfigGroup pluginsConfig = Amarok::config(QLatin1String("Plugins"));
     KService::List services = KServiceTypeTrader::self()->query( "Amarok/Plugin", query );
-    KPluginInfo::List plugins = KPluginInfo::fromServices( services );
+    KPluginInfo::List plugins = KPluginInfo::fromServices( services, pluginsConfig );
     qSort( plugins ); // sort list by category
 
-    foreach( const KPluginInfo &info, plugins )
+    foreach( KPluginInfo info, plugins )
     {
+        info.load( pluginsConfig ); // load the enabled state of plugin
         QString name = info.pluginName();
         m_pluginInfos[ info.category() ] << info;
         debug() << "found plugin:" << name << "enabled:" << info.isPluginEnabled();
