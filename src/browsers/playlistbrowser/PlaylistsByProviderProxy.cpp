@@ -266,22 +266,27 @@ PlaylistsByProviderProxy::buildTree()
     //add the empty providers at the top of the list
     PlaylistProviderList providerList =
             The::playlistManager()->providersForCategory( m_playlistCategory );
-    foreach( Playlists::PlaylistProvider *provider, providerList )
+    if( !providerList.isEmpty() )
     {
-        if( provider && ( provider->playlistCount() > 0 || provider->playlists().count() > 0 ) )
-            continue;
+        beginInsertRows( QModelIndex(), 0, providerList.count() );
+        foreach( Playlists::PlaylistProvider *provider, providerList )
+        {
+            if( provider && ( provider->playlistCount() > 0 || provider->playlists().count() > 0 ) )
+                continue;
 
-        ItemData itemData;
-        itemData.insert( Qt::DisplayRole, provider->prettyName() );
-        itemData.insert( Qt::DecorationRole, provider->icon() );
-        itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole,
-                         QVariant::fromValue( provider->providerActions() ) );
-        itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ByLineRole, QString() );
-        RowData rowData;
-        rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::PlaylistItemColumn, itemData );
-        //Provider column is used for filtering.
-        rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ProviderColumn, itemData );
-        m_groupMaps << rowData;
+            ItemData itemData;
+            itemData.insert( Qt::DisplayRole, provider->prettyName() );
+            itemData.insert( Qt::DecorationRole, provider->icon() );
+            itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole,
+                             QVariant::fromValue( provider->providerActions() ) );
+            itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ByLineRole, QString() );
+            RowData rowData;
+            rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::PlaylistItemColumn, itemData );
+            //Provider column is used for filtering.
+            rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ProviderColumn, itemData );
+            m_groupMaps << rowData;
+        }
+        endInsertRows();
     }
 
     QtGroupingProxy::buildTree();
