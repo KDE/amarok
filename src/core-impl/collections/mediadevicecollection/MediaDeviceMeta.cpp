@@ -832,6 +832,8 @@ MediaDeviceAlbum::MediaDeviceAlbum( Collections::MediaDeviceCollection *collecti
 
 MediaDeviceAlbum::~MediaDeviceAlbum()
 {
+    if( m_artworkCapability )
+        m_artworkCapability.data()->deleteLater();
     CoverCache::invalidateAlbum( this );
 }
 
