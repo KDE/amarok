@@ -327,50 +327,84 @@ Dynamic::TagMatchBias::newQuery()
     m_qm.reset( CollectionManager::instance()->queryMaker() );
 
     // -- set the querymaker
-    switch( m_filter.condition )
+    if( m_filter.isDate() )
     {
-    case MetaQueryWidget::Equals:
-    case MetaQueryWidget::GreaterThan:
-    case MetaQueryWidget::LessThan:
-        m_qm->addNumberFilter( m_filter.field, m_filter.numValue,
-                               (Collections::QueryMaker::NumberComparison)m_filter.condition );
-        break;
-    case MetaQueryWidget::Between:
-        m_qm->beginAnd();
-        m_qm->addNumberFilter( m_filter.field, qMin(m_filter.numValue, m_filter.numValue2)-1,
-                               Collections::QueryMaker::GreaterThan );
-        m_qm->addNumberFilter( m_filter.field, qMax(m_filter.numValue, m_filter.numValue2)+1,
-                               Collections::QueryMaker::LessThan );
-        m_qm->endAndOr();
-        break;
-    case MetaQueryWidget::OlderThan:
-        m_qm->addNumberFilter( m_filter.field, QDateTime::currentDateTime().toTime_t() - m_filter.numValue,
-                               Collections::QueryMaker::LessThan );
-        break;
-
-    case MetaQueryWidget::Contains:
-        if( m_filter.field == 0 )
+        switch( m_filter.condition )
         {
-            // simple search
-            // TODO: split different words and make seperate searches
-            m_qm->beginOr();
-            m_qm->addFilter( Meta::valArtist,  m_filter.value );
-            m_qm->addFilter( Meta::valTitle,   m_filter.value );
-            m_qm->addFilter( Meta::valAlbum,   m_filter.value );
-            m_qm->addFilter( Meta::valGenre,   m_filter.value );
-            m_qm->addFilter( Meta::valUrl,     m_filter.value );
-            m_qm->addFilter( Meta::valComment, m_filter.value );
-            m_qm->addFilter( Meta::valLabel,   m_filter.value );
+        case MetaQueryWidget::LessThan:
+        case MetaQueryWidget::Equals:
+        case MetaQueryWidget::GreaterThan:
+            m_qm->addNumberFilter( m_filter.field, m_filter.numValue,
+                                (Collections::QueryMaker::NumberComparison)m_filter.condition );
+            break;
+        case MetaQueryWidget::Between:
+            m_qm->beginAnd();
+            m_qm->addNumberFilter( m_filter.field, qMin(m_filter.numValue, m_filter.numValue2)-1,
+                                Collections::QueryMaker::GreaterThan );
+            m_qm->addNumberFilter( m_filter.field, qMax(m_filter.numValue, m_filter.numValue2)+1,
+                                Collections::QueryMaker::LessThan );
             m_qm->endAndOr();
+            break;
+        case MetaQueryWidget::OlderThan:
+            m_qm->addNumberFilter( m_filter.field, QDateTime::currentDateTime().toTime_t() - m_filter.numValue,
+                                Collections::QueryMaker::LessThan );
+            break;
+        default:
+            ;
         }
-        else
+    }
+    else if( m_filter.isNumeric() )
+    {
+        switch( m_filter.condition )
         {
-            m_qm->addFilter( m_filter.field, m_filter.value );
+        case MetaQueryWidget::LessThan:
+        case MetaQueryWidget::Equals:
+        case MetaQueryWidget::GreaterThan:
+            m_qm->addNumberFilter( m_filter.field, m_filter.numValue,
+                                (Collections::QueryMaker::NumberComparison)m_filter.condition );
+            break;
+        case MetaQueryWidget::Between:
+            m_qm->beginAnd();
+            m_qm->addNumberFilter( m_filter.field, qMin(m_filter.numValue, m_filter.numValue2)-1,
+                                Collections::QueryMaker::GreaterThan );
+            m_qm->addNumberFilter( m_filter.field, qMax(m_filter.numValue, m_filter.numValue2)+1,
+                                Collections::QueryMaker::LessThan );
+            m_qm->endAndOr();
+            break;
+        default:
+            ;
         }
-        break;
-
-    default:
-        ;// the other conditions are only for the advanced playlist generator
+    }
+    else
+    {
+        switch( m_filter.condition )
+        {
+        case MetaQueryWidget::Equals:
+            m_qm->addFilter( m_filter.field, m_filter.value, true, true );
+            break;
+        case MetaQueryWidget::Contains:
+            if( m_filter.field == 0 )
+            {
+                // simple search
+                // TODO: split different words and make seperate searches
+                m_qm->beginOr();
+                m_qm->addFilter( Meta::valArtist,  m_filter.value );
+                m_qm->addFilter( Meta::valTitle,   m_filter.value );
+                m_qm->addFilter( Meta::valAlbum,   m_filter.value );
+                m_qm->addFilter( Meta::valGenre,   m_filter.value );
+                m_qm->addFilter( Meta::valUrl,     m_filter.value );
+                m_qm->addFilter( Meta::valComment, m_filter.value );
+                m_qm->addFilter( Meta::valLabel,   m_filter.value );
+                m_qm->endAndOr();
+            }
+            else
+            {
+                m_qm->addFilter( m_filter.field, m_filter.value );
+            }
+            break;
+        default:
+            ;
+        }
     }
 
     m_qm->setQueryType( Collections::QueryMaker::Custom );
@@ -418,29 +452,64 @@ Dynamic::TagMatchBias::matches( const Meta::TrackPtr &track ) const
     QVariant value = Meta::valueForField( m_filter.field, track );
 
     bool result = false;
-    switch( m_filter.condition )
+    if( m_filter.isDate() )
     {
-    case MetaQueryWidget::Equals:
-        result = value.toLongLong() == m_filter.numValue;
-        break;
-    case MetaQueryWidget::GreaterThan:
-        result = value.toLongLong() > m_filter.numValue;
-        break;
-    case MetaQueryWidget::LessThan:
-        result = value.toLongLong() < m_filter.numValue;
-        break;
-    case MetaQueryWidget::Between:
-        result = value.toLongLong() > m_filter.numValue &&
-            value.toLongLong() < m_filter.numValue2;
-        break;
-    case MetaQueryWidget::OlderThan:
-        result = value.toLongLong() < m_filter.numValue + QDateTime::currentDateTime().toTime_t();
-        break;
-    case MetaQueryWidget::Contains:
-        result = value.toString().contains( m_filter.value, Qt::CaseInsensitive );
-        break;
-    default:
-        ;// the other conditions are only for the advanced playlist generator
+        switch( m_filter.condition )
+        {
+        case MetaQueryWidget::LessThan:
+            result = value.toLongLong() < m_filter.numValue;
+            break;
+        case MetaQueryWidget::Equals:
+            result = value.toLongLong() == m_filter.numValue;
+            break;
+        case MetaQueryWidget::GreaterThan:
+            result = value.toLongLong() > m_filter.numValue;
+            break;
+        case MetaQueryWidget::Between:
+            result = value.toLongLong() > m_filter.numValue &&
+                value.toLongLong() < m_filter.numValue2;
+            break;
+        case MetaQueryWidget::OlderThan:
+            result = value.toLongLong() < m_filter.numValue + QDateTime::currentDateTime().toTime_t();
+            break;
+        default:
+            ;
+        }
+    }
+    else if( m_filter.isNumeric() )
+    {
+        switch( m_filter.condition )
+        {
+        case MetaQueryWidget::LessThan:
+            result = value.toLongLong() < m_filter.numValue;
+            break;
+        case MetaQueryWidget::Equals:
+            result = value.toLongLong() == m_filter.numValue;
+            break;
+        case MetaQueryWidget::GreaterThan:
+            result = value.toLongLong() > m_filter.numValue;
+            break;
+        case MetaQueryWidget::Between:
+            result = value.toLongLong() > m_filter.numValue &&
+                value.toLongLong() < m_filter.numValue2;
+            break;
+        default:
+            ;
+        }
+    }
+    else
+    {
+        switch( m_filter.condition )
+        {
+        case MetaQueryWidget::Equals:
+            result = value.toString() == m_filter.value;
+            break;
+        case MetaQueryWidget::Contains:
+            result = value.toString().contains( m_filter.value, Qt::CaseInsensitive );
+            break;
+        default:
+            ;
+        }
     }
     if( m_invert )
         return !result;
