@@ -85,9 +85,9 @@ int main( int argc, char *argv[] )
     ocsData.addAuthor( "MarkKretschmann", aboutData.authors().at( 7 ) );
     ocsData.addAuthor( QString(), aboutData.authors().at( 8 ) );
     ocsData.addAuthor( "nhnFreespirit", aboutData.authors().at( 9 ) );
-    ocsData.addAuthor( "stuffcorpse", aboutData.authors().at( 11 ) );
-    ocsData.addAuthor( "seb", aboutData.authors().at( 12 ) );
-    ocsData.addAuthor( "teom", aboutData.authors().at( 13 ) );
+    ocsData.addAuthor( "stuffcorpse", aboutData.authors().at( 10 ) );
+    ocsData.addAuthor( "seb", aboutData.authors().at( 11 ) );
+    ocsData.addAuthor( "teom", aboutData.authors().at( 12 ) );
 
     //Contributors
     aboutData.addCredit( ki18n("Alex Merry"), ki18n("Developer, Replay Gain support"), "kde@randomguy3.me.uk" );
