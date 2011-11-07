@@ -49,7 +49,6 @@ GpodderServiceConfig::GpodderServiceConfig()
     load();
 }
 
-
 GpodderServiceConfig::~GpodderServiceConfig()
 {
     DEBUG_BLOCK
@@ -60,7 +59,6 @@ GpodderServiceConfig::~GpodderServiceConfig()
     if( m_wallet )
         m_wallet->deleteLater();
 }
-
 
 void
 GpodderServiceConfig::load()
@@ -98,7 +96,6 @@ GpodderServiceConfig::load()
     m_synchronise = config.readEntry( "synchronise", false );
 }
 
-
 void
 GpodderServiceConfig::save()
 {
@@ -135,7 +132,6 @@ GpodderServiceConfig::save()
     config.sync();
 }
 
-
 void
 GpodderServiceConfig::askAboutMissingKWallet()
 {
@@ -148,8 +144,8 @@ GpodderServiceConfig::askAboutMissingKWallet()
         m_askDiag->setButtons( KDialog::Yes | KDialog::No );
         m_askDiag->setModal( true );
 
-        connect( m_askDiag, SIGNAL( yesClicked() ), this, SLOT( textDialogYes() ) );
-        connect( m_askDiag, SIGNAL( noClicked() ), this, SLOT( textDialogNo() ) );
+        connect( m_askDiag, SIGNAL(yesClicked()), this, SLOT(textDialogYes()) );
+        connect( m_askDiag, SIGNAL(noClicked()), this, SLOT(textDialogNo()) );
     }
 
     m_askDiag->exec();
@@ -166,7 +162,6 @@ GpodderServiceConfig::reset()
     m_synchronise = false;
 }
 
-
 void
 GpodderServiceConfig::textDialogYes() //SLOT
 {
@@ -178,7 +173,6 @@ GpodderServiceConfig::textDialogYes() //SLOT
 
     config.sync();
 }
-
 
 void
 GpodderServiceConfig::textDialogNo() //SLOT

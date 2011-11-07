@@ -85,7 +85,6 @@ private:
 
     QPushButton *m_subscribeButton;
     QItemSelectionModel *m_selectionModel;
-
 };
 
 #endif  // GPODDERSERVICE_H

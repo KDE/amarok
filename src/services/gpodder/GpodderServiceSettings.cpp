@@ -54,9 +54,9 @@ GpodderServiceSettings::GpodderServiceSettings( QWidget *parent, const QVariantL
     m_configDialog->setupUi( w );
     l->addWidget( w );
 
-    connect( m_configDialog->kcfg_GpodderUsername, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
-    connect( m_configDialog->kcfg_GpodderPassword, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
-    connect( m_configDialog->testLogin, SIGNAL( clicked() ), this, SLOT( testLogin() ) );
+    connect( m_configDialog->kcfg_GpodderUsername, SIGNAL(textChanged( const QString & )), this, SLOT(settingsChanged()) );
+    connect( m_configDialog->kcfg_GpodderPassword, SIGNAL(textChanged( const QString & )), this, SLOT(settingsChanged()) );
+    connect( m_configDialog->testLogin, SIGNAL(clicked()), this, SLOT(testLogin()) );
 
     load();
 }
@@ -125,13 +125,13 @@ GpodderServiceSettings::finished()
                                m_configDialog->kcfg_GpodderPassword->text(), The::networkAccessManager() );
 
         m_createDevice = api.renameDevice( m_configDialog->kcfg_GpodderUsername->text(),
-                                           QLatin1String("amarok"),
+                                           QLatin1String( "amarok" ),
                                            QLatin1String( "Device for gpodder.net in Amarok" ),
                                            mygpo::Device::OTHER );
 
-        connect( m_createDevice, SIGNAL( finished() ), SLOT( deviceCreationFinished()) );
-        connect( m_createDevice, SIGNAL( error( QNetworkReply::NetworkError ) ),
-                                 SLOT( deviceCreationError( QNetworkReply::NetworkError ) ) );
+        connect( m_createDevice, SIGNAL(finished() ), SLOT(deviceCreationFinished()) );
+        connect( m_createDevice, SIGNAL(error( QNetworkReply::NetworkError )),
+                                 SLOT(deviceCreationError( QNetworkReply::NetworkError )) );
     }
     else
     {

@@ -170,7 +170,7 @@ GpodderServiceModel::topTagsRequestError( QNetworkReply::NetworkError error )
 
     debug() << "Error in TopTags request: " << error;
 
-    QTimer::singleShot( 20 * 1000, this, SLOT( requestTopTags() ) );
+    QTimer::singleShot( 20 * 1000, this, SLOT(requestTopTags()) );
 }
 
 void
@@ -180,7 +180,7 @@ GpodderServiceModel::topTagsParseError()
 
     debug() << "Error while parsing TopTags";
 
-    QTimer::singleShot( 20 * 1000, this, SLOT( requestTopTags() ) );
+    QTimer::singleShot( 20 * 1000, this, SLOT(requestTopTags()) );
 }
 
 void
@@ -190,7 +190,7 @@ GpodderServiceModel::topPodcastsRequestError( QNetworkReply::NetworkError error 
 
     debug() << "Error in TopPodcasts request: " << error;
 
-    QTimer::singleShot( 20 * 1000, this, SLOT( requestTopPodcasts() ) );
+    QTimer::singleShot( 20 * 1000, this, SLOT(requestTopPodcasts()) );
 }
 
 void
@@ -200,7 +200,7 @@ GpodderServiceModel::topPodcastsParseError()
 
     debug() << "Error while parsing TopPodcasts";
 
-    QTimer::singleShot( 20 * 1000, this, SLOT( requestTopPodcasts() ) );
+    QTimer::singleShot( 20 * 1000, this, SLOT(requestTopPodcasts()) );
 }
 
 void
@@ -210,7 +210,7 @@ GpodderServiceModel::suggestedPodcastsRequestError( QNetworkReply::NetworkError 
 
     debug() << "Error in suggestedPodcasts request: " << error;
 
-    QTimer::singleShot( 20 * 1000, this, SLOT( requestSuggestedPodcasts() ) );
+    QTimer::singleShot( 20 * 1000, this, SLOT(requestSuggestedPodcasts()) );
 }
 
 void
@@ -220,7 +220,7 @@ GpodderServiceModel::suggestedPodcastsParseError()
 
     debug() << "Error while parsing suggestedPodcasts";
 
-    QTimer::singleShot( 20 * 1000, this, SLOT( requestSuggestedPodcasts() ) );
+    QTimer::singleShot( 20 * 1000, this, SLOT(requestSuggestedPodcasts()) );
 }
 
 void
@@ -329,9 +329,9 @@ GpodderServiceModel::requestTopTags()
     m_rootItem->setHasChildren( true );
 
     m_topTags = m_request->topTags( s_numberItemsToLoad );
-    connect( m_topTags.data(), SIGNAL( finished() ), this, SLOT( insertTagList() ) );
-    connect( m_topTags.data(), SIGNAL( requestError( QNetworkReply::NetworkError ) ), SLOT( topTagsRequestError( QNetworkReply::NetworkError ) ) );
-    connect( m_topTags.data(), SIGNAL( parseError() ), SLOT( topTagsParseError() ) );
+    connect( m_topTags.data(), SIGNAL(finished()), this, SLOT(insertTagList()) );
+    connect( m_topTags.data(), SIGNAL(requestError( QNetworkReply::NetworkError )), SLOT(topTagsRequestError( QNetworkReply::NetworkError )) );
+    connect( m_topTags.data(), SIGNAL(parseError()), SLOT(topTagsParseError()) );
 }
 
 void
@@ -341,9 +341,9 @@ GpodderServiceModel::requestTopPodcasts()
 
     mygpo::PodcastListPtr topPodcasts = m_request->toplist( s_numberItemsToLoad );
     GpodderPodcastRequestHandler *podcastRequestHandler1 = new GpodderPodcastRequestHandler( topPodcasts, createIndex( 0,0, m_topPodcastsItem ), this );
-    connect( topPodcasts.data(), SIGNAL( finished() ), podcastRequestHandler1, SLOT( finished() ) );
-    connect( topPodcasts.data(), SIGNAL( requestError( QNetworkReply::NetworkError ) ), SLOT( topPodcastsRequestError( QNetworkReply::NetworkError ) ) );
-    connect( topPodcasts.data(), SIGNAL( parseError() ), SLOT( topPodcastsParseError() ) );
+    connect( topPodcasts.data(), SIGNAL(finished()), podcastRequestHandler1, SLOT(finished()) );
+    connect( topPodcasts.data(), SIGNAL(requestError( QNetworkReply::NetworkError )), SLOT(topPodcastsRequestError( QNetworkReply::NetworkError )) );
+    connect( topPodcasts.data(), SIGNAL(parseError()), SLOT(topPodcastsParseError()) );
 }
 
 void

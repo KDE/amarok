@@ -55,15 +55,19 @@ GpodderProvider::GpodderProvider( const QString& username, ApiRequest *apiReques
     , m_removeAction( 0 )
     , m_addList()
     , m_removeList()
+    , m_timerGenerateEpisodeAction( new QTimer( this ) )
     , m_timerSynchronizeStatus( new QTimer( this ) )
     , m_timerSynchronizeSubscriptions( new QTimer( this ) )
 {
-    //Request all channels and episodes from DEVICE_NAME device and after it
+    //Load cached Episode Actions
+    loadEpisodeActions();
+
+    //Request all channels and episodes from s_deviceName device and after it
     //request episode actions too
     requestDeviceUpdates();
 
     //Add the provider for gpodder to the playlist manager
-    The::playlistManager()->addProvider( this,PlaylistManager::PodcastChannel );
+    The::playlistManager()->addProvider( this, PlaylistManager::PodcastChannel );
 
     //Connect default podcasts signals to make possible to ask the user if he wants
     //to upload a new local podcast to gpodder.net
@@ -71,48 +75,51 @@ GpodderProvider::GpodderProvider( const QString& username, ApiRequest *apiReques
              SIGNAL(playlistAdded( Playlists::PlaylistPtr )),
              SLOT(slotSyncPlaylistAdded( Playlists::PlaylistPtr )) );
     connect( The::playlistManager()->defaultPodcasts(),
-             SIGNAL(playlistRemoved(Playlists::PlaylistPtr )),
-             SLOT(slotSyncPlaylistRemoved(Playlists::PlaylistPtr )) );
+             SIGNAL(playlistRemoved( Playlists::PlaylistPtr )),
+             SLOT(slotSyncPlaylistRemoved( Playlists::PlaylistPtr )) );
 
     //Connect engine controller signals to make possible to synchronize podcast status
     connect( The::engineController(), SIGNAL(trackChanged( Meta::TrackPtr )),
              SLOT(slotTrackChanged( Meta::TrackPtr )) );
-
     connect( The::engineController(), SIGNAL(trackPositionChanged( qint64, bool )),
              SLOT(slotTrackPositionChanged( qint64, bool )) );
+    connect( The::engineController(), SIGNAL(paused()),
+             SLOT(slotPaused()) );
 
     //These timers will periodically synchronize data between local podcasts and gpodder.net
     connect( m_timerSynchronizeStatus, SIGNAL(timeout()), SLOT(timerSynchronizeStatus()) );
     connect( m_timerSynchronizeSubscriptions, SIGNAL(timeout()),
              SLOT(timerSynchronizeSubscriptions()) );
+    connect( m_timerGenerateEpisodeAction, SIGNAL(timeout()),
+             SLOT(timerGenerateEpisodeAction()) );
 
+    m_timerGenerateEpisodeAction->stop();
     m_timerSynchronizeStatus->stop();
-    m_timerSynchronizeSubscriptions->start( 1000 * 60 );
+    m_timerSynchronizeSubscriptions->stop();
 }
 
 GpodderProvider::~GpodderProvider()
 {
+    delete m_timerGenerateEpisodeAction;
     delete m_timerSynchronizeStatus;
     delete m_timerSynchronizeSubscriptions;
 
     //Send remaining subscriptions changes
     if( !m_removeList.isEmpty() || !m_addList.isEmpty() )
     {
-        m_addRemoveResult = m_apiRequest->addRemoveSubscriptions( m_username, s_deviceName, m_addList,
-                                                                 m_removeList );
+        m_addRemoveResult =
+                m_apiRequest->addRemoveSubscriptions( m_username, s_deviceName, m_addList, m_removeList );
         m_addList.clear();
         m_removeList.clear();
     }
 
-    //Send remaining status changes
-    if( !m_uploadEpisodeStatusMap.isEmpty() )
-    {
-        m_episodeActionsResult =
-                m_apiRequest->uploadEpisodeActions( m_username, m_uploadEpisodeStatusMap.values() );
-        m_uploadEpisodeStatusMap.clear();
-    }
+    //Save cached Episode Actions
+    saveEpisodeActions();
 
+    m_uploadEpisodeStatusMap.clear();
     m_episodeStatusMap.clear();
+    m_redirectionUrlMap.clear();
+    m_channels.clear();
 
     m_trackToSyncStatus = NULL;
 
@@ -333,8 +340,8 @@ GpodderProvider::channelActions( PodcastChannelList channels )
 
         m_removeAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_removeAction, 
-                 SIGNAL( triggered() ),
-                 SLOT( slotRemoveChannels() ) );
+                 SIGNAL(triggered()),
+                 SLOT(slotRemoveChannels()) );
     }
 
     //Set the episode list as data that we'll retrieve in the slot
@@ -424,8 +431,7 @@ GpodderProvider::setSubscriptionTimestamp( qulonglong newTimestamp )
     config.writeEntry( "subscriptionTimestamp", newTimestamp );
 }
 
-void
-GpodderProvider::synchronizeStatus()
+void GpodderProvider::synchronizeStatus()
 {
     DEBUG_BLOCK
 
@@ -437,15 +443,20 @@ GpodderProvider::synchronizeStatus()
                 m_apiRequest->uploadEpisodeActions( m_username, m_uploadEpisodeStatusMap.values() );
 
         //Only clear m_episodeStatusList if the synchronisation with gpodder.net really worked
-        connect( m_episodeActionsResult.data(), SIGNAL( finished() ), this,
-                 SLOT( slotSuccessfulStatusSynchronisation() ) );
-    }
+        connect( m_episodeActionsResult.data(), SIGNAL(finished()), this,
+                 SLOT(slotSuccessfulStatusSynchronisation()) );
+        connect( m_episodeActionsResult.data(), SIGNAL(requestError( QNetworkReply::NetworkError )),
+                 SLOT(synchronizeStatusRequestError( QNetworkReply::NetworkError )) );
+        connect( m_episodeActionsResult.data(), SIGNAL(parseError()),
+                 SLOT(synchronizeStatusParseError()) );
 
-    Amarok::Components::logger()->shortMessage( i18n( "Trying to synchronize with gpodder.net" ) );
+        Amarok::Components::logger()->shortMessage( i18n( "Trying to synchronize statuses with gpodder.net" ) );
+    }
+    else
+        m_timerSynchronizeStatus->stop();
 }
 
-void
-GpodderProvider::slotSuccessfulStatusSynchronisation()
+void GpodderProvider::slotSuccessfulStatusSynchronisation()
 {
     DEBUG_BLOCK
 
@@ -459,6 +470,24 @@ GpodderProvider::slotSuccessfulStatusSynchronisation()
     //"content" should stay the same and therefore the client can simply update the URL value
     //locally and use it for future updates
     updateLocalPodcasts( m_episodeActionsResult->updateUrlsList() );
+}
+
+void GpodderProvider::synchronizeStatusParseError()
+{
+    DEBUG_BLOCK
+
+    QTimer::singleShot( 20000, this, SLOT(timerSynchronizeStatus()) );
+
+    debug() << "synchronizeStatus [Status Synchronisation] - Parse error";
+}
+
+void GpodderProvider::synchronizeStatusRequestError(QNetworkReply::NetworkError error)
+{
+    DEBUG_BLOCK
+
+    QTimer::singleShot( 20000, this, SLOT(timerSynchronizeStatus()) );
+
+    debug() << "synchronizeStatus [Status Synchronisation] - Request error nr.: " << error;
 }
 
 void
@@ -475,8 +504,8 @@ GpodderProvider::synchronizeSubscriptions()
                 m_apiRequest->addRemoveSubscriptions( m_username, s_deviceName, m_addList, m_removeList );
 
         //Only clear m_addList and m_removeList if the synchronisation with gpodder.net really worked
-        connect( m_addRemoveResult.data(), SIGNAL( finished() ), this,
-                 SLOT( slotSuccessfulSubscriptionSynchronisation() ) );
+        connect( m_addRemoveResult.data(), SIGNAL(finished()), this,
+                 SLOT(slotSuccessfulSubscriptionSynchronisation()) );
     }
 
     Amarok::Components::logger()->shortMessage( i18n( "Trying to synchronize with gpodder.net" ) );
@@ -502,18 +531,6 @@ GpodderProvider::slotSuccessfulSubscriptionSynchronisation()
 }
 
 void
-GpodderProvider::timerSynchronizeSubscriptions()
-{
-    synchronizeSubscriptions();
-}
-
-void
-GpodderProvider::timerSynchronizeStatus()
-{
-    synchronizeStatus();
-}
-
-void
 GpodderProvider::slotTrackChanged( Meta::TrackPtr track )
 {
     m_trackToSyncStatus = NULL;
@@ -528,28 +545,36 @@ GpodderProvider::slotTrackChanged( Meta::TrackPtr track )
         {
             m_trackToSyncStatus = track;
 
-            QTimer::singleShot( 10 * 1000, this, SLOT( timerPrepareToSyncPodcastStatus() ) );
+            QTimer::singleShot( 10000, this, SLOT(timerPrepareToSyncPodcastStatus()) );
 
             //A bookmark will be created if we have a play status available,
             //for current track, at m_episodeStatusMap
             createPlayStatusBookmark();
+
+            m_timerSynchronizeStatus->stop();
         }
         else
         {
-            //Stop the timer if track is not from a podcast subscribed at gpodder.net
-            m_timerSynchronizeStatus->stop();
+            m_timerGenerateEpisodeAction->stop();
+            //EpisodeActions should be sent when the user is not
+            //listening a podcast in e.g. 1 minute
+            m_timerSynchronizeStatus->start( 60 * 1000 );
         }
     }
     else
     {
-        //Stop the timer if Amarok is stopped
-        m_timerSynchronizeStatus->stop();
+        m_timerGenerateEpisodeAction->stop();
+        //EpisodeActions should be sent when the user clicks
+        //stops and doesn't resume listening in e.g. 1 minute
+        m_timerSynchronizeStatus->start( 60 * 1000 );
     }
 }
 
 void
 GpodderProvider::slotTrackPositionChanged( qint64 position, bool userSeek )
 {
+    Q_UNUSED( position )
+
     //If the current track is in one of the subscribed gpodder channels and it's position
     //is not at the beggining of the track, then we probably should sync it status.
     if( m_trackToSyncStatus )
@@ -557,40 +582,29 @@ GpodderProvider::slotTrackPositionChanged( qint64 position, bool userSeek )
         if( userSeek )
         {
             //Test if this track still playing after 10 seconds to avoid accidentally user changes
-            QTimer::singleShot( 10 * 1000, this, SLOT( timerPrepareToSyncPodcastStatus() ) );
-        }
-        else
-        {
-            //Synchronize episode actions every 30 seconds
-            if( position % 30 )
-            {
-                EpisodeActionPtr tempEpisodeAction;
-                PodcastEpisodePtr tempEpisode = PodcastEpisodePtr::dynamicCast( m_trackToSyncStatus );
-
-                if( tempEpisode )
-                {
-                    qulonglong positionSeconds = The::engineController()->trackPosition();
-                    qulonglong lengthSeconds = The::engineController()->trackLength() / 1000;
-
-                    tempEpisodeAction = EpisodeActionPtr(
-                                new EpisodeAction( QUrl( tempEpisode->channel()->url().url() ),
-                                                   QUrl( tempEpisode->uidUrl() ),
-                                                   s_deviceName,
-                                                   EpisodeAction::Play,
-                                                   m_timestampStatus,
-                                                   1,
-                                                   positionSeconds,
-                                                   lengthSeconds
-                                                  ) );
-
-                    //Any previous episodeAction, from the same podcast, will be replaced
-                    m_uploadEpisodeStatusMap.insert( tempEpisode->uidUrl(), tempEpisodeAction );
-                    //Make local podcasts aware of new episodeActions
-                    m_episodeStatusMap.insert( tempEpisode->uidUrl(), tempEpisodeAction );
-                }
-            }
+            QTimer::singleShot( 10000, this, SLOT(timerPrepareToSyncPodcastStatus()) );
         }
     }
+}
+
+void GpodderProvider::slotPaused()
+{
+    m_timerGenerateEpisodeAction->stop();
+    //EpisodeActions should be sent when the user clicks pause
+    //or stop and doesn't resume listening in e.g. 1 minute
+    m_timerSynchronizeStatus->start( 60 * 1000 );
+}
+
+void
+GpodderProvider::timerSynchronizeSubscriptions()
+{
+    synchronizeSubscriptions();
+}
+
+void
+GpodderProvider::timerSynchronizeStatus()
+{
+    synchronizeStatus();
 }
 
 void
@@ -603,25 +617,82 @@ GpodderProvider::timerPrepareToSyncPodcastStatus()
 
         if( tempEpisode )
         {
-            qulonglong position = The::engineController()->trackPosition();
+            qulonglong positionSeconds = The::engineController()->trackPosition();
+            qulonglong lengthSeconds = The::engineController()->trackLength() / 1000;
+
+            QUrl podcastUrl = QUrl( tempEpisode->channel()->url().url() );
+
+            if( m_redirectionUrlMap.contains( tempEpisode->channel()->url() ) )
+                podcastUrl = QUrl( m_redirectionUrlMap.value(
+                                       tempEpisode->channel()->url() ).url() );
 
             tempEpisodeAction = EpisodeActionPtr(
-                        new EpisodeAction( QUrl( tempEpisode->channel()->url().url() ),
+                        new EpisodeAction( podcastUrl,
                                            QUrl( tempEpisode->uidUrl() ),
                                            s_deviceName,
                                            EpisodeAction::Play,
                                            m_timestampStatus,
-                                           0, position,
-                                           m_trackToSyncStatus->length()
+                                           1,
+                                           positionSeconds + 1,
+                                           lengthSeconds
                                           ) );
 
             //Any previous episodeAction, from the same podcast, will be replaced
             m_uploadEpisodeStatusMap.insert( tempEpisode->uidUrl(), tempEpisodeAction );
         }
 
-        //Starts or restarts the timer
-        m_timerSynchronizeStatus->start( 60 * 1000 );
+        //Starts to generate EpisodeActions
+        m_timerGenerateEpisodeAction->start( 30 * 1000 );
     }
+}
+
+void GpodderProvider::timerGenerateEpisodeAction()
+{
+    //Create and update episode actions
+    if( The::engineController()->currentTrack() == m_trackToSyncStatus )
+    {
+        EpisodeActionPtr tempEpisodeAction;
+        PodcastEpisodePtr tempEpisode = PodcastEpisodePtr::dynamicCast( m_trackToSyncStatus );
+
+        if( tempEpisode )
+        {
+            qulonglong positionSeconds = The::engineController()->trackPosition();
+            qulonglong lengthSeconds = The::engineController()->trackLength() / 1000;
+
+            QUrl podcastUrl = QUrl( tempEpisode->channel()->url().url() );
+
+            if( m_redirectionUrlMap.contains( tempEpisode->channel()->url() ) )
+                podcastUrl = QUrl(
+                            m_redirectionUrlMap.value( tempEpisode->channel()->url() ).url() );
+
+            tempEpisodeAction = EpisodeActionPtr(
+                        new EpisodeAction( podcastUrl,
+                                           QUrl( tempEpisode->uidUrl() ),
+                                           s_deviceName,
+                                           EpisodeAction::Play,
+                                           m_timestampStatus,
+                                           1,
+                                           positionSeconds,
+                                           lengthSeconds
+                                           ) );
+
+            //Any previous episodeAction, from the same podcast, will be replaced
+            m_uploadEpisodeStatusMap.insert( tempEpisode->uidUrl(), tempEpisodeAction );
+            //Make local podcasts aware of new episodeActions
+            m_episodeStatusMap.insert( tempEpisode->uidUrl(), tempEpisodeAction );
+        }
+    }
+}
+
+void
+GpodderProvider::requestDeviceUpdates()
+{
+    m_deviceUpdatesResult = m_apiRequest->deviceUpdates( m_username, s_deviceName, 0 );
+
+    connect( m_deviceUpdatesResult.data(), SIGNAL(finished()), SLOT(deviceUpdatesFinished()) );
+    connect( m_deviceUpdatesResult.data(), SIGNAL(requestError( QNetworkReply::NetworkError )),
+             SLOT(deviceUpdatesRequestError( QNetworkReply::NetworkError )) );
+    connect( m_deviceUpdatesResult.data(), SIGNAL(parseError()), SLOT(deviceUpdatesParseError()) );
 }
 
 void
@@ -681,7 +752,7 @@ GpodderProvider::deviceUpdatesParseError()
 {
     DEBUG_BLOCK
 
-    QTimer::singleShot( 10000, this, SLOT( requestDeviceUpdates() ) );
+    QTimer::singleShot( 10000, this, SLOT(requestDeviceUpdates()) );
 
     debug() << "deviceUpdates [Subscription Synchronisation] - Parse error";
 }
@@ -691,9 +762,36 @@ GpodderProvider::deviceUpdatesRequestError( QNetworkReply::NetworkError error )
 {
     DEBUG_BLOCK
 
-    QTimer::singleShot( 10000, this, SLOT( requestDeviceUpdates() ) );
+    QTimer::singleShot( 10000, this, SLOT(requestDeviceUpdates()) );
 
     debug() << "deviceUpdates [Subscription Synchronisation] - Request error nr.: " << error;
+}
+
+void
+GpodderProvider::requestEpisodeActionsInCascade()
+{
+    DEBUG_BLOCK
+
+    //This function will download all episode actions for
+    //every podcast contained in m_channelsToRequestActions
+    if( !m_channelsToRequestActions.isEmpty() )
+    {
+        QUrl url = m_channelsToRequestActions.head();
+        m_episodeActionListResult = m_apiRequest->episodeActionsByPodcast( m_username, url.toString(), true );
+        debug() << "Requesting actions for " << url.toString();
+        connect( m_episodeActionListResult.data(), SIGNAL(finished()),
+                 SLOT(episodeActionsInCascadeFinished()) );
+        connect( m_episodeActionListResult.data(),
+                 SIGNAL(requestError( QNetworkReply::NetworkError )),
+                 SLOT(episodeActionsInCascadeRequestError( QNetworkReply::NetworkError )) );
+        connect( m_episodeActionListResult.data(), SIGNAL(parseError()),
+                 SLOT(episodeActionsInCascadeParseError()) );
+    }
+    else
+    {
+        //We should try to upload cached EpisodeActions to gpodder.net
+        synchronizeStatus();
+    }
 }
 
 void
@@ -738,7 +836,7 @@ GpodderProvider::episodeActionsInCascadeFinished()
     //We must remove this podcast url and continue with the others
     m_channelsToRequestActions.dequeue();
 
-    QTimer::singleShot( 100, this, SLOT( requestEpisodeActionsInCascade() ) );
+    QTimer::singleShot( 100, this, SLOT(requestEpisodeActionsInCascade()) );
 }
 
 void
@@ -746,7 +844,7 @@ GpodderProvider::episodeActionsInCascadeParseError()
 {
     DEBUG_BLOCK
 
-    QTimer::singleShot( 10 * 1000, this, SLOT( requestEpisodeActionsInCascade() ) );
+    QTimer::singleShot( 10000, this, SLOT(requestEpisodeActionsInCascade()) );
     //If we fail to get EpisodeActions for this channel then we must put it
     //at the end of the list. In order to be synced later on.
     m_channelsToRequestActions.enqueue( m_channelsToRequestActions.dequeue() );
@@ -759,7 +857,7 @@ GpodderProvider::episodeActionsInCascadeRequestError( QNetworkReply::NetworkErro
 {
     DEBUG_BLOCK
 
-    QTimer::singleShot( 10 * 1000, this, SLOT( requestEpisodeActionsInCascade() ) );
+    QTimer::singleShot( 10000, this, SLOT(requestEpisodeActionsInCascade()) );
     //If we fail to get EpisodeActions for this channel then we must put it
     //at the end of the list. In order to be synced later on.
     m_channelsToRequestActions.enqueue( m_channelsToRequestActions.dequeue() );
@@ -789,39 +887,6 @@ GpodderProvider::updateLocalPodcasts( const QList<QPair<QUrl,QUrl> > updatedUrls
 }
 
 void
-GpodderProvider::requestDeviceUpdates()
-{
-    m_deviceUpdatesResult = m_apiRequest->deviceUpdates( m_username, s_deviceName, 0 );
-
-    connect( m_deviceUpdatesResult.data(), SIGNAL( finished() ), SLOT( deviceUpdatesFinished() ) );
-    connect( m_deviceUpdatesResult.data(), SIGNAL( requestError( QNetworkReply::NetworkError ) ),
-             SLOT( deviceUpdatesRequestError( QNetworkReply::NetworkError ) ) );
-    connect( m_deviceUpdatesResult.data(), SIGNAL( parseError() ), SLOT( deviceUpdatesParseError() ) );
-}
-
-void
-GpodderProvider::requestEpisodeActionsInCascade()
-{
-    DEBUG_BLOCK
-
-    //This function will download all episode actions for
-    //every podcast contained in m_channelsToRequestActions
-    if( !m_channelsToRequestActions.isEmpty() )
-    {
-        QUrl url = m_channelsToRequestActions.head();
-        m_episodeActionListResult = m_apiRequest->episodeActionsByPodcast( m_username, url.toString(), true );
-        debug() << "Requesting actions for " << url.toString();
-        connect( m_episodeActionListResult.data(), SIGNAL(finished()),
-                 SLOT(episodeActionsInCascadeFinished()) );
-        connect( m_episodeActionListResult.data(),
-                 SIGNAL(requestError( QNetworkReply::NetworkError )),
-                 SLOT(episodeActionsInCascadeRequestError( QNetworkReply::NetworkError )) );
-        connect( m_episodeActionListResult.data(), SIGNAL(parseError()),
-                 SLOT(episodeActionsInCascadeParseError()) );
-    }
-}
-
-void
 GpodderProvider::createPlayStatusBookmark()
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -845,20 +910,39 @@ GpodderProvider::createPlayStatusBookmark()
 }
 
 void
-GpodderProvider::urlResolvePermanentRedirection( KIO::Job *job, const KUrl &fromUrl,
-        const KUrl &toUrl )
+GpodderProvider::requestUrlResolve( Podcasts::GpodderPodcastChannelPtr channel )
+{
+    if ( !channel )
+        return;
+
+    m_resolveUrlJob = KIO::get( channel->url(), KIO::Reload, KIO::HideProgressInfo );
+
+    connect( m_resolveUrlJob, SIGNAL(result( KJob * )),
+             SLOT(urlResolveFinished( KJob * )) );
+    connect( m_resolveUrlJob,
+             SIGNAL(permanentRedirection( KIO::Job *, const KUrl &, const KUrl & )),
+             SLOT(urlResolvePermanentRedirection( KIO::Job *, const KUrl &, const KUrl & )) );
+
+    m_resolvedPodcasts.insert( m_resolveUrlJob, channel );
+}
+
+void
+GpodderProvider::urlResolvePermanentRedirection( KIO::Job *job, const KUrl &fromUrl, const KUrl &toUrl )
 {
     DEBUG_BLOCK
 
     KIO::TransferJob *transferJob = dynamic_cast<KIO::TransferJob *>( job );
     GpodderPodcastChannelPtr channel = m_resolvedPodcasts.value( transferJob );
+
+    m_redirectionUrlMap.insert( toUrl, channel->url() );
+
     channel->setUrl( toUrl );
 
     debug() << fromUrl.url() << " was redirected to " << toUrl.url();
 }
 
 void
-GpodderProvider::urlResolveFinished( KJob *job )
+GpodderProvider::urlResolveFinished( KJob * job )
 {
     KIO::TransferJob *transferJob = dynamic_cast<KIO::TransferJob *>( job );
 
@@ -876,19 +960,118 @@ GpodderProvider::urlResolveFinished( KJob *job )
     m_resolveUrlJob = 0;
 }
 
-void
-GpodderProvider::requestUrlResolve( Podcasts::GpodderPodcastChannelPtr channel )
+inline KConfigGroup
+GpodderProvider::gpodderActionsConfig() const
 {
-    if( !channel )
+    return Amarok::config( "GPodder Actions" );
+}
+
+void GpodderProvider::loadEpisodeActions()
+{
+    DEBUG_BLOCK
+
+    if ( !gpodderActionsConfig().exists() )
         return;
 
-    m_resolveUrlJob = KIO::get( channel->url(), KIO::Reload, KIO::HideProgressInfo );
+    int action;
+    bool validActionType;
+    bool actionTypeConversion;
+    qulonglong timestamp = 0;
+    qulonglong started = 0;
+    qulonglong position = 0;
+    qulonglong total = 0;
+    QStringList actionsDetails;
+    EpisodeAction::ActionType actionType;
 
-    connect( m_resolveUrlJob, SIGNAL(result( KJob * )),
-             SLOT(urlResolveFinished( KJob * )) );
-    connect( m_resolveUrlJob,
-             SIGNAL(permanentRedirection( KIO::Job *, const KUrl &, const KUrl & )),
-             SLOT(urlResolvePermanentRedirection( KIO::Job *, const KUrl &, const KUrl & )) );
+    foreach( QString episodeUrl, gpodderActionsConfig().keyList() )
+    {
+        actionsDetails.clear();
+        actionsDetails = gpodderActionsConfig().readEntry( episodeUrl ).split( ',' );
 
-    m_resolvedPodcasts.insert( m_resolveUrlJob, channel );
+        if ( actionsDetails.count() != 6 )
+            debug() << "There are less/more fields than expected.";
+        else
+        {
+            action = actionsDetails[1].toInt( &actionTypeConversion );
+
+            if( !actionTypeConversion )
+                debug() << "Failed to convert actionType field to int.";
+            else
+            {
+                validActionType = true;
+                timestamp = actionsDetails[2].toULongLong();
+                started = actionsDetails[3].toULongLong();
+                position = actionsDetails[4].toULongLong();
+                total = actionsDetails[5].toULongLong();
+
+                switch( action )
+                {
+                    case 0: actionType = EpisodeAction::Download; break;
+                    case 1: actionType = EpisodeAction::Play; break;
+                    case 2: actionType = EpisodeAction::Delete; break;
+                    case 3: actionType = EpisodeAction::New; break;
+                    default: validActionType = false; break;
+                }
+
+                //We can't create a EpisodeAction if action isn't a valid alternative
+                if( !validActionType )
+                    debug() << "Action isn't a valid alternative.";
+                else
+                {
+                    debug() << QString( "Loaded %1 action." ).arg( episodeUrl );
+
+                    EpisodeActionPtr tempEpisodeAction = EpisodeActionPtr(
+                                new EpisodeAction( QUrl( actionsDetails[0] ),
+                                                   QUrl( episodeUrl ),
+                                                   s_deviceName,
+                                                   actionType,
+                                                   timestamp,
+                                                   started,
+                                                   position,
+                                                   total
+                                                   ) );
+
+                    //Any previous episodeAction, from the same podcast, will be replaced
+                    m_uploadEpisodeStatusMap.insert( tempEpisodeAction->episodeUrl(), tempEpisodeAction );
+                    m_episodeStatusMap.insert( tempEpisodeAction->episodeUrl(), tempEpisodeAction );
+                }
+            }
+        }
+    }
+
+    //We should delete cached EpisodeActions, since we already loaded them
+    gpodderActionsConfig().deleteGroup();
+}
+
+void GpodderProvider::saveEpisodeActions()
+{
+    DEBUG_BLOCK
+
+    if ( m_uploadEpisodeStatusMap.isEmpty() )
+        return;
+
+    int actionType;
+    QList<QString> actionsDetails;
+
+    foreach( EpisodeActionPtr action, m_uploadEpisodeStatusMap.values() )
+    {
+        actionsDetails.clear();
+        actionsDetails.append( action->podcastUrl().toString() );
+
+        switch( action->action() )
+        {
+            case EpisodeAction::Download: actionType = 0; break;
+            case EpisodeAction::Play: actionType = 1; break;
+            case EpisodeAction::Delete: actionType = 2; break;
+            case EpisodeAction::New: actionType = 3; break;
+        }
+
+        actionsDetails.append( QString::number( actionType ) );
+        actionsDetails.append( QString::number( action->timestamp() ) );
+        actionsDetails.append( QString::number( action->started() ) );
+        actionsDetails.append( QString::number( action->position() ) );
+        actionsDetails.append( QString::number( action->total() ) );
+
+        gpodderActionsConfig().writeEntry( action->episodeUrl().toString(), actionsDetails );
+    }
 }

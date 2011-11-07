@@ -139,7 +139,6 @@ GpodderService::~GpodderService()
     DEBUG_BLOCK
 
     delete m_podcastProvider;
-
     delete m_apiRequest;
 }
 
@@ -149,7 +148,8 @@ GpodderService::init()
 {
     GpodderServiceConfig config;
 
-    if( config.enableProvider() ) {
+    if( config.enableProvider() )
+    {
         m_apiRequest = new mygpo::ApiRequest( config.username(), config.password(), The::networkAccessManager() );
         enableGpodderProvider( config.username() );
     }
@@ -168,6 +168,7 @@ GpodderService::polish()
     DEBUG_BLOCK
 
     generateWidgetInfo();
+
     if( m_polished )
         return;
 
@@ -208,10 +209,10 @@ GpodderService::polish()
 
     m_subscribeButton->setEnabled( true );
 
-    connect( m_subscribeButton, SIGNAL( clicked() ), this, SLOT( subscribe() ) );
+    connect( m_subscribeButton, SIGNAL(clicked()), this, SLOT(subscribe()) );
 
-    connect( m_searchWidget, SIGNAL( filterChanged( const QString & ) ),
-             m_proxyModel, SLOT( setFilterWildcard( const QString & ) ) );
+    connect( m_searchWidget, SIGNAL(filterChanged( const QString & )),
+             m_proxyModel, SLOT(setFilterWildcard( const QString & )) );
 
     m_polished = true;
 }
@@ -243,7 +244,7 @@ GpodderService::enableGpodderProvider( const QString &username )
 {
     DEBUG_BLOCK
 
-    debug() << "enabling GpodderProvider";
+    debug() << "Enabling GpodderProvider";
 
     delete m_podcastProvider;
     m_podcastProvider = new Podcasts::GpodderProvider( username, m_apiRequest );

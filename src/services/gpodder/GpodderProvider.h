@@ -79,7 +79,7 @@ public:
     virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
     QList<QAction *> channelActions( PodcastChannelList episodes );
     QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
-    
+
 signals:
     //PlaylistProvider signals
     void updated();
@@ -98,17 +98,21 @@ private slots:
     void episodeActionsInCascadeParseError();
     void episodeActionsInCascadeRequestError( QNetworkReply::NetworkError error );
 
+    void timerGenerateEpisodeAction();
     void timerSynchronizeStatus();
     void timerSynchronizeSubscriptions();
     void timerPrepareToSyncPodcastStatus();
 
     void slotRemoveChannels();
+    void synchronizeStatusParseError();
+    void synchronizeStatusRequestError( QNetworkReply::NetworkError error );
     void slotSuccessfulStatusSynchronisation();
     void slotSuccessfulSubscriptionSynchronisation();
 
     void slotSyncPlaylistAdded( Playlists::PlaylistPtr playlist );
     void slotSyncPlaylistRemoved( Playlists::PlaylistPtr playlist );
 
+    void slotPaused();
     void slotTrackChanged( Meta::TrackPtr track );
     void slotTrackPositionChanged( qint64 position, bool userSeek );
 
@@ -133,7 +137,7 @@ private:
 
     qulonglong subscriptionTimestamp();
     void setSubscriptionTimestamp( qulonglong newTimestamp );
-    
+
     void removeChannel( const QUrl &url );
     void createPlayStatusBookmark();
 
@@ -141,16 +145,22 @@ private:
     void synchronizeSubscriptions();
     void updateLocalPodcasts( const QList< QPair<QUrl,QUrl> > updatedUrls );
 
+    KConfigGroup gpodderActionsConfig() const;
+    void loadEpisodeActions();
+    void saveEpisodeActions();
+
     QAction *m_removeAction; //remove a subscription
     QList<QUrl> m_addList;
     QList<QUrl> m_removeList;
 
+    QMap<KUrl,KUrl> m_redirectionUrlMap;
     QQueue<QUrl> m_channelsToRequestActions;
     QQueue<GpodderPodcastChannelPtr> m_channelsToAdd;
     QMap<QUrl,EpisodeActionPtr> m_episodeStatusMap;
     QMap<QUrl,EpisodeActionPtr> m_uploadEpisodeStatusMap;
     QMap<KIO::TransferJob *,GpodderPodcastChannelPtr> m_resolvedPodcasts;
 
+    QTimer *m_timerGenerateEpisodeAction;
     QTimer *m_timerSynchronizeStatus;
     QTimer *m_timerSynchronizeSubscriptions;
 

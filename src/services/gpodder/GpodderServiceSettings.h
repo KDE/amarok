@@ -65,7 +65,6 @@ private:
     mygpo::AddRemoveResultPtr m_result;
     bool m_enableProvider;
     QNetworkReply *m_createDevice;
-
 };
 
 #endif // GPODDERSERVICESETTINGS_H
