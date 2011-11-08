@@ -44,14 +44,14 @@ using namespace Meta;
 void
 Collections::addTextualFilter( Collections::QueryMaker *qm, const QString &filter )
 {
-    int validFilters = qm->validFilterMask();
+    const int validFilters = qm->validFilterMask();
 
     ParsedExpression parsed = ExpressionParser::parse( filter );
     foreach( const or_list &orList, parsed )
     {
         qm->beginOr();
 
-        foreach ( const expression_element &elem, orList )
+        foreach( const expression_element &elem, orList )
         {
             if( elem.negate )
                 qm->beginAnd();
@@ -86,7 +86,7 @@ Collections::addTextualFilter( Collections::QueryMaker *qm, const QString &filte
             else
             {
                 //get field values based on name
-                QString lcField = elem.field.toLower();
+                const qint64 field = Meta::fieldForName( elem.field );
                 Collections::QueryMaker::NumberComparison compare = Collections::QueryMaker::Equals;
                 switch( elem.match )
                 {
@@ -103,144 +103,102 @@ Collections::addTextualFilter( Collections::QueryMaker *qm, const QString &filte
 
                 const bool matchEqual = ( elem.match == expression_element::Equals );
 
-                // TODO: Once we have MetaConstants.cpp use those functions here
-                if ( lcField.compare( "album", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valAlbum ), Qt::CaseInsensitive ) == 0 )
+                switch( field )
                 {
-                    if ( ( validFilters & Collections::QueryMaker::AlbumFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbum, elem.text, matchEqual, matchEqual );
-                }
-                else if ( lcField.compare( "artist", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valArtist ), Qt::CaseInsensitive ) == 0 )
-                {
-                    if ( ( validFilters & Collections::QueryMaker::ArtistFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valArtist, elem.text, matchEqual, matchEqual );
-                }
-                else if ( lcField.compare( "albumartist", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valAlbumArtist ), Qt::CaseInsensitive ) == 0 )
-                {
-                    if ( ( validFilters & Collections::QueryMaker::AlbumArtistFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valAlbumArtist, elem.text, matchEqual, matchEqual );
-                }
-                else if ( lcField.compare( "genre", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valGenre ), Qt::CaseInsensitive ) == 0)
-                {
-                    if ( ( validFilters & Collections::QueryMaker::GenreFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valGenre, elem.text, matchEqual, matchEqual );
-                }
-                else if ( lcField.compare( "title", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valTitle ), Qt::CaseInsensitive ) == 0 )
-                {
-                    if ( ( validFilters & Collections::QueryMaker::TitleFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, matchEqual, matchEqual );
-                }
-                else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valComposer ), Qt::CaseInsensitive ) == 0 )
-                {
-                    if ( ( validFilters & Collections::QueryMaker::ComposerFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, matchEqual, matchEqual );
-                }
-                else if( lcField.compare( "label", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valLabel ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_FILTER( Meta::valLabel, elem.text, matchEqual, matchEqual );
-                }
-                else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valYear ), Qt::CaseInsensitive ) == 0)
-                {
-                    if ( ( validFilters & Collections::QueryMaker::YearFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valYear, elem.text.toInt(), compare );
-                }
-                else if ( lcField.compare( "bpm", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valBpm ), Qt::CaseInsensitive ) == 0)
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBpm, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "comment", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valComment ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_FILTER( Meta::valComment, elem.text, matchEqual, matchEqual );
-                }
-                else if( lcField.compare( "filename", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valUrl ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_FILTER( Meta::valUrl, elem.text, false, false );
-                }
-                else if( lcField.compare( "bitrate", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valBitrate ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBitrate, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "rating", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valRating ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valRating, elem.text.toFloat() * 2, compare );
-                }
-                else if( lcField.compare( "score", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valScore ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valScore, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "playcount", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valPlaycount ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valPlaycount, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "samplerate", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valSamplerate ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valSamplerate, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "length", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valLength ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLength, elem.text.toInt() * 1000, compare );
-                }
-                else if( lcField.compare( "filesize", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valFilesize ), Qt::CaseInsensitive ) == 0 )
-                {
-                    bool doubleOk( false );
-                    const double mbytes = elem.text.toDouble( &doubleOk ); // input in MBs
-                    if( !doubleOk )
-                    {
-                        qm->endAndOr();
-                        return;
-                    }
-
-                    /*
-                     * A special case is made for Equals (e.g. filesize:100), which actually filters
-                     * for anything beween 100 and 101MBs. Megabytes are used because for audio files
-                     * they are the most reasonable units for the user to deal with.
-                     */
-                    const qreal bytes = mbytes * 1024.0 * 1024.0;
-                    const qint64 mbFloor = qint64( qAbs(mbytes) );
-                    switch( compare )
-                    {
-                    case Collections::QueryMaker::Equals:
-                        qm->endAndOr();
-                        qm->beginAnd();
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, mbFloor * 1024 * 1024, Collections::QueryMaker::GreaterThan );
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, (mbFloor + 1) * 1024 * 1024, Collections::QueryMaker::LessThan );
+                    case Meta::valAlbum:
+                        if( ( validFilters & Collections::QueryMaker::AlbumFilter ) == 0 ) break;
+                        ADD_OR_EXCLUDE_FILTER( field, elem.text, matchEqual, matchEqual );
                         break;
-                    case Collections::QueryMaker::GreaterThan:
-                    case Collections::QueryMaker::LessThan:
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, bytes, compare );
+                    case Meta::valArtist:
+                        if( ( validFilters & Collections::QueryMaker::ArtistFilter ) == 0 ) break;
+                        ADD_OR_EXCLUDE_FILTER( field, elem.text, matchEqual, matchEqual );
+                        break;
+                    case Meta::valAlbumArtist:
+                        if( ( validFilters & Collections::QueryMaker::AlbumArtistFilter ) == 0 ) break;
+                        ADD_OR_EXCLUDE_FILTER( field, elem.text, matchEqual, matchEqual );
+                        break;
+                    case Meta::valGenre:
+                        if( ( validFilters & Collections::QueryMaker::GenreFilter ) == 0 ) break;
+                        ADD_OR_EXCLUDE_FILTER( field, elem.text, matchEqual, matchEqual );
+                        break;
+                    case Meta::valTitle:
+                        if( ( validFilters & Collections::QueryMaker::TitleFilter ) == 0 ) break;
+                        ADD_OR_EXCLUDE_FILTER( field, elem.text, matchEqual, matchEqual );
+                        break;
+                    case Meta::valComposer:
+                        if( ( validFilters & Collections::QueryMaker::ComposerFilter ) == 0 ) break;
+                        ADD_OR_EXCLUDE_FILTER( field, elem.text, matchEqual, matchEqual );
+                        break;
+                    case Meta::valYear:
+                        if( ( validFilters & Collections::QueryMaker::YearFilter ) == 0 ) break;
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( field, elem.text.toInt(), compare );
+                        break;
+                    case Meta::valLabel:
+                    case Meta::valComment:
+                        ADD_OR_EXCLUDE_FILTER( field, elem.text, matchEqual, matchEqual );
+                        break;
+                    case Meta::valUrl:
+                        ADD_OR_EXCLUDE_FILTER( field, elem.text, false, false );
+                        break;
+                    case Meta::valBpm:
+                    case Meta::valBitrate:
+                    case Meta::valScore:
+                    case Meta::valPlaycount:
+                    case Meta::valSamplerate:
+                    case Meta::valDiscNr:
+                    case Meta::valTrackNr:
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( field, elem.text.toInt(), compare );
+                        break;
+                    case Meta::valRating:
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( field, elem.text.toFloat() * 2, compare );
+                        break;
+                    case Meta::valLength:
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( field, elem.text.toInt() * 1000, compare );
+                        break;
+                    case Meta::valLastPlayed:
+                    case Meta::valFirstPlayed:
+                    case Meta::valCreateDate:
+                    case Meta::valModified:
+                        addDateFilter( field, compare, elem.negate, elem.text, qm );
+                        break;
+                    case Meta::valFilesize:
+                    {
+                        bool doubleOk( false );
+                        const double mbytes = elem.text.toDouble( &doubleOk ); // input in MBs
+                        if( !doubleOk )
+                        {
+                            qm->endAndOr();
+                            return;
+                        }
+                        /*
+                        * A special case is made for Equals (e.g. filesize:100), which actually filters
+                        * for anything beween 100 and 101MBs. Megabytes are used because for audio files
+                        * they are the most reasonable units for the user to deal with.
+                        */
+                        const qreal bytes = mbytes * 1024.0 * 1024.0;
+                        const qint64 mbFloor = qint64( qAbs(mbytes) );
+                        switch( compare )
+                        {
+                        case Collections::QueryMaker::Equals:
+                            qm->endAndOr();
+                            qm->beginAnd();
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( field, mbFloor * 1024 * 1024, Collections::QueryMaker::GreaterThan );
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( field, (mbFloor + 1) * 1024 * 1024, Collections::QueryMaker::LessThan );
+                            break;
+                        case Collections::QueryMaker::GreaterThan:
+                        case Collections::QueryMaker::LessThan:
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( field, bytes, compare );
+                            break;
+                        }
                         break;
                     }
-                }
-                else if( lcField.compare( "format", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valFormat ), Qt::CaseInsensitive ) == 0 )
-                {
-                    // NOTE: possible keywords that could be considered: codec, filetype, etc.
-                    const QString &ftStr = elem.text;
-                    Amarok::FileType ft = Amarok::FileTypeSupport::fileType(ftStr);
-
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFormat, int(ft), compare );
-                }
-                else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valDiscNr ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valDiscNr, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "tracknumber", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valTrackNr ), Qt::CaseInsensitive ) == 0 )
-                {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valTrackNr, elem.text.toInt(), compare );
-                }
-                else if( lcField.compare( "played", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valLastPlayed ), Qt::CaseInsensitive ) == 0 )
-                {
-                    addDateFilter( Meta::valLastPlayed, compare, elem.negate, elem.text, qm );
-                }
-                else if( lcField.compare( "first", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valFirstPlayed ), Qt::CaseInsensitive ) == 0 )
-                {
-                    addDateFilter( Meta::valFirstPlayed, compare, elem.negate, elem.text, qm );
-                }
-                else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valCreateDate ), Qt::CaseInsensitive ) == 0 )
-                {
-                    addDateFilter( Meta::valCreateDate, compare, elem.negate, elem.text, qm );
-                }
-                else if( lcField.compare( "modified", Qt::CaseInsensitive ) == 0 || lcField.compare( shortI18nForField( Meta::valModified ), Qt::CaseInsensitive ) == 0 )
-                {
-                    addDateFilter( Meta::valModified, compare, elem.negate, elem.text, qm );
+                    case Meta::valFormat:
+                    {
+                        const QString &ftStr = elem.text;
+                        Amarok::FileType ft = Amarok::FileTypeSupport::fileType(ftStr);
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( field, int(ft), compare );
+                        break;
+                    }
                 }
             }
             qm->endAndOr();

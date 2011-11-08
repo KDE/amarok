@@ -54,47 +54,113 @@ QString Meta::nameForField( qint64 field )
 
     case Meta::valAlbumArtist: return "albumartist";
     case Meta::valLabel:       return "label";
-    case Meta::valModified:    return "modifydate";
+    case Meta::valModified:    return "modified";
     default:                   return QString();
     }
 }
 
 qint64 Meta::fieldForName( const QString &name )
 {
-    if( name == "anything" ) return 0;
-    else if( name == "filename" ) return Meta::valUrl;
-    else if( name == "title" ) return Meta::valTitle;
-    else if( name == "artist" ) return Meta::valArtist;
-    else if( name == "album" ) return Meta::valAlbum;
-    else if( name == "genre" ) return Meta::valGenre;
-    else if( name == "composer" ) return Meta::valComposer;
-    else if( name == "year" ) return Meta::valYear;
-    else if( name == "comment" ) return Meta::valComment;
-    else if( name == "tracknumber" ) return Meta::valTrackNr;
-    else if( name == "discnumber" ) return Meta::valDiscNr;
-    else if( name == "bpm" ) return Meta::valBpm;
-    else if( name == "length" ) return Meta::valLength;
-    else if( name == "bitrate" ) return Meta::valBitrate;
-    else if( name == "samplerate" ) return Meta::valSamplerate;
-    else if( name == "filesize" ) return Meta::valFilesize;
-    else if( name == "format" ) return Meta::valFormat;
-    else if( name == "added" ) return Meta::valCreateDate;
-    else if( name == "score" ) return Meta::valScore;
-    else if( name == "rating" ) return Meta::valRating;
-    else if( name == "firstplay" ) return Meta::valFirstPlayed;
-    else if( name == "lastplay" ) return Meta::valLastPlayed;
-    else if( name == "playcount" ) return Meta::valPlaycount;
-    else if( name == "uniqueid" ) return Meta::valUniqueId;
+    if(      name.compare( "anything", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( 0 ), Qt::CaseInsensitive ) == 0 )
+            return 0;
+    else if( name.compare( "filename", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valUrl ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valUrl;
+    else if( name.compare( "title", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valTitle ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valTitle;
+    else if( name.compare( "artist", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valArtist ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valArtist;
+    else if( name.compare( "album", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valAlbum ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valAlbum;
+    else if( name.compare( "genre", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valGenre ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valGenre;
+    else if( name.compare( "composer", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valComposer ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valComposer;
+    else if( name.compare( "year", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valYear ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valYear;
+    else if( name.compare( "comment", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valComment ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valComment;
+    else if( name.compare( "tracknumber", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valTrackNr ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valTrackNr;
+    else if( name.compare( "discnumber", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valDiscNr ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valDiscNr;
+    else if( name.compare( "bpm", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valBpm ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valBpm;
+    else if( name.compare( "length", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valLength ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valLength;
+    else if( name.compare( "bitrate", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valBitrate ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valBitrate;
+    else if( name.compare( "samplerate", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valSamplerate ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valSamplerate;
+    else if( name.compare( "filesize", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valFilesize ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valFilesize;
+    else if( name.compare( "format", Qt::CaseInsensitive ) == 0
+          || name.compare( "codec", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valFormat ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valFormat;
+    else if( name.compare( "added", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valCreateDate ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valCreateDate;
+    else if( name.compare( "score", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valScore ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valScore;
+    else if( name.compare( "rating", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valRating ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valRating;
+    else if( name.compare( "firstplay", Qt::CaseInsensitive ) == 0
+          || name.compare( "first", Qt::CaseInsensitive ) == 0 // legacy
+          || name.compare( shortI18nForField( Meta::valFirstPlayed ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valFirstPlayed;
+    else if( name.compare( "lastplay", Qt::CaseInsensitive ) == 0
+          || name.compare( "played", Qt::CaseInsensitive ) == 0 // legacy
+          || name.compare( shortI18nForField( Meta::valLastPlayed ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valLastPlayed;
+    else if( name.compare( "playcount", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valPlaycount ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valPlaycount;
+    else if( name.compare( "uniqueid", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valUniqueId ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valUniqueId;
 
-    else if( name == "trackgain" ) return Meta::valTrackGain;
-    else if( name == "trackgainpeak" ) return Meta::valTrackGainPeak;
-    else if( name == "albumgain" ) return Meta::valAlbumGain;
-    else if( name == "albumgainpeak" ) return Meta::valAlbumGainPeak;
+    else if( name.compare( "trackgain", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valTrackGain ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valTrackGain;
+    else if( name.compare( "trackgainpeak", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valTrackGainPeak ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valTrackGainPeak;
+    else if( name.compare( "albumgain", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valAlbumGain ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valAlbumGain;
+    else if( name.compare( "albumgainpeak", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valAlbumGainPeak ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valAlbumGainPeak;
 
-    else if( name == "albumartist" ) return Meta::valAlbumArtist;
-    else if( name == "label" ) return Meta::valLabel;
-    else if( name == "modifydate" ) return Meta::valModified;
-    else return 0;
+    else if( name.compare( "albumartist", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valAlbumArtist ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valAlbumArtist;
+    else if( name.compare( "label", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valLabel ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valLabel;
+    else if( name.compare( "modified", Qt::CaseInsensitive ) == 0
+          || name.compare( shortI18nForField( Meta::valModified ), Qt::CaseInsensitive ) == 0 )
+            return Meta::valModified;
+    else
+            return 0;
 }
 
 QString Meta::i18nForField( qint64 field )
@@ -217,7 +283,7 @@ QString Meta::playlistNameForField( qint64 field )
 
     case Meta::valAlbumArtist: return "album artist name";
     case Meta::valLabel:       return "label";
-    case Meta::valModified:    return "modifydate";
+    case Meta::valModified:    return "modified";
     default:                   return "";
     }
 }
@@ -256,7 +322,7 @@ qint64 Meta::fieldForPlaylistName( const QString &name )
 
     else if( name == "album artist name" ) return Meta::valAlbumArtist;
     else if( name == "label" ) return Meta::valLabel;
-    else if( name == "modifydate" ) return Meta::valModified;
+    else if( name == "modified" ) return Meta::valModified;
     else return 0;
 }
 
