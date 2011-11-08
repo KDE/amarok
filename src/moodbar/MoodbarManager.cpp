@@ -310,7 +310,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 
         switch( paintStyle )
         {
-        case 1: // Angry
+        case Angry: // Angry
             threshold  = samples / 360 * 9;
             rangeStart = 45;
             rangeDelta = -45;
@@ -318,7 +318,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
             val        = 100;
             break;
 
-        case 2: // Frozen
+        case Frozen: // Frozen
             threshold  = samples / 360 * 1;
             rangeStart = 140;
             rangeDelta = 160;
@@ -326,7 +326,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
             val        = 100;
             break;
 
-        case 3: // Happy
+        case Happy: // Happy
             threshold  = samples / 360 * 2;
             rangeStart = 0;
             rangeDelta = 359;
@@ -334,6 +334,15 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
             val        = 250;
             break;
 
+        case Normal: // old "normal" mode, don't change moodfile's RGB values
+            threshold  = samples / 360 * 3;
+            rangeStart = 0;
+            rangeDelta = 359;
+            sat        = 100;
+            val        = 100;
+            break;
+
+        case SystemColours:
         default: // Default (system colours)
             threshold  = samples / 360 * 3;
             rangeStart = The::paletteHandler()->highlightColor().hsvHue();

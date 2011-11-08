@@ -42,6 +42,14 @@ Q_OBJECT
 friend MoodbarManager* The::moodbarManager();
 
 public:
+    enum Style
+    {
+        SystemColours,
+        Angry,
+        Frozen,
+        Happy,
+        Normal
+    };
     ~MoodbarManager();
 
     bool hasMoodbar( Meta::TrackPtr track );

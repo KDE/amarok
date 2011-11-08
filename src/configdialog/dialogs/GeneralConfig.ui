@@ -138,7 +138,7 @@ Please note that this feature requires the external &quot;Moodbar Generator&quot
         </property>
         <item>
          <property name="text">
-          <string>Default</string>
+          <string>Default (System colours)</string>
          </property>
         </item>
         <item>
@@ -154,6 +154,11 @@ Please note that this feature requires the external &quot;Moodbar Generator&quot
         <item>
          <property name="text">
           <string>Happy</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Normal</string>
          </property>
         </item>
        </widget>
