@@ -48,17 +48,9 @@ int main( int argc, char *argv[] )
 
     //Authors
     extern OcsData ocsData;
-    aboutData.addAuthor( ki18n("Alejandro Wainzinger"),
-            ki18n("Developer (xevix)"), "aikawarazuni@gmail.com", "http://awainzin-foss.blogspot.com" );
-    ocsData.addAuthor( "xevix", aboutData.authors().last() );
-
     aboutData.addAuthor( ki18n("Bart 'Where are my toothpicks' Cerneels"),
             ki18n("Developer (Stecchino)"), "bart.cerneels@kde.org", "http://commonideas.blogspot.com" );
     ocsData.addAuthor( "Stecchino", aboutData.authors().last() );
-
-    aboutData.addAuthor( ki18n("Dan 'Hey, it compiled...' Meltzer"),
-            ki18n("Developer (hydrogen)"), "parallelgrapefruit@gmail.com" );
-    ocsData.addAuthor( QString(), aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Ian 'The Beard' Monroe"),
             ki18n("Developer (eean)"), "ian@monroe.nu", "http://www.monroe.nu/" );
@@ -80,13 +72,16 @@ int main( int argc, char *argv[] )
             ki18n("Project founder (markey)"), "kretschmann@kde.org", "http://amarok.kde.org/blog/categories/1-markey" );
     ocsData.addAuthor( "MarkKretschmann", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Maximilian Kossick"),
-            ki18n("Developer (maxx_k)"), "maximilian.kossick@gmail.com" );
-    ocsData.addAuthor( QString(), aboutData.authors().last() );
+    aboutData.addAuthor( ki18n("Myriam Schweingruber"), ki18n("Rokymoter, Bug triaging (Mamarok)"), "myriam@kde.org" );
+    ocsData.addAuthor( "Mamarok", aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Nikolaj Hald 'Also very hot' Nielsen"),
             ki18n("Developer (nhn)"), "nhn@kde.org", "http://amarok.kde.org/blog/categories/18-freespirit" );
     ocsData.addAuthor( "nhnFreespirit", aboutData.authors().last() );
+
+    aboutData.addAuthor( ki18n("Ralf 'SalsaMaster' Engels"),
+            ki18n("Developer (rengels)"), "ralf.engels@nokia.com" );
+    ocsData.addAuthor( QString(), aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Rick W. Chen"),
             ki18n("Developer (stuffcorpse)"), "stuffcorpse@archlinux.us" );
@@ -96,12 +91,17 @@ int main( int argc, char *argv[] )
             ki18n("Developer (sebr)"), "ruiz@kde.org", "http://www.sebruiz.net" );
     ocsData.addAuthor( "seb", aboutData.authors().last() );
 
+    aboutData.addAuthor( ki18n("Sven Krohlas"), ki18n("Rokymoter, Developer (sven423)"), "sven@asbest-online.de" );
+    ocsData.addAuthor( "krohlas", aboutData.authors().last() );
+
     aboutData.addAuthor( ki18n("Téo Mrnjavac"),
             ki18n("Developer (Teo`)"), "teo@kde.org", "http://teom.wordpress.com/" );
     ocsData.addAuthor( "teom", aboutData.authors().last() );
 
 
     //Contributors
+    aboutData.addCredit( ki18n("Alejandro Wainzinger"), ki18n("Developer (xevix)"), "aikawarazuni@gmail.com" );
+        ocsData.addCredit( "xevix", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Alex Merry"), ki18n("Developer, Replay Gain support"), "kde@randomguy3.me.uk" );
         ocsData.addCredit( "randomguy3", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Casey Link"), ki18n("MP3tunes integration"), "unnamedrambler@gmail.com" );
@@ -112,6 +112,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "dangle", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Dan Leinir Turthra Jensen"), ki18n("Usability"), "admin@leinir.dk" );
         ocsData.addCredit( "leinir", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Dan 'Hey, it compiled...' Meltzer"), ki18n("Developer (hydrogen)"), "parallelgrapefruit@gmail.com" );
+        ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Daniel Caleb Jones"), ki18n("Biased playlists"), "danielcjones@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Daniel Dewald"), ki18n("Tag Guesser, Labels, Spectrum Analyzer"), "Daniel.Dewald@time-shift.de" );
@@ -145,10 +147,10 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "panzi", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Max Howell"), ki18n("Developer, Vision"), "max.howell@methylblue.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Maximilian Kossick"), ki18n("Developer (maxx_k)"), "maximilian.kossick@gmail.com" );
+        ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Mikko Caldara"), ki18n("Bug triaging and sanitizing"), "mikko.cal@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Myriam Schweingruber"), ki18n("Rokymoter, Bug triaging (Mamarok)"), "myriam@kde.org" );
-        ocsData.addCredit( "Mamarok", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Nikhil Marathe"), ki18n("UPnP support and patches (nsm)"), "nsm.nikhil@gmail.com" );
         ocsData.addCredit( "nikhilm", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Nuno Pinheiro"), ki18n("Artwork"), "nuno@oxygen-icons.org" );
@@ -171,8 +173,6 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "Takahani", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Soren Harward"), ki18n("Developer, Automated Playlist Generator"), "stharward@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Sven Krohlas"), ki18n("Rokymoter, Developer (sven423)"), "sven@asbest-online.de" );
-        ocsData.addCredit( "krohlas", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Thomas Lübking"), ki18n("Developer"), "thomas.luebking@web.de" );
         ocsData.addCredit( "thomas12777", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Valentin Rouet"), ki18n("Developer"), "v.rouet@gmail.com" );
