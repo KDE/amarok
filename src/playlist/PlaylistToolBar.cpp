@@ -27,7 +27,8 @@
 namespace Playlist {
 
 ToolBar::ToolBar( QWidget *parent ) :
-    QToolBar( parent )
+    QToolBar( parent ),
+    m_collapsed( false )
 {
     setObjectName( "PlaylistToolBar" );
 

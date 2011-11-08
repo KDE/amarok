@@ -81,6 +81,7 @@ static const int track_action_spacing = 6;
 MainToolbar::MainToolbar( QWidget *parent )
     : QToolBar( i18n( "Main Toolbar" ), parent )
     , m_lastTime( -1 )
+    , m_trackBarAnimationTimer( 0 )
 {
     DEBUG_BLOCK
     setObjectName( "MainToolbar" );

@@ -76,8 +76,9 @@ private:
 
     QPixmap m_skip_left, m_skip_right;
 
-    struct
+    struct Current
     {
+        Current() : label(0), key(0), actionsVisible(false) {}
         AnimatedLabelStack *label;
         void* key;
         QString uidUrl;
@@ -85,26 +86,28 @@ private:
         QRect rect;
     } m_current;
 
-    typedef struct
+    struct Skip
     {
+        Skip() : label(0), key(0) {}
         AnimatedLabelStack *label;
         void* key;
         QRect rect;
-    } Skip;
+    };
 
     Skip m_next, m_prev;
 
-    struct
+    struct Dummy
     {
+        Dummy() : label(0), targetX(0) {}
         AnimatedLabelStack *label;
         int targetX;
     } m_dummy;
 
     QLabel *m_timeLabel, *m_remainingTimeLabel;
     Amarok::TimeSlider *m_slider;
-    
+
     VolumeDial *m_volume;
-    
+
     int m_lastTime;
     int m_lastRemainingTime;
 
