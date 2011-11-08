@@ -12,8 +12,8 @@ include_directories(
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES}
-        ${LIBMYGPO_QT_INCLUDE_DIR}
-        ${LIBMYGPO_QT_INCLUDE_DIR}/../
+        ${LIBMYGPO_QT_INCLUDE_DIRS}
+        ${LIBMYGPO_QT_INCLUDE_DIRS}/../
         )
 
         add_subdirectory( images )
@@ -43,7 +43,7 @@ include_directories(
             amarokcore
             amaroklib
             amarokpud
-            ${LIBMYGPO_QT_LIBRARY}
+            ${LIBMYGPO_QT_LIBRARIES}
             ${KDE4_KDECORE_LIBS}
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KIO_LIBS}
@@ -68,7 +68,7 @@ include_directories(
          target_link_libraries( kcm_amarok_service_gpodder
             amarokcore
             amaroklib
-            ${LIBMYGPO_QT_LIBRARY}
+            ${LIBMYGPO_QT_LIBRARIES}
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KUTILS_LIBS}
             ${KDE4_KIO_LIBS}

@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 2.6.2)
 
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
+message(STATUS "${CMAKE_MODULE_PATH}")
+
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
@@ -131,7 +133,7 @@ if( WITH_PLAYER )
     endif( FFMPEG_FOUND )
     
     ##gpodder Service
-    macro_optional_find_package(Libmygpo-qt)
+    macro_optional_find_package( Mygpo-qt )
     macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable gpodder.net service" "http://wiki.gpodder.org/wiki/Libmygpo-qt" FALSE "1.0.5" "" )
     macro_bool_to_01( LIBMYGPO_QT_FOUND HAVE_LIBMYGPOQT )
 

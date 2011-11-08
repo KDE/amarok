@@ -785,8 +785,8 @@ if(KDE4_BUILD_TESTS)
 endif()
 
 if( LIBMYGPO_QT_FOUND )
-    set( EXTRA_LIBS ${LIBMYGPO_QT_LIBRARY} )
-    include_directories(     ${LIBMYGPO_QT_INCLUDE_DIR}  ${LIBMYGPO_QT_INCLUDE_DIR}/../ )
+    set( EXTRA_LIBS ${LIBMYGPO_QT_LIBRARIES} )
+    include_directories(     ${LIBMYGPO_QT_INCLUDE_DIRS} ${LIBMYGPO_QT_INCLUDE_DIRS}/../ )
 endif( LIBMYGPO_QT_FOUND )
 
 if( LIBLASTFM_FOUND )
