@@ -50,6 +50,8 @@ if(TAGLIB_FOUND)
     include(CheckTagLibFileName)
 
     check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
+else()
+    message(WARNING "You are building Amarok without taglib. This has been known to cause many strange behaviours and is strongly advised against.")
 endif()
 
 # --------------------------
