@@ -38,7 +38,6 @@ QVariant
 PlaylistBrowserFilterProxy::data(const QModelIndex &index, int role) const
 {
     QVariant result =  QSortFilterProxyModel::data( index, role );
-    debug() << result;
     return result;
 }
 
