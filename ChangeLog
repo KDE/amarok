@@ -26,6 +26,7 @@ Version 2.5.0-Beta 1
     * Auto-save the playlist so that it is not lost if Amarok crashes.
 
   CHANGES:
+    * Amarok now depends on libmygpo-qt > 1.0.5.
     * New USB Mass Storage media-device plugin using the Amarok Collection Scanner.
     * Browser widget backgrounds can now be enabled/disabled.
     * Playlist: Don't group albums without name. (BR 243344)
@@ -40,10 +41,6 @@ Version 2.5.0-Beta 1
       is far less complicated and crash-prone, but at the cost of taking
       longer to converge when the constraint tree is complicated. (BR 240927,
       BR 240301)
-    * Added local podcasts are automatically subscribed in gpodder.net.
-    * Removed local podcasts are automatically unsubscribed from gpodder.net.
-    * GPodder Service automatically subscribes all local podcasts into
-      gpodder.net when the login is successfull.
     * Improved the playlist synchronisation feature.
     * Make possible to get count tracks before the XSPF file is fully loaded.
     * Mark unplayble tracks in the playlist. Patch by Sandeep Raghuraman. (BR 263640)
