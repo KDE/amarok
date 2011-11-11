@@ -86,12 +86,6 @@ namespace Amarok
         new Mpris2AmarokPlayerAdaptor( this );
         QDBusConnection::sessionBus().registerObject( MPRIS2_OBJECT_PATH, this );
 
-        updateTrackProgressionProperties();
-        updatePlaybackStatusProperty();
-        updatePlaylistProperties();
-        updateTrackProperties();
-        setPropertyInternal( "Volume", static_cast<double>(The::engineController()->volume()) / 100.0 );
-
         connect( The::playlistActions(), SIGNAL( navigatorChanged() ),
             SLOT( updateTrackProgressionProperties() ) );
         // changing the navigator may also affect whether there is a
@@ -126,6 +120,12 @@ namespace Amarok
         connect( engine, SIGNAL( volumeChanged( int ) ),
                  this, SLOT( volumeChanged( int ) ) );
 
+        updateTrackProgressionProperties();
+        updatePlaybackStatusProperty();
+        updatePlaylistProperties();
+        updateTrackProperties();
+        setPropertyInternal( "Volume", static_cast<double>(The::engineController()->volume()) / 100.0 );
+        setPropertyInternal( "CanSeek", The::engineController()->phononMediaObject()->isSeekable() );
     }
 
     void Mpris2DBusHandler::setProperty( const char *name, const QVariant &value )
