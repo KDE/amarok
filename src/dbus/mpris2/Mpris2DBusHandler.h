@@ -184,6 +184,7 @@ namespace Amarok
         void seekableChanged( bool );
         void volumeChanged( int percent );
 
+        void playlistActiveTrackChanged( quint64 newTrackId );
         void updateTrackProgressionProperties();
         void updatePlaybackStatusProperty();
         void updatePlaylistProperties();
