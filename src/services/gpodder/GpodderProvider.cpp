@@ -39,13 +39,12 @@
 #include <KLocale>
 #include <KVBox>
 
-static const QString s_deviceName = "amarok";
-
 using namespace Podcasts;
 
-GpodderProvider::GpodderProvider( const QString& username, ApiRequest *apiRequest )
+GpodderProvider::GpodderProvider( const QString& username, const QString& devicename, ApiRequest *apiRequest )
     : m_apiRequest( apiRequest )
     , m_username( username )
+    , m_devicename( devicename )
     , m_channels()
     , m_addRemoveResult()
     , m_deviceUpdatesResult()
@@ -62,7 +61,7 @@ GpodderProvider::GpodderProvider( const QString& username, ApiRequest *apiReques
     //Load cached Episode Actions
     loadEpisodeActions();
 
-    //Request all channels and episodes from s_deviceName device and after it
+    //Request all channels and episodes from m_devicename device and after it
     //request episode actions too
     requestDeviceUpdates();
 
@@ -108,7 +107,7 @@ GpodderProvider::~GpodderProvider()
     if( !m_removeList.isEmpty() || !m_addList.isEmpty() )
     {
         m_addRemoveResult =
-                m_apiRequest->addRemoveSubscriptions( m_username, s_deviceName, m_addList, m_removeList );
+                m_apiRequest->addRemoveSubscriptions( m_username, m_devicename, m_addList, m_removeList );
         m_addList.clear();
         m_removeList.clear();
     }
@@ -501,7 +500,7 @@ GpodderProvider::synchronizeSubscriptions()
     if( !m_removeList.isEmpty() || !m_addList.isEmpty() )
     {
         m_addRemoveResult =
-                m_apiRequest->addRemoveSubscriptions( m_username, s_deviceName, m_addList, m_removeList );
+                m_apiRequest->addRemoveSubscriptions( m_username, m_devicename, m_addList, m_removeList );
 
         //Only clear m_addList and m_removeList if the synchronisation with gpodder.net really worked
         connect( m_addRemoveResult.data(), SIGNAL(finished()), this,
@@ -629,7 +628,7 @@ GpodderProvider::timerPrepareToSyncPodcastStatus()
             tempEpisodeAction = EpisodeActionPtr(
                         new EpisodeAction( podcastUrl,
                                            QUrl( tempEpisode->uidUrl() ),
-                                           s_deviceName,
+                                           m_devicename,
                                            EpisodeAction::Play,
                                            m_timestampStatus,
                                            1,
@@ -668,7 +667,7 @@ void GpodderProvider::timerGenerateEpisodeAction()
             tempEpisodeAction = EpisodeActionPtr(
                         new EpisodeAction( podcastUrl,
                                            QUrl( tempEpisode->uidUrl() ),
-                                           s_deviceName,
+                                           m_devicename,
                                            EpisodeAction::Play,
                                            m_timestampStatus,
                                            1,
@@ -687,7 +686,7 @@ void GpodderProvider::timerGenerateEpisodeAction()
 void
 GpodderProvider::requestDeviceUpdates()
 {
-    m_deviceUpdatesResult = m_apiRequest->deviceUpdates( m_username, s_deviceName, 0 );
+    m_deviceUpdatesResult = m_apiRequest->deviceUpdates( m_username, m_devicename, 0 );
 
     connect( m_deviceUpdatesResult.data(), SIGNAL(finished()), SLOT(deviceUpdatesFinished()) );
     connect( m_deviceUpdatesResult.data(), SIGNAL(requestError( QNetworkReply::NetworkError )),
@@ -1023,7 +1022,7 @@ void GpodderProvider::loadEpisodeActions()
                     EpisodeActionPtr tempEpisodeAction = EpisodeActionPtr(
                                 new EpisodeAction( QUrl( actionsDetails[0] ),
                                                    QUrl( episodeUrl ),
-                                                   s_deviceName,
+                                                   m_devicename,
                                                    actionType,
                                                    timestamp,
                                                    started,

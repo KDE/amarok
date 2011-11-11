@@ -28,6 +28,7 @@
 #include "NetworkAccessManagerProxy.h"
 #include "ui_GpodderConfigWidget.h"
 
+#include <QHostInfo>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QVBoxLayout>
@@ -111,9 +112,12 @@ GpodderServiceSettings::finished()
     QList<mygpo::DevicePtr> ptrList = m_devices->devicesList();
     mygpo::DevicePtr devPtr;
 
+    QString hostname = QHostInfo::localHostName();
+    QString deviceID = QLatin1String( "amarok-" ) % hostname;
+
     foreach( devPtr, ptrList )
     {
-        if( devPtr->id().compare( "amarok" ) == 0 )
+        if( devPtr->id().compare( deviceID ) == 0 )
         {
             deviceExists = true;
             break;
@@ -121,12 +125,13 @@ GpodderServiceSettings::finished()
     }
     if( !deviceExists )
     {
+        debug() << "create new device " % deviceID;
         mygpo::ApiRequest api( m_configDialog->kcfg_GpodderUsername->text(),
                                m_configDialog->kcfg_GpodderPassword->text(), The::networkAccessManager() );
 
         m_createDevice = api.renameDevice( m_configDialog->kcfg_GpodderUsername->text(),
-                                           QLatin1String( "amarok" ),
-                                           QLatin1String( "Device for gpodder.net in Amarok" ),
+                                           deviceID,
+                                           QLatin1String( "Amarok on " ) % hostname,
                                            mygpo::Device::OTHER );
 
         connect( m_createDevice, SIGNAL(finished() ), SLOT(deviceCreationFinished()) );

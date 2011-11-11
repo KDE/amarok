@@ -31,6 +31,8 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "widgets/SearchWidget.h"
 
+#include <QHostInfo>
+
 #include <KLocale>
 #include <KPasswordDialog>
 #include <KStandardDirs>
@@ -247,5 +249,6 @@ GpodderService::enableGpodderProvider( const QString &username )
     debug() << "Enabling GpodderProvider";
 
     delete m_podcastProvider;
-    m_podcastProvider = new Podcasts::GpodderProvider( username, m_apiRequest );
+    QString device = QLatin1String( "amarok-" ) % QHostInfo::localHostName();
+    m_podcastProvider = new Podcasts::GpodderProvider( username, device, m_apiRequest );
 }
