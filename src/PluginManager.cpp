@@ -34,7 +34,7 @@
 
 #include <cstdlib>
 
-const int Plugins::PluginManager::s_pluginFrameworkVersion = 65;
+const int Plugins::PluginManager::s_pluginFrameworkVersion = 66;
 Plugins::PluginManager* Plugins::PluginManager::s_instance = 0;
 
 Plugins::PluginManager*
