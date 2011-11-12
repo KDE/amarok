@@ -137,6 +137,7 @@ AmazonStore::polish()
 
         connect( m_itemView, SIGNAL( itemSelected( QModelIndex ) ), this, SLOT( itemSelected( QModelIndex ) ) );
         connect( m_itemView, SIGNAL( itemDoubleClicked( QModelIndex ) ), this, SLOT( itemDoubleClicked( QModelIndex ) ) );
+        connect( m_itemView, SIGNAL( searchForAlbum( QModelIndex ) ), this, SLOT( searchForAlbum( QModelIndex ) ) );
 
         AmazonUrlRunner *runner = new AmazonUrlRunner();
         connect( runner, SIGNAL( search( const QString ) ), this, SLOT( newSearchRequest( QString ) ) );
@@ -311,6 +312,27 @@ AmazonStore::newSpinBoxSearchRequest( int i )
     newSearchRequest( m_searchWidget->currentText() );
 }
 
+void
+AmazonStore::searchForAlbum( QModelIndex index )
+{
+    // only being called for tracks to search for the album
+
+    if( !(index.row() < m_collection->albumIDMap()->size() - m_itemModel->hiddenAlbums() ) ) // track
+    {
+        Meta::AmazonTrack* track;
+        int id = index.row() - m_collection->albumIDMap()->size() + m_itemModel->hiddenAlbums() ;
+
+        // row == albumId
+        track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id + 1 ).data() );
+
+        if( !track )
+            return;
+
+        QString name = m_collection->artistById( track->artistId() )->name() + " - ";
+        name =  name + m_collection->albumById( track->albumId() )->name();
+        m_searchWidget->setSearchString( name );
+    }
+}
 
 /* private */
 

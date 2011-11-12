@@ -78,7 +78,10 @@ AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
     if( amazonModel->isAlbum( index ) )
         actions.append( createDetailsAction() );
     else // track
+    {
         actions.append( createAddToPlaylistAction() ); // this should be the first action
+        actions.append( createSearchForAlbumAction() );
+    }
 
     actions.append( createAddToCartAction() );
 
@@ -182,6 +185,11 @@ AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
             QAction *addToPlaylistAction = createAddToPlaylistAction();
             addToPlaylistAction->setProperty( "popupdropper_svg_id", "append" );
             m_pd->addItem( The::popupDropperFactory()->createItem( addToPlaylistAction ) );
+
+            QAction *searchForAlbumAction = createSearchForAlbumAction();
+            // TODO: add correct icon here
+            //addToPlaylistAction->setProperty( "popupdropper_svg_id", "append" );
+            m_pd->addItem( The::popupDropperFactory()->createItem( searchForAlbumAction ) );
         }
 
         m_pd->addItem( The::popupDropperFactory()->createItem( createAddToCartAction() ) );
@@ -233,6 +241,26 @@ AmazonItemTreeView::itemActivatedAction()
     emit itemDoubleClicked( indexes[0] ); // same behaviour as double click
 }
 
+void
+AmazonItemTreeView::searchForAlbumAction()
+{
+    QModelIndexList indexes = selectedIndexes();
+
+    if( indexes.count() < 1 )
+        return;
+
+    // make sure we are working on a track
+    AmazonItemTreeModel *amazonModel;
+    amazonModel = dynamic_cast<AmazonItemTreeModel*>( model() );
+
+    if( !amazonModel )
+        return;
+
+    if( amazonModel->isAlbum( indexes[0] ) )
+        return;
+
+    emit searchForAlbum( indexes[0] );
+}
 
 // private
 
@@ -263,4 +291,13 @@ AmazonItemTreeView::createDetailsAction()
     connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
 
     return getDetailsAction;
+}
+
+QAction*
+AmazonItemTreeView::createSearchForAlbumAction()
+{
+    QAction *searchForAlbumAction = new QAction( KIcon( "media-optical-amarok" ), QString( i18n( "Search for Album..." ) ), this );
+    connect( searchForAlbumAction, SIGNAL( triggered() ), this, SLOT( searchForAlbumAction() ) );
+
+    return searchForAlbumAction;
 }

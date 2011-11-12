@@ -57,6 +57,7 @@ protected slots:
     virtual void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
     void itemActivatedAction();
+    void searchForAlbumAction();
 
 private:
     PopupDropper *m_pd;
@@ -64,11 +65,13 @@ private:
     QAction* createAddToCartAction();
     QAction* createAddToPlaylistAction();
     QAction* createDetailsAction();
+    QAction* createSearchForAlbumAction();
 
 signals:
     void addToCart();
     void itemDoubleClicked( QModelIndex index );
-    void itemSelected( QModelIndex item );
+    void itemSelected( QModelIndex index );
+    void searchForAlbum( QModelIndex index );
 };
 
 #endif // AMAZONITEMTREEVIEW_H

@@ -91,11 +91,13 @@ public slots:
 
     /**
     * React to a double click on an item.
+    * @param index The QModelIndex of the item.
     */
     void itemDoubleClicked( QModelIndex index );
 
     /**
     * Activates buttons required to interact with the currently selected item.
+    * @param index The QModelIndex of the item.
     */
     void itemSelected( QModelIndex index );
 
@@ -110,6 +112,12 @@ public slots:
     * @param i page to go to.
     */
     void newSpinBoxSearchRequest( int i );
+
+    /**
+    * Starts a search for the album of a track the given QModelIndex represents.
+    * @param index The QModelIndex for the track.
+    */
+    void searchForAlbum( QModelIndex index );
 
 private:
     /**
