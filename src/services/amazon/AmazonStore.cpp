@@ -154,7 +154,7 @@ AmazonStore::addToCart()
     QString asin, name, price;
 
     // get item from collection
-    if( m_selectedIndex.row() < m_collection->albumIDMap()->size() - m_itemModel->hiddenAlbums() ) // it's an album
+    if( m_itemModel->isAlbum( m_selectedIndex ) ) // album
     {
         Meta::AmazonAlbum* album;
         // row == albumId
@@ -223,7 +223,7 @@ AmazonStore::itemDoubleClicked( QModelIndex index )
     // for albums: search for the album name to get details about it
     // for tracks: add it to the playlist
 
-    if( index.row() < m_collection->albumIDMap()->size() - m_itemModel->hiddenAlbums() ) // it's an album
+    if( m_itemModel->isAlbum( index ) ) // album
     {
         Meta::AmazonAlbum* album;
         // row == albumId
@@ -317,7 +317,7 @@ AmazonStore::searchForAlbum( QModelIndex index )
 {
     // only being called for tracks to search for the album
 
-    if( !(index.row() < m_collection->albumIDMap()->size() - m_itemModel->hiddenAlbums() ) ) // track
+    if( !m_itemModel->isAlbum( index ) ) // track
     {
         Meta::AmazonTrack* track;
         int id = index.row() - m_collection->albumIDMap()->size() + m_itemModel->hiddenAlbums() ;
