@@ -90,7 +90,60 @@ AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
         }
     }
     else if( role == Qt::ToolTipRole )
-        return prettyNameByIndex( index );
+    {
+        // TODO: maybe we could also show the cover here
+        QString toolTip;
+        toolTip = "<center><b>" + prettyNameByIndex( index ) + "</b></center><br/>";
+
+        if( isAlbum( index ) )
+        {
+            id = index.row() + 1;
+
+            Meta::AmazonAlbum* album;
+            album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( id ).data() );
+
+            if( !album )
+                return QString();
+
+            toolTip += i18n( "<b>Artist:</b> " );
+            toolTip += m_collection->artistById( album->artistId() )->name();
+            toolTip += "<br/>";
+
+            toolTip += i18n( "<b>Album:</b> " );
+            toolTip += album->name();
+            toolTip += "<br/>";
+
+            toolTip += i18n( "<b>Price:</b> " );
+            toolTip += Amazon::prettyPrice( album->price() );
+        }
+        else // track
+        {
+            id = index.row() - m_collection->albumIDMap()->size() + 1 + m_hiddenAlbums;
+
+            Meta::AmazonTrack* track;
+            track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() );
+
+            if( !track )
+                return QString();
+
+            toolTip += i18n( "<b>Artist:</b> " );
+            toolTip += m_collection->artistById( track->artistId() )->name();
+            toolTip += "<br/>";
+
+            toolTip += i18n( "<b>Album:</b> " );
+            toolTip += m_collection->albumById( track->albumId() )->name();
+            toolTip += "<br/>";
+
+            toolTip += i18n( "<b>Track:</b> " );
+            toolTip += track->name();
+            toolTip += "<br/>";
+
+            toolTip += i18n( "<b>Price:</b> " );
+            toolTip += Amazon::prettyPrice( track->price() );
+        }
+
+        return toolTip;
+    }
 
     return QVariant();
 }
