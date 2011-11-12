@@ -1063,23 +1063,24 @@ QHash<QAction*, Collections::Collection*> CollectionTreeView::getRemoveActions( 
 {
     QHash<QAction*, Collections::Collection*> currentRemoveDestination;
 
-    if( onlyOneCollection( indices) )
-    {
-        Collections::Collection *collection = getCollection( indices.first() );
-        if( collection && collection->isWritable() )
-        {
-            //writableCollections.append( collection );
-            KAction *action = new KAction( KIcon( "remove-amarok" ), i18n( "Delete Tracks" ), 0 );
-            action->setProperty( "popupdropper_svg_id", "delete" );
+    if( !onlyOneCollection( indices ) )
+        return currentRemoveDestination;
+    Collections::Collection *collection = getCollection( indices.first() );
+    if( !collection || !collection->isWritable() )
+        return currentRemoveDestination;
 
-            connect( action, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                     this, SLOT(slotRemoveTracks(Qt::MouseButtons,Qt::KeyboardModifiers)) );
+    KAction *trashAction = new KAction( KIcon( "user-trash" ), i18n( "Move Tracks to Trash" ), 0 );
+    trashAction->setProperty( "popupdropper_svg_id", "delete" );
+    connect( trashAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                this, SLOT(slotTrashTracks()) );
+    currentRemoveDestination.insert( trashAction, collection );
 
-            currentRemoveDestination.insert( action, collection );
-        }
+    KAction *deleteAction = new KAction( KIcon( "remove-amarok" ), i18n( "Delete Tracks" ), 0 );
+    deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+    connect( deleteAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                this, SLOT(slotRemoveTracks()) );
+    currentRemoveDestination.insert( deleteAction, collection );
 
-
-    }
     return currentRemoveDestination;
 }
 
@@ -1173,15 +1174,23 @@ void CollectionTreeView::slotMoveTracks()
     }
 }
 
-void CollectionTreeView::slotRemoveTracks( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
+void
+CollectionTreeView::slotTrashTracks()
 {
-    Q_UNUSED( buttons )
     KAction *action = qobject_cast<KAction*>( sender() );
-    if( action )
-    {
-        bool skipTrash = modifiers.testFlag( Qt::ShiftModifier );
-        removeTracks( m_currentItems, !skipTrash );
-    }
+    if( !action )
+        return;
+    // TODO: can use m_currentRemoveDestination[ action ] and pass it to removeTracks()
+    removeTracks( m_currentItems, true /* use trash */ );
+}
+
+void CollectionTreeView::slotRemoveTracks()
+{
+    KAction *action = qobject_cast<KAction*>( sender() );
+    if( !action )
+        return;
+    // TODO: can use m_currentRemoveDestination[ action ] and pass it to removeTracks()
+    removeTracks( m_currentItems, false /* do not use trash */ );
 }
 
 void CollectionTreeView::slotOrganize()
