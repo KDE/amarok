@@ -2,13 +2,14 @@ Amarok ChangeLog
 ================
 (C) 2002-2011 the Amarok authors.
 
+
 Version 2.5.0-Beta 1
   FEATURES:
     * New "equals" match in collection filter - e.g. label:=pop finds songs
       with label "pop" but not songs with label "electro pop". (BR 260004)
     * Enable dropping tracks on empty area in Saved Playlists to create new
       playlist.
-    * Addded a "create new playlist" action in the empty space of the Saved
+    * Added a "create new playlist" action in the empty space of the Saved
       Playlists. (BR202725)
     * Add new type of optional tokens in format string (Collection Organizer)
       (BR 264874)
@@ -16,7 +17,7 @@ Version 2.5.0-Beta 1
       to/from iPods. (BR 207880)
     * Ctrl+F now activates collection browser and focuses the seach collection
       bar. (BR 257381)
-    * Music store based on the Amazon catalogue
+    * Music store based on the Amazon catalogue.
     * Podcast subscription synchronisation and podcast status synchronisation
       with Gpodder service.
     * Possibility to browse through podcasts suggested by gpodder.net and
@@ -53,11 +54,11 @@ Version 2.5.0-Beta 1
     * Fixed crash on exit while collection scanner is running. (BR 261421)
     * Fixed collection browser tracks grouping after switching to Merged View. (BR 277015)
     * Prefer track artist to album artist in Albums applet fiter. (BR 266682)
-    * Fix the Metadata, CanGoPrevious, CanGoNext and CanSeek properties of the
+    * Fixed the Metadata, CanGoPrevious, CanGoNext and CanSeek properties of the
       MPRIS2 interface
     * Fixed Wikipedia search field not accepting space character or cursor
       keys. (BR 266591)
-    * Fix SupportedMimeTypes method on the MPRIS2 D-Bus interface, so that it
+    * Fixed SupportedMimeTypes method on the MPRIS2 D-Bus interface, so that it
       no longer appends duplicate entries on every call.
     * Do not use Album Artist as Artist for files without Artist metadata. (BR 281283)
     * Fixed crash on decodeing currupted media during MusicDNS search. (BR 284895)
@@ -76,7 +77,7 @@ Version 2.5.0-Beta 1
     * Use regular MusicBrainz search for tracks with MBID. (BR 280857)
     * Always use English AND/OR in Collection Filter even if translations are
       in effect. (BR 279559)
-    * Fix errors in the saved playlists view when removing a playlist. (BR 273358)
+    * Fixed errors in the saved playlists view when removing a playlist. (BR 273358)
     * Fixed issue where the Context View wrench was not created when the
       Context View had no applets. (BR 280382)
     * Fixed off-by-one error in organize collection dialog.
