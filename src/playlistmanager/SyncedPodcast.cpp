@@ -23,8 +23,8 @@
 
 using namespace Meta;
 
-SyncedPodcast::SyncedPodcast( Playlists::PlaylistPtr podcast )
-    : SyncedPlaylist( podcast )
+SyncedPodcast::SyncedPodcast( Podcasts::PodcastChannelPtr podcast )
 {
-    m_master = Podcasts::PodcastChannelPtr::dynamicCast( master() );
+    m_master = podcast;
+    addPlaylist( Playlists::PlaylistPtr::dynamicCast( m_master ) );
 }

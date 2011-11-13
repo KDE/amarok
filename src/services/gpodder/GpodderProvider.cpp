@@ -711,6 +711,8 @@ GpodderProvider::deviceUpdatesFinished()
         requestUrlResolve( channel );
     }
 
+    m_timerSynchronizeSubscriptions->start( 60 * 1000 );
+
     //Only after all subscription changes are committed should we save the timestamp
     setSubscriptionTimestamp( m_deviceUpdatesResult->timestamp() );
 }
@@ -1063,6 +1065,7 @@ void GpodderProvider::saveEpisodeActions()
             case EpisodeAction::Play: actionType = 1; break;
             case EpisodeAction::Delete: actionType = 2; break;
             case EpisodeAction::New: actionType = 3; break;
+            default: actionType = -1; break;
         }
 
         actionsDetails.append( QString::number( actionType ) );

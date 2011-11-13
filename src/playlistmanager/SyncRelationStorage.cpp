@@ -33,7 +33,8 @@ SyncRelationStorage::createSyncedPlaylist( const Playlists::PlaylistPtr playlist
     SyncedPlaylistPtr syncedPlaylist;
 
     if( Podcasts::PodcastChannelPtr::dynamicCast( playlist ) )
-        syncedPlaylist = SyncedPlaylistPtr( new SyncedPodcast( playlist ) );
+        syncedPlaylist = SyncedPlaylistPtr( new SyncedPodcast(
+                                                Podcasts::PodcastChannelPtr::dynamicCast( playlist ) ) );
     else
         syncedPlaylist = SyncedPlaylistPtr( new SyncedPlaylist( playlist ) );
 

@@ -21,13 +21,12 @@
 #include <src/core/playlists/Playlist.h>
 
 /** A synchronized playlist that will try to get the attached slaves into the same state as the
-  * master. The first playlist attached (through constructor or addPlaylist()) is the master.
+  * master. The first playlist attached (through constructor) is the master.
   */
 class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObserver
 {
     public:
-        SyncedPlaylist();
-        SyncedPlaylist( Playlists::PlaylistPtr playlist );
+        explicit SyncedPlaylist( Playlists::PlaylistPtr playlist );
         virtual ~SyncedPlaylist() {}
 
         //Playlists::Playlist methods
@@ -35,9 +34,11 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual QString name() const;
         virtual QString prettyName() const;
         virtual QString description() const;
+        virtual Playlists::PlaylistProvider *provider() const;
         virtual void setName( const QString &name ) { Q_UNUSED( name ); }
 
         virtual Meta::TrackList tracks();
+        virtual int trackCount() const;
 
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
@@ -66,6 +67,7 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual Playlists::PlaylistList slaves() const;
 
     protected:
+        SyncedPlaylist() {};
 
     private:
         Playlists::PlaylistList m_playlists;

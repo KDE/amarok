@@ -183,7 +183,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
             pmc = dynamic_cast<Podcasts::PodcastMetaCommon *>( trackFromIndex( idx ).data() );
         else
             //HACK: get rid of getPlaylist()
-            pmc = dynamic_cast<Podcasts::PodcastMetaCommon *>( getPlaylist( playlistFromIndex( idx ).data() ) );
+            pmc = dynamic_cast<Podcasts::PodcastMetaCommon *>( playlistFromIndex( idx ).data() );
 
         if( !pmc )
             return QVariant();
@@ -451,7 +451,7 @@ PlaylistBrowserNS::PodcastModel::podcastItemType( const QModelIndex &idx ) const
 Podcasts::PodcastChannelPtr
 PlaylistBrowserNS::PodcastModel::channelForIndex( const QModelIndex &idx ) const
 {
-    return Podcasts::PodcastChannelPtr::dynamicCast( getPlaylist( playlistFromIndex( idx ) ) );
+    return Podcasts::PodcastChannelPtr::dynamicCast( playlistFromIndex( idx ) );
 }
 
 Podcasts::PodcastEpisodePtr
@@ -467,27 +467,6 @@ PlaylistBrowserNS::PodcastModel::podcastEpisodesToTracks( Podcasts::PodcastEpiso
     foreach( Podcasts::PodcastEpisodePtr episode, episodes )
         tracks << Meta::TrackPtr::staticCast( episode );
     return tracks;
-}
-
-//HACK: fuctions used to get to the master of a SyncedPodcast. Handle in SyncedPodcast instead.
-Playlists::PlaylistPtr
-PlaylistBrowserNS::PodcastModel::getPlaylist( Playlists::PlaylistPtr playlist ) const
-{
-    SyncedPodcastPtr syncedPodcast = SyncedPodcastPtr::dynamicCast( playlist );
-    if( syncedPodcast )
-        return syncedPodcast->master();
-    else
-        return playlist;
-}
-
-Playlists::Playlist*
-PlaylistBrowserNS::PodcastModel::getPlaylist( Playlists::Playlist* playlist ) const
-{
-    SyncedPodcast* syncedPodcast = dynamic_cast<SyncedPodcast *>( playlist );
-    if( syncedPodcast )
-        return syncedPodcast->master().data();
-    else
-        return playlist;
 }
 
 #include "PodcastModel.moc"

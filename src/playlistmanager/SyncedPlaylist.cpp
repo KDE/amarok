@@ -65,6 +65,12 @@ SyncedPlaylist::description() const
     return i18n( "Synchronized on: %1", providerNames.join( ", " ) );
 }
 
+Playlists::PlaylistProvider*
+SyncedPlaylist::provider() const
+{
+    return m_playlists.first()->provider();
+}
+
 TrackList
 SyncedPlaylist::tracks()
 {
@@ -72,6 +78,15 @@ SyncedPlaylist::tracks()
         return TrackList();
 
     return m_playlists.first()->tracks();
+}
+
+int
+SyncedPlaylist::trackCount() const
+{
+    if( isEmpty() )
+        return -1;
+
+    return m_playlists.first()->trackCount();
 }
 
 void

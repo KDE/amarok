@@ -20,16 +20,23 @@
 #include <src/playlistmanager/SyncedPlaylist.h>
 #include <src/core/podcasts/PodcastMeta.h>
 
-class SyncedPodcast : public SyncedPlaylist
+class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
 {
     public:
-        explicit SyncedPodcast( Playlists::PlaylistPtr podcast );
+        explicit SyncedPodcast( Podcasts::PodcastChannelPtr podcast );
         virtual ~SyncedPodcast() {}
 
-        //PodcastMetaCommon methods
-        int podcastType() { return m_master->podcastType(); }
+        //Playlist virtual methods
+        virtual QString name() const { return title(); }
 
-        virtual Playlists::PlaylistProvider *provider() const { return m_master->provider(); }
+        //PodcastMetaCommon methods
+        virtual QString title() const { return m_master->title(); }
+        virtual QString description() const { return m_master->description(); }
+        virtual QStringList keywords() const { return m_master->keywords(); }
+        virtual QString subtitle() const { return m_master->subtitle(); }
+        virtual QString summary() const { return m_master->summary(); }
+        virtual QString author() const { return m_master->author(); }
+        int podcastType() { return m_master->podcastType(); }
 
         //Podcasts::PodcastChannel methods
         virtual KUrl url() const { return m_master->url(); }
@@ -51,16 +58,22 @@ class SyncedPodcast : public SyncedPlaylist
         virtual void setSubscribeDate( const QDate &date ) { m_master->setSubscribeDate( date ); }
 
         virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode )
-                { return m_master->addEpisode( episode ); }
+        {
+            return m_master->addEpisode( episode );
+        }
         virtual Podcasts::PodcastEpisodeList episodes() { return m_master->episodes(); }
 
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
-                { Q_UNUSED( type ); return false; }
+        {
+            return m_master->hasCapabilityInterface( type );
+        }
 
         Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type )
-                { Q_UNUSED( type ); return static_cast<Capabilities::Capability *>( 0 ); }
+        {
+            return m_master->createCapabilityInterface( type );
+        }
 
-        bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
+        bool load( QTextStream &stream ) { return m_master->load( stream ); }
 
         //Settings
         virtual KUrl saveLocation() const { return m_master->saveLocation(); }
@@ -71,7 +84,9 @@ class SyncedPodcast : public SyncedPlaylist
         void setSaveLocation( const KUrl &url ) { m_master->setSaveLocation( url ); }
         void setAutoScan( bool autoScan ) { m_master->setAutoScan( autoScan ); }
         void setFetchType( Podcasts::PodcastChannel::FetchType fetchType )
-                { m_master->setFetchType( fetchType ); }
+        {
+            m_master->setFetchType( fetchType );
+        }
         void setPurge( bool purge ) { m_master->setPurge( purge ); }
         void setPurgeCount( int purgeCount ) { m_master->setPurgeCount( purgeCount ); }
 
