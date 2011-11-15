@@ -21,9 +21,12 @@
 
 #include <QAbstractItemModel>
 #include <QStringList>
-#include <ApiRequest.h>
+
+#include <mygpo-qt/ApiRequest.h>
+#include <mygpo-qt/TagList.h>
+
 #include "NetworkAccessManagerProxy.h"
-#include <TagList.h>
+
 #include "GpodderTreeItem.h"
 
 class GpodderTreeItem;

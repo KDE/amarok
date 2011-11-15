@@ -24,6 +24,7 @@
 
 #include <mygpo-qt/ApiRequest.h>
 #include <mygpo-qt/EpisodeActionList.h>
+
 #include "core/podcasts/PodcastReader.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/file/KConfigSyncRelStore.h"

@@ -23,7 +23,7 @@
 #include "core/podcasts/PodcastMeta.h"
 #include "core/playlists/PlaylistProvider.h"
 
-#include "ApiRequest.h"
+#include <mygpo-qt/ApiRequest.h>
 
 namespace Podcasts {
 

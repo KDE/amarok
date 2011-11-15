@@ -20,7 +20,8 @@
 #ifndef GPODDERSERVICESETTINGS_H
 #define GPODDERSERVICESETTINGS_H
 
-#include <ApiRequest.h>
+#include <mygpo-qt/ApiRequest.h>
+
 #include "GpodderServiceConfig.h"
 #include "core/podcasts/PodcastMeta.h"
 

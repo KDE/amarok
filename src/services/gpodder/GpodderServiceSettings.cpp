@@ -20,6 +20,7 @@
 #define DEBUG_PREFIX "GpodderServiceSettings"
 
 #include <mygpo-qt/ApiRequest.h>
+
 #include "GpodderServiceSettings.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
