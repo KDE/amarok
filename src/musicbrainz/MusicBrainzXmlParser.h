@@ -34,7 +34,7 @@ class MusicBrainzXmlParser : public ThreadWeaver::Job
             Track       = 3
         };
 
-        MusicBrainzXmlParser(QString &doc );
+        MusicBrainzXmlParser( QString &doc );
         void run();
 
         int type();

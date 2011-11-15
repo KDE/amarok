@@ -353,7 +353,11 @@ MusicBrainzXmlParser::grabTrackByLength( const quint64 length )
     }
 
     QVariantMap track = chosenTrack.isEmpty() ? tracks.values().first() : tracks.value( chosenTrack );
-    QString releaseId = track.value( MusicBrainz::RELEASELIST ).toStringList().first();
+    QString releaseId;
+
+    if( !track.value( MusicBrainz::RELEASELIST ).toStringList().isEmpty() )
+        releaseId = track.value( MusicBrainz::RELEASELIST ).toStringList().first();
+
     QVariantMap release = releases.value( releaseId );
     track.insert( MusicBrainz::RELEASEID, releaseId );
     track.insert( Meta::Field::ALBUM, release.value( Meta::Field::TITLE ).toString() );
@@ -372,7 +376,11 @@ MusicBrainzXmlParser::grabTrackByID( const QString &ID )
         return QVariantMap();
 
     QVariantMap track = tracks.value( ID );
-    QString releaseId = track.value( MusicBrainz::RELEASELIST ).toStringList().first();
+    QString releaseId;
+
+    if( !track.value( MusicBrainz::RELEASELIST ).toStringList().isEmpty() )
+        releaseId = track.value( MusicBrainz::RELEASELIST ).toStringList().first();
+
     QVariantMap release = releases.value( releaseId );
     track.insert( MusicBrainz::RELEASEID, releaseId );
     track.insert( Meta::Field::ALBUM, release.value( Meta::Field::TITLE ).toString() );
