@@ -72,52 +72,52 @@
 <para>Congratulations on installing &amarok;, the most advanced music discovery software available. &amarok; will help you explore your music, and enjoy it as never before. Also, you can tour different sources of music, radio stations and audio books online. In this guide, we'll show you how to let &amarok; find your collection, play it for you, and also how to use &amarok; to find things online. We'll assume that you know nothing about &amarok;, but do know how to use menus, a mouse, and your keyboard.
 </para>
 <orderedlist>
-<listitem><para><link linkend="getting-started">Getting started</link>.<orderedlist>
-<listitem><para><link linkend="starting-amarok">Starting Amarok</link>.</para></listitem>
-<listitem><para><link linkend="closing-amarok">Closing Amarok</link>.</para></listitem>
+<listitem><para><link linkend="getting-started">Getting started</link>&nbsp;<orderedlist>
+<listitem><para><link linkend="starting-amarok">Starting Amarok</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="closing-amarok">Closing Amarok</link>&nbsp;</para></listitem>
 </orderedlist>
 </para></listitem>
-<listitem><para><link linkend="the-amarok-window">The Amarok window</link>.<orderedlist>
-<listitem><para><link linkend="default-layout-of-the-amarok-window">Default layout of the Amarok window</link>.</para></listitem>
-<listitem><para><link linkend="using-the-amarok-window-to-manage-and-play-your-music">Using the Amarok window to manage and play your music</link>.</para></listitem>
+<listitem><para><link linkend="the-amarok-window">The Amarok window</link>&nbsp;<orderedlist>
+<listitem><para><link linkend="default-layout-of-the-amarok-window">Default layout of the Amarok window</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="using-the-amarok-window-to-manage-and-play-your-music">Using the Amarok window to manage and play your music</link>&nbsp;</para></listitem>
 </orderedlist>
 </para></listitem>
-<listitem><para><link linkend="the-music-collection">The Music Collection</link>.<orderedlist>
-<listitem><para><link linkend="the-media-sources-pane">The Media Sources Pane</link>.</para></listitem>
-<listitem><para><link linkend="setting-up-a-collection">Setting up a collection</link>.</para></listitem>
-<listitem><para><link linkend="adding-media-devices-to-the-collection">Adding Media Devices to the Collection</link>.</para></listitem>
-<listitem><para><link linkend="ripping-a-cd-into-the-collection">Ripping a CD into the collection</link>.</para></listitem>
-<listitem><para><link linkend="accessing-other-media-sources">Accessing other media sources</link>.</para></listitem>
-<listitem><para><link linkend="streams-and-podcasts">Streams and Podcasts</link>.</para></listitem>
-<listitem><para><link linkend="using-the-content-browser">Using the Content Browser</link>.
+<listitem><para><link linkend="the-music-collection">The Music Collection</link>&nbsp;<orderedlist>
+<listitem><para><link linkend="the-media-sources-pane">The Media Sources Pane</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="setting-up-a-collection">Setting up a collection</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="adding-media-devices-to-the-collection">Adding Media Devices to the Collection</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="ripping-a-cd-into-the-collection">Ripping a CD into the collection</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="accessing-other-media-sources">Accessing other media sources</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="streams-and-podcasts">Streams and Podcasts</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="using-the-content-browser">Using the Content Browser</link>&nbsp;
 <orderedlist>
-<listitem><para><link linkend="hiding-or-expanding-information">Hiding or expanding information</link>.</para></listitem>
-<listitem><para><link linkend="changing-the-order-of-tracks-and-albums">Changing the order of tracks and albums</link>.</para></listitem>
-<listitem><para><link linkend="deleting-items-from-the-collection">Deleting items from the collection</link>.</para></listitem>
+<listitem><para><link linkend="hiding-or-expanding-information">Hiding or expanding information</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="changing-the-order-of-tracks-and-albums">Changing the order of tracks and albums</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="deleting-items-from-the-collection">Deleting items from the collection</link>&nbsp;</para></listitem>
 </orderedlist>
 </para></listitem>
 </orderedlist>
 </para></listitem>
-<listitem><para><link linkend="playlists">Playlists</link>.<orderedlist>
-<listitem><para><link linkend="the-playlist-pane">The Playlist pane</link>.</para></listitem>
-<listitem><para><link linkend="adding-music-to-a-playlist">Adding music to a playlist</link>.</para></listitem>
-<listitem><para><link linkend="using-the-toolbar">Using the Toolbar</link>.</para></listitem>
-<listitem><para><link linkend="manipulating-playlists">Manipulating playlists</link>.
+<listitem><para><link linkend="playlists">Playlists</link>&nbsp;<orderedlist>
+<listitem><para><link linkend="the-playlist-pane">The Playlist pane</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="adding-music-to-a-playlist">Adding music to a playlist</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="using-the-toolbar">Using the Toolbar</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="manipulating-playlists">Manipulating playlists</link>&nbsp;
 <orderedlist>
-<listitem><para><link linkend="removing-a-track">Removing a track</link>.</para></listitem>
-<listitem><para><link linkend="using-the-playlist-tools-at-the-bottom">Using the Playlist tools at the bottom</link>.</para></listitem>
+<listitem><para><link linkend="removing-a-track">Removing a track</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="using-the-playlist-tools-at-the-bottom">Using the Playlist tools at the bottom</link>&nbsp;</para></listitem>
 </orderedlist>
 </para></listitem>
-<listitem><para><link linkend="saving-and-retrieving-your-favorite-playlists">Saving and retrieving your favorite playlists</link>.</para></listitem>
+<listitem><para><link linkend="saving-and-retrieving-your-favorite-playlists">Saving and retrieving your favorite playlists</link>&nbsp;</para></listitem>
 </orderedlist>
 </para></listitem>
-<listitem><para><link linkend="the-context-view">The Context View</link>.<orderedlist>
-<listitem><para><link linkend="default-layout">Default layout</link>.</para></listitem>
-<listitem><para><link linkend="customizing-the-context-pane">Customizing the Context pane</link>.</para></listitem>
+<listitem><para><link linkend="the-context-view">The Context View</link>&nbsp;<orderedlist>
+<listitem><para><link linkend="default-layout">Default layout</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="customizing-the-context-pane">Customizing the Context pane</link>&nbsp;</para></listitem>
 </orderedlist>
 </para></listitem>
-<listitem><para><link linkend="how-to-deal-with-problems">How to deal with problems</link>.</para></listitem>
-<listitem><para><link linkend="glossary">Glossary</link>.</para></listitem>
+<listitem><para><link linkend="how-to-deal-with-problems">How to deal with problems</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="glossary">Glossary</link>&nbsp;</para></listitem>
 </orderedlist>
 <sect1 id="getting-started"><title>Getting started</title> 
 <sect2 id="starting-amarok"><title>Starting Amarok</title> 
@@ -1054,7 +1054,7 @@
 </screenshot></para>
     </entry>
     <entry>
-    <para><link linkend="toolbar">The Toolbar</link>.</para>    </entry>
+    <para><link linkend="toolbar">The Toolbar</link>&nbsp;</para>    </entry>
   </row>
   <row>
     <entry>
@@ -1072,7 +1072,7 @@
 </screenshot></para>
     </entry>
     <entry>
-    <para><link linkend="the-media-sources-pane">The Media Sources pane</link>.</para>    </entry>
+    <para><link linkend="the-media-sources-pane">The Media Sources pane</link>&nbsp;</para>    </entry>
   </row>
   <row>
     <entry>
@@ -1090,7 +1090,7 @@
 </screenshot></para>
     </entry>
     <entry>
-    <para><link linkend="the-context-pane">The Context pane</link>.</para>    </entry>
+    <para><link linkend="the-context-pane">The Context pane</link>&nbsp;</para>    </entry>
   </row>
   <row>
     <entry>
@@ -1108,7 +1108,7 @@
 </screenshot></para>
     </entry>
     <entry>
-    <para><link linkend="the-playlist-pane">The Playlist pane</link>.</para></entry>
+    <para><link linkend="the-playlist-pane">The Playlist pane</link>&nbsp;</para></entry>
   </row>
   </tbody>
   </tgroup>
@@ -3020,7 +3020,7 @@
     <para>A popular internet radio service, streaming only for subscribers. See also <ulink url="http://www.last.fm/about">Last.fm</ulink></para>
     </entry>
     <entry>
-    <para>Yes, personal information to <link linkend="scrobble">scrobble</link>.</para>
+    <para>Yes, personal information to <link linkend="scrobble">scrobble</link>&nbsp;</para>
     </entry>
   </row>
   <row>
@@ -3367,45 +3367,45 @@
 <para>First, organize your collection of music, both local and remote:
 </para>
 <itemizedlist>
-<listitem><para><link linkend="collection">Collection</link>.<itemizedlist>
-<listitem><para><link linkend="collection-scanning">Collection Scanning</link>.</para></listitem>
-<listitem><para><link linkend="search-in-collection">Search in Collection</link>.</para></listitem>
-<listitem><para><link linkend="organize-collection">Organize Collection</link>.</para></listitem>
-<listitem><para><link linkend="remote-collections">Remote Collections</link>.
+<listitem><para><link linkend="collection">Collection</link>&nbsp;<itemizedlist>
+<listitem><para><link linkend="collection-scanning">Collection Scanning</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="search-in-collection">Search in Collection</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="organize-collection">Organize Collection</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="remote-collections">Remote Collections</link>&nbsp;
 <itemizedlist>
-<listitem><para><link linkend="ampache">Ampache</link>.</para></listitem>
-<listitem><para><link linkend="digital-audio-access-protocol-daap">DAAP</link>.</para></listitem>
-<listitem><para><link linkend="samba">Samba</link>.</para></listitem>
-<listitem><para><link linkend="universal-plug-and-play-upnp">UPnP</link>.</para></listitem>
+<listitem><para><link linkend="ampache">Ampache</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="digital-audio-access-protocol-daap">DAAP</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="samba">Samba</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="universal-plug-and-play-upnp">UPnP</link>&nbsp;</para></listitem>
 </itemizedlist>
 </para></listitem>
-<listitem><para><link linkend="external-database">External Database</link>.</para></listitem>
-<listitem><para><link linkend="working-with-media-devices">Working with Media Devices</link>.</para></listitem>
+<listitem><para><link linkend="external-database">External Database</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="working-with-media-devices">Working with Media Devices</link>&nbsp;</para></listitem>
 </itemizedlist>
 </para></listitem>
 </itemizedlist><para>The <guilabel>Cover Manager</guilabel> organizes your album covers, the <emphasis>Tag Editor</emphasis> helps &amarok; categorize your tracks, and transcoding allows you to transfer tracks to your devices in encoding they can play.
 </para>
 <itemizedlist>
-<listitem><para><link linkend="cover-manager">Cover Manager</link>.</para></listitem>
-<listitem><para><link linkend="tag-editor">Tag Editor</link>.</para></listitem>
-<listitem><para><link linkend="transcoding">Transcoding</link>.</para></listitem>
+<listitem><para><link linkend="cover-manager">Cover Manager</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="tag-editor">Tag Editor</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="transcoding">Transcoding</link>&nbsp;</para></listitem>
 </itemizedlist>
 <sect1 id="collection5"><title>Collection</title>
 <para>&amarok; organizes your music in the <emphasis>Collection</emphasis>.
 </para>
 <itemizedlist>
-<listitem><para><link linkend="collection-scanning">Collection Scanning</link>.</para></listitem>
-<listitem><para><link linkend="search-in-collection">Search in Collection</link>.</para></listitem>
-<listitem><para><link linkend="organize-collection">Organize Collection</link>.</para></listitem>
-<listitem><para><link linkend="remote-collections">Remote Collections</link>.<itemizedlist>
-<listitem><para><link linkend="ampache">Ampache</link>.</para></listitem>
-<listitem><para><link linkend="digital-audio-access-protocol-daap">DAAP</link>.</para></listitem>
-<listitem><para><link linkend="samba">Samba</link>.</para></listitem>
-<listitem><para><link linkend="universal-plug-and-play-upnp">UPnP</link>.</para></listitem>
+<listitem><para><link linkend="collection-scanning">Collection Scanning</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="search-in-collection">Search in Collection</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="organize-collection">Organize Collection</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="remote-collections">Remote Collections</link>&nbsp;<itemizedlist>
+<listitem><para><link linkend="ampache">Ampache</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="digital-audio-access-protocol-daap">DAAP</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="samba">Samba</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="universal-plug-and-play-upnp">UPnP</link>&nbsp;</para></listitem>
 </itemizedlist>
 </para></listitem>
-<listitem><para><link linkend="external-database">External Database</link>.</para></listitem>
-<listitem><para><link linkend="working-with-media-devices">Working with Media Devices</link>.</para></listitem>
+<listitem><para><link linkend="external-database">External Database</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="working-with-media-devices">Working with Media Devices</link>&nbsp;</para></listitem>
 </itemizedlist>
 <sect2 id="collection-scanning"><title>Collection Scanning</title> 
 <para>Every time &amarok; is displaying a collection the information about tracks and albums needs to come from a source.
@@ -3821,10 +3821,10 @@
 <para>Often it is very useful to share your media files across the network, especially if you want to use it on different computers. This can be done in different ways:
 </para>
 <itemizedlist>
-<listitem><para><link linkend="ampache">Ampache</link>.</para></listitem>
-<listitem><para><link linkend="digital-audio-access-protocol-daap">DAAP</link>.</para></listitem>
-<listitem><para><link linkend="samba">Samba</link>.</para></listitem>
-<listitem><para><link linkend="universal-plug-and-play-upnp">UPnP</link>.</para></listitem>
+<listitem><para><link linkend="ampache">Ampache</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="digital-audio-access-protocol-daap">DAAP</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="samba">Samba</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="universal-plug-and-play-upnp">UPnP</link>&nbsp;</para></listitem>
 </itemizedlist>
 <sect3 id="ampache"><title>Ampache</title> 
 <para>&amarok; is able to play music from an <guilabel>Ampache</guilabel> media server. If you want to install a server, see <ulink url="http://ampache.org/wiki/os_foundation">here</ulink> for more information. Installation directions are <ulink url="http://ampache.org/wiki/install">here</ulink>.
@@ -4829,11 +4829,11 @@
 <para>The <emphasis>Playlist</emphasis> is a powerful part of &amarok;. One can drag in some tracks, but there is a lot more available.
 </para>
 <itemizedlist>
-<listitem><para><link linkend="saved-playlists">Saved Playlists</link>.</para></listitem>
-<listitem><para><link linkend="playlist-filtering">Playlist Filtering</link>.</para></listitem>
-<listitem><para><link linkend="queue-manager">Queue Manager</link>.</para></listitem>
-<listitem><para><link linkend="dynamic-playlists">Dynamic Playlists</link>.</para></listitem>
-<listitem><para><link linkend="automatic-playlist-generator">Automatic Playlist Generator</link>.</para></listitem>
+<listitem><para><link linkend="saved-playlists">Saved Playlists</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="playlist-filtering">Playlist Filtering</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="queue-manager">Queue Manager</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="dynamic-playlists">Dynamic Playlists</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="automatic-playlist-generator">Automatic Playlist Generator</link>&nbsp;</para></listitem>
 </itemizedlist>
 <sect1 id="saved-playlists"><title>Saved Playlists</title>
 <para><emphasis>Saved playlist</emphasis> is a traditional type of playlist. Saved playlists work like &amarok;'s current playlist, saved in the <emphasis>Amarok Database</emphasis> or your file system for later use. Sharing your saved playlists with your friends is easy and it can be fun to use them at events when you have specific songs you want played.
@@ -5529,15 +5529,15 @@
 <para>Topics which didn't fit elsewhere, such a Moodbar, Amarok on other platforms, troubleshooting, common problems, and the FAQ:
 </para>
 <itemizedlist>
-<listitem><para><link linkend="the-moodbar">Moodbar</link>.</para></listitem>
-<listitem><para><link linkend="amarok-on-other-platforms">Amarok on other Desktops and Operating Systems</link>.<itemizedlist>
-<listitem><para><link linkend="amarok-on-non-kde-desktops">Non-KDE Desktops</link>.</para></listitem>
-<listitem><para><link linkend="amarok-on-windows">Amarok on Windows</link>.</para></listitem>
-<listitem><para><link linkend="amarok-on-mac-os-x">Amarok on OS X</link>.</para></listitem>
+<listitem><para><link linkend="the-moodbar">Moodbar</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="amarok-on-other-platforms">Amarok on other Desktops and Operating Systems</link>&nbsp;<itemizedlist>
+<listitem><para><link linkend="amarok-on-non-kde-desktops">Non-KDE Desktops</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="amarok-on-windows">Amarok on Windows</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="amarok-on-mac-os-x">Amarok on OS X</link>&nbsp;</para></listitem>
 </itemizedlist>
 </para></listitem>
-<listitem><para><link linkend="troubleshooting-and-common-problems">Troubleshooting and Common Problems</link>.</para></listitem>
-<listitem><para><link linkend="frequently-asked-questions">FAQ</link>.</para></listitem>
+<listitem><para><link linkend="troubleshooting-and-common-problems">Troubleshooting and Common Problems</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="frequently-asked-questions">FAQ</link>&nbsp;</para></listitem>
 </itemizedlist>
 <sect1 id="the-moodbar"><title>The Moodbar</title>
 <para>The <emphasis>Moodbar</emphasis> officially returns as of &amarok; 2.2.2. It shows you the <quote>mood</quote> of a track, which you can then use to figure out when something interesting happens in the song.
@@ -5861,7 +5861,7 @@
 </screenshot></para>
     </entry>
     <entry>
-    <para><link linkend="amarok-on-non-kde-desktops">Non-KDE Desktops</link>.</para>    </entry>
+    <para><link linkend="amarok-on-non-kde-desktops">Non-KDE Desktops</link>&nbsp;</para>    </entry>
   </row>
   <row>
     <entry>
@@ -5879,7 +5879,7 @@
 </screenshot></para>
     </entry>
     <entry>
-    <para><link linkend="amarok-on-windows">Windows</link>.</para>    </entry>
+    <para><link linkend="amarok-on-windows">Windows</link>&nbsp;</para>    </entry>
   </row>
   <row>
     <entry>
@@ -5897,7 +5897,7 @@
 </screenshot></para>
     </entry>
     <entry>
-    <para><link linkend="amarok-on-mac-os-x">OS X</link>.</para></entry>
+    <para><link linkend="amarok-on-mac-os-x">OS X</link>&nbsp;</para></entry>
   </row>
   </tbody>
   </tgroup>
@@ -6472,21 +6472,21 @@ sudo port install amarok
 </chapter>
 <chapter id="references"><title>References</title>
 <itemizedlist>
-<listitem><para><link linkend="menu-and-command-reference">Menu and Command Reference</link>.<itemizedlist>
-<listitem><para><link linkend="amarok-menu">Amarok Menu</link>.</para></listitem>
-<listitem><para><link linkend="view-menu">View Menu</link>.</para></listitem>
-<listitem><para><link linkend="playlist">Playlist Menu</link>.</para></listitem>
-<listitem><para><link linkend="tools-menu">Tools Menu</link>.</para></listitem>
-<listitem><para><link linkend="settings-menu">Settings Menu</link>.</para></listitem>
-<listitem><para><link linkend="help-menu">Help Menu</link>.</para></listitem>
+<listitem><para><link linkend="menu-and-command-reference">Menu and Command Reference</link>&nbsp;<itemizedlist>
+<listitem><para><link linkend="amarok-menu">Amarok Menu</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="view-menu">View Menu</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="playlist">Playlist Menu</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="tools-menu">Tools Menu</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="settings-menu">Settings Menu</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="help-menu">Help Menu</link>&nbsp;</para></listitem>
 </itemizedlist>
 </para></listitem>
-<listitem><para><link linkend="keybinding-reference">Keybinding Reference</link>.<itemizedlist>
-<listitem><para><link linkend="kde-global-shortcuts">Global Shortcuts</link>.</para></listitem>
-<listitem><para><link linkend="amarok-shortcuts">Amarok Shortcuts</link>.</para></listitem>
+<listitem><para><link linkend="keybinding-reference">Keybinding Reference</link>&nbsp;<itemizedlist>
+<listitem><para><link linkend="kde-global-shortcuts">Global Shortcuts</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="amarok-shortcuts">Amarok Shortcuts</link>&nbsp;</para></listitem>
 </itemizedlist>
 </para></listitem>
-<listitem><para><link linkend="credits-and-license">Credits and License</link>.</para></listitem>
+<listitem><para><link linkend="credits-and-license">Credits and License</link>&nbsp;</para></listitem>
 </itemizedlist>
 </chapter>
 <chapter id="menu-and-command-reference"><title>Menu and Command Reference</title>
@@ -6519,7 +6519,7 @@ sudo port install amarok
     <para>&amarok;</para>
     </entry>
     <entry>
-    <para><link linkend="amarok-menu">Common actions such as Play, Pause, &etc;</link>.</para>
+    <para><link linkend="amarok-menu">Common actions such as Play, Pause, &etc;</link>&nbsp;</para>
     </entry>
   </row>
   <row>
@@ -6527,7 +6527,7 @@ sudo port install amarok
     <para><guilabel>View</guilabel></para>
     </entry>
     <entry>
-    <para><link linkend="view-menu">Change the layout of Amarok</link>.</para>
+    <para><link linkend="view-menu">Change the layout of Amarok</link>&nbsp;</para>
     </entry>
   </row>
   <row>
@@ -6535,7 +6535,7 @@ sudo port install amarok
     <para><guilabel>Playlist</guilabel></para>
     </entry>
     <entry>
-    <para><link linkend="playlist">Configure your Playlist</link>.</para>
+    <para><link linkend="playlist">Configure your Playlist</link>&nbsp;</para>
     </entry>
   </row>
   <row>
@@ -6543,7 +6543,7 @@ sudo port install amarok
     <para><guilabel>Tools</guilabel></para>
     </entry>
     <entry>
-    <para><link linkend="tools-menu">Start additional tools and scripts</link>.</para>
+    <para><link linkend="tools-menu">Start additional tools and scripts</link>&nbsp;</para>
     </entry>
   </row>
   <row>
@@ -6551,7 +6551,7 @@ sudo port install amarok
     <para><guilabel>Settings</guilabel></para>
     </entry>
     <entry>
-    <para><link linkend="settings-menu">Change settings and configure Amarok</link>.</para>
+    <para><link linkend="settings-menu">Change settings and configure Amarok</link>&nbsp;</para>
     </entry>
   </row>
   <row>
@@ -6559,7 +6559,7 @@ sudo port install amarok
     <para><guilabel>Help</guilabel></para>
     </entry>
     <entry>
-    <para><link linkend="help-menu">Important information about Amarok and KDE</link>.</para></entry>
+    <para><link linkend="help-menu">Important information about Amarok and KDE</link>&nbsp;</para></entry>
   </row>
   </tbody>
   </tgroup>
@@ -7503,8 +7503,8 @@ sudo port install amarok
 <para>Shortcuts are divided into two groups:
 </para>
 <itemizedlist>
-<listitem><para><link linkend="kde-global-shortcuts">Global Shortcuts</link>.</para></listitem>
-<listitem><para><link linkend="amarok-shortcuts">Amarok Shortcuts</link>.</para></listitem>
+<listitem><para><link linkend="kde-global-shortcuts">Global Shortcuts</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="amarok-shortcuts">Amarok Shortcuts</link>&nbsp;</para></listitem>
 </itemizedlist>
 </sect1>
 <sect1 id="control-from-console"><title>Control from Console</title>
