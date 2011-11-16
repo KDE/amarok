@@ -2845,10 +2845,10 @@
       <imagedata fileref="amarok2-4-1configuredialogplugins.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Plugins after 2.4.1 (Click to enlarge)</phrase>
+      <phrase>Plugins after 2.4.1</phrase>
     </textobject>
     <caption>
-      <para>Plugins after 2.4.1 (Click to enlarge)</para>
+      <para>Plugins after 2.4.1</para>
     </caption>
   </mediaobject>
 </screenshot></para></entry>
@@ -3090,10 +3090,10 @@
       <imagedata fileref="amarok2-4-1configscripts.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Script configuration dialog in Amarok 2.4.1 (click to enlarge)</phrase>
+      <phrase>Script configuration dialog in Amarok 2.4.1</phrase>
     </textobject>
     <caption>
-      <para>Script configuration dialog in Amarok 2.4.1 (click to enlarge)</para>
+      <para>Script configuration dialog in Amarok 2.4.1</para>
     </caption>
   </mediaobject>
 </screenshot>
