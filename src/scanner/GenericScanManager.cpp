@@ -188,6 +188,7 @@ GenericScannerJob::GenericScannerJob( QObject *parent, QStringList scanDirsReque
 
 GenericScannerJob::~GenericScannerJob()
 {
+    delete m_scanner;
 }
 
 void
@@ -242,7 +243,7 @@ GenericScannerJob::createScannerProcess( bool restart )
     }
 
     // -- create the scanner process
-    KProcess *scanner = new KProcess( this );
+    KProcess *scanner = new KProcess(); //not parented since in a different thread
     scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
 
     *scanner << GenericScannerJob::scannerPath() << "--idlepriority";
