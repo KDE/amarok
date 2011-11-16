@@ -472,7 +472,6 @@ UmsCollection::slotParseTracks()
         m_scanManager = new GenericScanManager( this );
         connect( m_scanManager, SIGNAL(directoryScanned( CollectionScanner::Directory * )),
                 SLOT(slotDirectoryScanned(CollectionScanner::Directory*)), Qt::DirectConnection );
-        connect( m_scanManager, SIGNAL(succeeded()), SIGNAL(updated()) );
     }
 
     m_scanManager->requestFullScan( QList<KUrl>() << m_musicPath );
@@ -647,6 +646,8 @@ UmsCollection::slotDirectoryScanned( CollectionScanner::Directory *dir )
         //TODO: use proxy tracks so no real file read is required
         slotTrackAdded( scannerTrack->path() );
     }
+
+    emit updated();
 
     //TODO: read playlists
 }

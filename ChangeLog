@@ -7,6 +7,7 @@ Version 2.5
     * Fixed crash during MusicBrainz search. (BR 277475)
 
   CHANGES:
+    * Update the collection view while UMS is scanning.
     * Don't block the UI while scanning UMS device.
 
 Version 2.5.0-Beta 1
