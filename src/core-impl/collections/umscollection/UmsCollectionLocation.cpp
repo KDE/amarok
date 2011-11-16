@@ -103,9 +103,8 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 
     //TODO: disable scanning until we are done with copying
 
-    QString loggerText = i18np( "Copying one track to %2", "Copying %1 tracks to %2" )
-                                .arg( sources.count() )
-                                .arg( m_umsCollection->prettyName() );
+    QString loggerText = i18np( "Copying one track to %2", "Copying %1 tracks to %2",
+                                 sources.count(), m_umsCollection->prettyName() );
     UmsTransferJob *transferJob = new UmsTransferJob( this );
     QMapIterator<Meta::TrackPtr, KUrl> i( sources );
     while( i.hasNext() )
@@ -142,9 +141,8 @@ UmsCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources 
         sourceUrls << track->playableUrl();
 
     QString loggerText = i18np( "Removing one track from %2",
-                                "Removing %1 tracks from %2" )
-                                .arg( sourceUrls.count() )
-                                .arg( m_umsCollection->prettyName() );
+                                "Removing %1 tracks from %2", sourceUrls.count(),
+                                m_umsCollection->prettyName() );
     KIO::DeleteJob *delJob = KIO::del( sourceUrls, KIO::HideProgressInfo );
     //TODO: make cancelable.
     Amarok::Components::logger()->newProgressOperation( delJob, loggerText );
@@ -197,9 +195,9 @@ UmsTransferJob::startNextJob()
                                             KIO::HideProgressInfo );
     connect( job, SIGNAL(percent( KJob *, unsigned long )),
              SLOT(slotChildJobPercent( KJob *, unsigned long )) );
-    QString loggerText = i18n( "Copying one track to %2", "Copying %1 tracks to %2" )
-                                .arg( m_transferList.count() )
-                                .arg( m_location->umsCollection()->prettyName() );
+    QString loggerText = i18np( "Copying one track to %2", "Copying %1 tracks to %2",
+                                m_transferList.count(),
+                                m_location->umsCollection()->prettyName() );
     emit infoMessage( this, loggerText, loggerText );
     addSubjob( job );
 }
