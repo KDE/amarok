@@ -115,6 +115,7 @@ class UmsCollection : public Collection
         void slotAccessibilityChanged( bool accessible, const QString &udi );
 
         void slotParseTracks();
+        void slotParseActionTriggered();
         void slotConfigure();
         void slotEject();
 

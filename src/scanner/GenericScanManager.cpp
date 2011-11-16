@@ -33,6 +33,7 @@
 
 #include <QFileInfo>
 #include <QSharedMemory>
+#include <QThread>
 
 static const int SHARED_MEMORY_SIZE = 1024 * 1024; // 1 MB shared memory
 
@@ -112,7 +113,8 @@ GenericScanManager::requestFullScan( QList<KUrl> directories )
     connect( m_scannerJob, SIGNAL(done( ThreadWeaver::Job* )), SLOT(slotJobDone()) );
     connect( m_scannerJob, SIGNAL(failed( QString )), SIGNAL(failed( QString )) );
     connect( m_scannerJob, SIGNAL(directoryScanned( CollectionScanner::Directory * )),
-             SIGNAL(directoryScanned( CollectionScanner::Directory * )) );
+             SIGNAL(directoryScanned( CollectionScanner::Directory * )),
+             Qt::DirectConnection );
 
     ThreadWeaver::Weaver::instance()->enqueue( m_scannerJob );
 }

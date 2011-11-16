@@ -48,6 +48,9 @@
 #include <kmimetype.h>
 #include <KUrl>
 
+#include <QThread>
+#include <QTimer>
+
 AMAROK_EXPORT_COLLECTION( UmsCollectionFactory, umscollection )
 
 UmsCollectionFactory::UmsCollectionFactory( QObject *parent, const QVariantList &args )
@@ -165,7 +168,7 @@ UmsCollection::UmsCollection( Solid::Device device )
 
     m_parseAction = new QAction( KIcon( "checkbox" ), i18n(  "&Use as Collection" ), this );
     m_parseAction->setProperty( "popupdropper_svg_id", "edit" );
-    connect( m_parseAction, SIGNAL( triggered() ), this, SLOT( slotParseTracks() ) );
+    connect( m_parseAction, SIGNAL( triggered() ), this, SLOT( slotParseActionTriggered() ) );
 
     m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Disconnect Device" ),
                                  const_cast<UmsCollection*>( this ) );
@@ -274,7 +277,7 @@ UmsCollection::init()
     m_initialized = true;
 
     if( m_autoConnect )
-        slotParseTracks();
+        QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
 }
 
 void
@@ -402,10 +405,12 @@ UmsCollection::createCapabilityInterface( Capabilities::Capability::Type type )
     {
         case Capabilities::Capability::Actions:
         {
-            QList< QAction* > actions;
+            QList<QAction *> actions;
             if( m_initialized )
             {
-                actions << m_parseAction;
+                //HACK: use a bool or something else less unsafe
+                if( m_mc->trackMap().isEmpty() )
+                    actions << m_parseAction;
                 actions << m_configureAction;
                 actions << m_ejectAction;
             }
@@ -466,11 +471,18 @@ UmsCollection::slotParseTracks()
     {
         m_scanManager = new GenericScanManager( this );
         connect( m_scanManager, SIGNAL(directoryScanned( CollectionScanner::Directory * )),
-                SLOT(slotDirectoryScanned(CollectionScanner::Directory*)) );
+                SLOT(slotDirectoryScanned(CollectionScanner::Directory*)), Qt::DirectConnection );
         connect( m_scanManager, SIGNAL(succeeded()), SIGNAL(updated()) );
     }
 
     m_scanManager->requestFullScan( QList<KUrl>() << m_musicPath );
+}
+
+void
+UmsCollection::slotParseActionTriggered()
+{
+    if( m_mc->trackMap().isEmpty() )
+        QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
 }
 
 void
@@ -566,7 +578,7 @@ UmsCollection::slotConfigure()
 
         m_autoConnect = settings->m_autoConnect->isChecked();
         if( !m_musicPath.isEmpty() && m_autoConnect )
-            slotParseTracks();
+            QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
 
         //write the date to the on-disk file
         KUrl localFile = KUrl( m_mountPoint );
