@@ -650,7 +650,6 @@ CollectionTreeItemModelBase::addQueryMaker( CollectionTreeItem* item,
 void
 CollectionTreeItemModelBase::queryDone()
 {
-    DEBUG_BLOCK
     Collections::QueryMaker *qm = qobject_cast<Collections::QueryMaker*>( sender() );
     if( !qm )
         return;
@@ -994,8 +993,6 @@ CollectionTreeItemModelBase::nameForLevel(int level) const
 void
 CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) const
 {
-    DEBUG_BLOCK
-
     //this method will be called when we retrieve a list of artists from the database.
     //we have to query for all compilations, and then add a "Various Artists" node if at least
     //one compilation exists
