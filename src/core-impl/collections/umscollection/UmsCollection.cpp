@@ -148,6 +148,7 @@ UmsCollection::UmsCollection( Solid::Device device )
     , m_mc( new MemoryCollection() )
     , m_initialized( false )
     , m_autoConnect( false )
+    , m_musicFilenameScheme( "%artist%/%album%/%track% %title%" )
     , m_vfatSafe( true )
     , m_asciiOnly( false )
     , m_ignoreThe( false )
@@ -222,7 +223,10 @@ UmsCollection::init()
             }
             else if( line.startsWith( s_musicFilenameSchemeKey + "=" ) )
             {
-                m_musicFilenameScheme = line.section( '=', 1, 1 );
+                QString scheme = line.section( '=', 1, 1 );
+                //protect against empty setting.
+                if( !scheme.isEmpty() )
+                    m_musicFilenameScheme = scheme;
                 debug() << QString( "filename scheme: %1" ).arg( m_musicFilenameScheme );
             }
             else if( line.startsWith( s_vfatSafeKey + "=" ) )
@@ -542,7 +546,10 @@ UmsCollection::slotConfigure()
                 m_musicPath = settings->m_musicFolder->url();
                 //TODO: reparse music
             }
-            m_musicFilenameScheme = filenameLayoutDialog.getParsableScheme().simplified();
+            QString scheme = filenameLayoutDialog.getParsableScheme().simplified();
+            //protect against empty string.
+            if( !scheme.isEmpty() )
+                m_musicFilenameScheme = scheme;
         }
         else
         {
