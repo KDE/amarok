@@ -91,14 +91,8 @@ MediaDeviceCache::refreshCache()
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
 
         const Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
-        const Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
 
-        if ( opt && opt->availableContent() & Solid::OpticalDisc::Audio )
-        {
-            m_type[ device.udi() ] = MediaDeviceCache::SolidAudioCdType;
-            m_name[ device.udi() ] = device.vendor() + " - " + device.product();
-        }
-        else if( ssa )
+        if( ssa )
         {
             if( !m_volumes.contains( device.udi() ) )
             {
@@ -128,6 +122,21 @@ MediaDeviceCache::refreshCache()
         if( device.as<Solid::StorageDrive>() )
         {
             m_type[device.udi()] = MediaDeviceCache::SolidGenericType;
+            m_name[device.udi()] = device.vendor() + " - " + device.product();
+        }
+    }
+    deviceList = Solid::Device::listFromType( Solid::DeviceInterface::OpticalDisc );
+    foreach( const Solid::Device &device, deviceList )
+    {
+        debug() << "Found Solid::DeviceInterface::OpticalDisc with udi = " << device.udi();
+        debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
+
+        const Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+
+        if ( opt && opt->availableContent() & Solid::OpticalDisc::Audio )
+        {
+            debug() << "device is an Audio CD";
+            m_type[device.udi()] = MediaDeviceCache::SolidAudioCdType;
             m_name[device.udi()] = device.vendor() + " - " + device.product();
         }
     }

@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 Version 2.5
   BUGFIXES:
+    * Fix audio CD detection on Amarok start. (BR 276032)
     * Set a default filename scheme for USB Mass Storage (BR 285900)
     * Fixed crash during MusicBrainz search. (BR 277475)
 
