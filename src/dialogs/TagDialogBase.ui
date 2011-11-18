@@ -28,7 +28,7 @@
      <item>
       <widget class="KTabWidget" name="kTabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <property name="currentPage" stdset="0">
         <number>4</number>
@@ -728,7 +728,7 @@
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="keyboardTracking">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="maximum">
             <number>3000</number>
@@ -801,7 +801,7 @@
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="keyboardTracking">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="maximum">
             <number>3000</number>
@@ -836,7 +836,7 @@
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="keyboardTracking">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="maximum">
             <number>3000</number>
