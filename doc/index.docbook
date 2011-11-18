@@ -4057,7 +4057,7 @@
 <sect3 id="configure-database"><title>Configure Database</title>
 <para>Connect to the local database using
 </para>
-<para><userinput>mysql -u root -p''</userinput>
+<para><userinput>mysql -u root -p</userinput>
 </para>
 <para>You will be prompted for the password for <guilabel>MySQL</guilabel><command>'s</command> <guilabel>root</guilabel> user. You will get the <screen>mysql&gt;</screen> prompt.
 </para>
@@ -4067,7 +4067,7 @@
 </para>
 <para>command. Amarok needs its own database, which is created with
 </para>
-<para><userinput>CREATE DATABASE <guilabel>amarokdb</guilabel>;''</userinput>
+<para><userinput>CREATE DATABASE <guilabel>amarokdb</guilabel>;</userinput>
 </para>
 <para>Give the new user access to the database by entering the
 </para>
@@ -4482,7 +4482,7 @@
 </para>
 </sect3>
 <sect3 id="edit-several-tracks"><title>Edit Several Tracks</title>
-<para>Several tracks can be selected by clicking on the artist, album, or genre in the your collection or by selecting several tracks in the laylist using the &Ctrl; (non-sequential) or &Shift; (sequential) key.
+<para>Several tracks can be selected by clicking on the artist, album, or genre in the your collection or by selecting several tracks in the playlist using the &Ctrl; (non-sequential) or &Shift; (sequential) key.
 </para>
 </sect3>
 <sect3 id="all-at-once"><title>All At Once</title>
@@ -5559,7 +5559,7 @@
 <listitem><para>The <emphasis>Fastest Fourier Transform In The West</emphasis> (http://www.fftw.org) <emphasis>FFTW</emphasis> library version 3.0 or above (at least single-precision floating point version - libfftw3f) -- If your platform does not provide this for you or you need to compile your own version, remember to configure the <emphasis>FFTW</emphasis> package with <userinput>./configure --enable-single</userinput></para></listitem>
 <listitem><para>A version of &amarok; with a <guilabel>Use moods</guilabel> option in the General section of the configuration screen. This means 1.4.4 or higher in the 1.4 series or 2.2.2 or higher in the 2.x series.</para></listitem>
 </itemizedlist>
-<para><note><para>Systems with package managers should automatically install the <emphasis>GStreamer</emphasis> plugins and <emphasis>FFTW</emphasis> along with <guilabel>Moodbar</guilabel>; this information is provided mostly for people who want or need to compile from source xor manually install packages.</para></note>
+<para><note><para>Systems with package managers should automatically install the <emphasis>GStreamer</emphasis> plugins and <emphasis>FFTW</emphasis> along with <guilabel>Moodbar</guilabel>; this information is provided mostly for people who want or need to compile from source or manually install packages.</para></note>
 </para>
 </sect2>
 <sect2 id="usage"><title>Usage</title>
