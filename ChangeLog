@@ -35,6 +35,8 @@ Version 2.5.0-Beta 1
     * Auto-save the playlist so that it is not lost if Amarok crashes.
 
   CHANGES:
+    * BPM (beats-per-minute) attribute is now kept when transferring tracks
+      to/from media devices. (including iPods)
     * Both Delete and Move to Trash actions are now offered in the collection
       browser context menu. (BR 286356)
     * Amarok now depends on libmygpo-qt >= 1.0.5.
