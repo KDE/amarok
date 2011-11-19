@@ -58,6 +58,7 @@ Version 2.5.0-Beta 1
       BR 240301)
     * Improved the playlist synchronisation feature.
     * Make possible to get count tracks before the XSPF file is fully loaded.
+    * Stop fetching guitar- and bass-tabs from fretplay.com because the site is down.
     * Mark unplayble tracks in the playlist. Patch by Sandeep Raghuraman. (BR 263640)
     * Current track applet: show number of artists instead of genres. (BR 261077)
 
