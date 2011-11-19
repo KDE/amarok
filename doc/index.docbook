@@ -33,7 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2011-11-14T15:02:50Z</timestamp>-->
+<!--userbase <timestamp>2011-11-18T18:12:53Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -2522,7 +2522,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>Configure the playback options, as well as the KDE multimedia framework <guilabel>Phonon</guilabel>.
+<para>Configure the playback options, as well as the KDE multimedia framework &phonon;.
 </para>
 <para>
 <informaltable>
@@ -2562,11 +2562,11 @@
 </informaltable>
 </para>
 <sect2 id="configuring-phonon"><title>Configuring Phonon</title> 
-<para><guilabel>Phonon</guilabel> is the multimedia framework used by &amarok;. It was created to allow KDE 4 to be independent of any single multimedia framework such as <guilabel>GStreamer</guilabel> or <guilabel>Xine</guilabel> and to provide a stable API for KDE 4's lifetime. As an added bonus, it simplifies development by providing a simple API that works across different platforms such as <guilabel>Windows</guilabel> and <guilabel>OS X</guilabel>.
+<para>&phonon; is the multimedia framework used by &amarok;. It was created to allow KDE 4 to be independent of any single multimedia framework such as <guilabel>GStreamer</guilabel> or <guilabel>Xine</guilabel> and to provide a stable API for KDE 4's lifetime. As an added bonus, it simplifies development by providing a simple API that works across different platforms such as <guilabel>Windows</guilabel> and <guilabel>OS X</guilabel>.
 </para>
 <para>The result of all this for you, the user, is that you can choose the multimedia framework that works best for you. This is usually pre-configured by your distribution.
 </para>
-<para>Playback problems in &amarok; are typically not &amarok; issues, but rather <guilabel>Phonon</guilabel> issues, as &amarok; doesn't handle sound directly anymore.
+<para>Playback problems in &amarok; are typically not &amarok; issues, but rather &phonon; issues, as &amarok; doesn't handle sound directly anymore.
 </para>
 <sect3 id="device-preference-tab"><title>Device Preference tab</title> 
 <para>
@@ -3929,7 +3929,7 @@
 </para>
 </sect3>
 <sect3 id="server"><title>Server</title> 
-<para>On <guilabel>Debian</guilabel>-based distributions like <guilabel>Ubuntu</guilabel> you can install a DAAP server using
+<para>On <guilabel>Debian</guilabel>-based distributions like &ubuntu; you can install a DAAP server using
 </para>
 <para><userinput>sudo apt-get install mt-daapd</userinput>
 </para>
@@ -3950,7 +3950,7 @@
 </para>
 </sect3>
 <sect3 id="samba"><title>Samba</title>
-<para><guilabel>Samba</guilabel> is a free implementation of the <emphasis>SMB/CIFS</emphasis> protocol which is used to share files and printers in a network. Most modern file managers like <guilabel>Dolphin</guilabel> and <guilabel>Nautilus</guilabel> support this protocol.
+<para><guilabel>Samba</guilabel> is a free implementation of the <emphasis>SMB/CIFS</emphasis> protocol which is used to share files and printers in a network. Most modern file managers like &dolphin; and <guilabel>Nautilus</guilabel> support this protocol.
 </para>
 </sect3>
 <sect3 id="client7"><title>Client</title>
@@ -3962,11 +3962,11 @@
 </para>
 </sect3>
 <sect3 id="server8"><title>Server</title>
-<para>The easiest way is to use your file manager. On <guilabel>Debian</guilabel>-based distributions like <guilabel>Ubuntu</guilabel> you can install a <guilabel>Dolphin</guilabel> extension to manage shares using
+<para>The easiest way is to use your file manager. On <guilabel>Debian</guilabel>-based distributions like &ubuntu; you can install a &dolphin; extension to manage shares using
 </para>
 <para><userinput>sudo apt-get install kdenetwork-filesharing</userinput>
 </para>
-<para>Open the properties of a folder in <guilabel>Dolphin</guilabel> and switch to the <guilabel>Share</guilabel> tab.
+<para>Open the properties of a folder in &dolphin; and switch to the <guilabel>Share</guilabel> tab.
 </para>
 <para>
 <screenshot>
@@ -4034,7 +4034,7 @@
 </para>
 <para>&amarok; has a build in UPnP media share client so it can play tracks shared on the network. When a media share is discovered it will be shown in <emphasis>Local Music</emphasis>.
 </para>
-<para>The UPnP feature depends on the UPnP media server support in <guilabel>KDE</guilabel>.
+<para>The UPnP feature depends on the UPnP media server support in &kde;.
 </para>
 </sect3>
 </sect2>
@@ -5582,7 +5582,7 @@
 <sect3 id="kubuntu-and-ubuntu-packages"><title>Kubuntu and Ubuntu packages</title>
 <para>A package for <guilabel>Moodbar</guilabel> is available in the official package repository; just ensure the universe section is activated (which should be default anyway). Just install the package 'moodbar' with your preferred package manager (Kpackagekit, Aptitude, Adept, Synaptic). You will likely also want to install <emphasis>gstreamer0.10-plugins-ugly</emphasis>, <emphasis>gstreamer0.10-plugins-good</emphasis>, and <emphasis>gstreamer0.10-plugins-bad</emphasis> for format support.
 </para>
-<para>Or, to install, paste this into <guilabel>Firefox</guilabel> or <guilabel>Konqueror</guilabel> and hit &Enter;.
+<para>Or, to install, paste this into <guilabel>Firefox</guilabel> or &konqueror; and hit &Enter;.
 </para>
 <para><userinput>apt://moodbar,gstreamer0.10-plugins-ugly,gstreamer0.10-plugins-good,gstreamer0.10-plugins-bad?section=universe?refresh=yep</userinput>
 </para>
@@ -6098,11 +6098,11 @@ ftpProxy=http://username:password@proxyserver:port/
 </para>
 </sect3>
 </sect2>
-<sect2 id="amarok-on-mac-os-x"><title>Amarok on Mac OS X</title>
-<para>&amarok; can be installed and used on the Mac OS X.
+<sect2 id="amarok-on-mac-os-x"><title>Amarok on &MacOS; X</title>
+<para>&amarok; can be installed and used on the &MacOS; X.
 </para>
 <sect3 id="dependencies"><title>Dependencies</title>
-<para>The following are the dependencies required to install &amarok; on Mac OS X. These will be automatically installed if one is using MacPorts.
+<para>The following are the dependencies required to install &amarok; on &MacOS; X. These will be automatically installed if one is using MacPorts.
 </para>
 <para><screen>
 automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdelibs4 aspell texinfo xz aspell-dict-en attica phonon glib2 avahi dbus-python26 dbus-glib gtk-doc docbook-xml docbook-xml-4.1.2 docbook-xml-4.2 docbook-xml-4.3 docbook-xml-4.4 docbook-xml-4.5 docbook-xml-5.0 gnome-doc-utils intltool gnome-common p5-getopt-long p5-pathtools p5-scalar-list-utils p5-xml-parser iso-codes py27-libxml2 python27 rarian getopt py26-gobject libffi libdaemon libglade2 gtk2 atk gdk-pixbuf2 jasper pango cairo libpixman shared-mime-info xorg-libXcomposite xorg-compositeproto xorg-libXfixes xorg-fixesproto xorg-libXcursor xorg-libXdamage xorg-damageproto xorg-libXi xorg-libXinerama xorg-xineramaproto xorg-libXrandr xorg-randrproto py26-gtk py26-cairo py26-numpy atlas gcc44 gmp mpfr gzip fftw-3 py26-nose dbusmenu-qt qjson enchant hunspell flex gmake grantlee libart_lgpl liblzma openexr ilmbase gsed pcre qca shared-desktop-ontologies soprano clucene libiodbc redland raptor rasqal strigi virtuoso gawk libssh openslp oxygen-icons qimageblitz libgpod libplist swig-python python_select swig libusb py27-gobject py27-mutagen taglib liblastfm fftw-3-single libsamplerate libsndfile flac libogg libvorbis ruby libmtp libusb-compat loudmouth gnutls libgcrypt libgpg-error libtasn1 lzo qtscriptgenerator taglib-extras
@@ -6110,7 +6110,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </para>
 </sect3>
 <sect3 id="installation-using-macports"><title>Installation using MacPorts</title>
-<para>To install &amarok; on Mac OS X, first one needs to install MacPorts from <ulink url="http://www.macports.org/install.php">here</ulink>. Once MacPorts is installed one needs to run the following command in the terminal:
+<para>To install &amarok; on &MacOS; X, first one needs to install MacPorts from <ulink url="http://www.macports.org/install.php">here</ulink>. Once MacPorts is installed one needs to run the following command in the terminal:
 </para>
 <para><screen>
 sudo port install amarok
@@ -6133,7 +6133,7 @@ sudo port install amarok
 </para>
 </sect3>
 <sect3 id="screenshots17"><title>Screenshots</title>
-<para>The following screenshot shows &amarok; running on the Mac OS X:
+<para>The following screenshot shows &amarok; running on the &MacOS; X:
 </para>
 <para>
 <screenshot>
@@ -6284,7 +6284,7 @@ sudo port install amarok
 <para>More about the <link linkend="the-playlist-pane">Playlist here</link>.
 </para>
 <sect2 id="when-i-start-amarok-i-see-an-empty-playlist--how-do-i-actually-get-tracks-in-there"><title>When I start Amarok, I see an empty playlist. How do I actually get tracks in there?</title>
-<para>Use the <emphasis>Collection</emphasis> on the left side to navigate to the desired artist/album/track. Then drag the files into the <emphasis>Playlist</emphasis> part on the right. You can use <emphasis>Dynamic Playlists</emphasis> or the <emphasis>Automatic Playlist Generator</emphasis> to populate your playlist. You can also drag files in from any file manager, such as <guilabel>Dolphin</guilabel>. You may also double-click a track, artist or genre in your <emphasis>Collection</emphasis> or file-system, or right-click and <guilabel>Add to Playlist</guilabel> or <guilabel>Replace Playlist</guilabel>.
+<para>Use the <emphasis>Collection</emphasis> on the left side to navigate to the desired artist/album/track. Then drag the files into the <emphasis>Playlist</emphasis> part on the right. You can use <emphasis>Dynamic Playlists</emphasis> or the <emphasis>Automatic Playlist Generator</emphasis> to populate your playlist. You can also drag files in from any file manager, such as &dolphin;. You may also double-click a track, artist or genre in your <emphasis>Collection</emphasis> or file-system, or right-click and <guilabel>Add to Playlist</guilabel> or <guilabel>Replace Playlist</guilabel>.
 </para>
 </sect2>
 <sect2 id="how-do-i-remove-tracks-from-the-playlist"><title>How do I remove tracks from the Playlist?</title>
