@@ -73,7 +73,7 @@ DBusQueryHelper::abortQuery()
     deleteLater();
     m_timeout = true;
 
-    QDBusMessage error = m_message.createError( QDBusError::InternalError, "Internal timeout" );
+    QDBusMessage error = m_message.createErrorReply( QDBusError::InternalError, "Internal timeout" );
     bool success = m_connection.send( error );
     if( !success )
         debug() << "sending async error failed";
