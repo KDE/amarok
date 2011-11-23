@@ -65,8 +65,6 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
         virtual bool deletePlaylists( Playlists::PlaylistList playlistList );
 
-        virtual void loadPlaylists();
-
         /* PlaylistFileProvider methods */
         /** Schedules a PlaylistFile to be saved on the next iteration of the mainloop.
           * Each playlist will be scheduled and saved only once.
@@ -74,6 +72,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         void saveLater( Playlists::PlaylistFilePtr playlist );
 
     private slots:
+        void loadPlaylists();
         void slotSaveLater();
 
         void slotDelete();
@@ -85,6 +84,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         KConfigGroup loadedPlaylistsConfig() const;
 
         bool m_playlistsLoaded;
+        QList<KUrl> m_urlsToLoad;
         Playlists::PlaylistFileList m_playlists;
         Playlists::PlaylistFormat m_defaultFormat;
         QMultiMap<QString, Playlists::PlaylistPtr> m_groupMap;

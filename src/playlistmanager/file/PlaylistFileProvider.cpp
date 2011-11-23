@@ -34,6 +34,7 @@
 #include <KUrl>
 
 #include <QAction>
+#include <QDir>
 #include <QLabel>
 #include <QString>
 #include <QTimer>
@@ -55,7 +56,27 @@ PlaylistFileProvider::PlaylistFileProvider()
  , m_removeTrackAction( 0 )
  , m_saveLaterTimer( 0 )
 {
-    //playlists are lazy loaded
+    //playlists are lazy loaded but we can count how many we'll load already
+    QStringList keys = loadedPlaylistsConfig().keyList();
+    foreach( const QString &key, keys )
+    {
+        KUrl url( key );
+        //Don't load these from the config file, they are read from the directory anyway
+        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
+            continue;
+        m_urlsToLoad << url;
+    }
+    //also add all files in the $KDEHOME/share/apps/amarok/playlists
+    QDir playlistDir = QDir( Amarok::saveLocation( "playlists" ), "",
+                             QDir::Name,
+                             QDir::Files | QDir::Readable );
+    foreach( const QString &file, playlistDir.entryList() )
+    {
+        KUrl url( playlistDir.path() );
+        url.addPath( file );
+        if( Playlists::isPlaylist( url ) )
+            m_urlsToLoad << url;
+    }
 }
 
 PlaylistFileProvider::~PlaylistFileProvider()
@@ -88,19 +109,21 @@ PlaylistFileProvider::prettyName() const
 int
 PlaylistFileProvider::playlistCount() const
 {
-    if( m_playlistsLoaded )
-        return m_playlists.count();
-    //count the entries in the config file
-    return loadedPlaylistsConfig().keyList().count();
+    return m_playlists.count() + m_urlsToLoad.count();
 }
 
 Playlists::PlaylistList
 PlaylistFileProvider::playlists()
 {
-    if( !m_playlistsLoaded )
-        loadPlaylists();
-
     Playlists::PlaylistList playlists;
+
+    if( !m_playlistsLoaded )
+    {
+        //trigger a lazy load the playlists
+        QTimer::singleShot(0, this, SLOT(loadPlaylists()) );
+        return playlists;
+    }
+
     foreach( const Playlists::PlaylistFilePtr &playlistFile, m_playlists )
     {
         Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( playlistFile );
@@ -347,20 +370,14 @@ PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistF
 void
 PlaylistFileProvider::loadPlaylists()
 {
-    DEBUG_BLOCK
-    //load the playlists defined in the config
-    QStringList keys = loadedPlaylistsConfig().keyList();
-    // debug() << "keys " << keys;
+    if( m_urlsToLoad.isEmpty() )
+        return;
 
-    //ConfigEntry: name, file
-    foreach( const QString &key, keys )
+    //arbitrary number of playlists to load during one mainloop run: 5
+    for( int i = 0; i < qMin( m_urlsToLoad.count(), 5 ); i++ )
     {
-        KUrl url( key );
-        //Don't load these from the config file, they are read from the directory anyway
-        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
-            continue;
-
-        QString groups = loadedPlaylistsConfig().readEntry( key );
+        KUrl url = m_urlsToLoad.takeFirst();
+        QString groups = loadedPlaylistsConfig().readEntry( url.url() );
         Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
         if( playlist.isNull() )
         {
@@ -381,31 +398,9 @@ PlaylistFileProvider::loadPlaylists()
         emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( playlist ) );
     }
 
-    //also add all files in the $KDEHOME/share/apps/amarok/playlists
-    QDir playlistDir = QDir( Amarok::saveLocation( "playlists" ), "",
-                             QDir::Name,
-                             QDir::Files | QDir::Readable );
-    foreach( const QString &file, playlistDir.entryList() )
-    {
-        KUrl url( playlistDir.path() );
-        url.addPath( file );
-        debug() << QString( "Trying to open %1 as a playlist file" ).arg( url.url() );
-        Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
-        if( playlist.isNull() )
-        {
-            Amarok::Components::logger()->longMessage(
-                    i18n("The playlist file \"%1\" could not be loaded.", url.fileName() ),
-                    Amarok::Logger::Error
-                );
-            continue;
-        }
-        playlist->setProvider( this );
-
-        m_playlists << playlist;
-        emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( playlist ) );
-    }
-
-    m_playlistsLoaded = true;
+    //give the mainloop time to run
+    if( !m_urlsToLoad.isEmpty() )
+        QTimer::singleShot( 0, this, SLOT(loadPlaylists()) );
 }
 
 void
