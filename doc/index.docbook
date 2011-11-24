@@ -33,7 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2011-11-18T18:12:53Z</timestamp>-->
+<!--userbase <timestamp>2011-11-24T13:28:14Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -3346,7 +3346,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>You can then decide of the total width of them item (100% is the total width of the line, so if you use a custom width and have more than one item on a line, you need to reduce that width per item), its alignment, the font weight and whether the tag should be shown with a prefix or suffix.
+<para>You can then decide of the total width of the item (100% is the total width of the line, so if you use a custom width and have more than one item on a line, you need to reduce that width per item), its alignment, the font weight and whether the tag should be shown with a prefix or suffix.
 </para>
 </sect4>
 <sect4 id="example--single-line-layout"><title>Example: single line layout</title>
@@ -3518,7 +3518,7 @@
 <sect3 id="edit-box"><title>Edit Box</title> 
 <para>When you type in the input field, &amarok; will search for the text in all available tags such as artist, album and title. Your view of the collection will update automatically to display only the matches of the search.
 </para>
-<para>To search in a specific tag, type <varname>tag:value</varname> into the search bar. Operators like <keycap></keycap> can be used to create more general conditions. Several conditions can be used together by separating them by a <keycap>Space</keycap>. For time conditions, use the following abbreviations: d=day, w=week, m=month, y=year.
+<para>To search in a specific tag, type <varname>tag:value</varname> into the search bar. Operators like <keycap>&gt;</keycap> and <keycap>&lt;</keycap> can be used to create more general conditions. Several conditions can be used together by separating them by a <keycap>Space</keycap>. For time conditions, use the following abbreviations: d=day, w=week, m=month, y=year.
 </para>
 </sect3>
 <sect3 id="tags6"><title>Tags</title> 
@@ -4320,7 +4320,7 @@
 <para>If an album is missing a cover or the current one is incorrect, you can fetch one from the Internet with <emphasis>Cover Manager</emphasis>.
 </para>
 <sect2 id="browsing-covers"><title>Browsing Covers</title>
-<para>With <emphasis>Cover Manager</emphasis>, browsing covers is easy. You can view covers for any artist by selecting from list on left, or use the search box to find the right album. On the status bar, you can see how many covers are currently listed and how many albums are missing covers. You can also set the <emphasis>Cover Manager</emphasis> to only show albums with or without covers. By left-clicking on cover art and selecting <guilabel>Display Cover</guilabel> you can view the cover image at the original size.
+<para>With <emphasis>Cover Manager</emphasis>, browsing covers is easy. You can view covers for any artist by selecting from list on left, or use the search box to find the right album. On the status bar, you can see how many covers are currently listed and how many albums are missing covers. You can also set the <emphasis>Cover Manager</emphasis> to only show albums with or without covers. By right-clicking on cover art and selecting <guilabel>Display Cover</guilabel> you can view the cover image at the original size.
 </para>
 </sect2>
 <sect2 id="fetching-missing-covers"><title>Fetching Missing Covers</title>
@@ -4825,7 +4825,7 @@
 </para>
 </sect1>
 </chapter>
-<chapter id="playlist11"><title>Playlist</title>
+<chapter id="playlist11"><title>Playlist</title> 
 <para>The <emphasis>Playlist</emphasis> is a powerful part of &amarok;. One can drag in some tracks, but there is a lot more available.
 </para>
 <itemizedlist>
@@ -4835,15 +4835,15 @@
 <listitem><para><link linkend="dynamic-playlists">Dynamic Playlists</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="automatic-playlist-generator">Automatic Playlist Generator</link>&nbsp;</para></listitem>
 </itemizedlist>
-<sect1 id="saved-playlists"><title>Saved Playlists</title>
+<sect1 id="saved-playlists"><title>Saved Playlists</title> 
 <para><emphasis>Saved playlist</emphasis> is a traditional type of playlist. Saved playlists work like &amarok;'s current playlist, saved in the <emphasis>Amarok Database</emphasis> or your file system for later use. Sharing your saved playlists with your friends is easy and it can be fun to use them at events when you have specific songs you want played.
 </para>
 <para>Saved playlists can be created with &amarok; or imported from your file system. Creating a saved playlist is very easy with the exact songs and order that you want. For every day use, sometimes it is faster to use <link linkend="dynamic-playlists">Dynamic Playlists</link> or the <link linkend="automatic-playlist-generator">Automatic Playlist Generator</link> when you have less specific needs for specific tracks and progression.
 </para>
 <para>To browse and manage your saved playlists, go to <menuchoice><guimenu>Playlists</guimenu><guimenuitem>Saved Playlists</guimenuitem></menuchoice> on the menubar.
 </para>
-<sect2 id="managing-saved-playlists"><title>Managing saved playlists</title>
-<sect3 id="saving-a-playlist"><title>Saving a Playlist</title>
+<sect2 id="managing-saved-playlists"><title>Managing saved playlists</title> 
+<sect3 id="saving-a-playlist"><title>Saving a Playlist</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -4871,17 +4871,17 @@
 </screenshot>) at the bottom of the <emphasis>Playlist</emphasis> view. You can browse playlists in the <emphasis>Amarok database</emphasis> by going to <menuchoice><guimenu>Playlists</guimenu><guimenuitem>Saved Playlists</guimenuitem></menuchoice> and expanding the <emphasis>Amarok database</emphasis> section. You will find them in your filesystem here: <filename>~/.kde(4)/share/apps/amarok/playlists</filename>.
 </para>
 </sect3>
-<sect3 id="exporting-a-playlist"><title>Exporting a Playlist</title>
+<sect3 id="exporting-a-playlist"><title>Exporting a Playlist</title> 
 <para>You can export your current playlist to your file system by clicking <menuchoice><guimenu>Playlist</guimenu><guimenuitem>Export Playlist As...</guimenuitem></menuchoice> from the top menubar. From the opening save dialog, you can change the name, location and type of the playlist. Then just click on <guilabel>Save</guilabel>. Remember, playlist files don't contain any music data. If you want to listen the content of the playlist on another computer, you'll need to bring your music with you unless that computer already has the tracks.
 </para>
 </sect3>
-<sect3 id="importing-a-playlist"><title>Importing a Playlist</title>
+<sect3 id="importing-a-playlist"><title>Importing a Playlist</title> 
 <para>You can import a playlist file into &amarok; just by copying it to any directory that &amarok; knows as part of your music collection. When &amarok; detects a new playlist on any folder of your collection, it will add it to the <guilabel>Playlist Files on Disk</guilabel> section. If the playlist doesn't appear right away, you can update the collection manually by clicking <menuchoice><guimenu>Tools</guimenu><guimenuitem>Update Collection</guimenuitem></menuchoice>. If instead of importing the playlist, you want to just listen it, open it with <menuchoice><guimenu>Amarok</guimenu><guimenuitem>Play Media...</guimenuitem></menuchoice> from menubar. Selected playlist will be added to the current playlist.
 </para>
 </sect3>
 </sect2>
 </sect1>
-<sect1 id="playlist-filtering"><title>Playlist Filtering</title>
+<sect1 id="playlist-filtering"><title>Playlist Filtering</title> 
 <para>The <emphasis>Search playlist</emphasis> function in &amarok; is very powerful, as it allows you to search for different tracks by various constraints. The search results limits what you can actually see, which makes it easy to queue up wanted tracks, or remove them from the playlist.
 </para>
 <para>
@@ -4897,10 +4897,10 @@
   </mediaobject>
 </screenshot>
 </para>
-<sect2 id="edit-box12"><title>Edit Box</title>
+<sect2 id="edit-box12"><title>Edit Box</title> 
 <para>When you type something in the field, &amarok; will search in your playlist and mark matching tracks, artists and so forth.
 </para>
-<sect3 id="examples13"><title>Examples</title>
+<sect3 id="examples13"><title>Examples</title> 
 <para>The first track that matches the current search will be highlighted as in this example:
 </para>
 <para>
@@ -4918,7 +4918,7 @@
 </para>
 </sect3>
 </sect2>
-<sect2 id="search-preferences"><title>Search Preferences</title>
+<sect2 id="search-preferences"><title>Search Preferences</title> 
 <para>This is a small drop down menu with options for the search field, if you need more than simple search. You can choose which types of searching you want to use in your <emphasis>Search playlist</emphasis>. Check the boxes according to what you need for your search.
 </para>
 <para>
@@ -4934,7 +4934,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<sect3 id="check-boxes"><title>Check boxes</title>
+<sect3 id="check-boxes"><title>Check boxes</title> 
 <para>
 <informaltable>
   <tgroup cols="2">
@@ -5013,7 +5013,7 @@
 </informaltable>
 </para>
 </sect3>
-<sect3 id="show-only-matches---example"><title>Show only matches - example</title>
+<sect3 id="show-only-matches---example"><title>Show only matches - example</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5030,15 +5030,15 @@
 </sect3>
 </sect2>
 </sect1>
-<sect1 id="queue-manager"><title>Queue Manager</title>
+<sect1 id="queue-manager"><title>Queue Manager</title> 
 <para>Tracks are loaded in the <emphasis>Playlist</emphasis>. In normal track progression, when a song is over, the next one played is the one below the just-played one. The <emphasis>Queue</emphasis> is one way to change the order in which the songs are played.
 </para>
-<sect2 id="how-to-create-a-queue"><title>How to Create a Queue</title>
+<sect2 id="how-to-create-a-queue"><title>How to Create a Queue</title> 
 <para>It is very easy to make a <emphasis>Queue</emphasis>; just select one or more tracks and move in the center of &amarok;, to the <emphasis>Pop-Up Dropper</emphasis> (PUD), or right-click and scroll to <guilabel>Queue Track</guilabel>.
 </para>
 <para>As you select or add songs to the <emphasis>Queue</emphasis> each of them takes a number. The number indicates the order in which songs will play.
 </para>
-<sect3 id="example14"><title>Example</title>
+<sect3 id="example14"><title>Example</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5105,7 +5105,7 @@
 </para>
 </sect3>
 </sect2>
-<sect2 id="how-to-edit-the-queue"><title>How to Edit the Queue</title>
+<sect2 id="how-to-edit-the-queue"><title>How to Edit the Queue</title> 
 <para>If you want to make any changes in the <emphasis>Queue</emphasis> you can use the <emphasis>Queue Editor</emphasis>. Start the <emphasis>Queue Editor</emphasis> from the button in right-bottom corner of &amarok;.
 </para>
 <para>
@@ -5121,7 +5121,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<sect3 id="queue-editor"><title>Queue Editor</title>
+<sect3 id="queue-editor"><title>Queue Editor</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5183,7 +5183,7 @@
 </sect3>
 </sect2>
 </sect1>
-<sect1 id="dynamic-playlists"><title>Dynamic Playlists</title>
+<sect1 id="dynamic-playlists"><title>Dynamic Playlists</title> 
 <para>Some media players are designed to load the entire collection of music in a single playlist, then play it in random order, or search/ sorted, then queued. With a larger collection, this way of managing your playlist isn't efficient. &amarok;<command>'s</command> <emphasis>Dynamic Playlist</emphasis> is a better way to explore your music.
 </para>
 <para>The <emphasis>Dynamic Playlist</emphasis> is reached from <menuchoice><guimenu>Playlists</guimenu><guimenuitem>Dynamic Playlists</guimenuitem></menuchoice> in the <emphasis>Media Sources</emphasis> pane.
@@ -5203,7 +5203,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<sect2 id="how-the-dynamic-playlist-works"><title>How the Dynamic Playlist works</title>
+<sect2 id="how-the-dynamic-playlist-works"><title>How the Dynamic Playlist works</title> 
 <para>The dynamic playlist is a list that grows while you listen to your music.
 </para>
 <para>It will keep a certain number of songs in front of the currently played song and it will clean up the playlist by removing old songs.
@@ -5211,18 +5211,18 @@
 <para>The songs that will be added to the front of the playlist are determined by the currently selected dynamic playlist.
 </para>
 </sect2>
-<sect2 id="using-a-dynamic-playlist"><title>Using a Dynamic Playlist</title>
+<sect2 id="using-a-dynamic-playlist"><title>Using a Dynamic Playlist</title> 
 <para>To enable dynamic playlists, click the <guilabel>Turn dynamic playlist on</guilabel> button (the one with the small dice) in the dynamic playlist pane. A bar will be displayed at the top of the playlist pane announcing that it is enabled. Select which dynamic playlist to use from the list of options by double clicking it. The currently selected dynamic playlist is bolded.
 </para>
 <para>You can adjust the number of songs before and after the currently playing song to be displayed in the playlist with the <guilabel>Previous</guilabel> and <guilabel>Upcoming</guilabel> fields. You can prevent the same track appearing in the current playlist more than once using the <guilabel>Allow duplicate songs in result</guilabel> button. The <guilabel>Repopulate</guilabel> button allows you to generate a new set of tracks. This can be used together with a high <guilabel>Upcoming</guilabel> setting to generate fixed playlists for export.
 </para>
 </sect2>
-<sect2 id="defining-dynamic-playlists"><title>Defining Dynamic Playlists</title>
+<sect2 id="defining-dynamic-playlists"><title>Defining Dynamic Playlists</title> 
 <para>Each dynamic playlist is built of biases. A bias defines a particular constraint on the behaviour of the dynamic playlist, and new items to be added to the playlist are selected at random from a list of all songs which match the biases. Biases may either be a single bias (&eg; the <emphasis>Search</emphasis> bias) or a grouping of other biases (&eg; the <emphasis>Match All</emphasis> bias). Some examples playlists are included, and you can define a new playlist with the <guilabel>New playlist</guilabel> button.
 </para>
 <para>To change the name of a playlist, either use the <guilabel>Edit the selected playlist or bias</guilabel> button or right click on it and select <guilabel>Rename playlist</guilabel>. A bias can be edited with the same button or by right-clicking and selecting <guilabel>Edit bias</guilabel>, and for biases which have sub-biases, a new sub-bias can be added by right clicking and selecting <guilabel>Add new bias</guilabel>.
 </para>
-<sect3 id="biases"><title>Biases</title>
+<sect3 id="biases"><title>Biases</title> 
 <para>An explanation of each available bias and any options it takes follows.
 </para>
 <variablelist>
@@ -5290,7 +5290,7 @@
 </variablelist>
 </sect3>
 </sect2>
-<sect2 id="a-dynamic-playlist-in-use"><title>A dynamic playlist in use</title>
+<sect2 id="a-dynamic-playlist-in-use"><title>A dynamic playlist in use</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5305,7 +5305,7 @@
 </screenshot>
 </para>
 </sect2>
-<sect2 id="old-2-4-1-and-earlier-dynamic-playlist"><title>Old (2.4.1 and earlier) Dynamic Playlist</title>
+<sect2 id="old-2-4-1-and-earlier-dynamic-playlist"><title>Old (2.4.1 and earlier) Dynamic Playlist</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5319,28 +5319,28 @@
   </mediaobject>
 </screenshot>
 </para>
-<sect3 id="biases15"><title>Biases</title>
+<sect3 id="biases15"><title>Biases</title> 
 <para>Biases are what makes your dynamic playlist special! The default value for the dynamic playlist, with no biases, is random play. Biases of various sorts will alter that in different ways.
 </para>
 </sect3>
-<sect3 id="proportional-bias"><title>Proportional Bias</title>
+<sect3 id="proportional-bias"><title>Proportional Bias</title> 
 <para>Proportional biases match a certain portion of the playlist to a specific value, such as Artist, Composer, Title, Genre, Year, &etc; You can specify as many biases as you like to work together. This is a very flexible way of choosing your playlist.
 </para>
 <para>Don't be confused, though -- a dynamic playlist containing the following two biases: 50% Artist: Michael Jackson, 50% Genre:Rock can contain tracks that are from neither Michael Jackson nor have a Rock genre. This is because while both biases are used, half the time a track will be chosen which is Jackson, and half the time not, and the same for Rock. So if you want 50/50 Jackson and Rock, set the biases to 100% for each.
 </para>
 </sect3>
-<sect3 id="custom-bias"><title>Custom Bias</title>
+<sect3 id="custom-bias"><title>Custom Bias</title> 
 <para>This is where you will find the new Last.fm and Echo Nest biases. Use Last.fm or Echo Nest to bias the playlist towards artists who are similar to either the currently playing artist, your weekly top artists in Last.fm; or for Echo Nest, the current playlist as a whole.
 </para>
 <para>This function will use as a seed whatever song is playing when the playlist is repopulated so your music evolves as you listen, while remaining somewhat similar to whatever is currently playing.
 </para>
 </sect3>
-<sect3 id="fuzzy-bias"><title>Fuzzy Bias</title>
+<sect3 id="fuzzy-bias"><title>Fuzzy Bias</title> 
 <para>Fuzzy bias will match an approximate value and has a strictness field, as opposed to a percentage one. More strictness means more exact matches. The resulting playlist will consist of tracks normally distributed around the requested value.
 </para>
 </sect3>
 </sect2>
-<sect2 id="using-your-dynamic-playlist"><title>Using your Dynamic Playlist</title>
+<sect2 id="using-your-dynamic-playlist"><title>Using your Dynamic Playlist</title> 
 <para>To enable the dynamic playlist you have created simply check the <guilabel>On</guilabel> box in the upper-left corner of the pane. To regenerate the entire playlist at any time, click <guilabel>Repopulate</guilabel>, to the right of <guilabel>On</guilabel>.
 </para>
 <para>The default number of items in the playlist is your 5 previous plays plus 10 upcoming items. With the currently playing track, this makes 16 items in the playlist at any given time. The number of tracks can be changed right below the <guilabel>On</guilabel> checkbox.
@@ -5348,7 +5348,7 @@
 <para>Below that are is the dropdown menu for loading saved playlists, the <guilabel>Save</guilabel> button, and the <guilabel>Delete</guilabel> button.
 </para>
 </sect2>
-<sect2 id="a-dynamic-playlist-in-use16"><title>A dynamic playlist in use</title>
+<sect2 id="a-dynamic-playlist-in-use16"><title>A dynamic playlist in use</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5364,10 +5364,10 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="automatic-playlist-generator"><title>Automatic Playlist Generator</title>
+<sect1 id="automatic-playlist-generator"><title>Automatic Playlist Generator</title> 
 <para>The <emphasis>Automated Playlist Generator (APG)</emphasis> automatically generates playlists based on constraints you set. These constraints can be set based on song data (Author, Artist, Genre) or access time (Last Time Played). There are also special constraints to determine how &amarok; is going to look for songs. You will find the <emphasis>APG</emphasis> in your <emphasis>Media</emphasis> pane, <menuchoice><guimenu>Playlists</guimenu><guimenuitem>Automated Playlist Generator</guimenuitem></menuchoice>.
 </para>
-<sect2 id="apg-presets-toolbar"><title>APG Presets Toolbar</title>
+<sect2 id="apg-presets-toolbar"><title>APG Presets Toolbar</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5393,7 +5393,7 @@
 <listitem><para>Run <emphasis>APG</emphasis> with selected preset: Loads <emphasis>APG</emphasis> with the selected preset and automatically generates a playlist.</para></listitem>
 </itemizedlist>
 </sect2>
-<sect2 id="working-with-presets"><title>Working with Presets</title>
+<sect2 id="working-with-presets"><title>Working with Presets</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5412,13 +5412,13 @@
 </para>
 <para>Presets are sets of rules that &amarok; <emphasis>APG</emphasis> will use when generating playlists. These rules are going to be referred to as <emphasis>constraints</emphasis> from now on; every preset is determined by the constraints which create it. Groups of constraints hierarchically and logically organized are called constraint trees.
 </para>
-<sect3 id="constraints"><title>Constraints</title>
+<sect3 id="constraints"><title>Constraints</title> 
 <para>Constraints are the building blocks of constraint trees. They are simple statements that the <emphasis>APG</emphasis> will use to add songs to the playlist it generates To add a constraint to the currently selected preset constraint tree use the <guilabel>Edit selected preset</guilabel> option from the <emphasis>APG Preset toolbar</emphasis> and click the <guilabel>Add new</guilabel> option on the <emphasis>APG Preset Editor</emphasis> window. Note that this will add the constraint under the selected item (constraint or constraint group).
 </para>
 <para>Many different kinds of constraints can be added; each works in a different way inside the tree.
 </para>
 </sect3>
-<sect3 id="constraint-types"><title>Constraint Types</title>
+<sect3 id="constraint-types"><title>Constraint Types</title> 
 <para>&amarok; <emphasis>APG</emphasis> supports several types of constraints:
 </para>
 <para>
@@ -5483,14 +5483,14 @@
 <para>Another way to change constraint behavior is to check the <guilabel>invert</guilabel> checkbox on them, this makes them behave the opposite way, a <emphasis>Match Tag: artist contains</emphasis>.
 </para>
 </sect3>
-<sect3 id="constraint-groups"><title>Constraint Groups</title>
+<sect3 id="constraint-groups"><title>Constraint Groups</title> 
 <para>Constraint groups can be added from the <guilabel>Add new</guilabel> option from the <emphasis>APG Preset Editor</emphasis> window, constraints under a group are logically linked, the same applies to groups under groups.
 </para>
 <para>There are currently two kinds of constraint groups: <quote>Match all</quote> groups and <quote>Match any</quote> groups. <quote>Match all</quote> groups require that all the constraints under them are met by the song. <quote>Match any</quote> groups require that at least one of the constraints under them are met by the song. To add a constraint under a specific group highlight it on the preset editor and use the <guilabel>Add new</guilabel> option.
 </para>
 </sect3>
 </sect2>
-<sect2 id="using-your-presets"><title>Using your Presets</title>
+<sect2 id="using-your-presets"><title>Using your Presets</title> 
 <para>Once you set up a preset, you just have to select it on the <emphasis>APG Presets</emphasis> panel and click the rightmost button on the toolbar, <guilabel>Run APG with selected preset</guilabel>. You will then have a playlist matching your criteria, like this:
 </para>
 <para>
@@ -6677,7 +6677,7 @@ sudo port install amarok
 </para>
 </sect1>
 <sect1 id="view-menu"><title>View Menu</title>
-<para>This top-level menu contains options to adjust the layout of <guilabel>Amarok,</guilabel> and a checkbox to lock the configuration; use this to prevent any accidental changes to the &amarok; window layout.
+<para>This top-level menu contains options to adjust the layout of &amarok;, and a checkbox to lock the configuration; use this to prevent any accidental changes to the &amarok; window layout.
 </para>
 <para>
 <screenshot>
@@ -7267,7 +7267,7 @@ sudo port install amarok
 </para>
 </sect2>
 <sect2 id="script-manager-before-amarok-2-4-1"><title>Script Manager (before Amarok 2.4.1)</title>
-<para>Here scripts that enhance the functionality of Amarok can be installed and removed. More about the <link linkend="scripts">Script Manager</link>. After Amarok 2.4.1, the Script Manager is found from the<guilabel>Settings</guilabel> menu, <menuchoice><guimenu>Configure Amarok</guimenu><guimenuitem>Scripts</guimenuitem></menuchoice>.
+<para>Here scripts that enhance the functionality of Amarok can be installed and removed. More about the <link linkend="scripts">Script Manager</link>. After Amarok 2.4.1, the Script Manager is found from the <guilabel>Settings</guilabel> menu, <menuchoice><guimenu>Configure Amarok</guimenu><guimenuitem>Scripts</guimenuitem></menuchoice>.
 </para>
 <para>
 <screenshot>
