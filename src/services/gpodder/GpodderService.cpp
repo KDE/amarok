@@ -20,26 +20,24 @@
 
 #include "GpodderService.h"
 
-#include "GpodderServiceConfig.h"
-#include "GpodderServiceView.h"
-#include "GpodderServiceModel.h"
-#include "GpodderPodcastTreeItem.h"
-#include "GpodderSortFilterProxyModel.h"
-
-#include "core/support/Debug.h"
 #include "core/podcasts/PodcastProvider.h"
+#include "core/support/Debug.h"
+#include "GpodderPodcastTreeItem.h"
+#include "GpodderServiceConfig.h"
+#include "GpodderServiceModel.h"
+#include "GpodderServiceView.h"
+#include "GpodderSortFilterProxyModel.h"
+#include <mygpo-qt/ApiRequest.h>
+#include <mygpo-qt/Podcast.h>
 #include "playlistmanager/PlaylistManager.h"
 #include "widgets/SearchWidget.h"
-
-#include <QHostInfo>
 
 #include <KLocale>
 #include <KPasswordDialog>
 #include <KStandardDirs>
 #include <KUrl>
 
-#include <mygpo-qt/ApiRequest.h>
-#include <mygpo-qt/Podcast.h>
+#include <QHostInfo>
 
 AMAROK_EXPORT_SERVICE_PLUGIN( gpodder, GpodderServiceFactory )
 

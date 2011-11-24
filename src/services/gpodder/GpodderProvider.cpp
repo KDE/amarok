@@ -21,23 +21,23 @@
 
 #include "GpodderProvider.h"
 
-#include "core/support/Debug.h"
-#include "EngineController.h"
+#include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
+#include "core-impl/podcasts/sql/SqlPodcastMeta.h"
+#include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
-#include "NetworkAccessManagerProxy.h"
+#include "core/support/Debug.h"
+#include "EngineController.h"
 #include "gpodder/GpodderServiceConfig.h"
-#include "core-impl/podcasts/sql/SqlPodcastMeta.h"
-#include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
-
-#include <QAction>
-#include <QLabel>
-#include <QTimer>
+#include "NetworkAccessManagerProxy.h"
 
 #include <kio/job.h>
 #include <KLocale>
 #include <KVBox>
+
+#include <QAction>
+#include <QLabel>
+#include <QTimer>
 
 using namespace Podcasts;
 

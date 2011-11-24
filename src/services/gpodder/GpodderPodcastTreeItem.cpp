@@ -20,12 +20,10 @@
 
 GpodderPodcastTreeItem::GpodderPodcastTreeItem( mygpo::PodcastPtr podcast, GpodderTreeItem *parent ) : GpodderTreeItem( parent ), m_podcast( podcast )
 {
-
 }
 
 GpodderPodcastTreeItem::~GpodderPodcastTreeItem()
 {
-
 }
 
 QVariant GpodderPodcastTreeItem::displayData() const

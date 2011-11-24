@@ -20,12 +20,10 @@
 
 GpodderSortFilterProxyModel::GpodderSortFilterProxyModel( QObject *parent ) : QSortFilterProxyModel( parent )
 {
-
 }
 
 GpodderSortFilterProxyModel::~GpodderSortFilterProxyModel()
 {
-
 }
 
 bool GpodderSortFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const

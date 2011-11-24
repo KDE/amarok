@@ -19,9 +19,8 @@
 #ifndef GPODDERSERVICE_H
 #define GPODDERSERVICE_H
 
-#include "GpodderProvider.h"
-
 #include "core/support/Amarok.h"
+#include "GpodderProvider.h"
 #include "services/ServiceBase.h"
 
 #include <QItemSelectionModel>
@@ -29,10 +28,7 @@
 
 class GpodderService;
 
-namespace The
-{
-    GpodderService *gpodderService();
-}
+namespace The { GpodderService *gpodderService(); }
 
 class GpodderServiceFactory : public ServiceFactory
 {

@@ -22,9 +22,9 @@
 #include <mygpo-qt/ApiRequest.h>
 #include <mygpo-qt/TagList.h>
 
-#include <QVariant>
 #include <QList>
 #include <QModelIndex>
+#include <QVariant>
 
 class GpodderServiceModel;
 

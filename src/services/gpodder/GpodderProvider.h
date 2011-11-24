@@ -21,22 +21,19 @@
 #define GPODDERPODCASTPROVIDER_H
 
 #include "core/podcasts/PodcastProvider.h"
-
+#include "core/podcasts/PodcastReader.h"
+#include "GpodderPodcastMeta.h"
 #include <mygpo-qt/ApiRequest.h>
 #include <mygpo-qt/EpisodeActionList.h>
-
-#include "core/podcasts/PodcastReader.h"
-#include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/file/KConfigSyncRelStore.h"
+#include "playlistmanager/PlaylistManager.h"
 
-#include "GpodderPodcastMeta.h"
+#include <KDialog>
+#include <KLocale>
 
 #include <QCheckBox>
-#include <QQueue>
 #include <QPair>
-
-#include <KLocale>
-#include <KDialog>
+#include <QQueue>
 
 using namespace mygpo;
 
@@ -44,7 +41,6 @@ class QAction;
 
 namespace Podcasts
 {
-
 class GpodderProvider : public PodcastProvider
 {
     Q_OBJECT

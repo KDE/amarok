@@ -20,12 +20,14 @@
 
 #define DEBUG_PREFIX "GPodderConfig"
 
-#include "App.h"
 #include "GpodderServiceConfig.h"
+
+#include "App.h"
 #include "core/support/Debug.h"
 
-#include <KWallet/Wallet>
 #include <KDialog>
+#include <KWallet/Wallet>
+
 #include <QLabel>
 
 GpodderServiceConfig::GpodderServiceConfig()

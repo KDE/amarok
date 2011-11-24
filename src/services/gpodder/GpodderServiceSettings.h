@@ -20,14 +20,13 @@
 #ifndef GPODDERSERVICESETTINGS_H
 #define GPODDERSERVICESETTINGS_H
 
+#include "core/podcasts/PodcastMeta.h"
+#include "GpodderServiceConfig.h"
 #include <mygpo-qt/ApiRequest.h>
 
-#include "GpodderServiceConfig.h"
-#include "core/podcasts/PodcastMeta.h"
+#include <kcmodule.h>
 
 #include <QNetworkReply>
-
-#include <kcmodule.h>
 
 namespace Ui { class GpodderConfigWidget; }
 

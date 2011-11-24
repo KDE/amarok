@@ -17,7 +17,7 @@
 #ifndef KCONFIGSYNCRELSTORE_H
 #define KCONFIGSYNCRELSTORE_H
 
-#include <src/playlistmanager/SyncRelationStorage.h>
+#include "playlistmanager/SyncRelationStorage.h"
 
 #include <QMap>
 

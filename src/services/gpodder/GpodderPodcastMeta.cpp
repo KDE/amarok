@@ -20,6 +20,7 @@
 #define DEBUG_PREFIX "GpodderPodcastMeta"
 
 #include "GpodderPodcastMeta.h"
+
 #include "GpodderProvider.h"
 
 using namespace Podcasts;

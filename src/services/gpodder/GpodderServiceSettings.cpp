@@ -19,26 +19,25 @@
 
 #define DEBUG_PREFIX "GpodderServiceSettings"
 
-#include <mygpo-qt/ApiRequest.h>
-
 #include "GpodderServiceSettings.h"
+
+#include "core/podcasts/PodcastProvider.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core/podcasts/PodcastProvider.h"
-#include "playlistmanager/PlaylistManager.h"
+#include <mygpo-qt/ApiRequest.h>
 #include "NetworkAccessManagerProxy.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "ui_GpodderConfigWidget.h"
+
+#include <KLocale>
+#include <KMessageBox>
+#include <KPluginFactory>
 
 #include <QHostInfo>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QVBoxLayout>
 #include <QRegExpValidator>
-
-#include <KMessageBox>
-#include <KPluginFactory>
-#include <KLocale>
-
+#include <QVBoxLayout>
 
 K_PLUGIN_FACTORY( GpodderServiceSettingsFactory, registerPlugin<GpodderServiceSettings>(); )
 K_EXPORT_PLUGIN( GpodderServiceSettingsFactory( "kcm_amarok_gpodder" ) )

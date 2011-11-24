@@ -16,8 +16,8 @@
  ****************************************************************************************/
 
 #include "SyncedPlaylist.h"
-#include <src/core/playlists/PlaylistProvider.h>
 
+#include "core/playlists/PlaylistProvider.h"
 #include "core/support/Debug.h"
 
 #include <KLocale>

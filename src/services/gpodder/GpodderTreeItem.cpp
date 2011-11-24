@@ -17,8 +17,9 @@
  ****************************************************************************************/
 
 #include "GpodderTreeItem.h"
-#include "GpodderServiceModel.h"
+
 #include "GpodderPodcastTreeItem.h"
+#include "GpodderServiceModel.h"
 #include "GpodderTagTreeItem.h"
 
 GpodderTreeItem::GpodderTreeItem( GpodderTreeItem *parent, QString name )

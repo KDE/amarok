@@ -18,7 +18,7 @@
 #ifndef SYNCEDPLAYLIST_H
 #define SYNCEDPLAYLIST_H
 
-#include <src/core/playlists/Playlist.h>
+#include "core/playlists/Playlist.h"
 
 /** A synchronized playlist that will try to get the attached slaves into the same state as the
   * master. The first playlist attached (through constructor) is the master.

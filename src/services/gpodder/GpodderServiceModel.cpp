@@ -17,14 +17,15 @@
  ****************************************************************************************/
 
 #include "GpodderServiceModel.h"
-#include "GpodderServiceSettings.h"
-#include "GpodderTagTreeItem.h"
-#include "GpodderPodcastTreeItem.h"
+
 #include "core/support/Debug.h"
 #include "GpodderPodcastRequestHandler.h"
+#include "GpodderPodcastTreeItem.h"
+#include "GpodderServiceSettings.h"
+#include "GpodderTagTreeItem.h"
 
-#include <QList>
 #include <QEventLoop>
+#include <QList>
 #include <QTimer>
 
 static const int s_numberItemsToLoad = 100;

@@ -17,8 +17,8 @@
 #ifndef SYNCEDPODCAST_H
 #define SYNCEDPODCAST_H
 
-#include <src/playlistmanager/SyncedPlaylist.h>
-#include <src/core/podcasts/PodcastMeta.h>
+#include "core/podcasts/PodcastMeta.h"
+#include "playlistmanager/SyncedPlaylist.h"
 
 class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
 {

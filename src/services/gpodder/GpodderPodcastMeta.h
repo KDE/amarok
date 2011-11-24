@@ -20,9 +20,8 @@
 #ifndef GPODDERPODCASTMETA_H
 #define GPODDERPODCASTMETA_H
 
-#include "core/podcasts/PodcastMeta.h"
 #include "core/playlists/PlaylistProvider.h"
-
+#include "core/podcasts/PodcastMeta.h"
 #include <mygpo-qt/ApiRequest.h>
 
 namespace Podcasts {

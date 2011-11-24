@@ -24,9 +24,7 @@
 #include <QObject>
 #include <QString>
 
-namespace KWallet {
-    class Wallet;
-}
+namespace KWallet { class Wallet; }
 
 class KDialog;
 

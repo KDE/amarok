@@ -19,15 +19,13 @@
 #ifndef GPODDERSERVICEMODEL_H_
 #define GPODDERSERVICEMODEL_H_
 
-#include <QAbstractItemModel>
-#include <QStringList>
-
+#include "GpodderTreeItem.h"
 #include <mygpo-qt/ApiRequest.h>
 #include <mygpo-qt/TagList.h>
-
 #include "NetworkAccessManagerProxy.h"
 
-#include "GpodderTreeItem.h"
+#include <QAbstractItemModel>
+#include <QStringList>
 
 class GpodderTreeItem;
 

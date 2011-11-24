@@ -15,8 +15,8 @@
  ****************************************************************************************/
 
 #include "SyncedPodcast.h"
-#include "src/core/playlists/Playlist.h"
 
+#include "core/playlists/Playlist.h"
 #include "core/support/Debug.h"
 
 #include <KLocale>

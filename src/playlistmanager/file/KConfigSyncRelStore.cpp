@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
-#include "KConfigSyncRelStore.h"
-#include "playlistmanager/SyncedPlaylist.h"
 
-#include <src/core/support/Amarok.h>
-#include <src/core/support/Debug.h>
+#include "KConfigSyncRelStore.h"
+
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "playlistmanager/SyncedPlaylist.h"
 
 #include <KConfigGroup>
 

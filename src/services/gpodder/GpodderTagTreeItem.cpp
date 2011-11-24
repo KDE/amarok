@@ -17,17 +17,16 @@
  ****************************************************************************************/
 
 #include "GpodderTagTreeItem.h"
+
 #include "GpodderPodcastTreeItem.h"
 
 GpodderTagTreeItem::GpodderTagTreeItem( mygpo::TagPtr tag, GpodderTreeItem *parent ) : GpodderTreeItem( parent ), m_tag( tag )
 {
-
 }
 
 
 GpodderTagTreeItem::~GpodderTagTreeItem()
 {
-
 }
 
 QVariant GpodderTagTreeItem::displayData() const
