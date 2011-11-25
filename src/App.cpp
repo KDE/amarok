@@ -531,8 +531,8 @@ App::continueInit()
     Amarok::Components::applicationController()->start();
 
     // splash screen makes problems on Windows, it cannot be closed with a click
+	KSplashScreen* splash = 0;
 #ifndef Q_WS_WIN
-    KSplashScreen* splash = 0;
     if( AmarokConfig::showSplashScreen() && !isSessionRestored() )
     {
         QPixmap splashimg( KGlobal::dirs()->findResource( "data", "amarok/images/splash_screen.jpg" ) );
