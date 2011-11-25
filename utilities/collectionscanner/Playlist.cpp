@@ -39,7 +39,7 @@ CollectionScanner::Playlist::Playlist( QXmlStreamReader *reader )
             if( reader->name() == QLatin1String("path") )
                 m_path = reader->readElementText();
             else if( reader->name() == QLatin1String("rpath") )
-                m_path = reader->readElementText();
+                m_rpath = reader->readElementText();
             else
                 reader->readElementText(); // just read over the element
         }
