@@ -281,6 +281,12 @@ AmazonStore::newSearchRequest( const QString request )
         if( !(KCM.exec() == QDialog::Accepted) )
             return;
     }
+    else if( AmazonConfig::instance()->country() == QString( "none" ) )
+    {
+        // user explicitly said we are in a not supported country
+        Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Please select a valid country in the settings to make the store work." ) );
+        return;
+    }
 
     if( m_lastSearch != request )
     {

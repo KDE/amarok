@@ -75,6 +75,9 @@ AmazonSettingsModule::save()
     case 4:
         AmazonConfig::instance()->setCountry( QString ( "com" ) );
         break;
+    case 5:
+        AmazonConfig::instance()->setCountry( QString ( "none" ) );
+        break;
 
     default:
         AmazonConfig::instance()->setCountry( QString ( "" ) );
@@ -100,6 +103,8 @@ AmazonSettingsModule::load()
         index = 3;
     else if ( text == QString( "com" ) )
         index = 4;
+    else if ( text == QString( "none" ) )
+        index = 5;
     // no match -> index is still -1
 
     m_configDialog->countrySelectionComboBox->setCurrentIndex( index );
