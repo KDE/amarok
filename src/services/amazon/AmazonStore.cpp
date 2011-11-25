@@ -25,7 +25,6 @@
 #include "AmazonParser.h"
 #include "AmazonShoppingCartDialog.h"
 #include "AmazonUrlRunner.h"
-#include "AmazonStore.h"
 
 #include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/CollectionTreeItem.h"
@@ -95,7 +94,8 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     setObjectName( name );
 
     m_polished = false;
-    m_isBack = true;
+    m_isNavigation = false;
+
     setShortDescription( i18n( "Access the Amazon MP3 Store directly from Amarok" ) );
     setIcon( KIcon( "view-services-amazon-amarok" ) );
 
@@ -118,8 +118,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     connect( m_searchWidget, SIGNAL( filterChanged( const QString ) ), this, SLOT( newSearchRequest( const QString ) ) );
 
     emit( ready() );
-    newSearchRequest( m_lastSearch ); // to get some default content
-    m_isBack = false;
+    newSearchRequest( QString( "" ) ); // to get some default content
 }
 
 AmazonStore::~AmazonStore()
@@ -267,13 +266,6 @@ AmazonStore::newSearchRequest( const QString request )
 {
     DEBUG_BLOCK
 
-    if( !m_isBack )
-        m_backStack.push( m_lastSearch );
-
-    // update actions(buttons)
-    m_backwardAction->setEnabled( !m_backStack.isEmpty() );
-    m_forwardAction->setEnabled( !m_forwardStack.isEmpty() );
-
     // make sure we know where to search
     if( AmazonConfig::instance()->country().isEmpty() )
     {
@@ -291,10 +283,20 @@ AmazonStore::newSearchRequest( const QString request )
 
     if( m_lastSearch != request )
     {
+        // only add the request to the stack if it's a new one
+        if( !m_isNavigation )
+            m_backStack.push( m_lastSearch );
+
         // we start by showing the first result page
         m_lastSearch = request;
         m_resultpageSpinBox->setValue( 1 );
     }
+
+    m_isNavigation = false;
+
+    // update actions status
+    m_backwardAction->setEnabled( !m_backStack.isEmpty() );
+    m_forwardAction->setEnabled( !m_forwardStack.isEmpty() );
 
     // create request fetcher thread
     debug() << "Amazon: newSearchRequest: " << request;
@@ -321,34 +323,6 @@ AmazonStore::newSpinBoxSearchRequest( int i )
 {
     Q_UNUSED( i )
     newSearchRequest( m_searchWidget->currentText() );
-}
-
-void
-AmazonStore::back()
-{
-    if( m_backStack.isEmpty() )
-        return;
-
-    QString request = m_backStack.pop();
-    m_forwardStack.push( m_lastSearch );
-    m_isBack = true;
-    newSearchRequest( request );
-    m_searchWidget->setSearchString( request );
-    m_isBack = false;
-}
-
-void
-AmazonStore::forward()
-{
-    if( m_forwardStack.isEmpty() )
-        return;
-
-    QString request = m_forwardStack.pop();
-    m_isBack = true;
-    m_backStack.push( m_lastSearch );
-    newSearchRequest( request );
-    m_searchWidget->setSearchString( request );
-    m_isBack = false;
 }
 
 void
@@ -566,4 +540,28 @@ AmazonStore::openCheckoutUrl( KJob* requestJob )
     requestJob->deleteLater();
     QFile::remove( tempFileName );
     AmazonCart::instance()->clear();
+}
+
+void
+AmazonStore::back()
+{
+    if( m_backStack.isEmpty() )
+        return;
+
+    QString request = m_backStack.pop();
+    m_forwardStack.push( m_lastSearch );
+    m_isNavigation = true;
+    m_searchWidget->setSearchString( request );
+}
+
+void
+AmazonStore::forward()
+{
+    if( m_forwardStack.isEmpty() )
+        return;
+
+    QString request = m_forwardStack.pop();
+    m_backStack.push( m_lastSearch );
+    m_isNavigation = true;
+    m_searchWidget->setSearchString( request );
 }

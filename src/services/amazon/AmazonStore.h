@@ -152,13 +152,13 @@ private:
     QSpinBox* m_resultpageSpinBox;
     KAction* m_forwardAction;
     KAction* m_backwardAction;
-	
-    bool m_isBack;
+
+    bool m_isNavigation;
 
     QString m_lastSearch;
     QStack<QString> m_backStack;
     QStack<QString> m_forwardStack;
-	
+
     AmazonItemTreeView* m_itemView;
     AmazonItemTreeModel* m_itemModel;
 
@@ -186,12 +186,12 @@ private slots:
     void openCheckoutUrl( KJob* requestJob );
 
     /**
-    * Go backward in amazon store
+    * Go backward in Amazon store.
     */
     void back();
 
     /**
-    * Go forward in amazon store
+    * Go forward in Amazon store.
     */
     void forward();
 };
