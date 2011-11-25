@@ -42,6 +42,7 @@
 #include "kio/jobclasses.h"
 #include <KCMultiDialog>
 #include <KStandardDirs>
+#include <KToolBar>
 #include "klocalizedstring.h"
 
 AMAROK_EXPORT_SERVICE_PLUGIN( amazonstore, AmazonServiceFactory )
@@ -374,11 +375,19 @@ AmazonStore::createRequestUrl( QString request )
 void
 AmazonStore::initTopPanel()
 {
-    m_backwardAction = KStandardAction::back( this, SLOT(back()), m_searchWidget->parentWidget() );
+    KHBox *topPanel = new KHBox( m_topPanel );
+    delete m_searchWidget;
+
+    KToolBar *navigationToolbar = new KToolBar( topPanel );
+    navigationToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+    navigationToolbar->setIconDimensions( 16 );
+
+    m_backwardAction = KStandardAction::back( this, SLOT( back() ), topPanel );
+    m_forwardAction = KStandardAction::forward( this, SLOT( forward() ), topPanel );
     m_backwardAction->setEnabled( false );
-    m_forwardAction = KStandardAction::forward( this, SLOT(forward()), m_searchWidget->parentWidget() );
     m_forwardAction->setEnabled( false );
 
+    m_searchWidget = new SearchWidget( topPanel, false );
     m_searchWidget->setTimeout( 1500 );
     m_searchWidget->showAdvancedButton( false );
 
@@ -386,10 +395,9 @@ AmazonStore::initTopPanel()
     m_resultpageSpinBox->setMinimum( 1 );
     m_resultpageSpinBox->setToolTip( i18n( "Select results page to show" ) );
 
-    m_searchWidget->toolBar()->addAction( m_backwardAction );
-    m_searchWidget->toolBar()->addAction( m_forwardAction );
+    navigationToolbar->addAction( m_backwardAction );
+    navigationToolbar->addAction( m_forwardAction );
     m_searchWidget->toolBar()->addWidget( m_resultpageSpinBox );
-    m_searchWidget->toolBar()->addSeparator();
 
     connect( m_resultpageSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( newSpinBoxSearchRequest( int ) ) );
 }
