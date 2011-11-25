@@ -38,7 +38,7 @@ Context::AppletToolbarBase::paint( QPainter* painter, const QStyleOptionGraphics
     painter->save();
     painter->setRenderHint( QPainter::Antialiasing );
 
-    QColor topColor = The::paletteHandler()->palette().color( QPalette::Base );
+    QColor topColor = The::paletteHandler()->palette().color( QPalette::Button );
     QColor bottomColor = topColor;
     topColor.setAlpha( 200 );
     bottomColor.setAlpha( 100 );

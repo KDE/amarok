@@ -51,7 +51,7 @@ private:
     BrowserBreadcrumbWidget *m_breadcrumbWidget;
     QWeakPointer<BrowserCategoryList> m_categoryList;
     KVBox *m_mainWidget;
-    BrowserMessageArea *m_progressArea;
+    BrowserMessageArea *m_messageArea;
 };
 
 #endif

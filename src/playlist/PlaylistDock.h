@@ -83,7 +83,7 @@ private:
     QLabel *m_dynamicHintWidget;
 
     KVBox *m_mainWidget;
-    KHBox *m_barBox;
+    QFrame *m_barBox;
 };
 }
 

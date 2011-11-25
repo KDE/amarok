@@ -52,14 +52,14 @@ BrowserDock::BrowserDock( QWidget *parent )
     m_categoryList = new BrowserCategoryList( "root list", m_mainWidget );
     m_breadcrumbWidget->setRootList( m_categoryList.data() );
 
-    m_progressArea = new BrowserMessageArea( m_mainWidget );
-    m_progressArea->setAutoFillBackground( true );
-    m_progressArea->setFixedHeight( 30 );
+    m_messageArea = new BrowserMessageArea( m_mainWidget );
+    m_messageArea->setAutoFillBackground( true );
+    m_messageArea->setFixedHeight( 36 );
 
     Amarok::Logger *logger = Amarok::Components::logger();
     ProxyLogger *proxy = dynamic_cast<ProxyLogger *>( logger );
     if( proxy )
-        proxy->setLogger( m_progressArea );
+        proxy->setLogger( m_messageArea );
     else
         error() << "Was not able to register BrowserDock as logger";
 
@@ -109,11 +109,13 @@ BrowserDock::home()
 void
 BrowserDock::paletteChanged( const QPalette &palette )
 {
-    Q_UNUSED(palette); //palette is accessible via PaletteHandler
-    m_progressArea->setStyleSheet(
-                QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
-                        .arg( PaletteHandler::alternateBackgroundColor().name() )
-                        .arg( The::paletteHandler()->palette().highlightedText().color().name() )
+    m_messageArea->setStyleSheet(
+                QString( "QFrame#BrowserMessageArea { border: 1px ridge %1; " \
+                         "background-color: %2; color: %3; border-radius: 3px; }" \
+                         "QLabel { color: %3; }" )
+                        .arg( palette.color( QPalette::Shadow ).name() )
+                        .arg( The::paletteHandler()->highlightColor().name() )
+                        .arg( palette.color( QPalette::HighlightedText ).name() )
                 );
 }
 

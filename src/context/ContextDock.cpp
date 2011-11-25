@@ -32,10 +32,12 @@ ContextDock::ContextDock( QWidget *parent )
     setObjectName( "Context dock" );
     setAllowedAreas( Qt::AllDockWidgetAreas );
     setMinimumWidth( 50 );
+    setContentsMargins( 0, 0, 0, 0 );
 
     m_mainWidget = new KVBox( this );
     m_mainWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_mainWidget->setSpacing( 0 );
+    m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
     m_mainWidget->setFrameShape( QFrame::NoFrame );
     setWidget( m_mainWidget );
 
@@ -64,7 +66,6 @@ ContextDock::createContextView( Plasma::Containment *containment )
     m_contextView = new Context::ContextView( containment, m_corona.data(), m_mainWidget );
     m_contextView.data()->setFrameShape( QFrame::NoFrame );
     m_contextToolbarView = new Context::ToolbarView( containment, m_corona.data(), m_mainWidget );
-    m_contextToolbarView.data()->setFrameShape( QFrame::NoFrame );
     PERF_LOG( "Created ContexToolbarView" )
 
     connect( m_corona.data(), SIGNAL(sceneRectChanged(QRectF)), m_contextView.data(), SLOT(updateSceneRect(QRectF)) );

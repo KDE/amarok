@@ -26,6 +26,8 @@ BrowserMessageArea::BrowserMessageArea( QWidget *parent )
     : QFrame( parent )
     , m_busy( false )
 {
+    setObjectName( "BrowserMessageArea" );
+
     setLayout( new QVBoxLayout( this ) );
 
     m_progressBar = new CompoundProgressBar( this );

@@ -59,30 +59,11 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
     connect( m_configItem, SIGNAL( triggered() ), this, SLOT( toggleConfigMode() ) );
     m_appletLayout->addItem( m_configItem );
     m_appletLayout->setAlignment( m_configItem, Qt::AlignRight );
-    m_appletLayout->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    m_appletLayout->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 }
 
 Context::AppletToolbar::~AppletToolbar()
 {
-}
-
-void
-Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
-{
-    Q_UNUSED( option )
-    Q_UNUSED( widget )
-
-    painter->setRenderHint( QPainter::Antialiasing );
-    painter->save();
-
-    QColor col = PaletteHandler::alternateBackgroundColor();
-    qreal radius = 3;
-
-    QPainterPath outline;
-    outline.addRoundedRect( boundingRect(), radius, radius );
-    painter->fillPath( outline, QBrush( col ) );
-
-    painter->restore();
 }
 
 void
@@ -128,10 +109,10 @@ Context::AppletToolbar::appletRemoved( Plasma::Applet* applet )
 }
 
 QSizeF
-Context::AppletToolbar::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
+Context::AppletToolbar::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
 {
     Q_UNUSED( which )
-    return QSizeF( constraint.width(), 30 );
+    return QSizeF( constraint.width(), constraint.height() );
 }
 
 

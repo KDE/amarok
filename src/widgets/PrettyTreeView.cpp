@@ -29,6 +29,7 @@ PrettyTreeView::PrettyTreeView( QWidget *parent )
     : QTreeView( parent )
 {
     setAlternatingRowColors( true );
+    setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
 
     The::paletteHandler()->updateItemView( this );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );

@@ -49,8 +49,6 @@ class AppletToolbar : public QGraphicsWidget
         AppletToolbar( QGraphicsItem* parent = 0 );
         ~AppletToolbar();
         
-        virtual void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
-        
         QSizePolicy sizePolicy () const;  
         QGraphicsLinearLayout* appletLayout() const;
         bool configEnabled() const;

@@ -104,11 +104,7 @@ Playlist::Dock::polish()
              SLOT( showDynamicHint() ) );
     m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), m_mainWidget );
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
-    m_dynamicHintWidget->setStyleSheet(
-            QString( "QLabel { background-color: %1; color: %2; border-radius: 3px; } " )
-                    .arg( PaletteHandler::alternateBackgroundColor().name() )
-                    .arg( The::paletteHandler()->palette().highlightedText().color().name() )
-            );
+
     QFont dynamicHintWidgetFont = m_dynamicHintWidget->font();
     dynamicHintWidgetFont.setPointSize( dynamicHintWidgetFont.pointSize() + 1 );
     m_dynamicHintWidget->setFont( dynamicHintWidgetFont );
@@ -162,17 +158,12 @@ Playlist::Dock::polish()
     { // START: Playlist toolbar
         // action toolbar
         m_barBox = new KHBox( m_mainWidget );
-        m_barBox->setMargin( 0 );
+        m_barBox->setObjectName( "PlaylistBarBox" );
         m_barBox->setContentsMargins( 0, 0, 0, 0 );
-        m_barBox->setStyleSheet(
-                        QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
-                        .arg( PaletteHandler::alternateBackgroundColor().name() )
-                        .arg( The::paletteHandler()->palette().highlightedText().color().name() )
-                    );
+        m_barBox->setFixedHeight( 36 );
 
         // Use QToolBar instead of KToolBar, see bug 228390
-        ToolBar *plBar = new ToolBar( m_barBox );
-        plBar->setFixedHeight( 30 );
+        Playlist::ToolBar *plBar = new Playlist::ToolBar( m_barBox );
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setMovable( false );
 
@@ -215,7 +206,7 @@ Playlist::Dock::polish()
         plBar->addAction( navigatorConfig );
 
         QToolButton *toolButton =
-                qobject_cast<QToolButton*>(plBar->widgetForAction( navigatorConfig ) );
+                qobject_cast<QToolButton *>(plBar->widgetForAction( navigatorConfig ) );
         if( toolButton )
             toolButton->setPopupMode( QToolButton::InstantPopup );
 
@@ -224,6 +215,9 @@ Playlist::Dock::polish()
         // label widget
         new PlaylistInfoWidget( m_barBox );
     } // END Playlist Toolbar
+
+    //set correct colors
+    paletteChanged( QApplication::palette() );
 
     // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.
     connect( The::playlistController(), SIGNAL( replacingPlaylist() ),
@@ -248,9 +242,14 @@ Playlist::Dock::paletteChanged( const QPalette &palette )
                         );
     if( m_barBox )
         m_barBox->setStyleSheet(
-                    QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
-                                        .arg( PaletteHandler::alternateBackgroundColor().name() )
-                                        .arg( palette.highlightedText().color().name() ) );
+                    QString( "QFrame#PlaylistBarBox { border: 1px ridge %1; " \
+                             "background-color: %2; color: %3; border-radius: 3px; }" \
+                             "QLabel { color: %3; }" )
+                            .arg( palette.color( QPalette::Shadow ).name() )
+                            .arg( The::paletteHandler()->highlightColor().name() )
+                            .arg( palette.color( QPalette::HighlightedText ).name() )
+                    );
+
 }
 
 void

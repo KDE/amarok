@@ -18,9 +18,10 @@
 
 #include "Containment.h"
 #include "core/support/Debug.h"
+#include "PaletteHandler.h"
 #include "toolbar/AppletItemOverlay.h"
-#include "toolbar/AppletToolbar.h"
 #include "toolbar/AppletToolbarAppletItem.h"
+#include "toolbar/AppletToolbar.h"
 
 #include <kfiledialog.h>
 #include <kstandarddirs.h>
@@ -29,6 +30,7 @@
 #include <plasma/packagestructure.h>
 #include <plasma/theme.h>
 
+#include <QApplication>
 #include <QDBusInterface>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsScene>
@@ -38,36 +40,47 @@
 #include <QTimer>
 
 #define TOOLBAR_X_OFFSET 2000
+#define TOOLBAR_SCENE_PADDING 2
 
 Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsScene* scene, QWidget* parent )
     : QGraphicsView( scene, parent )
-    , m_height( 30 )
+    , m_height( 36 )
     , m_cont( containment )
 {
-    setSceneRect( TOOLBAR_X_OFFSET, 0, size().width(), m_height );
-    QSizePolicy policy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-    policy.setHeightForWidth( true );
-    setSizePolicy( policy );
-    setAutoFillBackground( true );
+    setObjectName( "ContextToolbarView" );
 
-    setFrameStyle(QFrame::NoFrame);
-    //setAutoFillBackground(true);
-    //setDragMode(QGraphicsView::RubberBandDrag);
-    //setCacheMode(QGraphicsView::CacheBackground);
-    setInteractive(true);
-    setAcceptDrops(true);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setFixedHeight( m_height );
+    setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+    setAutoFillBackground( true );
+    setContentsMargins( 0, 0, 0, 0 );
+
+    QPalette palette = QApplication::palette();
+    setFrameStyle( QFrame::NoFrame );
+    setStyleSheet( QString( "QFrame#ContextToolbarView { border: 1px ridge %1; " \
+                            "background-color: %2; color: %3; border-radius: 3px; }" \
+                            "QLabel { color: %3; }" )
+                           .arg( palette.color( QPalette::Shadow ).name() )
+                           .arg( The::paletteHandler()->highlightColor().name() )
+                           .arg( palette.color( QPalette::HighlightedText ).name() )
+                 );
+
+    //Padding required to prevent view scrolling, probably caused by the 1px ridge
+    setSceneRect( TOOLBAR_X_OFFSET, 0, size().width()-TOOLBAR_SCENE_PADDING,
+                  size().height()-TOOLBAR_SCENE_PADDING );
+
+    setInteractive( true );
+    setAcceptDrops( true );
+    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
     // now we create the toolbar
     m_toolbar = new AppletToolbar( containment );
     m_toolbar.data()->setZValue( m_toolbar.data()->zValue() + 1000 );
-    // scene()->addItem( m_toolbar );
     m_toolbar.data()->setPos( TOOLBAR_X_OFFSET, 0 );
 
-   connect( m_toolbar.data(), SIGNAL( configModeToggled() ), this, SLOT( toggleConfigMode() ) );
-   connect( m_toolbar.data(), SIGNAL( hideAppletExplorer() ), this, SIGNAL( hideAppletExplorer() ) );
-   connect( m_toolbar.data(), SIGNAL( showAppletExplorer() ), this, SIGNAL( showAppletExplorer() ) );
+   connect( m_toolbar.data(), SIGNAL(configModeToggled()), SLOT(toggleConfigMode()) );
+   connect( m_toolbar.data(), SIGNAL(hideAppletExplorer()), SIGNAL(hideAppletExplorer()) );
+   connect( m_toolbar.data(), SIGNAL(showAppletExplorer()), SIGNAL(showAppletExplorer()) );
 
    Context::Containment* cont = dynamic_cast< Context::Containment* >( containment );
    if( cont )
@@ -79,13 +92,6 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
        connect( m_toolbar.data(), SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
    }
 
-   //make background transparent
-   QPalette p = palette();
-   QColor c = p.color( QPalette::Base );
-   c.setAlpha( 0 );
-   p.setColor( QPalette::Base, c );
-   setPalette( p );
-
 }
 
 Context::ToolbarView::~ToolbarView()
@@ -93,26 +99,14 @@ Context::ToolbarView::~ToolbarView()
 
 }
 
-QSize
-Context::ToolbarView::sizeHint() const
-{
-    return QSize( size().width(), m_height );
-}
-
-int
-Context::ToolbarView::heightForWidth( int w ) const
-{
-    Q_UNUSED( w )
-    return m_height;
-}
-
-
 void
 Context::ToolbarView::resizeEvent( QResizeEvent *event )
 {
     Q_UNUSED( event )
 
-    setSceneRect( TOOLBAR_X_OFFSET, 0, size().width(), m_height );
+    debug() << size();
+    setSceneRect( TOOLBAR_X_OFFSET, 0, size().width()-TOOLBAR_SCENE_PADDING,
+                  size().height()-TOOLBAR_SCENE_PADDING );
 
     if( m_toolbar )
         m_toolbar.data()->setGeometry( sceneRect() );

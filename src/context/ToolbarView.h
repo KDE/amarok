@@ -48,9 +48,6 @@ class ToolbarView : public QGraphicsView
     public:
         explicit ToolbarView( Plasma::Containment* cont, QGraphicsScene* scene, QWidget* parent = 0 );
         ~ToolbarView();
-        
-        virtual QSize sizeHint() const;
-        int heightForWidth ( int w ) const;
 
     signals:
         void hideAppletExplorer();
