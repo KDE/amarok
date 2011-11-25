@@ -13,6 +13,7 @@ Version 2.5
   CHANGES:
     * Update the collection view while UMS is scanning.
     * Don't block the UI while scanning UMS device.
+    * Allow going back and forward in Amazon store. Thanks to GCI student Nikola Miljkovic.
 
 Version 2.5.0-Beta 1
   FEATURES:

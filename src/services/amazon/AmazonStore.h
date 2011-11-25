@@ -34,7 +34,9 @@
 #include <QString>
 #include <QTreeView>
 #include <QUrl>
+#include <QStack>
 
+#include <KAction>
 #include <threadweaver/ThreadWeaver.h>
 
 class AmazonMetaFactory;
@@ -147,10 +149,16 @@ private:
     QPushButton* m_viewCartButton;
     QPushButton* m_checkoutButton;
 
-    QString m_lastSearch;
-
     QSpinBox* m_resultpageSpinBox;
+    KAction* m_forwardAction;
+    KAction* m_backwardAction;
+	
+    bool m_isBack;
 
+    QString m_lastSearch;
+    QStack<QString> m_backStack;
+    QStack<QString> m_forwardStack;
+	
     AmazonItemTreeView* m_itemView;
     AmazonItemTreeModel* m_itemModel;
 
@@ -176,6 +184,16 @@ private slots:
     * Opens the shopping cart with the cart items in the default browser.
     */
     void openCheckoutUrl( KJob* requestJob );
+
+    /**
+    * Go backward in amazon store
+    */
+    void back();
+
+    /**
+    * Go forward in amazon store
+    */
+    void forward();
 };
 
 #endif // AMAZONSTORE_H

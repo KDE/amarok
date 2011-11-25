@@ -25,6 +25,7 @@
 #include "AmazonParser.h"
 #include "AmazonShoppingCartDialog.h"
 #include "AmazonUrlRunner.h"
+#include "AmazonStore.h"
 
 #include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/CollectionTreeItem.h"
@@ -38,6 +39,7 @@
 #include <QTemporaryFile>
 #include <QToolBar>
 
+#include <KAction>
 #include "kio/jobclasses.h"
 #include <KCMultiDialog>
 #include <KStandardDirs>
@@ -93,6 +95,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     setObjectName( name );
 
     m_polished = false;
+    m_isBack = true;
     setShortDescription( i18n( "Access the Amazon MP3 Store directly from Amarok" ) );
     setIcon( KIcon( "view-services-amazon-amarok" ) );
 
@@ -115,7 +118,8 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     connect( m_searchWidget, SIGNAL( filterChanged( const QString ) ), this, SLOT( newSearchRequest( const QString ) ) );
 
     emit( ready() );
-    newSearchRequest( QString() ); // to get some default content
+    newSearchRequest( m_lastSearch ); // to get some default content
+    m_isBack = false;
 }
 
 AmazonStore::~AmazonStore()
@@ -263,6 +267,13 @@ AmazonStore::newSearchRequest( const QString request )
 {
     DEBUG_BLOCK
 
+    if( !m_isBack )
+        m_backStack.push( m_lastSearch );
+
+    // update actions(buttons)
+    m_backwardAction->setEnabled( !m_backStack.isEmpty() );
+    m_forwardAction->setEnabled( !m_forwardStack.isEmpty() );
+
     // make sure we know where to search
     if( AmazonConfig::instance()->country().isEmpty() )
     {
@@ -310,6 +321,34 @@ AmazonStore::newSpinBoxSearchRequest( int i )
 {
     Q_UNUSED( i )
     newSearchRequest( m_searchWidget->currentText() );
+}
+
+void
+AmazonStore::back()
+{
+    if( m_backStack.isEmpty() )
+        return;
+
+    QString request = m_backStack.pop();
+    m_forwardStack.push( m_lastSearch );
+    m_isBack = true;
+    newSearchRequest( request );
+    m_searchWidget->setSearchString( request );
+    m_isBack = false;
+}
+
+void
+AmazonStore::forward()
+{
+    if( m_forwardStack.isEmpty() )
+        return;
+
+    QString request = m_forwardStack.pop();
+    m_isBack = true;
+    m_backStack.push( m_lastSearch );
+    newSearchRequest( request );
+    m_searchWidget->setSearchString( request );
+    m_isBack = false;
 }
 
 void
@@ -361,6 +400,11 @@ AmazonStore::createRequestUrl( QString request )
 void
 AmazonStore::initTopPanel()
 {
+    m_backwardAction = KStandardAction::back( this, SLOT(back()), m_searchWidget->parentWidget() );
+    m_backwardAction->setEnabled( false );
+    m_forwardAction = KStandardAction::forward( this, SLOT(forward()), m_searchWidget->parentWidget() );
+    m_forwardAction->setEnabled( false );
+
     m_searchWidget->setTimeout( 1500 );
     m_searchWidget->showAdvancedButton( false );
 
@@ -368,8 +412,9 @@ AmazonStore::initTopPanel()
     m_resultpageSpinBox->setMinimum( 1 );
     m_resultpageSpinBox->setToolTip( i18n( "Select results page to show" ) );
 
+    m_searchWidget->toolBar()->addAction( m_backwardAction );
+    m_searchWidget->toolBar()->addAction( m_forwardAction );
     m_searchWidget->toolBar()->addWidget( m_resultpageSpinBox );
-
     m_searchWidget->toolBar()->addSeparator();
 
     connect( m_resultpageSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( newSpinBoxSearchRequest( int ) ) );
