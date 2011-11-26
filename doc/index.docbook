@@ -3063,7 +3063,7 @@
 </para>
 </sect2>
 <sect2 id="ampache-configuration"><title>Ampache configuration</title> 
-<para>If you have access to a remote <guilabel>Ampache</guilabel> music server, click <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject> and enter the necessary information. You can configure access to more than one <guilabel>Ampache</guilabel> server. For more information see the <link linkend="ampache">Ampache</link> section in Advanced Features.
+<para>If you have access to a remote <guilabel>Ampache</guilabel> music server, click <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject> and enter the necessary information. You can configure access to more than one <guilabel>Ampache</guilabel> server. For more information see the <link linkend="ampache">Ampache</link> section in what follows.
 </para>
 </sect2>
 <sect2 id="last-fm-configuration"><title>Last.fm configuration</title> 
@@ -3430,7 +3430,7 @@
 <para>This has a couple of implications:
 </para>
 <itemizedlist>
-<listitem><para>You can trigger a rescan of one directory by modifying its time (such as using <filename>touch</filename> in the console).</para></listitem>
+<listitem><para>You can trigger a rescan of one directory by modifying its time (such as using <varname>touch</varname> in the console).</para></listitem>
 <listitem><para>If files inside a directory are changed the scanner will not notice, because changing a file updates its modification time but not the time of the parent folder.</para></listitem>
 <listitem><para>If the collection folders are on a very slow partition the process of checking all the modification times can take some time. Usually this information is cached by the operating system but with large collections that might not be possible. In such a case the scanner might appear to scan continuously. With collections above 5000 tracks or when collections are stored on a network drive or an NTFS partition it is recommended to switch off the <guilabel>Watch folders for change</guilabel> option.</para></listitem>
 </itemizedlist>
@@ -4352,7 +4352,7 @@
 </sect2>
 </sect1>
 <sect1 id="tag-editor"><title>Tag Editor</title>
-<para>The built-in <emphasis>Tag Editor</emphasis> allows to show and change meta data of music files. To open the editor just right-click on one or more selected songs, albums, or genres, in either your collection or or your playlist, click on <guilabel>Edit Track Details</guilabel> and choose the <guilabel>Tags</guilabel> tab.
+<para>The built-in <emphasis>Tag Editor</emphasis> allows to show and change meta data of music files. To open the editor just right-click on one or more selected songs, albums, or genres, in either your collection or your playlist, click on <guilabel>Edit Track Details</guilabel> and choose the <guilabel>Tags</guilabel> tab.
 </para>
 <sect2 id="edit-tags-manually"><title>Edit Tags Manually</title>
 <para>Change the proper line to the required value and click <guilabel>Save &amp; Close</guilabel>. Clicking <guilabel>Cancel</guilabel> discards all unsaved changes.
@@ -5269,7 +5269,7 @@
   </varlistentry>
   <varlistentry><term><emphasis role="bold">Quiz Play</emphasis></term>
     <listitem>
-    <para>This bias matches tracks for which the first character of a given tag (title, artist or album) is the same as the last character of the same tag for the previous tag. For example, with artist selected, you could have the following series: Led Zeppeli<guilabel>n</guilabel> -&gt; <guilabel>N</guilabel>ine Inch Nail<guilabel>s</guilabel> -&gt; <guilabel>S</guilabel>antana, e.t.c.</para>
+    <para>This bias matches tracks for which the first character of a given tag (title, artist or album) is the same as the last character of the same tag for the previous tag. For example, with artist selected, you could have the following series: Led Zeppeli<guilabel>n</guilabel> -&gt; <guilabel>N</guilabel>ine Inch Nail<guilabel>s</guilabel> -&gt; <guilabel>S</guilabel>antana, &etc;</para>
      </listitem>
   </varlistentry>
   <varlistentry><term><emphasis role="bold">EchoNest similar artist</emphasis></term>
@@ -5345,7 +5345,7 @@
 </para>
 <para>The default number of items in the playlist is your 5 previous plays plus 10 upcoming items. With the currently playing track, this makes 16 items in the playlist at any given time. The number of tracks can be changed right below the <guilabel>On</guilabel> checkbox.
 </para>
-<para>Below that are is the dropdown menu for loading saved playlists, the <guilabel>Save</guilabel> button, and the <guilabel>Delete</guilabel> button.
+<para>Below that is the dropdown menu for loading saved playlists, the <guilabel>Save</guilabel> button, and the <guilabel>Delete</guilabel> button.
 </para>
 </sect2>
 <sect2 id="a-dynamic-playlist-in-use16"><title>A dynamic playlist in use</title> 
@@ -5480,7 +5480,7 @@
 </para>
 <para>You can also edit the way value-based (such as the Length constraints and the playcount <guilabel>Match Tag</guilabel> constraint) behave by changing the option close to the text to settings such as <guilabel>fewer than</guilabel>, <guilabel>equals</guilabel> and <guilabel>more than</guilabel>.
 </para>
-<para>Another way to change constraint behavior is to check the <guilabel>invert</guilabel> checkbox on them, this makes them behave the opposite way, a <emphasis>Match Tag: artist contains</emphasis>.
+<para>Another way to change constraint behavior is to check the <guilabel>invert</guilabel> checkbox on them, this makes them behave the opposite way, a <quote>Match Tag: artist contains <replaceable>name</replaceable></quote> becomes <quote>Match Tag: artist not contains <replaceable>name</replaceable></quote>.
 </para>
 </sect3>
 <sect3 id="constraint-groups"><title>Constraint Groups</title> 
@@ -5525,7 +5525,7 @@
 </sect2>
 </sect1>
 </chapter>
-<chapter id="various"><title>Various</title>
+<chapter id="various"><title>Various</title> 
 <para>Topics which didn't fit elsewhere, such a Moodbar, Amarok on other platforms, troubleshooting, common problems, and the FAQ:
 </para>
 <itemizedlist>
@@ -5539,7 +5539,7 @@
 <listitem><para><link linkend="troubleshooting-and-common-problems">Troubleshooting and Common Problems</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="frequently-asked-questions">FAQ</link>&nbsp;</para></listitem>
 </itemizedlist>
-<sect1 id="the-moodbar"><title>The Moodbar</title>
+<sect1 id="the-moodbar"><title>The Moodbar</title> 
 <para>The <emphasis>Moodbar</emphasis> officially returns as of &amarok; 2.2.2. It shows you the <quote>mood</quote> of a track, which you can then use to figure out when something interesting happens in the song.
 </para>
 <para>In order for &amarok; to analyze your music files to create moodbars, you will need the <guilabel>Moodbar</guilabel> program (see below for <link linkend="source-downloads">downloads</link> and binary packages).
@@ -5552,7 +5552,7 @@
 </para>
 <para>The <emphasis>Moodbar</emphasis> is due to the work of Gavin Wood and Simon O'Keefe, who designed the algorithms; their original paper is <ulink url="http://cratoo.de/amarok/ismir-crc.pdf">here</ulink>.
 </para>
-<sect2 id="summary-of-requirements"><title>Summary of Requirements</title>
+<sect2 id="summary-of-requirements"><title>Summary of Requirements</title> 
 <itemizedlist>
 <listitem><para>The <guilabel>Moodbar</guilabel> binary, in your PATH (it should be listed upon running <userinput>which moodbar</userinput> from a console) -- Remember to configure the <guilabel>Moodbar</guilabel> package with <userinput>./configure --prefix=`pkg-config --variable=prefix gstreamer-0.10`</userinput></para></listitem>
 <listitem><para>The <emphasis>GStreamer</emphasis> 0.10 library and <link linkend="supported-filetypes">plugins</link> for the formats you want <guilabel>Moodbar</guilabel> to be able to analyse.</para></listitem>
@@ -5562,24 +5562,24 @@
 <para><note><para>Systems with package managers should automatically install the <emphasis>GStreamer</emphasis> plugins and <emphasis>FFTW</emphasis> along with <guilabel>Moodbar</guilabel>; this information is provided mostly for people who want or need to compile from source or manually install packages.</para></note>
 </para>
 </sect2>
-<sect2 id="usage"><title>Usage</title>
+<sect2 id="usage"><title>Usage</title> 
 <para>Currently .mood files must generated manually. To do this for your entire collection, use the <link linkend="moodbar-file-generation-script">Moodbar File Generation Script</link> described below.
 </para>
 <para>To enable the display of moodbars in &amarok;, activate it in the configuration: <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>General</guimenuitem><guimenuitem>Show Moodbar in Progress Slider</guimenuitem></menuchoice>. Moodbars should now appear in the track sliders in the player window and the playlist window; there will also be a mood field that you may add to your playlist layouts.
 </para>
 </sect2>
-<sect2 id="installation"><title>Installation</title>
-<sect3 id="source-downloads"><title>Source Downloads</title>
+<sect2 id="installation"><title>Installation</title> 
+<sect3 id="source-downloads"><title>Source Downloads</title> 
 <para>Latest release: <ulink url="http://pwsp.net/~qbob/moodbar-0.1.2.tar.gz">moodbar-0.1.2.tar.gz</ulink> -- this is the <guilabel>Moodbar</guilabel> source package, which contains the <guilabel>Moodbar</guilabel> program (which generates .mood files from music files), and a <emphasis>GStreamer</emphasis> plugin that does the work. The <guilabel>Moodbar</guilabel> package  needs <emphasis>GStreamer</emphasis> 0.10.* installed, plus the 0.10.* version of <link linkend="supported-filetypes">various plugins</link>. Be sure to install the <guilabel>Moodbar</guilabel> package into the <guilabel>same prefix</guilabel> as <emphasis>GStreamer</emphasis> -- follow the instructions in the INSTALL file.
 </para>
 <para>If you find any bugs, please submit a bug report at <ulink url="http://bugs.kde.org">bugs.kde.org</ulink>.
 </para>
 </sect3>
-<sect3 id="debian-packages"><title>Debian packages</title>
+<sect3 id="debian-packages"><title>Debian packages</title> 
 <para>A package for <guilabel>Moodbar</guilabel> is now available in Debian unstable. Simply run <userinput>apt-get install moodbar</userinput> . You will likely also want to install <emphasis>gstreamer0.10-plugins-ugly</emphasis>, <emphasis>gstreamer0.10-plugins-good</emphasis>, and <emphasis>gstreamer0.10-plugins-bad</emphasis> for format support.
 </para>
 </sect3>
-<sect3 id="kubuntu-and-ubuntu-packages"><title>Kubuntu and Ubuntu packages</title>
+<sect3 id="kubuntu-and-ubuntu-packages"><title>Kubuntu and Ubuntu packages</title> 
 <para>A package for <guilabel>Moodbar</guilabel> is available in the official package repository; just ensure the universe section is activated (which should be default anyway). Just install the package 'moodbar' with your preferred package manager (Kpackagekit, Aptitude, Adept, Synaptic). You will likely also want to install <emphasis>gstreamer0.10-plugins-ugly</emphasis>, <emphasis>gstreamer0.10-plugins-good</emphasis>, and <emphasis>gstreamer0.10-plugins-bad</emphasis> for format support.
 </para>
 <para>Or, to install, paste this into <guilabel>Firefox</guilabel> or &konqueror; and hit &Enter;.
@@ -5587,23 +5587,23 @@
 <para><userinput>apt://moodbar,gstreamer0.10-plugins-ugly,gstreamer0.10-plugins-good,gstreamer0.10-plugins-bad?section=universe?refresh=yep</userinput>
 </para>
 </sect3>
-<sect3 id="gentoo-ebuilds"><title>Gentoo ebuilds</title>
+<sect3 id="gentoo-ebuilds"><title>Gentoo ebuilds</title> 
 <para><guilabel>Moodbar</guilabel> is available in Portage, simply <userinput>emerge moodbar</userinput>  Unofficial ebuilds are no longer required.
 </para>
 </sect3>
-<sect3 id="rpm-builds"><title>RPM builds</title>
+<sect3 id="rpm-builds"><title>RPM builds</title> 
 <para>If you are a rpm-based distro user, you can build a .rpm using `rpmbuild` with latest
 </para>
 <para><ulink url="http://cvs.pld-linux.org/cgi-bin/cvsweb/SPECS/gstreamer-plugins-moodbar.spec">gstreamer-plugins-moodbar.spec</ulink>. The binary package will be soon available for <ulink url="http://pld-linux.org">PLD-linux</ulink> distro.
 </para>
 </sect3>
-<sect3 id="fedora"><title>Fedora</title>
+<sect3 id="fedora"><title>Fedora</title> 
 <para>In Fedora 7 and higher (up to 16 as of this writing) <guilabel>Moodbar</guilabel> is available in the default repositories. Simply install it with your PackageKit GUI or with the following yum command:
 </para>
 <para><userinput>yum install moodbar</userinput>
 </para>
 </sect3>
-<sect3 id="opensuse-packages"><title>openSUSE packages</title>
+<sect3 id="opensuse-packages"><title>openSUSE packages</title> 
 <para>openSUSE 11.0 and later, automatically install the following packages:
 </para>
 <itemizedlist>
@@ -5636,7 +5636,7 @@
 <para>If you are using the <guilabel>Smart</guilabel> software management tool, add the channel by entering the following at the command line, remember to change the URL to match your version of openSUSE: <userinput>smart channel --add http://software.opensuse.org/download/home:/d7/openSUSE_10.2/home:d7.repo</userinput> Then enter <userinput>smart update home:d7</userinput> You can now install the required packages by <userinput>smart install gstreamer10-plugins-moodbar</userinput> Dependencies are resolved automatically.
 </para>
 </sect3>
-<sect3 id="mandriva-packages"><title>Mandriva packages</title>
+<sect3 id="mandriva-packages"><title>Mandriva packages</title> 
 <para>First of all, you need to add PLF repositories, so visit <ulink url="http://easyurpmi.zarb.org">easyurpmi.zarb.org</ulink> and add them to your repositories list.
 </para>
 <para>Then simply install the following packages:
@@ -5648,13 +5648,13 @@
 <listitem><para><emphasis>gstreamer0.10-plugins-bad</emphasis></para></listitem>
 </itemizedlist>
 </sect3>
-<sect3 id="arch-linux"><title>Arch &Linux;</title>
+<sect3 id="arch-linux"><title>Arch &Linux;</title> 
 <para>There is a PKGBUILD for <guilabel>Moodbar</guilabel> in the <ulink url="http://aur.archlinux.org">Arch User Repository (AUR)</ulink> available <ulink url="http://aur.archlinux.org/packages.php?ID=6552">here</ulink>.
 </para>
 <para>For more information about the AUR and working with PKGBUILDs, see the <ulink url="http://wiki.archlinux.org/index.php/AUR_User_Guidelines">AUR User Guidelines</ulink>.
 </para>
 </sect3>
-<sect3 id="freebsd"><title>FreeBSD</title>
+<sect3 id="freebsd"><title>FreeBSD</title> 
 <para>There is a port: <ulink url="http://www.freshports.org/audio/gstreamer-plugins-moodbar">audio/gstreamer-plugins-moodbar here</ulink>.
 </para>
 <para>To install the port: <userinput>cd /usr/ports/audio/gstreamer-plugins-moodbar/ &amp;&amp; make install clean</userinput>
@@ -5663,7 +5663,7 @@
 </para>
 </sect3>
 </sect2>
-<sect2 id="moodbar-file-generation-script"><title>Moodbar File Generation Script</title>
+<sect2 id="moodbar-file-generation-script"><title>Moodbar File Generation Script</title> 
 <para>Here is a simple bash script that will add .mood files to your entire collection. It adds mood files for all files matching the extensions in the current directory and all subdirectories, so it's best run from the base of your music directory.
 </para>
 <para><programlisting>
@@ -5708,7 +5708,7 @@
  ./moodbar.sh
 </userinput> 
 </para>
-<para>This may take a very long time for large collections! Note that the moodbars will not appear in Amarok until Amarok rescans the collection. The generated mood files will be dotfiles (ie, prefixed with a full stop), or hidden files - so keep this in mind if you can't find any generated mood files.
+<para>This may take a very long time for large collections! Note that the moodbars will not appear in &amarok; until &amarok; rescans the collection. The generated <filename>mood</filename> files will be dotfiles (&ie;, prefixed with a full stop), or hidden files - so keep this in mind if you can't find any generated mood files.
 </para>
 <para>Based on the above script, an alternative for multicore CPUs:
 </para>
@@ -5729,7 +5729,7 @@
 <para>There is another script at <ulink url="https://github.com/aendruk/moodbar-preview-cli">Github</ulink>, which shows previews of the generated mood files on the command line while they are being generated. Read more about it at the <ulink url="https://aendruk.wordpress.com/2011/02/13/moodbar-previews-on-the-command-line/">author's blog</ulink>.
 </para>
 </sect2>
-<sect2 id="troubleshooting"><title>Troubleshooting</title>
+<sect2 id="troubleshooting"><title>Troubleshooting</title> 
 <itemizedlist>
 <listitem><para>If the <guilabel>Moodbar</guilabel> executable gives you a <emphasis>bus error</emphasis>, that almost always means it can't decode (or can't find) your file.  Take a look at the <link linkend="supported-filetypes">supported file types</link> below for ideas on which <emphasis>GStreamer</emphasis> plugins to install.  You can also try the command below to test whether <emphasis>GStreamer</emphasis> can decode your file:<userinput>gst-launch filesrc location=[file] ! decodebin ! fakesink</userinput></para></listitem>
 <listitem><para>If you are using the ffmpeg plugin to decode mp3s, you may also receive mysterious bus errors. The solution is to stop using the ffmpeg plugin, as it is extremely buggy -- use mad instead.</para></listitem>
@@ -5742,7 +5742,7 @@
 <listitem><para>If you have multiple versions of <emphasis>GStreamer</emphasis> installed, make sure all of the required plugins are installed <guilabel>for version 0.10.*</guilabel> -- different versions <emphasis>cannot</emphasis> use each other's plugins.</para></listitem>
 </itemizedlist>
 </sect2>
-<sect2 id="supported-filetypes"><title>Supported Filetypes</title>
+<sect2 id="supported-filetypes"><title>Supported Filetypes</title> 
 <para>You will need various <emphasis>Gstreamer</emphasis> plugins to enable <guilabel>Moodbar</guilabel> to analyze your files. Here is a list of the plugins you will need; make sure to install the <guilabel>0.10.* version</guilabel> of each plugin:
 </para>
 <para>
@@ -5819,7 +5819,7 @@
 </informaltable>
 </para>
 </sect2>
-<sect2 id="screenshots"><title>Screenshots</title>
+<sect2 id="screenshots"><title>Screenshots</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5838,7 +5838,7 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="amarok-on-other-platforms"><title>Amarok on other platforms</title>
+<sect1 id="amarok-on-other-platforms"><title>Amarok on other platforms</title> 
 <para>&amarok; is intended for the KDE desktop, but it works on other platforms as well. Although it takes some effort, Amarok can run on these configurations:
 </para>
 <para>
@@ -5903,12 +5903,12 @@
   </tgroup>
 </informaltable>
 </para>
-<sect2 id="amarok-on-non-kde-desktops"><title>Amarok on Non-KDE Desktops</title>
+<sect2 id="amarok-on-non-kde-desktops"><title>Amarok on Non-KDE Desktops</title> 
 <para>Although &amarok; is one the most well-known KDE applications, it can run on other desktop environments too.
 </para>
 <para>This section shows how &amarok; can be used on non-KDE &Linux; desktops. These are examples; there may be more.
 </para>
-<sect3 id="gnome"><title>GNOME</title>
+<sect3 id="gnome"><title>GNOME</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5933,7 +5933,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </screen>
 </para>
 </sect3>
-<sect3 id="enlightenment"><title>Enlightenment</title>
+<sect3 id="enlightenment"><title>Enlightenment</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5950,7 +5950,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para>The &amarok; systray icon does not work by default with E17. So, one should disable the <guilabel>Show tray icon</guilabel> from <guilabel>General Options</guilabel> in &amarok; <emphasis>Preferences</emphasis>.
 </para>
 </sect3>
-<sect3 id="xfce"><title>XFCE</title>
+<sect3 id="xfce"><title>XFCE</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5967,7 +5967,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para>To launch &amarok; faster, enable <guilabel>Launch KDE services on startup</guilabel> by going into <menuchoice><guimenu>Settings</guimenu><guisubmenu>Sessions and Startup</guisubmenu><guimenuitem>Advanced</guimenuitem></menuchoice> and checking the option.
 </para>
 </sect3>
-<sect3 id="fluxbox"><title>Fluxbox</title>
+<sect3 id="fluxbox"><title>Fluxbox</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5984,7 +5984,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para>If &amarok; is taking to long to load, add <userinput>exec kdeinit</userinput>  to ~/.fluxbox/startup.
 </para>
 </sect3>
-<sect3 id="lxde"><title>LXDE</title>
+<sect3 id="lxde"><title>LXDE</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -6002,28 +6002,28 @@ ftpProxy=http://username:password@proxyserver:port/
 </para>
 </sect3>
 </sect2>
-<sect2 id="amarok-on-windows"><title>Amarok on Windows</title>
+<sect2 id="amarok-on-windows"><title>Amarok on Windows</title> 
 <para>As you already know, a normal Windows install doesn't use KDE, so if you want to install &amarok;, you can't just download the &amarok; package. You must install a compatible compiler first. Here is described how to download, install and run &amarok; in the Windows operating system.
 </para>
-<sect3 id="how-to-download"><title>How to download</title>
+<sect3 id="how-to-download"><title>How to download</title> 
 <para>If you run into any difficulties, please visit the <ulink url="http://amarok.kde.org/wiki/Download:Windows">Amarok on Windows wiki page</ulink> where the latest links will be kept updated. Otherwise, use the latest at the following links:
 </para>
 </sect3>
-<sect3 id="amarok-2-4-base-packages"><title>Amarok-2.4-Base-Packages</title>
+<sect3 id="amarok-2-4-base-packages"><title>Amarok-2.4-Base-Packages</title> 
 <para><ulink url="http://kollide.net/~dgran10/amarok/">Here</ulink> you can download the Windows installer provided by Nitrostemp, in which you will find both the &amarok; package and the needed KDE compiler for Windows.
 </para>
 </sect3>
-<sect3 id="amarok-2-4-only"><title>Amarok-2.4-Only</title>
+<sect3 id="amarok-2-4-only"><title>Amarok-2.4-Only</title> 
 <para>If you already have &amarok; installed, you can update to the newest version from here: <ulink url="http://kollide.net/~dgran10/amarok/">Amarok-2.4-Only</ulink>. This package will update the files and save you downloading everything again.
 </para>
 </sect3>
-<sect3 id="how-to-install"><title>How to install</title>
+<sect3 id="how-to-install"><title>How to install</title> 
 <para>The installation is very simple, just run the downloaded .exe file.
 </para>
 <para><warning><para>If you want to update be sure to remove your current install.</para></warning>
 </para>
 </sect3>
-<sect3 id="step-1"><title>Step 1</title>
+<sect3 id="step-1"><title>Step 1</title> 
 <para>First, review on the license terms.
 </para>
 <para>
@@ -6040,7 +6040,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </screenshot>
 </para>
 </sect3>
-<sect3 id="step-2"><title>Step 2</title>
+<sect3 id="step-2"><title>Step 2</title> 
 <para>Second, choose the install location.
 </para>
 <para>If you want to change the default location, select  <guilabel>Browse...</guilabel> and choose a new location.
@@ -6059,7 +6059,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </screenshot>
 </para>
 </sect3>
-<sect3 id="step-3"><title>Step 3</title>
+<sect3 id="step-3"><title>Step 3</title> 
 <para>Wait a few minutes while the installation finishes.
 </para>
 <para>
@@ -6076,7 +6076,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </screenshot>
 </para>
 </sect3>
-<sect3 id="step-4"><title>Step 4</title> 
+<sect3 id="step-4"><title>Step 4</title>  
 <para>When the installation is done, dismiss the window with <guilabel>Close</guilabel>. Your &amarok; installation has finished.
 </para>
 <para>
@@ -6093,15 +6093,15 @@ ftpProxy=http://username:password@proxyserver:port/
 </screenshot>
 </para>
 </sect3>
-<sect3 id="running-amarok"><title>Running Amarok</title>
+<sect3 id="running-amarok"><title>Running Amarok</title> 
 <para>When the installation finishes,  you'll find an &amarok; shortcut on your desktop. To run &amarok;, just click the shortcut.
 </para>
 </sect3>
 </sect2>
-<sect2 id="amarok-on-mac-os-x"><title>Amarok on &MacOS; X</title>
+<sect2 id="amarok-on-mac-os-x"><title>Amarok on &MacOS; X</title> 
 <para>&amarok; can be installed and used on the &MacOS; X.
 </para>
-<sect3 id="dependencies"><title>Dependencies</title>
+<sect3 id="dependencies"><title>Dependencies</title> 
 <para>The following are the dependencies required to install &amarok; on &MacOS; X. These will be automatically installed if one is using MacPorts.
 </para>
 <para><screen>
@@ -6109,12 +6109,10 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </screen>
 </para>
 </sect3>
-<sect3 id="installation-using-macports"><title>Installation using MacPorts</title>
+<sect3 id="installation-using-macports"><title>Installation using MacPorts</title> 
 <para>To install &amarok; on &MacOS; X, first one needs to install MacPorts from <ulink url="http://www.macports.org/install.php">here</ulink>. Once MacPorts is installed one needs to run the following command in the terminal:
 </para>
-<para><screen>
-sudo port install amarok
-</screen> 
+<para><userinput>sudo port install amarok</userinput>
 </para>
 <para>
 <screenshot>
@@ -6132,7 +6130,7 @@ sudo port install amarok
 <para>The <guilabel>port</guilabel> command will fetch all the dependencies, compile, build and install them. This process may take quite some time, four to five hours in a recent install.
 </para>
 </sect3>
-<sect3 id="screenshots17"><title>Screenshots</title>
+<sect3 id="screenshots17"><title>Screenshots</title> 
 <para>The following screenshot shows &amarok; running on the &MacOS; X:
 </para>
 <para>
@@ -6149,74 +6147,74 @@ sudo port install amarok
 </screenshot>
 </para>
 </sect3>
-<sect3 id="other-resources"><title>Other resources</title>
+<sect3 id="other-resources"><title>Other resources</title> 
 <para>If you run into difficulties, there is a <ulink url="http://amarok.kde.org/wiki/Amarok2_On_OS_X">troubleshooting page here</ulink>.
 </para>
 </sect3>
 </sect2>
 </sect1>
 </chapter>
-<chapter id="troubleshooting-and-common-problems"><title>Troubleshooting and Common Problems</title>
+<chapter id="troubleshooting-and-common-problems"><title>Troubleshooting and Common Problems</title> 
 <para>If you work through the procedures here, but don't have success, please come into IRC (irc://irc.freenode.org/amarok), post on the KDE Forum <ulink url="http://forum.kde.org/viewforum.php?f=127">Amarok section</ulink>, or write to the <ulink url="https://mail.kde.org/mailman/listinfo/amarok">Amarok list</ulink>.
 </para>
-<sect1 id="problems-installing"><title>Problems installing</title>
-<sect2 id="bad-packaging"><title>Bad packaging</title>
+<sect1 id="problems-installing"><title>Problems installing</title> 
+<sect2 id="bad-packaging"><title>Bad packaging</title> 
 <para>Occasionally, users will encounter bad packaging from the distributions; either from the wrong version of a component being included, or some needful part being left out. For some reason, this often happens with MySQL dependencies. Bug reports in these cases should be made to your distribution, not to bugs.kde.org.
 </para>
 </sect2>
-<sect2 id="difficulties-building-from-source"><title>Difficulties building from source</title>
+<sect2 id="difficulties-building-from-source"><title>Difficulties building from source</title> 
 <para>For those who wish to help out by testing the newest &amarok; versions, a local build is advised. Use this excellent guide: <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/">Compiling &amarok; from GIT Locally; a Full Summary</ulink>. Detailed information about git can be found here: <ulink url="http://techbase.kde.org/Getting_Started/Sources/KDE_git-tutorial">Techbase GIT Tutorial</ulink>.
 </para>
 <para>If you have built successfully before, and now are encountering errors, try removing <emphasis>CMakeCache.txt</emphasis> and try again. If that still errors out, remove the entire Build folder and build completely fresh.
 </para>
-<para>The URL to pull from git has recently changed. Run <userinput>git remote set-url origin git://anongit.kde.org/amarok</userinput>  if you still using the old URL. Please ping us if you find the old link in our documents so we can update it everywhere.
+<para>The URL to pull from git has recently changed. Run <userinput><command>git remote set-url origin git://anongit.kde.org/amarok</command></userinput>  if you still using the old URL. Please ping us if you find the old link in our documents so we can update it everywhere.
 </para>
 </sect2>
 </sect1>
-<sect1 id="problems-starting-up"><title>Problems starting up</title>
-<sect2 id="playlist-errors"><title>Playlist errors</title>
+<sect1 id="problems-starting-up"><title>Problems starting up</title> 
+<sect2 id="playlist-errors"><title>Playlist errors</title> 
 <para>The current playlist can occasionally get corrupt, which will prevent &amarok; from starting. This can be fixed by simply removing the current playlist file in the &amarok; directory, $HOME/.kde/share/apps/amarok/current.xspf . Note that on some systems, this may be .kde4 rather than .kde.
 </para>
 </sect2>
-<sect2 id="database-issues"><title>Database issues</title>
+<sect2 id="database-issues"><title>Database issues</title> 
 <para>If the database is corrupt and this is preventing &amarok; from starting, you can move the database to a backup location (or simply delete it). This will cause &amarok; to rebuild the database from scratch. Move the $HOME/.kde/share/apps/amarok/mysqle folder to a backup location (such as $HOME/.kde/share/apps/amarok/mysqle~) and restart &amarok;.
 </para>
 </sect2>
-<sect2 id="other-issues-and-backing-up-settings"><title>Other issues and backing up settings</title>
+<sect2 id="other-issues-and-backing-up-settings"><title>Other issues and backing up settings</title> 
 <para>If the above two items do not help, or you otherwise need to restore &amarok; to a clean configuration, you can move to a backup location (or delete) the &amarok; directory at $HOME/.kde/share/apps/amarok and the &amarok; config files at $HOME/.kde/share/config/amarok* (there may be two or three files matching this pattern). Again, the directory may be .kde4 rather than .kde.
 </para>
 </sect2>
 </sect1>
-<sect1 id="problems-scanning-sorting-files"><title>Problems Scanning, Sorting files</title>
+<sect1 id="problems-scanning-sorting-files"><title>Problems Scanning, Sorting files</title> 
 <para>&amarok; scans your music files on first startup, and will keep your collection up-to-date automatically, if you chose <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Collection</guimenuitem><guimenuitem>Watch folders for changes</guimenuitem></menuchoice>.
 </para>
 <para>If you don't want &amarok; scanning for changes, uncheck that, and use <menuchoice><guimenu>Tools</guimenu><guimenuitem>Update Collection</guimenuitem></menuchoice> whenever you make changes to your collection.
 </para>
 <para>More about <link linkend="collection-scanning">&amarok; collection scanning here</link>.
 </para>
-<sect2 id="corrupt-tags"><title>Corrupt tags</title>
+<sect2 id="corrupt-tags"><title>Corrupt tags</title> 
 <para>Some folks notice that &amarok; seems to be missing some files. One of the causes can be corrupt tags, which you can check using the tagging application <ulink url="http://kid3.sourceforge.net/">kid3</ulink>. More about tagging <link linkend="tag-editor">here</link>.
 </para>
 <para>To find the bad file(s), run <emphasis>amarokcollectionscanner</emphasis> from the console. Details <ulink url="http://amarok.kde.org/wiki/Batch_Mode">here</ulink>.
 </para>
 </sect2>
-<sect2 id="inability-to-write-tags"><title>Inability to write tags</title>
+<sect2 id="inability-to-write-tags"><title>Inability to write tags</title> 
 <para>If &amarok; is not saving changes to tags, you may have permissions problems. Ensure that your user has write permissions to your music. For example, <userinput>chown -R youruser Music/</userinput>  to change ownership to your user, or <userinput>chmod -R +w Music/</userinput>  to add write permissions to the owner.
 </para>
 </sect2>
-<sect2 id="incorrect-sorting-various-artists"><title>Incorrect Sorting (Various Artists)</title>
+<sect2 id="incorrect-sorting-various-artists"><title>Incorrect Sorting (Various Artists)</title> 
 <para>Sometimes people report that tracks are in Various Artists when they should not be, or are sorted into <quote>Unknown Album.</quote> What separates Various Artists albums and tracks and albums sorted under their artists is the Album Artist tag. When you click <guilabel>Show under Various Artists</guilabel> in the context (right-click) menu, that tag will be emptied if it is filled. The opposite happens to a file in Various Artists when you choose <guilabel>Do not show under Various Artists</guilabel>, but the Album Artist tag will be auto-filled from the Artist tag.
 </para>
 <para>If there is no Album tag, and no Album Artist tag, &amarok; will put the track into Unknown Album in Various Artists. If you want them sorted otherwise, tag them the way you want them sorted. If you don't know some of the information, try out the new <emphasis>MusicBrainz</emphasis> function in the tag editor, or use a tagging application.
 </para>
 </sect2>
 </sect1>
-<sect1 id="problems-playing-files"><title>Problems playing files</title>
-<sect2 id="amarok-skips-over-tracks-or-appears-to-play-them-without-sound"><title>Amarok skips over tracks, or appears to play them without sound</title>
+<sect1 id="problems-playing-files"><title>Problems playing files</title> 
+<sect2 id="amarok-skips-over-tracks-or-appears-to-play-them-without-sound"><title>Amarok skips over tracks, or appears to play them without sound</title> 
 <para>If the files you are attempting to play are in mp3 format, please see instructions for enabling mp3 support on your distro, <link linkend="what-media-types-does-amarok-support">here</link>. Note that one piece of software being able to play mp3s on your system does not necessarily mean &amarok; has had the required codecs installed.
 </para>
 </sect2>
-<sect2 id="no-sound-or-bad-sound"><title>No sound, or bad sound</title>
+<sect2 id="no-sound-or-bad-sound"><title>No sound, or bad sound</title> 
 <para>For more general sound issues, first check what Phonon backend you are using in <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Playback</guimenuitem><guimenuitem>Configure Phonon</guimenuitem><guimenuitem>Backend</guimenuitem></menuchoice>. Consider switching to a different backend; VLC, GStreamer and Xine backends should be available from your distribution, although Xine is deprecated. Gstreamer or VLC is usually recommended.
 </para>
 <para>Also check whether the backend standalone software can play the files correctly; if not this is an issue with that software and you may find information in their help files. In other words, can Gstreamer or VLC play the same file? Will it play in <ulink url="help:/dragonplayer">Dragon</ulink>, which also uses phonon?
@@ -6225,7 +6223,7 @@ sudo port install amarok
 </para>
 </sect2>
 </sect1>
-<sect1 id="crashes-and-bugs"><title>Crashes and bugs</title>
+<sect1 id="crashes-and-bugs"><title>Crashes and bugs</title> 
 <itemizedlist>
 <listitem><para>How to run &amarok; from the command line: <userinput>amarok --debug --nofork</userinput></para></listitem>
 <listitem><para>&amarok; crashes, but <guilabel>Dr. Konqi</guilabel> doesn't pop up -- run in <guilabel>gdb</guilabel> with the following command: <userinput>gdb --args amarok --debug --nofork</userinput>  In gdb's console, type <emphasis>run</emphasis> to start &amarok;, reproduce the crash, and then in gdb type <emphasis>thread apply all bt</emphasis> to generate the backtrace.</para></listitem>
@@ -6234,12 +6232,12 @@ sudo port install amarok
 </itemizedlist>
 </sect1>
 </chapter>
-<chapter id="frequently-asked-questions"><title>Frequently Asked Questions</title>
-<sect1 id="what-is-amarok"><title>What is Amarok?</title>
+<chapter id="frequently-asked-questions"><title>Frequently Asked Questions</title> 
+<sect1 id="what-is-amarok"><title>What is Amarok?</title> 
 <para>&amarok; is a music player. More information can be found in <link linkend="amarok-menu">a summary of its features</link> and the <ulink url="http://amarok.kde.org/en/screenshots">screenshot gallery</ulink>. To get started using &amarok;, see the <link linkend="quick-start-guide"><emphasis>Quick Start Guide</emphasis></link>. The <guilabel>Amarok Handbook</guilabel> is <link linkend="introduction">here</link>.
 </para>
 </sect1>
-<sect1 id="what-are-the-differences-between-amarok-2-and-the-previous-versions"><title>What are the differences between Amarok 2 and the previous versions?</title>
+<sect1 id="what-are-the-differences-between-amarok-2-and-the-previous-versions"><title>What are the differences between Amarok 2 and the previous versions?</title> 
 <para>&amarok; 2 is a nearly complete code-rewrite so the codebase has little to do with &amarok; 1.4. If you are missing a feature, please file a wish in <ulink url="http://bugs.kde.org">Bugzilla</ulink>.
 </para>
 <para>Here you have a short list of some new features:
@@ -6254,72 +6252,72 @@ sudo port install amarok
 <para>There are many more great features like advanced scripting, dynamic collections, usability improvements, improved media devices handling, a new podcast manager, support for more software platforms, and others.
 </para>
 </sect1>
-<sect1 id="installation18"><title>Installation</title>
-<sect2 id="can-i-use-amarok-without-kde"><title>Can I use Amarok without KDE?</title>
+<sect1 id="installation18"><title>Installation</title> 
+<sect2 id="can-i-use-amarok-without-kde"><title>Can I use Amarok without KDE?</title> 
 <para>&amarok; requires parts of KDE to be installed to run, but will run fine in Gnome or other desktop environments, including Windows and OSx. For &amarok; to run, kdelibs and kdebase-runtime need to be installed.
 </para>
 <para>For some features to work correctly, such as the on-screen display, your window manager must be configured to support the relevant <emphasis>freedesktop.org</emphasis> standards. More about running &amarok; on other platforms <link linkend="amarok-on-other-platforms">here</link>.
 </para>
 </sect2>
-<sect2 id="why-does-amarok-use-kdelibs"><title>Why does Amarok use KDElibs?</title>
+<sect2 id="why-does-amarok-use-kdelibs"><title>Why does Amarok use KDElibs?</title> 
 <para>We are committed to supporting &amarok; on all platforms. We use KDElibs and Qt because they provide an excellent development environment. Aside from &Linux; and BSD, &amarok; works on Windows and MacOS, and there are installers available, but unfortunately we don't have (yet) the resources to offer full support for those operating systems. Almost all of our developers use free operating systems, and those have priority for us. We do however welcome Windows and OS X developers willing to help, and improve &amarok; on those platforms.
 </para>
 </sect2>
 </sect1>
-<sect1 id="general-usage"><title>General usage</title>
-<sect2 id="how-can-i-control-amarok-from-the-keyboard"><title>How can I control Amarok from the keyboard?</title>
+<sect1 id="general-usage"><title>General usage</title> 
+<sect2 id="how-can-i-control-amarok-from-the-keyboard"><title>How can I control Amarok from the keyboard?</title> 
 <para>Keyboard shortcuts are available; see our <link linkend="keybinding-reference">Keybinding Reference page</link> for more information.
 </para>
 <para>To control &amarok; from the console, type <userinput>amarok --help-all</userinput> for a current complete list of available control commands.
 </para>
 </sect2>
-<sect2 id="where-can-i-get-support-for-amarok"><title>Where can I get support for Amarok?</title>
+<sect2 id="where-can-i-get-support-for-amarok"><title>Where can I get support for Amarok?</title> 
 <para>There are several options. Often times problems you have with the initial install of &amarok; are best answered by experts of your particular &UNIX; or &Linux; distribution. You may seek help from fellow users and developers at the <ulink url="http://forum.kde.org/viewforum.php?f=127">&amarok; forum</ulink> and the <ulink url="irc://irc.freenode.net/amarok">&amarok; IRC channel</ulink> at irc.freenode.net channel #amarok.
 </para>
 <para>Note that <ulink url="http://bugs.kde.org">bugzilla</ulink> is not a place to seek support. Please do enter a bug if you are serious about helping fix a bug in &amarok; itself.
 </para>
 </sect2>
 </sect1>
-<sect1 id="questions-about-the-playlist"><title>Questions about the Playlist</title>
+<sect1 id="questions-about-the-playlist"><title>Questions about the Playlist</title> 
 <para>More about the <link linkend="the-playlist-pane">Playlist here</link>.
 </para>
-<sect2 id="when-i-start-amarok-i-see-an-empty-playlist--how-do-i-actually-get-tracks-in-there"><title>When I start Amarok, I see an empty playlist. How do I actually get tracks in there?</title>
+<sect2 id="when-i-start-amarok-i-see-an-empty-playlist--how-do-i-actually-get-tracks-in-there"><title>When I start Amarok, I see an empty playlist. How do I actually get tracks in there?</title> 
 <para>Use the <emphasis>Collection</emphasis> on the left side to navigate to the desired artist/album/track. Then drag the files into the <emphasis>Playlist</emphasis> part on the right. You can use <emphasis>Dynamic Playlists</emphasis> or the <emphasis>Automatic Playlist Generator</emphasis> to populate your playlist. You can also drag files in from any file manager, such as &dolphin;. You may also double-click a track, artist or genre in your <emphasis>Collection</emphasis> or file-system, or right-click and <guilabel>Add to Playlist</guilabel> or <guilabel>Replace Playlist</guilabel>.
 </para>
 </sect2>
-<sect2 id="how-do-i-remove-tracks-from-the-playlist"><title>How do I remove tracks from the Playlist?</title>
+<sect2 id="how-do-i-remove-tracks-from-the-playlist"><title>How do I remove tracks from the Playlist?</title> 
 <para>Select the track(s) you want to remove, and press the <keycap>Delete</keycap> key. Or right-click the selection and choose <guilabel>Remove From Playlist</guilabel>.
 </para>
 </sect2>
-<sect2 id="how-can-i-load-a-playlist"><title>How can I load a playlist?</title>
+<sect2 id="how-can-i-load-a-playlist"><title>How can I load a playlist?</title> 
 <para>Just drag and drop the playlist file into the <emphasis>Playlist</emphasis>, like you would do with any other file. It's that simple!
 </para>
 </sect2>
-<sect2 id="how-can-i-save-the-current-playlist"><title>How can I save the current playlist?</title>
+<sect2 id="how-can-i-save-the-current-playlist"><title>How can I save the current playlist?</title> 
 <para>Use the <guilabel>Save Playlist As</guilabel> button in the <emphasis>Playlist</emphasis> toolbar. Slow-click the disc icon to chose to save to your harddisk, or to the database.
 </para>
 </sect2>
 </sect1>
-<sect1 id="playback-questions"><title>Playback Questions</title>
-<sect2 id="how-do-i-play-audio-cds"><title>How do I play audio CDs?</title>
+<sect1 id="playback-questions"><title>Playback Questions</title> 
+<sect2 id="how-do-i-play-audio-cds"><title>How do I play audio CDs?</title> 
 <para>When you insert an audio CD, it will be shown as a local collection. Drag to the playlist or <emphasis>Pop-Up Dropper</emphasis>, or right-click the selected tracks and choose <guilabel>Add to Playlist</guilabel> or <guilabel>Replace Playlist</guilabel>.
 </para>
 </sect2>
-<sect2 id="what-media-types-does-amarok-support"><title>What media types does Amarok support?</title>
+<sect2 id="what-media-types-does-amarok-support"><title>What media types does Amarok support?</title> 
 <para>&amarok; does not play music by itself, but lets <emphasis>Phonon</emphasis> do that job, specifically the <emphasis>VLC</emphasis>, <emphasis>GStreamer</emphasis> or <emphasis>Xine backends</emphasis> of <emphasis>Phonon</emphasis>. Therefore, whatever files they can play, &amarok; can play. To analyse file tags, &amarok; uses <emphasis>Taglib</emphasis>, which supports most file types that contain metadata.
 </para>
 </sect2>
-<sect2 id="what-is-phonon-what-are-phonon-backends"><title>What is Phonon? What are Phonon backends?</title>
+<sect2 id="what-is-phonon-what-are-phonon-backends"><title>What is Phonon? What are Phonon backends?</title> 
 <para><emphasis>Phonon</emphasis> is the multimedia framework of KDE 4. You can find more information <link linkend="playback">here</link>.
 </para>
 <para>Usually the <emphasis>VLC backend</emphasis> works better than the <emphasis>Xine</emphasis> one, although this is not always true. We also suggest you try the <emphasis>Gstreamer backend</emphasis>, although it is still in development. You can find more details on installing backends in the <ulink url="http://amarok.kde.org/wiki/Download">download page</ulink>.
 </para>
 </sect2>
-<sect2 id="amarok-wont-play-mp3s-what-can-i-do"><title>Amarok won't play mp3s, what can I do?</title>
+<sect2 id="amarok-wont-play-mp3s-what-can-i-do"><title>Amarok won't play mp3s, what can I do?</title> 
 <para>Have a look at the <ulink url="http://amarok.kde.org/wiki/MP3">mp3 information page</ulink>. You probably lack the codecs required by your particular <emphasis>phonon-backend</emphasis> (<guilabel>VLC,</guilabel> <guilabel>Gstreamer</guilabel>, or <guilabel>Xine</guilabel>).
 </para>
 </sect2>
-<sect2 id="i-cant-get-any-media-to-play-in-amarok-why-not"><title>I can't get any media to play in Amarok, why not?</title>
+<sect2 id="i-cant-get-any-media-to-play-in-amarok-why-not"><title>I can't get any media to play in Amarok, why not?</title> 
 <para>Test the sound frameworks at the command line:
 </para>
 <para><userinput>xine-check</userinput>
@@ -6329,56 +6327,56 @@ sudo port install amarok
 <para>The output from these commands should help you identify the problems you are having and how to fix them.
 </para>
 </sect2>
-<sect2 id="i-have-a-second-soundcard-and-im-using-alsa--how-do-i-make-amarok-use-it-instead-of-the-default"><title>I have a second soundcard and I'm using ALSA. How do I make Amarok use it instead of the default?</title>
+<sect2 id="i-have-a-second-soundcard-and-im-using-alsa--how-do-i-make-amarok-use-it-instead-of-the-default"><title>I have a second soundcard and I'm using ALSA. How do I make Amarok use it instead of the default?</title> 
 <para> Configure this in the <emphasis>Phonon</emphasis> system settings module. <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Playback</guimenuitem><guimenuitem>Configure Phonon</guimenuitem></menuchoice>
 </para>
 </sect2>
-<sect2 id="wheres-the-equalizer"><title>Where's the equalizer?</title>
+<sect2 id="wheres-the-equalizer"><title>Where's the equalizer?</title> 
 <para>The equalizer is only available if you are using a <emphasis>Phonon</emphasis>-backend which supports it, which the modern ones now do. You can find it in the <guilabel>Tools</guilabel> menu. You can get more information about configuring <emphasis>Phonon</emphasis>-backends in your distribution in the <ulink url="http://amarok.kde.org/wiki/Download">download page</ulink>.
 </para>
 </sect2>
-<sect2 id="how-do-i-turn-on-visualizations"><title>How do I turn on visualizations?</title>
+<sect2 id="how-do-i-turn-on-visualizations"><title>How do I turn on visualizations?</title> 
 <para>Visualizations are not implemented yet, but they will be very soon.
 </para>
 </sect2>
-<sect2 id="how-can-i-add-podcasts"><title>How can I add podcasts?</title>
+<sect2 id="how-can-i-add-podcasts"><title>How can I add podcasts?</title> 
 <para>Go to <emphasis>Podcast</emphasis> section in the left toolbar and then select <guilabel>Add Podcast...</guilabel> Add the podcast URL where indicated. More about podcasts <link linkend="podcasts">here</link>.
 </para>
 <para>We also have some services, such as gpodder and Podcast Directory to help you find great podcasts. Enable services in the <guilabel>Settings</guilabel> menu: <menuchoice><guimenu>Configure Amarok</guimenu><guimenuitem>Plugins</guimenuitem></menuchoice>.
 </para>
 </sect2>
-<sect2 id="how-can-i-use-amarok-to-stream-to-my-own-radio-station"><title>How can I use Amarok to stream to my own radio station?</title>
+<sect2 id="how-can-i-use-amarok-to-stream-to-my-own-radio-station"><title>How can I use Amarok to stream to my own radio station?</title> 
 <para>If you want to stream directly to an icecast or shoutcast server the answer simply is: it is not supported. You could use <ulink url="http://giss.tv/sahabuntu/doc/idjc.html">IDJC</ulink> for that.
 </para>
 </sect2>
 </sect1>
-<sect1 id="general-questions"><title>General questions</title>
-<sect2 id="what-are-scripts"><title>What are scripts?</title>
+<sect1 id="general-questions"><title>General questions</title> 
+<sect2 id="what-are-scripts"><title>What are scripts?</title> 
 <para>They are little pieces of software that add some functions to &amarok;. There are a lot of scripts, and you can find them in <ulink url="http://www.kde-apps.org/index.php?xcontentmode=57">kde-apps.org</ulink> or you can find and install them inside &amarok; using the <emphasis>Script Manager</emphasis> (until &amarok; 2.4.1). More details <link linkend="script-manager">here</link>. After &amarok; 2.4.1, you will find the Script Manager from the <guilabel>Settings</guilabel> menu, <menuchoice><guimenu>Configure Amarok</guimenu><guimenuitem>Scripts</guimenuitem></menuchoice>.
 </para>
 </sect2>
-<sect2 id="can-i-use-amarok-1-4-scripts-in-amarok-2"><title>Can I use Amarok 1.4 scripts in Amarok 2?</title>
+<sect2 id="can-i-use-amarok-1-4-scripts-in-amarok-2"><title>Can I use Amarok 1.4 scripts in Amarok 2?</title> 
 <para>No. A new and powerful scripting API has been created, which provides huge improvements but won't let you use your old scripts. The new scripting system is based on QtScript and will significantly reduce &amarok;<command>'s</command> dependencies, a huge problem for non-technical and cross-platform users, and will greatly reduce the amount of external processes launched at runtime.  Another advantage is that the new API will allow much deeper integration with &amarok; than the old scripting system. <ulink url="http://amarok.kde.org/wiki/Development/Script_API">Amarok Scripting API</ulink>.
 </para>
 </sect2>
-<sect2 id="what-are-moodbars"><title>What are Moodbars?</title>
+<sect2 id="what-are-moodbars"><title>What are Moodbars?</title> 
 <para><emphasis>Moodbars</emphasis> show the mood of a song in the progress bar. More about <guilabel>Moodbar</guilabel> <link linkend="the-moodbar">here</link>.
 </para>
 </sect2>
-<sect2 id="can-i-play-video-files"><title>Can I play video files?</title>
+<sect2 id="can-i-play-video-files"><title>Can I play video files?</title> 
 <para>&amarok; is mainly a music player so no video file management, collection support, DVD playback, subtitles, or any other sophisticated features are available. However, the <emphasis>video applet</emphasis> lets you play YouTube video clips inside &amarok;.
 </para>
 </sect2>
-<sect2 id="is-it-amarok-amarok-or-amarok"><title>Is it Amarok, AmaroK or amaroK?</title>
+<sect2 id="is-it-amarok-amarok-or-amarok"><title>Is it Amarok, AmaroK or amaroK?</title> 
 <para>It is &amarok;! The former spelling was <emphasis>amaroK</emphasis>, but it was changed due to its strange look.
 </para>
 </sect2>
-<sect2 id="how-are-track-scores-determined"><title>How are track scores determined?</title>
+<sect2 id="how-are-track-scores-determined"><title>How are track scores determined?</title> 
 <para>&amarok; assigns a score (a number 0-100) to a song based on how many times you've listened to it and whether you skip the song without it finishing.  Every time the song finishes playing, the score is changed.
 </para>
 <para>Here you have an example script that can calculate scores:
 </para>
-<para>   if( playcount &lt;= 0 ) # not supposed to be less, but what the hell.
+<para>if( playcount &lt;= 0 ) # not supposed to be less, but what the hell.
 </para>
 <para>       newscore = ( prevscore + percentage ) / 2
 </para>
@@ -6391,81 +6389,81 @@ sudo port install amarok
 <para>You can easily create your own script with your own algorithm. Look at the <ulink url="http://amarok.kde.org/wiki/Development/Scripting_HowTo_2.0">Script-Writing-Howto</ulink> for further information.
 </para>
 </sect2>
-<sect2 id="how-do-i-manually-change-a-tracks-score"><title>How do I manually change a track's score?</title>
+<sect2 id="how-do-i-manually-change-a-tracks-score"><title>How do I manually change a track's score?</title> 
 <para>You may change the score manually in the <emphasis>Edit Track Details</emphasis> dialog, available by right-clicking on a track, and choosing the <guilabel>Summary</guilabel> tab. Before &amarok; 2.4.1, this is called the <guilabel>Statistics</guilabel> tab.
 </para>
 </sect2>
-<sect2 id="but-i-also-want-that-stars-system-like-in-other-players"><title>But I also want that stars system like in other players!</title>
+<sect2 id="but-i-also-want-that-stars-system-like-in-other-players"><title>But I also want that stars system like in other players!</title> 
 <para>&amarok;, of course, supports an user-defined rating system, and you can rate your tracks with a single click using the <emphasis>Current Track applet</emphasis>. You can also do this in the context menu (right-click) <menuchoice><guimenu>Edit Track Details</guimenu><guimenuitem>Summary</guimenuitem></menuchoice> tab (before Amarok 2.4.1, this is <menuchoice><guimenu>Edit Track Details</guimenu><guimenuitem>Statistics</guimenuitem></menuchoice>). If you have the rating stars displayed in your playlist layout, you can also edit there, with the <emphasis>slow double-click</emphasis>.
 </para>
 </sect2>
-<sect2 id="can-i-drag-and-drop-plasma-applets-from-the-main-window-to-the-desktop"><title>Can I drag and drop Plasma applets from the main window to the Desktop?</title>
+<sect2 id="can-i-drag-and-drop-plasma-applets-from-the-main-window-to-the-desktop"><title>Can I drag and drop Plasma applets from the main window to the Desktop?</title> 
 <para>No, but there are many Plasmoids available for your Desktop, which will let you display information provided by &amarok; as well as control &amarok;.
 </para>
 </sect2>
-<sect2 id="can-i-use-removable-media-inside-amarok"><title>Can I use removable media inside Amarok?</title>
+<sect2 id="can-i-use-removable-media-inside-amarok"><title>Can I use removable media inside Amarok?</title> 
 <para>&amarok; has a greatly improved support for the media devices based on <emphasis>Solid</emphasis>, the KDE hardware layer, that doesn't need a lot of configuration. You should be able to just plug in your device and access it within &amarok;. Also, thanks to the <emphasis>Dynamic Collections</emphasis>, your media devices could become part of your music collection, and be searchable and accessible within the <emphasis>Collection Browser</emphasis> when it's connected.
 </para>
 <para>You can transfer your songs, albums and artists from your local collection by right-clicking <menuchoice><guimenu>Copy to Collection</guimenu><guimenuitem>Your device</guimenuitem></menuchoice>; and you can also do it in the other way: right-click <menuchoice><guimenu>Copy to Collection</guimenu><guimenuitem>Local Collection</guimenuitem></menuchoice>. More about &amarok; and devices <link linkend="working-with-media-devices">here</link>.
 </para>
 </sect2>
-<sect2 id="how-can-i-save-a-stream"><title>How can I save a stream?</title>
+<sect2 id="how-can-i-save-a-stream"><title>How can I save a stream?</title> 
 <para>First of all, load the stream into the playlist. There are several ways to do this: downloading the file, for example from <ulink url="http://www.shoutcast.com">shoutcast.com</ulink>, and opening it with &amarok;; using the menu <menuchoice><guimenu>Playlist</guimenu><guimenuitem>Add stream</guimenuitem></menuchoice>; among others.
 </para>
 <para>Once the stream is loaded, you can save it by clicking on <guilabel>Save current playlist</guilabel> which is under the Playlist, and giving it a meaningful name. The Stream will then be added to the <emphasis>Saved playlists view</emphasis> for later reference.
 </para>
 </sect2>
-<sect2 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"><title>Can I use the old Amarok's collection in Amarok 2? Will my tags, score are ratings be lost?</title>
+<sect2 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"><title>Can I use the old Amarok's collection in Amarok 2? Will my tags, score are ratings be lost?</title> 
 <para>A database importer is available. You will be able to keep your ratings and statistics just fine. More <link linkend="collection">here</link>.
 </para>
 </sect2>
-<sect2 id="where-do-i-find-the-settings-for-amarok"><title>Where do I find the settings for Amarok?</title>
+<sect2 id="where-do-i-find-the-settings-for-amarok"><title>Where do I find the settings for Amarok?</title> 
 <para>`kde4-config --localprefix`/share/apps/amarok
 </para>
 <para>`kde4-config --localprefix`/share/config/amarokrc
 </para>
 </sect2>
 </sect1>
-<sect1 id="troubleshooting19"><title>Troubleshooting</title>
-<sect2 id="how-can-i-obtain-a-backtrace"><title>How can I obtain a backtrace?</title>
+<sect1 id="troubleshooting19"><title>Troubleshooting</title> 
+<sect2 id="how-can-i-obtain-a-backtrace"><title>How can I obtain a backtrace?</title> 
 <para>If &amarok; has crashed and you want to report it, visit the <ulink url="http://amarok.kde.org/wiki/Debugging_(documentation)">Debugging HowTo</ulink>. The bug report must be sent in <ulink url="http://bugs.kde.org">bugs.kde.org</ulink> after verifying if it has already been reported.
 </para>
 </sect2>
-<sect2 id="amarok-just-freezes-how-can-i-help-get-this-fixed"><title>Amarok just freezes! How can I help get this fixed?</title>
+<sect2 id="amarok-just-freezes-how-can-i-help-get-this-fixed"><title>Amarok just freezes! How can I help get this fixed?</title> 
 <para>You can obtain a backtrace of a frozen instance of &amarok; using gdb like so:
 </para>
 <para><userinput>$ gdb -p `pidof amarok`
- (gdb) thread apply full bt all</userinput> 
+(gdb) thread apply full bt all</userinput> 
 </para>
 <para>Then just post the backtrace to <ulink url="http://paste.kde.org/">PasteBin</ulink>, as described in the <ulink url="http://amarok.kde.org/wiki/Debugging_%28documentation%29">Debugging HowTo</ulink>.
 </para>
 </sect2>
-<sect2 id="amarok-takes-a-lot-of-time-to-start"><title>Amarok takes a lot of time to start</title>
+<sect2 id="amarok-takes-a-lot-of-time-to-start"><title>Amarok takes a lot of time to start</title> 
 <para>If this happens you have to check what scripts you have installed and what internet services are running, because some of them may slow down the startup. Also, if you have streams in the playlist when you open &amarok;, the startup can take a little longer.
 </para>
 <para>On the other hand, if you don't use KDE, but a different desktop environment, startup time can be increased very slightly because there are more libraries to be loaded.
 </para>
 </sect2>
 </sect1>
-<sect1 id="development-questions"><title>Development questions</title>
-<sect2 id="how-do-i-get-a-git-version-of-amarok"><title>How do I get a GIT version of Amarok?</title>
+<sect1 id="development-questions"><title>Development questions</title> 
+<sect2 id="how-do-i-get-a-git-version-of-amarok"><title>How do I get a GIT version of Amarok?</title> 
 <para><ulink url="http://techbase.kde.org/Getting_Started/Sources/KDE_git-tutorial">How to obtain and build &amarok; Git</ulink>. Check here for a local build: <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/">Building from Git Locally: Full Summary</ulink>
 </para>
 </sect2>
-<sect2 id="why-isnt-amarok-part-of-kdemultimedia"><title>Why isn't Amarok part of KDEmultimedia?</title>
+<sect2 id="why-isnt-amarok-part-of-kdemultimedia"><title>Why isn't Amarok part of KDEmultimedia?</title> 
 <para>The developers don't want <emphasis>the man</emphasis> telling them when they can release. (Meaning, packages in the KDE SC proper have a release schedule that doesn't fit with &amarok;'s fast-paced development.)
 </para>
 </sect2>
-<sect2 id="ive-found-a-bug---ive-got-a-great-idea-for-amarok"><title>I've found a bug / I've got a great idea for Amarok!</title>
+<sect2 id="ive-found-a-bug---ive-got-a-great-idea-for-amarok"><title>I've found a bug / I've got a great idea for Amarok!</title> 
 <para>Please report it at <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok">bugs.kde.org</ulink>. If you have a list of suggestions or wishes it may be best to send them to our mailing list: <ulink url="mailto:amarok@kde.org">amarok@kde.org</ulink>. Simply posting the idea to our IRC channels or on an obscure wiki page or blog won't help much as the information will get lost.
 </para>
 </sect2>
-<sect2 id="do-you-accept-patches"><title>Do you accept patches?</title>
+<sect2 id="do-you-accept-patches"><title>Do you accept patches?</title> 
 <para>Happily! Your best course of action is to let us know what you plan to do before you do any work so we can discuss it, but don't fret; we haven't turned down a patch yet! Discussion is mostly to help you patch the correct bits of &amarok;. Submit your patches and code contributions to git.reviewboard.kde.org. See also <ulink url="http://blogs.fsfe.org/myriam/2010/09/how-to-submit-patches-for-amarok/">How to Submit Patches to &amarok;</ulink>. If you have a bug fix then just go ahead; this is open source after all. :)
 </para>
 </sect2>
-<sect2 id="why-did-you-choose-the-name-amarok"><title>Why did you choose the name Amarok?</title>
-<para><emphasis>Amarok</emphasis> is an album by British composer Mike Oldfield. Project founder Mark Kretschmann happens to like it a lot, and he thought the name had a nice sound. Plus, of course, it contains the all important <guilabel>K</guilabel>. :)
+<sect2 id="why-did-you-choose-the-name-amarok"><title>Why did you choose the name Amarok?</title> 
+<para><emphasis>Amarok</emphasis> is an album by British composer Mike Oldfield. Project founder Mark Kretschmann happens to like it a lot, and he thought the name had a nice sound. Plus, of course, it contains the all important <guilabel>K</guilabel>. <inlinemediaobject> <imageobject> <imagedata fileref="Face-smile.png" format="PNG"/> </imageobject> </inlinemediaobject>
 </para>
 </sect2>
 </sect1>
