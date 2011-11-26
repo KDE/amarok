@@ -57,30 +57,30 @@ AmazonSettingsModule::save()
     switch( m_configDialog->countrySelectionComboBox->currentIndex() )
     {
     case 0:
-        AmazonConfig::instance()->setCountry( QString ( "fr" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String ( "fr" ) );
         break;
 
     case 1:
-        AmazonConfig::instance()->setCountry( QString ( "de" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String ( "de" ) );
         break;
 
     case 2:
-        AmazonConfig::instance()->setCountry( QString ( "co.jp" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String ( "co.jp" ) );
         break;
 
     case 3:
-        AmazonConfig::instance()->setCountry( QString ( "co.uk" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String ( "co.uk" ) );
         break;
 
     case 4:
-        AmazonConfig::instance()->setCountry( QString ( "com" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String ( "com" ) );
         break;
     case 5:
-        AmazonConfig::instance()->setCountry( QString ( "none" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String ( "none" ) );
         break;
 
     default:
-        AmazonConfig::instance()->setCountry( QString ( "" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String ( "" ) );
         break;
     }
 
@@ -93,17 +93,17 @@ AmazonSettingsModule::load()
     int index = -1;
     QString text = AmazonConfig::instance()->country();
 
-    if( text == QString( "fr" ) )
+    if( text == QLatin1String( "fr" ) )
         index = 0;
-    else if ( text == QString( "de" ) )
+    else if ( text == QLatin1String( "de" ) )
         index = 1;
-    else if ( text == QString( "co.jp" ) )
+    else if ( text == QLatin1String( "co.jp" ) )
         index = 2;
-    else if ( text == QString( "co.uk" ) )
+    else if ( text == QLatin1String( "co.uk" ) )
         index = 3;
-    else if ( text == QString( "com" ) )
+    else if ( text == QLatin1String( "com" ) )
         index = 4;
-    else if ( text == QString( "none" ) )
+    else if ( text == QLatin1String( "none" ) )
         index = 5;
     // no match -> index is still -1
 

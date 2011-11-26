@@ -119,7 +119,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     connect( m_searchWidget, SIGNAL( filterChanged( const QString ) ), this, SLOT( newSearchRequest( const QString ) ) );
 
     emit( ready() );
-    newSearchRequest( QString( "" ) ); // to get some default content
+    newSearchRequest( QLatin1String( "" ) ); // to get some default content
 }
 
 AmazonStore::~AmazonStore()
@@ -281,7 +281,7 @@ AmazonStore::newSearchRequest( const QString request )
         if( !(KCM.exec() == QDialog::Accepted) )
             return;
     }
-    else if( AmazonConfig::instance()->country() == QString( "none" ) )
+    else if( AmazonConfig::instance()->country() == QLatin1String( "none" ) )
     {
         // user explicitly said we are in a not supported country
         Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Please select a valid country in the settings to make the store work." ) );
