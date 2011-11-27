@@ -8,6 +8,7 @@ Version 2.5
       Playlist's layout items.
 
   BUGFIXES:
+    * Fix Amarok consuming CPU until main window is shown. (BR 278897)
     * Fix last.fm 'scrobble composer' option's fallback to artist (BR 286215)
     * Fix volume control from within Amarok.
     * Fix slow startup because of imported playlists. (BR 284761)

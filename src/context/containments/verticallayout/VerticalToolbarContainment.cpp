@@ -118,7 +118,18 @@ void
 Context::VerticalToolbarContainment::updateGeometry()
 {
     Context::Containment::updateGeometry();
-    QRectF rect = scene()->sceneRect();
+
+    /* We used to use _scene_ sceneRect here to update applets and geomtery, but that
+     * leaded to infinite loop (across mainloop) - see bug 278897.
+     * (m_applets->setGeometry(), refresh() would enlarge _scene_ sceneRect by a few
+     * pixels which would trigger updateGeometry() and so on...)
+     *
+     * We now use _view_ sceneRect to update geometry and do nothing without a view
+     */
+    if(!view())
+        return;
+
+    QRectF rect = view()->sceneRect();
     setGeometry( rect );
     m_applets->setGeometry( rect );
     m_applets->refresh();
