@@ -20,6 +20,7 @@
 #ifndef PRETTYITEMDELEGATE_H
 #define PRETTYITEMDELEGATE_H
 
+#include "core/meta/Meta.h"
 #include "playlist/layouts/LayoutItemConfig.h"
 
 #include <QModelIndex>
@@ -91,6 +92,8 @@ private:
     QPointF centerImage( const QPixmap&, const QRectF& ) const;
 
     static int getGroupMode( const QModelIndex &index);
+
+    QMap<QString, QString> buildTrackArgsMap( const Meta::TrackPtr track ) const;
 
     static QFontMetricsF* s_nfm; //normal
     static QFontMetricsF* s_ufm; //underline

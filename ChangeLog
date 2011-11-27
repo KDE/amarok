@@ -3,6 +3,10 @@ Amarok ChangeLog
 (C) 2002-2011 the Amarok authors.
 
 Version 2.5
+  FEATURES:
+    * Now It's possible to use formated strings for prefix and suffix in 
+      Playlist's layout items.
+
   BUGFIXES:
     * Fix volume control from within Amarok.
     * Fix slow startup because of imported playlists. (BR 284761)

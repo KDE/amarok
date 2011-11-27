@@ -37,6 +37,7 @@
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/layouts/LayoutManager.h"
+#include "QStringx.h"
 
 #include "kratingpainter.h"
 
@@ -380,6 +381,11 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
     }
     int markersWidth = rowOffsetX - rowOffsetXBeforeMarkers;
 
+    Meta::TrackPtr trackPtr = index.data( TrackRole ).value<Meta::TrackPtr>();
+    QMap<QString, QString> trackArgs;
+    if( trackPtr )
+        trackArgs = buildTrackArgsMap( trackPtr );
+
     // --- paint all the rows
     for ( int i = 0; i < rowCount; i++ )
     {
@@ -510,7 +516,9 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
                 //TODO: get rid of passing TrackPtr as data, use custom role instead
                 Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
                 QString text = textIndex.data( Qt::DisplayRole ).toString();
-                text = element.prefix() + text + element.suffix();
+                QStringx prefix( element.prefix() );
+                QStringx suffix( element.suffix() );
+                text = prefix.namedOptArgs( trackArgs ) + text + suffix.namedOptArgs( trackArgs );
                 text = QFontMetricsF( font ).elidedText( text, Qt::ElideRight, itemWidth );
 
                 //if the track can't be played, it should be grayed out to show that it is unavailable
@@ -826,6 +834,49 @@ void
 Playlist::PrettyItemDelegate::editorDone( InlineEditorWidget * editor )
 {
     emit commitData( editor );
+}
+
+QMap<QString, QString>
+Playlist::PrettyItemDelegate::buildTrackArgsMap( const Meta::TrackPtr track ) const
+{
+    QMap<QString, QString> args;
+    QString artist = track->artist() ? track->artist()->name() : QString();
+    QString albumartist;
+    if( track->album() && track->album()->hasAlbumArtist() )
+        albumartist = track->album()->albumArtist()->name();
+    else
+        albumartist = artist;
+
+
+    args["title"] = track->name();
+    args["composer"] = track->composer() ? track->composer()->name() : QString();
+
+    // if year == 0 then we don't want include it
+    QString year = track->year() ? track->year()->name() : QString();
+    args["year"] = year.localeAwareCompare( "0" ) == 0 ? QString() : year;
+    args["album"] = track->album() ? track->album()->name() : QString();
+
+    if( track->discNumber() )
+        args["discnumber"] = QString::number( track->discNumber() );
+
+    args["genre"] = track->genre() ? track->genre()->name() : QString();
+    args["comment"] = track->comment();
+    args["artist"] = artist;
+    args["albumartist"] = albumartist;
+    args["initial"] = albumartist.mid( 0, 1 ).toUpper();    //artists starting with The are already handled above
+    args["filetype"] = track->type();
+
+    args["rating"] = track->rating();
+    args["filesize"] = track->filesize();
+    args["length"] = track->length() / 1000;
+
+    if ( track->trackNumber() )
+    {
+        QString trackNum = QString( "%1" ).arg( track->trackNumber(), 2, 10, QChar('0') );
+        args["track"] = trackNum;
+    }
+
+    return args;
 }
 
 #include "PrettyItemDelegate.moc"
