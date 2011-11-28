@@ -18,6 +18,7 @@ Version 2.5
     * Fixed crash during MusicBrainz search. (BR 277475)
 
   CHANGES:
+    * Allow editing the SearchWidget during a search animation.
     * Update the collection view while UMS is scanning.
     * Don't block the UI while scanning UMS device.
     * Allow going back and forward in Amazon store. Thanks to GCI student Nikola Miljkovic.

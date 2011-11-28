@@ -209,7 +209,9 @@ SearchWidget::searchEnded()
     if( m_runningSearches == 0 )
     {
         m_animationTimer.stop();
+        saveLineEditStatus();
         m_sw->setItemIcon( m_sw->currentIndex(), KStandardGuiItem::find().icon() );
+        restoreLineEditStatus();
     }
 }
 
@@ -236,7 +238,6 @@ SearchWidget::searchStarted()
         if( i != m_sw->currentIndex() ) // not the current one, which should be animated!
             m_sw->setItemIcon( i, KStandardGuiItem::find().icon() );
     }
-
 }
 
 
@@ -245,13 +246,42 @@ SearchWidget::searchStarted()
 void
 SearchWidget::nextAnimationTick()
 {
+    saveLineEditStatus();
+
     // switch frames
     if( m_currentFrame == 0 )
         m_sw->setItemIcon( m_sw->currentIndex(), QIcon( KStandardDirs::locate( "data", "amarok/images/loading2.png" ) ) );
     else
         m_sw->setItemIcon( m_sw->currentIndex(), QIcon( KStandardDirs::locate( "data", "amarok/images/loading1.png" ) ) );
 
+    restoreLineEditStatus();
     m_currentFrame = !m_currentFrame;
+}
+
+
+// private:
+
+void
+SearchWidget::restoreLineEditStatus()
+{
+    // restore text changes made by the user
+    m_sw->setEditText( m_text );
+
+    if( m_hasSelectedText )
+        m_sw->lineEdit()->setSelection( m_selectionStart, m_selectionLength ); // also sets cursor
+    else
+        m_sw->lineEdit()->setCursorPosition( m_cursorPosition );
+}
+
+void
+SearchWidget::saveLineEditStatus()
+{
+    // save text changes made by the user
+    m_text = m_sw->lineEdit()->text();
+    m_cursorPosition = m_sw->cursorPosition();
+    m_hasSelectedText = m_sw->lineEdit()->hasSelectedText();
+    m_selectionStart = m_sw->lineEdit()->selectionStart();
+    m_selectionLength = m_sw->lineEdit()->selectedText().length();
 }
 
 #include "SearchWidget.moc"

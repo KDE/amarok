@@ -100,6 +100,27 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         quint16           m_timeout;
         bool              m_currentFrame;
         unsigned int      m_runningSearches;
+
+        // required to save/restore line edit status
+        QString m_text;
+        int     m_cursorPosition;
+        bool    m_hasSelectedText;
+        int     m_selectionStart;
+        int     m_selectionLength;
+
+        /**
+         * Restore the status of the internal line edit (text, selection, cursor position).
+         * Crete a snapshot with saveLineEditStatus() before using this method.
+         * Required to keep user changes during animations.
+         */
+        void restoreLineEditStatus();
+
+        /**
+         * Save the status of the internal line edit (text, selection, cursor position) to
+         * restore it later with restoreLineEditStatus().
+         * Required to keep user changes during animations.
+         */
+        void saveLineEditStatus();
 };
 
 #endif
