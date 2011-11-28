@@ -156,13 +156,15 @@ void
 AmazonStore::addToCart()
 {
     QString asin, name, price;
+    int id = 0;
 
     // get item from collection
     if( m_itemModel->isAlbum( m_selectedIndex ) ) // album
     {
         Meta::AmazonAlbum* album;
-        // row == albumId
-        album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( m_selectedIndex.row() + 1 ).data() );
+        id = m_itemModel->idForIndex( m_selectedIndex );
+
+        album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( id ).data() );
 
         if( !album )
             return;
@@ -174,9 +176,8 @@ AmazonStore::addToCart()
     else // track
     {
         Meta::AmazonTrack* track;
-        int id = m_selectedIndex.row() - m_collection->albumIDMap()->size() + m_itemModel->hiddenAlbums();
-        // row == albumId
-        track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id + 1 ).data() );
+        id = m_itemModel->idForIndex( m_selectedIndex );
+        track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() );
 
         if( !track )
             return;
@@ -227,11 +228,13 @@ AmazonStore::itemDoubleClicked( QModelIndex index )
     // for albums: search for the album name to get details about it
     // for tracks: add it to the playlist
 
+    int id = 0;
+
     if( m_itemModel->isAlbum( index ) ) // album
     {
         Meta::AmazonAlbum* album;
-        // row == albumId
-        album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( m_selectedIndex.row() + 1 ).data() );
+        id = m_itemModel->idForIndex( index );
+        album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( id ).data() );
 
         if( !album )
             return;
@@ -242,9 +245,8 @@ AmazonStore::itemDoubleClicked( QModelIndex index )
     else // track
     {
         Meta::AmazonTrack* track;
-        int id = index.row() - m_collection->albumIDMap()->size() + m_itemModel->hiddenAlbums() ;
-        // row == albumId
-        track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id + 1 ).data() );
+        id = m_itemModel->idForIndex( index );
+        track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() );
 
         if( !track )
             return;
@@ -340,10 +342,9 @@ AmazonStore::searchForAlbum( QModelIndex index )
     if( !m_itemModel->isAlbum( index ) ) // track
     {
         Meta::AmazonTrack* track;
-        int id = index.row() - m_collection->albumIDMap()->size() + m_itemModel->hiddenAlbums() ;
+        int id = m_itemModel->idForIndex( index );
 
-        // row == albumId
-        track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id + 1 ).data() );
+        track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() );
 
         if( !track )
             return;

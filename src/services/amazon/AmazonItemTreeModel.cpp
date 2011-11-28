@@ -227,6 +227,25 @@ AmazonItemTreeModel::rowCount( const QModelIndex &parent ) const
     return m_collection->albumIDMap()->size() + m_collection->trackIDMap()->size() - m_hiddenAlbums;
 }
 
+int
+AmazonItemTreeModel::idForIndex( const QModelIndex &index ) const
+{
+    /* Collection-IDs start with 1, model rows with 0. */
+    /* Albums and tracks have their own IDs. */
+
+    int result = -1;
+
+    if( !index.isValid() )
+        return result;
+
+    if( isAlbum( index ) )
+        result = index.row() + 1;
+    else // track
+        result = index.row() - m_collection->albumIDMap()->size() + m_hiddenAlbums + 1;
+
+    return result;
+}
+
 bool
 AmazonItemTreeModel::isAlbum( const QModelIndex &index ) const
 {
@@ -234,12 +253,6 @@ AmazonItemTreeModel::isAlbum( const QModelIndex &index ) const
         return true;
     else
         return false;
-}
-
-int
-AmazonItemTreeModel::hiddenAlbums() const
-{
-    return m_hiddenAlbums;
 }
 
 

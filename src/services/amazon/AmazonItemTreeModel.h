@@ -38,12 +38,16 @@ public:
     virtual int rowCount( const QModelIndex &parent ) const;
 
     /**
-    * Returns the number of albums without price. These should be hidden in the view.
+    * Given a QModelIndex this returns the ID the item has in the collection.
+    * Use isAlbum() to check weather it's an album or a track.
+    * @param index the QModelIndex to check.
+    * @return the ID the item can be found in the collection, -1 if index is invalid.
     */
-    int hiddenAlbums() const;
+    int idForIndex( const QModelIndex &index ) const;
 
     /**
     * Checks if the item at the specified index is an album or not.
+    * Use idForIndex() to get the ID of the item.
     * @param index the QModelIndex to check.
     * @return true if album, false if track.
     */
