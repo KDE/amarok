@@ -39,7 +39,15 @@
 
 namespace Amazon
 {
-inline QString prettyPrice( QString price )
+
+/**
+ * Returns the human readable pretty price for a given price.
+ * The pretty price includes the currency symbol at a position
+ * according to the current KDE locale.
+ */
+
+inline QString
+prettyPrice( QString price )
 {
     if( price.toInt() == 0 )
         return price;
