@@ -287,11 +287,13 @@ Context::Applet::collapse( bool on )
     if( (finalHeight > maxHeight) || (finalHeight < 0) )
         finalHeight = maxHeight;
 
-    if( finalHeight == size().height() )
-        return;
-
     prepareGeometryChange();
-    if( !AmarokConfig::animateAppletCollapse() )
+    ContextView *v = static_cast<ContextView*>( view() );
+    // Plasma::Applet::view() might return 0, if the widget is not yet constructed, etc.
+    // \sa https://bugs.kde.org/show_bug.cgi?id=258741. If view is not available
+    // yet, regardless of the animation setting the preferred size is set
+    // straight away.
+    if( !v || !AmarokConfig::animateAppletCollapse() )
     {
         setPreferredHeight( finalHeight );
         emit sizeHintChanged( Qt::PreferredSize );
@@ -299,10 +301,8 @@ Context::Applet::collapse( bool on )
         return;
     }
 
-    ContextView *v = static_cast<ContextView*>( view() );
-    // Plasma::Applet::view() might return 0, if the widget is not yet constructed, etc.
-    // \sa https://bugs.kde.org/show_bug.cgi?id=258741
-    DEBUG_ASSERT(v, return)
+    if( finalHeight == size().height() )
+        return;
 
     // debug() << pluginName() << (on ? "collapsing to" : "uncollapsing to") << finalHeight;
     QPropertyAnimation *pan = m_animation.data();
