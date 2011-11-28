@@ -88,15 +88,8 @@ ScrobblerAdapter::trackPlaying( Meta::TrackPtr track )
 
         m_current.stamp();
         
-        m_current.setTitle( track->name() );
         m_current.setDuration( track->length() / 1000 );
-        debug() << "scrobbleComposer: " << scrobbleComposer();
-        if( track->composer() && scrobbleComposer() )
-            m_current.setArtist( track->composer()->name() );
-        else if( track->artist() )
-            m_current.setArtist( track->artist()->name() );
-        if( track->album() )
-            m_current.setAlbum( track->album()->name() );
+	copyTrackMetadata( m_current, track );
 
         QString uid = track->uidUrl();
         if( uid.startsWith( "amarok-sqltrackuid://mb-" ) )
@@ -134,7 +127,7 @@ ScrobblerAdapter::trackMetadataChanged( Meta::TrackPtr track )
     // if we are listening to a stream, take the new metadata as a "new track" and, if we have enough info, save it for scrobbling
     if( track &&
         ( track->type() == "stream" && ( !track->name().isEmpty() 
-          && ( track->artist() || ( track->composer() && scrobbleComposer() ) ) ) ) )
+          && ( track->artist() || scrobbleComposer( track ) ) ) ) )
         // got a stream, and it has enough info to be a new track
     {
         // don't use checkScrobble as we don't need to check timestamps, it is a stream
@@ -143,13 +136,9 @@ ScrobblerAdapter::trackMetadataChanged( Meta::TrackPtr track )
         m_scrobbler->cache( m_current );
         m_scrobbler->submit();
         resetVariables();
-                    
-        m_current.setTitle( track->name() );
-        m_current.setArtist(
-              track->composer() && scrobbleComposer()
-            ? track->composer()->name()
-            : track->artist()->name()
-        );
+
+        // previous implementation didn't copy over album, I have no idea why so now we use generic method that does
+	copyTrackMetadata( m_current, track );
         m_current.stamp();
 
         m_current.setSource( lastfm::Track::NonPersonalisedBroadcast );
@@ -224,13 +213,7 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
     if( track )
     {
         lastfm::MutableTrack trackInfo;
-        trackInfo.setTitle( track->name() );
-        if( track->composer() && scrobbleComposer() )
-            trackInfo.setArtist( track->composer()->name() );
-        else if( track->artist() )
-            trackInfo.setArtist( track->artist()->name() );
-        if( track->album() )
-            trackInfo.setAlbum( track->album()->name() );
+	copyTrackMetadata( trackInfo, track );
 
         trackInfo.love();
         Amarok::Components::logger()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
@@ -275,9 +258,28 @@ ScrobblerAdapter::checkScrobble()
     resetVariables();
 }
 
+void
+ScrobblerAdapter::copyTrackMetadata( lastfm::MutableTrack& mutableTrack, Meta::TrackPtr track )
+{
+    DEBUG_BLOCK
+
+    mutableTrack.setTitle( track->name() );
+
+    bool okScrobbleComposer = scrobbleComposer( track );
+    debug() << "scrobbleComposer: " << okScrobbleComposer;
+    if( okScrobbleComposer )
+        mutableTrack.setArtist( track->composer()->name() );
+    else if( track->artist() )
+        mutableTrack.setArtist( track->artist()->name() );
+
+    if( track->album() )
+        mutableTrack.setAlbum( track->album()->name() );
+}
+
 bool
-ScrobblerAdapter::scrobbleComposer()
+ScrobblerAdapter::scrobbleComposer( Meta::TrackPtr track )
 {
     KConfigGroup config = KGlobal::config()->group( LastFmServiceConfig::configSectionName() );
-    return config.readEntry( "scrobbleComposer", false );
+    return config.readEntry( "scrobbleComposer", false ) &&
+        track->composer() && !track->composer()->name().isEmpty();
 }

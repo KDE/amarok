@@ -50,7 +50,8 @@ private slots:
 private:
     void resetVariables();
     void checkScrobble();
-    bool scrobbleComposer();
+    void copyTrackMetadata( lastfm::MutableTrack& to, Meta::TrackPtr from );
+    bool scrobbleComposer( Meta::TrackPtr track );
 
     lastfm::Audioscrobbler *m_scrobbler;
     lastfm::MutableTrack m_current;
