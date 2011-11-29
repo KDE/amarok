@@ -455,11 +455,15 @@ WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
             pattern = QLatin1String(".*\\(.*(album|score|soundtrack).*\\)");
         else if( hostLang == QLatin1String("fr") )
             pattern = QLatin1String(".*\\(.*(album|BO).*\\)");
+        else if( hostLang == QLatin1String("de") )
+            pattern = QLatin1String(".*\\(.*(album|soundtrack).*\\)");
         break;
 
     case Track:
         if( hostLang == QLatin1String("en") )
             pattern = QLatin1String(".*\\(.*(song|track).*\\)");
+        else if( hostLang == QLatin1String("de") )
+            pattern = QLatin1String(".*\\(.*(lied).*\\)");
         else if( hostLang == QLatin1String("pl") )
             pattern = QLatin1String(".*\\(.*singel.*\\)");
         break;
