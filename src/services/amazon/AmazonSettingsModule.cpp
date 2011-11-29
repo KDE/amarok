@@ -56,26 +56,26 @@ AmazonSettingsModule::save()
 {
     switch( m_configDialog->countrySelectionComboBox->currentIndex() )
     {
-    case 0:
+    case AMAZON_FR:
         AmazonConfig::instance()->setCountry( QLatin1String ( "fr" ) );
         break;
 
-    case 1:
+    case AMAZON_DE:
         AmazonConfig::instance()->setCountry( QLatin1String ( "de" ) );
         break;
 
-    case 2:
+    case AMAZON_JP:
         AmazonConfig::instance()->setCountry( QLatin1String ( "co.jp" ) );
         break;
 
-    case 3:
+    case AMAZON_UK:
         AmazonConfig::instance()->setCountry( QLatin1String ( "co.uk" ) );
         break;
 
-    case 4:
+    case AMAZON_COM:
         AmazonConfig::instance()->setCountry( QLatin1String ( "com" ) );
         break;
-    case 5:
+    case AMAZON_NONE:
         AmazonConfig::instance()->setCountry( QLatin1String ( "none" ) );
         break;
 
@@ -94,17 +94,17 @@ AmazonSettingsModule::load()
     QString text = AmazonConfig::instance()->country();
 
     if( text == QLatin1String( "fr" ) )
-        index = 0;
+        index = AMAZON_FR;
     else if ( text == QLatin1String( "de" ) )
-        index = 1;
+        index = AMAZON_DE;
     else if ( text == QLatin1String( "co.jp" ) )
-        index = 2;
+        index = AMAZON_JP;
     else if ( text == QLatin1String( "co.uk" ) )
-        index = 3;
+        index = AMAZON_UK;
     else if ( text == QLatin1String( "com" ) )
-        index = 4;
+        index = AMAZON_COM;
     else if ( text == QLatin1String( "none" ) )
-        index = 5;
+        index = AMAZON_NONE;
     // no match -> index is still -1
 
     m_configDialog->countrySelectionComboBox->setCurrentIndex( index );

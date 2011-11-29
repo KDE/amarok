@@ -23,6 +23,21 @@
 
 namespace Ui { class AmazonConfigWidget; }
 
+
+/**
+ * Represents the position of the different Amazon locales in the AmazonConfigWidget.
+ */
+
+enum Location
+{
+    AMAZON_FR = 0,
+    AMAZON_DE,
+    AMAZON_JP,
+    AMAZON_UK,
+    AMAZON_COM,
+    AMAZON_NONE // user explicitly doesn't want to set a country
+};
+
 /**
 A KCM module to configure the Amazon service
 
