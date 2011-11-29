@@ -14,9 +14,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AppletItemOverlay"
+
 #include "AppletItemOverlay.h"
 #include "core/support/Debug.h"
-#include "toolbar/AppletToolbarAddItem.h"
 #include "toolbar/AppletToolbarAppletItem.h"
 #include "ToolbarView.h"
 
@@ -130,7 +131,6 @@ Context::AppletItemOverlay::AppletItemOverlay( Context::AppletToolbarAppletItem 
 
 Context::AppletItemOverlay::~AppletItemOverlay()
 {
-    DEBUG_BLOCK
     if( m_spacer ) 
     {
         m_layout->removeItem( m_spacer );
@@ -274,21 +274,8 @@ Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
 
     m_applet->setGeometry( g );
 
-    // find location of the AddItem icon
-    QRectF addItemGeom;
-    for( int i = 0; i < m_layout->count(); ++i )
-    {
-        QGraphicsLayoutItem *item = m_layout->itemAt( i );
-
-        Context::AppletToolbarAddItem* addItem =
-            dynamic_cast< Context::AppletToolbarAddItem* >( item );
-
-        if( addItem )
-        {
-            addItemGeom = addItem->geometry();
-            break;
-        }
-    }
+    // find position of the config item (always last item)
+    QGraphicsLayoutItem *lastItem = m_layout->itemAt( m_layout->count() - 1 );
 
     // swap items if we pass completely over the next/previous item or cross
     // more than halfway across it, whichever comes first
@@ -297,8 +284,8 @@ Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
     {
         swapWithPrevious();
     }
-    else if( m_nextGeom.isValid() && g.right() >= m_nextGeom.right()
-                                  && g.right() <  addItemGeom.left() )
+    else if( m_nextGeom.isValid() && (g.right() >= m_nextGeom.right())
+                                  && (g.right() < lastItem->geometry().left()) )
     {
         swapWithNext();
     }
