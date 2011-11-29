@@ -443,7 +443,6 @@ LyricsApplet::init()
     setCollapseHeight( m_header->height() );
     setMinimumHeight( collapseHeight() );
     setPreferredHeight( collapseHeight() );
-    setCollapseOn();
 
     QAction* editAction = new QAction( this );
     editAction->setIcon( KIcon( "document-edit" ) );
