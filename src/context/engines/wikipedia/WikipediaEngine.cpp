@@ -459,7 +459,7 @@ WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
 
     case Track:
         if( hostLang == QLatin1String("en") )
-            pattern = QLatin1String(".*\\(.*song|track.*\\)");
+            pattern = QLatin1String(".*\\(.*(song|track).*\\)");
         else if( hostLang == QLatin1String("pl") )
             pattern = QLatin1String(".*\\(.*singel.*\\)");
         break;
