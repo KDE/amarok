@@ -8,6 +8,8 @@ Version 2.5
       Playlist's layout items.
 
   BUGFIXES:
+    * Fix crash in CoverFoundDialog if progress dialog is cancelled just
+      before fetch is done.
     * Correctly parse disambiguation pages for songs in the English Wikipedia. (BR 270054)
     * Fix wrong context view applets sizes on start up in some cases.
     * Fix Amarok consuming CPU until main window is shown. (BR 278897)

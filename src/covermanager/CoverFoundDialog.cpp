@@ -478,14 +478,16 @@ void CoverFoundDialog::handleFetchResult( const KUrl &url, QByteArray data,
     {
         item->setBigPix( image );
         m_sideBar->setPixmap( QPixmap::fromImage( image ) );
-        m_dialog.data()->accept();
+        if( m_dialog )
+            m_dialog.data()->accept();
     }
     else
     {
         QStringList errors;
         errors << e.description;
         KMessageBox::errorList( this, i18n("Sorry, the cover image could not be retrieved."), errors );
-        m_dialog.data()->reject();
+        if( m_dialog )
+            m_dialog.data()->reject();
     }
 }
 
