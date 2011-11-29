@@ -59,7 +59,6 @@ class AppletToolbar : public QGraphicsWidget
 
     signals:
         void showApplet( Plasma::Applet* );
-        void addAppletToContainment( const QString& pluginName, int loc );
         void appletAddedToToolbar( Plasma::Applet* applet, int loc );
         void moveApplet( Plasma::Applet*, int, int );
         void configModeToggled();
