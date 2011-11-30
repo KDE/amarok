@@ -144,7 +144,7 @@ class ServiceAlbumCoverDownloader : public QObject
          * Start the download of the cover of a ServiceAlbumWithCover.
          * @param album The albumwhose cover should be downloaded.
          */
-        void downloadCover( Meta::ServiceAlbumWithCover* album );
+        void downloadCover( Meta::ServiceAlbumWithCoverPtr album );
 
     private slots:
 
@@ -160,7 +160,7 @@ class ServiceAlbumCoverDownloader : public QObject
          */
         void coverDownloadCanceled( KJob * downloadJob );
     private:
-        QWeakPointer<ServiceAlbumWithCover> m_album;
+        Meta::ServiceAlbumWithCoverPtr m_album;
         QString m_coverDownloadPath;
         KIO::FileCopyJob * m_albumDownloadJob;
         KTempDir * m_tempDir;
