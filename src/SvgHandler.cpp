@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
+#define DEBUG_PREFIX "SvgHandler"
  
 #include "SvgHandler.h"
 
@@ -246,7 +248,7 @@ QPixmap
 SvgHandler::imageWithBorder( Meta::AlbumPtr album, int size, int borderWidth )
 {
     const int imageSize = size - ( borderWidth * 2 );
-    const QString &loc  = album->imageLocation( imageSize ).path( KUrl::LeaveTrailingSlash );
+    const QString &loc  = album->imageLocation( imageSize ).url();
     const QString &key  = !loc.isEmpty() ? loc : album->name();
     return addBordersToPixmap( The::coverCache()->getCover( album, imageSize ), borderWidth, key );
 }
