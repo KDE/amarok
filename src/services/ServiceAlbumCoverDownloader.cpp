@@ -59,43 +59,42 @@ ServiceAlbumWithCover::image( int size ) const
         return Meta::Album::image( size );
     }
 
-    QString artist;
+    const QString artist = hasAlbumArtist() ?
+        albumArtist()->name() :
+        QLatin1String("NULL"); //no need to translate, only used as a caching key/temp filename
 
-    if ( hasAlbumArtist() )
-        artist = albumArtist()->name();
-    else
-        artist = "NULL"; //no need to translate, only used as a caching key/temp filename
-
-    QString coverName = downloadPrefix() + '_' + artist+ '_' + name() + "_cover.png";
-
-    QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    const QString coverName = QString( "%1_%2_%3_cover.png" ).arg( downloadPrefix(), artist, name() );
+    const QString saveLocation = Amarok::saveLocation( "albumcovers/cache/" );
+    const QDir cacheCoverDir = QDir( saveLocation );
 
     //make sure that this dir exists
-    if ( !cacheCoverDir.exists() )
-        cacheCoverDir.mkpath( Amarok::saveLocation( "albumcovers/cache/" ) );
+    if( !cacheCoverDir.exists() )
+        cacheCoverDir.mkpath( saveLocation );
 
-    if ( size <= 1 )
+    if( size <= 1 )
         size = 100;
-    QString sizeKey = QString::number( size ) + '@';
 
-    if( QFile::exists( cacheCoverDir.filePath( sizeKey + coverName ) ) )
+    const QString sizeKey = QString::number( size ) + QLatin1Char('@');
+    const QString cacheCoverPath = cacheCoverDir.filePath( sizeKey + coverName );
+
+    if( QFile::exists( cacheCoverPath ) )
     {
-        return QImage( cacheCoverDir.filePath( sizeKey + coverName ) );
+        return QImage( cacheCoverPath );
     }
-    else if ( m_hasFetchedCover && !m_cover.isNull() )
+    else if( m_hasFetchedCover && !m_cover.isNull() )
     {
         QImage image( m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
-        image.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
+        image.save( cacheCoverPath, "PNG" );
         return image;
-
     }
-    else if ( !m_isFetchingCover && !coverUrl().isEmpty() )
+    else if( !m_isFetchingCover && !coverUrl().isEmpty() )
     {
         m_isFetchingCover = true;
 
-        if ( m_coverDownloader == 0 )
+        if( m_coverDownloader == 0 )
             m_coverDownloader = new ServiceAlbumCoverDownloader();
-        m_coverDownloader->downloadCover( ServiceAlbumWithCoverPtr(const_cast<ServiceAlbumWithCover*>(this)) );
+        m_coverDownloader->downloadCover(
+            ServiceAlbumWithCoverPtr(const_cast<ServiceAlbumWithCover*>(this)) );
     }
 
     return Meta::Album::image( size );
