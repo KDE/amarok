@@ -357,7 +357,7 @@ TagDialog::accept() //SLOT
 inline void
 TagDialog::openPressed() //SLOT
 {
-    new KRun( QFileInfo( m_path ).absolutePath(), this );
+    new KRun( m_path, this );
 }
 
 
@@ -814,14 +814,16 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
     setControlsAccessability();
 
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
-    KUrl url = tags.value( Meta::Field::URL ).toString();
+    QString urlString = tags.value( Meta::Field::URL ).toString();
+    KUrl url( urlString );
     //pathOrUrl will give localpath or proper url for remote.
     ui->kLineEdit_location->setText( url.pathOrUrl() );
     if( url.isLocalFile() )
     {
         ui->locationLabel->show();
         ui->kLineEdit_location->show();
-        m_path = url.directory( KUrl::AppendTrailingSlash );
+        QFileInfo fi( urlString );
+        m_path = fi.isDir() ? urlString : url.directory( KUrl::AppendTrailingSlash );
         ui->pushButton_open->setEnabled( true );
     }
     else

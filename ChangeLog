@@ -8,6 +8,7 @@ Version 2.5
       Playlist's layout items.
 
   BUGFIXES:
+    * Fix directory selection when opening album location in tag dialog.
     * Fix crash in CoverFoundDialog if progress dialog is cancelled just
       before fetch is done.
     * Correctly parse disambiguation pages for songs in the English Wikipedia. (BR 270054)
