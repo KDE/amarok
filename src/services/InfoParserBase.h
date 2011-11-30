@@ -62,7 +62,7 @@ signals:
      * Signal emmited when new html info is ready to be shown
      * @param info The string containing the html formatted information
      */
-    void info( QString info );
+    void info( const QString &info );
 
 private:
     static QString s_loadingBaseHtml;
