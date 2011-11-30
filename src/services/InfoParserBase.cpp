@@ -62,7 +62,7 @@ void InfoParserBase::showLoading( const QString &message )
     currentHtml = currentHtml.replace( "%%IMAGEPATH%%", url.url() );
     currentHtml = currentHtml.replace( "%%TEXT%%", message );
 
-    debug() << "showing html: " << currentHtml;
+    // debug() << "showing html: " << currentHtml;
     emit ( info( currentHtml ) );
 }
 
