@@ -30,7 +30,6 @@ namespace Meta
 {
 
 //forward declaration
-class ServiceAlbumCoverDownloader;
 class ServiceAlbumWithCover;
 
 typedef KSharedPtr<ServiceAlbumWithCover> ServiceAlbumWithCoverPtr;
@@ -114,7 +113,6 @@ protected:
     mutable bool m_hasFetchedCover;
     mutable bool m_isFetchingCover;
     QString m_coverDownloadPath;
-    mutable ServiceAlbumCoverDownloader *m_coverDownloader;
 };
 
 

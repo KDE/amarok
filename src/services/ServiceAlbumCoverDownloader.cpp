@@ -34,20 +34,17 @@ Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QString &name )
     : ServiceAlbum( name )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )
-    , m_coverDownloader( 0 )
 {}
 
 Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QStringList &resultRow )
     : ServiceAlbum( resultRow )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )
-    , m_coverDownloader( 0 )
 {}
 
 Meta::ServiceAlbumWithCover::~ServiceAlbumWithCover()
 {
     CoverCache::invalidateAlbum( this );
-    delete m_coverDownloader;
 }
 
 QImage
@@ -91,9 +88,7 @@ ServiceAlbumWithCover::image( int size ) const
     {
         m_isFetchingCover = true;
 
-        if( m_coverDownloader == 0 )
-            m_coverDownloader = new ServiceAlbumCoverDownloader();
-        m_coverDownloader->downloadCover(
+        ( new ServiceAlbumCoverDownloader )->downloadCover(
             ServiceAlbumWithCoverPtr(const_cast<ServiceAlbumWithCover*>(this)) );
     }
 
@@ -187,6 +182,7 @@ ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
     downloadJob->deleteLater();
 
     m_tempDir->unlink();
+    deleteLater();
 }
 
 void
@@ -200,6 +196,7 @@ ServiceAlbumCoverDownloader::coverDownloadCanceled( KJob *downloadJob )
 
     debug() << "Cover download cancelled";
     m_album->imageDownloadCanceled();
+    deleteLater();
 }
 
 #include "ServiceAlbumCoverDownloader.moc"
