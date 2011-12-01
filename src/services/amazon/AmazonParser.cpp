@@ -116,12 +116,13 @@ AmazonParser::run()
         price      = trackItemsList.at( i ).firstChildElement( QString( "price" ) ).firstChild().nodeValue();
         trackAsin  = trackItemsList.at( i ).firstChildElement( QString( "asin" ) ).firstChild().nodeValue();
         songTitle  = trackItemsList.at( i ).firstChildElement( QString( "title" ) ).firstChild().nodeValue();
+        imgUrl     = albumItemsList.at( i ).firstChildElement( QString( "img" ) ).firstChild().nodeValue();
 
         // first we make sure the artist is in the collection and get its id
         artistID.setNum( addArtistToCollection( artist,  QString( "TODO: I am a description. Where do I show up?" ) ) );
 
         // same for the album
-        albumID.setNum( addAlbumToCollection( albumTitle, QString( "TODO: I am a description. Where do I show up?" ), artistID, QString( "" ),  QString( "" ), albumAsin ) );
+        albumID.setNum( addAlbumToCollection( albumTitle, QString( "TODO: I am a description. Where do I show up?" ), artistID, QString( "" ),  imgUrl, albumAsin ) );
 
         // now we can be sure that artist and album of this track are in the collection and we have their IDs
         // id, name, tracknumber, length, Url, albumId, artistID
