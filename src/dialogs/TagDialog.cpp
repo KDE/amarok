@@ -38,6 +38,7 @@
 #include "MusicBrainzTagger.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/collections/QueryMaker.h"
+#include "SvgHandler.h"
 #include "TagGuesser.h"
 #include "ui_TagDialogBase.h"
 
@@ -1193,7 +1194,7 @@ TagDialog::updateButtons()
 void
 TagDialog::updateCover()
 {
-    DEBUG_BLOCK;
+    DEBUG_BLOCK
 
     if( !m_currentTrack )
         return;
@@ -1221,8 +1222,7 @@ TagDialog::updateCover()
     else
     {
         ui->pixmap_cover->setVisible( true );
-
-        ui->pixmap_cover->setPixmap( QPixmap::fromImage( album->image( s ) ) );
+        ui->pixmap_cover->setPixmap( The::svgHandler()->imageWithBorder( album, s ) );
         QString artist = m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString();
         ui->pixmap_cover->setInformation( artist, album->name() );
     }
