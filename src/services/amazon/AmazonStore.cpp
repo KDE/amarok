@@ -555,7 +555,6 @@ AmazonStore::openCheckoutUrl( KJob* requestJob )
     QUrl url;
     url.setEncodedUrl( responseDocument.documentElement().elementsByTagName( QLatin1String( "purchaseurl" ) ).at( 0 ).firstChild().nodeValue().toAscii() );
 
-    qDebug() << url;
     QDesktopServices::openUrl( url );
 
     requestJob->deleteLater();

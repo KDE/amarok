@@ -33,11 +33,8 @@ PodcastProvider::couldBeFeed( const QString &urlString )
     feedProtocols << "feed";
 
     QString matchString = QString( "^(%1)" ).arg( feedProtocols.join( "|" ) );
-    qDebug() << "matchString = " << matchString;
-
     QRegExp rx( matchString );
     int pos = rx.indexIn( urlString.trimmed() );
-    qDebug() << "found at " << pos;
 
     return pos != -1;
 }
