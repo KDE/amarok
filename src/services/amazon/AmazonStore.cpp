@@ -349,8 +349,14 @@ AmazonStore::searchForAlbum( QModelIndex index )
         if( !track )
             return;
 
-        QString name = m_collection->artistById( track->artistId() )->name() + " - ";
-        name =  name + m_collection->albumById( track->albumId() )->name();
+        QString name;
+
+        // don't add the artist name for compilations
+        if( !m_collection->albumById( track->albumId() )->isCompilation() )
+            name = m_collection->artistById( track->artistId() )->name() + " - ";
+
+        name = name + m_collection->albumById( track->albumId() )->name();
+
         m_searchWidget->setSearchString( name );
     }
 }
