@@ -56,17 +56,15 @@ public:
 
     /**
      * Returns the highlight color which should be used instead of the color from KDE.
-     * @return Highlight color, which is the KDE highlight color, with reduced saturation (less contrast).
+     * @param percentSaturation Decimal percentage to saturate the highlight color. Will
+     *        reduce (or magnify) the saturation in HSV representation of the color.
+     *        Defaults to 50%
+     * @param percentValue Decimal percentage to multiply the value of the HSV color with.
+     *        Defaults to 100%.
+     * @return Highlight color, which is the KDE highlight color, with reduced saturation
+     *         (less contrast).
      */
-    static QColor highlightColor();
-
-    /**
-     * Returns the highlight color which should be used instead of the color from KDE.
-     * @param  Decimal percentage to saturate the highlight color. Will reduce (or magnify) the saturation in HSV representation of the color.
-     * @param  Decimal percentage to multiply the value of the HSV color with.
-     * @return Highlight color, which is the KDE highlight color, with reduced saturation (less contrast).
-     */
-    static QColor highlightColor( qreal percentSaturation, qreal percentValue );
+    static QColor highlightColor( qreal percentSaturation = 0.5, qreal percentValue = 1.0 );
 
     /**
      * Returns the background color used in context applets.

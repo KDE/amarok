@@ -106,17 +106,6 @@ PaletteHandler::palette()
 }
 
 QColor
-PaletteHandler::highlightColor()
-{
-    QColor highlight = App::instance()->palette().highlight().color();
-    qreal saturation = highlight.saturationF();
-    saturation *= 0.5;
-    highlight.setHsvF( highlight.hueF(), saturation, highlight.valueF(), highlight.alphaF() );
-
-    return highlight;
-}
-
-QColor
 PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
 {
     QColor highlight = QColor( App::instance()->palette().highlight().color() );
