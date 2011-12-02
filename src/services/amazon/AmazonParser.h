@@ -59,7 +59,7 @@ private:
     * @param imgUrl url of a cover image.
     * @param albumAsin the ASIN for this album in the Amazon store.
     */
-    int addAlbumToCollection( const QString &albumTitle, const QString &description, const QString &artistID, const QString &price, const QString &imgUrl, const QString &albumAsin );
+    int addAlbumToCollection( const QString &albumTitle, const QString &description, const QString &artistID, const QString &price, const QString &imgUrl, const QString &albumAsin, const bool isCompilation );
 
     Collections::AmazonCollection* m_collection;
     QString m_tempFileName;
