@@ -85,8 +85,8 @@ AmazonParser::run()
     QString artistID, albumID, trackID;
     QStringList results;
 
-    QDomNodeList albumItemsList = m_responseDocument->documentElement().firstChildElement( QString( "albums" ) ).elementsByTagName( QString( "item" ) );
-    QDomNodeList trackItemsList = m_responseDocument->documentElement().firstChildElement( QString( "tracks" ) ).elementsByTagName( QString( "item" ) );
+    QDomNodeList albumItemsList = m_responseDocument->documentElement().firstChildElement( QLatin1String( "albums" ) ).elementsByTagName( QString( "item" ) );
+    QDomNodeList trackItemsList = m_responseDocument->documentElement().firstChildElement( QLatin1String( "tracks" ) ).elementsByTagName( QString( "item" ) );
 
     m_collection->acquireWriteLock(); // locks for reading AND writing
     // we have a new results page, so we can clear the old one
@@ -95,11 +95,11 @@ AmazonParser::run()
     // album parsing
     for( int i = 0; i < albumItemsList.size(); i++ )
     {
-        albumAsin  = albumItemsList.at( i ).firstChildElement( QString( "asin" ) ).firstChild().nodeValue();
-        artist     = albumItemsList.at( i ).firstChildElement( QString( "artist" ) ).firstChild().nodeValue();
-        albumTitle = albumItemsList.at( i ).firstChildElement( QString( "album" ) ).firstChild().nodeValue();
-        price      = albumItemsList.at( i ).firstChildElement( QString( "price" ) ).firstChild().nodeValue();
-        imgUrl     = albumItemsList.at( i ).firstChildElement( QString( "img" ) ).firstChild().nodeValue();
+        albumAsin  = albumItemsList.at( i ).firstChildElement( QLatin1String( "asin" ) ).firstChild().nodeValue();
+        artist     = albumItemsList.at( i ).firstChildElement( QLatin1String( "artist" ) ).firstChild().nodeValue();
+        albumTitle = albumItemsList.at( i ).firstChildElement( QLatin1String( "album" ) ).firstChild().nodeValue();
+        price      = albumItemsList.at( i ).firstChildElement( QLatin1String( "price" ) ).firstChild().nodeValue();
+        imgUrl     = albumItemsList.at( i ).firstChildElement( QLatin1String( "img" ) ).firstChild().nodeValue();
 
         debug() << albumAsin << artist << albumTitle << price << imgUrl;
 
@@ -110,19 +110,19 @@ AmazonParser::run()
     // track parsing
     for( int i = 0; i < trackItemsList.size(); i++ )
     {
-        albumAsin  = trackItemsList.at( i ).firstChildElement( QString( "albumasin" ) ).firstChild().nodeValue();
-        artist     = trackItemsList.at( i ).firstChildElement( QString( "artist" ) ).firstChild().nodeValue();
-        albumTitle = trackItemsList.at( i ).firstChildElement( QString( "album" ) ).firstChild().nodeValue();
-        price      = trackItemsList.at( i ).firstChildElement( QString( "price" ) ).firstChild().nodeValue();
-        trackAsin  = trackItemsList.at( i ).firstChildElement( QString( "asin" ) ).firstChild().nodeValue();
-        songTitle  = trackItemsList.at( i ).firstChildElement( QString( "title" ) ).firstChild().nodeValue();
-        imgUrl     = albumItemsList.at( i ).firstChildElement( QString( "img" ) ).firstChild().nodeValue();
+        albumAsin  = trackItemsList.at( i ).firstChildElement( QLatin1String( "albumasin" ) ).firstChild().nodeValue();
+        artist     = trackItemsList.at( i ).firstChildElement( QLatin1String( "artist" ) ).firstChild().nodeValue();
+        albumTitle = trackItemsList.at( i ).firstChildElement( QLatin1String( "album" ) ).firstChild().nodeValue();
+        price      = trackItemsList.at( i ).firstChildElement( QLatin1String( "price" ) ).firstChild().nodeValue();
+        trackAsin  = trackItemsList.at( i ).firstChildElement( QLatin1String( "asin" ) ).firstChild().nodeValue();
+        songTitle  = trackItemsList.at( i ).firstChildElement( QLatin1String( "title" ) ).firstChild().nodeValue();
+        imgUrl     = albumItemsList.at( i ).firstChildElement( QLatin1String( "img" ) ).firstChild().nodeValue();
 
         // first we make sure the artist is in the collection and get its id
         artistID.setNum( addArtistToCollection( artist,  QString( "TODO: I am a description. Where do I show up?" ) ) );
 
         // same for the album
-        albumID.setNum( addAlbumToCollection( albumTitle, QString( "TODO: I am a description. Where do I show up?" ), artistID, QString( "" ),  imgUrl, albumAsin ) );
+        albumID.setNum( addAlbumToCollection( albumTitle, QString( "TODO: I am a description. Where do I show up?" ), artistID, QString(),  imgUrl, albumAsin ) );
 
         // now we can be sure that artist and album of this track are in the collection and we have their IDs
         // id, name, tracknumber, length, Url, albumId, artistID

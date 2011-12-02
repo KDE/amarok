@@ -547,7 +547,7 @@ AmazonStore::openCheckoutUrl( KJob* requestJob )
 
     // now that's the whole parser for this reply:
     QUrl url;
-    url.setEncodedUrl( responseDocument.documentElement().elementsByTagName( QString( "purchaseurl" ) ).at( 0 ).firstChild().nodeValue().toAscii() );
+    url.setEncodedUrl( responseDocument.documentElement().elementsByTagName( QLatin1String( "purchaseurl" ) ).at( 0 ).firstChild().nodeValue().toAscii() );
 
     qDebug() << url;
     QDesktopServices::openUrl( url );
