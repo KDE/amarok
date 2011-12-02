@@ -27,6 +27,7 @@ Version 2.5
     * Fixed crash during MusicBrainz search. (BR 277475)
 
   CHANGES:
+    * Load Last.fm friend/neighbour avatars on demand.
     * Update tracks in the recently played widget only when needed.
     * Allow editing the SearchWidget during a search animation.
     * Update the collection view while UMS is scanning.

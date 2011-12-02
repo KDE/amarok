@@ -142,15 +142,12 @@ private:
     QStringList m_neighbors;
     WeightedStringList m_tags;
 
-    QPixmap mAvatar;
-    QMap<QString, QString> m_avatarQueue;
     QHash<QString, QIcon> m_avatars;
     int m_avatarSize;
 
     QMap< QString, QNetworkReply* > m_jobs;
 
-    void queueAvatarsDownload ( const QMap<QString, QString>& urls );
-    void downloadAvatar ( const QString& user, const KUrl& url );
+    QIcon avatar( const QString &username, const KUrl &avatarUrl ) const;
     QString mapTypeToUrl ( LastFm::Type type, const QString &key = "" );
 
     void appendUserStations ( LastFmTreeItem* item, const QString& user );
@@ -179,12 +176,22 @@ public:
         return mType;
     }
 
+    KUrl avatarUrl() const
+    {
+        return avatar;
+    }
+    void setAvatarUrl( const KUrl &url )
+    {
+        avatar = url;
+    }
+
 private:
     QList<LastFmTreeItem*> childItems;
     LastFm::Type mType;
     LastFmTreeItem *parentItem;
     QVariant itemData;
     QString mUrl;
+    KUrl avatar;
 };
 
 #endif
