@@ -34,23 +34,21 @@ public:
 
     void clear();
 
-    void startQuery();
-    void addTrack( const Meta::TrackPtr &track );
-
 private slots:
     void tracksReturned( Meta::TrackList );
     void trackChanged( Meta::TrackPtr track );
     void setupTracksData();
+    void startQuery();
+    void updateWidget();
 
 private:
-    void removeLast();
+    void addTrack( const Meta::TrackPtr &track );
     void removeItem( QGraphicsLayoutItem *item );
 
     KIcon m_trackIcon;
     Meta::TrackPtr m_currentTrack;
-    Meta::TrackList m_recentTracks;
+    QMap<uint, Meta::TrackPtr> m_recentTracks;
     QGraphicsLinearLayout *m_layout;
-    QMap<uint, QGraphicsLayoutItem*> m_items;
     Q_DISABLE_COPY( RecentlyPlayedListWidget )
 };
 
