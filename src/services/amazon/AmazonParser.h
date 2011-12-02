@@ -48,7 +48,7 @@ private:
     * @param artist name of the artist to add.
     * @param description description of the artist to add.
     */
-    int addArtistToCollection( QString artist, QString description );
+    int addArtistToCollection( QString &artist, QString &description );
 
     /**
     * Adds an album to the collection if it does not yet exist. In any case it returns the ID of the album.
@@ -59,7 +59,7 @@ private:
     * @param imgUrl url of a cover image.
     * @param albumAsin the ASIN for this album in the Amazon store.
     */
-    int addAlbumToCollection( QString albumTitle, QString description, QString artistID, QString price, QString imgUrl, QString albumAsin );
+    int addAlbumToCollection( QString &albumTitle, QString &description, QString &artistID, QString &price, QString &imgUrl, QString &albumAsin );
 
     Collections::AmazonCollection* m_collection;
     QString m_tempFileName;
