@@ -157,7 +157,7 @@ AmazonParser::run()
 /* private */
 
 int
-AmazonParser::addArtistToCollection( QString &artistName, QString &description )
+AmazonParser::addArtistToCollection( const QString &artistName, const QString &description )
 {
     QStringList results;
     QString artistID;
@@ -175,7 +175,7 @@ AmazonParser::addArtistToCollection( QString &artistName, QString &description )
 }
 
 int
-AmazonParser::addAlbumToCollection( QString &albumTitle, QString &description, QString &artistID, QString &price, QString &imgUrl, QString &albumAsin )
+AmazonParser::addAlbumToCollection( const QString &albumTitle, const QString &description, const QString &artistID, const QString &price, const QString &imgUrl, const QString &albumAsin )
 {
     QStringList results;
     QString albumID;
