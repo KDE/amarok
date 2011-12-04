@@ -114,8 +114,6 @@ MediaDeviceCollectionFactoryBase::slotDeviceDisconnected( const QString &udi )
 MediaDeviceCollection::MediaDeviceCollection()
     : Collection()
     , m_ejectAction( 0 )
-    , m_usedCapacity( -1 )
-    , m_totalCapacity( -1 )
     , m_mc( new MemoryCollection() )
 {
     connect( this, SIGNAL( attemptConnectionDone(bool)),
@@ -125,13 +123,6 @@ MediaDeviceCollection::MediaDeviceCollection()
 MediaDeviceCollection::~MediaDeviceCollection()
 {
     DEBUG_BLOCK
-}
-
-void
-MediaDeviceCollection::initCapacities()
-{
-    m_usedCapacity = m_handler->usedcapacity();
-    m_totalCapacity = m_handler->totalcapacity();
 }
 
 QueryMaker*
@@ -235,18 +226,13 @@ MediaDeviceCollection::hasCapacity() const
 float
 MediaDeviceCollection::usedCapacity() const
 {
-    if( m_totalCapacity >= 0 )
-        return m_usedCapacity;
-    else
-        return 0.0;
+    return m_handler->usedcapacity();
 }
 
 float
 MediaDeviceCollection::totalCapacity() const
 {
-    if( m_totalCapacity < 0 )
-        const_cast<MediaDeviceCollection*>(this)->initCapacities();
-    return m_totalCapacity;
+    return m_handler->totalcapacity();
 }
 
 void

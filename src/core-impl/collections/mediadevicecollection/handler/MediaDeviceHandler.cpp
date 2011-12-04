@@ -1048,7 +1048,6 @@ MediaDeviceHandler::freeSpace() const
 float
 MediaDeviceHandler::usedcapacity() const
 {
-    DEBUG_BLOCK
     if ( m_rcb )
         return m_rcb->usedCapacity();
     else
@@ -1058,7 +1057,6 @@ MediaDeviceHandler::usedcapacity() const
 float
 MediaDeviceHandler::totalcapacity() const
 {
-    DEBUG_BLOCK
     if ( m_rcb )
         return m_rcb->totalCapacity();
     else

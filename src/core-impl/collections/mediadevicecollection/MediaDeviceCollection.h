@@ -169,12 +169,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
 
         mutable QAction *m_ejectAction;
 
-        float m_usedCapacity;
-        float m_totalCapacity;
         QSharedPointer<MemoryCollection> m_mc;
-
-    private:
-        void initCapacities();
 
 };
 
