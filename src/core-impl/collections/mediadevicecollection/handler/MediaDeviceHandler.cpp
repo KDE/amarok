@@ -247,7 +247,6 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
     year->remTrack( track );
 
     // if empty, get rid of metadata in general
-
     if( artist->tracks().isEmpty() )
     {
         artistMap.remove( artist->name() );
@@ -285,9 +284,18 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
     }
 
     // remove from trackmap
-    trackMap.remove( track->name() );
+    trackMap.remove( track->uidUrl() );
+
+    m_titlemap.remove( track->name(), TrackPtr::staticCast( track ) );
+
+    // Finally, assign the created maps to the collection
     m_memColl->memoryCollection()->acquireWriteLock();
     m_memColl->memoryCollection()->setTrackMap( trackMap );
+    m_memColl->memoryCollection()->setArtistMap( artistMap );
+    m_memColl->memoryCollection()->setAlbumMap( albumMap );
+    m_memColl->memoryCollection()->setGenreMap( genreMap );
+    m_memColl->memoryCollection()->setComposerMap( composerMap );
+    m_memColl->memoryCollection()->setYearMap( yearMap );
     m_memColl->memoryCollection()->releaseLock();
 }
 
@@ -677,12 +685,7 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
         m_wc->setDatabaseChanged();
     }
 
-    // remove from titlemap
-
-    m_titlemap.remove( track->name(), track );
-
-    // remove from collection
-
+    // remove from memory collection
     removeMediaDeviceTrackFromCollection( devicetrack );
 
     emit incrementProgress();
