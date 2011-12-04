@@ -68,9 +68,9 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
             void sendUpdated() { emit updated(); }
 
         signals:
-            void playlistSaved( const MediaDevicePlaylistPtr &playlist, const QString& name );
-            void playlistRenamed( const MediaDevicePlaylistPtr &playlist );
-            void playlistsDeleted( const MediaDevicePlaylistList &playlistlist );
+            void playlistSaved( const Playlists::MediaDevicePlaylistPtr &playlist, const QString &name );
+            void playlistRenamed( const Playlists::MediaDevicePlaylistPtr &playlist );
+            void playlistsDeleted( const Playlists::MediaDevicePlaylistList &playlistlist );
 
         private slots:
         //void slotDelete();

@@ -947,12 +947,12 @@ MediaDeviceHandler::privateParseTracks()
         }
 
         // When the provider saves a playlist, the handler should save it internally
-        connect( m_provider, SIGNAL( playlistSaved( const Playlists::MediaDevicePlaylistPtr &, const QString& ) ),
-                 SLOT( savePlaylist( const Playlists::MediaDevicePlaylistPtr &, const QString& ) ) );
-        connect( m_provider, SIGNAL( playlistRenamed( const Playlists::MediaDevicePlaylistPtr &) ),
-                 SLOT( renamePlaylist( const Playlists::MediaDevicePlaylistPtr & ) ) );
-        connect( m_provider, SIGNAL( playlistsDeleted( const Playlists::MediaDevicePlaylistList & ) ),
-                 SLOT( deletePlaylists( const Playlists::MediaDevicePlaylistList &  ) ) );
+        connect( m_provider, SIGNAL(playlistSaved(Playlists::MediaDevicePlaylistPtr,QString)),
+                 SLOT(savePlaylist(Playlists::MediaDevicePlaylistPtr,QString)) );
+        connect( m_provider, SIGNAL(playlistRenamed(Playlists::MediaDevicePlaylistPtr)),
+                 SLOT(renamePlaylist(Playlists::MediaDevicePlaylistPtr)) );
+        connect( m_provider, SIGNAL(playlistsDeleted(Playlists::MediaDevicePlaylistList)),
+                 SLOT(deletePlaylists(Playlists::MediaDevicePlaylistList)) );
 
         The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
         m_provider->sendUpdated();
