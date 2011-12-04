@@ -135,7 +135,12 @@ CollectionManager::~CollectionManager()
     d->unmanagedCollections.clear();
     d->trackProviders.clear();
     qDeleteAll( d->managedCollections );
-    qDeleteAll( d->factories );
+
+    // qDeleteAll seems to be partly broken in Qt 4.8, FIX: 285951
+    // qDeleteAll( d->factories );
+    while (!d->factories.isEmpty())
+        delete d->factories.takeFirst();
+
     delete d;
 }
 

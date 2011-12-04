@@ -8,6 +8,7 @@ Version 2.5
       Playlist's layout items.
 
   BUGFIXES:
+    * Fix crash at exit with Qt 4.8
     * Fix moving applets rightward in the context toolbar.
     * Fix breadcrumbs not working properly for the file browser.
     * Disable cover fetching action for tracks not in the collection to avoid
