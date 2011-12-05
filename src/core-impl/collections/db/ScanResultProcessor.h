@@ -131,7 +131,7 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
         CollectionScanner::Album* sortTrack( CollectionScanner::Track *track );
         CollectionScanner::Album* sortTrack( CollectionScanner::Track *track,
                                              const QString &albumName,
-                                             const QString &albumArtist );
+                                             QString albumArtist );
 
         QList<CollectionScanner::Directory*> m_directories;
         QHash<AlbumKey, CollectionScanner::Album*> m_albums;

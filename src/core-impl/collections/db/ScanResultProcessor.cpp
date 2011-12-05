@@ -284,22 +284,20 @@ ScanResultProcessor::sortTrack( CollectionScanner::Track *track )
 CollectionScanner::Album*
 ScanResultProcessor::sortTrack( CollectionScanner::Track *track,
                                 const QString &albumName,
-                                const QString &albumArtist )
+                                QString albumArtist )
 {
-    QString newAlbumArtist( albumArtist );
-    if( albumName.isEmpty() )
-        newAlbumArtist.clear(); // no album, no album artist
+    // we allow albums with empty name and nonepty artist, see bug 272471
     if( track->isCompilation() )
-        newAlbumArtist.clear();
+        albumArtist.clear();  // no album artist denotes a compilation
 
-    AlbumKey key( albumName, newAlbumArtist );
+    AlbumKey key( albumName, albumArtist );
 
     CollectionScanner::Album *album;
     if( m_albums.contains( key ) )
         album = m_albums.value( key );
     else
     {
-        album = new CollectionScanner::Album( albumName, newAlbumArtist );
+        album = new CollectionScanner::Album( albumName, albumArtist );
         m_albums.insert( key, album );
         m_albumNames.insert( albumName, album );
     }

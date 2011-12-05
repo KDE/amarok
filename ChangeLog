@@ -8,6 +8,7 @@ Version 2.5
       Playlist's layout items.
 
   BUGFIXES:
+    * Allow albums with empty name but nonempty artist in local collection. (BR 272471)
     * Fix collection info display (track count, free space) for iPod and MTP
       devices. (BR 232093)
     * Fix crash at exit with Qt 4.8

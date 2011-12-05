@@ -568,8 +568,7 @@ Meta::AlbumPtr
 SqlRegistry::getAlbum( const QString &name, const QString &artist )
 {
     QString albumArtist( artist );
-    if( name.isEmpty() ) // the empty album is special. all singles are collected here
-        albumArtist.clear();
+    // we allow albums with empty name but nonempty artist, see bug 272471
 
     QMutexLocker locker( &m_albumMutex );
 
