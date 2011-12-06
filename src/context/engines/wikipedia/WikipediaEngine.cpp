@@ -143,7 +143,7 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
             wikiCurrentUrl = clickUrl;
             if( !wikiCurrentUrl.hasQueryItem( QLatin1String("useskin") ) )
                 wikiCurrentUrl.addQueryItem( QLatin1String("useskin"), QLatin1String("monobook") );
-            KUrl encodedUrl( wikiCurrentUrl.toString() );
+            KUrl encodedUrl( wikiCurrentUrl.toEncoded() );
             urls << encodedUrl;
             q->setData( source, QLatin1String("busy"), true );
             The::networkAccessManager()->getData( encodedUrl, q,
