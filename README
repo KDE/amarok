@@ -99,8 +99,8 @@ Optional
         * libavcodec & libavformat specifically
       * LibOFA - http://code.google.com/p/musicip-libofa/
       
-    * gpodder.net Podcast Service
-      * libmygpo-qt 1.0 (or newer)
+    * gpodder.net Podcast Provider & Service
+      * libmygpo-qt 1.0.5 (or newer)
 
     * Transcoding requires (at runtime):
       * FFmpeg 0.6.0 (or newer) - http://ffmpeg.org/
