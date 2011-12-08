@@ -187,6 +187,7 @@ MimeType=audio/aac;audio/mp4;audio/mpeg;audio/mpegurl;audio/vnd.rn-realaudio;aud
 X-DocPath=amarok/index.html
 X-KDE-Keywords=music,podcast
 X-KDE-Keywords[nl]=muziek,podcast
+X-KDE-Keywords[pt]=música,podcast
 X-KDE-Keywords[pt_BR]=música,podcast
 X-KDE-Keywords[sv]=musik,podsändning
 X-KDE-Keywords[uk]=music,podcast,музика,трансляція,подкаст
