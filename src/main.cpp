@@ -247,19 +247,12 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
     //Donors:
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Benoît AlK Zugmeyer" ), KLocalizedString(), "benoit@zugmeyer.com" ) );
-    ocsData.addDonor( "bubeck", KAboutPerson( ki18n( "Dr. Tilmann Bubeck" ), KLocalizedString(), "t.bubeck@reinform.de" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Edward Karavakis" ), KLocalizedString(), "edward.karavakis@cern.ch" ) );
-    ocsData.addDonor( "hekkro", KAboutPerson( ki18n( "Hekkro" ), KLocalizedString(), "hekkro@hekkro.com" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Maik Keller" ), KLocalizedString(), "mk3ll3r@gmail.com" ) );
-    ocsData.addDonor( "mastercactapus", KAboutPerson( ki18n( "Nathan Caza" ), KLocalizedString(), "mastercactapus@gmail.com" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Paul Erntges" ), KLocalizedString(), "fleischindosen@web.de" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Štětka" ), KLocalizedString(), "robert.stetka@gmail.com" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Tell" ), KLocalizedString(), "robert.tell@gmx.net" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Ryan Rix" ), KLocalizedString(), "phrkonaleash@gmail.com" ) );
-    ocsData.addDonor( "", KAboutPerson( ki18n( "Thomas Kahle" ), KLocalizedString(), "tom111@gmx.de" ) );
-    ocsData.addDonor( "VBart", KAboutPerson( ki18n( "Valentin V. Bartenev" ), KLocalizedString(), "i@vbart.ru" ) );
-    //Last update: 11/1/2010
+    ocsData.addDonor( "drew826", KAboutPerson( ki18n( "Andrew Browning" ) ) );
+    ocsData.addDonor( QString(), KAboutPerson( ki18n( "David Roth" ) ) );
+    ocsData.addDonor( QString(), KAboutPerson( ki18n( "Dr. Tilmann Bubeck" ) ) );
+    ocsData.addDonor( "valoriez", KAboutPerson( ki18n( "Valorie Zimmerman" ) ) );
+
+    //Last update: 2011/12/08, post Rocktober 2011
 
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
