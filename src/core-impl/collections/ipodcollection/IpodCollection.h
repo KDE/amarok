@@ -62,9 +62,6 @@ class IpodCollection : public MediaDeviceCollection
         virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon("multimedia-player-apple-ipod"); };
 
-        // HACK: this function will be deleted later
-        void writeDatabase() { m_handler->writeDatabase(); }
-
     private:
         QString m_mountPoint;
 };

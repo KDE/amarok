@@ -130,8 +130,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
         /** MediaDeviceCollection methods */
         QString udi() const { return m_udi; }
 
-        virtual void writeDatabase() {} // threaded
-
         /** MediaDeviceCollection-specific */
         Meta::MediaDeviceHandler* handler();
         void init() { m_handler->init(); } // tell handler to start connection
