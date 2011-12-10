@@ -484,14 +484,6 @@ MediaDeviceTrack::setAlbumArtist( const QString &newAlbumArtist )
 
     MediaDeviceArtistPtr artistPtr;
     ArtistMap artistMap = m_collection.data()->memoryCollection()->artistMap();
-    artistPtr = MediaDeviceArtistPtr::staticCast( m_album->albumArtist() );
-
-    if( !artistPtr.isNull() )
-    {
-        artistPtr->remAlbum( m_album );
-        if( artistPtr->tracks().isEmpty() && artistPtr->albums().isEmpty() )
-            artistMap.remove( artistPtr->name() );
-    }
 
     if( artistMap.contains( newAlbumArtist ) )
         artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( newAlbumArtist ) );
@@ -501,7 +493,6 @@ MediaDeviceTrack::setAlbumArtist( const QString &newAlbumArtist )
         artistMap.insert( newAlbumArtist, ArtistPtr::staticCast( artistPtr ) );
     }
 
-    artistPtr->addAlbum( m_album );
     m_album->setAlbumArtist( artistPtr );
 
     m_collection.data()->memoryCollection()->acquireWriteLock();
@@ -527,7 +518,7 @@ MediaDeviceTrack::setArtist( const QString &newArtist )
     {
         artistPtr->remTrack( track );
         // if artist's tracklist is empty, remove artist from artistmap
-        if( artistPtr->tracks().isEmpty() && artistPtr->albums().isEmpty() )
+        if( artistPtr->tracks().isEmpty() )
             artistMap.remove( artistPtr->name() );
     }
 
@@ -781,12 +772,6 @@ MediaDeviceArtist::tracks()
     return m_tracks;
 }
 
-AlbumList
-MediaDeviceArtist::albums()
-{
-    return m_albums;
-}
-
 void
 MediaDeviceArtist::addTrack( MediaDeviceTrackPtr track )
 {
@@ -797,18 +782,6 @@ void
 MediaDeviceArtist::remTrack( MediaDeviceTrackPtr track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
-}
-
-void
-MediaDeviceArtist::addAlbum( MediaDeviceAlbumPtr album )
-{
-    m_albums.append( AlbumPtr::staticCast( album ) );
-}
-
-void
-MediaDeviceArtist::remAlbum( MediaDeviceAlbumPtr album )
-{
-    m_albums.removeOne( AlbumPtr::staticCast( album ) );
 }
 
 //---------------MediaDeviceAlbum-----------------------------------

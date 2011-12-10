@@ -780,7 +780,6 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 
     if( !artistPtr.isNull() )
     {
-        artistPtr->addAlbum( albumPtr );
         albumPtr->setAlbumArtist( artistPtr );
     }
 }
