@@ -32,7 +32,6 @@ set(amarok_collection-sqlcollection_SRCS
     SqlWriteLabelCapability.cpp
     SqlScanResultProcessor.cpp
     ${CMAKE_SOURCE_DIR}/shared/FileType.cpp
-    ${CMAKE_SOURCE_DIR}/src/core-impl/collections/support/ArtistHelper.cpp
     ${extra_src}
  )
 

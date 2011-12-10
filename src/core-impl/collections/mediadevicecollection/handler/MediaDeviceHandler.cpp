@@ -18,16 +18,14 @@
 
 #include "MediaDeviceHandler.h"
 
-#include "MediaDeviceCollection.h"
-
 #include "MediaDeviceHandlerCapability.h"
-
 #include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
+#include "core-impl/collections/support/ArtistHelper.h"
 #include "playlist/MediaDeviceUserPlaylistProvider.h"
-#include "playlistmanager/PlaylistManager.h"
-
 #include "playlist/MediaDevicePlaylist.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <KMessageBox>
 #include <threadweaver/ThreadWeaver.h>
@@ -140,25 +138,51 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
         return;
 
     m_wc->libSetTitle( destTrack, srcTrack->name() );
+
+    QString albumArtist;
+    bool isCompilation = false;
     if ( srcTrack->album() )
     {
         AlbumPtr album = srcTrack->album();
 
         m_wc->libSetAlbum( destTrack, album->name() );
-        m_wc->libSetIsCompilation( destTrack, album->isCompilation() );
-
+        isCompilation = album->isCompilation();
+        m_wc->libSetIsCompilation( destTrack, isCompilation );
         if( album->hasAlbumArtist() )
-            m_wc->libSetAlbumArtist( destTrack, album->albumArtist()->name() );
+            albumArtist = album->albumArtist()->name();
 
         if( album->hasImage() )
             m_wc->libSetCoverArt( destTrack, album->image() );
     }
+
+    QString trackArtist;
     if ( srcTrack->artist() )
-        m_wc->libSetArtist( destTrack, srcTrack->artist()->name() );
+    {
+        trackArtist = srcTrack->artist()->name();
+        m_wc->libSetArtist( destTrack, trackArtist );
+    }
+
+    QString composer;
     if ( srcTrack->composer() )
-        m_wc->libSetComposer( destTrack, srcTrack->composer()->name() );
+    {
+        composer = srcTrack->composer()->name();
+        m_wc->libSetComposer( destTrack, composer );
+    }
+
+    QString genre;
     if ( srcTrack->genre() )
-        m_wc->libSetGenre( destTrack, srcTrack->genre()->name() );
+    {
+        genre = srcTrack->genre()->name();
+        m_wc->libSetGenre( destTrack, genre );
+    }
+
+    if( isCompilation && albumArtist.isEmpty() )
+        // iPod doesn't handle empy album artist well for compilation albums (splits these albums)
+        albumArtist = i18n( "Various Artists" );
+    else
+        albumArtist = ArtistHelper::bestGuessAlbumArtist( albumArtist, trackArtist, genre, composer );
+    m_wc->libSetAlbumArtist( destTrack, albumArtist );
+
     if ( srcTrack->year() )
         m_wc->libSetYear( destTrack, srcTrack->year()->name() );
     m_wc->libSetLength( destTrack, srcTrack->length() );
@@ -721,10 +745,9 @@ MediaDeviceHandler::slotDatabaseWritten( bool success )
 
 
 void
-MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
+MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap &artistMap )
 {
     const QString artist( m_rcb->libGetArtist( track ) );
-    const QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
     if( artistMap.contains( artist ) )
@@ -737,21 +760,13 @@ MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& 
 
     artistPtr->addTrack( track );
     track->setArtist( artistPtr );
-
-    if( !albumArtist.isEmpty() && albumArtist != artist &&
-        !artistMap.contains( albumArtist ) )
-    {
-        artistPtr = MediaDeviceArtistPtr( new MediaDeviceArtist( albumArtist ) );
-        artistMap.insert( albumArtist, ArtistPtr::staticCast( artistPtr ) );
-    }
 }
 
 void
-MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& albumMap, const ArtistMap &artistMap )
+MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& albumMap, ArtistMap &artistMap )
 {
     const QString album( m_rcb->libGetAlbum( track ) );
-    const QString artist( m_rcb->libGetArtist( track ) );
-    const QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
+    QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
     MediaDeviceAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
@@ -771,17 +786,28 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
     isCompilation |= m_rc->libIsCompilation( track );
     albumPtr->setIsCompilation( isCompilation );
 
-    MediaDeviceArtistPtr artistPtr;
-
-    if( !albumArtist.isEmpty() && artistMap.contains( artist ) )
-        artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( albumArtist ) );
-    else if( !artist.isEmpty() && artistMap.contains( artist ) )
-        artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
-
-    if( !artistPtr.isNull() )
+    if( albumArtist.compare( "Various Artists", Qt::CaseInsensitive ) == 0 ||
+        albumArtist.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) == 0 )
     {
-        albumPtr->setAlbumArtist( artistPtr );
+        albumArtist.clear();
     }
+    if( albumArtist.isEmpty() )
+    {
+        // set compilation flag, otherwise the album would be invisible in collection
+        // browser if "Album Artist / Album" view is selected.
+        albumPtr->setIsCompilation( true );
+        return;  // nothing more to do - this is an album with no album artist
+    }
+
+    MediaDeviceArtistPtr albumArtistPtr;
+    if( artistMap.contains( albumArtist ) )
+        albumArtistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( albumArtist ) );
+    else
+    {
+        albumArtistPtr = MediaDeviceArtistPtr( new MediaDeviceArtist( albumArtist ) );
+        artistMap.insert( albumArtist, ArtistPtr::staticCast( albumArtistPtr ) );
+    }
+    albumPtr->setAlbumArtist( albumArtistPtr );
 }
 
 void
