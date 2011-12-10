@@ -2138,10 +2138,7 @@ void
 IpodHandler::slotDBWriteDone( ThreadWeaver::Job* job )
 {
     if( job->success() )
-    {
         debug() << "Writing to DB succeeded!";
-        slotDatabaseWritten( true );
-    }
     else
         debug() << "Writing to DB did not happen or failed";
     slotDatabaseWritten( job->success() );
