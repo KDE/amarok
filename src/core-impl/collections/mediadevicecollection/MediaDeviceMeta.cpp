@@ -25,7 +25,6 @@
 #include "SvgHandler.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/EditCapability.h"
-#include "core/capabilities/UpdateCapability.h"
 
 #include <KIcon>
 #include <KUrl>
@@ -61,25 +60,6 @@ class EditCapabilityMediaDevice : public Capabilities::EditCapability
 
     private:
         KSharedPtr<MediaDeviceTrack> m_track;
-};
-
-class UpdateCapabilityMediaDevice : public Capabilities::UpdateCapability
-{
-    Q_OBJECT
-    public:
-        UpdateCapabilityMediaDevice( Collections::MediaDeviceCollection *coll )
-            : Capabilities::UpdateCapability()
-            , m_coll( coll )
-        {}
-
-        virtual void collectionUpdated() const
-        {
-            m_coll->collectionUpdated();
-            m_coll->writeDatabase();
-        }
-
-    private:
-        Collections::MediaDeviceCollection *m_coll;
 };
 
 
@@ -402,8 +382,6 @@ MediaDeviceTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) 
     {
         case Capabilities::Capability::Editable:
             return true;
-        case Capabilities::Capability::Updatable:
-            return true;
         default:
             return false;
     }
@@ -419,8 +397,6 @@ MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type
     {
         case Capabilities::Capability::Editable:
             return new EditCapabilityMediaDevice( this );
-        case Capabilities::Capability::Updatable:
-            return new UpdateCapabilityMediaDevice( m_collection.data() );
         default:
             return 0;
     }

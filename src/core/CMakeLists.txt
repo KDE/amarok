@@ -46,7 +46,6 @@ set(libcore_capabilities_SRCS
     capabilities/SourceInfoCapability.cpp
     capabilities/StatisticsCapability.cpp
     capabilities/StreamInfoCapability.cpp
-    capabilities/UpdateCapability.cpp
     capabilities/WriteLabelCapability.cpp
 )
 
