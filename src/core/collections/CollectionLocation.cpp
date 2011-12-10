@@ -25,7 +25,6 @@
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core/collections/QueryMaker.h"
-#include "core/capabilities/UpdateCapability.h"
 
 using namespace Collections;
 
@@ -434,12 +433,6 @@ CollectionLocation::slotFinishRemove()
 
         if( track->playableUrl().isLocalFile() )
             dirsToRemove.append( track->playableUrl().directory( KUrl::AppendTrailingSlash ) );
-
-        QScopedPointer<Capabilities::UpdateCapability> uc( track->create<Capabilities::UpdateCapability>() );
-        if(!uc)
-            continue;
-
-        uc->collectionUpdated();
     }
 
     if( !dirsToRemove.isEmpty() && delegate->deleteEmptyDirs( this ) )
