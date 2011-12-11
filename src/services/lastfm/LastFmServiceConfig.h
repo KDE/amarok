@@ -64,6 +64,13 @@ private slots:
     void textDialogNo();
 
 private:
+    /**
+     * Tries to open KWallet and assigns it to m_wallet if successfull. Takes ignore
+     * wallet configuration key into account.
+     *
+     * @return true when m_wallet is valid, false otherwise
+     */
+    bool tryToOpenWallet();
     void askAboutMissingKWallet();
 
     QString m_username;
