@@ -193,6 +193,7 @@ X-KDE-Keywords[pt_BR]=música,podcast
 X-KDE-Keywords[sv]=musik,podsändning
 X-KDE-Keywords[uk]=music,podcast,музика,трансляція,подкаст
 X-KDE-Keywords[x-test]=xxmusic,podcastxx
+X-KDE-Keywords[zh_TW]=music,podcast
 X-KDE-Protocols=http
 Terminal=false
 Categories=Qt;KDE;AudioVideo;Audio;Player;
