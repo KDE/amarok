@@ -10,6 +10,8 @@ Version 2.6-Beta 1
 
   CHANGES:
     * libgpod requirement raised from 0.7.0 to 0.7.93 for better maintainability.
+    * When hovering iPod, UMS or MTP collection in collection browser,
+      "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
     * Compilations are handled more consistently on iPods. (BR 232072)

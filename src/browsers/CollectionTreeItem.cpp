@@ -176,9 +176,9 @@ CollectionTreeItem::data( int role ) const
         case CustomRoles::HasCapacityRole:
             return m_parentCollection->hasCapacity();
         case CustomRoles::UsedCapacityRole:
-            if( m_parentCollection->hasCapacity() && m_parentCollection->totalCapacity() > 0 )
-                return m_parentCollection->usedCapacity() * 100 / m_parentCollection->totalCapacity();
-            break;
+            return m_parentCollection->usedCapacity();
+        case CustomRoles::TotalCapacityRole:
+            return m_parentCollection->totalCapacity();
         case CustomRoles::DecoratorRoleCount:
             return decoratorActions().size();
         case CustomRoles::DecoratorRole:

@@ -35,7 +35,8 @@
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
 
-#define CAPACITYRECT_HEIGHT 12
+#define CAPACITYRECT_MIN_HEIGHT 12
+#define CAPACITYRECT_MAX_HEIGHT 18
 #define ACTIONICON_SIZE 16
 
 QHash<QPersistentModelIndex, QRect> CollectionTreeItemDelegate::s_indexDecoratorRects;
@@ -153,23 +154,28 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     QPoint cursorPos = m_view->mapFromGlobal( QCursor::pos() );
     cursorPos.ry() -= 20; // Where the fuck does this offset come from. I have _ZERO_ idea.
 
+    painter->setFont( m_smallFont );  // we want smaller font for both subtitle and capacity bar
     //show the bylinetext or the capacity (if available) when hovering
     if( isHover && hasCapacity )
     {
+        qreal bytesUsed = index.data( CustomRoles::UsedCapacityRole ).toReal();
+        qreal bytesTotal = index.data( CustomRoles::TotalCapacityRole ).toReal();
+        const int percentage = (bytesTotal > 0.0) ? qRound( 100.0 * bytesUsed / bytesTotal ) : 100;
+
+        KCapacityBar capacityBar( KCapacityBar::DrawTextInline );
+        capacityBar.setValue( percentage );
+        capacityBar.setText( i18nc( "Example: 3.5 GB free (unit is part of %1)", "%1 free",
+                                    KGlobal::locale()->formatByteSize( bytesTotal - bytesUsed, 1 ) ) );
+
         QRect capacityRect;
         capacityRect.setLeft( isRTL ? 0 : infoRectLeft );
         capacityRect.setTop( titleRect.bottom() );
         //makeing sure capacity bar does not overlap expander
         capacityRect.setWidth( infoRectWidth - iconWidth );
-        capacityRect.setHeight( CAPACITYRECT_HEIGHT );
+        capacityRect.setHeight( qBound( CAPACITYRECT_MIN_HEIGHT,
+                                        capacityBar.minimumSizeHint().height(),
+                                        CAPACITYRECT_MAX_HEIGHT ) );
 
-        const int used = index.data( CustomRoles::UsedCapacityRole ).toInt();
-
-        KCapacityBar capacityBar( KCapacityBar::DrawTextInline );
-        capacityBar.setValue( used );
-
-        // TODO: set text in a tooltip where we can show extra info (eg bytes available, not just percentage)
-        capacityBar.setText( i18n("%1% used", QString::number(used) ) );
         capacityBar.drawCapacityBar( painter, capacityRect );
     }
     else
@@ -180,7 +186,6 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         textRect.setWidth( titleRectWidth );
         textRect.setHeight( m_smallFm->boundingRect( bylineText ).height() );
 
-        painter->setFont( m_smallFont );
         painter->drawText( textRect, Qt::TextWordWrap, bylineText );
     }
 
