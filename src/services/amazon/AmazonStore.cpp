@@ -423,6 +423,7 @@ AmazonStore::initView()
     m_itemView->setParent( this );
     m_itemView->setRootIsDecorated( false ); // items cannot be expanded
     m_itemView->setUniformRowHeights( true ); // for perf reasons
+    m_itemView->setFrameStyle( QFrame::NoFrame ); // no frame around the view, especially when selecting items
     m_itemView->setModel( m_itemModel );
 
     KHBox* bottomPanelLayout = new KHBox;
