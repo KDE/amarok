@@ -32,6 +32,7 @@ AmazonShoppingCartDialog::AmazonShoppingCartDialog( QWidget *parent, AmazonStore
     m_model->setStringList( AmazonCart::instance()->stringList() );
     ui->listView->setModel( m_model );
     ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonCart::instance()->price() ) ) );
+    ui->checkoutButton->setIcon( KIcon( "download-amarok" ) );
 
     if( AmazonCart::instance()->isEmpty() )
         ui->checkoutButton->setEnabled( false );

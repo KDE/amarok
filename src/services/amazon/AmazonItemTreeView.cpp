@@ -30,6 +30,8 @@
 #include <QHeaderView>
 #include <QMouseEvent>
 
+#include <kstandarddirs.h>
+
 #include <KIcon>
 #include <KMenu>
 
@@ -188,7 +190,7 @@ AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
 
             QAction *searchForAlbumAction = createSearchForAlbumAction();
             // TODO: add correct icon here
-            //addToPlaylistAction->setProperty( "popupdropper_svg_id", "append" );
+            // addToPlaylistAction->setProperty( "popupdropper_svg_id", "media-optical-amarok" );
             m_pd->addItem( The::popupDropperFactory()->createItem( searchForAlbumAction ) );
         }
 
@@ -267,8 +269,7 @@ AmazonItemTreeView::searchForAlbumAction()
 QAction*
 AmazonItemTreeView::createAddToCartAction()
 {
-    // TODO: add correct icon here
-    QAction *addToCartAction = new QAction( QString( i18n( "Add to Cart" ) ), this );
+    QAction *addToCartAction = new QAction( KIcon( "amarok_cart_add" ), QString( i18n( "Add to Cart" ) ), this );
     connect( addToCartAction, SIGNAL( triggered() ), this, SIGNAL( addToCart() ) );
 
     return addToCartAction;
@@ -286,8 +287,7 @@ AmazonItemTreeView::createAddToPlaylistAction()
 QAction*
 AmazonItemTreeView::createDetailsAction()
 {
-    // TODO: add correct icon here
-    QAction *getDetailsAction = new QAction( QString( i18n( "Load Details..." ) ), this );
+    QAction *getDetailsAction = new QAction( QIcon( KStandardDirs::locate( "data", "amarok/images/loading1.png" ) ), QString( i18n( "Load Details..." ) ), this );
     connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
 
     return getDetailsAction;

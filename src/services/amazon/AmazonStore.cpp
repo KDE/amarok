@@ -435,7 +435,7 @@ AmazonStore::initView()
     m_addToCartButton->setEnabled( false );
     m_addToCartButton->setObjectName( "addToCartButton" );
     m_addToCartButton->setParent( bottomPanelLayout );
-    //m_downloadAlbumButton->setIcon( KIcon( "addToCart-amarok" ) );
+    m_addToCartButton->setIcon( KIcon( "amarok_cart_add" ) );
 
     m_viewCartButton = new QPushButton;
     m_viewCartButton->setText( i18nc( "View your shopping cart contents", "View Cart" ) );
@@ -443,7 +443,7 @@ AmazonStore::initView()
     m_viewCartButton->setEnabled( true );
     m_viewCartButton->setObjectName( "viewCartButton" );
     m_viewCartButton->setParent( bottomPanelLayout );
-    //m_downloadAlbumButton->setIcon( KIcon( "viewCartButton-amarok" ) );
+    m_viewCartButton->setIcon( KIcon( "amarok_cart_view" ) );
 
     m_checkoutButton = new QPushButton;
     m_checkoutButton->setText( i18nc( "Checkout your shopping cart", "Checkout" ) );
@@ -451,7 +451,7 @@ AmazonStore::initView()
     m_checkoutButton->setEnabled( false );
     m_checkoutButton->setObjectName( "checkoutButton" );
     m_checkoutButton->setParent( bottomPanelLayout );
-    //m_downloadAlbumButton->setIcon( KIcon( "checkoutButton-amarok" ) );
+    m_checkoutButton->setIcon( KIcon( "download-amarok" ) );
 
     connect( m_addToCartButton, SIGNAL( clicked() ), this, SLOT( addToCart() ) );
     connect( m_itemView, SIGNAL( addToCart() ), this, SLOT( addToCart() ) );
