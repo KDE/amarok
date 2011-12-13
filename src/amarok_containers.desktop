@@ -185,6 +185,7 @@ Icon=amarok
 MimeType=video/x-ms-asf;application/ogg;
 NoDisplay=true
 X-KDE-Keywords=music,podcast
+X-KDE-Keywords[el]=μουσική,podcast
 X-KDE-Keywords[es]=música, podcast
 X-KDE-Keywords[nl]=muziek,podcast
 X-KDE-Keywords[pt]=música,podcast
