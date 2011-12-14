@@ -40,19 +40,6 @@ if(TAGLIB_FOUND)
         message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
     endif( NOT TAGLIB_MP4_FOUND )
 
-    check_cxx_source_compiles("#include <modtag.h>
-    #include <modfile.h>
-    #include <s3mfile.h>
-    #include <itfile.h>
-    #include <xmfile.h>
-    int main() {
-        TagLib::Mod::Tag tag;
-        TagLib::Mod::File modfile(\"/dev/null\");
-        TagLib::S3M::File s3mfile(\"/dev/null\");
-        TagLib::IT::File itfile(\"/dev/null\");
-        TagLib::XM::File xmfile(\"/dev/null\");
-        return 0; }" TAGLIB_MOD_FOUND)
-
     set(CMAKE_REQUIRED_INCLUDES)
     set(CMAKE_REQUIRED_LIBRARIES)
 

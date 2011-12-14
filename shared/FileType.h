@@ -38,11 +38,7 @@ enum FileType
     Mpc         =  7,
     TrueAudio   =  8,
     Wav         =  9,
-    WavPack     = 10,
-    Mod         = 11,
-    S3M         = 12,
-    IT          = 13,
-    XM          = 14
+    WavPack     = 10
 };
 
 

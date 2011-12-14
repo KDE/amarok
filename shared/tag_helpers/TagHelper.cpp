@@ -16,8 +16,6 @@
 
 #include "TagHelper.h"
 
-#include <config-amarok.h>
-
 #include <QRegExp>
 #include <QStringList>
 
@@ -36,12 +34,6 @@
 #include <vorbisfile.h>
 #include <wavfile.h>
 #include <wavpackfile.h>
-#ifdef TAGLIB_MOD_FOUND
-#include <modfile.h>
-#include <s3mfile.h>
-#include <itfile.h>
-#include <xmfile.h>
-#endif
 
 #include "APETagHelper.h"
 #include "ASFTagHelper.h"
@@ -332,33 +324,6 @@ Meta::Tag::selectHelper( const TagLib::FileRef fileref, bool forceCreation )
             tagHelper = new APETagHelper( fileref.tag(), file->APETag(), Amarok::WavPack );
         else if( file->ID3v1Tag() )
             tagHelper = new TagHelper( fileref.tag(), Amarok::WavPack );
-    }
-#ifdef TAGLIB_MOD_FOUND
-    else if( TagLib::Mod::File *file = dynamic_cast< TagLib::Mod::File * >( fileref.file() ) )
-    {
-        if( file->tag() )
-            tagHelper = new TagHelper( fileref.tag(), Amarok::Mod );
-    }
-    else if( TagLib::S3M::File *file = dynamic_cast< TagLib::S3M::File * >( fileref.file() ) )
-    {
-        if( file->tag() )
-            tagHelper = new TagHelper( fileref.tag(), Amarok::S3M );
-    }
-    else if( TagLib::IT::File *file = dynamic_cast< TagLib::IT::File * >( fileref.file() ) )
-    {
-        if( file->tag() )
-            tagHelper = new TagHelper( fileref.tag(), Amarok::IT );
-    }
-    else if( TagLib::XM::File *file = dynamic_cast< TagLib::XM::File * >( fileref.file() ) )
-    {
-        if( file->tag() )
-            tagHelper = new TagHelper( fileref.tag(), Amarok::XM );
-    }
-#endif
-    else if( !fileref.isNull() )
-    {
-        if( fileref.tag() )
-            tagHelper = new TagHelper( fileref.tag(), Amarok::Unknown );
     }
 
     return tagHelper;
