@@ -8,6 +8,7 @@ Version 2.5
       Playlist's layout items.
 
   BUGFIXES:
+    * Do not crash when iPod doesn't have a master playlist. (BR 288936)
     * Fix Last.fm not finding KDE Wallet. (BR 286741)
     * Put a border around bottom toolbars, visually separating them from
       browser contents. (BR 277741)

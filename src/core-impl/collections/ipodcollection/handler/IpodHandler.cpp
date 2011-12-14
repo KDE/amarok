@@ -505,7 +505,11 @@ IpodHandler::isWritable() const
 QString
 IpodHandler::prettyName() const
 {
-    return QString::fromUtf8( itdb_playlist_mpl( m_itdb )->name );
+    Itdb_Playlist *masterPlaylist = itdb_playlist_mpl( m_itdb );
+    // itdb_playlist_mpl() may return null in some corner cases, see bug 288936
+    if( masterPlaylist && masterPlaylist->name )
+        return QString::fromUtf8( masterPlaylist->name );
+    return i18n( "Unknown" );
 }
 
 QList<QAction *>
