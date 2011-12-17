@@ -107,12 +107,6 @@ being done correctly, before reading more information.
 ReadCapability - Maps further functions, and completes the reading of
 the metadata from the device.
 
-CustomReadCapability - Essentially, a hack.  This is used by the
-UMSHandler to "cheat" and just copy all the metadata it needs from
-another Meta::Track which is already created by File::Track.  Do not
-use this unless the device requires a similar quick hack, so as to
-avoid a lot of redundant calls.
-
 WriteCapabilityBase - Receives generic commands related to writing to
 the device: find where to copy a new track onto the device, copy the
 track, delete the track.  In case this device is not struct-based as

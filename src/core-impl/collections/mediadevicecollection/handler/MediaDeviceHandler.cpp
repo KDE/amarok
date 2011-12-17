@@ -55,7 +55,6 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     , m_isDeleting( false )
     , m_pc( 0 )
     , m_rcb( 0 )
-    , m_crc( 0 )
     , m_rc( 0 )
     , m_wcb( 0 )
     , m_wc( 0 )
@@ -899,12 +898,6 @@ MediaDeviceHandler::privateParseTracks()
             getBasicMediaDeviceTrackInfo( track, track );
         }
 
-        else if( m_crc != 0 )
-        {
-            Meta::TrackPtr srcTrack = m_crc->sourceTrack();
-            getBasicMediaDeviceTrackInfo( srcTrack, track );
-        }
-
         /* map-related info retrieval */
         setupArtistMap( track, artistMap );
         setupAlbumMap( track, albumMap, artistMap );
@@ -1193,7 +1186,6 @@ MediaDeviceHandler::setupReadCapability()
             debug() << "Has read capability interface";
             m_rcb = handler->create<Handler::ReadCapabilityBase>();
             m_rc = 0;
-            m_crc = 0;
             if( !m_rcb )
             {
                 debug() << "Handler does not have MediaDeviceHandler::ReadCapability. Aborting.";
@@ -1203,11 +1195,6 @@ MediaDeviceHandler::setupReadCapability()
             {
                 debug() << "Making read capability";
                 m_rc = qobject_cast<Handler::ReadCapability *>( m_rcb );
-            }
-            else if( m_rcb->inherits( "Handler::CustomReadCapability" ) )
-            {
-                debug() << "making custom read capability";
-                m_crc = qobject_cast<Handler::CustomReadCapability *>( m_rcb );
             }
             debug() << "Created rc";
         }
