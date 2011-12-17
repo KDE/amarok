@@ -334,11 +334,12 @@ private:
      * @return true if m_rc is valid read capability, false otherwise
      */
     bool setupReadCapability();
-    void setupWriteCapability();
 
     /**
-     *  @return free space on the device
+     * Tries to create write capability in m_rc
+     * @return true if m_wc is valid write capability, false otherwise
      */
+    bool setupWriteCapability();
 
     /**
      *  @return free space on the device
@@ -382,8 +383,7 @@ private:
     Handler::PlaylistCapability *m_pc;
     Handler::PodcastCapability *m_podcastCapability;
     Handler::ReadCapability *m_rc;
-    Handler::WriteCapabilityBase *m_wcb;
-    Handler::WriteCapability    *m_wc;
+    Handler::WriteCapability *m_wc;
 
 };
 

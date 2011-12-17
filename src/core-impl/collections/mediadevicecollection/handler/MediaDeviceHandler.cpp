@@ -55,7 +55,6 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     , m_isDeleting( false )
     , m_pc( 0 )
     , m_rc( 0 )
-    , m_wcb( 0 )
     , m_wc( 0 )
 {
     DEBUG_BLOCK
@@ -130,9 +129,7 @@ void
 MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack, MediaDeviceTrackPtr destTrack )
 {
     DEBUG_BLOCK
-    setupWriteCapability();
-
-    if( !m_wc )
+    if( !setupWriteCapability() )
         return;
 
     m_wc->libSetTitle( destTrack, srcTrack->name() );
@@ -333,6 +330,7 @@ MediaDeviceHandler::getCopyableUrls(const Meta::TrackList &tracks)
 void
 MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 {
+    DEBUG_BLOCK
     const QString copyErrorCaption = i18n( "Copying Tracks Failed" );
 
     if ( m_isCopying )
@@ -341,12 +339,8 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         return;
     }
 
-    DEBUG_BLOCK
-
-    setupWriteCapability();
     setupReadCapability();
-
-    if( !m_wcb )
+    if( !setupWriteCapability() )
         return;
 
     m_isCopying = true;
@@ -372,7 +366,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         // Check for compatible formats
         format = track->type();
 
-        if( !m_wcb->supportedFormats().contains( format ) )
+        if( !m_wc->supportedFormats().contains( format ) )
         {
              const QString error = i18n("Unsupported format: %1", format);
              m_tracksFailed.insert( track, error );
@@ -467,7 +461,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
             i18n( "Transferring Tracks to Device" ), m_tracksToCopy.size() );
 
     // prepare to copy
-    m_wcb->prepareToCopy();
+    m_wc->prepareToCopy();
 
     m_numTracksToCopy = m_tracksToCopy.count();
     m_tracksCopying.clear();
@@ -529,15 +523,12 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
 
-    bool success = false;
-
     // Create new destTrack that will go into the device collection, based on source track
 
     Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
 
     // find path to copy to
-
-    m_wcb->findPathToCopy( track, destTrack );
+    m_wc->findPathToCopy( track, destTrack );
 
     if( !isOrganizable() )
     {
@@ -558,17 +549,13 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
     else
     {
         // Fill metadata of destTrack too with the same info
-
         getBasicMediaDeviceTrackInfo( track, destTrack );
     }
 
     m_trackSrcDst[ track ] = destTrack; // associate source with destination, for finalizing copy
 
     // Copy the file to the device
-
-    success = m_wcb->libCopyTrack( track, destTrack );
-
-    return success;
+    return m_wc->libCopyTrack( track, destTrack );
 }
 
 /// @param track is the source track from which we are copying
@@ -627,9 +614,7 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
         return;
     }
 
-    setupWriteCapability();
-
-    if( !m_wcb )
+    if( !setupWriteCapability() )
         return;
 
     m_isDeleting = true;
@@ -643,7 +628,7 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
             i18np( "Removing Track from Device", "Removing Tracks from Device", tracks.size() ),
             tracks.size() );
 
-    m_wcb->prepareToDelete();
+    m_wc->prepareToDelete();
 
     m_numTracksToRemove = m_tracksToDelete.count();
 
@@ -676,10 +661,7 @@ MediaDeviceHandler::privateRemoveTrackFromDevice( const Meta::TrackPtr &track )
     Meta::MediaDeviceTrackPtr devicetrack = Meta::MediaDeviceTrackPtr::staticCast( track );
 
     // Remove the physical file from the device, perhaps using a libcall, or KIO
-
-    m_wcb->libDeleteTrackFile( devicetrack );
-
-
+    m_wc->libDeleteTrackFile( devicetrack );
 }
 
 void
@@ -719,7 +701,6 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
                         i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         */
-        m_wcb->endTrackRemove();
         debug() << "Done removing tracks";
         m_isDeleting = false;
         emit removeTracksDone();
@@ -1169,29 +1150,16 @@ MediaDeviceHandler::setupReadCapability()
     return (bool) m_rc;
 }
 
-void
+bool
 MediaDeviceHandler::setupWriteCapability()
 {
-    DEBUG_BLOCK
-    if( !m_wcb )
-    {
-        debug() << "WCB does not exist";
-        if( this->hasCapabilityInterface( Handler::Capability::Writable ) )
-        {
-            m_wcb = this->create<Handler::WriteCapabilityBase>();
-            m_wc = 0;
-            if( !m_wcb )
-            {
-                debug() << "Handler does not have MediaDeviceHandler::WriteCapability. Aborting.";
-                return;
-            }
-            if( m_wcb->inherits( "Handler::WriteCapability" ) )
-            {
-                debug() << "Making write capability";
-                m_wc = qobject_cast<Handler::WriteCapability *>( m_wcb );
-            }
-        }
-    }
+    if( m_wc )
+        return true;
+    if( !hasCapabilityInterface( Handler::Capability::Writable ) )
+        return false;
+
+    m_wc = create<Handler::WriteCapability>();
+    return (bool) m_wc;
 }
 
 /** Observer Methods **/
@@ -1203,9 +1171,7 @@ MediaDeviceHandler::metadataChanged( TrackPtr track )
     Meta::MediaDeviceTrackPtr trackPtr = Meta::MediaDeviceTrackPtr::staticCast( track );
     KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
 
-    setupWriteCapability();
-
-    if( !m_wcb )
+    if( !setupWriteCapability() )
         return;
 
     if( !isOrganizable() )
@@ -1214,7 +1180,7 @@ MediaDeviceHandler::metadataChanged( TrackPtr track )
         m_wc->setDatabaseChanged();
     }
 
-    m_wcb->updateTrack( trackPtr );
+    m_wc->updateTrack( trackPtr );
 }
 
 void
