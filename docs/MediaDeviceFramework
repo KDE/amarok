@@ -98,14 +98,9 @@ appropriate library.
 
 2.3.2 Capabilities
 
-ReadCapabilityBase - Maps the necessary functions to read the structs
+ReadCapability - Maps the necessary functions to read the structs
 specific to the device, with the goal of parsing the entire device's
-metadata.  Can also read the device's capacity, used and total.  This
-is a good Capability to subclass to initially test that the parsing is
-being done correctly, before reading more information.
-
-ReadCapability - Maps further functions, and completes the reading of
-the metadata from the device.
+metadata. Can also read the device's capacity, used and total.
 
 WriteCapabilityBase - Receives generic commands related to writing to
 the device: find where to copy a new track onto the device, copy the

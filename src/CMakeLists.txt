@@ -104,7 +104,6 @@ set(libmediadeviceframework_SRCS
   core-impl/collections/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/PodcastCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/ReadCapability.cpp
-  core-impl/collections/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/WriteCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
   core-impl/collections/mediadevicecollection/playlist/MediaDevicePlaylist.cpp

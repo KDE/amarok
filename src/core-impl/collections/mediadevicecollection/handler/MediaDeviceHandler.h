@@ -187,8 +187,8 @@ public:
     */
     virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) } // called by @param track
 
-    virtual float usedcapacity() const;
-    virtual float totalcapacity() const;
+    virtual float usedcapacity();
+    virtual float totalcapacity();
 
     Playlists::UserPlaylistProvider* provider();
 
@@ -329,14 +329,21 @@ private:
 
     // Misc. Helper Methods
 
-    void setupReadCapability();
+    /**
+     * Tries to create read capability in m_rc
+     * @return true if m_rc is valid read capability, false otherwise
+     */
+    bool setupReadCapability();
     void setupWriteCapability();
 
     /**
      *  @return free space on the device
      */
 
-    float freeSpace() const;
+    /**
+     *  @return free space on the device
+     */
+    float freeSpace();
 
     // Observer Methods
 
@@ -374,7 +381,6 @@ private:
 
     Handler::PlaylistCapability *m_pc;
     Handler::PodcastCapability *m_podcastCapability;
-    Handler::ReadCapabilityBase *m_rcb;
     Handler::ReadCapability *m_rc;
     Handler::WriteCapabilityBase *m_wcb;
     Handler::WriteCapability    *m_wc;

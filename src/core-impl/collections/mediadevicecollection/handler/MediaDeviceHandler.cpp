@@ -54,7 +54,6 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     , m_isCopying( false )
     , m_isDeleting( false )
     , m_pc( 0 )
-    , m_rcb( 0 )
     , m_rc( 0 )
     , m_wcb( 0 )
     , m_wc( 0 )
@@ -202,11 +201,7 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
 void
 MediaDeviceHandler::addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr& track )
 {
-    DEBUG_BLOCK
-
-    setupReadCapability();
-
-    if( !m_rcb )
+    if( !setupReadCapability() )
         return;
 
     TrackMap trackMap = m_memColl->memoryCollection()->trackMap();
@@ -746,7 +741,7 @@ MediaDeviceHandler::slotDatabaseWritten( bool success )
 void
 MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap &artistMap )
 {
-    const QString artist( m_rcb->libGetArtist( track ) );
+    const QString artist( m_rc->libGetArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
     if( artistMap.contains( artist ) )
@@ -764,8 +759,8 @@ MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap &
 void
 MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& albumMap, ArtistMap &artistMap )
 {
-    const QString album( m_rcb->libGetAlbum( track ) );
-    QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
+    const QString album( m_rc->libGetAlbum( track ) );
+    QString albumArtist( m_rc->libGetAlbumArtist( track ) );
     MediaDeviceAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
@@ -812,7 +807,7 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 void
 MediaDeviceHandler::setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap& genreMap )
 {
-    const QString genre = m_rcb->libGetGenre( track );
+    const QString genre = m_rc->libGetGenre( track );
     MediaDeviceGenrePtr genrePtr;
 
     if ( genreMap.contains( genre ) )
@@ -831,7 +826,7 @@ MediaDeviceHandler::setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap& ge
 void
 MediaDeviceHandler::setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerMap& composerMap )
 {
-    QString composer ( m_rcb->libGetComposer( track ) );
+    QString composer ( m_rc->libGetComposer( track ) );
     MediaDeviceComposerPtr composerPtr;
 
     if ( composerMap.contains( composer ) )
@@ -849,7 +844,7 @@ MediaDeviceHandler::setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerM
 void
 MediaDeviceHandler::setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap& yearMap )
 {
-    int year = m_rcb->libGetYear( track );
+    int year = m_rc->libGetYear( track );
     MediaDeviceYearPtr yearPtr;
     if ( yearMap.contains( year ) )
         yearPtr = MediaDeviceYearPtr::staticCast( yearMap.value( year ) );
@@ -867,8 +862,7 @@ MediaDeviceHandler::privateParseTracks()
 {
     DEBUG_BLOCK
 
-    setupReadCapability();
-    if ( !m_rcb )
+    if( !setupReadCapability() )
         return false;
 
     TrackMap trackMap;
@@ -879,11 +873,11 @@ MediaDeviceHandler::privateParseTracks()
     YearMap yearMap;
 
     /* iterate through tracklist and add to appropriate map */
-    for( m_rcb->prepareToParseTracks(); !m_rcb->isEndOfParseTracksList(); m_rcb->prepareToParseNextTrack() )
+    for( m_rc->prepareToParseTracks(); !m_rc->isEndOfParseTracksList(); m_rc->prepareToParseNextTrack() )
     {
         /// Fetch next track to parse
 
-        m_rcb->nextTrackToParse();
+        m_rc->nextTrackToParse();
 
         // FIXME: should we return true or false?
         if (!m_memColl)
@@ -891,12 +885,8 @@ MediaDeviceHandler::privateParseTracks()
 
         MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
 
-        m_rcb->setAssociateTrack( track );
-
-        if( m_rc != 0 )
-        {
-            getBasicMediaDeviceTrackInfo( track, track );
-        }
+        m_rc->setAssociateTrack( track );
+        getBasicMediaDeviceTrackInfo( track, track );
 
         /* map-related info retrieval */
         setupArtistMap( track, artistMap );
@@ -1052,34 +1042,28 @@ MediaDeviceHandler::enqueueNextCopyThread()
 }
 
 float
-MediaDeviceHandler::freeSpace() const
+MediaDeviceHandler::freeSpace()
 {
-    DEBUG_BLOCK
-    if ( m_rcb )
-    {
-        debug() << "totalCapacity:" << m_rcb->totalCapacity();
-        debug() << "usedCapacity():" << m_rcb->usedCapacity();
-        return ( m_rcb->totalCapacity() - m_rcb->usedCapacity() );
-    } else {
-        debug() << "m_rcb null!";
-        return 0.0;
-    }
-}
-
-float
-MediaDeviceHandler::usedcapacity() const
-{
-    if ( m_rcb )
-        return m_rcb->usedCapacity();
+    if ( setupReadCapability() )
+        return m_rc->totalCapacity() - m_rc->usedCapacity();
     else
         return 0.0;
 }
 
 float
-MediaDeviceHandler::totalcapacity() const
+MediaDeviceHandler::usedcapacity()
 {
-    if ( m_rcb )
-        return m_rcb->totalCapacity();
+    if ( setupReadCapability() )
+        return m_rc->usedCapacity();
+    else
+        return 0.0;
+}
+
+float
+MediaDeviceHandler::totalcapacity()
+{
+    if ( setupReadCapability() )
+        return m_rc->totalCapacity();
     else
         return 0.0;
 }
@@ -1173,32 +1157,16 @@ MediaDeviceHandler::deletePlaylists( const Playlists::MediaDevicePlaylistList &p
     }
 }
 
-void
+bool
 MediaDeviceHandler::setupReadCapability()
 {
-    DEBUG_BLOCK
-    MediaDeviceHandler *handler = const_cast<MediaDeviceHandler*> ( this );
-    if( !m_rcb )
-    {
-        debug() << "RCB does not exist";
-        if( handler->hasCapabilityInterface( Handler::Capability::Readable ) )
-        {
-            debug() << "Has read capability interface";
-            m_rcb = handler->create<Handler::ReadCapabilityBase>();
-            m_rc = 0;
-            if( !m_rcb )
-            {
-                debug() << "Handler does not have MediaDeviceHandler::ReadCapability. Aborting.";
-                return;
-            }
-            if( m_rcb->inherits( "Handler::ReadCapability" ) )
-            {
-                debug() << "Making read capability";
-                m_rc = qobject_cast<Handler::ReadCapability *>( m_rcb );
-            }
-            debug() << "Created rc";
-        }
-    }
+    if( m_rc )
+        return true;
+    if( !hasCapabilityInterface( Handler::Capability::Readable ) )
+        return false;
+
+    m_rc = create<Handler::ReadCapability>();
+    return (bool) m_rc;
 }
 
 void
