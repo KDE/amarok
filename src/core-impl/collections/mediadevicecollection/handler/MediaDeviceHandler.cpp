@@ -524,7 +524,6 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
     DEBUG_BLOCK
 
     // Create new destTrack that will go into the device collection, based on source track
-
     Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
 
     // find path to copy to
@@ -533,15 +532,12 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
     if( !isOrganizable() )
     {
         // Create a track struct, associate it to destTrack
-
         m_wc->libCreateTrack( destTrack );
 
         // Fill the track struct of the destTrack with info from the track parameter as source
-
         setBasicMediaDeviceTrackInfo( track, destTrack );
 
         // set up the play url
-
         m_wc->libSetPlayableUrl( destTrack, track );
 
         getBasicMediaDeviceTrackInfo( destTrack, destTrack );
@@ -620,7 +616,6 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
     m_isDeleting = true;
 
     // Init the list of tracks to be deleted
-
     m_tracksToDelete = tracks;
 
     // Set up statusbar for deletion operation

@@ -231,7 +231,7 @@ public slots:
     void deletePlaylists( const Playlists::MediaDevicePlaylistList &playlistlist );
 
     bool privateParseTracks();
-    
+
     void copyNextTrackToDevice();
     bool privateCopyTrackToDevice( const Meta::TrackPtr& track );
 
@@ -242,46 +242,46 @@ public slots:
 protected:
 
     /**
-    * Constructor
-    * @param parent the Collection whose handler this is
-    */
-
+     * Constructor
+     * @param parent the Collection whose handler this is
+     */
     MediaDeviceHandler( QObject *parent );
 
-    /** Creates a MediaDeviceTrack based on the latest track struct created as a
-    *  result of a copy to the device, and adds it into the collection to reflect
-    *  that it has been copied.
-    *  @param track The track to add to the collection
-    */
-
+    /**
+     * Creates a MediaDeviceTrack based on the latest track struct created as a
+     *  result of a copy to the device, and adds it into the collection to reflect
+     *  that it has been copied.
+     *  @param track The track to add to the collection
+     */
     void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
 
-   /**  Removes the @param track from all the collection's maps to reflect that
-    *  it has been removed from the collection
-    *  @param track The track to remove from the collection
-    */
-
+    /**
+     * Removes the @param track from all the collection's maps to reflect that
+     * it has been removed from the collection
+     * @param track The track to remove from the collection
+     */
     void removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrackPtr &track );
 
-   /** Uses wrapped libGet methods to fill a track with information from device
-    *  @param track The track from whose associated struct to get the information
-    *  @param destTrack The track that we want to fill with information
-    */
+    /**
+     * Uses wrapped libGet methods to fill a track with information from device
+     * @param track The track from whose associated struct to get the information
+     * @param destTrack The track that we want to fill with information
+     */
     void getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
 
-   /** Convenience method.  Can be used to just pull information out of a track
-    *  that was custom constructed, instead of parsing using specific device's
-    *  library methods.
-    */
-
+    /**
+     * Convenience method. Can be used to just pull information out of a track
+     * that was custom constructed, instead of parsing using specific device's
+     * library methods.
+     */
     void getBasicMediaDeviceTrackInfo( const Meta::TrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
 
-    /** Uses wrapped libSet methods to fill a track struct of the particular library
-    *  with information from a Meta::Track
-    *  @param srcTrack The track that has the source information
-    *  @param destTrack The track whose associated struct we want to fill with information
-    */
-
+    /**
+     * Uses wrapped libSet methods to fill a track struct of the particular library
+     * with information from a Meta::Track
+     * @param srcTrack The track that has the source information
+     * @param destTrack The track whose associated struct we want to fill with information
+     */
     void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
 
     Collections::MediaDeviceCollection   *m_memColl; ///< Associated collection
