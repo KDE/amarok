@@ -97,6 +97,7 @@ set(libproxycollection_SRCS
 set(libmediadeviceframework_SRCS
   core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceCollectionLocation.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceEditCapability.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp

@@ -18,6 +18,7 @@
 #include "MediaDeviceCollection.h"
 #include "MediaDeviceHandler.h"
 
+#include "MediaDeviceEditCapability.h"
 #include "handler/capabilities/ArtworkCapability.h"
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetchingActions.h"
@@ -32,36 +33,6 @@
 #include <QAction>
 
 using namespace Meta;
-// Currently complaining about some vtable issue
-
-class EditCapabilityMediaDevice : public Capabilities::EditCapability
-{
-    Q_OBJECT
-    public:
-        EditCapabilityMediaDevice( MediaDeviceTrack *track )
-            : Capabilities::EditCapability()
-            , m_track( track ) {}
-
-        virtual bool isEditable() const { return m_track->isEditable(); }
-        virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
-        virtual void setAlbumArtist( const QString &newAlbumArtist ) { m_track->setAlbumArtist( newAlbumArtist ); }
-        virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
-        virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
-        virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-        virtual void setYear( int newYear ) { m_track->setYear( newYear ); }
-        virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
-        virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
-        virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
-        virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
-        virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-        virtual void setUidUrl( const QString &newUidUrl ) { m_track->setUidUrl( newUidUrl ); }
-        virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
-        virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
-
-    private:
-        KSharedPtr<MediaDeviceTrack> m_track;
-};
-
 
 MediaDeviceTrack::MediaDeviceTrack( Collections::MediaDeviceCollection *collection )
     : Meta::Track()
@@ -1096,5 +1067,3 @@ MediaDeviceYear::remTrack( MediaDeviceTrackPtr track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
 }
-
-#include "mediadevicemeta.moc"
