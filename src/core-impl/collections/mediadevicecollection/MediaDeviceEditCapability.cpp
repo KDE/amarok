@@ -16,9 +16,123 @@
 
 #include "MediaDeviceEditCapability.h"
 
-Meta::EditCapabilityMediaDevice::~EditCapabilityMediaDevice()
+using namespace Meta;
+
+MediaDeviceEditCapability::MediaDeviceEditCapability( MediaDeviceTrack *track )
+    : Capabilities::EditCapability()
+    , m_inBatchUpdate( false )
+    , m_track( track )
+{
+}
+
+MediaDeviceEditCapability::~MediaDeviceEditCapability()
 {
     // nothing to do
+}
+
+void
+MediaDeviceEditCapability::setAlbum( const QString &newAlbum )
+{
+    m_track->setAlbum( newAlbum );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::setAlbumArtist( const QString &newAlbumArtist )
+{
+    m_track->setAlbumArtist( newAlbumArtist );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::setArtist( const QString &newArtist )
+{
+    m_track->setArtist( newArtist );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::setComposer( const QString &newComposer )
+{
+    m_track->setComposer( newComposer );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::setGenre( const QString &newGenre )
+{
+    m_track->setGenre( newGenre );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::setYear( int newYear )
+{
+    m_track->setYear( newYear );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::setBpm( const qreal newBpm )
+{
+    m_track->setBpm( newBpm );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::setTitle( const QString &newTitle )
+{
+    m_track->setTitle( newTitle );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::setComment( const QString &newComment )
+{
+    m_track->setComment( newComment );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::setTrackNumber( int newTrackNumber )
+{
+    m_track->setTrackNumber( newTrackNumber );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::setDiscNumber( int newDiscNumber )
+{
+    m_track->setDiscNumber( newDiscNumber );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::setUidUrl( const QString &newUidUrl )
+{
+    m_track->setUidUrl( newUidUrl );
+    commitIfInNonBatchUpdate();
+}
+
+void
+MediaDeviceEditCapability::beginMetaDataUpdate()
+{
+    m_inBatchUpdate = true;
+}
+
+void
+MediaDeviceEditCapability::endMetaDataUpdate()
+{
+    m_inBatchUpdate = false;
+    m_track->commitChanges();
+}
+
+void
+MediaDeviceEditCapability::commitIfInNonBatchUpdate()
+{
+    if( m_inBatchUpdate )
+        return;
+    m_track->commitChanges();
 }
 
 #include "MediaDeviceEditCapability.moc"

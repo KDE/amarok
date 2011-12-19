@@ -184,7 +184,10 @@ MediaDeviceTrack::rating() const
 void
 MediaDeviceTrack::setRating( int newRating )
 {
+    if( newRating == m_rating )
+        return;
     m_rating = newRating;
+    // this method is _not_ called though EditCapability, notify observers manually
     notifyObservers();
 }
 
@@ -390,7 +393,7 @@ MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type
     switch( type )
     {
         case Capabilities::Capability::Editable:
-            return new EditCapabilityMediaDevice( this );
+            return new MediaDeviceEditCapability( this );
         default:
             return 0;
     }
@@ -707,11 +710,8 @@ MediaDeviceTrack::setLength( qint64 length )
 }
 
 void
-MediaDeviceTrack::endMetaDataUpdate()
+MediaDeviceTrack::commitChanges()
 {
-    DEBUG_BLOCK
-    // Update info in local mediadevice database struct
-    debug() << "Observer number: " << m_observers.count();
     notifyObservers();
 }
 

@@ -126,12 +126,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual QString type() const;
         virtual void prepareToPlay();
 
-        virtual void beginMetaDataUpdate() { DEBUG_BLOCK }
-        virtual void endMetaDataUpdate();
-/*
-        virtual void subscribe ( Observer *observer );
-        virtual void unsubscribe ( Observer *observer );
-*/
         virtual bool inCollection() const;
         virtual Collections::Collection* collection() const;
 
@@ -151,6 +145,12 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
 
         void setLength( qint64 length );
         void setPlayableUrl( const KUrl &url) { m_playableUrl = url; }
+
+        /**
+         * Notifies observers about changes to metadata, one of the observers is media
+         * device handler which writes the changes back to the device.
+         */
+        void commitChanges();
 
     private:
         QWeakPointer<Collections::MediaDeviceCollection> m_collection;
