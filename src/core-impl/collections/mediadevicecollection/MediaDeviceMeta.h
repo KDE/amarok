@@ -119,6 +119,10 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual int playCount() const;
         void setPlayCount( const int newCount );
 
+        virtual qreal replayGain( ReplayGainTag mode ) const;
+        /* Set the track replay gain (other types unsupported) */
+        void setReplayGain( qreal newReplayGain );
+
         virtual QString type() const;
         virtual void prepareToPlay();
 
@@ -174,6 +178,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         QDateTime m_lastPlayed;
         int m_rating;
         qreal m_bpm;
+        qreal m_replayGain;
         QString m_displayUrl;
         KUrl m_playableUrl;
 };

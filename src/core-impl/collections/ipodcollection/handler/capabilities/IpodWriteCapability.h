@@ -71,6 +71,7 @@ class IpodWriteCapability : public WriteCapability
     virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
     virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
     virtual void libSetIsCompilation( Meta::MediaDeviceTrackPtr &track, bool isCompilation );
+    virtual void libSetReplayGain( Meta::MediaDeviceTrackPtr &track, qreal newReplayGain );
     virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &cover );
 
     virtual void prepareToCopy();

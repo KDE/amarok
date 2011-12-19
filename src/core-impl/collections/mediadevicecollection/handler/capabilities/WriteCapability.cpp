@@ -29,4 +29,11 @@ Handler::WriteCapability::libSetIsCompilation( Meta::MediaDeviceTrackPtr &track,
     // provide default implementation so that MTP collection doesn't need to override.
 }
 
+void
+Handler::WriteCapability::libSetReplayGain( Meta::MediaDeviceTrackPtr &track, qreal newReplayGain )
+{
+    Q_UNUSED( track )
+    Q_UNUSED( newReplayGain )
+}
+
 #include "WriteCapability.moc"

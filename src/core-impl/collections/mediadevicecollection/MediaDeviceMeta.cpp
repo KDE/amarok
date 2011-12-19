@@ -318,6 +318,29 @@ MediaDeviceTrack::setLastPlayed( const QDateTime &newTime )
     m_lastPlayed = newTime;
 }
 
+qreal
+MediaDeviceTrack::replayGain( ReplayGainTag mode ) const
+{
+    /* no known non-UMS portable media player is able to differentiante between different
+     * replay gain modes (track & album), so store only one value */
+    switch( mode ) {
+        case Meta::ReplayGain_Track_Gain:
+        case Meta::ReplayGain_Album_Gain:
+            return m_replayGain;
+        case Meta::ReplayGain_Track_Peak:
+        case Meta::ReplayGain_Album_Peak:
+            // no default label so that compiler emits a warning when new enum value is added
+            break;
+    }
+    return 0.0;
+}
+
+void
+MediaDeviceTrack::setReplayGain( qreal newReplayGain )
+{
+    m_replayGain = newReplayGain;
+}
+
 QString
 MediaDeviceTrack::type() const
 {

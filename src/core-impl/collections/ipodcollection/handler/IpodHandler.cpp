@@ -69,6 +69,8 @@ extern "C" {
 #include <QStringList>
 #include <QTime>
 
+#include <cmath>
+
 using namespace Meta;
 
 /// IpodHandler
@@ -1616,6 +1618,17 @@ IpodHandler::libIsCompilation( const Meta::MediaDeviceTrackPtr &track )
     return m_itdbtrackhash[ track ]->compilation != 0x0;
 }
 
+qreal
+IpodHandler::libGetReplayGain( const MediaDeviceTrackPtr &track )
+{
+    guint32 soundcheck = m_itdbtrackhash[ track ]->soundcheck;
+    if( soundcheck == 0 )  // libgpod: The value 0 is special, treated as "no Soundcheck"
+        return 0.0;
+    // libgpod: X = 1000 * 10 ^ (-.1 * Y)
+    // where Y is the adjustment value in dB and X is the value that goes into the SoundCheck field
+    return 30.0 - 10.0 * std::log10( soundcheck );
+}
+
 float
 IpodHandler::usedCapacity() const
 {
@@ -1843,6 +1856,19 @@ IpodHandler::libSetIsCompilation( MediaDeviceTrackPtr &track, bool isCompilation
 {
     // libgpod says: True if set to 0x1, false if set to 0x0.
     m_itdbtrackhash[ track ]->compilation = isCompilation ? 0x1 : 0x0;
+}
+
+void IpodHandler::libSetReplayGain( MediaDeviceTrackPtr &track, qreal newReplayGain )
+{
+    guint32 soundcheck;
+    if( newReplayGain == 0.0 )
+        // libgpod: The value 0 is special, treated as "no Soundcheck"
+        soundcheck = 0;
+    else
+        // libgpod: X = 1000 * 10 ^ (-.1 * Y)
+        // where Y is the adjustment value in dB and X is the value that goes into the SoundCheck field
+        soundcheck = 1000 * std::pow( 10.0, -0.1 * newReplayGain );
+    m_itdbtrackhash[ track ]->soundcheck = soundcheck;
 }
 
 void

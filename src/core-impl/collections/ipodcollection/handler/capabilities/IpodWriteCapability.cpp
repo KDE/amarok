@@ -201,9 +201,15 @@ IpodWriteCapability::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, co
 }
 
 void
-IpodWriteCapability::libSetIsCompilation(Meta::MediaDeviceTrackPtr& track, bool isCompilation)
+IpodWriteCapability::libSetIsCompilation( Meta::MediaDeviceTrackPtr &track, bool isCompilation )
 {
     m_handler->libSetIsCompilation( track, isCompilation );
+}
+
+void
+IpodWriteCapability::libSetReplayGain( Meta::MediaDeviceTrackPtr &track, qreal newReplayGain )
+{
+    m_handler->libSetReplayGain( track, newReplayGain );
 }
 
 void

@@ -106,6 +106,7 @@ class MEDIADEVICECOLLECTION_EXPORT ReadCapability : public Handler::Capability
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual bool    libIsCompilation( const Meta::MediaDeviceTrackPtr &track );
+        virtual qreal   libGetReplayGain( const Meta::MediaDeviceTrackPtr &track );
 
         /**
          * Get used capacity on the device, in bytes. Returns 0.0 if capacity information

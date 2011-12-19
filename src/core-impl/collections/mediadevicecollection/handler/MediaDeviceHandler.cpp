@@ -97,6 +97,7 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPt
     destTrack->setPlayCount( m_rc->libGetPlayCount( srcTrack ) );
     destTrack->setLastPlayed( m_rc->libGetLastPlayed( srcTrack ) );
     destTrack->setRating( m_rc->libGetRating( srcTrack ) );
+    destTrack->setReplayGain( m_rc->libGetReplayGain( srcTrack ) );
 
     destTrack->setPlayableUrl( m_rc->libGetPlayableUrl( srcTrack ) );
 
@@ -119,6 +120,8 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack
     destTrack->setPlayCount( srcTrack->playCount() );
     destTrack->setLastPlayed( srcTrack->lastPlayed() );
     destTrack->setRating( srcTrack->rating() );
+    // MediaDeviceTrack stores only track gain:
+    destTrack->setReplayGain( srcTrack->replayGain( Meta::ReplayGain_Track_Gain ) );
 
     destTrack->setPlayableUrl( srcTrack->playableUrl() );
 
@@ -191,6 +194,8 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     m_wc->libSetPlayCount( destTrack, srcTrack->playCount() );
     m_wc->libSetLastPlayed( destTrack, srcTrack->lastPlayed() );
     m_wc->libSetRating( destTrack, srcTrack->rating() );
+    // MediaDeviceTrack stores only track gain:
+    m_wc->libSetReplayGain( destTrack, srcTrack->replayGain( Meta::ReplayGain_Track_Gain ) );
     m_wc->libSetType( destTrack, srcTrack->type() );
     //libSetPlayableUrl( destTrack, srcTrack );
 }
