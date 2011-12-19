@@ -1169,7 +1169,6 @@ MediaDeviceHandler::metadataChanged( TrackPtr track )
     DEBUG_BLOCK
 
     Meta::MediaDeviceTrackPtr trackPtr = Meta::MediaDeviceTrackPtr::staticCast( track );
-    KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
 
     if( !setupWriteCapability() )
         return;
