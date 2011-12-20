@@ -23,8 +23,6 @@
 //#include "MediaDeviceMeta.h"
 #include "MediaDeviceCache.h" // for collection refresh hack
 
-#include "dialogs/OrganizeCollectionDialog.h"
-
 #include <kjob.h>
 #include <KLocale>
 #include <kio/job.h>
@@ -51,63 +49,16 @@ MediaDeviceCollectionLocation::prettyLocation() const
     return collection()->prettyName();
 }
 
-// NOTE: must be overridden by child class if
-// it is writable
 bool
 MediaDeviceCollectionLocation::isWritable() const
 {
     return m_handler->isWritable();
 }
 
-bool
-MediaDeviceCollectionLocation::remove( const Meta::TrackPtr &track )
-{
-    Q_UNUSED( track );
-    return false;
-}
-
-void
-MediaDeviceCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources,
-                                                      const Transcoding::Configuration &configuration )
-{
-    Q_UNUSED( removeSources )
-    Q_UNUSED( configuration )
-    if( m_handler->isOrganizable() )
-    {
-        QStringList folders;
-        folders << m_handler->baseMusicFolder();
-        OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks, folders );
-        connect( dialog, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
-        connect( dialog, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
-        dialog->show();
-    }
-    else
-        slotShowDestinationDialogDone();
-}
-
-void
-MediaDeviceCollectionLocation::slotDialogAccepted()
-{
-    sender()->deleteLater();
-    OrganizeCollectionDialog *dialog = qobject_cast<OrganizeCollectionDialog*>( sender() );
-    m_destinations = dialog->getDestinations();
-    slotShowDestinationDialogDone();
-}
-
-void
-MediaDeviceCollectionLocation::slotDialogRejected()
-{
-    DEBUG_BLOCK
-    sender()->deleteLater();
-    abort();
-}
-
 void
 MediaDeviceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
-    //    CollectionLocation::getKIOCopyableUrls(tracks);
     connect( m_handler, SIGNAL( gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> & ) ),SLOT(slotGetKIOCopyableUrlsDone(const QMap<Meta::TrackPtr,KUrl> &)) );
-
     m_handler->getCopyableUrls( tracks );
 }
 
@@ -118,9 +69,6 @@ MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, 
 {
     DEBUG_BLOCK
     Q_UNUSED( configuration )
-
-    if( m_handler->isOrganizable() )
-        m_handler->setDestinations( m_destinations );
 
     connect( m_handler, SIGNAL( copyTracksDone( bool  ) ),
              this,      SLOT( copyOperationFinished( bool ) ),
@@ -168,7 +116,6 @@ MediaDeviceCollectionLocation::copyOperationFinished( bool success )
     }
     */
     slotCopyOperationFinished();
-
 }
 
 void

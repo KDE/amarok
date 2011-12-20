@@ -41,11 +41,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public Collec
 
         virtual QString prettyLocation() const;
         virtual bool isWritable() const;
-        virtual bool remove( const Meta::TrackPtr &track );
 
     protected:
-        virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources,
-                                            const Transcoding::Configuration &configuration = Transcoding::Configuration() );
         virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
 
         /// Copies these tracks to the Collection using the Handler
@@ -56,13 +53,10 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public Collec
 
 
     private slots:
-        void slotDialogAccepted();
-        void slotDialogRejected();
         void copyOperationFinished( bool success );
         void removeOperationFinished();
 
     private:
-        QMap<Meta::TrackPtr, QString> m_destinations;
         MediaDeviceCollection *m_collection;
         Meta::MediaDeviceHandler *m_handler;
 };

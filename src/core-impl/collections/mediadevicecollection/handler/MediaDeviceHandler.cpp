@@ -105,30 +105,6 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPt
 }
 
 void
-MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack )
-{
-    /* 1-liner info retrieval */
-    destTrack->setTitle( srcTrack->name() );
-    destTrack->setLength( srcTrack->length() );
-    destTrack->setTrackNumber( srcTrack->trackNumber() );
-    destTrack->setComment( srcTrack->comment() );
-    destTrack->setDiscNumber( srcTrack->discNumber() );
-    destTrack->setBitrate( srcTrack->bitrate() );
-    destTrack->setSamplerate( srcTrack->sampleRate() );
-    destTrack->setBpm( srcTrack->bpm() );
-    destTrack->setFileSize( srcTrack->filesize() );
-    destTrack->setPlayCount( srcTrack->playCount() );
-    destTrack->setLastPlayed( srcTrack->lastPlayed() );
-    destTrack->setRating( srcTrack->rating() );
-    // MediaDeviceTrack stores only track gain:
-    destTrack->setReplayGain( srcTrack->replayGain( Meta::ReplayGain_Track_Gain ) );
-
-    destTrack->setPlayableUrl( srcTrack->playableUrl() );
-
-    destTrack->setType( srcTrack->type() );
-}
-
-void
 MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack, MediaDeviceTrackPtr destTrack )
 {
     DEBUG_BLOCK
@@ -534,24 +510,16 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
     // find path to copy to
     m_wc->findPathToCopy( track, destTrack );
 
-    if( !isOrganizable() )
-    {
-        // Create a track struct, associate it to destTrack
-        m_wc->libCreateTrack( destTrack );
+    // Create a track struct, associate it to destTrack
+    m_wc->libCreateTrack( destTrack );
 
-        // Fill the track struct of the destTrack with info from the track parameter as source
-        setBasicMediaDeviceTrackInfo( track, destTrack );
+    // Fill the track struct of the destTrack with info from the track parameter as source
+    setBasicMediaDeviceTrackInfo( track, destTrack );
 
-        // set up the play url
-        m_wc->libSetPlayableUrl( destTrack, track );
+    // set up the play url
+    m_wc->libSetPlayableUrl( destTrack, track );
 
-        getBasicMediaDeviceTrackInfo( destTrack, destTrack );
-    }
-    else
-    {
-        // Fill metadata of destTrack too with the same info
-        getBasicMediaDeviceTrackInfo( track, destTrack );
-    }
+    getBasicMediaDeviceTrackInfo( destTrack, destTrack );
 
     m_trackSrcDst[ track ] = destTrack; // associate source with destination, for finalizing copy
 
@@ -568,16 +536,11 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
 
     Meta::MediaDeviceTrackPtr destTrack = m_trackSrcDst[ track ];
 
-    if( !isOrganizable() )
-    {
-        // Add the track struct into the database, if the library needs to
+    // Add the track struct into the database, if the library needs to
+    m_wc->addTrackInDB( destTrack );
 
-        m_wc->addTrackInDB( destTrack );
-
-        // Inform subclass that a track has been added to the db
-
-        m_wc->setDatabaseChanged();
-    }
+    // Inform subclass that a track has been added to the db
+    m_wc->setDatabaseChanged();
 
     // Add the new Meta::MediaDeviceTrackPtr into the device collection
 
@@ -670,20 +633,14 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
     DEBUG_BLOCK
     Meta::MediaDeviceTrackPtr devicetrack = Meta::MediaDeviceTrackPtr::staticCast( track );
 
-    if( !isOrganizable() )
-    {
-        // Remove the track struct from the db, references to it
+    // Remove the track struct from the db, references to it
+    m_wc->removeTrackFromDB( devicetrack );
 
-        m_wc->removeTrackFromDB( devicetrack );
+    // delete the struct associated with this track
+    m_wc->libDeleteTrack( devicetrack );
 
-        // delete the struct associated with this track
-
-        m_wc->libDeleteTrack( devicetrack );
-
-        // Inform subclass that a track has been removed from
-
-        m_wc->setDatabaseChanged();
-    }
+    // Inform subclass that a track has been removed from
+    m_wc->setDatabaseChanged();
 
     // remove from memory collection
     removeMediaDeviceTrackFromCollection( devicetrack );
@@ -1049,13 +1006,6 @@ MediaDeviceHandler::totalcapacity()
         return 0.0;
 }
 
-void
-MediaDeviceHandler::setDestinations( const QMap<Meta::TrackPtr, QString> &destinations )
-{
-    m_destinations.clear();
-    m_destinations = destinations;
-}
-
 Playlists::UserPlaylistProvider*
 MediaDeviceHandler::provider()
 {
@@ -1173,11 +1123,8 @@ MediaDeviceHandler::metadataChanged( TrackPtr track )
     if( !setupWriteCapability() )
         return;
 
-    if( !isOrganizable() )
-    {
-        setBasicMediaDeviceTrackInfo( track, trackPtr );
-        m_wc->setDatabaseChanged();
-    }
+    setBasicMediaDeviceTrackInfo( track, trackPtr );
+    m_wc->setDatabaseChanged();
 
     m_wc->updateTrack( trackPtr );
 }
