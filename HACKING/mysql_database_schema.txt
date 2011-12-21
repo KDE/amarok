@@ -1,0 +1,613 @@
+-- MySQL dump 10.13  Distrib 5.1.58, for debian-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: amarok
+-- ------------------------------------------------------
+-- Server version	5.1.58-1ubuntu1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `admin` (
+  `component` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `version` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `albums`
+--
+
+DROP TABLE IF EXISTS `albums`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `albums` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `artist` int(11) DEFAULT NULL,
+  `image` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `albums_name_artist` (`name`,`artist`),
+  KEY `albums_name` (`name`),
+  KEY `albums_artist` (`artist`),
+  KEY `albums_image` (`image`)
+) ENGINE=MyISAM AUTO_INCREMENT=547 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `amazon`
+--
+
+DROP TABLE IF EXISTS `amazon`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `amazon` (
+  `asin` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `locale` varchar(2) COLLATE utf8_bin DEFAULT NULL,
+  `filename` varchar(33) COLLATE utf8_bin DEFAULT NULL,
+  `refetchdate` int(11) DEFAULT NULL,
+  KEY `amazon_date` (`refetchdate`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `artists`
+--
+
+DROP TABLE IF EXISTS `artists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `artists` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `artists_name` (`name`)
+) ENGINE=MyISAM AUTO_INCREMENT=966 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `bookmark_groups`
+--
+
+DROP TABLE IF EXISTS `bookmark_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bookmark_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `custom` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `bookmarks`
+--
+
+DROP TABLE IF EXISTS `bookmarks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bookmarks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `url` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  `description` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  `custom` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `composers`
+--
+
+DROP TABLE IF EXISTS `composers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `composers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `composers_name` (`name`)
+) ENGINE=MyISAM AUTO_INCREMENT=268 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `devices`
+--
+
+DROP TABLE IF EXISTS `devices`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `devices` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `label` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `lastmountpoint` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `uuid` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `servername` varchar(80) COLLATE utf8_bin DEFAULT NULL,
+  `sharename` varchar(240) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `devices_uuid` (`uuid`),
+  KEY `devices_type` (`type`),
+  KEY `devices_rshare` (`servername`,`sharename`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `directories`
+--
+
+DROP TABLE IF EXISTS `directories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `directories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `deviceid` int(11) DEFAULT NULL,
+  `dir` varchar(1000) COLLATE utf8_bin NOT NULL,
+  `changedate` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `directories_deviceid` (`deviceid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1051 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `genres`
+--
+
+DROP TABLE IF EXISTS `genres`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `genres` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `genres_name` (`name`)
+) ENGINE=MyISAM AUTO_INCREMENT=132 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `images`
+--
+
+DROP TABLE IF EXISTS `images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `images` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `path` varchar(255) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `images_name` (`path`)
+) ENGINE=MyISAM AUTO_INCREMENT=356 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `labels`
+--
+
+DROP TABLE IF EXISTS `labels`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `labels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `label` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `labels_label` (`label`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `lyrics`
+--
+
+DROP TABLE IF EXISTS `lyrics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lyrics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `url` varchar(324) COLLATE utf8_bin DEFAULT NULL,
+  `lyrics` text COLLATE utf8_bin,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `lyrics_url` (`url`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `magnatune_albums`
+--
+
+DROP TABLE IF EXISTS `magnatune_albums`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `magnatune_albums` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `year` int(11) DEFAULT NULL,
+  `artist_id` int(11) DEFAULT NULL,
+  `album_code` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `cover_url` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  `description` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `magnatune_albums_name` (`name`),
+  KEY `magnatune_albums_artist_id` (`artist_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1154 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `magnatune_artists`
+--
+
+DROP TABLE IF EXISTS `magnatune_artists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `magnatune_artists` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `artist_page` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `photo_url` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `magnatune_artists_name` (`name`)
+) ENGINE=MyISAM AUTO_INCREMENT=500 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `magnatune_genre`
+--
+
+DROP TABLE IF EXISTS `magnatune_genre`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `magnatune_genre` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `album_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `magnatune_genre_name` (`name`),
+  KEY `magnatune_genre_album_id` (`album_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2783 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `magnatune_moods`
+--
+
+DROP TABLE IF EXISTS `magnatune_moods`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `magnatune_moods` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `track_id` int(11) DEFAULT NULL,
+  `mood` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2762 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `magnatune_tracks`
+--
+
+DROP TABLE IF EXISTS `magnatune_tracks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `magnatune_tracks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `track_number` int(11) DEFAULT NULL,
+  `length` int(11) DEFAULT NULL,
+  `album_id` int(11) DEFAULT NULL,
+  `artist_id` int(11) DEFAULT NULL,
+  `preview_lofi` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  `preview_ogg` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  `preview_url` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `magnatune_tracks_album_id` (`album_id`),
+  KEY `magnatune_tracks_artist_id` (`artist_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=14831 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `playlist_groups`
+--
+
+DROP TABLE IF EXISTS `playlist_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `playlist_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `parent_podchannel` (`parent_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `playlist_tracks`
+--
+
+DROP TABLE IF EXISTS `playlist_tracks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `playlist_tracks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `playlist_id` int(11) DEFAULT NULL,
+  `track_num` int(11) DEFAULT NULL,
+  `url` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `album` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `artist` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `length` int(11) DEFAULT NULL,
+  `uniqueid` varchar(128) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `parent_playlist_tracks` (`playlist_id`),
+  KEY `playlist_tracks_uniqueid` (`uniqueid`)
+) ENGINE=MyISAM AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `playlists`
+--
+
+DROP TABLE IF EXISTS `playlists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `playlists` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `urlid` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `parent_playlist` (`parent_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `podcastchannels`
+--
+
+DROP TABLE IF EXISTS `podcastchannels`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `podcastchannels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `url` text COLLATE utf8_bin,
+  `title` text COLLATE utf8_bin,
+  `weblink` text COLLATE utf8_bin,
+  `image` text COLLATE utf8_bin,
+  `description` text COLLATE utf8_bin,
+  `copyright` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `directory` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `labels` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `subscribedate` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `autoscan` tinyint(1) DEFAULT NULL,
+  `fetchtype` int(11) DEFAULT NULL,
+  `haspurge` tinyint(1) DEFAULT NULL,
+  `purgecount` int(11) DEFAULT NULL,
+  `writetags` tinyint(1) DEFAULT NULL,
+  `filenamelayout` varchar(1024) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FULLTEXT KEY `url_podchannel` (`url`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `podcastepisodes`
+--
+
+DROP TABLE IF EXISTS `podcastepisodes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `podcastepisodes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `url` text COLLATE utf8_bin,
+  `channel` int(11) DEFAULT NULL,
+  `localurl` text COLLATE utf8_bin,
+  `guid` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
+  `title` text COLLATE utf8_bin,
+  `subtitle` text COLLATE utf8_bin,
+  `sequencenumber` int(11) DEFAULT NULL,
+  `description` text COLLATE utf8_bin,
+  `mimetype` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `pubdate` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `duration` int(11) DEFAULT NULL,
+  `filesize` int(11) DEFAULT NULL,
+  `isnew` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FULLTEXT KEY `url_podepisode` (`url`),
+  FULLTEXT KEY `localurl_podepisode` (`localurl`)
+) ENGINE=MyISAM AUTO_INCREMENT=263 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `statistics`
+--
+
+DROP TABLE IF EXISTS `statistics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `statistics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `url` int(11) NOT NULL,
+  `createdate` int(11) DEFAULT NULL,
+  `accessdate` int(11) DEFAULT NULL,
+  `score` float DEFAULT NULL,
+  `rating` int(11) NOT NULL DEFAULT '0',
+  `playcount` int(11) NOT NULL DEFAULT '0',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `statistics_url` (`url`),
+  KEY `statistics_createdate` (`createdate`),
+  KEY `statistics_accessdate` (`accessdate`),
+  KEY `statistics_score` (`score`),
+  KEY `statistics_rating` (`rating`),
+  KEY `statistics_playcount` (`playcount`)
+) ENGINE=MyISAM AUTO_INCREMENT=6721 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `statistics_permanent`
+--
+
+DROP TABLE IF EXISTS `statistics_permanent`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `statistics_permanent` (
+  `url` varchar(324) COLLATE utf8_bin NOT NULL,
+  `firstplayed` datetime DEFAULT NULL,
+  `lastplayed` datetime DEFAULT NULL,
+  `score` float DEFAULT NULL,
+  `rating` int(11) DEFAULT '0',
+  `playcount` int(11) DEFAULT NULL,
+  UNIQUE KEY `stats_perm_url` (`url`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `statistics_tag`
+--
+
+DROP TABLE IF EXISTS `statistics_tag`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `statistics_tag` (
+  `name` varchar(108) COLLATE utf8_bin DEFAULT NULL,
+  `artist` varchar(108) COLLATE utf8_bin DEFAULT NULL,
+  `album` varchar(108) COLLATE utf8_bin DEFAULT NULL,
+  `firstplayed` datetime DEFAULT NULL,
+  `lastplayed` datetime DEFAULT NULL,
+  `score` float DEFAULT NULL,
+  `rating` int(11) DEFAULT '0',
+  `playcount` int(11) DEFAULT NULL,
+  UNIQUE KEY `stats_tag_name_artist_album` (`name`,`artist`,`album`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tracks`
+--
+
+DROP TABLE IF EXISTS `tracks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tracks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `url` int(11) DEFAULT NULL,
+  `artist` int(11) DEFAULT NULL,
+  `album` int(11) DEFAULT NULL,
+  `genre` int(11) DEFAULT NULL,
+  `composer` int(11) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `comment` text COLLATE utf8_bin,
+  `tracknumber` int(11) DEFAULT NULL,
+  `discnumber` int(11) DEFAULT NULL,
+  `bitrate` int(11) DEFAULT NULL,
+  `length` int(11) DEFAULT NULL,
+  `samplerate` int(11) DEFAULT NULL,
+  `filesize` int(11) DEFAULT NULL,
+  `filetype` int(11) DEFAULT NULL,
+  `bpm` float DEFAULT NULL,
+  `createdate` int(11) DEFAULT NULL,
+  `modifydate` int(11) DEFAULT NULL,
+  `albumgain` float DEFAULT NULL,
+  `albumpeakgain` float DEFAULT NULL,
+  `trackgain` float DEFAULT NULL,
+  `trackpeakgain` float DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tracks_url` (`url`),
+  KEY `tracks_id` (`id`),
+  KEY `tracks_artist` (`artist`),
+  KEY `tracks_album` (`album`),
+  KEY `tracks_genre` (`genre`),
+  KEY `tracks_composer` (`composer`),
+  KEY `tracks_year` (`year`),
+  KEY `tracks_title` (`title`),
+  KEY `tracks_discnumber` (`discnumber`),
+  KEY `tracks_createdate` (`createdate`),
+  KEY `tracks_length` (`length`),
+  KEY `tracks_bitrate` (`bitrate`),
+  KEY `tracks_filesize` (`filesize`)
+) ENGINE=MyISAM AUTO_INCREMENT=6721 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `urls`
+--
+
+DROP TABLE IF EXISTS `urls`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `urls` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `deviceid` int(11) DEFAULT NULL,
+  `rpath` varchar(324) COLLATE utf8_bin NOT NULL,
+  `directory` int(11) DEFAULT NULL,
+  `uniqueid` varchar(128) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniqueid` (`uniqueid`),
+  UNIQUE KEY `urls_id_rpath` (`deviceid`,`rpath`),
+  KEY `urls_uniqueid` (`uniqueid`),
+  KEY `urls_directory` (`directory`)
+) ENGINE=MyISAM AUTO_INCREMENT=6721 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `urls_labels`
+--
+
+DROP TABLE IF EXISTS `urls_labels`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `urls_labels` (
+  `url` int(11) DEFAULT NULL,
+  `label` int(11) DEFAULT NULL,
+  KEY `urlslabels_url` (`url`),
+  KEY `urlslabels_label` (`label`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `years`
+--
+
+DROP TABLE IF EXISTS `years`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `years` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `years_name` (`name`)
+) ENGINE=MyISAM AUTO_INCREMENT=73 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2011-12-21 12:50:14
