@@ -199,8 +199,6 @@ TestSqlAlbum::testCapabilities()
     QVERIFY( btc );
     QVERIFY( btc->bookmarkAction() );
 
-    QVERIFY( !album->hasCapabilityInterface( Capabilities::Capability::Updatable ) );
-
     // need to delete the actions. They hold pointers that prevent the registry from cleaning
     // it's state.
     foreach( QAction *action, ac->actions() )
