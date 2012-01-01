@@ -18,16 +18,14 @@
 
 #include "MediaDeviceHandler.h"
 
-#include "MediaDeviceCollection.h"
-
 #include "MediaDeviceHandlerCapability.h"
-
 #include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
+#include "core-impl/collections/support/ArtistHelper.h"
 #include "playlist/MediaDeviceUserPlaylistProvider.h"
-#include "playlistmanager/PlaylistManager.h"
-
 #include "playlist/MediaDevicePlaylist.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <KMessageBox>
 #include <threadweaver/ThreadWeaver.h>
@@ -56,10 +54,7 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     , m_isCopying( false )
     , m_isDeleting( false )
     , m_pc( 0 )
-    , m_rcb( 0 )
-    , m_crc( 0 )
     , m_rc( 0 )
-    , m_wcb( 0 )
     , m_wc( 0 )
 {
     DEBUG_BLOCK
@@ -102,6 +97,7 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPt
     destTrack->setPlayCount( m_rc->libGetPlayCount( srcTrack ) );
     destTrack->setLastPlayed( m_rc->libGetLastPlayed( srcTrack ) );
     destTrack->setRating( m_rc->libGetRating( srcTrack ) );
+    destTrack->setReplayGain( m_rc->libGetReplayGain( srcTrack ) );
 
     destTrack->setPlayableUrl( m_rc->libGetPlayableUrl( srcTrack ) );
 
@@ -109,81 +105,81 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPt
 }
 
 void
-MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack )
-{
-    /* 1-liner info retrieval */
-    destTrack->setTitle( srcTrack->name() );
-    destTrack->setLength( srcTrack->length() );
-    destTrack->setTrackNumber( srcTrack->trackNumber() );
-    destTrack->setComment( srcTrack->comment() );
-    destTrack->setDiscNumber( srcTrack->discNumber() );
-    destTrack->setBitrate( srcTrack->bitrate() );
-    destTrack->setSamplerate( srcTrack->sampleRate() );
-    destTrack->setBpm( srcTrack->bpm() );
-    destTrack->setFileSize( srcTrack->filesize() );
-    destTrack->setPlayCount( srcTrack->playCount() );
-    destTrack->setLastPlayed( srcTrack->lastPlayed() );
-    destTrack->setRating( srcTrack->rating() );
-
-    destTrack->setPlayableUrl( srcTrack->playableUrl() );
-
-    destTrack->setType( srcTrack->type() );
-}
-
-void
 MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack, MediaDeviceTrackPtr destTrack )
 {
     DEBUG_BLOCK
-    setupWriteCapability();
-
-    if( !m_wc )
+    if( !setupWriteCapability() )
         return;
 
     m_wc->libSetTitle( destTrack, srcTrack->name() );
+
+    QString albumArtist;
+    bool isCompilation = false;
     if ( srcTrack->album() )
     {
         AlbumPtr album = srcTrack->album();
 
         m_wc->libSetAlbum( destTrack, album->name() );
-        m_wc->libSetIsCompilation( destTrack, album->isCompilation() );
-
+        isCompilation = album->isCompilation();
+        m_wc->libSetIsCompilation( destTrack, isCompilation );
         if( album->hasAlbumArtist() )
-            m_wc->libSetAlbumArtist( destTrack, album->albumArtist()->name() );
+            albumArtist = album->albumArtist()->name();
 
         if( album->hasImage() )
             m_wc->libSetCoverArt( destTrack, album->image() );
     }
+
+    QString trackArtist;
     if ( srcTrack->artist() )
-        m_wc->libSetArtist( destTrack, srcTrack->artist()->name() ); Debug::stamp();
+    {
+        trackArtist = srcTrack->artist()->name();
+        m_wc->libSetArtist( destTrack, trackArtist );
+    }
+
+    QString composer;
     if ( srcTrack->composer() )
-        m_wc->libSetComposer( destTrack, srcTrack->composer()->name() ); Debug::stamp();
+    {
+        composer = srcTrack->composer()->name();
+        m_wc->libSetComposer( destTrack, composer );
+    }
+
+    QString genre;
     if ( srcTrack->genre() )
-        m_wc->libSetGenre( destTrack, srcTrack->genre()->name() ); Debug::stamp();
+    {
+        genre = srcTrack->genre()->name();
+        m_wc->libSetGenre( destTrack, genre );
+    }
+
+    if( isCompilation && albumArtist.isEmpty() )
+        // iPod doesn't handle empy album artist well for compilation albums (splits these albums)
+        albumArtist = i18n( "Various Artists" );
+    else
+        albumArtist = ArtistHelper::bestGuessAlbumArtist( albumArtist, trackArtist, genre, composer );
+    m_wc->libSetAlbumArtist( destTrack, albumArtist );
+
     if ( srcTrack->year() )
-        m_wc->libSetYear( destTrack, srcTrack->year()->name() ); Debug::stamp();
-    m_wc->libSetLength( destTrack, srcTrack->length() ); Debug::stamp();
-    m_wc->libSetTrackNumber( destTrack, srcTrack->trackNumber() ); Debug::stamp();
-    m_wc->libSetComment( destTrack, srcTrack->comment() ); Debug::stamp();
-    m_wc->libSetDiscNumber( destTrack, srcTrack->discNumber() ); Debug::stamp();
-    m_wc->libSetBitrate( destTrack, srcTrack->bitrate() ); Debug::stamp();
-    m_wc->libSetSamplerate( destTrack, srcTrack->sampleRate() ); Debug::stamp();
-    m_wc->libSetBpm( destTrack, srcTrack->bpm() ); Debug::stamp();
-    m_wc->libSetFileSize( destTrack, srcTrack->filesize() ); Debug::stamp();
-    m_wc->libSetPlayCount( destTrack, srcTrack->playCount() ); Debug::stamp();
-    m_wc->libSetLastPlayed( destTrack, srcTrack->lastPlayed() ); Debug::stamp();
-    m_wc->libSetRating( destTrack, srcTrack->rating() ); Debug::stamp();
-    m_wc->libSetType( destTrack, srcTrack->type() ); Debug::stamp();
+        m_wc->libSetYear( destTrack, srcTrack->year()->name() );
+    m_wc->libSetLength( destTrack, srcTrack->length() );
+    m_wc->libSetTrackNumber( destTrack, srcTrack->trackNumber() );
+    m_wc->libSetComment( destTrack, srcTrack->comment() );
+    m_wc->libSetDiscNumber( destTrack, srcTrack->discNumber() );
+    m_wc->libSetBitrate( destTrack, srcTrack->bitrate() );
+    m_wc->libSetSamplerate( destTrack, srcTrack->sampleRate() );
+    m_wc->libSetBpm( destTrack, srcTrack->bpm() );
+    m_wc->libSetFileSize( destTrack, srcTrack->filesize() );
+    m_wc->libSetPlayCount( destTrack, srcTrack->playCount() );
+    m_wc->libSetLastPlayed( destTrack, srcTrack->lastPlayed() );
+    m_wc->libSetRating( destTrack, srcTrack->rating() );
+    // MediaDeviceTrack stores only track gain:
+    m_wc->libSetReplayGain( destTrack, srcTrack->replayGain( Meta::ReplayGain_Track_Gain ) );
+    m_wc->libSetType( destTrack, srcTrack->type() );
     //libSetPlayableUrl( destTrack, srcTrack );
 }
 
 void
 MediaDeviceHandler::addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr& track )
 {
-    DEBUG_BLOCK
-
-    setupReadCapability();
-
-    if( !m_rcb )
+    if( !setupReadCapability() )
         return;
 
     TrackMap trackMap = m_memColl->memoryCollection()->trackMap();
@@ -315,6 +311,7 @@ MediaDeviceHandler::getCopyableUrls(const Meta::TrackList &tracks)
 void
 MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 {
+    DEBUG_BLOCK
     const QString copyErrorCaption = i18n( "Copying Tracks Failed" );
 
     if ( m_isCopying )
@@ -323,12 +320,8 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         return;
     }
 
-    DEBUG_BLOCK
-
-    setupWriteCapability();
     setupReadCapability();
-
-    if( !m_wcb )
+    if( !setupWriteCapability() )
         return;
 
     m_isCopying = true;
@@ -354,7 +347,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         // Check for compatible formats
         format = track->type();
 
-        if( !m_wcb->supportedFormats().contains( format ) )
+        if( !m_wc->supportedFormats().contains( format ) )
         {
              const QString error = i18n("Unsupported format: %1", format);
              m_tracksFailed.insert( track, error );
@@ -449,7 +442,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
             i18n( "Transferring Tracks to Device" ), m_tracksToCopy.size() );
 
     // prepare to copy
-    m_wcb->prepareToCopy();
+    m_wc->prepareToCopy();
 
     m_numTracksToCopy = m_tracksToCopy.count();
     m_tracksCopying.clear();
@@ -511,46 +504,27 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
 
-    bool success = false;
-
     // Create new destTrack that will go into the device collection, based on source track
-
     Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
 
     // find path to copy to
+    m_wc->findPathToCopy( track, destTrack );
 
-    m_wcb->findPathToCopy( track, destTrack );
+    // Create a track struct, associate it to destTrack
+    m_wc->libCreateTrack( destTrack );
 
-    if( !isOrganizable() )
-    {
-        // Create a track struct, associate it to destTrack
+    // Fill the track struct of the destTrack with info from the track parameter as source
+    setBasicMediaDeviceTrackInfo( track, destTrack );
 
-        m_wc->libCreateTrack( destTrack );
+    // set up the play url
+    m_wc->libSetPlayableUrl( destTrack, track );
 
-        // Fill the track struct of the destTrack with info from the track parameter as source
-
-        setBasicMediaDeviceTrackInfo( track, destTrack );
-
-        // set up the play url
-
-        m_wc->libSetPlayableUrl( destTrack, track );
-
-        getBasicMediaDeviceTrackInfo( destTrack, destTrack );
-    }
-    else
-    {
-        // Fill metadata of destTrack too with the same info
-
-        getBasicMediaDeviceTrackInfo( track, destTrack );
-    }
+    getBasicMediaDeviceTrackInfo( destTrack, destTrack );
 
     m_trackSrcDst[ track ] = destTrack; // associate source with destination, for finalizing copy
 
     // Copy the file to the device
-
-    success = m_wcb->libCopyTrack( track, destTrack );
-
-    return success;
+    return m_wc->libCopyTrack( track, destTrack );
 }
 
 /// @param track is the source track from which we are copying
@@ -562,16 +536,11 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
 
     Meta::MediaDeviceTrackPtr destTrack = m_trackSrcDst[ track ];
 
-    if( !isOrganizable() )
-    {
-        // Add the track struct into the database, if the library needs to
+    // Add the track struct into the database, if the library needs to
+    m_wc->addTrackInDB( destTrack );
 
-        m_wc->addTrackInDB( destTrack );
-
-        // Inform subclass that a track has been added to the db
-
-        m_wc->setDatabaseChanged();
-    }
+    // Inform subclass that a track has been added to the db
+    m_wc->setDatabaseChanged();
 
     // Add the new Meta::MediaDeviceTrackPtr into the device collection
 
@@ -609,15 +578,12 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
         return;
     }
 
-    setupWriteCapability();
-
-    if( !m_wcb )
+    if( !setupWriteCapability() )
         return;
 
     m_isDeleting = true;
 
     // Init the list of tracks to be deleted
-
     m_tracksToDelete = tracks;
 
     // Set up statusbar for deletion operation
@@ -625,7 +591,7 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
             i18np( "Removing Track from Device", "Removing Tracks from Device", tracks.size() ),
             tracks.size() );
 
-    m_wcb->prepareToDelete();
+    m_wc->prepareToDelete();
 
     m_numTracksToRemove = m_tracksToDelete.count();
 
@@ -658,10 +624,7 @@ MediaDeviceHandler::privateRemoveTrackFromDevice( const Meta::TrackPtr &track )
     Meta::MediaDeviceTrackPtr devicetrack = Meta::MediaDeviceTrackPtr::staticCast( track );
 
     // Remove the physical file from the device, perhaps using a libcall, or KIO
-
-    m_wcb->libDeleteTrackFile( devicetrack );
-
-
+    m_wc->libDeleteTrackFile( devicetrack );
 }
 
 void
@@ -670,20 +633,14 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
     DEBUG_BLOCK
     Meta::MediaDeviceTrackPtr devicetrack = Meta::MediaDeviceTrackPtr::staticCast( track );
 
-    if( !isOrganizable() )
-    {
-        // Remove the track struct from the db, references to it
+    // Remove the track struct from the db, references to it
+    m_wc->removeTrackFromDB( devicetrack );
 
-        m_wc->removeTrackFromDB( devicetrack );
+    // delete the struct associated with this track
+    m_wc->libDeleteTrack( devicetrack );
 
-        // delete the struct associated with this track
-
-        m_wc->libDeleteTrack( devicetrack );
-
-        // Inform subclass that a track has been removed from
-
-        m_wc->setDatabaseChanged();
-    }
+    // Inform subclass that a track has been removed from
+    m_wc->setDatabaseChanged();
 
     // remove from memory collection
     removeMediaDeviceTrackFromCollection( devicetrack );
@@ -701,7 +658,6 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
                         i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         */
-        m_wcb->endTrackRemove();
         debug() << "Done removing tracks";
         m_isDeleting = false;
         emit removeTracksDone();
@@ -721,10 +677,9 @@ MediaDeviceHandler::slotDatabaseWritten( bool success )
 
 
 void
-MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
+MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap &artistMap )
 {
-    const QString artist( m_rcb->libGetArtist( track ) );
-    const QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
+    const QString artist( m_rc->libGetArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
     if( artistMap.contains( artist ) )
@@ -737,21 +692,13 @@ MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& 
 
     artistPtr->addTrack( track );
     track->setArtist( artistPtr );
-
-    if( !albumArtist.isEmpty() && albumArtist != artist &&
-        !artistMap.contains( albumArtist ) )
-    {
-        artistPtr = MediaDeviceArtistPtr( new MediaDeviceArtist( albumArtist ) );
-        artistMap.insert( albumArtist, ArtistPtr::staticCast( artistPtr ) );
-    }
 }
 
 void
-MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& albumMap, const ArtistMap &artistMap )
+MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& albumMap, ArtistMap &artistMap )
 {
-    const QString album( m_rcb->libGetAlbum( track ) );
-    const QString artist( m_rcb->libGetArtist( track ) );
-    const QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
+    const QString album( m_rc->libGetAlbum( track ) );
+    QString albumArtist( m_rc->libGetAlbumArtist( track ) );
     MediaDeviceAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
@@ -771,24 +718,34 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
     isCompilation |= m_rc->libIsCompilation( track );
     albumPtr->setIsCompilation( isCompilation );
 
-    MediaDeviceArtistPtr artistPtr;
-
-    if( !albumArtist.isEmpty() && artistMap.contains( artist ) )
-        artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( albumArtist ) );
-    else if( !artist.isEmpty() && artistMap.contains( artist ) )
-        artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
-
-    if( !artistPtr.isNull() )
+    if( albumArtist.compare( "Various Artists", Qt::CaseInsensitive ) == 0 ||
+        albumArtist.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) == 0 )
     {
-        artistPtr->addAlbum( albumPtr );
-        albumPtr->setAlbumArtist( artistPtr );
+        albumArtist.clear();
     }
+    if( albumArtist.isEmpty() )
+    {
+        // set compilation flag, otherwise the album would be invisible in collection
+        // browser if "Album Artist / Album" view is selected.
+        albumPtr->setIsCompilation( true );
+        return;  // nothing more to do - this is an album with no album artist
+    }
+
+    MediaDeviceArtistPtr albumArtistPtr;
+    if( artistMap.contains( albumArtist ) )
+        albumArtistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( albumArtist ) );
+    else
+    {
+        albumArtistPtr = MediaDeviceArtistPtr( new MediaDeviceArtist( albumArtist ) );
+        artistMap.insert( albumArtist, ArtistPtr::staticCast( albumArtistPtr ) );
+    }
+    albumPtr->setAlbumArtist( albumArtistPtr );
 }
 
 void
 MediaDeviceHandler::setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap& genreMap )
 {
-    const QString genre = m_rcb->libGetGenre( track );
+    const QString genre = m_rc->libGetGenre( track );
     MediaDeviceGenrePtr genrePtr;
 
     if ( genreMap.contains( genre ) )
@@ -807,7 +764,7 @@ MediaDeviceHandler::setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap& ge
 void
 MediaDeviceHandler::setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerMap& composerMap )
 {
-    QString composer ( m_rcb->libGetComposer( track ) );
+    QString composer ( m_rc->libGetComposer( track ) );
     MediaDeviceComposerPtr composerPtr;
 
     if ( composerMap.contains( composer ) )
@@ -825,7 +782,7 @@ MediaDeviceHandler::setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerM
 void
 MediaDeviceHandler::setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap& yearMap )
 {
-    int year = m_rcb->libGetYear( track );
+    int year = m_rc->libGetYear( track );
     MediaDeviceYearPtr yearPtr;
     if ( yearMap.contains( year ) )
         yearPtr = MediaDeviceYearPtr::staticCast( yearMap.value( year ) );
@@ -843,8 +800,7 @@ MediaDeviceHandler::privateParseTracks()
 {
     DEBUG_BLOCK
 
-    setupReadCapability();
-    if ( !m_rcb )
+    if( !setupReadCapability() )
         return false;
 
     TrackMap trackMap;
@@ -855,11 +811,11 @@ MediaDeviceHandler::privateParseTracks()
     YearMap yearMap;
 
     /* iterate through tracklist and add to appropriate map */
-    for( m_rcb->prepareToParseTracks(); !m_rcb->isEndOfParseTracksList(); m_rcb->prepareToParseNextTrack() )
+    for( m_rc->prepareToParseTracks(); !m_rc->isEndOfParseTracksList(); m_rc->prepareToParseNextTrack() )
     {
         /// Fetch next track to parse
 
-        m_rcb->nextTrackToParse();
+        m_rc->nextTrackToParse();
 
         // FIXME: should we return true or false?
         if (!m_memColl)
@@ -867,18 +823,8 @@ MediaDeviceHandler::privateParseTracks()
 
         MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
 
-        m_rcb->setAssociateTrack( track );
-
-        if( m_rc != 0 )
-        {
-            getBasicMediaDeviceTrackInfo( track, track );
-        }
-
-        else if( m_crc != 0 )
-        {
-            Meta::TrackPtr srcTrack = m_crc->sourceTrack();
-            getBasicMediaDeviceTrackInfo( srcTrack, track );
-        }
+        m_rc->setAssociateTrack( track );
+        getBasicMediaDeviceTrackInfo( track, track );
 
         /* map-related info retrieval */
         setupArtistMap( track, artistMap );
@@ -1034,43 +980,30 @@ MediaDeviceHandler::enqueueNextCopyThread()
 }
 
 float
-MediaDeviceHandler::freeSpace() const
+MediaDeviceHandler::freeSpace()
 {
-    DEBUG_BLOCK
-    if ( m_rcb )
-    {
-        debug() << "totalCapacity:" << m_rcb->totalCapacity();
-        debug() << "usedCapacity():" << m_rcb->usedCapacity();
-        return ( m_rcb->totalCapacity() - m_rcb->usedCapacity() );
-    } else {
-        debug() << "m_rcb null!";
-        return 0.0;
-    }
-}
-
-float
-MediaDeviceHandler::usedcapacity() const
-{
-    if ( m_rcb )
-        return m_rcb->usedCapacity();
+    if ( setupReadCapability() )
+        return m_rc->totalCapacity() - m_rc->usedCapacity();
     else
         return 0.0;
 }
 
 float
-MediaDeviceHandler::totalcapacity() const
+MediaDeviceHandler::usedcapacity()
 {
-    if ( m_rcb )
-        return m_rcb->totalCapacity();
+    if ( setupReadCapability() )
+        return m_rc->usedCapacity();
     else
         return 0.0;
 }
 
-void
-MediaDeviceHandler::setDestinations( const QMap<Meta::TrackPtr, QString> &destinations )
+float
+MediaDeviceHandler::totalcapacity()
 {
-    m_destinations.clear();
-    m_destinations = destinations;
+    if ( setupReadCapability() )
+        return m_rc->totalCapacity();
+    else
+        return 0.0;
 }
 
 Playlists::UserPlaylistProvider*
@@ -1155,63 +1088,28 @@ MediaDeviceHandler::deletePlaylists( const Playlists::MediaDevicePlaylistList &p
     }
 }
 
-void
+bool
 MediaDeviceHandler::setupReadCapability()
 {
-    DEBUG_BLOCK
-    MediaDeviceHandler *handler = const_cast<MediaDeviceHandler*> ( this );
-    if( !m_rcb )
-    {
-        debug() << "RCB does not exist";
-        if( handler->hasCapabilityInterface( Handler::Capability::Readable ) )
-        {
-            debug() << "Has read capability interface";
-            m_rcb = handler->create<Handler::ReadCapabilityBase>();
-            m_rc = 0;
-            m_crc = 0;
-            if( !m_rcb )
-            {
-                debug() << "Handler does not have MediaDeviceHandler::ReadCapability. Aborting.";
-                return;
-            }
-            if( m_rcb->inherits( "Handler::ReadCapability" ) )
-            {
-                debug() << "Making read capability";
-                m_rc = qobject_cast<Handler::ReadCapability *>( m_rcb );
-            }
-            else if( m_rcb->inherits( "Handler::CustomReadCapability" ) )
-            {
-                debug() << "making custom read capability";
-                m_crc = qobject_cast<Handler::CustomReadCapability *>( m_rcb );
-            }
-            debug() << "Created rc";
-        }
-    }
+    if( m_rc )
+        return true;
+    if( !hasCapabilityInterface( Handler::Capability::Readable ) )
+        return false;
+
+    m_rc = create<Handler::ReadCapability>();
+    return (bool) m_rc;
 }
 
-void
+bool
 MediaDeviceHandler::setupWriteCapability()
 {
-    DEBUG_BLOCK
-    if( !m_wcb )
-    {
-        debug() << "WCB does not exist";
-        if( this->hasCapabilityInterface( Handler::Capability::Writable ) )
-        {
-            m_wcb = this->create<Handler::WriteCapabilityBase>();
-            m_wc = 0;
-            if( !m_wcb )
-            {
-                debug() << "Handler does not have MediaDeviceHandler::WriteCapability. Aborting.";
-                return;
-            }
-            if( m_wcb->inherits( "Handler::WriteCapability" ) )
-            {
-                debug() << "Making write capability";
-                m_wc = qobject_cast<Handler::WriteCapability *>( m_wcb );
-            }
-        }
-    }
+    if( m_wc )
+        return true;
+    if( !hasCapabilityInterface( Handler::Capability::Writable ) )
+        return false;
+
+    m_wc = create<Handler::WriteCapability>();
+    return (bool) m_wc;
 }
 
 /** Observer Methods **/
@@ -1221,20 +1119,14 @@ MediaDeviceHandler::metadataChanged( TrackPtr track )
     DEBUG_BLOCK
 
     Meta::MediaDeviceTrackPtr trackPtr = Meta::MediaDeviceTrackPtr::staticCast( track );
-    KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
 
-    setupWriteCapability();
-
-    if( !m_wcb )
+    if( !setupWriteCapability() )
         return;
 
-    if( !isOrganizable() )
-    {
-        setBasicMediaDeviceTrackInfo( track, trackPtr );
-        m_wc->setDatabaseChanged();
-    }
+    setBasicMediaDeviceTrackInfo( track, trackPtr );
+    m_wc->setDatabaseChanged();
 
-    m_wcb->updateTrack( trackPtr );
+    m_wc->updateTrack( trackPtr );
 }
 
 void

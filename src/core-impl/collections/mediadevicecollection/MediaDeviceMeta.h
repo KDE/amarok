@@ -119,15 +119,13 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual int playCount() const;
         void setPlayCount( const int newCount );
 
+        virtual qreal replayGain( ReplayGainTag mode ) const;
+        /* Set the track replay gain (other types unsupported) */
+        void setReplayGain( qreal newReplayGain );
+
         virtual QString type() const;
         virtual void prepareToPlay();
 
-        virtual void beginMetaDataUpdate() { DEBUG_BLOCK }
-        virtual void endMetaDataUpdate();
-/*
-        virtual void subscribe ( Observer *observer );
-        virtual void unsubscribe ( Observer *observer );
-*/
         virtual bool inCollection() const;
         virtual Collections::Collection* collection() const;
 
@@ -147,6 +145,12 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
 
         void setLength( qint64 length );
         void setPlayableUrl( const KUrl &url) { m_playableUrl = url; }
+
+        /**
+         * Notifies observers about changes to metadata, one of the observers is media
+         * device handler which writes the changes back to the device.
+         */
+        void commitChanges();
 
     private:
         QWeakPointer<Collections::MediaDeviceCollection> m_collection;
@@ -174,6 +178,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         QDateTime m_lastPlayed;
         int m_rating;
         qreal m_bpm;
+        qreal m_replayGain;
         QString m_displayUrl;
         KUrl m_playableUrl;
 };
@@ -187,19 +192,14 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceArtist : public Meta::Artist
         virtual QString name() const;
 
         virtual TrackList tracks();
-        virtual AlbumList albums();
 
         //MediaDeviceArtist specific methods
         virtual void addTrack( MediaDeviceTrackPtr track );
         virtual void remTrack( MediaDeviceTrackPtr track );
 
-        virtual void addAlbum( MediaDeviceAlbumPtr album );
-        virtual void remAlbum( MediaDeviceAlbumPtr album );
-
     private:
         QString m_name;
         TrackList m_tracks;
-        AlbumList m_albums;
 };
 
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album

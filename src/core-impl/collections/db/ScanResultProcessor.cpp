@@ -253,27 +253,11 @@ ScanResultProcessor::commitPlaylist( CollectionScanner::Playlist *playlist )
 CollectionScanner::Album*
 ScanResultProcessor::sortTrack( CollectionScanner::Track *track )
 {
-    // -- try to find a sensible album artist
-    QString albumArtist( track->albumArtist() );
-
-    // - for classical tracks it's the composer
-    if( albumArtist.isEmpty() &&
-        (track->genre().compare( i18nc( "The genre name for classical music", "Classical" ), Qt::CaseInsensitive ) == 0 ||
-         track->genre().compare( QLatin1String( "Classical" ), Qt::CaseInsensitive ) == 0 ) )
-        albumArtist = ArtistHelper::realTrackArtist( track->composer() );
-
-    // - for "normal" tracks it's the track artist
-    if( albumArtist.isEmpty() )
-            albumArtist = ArtistHelper::realTrackArtist( track->artist() );
-
-    // - "Various Artists" is the same as no artist
-    if( albumArtist.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) == 0 ||
-        albumArtist.compare( QLatin1String( "Various Artists" ), Qt::CaseInsensitive ) == 0 )
-        albumArtist.clear();
+    QString albumArtist = ArtistHelper::bestGuessAlbumArtist( track->albumArtist(),
+        track->artist(), track->genre(), track->composer() );
 
     if( track->album().isEmpty() && albumArtist.isEmpty() )
-        return 0;
-
+        return 0;  // unknown album from various artists
     return sortTrack( track, track->album(), albumArtist );
 }
 

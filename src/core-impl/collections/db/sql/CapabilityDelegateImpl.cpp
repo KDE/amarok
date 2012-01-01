@@ -31,7 +31,6 @@
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/StatisticsCapability.h"
 #include "core/capabilities/OrganiseCapability.h"
-#include "core/capabilities/UpdateCapability.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
@@ -164,21 +163,6 @@ class OrganiseCapabilityImpl : public Capabilities::OrganiseCapability
         KSharedPtr<Meta::SqlTrack> m_track;
 };
 
-class UpdateCapabilityImpl : public Capabilities::UpdateCapability
-{
-    Q_OBJECT
-    public:
-        UpdateCapabilityImpl( Meta::SqlTrack *track )
-            : Capabilities::UpdateCapability()
-            , m_track( track ) {}
-
-        virtual void collectionUpdated() const { m_track->collection()->collectionUpdated(); }
-
-
-    private:
-        KSharedPtr<Meta::SqlTrack> m_track;
-};
-
 class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
 {
     Q_OBJECT
@@ -296,7 +280,6 @@ TrackCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::T
         case Capabilities::Capability::Actions:
         case Capabilities::Capability::Importable:
         case Capabilities::Capability::Organisable:
-        case Capabilities::Capability::Updatable:
         case Capabilities::Capability::BookmarkThis:
         case Capabilities::Capability::WriteTimecode:
         case Capabilities::Capability::LoadTimecode:
@@ -343,10 +326,6 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
 
         case Capabilities::Capability::Organisable:
             return new OrganiseCapabilityImpl( track );
-
-        case Capabilities::Capability::Updatable:
-            return new UpdateCapabilityImpl( track );
-
         case Capabilities::Capability::BookmarkThis:
             return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
         case Capabilities::Capability::WriteTimecode:

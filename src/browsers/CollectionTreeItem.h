@@ -31,12 +31,16 @@ namespace CustomRoles
         SortRole = Qt::UserRole + 1,
         FilterRole = Qt::UserRole + 2,
         ByLineRole = Qt::UserRole + 3,
+        /** Boolean value whether given collection knows about used and total capacity */
         HasCapacityRole = Qt::UserRole + 4,
+        /** Number of bytes used by music and other files in collection (float) */
         UsedCapacityRole = Qt::UserRole + 5,
+        /** Total capacity of the collection in bytes (float) */
+        TotalCapacityRole = Qt::UserRole + 6,
         /** The number of collection actions */
-        DecoratorRoleCount = Qt::UserRole + 6,
+        DecoratorRoleCount = Qt::UserRole + 7,
         /** The collection actions */
-        DecoratorRole = Qt::UserRole + 7
+        DecoratorRole = Qt::UserRole + 8
     };
 }
 

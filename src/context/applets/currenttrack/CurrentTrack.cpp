@@ -41,7 +41,6 @@
 #include "context/widgets/TextScrollingWidget.h"
 #include "context/widgets/DropPixmapItem.h"
 #include "context/widgets/RecentlyPlayedListWidget.h"
-#include "core/capabilities/UpdateCapability.h"
 #include "dialogs/TagDialog.h"
 
 #include <KConfigDialog>
@@ -215,10 +214,7 @@ CurrentTrack::trackRatingChanged( int rating )
     if( !track )
         return;
 
-    // Inform collections of end of a metadata update
-    QScopedPointer<Capabilities::UpdateCapability> uc( track->create<Capabilities::UpdateCapability>() );
-    if( uc )
-        track->setRating( rating );
+    track->setRating( rating );
 }
 
 QList<QAction*>

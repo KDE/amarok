@@ -44,8 +44,9 @@
 #include "UndoCommands.h"
 
 #include <KGlobal>
-#include <KUrl>
 #include <KIconLoader>
+#include <KLocale>
+#include <KUrl>
 
 #include <QAction>
 #include <QTimer>
@@ -149,7 +150,9 @@ HTMLLine( const Playlist::Column& column, const QString& value, bool force = fal
 static QString
 HTMLLine( const Playlist::Column& column, const int value, bool force = false )
 {
-    if( (value != 0) || force )
+    // there is currenly no numeric meta-data that would have sense if it were negative.
+    // also, zero denotes not available, unknow etc; don't show these unless forced.
+    if( value > 0 || force )
     {
         return HTMLLine( column, QString::number( value ) );
     }
@@ -235,9 +238,11 @@ QString
 Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
 {
     QString text;
+    KLocale *locale = KGlobal::locale();
     // get the shared pointers now to be thread safe
     Meta::ArtistPtr artist = track->artist();
     Meta::AlbumPtr album = track->album();
+    Meta::ArtistPtr albumArtist = album ? album->albumArtist() : Meta::ArtistPtr();
     Meta::GenrePtr genre = track->genre();
     Meta::ComposerPtr composer = track->composer();
     Meta::YearPtr year = track->year();
@@ -247,6 +252,10 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
 
     if( s_tooltipColumns[Playlist::Artist] && artist )
         text += HTMLLine( Playlist::Artist, artist->name() );
+
+    // only show albumArtist when different from artist (it should suffice to compare pointers)
+    if( s_tooltipColumns[Playlist::AlbumArtist] && albumArtist && albumArtist != artist )
+        text += HTMLLine( Playlist::AlbumArtist, albumArtist->name() );
 
     if( s_tooltipColumns[Playlist::Album] && album )
         text += HTMLLine( Playlist::Album, album->name() );
@@ -266,11 +275,25 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
     if( s_tooltipColumns[Playlist::Year] && year && year->year() > 0 )
         text += HTMLLine( Playlist::Year, year->year() );
 
+    if( s_tooltipColumns[Playlist::Bpm] )
+        text += HTMLLine( Playlist::Bpm, track->bpm() );
+
     if( s_tooltipColumns[Playlist::Comment]) {
         if ( !(fitsInOneLineHTML( track->comment() ) ) )
             text += HTMLLine( Playlist::Comment, i18n( "(...)" ) );
         else
             text += HTMLLine( Playlist::Comment, track->comment() );
+    }
+
+    if( s_tooltipColumns[Playlist::Labels] && !track->labels().empty() )
+    {
+        QStringList labels;
+        foreach( Meta::LabelPtr label, track->labels() )
+        {
+            if( label )
+                labels << label->name();
+        }
+        text += HTMLLine( Playlist::Labels, labels.join( QString(", ") ) );
     }
 
     if( s_tooltipColumns[Playlist::Score] )
@@ -281,6 +304,12 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
 
     if( s_tooltipColumns[Playlist::PlayCount] )
         text += HTMLLine( Playlist::PlayCount, track->playCount(), true );
+
+    if( s_tooltipColumns[Playlist::LastPlayed] && track->lastPlayed().isValid() )
+        text += HTMLLine( Playlist::LastPlayed, locale->formatDateTime( track->lastPlayed() ) );
+
+    if( s_tooltipColumns[Playlist::Bitrate] && track->bitrate() )
+        text += HTMLLine( Playlist::Bitrate, i18nc( "%1: bitrate", "%1 kbps", track->bitrate() ) );
 
     if( text.isEmpty() )
         text = QString( i18n( "No extra information available" ) );

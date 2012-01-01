@@ -117,6 +117,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         friend class OrphanedWorkerThread;
         friend class AddOrphanedWorkerThread;
         friend class SyncArtworkWorkerThread;
+        friend class DBWorkerThread;
 
         /// Ipod-Specific Methods
         QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
@@ -125,23 +126,18 @@ class IpodHandler : public Meta::MediaDeviceHandler
         void setMountPoint( const QString &mp ) { m_mountPoint = mp; }
 #endif
 
-        // NOTE: do not use writeITunesDB,
-        // use the threaded writeDatabase
-        bool writeITunesDB( bool threaded = false );
-
     public slots:
+        /**
+         * Schedule a job that writes iTunes database onto iPod if database was changed.
+         * Returns immediately. @see setDatabaseChanged()
+         */
         virtual void writeDatabase();
 
-        void slotInitializeIpod();
         void slotStaleOrphaned();
         void slotSyncArtwork();
 
     protected:
         /// Functions for PlaylistCapability
-        /**
-         * Writes to the device's database if it has one, otherwise
-         * simply calls slotDatabaseWritten to continue the workflow.
-         */
         virtual void prepareToParsePlaylists();
         virtual bool isEndOfParsePlaylistsList();
         virtual void prepareToParseNextPlaylist();
@@ -195,6 +191,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
         virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
         virtual void libSetIsCompilation( Meta::MediaDeviceTrackPtr &track, bool isCompilation );
+        virtual void libSetReplayGain( Meta::MediaDeviceTrackPtr &track, qreal newReplayGain );
 
         virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &image );
         virtual void libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString &path );
@@ -232,6 +229,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
         virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
         virtual bool    libIsCompilation( const Meta::MediaDeviceTrackPtr &track );
+        virtual qreal   libGetReplayGain( const Meta::MediaDeviceTrackPtr &track );
         virtual QImage  libGetCoverArt( const Meta::MediaDeviceTrackPtr &track );
 
         virtual float usedCapacity() const;
@@ -262,6 +260,15 @@ class IpodHandler : public Meta::MediaDeviceHandler
         bool initializeIpod();
 
         bool removeDBTrack( Itdb_Track *track );
+
+        /**
+         * Low-level worker method that actually calls libgpod to physically write iTunes
+         * database onto iPod. Skips any writes if setDatabaseChanged() was not called
+         * previously
+         *
+         * @return true if database was successfully written, false otherwise
+         */
+        bool writeDatabaseWorker();
 
         /* libgpod Information Extraction Methods */
 

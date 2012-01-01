@@ -69,6 +69,8 @@ extern "C" {
 #include <QStringList>
 #include <QTime>
 
+#include <cmath>
+
 using namespace Meta;
 
 /// IpodHandler
@@ -123,7 +125,7 @@ IpodHandler::~IpodHandler()
     delete m_tempdir;
     // Write to DB before closing, for ratings updates etc.
     debug() << "Cleaning up Ipod Database";
-    writeITunesDB( false );
+    writeDatabaseWorker();
     if ( m_itdb )
         itdb_free( m_itdb );
 
@@ -543,26 +545,6 @@ IpodHandler::collectionActions()
 }
 
 void
-IpodHandler::slotInitializeIpod()
-{
-    const QString text( i18n( "Do you really want to initialize this iPod? Its database will be cleared of all information, but the files will not be deleted." ) );
-
-    const bool init = KMessageBox::warningContinueCancel(0,
-                                                         text,
-                                                         i18n("Initialize iPod") ) == KMessageBox::Continue;
-    if( init )
-    {
-        const bool success = initializeIpod();
-
-        if ( success )
-            Amarok::Components::logger()->shortMessage( i18n( "The iPod has been initialized" ) );
-        else
-            Amarok::Components::logger()->shortMessage(
-                        i18n( "The iPod was unable to be initialized" ) );
-    }
-}
-
-void
 IpodHandler::slotStaleOrphaned()
 {
     DEBUG_BLOCK
@@ -762,7 +744,7 @@ IpodHandler::initializeIpod()
     // initializing a device is rare, and requires focus
     // to minimize possible error
     // TODO: database methods abstraction needed
-    if( !writeITunesDB( false ) )
+    if( !writeDatabaseWorker() )
        return false;
 
     return true;
@@ -1035,70 +1017,46 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 }
 
 bool
-IpodHandler::writeITunesDB( bool threaded )
+IpodHandler::writeDatabaseWorker()
 {
     DEBUG_BLOCK
 
-    QMutexLocker locker( &m_dbLocker );
     if( !m_itdb )
         return false;
-
-    if( m_dbChanged )
+    if( !m_dbChanged )
     {
-        bool ok = false;
-        if( !threaded )
-        {
-            if( !m_itdb )
-                return false;
-
-            ok = true;
-            GError *error = 0;
-            if ( !itdb_write (m_itdb, &error) )
-            {   /* an error occurred */
-                if(error)
-                {
-                    if (error->message)
-                        debug() << "itdb_write error: " << error->message;
-                    else
-                        debug() << "itdb_write error: error->message == 0!";
-                    g_error_free (error);
-                }
-                error = 0;
-                ok = false;
-            }
-
-            if( m_isShuffle )
-            {
-                /* write shuffle data */
-                if (!itdb_shuffle_write (m_itdb, &error))
-                {   /* an error occurred */
-                    if(error)
-                    {
-                        if (error->message)
-                            debug() << "itdb_shuffle_write error: " << error->message;
-                        else
-                            debug() << "itdb_shuffle_write error: error->message == 0!";
-                        g_error_free (error);
-                    }
-                    error = 0;
-                    ok = false;
-                }
-            }
-            // Kill status bar only once DB is written
-            //emit databaseWritten( this );
-        }
-
-        if( ok )
-            m_dbChanged = false;
-        else
-            debug() << "Failed to write iPod database";
-
-        return ok;
+        debug() << "Database was not changed, will not flush";
+        return false;
     }
 
-    debug() << "Database was not changed, will not flush";
+    GError *error = 0;
 
-    return false;
+    QMutexLocker locker( &m_dbLocker );
+    /* from NEWS file of libgpod 0.7.93:
+     * * automatically call itdb_shuffle_write when itdb_write is called if needed.
+     */
+    if ( !itdb_write (m_itdb, &error) )
+    {   /* if an error occurred */
+        QString errorText;
+        if(error)
+        {
+            if (error->message)
+                errorText = i18nc( "%1: error message from libgpod",
+                                   "Failed to write iTunes database onto iPod: %1",
+                                   error->message );
+            else
+                errorText = i18n( "Failed to write iTunes database onto iPod. "
+                                  "Additonally, libgpod failed to tell us what problem "
+                                  "caused it. (error->message = 0)" );
+            g_error_free (error);
+        }
+        else
+            errorText = i18n( "Failed to write iTunes database onto iPod. Additonally, "
+                              "libgpod failed to tell us what problem caused it. (error = 0)" );
+        Amarok::Components::logger()->longMessage( errorText, Amarok::Logger::Error );
+        return false;
+    }
+    return true;
 }
 
 QString
@@ -1164,7 +1122,7 @@ IpodHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrac
 void
 IpodHandler::writeDatabase()
 {
-    disconnect( this, SIGNAL( removeTracksDone() ), 0, 0 );
+    disconnect( this, SIGNAL( removeTracksDone() ), 0, 0 );  // TODO: why this is here???
     ThreadWeaver::Weaver::instance()->enqueue( new DBWorkerThread( this ) );
 }
 
@@ -1660,6 +1618,17 @@ IpodHandler::libIsCompilation( const Meta::MediaDeviceTrackPtr &track )
     return m_itdbtrackhash[ track ]->compilation != 0x0;
 }
 
+qreal
+IpodHandler::libGetReplayGain( const MediaDeviceTrackPtr &track )
+{
+    guint32 soundcheck = m_itdbtrackhash[ track ]->soundcheck;
+    if( soundcheck == 0 )  // libgpod: The value 0 is special, treated as "no Soundcheck"
+        return 0.0;
+    // libgpod: X = 1000 * 10 ^ (-.1 * Y)
+    // where Y is the adjustment value in dB and X is the value that goes into the SoundCheck field
+    return 30.0 - 10.0 * std::log10( soundcheck );
+}
+
 float
 IpodHandler::usedCapacity() const
 {
@@ -1887,6 +1856,19 @@ IpodHandler::libSetIsCompilation( MediaDeviceTrackPtr &track, bool isCompilation
 {
     // libgpod says: True if set to 0x1, false if set to 0x0.
     m_itdbtrackhash[ track ]->compilation = isCompilation ? 0x1 : 0x0;
+}
+
+void IpodHandler::libSetReplayGain( MediaDeviceTrackPtr &track, qreal newReplayGain )
+{
+    guint32 soundcheck;
+    if( newReplayGain == 0.0 )
+        // libgpod: The value 0 is special, treated as "no Soundcheck"
+        soundcheck = 0;
+    else
+        // libgpod: X = 1000 * 10 ^ (-.1 * Y)
+        // where Y is the adjustment value in dB and X is the value that goes into the SoundCheck field
+        soundcheck = 1000 * std::pow( 10.0, -0.1 * newReplayGain );
+    m_itdbtrackhash[ track ]->soundcheck = soundcheck;
 }
 
 void
@@ -2182,10 +2164,7 @@ void
 IpodHandler::slotDBWriteDone( ThreadWeaver::Job* job )
 {
     if( job->success() )
-    {
         debug() << "Writing to DB succeeded!";
-        slotDatabaseWritten( true );
-    }
     else
         debug() << "Writing to DB did not happen or failed";
     slotDatabaseWritten( job->success() );
@@ -2361,7 +2340,7 @@ DBWorkerThread::DBWorkerThread( IpodHandler* handler )
 void
 DBWorkerThread::run()
 {
-    m_success = m_handler->writeITunesDB( false );
+    m_success = m_handler->writeDatabaseWorker();
 }
 
 // stale

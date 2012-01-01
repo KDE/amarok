@@ -98,31 +98,16 @@ appropriate library.
 
 2.3.2 Capabilities
 
-ReadCapabilityBase - Maps the necessary functions to read the structs
+ReadCapability - Maps the necessary functions to read the structs
 specific to the device, with the goal of parsing the entire device's
-metadata.  Can also read the device's capacity, used and total.  This
-is a good Capability to subclass to initially test that the parsing is
-being done correctly, before reading more information.
+metadata. Can also read the device's capacity, used and total.
 
-ReadCapability - Maps further functions, and completes the reading of
-the metadata from the device.
-
-CustomReadCapability - Essentially, a hack.  This is used by the
-UMSHandler to "cheat" and just copy all the metadata it needs from
-another Meta::Track which is already created by File::Track.  Do not
-use this unless the device requires a similar quick hack, so as to
-avoid a lot of redundant calls.
-
-WriteCapabilityBase - Receives generic commands related to writing to
+WriteCapability - Receives generic commands related to writing to
 the device: find where to copy a new track onto the device, copy the
-track, delete the track.  In case this device is not struct-based as
-described above, this is a good candidate for just subclassing this
-Capability for writing.
-
-WriteCapability - In case the device is struct-based, subclass this
-Capability to provide a full mapping onto the functions required to set
-the metadata on a newly created track struct, and the higher logic of
-in what order to do this is handled by the main Handler class.
+track, delete the track. Subclass this Capability also to provide a full
+mapping onto the functions required to set the metadata on a newly
+created track struct, and the higher logic of in what order to do this
+is handled by the main Handler class.
 
 ArtworkCapability - Optional.  If the device supports artwork, this
 provides the interface for reading/writing that artwork.

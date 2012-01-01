@@ -68,7 +68,6 @@ class MtpHandler : public MediaDeviceHandler
 
         virtual void init(); // collection
         virtual bool isWritable() const;
-        virtual void writeDatabase();
 
         virtual void getCopyableUrls( const Meta::TrackList &tracks );
 

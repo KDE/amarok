@@ -20,7 +20,6 @@
 #define MEDIADEVICEHANDLER_H
 
 #include "MediaDeviceHandlerCapability.h"
-#include "capabilities/CustomReadCapability.h"
 #include "capabilities/PlaylistCapability.h"
 #include "capabilities/PodcastCapability.h"
 #include "capabilities/ReadCapability.h"
@@ -127,29 +126,12 @@ public:
     /// Methods provided for CollectionLocation
 
     /**
-     * Allows organizable devices to tell
-     * from which base folder to organize music
-     * into folders
-     */
-
-    virtual QString baseMusicFolder() const
-    {
-        return QString();
-    }
-
-    /**
     * Checks if a device can be written to.
     * @return
     *   TRUE if the device can be written to
     *   FALSE if the device can not be written to
     */
     virtual bool isWritable() const = 0;
-
-    /**
-    * Checks if a device supports customizing
-    * filename when being copied to
-    */
-    virtual bool isOrganizable() const { return false; }
 
     /** Given a list of tracks, get URLs for device tracks
     *  of this type of device.  If the device needs to
@@ -188,16 +170,13 @@ public:
     */
     virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) } // called by @param track
 
-    virtual float usedcapacity() const;
-    virtual float totalcapacity() const;
+    virtual float usedcapacity();
+    virtual float totalcapacity();
 
     Playlists::UserPlaylistProvider* provider();
 
     // HACK: Used for device-specific actions, such as initialize for iPod
     virtual QList<QAction *> collectionActions() { return QList<QAction*> (); }
-
-    // Used by CollLocation to set destinations if organizable device
-    void setDestinations( const QMap<Meta::TrackPtr, QString> &destinations );
 
 signals:
     void gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> &urls );
@@ -232,7 +211,7 @@ public slots:
     void deletePlaylists( const Playlists::MediaDevicePlaylistList &playlistlist );
 
     bool privateParseTracks();
-    
+
     void copyNextTrackToDevice();
     bool privateCopyTrackToDevice( const Meta::TrackPtr& track );
 
@@ -243,46 +222,39 @@ public slots:
 protected:
 
     /**
-    * Constructor
-    * @param parent the Collection whose handler this is
-    */
-
+     * Constructor
+     * @param parent the Collection whose handler this is
+     */
     MediaDeviceHandler( QObject *parent );
 
-    /** Creates a MediaDeviceTrack based on the latest track struct created as a
-    *  result of a copy to the device, and adds it into the collection to reflect
-    *  that it has been copied.
-    *  @param track The track to add to the collection
-    */
-
+    /**
+     * Creates a MediaDeviceTrack based on the latest track struct created as a
+     *  result of a copy to the device, and adds it into the collection to reflect
+     *  that it has been copied.
+     *  @param track The track to add to the collection
+     */
     void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
 
-   /**  Removes the @param track from all the collection's maps to reflect that
-    *  it has been removed from the collection
-    *  @param track The track to remove from the collection
-    */
-
+    /**
+     * Removes the @param track from all the collection's maps to reflect that
+     * it has been removed from the collection
+     * @param track The track to remove from the collection
+     */
     void removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrackPtr &track );
 
-   /** Uses wrapped libGet methods to fill a track with information from device
-    *  @param track The track from whose associated struct to get the information
-    *  @param destTrack The track that we want to fill with information
-    */
+    /**
+     * Uses wrapped libGet methods to fill a track with information from device
+     * @param track The track from whose associated struct to get the information
+     * @param destTrack The track that we want to fill with information
+     */
     void getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
 
-   /** Convenience method.  Can be used to just pull information out of a track
-    *  that was custom constructed, instead of parsing using specific device's
-    *  library methods.
-    */
-
-    void getBasicMediaDeviceTrackInfo( const Meta::TrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
-
-    /** Uses wrapped libSet methods to fill a track struct of the particular library
-    *  with information from a Meta::Track
-    *  @param srcTrack The track that has the source information
-    *  @param destTrack The track whose associated struct we want to fill with information
-    */
-
+    /**
+     * Uses wrapped libSet methods to fill a track struct of the particular library
+     * with information from a Meta::Track
+     * @param srcTrack The track that has the source information
+     * @param destTrack The track whose associated struct we want to fill with information
+     */
     void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
 
     Collections::MediaDeviceCollection   *m_memColl; ///< Associated collection
@@ -290,8 +262,6 @@ protected:
     bool m_success;
     bool m_copyingthreadsafe; ///< whether or not the handler's method of copying is threadsafe
     TitleMap          m_titlemap; ///< Map of track titles to tracks, used to detect duplicates
-    QMap<Meta::TrackPtr, QString> m_destinations;///< Destination urls for organizable devices, on copy
-
 
 protected slots:
 
@@ -323,21 +293,29 @@ private:
     */
 
     void setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap &artistMap );
-    void setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap &albumMap, const ArtistMap &artistMap );
+    void setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap &albumMap, ArtistMap &artistMap );
     void setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap &genreMap );
     void setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerMap &composerMap );
     void setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap &yearMap );
 
     // Misc. Helper Methods
 
-    void setupReadCapability();
-    void setupWriteCapability();
+    /**
+     * Tries to create read capability in m_rc
+     * @return true if m_rc is valid read capability, false otherwise
+     */
+    bool setupReadCapability();
+
+    /**
+     * Tries to create write capability in m_rc
+     * @return true if m_wc is valid write capability, false otherwise
+     */
+    bool setupWriteCapability();
 
     /**
      *  @return free space on the device
      */
-
-    float freeSpace() const;
+    float freeSpace();
 
     // Observer Methods
 
@@ -375,11 +353,8 @@ private:
 
     Handler::PlaylistCapability *m_pc;
     Handler::PodcastCapability *m_podcastCapability;
-    Handler::ReadCapabilityBase *m_rcb;
-    Handler::CustomReadCapability *m_crc;
     Handler::ReadCapability *m_rc;
-    Handler::WriteCapabilityBase *m_wcb;
-    Handler::WriteCapability    *m_wc;
+    Handler::WriteCapability *m_wc;
 
 };
 

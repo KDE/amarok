@@ -29,4 +29,10 @@ Handler::ReadCapability::libIsCompilation( const Meta::MediaDeviceTrackPtr &trac
     return false;
 }
 
+qreal Handler::ReadCapability::libGetReplayGain( const Meta::MediaDeviceTrackPtr &track )
+{
+    Q_UNUSED( track )
+    return 0.0;
+}
+
 #include "ReadCapability.moc"

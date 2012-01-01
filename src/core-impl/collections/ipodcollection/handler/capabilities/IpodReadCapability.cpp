@@ -181,6 +181,12 @@ IpodReadCapability::libIsCompilation( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->libIsCompilation( track );
 }
 
+qreal
+IpodReadCapability::libGetReplayGain( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_handler->libGetReplayGain( track );
+}
+
 float
 IpodReadCapability::usedCapacity() const
 {

@@ -65,7 +65,7 @@ Required
 
 Optional
     * iPod support requires:
-      * libgpod 0.7.0 (or newer)
+      * libgpod 0.7.93 (or newer)
         http://www.gtkpod.org/libgpod/
       * GDKPixBuf 2.0 (or newer)
         (For artwork support)

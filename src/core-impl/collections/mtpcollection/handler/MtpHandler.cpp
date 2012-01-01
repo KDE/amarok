@@ -713,13 +713,6 @@ MtpHandler::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
 }
 
 void
-MtpHandler::writeDatabase()
-{
-    AMAROK_NOTIMPLEMENTED
-    slotDatabaseWritten( true );
-}
-
-void
 MtpHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
 {
     DEBUG_BLOCK

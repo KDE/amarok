@@ -97,17 +97,15 @@ set(libproxycollection_SRCS
 set(libmediadeviceframework_SRCS
   core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceCollectionLocation.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceEditCapability.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
-  core-impl/collections/mediadevicecollection/handler/capabilities/CustomReadCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/PodcastCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/ReadCapability.cpp
-  core-impl/collections/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/WriteCapability.cpp
-  core-impl/collections/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
   core-impl/collections/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
   core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
   core-impl/collections/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp
@@ -312,6 +310,7 @@ endif( TAGLIB_FOUND )
 # COLLECTION
 #####################################################################
 set(collection_SRCS
+    core-impl/collections/support/ArtistHelper.cpp
     core-impl/collections/support/CollectionManager.cpp
     core-impl/collections/support/CollectionLocationDelegateImpl.cpp
     core-impl/collections/support/MemoryCustomValue.cpp

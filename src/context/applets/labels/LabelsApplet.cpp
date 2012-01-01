@@ -24,7 +24,6 @@
 #include "App.h"
 #include "amarokurls/AmarokUrl.h"
 #include "context/widgets/AppletHeader.h"
-#include "core/capabilities/UpdateCapability.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "PaletteHandler.h"

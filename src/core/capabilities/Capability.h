@@ -50,7 +50,7 @@ namespace Capabilities
                         , SourceInfo = 8
                         // not longer used
                         , StreamInfo = 10
-                        , Updatable = 11
+                        // not longer used
                         , Importable = 12
                         // not longer used
                         , BookmarkThis = 14

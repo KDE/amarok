@@ -16,7 +16,33 @@
 
 #include "ArtistHelper.h"
 
+#include <KLocalizedString>
+
 #include <QStringList>
+
+QString
+ArtistHelper::bestGuessAlbumArtist( const QString &albumArtist, const QString &trackArtist,
+                                    const QString &genre, const QString &composer)
+{
+    QString best( albumArtist );
+
+    // - for classical tracks it's the composer
+    if( best.isEmpty() &&
+        (genre.compare( i18nc( "The genre name for classical music", "Classical" ), Qt::CaseInsensitive ) == 0 ||
+         genre.compare( QLatin1String( "Classical" ), Qt::CaseInsensitive ) == 0 ) )
+        best = ArtistHelper::realTrackArtist( composer );
+
+    // - for "normal" tracks it's the track artist
+    if( best.isEmpty() )
+        best = ArtistHelper::realTrackArtist( trackArtist );
+
+    // - "Various Artists" is the same as no artist
+    if( best.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) == 0 ||
+        best.compare( QLatin1String( "Various Artists" ), Qt::CaseInsensitive ) == 0 )
+        best.clear();
+
+    return best;
+}
 
 QString
 ArtistHelper::realTrackArtist( const QString &trackArtistTag )
