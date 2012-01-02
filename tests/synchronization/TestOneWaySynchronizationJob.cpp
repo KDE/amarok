@@ -62,7 +62,7 @@ public:
     void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources, const Transcoding::Configuration& conf)
     {
         Q_UNUSED( conf )
-        qDebug() << "adding " << sources.count() << " tracks to " << coll->collectionId();
+        // qDebug() << "adding " << sources.count() << " tracks to " << coll->collectionId();
         trackCopyCount = sources.count();
         foreach( const Meta::TrackPtr &track, sources.keys() )
         {
@@ -246,7 +246,7 @@ TestOneWaySynchronizationJob::testAddArtistToTarget()
     job->synchronize();
     QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
 
-    QCOMPARE( trackCopyCount, 1 );
+    QCOMPARE( trackCopyCount, 2 );
     QCOMPARE( source->mc->trackMap().count(), 2 );
     QCOMPARE( target->mc->trackMap().count(), 2 );
 
