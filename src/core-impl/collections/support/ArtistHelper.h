@@ -28,7 +28,7 @@ namespace ArtistHelper
      *
      * Guessing algorithm includes extracting artist from composer for classical tracks,
      * falling back to trackArtist if albumArtist is empty etc. Returns empty string for
-     * tracks that are believed to belong to belong into a compilation.
+     * tracks that are believed to belong into a compilation.
      */
     AMAROK_EXPORT QString bestGuessAlbumArtist( const QString &albumArtist, const QString &trackArtist,
                                   const QString &genre, const QString &composer );
