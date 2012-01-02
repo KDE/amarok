@@ -44,6 +44,12 @@ namespace Playlists
 
             virtual bool save( const KUrl &url, bool relative )
                 { Q_UNUSED( url ); Q_UNUSED( relative ); return false; }
+
+            /** Loads the playlist from the stream adding the newly found tracks to the current playlist.
+                This function is called automatically if the playlist is created with a file.
+                It only needs to be called when the playlist object is created from an url.
+                @returns true if the loading was successfull.
+            */
             virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 
             virtual QList<int> queue() { return QList<int>(); }

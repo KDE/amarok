@@ -44,27 +44,16 @@ void TestM3UPlaylist::initTestCase()
 {
     const KUrl url = dataPath( "data/playlists/test.m3u" );
     QFile playlistFile1( url.toLocalFile() );
-    QVERIFY( playlistFile1.open( QFile::ReadOnly ) );
-
-    const QString tmpFile = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) ) + "/test.m3u";
-    if( QFile::exists( tmpFile ) )
-        QFile::remove( tmpFile );
-    QVERIFY( QFile::copy( url.toLocalFile(), tmpFile ) );
-    QFile playlistFile2( tmpFile );
-    QVERIFY( playlistFile2.open( QFile::ReadOnly ) );
-
-    m_testPlaylist = new Playlists::M3UPlaylist( KUrl( tmpFile ) );
-    QVERIFY( m_testPlaylist );
-
     QTextStream playlistStream;
-    playlistStream.setDevice( &playlistFile2 );
+
+    QVERIFY( playlistFile1.open( QFile::ReadOnly ) );
+    playlistStream.setDevice( &playlistFile1 );
     QVERIFY( playlistStream.device() );
 
+    m_testPlaylist = new Playlists::M3UPlaylist( url );
     QVERIFY( m_testPlaylist->load( playlistStream ) );
     QCOMPARE( m_testPlaylist->tracks().size(), 10 );
     playlistFile1.close();
-
-    QVERIFY( QFile::remove( tmpFile ) );
 }
 
 void TestM3UPlaylist::cleanupTestCase()
@@ -85,7 +74,7 @@ void TestM3UPlaylist::testSetAndGetName()
     QCOMPARE( m_testPlaylist->name(), QString( "set name test aäoöuüß" ) );
 
     m_testPlaylist->setName( "" );
-    QCOMPARE( m_testPlaylist->name(), QString( "tests" ) );
+    QCOMPARE( m_testPlaylist->name(), QString( "playlists" ) );
 }
 
 void TestM3UPlaylist::testTracks()
@@ -101,7 +90,7 @@ void TestM3UPlaylist::testTracks()
 
 void TestM3UPlaylist::testUidUrl()
 {
-    QCOMPARE( m_testPlaylist->uidUrl().pathOrUrl(), dataPath() );
+    QCOMPARE( m_testPlaylist->uidUrl().pathOrUrl(), dataPath( "data/playlists/" ) );
 }
 
 void TestM3UPlaylist::testSetAndGetGroups()

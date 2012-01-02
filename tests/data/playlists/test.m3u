@@ -1,21 +1,24 @@
 #EXTM3U
+# Note: the M3U playlist is verifying that the
+# files actually exist when reading the
+# playlist. So the path has to be valid.
 #EXTINF:12,Free Music Charts - Platz 01
-data/audio/Platz 01.mp3
+../audio/Platz 01.mp3
 #EXTINF:8,Free Music Charts - Platz 02
-data/audio/Platz 02.mp3
+../audio/Platz 02.mp3
 #EXTINF:9,Free Music Charts - Platz 03
-data/audio/Platz 03.mp3
+../audio/Platz 03.mp3
 #EXTINF:12,Free Music Charts - Platz 04
-data/audio/Platz 04.mp3
+../audio/Platz 04.mp3
 #EXTINF:8,Free Music Charts - Platz 05
-data/audio/Platz 05.mp3
+../audio/Platz 05.mp3
 #EXTINF:9,Free Music Charts - Platz 06
-data/audio/Platz 06.mp3
+../audio/Platz 06.mp3
 #EXTINF:10,Free Music Charts - Platz 07
-data/audio/Platz 07.mp3
+../audio/Platz 07.mp3
 #EXTINF:13,Free Music Charts - Platz 08
-data/audio/Platz 08.mp3
+../audio/Platz 08.mp3
 #EXTINF:13,Free Music Charts - Platz 09
-data/audio/Platz 09.mp3
+../audio/Platz 09.mp3
 #EXTINF:12,Free Music Charts - Platz 10
-data/audio/Platz 10.mp3
+../audio/Platz 10.mp3

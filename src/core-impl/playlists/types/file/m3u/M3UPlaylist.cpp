@@ -37,7 +37,6 @@ namespace Playlists {
 M3UPlaylist::M3UPlaylist()
     : m_url( Playlists::newPlaylistFilePath( "m3u" ) )
     , m_tracksLoaded( true )
-    , m_tracks( Meta::TrackList() )
 {
     m_name = m_url.fileName();
 }
@@ -55,8 +54,6 @@ M3UPlaylist::M3UPlaylist( const KUrl &url )
     , m_tracksLoaded( false )
 {
     m_name = m_url.fileName();
-
-    triggerTrackLoad();
 }
 
 M3UPlaylist::~M3UPlaylist()

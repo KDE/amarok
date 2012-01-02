@@ -46,7 +46,7 @@ void TestPLSPlaylist::initTestCase()
     //apparently the engine controller is needed somewhere, or we will get a crash...
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );
-  
+
     const KUrl url = dataPath( "data/playlists/test.pls" );
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream1;
@@ -57,6 +57,7 @@ void TestPLSPlaylist::initTestCase()
 
     m_testPlaylist1 = new Playlists::PLSPlaylist( url );
     QVERIFY( m_testPlaylist1->load( playlistStream1 ) );
+    QCOMPARE( m_testPlaylist1->tracks().size(), 4 );
     playlistFile1.close();
 }
 
