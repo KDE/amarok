@@ -30,12 +30,22 @@ private slots:
     void init();
     void cleanup();
 
+    /** Test the data function for root, playlists and biases */
     void testData();
+
+    /** Test all the different index operations. */
     void testPlaylistIndex();
+
+    /** Test the different slots for the DynamicModel class */
     void testSlots();
+
+    /** Test that serializing the playlists and biases returns the original data */
     void testSerializeIndex();
+
+    /** Test th dropMimeData functions */
     void testDnD();
-    void testSaveActive();
+
+    /** Test removing active and non-active playlists */
     void testRemoveActive();
 
 private:

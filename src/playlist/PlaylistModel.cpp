@@ -961,13 +961,16 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         m_activeRow += activeShift;
     else
     {
-         // If one of the inserted tracks is currently playing, choose it as the active track.
-        const Meta::TrackPtr engineTrack = The::engineController()->currentTrack();
-        if( engineTrack )
+        EngineController *engine = The::engineController();
+        if( engine ) // test cases might create a playlist without having an EngineController
         {
-            int engineRow = firstRowForTrack( engineTrack );
-            if( engineRow > -1 )
-                setActiveRow( engineRow );
+            const Meta::TrackPtr engineTrack = engine->currentTrack();
+            if( engineTrack )
+            {
+                int engineRow = firstRowForTrack( engineTrack );
+                if( engineRow > -1 )
+                    setActiveRow( engineRow );
+            }
         }
     }
 }

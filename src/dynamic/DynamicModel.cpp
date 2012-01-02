@@ -100,6 +100,9 @@ Dynamic::DynamicModel::setActivePlaylist( int index )
 Dynamic::DynamicPlaylist*
 Dynamic::DynamicModel::activePlaylist() const
 {
+    if( m_activePlaylistIndex < 0 || m_activePlaylistIndex >= m_playlists.count() )
+        return 0;
+
     return m_playlists[m_activePlaylistIndex];
 }
 
@@ -559,6 +562,8 @@ Dynamic::DynamicModel::dropMimeData(const QMimeData *data,
                                     Qt::DropAction action,
                                     int row, int column, const QModelIndex &_parent)
 {
+    Q_UNUSED( column );
+
     QModelIndex parent = _parent;
 
     if( action == Qt::IgnoreAction )

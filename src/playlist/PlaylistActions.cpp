@@ -78,8 +78,9 @@ Playlist::Actions::Actions()
 {
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( slotTrackPlaying( Meta::TrackPtr ) ) );
+    if( engine ) // test cases might create a playlist without having an EngineController
+        connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+                 this, SLOT( slotTrackPlaying( Meta::TrackPtr ) ) );
 }
 
 Playlist::Actions::~Actions()

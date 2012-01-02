@@ -25,7 +25,6 @@
 
 #include <QByteArray>
 #include <QDataStream>
-#include <QDebug>
 
 #include <QSignalSpy>
 #include <KTempDir>
@@ -124,7 +123,6 @@ TestDynamicModel::testPlaylistIndex()
 
     Dynamic::BiasPtr bias = qobject_cast<Dynamic::BiasedPlaylist*>(playlist)->bias();
     biasIndex = model->index( 0, 0, playlistIndex );
-    qDebug() << model->index( bias ) << "=" << biasIndex;
     QCOMPARE( model->index( bias ), biasIndex );
 
     Dynamic::BiasPtr subBias = qobject_cast<Dynamic::AndBias*>(bias.data())->biases().at(0);
@@ -322,81 +320,11 @@ TestDynamicModel::testDnD()
     delete data;
 
 
-
     // -- copy a bias
+    // TODO
     QModelIndex biasIndex = model->index( 0, 0, playlistIndex );
     QModelIndex subBiasIndex = model->index( 0, 0, biasIndex );
 
-}
-
-void
-TestDynamicModel::testSaveActive()
-{
-    Dynamic::DynamicModel *model = Dynamic::DynamicModel::instance();
-
-    // load from the empty directory
-    model->loadPlaylists();
-
-    // now we should have the default playlist
-    // QCOMPARE( model->isActiveUnsaved(), false );
-    // QCOMPARE( model->isActiveDefault(), true );
-    QCOMPARE( model->activePlaylistIndex(), 0 );
-    // QCOMPARE( model->defaultPlaylistIndex(), model->activePlaylistIndex() );
-    QCOMPARE( model->activePlaylist()->title(), QString("Random") );
-
-    // change the default playlist
-    Dynamic::BiasedPlaylist* playlist = qobject_cast<Dynamic::BiasedPlaylist*>(model->activePlaylist());
-    playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::AndBias() ) );
-
-    // QCOMPARE( model->isActiveUnsaved(), true );
-    // QVERIFY( model->data( model->index(0, 0) ).toString() != QString("Random") );
-
-    // saving and loading the playlist does not change the state
-    model->savePlaylists();
-    // QCOMPARE( model->isActiveUnsaved(), true );
-    QCOMPARE( model->activePlaylistIndex(), 0 );
-
-    model->loadPlaylists();
-    // QCOMPARE( model->isActiveUnsaved(), true );
-    QCOMPARE( model->activePlaylistIndex(), 0 );
-
-    // model->saveActive( "New Playlist" );
-
-    // Saved the playlist under a new name (at the end)
-    QCOMPARE( model->columnCount(), 1 );
-    QCOMPARE( model->rowCount(), 2 );
-    QCOMPARE( model->data( model->index(model->activePlaylistIndex(), 0) ).toString(),
-              QString("New Playlist") );
-    // QCOMPARE( model->isActiveUnsaved(), false );
-    // QCOMPARE( model->isActiveDefault(), false );
-    QCOMPARE( model->activePlaylistIndex(), 1 );
-    // QVERIFY( model->defaultPlaylistIndex() != model->activePlaylistIndex() );
-    QCOMPARE( model->activePlaylist()->title(), QString("New Playlist") );
-
-    // Save the unmodified playlist under a new name
-    // model->saveActive( "New Playlist 2" );
-    QCOMPARE( model->rowCount(), 3 );
-    // QCOMPARE( model->isActiveUnsaved(), false );
-    // QCOMPARE( model->isActiveDefault(), false );
-    QCOMPARE( model->activePlaylistIndex(), 2 );
-
-    // change the default playlist again
-    // model->setActivePlaylist( model->defaultPlaylistIndex() );
-    playlist = qobject_cast<Dynamic::BiasedPlaylist*>(model->activePlaylist());
-    playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::AndBias() ) );
-
-    // QCOMPARE( model->isActiveUnsaved(), true );
-
-    // Saved the playlist under an already existing
-    // model->saveActive( "New Playlist" );
-    QCOMPARE( model->rowCount(), 3 );
-    QCOMPARE( model->data( model->index(model->activePlaylistIndex(), 0) ).toString(),
-              QString("New Playlist") );
-    // QCOMPARE( model->isActiveUnsaved(), false );
-    // QCOMPARE( model->isActiveDefault(), false );
-    QCOMPARE( model->activePlaylistIndex(), 2 );
-    // QVERIFY( model->defaultPlaylistIndex() != model->activePlaylistIndex() );
-    QCOMPARE( model->activePlaylist()->title(), QString("New Playlist") );
 }
 
 void
@@ -406,30 +334,24 @@ TestDynamicModel::testRemoveActive()
 
     // load from the empty directory
     model->loadPlaylists();
-
-    // create three new playlists
-    // model->saveActive( "New Playlist" );
-    // model->saveActive( "New Playlist 2" );
-    // model->saveActive( "New Playlist 3" );
-
-    QCOMPARE( model->rowCount(), 4 );
-    // QCOMPARE( model->activePlaylist()->title(), QString("New Playlist 3") );
-
-    // try to remove the default playlist
-    // model->setActivePlaylist( model->defaultPlaylistIndex() );
-    // model->removeActive();
     QCOMPARE( model->rowCount(), 4 );
 
-    // try to remove the the second
+    // -- try to remove the active playlist
     model->setActivePlaylist( 2 );
-    // model->removeActive();
+    QCOMPARE( model->activePlaylistIndex(), 2 );
+    Dynamic::DynamicPlaylist* pl = model->activePlaylist();
+
+    model->removeAt( model->index( pl ) );
     QCOMPARE( model->rowCount(), 3 );
+    QVERIFY( model->activePlaylist() != pl );
 
-    model->setActivePlaylist( 1 );
-    QCOMPARE( model->activePlaylist()->title(), QString("New Playlist") );
+    // -- now remove all playlists remaining three playlists
+    model->removeAt( model->index( model->activePlaylist() ) );
+    model->removeAt( model->index( model->activePlaylist() ) );
+    model->removeAt( model->index( model->activePlaylist() ) );
 
-    model->setActivePlaylist( 2 );
-    QCOMPARE( model->activePlaylist()->title(), QString("New Playlist 3") );
+    QCOMPARE( model->rowCount(), 0 );
+    QCOMPARE( model->activePlaylist(), static_cast<Dynamic::DynamicPlaylist*>(0) );
 }
 
 #include "TestDynamicModel.moc"
