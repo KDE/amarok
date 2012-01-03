@@ -82,6 +82,7 @@ class Album : public Meta::Album, public Base
 
         /* MemoryMeta::Album methods: */
         void setAlbumArtist( Meta::ArtistPtr artist ) { m_albumArtist = artist; }
+        void setIsCompilation( bool isCompilation ) { m_isCompilation = isCompilation; }
 
     protected:
         virtual void notifyObservers() const {}
@@ -250,9 +251,12 @@ class MapAdder
                 albumMap.insert( albumName, album );
             }
 
+            bool isCompilation = track->album().isNull() ? false : track->album()->isCompilation();
             Album *memoryAlbum = static_cast<Album *>( album.data() );
             memoryAlbum->addTrack( metaTrackPtr );
             memoryAlbum->setAlbumArtist( metaTrackPtr->artist() );
+            // be deterministic wrt track adding order:
+            memoryAlbum->setIsCompilation( memoryAlbum->isCompilation() || isCompilation );
             QImage albumImage = track->album().isNull() ? QImage() : track->album()->image();
             if( !albumImage.isNull() )
             {
