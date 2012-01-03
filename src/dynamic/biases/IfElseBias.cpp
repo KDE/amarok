@@ -43,7 +43,7 @@ Dynamic::IfElseBiasFactory::name() const
 QString
 Dynamic::IfElseBiasFactory::i18nDescription() const
 { return i18nc("Description of the \"IfElse\" bias",
-                   "The \"IfElse\" bias adds tracks that match at least one of the sub biases. It will only check the second sub-bias if the first doesn't return any results."); }
+                   "The \"IfElse\" bias adds tracks that match at least one of the sub biases.\nIt will only check the second sub-bias if the first doesn't return any results."); }
 
 Dynamic::BiasPtr
 Dynamic::IfElseBiasFactory::createBias()
