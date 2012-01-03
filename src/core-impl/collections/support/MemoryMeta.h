@@ -209,11 +209,19 @@ class Track : public Meta::Track
         Meta::YearPtr m_year;
 };
 
-class AMAROK_EXPORT MapAdder
+/**
+ * Helper class that facilitates adding, removing and changing tracks that are in
+ * MemoryCollection. This class locks underlying MemoryCollection upon construction for
+ * writing and releases the lock in destructor.
+ *
+ * Typical usage:
+ * MemoryMeta::MapChanger().addTrack( trackPtr );
+ */
+class AMAROK_EXPORT MapChanger
 {
     public:
-        MapAdder( MemoryCollection *memoryCollection );
-        ~MapAdder();
+        MapChanger( MemoryCollection *memoryCollection );
+        ~MapChanger();
 
         /**
          * Adds a track to memoryCollection by proxying it using @see MemoryMeta::Track

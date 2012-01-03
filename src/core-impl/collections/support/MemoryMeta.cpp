@@ -115,19 +115,19 @@ Track::setYear( Year *year )
     m_year = Meta::YearPtr( year );
 }
 
-MapAdder::MapAdder(MemoryCollection* memoryCollection)
+MapChanger::MapChanger(MemoryCollection* memoryCollection)
     : m_mc( memoryCollection )
 {
     m_mc->acquireWriteLock();
 }
 
-MapAdder::~MapAdder()
+MapChanger::~MapChanger()
 {
     m_mc->releaseLock();
 }
 
 Meta::TrackPtr
-MapAdder::addTrack(Meta::TrackPtr track)
+MapChanger::addTrack(Meta::TrackPtr track)
 {
     Track *memoryTrack = new Track( track );
     Meta::TrackPtr metaTrackPtr = Meta::TrackPtr( memoryTrack );
