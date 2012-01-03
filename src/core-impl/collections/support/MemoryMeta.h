@@ -69,6 +69,18 @@ class Album : public Meta::Album, public Base
         virtual Meta::ArtistPtr albumArtist() const { return m_albumArtist; }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
 
+        virtual bool hasImage( int /* size */ = 0 ) const { return !m_image.isNull(); }
+        virtual QImage image( int size = 0 ) const
+        {
+            if( size > 1 && size <= 1000 && !m_image.isNull() )
+                return m_image.scaled( size, size, Qt::KeepAspectRatio, Qt::FastTransformation );
+            return m_image;
+        }
+        /* We intentionally don't advertise canUpdateImage() - setting image here would not
+         * currently do what the user expects */
+        virtual void setImage( const QImage &image ) { m_image = image; }
+
+        /* MemoryMeta::Album methods: */
         void setAlbumArtist( Meta::ArtistPtr artist ) { m_albumArtist = artist; }
 
     protected:
@@ -77,6 +89,7 @@ class Album : public Meta::Album, public Base
     private:
         bool m_isCompilation;
         Meta::ArtistPtr m_albumArtist;
+        QImage m_image;
 };
 
 class Composer : public Meta::Composer, public Base
@@ -240,6 +253,15 @@ class MapAdder
             Album *memoryAlbum = static_cast<Album *>( album.data() );
             memoryAlbum->addTrack( metaTrackPtr );
             memoryAlbum->setAlbumArtist( metaTrackPtr->artist() );
+            QImage albumImage = track->album().isNull() ? QImage() : track->album()->image();
+            if( !albumImage.isNull() )
+            {
+                /* We overwrite album image only if it is bigger than the old one */
+                int memoryImageArea = album->image().width() * album->image().height();
+                int albumImageArea = albumImage.width() * albumImage.height();
+                if( albumImageArea > memoryImageArea )
+                    album->setImage( albumImage );
+            }
             memoryTrack->setAlbum( album );
 
             m_mc->setAlbumMap( albumMap );
