@@ -26,6 +26,8 @@ using namespace Collections;
 /** These classes can be used with a MemoryCollection to populate the meta-type maps */
 namespace MemoryMeta {
 
+class Track;
+
 class Base
 {
     public:
@@ -34,14 +36,19 @@ class Base
 
         // Meta::{Artist,Album,Composer,Genre,Year} methods:
         virtual QString name() const { return m_name; }
-        virtual Meta::TrackList tracks() { return m_tracks; }
+        virtual Meta::TrackList tracks();
 
         // MemoryMeta::Base methods:
-        void addTrack( Meta::TrackPtr track ) { m_tracks << track; }
+        void addTrack( Track *track ) { m_tracks << track; }
+        void removeTrack( Track *track ) { m_tracks.removeOne( track ); }
 
     protected:
         QString m_name;
-        Meta::TrackList m_tracks;
+        /* We cannot easily store KSharedPtr to tracks, because it creates reference
+         * counting cycle: MemoryMeta::Track::m_album -> MemoryMeta::Album::tracks() ->
+         * MemoryMeta::Track. We therefore store plain pointers and rely on
+         * MemoryMeta::Track to notify when it is destroyed. */
+        QList<Track *> m_tracks;
 };
 
 class Artist : public Meta::Artist, public Base
@@ -128,6 +135,7 @@ class Track : public Meta::Track
 {
     public:
         Track( const Meta::TrackPtr &originalTrack );
+        virtual ~Track();
 
         /* Meta::Track virtual methods */
         virtual QString name() const { return m_track->name(); }
@@ -182,12 +190,15 @@ class Track : public Meta::Track
         virtual void addLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
         virtual void removeLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
 
-        /* MemoryMeta::Track methods */
-        void setAlbum( const Meta::AlbumPtr &album );
-        void setArtist( const Meta::ArtistPtr &artist );
-        void setComposer( const Meta::ComposerPtr &composer );
-        void setGenre( const Meta::GenrePtr &genre );
-        void setYear( const Meta::YearPtr &year );
+        /* MemoryMeta::Track methods.
+         * All of these methods pass the pointer to KSharedPtr (thus memory-manage it),
+         * remove this track from previous {Album,Artist,Composer,Genre,Year} entity (if any)
+         * and add this track to newly set entity (if non-null) */
+        void setAlbum( Album *album );
+        void setArtist( Artist *artist );
+        void setComposer( Composer *composer );
+        void setGenre( Genre *genre );
+        void setYear( Year *year );
 
     private:
         Meta::TrackPtr m_track;

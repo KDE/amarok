@@ -17,15 +17,29 @@
 
 #include "MemoryMeta.h"
 
+using namespace MemoryMeta;
+
+Meta::TrackList
+Base::tracks()
+{
+    // construct KSharedPtrs on demand, see m_track comment
+    Meta::TrackList list;
+    foreach( Track *track, m_tracks )
+    {
+        list << Meta::TrackPtr( track );
+    }
+    return list;
+}
+
 QImage
-MemoryMeta::Album::image( int size ) const
+Album::image( int size ) const
 {
     if( size > 1 && size <= 1000 && !m_image.isNull() )
         return m_image.scaled( size, size, Qt::KeepAspectRatio, Qt::FastTransformation );
     return m_image;
 }
 
-MemoryMeta::Track::Track(const Meta::TrackPtr& originalTrack)
+Track::Track(const Meta::TrackPtr& originalTrack)
     : m_track( originalTrack )
     , m_album( 0 )
     , m_artist( 0 )
@@ -35,48 +49,85 @@ MemoryMeta::Track::Track(const Meta::TrackPtr& originalTrack)
 {
 }
 
-void
-MemoryMeta::Track::setAlbum( const Meta::AlbumPtr &album )
+Track::~Track()
 {
-    m_album = album;
+    // all following static casts are valid - there is no way attributes could have been
+    // set to different Meta::* subclasses
+    if( m_album )
+        static_cast<Album *>( m_album.data() )->removeTrack( this );
+    if( m_artist )
+        static_cast<Artist *>( m_artist.data() )->removeTrack( this );
+    if( m_composer )
+        static_cast<Composer *>( m_composer.data() )->removeTrack( this );
+    if( m_genre )
+        static_cast<Genre *>( m_genre.data() )->removeTrack( this );
+    if( m_year )
+        static_cast<Year *>( m_year.data() )->removeTrack( this );
 }
 
 void
-MemoryMeta::Track::setArtist( const Meta::ArtistPtr &artist )
+Track::setAlbum( Album *album )
 {
-    m_artist = artist;
+    if( m_album )
+        static_cast<Album *>( m_album.data() )->removeTrack( this );
+    if( album )
+        album->addTrack( this );
+    m_album = Meta::AlbumPtr( album );
 }
 
 void
-MemoryMeta::Track::setComposer( const Meta::ComposerPtr &composer )
+Track::setArtist( Artist *artist )
 {
-    m_composer = composer;
+    if( m_artist )
+        static_cast<Artist *>( m_artist.data() )->removeTrack( this );
+    if( artist )
+        artist->addTrack( this );
+    m_artist = Meta::ArtistPtr( artist );
 }
 
 void
-MemoryMeta::Track::setGenre( const Meta::GenrePtr &genre )
+Track::setComposer( Composer *composer )
 {
-    m_genre = genre;
+    if( m_composer )
+        static_cast<Composer *>( m_composer.data() )->removeTrack( this );
+    if( composer )
+        composer->addTrack( this );
+    m_composer = Meta::ComposerPtr( composer );
 }
 
 void
-MemoryMeta::Track::setYear( const Meta::YearPtr &year )
+Track::setGenre( Genre *genre )
 {
-    m_year = year;
+    if( m_genre )
+        static_cast<Genre *>( m_genre.data() )->removeTrack( this );
+    if( genre )
+        genre->addTrack( this );
+    m_genre = Meta::GenrePtr( genre );
 }
 
-MemoryMeta::MapAdder::MapAdder(MemoryCollection* memoryCollection)
+void
+Track::setYear( Year *year )
+{
+    if( m_year )
+        static_cast<Year *>( m_year.data() )->removeTrack( this );
+    if( year )
+        year->addTrack( this );
+    m_year = Meta::YearPtr( year );
+}
+
+MapAdder::MapAdder(MemoryCollection* memoryCollection)
     : m_mc( memoryCollection )
 {
     m_mc->acquireWriteLock();
 }
 
-MemoryMeta::MapAdder::~MapAdder()
+MapAdder::~MapAdder()
 {
     m_mc->releaseLock();
 }
 
-Meta::TrackPtr MemoryMeta::MapAdder::addTrack(Meta::TrackPtr track)
+Meta::TrackPtr
+MapAdder::addTrack(Meta::TrackPtr track)
 {
     Track *memoryTrack = new Track( track );
     Meta::TrackPtr metaTrackPtr = Meta::TrackPtr( memoryTrack );
@@ -89,8 +140,7 @@ Meta::TrackPtr MemoryMeta::MapAdder::addTrack(Meta::TrackPtr track)
         artist = Meta::ArtistPtr( new Artist( artistName ) );
         m_mc->addArtist( artist );
     }
-    static_cast<Artist *>( artist.data() )->addTrack( metaTrackPtr );
-    memoryTrack->setArtist( artist );
+    memoryTrack->setArtist( static_cast<Artist *>( artist.data() ) );
 
     QString albumName = track->album().isNull() ? QString() : track->album()->name();
     Meta::AlbumPtr album = m_mc->albumMap().value( albumName );
@@ -111,11 +161,9 @@ Meta::TrackPtr MemoryMeta::MapAdder::addTrack(Meta::TrackPtr track)
             albumArtist = Meta::ArtistPtr( new Artist( albumArtistName ) );
             m_mc->addArtist( albumArtist );
         }
-        // no need to albumArtist->addTrack(), this is not populated for album artists
     }
     bool isCompilation = track->album().isNull() ? false : track->album()->isCompilation();
     Album *memoryAlbum = static_cast<Album *>( album.data() );
-    memoryAlbum->addTrack( metaTrackPtr );
     memoryAlbum->setAlbumArtist( albumArtist );  // TODO: do it the other way around
     // be deterministic wrt track adding order:
     memoryAlbum->setIsCompilation( memoryAlbum->isCompilation() || isCompilation );
@@ -128,7 +176,7 @@ Meta::TrackPtr MemoryMeta::MapAdder::addTrack(Meta::TrackPtr track)
         if( albumImageArea > memoryImageArea )
             album->setImage( albumImage );
     }
-    memoryTrack->setAlbum( album );
+    memoryTrack->setAlbum( memoryAlbum );
 
     QString genreName = track->genre().isNull() ? QString() : track->genre()->name();
     Meta::GenrePtr genre = m_mc->genreMap().value( genreName );
@@ -137,8 +185,7 @@ Meta::TrackPtr MemoryMeta::MapAdder::addTrack(Meta::TrackPtr track)
         genre = Meta::GenrePtr( new Genre( genreName ) );
         m_mc->addGenre( genre );
     }
-    static_cast<Genre *>( genre.data() )->addTrack( metaTrackPtr );
-    memoryTrack->setGenre( genre );
+    memoryTrack->setGenre( static_cast<Genre *>( genre.data() ) );
 
     QString composerName = track->composer().isNull() ? QString() : track->composer()->name();
     Meta::ComposerPtr composer = m_mc->composerMap().value( composerName );
@@ -147,8 +194,7 @@ Meta::TrackPtr MemoryMeta::MapAdder::addTrack(Meta::TrackPtr track)
         composer = Meta::ComposerPtr( new Composer( composerName ) );
         m_mc->addComposer( composer );
     }
-    static_cast<Composer *>( composer.data() )->addTrack( metaTrackPtr );
-    memoryTrack->setComposer( composer );
+    memoryTrack->setComposer( static_cast<Composer *>( composer.data() ) );
 
     int year = track->year().isNull() ? 0 : track->year()->year();
     Meta::YearPtr yearPtr = m_mc->yearMap().value( year );
@@ -157,8 +203,7 @@ Meta::TrackPtr MemoryMeta::MapAdder::addTrack(Meta::TrackPtr track)
         yearPtr = Meta::YearPtr( new Year( year ? QString::number( year ) : QString() ) );
         m_mc->addYear( yearPtr );
     }
-    static_cast<Year *>( yearPtr.data() )->addTrack( metaTrackPtr );
-    memoryTrack->setYear( yearPtr );
+    memoryTrack->setYear( static_cast<Year *>( yearPtr.data() ) );
 
     //TODO:labels
 
