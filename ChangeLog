@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 Version 2.6-Beta 1
   FEATURES:
+    * Support for album artists in USB Mass Storage collection.
     * album artist (if differs from artist), BPM, labels, last played time and
       bitrate are now shown in playlist track tooltip (if not already displayed
       in playlist)

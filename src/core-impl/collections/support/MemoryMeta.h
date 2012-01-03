@@ -240,8 +240,6 @@ class MapAdder
             static_cast<Artist *>( artist.data() )->addTrack( metaTrackPtr );
             memoryTrack->setArtist( artist );
 
-            m_mc->setArtistMap( artistMap );
-
             AlbumMap albumMap = m_mc->albumMap();
             QString albumName = track->album().isNull() ? QString() : track->album()->name();
             Meta::AlbumPtr album = albumMap.value( albumName );
@@ -250,11 +248,24 @@ class MapAdder
                 album = Meta::AlbumPtr( new Album( albumName ) );
                 albumMap.insert( albumName, album );
             }
-
+            QString albumArtistName;
+            if( track->album() && track->album()->hasAlbumArtist() && track->album()->albumArtist() )
+                albumArtistName = track->album()->albumArtist()->name();
+            Meta::ArtistPtr albumArtist;
+            if( !albumArtistName.isEmpty() )
+            {
+                albumArtist = artistMap.value( albumArtistName );
+                if( albumArtist.isNull() )
+                {
+                    albumArtist = Meta::ArtistPtr( new Artist( albumArtistName ) );
+                    artistMap.insert( albumArtistName, albumArtist );
+                }
+                // no need to albumArtst->addTrack(), this is not populated for album artists
+            }
             bool isCompilation = track->album().isNull() ? false : track->album()->isCompilation();
             Album *memoryAlbum = static_cast<Album *>( album.data() );
             memoryAlbum->addTrack( metaTrackPtr );
-            memoryAlbum->setAlbumArtist( metaTrackPtr->artist() );
+            memoryAlbum->setAlbumArtist( albumArtist );  // TODO: do it the other way around
             // be deterministic wrt track adding order:
             memoryAlbum->setIsCompilation( memoryAlbum->isCompilation() || isCompilation );
             QImage albumImage = track->album().isNull() ? QImage() : track->album()->image();
@@ -267,7 +278,7 @@ class MapAdder
                     album->setImage( albumImage );
             }
             memoryTrack->setAlbum( album );
-
+            m_mc->setArtistMap( artistMap );
             m_mc->setAlbumMap( albumMap );
 
             GenreMap genreMap = m_mc->genreMap();
