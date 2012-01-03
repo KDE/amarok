@@ -315,6 +315,7 @@ set(collection_SRCS
     core-impl/collections/support/MemoryCustomValue.cpp
     core-impl/collections/support/MemoryFilter.cpp
     core-impl/collections/support/MemoryMatcher.cpp
+    core-impl/collections/support/MemoryMeta.cpp
     core-impl/collections/support/MemoryQueryMaker.cpp
     core-impl/collections/support/MemoryQueryMakerInternal.cpp
     core-impl/collections/support/MemoryQueryMakerHelper.cpp
