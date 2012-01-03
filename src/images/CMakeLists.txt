@@ -3,7 +3,6 @@ add_subdirectory( icons )
 ########### install files ###############
 
 install(FILES
-        FilenameLayoutDialogHint.png
         amarok_icon.svg
         default-theme-clean.svg
         emblem-amazon.png
