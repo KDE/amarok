@@ -36,7 +36,6 @@ install(FILES
         star.png
         volume_icon.png
         volume_muted_icon.png
-        web_applet_background.svg
         service_info_loading1.png
         service_info_loading2.png
         service_info_loading3.png
