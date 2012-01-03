@@ -29,12 +29,15 @@ namespace MemoryMeta {
 class Base
 {
     public:
-        Base( QString name ) : m_name( name ) {}
+        Base( const QString &name ) : m_name( name ) {}
         virtual ~Base() {}
 
+        // Meta::{Artist,Album,Composer,Genre,Year} methods:
         virtual QString name() const { return m_name; }
         virtual Meta::TrackList tracks() { return m_tracks; }
-        virtual void addTrack( Meta::TrackPtr track ) { m_tracks << track; }
+
+        // MemoryMeta::Base methods:
+        void addTrack( Meta::TrackPtr track ) { m_tracks << track; }
 
     protected:
         QString m_name;
@@ -44,10 +47,11 @@ class Base
 class Artist : public Meta::Artist, public Base
 {
     public:
-        Artist( QString name ) : Base( name ) {}
+        Artist( const QString &name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
+
     protected:
         virtual void notifyObservers() const {}
 };
@@ -55,7 +59,7 @@ class Artist : public Meta::Artist, public Base
 class Album : public Meta::Album, public Base
 {
     public:
-        Album( QString name ) : Base( name ), m_isCompilation( false ) {}
+        Album( const QString &name ) : Base( name ), m_isCompilation( false ) {}
 
         virtual QString name() const { return Base::name(); }
 
@@ -78,11 +82,9 @@ class Album : public Meta::Album, public Base
 class Composer : public Meta::Composer, public Base
 {
     public:
-        Composer( QString name ) : Base( name ) {}
+        Composer( const QString &name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
-
-        /** Meta::Composer virtual methods */
         virtual Meta::TrackList tracks() { return Base::tracks(); }
 
     protected:
@@ -92,11 +94,9 @@ class Composer : public Meta::Composer, public Base
 class Genre : public Meta::Genre, public Base
 {
     public:
-        Genre( QString name ) : Base( name ) {}
+        Genre( const QString &name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
-
-        /** Meta::Genre virtual methods */
         virtual Meta::TrackList tracks() { return Base::tracks(); }
 
     protected:
@@ -106,11 +106,9 @@ class Genre : public Meta::Genre, public Base
 class Year : public Meta::Year, public Base
 {
     public:
-        Year( QString name ) : Base( name ) {}
+        Year( const QString &name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
-
-        /** Meta::Year virtual methods */
         virtual Meta::TrackList tracks() { return Base::tracks(); }
 
     protected:
@@ -120,7 +118,7 @@ class Year : public Meta::Year, public Base
 class Track : public Meta::Track
 {
     public:
-        Track( Meta::TrackPtr originalTrack )
+        Track( const Meta::TrackPtr &originalTrack )
             : m_track( originalTrack )
             , m_album( 0 )
             , m_artist( 0 )
