@@ -319,7 +319,7 @@ ScanManager::slotJobDone()
     if( m_scanner )
     {
         // -- error reporting
-        if( !m_errorsReported )
+        if (QApplication::type() != QApplication::Tty && !m_errorsReported )
         {
             m_errorsReported = true;
 

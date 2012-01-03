@@ -212,12 +212,12 @@ TestSqlScanManager::testDuplicateUid()
     // -- check the commit (the database needs to have been updated correctly)
     m_collection->registry()->emptyCache();
 
+    // -- we need to have at least one of the tracks present
     Meta::AlbumPtr album;
-    album = m_collection->registry()->getAlbum( QString(), QString() );
+    album = m_collection->registry()->getAlbum( 1 );
 
-    QCOMPARE( album->tracks().count(), 1 );
-    QVERIFY( album->tracks().first()->name() == "Track 1" ||
-             album->tracks().first()->name() == "Track 2" );
+    // both tracks should be present
+    QVERIFY( album->tracks().count() >= 1 );
 }
 
 void
@@ -245,11 +245,10 @@ TestSqlScanManager::testLongUid()
     m_collection->registry()->emptyCache();
 
     Meta::AlbumPtr album;
-    album = m_collection->registry()->getAlbum( QString(), QString() );
+    album = m_collection->registry()->getAlbum( 1 );
 
+    // both tracks should be present
     QCOMPARE( album->tracks().count(), 2 );
-    QVERIFY( album->tracks().first()->name() == "Track 1" ||
-             album->tracks().first()->name() == "Track 2" );
 }
 
 
