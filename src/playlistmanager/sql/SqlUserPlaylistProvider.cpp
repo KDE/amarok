@@ -306,66 +306,6 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& nam
     return playlist; //assumes insertion in db was successful!
 }
 
-bool
-SqlUserPlaylistProvider::import( const QString &fromLocation )
-{
-    DEBUG_BLOCK
-    debug() << "importing playlist " << fromLocation;
-    QString query = "SELECT id, parent_id, name, description, urlid FROM \
-                playlists where urlid='%1';";
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
-    if( !sql )
-    {
-        debug() << "No sql storage available!";
-	    return false;
-    }
-    query = query.arg( sql->escape( fromLocation ) );
-    QStringList result = sql->query( query );
-    if( result.count() != 0 )
-    {
-        debug() << "Playlist was already imported";
-        return false;
-    }
-
-
-    KUrl url( fromLocation );
-    Playlists::Playlist* playlist = 0;
-    Playlists::PlaylistFormat format = Playlists::getFormat( fromLocation );
-
-    switch( format )
-    {
-        case Playlists::PLS:
-            playlist = new Playlists::PLSPlaylist( url );
-            break;
-        case Playlists::M3U:
-            playlist = new Playlists::M3UPlaylist( url );
-            break;
-        case Playlists::XSPF:
-            playlist = new Playlists::XSPFPlaylist( url );
-            break;
-
-        default:
-            debug() << "unknown type, cannot save playlist!";
-            return false;
-    }
-    Meta::TrackList tracks = playlist->tracks();
-    QString name = playlist->name().split('.')[0];
-    debug() << name << QString(" has %1 tracks.").arg( tracks.count() );
-    if( tracks.isEmpty() )
-        return false;
-
-    Playlists::SqlPlaylistPtr sqlPlaylist =
-        Playlists::SqlPlaylistPtr( new Playlists::SqlPlaylist( playlist->name(), tracks,
-                                                     Playlists::SqlPlaylistGroupPtr(),
-                                                     this,
-                                                     fromLocation )
-                              );
-    //TODO: don't reload database and emit playlistAdded()
-    reloadFromDb();
-
-    return true;
-}
-
 void
 SqlUserPlaylistProvider::reloadFromDb()
 {

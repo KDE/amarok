@@ -63,7 +63,6 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
 
         Playlists::SqlPlaylistGroupPtr group( const QString &name );
-        bool import( const QString& fromLocation );
 
         static Playlists::SqlPlaylistList toSqlPlaylists( Playlists::PlaylistList playlists );
 

@@ -39,8 +39,8 @@ private slots:
     void cleanupTestCase();
     void testPlaylists();
     void testSave();
-    void testImportAndDeletePlaylists();
     void testRename();
+    void testDelete();
 
 private:
     Playlists::SqlUserPlaylistProvider *m_testSqlUserPlaylistProvider;
