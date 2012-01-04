@@ -46,6 +46,15 @@ Base::removeTrack( Track *track )
     m_tracks.removeOne( track );
 }
 
+Album::Album( const Meta::AlbumPtr &other )
+    : Base( other->name() )
+    , m_isCompilation( other->isCompilation() )
+    , m_image( other->image() )
+{
+    if( other->hasAlbumArtist() && other->albumArtist() )
+        m_albumArtist = Meta::ArtistPtr( new Artist( other->albumArtist()->name() ) );
+}
+
 QImage
 Album::image( int size ) const
 {
@@ -173,6 +182,9 @@ MapChanger::addTrack( Meta::TrackPtr track )
     Meta::ArtistPtr albumArtist;
     if( !albumArtistName.isEmpty() )
     {
+        /* Even if MemoryQueryMaker doesn't need albumArtists to be in MemoryCollection
+         * maps, we add her into artist map so that album artist has the same instance as
+         * indentically-named artist (of potentially different tracks) */
         albumArtist = m_mc->artistMap().value( albumArtistName );
         if( albumArtist.isNull() )
         {
@@ -223,7 +235,109 @@ MapChanger::addTrack( Meta::TrackPtr track )
     }
     memoryTrack->setYear( static_cast<Year *>( yearPtr.data() ) );
 
-    //TODO:labels
+    //TODO: labels (when doing this, don't forget to tweak removeTrack too)
 
     return metaTrackPtr;
+}
+
+Meta::TrackPtr
+MapChanger::removeTrack( Meta::TrackPtr track )
+{
+    if( !track )
+        return Meta::TrackPtr(); // nothing to do
+
+    TrackMap trackMap = m_mc->trackMap();
+    ArtistMap artistMap = m_mc->artistMap();
+    AlbumMap albumMap = m_mc->albumMap();
+    GenreMap genreMap = m_mc->genreMap();
+    ComposerMap composerMap = m_mc->composerMap();
+    YearMap yearMap = m_mc->yearMap();
+
+    /* Ensure that we have the memory track (not the underlying one) and that it is
+     * actually present in MemoryCollection */
+    track = trackMap.value( track->uidUrl() );
+    if( !track )
+        return Meta::TrackPtr(); // was not in collection, nothing to do
+
+    /* Track added using mapadder are MemoryMeta::Tracks, but cope with different too: */
+    Track *memoryTrack = dynamic_cast<Track *>( track.data() );
+
+    trackMap.remove( track->uidUrl() );
+
+    /* Remove potentially dangling entities from memory collection. We cannot simply use
+     * if( entity && entity->tracks().count() == 1 ) because it would be racy: entity could
+     * have referenced a track that is no longer in MemoryCollection, but not yet destroyed.
+     *
+     * When track to remove is MemoryMeta::Track, copy and reassing Meta:: entities so
+     * that the track is detached from MemoryCollection completely. */
+
+    Meta::ArtistPtr artist = track->artist();
+    if( artist && !hasTrackInMap( artist->tracks(), trackMap )
+               && !referencedAsAlbumArtist( artist, albumMap ) )
+        artistMap.remove( artist->name() );
+    if( artist && memoryTrack )
+        memoryTrack->setArtist( new Artist( artist->name() ) );
+
+    Meta::AlbumPtr album = track->album();
+    if( album && !hasTrackInMap( album->tracks(), trackMap ) )
+    {
+        albumMap.remove( album->name() );
+        Meta::ArtistPtr albumArtist = album->hasAlbumArtist() ? album->albumArtist() : Meta::ArtistPtr();
+        if( albumArtist && !hasTrackInMap( albumArtist->tracks(), trackMap )
+                        && !referencedAsAlbumArtist( albumArtist, albumMap ) )
+            artistMap.remove( albumArtist->name() );
+    }
+    if( album && memoryTrack )
+        memoryTrack->setAlbum( new Album( album ) ); // copy-like constructor
+
+    Meta::GenrePtr genre = track->genre();
+    if( genre && !hasTrackInMap( genre->tracks(), trackMap ) )
+        genreMap.remove( genre->name() );
+    if( genre && memoryTrack )
+        memoryTrack->setGenre( new Genre( genre->name() ) );
+
+    Meta::ComposerPtr composer = track->composer();
+    if( composer && !hasTrackInMap( composer->tracks(), trackMap ) )
+        composerMap.remove( composer->name() );
+    if( composer && memoryTrack )
+        memoryTrack->setComposer( new Composer( composer->name() ) );
+
+    Meta::YearPtr year = track->year();
+    if( year && !hasTrackInMap( year->tracks(), trackMap ) )
+        yearMap.remove( year->year() );
+    if( year && memoryTrack )
+        memoryTrack->setYear( new Year( year->name() ) );
+
+    m_mc->setTrackMap( trackMap );
+    m_mc->setArtistMap( artistMap );
+    m_mc->setAlbumMap( albumMap );
+    m_mc->setGenreMap( genreMap );
+    m_mc->setComposerMap( composerMap );
+    m_mc->setYearMap( yearMap );
+
+    if( memoryTrack )
+        return memoryTrack->originalTrack();
+    return Meta::TrackPtr();
+}
+
+bool
+MapChanger::hasTrackInMap( const Meta::TrackList &needles, const TrackMap &haystack )
+{
+    foreach( Meta::TrackPtr track, needles )
+    {
+        if( track && haystack.contains( track->uidUrl() ) )
+            return true;
+    }
+    return false;
+}
+
+bool
+MapChanger::referencedAsAlbumArtist( const Meta::ArtistPtr &artist, const AlbumMap &haystack )
+{
+    foreach( Meta::AlbumPtr album, haystack )
+    {
+        if( album && album->hasAlbumArtist() && album->albumArtist() == artist )
+            return true;
+    }
+    return false;
 }

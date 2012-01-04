@@ -74,6 +74,10 @@ class Album : public Meta::Album, public Base
 {
     public:
         Album( const QString &name ) : Base( name ), m_isCompilation( false ) {}
+        /**
+         * Copy-like constructor for MapChanger
+         */
+        Album( const Meta::AlbumPtr &other );
 
         virtual QString name() const { return Base::name(); }
 
@@ -197,8 +201,9 @@ class Track : public Meta::Track
         virtual void addLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
         virtual void removeLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
 
-        /* MemoryMeta::Track methods.
-         * All of these methods pass the pointer to KSharedPtr (thus memory-manage it),
+        // MemoryMeta::Track methods:
+
+        /* All of these set* methods pass the pointer to KSharedPtr (thus memory-manage it),
          * remove this track from previous {Album,Artist,Composer,Genre,Year} entity (if any)
          * and add this track to newly set entity. (if non-null)
          * All these methods are reentrant, but not thread-safe: caller must ensure that
@@ -209,6 +214,11 @@ class Track : public Meta::Track
         void setComposer( Composer *composer );
         void setGenre( Genre *genre );
         void setYear( Year *year );
+
+        /**
+         * Return the original track this track proxies.
+         */
+        Meta::TrackPtr originalTrack() const { return m_track; }
 
     private:
         Meta::TrackPtr m_track;
@@ -254,7 +264,36 @@ class AMAROK_EXPORT MapChanger
          */
         Meta::TrackPtr addTrack( Meta::TrackPtr track );
 
+        /**
+         * Removes a track from MemoryCollection. Pays attention to remove artists,
+         * albums, genres, composers and years that may become dangling in
+         * MemoryCollection.
+         *
+         * @param track MemoryMeta track to remove, it doesn't matter if this is the track
+         * returned by MapChanger::addTrack or the underlying one passed to
+         * MapChanger::addTrack - the track is looked up using its uidUrl in
+         * MemoryCollection.
+         *
+         * @return shared pointer to underlying track of the deleted track, i.e. the track
+         * that you passed to MapChanger::addTrack() originally. May be null pointer if
+         * @param track is not found in collection ot if in wasn't added using MapChanger.
+         */
+        Meta::TrackPtr removeTrack( Meta::TrackPtr track );
+
     private:
+        /**
+         * Return true if at least one of the tracks in @param needles is in
+         * @param haystack, false otherwise. Comparison is done using track uidUrl.
+         */
+        static bool hasTrackInMap( const Meta::TrackList &needles, const TrackMap &haystack );
+
+        /**
+         * Return true if artist @param artist is referenced as albumArtist of one of the
+         * albums from @param haystack. The match is done using Meta:ArtistPtr
+         * operator==.
+         */
+        static bool referencedAsAlbumArtist( const Meta::ArtistPtr &artist, const AlbumMap &haystack );
+
         MemoryCollection *m_mc;
 };
 
