@@ -23,12 +23,27 @@ Meta::TrackList
 Base::tracks()
 {
     // construct KSharedPtrs on demand, see m_track comment
+    QReadLocker locker( &m_tracksLock );
     Meta::TrackList list;
     foreach( Track *track, m_tracks )
     {
         list << Meta::TrackPtr( track );
     }
     return list;
+}
+
+void
+Base::addTrack( Track *track )
+{
+    QWriteLocker locker( &m_tracksLock );
+    m_tracks.append( track );
+}
+
+void
+Base::removeTrack( Track *track )
+{
+    QWriteLocker locker( &m_tracksLock );
+    m_tracks.removeOne( track );
 }
 
 QImage
@@ -115,7 +130,7 @@ Track::setYear( Year *year )
     m_year = Meta::YearPtr( year );
 }
 
-MapChanger::MapChanger(MemoryCollection* memoryCollection)
+MapChanger::MapChanger( MemoryCollection *memoryCollection )
     : m_mc( memoryCollection )
 {
     m_mc->acquireWriteLock();
@@ -127,8 +142,11 @@ MapChanger::~MapChanger()
 }
 
 Meta::TrackPtr
-MapChanger::addTrack(Meta::TrackPtr track)
+MapChanger::addTrack( Meta::TrackPtr track )
 {
+    if( !track )
+        return Meta::TrackPtr(); // nothing to do
+
     Track *memoryTrack = new Track( track );
     Meta::TrackPtr metaTrackPtr = Meta::TrackPtr( memoryTrack );
     m_mc->addTrack( metaTrackPtr );

@@ -28,6 +28,12 @@ namespace MemoryMeta {
 
 class Track;
 
+/**
+ * Base class for all MemoryMeta:: entities that store a list of associated tracks:
+ * Artist, Album, Composer, Genre, Year.
+ *
+ * All methods of this class are thread-safe.
+ */
 class Base
 {
     public:
@@ -39,16 +45,17 @@ class Base
         virtual Meta::TrackList tracks();
 
         // MemoryMeta::Base methods:
-        void addTrack( Track *track ) { m_tracks << track; }
-        void removeTrack( Track *track ) { m_tracks.removeOne( track ); }
+        void addTrack( Track *track );
+        void removeTrack( Track *track );
 
-    protected:
+    private:
         QString m_name;
         /* We cannot easily store KSharedPtr to tracks, because it creates reference
          * counting cycle: MemoryMeta::Track::m_album -> MemoryMeta::Album::tracks() ->
          * MemoryMeta::Track. We therefore store plain pointers and rely on
          * MemoryMeta::Track to notify when it is destroyed. */
         QList<Track *> m_tracks;
+        QReadWriteLock m_tracksLock;
 };
 
 class Artist : public Meta::Artist, public Base
@@ -193,7 +200,10 @@ class Track : public Meta::Track
         /* MemoryMeta::Track methods.
          * All of these methods pass the pointer to KSharedPtr (thus memory-manage it),
          * remove this track from previous {Album,Artist,Composer,Genre,Year} entity (if any)
-         * and add this track to newly set entity (if non-null) */
+         * and add this track to newly set entity. (if non-null)
+         * All these methods are reentrant, but not thread-safe: caller must ensure that
+         * only one of the following methods is called at a time on a single instance.
+         */
         void setAlbum( Album *album );
         void setArtist( Artist *artist );
         void setComposer( Composer *composer );
@@ -215,7 +225,19 @@ class Track : public Meta::Track
  * writing and releases the lock in destructor.
  *
  * Typical usage:
- * MemoryMeta::MapChanger().addTrack( trackPtr );
+ * {
+ *     MemoryMeta::MapChanger changer( memoryCollectionPtr );
+ *     Meta::Track newTrack = changer.addTrack( trackPtr );
+ *     ...
+ *     changer.removeTrack( newTrack );
+ * }
+ *
+ * All methods in this class are re-entrant and it operates on MemoryCollection in
+ * a thread-safe way: you can run MapChangers from multiple threads on a single
+ * MemoryCollection at once. (each thread constructing MapChanger when needed and deleting
+ * it as soon as possible)
+ *
+ * All methods can be called multiple times on a single instance and can be combined.
  */
 class AMAROK_EXPORT MapChanger
 {
