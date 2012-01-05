@@ -114,7 +114,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
             Returns a pointer to the collection location's corresponding collection.
             @return a pointer to the collection location's corresponding collection
          */
-        const Collections::Collection* collection() const;
+        virtual const Collections::Collection* collection() const;
 
         /**
             a displayable string representation of the collection location. use the return
