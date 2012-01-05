@@ -253,6 +253,8 @@ APG::ConstraintSolver::select_population( APG::ConstraintSolver::Population& pop
     while ( it != population.end() ) {
         if ( it.key() == best ) {
             ++it;// Always keep the best solution, no matter how bad it is
+            if ( it == population.end() )
+                break;
         }
         
         if ( select( it.value() ) ) {
