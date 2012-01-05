@@ -74,7 +74,9 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
     // now we create the toolbar
-    m_toolbar = new AppletToolbar( containment );
+    m_toolbar = new AppletToolbar(0);
+    scene->addItem(m_toolbar.data());
+    m_toolbar.data()->setContainment( qobject_cast<Context::Containment *>(containment) );
     m_toolbar.data()->setZValue( m_toolbar.data()->zValue() + 1000 );
     m_toolbar.data()->setPos( TOOLBAR_X_OFFSET, 0 );
 
@@ -96,7 +98,7 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
 
 Context::ToolbarView::~ToolbarView()
 {
-
+    delete m_toolbar.data();
 }
 
 void

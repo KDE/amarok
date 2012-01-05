@@ -55,6 +55,9 @@ class AppletToolbar : public QGraphicsWidget
         
         void appletRemoved( Plasma::Applet* applet );
 
+        void setContainment( Containment * containment );
+        Containment* containment() const;
+
     signals:
         void showApplet( Plasma::Applet* );
         void appletAddedToToolbar( Plasma::Applet* applet, int loc );

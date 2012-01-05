@@ -67,6 +67,40 @@ Context::AppletToolbar::~AppletToolbar()
 }
 
 void
+<<<<<<< Updated upstream
+=======
+Context::AppletToolbar::setContainment( Containment * containment )
+{
+    m_cont = containment;
+}
+
+Context::Containment *
+Context::AppletToolbar::containment() const
+{
+    return m_cont;
+}
+
+void
+Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
+{
+    Q_UNUSED( option )
+    Q_UNUSED( widget )
+
+    painter->setRenderHint( QPainter::Antialiasing );
+    painter->save();
+
+    QColor col = PaletteHandler::alternateBackgroundColor();
+    qreal radius = 3;
+
+    QPainterPath outline;
+    outline.addRoundedRect( boundingRect(), radius, radius );
+    painter->fillPath( outline, QBrush( col ) );
+
+    painter->restore();
+}
+
+void
+>>>>>>> Stashed changes
 Context::AppletToolbar::resizeEvent( QGraphicsSceneResizeEvent * event )
 {
     debug() << "setting layout to" << QRectF( QPointF( 0, 0 ), event->newSize() );
