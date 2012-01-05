@@ -276,6 +276,11 @@ class AMAROK_EXPORT MapChanger
 
     private:
         /**
+         * Worker for addTrack
+         */
+        Meta::TrackPtr addExistingTrack( Meta::TrackPtr track, Track *memoryTrack );
+
+        /**
          * Return true if at least one of the tracks in @param needles is in
          * @param haystack, false otherwise. Comparison is done using track uidUrl.
          */

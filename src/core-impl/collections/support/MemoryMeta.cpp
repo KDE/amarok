@@ -160,6 +160,12 @@ MapChanger::addTrack( Meta::TrackPtr track )
         return Meta::TrackPtr();
 
     Track *memoryTrack = new Track( track );
+    return addExistingTrack( track, memoryTrack );
+}
+
+Meta::TrackPtr
+MapChanger::addExistingTrack(Meta::TrackPtr track, Track* memoryTrack)
+{
     Meta::TrackPtr metaTrackPtr = Meta::TrackPtr( memoryTrack );
     m_mc->addTrack( metaTrackPtr );
 
