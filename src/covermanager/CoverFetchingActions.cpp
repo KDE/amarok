@@ -47,12 +47,13 @@ void FetchCoverAction::init()
     setText( i18np("Fetch Cover", "Fetch Covers", m_albums.count()) );
     setIcon( KIcon("insert-image") );
     setToolTip( i18np("Fetch the artwork for this album", "Fetch artwork for %1 albums", m_albums.count()) );
-    // a track that is not in the collection will return a null tracklist under
-    // its album pointer. In that case we can't find the location of the track
-    // via the meta system, so cover fetching is fruitless.
-    Meta::AlbumPtr album = m_albums.first();
-    if( album )
-        setEnabled( !album->tracks().isEmpty() );
+
+    bool enabled = !m_albums.isEmpty();
+    foreach( Meta::AlbumPtr album, m_albums )
+    {
+        enabled &= album->canUpdateImage();
+    }
+    setEnabled( enabled );
 }
 
 void FetchCoverAction::slotTriggered()
