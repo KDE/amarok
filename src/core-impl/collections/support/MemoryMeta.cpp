@@ -71,6 +71,7 @@ Track::Track(const Meta::TrackPtr& originalTrack)
     , m_genre( 0 )
     , m_year( 0 )
 {
+    Q_ASSERT( originalTrack );
 }
 
 Track::~Track()
@@ -155,6 +156,8 @@ MapChanger::addTrack( Meta::TrackPtr track )
 {
     if( !track )
         return Meta::TrackPtr(); // nothing to do
+    if( m_mc->trackMap().contains( track->uidUrl() ) )
+        return Meta::TrackPtr();
 
     Track *memoryTrack = new Track( track );
     Meta::TrackPtr metaTrackPtr = Meta::TrackPtr( memoryTrack );

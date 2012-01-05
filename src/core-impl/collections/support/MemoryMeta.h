@@ -65,9 +65,6 @@ class Artist : public Meta::Artist, public Base
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
-
-    protected:
-        virtual void notifyObservers() const {}
 };
 
 class Album : public Meta::Album, public Base
@@ -97,9 +94,6 @@ class Album : public Meta::Album, public Base
         void setAlbumArtist( Meta::ArtistPtr artist ) { m_albumArtist = artist; }
         void setIsCompilation( bool isCompilation ) { m_isCompilation = isCompilation; }
 
-    protected:
-        virtual void notifyObservers() const {}
-
     private:
         bool m_isCompilation;
         Meta::ArtistPtr m_albumArtist;
@@ -113,9 +107,6 @@ class Composer : public Meta::Composer, public Base
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
-
-    protected:
-        virtual void notifyObservers() const {}
 };
 
 class Genre : public Meta::Genre, public Base
@@ -125,9 +116,6 @@ class Genre : public Meta::Genre, public Base
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
-
-    protected:
-        virtual void notifyObservers() const {}
 };
 
 class Year : public Meta::Year, public Base
@@ -137,9 +125,6 @@ class Year : public Meta::Year, public Base
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
-
-    protected:
-        virtual void notifyObservers() const {}
 };
 
 class Track : public Meta::Track
@@ -148,9 +133,16 @@ class Track : public Meta::Track
         Track( const Meta::TrackPtr &originalTrack );
         virtual ~Track();
 
-        /* Meta::Track virtual methods */
+        /* Meta::MetaCapability methods */
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+            { return m_track->hasCapabilityInterface( type ); }
+        virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type )
+            { return m_track->createCapabilityInterface( type ); }
+
+        /* Meta::MetaBase virtual methods */
         virtual QString name() const { return m_track->name(); }
 
+        /* Meta::Track virtual methods */
         virtual KUrl playableUrl() const { return m_track->playableUrl(); }
         virtual QString prettyUrl() const { return m_track->prettyUrl(); }
         virtual QString uidUrl() const { return m_track->uidUrl(); }
@@ -256,11 +248,13 @@ class AMAROK_EXPORT MapChanger
         ~MapChanger();
 
         /**
-         * Adds a track to memoryCollection by proxying it using @see MemoryMeta::Track
+         * Adds a track to MemoryCollection by proxying it using @see MemoryMeta::Track
          * track artist, album, genre, composer and year are replaced in MemoryMeta::Track
-         * by relevant MemoryMeta entities, based on their value.
+         * by relevant MemoryMeta entities, based on their value. Refuses to add a track
+         * whose proxy is already in MemoryCollection (returns null pointer in this case)
          *
-         * @return pointer to a newly created MemoryMeta::Track
+         * @return pointer to a newly created MemoryMeta::Track (may be null if not
+         * successfull)
          */
         Meta::TrackPtr addTrack( Meta::TrackPtr track );
 
@@ -271,7 +265,7 @@ class AMAROK_EXPORT MapChanger
          *
          * @param track MemoryMeta track to remove, it doesn't matter if this is the track
          * returned by MapChanger::addTrack or the underlying one passed to
-         * MapChanger::addTrack - the track is looked up using its uidUrl in
+         * MapChanger::addTrack - the real track is looked up using its uidUrl in
          * MemoryCollection.
          *
          * @return shared pointer to underlying track of the deleted track, i.e. the track
