@@ -1234,7 +1234,11 @@ TagDialog::setControlsAccessability()
 {
     bool editable = true;
     if( m_currentTrack )
-        editable = m_currentTrack->hasCapabilityInterface( Capabilities::Capability::Editable );
+    {
+        QScopedPointer<Capabilities::EditCapability> ec(
+            m_currentTrack->create<Capabilities::EditCapability>() );
+        editable = ec && ec->isEditable();
+    }
 
     ui->kTabWidget->setTabEnabled( ui->kTabWidget->indexOf(ui->lyricsTab),
                                    m_perTrack );
