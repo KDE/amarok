@@ -164,7 +164,7 @@ MapChanger::addTrack( Meta::TrackPtr track )
 }
 
 Meta::TrackPtr
-MapChanger::addExistingTrack(Meta::TrackPtr track, Track* memoryTrack)
+MapChanger::addExistingTrack( Meta::TrackPtr track, Track *memoryTrack )
 {
     Meta::TrackPtr metaTrackPtr = Meta::TrackPtr( memoryTrack );
     m_mc->addTrack( metaTrackPtr );
@@ -330,6 +330,46 @@ MapChanger::removeTrack( Meta::TrackPtr track )
 }
 
 bool
+MapChanger::trackChanged( Meta::TrackPtr track )
+{
+    if( !track )
+        return false;
+    // make sure we have a track from memory collection:
+    track = m_mc->trackMap().value( track->uidUrl() );
+    if( !track )
+        return false;
+    Track *memoryTrack = dynamic_cast<Track *>( track.data() );
+    if( !memoryTrack )
+        return false;
+
+    Meta::TrackPtr originalTrack = memoryTrack->originalTrack();
+    if( !originalTrack )
+        return false; // paranoia
+
+    bool mapsNeedUpdating = false;
+    if( entitiesDiffer( originalTrack->artist().data(), memoryTrack->artist().data() ) )
+        mapsNeedUpdating = true;
+    else if( entitiesDiffer( originalTrack->album().data(), memoryTrack->album().data() ) )
+        mapsNeedUpdating = true;
+    else if( entitiesDiffer( originalTrack->genre().data(), memoryTrack->genre().data() ) )
+        mapsNeedUpdating = true;
+    else if( entitiesDiffer( originalTrack->composer().data(), memoryTrack->composer().data() ) )
+        mapsNeedUpdating = true;
+    else if( entitiesDiffer( originalTrack->year().data(), memoryTrack->year().data() ) )
+        mapsNeedUpdating = true;
+
+    if( mapsNeedUpdating )
+    {
+        // we hold write lock so we can do the followin trick:
+        removeTrack( track );
+        addExistingTrack( originalTrack, memoryTrack );
+    }
+
+    memoryTrack->notifyObservers();
+    return mapsNeedUpdating;
+}
+
+bool
 MapChanger::hasTrackInMap( const Meta::TrackList &needles, const TrackMap &haystack )
 {
     foreach( Meta::TrackPtr track, needles )
@@ -348,5 +388,40 @@ MapChanger::referencedAsAlbumArtist( const Meta::ArtistPtr &artist, const AlbumM
         if( album && album->hasAlbumArtist() && album->albumArtist() == artist )
             return true;
     }
+    return false;
+}
+
+bool MapChanger::entitiesDiffer( const Meta::MetaBase *first, const Meta::MetaBase *second )
+{
+    if( !first && !second )
+        return false;  // both null -> do not differ
+    if( !first || !second )
+        return true;  // one of them null -> do differ
+
+    return first->name() != second->name();
+}
+
+bool MapChanger::entitiesDiffer( const Meta::Album *first, const Meta::Album *second )
+{
+    if( !first && !second )
+        return false;  // both null -> do not differ
+    if( !first || !second )
+        return true;  // one of them null -> do differ
+
+    if( first->name() != second->name() )
+        return true;
+    if( first->isCompilation() != second->isCompilation() )
+        return true;
+    if( first->hasImage() != second->hasImage() )
+        return true;
+    if( entitiesDiffer( first->albumArtist().data(), second->albumArtist().data() ) )
+        return true;
+
+    // we only compare images using dimension, it would be too costy otherwise
+    if( first->image().width() != second->image().width() )
+        return true;
+    if( first->image().height() != second->image().height() )
+        return true;
+
     return false;
 }

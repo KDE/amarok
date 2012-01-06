@@ -212,6 +212,11 @@ class Track : public Meta::Track
          */
         Meta::TrackPtr originalTrack() const { return m_track; }
 
+        /**
+         * Make notifyObservers() public so that MapChanger can call this
+         */
+        using Meta::Track::notifyObservers;
+
     private:
         Meta::TrackPtr m_track;
         Meta::AlbumPtr m_album;
@@ -274,9 +279,35 @@ class AMAROK_EXPORT MapChanger
          */
         Meta::TrackPtr removeTrack( Meta::TrackPtr track );
 
+        /**
+         * Reflects changes made to underlying track to its proxy track in
+         * MemoryCollection and to MemoryCollection maps.
+         *
+         * The one who called MapChanger::addTrack() is responsible to call this method
+         * everytime it detects that some metadata of underlying track have changed
+         * (perhaps by becoming its observer), even in minor fields such as comment. This
+         * method instructs proxy track to call notifyObservers().
+         *
+         * Please note that this method is currently unable to cope with changes
+         * to track uidUrl(). If you really need it, change MemoryCollection's
+         * trackMap manually _before_ calling this.
+         *
+         * @param track track whose metadata have changed, it doesn't matter if this is
+         * the track returned by MapChanger::addTrack or the underlying one passed to
+         * MapChanger::addTrack - the real track is looked up using its uidUrl in
+         * MemoryCollection. Does nothing if @param track is not found in MemoryCollection.
+         *
+         * @return true if memory collection maps had to be changed, false for minor
+         * changes where this is not required
+         */
+        bool trackChanged( Meta::TrackPtr track );
+
     private:
         /**
-         * Worker for addTrack
+         * Worker for addTrack.
+         *
+         * @param track original underlying track - source of metadata
+         * @param memoryTrack new track to add to MemoryCollection - target of metadata
          */
         Meta::TrackPtr addExistingTrack( Meta::TrackPtr track, Track *memoryTrack );
 
@@ -292,6 +323,17 @@ class AMAROK_EXPORT MapChanger
          * operator==.
          */
         static bool referencedAsAlbumArtist( const Meta::ArtistPtr &artist, const AlbumMap &haystack );
+
+        /**
+         * Return true if @param first has different value than @param other. Specifically
+         * returns true if one entity is null and the other non-null, but returns true if
+         * both are null.
+         */
+        static bool entitiesDiffer( const Meta::MetaBase *first, const Meta::MetaBase *second );
+        /**
+         * Overload for albums, we compare album artist, isCollection and image too
+         */
+        static bool entitiesDiffer( const Meta::Album *first, const Meta::Album *second );
 
         MemoryCollection *m_mc;
 };
