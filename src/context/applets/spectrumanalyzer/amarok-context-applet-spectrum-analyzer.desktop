@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Spectrum-Analyzer
 Name[ca]=Analitzador d'espectre
+Name[ca@valencia]=Analitzador d'espectre
 Name[cs]=Spektrální analyzátor
 Name[da]=Spektrumanalysator
 Name[de]=Bandbreitenanalyse
@@ -11,6 +12,7 @@ Name[eu]=Espektro-analizatzailea
 Name[it]=Analizzatore di spettro
 Name[nb]=Spektrumanalysator
 Name[nl]=Spectrumanalyser
+Name[pl]=Analizator-Spektrum
 Name[pt]=Analisador do Espectro
 Name[pt_BR]=Analisador de Espectro
 Name[ru]=Спектральный анализатор

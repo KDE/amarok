@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Last.fm Events
 Name[ca]=Esdeveniments de Last.fm
+Name[ca@valencia]=Esdeveniments de Last.fm
 Name[cs]=Události Last.fm
 Name[da]=Begivenheder fra Last.fm
 Name[de]=Last.fm-Ereignisse
@@ -14,6 +15,7 @@ Name[lt]=Last.fm įvykiai
 Name[nb]=Last.fm-hendelser
 Name[nds]=Last.Fm-Begeefnissen
 Name[nl]=Last.fm-gebeurtenissen
+Name[pl]=Wydarzenia Last.fm
 Name[pt]=Eventos do Last.fm
 Name[pt_BR]=Eventos do Last.fm
 Name[ro]=Evenimente Last.fm

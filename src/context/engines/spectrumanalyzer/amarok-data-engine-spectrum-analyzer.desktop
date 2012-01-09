@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Spectrum Analyzer Data Engine
 Name[ca]=Motor de dades d'analitzador d'espectre
+Name[ca@valencia]=Motor de dades d'analitzador d'espectre
 Name[cs]=Datový nástroj spektrálního analyzátoru
 Name[da]=Datamotor til spektrumanalysator
 Name[de]=Datenmodul zur Bandbreitenanalyse
@@ -11,6 +12,7 @@ Name[eu]=Espektro-analizatzaileko datuen motorra
 Name[it]=Motore dati analizzatore di spettro
 Name[nb]=Datamotor for spektrumanalysator
 Name[nl]=Gegevensengine van spectrumanalyser
+Name[pl]=Silnik danych analizatora spektrum
 Name[pt]=Motor de Dados do Analisador de Espectro
 Name[pt_BR]=Mecanismo de dados do Analisador de Espectro
 Name[ru]=Источник данных для спектрального анализатора
