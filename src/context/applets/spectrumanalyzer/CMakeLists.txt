@@ -14,7 +14,6 @@ if(APPLE)
    SET_TARGET_PROPERTIES(amarok_context_applet_spectrum_analyzer PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
-find_package( OpenGL REQUIRED )
 target_link_libraries(amarok_context_applet_spectrum_analyzer amarokcore amaroklib ${KDE4_PLASMA_LIBS} ${KDE4_KIO_LIBS} ${QT_QTOPENGL_LIBRARY} ${OPENGL_LIBRARY})
 
 install(TARGETS amarok_context_applet_spectrum_analyzer DESTINATION ${PLUGIN_INSTALL_DIR})

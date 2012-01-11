@@ -7,11 +7,14 @@ add_subdirectory( videoclip )
 add_subdirectory( photos )
 add_subdirectory( labels )
 add_subdirectory( tabs )
-add_subdirectory( spectrumanalyzer )
+
+if( OPENGL_FOUND )
+    add_subdirectory( spectrumanalyzer )
+endif()
 
 if( LIBLASTFM_FOUND )
     add_subdirectory( upcomingevents )
     add_subdirectory( similarartists )
-endif( LIBLASTFM_FOUND )
+endif()
 
 #add_subdirectory( songkick )

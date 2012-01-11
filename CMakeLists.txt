@@ -114,6 +114,10 @@ if( WITH_PLAYER )
     find_package(QCA2)
     macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" FALSE "" "" )
 
+    # OpenGL is required for the spectrum analyzer
+    find_package(OpenGL)
+    macro_log_feature( OPENGL_FOUND "OpenGL" "Support for hardware acceleration (enables the Spectrum Analyzer)" FALSE "" "" )
+
     # QJson is required for the PlaydarCollection
     macro_optional_find_package(QJSON)
     macro_log_feature( QJSON_FOUND "QJson" "Qt JSON Parser used for the Playdar Collection" "http://qjson.sourceforge.net/" FALSE "" "" )
