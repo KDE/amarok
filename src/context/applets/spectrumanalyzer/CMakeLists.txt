@@ -3,9 +3,10 @@ project(context-spectrum-analyzer)
 set(spectrum_analyzer_SRCS SpectrumAnalyzerApplet.cpp AnalyzerGlWidget.cpp SplineInterpolation.cpp FastFourierTransformation.cpp)
 
 include_directories(
-                    ../..
-                    ../../..
-                    )
+    ${OPENGL_INCLUDE_DIR}
+    ../..
+    ../../..
+)
 
 kde4_add_ui_files( spectrum_analyzer_SRCS spectrumAnalyzerSettings.ui )
 
