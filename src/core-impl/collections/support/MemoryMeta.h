@@ -17,8 +17,8 @@
 #ifndef MEMORYMETA_H
 #define MEMORYMETA_H
 
+#include "amarok_export.h"
 #include "MemoryCollection.h"
-
 #include "core/meta/Meta.h"
 
 using namespace Collections;
@@ -26,36 +26,55 @@ using namespace Collections;
 /** These classes can be used with a MemoryCollection to populate the meta-type maps */
 namespace MemoryMeta {
 
+class Track;
+
+/**
+ * Base class for all MemoryMeta:: entities that store a list of associated tracks:
+ * Artist, Album, Composer, Genre, Year.
+ *
+ * All methods of this class are thread-safe.
+ */
 class Base
 {
     public:
-        Base( QString name ) : m_name( name ) {}
+        Base( const QString &name ) : m_name( name ) {}
         virtual ~Base() {}
 
+        // Meta::{Artist,Album,Composer,Genre,Year} methods:
         virtual QString name() const { return m_name; }
-        virtual Meta::TrackList tracks() { return m_tracks; }
-        virtual void addTrack( Meta::TrackPtr track ) { m_tracks << track; }
+        virtual Meta::TrackList tracks();
 
-    protected:
+        // MemoryMeta::Base methods:
+        void addTrack( Track *track );
+        void removeTrack( Track *track );
+
+    private:
         QString m_name;
-        Meta::TrackList m_tracks;
+        /* We cannot easily store KSharedPtr to tracks, because it creates reference
+         * counting cycle: MemoryMeta::Track::m_album -> MemoryMeta::Album::tracks() ->
+         * MemoryMeta::Track. We therefore store plain pointers and rely on
+         * MemoryMeta::Track to notify when it is destroyed. */
+        QList<Track *> m_tracks;
+        QReadWriteLock m_tracksLock;
 };
 
 class Artist : public Meta::Artist, public Base
 {
     public:
-        Artist( QString name ) : Base( name ) {}
+        Artist( const QString &name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
-    protected:
-        virtual void notifyObservers() const {}
 };
 
 class Album : public Meta::Album, public Base
 {
     public:
-        Album( QString name ) : Base( name ), m_isCompilation( false ) {}
+        Album( const QString &name ) : Base( name ), m_isCompilation( false ) {}
+        /**
+         * Copy-like constructor for MapChanger
+         */
+        Album( const Meta::AlbumPtr &other );
 
         virtual QString name() const { return Base::name(); }
 
@@ -65,73 +84,65 @@ class Album : public Meta::Album, public Base
         virtual Meta::ArtistPtr albumArtist() const { return m_albumArtist; }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
 
-        void setAlbumArtist( Meta::ArtistPtr artist ) { m_albumArtist = artist; }
+        virtual bool hasImage( int /* size */ = 0 ) const { return !m_image.isNull(); }
+        virtual QImage image( int size = 0 ) const;
+        /* We intentionally don't advertise canUpdateImage() - setting image here would not
+         * currently do what the user expects */
+        virtual void setImage( const QImage &image ) { m_image = image; }
 
-    protected:
-        virtual void notifyObservers() const {}
+        /* MemoryMeta::Album methods: */
+        void setAlbumArtist( Meta::ArtistPtr artist ) { m_albumArtist = artist; }
+        void setIsCompilation( bool isCompilation ) { m_isCompilation = isCompilation; }
 
     private:
         bool m_isCompilation;
         Meta::ArtistPtr m_albumArtist;
+        QImage m_image;
 };
 
 class Composer : public Meta::Composer, public Base
 {
     public:
-        Composer( QString name ) : Base( name ) {}
+        Composer( const QString &name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
-
-        /** Meta::Composer virtual methods */
         virtual Meta::TrackList tracks() { return Base::tracks(); }
-
-    protected:
-        virtual void notifyObservers() const {}
 };
 
 class Genre : public Meta::Genre, public Base
 {
     public:
-        Genre( QString name ) : Base( name ) {}
+        Genre( const QString &name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
-
-        /** Meta::Genre virtual methods */
         virtual Meta::TrackList tracks() { return Base::tracks(); }
-
-    protected:
-        virtual void notifyObservers() const {}
 };
 
 class Year : public Meta::Year, public Base
 {
     public:
-        Year( QString name ) : Base( name ) {}
+        Year( const QString &name ) : Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
-
-        /** Meta::Year virtual methods */
         virtual Meta::TrackList tracks() { return Base::tracks(); }
-
-    protected:
-        virtual void notifyObservers() const {}
 };
 
 class Track : public Meta::Track
 {
     public:
-        Track( Meta::TrackPtr originalTrack )
-            : m_track( originalTrack )
-            , m_album( 0 )
-            , m_artist( 0 )
-            , m_composer( 0 )
-            , m_genre( 0 )
-            , m_year( 0 )
-        {}
+        Track( const Meta::TrackPtr &originalTrack );
+        virtual ~Track();
 
-        /* Meta::Track virtual methods */
+        /* Meta::MetaCapability methods */
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+            { return m_track->hasCapabilityInterface( type ); }
+        virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type )
+            { return m_track->createCapabilityInterface( type ); }
+
+        /* Meta::MetaBase virtual methods */
         virtual QString name() const { return m_track->name(); }
 
+        /* Meta::Track virtual methods */
         virtual KUrl playableUrl() const { return m_track->playableUrl(); }
         virtual QString prettyUrl() const { return m_track->prettyUrl(); }
         virtual QString uidUrl() const { return m_track->uidUrl(); }
@@ -182,12 +193,29 @@ class Track : public Meta::Track
         virtual void addLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
         virtual void removeLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
 
-        /* MemoryMeta::Track methods */
-        void setAlbum( Meta::AlbumPtr album ) { m_album = album; }
-        void setArtist( Meta::ArtistPtr artist ) { m_artist = artist; }
-        void setComposer( Meta::ComposerPtr composer ) { m_composer = composer; }
-        void setGenre( Meta::GenrePtr genre ) { m_genre = genre; }
-        void setYear( Meta::YearPtr year ) { m_year = year; }
+        // MemoryMeta::Track methods:
+
+        /* All of these set* methods pass the pointer to KSharedPtr (thus memory-manage it),
+         * remove this track from previous {Album,Artist,Composer,Genre,Year} entity (if any)
+         * and add this track to newly set entity. (if non-null)
+         * All these methods are reentrant, but not thread-safe: caller must ensure that
+         * only one of the following methods is called at a time on a single instance.
+         */
+        void setAlbum( Album *album );
+        void setArtist( Artist *artist );
+        void setComposer( Composer *composer );
+        void setGenre( Genre *genre );
+        void setYear( Year *year );
+
+        /**
+         * Return the original track this track proxies.
+         */
+        Meta::TrackPtr originalTrack() const { return m_track; }
+
+        /**
+         * Make notifyObservers() public so that MapChanger can call this
+         */
+        using Meta::Track::notifyObservers;
 
     private:
         Meta::TrackPtr m_track;
@@ -198,102 +226,115 @@ class Track : public Meta::Track
         Meta::YearPtr m_year;
 };
 
-class MapAdder
+/**
+ * Helper class that facilitates adding, removing and changing tracks that are in
+ * MemoryCollection. This class locks underlying MemoryCollection upon construction for
+ * writing and releases the lock in destructor.
+ *
+ * Typical usage:
+ * {
+ *     MemoryMeta::MapChanger changer( memoryCollectionPtr );
+ *     Meta::Track newTrack = changer.addTrack( trackPtr );
+ *     ...
+ *     changer.removeTrack( newTrack );
+ * }
+ *
+ * All methods in this class are re-entrant and it operates on MemoryCollection in
+ * a thread-safe way: you can run MapChangers from multiple threads on a single
+ * MemoryCollection at once. (each thread constructing MapChanger when needed and deleting
+ * it as soon as possible)
+ *
+ * All methods can be called multiple times on a single instance and can be combined.
+ */
+class AMAROK_EXPORT MapChanger
 {
     public:
-        MapAdder( MemoryCollection *memoryCollection )
-            : m_mc( memoryCollection )
-        {
-            m_mc->acquireWriteLock();
-        }
+        MapChanger( MemoryCollection *memoryCollection );
+        ~MapChanger();
 
-        ~MapAdder() { m_mc->releaseLock(); }
+        /**
+         * Adds a track to MemoryCollection by proxying it using @see MemoryMeta::Track
+         * track artist, album, genre, composer and year are replaced in MemoryMeta::Track
+         * by relevant MemoryMeta entities, based on their value. Refuses to add a track
+         * whose proxy is already in MemoryCollection (returns null pointer in this case)
+         *
+         * @return pointer to a newly created MemoryMeta::Track (may be null if not
+         * successfull)
+         */
+        Meta::TrackPtr addTrack( Meta::TrackPtr track );
 
-        void addTrack( Meta::TrackPtr track )
-        {
-            Track *memoryTrack = new Track( track );
-            Meta::TrackPtr metaTrackPtr =
-                    Meta::TrackPtr( static_cast<Meta::Track *>( memoryTrack ) );
+        /**
+         * Removes a track from MemoryCollection. Pays attention to remove artists,
+         * albums, genres, composers and years that may become dangling in
+         * MemoryCollection.
+         *
+         * @param track MemoryMeta track to remove, it doesn't matter if this is the track
+         * returned by MapChanger::addTrack or the underlying one passed to
+         * MapChanger::addTrack - the real track is looked up using its uidUrl in
+         * MemoryCollection.
+         *
+         * @return shared pointer to underlying track of the deleted track, i.e. the track
+         * that you passed to MapChanger::addTrack() originally. May be null pointer if
+         * @param track is not found in collection ot if in wasn't added using MapChanger.
+         */
+        Meta::TrackPtr removeTrack( Meta::TrackPtr track );
 
-            ArtistMap artistMap = m_mc->artistMap();
-
-            QString artistName = track->artist().isNull() ? QString() : track->artist()->name();
-            Meta::ArtistPtr artist = artistMap.value( artistName );
-            if( artist.isNull() )
-            {
-                artist = Meta::ArtistPtr( new Artist( artistName ) );
-                artistMap.insert( artistName, artist );
-            }
-
-            static_cast<Artist *>( artist.data() )->addTrack( metaTrackPtr );
-            memoryTrack->setArtist( artist );
-
-            m_mc->setArtistMap( artistMap );
-
-            AlbumMap albumMap = m_mc->albumMap();
-            QString albumName = track->album().isNull() ? QString() : track->album()->name();
-            Meta::AlbumPtr album = albumMap.value( albumName );
-            if( album.isNull() )
-            {
-                album = Meta::AlbumPtr( new Album( albumName ) );
-                albumMap.insert( albumName, album );
-            }
-
-            Album *memoryAlbum = static_cast<Album *>( album.data() );
-            memoryAlbum->addTrack( metaTrackPtr );
-            memoryAlbum->setAlbumArtist( metaTrackPtr->artist() );
-            memoryTrack->setAlbum( album );
-
-            m_mc->setAlbumMap( albumMap );
-
-            GenreMap genreMap = m_mc->genreMap();
-
-            QString genreName = track->genre().isNull() ? QString() : track->genre()->name();
-            Meta::GenrePtr genre = genreMap.value( genreName );
-            if( genre.isNull() )
-            {
-                genre = Meta::GenrePtr( new Genre( genreName ) );
-                genreMap.insert( genreName, genre );
-            }
-            static_cast<Genre *>( genre.data() )->addTrack( metaTrackPtr );
-            memoryTrack->setGenre( genre );
-
-            m_mc->setGenreMap( genreMap );
-
-            ComposerMap composerMap = m_mc->composerMap();
-
-            QString composerName = track->composer().isNull() ? QString() : track->composer()->name();
-            Meta::ComposerPtr composer = composerMap.value( composerName );
-            if( composer.isNull() )
-            {
-                composer = Meta::ComposerPtr( new Composer( composerName ) );
-                composerMap.insert( composerName, composer );
-            }
-
-            static_cast<Composer *>( composer.data() )->addTrack( metaTrackPtr );
-            memoryTrack->setComposer( composer );
-
-            m_mc->setComposerMap( composerMap );
-
-            YearMap yearMap = m_mc->yearMap();
-
-            int year = track->year().isNull() ? 0 : track->year()->year();
-            Meta::YearPtr yearPtr = yearMap.value( year );
-            if( yearPtr.isNull() )
-            {
-                yearPtr = Meta::YearPtr( new Year( year ? QString::number( year ) : QString() ) );
-                yearMap.insert( year, yearPtr );
-            }
-            static_cast<Year *>( yearPtr.data() )->addTrack( metaTrackPtr );
-            memoryTrack->setYear( yearPtr );
-
-            m_mc->setYearMap( yearMap );
-
-            m_mc->addTrack( metaTrackPtr );
-            //TODO:labels
-        }
+        /**
+         * Reflects changes made to underlying track to its proxy track in
+         * MemoryCollection and to MemoryCollection maps.
+         *
+         * The one who called MapChanger::addTrack() is responsible to call this method
+         * everytime it detects that some metadata of underlying track have changed
+         * (perhaps by becoming its observer), even in minor fields such as comment. This
+         * method instructs proxy track to call notifyObservers().
+         *
+         * Please note that this method is currently unable to cope with changes
+         * to track uidUrl(). If you really need it, change MemoryCollection's
+         * trackMap manually _before_ calling this.
+         *
+         * @param track track whose metadata have changed, it doesn't matter if this is
+         * the track returned by MapChanger::addTrack or the underlying one passed to
+         * MapChanger::addTrack - the real track is looked up using its uidUrl in
+         * MemoryCollection. Does nothing if @param track is not found in MemoryCollection.
+         *
+         * @return true if memory collection maps had to be changed, false for minor
+         * changes where this is not required
+         */
+        bool trackChanged( Meta::TrackPtr track );
 
     private:
+        /**
+         * Worker for addTrack.
+         *
+         * @param track original underlying track - source of metadata
+         * @param memoryTrack new track to add to MemoryCollection - target of metadata
+         */
+        Meta::TrackPtr addExistingTrack( Meta::TrackPtr track, Track *memoryTrack );
+
+        /**
+         * Return true if at least one of the tracks in @param needles is in
+         * @param haystack, false otherwise. Comparison is done using track uidUrl.
+         */
+        static bool hasTrackInMap( const Meta::TrackList &needles, const TrackMap &haystack );
+
+        /**
+         * Return true if artist @param artist is referenced as albumArtist of one of the
+         * albums from @param haystack. The match is done using Meta:ArtistPtr
+         * operator==.
+         */
+        static bool referencedAsAlbumArtist( const Meta::ArtistPtr &artist, const AlbumMap &haystack );
+
+        /**
+         * Return true if @param first has different value than @param other. Specifically
+         * returns true if one entity is null and the other non-null, but returns true if
+         * both are null.
+         */
+        static bool entitiesDiffer( const Meta::MetaBase *first, const Meta::MetaBase *second );
+        /**
+         * Overload for albums, we compare album artist, isCollection and image too
+         */
+        static bool entitiesDiffer( const Meta::Album *first, const Meta::Album *second );
+
         MemoryCollection *m_mc;
 };
 

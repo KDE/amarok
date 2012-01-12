@@ -40,14 +40,14 @@ class MemoryCollection
         void releaseLock() { m_readWriteLock.unlock(); }
         void acquireWriteLock() { m_readWriteLock.lockForWrite(); }
 
-        TrackMap trackMap() { return m_trackMap; }
-        ArtistMap artistMap() { return m_artistMap; }
-        AlbumMap albumMap() { return m_albumMap; }
-        GenreMap genreMap() { return m_genreMap; }
-        ComposerMap composerMap() { return m_composerMap; }
-        YearMap yearMap() { return m_yearMap; }
-        LabelMap labelMap() { return m_labelMap; }
-        LabelToTrackMap labelToTrackMap() { return m_labelToTrackMap; }
+        const TrackMap &trackMap() const { return m_trackMap; }
+        const ArtistMap &artistMap() const { return m_artistMap; }
+        const AlbumMap &albumMap() const { return m_albumMap; }
+        const GenreMap &genreMap() const { return m_genreMap; }
+        const ComposerMap &composerMap() const { return m_composerMap; }
+        const YearMap &yearMap() const { return m_yearMap; }
+        const LabelMap &labelMap() const { return m_labelMap; }
+        const LabelToTrackMap &labelToTrackMap() const { return m_labelToTrackMap; }
 
         void setTrackMap( const TrackMap &map ) { m_trackMap = map; }
         void addTrack( Meta::TrackPtr trackPtr ) { m_trackMap.insert( trackPtr->uidUrl(), trackPtr ); }

@@ -455,7 +455,7 @@ UmsCollection::slotTrackAdded( KUrl location )
 {
     Q_ASSERT( m_musicPath.isParentOf( location ) );
     MetaFile::TrackPtr track = MetaFile::TrackPtr( new MetaFile::Track( location ) );
-    MemoryMeta::MapAdder( m_mc.data() ).addTrack( Meta::TrackPtr::dynamicCast( track ) );
+    MemoryMeta::MapChanger( m_mc.data() ).addTrack( Meta::TrackPtr::dynamicCast( track ) );
 }
 
 void
