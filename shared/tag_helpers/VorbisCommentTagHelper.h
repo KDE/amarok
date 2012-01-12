@@ -21,6 +21,7 @@
 #include "TagHelper.h"
 
 #include <taglib/xiphcomment.h>
+#include <taglib/flacfile.h>
 
 namespace Meta
 {
@@ -30,14 +31,22 @@ namespace Meta
         {
             public:
                 VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType );
+                VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, TagLib::FLAC::File *file, Amarok::FileType fileType );
 
                 virtual Meta::FieldHash tags() const;
                 virtual bool setTags( const Meta::FieldHash &changes );
 
                 virtual TagLib::ByteVector render() const;
 
+#ifndef UTILITIES_BUILD
+                virtual bool hasEmbeddedCover() const;
+                virtual QImage embeddedCover() const;
+                virtual bool setEmbeddedCover( const QImage &cover );
+#endif  //UTILITIES_BUILD
+
             private:
                 TagLib::Ogg::XiphComment *m_tag;
+                TagLib::FLAC::File *m_flacFile;
         };
     }
 }

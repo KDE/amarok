@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 Version 2.6-Beta 1
   FEATURES:
+    * Support embedded covers for ogg (read only) and flac files. (BR 288752)
     * Track meta-data can be edited in USB Mass Storage collection.
     * Support for album artists in USB Mass Storage collection.
     * album artist (if differs from artist), BPM, labels, last played time and
