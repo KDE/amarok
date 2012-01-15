@@ -95,12 +95,6 @@ TimecodeEditCapability::setDiscNumber( int newDiscNumber )
 }
 
 void
-TimecodeEditCapability::setUidUrl( const QString &newUidUrl )
-{
-    Q_UNUSED( newUidUrl )
-}
-
-void
 TimecodeEditCapability::beginMetaDataUpdate()
 {
     m_track->beginMetaDataUpdate();

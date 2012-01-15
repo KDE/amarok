@@ -82,12 +82,6 @@ MediaDeviceTrack::uidUrl() const
     return m_playableUrl.isLocalFile() ? m_playableUrl.toLocalFile() : m_playableUrl.url();
 }
 
-void
-MediaDeviceTrack::setUidUrl( const QString &newUidUrl ) const
-{
-    Q_UNUSED( newUidUrl )
-}
-
 QString
 MediaDeviceTrack::prettyUrl() const
 {

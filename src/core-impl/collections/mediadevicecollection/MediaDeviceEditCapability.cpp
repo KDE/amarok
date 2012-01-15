@@ -108,13 +108,6 @@ MediaDeviceEditCapability::setDiscNumber( int newDiscNumber )
 }
 
 void
-MediaDeviceEditCapability::setUidUrl( const QString &newUidUrl )
-{
-    m_track->setUidUrl( newUidUrl );
-    commitIfInNonBatchUpdate();
-}
-
-void
 MediaDeviceEditCapability::beginMetaDataUpdate()
 {
     m_inBatchUpdate = true;

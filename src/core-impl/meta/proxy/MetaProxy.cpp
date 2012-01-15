@@ -55,7 +55,6 @@ class EditCapabilityProxy : public Capabilities::EditCapability
         virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ); /*m_track->setComment( newComment );*/ } // Do we want to support this?
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-        virtual void setUidUrl( const QString &newUidUrl ) { m_track->setUidUrl( newUidUrl ); }
 
         virtual void beginMetaDataUpdate() {}  // Nothing to do, we cache everything
         virtual void endMetaDataUpdate() {}
@@ -178,12 +177,6 @@ MetaProxy::Track::uidUrl() const
         return uidUrl;
     }
     return d->url.url();
-}
-
-void
-Track::setUidUrl( const QString &newUidUrl ) const
-{
-    Q_UNUSED( newUidUrl )
 }
 
 bool

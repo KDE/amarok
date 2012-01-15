@@ -1354,8 +1354,6 @@ TagDialog::saveTags()
                 ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
             if( data.contains( Meta::Field::BPM ) )
                 ec->setBpm( data.value( Meta::Field::BPM ).toDouble() );
-            if( data.contains( Meta::Field::UNIQUEID ) )
-                ec->setUidUrl( data.value( Meta::Field::UNIQUEID ).toString() );
             if( data.contains( Meta::Field::ALBUMARTIST ) )
                 ec->setAlbumArtist( data.value( Meta::Field::ALBUMARTIST ).toString() );
 

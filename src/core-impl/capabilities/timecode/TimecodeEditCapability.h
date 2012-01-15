@@ -43,7 +43,6 @@ public:
     virtual void setComment( const QString &newComment );
     virtual void setTrackNumber( int newTrackNumber );
     virtual void setDiscNumber( int newDiscNumber );
-    virtual void setUidUrl( const QString &newUidUrl );
 
     virtual void beginMetaDataUpdate();
     virtual void endMetaDataUpdate();

@@ -447,7 +447,6 @@ public:
     virtual void setTrackNumber( int newTrackNumber ) { Q_UNUSED( newTrackNumber ) };
     virtual void setDiscNumber( int newDiscNumber ) { Q_UNUSED( newDiscNumber ) };
     virtual void setBpm( const qreal newBpm ) { Q_UNUSED( newBpm ) };
-    virtual void setUidUrl( const QString &newUidUrl ) { Q_UNUSED( newUidUrl ) };
     virtual void beginMetaDataUpdate() { beginCallCount++; };
     virtual void endMetaDataUpdate() { endCallcount++; };
 
