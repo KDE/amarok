@@ -44,7 +44,8 @@ BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int milliseconds, QString 
 BookmarkTriangle::~BookmarkTriangle()
 {
     DEBUG_BLOCK
-    m_tooltip->deleteLater();
+    if (m_tooltip)
+      m_tooltip->deleteLater();
 }
 
 QSize BookmarkTriangle::sizeHint() const
@@ -119,8 +120,10 @@ void BookmarkTriangle::enterEvent ( QEvent * event )
 
 void BookmarkTriangle::leaveEvent ( QEvent * event )
 {
+    DEBUG_BLOCK
     Q_UNUSED ( event )
-    m_tooltip->displayNeeded(false);
+    if (m_tooltip)
+        m_tooltip->displayNeeded(false);
 }
 
 void BookmarkTriangle::initPopup()

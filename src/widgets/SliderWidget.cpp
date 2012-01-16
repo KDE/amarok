@@ -380,10 +380,11 @@ void Amarok::TimeSlider::slotTriangleFocused( int seconds )
 
 void Amarok::TimeSlider::clearTriangles()
 {
-    // DEBUG_BLOCK
-    // debug() << "number of triangles: " << m_triangles.count();
-    qDeleteAll( m_triangles );
-    // debug() << "deleted them all...";
+    DEBUG_BLOCK
+    QList<BookmarkTriangle *>::iterator i;
+    for( i = m_triangles.begin(); i != m_triangles.end(); ++i ){
+      (*i)->deleteLater();
+    }
     m_triangles.clear();
 }
 
