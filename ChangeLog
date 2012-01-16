@@ -19,6 +19,7 @@ Version 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Fix crashes with Bookmarks (BR 283753) thanks to Charles Reiss
     * Fix memory leaks in USB Mass Storage collection where track objects were
       never freed due to circular references.
     * Fix rare APG solver crash. (BR 290533)
