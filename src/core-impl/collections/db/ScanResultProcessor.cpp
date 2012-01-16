@@ -20,8 +20,6 @@
 
 #include "ScanResultProcessor.h"
 #include "core/support/Debug.h"
-#include "DatabaseCollection.h"
-#include "DatabaseMeta.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "MountPointManager.h"
 
