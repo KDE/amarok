@@ -244,8 +244,13 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
         /**
             this method is called on the destination. reimplement it if your implementation
-            is writable. you must call slotCopyOperationFinished() when you are done copying
+            is writable. You must call slotCopyOperationFinished() when you are done copying
             the files.
+
+            Before calling slotCopyOperationFinished(), you should call
+            source()->transferSuccessful() for every source track that was for sure
+            successfully copied to destination collection. Only such marked tracks are
+            then removed in case of a "move" action.
         */
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
             const Transcoding::Configuration &configuration = Transcoding::Configuration() );
@@ -253,9 +258,13 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         /**
            this method is called on the collection you want to remove tracks from.  it must
            be reimplemented if your collection is writable and you wish to implement
-           removing tracks
-        */
+           removing tracks. You must call slotRemoveOperationFinished() when you are done
+           removing the files.
 
+           Before calling slotRemoveOperationFinished(), you should call transferSuccessful()
+           for every track that was successfully deleted. CollectionLocation then scans
+           directories of such tracks and allows user to remove empty ones.
+        */
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
         /**
