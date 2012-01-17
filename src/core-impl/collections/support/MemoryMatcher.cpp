@@ -159,9 +159,9 @@ TrackList AlbumMatcher::match( Collections::MemoryCollection *memColl )
     if( !m_album || !memColl )
         return TrackList();
     AlbumMap albumMap = memColl->albumMap();
-    if ( albumMap.contains( m_album->name() ) )
+    if ( albumMap.contains( m_album ) ) // compares albums by value
     {
-        AlbumPtr album = albumMap.value( m_album->name() );
+        AlbumPtr album = albumMap.value( m_album ); // compares albums by value, too
         TrackList matchingTracks = album->tracks();
         if ( isLast() )
             return matchingTracks;

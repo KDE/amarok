@@ -34,6 +34,7 @@ namespace Meta
             explicit AlbumKey( const AlbumPtr &album );
 
             AlbumKey& operator=( const AlbumKey &o );
+            bool operator<( const AlbumKey &other ) const;
 
             QString albumName() const
             { return m_albumName; }

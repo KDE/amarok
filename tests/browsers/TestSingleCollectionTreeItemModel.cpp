@@ -58,7 +58,7 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     EXPECT_CALL( *track, year() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::YearPtr() ) );
     coll->mc->addTrack( trackPtr );
 
-    Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName );
+    Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName, QString() /* no album artist */ );
     Meta::MockAlbum *album;
     Meta::TrackList albumTracks;
     if( albumPtr )

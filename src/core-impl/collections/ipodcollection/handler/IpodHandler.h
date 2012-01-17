@@ -84,9 +84,6 @@ struct PodcastInfo
 namespace Meta
 {
 
-    typedef QMap<QString, Meta::TrackPtr> TrackMap;
-    typedef QMap<QString, Meta::AlbumPtr> AlbumMap;
-
 /* The libgpod backend for all Ipod calls */
 class IpodHandler : public Meta::MediaDeviceHandler
 {

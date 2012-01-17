@@ -281,9 +281,11 @@ namespace Collections
             track->setArtist( artistPtr );
 
             Meta::PlaydarAlbumPtr albumPtr;
-            if( m_memoryCollection->albumMap().contains( track->album()->name() ) )
+            if( m_memoryCollection->albumMap().contains( track->album()->name(),
+                                                         artistPtr->name() ) )
             {
-                Meta::AlbumPtr album = m_memoryCollection->albumMap().value( track->album()->name() );
+                Meta::AlbumPtr album = m_memoryCollection->albumMap().value( track->album()->name(),
+                                                                             artistPtr->name() );
                 albumPtr = Meta::PlaydarAlbumPtr::staticCast( album );
             }
             else

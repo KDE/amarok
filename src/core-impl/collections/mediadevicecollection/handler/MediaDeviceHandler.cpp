@@ -252,7 +252,7 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
     }
     if( album->tracks().isEmpty() )
     {
-        albumMap.remove( album->name() );
+        albumMap.remove( AlbumPtr::staticCast( album ) );
         m_memColl->memoryCollection()->acquireWriteLock();
         m_memColl->memoryCollection()->setAlbumMap( albumMap );
         m_memColl->memoryCollection()->releaseLock();
@@ -699,14 +699,29 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 {
     const QString album( m_rc->libGetAlbum( track ) );
     QString albumArtist( m_rc->libGetAlbumArtist( track ) );
+    if( albumArtist.compare( "Various Artists", Qt::CaseInsensitive ) == 0 ||
+        albumArtist.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) == 0 )
+    {
+        albumArtist.clear();
+    }
     MediaDeviceAlbumPtr albumPtr;
 
-    if ( albumMap.contains( album ) )
-        albumPtr = MediaDeviceAlbumPtr::staticCast( albumMap.value( album ) );
+    if ( albumMap.contains( album, albumArtist ) )
+        albumPtr = MediaDeviceAlbumPtr::staticCast( albumMap.value( album, albumArtist ) );
     else
     {
+        MediaDeviceArtistPtr albumArtistPtr;
+        if( artistMap.contains( albumArtist ) )
+            albumArtistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( albumArtist ) );
+        else if( !albumArtist.isEmpty() )
+        {
+            albumArtistPtr = MediaDeviceArtistPtr( new MediaDeviceArtist( albumArtist ) );
+            artistMap.insert( albumArtist, ArtistPtr::staticCast( albumArtistPtr ) );
+        }
+        albumPtr->setAlbumArtist( albumArtistPtr ); // needs to be before albumMap.insert()
+
         albumPtr = MediaDeviceAlbumPtr( new MediaDeviceAlbum( m_memColl, album ) );
-        albumMap.insert( album, AlbumPtr::staticCast( albumPtr ) );
+        albumMap.insert( AlbumPtr::staticCast( albumPtr ) );
     }
 
     albumPtr->addTrack( track );
@@ -718,28 +733,12 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
     isCompilation |= m_rc->libIsCompilation( track );
     albumPtr->setIsCompilation( isCompilation );
 
-    if( albumArtist.compare( "Various Artists", Qt::CaseInsensitive ) == 0 ||
-        albumArtist.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) == 0 )
-    {
-        albumArtist.clear();
-    }
     if( albumArtist.isEmpty() )
     {
         // set compilation flag, otherwise the album would be invisible in collection
         // browser if "Album Artist / Album" view is selected.
         albumPtr->setIsCompilation( true );
-        return;  // nothing more to do - this is an album with no album artist
     }
-
-    MediaDeviceArtistPtr albumArtistPtr;
-    if( artistMap.contains( albumArtist ) )
-        albumArtistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( albumArtist ) );
-    else
-    {
-        albumArtistPtr = MediaDeviceArtistPtr( new MediaDeviceArtist( albumArtist ) );
-        artistMap.insert( albumArtist, ArtistPtr::staticCast( albumArtistPtr ) );
-    }
-    albumPtr->setAlbumArtist( albumArtistPtr );
 }
 
 void

@@ -657,7 +657,7 @@ IpodHandler::syncArtwork()
     if( !localCollection )
         return false;
 
-    Meta::AlbumMap albumMap = m_memColl->memoryCollection()->albumMap();
+    AlbumMap albumMap = m_memColl->memoryCollection()->albumMap();
 
     foreach( const Meta::AlbumPtr album, albumMap )
     {
@@ -1216,7 +1216,7 @@ IpodHandler::staleTracks()
     DEBUG_BLOCK
     Meta::TrackList tracklist;
 
-    Meta::TrackMap trackMap = m_memColl->memoryCollection()->trackMap();
+    TrackMap trackMap = m_memColl->memoryCollection()->trackMap();
 
     foreach( const Meta::TrackPtr trk, trackMap )
     {

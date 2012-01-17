@@ -110,7 +110,7 @@ Meta::TrackPtr TestTrackOrganizer::makeMockTrack( const QString &trackName, cons
     
     mColl->mc->addTrack( trackPtr );
 
-    Meta::AlbumPtr albumPtr = mColl->mc->albumMap().value( albumName );
+    Meta::AlbumPtr albumPtr = mColl->mc->albumMap().value( albumName, QString() /* no album artist */ );
     Meta::MockAlbum *album;
     Meta::TrackList albumTracks;
     if( albumPtr )
@@ -130,9 +130,9 @@ Meta::TrackPtr TestTrackOrganizer::makeMockTrack( const QString &trackName, cons
         ::testing::Mock::AllowLeak( album );
         albumPtr = Meta::AlbumPtr( album );
         EXPECT_CALL( *album, name() ).Times( AnyNumber() ).WillRepeatedly( Return( albumName ) );
-	EXPECT_CALL( *album, prettyName() ).Times( AnyNumber() ).WillRepeatedly( Return( albumName ) );
+        EXPECT_CALL( *album, prettyName() ).Times( AnyNumber() ).WillRepeatedly( Return( albumName ) );
         EXPECT_CALL( *album, hasAlbumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( false ) );
-	EXPECT_CALL( *album, isCompilation() ).Times( AnyNumber() ).WillRepeatedly( Return( false ) );
+        EXPECT_CALL( *album, isCompilation() ).Times( AnyNumber() ).WillRepeatedly( Return( false ) );
         mColl->mc->addAlbum( albumPtr );
     }
     albumTracks << trackPtr;

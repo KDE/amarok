@@ -405,14 +405,19 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
 
     // do cleanup of soon to be previous album
 
+    MediaDeviceArtistPtr albumArtist;
+    QString albumArtistName;
     albumPtr = m_album;
     if ( !albumPtr.isNull() )
     {
+        albumArtist = MediaDeviceArtistPtr::staticCast( albumPtr->albumArtist() );
+        if( albumArtist )
+            albumArtistName = albumArtist->name();
         // remove track from previous album's tracklist
         albumPtr->remTrack( track );
         // if album's tracklist is empty, remove album from albummap
         if( albumPtr->tracks().isEmpty() )
-            albumMap.remove( albumPtr->name() );
+            albumMap.remove( AlbumPtr::staticCast( albumPtr ) );
     }
 
     // change to a new album
@@ -420,14 +425,15 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
     // check for the existence of the album to be set to,
     // if album exists, reuse, else create
 
-    if ( albumMap.contains( newAlbum ) )
+    if ( albumMap.contains( newAlbum, albumArtistName ) )
     {
-        albumPtr = MediaDeviceAlbumPtr::staticCast( albumMap.value( newAlbum ) );
+        albumPtr = MediaDeviceAlbumPtr::staticCast( albumMap.value( newAlbum, albumArtistName ) );
     }
     else
     {
         albumPtr = MediaDeviceAlbumPtr( new MediaDeviceAlbum( m_collection.data(), newAlbum ) );
-        albumMap.insert( newAlbum, AlbumPtr::staticCast( albumPtr ) );
+        albumPtr->setAlbumArtist( albumArtist );
+        albumMap.insert( AlbumPtr::staticCast( albumPtr ) );
     }
 
     // add track to album's tracklist

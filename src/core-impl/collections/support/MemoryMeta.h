@@ -70,7 +70,8 @@ class Artist : public Meta::Artist, public Base
 class Album : public Meta::Album, public Base
 {
     public:
-        Album( const QString &name ) : Base( name ), m_isCompilation( false ) {}
+        Album( const QString &name, const Meta::ArtistPtr &albumArtist )
+            : Base( name ), m_isCompilation( false ), m_albumArtist( albumArtist ) {}
         /**
          * Copy-like constructor for MapChanger
          */
@@ -91,7 +92,6 @@ class Album : public Meta::Album, public Base
         virtual void setImage( const QImage &image ) { m_image = image; }
 
         /* MemoryMeta::Album methods: */
-        void setAlbumArtist( Meta::ArtistPtr artist ) { m_albumArtist = artist; }
         void setIsCompilation( bool isCompilation ) { m_isCompilation = isCompilation; }
 
     private:

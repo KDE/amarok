@@ -347,13 +347,25 @@ Reader::addTrack( const QString& itemId, const QString& title, const QString& ar
     track->setComment( comment );
     track->setComposer( composer );
 
+    DaapArtistPtr artistPtr;
+    if ( m_artistMap.contains( artist ) )
+        artistPtr = DaapArtistPtr::staticCast( m_artistMap.value( artist ) );
+    else
+    {
+        artistPtr = DaapArtistPtr( new DaapArtist( artist ) );
+        m_artistMap.insert( artist, ArtistPtr::staticCast( artistPtr ) );
+    }
+    artistPtr->addTrack( track );
+    track->setArtist( artistPtr );
+
     DaapAlbumPtr albumPtr;
-    if ( m_albumMap.contains( album ) )
-        albumPtr = DaapAlbumPtr::staticCast( m_albumMap.value( album ) );
+    if ( m_albumMap.contains( album, artist ) )
+        albumPtr = DaapAlbumPtr::staticCast( m_albumMap.value( album, artist ) );
     else
     {
         albumPtr = DaapAlbumPtr( new DaapAlbum( album ) );
-        m_albumMap.insert( album, AlbumPtr::staticCast( albumPtr ) );
+        albumPtr->setAlbumArtist( artistPtr );
+        m_albumMap.insert( AlbumPtr::staticCast( albumPtr ) );
     }
     albumPtr->addTrack( track );
     track->setAlbum( albumPtr );
@@ -368,17 +380,6 @@ Reader::addTrack( const QString& itemId, const QString& title, const QString& ar
     }
     composerPtr->addTrack( track );
     track->setComposer ( composerPtr );
-
-    DaapArtistPtr artistPtr;
-    if ( m_artistMap.contains( artist ) )
-        artistPtr = DaapArtistPtr::staticCast( m_artistMap.value( artist ) );
-    else
-    {
-        artistPtr = DaapArtistPtr( new DaapArtist( artist ) );
-        m_artistMap.insert( artist, ArtistPtr::staticCast( artistPtr ) );
-    }
-    artistPtr->addTrack( track );
-    track->setArtist( artistPtr );
 
     DaapYearPtr yearPtr;
     if ( m_yearMap.contains( year ) )

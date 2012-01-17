@@ -31,15 +31,25 @@ Meta::AlbumKey::AlbumKey( const QString &name, const QString &artistName )
 Meta::AlbumKey::AlbumKey( const Meta::AlbumPtr &album )
 {
     m_albumName = album->name();
-    if( album->albumArtist() )
+    if( album->hasAlbumArtist() && album->albumArtist() )
         m_artistName = album->albumArtist()->name();
 }
 
-Meta::AlbumKey& Meta::AlbumKey::operator=( const Meta::AlbumKey &o )
+Meta::AlbumKey&
+Meta::AlbumKey::operator=( const Meta::AlbumKey &o )
 {
     m_albumName = o.m_albumName;
     m_artistName = o.m_artistName;
     return *this;
+}
+
+bool
+Meta::AlbumKey::operator<( const Meta::AlbumKey &other ) const
+{
+    // sort first by artist name, then by album name
+    if( m_artistName == other.m_artistName )
+        return m_albumName < other.m_albumName;
+    return m_artistName < other.m_artistName;
 }
 
 Meta::TrackKey::TrackKey()

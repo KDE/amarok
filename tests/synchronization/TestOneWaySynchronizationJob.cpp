@@ -100,7 +100,7 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     EXPECT_CALL( *track, year() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::YearPtr() ) );
     coll->mc->addTrack( trackPtr );
 
-    Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName );
+    Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName, QString() /* no album artist */ );
     Meta::MockAlbum *album;
     Meta::TrackList albumTracks;
     if( albumPtr )
@@ -246,7 +246,7 @@ TestOneWaySynchronizationJob::testAddArtistToTarget()
     job->synchronize();
     QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
 
-    QCOMPARE( trackCopyCount, 2 );
+    QCOMPARE( trackCopyCount, 1 );
     QCOMPARE( source->mc->trackMap().count(), 2 );
     QCOMPARE( target->mc->trackMap().count(), 2 );
 

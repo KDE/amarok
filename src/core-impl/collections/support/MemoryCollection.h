@@ -18,13 +18,62 @@
 #define MEMORYCOLLECTION_H
 
 #include "core/meta/Meta.h"
+#include "core/meta/support/MetaKeys.h"
 
 #include <QReadWriteLock>
 
 //QMap is slower than QHash but the items are ordered by key
 typedef QMap<QString, Meta::TrackPtr> TrackMap;
 typedef QMap<QString, Meta::ArtistPtr> ArtistMap;
-typedef QMap<QString, Meta::AlbumPtr> AlbumMap;
+class AlbumMap : public QMap<Meta::AlbumKey, Meta::AlbumPtr>
+{
+    public:
+        /**
+         * Return true if this map contains album with same name and artist as @param album
+         *
+         * This is a convenience overload of contains( QString, QString ) that has same
+         * semantics, i.e. compares albums by name and artist name.
+         */
+        bool contains( const Meta::AlbumPtr &album ) const {
+            return QMap::contains( Meta::AlbumKey( album ) ); }
+
+        /**
+         * Return true if this map contains album named @param name with album artist
+         * @param artistName. Amarok convention is to use empty artistName for compilaitons.
+         */
+        bool contains( const QString &name, const QString &artistName ) const {
+            return QMap::contains( Meta::AlbumKey( name, artistName ) ); }
+
+        /**
+         * Inserts new album @param album into this map, using its name and album artist.
+         * If album has no album artist, empty QString is used as artist key. You must not
+         * change name and album artist of album after adding it to this map!
+         */
+        void insert( const Meta::AlbumPtr &album ) {
+            QMap::insert( Meta::AlbumKey( album ) , album ); }
+
+        /**
+         * Remove album from this map that has same name and artist as @param album
+         */
+        int remove( const Meta::AlbumPtr &album ) {
+            return QMap::remove( Meta::AlbumKey( album ) ); }
+
+        /**
+         * Return pointer to album from this map that has same name and artist as @param album
+         *
+         * This is a convenience overload of value( QString, QString ) that has same
+         * semantics, i.e. compares albums by name and artist name.
+         */
+        const Meta::AlbumPtr value( const Meta::AlbumPtr &album ) const {
+            return QMap::value( Meta::AlbumKey( album ) ); }
+
+        /**
+         * Return pointer to album from this map that has name @param name and
+         * album artist @param artistName
+         */
+        const Meta::AlbumPtr value( const QString &name, const QString &artistName ) const {
+            return QMap::value( Meta::AlbumKey( name, artistName ) ); }
+};
 typedef QMap<QString, Meta::GenrePtr> GenreMap;
 typedef QMap<QString, Meta::ComposerPtr> ComposerMap;
 typedef QMap<int, Meta::YearPtr> YearMap;
@@ -54,7 +103,7 @@ class MemoryCollection
         void setArtistMap( const ArtistMap &map ) { m_artistMap = map; }
         void addArtist( Meta::ArtistPtr artistPtr) { m_artistMap.insert( artistPtr->name(), artistPtr ); }
         void setAlbumMap( const AlbumMap &map ) { m_albumMap = map; }
-        void addAlbum ( Meta::AlbumPtr albumPtr ) { m_albumMap.insert( albumPtr->name(), albumPtr ); }
+        void addAlbum ( Meta::AlbumPtr albumPtr ) { m_albumMap.insert( albumPtr ); }
         void setGenreMap( GenreMap map ) { m_genreMap = map; }
         void addGenre( Meta::GenrePtr genrePtr) { m_genreMap.insert( genrePtr->name(), genrePtr ); }
         void setComposerMap( const ComposerMap &map ) { m_composerMap = map; }

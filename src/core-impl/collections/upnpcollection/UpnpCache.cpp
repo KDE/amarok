@@ -144,13 +144,13 @@ Meta::ArtistPtr UpnpCache::getArtist( const QString& name )
 
 Meta::AlbumPtr UpnpCache::getAlbum(const QString& name, const QString &artist )
 {
-    if( m_albumMap.contains( name ) )
-        return m_albumMap[name];
+    if( m_albumMap.contains( name, artist ) )
+        return m_albumMap.value( name, artist );
 
     Meta::UpnpAlbumPtr album( new Meta::UpnpAlbum( name ) );
     album->setAlbumArtist( Meta::UpnpArtistPtr::staticCast( getArtist( artist ) ) );
-    m_albumMap.insert( name, Meta::AlbumPtr::staticCast( album ) );
-    return m_albumMap[name];
+    m_albumMap.insert( Meta::AlbumPtr::staticCast( album ) );
+    return Meta::AlbumPtr::staticCast( album );
 }
 
 Meta::GenrePtr UpnpCache::getGenre(const QString& name)
@@ -178,7 +178,7 @@ void UpnpCache::removeTrack( Meta::TrackPtr t )
 #define DOWNCAST( Type, item ) Meta::Upnp##Type##Ptr::staticCast( item )
     Meta::UpnpTrackPtr track = DOWNCAST( Track, t );
     DOWNCAST( Artist, m_artistMap[ track->artist()->name() ] )->removeTrack( track );
-    DOWNCAST( Album, m_albumMap[ track->album()->name() ] )->removeTrack( track );
+    DOWNCAST( Album, m_albumMap.value( track->album() ) )->removeTrack( track );
     DOWNCAST( Genre, m_genreMap[ track->genre()->name() ] )->removeTrack( track );
     DOWNCAST( Year, m_yearMap[ track->year()->year() ] )->removeTrack( track );
 #undef DOWNCAST

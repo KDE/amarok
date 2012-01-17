@@ -164,9 +164,9 @@ AmpacheServiceQueryMaker::addMatch( const Meta::AlbumPtr & album )
     }
     else
     {
-        if( m_collection->albumMap().contains( album->name() ) )
+        if( m_collection->albumMap().contains( album ) )  // compares albums by value
         {
-            serviceAlbum = static_cast< const Meta::ServiceAlbum* >( m_collection->albumMap().value( album->name() ).data() );
+            serviceAlbum = static_cast< const Meta::ServiceAlbum* >( m_collection->albumMap().value( album ).data() );
             m_parentAlbumId = QString::number( serviceAlbum->id() );
         }
         else

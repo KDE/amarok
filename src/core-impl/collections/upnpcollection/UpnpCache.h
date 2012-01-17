@@ -21,12 +21,8 @@
 #include <kio/udsentry.h>
 
 #include "core/meta/Meta.h"
+#include "core-impl/collections/support/MemoryCollection.h"
 
-typedef QMap<QString, Meta::TrackPtr> TrackMap;
-typedef QMap<QString, Meta::ArtistPtr> ArtistMap;
-typedef QMap<QString, Meta::AlbumPtr> AlbumMap;
-typedef QMap<QString, Meta::GenrePtr> GenreMap;
-typedef QMap<int, Meta::YearPtr> YearMap;
 
 namespace Collections {
 

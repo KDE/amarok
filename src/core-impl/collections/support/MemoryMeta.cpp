@@ -179,31 +179,31 @@ MapChanger::addExistingTrack( Meta::TrackPtr track, Track *memoryTrack )
     memoryTrack->setArtist( static_cast<Artist *>( artist.data() ) );
 
     QString albumName = track->album().isNull() ? QString() : track->album()->name();
-    Meta::AlbumPtr album = m_mc->albumMap().value( albumName );
-    if( album.isNull() )
-    {
-        album = Meta::AlbumPtr( new Album( albumName ) );
-        m_mc->addAlbum( album );
-    }
     QString albumArtistName;
     if( track->album() && track->album()->hasAlbumArtist() && track->album()->albumArtist() )
         albumArtistName = track->album()->albumArtist()->name();
-    Meta::ArtistPtr albumArtist;
-    if( !albumArtistName.isEmpty() )
+    Meta::AlbumPtr album = m_mc->albumMap().value( albumName, albumArtistName );
+    if( album.isNull() )
     {
-        /* Even if MemoryQueryMaker doesn't need albumArtists to be in MemoryCollection
-         * maps, we add her into artist map so that album artist has the same instance as
-         * indentically-named artist (of potentially different tracks) */
-        albumArtist = m_mc->artistMap().value( albumArtistName );
-        if( albumArtist.isNull() )
+        Meta::ArtistPtr albumArtist;
+        if( !albumArtistName.isEmpty() )
         {
-            albumArtist = Meta::ArtistPtr( new Artist( albumArtistName ) );
-            m_mc->addArtist( albumArtist );
+            /* Even if MemoryQueryMaker doesn't need albumArtists to be in MemoryCollection
+            * maps, we add her into artist map so that album artist has the same instance as
+            * indentically-named artist (of potentially different tracks) */
+            albumArtist = m_mc->artistMap().value( albumArtistName );
+            if( albumArtist.isNull() )
+            {
+                albumArtist = Meta::ArtistPtr( new Artist( albumArtistName ) );
+                m_mc->addArtist( albumArtist );
+            }
         }
+
+        album = Meta::AlbumPtr( new Album( albumName, albumArtist ) );
+        m_mc->addAlbum( album );
     }
     bool isCompilation = track->album().isNull() ? false : track->album()->isCompilation();
     Album *memoryAlbum = static_cast<Album *>( album.data() );
-    memoryAlbum->setAlbumArtist( albumArtist );  // TODO: do it the other way around
     // be deterministic wrt track adding order:
     memoryAlbum->setIsCompilation( memoryAlbum->isCompilation() || isCompilation );
     QImage albumImage = track->album().isNull() ? QImage() : track->album()->image();
@@ -290,7 +290,7 @@ MapChanger::removeTrack( Meta::TrackPtr track )
     Meta::AlbumPtr album = track->album();
     if( album && !hasTrackInMap( album->tracks(), trackMap ) )
     {
-        albumMap.remove( album->name() );
+        albumMap.remove( album );
         Meta::ArtistPtr albumArtist = album->hasAlbumArtist() ? album->albumArtist() : Meta::ArtistPtr();
         if( albumArtist && !hasTrackInMap( albumArtist->tracks(), trackMap )
                         && !referencedAsAlbumArtist( albumArtist, albumMap ) )
