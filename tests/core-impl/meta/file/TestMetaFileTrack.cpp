@@ -173,10 +173,14 @@ void TestMetaFileTrack::testIsEditable()
 
     QFile testFile( m_tmpDir->name() + m_tmpFileName );
 
-    testFile.setPermissions( 0x0000 );
-    QVERIFY( !m_track->isEditable() );
+    QVERIFY( testFile.setPermissions( 0x0000 ) );
+    /* When the tests are run as root under Linux, the file is accessible even when it
+     * has no permission bits set. Just skip one verify in this case in order not to
+     * break whole test. */
+    if( !QFileInfo( testFile ).isReadable() )
+        QVERIFY( !m_track->isEditable() );
 
-    testFile.setPermissions( QFile::ReadOwner | QFile::WriteOwner );
+    QVERIFY( testFile.setPermissions( QFile::ReadOwner | QFile::WriteOwner ) );
     QVERIFY( m_track->isEditable() );
 }
 

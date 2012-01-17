@@ -239,34 +239,15 @@ Track::uidUrl() const
 bool
 Track::isPlayable() const
 {
-    KUrl trackUrl = playableUrl();
-    QFileInfo trackFileInfo = QFileInfo( trackUrl.pathOrUrl() );
-
-    if( !( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() ) )
-            return false;
-
-    return true;
+    QFileInfo info = QFileInfo( playableUrl().pathOrUrl() );
+    return info.isFile() && info.isReadable();
 }
 
 bool
 Track::isEditable() const
 {
-    DEBUG_BLOCK
-
-    //note this probably needs more work on *nix
-    QFile::Permissions p;
-    if(d->url.isLocalFile())
-    {
-        p = QFile::permissions( d->url.toLocalFile() );
-    }
-    else
-    {
-        p = QFile::permissions( d->url.path() );
-    }
-    const bool editable = ( p & QFile::WriteUser ) || ( p & QFile::WriteGroup ) || ( p & QFile::WriteOther );
-
-    debug() << d->url.path() << " editable: " << editable;
-    return editable;
+    QFileInfo info = QFileInfo( playableUrl().pathOrUrl() );
+    return info.isFile() && info.isWritable();
 }
 
 Meta::AlbumPtr
