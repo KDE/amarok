@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 Version 2.6-Beta 1
   FEATURES:
+    * Support for detecting compilations in USB Mass Storage collection.
     * Support embedded covers for ogg (read only) and flac files. (BR 288752)
     * Track meta-data can be edited in USB Mass Storage collection.
     * Support for album artists in USB Mass Storage collection.
@@ -14,6 +15,9 @@ Version 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * Album artist is now guessed for tracks that do not belong into any
+      collection and tracks from USB Mass Storage collection. Guessing uses the
+      same algorithm as Local Collection.
     * libgpod requirement raised from 0.7.0 to 0.7.93 for better maintainability.
     * When hovering iPod, UMS or MTP collection in collection browser,
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.

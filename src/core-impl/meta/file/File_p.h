@@ -26,6 +26,7 @@
 #include "shared/MetaReplayGain.h"
 #include "shared/MetaTagLib.h"
 #include "core/statistics/StatisticsProvider.h"
+#include "core-impl/collections/support/ArtistHelper.h"
 
 #include <QDateTime>
 #include <QFile>
@@ -205,10 +206,9 @@ void Track::Private::readMetaData()
         m_data.title = url.fileName();
     }
 
-//    Disabled because of BUG 281283
-//    if( m_data.artist.isEmpty() && !m_data.albumArtist.isEmpty() )
-//        m_data.artist = m_data.albumArtist;
-
+    // try to guess best album artist (even if non-empty, part of compilation detection)
+    m_data.albumArtist = ArtistHelper::bestGuessAlbumArtist( m_data.albumArtist,
+        m_data.artist, m_data.genre, m_data.composer );
 }
 
 // internal helper classes
@@ -252,7 +252,9 @@ public:
 
     bool isCompilation() const
     {
-        return false;
+        /* non-compilation albums with no album artists may be hidden in collection
+         * browser if certain modes are used, so force compilation in this case */
+        return !hasAlbumArtist();
     }
 
     bool hasAlbumArtist() const
@@ -262,7 +264,12 @@ public:
 
     Meta::ArtistPtr albumArtist() const
     {
-        return d.data()->albumArtist;
+        /* only return album artist if it would be non-empty, some Amarok parts do not
+         * call hasAlbumArtist() prior to calling albumArtist() and it is better to be
+         * consistent with other Meta::Track implementations */
+        if( hasAlbumArtist() )
+            return d.data()->albumArtist;
+        return Meta::ArtistPtr();
     }
 
     Meta::TrackList tracks()
