@@ -371,7 +371,7 @@ UmsCollection::totalCapacity() const
 }
 
 CollectionLocation *
-UmsCollection::location() const
+UmsCollection::location()
 {
     return new UmsCollectionLocation( this );
 }

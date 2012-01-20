@@ -107,14 +107,14 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
 
     public:
         CollectionLocation();
-        CollectionLocation( const Collections::Collection* parentCollection );
+        CollectionLocation( Collections::Collection *parentCollection );
         virtual  ~CollectionLocation();
 
         /**
             Returns a pointer to the collection location's corresponding collection.
             @return a pointer to the collection location's corresponding collection
          */
-        virtual const Collections::Collection* collection() const;
+        virtual Collections::Collection *collection() const;
 
         /**
             a displayable string representation of the collection location. use the return
@@ -349,7 +349,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void setSourceTracks( Meta::TrackList tracks ) { m_sourceTracks = tracks; }
         Meta::TrackList m_sourceTracks;
 
-        const Collections::Collection* m_parentCollection;
+        Collections::Collection *m_parentCollection;
 
         bool getRemoveSources() const { return m_removeSources; }
         void setRemoveSources( bool removeSources ) { m_removeSources = removeSources; }

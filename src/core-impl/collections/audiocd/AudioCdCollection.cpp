@@ -404,7 +404,7 @@ AudioCdCollection::setEncodingFormat( int format ) const
 }
 
 CollectionLocation *
-AudioCdCollection::location() const
+AudioCdCollection::location()
 {
     return new AudioCdCollectionLocation( this );
 }

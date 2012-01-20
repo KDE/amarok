@@ -76,10 +76,10 @@ class MyCollectionTestImpl : public CollectionTestImpl
 public:
     MyCollectionTestImpl( const QString &id ) : CollectionTestImpl( id ) {}
 
-    CollectionLocation* location() const
+    CollectionLocation* location()
     {
         MyCollectionLocation *r = new MyCollectionLocation();
-        r->coll = const_cast<MyCollectionTestImpl*>( this );
+        r->coll = this;
         return r;
     }
 };

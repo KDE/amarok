@@ -30,6 +30,7 @@
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
 

@@ -40,7 +40,7 @@ public:
     virtual QString collectionId() const;
     virtual QString prettyName() const;
     virtual QueryMaker* queryMaker();
-    virtual CollectionLocation* location() const;
+    virtual CollectionLocation* location();
 
     KIcon icon() const; //why is this pure virtual?
 

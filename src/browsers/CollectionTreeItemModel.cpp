@@ -135,15 +135,15 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
 
     //TODO: optimize for copy from same provider.
     Meta::TrackList tracks = mimeData->tracks();
-    QMap<const Collections::Collection *, Meta::TrackPtr> collectionTrackMap;
+    QMap<Collections::Collection *, Meta::TrackPtr> collectionTrackMap;
 
     foreach( Meta::TrackPtr track, tracks )
     {
-        const Collections::Collection *sourceCollection = track->collection();
+        Collections::Collection *sourceCollection = track->collection();
         collectionTrackMap.insertMulti( sourceCollection, track );
     }
 
-    foreach( const Collections::Collection *sourceCollection, collectionTrackMap.uniqueKeys() )
+    foreach( Collections::Collection *sourceCollection, collectionTrackMap.uniqueKeys() )
     {
         Collections::CollectionLocation *sourceLocation;
         if( sourceCollection )

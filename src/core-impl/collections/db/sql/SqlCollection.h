@@ -102,9 +102,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual Meta::TrackPtr getTrackFromUid( const QString &uniqueid );
         virtual Meta::AlbumPtr getAlbum( const QString &album, const QString &artist );
 
-        virtual CollectionLocation* location() const;
-        virtual bool isWritable() const;
-        virtual bool isOrganizable() const;
+        virtual CollectionLocation* location();
         QStringList getDatabaseDirectories( QList<int> idList ) const;
 
         QStringList collectionFolders() const;

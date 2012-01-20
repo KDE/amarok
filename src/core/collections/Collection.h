@@ -161,7 +161,7 @@ class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, publ
         virtual float usedCapacity() const { return 0.0; }
         virtual float totalCapacity() const { return 0.0; }
 
-        virtual Collections::CollectionLocation* location() const;
+        virtual Collections::CollectionLocation* location();
 
         //convenience methods so that it is not necessary to create a CollectionLocation
         virtual bool isWritable() const;

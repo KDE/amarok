@@ -399,36 +399,10 @@ SqlCollection::getAlbum( const QString &album, const QString &artist )
 }
 
 CollectionLocation*
-SqlCollection::location() const
+SqlCollection::location()
 {
     Q_ASSERT( m_collectionLocationFactory );
     return m_collectionLocationFactory->createSqlCollectionLocation();
-}
-
-bool
-SqlCollection::isWritable() const
-{
-    CollectionLocation *loc = location();
-    if( loc )
-    {
-        bool res = loc->isWritable();
-        delete loc;
-        return res;
-    }
-    return false;
-}
-
-bool
-SqlCollection::isOrganizable() const
-{
-    CollectionLocation *loc = location();
-    if( loc )
-    {
-        bool res = loc->isOrganizable();
-        delete loc;
-        return res;
-    }
-    return false;
 }
 
 QStringList

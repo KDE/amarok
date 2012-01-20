@@ -42,7 +42,7 @@ CollectionLocation::CollectionLocation()
     //nothing to do
 }
 
-CollectionLocation::CollectionLocation( const Collections::Collection* parentCollection)
+CollectionLocation::CollectionLocation( Collections::Collection *parentCollection)
     :QObject()
     , m_destination( 0 )
     , m_source( 0 )
@@ -61,7 +61,7 @@ CollectionLocation::~CollectionLocation()
     //nothing to do
 }
 
-const Collections::Collection*
+Collections::Collection*
 CollectionLocation::collection() const
 {
     return m_parentCollection;

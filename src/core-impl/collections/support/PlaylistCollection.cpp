@@ -49,7 +49,7 @@ PlaylistCollection::queryMaker()
 }
 
 CollectionLocation*
-PlaylistCollection::location() const
+PlaylistCollection::location()
 {
     return new PlaylistCollectionLocation( this );
 }

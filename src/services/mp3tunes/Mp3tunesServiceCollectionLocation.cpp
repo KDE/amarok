@@ -27,9 +27,9 @@
 
 using namespace Collections;
 
-Mp3tunesServiceCollectionLocation::Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection const *parentCollection )
-    : ServiceCollectionLocation()
-    , m_collection( const_cast<Mp3tunesServiceCollection*>(  parentCollection ) )
+Mp3tunesServiceCollectionLocation::Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection *parentCollection )
+    : ServiceCollectionLocation( parentCollection )
+    , m_collection( parentCollection )
 {
     DEBUG_BLOCK
 }

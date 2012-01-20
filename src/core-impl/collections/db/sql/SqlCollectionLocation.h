@@ -74,7 +74,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
     Q_OBJECT
 
     public:
-        SqlCollectionLocation( SqlCollection const *collection );
+        SqlCollectionLocation( SqlCollection *collection );
         virtual ~SqlCollectionLocation();
 
         virtual QString prettyLocation() const;

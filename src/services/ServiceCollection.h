@@ -55,7 +55,7 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
         virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon("action-view-services-scripted-amarok"); }
 
-        virtual CollectionLocation* location() const;
+        virtual CollectionLocation* location();
 
         void emitUpdated();
 

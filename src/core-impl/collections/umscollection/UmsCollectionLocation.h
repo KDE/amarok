@@ -32,10 +32,8 @@ class UmsCollectionLocation : public Collections::CollectionLocation
 {
         Q_OBJECT
     public:
-        UmsCollectionLocation( const UmsCollection *umsCollection );
+        UmsCollectionLocation( UmsCollection *umsCollection );
         ~UmsCollectionLocation();
-
-        const UmsCollection *umsCollection() const { return m_umsCollection; }
 
         /* CollectionLocation methods */
         virtual QString prettyLocation() const;
@@ -51,7 +49,7 @@ class UmsCollectionLocation : public Collections::CollectionLocation
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
     private:
-        const UmsCollection *m_umsCollection;
+        UmsCollection *m_umsCollection;
 };
 
 class UmsTransferJob : public KCompositeJob

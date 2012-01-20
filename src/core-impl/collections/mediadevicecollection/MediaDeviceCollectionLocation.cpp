@@ -30,9 +30,9 @@
 
 using namespace Collections;
 
-MediaDeviceCollectionLocation::MediaDeviceCollectionLocation( MediaDeviceCollection const *collection )
-    : CollectionLocation()
-    , m_collection( const_cast<MediaDeviceCollection*>( collection ) )
+MediaDeviceCollectionLocation::MediaDeviceCollectionLocation( MediaDeviceCollection *collection )
+    : CollectionLocation( collection )
+    , m_collection( collection )
     , m_handler( m_collection->handler() )
 {
     //nothing to do

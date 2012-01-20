@@ -27,8 +27,8 @@
 #include <KUrl>
 #include <kio/jobclasses.h>
 
-UmsCollectionLocation::UmsCollectionLocation( const UmsCollection *umsCollection )
-    : CollectionLocation( static_cast<const Collection *>( umsCollection ) )
+UmsCollectionLocation::UmsCollectionLocation( UmsCollection *umsCollection )
+    : CollectionLocation( umsCollection )
     , m_umsCollection( umsCollection )
 {
 }
@@ -197,7 +197,7 @@ UmsTransferJob::startNextJob()
              SLOT(slotChildJobPercent( KJob *, unsigned long )) );
     QString loggerText = i18np( "Copying one track to %2", "Copying %1 tracks to %2",
                                 m_transferList.count(),
-                                m_location->umsCollection()->prettyName() );
+                                m_location->collection()->prettyName() );
     emit infoMessage( this, loggerText, loggerText );
     addSubjob( job );
 }

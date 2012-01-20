@@ -25,9 +25,9 @@ ServiceCollectionLocation::ServiceCollectionLocation()
     , m_overwriteFiles( false )
 {}
 
-ServiceCollectionLocation::ServiceCollectionLocation( const ServiceCollection* parentCollection )
-    : CollectionLocation()
-    , m_collection( const_cast<ServiceCollection*>( parentCollection ) )
+ServiceCollectionLocation::ServiceCollectionLocation( ServiceCollection *parentCollection )
+    : CollectionLocation( parentCollection )
+    , m_collection( parentCollection )
     , m_removeSources( false )
     , m_overwriteFiles( false )
 {}

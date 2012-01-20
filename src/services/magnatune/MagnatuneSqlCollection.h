@@ -34,7 +34,7 @@ public:
     
     virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-    virtual CollectionLocation* location() const;
+    virtual CollectionLocation* location();
 
 };
 

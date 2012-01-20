@@ -157,7 +157,7 @@ Mp3tunesLocker* Mp3tunesServiceCollection::locker() const
 }
 
 CollectionLocation*
-Mp3tunesServiceCollection::location() const
+Mp3tunesServiceCollection::location()
 {
     return new Mp3tunesServiceCollectionLocation( this );
 }

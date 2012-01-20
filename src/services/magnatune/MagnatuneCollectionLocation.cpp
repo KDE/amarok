@@ -23,7 +23,7 @@
 
 using namespace Collections;
 
-MagnatuneCollectionLocation::MagnatuneCollectionLocation( MagnatuneSqlCollection const *parentCollection )
+MagnatuneCollectionLocation::MagnatuneCollectionLocation( MagnatuneSqlCollection *parentCollection )
     : ServiceCollectionLocation( parentCollection )
 {
 }

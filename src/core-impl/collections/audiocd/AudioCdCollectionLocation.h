@@ -32,7 +32,7 @@ class AudioCdCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
 public:
-    AudioCdCollectionLocation( const AudioCdCollection* parentCollection );
+    AudioCdCollectionLocation( AudioCdCollection *parentCollection );
     ~AudioCdCollectionLocation();
 
     virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
@@ -40,17 +40,14 @@ public:
     virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
 
 private slots:
-
     void formatSelected( int format );
     void formatSelectionCancelled();
 
     void onFormatSelected( int format );
     void onCancel();
-    
+
 private:
-
-    const AudioCdCollection * m_collection;
-
+    AudioCdCollection *m_collection;
 };
 
 } //namespace Collections

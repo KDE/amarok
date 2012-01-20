@@ -89,7 +89,7 @@ class UmsCollection : public Collection
         virtual float usedCapacity() const;
         virtual float totalCapacity() const;
 
-        virtual CollectionLocation *location() const;
+        virtual CollectionLocation *location();
 
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;

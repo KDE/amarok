@@ -50,9 +50,9 @@
 
 using namespace Collections;
 
-SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
+SqlCollectionLocation::SqlCollectionLocation( SqlCollection *collection )
     : CollectionLocation( collection )
-    , m_collection( const_cast<Collections::SqlCollection*>( collection ) )
+    , m_collection( collection )
     , m_delegateFactory( 0 )
     , m_overwriteFiles( false )
     , m_transferjob( 0 )

@@ -81,7 +81,7 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const KUrl & url)
     
 }
 
-CollectionLocation * MagnatuneSqlCollection::location() const
+CollectionLocation * MagnatuneSqlCollection::location()
 {
     return new MagnatuneCollectionLocation( this );
 }

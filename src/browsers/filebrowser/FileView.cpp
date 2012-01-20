@@ -28,6 +28,7 @@
 #include "core/interfaces/Logger.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core/support/Debug.h"
+#include "core/support/Components.h"
 #include "dialogs/TagDialog.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"

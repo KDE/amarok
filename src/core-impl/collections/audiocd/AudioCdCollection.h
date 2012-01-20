@@ -79,7 +79,7 @@ public:
     virtual QString prettyName() const;
     virtual KIcon icon() const;
 
-    virtual CollectionLocation* location() const;
+    virtual CollectionLocation* location();
 
     virtual bool possiblyContainsTrack( const KUrl &url ) const;
     virtual Meta::TrackPtr trackForUrl( const KUrl &url );

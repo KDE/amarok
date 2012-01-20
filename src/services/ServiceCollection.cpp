@@ -72,7 +72,7 @@ ServiceCollection::prettyName() const
 }
 
 CollectionLocation*
-ServiceCollection::location() const
+ServiceCollection::location()
 {
     return new ServiceCollectionLocation( this );
 }

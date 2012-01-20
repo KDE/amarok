@@ -22,7 +22,7 @@
 
 using namespace Collections;
 
-AudioCdCollectionLocation::AudioCdCollectionLocation( const AudioCdCollection* parentCollection )
+AudioCdCollectionLocation::AudioCdCollectionLocation( AudioCdCollection *parentCollection )
     : CollectionLocation( parentCollection )
     , m_collection( parentCollection )
 {

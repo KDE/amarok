@@ -870,7 +870,7 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
             }
 
             Collections::Collection *collection = item->parentCollection();
-            const Collections::CollectionLocation* location = collection->location();
+            Collections::CollectionLocation* location = collection->location();
 
             if( location->isOrganizable() )
             {

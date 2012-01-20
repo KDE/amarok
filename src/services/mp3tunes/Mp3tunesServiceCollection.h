@@ -41,7 +41,7 @@ public:
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
-    virtual CollectionLocation* location() const;
+    virtual CollectionLocation* location();
     Mp3tunesLocker* locker() const;
 
     virtual Meta::TrackPtr trackForUrl( const KUrl &url );

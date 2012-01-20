@@ -93,9 +93,7 @@ class AMAROK_DATABASECOLLECTION_EXPORT DatabaseCollection : public Collections::
 
         virtual Meta::TrackPtr trackForUrl( const KUrl &url ) = 0;
 
-        virtual CollectionLocation* location() const = 0;
-        virtual bool isWritable() const = 0;
-        virtual bool isOrganizable() const = 0;
+        virtual CollectionLocation* location() = 0;
 
         /** Call this function to prevent the collection updated signal emitted.
          *  This function can be called in preparation of larger updates.

@@ -87,7 +87,7 @@ Collections::Collection::uidUrlProtocol() const
 }
 
 Collections::CollectionLocation*
-Collections::Collection::location() const
+Collections::Collection::location()
 {
     return new Collections::CollectionLocation( this );
 }
@@ -95,7 +95,9 @@ Collections::Collection::location() const
 bool
 Collections::Collection::isWritable() const
 {
-    Collections::CollectionLocation* loc = this->location();
+    Collections::CollectionLocation* loc = const_cast<Collections::Collection *>(this)->location();
+    if( !loc )
+        return false;
     bool writable = loc->isWritable();
     delete loc;
     return writable;
@@ -104,10 +106,12 @@ Collections::Collection::isWritable() const
 bool
 Collections::Collection::isOrganizable() const
 {
-    Collections::CollectionLocation* loc = this->location();
-    bool org = loc->isOrganizable();
+    Collections::CollectionLocation* loc = const_cast<Collections::Collection *>(this)->location();
+    if( !loc )
+        return false;
+    bool organizable = loc->isOrganizable();
     delete loc;
-    return org;  
+    return organizable;
 }
 
 #include "Collection.moc"
