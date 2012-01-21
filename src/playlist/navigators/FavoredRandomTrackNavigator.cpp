@@ -37,9 +37,18 @@ Playlist::FavoredRandomTrackNavigator::planOne()
 {
     DEBUG_BLOCK
 
-    if ( m_plannedItems.isEmpty() )
+    if ( m_plannedItems.isEmpty() && !allItemsList().isEmpty() )
     {
-        QList<qreal> weights = rowWeights();
+        int avoidRecentlyPlayedSize = AVOID_RECENTLY_PLAYED_MAX;    // Start with being very picky.
+
+        // Don't over-constrain ourself:
+        //   - Keep enough headroom to be unpredictable.
+        //   - Make sure that 'chooseRandomItem()' doesn't need to find a needle in a haystack.
+        avoidRecentlyPlayedSize = qMin( avoidRecentlyPlayedSize, allItemsList().size() / 2 );
+
+        QSet<quint64> avoidSet = getRecentHistory( avoidRecentlyPlayedSize );
+
+        QList<qreal> weights = rowWeights( avoidSet );
 
         // Choose a weighed random row.
         if( !weights.isEmpty() )
@@ -61,7 +70,7 @@ Playlist::FavoredRandomTrackNavigator::planOne()
 }
 
 QList<qreal>
-Playlist::FavoredRandomTrackNavigator::rowWeights()
+Playlist::FavoredRandomTrackNavigator::rowWeights( QSet<quint64> avoidSet )
 {
     QList<qreal> weights;
 
@@ -70,36 +79,39 @@ Playlist::FavoredRandomTrackNavigator::rowWeights()
 
     for( int row = 0; row < rowCount; row++ )
     {
-        qreal weight;
+        qreal weight = 0.0;
 
-        switch( favorType )
+        if ( !avoidSet.contains( m_model->idAt( row ) ) )
         {
-            case AmarokConfig::EnumFavorTracks::HigherScores:
+            switch( favorType )
             {
-                int score = m_model->trackAt( row )->score();
-                weight = score ? score : 50.0;    // "Unknown" weight: in the middle, 50%
-                break;
-            }
-
-            case AmarokConfig::EnumFavorTracks::HigherRatings:
-            {
-                int rating = m_model->trackAt( row )->rating();
-                weight = rating ? rating : 5.0;
-                break;
-            }
-
-            case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
-            {
-                QDateTime lastPlayed = m_model->trackAt( row )->lastPlayed();
-                if( lastPlayed.isValid() )
+                case AmarokConfig::EnumFavorTracks::HigherScores:
                 {
-                    weight = lastPlayed.secsTo( QDateTime::currentDateTime() );
-                    if ( weight < 0 )    // If 'lastPlayed()' is nonsense, or the system clock has been set back:
-                        weight = 1 * 60 * 60;    // "Nonsense" weight: 1 hour.
+                    int score = m_model->trackAt( row )->score();
+                    weight = score ? score : 50.0;    // "Unknown" weight: in the middle, 50%
+                    break;
                 }
-                else
-                    weight = 365 * 24 * 60 * 60;    // "Never" weight: 1 year.
-                break;
+
+                case AmarokConfig::EnumFavorTracks::HigherRatings:
+                {
+                    int rating = m_model->trackAt( row )->rating();
+                    weight = rating ? rating : 5.0;
+                    break;
+                }
+
+                case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
+                {
+                    QDateTime lastPlayed = m_model->trackAt( row )->lastPlayed();
+                    if ( lastPlayed.isValid() )
+                    {
+                        weight = lastPlayed.secsTo( QDateTime::currentDateTime() );
+                        if ( weight < 0 )    // If 'lastPlayed()' is nonsense, or the system clock has been set back:
+                            weight = 1 * 60 * 60;    // "Nonsense" weight: 1 hour.
+                    }
+                    else
+                        weight = 365 * 24 * 60 * 60;    // "Never" weight: 1 year.
+                    break;
+                }
             }
         }
 
@@ -107,4 +119,21 @@ Playlist::FavoredRandomTrackNavigator::rowWeights()
     }
 
     return weights;
+}
+
+QSet<quint64>
+Playlist::FavoredRandomTrackNavigator::getRecentHistory( int size )
+{
+    QList<quint64> allHistory = historyItems();
+    QSet<quint64> recentHistory;
+
+    if ( size > 0 ) {    // If '== 0', we even need to consider playing the same item again.
+        recentHistory.insert( currentItem() );    // Might be '0'
+        size--;
+    }
+
+    for ( int i = allHistory.size() - 1; ( i >= 0 ) && ( i >= allHistory.size() - size ); i-- )
+        recentHistory.insert( allHistory.at( i ) );
+
+    return recentHistory;
 }

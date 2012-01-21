@@ -30,13 +30,16 @@ namespace Playlist
         public:
             FavoredRandomTrackNavigator();
 
+            static const int AVOID_RECENTLY_PLAYED_MAX = 512;    //!< Try to avoid the 'N' most recently played items.
+
         private:
             //! Override from 'NonlinearTrackNavigator'
             void planOne();
             void notifyItemsInserted( const QSet<quint64> &insertedItems ) { Q_UNUSED( insertedItems ); }
             void notifyItemsRemoved( const QSet<quint64> &removedItems ) { Q_UNUSED( removedItems ); }
 
-            QList<qreal> rowWeights();
+            QList<qreal> rowWeights( QSet<quint64> avoidSet );
+            QSet<quint64> getRecentHistory( int size );
     };
 
 }
