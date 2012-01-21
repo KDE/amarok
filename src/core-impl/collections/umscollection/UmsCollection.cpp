@@ -141,6 +141,7 @@ QString UmsCollection::s_regexTextKey( "regex_text" );
 QString UmsCollection::s_replaceTextKey( "replace_text" );
 QString UmsCollection::s_podcastFolderKey( "podcast_folder" );
 QString UmsCollection::s_autoConnectKey( "use_automatically" );
+QString UmsCollection::s_collectionName( "collection_name" );
 
 UmsCollection::UmsCollection( Solid::Device device )
     : Collection()
@@ -155,6 +156,7 @@ UmsCollection::UmsCollection( Solid::Device device )
     , m_replaceSpaces( false )
     , m_regexText( QString() )
     , m_replaceText( QString() )
+    , m_collectionName( QString() )
     , m_scanManager( 0 )
 {
     debug() << "creating device with udi: " << m_device.udi();
@@ -275,6 +277,11 @@ UmsCollection::init()
                 debug() << "Use automatically: " << line.section( '=', 1, 1 );
                 m_autoConnect = ( line.section( '=', 1, 1 ) == "true" );
             }
+            else if( line.startsWith( s_collectionName + "=" ) )
+            {
+                debug() << "Collectin name: " << line.section( '=', 1, 1 );
+                m_collectionName = line.section( '=', 1, 1 );
+            }
         }
     }
 
@@ -330,6 +337,9 @@ UmsCollection::uidUrlProtocol() const
 QString
 UmsCollection::prettyName() const
 {
+    if( !m_collectionName.isEmpty() )
+        return m_collectionName;
+
     if( !m_device.description().isEmpty() )
         return m_device.description();
 
@@ -510,6 +520,8 @@ UmsCollection::slotConfigure()
     settings->m_podcastFolder->setUrl( m_podcastPath.isEmpty() ? KUrl( m_mountPoint )
                                          : m_podcastPath );
 
+    settings->m_collectionName->setText( prettyName() );
+
     FilenameLayoutDialog filenameLayoutDialog( &umsSettingsDialog, 1 );
     //TODO: save the setting that are normally written in onAccept()
 //    connect( this, SIGNAL(accepted()), &filenameLayoutDialog, SLOT(onAccept()) );
@@ -564,6 +576,7 @@ UmsCollection::slotConfigure()
         m_replaceSpaces = filenameLayoutDialog.replaceSpaces();
         m_regexText = filenameLayoutDialog.regexpText();
         m_replaceText = filenameLayoutDialog.replaceText();
+        m_collectionName = settings->m_collectionName->text();
 
         if( settings->m_podcastCheckBox->isChecked() )
         {
@@ -615,6 +628,7 @@ UmsCollection::slotConfigure()
             s << keyValuePair.arg( s_replaceSpacesKey, TRUE_FALSE(m_replaceSpaces) );
             s << keyValuePair.arg( s_regexTextKey, m_regexText );
             s << keyValuePair.arg( s_replaceTextKey, m_replaceText );
+            s << keyValuePair.arg( s_collectionName, m_collectionName );
 
             if( !m_podcastPath.isEmpty() )
             {

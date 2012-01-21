@@ -139,6 +139,7 @@ class UmsCollection : public Collection
         static QString s_replaceTextKey;
         static QString s_podcastFolderKey;
         static QString s_autoConnectKey;
+        static QString s_collectionName;
 
         Solid::Device m_device;
         QSharedPointer<MemoryCollection> m_mc;
@@ -155,6 +156,7 @@ class UmsCollection : public Collection
         bool m_replaceSpaces;
         QString m_regexText;
         QString m_replaceText;
+        QString m_collectionName;
 
         GenericScanManager *m_scanManager;
         KDirWatch m_watcher;
