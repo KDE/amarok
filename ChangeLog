@@ -27,6 +27,7 @@ Version 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Fix crash due to my silly method order error. (BR 291968)
     * Fix favored random track playing picking recent played songs (BR 244442)
     * Fix crashes with Bookmarks (BR 283753) thanks to Charles Reiss
     * Fix memory leaks in USB Mass Storage collection where track objects were

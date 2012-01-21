@@ -718,9 +718,9 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
             albumArtistPtr = MediaDeviceArtistPtr( new MediaDeviceArtist( albumArtist ) );
             artistMap.insert( albumArtist, ArtistPtr::staticCast( albumArtistPtr ) );
         }
-        albumPtr->setAlbumArtist( albumArtistPtr ); // needs to be before albumMap.insert()
 
         albumPtr = MediaDeviceAlbumPtr( new MediaDeviceAlbum( m_memColl, album ) );
+        albumPtr->setAlbumArtist( albumArtistPtr ); // needs to be before albumMap.insert()
         albumMap.insert( AlbumPtr::staticCast( albumPtr ) );
     }
 
