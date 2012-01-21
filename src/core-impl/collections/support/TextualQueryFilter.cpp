@@ -26,6 +26,7 @@
 #include "core/support/Debug.h"
 
 #include <KLocale>
+#include <klocalizeddate.h>
 
 using namespace Meta;
 
@@ -96,6 +97,7 @@ Collections::addTextualFilter( Collections::QueryMaker *qm, const QString &filte
                     case expression_element::Less:
                         compare = Collections::QueryMaker::LessThan;
                         break;
+                    case expression_element::Equals:
                     case expression_element::Contains:
                         compare = Collections::QueryMaker::Equals;
                         break;
@@ -211,7 +213,8 @@ void
 Collections::addDateFilter( qint64 field, Collections::QueryMaker::NumberComparison compare,
                             bool negate, const QString &text, Collections::QueryMaker *qm )
 {
-    const uint date = semanticDateTimeParser( text ).toTime_t();
+    bool absolute = false;
+    const uint date = semanticDateTimeParser( text, &absolute ).toTime_t();
     if( date == 0 )
         return;
 
@@ -219,6 +222,10 @@ Collections::addDateFilter( qint64 field, Collections::QueryMaker::NumberCompari
     {
         // equal means, on the same day
         uint day = 24 * 60 * 60;
+
+        qm->endAndOr();
+        qm->beginAnd();
+
         if( negate )
         {
             qm->excludeNumberFilter( field, date - day, Collections::QueryMaker::GreaterThan );
@@ -230,15 +237,15 @@ Collections::addDateFilter( qint64 field, Collections::QueryMaker::NumberCompari
             qm->addNumberFilter( field, date + day, Collections::QueryMaker::LessThan );
         }
     }
-    // note: for historic reasons the conditions for dates are inverted.
-    else if( compare == Collections::QueryMaker::LessThan )
+    // note: if the date is a relative time difference, invert the condition
+    else if( ( compare == Collections::QueryMaker::LessThan && !absolute ) || ( compare == Collections::QueryMaker::GreaterThan && absolute ) )
     {
         if( negate )
             qm->excludeNumberFilter( field, date, Collections::QueryMaker::GreaterThan );
         else
             qm->addNumberFilter( field, date, Collections::QueryMaker::GreaterThan );
     }
-    else if( compare == Collections::QueryMaker::GreaterThan )
+    else if( ( compare == Collections::QueryMaker::GreaterThan && !absolute ) || ( compare == Collections::QueryMaker::LessThan && absolute ) )
     {
         if( negate )
             qm->excludeNumberFilter( field, date, Collections::QueryMaker::LessThan );
@@ -247,15 +254,25 @@ Collections::addDateFilter( qint64 field, Collections::QueryMaker::NumberCompari
     }
 }
 
-
 QDateTime
-Collections::semanticDateTimeParser( const QString &text )
+Collections::semanticDateTimeParser( const QString &text, bool *absolute )
 {
     /* TODO: semanticDateTimeParser: has potential to extend and form a class of its own */
+    // some code duplications, see EditFilterDialog::parseTextFilter
 
     const QString lowerText = text.toLower();
     const QDateTime curTime = QDateTime::currentDateTime();
     QDateTime result;
+
+    if( absolute )
+        *absolute = false;
+
+    // parse date using local settings
+    KLocalizedDate localizedDate = KLocalizedDate::readDate( text, KLocale::ShortFormat );
+
+    // parse date using a backup standard independent from local settings
+    QRegExp shortDateReg("(\\d{1,2})[-.](\\d{1,2})");
+    QRegExp longDateReg("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})");
 
     if( text.at(0).isLetter() )
     {
@@ -270,10 +287,28 @@ Collections::semanticDateTimeParser( const QString &text )
         else if( ( lowerText.compare( "three months ago" ) == 0 ) || ( lowerText.compare( i18n( "three months ago" ) ) == 0 ) )
             result = curTime.addMonths( -3 );
     }
+    else if( localizedDate.isValid() )
+    {
+        result = QDateTime( localizedDate.date() );
+        if( absolute )
+            *absolute = true;
+    }
+    else if( text.contains(shortDateReg) )
+    {
+        result = QDateTime( QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ) );
+        if( absolute )
+            *absolute = true;
+    }
+    else if( text.contains(longDateReg) )
+    {
+        result = QDateTime( QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ) );
+        if( absolute )
+            *absolute = true;
+    }
     else // first character is a number
     {
         // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
-        int years = 0, months = 0, weeks = 0, days = 0, secs = 0;
+        int years = 0, months = 0, days = 0, secs = 0;
         QString tmp;
         for( int i = 0; i < text.length(); i++ )
         {
@@ -284,41 +319,41 @@ Collections::semanticDateTimeParser( const QString &text )
             }
             else if( c == 'y' )
             {
-                years = -tmp.toInt();
+                years += -tmp.toInt();
                 tmp.clear();
             }
             else if( c == 'm' )
             {
-                months = -tmp.toInt();
+                months += -tmp.toInt();
                 tmp.clear();
             }
             else if( c == 'w' )
             {
-                weeks = -tmp.toInt() * 7;
+                days += -tmp.toInt() * 7;
                 tmp.clear();
             }
             else if( c == 'd' )
             {
-                days = -tmp.toInt();
-                break;
+                days += -tmp.toInt();
+                tmp.clear();
             }
             else if( c == 'h' )
             {
-                secs = -tmp.toInt() * 60 * 60;
-                break;
+                secs += -tmp.toInt() * 60 * 60;
+                tmp.clear();
             }
             else if( c == 'M' )
             {
-                secs = -tmp.toInt() * 60;
-                break;
+                secs += -tmp.toInt() * 60;
+                tmp.clear();
             }
             else if( c == 's' )
             {
-                secs = -tmp.toInt();
-                break;
+                secs += -tmp.toInt();
+                tmp.clear();
             }
         }
-        result = QDateTime::currentDateTime().addYears( years ).addMonths( months ).addDays( weeks ).addDays( days ).addSecs( secs );
+        result = QDateTime::currentDateTime().addYears( years ).addMonths( months ).addDays( days ).addSecs( secs );
     }
     return result;
 }

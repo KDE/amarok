@@ -40,7 +40,8 @@
 
 #include <KComboBox>
 #include <KIcon>
-#include <KDateTime> // for local time
+// #include <KDateTime> // for local time
+#include <klocalizeddate.h>
 #include <KNumInput>
 #include <klocale.h>
 
@@ -55,7 +56,7 @@ TimeDistanceWidget::TimeDistanceWidget( QWidget *parent )
 
     m_unitSelection = new KComboBox(this);
     connect( m_timeEdit, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateComboBoxLabels(int)) );
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 7; ++i) {
         m_unitSelection->addItem( QString() );
     }
     slotUpdateComboBoxLabels( 0 );
@@ -71,8 +72,15 @@ qint64 TimeDistanceWidget::timeDistance() const
     qint64 time = m_timeEdit->value();
     switch( m_unitSelection->currentIndex() )
     {
+    case 6:
+        time *= 365*24*60*60; // years
+        break;
+    case 5:
+        time *=  30*24*60*60; // months
+        break;
     case 4:
-        time *= 30; // months
+        time *=   7*24*60*60; // weeks
+        break;
     case 3:
         time *= 24; // days
     case 2:
@@ -89,20 +97,26 @@ void TimeDistanceWidget::setTimeDistance( qint64 value )
     // as we don't store the time unit we try to reconstuct it
     int unit = 0;
     if( value > 600 || !(value % 60) ) {
-        unit++;
+        unit = 1;
         value /= 60;
 
         if( value > 600 || !(value % 60) ) {
-            unit++;
+            unit = 2;
             value /= 60;
 
-            if( value > 600 || !(value % 24) ) {
-                unit++;
+            if( value > 72 || !(value % 24) ) {
+                unit = 3;
                 value /= 24;
 
-                if( value > 89 || !(value % 30) ) {
-                    unit++;
+                if( !(value % 365) ) {
+                    unit = 6;
+                    value /= 365;
+                } else if( !(value % 30) ) {
+                    unit = 5;
                     value /= 30;
+                } else if( !(value % 7) ) {
+                    unit = 4;
+                    value /= 7;
                 }
             }
         }
@@ -125,7 +139,9 @@ void TimeDistanceWidget::slotUpdateComboBoxLabels( int value )
     m_unitSelection->setItemText(1, i18np("minute", "minutes", value));
     m_unitSelection->setItemText(2, i18np("hour", "hours", value));
     m_unitSelection->setItemText(3, i18np("day", "days", value));
-    m_unitSelection->setItemText(4, i18np("month", "months", value));
+    m_unitSelection->setItemText(4, i18np("week", "weeks", value));
+    m_unitSelection->setItemText(5, i18np("month", "months", value));
+    m_unitSelection->setItemText(6, i18np("year", "years", value));
 }
 
 
@@ -308,6 +324,69 @@ MetaQueryWidget::compareChanged( int index )
     if( m_filter.condition == condition )
         return; // nothing to do
 
+    if( isDate( m_filter.field) )
+    {
+        if(  ( condition == OlderThan || condition == NewerThan )
+            && m_filter.condition != OlderThan && m_filter.condition != NewerThan
+          )
+        {
+            // fix some inaccuracies caused by the conversion absoulte/relative time specifications
+            // this is actually just for visual consistency
+            int unit = 0;
+            qint64 value = QDateTime::currentDateTime().toTime_t() - m_filter.numValue;
+            if( value > 600 || !(value % 60) ) {
+                unit = 1;
+                value /= 60;
+
+                if( value > 600 || !(value % 60) ) {
+                    unit = 2;
+                    value /= 60;
+
+                    if( value > 72 || !(value % 24) ) {
+                        unit = 3;
+                        value /= 24;
+
+                        if( !(value % 365) ) {
+                            unit = 6;
+                            value /= 365;
+                        } else if( !(value % 30) ) {
+                            unit = 5;
+                            value /= 30;
+                        } else if( !(value % 7) ) {
+                            unit = 4;
+                            value /= 7;
+                        }
+                    }
+                }
+            }
+            switch( unit )
+            {
+            case 6:
+                value *= 365*24*60*60; // years
+                break;
+            case 5:
+                value *=  30*24*60*60; // months
+                break;
+            case 4:
+                value *=   7*24*60*60; // weeks
+                break;
+            case 3:
+                value *= 24; // days
+            case 2:
+                value *= 60; // hours
+            case 1:
+                value *= 60; // minutes
+            }
+            m_filter.numValue = value;
+        }
+        else if( condition != OlderThan && condition != NewerThan
+            && ( m_filter.condition == OlderThan || m_filter.condition == NewerThan )
+          )
+        {
+            m_filter.numValue = QDateTime::currentDateTime().toTime_t() - m_filter.numValue;
+        }
+    }
+
     m_filter.condition = condition;
 
     // need to re-generate the value selection fields
@@ -405,11 +484,17 @@ MetaQueryWidget::numValue2DateChanged()
 void
 MetaQueryWidget::numValueTimeDistanceChanged()
 {
+    if( !sender() )
+        return;
+
     // static_cast. Remember: the TimeDistanceWidget does not have a Q_OBJECT macro
     TimeDistanceWidget* distanceSelection = static_cast<TimeDistanceWidget*>( sender()->parent() );
-    m_filter.numValue = distanceSelection->timeDistance();
+    if( distanceSelection )
+    {
+        m_filter.numValue = distanceSelection->timeDistance();
 
-    emit changed(m_filter);
+        emit changed(m_filter);
+    }
 }
 
 void
@@ -466,9 +551,9 @@ MetaQueryWidget::makeCompareSelection()
         m_compareSelection->addItem( conditionToString( Equals, field ), (int)Equals );
         m_compareSelection->addItem( conditionToString( LessThan, field ), (int)LessThan );
         m_compareSelection->addItem( conditionToString( GreaterThan, field ), (int)GreaterThan );
-
         m_compareSelection->addItem( conditionToString( Between, field ), (int)Between );
         m_compareSelection->addItem( conditionToString( OlderThan, field ), (int)OlderThan );
+        m_compareSelection->addItem( conditionToString( NewerThan, field ), (int)NewerThan );
     }
     else if( isNumeric(field) )
     {
@@ -534,7 +619,7 @@ MetaQueryWidget::makeValueSelection()
     else if( field == Meta::valBitrate )
         makeGenericNumberSelection( 60, 2000, 160, i18nc("Unit for data rate kilo bit per seconds", "kbps") );
     else if( field == Meta::valSamplerate )
-        makeGenericNumberSelection( 8000, 48000, 44000, i18nc("Unit for sample rate", "Hz") );
+        makeGenericNumberSelection( 8000, 48000, 44100, i18nc("Unit for sample rate", "Hz") );
     else if( field == Meta::valFilesize )
         makeGenericNumberSelection( 0, 1000, 10, i18nc("Unit for file size in mega byte", "MiB") );
     else if( field == Meta::valFormat )
@@ -767,14 +852,24 @@ MetaQueryWidget::makeGenericNumberSelection( int min, int max, int def, const QS
 void
 MetaQueryWidget::makeDateTimeSelection()
 {
-    if( m_filter.condition != OlderThan )
+    if( m_filter.condition == OlderThan || m_filter.condition == NewerThan )
+    {
+        TimeDistanceWidget* distanceSelection = new TimeDistanceWidget();
+        distanceSelection->setTimeDistance( m_filter.numValue );
+
+        distanceSelection->connectChanged( this, SLOT(numValueTimeDistanceChanged()));
+
+        m_valueSelection1 = distanceSelection;
+    }
+    else
     {
         KDateCombo* dateSelection = new KDateCombo();
         QDateTime dt;
-        if( m_filter.condition == Contains )
-            dt = QDateTime::currentDateTime();
-        else
-            dt.setTime_t( m_filter.numValue );
+//         if( m_filter.condition == Contains || m_filter.condition == Equals )
+//             dt = QDateTime::currentDateTime();
+//         else
+//             dt.setTime_t( m_filter.numValue );
+        dt.setTime_t( m_filter.numValue );
         dateSelection->setDate( dt.date() );
 
         connect( dateSelection, SIGNAL(currentIndexChanged(int)),
@@ -787,25 +882,13 @@ MetaQueryWidget::makeDateTimeSelection()
 
         // second KDateCombo for the between selection
         KDateCombo* dateSelection2 = new KDateCombo();
-        if( m_filter.condition == Contains )
-            dt = QDateTime::currentDateTime();
-        else
-            dt.setTime_t( m_filter.numValue2 );
+        dt.setTime_t( m_filter.numValue2 );
         dateSelection2->setDate( dt.date() );
 
         connect( dateSelection2, SIGNAL(currentIndexChanged(int)),
                 SLOT( numValue2DateChanged() ) );
 
         m_valueSelection2 = dateSelection2;
-    }
-    else
-    {
-        TimeDistanceWidget* distanceSelection = new TimeDistanceWidget();
-        distanceSelection->setTimeDistance( m_filter.numValue);
-
-        distanceSelection->connectChanged( this, SLOT(numValueTimeDistanceChanged()));
-
-        m_valueSelection1 = distanceSelection;
     }
 }
 
@@ -869,6 +952,8 @@ MetaQueryWidget::conditionToString( FilterCondition condition, qint64 field )
             return i18nc( "The date is between the given fixed dates", "between" );
         case OlderThan:
             return i18nc( "The date lies before the given time interval", "older than" );
+        case NewerThan:
+            return i18nc( "The date lies after the given time interval", "newer than" );
         default:
             ; // fall through
         }
@@ -927,10 +1012,18 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
     }
     else if( MetaQueryWidget::isDate(field) )
     {
-        // here we are handling only the date. relative times are handled below
-        const QDateTime &today = KDateTime::currentLocalDateTime().dateTime();
-        strValue1 = QString::number( QDateTime::fromTime_t( numValue  ).daysTo( today )) + 'd';
-        strValue2 = QString::number( QDateTime::fromTime_t( numValue2 ).daysTo( today )) + 'd';
+        if( condition == OlderThan || condition == NewerThan )
+        {
+            strValue1 = QString::number( numValue  );
+            strValue2 = QString::number( numValue2 );
+        }
+        else
+        {
+            KLocalizedDate localizedDate1( QDateTime::fromTime_t(numValue).date() );
+            strValue1 = localizedDate1.formatDate( KLocale::ShortDate );
+            KLocalizedDate localizedDate2( QDateTime::fromTime_t(numValue2).date() );
+            strValue2 = localizedDate2.formatDate( KLocale::ShortDate );
+        }
     }
     else if( MetaQueryWidget::isNumeric(field) )
     {
@@ -981,36 +1074,41 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
         }
 
     case OlderThan:
+    case NewerThan:
         {
             // a human readable time..
-            int unit = 0;
-            qint64 val = numValue;
-            if( val > 600 || !(val % 60) ) {
-                unit++;
-                val /= 60;
+            QChar strUnit = 's';
+            qint64 value = numValue;
+            if( !(value % 60) ) {
+                strUnit = 'M';
+                value /= 60;
 
-                if( val > 600 || !(val % 60) ) {
-                    unit++;
-                    val /= 60;
+                if( !(value % 60) ) {
+                    strUnit = 'h';
+                    value /= 60;
 
-                    if( val > 600 || !(val % 24) ) {
-                        unit++;
-                        val /= 24;
+                    if( !(value % 24) ) {
+                        strUnit = 'd';
+                        value /= 24;
+
+                        if( !(value % 365) ) {
+                            strUnit = 'y';
+                            value /= 365;
+                        } else if( !(value % 30) ) {
+                            strUnit = 'm';
+                            value /= 30;
+                        } else if( !(value % 7) ) {
+                            strUnit = 'w';
+                            value /= 7;
+                        }
                     }
                 }
             }
-            QChar strUnit('s');
-            if( unit==1 )
-                strUnit = 'M';
-            else if( unit==2 )
-                strUnit = 'h';
-            else if( unit==3 )
-                strUnit = 'd';
 
             if( condition == OlderThan )
-                result += '>' + QString::number(val) + strUnit;
+                result += '>' + QString::number(value) + strUnit;
             else
-                result += '<' + QString::number(val) + strUnit;
+                result += '<' + QString::number(value) + strUnit;
             if( invert )
                 result.prepend( QChar('-') );
             break;

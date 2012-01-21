@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 Version 2.6-Beta 1
   FEATURES:
+    * New search filter for absolute date
     * Named UMS collections
     * Albums with same name but different album artist are now correctly
       separated in USB Mass Storage, iPod and various online service collections.

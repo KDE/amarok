@@ -175,13 +175,13 @@ TokenPool::performDrag( QMouseEvent *event )
 
         QDataStream dataStream( &itemData, QIODevice::WriteOnly );
         dataStream << token->name() << token->iconName() << token->value() << QPoint( event->pos() - rect().topLeft() );
-        
+
         QMimeData *mimeData = new QMimeData;
         mimeData->setData( m_mimeType, itemData );
-        
+
         QDrag *drag = new QDrag( this );
         drag->setMimeData( mimeData );
-        
+
         //TODO: set a pointer for the drag, like this: drag->setPixmap( QPixmap("foo.png" ) );
         drag->exec( Qt::MoveAction | Qt::CopyAction, Qt::CopyAction );
     }

@@ -84,7 +84,8 @@ class MetaQueryWidget : public QWidget
             LessThan     =  2,
             Between      =  3,
             OlderThan    =  4,
-            Contains     =  5
+            NewerThan    =  5,
+            Contains     =  6
         };
 
         struct Filter

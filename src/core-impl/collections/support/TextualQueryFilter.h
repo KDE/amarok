@@ -41,8 +41,9 @@ namespace Collections
 
     /** Returns a QDateTime from a text.
         e.g. converts "today" to the current date.
+
     */
-    QDateTime semanticDateTimeParser( const QString &text );
+    QDateTime semanticDateTimeParser( const QString &text, bool *absolute = 0 );
 
 }
 

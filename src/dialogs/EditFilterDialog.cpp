@@ -30,6 +30,7 @@
 
 #include <KGlobal>
 #include <KLocale>
+#include <klocalizeddate.h>
 #include <KMessageBox>
 #include <QPushButton>
 
@@ -257,9 +258,12 @@ EditFilterDialog::filter() const
 void
 EditFilterDialog::parseTextFilter( const QString &text )
 {
+    // some code duplications, see Collections::semanticDateTimeParser
+
     ParsedExpression parsed = ExpressionParser::parse ( text );
     bool AND = false;
     bool OR = false;
+    bool isDateAbsolute = false;
     foreach( const or_list &orList, parsed )
     {
         if( AND )
@@ -274,29 +278,114 @@ EditFilterDialog::parseTextFilter( const QString &text )
             Filter filter;
             filter.filter.field = !elem.field.isEmpty() ? Meta::fieldForName( elem.field ) : 0;
             if( filter.filter.field == Meta::valRating )
+            {
                 filter.filter.numValue = 2 * elem.text.toFloat();
+            }
             else if( m_ui->mqwAttributeEditor->isDate( filter.filter.field ) )
             {
-                quint64 today = QDateTime::currentDateTime().toTime_t();
-                bool invert = elem.text.startsWith( '-' );
-                QString strTime = elem.text.mid( invert, elem.text.length() - 1 - invert );
-                quint64 diff = strTime.toULongLong();
-                switch( elem.text[elem.text.length() - 1].toAscii() )
-                {
-                    case 'd':
-                        diff *= 24;
-                    case 'h':
-                        diff *= 60;
-                    case 'M':
-                        diff *= 60;
-                }
+                QString strTime = elem.text;
 
-                filter.filter.numValue = today - ( invert ? -diff : diff );
+                // parse date using local settings
+                KLocalizedDate localizedDate = KLocalizedDate::readDate( strTime, KLocale::ShortFormat );
+
+                // parse date using a backup standard independent from local settings
+                QRegExp shortDateReg("(\\d{1,2})[-.](\\d{1,2})");
+                QRegExp longDateReg("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})");
+                // NOTE for absolute time specifications numValue is a unix timestamp,
+                // for relative time specifications numValue is a time difference in seconds 'pointing to the past'
+                if( localizedDate.isValid() )
+                {
+                    filter.filter.numValue = QDateTime( localizedDate.date() ).toTime_t();
+                    isDateAbsolute = true;
+                }
+                else if( strTime.contains(shortDateReg) )
+                {
+                    filter.filter.numValue = QDateTime( QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ) ).toTime_t();
+                    isDateAbsolute = true;
+                }
+                else if( strTime.contains(longDateReg) )
+                {
+                    filter.filter.numValue = QDateTime( QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ) ).toTime_t();
+                    isDateAbsolute = true;
+                }
+                else
+                {
+                    // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
+                    int years = 0, months = 0, days = 0, secs = 0;
+                    QString tmp;
+                    for( int i = 0; i < strTime.length(); i++ )
+                    {
+                        QChar c = strTime.at( i );
+                        if( c.isNumber() )
+                        {
+                            tmp += c;
+                        }
+                        else if( c == 'y' )
+                        {
+                            years += tmp.toInt();
+                            tmp.clear();
+                        }
+                        else if( c == 'm' )
+                        {
+                            months += tmp.toInt();
+                            tmp.clear();
+                        }
+                        else if( c == 'w' )
+                        {
+                            days += tmp.toInt() * 7;
+                            tmp.clear();
+                        }
+                        else if( c == 'd' )
+                        {
+                            days += tmp.toInt();
+                            tmp.clear();
+                        }
+                        else if( c == 'h' )
+                        {
+                            secs += tmp.toInt() * 60 * 60;
+                            tmp.clear();
+                        }
+                        else if( c == 'M' )
+                        {
+                            secs += tmp.toInt() * 60;
+                            tmp.clear();
+                        }
+                        else if( c == 's' )
+                        {
+                            secs += tmp.toInt();
+                            tmp.clear();
+                        }
+                    }
+                    filter.filter.numValue = years*365*24*60*60 + months*30*24*60*60 + days*24*60*60 + secs;
+                    isDateAbsolute = false;
+                }
             }
             else if( m_ui->mqwAttributeEditor->isNumeric( filter.filter.field ) )
+            {
                 filter.filter.numValue = elem.text.toInt();
+            }
 
-            if( m_ui->mqwAttributeEditor->isNumeric( filter.filter.field ) )
+            if( m_ui->mqwAttributeEditor->isDate( filter.filter.field ) )
+            {
+                switch( elem.match )
+                {
+                    case expression_element::Less:
+                        if( isDateAbsolute )
+                            filter.filter.condition = MetaQueryWidget::LessThan;
+                        else
+                            filter.filter.condition = MetaQueryWidget::NewerThan;
+                        break;
+                    case expression_element::More:
+                        if( isDateAbsolute )
+                            filter.filter.condition = MetaQueryWidget::GreaterThan;
+                        else
+                            filter.filter.condition = MetaQueryWidget::OlderThan;
+                        break;
+                    default:
+                        filter.filter.condition = MetaQueryWidget::Equals;
+                }
+            }
+            else if( m_ui->mqwAttributeEditor->isNumeric( filter.filter.field ) )
             {
                 switch( elem.match )
                 {
