@@ -115,13 +115,16 @@ Dynamic::QuizPlayBias::toString() const
     {
     case TitleToTitle:
         return i18nc("QuizPlay bias representation",
-                     "Tracks whose title start with a\n character the last track ended with");
+                     "Tracks whose title start with a\n"
+                     "character the last track ended with");
     case ArtistToArtist:
         return i18nc("QuizPlay bias representation",
-                     "Tracks whose artist name start\n with a character the last track ended with");
+                     "Tracks whose artist name start\n"
+                     "with a character the last track ended with");
     case AlbumToAlbum:
         return i18nc("QuizPlay bias representation",
-                     "Tracks whose album name start\n with a character the last track ended with");
+                     "Tracks whose album name start\n"
+                     "with a character the last track ended with");
     }
     return QString();
 }
