@@ -31,8 +31,7 @@
 
 class QDBusArgument;
 QDBusArgument& operator<<( QDBusArgument &argument,
-                           const DeviceInfo &device );
+                           const DeviceInfo0_1_0 &device );
 const QDBusArgument& operator>>( const QDBusArgument &argument,
-                                 DeviceInfo &device );
-
+                                 DeviceInfo0_1_0 &device );
 #endif

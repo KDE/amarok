@@ -17,6 +17,8 @@
 #ifndef UPNPCOLLECTIONFACTORY_H
 #define UPNPCOLLECTIONFACTORY_H
 
+#include <QDBusConnection>
+
 #include <solid/device.h>
 
 #include "core/collections/Collection.h"
@@ -52,6 +54,10 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
     void slotSearchCapabilitiesDone( KJob * );
 
   private:
+    bool cagibi0_1_0Init( QDBusConnection bus );
+    bool cagibi0_2_0Init( QDBusConnection bus );
+    bool cagibi0_1_0DeviceDetails( const QString &udn, DeviceInfo *info );
+    bool cagibi0_2_0DeviceDetails( const QString &udn, DeviceInfo *info );
     QHash<QString, UpnpCollectionBase*> m_devices;
     QHash<QString, QStringList> m_capabilities;
 

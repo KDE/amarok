@@ -40,8 +40,10 @@ UpnpCollectionFactory::UpnpCollectionFactory( QObject *parent, const QVariantLis
     : Collections::CollectionFactory( parent, args )
 {
     m_info = KPluginInfo( "amarok_collection-upnpcollection.desktop", "services" );
+    qRegisterMetaType<DeviceInfo>();
     qDBusRegisterMetaType< QHash<QString, QString> >();
-    qDBusRegisterMetaType<DeviceInfo>();
+    qDBusRegisterMetaType<DeviceInfo0_1_0>();
+    qDBusRegisterMetaType<DeviceDetailsMap>();
 }
 
 UpnpCollectionFactory::~UpnpCollectionFactory()
@@ -52,8 +54,18 @@ void UpnpCollectionFactory::init()
 {
     DEBUG_BLOCK
 
-    QDBusConnection bus = QDBusConnection::sessionBus();
+    if(    !cagibi0_1_0Init( QDBusConnection::sessionBus() )
+        && !cagibi0_1_0Init( QDBusConnection::systemBus() )
+        && !cagibi0_2_0Init( QDBusConnection::sessionBus() )
+        && !cagibi0_2_0Init( QDBusConnection::systemBus() ) )
+    {
+        // we had problems with Cagibi
+        return;
+    }
+}
 
+bool UpnpCollectionFactory::cagibi0_1_0Init( QDBusConnection bus )
+{
     bus.connect( "org.kde.Cagibi",
                  "/org/kde/Cagibi",
                  "org.kde.Cagibi",
@@ -68,17 +80,20 @@ void UpnpCollectionFactory::init()
                  this,
                  SLOT( slotDeviceRemoved( const DeviceTypeMap & ) ) );
 
-    m_iface = new QDBusInterface("org.kde.Cagibi",
-                                               "/org/kde/Cagibi",
-                                               "org.kde.Cagibi",
-                                               bus,
-                                               this );
+    m_iface = new QDBusInterface( "org.kde.Cagibi",
+                                  "/org/kde/Cagibi",
+                                  "org.kde.Cagibi",
+                                  bus,
+                                  this );
+
     QDBusReply<DeviceTypeMap> reply = m_iface->call( "allDevices" );
-    if( !reply.isValid() ) {
+    if( !reply.isValid() )
+    {
         debug() << "ERROR" << reply.error().message();
-        //Q_ASSERT(false);
+        return false;
     }
-    else {
+    else
+    {
         slotDeviceAdded( reply.value() );
     }
 
@@ -91,6 +106,53 @@ void UpnpCollectionFactory::init()
     //}
 
     m_initialized = true;
+    return true;
+}
+
+bool UpnpCollectionFactory::cagibi0_2_0Init( QDBusConnection bus )
+{
+    bus.connect( "org.kde.Cagibi",
+                 "/org/kde/Cagibi/DeviceList",
+                 "org.kde.Cagibi.DeviceList",
+                 "devicesAdded",
+                 this,
+                 SLOT( slotDeviceAdded( const DeviceTypeMap & ) ) );
+
+    bus.connect( "org.kde.Cagibi",
+                 "/org/kde/Cagibi/DeviceList",
+                 "org.kde.Cagibi.DeviceList",
+                 "devicesRemoved",
+                 this,
+                 SLOT( slotDeviceRemoved( const DeviceTypeMap & ) ) );
+
+    m_iface = new QDBusInterface( "org.kde.Cagibi",
+                                  "/org/kde/Cagibi/DeviceList",
+                                  "org.kde.Cagibi.DeviceList",
+                                  bus,
+                                  this );
+
+    QDBusReply<DeviceTypeMap> reply = m_iface->call( "allDevices" );
+    if( !reply.isValid() )
+    {
+        debug() << "ERROR" << reply.error().message();
+        Q_ASSERT(false);
+        return false;
+    }
+    else
+    {
+        slotDeviceAdded( reply.value() );
+    }
+
+    //Solid::DeviceNotifier *notifier = Solid::DeviceNotifier::instance();
+    //connect( notifier, SIGNAL(deviceAdded(QString)), this, SLOT(slotDeviceAdded(QString)) );
+    //connect( notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(slotDeviceRemoved(QString)) );
+
+    //foreach( Solid::Device device, Solid::Device::allDevices() ) {
+    //    slotDeviceAdded(device.udi());
+    //}
+
+    m_initialized = true;
+    return true;
 }
 
 void UpnpCollectionFactory::slotDeviceAdded( const DeviceTypeMap &map )
@@ -117,20 +179,46 @@ void UpnpCollectionFactory::slotDeviceRemoved( const DeviceTypeMap &map )
 void UpnpCollectionFactory::createCollection( const QString &udn )
 {
     debug() << "|||| Creating collection " << udn;
-    QDBusReply<DeviceInfo> reply = m_iface->call( "deviceDetails", udn );
+    DeviceInfo info;
+    if(    !cagibi0_1_0DeviceDetails( udn, &info )
+        && !cagibi0_2_0DeviceDetails( udn, &info ) )
+    {
+        return;
+    }
+    debug() << "|||| Creating collection " << info.uuid();
+    KIO::ListJob *job = KIO::listDir( QString( "upnp-ms://" + info.uuid() + "/?searchcapabilities=1" ) );
+    job->setProperty( "deviceInfo", QVariant::fromValue( info ) );
+    connect( job, SIGNAL( entries( KIO::Job *, const KIO::UDSEntryList & ) ),
+            this, SLOT( slotSearchEntries( KIO::Job *, const KIO::UDSEntryList & ) ) );
+    connect( job, SIGNAL( result(KJob *) ), this, SLOT( slotSearchCapabilitiesDone( KJob* ) ) );
+}
+
+bool UpnpCollectionFactory::cagibi0_1_0DeviceDetails( const QString &udn, DeviceInfo *info )
+{
+    QDBusReply<DeviceInfo0_1_0> reply = m_iface->call( "deviceDetails", udn );
     if( !reply.isValid() ) {
         debug() << "Invalid reply from deviceDetails for" << udn << ". Skipping";
         debug() << "Error" << reply.error().message();
-        return;
+        return false;
     }
-    DeviceInfo info = reply.value();
+    *info = reply.value();
+    return true;
+}
 
-    debug() << "|||| Creating collection " << info.uuid();
-    KIO::ListJob *job = KIO::listDir( QString("upnp-ms://" + info.uuid() + "/?searchcapabilities=1") );
-    job->setProperty( "deviceInfo", QVariant::fromValue( info ) );
-    connect( job, SIGNAL(entries( KIO::Job *, const KIO::UDSEntryList & )),
-            this, SLOT(slotSearchEntries( KIO::Job *, const KIO::UDSEntryList & )) );
-    connect( job, SIGNAL(result(KJob *)), this, SLOT(slotSearchCapabilitiesDone(KJob*)) );
+bool UpnpCollectionFactory::cagibi0_2_0DeviceDetails( const QString &udn, DeviceInfo *info )
+{
+    QDBusReply<DeviceDetailsMap> reply = m_iface->call( "deviceDetails", udn );
+    if( !reply.isValid() ) {
+        debug() << "Invalid reply from deviceDetails for" << udn << ". Skipping";
+        debug() << "Error" << reply.error().message();
+        return false;
+    }
+
+    foreach( QString k, reply.value().keys() )
+        debug() << k << reply.value()[k];
+    DeviceInfo0_2_0 v( reply.value() );
+    *info = v;
+    return true;
 }
 
 void UpnpCollectionFactory::slotSearchEntries( KIO::Job *job, const KIO::UDSEntryList &list )

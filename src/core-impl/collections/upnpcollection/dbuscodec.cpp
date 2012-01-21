@@ -26,7 +26,7 @@
 #include <QtDBus/QDBusArgument>
 #include <QtCore/QUrl>
 
-QDBusArgument& operator<<( QDBusArgument& argument, const DeviceInfo& device )
+QDBusArgument& operator<<( QDBusArgument& argument, const DeviceInfo0_1_0& device )
 {
     argument.beginStructure();
 
@@ -57,7 +57,7 @@ QDBusArgument& operator<<( QDBusArgument& argument, const DeviceInfo& device )
 }
 
 const QDBusArgument& operator>>( const QDBusArgument& argument,
-                                 DeviceInfo& device )
+                                 DeviceInfo0_1_0& device )
 {
     argument.beginStructure();
 

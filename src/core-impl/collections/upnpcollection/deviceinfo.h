@@ -27,11 +27,16 @@
 #include <QDBusArgument>
 
 class DeviceInfo;
-extern const QDBusArgument& operator>>( const QDBusArgument& argument, DeviceInfo& device );
+
+class DeviceInfo0_1_0;
+class DeviceInfo0_2_0;
+
+extern const QDBusArgument& operator>>( const QDBusArgument& argument, DeviceInfo0_1_0& device );
+
+typedef QMap<QString, QString> DeviceDetailsMap;
 
 class DeviceInfo
 {
-    friend const QDBusArgument& operator>>( const QDBusArgument& argument, DeviceInfo& device );
 public:
     const QString& type() const;
     const QString& friendlyName() const;
@@ -51,7 +56,7 @@ public:
 
     bool isValid() const;
 
-private:
+protected:
     QString m_type;
     QString m_friendlyName;
     QString m_manufacturerName;
@@ -136,8 +141,38 @@ inline const QString& DeviceInfo::parentDeviceUdn() const
 
 inline QString DeviceInfo::uuid() const
 {
-  return QString(udn()).replace("uuid:", "");
+  return QString( udn() ).replace( "uuid:", "" );
 }
 
+class DeviceInfo0_1_0 : public DeviceInfo
+{
+friend const QDBusArgument& operator>>( const QDBusArgument& argument, DeviceInfo0_1_0& device );
+};
+
+class DeviceInfo0_2_0 : public DeviceInfo
+{
+public:
+    DeviceInfo0_2_0( const DeviceDetailsMap &map )
+    {
+        m_type = map.value( "deviceType" );
+        m_friendlyName = map.value( "friendlyName" );
+        m_manufacturerName = map.value( "manufacturer" );
+        m_modelDescription = map.value( "modelDescription" );
+        m_modelName = map.value( "modelName" );
+        m_modelNumber = map.value( "modelNumber" );
+        m_serialNumber = map.value( "serialNumber" );
+        m_udn = map.value( "UDN" );
+        m_presentationUrl = map.value( "presentationURL" );
+
+        m_host = map.value( "ipAddress" );
+        m_port = map.value( "ipPortNumber" ).toUInt();
+
+        m_parentDeviceUdn = map.value( "parentDeviceUDN" );
+
+    }
+};
+
 Q_DECLARE_METATYPE( DeviceInfo )
+Q_DECLARE_METATYPE( DeviceInfo0_1_0 )
+Q_DECLARE_METATYPE( DeviceDetailsMap )
 #endif
