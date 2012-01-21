@@ -66,7 +66,10 @@ void LyricsEngine::onTrackMetadataChanged( Meta::TrackPtr track )
     DEBUG_BLOCK
 
     // Only update if the lyrics have changed.
-    if( m_prevLyrics.text != track->cachedLyrics() )
+    QString artist = track->artist() ? track->artist()->name() : QString();
+    if( m_prevLyrics.artist != artist ||
+        m_prevLyrics.title != track->name() ||
+        m_prevLyrics.text != track->cachedLyrics() )
         update();
 }
 
