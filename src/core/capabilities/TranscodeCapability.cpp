@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Téo Mrnjavac <teo@kde.org>                                        *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,46 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TranscodingNullFormat.h"
+#include "TranscodeCapability.h"
 
-#include <KLocale>
+using namespace Capabilities;
 
-using namespace Transcoding;
-
-NullFormat::NullFormat( const Encoder &encoder )
+TranscodeCapability::~TranscodeCapability()
 {
-    m_encoder = encoder;
-    m_fileExtension = "";
-}
-
-QString
-NullFormat::prettyName() const
-{
-    return QString();
-}
-
-QString
-NullFormat::description() const
-{
-    return QString();
-}
-
-KIcon
-NullFormat::icon() const
-{
-    return KIcon();
-}
-
-QStringList
-NullFormat::ffmpegParameters( const Configuration &configuration ) const
-{
-    Q_UNUSED( configuration )
-    return QStringList() << "-acodec" << "copy";
-}
-
-bool
-NullFormat::verifyAvailability( const QString &ffmpegOutput ) const
-{
-    Q_UNUSED( ffmpegOutput )
-    return false;
+    // nothing to do
 }

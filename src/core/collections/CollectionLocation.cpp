@@ -18,13 +18,16 @@
 
 #define DEBUG_PREFIX "CollectionLocation"
 
-#include "core/collections/CollectionLocation.h"
+#include "CollectionLocation.h"
 
+#include "core/capabilities/TranscodeCapability.h"
 #include "core/collections/Collection.h"
 #include "core/collections/CollectionLocationDelegate.h"
+#include "core/collections/QueryMaker.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core/collections/QueryMaker.h"
+#include "core/transcoding/TranscodingConfiguration.h"
+#include "core/transcoding/TranscodingController.h"
 
 #include <QTimer>
 
@@ -39,7 +42,7 @@ CollectionLocation::CollectionLocation()
     , m_removeSources( false )
     , m_isRemoveAction( false )
     , m_noRemoveConfirmation( false )
-    , m_transcodingConfiguration( Transcoding::Configuration() )
+    , m_transcodingConfiguration( Transcoding::JUST_COPY )
 {
     //nothing to do
 }
@@ -53,7 +56,7 @@ CollectionLocation::CollectionLocation( Collections::Collection *parentCollectio
     , m_removeSources( false )
     , m_isRemoveAction( false )
     , m_noRemoveConfirmation( false )
-    , m_transcodingConfiguration( Transcoding::Configuration() )
+    , m_transcodingConfiguration( Transcoding::JUST_COPY )
 {
     //nothing to do
 }
@@ -94,42 +97,38 @@ CollectionLocation::isOrganizable() const
 }
 
 void
-CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination,
-                                 const Transcoding::Configuration &configuration )
+CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination )
 {
     Q_ASSERT(destination);
     Meta::TrackList list;
     list.append( track );
-    prepareCopy( list, destination, configuration );
+    prepareCopy( list, destination );
 }
 
-
 void
-CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination,
-                                 const Transcoding::Configuration &configuration )
+CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination )
 {
     if( !destination->isWritable() )
     {
-        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->notWriteable( this );
         destination->deleteLater();
         deleteLater();
         return;
     }
+
     m_destination = destination;
-    m_transcodingConfiguration = configuration;
     m_destination->setSource( this );
     startWorkflow( tracks, false );
 }
 
 void
-CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination,
-                                 const Transcoding::Configuration &configuration )
+CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination )
 {
     DEBUG_BLOCK
     if( !destination->isWritable() )
     {
-        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->notWriteable( this );
         destination->deleteLater();
         qm->deleteLater();
@@ -137,7 +136,6 @@ CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation
         return;
     }
     m_destination = destination;
-    m_transcodingConfiguration = configuration;
     m_removeSources = false;
     m_isRemoveAction = false;
     connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( resultReady( Meta::TrackList ) ) );
@@ -160,14 +158,15 @@ CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocati
     DEBUG_BLOCK
     if( !destination->isWritable() )
     {
-        Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
         delegate->notWriteable( this );
         destination->deleteLater();
         deleteLater();
         return;
     }
+
     m_destination = destination;
-    destination->setSource( this );
+    m_destination->setSource( this );
     startWorkflow( tracks, true );
 }
 
@@ -264,7 +263,6 @@ CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
             debug() << "adding url " << track->playableUrl();
         }
     }
-    debug() << "Format is " << m_transcodingConfiguration.encoder();
 
     slotGetKIOCopyableUrlsDone( urls );
 }
@@ -294,7 +292,52 @@ CollectionLocation::showSourceDialog( const Meta::TrackList &tracks, bool remove
 {
     Q_UNUSED( tracks )
     Q_UNUSED( removeSources )
-    slotShowSourceDialogDone();
+
+    m_transcodingConfiguration = getDestinationTranscodingConfig();
+    if( m_transcodingConfiguration.isValid() )
+        slotShowSourceDialogDone();
+    else
+        abort();
+}
+
+Transcoding::Configuration
+CollectionLocation::getDestinationTranscodingConfig()
+{
+    Transcoding::Configuration configuration( Transcoding::JUST_COPY );
+    Collection *destCollection = destination() ? destination()->collection() : 0;
+    if( !destCollection )
+        return configuration;
+    if( !destCollection->hasCapabilityInterface( Capabilities::Capability::Transcode ) )
+        return configuration;
+    QScopedPointer<Capabilities::TranscodeCapability> tc(
+        destCollection->create<Capabilities::TranscodeCapability>() );
+    if( !tc )
+        return configuration;
+    QSet<Transcoding::Encoder> availableEncoders = Amarok::Components::transcodingController()
+                                                   ->availableEncoders();
+    if( availableEncoders.isEmpty() )
+    {
+        debug() << "FFmpeg is not installed or does not support any of the required formats.";
+        return configuration;
+    }
+
+    Transcoding::Configuration saved = tc->savedConfiguration();
+    if( saved.isValid() && ( saved.isJustCopy() || availableEncoders.contains( saved.encoder() ) ) )
+        return saved;
+    // saved configuration was not available or was invalid, ask user
+
+    CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+    bool saveConfiguration = false;
+    CollectionLocationDelegate::OperationType operation = CollectionLocationDelegate::Copy;
+    if( isGoingToRemoveSources() )
+        operation = CollectionLocationDelegate::Move;
+    if( collection() && collection() == destination()->collection() )
+        operation = CollectionLocationDelegate::Move; // organizing
+    configuration = delegate->transcode( tc->playableFileTypes(), &saveConfiguration,
+                                         operation, destCollection->prettyName() );
+    if( configuration.isValid() && saveConfiguration )
+        tc->setSavedConfiguration( configuration );
+    return configuration; // may be invalid, it means user has hit cancel
 }
 
 void
@@ -508,7 +551,7 @@ CollectionLocation::queryDone()
     else
     {
         debug() << "we were about to copy something, lets proceed";
-        prepareCopy( m_sourceTracks, m_destination, m_transcodingConfiguration );
+        prepareCopy( m_sourceTracks, m_destination );
     }
 }
 

@@ -21,6 +21,8 @@
 #include "TranscodingProperty.h"
 #include "shared/amarok_export.h"
 
+#include <KConfigGroup>
+
 #include <QMap>
 #include <QVariant>
 
@@ -35,17 +37,52 @@ namespace Transcoding
 class AMAROK_CORE_EXPORT Configuration
 {
 public:
-    explicit Configuration( Encoder encoder = NULL_CODEC );
-
-    void addProperty( QByteArray name, QVariant value );
+    explicit Configuration( Encoder encoder );
 
     Encoder encoder() const { return m_encoder; }
 
+    /**
+     * Return true if this transcoding configuration is valid. JUST_COPY encoder is
+     * treated as valid.
+     */
+    bool isValid() const { return m_encoder != INVALID; }
+
+    /**
+     * Return true if this configuration represents plain copying of files. Bost INVALID
+     * and JUST_COPY encoders are considered plain copying.
+     */
+    bool isJustCopy() const { return m_encoder == INVALID || m_encoder == JUST_COPY; }
+
     QVariant property( QByteArray name ) const;
+    void addProperty( QByteArray name, QVariant value );
+
+    /**
+     * Re-create transcoding configuration from serialized form stored in a KConfigGroup.
+     * Return invalid configuration if parsing failed or was incomplete.
+     */
+    static Configuration fromConfigGroup( const KConfigGroup &serialized );
+
+    /**
+     * Serialize this transcoding configuration to a KConfigGroup. All existing keys in
+     * the group are erased or replaced.
+     */
+    void saveToConfigGroup( KConfigGroup &group ) const;
+
+    /**
+     * Return user-presentable representation of this configuration's codec and its
+     * parameters.
+     */
+    QString prettyName() const;
 
 private:
+    /**
+     * Get an Encoder to its identifier map
+     */
+    static const QMap<Encoder, QString> &encoderNames();
+
+    static QMap<Encoder, QString> s_encoderNames;
     Encoder m_encoder;
-    QMap< QByteArray, QVariant > m_values;
+    QMap<QByteArray, QVariant> m_values;
 };
 
 }

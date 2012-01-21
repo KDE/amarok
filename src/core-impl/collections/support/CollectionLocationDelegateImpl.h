@@ -38,6 +38,9 @@ public:
     virtual void errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const;
     virtual void notWriteable(CollectionLocation* loc) const;
     virtual bool deleteEmptyDirs(CollectionLocation* loc) const;
+    virtual Transcoding::Configuration transcode( const QStringList &playableFileTypes,
+                                                  bool *remember, OperationType operation,
+                                                  const QString &destCollectionName ) const;
 
 private:
     QStringList trackList( const Meta::TrackList &tracks ) const;

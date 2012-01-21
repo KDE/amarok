@@ -64,6 +64,7 @@ namespace Capabilities
                         , FindInSource = 22
                         , CollectionImport = 23
                         , CollectionScan = 24
+                        , Transcode = 25
                       };
 
             virtual ~Capability();

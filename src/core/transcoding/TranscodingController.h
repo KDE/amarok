@@ -25,7 +25,9 @@
 #include <KProcess>
 
 #include <QList>
+#include <QMap>
 #include <QObject>
+#include <QSet>
 
 
 namespace Transcoding
@@ -42,20 +44,30 @@ public:
     Controller( QObject *parent = 0 );
     ~Controller();
 
-    const QList< Format * > & availableFormats() const { return m_availableFormats; }
-    const QList< Format * > & allFormats() const { return m_formats; }
-    const Format * format( Encoder encoder ) const;
+    /**
+     * Return set of all encoders, available or not.
+     */
+    QSet<Encoder> allEncoders() const { return m_formats.uniqueKeys().toSet(); }
+
+    /**
+     * Return a set of all available encoders. You can use @see format() to get all
+     * available formats.
+     */
+    QSet<Encoder> availableEncoders() const { return m_availableEncoders; }
+
+    /**
+     * Return pointer to format that encodes using @param encoder. You must ensure that
+     * @param encoder is in @see allEncoders(). Always returns non-null pointer which
+     * remains owned by Transcoding::Controller.
+     */
+    Format *format( Encoder encoder ) const;
 
 private slots:
     void onAvailabilityVerified( int exitCode, QProcess::ExitStatus exitStatus );
 
 private:
-    const QList< Format * > m_formats;
-    QList< Format * > m_availableFormats;   /* Unfortunately here I can't use QList< Format >
-                                               instead of QList< Format * > because apparently
-                                               QList can't maintain a structure of polymorphic
-                                               stuff. This is an ugly workaround and it sucks.
-                                                    -- Teo */
+    QMap<Encoder, Format *> m_formats; // due to Format being polymorphic, we must store pointers
+    QSet<Encoder> m_availableEncoders;
 };
 
 } //namespace Transcoding

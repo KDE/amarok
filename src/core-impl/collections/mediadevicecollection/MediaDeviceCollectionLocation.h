@@ -47,7 +47,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public Collec
 
         /// Copies these tracks to the Collection using the Handler
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
-                                           const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+                                           const Transcoding::Configuration &configuration );
 
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 

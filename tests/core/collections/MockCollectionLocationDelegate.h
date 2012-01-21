@@ -21,6 +21,9 @@ public:
     MOCK_CONST_METHOD2( errorDeleting, void( CollectionLocation *loc, const Meta::TrackList &tracks ) );
     MOCK_CONST_METHOD1( notWriteable, void( CollectionLocation *loc ) );
     MOCK_CONST_METHOD1( deleteEmptyDirs, bool( CollectionLocation *loc ) );
+    MOCK_CONST_METHOD4( transcode, Transcoding::Configuration(
+        const QStringList &playableFileTypes, bool *remember, OperationType operation,
+        const QString &destCollectionName ) );
 };
 
 } //namespace Collections

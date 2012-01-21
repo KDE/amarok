@@ -21,6 +21,7 @@
 #include "core/interfaces/Logger.h"
 #include "core/collections/CollectionLocation.h"
 #include "core/support/Components.h"
+#include "transcoding/TranscodingAssistantDialog.h"
 
 #include <KLocale>
 #include <KMessageBox>
@@ -96,6 +97,22 @@ CollectionLocationDelegateImpl::deleteEmptyDirs( CollectionLocation *loc ) const
     int result = KMessageBox::questionYesNo( 0, text, caption, KStandardGuiItem::yes(),
         KStandardGuiItem::no(), QString( "Delete empty dirs from " + loc->prettyLocation() ) );
     return result == KMessageBox::Yes;
+}
+
+Transcoding::Configuration
+CollectionLocationDelegateImpl::transcode( const QStringList &playableFileTypes,
+                                           bool *remember, OperationType operation,
+                                           const QString &destCollectionName ) const
+{
+    Transcoding::AssistantDialog dialog( playableFileTypes, remember != 0, operation,
+                                         destCollectionName );
+    if( dialog.exec() )
+    {
+        if( remember )
+            *remember = dialog.shouldSave();
+        return dialog.configuration();
+    }
+    return Transcoding::Configuration( Transcoding::INVALID );
 }
 
 QStringList

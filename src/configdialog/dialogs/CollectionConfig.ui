@@ -21,8 +21,41 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QGroupBox" name="importingBox">
+     <property name="title">
+      <string>Importing Music</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="transcodeLabel">
+        <property name="toolTip">
+         <string>Whether Amarok should transcode tracks when they are copied or moved to Local Collection.</string>
+        </property>
+        <property name="text">
+         <string>Transcode tracks:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="Transcoding::SelectConfigWidget" name="transcodingConfig">
+        <property name="toolTip">
+         <string>Whether Amarok should transcode tracks when they are copied or moved to Local Collection.</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Transcoding::SelectConfigWidget</class>
+   <extends>QComboBox</extends>
+   <header>transcoding/TranscodingSelectConfigWidget.h</header>
+  </customwidget>
+ </customwidgets>
  <includes>
   <include location="local">klineedit.h</include>
   <include location="local">kpushbutton.h</include>

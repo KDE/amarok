@@ -20,6 +20,7 @@
 
 #include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
+#include "core/transcoding/TranscodingConfiguration.h"
 
 namespace Collections {
 
@@ -28,6 +29,11 @@ class CollectionLocation;
 class AMAROK_CORE_EXPORT CollectionLocationDelegate
 {
 public:
+    enum OperationType {
+        Copy,
+        Move
+    };
+
     CollectionLocationDelegate() {};
     virtual ~ CollectionLocationDelegate() {};
 
@@ -37,6 +43,22 @@ public:
     virtual void errorDeleting( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
     virtual void notWriteable( CollectionLocation *loc ) const = 0;
     virtual bool deleteEmptyDirs( CollectionLocation *loc ) const = 0;
+
+    /**
+     * Displays a dialog requesting what transcoding configuration to use.
+     *
+     * @param playableFileTypes list of filetypes that are playable (empty if everyhing playable)
+     * @param remember is set to true if user checks this transcoding config should be
+     * remembered per target collection. If null, such option is disabled in the UI.
+     * @param operation whether this is copying or moving
+     * @param destCollectionName name of the destination collection
+     *
+     * @return Transcoding configuration user requested or invalid configuration if user
+     * has hit Cancel or closed the dialog.
+     */
+    virtual Transcoding::Configuration transcode( const QStringList &playableFileTypes,
+                                                  bool *remember, OperationType operation,
+                                                  const QString &destCollectionName ) const = 0;
 };
 
 } //namespace Collections

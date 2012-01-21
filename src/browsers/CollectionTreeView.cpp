@@ -44,7 +44,6 @@
 #include "core/collections/QueryMaker.h"
 #include "SvgHandler.h"
 #include "TagDialog.h"
-#include "transcoding/TranscodingAssistantDialog.h"
 
 #include <KAction>
 #include <KGlobalSettings>
@@ -750,7 +749,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 
 void
 CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination,
-                                bool removeSources, Transcoding::Configuration configuration ) const
+                                bool removeSources ) const
 {
     DEBUG_BLOCK
     if( !destination || !destination->isWritable() )
@@ -798,7 +797,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
     else
     {
         debug() << "starting source->prepareCopy";
-        source->prepareCopy( qm, dest, configuration );
+        source->prepareCopy( qm, dest );
     }
 }
 
@@ -1175,40 +1174,18 @@ void CollectionTreeView::slotEditTracks()
 
 void CollectionTreeView::slotCopyTracks()
 {
-    if( sender() )
-    {
-        if( QAction * action = dynamic_cast<QAction *>( sender() ) )
-        {
-            Transcoding::Configuration configuration = Transcoding::Configuration();
-
-            Collections::Collection *destCollection = m_currentCopyDestination[ action ];
-
-            if( destCollection->uidUrlProtocol() == "amarok-sqltrackuid" ) //we can only transcode to a SqlCollection for now
-            {
-                if( !Amarok::Components::transcodingController()->availableFormats().isEmpty() )
-                {
-                    Transcoding::AssistantDialog dialog( this );
-                    if( dialog.exec() )
-                        configuration = dialog.configuration();
-                }
-                else
-                    debug() << "FFmpeg is not installed or does not support any of the required formats.";
-            }
-            else
-                debug() << "The destination collection does not support transcoding.";
-
-            copyTracks( m_currentItems, destCollection, false, configuration );
-        }
-    }
+    if( !sender() )
+        return;
+    if( QAction *action = dynamic_cast<QAction *>( sender() ) )
+        copyTracks( m_currentItems, m_currentCopyDestination[ action ], false );
 }
 
 void CollectionTreeView::slotMoveTracks()
 {
-    if( sender() )
-    {
-        if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
-            copyTracks( m_currentItems, m_currentMoveDestination[ action ], true );
-    }
+    if( !sender() )
+        return;
+    if ( QAction *action = dynamic_cast<QAction *>( sender() ) )
+        copyTracks( m_currentItems, m_currentMoveDestination[ action ], true );
 }
 
 void

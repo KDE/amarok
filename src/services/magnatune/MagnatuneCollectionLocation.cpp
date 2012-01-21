@@ -33,11 +33,8 @@ MagnatuneCollectionLocation::~MagnatuneCollectionLocation()
 {
 }
 
-void MagnatuneCollectionLocation::showSourceDialog( const Meta::TrackList & tracks, bool removeSources )
+void MagnatuneCollectionLocation::showSourceDialog( const Meta::TrackList &tracks, bool removeSources )
 {
-    Q_UNUSED( tracks );
-    Q_UNUSED( removeSources );
-
     KDialog dialog;
     dialog.setCaption( i18n( "Preview Tracks" ) );
     dialog.setButtons( KDialog::Ok | KDialog::Cancel );
@@ -54,6 +51,5 @@ void MagnatuneCollectionLocation::showSourceDialog( const Meta::TrackList & trac
     if ( dialog.result() == QDialog::Rejected )
         abort();
 
-    slotShowSourceDialogDone();
-    return;
+    CollectionLocation::showSourceDialog( tracks, removeSources ); // to get transcoding dialog
 }

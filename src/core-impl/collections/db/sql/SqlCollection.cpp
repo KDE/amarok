@@ -23,6 +23,7 @@
 #include "CapabilityDelegateImpl.h"
 #include "DatabaseUpdater.h"
 #include "core/support/Debug.h"
+#include "core/capabilities/TranscodeCapability.h"
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/db/ScanManager.h"
 #include "MountPointManager.h"
@@ -65,10 +66,10 @@ public:
     virtual void setTracks( const Meta::TrackList &tracks ) { m_tracks = tracks; }
     virtual void setFolders( const QStringList &folders ) { m_folders = folders; }
     virtual void setIsOrganizing( bool organizing ) { m_organizing = organizing; }
-    virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration
-                                                  = Transcoding::Configuration() )
+    virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration )
     { m_targetFileExtension =
       Amarok::Components::transcodingController()->format( configuration.encoder() )->fileExtension(); }
+    virtual void setCaption( const QString &caption ) { m_caption = caption; }
 
     virtual void show()
     {
@@ -78,7 +79,7 @@ public:
                     The::mainWindow(), //parent
                     "", //name is unused
                     true, //modal
-                    i18n( "Organize Files" ) //caption
+                    m_caption //caption
                 );
 
         connect( m_dialog, SIGNAL( accepted() ), SIGNAL( accepted() ) );
@@ -95,6 +96,7 @@ private:
     OrganizeCollectionDialog *m_dialog;
     bool m_organizing;
     QString m_targetFileExtension;
+    QString m_caption;
 };
 
 
@@ -480,19 +482,34 @@ SqlCollection::slotDeviceRemoved( int id )
 bool
 SqlCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return ( type == Capabilities::Capability::CollectionScan && m_scanManager ) ||
-        ( type == Capabilities::Capability::CollectionImport && m_scanManager );
+    switch( type )
+    {
+        case Capabilities::Capability::CollectionImport:
+        case Capabilities::Capability::CollectionScan:
+            return (bool) m_scanManager;
+        case Capabilities::Capability::Transcode:
+            return true;
+        default:
+            break;
+    }
+    return false;
 }
 
 Capabilities::Capability*
 SqlCollection::createCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( type == Capabilities::Capability::CollectionScan && m_scanManager )
-        return new SqlCollectionScanCapability( m_scanManager );
-    else if( type == Capabilities::Capability::CollectionImport && m_scanManager )
-        return new SqlCollectionImportCapability( m_scanManager );
-    else
-        return 0;
+    switch( type )
+    {
+        case Capabilities::Capability::CollectionImport:
+            return m_scanManager ? new SqlCollectionImportCapability( m_scanManager ) : 0;
+        case Capabilities::Capability::CollectionScan:
+            return m_scanManager ? new SqlCollectionScanCapability( m_scanManager ) : 0;
+        case Capabilities::Capability::Transcode:
+            return new SqlCollectionTranscodeCapability();
+        default:
+            break;
+    }
+    return 0;
 }
 
 void
@@ -586,5 +603,24 @@ SqlCollectionImportCapability::import( QIODevice *input, QObject *listener )
     }
 }
 
-#include "SqlCollection.moc"
+SqlCollectionTranscodeCapability::~SqlCollectionTranscodeCapability()
+{
+    // nothing to do
+}
 
+Transcoding::Configuration
+SqlCollectionTranscodeCapability::savedConfiguration()
+{
+    KConfigGroup transcodeGroup = Amarok::config( SQL_TRANSCODING_GROUP_NAME );
+    return Transcoding::Configuration::fromConfigGroup( transcodeGroup );
+}
+
+void
+SqlCollectionTranscodeCapability::setSavedConfiguration( const Transcoding::Configuration &configuration )
+{
+    KConfigGroup transcodeGroup = Amarok::config( SQL_TRANSCODING_GROUP_NAME );
+    configuration.saveToConfigGroup( transcodeGroup );
+    transcodeGroup.sync();
+}
+
+#include "SqlCollection.moc"

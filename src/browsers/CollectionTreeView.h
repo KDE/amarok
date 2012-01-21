@@ -21,7 +21,6 @@
 
 #include "core/meta/Meta.h"
 #include "playlist/PlaylistController.h"
-#include "core/transcoding/TranscodingController.h"
 
 #include <QModelIndex>
 #include <QMutex>
@@ -99,7 +98,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
         void copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination,
-                         bool removeSources, Transcoding::Configuration configuration = Transcoding::Configuration() ) const;
+                         bool removeSources) const;
         void removeTracks( const QSet<CollectionTreeItem*> &items, bool useTrash ) const;
 
         // creates different actions from the different objects.
