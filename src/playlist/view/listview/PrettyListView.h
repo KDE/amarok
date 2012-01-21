@@ -132,6 +132,10 @@ private:
     bool                  m_firstScrollToActiveTrack;
     quint64               m_rowsInsertedScrollItem;
 
+    QString               m_searchTerm;
+    int                   m_fields;
+    bool                  m_filter;
+
     QTimer       *m_proxyUpdateTimer;
     PopupDropper *m_pd;
 

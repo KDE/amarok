@@ -769,26 +769,18 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
     if ( ( The::playlist()->currentSearchFields() != fields ) || ( The::playlist()->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
 
-    int row = The::playlist()->find( searchTerm, fields );
+    m_searchTerm = searchTerm;
+    m_fields = fields;
+    m_filter = filter;
+
+    int row = The::playlist()->find( m_searchTerm, m_fields );
     if( row != -1 )
     {
         //select this track
         QModelIndex index = model()->index( row, 0 );
         QItemSelection selItems( index, index );
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
-
-        QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
-        setCurrentIndex( foundIndex );
-        if ( !filter )
-        {
-            if ( foundIndex.isValid() )
-                scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
-        }
-
-        emit( found() );
     }
-    else
-        emit( notFound() );
 
     //instead of kicking the proxy right away, start a small timeout.
     //this stops us from updating it for each letter of a long search term,
@@ -909,6 +901,23 @@ void Playlist::PrettyListView::updateProxyTimeout()
 {
     DEBUG_BLOCK
     The::playlist()->filterUpdated();
+
+    int row = The::playlist()->find( m_searchTerm, m_fields );
+    if( row != -1 )
+    {
+        QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+        setCurrentIndex( foundIndex );
+
+        if ( !m_filter )
+        {
+            if ( foundIndex.isValid() )
+                scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
+        }
+
+        emit( found() );
+    }
+    else
+        emit( notFound() );
 }
 
 void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
