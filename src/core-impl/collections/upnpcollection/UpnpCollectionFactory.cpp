@@ -135,7 +135,7 @@ bool UpnpCollectionFactory::cagibi0_2_0Init( QDBusConnection bus )
     if( !reply.isValid() )
     {
         debug() << "ERROR" << reply.error().message();
-        Q_ASSERT(false);
+        debug() << "Maybe cagibi is not installed.";
         return false;
     }
     else
