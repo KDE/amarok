@@ -16,8 +16,8 @@
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
       </authorgroup>
 <legalnotice>&FDLNotice;</legalnotice>
-<date>2011-09-21</date>
-      <releaseinfo>2.4.1</releaseinfo>
+<date>2012-01-19</date>
+      <releaseinfo>2.5.0</releaseinfo>
 <abstract>
 <para>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including &Linux;, &MacOS; and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.4.</para>
       </abstract>
@@ -33,7 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2011-11-24T13:28:14Z</timestamp>-->
+<!--userbase <timestamp>2012-01-19T19:28:52Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -137,7 +137,22 @@
 </sect3>
 </sect2>
 <sect2 id="first-time"><title>First Time</title> 
-<para>The first time you use &amarok;, a First Start dialog box will come up asking you to specify where your music is located.  If you have a music directory already <ulink url="help:/kcontrol/paths">configured in your system</ulink>, &amarok; should detect it and ask you to use it:
+<para>The first time you use &amarok;, a dialog box will come up asking you to specify your locale:
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok_locale_selection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Next, a First Start dialog box will come up asking you to specify where your music is located.  If you have a music directory already <ulink url="help:/kcontrol/paths">configured in your system</ulink>, &amarok; should detect it and ask you to use it:
 </para>
 <para>
 <screenshot>
@@ -226,10 +241,10 @@
       <imagedata fileref="amaroknew2-4.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Amarok 2.4, newly installed</phrase>
+      <phrase>Amarok 2.5, newly installed</phrase>
     </textobject>
     <caption>
-      <para>Amarok 2.4, newly installed</para>
+      <para>Amarok 2.5, newly installed</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -270,10 +285,10 @@
       <imagedata fileref="amarok2-4-1configuredialogcollection.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Configure Collection Dialog, as of version 2.4.1</phrase>
+      <phrase>Configure Collection Dialog, as of version 2.5</phrase>
     </textobject>
     <caption>
-      <para>Configure Collection Dialog, as of version 2.4.1</para>
+      <para>Configure Collection Dialog, as of version 2.5</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -411,7 +426,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="hi32-action-collection-amarok.png" format="PNG"/>
+      <imagedata fileref="action-collection-amarok48.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -557,18 +572,7 @@
 </para>
 </sect3>
 <sect3 id="changing-the-order-of-tracks-and-albums"><title>Changing the order of tracks and albums</title> 
-<para>The order in which tracks are sorted in the <guilabel>Content Browser</guilabel> can be customised by using the 
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="preferences-other.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot> button at the top of the <guilabel>Media Sources</guilabel> pane:
+<para>The order in which tracks are sorted in the <guilabel>Content Browser</guilabel> can be customised by using the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-preferences-other.png" format="PNG"/> </imageobject> </inlinemediaobject> button at the top of the <guilabel>Media Sources</guilabel> pane:
 </para>
 <para>
 <screenshot>
@@ -586,18 +590,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>The sort order is indicated on the top left of the <guilabel>Media Sources</guilabel> pane, just below the <guilabel>Search</guilabel> text box. The default order is <guilabel>Artist / Year - Album</guilabel>. The display order of the <guilabel>Content Browser</guilabel> can be temporarily switched between the user-defined sort order (described above) and a <emphasis>Merged view</emphasis> in which which artists are listed alphabetically, no matter on which media the music is stored. To toggle the <emphasis>Merged view</emphasis>, click the 
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok-merge-icon.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot> icon at the top right-hand of the <guilabel>Media Sources</guilabel> pane:
+<para>The sort order is indicated on the top left of the <guilabel>Media Sources</guilabel> pane, just below the <guilabel>Search</guilabel> text box. The default order is <guilabel>Artist / Year - Album</guilabel>. The display order of the <guilabel>Content Browser</guilabel> can be temporarily switched between the user-defined sort order (described above) and a <emphasis>Merged view</emphasis> in which which artists are listed alphabetically, no matter on which media the music is stored. To toggle the <emphasis>Merged view</emphasis>, click the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-view-list-tree.png" format="PNG"/> </imageobject> </inlinemediaobject> icon at the top right-hand of the <guilabel>Media Sources</guilabel> pane:
 </para>
 <para>To search your collection, type your search term into the <guilabel>Search bar</guilabel> at the top of the <guilabel>Local Music</guilabel> section. Not only can you search by artist, album or track name, but any part. You might create a nice playlist by searching for <replaceable>winter</replaceable>, for instance, or merely find a track when you only remember one word of the title. You can also search by rating, playcount, even filetype. See <link linkend="search-in-collection">Search in Collection</link> for more details.
 </para>
@@ -926,7 +919,7 @@
 </para>
 </sect2>
 <sect2 id="customizing-the-context-pane"><title>Customizing the Context pane</title> 
-<para>At the bottom of the <emphasis>Context</emphasis> pane are three buttons for the default applets. On the right of these buttons you see <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject>, clicking on it will show <inlinemediaobject> <imageobject> <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject> </inlinemediaobject> allowing you to remove these applets. Click <inlinemediaobject> <imageobject> <imagedata fileref="Icon-list-add.png" format="PNG"/> </imageobject> </inlinemediaobject> to add more display options (see image below). Drag the labeled buttons to re-order the applets you have, and click <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject> again to save your selections.
+<para>At the bottom of the <emphasis>Context</emphasis> pane are three buttons for the default applets. On the right of these buttons you see <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject>, clicking on it will show <inlinemediaobject> <imageobject> <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject> </inlinemediaobject> allowing you to remove these applets. Click the applets to add them to the pane. Drag the labeled buttons to re-order the applets you have, and click <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject> again to save your selections.
 </para>
 <para>This makes the <emphasis>Context</emphasis> pane extremely flexible, maximizing the possibility of a custom display that fits your preferences. More <link linkend="the-context-pane">here</link>.
 </para>
@@ -935,7 +928,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok-contextadd.png" format="PNG"/>
+      <imagedata fileref="app.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -1283,7 +1276,7 @@
 </para>
 </sect3>
 <sect3 id="local-music"><title>Local Music</title> 
-<para>Displays the music from your default collection folder, sorted as specified. Both the regular (non-merged) view and <emphasis>Merged</emphasis> view of the same collection are shown, with the same sorting. Click the icon <inlinemediaobject> <imageobject> <imagedata fileref="Amarok2-4-1MergeIcon.png" format="PNG"/> </imageobject> </inlinemediaobject> to toggle between views.
+<para>Displays the music from your default collection folder, sorted as specified. Both the regular (non-merged) view and <emphasis>Merged</emphasis> view of the same collection are shown, with the same sorting. Click the icon <inlinemediaobject> <imageobject> <imagedata fileref="Icon-view-list-tree.png" format="PNG"/> </imageobject> </inlinemediaobject> to toggle between views.
 </para>
 <para>
 <informaltable>
@@ -1328,7 +1321,7 @@
   </tgroup>
 </informaltable>
 </para>
-<para>Click the icon <inlinemediaobject> <imageobject> <imagedata fileref="Amarok2WrenchIcon.png" format="PNG"/> </imageobject> </inlinemediaobject> to change the sorting criteria, using the following menu:
+<para>Click the icon <inlinemediaobject> <imageobject> <imagedata fileref="Icon-preferences-other.png" format="PNG"/> </imageobject> </inlinemediaobject> to change the sorting criteria, using the following menu:
 </para>
 <para>
 <screenshot>
@@ -1358,7 +1351,15 @@
     <para><guilabel>Artist/Album</guilabel></para>
     </entry>
     <entry>
-    <para>Shows the collection sorted artists and album names. If two entries have the same artist they will be sorted by album.</para>
+    <para>Shows the collection sorted by artists and album names. If two entries have the same artist they will be sorted by album.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Album/Artist</guilabel></para>
+    </entry>
+    <entry>
+    <para>Shows the collection sorted by album and artist names.</para>
     </entry>
   </row>
   <row>
@@ -1465,6 +1466,14 @@
     </entry>
     <entry>
     <para>Connects with <guilabel>Magnatune</guilabel> a great online music store.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>MP3 Music Store</guilabel></para>
+    </entry>
+    <entry>
+    <para>Connects with <guilabel>Amazon MP3 Store</guilabel> an online music store.</para>
     </entry>
   </row>
   <row>
@@ -1635,7 +1644,7 @@
   </row>
   <row>
     <entry>
-    <para><guilabel>Import OPML</guilabel></para>
+    <para><inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-import.png" format="PNG"/> </imageobject> </inlinemediaobject></para>
     </entry>
     <entry>
     <para>Imports an OPML file from your hard drive.</para></entry>
@@ -1678,7 +1687,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="lowerpart.png" format="PNG"/>
+      <imagedata fileref="app.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -1686,7 +1695,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>Once you click <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject> in the lower portion of the <emphasis>Context</emphasis> pane changes slightly; each applet tab gets an <inlinemediaobject> <imageobject> <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject> </inlinemediaobject> icon that you can click to remove it, and there is a new green <inlinemediaobject> <imageobject> <imagedata fileref="Icon-list-add.png" format="PNG"/> </imageobject> </inlinemediaobject> icon which allows you to add new applets. To change the applet display order, click the tabs and drag them around the bar.
+<para>Once you click <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject> in the lower portion of the <emphasis>Context</emphasis> pane changes slightly; each applet tab gets an <inlinemediaobject> <imageobject> <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject> </inlinemediaobject> icon that you can click to remove it, and a list of applets appear. To add new applet, simply click on the applet, and it will appear in the pane, ready to be used. To change the applet display order, click the tabs and drag them around the bar.
 </para>
 </sect3>
 </sect2>
@@ -1812,8 +1821,6 @@
   </tgroup>
 </informaltable>
 </para>
-<para><warning><para>some new images</para></warning>
-</para>
 </sect2>
 </sect1>
 <sect1 id="the-playlist-pane3"><title>The Playlist pane</title> 
@@ -1824,7 +1831,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist.png" format="PNG"/>
+      <imagedata fileref="playlist2.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>&amarok; Playlist pane</phrase>
@@ -1873,7 +1880,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist_contextmenu.png" format="PNG"/>
+      <imagedata fileref="context_menu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -1913,7 +1920,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="playlist-album-menu.png" format="PNG"/>
+      <imagedata fileref="album.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Playlist album menu</phrase>
@@ -1938,7 +1945,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist_search2.png" format="PNG"/>
+      <imagedata fileref="playlistsearch.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Playlist searching options</phrase>
@@ -1982,7 +1989,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="playlist-ordering.png" format="PNG"/>
+      <imagedata fileref="sorting.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Playlist sorting and bookmarking toolbar</phrase>
@@ -1999,7 +2006,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist_sortingleavel.png" format="PNG"/>
+      <imagedata fileref="sorting2.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Menu for adding a sorting level</phrase>
@@ -2027,7 +2034,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist_bookmarking.png" format="PNG"/>
+      <imagedata fileref="bookmarking_menu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Bookmarking menu</phrase>
@@ -2050,7 +2057,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist_functions.png" format="PNG"/>
+      <imagedata fileref="albumbar.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Playlist bottom bar</phrase>
@@ -2217,7 +2224,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="save-playlist-menu.png" format="PNG"/>
+      <imagedata fileref="playlist_save.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Save playlist menu</phrase>
@@ -2237,7 +2244,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="repeat-menu.png" format="PNG"/>
+      <imagedata fileref="track_progression.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Track progression menu</phrase>
@@ -2258,7 +2265,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="favor-menu.png" format="PNG"/>
+      <imagedata fileref="favor.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Playlist favor menu</phrase>
@@ -2297,13 +2304,13 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="configure_amarok.png" format="PNG"/>
+      <imagedata fileref="amarok2-4-1configuredialog.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Before version 2.4.1</phrase>
+      <phrase>Amarok 2.4.1 on</phrase>
     </textobject>
     <caption>
-      <para>Before version 2.4.1</para>
+      <para>Amarok 2.4.1 on</para>
     </caption>
   </mediaobject>
 </screenshot></para>
@@ -2314,13 +2321,13 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configuredialog.png" format="PNG"/>
+      <imagedata fileref="new_amarok_configuration_options_general_edit.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Amarok 2.4.1</phrase>
+      <phrase>Amarok 2.5 on</phrase>
     </textobject>
     <caption>
-      <para>Amarok 2.4.1</para>
+      <para>Amarok 2.5 on</para>
     </caption>
   </mediaobject>
 </screenshot></para></entry>
@@ -2629,6 +2636,17 @@
 </sect1>
 <sect1 id="notifications"><title>Notifications</title> 
 <para>
+<informaltable>
+  <tgroup cols="1">
+  <thead>
+  <row>
+    <entry>Amarok Notifications Configuration dialog</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+    <entry>
+    <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
@@ -2636,10 +2654,34 @@
       <imagedata fileref="amarok2-4-1notifications.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase></phrase>
+      <phrase>Amarok 2.4.1 on</phrase>
     </textobject>
+    <caption>
+      <para>Amarok 2.4.1 on</para>
+    </caption>
   </mediaobject>
-</screenshot>
+</screenshot></para>
+    </entry>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="new_amarok_configuration_options_notifications_edit.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>Amarok 2.5 on</phrase>
+    </textobject>
+    <caption>
+      <para>Amarok 2.5 on</para>
+    </caption>
+  </mediaobject>
+</screenshot></para></entry>
+  </row>
+  </tbody>
+  </tgroup>
+</informaltable>
 </para>
 <para>
 <informaltable>
@@ -2842,13 +2884,13 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configuredialogplugins.png" format="PNG"/>
+      <imagedata fileref="mediasources4.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>Plugins after 2.4.1</phrase>
+      <phrase>Internet Services now</phrase>
     </textobject>
     <caption>
-      <para>Plugins after 2.4.1</para>
+      <para>Internet Services now</para>
     </caption>
   </mediaobject>
 </screenshot></para></entry>
@@ -3047,6 +3089,17 @@
   </row>
   <row>
     <entry>
+    <para><guilabel>MP3 Music Store</guilabel></para>
+    </entry>
+    <entry>
+    <para>Access the Amazon MP3 Store directly from Amarok</para>
+    </entry>
+    <entry>
+    <para>Yes</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
     <para><guilabel>Podcast Directory</guilabel></para>
     </entry>
     <entry>
@@ -3078,6 +3131,21 @@
 <para>Listen to the music offered by Magnatune for free and buy it directly through &amarok;. Click <inlinemediaobject> <imageobject> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject> </inlinemediaobject> to add your membership credentials if you are a member and/or add your email address to re-download music you previously have downloaded from Magnatune.
 </para>
 <para>To download, you then go to the <emphasis>Media Sources</emphasis> pane, select the Internet section and click on the Magnatune Store. It will then download the catalog where you can search and select the music you want to buy.
+</para>
+</sect2>
+<sect2 id="mp3-store-configuration"><title>MP3 Store configuration</title> 
+<para>Access the Amazon MP3 Store directly from &amarok;.
+</para>
+<para>The Amazon MP3 Store needs to know what country you are located in because it offers different items depending on your location. The following countries are allowed:
+</para>
+<itemizedlist>
+<listitem><para>France</para></listitem>
+<listitem><para>Austria, Germany, Switzerland</para></listitem>
+<listitem><para>Japan</para></listitem>
+<listitem><para>United Kingdom</para></listitem>
+<listitem><para>United States (default)</para></listitem>
+</itemizedlist>
+<para>NOTE: Changing the country invalidates your shopping cart. If your country is not in the list, you cannot use the Amazon MP3 Store because it is not supported by Amazon.
 </para>
 </sect2>
 </sect1>
@@ -3196,7 +3264,7 @@
 </sect3>
 </sect2>
 <sect2 id="changing-the-toolbar"><title>Changing the Toolbar</title>
-<para>You can also choose between two layouts of the <emphasis>Toolbar</emphasis> by clicking the appropriate item in the <guilabel>View</guilabel> menu:
+<para>You can also choose between two layouts of the Toolbar by clicking the appropriate item in the <guilabel>View</guilabel> menu:
 </para>
 <para>
 <informaltable>
@@ -3220,7 +3288,7 @@
   </row>
   <row>
     <entry>
-    <para><emphasis>Main Toolbar</emphasis></para>
+    <para>Main Toolbar</para>
     </entry>
   </row>
   <row>
@@ -3241,13 +3309,13 @@
   </row>
   <row>
     <entry>
-    <para><emphasis>Slim Toolbar</emphasis></para></entry>
+    <para>Slim Toolbar</para></entry>
   </row>
   </tbody>
   </tgroup>
 </informaltable>
 </para>
-<para>More about the <emphasis>Toolbar</emphasis> <link linkend="toolbar">here</link>.
+<para>More about the Toolbar <link linkend="toolbar">here</link>.
 </para>
 </sect2>
 <sect2 id="changing-the-playlist-layout"><title>Changing the Playlist layout</title>
@@ -3264,40 +3332,12 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>To access the <emphasis>Playlist Layout Editor</emphasis>, go to <menuchoice><guimenu>Playlist menu</guimenu><guisubmenu>Playlist Layouts</guisubmenu><guimenuitem>Configure Playlist Layouts...</guimenuitem></menuchoice> and you will see the above editor window. On the left you can see the preset layouts; clicking on those allows you to see how the configuration is done on the right. Clicking on the <guilabel>Preview</guilabel> button allows you to see the applied layout in the <emphasis>Playlist</emphasis> pane.
+<para>To access the <guilabel>Playlist Layout Editor</guilabel>, go to <menuchoice><guimenu>Playlist</guimenu><guisubmenu>Playlist Layouts</guisubmenu><guimenuitem>Configure Playlist Layouts...</guimenuitem></menuchoice> and you will see the above editor window. On the left you can see the preset layouts; clicking on those allows you to see how the configuration is done on the right. Clicking on the <guilabel>Preview</guilabel> button allows you to see the applied layout in the <guilabel>Playlist</guilabel> pane.
 </para>
 <sect3 id="modifying-a-default-layout"><title>Modifying a default layout</title>
-<para>To modify one of the default layouts, first make a new copy of it: simply click on this icon
+<para>To modify one of the default layouts, first make a new copy of it: simply click on <inlinemediaobject> <imageobject> <imagedata fileref="Icon-edit-copy.png" format="PNG"/> </imageobject> </inlinemediaobject> and save it under a new name. To generate a new layout, click on <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-new.png" format="PNG"/> </imageobject> </inlinemediaobject>
 </para>
-<para>
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="edit-copy.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para>and save it under a new name. To generate a new layout, click on this icon:
-</para>
-<para>
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="document-new.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para>A layout consists of 3 elements: the Album <emphasis>Head</emphasis>, the Album <emphasis>Body</emphasis> (with a special album body for Various Artist tracks) and the <emphasis>Single</emphasis> Tracks configuration, selectable in the tabs in the  middle of the editor. To add an item, simply drag it from the selector on top and drop it in the layout tab elected below. To show the album cover, just check the <emphasis>Cover</emphasis> field.
+<para>A layout consists of 3 elements: the Album <emphasis>Head</emphasis>, the Album <emphasis>Body</emphasis> (with a special album body for Various Artist tracks) and the <emphasis>Single</emphasis> Tracks configuration, selectable in the tabs in the  middle of the editor. To add an item, simply drag it from the selector on top and drop it in the layout tab elected below. To show the album cover, just check the <guilabel>Cover</guilabel> field.
 </para>
 <para>In addition, you can also add:
 </para>
@@ -3331,7 +3371,7 @@
 </informaltable>
 </para>
 <sect4 id="item-layout-configuration"><title>Item layout configuration</title>
-<para>Each of the added items can then have its own layout configured: hovering over the item shows a wrench, clicking on this wrench will let you access a configuration dialog for that item. The example below shows you the configuration dialog for the <emphasis>Album</emphasis> item:
+<para>Each of the added items can then have its own layout configured: hovering over the item shows a wrench, clicking on this wrench will let you access a configuration dialog for that item. The example below shows you the configuration dialog for the <guilabel>Album</guilabel> item:
 </para>
 <para>
 <screenshot>
@@ -3350,11 +3390,11 @@
 </para>
 </sect4>
 <sect4 id="example--single-line-layout"><title>Example: single line layout</title>
-<para><emphasis>Example</emphasis>: to generate a single line layout without grouping you only add items in the <emphasis>Single</emphasis> Track element.
+<para><emphasis>Example</emphasis>: to generate a single line layout without grouping you only add items in the <guilabel>Single</guilabel> Track element.
 </para>
 </sect4>
 <sect4 id="playlist-layout-storage"><title>Playlist layout storage</title>
-<para>The playlist layouts will be stored in xml format in <emphasis>$HOME/.kde/share/apps/amarok/playlist_layouts</emphasis> (might be <emphasis>$HOME/.kde4/share/apps/amarok/playlist-layouts</emphasis> for some distributions).
+<para>The playlist layouts will be stored in xml format in <filename>$HOME/.kde/share/apps/amarok/playlist_layouts</filename> (might be <filename>$HOME/.kde4/share/apps/amarok/playlist-layouts</filename> for some distributions).
 </para>
 </sect4>
 </sect3>
@@ -3390,7 +3430,7 @@
 <listitem><para><link linkend="tag-editor">Tag Editor</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="transcoding">Transcoding</link>&nbsp;</para></listitem>
 </itemizedlist>
-<sect1 id="collection5"><title>Collection</title>
+<sect1 id="collection5"><title>Collection</title> 
 <para>&amarok; organizes your music in the <emphasis>Collection</emphasis>.
 </para>
 <itemizedlist>
@@ -3500,7 +3540,7 @@
 </sect3>
 </sect2>
 <sect2 id="search-in-collection"><title>Search in Collection</title> 
-<para><emphasis>Search Collection</emphasis> lets you specify complex filters to search for specific tracks in your collection. Use the edit box in the <emphasis>Media Sources</emphasis> pane or click the <guilabel>Edit Filter</guilabel>-button right next to the edit box.
+<para><emphasis>Search Collection</emphasis> lets you specify complex filters to search for specific tracks in your collection. Use the edit box in the <emphasis>Media Sources</emphasis> pane or click the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-properties.png" format="PNG"/> </imageobject> </inlinemediaobject> button right next to the edit box. Alternatively you can simply press <keycombo>&Ctrl;<keycap>F</keycap></keycombo> to activate the search bar.
 </para>
 <para>
 <screenshot>
@@ -3518,52 +3558,52 @@
 <sect3 id="edit-box"><title>Edit Box</title> 
 <para>When you type in the input field, &amarok; will search for the text in all available tags such as artist, album and title. Your view of the collection will update automatically to display only the matches of the search.
 </para>
-<para>To search in a specific tag, type <varname>tag:value</varname> into the search bar. Operators like <keycap>&gt;</keycap> and <keycap>&lt;</keycap> can be used to create more general conditions. Several conditions can be used together by separating them by a <keycap>Space</keycap>. For time conditions, use the following abbreviations: d=day, w=week, m=month, y=year.
+<para>To search in a specific tag, type <varname>tag:value</varname> into the search bar. Operators like <quote>&gt;</quote> and <quote>&lt;</quote> can be used to create more general conditions. Several conditions can be used together by separating them by a space character. For time conditions, use the following abbreviations: d=day, w=week, m=month, y=year.
 </para>
 </sect3>
 <sect3 id="tags6"><title>Tags</title> 
 <para>The following tags can be searched:
 </para>
 <itemizedlist>
-<listitem><para><guilabel>Album</guilabel></para></listitem>
-<listitem><para><guilabel>Artist</guilabel></para></listitem>
-<listitem><para><guilabel>Bitrate</guilabel></para></listitem>
-<listitem><para><guilabel>Composer</guilabel></para></listitem>
-<listitem><para><guilabel>AlbumArtist</guilabel></para></listitem>
-<listitem><para><guilabel>Genre</guilabel></para></listitem>
-<listitem><para><guilabel>Playcount</guilabel></para></listitem>
-<listitem><para><guilabel>Rating</guilabel></para></listitem>
-<listitem><para><guilabel>Sample Rate</guilabel></para></listitem>
-<listitem><para><guilabel>Score</guilabel></para></listitem>
-<listitem><para><guilabel>Title</guilabel></para></listitem>
-<listitem><para><guilabel>Track</guilabel></para></listitem>
-<listitem><para><guilabel>Year</guilabel></para></listitem>
-<listitem><para><guilabel>BPM</guilabel></para></listitem>
+<listitem><para>Album</para></listitem>
+<listitem><para>Artist</para></listitem>
+<listitem><para>Bitrate</para></listitem>
+<listitem><para>Composer</para></listitem>
+<listitem><para>AlbumArtist</para></listitem>
+<listitem><para>Genre</para></listitem>
+<listitem><para>Playcount</para></listitem>
+<listitem><para>Rating</para></listitem>
+<listitem><para>Sample Rate</para></listitem>
+<listitem><para>Score</para></listitem>
+<listitem><para>Title</para></listitem>
+<listitem><para>Track</para></listitem>
+<listitem><para>Year</para></listitem>
+<listitem><para>BPM</para></listitem>
 </itemizedlist>
 </sect3>
 <sect3 id="additional-searchable-fields"><title>Additional searchable fields</title> 
 <para>Along with tags, the following can also be searched:
 </para>
 <itemizedlist>
-<listitem><para><guilabel>Comment</guilabel></para></listitem>
-<listitem><para><guilabel>Filename</guilabel></para></listitem>
-<listitem><para><guilabel>Disc number</guilabel></para></listitem>
-<listitem><para><guilabel>Length</guilabel></para></listitem>
-<listitem><para><guilabel>Filesize</guilabel></para></listitem>
-<listitem><para><guilabel>Format</guilabel></para></listitem>
-<listitem><para><guilabel>Added (to Collection)</guilabel></para></listitem>
-<listitem><para><guilabel>First played</guilabel></para></listitem>
-<listitem><para><guilabel>Label</guilabel></para></listitem>
-<listitem><para><guilabel>Last modified</guilabel></para></listitem>
+<listitem><para>Comment</para></listitem>
+<listitem><para>Filename</para></listitem>
+<listitem><para>Disc number</para></listitem>
+<listitem><para>Length</para></listitem>
+<listitem><para>Filesize</para></listitem>
+<listitem><para>Format</para></listitem>
+<listitem><para>Added (to Collection)</para></listitem>
+<listitem><para>First played</para></listitem>
+<listitem><para>Label</para></listitem>
+<listitem><para>Last modified</para></listitem>
 </itemizedlist>
 </sect3>
 <sect3 id="operators"><title>Operators</title> 
 <para>Numerical tags can use the following operators to create a condition:
 </para>
 <itemizedlist>
-<listitem><para>Equal: <keycap>:</keycap></para></listitem>
-<listitem><para>Less than: <keycap>&lt;</keycap></para></listitem>
-<listitem><para>Larger than: <keycap>&gt;</keycap></para></listitem>
+<listitem><para>Equal: <quote>:</quote></para></listitem>
+<listitem><para>Less than: <quote>&lt;</quote></para></listitem>
+<listitem><para>Larger than: <quote>&gt;</quote></para></listitem>
 </itemizedlist>
 </sect3>
 <sect3 id="examples"><title>Examples</title> 
@@ -3614,11 +3654,11 @@
 </para>
 <para>You can also add <guilabel>OR</guilabel> and <guilabel>AND</guilabel> here.
 </para>
-<para>Select a term and check <guilabel>Invert condition</guilabel> to disallow that search-term. Choose <guilabel>AND</guilabel> or <guilabel>OR</guilabel> for all terms in this search. If you choose <guilabel>AND</guilabel>, all search-terms must be present.
+<para>Select a term and check <guilabel>Invert condition</guilabel> to exclude items matching this term from the results. Choose <guilabel>AND</guilabel> or <guilabel>OR</guilabel> for all terms in this search. If you choose <guilabel>AND</guilabel>, all search-terms must be present.
 </para>
 <para>If <guilabel>OR</guilabel>, any matches will show up.
 </para>
-<para>Of course, clicking <guilabel>Reset</guilabel> removes your selections.
+<para>Of course, clicking <inlinemediaobject> <imageobject> <imagedata fileref="Icon-edit-clear-locationbar-rtl.png" format="PNG"/> </imageobject> </inlinemediaobject> removes your selections.
 </para>
 <para>
 <screenshot>
@@ -3655,18 +3695,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>If the option of <guilabel>Organize Files</guilabel> does not appear, you may have 
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok-merge-icon.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot> (Merged View) on. In order to safely organize your files, you need to see your collections separated, not merged.
+<para>If the option of <guilabel>Organize Files</guilabel> does not appear, you may have  Merged View on (toggled by <inlinemediaobject> <imageobject> <imagedata fileref="Icon-view-list-tree.png" format="PNG"/> </imageobject> </inlinemediaobject>). In order to safely organize your files, you need to see your collections separated, not merged.
 </para>
 <sect3 id="organizing-files-interface"><title>Organizing Files Interface</title> 
 <para>Organize using the following interface:
@@ -3765,7 +3794,7 @@
     <para><guilabel>Destination Preview</guilabel></para>
     </entry>
     <entry>
-    <para>Shows the original naming scheme of your media files and how they will look after the changes are applied.</para>
+    <para>Shows the original naming scheme of your media files and how they will look after the changes are applied (not available since ver. 2.4.2).</para>
     </entry>
   </row>
   <row>
@@ -3773,7 +3802,7 @@
     <para><guilabel>Overwrite Destination</guilabel></para>
     </entry>
     <entry>
-    <para>If checked, overwrites files of the same name without asking for further confirmation.</para></entry>
+    <para>If checked, overwrites files of the same name without asking for further confirmation (not available since ver. 2.4.2).</para></entry>
   </row>
   </tbody>
   </tgroup>
@@ -3876,7 +3905,7 @@
   </tgroup>
 </informaltable>
 </para>
-<para>Configure the service with the data entered on the server:
+<para>Select <guilabel>Add Server</guilabel>:
 </para>
 <para>
 <screenshot>
@@ -3884,6 +3913,21 @@
   <mediaobject>
     <imageobject>
       <imagedata fileref="remotecollections_ampache_client1.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Configure the service with the data entered on the server:
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok_ampache_client2.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -3912,7 +3956,7 @@
 </para>
 </sect3>
 <sect3 id="client"><title>Client</title> 
-<para>&amarok; automatically shows the tracks from the server in the Media Sources -&gt; Local Music pane and no further configuration is required. If the collection is not showing up, click the <guilabel>Merged View</guilabel> icon to be sure you are not in Merged View.
+<para>&amarok; automatically shows the tracks from the server in the <menuchoice><guimenu>Media Sources</guimenu><guimenuitem>Local Music</guimenuitem></menuchoice> pane and no further configuration is required. If the collection is not showing up, click the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-view-list-tree.png" format="PNG"/> </imageobject> </inlinemediaobject> icon to be sure you are not in Merged View.
 </para>
 <para>
 <screenshot>
@@ -3949,11 +3993,11 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="samba"><title>Samba</title>
+<sect3 id="samba"><title>Samba</title> 
 <para><guilabel>Samba</guilabel> is a free implementation of the <emphasis>SMB/CIFS</emphasis> protocol which is used to share files and printers in a network. Most modern file managers like &dolphin; and <guilabel>Nautilus</guilabel> support this protocol.
 </para>
 </sect3>
-<sect3 id="client7"><title>Client</title>
+<sect3 id="client7"><title>Client</title> 
 <para>You need to mount the share to use it in &amarok;. To do this, you need to install the package <emphasis>smbfs</emphasis>. Use the command
 </para>
 <para><userinput>sudo mount -t cifs //<guilabel>host</guilabel>/<guilabel>share</guilabel> <guilabel>/mount-point/</guilabel></userinput>
@@ -3961,7 +4005,7 @@
 <para>to mount the share. After that you can use it like a local folder and add it to your local collection.
 </para>
 </sect3>
-<sect3 id="server8"><title>Server</title>
+<sect3 id="server8"><title>Server</title> 
 <para>The easiest way is to use your file manager. On <guilabel>Debian</guilabel>-based distributions like &ubuntu; you can install a &dolphin; extension to manage shares using
 </para>
 <para><userinput>sudo apt-get install kdenetwork-filesharing</userinput>
@@ -4029,24 +4073,24 @@
 <para>The folder should now be accessible to the network.
 </para>
 </sect3>
-<sect3 id="universal-plug-and-play-upnp"><title>Universal Plug and Play (UPnP)</title>
+<sect3 id="universal-plug-and-play-upnp"><title>Universal Plug and Play (UPnP)</title> 
 <para><emphasis>UPnP</emphasis> is a set of protocols to share media on the network. It is also supported by a wide range of residential gateways and Network Attached Storage devices. UPnP support is now commonly marketed as <ulink url="http://en.wikipedia.org/wiki/DLNA">DLNA</ulink>.
 </para>
-<para>&amarok; has a build in UPnP media share client so it can play tracks shared on the network. When a media share is discovered it will be shown in <emphasis>Local Music</emphasis>.
+<para>&amarok; has a build in UPnP media share client so it can play tracks shared on the network. When a media share is discovered it will be shown in <guilabel>Local Music</guilabel>.
 </para>
-<para>The UPnP feature depends on the UPnP media server support in &kde;.
+<para>The UPnP feature depends on <guilabel>KDE's</guilabel> UPnP media server support.
 </para>
 </sect3>
 </sect2>
-<sect2 id="external-database"><title>External Database</title>
+<sect2 id="external-database"><title>External Database</title> 
 <para>&amarok; 2.2 and above support an external <guilabel>MySQL</guilabel> database as a backend.
 </para>
 
 <!-- empty sect3
-<sect3 id="configure-server"><title>Configure Server</title>
+<sect3 id="configure-server"><title>Configure Server</title> 
 </sect3
 -->
-<sect3 id="install-mysql-server"><title>Install MySQL-Server</title>
+<sect3 id="install-mysql-server"><title>Install MySQL-Server</title> 
 <para>First you need to install an <guilabel>MySQL</guilabel> server. On Debian-based distributions like Ubuntu you can use
 </para>
 <para><userinput>sudo apt-get install mysql-server mysql-client</userinput>
@@ -4054,12 +4098,12 @@
 <para>to install it. You will be asked to specify a password for the root-account for the database. The <emphasis>mysql-client</emphasis> package is needed in order to execute some of the commands in this document, but it's not fundamental to the use of &amarok;.
 </para>
 </sect3>
-<sect3 id="configure-database"><title>Configure Database</title>
+<sect3 id="configure-database"><title>Configure Database</title> 
 <para>Connect to the local database using
 </para>
 <para><userinput>mysql -u root -p</userinput>
 </para>
-<para>You will be prompted for the password for <guilabel>MySQL</guilabel><command>'s</command> <guilabel>root</guilabel> user. You will get the <screen>mysql&gt;</screen> prompt.
+<para>You will be prompted for the password for <guilabel>MySQL's</guilabel> <emphasis>root</emphasis> user. You will get the <screen>mysql&gt;</screen> prompt.
 </para>
 <para>Create a new user <replaceable>amarokuser</replaceable> with the password <replaceable>amarokpass</replaceable> using the
 </para>
@@ -4083,12 +4127,12 @@
 </para>
 <para>closes the <guilabel>MySQL</guilabel> prompt.
 </para>
-<para>By default the server can only be accessed by the local host. To change this you need to edit the file <emphasis>/etc/mysql/my.cnf</emphasis> and adjust the address near <emphasis>bind-address</emphasis> to the one your server listens on the network. <guilabel>0.0.0.0</guilabel> listens on all interfaces. After that you need to restart the server using
+<para>By default the server can only be accessed by the local host. To change this you need to edit the file <filename>/etc/mysql/my.cnf</filename> and adjust the address near <emphasis>bind-address</emphasis> to the one your server listens on the network. <guilabel>0.0.0.0</guilabel> listens on all interfaces. After that you need to restart the server using
 </para>
 <para><userinput>sudo service mysql restart</userinput>
 </para>
 </sect3>
-<sect3 id="configure-client"><title>Configure Client</title>
+<sect3 id="configure-client"><title>Configure Client</title> 
 <para>Open the configuration dialog by clicking <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok...</guisubmenu><guimenuitem>Database</guimenuitem></menuchoice>. Enable the checkbox and enter the user data.
 </para>
 <para>
@@ -4107,7 +4151,7 @@
 <para>You need to restart &amarok; so that the changes take effect.
 </para>
 </sect3>
-<sect3 id="migrating-from-mysql-embedded-to-mysql-server"><title>Migrating from MySQL Embedded to MySQL Server</title>
+<sect3 id="migrating-from-mysql-embedded-to-mysql-server"><title>Migrating from MySQL Embedded to MySQL Server</title> 
 <para>If you want to maintain the statistics, &etc; that you have in the embedded <guilabel>MySQL</guilabel> database from before &amarok; 2.2, you can do the following:
 </para>
 <para>First, start &amarok; 2.2+ at least once to give the database a chance to update to the latest schema version.
@@ -4116,7 +4160,7 @@
 </para>
 <para><userinput>sudo /etc/init.d/mysql stop</userinput>
 </para>
-<para>and start a <guilabel>MySQL</guilabel> daemon from your <emphasis>~/.kde4/share/apps/amarok</emphasis> directory (--defaults-file MUST be the first option!):
+<para>and start a <guilabel>MySQL</guilabel> daemon from your <filename>~/.kde4/share/apps/amarok</filename> directory (--defaults-file MUST be the first option!):
 </para>
 <para><userinput>/usr/sbin/mysqld --defaults-file=`pwd`/my.cnf --default-storage-engine=MyISAM --datadir=`pwd`/mysqle --socket=`pwd`/sock --skip-grant-tables</userinput>
 </para>
@@ -4131,13 +4175,13 @@
 <para>You can then restart your <guilabel>MySQL</guilabel> service and load this SQL file into your <guilabel>MySQL</guilabel> server. You'll have needed to already run the GRANT statement above and create an &amarok; database (<quote>CREATE DATABASE amarok;</quote>):
 </para>
 <para><userinput>sudo /etc/init.d/mysql stop
- mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput> 
+mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput> 
 </para>
 <para><note><para>You may need to re-scan your collection in &amarok; after completing this.</para></note>
 </para>
 </sect3>
 </sect2>
-<sect2 id="working-with-media-devices"><title>Working with Media Devices</title>
+<sect2 id="working-with-media-devices"><title>Working with Media Devices</title> 
 <para>Use &amarok; to play music from media devices such as MTP devices, iPods, and generic USB devices.
 </para>
 <para>
@@ -4153,8 +4197,8 @@
   </mediaobject>
 </screenshot>
 </para>
-<sect3 id="connecting-media-devices"><title>Connecting Media Devices</title>
-<para>Connect your media device using the USB cable. The device notifier applet will automatically pop up with a list of all available media devices. Click on the <guilabel>Connect</guilabel> icon to access your device.
+<sect3 id="connecting-media-devices"><title>Connecting Media Devices</title> 
+<para>Connect your media device using the USB cable. The device notifier applet will automatically pop up with a list of all available media devices. Click on the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-emblem-mounted.png" format="PNG"/> </imageobject> </inlinemediaobject> icon to access your device.
 </para>
 <para>
 <screenshot>
@@ -4170,7 +4214,7 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="play-music-from-the-media-device"><title>Play Music from the Media Device</title>
+<sect3 id="play-music-from-the-media-device"><title>Play Music from the Media Device</title> 
 <para>Or just wait until your device shows up in &amarok;, which will take anywhere from a few seconds to a minute or more, to scan the device for music tracks. Until then the vfat volume will show 0  tracks.
 </para>
 <para>
@@ -4186,7 +4230,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>After the scan, &amarok; will display all the music tracks available in the Media Device, which you can then move to the <emphasis>Playlist</emphasis> to play them, or copy or move to your <emphasis>Local Collection</emphasis>.
+<para>After the scan, &amarok; will display all the music tracks available in the Media Device, which you can then move to the <guilabel>Playlist</guilabel> to play them, or copy or move to your <guilabel>Local Collection</guilabel>.
 </para>
 <para>
 <screenshot>
@@ -4202,7 +4246,7 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="managing-the-media"><title>Managing the Media</title>
+<sect3 id="managing-the-media"><title>Managing the Media</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -4244,10 +4288,10 @@
   </row>
   <row>
     <entry>
-    <para><guilabel>Edit track details</guilabel></para>
+    <para><guilabel>Configure Device</guilabel></para>
     </entry>
     <entry>
-    <para>Opens a dialog box to edit details of the selected tracks from the media device.</para>
+    <para>Opens a dialog box to edit configuration options for the device.</para>
     </entry>
   </row>
   <row>
@@ -4276,10 +4320,34 @@
   </row>
   <row>
     <entry>
+    <para><guilabel>Move to trash</guilabel></para>
+    </entry>
+    <entry>
+    <para>Moves all the selected tracks from the media device to the trash.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
     <para><guilabel>Delete tracks</guilabel></para>
     </entry>
     <entry>
-    <para>Deletes all the selected tracks from the media device.</para></entry>
+    <para>Deletes all the selected tracks from the media device.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Organize Files</guilabel></para>
+    </entry>
+    <entry>
+    <para>Organizes tracks based on the configuration for the device.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Edit track details</guilabel></para>
+    </entry>
+    <entry>
+    <para>Opens a dialog box to edit details of the selected tracks from the media device.</para></entry>
   </row>
   </tbody>
   </tgroup>
@@ -4288,7 +4356,7 @@
 </sect3>
 </sect2>
 </sect1>
-<sect1 id="cover-manager"><title>Cover Manager</title>
+<sect1 id="cover-manager"><title>Cover Manager</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -4302,7 +4370,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>The <emphasis>Cover Manager</emphasis> is a tool to manage the cover art images of your collection. It allows you to change covers easily, fetch all missing covers and browse them. You can find <emphasis>Cover Manager</emphasis> in <menuchoice><guimenu>Tools</guimenu><guimenuitem>Cover Manager</guimenuitem></menuchoice>.
+<para>The <guilabel>Cover Manager</guilabel> is a tool to manage the cover art images of your collection. It allows you to change covers easily, fetch all missing covers and browse them. You can find <guilabel>Cover Manager</guilabel> in <menuchoice><guimenu>Tools</guimenu><guimenuitem>Cover Manager</guimenuitem></menuchoice>.
 </para>
 <para>When scanning the local music library, &amarok; tries to find corresponding covers for albums. At this point, &amarok; only searches them from the file system, not from the Internet. If none are found in your files, &amarok; uses a placeholder image like this for the album cover: 
 <screenshot>
@@ -4317,17 +4385,17 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>If an album is missing a cover or the current one is incorrect, you can fetch one from the Internet with <emphasis>Cover Manager</emphasis>.
+<para>If an album is missing a cover or the current one is incorrect, you can fetch one from the Internet with <guilabel>Cover Manager</guilabel>.
 </para>
-<sect2 id="browsing-covers"><title>Browsing Covers</title>
-<para>With <emphasis>Cover Manager</emphasis>, browsing covers is easy. You can view covers for any artist by selecting from list on left, or use the search box to find the right album. On the status bar, you can see how many covers are currently listed and how many albums are missing covers. You can also set the <emphasis>Cover Manager</emphasis> to only show albums with or without covers. By right-clicking on cover art and selecting <guilabel>Display Cover</guilabel> you can view the cover image at the original size.
+<sect2 id="browsing-covers"><title>Browsing Covers</title> 
+<para>With <guilabel>Cover Manager</guilabel>, browsing covers is easy. You can view covers for any artist by selecting from list on left, or use the search box to find the right album. On the status bar, you can see how many covers are currently listed and how many albums are missing covers. You can also set the <guilabel>Cover Manager</guilabel> to only show albums with or without covers. By right-clicking on cover art and selecting <guilabel>Display Cover</guilabel> you can view the cover image at the original size.
 </para>
 </sect2>
-<sect2 id="fetching-missing-covers"><title>Fetching Missing Covers</title>
+<sect2 id="fetching-missing-covers"><title>Fetching Missing Covers</title> 
 <para>If there are albums with missing covers, you can try to automatically fetch them all from the Internet. Just select <guilabel>Fetch Missing Covers</guilabel> from the top of the window and <emphasis>Cover Manager</emphasis> will try to find covers. If there are many albums missing covers, the process may take some time.
 </para>
 </sect2>
-<sect2 id="changing-cover-art"><title>Changing Cover Art</title>
+<sect2 id="changing-cover-art"><title>Changing Cover Art</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -4347,17 +4415,17 @@
 </para>
 <para>If you don't like the cover art at all, you can unset it by right-clicking on the image and selecting <guilabel>Unset Cover</guilabel>.
 </para>
-<para><tip><para>You can find this menu without <emphasis>Cover Manager</emphasis> too. Just right-click on the album or song from your playlist or collection and hover the <guilabel>Album</guilabel> item.</para></tip>
+<para><tip><para>You can find this menu without <guilabel>Cover Manager</guilabel> too. Just right-click on the album or song from your playlist or collection and hover the <guilabel>Album</guilabel> item.</para></tip>
 </para>
 </sect2>
 </sect1>
-<sect1 id="tag-editor"><title>Tag Editor</title>
+<sect1 id="tag-editor"><title>Tag Editor</title> 
 <para>The built-in <emphasis>Tag Editor</emphasis> allows to show and change meta data of music files. To open the editor just right-click on one or more selected songs, albums, or genres, in either your collection or your playlist, click on <guilabel>Edit Track Details</guilabel> and choose the <guilabel>Tags</guilabel> tab.
 </para>
-<sect2 id="edit-tags-manually"><title>Edit Tags Manually</title>
+<sect2 id="edit-tags-manually"><title>Edit Tags Manually</title> 
 <para>Change the proper line to the required value and click <guilabel>Save &amp; Close</guilabel>. Clicking <guilabel>Cancel</guilabel> discards all unsaved changes.
 </para>
-<sect3 id="tags9"><title>Tags</title>
+<sect3 id="tags9"><title>Tags</title> 
 <para>Tags are metadata such as the track number or the artist of the track contained in the file. A very common kind of tag is the <emphasis>ID3 tag</emphasis>.
 </para>
 <para>Here is a list of tags supported by &amarok;:
@@ -4464,7 +4532,7 @@
 </informaltable>
 </para>
 </sect3>
-<sect3 id="edit-single-track"><title>Edit Single Track</title>
+<sect3 id="edit-single-track"><title>Edit Single Track</title> 
 <para>In this mode you can change all supported tags of the chosen file.
 </para>
 <para>
@@ -4481,11 +4549,11 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="edit-several-tracks"><title>Edit Several Tracks</title>
+<sect3 id="edit-several-tracks"><title>Edit Several Tracks</title> 
 <para>Several tracks can be selected by clicking on the artist, album, or genre in the your collection or by selecting several tracks in the playlist using the &Ctrl; (non-sequential) or &Shift; (sequential) key.
 </para>
 </sect3>
-<sect3 id="all-at-once"><title>All At Once</title>
+<sect3 id="all-at-once"><title>All At Once</title> 
 <para>More general tags can be set for a group of tags at once. It works just like the single-track-mode, but the title and track number tags are locked.
 </para>
 <para>
@@ -4502,7 +4570,7 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="track-by-track"><title>Track By Track</title>
+<sect3 id="track-by-track"><title>Track By Track</title> 
 <para>This mode is pretty similar to the single-track-mode, except for the ability to switch between the selected tracks using the <guilabel>Next</guilabel> and <guilabel>Previous</guilabel> buttons. It is activated by clicking on the checkbox <guilabel>Per Track</guilabel> on the bottom of the window.
 </para>
 <para>
@@ -4520,7 +4588,7 @@
 </para>
 </sect3>
 </sect2>
-<sect2 id="get-tags-from-musicbrainz"><title>Get Tags from MusicBrainz</title>
+<sect2 id="get-tags-from-musicbrainz"><title>Get Tags from MusicBrainz</title> 
 <para>A new feature in &amarok; 2.4 is the ability to guess tags from the <guilabel>MusicBrainz</guilabel> database. Click the <guilabel>Get Tags from MusicBrainz</guilabel>, wait a moment for the database to be searched for matches, and then <guilabel>Update Tags</guilabel>, or <guilabel>Cancel</guilabel>.
 </para>
 <para>If you have the packages <emphasis>libofa</emphasis> and <emphasis>ffmpeg</emphasis> installed, and &amarok; is compiled with them, <guilabel>Musicbrainz</guilabel> will be able to use <quote>fingerprinting</quote> (the <emphasis>MusicDNS</emphasis> service) to search for albums and tracks without good filenames or existing tags.
@@ -4542,12 +4610,12 @@
 </screenshot>
 </para>
 </sect2>
-<sect2 id="guess-tags-from-filename"><title>Guess Tags From Filename</title>
+<sect2 id="guess-tags-from-filename"><title>Guess Tags From Filename</title> 
 <para>It is also possible to tag tracks using information in the filename. This is a very convenient feature when dealing with lots of files with a consistent naming scheme.
 </para>
 <para>Some tracks need to be edited manually, because special characters like single quotes are omitted in file names. A preview helps to create the correct pattern.
 </para>
-<sect3 id="options"><title>Options</title>
+<sect3 id="options"><title>Options</title> 
 <para>There are also several options to format the result. These are self-explanatory.
 </para>
 <para>
@@ -4564,7 +4632,7 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="basic"><title>Basic</title>
+<sect3 id="basic"><title>Basic</title> 
 <para>In the basic view you get a drag-and-drop menu to create the pattern in the filename.
 </para>
 <para>
@@ -4581,7 +4649,7 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="example"><title>Example</title>
+<sect3 id="example"><title>Example</title> 
 <para>Filename: 03-social_distortion-dont_take_me_for_granted.mp3
 </para>
 <para>Tracknumber: 03
@@ -4604,7 +4672,7 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="advanced"><title>Advanced</title>
+<sect3 id="advanced"><title>Advanced</title> 
 <para>In the advanced view you can create a pattern using markers in a string.
 </para>
 <para>
@@ -4621,7 +4689,7 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="example10"><title>Example</title>
+<sect3 id="example10"><title>Example</title> 
 <para>Filename: 03-social_distortion-dont_take_me_for_granted.mp3
 </para>
 <para>Tracknumber: 03
@@ -4646,15 +4714,15 @@
 </sect3>
 </sect2>
 </sect1>
-<sect1 id="transcoding"><title>Transcoding</title>
+<sect1 id="transcoding"><title>Transcoding</title> 
 <para><emphasis>Transcoding</emphasis> is a new &amarok; feature as of version 2.4. It allows you to encode media files to a variety of formats while copying them to your collection. A word of warning: be careful when you use this feature, as you are working with actual files on your hard drive. Have a backup!
 </para>
-<sect2 id="interface"><title>Interface</title>
-<para>Use <emphasis>transcoding</emphasis> while you copy files to your collection folder by right-clicking a media file then <menuchoice><guimenu>Copy to Collection</guimenu><guimenuitem>Local Collection</guimenuitem></menuchoice> and a menu will appear.
+<sect2 id="interface"><title>Interface</title> 
+<para>Use transcoding while you copy files to your collection folder by right-clicking a media file then <menuchoice><guimenu>Copy to Collection</guimenu><guimenuitem>Local Collection</guimenuitem></menuchoice> and a menu will appear.
 </para>
 </sect2>
-<sect2 id="transcode-menu"><title>Transcode Menu</title>
-<para>If you choose to copy files to your collection, the following menu interface will pop up.
+<sect2 id="transcode-menu"><title>Transcode Menu</title> 
+<para>If you choose to copy files to your collection, the following dialog will pop up.
 </para>
 <para>
 <screenshot>
@@ -4707,7 +4775,7 @@
 </informaltable>
 </para>
 </sect2>
-<sect2 id="custom-encoding"><title>Custom Encoding</title>
+<sect2 id="custom-encoding"><title>Custom Encoding</title> 
 <para>Whether to save space, to make your files readable by a portable music player or a particular software program, &amarok; can handle it. Choose a codec from the list and a custom setting and click <guilabel>Transcode</guilabel>.
 </para>
 <para>
@@ -4738,7 +4806,7 @@
     <para><guilabel>Back</guilabel></para>
     </entry>
     <entry>
-    <para>Back to the basic <emphasis>Transcoding menu</emphasis>.</para>
+    <para>Back to the basic <guilabel>Transcode Tracks</guilabel> dialog.</para>
     </entry>
   </row>
   <row>
@@ -4762,7 +4830,7 @@
     <para><guilabel>Cancel</guilabel></para>
     </entry>
     <entry>
-    <para>Exits the <emphasis>Transcoding menu</emphasis> and returns to the <emphasis>Media Sources pane</emphasis>.</para></entry>
+    <para>Exits the <guilabel>Transcode Tracks</guilabel> dialog and returns to the <guilabel>Media Sources</guilabel> pane.</para></entry>
   </row>
   </tbody>
   </tgroup>
@@ -4770,8 +4838,8 @@
 </para>
 </sect2>
 </sect1>
-<sect1 id="script-manager"><title>Script Manager</title>
-<para>The <emphasis>Script Manager</emphasis> contains the options required to extend the functionality of &amarok; through custom scripts. It was reached from the top-level menu <menuchoice><guimenu>Tools</guimenu><guimenuitem>Script Manager</guimenuitem></menuchoice> until &amarok; 2.4.1. Now, it is reached from the <guilabel>Settings</guilabel> menu, <menuchoice><guimenu>Configure Amarok</guimenu><guimenuitem>Scripts</guimenuitem></menuchoice>. Scripts can be installed from downloaded script packages, or from the <guilabel>Manage Scripts</guilabel> button (formerly <guilabel>Get More Scripts</guilabel> installer) which can fetch and install the latest user-contributed scripts from the Internet.
+<sect1 id="script-manager"><title>Script Manager</title> 
+<para>The <guilabel>Script Manager</guilabel> contains the options required to extend the functionality of &amarok; through custom scripts. It was reached from the top-level menu <menuchoice><guimenu>Tools</guimenu><guimenuitem>Script Manager</guimenuitem></menuchoice> until &amarok; 2.4.1. Now, it is reached from the <guilabel>Settings</guilabel> menu, <menuchoice><guimenu>Configure Amarok</guimenu><guimenuitem>Scripts</guimenuitem></menuchoice>. Scripts can be installed from downloaded script packages, or from the <guilabel>Manage Scripts</guilabel> button (formerly <guilabel>Get More Scripts</guilabel> installer) which can fetch and install the latest user-contributed scripts from the Internet.
 </para>
 <para>
 <informaltable>
@@ -4836,7 +4904,7 @@
 <listitem><para><link linkend="automatic-playlist-generator">Automatic Playlist Generator</link>&nbsp;</para></listitem>
 </itemizedlist>
 <sect1 id="saved-playlists"><title>Saved Playlists</title> 
-<para><emphasis>Saved playlist</emphasis> is a traditional type of playlist. Saved playlists work like &amarok;'s current playlist, saved in the <emphasis>Amarok Database</emphasis> or your file system for later use. Sharing your saved playlists with your friends is easy and it can be fun to use them at events when you have specific songs you want played.
+<para><emphasis>Saved playlist</emphasis> is a traditional type of playlist. Saved playlists work like &amarok;'s current playlist, saved in the &amarok; database or your file system for later use. Sharing your saved playlists with your friends is easy and it can be fun to use them at events when you have specific songs you want played.
 </para>
 <para>Saved playlists can be created with &amarok; or imported from your file system. Creating a saved playlist is very easy with the exact songs and order that you want. For every day use, sometimes it is faster to use <link linkend="dynamic-playlists">Dynamic Playlists</link> or the <link linkend="automatic-playlist-generator">Automatic Playlist Generator</link> when you have less specific needs for specific tracks and progression.
 </para>
@@ -4857,18 +4925,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>You can save your current playlist into the <emphasis>Amarok database</emphasis> by clicking the <guilabel>Save</guilabel> icon (
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="playlist_save_icon_amarok.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>) at the bottom of the <emphasis>Playlist</emphasis> view. You can browse playlists in the <emphasis>Amarok database</emphasis> by going to <menuchoice><guimenu>Playlists</guimenu><guimenuitem>Saved Playlists</guimenuitem></menuchoice> and expanding the <emphasis>Amarok database</emphasis> section. You will find them in your filesystem here: <filename>~/.kde(4)/share/apps/amarok/playlists</filename>.
+<para>You can save your current playlist into the &amarok; database by clicking the save icon (<inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-save.png" format="PNG"/> </imageobject> </inlinemediaobject>) at the bottom of the <guilabel>Playlist</guilabel> view. You can browse playlists in the &amarok; database by going to <menuchoice><guimenu>Playlists</guimenu><guimenuitem>Saved Playlists</guimenuitem></menuchoice> in the <guilabel>Media Sources</guilabel> pane and expanding the <guilabel>Amarok database</guilabel> section. You will find them in your filesystem here: <filename>~/.kde(4)/share/apps/amarok/playlists</filename>.
 </para>
 </sect3>
 <sect3 id="exporting-a-playlist"><title>Exporting a Playlist</title> 
@@ -4876,7 +4933,7 @@
 </para>
 </sect3>
 <sect3 id="importing-a-playlist"><title>Importing a Playlist</title> 
-<para>You can import a playlist file into &amarok; just by copying it to any directory that &amarok; knows as part of your music collection. When &amarok; detects a new playlist on any folder of your collection, it will add it to the <guilabel>Playlist Files on Disk</guilabel> section. If the playlist doesn't appear right away, you can update the collection manually by clicking <menuchoice><guimenu>Tools</guimenu><guimenuitem>Update Collection</guimenuitem></menuchoice>. If instead of importing the playlist, you want to just listen it, open it with <menuchoice><guimenu>Amarok</guimenu><guimenuitem>Play Media...</guimenuitem></menuchoice> from menubar. Selected playlist will be added to the current playlist.
+<para>You can import a playlist file into &amarok; just by copying it to any directory that &amarok; knows as part of your music collection. When &amarok; detects a new playlist on any folder of your collection, it will add it to the <guilabel>Playlist Files on Disk</guilabel> section of <menuchoice><guimenu>Playlists</guimenu><guimenuitem>Saved Playliste</guimenuitem></menuchoice> in the <guilabel>Media Sources</guilabel> pane. If the playlist doesn't appear right away, you can update the collection manually by clicking <menuchoice><guimenu>Tools</guimenu><guimenuitem>Update Collection</guimenuitem></menuchoice>. If instead of importing the playlist, you want to just listen it, open it with <menuchoice><guimenu>Amarok</guimenu><guimenuitem>Play Media...</guimenuitem></menuchoice> from menubar. Selected playlist will be added to the current playlist.
 </para>
 </sect3>
 </sect2>
@@ -4898,7 +4955,7 @@
 </screenshot>
 </para>
 <sect2 id="edit-box12"><title>Edit Box</title> 
-<para>When you type something in the field, &amarok; will search in your playlist and mark matching tracks, artists and so forth.
+<para>When you type something in the <guilabel>Search playlist</guilabel> field, &amarok; will search in your playlist and mark matching tracks, artists and so forth.
 </para>
 <sect3 id="examples13"><title>Examples</title> 
 <para>The first track that matches the current search will be highlighted as in this example:
@@ -4919,14 +4976,14 @@
 </sect3>
 </sect2>
 <sect2 id="search-preferences"><title>Search Preferences</title> 
-<para>This is a small drop down menu with options for the search field, if you need more than simple search. You can choose which types of searching you want to use in your <emphasis>Search playlist</emphasis>. Check the boxes according to what you need for your search.
+<para>This is a small drop down menu with options for the search field, if you need more than simple search. You can choose which types of searching you want to use in your <guilabel>Search playlist</guilabel>. Check the boxes according to what you need for your search.
 </para>
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-playlistsearchfilter.png" format="PNG"/>
+      <imagedata fileref="playlistsearch.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -5031,12 +5088,12 @@
 </sect2>
 </sect1>
 <sect1 id="queue-manager"><title>Queue Manager</title> 
-<para>Tracks are loaded in the <emphasis>Playlist</emphasis>. In normal track progression, when a song is over, the next one played is the one below the just-played one. The <emphasis>Queue</emphasis> is one way to change the order in which the songs are played.
+<para>Tracks are loaded in the <guilabel>Playlist</guilabel>. In normal track progression, when a song is over, the next one played is the one below the just-played one. The <emphasis>Queue</emphasis> is one way to change the order in which the songs are played.
 </para>
 <sect2 id="how-to-create-a-queue"><title>How to Create a Queue</title> 
-<para>It is very easy to make a <emphasis>Queue</emphasis>; just select one or more tracks and move in the center of &amarok;, to the <emphasis>Pop-Up Dropper</emphasis> (PUD), or right-click and scroll to <guilabel>Queue Track</guilabel>.
+<para>It is very easy to make a Queue; just select one or more tracks and move in the center of &amarok;, to the <emphasis>Pop-Up Dropper</emphasis> (PUD), or right-click and scroll to <guilabel>Queue Track</guilabel>.
 </para>
-<para>As you select or add songs to the <emphasis>Queue</emphasis> each of them takes a number. The number indicates the order in which songs will play.
+<para>As you select or add songs to the Queue each of them takes a number. The number indicates the order in which songs will play.
 </para>
 <sect3 id="example14"><title>Example</title> 
 <para>
@@ -5044,7 +5101,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="queue_example11.png" format="PNG"/>
+      <imagedata fileref="playlistpic.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>First, select the track</phrase>
@@ -5060,7 +5117,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="queue_example_4.png" format="PNG"/>
+      <imagedata fileref="playlistqueue.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Then right-click for context menu</phrase>
@@ -5076,7 +5133,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="queue_example_2.png" format="PNG"/>
+      <imagedata fileref="queue.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Or queue track by dragging to the PUD</phrase>
@@ -5092,7 +5149,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="queue_example12.png" format="PNG"/>
+      <imagedata fileref="queueend.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>Queued tracks in playlist</phrase>
@@ -5106,20 +5163,7 @@
 </sect3>
 </sect2>
 <sect2 id="how-to-edit-the-queue"><title>How to Edit the Queue</title> 
-<para>If you want to make any changes in the <emphasis>Queue</emphasis> you can use the <emphasis>Queue Editor</emphasis>. Start the <emphasis>Queue Editor</emphasis> from the button in right-bottom corner of &amarok;.
-</para>
-<para>
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="hi48-action-edit-playlist-queue.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
+<para>If you want to make any changes in the <emphasis>Queue</emphasis> you can use the <guilabel>Queue Editor</guilabel>. Start the <guilabel>Queue Editor</guilabel> from the menu in <menuchoice><guimenu>Playlist</guimenu><guimenuitem>Edit Queue</guimenuitem></menuchoice>.
 </para>
 <sect3 id="queue-editor"><title>Queue Editor</title> 
 <para>
@@ -5147,7 +5191,7 @@
   <tbody>
   <row>
     <entry>
-    <para><guilabel>Move Up</guilabel></para>
+    <para><inlinemediaobject> <imageobject> <imagedata fileref="Icon-go-up.png" format="PNG"/> </imageobject> </inlinemediaobject></para>
     </entry>
     <entry>
     <para>Move selected track ahead in the list.</para>
@@ -5155,7 +5199,7 @@
   </row>
   <row>
     <entry>
-    <para><guilabel>Move Down</guilabel></para>
+    <para><inlinemediaobject> <imageobject> <imagedata fileref="Icon-go-down.png" format="PNG"/> </imageobject> </inlinemediaobject></para>
     </entry>
     <entry>
     <para>Move selected track below in the list.</para>
@@ -5163,18 +5207,18 @@
   </row>
   <row>
     <entry>
-    <para><guilabel>Dequeue Track</guilabel></para>
+    <para><inlinemediaobject> <imageobject> <imagedata fileref="Icon-list-remove.png" format="PNG"/> </imageobject> </inlinemediaobject></para>
     </entry>
     <entry>
-    <para>Remove selected song from the <emphasis>Queue</emphasis>.</para>
+    <para>Remove selected song from the Queue.</para>
     </entry>
   </row>
   <row>
     <entry>
-    <para><guilabel>Clear Queue</guilabel></para>
+    <para><inlinemediaobject> <imageobject> <imagedata fileref="Icon-edit-clear-list.png" format="PNG"/> </imageobject> </inlinemediaobject></para>
     </entry>
     <entry>
-    <para>Remove all songs from the <emphasis>Queue</emphasis>.</para></entry>
+    <para>Remove all songs from the Queue.</para></entry>
   </row>
   </tbody>
   </tgroup>
@@ -5184,11 +5228,11 @@
 </sect2>
 </sect1>
 <sect1 id="dynamic-playlists"><title>Dynamic Playlists</title> 
-<para>Some media players are designed to load the entire collection of music in a single playlist, then play it in random order, or search/ sorted, then queued. With a larger collection, this way of managing your playlist isn't efficient. &amarok;<command>'s</command> <emphasis>Dynamic Playlist</emphasis> is a better way to explore your music.
+<para>Some media players are designed to load the entire collection of music in a single playlist, then play it in random order, or search/ sorted, then queued. With a larger collection, this way of managing your playlist isn't efficient. &amarok;'s <guilabel>Dynamic Playlist</guilabel> is a better way to explore your music.
 </para>
-<para>The <emphasis>Dynamic Playlist</emphasis> is reached from <menuchoice><guimenu>Playlists</guimenu><guimenuitem>Dynamic Playlists</guimenuitem></menuchoice> in the <emphasis>Media Sources</emphasis> pane.
+<para>The <guilabel>Dynamic Playlist</guilabel> is reached from <menuchoice><guimenu>Playlists</guimenu><guimenuitem>Dynamic Playlists</guimenuitem></menuchoice> in the <guilabel>Media Sources</guilabel> pane.
 </para>
-<para>These instructions are for the new version of the dynamic playlist in Amarok 2.4.2 and above. See below for 2.4.1 and older.
+<para>These instructions are for the new version of the dynamic playlist in &amarok; 2.4.2 and above. See below for 2.4.1 and older.
 </para>
 <para>
 <screenshot>
@@ -5212,15 +5256,15 @@
 </para>
 </sect2>
 <sect2 id="using-a-dynamic-playlist"><title>Using a Dynamic Playlist</title> 
-<para>To enable dynamic playlists, click the <guilabel>Turn dynamic playlist on</guilabel> button (the one with the small dice) in the dynamic playlist pane. A bar will be displayed at the top of the playlist pane announcing that it is enabled. Select which dynamic playlist to use from the list of options by double clicking it. The currently selected dynamic playlist is bolded.
+<para>To enable dynamic playlists, click the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-action-dynamic-amarok.png" format="PNG"/> </imageobject> </inlinemediaobject> button in the <guilabel>Dynamic Playlist</guilabel> pane. A bar will be displayed at the top of the <guilabel>Playlist</guilabel> pane announcing that it is enabled. Select which dynamic playlist to use from the list of options by double clicking it. The currently selected dynamic playlist is bolded.
 </para>
-<para>You can adjust the number of songs before and after the currently playing song to be displayed in the playlist with the <guilabel>Previous</guilabel> and <guilabel>Upcoming</guilabel> fields. You can prevent the same track appearing in the current playlist more than once using the <guilabel>Allow duplicate songs in result</guilabel> button. The <guilabel>Repopulate</guilabel> button allows you to generate a new set of tracks. This can be used together with a high <guilabel>Upcoming</guilabel> setting to generate fixed playlists for export.
+<para>You can adjust the number of songs before and after the currently playing song to be displayed in the playlist with the <guilabel>Previous</guilabel> and <guilabel>Upcoming</guilabel> fields. You can prevent the same track appearing in the current playlist more than once using the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-edit-copy.png" format="PNG"/> </imageobject> </inlinemediaobject> button. The <guilabel>Repopulate</guilabel> button allows you to generate a new set of tracks. This can be used together with a high <guilabel>Upcoming</guilabel> setting to generate fixed playlists for export.
 </para>
 </sect2>
 <sect2 id="defining-dynamic-playlists"><title>Defining Dynamic Playlists</title> 
-<para>Each dynamic playlist is built of biases. A bias defines a particular constraint on the behaviour of the dynamic playlist, and new items to be added to the playlist are selected at random from a list of all songs which match the biases. Biases may either be a single bias (&eg; the <emphasis>Search</emphasis> bias) or a grouping of other biases (&eg; the <emphasis>Match All</emphasis> bias). Some examples playlists are included, and you can define a new playlist with the <guilabel>New playlist</guilabel> button.
+<para>Each dynamic playlist is built of biases. A bias defines a particular constraint on the behaviour of the dynamic playlist, and new items to be added to the playlist are selected at random from a list of all songs which match the biases. Biases may either be a single bias (&eg; the <emphasis>Search</emphasis> bias) or a grouping of other biases (&eg; the <emphasis>Match All</emphasis> bias). Some examples playlists are included, and you can define a new playlist with the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-new.png" format="PNG"/> </imageobject> </inlinemediaobject> button.
 </para>
-<para>To change the name of a playlist, either use the <guilabel>Edit the selected playlist or bias</guilabel> button or right click on it and select <guilabel>Rename playlist</guilabel>. A bias can be edited with the same button or by right-clicking and selecting <guilabel>Edit bias</guilabel>, and for biases which have sub-biases, a new sub-bias can be added by right clicking and selecting <guilabel>Add new bias</guilabel>.
+<para>To change the name of a playlist, either use the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-properties.png" format="PNG"/> </imageobject> </inlinemediaobject> button or right click on it and select <guilabel>Rename playlist</guilabel>. A bias can be edited with the same button or by right-clicking and selecting <guilabel>Edit bias</guilabel>, and for biases which have sub-biases, a new sub-bias can be added by right clicking and selecting <guilabel>Add new bias</guilabel>.
 </para>
 <sect3 id="biases"><title>Biases</title> 
 <para>An explanation of each available bias and any options it takes follows.
@@ -5228,7 +5272,7 @@
 <variablelist>
   <varlistentry><term><emphasis role="bold">Search</emphasis></term>
     <listitem>
-    <para>This bias matches tracks found by a given search query. It uses the same search string used in the collection browser. You may also use the <emphasis>Match meta tag</emphasis> bias to match tags in the same way as the collection search editor.</para>
+    <para>This bias matches tracks found by a given search query. It uses the same search string used in the collection browser. You may also use the <guilabel>Match meta tag</guilabel> bias to match tags in the same way as the collection search editor.</para>
      </listitem>
   </varlistentry>
   <varlistentry><term><emphasis role="bold">Random</emphasis></term>
@@ -5249,22 +5293,22 @@
   <varlistentry><term><emphasis role="bold">Partition</emphasis></term>
     <listitem>
     <para>This group bias matches tracks from the sub-biases in proportion. The edit window for this bias has sliders for each sub-bias to adjust the proportions. For example, with two sub-biases with their proportion sliders set equal, half of the playlist will match one bias and half the other.</para>
-    <para>Note: The dynamic playlist is internally working with more tracks than you can see, so after clicking <quote>refresh</quote> the list might not contain a 50:50 distribution of songs. However as you continue listening to music you will see that in the end it actually matches.</para>
+    <para>Note: The dynamic playlist is internally working with more tracks than you can see, so after clicking <quote>Repopulate</quote> the list might not contain a 50:50 distribution of songs. However as you continue listening to music you will see that in the end it actually matches.</para>
      </listitem>
   </varlistentry>
   <varlistentry><term><emphasis role="bold">If Else</emphasis></term>
     <listitem>
-    <para>This group bias matches tracks from the first sub bias <emphasis>unless</emphasis> there are no matching tracks found, in which case it matches tracks from the second sub-bias. See the example Album Play playlist for an example of this in use.</para>
+    <para>This group bias matches tracks from the first sub bias <emphasis>unless</emphasis> there are no matching tracks found, in which case it matches tracks from the second sub-bias. See the example <guilabel>Album Play</guilabel> playlist for an example of this in use.</para>
      </listitem>
   </varlistentry>
   <varlistentry><term><emphasis role="bold">Match Meta Tag</emphasis></term>
     <listitem>
-    <para>This bias matches tracks which meet certain conditions on a tag. The selection interface is the same as the search filter editor in the collection browser. Select a tag type from the drop-down and fill in the constraint. (Hint: You can use a number of these in an <emphasis>And</emphasis> bias.)</para>
+    <para>This bias matches tracks which meet certain conditions on a tag. The selection interface is the same as the search filter editor in the collection browser. Select a tag type from the drop-down and fill in the constraint. (Hint: You can use a number of these in an <guilabel>And</guilabel> bias.)</para>
      </listitem>
   </varlistentry>
   <varlistentry><term><emphasis role="bold">Album Play</emphasis></term>
     <listitem>
-    <para>This bias matches tracks related to the previous item in the playlist by album. You can select the details of the bias from the drop-down menu. For example, <quote>Track directly follows previous track in album</quote> is used in the example Album Play playlist to ensure full albums are played in order.</para>
+    <para>This bias matches tracks related to the previous item in the playlist by album. You can select the details of the bias from the drop-down menu. For example, <guilabel>Track directly follows previous track in album</guilabel> is used in the example <guilabel>Album Play</guilabel> playlist to ensure full albums are played in order.</para>
      </listitem>
   </varlistentry>
   <varlistentry><term><emphasis role="bold">Quiz Play</emphasis></term>
@@ -5326,7 +5370,7 @@
 <sect3 id="proportional-bias"><title>Proportional Bias</title> 
 <para>Proportional biases match a certain portion of the playlist to a specific value, such as Artist, Composer, Title, Genre, Year, &etc; You can specify as many biases as you like to work together. This is a very flexible way of choosing your playlist.
 </para>
-<para>Don't be confused, though -- a dynamic playlist containing the following two biases: 50% Artist: Michael Jackson, 50% Genre:Rock can contain tracks that are from neither Michael Jackson nor have a Rock genre. This is because while both biases are used, half the time a track will be chosen which is Jackson, and half the time not, and the same for Rock. So if you want 50/50 Jackson and Rock, set the biases to 100% for each.
+<para>Don't be confused, though &mdash; a dynamic playlist containing the following two biases: 50% Artist: Michael Jackson, 50% Genre:Rock can contain tracks that are from neither Michael Jackson nor have a Rock genre. This is because while both biases are used, half the time a track will be chosen which is Jackson, and half the time not, and the same for Rock. So if you want 50/50 Jackson and Rock, set the biases to 100% for each.
 </para>
 </sect3>
 <sect3 id="custom-bias"><title>Custom Bias</title> 
@@ -5336,7 +5380,7 @@
 </para>
 </sect3>
 <sect3 id="fuzzy-bias"><title>Fuzzy Bias</title> 
-<para>Fuzzy bias will match an approximate value and has a strictness field, as opposed to a percentage one. More strictness means more exact matches. The resulting playlist will consist of tracks normally distributed around the requested value.
+<para>Fuzzy bias will match an approximate value and has a <guilabel>strictness</guilabel> slider, as opposed to a percentage one. More strictness means more exact matches. The resulting playlist will consist of tracks normally distributed around the requested value.
 </para>
 </sect3>
 </sect2>
@@ -5345,7 +5389,7 @@
 </para>
 <para>The default number of items in the playlist is your 5 previous plays plus 10 upcoming items. With the currently playing track, this makes 16 items in the playlist at any given time. The number of tracks can be changed right below the <guilabel>On</guilabel> checkbox.
 </para>
-<para>Below that is the dropdown menu for loading saved playlists, the <guilabel>Save</guilabel> button, and the <guilabel>Delete</guilabel> button.
+<para>Below that is the dropdown menu for loading saved playlists, the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-save.png" format="PNG"/> </imageobject> </inlinemediaobject> button to save playlists, and the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-edit-delete.png" format="PNG"/> </imageobject> </inlinemediaobject> button to delete them.
 </para>
 </sect2>
 <sect2 id="a-dynamic-playlist-in-use16"><title>A dynamic playlist in use</title> 
@@ -5365,7 +5409,7 @@
 </sect2>
 </sect1>
 <sect1 id="automatic-playlist-generator"><title>Automatic Playlist Generator</title> 
-<para>The <emphasis>Automated Playlist Generator (APG)</emphasis> automatically generates playlists based on constraints you set. These constraints can be set based on song data (Author, Artist, Genre) or access time (Last Time Played). There are also special constraints to determine how &amarok; is going to look for songs. You will find the <emphasis>APG</emphasis> in your <emphasis>Media</emphasis> pane, <menuchoice><guimenu>Playlists</guimenu><guimenuitem>Automated Playlist Generator</guimenuitem></menuchoice>.
+<para>The <guilabel>Automated Playlist Generator (APG)</guilabel> automatically generates playlists based on constraints you set. These constraints can be set based on song data (artist, genre, year) or access time (last played). There are also special constraints to determine how &amarok; is going to look for songs. You will find the <emphasis>APG</emphasis> in your <guilabel>Media Sources</guilabel> pane, <menuchoice><guimenu>Playlists</guimenu><guimenuitem>Automated Playlist Generator</guimenuitem></menuchoice>.
 </para>
 <sect2 id="apg-presets-toolbar"><title>APG Presets Toolbar</title> 
 <para>
@@ -5373,7 +5417,7 @@
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="menuitems.png" format="PNG"/>
+      <imagedata fileref="amarok-apg-presets-toolbar.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
@@ -5381,16 +5425,15 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>This is the <emphasis>APG Presets</emphasis> toolbar. From left to right we have the following buttons:
+<para>This is the <guilabel>APG Presets</guilabel> toolbar. From left to right we have the following buttons:
 </para>
 <itemizedlist>
-<listitem><para>Add new preset: Adds a blank preset that can be modified.</para></listitem>
-<listitem><para>Edit selected preset: Opens up the <emphasis>APG Preset Editor</emphasis> window to edit the currently selected preset constraints.</para></listitem>
-<listitem><para>Delete selected preset: Removes the selected preset from the list; can <guilabel>NOT</guilabel> be undone.</para></listitem>
-<listitem><para>Import new preset: Import a preset from a .xml file. Has the potential to be malformed if edited outside &amarok;; use the constraint tester.</para></listitem>
-<listitem><para>Export the selected preset: Export the selected preset to a .xml file that can be imported.</para></listitem>
-<listitem><para>Run constraint tester: Tests the selected preset for consistency.</para></listitem>
-<listitem><para>Run <emphasis>APG</emphasis> with selected preset: Loads <emphasis>APG</emphasis> with the selected preset and automatically generates a playlist.</para></listitem>
+<listitem><para><inlinemediaobject> <imageobject> <imagedata fileref="Icon-list-add.png" format="PNG"/> </imageobject> </inlinemediaobject> Adds a blank preset that can be modified.</para></listitem>
+<listitem><para><inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-properties.png" format="PNG"/> </imageobject> </inlinemediaobject> Opens up the <guilabel>APG Preset Editor</guilabel> window to edit the currently selected preset constraints.</para></listitem>
+<listitem><para><inlinemediaobject> <imageobject> <imagedata fileref="Icon-list-remove.png" format="PNG"/> </imageobject> </inlinemediaobject> Removes the selected preset from the list; can <emphasis>not</emphasis> be undone.</para></listitem>
+<listitem><para><inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-import.png" format="PNG"/> </imageobject> </inlinemediaobject> Import a preset from a .xml file. Has the potential to be malformed if edited outside &amarok;; use the constraint tester.</para></listitem>
+<listitem><para><inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-export.png" format="PNG"/> </imageobject> </inlinemediaobject> Export the selected preset to a .xml file that can be imported.</para></listitem>
+<listitem><para><inlinemediaobject> <imageobject> <imagedata fileref="Icon-go-next.png" format="PNG"/> </imageobject> </inlinemediaobject> Loads <guilabel>APG</guilabel> with the selected preset and automatically generates a playlist.</para></listitem>
 </itemizedlist>
 </sect2>
 <sect2 id="working-with-presets"><title>Working with Presets</title> 
@@ -5410,16 +5453,16 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>Presets are sets of rules that &amarok; <emphasis>APG</emphasis> will use when generating playlists. These rules are going to be referred to as <emphasis>constraints</emphasis> from now on; every preset is determined by the constraints which create it. Groups of constraints hierarchically and logically organized are called constraint trees.
+<para>Presets are sets of rules that &amarok; <guilabel>APG</guilabel> will use when generating playlists. These rules are going to be referred to as <emphasis>constraints</emphasis> from now on; every preset is determined by the constraints which create it. Groups of constraints hierarchically and logically organized are called constraint trees.
 </para>
 <sect3 id="constraints"><title>Constraints</title> 
-<para>Constraints are the building blocks of constraint trees. They are simple statements that the <emphasis>APG</emphasis> will use to add songs to the playlist it generates To add a constraint to the currently selected preset constraint tree use the <guilabel>Edit selected preset</guilabel> option from the <emphasis>APG Preset toolbar</emphasis> and click the <guilabel>Add new</guilabel> option on the <emphasis>APG Preset Editor</emphasis> window. Note that this will add the constraint under the selected item (constraint or constraint group).
+<para>Constraints are the building blocks of constraint trees. They are simple statements that the <guilabel>APG</guilabel> will use to add songs to the playlist it generates. To add a constraint to the currently selected preset constraint tree click the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-properties.png" format="PNG"/> </imageobject> </inlinemediaobject> button in the <guilabel>APG Preset toolbar</guilabel> and click the <guilabel>Add new</guilabel> option on the <guilabel>APG Preset Editor</guilabel> window. Note that this will add the constraint under the selected item (constraint or constraint group).
 </para>
 <para>Many different kinds of constraints can be added; each works in a different way inside the tree.
 </para>
 </sect3>
 <sect3 id="constraint-types"><title>Constraint Types</title> 
-<para>&amarok; <emphasis>APG</emphasis> supports several types of constraints:
+<para>&amarok; <guilabel>APG</guilabel> supports several types of constraints:
 </para>
 <para>
 <informaltable>
@@ -5436,7 +5479,7 @@
     <para><guilabel>Match Tags</guilabel></para>
     </entry>
     <entry>
-    <para>The most important constraints, because they can be set to virtually any information regarding the file, including: artist name, album name, genre, year, last time played, bpm, sample rate and score.</para>
+    <para>The most important constraints, because they can be set to virtually any information regarding the file, including: artist name, album name, genre, year, last played, and score.</para>
     </entry>
   </row>
   <row>
@@ -5476,22 +5519,22 @@
 </para>
 <para>Note that you can change how constraints work in various manners, such as setting the fuzzy-exact slider, which determines how closely the constraint is going to be followed.
 </para>
-<para>Another way to modify constraints that is present mainly on <guilabel>Match Tags</guilabel> is the option box at the left of the value to: <guilabel>contains</guilabel> (which will consider any songs that have the according text in their tag), <guilabel>matches</guilabel> (which will consider songs whose corresponding match exactly the one in the text box), <guilabel>starts with</guilabel> and <guilabel>ends with</guilabel>.
+<para>Another way to modify constraints that is present on <guilabel>Match Tags</guilabel> with a textbased tag is found in the line below the <guilabel>Field</guilabel> option box. In the text field to the right you write the text to be matched and in the option box at the left of the value you can select <guilabel>contains</guilabel> (which will consider any songs that have the according text in their tag), <guilabel>matches</guilabel> (which will consider songs whose corresponding tag match exactly the one in the text box), <guilabel>starts with</guilabel> and <guilabel>ends with</guilabel>.
 </para>
-<para>You can also edit the way value-based (such as the Length constraints and the playcount <guilabel>Match Tag</guilabel> constraint) behave by changing the option close to the text to settings such as <guilabel>fewer than</guilabel>, <guilabel>equals</guilabel> and <guilabel>more than</guilabel>.
+<para>Similarly, you can also edit the way value-based constraints (such as the <guilabel>Playlist Length</guilabel> constraints and the playcount <guilabel>Match Tag</guilabel> constraint) behave by changing the option close to the text to settings such as <guilabel>fewer than</guilabel>, <guilabel>equals</guilabel> and <guilabel>more than</guilabel>.
 </para>
 <para>Another way to change constraint behavior is to check the <guilabel>invert</guilabel> checkbox on them, this makes them behave the opposite way, a <quote>Match Tag: artist contains <replaceable>name</replaceable></quote> becomes <quote>Match Tag: artist not contains <replaceable>name</replaceable></quote>.
 </para>
 </sect3>
 <sect3 id="constraint-groups"><title>Constraint Groups</title> 
-<para>Constraint groups can be added from the <guilabel>Add new</guilabel> option from the <emphasis>APG Preset Editor</emphasis> window, constraints under a group are logically linked, the same applies to groups under groups.
+<para>Constraint groups can be added from the <guilabel>Add new</guilabel> option from the <guilabel>APG Preset Editor</guilabel> window, constraints under a group are logically linked, the same applies to groups under groups.
 </para>
 <para>There are currently two kinds of constraint groups: <quote>Match all</quote> groups and <quote>Match any</quote> groups. <quote>Match all</quote> groups require that all the constraints under them are met by the song. <quote>Match any</quote> groups require that at least one of the constraints under them are met by the song. To add a constraint under a specific group highlight it on the preset editor and use the <guilabel>Add new</guilabel> option.
 </para>
 </sect3>
 </sect2>
 <sect2 id="using-your-presets"><title>Using your Presets</title> 
-<para>Once you set up a preset, you just have to select it on the <emphasis>APG Presets</emphasis> panel and click the rightmost button on the toolbar, <guilabel>Run APG with selected preset</guilabel>. You will then have a playlist matching your criteria, like this:
+<para>Once you set up a preset, you just have to select it on the <guilabel>APG Presets</guilabel> panel in the <guilabel>Automated Playlist Generator (APG)</guilabel> and click <inlinemediaobject> <imageobject> <imagedata fileref="Icon-go-next.png" format="PNG"/> </imageobject> </inlinemediaobject> the toolbar to run <guilabel>APG</guilabel> with the selected preset. You will then have a playlist matching your criteria, like this:
 </para>
 <para>
 <screenshot>
@@ -5544,43 +5587,43 @@
 </para>
 <para>In order for &amarok; to analyze your music files to create moodbars, you will need the <guilabel>Moodbar</guilabel> program (see below for <link linkend="source-downloads">downloads</link> and binary packages).
 </para>
-<para>The <guilabel>Moodbar</guilabel> package requires <emphasis>GStreamer</emphasis> and various plugins depending on the filetypes you use (see <link linkend="supported-filetypes">Supported filetypes</link>).  You will <guilabel>not</guilabel> need the phonon-backend-gstreamer package to create .mood files.
+<para>The <guilabel>Moodbar</guilabel> package requires <emphasis>GStreamer</emphasis> and various plugins depending on the filetypes you use (see <link linkend="supported-filetypes">Supported filetypes</link>).  You will <emphasis>not</emphasis> need the phonon-backend-gstreamer package to create .mood files.
 </para>
-<para>There are two parts to the new <guilabel>Moodbar</guilabel> implementation: the <guilabel>Moodbar</guilabel> package, which contains a program that takes a music file and generates a .mood file, and support code in the &amarok; source, which runs the binary and displays the Moodbar.  The <guilabel>Moodbar</guilabel> package depends on the <emphasis>GStreamer</emphasis> libraries.  Without the <guilabel>Moodbar</guilabel> package, Amarok cannot generate the moodbars for your music.
+<para>There are two parts to the new <guilabel>Moodbar</guilabel> implementation: the <guilabel>Moodbar</guilabel> package, which contains a program that takes a music file and generates a .mood file, and support code in the &amarok; source, which runs the binary and displays the Moodbar.  The <guilabel>Moodbar</guilabel> package depends on the <emphasis>GStreamer</emphasis> libraries.  Without the <guilabel>Moodbar</guilabel> package, &amarok; cannot generate the moodbars for your music.
 </para>
-<para>As an alternative, there is a new script which will create moodbar files for tracks in an &amarok; playlist; this is an exception to the above. The script needs nothing but Amarok to work, but it only creates the .mood files as they are played in the <emphasis>Playlist</emphasis>.
+<para>As an alternative, there is a new script which will create moodbar files for tracks in an &amarok; playlist; this is an exception to the above. The script needs nothing but &amarok; to work, but it only creates the .mood files as they are played in the <guilabel>Playlist</guilabel>.
 </para>
-<para>The <emphasis>Moodbar</emphasis> is due to the work of Gavin Wood and Simon O'Keefe, who designed the algorithms; their original paper is <ulink url="http://cratoo.de/amarok/ismir-crc.pdf">here</ulink>.
+<para>The <guilabel>Moodbar</guilabel> is due to the work of Gavin Wood and Simon O'Keefe, who designed the algorithms; their original paper is <ulink url="http://cratoo.de/amarok/ismir-crc.pdf">here</ulink>.
 </para>
 <sect2 id="summary-of-requirements"><title>Summary of Requirements</title> 
 <itemizedlist>
-<listitem><para>The <guilabel>Moodbar</guilabel> binary, in your PATH (it should be listed upon running <userinput>which moodbar</userinput> from a console) -- Remember to configure the <guilabel>Moodbar</guilabel> package with <userinput>./configure --prefix=`pkg-config --variable=prefix gstreamer-0.10`</userinput></para></listitem>
-<listitem><para>The <emphasis>GStreamer</emphasis> 0.10 library and <link linkend="supported-filetypes">plugins</link> for the formats you want <guilabel>Moodbar</guilabel> to be able to analyse.</para></listitem>
-<listitem><para>The <emphasis>Fastest Fourier Transform In The West</emphasis> (http://www.fftw.org) <emphasis>FFTW</emphasis> library version 3.0 or above (at least single-precision floating point version - libfftw3f) -- If your platform does not provide this for you or you need to compile your own version, remember to configure the <emphasis>FFTW</emphasis> package with <userinput>./configure --enable-single</userinput></para></listitem>
-<listitem><para>A version of &amarok; with a <guilabel>Use moods</guilabel> option in the General section of the configuration screen. This means 1.4.4 or higher in the 1.4 series or 2.2.2 or higher in the 2.x series.</para></listitem>
+<listitem><para>The <guilabel>Moodbar</guilabel> binary, in your PATH (it should be listed upon running <userinput>which moodbar</userinput> from a console) &mdash; Remember to configure the <guilabel>Moodbar</guilabel> package with <userinput>./configure --prefix=`pkg-config --variable=prefix gstreamer-0.10`</userinput></para></listitem>
+<listitem><para>The GStreamer 0.10 library and <link linkend="supported-filetypes">plugins</link> for the formats you want <guilabel>Moodbar</guilabel> to be able to analyse.</para></listitem>
+<listitem><para>The <emphasis>Fastest Fourier Transform In The West</emphasis> (<ulink url="http://www.fftw.org">fftw.org</ulink>)  FFTW library version 3.0 or above (at least single-precision floating point version - libfftw3f) &mdash; If your platform does not provide this for you or you need to compile your own version, remember to configure the  FFTW package with <userinput>./configure --enable-single</userinput></para></listitem>
+<listitem><para>A version of &amarok; with a <guilabel>Use moods</guilabel> option in the <guilabel>General</guilabel> section of the configuration screen. This means 1.4.4 or higher in the 1.4 series or 2.2.2 or higher in the 2.x series.</para></listitem>
 </itemizedlist>
-<para><note><para>Systems with package managers should automatically install the <emphasis>GStreamer</emphasis> plugins and <emphasis>FFTW</emphasis> along with <guilabel>Moodbar</guilabel>; this information is provided mostly for people who want or need to compile from source or manually install packages.</para></note>
+<para><note><para>Systems with package managers should automatically install the GStreamer plugins and FFTW along with the Moodbar package; this information is provided mostly for people who want or need to compile from source or manually install packages.</para></note>
 </para>
 </sect2>
 <sect2 id="usage"><title>Usage</title> 
 <para>Currently .mood files must generated manually. To do this for your entire collection, use the <link linkend="moodbar-file-generation-script">Moodbar File Generation Script</link> described below.
 </para>
-<para>To enable the display of moodbars in &amarok;, activate it in the configuration: <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>General</guimenuitem><guimenuitem>Show Moodbar in Progress Slider</guimenuitem></menuchoice>. Moodbars should now appear in the track sliders in the player window and the playlist window; there will also be a mood field that you may add to your playlist layouts.
+<para>To enable the display of moodbars in &amarok;, activate it in the configuration: <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>General</guimenuitem><guimenuitem>Show Moodbar in Progress Slider</guimenuitem></menuchoice>. Moodbars should now appear in the track sliders in the player window and <guilabel>Playlist</guilabel>; there will also be a mood field that you may add to your playlist layouts.
 </para>
 </sect2>
 <sect2 id="installation"><title>Installation</title> 
 <sect3 id="source-downloads"><title>Source Downloads</title> 
-<para>Latest release: <ulink url="http://pwsp.net/~qbob/moodbar-0.1.2.tar.gz">moodbar-0.1.2.tar.gz</ulink> -- this is the <guilabel>Moodbar</guilabel> source package, which contains the <guilabel>Moodbar</guilabel> program (which generates .mood files from music files), and a <emphasis>GStreamer</emphasis> plugin that does the work. The <guilabel>Moodbar</guilabel> package  needs <emphasis>GStreamer</emphasis> 0.10.* installed, plus the 0.10.* version of <link linkend="supported-filetypes">various plugins</link>. Be sure to install the <guilabel>Moodbar</guilabel> package into the <guilabel>same prefix</guilabel> as <emphasis>GStreamer</emphasis> -- follow the instructions in the INSTALL file.
+<para>Latest release: <ulink url="http://pwsp.net/~qbob/moodbar-0.1.2.tar.gz">moodbar-0.1.2.tar.gz</ulink> &mdash; this is the Moodbar source package, which contains the <guilabel>Moodbar</guilabel> program (which generates .mood files from music files), and a GStreamer plugin that does the work. The Moodbar package  needs GStreamer 0.10.* installed, plus the 0.10.* version of <link linkend="supported-filetypes">various plugins</link>. Be sure to install the Moodbar package into the <emphasis>same prefix</emphasis> as GStreamer &mdash; follow the instructions in the INSTALL file.
 </para>
 <para>If you find any bugs, please submit a bug report at <ulink url="http://bugs.kde.org">bugs.kde.org</ulink>.
 </para>
 </sect3>
 <sect3 id="debian-packages"><title>Debian packages</title> 
-<para>A package for <guilabel>Moodbar</guilabel> is now available in Debian unstable. Simply run <userinput>apt-get install moodbar</userinput> . You will likely also want to install <emphasis>gstreamer0.10-plugins-ugly</emphasis>, <emphasis>gstreamer0.10-plugins-good</emphasis>, and <emphasis>gstreamer0.10-plugins-bad</emphasis> for format support.
+<para>A package for Moodbar is now available in Debian unstable. Simply run <userinput>apt-get install moodbar</userinput> . You will likely also want to install gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good, and gstreamer0.10-plugins-bad for format support.
 </para>
 </sect3>
 <sect3 id="kubuntu-and-ubuntu-packages"><title>Kubuntu and Ubuntu packages</title> 
-<para>A package for <guilabel>Moodbar</guilabel> is available in the official package repository; just ensure the universe section is activated (which should be default anyway). Just install the package 'moodbar' with your preferred package manager (Kpackagekit, Aptitude, Adept, Synaptic). You will likely also want to install <emphasis>gstreamer0.10-plugins-ugly</emphasis>, <emphasis>gstreamer0.10-plugins-good</emphasis>, and <emphasis>gstreamer0.10-plugins-bad</emphasis> for format support.
+<para>A package for Moodbar is available in the official package repository; just ensure the universe section is activated (which should be default anyway). Just install the package moodbar with your preferred package manager (<guilabel>Kpackagekit</guilabel>, <guilabel>Aptitude</guilabel>, <guilabel>Adept</guilabel>, <guilabel>Synaptic</guilabel>). You will likely also want to install gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good, and gstreamer0.10-plugins-bad for format support.
 </para>
 <para>Or, to install, paste this into <guilabel>Firefox</guilabel> or &konqueror; and hit &Enter;.
 </para>
@@ -5588,17 +5631,17 @@
 </para>
 </sect3>
 <sect3 id="gentoo-ebuilds"><title>Gentoo ebuilds</title> 
-<para><guilabel>Moodbar</guilabel> is available in Portage, simply <userinput>emerge moodbar</userinput>  Unofficial ebuilds are no longer required.
+<para>Moodbar is available in Portage, simply <userinput>emerge moodbar</userinput>  Unofficial ebuilds are no longer required.
 </para>
 </sect3>
 <sect3 id="rpm-builds"><title>RPM builds</title> 
-<para>If you are a rpm-based distro user, you can build a .rpm using `rpmbuild` with latest
+<para>If you are a rpm-based distro user, you can build a .rpm using rpmbuild with latest
 </para>
 <para><ulink url="http://cvs.pld-linux.org/cgi-bin/cvsweb/SPECS/gstreamer-plugins-moodbar.spec">gstreamer-plugins-moodbar.spec</ulink>. The binary package will be soon available for <ulink url="http://pld-linux.org">PLD-linux</ulink> distro.
 </para>
 </sect3>
 <sect3 id="fedora"><title>Fedora</title> 
-<para>In Fedora 7 and higher (up to 16 as of this writing) <guilabel>Moodbar</guilabel> is available in the default repositories. Simply install it with your PackageKit GUI or with the following yum command:
+<para>In Fedora 7 and higher (up to 16 as of this writing) Moodbar is available in the default repositories. Simply install it with your PackageKit GUI or with the following yum command:
 </para>
 <para><userinput>yum install moodbar</userinput>
 </para>
@@ -5607,17 +5650,16 @@
 <para>openSUSE 11.0 and later, automatically install the following packages:
 </para>
 <itemizedlist>
-<listitem><para><emphasis>gstreamer-0_10-fluendo-mp3</emphasis></para></listitem>
-<listitem><para><emphasis>gstreamer-0_10-plugins-base</emphasis></para></listitem>
+<listitem><para>gstreamer-0_10-fluendo-mp3</para></listitem>
+<listitem><para>gstreamer-0_10-plugins-base</para></listitem>
 </itemizedlist>
 <para>Also, if your songs contain ID3 tags, you must install
 </para>
 <itemizedlist>
-<listitem><para><emphasis>gstreamer-0_10-plugins-good</emphasis></para></listitem>
+<listitem><para>gstreamer-0_10-plugins-good</para></listitem>
 </itemizedlist>
-<para><guilabel>Moodbar Installation</guilabel>
-</para>
-<para>1-Click Install for openSUSE 11.* - just choose your version and installation procedure will do the rest:
+<sect4 id="moodbar-installation"><title>Moodbar Installation</title> 
+<para>1-Click Install for openSUSE 11. - just choose your version and installation procedure will do the rest:
 </para>
 <itemizedlist>
 <listitem><para><ulink url="http://software.opensuse.org/ymp/home:dstoecker/openSUSE_11.2/moodbar.ymp">openSUSE 11.2</ulink></para></listitem>
@@ -5626,15 +5668,16 @@
 <para>To install, add the correct repository for your version of openSUSE to <guilabel>YaST</guilabel> then make sure the following packages are installed:
 </para>
 <itemizedlist>
-<listitem><para><emphasis>gstreamer-0_10-plugins-good</emphasis></para></listitem>
-<listitem><para><emphasis>gstreamer-0_10-plugins-ugly</emphasis></para></listitem>
-<listitem><para><emphasis>gstreamer-0_10-plugins-moodbar</emphasis></para></listitem>
-<listitem><para><emphasis>mad</emphasis></para></listitem>
+<listitem><para>gstreamer-0_10-plugins-good</para></listitem>
+<listitem><para>gstreamer-0_10-plugins-ugly</para></listitem>
+<listitem><para>gstreamer-0_10-plugins-moodbar</para></listitem>
+<listitem><para>mad</para></listitem>
 </itemizedlist>
 <para>For details on how to add repositories, see the <ulink url="http://en.opensuse.org/SDB:Add_package_repositories">openSUSE wiki</ulink>.
 </para>
-<para>If you are using the <guilabel>Smart</guilabel> software management tool, add the channel by entering the following at the command line, remember to change the URL to match your version of openSUSE: <userinput>smart channel --add http://software.opensuse.org/download/home:/d7/openSUSE_10.2/home:d7.repo</userinput> Then enter <userinput>smart update home:d7</userinput> You can now install the required packages by <userinput>smart install gstreamer10-plugins-moodbar</userinput> Dependencies are resolved automatically.
+<para>If you are using the <guilabel>Smart</guilabel> software management tool, add the channel by entering the following at the command line, remember to change the URL to match your version of openSUSE: <userinput><command>smart channel --add http://software.opensuse.org/download/home:/d7/openSUSE_10.2/home:d7.repo</command></userinput> Then enter <userinput>smart update home:d7</userinput> You can now install the required packages by <userinput>smart install gstreamer10-plugins-moodbar</userinput> Dependencies are resolved automatically.
 </para>
+</sect4>
 </sect3>
 <sect3 id="mandriva-packages"><title>Mandriva packages</title> 
 <para>First of all, you need to add PLF repositories, so visit <ulink url="http://easyurpmi.zarb.org">easyurpmi.zarb.org</ulink> and add them to your repositories list.
@@ -5642,14 +5685,14 @@
 <para>Then simply install the following packages:
 </para>
 <itemizedlist>
-<listitem><para><emphasis>gstreamer0.10-moodbar</emphasis></para></listitem>
-<listitem><para><emphasis>gstreamer0.10-plugins-ugly</emphasis></para></listitem>
-<listitem><para><emphasis>gstreamer0.10-plugins-good</emphasis></para></listitem>
-<listitem><para><emphasis>gstreamer0.10-plugins-bad</emphasis></para></listitem>
+<listitem><para>gstreamer0.10-moodbar</para></listitem>
+<listitem><para>gstreamer0.10-plugins-ugly</para></listitem>
+<listitem><para>gstreamer0.10-plugins-good</para></listitem>
+<listitem><para>gstreamer0.10-plugins-bad</para></listitem>
 </itemizedlist>
 </sect3>
 <sect3 id="arch-linux"><title>Arch &Linux;</title> 
-<para>There is a PKGBUILD for <guilabel>Moodbar</guilabel> in the <ulink url="http://aur.archlinux.org">Arch User Repository (AUR)</ulink> available <ulink url="http://aur.archlinux.org/packages.php?ID=6552">here</ulink>.
+<para>There is a PKGBUILD for Moodbar in the <ulink url="http://aur.archlinux.org">Arch User Repository (AUR)</ulink> available <ulink url="http://aur.archlinux.org/packages.php?ID=6552">here</ulink>.
 </para>
 <para>For more information about the AUR and working with PKGBUILDs, see the <ulink url="http://wiki.archlinux.org/index.php/AUR_User_Guidelines">AUR User Guidelines</ulink>.
 </para>
@@ -5731,19 +5774,15 @@
 </sect2>
 <sect2 id="troubleshooting"><title>Troubleshooting</title> 
 <itemizedlist>
-<listitem><para>If the <guilabel>Moodbar</guilabel> executable gives you a <emphasis>bus error</emphasis>, that almost always means it can't decode (or can't find) your file.  Take a look at the <link linkend="supported-filetypes">supported file types</link> below for ideas on which <emphasis>GStreamer</emphasis> plugins to install.  You can also try the command below to test whether <emphasis>GStreamer</emphasis> can decode your file:<userinput>gst-launch filesrc location=[file] ! decodebin ! fakesink</userinput></para></listitem>
-<listitem><para>If you are using the ffmpeg plugin to decode mp3s, you may also receive mysterious bus errors. The solution is to stop using the ffmpeg plugin, as it is extremely buggy -- use mad instead.</para></listitem>
-<listitem><para>If the <guilabel>Moodbar</guilabel> executable tells you that it can't find an element -- i.e, it gives an error message like <screen>Could not create element of type fftwspectrum, please install it.</screen></para></listitem>
-</itemizedlist>
-<para>-- that usually means that you either don't have the required plugins installed (see the plugin list <link linkend="supported-filetypes">here</link>), or that you didn't install the <guilabel>Moodbar</guilabel> package in the same prefix as <emphasis>GStreamer</emphasis>. If libmoodbar.so and libgstdecodebin.so are not in the same directory, then <guilabel>Moodbar</guilabel> is not installed in the same prefix as <emphasis>GStreamer</emphasis>.  Please read the INSTALL file for instructions on how to configure the moodbar package correctly. Alternatively, <emphasis>if you know what you're doing,</emphasis> it may be easier for you to take a look at the <filename>GST_PLUGIN_PATH</filename> environment variable.
-</para>
-<itemizedlist>
+<listitem><para>If the <guilabel>Moodbar</guilabel> executable gives you a <emphasis>bus error</emphasis>, that almost always means it can't decode (or can't find) your file.  Take a look at the <link linkend="supported-filetypes">supported file types</link> below for ideas on which GStreamer plugins to install.  You can also try the command below to test whether GStreamer can decode your file:<userinput>gst-launch filesrc location=[file] ! decodebin ! fakesink</userinput></para></listitem>
+<listitem><para>If you are using the ffmpeg plugin to decode mp3s, you may also receive mysterious bus errors. The solution is to stop using the ffmpeg plugin, as it is extremely buggy &mdash; use mad instead.</para></listitem>
+<listitem><para>If the <guilabel>Moodbar</guilabel> executable tells you that it can't find an element ;mdash; i.e, it gives an error message like <screen>Could not create element of type fftwspectrum, please install it.</screen>&mdash; that usually means that you either don't have the required plugins installed (see the plugin list <link linkend="supported-filetypes">here</link>), or that you didn't install the Moodbar package in the same prefix as GStreamer. If libmoodbar.so and libgstdecodebin.so are not in the same directory, then Moodbar is not installed in the same prefix as GStreamer.  Please read the INSTALL file for instructions on how to configure the moodbar package correctly. Alternatively, <emphasis>if you know what you're doing,</emphasis> it may be easier for you to take a look at the <filename>GST_PLUGIN_PATH</filename> environment variable.</para></listitem>
 <listitem><para>If you're wondering why the <guilabel>Moodbar</guilabel> isn't working, either not working at all or not working for a particular file, run the command below, where [file] is a music file:<userinput>moodbar -o test.mood [file]</userinput></para></listitem>
-<listitem><para>If you have multiple versions of <emphasis>GStreamer</emphasis> installed, make sure all of the required plugins are installed <guilabel>for version 0.10.*</guilabel> -- different versions <emphasis>cannot</emphasis> use each other's plugins.</para></listitem>
+<listitem><para>If you have multiple versions of GStreamer installed, make sure all of the required plugins are installed <emphasis>for version 0.10.*</emphasis> -- different versions <emphasis>cannot</emphasis> use each other's plugins.</para></listitem>
 </itemizedlist>
 </sect2>
 <sect2 id="supported-filetypes"><title>Supported Filetypes</title> 
-<para>You will need various <emphasis>Gstreamer</emphasis> plugins to enable <guilabel>Moodbar</guilabel> to analyze your files. Here is a list of the plugins you will need; make sure to install the <guilabel>0.10.* version</guilabel> of each plugin:
+<para>You will need various Gstreamer plugins to enable <guilabel>Moodbar</guilabel> to analyze your files. Here is a list of the plugins you will need; make sure to install the <emphasis>0.10.* version</emphasis> of each plugin:
 </para>
 <para>
 <informaltable>
@@ -5861,7 +5900,8 @@
 </screenshot></para>
     </entry>
     <entry>
-    <para><link linkend="amarok-on-non-kde-desktops">Non-KDE Desktops</link>&nbsp;</para>    </entry>
+    <para><link linkend="amarok-on-non-kde-desktops">Non-KDE Desktops</link>&nbsp;</para>
+    </entry>
   </row>
   <row>
     <entry>
@@ -5879,7 +5919,8 @@
 </screenshot></para>
     </entry>
     <entry>
-    <para><link linkend="amarok-on-windows">Windows</link>&nbsp;</para>    </entry>
+    <para><link linkend="amarok-on-windows">Windows</link>&nbsp;</para>
+    </entry>
   </row>
   <row>
     <entry>
@@ -5922,7 +5963,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>To configure the proxy for &amarok; on GNOME, modify and add this to ~/.kde/share/config/kioslaverc
+<para>To configure the proxy for &amarok; on GNOME, modify and add this to <filename>~/.kde/share/config/kioslaverc</filename>
 </para>
 <para><screen>
 [Proxy Settings][$i]
@@ -5947,7 +5988,7 @@ ftpProxy=http://username:password@proxyserver:port/
   </mediaobject>
 </screenshot>
 </para>
-<para>The &amarok; systray icon does not work by default with E17. So, one should disable the <guilabel>Show tray icon</guilabel> from <guilabel>General Options</guilabel> in &amarok; <emphasis>Preferences</emphasis>.
+<para>The &amarok; systray icon does not work by default with E17. So, one should disable the <guilabel>Show tray icon</guilabel> from <guilabel>General Options</guilabel> in &amarok;'s preferences.
 </para>
 </sect3>
 <sect3 id="xfce"><title>XFCE</title> 
@@ -5981,7 +6022,7 @@ ftpProxy=http://username:password@proxyserver:port/
   </mediaobject>
 </screenshot>
 </para>
-<para>If &amarok; is taking to long to load, add <userinput>exec kdeinit</userinput>  to ~/.fluxbox/startup.
+<para>If &amarok; is taking to long to load, add <userinput>exec kdeinit</userinput>  to <filename>~/.fluxbox/startup</filename>.
 </para>
 </sect3>
 <sect3 id="lxde"><title>LXDE</title> 
@@ -6008,22 +6049,21 @@ ftpProxy=http://username:password@proxyserver:port/
 <sect3 id="how-to-download"><title>How to download</title> 
 <para>If you run into any difficulties, please visit the <ulink url="http://amarok.kde.org/wiki/Download:Windows">Amarok on Windows wiki page</ulink> where the latest links will be kept updated. Otherwise, use the latest at the following links:
 </para>
-</sect3>
-<sect3 id="amarok-2-4-base-packages"><title>Amarok-2.4-Base-Packages</title> 
+<sect4 id="amarok-2-4-with-base-packages"><title>Amarok-2.4 with Base Packages</title> 
 <para><ulink url="http://kollide.net/~dgran10/amarok/">Here</ulink> you can download the Windows installer provided by Nitrostemp, in which you will find both the &amarok; package and the needed KDE compiler for Windows.
 </para>
-</sect3>
-<sect3 id="amarok-2-4-only"><title>Amarok-2.4-Only</title> 
+</sect4>
+<sect4 id="amarok-2-4-only"><title>Amarok-2.4 Only</title> 
 <para>If you already have &amarok; installed, you can update to the newest version from here: <ulink url="http://kollide.net/~dgran10/amarok/">Amarok-2.4-Only</ulink>. This package will update the files and save you downloading everything again.
 </para>
+</sect4>
 </sect3>
 <sect3 id="how-to-install"><title>How to install</title> 
 <para>The installation is very simple, just run the downloaded .exe file.
 </para>
 <para><warning><para>If you want to update be sure to remove your current install.</para></warning>
 </para>
-</sect3>
-<sect3 id="step-1"><title>Step 1</title> 
+<sect4 id="step-1"><title>Step 1</title> 
 <para>First, review on the license terms.
 </para>
 <para>
@@ -6039,8 +6079,8 @@ ftpProxy=http://username:password@proxyserver:port/
   </mediaobject>
 </screenshot>
 </para>
-</sect3>
-<sect3 id="step-2"><title>Step 2</title> 
+</sect4>
+<sect4 id="step-2"><title>Step 2</title> 
 <para>Second, choose the install location.
 </para>
 <para>If you want to change the default location, select  <guilabel>Browse...</guilabel> and choose a new location.
@@ -6058,8 +6098,8 @@ ftpProxy=http://username:password@proxyserver:port/
   </mediaobject>
 </screenshot>
 </para>
-</sect3>
-<sect3 id="step-3"><title>Step 3</title> 
+</sect4>
+<sect4 id="step-3"><title>Step 3</title> 
 <para>Wait a few minutes while the installation finishes.
 </para>
 <para>
@@ -6075,8 +6115,8 @@ ftpProxy=http://username:password@proxyserver:port/
   </mediaobject>
 </screenshot>
 </para>
-</sect3>
-<sect3 id="step-4"><title>Step 4</title>  
+</sect4>
+<sect4 id="step-4"><title>Step 4</title>  
 <para>When the installation is done, dismiss the window with <guilabel>Close</guilabel>. Your &amarok; installation has finished.
 </para>
 <para>
@@ -6092,6 +6132,7 @@ ftpProxy=http://username:password@proxyserver:port/
   </mediaobject>
 </screenshot>
 </para>
+</sect4>
 </sect3>
 <sect3 id="running-amarok"><title>Running Amarok</title> 
 <para>When the installation finishes,  you'll find an &amarok; shortcut on your desktop. To run &amarok;, just click the shortcut.
@@ -6127,7 +6168,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </mediaobject>
 </screenshot>
 </para>
-<para>The <guilabel>port</guilabel> command will fetch all the dependencies, compile, build and install them. This process may take quite some time, four to five hours in a recent install.
+<para>The <varname>port</varname> command will fetch all the dependencies, compile, build and install them. This process may take quite some time, four to five hours in a recent install.
 </para>
 </sect3>
 <sect3 id="screenshots17"><title>Screenshots</title> 
@@ -6153,318 +6194,315 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </sect3>
 </sect2>
 </sect1>
-</chapter>
-<chapter id="troubleshooting-and-common-problems"><title>Troubleshooting and Common Problems</title> 
+<sect1 id="troubleshooting-and-common-problems"><title>Troubleshooting and Common Problems</title> 
 <para>If you work through the procedures here, but don't have success, please come into IRC (irc://irc.freenode.org/amarok), post on the KDE Forum <ulink url="http://forum.kde.org/viewforum.php?f=127">Amarok section</ulink>, or write to the <ulink url="https://mail.kde.org/mailman/listinfo/amarok">Amarok list</ulink>.
 </para>
-<sect1 id="problems-installing"><title>Problems installing</title> 
-<sect2 id="bad-packaging"><title>Bad packaging</title> 
+<sect2 id="problems-installing"><title>Problems installing</title> 
+<sect3 id="bad-packaging"><title>Bad packaging</title> 
 <para>Occasionally, users will encounter bad packaging from the distributions; either from the wrong version of a component being included, or some needful part being left out. For some reason, this often happens with MySQL dependencies. Bug reports in these cases should be made to your distribution, not to bugs.kde.org.
 </para>
-</sect2>
-<sect2 id="difficulties-building-from-source"><title>Difficulties building from source</title> 
-<para>For those who wish to help out by testing the newest &amarok; versions, a local build is advised. Use this excellent guide: <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/">Compiling &amarok; from GIT Locally; a Full Summary</ulink>. Detailed information about git can be found here: <ulink url="http://techbase.kde.org/Getting_Started/Sources/KDE_git-tutorial">Techbase GIT Tutorial</ulink>.
+</sect3>
+<sect3 id="difficulties-building-from-source"><title>Difficulties building from source</title> 
+<para>For those who wish to help out by testing the newest &amarok; versions, a local build is advised. Use this excellent guide: <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/">Compiling Amarok from GIT Locally; a Full Summary</ulink>. Detailed information about git can be found here: <ulink url="http://techbase.kde.org/Getting_Started/Sources/KDE_git-tutorial">Techbase GIT Tutorial</ulink>.
 </para>
-<para>If you have built successfully before, and now are encountering errors, try removing <emphasis>CMakeCache.txt</emphasis> and try again. If that still errors out, remove the entire Build folder and build completely fresh.
+<para>If you have built successfully before, and now are encountering errors, try removing <filename>CMakeCache.txt</filename> and try again. If that still errors out, remove the entire Build folder and build completely fresh.
 </para>
 <para>The URL to pull from git has recently changed. Run <userinput><command>git remote set-url origin git://anongit.kde.org/amarok</command></userinput>  if you still using the old URL. Please ping us if you find the old link in our documents so we can update it everywhere.
 </para>
+</sect3>
 </sect2>
-</sect1>
-<sect1 id="problems-starting-up"><title>Problems starting up</title> 
-<sect2 id="playlist-errors"><title>Playlist errors</title> 
-<para>The current playlist can occasionally get corrupt, which will prevent &amarok; from starting. This can be fixed by simply removing the current playlist file in the &amarok; directory, $HOME/.kde/share/apps/amarok/current.xspf . Note that on some systems, this may be .kde4 rather than .kde.
+<sect2 id="problems-starting-up"><title>Problems starting up</title> 
+<sect3 id="playlist-errors"><title>Playlist errors</title> 
+<para>The current playlist can occasionally get corrupt, which will prevent &amarok; from starting. This can be fixed by simply removing the current playlist file in the &amarok; directory, <filename>$HOME/.kde/share/apps/amarok/current.xspf</filename> . Note that on some systems, this may be <filename>.kde4</filename> rather than <filename>.kde</filename>.
 </para>
-</sect2>
-<sect2 id="database-issues"><title>Database issues</title> 
-<para>If the database is corrupt and this is preventing &amarok; from starting, you can move the database to a backup location (or simply delete it). This will cause &amarok; to rebuild the database from scratch. Move the $HOME/.kde/share/apps/amarok/mysqle folder to a backup location (such as $HOME/.kde/share/apps/amarok/mysqle~) and restart &amarok;.
+</sect3>
+<sect3 id="database-issues"><title>Database issues</title> 
+<para>If the database is corrupt and this is preventing &amarok; from starting, you can move the database to a backup location (or simply delete it). This will cause &amarok; to rebuild the database from scratch. Move the <filename>$HOME/.kde/share/apps/amarok/mysqle</filename> folder to a backup location (such as <filename>$HOME/.kde/share/apps/amarok/mysqle~</filename>) and restart &amarok;.
 </para>
-</sect2>
-<sect2 id="other-issues-and-backing-up-settings"><title>Other issues and backing up settings</title> 
-<para>If the above two items do not help, or you otherwise need to restore &amarok; to a clean configuration, you can move to a backup location (or delete) the &amarok; directory at $HOME/.kde/share/apps/amarok and the &amarok; config files at $HOME/.kde/share/config/amarok* (there may be two or three files matching this pattern). Again, the directory may be .kde4 rather than .kde.
+</sect3>
+<sect3 id="other-issues-and-backing-up-settings"><title>Other issues and backing up settings</title> 
+<para>If the above two items do not help, or you otherwise need to restore &amarok; to a clean configuration, you can move to a backup location (or delete) the &amarok; directory at <filename>$HOME/.kde/share/apps/amarok</filename> and the &amarok; config files at <filename>$HOME/.kde/share/config/amarok*</filename> (there may be two or three files matching this pattern). Again, the directory may be <filename>.kde4</filename> rather than <filename>.kde</filename>.
 </para>
+</sect3>
 </sect2>
-</sect1>
-<sect1 id="problems-scanning-sorting-files"><title>Problems Scanning, Sorting files</title> 
+<sect2 id="problems-scanning-sorting-files"><title>Problems Scanning, Sorting files</title> 
 <para>&amarok; scans your music files on first startup, and will keep your collection up-to-date automatically, if you chose <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Collection</guimenuitem><guimenuitem>Watch folders for changes</guimenuitem></menuchoice>.
 </para>
 <para>If you don't want &amarok; scanning for changes, uncheck that, and use <menuchoice><guimenu>Tools</guimenu><guimenuitem>Update Collection</guimenuitem></menuchoice> whenever you make changes to your collection.
 </para>
-<para>More about <link linkend="collection-scanning">&amarok; collection scanning here</link>.
+<para>More about <link linkend="collection-scanning">Amarok collection scanning here</link>.
 </para>
-<sect2 id="corrupt-tags"><title>Corrupt tags</title> 
+<sect3 id="corrupt-tags"><title>Corrupt tags</title> 
 <para>Some folks notice that &amarok; seems to be missing some files. One of the causes can be corrupt tags, which you can check using the tagging application <ulink url="http://kid3.sourceforge.net/">kid3</ulink>. More about tagging <link linkend="tag-editor">here</link>.
 </para>
-<para>To find the bad file(s), run <emphasis>amarokcollectionscanner</emphasis> from the console. Details <ulink url="http://amarok.kde.org/wiki/Batch_Mode">here</ulink>.
+<para>To find the bad file(s), run <varname>amarokcollectionscanner</varname> from the console. Details <ulink url="http://amarok.kde.org/wiki/Batch_Mode">here</ulink>.
 </para>
-</sect2>
-<sect2 id="inability-to-write-tags"><title>Inability to write tags</title> 
+</sect3>
+<sect3 id="inability-to-write-tags"><title>Inability to write tags</title> 
 <para>If &amarok; is not saving changes to tags, you may have permissions problems. Ensure that your user has write permissions to your music. For example, <userinput>chown -R youruser Music/</userinput>  to change ownership to your user, or <userinput>chmod -R +w Music/</userinput>  to add write permissions to the owner.
 </para>
-</sect2>
-<sect2 id="incorrect-sorting-various-artists"><title>Incorrect Sorting (Various Artists)</title> 
+</sect3>
+<sect3 id="incorrect-sorting-various-artists"><title>Incorrect Sorting (Various Artists)</title> 
 <para>Sometimes people report that tracks are in Various Artists when they should not be, or are sorted into <quote>Unknown Album.</quote> What separates Various Artists albums and tracks and albums sorted under their artists is the Album Artist tag. When you click <guilabel>Show under Various Artists</guilabel> in the context (right-click) menu, that tag will be emptied if it is filled. The opposite happens to a file in Various Artists when you choose <guilabel>Do not show under Various Artists</guilabel>, but the Album Artist tag will be auto-filled from the Artist tag.
 </para>
 <para>If there is no Album tag, and no Album Artist tag, &amarok; will put the track into Unknown Album in Various Artists. If you want them sorted otherwise, tag them the way you want them sorted. If you don't know some of the information, try out the new <emphasis>MusicBrainz</emphasis> function in the tag editor, or use a tagging application.
 </para>
+</sect3>
 </sect2>
-</sect1>
-<sect1 id="problems-playing-files"><title>Problems playing files</title> 
-<sect2 id="amarok-skips-over-tracks-or-appears-to-play-them-without-sound"><title>Amarok skips over tracks, or appears to play them without sound</title> 
+<sect2 id="problems-playing-files"><title>Problems playing files</title> 
+<sect3 id="amarok-skips-over-tracks-or-appears-to-play-them-without-sound"><title>Amarok skips over tracks, or appears to play them without sound</title> 
 <para>If the files you are attempting to play are in mp3 format, please see instructions for enabling mp3 support on your distro, <link linkend="what-media-types-does-amarok-support">here</link>. Note that one piece of software being able to play mp3s on your system does not necessarily mean &amarok; has had the required codecs installed.
 </para>
-</sect2>
-<sect2 id="no-sound-or-bad-sound"><title>No sound, or bad sound</title> 
+</sect3>
+<sect3 id="no-sound-or-bad-sound"><title>No sound, or bad sound</title> 
 <para>For more general sound issues, first check what Phonon backend you are using in <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Playback</guimenuitem><guimenuitem>Configure Phonon</guimenuitem><guimenuitem>Backend</guimenuitem></menuchoice>. Consider switching to a different backend; VLC, GStreamer and Xine backends should be available from your distribution, although Xine is deprecated. Gstreamer or VLC is usually recommended.
 </para>
 <para>Also check whether the backend standalone software can play the files correctly; if not this is an issue with that software and you may find information in their help files. In other words, can Gstreamer or VLC play the same file? Will it play in <ulink url="help:/dragonplayer">Dragon</ulink>, which also uses phonon?
 </para>
 <para>If it seems to be a PulseAudio problem, and you want to provide a log to the PulseAudio developers, the troubleshooting page is <ulink url="https://wiki.ubuntu.com/PulseAudio/Log">here</ulink>.
 </para>
+</sect3>
 </sect2>
-</sect1>
-<sect1 id="crashes-and-bugs"><title>Crashes and bugs</title> 
+<sect2 id="crashes-and-bugs"><title>Crashes and bugs</title> 
 <itemizedlist>
 <listitem><para>How to run &amarok; from the command line: <userinput>amarok --debug --nofork</userinput></para></listitem>
-<listitem><para>&amarok; crashes, but <guilabel>Dr. Konqi</guilabel> doesn't pop up -- run in <guilabel>gdb</guilabel> with the following command: <userinput>gdb --args amarok --debug --nofork</userinput>  In gdb's console, type <emphasis>run</emphasis> to start &amarok;, reproduce the crash, and then in gdb type <emphasis>thread apply all bt</emphasis> to generate the backtrace.</para></listitem>
-<listitem><para>Filing bugs: If triggered, Dr. Konqi will provide an option to report a bug and do most of the work for you. If not, you will need to submit the bug manually at <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok"> bugs.kde.org</ulink>. For crash bugs, paste the backtrace from gdb as a comment.</para></listitem>
+<listitem><para>&amarok; crashes, but <guilabel>Dr. Konqi</guilabel> doesn't pop up &mdash; run in <guilabel>gdb</guilabel> with the following command: <userinput>gdb --args amarok --debug --nofork</userinput>  In <guilabel>gdb's</guilabel> console, type <varname>run</varname> to start &amarok;, reproduce the crash, and then in <guilabel>gdb</guilabel> type <varname>thread apply all bt</varname> to generate the backtrace.</para></listitem>
+<listitem><para>Filing bugs: If triggered, <guilabel>Dr. Konqi</guilabel> will provide an option to report a bug and do most of the work for you. If not, you will need to submit the bug manually at <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok"> bugs.kde.org</ulink>. For crash bugs, paste the backtrace from <guilabel>gdb</guilabel> as a comment.</para></listitem>
 <listitem><para>How to get personal support with problems: <ulink url="irc://irc.freenode.net/#amarok">IRC</ulink> (#amarok on Freenode IRC), <ulink url="http://forum.kde.org/viewforum.php?f=127">Forum</ulink>, <ulink url="https://mail.kde.org/mailman/listinfo/amarok">Mailing list</ulink></para></listitem>
 </itemizedlist>
+</sect2>
 </sect1>
-</chapter>
-<chapter id="frequently-asked-questions"><title>Frequently Asked Questions</title> 
-<sect1 id="what-is-amarok"><title>What is Amarok?</title> 
-<para>&amarok; is a music player. More information can be found in <link linkend="amarok-menu">a summary of its features</link> and the <ulink url="http://amarok.kde.org/en/screenshots">screenshot gallery</ulink>. To get started using &amarok;, see the <link linkend="quick-start-guide"><emphasis>Quick Start Guide</emphasis></link>. The <guilabel>Amarok Handbook</guilabel> is <link linkend="introduction">here</link>.
+<sect1 id="frequently-asked-questions"><title>Frequently Asked Questions</title> 
+<sect2 id="what-is-amarok"><title>What is Amarok?</title> 
+<para>&amarok; is a music player. More information can be found in <link linkend="amarok-menu">a summary of its features</link> and the <ulink url="http://amarok.kde.org/en/screenshots">screenshot gallery</ulink>. To get started using &amarok;, see the <link linkend="quick-start-guide">Quick Start Guide</link>. The &amarok; Handbook is <link linkend="introduction">here</link>.
 </para>
-</sect1>
-<sect1 id="what-are-the-differences-between-amarok-2-and-the-previous-versions"><title>What are the differences between Amarok 2 and the previous versions?</title> 
+</sect2>
+<sect2 id="what-are-the-differences-between-amarok-2-and-the-previous-versions"><title>What are the differences between Amarok 2 and the previous versions?</title> 
 <para>&amarok; 2 is a nearly complete code-rewrite so the codebase has little to do with &amarok; 1.4. If you are missing a feature, please file a wish in <ulink url="http://bugs.kde.org">Bugzilla</ulink>.
 </para>
 <para>Here you have a short list of some new features:
 </para>
 <itemizedlist>
 <listitem><para>Maybe the biggest new feature is the <emphasis>Service Framework</emphasis>, which integrates networked music sources directly into &amarok;. This includes online music stores, media servers, Web music lockers, and more. Thanks to it you'll get easy access to music provided by <emphasis>Magnatune</emphasis>, <emphasis>Jamendo</emphasis>, <emphasis>Last.fm</emphasis>, <emphasis>MP3Tunes Locker</emphasis>, <guilabel>Ampache</guilabel> and many others. Expect more big (and small) names to join during the 2.x lifecycle. See <link linkend="internet">Internet Media Sources</link> for more.</para></listitem>
-<listitem><para>Another exciting feature is the <emphasis>Context</emphasis> pane, occupying the central place of the &amarok;<command>'s</command> window, replacing the old <emphasis>Context Browser</emphasis> from the 1.x series. It displays contextual information about the music you play, like the album cover, track rating, labels, lyrics, artist information, related songs and artists, guitar and bass tabs and others. Thanks to the Plasma technology it uses, the <emphasis>Context</emphasis> pane can provide very rich content, like AJAX, video and animations, all in an eye-catching fashion. More about the <link linkend="the-context-pane">Context pane</link>.</para></listitem>
-<listitem><para>To accompany the <emphasis>Context</emphasis> pane, we developed a new, space efficient playlist. In order to preserve horizontal space, it groups the track name, artist, album name and cover art together, and allows further grouping by album names. Plus you can rearrange it to your heart's content! If you prefer the old 1.4 playlist, you can have that too. See <link linkend="changing-the-playlist-layout">Changing the Playlist layout</link> for more.</para></listitem>
+<listitem><para>Another exciting feature is the <guilabel>Context</guilabel> pane, occupying the central place of the &amarok;'s window, replacing the old <emphasis>Context Browser</emphasis> from the 1.x series. It displays contextual information about the music you play, like the album cover, track rating, labels, lyrics, artist information, related songs and artists, guitar and bass tabs and others. Thanks to the Plasma technology it uses, the <guilabel>Context</guilabel> pane can provide very rich content, like AJAX, video and animations, all in an eye-catching fashion. More about the <link linkend="the-context-pane">Context pane</link>.</para></listitem>
+<listitem><para>To accompany the <guilabel>Context</guilabel> pane, we developed a new, space efficient playlist. In order to preserve horizontal space, it groups the track name, artist, album name and cover art together, and allows further grouping by album names. Plus you can rearrange it to your heart's content! If you prefer the old 1.4 playlist, you can have that too. See <link linkend="changing-the-playlist-layout">Changing the Playlist layout</link> for more.</para></listitem>
 <listitem><para>Another great gem is the video support. Watching your music videos inside &amarok; feels great!</para></listitem>
-<listitem><para>We can't forget the <emphasis>Dynamic Playlists</emphasis>, which extend the old <emphasis>Dynamic Playlists</emphasis>. They allow you to define an automatically populated playlist, based on specific probability driven criteria called <quote>biases</quote>. The dynamic playlist is joined by the new Automatic Playlist Generator, used to generate lists for specific purposes and of a specified length. See <link linkend="dynamic-playlists">Dynamic Playlists</link> and <link linkend="automatic-playlist-generator">Automatic Playlist Generator</link> for more information.</para></listitem>
+<listitem><para>We can't forget the <guilabel>Dynamic Playlists</guilabel>, which extend the old <guilabel>Dynamic Playlists</guilabel>. They allow you to define an automatically populated playlist, based on specific probability driven criteria called <quote>biases</quote>. The <guilabel>Dynamic Playlists</guilabel> is joined by the new <guilabel>Automatic Playlist Generator</guilabel>, used to generate lists for specific purposes and of a specified length. See <link linkend="dynamic-playlists">Dynamic Playlists</link> and <link linkend="automatic-playlist-generator">Automatic Playlist Generator</link> for more information.</para></listitem>
 </itemizedlist>
 <para>There are many more great features like advanced scripting, dynamic collections, usability improvements, improved media devices handling, a new podcast manager, support for more software platforms, and others.
 </para>
-</sect1>
-<sect1 id="installation18"><title>Installation</title> 
-<sect2 id="can-i-use-amarok-without-kde"><title>Can I use Amarok without KDE?</title> 
-<para>&amarok; requires parts of KDE to be installed to run, but will run fine in Gnome or other desktop environments, including Windows and OSx. For &amarok; to run, kdelibs and kdebase-runtime need to be installed.
+</sect2>
+<sect2 id="installation18"><title>Installation</title> 
+<sect3 id="can-i-use-amarok-without-kde"><title>Can I use Amarok without KDE?</title> 
+<para>&amarok; requires parts of KDE to be installed to run, but will run fine in Gnome or other desktop environments, including Windows and OS X. For &amarok; to run, kdelibs and kdebase-runtime need to be installed.
 </para>
 <para>For some features to work correctly, such as the on-screen display, your window manager must be configured to support the relevant <emphasis>freedesktop.org</emphasis> standards. More about running &amarok; on other platforms <link linkend="amarok-on-other-platforms">here</link>.
 </para>
-</sect2>
-<sect2 id="why-does-amarok-use-kdelibs"><title>Why does Amarok use KDElibs?</title> 
+</sect3>
+<sect3 id="why-does-amarok-use-kdelibs"><title>Why does Amarok use KDElibs?</title> 
 <para>We are committed to supporting &amarok; on all platforms. We use KDElibs and Qt because they provide an excellent development environment. Aside from &Linux; and BSD, &amarok; works on Windows and MacOS, and there are installers available, but unfortunately we don't have (yet) the resources to offer full support for those operating systems. Almost all of our developers use free operating systems, and those have priority for us. We do however welcome Windows and OS X developers willing to help, and improve &amarok; on those platforms.
 </para>
+</sect3>
 </sect2>
-</sect1>
-<sect1 id="general-usage"><title>General usage</title> 
-<sect2 id="how-can-i-control-amarok-from-the-keyboard"><title>How can I control Amarok from the keyboard?</title> 
+<sect2 id="general-usage"><title>General usage</title> 
+<sect3 id="how-can-i-control-amarok-from-the-keyboard"><title>How can I control Amarok from the keyboard?</title> 
 <para>Keyboard shortcuts are available; see our <link linkend="keybinding-reference">Keybinding Reference page</link> for more information.
 </para>
 <para>To control &amarok; from the console, type <userinput>amarok --help-all</userinput> for a current complete list of available control commands.
 </para>
-</sect2>
-<sect2 id="where-can-i-get-support-for-amarok"><title>Where can I get support for Amarok?</title> 
-<para>There are several options. Often times problems you have with the initial install of &amarok; are best answered by experts of your particular &UNIX; or &Linux; distribution. You may seek help from fellow users and developers at the <ulink url="http://forum.kde.org/viewforum.php?f=127">&amarok; forum</ulink> and the <ulink url="irc://irc.freenode.net/amarok">&amarok; IRC channel</ulink> at irc.freenode.net channel #amarok.
+</sect3>
+<sect3 id="where-can-i-get-support-for-amarok"><title>Where can I get support for Amarok?</title> 
+<para>There are several options. Often times problems you have with the initial install of &amarok; are best answered by experts of your particular &UNIX; or &Linux; distribution. You may seek help from fellow users and developers at the <ulink url="http://forum.kde.org/viewforum.php?f=127">Amarok forum</ulink> and the <ulink url="irc://irc.freenode.net/amarok">Amarok IRC channel</ulink> at irc.freenode.net channel #amarok.
 </para>
 <para>Note that <ulink url="http://bugs.kde.org">bugzilla</ulink> is not a place to seek support. Please do enter a bug if you are serious about helping fix a bug in &amarok; itself.
 </para>
+</sect3>
 </sect2>
-</sect1>
-<sect1 id="questions-about-the-playlist"><title>Questions about the Playlist</title> 
+<sect2 id="questions-about-the-playlist"><title>Questions about the Playlist</title> 
 <para>More about the <link linkend="the-playlist-pane">Playlist here</link>.
 </para>
-<sect2 id="when-i-start-amarok-i-see-an-empty-playlist--how-do-i-actually-get-tracks-in-there"><title>When I start Amarok, I see an empty playlist. How do I actually get tracks in there?</title> 
-<para>Use the <emphasis>Collection</emphasis> on the left side to navigate to the desired artist/album/track. Then drag the files into the <emphasis>Playlist</emphasis> part on the right. You can use <emphasis>Dynamic Playlists</emphasis> or the <emphasis>Automatic Playlist Generator</emphasis> to populate your playlist. You can also drag files in from any file manager, such as &dolphin;. You may also double-click a track, artist or genre in your <emphasis>Collection</emphasis> or file-system, or right-click and <guilabel>Add to Playlist</guilabel> or <guilabel>Replace Playlist</guilabel>.
+<sect3 id="when-i-start-amarok-i-see-an-empty-playlist--how-do-i-actually-get-tracks-in-there"><title>When I start Amarok, I see an empty playlist. How do I actually get tracks in there?</title> 
+<para>Use the <guilabel>Media Sources</guilabel> on the left side to navigate to the desired artist/album/track. Then drag the files into the <guilabel>Playlist</guilabel> part on the right. You can use <guilabel>Dynamic Playlists</guilabel> or the <guilabel>Automatic Playlist Generator</guilabel> to populate your playlist. You can also drag files in from any file manager, such as &dolphin;. You may also double-click a track, artist or genre in your <guilabel>Media Sources</guilabel> or file-system, or right-click and <guilabel>Add to Playlist</guilabel> or <guilabel>Replace Playlist</guilabel>.
 </para>
-</sect2>
-<sect2 id="how-do-i-remove-tracks-from-the-playlist"><title>How do I remove tracks from the Playlist?</title> 
+</sect3>
+<sect3 id="how-do-i-remove-tracks-from-the-playlist"><title>How do I remove tracks from the Playlist?</title> 
 <para>Select the track(s) you want to remove, and press the <keycap>Delete</keycap> key. Or right-click the selection and choose <guilabel>Remove From Playlist</guilabel>.
 </para>
-</sect2>
-<sect2 id="how-can-i-load-a-playlist"><title>How can I load a playlist?</title> 
-<para>Just drag and drop the playlist file into the <emphasis>Playlist</emphasis>, like you would do with any other file. It's that simple!
+</sect3>
+<sect3 id="how-can-i-load-a-playlist"><title>How can I load a playlist?</title> 
+<para>Just drag and drop the playlist file into the <guilabel>Playlist</guilabel>, like you would do with any other file. It's that simple!
 </para>
-</sect2>
-<sect2 id="how-can-i-save-the-current-playlist"><title>How can I save the current playlist?</title> 
-<para>Use the <guilabel>Save Playlist As</guilabel> button in the <emphasis>Playlist</emphasis> toolbar. Slow-click the disc icon to chose to save to your harddisk, or to the database.
+</sect3>
+<sect3 id="how-can-i-save-the-current-playlist"><title>How can I save the current playlist?</title> 
+<para>Click the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-save.png" format="PNG"/> </imageobject> </inlinemediaobject> button in the <guilabel>Playlist</guilabel> toolbar. Slow-click the disc icon to chose to save to your harddisk, or to the database.
 </para>
+</sect3>
 </sect2>
-</sect1>
-<sect1 id="playback-questions"><title>Playback Questions</title> 
-<sect2 id="how-do-i-play-audio-cds"><title>How do I play audio CDs?</title> 
+<sect2 id="playback-questions"><title>Playback Questions</title> 
+<sect3 id="how-do-i-play-audio-cds"><title>How do I play audio CDs?</title> 
 <para>When you insert an audio CD, it will be shown as a local collection. Drag to the playlist or <emphasis>Pop-Up Dropper</emphasis>, or right-click the selected tracks and choose <guilabel>Add to Playlist</guilabel> or <guilabel>Replace Playlist</guilabel>.
 </para>
-</sect2>
-<sect2 id="what-media-types-does-amarok-support"><title>What media types does Amarok support?</title> 
-<para>&amarok; does not play music by itself, but lets <emphasis>Phonon</emphasis> do that job, specifically the <emphasis>VLC</emphasis>, <emphasis>GStreamer</emphasis> or <emphasis>Xine backends</emphasis> of <emphasis>Phonon</emphasis>. Therefore, whatever files they can play, &amarok; can play. To analyse file tags, &amarok; uses <emphasis>Taglib</emphasis>, which supports most file types that contain metadata.
+</sect3>
+<sect3 id="what-media-types-does-amarok-support"><title>What media types does Amarok support?</title> 
+<para>&amarok; does not play music by itself, but lets Phonon do that job, specifically the VLC, GStreamer or Xine backends of Phonon. Therefore, whatever files they can play, &amarok; can play. To analyse file tags, &amarok; uses Taglib, which supports most file types that contain metadata.
 </para>
-</sect2>
-<sect2 id="what-is-phonon-what-are-phonon-backends"><title>What is Phonon? What are Phonon backends?</title> 
+</sect3>
+<sect3 id="what-is-phonon-what-are-phonon-backends"><title>What is Phonon? What are Phonon backends?</title> 
 <para><emphasis>Phonon</emphasis> is the multimedia framework of KDE 4. You can find more information <link linkend="playback">here</link>.
 </para>
-<para>Usually the <emphasis>VLC backend</emphasis> works better than the <emphasis>Xine</emphasis> one, although this is not always true. We also suggest you try the <emphasis>Gstreamer backend</emphasis>, although it is still in development. You can find more details on installing backends in the <ulink url="http://amarok.kde.org/wiki/Download">download page</ulink>.
+<para>Usually the VLC backend works better than the Xine one, although this is not always true. We also suggest you try the Gstreamer backend, although it is still in development. You can find more details on installing backends in the <ulink url="http://amarok.kde.org/wiki/Download">download page</ulink>.
 </para>
-</sect2>
-<sect2 id="amarok-wont-play-mp3s-what-can-i-do"><title>Amarok won't play mp3s, what can I do?</title> 
-<para>Have a look at the <ulink url="http://amarok.kde.org/wiki/MP3">mp3 information page</ulink>. You probably lack the codecs required by your particular <emphasis>phonon-backend</emphasis> (<guilabel>VLC,</guilabel> <guilabel>Gstreamer</guilabel>, or <guilabel>Xine</guilabel>).
+</sect3>
+<sect3 id="amarok-wont-play-mp3s-what-can-i-do"><title>Amarok won't play mp3s, what can I do?</title> 
+<para>Have a look at the <ulink url="http://amarok.kde.org/wiki/MP3">mp3 information page</ulink>. You probably lack the codecs required by your particular Phonon backend (VLC, Gstreamer, or Xine).
 </para>
-</sect2>
-<sect2 id="i-cant-get-any-media-to-play-in-amarok-why-not"><title>I can't get any media to play in Amarok, why not?</title> 
+</sect3>
+<sect3 id="i-cant-get-any-media-to-play-in-amarok-why-not"><title>I can't get any media to play in Amarok, why not?</title> 
 <para>Test the sound frameworks at the command line:
 </para>
 <para><userinput>xine-check</userinput>
 </para>
-<para>(The <emphasis>xine-ui</emphasis> package contains <guilabel>xine-check</guilabel>)
+<para>(The xine-ui package contains <guilabel>xine-check</guilabel>)
 </para>
 <para>The output from these commands should help you identify the problems you are having and how to fix them.
 </para>
-</sect2>
-<sect2 id="i-have-a-second-soundcard-and-im-using-alsa--how-do-i-make-amarok-use-it-instead-of-the-default"><title>I have a second soundcard and I'm using ALSA. How do I make Amarok use it instead of the default?</title> 
-<para> Configure this in the <emphasis>Phonon</emphasis> system settings module. <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Playback</guimenuitem><guimenuitem>Configure Phonon</guimenuitem></menuchoice>
+</sect3>
+<sect3 id="i-have-a-second-soundcard-and-im-using-alsa--how-do-i-make-amarok-use-it-instead-of-the-default"><title>I have a second soundcard and I'm using ALSA. How do I make Amarok use it instead of the default?</title> 
+<para> Configure this in the Phonon system settings module. <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Playback</guimenuitem><guimenuitem>Configure Phonon</guimenuitem></menuchoice>
 </para>
-</sect2>
-<sect2 id="wheres-the-equalizer"><title>Where's the equalizer?</title> 
-<para>The equalizer is only available if you are using a <emphasis>Phonon</emphasis>-backend which supports it, which the modern ones now do. You can find it in the <guilabel>Tools</guilabel> menu. You can get more information about configuring <emphasis>Phonon</emphasis>-backends in your distribution in the <ulink url="http://amarok.kde.org/wiki/Download">download page</ulink>.
+</sect3>
+<sect3 id="wheres-the-equalizer"><title>Where's the equalizer?</title> 
+<para>The equalizer is only available if you are using a Phonon backend which supports it, which the modern ones now do. You can find it in the <guilabel>Tools</guilabel> menu. You can get more information about configuring Phonon backends in your distribution in the <ulink url="http://amarok.kde.org/wiki/Download">download page</ulink>.
 </para>
-</sect2>
-<sect2 id="how-do-i-turn-on-visualizations"><title>How do I turn on visualizations?</title> 
+</sect3>
+<sect3 id="how-do-i-turn-on-visualizations"><title>How do I turn on visualizations?</title> 
 <para>Visualizations are not implemented yet, but they will be very soon.
 </para>
-</sect2>
-<sect2 id="how-can-i-add-podcasts"><title>How can I add podcasts?</title> 
-<para>Go to <emphasis>Podcast</emphasis> section in the left toolbar and then select <guilabel>Add Podcast...</guilabel> Add the podcast URL where indicated. More about podcasts <link linkend="podcasts">here</link>.
+</sect3>
+<sect3 id="how-can-i-add-podcasts"><title>How can I add podcasts?</title> 
+<para>Go to <guilabel>Podcast</guilabel> section in the <guilabel>Media Sources</guilabel> pane and then select <guilabel>Add Podcast...</guilabel> Add the podcast URL where indicated. More about podcasts <link linkend="podcasts">here</link>.
 </para>
 <para>We also have some services, such as gpodder and Podcast Directory to help you find great podcasts. Enable services in the <guilabel>Settings</guilabel> menu: <menuchoice><guimenu>Configure Amarok</guimenu><guimenuitem>Plugins</guimenuitem></menuchoice>.
 </para>
-</sect2>
-<sect2 id="how-can-i-use-amarok-to-stream-to-my-own-radio-station"><title>How can I use Amarok to stream to my own radio station?</title> 
+</sect3>
+<sect3 id="how-can-i-use-amarok-to-stream-to-my-own-radio-station"><title>How can I use Amarok to stream to my own radio station?</title> 
 <para>If you want to stream directly to an icecast or shoutcast server the answer simply is: it is not supported. You could use <ulink url="http://giss.tv/sahabuntu/doc/idjc.html">IDJC</ulink> for that.
 </para>
+</sect3>
 </sect2>
-</sect1>
-<sect1 id="general-questions"><title>General questions</title> 
-<sect2 id="what-are-scripts"><title>What are scripts?</title> 
-<para>They are little pieces of software that add some functions to &amarok;. There are a lot of scripts, and you can find them in <ulink url="http://www.kde-apps.org/index.php?xcontentmode=57">kde-apps.org</ulink> or you can find and install them inside &amarok; using the <emphasis>Script Manager</emphasis> (until &amarok; 2.4.1). More details <link linkend="script-manager">here</link>. After &amarok; 2.4.1, you will find the Script Manager from the <guilabel>Settings</guilabel> menu, <menuchoice><guimenu>Configure Amarok</guimenu><guimenuitem>Scripts</guimenuitem></menuchoice>.
+<sect2 id="general-questions"><title>General questions</title> 
+<sect3 id="what-are-scripts"><title>What are scripts?</title> 
+<para>They are little pieces of software that add some functions to &amarok;. There are a lot of scripts, and you can find them in <ulink url="http://www.kde-apps.org/index.php?xcontentmode=57">kde-apps.org</ulink> or you can find and install them inside &amarok; using the <guilabel>Script Manager</guilabel> (until &amarok; 2.4.1). More details <link linkend="script-manager">here</link>. After &amarok; 2.4.1, you will find the <guilabel>Script Manager</guilabel> from the <guilabel>Settings</guilabel> menu, <menuchoice><guimenu>Configure Amarok</guimenu><guimenuitem>Scripts</guimenuitem></menuchoice>.
 </para>
-</sect2>
-<sect2 id="can-i-use-amarok-1-4-scripts-in-amarok-2"><title>Can I use Amarok 1.4 scripts in Amarok 2?</title> 
-<para>No. A new and powerful scripting API has been created, which provides huge improvements but won't let you use your old scripts. The new scripting system is based on QtScript and will significantly reduce &amarok;<command>'s</command> dependencies, a huge problem for non-technical and cross-platform users, and will greatly reduce the amount of external processes launched at runtime.  Another advantage is that the new API will allow much deeper integration with &amarok; than the old scripting system. <ulink url="http://amarok.kde.org/wiki/Development/Script_API">Amarok Scripting API</ulink>.
+</sect3>
+<sect3 id="can-i-use-amarok-1-4-scripts-in-amarok-2"><title>Can I use Amarok 1.4 scripts in Amarok 2?</title> 
+<para>No. A new and powerful scripting API has been created, which provides huge improvements but won't let you use your old scripts. The new scripting system is based on QtScript and will significantly reduce &amarok;'s dependencies, a huge problem for non-technical and cross-platform users, and will greatly reduce the amount of external processes launched at runtime.  Another advantage is that the new API will allow much deeper integration with &amarok; than the old scripting system. <ulink url="http://amarok.kde.org/wiki/Development/Script_API">Amarok Scripting API</ulink>.
 </para>
-</sect2>
-<sect2 id="what-are-moodbars"><title>What are Moodbars?</title> 
-<para><emphasis>Moodbars</emphasis> show the mood of a song in the progress bar. More about <guilabel>Moodbar</guilabel> <link linkend="the-moodbar">here</link>.
+</sect3>
+<sect3 id="what-are-moodbars"><title>What are Moodbars?</title> 
+<para><guilabel>Moodbars</guilabel> show the mood of a song in the progress bar. More about <guilabel>Moodbar</guilabel> <link linkend="the-moodbar">here</link>.
 </para>
-</sect2>
-<sect2 id="can-i-play-video-files"><title>Can I play video files?</title> 
-<para>&amarok; is mainly a music player so no video file management, collection support, DVD playback, subtitles, or any other sophisticated features are available. However, the <emphasis>video applet</emphasis> lets you play YouTube video clips inside &amarok;.
+</sect3>
+<sect3 id="can-i-play-video-files"><title>Can I play video files?</title> 
+<para>&amarok; is mainly a music player so no video file management, collection support, DVD playback, subtitles, or any other sophisticated features are available. However, the <guilabel>Video</guilabel> applet lets you play YouTube video clips inside &amarok;.
 </para>
-</sect2>
-<sect2 id="is-it-amarok-amarok-or-amarok"><title>Is it Amarok, AmaroK or amaroK?</title> 
+</sect3>
+<sect3 id="is-it-amarok-amarok-or-amarok"><title>Is it Amarok, AmaroK or amaroK?</title> 
 <para>It is &amarok;! The former spelling was <emphasis>amaroK</emphasis>, but it was changed due to its strange look.
 </para>
-</sect2>
-<sect2 id="how-are-track-scores-determined"><title>How are track scores determined?</title> 
+</sect3>
+<sect3 id="how-are-track-scores-determined"><title>How are track scores determined?</title> 
 <para>&amarok; assigns a score (a number 0-100) to a song based on how many times you've listened to it and whether you skip the song without it finishing.  Every time the song finishes playing, the score is changed.
 </para>
 <para>Here you have an example script that can calculate scores:
 </para>
-<para>if( playcount &lt;= 0 ) # not supposed to be less, but what the hell.
-</para>
-<para>       newscore = ( prevscore + percentage ) / 2
-</para>
-<para>   else
-</para>
-<para>       newscore = ( ( prevscore * playcount ) + percentage ) / ( playcount + 1 )
-</para>
-<para>   end
+<para><screen>if( playcount &lt;= 0 ) # not supposed to be less, but what the hell.
+       newscore = ( prevscore + percentage ) / 2
+   else
+       newscore = ( ( prevscore * playcount ) + percentage ) / ( playcount + 1 )
+   end
+</screen>
 </para>
 <para>You can easily create your own script with your own algorithm. Look at the <ulink url="http://amarok.kde.org/wiki/Development/Scripting_HowTo_2.0">Script-Writing-Howto</ulink> for further information.
 </para>
-</sect2>
-<sect2 id="how-do-i-manually-change-a-tracks-score"><title>How do I manually change a track's score?</title> 
-<para>You may change the score manually in the <emphasis>Edit Track Details</emphasis> dialog, available by right-clicking on a track, and choosing the <guilabel>Summary</guilabel> tab. Before &amarok; 2.4.1, this is called the <guilabel>Statistics</guilabel> tab.
+</sect3>
+<sect3 id="how-do-i-manually-change-a-tracks-score"><title>How do I manually change a track's score?</title> 
+<para>You may change the score manually in the <guilabel>Track Details</guilabel> dialog, available by right-clicking on a track, choosing <guilabel>Edit Track Details</guilabel> and going to the <guilabel>Summary</guilabel> tab. Before &amarok; 2.4.1, this is called the <guilabel>Statistics</guilabel> tab.
 </para>
-</sect2>
-<sect2 id="but-i-also-want-that-stars-system-like-in-other-players"><title>But I also want that stars system like in other players!</title> 
-<para>&amarok;, of course, supports an user-defined rating system, and you can rate your tracks with a single click using the <emphasis>Current Track applet</emphasis>. You can also do this in the context menu (right-click) <menuchoice><guimenu>Edit Track Details</guimenu><guimenuitem>Summary</guimenuitem></menuchoice> tab (before Amarok 2.4.1, this is <menuchoice><guimenu>Edit Track Details</guimenu><guimenuitem>Statistics</guimenuitem></menuchoice>). If you have the rating stars displayed in your playlist layout, you can also edit there, with the <emphasis>slow double-click</emphasis>.
+</sect3>
+<sect3 id="but-i-also-want-that-stars-system-like-in-other-players"><title>But I also want that stars system like in other players!</title> 
+<para>&amarok;, of course, supports an user-defined rating system, and you can rate your tracks with a single click using the <guilabel>Current Track</guilabel> applet. You can also do this in the context menu (right-click) <menuchoice><guimenu>Edit Track Details</guimenu><guimenuitem>Summary</guimenuitem></menuchoice> tab (before Amarok 2.4.1, this is <menuchoice><guimenu>Edit Track Details</guimenu><guimenuitem>Statistics</guimenuitem></menuchoice>). If you have the rating stars displayed in your playlist layout, you can also edit there, with the <emphasis>slow double-click</emphasis>.
 </para>
-</sect2>
-<sect2 id="can-i-drag-and-drop-plasma-applets-from-the-main-window-to-the-desktop"><title>Can I drag and drop Plasma applets from the main window to the Desktop?</title> 
+</sect3>
+<sect3 id="can-i-drag-and-drop-plasma-applets-from-the-main-window-to-the-desktop"><title>Can I drag and drop Plasma applets from the main window to the Desktop?</title> 
 <para>No, but there are many Plasmoids available for your Desktop, which will let you display information provided by &amarok; as well as control &amarok;.
 </para>
-</sect2>
-<sect2 id="can-i-use-removable-media-inside-amarok"><title>Can I use removable media inside Amarok?</title> 
-<para>&amarok; has a greatly improved support for the media devices based on <emphasis>Solid</emphasis>, the KDE hardware layer, that doesn't need a lot of configuration. You should be able to just plug in your device and access it within &amarok;. Also, thanks to the <emphasis>Dynamic Collections</emphasis>, your media devices could become part of your music collection, and be searchable and accessible within the <emphasis>Collection Browser</emphasis> when it's connected.
+</sect3>
+<sect3 id="can-i-use-removable-media-inside-amarok"><title>Can I use removable media inside Amarok?</title> 
+<para>&amarok; has a greatly improved support for the media devices based on Solid, the KDE hardware layer, that doesn't need a lot of configuration. You should be able to just plug in your device and access it within &amarok;. Also, thanks to the <emphasis>Dynamic Collections</emphasis>, your media devices could become part of your music collection, and be searchable and accessible within the <guilabel>Local Music</guilabel> section of the <guilabel>Media Sources</guilabel> pane when it's connected.
 </para>
-<para>You can transfer your songs, albums and artists from your local collection by right-clicking <menuchoice><guimenu>Copy to Collection</guimenu><guimenuitem>Your device</guimenuitem></menuchoice>; and you can also do it in the other way: right-click <menuchoice><guimenu>Copy to Collection</guimenu><guimenuitem>Local Collection</guimenuitem></menuchoice>. More about &amarok; and devices <link linkend="working-with-media-devices">here</link>.
+<para>You can transfer your songs, albums and artists from your local collection by right-clicking, selecting <guilabel>Copy to Collection</guilabel> and picking your device; and you can also do it in the other way: right-click and select <menuchoice><guimenu>Copy to Collection</guimenu><guimenuitem>Local Collection</guimenuitem></menuchoice>. More about &amarok; and devices <link linkend="working-with-media-devices">here</link>.
 </para>
-</sect2>
-<sect2 id="how-can-i-save-a-stream"><title>How can I save a stream?</title> 
+</sect3>
+<sect3 id="how-can-i-save-a-stream"><title>How can I save a stream?</title> 
 <para>First of all, load the stream into the playlist. There are several ways to do this: downloading the file, for example from <ulink url="http://www.shoutcast.com">shoutcast.com</ulink>, and opening it with &amarok;; using the menu <menuchoice><guimenu>Playlist</guimenu><guimenuitem>Add stream</guimenuitem></menuchoice>; among others.
 </para>
-<para>Once the stream is loaded, you can save it by clicking on <guilabel>Save current playlist</guilabel> which is under the Playlist, and giving it a meaningful name. The Stream will then be added to the <emphasis>Saved playlists view</emphasis> for later reference.
+<para>Once the stream is loaded, you can save it by clicking on <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-save.png" format="PNG"/> </imageobject> </inlinemediaobject> in the <guilabel>Playlist</guilabel> pane, and giving it a meaningful name. The Stream will then be added to the <guilabel>Saved Playlists</guilabel> view for later reference.
 </para>
-</sect2>
-<sect2 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"><title>Can I use the old Amarok's collection in Amarok 2? Will my tags, score are ratings be lost?</title> 
+</sect3>
+<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"><title>Can I use the old Amarok's collection in Amarok 2? Will my tags, score are ratings be lost?</title> 
 <para>A database importer is available. You will be able to keep your ratings and statistics just fine. More <link linkend="collection">here</link>.
 </para>
-</sect2>
-<sect2 id="where-do-i-find-the-settings-for-amarok"><title>Where do I find the settings for Amarok?</title> 
-<para>`kde4-config --localprefix`/share/apps/amarok
+</sect3>
+<sect3 id="where-do-i-find-the-settings-for-amarok"><title>Where do I find the settings for Amarok?</title> 
+<para><userinput>`kde4-config --localprefix`/share/apps/amarok</userinput>
 </para>
-<para>`kde4-config --localprefix`/share/config/amarokrc
+<para><userinput>`kde4-config --localprefix`/share/config/amarokrc</userinput>
 </para>
+</sect3>
 </sect2>
-</sect1>
-<sect1 id="troubleshooting19"><title>Troubleshooting</title> 
-<sect2 id="how-can-i-obtain-a-backtrace"><title>How can I obtain a backtrace?</title> 
+<sect2 id="troubleshooting19"><title>Troubleshooting</title> 
+<sect3 id="how-can-i-obtain-a-backtrace"><title>How can I obtain a backtrace?</title> 
 <para>If &amarok; has crashed and you want to report it, visit the <ulink url="http://amarok.kde.org/wiki/Debugging_(documentation)">Debugging HowTo</ulink>. The bug report must be sent in <ulink url="http://bugs.kde.org">bugs.kde.org</ulink> after verifying if it has already been reported.
 </para>
-</sect2>
-<sect2 id="amarok-just-freezes-how-can-i-help-get-this-fixed"><title>Amarok just freezes! How can I help get this fixed?</title> 
+</sect3>
+<sect3 id="amarok-just-freezes-how-can-i-help-get-this-fixed"><title>Amarok just freezes! How can I help get this fixed?</title> 
 <para>You can obtain a backtrace of a frozen instance of &amarok; using gdb like so:
 </para>
-<para><userinput>$ gdb -p `pidof amarok`
-(gdb) thread apply full bt all</userinput> 
+<para><userinput>$ gdb -p `pidof amarok` 
+(gdb) thread apply full bt all</userinput>  
 </para>
 <para>Then just post the backtrace to <ulink url="http://paste.kde.org/">PasteBin</ulink>, as described in the <ulink url="http://amarok.kde.org/wiki/Debugging_%28documentation%29">Debugging HowTo</ulink>.
 </para>
-</sect2>
-<sect2 id="amarok-takes-a-lot-of-time-to-start"><title>Amarok takes a lot of time to start</title> 
+</sect3>
+<sect3 id="amarok-takes-a-lot-of-time-to-start"><title>Amarok takes a lot of time to start</title> 
 <para>If this happens you have to check what scripts you have installed and what internet services are running, because some of them may slow down the startup. Also, if you have streams in the playlist when you open &amarok;, the startup can take a little longer.
 </para>
 <para>On the other hand, if you don't use KDE, but a different desktop environment, startup time can be increased very slightly because there are more libraries to be loaded.
 </para>
+</sect3>
 </sect2>
-</sect1>
-<sect1 id="development-questions"><title>Development questions</title> 
-<sect2 id="how-do-i-get-a-git-version-of-amarok"><title>How do I get a GIT version of Amarok?</title> 
+<sect2 id="development-questions"><title>Development questions</title> 
+<sect3 id="how-do-i-get-a-git-version-of-amarok"><title>How do I get a GIT version of Amarok?</title> 
 <para><ulink url="http://techbase.kde.org/Getting_Started/Sources/KDE_git-tutorial">How to obtain and build &amarok; Git</ulink>. Check here for a local build: <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/">Building from Git Locally: Full Summary</ulink>
 </para>
-</sect2>
-<sect2 id="why-isnt-amarok-part-of-kdemultimedia"><title>Why isn't Amarok part of KDEmultimedia?</title> 
+</sect3>
+<sect3 id="why-isnt-amarok-part-of-kdemultimedia"><title>Why isn't Amarok part of KDEmultimedia?</title> 
 <para>The developers don't want <emphasis>the man</emphasis> telling them when they can release. (Meaning, packages in the KDE SC proper have a release schedule that doesn't fit with &amarok;'s fast-paced development.)
 </para>
-</sect2>
-<sect2 id="ive-found-a-bug---ive-got-a-great-idea-for-amarok"><title>I've found a bug / I've got a great idea for Amarok!</title> 
+</sect3>
+<sect3 id="ive-found-a-bug---ive-got-a-great-idea-for-amarok"><title>I've found a bug / I've got a great idea for Amarok!</title> 
 <para>Please report it at <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok">bugs.kde.org</ulink>. If you have a list of suggestions or wishes it may be best to send them to our mailing list: <ulink url="mailto:amarok@kde.org">amarok@kde.org</ulink>. Simply posting the idea to our IRC channels or on an obscure wiki page or blog won't help much as the information will get lost.
 </para>
-</sect2>
-<sect2 id="do-you-accept-patches"><title>Do you accept patches?</title> 
-<para>Happily! Your best course of action is to let us know what you plan to do before you do any work so we can discuss it, but don't fret; we haven't turned down a patch yet! Discussion is mostly to help you patch the correct bits of &amarok;. Submit your patches and code contributions to git.reviewboard.kde.org. See also <ulink url="http://blogs.fsfe.org/myriam/2010/09/how-to-submit-patches-for-amarok/">How to Submit Patches to &amarok;</ulink>. If you have a bug fix then just go ahead; this is open source after all. :)
+</sect3>
+<sect3 id="do-you-accept-patches"><title>Do you accept patches?</title> 
+<para>Happily! Your best course of action is to let us know what you plan to do before you do any work so we can discuss it, but don't fret; we haven't turned down a patch yet! Discussion is mostly to help you patch the correct bits of &amarok;. Submit your patches and code contributions to git.reviewboard.kde.org. See also <ulink url="http://blogs.fsfe.org/myriam/2010/09/how-to-submit-patches-for-amarok/">How to Submit Patches to &amarok;</ulink>. If you have a bug fix then just go ahead; this is open source after all. <inlinemediaobject> <imageobject> <imagedata fileref="Face-smile.png" format="PNG"/> </imageobject> </inlinemediaobject>
 </para>
-</sect2>
-<sect2 id="why-did-you-choose-the-name-amarok"><title>Why did you choose the name Amarok?</title> 
+</sect3>
+<sect3 id="why-did-you-choose-the-name-amarok"><title>Why did you choose the name Amarok?</title> 
 <para><emphasis>Amarok</emphasis> is an album by British composer Mike Oldfield. Project founder Mark Kretschmann happens to like it a lot, and he thought the name had a nice sound. Plus, of course, it contains the all important <guilabel>K</guilabel>. <inlinemediaobject> <imageobject> <imagedata fileref="Face-smile.png" format="PNG"/> </imageobject> </inlinemediaobject>
 </para>
+</sect3>
 </sect2>
 </sect1>
 </chapter>
@@ -6486,9 +6524,8 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </para></listitem>
 <listitem><para><link linkend="credits-and-license">Credits and License</link>&nbsp;</para></listitem>
 </itemizedlist>
-</chapter>
-<chapter id="menu-and-command-reference"><title>Menu and Command Reference</title>
-<sect1 id="amarok-top-level-menus"><title>Amarok Top-level Menus</title>
+<sect1 id="menu-and-command-reference"><title>Menu and Command Reference</title> 
+<sect2 id="amarok-top-level-menus"><title>Amarok Top-level Menus</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -6563,12 +6600,12 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </tgroup>
 </informaltable>
 </para>
-</sect1>
-<sect1 id="amarok-menu"><title>Amarok Menu</title>
+</sect2>
+<sect2 id="amarok-menu"><title>Amarok Menu</title> 
 <para>Some of the common actions in &amarok; are here, mostly to control media playback.
 </para>
-</sect1>
-<sect1 id="contents20"><title>Contents</title>
+</sect2>
+<sect2 id="contents20"><title>Contents</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -6673,6 +6710,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </tgroup>
 </informaltable>
 </para>
+</sect2>
 </sect1>
 <sect1 id="view-menu"><title>View Menu</title>
 <para>This top-level menu contains options to adjust the layout of &amarok;, and a checkbox to lock the configuration; use this to prevent any accidental changes to the &amarok; window layout.
@@ -6836,20 +6874,17 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </mediaobject>
 </screenshot>
 </para>
-<para><warning><para>check screenshots for accuracy</para></warning>
-</para>
 </sect2>
-</sect1>
-<sect1 id="playlist-menu"><title>Playlist Menu</title>
+<sect2 id="playlist-menu"><title>Playlist Menu</title> 
 <para>This is a top-level drop down menu where can configure your <guilabel>Playlist</guilabel>. From here you can add more tracks, streaming radio channels, and clean your playlist.
 </para>
-<sect2 id="menu-items"><title>Menu Items</title>
+<sect3 id="menu-items"><title>Menu Items</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="playlist.png" format="PNG"/>
+      <imagedata fileref="playlistmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>The Amarok Playlist Menu</phrase>
@@ -6922,7 +6957,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
     <para><guilabel>Clear PlayList</guilabel></para>
     </entry>
     <entry>
-    <para>Cleans the current <emphasis>Playlist</emphasis></para>
+    <para>Cleans the current playlist</para>
     </entry>
   </row>
   <row>
@@ -6930,7 +6965,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
     <para><guilabel>Remove Duplicates</guilabel></para>
     </entry>
     <entry>
-    <para>Removes duplicate entries in the <emphasis>Playlist</emphasis></para>
+    <para>Removes duplicate entries in the playlist</para>
     </entry>
   </row>
   <row>
@@ -6938,17 +6973,25 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
     <para><guilabel>Playlist Layouts</guilabel></para>
     </entry>
     <entry>
-    <para>Changes the visual style of the <emphasis>Playlist</emphasis></para></entry>
+    <para>Changes the visual style of the <guilabel>Playlist</guilabel></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para><guilabel>Edit Queue</guilabel></para>
+    </entry>
+    <entry>
+    <para>Allows you to change the order of your queue</para></entry>
   </row>
   </tbody>
   </tgroup>
 </informaltable>
 </para>
-</sect2>
-<sect2 id="playlist-layouts"><title>Playlist Layouts</title>
-<para>From <menuchoice><guimenu>Playlist</guimenu><guimenuitem>Playlist Layouts</guimenuitem></menuchoice> switch between different layouts with radio buttons, and configure your personal <emphasis>Playlist</emphasis> layout.
+</sect3>
+<sect3 id="playlist-layouts"><title>Playlist Layouts</title> 
+<para>From <menuchoice><guimenu>Playlist</guimenu><guimenuitem>Playlist Layouts</guimenuitem></menuchoice> switch between different layouts with radio buttons, and configure your personal <guilabel>Playlist</guilabel> layout.
 </para>
-<sect3 id="default"><title>Default</title>
+<sect4 id="default"><title>Default</title> 
 <para><menuchoice><guimenu>Playlist</guimenu><guisubmenu>Playlist Layouts</guisubmenu><guimenuitem>Default</guimenuitem></menuchoice>
 </para>
 <para>
@@ -6956,13 +6999,15 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist_layout_d.png" format="PNG"/>
+      <imagedata fileref="playlistlayout1.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
     </textobject>
   </mediaobject>
 </screenshot>
+</para>
+<para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
@@ -6975,8 +7020,8 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </mediaobject>
 </screenshot>
 </para>
-</sect3>
-<sect3 id="no-grouping"><title>No Grouping</title>
+</sect4>
+<sect4 id="no-grouping"><title>No Grouping</title> 
 <para><menuchoice><guimenu>Playlist</guimenu><guisubmenu>Playlist Layouts</guisubmenu><guimenuitem>No Grouping</guimenuitem></menuchoice>
 </para>
 <para>
@@ -6984,13 +7029,15 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist_layout_nog1.png" format="PNG"/>
+      <imagedata fileref="playlistlayout2.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
     </textobject>
   </mediaobject>
 </screenshot>
+</para>
+<para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
@@ -7003,8 +7050,8 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </mediaobject>
 </screenshot>
 </para>
-</sect3>
-<sect3 id="no-grouping-single-line"><title>No Grouping (Single line)</title>
+</sect4>
+<sect4 id="no-grouping-single-line"><title>No Grouping (Single line)</title> 
 <para><menuchoice><guimenu>Playlist</guimenu><guisubmenu>Playlist Layouts</guisubmenu><guimenuitem>No Grouping(Single line)</guimenuitem></menuchoice>
 </para>
 <para>
@@ -7012,13 +7059,15 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist_layout_nog2.png" format="PNG"/>
+      <imagedata fileref="playlistlayout3.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
     </textobject>
   </mediaobject>
 </screenshot>
+</para>
+<para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
@@ -7031,8 +7080,8 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </mediaobject>
 </screenshot>
 </para>
-</sect3>
-<sect3 id="verbose"><title>Verbose</title>
+</sect4>
+<sect4 id="verbose"><title>Verbose</title> 
 <para><menuchoice><guimenu>Playlist</guimenu><guisubmenu>Playlist Layouts</guisubmenu><guimenuitem>Verbose</guimenuitem></menuchoice>
 </para>
 <para>
@@ -7040,13 +7089,15 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_playlist_layout_v.png" format="PNG"/>
+      <imagedata fileref="playlistlayout4.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase></phrase>
     </textobject>
   </mediaobject>
 </screenshot>
+</para>
+<para>
 <screenshot>
 <screeninfo></screeninfo>
   <mediaobject>
@@ -7059,11 +7110,11 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </mediaobject>
 </screenshot>
 </para>
-</sect3>
-<sect3 id="configure-playlist-layout---"><title>Configure playlist layout...</title>
+</sect4>
+<sect4 id="configure-playlist-layout---"><title>Configure playlist layout...</title> 
 <para><menuchoice><guimenu>Playlist</guimenu><guisubmenu>Playlist Layouts</guisubmenu><guimenuitem>Configure playlist layout...</guimenuitem></menuchoice>
 </para>
-<para>This option allows you to make your own <emphasis>Playlist</emphasis> layout; display Artist, Genre, Year, BPM and so forth.
+<para>This option allows you to make your own <guilabel>Playlist</guilabel> layout; display Artist, Genre, Year, BPM and so forth.
 </para>
 <para>
 <screenshot>
@@ -7081,10 +7132,10 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </mediaobject>
 </screenshot>
 </para>
+</sect4>
 </sect3>
 </sect2>
-</sect1>
-<sect1 id="tools-menu"><title>Tools Menu</title>
+<sect2 id="tools-menu"><title>Tools Menu</title> 
 <para>From this menu you can use additional tools and scripts.
 </para>
 <para>
@@ -7092,7 +7143,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok24_toolsmenu_withtwoscripts.png" format="PNG"/>
+      <imagedata fileref="toolmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>The Tools Menu</phrase>
@@ -7139,32 +7190,16 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </row>
   <row>
     <entry>
-    <para><guilabel>Script Manager</guilabel></para>
-    </entry>
-    <entry>
-    <para>Shows the dialog to install and remove scripts.</para>
-    </entry>
-  </row>
-  <row>
-    <entry>
     <para><guilabel>Update Collection</guilabel></para>
     </entry>
     <entry>
-    <para>Checks the tracks in your collection.</para>
-    </entry>
-  </row>
-  <row>
-    <entry>
-    <para><guilabel>Scripts</guilabel></para>
-    </entry>
-    <entry>
-    <para>Menu items to start installed scripts will be added to this menu [<emphasis>Copy All Cover</emphasis> and <emphasis>Rating Statistics</emphasis> in this image].</para></entry>
+    <para>Checks the tracks in your collection.</para></entry>
   </row>
   </tbody>
   </tgroup>
 </informaltable>
 </para>
-<sect2 id="bookmark-manager"><title>Bookmark Manager</title>
+<sect3 id="bookmark-manager"><title>Bookmark Manager</title> 
 <para>The bookmark manager allows you to bookmark different kinds of things to recall them later. You can also create folders to organize your collection of bookmarks. The search box provides a convenient way to find bookmarks. The context menu offers the possibility to <guilabel>Load</guilabel> and <guilabel>Delete</guilabel> the bookmark.
 </para>
 <para>
@@ -7219,19 +7254,15 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
     <para><guilabel>Bookmark Track Position</guilabel></para>
     </entry>
     <entry>
-    <para>Saves the position in the current track.</para>
-    </entry>
-  </row>
-  <row>
-    <entry>
-    <para><guilabel>Cover Manager</guilabel></para>
-    </entry>
-    <entry>
-    <para>Shows all albums in your collection. Here you can set custom album covers and fetch missing ones. More about the <link linkend="cover-manager">Cover Manager</link>, shown below.</para></entry>
+    <para>Saves the position in the current track.</para></entry>
   </row>
   </tbody>
   </tgroup>
 </informaltable>
+</para>
+</sect3>
+<sect3 id="cover-manager21"><title>Cover Manager</title>  
+<para>Shows all albums in your collection. Here you can set custom album covers and fetch missing ones. More about the <link linkend="cover-manager">Cover Manager</link>, shown below.
 </para>
 <para>
 <screenshot>
@@ -7246,8 +7277,8 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </mediaobject>
 </screenshot>
 </para>
-</sect2>
-<sect2 id="equalizer"><title>Equalizer</title>
+</sect3>
+<sect3 id="equalizer"><title>Equalizer</title> 
 <para>Provides the possibility to configure sound settings. You can choose between manually adjusting the settings and using templates.
 </para>
 <para>
@@ -7263,34 +7294,13 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </mediaobject>
 </screenshot>
 </para>
-</sect2>
-<sect2 id="script-manager-before-amarok-2-4-1"><title>Script Manager (before Amarok 2.4.1)</title>
-<para>Here scripts that enhance the functionality of Amarok can be installed and removed. More about the <link linkend="scripts">Script Manager</link>. After Amarok 2.4.1, the Script Manager is found from the <guilabel>Settings</guilabel> menu, <menuchoice><guimenu>Configure Amarok</guimenu><guimenuitem>Scripts</guimenuitem></menuchoice>.
-</para>
-<para>
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="tools_scriptmanager.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-</sect2>
-<sect2 id="update-collection"><title>Update Collection</title>
+</sect3>
+<sect3 id="update-collection"><title>Update Collection</title> 
 <para>Checks the files in the folders you defined as your collection. New files will be added and missing ones removed from the left pane.
 </para>
+</sect3>
 </sect2>
-<sect2 id="scripts21"><title>Scripts</title>
-<para>Scripts installed using the <link linkend="scripts">Script Manager</link> can be started from here.
-</para>
-</sect2>
-</sect1>
-<sect1 id="settings-menu"><title>Settings Menu</title>
+<sect2 id="settings-menu"><title>Settings Menu</title> 
 <para>Here is where you change settings and configure &amarok;.
 </para>
 <para>
@@ -7354,23 +7364,23 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </tgroup>
 </informaltable>
 </para>
-<sect2 id="show-menubar"><title>Show Menubar</title>
+<sect3 id="show-menubar"><title>Show Menubar</title> 
 <para>Clicking this option will hide the menu bar.
 </para>
 <para>The only way to show the menu bar again is by pressing <keycombo>&Ctrl;<keycap>M</keycap></keycombo>, because you can't de-select the menu option when no menu bar is shown. More about the <link linkend="menu-and-command-reference">Menus in the Menubar</link>.
 </para>
-</sect2>
-<sect2 id="replay-gain-mode"><title>Replay Gain Mode</title>
+</sect3>
+<sect3 id="replay-gain-mode"><title>Replay Gain Mode</title> 
 <para>The replay gain mode will change the volume depending on meta information of the track. More about replay gain: <ulink url="http://en.wikipedia.org/wiki/Replay_Gain">Wikipedia entry for replay gain</ulink>.
 </para>
 <para>You can switch the replay gain mechanism off, use a track-based or the album-based replay gain.
 </para>
-</sect2>
-<sect2 id="configure-shortcuts---"><title>Configure Shortcuts...</title>
+</sect3>
+<sect3 id="configure-shortcuts---"><title>Configure Shortcuts...</title> 
 <para>Change and define new keyboard shortcuts, or turn on multimedia keys if your keyboard has them. More about <link linkend="keybinding-reference">Shortcuts</link>.
 </para>
-</sect2>
-<sect2 id="configure-amarok---"><title>Configure Amarok...</title>
+</sect3>
+<sect3 id="configure-amarok---"><title>Configure Amarok...</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -7389,9 +7399,9 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </para>
 <para>Configure many aspects of &amarok;. Details in <link linkend="configuring-amarok">Configuring Amarok</link>.
 </para>
+</sect3>
 </sect2>
-</sect1>
-<sect1 id="help-menu"><title>Help Menu</title>
+<sect2 id="help-menu"><title>Help Menu</title> 
 <para>Important information about &amarok; and KDE.
 </para>
 <para>
@@ -7479,6 +7489,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </tgroup>
 </informaltable>
 </para>
+</sect2>
 </sect1>
 </chapter>
 <chapter id="keybinding-reference"><title>Keybinding Reference</title>
@@ -7508,12 +7519,10 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <sect1 id="control-from-console"><title>Control from Console</title>
 <para>To control &amarok; from the console, type <userinput>amarok --help-all</userinput> for a current complete list of available commands.
 </para>
-</sect1>
-</chapter>
-<chapter id="kde-global-shortcuts"><title>KDE Global Shortcuts</title>
+<sect2 id="kde-global-shortcuts"><title>KDE Global Shortcuts</title> 
 <para><emphasis>Global Shortcuts</emphasis> are KDE's control key combinations. Use them to control &amarok; from the keyboard as an alternative to using the mouse.
 </para>
-<sect1 id="default-global-shortcuts"><title>Default Global Shortcuts</title>
+<sect3 id="default-global-shortcuts"><title>Default Global Shortcuts</title> 
 <para>
 <informaltable>
   <tgroup cols="2">
@@ -7679,12 +7688,12 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </tgroup>
 </informaltable>
 </para>
-</sect1>
-</chapter>
-<chapter id="amarok-shortcuts"><title>Amarok Shortcuts</title>
+</sect3>
+</sect2>
+<sect2 id="amarok-shortcuts"><title>Amarok Shortcuts</title> 
 <para>Control &amarok; using <emphasis>keyboard shortcuts</emphasis>, which are combinations of keys which each control a specific action. &amarok; has default shortcuts, but you can also make your own.
 </para>
-<sect1 id="default-shortcuts"><title>Default Shortcuts</title>
+<sect3 id="default-shortcuts"><title>Default Shortcuts</title> 
 <para>
 <informaltable>
   <tgroup cols="2">
@@ -7785,6 +7794,14 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </row>
   <row>
     <entry>
+    <para>Activate Search Bar</para>
+    </entry>
+    <entry>
+    <para><keycombo>&Ctrl;<keycap>F</keycap></keycombo></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
     <para>Toggle Full Screen</para>
     </entry>
     <entry>
@@ -7826,9 +7843,9 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </tgroup>
 </informaltable>
 </para>
-</sect1>
-<sect1 id="how-to-make-shortcuts"><title>How to make shortcuts</title>
-<para>You can configure shortcuts from <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure Shortcuts...</guimenuitem></menuchoice> where you can change and make new shortcuts.
+</sect3>
+<sect3 id="how-to-make-shortcuts"><title>How to make shortcuts</title> 
+<para>You can configure shortcuts from <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure Shortcuts...</guimenuitem></menuchoice> where you can change or make new shortcuts.
 </para>
 <para>
 <screenshot>
@@ -7843,7 +7860,9 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
   </mediaobject>
 </screenshot>
 </para>
-<sect2 id="how-to-use-configure-shortcuts---"><title>How to use Configure Shortcuts...</title>
+</sect3>
+</sect2>
+<sect2 id="how-to-use-configure-shortcuts---"><title>How to use Configure Shortcuts...</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
