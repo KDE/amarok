@@ -19,7 +19,7 @@ check_library_exists(dl dlopen "" LIBDL_FOUND)
 # --------- taglib --------
 # building without taglib is stupid, but it's possible
 
-set(TAGLIB_MIN_VERSION "1.6")
+set(TAGLIB_MIN_VERSION "1.7")
 find_package(Taglib)
 
 if(TAGLIB_FOUND)

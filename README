@@ -41,7 +41,7 @@ Required
     * Qt 4.6 (or newer)
       http://qt.nokia.com/
 
-    * TagLib 1.6 (or newer)
+    * TagLib 1.7 (or newer)
       (Metadata tagging library)
       http://developer.kde.org/~wheeler/taglib.html
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib
