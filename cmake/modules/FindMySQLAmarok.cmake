@@ -16,8 +16,18 @@ if(NOT WIN32)
     find_program(MYSQLCONFIG_EXECUTABLE NAMES mysql_config mysql_config5 PATHS ${BIN_INSTALL_DIR} ~/usr/bin /usr/local/bin)
 endif(NOT WIN32)
 
+find_path(MYSQL_INCLUDE_DIR mysql.h
+    /opt/local/include/mysql5/mysql
+    /opt/mysql/mysql/include
+    /opt/mysqle/include/mysql
+    /opt/ports/include/mysql5/mysql
+    /usr/include/mysql
+    /usr/local/include/mysql
+    /usr/mysql/include/mysql
+    ~/usr/include/mysql
+)
+
 if(MYSQLCONFIG_EXECUTABLE)
-    exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --variable=pkgincludedir RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_INCLUDE_DIR)
     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --cflags RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_CFLAGS)
     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_LIBRARIES)
     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libmysqld-libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_EMBEDDED_LIBSTEMP)
@@ -48,18 +58,6 @@ if(MYSQLCONFIG_EXECUTABLE)
     endif(UNIX)
 
 else(MYSQLCONFIG_EXECUTABLE)
-
-    find_path(MYSQL_INCLUDE_DIR mysql.h
-       ~/usr/include/mysql
-       /opt/local/include/mysql5/mysql
-       /opt/mysqle/include/mysql
-       /opt/mysql/mysql/include 
-       /usr/mysql/include/mysql
-       /usr/include/mysql
-       /usr/local/include/mysql
-       /opt/local/include/mysql
-       /opt/ports/include/mysql5/mysql
-    )
 
     if(WIN32)
         set(MYSQL_CLIENT_LIBRARY_NAME libmysql)
