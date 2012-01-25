@@ -146,7 +146,7 @@ QString UmsCollection::s_collectionName( "collection_name" );
 UmsCollection::UmsCollection( Solid::Device device )
     : Collection()
     , m_device( device )
-    , m_mc( new MemoryCollection() )
+    , m_mc( 0 )
     , m_initialized( false )
     , m_autoConnect( false )
     , m_musicFilenameScheme( "%artist%/%album%/%track% %title%" )
@@ -284,6 +284,8 @@ UmsCollection::init()
             }
         }
     }
+
+    m_mc =  QSharedPointer<MemoryCollection>(new MemoryCollection());
 
     m_initialized = true;
 
