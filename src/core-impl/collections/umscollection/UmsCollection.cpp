@@ -285,7 +285,7 @@ UmsCollection::init()
         }
     }
 
-    m_mc =  QSharedPointer<MemoryCollection>(new MemoryCollection());
+    m_mc = QSharedPointer<MemoryCollection>(new MemoryCollection());
 
     m_initialized = true;
 
@@ -305,6 +305,10 @@ UmsCollection::deInit()
 bool
 UmsCollection::possiblyContainsTrack( const KUrl &url ) const
 {
+    //not initialized yet.
+    if( m_mc.isNull() )
+        return false;
+
     QString u = QUrl::fromPercentEncoding( url.url().toUtf8() );
     return u.startsWith( m_mountPoint ) || u.startsWith( "file://" + m_mountPoint );
 }
@@ -312,6 +316,10 @@ UmsCollection::possiblyContainsTrack( const KUrl &url ) const
 Meta::TrackPtr
 UmsCollection::trackForUrl( const KUrl &url )
 {
+    //not initialized yet.
+    if( m_mc.isNull() )
+        return Meta::TrackPtr();
+
     QString uid = QUrl::fromPercentEncoding( url.url().toUtf8() );
     if( uid.startsWith("file://") )
         uid = uid.remove( 0, 7 );
