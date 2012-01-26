@@ -174,7 +174,7 @@ QString LikeBackDialog::introductionText()
         balancingMessage = i18nc( "Feedback dialog text, message to remind to balance the likes and dislikes",
                                   "<b>LikeBack is used for statistical reasons only, you will not get an answer if you ask "
                                   "questions. For support, please ask <a href=\"http://forum.kde.org/Amarok\">in the forum</a> "
-                                  "or join the #amarok channel on irc.freenode.net</b>. To make the comments you send more useful "
+                                  "or join the #amarok channel on irc.freenode.net</b>. To make the comments you have sent more useful "
                                   "in improving this application, try to send the same amount of positive and negative comments.<br/>" );
     }
 
