@@ -13,9 +13,7 @@ set(amarok_transcoding_SRCS
     TranscodingAssistantDialog.cpp
     TranscodingOptionsStackedWidget.cpp
     TranscodingPropertyWidget.cpp
-    TranscodingPropertyComboBoxWidget.cpp
     TranscodingPropertySliderWidget.cpp
-    TranscodingPropertySpinBoxWidget.cpp
 )
 
 kde4_add_ui_files(amarok_transcoding_SRCS

@@ -114,17 +114,7 @@ AssistantDialog::onTranscodeWithDefaultsClicked() //SLOT
     m_configuration = Configuration( VORBIS );
     foreach( Property property, Amarok::Components::transcodingController()->format( VORBIS )->propertyList() )
     {
-        switch( property.type() )
-        {
-        case Property::NUMERIC:
-            m_configuration.addProperty( property.name(), property.defaultValue() );
-        case Property::TEXT:
-            m_configuration.addProperty( property.name(), property.defaultText() );
-        case Property::LIST:
-            m_configuration.addProperty( property.name(), property.defaultIndex() );
-        case Property::TRADEOFF:
-            m_configuration.addProperty( property.name(), property.defaultValue() );
-        }
+        m_configuration.addProperty( property.name(), property.defaultValue() );
     }
     KDialog::done( KDialog::Accepted );
 }

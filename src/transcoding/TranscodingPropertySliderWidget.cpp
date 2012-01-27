@@ -47,7 +47,7 @@ PropertySliderWidget::PropertySliderWidget( Property property, QWidget * parent 
     m_mainEdit->setOrientation( Qt::Horizontal );
     m_mainEdit->setRange( m_property.min(), m_property.max() );
 
-    m_mainEdit->setValue( m_property.defaultValue() );
+    m_mainEdit->setValue( m_property.defaultValue().toInt() );
     m_mainEdit->setTickPosition( QSlider::TicksBelow );
     m_mainEdit->setTickInterval( 1 );
     m_mainEdit->setPageStep( 2 );
@@ -56,7 +56,7 @@ PropertySliderWidget::PropertySliderWidget( Property property, QWidget * parent 
 
     secondaryTopLayout->addSpacing( 5 );
 
-    QLabel *leftLabel = new QLabel( m_property.prettyValues().at( 0 ), this );
+    QLabel *leftLabel = new QLabel( m_property.endLabels().at( 0 ), this );
     secondaryBotLayout->addWidget( leftLabel, 1 );
 
     m_midLabel = new QLabel( QString::number( m_mainEdit->value() ), this );
@@ -68,13 +68,13 @@ PropertySliderWidget::PropertySliderWidget( Property property, QWidget * parent 
     connect( m_mainEdit, SIGNAL( valueChanged( int ) ),
              this, SLOT( onSliderChanged( int ) ) );
 
-    QLabel *rightLabel = new QLabel( m_property.prettyValues().at( 1 ), this );
+    QLabel *rightLabel = new QLabel( m_property.endLabels().at( 1 ), this );
     rightLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     secondaryBotLayout->addWidget( rightLabel, 1 );
 
     mainLayout->addWidget( m_midLabel );
 
-    onSliderChanged( m_property.defaultValue() );
+    onSliderChanged( m_property.defaultValue().toInt() );
 
     QString description = m_property.description();
     m_mainEdit->setToolTip( description );
@@ -90,13 +90,13 @@ void
 PropertySliderWidget::onSliderChanged( int value ) //SLOT
 {
     QString newText;
-    if( !m_property.values().isEmpty() &&
-        m_property.values().size() == qAbs( m_property.max() - m_property.min() ) + 1 )
-        newText = m_property.values().at( value - qMin( m_property.min(), m_property.max() ) );
+    if( !m_property.valueLabels().isEmpty() &&
+        m_property.valueLabels().size() == qAbs( m_property.max() - m_property.min() ) + 1 )
+        newText = m_property.valueLabels().at( value - qMin( m_property.min(), m_property.max() ) );
     else
         newText = QString::number( value );
 
-    if( value == m_property.defaultValue() )
+    if( value == m_property.defaultValue().toInt() )
         newText += i18n( " (recommended)" );
 
     m_midLabel->setText( newText );
