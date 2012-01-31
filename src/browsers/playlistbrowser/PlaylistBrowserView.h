@@ -50,7 +50,6 @@ protected:
     virtual void keyPressEvent( QKeyEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
-    virtual void mouseDoubleClickEvent( QMouseEvent *event );
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void startDrag( Qt::DropActions supportedActions );
 
@@ -59,6 +58,9 @@ protected:
 
 protected slots:
     void currentChanged( const QModelIndex &current, const QModelIndex &previous );
+
+    /** Used for executing default (first) action when Enter/Return/double click. */
+    void slotActivated( const QModelIndex &index );
 
 private:
     QAction *decoratorActionAt( const QModelIndex &idx, const QPoint position );

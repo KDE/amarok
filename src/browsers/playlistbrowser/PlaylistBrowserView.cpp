@@ -61,6 +61,8 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
         setAnimated( true );
 
+    //act on Enter/Return/double click/etc
+    connect( this, SIGNAL(activated( QModelIndex )), SLOT(slotActivated( QModelIndex )) );
     The::paletteHandler()->updateItemView( this );
 }
 
@@ -186,30 +188,6 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseMoveEvent( QMouseEvent *event )
     event->accept();
 }
 
-void
-PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent *event )
-{
-    QModelIndex index = indexAt( event->pos() );
-    if( !index.isValid() )
-    {
-        event->accept();
-        return;
-    }
-
-    if( !model()->hasChildren( index ) )
-    {
-        QList<QAction *> actions =
-            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
-        if( actions.count() > 0 )
-        {
-            //HACK execute the first action assuming it's load
-            actions.first()->trigger();
-            actions.first()->setData( QVariant() );
-        }
-    }
-    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
-}
-
 void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supportedActions )
 {
     //Waah? when a parent item is dragged, startDrag is called a bunch of times
@@ -281,7 +259,10 @@ PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent( QKeyEvent *event )
             return;
         }
      }
-     Amarok::PrettyTreeView::keyPressEvent( event );
+
+    //Note: Regular keyboard navigation with arrows won't work because they are used for
+    // seeking with default settings.
+    Amarok::PrettyTreeView::keyPressEvent( event );
 }
 
 void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent *event )
@@ -368,6 +349,24 @@ PlaylistBrowserNS::PlaylistBrowserView::currentChanged( const QModelIndex &curre
 {
     Q_UNUSED( previous )
     emit currentItemChanged( current );
+}
+
+void
+PlaylistBrowserNS::PlaylistBrowserView::slotActivated( const QModelIndex &idx )
+{
+    if( !idx.isValid() )
+        return;
+
+    QActionList idxActions = model()->data( idx,
+            PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
+
+    //The first action is usually "Add to Playlist"
+    if( !idxActions.isEmpty() )
+    {
+        idxActions.first()->trigger();
+        //always needs to be done after activation.
+        idxActions.first()->setData( QVariant() );
+    }
 }
 
 #include "PlaylistBrowserView.moc"

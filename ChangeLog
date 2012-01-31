@@ -19,6 +19,7 @@ Version 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * Enable keyboard activation of PlaylistBrowser items. 
     * Don't use `mysql_config --variable=pkgincludedir`, find mysql include
       directory manually by looking up mysql.h.
     * Album artist is now guessed for tracks that do not belong into any
