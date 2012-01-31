@@ -175,6 +175,14 @@ EqualizerDialog::eqPresetChanged( int index ) //SLOT
 
     if( index < 0 )
         return;
+
+    // use offset by one since the first entry ("Off") is not part of the global list
+    if( index > mPresets.eqGlobalList().count() )
+    {
+        eqSavePreset();
+        return;
+    }
+
     // new settings
     AmarokConfig::setEqualizerMode( index );
     AmarokConfig::setEqualizerGains( mPresets.eqCfgGetPresetVal( eqSelectedPresetName() ) );
@@ -226,11 +234,12 @@ EqualizerDialog::eqUpdateUI( int index ) // SLOT
     if( index < 0 )
         return;
 
-    const bool mstate = index > 0 ? true : false;
-    eqBandsGroupBox->setEnabled( mstate );
-    eqPresetSaveBtn->setEnabled( mstate );
-    eqPresetDeleteBtn->setEnabled( mstate );
-    eqPresetResetBtn->setEnabled( mstate );
+    const bool enabledState = index > 0 ? true : false;
+    const bool userState = EqualizerPresets::eqUserList().contains( eqPresets->itemText(index) );
+    eqBandsGroupBox->setEnabled( enabledState );
+    eqPresetSaveBtn->setEnabled( enabledState );
+    eqPresetDeleteBtn->setEnabled( enabledState && userState );
+    eqPresetResetBtn->setEnabled( enabledState && !userState );
     QList<int> eqGains = AmarokConfig::equalizerGains();
     QListIterator<int> i( eqGains );
     // Update slider values with signal blocking to prevent circular loop
@@ -280,7 +289,7 @@ QString
 EqualizerDialog::eqSelectedPresetName() const
 {
     const int index = eqPresets->currentIndex();
-    if( index <= 0 )
+    if( index <= 0 || index > mPresets.eqGlobalList().count() )
         return QString();
 
     // use offset by one since the first entry ("Off") is not part of the global list
@@ -313,9 +322,8 @@ EqualizerDialog::eqSavePreset() //SLOT
 {
     DEBUG_BLOCK
 
-    const QString mPresetSelected = eqSelectedPresetName();
-    const QString mPresetName = eqPresets->currentText();
-    if( mPresetSelected == QLatin1String( "Manual" ) && mPresetName == QLatin1String("Manual") )
+    const QString presetName = eqPresets->currentText();
+    if( presetName == i18n("Manual") )
     {
         KMessageBox::detailedSorry( 0, i18n( "Cannot save this preset" ),
                                        i18n( "Preset 'Manual' is reserved for momentary settings.\n\
@@ -327,9 +335,9 @@ EqualizerDialog::eqSavePreset() //SLOT
     QList<int> eqGains;
     foreach( QSlider* mSlider, mBands )
         eqGains << mSlider->value();
-    mPresets.eqCfgSetPresetVal( mPresetName, eqGains );
+    mPresets.eqCfgSetPresetVal( presetName, eqGains );
     eqRepopulateUi();
-    eqPresets->setCurrentIndex( eqPresets->findText( mPresetName ) );
+    eqPresets->setCurrentIndex( eqPresets->findText( presetName ) );
 }
 
 namespace The {
