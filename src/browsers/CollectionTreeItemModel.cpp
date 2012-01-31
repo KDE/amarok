@@ -120,8 +120,12 @@ bool
 CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row,
                                   int column, const QModelIndex &parent )
 {
-    if( !parent.isValid() && row == -1 && column == -1 )
-        return true; //only droppable on root (collection header) items.
+    //no drops on empty areas
+    if( !parent.isValid() )
+        return false;
+
+    if( parent.isValid() && ( row != -1 && column != -1 ) )
+        return false; //only droppable on root (collection header) items.
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
     Q_ASSERT(item->type() == CollectionTreeItem::Collection);
