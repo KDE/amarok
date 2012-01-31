@@ -30,6 +30,7 @@ Version 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Fix scrollarea following keyboard navigation. (BR 259791)
     * Fix crash when trying to save custom equalizer presets. (BR 286227)
     * Fix crash due to my silly method order error. (BR 291968)
     * Fix favored random track playing picking recent played songs (BR 244442)

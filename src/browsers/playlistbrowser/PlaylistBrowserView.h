@@ -57,6 +57,7 @@ protected:
     virtual bool viewportEvent( QEvent *event );
 
 protected slots:
+    /** reimplemented to emit a signal */
     void currentChanged( const QModelIndex &current, const QModelIndex &previous );
 
     /** Used for executing default (first) action when Enter/Return/double click. */

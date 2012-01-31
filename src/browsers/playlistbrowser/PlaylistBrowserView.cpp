@@ -349,6 +349,7 @@ PlaylistBrowserNS::PlaylistBrowserView::currentChanged( const QModelIndex &curre
 {
     Q_UNUSED( previous )
     emit currentItemChanged( current );
+    Amarok::PrettyTreeView::currentChanged( current, previous );
 }
 
 void
