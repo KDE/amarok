@@ -199,6 +199,13 @@ CollectionTreeItemModel::fetchMore( const QModelIndex &parent )
     ensureChildrenLoaded( item );
 }
 
+Qt::DropActions
+CollectionTreeItemModel::supportedDropActions() const
+{
+    // this also causes supportedDragActions() to contain move action
+    return CollectionTreeItemModelBase::supportedDropActions() | Qt::MoveAction;
+}
+
 void
 CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection )
 {

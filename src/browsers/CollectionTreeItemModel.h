@@ -37,12 +37,16 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         CollectionTreeItemModel( const QList<int> &levelType );
         ~CollectionTreeItemModel();
 
+        /* QAbstractItemModel methods */
         virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
         virtual QVariant data( const QModelIndex &index, int role ) const;
         virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row,
                                   int column, const QModelIndex &parent );
         virtual bool canFetchMore( const QModelIndex &parent ) const;
         virtual void fetchMore( const QModelIndex &parent );
+        virtual Qt::DropActions supportedDropActions() const;
+
+        /* CollectionTreeItemModelBase methods */
         virtual void setLevels( const QList<int> &levelType );
 
     public slots:
