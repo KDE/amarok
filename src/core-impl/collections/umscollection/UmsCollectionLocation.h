@@ -30,7 +30,7 @@ class UmsTransferJob;
 
 class UmsCollectionLocation : public Collections::CollectionLocation
 {
-        Q_OBJECT
+    Q_OBJECT
     public:
         UmsCollectionLocation( UmsCollection *umsCollection );
         ~UmsCollectionLocation();
@@ -48,8 +48,20 @@ class UmsCollectionLocation : public Collections::CollectionLocation
             const Transcoding::Configuration &configuration = Transcoding::Configuration() );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
+    private slots:
+        /**
+         * Needed for removal of source tracks during move operation
+         */
+        void slotTrackTransferred( const KUrl &sourceTrackUrl );
+
+        /**
+         * Needed for removal of empty dirs during delete operation
+         */
+        void slotTrackDeleted( KIO::Job*, const KUrl &trackUrl );
+
     private:
         UmsCollection *m_umsCollection;
+        QHash<KUrl, Meta::TrackPtr> m_sourceUrlToTrackMap;
 };
 
 class UmsTransferJob : public KCompositeJob
@@ -62,9 +74,9 @@ class UmsTransferJob : public KCompositeJob
         virtual void start();
 
     signals:
+        void sourceFileTransferDone( KUrl source );
         void fileTransferDone( KUrl destination );
         void percent( KJob *job, unsigned long percent );
-        void infoMessage( KJob *job, QString plain, QString rich );
 
     public slots:
         void slotCancel();
@@ -78,10 +90,11 @@ class UmsTransferJob : public KCompositeJob
 
     private:
         UmsCollectionLocation *m_location;
-        bool m_cancled;
+        bool m_abort;
 
         typedef QPair<KUrl,KUrl> KUrlPair;
         QList<KUrlPair> m_transferList;
+        int m_totalTracks; // total number of tracks in whole transfer
 };
 
 #endif // UMSCOLLECTIONLOCATION_H

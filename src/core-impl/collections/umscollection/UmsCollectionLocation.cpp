@@ -65,23 +65,7 @@ bool
 UmsCollectionLocation::remove( const Meta::TrackPtr &track )
 {
     Q_UNUSED( track )
-    /* TODO: implement using MemoryCollection access.
-    debug() << track->playableUrl().url();
-    MetaFile::TrackPtr fileTrack = MetaFile::TrackPtr::dynamicCast( track );
-    if( fileTrack.isNull() )
-    {
-        error() << "TrackPtr passed was not a MetaFile::TrackPtr";
-        return false;
-    }
-
-    KUrl filePath = fileTrack->playableUrl();
-    if( !m_umsCollection->musicPath().isParentOf( filePath ) )
-    {
-        error() << "This track is not in the music path of this UMS collection";
-        return false;
-    }
-    */
-
+    warning() << "Don't use UmsCollectionLocation::remove(). Use removeUrlsFromCollection().";
     return false;
 }
 
@@ -90,7 +74,7 @@ UmsCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 {
     Q_UNUSED( track )
     Q_UNUSED( url )
-    //TODO: implement if really required. UMS does not have a database.
+    warning() << "Don't use UmsCollectionLocation::insert(). Use copyUrlsToCollection().";
     return false;
 }
 
@@ -103,8 +87,6 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 
     //TODO: disable scanning until we are done with copying
 
-    QString loggerText = i18np( "Copying one track to %2", "Copying %1 tracks to %2",
-                                 sources.count(), m_umsCollection->prettyName() );
     UmsTransferJob *transferJob = new UmsTransferJob( this );
     QMapIterator<Meta::TrackPtr, KUrl> i( sources );
     while( i.hasNext() )
@@ -116,20 +98,28 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
         if( !dir.exists() && !dir.mkpath( "." ) )
         {
             error() << "could not create directory to copy into.";
-            return;
+            abort();
         }
+        m_sourceUrlToTrackMap.insert( i.value(), i.key() ); // needed for slotTrackTransferred()
         transferJob->addCopy( i.value(), destination );
     }
-    connect( transferJob, SIGNAL(fileTransferDone( KUrl )), m_umsCollection,
-             SLOT(slotTrackAdded( KUrl )) );
-    //TODO: make cancelable.
+
+    connect( transferJob, SIGNAL(sourceFileTransferDone(KUrl)),
+             this, SLOT(slotTrackTransferred(KUrl)) );
+    connect( transferJob, SIGNAL(fileTransferDone(KUrl)),
+             m_umsCollection, SLOT(slotTrackAdded(KUrl)) );
+    connect( transferJob, SIGNAL(finished(KJob*)),
+             this, SLOT(slotCopyOperationFinished()) );
+
+    QString loggerText;
+    if( isGoingToRemoveSources() )
+        loggerText = i18np( "Moving one track to %2", "Moving %1 tracks to %2",
+                                 sources.count(), m_umsCollection->prettyName() );
+    else
+        loggerText = i18np( "Copying one track to %2", "Copying %1 tracks to %2",
+                                 sources.count(), m_umsCollection->prettyName() );
     Amarok::Components::logger()->newProgressOperation( transferJob, loggerText, transferJob,
                                                         SLOT(slotCancel()) );
-
-    connect( transferJob, SIGNAL(finished( KJob * )), SLOT(slotCopyOperationFinished()) );
-    connect( transferJob, SIGNAL(finished( KJob * )), m_umsCollection,
-             SLOT(slotConnectionUpdated()) );
-
     transferJob->start();
 }
 
@@ -138,22 +128,49 @@ UmsCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources 
 {
     KUrl::List sourceUrls;
     foreach( const Meta::TrackPtr track, sources )
-        sourceUrls << track->playableUrl();
+    {
+        KUrl trackUrl = track->playableUrl();
+        m_sourceUrlToTrackMap.insert( trackUrl, track );
+        sourceUrls.append( trackUrl );
+    }
 
     QString loggerText = i18np( "Removing one track from %2",
                                 "Removing %1 tracks from %2", sourceUrls.count(),
                                 m_umsCollection->prettyName() );
     KIO::DeleteJob *delJob = KIO::del( sourceUrls, KIO::HideProgressInfo );
-    //TODO: make cancelable.
-    Amarok::Components::logger()->newProgressOperation( delJob, loggerText );
+    Amarok::Components::logger()->newProgressOperation( delJob, loggerText, delJob, SLOT(kill()) );
 
+    // there is no deleted() signal, so assume that deleting succeeded.
+    connect( delJob, SIGNAL(deleting(KIO::Job*,KUrl)), SLOT(slotTrackDeleted(KIO::Job*,KUrl)) );
     connect( delJob, SIGNAL(finished( KJob * )), SLOT(slotRemoveOperationFinished()) );
+}
+
+void
+UmsCollectionLocation::slotTrackTransferred( const KUrl &sourceTrackUrl )
+{
+    Meta::TrackPtr sourceTrack = m_sourceUrlToTrackMap.value( sourceTrackUrl );
+    if( !sourceTrack )
+        warning() << __PRETTY_FUNCTION__ << ": I don't know about" << sourceTrackUrl;
+    else
+        // this is needed for example for "move" operation to actually remove source tracks
+        source()->transferSuccessful( sourceTrack );
+}
+
+void
+UmsCollectionLocation::slotTrackDeleted( KIO::Job* ,const KUrl &trackUrl )
+{
+    Meta::TrackPtr sourceTrack = m_sourceUrlToTrackMap.value( trackUrl );
+    if( !sourceTrack )
+        warning() << __PRETTY_FUNCTION__ << ": I don't know about" << trackUrl;
+    else
+        // this is needed to trigger CollectionLocation's functionality to remove empty dirs
+        transferSuccessful( sourceTrack );
 }
 
 UmsTransferJob::UmsTransferJob( UmsCollectionLocation *location )
     : KCompositeJob( location )
     , m_location( location )
-    , m_cancled( false )
+    , m_abort( false )
 {
     setCapabilities( KJob::Killable );
 }
@@ -171,34 +188,30 @@ UmsTransferJob::start()
     if( m_transferList.isEmpty() )
         return;
 
+    m_totalTracks = m_transferList.size();
     startNextJob();
 }
 
 void
 UmsTransferJob::slotCancel()
 {
-    DEBUG_BLOCK
+    m_abort = true;
 }
 
 void
 UmsTransferJob::startNextJob()
 {
-    if( m_transferList.isEmpty() )
+    if( m_transferList.isEmpty() || m_abort )
     {
         emitResult();
         return;
     }
 
     KUrlPair urlPair = m_transferList.takeFirst();
-    //TODO: add move as well.
     KIO::FileCopyJob *job = KIO::file_copy( urlPair.first, urlPair.second, -1,
                                             KIO::HideProgressInfo );
     connect( job, SIGNAL(percent( KJob *, unsigned long )),
              SLOT(slotChildJobPercent( KJob *, unsigned long )) );
-    QString loggerText = i18np( "Copying one track to %2", "Copying %1 tracks to %2",
-                                m_transferList.count(),
-                                m_location->collection()->prettyName() );
-    emit infoMessage( this, loggerText, loggerText );
     addSubjob( job );
 }
 
@@ -206,7 +219,8 @@ void
 UmsTransferJob::slotChildJobPercent( KJob *job, unsigned long percentage )
 {
     Q_UNUSED(job)
-    emit percent( this, percentage );
+    int alreadyTransferred = m_totalTracks - m_transferList.size() - 1;
+    emit percent( this, ( alreadyTransferred * 100.0 + percentage ) / m_totalTracks );
 }
 
 void
@@ -218,7 +232,12 @@ UmsTransferJob::slotResult( KJob *job )
     {
         KIO::FileCopyJob *copyJob = dynamic_cast<KIO::FileCopyJob *>( job );
         if( copyJob )
+        {
+            emit sourceFileTransferDone( copyJob->srcUrl() );
             emit fileTransferDone( copyJob->destUrl() );
+        }
+        else
+            Debug::warning() << __PRETTY_FUNCTION__ << "invalid job passed to me!";
     }
     startNextJob();
 }
