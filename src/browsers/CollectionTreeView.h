@@ -69,6 +69,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void mousePressEvent( QMouseEvent *event );
         void mouseReleaseEvent( QMouseEvent *event );
         void keyPressEvent( QKeyEvent * event );
+        void dragEnterEvent( QDragEnterEvent *event );
         void dragMoveEvent( QDragMoveEvent *event );
         void startDrag( Qt::DropActions supportedActions );
 

@@ -46,8 +46,8 @@ Version 2.6-Beta 1
     * Do not double-transcode tracks when importing from an audio CD. (BR 263775)
     * Allow ripping of CD tracks with special characters in name tranks to
       Björn Steinbrink. (BR 224437)
-    * Don't show organize collection when dropping track on non-collection
-      entry in Collection Browser. (BR 291068) 
+    * Don't allow tracks to be dropped to their own collection and to
+      non-writable collections; indicate the fact visually. (BR 291068)
     * Fix scrollarea following keyboard navigation. (BR 259791)
     * Fix crash when trying to save custom equalizer presets. (BR 286227)
     * Fix crash due to my silly method order error. (BR 291968)

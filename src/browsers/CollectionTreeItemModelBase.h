@@ -101,6 +101,11 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         void itemAboutToBeDeleted( CollectionTreeItem *item );
 
+        /**
+         * This should be called every time a drag enters collection browser
+         */
+        void setDragSourceCollections( const QSet<Collections::Collection*> &collections );
+
     signals:
         void expandIndex( const QModelIndex &index );
         void allQueriesFinished();
@@ -162,6 +167,13 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         QSet<Meta::DataPtr> m_expandedItems;
         QSet<Collections::Collection*> m_expandedCollections;
         QSet<Collections::Collection*> m_expandedSpecialNodes;
+
+        /**
+         * Contents of this set are undefined if there is no active drag 'n drop operation.
+         * Additionally, you may _never_ dereference pointers in this set, just compare
+         * them with other pointers
+         */
+        QSet<Collections::Collection*> m_dragSourceCollections;
 
     protected slots:
         void startAnimationTick();

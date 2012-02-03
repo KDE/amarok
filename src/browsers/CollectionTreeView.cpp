@@ -471,6 +471,25 @@ void CollectionTreeView::keyPressEvent( QKeyEvent *event )
 }
 
 void
+CollectionTreeView::dragEnterEvent( QDragEnterEvent *event )
+{
+    // We want to indicate to the user that dropping to the same collection is not possible.
+    // CollectionTreeItemModel therefore needs to know what collection the drag originated
+    // so that is can play with Qt::ItemIsDropEnabled in flags()
+    const AmarokMimeData *mimeData = qobject_cast<const AmarokMimeData*>( event->mimeData() );
+    if( mimeData ) // drag from within Amarok
+    {
+        QSet<Collections::Collection *> srcCollections;
+        foreach( Meta::TrackPtr track, mimeData->tracks() )
+        {
+            srcCollections.insert( track->collection() );
+        }
+        m_treeModel->setDragSourceCollections( srcCollections );
+    }
+    QAbstractItemView::dragEnterEvent( event );
+}
+
+void
 CollectionTreeView::dragMoveEvent( QDragMoveEvent *event )
 {
     // this mangling is not needed for Copy/Move distinction to work, it is only needed

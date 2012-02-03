@@ -97,12 +97,26 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType )
 Qt::ItemFlags
 CollectionTreeItemModel::flags( const QModelIndex &idx ) const
 {
+    if( !idx.isValid() )
+        return 0;
+
     Qt::ItemFlags flags = CollectionTreeItemModelBase::flags( idx );
-    //TODO: check for CollectionLocation::isWritable().
-    if( !idx.parent().isValid() )
-        return flags | Qt::ItemIsDropEnabled;
-    else
-        return flags;
+    if( idx.parent().isValid() )
+        return flags; // has parent -> not a collection -> no drops
+
+    // we depend on someone (probably CollectionTreeView) to call
+    // CollectionTreeItemModelBase::setDragSourceCollections() every time a drag is
+    // initiated or enters collection browser widget
+    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( idx.internalPointer() );
+    Q_ASSERT(item->type() == CollectionTreeItem::Collection);
+    if( m_dragSourceCollections.contains( item->parentCollection() ) )
+        return flags; // attempt to drag tracks from the same collection, don't allow this (bug 291068)
+
+    if( !item->parentCollection()->isWritable() )
+        return flags; // not writeable, disallow drops
+
+    // all paranoid checks passed, tracks can be dropped to this item
+    return flags | Qt::ItemIsDropEnabled;
 }
 
 QVariant
@@ -124,13 +138,11 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
     if( !parent.isValid() )
         return false;
 
-    if( parent.isValid() && ( row != -1 && column != -1 ) )
-        return false; //only droppable on root (collection header) items.
-
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
     Q_ASSERT(item->type() == CollectionTreeItem::Collection);
 
-    Collections::CollectionLocation *targetLocation = item->parentCollection()->location();
+    Collections::Collection *targetCollection = item->parentCollection();
+    Collections::CollectionLocation *targetLocation = targetCollection->location();
     Q_ASSERT(targetLocation);
 
     //TODO: accept external drops.
@@ -149,6 +161,9 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
 
     foreach( Collections::Collection *sourceCollection, collectionTrackMap.uniqueKeys() )
     {
+        if( sourceCollection == targetCollection )
+            continue; // should be already catched by ...Model::flags(), but hey
+
         Collections::CollectionLocation *sourceLocation;
         if( sourceCollection )
         {
@@ -159,9 +174,6 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
         {
             sourceLocation = new Collections::FileCollectionLocation();
         }
-
-        if( sourceLocation == targetLocation )
-            continue;
 
         if( action == Qt::CopyAction )
         {

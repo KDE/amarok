@@ -1170,6 +1170,12 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
     }
 }
 
+void
+CollectionTreeItemModelBase::setDragSourceCollections( const QSet<Collections::Collection*> &collections )
+{
+    m_dragSourceCollections = collections;
+}
+
 int
 CollectionTreeItemModelBase::levelCategory( const int level ) const
 {
