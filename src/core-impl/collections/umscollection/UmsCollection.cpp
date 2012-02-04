@@ -164,6 +164,10 @@ UmsCollection::UmsCollection( Solid::Device device )
     connect( storageAccess, SIGNAL(accessibilityChanged( bool, QString )),
              SLOT(slotAccessibilityChanged( bool, QString )) );
 
+    m_updateTimer.setSingleShot( true );
+    connect( this, SIGNAL(startUpdateTimer()), SLOT(slotStartUpdateTimer()) );
+    connect( &m_updateTimer, SIGNAL(timeout()), SIGNAL(updated()) );
+
     m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure %1", prettyName() ),
                 this );
     m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
@@ -445,6 +449,14 @@ UmsCollection::createCapabilityInterface( Capabilities::Capability::Type type )
     }
 }
 
+void
+UmsCollection::metadataChanged( Meta::TrackPtr track )
+{
+    if( MemoryMeta::MapChanger( m_mc.data() ).trackChanged( track ) )
+        // big-enough change:
+        emit startUpdateTimer();
+}
+
 KUrl
 UmsCollection::organizedUrl( Meta::TrackPtr track ) const
 {
@@ -474,8 +486,26 @@ void
 UmsCollection::slotTrackAdded( KUrl location )
 {
     Q_ASSERT( m_musicPath.isParentOf( location ) );
-    MetaFile::TrackPtr track = MetaFile::TrackPtr( new MetaFile::Track( location ) );
-    MemoryMeta::MapChanger( m_mc.data() ).addTrack( Meta::TrackPtr::dynamicCast( track ) );
+    Meta::TrackPtr fileTrack = Meta::TrackPtr( new MetaFile::Track( location ) );
+    Meta::TrackPtr proxyTrack = MemoryMeta::MapChanger( m_mc.data() ).addTrack( fileTrack );
+    if( proxyTrack )
+    {
+        subscribeTo( fileTrack );
+        emit startUpdateTimer();
+    }
+    else
+        warning() << __PRETTY_FUNCTION__ << "Failed to add" << fileTrack->playableUrl()
+                  << "to MemoryCollection. Perhaps already there?!?";
+}
+
+void
+UmsCollection::slotTrackRemoved( const Meta::TrackPtr &track )
+{
+    if( MemoryMeta::MapChanger( m_mc.data() ).removeTrack( track ) )
+        emit startUpdateTimer();
+    else
+        warning() << __PRETTY_FUNCTION__ << "Failed to remove" << track->playableUrl()
+                  << "from MemoryCollection. Perhaps it never were there?";
 }
 
 void
@@ -681,4 +711,10 @@ UmsCollection::slotDirectoryScanned( CollectionScanner::Directory *dir )
     emit updated();
 
     //TODO: read playlists
+}
+
+void
+UmsCollection::slotStartUpdateTimer()
+{
+    m_updateTimer.start( 2000 );
 }

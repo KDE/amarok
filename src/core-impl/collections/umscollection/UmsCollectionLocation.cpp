@@ -140,8 +140,6 @@ UmsCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources 
     KIO::DeleteJob *delJob = KIO::del( sourceUrls, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( delJob, loggerText, delJob, SLOT(kill()) );
 
-    // there is no deleted() signal, so assume that deleting succeeded.
-    connect( delJob, SIGNAL(deleting(KIO::Job*,KUrl)), SLOT(slotTrackDeleted(KIO::Job*,KUrl)) );
     connect( delJob, SIGNAL(finished( KJob * )), SLOT(slotRemoveOperationFinished()) );
 }
 
@@ -156,15 +154,21 @@ UmsCollectionLocation::slotTrackTransferred( const KUrl &sourceTrackUrl )
         source()->transferSuccessful( sourceTrack );
 }
 
-void
-UmsCollectionLocation::slotTrackDeleted( KIO::Job* ,const KUrl &trackUrl )
+void UmsCollectionLocation::slotRemoveOperationFinished()
 {
-    Meta::TrackPtr sourceTrack = m_sourceUrlToTrackMap.value( trackUrl );
-    if( !sourceTrack )
-        warning() << __PRETTY_FUNCTION__ << ": I don't know about" << trackUrl;
-    else
-        // this is needed to trigger CollectionLocation's functionality to remove empty dirs
-        transferSuccessful( sourceTrack );
+    foreach( Meta::TrackPtr track, m_sourceUrlToTrackMap )
+    {
+        KUrl trackUrl = track->playableUrl();
+        if( !trackUrl.isLocalFile() // just pretend it was deleted
+            || !QFileInfo( trackUrl.toLocalFile() ).exists() )
+        {
+            // good, the file was deleted. following is needed to trigger
+            // CollectionLocation's functionality to remove empty dirs:
+            transferSuccessful( track );
+            m_umsCollection->slotTrackRemoved( track );
+        }
+    }
+    CollectionLocation::slotRemoveOperationFinished();
 }
 
 UmsTransferJob::UmsTransferJob( UmsCollectionLocation *location )

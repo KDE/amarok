@@ -48,16 +48,14 @@ class UmsCollectionLocation : public Collections::CollectionLocation
             const Transcoding::Configuration &configuration = Transcoding::Configuration() );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
+    protected slots:
+        void slotRemoveOperationFinished(); // hides intentionally parent methods
+
     private slots:
         /**
          * Needed for removal of source tracks during move operation
          */
         void slotTrackTransferred( const KUrl &sourceTrackUrl );
-
-        /**
-         * Needed for removal of empty dirs during delete operation
-         */
-        void slotTrackDeleted( KIO::Job*, const KUrl &trackUrl );
 
     private:
         UmsCollection *m_umsCollection;

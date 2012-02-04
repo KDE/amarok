@@ -27,6 +27,7 @@
 #include <solid/device.h>
 
 #include <QtGlobal>
+#include <QTimer>
 
 using namespace Collections;
 
@@ -62,7 +63,7 @@ class UmsCollectionFactory : public CollectionFactory
         QMap<QString, UmsCollection *> m_umsCollectionMap;
 };
 
-class UmsCollection : public Collection
+class UmsCollection : public Collection, public Meta::Observer
 {
     Q_OBJECT
 
@@ -99,6 +100,10 @@ class UmsCollection : public Collection
         virtual Capabilities::Capability *createCapabilityInterface(
                 Capabilities::Capability::Type type );
 
+        /* Meta::Observer methods */
+        virtual void metadataChanged( Meta::TrackPtr track );
+        using Meta::Observer::metadataChanged; // silence compiler warning about hidder overloads
+
         /* own methods */
         const KUrl &musicPath() const { return m_musicPath; }
         const KUrl &podcastPath() const { return m_podcastPath; }
@@ -107,9 +112,20 @@ class UmsCollection : public Collection
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
+    signals:
+        /**
+         * Start a count-down that emits updated() signal after it expires.
+         * Resets the timer to original timeout if already running. This is to ensure
+         * that we emit update() max. once per <timeout> for batch updates.
+         *
+         * Timers can only be started from "their" thread so use signals & slots for that.
+         */
+        void startUpdateTimer();
+
     public slots:
         void slotDeviceRemoved();
         void slotTrackAdded( KUrl trackLocation );
+        void slotTrackRemoved( const Meta::TrackPtr &track );
 
     private slots:
         void slotAccessibilityChanged( bool accessible, const QString &udi );
@@ -120,6 +136,11 @@ class UmsCollection : public Collection
         void slotEject();
 
         void slotDirectoryScanned( CollectionScanner::Directory *dir );
+
+        /**
+         * Starts a timer that emits updated() signal after 2 seconds.
+         */
+        void slotStartUpdateTimer();
 
     private:
         /** enable the collection after the volume got mounted */
@@ -168,6 +189,7 @@ class UmsCollection : public Collection
         QAction *m_parseAction;
         QAction *m_configureAction;
         QAction *m_ejectAction;
+        QTimer m_updateTimer;
 };
 
 #endif

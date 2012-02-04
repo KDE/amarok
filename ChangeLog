@@ -32,6 +32,8 @@ Version 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * When adding, changing and removing tracks in USB Mass Storage collection,
+      actually update the user interface to show it.
     * Remove empty folders when deleting tracks from USB Mass Storage collection.
     * Don't copy tracks to USB Mass Storage collection in move operation.
     * Fix defunct aborting of transfers to USB Mass Storage collection. (BR 290448)
