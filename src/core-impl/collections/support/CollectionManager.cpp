@@ -134,11 +134,11 @@ CollectionManager::~CollectionManager()
     d->collections.clear();
     d->unmanagedCollections.clear();
     d->trackProviders.clear();
-    qDeleteAll( d->managedCollections );
 
-    // qDeleteAll seems to be partly broken in Qt 4.8, FIX: 285951
-    // qDeleteAll( d->factories );
-    while (!d->factories.isEmpty())
+    // Hmm, qDeleteAll from Qt 4.8 crashes with our SmartPointerList, do it manually. Bug 285951
+    while( !d->managedCollections.isEmpty() )
+        delete d->managedCollections.takeFirst();
+    while (!d->factories.isEmpty() )
         delete d->factories.takeFirst();
 
     delete d;
