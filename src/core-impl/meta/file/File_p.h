@@ -27,6 +27,7 @@
 #include "shared/MetaTagLib.h"
 #include "core/statistics/StatisticsProvider.h"
 #include "core-impl/collections/support/ArtistHelper.h"
+#include "covermanager/CoverCache.h"
 
 #include <QDateTime>
 #include <QFile>
@@ -286,6 +287,45 @@ public:
         }
         else
             return QString();
+    }
+
+    bool hasImage( int /* size */ = 0 ) const
+    {
+        if( d && d.data()->m_data.embeddedImage )
+            return true;
+        return false;
+    }
+
+    QImage image( int size = 0 ) const
+    {
+        QImage image;
+        if( d && d.data()->m_data.embeddedImage )
+        {
+            image = Meta::Tag::embeddedCover( d.data()->url.toLocalFile() );
+        }
+
+        if( image.isNull() || size <= 0 /* do not scale */ )
+            return image;
+        return image.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    }
+
+    bool canUpdateImage() const
+    {
+        return d; // true if underlying track is not null
+    }
+
+    void setImage( const QImage &image )
+    {
+        if( !d )
+            return;
+
+        Meta::Tag::setEmbeddedCover( d.data()->url.toLocalFile(), image );
+        if( d.data()->m_data.embeddedImage == image.isNull() )
+            // we need to toggle the embeddedImage switch in this case
+            d.data()->readMetaData();
+
+        CoverCache::invalidateAlbum( this );
+        notifyObservers();
     }
 
     bool operator==( const Meta::Album &other ) const {
