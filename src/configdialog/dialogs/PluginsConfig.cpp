@@ -49,7 +49,7 @@ PluginsConfig::PluginsConfig( QWidget *parent )
 
     key = QLatin1String( "Device" );
     m_selector->addPlugins( The::pluginManager()->plugins( key ),
-                            KPluginSelector::ReadConfigFile, i18n("Devices"), key );
+                            KPluginSelector::ReadConfigFile, i18n("Local Collection Backends"), key );
 
     connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
     connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );

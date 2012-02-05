@@ -23,6 +23,8 @@ Version 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * "Devices" in Amarok configuration -> Plugins is with other related strings
+      renamed to "Local Collection Backends" to reduce user confusion.
     * Enable keyboard activation of PlaylistBrowser items. 
     * Don't use `mysql_config --variable=pkgincludedir`, find mysql include
       directory manually by looking up mysql.h.

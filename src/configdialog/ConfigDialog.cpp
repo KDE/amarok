@@ -56,7 +56,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     //ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
     addPage( general,     i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
-    addPage( collection,  i18n( "Collection" ), "collection-amarok", i18n( "Configure Collection" ) );
+    addPage( collection,  i18n( "Local Collection" ), "collection-amarok", i18n( "Configure Local Collection" ) );
     addPage( playback,    i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
     addPage( notify,      i18n( "Notifications" ), "preferences-indicator-amarok", i18n( "Configure Notifications" ) );
     addPage( database,    i18n( "Database" ), "server-database", i18n( "Configure Database" ) );
