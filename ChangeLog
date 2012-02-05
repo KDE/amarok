@@ -23,6 +23,8 @@ Version 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * Don't show unmounted USB Mass Storage devices and make it clear when
+      the device is not "activated" yet.
     * "Devices" in Amarok configuration -> Plugins is with other related strings
       renamed to "Local Collection Backends" to reduce user confusion.
     * Enable keyboard activation of PlaylistBrowser items. 

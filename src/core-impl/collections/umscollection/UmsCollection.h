@@ -49,18 +49,51 @@ class UmsCollectionFactory : public CollectionFactory
 
         virtual void init();
 
-    signals:
-        void newCollection( Collections::Collection *newCollection );
-
     private slots:
-        void slotAddSolidDevice( const QString & );
-        void slotRemoveSolidDevice( const QString & );
+        /**
+         * Called when solid notifier detects a new device has been added
+         */
+        void slotAddSolidDevice( const QString &udi );
+
+        /**
+         * Called when solid StorageAccess device we are interested in is mounted or
+         * unmounted
+         */
+        void slotAccessibilityChanged( bool accessible, const QString &udi );
+
+        /**
+         * Called when solid notifier detects a device has been removed
+         */
+        void slotRemoveSolidDevice( const QString &udi );
+
+        /**
+         * Like @see slotRemoveSolidDevice(), but instructs Collection to eject the
+         * device after it has performed necessary teardown operations.
+         *
+         * Called when user wants to unmount the device from for example Device Notifier
+         */
+        void slotRemoveAndTeardownSolidDevice( const QString &udi );
+
+        /**
+         * Called when "tracked" collection is destroyed
+         */
+        void slotCollectionDestroyed( QObject *collection );
 
     private:
-        bool m_initialized;
+        /**
+         * Checks whether a solid device is a USB mass-storage one
+         */
+        bool identifySolidDevice( const QString &udi ) const;
 
-        //maps device udi to active UMS collections
-        QMap<QString, UmsCollection *> m_umsCollectionMap;
+        /**
+         * Attempts to create appropriate collection for already identified solid device
+         * @param udi. Should emit newCollection() if the collection was successfully
+         * created and should become visible to the user.
+         */
+        void createCollectionForSolidDevice( const QString &udi );
+
+        // maps device udi to active UMS collections
+        QMap<QString, UmsCollection *> m_collectionMap;
 };
 
 class UmsCollection : public Collection, public Meta::Observer
@@ -123,17 +156,23 @@ class UmsCollection : public Collection, public Meta::Observer
         void startUpdateTimer();
 
     public slots:
-        void slotDeviceRemoved();
+        /**
+         * Destroy the collection (by emitting remove)
+         */
+        void slotDestroy();
+
+        /**
+         * Destroy the collection and try to eject the device from system
+         */
+        void slotEject();
+
         void slotTrackAdded( KUrl trackLocation );
         void slotTrackRemoved( const Meta::TrackPtr &track );
 
     private slots:
-        void slotAccessibilityChanged( bool accessible, const QString &udi );
-
         void slotParseTracks();
         void slotParseActionTriggered();
         void slotConfigure();
-        void slotEject();
 
         void slotDirectoryScanned( CollectionScanner::Directory *dir );
 
@@ -143,10 +182,8 @@ class UmsCollection : public Collection, public Meta::Observer
         void slotStartUpdateTimer();
 
     private:
-        /** enable the collection after the volume got mounted */
+        /** extended constructor */
         void init();
-        /** disable the collection, but don't remove it yet so it stays in the collection view */
-        void deInit();
 
         //static variables relating to the on-disk configuration file
         static QString s_settingsFileName;
@@ -164,7 +201,7 @@ class UmsCollection : public Collection, public Meta::Observer
 
         Solid::Device m_device;
         QSharedPointer<MemoryCollection> m_mc;
-        bool m_initialized;
+        bool m_tracksParsed;
 
         bool m_autoConnect;
         QString m_mountPoint;
