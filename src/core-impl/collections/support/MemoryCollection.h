@@ -35,14 +35,14 @@ class AlbumMap : public QMap<Meta::AlbumKey, Meta::AlbumPtr>
          * semantics, i.e. compares albums by name and artist name.
          */
         bool contains( const Meta::AlbumPtr &album ) const {
-            return QMap::contains( Meta::AlbumKey( album ) ); }
+            return QMap<Meta::AlbumKey, Meta::AlbumPtr>::contains( Meta::AlbumKey( album ) ); }
 
         /**
          * Return true if this map contains album named @param name with album artist
          * @param artistName. Amarok convention is to use empty artistName for compilaitons.
          */
         bool contains( const QString &name, const QString &artistName ) const {
-            return QMap::contains( Meta::AlbumKey( name, artistName ) ); }
+            return QMap<Meta::AlbumKey, Meta::AlbumPtr>::contains( Meta::AlbumKey( name, artistName ) ); }
 
         /**
          * Inserts new album @param album into this map, using its name and album artist.
@@ -50,13 +50,13 @@ class AlbumMap : public QMap<Meta::AlbumKey, Meta::AlbumPtr>
          * change name and album artist of album after adding it to this map!
          */
         void insert( const Meta::AlbumPtr &album ) {
-            QMap::insert( Meta::AlbumKey( album ) , album ); }
+            QMap<Meta::AlbumKey, Meta::AlbumPtr>::insert( Meta::AlbumKey( album ) , album ); }
 
         /**
          * Remove album from this map that has same name and artist as @param album
          */
         int remove( const Meta::AlbumPtr &album ) {
-            return QMap::remove( Meta::AlbumKey( album ) ); }
+            return QMap<Meta::AlbumKey, Meta::AlbumPtr>::remove( Meta::AlbumKey( album ) ); }
 
         /**
          * Return pointer to album from this map that has same name and artist as @param album
@@ -65,14 +65,14 @@ class AlbumMap : public QMap<Meta::AlbumKey, Meta::AlbumPtr>
          * semantics, i.e. compares albums by name and artist name.
          */
         const Meta::AlbumPtr value( const Meta::AlbumPtr &album ) const {
-            return QMap::value( Meta::AlbumKey( album ) ); }
+            return QMap<Meta::AlbumKey, Meta::AlbumPtr>::value( Meta::AlbumKey( album ) ); }
 
         /**
          * Return pointer to album from this map that has name @param name and
          * album artist @param artistName
          */
         const Meta::AlbumPtr value( const QString &name, const QString &artistName ) const {
-            return QMap::value( Meta::AlbumKey( name, artistName ) ); }
+            return QMap<Meta::AlbumKey, Meta::AlbumPtr>::value( Meta::AlbumKey( name, artistName ) ); }
 };
 typedef QMap<QString, Meta::GenrePtr> GenreMap;
 typedef QMap<QString, Meta::ComposerPtr> ComposerMap;
