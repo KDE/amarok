@@ -160,7 +160,9 @@ VideoclipApplet::init()
 VideoclipApplet::~VideoclipApplet()
 {
     delete m_videoWidget.data();
-    qDeleteAll( m_videoItemButtons );
+    // Hmm, qDeleteAll from Qt 4.8 crashes with our SmartPointerList, do it manually. Bug 285951
+    while (!m_videoItemButtons.isEmpty() )
+         delete m_videoItemButtons.takeFirst();
 }
 
 void
