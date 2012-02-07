@@ -20,6 +20,7 @@
 #define AMAROK_META_FILE_P_H
 
 #include "amarokconfig.h"
+#include "core/collections/Collection.h"
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
@@ -113,6 +114,7 @@ public:
     Meta::YearPtr year;
     Statistics::StatisticsProvider *provider;
     QWeakPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
+    QWeakPointer<Collections::Collection> collection;
 
     void readMetaData();
     Meta::FieldHash changes;

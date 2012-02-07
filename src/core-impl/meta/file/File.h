@@ -48,20 +48,8 @@ namespace MetaFile
             virtual Meta::ComposerPtr composer() const;
             virtual Meta::YearPtr year() const;
 
-            virtual void setAlbum( const QString &newAlbum );
-            virtual void setAlbumArtist( const QString &newAlbumArtist );
-            virtual void setArtist( const QString &newArtist );
-            virtual void setGenre( const QString &newGenre );
-            virtual void setComposer( const QString &newComposer );
-            virtual void setYear( int newYear );
-
-            virtual void setTitle( const QString &newTitle );
-
-            virtual void setBpm( const qreal newBpm );
             virtual qreal bpm() const;
-
             virtual QString comment() const;
-            virtual void setComment( const QString &newComment );
 
             virtual double score() const;
             virtual void setScore( double newScore );
@@ -70,10 +58,7 @@ namespace MetaFile
             virtual void setRating( int newRating );
 
             virtual int trackNumber() const;
-            virtual void setTrackNumber( int newTrackNumber );
-
             virtual int discNumber() const;
-            virtual void setDiscNumber( int newDiscNumber );
 
             virtual qint64 length() const;
             virtual int filesize() const;
@@ -81,28 +66,41 @@ namespace MetaFile
             virtual int bitrate() const;
             virtual QDateTime createDate() const;
             virtual QDateTime lastPlayed() const;
-            virtual void setLastPlayed( const QDateTime &newTime );
             virtual QDateTime firstPlayed() const;
-            virtual void setFirstPlayed( const QDateTime &newTime );
             virtual int playCount() const;
-            virtual void setPlayCount( int newCount );
 
             virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
 
             virtual QString type() const;
 
-            virtual void beginMetaDataUpdate();
-            virtual void endMetaDataUpdate();
-
             virtual void finishedPlaying( double playedFraction );
-
             virtual bool inCollection() const;
             virtual Collections::Collection *collection() const;
 
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
+        // MetaFile::Track own methods:
+            virtual void beginMetaDataUpdate();
+            virtual void endMetaDataUpdate();
+
             virtual QImage getEmbeddedCover() const;
+
+            virtual void setCollection( Collections::Collection *newCollection );
+            virtual void setTitle( const QString &newTitle );
+            virtual void setAlbum( const QString &newAlbum );
+            virtual void setAlbumArtist( const QString &newAlbumArtist );
+            virtual void setArtist( const QString &newArtist );
+            virtual void setGenre( const QString &newGenre );
+            virtual void setComposer( const QString &newComposer );
+            virtual void setYear( int newYear );
+            virtual void setTrackNumber( int newTrackNumber );
+            virtual void setBpm( const qreal newBpm );
+            virtual void setComment( const QString &newComment );
+            virtual void setDiscNumber( int newDiscNumber );
+            virtual void setLastPlayed( const QDateTime &newTime );
+            virtual void setFirstPlayed( const QDateTime &newTime );
+            virtual void setPlayCount( int newCount );
 
             class Private;
 

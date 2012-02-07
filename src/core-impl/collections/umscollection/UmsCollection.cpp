@@ -553,26 +553,34 @@ void
 UmsCollection::slotTrackAdded( KUrl location )
 {
     Q_ASSERT( m_musicPath.isParentOf( location ) );
-    Meta::TrackPtr fileTrack = Meta::TrackPtr( new MetaFile::Track( location ) );
-    Meta::TrackPtr proxyTrack = MemoryMeta::MapChanger( m_mc.data() ).addTrack( fileTrack );
+    MetaFile::Track *fileTrack = new MetaFile::Track( location );
+    fileTrack->setCollection( this );
+    Meta::TrackPtr fileTrackPtr = Meta::TrackPtr( fileTrack );
+    Meta::TrackPtr proxyTrack = MemoryMeta::MapChanger( m_mc.data() ).addTrack( fileTrackPtr );
     if( proxyTrack )
     {
-        subscribeTo( fileTrack );
+        subscribeTo( fileTrackPtr );
         emit startUpdateTimer();
     }
     else
-        warning() << __PRETTY_FUNCTION__ << "Failed to add" << fileTrack->playableUrl()
+        warning() << __PRETTY_FUNCTION__ << "Failed to add" << fileTrackPtr->playableUrl()
                   << "to MemoryCollection. Perhaps already there?!?";
 }
 
 void
 UmsCollection::slotTrackRemoved( const Meta::TrackPtr &track )
 {
-    if( MemoryMeta::MapChanger( m_mc.data() ).removeTrack( track ) )
+    Meta::TrackPtr removedTrack = MemoryMeta::MapChanger( m_mc.data() ).removeTrack( track );
+    if( removedTrack )
+    {
+        unsubscribeFrom( removedTrack );
+        // we only added MetaFile::Tracks, following static cast is safe
+        static_cast<MetaFile::Track*>( removedTrack.data() )->setCollection( 0 );
         emit startUpdateTimer();
+    }
     else
         warning() << __PRETTY_FUNCTION__ << "Failed to remove" << track->playableUrl()
-                  << "from MemoryCollection. Perhaps it never were there?";
+                  << "from MemoryCollection. Perhaps it was never there?";
 }
 
 void

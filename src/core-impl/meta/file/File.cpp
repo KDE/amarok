@@ -614,13 +614,19 @@ Track::finishedPlaying( double playedFraction )
 bool
 Track::inCollection() const
 {
-    return false;
+    return d->collection; // calls QWeakPointer's (bool) operator
 }
 
 Collections::Collection*
 Track::collection() const
 {
-    return 0;
+    return d->collection.data();
+}
+
+void
+Track::setCollection( Collections::Collection *newCollection )
+{
+    d->collection = newCollection;
 }
 
 bool
