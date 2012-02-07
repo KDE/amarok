@@ -2,7 +2,17 @@
 Type=Service
 Icon=network-server
 Name=NFS Share Backend
+Name[nl]=Backend voor NFS-share
+Name[pt]=Infra-Estrutura de Partilha NFS
+Name[pt_BR]=Infraestrutura de compartilhamento NFS
+Name[uk]=Модуль спільних ресурсів NFS
+Name[x-test]=xxNFS Share Backendxx
 Comment=Local Collection folders on remote NFS shares
+Comment[nl]=Mappen voor lokale verzameling op NFS-shares op afstand
+Comment[pt]=Pastas de colecções locais em partilhas NFS remotas
+Comment[pt_BR]=Pastas da coleção local em compartilhamentos remotos NFS
+Comment[uk]=Теки локальної збірки на віддалених спільних ресурсах NFS
+Comment[x-test]=xxLocal Collection folders on remote NFS sharesxx
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Maximilian Kossick, Peter C. Ndikuwera

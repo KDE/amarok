@@ -2,7 +2,17 @@
 Type=Service
 Icon=network-server
 Name=SMB (Windows) Share Backend
+Name[nl]=Backend voor SMB (Windows)-share 
+Name[pt]=Infra-Estrutura de Partilha SMB (Windows)
+Name[pt_BR]=Infraestrutura de compartilhamento SMB (Windows)
+Name[uk]=Модуль спільних ресурсів SMB (Windows)
+Name[x-test]=xxSMB (Windows) Share Backendxx
 Comment=Local Collection folders on remote Samba (Windows) shares
+Comment[nl]=Mappen voor lokale verzameling op Samba (Windows)-shares op afstand
+Comment[pt]=Pastas de colecções locais em partilhas de Samba (Windows) remotas
+Comment[pt_BR]=Pastas da coleção local em compartilhamentos remotos do Samba (Windows)
+Comment[uk]=Теки локальної збірки на віддалених спільних ресурсах Samba (Windows)
+Comment[x-test]=xxLocal Collection folders on remote Samba (Windows) sharesxx
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Maximilian Kossick, Peter C. Ndikuwera
