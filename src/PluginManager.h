@@ -20,7 +20,6 @@
 #include "amarok_export.h"
 #include "core/support/PluginFactory.h"
 
-class MountPointManager;
 class ServicePluginManager;
 
 namespace Plugins {

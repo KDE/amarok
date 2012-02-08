@@ -631,7 +631,6 @@ set(amaroklib_LIB_SRCS
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
-    MountPointManager.cpp
     PluginManager.cpp
     QStringx.cpp
     ScriptManager.cpp

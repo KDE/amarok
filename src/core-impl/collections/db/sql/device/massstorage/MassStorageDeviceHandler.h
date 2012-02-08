@@ -17,16 +17,14 @@
 #ifndef MASSSTORAGEDEVICEHANDLER_H
 #define MASSSTORAGEDEVICEHANDLER_H
 
-#include <MountPointManager.h>
-
-#include <solid/device.h>
+#include "core-impl/collections/db/MountPointManager.h"
 
 class SqlStorage;
 
 class MassStorageDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
-    MassStorageDeviceHandlerFactory( QObject *parent, const QVariantList &args );
+    MassStorageDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
     virtual ~MassStorageDeviceHandlerFactory();
 
     virtual bool canHandle( const Solid::Device &device ) const;
@@ -40,8 +38,6 @@ public:
     virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const;
 
     virtual QString type() const;
-
-    virtual void init();
 
 private:
     bool excludedFilesystem( const QString &fstype ) const;
@@ -71,7 +67,6 @@ private:
     int m_deviceID;
     const QString m_mountPoint;
     QString m_udi;
-
 };
 
 #endif

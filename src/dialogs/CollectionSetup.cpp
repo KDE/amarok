@@ -239,7 +239,7 @@ CollectionSetup::writeConfig()
         if( primaryCollection )
             primaryCollection->setProperty( "collectionFolders", m_model->directories() );
 
-        debug() << "MountPointManager collection folders: " << collectionFolders;
+        debug() << "Old collection folders:      " << collectionFolders;
         CollectionManager::instance()->startFullScan();
     }
 }

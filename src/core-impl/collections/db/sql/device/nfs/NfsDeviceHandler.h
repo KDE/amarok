@@ -18,12 +18,12 @@
 #ifndef NFSDEVICEHANDLER_H
 #define NFSDEVICEHANDLER_H
 
-#include <MountPointManager.h>
+#include "core-impl/collections/db/MountPointManager.h"
 
 class NfsDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
-    NfsDeviceHandlerFactory( QObject *parent, const QVariantList &args );
+    NfsDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
     virtual ~NfsDeviceHandlerFactory();
 
     virtual bool canHandle( const Solid::Device &device ) const;
@@ -37,8 +37,6 @@ public:
     virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const;
 
     virtual QString type() const;
-
-    virtual void init();
 };
 
 /**

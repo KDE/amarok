@@ -19,13 +19,11 @@
  
 #include "NfsDeviceHandler.h"
 
-AMAROK_EXPORT_DEVICE_PLUGIN( nfs, NfsDeviceHandlerFactory )
-
 #include "core/support/Debug.h"
 #include "core/collections/support/SqlStorage.h"
 
-#include <KConfig>
 #include <KUrl>
+#include <Solid/Device>
 #include <Solid/StorageAccess>
 #include <Solid/NetworkShare>
 
@@ -103,11 +101,6 @@ QString NfsDeviceHandlerFactory::type( ) const
     return "nfs";
 }
 
-void NfsDeviceHandlerFactory::init()
-{
-    m_initialized = true;
-}
-
 bool NfsDeviceHandlerFactory::canCreateFromMedium( ) const
 {
     return true;
@@ -145,14 +138,6 @@ bool NfsDeviceHandlerFactory::canHandle( const Solid::Device &device ) const
         return false;
     }
     return true;
-}
-
-NfsDeviceHandlerFactory::NfsDeviceHandlerFactory( QObject *parent, const QVariantList &args )
-    : DeviceHandlerFactory( parent, args )
-{
-    KPluginInfo pluginInfo( "amarok_device_nfs.desktop", "services" );
-    pluginInfo.setConfig( Amarok::config("Device_MassiveStorage") );
-    m_info = pluginInfo;
 }
 
 NfsDeviceHandlerFactory::~NfsDeviceHandlerFactory( )

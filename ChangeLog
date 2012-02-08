@@ -14,6 +14,8 @@ VERSION 2.7-Beta 1
     * Amazon store: We now ship a utility to handle downloads from Amazon.
 
   CHANGES:
+    * The confusing "Local Collection Backends" category of plugins was removed
+      from the Configure dialog. All backends are enabled from now on.
     * Statistics of tracks outside of collections are only read/saved to file
       tags (if enabled) instead of being kept in the database.
     * Last.fm Skip button removed; Last.fm API no longer provides it. (BR 305576)

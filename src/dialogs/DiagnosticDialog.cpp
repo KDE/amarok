@@ -83,7 +83,6 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     const Plugins::PluginManager *aPluginManager = Plugins::PluginManager::instance();
     aPlugins.append( aPluginManager->plugins( QLatin1String( "Collection" ) ) );
     aPlugins.append( aPluginManager->plugins( QLatin1String( "Service" ) ) );
-    aPlugins.append( aPluginManager->plugins( QLatin1String( "Device" ) ) );
 
     QString aPluginString;
     foreach( KPluginInfo aInfo, aPlugins )

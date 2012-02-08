@@ -22,12 +22,13 @@
 #include "CapabilityDelegate.h"
 #include "CapabilityDelegateImpl.h"
 #include "DatabaseUpdater.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/capabilities/TranscodeCapability.h"
 #include "core/transcoding/TranscodingController.h"
+#include "core-impl/collections/db/MountPointManager.h"
 #include "core-impl/collections/db/ScanManager.h"
 #include "dialogs/OrganizeCollectionDialog.h"
-#include "MountPointManager.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
 #include "SqlScanResultProcessor.h"
@@ -38,6 +39,7 @@
 #include <KMessageBox>
 
 #include <QApplication>
+#include <QDir>
 
 namespace Collections {
 

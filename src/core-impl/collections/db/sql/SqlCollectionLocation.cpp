@@ -22,7 +22,6 @@
 #include "SqlCollectionLocation.h"
 
 #include "MetaTagLib.h" // for getting the uid
-#include "MountPointManager.h"
 #include "core/collections/CollectionLocationDelegate.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core/interfaces/Logger.h"
@@ -31,9 +30,10 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/transcoding/TranscodingController.h"
+#include "core-impl/collections/db/MountPointManager.h"
 #include "core-impl/collections/db/ScanManager.h"
-#include "SqlCollection.h"
-#include "SqlMeta.h"
+#include "core-impl/collections/db/sql/SqlCollection.h"
+#include "core-impl/collections/db/sql/SqlMeta.h"
 #include "transcoding/TranscodingJob.h"
 
 #include <QDir>
@@ -46,7 +46,6 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <kio/deletejob.h>
-
 
 using namespace Collections;
 

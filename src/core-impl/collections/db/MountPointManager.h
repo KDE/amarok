@@ -17,34 +17,32 @@
 #ifndef AMAROK_MOUNTPOINTMANAGER_H
 #define AMAROK_MOUNTPOINTMANAGER_H
 
-#include "amarok_export.h"
-#include "core/support/Amarok.h"
-#include "core/support/PluginFactory.h"
+#include "core-impl/collections/db/sql/amarok_sqlcollection_export.h"
 
-#include <KConfigGroup>
-#include <KUrl>
-#include <KPluginInfo>
-#include <solid/device.h>
-#include <threadweaver/Job.h>
+#include <KSharedConfig>
 
 #include <QMap>
 #include <QMutex>
-#include <QStringList>
+#include <QObject>
 
 class DeviceHandler;
 class DeviceHandlerFactory;
 class SqlStorage;
+class KUrl;
+namespace Solid {
+    class Device;
+}
 
 typedef QList<int> IdList;
 typedef QList<DeviceHandlerFactory*> FactoryList;
 typedef QMap<int, DeviceHandler*> HandlerMap;
 
-class AMAROK_EXPORT DeviceHandlerFactory : public Plugins::PluginFactory
+class DeviceHandlerFactory : public QObject
 {
     Q_OBJECT
 
 public:
-    DeviceHandlerFactory( QObject *parent, const QVariantList &args );
+    DeviceHandlerFactory( QObject *parent ) : QObject( parent ) {}
     virtual ~DeviceHandlerFactory() {}
 
     /**
@@ -81,11 +79,7 @@ public:
     virtual QString type() const = 0;
 };
 
-/**
- *
- *
- */
-class AMAROK_EXPORT DeviceHandler
+class DeviceHandler
 {
 public:
     DeviceHandler() {}
@@ -141,7 +135,7 @@ public:
 /**
  *	@author Maximilian Kossick <maximilian.kossick@googlemail.com>
  */
-class AMAROK_EXPORT MountPointManager : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT MountPointManager : public QObject
 {
     Q_OBJECT
 
@@ -189,13 +183,13 @@ public:
     virtual QStringList collectionFolders() const;
     virtual void setCollectionFolders( const QStringList &folders );
 
-    void loadDevicePlugins( const QList<Plugins::PluginFactory*> &factories );
-
 signals:
     void deviceAdded( int id );
     void deviceRemoved( int id );
 
 private:
+    void createDeviceFactories();
+
     /**
      * checks whether a medium identified by its unique database id is currently mounted.
      * Note: does not handle deviceId = -1! It only checks real devices

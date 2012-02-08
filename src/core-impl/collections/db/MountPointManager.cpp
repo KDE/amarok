@@ -19,20 +19,16 @@
 #include "MountPointManager.h"
 
 #include "MediaDeviceCache.h"
-
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core-impl/collections/db/sql/device/massstorage/MassStorageDeviceHandler.h"
+#include "core-impl/collections/db/sql/device/nfs/NfsDeviceHandler.h"
+#include "core-impl/collections/db/sql/device/smb/SmbDeviceHandler.h"
 
-//solid stuff
-#include <solid/predicate.h>
-#include <solid/device.h>
-#include <solid/deviceinterface.h>
-#include <solid/devicenotifier.h>
-#include <solid/storageaccess.h>
-
-#include <threadweaver/Job.h>
-#include <threadweaver/ThreadWeaver.h>
+#include <KConfigGroup>
+#include <Solid/Predicate>
+#include <Solid/Device>
 
 #include <QDesktopServices>
 #include <QDir>
@@ -40,12 +36,6 @@
 #include <QList>
 #include <QStringList>
 #include <QTimer>
-
-DeviceHandlerFactory::DeviceHandlerFactory( QObject *parent, const QVariantList &args )
-    : Plugins::PluginFactory( parent, args )
-{
-    m_type = Plugins::PluginFactory::Device;
-}
 
 MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
     : QObject( parent )
@@ -63,6 +53,8 @@ MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
 
     connect( MediaDeviceCache::instance(), SIGNAL( deviceAdded( QString ) ), SLOT( deviceAdded( QString ) ) );
     connect( MediaDeviceCache::instance(), SIGNAL( deviceRemoved( QString ) ), SLOT( deviceRemoved( QString ) ) );
+
+    createDeviceFactories();
 }
 
 
@@ -73,33 +65,23 @@ MountPointManager::~MountPointManager()
     m_handlerMapMutex.lock();
     foreach( DeviceHandler *dh, m_handlerMap )
         delete dh;
-
-    while( !m_mediumFactories.isEmpty() )
-        delete m_mediumFactories.takeFirst();
-    while( !m_remoteFactories.isEmpty() )
-        delete m_remoteFactories.takeFirst();
     m_handlerMapMutex.unlock();
+
+    // DeviceHandlerFactories are memory managed using QObject parentship
 }
 
 
 void
-MountPointManager::loadDevicePlugins( const QList<Plugins::PluginFactory*> &factories )
+MountPointManager::createDeviceFactories()
 {
     DEBUG_BLOCK
-    foreach( Plugins::PluginFactory *pFactory, factories )
+    QList<DeviceHandlerFactory*> factories;
+    factories << new MassStorageDeviceHandlerFactory( this );
+    factories << new NfsDeviceHandlerFactory( this );
+    factories << new SmbDeviceHandlerFactory( this );
+    foreach( DeviceHandlerFactory *factory, factories )
     {
-        DeviceHandlerFactory *factory = qobject_cast<DeviceHandlerFactory*>( pFactory );
-        if( !factory )
-            continue;
-
-        KPluginInfo info = factory->info();
-        QString name = info.pluginName();
-        bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", info.isPluginEnabledByDefault() );
-        if( !enabled )
-            continue;
-
-        debug() << "initializing:" << name;
-        factory->init();
+        debug() << "Initializing DeviceHandlerFactory of type:" << factory->type();
         if( factory->canCreateFromMedium() )
             m_mediumFactories.append( factory );
         else if (factory->canCreateFromConfig() )

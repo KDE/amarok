@@ -18,7 +18,6 @@
 #define SQLREGISTRY_H
 
 #include "SqlMeta.h"
-#include "MountPointManager.h"
 #include "amarok_sqlcollection_export.h"
 
 #include <QHash>

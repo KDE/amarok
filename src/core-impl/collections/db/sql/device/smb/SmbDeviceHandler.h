@@ -18,12 +18,12 @@
 #ifndef SMBDEVICEHANDLER_H
 #define SMBDEVICEHANDLER_H
 
-#include <MountPointManager.h>
+#include "core-impl/collections/db/MountPointManager.h"
 
 class SmbDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
-    SmbDeviceHandlerFactory( QObject *parent, const QVariantList &args );
+    SmbDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
     virtual ~SmbDeviceHandlerFactory();
 
     virtual bool canHandle( const Solid::Device &device ) const;
@@ -37,8 +37,6 @@ public:
     virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const;
 
     virtual QString type() const;
-
-    virtual void init();
 };
 
 /**
