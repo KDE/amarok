@@ -178,12 +178,13 @@ MapChanger::addExistingTrack( Meta::TrackPtr track, Track *memoryTrack )
     }
     memoryTrack->setArtist( static_cast<Artist *>( artist.data() ) );
 
-    QString albumName = track->album().isNull() ? QString() : track->album()->name();
+    Meta::AlbumPtr trackAlbum = track->album();
+    QString albumName = trackAlbum ? trackAlbum->name() : QString();
     QString albumArtistName;
-    if( track->album() && track->album()->hasAlbumArtist() && track->album()->albumArtist() )
-        albumArtistName = track->album()->albumArtist()->name();
+    if( trackAlbum && trackAlbum->hasAlbumArtist() && trackAlbum->albumArtist() )
+        albumArtistName = trackAlbum->albumArtist()->name();
     Meta::AlbumPtr album = m_mc->albumMap().value( albumName, albumArtistName );
-    if( album.isNull() )
+    if( !album )
     {
         Meta::ArtistPtr albumArtist;
         if( !albumArtistName.isEmpty() )
@@ -192,7 +193,7 @@ MapChanger::addExistingTrack( Meta::TrackPtr track, Track *memoryTrack )
             * maps, we add her into artist map so that album artist has the same instance as
             * indentically-named artist (of potentially different tracks) */
             albumArtist = m_mc->artistMap().value( albumArtistName );
-            if( albumArtist.isNull() )
+            if( !albumArtist )
             {
                 albumArtist = Meta::ArtistPtr( new Artist( albumArtistName ) );
                 m_mc->addArtist( albumArtist );
@@ -202,11 +203,11 @@ MapChanger::addExistingTrack( Meta::TrackPtr track, Track *memoryTrack )
         album = Meta::AlbumPtr( new Album( albumName, albumArtist ) );
         m_mc->addAlbum( album );
     }
-    bool isCompilation = track->album().isNull() ? false : track->album()->isCompilation();
+    bool isCompilation = trackAlbum ? trackAlbum->isCompilation() : false;
     Album *memoryAlbum = static_cast<Album *>( album.data() );
     // be deterministic wrt track adding order:
     memoryAlbum->setIsCompilation( memoryAlbum->isCompilation() || isCompilation );
-    QImage albumImage = track->album().isNull() ? QImage() : track->album()->image();
+    QImage albumImage = trackAlbum ? trackAlbum->image() : QImage();
     if( !albumImage.isNull() )
     {
         /* We overwrite album image only if it is bigger than the old one */
