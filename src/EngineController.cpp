@@ -468,9 +468,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
     debug() << "URL: " << url << url.url();
     debug() << "Offset: " << offset;
 
-    if ( url.url().startsWith( "audiocd:/" ) )
+    if( url.url().startsWith( "audiocd:/" ) )
     {
-
         m_currentIsAudioCd = true;
         //disconnect this signal for now or it will cause a loop that will cause a mutex lockup
         disconnect( m_controller.data(), SIGNAL( titleChanged( int ) ), this, SLOT( slotTitleChanged( int ) ) );
@@ -481,10 +480,11 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
         const QString devicePrefix( "?device=" );
         QString device("");
-        if (trackNumberString.contains(devicePrefix))
+        if( trackNumberString.contains( devicePrefix ) )
         {
             int pos = trackNumberString.indexOf( devicePrefix );
-            device = trackNumberString.mid( pos + devicePrefix.size() );
+            device = QUrl::fromPercentEncoding(
+                        trackNumberString.mid( pos + devicePrefix.size() ).toLocal8Bit() );
             trackNumberString = trackNumberString.left( pos );
         }
 
@@ -510,7 +510,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
         debug() << "Old device: " << m_media.data()->currentSource().deviceName();
 
         Phonon::MediaSource::Type type = m_media.data()->currentSource().type();
-        if( type != Phonon::MediaSource::Disc || m_media.data()->currentSource().deviceName() != device )
+        if( type != Phonon::MediaSource::Disc
+                || m_media.data()->currentSource().deviceName() != device )
         {
             m_media.data()->clear();
             debug() << "New device: " << device;
