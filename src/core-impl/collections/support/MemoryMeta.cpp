@@ -207,15 +207,9 @@ MapChanger::addExistingTrack( Meta::TrackPtr track, Track *memoryTrack )
     Album *memoryAlbum = static_cast<Album *>( album.data() );
     // be deterministic wrt track adding order:
     memoryAlbum->setIsCompilation( memoryAlbum->isCompilation() || isCompilation );
-    QImage albumImage = trackAlbum ? trackAlbum->image() : QImage();
-    if( !albumImage.isNull() )
-    {
-        /* We overwrite album image only if it is bigger than the old one */
-        int memoryImageArea = album->image().width() * album->image().height();
-        int albumImageArea = albumImage.width() * albumImage.height();
-        if( albumImageArea > memoryImageArea )
-            album->setImage( albumImage );
-    }
+    // optimisation: only read album cover if no previous one exists:
+    if( !memoryAlbum->hasImage() && trackAlbum && trackAlbum->hasImage() )
+            memoryAlbum->setImage( trackAlbum->image() );
     memoryTrack->setAlbum( memoryAlbum );
 
     QString genreName = track->genre().isNull() ? QString() : track->genre()->name();
