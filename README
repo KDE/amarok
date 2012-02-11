@@ -98,7 +98,7 @@ Optional
       * FFmpeg 0.6.0 (or newer) - http://ffmpeg.org/
         * libavcodec & libavformat specifically
       * LibOFA - http://code.google.com/p/musicip-libofa/
-      
+
     * gpodder.net Podcast Provider & Service
       * libmygpo-qt 1.0.5 (or newer)
 
@@ -112,6 +112,9 @@ Optional
         * libmp3lame (NOT just "mp3")
         * libvorbis (NOT just "vorbis")
         * wmav2
+
+    * Building tests require:
+      * gmock 1.4 (or newer) - http://code.google.com/p/googlemock/
 
 Please note that if compiling from source you also need to install -dev/-devel
 versions of these packages, depending on your distribution.
