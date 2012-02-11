@@ -38,11 +38,6 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
         virtual int category() const;
 
         /* UserPlaylistProvider functions */
-        /**
-            @returns true if this provider supports - and is currently able to - save playlists
-        **/
-        virtual bool canSavePlaylists() = 0;
-
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
                                              const QString& name = QString() ) = 0;
 

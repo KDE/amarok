@@ -54,8 +54,6 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
                                                   int trackIndex );
 
-        virtual bool canSavePlaylists() { return true; }
-
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
                                              const QString &name = QString() );
 

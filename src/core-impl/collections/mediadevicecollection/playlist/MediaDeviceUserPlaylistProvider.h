@@ -45,7 +45,6 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
         /* Playlists::UserPlaylistProvider functions */
         virtual Playlists::PlaylistList playlists();
 
-        virtual bool canSavePlaylists() { return true; };
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks );
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
 
