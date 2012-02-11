@@ -46,8 +46,6 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
                                              const QString& name = QString() ) = 0;
 
-        virtual bool supportsEmptyGroups();
-
         virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
         virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
                                                   int trackIndex );

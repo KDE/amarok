@@ -26,12 +26,6 @@ Playlists::UserPlaylistProvider::category() const
      return Playlists::UserPlaylist;
 }
 
-bool
-Playlists::UserPlaylistProvider::supportsEmptyGroups()
-{
-    return false;
-}
-
 QList<QAction *>
 Playlists::UserPlaylistProvider::playlistActions( Playlists::PlaylistPtr playlist )
 {

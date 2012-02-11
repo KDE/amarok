@@ -52,8 +52,6 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks );
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
 
-        virtual bool supportsEmptyGroups() { return true; }
-
         QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
         QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
                                                   int trackIndex );
