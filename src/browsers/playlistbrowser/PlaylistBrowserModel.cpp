@@ -498,7 +498,7 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
                 return false;
 
             foreach( Meta::TrackPtr track, tracks )
-                playlist->addTrack( track, row++ );
+                playlist->addTrack( track, ( row >= 0 ) ? row++ : -1 ); // increment only if positive
 
             return true;
         }

@@ -145,8 +145,14 @@ namespace Playlists
             virtual void setGroups( const QStringList &groups ) { Q_UNUSED(groups) }
 
         protected:
+            /**
+             * Implementations must call this when a track is added to playlist
+             *
+             * @param position is the actual new position of the added track, never negative
+             */
             inline void notifyObserversTrackAdded( Meta::TrackPtr track, int position )
             {
+                Q_ASSERT( position >= 0 ); // notice bug 293295 early
                 foreach( Playlists::PlaylistObserver *observer, m_observers )
                 {
                     if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
@@ -154,6 +160,11 @@ namespace Playlists
                 }
             }
 
+            /**
+             * Implementations must call this when a track is added to playlist
+             *
+             * @param position is the position where the track was before removal
+             */
             inline void notifyObserversTrackRemoved( int position )
             {
                 foreach( Playlists::PlaylistObserver *observer, m_observers )

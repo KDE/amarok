@@ -251,9 +251,12 @@ SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
     if( !m_tracksLoaded )
         loadTracks();
 
-    int insertAt = (position == -1) ? m_tracks.count() : position;
+    if( position < 0 )
+        position = m_tracks.count();
+    else
+        position = qMin( position, m_tracks.count() );
     subscribeTo( track ); //keep track of metadata changes.
-    m_tracks.insert( insertAt, track );
+    m_tracks.insert( position, track );
     saveToDb( true );
     notifyObserversTrackAdded( track, position );
 }
