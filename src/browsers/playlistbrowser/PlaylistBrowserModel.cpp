@@ -486,7 +486,6 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
         if( !parent.isValid() && row == -1 )
         {
             debug() << "Dropped tracks on empty area: create new playlist";
-            //TODO: use Playlist::Model::generatePlaylistName()
             The::playlistManager()->save( tracks, Amarok::generatePlaylistName( tracks ) );
         }
         else

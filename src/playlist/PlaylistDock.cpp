@@ -258,7 +258,7 @@ Playlist::Dock::playlistProviderAdded( Playlists::PlaylistProvider *provider, in
     if( category != PlaylistManager::UserPlaylist )
         return;
 
-    debug() << "Adding provider: " << provider->objectName();
+    debug() << "Adding provider: " << provider->prettyName();
     Playlists::UserPlaylistProvider *userProvider =
             dynamic_cast<Playlists::UserPlaylistProvider *>(provider);
     if( userProvider == 0 )
@@ -268,7 +268,7 @@ Playlist::Dock::playlistProviderAdded( Playlists::PlaylistProvider *provider, in
                                    this );
     action->setData( QVariant::fromValue(
             QWeakPointer<Playlists::UserPlaylistProvider>( userProvider ) ) );
-    m_saveActions->addAction( provider->objectName(), action );
+    m_saveActions->addAction( QString::number( (qlonglong) userProvider ), action );
 
     m_savePlaylistMenu->addAction( action );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotSaveCurrentPlaylist() ) );
@@ -280,9 +280,11 @@ Playlist::Dock::playlistProviderRemoved( Playlists::PlaylistProvider *provider, 
     if( category != PlaylistManager::UserPlaylist )
         return;
 
-    QAction *action = m_saveActions->action( provider->objectName() );
+    QAction *action = m_saveActions->action( QString::number( (qlonglong) provider ) );
     if( action )
         m_savePlaylistMenu->removeAction( action );
+    else
+        warning() << __PRETTY_FUNCTION__ << ": no save action for provider" << provider->prettyName();
 }
 
 void

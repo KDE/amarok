@@ -201,9 +201,8 @@ PlaylistBrowserCategory::slotProviderAdded( Playlists::PlaylistProvider *provide
     if( !m_providerActions.keys().contains( provider ) )
         createProviderButton( provider );
 
-    //Hide empty providers when added
     if( provider->playlistCount() != 0 )
-        toggleView( false );
+        toggleView( false ); // set view to non-merged if new provider has some tracks
 
     slotToggleProviderButton();
 }
