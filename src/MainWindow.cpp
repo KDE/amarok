@@ -522,6 +522,12 @@ MainWindow::slotShowActiveTrack() const
 }
 
 void
+MainWindow::slotEditTrackInfo() const
+{
+    m_playlistDock.data()->editTrackInfo();
+}
+
+void
 MainWindow::slotShowCoverManager() const //SLOT
 {
     CoverManager::showOnce();
@@ -764,6 +770,11 @@ MainWindow::createActions()
     ac->addAction( "playlist_playmedia", action );
     action->setShortcut( Qt::CTRL + Qt::Key_O );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( slotPlayMedia() ) );
+
+    action = new KAction( KIcon("media-track-edit-amarok"), i18n("Edit Details of Currently Selected Track"), this );
+    ac->addAction( "trackdetails_edit", action );
+    action->setShortcut( Qt::CTRL + Qt::Key_E );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotEditTrackInfo() ) );
 
     action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
     ac->addAction( "seek_forward", action );

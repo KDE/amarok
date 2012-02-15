@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 Version 2.6-Beta 1
   FEATURES:
+    * Added keyboard shortcut for "Edit Track Information..." (BR 173814)
+      Patch by Jasneet Bhatti.
     * Support for embedded album covers in non-collection tracks and
       in USB Mass Storage collection.
     * Hold the Shift key when dragging tracks to collections to move them

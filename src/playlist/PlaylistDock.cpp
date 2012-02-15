@@ -322,6 +322,12 @@ Playlist::Dock::showActiveTrack()
 }
 
 void
+Playlist::Dock::editTrackInfo()
+{
+    m_playlistView->editTrackInformation();
+}
+
+void
 Playlist::Dock::showDynamicHint() // slot
 {
     DEBUG_BLOCK

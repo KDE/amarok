@@ -52,6 +52,7 @@ public:
     SortWidget *sortWidget();
     ProgressiveSearchWidget *searchWidget();
     void showActiveTrack();
+    void editTrackInfo();
 
     void polish();
 
