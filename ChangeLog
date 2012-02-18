@@ -40,6 +40,7 @@ Version 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Show in Media Sources actions no longer reset the collection sorting to artist/album. (BR 231858)
     * Don't mark audio-CD tracks as unplayable (greyed out). (BR 285885)
     * Don't misbehave when track is dropped directly to saved playlist. (BR 293295)
     * Don't report collection of USB Mass Storage tracks as None.

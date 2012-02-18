@@ -251,7 +251,6 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
                 url.setCommand( "navigate" );
                 url.setPath( "collections" );
                 url.appendArg( "filter", filters.join( QLatin1String(" AND ") ) );
-                url.appendArg( "levels", "artist-album" );
 
                 debug() << "running url: " << url.url();
                 url.run();
