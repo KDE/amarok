@@ -42,6 +42,10 @@ This document explains how to install Amarok 2 from git in your home directory -
     mkdir $HOME/kde/src
     mkdir -p $HOME/kde/build/amarok
 
+* Make sure you have all necessary dependencies
+    See the README file for the complete list of necessary dependencies. Make sure you have the development files of these packages.
+    For distribution specific requirements refer to http://amarok.kde.org/wiki/2.0_Development_HowTo
+    
 * Check out Amarok:
     cd $HOME/kde/src
     git clone git://anongit.kde.org/amarok
