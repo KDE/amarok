@@ -11,6 +11,7 @@ Name[sk]=Backend zdieľania SMB (Windows)
 Name[sv]=Gränssnitt för delade SMB (Windows) kataloger
 Name[uk]=Модуль спільних ресурсів SMB (Windows)
 Name[x-test]=xxSMB (Windows) Share Backendxx
+Name[zh_TW]=SMB (Windows) 分享後端介面
 Comment=Local Collection folders on remote Samba (Windows) shares
 Comment[es]=Carpetas de colecciones locales en comparticiones remotas Samba (Windows)
 Comment[it]=Cartelle della collezione locale su condivisioni remote Samba (Windows)
@@ -21,6 +22,7 @@ Comment[sk]=Priečinky miestnej kolekcie na vzdialených Samba (Windows) zdieľa
 Comment[sv]=Lokala samlingskataloger på delade Samba (Windows) fjärrkataloger
 Comment[uk]=Теки локальної збірки на віддалених спільних ресурсах Samba (Windows)
 Comment[x-test]=xxLocal Collection folders on remote Samba (Windows) sharesxx
+Comment[zh_TW]=在遠端 Samba (Windows) 分享中的本地收藏資料夾
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Maximilian Kossick, Peter C. Ndikuwera

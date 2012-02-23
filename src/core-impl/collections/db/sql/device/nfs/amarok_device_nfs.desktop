@@ -11,6 +11,7 @@ Name[sk]=Backend zdieľania NFS
 Name[sv]=Gränssnitt för delade NFS kataloger
 Name[uk]=Модуль спільних ресурсів NFS
 Name[x-test]=xxNFS Share Backendxx
+Name[zh_TW]=NFS 分享後端介面
 Comment=Local Collection folders on remote NFS shares
 Comment[es]=Carpetas de colecciones locales en comparticiones remotas NFS
 Comment[it]=Cartelle della collezione locale su condivisioni remote NFS
@@ -21,6 +22,7 @@ Comment[sk]=Priečinky miestnej kolekcie na vzdialených NFS zdieľaniach
 Comment[sv]=Lokala samlingskataloger på delade NFS fjärrkataloger
 Comment[uk]=Теки локальної збірки на віддалених спільних ресурсах NFS
 Comment[x-test]=xxLocal Collection folders on remote NFS sharesxx
+Comment[zh_TW]=在遠端 NFS 分享中的本地收藏資料夾
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Maximilian Kossick, Peter C. Ndikuwera

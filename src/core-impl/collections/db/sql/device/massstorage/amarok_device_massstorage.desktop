@@ -10,6 +10,7 @@ Name[sk]=Miestne súbory & USB backend Mass Storage
 Name[sv]=Gränssnitt för lokala filer och USB-masslagring
 Name[uk]=Модуль локальних файлів та файлів на носіях з протоколом USB
 Name[x-test]=xxLocal Files & USB Mass Storage Backendxx
+Name[zh_TW]=本地檔案與 USB 儲存裝置後端介面
 Icon=drive-harddisk
 Comment=Local Collection folders on local and pluggable disks
 Comment[es]=Carpetas de la colección local y discos conectables
@@ -21,6 +22,7 @@ Comment[sk]=Priečinky miestnej kolekcie na lokálnych a pripojiteľných diskoc
 Comment[sv]=Lokala samlingskataloger på lokala och inkopplingsbara diskar
 Comment[uk]=Теки локальної збірки на локальних та портативних дисках
 Comment[x-test]=xxLocal Collection folders on local and pluggable disksxx
+Comment[zh_TW]=在本機與可插拔磁碟上的本地收藏資料夾
 
 ServiceTypes=Amarok/Plugin
 
