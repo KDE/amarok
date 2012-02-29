@@ -46,6 +46,10 @@ if(MYSQLCONFIG_EXECUTABLE)
 
     if(MYSQLD_PIC_SEPARATE)
         string(REPLACE "lmysqld" "lmysqld_pic" MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
+        # append link directory to variable as mysql_config is not always (since Ubuntu 12.04?)
+        # reporting this directory with when being called with --libs
+        get_filename_component(MYSQL_EMBEDDED_LIB_DIR_TMP "${MYSQLD_PIC_SEPARATE}" PATH)
+        set(MYSQL_EMBEDDED_LIBRARIES "${MYSQL_EMBEDDED_LIBRARIES} -L${MYSQL_EMBEDDED_LIB_DIR_TMP}")
     else(MYSQLD_PIC_SEPARATE)
         set(MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
     endif(MYSQLD_PIC_SEPARATE)
