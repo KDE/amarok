@@ -31,11 +31,6 @@
     #include <QBuffer>
 #endif  //UTILITIES_BUILD
 
-// Taglib added support for FLAC pictures in 1.7.0
-#if (TAGLIB_MAJOR_VERSION > 1) || (TAGLIB_MAJOR_VERSION == 1 && TAGLIB_MINOR_VERSION >= 7)
-# define TAGLIB_HAS_FLAC_PICTURELIST
-#endif
-
 using namespace Meta::Tag;
 
 VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType )
@@ -112,7 +107,6 @@ VorbisCommentTagHelper::tags() const
         }
     }
 
-    #ifdef TAGLIB_HAS_FLAC_PICTURELIST
     if( m_flacFile )
     {
         const TagLib::List<TagLib::FLAC::Picture*> picturelist = m_flacFile->pictureList();
@@ -129,7 +123,6 @@ VorbisCommentTagHelper::tags() const
             }
         }
     }
-    #endif // TAGLIB_HAS_FLAC_PICTURELIST
 
     return data;
 }
@@ -183,7 +176,6 @@ VorbisCommentTagHelper::hasEmbeddedCover() const
 {
     if( m_flacFile )
     {
-        #ifdef TAGLIB_HAS_FLAC_PICTURELIST
         const TagLib::List<TagLib::FLAC::Picture*> picturelist = m_flacFile->pictureList();
         for( TagLib::List<TagLib::FLAC::Picture*>::ConstIterator it = picturelist.begin(); it != picturelist.end(); it++ )
         {
@@ -196,7 +188,6 @@ VorbisCommentTagHelper::hasEmbeddedCover() const
                 return true;
             }
         }
-        #endif // TAGLIB_HAS_FLAC_PICTURELIST
     }
     else if( !fieldName( Meta::valHasCover ).isEmpty() )
     {
@@ -215,7 +206,6 @@ VorbisCommentTagHelper::embeddedCover() const
 
     if( m_flacFile )
     {
-        #ifdef TAGLIB_HAS_FLAC_PICTURELIST
         QImage otherCover;
 
         const TagLib::List<TagLib::FLAC::Picture*> picturelist = m_flacFile->pictureList();
@@ -243,7 +233,6 @@ VorbisCommentTagHelper::embeddedCover() const
 
         if( cover.isNull() && !otherCover.isNull() )
             cover = otherCover;
-        #endif // TAGLIB_HAS_FLAC_PICTURELIST
     }
     else if( !fieldName( Meta::valHasCover ).isEmpty() )
     {
@@ -283,7 +272,6 @@ VorbisCommentTagHelper::setEmbeddedCover( const QImage &cover )
 // we should wait until taglib provides an implementation.
 // [1] http://wiki.xiph.org/index.php/VorbisComment#Cover_art
 
-    #ifdef TAGLIB_HAS_FLAC_PICTURELIST
     if( m_flacFile )
     {
         QByteArray bytes;
@@ -338,7 +326,6 @@ VorbisCommentTagHelper::setEmbeddedCover( const QImage &cover )
 
         return true;
     }
-    #endif // TAGLIB_HAS_FLAC_PICTURELIST
 
     return false;
 }
