@@ -182,6 +182,7 @@ LabelsApplet::setStoppedState( bool stopped )
         m_reloadIcon.data()->setEnabled( true );
         m_titleText = i18n( "Labels" );
         m_addLabelProxy.data()->show();
+        m_addLabel.data()->show();
         m_addLabel.data()->clearEditText();
         // not needed at the moment, since setStoppedState(false) is only called in dataUpdated() and we know that the engine never sends state=started without the user labels;
         // so the minimum size is set in constraintsEvent()
@@ -193,6 +194,7 @@ LabelsApplet::setStoppedState( bool stopped )
         m_reloadIcon.data()->setEnabled( false );
         m_titleText = i18n( "Labels: No track playing" );
         m_addLabelProxy.data()->hide();
+        m_addLabel.data()->hide();
         setBusy( false );
         qDeleteAll( m_labelItems );
         m_labelItems.clear();
