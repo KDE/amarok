@@ -216,6 +216,8 @@ VorbisCommentTagHelper::embeddedCover() const
     if( m_flacFile )
     {
         #ifdef TAGLIB_HAS_FLAC_PICTURELIST
+        QImage otherCover;
+
         const TagLib::List<TagLib::FLAC::Picture*> picturelist = m_flacFile->pictureList();
         for( TagLib::List<TagLib::FLAC::Picture*>::ConstIterator it = picturelist.begin(); it != picturelist.end(); it++ )
         {
@@ -226,9 +228,21 @@ VorbisCommentTagHelper::embeddedCover() const
                 picture->data().size() > 1024 ) // must be at least 1kb
             {
                 QByteArray image_data( picture->data().data(), picture->data().size() );
-                cover.loadFromData( image_data );
+
+                if( picture->type() == TagLib::FLAC::Picture::FrontCover )
+                {
+                    cover.loadFromData( image_data );
+                    break;
+                }
+                else if( otherCover.isNull() )
+                {
+                    otherCover.loadFromData( image_data );
+                }
             }
         }
+
+        if( cover.isNull() && !otherCover.isNull() )
+            cover = otherCover;
         #endif // TAGLIB_HAS_FLAC_PICTURELIST
     }
     else if( !fieldName( Meta::valHasCover ).isEmpty() )
