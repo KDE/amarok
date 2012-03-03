@@ -50,7 +50,6 @@ namespace Playlists {
 PlaylistFileProvider::PlaylistFileProvider()
  : UserPlaylistProvider()
  , m_playlistsLoaded( false )
- , m_defaultFormat( Playlists::XSPF )
  , m_renameAction( 0 )
  , m_deleteAction( 0 )
  , m_removeTrackAction( 0 )
@@ -233,7 +232,15 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     DEBUG_BLOCK
     QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") : name;
-    filename = QString( filename ).replace( QLatin1Char('/'), QLatin1Char('-') );
+    filename.replace( QLatin1Char('/'), QLatin1Char('-') );
+
+    QString ext = Amarok::extension( filename );
+    Playlists::PlaylistFormat format = Playlists::getFormat( ext );
+    if( format == Unknown )
+    {
+        format = Playlists::XSPF;
+        filename.append( QLatin1String( ".xspf" ) );
+    }
 
     KUrl path( Amarok::saveLocation( "playlists" ) );
     path.addPath( Amarok::vfatPath( filename ) );
@@ -241,19 +248,6 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     {
         //TODO:request overwrite
         return Playlists::PlaylistPtr();
-    }
-
-    //FIXME: extention guessing fails with playlist names with a '.' in them
-    Playlists::PlaylistFormat format = m_defaultFormat;
-    QString ext = Amarok::extension( path.fileName() );
-    if( ext.isEmpty() )
-    {
-        ext = QLatin1String("xspf");
-        path.setFileName( QString("%1.%2").arg(Amarok::vfatPath(filename), ext) );
-    }
-    else
-    {
-        format = Playlists::getFormat( path );
     }
 
     Playlists::PlaylistFile *playlistFile = 0;
@@ -273,7 +267,6 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
             return Playlists::PlaylistPtr();
     }
     playlistFile->setName( filename );
-    debug() << "Forcing save of playlist!";
     playlistFile->save( path, true );
     playlistFile->setProvider( this );
 

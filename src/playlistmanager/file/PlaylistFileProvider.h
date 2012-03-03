@@ -84,7 +84,6 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         bool m_playlistsLoaded;
         QList<KUrl> m_urlsToLoad;
         Playlists::PlaylistFileList m_playlists;
-        Playlists::PlaylistFormat m_defaultFormat;
         QMultiMap<QString, Playlists::PlaylistPtr> m_groupMap;
 
         QAction *m_renameAction;
