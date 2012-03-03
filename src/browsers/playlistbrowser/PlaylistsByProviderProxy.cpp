@@ -27,15 +27,18 @@
 
 #include <QStack>
 
-const QString PlaylistsByProviderProxy::AMAROK_PROVIDERPROXY_INDEXES =
-        "application/x-amarok-providerproxy-indexes";
-
 PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, int column, int playlistCategory )
         : QtGroupingProxy( model, QModelIndex(), column )
         , m_playlistCategory( playlistCategory )
 {
     connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
              SLOT(slotRenameIndex( const QModelIndex & )) );
+
+    // we need this to track providers with no playlists
+    connect( The::playlistManager(), SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)),
+             this, SLOT(slotProviderAdded(Playlists::PlaylistProvider*,int)) );
+    connect( The::playlistManager(), SIGNAL(providerRemoved(Playlists::PlaylistProvider*,int)),
+             this, SLOT(slotProviderRemoved(Playlists::PlaylistProvider*,int)) );
 }
 
 QVariant
@@ -102,133 +105,69 @@ PlaylistsByProviderProxy::mimeData( const QModelIndexList &indexes ) const
     QModelIndexList sourceIndexes;
     foreach( const QModelIndex &idx, indexes )
     {
-        debug() << idx;
         if( isGroup( idx ) )
-        {
-            debug() << "is a group, add mimeData of all children";
-            //TODO: add originalRows of children to list
-        }
-        else
-        {
-            debug() << "is original item, add mimeData from source model";
-            QModelIndex originalIdx = mapToSource( idx );
-            if( originalIdx.isValid() )
-                sourceIndexes << originalIdx;
-        }
+            continue; // drags not enabled for playlist providers
+        QModelIndex originalIdx = mapToSource( idx );
+        if( originalIdx.isValid() )
+            sourceIndexes << originalIdx;
     }
 
-    QMimeData* mime = 0;
-    if( !sourceIndexes.isEmpty() )
-        mime = sourceModel()->mimeData( sourceIndexes );
-
-    if( !mime )
-        mime = new QMimeData();
-
-    if( !sourceIndexes.isEmpty() )
-    {
-        QByteArray encodedIndexes = encodeMimeRows( sourceIndexes );
-        mime->setData( AMAROK_PROVIDERPROXY_INDEXES, encodedIndexes );
-    }
-
-    return mime;
-}
-
-QByteArray
-PlaylistsByProviderProxy::encodeMimeRows( const QList<QModelIndex> indexes ) const
-{
-    QByteArray encodedIndexes;
-    QDataStream stream( &encodedIndexes, QIODevice::WriteOnly );
-    foreach( const QModelIndex &idx, indexes )
-    {
-        QStack<QModelIndex> indexStack;
-        //save the index and it's parents until we reach the rootnode so we have the complete tree.
-        QModelIndex i = idx;
-        while( i != m_rootNode )
-        {
-            indexStack.push( i );
-            i = i.parent();
-        }
-        //save the length of the stack first.
-        stream << indexStack.count();
-        while( !indexStack.isEmpty() )
-        {
-            QModelIndex i = indexStack.pop();
-            stream << i.row() << i.column();
-        }
-    }
-
-    return encodedIndexes;
-}
-
-QList<QModelIndex>
-PlaylistsByProviderProxy::decodeMimeRows( QByteArray mimeData, QAbstractItemModel *model ) const
-{
-    DEBUG_BLOCK
-    debug() << mimeData;
-    QList<QModelIndex> idxs;
-    QDataStream stream( &mimeData, QIODevice::ReadOnly );
-    while( !stream.atEnd() )
-    {
-        QStack<QModelIndex> indexStack;
-        int count;
-        stream >> count;
-        //start from the rootNode and build "down" the tree
-        QModelIndex idx = m_rootNode;
-        while( count-- > 0 )
-        {
-            int row;
-            int column;
-            stream >> row >> column;
-            idx = model->index( row, column, idx );
-        }
-        //the last one should be the index we saved in encodeMimeRows
-        idxs << idx;
-    }
-    return idxs;
+    if( sourceIndexes.isEmpty() )
+        return 0;
+    return sourceModel()->mimeData( sourceIndexes );
 }
 
 bool
 PlaylistsByProviderProxy::dropMimeData( const QMimeData *data, Qt::DropAction action,
-                                   int row, int column, const QModelIndex &parent )
+                                        int row, int column, const QModelIndex &parent )
 {
     DEBUG_BLOCK
-    debug() << "dropped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
-    debug() << parent;
-    debug() << "With action: " << action;
+    debug() << "Dropped on" << parent << "row" << row << "column" << column << "action" << action;
     if( action == Qt::IgnoreAction )
-    {
-        debug() << "ignored";
         return true;
+
+    if( !isGroup( parent ) ) // drops on empty space fall here, it is okay
+    {
+        QModelIndex sourceIndex = mapToSource( parent );
+        return sourceModel()->dropMimeData( data, action, row, column, sourceIndex );
     }
 
-    if( isGroup( parent ) )
+    const AmarokMimeData *amarokData = dynamic_cast<const AmarokMimeData *>( data );
+    if( !amarokData )
     {
-        if( data->hasFormat( AMAROK_PROVIDERPROXY_INDEXES ) )
-        {
-            QList<QModelIndex> originalIndexes =
-                    decodeMimeRows( data->data( AMAROK_PROVIDERPROXY_INDEXES ), sourceModel() );
-            //set the groupedColumn data of all playlist indexes to the data of this group
-            //the model will understand this as a copy to the provider it's dropped on
-            ItemData groupData =
-                    m_groupMaps.value( parent.row() ).value( parent.column() );
-            bool result = !originalIndexes.isEmpty();
-            foreach( const QModelIndex& originalIndex, originalIndexes )
-            {
-                QModelIndex groupedColumnIndex =
-                        originalIndex.sibling( originalIndex.row(), m_groupedColumn );
-                if( !groupedColumnIndex.isValid() )
-                    continue;
-
-                result = sourceModel()->setItemData( groupedColumnIndex, groupData ) ? result : false;
-            }
-            return result;
-        }
+        debug() << __PRETTY_FUNCTION__ << "supports only drag & drop originating in Amarok.";
         return false;
     }
 
-    QModelIndex sourceIndex = mapToSource( parent );
-    return sourceModel()->dropMimeData( data, action, row, column,
-                               sourceIndex );
+    Playlists::PlaylistProvider *provider =
+        parent.data( PlaylistBrowserNS::PlaylistBrowserModel::ProviderRole )
+        .value<Playlists::PlaylistProvider *>();
+    if( !provider )
+    {
+        warning() << "Dropped tracks to a group with no (or multiple) providers!";
+        return false;
+    }
+
+    if( amarokData->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+    {
+        debug() << "Dropped playlists to provider" << provider->prettyName();
+        foreach( Playlists::PlaylistPtr pl, amarokData->playlists() )
+        {
+            // few PlaylistProviders implement addPlaylist(), use save() instead:
+            The::playlistManager()->save( pl->tracks(), pl->name(), provider, false /* editName */ );
+        }
+        return true;
+    }
+    if( amarokData->hasFormat( AmarokMimeData::TRACK_MIME ) )
+    {
+        debug() << "Dropped tracks to provider" << provider->prettyName();
+        Meta::TrackList tracks = amarokData->tracks();
+        QString playlistName = Amarok::generatePlaylistName( tracks );
+        return The::playlistManager()->save( tracks, playlistName, provider );
+    }
+
+    debug() << __PRETTY_FUNCTION__ << "Unsupported drop mime-data:" << data->formats();
+    return false;
 }
 
 Qt::DropActions
@@ -266,27 +205,10 @@ PlaylistsByProviderProxy::buildTree()
     //add the empty providers at the top of the list
     PlaylistProviderList providerList =
             The::playlistManager()->providersForCategory( m_playlistCategory );
-    if( !providerList.isEmpty() )
-    {
-        beginInsertRows( QModelIndex(), 0, providerList.count() );
-        foreach( Playlists::PlaylistProvider *provider, providerList )
-        {
-            if( provider && ( provider->playlistCount() > 0 || provider->playlists().count() > 0 ) )
-                continue;
 
-            ItemData itemData;
-            itemData.insert( Qt::DisplayRole, provider->prettyName() );
-            itemData.insert( Qt::DecorationRole, provider->icon() );
-            itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole,
-                             QVariant::fromValue( provider->providerActions() ) );
-            itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ByLineRole, QString() );
-            RowData rowData;
-            rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::PlaylistItemColumn, itemData );
-            //Provider column is used for filtering.
-            rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ProviderColumn, itemData );
-            m_groupMaps << rowData;
-        }
-        endInsertRows();
+    foreach( Playlists::PlaylistProvider *provider, providerList )
+    {
+        slotProviderAdded( provider, provider->category() );
     }
 
     QtGroupingProxy::buildTree();
@@ -298,4 +220,50 @@ PlaylistsByProviderProxy::slotRenameIndex( const QModelIndex &sourceIdx )
     QModelIndex idx = mapFromSource( sourceIdx );
     if( idx.isValid() )
         emit renameIndex( idx );
+}
+
+void
+PlaylistsByProviderProxy::slotProviderAdded( Playlists::PlaylistProvider *provider, int category )
+{
+    DEBUG_BLOCK
+    if( category != m_playlistCategory )
+        return;
+
+    if(   provider->playlistCount() > 0 ||
+        ( provider->playlistCount() < 0 /* not counted */ && !provider->playlists().isEmpty() ) )
+        return; // non-empty providers are handled by PlaylistBrowserModel
+
+    ItemData itemData;
+    itemData.insert( Qt::DisplayRole, provider->prettyName() );
+    itemData.insert( Qt::DecorationRole, provider->icon() );
+    itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole,
+                        QVariant::fromValue( provider->providerActions() ) );
+    itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ByLineRole, i18n( "No playlists" ) );
+    itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ProviderRole,
+                        QVariant::fromValue<Playlists::PlaylistProvider*>( provider ) );
+    RowData rowData;
+    rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::PlaylistItemColumn, itemData );
+    //Provider column is used for filtering.
+    rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ProviderColumn, itemData );
+
+    addEmptyGroup( rowData );
+}
+
+void
+PlaylistsByProviderProxy::slotProviderRemoved( Playlists::PlaylistProvider *provider, int category )
+{
+    DEBUG_BLOCK
+    if( category != m_playlistCategory )
+        return;
+
+    for( int i = 0; i < rowCount(); i++ )
+    {
+        QModelIndex idx = index( i, PlaylistBrowserNS::PlaylistBrowserModel::PlaylistItemColumn );
+        Playlists::PlaylistProvider *rowProvider = data( idx, PlaylistBrowserNS::PlaylistBrowserModel::ProviderRole )
+            .value<Playlists::PlaylistProvider *>();
+        if( rowProvider != provider )
+            continue;
+
+        removeGroup( idx );
+    }
 }

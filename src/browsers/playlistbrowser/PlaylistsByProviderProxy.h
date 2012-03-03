@@ -25,17 +25,6 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
 {
     Q_OBJECT
     public:
-        //TODO: move these internal drag and drop functions to QtGroupingProxy
-        /** serializes the indexes into a bytearray
-          */
-        QByteArray encodeMimeRows( const QList<QModelIndex> indexes ) const;
-
-        /** \arg data serialized data
-          * \model this model is used to get the indexes.
-          */
-        QList<QModelIndex> decodeMimeRows( QByteArray data, QAbstractItemModel *model ) const;
-        static const QString AMAROK_PROVIDERPROXY_INDEXES;
-
         PlaylistsByProviderProxy( QAbstractItemModel *model, int column, int playlistCategory );
         ~PlaylistsByProviderProxy() {}
 
@@ -69,6 +58,8 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
 
     private slots:
         void slotRenameIndex( const QModelIndex &index );
+        void slotProviderAdded( Playlists::PlaylistProvider *provider, int category );
+        void slotProviderRemoved( Playlists::PlaylistProvider *provider, int category );
 
     private:
         int m_playlistCategory;

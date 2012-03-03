@@ -57,6 +57,7 @@ class PlaylistBrowserModel : public QAbstractItemModel,
             ByLineRole, //show some additional info like count or status. Displayed under description
             ActionCountRole,
             ActionRole, //list of QActions for the index
+            ProviderRole,  // pointer to associated PlaylistProvider
             CustomRoleOffset //first role that can be used by sublasses for their own data
         };
 

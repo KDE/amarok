@@ -340,16 +340,24 @@ PlaylistManager::downloadComplete( KJob *job )
 
 bool
 PlaylistManager::save( Meta::TrackList tracks, const QString &name,
-                       Playlists::UserPlaylistProvider *toProvider )
+                       Playlists::PlaylistProvider *toProvider, bool editName )
 {
     //if toProvider is 0 use the default Playlists::UserPlaylistProvider (SQL)
-    Playlists::UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
+    Playlists::UserPlaylistProvider *prov = toProvider
+        ? qobject_cast<Playlists::UserPlaylistProvider *>( toProvider )
+        : m_defaultUserPlaylistProvider;
+    if( !prov )
+        return false;
+
     Playlists::PlaylistPtr playlist = prov->save( tracks, name );
     if( playlist.isNull() )
         return false;
 
-    AmarokUrl("amarok://navigate/playlists/user playlists").run();
-    emit renamePlaylist( playlist );
+    if( editName )
+    {
+        AmarokUrl("amarok://navigate/playlists/user playlists").run();
+        emit renamePlaylist( playlist );
+    }
 
     return true;
 }

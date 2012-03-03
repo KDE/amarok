@@ -32,6 +32,7 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 {
     Q_OBJECT
     public:
+        UserPlaylistProvider( QObject *parent = 0 ) : PlaylistProvider( parent ) {}
         virtual ~UserPlaylistProvider();
 
         /* PlaylistProvider functions */

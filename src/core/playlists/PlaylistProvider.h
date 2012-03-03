@@ -78,4 +78,6 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject
 
 } //namespace Playlists
 
+Q_DECLARE_METATYPE( Playlists::PlaylistProvider * )
+
 #endif // AMAROK_PLAYLISTPROVIDER_H
