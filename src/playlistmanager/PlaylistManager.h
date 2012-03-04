@@ -127,7 +127,17 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          */
          bool import( const QString &fromLocation );
 
+        /**
+         * Initiates renaming of playlists @param playlist. Can Focus Saved Playlists and
+         * initiate inline rename.
+         */
         void rename( Playlists::PlaylistPtr playlist );
+
+        /**
+         * Rename @param playlist to @param newName, return true if renaming was successful,
+         * false otherwise.
+         */
+        bool rename( Playlists::PlaylistPtr playlist, const QString &newName );
 
         bool deletePlaylists( Playlists::PlaylistList playlistlist );
 

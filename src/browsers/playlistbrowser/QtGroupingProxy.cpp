@@ -695,9 +695,7 @@ QtGroupingProxy::modelRowsAboutToBeInserted( const QModelIndex &parent, int star
     if( parent != m_rootNode )
     {
         //an item will be added to an original index, remap and pass it on
-//        qDebug() << parent;
         QModelIndex proxyParent = mapFromSource( parent );
-//        qDebug() << proxyParent;
         beginInsertRows( proxyParent, start, end );
     }
 }
@@ -715,10 +713,6 @@ QtGroupingProxy::modelRowsInserted( const QModelIndex &parent, int start, int en
     }
     else
     {
-        //an item was added to an original index, remap and pass it on
-//        QModelIndex proxyParent = mapFromSource( parent );
-//        qDebug() << proxyParent;
-        //beginInsertRows had to be called in modelRowsAboutToBeInserted()
         endInsertRows();
     }
 }

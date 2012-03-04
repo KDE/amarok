@@ -40,6 +40,24 @@ PrettyTreeView::~PrettyTreeView()
 {
 }
 
+void
+PrettyTreeView::edit( const QModelIndex &index )
+{
+    QModelIndex parent = index.parent();
+    while( parent.isValid() )
+    {
+        expand( parent );
+        parent = parent.parent();
+    }
+    QTreeView::edit( index );
+}
+
+bool
+PrettyTreeView::edit( const QModelIndex &index, QAbstractItemView::EditTrigger trigger, QEvent *event )
+{
+    return QAbstractItemView::edit( index, trigger, event );
+}
+
 void PrettyTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     QTreeView::drawRow( painter, option, index );

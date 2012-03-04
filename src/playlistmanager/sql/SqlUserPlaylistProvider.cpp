@@ -43,16 +43,10 @@
 static const int USERPLAYLIST_DB_VERSION = 2;
 static const QString key("AMAROK_USERPLAYLIST");
 
-typedef QMultiMap<Playlists::PlaylistPtr, Meta::TrackPtr> PlaylistTrackMap;
-Q_DECLARE_METATYPE( PlaylistTrackMap )
-
 namespace Playlists {
 
 SqlUserPlaylistProvider::SqlUserPlaylistProvider( bool debug )
     : UserPlaylistProvider()
-    , m_renameAction( 0 )
-    , m_deleteAction( 0 )
-    , m_removeTrackAction( 0 )
     , m_debug( debug )
 {
     checkTables();
@@ -84,17 +78,6 @@ SqlUserPlaylistProvider::playlists()
 void
 SqlUserPlaylistProvider::rename( Playlists::PlaylistPtr playlist, const QString &newName )
 {
-    if( !m_debug )
-    {
-        KDialog dialog;
-        dialog.setCaption( i18n( "Confirm Rename" ) );
-        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-        QLabel label( i18n( "Are you sure you want to rename this playlist to '%1'?", newName ), &dialog );
-        dialog.setButtonText( KDialog::Ok, i18n( "Yes, rename this playlist." ) );
-        dialog.setMainWidget( &label );
-        if( dialog.exec() != QDialog::Accepted )
-            return;
-    }
     playlist->setName( newName.trimmed() );
 }
 
@@ -105,9 +88,7 @@ SqlUserPlaylistProvider::slotDelete()
     if( action == 0 )
         return;
 
-    //only one playlist can be selected at this point
-    Playlists::SqlPlaylistList playlists = action->data().value<Playlists::SqlPlaylistList>();
-
+    Playlists::PlaylistList playlists = action->data().value<Playlists::PlaylistList>();
     if( playlists.count() == 0 )
         return;
 
@@ -122,135 +103,20 @@ SqlUserPlaylistProvider::slotDelete()
                       , &dialog
                     );
         //TODO:include a text area with all the names of the playlists
-        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from database." ) );
+        dialog.setButtonText( KDialog::Ok, i18nc( "%1 is playlist provider pretty name",
+                                                  "Yes, delete from %1.", prettyName() ) );
         dialog.setMainWidget( &label );
         if( dialog.exec() != QDialog::Accepted )
             return;
     }
 
-    deleteSqlPlaylists( playlists );
+    deletePlaylists( playlists );
 }
 
-void
-SqlUserPlaylistProvider::slotRename()
+bool
+SqlUserPlaylistProvider::isWritable()
 {
-    QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
-        return;
-
-    //only one playlist can be renamed at a time.
-    Playlists::SqlPlaylistPtr playlist = action->data().value<Playlists::SqlPlaylistPtr>();
-    if( playlist.isNull() )
-        return;
-
-    //TODO: inline rename
-    bool ok;
-    const QString newName = KInputDialog::getText( i18n("Change playlist"),
-                i18n("Enter new name for playlist:"), playlist->name(),
-                                                   &ok );
-    if( ok )
-        playlist->setName( newName.trimmed() );
-}
-
-void
-SqlUserPlaylistProvider::slotRemove()
-{
-    QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
-        return;
-
-    PlaylistTrackMap playlistMap = action->data().value<PlaylistTrackMap>();
-    QList< Playlists::PlaylistPtr > uniquePlaylists = playlistMap.uniqueKeys();
-
-    foreach( Playlists::PlaylistPtr playlist, uniquePlaylists )
-    {
-        QList< Meta::TrackPtr > tracks = playlistMap.values( playlist );
-        foreach( Meta::TrackPtr track, tracks )
-            playlist->removeTrack( playlist->tracks().indexOf( track ) );
-    }
-
-    //clear the data
-    action->setData( QVariant() );
-}
-
-QList<QAction *>
-SqlUserPlaylistProvider::playlistActions( Playlists::PlaylistPtr playlist )
-{
-    QList<QAction *> actions;
-
-    Playlists::SqlPlaylistPtr sqlPlaylist = Playlists::SqlPlaylistPtr::dynamicCast( playlist );
-    if( !sqlPlaylist )
-    {
-        error() << "Action requested for a non-SQL playlist";
-        return actions;
-    }
-
-    if( m_renameAction == 0 )
-    {
-        m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename..." ), this );
-        m_renameAction->setProperty( "popupdropper_svg_id", "edit" );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
-    }
-    //only one playlist can be renamed at a time.
-    if( m_renameAction->data().isNull() )
-        m_renameAction->setData( QVariant::fromValue( sqlPlaylist ) );
-
-    actions << m_renameAction;
-
-    if( m_deleteAction == 0 )
-    {
-        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete..." ), this );
-        m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
-    }
-    m_deleteAction->setObjectName( "deleteAction" );
-
-    Playlists::SqlPlaylistList actionList = m_deleteAction->data().value<Playlists::SqlPlaylistList>();
-    actionList << sqlPlaylist;
-    m_deleteAction->setData( QVariant::fromValue( actionList ) );
-
-    actions << m_deleteAction;
-
-    return actions;
-}
-
-QList<QAction *>
-SqlUserPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIndex )
-{
-    Q_UNUSED( trackIndex );
-    QList<QAction *> actions;
-
-    if( m_removeTrackAction == 0 )
-    {
-        m_removeTrackAction = new QAction( this );
-        m_removeTrackAction->setIcon( KIcon( "media-track-remove-amarok" ) );
-        m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
-    }
-
-    m_removeTrackAction->setObjectName( "deleteAction" );
-
-    //Add the playlist/track combination to a QMultiMap that is stored in the action.
-    //In the slot we use this data to remove that track from the playlist.
-    PlaylistTrackMap playlistMap = m_removeTrackAction->data().value<PlaylistTrackMap>();
-    Meta::TrackPtr track = playlist->tracks()[trackIndex];
-    //only add action to map if playlist/track combo is not in there yet.
-    if( !playlistMap.keys().contains( playlist ) ||
-           !playlistMap.values( playlist ).contains( track )
-      )
-    {
-        playlistMap.insert( playlist, track );
-    }
-    m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
-
-    if( playlistMap.keys().count() > 1 )
-        m_removeTrackAction->setText( i18n( "Remove tracks" ) );
-    else
-        m_removeTrackAction->setText( i18nc( "Remove a track from a saved playlist",
-                                                 "Remove From \"%1\"", playlist->name() ) );
-    actions << m_removeTrackAction;
-
-    return actions;
+    return true;
 }
 
 bool
@@ -258,7 +124,12 @@ SqlUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistList )
 {
     Playlists::SqlPlaylistList sqlPlaylists;
     foreach( Playlists::PlaylistPtr playlist, playlistList )
-        sqlPlaylists << Playlists::SqlPlaylistPtr::dynamicCast( playlist );
+    {
+        Playlists::SqlPlaylistPtr sqlPlaylist =
+            Playlists::SqlPlaylistPtr::dynamicCast( playlist );
+        if( !sqlPlaylist.isNull() )
+            sqlPlaylists << sqlPlaylist;
+    }
     return deleteSqlPlaylists( sqlPlaylists );
 }
 

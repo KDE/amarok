@@ -547,22 +547,16 @@ PlaylistBrowserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
     if( !playlist->provider() || playlist->provider()->category() != m_playlistCategory )
         return;
 
-    //search index of this Playlist
-    // HACK: matches first to match same name, but there could be
-    // several playlists with the same name
-    int row = -1;
-    foreach( const Playlists::PlaylistPtr p, m_playlists )
+    int row = 0;
+    foreach( Playlists::PlaylistPtr p, m_playlists )
     {
-        row++;
-        if( p->name() == playlist->name() )
+        if( p == playlist )
+        {
+            emit renameIndex( index( row, 0 ) );
             break;
+        }
+        row++;
     }
-    if( row == -1 )
-        return;
-
-    QModelIndex idx = index( row, 0, QModelIndex() );
-    debug() << idx;
-    emit( renameIndex( idx ) );
 }
 
 void

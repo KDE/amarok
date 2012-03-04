@@ -32,7 +32,7 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 {
     Q_OBJECT
     public:
-        UserPlaylistProvider( QObject *parent = 0 ) : PlaylistProvider( parent ) {}
+        explicit UserPlaylistProvider( QObject *parent = 0 );
         virtual ~UserPlaylistProvider();
 
         /* PlaylistProvider functions */
@@ -52,6 +52,28 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
                 { Q_UNUSED( playlist ) Q_UNUSED(newName) }
         virtual bool deletePlaylists( Playlists::PlaylistList playlistlist )
                 { Q_UNUSED( playlistlist ) return false; }
+
+    protected slots:
+        /**
+         * Delete selected playlists. Must only be connected to deleting QAction.
+         */
+        virtual void slotDelete();
+
+        /**
+         * Rename selected playlist. Must only be connected to renaming QAction.
+         */
+        virtual void slotRename();
+
+        /**
+         * Remove a track (or tracks) from a playlist. Must only be connected to removing
+         * QAction.
+         */
+        virtual void slotRemoveTrack();
+
+    protected:
+        QAction *m_deleteAction;
+        QAction *m_renameAction;
+        QAction *m_removeTrackAction;
 };
 
 } //namespace Playlists

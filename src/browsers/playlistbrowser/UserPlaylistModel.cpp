@@ -84,17 +84,20 @@ PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &v
     {
         case PlaylistBrowserModel::PlaylistItemColumn:
         {
-            debug() << "setting name of item " << idx.internalId() << " to " << value.toString();
-            Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );
-            item->setName( value.toString() );
-            break;
+            QString newName = value.toString().trimmed();
+            if( newName.isEmpty() )
+                return false;
+            Playlists::PlaylistPtr playlist = m_playlists.value( idx.internalId() );
+            // we emit dataChanged signals later
+            return The::playlistManager()->rename( playlist, newName );
         }
         case PlaylistBrowserModel::LabelColumn:
         {
             debug() << "changing group of item " << idx.internalId() << " to " << value.toString();
             Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setGroups( value.toStringList() );
-            break;
+            // we emit dataChanged signals later
+            return true;
         }
         default:
             return false;

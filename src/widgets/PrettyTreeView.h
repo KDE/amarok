@@ -36,6 +36,10 @@ public:
     PrettyTreeView( QWidget *parent = 0 );
     virtual ~PrettyTreeView();
 
+public slots:
+    void edit( const QModelIndex &index ); // hides QTreeView::edit() to expand all parent items
+    bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event ); // silence compiler warning
+
 protected:
     virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
