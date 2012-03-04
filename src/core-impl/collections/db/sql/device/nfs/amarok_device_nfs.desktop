@@ -2,6 +2,7 @@
 Type=Service
 Icon=network-server
 Name=NFS Share Backend
+Name[el]=Σύστημα υποστήριξης διαμοιρασμού NFS
 Name[es]=Motor de compartición NFS
 Name[it]=Motore condivisione NFS
 Name[nl]=Backend voor NFS-share
@@ -13,6 +14,7 @@ Name[uk]=Модуль спільних ресурсів NFS
 Name[x-test]=xxNFS Share Backendxx
 Name[zh_TW]=NFS 分享後端介面
 Comment=Local Collection folders on remote NFS shares
+Comment[el]=Φάκελοι τοπικών συλλογών σε απομακρυσμένα συστήματα διαμοιρασμού NFS
 Comment[es]=Carpetas de colecciones locales en comparticiones remotas NFS
 Comment[it]=Cartelle della collezione locale su condivisioni remote NFS
 Comment[nl]=Mappen voor lokale verzameling op NFS-shares op afstand

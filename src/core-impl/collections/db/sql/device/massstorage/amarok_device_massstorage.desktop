@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=Local Files & USB Mass Storage Backend
+Name[el]=Τοπικά αρχεία & σύστημα υποστήριξης μαζικής αποθήκευσης USB
 Name[es]=Motor de archivos locales y almacenamiento USB
 Name[it]=Motore dei file locali e archiviazione USB di massa
 Name[nl]=Backend voor lokale bestanden & USB-massa-opslag
@@ -13,6 +14,7 @@ Name[x-test]=xxLocal Files & USB Mass Storage Backendxx
 Name[zh_TW]=本地檔案與 USB 儲存裝置後端介面
 Icon=drive-harddisk
 Comment=Local Collection folders on local and pluggable disks
+Comment[el]=Φάκελοι τοπικών συλλογών σε τοπικούς και αυτοπροσαρτώμενους δίσκους
 Comment[es]=Carpetas de la colección local y discos conectables
 Comment[it]=Cartelle della collezione locale su dischi locali e rimovibili
 Comment[nl]=Mappen voor lokale verzameling op lokale en in te pluggen schijven

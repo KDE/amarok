@@ -2,6 +2,7 @@
 Type=Service
 Icon=network-server
 Name=SMB (Windows) Share Backend
+Name[el]=Σύστημα υποστήριξης διαμοιρασμού SMB (Windows)
 Name[es]=Motor de compartición SMB (Windows)
 Name[it]=Motore condivisione SMB (Windows)
 Name[nl]=Backend voor SMB (Windows)-share 
@@ -13,6 +14,7 @@ Name[uk]=Модуль спільних ресурсів SMB (Windows)
 Name[x-test]=xxSMB (Windows) Share Backendxx
 Name[zh_TW]=SMB (Windows) 分享後端介面
 Comment=Local Collection folders on remote Samba (Windows) shares
+Comment[el]=Φάκελοι τοπικών συλλογών σε απομακρυσμένα συστήματα διαμοιρασμού Samba (Windows)
 Comment[es]=Carpetas de colecciones locales en comparticiones remotas Samba (Windows)
 Comment[it]=Cartelle della collezione locale su condivisioni remote Samba (Windows)
 Comment[nl]=Mappen voor lokale verzameling op Samba (Windows)-shares op afstand
