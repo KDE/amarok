@@ -318,7 +318,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void slotShowDestinationDialogDone();
 
     private slots:
-
+        void slotShowSourceDialog();  // trick to show dialog in next mainloop iteration
         void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources,
                                    const Transcoding::Configuration &configuration );
         void slotOperationPrepared();

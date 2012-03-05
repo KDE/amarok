@@ -26,6 +26,8 @@
 #include "core/support/Debug.h"
 #include "core/collections/QueryMaker.h"
 
+#include <QTimer>
+
 using namespace Collections;
 
 CollectionLocation::CollectionLocation()
@@ -362,6 +364,12 @@ CollectionLocation::slotShowRemoveDialogDone()
 }
 
 void
+CollectionLocation::slotShowSourceDialog()
+{
+    showSourceDialog( m_sourceTracks, m_removeSources );
+}
+
+void
 CollectionLocation::slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources,
                                           const Transcoding::Configuration &configuration )
 {
@@ -538,7 +546,8 @@ CollectionLocation::startWorkflow( const Meta::TrackList &tracks, bool removeSou
     if( tracks.size() <= 0 )
         abort();
     else
-        showSourceDialog( tracks, m_removeSources );
+        // show dialog in next mainloop iteration so that prepare[Something]() returns quickly
+        QTimer::singleShot( 0, this, SLOT(slotShowSourceDialog()) );
 }
 
 void
