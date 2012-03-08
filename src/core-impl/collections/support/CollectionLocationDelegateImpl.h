@@ -1,4 +1,5 @@
 /****************************************************************************************
+ * Copyright (c) 2012 Ryan McCoskrie <ryan.mccoskrie@gmail.com>                         *
  * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
@@ -21,6 +22,8 @@
 #include "amarok_export.h"
 #include "core/collections/CollectionLocationDelegate.h"
 
+#include <QStringList>
+
 namespace Collections {
 
 class AMAROK_EXPORT CollectionLocationDelegateImpl : public CollectionLocationDelegate
@@ -35,6 +38,9 @@ public:
     virtual void errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const;
     virtual void notWriteable(CollectionLocation* loc) const;
     virtual bool deleteEmptyDirs(CollectionLocation* loc) const;
+
+private:
+    QStringList trackList( const Meta::TrackList &tracks ) const;
 };
 
 } //namespace Collections

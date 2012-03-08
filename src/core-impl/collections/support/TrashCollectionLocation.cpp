@@ -108,7 +108,7 @@ TrashCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, b
     Q_UNUSED( removeSources )
     Q_UNUSED( configuration )
     Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
-    m_trashConfirmed = delegate->reallyTrash( this, tracks );
+    m_trashConfirmed = delegate->reallyTrash( source(), tracks );
     if( !m_trashConfirmed )
         abort();
     else
