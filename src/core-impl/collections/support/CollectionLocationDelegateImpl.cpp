@@ -32,9 +32,9 @@ CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Met
 {
     QStringList files = trackList( tracks );
     const QString text( i18ncp( "@info",
-        "Do you really want to delete this track? It will be removed from %1 and from underlying storage medium.",
-        "Do you really want to delete these %2 tracks? They will be removed from %1 and from underlying storage medium.",
-        loc->prettyLocation(), tracks.count() ) );
+        "Do you really want to delete this track? It will be removed from %2 and from underlying storage medium.",
+        "Do you really want to delete these %1 tracks? They will be removed from %2 and from underlying storage medium.",
+         tracks.count(), loc->prettyLocation()) );
     int ret = KMessageBox::warningContinueCancelList(0, text, files,
         i18nc( "@title:window", "Confirm Delete" ), KStandardGuiItem::del() );
     return ret == KMessageBox::Continue;
