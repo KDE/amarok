@@ -146,10 +146,8 @@ PLSPlaylist::removeTrack( int position )
 }
 
 bool
-PLSPlaylist::loadPls( QTextStream &stream )
+PLSPlaylist::loadPls( QTextStream &textStream )
 {
-    DEBUG_BLOCK
-
     Meta::TrackPtr currentTrack;
 
     // Counted number of "File#=" lines.
@@ -172,27 +170,32 @@ PLSPlaylist::loadPls( QTextStream &stream )
     * Read the lines into a buffer; Cleanup the line strings;
     * Count the entries manually and read "NumberOfEntries".
     */
-    while (!stream.atEnd()) {
-        tmp = stream.readLine();
+    while( !textStream.atEnd() )
+    {
+        tmp = textStream.readLine();
         tmp = tmp.trimmed();
-        if (tmp.isEmpty())
+        if( tmp.isEmpty() )
             continue;
-        lines.append(tmp);
+        lines.append( tmp );
 
-        if (tmp.contains(regExp_File)) {
+        if( tmp.contains( regExp_File ) )
+        {
             entryCnt++;
             continue;
         }
-        if (tmp == section_playlist) {
+        if( tmp == section_playlist )
+        {
             havePlaylistSection = true;
             continue;
         }
-        if (tmp.contains(regExp_NumberOfEntries)) {
-            numberOfEntries = tmp.section('=', -1).trimmed().toUInt();
+        if( tmp.contains( regExp_NumberOfEntries ) )
+        {
+            numberOfEntries = tmp.section( '=', -1 ).trimmed().toUInt();
             continue;
         }
     }
-    if (numberOfEntries != entryCnt) {
+    if( numberOfEntries != entryCnt )
+    {
         warning() << ".pls playlist: Invalid \"NumberOfEntries\" value.  "
                 << "NumberOfEntries=" << numberOfEntries << "  counted="
                 << entryCnt << endl;
@@ -202,7 +205,7 @@ PLSPlaylist::loadPls( QTextStream &stream )
         */
         numberOfEntries = entryCnt;
     }
-    if (!numberOfEntries)
+    if( numberOfEntries == 0 )
         return true;
 
     unsigned int index;
@@ -213,21 +216,24 @@ PLSPlaylist::loadPls( QTextStream &stream )
     * and parse the playlist data.
     */
     QStringList::const_iterator i = lines.constBegin(), end = lines.constEnd();
-    for ( ; i != end; ++i) {
-        if (!inPlaylistSection && havePlaylistSection) {
+    for( ; i != end; ++i )
+    {
+        if( !inPlaylistSection && havePlaylistSection )
+        {
             /* The playlist begins with the "[playlist]" tag.
             * Skip everything before this.
             */
-            if ((*i) == section_playlist)
+            if( (*i) == section_playlist )
                 inPlaylistSection = true;
             continue;
         }
-        if ((*i).contains(regExp_File)) {
+        if( (*i).contains( regExp_File ) )
+        {
             // Have a "File#=XYZ" line.
-            index = loadPls_extractIndex(*i);
-            if (index > numberOfEntries || index == 0)
+            index = loadPls_extractIndex( *i );
+            if( index > numberOfEntries || index == 0 )
                 continue;
-            tmp = (*i).section('=', 1).trimmed();
+            tmp = (*i).section( '=', 1 ).trimmed();
             currentTrack = CollectionManager::instance()->trackForUrl( tmp );
             if( currentTrack.isNull() )
             {
@@ -237,43 +243,46 @@ PLSPlaylist::loadPls( QTextStream &stream )
             m_tracks.append( currentTrack );
             continue;
         }
-        if ((*i).contains(regExp_Title)) {
+        if( (*i).contains(regExp_Title) )
+        {
             // Have a "Title#=XYZ" line.
             index = loadPls_extractIndex(*i);
-            if (index > numberOfEntries || index == 0)
+            if( index > numberOfEntries || index == 0 )
                 continue;
-            tmp = (*i).section('=', 1).trimmed();
+            tmp = (*i).section( '=', 1 ).trimmed();
 
-            if ( currentTrack.data() != 0 && currentTrack->is<Capabilities::EditCapability>() )
+            if( currentTrack.data() != 0
+                && currentTrack->is<Capabilities::EditCapability>() )
             {
-                Capabilities::EditCapability *ec = currentTrack->create<Capabilities::EditCapability>();
+                Capabilities::EditCapability *ec =
+                        currentTrack->create<Capabilities::EditCapability>();
                 if( ec )
                     ec->setTitle( tmp );
                 delete ec;
             }
             continue;
         }
-        if ((*i).contains(regExp_Length)) {
+        if( (*i).contains( regExp_Length ) )
+        {
             // Have a "Length#=XYZ" line.
             index = loadPls_extractIndex(*i);
-            if (index > numberOfEntries || index == 0)
+            if( index > numberOfEntries || index == 0 )
                 continue;
-            tmp = (*i).section('=', 1).trimmed();
-            //tracks.append( KUrl(tmp) );
-//             Q_ASSERT(ok);
+            tmp = (*i).section( '=', 1 ).trimmed();
             continue;
         }
-        if ((*i).contains(regExp_NumberOfEntries)) {
+        if( (*i).contains( regExp_NumberOfEntries ) )
+        {
             // Have the "NumberOfEntries=#" line.
             continue;
         }
-        if ((*i).contains(regExp_Version)) {
+        if( (*i).contains( regExp_Version ) )
+        {
             // Have the "Version=#" line.
-            tmp = (*i).section('=', 1).trimmed();
+            tmp = (*i).section( '=', 1 ).trimmed();
             // We only support Version=2
-            if (tmp.toUInt(&ok) != 2)
+            if (tmp.toUInt( &ok ) != 2)
                 warning() << ".pls playlist: Unsupported version." << endl;
-//             Q_ASSERT(ok);
             continue;
         }
         warning() << ".pls playlist: Unrecognized line: \"" << *i << "\"" << endl;
