@@ -17,6 +17,7 @@
 #ifndef AMAROK_FILECOLLECTIONLOCATION_H
 #define AMAROK_FILECOLLECTIONLOCATION_H
 
+#include "amarok_export.h"
 #include "core/collections/CollectionLocation.h"
 
 #include <QSet>
@@ -27,7 +28,7 @@ class KJob;
 
 namespace Collections {
 
-class FileCollectionLocation : public CollectionLocation
+class AMAROK_EXPORT FileCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
     public:
