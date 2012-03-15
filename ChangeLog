@@ -42,6 +42,7 @@ Version 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Fix resulting filetype when copying a track from Jamendo. (BR 296000)
     * Playlists with a dot in name can now be saved to Playlist Files on Disk. (BR 290318)
     * iPod playlists now appear even when plugged in while Amarok is running. (BR 289303)
     * Show in Media Sources actions no longer reset the collection sorting to artist/album. (BR 231858)
