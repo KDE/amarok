@@ -17,8 +17,6 @@
 #include "TranscodingPropertyWidget.h"
 
 #include "TranscodingPropertySliderWidget.h"
-#include "TranscodingPropertySpinBoxWidget.h"
-#include "TranscodingPropertyComboBoxWidget.h"
 
 #include "core/support/Debug.h"
 
@@ -30,10 +28,6 @@ PropertyWidget::create( Property &property, QWidget * parent )
 {
     switch( property.type() )
     {
-    case Property::NUMERIC:
-        return new PropertySpinBoxWidget( property, parent );
-    case Property::LIST:
-        return new PropertyComboBoxWidget( property, parent );
     case Property::TRADEOFF:
         return new PropertySliderWidget( property, parent );
     default:

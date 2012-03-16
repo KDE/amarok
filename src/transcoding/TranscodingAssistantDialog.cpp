@@ -15,19 +15,27 @@
  ****************************************************************************************/
 
 #include "TranscodingAssistantDialog.h"
+
 #include "TranscodingJob.h"
 #include "core/transcoding/TranscodingController.h"
 
 #include <KIcon>
 #include <KPushButton>
 
-namespace Transcoding
-{
+using namespace Transcoding;
 
-AssistantDialog::AssistantDialog( QWidget *parent )
+AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool saveSupported,
+                                  Collections::CollectionLocationDelegate::OperationType operation,
+                                  const QString &destCollectionName, QWidget *parent )
     : KDialog( parent, Qt::Dialog )
+    , m_defaultEncoder( VORBIS )
+    , m_configuration( JUST_COPY )
+    , m_save( false )
+    , m_playableFileTypes( playableFileTypes )
 {
     DEBUG_BLOCK
+    Q_UNUSED( destCollectionName )  // keep it in signature, may be useful in future
+
     QWidget *uiBase = new QWidget( this );
     setMainWidget( uiBase);
     ui.setupUi( uiBase );
@@ -38,65 +46,93 @@ AssistantDialog::AssistantDialog( QWidget *parent )
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::MinimumExpanding );
 
     setButtons( Ok|Cancel );
-    onCurrentChanged( 0 );
     button( Ok )->setText( i18n( "Transc&ode" ) );
+    button( Ok )->setEnabled( false );
 
-    ui.explanatoryTextLabel->setText( i18n(
-            "You are about to copy one or more tracks.\nWhile copying, you can also choose "
-            "to transcode your music files into another format with an encoder (codec). "
-            "This can be done to save space or to make your files readable by a portable "
-            "music player or a particular software program." ) );
+    QString explanatoryText;
+    KIcon justCopyIcon;
+    QString justCopyText;
+    QString justCopyDescription;
+    switch( operation )
+    {
+        case Collections::CollectionLocationDelegate::Copy:
+            explanatoryText = i18n(
+                "While copying, you can choose to transcode your music files into another "
+                "format with an encoder (codec). This can be done to save space or to "
+                "make your files readable by a portable music player or a particular "
+                "software program." );
+            justCopyIcon = KIcon( "edit-copy" );
+            justCopyText = i18n( "&Copy" );
+            justCopyDescription = i18n( "Just copy the tracks without transcoding them." );
+            break;
+        case Collections::CollectionLocationDelegate::Move:
+            explanatoryText = i18n(
+                "While moving, you can choose to transcode your music files into another "
+                "format with an encoder (codec). This can be done to save space or to "
+                "make your files readable by a portable music player or a particular "
+                "software program. Only successfully transcoded files will be removed "
+                "from their original location." );
+            justCopyIcon = KIcon( "go-jump" ); // Dolphin uses this icon for "move"
+            justCopyText = i18n( "&Move" );
+            justCopyDescription = i18n( "Just move the tracks without transcoding them." );
+            break;
+    }
+    ui.explanatoryTextLabel->setText( explanatoryText );
 
-    ui.justCopyButton->setIcon( KIcon( "edit-copy" ) );
-    ui.transcodeWithDefaultsButton->setIcon( KIcon( "audio-x-generic" ) );
-    ui.transcodeWithOptionsButton->setIcon( KIcon( "tools-rip-audio-cd" ) );
-
+    ui.justCopyButton->setIcon( justCopyIcon );
+    ui.justCopyButton->setText( justCopyText );
+    ui.justCopyButton->setDescription( justCopyDescription );
     ui.justCopyButton->setMinimumHeight( ui.justCopyButton->iconSize().height() + 2*10 ); //we make room for the pretty icon
     connect( ui.justCopyButton, SIGNAL( clicked() ),
              this, SLOT( onJustCopyClicked() ) );
-    ui.transcodeWithDefaultsButton->setMinimumHeight( ui.transcodeWithDefaultsButton->iconSize().height() + 2*10 );
-    ui.transcodeWithDefaultsButton->setDescription( i18nc(
-            "Attention translators. This description *must* fit in 2 rows, because of a "
-            "hardcoded constraint in QCommandLinkButton.",
-            "As you copy, transcode the tracks using the preset encoding parameters.\nMedium "
-            "compression, high quality Ogg Vorbis (lossy)." ) );
-    connect( ui.transcodeWithDefaultsButton, SIGNAL( clicked() ),
-             this, SLOT( onTranscodeWithDefaultsClicked() ) );
-    ui.transcodeWithOptionsButton->setMinimumHeight( ui.transcodeWithOptionsButton->iconSize().height() + 2*10 );
-    connect( ui.transcodeWithOptionsButton, SIGNAL( clicked() ),
-             this, SLOT( onTranscodeWithOptionsClicked() ) );
-
-
-    connect( button( Cancel ), SIGNAL( clicked() ),
-             this, SLOT( reject() ) );
-    connect( ui.stackedWidget, SIGNAL( currentChanged( int ) ),
-             this, SLOT( onCurrentChanged( int ) ) );
 
     //Let's set up the codecs page...
-    ui.backButton->setMinimumSize( ui.formatListWidget->width(), ui.backButton->height() + 5 ); //no description text
-    ui.backButton->setMaximumSize( ui.formatListWidget->width(), ui.backButton->height() + 5 );
-    ui.backButton->setIcon( KIcon( "go-previous" ) );
-    connect( ui.backButton, SIGNAL( clicked() ),
-             this, SLOT( onBackClicked() ) );
-
     populateFormatList();
-    connect( ui.formatListWidget, SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
-             this, SLOT( onFormatSelect( QListWidgetItem * ) ) );
+    connect( ui.formatListWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
+             this, SLOT(onFormatSelect(QListWidgetItem*)) );
 
     ui.formatIconLabel->hide();
     ui.formatNameLabel->hide();
-    connect( button( Ok ), SIGNAL( clicked() ),
-             this, SLOT( onTranscodeClicked() ) );
+    connect( button( Ok ), SIGNAL(clicked()),
+             this, SLOT(onTranscodeClicked()) );
+
+    ui.rememberCheckBox->setChecked( m_save );
+    ui.rememberCheckBox->setEnabled( saveSupported );
+    connect( ui.rememberCheckBox, SIGNAL(toggled(bool)),
+             this, SLOT(onRememberToggled(bool)) );
 }
 
 void
 AssistantDialog::populateFormatList()
 {
-    foreach( Format *format, Amarok::Components::transcodingController()->availableFormats() )
+    QSet<Encoder> available = Amarok::Components::transcodingController()->availableEncoders();
+    foreach( Encoder encoder, Amarok::Components::transcodingController()->allEncoders() )
     {
+        if( encoder == INVALID || encoder == JUST_COPY )
+            continue; // skip "fake" encoders
+        Format *format = Amarok::Components::transcodingController()->format( encoder );
+
         QListWidgetItem *item = new QListWidgetItem( format->icon(), format->prettyName() );
         item->setToolTip( format->description() );
-        item->setData( Qt::UserRole, format->encoder() );
+        item->setData( Qt::UserRole, encoder );
+
+        // can be disabled due to unavailabilty
+        bool enabled = available.contains( encoder );
+        if( !enabled )
+            item->setToolTip( i18nc( "Tooltip of a disabled transcoding encoder option",
+                                     "Not currently available on your system." ) );
+
+        // or because not supported by target collection
+        if( enabled && !m_playableFileTypes.isEmpty() )
+        {
+            enabled = m_playableFileTypes.contains( format->fileExtension() );
+            if( !enabled )
+                item->setToolTip( i18n( "Target collection indicates this format would not be playable." ) );
+        }
+
+        Qt::ItemFlags flags = item->flags();
+        if( !enabled )
+            item->setFlags( flags & ~Qt::ItemIsEnabled );
         ui.formatListWidget->addItem( item );
     }
 }
@@ -105,48 +141,6 @@ void
 AssistantDialog::onJustCopyClicked() //SLOT
 {
     KDialog::done( KDialog::Accepted );
-}
-
-void
-AssistantDialog::onTranscodeWithDefaultsClicked() //SLOT
-{
-    //REMOVE THIS BUTTON!
-    m_configuration = Configuration( VORBIS );
-    foreach( Property property, Amarok::Components::transcodingController()->format( VORBIS )->propertyList() )
-    {
-        switch( property.type() )
-        {
-        case Property::NUMERIC:
-            m_configuration.addProperty( property.name(), property.defaultValue() );
-        case Property::TEXT:
-            m_configuration.addProperty( property.name(), property.defaultText() );
-        case Property::LIST:
-            m_configuration.addProperty( property.name(), property.defaultIndex() );
-        case Property::TRADEOFF:
-            m_configuration.addProperty( property.name(), property.defaultValue() );
-        }
-    }
-    KDialog::done( KDialog::Accepted );
-}
-
-void
-AssistantDialog::onTranscodeWithOptionsClicked() //SLOT
-{
-    ui.stackedWidget->setCurrentIndex( 1 );
-}
-
-void
-AssistantDialog::onBackClicked() //SLOT
-{
-    ui.stackedWidget->setCurrentIndex( 0 );
-}
-
-void
-AssistantDialog::onCurrentChanged( int page ) //SLOT
-{
-    button( Ok )->setVisible( page );
-    if( ui.formatListWidget->currentRow() < 0 )
-        button( Ok )->setEnabled( false );
 }
 
 void
@@ -176,6 +170,10 @@ AssistantDialog::onFormatSelect( QListWidgetItem *item ) //SLOT
     }
 }
 
-} //namespace Transcoding
+void
+AssistantDialog::onRememberToggled( bool checked ) //SLOT
+{
+    m_save = checked;
+}
 
 #include "TranscodingAssistantDialog.moc"

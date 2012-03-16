@@ -52,9 +52,11 @@ public:
     /*final*/ virtual Encoder encoder() { return m_encoder; }
 
     /**
-     * Returns the file extension suggested by the current format.
+     * Returns the file extension suggested by the current format. The string should be
+     * compatible with Meta::Track::type()
      * @note You should not need to reimplement this method when subclassing as long as you
      * initialize m_fileExtension in the constructor.
+     *
      * @return a QString with the file extension
      */
     /*final*/ virtual QString fileExtension() const { return m_fileExtension; }

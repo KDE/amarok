@@ -154,12 +154,9 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
            convenience method for copying a single track,
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
-        void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination,
-                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
-        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination,
-                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
-        void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination,
-                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+        void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
+        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
+        void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination );
 
         /**
            convenience method for moving a single track,
@@ -253,7 +250,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
             then removed in case of a "move" action.
         */
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
-            const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+                                           const Transcoding::Configuration &configuration );
 
         /**
            this method is called on the collection you want to remove tracks from.  it must
@@ -271,8 +268,22 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
          * this method is called on the source. It allows the source CollectionLocation to
          * show a dialog. Classes that reimplement this method must call
          * slotShowSourceDialogDone() after they have acquired all necessary information from the user.
+         *
+         * Default implementation calls getDestinationTranscodingConfig() which may ask
+         * user. If you reimplement this you may (or not) call this base method instead
+         * of calling slotShowDestinationDialogDone() to support transcoding.
          */
         virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
+
+        /**
+         * Get transcoding configuration to use when transferring tracks to destination.
+         * If destination collection doesn't support transcoding, JUST_COPY configuration
+         * is returned, otherwise preferred configuration is read or user is asked.
+         * Returns invalid configuration in case user has hit cancel or closed the dialog.
+         *
+         * This method is meant to be called by source collection.
+         */
+        virtual Transcoding::Configuration getDestinationTranscodingConfig();
 
         /**
          * this method is called on the destination. It allows the destination
@@ -318,7 +329,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void slotShowDestinationDialogDone();
 
     private slots:
-
+        void slotShowSourceDialog();  // trick to show dialog in next mainloop iteration
         void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources,
                                    const Transcoding::Configuration &configuration );
         void slotOperationPrepared();
@@ -356,7 +367,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         bool m_removeSources;
         bool m_isRemoveAction;
         bool m_noRemoveConfirmation;
-        Transcoding::Configuration m_transcodingConfiguration;  //only used when copying
+        Transcoding::Configuration m_transcodingConfiguration;
         //used by the source collection to store the tracks that were successfully
         //copied by the destination and can be removed as part of a move
         Meta::TrackList m_tracksSuccessfullyTransferred;

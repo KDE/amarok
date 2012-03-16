@@ -17,15 +17,16 @@
 #ifndef TRANSCODING_ASSISTANTDIALOG_H
 #define TRANSCODING_ASSISTANTDIALOG_H
 
-#include "src/transcoding/ui_TranscodingAssistantDialog.h"
 #include "amarok_transcoding_export.h"
+#include "transcoding/ui_TranscodingAssistantDialog.h"
+#include "core/collections/CollectionLocationDelegate.h"
+#include "core/support/Debug.h"
 #include "core/transcoding/TranscodingFormat.h"
 #include "core/transcoding/TranscodingConfiguration.h"
-#include "core/support/Debug.h"
 
 #include <KDialog>
 
-#include <QListWidget>
+class QListWidget;
 
 namespace Transcoding
 {
@@ -38,23 +39,38 @@ class AMAROK_TRANSCODING_EXPORT AssistantDialog : public KDialog
 {
     Q_OBJECT
 public:
-    AssistantDialog( QWidget *parent );
+    /**
+     * Create transcoding assistant dialog. Only encoders that encode to one of the
+     * @param playableFileTypes will be enabled.
+     * @param saveSupported true if transcoding config preference can be saved
+     * @param operation whether this is copying or moving
+     * @param destCollectionName name of the destination collection
+     */
+    AssistantDialog( const QStringList &playableFileTypes, bool saveSupported,
+                     Collections::CollectionLocationDelegate::OperationType operation,
+                     const QString &destCollectionName, QWidget *parent = 0 );
 
-    const Configuration configuration() const { return m_configuration; }
+    Configuration configuration() const { return m_configuration; }
+
+    /**
+     * Return true if user wants to remember this configuration per destination collection
+     */
+    bool shouldSave() const { return m_save; }
 
 private:
     inline void populateFormatList();
+
+    Encoder m_defaultEncoder;
     Configuration m_configuration;
+    bool m_save;
+    QStringList m_playableFileTypes;
     Ui::AssistantDialog ui;
 
 private slots:
     void onJustCopyClicked();
-    void onTranscodeWithDefaultsClicked();
-    void onTranscodeWithOptionsClicked();
     void onTranscodeClicked();
-    void onBackClicked();
-    void onCurrentChanged( int page );
     void onFormatSelect( QListWidgetItem *item );
+    void onRememberToggled( bool checked );
 };
 
 } //namespace Transcoding

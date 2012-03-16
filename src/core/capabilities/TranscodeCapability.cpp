@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Téo Mrnjavac <teo@kde.org>                                        *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,47 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TranscodingPropertySpinBoxWidget.h"
+#include "TranscodeCapability.h"
 
-#include <QHBoxLayout>
+using namespace Capabilities;
 
-namespace Transcoding
+TranscodeCapability::~TranscodeCapability()
 {
-
-PropertySpinBoxWidget::PropertySpinBoxWidget( Property property, QWidget * parent )
-    : QWidget( parent )
-    , m_property( property )
-{
-    m_name = property.name();
-
-    QBoxLayout *mainLayout;
-    m_mainLabel = new QLabel( m_property.prettyName(), this );
-    m_mainLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-
-    mainLayout = new QHBoxLayout( this );
-    mainLayout->addSpacing( 5 );
-    mainLayout->addWidget( m_mainLabel, 1 );
-
-    m_mainEdit = new QSpinBox( this );
-    m_mainEdit->setRange( m_property.min(), m_property.max() );
-    m_mainEdit->setValue( m_property.defaultValue() );
-
-    mainLayout->addWidget( m_mainEdit );
-    mainLayout->addSpacing( 5 );
-
-    QString description = m_property.description();
-    m_mainEdit->setToolTip( description );
-    m_mainLabel->setToolTip( description );
-    m_mainEdit->setWhatsThis( description );
-    m_mainLabel->setWhatsThis( description );
-
-    m_mainLabel->setBuddy( m_mainEdit );
+    // nothing to do
 }
-
-QVariant
-PropertySpinBoxWidget::value() const
-{
-    return m_mainEdit->value();
-}
-
-} //namespace Transcoding

@@ -45,7 +45,7 @@ class UmsCollectionLocation : public Collections::CollectionLocation
         virtual bool insert( const Meta::TrackPtr &track, const QString &url );
 
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
-            const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+                                           const Transcoding::Configuration &configuration );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
     protected slots:

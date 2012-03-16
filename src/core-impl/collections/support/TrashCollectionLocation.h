@@ -41,9 +41,9 @@ public:
 
 protected:
     void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
-                               const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+                               const Transcoding::Configuration &configuration );
     void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources,
-                                const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+                                const Transcoding::Configuration &configuration );
 
 private slots:
     void slotTrashJobFinished( KJob *job );

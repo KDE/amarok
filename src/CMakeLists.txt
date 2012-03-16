@@ -891,6 +891,7 @@ qt4_add_dbus_adaptor(
 
 set( amaroklib_DEPENDS "amarokpud" )
 set( amaroklib_DEPENDS "amarokcore" )
+set( amaroklib_DEPENDS "amarok-transcoding" ) # depends on generated ui_*.h file
 
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 add_custom_target(amarokconfig_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/amarokconfig.h)

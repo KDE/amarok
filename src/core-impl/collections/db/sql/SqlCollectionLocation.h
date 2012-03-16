@@ -100,7 +100,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
                                             bool removeSources,
                                             const Transcoding::Configuration &configuration );
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
-                                           const Transcoding::Configuration & configuration = Transcoding::Configuration() );
+                                           const Transcoding::Configuration & configuration );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
     private slots:
@@ -116,6 +116,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
         void migrateLabels( const QMap<Meta::TrackPtr, QString> &trackMap );
         bool startNextJob( const Transcoding::Configuration configuration );
         bool startNextRemoveJob();
+        QString operationText( const Transcoding::Configuration &configuration, bool continuousSuffix );
 
         Collections::SqlCollection *m_collection;
         OrganizeCollectionDelegateFactory *m_delegateFactory;
@@ -150,6 +151,7 @@ public:
     virtual void setFolders( const QStringList &folders ) = 0;
     virtual void setIsOrganizing( bool organizing ) = 0;
     virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration ) = 0;
+    virtual void setCaption( const QString &caption ) = 0;
 
     virtual void show() = 0;
 

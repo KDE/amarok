@@ -351,6 +351,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
     delegate->setFolders( available_folders );
     delegate->setIsOrganizing( ( collection() == source()->collection() ) );
     delegate->setTranscodingConfiguration( configuration );
+    delegate->setCaption( operationText( configuration, false /* continuousSuffix */ ) );
 
     connect( delegate, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( delegate, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
@@ -491,20 +492,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 
     m_sources = sources;
 
-    QString statusBarTxt;
-
-    if( destination() == source() )
-        statusBarTxt = i18n( "Organizing tracks" );
-    else if ( isGoingToRemoveSources() )
-        statusBarTxt = i18n( "Moving tracks" );
-    else
-    {
-        if( configuration.encoder() == Transcoding::NULL_CODEC )
-            statusBarTxt = i18n( "Copying tracks" );
-        else
-            statusBarTxt = i18n( "Transcoding tracks" );
-    }
-
+    QString statusBarTxt = operationText( configuration, true /* continuousSuffix */ );
     m_transferjob = new TransferJob( this, configuration );
     Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this,
                                                         SLOT(slotTransferJobAborted()) );
@@ -548,7 +536,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
 
         bool hasMoodFile = QFile::exists( moodFile( src ).toLocalFile() );
 
-        if( configuration.encoder() == Transcoding::NULL_CODEC )
+        if( configuration.isJustCopy() )
             debug() << "copying from " << src << " to " << dest;
         else
             debug() << "transcoding from " << src << " to " << dest;
@@ -566,7 +554,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         }
 
         KIO::JobFlags flags;
-        if( configuration.encoder() == Transcoding::NULL_CODEC )
+        if( configuration.isJustCopy() )
         {
             flags = KIO::HideProgressInfo;
             if( m_overwriteFiles )
@@ -600,7 +588,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         else
         {
             //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
-            if( configuration.encoder() == Transcoding::NULL_CODEC )
+            if( configuration.isJustCopy() )
                 job = KIO::file_copy( src, dest, -1, flags );
             else
             {
@@ -636,7 +624,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            if( configuration.encoder() == Transcoding::NULL_CODEC )
+            if( configuration.isJustCopy() )
                 m_transferjob->emitInfo( i18n( "Transferring: %1", name ) );
             else
                 m_transferjob->emitInfo( i18n( "Transcoding: %1", name ) );
@@ -698,6 +686,39 @@ SqlCollectionLocation::moodFile( const KUrl &track ) const
     KUrl moodPath = track;
     moodPath.setFileName( "." + moodPath.fileName().replace( QRegExp( "(\\.\\w{2,5})$" ), ".mood" ) );
     return moodPath;
+}
+
+QString
+SqlCollectionLocation::operationText( const Transcoding::Configuration &configuration, bool continuousSuffix )
+{
+    if( source()->collection() == collection() )
+    {
+        if( configuration.isJustCopy() )
+            // in this case it is really about the files, not "tracks".
+            return continuousSuffix ? i18n( "Organizing files" )
+                                    : i18n( "Organize files" );
+        else
+            return continuousSuffix ? i18n( "Transcoding and organizing tracks" )
+                                    : i18n( "Transcode and organize tracks" );
+    }
+    if( isGoingToRemoveSources() )
+    {
+        if( configuration.isJustCopy() )
+            return continuousSuffix ? i18n( "Moving tracks" )
+                                    : i18n( "Move tracks" );
+        else
+            return continuousSuffix ? i18n( "Transcoding and moving tracks" )
+                                    : i18n( "Transcode and move tracks" );
+    }
+    else
+    {
+        if( configuration.isJustCopy() )
+            return continuousSuffix ? i18n( "Copying tracks" )
+                                    : i18n( "Copy tracks" );
+        else
+            return continuousSuffix ? i18n( "Transcoding and copying tracks" )
+                                    : i18n( "Transcode and copy tracks" );
+    }
 }
 
 TransferJob::TransferJob( SqlCollectionLocation * location, const Transcoding::Configuration & configuration )

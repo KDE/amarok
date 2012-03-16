@@ -37,30 +37,8 @@ class AMAROK_CORE_EXPORT Property
 public:
     enum Type
     {
-        NUMERIC = 0,
-        TEXT,
-        LIST,
         TRADEOFF
     };
-
-    static Property Numeric(  const QByteArray name,
-                              const QString &prettyName,
-                              const QString &description,
-                              int min,
-                              int max,
-                              int defaultValue );
-
-    static Property String(   const QByteArray name,
-                              const QString &prettyName,
-                              const QString &description,
-                              const QString &defaultText );
-
-    static Property List(     const QByteArray name,
-                              const QString &prettyName,
-                              const QString &description,
-                              const QStringList &valuesList,
-                              const QStringList &prettyValuesList,
-                              int defaultIndex );
 
     static Property Tradeoff( const QByteArray name,
                               const QString &prettyName,
@@ -87,45 +65,38 @@ public:
 
     Type type() const { return m_type; }
 
-    QVariant::Type variantType() const
-    { return ( m_type == NUMERIC || m_type == TRADEOFF ) ? QVariant::Int : QVariant::String; }
+    QVariant::Type variantType() const;
 
     int min() const { return m_min; }
 
     int max() const { return m_max; }
 
-    int defaultValue() const { return m_defaultNumber; }
+    QVariant defaultValue() const { return m_defaultValue; }
 
-    const QString & defaultText() const { return m_defaultString; }
+    const QStringList & valueLabels() const { return m_valueLabels; }
 
-    const QStringList & values() const { return m_values; }
-
-    const QStringList & prettyValues() const { return m_prettyValues; }
-
-    int defaultIndex() const { return m_defaultNumber; }
+    const QStringList & endLabels() const { return m_endLabels; }
 
 private:
     Property( const QByteArray name,
               const QString &prettyName,
               const QString &description,
               Type type,
-              int defaultNumber,
+              QVariant defaultValue,
               int min,
               int max,
-              const QStringList &values,
-              const QStringList &prettyValues,
-              const QString &defaultText );
+              const QStringList &valueLabels,
+              const QStringList &endLabels );
+
     QByteArray m_name;
     QString m_prettyName;
     QString m_description;
     Type m_type;
-    int m_defaultNumber;
+    QVariant m_defaultValue;
     int m_min;
     int m_max;
-    QStringList m_values;
-    QStringList m_prettyValues;
-    QString m_defaultString;
-    QPointer< QWidget > m_widget;
+    QStringList m_valueLabels;
+    QStringList m_endLabels;
 };
 
 typedef QList< Property > PropertyList;

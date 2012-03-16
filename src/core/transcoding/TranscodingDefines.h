@@ -19,18 +19,17 @@
 
 namespace Transcoding
 {
-enum Encoder
-{
-    NULL_CODEC = 0, //null codec
-    AAC,          //aac (would libfaac be better?)
-    ALAC,         //alac
-    FLAC,         //flac
-    MP3,          //libmp3lame
-    VORBIS,       //"libvorbis" supposedly gives better quality than "vorbis" but worse
-                  //than oggenc. TODO: investigate
-    WMA2,          //wmav2  no idea what's this
-    NUM_CODECS
-};
+    enum Encoder
+    {
+        INVALID,   // denotes invalid transcoding configuration
+        JUST_COPY, // just copy or move the tracks (no transcoding)
+        AAC,       // Advanded Audio Coding
+        ALAC,      // Apple Lossless Audio Codec
+        FLAC,      // Free Lossless Audio Codec
+        MP3,       // MPEG-1 or MPEG-2 Audio Layer III encoded using lame encoder
+        VORBIS,    // Ogg Vorbis
+        WMA2       // Windows Media Audio 2
+    };
 
 }
 

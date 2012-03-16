@@ -18,12 +18,11 @@
 
 #include <KLocale>
 
-namespace Transcoding
-{
+using namespace Transcoding;
 
-NullFormat::NullFormat()
+NullFormat::NullFormat( const Encoder &encoder )
 {
-    m_encoder = NULL_CODEC;
+    m_encoder = encoder;
     m_fileExtension = "";
 }
 
@@ -48,6 +47,7 @@ NullFormat::icon() const
 QStringList
 NullFormat::ffmpegParameters( const Configuration &configuration ) const
 {
+    Q_UNUSED( configuration )
     return QStringList() << "-acodec" << "copy";
 }
 
@@ -56,6 +56,4 @@ NullFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
     Q_UNUSED( ffmpegOutput )
     return false;
-}
-
 }

@@ -27,40 +27,6 @@ namespace Transcoding
 {
 
 Property
-Property::Numeric( const QByteArray name,
-                   const QString &prettyName,
-                   const QString &description,
-                   int min,
-                   int max,
-                   int defaultValue )
-{
-    return Property( name, prettyName, description, NUMERIC,
-                     defaultValue, min, max, QStringList(), QStringList(), QString() );
-}
-
-Property
-Property::String( const QByteArray name,
-                  const QString &prettyName,
-                  const QString &description,
-                  const QString &defaultText )
-{
-    return Property( name, prettyName, description, TEXT,
-                     0, 0, 0, QStringList(), QStringList(), defaultText );
-}
-
-Property
-Property::List( const QByteArray name,
-                const QString &prettyName,
-                const QString &description,
-                const QStringList &valuesList,
-                const QStringList &prettyValuesList,
-                int defaultIndex )
-{
-    return Property( name, prettyName, description, LIST,
-                     defaultIndex, 0, 0, valuesList, prettyValuesList, QString() );
-}
-
-Property
 Property::Tradeoff( const QByteArray name,
                     const QString &prettyName,
                     const QString &description,
@@ -74,7 +40,7 @@ Property::Tradeoff( const QByteArray name,
         qSwap( min, max );
     return Property( name, prettyName, description, TRADEOFF,
                      defaultValue, min, max, QStringList(),
-                     QStringList() << leftText << rightText, QString() );
+                     QStringList() << leftText << rightText );
 }
 
 Property
@@ -88,29 +54,38 @@ Property::Tradeoff( const QByteArray name,
 {
     return Property( name, prettyName, description, TRADEOFF,
                      defaultValue, 0, valueLabels.isEmpty() ? 0 : valueLabels.size() - 1, valueLabels,
-                     QStringList() << leftText << rightText, QString() );
+                     QStringList() << leftText << rightText );
+}
+
+QVariant::Type
+Property::variantType() const
+{
+    switch( m_type )
+    {
+        case TRADEOFF:
+            return QVariant::Int;
+    }
+    return QVariant::Invalid;
 }
 
 Property::Property( const QByteArray name,
                     const QString &prettyName,
                     const QString &description,
                     Type type,
-                    int defaultNumber,
+                    QVariant defaultValue,
                     int min,
                     int max,
-                    const QStringList &values,
-                    const QStringList &prettyValues,
-                    const QString &defaultText )
+                    const QStringList &valueLabels,
+                    const QStringList &endLabels )
     : m_name( name )
     , m_prettyName( prettyName )
     , m_description( description )
     , m_type( type )
-    , m_defaultNumber( defaultNumber )
+    , m_defaultValue( defaultValue )
     , m_min( min )
     , m_max( max )
-    , m_values( values )
-    , m_prettyValues( prettyValues )
-    , m_defaultString( defaultText )
+    , m_valueLabels( valueLabels )
+    , m_endLabels( endLabels )
 {}
 
 } //namespace Transcoding
