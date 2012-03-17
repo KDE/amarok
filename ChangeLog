@@ -45,6 +45,7 @@ Version 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Prevent occasional tag corruption on multi-byte UTF8 characters in tags.
     * Do not double-transcode tracks when importing from an audio CD. (BR 263775)
     * Fix resulting filetype when copying a track from Jamendo. (BR 296000)
     * Playlists with a dot in name can now be saved to Playlist Files on Disk. (BR 290318)

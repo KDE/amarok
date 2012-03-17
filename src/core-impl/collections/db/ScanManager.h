@@ -264,7 +264,7 @@ class ScannerJob : public ThreadWeaver::Job
         int m_restartCount;
         volatile bool m_abortRequested;
         QString m_abortReason;
-        QString m_incompleteTagBuffer; // strings received via addNewXmlData but not terminated by either a </directory> or a </scanner>
+        QByteArray m_incompleteTagBuffer; // strings received via addNewXmlData but not terminated by either a </directory> or a </scanner>
 
         AmarokProcess *m_scanner;
         QString m_batchfilePath;

@@ -713,7 +713,7 @@ ScannerJob::getScannerOutput()
     if( index >= 0 )
     {
         // append new data (we need to be locked. the reader is probalby not thread save)
-        m_reader.addData( m_incompleteTagBuffer.left( index + 10 ) );
+        m_reader.addData( QString( m_incompleteTagBuffer.left( index + 10 ) ) );
         m_incompleteTagBuffer = m_incompleteTagBuffer.mid( index + 10 );
     }
     else
@@ -722,7 +722,7 @@ ScannerJob::getScannerOutput()
         if( index >= 0 )
         {
             // append new data (we need to be locked. the reader is probalby not thread save)
-            m_reader.addData( m_incompleteTagBuffer.left( index + 12 ) );
+            m_reader.addData( QString( m_incompleteTagBuffer.left( index + 12 ) ) );
             m_incompleteTagBuffer = m_incompleteTagBuffer.mid( index + 12 );
         }
     }
