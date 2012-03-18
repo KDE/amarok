@@ -125,7 +125,7 @@ AmarokMimeData::tracks() const
 {
     while( d->completedQueries < d->queryMakers.count() )
     {
-        QCoreApplication::instance()->processEvents( QEventLoop::AllEvents );
+        QCoreApplication::instance()->processEvents( QEventLoop::ExcludeUserInputEvents );
     }
     Meta::TrackList result = d->tracks;
     foreach( Collections::QueryMaker *qm, d->queryMakers )
