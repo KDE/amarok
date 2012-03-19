@@ -37,7 +37,6 @@ class FileCollectionLocation : public CollectionLocation
         virtual QString prettyLocation() const;
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
-        virtual bool remove( const Meta::TrackPtr &track );
         virtual void removeUrlsFromCollection( const Meta::TrackList& sources );
         virtual void showRemoveDialog( const Meta::TrackList &tracks );
     public slots:

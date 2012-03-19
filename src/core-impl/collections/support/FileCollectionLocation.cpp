@@ -65,19 +65,6 @@ FileCollectionLocation::isOrganizable() const
     return false;
 }
 
-bool
-FileCollectionLocation::remove( const Meta::TrackPtr &track )
-{
-    // This block taken from SqlCollectionLocation::remove()
-    DEBUG_BLOCK
-    if( !track )
-    {
-        debug() << "track null!";
-        return false;
-    }
-
-    return !QFile::exists( track->playableUrl().path()  );
-}
 void FileCollectionLocation::startRemoveJobs()
 {
     DEBUG_BLOCK
@@ -102,22 +89,14 @@ void FileCollectionLocation::startRemoveJobs()
     }
 }
 
-void FileCollectionLocation::slotRemoveJobFinished(KJob* job)
+void FileCollectionLocation::slotRemoveJobFinished( KJob *job )
 {
-    DEBUG_BLOCK
-    if( job->error() )
-    {
-        warning() << "An error occurred when removing a file: " << job->errorString();
+    // ignore and error that the file did not exist in the first place. Perhaps destination
+    // collection too eager? :-)
+    if( job->error() && job->error() != KIO::ERR_DOES_NOT_EXIST )
         transferError( m_removejobs.value( job ), KIO::buildErrorString( job->error(), job->errorString() ) );
-    }
     else
-    {
-        // The file is deleted, but do dir cleanup
-        remove( m_removejobs.value( job ) );
-
-        //we  assume that KIO works correctly...
         transferSuccessful( m_removejobs.value( job ) );
-    }
 
     m_removejobs.remove( job );
     job->deleteLater();
