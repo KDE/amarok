@@ -481,7 +481,7 @@ namespace Amarok
                 metaData["mpris:trackid"] = QVariant::fromValue<QDBusObjectPath>(activeMprisTrackId());
             else {
                 // we should be updated shortly
-                QString path = QString( "/PendingTrack" ).arg( MPRIS2_OBJECT_PATH );
+                QString path = QString( "%1/PendingTrack" ).arg( MPRIS2_OBJECT_PATH );
                 metaData["mpris:trackid"] = QVariant::fromValue<QDBusObjectPath>( QDBusObjectPath( path ) );
             }
 
