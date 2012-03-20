@@ -73,7 +73,7 @@ PLSPlaylist::trackCount() const
     if( m_tracksLoaded )
         return m_tracks.count();
 
-    //TODO: count the number of lines starting with #
+    //TODO: read NumberOfEntries from footer
     return -1;
 }
 
@@ -235,7 +235,13 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             if( index > numberOfEntries || index == 0 )
                 continue;
             tmp = (*i).section( '=', 1 ).trimmed();
-            proxyTrack = new MetaProxy::Track( tmp );
+            KUrl url( tmp );
+            if( url.isRelative() )
+            {
+                url = m_url;
+                url.addPath( tmp );
+            }
+            proxyTrack = new MetaProxy::Track( url );
             m_tracks << Meta::TrackPtr( proxyTrack );
             continue;
         }
@@ -300,14 +306,31 @@ PLSPlaylist::save( const KUrl &location, bool relative )
         return false;
     }
 
+    //Format: http://en.wikipedia.org/wiki/PLS_(file_format)
     QTextStream stream( &file );
+    //header
     stream << "[Playlist]\n";
-    stream << "NumberOfEntries=" << m_tracks.count() << endl;
+
+    //body
     int i = 1; //PLS starts at File1=
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        stream << "File" << i << "=";
-        stream << KUrl( track->playableUrl() ).path();
+        KUrl playableUrl( track->playableUrl() );
+        QString file = playableUrl.url();
+
+        if( playableUrl.isLocalFile() )
+        {
+            if( relative )
+            {
+                file = KUrl::relativePath( savePath.toLocalFile(),
+                                           playableUrl.toLocalFile() );
+            }
+            else
+            {
+                file = playableUrl.toLocalFile();
+            }
+        }
+        stream << "File" << i << "=" << file;
         stream << "\nTitle" << i << "=";
         stream << track->name();
         stream << "\nLength" << i << "=";
@@ -316,6 +339,8 @@ PLSPlaylist::save( const KUrl &location, bool relative )
         i++;
     }
 
+    //footer
+    stream << "NumberOfEntries=" << m_tracks.count() << endl;
     stream << "Version=2\n";
     file.close();
     return true;
@@ -330,9 +355,9 @@ PLSPlaylist::loadPls_extractIndex( const QString &str ) const
     */
     bool ok = false;
     unsigned int ret;
-    QString tmp(str.section('=', 0, 0));
-    tmp.remove(QRegExp("^\\D*"));
-    ret = tmp.trimmed().toUInt(&ok);
+    QString tmp( str.section( '=', 0, 0 ) );
+    tmp.remove( QRegExp( "^\\D*" ) );
+    ret = tmp.trimmed().toUInt( &ok );
     Q_ASSERT(ok);
     return ret;
 }
