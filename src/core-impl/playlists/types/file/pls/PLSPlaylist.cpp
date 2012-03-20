@@ -21,6 +21,7 @@
 #include "core/capabilities/EditCapability.h"
 #include "core/meta/Meta.h"
 #include "PlaylistManager.h"
+#include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
 #include <KMimeType>
@@ -148,7 +149,7 @@ PLSPlaylist::removeTrack( int position )
 bool
 PLSPlaylist::loadPls( QTextStream &textStream )
 {
-    Meta::TrackPtr currentTrack;
+    MetaProxy::Track *proxyTrack;
 
     // Counted number of "File#=" lines.
     unsigned int entryCnt = 0;
@@ -234,13 +235,8 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             if( index > numberOfEntries || index == 0 )
                 continue;
             tmp = (*i).section( '=', 1 ).trimmed();
-            currentTrack = CollectionManager::instance()->trackForUrl( tmp );
-            if( currentTrack.isNull() )
-            {
-                debug() << "track could not be loaded: " << tmp;
-                continue;
-            }
-            m_tracks.append( currentTrack );
+            proxyTrack = new MetaProxy::Track( tmp );
+            m_tracks << Meta::TrackPtr( proxyTrack );
             continue;
         }
         if( (*i).contains(regExp_Title) )
@@ -250,16 +246,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             if( index > numberOfEntries || index == 0 )
                 continue;
             tmp = (*i).section( '=', 1 ).trimmed();
-
-            if( currentTrack.data() != 0
-                && currentTrack->is<Capabilities::EditCapability>() )
-            {
-                Capabilities::EditCapability *ec =
-                        currentTrack->create<Capabilities::EditCapability>();
-                if( ec )
-                    ec->setTitle( tmp );
-                delete ec;
-            }
+            proxyTrack->setName( tmp );
             continue;
         }
         if( (*i).contains( regExp_Length ) )
@@ -269,6 +256,10 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             if( index > numberOfEntries || index == 0 )
                 continue;
             tmp = (*i).section( '=', 1 ).trimmed();
+            bool ok = false;
+            int seconds = tmp.toInt( &ok );
+            if( ok )
+                proxyTrack->setLength( seconds * 1000 ); //length is in milliseconds
             continue;
         }
         if( (*i).contains( regExp_NumberOfEntries ) )
