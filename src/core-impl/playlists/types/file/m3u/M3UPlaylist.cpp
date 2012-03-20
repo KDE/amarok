@@ -21,6 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
 #include "PlaylistManager.h"
@@ -150,20 +151,25 @@ bool
 M3UPlaylist::loadM3u( QTextStream &stream )
 {
     const QString directory = m_url.directory();
-    bool hasTracks = false;
     m_tracksLoaded = false;
 
+    int length = -1;
+    QString extinfTitle;
     do
     {
         QString line = stream.readLine();
         if( line.startsWith( "#EXTINF" ) )
         {
-            //const QString extinf = line.section( ':', 1 );
-            //const int length = extinf.section( ',', 0, 0 ).toInt();
+            const QString extinf = line.section( ':', 1 );
+            bool ok;
+            length = extinf.section( ',', 0, 0 ).toInt( &ok );
+            if( !ok )
+                length = -1;
+            extinfTitle = extinf.section( ',', 1 );
         }
         else if( !line.startsWith( '#' ) && !line.isEmpty() )
         {
-            Meta::TrackPtr trackPtr;
+            MetaProxy::Track *proxyTrack;
             line = line.replace( "\\", "/" );
 
             // KUrl::isRelativeUrl() expects absolute URLs to start with a protocol, so prepend it if missing
@@ -180,22 +186,30 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 kurl.addPath( line ); // adds directory separator if required
                 kurl.cleanPath();
 
-                trackPtr = CollectionManager::instance()->trackForUrl( kurl );
+                url = kurl.url();
+            }
+
+            proxyTrack = new MetaProxy::Track( KUrl( url ) );
+            QString artist = extinfTitle.section( " - ", 0, 0 );
+            QString title = extinfTitle.section( " - ", 1, 1 );
+            //if title and artist are saved such as in M3UPlaylist::save()
+            if( !title.isEmpty() && !artist.isEmpty() )
+            {
+                proxyTrack->setName( title );
+                proxyTrack->setArtist( artist );
             }
             else
             {
-                trackPtr = CollectionManager::instance()->trackForUrl( KUrl( line ) );
+                proxyTrack->setName( extinfTitle );
             }
-
-            if( trackPtr )
-            {
-                m_tracks.append( trackPtr );
-                hasTracks = true;
-                m_tracksLoaded = true;
-            }
+            proxyTrack->setLength( length );
+            m_tracks << Meta::TrackPtr( proxyTrack );
+            m_tracksLoaded = true;
         }
     } while( !stream.atEnd() );
-    return hasTracks;
+
+    //TODO: return false if stream is not readable, empty or has errors
+    return true;
 }
 
 bool
