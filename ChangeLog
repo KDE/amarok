@@ -30,6 +30,7 @@ Version 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * Load tracks in playlists asynchronously using proxy tracks. (BR 295199)
     * It is now possible to transcode tracks when moving them. (BR 280526)
     * Drag & drop of tracks and playlists to Saved Playlists works in all cases.
     * Don't show unmounted USB Mass Storage devices and make it clear when
