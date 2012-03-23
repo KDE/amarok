@@ -1,5 +1,6 @@
-==1.5.0 (2011-XX-XX)==
-* show a link to search for this artist in the integrated MP3 Music Store
+==1.5.0 (2012-03-23)==
+* show a link to search for this artist in the integrated Amazon MP3 Music Store
+* Amazon integration requires Amarok 2.5 or later to work
 * less debug output
 
 ==1.4.0 (2010-02-13)==
