@@ -24,6 +24,7 @@
 #include <QMouseEvent>
 #include <QPaintEvent>
 #include <QWidget>
+#include <QPoint>
 
 class QSize;
 class QSizePolicy;
@@ -33,7 +34,8 @@ class BookmarkTriangle : public QWidget
 {
     Q_OBJECT
 public:
-    BookmarkTriangle ( QWidget *parent, int milliseconds, QString name , bool showPopup = false);
+    BookmarkTriangle( QWidget *parent, int milliseconds, QString name, int sliderwidth,
+                      bool showPopup = false );
     ~BookmarkTriangle();
     virtual QSize sizeHint() const;
     virtual QSizePolicy sizePolicy() const;
@@ -41,12 +43,22 @@ public:
 
     virtual void showEvent ( QShowEvent * event );
     virtual void mousePressEvent ( QMouseEvent * event );
+    virtual void mouseMoveEvent ( QMouseEvent * event );
     virtual void mouseReleaseEvent  (QMouseEvent *);
     virtual void enterEvent ( QEvent * event );
     virtual void leaveEvent ( QEvent * event );
     virtual void paintEvent ( QPaintEvent* );
 
     virtual void hidePopup();
+
+    /**
+     * Updates the position of the bookmark named @param name to @param newMiliseconds.
+     *
+     * The name should be a valid existing bookmark name and should include the trailing
+     * "- m:ss"
+     */
+    virtual void moveBookmark( qint64 newMilliseconds, QString name );
+
     virtual void deleteBookmark();
     virtual int getTimeValue();
 
@@ -56,9 +68,13 @@ signals:
 
 private:
     void initPopup();
-    int m_mseconds;
-    QString m_name;
-    bool m_showPopup;
-    BookmarkPopup* m_tooltip;
+
+    int m_mseconds; /// position of the bookmark on the slider in terms of milliseconds
+    QString m_name; /// name of the bookmark
+    int m_sliderwidth; /// width of the slider on which the bookmark will appear
+    bool m_showPopup; /// used to determine whether to show the Pop-up on focussing the bookmark
+    BookmarkPopup* m_tooltip; /// the tooltip that appears on focussing the bookmark
+    QPoint m_offset; /// used while moving the bookmark, holds the position of the bookmark before moving
+    int m_pos; /// used while moving the bookmark, holds the x co-ordinate of the bookmark after moving
 };
 #endif // BOOKMARKTRIANGLE_H

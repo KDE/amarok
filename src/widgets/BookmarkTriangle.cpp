@@ -24,6 +24,8 @@
 #include "MainWindow.h"
 #include "core/meta/support/MetaUtility.h"
 #include "SvgHandler.h"
+#include "EngineController.h"
+#include "PlayUrlGenerator.h"
 
 #include <KLocale>
 
@@ -32,12 +34,14 @@
 #include <QSize>
 #include <QSizePolicy>
 
-BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int milliseconds, QString name , bool showPopup)
-        : QWidget ( parent ),
-        m_mseconds ( milliseconds ),
-        m_name ( name ),
-        m_showPopup ( showPopup ),
-        m_tooltip ( 0 )
+BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int milliseconds, QString name,
+                                     int sliderwidth, bool showPopup )
+    : QWidget ( parent ),
+    m_mseconds ( milliseconds ),
+    m_name ( name ),
+    m_sliderwidth ( sliderwidth ),
+    m_showPopup ( showPopup ),
+    m_tooltip ( 0 )
 {
 }
 
@@ -87,16 +91,47 @@ void BookmarkTriangle::showEvent ( QShowEvent * event )
 
 void BookmarkTriangle::mousePressEvent ( QMouseEvent * event )
 {
-    Q_UNUSED ( event )
-// we don't do anything here, but we want to prevent the event from being
-// propagated to the parent.
+    event->accept();
+    m_offset = event->pos();
+    m_pos = this->x();
+}
+
+void BookmarkTriangle::mouseMoveEvent ( QMouseEvent * event )
+{
+    event->accept();
+    int distance_x = event->x() - m_offset.x();
+    QPoint pt(distance_x, 0);
+    move(mapToParent( pt ));
 }
 
 void BookmarkTriangle::mouseReleaseEvent ( QMouseEvent * event )
 {
-   Q_UNUSED( event )
+    event->accept();
 
-   emit clicked ( m_mseconds );
+    if( this->x() == m_pos ){
+        emit clicked ( m_mseconds );
+    }
+    else
+    {
+        if( this->x() < 0 || this->x() > m_sliderwidth )
+        {
+            this->setGeometry(m_pos, 1, 11, 11);
+            this->update();
+        }
+        else{
+            qreal percentage = (qreal) ( this->x() ) / (qreal) m_sliderwidth;
+            long trackLength = The::engineController()->trackLength();
+            qint64 trackPosition = trackLength * percentage;
+            moveBookmark( trackPosition, m_name );
+        }
+    }
+}
+
+void BookmarkTriangle::moveBookmark ( qint64 newMilliseconds, QString name )
+{
+    hidePopup();
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    PlayUrlGenerator::instance()->moveTrackBookmark( track, newMilliseconds, name );
 }
 
 void BookmarkTriangle::deleteBookmark ()

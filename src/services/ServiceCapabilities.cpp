@@ -134,8 +134,8 @@ void ServiceFindInSourceCapability::findInSource( QFlags<TargetTag> tag )
         url.setPath( "internet/" + collection );
         if( !m_track->simpleFiltering() )
         {
-            url.appendArg( "filter", "artist:\"" + artist + "\" AND album:\"" + album + "\"" );
-            url.appendArg( "levels", "artist-album" );
+            url.setArg( "filter", "artist:\"" + artist + "\" AND album:\"" + album + "\"" );
+            url.setArg( "levels", "artist-album" );
             debug() << "running url: " << url.url();
             url.run();
         }

@@ -41,10 +41,15 @@ public:
     QString prettyCommand() const;
     QString path() const;
     QMap<QString, QString> args() const;
-    
+
     void setCommand( const QString &command );
     void setPath( const QString &path );
-    void appendArg( const QString &name, const QString &value );
+
+    /**
+     * Sets the url argument named @param name to @param value. Overrides any possible
+     * previous value.
+     */
+    void setArg( const QString &name, const QString &value );
 
     void setName( const QString &name );
     void setDescription( const QString &description );

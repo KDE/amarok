@@ -21,6 +21,7 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
+#include "BookmarkModel.h"
 
 #include <KLocale>
 
@@ -61,7 +62,7 @@ PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds,
     const int seconds = miliseconds / 1000;
     const qreal accurateSeconds = (qreal) miliseconds / 1000.0;
     QString secondsString = QString::number( accurateSeconds );
-    
+
     AmarokUrl url;
     if( !track )
         return url;
@@ -69,7 +70,7 @@ PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds,
     const QString trackUrl = track->playableUrl().toEncoded().toBase64();
     url.setCommand( "play" );
     url.setPath( trackUrl );
-    url.appendArg( "pos", secondsString );
+    url.setArg( "pos", secondsString );
 
     if( name.isEmpty() )
         url.setName( track->prettyName() + " - " + Meta::secToPrettyTime( seconds ) );
@@ -79,6 +80,20 @@ PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds,
     debug() << "concocted url: " << url.url();
     debug() << "pos: " << accurateSeconds;
     return url;
+}
+
+void
+PlayUrlGenerator::moveTrackBookmark( Meta::TrackPtr track, qint64 newMiliseconds, QString name )
+{
+    qreal seconds = qreal ( newMiliseconds ) / 1000;
+    QString trackPosition;
+    trackPosition.setNum( seconds );
+
+    QString trackName = track->prettyName();
+    QString newName = ( trackName + " - " + Meta::msToPrettyTime( newMiliseconds ) );
+
+    BookmarkModel::instance()->setBookmarkArg( name, "pos", trackPosition );
+    BookmarkModel::instance()->renameBookmark( name, newName );
 }
 
 QString

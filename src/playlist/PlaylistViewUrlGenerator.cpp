@@ -68,13 +68,13 @@ ViewUrlGenerator::createUrl()
 
     if( !sortPath.isEmpty() )
     {
-        url.appendArg( "sort", sortPath );
+        url.setArg( "sort", sortPath );
         prettyUrlName.append( prettySortPath );
     }
     if( !filterExpr.isEmpty() )
     {
-        url.appendArg( "filter", filterExpr );
-        url.appendArg( "matches", onlyMatches );
+        url.setArg( "filter", filterExpr );
+        url.setArg( "matches", onlyMatches );
         if( !prettyUrlName.isEmpty() )
             prettyUrlName.append( "  |  " );
         QString prettyFilterExpr = "\"" + filterExpr + "\"";
@@ -84,7 +84,7 @@ ViewUrlGenerator::createUrl()
     }
     if( !layout.isEmpty() )
     {
-        url.appendArg( "layout", layout );
+        url.setArg( "layout", layout );
         if( !prettyUrlName.isEmpty() )
             prettyUrlName.append( "  |  " );
         prettyUrlName.append( i18n( "%1 layout", layout ) );

@@ -567,7 +567,7 @@ UpcomingEventsApplet::navigateToArtist()
     AmarokUrl url;
     url.setCommand( "navigate" );
     url.setPath( "collections" );
-    url.appendArg( "filter", "artist:\"" + m_artistEventsList->name() + "\"" );
+    url.setArg( "filter", "artist:\"" + m_artistEventsList->name() + "\"" );
     url.run();
 }
 

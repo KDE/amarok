@@ -103,6 +103,12 @@ public slots:
     void deleteBookmark( const QString &name );
     void renameBookmark( const QString &oldName , const QString &newName );
 
+    /**
+     * Sets the bookmark's (whose name is @param name) url argument named @param key
+     * to @param value. Overrides any possible previous value.
+     */
+    void setBookmarkArg(const QString &name, const QString &key, const QString &value);
+
 signals:
     void editIndex( const QModelIndex &index );
 
@@ -114,6 +120,7 @@ private:
     void deleteTables();
     void upgradeTables( int from );
 
+    bool setBookmarkArgRecursively( BookmarkGroupPtr group, const QString &name, const QString &key, const QString &value );
     bool deleteBookmarkRecursively( BookmarkGroupPtr group, const QString &name );
     bool renameBookmarkRecursively( BookmarkGroupPtr group, const QString &oldName, const QString &newName );
 

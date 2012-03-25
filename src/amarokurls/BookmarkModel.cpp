@@ -566,6 +566,21 @@ BookmarkModel::createNewBookmark()
 }
 
 void
+BookmarkModel::setBookmarkArg( const QString &name, const QString &key, const QString &value )
+{
+    if( setBookmarkArgRecursively( m_root, name, key, value ) )
+    {
+        reloadFromDb();
+        The::amarokUrlHandler()->updateTimecodes();
+    }
+    else
+    {
+        warning() << "Cannot set argument" << key << "of the bookmark" << name
+                  << "to value" << value << "- bookmark not found.";
+    }
+}
+
+void
 BookmarkModel::deleteBookmark( const QString& name )
 {
     DEBUG_BLOCK
@@ -600,6 +615,29 @@ BookmarkModel::renameBookmark( const QString& oldName, const QString& newName )
         debug() << "No such bookmark found!";
 }
 
+bool
+BookmarkModel::setBookmarkArgRecursively(  BookmarkGroupPtr group, const QString& name, const QString& key, const QString &value )
+{
+    foreach( AmarokUrlPtr item, group->childBookmarks() )
+    {
+        if( item->name() == name )
+        {
+            item->setArg( key, value );
+            item->saveToDb();
+            return true;
+        }
+    }
+
+    //if not found, recurse through child groups
+    foreach( BookmarkGroupPtr childGroup, group->childGroups() )
+    {
+        if( setBookmarkArgRecursively( childGroup, name, key, value ) )
+            return true;
+    }
+
+    return false;
+
+}
 
 bool
 BookmarkModel::deleteBookmarkRecursively( BookmarkGroupPtr group, const QString& name )

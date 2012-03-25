@@ -70,7 +70,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     QString filter = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->filter();
 
     if ( !filter.isEmpty() )
-        url.appendArg( "filter", filter );
+        url.setArg( "filter", filter );
 
     QList<int> levels = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->levels();
     QString sortMode;
@@ -105,7 +105,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         sortMode = sortMode.left( sortMode.size() - 1 );
     
     if ( !sortMode.isEmpty() )
-        url.appendArg( "levels", sortMode );
+        url.setArg( "levels", sortMode );
 
 
     //if in the local collection view, also store "show covers" and "show years"
@@ -114,14 +114,14 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         debug() << "bookmarking in local collection";
 
         if( AmarokConfig::showAlbumArt() )
-            url.appendArg( "show_cover", "true" );
+            url.setArg( "show_cover", "true" );
         else
-            url.appendArg( "show_cover", "false" );
+            url.setArg( "show_cover", "false" );
 
         if(  AmarokConfig::showYears() )
-            url.appendArg( "show_years", "true" );
+            url.setArg( "show_years", "true" );
         else
-            url.appendArg( "show_years", "false" );
+            url.setArg( "show_years", "false" );
     }
 
     //come up with a default name for this url..
@@ -137,7 +137,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserDock()->list()->activeCategory() );
         if( fileBrowser )
         {
-            url.appendArg( "path", fileBrowser->currentDir() );
+            url.setArg( "path", fileBrowser->currentDir() );
             name = i18n( "Files (%1)", fileBrowser->currentDir() );
         }
     }
@@ -172,7 +172,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
             }
             else
             {
-                url.appendArg( "levels", "album" );
+                url.setArg( "levels", "album" );
 
                 QString artistName;
                 if ( album->albumArtist() )
@@ -183,7 +183,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
                     filter += ( " AND artist:\"" + artistName + "\"" );
             }
 
-            url.appendArg( "filter", filter );
+            url.setArg( "filter", filter );
 
             if ( !btc->collectionName().isEmpty() )
                 url.setName( i18n( "Album \"%1\" from %2", albumName, btc->collectionName() ) );
@@ -226,11 +226,11 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
             }
             else
             {
-                url.appendArg( "levels", "artist-album" );
+                url.setArg( "levels", "artist-album" );
                 filter = ( "artist:\"" + artistName + "\"" );
             }
 
-            url.appendArg( "filter", filter );
+            url.setArg( "filter", filter );
 
             if ( !btc->collectionName().isEmpty() )
                 url.setName( i18n( "Artist \"%1\" from %2", artistName, btc->collectionName() ) );

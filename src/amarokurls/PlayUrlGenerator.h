@@ -26,7 +26,7 @@
 class AmarokUrl;
 
 /**
- * A class used to generate play urls.
+ * A class used to generate and modify amarok://play/ urls.
  *
  * The format of a 'play' amarokurl is:
  * amarokurl://play/<Base 64 Encoded playableUrl() of the track>/<integer seconds>
@@ -39,6 +39,15 @@ public:
 
     AmarokUrl createCurrentTrackBookmark();
     AmarokUrl createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds, QString name = QString() );
+
+    /**
+     * Updates the position of the bookmark named @param name to @param newMiliseconds
+     * for the track @param track.
+     *
+     * The name should be a valid bookmark name and should include the trailing "- mm:ss".
+     * Bookmark is renamed according to track title and new position, too.
+     */
+    void moveTrackBookmark( Meta::TrackPtr track, qint64 newMiliseconds, QString name );
 
     QString description();
     KIcon icon();

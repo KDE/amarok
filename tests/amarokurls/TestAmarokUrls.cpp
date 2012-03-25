@@ -46,8 +46,8 @@ TestAmarokUrls::testConstructUrl()
   
     url.setCommand( "navigate" );
     url.setPath( "collections" );
-    url.appendArg( "filter", "artist:\"Code Monkeys\"" );
-    url.appendArg( "levels", "artist-album" );
+    url.setArg( "filter", "artist:\"Code Monkeys\"" );
+    url.setArg( "levels", "artist-album" );
     
     QCOMPARE( url.command(), QString( "navigate" ) );
     QCOMPARE( url.path(), QString( "collections" ) );

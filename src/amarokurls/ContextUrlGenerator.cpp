@@ -51,7 +51,7 @@ ContextUrlGenerator::createContextBookmark()
     AmarokUrl url;
 
     url.setCommand( "context" );
-    url.appendArg( "applets", pluginNames.join( "," ) );
+    url.setArg( "applets", pluginNames.join( "," ) );
 
     url.setName( i18n( "Context: %1", appletNames.join( "," ) ) );
 

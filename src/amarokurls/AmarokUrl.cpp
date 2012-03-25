@@ -75,7 +75,7 @@ void AmarokUrl::initFromString( const QString & urlString )
             
             QStringList argParts = argument.split( '=' );
             debug() << "argument: " << argument << " unescaped: " << unescape( argParts.at( 1 ) );
-            appendArg( argParts.at( 0 ), unescape( argParts.at( 1 ) ) );
+            setArg( argParts.at( 0 ), unescape( argParts.at( 1 ) ) );
         }
     }
 
@@ -111,7 +111,7 @@ QMap<QString, QString> AmarokUrl::args() const
     return m_arguments;
 }
 
-void AmarokUrl::appendArg( const QString &name, const QString &value )
+void AmarokUrl::setArg( const QString &name, const QString &value )
 {
     m_arguments.insert( name, value );
 }

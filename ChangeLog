@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 Version 2.6-Beta 1
   FEATURES:
+    * Ability to move track position bookmarks by dragging; patch by
+      Jasneet Bhatti. (BR 214721)
     * Amarok can now remember whether and how to transcode tracks when
       transferring them to a particular collection. (BR 264681)
     * "Crop playlist" functionality implemented using drag & drop. (BR 267729, 211811)

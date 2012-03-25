@@ -44,7 +44,6 @@
 #include <QStyleOption>
 #include <QPainter>
 
-
 Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
     : QSlider( orientation, parent )
     , m_sliding( false )
@@ -356,7 +355,7 @@ void Amarok::TimeSlider::drawTriangle( const QString& name, int milliSeconds, bo
     // This mess converts the # of seconds into the pixel width value where the triangle should be drawn
     int x_pos = ( ( ( double ) milliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + s_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
-    BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name, showPopup );
+    BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name, width(), showPopup );
     connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );
     connect( tri, SIGNAL( focused( int ) ), SLOT( slotTriangleFocused( int ) ) );
     m_triangles << tri;

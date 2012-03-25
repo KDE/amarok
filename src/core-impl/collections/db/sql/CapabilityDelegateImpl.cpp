@@ -250,7 +250,7 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
                 AmarokUrl url;
                 url.setCommand( "navigate" );
                 url.setPath( "collections" );
-                url.appendArg( "filter", filters.join( QLatin1String(" AND ") ) );
+                url.setArg( "filter", filters.join( QLatin1String(" AND ") ) );
 
                 debug() << "running url: " << url.url();
                 url.run();
