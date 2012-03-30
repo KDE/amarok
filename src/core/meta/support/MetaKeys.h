@@ -61,9 +61,10 @@ namespace Meta
 
         private:
             QString m_trackName;
+            int m_discNumber;
+            int m_trackNumber;
             QString m_albumName;
             QString m_artistName;
-            //more?
 
             friend bool operator==( const TrackKey &k1, const TrackKey &k2 );
             friend uint qHash( const TrackKey &key );
@@ -74,6 +75,8 @@ namespace Meta
     operator==( const TrackKey &k1, const TrackKey &k2 )
     {
         return k1.m_trackName == k2.m_trackName &&
+            k1.m_discNumber == k2.m_discNumber &&
+            k1.m_trackNumber == k2.m_trackNumber &&
             k1.m_albumName == k2.m_albumName &&
             k1.m_artistName == k2.m_artistName;
     }
@@ -81,7 +84,8 @@ namespace Meta
     inline uint
     qHash( const TrackKey &key )
     {
-        return qHash( key.m_trackName ) + 17 * qHash( key.m_albumName ) + 31 * qHash( key.m_artistName );
+        return qHash( key.m_trackName ) + 17 * qHash( key.m_albumName ) +
+            31 * qHash( key.m_artistName ) + 13 * key.m_discNumber + 11 * key.m_trackNumber;
     }
 
     inline bool

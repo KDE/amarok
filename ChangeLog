@@ -47,6 +47,8 @@ Version 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Prevent merging tracks with same title but different track (disc) numbers;
+      patch by Alexey Neyman.
     * Prevent crash on very quick drag and release of tracks. (BR 295275)
     * Prevent occasional tag corruption on multi-byte UTF8 characters in tags.
     * Do not double-transcode tracks when importing from an audio CD. (BR 263775)
