@@ -48,6 +48,7 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     //common, unconditional actions
     m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
                                   this );
+    m_appendAction->setObjectName( "appendAction" );
     m_appendAction->setProperty( "popupdropper_svg_id", "append" );
     connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
 
@@ -55,6 +56,7 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
                                 i18nc( "Replace the currently loaded tracks with these",
                                        "&Replace Playlist" ),
                                 this );
+    m_loadAction->setObjectName( "loadAction" );
     m_loadAction->setProperty( "popupdropper_svg_id", "load" );
     connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
 

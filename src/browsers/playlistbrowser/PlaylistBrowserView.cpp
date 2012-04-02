@@ -292,7 +292,7 @@ void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent
 
     menu.exec( mapToGlobal( event->pos() ) );
 
-    //We keep the items that the actions need to be applied to in the actions private data.
+    //We keep the items that the action need to be applied to in the action's private data.
     //Clear the data from all actions now that the context menu has executed.
     foreach( QAction *action, actions )
         action->setData( QVariant() );
@@ -361,13 +361,16 @@ PlaylistBrowserNS::PlaylistBrowserView::slotActivated( const QModelIndex &idx )
     QActionList idxActions = model()->data( idx,
             PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
 
-    //The first action is usually "Add to Playlist"
-    if( !idxActions.isEmpty() )
-    {
-        idxActions.first()->trigger();
-        //always needs to be done after activation.
-        idxActions.first()->setData( QVariant() );
-    }
+    //The first action is by convention "Add to Playlist" (see PlaylistBrowserModel)
+    Q_ASSERT(!idxActions.isEmpty());
+    QAction *appendAction = idxActions.first();
+    Q_ASSERT(appendAction->objectName() == "appendAction" );
+    appendAction->trigger();
+
+    //We keep the items that the action need to be applied to in the action's private data.
+    //Clear the data from all actions now that the context menu has executed.
+    foreach( QAction *action, idxActions )
+        action->setData( QVariant() );
 }
 
 #include "PlaylistBrowserView.moc"
