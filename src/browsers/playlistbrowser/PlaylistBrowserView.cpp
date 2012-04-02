@@ -361,11 +361,14 @@ PlaylistBrowserNS::PlaylistBrowserView::slotActivated( const QModelIndex &idx )
     QActionList idxActions = model()->data( idx,
             PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
 
-    //The first action is by convention "Add to Playlist" (see PlaylistBrowserModel)
-    Q_ASSERT(!idxActions.isEmpty());
-    QAction *appendAction = idxActions.first();
-    Q_ASSERT(appendAction->objectName() == "appendAction" );
-    appendAction->trigger();
+    //empty actionlist is valid (ex. provider root items)
+    if( !idxActions.isEmpty() )
+    {
+        //The first action is by convention "Add to Playlist" (see PlaylistBrowserModel)
+        QAction *appendAction = idxActions.first();
+        Q_ASSERT(appendAction->objectName() == "appendAction" );
+        appendAction->trigger();
+    }
 
     //We keep the items that the action need to be applied to in the action's private data.
     //Clear the data from all actions now that the context menu has executed.
