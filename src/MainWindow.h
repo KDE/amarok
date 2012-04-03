@@ -140,6 +140,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void slotShowBookmarkManager() const;
         void slotShowEqualizer() const;
         void slotShowCoverManager() const;
+        void slotShowDiagnosticsDialog() const;
         void slotShowMenuBar();
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );

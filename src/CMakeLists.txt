@@ -680,6 +680,7 @@ set(amaroklib_LIB_SRCS
     databaseimporter/sqlbatch/SqlBatchImporterConfig.cpp
     dialogs/CollectionSetup.cpp
     dialogs/DatabaseImporterDialog.cpp
+    dialogs/DiagnosticDialog.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/EqualizerDialog.cpp
     dialogs/FilenameLayoutDialog.cpp

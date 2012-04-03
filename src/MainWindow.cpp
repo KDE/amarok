@@ -42,6 +42,7 @@
 #include "context/ContextDock.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverManager.h" // for actions
+#include "dialogs/DiagnosticDialog.h"
 #include "dialogs/EqualizerDialog.h"
 #include "likeback/LikeBack.h"
 #include "moodbar/MoodbarManager.h"
@@ -533,6 +534,13 @@ MainWindow::slotShowCoverManager() const //SLOT
     CoverManager::showOnce();
 }
 
+void
+MainWindow::slotShowDiagnosticsDialog() const
+{
+    DiagnosticDialog dialog( KGlobal::mainComponent().aboutData() );
+    dialog.exec();
+}
+
 void MainWindow::slotShowBookmarkManager() const
 {
     The::bookmarkManager()->showOnce();
@@ -938,6 +946,10 @@ MainWindow::createActions()
     ac->addAction( "extendedAbout", action );
     connect( action, SIGNAL( triggered() ), SLOT( showAbout() ) );
 
+    action = new KAction ( KIcon( "info-amarok" ), i18n( "&Diagnostics" ), this );
+    ac->addAction( "diagnosticDialog", action );
+    connect( action, SIGNAL( triggered() ), SLOT( slotShowDiagnosticsDialog() ) );
+
     action = new KAction( KIcon( "tools-report-bug" ), i18n("&Report Bug..."), this );
     ac->addAction( "reportBug", action );
     connect( action, SIGNAL( triggered() ), SLOT( showReportBug() ) );
@@ -1089,6 +1101,8 @@ MainWindow::createMenus()
                             Amarok::actionCollection()->action( "reportBug" ) );
     helpMenu->insertAction( helpMenu->actions().last(),
                             Amarok::actionCollection()->action( "extendedAbout" ) );
+    helpMenu->insertAction( helpMenu->actions().last(),
+                            Amarok::actionCollection()->action( "diagnosticDialog" ) );
     helpMenu->insertAction( helpMenu->actions().at( 4 ),
                             Amarok::actionCollection()->action( "likeBackSendComment" ) );
     helpMenu->insertAction( helpMenu->actions().at( 5 ),

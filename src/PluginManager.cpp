@@ -141,7 +141,7 @@ Plugins::PluginManager::checkPluginEnabledStates()
 }
 
 KPluginInfo::List
-Plugins::PluginManager::plugins( const QString &category )
+Plugins::PluginManager::plugins( const QString &category ) const
 {
     return m_pluginInfos.value( category );
 }

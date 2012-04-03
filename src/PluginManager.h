@@ -46,7 +46,7 @@ class AMAROK_EXPORT PluginManager : public QObject
 
         QList<PluginFactory*> factories( const QString &category ) const;
 
-        KPluginInfo::List plugins( const QString &category );
+        KPluginInfo::List plugins( const QString &category ) const;
 
         ServicePluginManager *servicePluginManager();
 
