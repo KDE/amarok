@@ -38,7 +38,9 @@ QStringList FileTypeSupport::s_fileTypeStrings = QStringList()
         << QLatin1String( "mpc" )
         << QLatin1String( "tta" )
         << QLatin1String( "wav" )
-        << QLatin1String( "wv" );
+        << QLatin1String( "wv" )
+        << QLatin1String( "m4a" )
+        << QLatin1String( "m4v" );
 
 
 QString
