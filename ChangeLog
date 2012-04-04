@@ -4,6 +4,9 @@ Amarok ChangeLog
 
 Version 2.6-Beta 1
   FEATURES:
+    * A diagnostic dialog reporting versions of Amarok, Qt, KDE and phonon libraries
+      as well as the used phonon backend and status of plugins and scripts.
+      Patch by Andrzej Hunt.
     * Ability to move track position bookmarks by dragging; patch by
       Jasneet Bhatti. (BR 214721)
     * Amarok can now remember whether and how to transcode tracks when

@@ -37,6 +37,7 @@ private:
 
 private slots:
     void slotCopyToClipboard() const;
+    void slotFinished();
 };
 
 

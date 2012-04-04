@@ -537,8 +537,8 @@ MainWindow::slotShowCoverManager() const //SLOT
 void
 MainWindow::slotShowDiagnosticsDialog() const
 {
-    DiagnosticDialog dialog( KGlobal::mainComponent().aboutData() );
-    dialog.exec();
+    DiagnosticDialog *dialog = new DiagnosticDialog( KGlobal::mainComponent().aboutData() );
+    dialog->show();
 }
 
 void MainWindow::slotShowBookmarkManager() const

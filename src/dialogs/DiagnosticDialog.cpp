@@ -32,7 +32,7 @@
 DiagnosticDialog::DiagnosticDialog( const KAboutData *aboutData, QWidget *parent )
         : KDialog( parent )
 {
-    if ( aboutData == 0 )
+    if( aboutData == 0 )
         aboutData = KGlobal::mainComponent().aboutData();
 
 
@@ -48,7 +48,8 @@ DiagnosticDialog::DiagnosticDialog( const KAboutData *aboutData, QWidget *parent
     setMainWidget( m_textBox );
     setInitialSize( QSize( 480, 460 ) );
 
-    connect( this, SIGNAL( user1Clicked() ), SLOT( slotCopyToClipboard() ) );
+    connect( this, SIGNAL(user1Clicked()), SLOT(slotCopyToClipboard()) );
+    connect( this, SIGNAL(finished()), SLOT(slotFinished()) );
 }
 
 DiagnosticDialog::~DiagnosticDialog()
@@ -72,7 +73,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     foreach( KPluginInfo aInfo, aScripts )
     {
         aScriptString = aScriptString % aInfo.name() % " " % aInfo.version() %
-                        ( aInfo.isPluginEnabled() ? " (running)" : " (stopped)" ) % "\n    ";
+                        ( aInfo.isPluginEnabled() ? " (running)" : " (stopped)" ) % "\n";
     }
 
 
@@ -87,7 +88,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     foreach( KPluginInfo aInfo, aPlugins )
     {
         aPluginString = aPluginString % aInfo.name() %          // " " % aInfo.version() %
-                        ( aInfo.isPluginEnabled() ? "  (enabled)" : " (disabled)" ) % "\n    ";
+                        ( aInfo.isPluginEnabled() ? "  (enabled)" : " (disabled)" ) % "\n";
     }
 
 
@@ -120,4 +121,9 @@ DiagnosticDialog::slotCopyToClipboard() const
 {
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText( m_textBox->toPlainText() );
+}
+
+void DiagnosticDialog::slotFinished()
+{
+    deleteLater();
 }
