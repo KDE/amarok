@@ -69,8 +69,8 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     connect( The::playlistManager(), SIGNAL(playlistUpdated( Playlists::PlaylistPtr, int )),
              SLOT(slotPlaylistUpdated( Playlists::PlaylistPtr, int )) );
 
-    connect( The::playlistManager(), SIGNAL(renamePlaylist( Playlists::PlaylistPtr )),
-             SLOT(slotRenamePlaylist( Playlists::PlaylistPtr )) );
+    connect( The::playlistManager(), SIGNAL(renamePlaylist(Playlists::PlaylistPtr)),
+             SLOT(slotRenamePlaylist(Playlists::PlaylistPtr)) );
 
     m_playlists = loadPlaylists();
 }

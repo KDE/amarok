@@ -31,8 +31,8 @@ PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, i
         : QtGroupingProxy( model, QModelIndex(), column )
         , m_playlistCategory( playlistCategory )
 {
-    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
-             SLOT(slotRenameIndex( const QModelIndex & )) );
+    connect( sourceModel(), SIGNAL(renameIndex(QModelIndex)),
+             SLOT(slotRenameIndex(QModelIndex)) );
 
     // we need this to track providers with no playlists
     connect( The::playlistManager(), SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)),
@@ -192,8 +192,8 @@ PlaylistsByProviderProxy::setSourceModel( QAbstractItemModel *model )
 
     QtGroupingProxy::setSourceModel( model );
 
-    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
-             SLOT(slotRenameIndex( const QModelIndex & )) );
+    connect( sourceModel(), SIGNAL(renameIndex(QModelIndex)),
+             SLOT(slotRenameIndex(QModelIndex)) );
 }
 
 void

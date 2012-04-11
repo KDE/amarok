@@ -73,13 +73,10 @@ PlaylistBrowserNS::PlaylistBrowserView::~PlaylistBrowserView()
 void
 PlaylistBrowserNS::PlaylistBrowserView::setModel( QAbstractItemModel *model )
 {
-    if( this->model() )
-        this->model()->disconnect();
-
+    disconnect( this->model(), 0, this, 0 );
     Amarok::PrettyTreeView::setModel( model );
 
-    connect( this->model(), SIGNAL(renameIndex( const QModelIndex & )),
-                 SLOT(edit( const QModelIndex &)) );
+    connect( this->model(), SIGNAL(renameIndex(QModelIndex)), SLOT(edit(QModelIndex)) );
 }
 
 void
