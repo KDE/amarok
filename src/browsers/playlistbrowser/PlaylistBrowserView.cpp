@@ -358,12 +358,12 @@ PlaylistBrowserNS::PlaylistBrowserView::slotActivated( const QModelIndex &idx )
     QActionList idxActions = model()->data( idx,
             PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
 
-    //empty actionlist is valid (ex. provider root items)
-    if( !idxActions.isEmpty() )
+    // empty actionlist is valid; If there is an "Add to Playlist" action, it is by
+    // convention first (see PlaylistBrowserModel). Special items (root nodes) might not
+    // have appendAction, do nothing for them.
+    if( !idxActions.isEmpty() && idxActions.first()->objectName() == "appendAction" )
     {
-        //The first action is by convention "Add to Playlist" (see PlaylistBrowserModel)
         QAction *appendAction = idxActions.first();
-        Q_ASSERT(appendAction->objectName() == "appendAction" );
         appendAction->trigger();
     }
 
