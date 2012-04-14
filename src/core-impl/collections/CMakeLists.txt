@@ -10,7 +10,7 @@ add_subdirectory( daap )
 # NOTE: disabled until ported to new framework
 add_subdirectory( audiocd )
 
-add_subdirectory( ipodcollection )
+#add_subdirectory( ipodcollection )
 add_subdirectory( mtpcollection )
 add_subdirectory( umscollection )
 add_subdirectory( db )
