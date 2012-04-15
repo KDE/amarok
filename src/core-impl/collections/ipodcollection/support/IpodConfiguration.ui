@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>IpodConfiguration</class>
+ <widget class="QWidget" name="IpodConfiguration">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>427</width>
+    <height>451</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>iPod device configuration</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="settingsGroupBox">
+     <property name="title">
+      <string>Settings</string>
+     </property>
+     <layout class="QFormLayout" name="settingsGroupBoxLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="nameLabel">
+        <property name="text">
+         <string>iPod name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="nameLineEdit"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="transcodeLabel">
+        <property name="text">
+         <string>Transcode:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="Transcoding::SelectConfigWidget" name="transcodeComboBox">
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="modelComboLabel">
+        <property name="text">
+         <string>Model:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="modelComboBox"/>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QLabel" name="initializeLabel">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string notr="true">&lt;b&gt;Warning: some rather long placeholder text.&lt;/b&gt; Also with explanation. Initializing iPod does something and something.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="initializeButton">
+          <property name="text">
+           <string>&amp;Initialize iPod</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="infoGroupBox">
+     <property name="title">
+      <string>Information</string>
+     </property>
+     <layout class="QFormLayout" name="infoGroupBoxLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="modelLabel">
+        <property name="text">
+         <string>Model:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="modelPlaceholer">
+        <property name="text">
+         <string notr="true">&lt;modelplaceholer&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="generationLabel">
+        <property name="text">
+         <string>Generation:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="generationPlaceholder">
+        <property name="text">
+         <string notr="true">&lt;generationplaceholer&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="videoLabel">
+        <property name="text">
+         <string>Video:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="videoPlaceholder">
+        <property name="text">
+         <string notr="true">&lt;videoplaceholder&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="albumArtworkLabel">
+        <property name="text">
+         <string>Album artwork:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="albumArtworkPlaceholder">
+        <property name="text">
+         <string notr="true">&lt;artworkplaceholder&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="troubleshootingGroupBox">
+     <property name="title">
+      <string>Troubleshooting</string>
+     </property>
+     <layout class="QFormLayout" name="troubleshootingGroupBoxLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="sysInfoLabel">
+        <property name="text">
+         <string>SysInfo file:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="sysInfoPlaceholder">
+        <property name="text">
+         <string notr="true">&lt;placeholder&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="sysInfoExtendedLabel">
+        <property name="text">
+         <string>SysInfoExtended file:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="sysInfoExtendedPlaceholder">
+        <property name="text">
+         <string notr="true">&lt;placeholder&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="notesPlaceholder">
+        <property name="text">
+         <string notr="true">&lt;multi line notes placeholder&gt;</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+        <property name="textInteractionFlags">
+         <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Transcoding::SelectConfigWidget</class>
+   <extends>QComboBox</extends>
+   <header>transcoding/TranscodingSelectConfigWidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
