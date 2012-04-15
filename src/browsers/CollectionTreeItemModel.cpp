@@ -142,8 +142,7 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
     Q_ASSERT(item->type() == CollectionTreeItem::Collection);
 
     Collections::Collection *targetCollection = item->parentCollection();
-    Collections::CollectionLocation *targetLocation = targetCollection->location();
-    Q_ASSERT(targetLocation);
+    Q_ASSERT(targetCollection);
 
     //TODO: accept external drops.
     const AmarokMimeData *mimeData = qobject_cast<const AmarokMimeData *>( data );
@@ -175,15 +174,20 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
             sourceLocation = new Collections::FileCollectionLocation();
         }
 
+        // we need to create target collection location per each source colleciton location
+        // -- prepareSomething() takes ownership of the pointer.
+        Collections::CollectionLocation *targetLocation = targetCollection->location();
+        Q_ASSERT(targetLocation);
+
         if( action == Qt::CopyAction )
         {
             sourceLocation->prepareCopy( collectionTrackMap.values( sourceCollection ),
-                                        targetLocation );
+                                         targetLocation );
         }
         else if( action == Qt::MoveAction )
         {
             sourceLocation->prepareMove( collectionTrackMap.values( sourceCollection ),
-                                        targetLocation );
+                                         targetLocation );
         }
     }
 

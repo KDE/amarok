@@ -155,7 +155,17 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
         void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
+        /**
+           Schedule copying of @param tracks to collection location @param destination.
+           This method takes ownership of the @param destination, you may not reference
+           or delete it after this call. This method returns immediately and the actual
+           copy is performed in the event loop and/or another thread.
+        */
         void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
+        /**
+           convenience method for copying tracks based on QueryMaker restults,
+           @see prepareCopy( Meta::TrackList, CollectionLocation* )
+        */
         void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination );
 
         /**
@@ -163,7 +173,17 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
            @see prepareMove( Meta::TrackList, CollectionLocation* )
         */
         void prepareMove( Meta::TrackPtr track, CollectionLocation *destination );
+        /**
+           Schedule moving of @param tracks to collection location @param destination.
+           This method takes ownership of the @param destination, you may not reference
+           or delete it after this call. This method returns immediately and the actual
+           move is performed in the event loop and/or another thread.
+        */
         void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );
+        /**
+           convenience method for moving tracks based on QueryMaker restults,
+           @see prepareMove( Meta::TrackList, CollectionLocation* )
+        */
         void prepareMove( Collections::QueryMaker *qm, CollectionLocation *destination );
 
         /**
