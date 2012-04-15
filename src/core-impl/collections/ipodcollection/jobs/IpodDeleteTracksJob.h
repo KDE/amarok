@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,23 +14,33 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPODCONNECTIONASSISTANT_H
-#define IPODCONNECTIONASSISTANT_H
+#ifndef IPODDELETETRACKSJOB_H
+#define IPODDELETETRACKSJOB_H
 
-#include "ConnectionAssistant.h"
+#include "IpodCollection.h"
+#include "core/meta/Meta.h"
 
-#include <QObject>
+#include <ThreadWeaver/Job>
 
-class IpodConnectionAssistant : public ConnectionAssistant
+
+class IpodDeleteTracksJob : public ThreadWeaver::Job
 {
     Q_OBJECT
-    
-public:
-    virtual ~IpodConnectionAssistant();
 
-    virtual bool identify( const QString& udi );
-    virtual MediaDeviceInfo* deviceInfo( const QString& udi );
+    public:
+        explicit IpodDeleteTracksJob( const Meta::TrackList &sources,
+                                      const QWeakPointer<IpodCollection> &collection );
+        virtual void run();
 
+    signals:
+        // signals for progress operation:
+        void incrementProgress();
+        void endProgressOperation( QObject *obj );
+        void totalSteps( int steps ); // not used, defined to keep QObject::conect warning quiet
+
+    private:
+        Meta::TrackList m_sources;
+        QWeakPointer<IpodCollection> m_coll;
 };
 
-#endif // IPODCONNECTIONASSISTANT_H
+#endif // IPODDELETETRACKSJOB_H

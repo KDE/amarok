@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,41 +14,20 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_FILECOLLECTIONLOCATION_H
-#define AMAROK_FILECOLLECTIONLOCATION_H
+#include "IpodWriteDatabaseJob.h"
 
-#include "amarok_export.h"
-#include "core/collections/CollectionLocation.h"
 
-#include <QSet>
-#include <QMap>
-#include <QString>
-
-class KJob;
-
-namespace Collections {
-
-class AMAROK_EXPORT FileCollectionLocation : public CollectionLocation
+IpodWriteDatabaseJob::IpodWriteDatabaseJob( const QWeakPointer<IpodCollection> &collection )
+    : Job()
+    , m_coll( collection )
 {
-    Q_OBJECT
-    public:
-        FileCollectionLocation();
-        virtual ~FileCollectionLocation();
+}
 
-        virtual QString prettyLocation() const;
-        virtual bool isWritable() const;
-        virtual bool isOrganizable() const;
-        virtual void removeUrlsFromCollection( const Meta::TrackList& sources );
-        virtual void showRemoveDialog( const Meta::TrackList &tracks );
-    public slots:
-        void slotRemoveJobFinished( KJob *job );
-    private:
-        void startRemoveJobs();
+void
+IpodWriteDatabaseJob::run()
+{
+    if( m_coll )
+        m_coll.data()->writeDatabase();
+}
 
-        QMap<KJob*, Meta::TrackPtr> m_removejobs;
-        Meta::TrackList m_removetracks;
-};
-
-} //namespace Collections
-
-#endif
+#include "IpodWriteDatabaseJob.moc"

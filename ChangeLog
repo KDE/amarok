@@ -4,6 +4,11 @@ Amarok ChangeLog
 
 Version 2.6-Beta 1
   FEATURES:
+    * Small configuration dialog for iPods that shows troubleshooting information
+      and allows to change iPod name.
+    * Improved usability of iPod playlists: iPod collection automatically transfers
+      tracks dropped to iPod playlists to iPod when it is needed.
+    * Tracks can now be transcoded when transferring them to iPod. (BR 291722)
     * A diagnostic dialog reporting versions of Amarok, Qt, KDE and phonon libraries
       as well as the used phonon backend and status of plugins and scripts.
       Patch by Andrzej Hunt.
@@ -33,6 +38,18 @@ Version 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * optional libgpod dependency raised to 0.8.2 to support newest iPods.
+    * Amarok now prevents accidental unmounting of iPods in (small) time-frames
+      when iTunes database on iPod is not yet updated.
+    * Amarok detects when iPod is to be ejected from system and gracefully
+      disconnects it when it occurs.
+    * Hitting the eject button on iPod collection ejects it also from the system.
+    * iPod collection now detects whether iPod is safe to write and marks iPod
+      as read-only if not. This prevents "iPod shows 0 tracks" problem.
+    * Correct progress bar advancement when transferring tracks to iPod. (BR 139454)
+    * iPod Collection supports multiple simultaneous cancellable transfers.
+      (BR 219963)
+    * Improved dialog to initialize iPod. (BR 279797)
     * Load tracks in playlists asynchronously using proxy tracks. (BR 295199)
     * It is now possible to transcode tracks when moving them. (BR 280526)
     * Drag & drop of tracks and playlists to Saved Playlists works in all cases.
@@ -51,6 +68,10 @@ Version 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Detection and elimination of stale and orphaned iPod tracks now works
+      correctly; users are notified about these when iPod is plugged in.
+    * iPod playlists now work correctly. (BR 289304)
+    * Show correct error when transferring unsupported files to iPod. (BR 234876)
     * Fix m4a tracks transferred as mp4 videos to iPods. Affected users need to
       fully rescan their collection. (BR 268238)
     * Combination of double click and context menu actions caused multiple

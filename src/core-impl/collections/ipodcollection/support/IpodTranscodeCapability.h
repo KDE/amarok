@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,39 +14,36 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPODARTWORKCAPABILITY_H
-#define IPODARTWORKCAPABILITY_H
+#ifndef IPODTRANSCODECAPABILITY_H
+#define IPODTRANSCODECAPABILITY_H
 
-#include "ArtworkCapability.h"
-#include "../../MediaDeviceMeta.h"
+#include "IpodCollection.h"
+#include "core/capabilities/TranscodeCapability.h"
 
-namespace Meta {
-    class IpodHandler;
-}
 
-namespace Handler
+namespace Capabilities
 {
-    class IpodArtworkCapability : public ArtworkCapability
+
+    class IpodTranscodeCapability : public TranscodeCapability
     {
         Q_OBJECT
 
         public:
-            IpodArtworkCapability( Meta::IpodHandler *handler );
-            virtual ~IpodArtworkCapability();
+            /**
+             * @param deviceDirPath path to .../iPod_Control/Device directory
+             */
+            IpodTranscodeCapability( IpodCollection *coll, const QString &deviceDirPath );
+            virtual ~IpodTranscodeCapability();
 
-            virtual QImage getCover( const Meta::MediaDeviceTrackPtr &track );
-
-            virtual void setCover( Meta::MediaDeviceAlbumPtr album, const QImage &image );
-
-            virtual void setCoverPath( Meta::MediaDeviceAlbumPtr album, const QString &path );
-
-            virtual bool canUpdateCover() const;
-
-            static Type capabilityInterfaceType() { return Handler::Capability::Artwork; }
+            virtual QStringList playableFileTypes();
+            virtual Transcoding::Configuration savedConfiguration();
+            virtual void setSavedConfiguration( const Transcoding::Configuration &configuration );
 
         private:
-            Meta::IpodHandler *m_handler;
+            QWeakPointer<IpodCollection> m_coll;
+            QString m_configFilePath; // must be absolute
     };
-}
 
-#endif
+} // namespace capabilities
+
+#endif // IPODTRANSCODECAPABILITY_H

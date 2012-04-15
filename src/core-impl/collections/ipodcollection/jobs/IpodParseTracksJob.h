@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,54 +14,36 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "IpodDeviceInfo.h"
+#ifndef IPODPARSETRACKSJOB_H
+#define IPODPARSETRACKSJOB_H
 
-#include "MediaDeviceInfo.h"
+#include "IpodCollection.h"
 
-#include <QStringList>
+#include <ThreadWeaver/Job>
+
+#include <QWeakPointer>
 
 
-IpodDeviceInfo::IpodDeviceInfo( QString mountpoint, QString udi, bool wasMounted )
-: MediaDeviceInfo()
-, m_mountpoint( mountpoint )
-, m_wasMounted( wasMounted )
+class IpodParseTracksJob : public ThreadWeaver::Job
 {
-    m_udi = udi;
-}
+    Q_OBJECT
 
-IpodDeviceInfo::~IpodDeviceInfo()
-{
-}
+    public:
+        explicit IpodParseTracksJob( IpodCollection *collection );
+        virtual void run();
 
-QString
-IpodDeviceInfo::mountPoint() const
-{
-    return m_mountpoint;
-}
+    public slots:
+        void abort();
 
-void
-IpodDeviceInfo::setMountPoint( QString mp )
-{
-    m_mountpoint = mp;
-}
+    signals:
+        // signals for progress operation:
+        void incrementProgress();
+        void endProgressOperation( QObject *obj );
+        void totalSteps( int steps ); // not used, defined to keep QObject::conect warning quiet
 
-QString
-IpodDeviceInfo::deviceUid() const
-{
-    const QStringList components = m_udi.split( '_' );
-    if( components.count() >= 2 )
-    {
-        QString uid = components[components.count()-2];
-        if( uid.length() == 40 )
-            return uid;
-    }
-    return QString();
-}
+    private:
+        QWeakPointer<IpodCollection> m_coll;
+        bool m_aborted;
+};
 
-bool
-IpodDeviceInfo::wasMounted() const
-{
-    return m_wasMounted;
-}
-
-#include "IpodDeviceInfo.moc"
+#endif // IPODPARSETRACKSJOB_H

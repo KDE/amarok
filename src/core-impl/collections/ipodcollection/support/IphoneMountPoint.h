@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,41 +14,40 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_FILECOLLECTIONLOCATION_H
-#define AMAROK_FILECOLLECTIONLOCATION_H
+#ifndef IPHONEMOUNTPOINT_H
+#define IPHONEMOUNTPOINT_H
 
-#include "amarok_export.h"
-#include "core/collections/CollectionLocation.h"
-
-#include <QSet>
-#include <QMap>
 #include <QString>
 
-class KJob;
 
-namespace Collections {
-
-class AMAROK_EXPORT FileCollectionLocation : public CollectionLocation
+/**
+ * An automatic iPhone/iPad mountpoint that tries to mount the device using ifuse in
+ * constructor and to unmount it in destructor.
+ */
+class IphoneMountPoint
 {
-    Q_OBJECT
     public:
-        FileCollectionLocation();
-        virtual ~FileCollectionLocation();
+        /**
+         * Mount iPhone/iPad device by its 40-digit device UUID or mount any connected
+         * iPhone/iPad if @param uuid is empty.
+         */
+        IphoneMountPoint( const QString &uuid );
+        ~IphoneMountPoint();
 
-        virtual QString prettyLocation() const;
-        virtual bool isWritable() const;
-        virtual bool isOrganizable() const;
-        virtual void removeUrlsFromCollection( const Meta::TrackList& sources );
-        virtual void showRemoveDialog( const Meta::TrackList &tracks );
-    public slots:
-        void slotRemoveJobFinished( KJob *job );
+        /**
+         * Get location where iPhone was mounted to. If empty, mounting the iPhone failed.
+         */
+        QString mountPoint() const;
+
     private:
-        void startRemoveJobs();
+        Q_DISABLE_COPY(IphoneMountPoint)
 
-        QMap<KJob*, Meta::TrackPtr> m_removejobs;
-        Meta::TrackList m_removetracks;
+        /**
+         * Creates unique directory for mounting iPhone under temporary directory
+         */
+        QString constructMountpoint( const QString &uuid );
+
+        QString m_mountPoint;
 };
 
-} //namespace Collections
-
-#endif
+#endif // IPHONEMOUNTPOINT_H

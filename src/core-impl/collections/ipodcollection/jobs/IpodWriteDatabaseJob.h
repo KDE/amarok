@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,47 +14,24 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "IpodArtworkCapability.h"
-#include "IpodHandler.h"
+#ifndef IPODWRITEDATABASEJOB_H
+#define IPODWRITEDATABASEJOB_H
 
-using namespace Handler;
+#include "IpodCollection.h"
 
-IpodArtworkCapability::IpodArtworkCapability( Meta::IpodHandler *handler )
-    : ArtworkCapability( handler )
-    , m_handler( handler )
+#include <ThreadWeaver/Job>
+
+
+class IpodWriteDatabaseJob : public ThreadWeaver::Job
 {
-}
+    Q_OBJECT
 
-IpodArtworkCapability::~IpodArtworkCapability()
-{
-    // nothing to do here
-}
+    public:
+        explicit IpodWriteDatabaseJob( const QWeakPointer<IpodCollection> &collection );
+        virtual void run();
 
-QImage IpodArtworkCapability::getCover( const Meta::MediaDeviceTrackPtr &track )
-{
-    return m_handler->libGetCoverArt( track );
-}
+    private:
+        QWeakPointer<IpodCollection> m_coll;
+};
 
-void IpodArtworkCapability::setCover( Meta::MediaDeviceAlbumPtr album, const QImage &image )
-{
-    foreach( Meta::TrackPtr t, album->tracks() )
-    {
-        Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::dynamicCast( t );
-        m_handler->libSetCoverArt( track, image );
-    }
-}
-
-void IpodArtworkCapability::setCoverPath( Meta::MediaDeviceAlbumPtr album, const QString &path )
-{
-    foreach( Meta::TrackPtr t, album->tracks() )
-    {
-        Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::dynamicCast( t );
-        m_handler->libSetCoverArtPath( track, path );
-    }
-}
-
-bool IpodArtworkCapability::canUpdateCover() const
-{
-    return m_handler->isWritable() && m_handler->supportsArtwork();
-}
-
+#endif // IPODWRITEDATABASEJOB_H

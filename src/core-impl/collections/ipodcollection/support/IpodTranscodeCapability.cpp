@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,26 +14,45 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPOD_DEVICE_INFO_H
-#define IPOD_DEVICE_INFO_H
+#include "IpodTranscodeCapability.h"
 
-#include "MediaDeviceInfo.h"
 
-class IpodDeviceInfo : public MediaDeviceInfo
+using namespace Capabilities;
+
+IpodTranscodeCapability::IpodTranscodeCapability( IpodCollection *coll, const QString &deviceDirPath  )
+    : TranscodeCapability()
+    , m_coll( coll )
+    , m_configFilePath( deviceDirPath + QString( "/AmarokTranscodingPrefs" ) )
 {
-    Q_OBJECT
-    public:
-        IpodDeviceInfo( QString mountpoint, QString udi, bool wasMounted );
-        ~IpodDeviceInfo();
+}
 
-        QString mountPoint() const;
-        void setMountPoint( QString mp );
-        QString deviceUid() const;
-        bool wasMounted() const;
+IpodTranscodeCapability::~IpodTranscodeCapability()
+{
+    // nothing to do
+}
 
-    private:
-        QString m_mountpoint;
-        bool m_wasMounted;
-};
+QStringList
+IpodTranscodeCapability::playableFileTypes()
+{
+    if( m_coll )
+        return m_coll.data()->supportedFormats();
+    return QStringList();
+}
 
-#endif
+Transcoding::Configuration
+IpodTranscodeCapability::savedConfiguration()
+{
+    KConfig config( m_configFilePath, KConfig::SimpleConfig );
+    return Transcoding::Configuration::fromConfigGroup( config.group( 0 ) );
+}
+
+void
+IpodTranscodeCapability::setSavedConfiguration( const Transcoding::Configuration &configuration )
+{
+    KConfig config( m_configFilePath, KConfig::SimpleConfig );
+    KConfigGroup group = config.group( 0 );
+    configuration.saveToConfigGroup( group );
+    config.sync();
+}
+
+#include "IpodTranscodeCapability.moc"

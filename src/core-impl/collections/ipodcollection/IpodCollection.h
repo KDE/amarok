@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz                                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,55 +17,244 @@
 #ifndef IPODCOLLECTION_H
 #define IPODCOLLECTION_H
 
-extern "C" {
-  #include <gpod/itdb.h>
-}
+#include "ui_IpodConfiguration.h"
+#include "core/collections/Collection.h"
 
-#include "IpodHandler.h"
+#include <QMutex>
+#include <QSharedPointer>
+#include <QTimer>
 
-#include "MediaDeviceCollection.h"
-#include "core/support/Debug.h"
 
-#include <KIcon>
+namespace Collections { class MemoryCollection; }
+namespace IpodMeta { class Track; }
+class IphoneMountPoint;
+class IpodPlaylistProvider;
+class QTemporaryFile;
+struct _Itdb_iTunesDB;
+typedef _Itdb_iTunesDB Itdb_iTunesDB;
 
-#include <QtGlobal>
-
-class MediaDeviceInfo;
-
-namespace Collections {
-
-class IpodCollection;
-
-class IpodCollectionFactory : public MediaDeviceCollectionFactory<IpodCollection>
+class IpodCollection : public Collections::Collection, public Meta::Observer
 {
     Q_OBJECT
 
     public:
-        IpodCollectionFactory( QObject *parent, const QVariantList &args );
-        virtual ~IpodCollectionFactory();
-};
+        static const QString s_uidUrlProtocol;
 
-class IpodCollection : public MediaDeviceCollection
-{
-    Q_OBJECT
+        /**
+         * Creates an iPod collection on top of already-mounted filesystem.
+         *
+         * @param mountPoint actual iPod mount point to use, must be already mounted and
+         * accessible. When eject is requested, solid StorageAccess with this mount point
+         * is searched for to perform unmounting.
+         */
+        explicit IpodCollection( const QDir &mountPoint );
 
-    public:
-        // inherited methods
+        /**
+         * Creates an iPod collection on top of not-mounted iPhone/iPad by accessing it
+         * using libimobiledevice by its 40-digit device UUID. UUID may be empty which
+         * means "any connected iPhone/iPad".
+         */
+        explicit IpodCollection( const QString &uuid );
 
-        IpodCollection( MediaDeviceInfo* info );
         virtual ~IpodCollection();
 
+        // TrackProvider methods:
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
+        // CollectionBase methods:
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+
+        // Collection methods:
+        virtual Collections::QueryMaker *queryMaker();
+
+        virtual QString uidUrlProtocol() const;
         virtual QString collectionId() const;
         virtual QString prettyName() const;
-        virtual KIcon icon() const { return KIcon("multimedia-player-apple-ipod"); };
+        virtual KIcon icon() const;
+
+        virtual bool hasCapacity() const;
+        virtual float usedCapacity() const;
+        virtual float totalCapacity() const;
+
+        virtual Collections::CollectionLocation *location();
+        virtual bool isWritable() const;
+        virtual bool isOrganizable() const;
+
+        // Observer methods:
+        virtual void metadataChanged( Meta::TrackPtr track );
+        // so that the compiler doesn't complain about hidden virtual functions:
+        using Meta::Observer::metadataChanged;
+
+        // IpodCollection methods:
+        /**
+         * Get local mount point. Can return QString() in case no reasonamble mountpoint
+         * is available
+         */
+        QString mountPoint();
+
+        /**
+         * Return number of bytes that should be kept free in iPod for database operations.
+         * CollectionLocation should try hard not to occupy this safety margin.
+         */
+        float capacityMargin() const;
+
+        /**
+         * Return a list of file formats (compatible with Meta::Track::type()) current iPod
+         * is able to play.
+         */
+        QStringList supportedFormats() const;
+
+        /**
+         * Return pointer to playlist provider associated with this iPod. May be null in
+         * special cases (iPod not yet initialised etc.)
+         */
+        Playlists::UserPlaylistProvider *playlistProvider() const;
+
+        Meta::TrackPtr trackForUidUrl( const QString &uidUrl );
+
+    signals:
+        /**
+         * Start a count-down that emits updated() signal after it expires.
+         * Resets the timer to original timeout if already running. This is to ensure
+         * that we emit update() max. once per <timeout> for batch updates.
+         *
+         * Timers can only be started from "their" thread so use signals & slots for that.
+         */
+        void startUpdateTimer();
+
+        /**
+         * Start a count-down that initiates iTunes database wrtiging after it expires.
+         * Resets the timer to original timeout if already running. This is to ensure
+         * that we dont write the database all the time for batch updates.
+         *
+         * Timers can only be started from "their" thread so use signals & slots for that.
+         */
+        void startWriteDatabaseTimer();
+
+    public slots:
+        /**
+         * Destroy the collection, try to write back iTunes database (if dirty)
+         */
+        void slotDestroy();
+
+        /**
+         * Destroy the collection, write back iTunes db (if dirty) and try to eject the
+         * iPod from system
+         */
+        void slotEject();
+
+        /**
+         * Shows the configuration dialog in a non-modal window. If m_itdb is null, shows
+         * some info and a button to try to initialize iPod.
+         */
+        void slotShowConfigureDialog( const QString &errorMessage = QString() );
+
+    private slots:
+        /**
+         * Tries to initialize iPod, read the database, add tracks. (Re)shows the
+         * configuration dialog with info about initialization.
+         */
+        void slotInitialize();
+
+        /**
+         * Sets iPod name to the name in configure dialog.
+         */
+        void slotApplyConfiguration();
+
+        /**
+         * Starts a timer that emits updated() signal after 2 seconds.
+         */
+        void slotStartUpdateTimer();
+
+        /**
+         * Starts a timer that initiates iTunes database writing after 30 seconds.
+         */
+        void slotStartWriteDatabaseTimer();
+
+        /**
+         * Enqueues a job in a thread that writes iTunes database back to iPod. Should
+         * only be called from m_writeDatabaseTimer's timeout() signal. (with exception
+         * when IpodCollection is about to destroy itself)
+         */
+        void slotInitiateDatabaseWrite();
+
+        /**
+         * Tries to unmount underlying solid device. You must try to write database before
+         * calling this. Emits remove() before returning.
+         */
+        void slotPerformTeardownAndRemove();
 
     private:
+        friend class IpodCopyTracksJob;
+        friend class IpodDeleteTracksJob;
+        friend class IpodParseTracksJob;
+        friend class IpodWriteDatabaseJob;
+        friend class IpodPlaylistProvider;
+
+        static const QStringList s_audioFileTypes;
+        static const QStringList s_videoFileTypes;
+        static const QStringList s_audioVideoFileTypes;
+
+        /**
+         * In-fact construcor used to share code between different constructors.
+         */
+        void init();
+
+        // method for IpodParseTracksJob and IpodCopyTracksJob:
+        /**
+         * Add an iPod track to the collection.
+         *
+         * This method adds it to the collection, master playlist (if not already there)
+         * etc. The file must be already physically copied to iPod. (Re)Sets track's
+         * collection to this collection. Takes ownership of the track (passes it to
+         * KSharedPtr)
+         *
+         * This method is thread-safe.
+         *
+         * @return pointer to newly added track if successful, null pointer otherwise
+         */
+        Meta::TrackPtr addTrack( IpodMeta::Track *track );
+
+        // method for IpodDeleteTracksJob:
+        /**
+         * Removes a track from iPod collection. Does not delete the file physically,
+         * caller must do it after calling this method.
+         *
+         * @param track a track from associated MemoryCollection to delete. Accepts also
+         * underlying IpodMeta::Track, this is treated as if MemoryMeta::Track track
+         * proxy it was passed.
+         *
+         * This method is thread-safe.
+         */
+        void removeTrack( const Meta::TrackPtr &track );
+
+        // method for IpodWriteDatabaseJob and destructor:
+        /**
+         * Calls itdb_write() directly. Logs a message about success/failure in Amarok
+         * interface.
+         */
+        bool writeDatabase();
+
+        KDialog *m_configureDialog;
+        Ui::IpodConfiguration m_configureDialogUi;
+        QSharedPointer<Collections::MemoryCollection> m_mc;
+        /**
+         * pointer to libgpod iTunes database. If null, this collection is invalid
+         * (not yet initialised). Can only be changed with m_itdbMutex hold.
+         */
+        Itdb_iTunesDB *m_itdb;
+        QMutex m_itdbMutex;
+        QTimer m_updateTimer;
+        QTimer m_writeDatabaseTimer;
+        QTemporaryFile *m_preventUnmountTempFile;
         QString m_mountPoint;
+        IphoneMountPoint *m_iphoneAutoMountpoint;
+        QString m_prettyName;
+        IpodPlaylistProvider *m_playlistProvider;
+        QAction *m_configureAction;
+        QAction *m_ejectAction;
 };
 
-} //namespace Collections
-
-#endif
+#endif // IPODCOLLECTION_H
