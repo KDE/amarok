@@ -67,9 +67,9 @@ Optional
     * iPod support requires:
       * libgpod 0.8.2 (or newer)
         http://www.gtkpod.org/libgpod/
-      * GDKPixBuf 2.0 (or newer)
-        (For optional artwork support)
-        http://library.gnome.org/devel/gdk-pixbuf/stable/
+      * optional iPod album artwork support requires:
+        * libgpod built with GDKPixBuf support enabled
+        * GDKPixBuf 2.0 (or newer) itself
 
     * libmtp 1.0.0 (or newer)
       (MTP device support)
