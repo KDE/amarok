@@ -25,7 +25,7 @@
 #include "core-impl/collections/support/FileCollectionLocation.h"
 #include "core-impl/meta/file/File.h"
 
-#include <glib/glist.h>
+#include <glib.h>
 #include <gpod/itdb.h>
 
 

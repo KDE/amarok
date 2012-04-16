@@ -24,7 +24,7 @@
 
 #include <QReadWriteLock>
 
-#include <glib/gtypes.h>
+#include <glib.h>
 #include <glibconfig.h>
 
 
