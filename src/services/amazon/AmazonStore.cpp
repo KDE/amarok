@@ -284,7 +284,7 @@ AmazonStore::newSearchRequest( const QString request )
         if( !(KCM.exec() == QDialog::Accepted) )
             return;
     }
-    else if( AmazonConfig::instance()->country() == QLatin1String( "none" ) )
+    else if( AmazonConfig::instance()->country() == QLatin1String( "none" ) && m_itemView->isVisible() ) // do not show the message on startup, if the service is not visible
     {
         // user explicitly said we are in a not supported country
         Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Please select a valid country in the settings to make the store work." ) );
