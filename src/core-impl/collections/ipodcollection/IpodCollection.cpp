@@ -108,8 +108,8 @@ void IpodCollection::init()
     m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
     connect( m_ejectAction, SIGNAL(triggered()), SLOT(slotEject()) );
 
-    QString parseErrrorMessage;
-    m_itdb = IpodDeviceHelper::parseItdb( m_mountPoint, parseErrrorMessage );
+    QString parseErrorMessage;
+    m_itdb = IpodDeviceHelper::parseItdb( m_mountPoint, parseErrorMessage );
     m_prettyName = IpodDeviceHelper::collectionName( m_itdb ); // allows null m_itdb
 
     // provider needs to be up before IpodParseTracksJob is started
@@ -125,7 +125,7 @@ void IpodCollection::init()
         ThreadWeaver::Weaver::instance()->enqueue( job );
     }
     else
-        slotShowConfigureDialog( parseErrrorMessage ); // shows error message and allows initializing
+        slotShowConfigureDialog( parseErrorMessage ); // shows error message and allows initializing
 }
 
 IpodCollection::~IpodCollection()
