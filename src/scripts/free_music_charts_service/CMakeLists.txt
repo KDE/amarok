@@ -1,6 +1,4 @@
 install( FILES
-    COPYING
-    README
     main.js
     script.spec
     FMCIcon.png
