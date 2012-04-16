@@ -172,24 +172,17 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             MetaProxy::Track *proxyTrack;
             line = line.replace( "\\", "/" );
 
-            // KUrl::isRelativeUrl() expects absolute URLs to start with a protocol, so prepend it if missing
-            QString url = line;
-            if( url.startsWith( '/' ) )
-                url.prepend( "file://" );
-            // Won't be relative if it begins with a /
-            // Also won't be windows url, so no need to worry about swapping \ for /
-            if( KUrl::isRelativeUrl( url ) )
+            // KUrl's constructor handles detection of local file paths without
+            // file:// etc for us
+            KUrl url ( line );
+            if( url.isRelative() )
             {
-                //Replace \ with / for windows playlists
-                line.replace('\\','/');
-                KUrl kurl( directory );
-                kurl.addPath( line ); // adds directory separator if required
-                kurl.cleanPath();
-
-                url = kurl.url();
+                url = KUrl( directory );
+                url.addPath( line ); // adds directory separator if required
+                url.cleanPath();
             }
 
-            proxyTrack = new MetaProxy::Track( KUrl( url ) );
+            proxyTrack = new MetaProxy::Track( url );
             QString artist = extinfTitle.section( " - ", 0, 0 );
             QString title = extinfTitle.section( " - ", 1, 1 );
             //if title and artist are saved such as in M3UPlaylist::save()
@@ -258,7 +251,8 @@ M3UPlaylist::save( const KUrl &location, bool relative )
             {
                 const QFileInfo fi( file );
                 QString relativePath = KUrl::relativePath( fi.path(), url.path() );
-                relativePath.remove( 0, 2 ); //remove "./"
+                if( relativePath.startsWith( "./" ) )
+                    relativePath.remove( 0, 2 );
                 stream << relativePath;
             }
             else

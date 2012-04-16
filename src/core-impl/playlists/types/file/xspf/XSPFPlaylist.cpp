@@ -642,15 +642,16 @@ XSPFPlaylist::trackList()
             {
                 if( subSubNode.nodeName() == "location" )
                 {
-                    QString path = QUrl::fromPercentEncoding( subSubNode.firstChild().nodeValue().toAscii() );
+                    QByteArray path = subSubNode.firstChild().nodeValue().toAscii();
                     path.replace( '\\', '/' );
 
-                    KUrl url = path;
+                    KUrl url = KUrl::fromEncoded( path );
                     if( url.isRelative() )
                     {
                         m_relativePaths = true;
+                        const QString relativePath = url.path();
                         url = m_url.directory();
-                        url.addPath( path );
+                        url.addPath( relativePath );
                         url.cleanPath();
                     }
 
@@ -897,7 +898,7 @@ XSPFPlaylist::trackLocation( Meta::TrackPtr &track )
         return track->uidUrl();
     
     if( !m_relativePaths || m_url.isEmpty() || !path.isLocalFile() || !m_url.isLocalFile() )
-        return path.url();
+        return path.toEncoded();
 
     QDir playlistDir( m_url.directory() );
     return QUrl::toPercentEncoding( playlistDir.relativeFilePath( path.path() ), "/" );

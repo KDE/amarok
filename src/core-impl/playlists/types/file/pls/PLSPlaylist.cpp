@@ -238,8 +238,10 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             KUrl url( tmp );
             if( url.isRelative() )
             {
-                url = m_url;
+                const QString dir = m_url.directory();
+                url = KUrl( dir );
                 url.addPath( tmp );
+                url.cleanPath();
             }
             proxyTrack = new MetaProxy::Track( url );
             m_tracks << Meta::TrackPtr( proxyTrack );
@@ -322,8 +324,10 @@ PLSPlaylist::save( const KUrl &location, bool relative )
         {
             if( relative )
             {
-                file = KUrl::relativePath( savePath.toLocalFile(),
+                file = KUrl::relativePath( savePath.directory(),
                                            playableUrl.toLocalFile() );
+                if( file.startsWith( "./" ) )
+                    file.remove( 0, 2 );
             }
             else
             {
