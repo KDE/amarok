@@ -83,7 +83,7 @@ IpodCollection::IpodCollection( const QString &uuid )
     m_mountPoint = m_iphoneAutoMountpoint->mountPoint();
     if( m_mountPoint.isEmpty() )
     {
-        KMessageBox::sorry( 0, i18n("Cannot conntect to iPhone or iPad. More "
+        KMessageBox::sorry( 0, i18n("Cannot connect to iPhone or iPad. More "
             "information is available in the Amarok debug log.") );
         return;
     }

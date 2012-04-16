@@ -357,7 +357,7 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
                       "%1 tracks successfully transferred, but transfer of some other tracks failed.",
                       successCount );
     else
-        text = i18n( "Trasfer of tracks failed." );
+        text = i18n( "Transfer of tracks failed." );
     QString details;
     int exceededingSafeCapacityCount = m_sourceTrackStatus.count( ExceededingSafeCapacity );
     if( exceededingSafeCapacityCount )
