@@ -1,3 +1,6 @@
+==1.6.0 ()==
+* no longer show a message on init, as Amarok now inits services on startup
+
 ==1.5.0 (2012-03-23)==
 * show a link to search for this artist in the integrated Amazon MP3 Music Store
 * Amazon integration requires Amarok 2.5 or later to work

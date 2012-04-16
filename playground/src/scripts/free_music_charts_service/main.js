@@ -180,7 +180,6 @@ function onPopulate( level, callbackData, filter ) {
     if( shows.length() == 0 ) { // we have to fetch the xml
       try {
         Amarok.debug( "fetching fmc xml..." );
-        Amarok.Window.Statusbar.longMessage( "<b>Free Music Charts</b><br/><br/>Fetching charts.<br/>This might take some seconds, depending on the speed of your internet connection..." );
         a = new Downloader( xmlUrl, fmcShowsXmlParser );
       }
       catch( err ) {
