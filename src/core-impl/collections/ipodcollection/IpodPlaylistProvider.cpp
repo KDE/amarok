@@ -379,7 +379,7 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
     }
 
     QString failedText = failed ? i18np("Failed to process one track. (more info about "
-        "it is in the Amarok debugging log)", "Failed to process %4 tracks. (more info "
+        "it is in the Amarok debugging log)", "Failed to process %1 tracks. (more info "
         "about these is in the Amarok debugging log)", failed ) : QString();
     QString text = i18nc( "Infrequently displayed message, don't bother with singlar "
         "forms. %1 to %3 are numbers, %4 is the 'Failed to process ...' sentence or an "
