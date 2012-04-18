@@ -2,12 +2,15 @@
 Type=Service
 Icon=multimedia-player-apple-ipod
 Name=iPod, iPad & iPhone Collection
+Name[cs]=Kolekce pro iPod, iPad & iPhone
+Name[es]=Colección de iPod, iPad e iPhone
 Name[nl]=iPod, iPad & iPhone verzameling
 Name[pt]=Colecção do iPod, iPad & iPhone
 Name[sv]=Samling på iPod, iPad och iPhone
 Name[uk]=Збірка на iPod, iPad і iPhone
 Name[x-test]=xxiPod, iPad & iPhone Collectionxx
 Comment=Plugin to use iPod-like devices as collections in Amarok
+Comment[es]=Complemento para dispositivos similares a iPod en Amarok
 Comment[nl]=Plugin voor gebruik van iPod-achtige apparaten als verzamelingen in Amarok
 Comment[pt]=Um 'plugin' para usar dispositivos compatíveis com o iPod como colecções do Amarok
 Comment[sv]=Insticksprogram för att använda iPod-liknande enheter som samlingar i Amarok
