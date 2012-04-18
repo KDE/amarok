@@ -22,6 +22,12 @@
 #include <QStringList>
 #include <QString>
 
+#ifndef UTILITIES_BUILD
+    #include "amarok_export.h"
+#else
+    #define AMAROK_EXPORT
+#endif
+
 namespace Amarok
 {
 
@@ -44,7 +50,7 @@ enum FileType
 };
 
 
-class FileTypeSupport
+class AMAROK_EXPORT FileTypeSupport
 {
 public:
     static QString toString( Amarok::FileType ft );
