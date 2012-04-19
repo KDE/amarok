@@ -193,8 +193,10 @@ IpodCollection::createCapabilityInterface( Capabilities::Capability::Type type )
         case Capabilities::Capability::Actions:
         {
             QList<QAction *> actions;
-            actions << m_configureAction;
-            actions << m_ejectAction;
+            if( m_configureAction )
+                actions << m_configureAction;
+            if( m_ejectAction )
+                actions << m_ejectAction;
             return new Capabilities::ActionsCapability( actions );
         }
         case Capabilities::Capability::Transcode:
