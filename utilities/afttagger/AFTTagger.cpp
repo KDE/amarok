@@ -88,7 +88,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
         m_textStream.flush();
         std::string response;
         std::cin >> response;
-        cin.get();
+        std::cin.get();
 
         if( response != "y" && response != "Y")
         {
