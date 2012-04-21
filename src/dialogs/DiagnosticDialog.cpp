@@ -25,6 +25,7 @@
 #include <kglobal.h>
 #include "kplugininfo.h"
 #include <Phonon/Global>
+#include <phonon/pulsesupport.h>
 
 #include <QClipboard>
 
@@ -95,14 +96,16 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     const KService::Ptr aPhononBackend =
         KServiceTypeTrader::self()->preferredService( "PhononBackend" );
 
+    const bool hasPulse = Phonon::PulseSupport::getInstance()->isActive();
+    const QString pulse = hasPulse ? i18nc("Usage", "Yes") : i18nc("Usage", "No");
+
     return i18n(
                "%1-Diagnostics\n\n%1 Version: %2\n"
                "KDE Version: %3\n"
                "Qt Version: %4\n"
                "Phonon Version: %5\n"
-               "Phonon Backend: %6 (%7)\n\n"
-               "Amarok Scripts:\n    %8\n"
-               "Amarok Plugins:\n    %9\n",
+               "Phonon Backend: %6 (%7)\n"
+               "PulseAudio: %8\n\n",
 
                aboutData->programName(), aboutData->version(),      // Amarok
                KDE::versionString(),                                // KDE
@@ -111,6 +114,10 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
                aPhononBackend.data()->name(),
                aPhononBackend.data()->property( "X-KDE-PhononBackendInfo-Version",
                                                 QVariant::String).toString(), // & Backend
+               pulse                                                // PulseAudio
+           ) + i18n(
+               "Amarok Scripts:\n    %1\n"
+               "Amarok Plugins:\n    %2\n",
                aScriptString, aPluginString
            );
 

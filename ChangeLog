@@ -38,6 +38,7 @@ Version 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * PulseAudio status in diagnostic dialog.
     * optional libgpod dependency raised to 0.8.2 to support newest iPods.
     * Amarok now prevents accidental unmounting of iPods in (small) time-frames
       when iTunes database on iPod is not yet updated.
