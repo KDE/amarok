@@ -212,6 +212,9 @@ if( WITH_PLAYER )
     add_subdirectory( src )
     add_subdirectory( external )
 
+    # Also display taglib in the feature log
+    macro_log_feature( TAGLIB_FOUND "taglib" "Support for Audio metadata." "http://developer.kde.org/~wheeler/taglib.html" FALSE "" "STRONGLY RECOMMENDED" )
+
     macro_display_feature_log()
 
     #Do not remove or modify these.  The release script substitutes in for these
