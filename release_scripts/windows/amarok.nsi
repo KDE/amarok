@@ -13,6 +13,11 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+ 
+/*
+This script requires the Unicode NSIS framework http://www.scratchpaper.com/
+You will also need to install http://nsis.sourceforge.net/Nsis7z_plug-in
+*/
 
 ; registry stuff
 !define regkey "Software\${company}\Amarok"
