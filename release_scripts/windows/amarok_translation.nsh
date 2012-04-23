@@ -56,24 +56,51 @@
 ; !insertmacro MUI_LANGUAGE "Afrikaans"
 ; !insertmacro MUI_LANGUAGE "Catalan"
 ; !insertmacro MUI_LANGUAGE "Esperanto"
+
+!insertmacro MUI_RESERVEFILE_LANGDLL
   
-  
- 
+; all required strings
+;################################
+; LangString PAGE_LICENSE_HEADER_TEXT ${LANG_
+; LangString PAGE_LICENSE_SUBTEXT ${LANG_
+; LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_
+; LangString SECTION_LANGUAGES ${LANG_
+; LangString DESC_SECTION_AMAROK ${LANG_
+; LangString DESC_SECTION_LANGUAGES ${LANG_
+; LangString SECTION_LANGUAGES_ar ${LANG_
+; LangString DESC_SECTION_LANGUAGES_ar ${LANG_
+; LangString SECTION_LANGUAGES_ca ${LANG_
+; LangString DESC_SECTION_LANGUAGES_ca ${LANG_
+; LangString SECTION_LANGUAGES_de ${LANG_
+; LangString DESC_SECTION_LANGUAGES_de ${LANG_
+; LangString SECTION_LANGUAGES_en_GB ${LANG_
+; LangString DESC_SECTION_LANGUAGES_en_GB ${LANG_
+; LangString SECTION_LANGUAGES_fr ${LANG_
+; LangString DESC_SECTION_LANGUAGES_fr ${LANG_
+; LangString SECTION_LANGUAGES_it ${LANG_
+; LangString DESC_SECTION_LANGUAGES_it ${LANG_
+;################################
+
   
 ;English
 LangString PAGE_LICENSE_HEADER_TEXT ${LANG_ENGLISH} "License Review"
 LangString PAGE_LICENSE_SUBTEXT ${LANG_ENGLISH} "Please review the license to know your rights before installing Amarok"
-; LangString MUI_LICENSEPAGE_TEXT_BOTTOM  ${LANG_ENGLIS} $(PAGE_LICENSE_BOTTOM)
 LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_ENGLISH} "Next >"
 LangString SECTION_LANGUAGES ${LANG_ENGLISH} "Languages"
 LangString DESC_SECTION_AMAROK ${LANG_ENGLISH} "Installs the required program elements"
-LangString DESC_SECTION_LANGAUAGES ${LANG_ENGLISH} "You have to be online to install aditional translations"
-LangString SECTION_LANGUAGEES_DE ${LANG_ENGLISH} "German"
-LangString DESC_SECTION_LANGAUAGES_DE ${LANG_ENGLISH} "The German translations package"
-LangString SECTION_LANGUAGEES_EN_GB ${LANG_ENGLISH} "British English"
-LangString DESC_SECTION_LANGAUAGES_EN_GB ${LANG_ENGLISH} "The English translations package"
-LangString SECTION_LANGUAGEES_IT ${LANG_ENGLISH} "Italian"
-LangString DESC_SECTION_LANGAUAGES_IT ${LANG_ENGLISH} "The itallian translation package"
+LangString DESC_SECTION_LANGUAGES ${LANG_ENGLISH} "You have to be online to install aditional translations"
+LangString SECTION_LANGUAGES_ar ${LANG_ENGLISH} "Arabic"
+LangString DESC_SECTION_LANGUAGES_ar ${LANG_ENGLISH} "The Arabic translation package"
+LangString SECTION_LANGUAGES_ca ${LANG_ENGLISH} "Catalan"
+LangString DESC_SECTION_LANGUAGES_ca ${LANG_ENGLISH} "The Catalan translation package"
+LangString SECTION_LANGUAGES_de ${LANG_ENGLISH} "German"
+LangString DESC_SECTION_LANGUAGES_de ${LANG_ENGLISH} "The German translations package"
+LangString SECTION_LANGUAGES_en_GB ${LANG_ENGLISH} "British English"
+LangString DESC_SECTION_LANGUAGES_en_GB ${LANG_ENGLISH} "The English translations package"
+LangString SECTION_LANGUAGES_fr ${LANG_ENGLISH} "French"
+LangString DESC_SECTION_LANGUAGES_fr ${LANG_ENGLISH} "The French translation package"
+LangString SECTION_LANGUAGES_it ${LANG_ENGLISH} "Italian"
+LangString DESC_SECTION_LANGUAGES_it ${LANG_ENGLISH} "The Itallian translation package"
 
 ;German
 LangString PAGE_LICENSE_HEADER_TEXT ${LANG_GERMAN} "Lizens Hinweis"
@@ -81,11 +108,17 @@ LangString PAGE_LICENSE_SUBTEXT ${LANG_GERMAN} "Bitte lesen sie den Lizens Text 
 LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_GERMAN} "Weiter >"
 LangString DESC_SECTION_AMAROK ${LANG_GERMAN} "Installiert die benötigten Programm elemente"
 LangString SECTION_LANGUAGES ${LANG_GERMAN} "Sprachen"
-LangString DESC_SECTION_LANGAUAGES ${LANG_GERMAN} "Sie müssen online sein um zusäzlich sprachen zu installieren"
-LangString SECTION_LANGUAGEES_DE ${LANG_GERMAN} "Deutsch"
-LangString DESC_SECTION_LANGAUAGES_DE ${LANG_GERMAN} "Das deutsche sprach packet"
-LangString SECTION_LANGUAGEES_EN_GB ${LANG_GERMAN} "Britisches Englisch"
-LangString DESC_SECTION_LANGAUAGES_EN_GB ${LANG_GERMAN} "Das englische Sprachpacket"
-LangString SECTION_LANGUAGEES_IT ${LANG_GERMAN} "Italienisch"
-LangString DESC_SECTION_LANGAUAGES_IT ${LANG_GERMAN} "Das italienische Sprachpacket"
+LangString DESC_SECTION_LANGUAGES ${LANG_GERMAN} "Sie müssen online sein um zusäzlich sprachen zu installieren"
+LangString SECTION_LANGUAGES_ar ${LANG_GERMAN} "Arabisch"
+LangString DESC_SECTION_LANGUAGES_ar ${LANG_GERMAN} "Das Arabishe sprach packet"
+LangString SECTION_LANGUAGES_ca ${LANG_GERMAN} "Catalan"
+LangString DESC_SECTION_LANGUAGES_ca ${LANG_GERMAN} "Das catalan sprach packet"
+LangString SECTION_LANGUAGES_de ${LANG_GERMAN} "Deutsch"
+LangString DESC_SECTION_LANGUAGES_de ${LANG_GERMAN} "Das deutsche sprach packet"
+LangString SECTION_LANGUAGES_en_GB ${LANG_GERMAN} "Britisches Englisch"
+LangString DESC_SECTION_LANGUAGES_en_GB ${LANG_GERMAN} "Das britische Sprachpacket"
+LangString SECTION_LANGUAGES_fr ${LANG_GERMAN} "Französisch"
+LangString DESC_SECTION_LANGUAGES_fr ${LANG_GERMAN} "Das französische Sprachpacket"
+LangString SECTION_LANGUAGES_it ${LANG_GERMAN} "Italienisch"
+LangString DESC_SECTION_LANGUAGES_it ${LANG_GERMAN} "Das italienische Sprachpacket"
 

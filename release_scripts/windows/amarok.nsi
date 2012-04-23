@@ -1,18 +1,18 @@
- ; ****************************************************************************************
- ; * Copyright (c) 2012 Patrick von Reth <vonreth@kde.org>                                *
- ; *                                                                                      *
- ; * This program is free software; you can redistribute it and/or modify it under        *
- ; * the terms of the GNU General Public License as published by the Free Software        *
- ; * Foundation; either version 2 of the License, or (at your option) any later           *
- ; * version.                                                                             *
- ; *                                                                                      *
- ; * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- ; * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- ; * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- ; *                                                                                      *
- ; * You should have received a copy of the GNU General Public License along with         *
- ; * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ; ****************************************************************************************
+ /****************************************************************************************
+ * Copyright (c) 2012 Patrick von Reth <vonreth@kde.org>                                *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 ; registry stuff
 !define regkey "Software\${company}\Amarok"
@@ -51,7 +51,6 @@ OutFile "${setupname}"
  
 !include "MUI2.nsh"
 
-
 SetDateSave on
 SetDatablockOptimize on
 CRCCheck on
@@ -69,7 +68,6 @@ ShowInstDetails hide
 !insertmacro MUI_PAGE_WELCOME
 !define MUI_PAGE_HEADER_TEXT $(PAGE_LICENSE_HEADER_TEXT)
 !define MUI_PAGE_HEADER_SUBTEXT $(PAGE_LICENSE_SUBTEXT)
-; !define MUI_LICENSEPAGE_TEXT_BOTTOM $(PAGE_LICENSE_BOTTOM)
 !define MUI_LICENSEPAGE_TEXT_BOTTOM " "
 !define MUI_LICENSEPAGE_BUTTON $(PAGE_LICENSE_BUTTON_TEXT)
 !insertmacro MUI_PAGE_LICENSE "..\..\COPYING"
@@ -113,45 +111,39 @@ WriteUninstaller "${uninstaller}"
     CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Snorenotify.lnk" "$INSTDIR\bin\snorenotify.exe"
     CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\uninstall.exe"      
 !insertmacro MUI_STARTMENU_WRITE_END
+
+SetOutPath "$INSTDIR"
+ExecWait '"$INSTDIR\bin\update-mime-database.exe" "$INSTDIR\share\mime"'
+ExecWait '"$INSTDIR\bin\kbuildsycoca4.exe" "--noincremental"'
+
+WriteRegStr HKLM "${uninstkey}" "DisplayName" "Amarok (remove only)"
+WriteRegStr HKLM "${uninstkey}" "UninstallString" '"$INSTDIR\${uninstaller}"'
 SectionEnd
 
 
-Section ;registry
-  WriteRegStr HKLM "${uninstkey}" "DisplayName" "Amarok (remove only)"
-  WriteRegStr HKLM "${uninstkey}" "UninstallString" '"$INSTDIR\${uninstaller}"'
-
-SectionEnd
 
 
 
 !macro AMAROK_ADD_LANGUAGE_PACKAGE LANG_SUFFIX
-    SetOutPath "$INSTDIR"
-    DetailPrint "Downloading: http://winkde.org/~pvonreth/downloads/l10n/${kde-version}/kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z"
-    NSISdl::download "http://winkde.org/~pvonreth/downloads/l10n/${kde-version}/kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z" "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z"
-	Nsis7z::Extract "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z" 
-	Delete "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z"
+    Section /o "$(SECTION_LANGUAGES_${LANG_SUFFIX}) (${LANG_SUFFIX})" SECTION_LANGUAGES_${LANG_SUFFIX}
+        SetOutPath "$INSTDIR"
+        NSISdl::download "http://winkde.org/~pvonreth/downloads/l10n/${kde-version}/kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z" "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z"
+        Nsis7z::Extract "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z" 
+        Delete "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z"
+    SectionEnd
 !macroend
 
-SubSection $(SECTION_LANGUAGES) SECTION_LANGAUAGES
-Section /o "$(SECTION_LANGUAGEES_DE) (de)" SECTION_LANGAUAGES_DE
+SubSection $(SECTION_LANGUAGES) SECTION_LANGUAGES
+    !insertmacro AMAROK_ADD_LANGUAGE_PACKAGE ar
+    !insertmacro AMAROK_ADD_LANGUAGE_PACKAGE ca
     !insertmacro AMAROK_ADD_LANGUAGE_PACKAGE de
-SectionEnd
-Section /o "$(SECTION_LANGUAGEES_EN_GB) (en_GB)" SECTION_LANGAUAGES_EN_GB
     !insertmacro AMAROK_ADD_LANGUAGE_PACKAGE en_GB
-SectionEnd
-Section /o "$(SECTION_LANGUAGEES_IT) (it)" SECTION_LANGAUAGES_IT
+    !insertmacro AMAROK_ADD_LANGUAGE_PACKAGE fr
     !insertmacro AMAROK_ADD_LANGUAGE_PACKAGE it
-SectionEnd
 SubSectionEnd
 
 
 
-;post install
-Section
-SetOutPath "$INSTDIR"
-ExecWait '"$INSTDIR\bin\update-mime-database.exe" "$INSTDIR\share\mime"'
-ExecWait '"$INSTDIR\bin\kbuildsycoca4.exe" "--noincremental"'
-SectionEnd
  
 ; Uninstaller
 ; All section names prefixed by "Un" will be in the uninstaller
@@ -176,10 +168,13 @@ SectionEnd
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_AMAROK} $(DESC_SECTION_AMAROK)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_LANGAUAGES} $(DESC_SECTION_LANGAUAGES)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_LANGAUAGES_DE} $(DESC_SECTION_LANGAUAGES_DE)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_LANGAUAGES_EN_GB} $(DESC_SECTION_LANGAUAGES_EN_GB)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_LANGAUAGES_IT} $(DESC_SECTION_LANGAUAGES_IT)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_LANGUAGES} $(DESC_SECTION_LANGUAGES)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_LANGUAGES_ar} $(DESC_SECTION_LANGUAGES_ar)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_LANGUAGES_ca} $(DESC_SECTION_LANGUAGES_ca)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_LANGUAGES_de} $(DESC_SECTION_LANGUAGES_de)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_LANGUAGES_en_gb} $(DESC_SECTION_LANGUAGES_en_gb)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_LANGUAGES_fr} $(DESC_SECTION_LANGUAGES_fr)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SECTION_LANGUAGES_it} $(DESC_SECTION_LANGUAGES_it)  
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
@@ -189,7 +184,7 @@ SectionEnd
 
 
 ;installer Fcuntion
-Function  .onInit 
+Function .onInit
 
   !insertmacro MUI_LANGDLL_DISPLAY
 
