@@ -55,7 +55,9 @@ Caption "${productname}"
 OutFile "${setupname}"
  
 !include "MUI2.nsh"
-; alist of all supported language packages
+; all required LangStrings
+!include "amarok_translation.nsh"
+; a list of all supported language packages
 !include "languages.nsh"
 
 SetDateSave on
@@ -94,38 +96,34 @@ ShowInstDetails hide
  
 
 Section "Amarok" SECTION_AMAROK
-  SectionIn RO
-  ExecWait '"$INSTDIR\bin\kdeinit4.exe" "--shutdown"'
-  WriteRegStr HKLM "${regkey}" "Install_Dir" "$INSTDIR"
-  ; write uninstall strings
- 
-  SetOutPath $INSTDIR
- 
- 
-; package all files, recursively, preserving attributes
-; assume files are in the correct places
-
-File /a /r /x "*.nsi" /x "${setupname}" "${srcdir}\*.*" 
-
-WriteUninstaller "${uninstaller}"
-  
-    ;Create shortcuts
-
-!insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+    SectionIn RO
+    SetOutPath $INSTDIR
     SetShellVarContext all
-    CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Amarok.lnk" "$INSTDIR\bin\Amarok.exe"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Appearance Settings.lnk" "$INSTDIR\bin\kcmshell4.exe" "style" "$INSTDIR\bin\systemsettings.exe"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Snorenotify.lnk" "$INSTDIR\bin\snorenotify.exe"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\uninstall.exe"      
-!insertmacro MUI_STARTMENU_WRITE_END
+    
+    ExecWait '"$INSTDIR\bin\kdeinit4.exe" "--shutdown"'
+    WriteRegStr HKLM "${regkey}" "Install_Dir" "$INSTDIR"
+    WriteRegStr HKLM "${uninstkey}" "DisplayName" "Amarok (remove only)"
+    WriteRegStr HKLM "${uninstkey}" "UninstallString" '"$INSTDIR\${uninstaller}"'
 
-SetOutPath "$INSTDIR"
-ExecWait '"$INSTDIR\bin\update-mime-database.exe" "$INSTDIR\share\mime"'
-ExecWait '"$INSTDIR\bin\kbuildsycoca4.exe" "--noincremental"'
+    ; package all files, recursively, preserving attributes
+    ; assume files are in the correct places
 
-WriteRegStr HKLM "${uninstkey}" "DisplayName" "Amarok (remove only)"
-WriteRegStr HKLM "${uninstkey}" "UninstallString" '"$INSTDIR\${uninstaller}"'
+    File /a /r /x "*.nsi" /x "${setupname}" "${srcdir}\*.*" 
+
+    WriteUninstaller "${uninstaller}"
+
+    ;Create shortcuts
+    !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+        CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
+        CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Amarok.lnk" "$INSTDIR\bin\Amarok.exe"
+        CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Appearance Settings.lnk" "$INSTDIR\bin\kcmshell4.exe" "style" "$INSTDIR\bin\systemsettings.exe"
+        CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Snorenotify.lnk" "$INSTDIR\bin\snorenotify.exe"
+        CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\uninstall.exe"      
+    !insertmacro MUI_STARTMENU_WRITE_END
+
+
+    ExecWait '"$INSTDIR\bin\update-mime-database.exe" "$INSTDIR\share\mime"'
+    ExecWait '"$INSTDIR\bin\kbuildsycoca4.exe" "--noincremental"'
 SectionEnd
 
 !insertmacro AMAROK_LANGUAGE_PACKAGES
@@ -135,27 +133,26 @@ SectionEnd
  
  
 Section "Uninstall"
-SetShellVarContext all
-ExecWait '"$INSTDIR\bin\kdeinit4.exe" "--shutdown"'
+    SetShellVarContext all
+    ExecWait '"$INSTDIR\bin\kdeinit4.exe" "--shutdown"'
 
-DeleteRegKey HKLM "${uninstkey}"
-DeleteRegKey HKLM "${regkey}"
+    DeleteRegKey HKLM "${uninstkey}"
+    DeleteRegKey HKLM "${regkey}"
 
-!insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
+    !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
 
-RMDir /r "$SMPROGRAMS\$StartMenuFolder"
-RMDir /r "$INSTDIR"
-
+    RMDir /r "$SMPROGRAMS\$StartMenuFolder"
+    RMDir /r "$INSTDIR"
 SectionEnd
 
 ;initialize the translations
-!include "amarok_translation.nsh"
+!insertmacro AMAROK_TRANSLATIONS
 
 
 ;installer Fcuntion
 Function .onInit
 
-  !insertmacro MUI_LANGDLL_DISPLAY
+    !insertmacro MUI_LANGDLL_DISPLAY
 
 FunctionEnd
 
@@ -163,7 +160,7 @@ FunctionEnd
 
 Function un.onInit
 
-  !insertmacro MUI_UNGETLANGUAGE
+    !insertmacro MUI_UNGETLANGUAGE
   
 FunctionEnd
 

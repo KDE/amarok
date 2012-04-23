@@ -1,3 +1,4 @@
+!macro AMAROK_TRANSLATIONS
 ;Languages
 ; uncomment supported languages
 !insertmacro MUI_LANGUAGE "English" ;first language is the default language
@@ -75,5 +76,5 @@ LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_GERMAN} "Weiter >"
 LangString DESC_SECTION_AMAROK ${LANG_GERMAN} "Installiert die benötigten Programm elemente"
 LangString SECTION_LANGUAGES ${LANG_GERMAN} "Sprachen (Internet verbindung benötigt)"
 
-
+!macroend
 
