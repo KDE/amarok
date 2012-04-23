@@ -3,13 +3,16 @@
     Section /o "${LANG} (${LANG_SUFFIX})" SECTION_LANGUAGES_${LANG_SUFFIX}
         SetOutPath "$INSTDIR"
         NSISdl::download "http://winkde.org/~pvonreth/downloads/l10n/${kde-version}/kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z" "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z"
-        Nsis7z::Extract "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z" 
+        Nsis7z::ExtractWithDetails "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z" "Installing language ${LANG}..."
         Delete "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z"
     SectionEnd
 !macroend
 
 !macro AMAROK_LANGUAGE_PACKAGES
     SubSection $(SECTION_LANGUAGES) SECTION_LANGUAGES
+        Section  "Amarican English (en_US)"
+            SectionIn RO
+        SectionEnd
         !insertmacro AMAROK_ADD_LANGUAGE_PACKAGE "العربية" ar
         !insertmacro AMAROK_ADD_LANGUAGE_PACKAGE "български" bg
         !insertmacro AMAROK_ADD_LANGUAGE_PACKAGE "bosanski" bs

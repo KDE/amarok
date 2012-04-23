@@ -120,17 +120,18 @@ Section "Amarok" SECTION_AMAROK
         CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Snorenotify.lnk" "$INSTDIR\bin\snorenotify.exe"
         CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\uninstall.exe"      
     !insertmacro MUI_STARTMENU_WRITE_END
-
-
-    ExecWait '"$INSTDIR\bin\update-mime-database.exe" "$INSTDIR\share\mime"'
-    ExecWait '"$INSTDIR\bin\kbuildsycoca4.exe" "--noincremental"'
 SectionEnd
 
 !insertmacro AMAROK_LANGUAGE_PACKAGES
  
+
+Section
+    ExecWait '"$INSTDIR\bin\update-mime-database.exe" "$INSTDIR\share\mime"'
+    ExecWait '"$INSTDIR\bin\kbuildsycoca4.exe" "--noincremental"'
+SectionEnd
+
 ; Uninstaller
 ; All section names prefixed by "Un" will be in the uninstaller
- 
  
 Section "Uninstall"
     SetShellVarContext all
@@ -144,6 +145,7 @@ Section "Uninstall"
     RMDir /r "$SMPROGRAMS\$StartMenuFolder"
     RMDir /r "$INSTDIR"
 SectionEnd
+
 
 ;initialize the translations
 !insertmacro AMAROK_TRANSLATIONS
