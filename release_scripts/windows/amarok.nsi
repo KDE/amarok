@@ -116,8 +116,8 @@ Section "Amarok" SECTION_AMAROK
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
         CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
         CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Amarok.lnk" "$INSTDIR\bin\Amarok.exe"
-        CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Appearance Settings.lnk" "$INSTDIR\bin\kcmshell4.exe" "style" "$INSTDIR\bin\systemsettings.exe"
-        CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Language Settings.lnk" "$INSTDIR\bin\kcmshell4.exe" "language" "$INSTDIR\bin\systemsettings.exe"
+        CreateShortCut "$SMPROGRAMS\$StartMenuFolder\$(APPEARANCE_SETTINGS).lnk" "$INSTDIR\bin\kcmshell4.exe" "style" "$INSTDIR\bin\systemsettings.exe"
+        CreateShortCut "$SMPROGRAMS\$StartMenuFolder\$(LANGUAGE_SETTINGS).lnk" "$INSTDIR\bin\kcmshell4.exe" "language" "$INSTDIR\bin\systemsettings.exe"
         CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\uninstall.exe"      
     !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
