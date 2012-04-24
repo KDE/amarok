@@ -122,7 +122,7 @@ Section "Amarok" SECTION_AMAROK
     !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
-Section /o "Snore"
+Section /o "Snore" SECTION_SNORE
     SetOutPath "$INSTDIR"
     NSISdl::download "http://winkde.org/~pvonreth/downloads/snore/bin/snorenotify-0.3.7z" "$TEMP\snore.7z"
     Nsis7z::ExtractWithDetails "$TEMP\snore.7z" "Installing Snore..."
