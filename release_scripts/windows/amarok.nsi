@@ -117,12 +117,22 @@ Section "Amarok" SECTION_AMAROK
         CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
         CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Amarok.lnk" "$INSTDIR\bin\Amarok.exe"
         CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Appearance Settings.lnk" "$INSTDIR\bin\kcmshell4.exe" "style" "$INSTDIR\bin\systemsettings.exe"
-        CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Snorenotify.lnk" "$INSTDIR\bin\snorenotify.exe"
+        CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Language Settings.lnk" "$INSTDIR\bin\kcmshell4.exe" "language" "$INSTDIR\bin\systemsettings.exe"
         CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\uninstall.exe"      
     !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
-!insertmacro AMAROK_LANGUAGE_PACKAGES
+Section /o "Snore"
+    SetOutPath "$INSTDIR"
+    NSISdl::download "http://winkde.org/~pvonreth/downloads/snore/bin/snorenotify-0.3.7z" "$TEMP\snore.7z"
+    Nsis7z::ExtractWithDetails "$TEMP\snore.7z" "Installing Snore..."
+    Delete "$TEMP\snore.7z"
+    !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+        CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Snorenotify.lnk" "$INSTDIR\bin\snorenotify.exe"
+    !insertmacro MUI_STARTMENU_WRITE_END
+SectionEnd
+
+!insertmacro KDE_LANGUAGE_PACKAGES
  
 
 Section
