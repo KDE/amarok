@@ -72,12 +72,12 @@
 
 
     ;German
-    LangString PAGE_LICENSE_HEADER_TEXT ${LANG_GERMAN} "Lizens Hinweis"
-    LangString PAGE_LICENSE_SUBTEXT ${LANG_GERMAN} "Bitte lesen sie den Lizens Text bevor sie Amarok installieren, um ihre Rechte zu kennen";ouch needs some improvement
+    LangString PAGE_LICENSE_HEADER_TEXT ${LANG_GERMAN} "Lizenz-Hinweis"
+    LangString PAGE_LICENSE_SUBTEXT ${LANG_GERMAN} "Bitte lesen Sie den Lizenz-Text bevor Sie Amarok installieren, um ihre Rechte zu kennen";ouch needs some improvement
     LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_GERMAN} "Weiter >"
-    LangString DESC_SECTION_AMAROK ${LANG_GERMAN} "Installiert die benötigten Programm elemente"
-    LangString SECTION_LANGUAGES ${LANG_GERMAN} "Sprachen (Internet verbindung benötigt)"
-    LangString APPEARANCE_SETTINGS ${LANG_GERMAN} "Einstellungen zum  Erscheinungsbild"
+    LangString DESC_SECTION_AMAROK ${LANG_GERMAN} "Installiert die benötigten Programmelemente"
+    LangString SECTION_LANGUAGES ${LANG_GERMAN} "Sprachen (Internet-Verbindung benötigt)"
+    LangString APPEARANCE_SETTINGS ${LANG_GERMAN} "Einstellungen zum Erscheinungsbild"
     LangString LANGUAGE_SETTINGS ${LANG_GERMAN} "Einstellungen zur Sprache"
 !macroend
 
