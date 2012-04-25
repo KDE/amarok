@@ -44,7 +44,7 @@ var stationArray = new Array (
     new Station( "Mostly Classical [Classical]",                        "http://www.sky.fm/mp3/classical.pls" ),
     new Station( "MTH.Electro [Minimal Techno]",                        "http://www.shouted.fm/tunein/electro-dsl.m3u" ),
     new Station( "MTH.House [House]",                                   "http://stream.mth-house.de:8500/listen.pls" ),
-    new Station( "Nectarine Demoscene Radio [Computer-Music]",          "http://demovibes.de:8000/necta128.ogg" ),
+    new Station( "Nectarine Demoscene Radio [Computer-Music]",          "http://de.scenemusic.net/necta192.mp3.m3u" ),
     new Station( "Proton Radio [House/Dance]",                          "http://protonradio.com/proton.m3u" ),
     new Station( "Psyradio [Progressive Psytrance]",                    "http://streamer.psyradio.org:8010/" ),
     new Station( "Radio Paradise [Rock/Pop/Alternative]",               "http://www.radioparadise.com/musiclinks/rp_128.m3u" ),
