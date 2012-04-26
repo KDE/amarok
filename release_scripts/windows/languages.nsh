@@ -19,12 +19,27 @@ This script requires the Unicode NSIS framework http://www.scratchpaper.com/
 You will also need to install http://nsis.sourceforge.net/Nsis7z_plug-in
 */
 
+!include 'LogicLib.nsh'
+
+Var KDE_OFFLINE_FILES
+
+!macro INIT_KDE SUB_DIR
+     StrCpy $KDE_OFFLINE_FILES "$EXEDIR\${SUB_DIR}"
+!macroend
+
+!macro KDE_FETCH_AND_EXTRACT BASE_URL FILENAME DETAILS
+    ${IfNot} ${FileExists} "$KDE_OFFLINE_FILES\${FILENAME}"
+        NSISdl::download "${BASE_URL}/${FILENAME}" "$TEMP\${FILENAME}"
+        Nsis7z::ExtractWithDetails "$TEMP\${FILENAME}" "${DETAILS}"
+        Delete "$TEMP\${FILENAME}"
+    ${Else}
+        Nsis7z::ExtractWithDetails "$KDE_OFFLINE_FILES\${FILENAME}" "${DETAILS}"
+    ${ENDIF}    
+!macroend
+
 !macro KDE_ADD_LANGUAGE_PACKAGE LANG LANG_SUFFIX
-    Section /o "${LANG} (${LANG_SUFFIX})" SECTION_LANGUAGES_${LANG_SUFFIX}
-        SetOutPath "$INSTDIR"
-        NSISdl::download "http://winkde.org/~pvonreth/downloads/l10n/${kde-version}/kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z" "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z"
-        Nsis7z::ExtractWithDetails "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z" "Installing language ${LANG}..."
-        Delete "$TEMP\kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z"
+    Section /o "${LANG} (${LANG_SUFFIX})" SECTION_LANGUAGES_${LANG_SUFFIX}        
+        !insertmacro KDE_FETCH_AND_EXTRACT "http://winkde.org/~pvonreth/downloads/l10n/${kde-version}" "kde4-l10n-${LANG_SUFFIX}-${kde-version}.7z" "Installing language ${LANG}..."
     SectionEnd
 !macroend
 

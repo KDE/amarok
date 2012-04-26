@@ -31,6 +31,7 @@ You will also need to install http://nsis.sourceforge.net/Nsis7z_plug-in
 !define MUI_LANGDLL_ALLLANGUAGES
 !define MUI_ICON "amarok.ico"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\amarok.exe"
+
 ;save language
 !define MUI_LANGDLL_REGISTRY_ROOT "HKLM" 
 !define MUI_LANGDLL_REGISTRY_KEY "${regkey}"
@@ -85,6 +86,7 @@ ShowInstDetails hide
 !define MUI_COMPONENTSPAGE_NODESC
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
+!define MUI_FINISHPAGE_LINK_LOCATION "http://amarok.kde.org/"
 !insertmacro MUI_PAGE_FINISH
 
 
@@ -122,18 +124,14 @@ Section "Amarok" SECTION_AMAROK
     !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
-Section /o "Snore" SECTION_SNORE
-    SetOutPath "$INSTDIR"
-    NSISdl::download "http://winkde.org/~pvonreth/downloads/snore/bin/snorenotify-0.3.7z" "$TEMP\snore.7z"
-    Nsis7z::ExtractWithDetails "$TEMP\snore.7z" "Installing Snore..."
-    Delete "$TEMP\snore.7z"
+Section /o $(SECTION_SNORE) SECTION_SNORE
+    !insertmacro KDE_FETCH_AND_EXTRACT "http://winkde.org/~pvonreth/downloads/snore/bin/" "snorenotify-0.3.7z" "Installing Snore..."
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
         CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Snorenotify.lnk" "$INSTDIR\bin\snorenotify.exe"
     !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
 !insertmacro KDE_LANGUAGE_PACKAGES
- 
 
 Section
     ExecWait '"$INSTDIR\bin\update-mime-database.exe" "$INSTDIR\share\mime"'
@@ -157,6 +155,7 @@ Section "Uninstall"
 SectionEnd
 
 
+
 ;initialize the translations
 !insertmacro AMAROK_TRANSLATIONS
 
@@ -165,6 +164,7 @@ SectionEnd
 Function .onInit
 
     !insertmacro MUI_LANGDLL_DISPLAY
+    !insertmacro INIT_KDE "amarok"
 
 FunctionEnd
 
