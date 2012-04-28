@@ -219,17 +219,39 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
     }
     else // no ssa
     {
-        type = iOS;
-        debug() << "device" << udi << "has no StorageAccess interface, treating as iPhone/iPad";
-        // HACK: in order to avoid many false-positives once KDE's solid attaches PMP
-        // interface to class iPods too, check that both PMP and vendor/name matches for
-        // "leaf" iPhone device:
-        if( !device.is<Solid::PortableMediaPlayer>() || !deviceIsRootIpodDevice( device ) )
-        {
-            debug() << "Ignoring above device as it either has no PortableMediaPlayer interface or vendor/product doesn't match";
+        do { // break inside this block means "continue with collection creation"
+            type = iOS;
+            debug() << "device" << udi << "has no StorageAccess interface, treating as iPhone/iPad";
+            Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
+            if( !pmp )
+            {
+                debug() << "Ignoring above device as it doesn't have PortableMediaPlayer interface";
+                return;
+            }
+            // try to get 40-digit serial number; may return empty string in older kdelibs
+            mountPointOrUuid = pmp->driverHandle( "usbmux" ).toString();
+
+            if( pmp->supportedProtocols().contains( "ipod" ) &&
+                pmp->supportedDrivers().contains( "usbmux" ) )
+            {
+                debug() << "Above device suports ipod/usbmux protocol/driver combo, good";
+                break;
+            }
+            /* Following is a work-around for kdelibs 4.8.3 and earlier that return
+             * mtp protocol for AFC-capable iOS devices. It can be removed once Amarok
+             * depends on kdelibs >= 4.8.4 or kdelibs 4.9 */
+            if( pmp->supportedProtocols().contains( "mtp" ) &&
+                pmp->supportedDrivers().contains( "usb" ) )
+            {
+                debug() << "Above device suports mtp/usb protocol/driver combo,"
+                        << "treating as iPhone (kdelibs <= 4.8.3 work-around)";
+                break;
+            }
+
+            debug() << "Ignoring above device as it doesn't support ipod/usbmux or mtp/usb"
+                    << "(kdelibs <= 4.8.3 work-around) PortableMediaPlayer protocol/driver combo";
             return;
-        }
-        // TODO: get device uuid
+        } while( false );
     }
 
     debug() << "creating iPod collection, mount-point or uuid:" << mountPointOrUuid;
