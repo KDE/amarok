@@ -417,6 +417,15 @@ AudioCdAlbum::image( int size ) const
 }
 
 bool
+AudioCdAlbum::hasImage( int size ) const
+{
+    if ( m_cover.isNull() )
+        return Meta::Album::hasImage( size );
+    else
+        return true;
+}
+
+bool
 AudioCdAlbum::canUpdateImage() const
 {
     return false;

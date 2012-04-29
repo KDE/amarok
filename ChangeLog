@@ -114,6 +114,7 @@ Version 2.6-Beta 1
     * Compilations are handled more consistently on iPods. (BR 232072)
     * MPRIS2 compliance: don't use track ids that start with /org/mpris/
     * MPRIS2: be better about emitting the Seeked signal
+    * MPRIS2: fix the mpris:artUrl metadata property
 
 Version 2.5
   FEATURES:

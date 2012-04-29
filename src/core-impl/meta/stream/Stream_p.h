@@ -188,6 +188,14 @@ public:
         return name();
     }
 
+    bool hasImage( int size ) const
+    {
+        if( m_cover.isNull() )
+            return Meta::Album::hasImage( size );
+        else
+            return true;
+    }
+
     QImage image( int size ) const
     {
         if( m_cover.isNull() )

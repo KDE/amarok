@@ -221,6 +221,26 @@ public:
             return Meta::Album::image( size );
     }
 
+    bool hasImage( int size ) const
+    {
+        if( d && d->realTrack ) {
+            if ( d->realTrack->album() )
+                return d->realTrack->album()->hasImage( size );
+            return Meta::Album::hasImage( size );
+        } else
+            return Meta::Album::hasImage( size );
+    }
+
+    KUrl imageLocation( int size = 0 )
+    {
+        if( d && d->realTrack ) {
+            if ( d->realTrack->album() )
+                return d->realTrack->album()->imageLocation( size );
+            return Meta::Album::imageLocation( size );
+        } else
+            return Meta::Album::imageLocation( size );
+    }
+
     virtual bool operator==( const Meta::Album &album ) const
     {
         const ProxyAlbum *proxy = dynamic_cast<const ProxyAlbum*>( &album );

@@ -169,6 +169,7 @@ class AudioCdAlbum : public Meta::Album
         virtual TrackList tracks();
 
         virtual QImage image( int size = 0 ) const;
+        virtual bool hasImage( int size = 0 ) const;
         virtual bool canUpdateImage() const;
         virtual void setImage( const QImage &image );
 
