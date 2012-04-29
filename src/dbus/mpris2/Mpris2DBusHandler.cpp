@@ -491,6 +491,7 @@ namespace Amarok
             setPropertyInternal( "CanPause", true );
             //setPropertyInternal( "CanSeek", The::engineController()->phononMediaObject()->isSeekable() );
             setPropertyInternal( "Metadata", metaData );
+            Seeked( Position() );
         }
     }
 
