@@ -177,10 +177,18 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
         // of the track in the playlist
         map["mpris:length"] = track->length() * 1000; // microseconds
 
-        if( track->album() )
-            map["mpris:artUrl"] = track->album()->imageLocation( MPRIS_IMAGE_SIZE ).url();
-
         if( track->album() ) {
+            QImage image = track->album()->image();
+            KUrl url = track->album()->imageLocation().url();
+            if ( url.isValid() && !url.isLocalFile() ) {
+                // embedded id?  Request a version to be put in the cache
+                debug() << "MPRIS2: asking the image to be cached";
+                track->album()->image( MPRIS_IMAGE_SIZE );
+                url = track->album()->imageLocation().url();
+            }
+            if ( url.isValid() && url.isLocalFile() )
+                map["mpris:artUrl"] = QString::fromLatin1( url.toEncoded() );
+
             map["xesam:album"] = track->album()->name();
             if ( track->album()->hasAlbumArtist() )
                 map["xesam:albumArtist"] = QStringList() << track->album()->albumArtist()->name();
