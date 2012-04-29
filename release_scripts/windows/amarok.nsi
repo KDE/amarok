@@ -31,6 +31,7 @@ You will also need to install http://nsis.sourceforge.net/Nsis7z_plug-in
 !define MUI_LANGDLL_ALLLANGUAGES
 !define MUI_ICON "amarok.ico"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\amarok.exe"
+!define PRODUCT_WEB_SITE http://amarok.kde.org/
 
 ;save language
 !define MUI_LANGDLL_REGISTRY_ROOT "HKLM" 
@@ -86,8 +87,8 @@ ShowInstDetails hide
 !define MUI_COMPONENTSPAGE_NODESC
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
-!define MUI_FINISHPAGE_LINK "http://amarok.kde.org/"
-!define MUI_FINISHPAGE_LINK_LOCATION "http://amarok.kde.org/"
+!define MUI_FINISHPAGE_LINK "$(VISITE_PROJECT_HOMEPAGE)"
+!define MUI_FINISHPAGE_LINK_LOCATION "${PRODUCT_WEB_SITE}"
 !insertmacro MUI_PAGE_FINISH
 
 
@@ -105,12 +106,20 @@ Section "Amarok" SECTION_AMAROK
     
     ExecWait '"$INSTDIR\bin\kdeinit4.exe" "--terminate"'
     WriteRegStr HKLM "${regkey}" "Install_Dir" "$INSTDIR"
+    WriteRegStr HKLM "${regkey}" "Version" "${version}"
+    WriteRegStr HKLM "${regkey}" "" "$INSTDIR\bin\amarok.exe"
+    
     WriteRegStr HKLM "${uninstkey}" "DisplayName" "Amarok (remove only)"
-    WriteRegStr HKLM "${uninstkey}" "UninstallString" '"$INSTDIR\${uninstaller}"'
+    WriteRegStr HKLM "${uninstkey}" "DisplayIcon" "$INSTDIR\${MUI_ICON}"
+    WriteRegStr HKLM "${uninstkey}" "DisplayVersion" "${version}"
+    WriteRegStr HKLM "${uninstkey}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+    WriteRegStr HKLM "${uninstkey}" "UninstallString" '"$INSTDIR\${uninstaller}"
+    WriteRegStr HKLM "${uninstkey}" "Publisher" "${company}"
 
     ; package all files, recursively, preserving attributes
     ; assume files are in the correct places
 
+    File ${MUI_ICON}
     File /a /r /x "*.nsi" /x "${setupname}" "${srcdir}\*.*" 
 
     WriteUninstaller "${uninstaller}"
