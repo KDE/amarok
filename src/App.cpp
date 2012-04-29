@@ -52,7 +52,7 @@
 #include "dbus/mpris1/PlayerHandler.h"
 #include "dbus/mpris1/RootHandler.h"
 #include "dbus/mpris1/TrackListHandler.h"
-#include "dbus/mpris2/Mpris2DBusHandler.h"
+#include "dbus/mpris2/Mpris2.h"
 #include "dialogs/EqualizerDialog.h"
 #include "firstruntutorial/FirstRunTutorial.h"
 #include "network/NetworkAccessManagerProxy.h"
@@ -553,10 +553,9 @@ App::continueInit()
     new Mpris1::RootHandler();
     new Mpris1::PlayerHandler();
     new Mpris1::TrackListHandler();
-    new CollectionDBusHandler( this );
-    new Amarok::Mpris2DBusHandler();
     QDBusConnection::sessionBus().registerService("org.mpris.amarok");
-    QDBusConnection::sessionBus().registerService("org.mpris.MediaPlayer2.amarok");
+    new CollectionDBusHandler( this );
+    new Amarok::Mpris2( this );
     PERF_LOG( "Done creating DBus handlers" )
 
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
