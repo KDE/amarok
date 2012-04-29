@@ -2,7 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2011 the Amarok authors.
 
-Version 2.6-Beta 1
+VERSION 2.6-Beta 1
   FEATURES:
     * The maximum dimensions for embedded covers are now configurable. (BR 279493)
     * Small configuration dialog for iPods that shows troubleshooting information
@@ -118,7 +118,7 @@ Version 2.6-Beta 1
     * MPRIS2: be better about emitting the Seeked signal
     * MPRIS2: fix the mpris:artUrl metadata property
 
-Version 2.5
+VERSION 2.5
   FEATURES:
     * Now It's possible to use formated strings for prefix and suffix in 
       Playlist's layout items.
@@ -159,7 +159,7 @@ Version 2.5
     * Don't block the UI while scanning UMS device.
     * Allow going back and forward in Amazon store. Thanks to GCI student Nikola Miljkovic.
 
-Version 2.5.0-Beta 1
+VERSION 2.5.0-Beta 1
   FEATURES:
     * New "equals" match in collection filter - e.g. label:=pop finds songs
       with label "pop" but not songs with label "electro pop". (BR 260004)
@@ -252,7 +252,7 @@ Version 2.5.0-Beta 1
     * Fixed issue with TagDialog's "Open Destination" button, now It opens
       correct directory instead of parent. (BR 279147)
 
-Version 2.4.3
+VERSION 2.4.3
   BUGFIXES:
     * Fix KWallet auth requests on every track change. (BR 278177)
     * Display correct values for pretty times (playlist length) > 1 day.
@@ -264,7 +264,7 @@ Version 2.4.3
     * Don't block the UI while calculating the filename previews. (BR 233196)
     * Make M3U & PLS playlist files editable from Saved Playlists. (BR 245963)
 
-Version 2.4.2
+VERSION 2.4.2
     * This version number was skipped.
 
 VERSION 2.4.2-Beta 1
