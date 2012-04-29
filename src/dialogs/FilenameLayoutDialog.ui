@@ -86,7 +86,7 @@
       <bool>true</bool>
      </property>
      <property name="mimeType" stdset="0">
-      <string>application/x-amarok-tag-token</string>
+      <string notr="true">application/x-amarok-tag-token</string>
      </property>
     </widget>
    </item>
