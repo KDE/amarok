@@ -107,10 +107,10 @@
     LangString LANGUAGE_SETTINGS ${LANG_HUNGARIAN} "Nyelvi beállítások"
     
     ;Ukrainian
-    LangString VISIT_PROJECT_HOMEPAGE ${LANG_UKRAINIAN} "Visit project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_UKRAINIAN} "Відвідати сторінку проекту"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_UKRAINIAN} "Перегляд умов ліцензування"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_UKRAINIAN} "Будь ласка, прочитайте умови ліцензування, щоб ознайомитися зі своїми правами до встановлення Amarok"
-    LangString SECTION_SNORE ${LANG_UKRAIN} "Snore (OSD notifications)"
+    LangString SECTION_SNORE ${LANG_UKRAIN} "Snore (сповіщення на екрані)"
     LangString SECTION_LANGUAGES ${LANG_UKRAINIAN} "Мови"; (потрібне інтернет-з’єднання)"
     LangString APPEARANCE_SETTINGS ${LANG_UKRAINIAN} "Параметри вигляду"
     LangString LANGUAGE_SETTINGS ${LANG_UKRAINIAN} "Параметри мови"
