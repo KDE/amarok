@@ -23,7 +23,7 @@
     !insertmacro MUI_LANGUAGE "PortugueseBR"
     ; !insertmacro MUI_LANGUAGE "Polish"
     !insertmacro MUI_LANGUAGE "Ukrainian"
-    ; !insertmacro MUI_LANGUAGE "Czech"
+    !insertmacro MUI_LANGUAGE "Czech"
     ; !insertmacro MUI_LANGUAGE "Slovak"
     ; !insertmacro MUI_LANGUAGE "Croatian"
     ; !insertmacro MUI_LANGUAGE "Bulgarian"
@@ -114,7 +114,16 @@
     LangString SECTION_LANGUAGES ${LANG_UKRAINIAN} "Мови"; (потрібне інтернет-з’єднання)"
     LangString APPEARANCE_SETTINGS ${LANG_UKRAINIAN} "Параметри вигляду"
     LangString LANGUAGE_SETTINGS ${LANG_UKRAINIAN} "Параметри мови"
-    
+
+    ;Czech
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_CZECH} "Navštívit domovskou stránku projektu"
+    LangString PAGE_LICENSE_HEADER_TEXT ${LANG_CZECH} "Licenční ujednání"
+    LangString PAGE_LICENSE_SUBTEXT ${LANG_CZECH} "Abyste znali svá práva, můžete si před instalací Amaroku přečíst licenční ujednání"
+    LangString SECTION_SNORE ${LANG_CZECH} "Snore (informační okénka ozamující novou písničku)"
+    LangString SECTION_LANGUAGES ${LANG_CZECH} "Jazyky"; (je požadováno připojení k internetu)
+    LangString APPEARANCE_SETTINGS ${LANG_CZECH} "Nastavení vzhledu"
+    LangString LANGUAGE_SETTINGS ${LANG_CZECH} "Nastavení jazyka"
+
     ;Danish
     LangString VISIT_PROJECT_HOMEPAGE ${LANG_DANISH} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_DANISH} "Læs licensen"
