@@ -64,7 +64,6 @@
     ;English
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_ENGLISH} "License Review"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_ENGLISH} "Please review the license to know your rights before installing Amarok"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_ENGLISH} "Next >"
     LangString SECTION_SNORE ${LANG_ENGLISH} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_ENGLISH} "Languages";(internet connection required)
     LangString APPEARANCE_SETTINGS ${LANG_ENGLISH} "Appearance Settings"
@@ -73,7 +72,6 @@
     ;German
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_GERMAN} "Lizenz-Hinweis"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_GERMAN} "Bitte lesen Sie den Lizenz-Text bevor Sie Amarok installieren, um ihre Rechte zu kennen";ouch needs some improvement
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_GERMAN} "Weiter >"
     LangString SECTION_SNORE ${LANG_GERMAN} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_GERMAN} "Sprachen"; (Internet-Verbindung benötigt)"
     LangString APPEARANCE_SETTINGS ${LANG_GERMAN} "Einstellungen zum Erscheinungsbild"
@@ -82,7 +80,6 @@
     ;Italian
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_ITALIAN} "Lettura della licenza"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_ITALIAN} "Leggi la licenza per conoscere i tuoi diritti prima di installare Amarok"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_ITALIAN} "Avanti >"
     LangString SECTION_SNORE ${LANG_ITALIAN} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_ITALIAN} "Lingue"; (richiesta la connessione a Internet)"
     LangString APPEARANCE_SETTINGS ${LANG_ITALIAN} "Impostazioni dell'aspetto"
@@ -91,7 +88,6 @@
     ;Galician
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_GALICIAN} "Revisión da licenza"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_GALICIAN} "Antes de instalar o Amarok revise a licenza para coñecer os seus dereitos"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_GALICIAN} "Seguinte >"
     LangString SECTION_SNORE ${LANG_GALICIAN} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_GALICIAN} "Linguas"; (require de conexión á internet)"
     LangString APPEARANCE_SETTINGS ${LANG_GALICIAN} "Configuranción da aparencia"
@@ -100,7 +96,6 @@
     ;Hungarian
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_HUNGARIAN} "Licencáttekintés"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_HUNGARIAN} "Kérjük, hogy olvassa át a licencfeltételeket az Amarok telepítése előtt"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_HUNGARIAN} "Tovább >"
     LangString SECTION_SNORE ${LANG_HUNGARUAN} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_HUNGARIAN} "Nyelvek"; (internetkapcsolat szükséges)"
     LangString APPEARANCE_SETTINGS ${LANG_HUNGARIAN} "Megjelenési beállítások"
@@ -109,7 +104,6 @@
     ;Ukrainian
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_UKRAINIAN} "Перегляд умов ліцензування"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_UKRAINIAN} "Будь ласка, прочитайте умови ліцензування, щоб ознайомитися зі своїми правами до встановлення Amarok"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_UKRAINIAN} "Далі >"
     LangString SECTION_SNORE ${LANG_UKRAIN} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_UKRAINIAN} "Мови"; (потрібне інтернет-з’єднання)"
     LangString APPEARANCE_SETTINGS ${LANG_UKRAINIAN} "Параметри вигляду"
@@ -118,7 +112,6 @@
     ;Danish
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_DANISH} "Læs licensen"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_DANISH} "Læs licensen for at kende dine rettigheder før du installerer Amarok"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_DANISH} "Næste >"
     LangString SECTION_SNORE ${LANG_DANISH} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_DANISH} "Sprog"; (internetforbindelse kræves)"
     LangString APPEARANCE_SETTINGS ${LANG_DANISH} "Indstilling af udseende"
@@ -127,7 +120,6 @@
     ;Dutch
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_DUTCH} "Licentie bekijken"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_DUTCH} "Bekijk aub de licentie om uw rechten en plichten te weten alvorens Amarok te installeren"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_DUTCH} "Volgende >"
     LangString SECTION_SNORE ${LANG_DUTCH} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_DUTCH} "Talen"; (verbinding met het internet vereist)"
     LangString APPEARANCE_SETTINGS ${LANG_DUTCH} "Instellingen voor het uiterlijk"
@@ -136,7 +128,6 @@
     ;French
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_FRENCH} "Consultation de la licence"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_FRENCH} "Veuillez consulter la licence pour connaître vos droits avant d'installer Amarok"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_FRENCH} "Suivant >"
     LangString SECTION_SNORE ${LANG_FRENCH} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_FRENCH} "Langues"; (connexion internet requise)"
     LangString APPEARANCE_SETTINGS ${LANG_FRENCH} "Configuration de l'apparence"
@@ -145,7 +136,6 @@
     ;Estonian
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_ESTONIAN} "Teave litsentsi kohta"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_ESTONIAN} "Palun loe litsents hoolikalt läbi, et teaksid enne Amaroki paigaldamist täpselt, millised on sinu õigused"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_ESTONIAN} "Edasi >"
     LangString SECTION_SNORE ${LANG_ESTONIA} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_ESTONIAN} "Keeled"; (vajalik on internetiühendus)"
     LangString APPEARANCE_SETTINGS ${LANG_ESTONIAN} "Välimuse seadistused"
@@ -154,7 +144,6 @@
     ;Hebrew
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_HEBREW} "קרא רישיון"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_HEBREW} "אנא קרא את הרישיון כדי לדעת את זכויותיך לפני ההתקנה של Amarok"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_HEBREW} "הבא >"
     LangString SECTION_SNORE ${LANG_HEBREW} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_HEBREW} "שפות" ;"שפות (יש צורך בחיבור אינטרנט)"
     LangString APPEARANCE_SETTINGS ${LANG_HEBREW} "הגדרות מראה"
@@ -163,7 +152,6 @@
     ;Finnish
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_FINNISH} "Lisenssin luku"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_FINNISH} "Lue lisenssi, jotta tiedät oikeutesi ennen Amarokin asentamista"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_FINNISH} "Seuraava >"
     LangString SECTION_SNORE ${LANG_FINISH} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_FINNISH} "Kielet"; (Internet-yhteys tarvitaan)"
     LangString APPEARANCE_SETTINGS ${LANG_FINNISH} "Ulkoasuasetukset"
@@ -172,7 +160,6 @@
     ;Catalan"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_CATALAN} "Revisió de la llicència"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_CATALAN} "Reviseu la llicència per conèixer els vostres drets abans d'instal·lar l'Amarok"
-    LangString PAGE_LICENSE_BUTTON_TEXT ${LANG_CATALAN} "Següent >"
     LangString SECTION_SNORE ${LANG_CATALAN} "Snore (OSD notifications)"
     LangString SECTION_LANGUAGES ${LANG_CATALAN} "Idiomes"; (Es requereix connexió a Internet)"
     LangString APPEARANCE_SETTINGS ${LANG_CATALAN} "Configuració de l'aparença"

@@ -79,13 +79,14 @@ ShowInstDetails hide
 !define MUI_PAGE_HEADER_TEXT $(PAGE_LICENSE_HEADER_TEXT)
 !define MUI_PAGE_HEADER_SUBTEXT $(PAGE_LICENSE_SUBTEXT)
 !define MUI_LICENSEPAGE_TEXT_BOTTOM " "
-!define MUI_LICENSEPAGE_BUTTON $(PAGE_LICENSE_BUTTON_TEXT)
+!define MUI_LICENSEPAGE_BUTTON $(^NextBtn)
 !insertmacro MUI_PAGE_LICENSE "..\..\COPYING"
 !insertmacro MUI_PAGE_DIRECTORY 
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
 !define MUI_COMPONENTSPAGE_NODESC
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
+!define MUI_FINISHPAGE_LINK "http://amarok.kde.org/"
 !define MUI_FINISHPAGE_LINK_LOCATION "http://amarok.kde.org/"
 !insertmacro MUI_PAGE_FINISH
 
@@ -102,7 +103,7 @@ Section "Amarok" SECTION_AMAROK
     SetOutPath $INSTDIR
     SetShellVarContext all
     
-    ExecWait '"$INSTDIR\bin\kdeinit4.exe" "--shutdown"'
+    ExecWait '"$INSTDIR\bin\kdeinit4.exe" "--terminate"'
     WriteRegStr HKLM "${regkey}" "Install_Dir" "$INSTDIR"
     WriteRegStr HKLM "${uninstkey}" "DisplayName" "Amarok (remove only)"
     WriteRegStr HKLM "${uninstkey}" "UninstallString" '"$INSTDIR\${uninstaller}"'
@@ -143,7 +144,7 @@ SectionEnd
  
 Section "Uninstall"
     SetShellVarContext all
-    ExecWait '"$INSTDIR\bin\kdeinit4.exe" "--shutdown"'
+    ExecWait '"$INSTDIR\bin\kdeinit4.exe" "--terminate"'
 
     DeleteRegKey HKLM "${uninstkey}"
     DeleteRegKey HKLM "${regkey}"
