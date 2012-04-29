@@ -116,7 +116,7 @@ VorbisCommentTagHelper::tags() const
 
             if( ( picture->type() == TagLib::FLAC::Picture::FrontCover ||
                 picture->type() == TagLib::FLAC::Picture::Other ) &&
-                picture->data().size() > 1024 ) // must be at least 1kb
+                picture->data().size() > MIN_COVER_SIZE ) // must be at least 1kb
             {
                 data.insert( Meta::valHasCover, true );
                 break;
@@ -183,7 +183,7 @@ VorbisCommentTagHelper::hasEmbeddedCover() const
 
             if( ( picture->type() == TagLib::FLAC::Picture::FrontCover ||
                 picture->type() == TagLib::FLAC::Picture::Other ) &&
-                picture->data().size() > 1024 ) // must be at least 1kb
+                picture->data().size() > MIN_COVER_SIZE ) // must be at least 1kb
             {
                 return true;
             }
@@ -215,7 +215,7 @@ VorbisCommentTagHelper::embeddedCover() const
 
             if( ( picture->type() == TagLib::FLAC::Picture::FrontCover ||
                 picture->type() == TagLib::FLAC::Picture::Other ) &&
-                picture->data().size() > 1024 ) // must be at least 1kb
+                picture->data().size() > MIN_COVER_SIZE ) // must be at least 1kb
             {
                 QByteArray image_data( picture->data().data(), picture->data().size() );
 
@@ -248,7 +248,7 @@ VorbisCommentTagHelper::embeddedCover() const
             QByteArray image_data_b64( coverList[i].toCString() );
             QByteArray image_data = QByteArray::fromBase64(image_data_b64);
 
-            if( image_data.size() <= 1024 ) // must be at least 1kb
+            if( image_data.size() <= MIN_COVER_SIZE ) // must be at least 1kb
                 continue;
 
             bool success = false;
@@ -287,22 +287,6 @@ VorbisCommentTagHelper::setEmbeddedCover( const QImage &cover )
 
         buffer.close();
 
-        // back up covers
-        TagLib::List<TagLib::FLAC::Picture*> backedUpPictures;
-        const TagLib::List<TagLib::FLAC::Picture*> picturelist = m_flacFile->pictureList();
-        for( TagLib::List<TagLib::FLAC::Picture*>::ConstIterator it = picturelist.begin(); it != picturelist.end(); it++ )
-        {
-            const TagLib::FLAC::Picture *picture = *it;
-
-            TagLib::FLAC::Picture *backedUpPicture = new TagLib::FLAC::Picture();
-            backedUpPicture->setData( picture->data() );
-            backedUpPicture->setMimeType( picture->mimeType() );
-            backedUpPicture->setType( picture->type() );
-            backedUpPicture->setDescription( picture->description() );
-
-            backedUpPictures.append( backedUpPicture );
-        }
-
         // remove all covers
         m_flacFile->removePictures();
 
@@ -312,17 +296,6 @@ VorbisCommentTagHelper::setEmbeddedCover( const QImage &cover )
         newPicture->setMimeType( "image/jpeg" );
         newPicture->setType( TagLib::FLAC::Picture::FrontCover );
         m_flacFile->addPicture( newPicture );
-
-        // re-add all the backed-up covers except the front cover
-        for( TagLib::List<TagLib::FLAC::Picture*>::Iterator it = backedUpPictures.begin(); it != backedUpPictures.end(); it++ )
-        {
-            TagLib::FLAC::Picture *picture = *it;
-
-            if( picture->type() != TagLib::FLAC::Picture::FrontCover )
-            {
-                m_flacFile->addPicture( picture );
-            }
-        }
 
         return true;
     }

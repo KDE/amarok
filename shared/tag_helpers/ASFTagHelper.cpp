@@ -28,167 +28,6 @@
 using namespace Meta::Tag;
 
 
-class ASFPicture
-{
-    public:
-        enum PictureType
-        {
-            Other                       = 0,
-            PNGIcon                     = 1,
-            OtherIcon                   = 2,
-            FrontCover                  = 3,
-            BackCover                   = 4,
-            Leaflet                     = 5,
-            Media                       = 6,
-            LeadArtist                  = 7,
-            Artist                      = 8,
-            Conductor                   = 9,
-            Band                        = 10,
-            Composer                    = 11,
-            Lyricist                    = 12,
-            RecordingStudioOrLocation   = 13,
-            RecordingSession            = 14,
-            Performance                 = 15,
-            CaptureFromMovieOrVideo     = 16,
-            BrightColoredFish           = 17,
-            Illustration                = 18,
-            BandLogo                    = 19,
-            PublisherLogo               = 20
-        };
-
-        ASFPicture();
-        ASFPicture( const TagLib::ByteVector &bv );
-
-        ASFPicture &operator=( const ASFPicture &picture );
-
-        PictureType type() const;
-        QString mimeType() const;
-        QString description() const;
-
-        QByteArray data() const;
-        int size() const;
-#ifndef UTILITIES_BUILD
-        ASFPicture( const QImage &image );
-        QImage image() const;
-        TagLib::ByteVector toByteVector() const;
-#endif  //UTILITIES_BUILD
-    private:
-        PictureType m_type;
-        QString m_mimeType;
-        QString m_description;
-        QByteArray m_data;
-};
-
-
-ASFPicture::ASFPicture()
-          : m_type( PublisherLogo )             // We won't use such
-{
-}
-
-ASFPicture::ASFPicture( const TagLib::ByteVector &bv )
-{
-    if( bv.isEmpty() || bv.isNull() )
-    {
-        m_type = PublisherLogo;
-        return;
-    }
-
-    qint32 pos = 0;
-    const char *data = bv.data();
-    m_type = PictureType( *data );
-    pos++;
-    quint32 pictSize = *( quint32 *)(data + pos );
-    pos += 4;
-    m_mimeType = QString::fromUtf16( ( const ushort *)( data + pos ) );
-    pos += 2 * ( m_mimeType.length() + 1 );
-    m_description = QString::fromUtf16( ( const ushort *)( data + pos ) );
-    pos += 2 * ( m_description.length() + 1 );
-    m_data = QByteArray( data + pos, pictSize );
-}
-
-ASFPicture &
-ASFPicture::operator=( const ASFPicture &picture )
-{
-    m_type = picture.m_type;
-    m_mimeType = picture.m_mimeType;
-    m_description = picture.m_description;
-    m_data = picture.m_data;
-
-    return *this;
-}
-
-ASFPicture::PictureType
-ASFPicture::type() const
-{
-    return m_type;
-}
-
-QString
-ASFPicture::mimeType() const
-{
-    return m_mimeType;
-}
-
-QString
-ASFPicture::description() const
-{
-    return m_description;
-}
-
-QByteArray
-ASFPicture::data() const
-{
-    return m_data;
-}
-
-int
-ASFPicture::size() const
-{
-    return m_data.size();
-}
-
-#ifndef UTILITIES_BUILD
-ASFPicture::ASFPicture( const QImage &image )
-          : m_type( FrontCover )
-          , m_mimeType( "image/jpeg" )
-{
-    QBuffer buffer( &m_data );
-
-    buffer.open( QIODevice::WriteOnly );
-    image.save( &buffer, "JPEG" );
-    buffer.close();
-}
-
-QImage
-ASFPicture::image() const
-{
-    return QImage::fromData( m_data );
-}
-
-TagLib::ByteVector
-ASFPicture::toByteVector() const
-{
-    QByteArray data;
-
-    uchar type = m_type;
-    qint32 pictSize = m_data.size();
-
-    QBuffer buffer( &data );
-    buffer.open( QIODevice::WriteOnly );
-
-    buffer.write( ( const char *)&type, 1 );
-    buffer.write( ( const char *)&pictSize, 4 );
-    buffer.write( ( const char *)m_mimeType.utf16(), ( m_mimeType.length() + 1 ) * 2 );
-    buffer.write( ( const char *)m_description.utf16(), ( m_description.length() + 1 ) * 2 );
-    buffer.write( m_data.data(), pictSize );
-
-    buffer.close();
-
-    return TagLib::ByteVector( data.data(), data.size() );
-}
-
-#endif  //UTILITIES_BUILD
-
 ASFTagHelper::ASFTagHelper( TagLib::Tag *tag, TagLib::ASF::Tag *asfTag, Amarok::FileType fileType )
             : TagHelper( tag, fileType )
             , m_tag( asfTag )
@@ -240,10 +79,10 @@ ASFTagHelper::tags() const
                     if( cover->type() != TagLib::ASF::Attribute::BytesType )
                         continue;
 
-                    ASFPicture pict( cover->toByteVector() );
-                    if( ( pict.type() == ASFPicture::FrontCover ||
-                          pict.type() == ASFPicture::Other ) &&
-                        pict.size() > 1024 )
+                    TagLib::ASF::Picture pict = cover->toPicture();
+                    if( ( pict.type() == TagLib::ASF::Picture::FrontCover ||
+                        pict.type() == TagLib::ASF::Picture::Other ) &&
+                        pict.dataSize() > MIN_COVER_SIZE )
                     {
                         data.insert( field, true );
                         break;
@@ -317,6 +156,7 @@ ASFTagHelper::hasEmbeddedCover() const
     TagLib::ASF::AttributeListMap map = m_tag->attributeListMap();
     TagLib::String name = fieldName( Meta::valHasCover );
     for( TagLib::ASF::AttributeListMap::ConstIterator it = map.begin(); it != map.end(); ++it )
+    {
         if( it->first == name )
         {
             TagLib::ASF::AttributeList coverList = it->second;
@@ -325,15 +165,16 @@ ASFTagHelper::hasEmbeddedCover() const
                 if( cover->type() != TagLib::ASF::Attribute::BytesType )
                     continue;
 
-                    ASFPicture pict( cover->toByteVector() );
-                    if( ( pict.type() == ASFPicture::FrontCover ||
-                          pict.type() == ASFPicture::Other ) &&
-                        pict.size() > 1024 )
-                    {
-                        return true;
-                    }
+                TagLib::ASF::Picture pict = cover->toPicture();
+                if( ( pict.type() == TagLib::ASF::Picture::FrontCover ||
+                      pict.type() == TagLib::ASF::Picture::Other ) &&
+                    pict.dataSize() > MIN_COVER_SIZE )
+                {
+                    return true;
+                }
             }
         }
+    }
 
     return false;
 }
@@ -344,76 +185,77 @@ ASFTagHelper::embeddedCover() const
     TagLib::ASF::AttributeListMap map = m_tag->attributeListMap();
     TagLib::String name = fieldName( Meta::valHasCover );
 
-    ASFPicture other, front;
-    bool hasFront = false, hasOther = false;
-    int maxSize = 1024;
+    TagLib::ASF::Picture cover, otherCover;
+    bool hasCover = false, hasOtherCover = false;
 
     for( TagLib::ASF::AttributeListMap::ConstIterator it = map.begin(); it != map.end(); ++it )
+    {
         if( it->first == name )
         {
             TagLib::ASF::AttributeList coverList = it->second;
-            for( TagLib::ASF::AttributeList::ConstIterator cover = coverList.begin(); cover != coverList.end(); ++cover )
+            for( TagLib::ASF::AttributeList::ConstIterator it = coverList.begin(); it != coverList.end(); ++it )
             {
-                if( cover->type() != TagLib::ASF::Attribute::BytesType )
+                if( it->type() != TagLib::ASF::Attribute::BytesType )
                     continue;
 
-                ASFPicture pict( cover->toByteVector() );
-                if( pict.size() < maxSize )
+                TagLib::ASF::Picture pict = it->toPicture();
+
+                if( pict.dataSize() < MIN_COVER_SIZE )
                     continue;
 
-                if( pict.type() == ASFPicture::FrontCover )
+                if( pict.type() == TagLib::ASF::Picture::FrontCover )
                 {
-                    front = pict;
-                    maxSize = pict.size();
-                    hasFront = true;
+                    cover = pict;
+                    hasCover = true;
                 }
-                else if( pict.type() == ASFPicture::Other )
+                else if( pict.type() == TagLib::ASF::Picture::Other )
                 {
-                    other = pict;
-                    maxSize = pict.size();
-                    hasOther = true;
+                    otherCover = pict;
+                    hasOtherCover = true;
                 }
             }
         }
+    }
 
-    if( !hasFront && !hasOther )
+    if( !hasCover && hasOtherCover )
+    {
+        cover = otherCover;
+        hasCover = true;
+    }
+
+    if( !hasCover )
         return QImage();
 
-    //If Front and Other covers have the same size, we should use the Front one.
-    if( hasFront && !hasOther )
-        return front.image();
-    else if( !hasFront && hasOther )
-        return other.image();
-    else if( front.size() >= other.size() )
-        return front.image();
-    //else
-    return other.image();
+    return QImage::fromData( ( uchar * ) cover.picture().data(), cover.picture().size() );
 }
 
 bool
 ASFTagHelper::setEmbeddedCover( const QImage &cover )
 {
-    TagLib::String name = fieldName( Meta::valHasCover );
+    QByteArray bytes;
+    QBuffer buffer( &bytes );
 
-    ASFPicture picture( cover );
-    bool stored = false;
+    buffer.open( QIODevice::WriteOnly );
 
-    TagLib::ASF::AttributeList coverList = m_tag->attributeListMap()[name];
-    for( uint i = 0; i < coverList.size(); i++ )
+    if( !cover.save( &buffer, "JPEG" ) )
     {
-        if( coverList[i].type() != TagLib::ASF::Attribute::BytesType )
-            continue;
-
-        ASFPicture pict( coverList[i].toByteVector() );
-        if( pict.type() == ASFPicture::FrontCover )
-        {
-            coverList[i] = TagLib::ASF::Attribute( picture.toByteVector() );
-            stored = true;
-        }
+        buffer.close();
+        return false;
     }
 
-    if( !stored )
-        m_tag->addAttribute( name, TagLib::ASF::Attribute( picture.toByteVector() ) );
+    buffer.close();
+
+    TagLib::String name = fieldName( Meta::valHasCover );
+
+    // remove all covers
+    m_tag->removeItem( name );
+
+    // add new cover
+    TagLib::ASF::Picture picture;
+    picture.setPicture( TagLib::ByteVector( bytes.data(), bytes.count() ) );
+    picture.setType( TagLib::ASF::Picture::FrontCover );
+    picture.setMimeType( "image/jpeg" );
+    m_tag->addAttribute( name, TagLib::ASF::Attribute( picture.render() ) );
 
     return true;
 }

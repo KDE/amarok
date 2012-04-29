@@ -102,7 +102,7 @@ ID3v2TagHelper::tags() const
 
                 if( ( frame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover ||
                       frame->type() == TagLib::ID3v2::AttachedPictureFrame::Other ) &&
-                    frame->picture().size() > 1024 ) // must be at least 1kb
+                    frame->picture().size() > MIN_COVER_SIZE ) // must be at least 1kb
                 {
                     data.insert( Meta::valHasCover, true );
                 }
@@ -331,15 +331,21 @@ ID3v2TagHelper::render() const
 bool
 ID3v2TagHelper::hasEmbeddedCover() const
 {
-    TagLib::ByteVector field = fieldName( Meta::valHasCover ).toCString();
-    if( m_tag->frameListMap().contains( field ) )
+    TagLib::ID3v2::FrameList apicList = m_tag->frameListMap()[fieldName( Meta::valHasCover ).toCString()];
+
+    for( TagLib::ID3v2::FrameList::ConstIterator it = apicList.begin(); it != apicList.end(); ++it )
     {
-        TagLib::ID3v2::AttachedPictureFrame *frame =
-                dynamic_cast< TagLib::ID3v2::AttachedPictureFrame * >( m_tag->frameListMap()[field].front() );
-        return frame && ( frame->picture().size() > 1024 ) &&
-               ( frame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover ||
-                 frame->type() == TagLib::ID3v2::AttachedPictureFrame::Other );
+        TagLib::ID3v2::AttachedPictureFrame *currFrame =
+                dynamic_cast< TagLib::ID3v2::AttachedPictureFrame * >( *it );
+
+        if( currFrame->picture().size() < MIN_COVER_SIZE )
+            continue;
+
+        if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover ||
+            currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::Other )
+            return true;
     }
+
     return false;
 }
 
@@ -347,47 +353,34 @@ QImage
 ID3v2TagHelper::embeddedCover() const
 {
     TagLib::ID3v2::FrameList apicList = m_tag->frameListMap()[fieldName( Meta::valHasCover ).toCString()];
-    TagLib::ID3v2::AttachedPictureFrame *frontCover = NULL;
+    TagLib::ID3v2::AttachedPictureFrame *cover = NULL;
     TagLib::ID3v2::AttachedPictureFrame *otherCover = NULL;
-    TagLib::ID3v2::AttachedPictureFrame *coverToUse = NULL;
 
-    uint maxSize = 1024;     // ignore images that are too small
-
-    for( TagLib::ID3v2::FrameList::ConstIterator iter = apicList.begin(); iter != apicList.end(); ++iter )
+    for( TagLib::ID3v2::FrameList::ConstIterator it = apicList.begin(); it != apicList.end(); ++it )
     {
         TagLib::ID3v2::AttachedPictureFrame *currFrame =
-                dynamic_cast< TagLib::ID3v2::AttachedPictureFrame * >( *iter );
+                dynamic_cast< TagLib::ID3v2::AttachedPictureFrame * >( *it );
 
-        if( currFrame->picture().size() < maxSize )
+        if( currFrame->picture().size() < MIN_COVER_SIZE )
             continue;
 
         if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover )
         {
-            frontCover = currFrame;
-            maxSize = currFrame->picture().size();
+            cover = currFrame;
         }
         else if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::Other )
         {
             otherCover = currFrame;
-            maxSize = currFrame->picture().size();
         }
     }
 
-    if( !frontCover && !otherCover )
+    if( !cover && otherCover )
+        cover = otherCover;
+
+    if( !cover )
         return QImage();
 
-    //If Front and Other covers have the same size, we should use the Front one.
-    if( frontCover && !otherCover )
-        coverToUse = frontCover;
-    else if( !frontCover && otherCover )
-        coverToUse = otherCover;
-    else if( frontCover->picture().size() >= otherCover->picture().size() )
-        coverToUse = frontCover;
-    else
-        coverToUse = otherCover;
-
-    return QImage::fromData( ( uchar * )( coverToUse->picture().data() ),
-                             coverToUse->picture().size() );
+    return QImage::fromData( ( uchar * )( cover->picture().data() ), cover->picture().size() );
 }
 
 bool
@@ -410,27 +403,23 @@ ID3v2TagHelper::setEmbeddedCover( const QImage &cover )
     TagLib::ID3v2::FrameList apicList = m_tag->frameListMap()[field];
     TagLib::ID3v2::AttachedPictureFrame *frontCover = NULL;
 
-    for( TagLib::ID3v2::FrameList::ConstIterator iter = apicList.begin(); iter != apicList.end(); ++iter )
+    // remove covers
+    TagLib::List<TagLib::ID3v2::AttachedPictureFrame*> backedUpPictures;
+    for( TagLib::ID3v2::FrameList::ConstIterator it = apicList.begin(); it != apicList.end(); ++it )
     {
         TagLib::ID3v2::AttachedPictureFrame *currFrame =
-                dynamic_cast< TagLib::ID3v2::AttachedPictureFrame * >( *iter );
+                dynamic_cast< TagLib::ID3v2::AttachedPictureFrame * >( *it );
 
-        if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover )
-        {
-            frontCover = currFrame;
-            break;
-        }
+        m_tag->removeFrame( currFrame, false );
     }
 
-    if( !frontCover )
-    {
-        frontCover = new TagLib::ID3v2::AttachedPictureFrame( field );
-        frontCover->setType( TagLib::ID3v2::AttachedPictureFrame::FrontCover );
-        m_tag->addFrame( frontCover );
-    }
-
+    // add new cover
+    frontCover = new TagLib::ID3v2::AttachedPictureFrame( field );
     frontCover->setMimeType( "image/jpeg" );
     frontCover->setPicture( TagLib::ByteVector( bytes.data(), bytes.count() ) );
+    frontCover->setType( TagLib::ID3v2::AttachedPictureFrame::FrontCover );
+    m_tag->addFrame( frontCover );
+
     return true;
 }
 #endif  //UTILITIES_BUILD

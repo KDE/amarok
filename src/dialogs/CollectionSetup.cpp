@@ -103,7 +103,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     setObjectName( "CollectionSetup" );
     s_instance = this;
 
-    QLabel* descriptionLabel = new QLabel( i18n( 
+    QLabel* descriptionLabel = new QLabel( i18n(
         "These folders will be scanned for "
         "media to make up your collection. You can "
         "right-click on a folder to individually "
@@ -133,13 +133,20 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
     m_writeBack = new QCheckBox( i18n("Write metadata to file"), this );
     m_writeBackStatistics = new QCheckBox( i18n("Write statistics to file"), this );
-    m_writeBackCover = new QCheckBox( i18n("Write covers to file"), this );
+    KHBox* writeBackCoverDimensionsBox = new KHBox( this );
+    m_writeBackCover = new QCheckBox( i18n("Write covers to file, maximum size:"), writeBackCoverDimensionsBox );
+    m_writeBackCoverDimensions = new KComboBox( writeBackCoverDimensionsBox );
+    m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Small (200 px)"), QVariant(200) );
+    m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Medium (400 px)"), QVariant(400) );
+    m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Large (800 px)"), QVariant(800) );
+    m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Huge (1600 px)"), QVariant(1600) );
     m_charset   = new QCheckBox( i18n("&Enable character set detection in ID3 tags"), this );
     connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_monitor  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_writeBack, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_writeBackStatistics, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_writeBackCover, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+    connect( m_writeBackCoverDimensions, SIGNAL( currentIndexChanged( int )), this, SIGNAL( changed() ) );
     connect( m_charset  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
@@ -147,6 +154,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_writeBack->setToolTip( i18n( "Write meta data changes (including 'stars' rating) back to the original file.\nYou can also prevent writing back by write protecting the file.\nThis might be a good idea if you are currently\nsharing those files via the Internet." ) );
     m_writeBackStatistics->setToolTip( i18n( "Write play-changing statistics (e.g. score, lastplayed, playcount)\nas tags back to the file." ) );
     m_writeBackCover->setToolTip( i18n( "Write changed covers back to the file.\nThis will replace existing embedded covers." ) );
+    m_writeBackCoverDimensions->setToolTip( i18n( "Scale covers down if necessary." ) );
     m_charset->setToolTip(   i18n( "If selected, Amarok will use Mozilla's\nCharacter Set Detector to attempt to automatically guess the\ncharacter sets used in ID3 tags." ) );
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
@@ -157,6 +165,11 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_writeBackStatistics->setEnabled( writeBack() );
     m_writeBackCover->setChecked( AmarokConfig::writeBackCover() );
     m_writeBackCover->setEnabled( writeBack() );
+    if( m_writeBackCoverDimensions->findData( AmarokConfig::writeBackCoverDimensions() ) != -1 )
+        m_writeBackCoverDimensions->setCurrentIndex( m_writeBackCoverDimensions->findData( AmarokConfig::writeBackCoverDimensions() ) );
+    else
+        m_writeBackCoverDimensions->setCurrentIndex( 1 );
+    m_writeBackCoverDimensions->setEnabled( m_writeBackCover->isEnabled() && m_writeBackCover->isChecked() );
     m_charset->setChecked( AmarokConfig::useCharsetDetector() );
 
     // set the model _after_ constructing the checkboxes
@@ -167,11 +180,11 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     #else
     m_view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
     #endif
-    
+
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList dirs = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
     m_model->setDirectories( dirs );
-    
+
     // make sure that the tree is expanded to show all selected items
     foreach( const QString &dir, dirs )
     {
@@ -190,14 +203,16 @@ CollectionSetup::hasChanged() const
 
     m_writeBackStatistics->setEnabled( writeBack() );
     m_writeBackCover->setEnabled( writeBack() );
+    m_writeBackCoverDimensions->setEnabled( m_writeBackCover->isEnabled() && m_writeBackCover->isChecked() );
 
     return
         m_model->directories() != collectionFolders ||
-        m_recursive->isChecked() != recursive() ||
-        m_monitor->isChecked() != monitor() ||
-        m_writeBack->isChecked() != writeBack() ||
-        m_writeBackStatistics->isChecked() != writeBackStatistics() ||
-        m_writeBackCover->isChecked() != writeBackCover() ||
+        m_recursive->isChecked() != AmarokConfig::scanRecursively() ||
+        m_monitor->isChecked() != AmarokConfig::monitorChanges() ||
+        m_writeBack->isChecked() != AmarokConfig::writeBack() ||
+        m_writeBackStatistics->isChecked() != AmarokConfig::writeBackStatistics() ||
+        m_writeBackCover->isChecked() != AmarokConfig::writeBackCover() ||
+        m_writeBackCoverDimensions->itemData(m_writeBackCoverDimensions->currentIndex()).toInt() != AmarokConfig::writeBackCoverDimensions() ||
         m_charset->isChecked() != AmarokConfig::useCharsetDetector();
 }
 
@@ -211,6 +226,8 @@ CollectionSetup::writeConfig()
     AmarokConfig::setWriteBack( writeBack() );
     AmarokConfig::setWriteBackStatistics( writeBackStatistics() );
     AmarokConfig::setWriteBackCover( writeBackCover() );
+    if( writeBackCoverDimensions() > 0 )
+        AmarokConfig::setWriteBackCoverDimensions( writeBackCoverDimensions() );
     AmarokConfig::setUseCharsetDetector( charset() );
 
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
@@ -260,7 +277,7 @@ namespace CollectionFolder {
         const QString path = filePath( index );
         if( isForbiddenPath( path ) )
             flags ^= Qt::ItemIsEnabled; //disabled!
-       
+
         flags |= Qt::ItemIsUserCheckable;
 
         return flags;
@@ -353,7 +370,7 @@ namespace CollectionFolder {
 
         qSort( dirs.begin(), dirs.end() );
 
-        // we need to remove any children of selected items as 
+        // we need to remove any children of selected items as
         // they are redundant when recursive mode is chosen
         if( recursive() )
         {
@@ -426,7 +443,7 @@ namespace CollectionFolder {
     /**
      * Check the logical recursive difference of root and excludePath.
      * For example, if excludePath is a grandchild of root, then this method
-     * will check all of the children of root except the one that is the 
+     * will check all of the children of root except the one that is the
      * parent of excludePath, as well as excludePath's siblings.
      */
     void

@@ -24,6 +24,8 @@
     #define AMAROK_EXPORT
 #endif
 
+#define MIN_COVER_SIZE 1024 // Minimum size for an embedded cover to be loaded
+
 #include "MetaValues.h"
 #include "FileType.h"
 

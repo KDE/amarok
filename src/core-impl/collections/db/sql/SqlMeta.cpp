@@ -1631,8 +1631,8 @@ SqlAlbum::setImage( const QImage &image )
     {
         // - scale to cover to a sensible size
         QImage scaledImage( image );
-        if( scaledImage.width() > 200 || scaledImage.height() > 200 )
-            scaledImage = scaledImage.scaled( 200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        if( scaledImage.width() > AmarokConfig::writeBackCoverDimensions() || scaledImage.height() > AmarokConfig::writeBackCoverDimensions() )
+            scaledImage = scaledImage.scaled( AmarokConfig::writeBackCoverDimensions(), AmarokConfig::writeBackCoverDimensions(), Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
         // - set the image for each track
         Meta::TrackList myTracks = tracks();

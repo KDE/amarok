@@ -65,7 +65,7 @@ MP4TagHelper::tags() const
             {
                 TagLib::MP4::CoverArtList coverList = it->second.toCoverArtList();
                 for( TagLib::MP4::CoverArtList::ConstIterator it = coverList.begin(); it != coverList.end(); ++it )
-                    if( it->data().size() > 1024 )
+                    if( it->data().size() > MIN_COVER_SIZE )
                     {
                         data.insert( field, true );
                         break;
@@ -151,13 +151,17 @@ MP4TagHelper::hasEmbeddedCover() const
     TagLib::MP4::ItemListMap map = m_tag->itemListMap();
     TagLib::String name = fieldName( Meta::valHasCover );
     for( TagLib::MP4::ItemListMap::ConstIterator it = map.begin(); it != map.end(); ++it )
+    {
         if( it->first == name )
         {
             TagLib::MP4::CoverArtList coverList = it->second.toCoverArtList();
             for( TagLib::MP4::CoverArtList::ConstIterator cover = coverList.begin(); cover != coverList.end(); ++cover )
-                if( cover->data().size() > 1024 )
+            {
+                if( cover->data().size() > MIN_COVER_SIZE )
                     return true;
+            }
         }
+    }
 
     return false;
 }
@@ -167,24 +171,20 @@ MP4TagHelper::embeddedCover() const
 {
     TagLib::MP4::ItemListMap map = m_tag->itemListMap();
     TagLib::String name = fieldName( Meta::valHasCover );
-
-    TagLib::ByteVector coverData;
-    bool foundCover = false;
-    quint64 maxSize = 1024;
     for( TagLib::MP4::ItemListMap::ConstIterator it = map.begin(); it != map.end(); ++it )
+    {
         if( it->first == name )
         {
             TagLib::MP4::CoverArtList coverList = it->second.toCoverArtList();
             for( TagLib::MP4::CoverArtList::Iterator cover = coverList.begin(); cover != coverList.end(); ++cover )
-                if( cover->data().size() > maxSize )
-                {
-                    maxSize = cover->data().size();
-                    foundCover = true;
-                    coverData = cover->data();
-                }
+            {
+                if( cover->data().size() > MIN_COVER_SIZE )
+                    return QImage::fromData( ( uchar * ) cover->data().data(), cover->data().size() );
+            }
         }
+    }
 
-    return foundCover ? QImage::fromData( ( uchar * ) coverData.data(), coverData.size() ) : QImage();
+    return QImage();
 }
 
 bool
@@ -203,12 +203,12 @@ MP4TagHelper::setEmbeddedCover( const QImage &cover )
 
     buffer.close();
 
-    //Or just replace all covers with the new one?
-    TagLib::MP4::CoverArtList covers = m_tag->itemListMap()[fieldName( Meta::valHasCover )].toCoverArtList();
-    covers.prepend( TagLib::MP4::CoverArt( TagLib::MP4::CoverArt::JPEG,
-                                           TagLib::ByteVector( bytes.data(), bytes.count() ) ) );
+    TagLib::MP4::CoverArtList covers;
+
+    covers.append( TagLib::MP4::CoverArt( TagLib::MP4::CoverArt::JPEG, TagLib::ByteVector( bytes.data(), bytes.count() ) ) );
 
     m_tag->itemListMap()[fieldName( Meta::valHasCover )] = TagLib::MP4::Item( covers );
+
     return true;
 }
 #endif  //UTILITIES_BUILD

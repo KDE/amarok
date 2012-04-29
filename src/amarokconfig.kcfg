@@ -445,6 +445,10 @@
         <label>Whether changes to the album cover are written back</label>
         <default>false</default>
     </entry>
+    <entry key="Write Back Cover Dimensions" type="Int">
+        <label>Maximum embedded cover dimensions</label>
+        <default>400</default>
+    </entry>
     <entry key="Collection Folders" type="PathList">
         <label>List of folders in the Collection</label>
     </entry>
