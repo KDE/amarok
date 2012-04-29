@@ -71,10 +71,10 @@
     LangString LANGUAGE_SETTINGS ${LANG_ENGLISH} "Language Settings"
 
     ;German
-    LangString VISIT_PROJECT_HOMEPAGE ${LANG_GERMAN} "Besuchen sie die Project Website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_GERMAN} "Besuchen Sie die Projekt-Webseite"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_GERMAN} "Lizenz-Hinweis"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_GERMAN} "Bitte lesen Sie den Lizenz-Text bevor Sie Amarok installieren, um ihre Rechte zu kennen";ouch needs some improvement
-    LangString SECTION_SNORE ${LANG_GERMAN} "Snore (OSD notifications)"
+    LangString SECTION_SNORE ${LANG_GERMAN} "Snore (OSD-Benachrichtigungen)"
     LangString SECTION_LANGUAGES ${LANG_GERMAN} "Sprachen"; (Internet-Verbindung benötigt)"
     LangString APPEARANCE_SETTINGS ${LANG_GERMAN} "Einstellungen zum Erscheinungsbild"
     LangString LANGUAGE_SETTINGS ${LANG_GERMAN} "Einstellungen zur Sprache"
