@@ -1,3 +1,12 @@
+****************************************************************************
+**  BIG FAT WARNING: This HowTo is very outdated and hasn't been updated  **
+**  to reflect Amarok 2, autotools -> cmake, svn -> git transition; the   **
+**  general ideas still hold, though.                                     **
+**                                                                        **
+**  Amarok now uses The Ultimate KDE Extragear Release Script located in  **
+**  git@git.kde.org:releaseme.git to do the release                       **
+****************************************************************************
+
 Section 0: A few days in advance
 
  * Check that release date doesn't clash with KDE's schedule
