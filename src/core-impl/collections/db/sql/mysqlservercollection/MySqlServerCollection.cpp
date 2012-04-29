@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
  * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ * Copyright (c) 2012 Lachlan Dufton <dufton@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -76,7 +77,7 @@ MySqlServerStorage::MySqlServerStorage()
     if( !mysql_real_connect( m_db,
                 Amarok::config( "MySQL" ).readEntry( "Host", "localhost" ).toUtf8(),
                 Amarok::config( "MySQL" ).readEntry( "User", "amarokuser" ).toUtf8(),
-                Amarok::config( "MySQL" ).readEntry( "Password", "" ).toUtf8(),
+                Amarok::config( "MySQL" ).readEntry( "Password", "password" ).toUtf8(),
                 NULL,
                 Amarok::config( "MySQL" ).readEntry( "Port", "3306" ).toInt(),
                 NULL,
