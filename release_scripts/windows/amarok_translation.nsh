@@ -62,7 +62,7 @@
       
 
     ;English
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_ENGLISH} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_ENGLISH} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_ENGLISH} "License Review"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_ENGLISH} "Please review the license to know your rights before installing Amarok"
     LangString SECTION_SNORE ${LANG_ENGLISH} "Snore (OSD notifications)"
@@ -71,7 +71,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_ENGLISH} "Language Settings"
 
     ;German
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_GERMAN} "Besuchen sie die Project Website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_GERMAN} "Besuchen sie die Project Website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_GERMAN} "Lizenz-Hinweis"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_GERMAN} "Bitte lesen Sie den Lizenz-Text bevor Sie Amarok installieren, um ihre Rechte zu kennen";ouch needs some improvement
     LangString SECTION_SNORE ${LANG_GERMAN} "Snore (OSD notifications)"
@@ -80,7 +80,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_GERMAN} "Einstellungen zur Sprache"
 
     ;Italian
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_ITALIAN} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_ITALIAN} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_ITALIAN} "Lettura della licenza"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_ITALIAN} "Leggi la licenza per conoscere i tuoi diritti prima di installare Amarok"
     LangString SECTION_SNORE ${LANG_ITALIAN} "Snore (OSD notifications)"
@@ -89,7 +89,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_ITALIAN} "Impostazioni della lingua"
     
     ;Galician
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_GALICIAN} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_GALICIAN} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_GALICIAN} "Revisión da licenza"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_GALICIAN} "Antes de instalar o Amarok revise a licenza para coñecer os seus dereitos"
     LangString SECTION_SNORE ${LANG_GALICIAN} "Snore (OSD notifications)"
@@ -98,7 +98,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_GALICIAN} "Configuración da lingua"
     
     ;Hungarian
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_HUNGARIAN} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_HUNGARIAN} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_HUNGARIAN} "Licencáttekintés"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_HUNGARIAN} "Kérjük, hogy olvassa át a licencfeltételeket az Amarok telepítése előtt"
     LangString SECTION_SNORE ${LANG_HUNGARUAN} "Snore (OSD notifications)"
@@ -107,7 +107,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_HUNGARIAN} "Nyelvi beállítások"
     
     ;Ukrainian
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_UKRAINIAN} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_UKRAINIAN} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_UKRAINIAN} "Перегляд умов ліцензування"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_UKRAINIAN} "Будь ласка, прочитайте умови ліцензування, щоб ознайомитися зі своїми правами до встановлення Amarok"
     LangString SECTION_SNORE ${LANG_UKRAIN} "Snore (OSD notifications)"
@@ -116,7 +116,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_UKRAINIAN} "Параметри мови"
     
     ;Danish
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_DANISH} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_DANISH} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_DANISH} "Læs licensen"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_DANISH} "Læs licensen for at kende dine rettigheder før du installerer Amarok"
     LangString SECTION_SNORE ${LANG_DANISH} "Snore (OSD notifications)"
@@ -125,7 +125,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_DANISH} "Indstilling af sprog"
     
     ;Dutch
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_DUTCH} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_DUTCH} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_DUTCH} "Licentie bekijken"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_DUTCH} "Bekijk aub de licentie om uw rechten en plichten te weten alvorens Amarok te installeren"
     LangString SECTION_SNORE ${LANG_DUTCH} "Snore (OSD notifications)"
@@ -134,7 +134,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_DUTCH} "Instellingen voor de taal"
     
     ;French
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_FRENCH} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_FRENCH} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_FRENCH} "Consultation de la licence"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_FRENCH} "Veuillez consulter la licence pour connaître vos droits avant d'installer Amarok"
     LangString SECTION_SNORE ${LANG_FRENCH} "Snore (OSD notifications)"
@@ -143,7 +143,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_FRENCH} "Configuration de la langue"
     
     ;Estonian
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_ESTONIAN} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_ESTONIAN} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_ESTONIAN} "Teave litsentsi kohta"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_ESTONIAN} "Palun loe litsents hoolikalt läbi, et teaksid enne Amaroki paigaldamist täpselt, millised on sinu õigused"
     LangString SECTION_SNORE ${LANG_ESTONIA} "Snore (OSD notifications)"
@@ -152,7 +152,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_ESTONIAN} "Keeleseadistused"
     
     ;Hebrew
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_HEBREW} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_HEBREW} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_HEBREW} "קרא רישיון"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_HEBREW} "אנא קרא את הרישיון כדי לדעת את זכויותיך לפני ההתקנה של Amarok"
     LangString SECTION_SNORE ${LANG_HEBREW} "Snore (OSD notifications)"
@@ -161,7 +161,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_HEBREW} "הגדרות שפה"
     
     ;Finnish
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_FINNISH} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_FINNISH} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_FINNISH} "Lisenssin luku"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_FINNISH} "Lue lisenssi, jotta tiedät oikeutesi ennen Amarokin asentamista"
     LangString SECTION_SNORE ${LANG_FINISH} "Snore (OSD notifications)"
@@ -170,7 +170,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_FINNISH} "Kieliasetukset"
     
     ;Catalan"
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_CATALAN} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_CATALAN} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_CATALAN} "Revisió de la llicència"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_CATALAN} "Reviseu la llicència per conèixer els vostres drets abans d'instal·lar l'Amarok"
     LangString SECTION_SNORE ${LANG_CATALAN} "Snore (OSD notifications)"
@@ -179,7 +179,7 @@
     LangString LANGUAGE_SETTINGS ${LANG_CATALAN} "Configuració de l'idioma"
 
     ;Spanish
-    LangString VISITE_PROJECT_HOMEPAGE ${LANG_SPANISH} "Visite project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_SPANISH} "Visit project website"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_SPANISH} "Revisión de la licencia"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_SPANISH} "Por favor, revise la licencia para conocer sus derechos antes de instalar Amarok"
     LangString SECTION_SNORE ${LANG_SPANISH} "Snore (OSD notifications)"
