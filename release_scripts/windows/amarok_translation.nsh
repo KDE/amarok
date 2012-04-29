@@ -4,7 +4,7 @@
     !insertmacro MUI_LANGUAGE "English" ;first language is the default language
     !insertmacro MUI_LANGUAGE "French"
     !insertmacro MUI_LANGUAGE "German"
-    ; !insertmacro MUI_LANGUAGE "Spanish"
+    !insertmacro MUI_LANGUAGE "Spanish"
     ; !insertmacro MUI_LANGUAGE "SpanishInternational"
     ; !insertmacro MUI_LANGUAGE "SimpChinese"
     ; !insertmacro MUI_LANGUAGE "TradChinese"
@@ -178,5 +178,13 @@
     LangString APPEARANCE_SETTINGS ${LANG_CATALAN} "Configuració de l'aparença"
     LangString LANGUAGE_SETTINGS ${LANG_CATALAN} "Configuració de l'idioma"
 
+    ;Spanish
+    LangString VISITE_PROJECT_HOMEPAGE ${LANG_SPANISH} "Visite project website"
+    LangString PAGE_LICENSE_HEADER_TEXT ${LANG_SPANISH} "Revisión de la licencia"
+    LangString PAGE_LICENSE_SUBTEXT ${LANG_SPANISH} "Por favor, revise la licencia para conocer sus derechos antes de instalar Amarok"
+    LangString SECTION_SNORE ${LANG_SPANISH} "Snore (OSD notifications)"
+    LangString SECTION_LANGUAGES ${LANG_SPANISH} "Idiomas"; (se necesita conexión a Internet)"
+    LangString APPEARANCE_SETTINGS ${LANG_SPANISH} "Preferencias de aspecto"
+    LangString LANGUAGE_SETTINGS ${LANG_SPANISH} "Preferencias de idioma"
 !macroend
 

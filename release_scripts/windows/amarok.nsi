@@ -113,7 +113,7 @@ Section "Amarok" SECTION_AMAROK
     WriteRegStr HKLM "${uninstkey}" "DisplayIcon" "$INSTDIR\${MUI_ICON}"
     WriteRegStr HKLM "${uninstkey}" "DisplayVersion" "${version}"
     WriteRegStr HKLM "${uninstkey}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-    WriteRegStr HKLM "${uninstkey}" "UninstallString" '"$INSTDIR\${uninstaller}"
+    WriteRegStr HKLM "${uninstkey}" "UninstallString" '"$INSTDIR\${uninstaller}"'
     WriteRegStr HKLM "${uninstkey}" "Publisher" "${company}"
 
     ; package all files, recursively, preserving attributes
