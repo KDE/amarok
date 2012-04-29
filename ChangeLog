@@ -67,7 +67,6 @@ VERSION 2.6-Beta 1
     * Album artist is now guessed for tracks that do not belong into any
       collection and tracks from USB Mass Storage collection. Guessing uses the
       same algorithm as Local Collection.
-    * libgpod requirement raised from 0.7.0 to 0.7.93 for better maintainability.
     * When hovering iPod, UMS or MTP collection in collection browser,
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
