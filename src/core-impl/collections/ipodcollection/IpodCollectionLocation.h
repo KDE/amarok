@@ -66,6 +66,12 @@ class IpodCollectionLocation : public Collections::CollectionLocation
                                      IpodCopyTracksJob::CopiedStatus status );
 
     private:
+        /**
+         * Helper method to create a basic set of <ipod>/iPod_Contol/Music/F.. directories
+         * so that copying doesn't fail for this simple reason
+         */
+        void ensureDirectoriesExist();
+
         QWeakPointer<IpodCollection> m_coll;
         QMap<Meta::TrackPtr, int> m_trackPlaylistPositions;
         Playlists::PlaylistPtr m_destPlaylist;

@@ -39,6 +39,7 @@ Version 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * When copying files to iPod, ensure target directories exist.
     * When writing covers to files, all existing covers will be replaced.
     * PulseAudio status in diagnostic dialog.
     * optional libgpod dependency raised to 0.8.2 to support newest iPods.

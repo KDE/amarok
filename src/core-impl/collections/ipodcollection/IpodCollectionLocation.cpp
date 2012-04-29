@@ -21,6 +21,8 @@
 
 #include <ThreadWeaver/Weaver>
 
+#include <gpod/itdb.h>
+
 
 IpodCollectionLocation::IpodCollectionLocation( QWeakPointer<IpodCollection> parentCollection )
     : CollectionLocation()  // we implement collection(), we need not pass parentCollection
@@ -62,6 +64,7 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr,KUrl> &s
 {
     if( !isWritable() )
         return;  // mostly unreachable, CollectionLocation already checks this and issues a warning
+    ensureDirectoriesExist();
 
     // for isGoingToRemoveSources() to work we rely on overriding showDestinationDialog()
     IpodCopyTracksJob *job = new IpodCopyTracksJob( sources, m_coll, configuration, isGoingToRemoveSources() );
@@ -113,6 +116,39 @@ IpodCollectionLocation::slotCopyTrackProcessed( Meta::TrackPtr srcTrack, Meta::T
         // add this track to iPod playlist
     {
         m_destPlaylist->addTrack( destTrack, m_trackPlaylistPositions.value( srcTrack ) );
+    }
+}
+
+void IpodCollectionLocation::ensureDirectoriesExist()
+{
+    QByteArray mountPoint = m_coll ? QFile::encodeName( m_coll.data()->mountPoint() ) : QByteArray();
+    if( mountPoint.isEmpty() )
+        return;
+
+    gchar *musicDirChar = itdb_get_music_dir( mountPoint.constData() );
+    QString musicDirPath = QFile::decodeName( musicDirChar );
+    g_free( musicDirChar );
+    if( musicDirPath.isEmpty() )
+        return;
+
+    QDir musicDir( musicDirPath );
+    if( !musicDir.exists() && !musicDir.mkpath( "." ) /* try to create it */ )
+    {
+        warning() << __PRETTY_FUNCTION__ << "failed to create" << musicDirPath << "directory.";
+        return;
+    }
+
+    QChar fillChar( '0' );
+    for( int i = 0; i < 20; i++ )
+    {
+        QString name = QString( "F%1" ).arg( i, /* min-width */ 2, /* base */ 10, fillChar );
+        if( musicDir.exists( name ) )
+            continue;
+        QString toCreatePath = QString( "%1/%2" ).arg( musicDirPath, name );
+        if( musicDir.mkdir( name ) )
+            debug() << __PRETTY_FUNCTION__ << "created" << toCreatePath << "directory.";
+        else
+            warning() << __PRETTY_FUNCTION__ << "failed to create" << toCreatePath << "directory.";
     }
 }
 
