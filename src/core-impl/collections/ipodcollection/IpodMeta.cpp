@@ -263,7 +263,7 @@ Track::setImage( const QImage &newImage )
     }
 
     // we set artwork even for devices that don't support it, everyone has new-enough iPod nowadays
-    const int maxSize = 768; // iPad screen is 1024x768, allow that big covers
+    const int maxSize = AmarokConfig::writeBackCoverDimensions();
     QImage image;
     if( newImage.width() > maxSize || newImage.height() > maxSize )
         image = newImage.scaled( maxSize, maxSize, Qt::KeepAspectRatio, Qt::SmoothTransformation );
