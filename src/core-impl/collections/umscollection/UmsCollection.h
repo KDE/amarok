@@ -169,6 +169,11 @@ class UmsCollection : public Collection, public Meta::Observer
         void slotTrackAdded( KUrl trackLocation );
         void slotTrackRemoved( const Meta::TrackPtr &track );
 
+        /**
+         * Overriden to update m_lastUpdated timestamp
+         */
+        virtual void collectionUpdated();
+
     private slots:
         void slotParseTracks();
         void slotParseActionTriggered();
@@ -177,7 +182,7 @@ class UmsCollection : public Collection, public Meta::Observer
         void slotDirectoryScanned( CollectionScanner::Directory *dir );
 
         /**
-         * Starts a timer that emits updated() signal after 2 seconds.
+         * Starts a timer that ensures we emit updated() signal sometime in future.
          */
         void slotStartUpdateTimer();
 
@@ -227,6 +232,7 @@ class UmsCollection : public Collection, public Meta::Observer
         QAction *m_configureAction;
         QAction *m_ejectAction;
         QTimer m_updateTimer;
+        qint64 m_lastUpdated; /* msecs since epoch */
 };
 
 #endif

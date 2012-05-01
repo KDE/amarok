@@ -225,12 +225,13 @@ UmsCollection::UmsCollection( Solid::Device device )
     , m_replaceText( QString() )
     , m_collectionName( QString() )
     , m_scanManager( 0 )
+    , m_lastUpdated( 0 )
 {
     debug() << "Creating UmsCollection for device with udi: " << m_device.udi();
 
     m_updateTimer.setSingleShot( true );
     connect( this, SIGNAL(startUpdateTimer()), SLOT(slotStartUpdateTimer()) );
-    connect( &m_updateTimer, SIGNAL(timeout()), SIGNAL(updated()) );
+    connect( &m_updateTimer, SIGNAL(timeout()), SLOT(collectionUpdated()) );
 
     m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure Device" ), this );
     m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
@@ -584,6 +585,13 @@ UmsCollection::slotTrackRemoved( const Meta::TrackPtr &track )
 }
 
 void
+UmsCollection::collectionUpdated()
+{
+    m_lastUpdated = QDateTime::currentMSecsSinceEpoch();
+    emit updated();
+}
+
+void
 UmsCollection::slotParseTracks()
 {
     if( !m_scanManager )
@@ -764,10 +772,9 @@ UmsCollection::slotDirectoryScanned( CollectionScanner::Directory *dir )
     foreach( const CollectionScanner::Track *scannerTrack, dir->tracks() )
     {
         //TODO: use proxy tracks so no real file read is required
+        // following method calls startUpdateTimer(), no need to emit updated()
         slotTrackAdded( scannerTrack->path() );
     }
-
-    emit updated();
 
     //TODO: read playlists
 }
@@ -775,5 +782,13 @@ UmsCollection::slotDirectoryScanned( CollectionScanner::Directory *dir )
 void
 UmsCollection::slotStartUpdateTimer()
 {
-    m_updateTimer.start( 2000 );
+    // there are no concurrency problems, this method can only be called from the main
+    // thread and that's where the timer fires
+    if( m_updateTimer.isActive() )
+        return; // already running, nothing to do
+
+    // number of milliseconds to next desired update, may be negative
+    int timeout = m_lastUpdated + 1000 - QDateTime::currentMSecsSinceEpoch();
+    // give at least 50 msecs to catch multi-tracks edits nicely on the first frame
+    m_updateTimer.start( qBound( 50, timeout, 1000 ) );
 }
