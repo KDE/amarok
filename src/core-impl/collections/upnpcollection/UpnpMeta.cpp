@@ -20,7 +20,7 @@
 #include "core/support/Debug.h"
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetchingActions.h"
-#include "core/capabilities/ActionsCapability.h"
+#include "core-impl/capabilities/AlbumActionsCapability.h"
 
 #include <Solid/Networking>
 
@@ -496,11 +496,7 @@ UpnpAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
     switch( type )
     {
         case Capabilities::Capability::Actions:
-        {
-            QList<QAction *> actions;
-            actions << new DisplayCoverAction( this, AlbumPtr::dynamicCast( UpnpAlbumPtr( this ) ) );
-            return new Capabilities::ActionsCapability( actions );
-        }
+            return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
         default:
             return 0;
     }

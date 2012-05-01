@@ -26,6 +26,7 @@
 #include "SvgHandler.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/EditCapability.h"
+#include "core-impl/capabilities/AlbumActionsCapability.h"
 
 #include <KIcon>
 #include <KUrl>
@@ -904,28 +905,7 @@ MediaDeviceAlbum::createCapabilityInterface( Capabilities::Capability::Type type
     switch( type )
     {
         case Capabilities::Capability::Actions:
-        {
-            QList<QAction*> actions;
-            if( m_collection && canUpdateImage() )
-            {
-                /* none of media device implementations can currently unset cover,
-                 * so it would only confuse user to see "Unset Cover" action. */
-                QAction *separator          = new QAction( m_collection.data() );
-                QAction *displayCoverAction = new DisplayCoverAction( m_collection.data(), AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
-
-                separator->setSeparator( true );
-
-                actions.append( separator );
-                actions.append( displayCoverAction );
-                actions.append( new FetchCoverAction( m_collection.data(), AlbumPtr::staticCast( MediaDeviceAlbumPtr(this) ) ) );
-                actions.append( new SetCustomCoverAction( m_collection.data(), AlbumPtr::staticCast( MediaDeviceAlbumPtr(this) ) ) );
-                if( !hasImage() )
-                {
-                    displayCoverAction->setEnabled( false );
-                }
-            }
-            return new Capabilities::ActionsCapability( actions );
-        }
+            return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
 
         default:
             return 0;

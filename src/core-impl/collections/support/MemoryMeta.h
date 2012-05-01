@@ -81,6 +81,11 @@ class Album : public Meta::Album, public Base
          */
         Album( const Meta::AlbumPtr &other );
 
+        /* Meta::MetaCapability virtual methods */
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+
+        /* Meta::MetaBase virtual methods */
         virtual QString name() const { return Base::name(); }
 
         /* Meta::Album virtual methods */

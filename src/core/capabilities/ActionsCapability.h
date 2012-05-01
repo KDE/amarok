@@ -28,21 +28,18 @@ namespace Capabilities
     /**
      * This capability allows different meta types to display custom actions in the right click menu in the tree view
      * or anywhere else where the actions are shown. This is useful for purchasing from stores, downloading from services
-     * banning a genre or whatever we can think of in the future
+     * banning a genre or whatever we can think of in the future.
+     *
+     * If you want to provide this capability for an album, consider using
+     * @see AlbumActionsCapability that provides you with common album actions such as
+     * show cover etc. for free.
      *
      * @author Nikolaj Hald Nielsen <nhn@kde.org>
      */
-
     class AMAROK_CORE_EXPORT ActionsCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:
-
-            /**
-             * Constructor
-             */
-            ActionsCapability();
-
             /**
              * Constructor
              * Note: The actions are not freed after usage
@@ -70,6 +67,11 @@ namespace Capabilities
             static Type capabilityInterfaceType() { return Capabilities::Capability::Actions; }
 
         protected:
+            /**
+             * No-action constructor has sense only for subclasses.
+             */
+            ActionsCapability();
+
             QList< QAction* > m_actions;
     };
 }

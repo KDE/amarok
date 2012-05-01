@@ -16,6 +16,7 @@
  ****************************************************************************************/
 
 #include "MemoryMeta.h"
+#include "core-impl/capabilities/AlbumActionsCapability.h"
 
 using namespace MemoryMeta;
 
@@ -54,6 +55,30 @@ Album::Album( const Meta::AlbumPtr &other )
 {
     if( other->hasAlbumArtist() && other->albumArtist() )
         m_albumArtist = Meta::ArtistPtr( new Artist( other->albumArtist()->name() ) );
+}
+
+bool
+Album::hasCapabilityInterface( Capabilities::Capability::Type type ) const
+{
+    switch( type )
+    {
+        case Capabilities::Capability::Actions:
+            return true;
+        default:
+            return false;
+    }
+}
+
+Capabilities::Capability*
+Album::createCapabilityInterface( Capabilities::Capability::Type type )
+{
+    switch( type )
+    {
+        case Capabilities::Capability::Actions:
+            return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
+        default:
+            return 0;
+    }
 }
 
 void

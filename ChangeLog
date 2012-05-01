@@ -39,6 +39,8 @@ VERSION 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * Common album actions such as Show cover, Show under Various Artists are now
+      available for all collections that support it, not just Local collection.
     * When copying files to iPod, ensure target directories exist.
     * When writing covers to files, all existing covers will be replaced.
     * PulseAudio status in diagnostic dialog.

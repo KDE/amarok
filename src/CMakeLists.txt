@@ -275,6 +275,7 @@ set(libmetaimpl_SRCS
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp
     core-impl/playlists/types/file/xspf/XSPFPlaylist.cpp
+    core-impl/capabilities/AlbumActionsCapability.cpp
     core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
     core-impl/capabilities/timecode/TimecodeEditCapability.cpp
     core-impl/capabilities/timecode/TimecodeLoadCapability.cpp

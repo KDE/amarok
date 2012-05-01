@@ -23,6 +23,7 @@
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/BoundedPlaybackCapability.h"
+#include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeEditCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.h"
 
@@ -546,47 +547,24 @@ void TimecodeAlbum::setAlbumArtist( TimecodeArtistPtr artist )
 
 bool TimecodeAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return type == Capabilities::Capability::Actions;
+    switch( type )
+    {
+        case Capabilities::Capability::Actions:
+            return true;
+        default:
+            return false;
+    }
 }
 
-Capabilities::Capability* TimecodeAlbum::asCapabilityInterface( Capabilities::Capability::Type type )
+Capabilities::Capability* TimecodeAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( type == Capabilities::Capability::Actions )
+    switch( type )
     {
-        QList<QAction*> actions;
-
-        if ( m_separator == 0 )
-        {
-            m_separator          = new QAction( this );
-            m_displayCoverAction = new DisplayCoverAction( this, AlbumPtr( this ) );
-            m_fetchCoverAction   = new FetchCoverAction( this, AlbumPtr( this ) );
-            m_setCustomCoverAction = new SetCustomCoverAction( this, AlbumPtr( this ) );
-            m_unsetCoverAction   = new UnsetCoverAction( this, AlbumPtr( this ) );
-        }
-
-        m_separator->setSeparator( true );
-
-        actions.append( m_separator );
-        actions.append( m_displayCoverAction );
-        actions.append( m_fetchCoverAction );
-        actions.append( m_setCustomCoverAction );
-        actions.append( m_unsetCoverAction );
-
-        if( m_cover.isNull() )
-        {
-            m_displayCoverAction->setEnabled( false );
-            m_unsetCoverAction->setEnabled( false );
-        }
-        else
-        {
-            m_displayCoverAction->setEnabled( true );
-            m_unsetCoverAction->setEnabled( true );
-        }
-
-        return new ActionsCapability( actions );
+        case Capabilities::Capability::Actions:
+            return new AlbumActionsCapability( Meta::AlbumPtr( this ) );
+        default:
+            return 0;
     }
-
-    return 0;
 }
 
 ////////////////// GENRE //////////////////
