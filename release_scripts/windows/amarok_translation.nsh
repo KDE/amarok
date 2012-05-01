@@ -206,12 +206,12 @@
     LangString LANGUAGE_SETTINGS ${LANG_ENGLISH} "Configurações do idioma"
 
     ;Russian
-    LangString VISIT_PROJECT_HOMEPAGE ${LANG_ENGLISH} "Посетить веб-сайт проекта"
-    LangString PAGE_LICENSE_HEADER_TEXT ${LANG_ENGLISH} "Лицензионное соглашение"
-    LangString PAGE_LICENSE_SUBTEXT ${LANG_ENGLISH} "Прочитайте лицензионное соглашение, чтобы узнать свои права до установки Amarok"
-    LangString SECTION_SNORE ${LANG_ENGLISH} "Snore (экранные уведомления)"
-    LangString SECTION_LANGUAGES ${LANG_ENGLISH} "Языки";(требуется подключение к сети Интернет)
-    LangString APPEARANCE_SETTINGS ${LANG_ENGLISH} "Настройка внешнего вида"
-    LangString LANGUAGE_SETTINGS ${LANG_ENGLISH} "Настройка языков"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_RUSSIAN} "Посетить веб-сайт проекта"
+    LangString PAGE_LICENSE_HEADER_TEXT ${LANG_RUSSIAN} "Лицензионное соглашение"
+    LangString PAGE_LICENSE_SUBTEXT ${LANG_RUSSIAN} "Прочитайте лицензионное соглашение, чтобы узнать свои права до установки Amarok"
+    LangString SECTION_SNORE ${LANG_RUSSIAN} "Snore (экранные уведомления)"
+    LangString SECTION_LANGUAGES ${LANG_RUSSIAN} "Языки";(требуется подключение к сети Интернет)
+    LangString APPEARANCE_SETTINGS ${LANG_RUSSIAN} "Настройка внешнего вида"
+    LangString LANGUAGE_SETTINGS ${LANG_RUSSIAN} "Настройка языков"
 !macroend
 
