@@ -221,24 +221,24 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     menu.addSeparator();
     actions.clear();
 
-    QActionList customActions = createCustomActions( indices );
-    KMenu menuCustom( i18n( "Album" )  );
-    foreach( QAction *action, customActions )
+    QActionList albumActions = createCustomActions( indices );
+    KMenu menuAlbum( i18n( "Album" )  );
+    foreach( QAction *action, albumActions )
     {
         if( !action->parent() )
-            action->setParent( &menuCustom );
+            action->setParent( &menuAlbum );
     }
 
-    if( customActions.count() > 1 )
+    if( albumActions.count() > 1 )
     {
-        menuCustom.addActions( customActions );
-        menuCustom.setIcon( KIcon( "filename-album-amarok" ) );
-        menu.addMenu( &menuCustom );
+        menuAlbum.addActions( albumActions );
+        menuAlbum.setIcon( KIcon( "filename-album-amarok" ) );
+        menu.addMenu( &menuAlbum );
         menu.addSeparator();
     }
-    else if( customActions.count() == 1 )
+    else if( albumActions.count() == 1 )
     {
-        menu.addActions( customActions );
+        menu.addActions( albumActions );
     }
 
     QActionList collectionActions = createCollectionActions( indices );
@@ -276,7 +276,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     KMenu moveMenu( i18n( "Move to Collection" ) );
     if( !m_currentMoveDestination.empty() )
     {
-        // moveMenu.setIcon(); // TODO: no move icon
+        moveMenu.setIcon( KIcon( "go-jump" ) );
         moveMenu.addActions( m_currentMoveDestination.keys() );
         menu.addMenu( &moveMenu );
     }
