@@ -74,7 +74,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     foreach( KPluginInfo aInfo, aScripts )
     {
         aScriptString = aScriptString % aInfo.name() % " " % aInfo.version() %
-                        ( aInfo.isPluginEnabled() ? " (running)" : " (stopped)" ) % "\n";
+                        ( aInfo.isPluginEnabled() ? i18n(" (running)") : i18n(" (stopped)") ) % "\n";
     }
 
 
@@ -89,7 +89,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     foreach( KPluginInfo aInfo, aPlugins )
     {
         aPluginString = aPluginString % aInfo.name() %          // " " % aInfo.version() %
-                        ( aInfo.isPluginEnabled() ? "  (enabled)" : " (disabled)" ) % "\n";
+                        ( aInfo.isPluginEnabled() ? i18n("  (enabled)") : i18n(" (disabled)") ) % "\n";
     }
 
 
