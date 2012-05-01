@@ -22,6 +22,11 @@
 
 namespace Capabilities
 {
+    /**
+     * Capability to edit meta-data of a track. You should call beginMetaDataUpdate()
+     * before calling any setter methods and you should call endMetaDataUpdate() after
+     * you're done.
+     */
     class AMAROK_CORE_EXPORT EditCapability : public Capabilities::Capability
     {
         Q_OBJECT
@@ -30,38 +35,33 @@ namespace Capabilities
 
             static Type capabilityInterfaceType() { return Capabilities::Capability::Editable; }
 
-            /** Returns true if the tags of this track are currently editable */
+            /**
+             * Return true if the tags of this track are currently editable
+             */
             virtual bool isEditable() const = 0;
-            /** Update the album of this track. */
+
             virtual void setAlbum( const QString &newAlbum ) = 0;
-
             virtual void setAlbumArtist( const QString &newAlbumArtist ) = 0;
-            //TODO: add overloaded methods which take a AlbumPtr if necessary
-            /** Change the artist of this track */
             virtual void setArtist( const QString &newArtist ) = 0;
-
             virtual void setComposer( const QString &newComposer ) = 0;
-
             virtual void setGenre( const QString &newGenre ) = 0;
-
             virtual void setYear( int newYear ) = 0;
-
             virtual void setTitle( const QString &newTitle ) = 0;
-
             virtual void setComment( const QString &newComment ) = 0;
-
             virtual void setTrackNumber( int newTrackNumber ) = 0;
-
             virtual void setDiscNumber( int newDiscNumber ) = 0;
-
             virtual void setBpm( const qreal newBpm ) = 0;
 
-            /** The track object should not store changed meta data immediately but cache the
-            changes until endMetaDataUpdate() is called */
+            /**
+             * The track object should not store changed meta data immediately but cache
+             * the changes until endMetaDataUpdate() is called
+             */
             virtual void beginMetaDataUpdate() = 0;
-            /** All meta data has been updated and the object should commit the changed */
-            virtual void endMetaDataUpdate() = 0;
 
+            /**
+             * All meta data has been updated and the object should commit the changed
+             */
+            virtual void endMetaDataUpdate() = 0;
     };
 }
 
