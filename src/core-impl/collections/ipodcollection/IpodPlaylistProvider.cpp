@@ -99,7 +99,7 @@ IpodPlaylistProvider::providerActions()
 {
     QActionList actions = Playlists::UserPlaylistProvider::providerActions();
     Capabilities::ActionsCapability *ac = m_coll->create<Capabilities::ActionsCapability>();
-    actions << ac->actions();
+    actions << ac->actions();  // all IpodCollection actions are parented, no memory leak here
     delete ac;
     if( m_stalePlaylist || m_orphanedPlaylist )
         actions << m_consolidateAction;

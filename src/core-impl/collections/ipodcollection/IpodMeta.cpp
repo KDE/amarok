@@ -18,14 +18,15 @@
 
 #include "IpodCollection.h"
 #include "IpodMetaEditCapability.h"
+#include "jobs/WriteTagsJob.h"
 #include "config-ipodcollection.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "FileType.h"
-#include "MetaTagLib.h"
 
 #include <KTemporaryFile>
+#include <ThreadWeaver/Weaver>
 
 #include <cmath>
 #include <gpod/itdb.h>
@@ -91,13 +92,13 @@ Track::Track( const Meta::TrackPtr &origTrack )
         albumArtist = ArtistHelper::bestGuessAlbumArtist( albumArtist, artist()->name(),
                                                           genre()->name(), composer()->name() );
     setAlbumArtist( albumArtist );
-    setIsCompilation( isCompilation );
+    setIsCompilation( isCompilation, /* doCommit */ false );
 
     setBpm( origTrack->bpm() );
     setComment( origTrack->comment() );
 
     setScore( origTrack->score() );
-    setRating( origTrack->rating() );
+    setRating( origTrack->rating(), /* doCommit */ false );
 
     setLength( origTrack->length() );
     // filesize is set in finalizeCopying(), which could be more accurate
@@ -244,11 +245,21 @@ Track::setAlbumArtist( const QString &newAlbumArtist )
 }
 
 void
-Track::setIsCompilation( bool newIsCompilation )
+Track::setIsCompilation( bool newIsCompilation, bool doCommit )
 {
-    // no need for lock here, integer assignment
-    // libgpod says: True if set to 0x1, false if set to 0x0.
-    m_track->compilation = newIsCompilation ? 0x1 : 0x0;
+    // libgpod says: m_track->combination: True if set to 0x1, false if set to 0x0.
+    if( m_track->compilation == newIsCompilation )
+        return;  // nothing to do
+
+    // we need to call commitChanges() without m_trackLock held, so create extra scope for it
+    {
+        QWriteLocker locker( &m_trackLock );
+        m_track->compilation = newIsCompilation ? 0x1 : 0x0;
+        m_changedFields.insert( Meta::valCompilation, newIsCompilation );
+    }
+    if( doCommit )
+         // setIsCompilation() is not a part of EditCapability, we have to commit ourselves:
+        commitChanges();
 }
 
 void
@@ -395,17 +406,20 @@ Track::rating() const
 }
 
 void
-Track::setRating( int newRating )
+Track::setRating( int newRating, bool doCommit )
 {
     newRating = ( newRating * ITDB_RATING_STEP ) / 2;
     if( newRating == (int) m_track->rating ) // casting prevents compiler waring about signedness
         return; // nothing to do, do not notify observers
-    m_track->rating = newRating;
+
+    // we need to call commitChanges() without m_trackLock held, so create extra scope for it
     {
         QWriteLocker locker( &m_trackLock );
+        m_track->rating = newRating;
         m_changedFields.insert( Meta::valRating, newRating );
     }
-    commitChanges(); // setRating() is not a part of EditCapability, we have to commit ourselves
+    if( doCommit )
+        commitChanges(); // setRating() is not a part of EditCapability, we have to commit ourselves
 }
 
 qint64
@@ -701,21 +715,27 @@ Track::commitChanges()
 {
     static const QSet<qint64> statFields = ( QSet<qint64>() << Meta::valFirstPlayed <<
         Meta::valLastPlayed << Meta::valPlaycount << Meta::valScore << Meta::valRating );
-    if( m_changedFields.isEmpty() )
-        return;
 
-    QString path = playableUrl().path(); // needs to be here because it lock m_trackLock too
-    m_trackLock.lockForWrite();  // guard access to m_changedFields
-    if( AmarokConfig::writeBackStatistics() ||
-        !(QSet<qint64>::fromList( m_changedFields.keys() ) - statFields).isEmpty() )
+    QString path = playableUrl().path(); // needs to be here because it locks m_trackLock too
+    // extra scope for m_trackLock locker:
     {
-        setModifyDate( QDateTime::currentDateTime() );
-    }
+        QWriteLocker locker( &m_trackLock ); // guard access to m_changedFields
+        if( m_changedFields.isEmpty() )
+            return;
 
-    // writeTags() respects AmarokConfig::writeBackStatistics, AmarokConfig::writeBack()
-    Meta::Tag::writeTags( path, m_changedFields );
-    m_changedFields.clear();
-    m_trackLock.unlock();
+        if( AmarokConfig::writeBackStatistics() ||
+            !(QSet<qint64>::fromList( m_changedFields.keys() ) - statFields).isEmpty() )
+        {
+            setModifyDate( QDateTime::currentDateTime() );
+        }
+
+        // write tags to file in a thread in order not to block
+        WriteTagsJob *job = new WriteTagsJob( path, m_changedFields );
+        job->connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+        ThreadWeaver::Weaver::instance()->enqueue( job );
+
+        m_changedFields.clear();
+    }
     notifyObservers();
 }
 

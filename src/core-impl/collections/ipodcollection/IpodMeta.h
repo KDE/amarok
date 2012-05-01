@@ -80,7 +80,8 @@ namespace IpodMeta
             virtual void setScore( double newScore );
 
             virtual int rating() const;
-            virtual void setRating( int newRating );
+            virtual void setRating( int newRating ) { setRating( newRating, true ); }
+            virtual void setRating( int newRating, bool doCommit );
 
             virtual qint64 length() const;
             virtual int filesize() const;
@@ -160,7 +161,7 @@ namespace IpodMeta
             void setFirstPlayed( const QDateTime &time );
             void setLastPlayed( const QDateTime &time );
             void setPlayCount( const int playcount );
-            void setIsCompilation( bool newIsCompilation );
+            void setIsCompilation( bool newIsCompilation, bool doCommit = true );
             void setImage( const QImage &newImage );
             void setLength( qint64 newLength );
             void setSampleRate( int newSampleRate );
