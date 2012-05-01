@@ -1893,6 +1893,14 @@ SqlAlbum::setImage( const QString &path )
     }
 }
 
+/** Set the compilation flag.
+ *  Actually it does not cange this album but instead moves
+ *  the tracks to other albums (e.g. one with the same name which is a
+ *  compilation)
+ *  If the compilation flag is set to "false" then all songs
+ *  with different artists will be moved to other albums, possibly even
+ *  creating them.
+ */
 void
 SqlAlbum::setCompilation( bool compilation )
 {

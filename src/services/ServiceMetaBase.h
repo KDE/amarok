@@ -363,6 +363,9 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
         virtual QString name() const;
 
         virtual bool isCompilation() const;
+        virtual bool canUpdateCompilation() const;
+        virtual void setCompilation( bool compilation );
+
         virtual bool hasAlbumArtist() const;
         virtual ArtistPtr albumArtist() const;
         virtual TrackList tracks();
@@ -401,7 +404,6 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
         //ServiceAlbum specific methods
         void addTrack( TrackPtr track );
         void setAlbumArtist( ArtistPtr artist );
-        void setIsCompilation( bool compilation );
 
         void setDescription( const QString &description );
         QString description( ) const;

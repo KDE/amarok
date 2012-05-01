@@ -182,7 +182,6 @@ class UpnpAlbum : public QObject, public Meta::Album
         void addTrack( UpnpTrackPtr track );
         void removeTrack( UpnpTrackPtr track );
         void setAlbumArtist( UpnpArtistPtr artist );
-        void setIsCompilation( bool compilation );
         void setAlbumArtUrl( const KUrl &url );
 
     private:

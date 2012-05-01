@@ -71,7 +71,11 @@ class Album : public Meta::Album, public Base
 {
     public:
         Album( const QString &name, const Meta::ArtistPtr &albumArtist )
-            : Base( name ), m_isCompilation( false ), m_albumArtist( albumArtist ) {}
+            : Base( name )
+            , m_isCompilation( false )
+            , m_canUpdateCompilation( false )
+            , m_albumArtist( albumArtist )
+            {}
         /**
          * Copy-like constructor for MapChanger
          */
@@ -79,8 +83,11 @@ class Album : public Meta::Album, public Base
 
         virtual QString name() const { return Base::name(); }
 
-        /** Meta::Album virtual methods */
+        /* Meta::Album virtual methods */
         virtual bool isCompilation() const { return m_isCompilation; }
+        virtual bool canUpdateCompilation() const { return m_canUpdateCompilation; }
+        virtual void setCompilation( bool isCompilation );
+
         virtual bool hasAlbumArtist() const { return !m_albumArtist.isNull(); }
         virtual Meta::ArtistPtr albumArtist() const { return m_albumArtist; }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
@@ -92,10 +99,14 @@ class Album : public Meta::Album, public Base
         virtual void setImage( const QImage &image ) { m_image = image; }
 
         /* MemoryMeta::Album methods: */
-        void setIsCompilation( bool isCompilation ) { m_isCompilation = isCompilation; }
+        void setCachedCompilation( bool isCompilation )
+            { m_isCompilation = isCompilation; }
+        void setCachedCanUpdateCompilation( bool canUpdateCompilation )
+            { m_canUpdateCompilation = canUpdateCompilation; }
 
     private:
         bool m_isCompilation;
+        bool m_canUpdateCompilation;
         Meta::ArtistPtr m_albumArtist;
         QImage m_image;
 };

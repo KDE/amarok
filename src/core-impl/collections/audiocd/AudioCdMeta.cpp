@@ -390,6 +390,19 @@ AudioCdAlbum::isCompilation() const
 }
 
 bool
+AudioCdAlbum::canUpdateCompilation() const
+{
+    return true;
+}
+
+void
+AudioCdAlbum::setCompilation( bool compilation )
+{
+    DEBUG_BLOCK
+    m_isCompilation = compilation;
+}
+
+bool
 AudioCdAlbum::hasAlbumArtist() const
 {
     return !m_albumArtist.isNull();
@@ -448,13 +461,6 @@ void
 AudioCdAlbum::setAlbumArtist( AudioCdArtistPtr artist )
 {
     m_albumArtist = artist;
-}
-
-void
-AudioCdAlbum::setIsCompilation( bool compilation )
-{
-    DEBUG_BLOCK
-    m_isCompilation = compilation;
 }
 
 //AudioCdGenre

@@ -201,7 +201,6 @@ public:
     //TimecodeAlbum specific methods
     void addTrack( TimecodeTrackPtr track );
     void setAlbumArtist( TimecodeArtistPtr artist );
-    void setIsCompilation( bool compilation );
 
     bool operator==( const Meta::Album &other ) const
     {

@@ -49,10 +49,26 @@ Base::removeTrack( Track *track )
 Album::Album( const Meta::AlbumPtr &other )
     : Base( other->name() )
     , m_isCompilation( other->isCompilation() )
+    , m_canUpdateCompilation( other->canUpdateCompilation() )
     , m_image( other->image() )
 {
     if( other->hasAlbumArtist() && other->albumArtist() )
         m_albumArtist = Meta::ArtistPtr( new Artist( other->albumArtist()->name() ) );
+}
+
+void
+Album::setCompilation( bool isCompilation )
+{
+    // we re-create the albums for each track - that's how MemoryMeta works - by
+    // aggregating multiple entities of same name into one.
+    foreach( Meta::TrackPtr track, tracks() )
+    {
+        Track *memoryTrack = static_cast<Track *>( track.data() );
+        Meta::AlbumPtr album = memoryTrack->originalTrack()->album();
+        if( album && album->canUpdateCompilation() )
+            album->setCompilation( isCompilation );
+    }
+    // no notifyObservers() etc needed - this is done from down-up by proxied tracks
 }
 
 QImage
@@ -204,9 +220,11 @@ MapChanger::addExistingTrack( Meta::TrackPtr track, Track *memoryTrack )
         m_mc->addAlbum( album );
     }
     bool isCompilation = trackAlbum ? trackAlbum->isCompilation() : false;
+    bool canUpdateCompilation = trackAlbum ? trackAlbum->canUpdateCompilation() : false;
     Album *memoryAlbum = static_cast<Album *>( album.data() );
     // be deterministic wrt track adding order:
-    memoryAlbum->setIsCompilation( memoryAlbum->isCompilation() || isCompilation );
+    memoryAlbum->setCachedCompilation( memoryAlbum->isCompilation() || isCompilation );
+    memoryAlbum->setCachedCanUpdateCompilation( memoryAlbum->canUpdateCompilation() || canUpdateCompilation );
     // optimisation: only read album cover if no previous one exists:
     if( !memoryAlbum->hasImage() && trackAlbum && trackAlbum->hasImage() )
             memoryAlbum->setImage( trackAlbum->image() );

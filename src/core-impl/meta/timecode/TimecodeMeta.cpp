@@ -544,11 +544,6 @@ void TimecodeAlbum::setAlbumArtist( TimecodeArtistPtr artist )
     m_albumArtist = artist;
 }
 
-void TimecodeAlbum::setIsCompilation( bool compilation )
-{
-    m_isCompilation = compilation;
-}
-
 bool TimecodeAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
     return type == Capabilities::Capability::Actions;

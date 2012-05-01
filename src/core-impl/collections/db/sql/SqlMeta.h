@@ -365,9 +365,9 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
 
         virtual Meta::TrackList tracks();
 
-        /** Returns true if this album is a compilation, meaning that the included songs are from different artists.
-        */
         virtual bool isCompilation() const;
+        virtual bool canUpdateCompilation() const { return true; }
+        void setCompilation( bool compilation );
 
         /** Returns true if this album has an artist.
          *  The following equation is always true: isCompilation() != hasAlbumArtist()
@@ -411,15 +411,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
         //SQL specific methods
         int id() const { return m_id; }
 
-        /** Set the compilation flag.
-         *  Actually it does not cange this album but instead moves
-         *  the tracks to other albums (e.g. one with the same name which is a
-         *  compilation)
-         *  If the compilation flag is set to "false" then all songs
-         *  with different artists will be moved to other albums, possibly even
-         *  creating them.
-         */
-        void setCompilation( bool compilation );
         Collections::SqlCollection *sqlCollection() const { return m_collection; }
 
     private:

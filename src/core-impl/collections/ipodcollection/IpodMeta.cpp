@@ -770,6 +770,19 @@ Album::isCompilation() const
 }
 
 bool
+Album::canUpdateCompilation() const
+{
+    Collections::Collection *coll = m_track->collection();
+    return coll ? coll->isWritable() : false;
+}
+
+void
+Album::setCompilation( bool isCompilation )
+{
+    m_track->setIsCompilation( isCompilation );
+}
+
+bool
 Album::hasAlbumArtist() const
 {
     readAlbumArtist();

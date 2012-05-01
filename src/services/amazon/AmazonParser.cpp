@@ -192,7 +192,7 @@ AmazonParser::addAlbumToCollection( const QString &albumTitle, const QString &de
         results << albumID << albumTitle << description << artistID << price << imgUrl << albumAsin;
 
         Meta::AlbumPtr newAlbum = m_factory->createAlbum( results );
-        dynamic_cast<Meta::AmazonAlbum*>( newAlbum.data() )->setIsCompilation( isCompilation );
+        newAlbum->setCompilation( isCompilation );
         m_collection->addAlbum( newAlbum );
         m_collection->albumIDMap()->insert( albumAsin, albumID.toInt() );
     }

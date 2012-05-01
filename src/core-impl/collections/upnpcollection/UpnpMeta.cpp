@@ -485,12 +485,6 @@ UpnpAlbum::setAlbumArtist( UpnpArtistPtr artist )
 }
 
 void
-UpnpAlbum::setIsCompilation( bool compilation )
-{
-    m_isCompilation = compilation;
-}
-
-void
 UpnpAlbum::setAlbumArtUrl( const KUrl &url )
 {
     m_albumArtUrl = url;

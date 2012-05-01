@@ -735,6 +735,17 @@ ServiceAlbum::isCompilation() const
     return m_isCompilation;
 }
 
+bool ServiceAlbum::canUpdateCompilation() const
+{
+    return true;
+}
+
+void
+ServiceAlbum::setCompilation( bool compilation )
+{
+    m_isCompilation = compilation;
+}
+
 bool
 ServiceAlbum::hasAlbumArtist() const
 {
@@ -763,12 +774,6 @@ void
 ServiceAlbum::setAlbumArtist( ArtistPtr artist )
 {
     m_albumArtist = artist;
-}
-
-void
-ServiceAlbum::setIsCompilation( bool compilation )
-{
-    m_isCompilation = compilation;
 }
 
 void ServiceAlbum::setDescription(const QString &description)

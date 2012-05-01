@@ -420,12 +420,6 @@ DaapAlbum::setAlbumArtist( DaapArtistPtr artist )
     m_albumArtist = artist;
 }
 
-void
-DaapAlbum::setIsCompilation( bool compilation )
-{
-    m_isCompilation = compilation;
-}
-
 //DaapGenre
 
 DaapGenre::DaapGenre( const QString &name )

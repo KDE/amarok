@@ -167,7 +167,6 @@ class DaapAlbum : public Meta::Album
         //DaapAlbum specific methods
         void addTrack( DaapTrackPtr track );
         void setAlbumArtist( DaapArtistPtr artist );
-        void setIsCompilation( bool compilation );
 
     private:
         QString m_name;

@@ -377,7 +377,20 @@ namespace Meta
 
             virtual QString prettyName() const;
 
+            /**
+             * Whether this album is considered to be a compilation of tracks from various
+             * artists.
+             */
             virtual bool isCompilation() const = 0;
+            /**
+             * Whether toggling the compilation status is currenlty supported. Default
+             * implementation returns false.
+             */
+            virtual bool canUpdateCompilation() const { return false; }
+            /**
+             * Set compilation status. You should check canUpdateCompilation() first.
+             */
+            virtual void setCompilation( bool isCompilation ) { Q_UNUSED( isCompilation ) }
 
             /** Returns true if this album has an album artist */
             virtual bool hasAlbumArtist() const = 0;

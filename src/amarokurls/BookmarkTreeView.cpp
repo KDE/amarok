@@ -388,7 +388,6 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
     track->setGenre( genre );
 
     album->setAlbumArtist( artist );
-    album->setIsCompilation( false );
 
     //make the user give us some info about this item...
 

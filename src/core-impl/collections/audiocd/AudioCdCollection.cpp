@@ -291,7 +291,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
                     trackPtr->setArtist( artistPtr );
                 else
                 {
-                    albumPtr->setIsCompilation( true );
+                    albumPtr->setCompilation( true );
 
                     Meta::AudioCdArtistPtr trackArtistPtr = Meta::AudioCdArtistPtr( new Meta::AudioCdArtist( trackArtist ) );
                     trackArtistPtr->addTrack( trackPtr );

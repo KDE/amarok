@@ -258,6 +258,9 @@ namespace IpodMeta
             virtual Meta::TrackList tracks() { return Meta::TrackList(); }
 
             virtual bool isCompilation() const;
+            virtual bool canUpdateCompilation() const;
+            virtual void setCompilation( bool isCompilation );
+
             virtual bool hasAlbumArtist() const;
             virtual Meta::ArtistPtr albumArtist() const;
 
