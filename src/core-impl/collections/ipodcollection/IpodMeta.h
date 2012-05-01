@@ -251,7 +251,6 @@ namespace IpodMeta
     {
         public:
             Album( Track *track );
-            virtual ~Album();
 
             virtual QString name() const;
             // dummy, iPod tracks are supposed to be proxied by MemoryMeta which handles this
@@ -268,11 +267,7 @@ namespace IpodMeta
             virtual QImage image(int size = 0) const;
 
         private:
-            /** Must be called _without_ m_trackLock held! */
-            void readAlbumArtist() const;
-
             KSharedPtr<Track> m_track;
-            mutable QString *m_albumArtist;
     };
 
     /**

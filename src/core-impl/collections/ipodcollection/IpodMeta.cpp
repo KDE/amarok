@@ -65,11 +65,12 @@ Track::Track( const Meta::TrackPtr &origTrack )
     m_track->userdata_duplicate = AmarokItdbUserDataDuplicateFunc;
 
     Meta::AlbumPtr origAlbum = origTrack->album();
+    Meta::ArtistPtr origArtist = origTrack->artist();
 
     setTitle( origTrack->name() );
     // url is set in setCollection()
     setAlbum( origAlbum ? origAlbum->name() : QString() );
-    setArtist( origTrack->artist() ? origTrack->artist()->name() : QString() );
+    setArtist( origArtist ? origArtist->name() : QString() );
     setComposer( origTrack->composer() ? origTrack->composer()->name() : QString() );
     setGenre( origTrack->genre() ? origTrack->genre()->name() : QString() );
     setYear( origTrack->year() ? origTrack->year()->year() : 0 );
@@ -85,12 +86,14 @@ Track::Track( const Meta::TrackPtr &origTrack )
         if( origAlbum->hasImage() )
             setImage( origAlbum->image() );
     }
-    if( isCompilation && albumArtist.isEmpty() )
-        // iPod doesn't handle empy album artist well for compilation albums (splits these albums)
+    /* iPod doesn't handle empty album artist well for compilation albums (splits these
+     * albums). Ensure that we have something in albumArtist. We filter it for Amarok for
+     * compilation albums in IpodMeta::Album::albumArtist() */
+    if( albumArtist.isEmpty() && origArtist )
+        albumArtist = origArtist->name();
+    if( albumArtist.isEmpty() )
         albumArtist = i18n( "Various Artists" );
-    else
-        albumArtist = ArtistHelper::bestGuessAlbumArtist( albumArtist, artist()->name(),
-                                                          genre()->name(), composer()->name() );
+
     setAlbumArtist( albumArtist );
     setIsCompilation( isCompilation, /* doCommit */ false );
 
@@ -743,13 +746,7 @@ Track::commitChanges()
 
 Album::Album( Track *track )
     : m_track( track )
-    , m_albumArtist( 0 ) // for lazy-reading album artist
 {
-}
-
-Album::~Album()
-{
-    delete m_albumArtist;
 }
 
 QString Album::name() const
@@ -761,12 +758,7 @@ QString Album::name() const
 bool
 Album::isCompilation() const
 {
-    readAlbumArtist();
-    if( m_albumArtist->isEmpty() )
-        // set compilation flag, otherwise the album would be invisible in collection
-        // browser if "Album Artist / Album" view is selected.
-        return true;
-    return m_track->m_track->compilation == 0x1;
+    return m_track->m_track->compilation;
 }
 
 bool
@@ -785,17 +777,19 @@ Album::setCompilation( bool isCompilation )
 bool
 Album::hasAlbumArtist() const
 {
-    readAlbumArtist();
-    return !m_albumArtist->isEmpty();
+    return !isCompilation();
 }
 
 Meta::ArtistPtr
 Album::albumArtist() const
 {
-    readAlbumArtist();
-    if( m_albumArtist->isEmpty() )
+    if( isCompilation() )
         return Meta::ArtistPtr();
-    return Meta::ArtistPtr( new Artist( *m_albumArtist ) );
+    QReadLocker locker( &m_track->m_trackLock );
+    QString albumArtistName = QString::fromUtf8( m_track->m_track->albumartist );
+    if( albumArtistName.isEmpty() )
+        albumArtistName = QString::fromUtf8( m_track->m_track->artist );
+    return Meta::ArtistPtr( new Artist( albumArtistName ) );
 }
 
 bool
@@ -860,19 +854,4 @@ Album::image( int size ) const
     } while( false );
 #endif
     return albumImage;
-}
-
-void
-Album::readAlbumArtist() const
-{
-    if( m_albumArtist )
-        return;
-    QReadLocker( &m_track->m_trackLock );
-    /* We have to guess albumArtist, because setting empty album artist (like Amarok does
-     * for compilations) breaks compilations feature on iPods. */
-    m_albumArtist = new QString( ArtistHelper::bestGuessAlbumArtist(
-        QString::fromUtf8( m_track->m_track->albumartist ),
-        QString::fromUtf8( m_track->m_track->artist ),
-        QString::fromUtf8( m_track->m_track->genre ),
-        QString::fromUtf8( m_track->m_track->composer ) ) );
 }
