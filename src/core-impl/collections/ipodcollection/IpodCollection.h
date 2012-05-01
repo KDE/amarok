@@ -151,6 +151,11 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          */
         void slotShowConfigureDialog( const QString &errorMessage = QString() );
 
+        /**
+         * Overriden to update m_lastUpdated timestamp
+         */
+        virtual void collectionUpdated();
+
     private slots:
         /**
          * Tries to initialize iPod, read the database, add tracks. (Re)shows the
@@ -247,6 +252,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         Itdb_iTunesDB *m_itdb;
         QMutex m_itdbMutex;
         QTimer m_updateTimer;
+        qint64 m_lastUpdated; /* msecs since epoch */
         QTimer m_writeDatabaseTimer;
         QTemporaryFile *m_preventUnmountTempFile;
         QString m_mountPoint;

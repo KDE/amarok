@@ -57,6 +57,7 @@ IpodCollection::IpodCollection( const QDir &mountPoint )
     , m_configureDialog( 0 )
     , m_mc( new Collections::MemoryCollection() )
     , m_itdb( 0 )
+    , m_lastUpdated( 0 )
     , m_preventUnmountTempFile( 0 )
     , m_mountPoint( mountPoint.absolutePath() )
     , m_iphoneAutoMountpoint( 0 )
@@ -73,6 +74,7 @@ IpodCollection::IpodCollection( const QString &uuid )
     , m_configureDialog( 0 )
     , m_mc( new Collections::MemoryCollection() )
     , m_itdb( 0 )
+    , m_lastUpdated( 0 )
     , m_preventUnmountTempFile( 0 )
     , m_playlistProvider( 0 )
     , m_configureAction( 0 )
@@ -94,7 +96,7 @@ void IpodCollection::init()
 {
     m_updateTimer.setSingleShot( true );
     connect( this, SIGNAL(startUpdateTimer()), SLOT(slotStartUpdateTimer()) );
-    connect( &m_updateTimer, SIGNAL(timeout()), SIGNAL(updated()) );
+    connect( &m_updateTimer, SIGNAL(timeout()), SLOT(collectionUpdated()) );
 
     m_writeDatabaseTimer.setSingleShot( true );
     connect( this, SIGNAL(startWriteDatabaseTimer()), SLOT(slotStartWriteDatabaseTimer()) );
@@ -401,6 +403,12 @@ IpodCollection::slotShowConfigureDialog( const QString &errorMessage )
     m_configureDialog->raise();
 }
 
+void IpodCollection::collectionUpdated()
+{
+    m_lastUpdated = QDateTime::currentMSecsSinceEpoch();
+    emit updated();
+}
+
 void
 IpodCollection::slotInitialize()
 {
@@ -470,7 +478,15 @@ IpodCollection::slotApplyConfiguration()
 void
 IpodCollection::slotStartUpdateTimer()
 {
-    m_updateTimer.start( 2000 );
+    // there are no concurrency problems, this method can only be called from the main
+    // thread and that's where the timer fires
+    if( m_updateTimer.isActive() )
+        return; // already running, nothing to do
+
+    // number of milliseconds to next desired update, may be negative
+    int timeout = m_lastUpdated + 1000 - QDateTime::currentMSecsSinceEpoch();
+    // give at least 50 msecs to catch multi-tracks edits nicely on the first frame
+    m_updateTimer.start( qBound( 50, timeout, 1000 ) );
 }
 
 void
