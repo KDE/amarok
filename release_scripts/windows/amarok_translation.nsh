@@ -18,7 +18,7 @@
     ; !insertmacro MUI_LANGUAGE "NorwegianNynorsk"
     !insertmacro MUI_LANGUAGE "Finnish"
     ; !insertmacro MUI_LANGUAGE "Greek"
-    ; !insertmacro MUI_LANGUAGE "Russian"
+    !insertmacro MUI_LANGUAGE "Russian"
     ; !insertmacro MUI_LANGUAGE "Portuguese"
     !insertmacro MUI_LANGUAGE "PortugueseBR"
     ; !insertmacro MUI_LANGUAGE "Polish"
@@ -204,5 +204,14 @@
     LangString SECTION_LANGUAGES ${LANG_ENGLISH} "Idiomas";(é necessário conexão com a internet)
     LangString APPEARANCE_SETTINGS ${LANG_ENGLISH} "Configurações da aparência"
     LangString LANGUAGE_SETTINGS ${LANG_ENGLISH} "Configurações do idioma"
+
+    ;Russian
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_ENGLISH} "Посетить веб-сайт проекта"
+    LangString PAGE_LICENSE_HEADER_TEXT ${LANG_ENGLISH} "Лицензионное соглашение"
+    LangString PAGE_LICENSE_SUBTEXT ${LANG_ENGLISH} "Прочитайте лицензионное соглашение, чтобы узнать свои права до установки Amarok"
+    LangString SECTION_SNORE ${LANG_ENGLISH} "Snore (экранные уведомления)"
+    LangString SECTION_LANGUAGES ${LANG_ENGLISH} "Языки";(требуется подключение к сети Интернет)
+    LangString APPEARANCE_SETTINGS ${LANG_ENGLISH} "Настройка внешнего вида"
+    LangString LANGUAGE_SETTINGS ${LANG_ENGLISH} "Настройка языков"
 !macroend
 
