@@ -197,13 +197,13 @@
     LangString LANGUAGE_SETTINGS ${LANG_SPANISH} "Preferencias de idioma"
 
     ;PortugueseBR
-    LangString VISIT_PROJECT_HOMEPAGE ${LANG_ENGLISH} "Visite a página do projeto na Internet"
-    LangString PAGE_LICENSE_HEADER_TEXT ${LANG_ENGLISH} "Leitura da licença"
-    LangString PAGE_LICENSE_SUBTEXT ${LANG_ENGLISH} "Por favor, leia a licença para conhecer os seus direitos antes de instalar o Amarok"
-    LangString SECTION_SNORE ${LANG_ENGLISH} "Snore (notificações OSD)"
-    LangString SECTION_LANGUAGES ${LANG_ENGLISH} "Idiomas";(é necessário conexão com a internet)
-    LangString APPEARANCE_SETTINGS ${LANG_ENGLISH} "Configurações da aparência"
-    LangString LANGUAGE_SETTINGS ${LANG_ENGLISH} "Configurações do idioma"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_PORTUGUESEBR} "Visite a página do projeto na Internet"
+    LangString PAGE_LICENSE_HEADER_TEXT ${LANG_PORTUGUESEBR} "Leitura da licença"
+    LangString PAGE_LICENSE_SUBTEXT ${LANG_PORTUGUESEBR} "Por favor, leia a licença para conhecer os seus direitos antes de instalar o Amarok"
+    LangString SECTION_SNORE ${LANG_PORTUGUESEBR} "Snore (notificações OSD)"
+    LangString SECTION_LANGUAGES ${LANG_PORTUGUESEBR} "Idiomas";(é necessário conexão com a internet)
+    LangString APPEARANCE_SETTINGS ${LANG_PORTUGUESEBR} "Configurações da aparência"
+    LangString LANGUAGE_SETTINGS ${LANG_PORTUGUESEBR} "Configurações do idioma"
 
     ;Russian
     LangString VISIT_PROJECT_HOMEPAGE ${LANG_RUSSIAN} "Посетить веб-сайт проекта"
