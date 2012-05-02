@@ -73,6 +73,7 @@ VERSION 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Fix URLs in MP3tunes, gpodder.net and Last.fm config dialogs. (BR 299088)
     * Fix drag & drop in playlist layout editor, filename layout editor and
       filter editor for non-english locales. (BR 215402)
     * Fix bug where MySQL password could not be set to 'password'; patch by
