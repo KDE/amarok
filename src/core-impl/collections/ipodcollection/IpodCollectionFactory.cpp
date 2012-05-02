@@ -275,7 +275,10 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
     // fail if we hold some files on the device open, we try to tearDown the device too.
     connect( ssa, SIGNAL(teardownRequested(QString)), SLOT(slotRemoveAndTeardownSolidDevice(QString)) );
 
-    emit newCollection( collection );  // TODO: emit only when the collection was successfully created
+    if( collection->init() )
+        emit newCollection( collection );
+    else
+        collection->deleteLater();
 }
 
 #include "IpodCollectionFactory.moc"

@@ -66,7 +66,6 @@ IpodCollection::IpodCollection( const QDir &mountPoint )
     , m_ejectAction( 0 )
 {
     DEBUG_BLOCK
-    init();
 }
 
 IpodCollection::IpodCollection( const QString &uuid )
@@ -83,17 +82,17 @@ IpodCollection::IpodCollection( const QString &uuid )
     DEBUG_BLOCK
     m_iphoneAutoMountpoint = new IphoneMountPoint( uuid );
     m_mountPoint = m_iphoneAutoMountpoint->mountPoint();
+}
+
+bool IpodCollection::init()
+{
     if( m_mountPoint.isEmpty() )
     {
         KMessageBox::sorry( 0, i18n("Cannot connect to iPhone or iPad. More "
             "information is available in the Amarok debug log.") );
-        return;
+        return false;
     }
-    init();
-}
 
-void IpodCollection::init()
-{
     m_updateTimer.setSingleShot( true );
     connect( this, SIGNAL(startUpdateTimer()), SLOT(slotStartUpdateTimer()) );
     connect( &m_updateTimer, SIGNAL(timeout()), SLOT(collectionUpdated()) );
@@ -128,6 +127,8 @@ void IpodCollection::init()
     }
     else
         slotShowConfigureDialog( parseErrorMessage ); // shows error message and allows initializing
+
+    return true;  // we have found iPod, even if it might not be initialised
 }
 
 IpodCollection::~IpodCollection()

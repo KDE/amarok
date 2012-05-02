@@ -89,6 +89,14 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
 
         // IpodCollection methods:
         /**
+         * In-fact second phase of the construcor. Called by CollectionFactory right after
+         * constructor. Should return true if the collection initialised itself successfully
+         * and should be shown to the user; return value of false means it should be
+         * destroyed and forgotten by the factory.
+         */
+        bool init();
+
+        /**
          * Get local mount point. Can return QString() in case no reasonamble mountpoint
          * is available
          */
@@ -201,11 +209,6 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         static const QStringList s_audioFileTypes;
         static const QStringList s_videoFileTypes;
         static const QStringList s_audioVideoFileTypes;
-
-        /**
-         * In-fact construcor used to share code between different constructors.
-         */
-        void init();
 
         // method for IpodParseTracksJob and IpodCopyTracksJob:
         /**
