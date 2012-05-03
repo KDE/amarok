@@ -33,8 +33,6 @@ IpodPlaylistProvider::IpodPlaylistProvider( IpodCollection* collection )
     : UserPlaylistProvider( collection )
     , m_coll( collection )
 {
-    m_consolidateAction = new QAction( KIcon( "dialog-ok-apply" ), i18n( "Re-add orphaned and forget stale tracks" ), this );
-    connect( m_consolidateAction, SIGNAL(triggered()), SLOT(slotConsolidateStaleOrphaned()) );
 }
 
 IpodPlaylistProvider::~IpodPlaylistProvider()
@@ -97,13 +95,8 @@ IpodPlaylistProvider::save( const Meta::TrackList &tracks, const QString &name )
 QActionList
 IpodPlaylistProvider::providerActions()
 {
-    QActionList actions = Playlists::UserPlaylistProvider::providerActions();
-    Capabilities::ActionsCapability *ac = m_coll->create<Capabilities::ActionsCapability>();
-    actions << ac->actions();  // all IpodCollection actions are parented, no memory leak here
-    delete ac;
-    if( m_stalePlaylist || m_orphanedPlaylist )
-        actions << m_consolidateAction;
-    return actions;
+    QScopedPointer<Capabilities::ActionsCapability> ac( m_coll->create<Capabilities::ActionsCapability>() );
+    return ac->actions();  // all IpodCollection actions are parented, no memory leak here
 }
 
 QActionList
@@ -120,7 +113,7 @@ IpodPlaylistProvider::playlistActions( Playlists::PlaylistPtr playlist )
             break;
         case IpodPlaylist::Stale:
         case IpodPlaylist::Orphaned:
-            actions << m_consolidateAction;
+            actions << m_coll->m_consolidateAction;
             break;
     }
 
@@ -141,7 +134,7 @@ IpodPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
             break;
         case IpodPlaylist::Stale:
         case IpodPlaylist::Orphaned:
-            actions << m_consolidateAction;
+            actions << m_coll->m_consolidateAction;
             break;
     }
 
@@ -261,23 +254,18 @@ IpodPlaylistProvider::parseItdbPlaylists( const Meta::TrackList &staleTracks, co
 
     if( m_stalePlaylist || m_orphanedPlaylist )
     {
-        QString text = i18n( "Stale and/or orphaned tracks detected on %1. You can go to "
-            "Saved Playlists to add orphaned tracks back to iTunes database and to remove "
-            "stale entries.", m_coll->prettyName() );
+        QString text = i18n( "Stale and/or orphaned tracks detected on %1. You can resolve "
+            "the situation using the <b>%2</b> collection action. You can also view the tracks "
+            "under the Saved Playlists tab.", m_coll->prettyName(),
+            m_coll->m_consolidateAction->text() );
         Amarok::Components::logger()->longMessage( text );
     }
 }
 
-void IpodPlaylistProvider::slotCopyAndInsertToPlaylists()
+bool
+IpodPlaylistProvider::hasStaleOrOrphaned() const
 {
-    QMutableSetIterator< KSharedPtr<IpodPlaylist> > it( m_copyTracksTo );
-    while( it.hasNext() )
-    {
-        KSharedPtr<IpodPlaylist> ipodPlaylist = it.next();
-        TrackPositionList tracks = ipodPlaylist->takeTracksToCopy();
-        copyAndInsertToPlaylist( tracks, Playlists::PlaylistPtr::staticCast( ipodPlaylist ) );
-        it.remove();
-    }
+    return m_stalePlaylist || m_orphanedPlaylist;
 }
 
 void
@@ -388,6 +376,19 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
         "tracks added back to the iTunes database. %4", matched, removed, added,
         failedText );
     Amarok::Components::logger()->longMessage( text );
+}
+
+void
+IpodPlaylistProvider::slotCopyAndInsertToPlaylists()
+{
+    QMutableSetIterator< KSharedPtr<IpodPlaylist> > it( m_copyTracksTo );
+    while( it.hasNext() )
+    {
+        KSharedPtr<IpodPlaylist> ipodPlaylist = it.next();
+        TrackPositionList tracks = ipodPlaylist->takeTracksToCopy();
+        copyAndInsertToPlaylist( tracks, Playlists::PlaylistPtr::staticCast( ipodPlaylist ) );
+        it.remove();
+    }
 }
 
 void IpodPlaylistProvider::copyAndInsertToPlaylist( const TrackPositionList &tracks, Playlists::PlaylistPtr destPlaylist )

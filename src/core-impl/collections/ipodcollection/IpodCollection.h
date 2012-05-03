@@ -264,6 +264,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         IpodPlaylistProvider *m_playlistProvider;
         QAction *m_configureAction;
         QAction *m_ejectAction;
+        QAction *m_consolidateAction;
 };
 
 #endif // IPODCOLLECTION_H

@@ -62,7 +62,6 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
         virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
 
         // IpodPlaylistProvider specific methods:
-
         /**
          * Copy tracks stored in playlists tracksToCopy() to iPod and them add them to the
          * playlist. The actual call to start copying tracks is deferred to next eventloop
@@ -86,6 +85,18 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
          */
         void parseItdbPlaylists( const Meta::TrackList &staleTracks, const QSet<QString> &knownPaths );
 
+        /**
+         * Return true whether there are some stale & orphaned files/entries in iTunes db
+         */
+        bool hasStaleOrOrphaned() const;
+
+    public slots:
+        /**
+         * Re-add orphaned files to db and remove stale iTunes database entries. Meant to
+         * be connected to the respective QAction.
+         */
+        void slotConsolidateStaleOrphaned();
+
     signals:
         /**
          * Signals to IpodCollection that the database has been dirtied and it has to
@@ -95,7 +106,6 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
 
     private slots:
         void slotCopyAndInsertToPlaylists();
-        void slotConsolidateStaleOrphaned();
 
     private:
         void copyAndInsertToPlaylist( const TrackPositionList &tracks, Playlists::PlaylistPtr destPlaylist );
@@ -108,7 +118,6 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
         QSet< KSharedPtr<IpodPlaylist> > m_copyTracksTo;
         Playlists::PlaylistPtr m_stalePlaylist;
         Playlists::PlaylistPtr m_orphanedPlaylist;
-        QAction *m_consolidateAction;
 };
 
 #endif // IPODPLAYLISTPROVIDER_H

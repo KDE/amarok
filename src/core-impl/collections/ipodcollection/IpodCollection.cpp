@@ -63,6 +63,7 @@ IpodCollection::IpodCollection( const QDir &mountPoint )
     , m_playlistProvider( 0 )
     , m_configureAction( 0 )
     , m_ejectAction( 0 )
+    , m_consolidateAction( 0 )
 {
     DEBUG_BLOCK
 }
@@ -77,6 +78,7 @@ IpodCollection::IpodCollection( const QString &uuid )
     , m_playlistProvider( 0 )
     , m_configureAction( 0 )
     , m_ejectAction( 0 )
+    , m_consolidateAction( 0 )
 {
     DEBUG_BLOCK
     // following constructor displays sorry message if it cannot mount iPhone:
@@ -109,9 +111,12 @@ bool IpodCollection::init()
     m_itdb = IpodDeviceHelper::parseItdb( m_mountPoint, parseErrorMessage );
     m_prettyName = IpodDeviceHelper::collectionName( m_itdb ); // allows null m_itdb
 
+    // m_consolidateAction is used by the provider
+    m_consolidateAction = new QAction( KIcon( "dialog-ok-apply" ), i18n( "Re-add orphaned and forget stale tracks" ), this );
     // provider needs to be up before IpodParseTracksJob is started
     m_playlistProvider = new IpodPlaylistProvider( this );
     connect( m_playlistProvider, SIGNAL(startWriteDatabaseTimer()), SIGNAL(startWriteDatabaseTimer()) );
+    connect( m_consolidateAction, SIGNAL(triggered()), m_playlistProvider, SLOT(slotConsolidateStaleOrphaned()) );
     The::playlistManager()->addProvider( m_playlistProvider, m_playlistProvider->category() );
 
     if( m_itdb )
@@ -196,6 +201,8 @@ IpodCollection::createCapabilityInterface( Capabilities::Capability::Type type )
                 actions << m_configureAction;
             if( m_ejectAction )
                 actions << m_ejectAction;
+            if( m_consolidateAction && m_playlistProvider && m_playlistProvider->hasStaleOrOrphaned() )
+                actions << m_consolidateAction;
             return new Capabilities::ActionsCapability( actions );
         }
         case Capabilities::Capability::Transcode:
