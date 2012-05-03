@@ -20,6 +20,8 @@
 #include "core/support/Debug.h"
 
 #include <KStandardDirs>
+#include <KLocalizedString>
+#include <KMessageBox>
 
 #include <QProcess>
 #include <QDir>
@@ -27,157 +29,55 @@
 
 IphoneMountPoint::IphoneMountPoint( const QString &uuid )
 {
-    QStringList args;
-    if( !uuid.isEmpty() )
-    {
-        args << "--uuid";
-        args << uuid;
-        args << QString("-ofsname=afc://%1").arg( uuid );
-    }
     QString mountPointCandidate = constructMountpoint( uuid );
-    args << mountPointCandidate;
-
-    // TODO: refactor this so that it is not that horrible
-    QProcess ifuse;
-    debug() << "calling ifuse with args" << args;
-    ifuse.start( "ifuse", args);
-    bool ok = ifuse.waitForStarted( 5000 );
-    if( !ok )
-        debug() << "Failed to start ifuse";
-    else
+    QStringList checkedDirs;  // see itdb_get_control_dir (const gchar *mountpoint)
+    checkedDirs << "/iTunes_Control";
+    checkedDirs << "/iPod_Control";
+    checkedDirs << "/iTunes/iTunes_Control";
+    foreach( QString dir, checkedDirs )
     {
-        ok = ifuse.waitForFinished();
-        if( !ok )
-            debug() << "ifuse did not yet terminate";
-    }
-    if( ok )
-    {
-        ok = ifuse.exitStatus() == QProcess::NormalExit;
-        if( !ok )
-            debug() << "ifuse crashed";
-    }
-    if( ok )
-    {
-        ok = ifuse.exitCode() == 0;
-        if( !ok )
+        if( QFile::exists( mountPointCandidate + dir ) )
         {
-            if( ifuse.exitCode() == 255 )
-            {
-                debug() << "ipod mount dir was not cleanly unmounted, attempting unmount";
-                QProcess unmount;
-                QStringList unmountarg;
-                unmountarg << "-u" << mountPointCandidate;
-                unmount.start("fusermount", unmountarg);
-                bool unmountok = unmount.waitForStarted();
-                if( !unmountok )
-                {
-                    debug() << "fusermount for unmounting" << mountPointCandidate << "failed to start";
-                }
-                else
-                {
-                    unmountok = unmount.waitForFinished();
-                    if( !unmountok )
-                        debug() << "fusermount did not terminate correctly";
-                }
-                if( unmountok )
-                {
-                    unmountok = unmount.exitStatus() == QProcess::NormalExit;
-                    if( !unmountok )
-                        debug() << "fusermount did not exit normally";
-                    else
-                    {
-                        // take 2
-                        debug() << "calling ifuse with args" << args;
-                        ifuse.start("ifuse", args);
-                        ok = ifuse.waitForStarted();
-                        if( !ok )
-                        {
-                            debug() << "Failed to start ifuse";
-                        }
-                        else
-                        {
-                            ok = ifuse.waitForFinished();
-                            if( !ok )
-                                debug() << "ifuse did not yet terminate";
-                        }
-                        if( ok )
-                        {
-                            ok = ifuse.exitStatus() == QProcess::NormalExit;
-                            if( !ok )
-                                debug() << "ifuse crashed";
-                        }
-                        if( ok )
-                        {
-                            ok = ifuse.exitCode() == 0;
-                            if( !ok )
-                            {
-                                debug() << "ifuse exited with non-zero exit code" << ifuse.exitCode();
-                            }
-                        }
-                    }
-                }
-            }
-            else
-                debug() << "ifuse exited with non-zero exit code" << ifuse.exitCode();
+            logMessage( QString( "%1 exists, assuming iPhone is already mounted" ).arg( dir ) );
+            m_mountPoint = mountPointCandidate;
+            return;
         }
     }
 
-    if( ok )
+    QStringList args;
+    if( !uuid.isEmpty() )
+        args << "--uuid" << uuid << QString( "-ofsname=afc://%1" ).arg( uuid );
+    args << mountPointCandidate;
+    if( !call( "ifuse", args ) )
     {
-        m_mountPoint = mountPointCandidate;
-        debug() << "Successfully mounted imobiledevice using ifuse on" << mountPointCandidate;
+        logMessage( QString( "Failed to mount iPhone on %1" ).arg( mountPointCandidate ) );
+        KMessageBox::detailedSorry( 0, i18n( "Connecting to iPhone, iPad or iPod touch failed."),
+            failureDetails() );
+        return;
     }
-    else
-    {
-        debug() << "Mounting imobiledevice using ifuse on" << mountPointCandidate << "failed";
-    }
+    logMessage( QString( "Successfully mounted iPhone on %1" ).arg( mountPointCandidate ) );
+    m_mountPoint = mountPointCandidate;
+
 }
 
 IphoneMountPoint::~IphoneMountPoint()
 {
-    if( mountPoint().isEmpty() )
+    if( m_mountPoint.isEmpty() )
         return; // easy, nothing to do
 
-    QProcess unmount;
-    QStringList args;
-    args << "-u" << "-z" << mountPoint();
-    unmount.start("fusermount", args);
-    bool ok = unmount.waitForStarted();
-    if( !ok )
-        debug() << "fusermount for unmounting" << mountPoint() << "failed to start";
+    logMessage( "" );  // have a line between constructor and destructor messages
+
+    if( !call( "fusermount", QStringList() << "-u" << "-z" << m_mountPoint ) )
+    {
+        logMessage( QString( "Failed to unmount iPhone from %1" ).arg( m_mountPoint ) );
+        return;
+    }
+    logMessage( QString( "Successfully unmounted iPhone from %1" ).arg( m_mountPoint ) );
+
+    if( QDir( mountPoint() ).rmpath( "." ) )
+        logMessage( QString( "Deleted %1 directory and empty parent directories" ).arg( m_mountPoint ) );
     else
-    {
-        ok = unmount.waitForFinished();
-        if( !ok )
-            debug() << "fusermount did not terminate correctly";
-    }
-
-    if( ok )
-    {
-        ok = unmount.exitStatus() == QProcess::NormalExit;
-        if( !ok )
-            debug() << "fusermount did not exit normally";
-    }
-
-    if( ok )
-    {
-        ok = unmount.exitCode() == 0;
-        if( !ok )
-            debug() << "fusermount did not exit successfully";
-    }
-
-    if( ok )
-        debug() << "Unmounted imobiledevice using ifuse from" << mountPoint();
-    else
-        debug() << "Unmounting imobiledevice using ifuse from" << mountPoint() << "failed";
-
-    if( ok )
-    {
-        if( QDir( mountPoint() ).rmpath( "." ) )
-            debug() << "Deleted" << mountPoint() << "directory and empty parent directories";
-        else
-            debug() << "Failed to delete" << mountPoint() << "directory.";
-    }
+        logMessage( QString( "Failed to delete %1 directory" ).arg( m_mountPoint ) );
 }
 
 QString
@@ -186,20 +86,69 @@ IphoneMountPoint::mountPoint() const
     return m_mountPoint;
 }
 
+QString IphoneMountPoint::failureDetails() const
+{
+    return m_messages.join( "<br>\n" );
+}
+
 QString
 IphoneMountPoint::constructMountpoint( const QString &uuid )
 {
     QString mountPointCandidate = KStandardDirs::locateLocal( "tmp", "amarok/" );
     mountPointCandidate += "imobiledevice";
     if( !uuid.isEmpty() )
-        mountPointCandidate += '_' + uuid;
-    debug() << "set mountpoint to " << mountPointCandidate;
+        mountPointCandidate += "_uuid_" + uuid;
+    logMessage( QString( "determined mount-point path to %1" ).arg( mountPointCandidate ) );
 
     QDir mp( mountPointCandidate );
     if( !mp.exists() )
     {
         mp.mkpath( mountPointCandidate );
-        debug() << "created " << mountPointCandidate;
+        logMessage( QString( "created %1 directory" ).arg( mountPointCandidate ) );
     }
     return mountPointCandidate;
+}
+
+bool IphoneMountPoint::call( const QString &command, const QStringList &arguments, int timeout )
+{
+    QProcess process;
+    process.setProcessChannelMode( QProcess::MergedChannels );
+    logMessage( QString( "calling `%1 \"%2\"` with timeout of %3s" ).arg( command, arguments.join( "\" \"" ) ).arg( timeout/1000.0 ) );
+    process.start( command, arguments );
+
+    if( !process.waitForStarted( timeout ) )
+    {
+        logMessage( "command failed to start within timeout" );
+        return false;
+    }
+    if( !process.waitForFinished( timeout ) )
+    {
+        logMessage( "command failed to finish within timeout" );
+        return false;
+    }
+
+    QByteArray output( process.readAllStandardOutput() );
+    foreach( QString line, QString::fromLocal8Bit( output ).split( QChar( '\n' ) ) )
+    {
+        logMessage( QString("%1: %2").arg( command, line ) );
+    }
+
+    if( process.exitStatus() != QProcess::NormalExit )
+    {
+        logMessage( "command crashed" );
+        return false;
+    }
+    if( process.exitCode() != 0 )
+    {
+        logMessage( QString( "command exited with non-zero return code %1" ).arg( process.exitCode() ) );
+        return false;
+    }
+    return true;
+}
+
+void IphoneMountPoint::logMessage( const QString &message )
+{
+    m_messages << message;
+    if( !message.isEmpty() )
+        debug() << "IpodCollection: IphoneMountPoint:" << message;
 }

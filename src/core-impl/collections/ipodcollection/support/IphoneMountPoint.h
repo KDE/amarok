@@ -18,6 +18,7 @@
 #define IPHONEMOUNTPOINT_H
 
 #include <QString>
+#include <QStringList>
 
 
 /**
@@ -39,6 +40,11 @@ class IphoneMountPoint
          */
         QString mountPoint() const;
 
+        /**
+         * Return a rather long string describing mount failure.
+         */
+        QString failureDetails() const;
+
     private:
         Q_DISABLE_COPY(IphoneMountPoint)
 
@@ -47,7 +53,21 @@ class IphoneMountPoint
          */
         QString constructMountpoint( const QString &uuid );
 
+        /**
+         * Calls command, logs the call and any errors using logMessage(), returns true
+         * if the command executed and returned successfully, false otherwise.
+         *
+         * @param timeout timeot of starting, waiting for process finished, etc. in milliseconds
+         */
+        bool call( const QString &command, const QStringList &arguments, int timeout = 10000 );
+
+        /**
+         * Log message to debugging output and to m_messages
+         */
+        void logMessage( const QString &message );
+
         QString m_mountPoint;
+        QStringList m_messages;
 };
 
 #endif // IPHONEMOUNTPOINT_H

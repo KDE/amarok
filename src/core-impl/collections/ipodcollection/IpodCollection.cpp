@@ -39,7 +39,6 @@
 #include <solid/predicate.h>
 #include <solid/storageaccess.h>
 #include <ThreadWeaver/Weaver>
-#include <KMessageBox>
 
 #include <QWeakPointer>
 
@@ -80,6 +79,7 @@ IpodCollection::IpodCollection( const QString &uuid )
     , m_ejectAction( 0 )
 {
     DEBUG_BLOCK
+    // following constructor displays sorry message if it cannot mount iPhone:
     m_iphoneAutoMountpoint = new IphoneMountPoint( uuid );
     m_mountPoint = m_iphoneAutoMountpoint->mountPoint();
 }
@@ -87,11 +87,7 @@ IpodCollection::IpodCollection( const QString &uuid )
 bool IpodCollection::init()
 {
     if( m_mountPoint.isEmpty() )
-    {
-        KMessageBox::sorry( 0, i18n("Cannot connect to iPhone or iPad. More "
-            "information is available in the Amarok debug log.") );
-        return false;
-    }
+        return false;  // we have already displayed sorry message
 
     m_updateTimer.setSingleShot( true );
     connect( this, SIGNAL(startUpdateTimer()), SLOT(slotStartUpdateTimer()) );
