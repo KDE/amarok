@@ -25,7 +25,10 @@
 /**
  * Calls Meta::Tag::writeTags( path, changedFields ) in a thread so that main thread
  * is not blocked with IO. writeTags() respects AmarokConfig::writeBackStatistics,
- * AmarokConfig::writeBack()
+ * AmarokConfig::writeBack().
+ *
+ * If @param changes contains IpodMeta::valImage, writes back image too, respecting
+ * AmarokConfig.
  *
  * The caller is responsible to delete this job after use, perhaps by connecting its
  * done() signal to its deleteLater() slot.

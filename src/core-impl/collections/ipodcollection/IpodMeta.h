@@ -34,6 +34,8 @@ class IpodCollection;
 
 namespace IpodMeta
 {
+    static const qint64 valImage = Meta::valCustom + 1LL;
+
     /**
      * An iPod track. album, artist, composer etc. are invisible to ouside world, they are
      * proxied in the MemoMeta track. All methods in this class are thread-safe with a few
@@ -162,7 +164,7 @@ namespace IpodMeta
             void setLastPlayed( const QDateTime &time );
             void setPlayCount( const int playcount );
             void setIsCompilation( bool newIsCompilation, bool doCommit = true );
-            void setImage( const QImage &newImage );
+            void setImage( const QImage &newImage, bool doCommit = true );
             void setLength( qint64 newLength );
             void setSampleRate( int newSampleRate );
             void setBitrate( int newBitrate );
@@ -264,7 +266,10 @@ namespace IpodMeta
             virtual Meta::ArtistPtr albumArtist() const;
 
             virtual bool hasImage( int size = 0 ) const;
-            virtual QImage image(int size = 0) const;
+            virtual QImage image( int size = 0 ) const;
+            virtual bool canUpdateImage() const;
+            virtual void setImage( const QImage &image );
+            virtual void removeImage();
 
         private:
             KSharedPtr<Track> m_track;

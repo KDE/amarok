@@ -23,6 +23,7 @@
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/ArtistHelper.h"
+#include "covermanager/CoverCache.h"
 #include "FileType.h"
 
 #include <KTemporaryFile>
@@ -84,7 +85,7 @@ Track::Track( const Meta::TrackPtr &origTrack )
             albumArtist = origAlbum->albumArtist()->name();
 
         if( origAlbum->hasImage() )
-            setImage( origAlbum->image() );
+            setImage( origAlbum->image(), /* doCommit */ false );
     }
     /* iPod doesn't handle empty album artist well for compilation albums (splits these
      * albums). Ensure that we have something in albumArtist. We filter it for Amarok for
@@ -266,35 +267,40 @@ Track::setIsCompilation( bool newIsCompilation, bool doCommit )
 }
 
 void
-Track::setImage( const QImage &newImage )
+Track::setImage( const QImage &newImage, bool doCommit )
 {
+    QWriteLocker locker( &m_trackLock );
     if( newImage.isNull() )
     {
         itdb_track_remove_thumbnails( m_track );
         delete m_tempImageFile;
         m_tempImageFile = 0;
-        return;
     }
-
-    // we set artwork even for devices that don't support it, everyone has new-enough iPod nowadays
-    const int maxSize = AmarokConfig::writeBackCoverDimensions();
-    QImage image;
-    if( newImage.width() > maxSize || newImage.height() > maxSize )
-        image = newImage.scaled( maxSize, maxSize, Qt::KeepAspectRatio, Qt::SmoothTransformation );
     else
-        image = newImage;
+    {
+        // we set artwork even for devices that don't support it, everyone has new-enough iPod nowadays
+        const int maxSize = AmarokConfig::writeBackCoverDimensions();
+        QImage image;
+        if( newImage.width() > maxSize || newImage.height() > maxSize )
+            image = newImage.scaled( maxSize, maxSize, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        else
+            image = newImage;
 
-    delete m_tempImageFile; // delete possible previous temporary file
-    m_tempImageFile = new KTemporaryFile();
-    m_tempImageFile->setSuffix( QString( ".png" ) );
-    if( !m_tempImageFile->open() )
-        return;
-    // we save the file to disk rather than pass image data to save several megabytes of RAM
-    if( !image.save( m_tempImageFile, "PNG" ) )
-        return;
-    /* this function remembers image path, it also fogots previous images (if any)
-     * and sets artwork_size, artwork_count and has_artwork m_track fields */
-    itdb_track_set_thumbnails( m_track, QFile::encodeName( m_tempImageFile->fileName() ) );
+        delete m_tempImageFile; // delete possible previous temporary file
+        m_tempImageFile = new KTemporaryFile();
+        m_tempImageFile->setSuffix( QString( ".png" ) );
+        // we save the file to disk rather than pass image data to save several megabytes of RAM
+        if( m_tempImageFile->open() && image.save( m_tempImageFile, "PNG" ) )
+            /* this function remembers image path, it also fogots previous images (if any)
+             * and sets artwork_size, artwork_count and has_artwork m_track fields */
+            itdb_track_set_thumbnails( m_track, QFile::encodeName( m_tempImageFile->fileName() ) );
+    }
+    m_changedFields.insert( IpodMeta::valImage, newImage );
+    locker.unlock();
+
+    if( doCommit )
+         // setImage() is not a part of EditCapability, we have to commit ourselves:
+        commitChanges();
 }
 
 Meta::ArtistPtr
@@ -854,4 +860,25 @@ Album::image( int size ) const
     } while( false );
 #endif
     return albumImage;
+}
+
+bool Album::canUpdateImage() const
+{
+#ifdef GDKPIXBUF_FOUND
+    Collections::Collection *coll = m_track->collection();
+    return coll ? coll->isWritable() : false;
+#else
+    return false;
+#endif
+}
+
+void Album::setImage( const QImage &image )
+{
+    m_track->setImage( image );
+    CoverCache::invalidateAlbum( this );
+}
+
+void Album::removeImage()
+{
+    setImage( QImage() );
 }
