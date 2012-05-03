@@ -72,9 +72,10 @@ class Album : public Meta::Album, public Base
     public:
         Album( const QString &name, const Meta::ArtistPtr &albumArtist )
             : Base( name )
+            , m_albumArtist( albumArtist )
             , m_isCompilation( false )
             , m_canUpdateCompilation( false )
-            , m_albumArtist( albumArtist )
+            , m_canUpdateImage( false )
             {}
         /**
          * Copy-like constructor for MapChanger
@@ -99,21 +100,23 @@ class Album : public Meta::Album, public Base
 
         virtual bool hasImage( int /* size */ = 0 ) const { return !m_image.isNull(); }
         virtual QImage image( int size = 0 ) const;
-        /* We intentionally don't advertise canUpdateImage() - setting image here would not
-         * currently do what the user expects */
-        virtual void setImage( const QImage &image ) { m_image = image; }
+        virtual bool canUpdateImage() const { return m_canUpdateImage; }
+        virtual void setImage( const QImage &image );
+        virtual void removeImage();
 
         /* MemoryMeta::Album methods: */
-        void setCachedCompilation( bool isCompilation )
-            { m_isCompilation = isCompilation; }
-        void setCachedCanUpdateCompilation( bool canUpdateCompilation )
-            { m_canUpdateCompilation = canUpdateCompilation; }
+        /**
+         * Re-read isCompilation, canUpdateCompilation, image, canUpdateImage from all
+         * underlying tracks.
+         */
+        void updateCachedValues();
 
     private:
+        Meta::ArtistPtr m_albumArtist;
         bool m_isCompilation;
         bool m_canUpdateCompilation;
-        Meta::ArtistPtr m_albumArtist;
         QImage m_image;
+        bool m_canUpdateImage;
 };
 
 class Composer : public Meta::Composer, public Base

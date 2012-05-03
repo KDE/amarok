@@ -17,6 +17,8 @@
 
 #include "MemoryMeta.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
+#include "covermanager/CoverCache.h"
+
 
 using namespace MemoryMeta;
 
@@ -52,6 +54,7 @@ Album::Album( const Meta::AlbumPtr &other )
     , m_isCompilation( other->isCompilation() )
     , m_canUpdateCompilation( other->canUpdateCompilation() )
     , m_image( other->image() )
+    , m_canUpdateImage( other->canUpdateImage() )
 {
     if( other->hasAlbumArtist() && other->albumArtist() )
         m_albumArtist = Meta::ArtistPtr( new Artist( other->albumArtist()->name() ) );
@@ -102,6 +105,55 @@ Album::image( int size ) const
     if( size > 1 && size <= 1000 && !m_image.isNull() )
         return m_image.scaled( size, size, Qt::KeepAspectRatio, Qt::FastTransformation );
     return m_image;
+}
+
+void
+Album::setImage( const QImage &image )
+{
+    foreach( Meta::TrackPtr track, tracks() )
+    {
+        Track *memoryTrack = static_cast<Track *>( track.data() );
+        Meta::AlbumPtr album = memoryTrack->originalTrack()->album();
+        if( album && album->canUpdateImage() )
+            album->setImage( image );
+    }
+    // no notifyObservers() etc needed - this is done from down-up by proxied tracks
+}
+
+void
+Album::removeImage()
+{
+    foreach( Meta::TrackPtr track, tracks() )
+    {
+        Track *memoryTrack = static_cast<Track *>( track.data() );
+        Meta::AlbumPtr album = memoryTrack->originalTrack()->album();
+        if( album && album->canUpdateImage() )
+            album->removeImage();
+    }
+    // no notifyObservers() etc needed - this is done from down-up by proxied tracks
+}
+
+void
+Album::updateCachedValues()
+{
+    m_isCompilation = false;
+    m_canUpdateCompilation = false;
+    m_image = QImage();
+    m_canUpdateImage = false;
+    foreach( Meta::TrackPtr track, tracks() )
+    {
+        Track *memoryTrack = static_cast<Track *>( track.data() );
+        Meta::AlbumPtr album = memoryTrack->originalTrack()->album();
+
+        if( !m_isCompilation )
+            m_isCompilation = album->isCompilation();
+        if( !m_canUpdateCompilation )
+            m_canUpdateCompilation = album->canUpdateCompilation();
+        if( m_image.isNull() && album->hasImage() )
+            m_image = album->image();
+        if( !m_canUpdateImage )
+            m_canUpdateImage = album->canUpdateImage();
+    }
 }
 
 Track::Track(const Meta::TrackPtr& originalTrack)
@@ -244,16 +296,9 @@ MapChanger::addExistingTrack( Meta::TrackPtr track, Track *memoryTrack )
         album = Meta::AlbumPtr( new Album( albumName, albumArtist ) );
         m_mc->addAlbum( album );
     }
-    bool isCompilation = trackAlbum ? trackAlbum->isCompilation() : false;
-    bool canUpdateCompilation = trackAlbum ? trackAlbum->canUpdateCompilation() : false;
     Album *memoryAlbum = static_cast<Album *>( album.data() );
-    // be deterministic wrt track adding order:
-    memoryAlbum->setCachedCompilation( memoryAlbum->isCompilation() || isCompilation );
-    memoryAlbum->setCachedCanUpdateCompilation( memoryAlbum->canUpdateCompilation() || canUpdateCompilation );
-    // optimisation: only read album cover if no previous one exists:
-    if( !memoryAlbum->hasImage() && trackAlbum && trackAlbum->hasImage() )
-            memoryAlbum->setImage( trackAlbum->image() );
     memoryTrack->setAlbum( memoryAlbum );
+    memoryAlbum->updateCachedValues();
 
     QString genreName = track->genre().isNull() ? QString() : track->genre()->name();
     Meta::GenrePtr genre = m_mc->genreMap().value( genreName );
@@ -385,9 +430,13 @@ MapChanger::trackChanged( Meta::TrackPtr track )
         return false; // paranoia
 
     bool mapsNeedUpdating = false;
-    if( entitiesDiffer( originalTrack->artist().data(), memoryTrack->artist().data() ) )
+    // make album first so that invalidateAlbum is called every time it is needed
+    if( entitiesDiffer( originalTrack->album().data(), memoryTrack->album().data() ) )
+    {
+        CoverCache::invalidateAlbum( memoryTrack->album().data() );
         mapsNeedUpdating = true;
-    else if( entitiesDiffer( originalTrack->album().data(), memoryTrack->album().data() ) )
+    }
+    else if( entitiesDiffer( originalTrack->artist().data(), memoryTrack->artist().data() ) )
         mapsNeedUpdating = true;
     else if( entitiesDiffer( originalTrack->genre().data(), memoryTrack->genre().data() ) )
         mapsNeedUpdating = true;
