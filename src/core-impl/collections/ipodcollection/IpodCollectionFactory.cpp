@@ -237,19 +237,19 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
                 debug() << "Above device suports ipod/usbmux protocol/driver combo, good";
                 break;
             }
-            /* Following is a work-around for kdelibs 4.8.3 and earlier that return
+            /* Following is a work-around for kdelibs 4.8.2 and earlier that return
              * mtp protocol for AFC-capable iOS devices. It can be removed once Amarok
-             * depends on kdelibs >= 4.8.4 or kdelibs 4.9 */
+             * depends on kdelibs >= 4.8.3 or kdelibs 4.9 */
             if( pmp->supportedProtocols().contains( "mtp" ) &&
                 pmp->supportedDrivers().contains( "usb" ) )
             {
                 debug() << "Above device suports mtp/usb protocol/driver combo,"
-                        << "treating as iPhone (kdelibs <= 4.8.3 work-around)";
+                        << "treating as iPhone (kdelibs <= 4.8.2 work-around)";
                 break;
             }
 
             debug() << "Ignoring above device as it doesn't support ipod/usbmux or mtp/usb"
-                    << "(kdelibs <= 4.8.3 work-around) PortableMediaPlayer protocol/driver combo";
+                    << "(kdelibs <= 4.8.2 work-around) PortableMediaPlayer protocol/driver combo";
             return;
         } while( false );
     }
