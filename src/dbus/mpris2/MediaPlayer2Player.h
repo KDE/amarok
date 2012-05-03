@@ -108,6 +108,8 @@ namespace Amarok
 
         private:
             QVariantMap metadataForTrack( Meta::TrackPtr track ) const;
+
+            qint64 m_lastPosition;
     };
 }
 

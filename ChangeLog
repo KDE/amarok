@@ -119,6 +119,8 @@ VERSION 2.6-Beta 1
     * MPRIS2 compliance: don't use track ids that start with /org/mpris/
     * MPRIS2: be better about emitting the Seeked signal
     * MPRIS2: fix the mpris:artUrl metadata property
+    * MPRIS2: make sure that the Seeked signal is sent out when the track time
+              moves backwards (eg: when the track changes)
 
 VERSION 2.5
   FEATURES:

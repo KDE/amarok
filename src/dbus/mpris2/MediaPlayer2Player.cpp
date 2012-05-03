@@ -56,6 +56,7 @@ using namespace Amarok;
 
 MediaPlayer2Player::MediaPlayer2Player(QObject* parent)
     : DBusAbstractAdaptor(parent)
+    , m_lastPosition(-1)
 {
     connect( The::engineController(), SIGNAL( trackPositionChanged( qint64, bool ) ),
              this,                    SLOT( trackPositionChanged( qint64, bool ) ) );
@@ -329,13 +330,14 @@ bool MediaPlayer2Player::CanControl() const
 
 void MediaPlayer2Player::trackPositionChanged( qint64 position, bool userSeek )
 {
-    if ( userSeek )
+    // if we went backwards, we should emit Seeked
+    if ( userSeek || position < m_lastPosition )
         emit Seeked( position * 1000 );
+    m_lastPosition = position;
 }
 
 void MediaPlayer2Player::trackChanged( Meta::TrackPtr track )
 {
-    emit Seeked( Position() );
     signalPropertyChange( "CanPause", CanPause() );
     signalPropertyChange( "Metadata", metadataForTrack( track ) );
 }
