@@ -102,6 +102,9 @@ namespace MetaFile
             virtual void setFirstPlayed( const QDateTime &newTime );
             virtual void setPlayCount( int newCount );
 
+            // publish method so that it can be called by Private.
+            using Meta::MetaBase::notifyObservers;
+
             class Private;
 
         private:

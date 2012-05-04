@@ -28,6 +28,7 @@
 #include "shared/MetaTagLib.h"
 #include "core/statistics/StatisticsProvider.h"
 #include "core-impl/collections/support/ArtistHelper.h"
+#include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "covermanager/CoverCache.h"
 
 #include <QDateTime>
@@ -125,6 +126,11 @@ public:
         Meta::Tag::writeTags( url.isLocalFile() ? url.toLocalFile() : url.path(), changes );
         changes.clear();
         readMetaData();
+    }
+
+    void notifyObservers()
+    {
+        track->notifyObservers();
     }
 
     MetaData m_data;
@@ -253,6 +259,28 @@ public:
         , d( dptr )
     {}
 
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+    {
+        switch( type )
+        {
+            case Capabilities::Capability::Actions:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+    {
+        switch( type )
+        {
+            case Capabilities::Capability::Actions:
+                return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
+            default:
+                return 0;
+        }
+    }
+
     bool isCompilation() const
     {
         /* non-compilation albums with no album artists may be hidden in collection
@@ -328,6 +356,15 @@ public:
 
         CoverCache::invalidateAlbum( this );
         notifyObservers();
+        // following call calls Track's notifyObservers. This is needed because for example
+        // UmsCollection justifiably listens only to Track's metadataChanged() to update
+        // its MemoryCollection maps
+        d.data()->notifyObservers();
+    }
+
+    void removeImage()
+    {
+        setImage( QImage() );
     }
 
     bool operator==( const Meta::Album &other ) const {
