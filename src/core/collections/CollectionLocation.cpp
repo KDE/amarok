@@ -233,9 +233,10 @@ CollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 {
     Q_UNUSED( track )
     Q_UNUSED( url )
+    warning() << __PRETTY_FUNCTION__ << "Don't call this method. It exists only because"
+              << "database importers need it. Call prepareCopy() instead.";
     return false;
 }
-
 
 void
 CollectionLocation::abort()

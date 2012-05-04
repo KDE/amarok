@@ -192,8 +192,8 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void prepareRemove( const Meta::TrackList &tracks );
         void prepareRemove( Collections::QueryMaker *qm );
 
-        /** Adds or merges a track to the collection (not to the disk)
-         * In
+        /**
+         * Adds or merges a track to the collection (not to the disk)
          * Inserts a set of TrackPtrs directly into the database without needing to actual move any files
          * This is a hack required by the DatabaseImporter
          * TODO: Remove this hack

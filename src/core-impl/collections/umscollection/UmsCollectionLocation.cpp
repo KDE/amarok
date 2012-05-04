@@ -61,15 +61,6 @@ UmsCollectionLocation::isOrganizable() const
     return isWritable();
 }
 
-bool
-UmsCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
-{
-    Q_UNUSED( track )
-    Q_UNUSED( url )
-    warning() << "Don't use UmsCollectionLocation::insert(). Use copyUrlsToCollection().";
-    return false;
-}
-
 void
 UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
                                              const Transcoding::Configuration &configuration )
