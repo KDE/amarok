@@ -49,16 +49,6 @@ public:
 
     QString prettyLocation() const { return "foo"; }
     bool isWritable() const { return true; }
-    bool remove( const Meta::TrackPtr &track )
-    {
-        coll->mc->acquireWriteLock();
-        //theoretically we should clean up the other maps as well...
-        TrackMap map = coll->mc->trackMap();
-        map.remove( track->uidUrl() );
-        coll->mc->setTrackMap( map );
-        coll->mc->releaseLock();
-        return true;
-    }
     void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources, const Transcoding::Configuration& conf)
     {
         Q_UNUSED( conf )

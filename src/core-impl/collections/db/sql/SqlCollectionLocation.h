@@ -82,14 +82,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
 
-        /**
-         * reimplementation
-         */
-        virtual bool remove( const Meta::TrackPtr &track );
-
-        /**
-         * reimplementation
-         */
+        bool remove( const Meta::TrackPtr &track );
         virtual bool insert( const Meta::TrackPtr &track, const QString &url );
 
         //dependency injectors

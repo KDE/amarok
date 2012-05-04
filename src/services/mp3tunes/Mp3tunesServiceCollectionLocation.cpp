@@ -48,11 +48,6 @@ bool Mp3tunesServiceCollectionLocation::isWritable() const
     return true;
 }
 
-bool Mp3tunesServiceCollectionLocation::remove( const Meta::TrackPtr &/*track*/ )
-{
-    //TODO
-    return false;
-}
 void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
         const QMap<Meta::TrackPtr, KUrl> &sources,
         const Transcoding::Configuration &configuration )

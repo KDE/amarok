@@ -229,13 +229,6 @@ CollectionLocation::prepareRemove( Collections::QueryMaker *qm )
 }
 
 bool
-CollectionLocation::remove( const Meta::TrackPtr &track )
-{
-    Q_UNUSED( track )
-    return false;
-}
-
-bool
 CollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 {
     Q_UNUSED( track )

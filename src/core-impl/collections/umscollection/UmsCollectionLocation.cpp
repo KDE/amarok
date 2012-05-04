@@ -62,14 +62,6 @@ UmsCollectionLocation::isOrganizable() const
 }
 
 bool
-UmsCollectionLocation::remove( const Meta::TrackPtr &track )
-{
-    Q_UNUSED( track )
-    warning() << "Don't use UmsCollectionLocation::remove(). Use removeUrlsFromCollection().";
-    return false;
-}
-
-bool
 UmsCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 {
     Q_UNUSED( track )
