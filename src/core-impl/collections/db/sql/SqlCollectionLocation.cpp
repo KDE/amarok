@@ -195,63 +195,56 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 
     if( !track->name().isEmpty() )
         metaTrack->setTitle( track->name() );
-
     if( track->album() )
         metaTrack->setAlbum( track->album()->name() );
-
     if( track->artist() )
         metaTrack->setArtist( track->artist()->name() );
-
     if( track->composer() )
         metaTrack->setComposer( track->composer()->name() );
-
     if( track->year() && track->year()->year() > 0 )
         metaTrack->setYear( track->year()->year() );
-
     if( track->genre() )
         metaTrack->setGenre( track->genre()->name() );
 
-    // the filetype is not set or in the database.
-    // Meta::SqlTrack uses the file extension.
-
-    /* we've already done this
-    if( !track->path().isEmpty() )
-        metaTrack->setUrl( track->path() );
-
-     and that too
-    if( !track->uidUrl().isEmpty() )
-        metaTrack->setUidUrl( uid );
-    */
-
     if( track->bpm() > 0 )
         metaTrack->setBpm( track->bpm() );
-
     if( !track->comment().isEmpty() )
         metaTrack->setComment( track->comment() );
 
+    if( track->score() > 0 )
+        metaTrack->setScore( track->score() );
+    if( track->rating() > 0 )
+        metaTrack->setRating( track->rating() );
+
     if( track->length() > 0 )
         metaTrack->setLength( track->length() );
-
     // the filesize is updated every time after the
     // file is changed. Doesn't make sense to set it.
-
     if( track->sampleRate() > 0 )
         metaTrack->setSampleRate( track->sampleRate() );
-
     if( track->bitrate() > 0 )
         metaTrack->setBitrate( track->bitrate() );
 
+    // createDate is already set in Track constructor
+    if( track->modifyDate().isValid() )
+        metaTrack->setModifyDate( track->modifyDate() );
+
     if( track->trackNumber() > 0 )
         metaTrack->setTrackNumber( track->trackNumber() );
-
     if( track->discNumber() > 0 )
         metaTrack->setDiscNumber( track->discNumber() );
+
+    if( track->lastPlayed().isValid() )
+        metaTrack->setLastPlayed( track->lastPlayed() );
+    if( track->firstPlayed().isValid() )
+        metaTrack->setFirstPlayed( track->firstPlayed() );
+    if( track->playCount() > 0 )
+        metaTrack->setPlayCount( track->playCount() );
 
     Meta::ReplayGainTag modes[] = { Meta::ReplayGain_Track_Gain,
         Meta::ReplayGain_Track_Peak,
         Meta::ReplayGain_Album_Gain,
         Meta::ReplayGain_Album_Peak };
-
     for( int i=0; i<4; i++ )
         if( track->replayGain( modes[i] ) != 0 )
             metaTrack->setReplayGain( modes[i], track->replayGain( modes[i] ) );
@@ -259,28 +252,24 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     Meta::LabelList labels = track->labels();
     foreach( Meta::LabelPtr label, labels )
         metaTrack->addLabel( label );
-    
+
     Amarok::FileType fileType = Amarok::FileTypeSupport::fileType( track->type() );
     if( fileType != Amarok::Unknown )
         metaTrack->setType( fileType );
-
-    metaTrack->endMetaDataUpdate();
 
     // Used to be updated after changes commit to prevent crash on NULL pointer access
     // if metaTrack had no album.
     if( track->album() && metaTrack->album() )
     {
-        metaTrack->beginMetaDataUpdate();
-        
         if( track->album()->hasAlbumArtist() && !metaTrack->album()->hasAlbumArtist() )
             metaTrack->setAlbumArtist( track->album()->albumArtist()->name() );
-        
+
         if( track->album()->hasImage() && !metaTrack->album()->hasImage() )
             metaTrack->album()->setImage( track->album()->image() );
-        
-        metaTrack->endMetaDataUpdate();
+
     }
 
+    metaTrack->endMetaDataUpdate();
     metaTrack->setWriteFile( true );
 
     // we have a first shot at the meta data (expecially ratings and playcounts from media
