@@ -33,6 +33,8 @@ Playlists::UserPlaylistProvider::UserPlaylistProvider( QObject *parent )
 {
     m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete..." ), this );
     m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+    // object name must match one in PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent()
+    m_deleteAction->setObjectName( "deleteAction" );
     connect( m_deleteAction, SIGNAL(triggered()), SLOT(slotDelete()) );
 
     m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename..." ), this );
@@ -41,6 +43,8 @@ Playlists::UserPlaylistProvider::UserPlaylistProvider( QObject *parent )
 
     m_removeTrackAction = new QAction( KIcon( "media-track-remove-amarok" ), QString( "Placeholder" ), this );
     m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
+    // object name must match one in PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent()
+    m_removeTrackAction->setObjectName( "deleteAction" );
     connect( m_removeTrackAction, SIGNAL(triggered()), SLOT(slotRemoveTrack()) );
 }
 
