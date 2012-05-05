@@ -216,13 +216,20 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     if( track->rating() > 0 )
         metaTrack->setRating( track->rating() );
 
-    if( track->length() > 0 )
+    /* These tags change when transcoding. Prefer to read those from file */
+    if( fileTags.value( Meta::valLength, 0 ).toLongLong() > 0 )
+        metaTrack->setLength( fileTags.value( Meta::valLength ).value<qint64>() );
+    else if( track->length() > 0 )
         metaTrack->setLength( track->length() );
     // the filesize is updated every time after the
     // file is changed. Doesn't make sense to set it.
-    if( track->sampleRate() > 0 )
+    if( fileTags.value( Meta::valSamplerate, 0 ).toInt() > 0 )
+        metaTrack->setSampleRate( fileTags.value( Meta::valSamplerate ).toInt() );
+    else if( track->sampleRate() > 0 )
         metaTrack->setSampleRate( track->sampleRate() );
-    if( track->bitrate() > 0 )
+    if( fileTags.value( Meta::valBitrate, 0 ).toInt() > 0 )
+        metaTrack->setBitrate( fileTags.value( Meta::valBitrate ).toInt() );
+    else if( track->bitrate() > 0 )
         metaTrack->setBitrate( track->bitrate() );
 
     // createDate is already set in Track constructor
@@ -253,9 +260,10 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     foreach( Meta::LabelPtr label, labels )
         metaTrack->addLabel( label );
 
-    Amarok::FileType fileType = Amarok::FileTypeSupport::fileType( track->type() );
-    if( fileType != Amarok::Unknown )
-        metaTrack->setType( fileType );
+    if( fileTags.value( Meta::valFormat, int(Amarok::Unknown) ).toInt() != int(Amarok::Unknown) )
+        metaTrack->setType( Amarok::FileType( fileTags.value( Meta::valFormat ).toInt() ) );
+    else if( Amarok::FileTypeSupport::fileType( track->type() ) != Amarok::Unknown )
+        metaTrack->setType( Amarok::FileTypeSupport::fileType( track->type() ) );
 
     // Used to be updated after changes commit to prevent crash on NULL pointer access
     // if metaTrack had no album.
