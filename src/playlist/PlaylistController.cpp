@@ -128,6 +128,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     }
 
     int topModelInsertRow;
+    int visibleInsertedRowCount = m_topModel->qaim()->rowCount();  // initialise with old count
     if( options & Replace )
     {
         debug()<<"Replace";
@@ -142,6 +143,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         topModelInsertRow = 0;
         insertionHelper( insertionTopRowToBottom( topModelInsertRow ), list );
         m_undoStack->endMacro();
+        visibleInsertedRowCount = m_topModel->qaim()->rowCount(); // simple
     }
     else if( options & Queue )
     {
@@ -154,6 +156,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 
         int bottomModelInsertRow = insertionTopRowToBottom( topModelInsertRow );
         insertionHelper( bottomModelInsertRow, list );
+        visibleInsertedRowCount = m_topModel->qaim()->rowCount() - visibleInsertedRowCount;
 
         // Construct list of rows to be queued
         QList<int> topModelRows;
@@ -171,6 +174,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         debug()<<"Append";
         topModelInsertRow = m_topModel->qaim()->rowCount();
         insertionHelper( insertionTopRowToBottom( topModelInsertRow ), list );
+        visibleInsertedRowCount = m_topModel->qaim()->rowCount() - visibleInsertedRowCount;
     }
 
     debug() << "engine playing?: " << The::engineController()->isPlaying();
@@ -191,13 +195,13 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
             playNow = true;
     }
 
-    if( playNow )
+    if( playNow && visibleInsertedRowCount > 0 )
     {
+        int fuzz = 0;
         if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
              AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum )
-            Actions::instance()->play();
-        else
-            Actions::instance()->play( topModelInsertRow );
+            fuzz = qrand() % visibleInsertedRowCount;
+        Actions::instance()->play( topModelInsertRow + fuzz );
     }
 
     emit changed();
