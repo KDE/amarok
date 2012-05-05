@@ -177,7 +177,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         void slotApplyConfiguration();
 
         /**
-         * Starts a timer that emits updated() signal after 2 seconds.
+         * Starts a timer that ensures we emit updated() signal sometime in future.
          */
         void slotStartUpdateTimer();
 

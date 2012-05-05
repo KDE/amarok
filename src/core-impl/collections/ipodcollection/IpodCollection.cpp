@@ -461,8 +461,8 @@ IpodCollection::slotApplyConfiguration()
     {
         IpodDeviceHelper::setIpodName( m_itdb, newName );
         m_prettyName = IpodDeviceHelper::collectionName( m_itdb );
-        slotStartWriteDatabaseTimer(); // the change should be written down to file
-        emit updated();  // no need to wait using startUpdateTimer()
+        emit startWriteDatabaseTimer(); // the change should be written down to the database
+        emit startUpdateTimer();
     }
 
     QScopedPointer<Capabilities::TranscodeCapability> tc( create<Capabilities::TranscodeCapability>() );
