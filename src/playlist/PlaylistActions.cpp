@@ -256,14 +256,18 @@ Playlist::Actions::enableDynamicMode( bool enable )
     // TODO: should we restore the state of other modes?
     AmarokConfig::self()->writeConfig();
 
-    //if the playlist is empty, repopulate while we are at it:
-    if( enable )
-    {
-        if ( Playlist::ModelStack::instance()->bottom()->rowCount() == 0 )
-            repopulateDynamicPlaylist();
-    }
+    Playlist::Dock *dock = The::mainWindow()->playlistDock();
+    Playlist::SortWidget *sorting = dock ? dock->sortWidget() : 0;
+    if( sorting )
+        sorting->trimToLevel();
 
     playlistModeChanged();
+
+    /* append upcoming tracks to satisfy user's with about number of upcoming tracks.
+     * Needs to be _after_ playlistModeChanged() because before calling it the old
+     * m_navigator still reigns. */
+    if( enable )
+        normalizeDynamicPlaylist();
 }
 
 

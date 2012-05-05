@@ -83,6 +83,8 @@ VERSION 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * When turning dynamic playlist on, immediately populate playlist and clear
+      any possible playlist sorting. (BR 220558)
     * Fix transcoding with ffmpeg >= 0.10; patch by Julian Simioni.
     * Fix crash on start when Qt is build with debugging assertions. (BR 285720)
     * Fix URLs in MP3tunes, gpodder.net and Last.fm config dialogs. (BR 299088)
