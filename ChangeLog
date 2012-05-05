@@ -7,6 +7,9 @@ VERSION 2.6-Beta 1
     * Support for setting cover images for albums on USB Mass Storage devices.
     * Support for setting and unsetting cover images for iPod albums, can
       write back covers to file meta-data too, respects configuration.
+    * Amazon store: ability to check out an item directly without using the Amarok
+      shopping cart. (BR 288808)
+    * Amarok now includes the Free Music Charts service by default.
     * The maximum dimensions for embedded covers are now configurable. (BR 279493)
     * Small configuration dialog for iPods that shows troubleshooting information
       and allows to change iPod name.

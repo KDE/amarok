@@ -86,6 +86,7 @@ AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
     }
 
     actions.append( createAddToCartAction() );
+    actions.append( createDirectCheckoutAction() );
 
     menu.exec( actions, event->globalPos() );
     event->accept();
@@ -196,6 +197,10 @@ AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
 
         m_pd->addItem( The::popupDropperFactory()->createItem( createAddToCartAction() ) );
 
+        QAction *directCheckoutAction = createDirectCheckoutAction();
+        directCheckoutAction->setProperty( "popupdropper_svg_id", "download" );
+        m_pd->addItem( The::popupDropperFactory()->createItem( directCheckoutAction ) );
+
         m_pd->show();
     }
 
@@ -291,6 +296,15 @@ AmazonItemTreeView::createDetailsAction()
     connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
 
     return getDetailsAction;
+}
+
+QAction*
+AmazonItemTreeView::createDirectCheckoutAction()
+{
+    QAction *directCheckoutAction = new QAction( KIcon( "download-amarok" ), QString( i18n( "Direct Checkout" ) ), this );
+    connect( directCheckoutAction, SIGNAL( triggered() ), this, SIGNAL( directCheckout() ) );
+
+    return directCheckoutAction;
 }
 
 QAction*

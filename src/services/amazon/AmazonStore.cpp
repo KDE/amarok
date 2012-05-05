@@ -224,6 +224,32 @@ AmazonStore::checkout()
 }
 
 void
+AmazonStore::directCheckout()
+{
+    if( !m_selectedIndex.isValid() )
+        return;
+
+    // get item ASIN from collection
+    int id = m_itemModel->idForIndex( m_selectedIndex );
+    QString asin;
+    Meta::AmazonItem* item;
+
+    if( m_itemModel->isAlbum( m_selectedIndex ) ) // album
+        item = dynamic_cast<Meta::AmazonItem*>( m_collection->albumById( id ).data() );
+    else // track
+        item = dynamic_cast<Meta::AmazonItem*>( m_collection->trackById( id ).data() );
+
+    if( !item )
+        return;
+
+    asin = item->asin();
+
+    // create and open direct checkout url
+    QUrl url( "http://www.mp3-music-store.de/buy.php?Location=" + AmazonConfig::instance()->country() + "&Player=amarok&ASINs[]=" + asin );
+    QDesktopServices::openUrl( url );
+}
+
+void
 AmazonStore::itemDoubleClicked( QModelIndex index )
 {
     // for albums: search for the album name to get details about it
@@ -456,6 +482,7 @@ AmazonStore::initView()
 
     connect( m_addToCartButton, SIGNAL( clicked() ), this, SLOT( addToCart() ) );
     connect( m_itemView, SIGNAL( addToCart() ), this, SLOT( addToCart() ) );
+    connect( m_itemView, SIGNAL( directCheckout() ), this, SLOT( directCheckout() ) );
     connect( m_viewCartButton, SIGNAL( clicked() ), this, SLOT( viewCart() ) );
     connect( m_checkoutButton, SIGNAL( clicked() ), this, SLOT( checkout() ) );
 }

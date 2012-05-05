@@ -65,10 +65,12 @@ private:
     QAction* createAddToCartAction();
     QAction* createAddToPlaylistAction();
     QAction* createDetailsAction();
+    QAction* createDirectCheckoutAction();
     QAction* createSearchForAlbumAction();
 
 signals:
     void addToCart();
+    void directCheckout();
     void itemDoubleClicked( QModelIndex index );
     void itemSelected( QModelIndex index );
     void searchForAlbum( QModelIndex index );

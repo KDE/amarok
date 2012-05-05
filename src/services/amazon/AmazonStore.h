@@ -87,9 +87,14 @@ public slots:
     void viewCart();
 
     /**
-    * Checks the none-empty cart out.
+    * Checks the non-empty cart out.
     */
     void checkout();
+
+    /**
+    * Checks the currently selected item out directly, without adding it to the local Amarok shopping cart.
+    */
+    void directCheckout();
 
     /**
     * React to a double click on an item.
