@@ -447,6 +447,11 @@ void CollectionTreeView::keyPressEvent( QKeyEvent *event )
         case Qt::Key_Return:
             slotAppendChildTracks();
             return;
+        case Qt::Key_Delete:
+            if( !onlyOneCollection( indices ) )
+                break;
+            removeTracks( m_currentItems, /* useTrash */ !( event->modifiers() & Qt::ShiftModifier ) );
+            return;
         case Qt::Key_Up:
             if( current.parent() == QModelIndex() && current.row() == 0 )
             {
@@ -875,6 +880,8 @@ CollectionTreeView::createBasicActions( const QModelIndexList & indices )
         {
             m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), this );
             m_appendAction->setProperty( "popupdropper_svg_id", "append" );
+            // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
+            m_appendAction->setShortcut( Qt::Key_Enter );
             connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendChildTracks() ) );
         }
 
@@ -1109,12 +1116,16 @@ QHash<QAction*, Collections::Collection*> CollectionTreeView::getRemoveActions( 
 
     KAction *trashAction = new KAction( KIcon( "user-trash" ), i18n( "Move Tracks to Trash" ), 0 );
     trashAction->setProperty( "popupdropper_svg_id", "delete" );
+    // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
+    trashAction->setShortcut( Qt::Key_Delete );
     connect( trashAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
                 this, SLOT(slotTrashTracks()) );
     currentRemoveDestination.insert( trashAction, collection );
 
     KAction *deleteAction = new KAction( KIcon( "remove-amarok" ), i18n( "Delete Tracks" ), 0 );
     deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+    // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
+    deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
     connect( deleteAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
                 this, SLOT(slotRemoveTracks()) );
     currentRemoveDestination.insert( deleteAction, collection );
