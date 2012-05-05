@@ -78,14 +78,11 @@ Job::init()
     //... and finally, outfile configuration followed by the outfile path.
     const Transcoding::Format *format = Amarok::Components::transcodingController()->format( m_configuration.encoder() );
     *m_transcoder << format->ffmpegParameters( m_configuration )
-                  << QString( "-map_meta_data" )
-                  << QString( m_dest.path() + ":" + m_src.path() )
                   << m_dest.path();
 
     //debug spam follows
-    debug() << "foo";
     debug() << format->ffmpegParameters( m_configuration );
-    debug() << QString( "FFMPEG call is " ) << m_transcoder->program();
+    debug() << QString( "FFMPEG call is " ) << m_transcoder->program().join(" ");
 
     connect( m_transcoder, SIGNAL( readyRead() ),
              this, SLOT( processOutput() ) );
@@ -98,7 +95,7 @@ Job::start()
 {
     DEBUG_BLOCK
     debug()<< "starting ffmpeg";
-    debug()<< "call is " << m_transcoder->program();
+    debug()<< "call is " << m_transcoder->program().join(" ");
     m_transcoder->start();
     debug() << m_transcoder->readAllStandardOutput();
     debug()<< "ffmpeg started";
