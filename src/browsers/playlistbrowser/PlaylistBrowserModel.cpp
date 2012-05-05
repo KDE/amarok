@@ -48,7 +48,10 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     //common, unconditional actions
     m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
                                   this );
+    // object name must match one in PlaylistBrowserNS::PlaylistBrowserView
     m_appendAction->setObjectName( "appendAction" );
+    // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
+    m_appendAction->setShortcut( Qt::Key_Enter );
     m_appendAction->setProperty( "popupdropper_svg_id", "append" );
     connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
 

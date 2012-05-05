@@ -48,6 +48,7 @@ protected:
     //TODO:re-implement QWidget::dragEnterEvent() to show drop-not-allowed indicator
 
     virtual void keyPressEvent( QKeyEvent *event );
+    virtual void mouseDoubleClickEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void mouseMoveEvent( QMouseEvent *event );
@@ -60,10 +61,23 @@ protected slots:
     /** reimplemented to emit a signal */
     void currentChanged( const QModelIndex &current, const QModelIndex &previous );
 
-    /** Used for executing default (first) action when Enter/Return/double click. */
-    void slotActivated( const QModelIndex &index );
-
 private:
+    /**
+     * Execute all actions that are named appendAction
+     */
+    void appendAndPlay( const QModelIndex &index );
+    void appendAndPlay( const QModelIndexList &list );
+
+    /**
+     * Execute all actions that are named deleteAction
+     */
+    void deletePlaylistsTracks( const QModelIndexList &list );
+
+    /**
+     * Executes all actions that are named @param name
+     */
+    void performActionNamed( const QString &name, const QModelIndexList &list );
+
     QAction *decoratorActionAt( const QModelIndex &idx, const QPoint position );
     QList<QAction *> actionsFor( QModelIndexList indexes );
 

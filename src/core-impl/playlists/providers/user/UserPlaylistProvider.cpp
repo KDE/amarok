@@ -33,18 +33,24 @@ Playlists::UserPlaylistProvider::UserPlaylistProvider( QObject *parent )
 {
     m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete..." ), this );
     m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
-    // object name must match one in PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent()
+    // object name must match one in PlaylistBrowserNS::PlaylistBrowserView
     m_deleteAction->setObjectName( "deleteAction" );
+    // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
+    m_deleteAction->setShortcut( Qt::Key_Delete );
     connect( m_deleteAction, SIGNAL(triggered()), SLOT(slotDelete()) );
 
     m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename..." ), this );
     m_renameAction->setProperty( "popupdropper_svg_id", "edit" );
+    // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
+    m_renameAction->setShortcut( Qt::Key_F2 );
     connect( m_renameAction, SIGNAL(triggered()), this, SLOT(slotRename()) );
 
     m_removeTrackAction = new QAction( KIcon( "media-track-remove-amarok" ), QString( "Placeholder" ), this );
     m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
-    // object name must match one in PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent()
+    // object name must match one in PlaylistBrowserNS::PlaylistBrowserView
     m_removeTrackAction->setObjectName( "deleteAction" );
+    // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
+    m_removeTrackAction->setShortcut( Qt::Key_Delete );
     connect( m_removeTrackAction, SIGNAL(triggered()), SLOT(slotRemoveTrack()) );
 }
 

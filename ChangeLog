@@ -45,7 +45,8 @@ VERSION 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
-    * Make delete key work in Saved Playlists.
+    * Make keyboard & mouse behaviour of saved playlists browser same as of the
+      collection browser, including the delete key.
     * Delete and Shift + Delete keys now work as expected in collection browser.
     * Preserve statistics when copying or moving tracks to Local Collection.
     * Common album actions such as Show cover, Show under Various Artists are now
