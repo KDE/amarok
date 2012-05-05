@@ -75,7 +75,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setSelectionBehavior( QAbstractItemView::SelectRows );
-    setEditTriggers( /* SelectedClicked | */ EditKeyPressed );
+    setEditTriggers( EditKeyPressed );
 #ifdef Q_WS_MAC
     setVerticalScrollMode( QAbstractItemView::ScrollPerItem ); // for some bizarre reason w/ some styles on mac
     setHorizontalScrollMode( QAbstractItemView::ScrollPerItem ); // per-pixel scrolling is slower than per-item
@@ -84,7 +84,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 #endif
 
-    setDragDropMode( QAbstractItemView::DragDrop ); // implement drop when time allows
+    setDragDropMode( QAbstractItemView::DragDrop );
 
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
         setAnimated( true );
@@ -311,9 +311,11 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         return;
     }
 
+    bool isExpandable = model()->hasChildren( index );
+    bool wouldExpand = isExpandable && !KGlobalSettings::singleClick(); // we're in doubleClick
     if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
-        (KGlobalSettings::singleClick() || !model()->hasChildren( index )) )
+        !wouldExpand )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
         playChildTracks( item, Playlist::AppendAndPlay );
@@ -419,7 +421,7 @@ void CollectionTreeView::keyPressEvent( QKeyEvent *event )
     QModelIndexList indices = selectedIndexes();
     if( indices.isEmpty() )
     {
-        QTreeView::keyPressEvent( event );
+        Amarok::PrettyTreeView::keyPressEvent( event );
         return;
     }
 
@@ -466,7 +468,7 @@ void CollectionTreeView::keyPressEvent( QKeyEvent *event )
         default:
             break;
     }
-    QTreeView::keyPressEvent( event );
+    Amarok::PrettyTreeView::keyPressEvent( event );
 }
 
 void
