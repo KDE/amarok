@@ -242,8 +242,8 @@ Playlist::Dock::paletteChanged( const QPalette &palette )
                         );
     if( m_barBox )
         m_barBox->setStyleSheet(
-                    QString( "QFrame#PlaylistBarBox { border: 1px ridge %1; " \
-                             "background-color: %2; color: %3; border-radius: 3px; }" \
+                    QString( "QFrame#PlaylistBarBox { border: 1px ridge %1; "
+                             "background-color: %2; color: %3; border-radius: 3px; }"
                              "QLabel { color: %3; }" )
                             .arg( palette.color( QPalette::Window ).name() )
                             .arg( The::paletteHandler()->highlightColor().name() )
