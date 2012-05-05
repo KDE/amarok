@@ -38,7 +38,7 @@ class QtGroupingProxy : public QAbstractProxyModel
         void setGroupedColumn( int groupedColumn );
 
         /* QAbstractProxyModel methods */
-        virtual QModelIndex index( int, int c = 0,
+        virtual QModelIndex index( int row, int column = 0,
                                    const QModelIndex& parent = QModelIndex() ) const;
         virtual Qt::ItemFlags flags( const QModelIndex &idx ) const;
         virtual QModelIndex parent( const QModelIndex &idx ) const;

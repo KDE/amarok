@@ -220,23 +220,15 @@ QtGroupingProxy::addSourceRow( const QModelIndex &idx )
         {
             int &rowValue = groupList[insertedProxyRow-1];
             if( idx.row() <= rowValue )
-            {
                 //increment the rows that come after the new row since they moved one place up.
                 rowValue++;
-            }
             else
-            {
                 break;
-            }
         }
 
         if( updatedGroups.contains( i.key() ) )
-        {
-            //the row needs to be added to this group
-            beginInsertRows( index( i.key() ), insertedProxyRow, insertedProxyRow );
+            // we're inside beginInsertRows() or beginInsertRows(), don't re-enter it.
             groupList.insert( insertedProxyRow, idx.row() );
-            endInsertRows();
-        }
     }
 
     return updatedGroups;
