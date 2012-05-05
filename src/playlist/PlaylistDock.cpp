@@ -50,6 +50,10 @@
 #include <QToolBar>
 #include <QHBoxLayout>
 
+
+static const QString s_repopulate( "repopulate" );
+static const QString s_turnOff( "turn_off" );
+
 Playlist::Dock::Dock( QWidget* parent )
     : AmarokDockWidget( i18n( "&Playlist" ), parent )
     , m_barBox( 0 )
@@ -102,8 +106,12 @@ Playlist::Dock::polish()
     // show visual indication of dynamic playlists  being enabled
     connect( The::playlistActions(), SIGNAL( navigatorChanged() ),
              SLOT( showDynamicHint() ) );
-    m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), m_mainWidget );
+    m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled. <a href='%1'>Repopulate</a> "
+        "| <a href='%2'>Turn off</a>", s_repopulate, s_turnOff ), m_mainWidget );
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
+    m_dynamicHintWidget->setTextInteractionFlags( Qt::LinksAccessibleByKeyboard | Qt::LinksAccessibleByMouse );
+    m_dynamicHintWidget->setMinimumSize( 1, 1 ); // so that it doesn't prevent playlist from shrinking
+    connect( m_dynamicHintWidget, SIGNAL(linkActivated(QString)), SLOT(slotDynamicHintLinkActivated(QString)) );
 
     QFont dynamicHintWidgetFont = m_dynamicHintWidget->font();
     dynamicHintWidgetFont.setPointSize( dynamicHintWidgetFont.pointSize() + 1 );
@@ -349,4 +357,13 @@ Playlist::Dock::clearFilterIfActive() // slot
 
     if( filterActive )
         m_searchWidget->slotFilterClear();
+}
+
+void
+Playlist::Dock::slotDynamicHintLinkActivated( const QString &href )
+{
+    if( href == s_repopulate )
+        The::playlistActions()->repopulateDynamicPlaylist();
+    else if( href == s_turnOff )
+        The::playlistActions()->enableDynamicMode( false );
 }

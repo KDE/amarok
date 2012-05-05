@@ -71,6 +71,7 @@ private slots:
     void playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category );
     void slotSaveCurrentPlaylist();
     void slotEditQueue();
+    void slotDynamicHintLinkActivated( const QString &href );
 
 private:
     KActionMenu *m_savePlaylistMenu;
