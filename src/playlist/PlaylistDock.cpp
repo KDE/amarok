@@ -40,6 +40,7 @@
 #include "playlist/PlaylistActions.h"
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "widgets/HorizontalDivider.h"
+#include "amarokurls/AmarokUrl.h"
 
 #include <KActionMenu>
 #include <KStandardDirs>
@@ -51,6 +52,7 @@
 #include <QHBoxLayout>
 
 
+static const QString s_dynMode( "dynamic_mode" );
 static const QString s_repopulate( "repopulate" );
 static const QString s_turnOff( "turn_off" );
 
@@ -106,8 +108,9 @@ Playlist::Dock::polish()
     // show visual indication of dynamic playlists  being enabled
     connect( The::playlistActions(), SIGNAL( navigatorChanged() ),
              SLOT( showDynamicHint() ) );
-    m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled. <a href='%1'>Repopulate</a> "
-        "| <a href='%2'>Turn off</a>", s_repopulate, s_turnOff ), m_mainWidget );
+    m_dynamicHintWidget = new QLabel( i18n( "<a href='%1'>Dynamic Mode</a> Enabled. "
+        "<a href='%2'>Repopulate</a> | <a href='%3'>Turn off</a>", s_dynMode,
+        s_repopulate, s_turnOff ), m_mainWidget );
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
     m_dynamicHintWidget->setTextInteractionFlags( Qt::LinksAccessibleByKeyboard | Qt::LinksAccessibleByMouse );
     m_dynamicHintWidget->setMinimumSize( 1, 1 ); // so that it doesn't prevent playlist from shrinking
@@ -362,7 +365,9 @@ Playlist::Dock::clearFilterIfActive() // slot
 void
 Playlist::Dock::slotDynamicHintLinkActivated( const QString &href )
 {
-    if( href == s_repopulate )
+    if( href == s_dynMode )
+        AmarokUrl( "amarok://navigate/playlists/dynamic category" ).run();
+    else if( href == s_repopulate )
         The::playlistActions()->repopulateDynamicPlaylist();
     else if( href == s_turnOff )
         The::playlistActions()->enableDynamicMode( false );
