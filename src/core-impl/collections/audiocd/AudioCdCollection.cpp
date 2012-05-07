@@ -575,7 +575,7 @@ AudioCdCollection::updateProxyTracks()
     foreach( const KUrl &url, m_proxyMap.keys() )
     {
 
-        const QString &urlString = url.url().remove( "audiocd:/" );
+        QString urlString = url.url().remove( "audiocd:/" );
         const QStringList &parts = urlString.split( '/' );
 
         if( parts.count() != 2 )
