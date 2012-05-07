@@ -190,12 +190,13 @@ AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
             m_pd->addItem( The::popupDropperFactory()->createItem( addToPlaylistAction ) );
 
             QAction *searchForAlbumAction = createSearchForAlbumAction();
-            // TODO: add correct icon here
-            // addToPlaylistAction->setProperty( "popupdropper_svg_id", "media-optical-amarok" );
+            addToPlaylistAction->setProperty( "popupdropper_svg_id", "collection" );
             m_pd->addItem( The::popupDropperFactory()->createItem( searchForAlbumAction ) );
         }
 
-        m_pd->addItem( The::popupDropperFactory()->createItem( createAddToCartAction() ) );
+        QAction *addToCartAction = createAddToCartAction();
+        addToCartAction->setProperty( "popupdropper_svg_id", "cart_in" );
+        m_pd->addItem( The::popupDropperFactory()->createItem( addToCartAction ) );
 
         QAction *directCheckoutAction = createDirectCheckoutAction();
         directCheckoutAction->setProperty( "popupdropper_svg_id", "download" );
