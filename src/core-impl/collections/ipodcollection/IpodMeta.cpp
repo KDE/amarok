@@ -18,10 +18,10 @@
 
 #include "IpodCollection.h"
 #include "IpodMetaEditCapability.h"
-#include "jobs/WriteTagsJob.h"
 #include "config-ipodcollection.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "covermanager/CoverCache.h"
 #include "FileType.h"
@@ -295,7 +295,7 @@ Track::setImage( const QImage &newImage, bool doCommit )
              * and sets artwork_size, artwork_count and has_artwork m_track fields */
             itdb_track_set_thumbnails( m_track, QFile::encodeName( m_tempImageFile->fileName() ) );
     }
-    m_changedFields.insert( IpodMeta::valImage, newImage );
+    m_changedFields.insert( Meta::valImage, newImage );
     locker.unlock();
 
     if( doCommit )

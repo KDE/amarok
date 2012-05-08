@@ -17,7 +17,6 @@
 #include "WriteTagsJob.h"
 
 #include "amarokconfig.h"
-#include "IpodMeta.h"
 #include "MetaTagLib.h"
 
 
@@ -32,8 +31,8 @@ void WriteTagsJob::run()
 {
     Meta::Tag::writeTags( m_path, m_changes );
 
-    if( m_changes.contains( IpodMeta::valImage ) && AmarokConfig::writeBackCover() )
-        Meta::Tag::setEmbeddedCover( m_path, m_changes.value( IpodMeta::valImage ).value<QImage>() );
+    if( m_changes.contains( Meta::valImage ) && AmarokConfig::writeBackCover() )
+        Meta::Tag::setEmbeddedCover( m_path, m_changes.value( Meta::valImage ).value<QImage>() );
 }
 
 #include "WriteTagsJob.moc"

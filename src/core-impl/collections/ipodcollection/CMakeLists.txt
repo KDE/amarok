@@ -36,7 +36,6 @@ if(IPOD_FOUND AND WITH_IPOD)
     jobs/IpodDeleteTracksJob.cpp
     jobs/IpodParseTracksJob.cpp
     jobs/IpodWriteDatabaseJob.cpp
-    jobs/WriteTagsJob.cpp
     support/IphoneMountPoint.cpp
     support/IpodDeviceHelper.cpp
     support/IpodTranscodeCapability.cpp

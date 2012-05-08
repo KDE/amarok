@@ -311,6 +311,7 @@ endif( TAGLIB_FOUND )
 # COLLECTION
 #####################################################################
 set(collection_SRCS
+    core-impl/collections/support/jobs/WriteTagsJob.cpp
     core-impl/collections/support/ArtistHelper.cpp
     core-impl/collections/support/CollectionManager.cpp
     core-impl/collections/support/CollectionLocationDelegateImpl.cpp

@@ -34,8 +34,6 @@ class IpodCollection;
 
 namespace IpodMeta
 {
-    static const qint64 valImage = Meta::valCustom + 1LL;
-
     /**
      * An iPod track. album, artist, composer etc. are invisible to ouside world, they are
      * proxied in the MemoMeta track. All methods in this class are thread-safe with a few

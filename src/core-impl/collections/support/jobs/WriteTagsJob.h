@@ -19,6 +19,7 @@
 
 #include "MetaValues.h"
 
+#include "amarok_export.h"
 #include <ThreadWeaver/Job>
 
 
@@ -27,18 +28,18 @@
  * is not blocked with IO. writeTags() respects AmarokConfig::writeBackStatistics,
  * AmarokConfig::writeBack().
  *
- * If @param changes contains IpodMeta::valImage, writes back image too, respecting
- * AmarokConfig.
+ * If @param changes contains Meta::valImage, writes back image too, respecting
+ * AmarokConfig::writeBackCover().
  *
  * The caller is responsible to delete this job after use, perhaps by connecting its
  * done() signal to its deleteLater() slot.
  */
-class WriteTagsJob : public ThreadWeaver::Job
+class AMAROK_EXPORT WriteTagsJob : public ThreadWeaver::Job
 {
     Q_OBJECT
 
     public:
-        explicit WriteTagsJob( const QString &path, const Meta::FieldHash &changes );
+        WriteTagsJob( const QString &path, const Meta::FieldHash &changes );
         virtual void run();
 
     private:

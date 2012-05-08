@@ -27,9 +27,12 @@
 #include "shared/MetaReplayGain.h"
 #include "shared/MetaTagLib.h"
 #include "core/statistics/StatisticsProvider.h"
+#include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "covermanager/CoverCache.h"
+
+#include <ThreadWeaver/Weaver>
 
 #include <QDateTime>
 #include <QFile>
@@ -117,7 +120,6 @@ public:
     QWeakPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
     QWeakPointer<Collections::Collection> collection;
 
-    void readMetaData();
     Meta::FieldHash changes;
 
     void writeMetaData()
@@ -134,6 +136,9 @@ public:
     }
 
     MetaData m_data;
+
+public slots:
+    void readMetaData();
 
 private:
     TagLib::FileRef getFileRef();
@@ -349,10 +354,14 @@ public:
         if( !d )
             return;
 
-        Meta::Tag::setEmbeddedCover( d.data()->url.toLocalFile(), image );
+        Meta::FieldHash fields;
+        fields.insert( Meta::valImage, image );
+        WriteTagsJob *job = new WriteTagsJob( d.data()->url.toLocalFile(), fields );
+        QObject::connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+        ThreadWeaver::Weaver::instance()->enqueue( job );
         if( d.data()->m_data.embeddedImage == image.isNull() )
             // we need to toggle the embeddedImage switch in this case
-            d.data()->readMetaData();
+            QObject::connect( job, SIGNAL(done(ThreadWeaver::Job*)), d.data(), SLOT(readMetaData()) );
 
         CoverCache::invalidateAlbum( this );
         notifyObservers();

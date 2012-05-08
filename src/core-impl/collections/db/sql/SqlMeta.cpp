@@ -26,6 +26,7 @@
 #include <core/support/Debug.h>
 #include <core/meta/support/MetaUtility.h>
 #include <shared/MetaTagLib.h> // for getting an embedded cover
+#include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include <core-impl/collections/support/ArtistHelper.h>
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
@@ -48,6 +49,7 @@
 #include <KCodecs>
 #include <KLocale>
 #include <KSharedPtr>
+#include <ThreadWeaver/Weaver>
 
 // additional constants
 namespace Meta
@@ -1641,7 +1643,13 @@ SqlAlbum::setImage( const QImage &image )
             // the song needs to be at least one mb big or we won't set an image
             // that means that the new image will increase the file size by less than 2%
             if( metaTrack->filesize() > 1024l * 1024l )
-                Meta::Tag::setEmbeddedCover( metaTrack->playableUrl().path(), scaledImage );
+            {
+                Meta::FieldHash fields;
+                fields.insert( Meta::valImage, scaledImage );
+                WriteTagsJob *job = new WriteTagsJob( metaTrack->playableUrl().path(), fields );
+                QObject::connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+                ThreadWeaver::Weaver::instance()->enqueue( job );
+            }
             // note: we might want to update the track file size after writing the image
         }
     }

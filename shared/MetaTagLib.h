@@ -37,16 +37,30 @@ namespace Meta
 
         AMAROK_EXPORT Meta::FieldHash readTags( const QString &path, bool useCharsetDetector = true );
 
+        /**
+         * Writes tags stored in @param changes back to file. Respects
+         * AmarokConfig::writeBack() and AmarokConfig::writeBackStatistics().
+         *
+         * If you are about to call this from the main thread, you should really think
+         * of using WriteTagsJob instead.
+         *
+         * @see WriteTagsJob
+         */
         AMAROK_EXPORT void writeTags( const QString &path, const FieldHash &changes );
 
 #ifndef UTILITIES_BUILD
         // the utilities don't need to handle images
         AMAROK_EXPORT QImage embeddedCover( const QString &path );
 
-        /** This will write an embedded cover.
-            It will also overwrite existing covers (Front), so make sure the user knows what he get's.
-            ASF, ID3v2 and MP4 covers are supported.
-        */
+        /**
+         * Writes embedded cover back to file. Overwrites any possible existing covers.
+         * This function doesn't take any configuration any account.
+         *
+         * If you are about to call this from the main thread, you should really think
+         * of using WriteTagsJob instead.
+         *
+         * @see WriteTagsJob
+         */
         AMAROK_EXPORT void setEmbeddedCover( const QString &path, const QImage &cover );
 #endif
     }

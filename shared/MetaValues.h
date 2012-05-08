@@ -77,6 +77,7 @@ namespace Meta
     // TODO: support for queryMaker
     static const qint64 valCompilation  = 1LL << 40;
     static const qint64 valHasCover     = (1LL << 40) + 1;
+    static const qint64 valImage        = (1LL << 40) + 2;
 
     // start for custom numbers
     static const qint64 valCustom       = 1LL << 60;
