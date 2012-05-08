@@ -116,13 +116,13 @@ Reader::contentCodesReceived( int /* id */, bool error )
     QList<QVariant> root = contentCodes["mccr"].toList();
     if( root.isEmpty() )
         return; //error
-    root = root[0].toMap()["mdcl"].toList();
+    root = root[0].toMap().value( "mdcl" ).toList();
     foreach( QVariant v, root )
     {
         Map entry = v.toMap();
-        QString code = entry["mcnm"].toList()[0].toString();
-        QString name = entry["mcna"].toList()[0].toString();
-        ContentTypes type = static_cast< ContentTypes > ( entry["mcty"].toList()[0].toInt() );
+        QString code = entry.value( "mcnm" ).toList().value( 0 ).toString();
+        QString name = entry.value( "mcna" ).toList().value( 0 ).toString();
+        ContentTypes type = ContentTypes( entry.value( "mcty" ).toList().value( 0 ).toInt() );
         if( !m_codes.contains( code ) && !code.isEmpty() && type > 0 )
         {
             m_codes[code] = Code( name, type );
