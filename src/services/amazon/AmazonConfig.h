@@ -30,7 +30,7 @@ public:
     /**
     * Returns the domain for the store we want to interact with.
     * France: fr
-    * Germany: de
+    * Austria, Germany, Switzerland: de
     * Japan: co.jp
     * United Kingdom: co.uk
     * United States: com
@@ -41,7 +41,7 @@ public:
     * Sets the domain for the store we want to interact with.
     * @param country the domain to set.
     * France: fr
-    * Germany: de
+    * Austria, Germany, Switzerland: de
     * Japan: co.jp
     * United Kingdom: co.uk
     * United States: com
