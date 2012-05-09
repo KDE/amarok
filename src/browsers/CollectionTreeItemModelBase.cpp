@@ -399,14 +399,32 @@ CollectionTreeItemModelBase::mimeTypes() const
 }
 
 QMimeData*
-CollectionTreeItemModelBase::mimeData(const QModelIndexList & indices) const
+CollectionTreeItemModelBase::mimeData( const QModelIndexList &indices ) const
 {
     if ( indices.isEmpty() )
         return 0;
 
-    QList<CollectionTreeItem*> items;
+    // first, filter out duplicate entries that may arise when both parent and child are selected
+    QSet<QModelIndex> indexSet = QSet<QModelIndex>::fromList( indices );
+    QMutableSetIterator<QModelIndex> it( indexSet );
+    while( it.hasNext() )
+    {
+        it.next();
+        // we go up in parent hierarchy searching whether some parent indices are already in set
+        QModelIndex parentIndex = it.value();
+        while( parentIndex.isValid() )  // leave the root (top, invalid) index intact
+        {
+            parentIndex = parentIndex.parent();  // yes, we start from the parent of current index
+            if( indexSet.contains( parentIndex ) )
+            {
+                it.remove(); // parent already in selected set, remove child
+                break; // no need to continue inner loop, already deleted
+            }
+        }
+    }
 
-    foreach( const QModelIndex &index, indices )
+    QList<CollectionTreeItem*> items;
+    foreach( const QModelIndex &index, indexSet )
     {
         if( index.isValid() )
             items << static_cast<CollectionTreeItem*>( index.internalPointer() );
