@@ -453,16 +453,15 @@ CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) 
             CollectionTreeItem *tmpItem = item;
             while( tmpItem->isDataItem() )
             {
-                if( tmpItem->data() )
-                {
-                    if( levelCategory( tmpItem->level() - 1 ) == CategoryId::AlbumArtist )
-                        qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
-                    tmpItem->addMatch( qm );
-                }
-                else
-                    qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+                tmpItem->addMatch( qm );
+                if( levelCategory( tmpItem->level() - 1 ) == CategoryId::AlbumArtist )
+                    qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
                 tmpItem = tmpItem->parent();
             }
+            if( item->isVariousArtistItem() )
+                qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+            if( item->isNoLabelItem() )
+                qm->setLabelQueryMode( Collections::QueryMaker::OnlyWithoutLabels );
             Collections::addTextualFilter( qm, m_currentFilter );
             queries.append( qm );
         }

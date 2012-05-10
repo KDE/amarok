@@ -86,6 +86,7 @@ VERSION 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Fix dragging of "No Labels" and "Various Artists" collection tree items.
     * Don't add duplicates to playlist when dragging from collection. (BR 254411)
     * Fix crash related to DAAP collection. (BR 280774)
     * Fix crash on startup related to Audio CD collection. (BR 256585)
