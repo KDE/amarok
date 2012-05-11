@@ -106,7 +106,8 @@ AmazonShoppingCart::checkoutUrl()
     QString url;
 
     // the basics
-    url += "http://www.mp3-music-store.de/index.php?apikey=";
+    url += MP3_MUSIC_STORE_HOST;
+    url += "/index.php?apikey=";
     url += MP3_MUSIC_STORE_KEY;
     url += "&method=CreateCart&Location=";
     url += AmazonConfig::instance()->country();

@@ -14,47 +14,24 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TestAmazonShoppingCartItem.h"
+#ifndef TESTAMAZONSHOPPINGCART_H
+#define TESTAMAZONSHOPPINGCART_H
 
-#include "services/amazon/AmazonShoppingCartItem.h"
+#include <QObject>
 
-#include <QtTest/QTest>
-
-#include <qtest_kde.h>
-
-QTEST_KDEMAIN_CORE( TestAmazonShoppingCartItem )
-
-TestAmazonShoppingCartItem::TestAmazonShoppingCartItem() :
-    QObject()
+class TestAmazonShoppingCart : public QObject
 {
-}
+    Q_OBJECT
+public:
+    TestAmazonShoppingCart();
 
-void
-TestAmazonShoppingCartItem::testAsin()
-{
-    AmazonShoppingCartItem item( "", "price", "prettyName" );
-    QCOMPARE( item.asin(), QString( "" ) );
+private slots:
+    void testAdd();
+    void testClear();
+    void testStringList();
+    void testPrice();
+    void testRemove();
+    void testCheckoutUrl();
+};
 
-    AmazonShoppingCartItem item2( "B003MJQB9A", "price", "prettyName" );
-    QCOMPARE( item2.asin(), QString( "B003MJQB9A" ) );
-}
-
-void
-TestAmazonShoppingCartItem::testPrettyName()
-{
-    AmazonShoppingCartItem item( "ASIN", "price", "" );
-    QCOMPARE( item.prettyName(), QString( "" ) );
-
-    AmazonShoppingCartItem item2( "ASIN", "price", "The Cure - Disintegration" );
-    QCOMPARE( item2.prettyName(), QString( "The Cure - Disintegration" ) );
-}
-
-void
-TestAmazonShoppingCartItem::testPrice()
-{
-    AmazonShoppingCartItem item( "ASIN", "", "prettyName" );
-    QCOMPARE( item.price(), QString( "" ) );
-
-    AmazonShoppingCartItem item2( "ASIN", "99", "prettyName" );
-    QCOMPARE( item2.price(), QString( "99" ) );
-}
+#endif // TESTAMAZONSHOPPINGCART_H

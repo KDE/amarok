@@ -31,7 +31,7 @@
 #include <KLocale>
 
 // API documentation: http://www.mp3-music-store.de/api.html
-#define MP3_MUSIC_STORE_HOST "http://www.mp3-music-store.de/?"
+#define MP3_MUSIC_STORE_HOST "http://www.mp3-music-store.de"
 #define MP3_MUSIC_STORE_KEY "27274503cb405cb1929f353fc507f09c"
 
 // Example search:

@@ -399,7 +399,7 @@ AmazonStore::createRequestUrl( QString request )
 
     pageValue.setNum( m_resultpageSpinBox->value() );
     urlString += MP3_MUSIC_STORE_HOST;
-    urlString += "apikey=";
+    urlString += "/?apikey=";
     urlString += MP3_MUSIC_STORE_KEY;
     urlString += "&method=Search&Player=amarok&Location=";
     urlString += AmazonConfig::instance()->country();
