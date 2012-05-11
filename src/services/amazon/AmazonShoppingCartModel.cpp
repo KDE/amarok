@@ -16,7 +16,7 @@
 
 #include "AmazonShoppingCartModel.h"
 
-#include "AmazonCart.h"
+#include "AmazonShoppingCart.h"
 
 AmazonShoppingCartModel::AmazonShoppingCartModel()
 {
@@ -27,7 +27,7 @@ AmazonShoppingCartModel::removeRows( int row, int count, const QModelIndex &pare
 {
     Q_UNUSED( count )
     beginRemoveRows( parent, row, 1 ); // we can only select one item
-    AmazonCart::instance()->remove( row );
+    AmazonShoppingCart::instance()->remove( row );
     endRemoveRows();
 
     emit contentsChanged();

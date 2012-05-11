@@ -18,8 +18,6 @@
 
 #include "AmazonMeta.h"
 
-#include "AmazonCart.h"
-
 #include <KStandardDirs>
 #include "klocalizedstring.h"
 

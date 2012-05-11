@@ -16,8 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAZONCART_H
-#define AMAZONCART_H
+#ifndef AMAZONSHOPPINGCART_H
+#define AMAZONSHOPPINGCART_H
 
 #include "AmazonShoppingCartItem.h"
 
@@ -30,10 +30,10 @@
 
 /* Singleton representing the Amazon shopping cart. */
 
-class AmazonCart : public QList<AmazonShoppingCartItem>
+class AmazonShoppingCart : public QList<AmazonShoppingCartItem>
 {
 public:
-    static AmazonCart* instance();
+    static AmazonShoppingCart* instance();
     static void destroy();
 
     /**
@@ -68,11 +68,11 @@ public:
     QUrl checkoutUrl();
 
 private:
-    AmazonCart();
-    ~AmazonCart();
+    AmazonShoppingCart();
+    ~AmazonShoppingCart();
 
-    static AmazonCart* m_instance;
+    static AmazonShoppingCart* m_instance;
     quint64 m_price;
 };
 
-#endif // AMAZONCART_H
+#endif // AMAZONSHOPPINGCART_H

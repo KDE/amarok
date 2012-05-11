@@ -19,10 +19,10 @@
 #include "AmazonStore.h"
 
 #include "Amazon.h"
-#include "AmazonCart.h"
 #include "AmazonConfig.h"
 #include "AmazonMeta.h"
 #include "AmazonParser.h"
+#include "AmazonShoppingCart.h"
 #include "AmazonShoppingCartDialog.h"
 #include "AmazonUrlRunner.h"
 
@@ -188,7 +188,7 @@ AmazonStore::addToCart()
         price = track->price();
     }
 
-    AmazonCart::instance()->add( asin, price, name );
+    AmazonShoppingCart::instance()->add( asin, price, name );
     Amarok::Components::logger()->shortMessage( i18n( "<em>%1</em> has been added to your shopping cart.", name ) );
     m_checkoutButton->setEnabled( true );
 }
@@ -203,7 +203,7 @@ AmazonStore::viewCart()
 void
 AmazonStore::checkout()
 {
-    QUrl url = AmazonCart::instance()->checkoutUrl();
+    QUrl url = AmazonShoppingCart::instance()->checkoutUrl();
     debug() << url;
     m_checkoutButton->setEnabled( false );
 
@@ -588,7 +588,7 @@ AmazonStore::openCheckoutUrl( KJob* requestJob )
 
     requestJob->deleteLater();
     QFile::remove( tempFileName );
-    AmazonCart::instance()->clear();
+    AmazonShoppingCart::instance()->clear();
 }
 
 void

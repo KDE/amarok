@@ -18,7 +18,6 @@
 
 #include "AmazonSettingsModule.h"
 
-#include "AmazonCart.h"
 #include "AmazonCollection.h"
 #include "AmazonConfig.h"
 #include "AmazonMeta.h"

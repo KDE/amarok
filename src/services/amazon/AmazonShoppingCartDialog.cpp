@@ -17,7 +17,7 @@
 #include "AmazonShoppingCartDialog.h"
 
 #include "Amazon.h"
-#include "AmazonCart.h"
+#include "AmazonShoppingCart.h"
 
 #include "ui_AmazonShoppingCartDialog.h"
 
@@ -29,12 +29,12 @@ AmazonShoppingCartDialog::AmazonShoppingCartDialog( QWidget *parent, AmazonStore
     ui->setupUi( this );
 
     m_model = new AmazonShoppingCartModel;
-    m_model->setStringList( AmazonCart::instance()->stringList() );
+    m_model->setStringList( AmazonShoppingCart::instance()->stringList() );
     ui->listView->setModel( m_model );
-    ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonCart::instance()->price() ) ) );
+    ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonShoppingCart::instance()->price() ) ) );
     ui->checkoutButton->setIcon( KIcon( "download-amarok" ) );
 
-    if( AmazonCart::instance()->isEmpty() )
+    if( AmazonShoppingCart::instance()->isEmpty() )
         ui->checkoutButton->setEnabled( false );
     else
         ui->checkoutButton->setEnabled( true );
@@ -56,14 +56,14 @@ void
 AmazonShoppingCartDialog::contentsChanged()
 {
     // update price
-    ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonCart::instance()->price() ) ) );
+    ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonShoppingCart::instance()->price() ) ) );
 
     // update view
-    m_model->setStringList( AmazonCart::instance()->stringList() ); // HACK, but works
+    m_model->setStringList( AmazonShoppingCart::instance()->stringList() ); // HACK, but works
     ui->listView->setModel( m_model );
 
     // update button status
-    if( AmazonCart::instance()->isEmpty() )
+    if( AmazonShoppingCart::instance()->isEmpty() )
         ui->checkoutButton->setEnabled( false );
     else
         ui->checkoutButton->setEnabled( true );

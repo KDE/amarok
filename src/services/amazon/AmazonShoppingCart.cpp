@@ -16,25 +16,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "AmazonCart.h"
+#include "AmazonShoppingCart.h"
 
 #include "Amazon.h"
 #include "AmazonConfig.h"
 
 #include <QDebug>
 
-AmazonCart* AmazonCart::m_instance = 0;
+AmazonShoppingCart* AmazonShoppingCart::m_instance = 0;
 
-AmazonCart* AmazonCart::instance()
+AmazonShoppingCart* AmazonShoppingCart::instance()
 {
     if( !m_instance )
-       m_instance = new AmazonCart();
+       m_instance = new AmazonShoppingCart();
 
     return m_instance;
 }
 
 void
-AmazonCart::destroy()
+AmazonShoppingCart::destroy()
 {
     if( m_instance )
     {
@@ -43,17 +43,17 @@ AmazonCart::destroy()
     }
 }
 
-AmazonCart::~AmazonCart()
+AmazonShoppingCart::~AmazonShoppingCart()
 {
 }
 
-AmazonCart::AmazonCart()
+AmazonShoppingCart::AmazonShoppingCart()
 {
     m_price = 0;
 }
 
 void
-AmazonCart::add( QString asin, QString price, QString name )
+AmazonShoppingCart::add( QString asin, QString price, QString name )
 {
     AmazonShoppingCartItem item( asin, price, name );
     m_price = m_price + price.toInt();
@@ -61,14 +61,14 @@ AmazonCart::add( QString asin, QString price, QString name )
 }
 
 void
-AmazonCart::clear()
+AmazonShoppingCart::clear()
 {
     QList<AmazonShoppingCartItem>::clear();
     m_price = 0;
 }
 
 QStringList
-AmazonCart::stringList()
+AmazonShoppingCart::stringList()
 {
     QStringList result;
 
@@ -81,14 +81,14 @@ AmazonCart::stringList()
 }
 
 QString
-AmazonCart::price()
+AmazonShoppingCart::price()
 {
     QString price;
     return price.setNum( m_price );
 }
 
 void
-AmazonCart::remove( int pos )
+AmazonShoppingCart::remove( int pos )
 {
     if( pos < 0 || pos >= size()  ) // not valid
         return;
@@ -98,7 +98,7 @@ AmazonCart::remove( int pos )
 }
 
 QUrl
-AmazonCart::checkoutUrl()
+AmazonShoppingCart::checkoutUrl()
 {
     if( isEmpty() ) // we don't create empty carts
         return QUrl();
