@@ -58,8 +58,6 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     Q_UNUSED( corona )
     DEBUG_BLOCK
 
-    s_self = this;
-
     // using QGraphicsScene::BspTreeIndex leads to crashes in some Qt versions
     scene()->setItemIndexMethod( QGraphicsScene::NoIndex );
     //TODO: Figure out a way to use rubberband and ScrollHandDrag
@@ -109,6 +107,9 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
              this, SLOT( slotTrackChanged( Meta::TrackPtr ) ) );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
              this, SLOT( slotMetadataChanged( Meta::TrackPtr ) ) );
+
+    // keep this assignment at bottom so that premature usage of ::self() asserts out
+    s_self = this;
 }
 
 ContextView::~ContextView()
