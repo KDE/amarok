@@ -179,8 +179,7 @@ AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
         if( amazonModel->isAlbum( indices.at( 0 ) ) )
         {
             QAction *detailsAction = createDetailsAction();
-            // TODO: add correct icon here
-            // detailsAction->setProperty( "popupdropper_svg_id", "load" );
+            detailsAction->setProperty( "popupdropper_svg_id", "loading" );
             m_pd->addItem( The::popupDropperFactory()->createItem( detailsAction ) );
         }
         else // track
