@@ -19,8 +19,6 @@
 #ifndef AMAZONMETA_H
 #define AMAZONMETA_H
 
-#include "AmazonStore.h"
-
 #include "../ServiceMetaBase.h"
 #include "../ServiceAlbumCoverDownloader.h"
 
@@ -132,15 +130,12 @@ public:
 class AmazonMetaFactory : public ServiceMetaFactory
 {
     public:
-        AmazonMetaFactory( const QString &dbPrefix, AmazonStore* store );
+        AmazonMetaFactory( const QString &dbPrefix );
         virtual ~AmazonMetaFactory() {}
 
         virtual Meta::TrackPtr createTrack( const QStringList &rows );
         virtual Meta::AlbumPtr createAlbum( const QStringList &rows );
         virtual Meta::ArtistPtr createArtist( const QStringList &rows );
-
-    private:
-        AmazonStore* m_store;
 };
 
 #endif // AMAZONMETA_H

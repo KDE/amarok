@@ -106,7 +106,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_amazon.png" ) );
 
-    m_metaFactory = new AmazonMetaFactory( "amazon", this );
+    m_metaFactory = new AmazonMetaFactory( "amazon" );
     m_collection = new Collections::AmazonCollection( this, "amazon", "MP3 Music Store" );
     polish();
     setPlayableTracks( true );

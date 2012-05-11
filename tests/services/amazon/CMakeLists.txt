@@ -14,6 +14,24 @@ kde4_add_unit_test( testamazonconfig ${testamazonconfig_SRCS} )
 target_link_libraries( testamazonconfig ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
 
 
+#------------------------ Test AmazonItem ---------------------------------
+
+set( testamazonitem_SRCS
+TestAmazonItem.cpp
+${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
+ )
+
+kde4_add_unit_test( testamazonitem ${testamazonitem_SRCS} )
+target_link_libraries( testamazonitem
+${KDE4_KDECORE_LIBS}
+${KDE4_KDEUI_LIBS}
+${QT_QTTEST_LIBRARY}
+${QT_QTCORE_LIBRARY}
+amarokcore
+amaroklib
+amarok_service_amazonstore )
+
+
 #------------------------ Test AmazonShoppingCart --------------------------
 
 set( testamazonshoppingcart_SRCS

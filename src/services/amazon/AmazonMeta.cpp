@@ -148,9 +148,8 @@ Meta::AmazonTrack::sourceName()
 // class AmazonMetaFactory
 ///////////////////////////////////////////////////////////////////////////////
 
-AmazonMetaFactory::AmazonMetaFactory( const QString &dbPrefix, AmazonStore* store )
+AmazonMetaFactory::AmazonMetaFactory( const QString &dbPrefix )
     : ServiceMetaFactory( dbPrefix )
-    , m_store( store )
 {}
 
 
