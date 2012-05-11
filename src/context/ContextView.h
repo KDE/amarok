@@ -60,7 +60,7 @@ public:
      /**
          * Singleton pattern accessor.
      */
-    static ContextView* self() { return s_self; }
+    static ContextView* self() { Q_ASSERT( s_self ); return s_self; }
 
     /**
         Returns the context scene that this view is attached to.
