@@ -48,6 +48,10 @@ public:
     */
     void setCountry( QString country );
 
+private:
+    AmazonConfig();
+    ~AmazonConfig();
+
     /**
     * Load current settings from disc.
     */
@@ -57,10 +61,6 @@ public:
     * Save current settings to disc.
     */
     void save();
-
-private:
-    AmazonConfig();
-    ~AmazonConfig();
 
     QString m_country;
     static AmazonConfig* m_instance;
