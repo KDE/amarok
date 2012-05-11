@@ -1264,19 +1264,8 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
     foreach( CollectionTreeItem *item, parents )
     {
         Collections::QueryMaker *qm = item->queryMaker();
-        CollectionTreeItem *tmp = item;
-        while( tmp->isDataItem() || tmp->isVariousArtistItem() )
-        {
-            if( tmp->isVariousArtistItem() )
-                qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
-            else if( tmp->data() )
-            {
-                if( m_treeModel->levelCategory( tmp->data() - 1 ) == CategoryId::AlbumArtist )
-                    qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
-                tmp->addMatch( qm );
-            }
-            tmp = tmp->parent();
-        }
+        for( CollectionTreeItem *tmp = item; tmp; tmp = tmp->parent() )
+            tmp->addMatch( qm, m_treeModel->levelCategory( tmp->level() - 1 ) );
         Collections::addTextualFilter( qm, m_treeModel->currentFilter() );
         queryMakers.append( qm );
     }

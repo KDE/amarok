@@ -279,17 +279,23 @@ CollectionTreeItem::queryMaker() const
 }
 
 void
-CollectionTreeItem::addMatch( Collections::QueryMaker *qm ) const
+CollectionTreeItem::addMatch( Collections::QueryMaker *qm, CategoryId::CatMenuId levelCategory ) const
 {
-    if( !m_data || m_type != Data )
-        return;
     if( !qm )
         return;
 
-    if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data ) )
+    if( isVariousArtistItem() )
+        qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+    if( isNoLabelItem() )
+        qm->setLabelQueryMode( Collections::QueryMaker::OnlyWithoutLabels );
+    else if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data ) )
         qm->addMatch( track );
     else if( Meta::ArtistPtr artist = Meta::ArtistPtr::dynamicCast( m_data ) )
+    {
         qm->addMatch( artist );
+        if( levelCategory == CategoryId::AlbumArtist )
+            qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
+    }
     else if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
         qm->addMatch( album );
     else if( Meta::ComposerPtr composer = Meta::ComposerPtr::dynamicCast( m_data ) )

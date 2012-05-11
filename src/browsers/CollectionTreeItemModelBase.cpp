@@ -450,18 +450,8 @@ CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) 
         else
         {
             Collections::QueryMaker *qm = item->queryMaker();
-            CollectionTreeItem *tmpItem = item;
-            while( tmpItem->isDataItem() )
-            {
-                tmpItem->addMatch( qm );
-                if( levelCategory( tmpItem->level() - 1 ) == CategoryId::AlbumArtist )
-                    qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
-                tmpItem = tmpItem->parent();
-            }
-            if( item->isVariousArtistItem() )
-                qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
-            if( item->isNoLabelItem() )
-                qm->setLabelQueryMode( Collections::QueryMaker::OnlyWithoutLabels );
+            for( CollectionTreeItem *tmp = item; tmp; tmp = tmp->parent() )
+                tmp->addMatch( qm, levelCategory( tmp->level() - 1 ) );
             Collections::addTextualFilter( qm, m_currentFilter );
             queries.append( qm );
         }
@@ -589,18 +579,8 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
             }
         }
 
-        for( CollectionTreeItem *tmpItem = parent; tmpItem->parent(); tmpItem = tmpItem->parent() )
-        {
-            // a various artist item means we are looking for compilations here
-            if( tmpItem->isVariousArtistItem() )
-                qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
-            else if( tmpItem->data() )
-            {
-                if( levelCategory( tmpItem->level() - 1 ) == CategoryId::AlbumArtist )
-                    qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
-                 tmpItem->addMatch( qm );
-            }
-        }
+        for( CollectionTreeItem *tmp = parent; tmp; tmp = tmp->parent() )
+            tmp->addMatch( qm, levelCategory( tmp->level() - 1 ) );
         Collections::addTextualFilter( qm, m_currentFilter );
         addQueryMaker( parent, qm );
         d->childQueries.insert( qm, parent );
@@ -1016,8 +996,8 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     Collections::QueryMaker *qm = parent->queryMaker();
     qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
     qm->setQueryType( Collections::QueryMaker::Album );
-    for( CollectionTreeItem *tmpItem = parent; tmpItem->parent(); tmpItem = tmpItem->parent() )
-        tmpItem->addMatch( qm );
+    for( CollectionTreeItem *tmp = parent; tmp; tmp = tmp->parent() )
+        tmp->addMatch( qm, levelCategory( tmp->level() - 1 ) );
 
     Collections::addTextualFilter( qm, m_currentFilter );
     addQueryMaker( parent, qm );
@@ -1032,8 +1012,8 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
     Collections::QueryMaker *qm = parent->queryMaker();
     qm->setQueryType( queryType );
     qm->setLabelQueryMode( Collections::QueryMaker::OnlyWithoutLabels );
-    for( CollectionTreeItem *tmpItem = parent; tmpItem->parent(); tmpItem = tmpItem->parent() )
-        tmpItem->addMatch( qm );
+    for( CollectionTreeItem *tmp = parent; tmp; tmp = tmp->parent() )
+        tmp->addMatch( qm, levelCategory( tmp->level() - 1 ) );
 
     Collections::addTextualFilter( qm, m_currentFilter );
     addQueryMaker( parent, qm );

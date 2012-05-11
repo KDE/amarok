@@ -95,8 +95,16 @@ class CollectionTreeItem : public QObject
 
         Collections::QueryMaker* queryMaker() const;
 
-        /** Call addMatch for this objects data and it's query maker */
-        void addMatch( Collections::QueryMaker *qm ) const;
+        /**
+         * Call addMatch for this objects data and it's query maker. Handles VariousArtist
+         * item and NoLabel item, too.
+         *
+         * @param qm QueryMaker to add match to
+         * @param levelCategory category for level this item is in, one of the values from
+         *        CategoryId::CatMenuId enum. Used only for distinction between Artist and
+         *        AlbumArtist.
+         */
+        void addMatch( Collections::QueryMaker* qm, CategoryId::CatMenuId levelCategory ) const;
 
         bool operator<( const CollectionTreeItem& other ) const;
 
