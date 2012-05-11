@@ -37,12 +37,13 @@ class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemMode
     Q_OBJECT
 
     public:
-        SingleCollectionTreeItemModel( Collections::Collection * collection,  const QList<int> &levelType );
+        SingleCollectionTreeItemModel( Collections::Collection *collection,
+                                       const QList<CategoryId::CatMenuId> &levelType );
 
         virtual QVariant data(const QModelIndex &index, int role) const;
         virtual bool canFetchMore( const QModelIndex &parent ) const;
         virtual void fetchMore( const QModelIndex &parent );
-        virtual void setLevels( const QList<int> &levelType );
+        virtual void setLevels( const QList<CategoryId::CatMenuId> &levelType );
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     protected:

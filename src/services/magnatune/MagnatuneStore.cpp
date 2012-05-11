@@ -463,7 +463,7 @@ void MagnatuneStore::polish()
         initTopPanel( );
         initBottomPanel();
 
-        QList<int> levels;
+        QList<CategoryId::CatMenuId> levels;
         levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
         m_magnatuneInfoParser = new MagnatuneInfoParser();

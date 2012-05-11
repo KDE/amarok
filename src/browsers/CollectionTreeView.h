@@ -17,8 +17,8 @@
 #ifndef COLLECTIONTREEVIEW_H
 #define COLLECTIONTREEVIEW_H
 
+#include "BrowserDefines.h"
 #include "widgets/PrettyTreeView.h"
-
 #include "core/meta/Meta.h"
 #include "playlist/PlaylistController.h"
 
@@ -46,10 +46,10 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         QSortFilterProxyModel* filterModel() const;
 
-        AMAROK_EXPORT void setLevels( const QList<int> &levels );
-        QList<int> levels() const;
+        AMAROK_EXPORT void setLevels( const QList<CategoryId::CatMenuId> &levels );
+        QList<CategoryId::CatMenuId> levels() const;
 
-        void setLevel( int level, int type );
+        void setLevel( int level, CategoryId::CatMenuId type );
 
         void setModel( QAbstractItemModel *model );
 

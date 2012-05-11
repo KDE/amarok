@@ -34,7 +34,7 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         Q_OBJECT
 
     public:
-        CollectionTreeItemModel( const QList<int> &levelType );
+        CollectionTreeItemModel( const QList<CategoryId::CatMenuId> &levelType );
         ~CollectionTreeItemModel();
 
         /* QAbstractItemModel methods */
@@ -47,7 +47,7 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         virtual Qt::DropActions supportedDropActions() const;
 
         /* CollectionTreeItemModelBase methods */
-        virtual void setLevels( const QList<int> &levelType );
+        virtual void setLevels( const QList<CategoryId::CatMenuId> &levelType );
 
     public slots:
         virtual void collectionAdded( Collections::Collection *newCollection );

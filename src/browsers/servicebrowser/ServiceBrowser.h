@@ -60,9 +60,6 @@ class ServiceBrowser : public BrowserCategoryList
          */
         void resetService( const QString &name );
 
-        QString activeServiceFilter();
-        QList<int> activeServiceLevels();
-
     public slots:
 
         /**

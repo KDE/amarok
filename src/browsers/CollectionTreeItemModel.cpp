@@ -37,7 +37,7 @@
 #include <QTimer>
 #include <QMap>
 
-CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
+CollectionTreeItemModel::CollectionTreeItemModel( const QList<CategoryId::CatMenuId> &levelType )
     : CollectionTreeItemModelBase()
 {
     CollectionManager* collMgr = CollectionManager::instance();
@@ -63,11 +63,14 @@ CollectionTreeItemModel::~CollectionTreeItemModel()
     DEBUG_BLOCK
 
     KConfigGroup config = Amarok::config( "Collection Browser" );
-    config.writeEntry( "TreeCategory", levels() );
+    QList<int> levelNumbers;
+    foreach( CategoryId::CatMenuId category, levels() )
+        levelNumbers.append( category );
+    config.writeEntry( "TreeCategory", levelNumbers );
 }
 
 void
-CollectionTreeItemModel::setLevels( const QList<int> &levelType )
+CollectionTreeItemModel::setLevels( const QList<CategoryId::CatMenuId> &levelType )
 {
     if( m_levelType == levelType && m_rootItem )
         return;

@@ -29,7 +29,6 @@
 #include "CollectionSortFilterProxyModel.h"
 #include "core-impl/collections/support/TrashCollectionLocation.h"
 #include "core-impl/collections/support/TextualQueryFilter.h"
-#include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
 #include "GlobalCollectionActions.h"
@@ -124,25 +123,25 @@ CollectionTreeView::~CollectionTreeView()
 }
 
 void
-CollectionTreeView::setLevels( const QList<int> &levels )
+CollectionTreeView::setLevels( const QList<CategoryId::CatMenuId> &levels )
 {
     if( m_treeModel )
         m_treeModel->setLevels( levels );
 }
 
-QList< int > CollectionTreeView::levels() const
+QList<CategoryId::CatMenuId> CollectionTreeView::levels() const
 {
     if( m_treeModel )
         return m_treeModel->levels();
-    return QList<int>();
+    return QList<CategoryId::CatMenuId>();
 }
 
 void
-CollectionTreeView::setLevel( int level, int type )
+CollectionTreeView::setLevel( int level, CategoryId::CatMenuId type )
 {
     if( !m_treeModel )
         return;
-    QList<int> levels = m_treeModel->levels();
+    QList<CategoryId::CatMenuId> levels = m_treeModel->levels();
     if ( type == CategoryId::None )
     {
         while( levels.count() >= level )

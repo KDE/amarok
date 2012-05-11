@@ -17,9 +17,10 @@
 #ifndef BROWSERCATEGORY_H
 #define BROWSERCATEGORY_H
 
-#include <KVBox>
-
 #include "amarok_export.h"
+#include "BrowserDefines.h"
+
+#include <KVBox>
 
 #include <QIcon>
 
@@ -141,10 +142,10 @@ public:
     //These 2 functions are forwarded to simplifiy the creation of urls
     //even though they might not be needed in many cases.
     virtual QString filter() const { return QString(); }
-    virtual QList<int> levels() const { return QList<int>(); }
+    virtual QList<CategoryId::CatMenuId> levels() const { return QList<CategoryId::CatMenuId>(); }
 
     virtual void setFilter( const QString &filter ) { Q_UNUSED( filter ) };
-    virtual void setLevels( const QList<int> &levels ) { Q_UNUSED( levels ) };
+    virtual void setLevels( const QList<CategoryId::CatMenuId> &levels ) { Q_UNUSED( levels ) };
 
     void addAdditionalItem( BrowserBreadcrumbItem * item );
     void clearAdditionalItems();

@@ -360,7 +360,7 @@ void ScriptableService::polish()
 {
 
     if ( !m_polished ) {
-        QList<int> viewLevels;
+        QList<CategoryId::CatMenuId> viewLevels;
 
         switch ( m_levels ) {
             case 1:

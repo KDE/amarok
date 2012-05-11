@@ -94,7 +94,7 @@ CollectionWidget::Private::view( CollectionWidget::ViewMode mode )
             connect( v, SIGNAL(leavingTree()), searchWidget->comboBox(), SLOT(setFocus()) );
             CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( v );
             v->setItemDelegate( delegate );
-            CollectionTreeItemModelBase *multiModel = new CollectionTreeItemModel( QList<int>() );
+            CollectionTreeItemModelBase *multiModel = new CollectionTreeItemModel( QList<CategoryId::CatMenuId>() );
             v->setModel( multiModel );
             treeView = v;
         }
@@ -121,7 +121,7 @@ CollectionWidget::Private::view( CollectionWidget::ViewMode mode )
             {
                 proxyColl->addCollection( coll, CollectionManager::CollectionViewable );
             }
-            CollectionTreeItemModelBase *singleModel = new SingleCollectionTreeItemModel( proxyColl, QList<int>() );
+            CollectionTreeItemModelBase *singleModel = new SingleCollectionTreeItemModel( proxyColl, QList<CategoryId::CatMenuId>() );
             v->setModel( singleModel );
             singleTreeView = v;
         }
@@ -155,7 +155,10 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     d->stack = new QStackedWidget( this );
 
     // -- read the view level settings from the configuration
-    QList<int>levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
+    QList<int> levelNumbers = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
+    QList<CategoryId::CatMenuId> levels;
+    foreach( int levelNumber, levelNumbers )
+        levels << CategoryId::CatMenuId( levelNumber );
     if ( levels.isEmpty() )
         levels << CategoryId::Artist << CategoryId::Album;
 
@@ -244,7 +247,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
         for( unsigned int j = 0; j < sizeof( definitions ) / sizeof( definitions[0] ); j++ )
         {
             QAction *action = d->menuLevel[i]->addAction( Meta::i18nForField( definitions[j].field ) );
-            action->setData( definitions[j].menuId );
+            action->setData( QVariant::fromValue<CategoryId::CatMenuId>( definitions[j].menuId ) );
             action->setCheckable( true );
             actionGroup->addAction( action );
 
@@ -316,12 +319,13 @@ CollectionWidget::sortLevelSelected( QAction *action )
 {
     Q_UNUSED( action );
 
-    QList<int> levels;
+    QList<CategoryId::CatMenuId> levels;
     for( int i = 0; i < CATEGORY_LEVEL_COUNT; i++ )
     {
-        if( d->levelGroups[i]->checkedAction() )
+        const QAction *action = d->levelGroups[i]->checkedAction();
+        if( action )
         {
-            int category = d->levelGroups[i]->checkedAction()->data().toInt();
+            CategoryId::CatMenuId category = action->data().value<CategoryId::CatMenuId>();
             if( category != CategoryId::None )
                 levels << category;
         }
@@ -332,7 +336,7 @@ CollectionWidget::sortLevelSelected( QAction *action )
 void
 CollectionWidget::sortByArtistAlbum()
 {
-    QList<int> levels;
+    QList<CategoryId::CatMenuId> levels;
     levels << CategoryId::Artist << CategoryId::Album;
     setLevels( levels );
 }
@@ -340,7 +344,7 @@ CollectionWidget::sortByArtistAlbum()
 void
 CollectionWidget::sortByAlbumArtist()
 {
-    QList<int> levels;
+    QList<CategoryId::CatMenuId> levels;
     levels << CategoryId::Album << CategoryId::Artist;
     setLevels( levels );
 }
@@ -348,7 +352,7 @@ CollectionWidget::sortByAlbumArtist()
 void
 CollectionWidget::sortByGenreArtist()
 {
-    QList<int> levels;
+    QList<CategoryId::CatMenuId> levels;
     levels << CategoryId::Genre << CategoryId::Artist;
     setLevels( levels );
 }
@@ -356,7 +360,7 @@ CollectionWidget::sortByGenreArtist()
 void
 CollectionWidget::sortByGenreArtistAlbum()
 {
-    QList<int> levels;
+    QList<CategoryId::CatMenuId> levels;
     levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
     setLevels( levels );
 }
@@ -393,19 +397,19 @@ void CollectionWidget::setFilter( const QString &filter )
     d->searchWidget->setSearchString( filter );
 }
 
-QList<int>
+QList<CategoryId::CatMenuId>
 CollectionWidget::levels() const
 {
     // return const_cast<CollectionWidget*>( this )->view( d->viewMode )->levels();
     return d->view( d->viewMode )->levels();
 }
 
-void CollectionWidget::setLevels( const QList<int> &levels )
+void CollectionWidget::setLevels( const QList<CategoryId::CatMenuId> &levels )
 {
     // -- select the corrrect menu entries
     for( int i = 0; i < CATEGORY_LEVEL_COUNT; i++ )
     {
-        int category;
+        CategoryId::CatMenuId category;
         if( levels.count() > i )
             category = levels[i];
         else
@@ -413,7 +417,7 @@ void CollectionWidget::setLevels( const QList<int> &levels )
 
         foreach( QAction* action, d->levelGroups[i]->actions() )
         {
-            if( action->data().toInt() == category && !action->isChecked() )
+            if( action->data().value<CategoryId::CatMenuId>() == category && !action->isChecked() )
                 action->setChecked( true );
         }
     }

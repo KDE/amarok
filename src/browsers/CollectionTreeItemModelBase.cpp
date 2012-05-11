@@ -1193,7 +1193,7 @@ CollectionTreeItemModelBase::setDragSourceCollections( const QSet<Collections::C
     m_dragSourceCollections = collections;
 }
 
-int
+CategoryId::CatMenuId
 CollectionTreeItemModelBase::levelCategory( const int level ) const
 {
     if( level >= 0 && level + levelModifier() < m_levelType.count() )

@@ -67,24 +67,6 @@ ServiceBrowser::resetService( const QString &name )
     Q_UNUSED( name );
 }
 
-QString ServiceBrowser::activeServiceFilter()
-{
-
-    ServiceBase * service = dynamic_cast<ServiceBase *>( activeCategory() );
-    if ( service )
-        return service->filter();
-    return QString();
-}
-
-QList<int> ServiceBrowser::activeServiceLevels()
-{
-
-    ServiceBase * service = dynamic_cast<ServiceBase *>( activeCategory() );
-    if ( service )
-        return service->levels();
-    return QList<int>();
-}
-
 void ServiceBrowser::addService( ServiceBase * service )
 {
     DEBUG_BLOCK

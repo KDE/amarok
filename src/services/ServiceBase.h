@@ -237,7 +237,7 @@ public:
      ServiceFactory* parent() const;
 
      virtual QString filter() const;
-     virtual QList<int> levels() const;
+     virtual QList<CategoryId::CatMenuId> levels() const;
 
 public slots:
     //void treeViewSelectionChanged( const QItemSelection & selected );
@@ -272,7 +272,7 @@ public slots:
      */
     void sortByGenreArtistAlbum();
 
-    void setLevels( const QList<int> &levels );
+    void setLevels( const QList<CategoryId::CatMenuId> &levels );
 
 signals:
     /**

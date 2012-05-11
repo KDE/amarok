@@ -49,10 +49,10 @@ class CollectionWidget : public BrowserCategory
         void setFilter( const QString &filter );
 
         /** Return the current views selected levels */
-        QList<int> levels() const;
+        QList<CategoryId::CatMenuId> levels() const;
 
         /** Set the current views selected levels */
-        void setLevels( const QList<int> &levels );
+        void setLevels( const QList<CategoryId::CatMenuId> &levels );
 
         void focusInputLine();
     public slots:

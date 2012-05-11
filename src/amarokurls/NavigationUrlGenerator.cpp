@@ -72,10 +72,10 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     if ( !filter.isEmpty() )
         url.setArg( "filter", filter );
 
-    QList<int> levels = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->levels();
+    QList<CategoryId::CatMenuId> levels = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->levels();
     QString sortMode;
 
-    foreach( int level, levels ) {
+    foreach( CategoryId::CatMenuId level, levels ) {
         switch( level ) {
             case CategoryId::Genre:
                 sortMode += "genre-";

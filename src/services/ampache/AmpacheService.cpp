@@ -137,7 +137,7 @@ AmpacheService::onLoginSuccessful()
     // connect( m_collection, SIGNAL( authenticationNeeded() ), SLOT( authenticate() ) );
     
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
-    QList<int> levels;
+    QList<CategoryId::CatMenuId> levels;
     levels << CategoryId::Artist << CategoryId::Album;
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
     m_serviceready = true;

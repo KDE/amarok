@@ -148,7 +148,7 @@ TestSingleCollectionTreeItemModel::testAddNewArtist()
     Collections::CollectionTestImpl *coll = new Collections::CollectionTestImpl( "test" );
     addMockTrack( coll, "track1", "artist1", "album1" );
 
-    QList<int> levels;
+    QList<CategoryId::CatMenuId> levels;
     levels<< CategoryId::Artist << CategoryId::Album;
 
     SingleCollectionTreeItemModel *model = new SingleCollectionTreeItemModel( coll, levels );
@@ -195,7 +195,7 @@ TestSingleCollectionTreeItemModel::testRemoveArtist()
     addMockTrack( coll, "track1", "artist1", "album1" );
     addMockTrack( coll, "track2", "artist2", "album2" );
 
-    QList<int> levels;
+    QList<CategoryId::CatMenuId> levels;
     levels<< CategoryId::Artist << CategoryId::Album;
 
     SingleCollectionTreeItemModel *model = new SingleCollectionTreeItemModel( coll, levels );
@@ -244,7 +244,7 @@ TestSingleCollectionTreeItemModel::testAddTrack()
     addMockTrack( coll, "track1", "artist1", "album1" );
     addMockTrack( coll, "track2", "artist2", "album2" );
 
-    QList<int> levels;
+    QList<CategoryId::CatMenuId> levels;
     levels<< CategoryId::Artist << CategoryId::Album;
 
     SingleCollectionTreeItemModel *model = new SingleCollectionTreeItemModel( coll, levels );
@@ -318,7 +318,7 @@ TestSingleCollectionTreeItemModel::testAddTrackWithFilter()
     Collections::CollectionTestImpl *coll = new Collections::CollectionTestImpl( "test" );
     addMockTrack( coll, "track1", "artist1", "album1" );
 
-    QList<int> levels;
+    QList<CategoryId::CatMenuId> levels;
     levels << CategoryId::Artist << CategoryId::Album;
 
     SingleCollectionTreeItemModel *model = new SingleCollectionTreeItemModel( coll, levels );

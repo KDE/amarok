@@ -254,25 +254,25 @@ ServiceBase::setPlayableTracks(bool playable)
 void
 ServiceBase::sortByArtist()
 {
-    setLevels( QList<int>() << CategoryId::Artist );
+    setLevels( QList<CategoryId::CatMenuId>() << CategoryId::Artist );
 }
 
 void
 ServiceBase::sortByArtistAlbum()
 {
-    setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
+    setLevels( QList<CategoryId::CatMenuId>() << CategoryId::Artist << CategoryId::Album );
 }
 
 void
 ServiceBase::sortByAlbum()
 {
-    setLevels( QList<int>() << CategoryId::Album );
+    setLevels( QList<CategoryId::CatMenuId>() << CategoryId::Album );
 }
 
 void
 ServiceBase::sortByGenreArtist()
 {
-    setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
+    setLevels( QList<CategoryId::CatMenuId>() << CategoryId::Genre << CategoryId::Artist );
 }
 
 void
@@ -280,7 +280,7 @@ ServiceBase::sortByGenreArtistAlbum()
 {
     if( m_useCollectionTreeView ) {
         if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
-            view->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
+            view->setLevels( QList<CategoryId::CatMenuId>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
     }
 }
 
@@ -324,16 +324,16 @@ ServiceBase::filter() const
     return m_searchWidget->currentText();
 }
 
-QList<int>
+QList<CategoryId::CatMenuId>
 ServiceBase::levels() const
 {
     CollectionTreeView *contentView = qobject_cast<CollectionTreeView*>(m_contentView);
     if( contentView )
         return contentView->levels();
-    return QList<int>();
+    return QList<CategoryId::CatMenuId>();
 }
 
-void ServiceBase::setLevels( const QList<int> &levels )
+void ServiceBase::setLevels( const QList<CategoryId::CatMenuId> &levels )
 {
     if( m_useCollectionTreeView ) {
         if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )

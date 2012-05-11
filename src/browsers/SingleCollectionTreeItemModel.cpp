@@ -28,7 +28,8 @@
 
 #include <KLocale>
 
-SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Collection * collection, const QList<int> &levelType )
+SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Collection *collection,
+                                                              const QList<CategoryId::CatMenuId> &levelType )
     :CollectionTreeItemModelBase( )
 {
     m_collection = collection;
@@ -40,7 +41,7 @@ SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Colle
 }
 
 void
-SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
+SingleCollectionTreeItemModel::setLevels( const QList<CategoryId::CatMenuId> &levelType )
 {
     if( m_levelType == levelType && m_rootItem )
         return;

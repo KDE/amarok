@@ -49,7 +49,10 @@ TrackSelectWidget::TrackSelectWidget( QWidget* parent )
     CollectionTreeItemDelegate* delegate = new CollectionTreeItemDelegate( m_view );
     m_view->setItemDelegate( delegate );
 
-    QList<int> levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
+    QList<int> levelNumbers = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
+    QList<CategoryId::CatMenuId> levels;
+    foreach( int levelNumber, levelNumbers )
+        levels << CategoryId::CatMenuId( levelNumber );
     if ( levels.isEmpty() )
         levels << CategoryId::Artist << CategoryId::Album;
     m_model = new CollectionTreeItemModel( levels );

@@ -132,7 +132,7 @@ JamendoService::polish()
 
     setInfoParser( new JamendoInfoParser() );
 
-    QList<int> levels;
+    QList<CategoryId::CatMenuId> levels;
     levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );

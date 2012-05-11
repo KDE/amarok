@@ -40,20 +40,6 @@ class QTimeLine;
 
 typedef QPair<Collections::Collection*, CollectionTreeItem* > CollectionRoot;
 
-namespace CategoryId
-{
-    enum CatMenuId {
-    None = 0,
-    Album,
-    Artist,
-    AlbumArtist,
-    Composer,
-    Genre,
-    Year,
-    Label
-    };
-}
-
 /**
 	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
@@ -86,9 +72,9 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual void listForLevel( int level, Collections::QueryMaker *qm, CollectionTreeItem* parent );
 
 
-        virtual void setLevels( const QList<int> &levelType ) = 0;
-        virtual QList<int> levels() const { return m_levelType; }
-        virtual int levelCategory( const int level ) const;
+        virtual void setLevels( const QList<CategoryId::CatMenuId> &levelType ) = 0;
+        virtual QList<CategoryId::CatMenuId> levels() const { return m_levelType; }
+        virtual CategoryId::CatMenuId levelCategory( const int level ) const;
 
         QString currentFilter() const
         { return m_currentFilter; }
@@ -154,7 +140,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         QString m_headerText;
         CollectionTreeItem *m_rootItem;
-        QList<int> m_levelType;
+        QList<CategoryId::CatMenuId> m_levelType;
 
         class Private;
         Private * const d;
