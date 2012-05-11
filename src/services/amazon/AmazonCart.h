@@ -19,7 +19,7 @@
 #ifndef AMAZONCART_H
 #define AMAZONCART_H
 
-#include "AmazonCartItem.h"
+#include "AmazonShoppingCartItem.h"
 
 #include <QtGlobal>
 
@@ -30,7 +30,7 @@
 
 /* Singleton representing the Amazon shopping cart. */
 
-class AmazonCart : public QList<AmazonCartItem>
+class AmazonCart : public QList<AmazonShoppingCartItem>
 {
 public:
     static AmazonCart* instance();

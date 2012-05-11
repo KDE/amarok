@@ -15,7 +15,6 @@ add_subdirectory( images )
 
 set( amarok_service_amazonstore_PART_SRCS
     AmazonCart.cpp
-    AmazonCartItem.cpp
     AmazonCollection.cpp
     AmazonConfig.cpp
     AmazonItemTreeModel.cpp
@@ -23,6 +22,7 @@ set( amarok_service_amazonstore_PART_SRCS
     AmazonParser.cpp
     AmazonMeta.cpp
     AmazonShoppingCartDialog.cpp
+    AmazonShoppingCartItem.cpp
     AmazonShoppingCartModel.cpp
     AmazonShoppingCartView.cpp
     AmazonStore.cpp

@@ -14,15 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAZONCARTITEM_H
-#define AMAZONCARTITEM_H
+#ifndef AMAZONSHOPPINGCARTITEM_H
+#define AMAZONSHOPPINGCARTITEM_H
 
 #include <QString>
 
-class AmazonCartItem
+class AmazonShoppingCartItem
 {
 public:
-    AmazonCartItem( QString asin, QString price, QString prettyName );
+    AmazonShoppingCartItem( QString asin, QString price, QString prettyName );
 
     /**
     * Returns the Amazon internal ID of the item.
@@ -45,4 +45,4 @@ private:
     QString m_price;
 };
 
-#endif // AMAZONCARTITEM_H
+#endif // AMAZONSHOPPINGCARTITEM_H

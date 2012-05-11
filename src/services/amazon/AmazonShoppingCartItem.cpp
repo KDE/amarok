@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "AmazonCartItem.h"
+#include "AmazonShoppingCartItem.h"
 
-AmazonCartItem::AmazonCartItem( QString asin, QString price, QString prettyName )
+AmazonShoppingCartItem::AmazonShoppingCartItem( QString asin, QString price, QString prettyName )
 {
     m_asin = asin;
     m_prettyName = prettyName;
@@ -24,19 +24,19 @@ AmazonCartItem::AmazonCartItem( QString asin, QString price, QString prettyName 
 }
 
 QString
-AmazonCartItem::asin() const
+AmazonShoppingCartItem::asin() const
 {
     return m_asin;
 }
 
 QString
-AmazonCartItem::prettyName() const
+AmazonShoppingCartItem::prettyName() const
 {
     return m_prettyName;
 }
 
 QString
-AmazonCartItem::price() const
+AmazonShoppingCartItem::price() const
 {
     return m_price;
 }

@@ -55,7 +55,7 @@ AmazonCart::AmazonCart()
 void
 AmazonCart::add( QString asin, QString price, QString name )
 {
-    AmazonCartItem item( asin, price, name );
+    AmazonShoppingCartItem item( asin, price, name );
     m_price = m_price + price.toInt();
     insert( size(), item );
 }
@@ -63,7 +63,7 @@ AmazonCart::add( QString asin, QString price, QString name )
 void
 AmazonCart::clear()
 {
-    QList<AmazonCartItem>::clear();
+    QList<AmazonShoppingCartItem>::clear();
     m_price = 0;
 }
 
@@ -94,7 +94,7 @@ AmazonCart::remove( int pos )
         return;
 
     m_price = m_price - at( pos ).price().toInt();
-    QList<AmazonCartItem>::removeAt( pos );
+    QList<AmazonShoppingCartItem>::removeAt( pos );
 }
 
 QUrl
