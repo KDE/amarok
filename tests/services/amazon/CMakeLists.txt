@@ -56,6 +56,24 @@ amaroklib
 amarok_service_amazonstore )
 
 
+#------------------------ Test Meta::AmazonArtist ---------------------------------
+
+set( testamazonartist_SRCS
+TestAmazonArtist.cpp
+${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
+ )
+
+kde4_add_unit_test( testamazonartist ${testamazonartist_SRCS} )
+target_link_libraries( testamazonartist
+${KDE4_KDECORE_LIBS}
+${KDE4_KDEUI_LIBS}
+${QT_QTTEST_LIBRARY}
+${QT_QTCORE_LIBRARY}
+amarokcore
+amaroklib
+amarok_service_amazonstore )
+
+
 #------------------------ Test Meta::AmazonItem ---------------------------------
 
 set( testamazonitem_SRCS
