@@ -90,3 +90,21 @@ ${QT_QTCORE_LIBRARY}
 amarokcore
 amaroklib
 amarok_service_amazonstore )
+
+
+#------------------------ Test Meta::AmazonTrack ---------------------------------
+
+set( testamazontrack_SRCS
+TestAmazonTrack.cpp
+${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
+ )
+
+kde4_add_unit_test( testamazontrack ${testamazontrack_SRCS} )
+target_link_libraries( testamazontrack
+${KDE4_KDECORE_LIBS}
+${KDE4_KDEUI_LIBS}
+${QT_QTTEST_LIBRARY}
+${QT_QTCORE_LIBRARY}
+amarokcore
+amaroklib
+amarok_service_amazonstore )
