@@ -180,4 +180,3 @@ AmazonMetaFactory::createArtist( const QStringList &rows )
 
     return ArtistPtr( artist );
 }
-
