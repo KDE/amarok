@@ -407,8 +407,13 @@ LyricsAppletPrivate::_trackPositionChanged( qint64 position, bool userSeek )
     if( engine->trackPositionMs() != 0 &&  !vbar->isSliderDown() && autoScroll )
     {
         userAutoScrollOffset = userAutoScrollOffset + vbar->value() - oldSliderPosition;
-        oldSliderPosition = (int)((((double)position/(double)engine->trackLength()))*vbar->maximum()) + userAutoScrollOffset;
-        vbar->setSliderPosition( oldSliderPosition );
+        // Scroll to try and keep the current position in the lyrics centred.
+        int newSliderPosition =
+            position * (vbar->maximum() + vbar->pageStep()) / engine->trackLength() -
+            vbar->pageStep() / 2 + userAutoScrollOffset;
+        vbar->setSliderPosition( newSliderPosition );
+
+        oldSliderPosition = vbar->value();
     }
 }
 
