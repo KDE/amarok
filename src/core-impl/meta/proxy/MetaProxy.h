@@ -41,75 +41,82 @@ namespace MetaProxy
             Track( const KUrl &url );
             virtual ~Track();
 
-        //methods inherited from Meta::MetaBase
+        // methods inherited from Meta::MetaCapability
+            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+            virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+
+        // methods inherited from Meta::MetaBase
             virtual QString name() const;
-            virtual void setName( const QString &name );
             virtual QString prettyName() const;
             virtual QString fullPrettyName() const;
             virtual QString sortableName() const;
+            virtual QString fixedName() const;
 
-        //methods inherited from Meta::Track
+            virtual void subscribe( Meta::Observer *observer );
+            virtual void unsubscribe( Meta::Observer *observer );
+
+        // methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
 
             virtual bool isPlayable() const;
-
             virtual Meta::AlbumPtr album() const;
-            virtual void setAlbum( const QString &album );
-            virtual void setAlbumArtist( const QString &artist );
             virtual Meta::ArtistPtr artist() const;
-            virtual void setArtist( const QString &artist );
             virtual Meta::GenrePtr genre() const;
-            virtual void setGenre( const QString &genre );
             virtual Meta::ComposerPtr composer() const;
-            virtual void setComposer( const QString &composer );
             virtual Meta::YearPtr year() const;
-            virtual void setYear( int year );
 
+            virtual Meta::LabelList labels() const;
             virtual qreal bpm() const;
-            virtual void setBpm( const qreal bpm );
-
             virtual QString comment() const;
-
             virtual double score() const;
             virtual void setScore( double newScore );
-
             virtual int rating() const;
             virtual void setRating( int newRating );
-
-            virtual int trackNumber() const;
-            virtual void setTrackNumber( int number );
-            virtual int discNumber() const;
-            virtual void setDiscNumber( int discNumber );
-
             virtual qint64 length() const;
-            virtual void setLength( qint64 length );
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;
             virtual QDateTime createDate() const;
-
-            virtual QDateTime firstPlayed() const;
+            virtual QDateTime modifyDate() const;
+            virtual int trackNumber() const;
+            virtual int discNumber() const;
             virtual QDateTime lastPlayed() const;
+            virtual QDateTime firstPlayed() const;
             virtual int playCount() const;
+            virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
 
             virtual QString type() const;
 
+            virtual void prepareToPlay();
             virtual void finishedPlaying( double playedFraction );
 
             virtual bool inCollection() const;
             virtual Collections::Collection *collection() const;
 
-            virtual void subscribe( Meta::Observer *observer );
-            virtual void unsubscribe( Meta::Observer *observer );
+            virtual QString cachedLyrics() const;
+            virtual void setCachedLyrics( const QString &lyrics );
 
-            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-            virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+            virtual void addLabel( const QString &label );
+            virtual void addLabel( const Meta::LabelPtr &label );
+            virtual void removeLabel( const Meta::LabelPtr &label );
 
             virtual bool operator==( const Meta::Track &track ) const;
 
         // custom MetaProxy methods
+            virtual void setName( const QString &name );
+            virtual void setAlbum( const QString &album );
+            virtual void setAlbumArtist( const QString &artist );
+            virtual void setArtist( const QString &artist );
+            virtual void setGenre( const QString &genre );
+            virtual void setComposer( const QString &composer );
+            virtual void setYear( int year );
+            virtual void setBpm( const qreal bpm );
+            virtual void setTrackNumber( int number );
+            virtual void setDiscNumber( int discNumber );
+            virtual void setLength( qint64 length );
+
             /**
              * allows subclasses to create an instance of trackprovider which will only check the TrackProvider
              * passed to lookupTrack(TrackProvider*) for the real track.

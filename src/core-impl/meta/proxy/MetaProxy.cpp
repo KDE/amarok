@@ -109,11 +109,10 @@ MetaProxy::Track::~Track()
 QString
 MetaProxy::Track::name() const
 {
-    if( d->realTrack ) {
-        QString name = d->realTrack->name();
-        return name;
-    }
-    return d->cachedName;
+    if( d->realTrack )
+        return d->realTrack->name();
+    else
+        return d->cachedName;
 }
 
 void
@@ -125,31 +124,37 @@ MetaProxy::Track::setName( const QString &name )
 QString
 MetaProxy::Track::prettyName() const
 {
-    if( d->realTrack ) {
-        QString prettyName = d->realTrack->prettyName();
-        return prettyName;
-    }
-    return d->cachedName;   //TODO maybe change this?
+    if( d->realTrack )
+        return d->realTrack->prettyName();
+    else
+        return d->cachedName;
 }
 
 QString
 MetaProxy::Track::fullPrettyName() const
 {
-    if( d->realTrack ) {
-        QString fullPrettyName = d->realTrack->fullPrettyName();
-        return fullPrettyName;
-    }
-    return d->cachedName;   //TODO maybe change this??
+    if( d->realTrack )
+        return d->realTrack->fullPrettyName();
+    else
+        return d->cachedName;
 }
 
 QString
 MetaProxy::Track::sortableName() const
 {
-    if( d->realTrack ) {
-        QString sortableName = d->realTrack->sortableName();
-        return sortableName;
-    }
-    return d->cachedName;   //TODO maybe change this??
+    if( d->realTrack )
+        return d->realTrack->sortableName();
+    else
+        return d->cachedName;
+}
+
+QString
+Track::fixedName() const
+{
+    if( d->realTrack )
+        return d->realTrack->fixedName();
+    else
+        return d->cachedName;
 }
 
 KUrl
@@ -257,6 +262,15 @@ void
 MetaProxy::Track::setYear( int year )
 {
     d->cachedYear = year;
+}
+
+Meta::LabelList
+Track::labels() const
+{
+    if( d->realTrack )
+        return d->realTrack->labels();
+    else
+        return Meta::Track::labels();
 }
 
 qreal
@@ -384,7 +398,15 @@ MetaProxy::Track::createDate() const
 {
     if( d->realTrack )
         return d->realTrack->createDate();
-    return QDateTime();
+    return Meta::Track::createDate();
+}
+
+QDateTime
+Track::modifyDate() const
+{
+    if( d->realTrack )
+        return d->realTrack->modifyDate();
+    return Meta::Track::modifyDate();
 }
 
 QDateTime
@@ -411,12 +433,27 @@ MetaProxy::Track::playCount() const
     return 0;
 }
 
+qreal
+Track::replayGain( Meta::ReplayGainTag mode ) const
+{
+    if( d->realTrack )
+        return d->realTrack->replayGain( mode );
+    return Meta::Track::replayGain( mode );
+}
+
 QString
 MetaProxy::Track::type() const
 {
     if( d->realTrack )
         return d->realTrack->type();
     return QString();       //TODO cache type??
+}
+
+void
+Track::prepareToPlay()
+{
+    if( d->realTrack )
+        d->realTrack->prepareToPlay();
 }
 
 void
@@ -441,6 +478,51 @@ MetaProxy::Track::collection() const
         return d->realTrack->collection();
     else
         return 0;
+}
+
+QString
+Track::cachedLyrics() const
+{
+    if( d->realTrack )
+        return d->realTrack->cachedLyrics();
+    else
+        return Meta::Track::cachedLyrics();
+}
+
+void
+Track::setCachedLyrics(const QString& lyrics)
+{
+    if( d->realTrack )
+        d->realTrack->setCachedLyrics( lyrics );
+    else
+        Meta::Track::setCachedLyrics( lyrics );
+}
+
+void
+Track::addLabel( const QString &label )
+{
+    if( d->realTrack )
+        d->realTrack->addLabel( label );
+    else
+        Meta::Track::addLabel( label );
+}
+
+void
+Track::addLabel( const Meta::LabelPtr &label )
+{
+    if( d->realTrack )
+        d->realTrack->addLabel( label );
+    else
+        Meta::Track::addLabel( label );
+}
+
+void
+Track::removeLabel( const Meta::LabelPtr &label )
+{
+    if( d->realTrack )
+        d->realTrack->removeLabel( label );
+    else
+        Meta::Track::removeLabel( label );
 }
 
 void

@@ -157,12 +157,42 @@ public:
         , d( dptr )
     {}
 
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->hasCapabilityInterface( type );
+        else
+            return Meta::Album::hasCapabilityInterface( type );
+    }
+
+    Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->createCapabilityInterface( type );
+        else
+            return Meta::Album::createCapabilityInterface( type );
+    }
+
     bool isCompilation() const
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->isCompilation();
         else
             return false;
+    }
+
+    bool canUpdateCompilation() const
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->canUpdateCompilation();
+        else
+            return Meta::Album::canUpdateCompilation();
+    }
+
+    void setCompilation( bool isCompilation )
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->setCompilation( isCompilation );
     }
 
     bool hasAlbumArtist() const
@@ -183,7 +213,7 @@ public:
 
     Meta::TrackList tracks()
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->tracks();
         else
             return Meta::TrackList();
@@ -213,32 +243,46 @@ public:
 
     QImage image( int size ) const
     {
-        if( d && d->realTrack ) {
-            if ( d->realTrack->album() )
-                return d->realTrack->album()->image( size );
-            return Meta::Album::image( size );
-        } else
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->image( size );
+        else
             return Meta::Album::image( size );
     }
 
     bool hasImage( int size ) const
     {
-        if( d && d->realTrack ) {
-            if ( d->realTrack->album() )
-                return d->realTrack->album()->hasImage( size );
-            return Meta::Album::hasImage( size );
-        } else
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->hasImage( size );
+        else
             return Meta::Album::hasImage( size );
     }
 
     KUrl imageLocation( int size = 0 )
     {
-        if( d && d->realTrack ) {
-            if ( d->realTrack->album() )
-                return d->realTrack->album()->imageLocation( size );
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->imageLocation( size );
+        else
             return Meta::Album::imageLocation( size );
-        } else
-            return Meta::Album::imageLocation( size );
+    }
+
+    bool canUpdateImage() const
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->canUpdateImage();
+        else
+            return Meta::Album::canUpdateImage();
+    }
+
+    void setImage( const QImage &image )
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->setImage( image );
+    }
+
+    void removeImage()
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->removeImage();
     }
 
     virtual bool operator==( const Meta::Album &album ) const
