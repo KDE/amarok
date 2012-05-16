@@ -318,7 +318,7 @@ DatabaseUpdater::upgradeVersion4to5()
     for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
     {
         storage->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ')' );
-        storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
+        storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first +
             " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL" );
     }
 
@@ -424,7 +424,7 @@ DatabaseUpdater::upgradeVersion6to7()
 
     for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
     {
-        storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
+        storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first +
             " VARCHAR(" + QString::number( i.value().second ) + ") COLLATE utf8_bin NOT NULL" );
     }
 
@@ -559,7 +559,7 @@ DatabaseUpdater::upgradeVersion9to10()
     for( i = columns.constBegin(), iEnd = columns.constEnd(); i != iEnd; ++i )
     {
         storage->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ')' );
-        storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
+        storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first +
             " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET utf8 COLLATE utf8_bin NOT NULL" );
     }
 
