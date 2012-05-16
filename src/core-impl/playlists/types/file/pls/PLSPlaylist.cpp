@@ -149,7 +149,7 @@ PLSPlaylist::removeTrack( int position )
 bool
 PLSPlaylist::loadPls( QTextStream &textStream )
 {
-    MetaProxy::Track *proxyTrack;
+    MetaProxy::Track *proxyTrack = 0;
 
     // Counted number of "File#=" lines.
     unsigned int entryCnt = 0;
