@@ -109,24 +109,25 @@ namespace MetaProxy
 
             virtual bool operator==( const Meta::Track &track ) const;
 
-		/**
-		 * allows subclasses to create an instance of trackprovider which will only check the TrackProvider
-		 * passed to lookupTrack(TrackProvider*) for the real track.
-		 */
-        Track( const KUrl &url, bool awaitLookupNotification );
+        // custom MetaProxy methods
+            /**
+             * allows subclasses to create an instance of trackprovider which will only check the TrackProvider
+             * passed to lookupTrack(TrackProvider*) for the real track.
+             */
+            Track( const KUrl &url, bool awaitLookupNotification );
 
-		/**
-		 * MetaProxy will check the given trackprovider if it can provide the track for the proxy's url.
-		 */
-        void lookupTrack( Collections::TrackProvider *provider );
+            /**
+             * MetaProxy will check the given trackprovider if it can provide the track for the proxy's url.
+             */
+            void lookupTrack( Collections::TrackProvider *provider );
 
-        /**
-         * MetaProxy will update the proxy with the track.
-         */
-        void updateTrack( Meta::TrackPtr track );
+            /**
+             * MetaProxy will update the proxy with the track.
+             */
+            void updateTrack( Meta::TrackPtr track );
 
         private:
-			void init( const KUrl &url, bool awaitLookupNotification );
+            void init( const KUrl &url, bool awaitLookupNotification );
             Private *const d;
     };
 
