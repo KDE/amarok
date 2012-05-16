@@ -1155,8 +1155,8 @@ SqlTrack::collection() const
 QString
 SqlTrack::cachedLyrics() const
 {
-    QString query = QString( "SELECT lyrics FROM lyrics WHERE url = '%1'" )
-                        .arg( m_collection->sqlStorage()->escape( m_rpath ) );
+    /* We don't cache the string as it may be potentially very long */
+    QString query = QString( "SELECT lyrics FROM lyrics WHERE url = %1" ).arg( m_urlId );
     QStringList result = m_collection->sqlStorage()->query( query );
     if( result.isEmpty() )
         return QString();
@@ -1166,26 +1166,23 @@ SqlTrack::cachedLyrics() const
 void
 SqlTrack::setCachedLyrics( const QString &lyrics )
 {
-    QString query = QString( "SELECT count(*) FROM lyrics WHERE url = '%1'")
-                        .arg( m_collection->sqlStorage()->escape(m_rpath) );
-
+    QString query = QString( "SELECT count(*) FROM lyrics WHERE url = %1").arg( m_urlId );
     const QStringList queryResult = m_collection->sqlStorage()->query( query );
-
     if( queryResult.isEmpty() )
-        return;
+        return;  // error in the query?
 
     if( queryResult.first().toInt() == 0 )
     {
-        QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( '%1', '%2' );" )
-                            .arg( m_collection->sqlStorage()->escape( m_rpath ),
+        QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( %1, '%2' )" )
+                            .arg( QString::number( m_urlId ),
                                   m_collection->sqlStorage()->escape( lyrics ) );
         m_collection->sqlStorage()->insert( insert, "lyrics" );
     }
     else
     {
-        QString update = QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" )
+        QString update = QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = %2" )
                             .arg( m_collection->sqlStorage()->escape( lyrics ),
-                                  m_collection->sqlStorage()->escape( m_rpath ) );
+                                  QString::number( m_urlId ) );
         m_collection->sqlStorage()->query( update );
     }
 

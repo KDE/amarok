@@ -30,7 +30,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 13;
+static const int DB_VERSION = 14;
 
 int
 DatabaseUpdater::expectedDatabaseVersion()
@@ -140,6 +140,11 @@ DatabaseUpdater::update()
         {
             upgradeVersion12to13();
             dbVersion = 13;
+        }
+        if( dbVersion == 13 && dbVersion < DB_VERSION )
+        {
+            upgradeVersion13to14();
+            dbVersion = 14;
         }
         /*
         if( dbVersion == X && dbVersion < DB_VERSION )
@@ -628,6 +633,37 @@ DatabaseUpdater::upgradeVersion12to13()
     m_collection->sqlStorage()->query( "UPDATE urls SET uniqueid = REPLACE(uniqueid, 'MB_', 'mb-');" );
 }
 
+void
+DatabaseUpdater::upgradeVersion13to14()
+{
+    DEBUG_BLOCK
+    SqlStorage *storage = m_collection->sqlStorage();
+
+    /* Following commands transition lyrics table from text-based urls (in fact just rpath
+     * parts) to references to urls table. */
+
+    // first, rename column
+    storage->query( "ALTER TABLE lyrics CHANGE url rpath VARCHAR(324) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL" );
+    // add integer column for url id
+    storage->query( "ALTER TABLE lyrics ADD COLUMN url INT NULL DEFAULT NULL FIRST" );
+    // try to extract url id from urls table using rpath
+    storage->query( "UPDATE lyrics l SET l.url = (SELECT u.id FROM urls u WHERE u.rpath = l.rpath LIMIT 1)" );
+    // delete entries with no matches in urls table; these should be just stale ones
+    storage->query( "DELETE FROM lyrics WHERE url IS NULL" );
+    // make the url columnt non-null
+    storage->query( "ALTER TABLE lyrics MODIFY url INT NOT NULL" );
+    // select duplicate ids into temporary table
+    storage->query( "CREATE TEMPORARY TABLE duplicate_lyrics_ids ( id INT NOT NULL ) "
+        "ENGINE=MEMORY SELECT dupl.id FROM lyrics orig "
+        "LEFT JOIN lyrics dupl ON dupl.url = orig.url AND dupl.id > orig.id" );
+    // delete duplicate lyrics entries
+    storage->query( "DELETE FROM lyrics WHERE id IN (SELECT id FROM duplicate_lyrics_ids)" );
+    // drop unwanted columns along with indexes defined on them
+    storage->query( "ALTER TABLE lyrics DROP id, DROP rpath" );
+    // add primary key; should definitely not fail as we have removed duplicate entries
+    storage->query( "ALTER TABLE lyrics ADD PRIMARY KEY(url)" );
+}
+
 
 void
 DatabaseUpdater::cleanupDatabase()
@@ -831,12 +867,10 @@ DatabaseUpdater::createTables() const
     }
     {
         QString q = "CREATE TABLE lyrics ("
-                    "id " + storage->idType() +
-                    ",url " + storage->exactIndexableTextColumnType() +
+                    "url INTEGER PRIMARY KEY"
                     ",lyrics " + storage->longTextColumnType() +
                     ") COLLATE = utf8_bin ENGINE = MyISAM;";
         storage->query( q );
-        storage->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
     }
     storage->query( "INSERT INTO admin(component,version) "
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );

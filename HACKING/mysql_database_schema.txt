@@ -221,11 +221,9 @@ DROP TABLE IF EXISTS `lyrics`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lyrics` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `url` varchar(324) COLLATE utf8_bin DEFAULT NULL,
+  `url` int(11) NOT NULL,
   `lyrics` text COLLATE utf8_bin,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `lyrics_url` (`url`)
+  PRIMARY KEY (`url`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
