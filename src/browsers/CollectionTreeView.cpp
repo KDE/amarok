@@ -276,20 +276,29 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     m_currentMoveDestination = getMoveActions( indices );
     m_currentRemoveDestination = getRemoveActions( indices );
 
-    KMenu copyMenu( i18n( "Copy to Collection" ) );
-    if( !m_currentCopyDestination.empty() )
+    //offer move operation only if Shift is pressed. Rational: Move is destructive operation
+    if( event->modifiers().testFlag( Qt::ShiftModifier ) )
     {
-        copyMenu.setIcon( KIcon( "edit-copy" ) );
-        copyMenu.addActions( m_currentCopyDestination.keys() );
-        menu.addMenu( &copyMenu );
+        //TODO: subclass KMenu in order to show tooltip and respond to Shift key press
+        // during exec()
+        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
+        moveMenu->setToolTip( i18n("Press Shift key for move") );
+        if( !m_currentMoveDestination.empty() )
+        {
+            moveMenu->setIcon( KIcon( "go-jump" ) );
+            moveMenu->addActions( m_currentMoveDestination.keys() );
+            menu.addMenu( moveMenu );
+        }
     }
-
-    KMenu moveMenu( i18n( "Move to Collection" ) );
-    if( !m_currentMoveDestination.empty() )
+    else
     {
-        moveMenu.setIcon( KIcon( "go-jump" ) );
-        moveMenu.addActions( m_currentMoveDestination.keys() );
-        menu.addMenu( &moveMenu );
+        KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
+        if( !m_currentCopyDestination.empty() )
+        {
+            copyMenu->setIcon( KIcon( "edit-copy" ) );
+            copyMenu->addActions( m_currentCopyDestination.keys() );
+            menu.addMenu( copyMenu );
+        }
     }
 
     if( !m_currentRemoveDestination.empty() )
