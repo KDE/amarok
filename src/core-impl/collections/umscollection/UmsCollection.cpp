@@ -268,89 +268,39 @@ UmsCollection::init()
     //prevent BR 259849: no audio_folder key in .is_audio_player file.
     m_musicPath = m_mountPoint;
 
-    if( playerFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    KConfig config( m_mountPoint + "/" + s_settingsFileName, KConfig::SimpleConfig );
+    KConfigGroup entries = config.group( QString() ); // default group
+    if( entries.hasKey( s_musicFolderKey ) )
     {
-        debug() << QString( "Found %1 file").arg( s_settingsFileName );
-        QTextStream in(&playerFile);
-        while( !in.atEnd() )
+        m_musicPath = KUrl( m_mountPoint );
+        m_musicPath.addPath( entries.readPathEntry( s_musicFolderKey, QString() ) );
+        m_musicPath.cleanPath();
+        if( !QDir( m_musicPath.toLocalFile() ).exists() )
         {
-            QString line = in.readLine();
-            if( line.startsWith( s_musicFolderKey + "=" ) )
-            {
-                debug() << QString( "Found %1" ).arg( s_musicFolderKey );
-                debug() << line;
-                m_musicPath = KUrl( m_mountPoint );
-                m_musicPath.addPath( line.section( '=', 1, 1 ) );
-                m_musicPath.cleanPath();
-                debug() << "Scan for music in " << m_musicPath.toLocalFile();
-                if( !QDir( m_musicPath.toLocalFile() ).exists() )
-                {
-                    debug() << "Music path doesn't exist! Using the mountpoint instead";
-                    //TODO: add user-visible warning after string freeze.
-                    m_musicPath = m_mountPoint;
-                }
-            }
-            else if( line.startsWith( s_musicFilenameSchemeKey + "=" ) )
-            {
-                QString scheme = line.section( '=', 1, 1 );
-                //protect against empty setting.
-                if( !scheme.isEmpty() )
-                    m_musicFilenameScheme = scheme;
-                debug() << QString( "filename scheme: %1" ).arg( m_musicFilenameScheme );
-            }
-            else if( line.startsWith( s_vfatSafeKey + "=" ) )
-            {
-                m_vfatSafe = ( line.section( '=', 1, 1 ) == "true" );
-                debug() << "vfat compatible: " << m_vfatSafe;
-            }
-            else if( line.startsWith( s_asciiOnlyKey + "=" ) )
-            {
-                m_asciiOnly = ( line.section( '=', 1, 1 ) == "true" );
-                debug() << "ASCII only: " << m_asciiOnly;
-            }
-            else if( line.startsWith( s_ignoreTheKey + "=" ) )
-            {
-                m_ignoreThe = ( line.section( '=', 1, 1 ) == "true" );
-                debug() << "ignore The in artist names: " << m_ignoreThe;
-            }
-            else if( line.startsWith( s_replaceSpacesKey + "=" ) )
-            {
-                m_replaceSpaces = ( line.section( '=', 1, 1 ) == "true" );
-                debug() << "replace spaces with underscores: " << m_replaceSpaces;
-            }
-            else if( line.startsWith( s_regexTextKey + "=" ) )
-            {
-                m_regexText = line.section( '=', 1, 1 );
-                debug() << "Regex match string: " << m_regexText;
-            }
-            else if( line.startsWith( s_replaceTextKey + "=" ) )
-            {
-                m_replaceText = line.section( '=', 1, 1 );
-                debug() << "Replace string: " << m_replaceText;
-            }
-            else if( line.startsWith( s_podcastFolderKey + "=" ) )
-            {
-                debug() << QString( "Found %1, initializing UMS podcast provider" )
-                                .arg( s_podcastFolderKey );
-                debug() << line;
-                m_podcastPath = KUrl( m_mountPoint );
-                m_podcastPath.addPath( line.section( '=', 1, 1 ) );
-                m_podcastPath.cleanPath();
-                debug() << "scan for podcasts in " <<
-                        m_podcastPath.toLocalFile( KUrl::AddTrailingSlash );
-            }
-            else if( line.startsWith( s_autoConnectKey + "=" ) )
-            {
-                debug() << "Use automatically: " << line.section( '=', 1, 1 );
-                m_autoConnect = ( line.section( '=', 1, 1 ) == "true" );
-            }
-            else if( line.startsWith( s_collectionName + "=" ) )
-            {
-                debug() << "Collectin name: " << line.section( '=', 1, 1 );
-                m_collectionName = line.section( '=', 1, 1 );
-            }
+            debug() << "Music path doesn't exist! Using the mountpoint instead";
+            //TODO: add user-visible warning after string freeze.
+            m_musicPath = m_mountPoint;
         }
     }
+    else if( !entries.keyList().isEmpty() )
+        // config file exists, but has no s_musicFolderKey -> music should be disabled
+        m_musicPath = KUrl();
+    QString scheme = entries.readEntry( s_musicFilenameSchemeKey );
+    m_musicFilenameScheme = !scheme.isEmpty() ? scheme : m_musicFilenameScheme;
+    m_vfatSafe = entries.readEntry( s_vfatSafeKey, m_vfatSafe );
+    m_asciiOnly = entries.readEntry( s_asciiOnlyKey, m_asciiOnly );
+    m_ignoreThe = entries.readEntry( s_ignoreTheKey, m_ignoreThe );
+    m_replaceSpaces = entries.readEntry( s_replaceSpacesKey, m_replaceSpaces );
+    m_regexText = entries.readEntry( s_regexTextKey, m_regexText );
+    m_replaceText = entries.readEntry( s_replaceTextKey, m_replaceText );
+    if( entries.hasKey( s_podcastFolderKey ) )
+    {
+        m_podcastPath = KUrl( m_mountPoint );
+        m_podcastPath.addPath( entries.readPathEntry( s_podcastFolderKey, QString() ) );
+        m_podcastPath.cleanPath();
+    }
+    m_autoConnect = entries.readEntry( s_autoConnectKey, m_autoConnect );
+    m_collectionName = entries.readEntry( s_collectionName, m_collectionName );
 
     m_mc = QSharedPointer<MemoryCollection>(new MemoryCollection());
 
@@ -713,47 +663,29 @@ UmsCollection::slotConfigure()
         if( !m_musicPath.isEmpty() && m_autoConnect )
             QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
 
-        //write the date to the on-disk file
-        KUrl localFile = KUrl( m_mountPoint );
-        localFile.addPath( s_settingsFileName );
-        QFile settingsFile( localFile.toLocalFile() );
-        if( settingsFile.open( QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text ) )
-        {
-            QTextStream s( &settingsFile );
-            QString keyValuePair( "%1=%2\n" );
-
-#define TRUE_FALSE(x) x ? "true" : "false"
-            s << keyValuePair.arg( s_autoConnectKey, TRUE_FALSE(m_autoConnect) );
-
-            if( !m_musicPath.isEmpty() )
-            {
-                s << keyValuePair.arg( s_musicFolderKey, KUrl::relativePath( m_mountPoint,
-                    m_musicPath.toLocalFile() ) );
-            }
-
-            if( !m_musicFilenameScheme.isEmpty() )
-            {
-                s << keyValuePair.arg( s_musicFilenameSchemeKey, m_musicFilenameScheme );
-            }
-
-            s << keyValuePair.arg( s_vfatSafeKey, TRUE_FALSE(m_vfatSafe) );
-            s << keyValuePair.arg( s_asciiOnlyKey, TRUE_FALSE(m_asciiOnly) );
-            s << keyValuePair.arg( s_ignoreTheKey, TRUE_FALSE(m_ignoreThe) );
-            s << keyValuePair.arg( s_replaceSpacesKey, TRUE_FALSE(m_replaceSpaces) );
-            s << keyValuePair.arg( s_regexTextKey, m_regexText );
-            s << keyValuePair.arg( s_replaceTextKey, m_replaceText );
-            s << keyValuePair.arg( s_collectionName, m_collectionName );
-
-            if( !m_podcastPath.isEmpty() )
-            {
-                s << keyValuePair.arg( s_podcastFolderKey, KUrl::relativePath( m_mountPoint,
-                    m_podcastPath.toLocalFile() ) );
-            }
-
-            settingsFile.close();
-        }
+        // write the data to the on-disk file
+        KConfig config( m_mountPoint + "/" + s_settingsFileName, KConfig::SimpleConfig );
+        KConfigGroup entries = config.group( QString() ); // default group
+        if( !m_musicPath.isEmpty() )
+            entries.writePathEntry( s_musicFolderKey, KUrl::relativePath( m_mountPoint,
+                m_musicPath.toLocalFile() ) );
         else
-            error() << "Could not open settingsfile " << localFile.toLocalFile();
+            entries.deleteEntry( s_musicFolderKey );
+        entries.writeEntry( s_musicFilenameSchemeKey, m_musicFilenameScheme );
+        entries.writeEntry( s_vfatSafeKey, m_vfatSafe );
+        entries.writeEntry( s_asciiOnlyKey, m_asciiOnly );
+        entries.writeEntry( s_ignoreTheKey, m_ignoreThe );
+        entries.writeEntry( s_replaceSpacesKey, m_replaceSpaces );
+        entries.writeEntry( s_regexTextKey, m_regexText );
+        entries.writeEntry( s_replaceTextKey, m_replaceText );
+        if( !m_podcastPath.isEmpty() )
+            entries.writePathEntry( s_podcastFolderKey, KUrl::relativePath( m_mountPoint,
+                m_podcastPath.toLocalFile() ) );
+        else
+            entries.deleteEntry( s_podcastFolderKey );
+        entries.writeEntry( s_autoConnectKey, m_autoConnect );
+        entries.writeEntry( s_collectionName, m_collectionName );
+        config.sync();
     }
 
     delete settings;
