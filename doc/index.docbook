@@ -16,7 +16,7 @@
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
       </authorgroup>
 <legalnotice>&FDLNotice;</legalnotice>
-<date>2012-01-19</date>
+<date>2012-05-18</date>
       <releaseinfo>2.5.0</releaseinfo>
 <abstract>
 <para>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including &Linux;, &MacOS; and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.4.</para>
@@ -34,6 +34,7 @@
 </keywordset>
 </bookinfo>
 <!--userbase <timestamp>2012-01-19T19:28:52Z</timestamp>-->
+<!--userbase <timestamp>2012-05-18T17:24:41Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -5776,7 +5777,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 <itemizedlist>
 <listitem><para>If the <guilabel>Moodbar</guilabel> executable gives you a <emphasis>bus error</emphasis>, that almost always means it can't decode (or can't find) your file.  Take a look at the <link linkend="supported-filetypes">supported file types</link> below for ideas on which GStreamer plugins to install.  You can also try the command below to test whether GStreamer can decode your file:<userinput>gst-launch filesrc location=[file] ! decodebin ! fakesink</userinput></para></listitem>
 <listitem><para>If you are using the ffmpeg plugin to decode mp3s, you may also receive mysterious bus errors. The solution is to stop using the ffmpeg plugin, as it is extremely buggy &mdash; use mad instead.</para></listitem>
-<listitem><para>If the <guilabel>Moodbar</guilabel> executable tells you that it can't find an element &mdash; i.e., it gives an error message like <screen>Could not create element of type fftwspectrum, please install it.</screen>&mdash; that usually means that you either don't have the required plugins installed (see the plugin list <link linkend="supported-filetypes">here</link>), or that you didn't install the Moodbar package in the same prefix as GStreamer. If libmoodbar.so and libgstdecodebin.so are not in the same directory, then Moodbar is not installed in the same prefix as GStreamer.  Please read the INSTALL file for instructions on how to configure the moodbar package correctly. Alternatively, <emphasis>if you know what you're doing,</emphasis> it may be easier for you to take a look at the <filename>GST_PLUGIN_PATH</filename> environment variable.</para></listitem>
+<listitem><para>If the <guilabel>Moodbar</guilabel> executable tells you that it can't find an element &mdash; &ie;, it gives an error message like <screen>Could not create element of type fftwspectrum, please install it.</screen>&mdash; that usually means that you either don't have the required plugins installed (see the plugin list <link linkend="supported-filetypes">here</link>), or that you didn't install the Moodbar package in the same prefix as GStreamer. If libmoodbar.so and libgstdecodebin.so are not in the same directory, then Moodbar is not installed in the same prefix as GStreamer.  Please read the INSTALL file for instructions on how to configure the moodbar package correctly. Alternatively, <emphasis>if you know what you're doing,</emphasis> it may be easier for you to take a look at the <filename>GST_PLUGIN_PATH</filename> environment variable.</para></listitem>
 <listitem><para>If you're wondering why the <guilabel>Moodbar</guilabel> isn't working, either not working at all or not working for a particular file, run the command below, where [file] is a music file:<userinput>moodbar -o test.mood [file]</userinput></para></listitem>
 <listitem><para>If you have multiple versions of GStreamer installed, make sure all of the required plugins are installed <emphasis>for version 0.10.*</emphasis> -- different versions <emphasis>cannot</emphasis> use each other's plugins.</para></listitem>
 </itemizedlist>
@@ -6357,6 +6358,34 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <para>Have a look at the <ulink url="http://amarok.kde.org/wiki/MP3">mp3 information page</ulink>. You probably lack the codecs required by your particular Phonon backend (VLC, Gstreamer, or Xine).
 </para>
 </sect3>
+<sect3 id="i-have-the-codecs-but-amarok-still-wont-play-mp4s-and-mkas"><title>I have the codecs, but Amarok still won't play mp4s and mkas</title>
+<para>When using some phonon backend, like the gstreamer one, &amarok; might refuse to play <filename>mp4</filename> and <filename>mka</filename> files. This is a known problem, see <ulink url="https://bugs.kde.org/show_bug.cgi?id=290168">bug #290168</ulink> for more technical information.
+</para>
+<para>A very simple workaround is to change the file extension. Change <filename>mp4</filename> extension to <filename>m4a</filename> and for <filename>mka</filename> change it to <filename>mkv</filename>. Of course you must be sure the files contains audio only. You can use the ffprobe command to look at what data streams are present in the file. If the file has a video stream it must be stripped out. There are a lot of tools able to edit these formats and most of them are based on <filename>ffmpeg</filename>/<filename>libav</filename>, which you can use if you are familiar with them. If you prefer graphical tools one possible choice is <ulink url="http://www.avidemux.org/">avidemux</ulink>.
+</para>
+<para>This is a quick example how you can remove a video stream from an <filename>mp4</filename> video with ffmpeg. Stripping a video stream from an <filename>mkv</filename> file is the same. First check if there is a video stream
+</para>
+<para><userinput><command>$ ffprobe example.mp4 2&gt;&amp;1 | grep Video</command></userinput>
+</para>
+<para><screen><command>Stream #0.1(und): Video: h264 (Baseline), yuv420p, 480x360 [PAR 1:1 DAR 4:3], 242 kb/s, 25 fps, 25 tbr, 25k tbn, 50k tbc</command></screen>
+</para>
+<para>If the output of the previous command is null there is no video stream in the file. To create an <filename>m4a</filename> file with just the audio stream you can use something like
+</para>
+<para><screen>
+ffmpeg -i example.mp4 -acodec copy -vn example.m4a
+</screen>
+</para>
+<para>You can also use <filename>avconv</filename> in place of <filename>ffmpeg</filename> with the same options, where
+</para>
+<itemizedlist>
+<listitem><para><emphasis>-i example.mp4</emphasis> option is the input file name</para></listitem>
+<listitem><para><emphasis>-acodec copy</emphasis> is used to not encode again the audio stream but just copy it. This to avoid quality loss, but you can also encode in a different format if you want, and you are not forced to use m4a container in this case</para></listitem>
+<listitem><para><emphasis>-vn</emphasis> strips the video stream</para></listitem>
+<listitem><para><replaceable>example.m4a</replaceable> is the output file name</para></listitem>
+</itemizedlist>
+<para>Another possible workaround is to change the phonon backend. For example the VLC backend doesn't suffer this problem.
+</para>
+</sect3>
 <sect3 id="i-cant-get-any-media-to-play-in-amarok-why-not"><title>I can't get any media to play in Amarok, why not?</title> 
 <para>Test the sound frameworks at the command line:
 </para>
@@ -6387,6 +6416,28 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </sect3>
 <sect3 id="how-can-i-use-amarok-to-stream-to-my-own-radio-station"><title>How can I use Amarok to stream to my own radio station?</title> 
 <para>If you want to stream directly to an icecast or shoutcast server the answer simply is: it is not supported. You could use <ulink url="http://giss.tv/sahabuntu/doc/idjc.html">IDJC</ulink> for that.
+</para>
+</sect3>
+</sect2>
+<sect2 id="collection-questions"><title>Collection questions</title>
+<sect3 id="folder-not-properly-picked-up"><title>Folder not properly picked up</title>
+<para>If you find that most of your music is recognized by &amarok;, but some folders are not properly picked up, open a console and type
+</para>
+<para><userinput>touch <replaceable>folder</replaceable></userinput>
+</para>
+<para>where <replaceable>folder</replaceable> is the path to the folder that has the problem. Then select <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure Amarok</guimenuitem></menuchoice> in Amarok main window menu, and open <menuchoice><guimenu>Collection</guimenu><guimenuitem>Rescan Collection</guimenuitem></menuchoice> page. Your folder should be visible again now.
+</para>
+<para><warning><para> this will not work on Windows, as the touch command is specific to &Linux; and BSD-like systems.</para></warning>
+</para>
+</sect3>
+<sect3 id="can-i-use-removable-media-inside-amarok"><title>Can I use removable media inside Amarok?</title> 
+<para>&amarok; has a greatly improved support for the media devices based on Solid, the KDE hardware layer, that doesn't need a lot of configuration. You should be able to just plug in your device and access it within &amarok;. Also, thanks to the <emphasis>Dynamic Collections</emphasis>, your media devices could become part of your music collection, and be searchable and accessible within the <guilabel>Local Music</guilabel> section of the <guilabel>Media Sources</guilabel> pane when it's connected.
+</para>
+<para>You can transfer your songs, albums and artists from your local collection by right-clicking, selecting <guilabel>Copy to Collection</guilabel> and picking your device; and you can also do it in the other way: right-click and select <menuchoice><guimenu>Copy to Collection</guimenu><guimenuitem>Local Collection</guimenuitem></menuchoice>. More about &amarok; and devices <link linkend="working-with-media-devices">here</link>.
+</para>
+</sect3>
+<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"><title>Can I use the old Amarok's collection in Amarok 2? Will my tags, score are ratings be lost?</title> 
+<para>A database importer is available. You will be able to keep your ratings and statistics just fine. More <link linkend="collection">here</link>.
 </para>
 </sect3>
 </sect2>
@@ -6438,20 +6489,10 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <para>No, but there are many Plasmoids available for your Desktop, which will let you display information provided by &amarok; as well as control &amarok;.
 </para>
 </sect3>
-<sect3 id="can-i-use-removable-media-inside-amarok"><title>Can I use removable media inside Amarok?</title> 
-<para>&amarok; has a greatly improved support for the media devices based on Solid, the KDE hardware layer, that doesn't need a lot of configuration. You should be able to just plug in your device and access it within &amarok;. Also, thanks to the <emphasis>Dynamic Collections</emphasis>, your media devices could become part of your music collection, and be searchable and accessible within the <guilabel>Local Music</guilabel> section of the <guilabel>Media Sources</guilabel> pane when it's connected.
-</para>
-<para>You can transfer your songs, albums and artists from your local collection by right-clicking, selecting <guilabel>Copy to Collection</guilabel> and picking your device; and you can also do it in the other way: right-click and select <menuchoice><guimenu>Copy to Collection</guimenu><guimenuitem>Local Collection</guimenuitem></menuchoice>. More about &amarok; and devices <link linkend="working-with-media-devices">here</link>.
-</para>
-</sect3>
 <sect3 id="how-can-i-save-a-stream"><title>How can I save a stream?</title> 
 <para>First of all, load the stream into the playlist. There are several ways to do this: downloading the file, for example from <ulink url="http://www.shoutcast.com">shoutcast.com</ulink>, and opening it with &amarok;; using the menu <menuchoice><guimenu>Playlist</guimenu><guimenuitem>Add stream</guimenuitem></menuchoice>; among others.
 </para>
 <para>Once the stream is loaded, you can save it by clicking on <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-save.png" format="PNG"/> </imageobject> </inlinemediaobject> in the <guilabel>Playlist</guilabel> pane, and giving it a meaningful name. The Stream will then be added to the <guilabel>Saved Playlists</guilabel> view for later reference.
-</para>
-</sect3>
-<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"><title>Can I use the old Amarok's collection in Amarok 2? Will my tags, score are ratings be lost?</title> 
-<para>A database importer is available. You will be able to keep your ratings and statistics just fine. More <link linkend="collection">here</link>.
 </para>
 </sect3>
 <sect3 id="where-do-i-find-the-settings-for-amarok"><title>Where do I find the settings for Amarok?</title> 
