@@ -261,13 +261,7 @@ UmsCollection::init()
     m_mountPoint = storageAccess->filePath();
     debug() << "Mounted at: " << m_mountPoint;
 
-    //read .is_audio_player from filesystem
-    KUrl playerFilePath( m_mountPoint );
-    playerFilePath.addPath( s_settingsFileName );
-    QFile playerFile( playerFilePath.toLocalFile() );
-    //prevent BR 259849: no audio_folder key in .is_audio_player file.
-    m_musicPath = m_mountPoint;
-
+    // read .is_audio_player from filesystem
     KConfig config( m_mountPoint + "/" + s_settingsFileName, KConfig::SimpleConfig );
     KConfigGroup entries = config.group( QString() ); // default group
     if( entries.hasKey( s_musicFolderKey ) )
@@ -285,6 +279,8 @@ UmsCollection::init()
     else if( !entries.keyList().isEmpty() )
         // config file exists, but has no s_musicFolderKey -> music should be disabled
         m_musicPath = KUrl();
+    else
+        m_musicPath = m_mountPoint; // related BR 259849
     QString scheme = entries.readEntry( s_musicFilenameSchemeKey );
     m_musicFilenameScheme = !scheme.isEmpty() ? scheme : m_musicFilenameScheme;
     m_vfatSafe = entries.readEntry( s_vfatSafeKey, m_vfatSafe );
