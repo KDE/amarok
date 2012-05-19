@@ -168,6 +168,9 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         /**
          * Set artist query mode. If this method is not called,
          * QueryMaker defaults to ArtistQueryMode::TrackArtist.
+         *
+         * WARNING: this gets reset to TrackArtist at the end of the following call to
+         * addMatch( Meta::Artist )
          */
         virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
 

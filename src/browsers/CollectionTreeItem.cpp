@@ -292,9 +292,10 @@ CollectionTreeItem::addMatch( Collections::QueryMaker *qm, CategoryId::CatMenuId
         qm->addMatch( track );
     else if( Meta::ArtistPtr artist = Meta::ArtistPtr::dynamicCast( m_data ) )
     {
-        qm->addMatch( artist );
         if( levelCategory == CategoryId::AlbumArtist )
+            // this needs to be BEFORE addMatch(), because addMatch() resets ArtistQueryMode
             qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
+        qm->addMatch( artist );
     }
     else if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
         qm->addMatch( album );
