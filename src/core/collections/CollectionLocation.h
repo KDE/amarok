@@ -298,10 +298,14 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual Transcoding::Configuration getDestinationTranscodingConfig();
 
         /**
-         * this method is called on the destination. It allows the destination
+         * This method is called on the destination. It allows the destination
          * CollectionLocation to show a dialog. Classes that reimplement this method
          * must call slotShowDestinationDialogDone() after they have acquired all necessary
          * information from the user.
+         *
+         * Default implementation calls setGoingToRemoveSources( removeSources ) so that
+         * isGoingToRemoveSources() is available on destination, too and then calls
+         * slotShowDestinationDialogDone()
          */
         virtual void showDestinationDialog( const Meta::TrackList &tracks,
                                             bool removeSources,

@@ -66,7 +66,6 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr,KUrl> &s
         return;  // mostly unreachable, CollectionLocation already checks this and issues a warning
     ensureDirectoriesExist();
 
-    // for isGoingToRemoveSources() to work we rely on overriding showDestinationDialog()
     IpodCopyTracksJob *job = new IpodCopyTracksJob( sources, m_coll, configuration, isGoingToRemoveSources() );
     qRegisterMetaType<IpodCopyTracksJob::CopiedStatus>( "IpodCopyTracksJob::CopiedStatus" );
     connect( job, SIGNAL(signalTrackProcessed(Meta::TrackPtr,Meta::TrackPtr,IpodCopyTracksJob::CopiedStatus)),
@@ -86,14 +85,6 @@ IpodCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotRemoveOperationFinished()) );
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
-}
-
-void IpodCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
-                                                    bool removeSources,
-                                                    const Transcoding::Configuration &configuration )
-{
-    setGoingToRemoveSources( removeSources ); // otherwise it is impossible to get it from source
-    Collections::CollectionLocation::showDestinationDialog( tracks, removeSources, configuration );
 }
 
 void

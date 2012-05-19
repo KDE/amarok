@@ -340,8 +340,8 @@ CollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
                                            const Transcoding::Configuration &configuration )
 {
     Q_UNUSED( tracks )
-    Q_UNUSED( removeSources )
     Q_UNUSED( configuration )
+    setGoingToRemoveSources( removeSources );
     slotShowDestinationDialogDone();
 }
 

@@ -43,11 +43,6 @@ class IpodCollectionLocation : public Collections::CollectionLocation
                                            const Transcoding::Configuration &configuration );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
-        // overriden to get removeSources out of source location
-        virtual void showDestinationDialog( const Meta::TrackList &tracks,
-                                            bool removeSources,
-                                            const Transcoding::Configuration &configuration );
-
         // IpodCollectionLocation specific methods:
         /**
          * Calling this causes that when the tracks are copied, they are added to iPod
