@@ -33,8 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2012-01-19T19:28:52Z</timestamp>-->
-<!--userbase <timestamp>2012-05-18T17:24:41Z</timestamp>-->
+<!--userbase <timestamp>2012-05-19T14:29:24Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -6358,7 +6357,7 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 <para>Have a look at the <ulink url="http://amarok.kde.org/wiki/MP3">mp3 information page</ulink>. You probably lack the codecs required by your particular Phonon backend (VLC, Gstreamer, or Xine).
 </para>
 </sect3>
-<sect3 id="i-have-the-codecs-but-amarok-still-wont-play-mp4s-and-mkas"><title>I have the codecs, but Amarok still won't play mp4s and mkas</title>
+<sect3 id="i-have-the-codecs-but-amarok-still-wont-play-mp4s-and-mkas"><title>I have the codecs, but Amarok still won't play mp4s and mkas</title> 
 <para>When using some phonon backend, like the gstreamer one, &amarok; might refuse to play <filename>mp4</filename> and <filename>mka</filename> files. This is a known problem, see <ulink url="https://bugs.kde.org/show_bug.cgi?id=290168">bug #290168</ulink> for more technical information.
 </para>
 <para>A very simple workaround is to change the file extension. Change <filename>mp4</filename> extension to <filename>m4a</filename> and for <filename>mka</filename> change it to <filename>mkv</filename>. Of course you must be sure the files contains audio only. You can use the ffprobe command to look at what data streams are present in the file. If the file has a video stream it must be stripped out. There are a lot of tools able to edit these formats and most of them are based on <filename>ffmpeg</filename>/<filename>libav</filename>, which you can use if you are familiar with them. If you prefer graphical tools one possible choice is <ulink url="http://www.avidemux.org/">avidemux</ulink>.
@@ -6419,13 +6418,13 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 </sect3>
 </sect2>
-<sect2 id="collection-questions"><title>Collection questions</title>
-<sect3 id="folder-not-properly-picked-up"><title>Folder not properly picked up</title>
+<sect2 id="collection-questions"><title>Collection questions</title> 
+<sect3 id="folder-not-properly-picked-up"><title>Folder not properly picked up</title> 
 <para>If you find that most of your music is recognized by &amarok;, but some folders are not properly picked up, open a console and type
 </para>
 <para><userinput>touch <replaceable>folder</replaceable></userinput>
 </para>
-<para>where <replaceable>folder</replaceable> is the path to the folder that has the problem. Then select <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure Amarok</guimenuitem></menuchoice> in Amarok main window menu, and open <menuchoice><guimenu>Collection</guimenu><guimenuitem>Rescan Collection</guimenuitem></menuchoice> page. Your folder should be visible again now.
+<para>where <replaceable>folder</replaceable> is the path to the folder that has the problem. Then select <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure Amarok</guimenuitem></menuchoice> in Amarok main window menu, open <guilabel>Collection</guilabel> page and click the <guilabel>Full Rescan</guilabel> button. Your folder should be visible again now.
 </para>
 <para><warning><para> this will not work on Windows, as the touch command is specific to &Linux; and BSD-like systems.</para></warning>
 </para>
