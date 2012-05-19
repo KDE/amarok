@@ -53,6 +53,8 @@ using namespace Amarok;
   * to a real logger if available. If no logger is available yet, it stores
   * the notifications until another logger becomes available.
   *
+  * This class can be only instantiated from the main thread and must reside in the main
+  * thread for its lifetime.
   */
 class ProxyLogger : public QObject, public Logger
 {
@@ -65,8 +67,6 @@ class ProxyLogger : public QObject, public Logger
 public:
     ProxyLogger();
     virtual ~ProxyLogger();
-
-    virtual bool event( QEvent *event ); //!< reimplemented to handle ThreadChange event
 
 public slots:
     virtual void shortMessage( const QString &text );
@@ -90,15 +90,15 @@ public slots:
     Logger* logger() const;
 
 private slots:
-    void init();
     void forwardNotifications();
+    void slotStartTimer();
 
-private:
+signals:
+    // timer can only be started from its thread, use signals & slots to pass thread barrier
     void startTimer();
 
 private:
     Logger *m_logger; //!< stores the real logger
-    bool m_initComplete; //!< initialization complete, including moving to GUI thread if necessary
     QMutex m_lock; //!< protect members that may be accessed from multiple threads
     QTimer *m_timer; //!< internal timer that triggers forwarding of notifications
     QQueue<QString> m_shortMessageQueue; //!< temporary storage for notifications that have not been forwarded yet

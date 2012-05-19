@@ -23,18 +23,17 @@
 ProxyLogger::ProxyLogger()
         : Amarok::Logger()
         , m_logger( 0 )
-        , m_initComplete( false )
         , m_timer( 0 )
 {
-    //ensure that the object livs in the GUI thread
-    if( thread() == QCoreApplication::instance()->thread() )
-    {
-        init();
-    }
-    else
-    {
-        this->moveToThread( QCoreApplication::instance()->thread() );
-    }
+    // ensure that the object livs in the GUI thread
+    Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
+
+    m_timer = new QTimer( this );
+    connect( m_timer, SIGNAL( timeout() ), this, SLOT( forwardNotifications() ) );
+    m_timer->setSingleShot( true );
+    m_timer->setInterval( 0 );
+
+    connect( this, SIGNAL(startTimer()), SLOT(slotStartTimer()) );
 }
 
 ProxyLogger::~ProxyLogger()
@@ -42,38 +41,11 @@ ProxyLogger::~ProxyLogger()
     //nothing to do
 }
 
-bool
-ProxyLogger::event( QEvent *event )
-{
-    if( event->type() == QEvent::ThreadChange )
-    {
-        QTimer::singleShot( 0, this, SLOT( init() ) );
-        return true;
-    }
-    else
-    {
-        return QObject::event( event );
-    }
-}
-
-void
-ProxyLogger::init()
-{
-    if( !m_initComplete )
-    {
-        m_timer = new QTimer( this );
-        connect( m_timer, SIGNAL( timeout() ), this, SLOT( forwardNotifications() ) );
-        m_timer->setSingleShot( true );
-        m_timer->setInterval( 0 );
-        m_initComplete = true;
-    }
-}
-
 void
 ProxyLogger::setLogger( Amarok::Logger *logger )
 {
     m_logger = logger;
-    startTimer();
+    emit startTimer();
 }
 
 Amarok::Logger *
@@ -83,12 +55,10 @@ ProxyLogger::logger() const
 }
 
 void
-ProxyLogger::startTimer()
+ProxyLogger::slotStartTimer()
 {
-    if( m_initComplete && m_timer && m_logger && !m_timer->isActive() )
-    {
+    if( m_logger && !m_timer->isActive() )
         m_timer->start();
-    }
 }
 
 void
@@ -96,7 +66,7 @@ ProxyLogger::shortMessage( const QString &text )
 {
     QMutexLocker locker( &m_lock );
     m_shortMessageQueue.enqueue( text );
-    startTimer();
+    emit startTimer();
 }
 
 void
@@ -107,7 +77,7 @@ ProxyLogger::longMessage( const QString &text, MessageType type )
     msg.first = text;
     msg.second = type;
     m_longMessageQueue.enqueue( msg );
-    startTimer();
+    emit startTimer();
 }
 
 void
@@ -121,7 +91,7 @@ ProxyLogger::newProgressOperation( KJob *job, const QString &text, QObject *obj,
     data.slot = slot;
     data.type = type;
     m_progressQueue.enqueue( data );
-    startTimer();
+    emit startTimer();
 }
 
 void
@@ -135,7 +105,7 @@ ProxyLogger::newProgressOperation( QNetworkReply *reply, const QString &text, QO
     data.slot = slot;
     data.type = type;
     m_progressQueue.enqueue( data );
-    startTimer();
+    emit startTimer();
 }
 
 void
@@ -151,7 +121,7 @@ ProxyLogger::newProgressOperation( QObject *sender, const QString &text, int max
     data.slot = slot;
     data.type = type;
     m_progressQueue.enqueue( data );
-    startTimer();
+    emit startTimer();
 }
 
 void
