@@ -21,6 +21,13 @@
 
 using namespace Transcoding;
 
+
+SelectConfigWidget::SelectConfigWidget( QWidget *parent )
+    : QComboBox( parent )
+    , m_passedChoice( INVALID )
+{
+}
+
 void
 SelectConfigWidget::fillInChoices( const Configuration &savedConfiguration )
 {
@@ -42,14 +49,33 @@ SelectConfigWidget::fillInChoices( const Configuration &savedConfiguration )
     }
     else
         addItem( KIcon( "edit-copy" ), i18n( "Never" ), JustCopy );
+
+    m_passedChoice = savedConfiguration;
 }
 
-SelectConfigWidget::Choice
+Configuration
 SelectConfigWidget::currentChoice() const
 {
+    Configuration invalid( INVALID );
     if( currentIndex() < 0 )
-        return DontChange; // nothing better to return
-    return Choice( itemData( currentIndex() ).toInt() );
+        return invalid;
+    Choice choice = Choice( itemData( currentIndex() ).toInt() );
+    switch( choice )
+    {
+        case DontChange:
+            return m_passedChoice;
+        case JustCopy:
+            return Configuration( JUST_COPY );
+        case Forget:
+            return invalid;
+    }
+    return invalid;
+}
+
+bool
+SelectConfigWidget::hasChanged() const
+{
+    return currentIndex() < 0 || itemData( currentIndex() ).toInt() != DontChange;
 }
 
 #include "TranscodingSelectConfigWidget.moc"

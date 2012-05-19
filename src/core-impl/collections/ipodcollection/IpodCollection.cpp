@@ -466,17 +466,7 @@ IpodCollection::slotApplyConfiguration()
     }
 
     QScopedPointer<Capabilities::TranscodeCapability> tc( create<Capabilities::TranscodeCapability>() );
-    switch( m_configureDialogUi.transcodeComboBox->currentChoice() )
-    {
-        case Transcoding::SelectConfigWidget::DontChange:
-            break;
-        case Transcoding::SelectConfigWidget::JustCopy:
-            tc->setSavedConfiguration( Transcoding::Configuration( Transcoding::JUST_COPY ) );
-            break;
-        case Transcoding::SelectConfigWidget::Forget:
-            tc->setSavedConfiguration( Transcoding::Configuration( Transcoding::INVALID ) );
-            break;
-    }
+    tc->setSavedConfiguration( m_configureDialogUi.transcodeComboBox->currentChoice() );
 }
 
 void

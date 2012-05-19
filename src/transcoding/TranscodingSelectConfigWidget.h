@@ -34,13 +34,7 @@ namespace Transcoding
         Q_OBJECT
 
         public:
-            enum Choice {
-                DontChange,
-                JustCopy,
-                Forget
-            };
-
-            explicit SelectConfigWidget( QWidget *parent = 0 ) : QComboBox( parent ) {}
+            explicit SelectConfigWidget( QWidget *parent = 0 );
 
             /**
              * Fills the combobox widget with appropriate transcoding configurations.
@@ -52,12 +46,26 @@ namespace Transcoding
             void fillInChoices( const Configuration &savedConfiguration );
 
             /**
-             * Get current choice. Valid only after @see fillInChoices() is called.
+             * Get current choice. Will return invalid configuration if called before
+             * @see fillInChoices()
              */
-            Choice currentChoice() const;
+            Configuration currentChoice() const;
+
+            /**
+             * Return true if currently selected choice is different from one that was
+             * passed to fillInChoices()
+             */
+            bool hasChanged() const;
 
         private:
+            enum Choice {
+                DontChange,
+                JustCopy,
+                Forget
+            };
+
             Q_DISABLE_COPY(SelectConfigWidget)
+            Configuration m_passedChoice;
     };
 
 } // namespace Transcoding

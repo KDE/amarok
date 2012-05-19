@@ -53,9 +53,7 @@ CollectionConfig::hasChanged()
 {
     DEBUG_BLOCK
 
-    return m_collectionSetup->hasChanged()
-        || transcodingConfig->currentChoice() != Transcoding::SelectConfigWidget::DontChange;
-
+    return m_collectionSetup->hasChanged() || transcodingConfig->hasChanged();
 }
 
 bool
@@ -70,17 +68,7 @@ CollectionConfig::updateSettings()
     m_collectionSetup->writeConfig();
 
     KConfigGroup transcodeGroup = Amarok::config( Collections::SQL_TRANSCODING_GROUP_NAME );
-    switch( transcodingConfig->currentChoice() )
-    {
-        case Transcoding::SelectConfigWidget::DontChange:
-            break;
-        case Transcoding::SelectConfigWidget::JustCopy:
-            Transcoding::Configuration( Transcoding::JUST_COPY ).saveToConfigGroup( transcodeGroup );
-            break;
-        case Transcoding::SelectConfigWidget::Forget:
-            Transcoding::Configuration( Transcoding::INVALID ).saveToConfigGroup( transcodeGroup );
-            break;
-    }
+    transcodingConfig->currentChoice().saveToConfigGroup( transcodeGroup );
 }
 
 #include "CollectionConfig.moc"
