@@ -81,7 +81,6 @@ SqlCollectionLocation::actualLocation() const
 bool
 SqlCollectionLocation::isWritable() const
 {
-    DEBUG_BLOCK
     // TODO: This function is also called when removing files to check
     //  if the tracks can be removed. In such a case we should not check the space
 
@@ -94,23 +93,17 @@ SqlCollectionLocation::isWritable() const
     {
         float used = KDiskFreeSpaceInfo::freeSpaceInfo( path ).used();
         float total = KDiskFreeSpaceInfo::freeSpaceInfo( path ).size();
-	debug() << path;
-	debug() << "\tused: " << used;
-	debug() << "\ttotal: " << total;
 
         if( total <= 0 ) // protect against div by zero
             continue; //How did this happen?
 
         float free_space = total - used;
-        debug() <<"\tfree space: " << free_space;
         if( free_space >= 500*1000*1000 ) // ~500 megabytes
             path_exists_with_space = true;
 
         QFileInfo info( path );
         if( info.isWritable() )
             path_exists_writable = true;
-	debug() << "\tpath_exists_writable" << path_exists_writable;
-	debug() << "\tpath_exists_with_space" << path_exists_with_space;
     }
     return path_exists_with_space && path_exists_writable;
 }
