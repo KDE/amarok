@@ -678,67 +678,6 @@ SqlCollectionLocation::moodFile( const KUrl &track ) const
     return moodPath;
 }
 
-QString
-SqlCollectionLocation::operationText( const Transcoding::Configuration &configuration )
-{
-    if( source()->collection() == collection() )
-    {
-        if( configuration.isJustCopy() )
-            return i18n( "Organize tracks" );
-        else
-            return i18n( "Transcode and organize tracks" );
-    }
-    if( isGoingToRemoveSources() )
-    {
-        if( configuration.isJustCopy() )
-            return i18n( "Move tracks" );
-        else
-            return i18n( "Transcode and move tracks" );
-    }
-    else
-    {
-        if( configuration.isJustCopy() )
-            return i18n( "Copy tracks" );
-        else
-            return i18n( "Transcode and copy tracks" );
-    }
-}
-
-QString
-SqlCollectionLocation::operationInProgressText( const Transcoding::Configuration &configuration,
-                                                int trackCount, QString destinationName )
-{
-    if( destinationName.isEmpty() )
-        destinationName = prettyLocation();
-    if( source()->collection() == collection() )
-    {
-        if( configuration.isJustCopy() )
-            return i18np( "Organizing one track",
-                          "Organizing %1 tracks", trackCount );
-        else
-            return i18np( "Transcoding and organizing one track",
-                          "Transcoding and organizing %1 tracks", trackCount );
-    }
-    if( isGoingToRemoveSources() )
-    {
-        if( configuration.isJustCopy() )
-            return i18np( "Moving one track to %2",
-                          "Moving %1 tracks to %2", trackCount, destinationName );
-        else
-            return i18np( "Transcoding and moving one track to %2",
-                          "Transcoding and moving %1 tracks to %2", trackCount, destinationName );
-    }
-    else
-    {
-        if( configuration.isJustCopy() )
-            return i18np( "Copying one track to %2",
-                          "Copying %1 tracks to %2", trackCount, destinationName );
-        else
-            return i18np( "Transcoding and copying one track to %2",
-                          "Transcoding and copying %1 tracks to %2", trackCount, destinationName );
-    }
-}
-
 TransferJob::TransferJob( SqlCollectionLocation * location, const Transcoding::Configuration & configuration )
     : KCompositeJob( 0 )
     , m_location( location )

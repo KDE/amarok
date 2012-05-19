@@ -320,6 +320,28 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual void showRemoveDialog( const Meta::TrackList &tracks );
 
         /**
+         * Get nice localised string describing the current operation based on transcoding
+         * configuraiton and isGoingToRemoveSources(); meant to be called by destination
+         * collection.
+         *
+         * @return "Copy Tracks", "Transcode and Organize Tracks" etc.
+         */
+        QString operationText( const Transcoding::Configuration &configuration );
+
+        /**
+         * Get nice localised string that can be used as progess bar text for the current
+         * operation; meant to be called by the destination collection.
+         *
+         * @param trackCount number of tracks in the transfer
+         * @param destinationName pretty localised name of the destination collection;
+         *        prettyLocation() is used if the string is empty or not specified
+         *
+         * @return "Transcoding and moving <trackCount> tracks to <destinationName>" etc.
+         */
+        QString operationInProgressText( const Transcoding::Configuration &configuration,
+                                         int trackCount, QString destinationName = QString() );
+
+        /**
         * Sets or gets whether some source files may be removed
         */
         virtual bool isGoingToRemoveSources() const;

@@ -110,28 +110,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
         bool startNextJob( const Transcoding::Configuration configuration );
         bool startNextRemoveJob();
 
-        /**
-         * Get nice localised string describing the current operation based on transcoding
-         * configuraiton and isGoingToRemoveSources(); meant to be called by destination
-         * collection.
-         *
-         * @return "Copy Tracks", "Transcode and Organize Tracks" etc.
-         */
-        QString operationText( const Transcoding::Configuration &configuration );
-
-        /**
-         * Get nice localised string that can be used as progess bar text for the current
-         * operation; meant to be called by the destination collection.
-         *
-         * @param trackCount number of tracks in the transfer
-         * @param destinationName pretty localised name of the destination collection;
-         *        prettyLocation() is used if the string is empty or not specified
-         *
-         * @return "Transcoding and moving <trackCount> tracks to <destinationName>" etc.
-         */
-        QString operationInProgressText( const Transcoding::Configuration &configuration,
-                                         int trackCount, QString destinationName = QString() );
-
         Collections::SqlCollection *m_collection;
         OrganizeCollectionDelegateFactory *m_delegateFactory;
         QMap<Meta::TrackPtr, QString> m_destinations;
