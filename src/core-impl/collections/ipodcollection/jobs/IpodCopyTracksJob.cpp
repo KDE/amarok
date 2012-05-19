@@ -60,18 +60,7 @@ IpodCopyTracksJob::run()
     QByteArray mountPoint = QFile::encodeName( m_coll.data()->mountPoint() );
     QString collectionPrettyName = m_coll.data()->prettyName();
 
-    int trackCount = m_sources.size();
-    QString operationText;
-    if( m_transcodingConfig.isJustCopy() )
-        operationText = i18np( "Transferring one track to %2", "Transferring %1 tracks to %2",
-                               trackCount, collectionPrettyName );
-    else
-        operationText = i18np( "Transcoding one track to %2", "Transcoding %1 tracks to %2",
-                               trackCount, collectionPrettyName );
-    Amarok::Components::logger()->newProgressOperation( this, operationText, trackCount,
-                                                        this, SLOT(abort()) );
     itdb_start_sync( m_coll.data()->m_itdb );
-
     QMapIterator<Meta::TrackPtr, KUrl> it( m_sources );
     while( it.hasNext() )
     {

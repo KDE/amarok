@@ -17,6 +17,8 @@
 #include "IpodCollectionLocation.h"
 
 #include "jobs/IpodDeleteTracksJob.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 
 #include <ThreadWeaver/Weaver>
@@ -67,6 +69,10 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr,KUrl> &s
     ensureDirectoriesExist();
 
     IpodCopyTracksJob *job = new IpodCopyTracksJob( sources, m_coll, configuration, isGoingToRemoveSources() );
+    int trackCount = sources.size();
+    Amarok::Components::logger()->newProgressOperation( job,
+        operationInProgressText( configuration, trackCount ), trackCount, job, SLOT(abort()) );
+
     qRegisterMetaType<IpodCopyTracksJob::CopiedStatus>( "IpodCopyTracksJob::CopiedStatus" );
     connect( job, SIGNAL(signalTrackProcessed(Meta::TrackPtr,Meta::TrackPtr,IpodCopyTracksJob::CopiedStatus)),
              this, SLOT(slotCopyTrackProcessed(Meta::TrackPtr,Meta::TrackPtr,IpodCopyTracksJob::CopiedStatus)) );
