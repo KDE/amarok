@@ -348,7 +348,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
     delegate->setFolders( available_folders );
     delegate->setIsOrganizing( ( collection() == source()->collection() ) );
     delegate->setTranscodingConfiguration( configuration );
-    delegate->setCaption( operationText( configuration, false /* continuousSuffix */ ) );
+    delegate->setCaption( operationText( configuration ) );
 
     connect( delegate, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( delegate, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
@@ -489,7 +489,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 
     m_sources = sources;
 
-    QString statusBarTxt = operationText( configuration, true /* continuousSuffix */ );
+    QString statusBarTxt = operationInProgressText( configuration, sources.count() );
     m_transferjob = new TransferJob( this, configuration );
     Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this,
                                                         SLOT(slotTransferJobAborted()) );
@@ -686,35 +686,63 @@ SqlCollectionLocation::moodFile( const KUrl &track ) const
 }
 
 QString
-SqlCollectionLocation::operationText( const Transcoding::Configuration &configuration, bool continuousSuffix )
+SqlCollectionLocation::operationText( const Transcoding::Configuration &configuration )
 {
     if( source()->collection() == collection() )
     {
         if( configuration.isJustCopy() )
-            // in this case it is really about the files, not "tracks".
-            return continuousSuffix ? i18n( "Organizing files" )
-                                    : i18n( "Organize files" );
+            return i18n( "Organize tracks" );
         else
-            return continuousSuffix ? i18n( "Transcoding and organizing tracks" )
-                                    : i18n( "Transcode and organize tracks" );
+            return i18n( "Transcode and organize tracks" );
     }
     if( isGoingToRemoveSources() )
     {
         if( configuration.isJustCopy() )
-            return continuousSuffix ? i18n( "Moving tracks" )
-                                    : i18n( "Move tracks" );
+            return i18n( "Move tracks" );
         else
-            return continuousSuffix ? i18n( "Transcoding and moving tracks" )
-                                    : i18n( "Transcode and move tracks" );
+            return i18n( "Transcode and move tracks" );
     }
     else
     {
         if( configuration.isJustCopy() )
-            return continuousSuffix ? i18n( "Copying tracks" )
-                                    : i18n( "Copy tracks" );
+            return i18n( "Copy tracks" );
         else
-            return continuousSuffix ? i18n( "Transcoding and copying tracks" )
-                                    : i18n( "Transcode and copy tracks" );
+            return i18n( "Transcode and copy tracks" );
+    }
+}
+
+QString
+SqlCollectionLocation::operationInProgressText( const Transcoding::Configuration &configuration,
+                                                int trackCount, QString destinationName )
+{
+    if( destinationName.isEmpty() )
+        destinationName = prettyLocation();
+    if( source()->collection() == collection() )
+    {
+        if( configuration.isJustCopy() )
+            return i18np( "Organizing one track",
+                          "Organizing %1 tracks", trackCount );
+        else
+            return i18np( "Transcoding and organizing one track",
+                          "Transcoding and organizing %1 tracks", trackCount );
+    }
+    if( isGoingToRemoveSources() )
+    {
+        if( configuration.isJustCopy() )
+            return i18np( "Moving one track to %2",
+                          "Moving %1 tracks to %2", trackCount, destinationName );
+        else
+            return i18np( "Transcoding and moving one track to %2",
+                          "Transcoding and moving %1 tracks to %2", trackCount, destinationName );
+    }
+    else
+    {
+        if( configuration.isJustCopy() )
+            return i18np( "Copying one track to %2",
+                          "Copying %1 tracks to %2", trackCount, destinationName );
+        else
+            return i18np( "Transcoding and copying one track to %2",
+                          "Transcoding and copying %1 tracks to %2", trackCount, destinationName );
     }
 }
 
