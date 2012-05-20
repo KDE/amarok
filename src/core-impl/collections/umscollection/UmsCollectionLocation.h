@@ -63,7 +63,7 @@ class UmsTransferJob : public KCompositeJob
 {
     Q_OBJECT
     public:
-        UmsTransferJob( UmsCollectionLocation *location );
+        UmsTransferJob( UmsCollectionLocation *location, const Transcoding::Configuration &configuration );
 
         virtual void addCopy( const KUrl &from, const KUrl &to );
         virtual void start();
@@ -71,7 +71,6 @@ class UmsTransferJob : public KCompositeJob
     signals:
         void sourceFileTransferDone( KUrl source );
         void fileTransferDone( KUrl destination );
-        void percent( KJob *job, unsigned long percent );
 
     public slots:
         void slotCancel();
@@ -85,6 +84,7 @@ class UmsTransferJob : public KCompositeJob
 
     private:
         UmsCollectionLocation *m_location;
+        Transcoding::Configuration m_transcodingConfiguration;
         bool m_abort;
 
         typedef QPair<KUrl,KUrl> KUrlPair;

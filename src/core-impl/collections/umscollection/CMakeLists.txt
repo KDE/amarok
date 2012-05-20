@@ -12,6 +12,7 @@ include_directories( ../..
 set(amarok_collection-umscollection_PART_SRCS
   UmsCollection.cpp
   UmsCollectionLocation.cpp
+  UmsTranscodeCapability.cpp
   podcasts/UmsPodcastProvider.cpp
   podcasts/UmsPodcastMeta.cpp)
 
@@ -24,6 +25,7 @@ kde4_add_plugin(amarok_collection-umscollection ${amarok_collection-umscollectio
 target_link_libraries(amarok_collection-umscollection
   amaroklib
   amarokcore
+  amarok-transcoding
   ${KDE4_KDECORE_LIBS}
   ${KDE4_KIO_LIBS}
   ${KDE4_KDEUI_LIBS}

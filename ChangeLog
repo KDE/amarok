@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.6-Beta 1
   FEATURES:
+    * Support for transcoding when copying tracks to USB Mass Storage devices;
+      per-device transcoding preference can be saved, too.
     * Provide Repopulate and Turn off link in "Dynamic Mode Enabled" bagde.
     * Support for setting cover images for albums on USB Mass Storage devices.
     * Support for setting and unsetting cover images for iPod albums, can

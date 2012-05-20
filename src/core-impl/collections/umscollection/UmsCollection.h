@@ -141,7 +141,13 @@ class UmsCollection : public Collection, public Meta::Observer
         const KUrl &musicPath() const { return m_musicPath; }
         const KUrl &podcastPath() const { return m_podcastPath; }
 
-        KUrl organizedUrl( Meta::TrackPtr track ) const;
+        /**
+         * Get location where track @param track should be transferred to.
+         *
+         * @param fileExtension new extension to use. Leave empty if you don't wish to
+         * change file extension
+         */
+        KUrl organizedUrl( Meta::TrackPtr track, const QString &fileExtension = QString() ) const;
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
@@ -203,6 +209,7 @@ class UmsCollection : public Collection, public Meta::Observer
         static QString s_podcastFolderKey;
         static QString s_autoConnectKey;
         static QString s_collectionName;
+        static QString s_transcodingGroup;
 
         Solid::Device m_device;
         QSharedPointer<MemoryCollection> m_mc;

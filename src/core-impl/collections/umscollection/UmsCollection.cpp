@@ -18,6 +18,7 @@
 
 #include "UmsCollection.h"
 #include "UmsCollectionLocation.h"
+#include "UmsTranscodeCapability.h"
 
 #include "amarokconfig.h"
 #include "core/capabilities/ActionsCapability.h"
@@ -209,6 +210,7 @@ QString UmsCollection::s_replaceTextKey( "replace_text" );
 QString UmsCollection::s_podcastFolderKey( "podcast_folder" );
 QString UmsCollection::s_autoConnectKey( "use_automatically" );
 QString UmsCollection::s_collectionName( "collection_name" );
+QString UmsCollection::s_transcodingGroup( "transcoding" );
 
 UmsCollection::UmsCollection( Solid::Device device )
     : Collection()
@@ -424,8 +426,8 @@ UmsCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) con
     switch( type )
     {
         case Capabilities::Capability::Actions:
+        case Capabilities::Capability::Transcode:
             return true;
-
         default:
             return false;
     }
@@ -450,6 +452,9 @@ UmsCollection::createCapabilityInterface( Capabilities::Capability::Type type )
             }
             return new Capabilities::ActionsCapability( actions );
         }
+        case Capabilities::Capability::Transcode:
+            return new UmsTranscodeCapability( m_mountPoint + "/" + s_settingsFileName,
+                                               s_transcodingGroup );
         default:
             return 0;
     }
@@ -464,7 +469,7 @@ UmsCollection::metadataChanged( Meta::TrackPtr track )
 }
 
 KUrl
-UmsCollection::organizedUrl( Meta::TrackPtr track ) const
+UmsCollection::organizedUrl( Meta::TrackPtr track, const QString &fileExtension ) const
 {
     TrackOrganizer trackOrganizer( Meta::TrackList() << track );
     //%folder% prefix required to get absolute url.
@@ -475,6 +480,8 @@ UmsCollection::organizedUrl( Meta::TrackPtr track ) const
     trackOrganizer.setIgnoreThe( m_ignoreThe );
     trackOrganizer.setReplaceSpaces( m_replaceSpaces );
     trackOrganizer.setReplace( m_regexText, m_replaceText );
+    if( !fileExtension.isEmpty() )
+        trackOrganizer.setTargetFileExtension( fileExtension );
 
     return KUrl( trackOrganizer.getDestinations().value( track ) );
 }
@@ -563,6 +570,7 @@ UmsCollection::slotConfigure()
 {
     KDialog umsSettingsDialog;
     QWidget *settingsWidget = new QWidget( &umsSettingsDialog );
+    QScopedPointer<Capabilities::TranscodeCapability> tc( create<Capabilities::TranscodeCapability>() );
 
     Ui::UmsConfiguration *settings = new Ui::UmsConfiguration();
     settings->setupUi( settingsWidget );
@@ -573,6 +581,7 @@ UmsCollection::slotConfigure()
     settings->m_musicCheckBox->setChecked( !m_musicPath.isEmpty() );
     settings->m_musicWidget->setEnabled( settings->m_musicCheckBox->isChecked() );
     settings->m_musicFolder->setUrl( m_musicPath.isEmpty() ? KUrl( m_mountPoint ) : m_musicPath );
+    settings->m_transcodeConfig->fillInChoices( tc->savedConfiguration() );
 
     settings->m_podcastFolder->setMode( KFile::Directory );
     settings->m_podcastCheckBox->setChecked( !m_podcastPath.isEmpty() );
@@ -682,6 +691,8 @@ UmsCollection::slotConfigure()
         entries.writeEntry( s_autoConnectKey, m_autoConnect );
         entries.writeEntry( s_collectionName, m_collectionName );
         config.sync();
+
+        tc->setSavedConfiguration( settings->m_transcodeConfig->currentChoice() );
     }
 
     delete settings;
