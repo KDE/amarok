@@ -75,10 +75,17 @@ public:
      * Starts the transcoding job.
      */
     void start();
-/*
-signals:
-    void percent( KJob *job, unsigned long percent );
-*/
+
+    /**
+     * Get the source url.
+     */
+    KUrl srcUrl() const { return m_src; }
+
+    /**
+     * Get the destination url.
+     */
+    KUrl destUrl() const { return m_dest; }
+
 private slots:
     void processOutput();
     void transcoderDone( int exitCode, QProcess::ExitStatus exitStatus );
