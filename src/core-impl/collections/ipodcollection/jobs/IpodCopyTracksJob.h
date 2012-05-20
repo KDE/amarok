@@ -84,7 +84,7 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         void slotDuplicateTrackSearchQueryDone();
 
         /// @see startCopyJob()
-        void slotStartOrTranscodeCopyJob( const KUrl &sourceUrl, const KUrl &destUrl );
+        void slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl );
         void slotCopyOrTranscodeJobFinished();
 
         /// @see displaySorryDialog()

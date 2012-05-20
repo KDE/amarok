@@ -47,7 +47,7 @@ IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,KUrl> &sources,
     connect( this, SIGNAL(startDuplicateTrackSearch(Meta::TrackPtr)),
                    SLOT(slotStartDuplicateTrackSearch(Meta::TrackPtr)) );
     connect( this, SIGNAL(startCopyOrTranscodeJob(KUrl,KUrl)),
-                   SLOT(slotStartOrTranscodeCopyJob(KUrl,KUrl)) );
+                   SLOT(slotStartCopyOrTranscodeJob(KUrl,KUrl)) );
     connect( this, SIGNAL(displaySorryDialog()), SLOT(slotDisplaySorryDialog()) );
 }
 
@@ -293,7 +293,7 @@ IpodCopyTracksJob::slotDuplicateTrackSearchQueryDone()
 }
 
 void
-IpodCopyTracksJob::slotStartOrTranscodeCopyJob( const KUrl &sourceUrl, const KUrl &destUrl )
+IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl )
 {
     KJob *job = 0;
     if( m_transcodingConfig.isJustCopy() )
@@ -318,7 +318,6 @@ IpodCopyTracksJob::slotStartOrTranscodeCopyJob( const KUrl &sourceUrl, const KUr
         job = new Transcoding::Job( sourceUrl, destUrl, m_transcodingConfig );
     }
     job->setUiDelegate( 0 ); // be non-interactive
-    job->setAutoDelete( true );
     connect( job, SIGNAL(finished(KJob*)), // we must use this instead of result() to prevent deadlock
              SLOT(slotCopyOrTranscodeJobFinished()) );
     job->start();  // no-op for KIO job, but matters for transcoding job
