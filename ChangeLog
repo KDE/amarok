@@ -48,6 +48,7 @@ VERSION 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * Only offer delete action when Ctrl key is pressed in Collection context menu.
     * Only offer move action when Ctrl key is pressed in Collection context menu.
     * Remove context view video applet. Unmaintained and broken. (BR 242793)
     * Album cover images are written in background to prevent freezes. (BR 298332)

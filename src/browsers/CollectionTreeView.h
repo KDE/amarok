@@ -87,7 +87,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotCopyTracks();
         void slotMoveTracks();
         void slotTrashTracks();
-        void slotRemoveTracks();
+        void slotDeleteTracks();
         void slotOrganize();
 
     private:
@@ -112,7 +112,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         Collections::Collection *getCollection( const QModelIndex &index );
         QHash<QAction*, Collections::Collection*> getCopyActions( const QModelIndexList &indcies );
         QHash<QAction*, Collections::Collection*> getMoveActions( const QModelIndexList &indcies );
-        QHash<QAction*, Collections::Collection*> getRemoveActions( const QModelIndexList & indices );
 
         Collections::QueryMaker* createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems=true ) const;
         CollectionTreeItem* getItemFromIndex( QModelIndex &index );
@@ -127,7 +126,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         QHash<QAction*, Collections::Collection*> m_currentCopyDestination;
         QHash<QAction*, Collections::Collection*> m_currentMoveDestination;
-        QHash<QAction*, Collections::Collection*> m_currentRemoveDestination;
 
         QMap<AmarokMimeData*, Playlist::AddOptions> m_playChildTracksMode;
 

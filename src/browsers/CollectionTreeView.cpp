@@ -195,6 +195,8 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
         setCurrentIndex( index );
     }
 
+    //TODO: get rid of this, it's a hack.
+    // Put remove actions in model so we don't need access to the internal pointer in view
     if( m_filterModel )
     {
         QModelIndexList tmp;
@@ -222,7 +224,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     // Destroy the menu when the model is reset (collection update), so that we don't
     // operate on invalid data. see BUG 190056
-    connect( m_treeModel, SIGNAL( modelReset() ), &menu, SLOT( deleteLater() ) );
+    connect( m_treeModel, SIGNAL(modelReset()), &menu, SLOT(deleteLater()) );
 
     // create basic actions
     QActionList actions = createBasicActions( indices );
@@ -253,6 +255,8 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     }
 
     QActionList collectionActions = createCollectionActions( indices );
+    //TODO: subclass KMenu in order to show tooltip and respond to Shift key press
+    // during exec()
     KMenu menuCollection( i18n( "Collection" ) );
     foreach( QAction *action, collectionActions )
     {
@@ -274,13 +278,48 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     m_currentCopyDestination = getCopyActions( indices );
     m_currentMoveDestination = getMoveActions( indices );
-    m_currentRemoveDestination = getRemoveActions( indices );
+
+    // create trash and delete actions
+    if( onlyOneCollection( indices ) )
+    {
+        Collection *collection = getCollection( indices.first() );
+        if( collection && collection->isWritable() )
+        {
+            //offer delete operation only if Shift is pressed.
+            if( event->modifiers().testFlag( Qt::ShiftModifier ) )
+            {
+                //TODO: don't recreate action
+                KAction *deleteAction = new KAction( KIcon( "remove-amarok" ),
+                                                     i18n( "Delete Tracks" ),
+                                                     &menu );
+                deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+                // key shortcut is only for display purposes here, actual one is
+                // determined by View in Model/View classes
+                deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
+                connect( deleteAction,
+                         SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                         this, SLOT(slotDeleteTracks()) );
+                menu.addAction( deleteAction );
+            }
+            else
+            {
+                //TODO: don't recreate action
+                KAction *trashAction = new KAction( KIcon( "user-trash" ),
+                                                    i18n( "Move Tracks to Trash" ),
+                                                    &menu );
+                trashAction->setProperty( "popupdropper_svg_id", "delete" );
+                trashAction->setShortcut( Qt::Key_Delete );
+                connect( trashAction,
+                         SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                         this, SLOT(slotTrashTracks()) );
+                menu.addAction( trashAction );
+            }
+        }
+    }
 
     //offer move operation only if Shift is pressed. Rational: Move is destructive operation
     if( event->modifiers().testFlag( Qt::ShiftModifier ) )
     {
-        //TODO: subclass KMenu in order to show tooltip and respond to Shift key press
-        // during exec()
         KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
         moveMenu->setToolTip( i18n("Press Shift key for move") );
         if( !m_currentMoveDestination.empty() )
@@ -299,11 +338,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
             copyMenu->addActions( m_currentCopyDestination.keys() );
             menu.addMenu( copyMenu );
         }
-    }
-
-    if( !m_currentRemoveDestination.empty() )
-    {
-        menu.addActions( m_currentRemoveDestination.keys() );
     }
 
     // add extended actions
@@ -1164,42 +1198,6 @@ CollectionTreeView::getMoveActions( const QModelIndexList &indices )
     return currentMoveDestination;
 }
 
-QHash<QAction *, Collection *>
-CollectionTreeView::getRemoveActions( const QModelIndexList &indices )
-{
-    QHash<QAction *, Collection *> currentRemoveDestination;
-
-    if( !onlyOneCollection( indices ) )
-        return currentRemoveDestination;
-    Collection *collection = getCollection( indices.first() );
-    if( !collection || !collection->isWritable() )
-        return currentRemoveDestination;
-
-    //TODO: possible mem leak
-    KAction *trashAction = new KAction( KIcon( "user-trash" ),
-                                        i18n( "Move Tracks to Trash" ), 0 );
-    trashAction->setProperty( "popupdropper_svg_id", "delete" );
-    // key shortcut is only for display purposes here, actual one is determined by View
-    // in Model/View classes
-    trashAction->setShortcut( Qt::Key_Delete );
-    connect( trashAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                this, SLOT(slotTrashTracks()) );
-    currentRemoveDestination.insert( trashAction, collection );
-
-    //TODO: possible mem leak
-    KAction *deleteAction = new KAction( KIcon( "remove-amarok" ),
-                                         i18n( "Delete Tracks" ), 0 );
-    deleteAction->setProperty( "popupdropper_svg_id", "delete" );
-    // key shortcut is only for display purposes here, actual one is determined by View
-    // in Model/View classes
-    deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
-    connect( deleteAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                this, SLOT(slotRemoveTracks()) );
-    currentRemoveDestination.insert( deleteAction, collection );
-
-    return currentRemoveDestination;
-}
-
 bool CollectionTreeView::onlyOneCollection( const QModelIndexList &indices )
 {
     if( !indices.isEmpty() )
@@ -1285,7 +1283,7 @@ CollectionTreeView::slotTrashTracks()
 }
 
 void
-CollectionTreeView::slotRemoveTracks()
+CollectionTreeView::slotDeleteTracks()
 {
     KAction *action = qobject_cast<KAction*>( sender() );
     if( !action )
