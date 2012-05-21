@@ -19,6 +19,8 @@
 
 #include <KMenu>
 
+#include <QAction>
+
 namespace Amarok
 {
 
@@ -31,10 +33,26 @@ class ContextMenu : public KMenu
 public:
     explicit ContextMenu( QWidget *parent = 0 );
 
+    /** Sets up 2 actions of which the alternative is only shown if the trigger key is
+      * pressed.
+      * @param action has to be added using addAction prior to calling this function
+      * @param alterative has to be added using addAction prior to calling this function
+      */
+    void setAlternatives( QAction *action, QAction *alterative, Qt::Key trigger );
+
 protected:
     // reimplemented to show tooltips and respond to keyboard modifiers
     virtual bool event( QEvent *e );
 
+    //reimplemented to toggle between action alternatives when a modifier key is used.
+    virtual void keyPressEvent( QKeyEvent *e );
+    virtual void keyReleaseEvent( QKeyEvent *e );
+
+private:
+    typedef QPair<QAction *, QAction *> QActionPair;
+
+    //which actions to toggle.
+    QMultiMap<int, QActionPair> m_alternativeActionMap;
 };
 
 } //namespace Amarok

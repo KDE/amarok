@@ -19,6 +19,8 @@
 #include <QHelpEvent>
 #include <QToolTip>
 
+#include "core/support/Debug.h"
+
 Amarok::ContextMenu::ContextMenu( QWidget *parent )
     : KMenu( parent )
 {
@@ -56,4 +58,46 @@ Amarok::ContextMenu::event( QEvent *e )
     }
 
     return KMenu::event( e );
+}
+
+void
+Amarok::ContextMenu::setAlternatives( QAction *action, QAction *alternative,
+                                           Qt::Key trigger)
+{
+    m_alternativeActionMap.insertMulti( (int)trigger, QActionPair( action, alternative) );
+
+    alternative->setVisible( false );
+}
+
+void
+Amarok::ContextMenu::keyPressEvent( QKeyEvent *e )
+{
+    if( m_alternativeActionMap.keys().contains( e->key() ) )
+    {
+        QList<QActionPair> pairs =
+                m_alternativeActionMap.values( e->key() );
+        foreach( QActionPair alt, pairs )
+        {
+            alt.first->setVisible( false);
+            alt.second->setVisible( true );
+        }
+    }
+    KMenu::keyPressEvent( e );
+}
+
+void
+Amarok::ContextMenu::keyReleaseEvent( QKeyEvent *e )
+{
+    if( m_alternativeActionMap.keys().contains( e->key() ) )
+    {
+        QList<QActionPair> pairs =
+                m_alternativeActionMap.values( e->key() );
+        foreach( QActionPair alt, pairs )
+        {
+            alt.first->setVisible( true );
+            alt.second->setVisible( false );
+        }
+    }
+
+    KMenu::keyPressEvent( e );
 }

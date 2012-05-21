@@ -281,66 +281,61 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     m_currentCopyDestination = getCopyActions( indices );
     m_currentMoveDestination = getMoveActions( indices );
 
+    if( !m_currentCopyDestination.empty() )
+    {
+        KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
+        copyMenu->setIcon( KIcon( "edit-copy" ) );
+        copyMenu->addActions( m_currentCopyDestination.keys() );
+        QAction *menuAction = menu.addMenu( copyMenu );
+
+        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
+
+        //Move = copy + delete from source
+        if( !m_currentMoveDestination.empty() )
+        {
+            moveMenu->setIcon( KIcon( "go-jump" ) );
+            moveMenu->addActions( m_currentMoveDestination.keys() );
+            menu.addMenu( moveMenu );
+            //offer move operation only if Shift is pressed because move is destructive
+            menu.setAlternatives( copyMenu->menuAction(), moveMenu->menuAction(),
+                                  Qt::Key_Shift );
+            //HACK: menu tooltip != action tooltip in QMenu::event();
+            menuAction->setToolTip( i18n("Press Shift key for move") );
+        }
+    }
+
     // create trash and delete actions
     if( onlyOneCollection( indices ) )
     {
         Collection *collection = getCollection( indices.first() );
         if( collection && collection->isWritable() )
         {
-            //offer delete operation only if Shift is pressed.
-            if( event->modifiers().testFlag( Qt::ShiftModifier ) )
-            {
-                //TODO: don't recreate action
-                KAction *deleteAction = new KAction( KIcon( "remove-amarok" ),
-                                                     i18n( "Delete Tracks" ),
-                                                     &menu );
-                deleteAction->setProperty( "popupdropper_svg_id", "delete" );
-                // key shortcut is only for display purposes here, actual one is
-                // determined by View in Model/View classes
-                deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
-                connect( deleteAction,
-                         SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                         this, SLOT(slotDeleteTracks()) );
-                menu.addAction( deleteAction );
-            }
-            else
-            {
-                //TODO: don't recreate action
-                KAction *trashAction = new KAction( KIcon( "user-trash" ),
-                                                    i18n( "Move Tracks to Trash" ),
-                                                    &menu );
-                trashAction->setProperty( "popupdropper_svg_id", "delete" );
-                trashAction->setShortcut( Qt::Key_Delete );
-                trashAction->setToolTip( i18n( "Press Shift key to delete") );
-                connect( trashAction,
-                         SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                         this, SLOT(slotTrashTracks()) );
-                menu.addAction( trashAction );
-            }
-        }
-    }
+            //TODO: don't recreate action
+            KAction *trashAction = new KAction( KIcon( "user-trash" ),
+                                                i18n( "Move Tracks to Trash" ),
+                                                &menu );
+            trashAction->setProperty( "popupdropper_svg_id", "delete" );
+            trashAction->setShortcut( Qt::Key_Delete );
+            trashAction->setToolTip( i18n( "Press Shift key to delete") );
+            connect( trashAction,
+                     SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                     this, SLOT(slotTrashTracks()) );
+            menu.addAction( trashAction );
 
-    //offer move operation only if Shift is pressed. Rational: Move is destructive operation
-    if( event->modifiers().testFlag( Qt::ShiftModifier ) )
-    {
-        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
-        if( !m_currentMoveDestination.empty() )
-        {
-            moveMenu->setIcon( KIcon( "go-jump" ) );
-            moveMenu->addActions( m_currentMoveDestination.keys() );
-            menu.addMenu( moveMenu );
-        }
-    }
-    else
-    {
-        KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
-        if( !m_currentCopyDestination.empty() )
-        {
-            copyMenu->setIcon( KIcon( "edit-copy" ) );
-            copyMenu->addActions( m_currentCopyDestination.keys() );
-            QAction *menuAction = menu.addMenu( copyMenu );
-            //HACK: menu tooltip != action tooltip in QMenu::event();
-            menuAction->setToolTip( i18n("Press Shift key for move") );
+            KAction *deleteAction = new KAction( KIcon( "remove-amarok" ),
+                                                 i18n( "Delete Tracks" ),
+                                                 &menu );
+            deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+            // key shortcut is only for display purposes here, actual one is
+            // determined by View in Model/View classes
+            deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
+            connect( deleteAction,
+                     SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                     this, SLOT(slotDeleteTracks()) );
+            menu.addAction( deleteAction );
+
+            //offer delete operation only if Shift is pressed.
+            menu.setAlternatives( trashAction, deleteAction, Qt::Key_Shift );
         }
     }
 
