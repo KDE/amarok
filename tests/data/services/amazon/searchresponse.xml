@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<searchresponse>
+	<albums>
+		<item>
+			<asin>B001SW8TFC</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<price>989</price>
+			<img>http://ecx.images-amazon.com/images/I/51L5Z-JXB3L._SL500_SS110_.jpg</img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B00666RKLE</asin>
+			<artist>The Cure</artist>
+			<album>Bestival Live 2011</album>
+			<price>699</price>
+			<img>http://ecx.images-amazon.com/images/I/61p6dd%2BShZL._SL500_SS110_.jpg</img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B003TZV8T0</asin>
+			<artist>The Cure</artist>
+			<album>Staring At The Sea - The Singles</album>
+			<price>599</price>
+			<img>http://ecx.images-amazon.com/images/I/51LN4o1DxYL._SL500_SS110_.jpg</img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B0045M8SDK</asin>
+			<artist>The Cure</artist>
+			<album>Kiss Me, Kiss Me, Kiss Me</album>
+			<price>599</price>
+			<img>http://ecx.images-amazon.com/images/I/411ncIcC8vL._SL500_SS110_.jpg</img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SVN2NM</asin>
+			<artist>The Cure</artist>
+			<album>Pornography</album>
+			<price>599</price>
+			<img>http://ecx.images-amazon.com/images/I/418turaImmL._SL500_SS110_.jpg</img>
+			<iscompilation></iscompilation></item></albums>
+	<tracks>
+		<item>
+			<asin>B001SW3X58</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>Lullaby</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SW8U92</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>Friday I'm In Love</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SW8UI8</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>Boys Don't Cry</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SWAZR2</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>The Lovecats</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SWAXGA</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>Just Like Heaven</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SW3VXC</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>A Forest</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SWAYV4</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>Lovesong</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SW6RHO</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>Close To Me</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SW53VU</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>Inbetween Days</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B003VW26FG</asin>
+			<artist>The Cure</artist>
+			<album>12" 80s Classics</album>
+			<albumasin>B003VW9H8A</albumasin>
+			<title>Lullaby</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SW8WDG</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>Why Can't I Be You?</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B0040BP98I</asin>
+			<artist>The Cure</artist>
+			<album>Galore - The Singles 1987-1997</album>
+			<albumasin>B0040BROFO</albumasin>
+			<title>Pictures Of You</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B00655JFDW</asin>
+			<artist>Jah Cure</artist>
+			<album>Heart And Soul Riddim</album>
+			<albumasin>B00655JD3Y</albumasin>
+			<title>From My Heart</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B002VCWOJK</asin>
+			<artist>Jah Cure</artist>
+			<album>The Universal Cure</album>
+			<albumasin>B002VCULQ8</albumasin>
+			<title>Call On Me</title>
+			<price>99</price>
+			<img>http://ecx.images-amazon.com/images/I/51TnF-PKCcL._SL500_AA240_.jpg</img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B005K0DFX4</asin>
+			<artist>The Cure</artist>
+			<album>Boys Don't Cry</album>
+			<albumasin>B005K0DFR0</albumasin>
+			<title>Boys Don't Cry</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B003MJM5XG</asin>
+			<artist>The Cure</artist>
+			<album>Disintegration (Deluxe Edition)</album>
+			<albumasin>B003MJQB9A</albumasin>
+			<title>Plainsong (Remastered)</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SQ4WDG</asin>
+			<artist>The Cure</artist>
+			<album>Seventeen Seconds</album>
+			<albumasin>B001SQ6ZEK</albumasin>
+			<title>A Forest</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B003TY24YO</asin>
+			<artist>The Cure</artist>
+			<album>Join The Dots - The B-Sides &amp; Rarities</album>
+			<albumasin>B003TY21DS</albumasin>
+			<title>Burn</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B004QMDJHY</asin>
+			<artist>The Cure</artist>
+			<album>The Cure - Greatest Hits (Deluxe Sound &amp; Vision) PAL</album>
+			<albumasin>B004QM84TM</albumasin>
+			<title>Friday I'm In Love (Album Version)</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SPPPGK</asin>
+			<artist>The Cure</artist>
+			<album>Faith [Deluxe]</album>
+			<albumasin>B001SPPMXG</albumasin>
+			<title>Charlotte Sometimes</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SWAZJA</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>The Walk</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B004UQSCY6</asin>
+			<artist>The Cure</artist>
+			<album>Disintegration (Remastered)</album>
+			<albumasin>B004UQSB8I</albumasin>
+			<title>Lullaby</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B003TZT6LM</asin>
+			<artist>The Cure</artist>
+			<album>Staring At The Sea - The Singles</album>
+			<albumasin>B003TZV8T0</albumasin>
+			<title>A Forest</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B0049BARAE</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B0049B5GKU</albumasin>
+			<title>A Forest (Acoustic Version)</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B0045MAPUY</asin>
+			<artist>The Cure</artist>
+			<album>Kiss Me, Kiss Me, Kiss Me</album>
+			<albumasin>B0045M8SDK</albumasin>
+			<title>Hot Hot Hot!!!</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B003TZWXYO</asin>
+			<artist>The Cure</artist>
+			<album>Staring At The Sea - The Singles</album>
+			<albumasin>B003TZV8T0</albumasin>
+			<title>Charlotte Sometimes</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B004UQJ678</asin>
+			<artist>The Cure</artist>
+			<album>Disintegration (Remastered)</album>
+			<albumasin>B004UQSB8I</albumasin>
+			<title>Pictures Of You</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B003MJQD84</asin>
+			<artist>The Cure</artist>
+			<album>Disintegration (Deluxe Edition)</album>
+			<albumasin>B003MJQB9A</albumasin>
+			<title>Pictures Of You (RS Home Instrumental Demo)</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SQ5L9K</asin>
+			<artist>The Cure</artist>
+			<album>Wish</album>
+			<albumasin>B001SQ9PUQ</albumasin>
+			<title>Friday I'm In Love</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B004QM85LO</asin>
+			<artist>The Cure</artist>
+			<album>The Cure - Greatest Hits (Deluxe Sound &amp; Vision) PAL</album>
+			<albumasin>B004QM84TM</albumasin>
+			<title>Lullaby</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B003TZRKE2</asin>
+			<artist>The Cure</artist>
+			<album>Staring At The Sea - The Singles</album>
+			<albumasin>B003TZV8T0</albumasin>
+			<title>A Night Like This</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B0045MAP9U</asin>
+			<artist>The Cure</artist>
+			<album>Kiss Me, Kiss Me, Kiss Me</album>
+			<albumasin>B0045M8SDK</albumasin>
+			<title>Why Can't I Be You?</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B003MJM612</asin>
+			<artist>The Cure</artist>
+			<album>Disintegration (Deluxe Edition)</album>
+			<albumasin>B003MJQB9A</albumasin>
+			<title>Pictures Of You (Remastered)</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B003MJOAPM</asin>
+			<artist>The Cure</artist>
+			<album>Disintegration (Deluxe Edition)</album>
+			<albumasin>B003MJQB9A</albumasin>
+			<title>Fascination Street (Remastered)</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SVTDUI</asin>
+			<artist>The Cure</artist>
+			<album>Faith</album>
+			<albumasin>B001SVX1H4</albumasin>
+			<title>Faith</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B0045M6YD6</asin>
+			<artist>The Cure</artist>
+			<album>Kiss Me, Kiss Me, Kiss Me</album>
+			<albumasin>B0045M8SDK</albumasin>
+			<title>Just Like Heaven</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SQGPUE</asin>
+			<artist>The Cure</artist>
+			<album>Wild Mood Swings</album>
+			<albumasin>B001SQA686</albumasin>
+			<title>Gone!</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SPU4NY</asin>
+			<artist>The Cure</artist>
+			<album>Seventeen Seconds [Deluxe]</album>
+			<albumasin>B001SPQ6AE</albumasin>
+			<title>A Forest</title>
+			<price>99</price>
+			<img>http://ecx.images-amazon.com/images/I/41NtuP%2BqlYL._SL500_AA240_.jpg</img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B00666RQCM</asin>
+			<artist>The Cure</artist>
+			<album>Bestival Live 2011</album>
+			<albumasin>B00666RKLE</albumasin>
+			<title>Just Like Heaven (Bestival Live 2011)</title>
+			<price>89</price>
+			<img>http://ecx.images-amazon.com/images/I/61p6dd%2BShZL._SL500_AA240_.jpg</img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SW3V3W</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>Mint Car</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B005K0DH1O</asin>
+			<artist>The Cure</artist>
+			<album>Boys Don't Cry</album>
+			<albumasin>B005K0DFR0</albumasin>
+			<title>Killing An Arab</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SQ6ZCW</asin>
+			<artist>The Cure</artist>
+			<album>Wild Mood Swings</album>
+			<albumasin>B001SQA686</albumasin>
+			<title>Want</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SQ5MCG</asin>
+			<artist>The Cure</artist>
+			<album>Wish</album>
+			<albumasin>B001SQ9PUQ</albumasin>
+			<title>To Wish Impossible Things</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SPPN6W</asin>
+			<artist>The Cure</artist>
+			<album>Faith [Deluxe]</album>
+			<albumasin>B001SPPMXG</albumasin>
+			<title>All Cats Are Grey</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SQ45Y2</asin>
+			<artist>The Cure</artist>
+			<album>The Head On The Door</album>
+			<albumasin>B001SQ8B2Y</albumasin>
+			<title>Kyoto Song</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SVR7CO</asin>
+			<artist>The Cure</artist>
+			<album>Greatest Hits</album>
+			<albumasin>B001SW8TFC</albumasin>
+			<title>Cut Here</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B0045M5TQ4</asin>
+			<artist>The Cure</artist>
+			<album>Kiss Me, Kiss Me, Kiss Me</album>
+			<albumasin>B0045M8SDK</albumasin>
+			<title>The Kiss</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SVNNRW</asin>
+			<artist>The Cure</artist>
+			<album>Three Imaginary Boys</album>
+			<albumasin>B001SVHLE8</albumasin>
+			<title>10:15 Saturday Night</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SQBK4K</asin>
+			<artist>The Cure</artist>
+			<album>Wish</album>
+			<albumasin>B001SQ9PUQ</albumasin>
+			<title>Cut</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item>
+		<item>
+			<asin>B001SQBJQE</asin>
+			<artist>The Cure</artist>
+			<album>Wish</album>
+			<albumasin>B001SQ9PUQ</albumasin>
+			<title>From The Edge Of The Deep Green Sea</title>
+			<price>99</price>
+			<img></img>
+			<iscompilation></iscompilation></item></tracks></searchresponse>

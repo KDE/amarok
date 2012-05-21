@@ -42,6 +42,12 @@ public:
 protected:
     virtual void run();
 
+    Collections::AmazonCollection* m_collection;
+    QString m_tempFileName;
+    QDomDocument *m_responseDocument;
+    AmazonMetaFactory *m_factory;
+    bool m_success;
+
 private:
     /**
     * Adds an artist to the collection if it does not yet exist. In any case it returns the ID of the artist.
@@ -60,13 +66,6 @@ private:
     * @param albumAsin the ASIN for this album in the Amazon store.
     */
     int addAlbumToCollection( const QString &albumTitle, const QString &description, const QString &artistID, const QString &price, const QString &imgUrl, const QString &albumAsin, const bool isCompilation );
-
-    Collections::AmazonCollection* m_collection;
-    QString m_tempFileName;
-    QDomDocument *m_responseDocument;
-    AmazonMetaFactory *m_factory;
-    bool m_success;
 };
-
 
 #endif // AMAZONPARSER_H

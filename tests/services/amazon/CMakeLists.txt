@@ -1,4 +1,6 @@
 include_directories(
+        ${Amarok_SOURCE_DIR}/src/core-impl/collections
+        ${Amarok_SOURCE_DIR}/src/services
         ${AMAROK_TEST_TREE}
         ${CMAKE_BINARY_DIR}/tests
         )
@@ -123,6 +125,29 @@ ${KDE4_KDECORE_LIBS}
 ${KDE4_KDEUI_LIBS}
 ${QT_QTTEST_LIBRARY}
 ${QT_QTCORE_LIBRARY}
+amarokcore
+amaroklib
+amarok_service_amazonstore )
+
+
+#------------------------ Test AmazonParser --------------------------------------
+
+set( testamazonparser_SRCS
+TestAmazonParser.cpp
+${AMAROK_SOURCE_TREE}/services/amazon/AmazonCollection.cpp
+${AMAROK_SOURCE_TREE}/services/amazon/AmazonConfig.cpp
+${AMAROK_SOURCE_TREE}/services/amazon/AmazonMeta.cpp
+${AMAROK_SOURCE_TREE}/services/amazon/AmazonParser.cpp
+ )
+
+kde4_add_unit_test( testamazonparser ${testamazonparser_SRCS} )
+target_link_libraries( testamazonparser
+${KDE4_KDECORE_LIBS}
+${KDE4_KDEUI_LIBS}
+${KDE4_THREADWEAVER_LIBRARIES}
+${QT_QTTEST_LIBRARY}
+${QT_QTCORE_LIBRARY}
+${QT_QTXML_LIBRARY}
 amarokcore
 amaroklib
 amarok_service_amazonstore )
