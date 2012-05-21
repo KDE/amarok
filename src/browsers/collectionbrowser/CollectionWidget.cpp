@@ -172,7 +172,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     // FIXME Variable viewMode is never used. What was the intention?
     ViewMode viewMode = NormalCollections;
     if( enumValue != -1 )
-       viewMode = (ViewMode) enumValue;
+       viewMode = (ViewMode)enumValue;
 
     // -- the search widget
     d->searchWidget = new SearchWidget( hbox );

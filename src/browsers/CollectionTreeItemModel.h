@@ -22,12 +22,12 @@
 #include "CollectionTreeItemModelBase.h"
 #include "core/meta/Meta.h"
 
+#include "core/collections/Collection.h"
 
 #include <QMap>
 #include <QPair>
 
 class CollectionTreeItem;
-class Collection;
 
 class CollectionTreeItemModel: public CollectionTreeItemModelBase
 {

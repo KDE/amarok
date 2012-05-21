@@ -134,9 +134,11 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 }
 
 bool
-CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row,
-                                  int column, const QModelIndex &parent )
+CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction action,
+                                       int row, int column, const QModelIndex &parent )
 {
+    Q_UNUSED(row)
+    Q_UNUSED(column)
     //no drops on empty areas
     if( !parent.isValid() )
         return false;
