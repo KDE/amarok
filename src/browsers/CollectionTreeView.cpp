@@ -44,6 +44,8 @@
 #include "SvgHandler.h"
 #include "TagDialog.h"
 
+#include "widgets/AmarokContextMenu.h"
+
 #include <KAction>
 #include <KGlobalSettings>
 #include <KIcon>
@@ -220,7 +222,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
                         );
     }
 
-    KMenu menu( this );
+    Amarok::ContextMenu menu( this );
 
     // Destroy the menu when the model is reset (collection update), so that we don't
     // operate on invalid data. see BUG 190056
@@ -309,6 +311,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
                                                     &menu );
                 trashAction->setProperty( "popupdropper_svg_id", "delete" );
                 trashAction->setShortcut( Qt::Key_Delete );
+                trashAction->setToolTip( i18n( "Press Shift key to delete") );
                 connect( trashAction,
                          SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
                          this, SLOT(slotTrashTracks()) );
@@ -321,7 +324,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     if( event->modifiers().testFlag( Qt::ShiftModifier ) )
     {
         KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
-        moveMenu->setToolTip( i18n("Press Shift key for move") );
         if( !m_currentMoveDestination.empty() )
         {
             moveMenu->setIcon( KIcon( "go-jump" ) );
@@ -336,7 +338,9 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
         {
             copyMenu->setIcon( KIcon( "edit-copy" ) );
             copyMenu->addActions( m_currentCopyDestination.keys() );
-            menu.addMenu( copyMenu );
+            QAction *menuAction = menu.addMenu( copyMenu );
+            //HACK: menu tooltip != action tooltip in QMenu::event();
+            menuAction->setToolTip( i18n("Press Shift key for move") );
         }
     }
 
