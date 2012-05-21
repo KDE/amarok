@@ -118,8 +118,8 @@ AmazonParser::run()
         albumAsin   = trackItemsList.at( i ).firstChildElement( QLatin1String( "albumasin" ) ).firstChild().nodeValue();
         artist      = trackItemsList.at( i ).firstChildElement( QLatin1String( "artist" ) ).firstChild().nodeValue();
         albumTitle  = trackItemsList.at( i ).firstChildElement( QLatin1String( "album" ) ).firstChild().nodeValue();
-        compilation = albumItemsList.at( i ).firstChildElement( QLatin1String( "iscompilation" ) ).firstChild().nodeValue();
-        imgUrl      = albumItemsList.at( i ).firstChildElement( QLatin1String( "img" ) ).firstChild().nodeValue();
+        compilation = trackItemsList.at( i ).firstChildElement( QLatin1String( "iscompilation" ) ).firstChild().nodeValue();
+        imgUrl      = trackItemsList.at( i ).firstChildElement( QLatin1String( "img" ) ).firstChild().nodeValue();
         price       = trackItemsList.at( i ).firstChildElement( QLatin1String( "price" ) ).firstChild().nodeValue();
         songTitle   = trackItemsList.at( i ).firstChildElement( QLatin1String( "title" ) ).firstChild().nodeValue();
         trackAsin   = trackItemsList.at( i ).firstChildElement( QLatin1String( "asin" ) ).firstChild().nodeValue();
