@@ -98,9 +98,9 @@ AmazonShoppingCart::remove( int pos )
 }
 
 QUrl
-AmazonShoppingCart::checkoutUrl()
+AmazonShoppingCart::checkoutUrl( QString asin )
 {
-    if( isEmpty() ) // we don't create empty carts
+    if( isEmpty() && asin.isEmpty() ) // we don't create empty carts
         return QUrl();
 
     QString url;
@@ -109,15 +109,21 @@ AmazonShoppingCart::checkoutUrl()
     url += MP3_MUSIC_STORE_HOST;
     url += "/index.php?apikey=";
     url += MP3_MUSIC_STORE_KEY;
-    url += "&method=CreateCart&Location=";
+    url += "&redirect=true&method=CreateCart&Location=";
     url += AmazonConfig::instance()->country();
     url += "&Player=amarok";
 
     // let's add the ASINs
-    for( int i = 0; i < size(); i++ )
+
+    if( !asin.isEmpty() )
+        url += "&ASINs[]=" + asin;
+    else
     {
-        url += "&ASINs[]=";
-        url += at( i ).asin();
+        for( int i = 0; i < size(); i++ )
+        {
+            url += "&ASINs[]=";
+            url += at( i ).asin();
+        }
     }
 
     return QUrl( url );

@@ -137,13 +137,19 @@ TestAmazonShoppingCart::testCheckoutUrl()
     QUrl result = AmazonShoppingCart::instance()->checkoutUrl();
     QCOMPARE( result, QUrl() );
 
+    result = AmazonShoppingCart::instance()->checkoutUrl( "B003MJQB9A" );
+    QCOMPARE( result, QUrl( "http://www.mp3-music-store.de/index.php?apikey=27274503cb405cb1929f353fc507f09c&redirect=true&method=CreateCart&Location=de&Player=amarok&ASINs[]=B003MJQB9A" ) );
+
     AmazonShoppingCart::instance()->add( "B003MJQB9A", "price", "name" );
     result = AmazonShoppingCart::instance()->checkoutUrl();
-    QCOMPARE( result, QUrl( "http://www.mp3-music-store.de/index.php?apikey=27274503cb405cb1929f353fc507f09c&method=CreateCart&Location=de&Player=amarok&ASINs[]=B003MJQB9A" ) );
+    QCOMPARE( result, QUrl( "http://www.mp3-music-store.de/index.php?apikey=27274503cb405cb1929f353fc507f09c&redirect=true&method=CreateCart&Location=de&Player=amarok&ASINs[]=B003MJQB9A" ) );
 
     AmazonShoppingCart::instance()->add( "B007XBRH3C", "price", "name" );
     result = AmazonShoppingCart::instance()->checkoutUrl();
-    QCOMPARE( result, QUrl( "http://www.mp3-music-store.de/index.php?apikey=27274503cb405cb1929f353fc507f09c&method=CreateCart&Location=de&Player=amarok&ASINs[]=B003MJQB9A&ASINs[]=B007XBRH3C" ) );
+    QCOMPARE( result, QUrl( "http://www.mp3-music-store.de/index.php?apikey=27274503cb405cb1929f353fc507f09c&redirect=true&method=CreateCart&Location=de&Player=amarok&ASINs[]=B003MJQB9A&ASINs[]=B007XBRH3C" ) );
+
+    result = AmazonShoppingCart::instance()->checkoutUrl( "B003MJQB9A" );
+    QCOMPARE( result, QUrl( "http://www.mp3-music-store.de/index.php?apikey=27274503cb405cb1929f353fc507f09c&redirect=true&method=CreateCart&Location=de&Player=amarok&ASINs[]=B003MJQB9A" ) );
 
     AmazonConfig::instance()->setCountry( country );
 }

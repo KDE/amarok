@@ -186,11 +186,6 @@ private slots:
     void parsingFailed( ThreadWeaver::Job* parserJob );
 
     /**
-    * Opens the shopping cart with the cart items in the default browser.
-    */
-    void openCheckoutUrl( KJob* requestJob );
-
-    /**
     * Go backward in Amazon store.
     */
     void back();

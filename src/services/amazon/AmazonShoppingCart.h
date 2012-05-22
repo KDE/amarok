@@ -64,8 +64,9 @@ public:
 
     /**
     * Returns the URL required to check the items in the cart out.
+    ** @asin single item to check out (optional).
     */
-    QUrl checkoutUrl();
+    QUrl checkoutUrl( QString asin = QString() );
 
 private:
     AmazonShoppingCart();

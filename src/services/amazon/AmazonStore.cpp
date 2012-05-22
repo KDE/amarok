@@ -205,22 +205,12 @@ AmazonStore::checkout()
 {
     QUrl url = AmazonShoppingCart::instance()->checkoutUrl();
     debug() << url;
-    m_checkoutButton->setEnabled( false );
 
-    QTemporaryFile tempFile;
-    tempFile.setAutoRemove( false );  // file must be removed later -> parser does it
-
-    if( !tempFile.open() )
+    if( QDesktopServices::openUrl( url ) )
     {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to write temporary file. :-(" ) );
-        m_checkoutButton->setEnabled( true );
-        return;
+        m_checkoutButton->setEnabled( false );
+        AmazonShoppingCart::instance()->clear();
     }
-
-    KIO::FileCopyJob *requestJob = KIO::file_copy( url, KUrl( tempFile.fileName() ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-
-    connect( requestJob, SIGNAL( result( KJob * ) ), this, SLOT( openCheckoutUrl( KJob * ) ) );
-    requestJob->start();
 }
 
 void
@@ -245,7 +235,7 @@ AmazonStore::directCheckout()
     asin = item->asin();
 
     // create and open direct checkout url
-    QUrl url( "http://www.mp3-music-store.de/buy.php?Location=" + AmazonConfig::instance()->country() + "&Player=amarok&ASINs[]=" + asin );
+    QUrl url( AmazonShoppingCart::instance()->checkoutUrl( asin ) );
     QDesktopServices::openUrl( url );
 }
 
@@ -532,63 +522,6 @@ AmazonStore::parsingFailed( ThreadWeaver::Job* parserJob )
     Q_UNUSED( parserJob )
     Amarok::Components::logger()->shortMessage( i18n( "Error: Received an invalid reply. :-(" ) );
     m_searchWidget->searchEnded();
-}
-
-void
-AmazonStore::openCheckoutUrl( KJob* requestJob )
-{
-    // very short document, we can parse it in the main thread
-    QDomDocument responseDocument;
-
-    QString tempFileName;
-    KIO::FileCopyJob *job = dynamic_cast<KIO::FileCopyJob*>( requestJob );
-
-    if( job )
-        tempFileName = job->destUrl().toLocalFile();
-
-    QFile responseFile( tempFileName );
-
-    if( !responseFile.open( QIODevice::ReadOnly ) )
-    {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to open temporary file. :-(" ) );
-
-        m_checkoutButton->setEnabled( true );
-        requestJob->deleteLater();
-        QFile::remove( tempFileName );
-        return;
-    }
-
-    QString errorMsg;
-    int errorLine;
-    int errorColumn;
-
-    // verify it is valid
-    if( !responseDocument.setContent( &responseFile, false, &errorMsg, &errorLine, &errorColumn ) ) // parse error
-    {
-        debug() << responseDocument.toString();
-        debug() << "Parse ERROR";
-        debug() << "Message:" << errorMsg;
-        debug() << "Line:" << errorLine;
-        debug() << "Column:" << errorColumn;
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to parse temporary file. :-(" ) );
-
-        m_checkoutButton->setEnabled( true );
-        requestJob->deleteLater();
-        QFile::remove( tempFileName );
-        return;
-    }
-
-    debug() << responseDocument.toString();
-
-    // now that's the whole parser for this reply:
-    QUrl url;
-    url.setEncodedUrl( responseDocument.documentElement().elementsByTagName( QLatin1String( "purchaseurl" ) ).at( 0 ).firstChild().nodeValue().toAscii() );
-
-    QDesktopServices::openUrl( url );
-
-    requestJob->deleteLater();
-    QFile::remove( tempFileName );
-    AmazonShoppingCart::instance()->clear();
 }
 
 void
