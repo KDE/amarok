@@ -57,7 +57,7 @@ namespace Amarok
             const KCalendarSystem *cal = KGlobal::locale()->calendar();
             const QDate date = datetime.date();
             return i18nc( "monthname year", "%1 %2", cal->monthName(date),
-                          cal->yearString(date, KCalendarSystem::LongFormat) );
+                          cal->formatDate( date, KLocale::Year, KLocale::LongNumber ) );
         }
 
         //TODO "last week" = maybe within 7 days, but prolly before last Sunday
