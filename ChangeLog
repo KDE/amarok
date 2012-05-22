@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.6-Beta 1
   FEATURES:
+    * Amazon store: improved album search
     * Support for transcoding when copying tracks to USB Mass Storage devices;
       per-device transcoding preference can be saved, too.
     * Provide Repopulate and Turn off link in "Dynamic Mode Enabled" bagde.

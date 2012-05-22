@@ -242,7 +242,7 @@ AmazonStore::directCheckout()
 void
 AmazonStore::itemDoubleClicked( QModelIndex index )
 {
-    // for albums: search for the album name to get details about it
+    // for albums: search for the album ASIN to get details about it
     // for tracks: add it to the playlist
 
     int id = 0;
@@ -256,8 +256,7 @@ AmazonStore::itemDoubleClicked( QModelIndex index )
         if( !album )
             return;
 
-        QString name = m_collection->artistById( album->artistId() )->name() + " - " + album->name();
-        m_searchWidget->setSearchString( name );
+        m_searchWidget->setSearchString( "asin:" + album->asin() );
     }
     else // track
     {
@@ -366,15 +365,13 @@ AmazonStore::searchForAlbum( QModelIndex index )
         if( !track )
             return;
 
-        QString name;
+        Meta::AmazonAlbum* album;
+        album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( track->albumId() ).data() );
 
-        // don't add the artist name for compilations
-        if( !m_collection->albumById( track->albumId() )->isCompilation() )
-            name = m_collection->artistById( track->artistId() )->name() + " - ";
+        if( !album )
+            return;
 
-        name = name + m_collection->albumById( track->albumId() )->name();
-
-        m_searchWidget->setSearchString( name );
+        m_searchWidget->setSearchString( "asin:" + album->asin() );
     }
 }
 
@@ -387,18 +384,29 @@ AmazonStore::createRequestUrl( QString request )
     QString urlString;
     QString pageValue;
 
-    pageValue.setNum( m_resultpageSpinBox->value() );
     urlString += MP3_MUSIC_STORE_HOST;
     urlString += "/?apikey=";
     urlString += MP3_MUSIC_STORE_KEY;
-    urlString += "&method=Search&Player=amarok&Location=";
+    urlString += "&Player=amarok&Location=";
     urlString += AmazonConfig::instance()->country();
-    urlString += "&Text=";
-    urlString += request.toUtf8().toBase64();
-    urlString += "&Page=";
-    urlString += pageValue;
-    debug() << urlString;
 
+    if( request.startsWith( "asin:" ) ) // we need to load album details
+    {
+        urlString += "&method=LoadAlbum";
+        urlString += "&ASIN=" + request.remove( "asin:" );
+    }
+    else // normal search
+    {
+        pageValue.setNum( m_resultpageSpinBox->value() );
+
+        urlString += "&method=Search";
+        urlString += "&Text=";
+        urlString += request.toUtf8().toBase64();
+        urlString += "&Page=";
+        urlString += pageValue;
+    }
+
+    debug() << urlString;
     return QUrl( urlString );
 }
 
