@@ -105,31 +105,31 @@ public:
 
     Meta::TrackList tracks()
     {
-        if( d && d->realTrack )
-            return d->realTrack->artist()->tracks();
-        else
-            return Meta::TrackList();
+        Meta::TrackPtr realTrack = d ? d->realTrack : Meta::TrackPtr();
+        Meta::ArtistPtr artist = realTrack ? realTrack->artist() : Meta::ArtistPtr();
+        return artist ? artist->tracks() : Meta::TrackList();
     }
 
     QString name() const
     {
-        if( d && d->realTrack )
+        Meta::TrackPtr realTrack = d ? d->realTrack : Meta::TrackPtr();
+        if( realTrack )
         {
-            if ( d->realTrack->artist() )
-                return d->realTrack->artist()->name();
-            return QString();
-        } else if( d )
-            return d->cachedArtist;
-        return QString();
+            Meta::ArtistPtr artist = realTrack ? realTrack->artist() : Meta::ArtistPtr();
+            return artist ? artist->name() : QString();
+        }
+        return d ? d->cachedArtist : QString();
     }
 
     QString prettyName() const
     {
-        if( d && d->realTrack )
-            return d->realTrack->artist()->prettyName();
-        else if( d )
-            return d->cachedArtist;
-        return QString();
+        Meta::TrackPtr realTrack = d ? d->realTrack : Meta::TrackPtr();
+        if( realTrack )
+        {
+            Meta::ArtistPtr artist = realTrack ? realTrack->artist() : Meta::ArtistPtr();
+            return artist ? artist->prettyName() : QString();
+        }
+        return d ? d->cachedArtist : QString();
     }
 
     virtual bool operator==( const Meta::Artist &artist ) const
