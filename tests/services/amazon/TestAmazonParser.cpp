@@ -46,23 +46,20 @@ TestAmazonParser::testRun()
     run();
 
     // test the result
-    QMap<QString, int> *artistIDMap = m_collection->artistIDMap();
-    QVERIFY( artistIDMap );
-    QCOMPARE( artistIDMap->size(), 2 );
-    QCOMPARE( artistIDMap->key( 1 ), QString( "The Cure" ) );
-    QCOMPARE( artistIDMap->key( 2 ), QString( "Jah Cure" ) );
+    QMap<QString, int> &artistIDMap = m_collection->artistIDMap();
+    QCOMPARE( artistIDMap.size(), 2 );
+    QCOMPARE( artistIDMap.key( 1 ), QString( "The Cure" ) );
+    QCOMPARE( artistIDMap.key( 2 ), QString( "Jah Cure" ) );
 
-    QMap<QString, int> *albumIDMap = m_collection->albumIDMap();
-    QVERIFY( albumIDMap );
-    QCOMPARE( albumIDMap->size(), 23 );
-    QCOMPARE( albumIDMap->key( 1 ), QString( "B001SW8TFC" ) );
-    QCOMPARE( albumIDMap->key( 23 ), QString( "B001SVHLE8" ) );
+    QMap<QString, int> &albumIDMap = m_collection->albumIDMap();
+    QCOMPARE( albumIDMap.size(), 23 );
+    QCOMPARE( albumIDMap.key( 1 ), QString( "B001SW8TFC" ) );
+    QCOMPARE( albumIDMap.key( 23 ), QString( "B001SVHLE8" ) );
 
-    QMap<QString, int> *trackIDMap = m_collection->trackIDMap();
-    QVERIFY( trackIDMap );
-    QCOMPARE( trackIDMap->size(), 50 );
-    QCOMPARE( trackIDMap->key( 1 ), QString( "B001SW3X58" ) );
-    QCOMPARE( trackIDMap->key( 50 ), QString( "B001SQBJQE" ) );
+    QMap<QString, int> &trackIDMap = m_collection->trackIDMap();
+    QCOMPARE( trackIDMap.size(), 50 );
+    QCOMPARE( trackIDMap.key( 1 ), QString( "B001SW3X58" ) );
+    QCOMPARE( trackIDMap.key( 50 ), QString( "B001SQBJQE" ) );
 
     // let's check some tracks
     Meta::AmazonTrack* track;
@@ -138,7 +135,7 @@ TestAmazonParser::testRun()
     QCOMPARE( album->price(), QString( "" ) );
 
     m_collection->clear();
-    QCOMPARE( artistIDMap->size(), 0 );
-    QCOMPARE( albumIDMap->size(), 0 );
-    QCOMPARE( trackIDMap->size(), 0 );
+    QCOMPARE( artistIDMap.size(), 0 );
+    QCOMPARE( albumIDMap.size(), 0 );
+    QCOMPARE( trackIDMap.size(), 0 );
 }

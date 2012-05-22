@@ -132,7 +132,7 @@ AmazonParser::run()
 
         // now we can be sure that artist and album of this track are in the collection and we have their IDs
         // id, name, tracknumber, length, Url, albumId, artistID
-        trackID.setNum( m_collection->trackIDMap()->size() + 1 );
+        trackID.setNum( m_collection->trackIDMap().size() + 1 );
         playableUrl = "http://www.amazon." + AmazonConfig::instance()->country() + "/gp/dmusic/get_sample_url.html?ASIN=" + trackAsin;
         results << trackID << songTitle << "1" << "30000" << playableUrl << albumID << artistID << price << trackAsin;
 
@@ -145,7 +145,7 @@ AmazonParser::run()
         }
 
         m_collection->addTrack( trackPtr );
-        m_collection->trackIDMap()->insert( trackAsin, trackID.toInt() );
+        m_collection->trackIDMap().insert( trackAsin, trackID.toInt() );
         results.clear();
     }
 
@@ -165,16 +165,16 @@ AmazonParser::addArtistToCollection( const QString &artistName, const QString &d
     QStringList results;
     QString artistID;
 
-    if( !m_collection->artistIDMap()->contains( artistName ) )
+    if( !m_collection->artistIDMap().contains( artistName ) )
     {
-        artistID.setNum( m_collection->artistIDMap()->size() + 1 );
+        artistID.setNum( m_collection->artistIDMap().size() + 1 );
         results << artistID << artistName << description;
         m_collection->addArtist( m_factory->createArtist( results ) );
-        m_collection->artistIDMap()->insert( artistName, artistID.toInt() );
+        m_collection->artistIDMap().insert( artistName, artistID.toInt() );
     }
 
     // return artist ID
-    return m_collection->artistIDMap()->value( artistName );
+    return m_collection->artistIDMap().value( artistName );
 }
 
 int
@@ -185,21 +185,21 @@ AmazonParser::addAlbumToCollection( const QString &albumTitle, const QString &de
 
     debug() << albumAsin;
 
-    if( !m_collection->albumIDMap()->contains( albumAsin ) ) // we have a new album here
+    if( !m_collection->albumIDMap().contains( albumAsin ) ) // we have a new album here
     {
         // id, name, description, artistID
-        albumID.setNum( m_collection->albumIDMap()->size() + 1 );
+        albumID.setNum( m_collection->albumIDMap().size() + 1 );
         results << albumID << albumTitle << description << artistID << price << imgUrl << albumAsin;
 
         Meta::AlbumPtr newAlbum = m_factory->createAlbum( results );
         newAlbum->setCompilation( isCompilation );
         m_collection->addAlbum( newAlbum );
-        m_collection->albumIDMap()->insert( albumAsin, albumID.toInt() );
+        m_collection->albumIDMap().insert( albumAsin, albumID.toInt() );
     }
     else // album is known, but we might need to update it
     {
         int id;
-        id = m_collection->albumIDMap()->value( albumAsin );
+        id = m_collection->albumIDMap().value( albumAsin );
 
         if( !price.isEmpty() )
         {
@@ -213,5 +213,5 @@ AmazonParser::addAlbumToCollection( const QString &albumTitle, const QString &de
     }
 
     // return album ID
-    return m_collection->albumIDMap()->value( albumAsin );
+    return m_collection->albumIDMap().value( albumAsin );
 }

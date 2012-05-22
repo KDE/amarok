@@ -23,22 +23,22 @@ Collections::AmazonCollection::AmazonCollection( ServiceBase * service, const QS
 {
 }
 
-QMap<QString, int> *
+QMap<QString, int> &
 Collections::AmazonCollection::artistIDMap()
 {
-    return &m_artistIDMap;
+    return m_artistIDMap;
 }
 
-QMap<QString, int> *
+QMap<QString, int> &
 Collections::AmazonCollection::albumIDMap()
 {
-    return &m_albumIDMap;
+    return m_albumIDMap;
 }
 
-QMap<QString, int> *
+QMap<QString, int> &
 Collections::AmazonCollection::trackIDMap()
 {
-    return &m_trackIDMap;
+    return m_trackIDMap;
 }
 
 void

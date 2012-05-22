@@ -49,7 +49,7 @@ AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
 
     if( role == Qt::DisplayRole ) // text
     {
-        if( index.row() < m_collection->albumIDMap()->size() - m_hiddenAlbums ) // we have to take data from the album map
+        if( index.row() < m_collection->albumIDMap().size() - m_hiddenAlbums ) // we have to take data from the album map
         {
             id = index.row() + 1; // collection IDs start with 1
 
@@ -69,7 +69,7 @@ AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
 
             else if( index.column() == 1 ) // price
             {
-                id = index.row() - m_collection->albumIDMap()->size() + 1 + m_hiddenAlbums;
+                id = index.row() - m_collection->albumIDMap().size() + 1 + m_hiddenAlbums;
 
                 if( m_collection->trackById( id ) )
                     return Amazon::prettyPrice( dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() )->price() );
@@ -78,7 +78,7 @@ AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
     }
     else if( role == Qt::DecorationRole ) // icon
     {
-        if( index.row() < m_collection->albumIDMap()->size() - m_hiddenAlbums ) // album
+        if( index.row() < m_collection->albumIDMap().size() - m_hiddenAlbums ) // album
         {
             if( index.column() == 0 )
                 return KIcon( "media-optical-amarok" );
@@ -118,7 +118,7 @@ AmazonItemTreeModel::data( const QModelIndex &index, int role ) const
         }
         else // track
         {
-            id = index.row() - m_collection->albumIDMap()->size() + 1 + m_hiddenAlbums;
+            id = index.row() - m_collection->albumIDMap().size() + 1 + m_hiddenAlbums;
 
             Meta::AmazonTrack* track;
             track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() );
@@ -194,13 +194,13 @@ AmazonItemTreeModel::mimeData( const QModelIndexList &indices ) const
 
     Meta::TrackList tracks;
 
-    if( indices[0].row() < m_collection->albumIDMap()->size() - m_hiddenAlbums ) // album
+    if( indices[0].row() < m_collection->albumIDMap().size() - m_hiddenAlbums ) // album
     {
         return new QMimeData;
     }
     else // track
     {
-        int id = indices[0].row() - m_collection->albumIDMap()->size() + 1 + m_hiddenAlbums;
+        int id = indices[0].row() - m_collection->albumIDMap().size() + 1 + m_hiddenAlbums;
         tracks.append( m_collection->trackById( id ) );
     }
 
@@ -224,7 +224,7 @@ AmazonItemTreeModel::rowCount( const QModelIndex &parent ) const
     if( !m_collection )
         return 0;
 
-    return m_collection->albumIDMap()->size() + m_collection->trackIDMap()->size() - m_hiddenAlbums;
+    return m_collection->albumIDMap().size() + m_collection->trackIDMap().size() - m_hiddenAlbums;
 }
 
 int
@@ -241,7 +241,7 @@ AmazonItemTreeModel::idForIndex( const QModelIndex &index ) const
     if( isAlbum( index ) )
         result = index.row() + 1;
     else // track
-        result = index.row() - m_collection->albumIDMap()->size() + m_hiddenAlbums + 1;
+        result = index.row() - m_collection->albumIDMap().size() + m_hiddenAlbums + 1;
 
     return result;
 }
@@ -249,7 +249,7 @@ AmazonItemTreeModel::idForIndex( const QModelIndex &index ) const
 bool
 AmazonItemTreeModel::isAlbum( const QModelIndex &index ) const
 {
-    if( index.row() < m_collection->albumIDMap()->size() - m_hiddenAlbums ) // album
+    if( index.row() < m_collection->albumIDMap().size() - m_hiddenAlbums ) // album
         return true;
     else
         return false;
@@ -264,7 +264,7 @@ AmazonItemTreeModel::prettyNameByIndex( const QModelIndex &index ) const
     QString prettyName;
     int id;
 
-    if( index.row() < m_collection->albumIDMap()->size() - m_hiddenAlbums ) // album
+    if( index.row() < m_collection->albumIDMap().size() - m_hiddenAlbums ) // album
     {
         id = index.row() + 1; // collection IDs start with 1
 
@@ -274,7 +274,7 @@ AmazonItemTreeModel::prettyNameByIndex( const QModelIndex &index ) const
     }
     else // track
     {
-        id = index.row() - m_collection->albumIDMap()->size() + 1 + m_hiddenAlbums;
+        id = index.row() - m_collection->albumIDMap().size() + 1 + m_hiddenAlbums;
 
         int artistId = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() )->artistId();
         prettyName = m_collection->artistById( artistId )->name();
@@ -297,7 +297,7 @@ AmazonItemTreeModel::collectionChanged()
     int i = 1, result = 0;
 
     // let's count empty prices
-    while( i <= m_collection->albumIDMap()->size() )
+    while( i <= m_collection->albumIDMap().size() )
     {
         if( ( dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( i ).data() )->price() ).isEmpty() ) // no price set
             result++;
