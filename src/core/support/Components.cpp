@@ -29,6 +29,7 @@ public:
         , applicationController( 0 )
         , collectionLocationDelegate( 0 )
         , transcodingController( 0 )
+        , statSyncingController( 0 )
     {}
 
     CollectionManager *collectionManager;
@@ -38,6 +39,7 @@ public:
     Amarok::ApplicationController *applicationController;
     Collections::CollectionLocationDelegate *collectionLocationDelegate;
     Transcoding::Controller *transcodingController;
+    StatSyncing::Controller *statSyncingController;
 };
 
 //using a static variable is ok in this case as ComponentsPrivate does nothing on destruction
@@ -74,3 +76,4 @@ COMPONENT_ACCESSORS( Collections::CollectionLocationDelegate*, collectionLocatio
 
 COMPONENT_ACCESSORS( Transcoding::Controller*, transcodingController, setTranscodingController )
 
+COMPONENT_ACCESSORS( StatSyncing::Controller*, statSyncingController, setStatSyncingController )

@@ -24,6 +24,7 @@
 #include "MainWindow.h"
 
 #include "ActionClasses.h"
+#include "core/support/Components.h"
 #include "EngineController.h" //for actions in ctor
 #include "KNotificationBackend.h"
 #include "PaletteHandler.h"
@@ -64,6 +65,7 @@
 #include "services/scriptable/ScriptableService.h"
 #include "toolbar/SlimToolbar.h"
 #include "toolbar/MainToolbar.h"
+#include "statsyncing/Controller.h"
 #include "widgets/Osd.h"
 
 #include <KAction>          //m_actionCollection
@@ -799,6 +801,10 @@ MainWindow::createActions()
     connect ( action, SIGNAL( triggered( bool ) ), CollectionManager::instance(), SLOT( checkCollectionChanges() ) );
     ac->addAction( "update_collection", action );
 
+    action =  new KAction( KIcon( "amarok_playcount" ), i18n( "Synchronize Statistics..." ), this );
+    ac->addAction( "synchronize_statistics", action );
+    connect( action, SIGNAL(triggered(bool)), Amarok::Components::statSyncingController(), SLOT(synchronize()) );
+
     action = new KAction( this );
     ac->addAction( "prev", action );
     action->setIcon( KIcon("media-skip-backward-amarok") );
@@ -1060,6 +1066,7 @@ MainWindow::createMenus()
 #endif // DEBUG_BUILD_TYPE
     m_toolsMenu.data()->addSeparator();
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("update_collection") );
+    m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("synchronize_statistics") );
     //END Tools menu
 
     //BEGIN Settings menu

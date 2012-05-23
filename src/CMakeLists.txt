@@ -30,6 +30,7 @@ if( QTSCRIPTQTBINDINGS_FOUND )
     add_subdirectory( scripts )
 endif( QTSCRIPTQTBINDINGS_FOUND )
 add_subdirectory( aboutdialog/libattica-ocsclient )
+add_subdirectory( statsyncing )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
 
@@ -889,6 +890,7 @@ target_link_libraries(amaroklib
     amarokcore
     amarokocsclient
     amarok-transcoding
+    amarok-statsyncing
 )
 
 if( TAGLIB_FOUND )
