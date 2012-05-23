@@ -17,6 +17,11 @@
 #include "Controller.h"
 
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "statsyncing/collection/CollectionTrackDelegateProvider.h"
+#include "statsyncing/jobs/MatchTracksJob.h"
+
+#include <ThreadWeaver/Weaver>
 
 using namespace StatSyncing;
 
@@ -27,10 +32,33 @@ Controller::Controller( QObject* parent )
 
 Controller::~Controller()
 {
+    qDeleteAll( m_providers );
+    m_providers.clear();
 }
 
 void
 Controller::synchronize()
 {
     DEBUG_BLOCK
+
+    if( m_providers.isEmpty() ) // TODO: this is way too much naive
+    {
+        QHash<Collections::Collection *, CollectionManager::CollectionStatus> collHash =
+            CollectionManager::instance()->collections();
+        QHashIterator<Collections::Collection *, CollectionManager::CollectionStatus> it( collHash );
+        while( it.hasNext() )
+        {
+            it.next();
+            if( it.value() == CollectionManager::CollectionEnabled )
+            {
+                TrackDelegateProvider *provider = new CollectionTrackDelegateProvider( it.key() );
+                debug() << "Adding provider" << provider->prettyName() << "with id" << provider->id();
+                m_providers.append( provider );
+            }
+        }
+    }
+
+    MatchTracksJob *job = new MatchTracksJob( m_providers );
+    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+    ThreadWeaver::Weaver::instance()->enqueue( job );
 }

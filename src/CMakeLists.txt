@@ -30,7 +30,6 @@ if( QTSCRIPTQTBINDINGS_FOUND )
     add_subdirectory( scripts )
 endif( QTSCRIPTQTBINDINGS_FOUND )
 add_subdirectory( aboutdialog/libattica-ocsclient )
-add_subdirectory( statsyncing )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
 
@@ -580,6 +579,18 @@ if( TAGLIB_FOUND )
 endif( TAGLIB_FOUND )
 
 #####################################################################
+# STATISTICS SYNCHRONIZATION
+#####################################################################
+set( statsyncing_SRCS
+    statsyncing/Controller.cpp
+    statsyncing/TrackDelegate.cpp
+    statsyncing/TrackDelegateProvider.cpp
+    statsyncing/collection/CollectionTrackDelegate.cpp
+    statsyncing/collection/CollectionTrackDelegateProvider.cpp
+    statsyncing/jobs/MatchTracksJob.cpp
+)
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -614,6 +625,7 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
     ${shared_SRCS}
+    ${statsyncing_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
@@ -890,7 +902,6 @@ target_link_libraries(amaroklib
     amarokcore
     amarokocsclient
     amarok-transcoding
-    amarok-statsyncing
 )
 
 if( TAGLIB_FOUND )

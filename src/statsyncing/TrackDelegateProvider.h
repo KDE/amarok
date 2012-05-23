@@ -27,11 +27,10 @@
 namespace StatSyncing
 {
     /**
-     * Something that can provide tracks for statistics syncronization. It can be backed
+     * A class that can provide tracks for statistics synchronization. It can be backed
      * by local Amarok collections or by online services such as Last.fm.
      *
-     * All methods from this class must be (at least) reentrant. This class may be
-     * created and used in a non-gui thread without its event loop.
+     * Instances of inheriters are guaranteed to be created in the main thread.
      */
     class TrackDelegateProvider
     {
@@ -40,32 +39,45 @@ namespace StatSyncing
             virtual ~TrackDelegateProvider();
 
             /**
-            * Unique identifier for this collection; may be used as a key to store
-            * configuration; must be thread-safe
-            */
+             * Unique identifier for this collection; may be used as a key to store
+             * configuration; must be thread-safe
+             */
             virtual QString id() const = 0;
 
             /**
-            * User-visible name of the provider; must be thread-safe
-            */
+             * User-visible name of the provider; must be thread-safe
+             */
             virtual QString prettyName() const = 0;
 
             /**
-            * Icon of this provider; must be thread-safe
-            */
+             * Icon of this provider; must be thread-safe
+             */
             virtual KIcon icon() const = 0;
 
             /**
-            * Return a set of (track) artist names that appear in this provider. This method
-            * is allowed block for a longer time.
-            */
-            virtual QSet<QString> artistNames() = 0;
+             * Return binary OR of Meta::val* types that this provider knows about its
+             * tracks. Must include at least: Meta::valTitle, Meta::valArtist and
+             * Meta::valAlbum. Optional fields: Meta::valComposer, Meta::valYear
+             * Meta::valTrackNr and Meta::valDiscNr
+             */
+            virtual qint64 reliableTrackMetaData() const = 0;
 
             /**
-            * Return a list of track delegates from (track) artist @param artistName that
-            * appear in this provider. This method is allowed to block for a longer time.
-            */
-            virtual QList<TrackDelegatePtr> artistTracks( const QString artistName ) = 0;
+             * Return a set of lowercased (all characters lowercased, not just ASCII)
+             * track artist names that appear in this provider. This method is guaranteed
+             * to be called in non-main thread and is allowed block for a longer time; it
+             * must be implemented in a reentrant manner.
+             */
+            virtual QSet<QString> artists() = 0;
+
+            /**
+             * Return a list of track delegates from (track) artist @param artistName that
+             * appear in this provider; the matching should be performed case-isensitively
+             * but should match the whole string, not just substring. This method is
+             * guaranteed to be called in non-main thread and is allowed block for
+             * a longer time; it must be implemented in a reentrant manner.
+             */
+            virtual TrackDelegateList artistTracks( const QString &artistName ) = 0;
 
         private:
             Q_DISABLE_COPY(TrackDelegateProvider)

@@ -16,6 +16,8 @@
 
 #include "TrackDelegate.h"
 
+#include "MetaValues.h"
+
 using namespace StatSyncing;
 
 TrackDelegate::TrackDelegate()
@@ -27,35 +29,66 @@ TrackDelegate::~TrackDelegate()
 {
 }
 
-bool
-TrackDelegate::operator==( const StatSyncing::TrackDelegate &other ) const
+QString
+TrackDelegate::composer() const
 {
-    if( name() != other.name() )
+    return QString();
+}
+
+int
+TrackDelegate::year() const
+{
+    return 0;
+}
+
+int
+TrackDelegate::trackNumber() const
+{
+    return 0;
+}
+
+int
+TrackDelegate::discNumber() const
+{
+    return 0;
+}
+
+bool TrackDelegate::equals( const TrackDelegate &other, qint64 fieldMask ) const
+{
+    if( fieldMask & Meta::valTitle && name() != other.name() )
         return false;
-    if( album() != other.album() )
+    if( fieldMask & Meta::valAlbum && album() != other.album() )
         return false;
-    if( artist() != other.artist() )
+    if( fieldMask & Meta::valArtist && artist() != other.artist() )
         return false;
-    if( composer() != other.composer() && !composer().isEmpty() && !other.composer().isEmpty() )
+    if( fieldMask & Meta::valComposer && composer() != other.composer() )
         return false;
-    if( year() != other.year() && year() > 0 && other.year() > 0 )
+    if( fieldMask & Meta::valYear && year() != other.year() )
         return false;
-    if( trackNumber() != other.trackNumber() && trackNumber() > 0 && other.trackNumber() > 0 )
+    if( fieldMask & Meta::valTrackNr && trackNumber() != other.trackNumber() )
         return false;
-    if( discNumber() != other.discNumber() && discNumber() > 0 && other.discNumber() > 0 )
+    if( fieldMask & Meta::valDiscNr && discNumber() != other.discNumber() )
         return false;
     return true;
 }
 
 bool
-TrackDelegate::operator<( const StatSyncing::TrackDelegate &other ) const
+TrackDelegate::lessThan( const TrackDelegate &other, qint64 fieldMask ) const
 {
-    // precedence: artist > album > name
-    if( artist() != other.artist() )
+    // artist > year > album > discNumber > trackNumber > composer > title
+    if( fieldMask & Meta::valArtist && artist() != other.artist() )
         return artist() < other.artist();
-    if( album() != other.album() )
+    if( fieldMask & Meta::valYear && year() != other.year() )
+        return year() < other.year();
+    if( fieldMask & Meta::valAlbum && album() != other.album() )
         return album() < other.album();
-    if( name() != other.name() )
+    if( fieldMask & Meta::valDiscNr && discNumber() != other.discNumber() )
+        return discNumber() < other.discNumber();
+    if( fieldMask & Meta::valTrackNr && trackNumber() != other.trackNumber() )
+        return trackNumber() < other.trackNumber();
+    if( fieldMask & Meta::valComposer && composer() != other.composer() )
+        return composer() < other.composer();
+    if( fieldMask & Meta::valTitle && name() != other.name() )
         return name() < other.name();
     return false;
 }

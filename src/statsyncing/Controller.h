@@ -17,7 +17,8 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include "statsyncing/amarok_statsyncing_export.h"
+#include "amarok_export.h"
+#include "statsyncing/TrackDelegateProvider.h"
 
 #include <QObject>
 
@@ -26,7 +27,7 @@ namespace StatSyncing
     /**
      * A singleton class that controls statistics synchronization and related tasks.
      */
-    class AMAROK_STATSYNCING_EXPORT Controller : public QObject
+    class AMAROK_EXPORT Controller : public QObject
     {
         Q_OBJECT
 
@@ -43,6 +44,8 @@ namespace StatSyncing
 
         private:
             Q_DISABLE_COPY(Controller)
+
+            QList<TrackDelegateProvider *> m_providers;
     };
 
 } // namespace StatSyncing

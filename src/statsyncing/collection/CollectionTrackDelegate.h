@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Téo Mrnjavac <teo@kde.org>                                        *
- * Copyright (c) 2010 Matěj Laitl <matej@laitl.cz>                                      *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,22 +14,42 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_STATSYNCING_EXPORT_H
-#define AMAROK_STATSYNCING_EXPORT_H
+#ifndef COLLECTIONTRACKDELEGATE_H
+#define COLLECTIONTRACKDELEGATE_H
 
-/* needed for KDE_EXPORT and KDE_IMPORT macros */
-#include <kdemacros.h>
+#include "core/meta/Meta.h"
+#include "statsyncing/TrackDelegate.h"
 
-#ifndef AMAROK_STATSYNCING_EXPORT
-# ifdef MAKE_AMAROK_STATSYNCING_LIB
-   /* We are building this library */
-#  define AMAROK_STATSYNCING_EXPORT KDE_EXPORT
+namespace StatSyncing
+{
 
-# else
-   /* We are using this library */
-#  define AMAROK_STATSYNCING_EXPORT KDE_IMPORT
+    class CollectionTrackDelegate : public TrackDelegate
+    {
+        public:
+            explicit CollectionTrackDelegate( Meta::TrackPtr track );
+            virtual ~CollectionTrackDelegate();
 
-# endif // MAKE_STATSYNCING_LIB
-#endif // AMAROK_EXPORT
+            virtual QString name() const;
+            virtual QString album() const;
+            virtual QString artist() const;
+            virtual QString composer() const;
+            virtual int year() const;
+            virtual int trackNumber() const;
+            virtual int discNumber() const;
 
-#endif //AMAROK_STATSYNCING_EXPORT_H
+            virtual QSet<QString> labels() const;
+            virtual int rating() const;
+            virtual QDateTime firstPlayed() const;
+            virtual QDateTime lastPlayed() const;
+            virtual int playcount() const;
+
+        private:
+            Q_DISABLE_COPY(CollectionTrackDelegate)
+
+            Meta::TrackPtr m_track;
+            Meta::StatisticsPtr m_trackStats;
+    };
+
+} // namespace StatSyncing
+
+#endif // COLLECTIONTRACKDELEGATE_H

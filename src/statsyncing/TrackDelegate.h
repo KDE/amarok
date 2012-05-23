@@ -17,6 +17,8 @@
 #ifndef TRACKDELEGATE_H
 #define TRACKDELEGATE_H
 
+#include "amarok_export.h"
+
 #include <KSharedPtr>
 
 #include <QDateTime>
@@ -55,45 +57,40 @@ namespace StatSyncing
             virtual QString artist() const = 0;
 
             /**
-             * Get composer name; empty composer means it is unknown and as such compares
-             * as equal to all other composers
+             * Get composer name; default implementation returns empty string that also
+             * serves as a value for 'unknown'
              */
-            virtual QString composer() const = 0;
+            virtual QString composer() const;
 
             /**
-             * Get track release year, 0 if it is unknown; if year <= 0, it compares as
-             * equal to all other years
+             * Get track release year, default implementation returns value of 0 that also
+             * serves as a value for 'unknown'
              */
-            virtual int year() const = 0;
+            virtual int year() const;
 
             /**
-             * Get track number within its disc, if trackNumber <= 0, it compares as
-             * equal to all other trackNumbers
+             * Get track number within its disc, default implementation returns value of 0
+             * that also serves as a value for 'unknown'
              */
-            virtual int trackNumber() const = 0;
+            virtual int trackNumber() const;
 
             /**
-             * Get disc number, 0 if it is unknown; if discNumber <= 0, it compares as
-             * equal to all other discNumbers
+             * Get disc number, default implementation returns value of 0 that also serves
+             * as a value for 'unknown'
              */
-            virtual int discNumber() const = 0;
+            virtual int discNumber() const;
 
             /**
-             * Return true if 2 tracks delegated by this and @param other are similar
-             * enough to be considered equal. Takes special values of composer, year,
-             * track and disc number into account.
+             * Return true if 2 tracks delegated by this and @param other are equal based
+             * on field mask @param fieldMask (binary OR of MetaValue.h values)
              */
-            bool operator==( const TrackDelegate &other ) const;
+            bool equals( const TrackDelegate &other, qint64 fieldMask ) const;
 
             /**
-             * Return true if this track delegate is considered smaller than @param other.
-             * Beware that this used only name, album and artist keys to do the comparison.
-             * As a result following implication does _not_ hold:
-             * !(A < B) && !(B < A)  =>   A == B
-             * while the other one still holds:
-             * A == B  =>  !(A < B) && !(B < A)
+             * Return true if this track delegate is considered smaller than @param other
+             * based on field mask @param fieldMask (binary OR of MetaValue.h values)
              */
-            bool operator<( const TrackDelegate &other ) const;
+            bool lessThan( const TrackDelegate &other, qint64 fieldMask ) const;
 
             /**
              * Get user-assigned track labels or empty set if there are none
@@ -102,7 +99,7 @@ namespace StatSyncing
 
             /**
              * Get user-assigned rating on scale from 0 to 10; 0 means the track is not
-             * rated - return this value if you don't know the rating.
+             * rated - return this value if you don't know the rating
              */
             virtual int rating() const = 0;
 
@@ -128,6 +125,21 @@ namespace StatSyncing
     };
 
     typedef KSharedPtr<TrackDelegate> TrackDelegatePtr;
+    typedef QList<TrackDelegatePtr> TrackDelegateList;
+
+    /**
+     * Comparison function that compares track delegate pointer by pointed value.
+     * Useful if you want to semantically sort TrackDelegateList using qSort()
+     *
+     * @template param ControllingClass: class name that implements static
+     *      ::comparisonFields() method that returns binary OR of Meta::val* fields
+     *      (as qint64) that should be used when comparing tracks.
+     */
+    template <class ControllingClass>
+    bool trackDelegatePtrLessThan( const TrackDelegatePtr &first, const TrackDelegatePtr &second )
+    {
+        return first->lessThan( *second, ControllingClass::comparisonFields() );
+    }
 
 } // namespace StatSyncing
 
