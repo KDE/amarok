@@ -23,16 +23,6 @@
 #include "UpnpMeta.h"
 #include "UpnpCollectionBase.h"
 
-static QString yearForDate( const QString &upnpDate )
-{
-    KDateTime dateTime = KDateTime::fromString( upnpDate );
-    int year = dateTime.date().year();
-    if( !dateTime.isValid() ) {
-        year = 0;
-    }
-    return QString::number( year );
-}
-
 // TODO : move this to CollectionBase
 static qint64 duration( QString duration ) {
     if( duration.isEmpty() )
