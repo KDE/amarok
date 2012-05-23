@@ -54,7 +54,6 @@
 #include "dbus/mpris1/TrackListHandler.h"
 #include "dbus/mpris2/Mpris2.h"
 #include "dialogs/EqualizerDialog.h"
-#include "firstruntutorial/FirstRunTutorial.h"
 #include "network/NetworkAccessManagerProxy.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
@@ -506,7 +505,7 @@ App::runUnitTests( const QStringList options, bool _stdout )
     PERF_LOG( "Running Unit Tests" )
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
-    TestDirectoryLoader        *test015 = new TestDirectoryLoader( options, logPath );
+    TestDirectoryLoader *test015 = new TestDirectoryLoader( options, logPath );
 
     PERF_LOG( "Done Running Unit Tests" )
     Q_UNUSED( test015 )
@@ -521,7 +520,8 @@ App::continueInit()
 
     PERF_LOG( "Begin App::continueInit" )
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-    const bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "queue" )
+    const bool restoreSession = args->count() == 0 || args->isSet( "append" )
+                                || args->isSet( "queue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
@@ -545,9 +545,8 @@ App::continueInit()
     m_mainWindow = new MainWindow();
     PERF_LOG( "Done creating MainWindow" )
 
-    if ( AmarokConfig::showTrayIcon() ) {
+    if( AmarokConfig::showTrayIcon() )
         m_tray = new Amarok::TrayIcon( mainWindow() );
-    }
 
     PERF_LOG( "Creating DBus handlers" )
     new Mpris1::RootHandler();
@@ -602,19 +601,6 @@ App::continueInit()
     }
 
     PERF_LOG( "App init done" )
-
-    // NOTE: First Run Tutorial disabled for 2.1-beta1 release (too buggy / unfinished)
-#if 0
-    const bool firstruntut = config.readEntry( "FirstRunTutorial", true );
-    debug() << "Checking whether to run first run tutorial..." << firstruntut;
-    if( firstruntut )
-    {
-        config.writeEntry( "FirstRunTutorial", false );
-        debug() << "Starting first run tutorial";
-        FirstRunTutorial *frt = new FirstRunTutorial( mainWindow() );
-        QTimer::singleShot( 1000, frt, SLOT( initOverlay() ) );
-    }
-#endif
 
 #ifdef NO_MYSQL_EMBEDDED
     bool useServer = true;

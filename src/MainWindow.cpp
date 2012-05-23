@@ -140,13 +140,8 @@ MainWindow::MainWindow()
     The::pluginManager();
     PERF_LOG( "Started Plugin Manager instance" )
 
-    // Sets caption and icon correctly (needed e.g. for GNOME)
-//     kapp->setTopWidget( this );
-    PERF_LOG( "Set Top Widget" )
     createActions();
     PERF_LOG( "Created actions" )
-
-    //new K3bExporter();
 
     The::paletteHandler()->setPalette( palette() );
     setPlainCaption( i18n( AMAROK_CAPTION ) );
@@ -245,7 +240,8 @@ MainWindow::init()
 
     PERF_LOG( "Loaded default contextScene" )
 
-    setDockOptions( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks | QMainWindow::VerticalTabs );
+    setDockOptions( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks
+                    | QMainWindow::AnimatedDocks | QMainWindow::VerticalTabs );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
@@ -257,8 +253,10 @@ MainWindow::init()
     {
         Debug::Block block( "Creating browsers. Please report long start times!" );
 
+        //TODO: parent these browsers?
         PERF_LOG( "Creating CollectionWidget" )
         m_collectionBrowser = new CollectionWidget( "collections", 0 );
+        //TODO: rename "Music Collections
         m_collectionBrowser->setPrettyName( i18n( "Local Music" ) );
         m_collectionBrowser->setIcon( KIcon( "collection-amarok" ) );
         m_collectionBrowser->setShortDescription( i18n( "Local sources of content" ) );
@@ -267,12 +265,12 @@ MainWindow::init()
 
 
         PERF_LOG( "Creating ServiceBrowser" )
-        ServiceBrowser *internetContentServiceBrowser = ServiceBrowser::instance();
-        internetContentServiceBrowser->setParent( 0 );
-        internetContentServiceBrowser->setPrettyName( i18n( "Internet" ) );
-        internetContentServiceBrowser->setIcon( KIcon( "applications-internet" ) );
-        internetContentServiceBrowser->setShortDescription( i18n( "Online sources of content" ) );
-        m_browserDock.data()->list()->addCategory( internetContentServiceBrowser );
+        ServiceBrowser *serviceBrowser = ServiceBrowser::instance();
+        serviceBrowser->setParent( 0 );
+        serviceBrowser->setPrettyName( i18n( "Internet" ) );
+        serviceBrowser->setIcon( KIcon( "applications-internet" ) );
+        serviceBrowser->setShortDescription( i18n( "Online sources of content" ) );
+        m_browserDock.data()->list()->addCategory( serviceBrowser );
         PERF_LOG( "Created ServiceBrowser" )
 
         PERF_LOG( "Creating PlaylistBrowser" )
@@ -284,14 +282,14 @@ MainWindow::init()
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
         PERF_LOG( "Creating FileBrowser" )
-        FileBrowser * fileBrowserMkII = new FileBrowser( "files", 0 );
-        fileBrowserMkII->setPrettyName( i18n("Files") );
-        fileBrowserMkII->setIcon( KIcon( "folder-amarok" ) );
-        fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );
-        m_browserDock.data()->list()->addCategory( fileBrowserMkII );
+        FileBrowser *fileBrowser = new FileBrowser( "files", 0 );
+        fileBrowser->setPrettyName( i18n("Files") );
+        fileBrowser->setIcon( KIcon( "folder-amarok" ) );
+        fileBrowser->setShortDescription( i18n( "Browse local hard drive for content" ) );
+        m_browserDock.data()->list()->addCategory( fileBrowser );
         PERF_LOG( "Created FileBrowser" )
 
-        internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
+        serviceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )
 
         PERF_LOG( "Creating Podcast Category" )

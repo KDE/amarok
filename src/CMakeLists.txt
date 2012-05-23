@@ -701,8 +701,6 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/MimeTypeFilterProxyModel.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/FileView.cpp
-    firstruntutorial/FirstRunTutorial.cpp
-    firstruntutorial/FirstRunTutorialPage.cpp
     musicbrainz/MusicBrainzFinder.cpp
     musicbrainz/MusicBrainzTags.cpp
     musicbrainz/MusicBrainzXmlParser.cpp
