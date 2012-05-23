@@ -156,23 +156,28 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     DatabaseUpdater updater( this );
     if( updater.needsUpdate() )
     {
-        KDialog dialog( 0, Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint );
-        QLabel label( i18n( "Updating Amarok database schema. Please don't terminate "
-            "Amarok now as it may result in database corruption." ) );
-        label.setWordWrap( true );
-        dialog.setMainWidget( &label );
-        dialog.setCaption( i18n( "Updating Amarok database schema" ) );
-        dialog.setButtons( KDialog::None );
-        dialog.setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-        dialog.show();
-        dialog.raise();
-        // otherwise the splash screen doesn't load image and this dialog is not shown:
-        kapp->processEvents();
+        if( updater.schemaExists() ) // this is an update
+        {
+            KDialog dialog( 0, Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint );
+            QLabel label( i18n( "Updating Amarok database schema. Please don't terminate "
+                "Amarok now as it may result in database corruption." ) );
+            label.setWordWrap( true );
+            dialog.setMainWidget( &label );
+            dialog.setCaption( i18n( "Updating Amarok database schema" ) );
+            dialog.setButtons( KDialog::None );
+            dialog.setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+            dialog.show();
+            dialog.raise();
+            // otherwise the splash screen doesn't load image and this dialog is not shown:
+            kapp->processEvents();
 
-        updater.update();
+            updater.update();
 
-        dialog.hide();
-        kapp->processEvents();
+            dialog.hide();
+            kapp->processEvents();
+        }
+        else // this is new schema creation
+            updater.update();
     }
 
     //perform a quick check of the database

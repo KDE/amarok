@@ -37,10 +37,20 @@ public:
 
     static int expectedDatabaseVersion();
 
+    /**
+     * Return true if the current database schema is outdated or non-existent and needs to
+     * be updated using to update() method.
+     */
     bool needsUpdate() const;
 
     /**
-     * Updates the database to DB_VERSION as defined in DatabaseUpdater.cpp
+     * Return true if database schema already exists in the database. When this method
+     * returns false, needsUpdate() returns true.
+     */
+    bool schemaExists() const;
+
+    /**
+     * Updates the database to @see expectedDatabaseVersion()
      * @returns true if a update was performed, false otherwise
      */
     bool update();

@@ -57,6 +57,12 @@ DatabaseUpdater::needsUpdate() const
 }
 
 bool
+DatabaseUpdater::schemaExists() const
+{
+    return adminValue( "DB_VERSION" ) != 0;
+}
+
+bool
 DatabaseUpdater::update()
 {
     DEBUG_BLOCK
