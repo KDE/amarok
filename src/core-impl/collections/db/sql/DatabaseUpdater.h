@@ -39,8 +39,9 @@ public:
 
     bool needsUpdate() const;
 
-    /** Updates the database to adminValue( "DB_VERSION" ).
-     *  @returns true if a update was performed.
+    /**
+     * Updates the database to DB_VERSION as defined in DatabaseUpdater.cpp
+     * @returns true if a update was performed, false otherwise
      */
     bool update();
 

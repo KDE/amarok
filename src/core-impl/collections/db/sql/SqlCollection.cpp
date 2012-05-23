@@ -31,8 +31,9 @@
 #include "SqlQueryMaker.h"
 #include "SqlScanResultProcessor.h"
 #include "SvgHandler.h"
-
 #include "MainWindow.h"
+
+#include <KApplication>
 #include <KMessageBox>
 
 /*
@@ -149,11 +150,30 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     qRegisterMetaType<TrackUrls>( "TrackUrls" );
     qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
 
-    // setUpdater runs the update function; this must be run *before* MountPointManager
+    // update database to current schema version; this must be run *before* MountPointManager
     // is initialized or its handlers may try to insert
     // into the database before it's created/updated!
     DatabaseUpdater updater( this );
-    updater.update();
+    if( updater.needsUpdate() )
+    {
+        KDialog dialog( 0, Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint );
+        QLabel label( i18n( "Updating Amarok database schema. Please don't terminate "
+            "Amarok now as it may result in database corruption." ) );
+        label.setWordWrap( true );
+        dialog.setMainWidget( &label );
+        dialog.setCaption( i18n( "Updating Amarok database schema" ) );
+        dialog.setButtons( KDialog::None );
+        dialog.setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+        dialog.show();
+        dialog.raise();
+        // otherwise the splash screen doesn't load image and this dialog is not shown:
+        kapp->processEvents();
+
+        updater.update();
+
+        dialog.hide();
+        kapp->processEvents();
+    }
 
     //perform a quick check of the database
     updater.cleanupDatabase();
