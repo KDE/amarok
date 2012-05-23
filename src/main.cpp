@@ -249,12 +249,11 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
     //Donors:
+    //Last update: 2011/12/08, post Rocktober 2011
     ocsData.addDonor( "drew826", KAboutPerson( ki18n( "Andrew Browning" ) ) );
     ocsData.addDonor( QString(), KAboutPerson( ki18n( "David Roth" ) ) );
     ocsData.addDonor( QString(), KAboutPerson( ki18n( "Dr. Tilmann Bubeck" ) ) );
     ocsData.addDonor( "valoriez", KAboutPerson( ki18n( "Valorie Zimmerman" ) ) );
-
-    //Last update: 2011/12/08, post Rocktober 2011
 
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
@@ -265,7 +264,9 @@ int main( int argc, char *argv[] )
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
     KUniqueApplication::StartFlag startFlag;
-    startFlag = args->isSet( "multipleinstances" ) ? KUniqueApplication::NonUniqueInstance : KUniqueApplication::StartFlag( 0 );
+    startFlag = args->isSet( "multipleinstances" )
+                ? KUniqueApplication::NonUniqueInstance
+                : KUniqueApplication::StartFlag( 0 );
 
     const bool debugColorsEnabled = !args->isSet( "coloroff" );
     const bool debugEnabled = args->isSet( "debug" );
