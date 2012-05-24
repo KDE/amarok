@@ -43,26 +43,26 @@ namespace Amarok
 {
     namespace Components
     {
-        AMAROK_CORE_EXPORT CollectionManager* collectionManager();
-        AMAROK_CORE_EXPORT CollectionManager* setCollectionManager( CollectionManager *mgr );
+        AMAROK_CORE_EXPORT CollectionManager *collectionManager();
+        AMAROK_CORE_EXPORT CollectionManager *setCollectionManager( CollectionManager *mgr );
 
-        AMAROK_CORE_EXPORT EngineController* engineController();
-        AMAROK_CORE_EXPORT EngineController* setEngineController( EngineController *controller );
+        AMAROK_CORE_EXPORT EngineController *engineController();
+        AMAROK_CORE_EXPORT EngineController *setEngineController( EngineController *controller );
 
-        AMAROK_CORE_EXPORT SqlStorage* sqlStorage();
-        AMAROK_CORE_EXPORT SqlStorage* setSqlStorage( SqlStorage *storage );
+        AMAROK_CORE_EXPORT SqlStorage *sqlStorage();
+        AMAROK_CORE_EXPORT SqlStorage *setSqlStorage( SqlStorage *storage );
 
-        AMAROK_CORE_EXPORT Amarok::Logger* logger();
-        AMAROK_CORE_EXPORT Amarok::Logger* setLogger( Amarok::Logger *logger );
+        AMAROK_CORE_EXPORT Amarok::Logger *logger();
+        AMAROK_CORE_EXPORT Amarok::Logger *setLogger( Amarok::Logger *logger );
 
-        AMAROK_CORE_EXPORT Amarok::ApplicationController* applicationController();
-        AMAROK_CORE_EXPORT Amarok::ApplicationController* setApplicationController( Amarok::ApplicationController *controller );
+        AMAROK_CORE_EXPORT Amarok::ApplicationController *applicationController();
+        AMAROK_CORE_EXPORT Amarok::ApplicationController *setApplicationController( Amarok::ApplicationController *controller );
 
-        AMAROK_CORE_EXPORT Collections::CollectionLocationDelegate* collectionLocationDelegate();
-        AMAROK_CORE_EXPORT Collections::CollectionLocationDelegate* setCollectionLocationDelegate( Collections::CollectionLocationDelegate *delegate );
+        AMAROK_CORE_EXPORT Collections::CollectionLocationDelegate *collectionLocationDelegate();
+        AMAROK_CORE_EXPORT Collections::CollectionLocationDelegate *setCollectionLocationDelegate( Collections::CollectionLocationDelegate *delegate );
 
-        AMAROK_CORE_EXPORT Transcoding::Controller* transcodingController();
-        AMAROK_CORE_EXPORT Transcoding::Controller* setTranscodingController( Transcoding::Controller *controller );
+        AMAROK_CORE_EXPORT Transcoding::Controller *transcodingController();
+        AMAROK_CORE_EXPORT Transcoding::Controller *setTranscodingController( Transcoding::Controller *controller );
     }
 }
 
