@@ -49,6 +49,7 @@ VERSION 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * Amazon store: try to show a sensible default in the country selection.
     * Only offer delete action when Shift key is pressed in Collection context menu.
     * Only offer move action when Shift key is pressed in Collection context menu.
     * Remove context view video applet. Unmaintained and broken. (BR 242793)

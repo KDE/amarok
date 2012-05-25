@@ -27,7 +27,6 @@
 #include <kgenericfactory.h>
 #include <QVBoxLayout>
 
-
 K_PLUGIN_FACTORY( AmazonSettingsFactory, registerPlugin<AmazonSettingsModule>(); )
 K_EXPORT_PLUGIN( AmazonSettingsFactory( "kcm_amarok_service_amazonstore" ) )
 
@@ -104,10 +103,26 @@ AmazonSettingsModule::load()
         index = AMAZON_COM;
     else if ( text == QLatin1String( "none" ) )
         index = AMAZON_NONE;
-    // no match -> index is still -1
+    else // try to guess
+    {
+        KLocale locale( "amarok" );
+        QString guess = locale.country();
+
+        if( guess == QLatin1String( "fr" ) )
+            index = AMAZON_FR;
+        else if ( guess == QLatin1String( "de" ) || guess == QLatin1String( "at" ) || guess == QLatin1String( "ch" ) )
+            index = AMAZON_DE;
+        else if ( guess == QLatin1String( "jp" ) )
+            index = AMAZON_JP;
+        else if ( guess == QLatin1String( "gb" ) )
+            index = AMAZON_UK;
+        else if ( guess == QLatin1String( "us" ) )
+            index = AMAZON_COM;
+        else
+            index = AMAZON_NONE;
+    }
 
     m_configDialog->countrySelectionComboBox->setCurrentIndex( index );
-
     KCModule::load();
 }
 
