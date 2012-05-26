@@ -16,7 +16,9 @@
 
 #include "Controller.h"
 
+#include "core/interfaces/Logger.h"
 #include "core/support/Debug.h"
+#include "core/support/Components.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "statsyncing/collection/CollectionTrackDelegateProvider.h"
 #include "statsyncing/jobs/MatchTracksJob.h"
@@ -59,6 +61,8 @@ Controller::synchronize()
     }
 
     MatchTracksJob *job = new MatchTracksJob( m_providers );
+    QString text = i18n( "Matching tracks..." );
+    Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
 }

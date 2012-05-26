@@ -43,9 +43,13 @@ namespace StatSyncing
      */
     class MatchTracksJob : public ThreadWeaver::Job
     {
+        Q_OBJECT
+
         public:
             MatchTracksJob( QList<TrackDelegateProvider *> providers,
                             QObject *parent = 0 );
+
+            virtual bool success() const;
 
             /**
              * Binary OR of MetaValues.h Meta::val* flags that are used to compare tracks
@@ -53,6 +57,29 @@ namespace StatSyncing
              * title. Valid only after run() has been called.
              */
             static qint64 comparisonFields();
+
+        public slots:
+            /**
+             * Abort the job as soon as possible.
+             */
+            void abort();
+
+        signals:
+            /**
+             * Emitted when matcher gets to know total number of steps it will take to
+             * match all tracks.
+             */
+            void totalSteps( int steps );
+
+            /**
+             * Emitted when one progress step has been finished.
+             */
+            void incrementProgress();
+
+            /**
+             * Emitted when matching tracks is done
+             */
+            void endProgressOperation( QObject *owner );
 
         protected:
             virtual void run();
@@ -91,6 +118,7 @@ namespace StatSyncing
              */
             static qint64 s_comparisonFields;
 
+            bool m_abort;
             QList<TrackDelegateProvider *> m_providers;
 
             /**

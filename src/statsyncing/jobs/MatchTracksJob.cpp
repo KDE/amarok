@@ -64,8 +64,21 @@ MatchTracksJob::comparisonFields()
 MatchTracksJob::MatchTracksJob( QList<TrackDelegateProvider *> providers,
                                 QObject *parent )
     : Job( parent )
+    , m_abort( false )
     , m_providers( providers )
 {
+}
+
+bool
+MatchTracksJob::success() const
+{
+    return !m_abort;
+}
+
+void
+MatchTracksJob::abort()
+{
+    m_abort = true;
 }
 
 void MatchTracksJob::run()
@@ -88,12 +101,17 @@ void MatchTracksJob::run()
         s_comparisonFields &= provider->reliableTrackMetaData();
     }
     Q_ASSERT( ( s_comparisonFields & requiredFields ) == requiredFields );
+    emit totalSteps( allArtists.size() );
     debug() << "Matching using:" << comparisonFieldNames( s_comparisonFields ).toLocal8Bit().constData();
 
     foreach( const QString &artist, allArtists )
     {
+        if( m_abort )
+            break;
         matchTracksFromArtist( artist, artistProviders.value( artist ) );
+        emit incrementProgress();
     }
+    emit endProgressOperation( this );
 
     //BEGIN debugging
     debug();
