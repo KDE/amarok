@@ -898,14 +898,9 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem *> &items,
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
         item = item->parent();
-
     Collection *coll = item->parentCollection();
 
-    if( !coll->isWritable() )
-        return;
-
     CollectionLocation *source = coll->location();
-
     if( !source->isWritable() ) //error
     {
         warning() << "We can not write to ze source!!! OMGooses!";
