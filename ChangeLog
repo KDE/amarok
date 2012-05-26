@@ -94,6 +94,7 @@ VERSION 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Transcoding: fix compatibility with libav's ffmpeg. (BR 300551)
     * Saved lyrics are preserved when the track is moved. (BR 242350)
     * Lyrics, labels and album actions are correctly displayed for tracks
       from main and saved playlists on Amarok startup. (BR 299150)

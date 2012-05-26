@@ -88,7 +88,11 @@ public:
 
 private slots:
     void processOutput();
-    void transcoderDone( int exitCode, QProcess::ExitStatus exitStatus );
+    /**
+     * Default arguments are for convenience (read: lazyness) so that this can be
+     * connected to QTimer::singleShot()
+     */
+    void transcoderDone( int exitCode = -1, QProcess::ExitStatus exitStatus = QProcess::CrashExit );
     void init();
 
 private:
