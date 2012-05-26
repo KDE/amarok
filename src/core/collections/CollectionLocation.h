@@ -151,7 +151,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual bool isOrganizable() const;
 
         /**
-           convenience method for copying a single track,
+           Convenience method for copying a single track.
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
         void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
@@ -163,15 +163,16 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         */
         void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
         /**
-           convenience method for copying tracks based on QueryMaker restults,
+           Convenience method for copying tracks based on QueryMaker restults,
+           takes ownership of the @param qm.
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
         void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination );
 
         /**
-           convenience method for moving a single track,
-           @see prepareMove( Meta::TrackList, CollectionLocation* )
-        */
+         * Convenience method for moving a single track.
+         * @see prepareMove( Meta::TrackList, CollectionLocation* )
+         */
         void prepareMove( Meta::TrackPtr track, CollectionLocation *destination );
         /**
            Schedule moving of @param tracks to collection location @param destination.
@@ -181,15 +182,21 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         */
         void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );
         /**
-           convenience method for moving tracks based on QueryMaker restults,
+           Convenience method for moving tracks based on QueryMaker restults,
+           takes ownership of the @param qm.
            @see prepareMove( Meta::TrackList, CollectionLocation* )
         */
         void prepareMove( Collections::QueryMaker *qm, CollectionLocation *destination );
 
         /**
-           method to get tracks from qm to prepare them to be removed
-        */
+           Starts workflow for removing tracks.
+         */
         void prepareRemove( const Meta::TrackList &tracks );
+        /**
+           Convenience method for removing tracks selected by QueryMaker,
+           takes ownership of the @param qm.
+           @see prepareRemove( Meta::TrackList )
+         */
         void prepareRemove( Collections::QueryMaker *qm );
 
         /**

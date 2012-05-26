@@ -654,8 +654,8 @@ CollectionLocation::startRemoveWorkflow( const Meta::TrackList &tracks )
     DEBUG_BLOCK
     m_sourceTracks = tracks;
     setupRemoveConnections();
-    if( tracks.size() <= 0 )
-        abort(); // TODO: check if this is the right function
+    if( tracks.isEmpty() )
+        abort();
     else
         showRemoveDialog( tracks );
 }
