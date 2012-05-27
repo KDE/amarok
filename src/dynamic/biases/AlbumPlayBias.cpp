@@ -157,7 +157,7 @@ Dynamic::AlbumPlayBias::matchingTracks( int position,
 
     Meta::TrackList albumTracks = album->tracks();
     if( albumTracks.count() == 1 ||
-        (track == albumTracks.last() && m_follow != DontCare) )
+        ( sameTrack( track, albumTracks.last() ) && m_follow != DontCare) )
         return Dynamic::TrackSet( universe, false );
 
     // we assume that the album tracks are sorted by cd and track number which
@@ -166,7 +166,7 @@ Dynamic::AlbumPlayBias::matchingTracks( int position,
     if( m_follow == DirectlyFollow )
     {
         for( int i = 1; i < albumTracks.count(); i++ )
-            if( albumTracks[i-1] == track )
+            if( sameTrack( albumTracks[i-1], track ) )
                 result.unite( albumTracks[i] );
     }
     else if( m_follow == Follow )
@@ -176,7 +176,7 @@ Dynamic::AlbumPlayBias::matchingTracks( int position,
         {
             if( found )
                 result.unite( albumTracks[i] );
-            if( albumTracks[i] == track )
+            if( sameTrack( albumTracks[i], track ) )
                 found = true;
         }
     }
@@ -184,7 +184,7 @@ Dynamic::AlbumPlayBias::matchingTracks( int position,
     {
         for( int i = 0; i < albumTracks.count(); i++ )
         {
-            if( albumTracks[i] != track )
+            if( !sameTrack( albumTracks[i], track ) )
                 result.unite( albumTracks[i] );
         }
     }
@@ -211,7 +211,7 @@ Dynamic::AlbumPlayBias::trackMatches( int position,
         return false;
 
     Meta::TrackList albumTracks = album->tracks();
-    if( track == albumTracks.last() && m_follow != DontCare )
+    if( sameTrack( track, albumTracks.last() ) && m_follow != DontCare )
         return false;
 
     // we assume that the album tracks are sorted by cd and track number which
@@ -219,8 +219,8 @@ Dynamic::AlbumPlayBias::trackMatches( int position,
     if( m_follow == DirectlyFollow )
     {
         for( int i = 1; i < albumTracks.count(); i++ )
-            if( albumTracks[i-1] == track )
-                return albumTracks[i] == currentTrack;
+            if( sameTrack( albumTracks[i-1], track ) )
+                return sameTrack( albumTracks[i], currentTrack );
         return false;
     }
     else if( m_follow == Follow )
@@ -228,9 +228,9 @@ Dynamic::AlbumPlayBias::trackMatches( int position,
         bool found = false;
         for( int i = 0; i < albumTracks.count(); i++ )
         {
-            if( found && albumTracks[i] == currentTrack )
+            if( found && sameTrack( albumTracks[i], currentTrack ) )
                 return true;
-            if( albumTracks[i] == track )
+            if( sameTrack( albumTracks[i], track ) )
                 found = true;
         }
         return false;
@@ -285,6 +285,15 @@ Dynamic::AlbumPlayBias::followForName( const QString &name )
     else return DontCare;
 }
 
+bool
+Dynamic::AlbumPlayBias::sameTrack( Meta::TrackPtr track1, Meta::TrackPtr track2 ) const
+{
+    // We compare items which may be MetaProxy::Track or Meta::Track. For the
+    // same underlying track, MetaProxy::Track == Meta;:Track will be true, but
+    // Meta::Track == MetaProxy::Track false. Check both ways, and if either
+    // returns true, it's the same track.
+    return ( *track1 == *track2 ) || ( *track2 == *track1 );
+}
 
 
 #include "AlbumPlayBias.moc"

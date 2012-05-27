@@ -65,6 +65,7 @@ namespace Dynamic
         protected:
             static QString nameForFollow( FollowType match );
             static FollowType followForName( const QString &name );
+            virtual bool sameTrack( Meta::TrackPtr track1, Meta::TrackPtr track2 ) const;
 
             FollowType m_follow;
 
