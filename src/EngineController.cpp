@@ -58,6 +58,8 @@ namespace The {
     EngineController* engineController() { return EngineController::instance(); }
 }
 
+QMutex EngineController::s_supportedMimeTypesMutex;
+
 EngineController*
 EngineController::instance()
 {
@@ -263,13 +265,19 @@ EngineController::supportedMimeTypes() //static
     //NOTE this function must be thread-safe
 
     // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
-    static QRegExp avFilter( "^(audio|video)/", Qt::CaseInsensitive );
-    // NB: we can't make this static, as we edit it later in the method; however, this method
-    //     should not be called too often.
-    QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
+    static QStringList mimeTable;
+    // theoretically not needed, but static initialization of mimeTable may have threading
+    // issues, so rather use boolean flag for it:
+    static bool mimeTableAlreadyFilled = false;
+
+    QMutexLocker locker( &s_supportedMimeTypesMutex );
+    if( mimeTableAlreadyFilled )
+        return mimeTable;
+
+    QRegExp avFilter( "^(audio|video)/", Qt::CaseInsensitive );
+    mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
 
     // Add whitelist hacks
-
     // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
     if( !mimeTable.contains( "audio/x-m4b" ) )
         mimeTable << "audio/x-m4b";
@@ -293,6 +301,7 @@ EngineController::supportedMimeTypes() //static
         mimeTable << "audio/mp3" << "audio/x-mp3";
     }
 
+    mimeTableAlreadyFilled = true;
     return mimeTable;
 }
 
