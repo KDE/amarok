@@ -402,11 +402,15 @@ void
 LyricsAppletPrivate::_trackPositionChanged( qint64 position, bool userSeek )
 {
     Q_UNUSED( userSeek );
-    EngineController* engine = The::engineController();
+    EngineController *engine = The::engineController();
     QScrollBar *vbar = browser->nativeWidget()->verticalScrollBar();
     if( engine->trackPositionMs() != 0 &&  !vbar->isSliderDown() && autoScroll )
     {
         userAutoScrollOffset = userAutoScrollOffset + vbar->value() - oldSliderPosition;
+
+        //prevent possible devision by 0 (example streams).
+        if( engine->trackLength() == 0 )
+            return;
         // Scroll to try and keep the current position in the lyrics centred.
         int newSliderPosition =
             position * (vbar->maximum() + vbar->pageStep()) / engine->trackLength() -
