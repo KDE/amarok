@@ -24,11 +24,7 @@
 #include "covermanager/CoverCache.h"
 #include "EngineController.h"
 
-#include <Phonon/Global>
-
-#include <QList>
 #include <QObject>
-#include <QPixmap>
 
 using namespace MetaStream;
 
@@ -52,8 +48,7 @@ class MetaStream::Track::Private : public QObject
         void notify() const
         {
             foreach( Meta::Observer *observer, observers )
-                observer->metadataChanged(
-                            Meta::TrackPtr( const_cast<MetaStream::Track *>( track ) ) );
+                observer->metadataChanged( Meta::TrackPtr( track ) );
         }
 
     public Q_SLOTS:
