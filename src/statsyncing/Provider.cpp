@@ -14,42 +14,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef COLLECTIONTRACKDELEGATE_H
-#define COLLECTIONTRACKDELEGATE_H
+#include "Provider.h"
 
-#include "core/meta/Meta.h"
-#include "statsyncing/TrackDelegate.h"
+using namespace StatSyncing;
 
-namespace StatSyncing
+Provider::Provider()
 {
+}
 
-    class CollectionTrackDelegate : public TrackDelegate
-    {
-        public:
-            explicit CollectionTrackDelegate( Meta::TrackPtr track );
-            virtual ~CollectionTrackDelegate();
-
-            virtual QString name() const;
-            virtual QString album() const;
-            virtual QString artist() const;
-            virtual QString composer() const;
-            virtual int year() const;
-            virtual int trackNumber() const;
-            virtual int discNumber() const;
-
-            virtual QSet<QString> labels() const;
-            virtual int rating() const;
-            virtual QDateTime firstPlayed() const;
-            virtual QDateTime lastPlayed() const;
-            virtual int playcount() const;
-
-        private:
-            Q_DISABLE_COPY(CollectionTrackDelegate)
-
-            Meta::TrackPtr m_track;
-            Meta::StatisticsPtr m_trackStats;
-    };
-
-} // namespace StatSyncing
-
-#endif // COLLECTIONTRACKDELEGATE_H
+Provider::~Provider()
+{
+}

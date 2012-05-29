@@ -14,47 +14,55 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_CONTROLLER_H
-#define STATSYNCING_CONTROLLER_H
+#include "SingleTracksModel.h"
 
-#include "amarok_export.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "MetaValues.h"
+#include "core/meta/support/MetaConstants.h"
+#include "core/support/Debug.h"
 
-#include <QList>
-#include <QWeakPointer>
+#include <KGlobal>
+#include <KLocale>
+#include <KLocalizedString>
 
-namespace ThreadWeaver {
-    class Job;
+using namespace StatSyncing;
+
+SingleTracksModel::SingleTracksModel( const TrackList &tracks,
+                                      const QList<qint64> &columns, QObject *parent )
+    : QAbstractTableModel( parent )
+    , CommonModel( columns )
+    , m_tracks( tracks )
+{
 }
 
-namespace StatSyncing
+int
+SingleTracksModel::rowCount( const QModelIndex &parent ) const
 {
-    class Process;
+    return parent.isValid() ? 0 : m_tracks.count();
+}
 
-    /**
-     * A singleton class that controls statistics synchronization and related tasks.
-     */
-    class AMAROK_EXPORT Controller : public QObject
+int
+SingleTracksModel::columnCount( const QModelIndex &parent ) const
+{
+    return parent.isValid() ? 0 : m_columns.count();
+}
+
+QVariant
+SingleTracksModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+    return CommonModel::headerData( section, orientation, role );
+}
+
+QVariant
+SingleTracksModel::data( const QModelIndex &index, int role ) const
+{
+    if( !index.isValid() ||
+        index.row() < 0 || index.row() >= m_tracks.count() ||
+        index.column() < 0 || index.column() >= m_columns.count() )
     {
-        Q_OBJECT
+        return QVariant();
+    }
 
-        public:
-            explicit Controller( QObject *parent = 0 );
-            ~Controller();
-
-        public slots:
-            /**
-             * Start the whole synchronization machinery. This call returns quickly,
-             * way before the synchronization is finished.
-             */
-            void synchronize();
-
-        private:
-            Q_DISABLE_COPY(Controller)
-
-            QWeakPointer<Process> m_currentProcess;
-    };
-
-} // namespace StatSyncing
-
-#endif // STATSYNCING_CONTROLLER_H
+    qint64 field = m_columns.at( index.column() );
+    const TrackPtr &track = m_tracks.at( index.row() );
+    return trackData( track, field, role );
+}

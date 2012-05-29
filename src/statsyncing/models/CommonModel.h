@@ -14,14 +14,36 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TrackDelegateProvider.h"
+#ifndef STATSYNCING_COMMONMODEL_H
+#define STATSYNCING_COMMONMODEL_H
 
-using namespace StatSyncing;
+#include "statsyncing/Track.h"
 
-TrackDelegateProvider::TrackDelegateProvider()
+#include <QList>
+#include <QVariant>
+
+namespace StatSyncing
 {
-}
+    /**
+     * Helper class for {Matched,Single}TracksModel's to avoid code duplication
+     */
+    class CommonModel
+    {
+        public:
+            explicit CommonModel( const QList<qint64> &columns );
 
-TrackDelegateProvider::~TrackDelegateProvider()
-{
-}
+            QVariant headerData( int section, Qt::Orientation orientation,
+                                 int role = Qt::DisplayRole ) const;
+
+        protected:
+            QVariant sizeHintData( qint64 field ) const;
+            QVariant trackData( const TrackPtr &track, qint64 field, int role ) const;
+            QVariant trackTitleData( const TrackPtr &track ) const;
+            QVariant trackToolTipData( const TrackPtr &track ) const;
+
+            QList<qint64> m_columns;
+    };
+
+} // namespace StatSyncing
+
+#endif // STATSYNCING_COMMONMODEL_H

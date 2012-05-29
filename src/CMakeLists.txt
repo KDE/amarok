@@ -583,11 +583,20 @@ endif( TAGLIB_FOUND )
 #####################################################################
 set( statsyncing_SRCS
     statsyncing/Controller.cpp
-    statsyncing/TrackDelegate.cpp
-    statsyncing/TrackDelegateProvider.cpp
-    statsyncing/collection/CollectionTrackDelegate.cpp
-    statsyncing/collection/CollectionTrackDelegateProvider.cpp
+    statsyncing/Process.cpp
+    statsyncing/Provider.cpp
+    statsyncing/Track.cpp
+    statsyncing/TrackTuple.cpp
+    statsyncing/collection/CollectionProvider.cpp
+    statsyncing/collection/CollectionTrack.cpp
     statsyncing/jobs/MatchTracksJob.cpp
+    statsyncing/models/CommonModel.cpp
+    statsyncing/models/MatchedTracksModel.cpp
+    statsyncing/models/SingleTracksModel.cpp
+)
+
+kde4_add_ui_files(statsyncing_SRCS
+    statsyncing/ui/MatchedTracksPage.ui
 )
 
 #####################################################################

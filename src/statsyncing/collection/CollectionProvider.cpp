@@ -14,58 +14,56 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "CollectionTrackDelegateProvider.h"
+#include "CollectionProvider.h"
 
 #include "MetaValues.h"
+#include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
-#include "core/support/Debug.h"
-#include "statsyncing/collection/CollectionTrackDelegate.h"
+#include "statsyncing/collection/CollectionTrack.h"
 
 #include <QEventLoop>
 
 using namespace StatSyncing;
 
-CollectionTrackDelegateProvider::CollectionTrackDelegateProvider( Collections::Collection *collection )
-    : QObject()
-    , TrackDelegateProvider()
-    , m_coll( collection )
+CollectionProvider::CollectionProvider( Collections::Collection *collection )
+    : m_coll( collection )
 {
     Q_ASSERT( m_coll );
     connect( this, SIGNAL(startArtistSearch()), SLOT(slotStartArtistSearch()) );
     connect( this, SIGNAL(startTrackSearch(QString)), SLOT(slotStartTrackSearch(QString)) );
 }
 
-CollectionTrackDelegateProvider::~CollectionTrackDelegateProvider()
+CollectionProvider::~CollectionProvider()
 {
 }
 
 QString
-CollectionTrackDelegateProvider::id() const
+CollectionProvider::id() const
 {
     return m_coll ? m_coll.data()->collectionId() : QString();
 }
 
 QString
-CollectionTrackDelegateProvider::prettyName() const
+CollectionProvider::prettyName() const
 {
     return m_coll ? m_coll.data()->prettyName() : QString();
 }
 
 KIcon
-CollectionTrackDelegateProvider::icon() const
+CollectionProvider::icon() const
 {
     return m_coll ? m_coll.data()->icon() : KIcon();
 }
 
 qint64
-CollectionTrackDelegateProvider::reliableTrackMetaData() const
+CollectionProvider::reliableTrackMetaData() const
 {
     return Meta::valTitle | Meta::valArtist | Meta::valAlbum |
            Meta::valComposer | Meta::valYear | Meta::valTrackNr | Meta::valDiscNr;
 }
 
 QSet<QString>
-CollectionTrackDelegateProvider::artists()
+CollectionProvider::artists()
 {
     if( !m_coll )
         return QSet<QString>();
@@ -79,23 +77,23 @@ CollectionTrackDelegateProvider::artists()
     return ret;
 }
 
-TrackDelegateList
-CollectionTrackDelegateProvider::artistTracks( const QString &artistName )
+TrackList
+CollectionProvider::artistTracks( const QString &artistName )
 {
     if( !m_coll )
-        return TrackDelegateList();
+        return TrackList();
 
     m_foundTracks.clear();
     emit startTrackSearch( artistName );
     m_queryMakerSemaphore.acquire(); // blocks until slotQueryDone() releases the semaphore
-    TrackDelegateList ret = m_foundTracks;
+    TrackList ret = m_foundTracks;
     m_foundTracks.clear();  // don't waste memory
 
     return ret;
 }
 
 void
-CollectionTrackDelegateProvider::slotStartArtistSearch()
+CollectionProvider::slotStartArtistSearch()
 {
     if( !m_coll )
     {
@@ -113,7 +111,7 @@ CollectionTrackDelegateProvider::slotStartArtistSearch()
 }
 
 void
-CollectionTrackDelegateProvider::slotStartTrackSearch( QString artistName )
+CollectionProvider::slotStartTrackSearch( QString artistName )
 {
     if( !m_coll )
     {
@@ -132,7 +130,7 @@ CollectionTrackDelegateProvider::slotStartTrackSearch( QString artistName )
 }
 
 void
-CollectionTrackDelegateProvider::slotNewResultReady( Meta::ArtistList list )
+CollectionProvider::slotNewResultReady( Meta::ArtistList list )
 {
     foreach( const Meta::ArtistPtr &artist, list )
     {
@@ -141,16 +139,16 @@ CollectionTrackDelegateProvider::slotNewResultReady( Meta::ArtistList list )
 }
 
 void
-CollectionTrackDelegateProvider::slotNewResultReady( Meta::TrackList list )
+CollectionProvider::slotNewResultReady( Meta::TrackList list )
 {
     foreach( Meta::TrackPtr track, list )
     {
-        m_foundTracks.append( TrackDelegatePtr( new CollectionTrackDelegate( track ) ) );
+        m_foundTracks.append( TrackPtr( new CollectionTrack( track ) ) );
     }
 }
 
 void
-CollectionTrackDelegateProvider::slotQueryDone()
+CollectionProvider::slotQueryDone()
 {
     m_queryMakerSemaphore.release(); // unblock method in a worker thread
 }

@@ -14,46 +14,46 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TrackDelegate.h"
+#include "Track.h"
 
 #include "MetaValues.h"
 
 using namespace StatSyncing;
 
-TrackDelegate::TrackDelegate()
+Track::Track()
     : QSharedData()
 {
 }
 
-TrackDelegate::~TrackDelegate()
+Track::~Track()
 {
 }
 
 QString
-TrackDelegate::composer() const
+Track::composer() const
 {
     return QString();
 }
 
 int
-TrackDelegate::year() const
+Track::year() const
 {
     return 0;
 }
 
 int
-TrackDelegate::trackNumber() const
+Track::trackNumber() const
 {
     return 0;
 }
 
 int
-TrackDelegate::discNumber() const
+Track::discNumber() const
 {
     return 0;
 }
 
-bool TrackDelegate::equals( const TrackDelegate &other, qint64 fieldMask ) const
+bool Track::equals( const Track &other, qint64 fieldMask ) const
 {
     if( fieldMask & Meta::valTitle && name() != other.name() )
         return false;
@@ -73,7 +73,7 @@ bool TrackDelegate::equals( const TrackDelegate &other, qint64 fieldMask ) const
 }
 
 bool
-TrackDelegate::lessThan( const TrackDelegate &other, qint64 fieldMask ) const
+Track::lessThan( const Track &other, qint64 fieldMask ) const
 {
     // artist > year > album > discNumber > trackNumber > composer > title
     if( fieldMask & Meta::valArtist && artist() != other.artist() )

@@ -14,22 +14,20 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef COLLECTIONTRACKDELEGATEPROVIDER_H
-#define COLLECTIONTRACKDELEGATEPROVIDER_H
+#ifndef STATSYNCING_COLLECTIONPROVIDER_H
+#define STATSYNCING_COLLECTIONPROVIDER_H
 
-#include "statsyncing/TrackDelegateProvider.h"
-#include <core/collections/Collection.h>
-#include <core/meta/Meta.h>
+#include "core/meta/Meta.h"
+#include "statsyncing/Provider.h"
+
 #include <QSemaphore>
-
-class QEventLoop;
 
 namespace StatSyncing
 {
     /**
-     * Track delegate provider that has Collections::Colections as a back-end.
+     * Provider that has Collections::Colections as a back-end.
      */
-    class CollectionTrackDelegateProvider : public QObject, public TrackDelegateProvider
+    class CollectionProvider : public Provider
     {
         Q_OBJECT
 
@@ -37,15 +35,15 @@ namespace StatSyncing
             /**
              * Construct provider that has @param collection as a back-end.
              */
-            CollectionTrackDelegateProvider( Collections::Collection *collection );
-            virtual ~CollectionTrackDelegateProvider();
+            CollectionProvider( Collections::Collection *collection );
+            virtual ~CollectionProvider();
 
             virtual QString id() const;
             virtual QString prettyName() const;
             virtual KIcon icon() const;
             virtual qint64 reliableTrackMetaData() const;
             virtual QSet<QString> artists();
-            virtual TrackDelegateList artistTracks( const QString &artistName );
+            virtual TrackList artistTracks( const QString &artistName );
 
         signals:
             /// hacks to create and start QueryMaker in main eventloop
@@ -62,15 +60,15 @@ namespace StatSyncing
             void slotQueryDone();
 
         private:
-            Q_DISABLE_COPY(CollectionTrackDelegateProvider)
+            Q_DISABLE_COPY(CollectionProvider)
 
             /// collection can disappear at any time, use weak pointer to notice it
             QWeakPointer<Collections::Collection> m_coll;
             QSet<QString> m_foundArtists;
-            TrackDelegateList m_foundTracks;
+            TrackList m_foundTracks;
             QSemaphore m_queryMakerSemaphore;
     };
 
 } // namespace StatSyncing
 
-#endif // COLLECTIONTRACKDELEGATEPROVIDER_H
+#endif // STATSYNCING_COLLECTIONPROVIDER_H

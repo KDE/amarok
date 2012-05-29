@@ -14,47 +14,47 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_CONTROLLER_H
-#define STATSYNCING_CONTROLLER_H
+#include "TrackTuple.h"
 
-#include "amarok_export.h"
-#include "core-impl/collections/support/CollectionManager.h"
+using namespace StatSyncing;
 
-#include <QList>
-#include <QWeakPointer>
-
-namespace ThreadWeaver {
-    class Job;
+TrackTuple::TrackTuple()
+{
 }
 
-namespace StatSyncing
+void
+TrackTuple::insert( const Provider *provider, const TrackPtr &track )
 {
-    class Process;
+    m_map.insert( provider, track );
+}
 
-    /**
-     * A singleton class that controls statistics synchronization and related tasks.
-     */
-    class AMAROK_EXPORT Controller : public QObject
-    {
-        Q_OBJECT
+QList<const Provider *>
+TrackTuple::providers() const
+{
+    return m_map.keys();
+}
 
-        public:
-            explicit Controller( QObject *parent = 0 );
-            ~Controller();
+const Provider *
+TrackTuple::provider( int i ) const
+{
+    return m_map.keys().value( i );
+}
 
-        public slots:
-            /**
-             * Start the whole synchronization machinery. This call returns quickly,
-             * way before the synchronization is finished.
-             */
-            void synchronize();
+TrackPtr
+TrackTuple::track( const Provider *provider ) const
+{
+    Q_ASSERT( m_map.contains( provider ) );
+    return m_map.value( provider );
+}
 
-        private:
-            Q_DISABLE_COPY(Controller)
+int
+TrackTuple::count() const
+{
+    return m_map.count();
+}
 
-            QWeakPointer<Process> m_currentProcess;
-    };
-
-} // namespace StatSyncing
-
-#endif // STATSYNCING_CONTROLLER_H
+bool
+TrackTuple::isEmpty() const
+{
+    return m_map.isEmpty();
+}

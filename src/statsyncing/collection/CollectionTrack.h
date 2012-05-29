@@ -14,47 +14,42 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_CONTROLLER_H
-#define STATSYNCING_CONTROLLER_H
+#ifndef STATSYNCING_COLLECTIONTRACK_H
+#define STATSYNCING_COLLECTIONTRACK_H
 
-#include "amarok_export.h"
-#include "core-impl/collections/support/CollectionManager.h"
-
-#include <QList>
-#include <QWeakPointer>
-
-namespace ThreadWeaver {
-    class Job;
-}
+#include "core/meta/Meta.h"
+#include "statsyncing/Track.h"
 
 namespace StatSyncing
 {
-    class Process;
 
-    /**
-     * A singleton class that controls statistics synchronization and related tasks.
-     */
-    class AMAROK_EXPORT Controller : public QObject
+    class CollectionTrack : public Track
     {
-        Q_OBJECT
-
         public:
-            explicit Controller( QObject *parent = 0 );
-            ~Controller();
+            explicit CollectionTrack( Meta::TrackPtr track );
+            virtual ~CollectionTrack();
 
-        public slots:
-            /**
-             * Start the whole synchronization machinery. This call returns quickly,
-             * way before the synchronization is finished.
-             */
-            void synchronize();
+            virtual QString name() const;
+            virtual QString album() const;
+            virtual QString artist() const;
+            virtual QString composer() const;
+            virtual int year() const;
+            virtual int trackNumber() const;
+            virtual int discNumber() const;
+
+            virtual QSet<QString> labels() const;
+            virtual int rating() const;
+            virtual QDateTime firstPlayed() const;
+            virtual QDateTime lastPlayed() const;
+            virtual int playcount() const;
 
         private:
-            Q_DISABLE_COPY(Controller)
+            Q_DISABLE_COPY(CollectionTrack)
 
-            QWeakPointer<Process> m_currentProcess;
+            Meta::TrackPtr m_track;
+            Meta::StatisticsPtr m_trackStats;
     };
 
 } // namespace StatSyncing
 
-#endif // STATSYNCING_CONTROLLER_H
+#endif // STATSYNCING_COLLECTIONTRACK_H

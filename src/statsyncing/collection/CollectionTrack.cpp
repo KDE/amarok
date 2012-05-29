@@ -14,13 +14,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "CollectionTrackDelegate.h"
+#include "CollectionTrack.h"
 
 #include "core/meta/Statistics.h"
 
 using namespace StatSyncing;
 
-CollectionTrackDelegate::CollectionTrackDelegate( Meta::TrackPtr track )
+CollectionTrack::CollectionTrack( Meta::TrackPtr track )
     : m_track( track )
     , m_trackStats( track->statistics() )
 {
@@ -28,58 +28,58 @@ CollectionTrackDelegate::CollectionTrackDelegate( Meta::TrackPtr track )
     Q_ASSERT( m_trackStats );
 }
 
-CollectionTrackDelegate::~CollectionTrackDelegate()
+CollectionTrack::~CollectionTrack()
 {
 }
 
 QString
-CollectionTrackDelegate::name() const
+CollectionTrack::name() const
 {
     return m_track->name();
 }
 
 QString
-CollectionTrackDelegate::album() const
+CollectionTrack::album() const
 {
     Meta::AlbumPtr album = m_track->album();
     return album ? album->name() : QString();
 }
 
 QString
-CollectionTrackDelegate::artist() const
+CollectionTrack::artist() const
 {
     Meta::ArtistPtr artist = m_track->artist();
     return artist ? artist->name() : QString();
 }
 
 QString
-CollectionTrackDelegate::composer() const
+CollectionTrack::composer() const
 {
     Meta::ComposerPtr composer = m_track->composer();
     return composer ? composer->name() : QString();
 }
 
 int
-CollectionTrackDelegate::year() const
+CollectionTrack::year() const
 {
     Meta::YearPtr year = m_track->year();
     return year ? year->year() : 0;
 }
 
 int
-CollectionTrackDelegate::trackNumber() const
+CollectionTrack::trackNumber() const
 {
     return m_track->trackNumber();
 }
 
 int
-CollectionTrackDelegate::discNumber() const
+CollectionTrack::discNumber() const
 {
     return m_track->discNumber();
 }
 
 QSet<QString>
-CollectionTrackDelegate::labels() const
+CollectionTrack::labels() const
 {
     Meta::LabelList labels = m_track->labels();
     QSet<QString> labelNames;
@@ -89,25 +89,25 @@ CollectionTrackDelegate::labels() const
 }
 
 int
-CollectionTrackDelegate::rating() const
+CollectionTrack::rating() const
 {
     return qBound<int>( 0, m_trackStats->rating(), 10 );
 }
 
 QDateTime
-CollectionTrackDelegate::firstPlayed() const
+CollectionTrack::firstPlayed() const
 {
     return m_trackStats->firstPlayed();
 }
 
 QDateTime
-CollectionTrackDelegate::lastPlayed() const
+CollectionTrack::lastPlayed() const
 {
     return m_trackStats->lastPlayed();
 }
 
 int
-CollectionTrackDelegate::playcount() const
+CollectionTrack::playcount() const
 {
     return m_trackStats->playCount();
 }

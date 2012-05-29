@@ -14,13 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRACKDELEGATEPROVIDER_H
-#define TRACKDELEGATEPROVIDER_H
+#ifndef STATSYNCING_PROVIDER_H
+#define STATSYNCING_PROVIDER_H
 
-#include "statsyncing/TrackDelegate.h"
+#include "statsyncing/Track.h"
 
 #include <KIcon>
 
+#include <QMap>
+#include <QMetaType>
 #include <QSet>
 #include <QString>
 
@@ -30,13 +32,15 @@ namespace StatSyncing
      * A class that can provide tracks for statistics synchronization. It can be backed
      * by local Amarok collections or by online services such as Last.fm.
      *
-     * Instances of inheriters are guaranteed to be created in the main thread.
+     * Instances of subclasses are guaranteed to be created in the main thread.
      */
-    class TrackDelegateProvider
+    class Provider : public QObject
     {
+        Q_OBJECT
+
         public:
-            TrackDelegateProvider();
-            virtual ~TrackDelegateProvider();
+            Provider();
+            virtual ~Provider();
 
             /**
              * Unique identifier for this collection; may be used as a key to store
@@ -77,12 +81,17 @@ namespace StatSyncing
              * guaranteed to be called in non-main thread and is allowed block for
              * a longer time; it must be implemented in a reentrant manner.
              */
-            virtual TrackDelegateList artistTracks( const QString &artistName ) = 0;
+            virtual TrackList artistTracks( const QString &artistName ) = 0;
 
         private:
-            Q_DISABLE_COPY(TrackDelegateProvider)
+            Q_DISABLE_COPY(Provider)
     };
+
+    /**
+     * Container for a set of track frovider lists, one for each provider
+     */
+    typedef QMap<const Provider *, TrackList> PerProviderTrackList;
 
 } // namespace StatSyncing
 
-#endif // TRACKDELEGATEPROVIDER_H
+#endif // STATSYNCING_PROVIDER_H

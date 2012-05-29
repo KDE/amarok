@@ -17,13 +17,10 @@
 #include "Controller.h"
 
 #include "core/interfaces/Logger.h"
-#include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "statsyncing/collection/CollectionTrackDelegateProvider.h"
-#include "statsyncing/jobs/MatchTracksJob.h"
-
-#include <ThreadWeaver/Weaver>
+#include "core/support/Debug.h"
+#include "statsyncing/Process.h"
+#include "statsyncing/collection/CollectionProvider.h"
 
 using namespace StatSyncing;
 
@@ -34,35 +31,42 @@ Controller::Controller( QObject* parent )
 
 Controller::~Controller()
 {
-    qDeleteAll( m_providers );
-    m_providers.clear();
 }
+
 
 void
 Controller::synchronize()
 {
-    DEBUG_BLOCK
-
-    if( m_providers.isEmpty() ) // TODO: this is way too much naive
+    if( m_currentProcess )
     {
-        QHash<Collections::Collection *, CollectionManager::CollectionStatus> collHash =
-            CollectionManager::instance()->collections();
-        QHashIterator<Collections::Collection *, CollectionManager::CollectionStatus> it( collHash );
-        while( it.hasNext() )
+        m_currentProcess.data()->raise();
+        return;
+    }
+
+    QList<QSharedPointer<Provider> > providers;
+    CollectionManager *manager = CollectionManager::instance();
+    QHash<Collections::Collection *, CollectionManager::CollectionStatus> collHash =
+        manager->collections();
+    QHashIterator<Collections::Collection *, CollectionManager::CollectionStatus> it( collHash );
+    while( it.hasNext() )
+    {
+        it.next();
+        if( it.value() == CollectionManager::CollectionEnabled )
         {
-            it.next();
-            if( it.value() == CollectionManager::CollectionEnabled )
-            {
-                TrackDelegateProvider *provider = new CollectionTrackDelegateProvider( it.key() );
-                debug() << "Adding provider" << provider->prettyName() << "with id" << provider->id();
-                m_providers.append( provider );
-            }
+            QSharedPointer<Provider> provider( new CollectionProvider( it.key() ) );
+            providers.append( provider );
         }
     }
 
-    MatchTracksJob *job = new MatchTracksJob( m_providers );
-    QString text = i18n( "Matching tracks..." );
-    Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    if( providers.count() <= 1 )
+    {
+        // the text intentionally doesn't cope with 0 collections
+        QString text = i18n( "You only seem to have one collection. statistics "
+            "synchronization only makes sense if there is more than one collection." );
+        Amarok::Components::logger()->longMessage( text );
+        return;
+    }
+
+    m_currentProcess = new Process( providers, this );
+    m_currentProcess.data()->start();
 }

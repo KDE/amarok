@@ -14,47 +14,46 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_CONTROLLER_H
-#define STATSYNCING_CONTROLLER_H
+#ifndef STATSYNCING_SINGLETRACKSMODEL_H
+#define STATSYNCING_SINGLETRACKSMODEL_H
 
-#include "amarok_export.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "statsyncing/Track.h"
+#include "statsyncing/models/CommonModel.h"
 
-#include <QList>
-#include <QWeakPointer>
-
-namespace ThreadWeaver {
-    class Job;
-}
+#include <QAbstractTableModel>
 
 namespace StatSyncing
 {
-    class Process;
-
     /**
-     * A singleton class that controls statistics synchronization and related tasks.
+     * Model that provides data about single tracks that for some radon didn't end up
+     * in synchronization.
      */
-    class AMAROK_EXPORT Controller : public QObject
+    class SingleTracksModel : public QAbstractTableModel, protected CommonModel
     {
         Q_OBJECT
 
         public:
-            explicit Controller( QObject *parent = 0 );
-            ~Controller();
-
-        public slots:
             /**
-             * Start the whole synchronization machinery. This call returns quickly,
-             * way before the synchronization is finished.
+             * Construct model of single tracks.
+             *
+             * @param matchedTuples list of tracks
+             * @param columns list of Meta::val* fields that will form colums of the model
+             *                must include Meta::valTitle, may include: valRating,
+             *                valFirstPlayed, valLastPlayed, valPlaycount, valLabel.
              */
-            void synchronize();
+            SingleTracksModel( const TrackList &tracks, const QList<qint64> &columns,
+                               QObject *parent = 0 );
+
+            int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+            int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+            QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+            QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
         private:
-            Q_DISABLE_COPY(Controller)
-
-            QWeakPointer<Process> m_currentProcess;
+            TrackList m_tracks;
     };
 
 } // namespace StatSyncing
 
-#endif // STATSYNCING_CONTROLLER_H
+#endif // STATSYNCING_SINGLETRACKSMODEL_H

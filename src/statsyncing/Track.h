@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TRACKDELEGATE_H
-#define TRACKDELEGATE_H
+#ifndef STATSYNCING_TRACK_H
+#define STATSYNCING_TRACK_H
 
 #include "amarok_export.h"
 
@@ -29,17 +29,19 @@
 namespace StatSyncing
 {
     /**
-     * Representation of a delegate of a track (either track from Amarok or from
-     * scrobbling services), abstract.
+     * Abstract representation of a track (either from Amarok or from scrobbling services).
      *
      * This class is used to perform track matching and synchronization. It must be
      * implemented in a thread-safe way.
+     *
+     * Note: This will be probably morphed into Meta::Track someday, keep the interface
+     * compatible as much as possible.
      */
-    class TrackDelegate : public QSharedData
+    class Track : public QSharedData
     {
         public:
-            TrackDelegate();
-            virtual ~TrackDelegate();
+            Track();
+            virtual ~Track();
 
             /**
              * Get track title
@@ -84,13 +86,13 @@ namespace StatSyncing
              * Return true if 2 tracks delegated by this and @param other are equal based
              * on field mask @param fieldMask (binary OR of MetaValue.h values)
              */
-            bool equals( const TrackDelegate &other, qint64 fieldMask ) const;
+            bool equals( const Track &other, qint64 fieldMask ) const;
 
             /**
              * Return true if this track delegate is considered smaller than @param other
              * based on field mask @param fieldMask (binary OR of MetaValue.h values)
              */
-            bool lessThan( const TrackDelegate &other, qint64 fieldMask ) const;
+            bool lessThan( const Track &other, qint64 fieldMask ) const;
 
             /**
              * Get user-assigned track labels or empty set if there are none
@@ -121,11 +123,11 @@ namespace StatSyncing
             virtual int playcount() const = 0;
 
         private:
-            Q_DISABLE_COPY(TrackDelegate)
+            Q_DISABLE_COPY(Track)
     };
 
-    typedef KSharedPtr<TrackDelegate> TrackDelegatePtr;
-    typedef QList<TrackDelegatePtr> TrackDelegateList;
+    typedef KSharedPtr<Track> TrackPtr;
+    typedef QList<TrackPtr> TrackList;
 
     /**
      * Comparison function that compares track delegate pointer by pointed value.
@@ -136,11 +138,11 @@ namespace StatSyncing
      *      (as qint64) that should be used when comparing tracks.
      */
     template <class ControllingClass>
-    bool trackDelegatePtrLessThan( const TrackDelegatePtr &first, const TrackDelegatePtr &second )
+    bool trackDelegatePtrLessThan( const TrackPtr &first, const TrackPtr &second )
     {
         return first->lessThan( *second, ControllingClass::comparisonFields() );
     }
 
 } // namespace StatSyncing
 
-#endif // TRACKDELEGATE_H
+#endif // STATSYNCING_TRACK_H

@@ -17,15 +17,17 @@
 #include "MatchTracksJob.h"
 
 #include "MetaValues.h"
-#include "core/support/Debug.h"
+
+//#define VERBOSE_DEBUG
 
 using namespace StatSyncing;
 
-//BEGIN debugging
+#ifdef VERBOSE_DEBUG
+#include "core/support/Debug.h"
 static void printPerProviderTrackList( const PerProviderTrackList &providerTracks,
                                        const QString *fromArtist = 0L )
 {
-    foreach( const TrackDelegateProvider *provider, providerTracks.keys() )
+    foreach( const Provider *provider, providerTracks.keys() )
     {
         if( fromArtist )
             debug() << provider->prettyName() << "tracks from" << *fromArtist;
@@ -51,7 +53,7 @@ static QString comparisonFieldNames( qint64 fields )
     }
     return names.join( ", " );
 }
-//END debugging
+#endif
 
 qint64 MatchTracksJob::s_comparisonFields( 0 );
 
@@ -61,7 +63,7 @@ MatchTracksJob::comparisonFields()
     return s_comparisonFields;
 }
 
-MatchTracksJob::MatchTracksJob( QList<TrackDelegateProvider *> providers,
+MatchTracksJob::MatchTracksJob( const QList<QSharedPointer<Provider> > &providers,
                                 QObject *parent )
     : Job( parent )
     , m_abort( false )
@@ -83,7 +85,6 @@ MatchTracksJob::abort()
 
 void MatchTracksJob::run()
 {
-    DEBUG_BLOCK
     const qint64 possibleFields = Meta::valTitle | Meta::valArtist | Meta::valAlbum |
         Meta::valComposer | Meta::valYear | Meta::valTrackNr | Meta::valDiscNr;
     const qint64 requiredFields = Meta::valTitle | Meta::valArtist | Meta::valAlbum;
@@ -91,20 +92,24 @@ void MatchTracksJob::run()
 
     QSet<QString> allArtists;
     // remember which providers contain particular artists (optimisation)
-    QMap<QString, QSet<TrackDelegateProvider *> > artistProviders;
-    foreach( TrackDelegateProvider *provider, m_providers )
+    QMap<QString, QSet<Provider *> > artistProviders;
+    foreach( QSharedPointer<Provider> provider, m_providers )
     {
         QSet<QString> artists = provider->artists();
         foreach( const QString &artist, artists )
-            artistProviders[ artist ].insert( provider );
+            artistProviders[ artist ].insert( provider.data() );
         allArtists.unite( artists );
         s_comparisonFields &= provider->reliableTrackMetaData();
     }
     Q_ASSERT( ( s_comparisonFields & requiredFields ) == requiredFields );
     emit totalSteps( allArtists.size() );
+#ifdef VERBOSE_DEBUG
     debug() << "Matching using:" << comparisonFieldNames( s_comparisonFields ).toLocal8Bit().constData();
+#endif
 
-    foreach( const QString &artist, allArtists )
+    QStringList allArtistsList = allArtists.toList();
+    qSort( allArtistsList ); // so that users get roughly sensible order
+    foreach( const QString &artist, allArtistsList )
     {
         if( m_abort )
             break;
@@ -113,39 +118,31 @@ void MatchTracksJob::run()
     }
     emit endProgressOperation( this );
 
-    //BEGIN debugging
+#ifdef VERBOSE_DEBUG
     debug();
     int tupleCount = m_matchedTuples.count();
     debug() << "Found" << tupleCount << "tuples of matched tracks from multiple collections";
-    foreach( const TrackDelegateProvider *provider, m_providers )
+    foreach( const Provider *provider, m_providers )
     {
         const TrackDelegateList uniqueList = m_uniqueTracks.value( provider );
         const TrackDelegateList excludedList = m_excludedTracks.value( provider );
-
-//         if( uniqueList.count() <= 100 )
-//             foreach( const TrackDelegatePtr &track, uniqueList )
-//                 debug() << "  " << track->artist() << "-" << track->album() << "-" << track->name();
-//         if( excludedList.count() <= 100 )
-//             foreach( const TrackDelegatePtr &track, excludedList )
-//                 debug() << "  " << track->artist() << "-" << track->album() << "-" << track->name();
-
         debug() << provider->prettyName() << "has" << uniqueList.count() << "unique tracks +"
                 << excludedList.count() << "duplicate tracks +" << m_matchedTrackCounts[ provider ]
                 << " matched =" << uniqueList.count() + excludedList.count() + m_matchedTrackCounts[ provider ];
     }
-    //END debugging
+#endif
 }
 
 void
 MatchTracksJob::matchTracksFromArtist( const QString &artist,
-                                       const QSet<TrackDelegateProvider *> &artistProviders )
+                                       const QSet<Provider *> &artistProviders )
 {
     PerProviderTrackList providerTracks;
-    foreach( TrackDelegateProvider *provider, artistProviders )
+    foreach( Provider *provider, artistProviders )
     {
         if( !artistProviders.contains( provider ) )
             continue;  // optimisation: don't query providers without this artist
-        TrackDelegateList trackList = provider->artistTracks( artist );
+        TrackList trackList = provider->artistTracks( artist );
         if( trackList.isEmpty() )
             continue;  // don't add empty lists to providerTracks
         // the sorting is important and makes our matching algorithm work
@@ -153,39 +150,39 @@ MatchTracksJob::matchTracksFromArtist( const QString &artist,
         providerTracks[ provider ] = trackList;
     }
 
-    //BEGIN debugging
+#ifdef VERBOSE_DEBUG
     QScopedPointer<Debug::Block> debugBlockPointer;
     if( providerTracks.keys().count() > 1 )
     {
         debugBlockPointer.reset( new Debug::Block( __PRETTY_FUNCTION__ ) );
         printPerProviderTrackList( providerTracks );
     }
-    //END debugging
+#endif
 
     // if only one (or less) non-empty provider is left, we're done
     while( providerTracks.keys().count() > 1 )
     {
-        TrackDelegatePtr firstTrack = findSmallestTrack( providerTracks );
+        TrackPtr firstTrack = findSmallestTrack( providerTracks );
         PerProviderTrackList equalTracks = takeTracksEqualTo( firstTrack, providerTracks );
         Q_ASSERT( !equalTracks.isEmpty() );
 
         // optimisation: continue early if there's only one provider left
         if( equalTracks.keys().count() <= 1 )
         {
-            const TrackDelegateProvider *provider = equalTracks.keys().first();
+            const Provider *provider = equalTracks.keys().first();
             m_uniqueTracks[ provider ].append( equalTracks[ provider ] );
             continue;
         }
 
-        //BEGIN debugging
+#ifdef VERBOSE_DEBUG
         debug();
         debug() << "First track:" << firstTrack->artist() << "-" << firstTrack->album() << "-" << firstTrack->name();
         debug() << "Tracks no greater than first track:";
         printPerProviderTrackList( equalTracks );
-        //END debugging
+#endif
 
         TrackTuple matchedTuple;
-        foreach( const TrackDelegateProvider *provider, equalTracks.keys() )
+        foreach( const Provider *provider, equalTracks.keys() )
         {
             int listSize = equalTracks[ provider ].size();
             Q_ASSERT( listSize >= 1 );
@@ -195,29 +192,29 @@ MatchTracksJob::matchTracksFromArtist( const QString &artist,
                 m_excludedTracks[ provider ].append( equalTracks[ provider ] );
         }
 
-        if( matchedTuple.size() > 1 )
-            // good, we've found track that match!
+        if( matchedTuple.count() > 1 )
+            // good, we've found track that matches!
             addMatchedTuple( matchedTuple );
-        else if( matchedTuple.size() == 1 )
+        else if( matchedTuple.count() == 1 )
         {
             // only one provider
-            const TrackDelegateProvider *provider = matchedTuple.keys().first();
-            m_uniqueTracks[ provider ].append( matchedTuple[ provider ] );
+            const Provider *provider = matchedTuple.provider( 0 );
+            m_uniqueTracks[ provider ].append( matchedTuple.track( provider ) );
         }
     }
 
     if( !providerTracks.isEmpty() ) // some tracks from one provider left
     {
-        const TrackDelegateProvider *provider = providerTracks.keys().first();
+        const Provider *provider = providerTracks.keys().first();
         m_uniqueTracks[ provider ].append( providerTracks[ provider ] );
     }
 }
 
-TrackDelegatePtr
+TrackPtr
 MatchTracksJob::findSmallestTrack( const PerProviderTrackList &providerTracks )
 {
-    TrackDelegatePtr smallest;
-    foreach( const TrackDelegateList &list, providerTracks )
+    TrackPtr smallest;
+    foreach( const TrackList &list, providerTracks )
     {
         if( !smallest || list.first()->lessThan( *smallest, s_comparisonFields ) )
             smallest = list.first();
@@ -227,11 +224,11 @@ MatchTracksJob::findSmallestTrack( const PerProviderTrackList &providerTracks )
 }
 
 PerProviderTrackList
-MatchTracksJob::takeTracksEqualTo( const TrackDelegatePtr &track,
+MatchTracksJob::takeTracksEqualTo( const TrackPtr &track,
                                    PerProviderTrackList &providerTracks )
 {
     PerProviderTrackList ret;
-    foreach( const TrackDelegateProvider *provider, providerTracks.keys() )
+    foreach( const Provider *provider, providerTracks.keys() )
     {
         while( !providerTracks[ provider ].isEmpty() &&
                track->equals( *providerTracks[ provider ].first(), s_comparisonFields ) )
@@ -248,7 +245,7 @@ void
 MatchTracksJob::addMatchedTuple( const TrackTuple &tuple )
 {
     m_matchedTuples.append( tuple );
-    foreach( const TrackDelegateProvider *provider, tuple.keys() )
+    foreach( const Provider *provider, tuple.providers() )
     {
         m_matchedTrackCounts[ provider ]++;
     }

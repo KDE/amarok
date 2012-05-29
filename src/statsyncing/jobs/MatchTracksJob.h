@@ -14,10 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MATCHTRACKSJOB_H
-#define MATCHTRACKSJOB_H
+#ifndef STATSYNCING_MATCHTRACKSJOB_H
+#define STATSYNCING_MATCHTRACKSJOB_H
 
-#include "statsyncing/TrackDelegateProvider.h"
+#include "statsyncing/Provider.h"
+#include "statsyncing/TrackTuple.h"
 
 #include <ThreadWeaver/Job>
 
@@ -26,18 +27,7 @@
 namespace StatSyncing
 {
     /**
-    * Container for a tuple of tracks from different track delegate providers that
-    * match each other based on their meta-data
-    */
-    typedef QMap<const TrackDelegateProvider *, TrackDelegatePtr> TrackTuple;
-
-    /**
-     * Container for a set of track frovider lists, one for each provider
-     */
-    typedef QMap<const TrackDelegateProvider *, TrackDelegateList> PerProviderTrackList;
-
-    /**
-     * Threadweaver job that matches tracks of multiple TrackDelegateProviders.
+     * Threadweaver job that matches tracks of multiple Providers.
      * Because comparisonFields() needs to be static, only one instance of this class is
      * allowed to exist at given time.
      */
@@ -46,7 +36,7 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
-            MatchTracksJob( QList<TrackDelegateProvider *> providers,
+            MatchTracksJob( const QList<QSharedPointer<Provider> > &providers,
                             QObject *parent = 0 );
 
             virtual bool success() const;
@@ -57,6 +47,11 @@ namespace StatSyncing
              * title. Valid only after run() has been called.
              */
             static qint64 comparisonFields();
+
+            // results:
+            const QList<TrackTuple> &matchedTuples() const { return m_matchedTuples; }
+            const PerProviderTrackList &uniqueTracks() const { return m_uniqueTracks; }
+            const PerProviderTrackList &excludedTracks() const { return m_excludedTracks; }
 
         public slots:
             /**
@@ -77,7 +72,7 @@ namespace StatSyncing
             void incrementProgress();
 
             /**
-             * Emitted when matching tracks is done
+             * Emitted from worker thread when all time-consuming operations are done.
              */
             void endProgressOperation( QObject *owner );
 
@@ -91,20 +86,20 @@ namespace StatSyncing
              * m_matchedTuples.
              */
             void matchTracksFromArtist( const QString& artist,
-                                        const QSet<TrackDelegateProvider *> &artistProviders );
+                                        const QSet<Provider *> &artistProviders );
 
             /**
              * Finds the "smallest" track among provider track lists; assumes individual
              * lists are already sorted and non-empty
              */
-            TrackDelegatePtr findSmallestTrack( const PerProviderTrackList &providerTracks );
+            TrackPtr findSmallestTrack( const PerProviderTrackList &providerTracks );
 
             /**
              * Takes tracks from each provider that are equal to @param track.
              * If a list from @param delegateTracks becomes empty, whole entry for that
              * provider is removed from @param delegateTracks.
              */
-            PerProviderTrackList takeTracksEqualTo( const TrackDelegatePtr &track,
+            PerProviderTrackList takeTracksEqualTo( const TrackPtr &track,
                                                     PerProviderTrackList &providerTracks );
 
             /**
@@ -119,7 +114,7 @@ namespace StatSyncing
             static qint64 s_comparisonFields;
 
             bool m_abort;
-            QList<TrackDelegateProvider *> m_providers;
+            QList<QSharedPointer<Provider> > m_providers;
 
             /**
              * Per-provider list of tracks that are unique to that provider
@@ -140,9 +135,9 @@ namespace StatSyncing
             /**
              * Per-provider count of matched tracks
              */
-            QMap<const TrackDelegateProvider *, int> m_matchedTrackCounts;
+            QMap<const Provider *, int> m_matchedTrackCounts;
     };
 
 } // namespace StatSyncing
 
-#endif // MATCHTRACKSJOB_H
+#endif // STATSYNCING_MATCHTRACKSJOB_H
