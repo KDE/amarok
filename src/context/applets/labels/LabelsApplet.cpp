@@ -159,6 +159,7 @@ LabelsApplet::init()
         m_replacementMap.insert( label, replacementValue );
     }
 
+    m_stoppedstate = false; // force an update
     setStoppedState( true );
 
     connectSource( "labels" );

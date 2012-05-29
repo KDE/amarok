@@ -368,6 +368,9 @@ DirWatchJob::run()
 {
     DEBUG_BLOCK;
 
+    if( !m_collection || !m_collection->mountPointManager())
+        return; // it crashed below in BUG:298425 because of no collection
+
     // -- update the KDirWatch with the current set of directories
     QSet<QString> dirs = m_collection->mountPointManager()->collectionFolders().toSet();
 

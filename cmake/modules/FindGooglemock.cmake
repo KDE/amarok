@@ -76,16 +76,55 @@ if( NOT WIN32 AND GOOGLEMOCK_LIBRARY )
        /opt/kde4/lib
        ${KDE4_LIB_DIR}
     )
+
 endif( NOT WIN32 AND GOOGLEMOCK_LIBRARY )
 
+# Google recommends not to distribute a pre-build libary and ubuntu is following
+# this advice with libgtest 1.6.0
+# However they are distributing sources, so we are looking if we at least have
+# them available
+if( NOT GOOGLEMOCK_DEP_GTEST_LIBRARY )
+    find_path( GOOGLEMOCK_DEP_GTEST_SOURCES NAMES gtest
+        PATHS /usr/src
+        NO_DEFAULT_PATH
+        NO_CMAKE_PATH
+    )
+
+    # in this case we also have to use the static google mock library
+    set( OLD_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
+    set( CMAKE_FIND_LIBRARY_SUFFIXES .a)
+    find_library( GOOGLEMOCK_LIBRARY_STATIC NAMES gmock
+        PATHS
+        ~/usr/lib
+       /opt/local/lib
+       /usr/lib
+       /usr/lib64
+       /usr/local/lib
+       /opt/kde4/lib
+       ${KDE4_LIB_DIR}
+    )
+    set( CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_CMAKE_FIND_LIBRARY_SUFFIXES})
+endif( NOT GOOGLEMOCK_DEP_GTEST_LIBRARY )
+
+# -- googlemock and gtest library available
 if(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_LIBRARY)
    set(GOOGLEMOCK_FOUND TRUE)
    set(GOOGLEMOCK_LIBRARIES ${GOOGLEMOCK_LIBRARY} ${GOOGLEMOCK_DEP_GTEST_LIBRARY} ${GOOGLEMOCK_DEP_PTHREAD_LIBRARY})
    message(STATUS "Found libgmock: ${GOOGLEMOCK_INCLUDE_DIR}, ${GOOGLEMOCK_LIBRARIES}")
-else(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_LIBRARY)
+
+
+# -- googlemock and gtest sources available
+elseif(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_SOURCES)
+   set(GOOGLEMOCK_FOUND TRUE)
+   set(GOOGLEMOCK_LIBRARIES ${GOOGLEMOCK_LIBRARY_STATIC} gtest)
+   set(GOOGLEMOCK_GTEST_SOURCES "${GOOGLEMOCK_DEP_GTEST_SOURCES}/gtest" CACHE PATH "Path to the gtest sources")
+   message(STATUS "Found libgmock but need to build gtest: ${GOOGLEMOCK_INCLUDE_DIR}, ${GOOGLEMOCK_LIBRARIES} ${GOOGLEMOCK_DEP_GTEST_SOURCES}")
+
+# -- googlemock but no gtest
+else(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_SOURCES)
    set(GOOGLEMOCK_FOUND FALSE)
    if (GOOGLEMOCK_FIND_REQUIRED)
-      message(FATAL_ERROR "Could NOT find required package Googlemock")
+      message(FATAL_ERROR "Could NOT find required package Googlemock or gtest")
    endif(GOOGLEMOCK_FIND_REQUIRED)
 endif(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_LIBRARY)
 

@@ -37,6 +37,7 @@ TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 
     , m_start( start )
     , m_end( end )
     , m_length( end - start )
+    , m_bpm( -1.0 )
     , m_trackNumber( 0 )
     , m_discNumber( 0 )
     , m_comment( QString() )

@@ -49,6 +49,7 @@ VERSION 2.6-Beta 1
       vice versa. (BR 142579)
 
   CHANGES:
+    * Builds with ffmpeg 0.11.
     * Database structure (lyrics table) was updated. Starting Amarok for the first
       time after the upgrade may take up to one minute as the data is migrated.
     * Amazon store: try to show a sensible default in the country selection.
@@ -94,6 +95,10 @@ VERSION 2.6-Beta 1
       "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
 
   BUGFIXES:
+    * Fix crash on startup due to EngineController. (BR 300659)
+    * Fix problem building tests with google mock 1.6.0 on Ubuntu
+    * Fix dynamic playlist album play bias with MetaProxy::Tracks.
+    * Transcoding: fix compatibility with libav's ffmpeg. (BR 300551)
     * Saved lyrics are preserved when the track is moved. (BR 242350)
     * Lyrics, labels and album actions are correctly displayed for tracks
       from main and saved playlists on Amarok startup. (BR 299150)

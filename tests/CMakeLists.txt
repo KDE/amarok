@@ -123,8 +123,15 @@ set( testtrackorganizer_SRCS
 
 kde4_add_unit_test( testtrackorganizer  ${testtrackorganizer_SRCS} )
 
+# Since Google recommends not to distribute a pre-compiled gtest library
+# we have to build it our own
+if(GOOGLEMOCK_GTEST_SOURCES)
+    add_subdirectory( ${GOOGLEMOCK_GTEST_SOURCES} gtest )
+endif(GOOGLEMOCK_GTEST_SOURCES)
+
 add_dependencies( testtrackorganizer amarokcore )
 add_dependencies( testtrackorganizer amaroklib )
+add_dependencies( testtrackorganizer gtest )
 
 target_link_libraries( testtrackorganizer amarokcore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${GOOGLEMOCK_LIBRARIES})
 

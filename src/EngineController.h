@@ -538,6 +538,8 @@ private:
 
     Q_DISABLE_COPY( EngineController )
 
+    static QMutex s_supportedMimeTypesMutex; // guards access to supportedMimeTypes()::mimeTable
+
     QWeakPointer<Phonon::MediaObject>       m_media;
     QWeakPointer<Phonon::VolumeFaderEffect> m_preamp;
     QWeakPointer<Phonon::Effect>            m_equalizer;

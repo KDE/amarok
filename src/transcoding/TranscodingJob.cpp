@@ -21,6 +21,9 @@
 
 #include <KProcess>
 
+#include <QFile>
+#include <QTimer>
+
 namespace Transcoding
 {
 
@@ -66,8 +69,11 @@ Job::init()
 
     //First the executable...
     m_transcoder->setProgram( "ffmpeg" );
-     //... no not overwrite output files but exit if file exists, otherwise ffmpeg is interactive and hangs
-    *m_transcoder << QString( "-n" );
+    //... prevent ffmpeg from being interactive when destination file already exists. We
+    //    would use -n to exit immediatelly, but libav's ffmpeg doesn't support it, so we
+    //    check for destination file existence manually and pass -y (overwrite) to avoid
+    //    race condition
+    *m_transcoder << QString( "-y" );
     //... then we'd have the infile configuration followed by "-i" and the infile path...
     *m_transcoder << QString( "-i" )
                   << m_src.path();
@@ -86,9 +92,17 @@ void
 Job::start()
 {
     DEBUG_BLOCK
-    QString commandline = QString( "'" ) + m_transcoder->program().join("' '") + QString( "'" );
-    debug()<< "Calling" << commandline.toLocal8Bit().constData();
-    m_transcoder->start();
+    if( QFile::exists( m_dest.path() ) )
+    {
+        debug() << "Not starting ffmpeg encoder, file already exists:" << m_dest.path();
+        QTimer::singleShot( 0, this, SLOT(transcoderDone()) );
+    }
+    else
+    {
+        QString commandline = QString( "'" ) + m_transcoder->program().join("' '") + QString( "'" );
+        debug()<< "Calling" << commandline.toLocal8Bit().constData();
+        m_transcoder->start();
+    }
 }
 
 void

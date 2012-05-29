@@ -46,7 +46,9 @@ IphoneMountPoint::IphoneMountPoint( const QString &uuid )
 
     QStringList args;
     if( !uuid.isEmpty() )
-        args << "--uuid" << uuid << QString( "-ofsname=afc://%1" ).arg( uuid );
+        // good change here: --uuid option was renamed to --udid with ifuse-1.1.2, the
+        // short option, -u, fortunately remained the same
+        args << "-u" << uuid << QString( "-ofsname=afc://%1" ).arg( uuid );
     args << mountPointCandidate;
     if( !call( "ifuse", args ) )
     {

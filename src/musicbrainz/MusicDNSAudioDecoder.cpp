@@ -135,14 +135,21 @@ MusicDNSAudioDecoder::run()
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        //TODO replace with "avformat_open_input" since av_open_input_file is deprecated
-        if( av_open_input_file( &pFormatCtx, ( const char * )track->playableUrl().toLocalFile().toAscii(), NULL, 0, NULL ) )
+#if LIBAVFORMAT_VERSION_MAJOR >= 53
+        if( avformat_open_input( &pFormatCtx, ( const char * )track->playableUrl().toLocalFile().toLocal8Bit(), NULL, NULL ) )
+#else
+        if( av_open_input_file( &pFormatCtx, ( const char * )track->playableUrl().toLocalFile().toLocal8Bit(), NULL, 0, NULL ) )
+#endif
         {
             warning() << QLatin1String( "Unable to open input file: " ) + track->playableUrl().toLocalFile();
             continue;
         }
 
+#if LIBAVFORMAT_VERSION_MAJOR >= 54
+        if( avformat_find_stream_info( pFormatCtx, NULL ) < 0 )
+#else
         if( av_find_stream_info( pFormatCtx ) < 0 )
+#endif
         {
             warning() << QLatin1String( "Unable to find stream info: " ) + track->playableUrl().toLocalFile();
             av_close_input_file( pFormatCtx );
@@ -173,7 +180,11 @@ MusicDNSAudioDecoder::run()
             continue;
         }
 
+#if LIBAVCODEC_VERSION_MAJOR >= 54
+        if( avcodec_open2( pCodecCtx, pCodec, NULL ) < 0 )
+#else
         if( avcodec_open( pCodecCtx, pCodec ) < 0 )
+#endif
         {
             warning() << QLatin1String( "Unable to open codec " ) + track->playableUrl().toLocalFile();
             av_close_input_file( pFormatCtx );
