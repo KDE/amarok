@@ -254,14 +254,14 @@ Correct:
 
 Unit Tests and API Docs
 -----------------------
-Amarok uses the "Hudson" system for doing automatic nightly builds, checking for
+Amarok uses the "Jenkins" system for doing automatic nightly builds, checking for
 compile errors, and visualizing Unit Tests. You can see the results here:
 
-http://ci.amarok.kde.org/
+http://build.kde.org/view/EXTRAGEAR/job/amarok_master/
 
-Hudson also generates API Docs every night, which are located here:
+The API DOc for Amarok can be found here:
 
-http://ci.amarok.kde.org/job/Amarok-Nightly/doxygen/
+http://api.kde.org/extragear-api/multimedia-apidocs/amarok/html/index.html
 
 
 Tips & Tricks
