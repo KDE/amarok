@@ -39,7 +39,7 @@ DiagnosticDialog::DiagnosticDialog( const KAboutData *aboutData, QWidget *parent
 
     m_textBox = new QPlainTextEdit( generateReport( aboutData ), this );
 
-    setPlainCaption( i18n( "%1 Diagnostics", aboutData->programName() ) );
+    setPlainCaption( i18nc( "%1 is the program name", "%1 Diagnostics", aboutData->programName() ) );
 
     setButtons( Close | User1 );
     setButtonText( User1, i18n( "Copy to Clipboard" ) );
@@ -89,7 +89,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     foreach( KPluginInfo aInfo, aPlugins )
     {
         aPluginString = aPluginString % aInfo.name() %          // " " % aInfo.version() %
-                        ( aInfo.isPluginEnabled() ? i18n("  (enabled)") : i18n(" (disabled)") ) % "\n";
+                        ( aInfo.isPluginEnabled() ? i18n(" (enabled)") : i18n(" (disabled)") ) % "\n";
     }
 
 
@@ -100,7 +100,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     const QString pulse = hasPulse ? i18nc("Usage", "Yes") : i18nc("Usage", "No");
 
     return i18n(
-               "%1-Diagnostics\n\n%1 Version: %2\n"
+               "%1 Diagnostics\n\n%1 Version: %2\n"
                "KDE Version: %3\n"
                "Qt Version: %4\n"
                "Phonon Version: %5\n"
