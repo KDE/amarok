@@ -46,9 +46,9 @@ CollectionLocationDelegateImpl::reallyTrash( CollectionLocation *loc, const Meta
 {
     QStringList files = trackList( tracks );
     const QString text( i18ncp( "@info",
-        "Do you really want to move this track to the trash? It will be removed from %1.",
-        "Do you really want to move these %2 tracks to the trash? They will be removed from %1.",
-        loc->prettyLocation(), tracks.count() ) );
+        "Do you really want to move this track to the trash? It will be removed from %2.",
+        "Do you really want to move these %1 tracks to the trash? They will be removed from %2.",
+        tracks.count(), loc->prettyLocation() ) );
     int ret = KMessageBox::warningContinueCancelList( 0, text, files,
         i18nc( "@title:window", "Confirm Move to Trash" ), KStandardGuiItem::remove() );
     return ret == KMessageBox::Continue;
