@@ -2,6 +2,11 @@ Amarok ChangeLog
 ================
 (C) 2002-2012 the Amarok authors.
 
+VERSION 2.6
+  CHANGES:
+    * Building the spectrum analyzer applet can now be disabled with a CMake
+      argument.
+
 VERSION 2.6-Beta 1
   FEATURES:
     * Amazon store: improved album search

@@ -11,6 +11,7 @@ option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recommended" ON)
+option(WITH_SPECTRUM_ANALYZER "Enable the spectrum analyzer context applet in Amarok" ON)
 option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
 
 include(CheckLibraryExists)
@@ -114,9 +115,11 @@ if( WITH_PLAYER )
     find_package(QCA2)
     macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" FALSE "" "" )
 
-    # OpenGL is required for the spectrum analyzer
-    find_package(OpenGL)
-    macro_log_feature( OPENGL_FOUND "OpenGL" "Support for hardware acceleration (enables the Spectrum Analyzer)" FALSE "" "" )
+    if( WITH_SPECTRUM_ANALYZER )
+        # OpenGL is required for the spectrum analyzer
+        macro_optional_find_package(OpenGL)
+        macro_log_feature( OPENGL_FOUND "OpenGL" "Support for hardware acceleration (enables the Spectrum Analyzer)" "http://www.opengl.org/" FALSE "" "" )
+    endif( WITH_SPECTRUM_ANALYZER )
 
     # QJson is required for the PlaydarCollection
     macro_optional_find_package(QJSON)

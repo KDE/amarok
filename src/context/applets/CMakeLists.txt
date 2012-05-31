@@ -7,7 +7,7 @@ add_subdirectory( photos )
 add_subdirectory( labels )
 add_subdirectory( tabs )
 
-if( OPENGL_FOUND )
+if( WITH_SPECTRUM_ANALYZER AND OPENGL_FOUND )
     add_subdirectory( spectrumanalyzer )
 endif()
 
