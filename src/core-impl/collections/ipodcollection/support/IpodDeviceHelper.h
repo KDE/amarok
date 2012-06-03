@@ -49,10 +49,10 @@ namespace IpodDeviceHelper {
     AMAROK_EXPORT QString ipodName( Itdb_iTunesDB *itdb );
 
     /**
-     * Unlinks tracks from itdb so that itdb no longer frees them when it itself is freed.
-     * Does nothing when itdb is null.
+     * Unlinks playlists and tracks from itdb so that itdb no longer frees them when it
+     * itself is freed. Does nothing when itdb is null.
      */
-    AMAROK_EXPORT void unlinkTracksFromItdb( Itdb_iTunesDB *itdb );
+    AMAROK_EXPORT void unlinkPlaylistsTracksFromItdb( Itdb_iTunesDB *itdb );
 
     /**
      * Fills in a dialog with iPod configuration.

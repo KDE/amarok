@@ -69,24 +69,37 @@ IpodDeviceHelper::ipodName( Itdb_iTunesDB *itdb )
 }
 
 void
-IpodDeviceHelper::unlinkTracksFromItdb( Itdb_iTunesDB *itdb )
+IpodDeviceHelper::unlinkPlaylistsTracksFromItdb( Itdb_iTunesDB *itdb )
 {
     if( !itdb )
         return;
 
+    while( itdb->playlists )
+    {
+        Itdb_Playlist *ipodPlaylist = (Itdb_Playlist *) itdb->playlists->data;
+        if( !ipodPlaylist || ipodPlaylist->itdb != itdb )
+        {
+            /* a) itdb_playlist_unlink() cannot work if ipodPlaylist is null, prevent
+             *    infinite loop
+             * b) if ipodPlaylist->itdb != itdb, something went horribly wrong. Prevent
+             *    infinite loop even in this case
+             */
+            itdb->playlists = g_list_remove( itdb->playlists, ipodPlaylist );
+            continue;
+        }
+        itdb_playlist_unlink( ipodPlaylist );
+    }
+
     while( itdb->tracks )
     {
         Itdb_Track *ipodTrack = (Itdb_Track *) itdb->tracks->data;
-        if( !ipodTrack )
+        if( !ipodTrack || ipodTrack->itdb != itdb )
         {
-            // itdb_track_unlink() cannot work in this case, prevent infinite loop:
-            itdb->tracks = g_list_remove( itdb->tracks, ipodTrack );
-            continue;
-        }
-        if( ipodTrack->itdb != itdb )
-        {
-            // something went horribly wrong, m_itdb->tracks contains a track that claims
-            // that it doesn't belong into this itdb. Prevent infinite loop:
+            /* a) itdb_track_unlink() cannot work if ipodTrack is null, prevent infinite
+             *    loop
+             * b) if ipodTrack->itdb != itdb, something went horribly wrong. Prevent
+             *    infinite loop even in this case
+             */
             itdb->tracks = g_list_remove( itdb->tracks, ipodTrack );
             continue;
         }

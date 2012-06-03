@@ -32,7 +32,9 @@ IpodPlaylist::IpodPlaylist( Itdb_Playlist *ipodPlaylist, IpodCollection *collect
     , m_coll( collection )
     , m_type( Normal )
 {
-    Q_ASSERT( m_playlist && collection );
+    Q_ASSERT( m_playlist );
+    if( !m_coll )
+        return;  // corner case, can happen if IpodCollection is destructed in wrong time
     for( GList *members = m_playlist->members; members; members = members->next )
     {
         Itdb_Track *itdbTrack = (Itdb_Track *) members->data;

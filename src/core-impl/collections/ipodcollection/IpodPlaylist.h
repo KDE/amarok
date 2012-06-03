@@ -17,7 +17,6 @@
 #ifndef IPODPLAYLIST_H
 #define IPODPLAYLIST_H
 
-#include "IpodCollectionLocation.h"
 #include "core/playlists/Playlist.h"
 
 #include <QReadWriteLock>

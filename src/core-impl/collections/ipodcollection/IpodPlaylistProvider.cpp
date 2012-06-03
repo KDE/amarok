@@ -17,6 +17,7 @@
 #include "IpodPlaylistProvider.h"
 
 #include "IpodCollection.h"
+#include "IpodCollectionLocation.h"
 #include "IpodPlaylist.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/interfaces/Logger.h"
@@ -236,11 +237,11 @@ IpodPlaylistProvider::parseItdbPlaylists( const Meta::TrackList &staleTracks, co
         emit playlistAdded( m_orphanedPlaylist );
     }
 
-    if( !m_coll->m_itdb )
-        return;
-
-    for( GList *playlists = m_coll->m_itdb->playlists; playlists; playlists = playlists->next )
+    Itdb_iTunesDB *itdb = m_coll ? m_coll->m_itdb : 0;
+    for( GList *playlists = itdb ? itdb->playlists : 0; playlists; playlists = playlists->next )
     {
+        if( !m_coll )
+            return; // guard against IpodCollection being destructed behind our back
         Itdb_Playlist *playlist = (Itdb_Playlist *) playlists->data;
         if( !playlist )
             continue;

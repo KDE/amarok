@@ -135,6 +135,12 @@ bool IpodCollection::init()
 IpodCollection::~IpodCollection()
 {
     DEBUG_BLOCK
+
+    The::playlistManager()->removeProvider( m_playlistProvider );
+    // if IpodPlaylistProvider is working in a thread, give it a chance to catch
+    // IpodCollection destruction.
+    m_playlistProvider->m_coll = 0;
+
     // this is not racy: destructor should be called in a main thread, the timer fires in the
     // same thread
     if( m_writeDatabaseTimer.isActive() )
@@ -149,15 +155,12 @@ IpodCollection::~IpodCollection()
     /* because m_itdb takes ownership of the tracks added to it, we need to remove the
      * tracks from itdb before we delete it because in Amarok, IpodMeta::Track is the owner
      * of the track */
-    IpodDeviceHelper::unlinkTracksFromItdb( m_itdb );  // does nothing if m_itdb is null
+    IpodDeviceHelper::unlinkPlaylistsTracksFromItdb( m_itdb );  // does nothing if m_itdb is null
     itdb_free( m_itdb );  // does nothing if m_itdb is null
     m_itdb = 0;
 
     delete m_configureDialog;
     delete m_iphoneAutoMountpoint; // this can unmount iPhone and remove temporary dir
-
-    The::playlistManager()->removeProvider( m_playlistProvider );
-    delete m_playlistProvider;
 }
 
 bool
@@ -366,9 +369,7 @@ IpodCollection::slotEject()
         ThreadWeaver::Weaver::instance()->enqueue( job );
     }
     else
-    {
         slotPerformTeardownAndRemove();
-    }
 }
 
 void

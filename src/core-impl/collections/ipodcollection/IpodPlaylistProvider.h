@@ -79,9 +79,10 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
          * Go through iPod playlists and create Amarok playlists for them. Designed to be
          * run from non-gui thread from IpodParseTracksJob.
          *
-         * @param staleTracks list of track from iTunes database whose associated file no longer exists
-         * @param knownPaths a set of absolute local paths of all track from iTunes database.
-         *                   used for orphaned tracks detection.
+         * @param staleTracks list of track from iTunes database whose associated file
+         *                    no longer exists
+         * @param knownPaths a set of absolute local paths of all track from iTunes
+         *                   database; used for orphaned tracks detection
          */
         void parseItdbPlaylists( const Meta::TrackList &staleTracks, const QSet<QString> &knownPaths );
 
@@ -108,6 +109,8 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
         void slotCopyAndInsertToPlaylists();
 
     private:
+        friend class IpodCollection;
+
         void copyAndInsertToPlaylist( const TrackPositionList &tracks, Playlists::PlaylistPtr destPlaylist );
         Meta::TrackList findOrphanedTracks( const QSet<QString> &knownPaths );
         bool orphanedAndStaleTracksMatch( const Meta::TrackPtr &orphaned, const Meta::TrackPtr &stale );
