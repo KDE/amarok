@@ -2,6 +2,7 @@
 Type=Service
 Name=Local Files & USB Mass Storage Backend
 Name[ca]=Fitxers locals i dorsal d'emmagatzematge massiu USB
+Name[da]=Motor til lokale filer og USB Mass Storage
 Name[de]=Backend für lokale Dateien und USB-Massenspeicher
 Name[el]=Τοπικά αρχεία & σύστημα υποστήριξης μαζικής αποθήκευσης USB
 Name[es]=Motor de archivos locales y almacenamiento USB
@@ -22,6 +23,7 @@ Name[zh_TW]=本地檔案與 USB 儲存裝置後端介面
 Icon=drive-harddisk
 Comment=Local Collection folders on local and pluggable disks
 Comment[ca]=Carpetes de col·leccions locals en discs locals o extraïbles
+Comment[da]=Mapper med lokal samling på lokale og flytbare diske
 Comment[de]=Ordner der lokalen Sammlung auf lokalen und Wechseldatenträgern
 Comment[el]=Φάκελοι τοπικών συλλογών σε τοπικούς και αυτοπροσαρτώμενους δίσκους
 Comment[es]=Carpetas de la colección local y discos conectables
