@@ -260,6 +260,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         QTimer m_writeDatabaseTimer;
         QTemporaryFile *m_preventUnmountTempFile;
         QString m_mountPoint;
+        QString m_uuid;
         IphoneMountPoint *m_iphoneAutoMountpoint;
         QString m_prettyName;
         IpodPlaylistProvider *m_playlistProvider;

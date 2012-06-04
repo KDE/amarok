@@ -59,14 +59,16 @@ IpodCollection::IpodCollection( const QDir &mountPoint, const QString &uuid )
     , m_lastUpdated( 0 )
     , m_preventUnmountTempFile( 0 )
     , m_mountPoint( mountPoint.absolutePath() )
+    , m_uuid( uuid )
     , m_iphoneAutoMountpoint( 0 )
     , m_playlistProvider( 0 )
     , m_configureAction( 0 )
     , m_ejectAction( 0 )
     , m_consolidateAction( 0 )
 {
-    Q_UNUSED( uuid )
     DEBUG_BLOCK
+    if( m_uuid.isEmpty() )
+        m_uuid = m_mountPoint;
 }
 
 IpodCollection::IpodCollection( const QString &uuid )
@@ -76,6 +78,7 @@ IpodCollection::IpodCollection( const QString &uuid )
     , m_itdb( 0 )
     , m_lastUpdated( 0 )
     , m_preventUnmountTempFile( 0 )
+    , m_uuid( uuid )
     , m_playlistProvider( 0 )
     , m_configureAction( 0 )
     , m_ejectAction( 0 )
@@ -85,6 +88,8 @@ IpodCollection::IpodCollection( const QString &uuid )
     // following constructor displays sorry message if it cannot mount iPhone:
     m_iphoneAutoMountpoint = new IphoneMountPoint( uuid );
     m_mountPoint = m_iphoneAutoMountpoint->mountPoint();
+    if( m_uuid.isEmpty() )
+        m_uuid = m_mountPoint;
 }
 
 bool IpodCollection::init()
@@ -173,9 +178,8 @@ IpodCollection::possiblyContainsTrack( const KUrl &url ) const
 Meta::TrackPtr
 IpodCollection::trackForUrl( const KUrl &url )
 {
-    QString uidUrl = QString( "%1://%2" )
-                     .arg( s_uidUrlProtocol )
-                     .arg( url.toLocalFile() );
+    QString relativePath = url.toLocalFile().mid( m_mountPoint.size() + 1 );
+    QString uidUrl = QString( "%1/%2" ).arg( collectionId(), relativePath );
     return trackForUidUrl( uidUrl );
 }
 
@@ -237,9 +241,7 @@ IpodCollection::uidUrlProtocol() const
 QString
 IpodCollection::collectionId() const
 {
-    return QString( "%1://%2" )
-           .arg( s_uidUrlProtocol )
-           .arg( m_mountPoint );
+    return QString( "%1://%2" ).arg( s_uidUrlProtocol, m_uuid );
 }
 
 QString

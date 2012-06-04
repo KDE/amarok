@@ -23,6 +23,7 @@
 #include <solid/devicenotifier.h>
 #include <solid/portablemediaplayer.h>
 #include <solid/storageaccess.h>
+#include <solid/storagevolume.h>
 
 
 AMAROK_EXPORT_COLLECTION( IpodCollectionFactory, ipodcollection )
@@ -217,6 +218,9 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
             return;
         }
         mountPoint = ssa->filePath();
+        Solid::StorageVolume *volume = device.as<Solid::StorageVolume>();
+        if( volume )
+            uuid = volume->uuid();
     }
     else // no ssa
     {

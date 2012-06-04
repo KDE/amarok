@@ -184,7 +184,9 @@ Track::playableUrl() const
         return KUrl();
     QReadLocker locker( &m_trackLock );
     gchar *relPathChar = g_strdup( m_track->ipod_path );
+    locker.unlock();
     itdb_filename_ipod2fs( relPathChar ); // in-place
+    // relPath begins with a slash
     QString relPath = QFile::decodeName( relPathChar );
     g_free( relPathChar );
     return KUrl( m_mountPoint + relPath );
@@ -207,9 +209,18 @@ Track::prettyUrl() const
 QString
 Track::uidUrl() const
 {
-    return QString( "%1://%2" )
-           .arg( IpodCollection::s_uidUrlProtocol )
-           .arg( playableUrl().toLocalFile() );
+    QReadLocker locker( &m_trackLock );
+    gchar *relPathChar = g_strdup( m_track->ipod_path );
+    locker.unlock();
+    itdb_filename_ipod2fs( relPathChar ); // in-place
+    // relPath begins with a slash
+    QString relPath = QFile::decodeName( relPathChar );
+    g_free( relPathChar );
+
+    if( m_coll )
+        return m_coll.data()->collectionId() + relPath;
+    else
+        return m_mountPoint + relPath;
 }
 
 bool
