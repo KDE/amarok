@@ -46,8 +46,9 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          * @param mountPoint actual iPod mount point to use, must be already mounted and
          * accessible. When eject is requested, solid StorageAccess with this mount point
          * is searched for to perform unmounting.
+         * @param uuid filesystem volume UUID or another unique identifier for this iPod
          */
-        explicit IpodCollection( const QDir &mountPoint );
+        explicit IpodCollection( const QDir &mountPoint, const QString &uuid );
 
         /**
          * Creates an iPod collection on top of not-mounted iPhone/iPad by accessing it

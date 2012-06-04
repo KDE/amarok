@@ -193,7 +193,8 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
 {
     DEBUG_BLOCK
     DeviceType type;
-    QString mountPointOrUuid;
+    QDir mountPoint;
+    QString uuid;
     Solid::Device device( udi );
     Solid::StorageAccess *ssa = device.as<Solid::StorageAccess>();
     if( ssa )
@@ -215,7 +216,7 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
             debug() << "device" << udi << "not accessible, ignoring for now";
             return;
         }
-        mountPointOrUuid = ssa->filePath();
+        mountPoint = ssa->filePath();
     }
     else // no ssa
     {
@@ -228,12 +229,11 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
                 debug() << "Ignoring above device as it doesn't have PortableMediaPlayer interface";
                 return;
             }
-            // try to get 40-digit serial number; may return empty string in older kdelibs
-            mountPointOrUuid = pmp->driverHandle( "usbmux" ).toString();
 
             if( pmp->supportedProtocols().contains( "ipod" ) &&
                 pmp->supportedDrivers().contains( "usbmux" ) )
             {
+                uuid = pmp->driverHandle( "usbmux" ).toString();
                 debug() << "Above device suports ipod/usbmux protocol/driver combo, good";
                 break;
             }
@@ -243,6 +243,7 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
             if( pmp->supportedProtocols().contains( "mtp" ) &&
                 pmp->supportedDrivers().contains( "usb" ) )
             {
+                uuid = pmp->driverHandle( "mtp" ).toString();
                 debug() << "Above device suports mtp/usb protocol/driver combo,"
                         << "treating as iPhone (kdelibs <= 4.8.2 work-around)";
                 break;
@@ -254,15 +255,16 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
         } while( false );
     }
 
-    debug() << "creating iPod collection, mount-point or uuid:" << mountPointOrUuid;
+    debug() << "Creating iPod collection, mount-point (empty if iOS):" << mountPoint
+            << "uuid:" << uuid;
     IpodCollection *collection;
     switch( type )
     {
         case iPod:
-            collection = new IpodCollection( QDir( mountPointOrUuid ) ); // QDir to call correct overload
+            collection = new IpodCollection( mountPoint, uuid );
             break;
         case iOS:
-            collection = new IpodCollection( mountPointOrUuid );
+            collection = new IpodCollection( uuid );
             break;
     }
     m_collectionMap.insert( udi, collection );

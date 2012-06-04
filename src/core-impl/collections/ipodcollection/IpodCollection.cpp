@@ -51,7 +51,7 @@ const QStringList IpodCollection::s_audioFileTypes = QStringList() << "mp3" << "
 const QStringList IpodCollection::s_videoFileTypes = QStringList() << "m4v" << "mov";
 const QStringList IpodCollection::s_audioVideoFileTypes = QStringList() << "mp4";
 
-IpodCollection::IpodCollection( const QDir &mountPoint )
+IpodCollection::IpodCollection( const QDir &mountPoint, const QString &uuid )
     : Collections::Collection()
     , m_configureDialog( 0 )
     , m_mc( new Collections::MemoryCollection() )
@@ -65,6 +65,7 @@ IpodCollection::IpodCollection( const QDir &mountPoint )
     , m_ejectAction( 0 )
     , m_consolidateAction( 0 )
 {
+    Q_UNUSED( uuid )
     DEBUG_BLOCK
 }
 
