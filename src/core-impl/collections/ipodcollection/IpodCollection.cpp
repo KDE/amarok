@@ -339,15 +339,26 @@ IpodCollection::trackForUidUrl( const QString &uidUrl )
 void
 IpodCollection::slotDestroy()
 {
+    // guard against user hitting the button twice or hitting it while there is another
+    // write database job alreaddy running
+    if( m_writeDatabaseJob )
+    {
+        IpodWriteDatabaseJob *job = m_writeDatabaseJob.data();
+        // don't create duplicate connections:
+        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotRemove()) );
+        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotPerformTeardownAndRemove()) );
+        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotRemove()) );
+    }
     // this is not racy: slotDestroy() is delivered to main thread, the timer fires in the
     // same thread
-    if( m_writeDatabaseTimer.isActive() )
+    else if( m_writeDatabaseTimer.isActive() )
     {
         // write database in a thread so that it need not be written in destructor
         m_writeDatabaseTimer.stop();
         IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
-        connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(slotRemove()) );
+        m_writeDatabaseJob = job;
         connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotRemove()) );
         ThreadWeaver::Weaver::instance()->enqueue( job );
     }
     else
@@ -357,15 +368,26 @@ IpodCollection::slotDestroy()
 void
 IpodCollection::slotEject()
 {
+    // guard against user hitting the button twice or hitting it while there is another
+    // write database job alreaddy running
+    if( m_writeDatabaseJob )
+    {
+        IpodWriteDatabaseJob *job = m_writeDatabaseJob.data();
+        // don't create duplicate connections:
+        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotRemove()) );
+        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotPerformTeardownAndRemove()) );
+        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotPerformTeardownAndRemove()) );
+    }
     // this is not racy: slotEject() is delivered to main thread, the timer fires in the
     // same thread
-    if( m_writeDatabaseTimer.isActive() )
+    else if( m_writeDatabaseTimer.isActive() )
     {
         // write database now because iPod will be already unmounted in destructor
         m_writeDatabaseTimer.stop();
         IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
-        connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(slotPerformTeardownAndRemove()) );
+        m_writeDatabaseJob = job;
         connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotPerformTeardownAndRemove()) );
         ThreadWeaver::Weaver::instance()->enqueue( job );
     }
     else
@@ -500,7 +522,14 @@ IpodCollection::slotStartWriteDatabaseTimer()
 
 void IpodCollection::slotInitiateDatabaseWrite()
 {
+    if( m_writeDatabaseJob )
+    {
+        warning() << __PRETTY_FUNCTION__ << "called while m_writeDatabaseJob still points"
+                  << "to an older job. Not doing anyhing.";
+        return;
+    }
     IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
+    m_writeDatabaseJob = job;
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
 }

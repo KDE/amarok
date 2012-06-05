@@ -8,6 +8,7 @@ VERSION 2.6
       argument.
 
   BUGFIXES:
+    * Don't crash if iPod's eject button is hit twice. (BR 301208)
     * Don't crash even if the iPod is connected and quickly ejected. (BR 301166)
 
 VERSION 2.6-Beta 1

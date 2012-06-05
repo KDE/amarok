@@ -29,6 +29,7 @@ namespace Collections { class MemoryCollection; }
 namespace IpodMeta { class Track; }
 class IphoneMountPoint;
 class IpodParseTracksJob;
+class IpodWriteDatabaseJob;
 class IpodPlaylistProvider;
 class QTemporaryFile;
 struct _Itdb_iTunesDB;
@@ -275,6 +276,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         QAction *m_ejectAction;
         QAction *m_consolidateAction;
         QWeakPointer<IpodParseTracksJob> m_parseTracksJob;
+        QWeakPointer<IpodWriteDatabaseJob> m_writeDatabaseJob;
 };
 
 #endif // IPODCOLLECTION_H

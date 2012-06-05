@@ -16,8 +16,9 @@
 
 #include "IpodWriteDatabaseJob.h"
 
+#include "IpodCollection.h"
 
-IpodWriteDatabaseJob::IpodWriteDatabaseJob( const QWeakPointer<IpodCollection> &collection )
+IpodWriteDatabaseJob::IpodWriteDatabaseJob( IpodCollection *collection )
     : Job()
     , m_coll( collection )
 {
@@ -26,8 +27,7 @@ IpodWriteDatabaseJob::IpodWriteDatabaseJob( const QWeakPointer<IpodCollection> &
 void
 IpodWriteDatabaseJob::run()
 {
-    if( m_coll )
-        m_coll.data()->writeDatabase();
+    m_coll->writeDatabase();
 }
 
 #include "IpodWriteDatabaseJob.moc"
