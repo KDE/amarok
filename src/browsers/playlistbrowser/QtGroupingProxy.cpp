@@ -37,19 +37,18 @@ QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNod
     setSourceModel( model );
 
     // signal proxies
-    connect( sourceModel(), SIGNAL(dataChanged( const QModelIndex &, const QModelIndex & )),
-             SLOT(modelDataChanged( const QModelIndex &, const QModelIndex & )) );
-    connect( sourceModel(), SIGNAL(rowsInserted( const QModelIndex &, int, int )),
-             SLOT(modelRowsInserted( const QModelIndex &, int, int )) );
-    connect( sourceModel(), SIGNAL(rowsAboutToBeInserted( const QModelIndex &, int ,int )),
-             SLOT(modelRowsAboutToBeInserted( const QModelIndex &, int ,int )));
-    connect( sourceModel(), SIGNAL(rowsRemoved( const QModelIndex &, int, int )),
-             SLOT(modelRowsRemoved( const QModelIndex &, int, int )) );
-    connect( sourceModel(), SIGNAL(rowsAboutToBeRemoved( const QModelIndex &, int ,int )),
-             SLOT(modelRowsAboutToBeRemoved( QModelIndex, int, int)) );
+    connect( sourceModel(), SIGNAL(rowsInserted(QModelIndex,int,int) ),
+             SLOT(modelRowsInserted(QModelIndex,int,int)) );
+    connect( sourceModel(), SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
+             SLOT(modelRowsAboutToBeInserted(QModelIndex,int,int)) );
+    connect( sourceModel(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
+             SLOT(modelRowsRemoved(QModelIndex,int,int)) );
+    connect( sourceModel(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+             SLOT(modelRowsAboutToBeRemoved(QModelIndex,int,int)) );
+
     connect( sourceModel(), SIGNAL(layoutChanged()), SLOT(buildTree()) );
-    connect( sourceModel(), SIGNAL(dataChanged( QModelIndex, QModelIndex )),
-             SLOT(modelDataChanged( QModelIndex, QModelIndex )) );
+    connect( sourceModel(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+             SLOT(modelDataChanged(QModelIndex,QModelIndex)) );
 
     if( groupedColumn != -1 )
         setGroupedColumn( groupedColumn );
@@ -63,7 +62,6 @@ void
 QtGroupingProxy::setGroupedColumn( int groupedColumn )
 {
     m_groupedColumn = groupedColumn;
-    //can be called from the constructor, this makes sure sub-class implementation is called.
     QTimer::singleShot( 0, this , SLOT(buildTree()) );
 }
 
@@ -222,23 +220,15 @@ QtGroupingProxy::addSourceRow( const QModelIndex &idx )
         {
             int &rowValue = groupList[insertedProxyRow-1];
             if( idx.row() <= rowValue )
-            {
                 //increment the rows that come after the new row since they moved one place up.
                 rowValue++;
-            }
             else
-            {
                 break;
-            }
         }
 
         if( updatedGroups.contains( i.key() ) )
-        {
-            //the row needs to be added to this group
-            beginInsertRows( index( i.key() ), insertedProxyRow, insertedProxyRow );
+            // we're inside beginInsertRows() or beginInsertRows(), don't re-enter it.
             groupList.insert( insertedProxyRow, idx.row() );
-            endInsertRows();
-        }
     }
 
     return updatedGroups;
@@ -715,7 +705,6 @@ QtGroupingProxy::modelRowsInserted( const QModelIndex &parent, int start, int en
     }
     else
     {
-        //beginInsertRows had to be called in modelRowsAboutToBeInserted()
         endInsertRows();
     }
 }
@@ -725,16 +714,10 @@ QtGroupingProxy::modelRowsAboutToBeRemoved( const QModelIndex &parent, int start
 {
     if( parent == m_rootNode )
     {
-        QHash<quint32, QList<int> >::const_iterator i;
-        //HACK, we are going to call beginRemoveRows() multiple times without
-        // endRemoveRows() if a source index is in multiple groups.
-        // This can be a problem for some views/proxies, but Q*Views can handle it.
-        // TODO: investigate a queue for applying proxy model changes in the correct order
-        for( i = m_groupHash.constBegin(); i != m_groupHash.constEnd(); ++i )
+        foreach( int groupIndex, m_groupHash.keys() )
         {
-            int groupIndex = i.key();
-            const QList<int> &groupList = i.value();
             QModelIndex proxyParent = index( groupIndex, 0 );
+            QList<int> &groupList = m_groupHash[groupIndex];
             foreach( int originalRow, groupList )
             {
                 if( originalRow >= start && originalRow <= end )
@@ -769,17 +752,10 @@ QtGroupingProxy::modelRowsRemoved( const QModelIndex &parent, int start, int end
         //X-times (where X = end - start).
         for( int i = start; i <= end; i++ )
         {
-            //HACK: we are going to iterate the hash in reverse so calls to endRemoveRows()
-            // are matched up with the beginRemoveRows() in modelRowsAboutToBeRemoved()
-            //NOTE: easier to do reverse with java style iterator
-            QMutableHashIterator<quint32, QList<int> > i( m_groupHash );
-            i.toBack();
-            while( i.hasPrevious() )
+            foreach( int groupIndex, m_groupHash.keys() )
             {
-                i.previous();
-                int groupIndex = i.key();
                 //has to be a modifiable reference for remove and replace operations
-                QList<int> &groupList = i.value();
+                QList<int> &groupList = m_groupHash[groupIndex];
                 int rowIndex = groupList.indexOf( start );
                 if( rowIndex != -1 )
                 {
