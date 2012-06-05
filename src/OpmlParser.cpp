@@ -55,14 +55,14 @@ OpmlParser::read( const KUrl &url )
     if( m_url.isLocalFile() )
     {
         //read directly from local file
-        QFile *localFile = new QFile( m_url.toLocalFile() );
+        QFile localFile( m_url.toLocalFile() );
         if( !localFile->open( QIODevice::ReadOnly ) )
         {
             debug() << "failed to open local OPML file " << m_url.url();
             return false;
         }
 
-        return read( localFile );
+        return read( &localFile );
     }
 
     m_transferJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
