@@ -40,6 +40,7 @@
 #include <solid/storageaccess.h>
 #include <ThreadWeaver/Weaver>
 
+#include <QTemporaryFile>
 #include <QWeakPointer>
 
 #include <gpod/itdb.h>

@@ -17,10 +17,8 @@
 #ifndef IPODMETA_H
 #define IPODMETA_H
 
-#include "core/meta/Meta.h"
 #include "MetaValues.h"
-
-#include <KTemporaryFile>
+#include "core/meta/Meta.h"
 
 #include <QReadWriteLock>
 
@@ -212,9 +210,10 @@ namespace IpodMeta
             /**
              * We need the temporary image file to exist for the lifetime of Track because
              * calling itdb_track_set_thumbnails() only saves the filename - the file is
-             * read only when needed
+             * read only when needed. If this path is non-empty, it means that the file
+             * should be deleted in destructor.
              */
-            KTemporaryFile *m_tempImageFile;
+            QString m_tempImageFilePath;
 
             /**
              * Set of field types (identified by constants from MetaValues.h) changed by
