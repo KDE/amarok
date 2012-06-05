@@ -300,11 +300,6 @@ void TestXSPFPlaylist::testSetAndGetLink()
     QCOMPARE( m_testPlaylist1->link().pathOrUrl(), QString( "" ) );
 }
 
-void TestXSPFPlaylist::testHasCapabilityInterface()
-{
-    QVERIFY( m_testPlaylist1->hasCapabilityInterface( Playlists::XSPFPlaylist::Capability::EditablePlaylist ) );
-}
-
 void TestXSPFPlaylist::testUidUrl()
 {
     QString tempPath = KStandardDirs::locateLocal( "tmp", "test.xspf" );

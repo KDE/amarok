@@ -19,7 +19,6 @@
 
 #include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
-#include "core/capabilities/Capability.h"
 
 #include <QList>
 #include <QMetaType>

@@ -36,7 +36,6 @@ set(libcore_capabilities_SRCS
     capabilities/CollectionScanCapability.cpp
     capabilities/CollectionImportCapability.cpp
     capabilities/EditCapability.cpp
-    capabilities/EditablePlaylistCapability.cpp
     capabilities/FindInSourceCapability.cpp
     capabilities/LastFmCapability.cpp
     capabilities/MultiPlayableCapability.cpp

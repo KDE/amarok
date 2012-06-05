@@ -19,7 +19,6 @@
 #define XSPFPLAYLIST_H
 
 #include "core-impl/playlists/types/file/PlaylistFile.h"
-#include "core/capabilities/EditablePlaylistCapability.h"
 
 #include <QDomDocument>
 #include <QTextStream>
@@ -54,8 +53,7 @@ typedef QList<XSPFTrack> XSPFTrackList;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class AMAROK_EXPORT XSPFPlaylist : public PlaylistFile, public QDomDocument,
-            public Capabilities::EditablePlaylistCapability
+class AMAROK_EXPORT XSPFPlaylist : public PlaylistFile, public QDomDocument
 {
 public:
     XSPFPlaylist();
@@ -117,9 +115,6 @@ public:
 
     /* Meta::Playlist virtual functions */
     virtual KUrl uidUrl() const { return m_url; }
-    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-
-    Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
     /* PlaylistFile methods */
     bool isWritable();

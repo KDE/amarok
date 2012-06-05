@@ -52,7 +52,6 @@ private slots:
     void testSetAndGetLicense();
     void testSetAndGetAttribution();
     void testSetAndGetLink();
-    void testHasCapabilityInterface();
     void testUidUrl();
     void testIsWritable();
     void testSave();

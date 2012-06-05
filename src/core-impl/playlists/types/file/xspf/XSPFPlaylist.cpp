@@ -845,26 +845,6 @@ XSPFPlaylist::queue()
 }
 
 bool
-XSPFPlaylist::hasCapabilityInterface( Capability::Type type ) const
-{
-    switch( type )
-    {
-        case Capability::EditablePlaylist: return true;
-        default: return false;
-    }
-}
-
-Capabilities::Capability*
-XSPFPlaylist::createCapabilityInterface( Capability::Type type )
-{
-    switch( type )
-    {
-        case Capability::EditablePlaylist: return static_cast<EditablePlaylistCapability *>( this );
-        default: return 0;
-    }
-}
-
-bool
 XSPFPlaylist::isWritable()
 {
     if( m_url.isEmpty() )
