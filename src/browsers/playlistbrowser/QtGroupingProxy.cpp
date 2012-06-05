@@ -29,26 +29,19 @@
     \ingroup model-view
 */
 
-QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNode, int groupedColumn )
-    : QAbstractProxyModel()
-    , m_rootNode( rootNode )
+
+QtGroupingProxy::QtGroupingProxy( QObject *parent )
+    : QAbstractProxyModel( parent )
+{
+}
+
+QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootIndex,
+                                  int groupedColumn, QObject *parent )
+    : QAbstractProxyModel( parent )
+    , m_rootIndex( rootIndex )
     , m_groupedColumn( 0 )
 {
     setSourceModel( model );
-
-    // signal proxies
-    connect( sourceModel(), SIGNAL(rowsInserted(QModelIndex,int,int) ),
-             SLOT(modelRowsInserted(QModelIndex,int,int)) );
-    connect( sourceModel(), SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
-             SLOT(modelRowsAboutToBeInserted(QModelIndex,int,int)) );
-    connect( sourceModel(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
-             SLOT(modelRowsRemoved(QModelIndex,int,int)) );
-    connect( sourceModel(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
-             SLOT(modelRowsAboutToBeRemoved(QModelIndex,int,int)) );
-
-    connect( sourceModel(), SIGNAL(layoutChanged()), SLOT(buildTree()) );
-    connect( sourceModel(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-             SLOT(modelDataChanged(QModelIndex,QModelIndex)) );
 
     if( groupedColumn != -1 )
         setGroupedColumn( groupedColumn );
@@ -59,10 +52,43 @@ QtGroupingProxy::~QtGroupingProxy()
 }
 
 void
+QtGroupingProxy::setSourceModel( QAbstractItemModel *sourceModel )
+{
+    QAbstractProxyModel::setSourceModel( sourceModel );
+    // signal proxies
+    connect( sourceModel, SIGNAL(dataChanged( const QModelIndex &, const QModelIndex & )),
+             SLOT(modelDataChanged( const QModelIndex &, const QModelIndex & )) );
+    connect( sourceModel, SIGNAL(rowsInserted( const QModelIndex &, int, int )),
+             SLOT(modelRowsInserted( const QModelIndex &, int, int )) );
+    connect( sourceModel, SIGNAL(rowsAboutToBeInserted( const QModelIndex &, int ,int )),
+             SLOT(modelRowsAboutToBeInserted( const QModelIndex &, int ,int )));
+    connect( sourceModel, SIGNAL(rowsRemoved( const QModelIndex &, int, int )),
+             SLOT(modelRowsRemoved( const QModelIndex &, int, int )) );
+    connect( sourceModel, SIGNAL(rowsAboutToBeRemoved( const QModelIndex &, int ,int )),
+             SLOT(modelRowsAboutToBeRemoved( QModelIndex, int, int)) );
+    connect( sourceModel, SIGNAL(layoutChanged()), SLOT(buildTree()) );
+    connect( sourceModel, SIGNAL(dataChanged( QModelIndex, QModelIndex )),
+             SLOT(modelDataChanged( QModelIndex, QModelIndex )) );
+    //set invalid index from source as root index
+    m_rootIndex = sourceModel->index( -1, -1 );
+}
+
+void
+QtGroupingProxy::setRootIndex( const QModelIndex &rootIndex )
+{
+    if( m_rootIndex == rootIndex )
+        return;
+
+    m_rootIndex = rootIndex;
+    //TODO: invalidate tree so buildTree() can be called later.
+}
+
+void
 QtGroupingProxy::setGroupedColumn( int groupedColumn )
 {
     m_groupedColumn = groupedColumn;
-    QTimer::singleShot( 0, this , SLOT(buildTree()) );
+    //TODO: invalidate tree so buildTree() can be called later.
+    buildTree();
 }
 
 /** Maps to what groups the source row belongs by returning the data of those groups.
@@ -143,13 +169,13 @@ QtGroupingProxy::buildTree()
     //don't clear the data maps since most of it will probably be needed again.
     m_parentCreateList.clear();
 
-    int max = sourceModel()->rowCount( m_rootNode );
+    int max = sourceModel()->rowCount( m_rootIndex );
     //qDebug() << QString("building tree with %1 leafs.").arg( max );
     //WARNING: these have to be added in order because the addToGroups function is optimized for
     //modelRowsInserted(). Failure to do so will result in wrong data shown in the view at best.
     for( int row = 0; row < max; row++ )
     {
-        QModelIndex idx = sourceModel()->index( row, m_groupedColumn, m_rootNode );
+        QModelIndex idx = sourceModel()->index( row, m_groupedColumn, m_rootIndex );
         addSourceRow( idx );
     }
 //    dumpGroups();
@@ -195,9 +221,8 @@ QtGroupingProxy::addSourceRow( const QModelIndex &idx )
             //-1 means not found
             if( updatedGroup == -1 )
             {
-                //new groups are added to the end of the existing list
-                m_groupMaps << data;
-                updatedGroup = m_groupMaps.count() - 1;
+                QModelIndex newGroupIdx = addEmptyGroup( data );
+                updatedGroup = newGroupIdx.row();
             }
 
             if( !m_groupHash.keys().contains( updatedGroup ) )
@@ -220,15 +245,23 @@ QtGroupingProxy::addSourceRow( const QModelIndex &idx )
         {
             int &rowValue = groupList[insertedProxyRow-1];
             if( idx.row() <= rowValue )
+            {
                 //increment the rows that come after the new row since they moved one place up.
                 rowValue++;
+            }
             else
+            {
                 break;
+            }
         }
 
         if( updatedGroups.contains( i.key() ) )
-            // we're inside beginInsertRows() or beginInsertRows(), don't re-enter it.
+        {
+            //the row needs to be added to this group
+            beginInsertRows( index( i.key() ), insertedProxyRow, insertedProxyRow );
             groupList.insert( insertedProxyRow, idx.row() );
+            endInsertRows();
+        }
     }
 
     return updatedGroups;
@@ -335,7 +368,7 @@ int
 QtGroupingProxy::columnCount( const QModelIndex &index ) const
 {
     if( !index.isValid() )
-        return sourceModel()->columnCount( m_rootNode );
+        return sourceModel()->columnCount( m_rootIndex );
 
     if( index.column() != 0 )
         return 0;
@@ -347,7 +380,7 @@ QVariant
 QtGroupingProxy::data( const QModelIndex &index, int role ) const
 {
     if( !index.isValid() )
-        return sourceModel()->data( m_rootNode, role ); //rootNode could have useful data
+        return sourceModel()->data( m_rootIndex, role ); //rootNode could have useful data
 
     //qDebug() << __FUNCTION__ << index << " role: " << role;
     int row = index.row();
@@ -432,7 +465,7 @@ QtGroupingProxy::setData( const QModelIndex &idx, const QVariant &value, int rol
         foreach( int originalRow, m_groupHash.value( idx.row() ) )
         {
             QModelIndex childIdx = sourceModel()->index( originalRow, columnToChange,
-                                                   m_rootNode );
+                                                   m_rootIndex );
             if( childIdx.isValid() )
                 sourceModel()->setData( childIdx, value, role );
         }
@@ -459,12 +492,12 @@ QtGroupingProxy::mapToSource( const QModelIndex &index ) const
 {
     //qDebug() << "mapToSource: " << index;
     if( !index.isValid() )
-        return m_rootNode;
+        return m_rootIndex;
 
     if( isGroup( index ) )
     {
         //qDebug() << "is a group: " << index.data( Qt::DisplayRole ).toString();
-        return m_rootNode;
+        return m_rootIndex;
     }
 
     QModelIndex proxyParent = index.parent();
@@ -472,7 +505,7 @@ QtGroupingProxy::mapToSource( const QModelIndex &index ) const
     QModelIndex originalParent = mapToSource( proxyParent );
     //qDebug() << "originalParent: " << originalParent;
     int originalRow = index.row();
-    if( originalParent == m_rootNode )
+    if( originalParent == m_rootIndex )
     {
         int indexInGroup = index.row();
         if( !proxyParent.isValid() )
@@ -513,7 +546,7 @@ QtGroupingProxy::mapFromSource( const QModelIndex &idx ) const
     int proxyRow = idx.row();
     int sourceRow = idx.row();
 
-    if( sourceParent.isValid() && ( sourceParent != m_rootNode ) )
+    if( sourceParent.isValid() && ( sourceParent != m_rootIndex ) )
     {
         //idx is a child of one of the items in the source model
         proxyParent = mapFromSource( sourceParent );
@@ -560,7 +593,7 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
 {
     if( !idx.isValid() )
     {
-        Qt::ItemFlags rootFlags = sourceModel()->flags( m_rootNode );
+        Qt::ItemFlags rootFlags = sourceModel()->flags( m_rootIndex );
         if( rootFlags.testFlag( Qt::ItemIsDropEnabled ) )
             return Qt::ItemFlags( Qt::ItemIsDropEnabled );
 
@@ -579,8 +612,8 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
         if( m_groupHash.value( idx.row() ).count() == 0 )
         {
             //check the flags of this column with the root node
-            QModelIndex originalRootNode = sourceModel()->index( m_rootNode.row(), m_groupedColumn,
-                                                           m_rootNode.parent() );
+            QModelIndex originalRootNode = sourceModel()->index( m_rootIndex.row(), m_groupedColumn,
+                                                           m_rootIndex.parent() );
             groupIsEditable = originalRootNode.flags().testFlag( Qt::ItemIsEditable );
         }
         else
@@ -588,7 +621,7 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
             foreach( int originalRow, m_groupHash.value( idx.row() ) )
             {
                 QModelIndex originalIdx = sourceModel()->index( originalRow, m_groupedColumn,
-                                                          m_rootNode );
+                                                          m_rootIndex );
 //                qDebug() << "originalIdx: " << originalIdx;
                 groupIsEditable = groupIsEditable
                                   ? originalIdx.flags().testFlag( Qt::ItemIsEditable )
@@ -684,7 +717,7 @@ QtGroupingProxy::hasChildren( const QModelIndex &parent ) const
 void
 QtGroupingProxy::modelRowsAboutToBeInserted( const QModelIndex &parent, int start, int end )
 {
-    if( parent != m_rootNode )
+    if( parent != m_rootIndex )
     {
         //an item will be added to an original index, remap and pass it on
         QModelIndex proxyParent = mapFromSource( parent );
@@ -695,16 +728,17 @@ QtGroupingProxy::modelRowsAboutToBeInserted( const QModelIndex &parent, int star
 void
 QtGroupingProxy::modelRowsInserted( const QModelIndex &parent, int start, int end )
 {
-    if( parent == m_rootNode )
+    if( parent == m_rootIndex )
     {
         //top level of the model changed, these new rows need to be put in groups
         for( int modelRow = start; modelRow <= end ; modelRow++ )
         {
-            addSourceRow( sourceModel()->index( modelRow, m_groupedColumn, m_rootNode ) );
+            addSourceRow( sourceModel()->index( modelRow, m_groupedColumn, m_rootIndex ) );
         }
     }
     else
     {
+        //beginInsertRows had to be called in modelRowsAboutToBeInserted()
         endInsertRows();
     }
 }
@@ -712,12 +746,18 @@ QtGroupingProxy::modelRowsInserted( const QModelIndex &parent, int start, int en
 void
 QtGroupingProxy::modelRowsAboutToBeRemoved( const QModelIndex &parent, int start, int end )
 {
-    if( parent == m_rootNode )
+    if( parent == m_rootIndex )
     {
-        foreach( int groupIndex, m_groupHash.keys() )
+        QHash<quint32, QList<int> >::const_iterator i;
+        //HACK, we are going to call beginRemoveRows() multiple times without
+        // endRemoveRows() if a source index is in multiple groups.
+        // This can be a problem for some views/proxies, but Q*Views can handle it.
+        // TODO: investigate a queue for applying proxy model changes in the correct order
+        for( i = m_groupHash.constBegin(); i != m_groupHash.constEnd(); ++i )
         {
+            int groupIndex = i.key();
+            const QList<int> &groupList = i.value();
             QModelIndex proxyParent = index( groupIndex, 0 );
-            QList<int> &groupList = m_groupHash[groupIndex];
             foreach( int originalRow, groupList )
             {
                 if( originalRow >= start && originalRow <= end )
@@ -744,7 +784,7 @@ QtGroupingProxy::modelRowsAboutToBeRemoved( const QModelIndex &parent, int start
 void
 QtGroupingProxy::modelRowsRemoved( const QModelIndex &parent, int start, int end )
 {
-    if( parent == m_rootNode )
+    if( parent == m_rootIndex )
     {
         //TODO: can be optimised by iterating over m_groupHash and checking start <= r < end
 
@@ -752,10 +792,17 @@ QtGroupingProxy::modelRowsRemoved( const QModelIndex &parent, int start, int end
         //X-times (where X = end - start).
         for( int i = start; i <= end; i++ )
         {
-            foreach( int groupIndex, m_groupHash.keys() )
+            //HACK: we are going to iterate the hash in reverse so calls to endRemoveRows()
+            // are matched up with the beginRemoveRows() in modelRowsAboutToBeRemoved()
+            //NOTE: easier to do reverse with java style iterator
+            QMutableHashIterator<quint32, QList<int> > i( m_groupHash );
+            i.toBack();
+            while( i.hasPrevious() )
             {
+                i.previous();
+                int groupIndex = i.key();
                 //has to be a modifiable reference for remove and replace operations
-                QList<int> &groupList = m_groupHash[groupIndex];
+                QList<int> &groupList = i.value();
                 int rowIndex = groupList.indexOf( start );
                 if( rowIndex != -1 )
                 {

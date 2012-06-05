@@ -266,11 +266,7 @@ PlaylistBrowserModel::index( int row, int column, const QModelIndex &parent) con
 {
     if( !parent.isValid() )
     {
-        //there are valid indexes available with row == -1 for empty groups and providers
-        if( row == -1 && column >= 0 )
-            return createIndex( row, column, row );
-
-        if( row < m_playlists.count() )
+        if( row >= 0 && row < m_playlists.count() )
             return createIndex( row, column, row );
     }
     else //if it has a parent it is a track

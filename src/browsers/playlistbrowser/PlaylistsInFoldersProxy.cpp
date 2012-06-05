@@ -108,8 +108,8 @@ PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &pare
         }
 
         //is a playlist not in a folder
-        QModelIndex childIdx = mapToSource( index( row, 0, m_rootNode ) );
-        result = sourceModel()->removeRows( childIdx.row(), count, m_rootNode );
+        QModelIndex childIdx = mapToSource( index( row, 0, m_rootIndex ) );
+        result = sourceModel()->removeRows( childIdx.row(), count, m_rootIndex );
         if( result )
         {
             beginRemoveRows( parent, row, row + count - 1 );

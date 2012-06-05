@@ -31,13 +31,20 @@ class QtGroupingProxy : public QAbstractProxyModel
 {
     Q_OBJECT
     public:
-        explicit QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNode = QModelIndex(),
-                                  int groupedColumn = -1 );
+        explicit QtGroupingProxy( QObject *parent = 0 );
+        QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootIndex = QModelIndex(),
+                                  int groupedColumn = -1, QObject *parent = 0 );
         ~QtGroupingProxy();
 
+        /* QtGroupingProxy methods */
+        void setRootIndex( const QModelIndex &rootIndex );
         void setGroupedColumn( int groupedColumn );
+        virtual QModelIndex addEmptyGroup( const RowData &data );
+        virtual bool removeGroup( const QModelIndex &idx );
 
         /* QAbstractProxyModel methods */
+        //re-implemented to connect to source signals
+        virtual void setSourceModel( QAbstractItemModel *sourceModel );
         virtual QModelIndex index( int row, int column = 0,
                                    const QModelIndex& parent = QModelIndex() ) const;
         virtual Qt::ItemFlags flags( const QModelIndex &idx ) const;
@@ -56,18 +63,14 @@ class QtGroupingProxy : public QAbstractProxyModel
         virtual void fetchMore( const QModelIndex &parent );
         virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
-        /* QtGroupingProxy methods */
-        virtual QModelIndex addEmptyGroup( const RowData &data );
-        virtual bool removeGroup( const QModelIndex &idx );
-
     protected slots:
         virtual void buildTree();
 
     private slots:
-        void modelDataChanged( const QModelIndex&, const QModelIndex& );
-        void modelRowsInserted( const QModelIndex&, int, int );
+        void modelDataChanged( const QModelIndex &, const QModelIndex & );
+        void modelRowsInserted( const QModelIndex &, int, int );
         void modelRowsAboutToBeInserted( const QModelIndex &, int ,int );
-        void modelRowsRemoved( const QModelIndex&, int, int );
+        void modelRowsRemoved( const QModelIndex &, int, int );
         void modelRowsAboutToBeRemoved( const QModelIndex &, int ,int );
 
     protected:
@@ -87,7 +90,7 @@ class QtGroupingProxy : public QAbstractProxyModel
         QList<int> addSourceRow( const QModelIndex &idx );
         
         bool isGroup( const QModelIndex &index ) const;
-        bool isAGroupSelected( const QModelIndexList& list ) const;
+        bool isAGroupSelected( const QModelIndexList &list ) const;
 
         /** Maintains the group -> sourcemodel row mapping
           * The reason a QList<int> is use instead of a QMultiHash is that the values have to be
@@ -115,7 +118,7 @@ class QtGroupingProxy : public QAbstractProxyModel
 
         QModelIndexList m_selectedGroups;
 
-        QModelIndex m_rootNode;
+        QModelIndex m_rootIndex;
         int m_groupedColumn;
 
         /* debug function */
