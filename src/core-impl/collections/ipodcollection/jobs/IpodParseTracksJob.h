@@ -17,23 +17,32 @@
 #ifndef IPODPARSETRACKSJOB_H
 #define IPODPARSETRACKSJOB_H
 
-#include "IpodCollection.h"
+#include "core/meta/Meta.h"
 
 #include <ThreadWeaver/Job>
 
-#include <QWeakPointer>
+class IpodCollection;
 
-
+/**
+ * A job designed to parse iPod tracks and playlists in a thread so that main thread is
+ * not blocked with it. It is guaranteed by IpodCollection that is doesn't destory itself
+ * while this job is alive. Memory management of this job is up to the caller of it.
+ */
 class IpodParseTracksJob : public ThreadWeaver::Job
 {
     Q_OBJECT
 
     public:
         explicit IpodParseTracksJob( IpodCollection *collection );
-        virtual void run();
 
     public slots:
+        /**
+         * Aborts the job as soon as it is safely possible
+         */
         void abort();
+
+    protected:
+        void run();
 
     signals:
         // signals for progress operation:
@@ -42,7 +51,19 @@ class IpodParseTracksJob : public ThreadWeaver::Job
         void totalSteps( int steps ); // not used, defined to keep QObject::conect warning quiet
 
     private:
-        QWeakPointer<IpodCollection> m_coll;
+        /**
+         * Go through iPod playlists and create Amarok playlists for them.
+         *
+         * @param staleTracks list of track from iTunes database whose associated file
+         *                    no longer exists
+         * @param knownPaths a set of absolute local paths of all track from iTunes
+         *                   database; used for orphaned tracks detection
+         */
+        void parsePlaylists( const Meta::TrackList &staleTracks,
+                             const QSet<QString> &knownPaths );
+        Meta::TrackList findOrphanedTracks( const QSet<QString> &knownPaths );
+
+        IpodCollection *m_coll;
         bool m_aborted;
 };
 

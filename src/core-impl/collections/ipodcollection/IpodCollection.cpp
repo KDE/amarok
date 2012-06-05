@@ -129,6 +129,7 @@ bool IpodCollection::init()
     {
         // parse tracks in a thread in order not to block main thread
         IpodParseTracksJob *job = new IpodParseTracksJob( this );
+        m_parseTracksJob = job;
         connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
         ThreadWeaver::Weaver::instance()->enqueue( job );
     }
@@ -141,11 +142,7 @@ bool IpodCollection::init()
 IpodCollection::~IpodCollection()
 {
     DEBUG_BLOCK
-
     The::playlistManager()->removeProvider( m_playlistProvider );
-    // if IpodPlaylistProvider is working in a thread, give it a chance to catch
-    // IpodCollection destruction.
-    m_playlistProvider->m_coll = 0;
 
     // this is not racy: destructor should be called in a main thread, the timer fires in the
     // same thread
@@ -342,29 +339,29 @@ IpodCollection::trackForUidUrl( const QString &uidUrl )
 void
 IpodCollection::slotDestroy()
 {
-    // this is not racy: destroy() is delivered to main thread, the timer fires in the
+    // this is not racy: slotDestroy() is delivered to main thread, the timer fires in the
     // same thread
     if( m_writeDatabaseTimer.isActive() )
     {
         // write database in a thread so that it need not be written in destructor
         m_writeDatabaseTimer.stop();
         IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
-        connect( job, SIGNAL(done(ThreadWeaver::Job*)), SIGNAL(remove()) );
+        connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(slotRemove()) );
         connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
         ThreadWeaver::Weaver::instance()->enqueue( job );
     }
     else
-        emit remove();  // CollectionManager will call deleteLater()
+        slotRemove();
 }
 
 void
 IpodCollection::slotEject()
 {
-    // this is not racy: destroy() is delivered to main thread, the timer fires in the
+    // this is not racy: slotEject() is delivered to main thread, the timer fires in the
     // same thread
     if( m_writeDatabaseTimer.isActive() )
     {
-        // write database now because iPod will be unmounted in destructor
+        // write database now because iPod will be already unmounted in destructor
         m_writeDatabaseTimer.stop();
         IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
         connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(slotPerformTeardownAndRemove()) );
@@ -524,7 +521,23 @@ void IpodCollection::slotPerformTeardownAndRemove()
             ssa->teardown();
     }
 
-    emit remove(); // CollectionManager will call deleteLater()
+    slotRemove();
+}
+
+void IpodCollection::slotRemove()
+{
+    // this is not racy, we are in the main thread and parseTracksJob can be deleted only
+    // in the main thread
+    if( m_parseTracksJob )
+    {
+        // we need to wait until parseTracksJob finishes, because it acceses IpodCollection
+        // and IpodPlaylistProvider in an asynchronous way that cannot safely cope with
+        // IpodCollection disappearing
+        connect( m_parseTracksJob.data(), SIGNAL(destroyed(QObject*)), SIGNAL(remove()) );
+        m_parseTracksJob.data()->abort();
+    }
+    else
+        emit remove();
 }
 
 Meta::TrackPtr

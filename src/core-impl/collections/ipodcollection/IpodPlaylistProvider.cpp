@@ -24,9 +24,7 @@
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"
-#include "core-impl/meta/file/File.h"
 
-#include <glib.h>
 #include <gpod/itdb.h>
 
 
@@ -217,52 +215,6 @@ IpodPlaylistProvider::removeTrackFromPlaylists( Meta::TrackPtr track )
     }
 }
 
-void
-IpodPlaylistProvider::parseItdbPlaylists( const Meta::TrackList &staleTracks, const QSet<QString> &knownPaths )
-{
-    if( !staleTracks.isEmpty() )
-    {
-        m_stalePlaylist = Playlists::PlaylistPtr( new IpodPlaylist( staleTracks,
-            i18nc( "iPod playlist name", "Stale tracks" ), m_coll, IpodPlaylist::Stale ) );
-        m_playlists << m_stalePlaylist;  // we dont subscribe to this playlist, no need to update database
-        emit playlistAdded( m_stalePlaylist );
-    }
-
-    Meta::TrackList orphanedTracks = findOrphanedTracks( knownPaths );
-    if( !orphanedTracks.isEmpty() )
-    {
-        m_orphanedPlaylist = Playlists::PlaylistPtr( new IpodPlaylist( orphanedTracks,
-            i18nc( "iPod playlist name", "Orphaned tracks" ), m_coll, IpodPlaylist::Orphaned ) );
-        m_playlists << m_orphanedPlaylist;  // we dont subscribe to this playlist, no need to update database
-        emit playlistAdded( m_orphanedPlaylist );
-    }
-
-    Itdb_iTunesDB *itdb = m_coll ? m_coll->m_itdb : 0;
-    for( GList *playlists = itdb ? itdb->playlists : 0; playlists; playlists = playlists->next )
-    {
-        if( !m_coll )
-            return; // guard against IpodCollection being destructed behind our back
-        Itdb_Playlist *playlist = (Itdb_Playlist *) playlists->data;
-        if( !playlist )
-            continue;
-        if( itdb_playlist_is_mpl( playlist ) )
-            continue; // skip master playlist
-        Playlists::PlaylistPtr playlistPtr( new IpodPlaylist( playlist, m_coll ) );
-        m_playlists << playlistPtr;
-        subscribeTo( playlistPtr );
-        emit playlistAdded( playlistPtr );
-    }
-
-    if( m_stalePlaylist || m_orphanedPlaylist )
-    {
-        QString text = i18n( "Stale and/or orphaned tracks detected on %1. You can resolve "
-            "the situation using the <b>%2</b> collection action. You can also view the tracks "
-            "under the Saved Playlists tab.", m_coll->prettyName(),
-            m_coll->m_consolidateAction->text() );
-        Amarok::Components::logger()->longMessage( text );
-    }
-}
-
 bool
 IpodPlaylistProvider::hasStaleOrOrphaned() const
 {
@@ -426,37 +378,6 @@ void IpodPlaylistProvider::copyAndInsertToPlaylist( const TrackPositionList &tra
         targetLocation->setDestinationPlaylist( destPlaylist, trackPlaylistPositions );
         sourceLocation->prepareCopy( sourceTracks, targetLocation );
     }
-}
-
-Meta::TrackList
-IpodPlaylistProvider::findOrphanedTracks( const QSet<QString> &knownPaths )
-{
-    gchar *musicDirChar = itdb_get_music_dir( QFile::encodeName( m_coll->mountPoint() ) );
-    QString musicDirPath = QFile::decodeName( musicDirChar );
-    g_free( musicDirChar );
-    musicDirChar = 0;
-
-    QStringList trackPatterns;
-    foreach( QString suffix, m_coll->supportedFormats() )
-    {
-        trackPatterns << QString( "*.%1" ).arg( suffix );
-    }
-
-    Meta::TrackList orphanedTracks;
-    QDir musicDir( musicDirPath );
-    foreach( QString subdir, musicDir.entryList( QStringList( "F??" ), QDir::Dirs | QDir::NoDotAndDotDot ) )
-    {
-        subdir = musicDir.absoluteFilePath( subdir ); // make the path absolute
-        foreach( QFileInfo info, QDir( subdir ).entryInfoList( trackPatterns ) )
-        {
-            QString canonPath = info.canonicalFilePath();
-            if( knownPaths.contains( canonPath ) )
-                continue;  // already in iTunes database
-            Meta::TrackPtr track( new MetaFile::Track( KUrl( canonPath ) ) );
-            orphanedTracks << track;
-        }
-    }
-    return orphanedTracks;
 }
 
 bool

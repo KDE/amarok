@@ -28,6 +28,7 @@
 namespace Collections { class MemoryCollection; }
 namespace IpodMeta { class Track; }
 class IphoneMountPoint;
+class IpodParseTracksJob;
 class IpodPlaylistProvider;
 class QTemporaryFile;
 struct _Itdb_iTunesDB;
@@ -200,6 +201,12 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          */
         void slotPerformTeardownAndRemove();
 
+        /**
+         * Do sanity checks and emit remove() so that this collection is destroyed by
+         * CollectionManager. No other method is allowed to emit remove()!
+         */
+        void slotRemove();
+
     private:
         friend class IpodCopyTracksJob;
         friend class IpodDeleteTracksJob;
@@ -267,6 +274,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         QAction *m_configureAction;
         QAction *m_ejectAction;
         QAction *m_consolidateAction;
+        QWeakPointer<IpodParseTracksJob> m_parseTracksJob;
 };
 
 #endif // IPODCOLLECTION_H

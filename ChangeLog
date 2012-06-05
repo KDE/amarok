@@ -7,6 +7,9 @@ VERSION 2.6
     * Building the spectrum analyzer applet can now be disabled with a CMake
       argument.
 
+  BUGFIXES:
+    * Don't crash even if the iPod is connected and quickly ejected. (BR 301166)
+
 VERSION 2.6-Beta 1
   FEATURES:
     * Amazon store: improved album search
