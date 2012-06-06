@@ -31,7 +31,7 @@
 
 
 BrowserCategoryListDelegate::BrowserCategoryListDelegate( QTreeView *view )
-    : QStyledItemDelegate()
+    : QStyledItemDelegate( view )
     , m_view( view )
 {
     DEBUG_BLOCK

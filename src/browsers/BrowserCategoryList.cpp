@@ -43,8 +43,8 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
     // -- the widget stack
     m_widgetStack = new QStackedWidget( this );
 
-    QWidget* mainWidget = new QWidget();
-    QVBoxLayout* vLayout = new QVBoxLayout();
+    QWidget* mainWidget = new QWidget( m_widgetStack );
+    QVBoxLayout* vLayout = new QVBoxLayout( mainWidget );
     mainWidget->setLayout( vLayout );
 
     // -- the search widget
