@@ -55,15 +55,6 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
 
-       /* the following has been copied from Meta.h
-        * it is my hope that we can integrate Playlists
-        * better into the rest of the Meta framework someday ~Bart Cerneels
-        * TODO: Playlist : public MetaBase
-        */
-        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
-
-        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
-
         /* PlaylistFile methods */
         bool isWritable();
         void setName( const QString &name );

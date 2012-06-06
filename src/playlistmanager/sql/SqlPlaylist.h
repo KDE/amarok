@@ -73,11 +73,6 @@ class SqlPlaylist : public Playlist, public Meta::Observer
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
 
-        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
-                { Q_UNUSED( type ); return false; }
-        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
-                { Q_UNUSED( type ); return 0; }
-
         /* Meta::Observer methods */
         virtual void metadataChanged( Meta::TrackPtr track );
         virtual void metadataChanged( Meta::ArtistPtr artist ) { Q_UNUSED( artist ) }

@@ -63,16 +63,6 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
         }
         virtual Podcasts::PodcastEpisodeList episodes() { return m_master->episodes(); }
 
-        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
-        {
-            return m_master->hasCapabilityInterface( type );
-        }
-
-        Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type )
-        {
-            return m_master->createCapabilityInterface( type );
-        }
-
         bool load( QTextStream &stream ) { return m_master->load( stream ); }
 
         //Settings

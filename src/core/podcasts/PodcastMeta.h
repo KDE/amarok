@@ -261,10 +261,6 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual Podcasts::PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
         virtual PodcastEpisodeList episodes() { return m_episodes; }
 
-        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
-
-        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return static_cast<Capabilities::Capability *>( 0 ); }
-
         bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 
         //Settings

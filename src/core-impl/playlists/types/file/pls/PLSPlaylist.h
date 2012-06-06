@@ -54,10 +54,6 @@ class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
 
-        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
-
-        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
-
         /* PlaylistFile methods */
         bool isWritable();
         void setName( const QString &name );
