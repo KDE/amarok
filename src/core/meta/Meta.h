@@ -108,35 +108,49 @@ namespace Meta
 
     class AMAROK_CORE_EXPORT MetaCapability
     {
-    public:
-        virtual ~MetaCapability() {}
+        public:
+            virtual ~MetaCapability() {}
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+            /**
+             * Return true if this entity has capability @param CapIface, false otherwise.
+             */
+            template <class CapIface> bool has() const
+            {
+                return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
+            }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
-
-        /**
-             * Retrieves a specialized interface which represents a capability of this
-             * MetaBase object.
+            /**
+             * Creates a specialized interface which represents a capability of this
+             * MetaBase object. The caller of this method is responsible for deleting
+             * created capability!
              *
              * @returns a pointer to the capability interface if it exists, 0 otherwise
              */
-        template <class CapIface> CapIface *create()
-        {
-            Capabilities::Capability::Type type = CapIface::capabilityInterfaceType();
-            Capabilities::Capability *iface = createCapabilityInterface( type );
-            return qobject_cast<CapIface *>( iface );
-        }
+            template <class CapIface> CapIface *create()
+            {
+                Capabilities::Capability::Type type = CapIface::capabilityInterfaceType();
+                Capabilities::Capability *iface = createCapabilityInterface( type );
+                return qobject_cast<CapIface *>( iface );
+            }
 
-        /**
-             * Tests if a MetaBase object provides a given capability interface.
+            /**
+             * Subclasses should override this method to denote they provide particular
+             * capability type. Must match @see createCapabilityInterface()
              *
-             * @returns true if the interface is available, false otherwise
+             * This method should be considered protected (but is not because of practical
+             * reasons), you should normally call @see has()
              */
-        template <class CapIface> bool is() const
-        {
-            return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
-        }
+            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+
+            /**
+             * Subclasses should override this method to create particular capability.
+             * Memory-management of the returned pointer is the responsibility of the
+             * caller of this method. Must match @see hasCapabilityInterface()
+             *
+             * This method should be considered protected (but is not because of practical
+             * reasons), you should normally call @see create()
+             */
+            virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type );
     };
 
     class AMAROK_CORE_EXPORT MetaBase : public QSharedData, public MetaCapability

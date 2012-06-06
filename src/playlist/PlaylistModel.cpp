@@ -33,6 +33,7 @@
 #include "core/support/Debug.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
+#include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/collections/Collection.h"
 #include "core/meta/support/MetaUtility.h"
@@ -346,7 +347,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
         return  m_items.at( row )->track()->inCollection();
 
     else if ( role == MultiSourceRole )
-        return  m_items.at( row )->track()->hasCapabilityInterface( Capabilities::Capability::MultiSource );
+        return  m_items.at( row )->track()->has<Capabilities::MultiSourceCapability>();
 
     else if ( role == StopAfterTrackRole )
         return Actions::instance()->willStopAfterTrack( idAt( row ) );

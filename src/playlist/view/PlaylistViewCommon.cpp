@@ -176,7 +176,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         foreach( QAction *action, globalCurrentTrackActions )
             actions << action;
 
-        if( track->hasCapabilityInterface( Capabilities::Capability::Actions ) )
+        if( track->has<Capabilities::ActionsCapability>() )
         {
             QScopedPointer<Capabilities::ActionsCapability>
                     ac( track->create<Capabilities::ActionsCapability>() );
@@ -185,7 +185,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         }
     }
 
-    if( track->hasCapabilityInterface( Capabilities::Capability::FindInSource ) )
+    if( track->has<Capabilities::FindInSourceCapability>() )
     {
         if( m_findInSourceAction == 0 )
         {

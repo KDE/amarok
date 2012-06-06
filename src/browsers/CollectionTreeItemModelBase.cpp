@@ -99,7 +99,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
 
     if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( data ) )
     {
-        if( !track->hasCapabilityInterface( Capabilities::Capability::Editable ) )
+        if( !track->has<Capabilities::EditCapability>() )
             return false;
         Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
         if( ec )

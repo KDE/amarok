@@ -162,7 +162,7 @@ public:
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->hasCapabilityInterface( type );
         else
-            return Meta::Album::hasCapabilityInterface( type );
+            return false;
     }
 
     Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
@@ -170,7 +170,7 @@ public:
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->createCapabilityInterface( type );
         else
-            return Meta::Album::createCapabilityInterface( type );
+            return 0;
     }
 
     bool isCompilation() const

@@ -62,7 +62,7 @@ bool Capabilities::TimecodeWriteCapability::writeAutoTimecode( qint64 milisecond
     //first up, find and delete any previously added auto timecodes for this track
 
     debug() << "deleting old auto timecodes";
-    if( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
+    if( track->has<Capabilities::TimecodeLoadCapability>() )
     {
         QScopedPointer<TimecodeLoadCapability> tcl( track->create<TimecodeLoadCapability>() );
         BookmarkList list = tcl->loadTimecodes();

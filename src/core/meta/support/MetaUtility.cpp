@@ -247,7 +247,7 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
 void
 Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
 {
-    if( !track || !track->hasCapabilityInterface( Capabilities::Capability::Editable ) )
+    if( !track || !track->has<Capabilities::EditCapability>() )
         return;
 
     QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );

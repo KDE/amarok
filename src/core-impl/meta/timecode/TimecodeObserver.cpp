@@ -82,7 +82,7 @@ TimecodeObserver::trackPlaying( Meta::TrackPtr track )
     }
 
     // now update to the new track
-    if( track && track->hasCapabilityInterface( Capabilities::Capability::WriteTimecode ) )
+    if( track && track->has<Capabilities::TimecodeWriteCapability>() )
     {
         debug() << "current track name: " << track->prettyName();
         m_trackTimecodeable = true;

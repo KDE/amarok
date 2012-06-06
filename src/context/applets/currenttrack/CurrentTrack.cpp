@@ -764,7 +764,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
         actions << btc->bookmarkAction();
     }
 
-    if( m_showEditTrackDetailsAction && track->hasCapabilityInterface( Capability::Editable ) )
+    if( m_showEditTrackDetailsAction && track->has<EditCapability>() )
     {
         QScopedPointer<EditCapability> ec( track->create<EditCapability>() );
         if( ec && ec->isEditable() )
@@ -776,7 +776,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
         }
     }
 
-    if( track->hasCapabilityInterface( Capability::FindInSource ) )
+    if( track->has<FindInSourceCapability>() )
     {
         if( !m_findInSourceSignalMapper )
         {

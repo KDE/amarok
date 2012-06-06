@@ -236,7 +236,7 @@ ProgressWidget::redrawBookmarks( const QString *BookmarkName )
     if ( The::engineController()->currentTrack() )
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
-        if ( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
+        if ( track->has<Capabilities::TimecodeLoadCapability>() )
         {
             Capabilities::TimecodeLoadCapability *tcl = track->create<Capabilities::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();

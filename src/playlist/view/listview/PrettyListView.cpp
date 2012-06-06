@@ -436,7 +436,7 @@ Playlist::PrettyListView::findInSource()
     Meta::TrackPtr track = currentIndex().data( TrackRole ).value<Meta::TrackPtr>();
     if ( track )
     {
-        if( track->hasCapabilityInterface( Capabilities::Capability::FindInSource ) )
+        if( track->has<Capabilities::FindInSourceCapability>() )
         {
             Capabilities::FindInSourceCapability *fis = track->create<Capabilities::FindInSourceCapability>();
             if ( fis )

@@ -899,7 +899,7 @@ GpodderProvider::createPlayStatusBookmark()
         //Create an AutoTimecode at the last position position, so the user always know where he stopped to listen
         if( tempEpisodeAction && ( tempEpisodeAction->action() == EpisodeAction::Play ) )
         {
-            if( track && track->hasCapabilityInterface( Capabilities::Capability::WriteTimecode ) )
+            if( track && track->has<Capabilities::TimecodeWriteCapability>() )
             {
                 QScopedPointer<Capabilities::TimecodeWriteCapability> tcw( track->create<Capabilities::TimecodeWriteCapability>() );
                 qint64 positionMiliSeconds = tempEpisodeAction->position() * 1000;

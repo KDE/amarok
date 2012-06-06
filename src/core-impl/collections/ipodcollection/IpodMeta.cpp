@@ -144,7 +144,7 @@ Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
         default:
             break;
     }
-    return Meta::MetaCapability::hasCapabilityInterface( type );
+    return false;
 }
 
 Capabilities::Capability*
@@ -157,7 +157,7 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
         default:
             break;
     }
-    return Meta::MetaCapability::createCapabilityInterface( type );
+    return 0;
 }
 
 QString

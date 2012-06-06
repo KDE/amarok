@@ -73,7 +73,7 @@ BookmarkCurrentTrackPositionAction::slotTriggered()
     Meta::TrackPtr track = The::engineController()->currentTrack();
     const qint64 miliseconds = The::engineController()->trackPositionMs();
 
-    if ( track && track->hasCapabilityInterface( Capabilities::Capability::WriteTimecode ) )
+    if ( track && track->has<Capabilities::TimecodeWriteCapability>() )
     {
         debug() << " has WriteTimecode  ";
         QScopedPointer<Capabilities::TimecodeWriteCapability> tcw( track->create<Capabilities::TimecodeWriteCapability>() );

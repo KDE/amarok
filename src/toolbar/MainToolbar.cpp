@@ -566,7 +566,7 @@ MainToolbar::updateBookmarks( const QString *BookmarkName )
     m_slider->clearTriangles();
     if( Meta::TrackPtr track = The::engineController()->currentTrack() )
     {
-        if( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
+        if( track->has<Capabilities::TimecodeLoadCapability>() )
         {
             Capabilities::TimecodeLoadCapability *tcl = track->create<Capabilities::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();
