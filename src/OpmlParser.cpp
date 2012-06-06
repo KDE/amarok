@@ -56,7 +56,7 @@ OpmlParser::read( const KUrl &url )
     {
         //read directly from local file
         QFile localFile( m_url.toLocalFile() );
-        if( !localFile->open( QIODevice::ReadOnly ) )
+        if( !localFile.open( QIODevice::ReadOnly ) )
         {
             debug() << "failed to open local OPML file " << m_url.url();
             return false;
