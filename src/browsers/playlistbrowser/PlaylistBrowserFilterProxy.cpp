@@ -34,13 +34,6 @@ PlaylistBrowserFilterProxy::setSourceModel( QAbstractItemModel *model )
              SLOT(slotRenameIndex( const QModelIndex & )) );
 }
 
-QVariant
-PlaylistBrowserFilterProxy::data(const QModelIndex &index, int role) const
-{
-    QVariant result =  QSortFilterProxyModel::data( index, role );
-    return result;
-}
-
 void
 PlaylistBrowserFilterProxy::slotRenameIndex( const QModelIndex &sourceIdx )
 {

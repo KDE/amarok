@@ -32,7 +32,6 @@ class PlaylistBrowserFilterProxy : public QSortFilterProxyModel
         // QSortFilterProxyModel methods
         virtual void setSourceModel( QAbstractItemModel *sourceModel );
 
-        virtual QVariant data(const QModelIndex &index, int role) const;
     signals:
         void renameIndex( const QModelIndex &index );
 
