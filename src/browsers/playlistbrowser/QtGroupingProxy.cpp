@@ -795,14 +795,14 @@ QtGroupingProxy::modelRowsRemoved( const QModelIndex &parent, int start, int end
             //HACK: we are going to iterate the hash in reverse so calls to endRemoveRows()
             // are matched up with the beginRemoveRows() in modelRowsAboutToBeRemoved()
             //NOTE: easier to do reverse with java style iterator
-            QMutableHashIterator<quint32, QList<int> > i( m_groupHash );
-            i.toBack();
-            while( i.hasPrevious() )
+            QMutableHashIterator<quint32, QList<int> > it( m_groupHash );
+            it.toBack();
+            while( it.hasPrevious() )
             {
-                i.previous();
-                int groupIndex = i.key();
+                it.previous();
+                int groupIndex = it.key();
                 //has to be a modifiable reference for remove and replace operations
-                QList<int> &groupList = i.value();
+                QList<int> &groupList = it.value();
                 int rowIndex = groupList.indexOf( start );
                 if( rowIndex != -1 )
                 {
