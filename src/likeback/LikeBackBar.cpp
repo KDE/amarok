@@ -136,7 +136,8 @@ void LikeBackBar::changeWindow( QWidget *oldWidget, QWidget *newWidget )
 #endif
         setParent( newWindow );
         newWindow->installEventFilter( this );
-        eventFilter( newWindow, new QResizeEvent( newWindow->size(), QSize() ) );
+        QResizeEvent fakeEvent( newWindow->size(), QSize() );
+        eventFilter( newWindow, &fakeEvent);
         show();
     }
 }

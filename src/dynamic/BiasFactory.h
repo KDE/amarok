@@ -129,6 +129,7 @@ namespace Dynamic
 
     private:
         BiasFactory( QObject *parent = 0 );
+        ~BiasFactory();
 
         void emitChanged();
 

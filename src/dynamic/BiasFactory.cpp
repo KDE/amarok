@@ -222,6 +222,11 @@ Dynamic::BiasFactory::BiasFactory( QObject *parent )
     : QObject( parent )
 { }
 
+Dynamic::BiasFactory::~BiasFactory()
+{
+    qDeleteAll(s_biasFactories);
+}
+
 Dynamic::BiasPtr
 Dynamic::BiasFactory::fromXml( QXmlStreamReader *reader )
 {
