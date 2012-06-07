@@ -292,18 +292,21 @@ AmazonStore::newSearchRequest( const QString request )
 
         KCM.setWindowTitle( i18n( "Select your Amazon locale - Amarok" ) );
         KCM.addModule( KCModuleInfo( QString( "amarok_service_amazonstore_config.desktop" ) ) );
-        KCM.setButtons( KCMultiDialog::Ok | KCMultiDialog::Cancel );
+        KCM.setButtons( KCMultiDialog::Ok | KCMultiDialog::Cancel | KCMultiDialog::Default );
         KCM.adjustSize();
 
-        // if the user selects a country we continue our quest for search results
+        // if the user selects an option we continue our quest for search results
         if( !(KCM.exec() == QDialog::Accepted) )
             return;
     }
-    else if( AmazonConfig::instance()->country() == QLatin1String( "none" ) && m_itemView->isVisible() ) // do not show the message on startup, if the service is not visible
+
+    if( AmazonConfig::instance()->country() == QLatin1String( "none" ) || AmazonConfig::instance()->country().isEmpty() )
     {
-        // user explicitly said we are in a not supported country
-        Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Please select a valid country in the settings to make the store work." ) );
-        return;
+        // user explicitly said we are not in a supported country or refused to supply one
+        if( m_itemView->isVisible() ) // show the message on startup only if the service is visible
+            Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Please select a valid country in the settings to make the store work." ) );
+
+        return; // do nothing
     }
 
     if( m_lastSearch != request )

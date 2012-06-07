@@ -25,6 +25,8 @@
 #include "ui_AmazonConfigWidget.h"
 
 #include <kgenericfactory.h>
+
+#include <QTimer>
 #include <QVBoxLayout>
 
 K_PLUGIN_FACTORY( AmazonSettingsFactory, registerPlugin<AmazonSettingsModule>(); )
@@ -40,13 +42,11 @@ AmazonSettingsModule::AmazonSettingsModule( QWidget *parent, const QVariantList 
     l->addWidget( w );
 
     connect( m_configDialog->countrySelectionComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( settingsChanged() ) );
-
-    setButtons( KCModule::NoAdditionalButton ); // TODO: does not work
-    load();
 }
 
 AmazonSettingsModule::~AmazonSettingsModule()
 {
+    // TODO: clear cart and collection, if the settings have changed
 }
 
 void
@@ -55,34 +55,32 @@ AmazonSettingsModule::save()
     switch( m_configDialog->countrySelectionComboBox->currentIndex() )
     {
     case AMAZON_FR:
-        AmazonConfig::instance()->setCountry( QLatin1String ( "fr" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String( "fr" ) );
         break;
 
     case AMAZON_DE:
-        AmazonConfig::instance()->setCountry( QLatin1String ( "de" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String( "de" ) );
         break;
 
     case AMAZON_JP:
-        AmazonConfig::instance()->setCountry( QLatin1String ( "co.jp" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String( "co.jp" ) );
         break;
 
     case AMAZON_UK:
-        AmazonConfig::instance()->setCountry( QLatin1String ( "co.uk" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String( "co.uk" ) );
         break;
 
     case AMAZON_COM:
-        AmazonConfig::instance()->setCountry( QLatin1String ( "com" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String( "com" ) );
         break;
+
     case AMAZON_NONE:
-        AmazonConfig::instance()->setCountry( QLatin1String ( "none" ) );
+        AmazonConfig::instance()->setCountry( QLatin1String( "none" ) );
         break;
 
     default:
-        AmazonConfig::instance()->setCountry( QLatin1String ( "" ) );
         break;
     }
-
-    KCModule::save();
 }
 
 void
@@ -103,37 +101,61 @@ AmazonSettingsModule::load()
         index = AMAZON_COM;
     else if ( text == QLatin1String( "none" ) )
         index = AMAZON_NONE;
-    else // try to guess
+
+    if( index != -1 )
+        m_configDialog->countrySelectionComboBox->setCurrentIndex( index );
+    else
     {
-        KLocale locale( "amarok" );
-        QString guess = locale.country();
+        defaults();
+        /*
+         * The following line is my entry to the "Ugliest Hack of the Year" contest.
+         *
+         * load() is being called during initialization of the KCModule. In that phase
+         * the connections to react to changes in the widget seem not yet to be set up.
+         *
+         * As a result, when
+         * 1. we guess the location and propose it in the widget
+         * 2. the user clicks OK without doing anything else
+         * nothing gets saved, as the change in the widget has been done during init
+         * and the changed( true ) signal is consequently being lost.
+         *
+         * Workaround:
+         */
+        QTimer::singleShot( 200, this, SLOT( settingsChanged() ) );
 
-        if( guess == QLatin1String( "fr" ) )
-            index = AMAZON_FR;
-        else if ( guess == QLatin1String( "de" ) || guess == QLatin1String( "at" ) || guess == QLatin1String( "ch" ) )
-            index = AMAZON_DE;
-        else if ( guess == QLatin1String( "jp" ) )
-            index = AMAZON_JP;
-        else if ( guess == QLatin1String( "gb" ) )
-            index = AMAZON_UK;
-        else if ( guess == QLatin1String( "us" ) )
-            index = AMAZON_COM;
-        else
-            index = AMAZON_NONE;
+        /*
+         * I'm going to burn in hell for that one, am I? :-/
+         */
     }
-
-    m_configDialog->countrySelectionComboBox->setCurrentIndex( index );
-    KCModule::load();
 }
 
 void
 AmazonSettingsModule::defaults()
 {
+    int index = -1;
+
+    // try to guess
+    KLocale locale( "amarok" );
+    QString guess = locale.country();
+
+    if( guess == QLatin1String( "fr" ) )
+        index = AMAZON_FR;
+    else if ( guess == QLatin1String( "de" ) || guess == QLatin1String( "at" ) || guess == QLatin1String( "ch" ) )
+        index = AMAZON_DE;
+    else if ( guess == QLatin1String( "jp" ) )
+        index = AMAZON_JP;
+    else if ( guess == QLatin1String( "gb" ) )
+        index = AMAZON_UK;
+    else if ( guess == QLatin1String( "us" ) )
+        index = AMAZON_COM;
+    else
+        index = AMAZON_NONE;
+
+    m_configDialog->countrySelectionComboBox->setCurrentIndex( index );
 }
 
 void
 AmazonSettingsModule::settingsChanged()
 {
-    // TODO: clear cart and collection, as they are no longer valid
     emit changed( true );
 }
