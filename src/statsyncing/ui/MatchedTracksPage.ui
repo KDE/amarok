@@ -67,7 +67,7 @@
      <item>
       <widget class="QLineEdit" name="filterLine">
        <property name="placeholderText">
-        <string>Filter tracks... (TODO)</string>
+        <string>Filter tracks...</string>
        </property>
       </widget>
      </item>
@@ -86,6 +86,9 @@
       <bool>true</bool>
      </property>
      <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
+     <property name="sortingEnabled">
       <bool>true</bool>
      </property>
      <property name="animated">

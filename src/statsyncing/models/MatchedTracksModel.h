@@ -36,6 +36,18 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
+            enum {
+                TupleFlagsRole = Qt::UserRole,
+            };
+
+            /**
+             * Flags for track tuple status
+             */
+            enum TupleFlag {
+                HasConflict = 1 << 0, /// there is at least one potential rating conflict
+                HasUpdate = 1 << 1, /// there is at least one field going to be updated
+            };
+
             /**
              * Construct model of matched tracks.
              *

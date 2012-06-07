@@ -30,6 +30,7 @@ class QAbstractItemModel;
 namespace StatSyncing
 {
     class MatchedTracksPage;
+    class SortFilterProxyModel;
 
     /**
      * Class that is responsible for one synchronization process from track matching
@@ -67,14 +68,15 @@ namespace StatSyncing
         private slots:
             void slotTracksMatched( ThreadWeaver::Job* job );
 
-            void showMatchedTracks( bool really );
-
+            void showMatchedTracks( bool checked );
             void showUniqueTracks( bool checked );
             void showExcludedTracks( bool checked );
             /**
              * Helper method for show{Unique,Excluded}Tracks
              */
             void showSingleTracks( const QMap<const Provider *, QAbstractItemModel *> &models );
+
+            void changeMatchedTracksFilter( int index );
 
             void changeUniqueTracksProvider( int index );
             void changeExcludedTracksProvider( int index );
@@ -89,6 +91,7 @@ namespace StatSyncing
             QList<QSharedPointer<Provider> > m_providers;
 
             MatchedTracksPage *m_matchedTracksPage;
+            SortFilterProxyModel *m_proxyModel;
             QAbstractItemModel *m_matchedTracksModel;
             QMap<const Provider *, QAbstractItemModel *> m_uniqueTracksModels;
             QMap<const Provider *, QAbstractItemModel *> m_excludedTracksModels;

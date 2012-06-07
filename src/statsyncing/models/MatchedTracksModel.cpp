@@ -175,6 +175,10 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
             return tuple.fieldUpdated( field, m_options ) ? m_boldFont : m_normalFont;
         case Qt::TextAlignmentRole:
             return textAlignmentData( field );
+        case TupleFlagsRole:
+            int flags = tuple.hasUpdate( m_options ) ? HasUpdate : 0;
+            flags |= tuple.hasConflict( m_options ) ? HasConflict : 0;
+            return flags;
     }
     return QVariant();
 }

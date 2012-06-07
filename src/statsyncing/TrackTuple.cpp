@@ -22,6 +22,7 @@
 using namespace StatSyncing;
 
 TrackTuple::TrackTuple()
+    : m_ratingProvider( 0 )
 {
 }
 
@@ -77,6 +78,8 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
         case Meta::valRating:
         {
             int rating = syncedRating( options );
+            if( rating < 0 )
+                return false; // unresolved conflict, not going to write that
             if( provider )
                 return track( provider )->rating() != rating;
 
@@ -147,12 +150,48 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
     return false;
 }
 
+bool
+TrackTuple::hasUpdate( const Options &options ) const
+{
+    static const QList<qint64> fields = QList<qint64>() << Meta::valRating
+        << Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount
+        << Meta::valLabel;
+
+    foreach( qint64 field, fields )
+    {
+        if( fieldUpdated( field, options ) )
+            return true;
+    }
+    return false;
+}
+
+bool
+TrackTuple::hasConflict( const Options &options ) const
+{
+    if( isEmpty() )
+        return false;
+    int firstRating = track( provider( 0 ) )->rating();
+    QMapIterator<const Provider *, TrackPtr> it( m_map );
+    it.next(); // skip the first one
+    while( it.hasNext() )
+    {
+        it.next();
+        if( it.value()->rating() != firstRating )
+            return true;
+    }
+    return false;
+}
+
 int
 TrackTuple::syncedRating( const Options &options ) const
 {
     if( isEmpty() || !(options.syncedFields() & Meta::valRating) )
         return 0;
-    // TODO: conflict resolution, now just takes first
+    if( m_ratingProvider ) // a provider has been chosen
+        return track( m_ratingProvider )->rating();
+    if( hasConflict( options ) )
+        return -1;
+    // all ratings are the same
     return track( provider( 0 ) )->rating();
 }
 

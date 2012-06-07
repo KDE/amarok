@@ -107,9 +107,7 @@ void MatchTracksJob::run()
     debug() << "Matching using:" << comparisonFieldNames( s_comparisonFields ).toLocal8Bit().constData();
 #endif
 
-    QStringList allArtistsList = allArtists.toList();
-    qSort( allArtistsList ); // so that users get roughly sensible order
-    foreach( const QString &artist, allArtistsList )
+    foreach( const QString &artist, allArtists )
     {
         if( m_abort )
             break;

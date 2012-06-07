@@ -28,6 +28,8 @@
 
 #include <ThreadWeaver/Weaver>
 
+#include <QSortFilterProxyModel>
+
 namespace StatSyncing
 {
     class MatchedTracksPage : public QWidget, public Ui_MatchedTracksPage
@@ -39,6 +41,62 @@ namespace StatSyncing
                 setupUi( this );
             }
     };
+
+    class SortFilterProxyModel : public QSortFilterProxyModel
+    {
+        public:
+            SortFilterProxyModel( QObject *parent = 0 )
+                : QSortFilterProxyModel( parent )
+                , m_tupleFilter( -1 )
+            {}
+
+            /**
+             * Filter tuples based on their MatchedTracksModel::TupleFlag flag. Set to -1
+             * to accept tuples with any flags.
+             */
+            void setTupleFilter( int filter )
+            {
+                m_tupleFilter = filter;
+                invalidateFilter();
+            }
+
+        protected:
+            bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+            {
+                if( source_parent.isValid() )
+                    return true; // we match all child items, we filter only root ones
+                if( m_tupleFilter != -1 )
+                {
+                    QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+                    int flags = sourceModel()->data( index, MatchedTracksModel::TupleFlagsRole ).toInt();
+                    if( !(flags & m_tupleFilter) )
+                        return false;
+                }
+                return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
+            }
+
+            bool lessThan( const QModelIndex &left, const QModelIndex &right ) const
+            {
+                if( left.parent().isValid() ) // we are comparing childs, special mode:
+                {
+                    // take providers, e.g. reset column to 0
+                    QModelIndex l = sourceModel()->index( left.row(), 0, left.parent() );
+                    QModelIndex r = sourceModel()->index( right.row(), 0, right.parent() );
+                    QString leftProvider = sourceModel()->data( l, Qt::DisplayRole ).toString();
+                    QString rightProvider = sourceModel()->data( r, Qt::DisplayRole ).toString();
+
+                    // make this sorting ignore the sort order, always sort acsendingly:
+                    if( sortOrder() == Qt::AscendingOrder )
+                        return leftProvider.localeAwareCompare( rightProvider ) < 0;
+                    else
+                        return leftProvider.localeAwareCompare( rightProvider ) > 0;
+                }
+                return QSortFilterProxyModel::lessThan( left, right );
+            }
+
+        private:
+            int m_tupleFilter;
+    };
 }
 
 using namespace StatSyncing;
@@ -47,6 +105,7 @@ Process::Process( const QList<QSharedPointer<Provider> > &providers, QObject *pa
     : QObject( parent )
     , m_providers( providers )
     , m_matchedTracksPage( 0 )
+    , m_proxyModel( 0 )
     , m_matchedTracksModel( 0 )
 {
     DEBUG_BLOCK
@@ -113,6 +172,11 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
                 matchJob->excludedTracks().value( provider.data() ), columns, this );
     }
 
+    m_proxyModel = new SortFilterProxyModel( this );
+    m_proxyModel->setSortLocaleAware( true );
+    m_proxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
+    m_proxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+
     m_matchedTracksPage = new MatchedTracksPage();
     m_matchedTracksPage->setAttribute( Qt::WA_DeleteOnClose );;
     connect( m_matchedTracksPage->matchedRadio, SIGNAL(toggled(bool)), SLOT(showMatchedTracks(bool)) );
@@ -130,6 +194,9 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
         m_matchedTracksPage->excludedRadio->setToolTip( "There are no tracks excluded "
             "from synchronization" );
     }
+    m_matchedTracksPage->treeView->setModel( m_proxyModel );
+    connect( m_matchedTracksPage->filterLine, SIGNAL(textChanged(QString)),
+             m_proxyModel, SLOT(setFilterFixedString(QString)) );
     m_matchedTracksPage->matchedRadio->setChecked( true ); // calls showMatchedTracks()
 
     QHeaderView *header = m_matchedTracksPage->treeView->header();
@@ -148,16 +215,26 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
 }
 
 void
-Process::showMatchedTracks( bool really )
+Process::showMatchedTracks( bool checked )
 {
-    if( !really )
-        return;
-    m_matchedTracksPage->treeView->setModel( m_matchedTracksModel );
     QComboBox *combo = m_matchedTracksPage->filterCombo;
-    combo->clear();
-    combo->addItem( i18n( "All tracks (TODO)" ) );
-    combo->addItem( i18n( "Updates (TODO)" ) );
-    combo->addItem( i18n( "Untouched tracks (TODO)" ) );
+    if( checked )
+    {
+        bool firstTime = m_proxyModel->sourceModel() == 0;
+        m_proxyModel->setSourceModel( m_matchedTracksModel );
+        if( firstTime )
+            m_proxyModel->sort( 0, Qt::AscendingOrder );
+        combo->clear();
+        combo->addItem( i18n( "All tracks" ), -1 );
+        combo->addItem( i18n( "Updated tracks" ), int( MatchedTracksModel::HasUpdate ) );
+        combo->addItem( i18n( "Tracks with conflicts" ), int( MatchedTracksModel::HasConflict ) );
+        connect( combo, SIGNAL(currentIndexChanged(int)), SLOT(changeMatchedTracksFilter(int)) );
+    }
+    else
+    {
+        disconnect( combo, 0, this, SLOT(changeMatchedTracksFilter(int)) );
+        m_proxyModel->setTupleFilter( -1 ); // reset filter for single tracks models
+    }
 }
 
 void
@@ -207,6 +284,14 @@ Process::showSingleTracks( const QMap<const Provider *, QAbstractItemModel *> &m
 }
 
 void
+Process::changeMatchedTracksFilter( int index )
+{
+    QComboBox *combo = m_matchedTracksPage->filterCombo;
+    int filter = combo->itemData( index ).toInt();
+    m_proxyModel->setTupleFilter( filter );
+}
+
+void
 Process::changeUniqueTracksProvider( int index )
 {
     changeSingleTracksProvider( index, m_uniqueTracksModels );
@@ -223,5 +308,5 @@ Process::changeSingleTracksProvider( int index, const QMap<const Provider *, QAb
 {
     const Provider *provider =
         m_matchedTracksPage->filterCombo->itemData( index ).value<const Provider *>();
-    m_matchedTracksPage->treeView->setModel( models.value( provider ) );
+    m_proxyModel->setSourceModel( models.value( provider ) );
 }

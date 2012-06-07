@@ -81,6 +81,20 @@ namespace StatSyncing
              */
             bool fieldUpdated( qint64 field, const Options &options, const Provider *provider = 0 ) const;
 
+            /**
+             * Return true if there's at least one field going to be updated.
+             */
+            bool hasUpdate( const Options &options ) const;
+
+            /**
+             * Return true if there's a (perhaps resolved) rating conflict in this tuple.
+             */
+            bool hasConflict( const Options &options ) const;
+
+            /**
+             * Return synchronized rating. Specifically, returns -1 if there's unsolved
+             * rating conflict.
+             */
             int syncedRating( const Options &options ) const;
             QDateTime syncedFirstPlayed( const Options &options ) const;
             QDateTime syncedLastPlayed( const Options &options ) const;
@@ -89,6 +103,7 @@ namespace StatSyncing
 
         private:
             QMap<const Provider *, TrackPtr> m_map;
+            const Provider *m_ratingProvider; /// source of rating in the event of conflict
     };
 
 } // namespace StatSyncing
