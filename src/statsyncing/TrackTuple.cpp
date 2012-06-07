@@ -16,6 +16,9 @@
 
 #include "TrackTuple.h"
 
+#include "MetaValues.h"
+#include "statsyncing/Options.h"
+
 using namespace StatSyncing;
 
 TrackTuple::TrackTuple()
@@ -57,4 +60,153 @@ bool
 TrackTuple::isEmpty() const
 {
     return m_map.isEmpty();
+}
+
+bool
+TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *provider ) const
+{
+    if( isEmpty() ||
+        ( provider && !m_map.contains( provider ) ) ||
+        !(options.syncedFields() & field) )
+    {
+        return false;
+    }
+
+    switch( field )
+    {
+        case Meta::valRating:
+        {
+            int rating = syncedRating( options );
+            if( provider )
+                return track( provider )->rating() != rating;
+
+            foreach( TrackPtr track, m_map )
+            {
+                if( track->rating() != rating )
+                    return true;
+            }
+            return false;
+        }
+
+        case Meta::valFirstPlayed:
+        {
+            QDateTime firstPlayed = syncedFirstPlayed( options );
+            if( provider )
+                return track( provider )->firstPlayed() != firstPlayed;
+
+            foreach( TrackPtr track, m_map )
+            {
+                if( track->firstPlayed() != firstPlayed )
+                    return true;
+            }
+            return false;
+        }
+
+        case Meta::valLastPlayed:
+        {
+            QDateTime lastPlayed = syncedLastPlayed( options );
+            if( provider )
+                return track( provider )->lastPlayed() != lastPlayed;
+
+            foreach( TrackPtr track, m_map )
+            {
+                if( track->lastPlayed() != lastPlayed )
+                    return true;
+            }
+            return false;
+        }
+
+        case Meta::valPlaycount:
+        {
+            int playcount = syncedPlaycount( options );
+            if( provider )
+                return track( provider )->playcount() != playcount;
+
+            foreach( TrackPtr track, m_map )
+            {
+                if( track->playcount() != playcount )
+                    return true;
+            }
+            return false;
+        }
+
+        case Meta::valLabel:
+        {
+            QSet<QString> labels = syncedLabels( options );
+            if( provider )
+                return track( provider )->labels() != labels;
+
+            foreach( TrackPtr track, m_map )
+            {
+                if( track->labels() != labels )
+                    return true;
+            }
+            return false;
+        }
+    }
+    return false;
+}
+
+int
+TrackTuple::syncedRating( const Options &options ) const
+{
+    if( isEmpty() || !(options.syncedFields() & Meta::valRating) )
+        return 0;
+    // TODO: conflict resolution, now just takes first
+    return track( provider( 0 ) )->rating();
+}
+
+QDateTime
+TrackTuple::syncedFirstPlayed( const Options &options ) const
+{
+    QDateTime first;
+    if( isEmpty() || !(options.syncedFields() & Meta::valFirstPlayed) )
+        return first;
+    foreach( TrackPtr track, m_map )
+    {
+        if( !first.isValid() || track->firstPlayed() < first )
+            first = track->firstPlayed();
+    }
+    return first;
+}
+
+QDateTime
+TrackTuple::syncedLastPlayed( const Options &options ) const
+{
+    QDateTime last;
+    if( isEmpty() || !(options.syncedFields() & Meta::valLastPlayed) )
+        return last;
+    foreach( TrackPtr track, m_map )
+    {
+        if( !last.isValid() || track->lastPlayed() > last )
+            last = track->lastPlayed();
+    }
+    return last;
+}
+
+int
+TrackTuple::syncedPlaycount( const Options &options ) const
+{
+    int max = 0;
+    if( isEmpty() || !(options.syncedFields() & Meta::valPlaycount) )
+        return max;
+    foreach( TrackPtr track, m_map )
+    {
+        max = qMax( max, track->playcount() );
+    }
+    return max;
+}
+
+QSet<QString>
+TrackTuple::syncedLabels( const Options &options ) const
+{
+    QSet<QString> labels;
+    if( isEmpty() || !(options.syncedFields() & Meta::valLabel) )
+        return labels;
+    foreach( TrackPtr track, m_map )
+    {
+        // TODO: this is just basic "unite" synchronization, add more options
+        labels |= track->labels();
+    }
+    return labels;
 }

@@ -51,6 +51,8 @@ Process::Process( const QList<QSharedPointer<Provider> > &providers, QObject *pa
 {
     DEBUG_BLOCK
     Q_ASSERT( m_providers.count() > 0 );
+    m_options.setSyncedFields( Meta::valRating | Meta::valFirstPlayed |
+        Meta::valLastPlayed | Meta::valPlaycount | Meta::valLabel );
 }
 
 Process::~Process()
@@ -100,7 +102,7 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
 
     QList<qint64> columns = QList<qint64>() << Meta::valTitle << Meta::valRating <<
         Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount << Meta::valLabel;
-    m_matchedTracksModel = new MatchedTracksModel( matchJob->matchedTuples(), columns, this );
+    m_matchedTracksModel = new MatchedTracksModel( matchJob->matchedTuples(), columns, m_options, this );
     foreach( QSharedPointer<Provider> provider, m_providers )
     {
         if( !matchJob->uniqueTracks().value( provider.data() ).isEmpty() )

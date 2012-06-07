@@ -583,6 +583,7 @@ endif( TAGLIB_FOUND )
 #####################################################################
 set( statsyncing_SRCS
     statsyncing/Controller.cpp
+    statsyncing/Options.cpp
     statsyncing/Process.cpp
     statsyncing/Provider.cpp
     statsyncing/Track.cpp

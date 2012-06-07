@@ -37,11 +37,11 @@ namespace StatSyncing
             virtual int trackNumber() const;
             virtual int discNumber() const;
 
-            virtual QSet<QString> labels() const;
             virtual int rating() const;
             virtual QDateTime firstPlayed() const;
             virtual QDateTime lastPlayed() const;
             virtual int playcount() const;
+            virtual QSet<QString> labels() const;
 
         private:
             Q_DISABLE_COPY(CollectionTrack)

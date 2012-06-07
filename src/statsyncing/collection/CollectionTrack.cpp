@@ -78,16 +78,6 @@ CollectionTrack::discNumber() const
     return m_track->discNumber();
 }
 
-QSet<QString>
-CollectionTrack::labels() const
-{
-    Meta::LabelList labels = m_track->labels();
-    QSet<QString> labelNames;
-    foreach( Meta::LabelPtr label, labels )
-        labelNames.insert( label->name() );
-    return labelNames;
-}
-
 int
 CollectionTrack::rating() const
 {
@@ -110,4 +100,14 @@ int
 CollectionTrack::playcount() const
 {
     return m_trackStats->playCount();
+}
+
+QSet<QString>
+CollectionTrack::labels() const
+{
+    Meta::LabelList labels = m_track->labels();
+    QSet<QString> labelNames;
+    foreach( Meta::LabelPtr label, labels )
+        labelNames.insert( label->name() );
+    return labelNames;
 }

@@ -30,11 +30,11 @@ using namespace StatSyncing;
 static const int tupleIndexIndernalId = -1;
 
 MatchedTracksModel::MatchedTracksModel( const QList<TrackTuple> &matchedTuples,
-                                        const QList<qint64> &columns,
-                                        QObject *parent )
+    const QList<qint64> &columns, const Options &options, QObject *parent )
     : QAbstractItemModel( parent )
     , CommonModel( columns )
     , m_matchedTuples( matchedTuples )
+    , m_options( options )
 {
     m_titleColumn = m_columns.indexOf( Meta::valTitle );
 }
@@ -125,7 +125,7 @@ MatchedTracksModel::data( const QModelIndex &index, int role ) const
         const Provider *provider = tuple.provider( index.row() );
         if( !provider )
             return QVariant();
-        return trackData( provider, tuple.track( provider ), field, role );
+        return trackData( provider, tuple, field, role );
     }
     return QVariant();
 }
@@ -135,6 +135,7 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
 {
     const Provider *firstProvider = tuple.provider( 0 );
     TrackPtr first = tuple.track( firstProvider );
+    KLocale *locale = KGlobal::locale();
     switch( role )
     {
         case Qt::DisplayRole:
@@ -142,31 +143,53 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
             {
                 case Meta::valTitle:
                     return trackTitleData( first );
-                // TODO: for other fields show updated value
+                case Meta::valRating:
+                    return tuple.syncedRating( m_options );
+                case Meta::valFirstPlayed:
+                    return tuple.syncedFirstPlayed( m_options ).isValid() ?
+                        locale->formatDateTime( tuple.syncedFirstPlayed( m_options ),
+                                                KLocale::FancyShortDate ) :
+                        QVariant();
+                case Meta::valLastPlayed:
+                    return tuple.syncedLastPlayed( m_options ).isValid() ?
+                        locale->formatDateTime( tuple.syncedLastPlayed( m_options ),
+                                                KLocale::FancyShortDate ) :
+                        QVariant();
+                case Meta::valPlaycount:
+                    return tuple.syncedPlaycount( m_options );
+                case Meta::valLabel:
+                    return QStringList( tuple.syncedLabels( m_options ).toList() ).join(
+                        i18nc( "comma between labels", ", " ) );
+                default:
+                    return QString( "Unknown field!" );
             }
             break;
         case Qt::ToolTipRole:
             switch( field )
             {
                 case Meta::valTitle:
-                    return trackToolTipData( first ); // TODO way to specifi which additional meta-data to display
+                    return trackToolTipData( first ); // TODO way to specify which additional meta-data to display
             }
-        // TODO: show icon if the field is being updated
+            break;
+        case Qt::FontRole:
+            return tuple.fieldUpdated( field, m_options ) ? m_boldFont : m_normalFont;
+        case Qt::TextAlignmentRole:
+            return textAlignmentData( field );
     }
     return QVariant();
 }
 
 QVariant
-MatchedTracksModel::trackData( const Provider *provider, const TrackPtr &track,
+MatchedTracksModel::trackData( const Provider *provider, const TrackTuple &tuple,
                                qint64 field, int role ) const
 {
+    TrackPtr track = tuple.track( provider );
+
     if( role == Qt::DisplayRole && field == Meta::valTitle )
         return provider->prettyName();
-    else if( role == Qt::DecorationRole )
-    {
-        if( field == Meta::valTitle )
-            return provider->icon();
-        // TODO: show icon if this field of this track will be updated
-    }
+    else if( role == Qt::DecorationRole && field == Meta::valTitle )
+        return provider->icon();
+    else if( role == Qt::FontRole )
+        return tuple.fieldUpdated( field, m_options, provider ) ? m_boldFont : m_normalFont;
     return trackData( track, field, role );
 }

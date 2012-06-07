@@ -16,13 +16,16 @@
 
 #ifndef STATSYNCING_TRACKTUPLE_H
 #define STATSYNCING_TRACKTUPLE_H
-#include "Track.h"
+
+#include "statsyncing/Track.h"
+
 #include <QMap>
 
 namespace StatSyncing
 {
+    class Options;
+    class Provider;
 
-class Provider;
     /**
      * Smallest element of synchronization, a container for provider-to-one-track map with
      * methods to perform statistics synchronization and querying methods.
@@ -70,6 +73,19 @@ class Provider;
              * Returns true if there are no tracks in the tuple, false otherwise.
              */
             bool isEmpty() const;
+
+            /**
+             * Return true if Meta::val* field @param field is going to be updated.
+             * If @param provider is null, returns true if at least one child track
+             * is going to be updated; otherwise works on a track from @param provider.
+             */
+            bool fieldUpdated( qint64 field, const Options &options, const Provider *provider = 0 ) const;
+
+            int syncedRating( const Options &options ) const;
+            QDateTime syncedFirstPlayed( const Options &options ) const;
+            QDateTime syncedLastPlayed( const Options &options ) const;
+            int syncedPlaycount( const Options &options ) const;
+            QSet<QString> syncedLabels( const Options &options ) const;
 
         private:
             QMap<const Provider *, TrackPtr> m_map;

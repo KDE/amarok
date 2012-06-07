@@ -17,6 +17,7 @@
 #ifndef STATSYNCING_PROCESS_H
 #define STATSYNCING_PROCESS_H
 
+#include "statsyncing/Options.h"
 #include "statsyncing/Provider.h"
 
 #include <QMap>
@@ -91,6 +92,7 @@ namespace StatSyncing
             QAbstractItemModel *m_matchedTracksModel;
             QMap<const Provider *, QAbstractItemModel *> m_uniqueTracksModels;
             QMap<const Provider *, QAbstractItemModel *> m_excludedTracksModels;
+            Options m_options;
     };
 
 } // namespace StatSyncing

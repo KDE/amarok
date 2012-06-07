@@ -17,6 +17,7 @@
 #ifndef STATSYNCING_MATCHEDTRACKSMODEL_H
 #define STATSYNCING_MATCHEDTRACKSMODEL_H
 
+#include "statsyncing/Options.h"
 #include "statsyncing/Provider.h"
 #include "statsyncing/models/CommonModel.h"
 
@@ -42,9 +43,10 @@ namespace StatSyncing
              * @param columns list of Meta::val* fields that will form colums of the model
              *                must include Meta::valTitle, may include: valRating,
              *                valFirstPlayed, valLastPlayed, valPlaycount, valLabel.
+             * @param options options for synchronizing individual tracks
              */
             MatchedTracksModel( const QList<TrackTuple> &matchedTuples,
-                                const QList<qint64> &columns,
+                                const QList<qint64> &columns, const Options &options,
                                 QObject *parent = 0 );
 
             QModelIndex index( int row, int column,
@@ -61,12 +63,13 @@ namespace StatSyncing
 
         private:
             QVariant tupleData( const TrackTuple &tuple, qint64 field, int role ) const;
-            QVariant trackData( const Provider *provider, const TrackPtr &track,
+            QVariant trackData( const Provider *provider, const TrackTuple &tuple,
                                 qint64 field, int role ) const;
             using CommonModel::trackData;
 
             QList<TrackTuple> m_matchedTuples;
             int m_titleColumn;
+            Options m_options;
     };
 
 } // namespace StatSyncing

@@ -31,6 +31,7 @@ CommonModel::CommonModel( const QList<qint64> &columns )
     : m_columns( columns )
 {
     Q_ASSERT( m_columns.contains( Meta::valTitle ) );
+    m_boldFont.setBold( true );
 }
 
 QVariant
@@ -66,8 +67,8 @@ CommonModel::headerData( int section, Qt::Orientation orientation, int role ) co
 QVariant
 CommonModel::sizeHintData( qint64 field ) const
 {
-    static const QSize smallNumberSize = QFontMetrics( QFont() ).size( 0, "888" ) + QSize( 10, 0 );
-    static const QSize dateSize = QFontMetrics( QFont() ).size( 0, "88.88.8888 88:88" ) + QSize( 10, 0 );
+    static const QSize smallNumberSize = QFontMetrics( m_boldFont ).size( 0, "888" ) + QSize( 10, 0 );
+    static const QSize dateSize = QFontMetrics( m_boldFont ).size( 0, "88.88.8888 88:88" ) + QSize( 10, 0 );
 
     switch( field )
     {
@@ -77,6 +78,19 @@ CommonModel::sizeHintData( qint64 field ) const
         case Meta::valFirstPlayed:
         case Meta::valLastPlayed:
             return dateSize;
+    }
+    return QVariant();
+}
+
+QVariant
+CommonModel::textAlignmentData( qint64 field ) const
+{
+    switch( field )
+    {
+        case Meta::valFirstPlayed:
+        case Meta::valLastPlayed:
+        case Meta::valPlaycount:
+            return Qt::AlignRight;
     }
     return QVariant();
 }
@@ -103,7 +117,7 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                         locale->formatDateTime( track->lastPlayed(), KLocale::FancyShortDate ) :
                         QVariant();
                 case Meta::valPlaycount:
-                    return track->playcount() ? track->playcount() : QVariant();
+                    return track->playcount();
                 case Meta::valLabel:
                     return QStringList( track->labels().toList() ).join( i18nc( "comma between labels", ", " ) );
                 default:
@@ -117,6 +131,8 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                     return trackToolTipData( track );
             }
             break;
+        case Qt::TextAlignmentRole:
+            return textAlignmentData( field );
     }
     return QVariant();
 }

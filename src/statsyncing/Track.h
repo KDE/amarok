@@ -95,11 +95,6 @@ namespace StatSyncing
             bool lessThan( const Track &other, qint64 fieldMask ) const;
 
             /**
-             * Get user-assigned track labels or empty set if there are none
-             */
-            virtual QSet<QString> labels() const = 0;
-
-            /**
              * Get user-assigned rating on scale from 0 to 10; 0 means the track is not
              * rated - return this value if you don't know the rating
              */
@@ -121,6 +116,11 @@ namespace StatSyncing
              * Get count of the track plays; return 0 in doubt
              */
             virtual int playcount() const = 0;
+
+            /**
+             * Get user-assigned track labels or empty set if there are none
+             */
+            virtual QSet<QString> labels() const = 0;
 
         private:
             Q_DISABLE_COPY(Track)

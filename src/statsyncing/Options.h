@@ -14,41 +14,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_COMMONMODEL_H
-#define STATSYNCING_COMMONMODEL_H
+#ifndef STATSYNCING_OPTIONS_H
+#define STATSYNCING_OPTIONS_H
 
-#include "statsyncing/Track.h"
-
-#include <QList>
-#include <QVariant>
-#include <QFont>
+#include <QtGlobal>
 
 namespace StatSyncing
 {
+    class Provider;
+
     /**
-     * Helper class for {Matched,Single}TracksModel's to avoid code duplication
+     * A container for options controlling how synchronization of two tracks is
+     * performed.
      */
-    class CommonModel
+    class Options
     {
         public:
-            explicit CommonModel( const QList<qint64> &columns );
+            explicit Options();
 
-            QVariant headerData( int section, Qt::Orientation orientation,
-                                 int role = Qt::DisplayRole ) const;
+            /**
+             * Binary OR of Meta::val* fields that should be synced.
+             */
+            qint64 syncedFields() const;
+            void setSyncedFields( qint64 fields );
 
-        protected:
-            QVariant sizeHintData( qint64 field ) const;
-            QVariant textAlignmentData( qint64 field ) const;
-
-            QVariant trackData( const TrackPtr &track, qint64 field, int role ) const;
-            QVariant trackTitleData( const TrackPtr &track ) const;
-            QVariant trackToolTipData( const TrackPtr &track ) const;
-
-            QList<qint64> m_columns;
-            QFont m_normalFont;
-            QFont m_boldFont;
+        private:
+            qint64 m_syncedFields;
     };
 
 } // namespace StatSyncing
 
-#endif // STATSYNCING_COMMONMODEL_H
+#endif // STATSYNCING_OPTIONS_H
