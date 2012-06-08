@@ -17,11 +17,10 @@
 #include "CollectionProvider.h"
 
 #include "MetaValues.h"
+#include "amarokconfig.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
 #include "statsyncing/collection/CollectionTrack.h"
-
-#include <QEventLoop>
 
 using namespace StatSyncing;
 
@@ -60,6 +59,21 @@ CollectionProvider::reliableTrackMetaData() const
 {
     return Meta::valTitle | Meta::valArtist | Meta::valAlbum |
            Meta::valComposer | Meta::valYear | Meta::valTrackNr | Meta::valDiscNr;
+}
+
+qint64
+CollectionProvider::writableTrackStatsData() const
+{
+    // TODO: this is unreliable and hacky, but serves for now:
+    if( id() == "localCollection" )
+        return Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed | Meta::valPlaycount | Meta::valLabel;
+    if( id().startsWith( "amarok-ipodtrackuid" ) )
+        return Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed | Meta::valPlaycount;
+
+    // for other collections, assume it just uses Amarok stats writeback settings:
+    if( AmarokConfig::writeBackStatistics() )
+        return Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed | Meta::valPlaycount;
+    return 0;
 }
 
 QSet<QString>

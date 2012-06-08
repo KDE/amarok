@@ -18,6 +18,7 @@
 
 #include "MetaValues.h"
 #include "statsyncing/Options.h"
+#include "statsyncing/Provider.h"
 
 using namespace StatSyncing;
 
@@ -68,7 +69,8 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
 {
     if( isEmpty() ||
         ( provider && !m_map.contains( provider ) ) ||
-        !(options.syncedFields() & field) )
+        !(options.syncedFields() & field) ||
+        ( provider && !(provider->writableTrackStatsData() & field) ) )
     {
         return false;
     }
@@ -83,9 +85,11 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
             if( provider )
                 return track( provider )->rating() != rating;
 
-            foreach( TrackPtr track, m_map )
+            foreach( const Provider *prov, m_map.keys() )
             {
-                if( track->rating() != rating )
+                if( !(prov->writableTrackStatsData() & field ) )
+                    continue; // this provider doesn't even know how to write this field
+                if( track( prov )->rating() != rating )
                     return true;
             }
             return false;
@@ -97,9 +101,11 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
             if( provider )
                 return track( provider )->firstPlayed() != firstPlayed;
 
-            foreach( TrackPtr track, m_map )
+            foreach( const Provider *prov, m_map.keys() )
             {
-                if( track->firstPlayed() != firstPlayed )
+                if( !(prov->writableTrackStatsData() & field ) )
+                    continue; // this provider doesn't even know how to write this field
+                if( track( prov )->firstPlayed() != firstPlayed )
                     return true;
             }
             return false;
@@ -111,9 +117,11 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
             if( provider )
                 return track( provider )->lastPlayed() != lastPlayed;
 
-            foreach( TrackPtr track, m_map )
+            foreach( const Provider *prov, m_map.keys() )
             {
-                if( track->lastPlayed() != lastPlayed )
+                if( !(prov->writableTrackStatsData() & field ) )
+                    continue; // this provider doesn't even know how to write this field
+                if( track( prov )->lastPlayed() != lastPlayed )
                     return true;
             }
             return false;
@@ -125,9 +133,11 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
             if( provider )
                 return track( provider )->playcount() != playcount;
 
-            foreach( TrackPtr track, m_map )
+            foreach( const Provider *prov, m_map.keys() )
             {
-                if( track->playcount() != playcount )
+                if( !(prov->writableTrackStatsData() & field ) )
+                    continue; // this provider doesn't even know how to write this field
+                if( track( prov )->playcount() != playcount )
                     return true;
             }
             return false;
@@ -139,9 +149,11 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
             if( provider )
                 return track( provider )->labels() != labels;
 
-            foreach( TrackPtr track, m_map )
+            foreach( const Provider *prov, m_map.keys() )
             {
-                if( track->labels() != labels )
+                if( !(prov->writableTrackStatsData() & field ) )
+                    continue; // this provider doesn't even know how to write this field
+                if( track( prov )->labels() != labels )
                     return true;
             }
             return false;

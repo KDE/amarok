@@ -59,12 +59,19 @@ namespace StatSyncing
             virtual KIcon icon() const = 0;
 
             /**
-             * Return binary OR of Meta::val* types that this provider knows about its
+             * Return binary OR of Meta::val* fields that this provider knows about its
              * tracks. Must include at least: Meta::valTitle, Meta::valArtist and
              * Meta::valAlbum. Optional fields: Meta::valComposer, Meta::valYear
              * Meta::valTrackNr and Meta::valDiscNr
              */
             virtual qint64 reliableTrackMetaData() const = 0;
+
+            /**
+             * Return binary OR of Meta::val* fields that this provider can write back
+             * to tracks. Choose a combination of: Meta::valRating, valFirstPlayed,
+             * valLastPlayed, valPlaycount, valLabel.
+             */
+            virtual qint64 writableTrackStatsData() const = 0;
 
             /**
              * Return a set of lowercased (all characters lowercased, not just ASCII)
