@@ -92,6 +92,18 @@ namespace StatSyncing
             bool hasConflict( const Options &options ) const;
 
             /**
+             * Returns a provider whose track's rating will be used in case of conflict.
+             * Will be null if rating provider hasn't been explicitly set.
+             */
+            const Provider *ratingProvider() const;
+
+            /**
+             * Sets the rating provider. Only accepts null provider or a provider of one
+             * track in this tuple.
+             */
+            void setRatingProvider( const Provider *provider );
+
+            /**
              * Return synchronized rating. Specifically, returns -1 if there's unsolved
              * rating conflict.
              */

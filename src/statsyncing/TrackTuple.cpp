@@ -168,7 +168,7 @@ TrackTuple::hasUpdate( const Options &options ) const
 bool
 TrackTuple::hasConflict( const Options &options ) const
 {
-    if( isEmpty() )
+    if( isEmpty() || !(options.syncedFields() & Meta::valRating) )
         return false;
     int firstRating = track( provider( 0 ) )->rating();
     QMapIterator<const Provider *, TrackPtr> it( m_map );
@@ -180,6 +180,19 @@ TrackTuple::hasConflict( const Options &options ) const
             return true;
     }
     return false;
+}
+
+const Provider *
+TrackTuple::ratingProvider() const
+{
+    return m_ratingProvider;
+}
+
+void
+TrackTuple::setRatingProvider( const Provider *provider )
+{
+    if( !provider || m_map.contains( provider ) )
+        m_ratingProvider = provider;
 }
 
 int

@@ -130,6 +130,51 @@ MatchedTracksModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 }
 
+bool
+MatchedTracksModel::setData( const QModelIndex &idx, const QVariant &value, int role )
+{
+    if( !idx.isValid() || idx.internalId() < 0 ||
+        idx.internalId() >= m_matchedTuples.count() ||
+        m_columns.value( idx.column() ) != Meta::valRating ||
+        role != Qt::CheckStateRole )
+    {
+        return false;
+    }
+    TrackTuple &tuple = m_matchedTuples[ idx.internalId() ]; // we need reference
+    const Provider *provider = tuple.provider( idx.row() );
+    if( !provider )
+        return false;
+
+    switch( Qt::CheckState( value.toInt() ) )
+    {
+        case Qt::Checked:
+            tuple.setRatingProvider( provider );
+            break;
+        case Qt::Unchecked:
+            tuple.setRatingProvider( 0 );
+            break;
+        default:
+            return false;
+    }
+    // parent changes:
+    QModelIndex parent = idx.parent();
+    QModelIndex parentRating = index( parent.row(), idx.column(), parent.parent() );
+    emit dataChanged( parentRating, parentRating );
+
+    // children change:
+    QModelIndex topLeft = index( 0, idx.column(), parent );
+    QModelIndex bottomRight = index( tuple.count() - 1, idx.column(), parent );
+    emit dataChanged( topLeft, bottomRight );
+    return true;
+}
+
+Qt::ItemFlags
+MatchedTracksModel::flags( const QModelIndex &index ) const
+{
+    // many false positives here, but no-one is hurt
+    return QAbstractItemModel::flags( index ) | Qt::ItemIsUserCheckable;
+}
+
 QVariant
 MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role ) const
 {
@@ -195,5 +240,7 @@ MatchedTracksModel::trackData( const Provider *provider, const TrackTuple &tuple
         return provider->icon();
     else if( role == Qt::FontRole )
         return tuple.fieldUpdated( field, m_options, provider ) ? m_boldFont : m_normalFont;
+    else if( role == Qt::CheckStateRole && field == Meta::valRating && tuple.hasConflict( m_options ) )
+        return ( tuple.ratingProvider() == provider ) ? Qt::Checked : Qt::Unchecked;
     return trackData( track, field, role );
 }
