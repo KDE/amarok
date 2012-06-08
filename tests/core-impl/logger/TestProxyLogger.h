@@ -29,7 +29,6 @@ private slots:
     void init();
     void cleanup();
 
-    void testClassMovesToMainThread();
     void testForwardShortMessage();
     void testForwardLongMessage();
     void testForwardProgressOperation();

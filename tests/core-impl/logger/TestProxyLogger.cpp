@@ -65,14 +65,6 @@ TestProxyLogger::cleanup()
     delete s_logger;
 }
 
-class CreateJob : public ThreadWeaver::Job
-{
-public:
-    void run() {
-        s_logger = new ProxyLogger();
-    }
-};
-
 class ProgressJob : public ThreadWeaver::Job
 {
 public:
@@ -89,16 +81,6 @@ public:
     bool deleteJob;
     bool deleteObject;
 };
-
-void
-TestProxyLogger::testClassMovesToMainThread()
-{
-    CreateJob *job = new CreateJob();
-    ThreadWeaver::Weaver::instance()->enqueue( job );
-    QTest::kWaitForSignal( job, SIGNAL(done(ThreadWeaver::Job*)), 0 );
-    QTest::qWait( 100 );
-    QCOMPARE( s_logger->thread(), QCoreApplication::instance()->thread() );
-}
 
 void
 TestProxyLogger::testDoNotForwardDeletedJob()
