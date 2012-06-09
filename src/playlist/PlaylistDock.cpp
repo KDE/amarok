@@ -247,9 +247,11 @@ void
 Playlist::Dock::paletteChanged( const QPalette &palette )
 {
     m_dynamicHintWidget->setStyleSheet(
-                QString( "QLabel { background-color: %1; color: %2; ; border-radius: 3px; } " )
+                QString( "QLabel { background-color: %1; color: %2; border-radius: 3px; } "
+                         "a { color: %3; } " )
                                 .arg( PaletteHandler::highlightColor().name() )
-                                .arg( palette.highlightedText().color().name() )
+                                .arg( palette.color( QPalette::HighlightedText ).name() )
+                                .arg( palette.color( QPalette::Link ).name() )
                         );
     if( m_barBox )
         m_barBox->setStyleSheet(
@@ -257,7 +259,7 @@ Playlist::Dock::paletteChanged( const QPalette &palette )
                              "background-color: %2; color: %3; border-radius: 3px; }"
                              "QLabel { color: %3; }" )
                             .arg( palette.color( QPalette::Window ).name() )
-                            .arg( The::paletteHandler()->highlightColor().name() )
+                            .arg( PaletteHandler::highlightColor().name() )
                             .arg( palette.color( QPalette::HighlightedText ).name() )
                     );
 
