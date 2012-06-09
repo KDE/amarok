@@ -288,7 +288,8 @@ Context::Applet::collapse( bool on )
         finalHeight = maxHeight;
 
     prepareGeometryChange();
-    ContextView *v = static_cast<ContextView*>( view() );
+    // warning: view() currently can return pointer to ToolbarView, not the ContextView
+    ContextView *v = ContextView::self(); // may return null
     // Plasma::Applet::view() might return 0, if the widget is not yet constructed, etc.
     // \sa https://bugs.kde.org/show_bug.cgi?id=258741. If view is not available
     // yet, regardless of the animation setting the preferred size is set

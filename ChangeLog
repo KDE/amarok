@@ -8,6 +8,7 @@ VERSION 2.6
       argument.
 
   BUGFIXES:
+    * Finally fix crash on startup in addCollapseAnimation. (BR 258741)
     * Don't hit "too many open files" when copying covers to iPod. (BR 301207)
     * Don't crash if iPod's eject button is hit twice. (BR 301208)
     * Don't crash even if the iPod is connected and quickly ejected. (BR 301166)

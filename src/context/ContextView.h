@@ -57,10 +57,10 @@ public:
      ContextView( Plasma::Containment *containment, Plasma::Corona *corona, QWidget* parent = 0 );
     ~ContextView();
 
-     /**
-         * Singleton pattern accessor.
+    /**
+     * Singleton pattern accessor. May return 0 if the view was not yet constructed.
      */
-    static ContextView* self() { Q_ASSERT( s_self ); return s_self; }
+    static ContextView *self() { return s_self; }
 
     /**
         Returns the context scene that this view is attached to.
