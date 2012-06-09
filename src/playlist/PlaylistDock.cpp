@@ -246,22 +246,23 @@ Playlist::Dock::sizeHint() const
 void
 Playlist::Dock::paletteChanged( const QPalette &palette )
 {
-    m_dynamicHintWidget->setStyleSheet(
-                QString( "QLabel { background-color: %1; color: %2; border-radius: 3px; } "
-                         "a { color: %3; } " )
-                                .arg( PaletteHandler::highlightColor().name() )
-                                .arg( palette.color( QPalette::HighlightedText ).name() )
-                                .arg( palette.color( QPalette::Link ).name() )
-                        );
+    const QString backgroundColor = PaletteHandler::highlightColor().name();
+    const QString textColor = palette.color( QPalette::HighlightedText ).name();
+    const QString linkColor = palette.color( QPalette::Link ).name();
+    const QString ridgeColor = palette.color( QPalette::Window ).name();
+
+    QString hintStyle( "QLabel { background-color: %1; color: %2; border-radius: 3px; } "
+                       "a { color: %3; }" );
+    hintStyle = hintStyle.arg( backgroundColor, textColor, linkColor );
+
+    QString barStyle( "QFrame#PlaylistBarBox { border: 1px ridge %1; background-color: %2; "
+                                             " color: %3; border-radius: 3px; } "
+                      "QLabel { color: %3; }" );
+    barStyle = barStyle.arg( ridgeColor, backgroundColor, textColor );
+
+    m_dynamicHintWidget->setStyleSheet( hintStyle );
     if( m_barBox )
-        m_barBox->setStyleSheet(
-                    QString( "QFrame#PlaylistBarBox { border: 1px ridge %1; "
-                             "background-color: %2; color: %3; border-radius: 3px; }"
-                             "QLabel { color: %3; }" )
-                            .arg( palette.color( QPalette::Window ).name() )
-                            .arg( PaletteHandler::highlightColor().name() )
-                            .arg( palette.color( QPalette::HighlightedText ).name() )
-                    );
+        m_barBox->setStyleSheet( barStyle );
 
 }
 
