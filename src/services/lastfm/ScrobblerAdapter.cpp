@@ -240,7 +240,7 @@ void
 ScrobblerAdapter::resetVariables()
 {
     m_current = lastfm::MutableTrack();
-    m_totalPlayed = m_lastPosition = 0;
+    m_totalPlayed = m_lastPosition = m_lastSaved = 0;
 }
 
 

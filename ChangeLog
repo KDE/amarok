@@ -8,6 +8,8 @@ VERSION 2.6
       argument.
 
   BUGFIXES:
+    * Fix inconsistent Last.fm scrobbling in some cases with GStreamer
+      backend.
     * Use colors from KDE style in Dynamic Playlist strip. (BR 301303)
     * Finally fix crash on startup in addCollapseAnimation. (BR 258741)
     * Don't hit "too many open files" when copying covers to iPod. (BR 301207)
