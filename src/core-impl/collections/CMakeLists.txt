@@ -20,6 +20,7 @@ add_subdirectory( db )
 # only build playdarcollection if QJson was found
 if( QJSON_FOUND )
     add_subdirectory( playdarcollection )
+    add_subdirectory( spotifycollection )
 endif( QJSON_FOUND )
 add_subdirectory( upnpcollection )
 add_subdirectory( nepomukcollection )
