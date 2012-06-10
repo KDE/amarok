@@ -60,7 +60,7 @@ public:
     void setComment( const QString &newComment ) { FORWARD( setComment( newComment ) ) }
     void setTrackNumber( int newTrackNumber ) { FORWARD( setTrackNumber( newTrackNumber ) ) }
     void setDiscNumber( int newDiscNumber ) { FORWARD( setDiscNumber( newDiscNumber ) ) }
-    void setBpm( qreal newBpm ) { FORWARD( setBpm( newBpm ) ) }
+    void setBpm( const qreal newBpm ) { FORWARD( setBpm( newBpm ) ) }
     void setTitle( const QString &newTitle ) { FORWARD( setTitle( newTitle ) ) }
     void setArtist( const QString &newArtist ) { FORWARD( setArtist( newArtist ) ) }
     void setAlbum( const QString &newAlbum ) { FORWARD( setAlbum( newAlbum ) ) }
