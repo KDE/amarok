@@ -1,0 +1,27 @@
+add_definitions(${KDE4_ENABLE_EXCEPTIONS})
+
+include_directories( ${Amarok_SOURCE_DIR}/src
+                     ${KDE4_INCLUDE_DIR}
+                     ${QT_INCLUDES}
+                     ${QJSON_INCLUDE_DIR} )
+
+set( amarok_collection-spotifycollection_PART_SRCS
+     SpotifyCollection.cpp
+     SpotifyQueryMaker.cpp
+     SpotifyMeta.cpp
+     support/Resolver.cpp
+     support/Controller.cpp )
+
+kde4_add_plugin(amarok_collection-spotifycollection ${amarok_collection-spotifycollection_PART_SRCS})
+
+target_link_libraries( amarok_collection-spotifycollection
+                       amarokcore
+                       amaroklib
+                       ${QJSON_LIBRARIES}
+                       ${KDE4_KDECORE_LIBS}
+                       ${KDE4_THREADWEAVER_LIBRARIES}
+                       ${KDE4_KIO_LIBS} )
+
+install( TARGETS amarok_collection-spotifycollection DESTINATION ${PLUGIN_INSTALL_DIR} )
+
+install( FILES amarok_collection-spotifycollection.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
