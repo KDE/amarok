@@ -117,7 +117,7 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                         locale->formatDateTime( track->lastPlayed(), KLocale::FancyShortDate ) :
                         QVariant();
                 case Meta::valPlaycount:
-                    return track->playcount();
+                    return track->playCount();
                 case Meta::valLabel:
                     return QStringList( track->labels().toList() ).join( i18nc( "comma between labels", ", " ) );
                 default:

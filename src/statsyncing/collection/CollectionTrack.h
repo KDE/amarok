@@ -38,16 +38,29 @@ namespace StatSyncing
             virtual int discNumber() const;
 
             virtual int rating() const;
+            virtual void setRating( int rating );
             virtual QDateTime firstPlayed() const;
+            virtual void setFirstPlayed( const QDateTime &firstPlayed );
             virtual QDateTime lastPlayed() const;
-            virtual int playcount() const;
+            virtual void setLastPlayed( const QDateTime &lastPlayed );
+            virtual int playCount() const;
+            virtual void setPlayCount( int playCount );
             virtual QSet<QString> labels() const;
+            virtual void setLabels( const QSet<QString> &labels );
+
+            virtual void commit();
 
         private:
             Q_DISABLE_COPY(CollectionTrack)
 
+            /**
+             * Calls m_trackStats->beginUpdate() if it hasn't been already called
+             */
+            void beginUpdate();
+
             Meta::TrackPtr m_track;
             Meta::StatisticsPtr m_trackStats;
+            bool m_beginUpdateAlreadyCalled;
     };
 
 } // namespace StatSyncing

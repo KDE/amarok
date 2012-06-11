@@ -23,6 +23,7 @@
 #include "core/support/Components.h"
 #include "statsyncing/Process.h"
 #include "statsyncing/jobs/MatchTracksJob.h"
+#include "jobs/SynchronizeTracksJob.h"
 #include "statsyncing/models/MatchedTracksModel.h"
 #include "statsyncing/models/SingleTracksModel.h"
 
@@ -209,9 +210,13 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
     header->setResizeMode( 4, QHeaderView::ResizeToContents );
     header->setResizeMode( 5, QHeaderView::Interactive );
 
+    m_matchedTracksPage->buttonBox->addButton( KGuiItem( "Synchronize", "document-save" ),
+                                               QDialogButtonBox::AcceptRole );
+    connect( m_matchedTracksPage->buttonBox, SIGNAL(accepted()), SLOT(slotSynchronize()) );
+    connect( m_matchedTracksPage->buttonBox, SIGNAL(rejected()), m_matchedTracksPage, SLOT(deleteLater()) );
+    connect( m_matchedTracksPage, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
     m_matchedTracksPage->show();
     m_matchedTracksPage->raise();
-    connect( m_matchedTracksPage, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
 }
 
 void
@@ -309,4 +314,20 @@ Process::changeSingleTracksProvider( int index, const QMap<const Provider *, QAb
     const Provider *provider =
         m_matchedTracksPage->filterCombo->itemData( index ).value<const Provider *>();
     m_proxyModel->setSourceModel( models.value( provider ) );
+}
+
+void
+Process::slotSynchronize()
+{
+    disconnect( m_matchedTracksPage, SIGNAL(destroyed(QObject*)), this, SLOT(deleteLater()) );
+    m_matchedTracksPage->deleteLater();
+    m_matchedTracksPage = 0;
+
+    SynchronizeTracksJob *job =
+        new SynchronizeTracksJob( m_matchedTracksModel->matchedTuples(), m_options );
+    QString text = i18n( "Synchronizing tracks..." );
+    Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
+    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+    connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(deleteLater()) );
+    ThreadWeaver::Weaver::instance()->enqueue( job );
 }

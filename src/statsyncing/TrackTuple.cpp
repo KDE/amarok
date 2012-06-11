@@ -17,10 +17,16 @@
 #include "TrackTuple.h"
 
 #include "MetaValues.h"
+#include "core/support/Debug.h"
 #include "statsyncing/Options.h"
 #include "statsyncing/Provider.h"
 
+Q_DECLARE_METATYPE(QSet<QString>)
+
 using namespace StatSyncing;
+
+const QList<qint64> TrackTuple::s_fields = QList<qint64>() << Meta::valRating
+    << Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount << Meta::valLabel;
 
 TrackTuple::TrackTuple()
     : m_ratingProvider( 0 )
@@ -131,13 +137,13 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
         {
             int playcount = syncedPlaycount( options );
             if( provider )
-                return track( provider )->playcount() != playcount;
+                return track( provider )->playCount() != playcount;
 
             foreach( const Provider *prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
-                if( track( prov )->playcount() != playcount )
+                if( track( prov )->playCount() != playcount )
                     return true;
             }
             return false;
@@ -165,11 +171,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
 bool
 TrackTuple::hasUpdate( const Options &options ) const
 {
-    static const QList<qint64> fields = QList<qint64>() << Meta::valRating
-        << Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount
-        << Meta::valLabel;
-
-    foreach( qint64 field, fields )
+    foreach( qint64 field, s_fields )
     {
         if( fieldUpdated( field, options ) )
             return true;
@@ -228,8 +230,11 @@ TrackTuple::syncedFirstPlayed( const Options &options ) const
         return first;
     foreach( TrackPtr track, m_map )
     {
-        if( !first.isValid() || track->firstPlayed() < first )
-            first = track->firstPlayed();
+        QDateTime trackFirstPlayed = track->firstPlayed();
+        if( !trackFirstPlayed.isValid() )
+            continue;
+        if( !first.isValid() || trackFirstPlayed < first )
+            first = trackFirstPlayed;
     }
     return first;
 }
@@ -242,8 +247,11 @@ TrackTuple::syncedLastPlayed( const Options &options ) const
         return last;
     foreach( TrackPtr track, m_map )
     {
-        if( !last.isValid() || track->lastPlayed() > last )
-            last = track->lastPlayed();
+        QDateTime trackLastPlayed = track->lastPlayed();
+        if( !trackLastPlayed.isValid() )
+            continue;
+        if( !last.isValid() || trackLastPlayed > last )
+            last = trackLastPlayed;
     }
     return last;
 }
@@ -256,7 +264,7 @@ TrackTuple::syncedPlaycount( const Options &options ) const
         return max;
     foreach( TrackPtr track, m_map )
     {
-        max = qMax( max, track->playcount() );
+        max = qMax( max, track->playCount() );
     }
     return max;
 }
@@ -273,4 +281,61 @@ TrackTuple::syncedLabels( const Options &options ) const
         labels |= track->labels();
     }
     return labels;
+}
+
+void
+TrackTuple::synchronize( const Options &options )
+{
+    foreach( qint64 field, s_fields )
+    {
+        // catches if field should not be at all updated (either no change or not in options )
+        if( !fieldUpdated( field, options ) )
+            continue;
+
+        QVariant synced;
+        switch( field )
+        {
+            case Meta::valRating:
+                synced = syncedRating( options ); break;
+            case Meta::valFirstPlayed:
+                synced = syncedFirstPlayed( options ); break;
+            case Meta::valLastPlayed:
+                synced = syncedLastPlayed( options ); break;
+            case Meta::valPlaycount:
+                synced = syncedPlaycount( options ); break;
+            case Meta::valLabel:
+                synced.setValue<QSet<QString> >( syncedLabels( options ) ); break;
+            default:
+                warning() << __PRETTY_FUNCTION__ << "unhandled first switch";
+        }
+
+        QMapIterator<const Provider *, TrackPtr> it( m_map );
+        while( it.hasNext() )
+        {
+            it.next();
+            const Provider *provider = it.key();
+            if( !fieldUpdated( field, options, provider ) )
+                continue; // nothing to do for this field and provider
+
+            TrackPtr track = it.value();
+            switch( field )
+            {
+                case Meta::valRating:
+                    track->setRating( synced.toInt() ); break;
+                case Meta::valFirstPlayed:
+                    track->setFirstPlayed( synced.toDateTime() ); break;
+                case Meta::valLastPlayed:
+                    track->setLastPlayed( synced.toDateTime() ); break;
+                case Meta::valPlaycount:
+                    track->setPlayCount( synced.toInt() ); break;
+                case Meta::valLabel:
+                    track->setLabels( synced.value<QSet<QString> >() ); break;
+                default:
+                    warning() << __PRETTY_FUNCTION__ << "unhandled second switch";
+            }
+        }
+    }
+
+    foreach( TrackPtr track, m_map )
+        track->commit();
 }

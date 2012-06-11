@@ -75,6 +75,13 @@ namespace StatSyncing
             bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
             Qt::ItemFlags flags( const QModelIndex &index ) const;
 
+            // MatchedTracksModel-specific methods:
+            /**
+             * Return a list of matched tuples, the same passed to model constructor, but
+             * some may be changed, e.g. conflict-resoluted etc.
+             */
+            const QList<TrackTuple> &matchedTuples();
+
         private:
             QVariant tupleData( const TrackTuple &tuple, qint64 field, int role ) const;
             QVariant trackData( const Provider *provider, const TrackTuple &tuple,

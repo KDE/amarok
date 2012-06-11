@@ -591,6 +591,7 @@ set( statsyncing_SRCS
     statsyncing/collection/CollectionProvider.cpp
     statsyncing/collection/CollectionTrack.cpp
     statsyncing/jobs/MatchTracksJob.cpp
+    statsyncing/jobs/SynchronizeTracksJob.cpp
     statsyncing/models/CommonModel.cpp
     statsyncing/models/MatchedTracksModel.cpp
     statsyncing/models/SingleTracksModel.cpp

@@ -175,6 +175,12 @@ MatchedTracksModel::flags( const QModelIndex &index ) const
     return QAbstractItemModel::flags( index ) | Qt::ItemIsUserCheckable;
 }
 
+const QList<TrackTuple> &
+MatchedTracksModel::matchedTuples()
+{
+    return m_matchedTuples;
+}
+
 QVariant
 MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role ) const
 {

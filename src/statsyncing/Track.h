@@ -99,28 +99,40 @@ namespace StatSyncing
              * rated - return this value if you don't know the rating
              */
             virtual int rating() const = 0;
+            virtual void setRating( int rating ) = 0;
 
             /**
              * Get date when the track was first played or invalid date if this is not
              * known or the track was not yet played
              */
             virtual QDateTime firstPlayed() const = 0;
+            virtual void setFirstPlayed( const QDateTime &firstPlayed ) = 0;
 
             /**
              * Get date when the track was last played or invalid date if this is not
              * known or the track was not yet played
              */
             virtual QDateTime lastPlayed() const = 0;
+            virtual void setLastPlayed( const QDateTime &lastPlayed ) = 0;
 
             /**
              * Get count of the track plays; return 0 in doubt
              */
-            virtual int playcount() const = 0;
+            virtual int playCount() const = 0;
+            virtual void setPlayCount( int playCount ) = 0;
 
             /**
              * Get user-assigned track labels or empty set if there are none
              */
             virtual QSet<QString> labels() const = 0;
+            virtual void setLabels( const QSet<QString> &labels ) = 0;
+
+            /**
+             * Write back statistics to the underlying storage. You must call this function
+             * after calling any of the set* methods. The track may decide whether the
+             * actual writeback happens in set* or in commit().
+             */
+            virtual void commit() = 0;
 
         private:
             Q_DISABLE_COPY(Track)

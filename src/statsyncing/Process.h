@@ -31,6 +31,7 @@ namespace StatSyncing
 {
     class MatchedTracksPage;
     class SortFilterProxyModel;
+    class MatchedTracksModel;
 
     /**
      * Class that is responsible for one synchronization process from track matching
@@ -85,6 +86,8 @@ namespace StatSyncing
              */
             void changeSingleTracksProvider( int index, const QMap<const Provider *, QAbstractItemModel *> &models );
 
+            void slotSynchronize();
+
         private:
             Q_DISABLE_COPY( Process )
 
@@ -92,7 +95,7 @@ namespace StatSyncing
 
             MatchedTracksPage *m_matchedTracksPage;
             SortFilterProxyModel *m_proxyModel;
-            QAbstractItemModel *m_matchedTracksModel;
+            MatchedTracksModel *m_matchedTracksModel;
             QMap<const Provider *, QAbstractItemModel *> m_uniqueTracksModels;
             QMap<const Provider *, QAbstractItemModel *> m_excludedTracksModels;
             Options m_options;

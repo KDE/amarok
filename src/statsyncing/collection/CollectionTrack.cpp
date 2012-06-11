@@ -17,12 +17,14 @@
 #include "CollectionTrack.h"
 
 #include "core/meta/Statistics.h"
+#include "core/support/Debug.h"
 
 using namespace StatSyncing;
 
 CollectionTrack::CollectionTrack( Meta::TrackPtr track )
     : m_track( track )
     , m_trackStats( track->statistics() )
+    , m_beginUpdateAlreadyCalled( false )
 {
     Q_ASSERT( m_track );
     Q_ASSERT( m_trackStats );
@@ -84,10 +86,24 @@ CollectionTrack::rating() const
     return qBound<int>( 0, m_trackStats->rating(), 10 );
 }
 
+void
+CollectionTrack::setRating( int rating )
+{
+    beginUpdate();
+    m_trackStats->setRating( rating );
+}
+
 QDateTime
 CollectionTrack::firstPlayed() const
 {
     return m_trackStats->firstPlayed();
+}
+
+void
+CollectionTrack::setFirstPlayed( const QDateTime &firstPlayed )
+{
+    beginUpdate();
+    m_trackStats->setFirstPlayed( firstPlayed );
 }
 
 QDateTime
@@ -96,10 +112,24 @@ CollectionTrack::lastPlayed() const
     return m_trackStats->lastPlayed();
 }
 
+void
+CollectionTrack::setLastPlayed( const QDateTime &lastPlayed )
+{
+    beginUpdate();
+    m_trackStats->setLastPlayed( lastPlayed );
+}
+
 int
-CollectionTrack::playcount() const
+CollectionTrack::playCount() const
 {
     return m_trackStats->playCount();
+}
+
+void
+CollectionTrack::setPlayCount( int playCount )
+{
+    beginUpdate();
+    m_trackStats->setPlayCount( playCount );
 }
 
 QSet<QString>
@@ -110,4 +140,31 @@ CollectionTrack::labels() const
     foreach( Meta::LabelPtr label, labels )
         labelNames.insert( label->name() );
     return labelNames;
+}
+
+void
+CollectionTrack::setLabels( const QSet<QString> &labels )
+{
+    Q_UNUSED( labels )
+    AMAROK_NOTIMPLEMENTED
+}
+
+void
+CollectionTrack::commit()
+{
+    if( !m_beginUpdateAlreadyCalled )
+        return;
+
+    m_trackStats->endUpdate();
+    m_beginUpdateAlreadyCalled = false;
+}
+
+void
+CollectionTrack::beginUpdate()
+{
+    if( m_beginUpdateAlreadyCalled )
+        return;
+
+    m_trackStats->beginUpdate();
+    m_beginUpdateAlreadyCalled = true;
 }

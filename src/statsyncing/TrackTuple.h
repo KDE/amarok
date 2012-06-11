@@ -113,7 +113,16 @@ namespace StatSyncing
             int syncedPlaycount( const Options &options ) const;
             QSet<QString> syncedLabels( const Options &options ) const;
 
+            /**
+             * Perform actual synchronization. For each track, only sets fields that are
+             * in fieldUpdated( .., .., provider). Specifically this method does not write
+             * ratings if there's unresolved rating conflict.
+             */
+            void synchronize( const Options &options );
+
         private:
+            static const QList<qint64> s_fields; /// list of Meta::val* fields capable of syncing
+
             QMap<const Provider *, TrackPtr> m_map;
             const Provider *m_ratingProvider; /// source of rating in the event of conflict
     };
