@@ -28,13 +28,6 @@
 #include <klocale.h>
 #include <kio/global.h>
 
-// We want to give sensible sized images to mpris.
-// 135 is also a size used by Amarok internally so the chances are quite good that we already
-// have a scaled image in our cache.
-// Also requesting images in a specific size reduces the chances that we get an abstract URL
-// like amarok-sqltrackuid://1345 (see bug 263642)
-#define MPRIS_IMAGE_SIZE 135
-
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
         static const QString XESAM_ALBUMARTIST    = "http://freedesktop.org/standards/xesam/1.0/core#albumArtist";
         static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#artist";
@@ -139,9 +132,9 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
             KUrl url = track->album()->imageLocation().url();
             if ( url.isValid() && !url.isLocalFile() ) {
                 // embedded id?  Request a version to be put in the cache
-                debug() << "MPRIS: asking the image to be cached";
-                track->album()->image( MPRIS_IMAGE_SIZE );
-                url = track->album()->imageLocation( MPRIS_IMAGE_SIZE ).url();
+                int width = track->album()->image().width();
+                url = track->album()->imageLocation( width ).url();
+                debug() << "MPRIS: New location for width" << width << "is" << url;
             }
             if ( url.isValid() && url.isLocalFile() )
                 map["arturl"] = QString::fromLatin1( url.toEncoded() );
@@ -191,10 +184,9 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
             debug() << "MPRIS2: Album image location is" << url;
             if ( url.isValid() && !url.isLocalFile() ) {
                 // embedded id?  Request a version to be put in the cache
-                debug() << "MPRIS2: asking the image to be cached";
-                track->album()->image( MPRIS_IMAGE_SIZE );
-                url = track->album()->imageLocation( MPRIS_IMAGE_SIZE ).url();
-                debug() << "MPRIS2: New location is" << url;
+                int width = track->album()->image().width();
+                url = track->album()->imageLocation( width ).url();
+                debug() << "MPRIS2: New location for width" << width << "is" << url;
             }
             if ( url.isValid() && url.isLocalFile() )
                 map["mpris:artUrl"] = QString::fromLatin1( url.toEncoded() );
