@@ -18,6 +18,7 @@ VERSION 2.6
     * Play the correct track when adding tracks to a sorted playlist. (BR
       244595)
     * Provide full-size covers via MPRIS1 if available. (BR 278550)
+    * Fix serving out of embedded images via MPRIS. (BR 301399)
 
 VERSION 2.6-Beta 1
   FEATURES:
