@@ -54,10 +54,6 @@ MediaDeviceCache::MediaDeviceCache() : QObject()
              this, SLOT( slotAddSolidDevice( const QString & ) ) );
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString & ) ),
              this, SLOT( slotRemoveSolidDevice( const QString & ) ) );
-    connect(&m_timer, SIGNAL(timeout()), this, SLOT(slotTimeout()));
-
-    m_timer.setSingleShot(true);
-    m_timer.start(1000);
 }
 
 MediaDeviceCache::~MediaDeviceCache()
@@ -285,45 +281,6 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
     }
     debug() << "Odd, got a deviceRemoved at udi " << udi << " but it did not seem to exist in the first place...";
     emit deviceRemoved( udi );
-}
-
-void MediaDeviceCache::slotTimeout()
-{
-    KMountPoint::List possibleMountList = KMountPoint::possibleMountPoints();
-    KMountPoint::List currentMountList = KMountPoint::currentMountPoints();
-    QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageAccess );
-
-    for (KMountPoint::List::iterator it = possibleMountList.begin(); it != possibleMountList.end(); ++it) {
-        if ((*it)->mountType() == "nfs" || (*it)->mountType() == "nfs4" || 
-            (*it)->mountType() == "smb" || (*it)->mountType() == "cifs") {
-            QString path = (*it)->mountPoint();
-            bool mounted = false;
-            QString udi = QString();
-
-            foreach( const Solid::Device &device, deviceList )
-            {
-                const Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
-                if( ssa && path == ssa->filePath())
-                    udi = device.udi();
-            }
-
-            for (KMountPoint::List::iterator it2 = currentMountList.begin(); it2 != currentMountList.end(); ++it2) {
-                if ( (*it)->mountType() == (*it2)->mountType() &&
-                     (*it)->mountPoint() == (*it2)->mountPoint() ) {
-                    mounted = true;
-                    break;
-                }
-            }
-
-            if ( m_accessibility[udi] != mounted ) {
-                m_accessibility[udi] = mounted;
-                slotAccessibilityChanged( mounted, udi);
-            }
-        }
-    }
-
-    m_timer.setSingleShot(true);
-    m_timer.start(1000);
 }
 
 void

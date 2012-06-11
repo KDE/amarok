@@ -63,7 +63,6 @@ class AMAROK_EXPORT MediaDeviceCache : public QObject
         void slotAddSolidDevice( const QString &udi );
         void slotRemoveSolidDevice( const QString &udi );
         void slotAccessibilityChanged( bool accessible, const QString &udi );
-        void slotTimeout();
 
     private:
         QMap<QString, MediaDeviceCache::DeviceType> m_type;
@@ -71,7 +70,6 @@ class AMAROK_EXPORT MediaDeviceCache : public QObject
         QMap<QString, bool> m_accessibility;
         QStringList m_volumes;
         static MediaDeviceCache* s_instance;
-        QTimer m_timer;
 };
 
 #endif /* AMAROK_MEDIADEVICECACHE_H */
