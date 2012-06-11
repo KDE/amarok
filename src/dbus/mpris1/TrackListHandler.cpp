@@ -49,7 +49,7 @@ namespace Mpris1
         if( track )
         {
             if( playImmediately )
-                The::playlistController()->insertOptioned( track, Playlist::DirectPlay );
+                The::playlistController()->insertOptioned( track, Playlist::AppendAndPlayImmediately );
             else
                 The::playlistController()->insertOptioned( track, Playlist::Append );
             return 0;
