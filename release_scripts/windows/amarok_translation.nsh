@@ -47,7 +47,7 @@
     ; !insertmacro MUI_LANGUAGE "Albanian"
     ; !insertmacro MUI_LANGUAGE "Breton"
     ; !insertmacro MUI_LANGUAGE "Belarusian"
-    ; !insertmacro MUI_LANGUAGE "Icelandic"
+    !insertmacro MUI_LANGUAGE "Icelandic"
     ; !insertmacro MUI_LANGUAGE "Malay"
     ; !insertmacro MUI_LANGUAGE "Bosnian"
     ; !insertmacro MUI_LANGUAGE "Kurdish"
@@ -179,19 +179,19 @@
     LangString LANGUAGE_SETTINGS ${LANG_FINNISH} "Kieliasetukset"
     
     ;Catalan"
-    LangString VISIT_PROJECT_HOMEPAGE ${LANG_CATALAN} "Visit project website"
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_CATALAN} "Visiteu el lloc web del projecte"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_CATALAN} "Revisió de la llicència"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_CATALAN} "Reviseu la llicència per conèixer els vostres drets abans d'instal·lar l'Amarok"
-    LangString SECTION_SNORE ${LANG_CATALAN} "Snore (OSD notifications)"
+    LangString SECTION_SNORE ${LANG_CATALAN} "Snore (notificacions OSD)"
     LangString SECTION_LANGUAGES ${LANG_CATALAN} "Idiomes"; (Es requereix connexió a Internet)"
     LangString APPEARANCE_SETTINGS ${LANG_CATALAN} "Configuració de l'aparença"
     LangString LANGUAGE_SETTINGS ${LANG_CATALAN} "Configuració de l'idioma"
 
     ;Spanish
-    LangString VISIT_PROJECT_HOMEPAGE ${LANG_SPANISH} "Visit project website"
+    LangString VISITE_PROJECT_HOMEPAGE ${LANG_SPANISH} "Visite el sitio web del proyecto"
     LangString PAGE_LICENSE_HEADER_TEXT ${LANG_SPANISH} "Revisión de la licencia"
     LangString PAGE_LICENSE_SUBTEXT ${LANG_SPANISH} "Por favor, revise la licencia para conocer sus derechos antes de instalar Amarok"
-    LangString SECTION_SNORE ${LANG_SPANISH} "Snore (OSD notifications)"
+    LangString SECTION_SNORE ${LANG_SPANISH} "Snore (notificaciones en pantalla)"
     LangString SECTION_LANGUAGES ${LANG_SPANISH} "Idiomas"; (se necesita conexión a Internet)"
     LangString APPEARANCE_SETTINGS ${LANG_SPANISH} "Preferencias de aspecto"
     LangString LANGUAGE_SETTINGS ${LANG_SPANISH} "Preferencias de idioma"
@@ -213,5 +213,14 @@
     LangString SECTION_LANGUAGES ${LANG_RUSSIAN} "Языки";(требуется подключение к сети Интернет)
     LangString APPEARANCE_SETTINGS ${LANG_RUSSIAN} "Настройка внешнего вида"
     LangString LANGUAGE_SETTINGS ${LANG_RUSSIAN} "Настройка языков"
+    
+    ;Icelandic
+    LangString VISIT_PROJECT_HOMEPAGE ${LANG_ICELANDIC} "Heimsækja heimasíðu verkefnisins"
+    LangString PAGE_LICENSE_HEADER_TEXT ${LANG_ICELANDIC} "Skoða notkunarleyfi"
+    LangString PAGE_LICENSE_SUBTEXT ${LANG_ICELANDIC} "Skoðaðu notkunarleyfið til að vita hver réttindi þín eru áður en þú setur upp Amarok"
+    LangString SECTION_SNORE ${LANG_ICELANDIC} "Snore (OSD skjátilkynningar)"
+    LangString SECTION_LANGUAGES ${LANG_ICELANDIC} "Tungumál (internettenging nauðsynleg)"
+    LangString APPEARANCE_SETTINGS ${LANG_ICELANDIC} "Útlitsstillingar"
+    LangString LANGUAGE_SETTINGS ${LANG_ICELANDIC} "Tungumálastillingar"
 !macroend
 
