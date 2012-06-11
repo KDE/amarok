@@ -65,6 +65,7 @@ public:
     virtual quint64 idAt( const int row ) const;
     virtual bool rowExists( int row ) const;
     virtual int rowForId( const quint64 id ) const;
+    virtual int rowFromBottomModel( const int rowInBase );
     virtual int rowToBottomModel( const int rowInProxy );
     virtual void setActiveId( const quint64 id );
     virtual void setActiveRow( int row );

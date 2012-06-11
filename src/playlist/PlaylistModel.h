@@ -80,6 +80,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         quint64 idAt( const int row ) const;
         bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }
         int rowForId( const quint64 id ) const; // returns -1 if the id is invalid
+        int rowFromBottomModel( const int row ) { return row; }
         int rowToBottomModel( const int row ) { return row; }
         void setActiveId( const quint64 id ) { setActiveRow( rowForId( id ) ); }
         void setActiveRow( int row );

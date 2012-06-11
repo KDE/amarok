@@ -140,8 +140,9 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         //make sure that we turn off dynamic mode.
         Amarok::actionCollection()->action( "disable_dynamic" )->trigger();
 
-        topModelInsertRow = 0;
-        insertionHelper( insertionTopRowToBottom( topModelInsertRow ), list );
+        int bottomModelInsertRow = insertionTopRowToBottom( 0 );
+        insertionHelper( bottomModelInsertRow, list );
+        topModelInsertRow = m_topModel->rowFromBottomModel( bottomModelInsertRow );
         m_undoStack->endMacro();
         visibleInsertedRowCount = m_topModel->qaim()->rowCount(); // simple
     }
@@ -157,6 +158,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 
         int bottomModelInsertRow = insertionTopRowToBottom( topModelInsertRow );
         insertionHelper( bottomModelInsertRow, list );
+        topModelInsertRow = m_topModel->rowFromBottomModel( bottomModelInsertRow );
         visibleInsertedRowCount = m_topModel->qaim()->rowCount() - oldVisibleRowCount;
 
         // Construct list of rows to be queued
@@ -177,7 +179,9 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         int oldVisibleRowCount = m_topModel->qaim()->rowCount();
         topModelInsertRow = m_topModel->qaim()->rowCount();
 
-        insertionHelper( insertionTopRowToBottom( topModelInsertRow ), list );
+        int bottomModelInsertRow = insertionTopRowToBottom( topModelInsertRow );
+        insertionHelper( bottomModelInsertRow, list );
+        topModelInsertRow = m_topModel->rowFromBottomModel( bottomModelInsertRow );
         visibleInsertedRowCount = m_topModel->qaim()->rowCount() - oldVisibleRowCount;
     }
 

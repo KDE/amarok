@@ -188,6 +188,12 @@ ProxyBase::rowForId( const quint64 id ) const
 }
 
 int
+ProxyBase::rowFromBottomModel( const int row )
+{
+    return rowFromSource( m_belowModel->rowFromBottomModel( row ) );
+}
+
+int
 ProxyBase::rowToBottomModel( const int row )
 {
     return m_belowModel->rowToBottomModel( rowToSource( row )  );

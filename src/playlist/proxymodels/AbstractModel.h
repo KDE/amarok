@@ -215,6 +215,13 @@ public:
     virtual int rowForId( const quint64 id ) const = 0;
 
     /**
+     * Returns the row number of a track given the row number in the bottom model.
+     * @param row the row in the bottom model.
+     * @return the row in a proxy model
+     */
+    virtual int rowFromBottomModel( const int row ) = 0;
+
+    /**
      * Returns the row number of a track in terms of the bottom model.
      * @param row the row in a proxy model
      * @return the row in the bottom model.
