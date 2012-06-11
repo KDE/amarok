@@ -188,6 +188,7 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
         if( track->album() ) {
             QImage image = track->album()->image();
             KUrl url = track->album()->imageLocation().url();
+            debug() << "MPRIS2: Album image location is" << url;
             if ( url.isValid() && !url.isLocalFile() ) {
                 // embedded id?  Request a version to be put in the cache
                 debug() << "MPRIS2: asking the image to be cached";
