@@ -141,7 +141,7 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
                 // embedded id?  Request a version to be put in the cache
                 debug() << "MPRIS: asking the image to be cached";
                 track->album()->image( MPRIS_IMAGE_SIZE );
-                url = track->album()->imageLocation().url();
+                url = track->album()->imageLocation( MPRIS_IMAGE_SIZE ).url();
             }
             if ( url.isValid() && url.isLocalFile() )
                 map["arturl"] = QString::fromLatin1( url.toEncoded() );
@@ -193,7 +193,8 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
                 // embedded id?  Request a version to be put in the cache
                 debug() << "MPRIS2: asking the image to be cached";
                 track->album()->image( MPRIS_IMAGE_SIZE );
-                url = track->album()->imageLocation().url();
+                url = track->album()->imageLocation( MPRIS_IMAGE_SIZE ).url();
+                debug() << "MPRIS2: New location is" << url;
             }
             if ( url.isValid() && url.isLocalFile() )
                 map["mpris:artUrl"] = QString::fromLatin1( url.toEncoded() );
