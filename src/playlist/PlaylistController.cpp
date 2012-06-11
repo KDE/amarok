@@ -128,7 +128,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     }
 
     int topModelInsertRow;
-    int visibleInsertedRowCount = m_topModel->qaim()->rowCount();  // initialise with old count
+    int visibleInsertedRowCount;
     if( options & Replace )
     {
         debug()<<"Replace";
@@ -149,6 +149,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     {
         debug()<<"Queue";
 
+        int oldVisibleRowCount = m_topModel->qaim()->rowCount();
         topModelInsertRow = m_topModel->activeRow() + 1;
 
         while( m_topModel->queuePositionOfRow( topModelInsertRow ) )
@@ -156,7 +157,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 
         int bottomModelInsertRow = insertionTopRowToBottom( topModelInsertRow );
         insertionHelper( bottomModelInsertRow, list );
-        visibleInsertedRowCount = m_topModel->qaim()->rowCount() - visibleInsertedRowCount;
+        visibleInsertedRowCount = m_topModel->qaim()->rowCount() - oldVisibleRowCount;
 
         // Construct list of rows to be queued
         QList<int> topModelRows;
@@ -172,9 +173,12 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     else
     {
         debug()<<"Append";
+
+        int oldVisibleRowCount = m_topModel->qaim()->rowCount();
         topModelInsertRow = m_topModel->qaim()->rowCount();
+
         insertionHelper( insertionTopRowToBottom( topModelInsertRow ), list );
-        visibleInsertedRowCount = m_topModel->qaim()->rowCount() - visibleInsertedRowCount;
+        visibleInsertedRowCount = m_topModel->qaim()->rowCount() - oldVisibleRowCount;
     }
 
     debug() << "engine playing?: " << The::engineController()->isPlaying();
