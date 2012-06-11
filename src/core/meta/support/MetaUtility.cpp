@@ -134,6 +134,17 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
             map["album"] = track->album()->name();
             if( track->album()->hasAlbumArtist() && !track->album()->albumArtist()->name().isEmpty() )
                 map[ "albumartist" ] = track->album()->albumArtist()->name();
+
+            QImage image = track->album()->image();
+            KUrl url = track->album()->imageLocation().url();
+            if ( url.isValid() && !url.isLocalFile() ) {
+                // embedded id?  Request a version to be put in the cache
+                debug() << "MPRIS: asking the image to be cached";
+                track->album()->image( MPRIS_IMAGE_SIZE );
+                url = track->album()->imageLocation().url();
+            }
+            if ( url.isValid() && url.isLocalFile() )
+                map["arturl"] = QString::fromLatin1( url.toEncoded() );
         }
 
         map["tracknumber"] = track->trackNumber();
@@ -148,9 +159,6 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
 
         if( track->year() )
             map["year"] = track->year()->name();
-
-        if( track->album() )
-            map["arturl"] = track->album()->imageLocation( MPRIS_IMAGE_SIZE ).url();
 
         //TODO: external service meta info
 
