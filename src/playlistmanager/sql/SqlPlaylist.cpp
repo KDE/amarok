@@ -63,12 +63,6 @@ SqlPlaylist::~SqlPlaylist()
 {
 }
 
-SqlPlaylistGroupPtr
-SqlPlaylist::parent() const
-{
-    return m_parent;
-}
-
 KUrl
 SqlPlaylist::uidUrl() const
 {
@@ -345,11 +339,4 @@ SqlPlaylist::removeFromDb()
     CollectionManager::instance()->sqlStorage()->query( query );
 }
 
-int
-SqlPlaylist::id()
-{
-    return m_dbId;
-}
-
 } //namespace Playlists
-

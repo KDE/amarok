@@ -59,13 +59,6 @@ class SqlPlaylist : public Playlist, public Meta::Observer
         virtual QStringList groups();
         void setGroups( const QStringList &groups );
 
-        bool saveToDb( bool tracks = true );
-        void setDescription( const QString &description ) { m_description = description; }
-
-        void setParent( SqlPlaylistGroupPtr parent );
-
-        int id();
-
         virtual int trackCount() const;
         virtual Meta::TrackList tracks();
         virtual void triggerTrackLoad();
@@ -81,8 +74,8 @@ class SqlPlaylist : public Playlist, public Meta::Observer
         virtual void metadataChanged( Meta::ComposerPtr composer ) { Q_UNUSED( composer ) }
         virtual void metadataChanged( Meta::YearPtr year ) { Q_UNUSED( year ) }
 
-        SqlPlaylistGroupPtr parent() const;
-
+        // SqlPlaylist-specific methods
+        bool saveToDb( bool tracks = true );
         void removeFromDb();
 
     private:
