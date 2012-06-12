@@ -36,7 +36,7 @@ typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class SqlPlaylist : public Playlist, public Meta::Observer
+class SqlPlaylist : public Playlist
 {
     public:
         SqlPlaylist( const QString &name, const Meta::TrackList &tracks,
@@ -65,14 +65,6 @@ class SqlPlaylist : public Playlist, public Meta::Observer
 
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
-
-        /* Meta::Observer methods */
-        virtual void metadataChanged( Meta::TrackPtr track );
-        virtual void metadataChanged( Meta::ArtistPtr artist ) { Q_UNUSED( artist ) }
-        virtual void metadataChanged( Meta::AlbumPtr album ) { Q_UNUSED( album ) }
-        virtual void metadataChanged( Meta::GenrePtr genre ) { Q_UNUSED( genre ) }
-        virtual void metadataChanged( Meta::ComposerPtr composer ) { Q_UNUSED( composer ) }
-        virtual void metadataChanged( Meta::YearPtr year ) { Q_UNUSED( year ) }
 
         // SqlPlaylist-specific methods
         bool saveToDb( bool tracks = true );

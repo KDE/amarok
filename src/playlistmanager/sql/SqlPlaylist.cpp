@@ -250,7 +250,6 @@ SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
         position = m_tracks.count();
     else
         position = qMin( position, m_tracks.count() );
-    subscribeTo( track ); //keep track of metadata changes.
     m_tracks.insert( position, track );
     saveToDb( true );
     notifyObserversTrackAdded( track, position );
@@ -265,29 +264,8 @@ SqlPlaylist::removeTrack( int position )
     if( position < 0 || position >= m_tracks.size() )
         return;
     Meta::TrackPtr track = m_tracks.takeAt( position );
-    unsubscribeFrom( track );
     saveToDb( true );
     notifyObserversTrackRemoved( position );
-}
-
-void
-SqlPlaylist::metadataChanged( Meta::TrackPtr track )
-{
-    //TODO: do we really need to observe track changes? Metadata will be properly saved
-    //on exit and proxy tracks are loaded with uidUrl. So at worse the save metadata in
-    //playlist_tracks will be outdated until real track is loaded.
-    if( !m_tracksLoaded )
-        loadTracks();
-
-    //When AFT detects a moved file it will update the track and make it signal it's observers.
-    if( !m_tracks.contains( track ) )
-    {
-        error() << "Got a metadataChanged for a track that is not in the playlist.";
-        return;
-    }
-
-    //force update of tracks in database
-    saveToDb();
 }
 
 void
@@ -312,8 +290,6 @@ SqlPlaylist::loadTracks()
         proxyTrack->setAlbum( row[4] );
         proxyTrack->setArtist( row[5] );
         Meta::TrackPtr trackPtr = Meta::TrackPtr( proxyTrack );
-        //subscribed to force a save to db on any change (such as AFT file move)
-        subscribeTo( trackPtr );
         m_tracks << trackPtr;
     }
 
