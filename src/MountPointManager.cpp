@@ -50,6 +50,7 @@ DeviceHandlerFactory::DeviceHandlerFactory( QObject *parent, const QVariantList 
 MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
     : QObject( parent )
     , m_storage( storage )
+    , m_ready( false )
 {
     DEBUG_BLOCK
     setObjectName( "MountPointManager" );
@@ -122,6 +123,7 @@ MountPointManager::loadDevicePlugins( const QList<Plugins::PluginFactory*> &fact
         foreach( const Solid::Device &device, devices )
             createHandlerFromDevice( device, device.udi() );
     }
+    m_ready = true;
 }
 
 int
@@ -323,6 +325,12 @@ MountPointManager::getMountedDeviceIds() const
 QStringList
 MountPointManager::collectionFolders() const
 {
+    if (!m_ready)
+    {
+        debug() << "requested collectionFolders from MountPointManager that is not yet ready";
+        return QStringList();
+    }
+
     //TODO max: cache data
     QStringList result;
     KConfigGroup folders = Amarok::config( "Collection Folders" );

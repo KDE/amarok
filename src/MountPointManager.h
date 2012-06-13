@@ -230,6 +230,7 @@ private:
     mutable QMutex m_handlerMapMutex;
     FactoryList m_mediumFactories;
     FactoryList m_remoteFactories;
+    bool m_ready;
 
 //Solid specific
     void createHandlerFromDevice( const Solid::Device &device, const QString &udi );
