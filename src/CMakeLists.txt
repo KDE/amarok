@@ -595,6 +595,7 @@ set( statsyncing_SRCS
     statsyncing/models/CommonModel.cpp
     statsyncing/models/MatchedTracksModel.cpp
     statsyncing/models/SingleTracksModel.cpp
+    statsyncing/ui/MatchedTracksPage.cpp
 )
 
 kde4_add_ui_files(statsyncing_SRCS

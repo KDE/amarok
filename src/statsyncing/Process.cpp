@@ -21,92 +21,19 @@
 #include "core/interfaces/Logger.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "statsyncing/Process.h"
 #include "statsyncing/jobs/MatchTracksJob.h"
-#include "jobs/SynchronizeTracksJob.h"
+#include "statsyncing/jobs/SynchronizeTracksJob.h"
 #include "statsyncing/models/MatchedTracksModel.h"
 #include "statsyncing/models/SingleTracksModel.h"
+#include "statsyncing/ui/MatchedTracksPage.h"
 
 #include <ThreadWeaver/Weaver>
-
-#include <QSortFilterProxyModel>
-
-namespace StatSyncing
-{
-    class MatchedTracksPage : public QWidget, public Ui_MatchedTracksPage
-    {
-        public:
-            explicit MatchedTracksPage( QWidget *parent = 0 )
-                : QWidget( parent )
-            {
-                setupUi( this );
-            }
-    };
-
-    class SortFilterProxyModel : public QSortFilterProxyModel
-    {
-        public:
-            SortFilterProxyModel( QObject *parent = 0 )
-                : QSortFilterProxyModel( parent )
-                , m_tupleFilter( -1 )
-            {}
-
-            /**
-             * Filter tuples based on their MatchedTracksModel::TupleFlag flag. Set to -1
-             * to accept tuples with any flags.
-             */
-            void setTupleFilter( int filter )
-            {
-                m_tupleFilter = filter;
-                invalidateFilter();
-            }
-
-        protected:
-            bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
-            {
-                if( source_parent.isValid() )
-                    return true; // we match all child items, we filter only root ones
-                if( m_tupleFilter != -1 )
-                {
-                    QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-                    int flags = sourceModel()->data( index, MatchedTracksModel::TupleFlagsRole ).toInt();
-                    if( !(flags & m_tupleFilter) )
-                        return false;
-                }
-                return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
-            }
-
-            bool lessThan( const QModelIndex &left, const QModelIndex &right ) const
-            {
-                if( left.parent().isValid() ) // we are comparing childs, special mode:
-                {
-                    // take providers, e.g. reset column to 0
-                    QModelIndex l = sourceModel()->index( left.row(), 0, left.parent() );
-                    QModelIndex r = sourceModel()->index( right.row(), 0, right.parent() );
-                    QString leftProvider = sourceModel()->data( l, Qt::DisplayRole ).toString();
-                    QString rightProvider = sourceModel()->data( r, Qt::DisplayRole ).toString();
-
-                    // make this sorting ignore the sort order, always sort acsendingly:
-                    if( sortOrder() == Qt::AscendingOrder )
-                        return leftProvider.localeAwareCompare( rightProvider ) < 0;
-                    else
-                        return leftProvider.localeAwareCompare( rightProvider ) > 0;
-                }
-                return QSortFilterProxyModel::lessThan( left, right );
-            }
-
-        private:
-            int m_tupleFilter;
-    };
-}
 
 using namespace StatSyncing;
 
 Process::Process( const QList<QSharedPointer<Provider> > &providers, QObject *parent )
     : QObject( parent )
     , m_providers( providers )
-    , m_matchedTracksPage( 0 )
-    , m_proxyModel( 0 )
     , m_matchedTracksModel( 0 )
 {
     DEBUG_BLOCK
@@ -133,10 +60,7 @@ Process::start()
 void
 Process::raise()
 {
-    if( !m_matchedTracksPage )
-        return;
-    m_matchedTracksPage->activateWindow();
-    m_matchedTracksPage->raise();
+    emit signalRaise();
 }
 
 void
@@ -162,167 +86,35 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
 
     QList<qint64> columns = QList<qint64>() << Meta::valTitle << Meta::valRating <<
         Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount << Meta::valLabel;
-    m_matchedTracksModel = new MatchedTracksModel( matchJob->matchedTuples(), columns, m_options, this );
-    foreach( QSharedPointer<Provider> provider, m_providers )
+
+    MatchedTracksPage *matchedPage = new MatchedTracksPage();
+    m_matchedTracksModel = new MatchedTracksModel( matchJob->matchedTuples(), columns,
+                                                   m_options, this );
+    matchedPage->setMatchedTracksModel( m_matchedTracksModel );
+    foreach( QSharedPointer<Provider> providerPointer, m_providers )
     {
-        if( !matchJob->uniqueTracks().value( provider.data() ).isEmpty() )
-            m_uniqueTracksModels[ provider.data() ] = new SingleTracksModel(
-                matchJob->uniqueTracks().value( provider.data() ), columns, this );
-        if( !matchJob->excludedTracks().value( provider.data() ).isEmpty() )
-            m_excludedTracksModels[ provider.data() ] = new SingleTracksModel(
-                matchJob->excludedTracks().value( provider.data() ), columns, this );
+        Provider *provider = providerPointer.data();
+        if( !matchJob->uniqueTracks().value( provider ).isEmpty() )
+            matchedPage->addUniqueTracksModel( provider, new SingleTracksModel(
+                matchJob->uniqueTracks().value( provider ), columns, matchedPage ) );
+        if( !matchJob->excludedTracks().value( provider ).isEmpty() )
+            matchedPage->addExcludedTracksModel( provider, new SingleTracksModel(
+                matchJob->excludedTracks().value( provider ), columns, matchedPage ) );
     }
 
-    m_proxyModel = new SortFilterProxyModel( this );
-    m_proxyModel->setSortLocaleAware( true );
-    m_proxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
-    m_proxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    connect( matchedPage, SIGNAL(accepted()), SLOT(slotSynchronize()) );
+    connect( matchedPage, SIGNAL(accepted()), matchedPage, SLOT(deleteLater()) );
+    connect( matchedPage, SIGNAL(rejected()), SLOT(deleteLater()) );
+    connect( matchedPage, SIGNAL(rejected()), matchedPage, SLOT(deleteLater()) );
 
-    m_matchedTracksPage = new MatchedTracksPage();
-    m_matchedTracksPage->setAttribute( Qt::WA_DeleteOnClose );;
-    connect( m_matchedTracksPage->matchedRadio, SIGNAL(toggled(bool)), SLOT(showMatchedTracks(bool)) );
-    connect( m_matchedTracksPage->uniqueRadio, SIGNAL(toggled(bool)), SLOT(showUniqueTracks(bool)) );
-    if( m_uniqueTracksModels.isEmpty() )
-    {
-        m_matchedTracksPage->uniqueRadio->setEnabled( false );
-        m_matchedTracksPage->uniqueRadio->setToolTip( "There are no tracks unique to one "
-            "of the sources participating in the synchronization" );
-    }
-    connect( m_matchedTracksPage->excludedRadio, SIGNAL(toggled(bool)), SLOT(showExcludedTracks(bool)) );
-    if( m_excludedTracksModels.isEmpty() )
-    {
-        m_matchedTracksPage->excludedRadio->setEnabled( false );
-        m_matchedTracksPage->excludedRadio->setToolTip( "There are no tracks excluded "
-            "from synchronization" );
-    }
-    m_matchedTracksPage->treeView->setModel( m_proxyModel );
-    connect( m_matchedTracksPage->filterLine, SIGNAL(textChanged(QString)),
-             m_proxyModel, SLOT(setFilterFixedString(QString)) );
-    m_matchedTracksPage->matchedRadio->setChecked( true ); // calls showMatchedTracks()
-
-    QHeaderView *header = m_matchedTracksPage->treeView->header();
-    header->setStretchLastSection( false );
-    header->setDefaultSectionSize( 80 );
-    header->setResizeMode( 0, QHeaderView::Stretch );
-    header->setResizeMode( 1, QHeaderView::ResizeToContents );
-    header->setResizeMode( 2, QHeaderView::ResizeToContents );
-    header->setResizeMode( 3, QHeaderView::ResizeToContents );
-    header->setResizeMode( 4, QHeaderView::ResizeToContents );
-    header->setResizeMode( 5, QHeaderView::Interactive );
-
-    m_matchedTracksPage->buttonBox->addButton( KGuiItem( "Synchronize", "document-save" ),
-                                               QDialogButtonBox::AcceptRole );
-    connect( m_matchedTracksPage->buttonBox, SIGNAL(accepted()), SLOT(slotSynchronize()) );
-    connect( m_matchedTracksPage->buttonBox, SIGNAL(rejected()), m_matchedTracksPage, SLOT(deleteLater()) );
-    connect( m_matchedTracksPage, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
-    m_matchedTracksPage->show();
-    m_matchedTracksPage->raise();
+    connect( this, SIGNAL(signalRaise()), matchedPage, SLOT(show()) );
+    connect( this, SIGNAL(signalRaise()), matchedPage, SLOT(raise()) );
+    matchedPage->show();
+    matchedPage->raise();
 }
 
-void
-Process::showMatchedTracks( bool checked )
+void Process::slotSynchronize()
 {
-    QComboBox *combo = m_matchedTracksPage->filterCombo;
-    if( checked )
-    {
-        bool firstTime = m_proxyModel->sourceModel() == 0;
-        m_proxyModel->setSourceModel( m_matchedTracksModel );
-        if( firstTime )
-            m_proxyModel->sort( 0, Qt::AscendingOrder );
-        combo->clear();
-        combo->addItem( i18n( "All tracks" ), -1 );
-        combo->addItem( i18n( "Updated tracks" ), int( MatchedTracksModel::HasUpdate ) );
-        combo->addItem( i18n( "Tracks with conflicts" ), int( MatchedTracksModel::HasConflict ) );
-        connect( combo, SIGNAL(currentIndexChanged(int)), SLOT(changeMatchedTracksFilter(int)) );
-    }
-    else
-    {
-        disconnect( combo, 0, this, SLOT(changeMatchedTracksFilter(int)) );
-        m_proxyModel->setTupleFilter( -1 ); // reset filter for single tracks models
-    }
-}
-
-void
-Process::showUniqueTracks( bool checked )
-{
-    QComboBox *combo = m_matchedTracksPage->filterCombo;
-    if( checked )
-    {
-        showSingleTracks( m_uniqueTracksModels );
-        connect( combo, SIGNAL(currentIndexChanged(int)), SLOT(changeUniqueTracksProvider(int)) );
-    }
-    else
-        disconnect( combo, 0, this, SLOT(changeUniqueTracksProvider(int)) );
-}
-
-void
-Process::showExcludedTracks( bool checked )
-{
-    QComboBox *combo = m_matchedTracksPage->filterCombo;
-    if( checked )
-    {
-        showSingleTracks( m_excludedTracksModels );
-        connect( combo, SIGNAL(currentIndexChanged(int)), SLOT(changeExcludedTracksProvider(int)) );
-    }
-    else
-        disconnect( combo, 0, this, SLOT(changeExcludedTracksProvider(int)) );
-}
-
-void
-Process::showSingleTracks( const QMap<const Provider *, QAbstractItemModel *> &models )
-{
-    QComboBox *combo = m_matchedTracksPage->filterCombo;
-    const Provider *lastProvider =
-        combo->itemData( combo->currentIndex() ).value<const Provider *>();
-    combo->clear();
-    int currentIndex = 0;
-    int i = 0;
-    foreach( const Provider *provider, models.keys() )
-    {
-        if( provider == lastProvider )
-            currentIndex = i;
-        combo->insertItem( i++, provider->icon(), provider->prettyName(),
-                           QVariant::fromValue<const Provider *>( provider ) );
-    }
-    combo->setCurrentIndex( currentIndex );
-    changeSingleTracksProvider( currentIndex, models );
-}
-
-void
-Process::changeMatchedTracksFilter( int index )
-{
-    QComboBox *combo = m_matchedTracksPage->filterCombo;
-    int filter = combo->itemData( index ).toInt();
-    m_proxyModel->setTupleFilter( filter );
-}
-
-void
-Process::changeUniqueTracksProvider( int index )
-{
-    changeSingleTracksProvider( index, m_uniqueTracksModels );
-}
-
-void
-Process::changeExcludedTracksProvider( int index )
-{
-    changeSingleTracksProvider( index, m_excludedTracksModels );
-}
-
-void
-Process::changeSingleTracksProvider( int index, const QMap<const Provider *, QAbstractItemModel *> &models )
-{
-    const Provider *provider =
-        m_matchedTracksPage->filterCombo->itemData( index ).value<const Provider *>();
-    m_proxyModel->setSourceModel( models.value( provider ) );
-}
-
-void
-Process::slotSynchronize()
-{
-    disconnect( m_matchedTracksPage, SIGNAL(destroyed(QObject*)), this, SLOT(deleteLater()) );
-    m_matchedTracksPage->deleteLater();
-    m_matchedTracksPage = 0;
-
     SynchronizeTracksJob *job =
         new SynchronizeTracksJob( m_matchedTracksModel->matchedTuples(), m_options );
     QString text = i18n( "Synchronizing tracks..." );

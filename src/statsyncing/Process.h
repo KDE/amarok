@@ -18,19 +18,17 @@
 #define STATSYNCING_PROCESS_H
 
 #include "statsyncing/Options.h"
-#include "statsyncing/Provider.h"
 
+#include <QSharedPointer>
 #include <QMap>
 
 namespace ThreadWeaver {
     class Job;
 }
-class QAbstractItemModel;
 
 namespace StatSyncing
 {
     class MatchedTracksPage;
-    class SortFilterProxyModel;
     class MatchedTracksModel;
 
     /**
@@ -66,44 +64,24 @@ namespace StatSyncing
              */
             void raise();
 
+        signals:
+            /**
+             * Re-emitted in the raise() slot
+             */
+            void signalRaise();
+
         private slots:
             void slotTracksMatched( ThreadWeaver::Job* job );
-
-            void showMatchedTracks( bool checked );
-            void showUniqueTracks( bool checked );
-            void showExcludedTracks( bool checked );
-            /**
-             * Helper method for show{Unique,Excluded}Tracks
-             */
-            void showSingleTracks( const QMap<const Provider *, QAbstractItemModel *> &models );
-
-            void changeMatchedTracksFilter( int index );
-
-            void changeUniqueTracksProvider( int index );
-            void changeExcludedTracksProvider( int index );
-            /**
-             * Helper method for change{UniqueExcluded}TracksProvider
-             */
-            void changeSingleTracksProvider( int index, const QMap<const Provider *, QAbstractItemModel *> &models );
-
             void slotSynchronize();
 
         private:
             Q_DISABLE_COPY( Process )
 
             QList<QSharedPointer<Provider> > m_providers;
-
-            MatchedTracksPage *m_matchedTracksPage;
-            SortFilterProxyModel *m_proxyModel;
             MatchedTracksModel *m_matchedTracksModel;
-            QMap<const Provider *, QAbstractItemModel *> m_uniqueTracksModels;
-            QMap<const Provider *, QAbstractItemModel *> m_excludedTracksModels;
             Options m_options;
     };
 
 } // namespace StatSyncing
-
-// needed for QCombobox payloads:
-Q_DECLARE_METATYPE( const StatSyncing::Provider * )
 
 #endif // STATSYNCING_PROCESS_H
