@@ -121,8 +121,9 @@ namespace StatSyncing
             void synchronize( const Options &options );
 
         private:
-            static const QList<qint64> s_fields; /// list of Meta::val* fields capable of syncing
+            int syncedRating( const Options &options, const Provider *ratingProvider ) const;
 
+            static const QList<qint64> s_fields; /// list of Meta::val* fields capable of syncing
             QMap<const Provider *, TrackPtr> m_map;
             const Provider *m_ratingProvider; /// source of rating in the event of conflict
     };

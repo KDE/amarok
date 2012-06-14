@@ -182,18 +182,8 @@ TrackTuple::hasUpdate( const Options &options ) const
 bool
 TrackTuple::hasConflict( const Options &options ) const
 {
-    if( isEmpty() || !(options.syncedFields() & Meta::valRating) )
-        return false;
-    int firstRating = track( provider( 0 ) )->rating();
-    QMapIterator<const Provider *, TrackPtr> it( m_map );
-    it.next(); // skip the first one
-    while( it.hasNext() )
-    {
-        it.next();
-        if( it.value()->rating() != firstRating )
-            return true;
-    }
-    return false;
+    // we must disregard currently selected rating provider
+    return syncedRating( options, 0 ) < 0;
 }
 
 const Provider *
@@ -212,14 +202,42 @@ TrackTuple::setRatingProvider( const Provider *provider )
 int
 TrackTuple::syncedRating( const Options &options ) const
 {
+    return syncedRating( options, m_ratingProvider );
+}
+
+int
+TrackTuple::syncedRating( const Options &options, const Provider *ratingProvider ) const
+{
     if( isEmpty() || !(options.syncedFields() & Meta::valRating) )
         return 0;
-    if( m_ratingProvider ) // a provider has been chosen
-        return track( m_ratingProvider )->rating();
-    if( hasConflict( options ) )
-        return -1;
-    // all ratings are the same
-    return track( provider( 0 ) )->rating();
+    if( ratingProvider ) // a provider has been chosen
+        return track( ratingProvider )->rating();
+
+    // look for conflict:
+    int candidate = -1; // rating candidate
+    QMapIterator<const Provider *, TrackPtr> it( m_map );
+    while( it.hasNext() )
+    {
+        it.next();
+        int rating = it.value()->rating();
+
+        // take rating candidate only from rated tracks or one from rating-writable collections
+        bool canWriteRating = it.key()->writableTrackStatsData() & Meta::valRating;
+        if( candidate < 0 )
+        {
+            if( rating > 0 || canWriteRating )
+                candidate = rating;
+            continue; // nothing to do in this loop iteration in either case
+        }
+        if( rating <= 0 && !canWriteRating )
+            // skip unrated songs from colls with not-writable rating
+            continue;
+
+        if( rating != candidate )
+            return -1;
+    }
+    // if candidate == -1, it means there are no colls with writable or non-zero rating
+    return qMax( 0, candidate );
 }
 
 QDateTime
