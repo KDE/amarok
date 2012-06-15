@@ -34,8 +34,7 @@
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),
       m_scrobbler( new lastfm::Audioscrobbler( clientId ) ),
-      m_clientId( clientId ),
-      m_lastSaved( 0 )
+      m_clientId( clientId )
 {
     DEBUG_BLOCK
 
@@ -79,8 +78,6 @@ ScrobblerAdapter::trackPlaying( Meta::TrackPtr track )
 
     if( track )
     {
-        m_lastSaved = m_lastPosition; // HACK engineController is broken :(
-
         debug() << "track type:" << track->type();
         const bool isRadio = ( track->type() == "stream/lastfm" );
         
@@ -89,7 +86,7 @@ ScrobblerAdapter::trackPlaying( Meta::TrackPtr track )
         m_current.stamp();
         
         m_current.setDuration( track->length() / 1000 );
-	copyTrackMetadata( m_current, track );
+        copyTrackMetadata( m_current, track );
 
         QString uid = track->uidUrl();
         if( uid.startsWith( "amarok-sqltrackuid://mb-" ) )
@@ -138,7 +135,7 @@ ScrobblerAdapter::trackMetadataChanged( Meta::TrackPtr track )
         resetVariables();
 
         // previous implementation didn't copy over album, I have no idea why so now we use generic method that does
-	copyTrackMetadata( m_current, track );
+        copyTrackMetadata( m_current, track );
         m_current.stamp();
 
         m_current.setSource( lastfm::Track::NonPersonalisedBroadcast );
@@ -167,19 +164,16 @@ ScrobblerAdapter::trackPositionChanged( qint64 position, bool userSeek )
 {
     // HACK enginecontroller is fscked. it sends engineTrackPositionChanged messages
     // with info for the last track even after engineNewTrackPlaying. this means that
-    // we think we've played the whole new track even though we really haven't. so, temporary
-    // workaround for 2.1.0 until i can rewrite this class properly to not need to do it
-    // this way.
-    //debug() << "m_lastPosition:" << m_lastPosition << "position:" << position << "m_lastSaved:" << m_lastSaved;
-
-    if( m_lastPosition == 0 && m_lastSaved != 0 && position > m_lastSaved ) // this is probably when the fucked up info came through, ignore
-        return;
-    m_lastSaved = 0;
-    
+    // we think we've played the whole new track even though we really haven't.
+    // engineController ticks at least a couple of times a second under normal
+    // circumstances; a larger jump that is not a userSeek is caused by a tick from
+    // the old track after resetting variables. Therefore, ignore. The threshold is
+    // arbitrarily chosen as approximately ten times the tick rate of the slowest-
+    // ticking backend.
     // note: in the 1.2 protocol, it's OK to submit if the user seeks
     // so long as they meet the half file played requirement.
     //debug() << "userSeek" << userSeek << "position:" << position << "m_lastPosition" << m_lastPosition << "m_totalPlayed" << m_totalPlayed;
-    if( !userSeek && position > m_lastPosition )
+    if( !userSeek && position > m_lastPosition && ( position - m_lastPosition ) < 4000 )
         m_totalPlayed += position - m_lastPosition;
     m_lastPosition = position;
     //debug() << "userSeek" << userSeek << "position:" << position << "m_lastPosition" << m_lastPosition << "m_totalPlayed" << m_totalPlayed;
@@ -240,7 +234,7 @@ void
 ScrobblerAdapter::resetVariables()
 {
     m_current = lastfm::MutableTrack();
-    m_totalPlayed = m_lastPosition = m_lastSaved = 0;
+    m_totalPlayed = m_lastPosition = 0;
 }
 
 

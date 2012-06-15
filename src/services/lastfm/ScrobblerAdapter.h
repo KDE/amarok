@@ -58,8 +58,6 @@ private:
     qint64 m_lastPosition;
     qint64 m_totalPlayed;
     QString m_clientId;
-
-    qint64 m_lastSaved;
 };
 
 #endif // LASTFMSCROBBLERADAPTER_H
