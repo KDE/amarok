@@ -102,10 +102,11 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
                 matchJob->excludedTracks().value( provider ), columns, matchedPage ) );
     }
 
-    connect( matchedPage, SIGNAL(accepted()), SLOT(slotSynchronize()) );
     connect( matchedPage, SIGNAL(accepted()), matchedPage, SLOT(deleteLater()) );
-    connect( matchedPage, SIGNAL(rejected()), SLOT(deleteLater()) );
+    connect( matchedPage, SIGNAL(accepted()), SLOT(slotSynchronize()) );
+    // page needs to be deleted first, it references m_matchedTracksModel
     connect( matchedPage, SIGNAL(rejected()), matchedPage, SLOT(deleteLater()) );
+    connect( matchedPage, SIGNAL(rejected()), SLOT(deleteLater()) );
 
     connect( this, SIGNAL(signalRaise()), matchedPage, SLOT(show()) );
     connect( this, SIGNAL(signalRaise()), matchedPage, SLOT(raise()) );

@@ -82,6 +82,17 @@ namespace StatSyncing
              */
             const QList<TrackTuple> &matchedTuples();
 
+            /**
+             * Return true if at least one of the tuple is going to be updated. Warning:
+             * can depend on whether a conflict of one tuple is resolved or not.
+             */
+            bool hasUpdate() const;
+
+            /**
+             * Return true if at least one tuple has potential conflict.
+             */
+            bool hasConflict() const;
+
         private:
             QVariant tupleData( const TrackTuple &tuple, qint64 field, int role ) const;
             QVariant trackData( const Provider *provider, const TrackTuple &tuple,

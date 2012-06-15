@@ -89,6 +89,7 @@ namespace StatSyncing
             Q_DISABLE_COPY( MatchedTracksPage )
 
             bool m_polished;
+            int m_matchedTracksComboLastIndex;
             SortFilterProxyModel *m_proxyModel;
             MatchedTracksModel *m_matchedTracksModel;
             QMap<const Provider *, QAbstractItemModel *> m_uniqueTracksModels;

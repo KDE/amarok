@@ -181,6 +181,28 @@ MatchedTracksModel::matchedTuples()
     return m_matchedTuples;
 }
 
+bool
+MatchedTracksModel::hasUpdate() const
+{
+    foreach( const TrackTuple &tuple, m_matchedTuples )
+    {
+        if( tuple.hasUpdate( m_options ) )
+            return true;
+    }
+    return false;
+}
+
+bool
+MatchedTracksModel::hasConflict() const
+{
+    foreach( const TrackTuple &tuple, m_matchedTuples )
+    {
+        if( tuple.hasConflict( m_options ) )
+            return true;
+    }
+    return false;
+}
+
 QVariant
 MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role ) const
 {

@@ -16,10 +16,12 @@
 
 #include "MatchedTracksPage.h"
 
+#include "core/support/Debug.h"
 #include "statsyncing/models/MatchedTracksModel.h"
 
 #include <QEvent>
 #include <QSortFilterProxyModel>
+#include <QStandardItemModel>
 
 // needed for QCombobox payloads:
 Q_DECLARE_METATYPE( const StatSyncing::Provider * )
@@ -89,6 +91,7 @@ using namespace StatSyncing;
 MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     : QWidget( parent, f )
     , m_polished( false )
+    , m_matchedTracksComboLastIndex( 2 ) // tracks with conflict
     , m_proxyModel( 0 )
     , m_matchedTracksModel( 0 )
 {
@@ -160,6 +163,26 @@ MatchedTracksPage::showMatchedTracks( bool checked )
         filterCombo->addItem( i18n( "All tracks" ), -1 );
         filterCombo->addItem( i18n( "Updated tracks" ), int( MatchedTracksModel::HasUpdate ) );
         filterCombo->addItem( i18n( "Tracks with conflicts" ), int( MatchedTracksModel::HasConflict ) );
+        QStandardItemModel *comboModel = dynamic_cast<QStandardItemModel *>( filterCombo->model() );
+        if( comboModel )
+        {
+            if( !m_matchedTracksModel->hasConflict() )
+            {
+                comboModel->item( 2 )->setFlags( Qt::NoItemFlags );
+                filterCombo->setItemData( 2, i18n( "There are no tracks with conflicts" ),
+                                          Qt::ToolTipRole );
+                m_matchedTracksComboLastIndex = qBound( 0, m_matchedTracksComboLastIndex, 1 );
+                if( !m_matchedTracksModel->hasUpdate() )
+                {
+                    comboModel->item( 1 )->setFlags( Qt::NoItemFlags );
+                    filterCombo->setItemData( 1, i18n( "There are no tracks going to be "
+                                              "updated" ), Qt::ToolTipRole );
+                    m_matchedTracksComboLastIndex = 0; // no other possibility
+                }
+            }
+        }
+        filterCombo->setCurrentIndex( m_matchedTracksComboLastIndex );
+        changeMatchedTracksFilter( m_matchedTracksComboLastIndex );
         connect( filterCombo, SIGNAL(currentIndexChanged(int)), SLOT(changeMatchedTracksFilter(int)) );
     }
     else
@@ -217,6 +240,7 @@ MatchedTracksPage::showSingleTracks( const QMap<const Provider *, QAbstractItemM
 void
 MatchedTracksPage::changeMatchedTracksFilter( int index )
 {
+    m_matchedTracksComboLastIndex = index;
     int filter = filterCombo->itemData( index ).toInt();
     m_proxyModel->setTupleFilter( filter );
 }
