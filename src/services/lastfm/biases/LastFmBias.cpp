@@ -34,9 +34,8 @@
 #include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include "lastfm/Artist"
-#include "lastfm/ws.h"
-#include "lastfm/XmlQuery"
+#include <lastfm/Artist.h>
+#include <lastfm/ws.h>
 
 #include <QLabel>
 #include <QComboBox>

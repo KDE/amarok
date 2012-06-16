@@ -46,8 +46,8 @@
 #include "widgets/SearchWidget.h"
 #include "NetworkAccessManagerProxy.h"
 
-#include <lastfm/Audioscrobbler> // from liblastfm
-#include <lastfm/XmlQuery>
+#include <lastfm/Audioscrobbler.h> // from liblastfm
+#include <lastfm/XmlQuery.h>
 
 #include <KLocale>
 #include <KPasswordDialog>
@@ -224,10 +224,7 @@ LastFmService::init()
 {
     // set the global static Lastfm::Ws stuff
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
-    lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
-    // testing w/ official keys
-    //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
-    //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
+    lastfm::ws::SharedSecret = Amarok::lastfmApiSharedSecret();
     m_userNameArray = qstrdup( m_userName.toLatin1().data() );
     lastfm::ws::Username = m_userNameArray;
     if( lastfm::nam() != The::networkAccessManager() )
@@ -309,7 +306,8 @@ LastFmService::onAuthenticated()
         case QNetworkReply::NoError:
         {
 
-            lastfm::XmlQuery lfm = lastfm::XmlQuery( m_jobs[ "auth" ]->readAll() );
+            lastfm::XmlQuery lfm;
+            lfm.parse( m_jobs[ "auth" ]->readAll() );
             LastFmServiceConfig config;
 
             if( lfm.children( "error" ).size() > 0 )
@@ -359,10 +357,8 @@ LastFmService::onGetUserInfo()
     {
         case QNetworkReply::NoError:
         {
-            try
-            {
-                lastfm::XmlQuery lfm( m_jobs[ "getUserInfo" ]->readAll() );
-
+            lastfm::XmlQuery lfm;
+            if( lfm.parse( m_jobs[ "getUserInfo" ]->readAll() ) ) {
                 m_country = lfm["user"]["country"].text();
                 m_age = lfm["user"]["age"].text();
                 m_gender = lfm["user"]["gender"].text();
@@ -381,9 +377,10 @@ LastFmService::onGetUserInfo()
                 }
                 updateProfileInfo();
 
-            } catch( lastfm::ws::ParseError& e )
+            }
+            else
             {
-                debug() << "Got exception in parsing from last.fm:" << e.what();
+                debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
             }
             break;
         } case QNetworkReply::AuthenticationRequiredError:

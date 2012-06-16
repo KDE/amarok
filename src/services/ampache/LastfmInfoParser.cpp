@@ -20,8 +20,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <lastfm/XmlQuery>
-#include <lastfm/ws.h>
+#include <lastfm/XmlQuery.h>
 
 #include <KLocale>
 
@@ -55,7 +54,8 @@ void LastfmInfoParser::onGetTrackInfo()
     {
         case QNetworkReply::NoError:
         {
-            lastfm::XmlQuery lfm = m_jobs[ "getTrackInfo" ]->readAll();
+            lastfm::XmlQuery lfm;
+            lfm.parse( m_jobs[ "getTrackInfo" ]->readAll() );
             lastfm::XmlQuery wiki = lfm["track"]["wiki"];
             const QString contentText = wiki["content"].text();
             const QString publishedDate = wiki["published"].text();
@@ -103,7 +103,8 @@ void LastfmInfoParser::onGetAlbumInfo()
     {
         case QNetworkReply::NoError:
         {
-            lastfm::XmlQuery lfm = m_jobs[ "getAlbumInfo" ]->readAll();
+            lastfm::XmlQuery lfm;
+            lfm.parse( m_jobs[ "getAlbumInfo" ]->readAll() );
             lastfm::XmlQuery wiki = lfm["album"]["wiki"];
             const QString summaryText = wiki["summary"].text();
             const QString contentText = wiki["content"].text();
@@ -155,7 +156,8 @@ void LastfmInfoParser::onGetArtistInfo()
     {
         case QNetworkReply::NoError:
         {
-            lastfm::XmlQuery lfm = m_jobs[ "getArtistInfo" ]->readAll();
+            lastfm::XmlQuery lfm;
+            lfm.parse( m_jobs[ "getArtistInfo" ]->readAll() );
             debug() << lfm.text();
             lastfm::XmlQuery bio = lfm["artist"]["bio"];
             const QString summaryText = bio["summary"].text();

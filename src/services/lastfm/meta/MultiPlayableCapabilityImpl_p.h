@@ -25,8 +25,9 @@
 #include "core/meta/Meta.h"
 #include "core/capabilities/MultiPlayableCapability.h"
 
-#include <lastfm/Track>
-#include <lastfm/RadioTuner>
+#include <lastfm/Track.h>
+#include <lastfm/RadioStation.h>
+#include <lastfm/RadioTuner.h>
 #include <lastfm/ws.h>
 
 #include <KLocale>
@@ -57,17 +58,16 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
             m_tuner = new lastfm::RadioTuner( lastfm::RadioStation( m_track->uidUrl() ) );
             
             connect( m_tuner, SIGNAL( trackAvailable() ), this, SLOT( slotNewTrackAvailable() ) );
-            connect( m_tuner, SIGNAL( error( lastfm::ws::Error ) ), this, SLOT( error( lastfm::ws::Error ) ) );
+            connect( m_tuner, SIGNAL( error(lastfm::ws::Error,QString) ), this, SLOT( error( lastfm::ws::Error ) ) );
         }
-        
+
         virtual void fetchNext()
         {
             DEBUG_BLOCK
             m_currentTrack = m_tuner->takeNextTrack();
             m_track->setTrackInfo( m_currentTrack );
-
         }
-        
+
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::TrackPtr track )
         {
@@ -94,7 +94,7 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
                 m_track->setTrackInfo( m_currentTrack );
             }
         }
-        
+
         virtual void skip()
         {
             fetchNext();

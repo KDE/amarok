@@ -26,10 +26,10 @@
 #include "core/statistics/StatisticsProvider.h"
 #include "core-impl/statistics/providers/tag/TagStatisticsProvider.h"
 
-#include <lastfm/Track>
+#include <lastfm/Track.h>
 #include <lastfm/ws.h>
-#include <lastfm/RadioTuner>
-#include <lastfm/XmlQuery>
+#include <lastfm/RadioTuner.h>
+#include <lastfm/XmlQuery.h>
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -144,26 +144,24 @@ class Track::Private : public QObject
                 return;
             if( m_userFetch->error() == QNetworkReply::NoError )
             {
-                try
+                lastfm::XmlQuery lfm;
+                if( !lfm.parse( m_userFetch->readAll() ) )
                 {
-                    lastfm::XmlQuery lfm( m_userFetch->readAll() );
-                    albumUrl = lfm[ "track" ][ "album" ][ "url" ].text();
-                    trackUrl = lfm[ "track" ][ "url" ].text();
-                    artistUrl = lfm[ "track" ][ "artist" ][ "url" ].text();
+                    debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
+                    return;
+                }
+                albumUrl = lfm[ "track" ][ "album" ][ "url" ].text();
+                trackUrl = lfm[ "track" ][ "url" ].text();
+                artistUrl = lfm[ "track" ][ "artist" ][ "url" ].text();
 
-                    notifyObservers();
+                notifyObservers();
 
-                    imageUrl = lfm[ "track" ][ "album" ][ "image size=large" ].text();
+                imageUrl = lfm[ "track" ][ "album" ][ "image size=large" ].text();
 
-                    if( !imageUrl.isEmpty() )
-                    {
-                        KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
-                        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
-                    }
-
-                } catch( lastfm::ws::ParseError& e )
+                if( !imageUrl.isEmpty() )
                 {
-                    debug() << "Got exception in parsing from last.fm:" << e.what();
+                    KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
+                    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
                 }
             }
 

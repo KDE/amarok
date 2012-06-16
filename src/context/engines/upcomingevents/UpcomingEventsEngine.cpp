@@ -27,10 +27,6 @@
 #include "EngineController.h"
 #include "LastFmEventXmlParser.h"
 
-// LastFm
-#include <lastfm/XmlQuery>
-#include <lastfm/ws.h>
-
 // KDE
 #include <KDateTime>
 
