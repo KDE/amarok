@@ -84,6 +84,8 @@ namespace StatSyncing
              */
             void changeSingleTracksProvider( int index, const QMap<const Provider *, QAbstractItemModel *> &models );
 
+            void refreshStatusText();
+
         private:
             void polish();
             Q_DISABLE_COPY( MatchedTracksPage )

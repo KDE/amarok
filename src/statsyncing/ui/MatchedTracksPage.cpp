@@ -100,6 +100,9 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     m_proxyModel->setSortLocaleAware( true );
     m_proxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     m_proxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    connect( m_proxyModel, SIGNAL(modelReset()), SLOT(refreshStatusText()) );
+    connect( m_proxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(refreshStatusText()) );
+    connect( m_proxyModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(refreshStatusText()) );
     treeView->setModel( m_proxyModel );
 
     connect( matchedRadio, SIGNAL(toggled(bool)), SLOT(showMatchedTracks(bool)) );
@@ -265,7 +268,26 @@ MatchedTracksPage::changeSingleTracksProvider( int index,
     m_proxyModel->setSourceModel( models.value( provider ) );
 }
 
-void MatchedTracksPage::polish()
+void
+MatchedTracksPage::refreshStatusText()
+{
+    int bottomModelRows = m_proxyModel->sourceModel() ?
+        m_proxyModel->sourceModel()->rowCount() : 0;
+    int topModelRows = m_proxyModel->rowCount();
+
+    QString bottomText = i18np( "%1 track", "%1 tracks", bottomModelRows );
+    if( topModelRows == bottomModelRows )
+        statusBar->setText( bottomText );
+    else
+    {
+        QString text = i18nc( "%2 is the above '%1 track(s)' message", "Showing %1 out "
+            "of %2", topModelRows, bottomText );
+        statusBar->setText( text );
+    }
+}
+
+void
+MatchedTracksPage::polish()
 {
     if( m_uniqueTracksModels.isEmpty() )
     {
