@@ -18,31 +18,16 @@
 
 #include "LastFmTreeView.h"
 
-#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "LastFmTreeModel.h" //FIXME just for enums
 #include "PopupDropperFactory.h"
-#include "SvgHandler.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 
-#include <KIcon>
 #include <KMenu>
 
-#include <QAction>
-#include <QContextMenuEvent>
-#include <QDesktopServices>
-#include <QDropEvent>
 #include <QHeaderView>
-#include <QMap>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QSlider>
-#include <QStandardItemModel>
-#include <QTimer>
-#include <QTreeView>
-#include <QWidgetAction>
 
 LastFmTreeView::LastFmTreeView ( QWidget* parent )
         : Amarok::PrettyTreeView ( parent )

@@ -25,8 +25,6 @@
 #include "EngineController.h"
 #include "biases/LastFmBias.h"
 #include "biases/WeeklyTopBias.h"
-#include "browsers/CollectionTreeItem.h"
-#include "browsers/CollectionTreeItemModelBase.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
 #include "LoveTrackAction.h"
@@ -34,33 +32,21 @@
 #include "LastFmTreeModel.h"
 #include "LastFmTreeView.h"
 #include "ScrobblerAdapter.h"
-#include "widgets/FlowLayout.h"
-#include "GlobalCollectionActions.h"
 #include "GlobalCurrentTrackActions.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/capabilities/LastFmCapability.h"
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
 #include "meta/LastFmMeta.h"
-#include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"
-#include "NetworkAccessManagerProxy.h"
 
-#include <lastfm/Audioscrobbler.h> // from liblastfm
 #include <lastfm/XmlQuery.h>
 
-#include <KLocale>
-#include <KPasswordDialog>
+#include <KLineEdit>
 #include <KStandardDirs>
-#include <solid/networking.h>
 
-#include <QComboBox>
 #include <QCryptographicHash>
 #include <QGroupBox>
-#include <QNetworkReply>
-#include <QPainter>
-#include <QImage>
-#include <QFrame>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QTextDocument>        //Qt::escape
 
 AMAROK_EXPORT_SERVICE_PLUGIN( lastfm, LastFmServiceFactory )

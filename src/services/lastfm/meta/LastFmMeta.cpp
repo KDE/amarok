@@ -23,25 +23,12 @@
 #include "LastFmCapabilityImpl_p.moc"
 #include "MultiPlayableCapabilityImpl_p.h"
 #include "MultiPlayableCapabilityImpl_p.moc"
-#include "ServiceCapabilities.h"
 
-#include "LastFmService.h"
 #include "LastFmStreamInfoCapability.h"
-#include "ScrobblerAdapter.h"
 
 #include "EngineController.h"
-#include "core/support/Debug.h"
-#include "core/capabilities/ActionsCapability.h"
 
-#include <KLocale>
-#include <KSharedPtr>
-#include <KStandardDirs>
 #include <Solid/Networking>
-
-#include <QWeakPointer>
-#include <QUrl>
-
-#include <lastfm/Track.h>
 
 namespace LastFm {
 

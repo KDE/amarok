@@ -19,7 +19,6 @@
 #ifndef LASTFMTREEVIEW_H
 #define LASTFMTREEVIEW_H
 
-#include "LastFmTreeModel.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
@@ -27,11 +26,12 @@
 #include <QMutex>
 #include <QWeakPointer>
 
+class LastFmTreeModel;
+
+class QAction;
 class QContextMenuEvent;
 class QMouseEvent;
-
 class PopupDropper;
-class QAction;
 
 typedef QList<QAction *> QActionList;
 

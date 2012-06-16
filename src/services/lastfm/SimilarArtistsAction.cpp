@@ -17,10 +17,8 @@
 #include "SimilarArtistsAction.h"
 #include "playlist/PlaylistController.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "SvgHandler.h"
 
 #include <KIcon>
-#include <KLocale>
 
 SimilarArtistsAction::SimilarArtistsAction( QObject *parent )
     : GlobalCollectionArtistAction( i18n( "Play Similar Artists from Last.fm" ), parent )

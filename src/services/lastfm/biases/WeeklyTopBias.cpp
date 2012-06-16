@@ -25,17 +25,10 @@
 #include <QDomDocument>
 #include <QDomNode>
 #include <QDomElement>
-
 #include <QXmlStreamReader>
-#include <QXmlStreamWriter>
 
-#include "core/meta/Meta.h"
-#include "core/collections/Collection.h"
-#include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <lastfm/Artist.h>
-#include <lastfm/ws.h>
 #include <lastfm/XmlQuery.h>
 
 #include <QNetworkReply>

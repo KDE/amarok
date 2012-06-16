@@ -18,20 +18,12 @@
 
 #include "core/support/Debug.h"
 
-#include "TrackSet.h"
-#include "DynamicBiasWidgets.h"
-
 #include <QDomDocument>
 #include <QDomNode>
-#include <QDomElement>
 
 #include <QXmlStreamReader>
-#include <QXmlStreamWriter>
 #include <QTimer>
 
-#include "core/meta/Meta.h"
-#include "core/collections/Collection.h"
-#include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
 #include <lastfm/Artist.h>

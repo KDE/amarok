@@ -16,10 +16,9 @@
  
 #include "LoveTrackAction.h"
 
-#include "SvgHandler.h"
+#include "LastFmService.h"
 
 #include <KIcon>
-#include <KLocale>
 
 LoveTrackAction::LoveTrackAction( LastFmService * service )
     : GlobalCollectionTrackAction( i18n( "Last.fm: Love" ), service )

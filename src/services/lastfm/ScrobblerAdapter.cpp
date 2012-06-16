@@ -23,11 +23,11 @@
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "core/meta/support/MetaConstants.h"
 #include "meta/LastFmMeta.h"
+
+#include <lastfm/Audioscrobbler.h>
 
 #include <KLocale>
 
