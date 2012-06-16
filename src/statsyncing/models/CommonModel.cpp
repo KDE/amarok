@@ -67,14 +67,13 @@ CommonModel::headerData( int section, Qt::Orientation orientation, int role ) co
 QVariant
 CommonModel::sizeHintData( qint64 field ) const
 {
-    static const QSize smallNumberSize = QFontMetrics( m_boldFont ).size( 0, "888" ) + QSize( 10, 0 );
+    static const QSize playCountSize = QFontMetrics( m_boldFont ).size( 0, "888 (88)" ) + QSize( 10, 0 );
     static const QSize dateSize = QFontMetrics( m_boldFont ).size( 0, "88.88.8888 88:88" ) + QSize( 10, 0 );
 
     switch( field )
     {
-        case Meta::valRating:
         case Meta::valPlaycount:
-            return smallNumberSize;
+            return playCountSize;
         case Meta::valFirstPlayed:
         case Meta::valLastPlayed:
             return dateSize;
@@ -117,7 +116,11 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                         locale->formatDateTime( track->lastPlayed(), KLocale::FancyShortDate ) :
                         QVariant();
                 case Meta::valPlaycount:
-                    return track->playCount();
+                {
+                    int recent = track->recentPlayCount();
+                    return recent ? i18nc( "%1 is play count and %2 is recent play count",
+                        "%1 (%2)", track->playCount(), recent ) : QString::number( track->playCount() );
+                }
                 case Meta::valLabel:
                     return QStringList( track->labels().toList() ).join( i18nc( "comma between labels", ", " ) );
                 default:
@@ -129,6 +132,10 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
             {
                 case Meta::valTitle:
                     return trackToolTipData( track );
+                case Meta::valPlaycount:
+                    return i18np( "Played %2 times of which one play is recent and unique "
+                        "to this source", "Played %2 times of which %1 plays are recent "
+                        "and unique to this source", track->recentPlayCount(), track->playCount() );
             }
             break;
         case Qt::TextAlignmentRole:

@@ -44,6 +44,7 @@ namespace StatSyncing
             virtual QDateTime lastPlayed() const;
             virtual void setLastPlayed( const QDateTime &lastPlayed );
             virtual int playCount() const;
+            virtual int recentPlayCount() const;
             virtual void setPlayCount( int playCount );
             virtual QSet<QString> labels() const;
             virtual void setLabels( const QSet<QString> &labels );
@@ -51,7 +52,7 @@ namespace StatSyncing
             virtual void commit();
 
         private:
-            Q_DISABLE_COPY(CollectionTrack)
+            Q_DISABLE_COPY( CollectionTrack )
 
             /**
              * Calls m_trackStats->beginUpdate() if it hasn't been already called

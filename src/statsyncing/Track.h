@@ -119,6 +119,12 @@ namespace StatSyncing
              * Get count of the track plays; return 0 in doubt
              */
             virtual int playCount() const = 0;
+            /**
+             * Return play count on device since it has been last connected to a computer.
+             * This number is _already_ _included_ in playcount()! Setting playcount
+             * must reset recent playcount to 0.
+             */
+            virtual int recentPlayCount() const;
             virtual void setPlayCount( int playCount ) = 0;
 
             /**

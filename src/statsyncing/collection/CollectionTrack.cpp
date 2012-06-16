@@ -125,6 +125,12 @@ CollectionTrack::playCount() const
     return m_trackStats->playCount();
 }
 
+int
+CollectionTrack::recentPlayCount() const
+{
+    return m_trackStats->recentPlayCount();
+}
+
 void
 CollectionTrack::setPlayCount( int playCount )
 {

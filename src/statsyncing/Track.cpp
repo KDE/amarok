@@ -92,3 +92,9 @@ Track::lessThan( const Track &other, qint64 fieldMask ) const
         return name() < other.name();
     return false;
 }
+
+int
+Track::recentPlayCount() const
+{
+    return 0;
+}

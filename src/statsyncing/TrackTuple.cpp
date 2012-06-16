@@ -277,14 +277,17 @@ TrackTuple::syncedLastPlayed( const Options &options ) const
 int
 TrackTuple::syncedPlaycount( const Options &options ) const
 {
-    int max = 0;
     if( isEmpty() || !(options.syncedFields() & Meta::valPlaycount) )
-        return max;
+        return 0;
+    int max = 0;
+    int sumRecent = 0;
     foreach( TrackPtr track, m_map )
     {
-        max = qMax( max, track->playCount() );
+        int recent = track->recentPlayCount();
+        sumRecent += recent;
+        max = qMax( max, track->playCount() - recent );
     }
-    return max;
+    return max + sumRecent;
 }
 
 QSet<QString>
@@ -332,7 +335,9 @@ TrackTuple::synchronize( const Options &options )
         {
             it.next();
             const Provider *provider = it.key();
-            if( !fieldUpdated( field, options, provider ) )
+            // we have special case for playcount because it needs to we written even if
+            // apparently unchanged to reset possible nonzero recentPlayCount
+            if( field != Meta::valPlaycount && !fieldUpdated( field, options, provider ) )
                 continue; // nothing to do for this field and provider
 
             TrackPtr track = it.value();
