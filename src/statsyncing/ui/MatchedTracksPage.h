@@ -85,13 +85,18 @@ namespace StatSyncing
             void changeSingleTracksProvider( int index, const QMap<const Provider *, QAbstractItemModel *> &models );
 
             void refreshStatusText();
+            void rememberExpandedState( const QModelIndex &parent, int start, int end );
+            void restoreExpandedState( const QModelIndex &parent, int start, int end );
 
         private:
             void polish();
+            void saveExpandedTuples();
+            void restoreExpandedTuples();
             Q_DISABLE_COPY( MatchedTracksPage )
 
             bool m_polished;
             int m_matchedTracksComboLastIndex;
+            QSet<int> m_expandedTuples;
             SortFilterProxyModel *m_proxyModel;
             MatchedTracksModel *m_matchedTracksModel;
             QMap<const Provider *, QAbstractItemModel *> m_uniqueTracksModels;

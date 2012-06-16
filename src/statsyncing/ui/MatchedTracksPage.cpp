@@ -17,6 +17,7 @@
 #include "MatchedTracksPage.h"
 
 #include "core/support/Debug.h"
+#include "statsyncing/TrackTuple.h"
 #include "statsyncing/models/MatchedTracksModel.h"
 
 #include <QEvent>
@@ -162,6 +163,13 @@ MatchedTracksPage::showMatchedTracks( bool checked )
     if( checked )
     {
         m_proxyModel->setSourceModel( m_matchedTracksModel );
+        restoreExpandedTuples();
+        connect( m_proxyModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+                 SLOT(rememberExpandedState(QModelIndex,int,int)) );
+        connect( m_proxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
+                 SLOT(restoreExpandedState(QModelIndex,int,int)) );
+
+        // re-fill combo box and disable choices without tracks
         filterCombo->clear();
         filterCombo->addItem( i18n( "All tracks" ), -1 );
         filterCombo->addItem( i18n( "Updated tracks" ), int( MatchedTracksModel::HasUpdate ) );
@@ -184,6 +192,7 @@ MatchedTracksPage::showMatchedTracks( bool checked )
                 }
             }
         }
+
         filterCombo->setCurrentIndex( m_matchedTracksComboLastIndex );
         changeMatchedTracksFilter( m_matchedTracksComboLastIndex );
         connect( filterCombo, SIGNAL(currentIndexChanged(int)), SLOT(changeMatchedTracksFilter(int)) );
@@ -191,6 +200,11 @@ MatchedTracksPage::showMatchedTracks( bool checked )
     else
     {
         disconnect( filterCombo, 0, this, SLOT(changeMatchedTracksFilter(int)) );
+        disconnect( m_proxyModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+                    this, SLOT(rememberExpandedState(QModelIndex,int,int)) );
+        disconnect( m_proxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
+                    this, SLOT(restoreExpandedState(QModelIndex,int,int)) );
+        saveExpandedTuples();
         m_proxyModel->setTupleFilter( -1 ); // reset filter for single tracks models
     }
 }
@@ -287,8 +301,45 @@ MatchedTracksPage::refreshStatusText()
 }
 
 void
+MatchedTracksPage::rememberExpandedState( const QModelIndex &parent, int start, int end )
+{
+    if( parent.isValid() )
+        return;
+    for( int topModelRow = start; topModelRow <= end; topModelRow++ )
+    {
+        QModelIndex topModelIndex = m_proxyModel->index( topModelRow, 0 );
+        int bottomModelRow = m_proxyModel->mapToSource( topModelIndex ).row();
+        if( treeView->isExpanded( topModelIndex ) )
+            m_expandedTuples.insert( bottomModelRow );
+        else
+            m_expandedTuples.remove( bottomModelRow );
+    }
+}
+
+void
+MatchedTracksPage::restoreExpandedState( const QModelIndex &parent, int start, int end )
+{
+    if( parent.isValid() )
+        return;
+    for( int topModelRow = start; topModelRow <= end; topModelRow++ )
+    {
+        QModelIndex topIndex = m_proxyModel->index( topModelRow, 0 );
+        int bottomModelRow = m_proxyModel->mapToSource( topIndex ).row();
+        if( m_expandedTuples.contains( bottomModelRow ) )
+            treeView->expand( topIndex );
+    }
+}
+
+void
 MatchedTracksPage::polish()
 {
+    Q_ASSERT( m_matchedTracksModel );
+    // initially, expand tuples with conflicts:
+    for( int i = 0; i < m_matchedTracksModel->rowCount(); i++ )
+    {
+        if( m_matchedTracksModel->hasConflict( i ) )
+            m_expandedTuples.insert( i );
+    }
     if( m_uniqueTracksModels.isEmpty() )
     {
         uniqueRadio->setEnabled( false );
@@ -314,4 +365,22 @@ MatchedTracksPage::polish()
     m_proxyModel->sort( 0, Qt::AscendingOrder );
 
     m_polished = true;
+}
+
+void
+MatchedTracksPage::saveExpandedTuples()
+{
+    rememberExpandedState( QModelIndex(), 0, m_proxyModel->rowCount() - 1 );
+}
+
+void
+MatchedTracksPage::restoreExpandedTuples()
+{
+    foreach( int bottomModelRow, m_expandedTuples )
+    {
+        QModelIndex bottomIndex = m_matchedTracksModel->index( bottomModelRow, 0 );
+        QModelIndex topIndex = m_proxyModel->mapFromSource( bottomIndex );
+        if( topIndex.isValid() )
+            treeView->expand( topIndex );
+    }
 }

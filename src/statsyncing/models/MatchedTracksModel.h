@@ -89,9 +89,10 @@ namespace StatSyncing
             bool hasUpdate() const;
 
             /**
-             * Return true if at least one tuple has potential conflict.
+             * Return true if given or at least one tuple has potential conflict.
+             * @param i if >= 0, queries tuple at position i; otherwise match any tuple
              */
-            bool hasConflict() const;
+            bool hasConflict( int i = -1 ) const;
 
         private:
             QVariant tupleData( const TrackTuple &tuple, qint64 field, int role ) const;
