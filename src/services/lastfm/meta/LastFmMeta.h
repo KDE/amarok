@@ -24,7 +24,7 @@
 #include "ServiceMetaBase.h" // for the SourceInfoProvider
 
 
-#include <lastfm/Track>
+#include <lastfm/Track.h>
 
 
 #include <QObject>

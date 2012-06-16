@@ -20,8 +20,8 @@
 
 #include "core/meta/Meta.h"
 
-#include <lastfm/Audioscrobbler>
-#include <lastfm/Track>
+#include <lastfm/Audioscrobbler.h>
+#include <lastfm/Track.h>
 
 #include <QVariant>
 

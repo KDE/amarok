@@ -34,9 +34,9 @@
 #include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include "lastfm/Artist"
-#include "lastfm/ws.h"
-#include "lastfm/XmlQuery"
+#include <lastfm/Artist.h>
+#include <lastfm/ws.h>
+#include <lastfm/XmlQuery.h>
 
 #include <QNetworkReply>
 
@@ -371,10 +371,9 @@ Dynamic::WeeklyTopBias::weeklyArtistQueryFinished()
     }
 
 
-    try
+    lastfm::XmlQuery lfm;
+    if( lfm.parse( reply->readAll() ) )
     {
-        lastfm::XmlQuery lfm( reply->readAll() );
-
         // debug() << "got response:" << lfm;
         QStringList artists;
         for( int i = 0; i < lfm[ "weeklyartistchart" ].children( "artist" ).size(); i++ )
@@ -398,10 +397,10 @@ Dynamic::WeeklyTopBias::weeklyArtistQueryFinished()
             warning() << "Got a reply for a week"<<week<<"that was not requested.";
             return;
         }
-
-    } catch( lastfm::ws::ParseError& e )
+    }
+    else
     {
-        debug() << "caught exception parsing weekly artist chart.";
+        debug() << "failed to parse weekly artist chart.";
     }
 
     reply->deleteLater();

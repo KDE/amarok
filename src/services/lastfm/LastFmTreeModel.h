@@ -22,7 +22,7 @@
 #include "core/meta/Meta.h"
 #include "WeightedStringList.h"
 
-#include <lastfm/User>
+#include <lastfm/User.h>
 
 #include <QAbstractItemModel>
 #include <QHash>
@@ -136,7 +136,7 @@ private:
     LastFmTreeItem *m_myTopArtists;
 
     QString m_userName;
-    lastfm::AuthenticatedUser m_user;
+    lastfm::User m_user;
 
     QStringList m_friends;
     QStringList m_neighbors;

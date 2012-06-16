@@ -26,8 +26,8 @@
 #include "AmarokMimeData.h"
 
 #include <lastfm/ws.h>
-#include <lastfm/Tag>
-#include <lastfm/XmlQuery>
+#include <lastfm/Tag.h>
+#include <lastfm/XmlQuery.h>
 
 #include <KIcon>
 #include <KLocale>
@@ -68,11 +68,12 @@ LastFmTreeModel::slotAddNeighbors ()
 {
     DEBUG_BLOCK
 
-    try
-    {
         // Iterate over each neighbor, in two passes: 1) Get data 2) Sort data, store in model
 
-        lastfm::XmlQuery lfm( m_jobs[ "getNeighbours" ]->readAll() );
+    lastfm::XmlQuery lfm;
+    lfm.parse( m_jobs[ "getNeighbours" ]->readAll() );
+    if( lfm.parseError().enumValue() == lastfm::ws::NoError )
+    {
         foreach( const lastfm::XmlQuery &e, lfm[ "neighbours" ].children ( "user" ) )
         {
             const QString name = e[ "name" ].text();
@@ -88,11 +89,11 @@ LastFmTreeModel::slotAddNeighbors ()
             appendUserStations( neighbor, name );
         }
         m_neighbors.sort();
+    } else {
+        debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
+        return;
     }
-    catch( lastfm::ws::ParseError e )
-    {
-        debug() << "Got exception in parsing from last.fm:" << e.what();
-    }
+
     emitRowChanged(LastFm::Neighbors);
     m_jobs[ "getNeighbours" ]->deleteLater();
 }
@@ -102,11 +103,11 @@ LastFmTreeModel::slotAddFriends ()
 {
     DEBUG_BLOCK
 
-    try
-    {
-        // Iterate over each friend, in two passes: 1) Get data 2) Sort data, store in model
+    // Iterate over each friend, in two passes: 1) Get data 2) Sort data, store in model
 
-        lastfm::XmlQuery lfm( m_jobs[ "getFriends" ]->readAll() );
+    lastfm::XmlQuery lfm;
+    if( lfm.parse( m_jobs[ "getFriends" ]->readAll() ) )
+    {
         foreach( const lastfm::XmlQuery &e, lfm[ "friends" ].children ( "user" ) )
         {
             const QString name = e[ "name" ].text();
@@ -123,11 +124,11 @@ LastFmTreeModel::slotAddFriends ()
             appendUserStations( afriend, name );
         }
         m_friends.sort();
+    } else {
+        debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
+        return;
     }
-    catch( lastfm::ws::ParseError e )
-    {
-        debug() << "Got exception in parsing from last.fm:" << e.what();
-    }
+
     emitRowChanged(LastFm::Friends);
     m_jobs[ "getFriends" ]->deleteLater();
 }
@@ -137,10 +138,9 @@ LastFmTreeModel::slotAddTopArtists ()
 {
     DEBUG_BLOCK
     WeightedStringList list;
-    try
+    lastfm::XmlQuery lfm;
+    if( lfm.parse( m_jobs[ "getTopArtists" ]->readAll() ) )
     {
-        lastfm::XmlQuery lfm( m_jobs[ "getTopArtists" ]->readAll() );
-
         foreach( const lastfm::XmlQuery &e, lfm[ "topartists" ].children ( "artist" ) )
         {
             const QString name = e[ "name" ].text();
@@ -158,9 +158,10 @@ LastFmTreeModel::slotAddTopArtists ()
             m_myTopArtists->appendChild ( artist );
         }
 
-    } catch( lastfm::ws::ParseError e )
+    }
+    else
     {
-        debug() << "Got exception in parsing from last.fm:" << e.what();
+        debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
     }
     emitRowChanged(LastFm::TopArtists);
     m_jobs[ "getTopArtists" ]->deleteLater();
