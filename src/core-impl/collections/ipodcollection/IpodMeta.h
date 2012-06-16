@@ -23,8 +23,6 @@
 #include <QReadWriteLock>
 
 #include <glib.h>
-#include <glibconfig.h>
-
 
 struct _Itdb_Track;
 typedef _Itdb_Track Itdb_Track;
@@ -222,7 +220,7 @@ namespace IpodMeta
              */
             Meta::FieldHash m_changedFields;
 
-            static const guint64 m_gpodTrackUserTypeAmarokTrackPtr = G_GUINT64_CONSTANT(0x416d61726f6b5472); /* AmarokTr */
+            static const quint64 m_gpodTrackUserTypeAmarokTrackPtr = Q_UINT64_C(0x416d61726f6b5472); /* AmarokTr */
     };
 
     /**
