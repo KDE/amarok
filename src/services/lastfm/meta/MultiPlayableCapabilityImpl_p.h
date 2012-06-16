@@ -56,7 +56,7 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
         {
             DEBUG_BLOCK
             m_tuner = new lastfm::RadioTuner( lastfm::RadioStation( m_track->uidUrl() ) );
-            
+
             connect( m_tuner, SIGNAL( trackAvailable() ), this, SLOT( slotNewTrackAvailable() ) );
             connect( m_tuner, SIGNAL( error(lastfm::ws::Error,QString) ), this, SLOT( error( lastfm::ws::Error ) ) );
         }
@@ -72,7 +72,7 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
         virtual void metadataChanged( Meta::TrackPtr track )
         {
             const LastFm::TrackPtr ltrack = LastFm::TrackPtr::dynamicCast( track );
-            
+
             if( ltrack.isNull() )
                 return;
 

@@ -25,12 +25,6 @@
 #include <lastfm/User.h>
 
 #include <QAbstractItemModel>
-#include <QHash>
-#include <QIcon>
-#include <QMap>
-#include <QModelIndex>
-#include <QPixmap>
-#include <QVariant>
 
 class QNetworkReply;
 

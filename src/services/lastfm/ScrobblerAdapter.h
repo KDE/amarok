@@ -20,10 +20,12 @@
 
 #include "core/meta/Meta.h"
 
-#include <lastfm/Audioscrobbler.h>
 #include <lastfm/Track.h>
 
-#include <QVariant>
+namespace lastfm
+{
+class Audioscrobbler;
+}
 
 class ScrobblerAdapter : public QObject
 {

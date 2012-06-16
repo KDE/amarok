@@ -19,18 +19,9 @@
 #define DEBUG_PREFIX "lastfm"
 
 #include "LastFmServiceCollection.h"
-#include "LastFmServiceQueryMaker.h"
 #include "meta/LastFmMeta.h"
-#include "ServiceMetaBase.h"
 
-#include "core-impl/collections/support/MemoryQueryMaker.h"
-
-#include <lastfm/ws.h>
 #include <lastfm/XmlQuery.h>
-
-#include <QNetworkReply>
-
-#include <KLocale>
 
 using namespace Collections;
 

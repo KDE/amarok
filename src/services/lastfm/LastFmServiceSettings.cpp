@@ -23,14 +23,9 @@
 #include "NetworkAccessManagerProxy.h"
 #include "ui_LastFmConfigWidget.h"
 
-#include <lastfm/Audioscrobbler.h> // from liblastfm
-#include <lastfm/ws.h>
 #include <lastfm/XmlQuery.h>
 
 #include <QCryptographicHash>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QVBoxLayout>
 #include <QRegExpValidator>
 
 #include <KMessageBox>

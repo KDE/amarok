@@ -18,11 +18,7 @@
 #ifndef WEEKLY_TOP_BIAS_H
 #define WEEKLY_TOP_BIAS_H
 
-#include "dynamic/Bias.h"
-#include "dynamic/BiasFactory.h"
 #include "dynamic/biases/TagMatchBias.h"
-
-#include <QNetworkReply>
 
 class KJob;
 class QNetworkReply;

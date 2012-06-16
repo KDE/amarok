@@ -31,7 +31,6 @@ include_directories(
             LastFmService.cpp
             LastFmServiceCollection.cpp
             LastFmServiceConfig.cpp
-            LastFmServiceQueryMaker.cpp
 #             LastfmReadLabelCapability.cpp
             ScrobblerAdapter.cpp
             LastFmTreeModel.cpp

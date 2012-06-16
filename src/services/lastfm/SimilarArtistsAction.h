@@ -19,9 +19,6 @@
 
 #include "GlobalCollectionActions.h"
 
-#include "core/meta/Meta.h"
-
-
 class SimilarArtistsAction : public GlobalCollectionArtistAction
 {
     Q_OBJECT

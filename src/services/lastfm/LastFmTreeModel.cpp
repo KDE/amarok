@@ -25,15 +25,9 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "AmarokMimeData.h"
 
-#include <lastfm/ws.h>
 #include <lastfm/Tag.h>
 #include <lastfm/XmlQuery.h>
 
-#include <KIcon>
-#include <KLocale>
-
-#include <QMap>
-#include <QNetworkReply>
 #include <QPainter>
 
 using namespace LastFm;
