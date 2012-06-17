@@ -30,7 +30,7 @@ using namespace StatSyncing;
 CommonModel::CommonModel( const QList<qint64> &columns )
     : m_columns( columns )
 {
-    Q_ASSERT( m_columns.contains( Meta::valTitle ) );
+    Q_ASSERT( m_columns.value( 0 ) == Meta::valTitle );
     m_boldFont.setBold( true );
 }
 

@@ -88,6 +88,7 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
         Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount << Meta::valLabel;
 
     MatchedTracksPage *matchedPage = new MatchedTracksPage();
+    matchedPage->setProviders( m_providers );
     m_matchedTracksModel = new MatchedTracksModel( matchJob->matchedTuples(), columns,
                                                    m_options, this );
     matchedPage->setMatchedTracksModel( m_matchedTracksModel );

@@ -34,6 +34,11 @@ namespace StatSyncing
             virtual ~MatchedTracksPage();
 
             /**
+             * Set provider, you must call this before showing the widget.
+             */
+            void setProviders( const QList<QSharedPointer<Provider> > &providers );
+
+            /**
              * Set mathed tracks model. MatchedTracksPage does _not_ take ownership of
              * the pointer.
              */
@@ -85,8 +90,11 @@ namespace StatSyncing
             void changeSingleTracksProvider( int index, const QMap<const Provider *, QAbstractItemModel *> &models );
 
             void refreshStatusText();
+
             void rememberExpandedState( const QModelIndex &parent, int start, int end );
             void restoreExpandedState( const QModelIndex &parent, int start, int end );
+
+            void takeRatingsFrom();
 
         private:
             void polish();
@@ -97,6 +105,7 @@ namespace StatSyncing
             bool m_polished;
             int m_matchedTracksComboLastIndex;
             QSet<int> m_expandedTuples;
+            QList<QSharedPointer<Provider> > m_providers;
             SortFilterProxyModel *m_proxyModel;
             MatchedTracksModel *m_matchedTracksModel;
             QMap<const Provider *, QAbstractItemModel *> m_uniqueTracksModels;

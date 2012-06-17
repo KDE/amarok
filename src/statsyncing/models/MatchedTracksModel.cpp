@@ -205,6 +205,29 @@ MatchedTracksModel::hasConflict( int i ) const
     return false;
 }
 
+void
+MatchedTracksModel::takeRatingsFrom( const Provider *provider )
+{
+    for( int i = 0; i < m_matchedTuples.count(); i++ )
+    {
+        TrackTuple &tuple = m_matchedTuples[ i ]; // we need reference
+        if( !tuple.hasConflict( m_options ) )
+            continue;
+        tuple.setRatingProvider( provider ); // does nothing if non-null provider isn't in tuple
+
+        // parent changes:
+        int ratingColumn = m_columns.indexOf( Meta::valRating );
+        QModelIndex parentRating = index( i, ratingColumn );
+        emit dataChanged( parentRating, parentRating );
+
+        // children change:
+        QModelIndex parent = index( i, 0 );
+        QModelIndex topLeft = index( 0, ratingColumn, parent );
+        QModelIndex bottomRight = index( tuple.count() - 1, ratingColumn, parent );
+        emit dataChanged( topLeft, bottomRight );
+    }
+}
+
 QVariant
 MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role ) const
 {

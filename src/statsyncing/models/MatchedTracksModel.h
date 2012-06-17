@@ -94,6 +94,15 @@ namespace StatSyncing
              */
             bool hasConflict( int i = -1 ) const;
 
+            /**
+             * Go through all tuples with (both resolved and unresolved) rating conflict
+             * and (re)set their preferred rating provider to @param provider. Null
+             * @param provider resets all tuples to "undecided". If @param provider is
+             * not null and given tuple has no track from provider, its state remains
+             * unchanged.
+             */
+            void takeRatingsFrom( const Provider *provider );
+
         private:
             QVariant tupleData( const TrackTuple &tuple, qint64 field, int role ) const;
             QVariant trackData( const Provider *provider, const TrackTuple &tuple,

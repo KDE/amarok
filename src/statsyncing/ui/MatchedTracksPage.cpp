@@ -16,11 +16,13 @@
 
 #include "MatchedTracksPage.h"
 
+#include "core/meta/support/MetaConstants.h"
 #include "core/support/Debug.h"
 #include "statsyncing/TrackTuple.h"
 #include "statsyncing/models/MatchedTracksModel.h"
 
 #include <QEvent>
+#include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 
@@ -127,6 +129,12 @@ MatchedTracksPage::~MatchedTracksPage()
 }
 
 void
+MatchedTracksPage::setProviders( const QList<QSharedPointer<Provider> > &providers )
+{
+    m_providers = providers;
+}
+
+void
 MatchedTracksPage::setMatchedTracksModel( MatchedTracksModel *model )
 {
     m_matchedTracksModel = model;
@@ -170,6 +178,7 @@ MatchedTracksPage::showMatchedTracks( bool checked )
                  SLOT(restoreExpandedState(QModelIndex,int,int)) );
 
         // re-fill combo box and disable choices without tracks
+        bool hasConflict = m_matchedTracksModel->hasConflict();
         filterCombo->clear();
         filterCombo->addItem( i18n( "All Tracks" ), -1 );
         filterCombo->addItem( i18n( "Updated Tracks" ), int( MatchedTracksModel::HasUpdate ) );
@@ -177,7 +186,7 @@ MatchedTracksPage::showMatchedTracks( bool checked )
         QStandardItemModel *comboModel = dynamic_cast<QStandardItemModel *>( filterCombo->model() );
         if( comboModel )
         {
-            if( !m_matchedTracksModel->hasConflict() )
+            if( !hasConflict )
             {
                 comboModel->item( 2 )->setFlags( Qt::NoItemFlags );
                 filterCombo->setItemData( 2, i18n( "There are no tracks with conflicts" ),
@@ -196,6 +205,8 @@ MatchedTracksPage::showMatchedTracks( bool checked )
         filterCombo->setCurrentIndex( m_matchedTracksComboLastIndex );
         changeMatchedTracksFilter( m_matchedTracksComboLastIndex );
         connect( filterCombo, SIGNAL(currentIndexChanged(int)), SLOT(changeMatchedTracksFilter(int)) );
+
+        takeRatingsButton->setEnabled( hasConflict );
     }
     else
     {
@@ -206,6 +217,7 @@ MatchedTracksPage::showMatchedTracks( bool checked )
                     this, SLOT(restoreExpandedState(QModelIndex,int,int)) );
         saveExpandedTuples();
         m_proxyModel->setTupleFilter( -1 ); // reset filter for single tracks models
+        takeRatingsButton->setEnabled( false );
     }
 }
 
@@ -331,6 +343,20 @@ MatchedTracksPage::restoreExpandedState( const QModelIndex &parent, int start, i
 }
 
 void
+MatchedTracksPage::takeRatingsFrom()
+{
+    QAction *action = dynamic_cast<QAction *>( sender() );
+    if( !action )
+    {
+        warning() << __PRETTY_FUNCTION__ << "must only be called from QAction";
+        return;
+    }
+
+    const Provider *provider = action->data().value<const Provider *>();
+    m_matchedTracksModel->takeRatingsFrom( provider );
+}
+
+void
 MatchedTracksPage::polish()
 {
     Q_ASSERT( m_matchedTracksModel );
@@ -352,6 +378,18 @@ MatchedTracksPage::polish()
         excludedRadio->setToolTip( i18n( "There are no tracks excluded from "
             "synchronization" ) );
     }
+
+    // populate menu of the "Take Ratings From" button
+    QMenu *takeRatingsMenu = new QMenu( takeRatingsButton );
+    foreach( QSharedPointer<Provider> provider, m_providers )
+    {
+        QAction *action = takeRatingsMenu->addAction( provider->icon(), provider->prettyName() );
+        action->setData( QVariant::fromValue<const Provider *>( provider.data() ) );
+        connect( action, SIGNAL(triggered(bool)), SLOT(takeRatingsFrom()) );
+    }
+    takeRatingsMenu->addAction( i18n( "Reset All Ratings to Undecided" ), this, SLOT(takeRatingsFrom()) );
+    takeRatingsButton->setMenu( takeRatingsMenu );
+    takeRatingsButton->setIcon( KIcon( Meta::iconForField( Meta::valRating ) ) );
 
     matchedRadio->setChecked( true ); // calls showMatchedTracks() that sets the model
     QHeaderView *header = treeView->header();

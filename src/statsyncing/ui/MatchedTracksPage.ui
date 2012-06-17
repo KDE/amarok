@@ -100,11 +100,31 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="statusBar">
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="statusLayout">
+     <item>
+      <widget class="QToolButton" name="takeRatingsButton">
+       <property name="text">
+        <string>Take Ratings From</string>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::InstantPopup</enum>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="statusBar">
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="KDialogButtonBox" name="buttonBox">
