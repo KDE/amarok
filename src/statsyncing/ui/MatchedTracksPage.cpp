@@ -171,9 +171,9 @@ MatchedTracksPage::showMatchedTracks( bool checked )
 
         // re-fill combo box and disable choices without tracks
         filterCombo->clear();
-        filterCombo->addItem( i18n( "All tracks" ), -1 );
-        filterCombo->addItem( i18n( "Updated tracks" ), int( MatchedTracksModel::HasUpdate ) );
-        filterCombo->addItem( i18n( "Tracks with conflicts" ), int( MatchedTracksModel::HasConflict ) );
+        filterCombo->addItem( i18n( "All Tracks" ), -1 );
+        filterCombo->addItem( i18n( "Updated Tracks" ), int( MatchedTracksModel::HasUpdate ) );
+        filterCombo->addItem( i18n( "Tracks With Conflicts" ), int( MatchedTracksModel::HasConflict ) );
         QStandardItemModel *comboModel = dynamic_cast<QStandardItemModel *>( filterCombo->model() );
         if( comboModel )
         {

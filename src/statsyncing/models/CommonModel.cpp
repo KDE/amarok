@@ -43,21 +43,7 @@ CommonModel::headerData( int section, Qt::Orientation orientation, int role ) co
     switch( role )
     {
         case Qt::DisplayRole:
-            switch( field )
-            {
-                case Meta::valPlaycount:
-                    return QVariant();
-                default:
-                    return Meta::i18nForField( field );
-            }
-        case Qt::DecorationRole:
-            switch( field )
-            {
-                case Meta::valPlaycount:
-                    return KIcon( Meta::iconForField( field ) );
-                default:
-                    return QVariant();
-            }
+            return Meta::i18nForField( field );
         case Qt::SizeHintRole:
             return sizeHintData( field );
     }

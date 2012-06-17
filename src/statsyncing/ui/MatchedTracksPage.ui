@@ -33,7 +33,7 @@
         <string>Tracks that are unique to their sources</string>
        </property>
        <property name="text">
-        <string>Unique tracks</string>
+        <string>Unique Tracks</string>
        </property>
       </widget>
      </item>
@@ -43,7 +43,7 @@
         <string>Tracks that have been excluded from synchronization due to ambiguity</string>
        </property>
        <property name="text">
-        <string>Excluded tracks</string>
+        <string>Excluded Tracks</string>
        </property>
       </widget>
      </item>

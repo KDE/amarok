@@ -61,7 +61,7 @@ Controller::synchronize()
     if( providers.count() <= 1 )
     {
         // the text intentionally doesn't cope with 0 collections
-        QString text = i18n( "You only seem to have one collection. statistics "
+        QString text = i18n( "You only seem to have one collection. Statistics "
             "synchronization only makes sense if there is more than one collection." );
         Amarok::Components::logger()->longMessage( text );
         return;
