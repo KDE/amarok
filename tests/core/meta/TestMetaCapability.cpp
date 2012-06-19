@@ -1,0 +1,111 @@
+/****************************************************************************************
+ * Copyright (c) 2012 Jasneet Singh Bhatti <jazneetbhatti@gmail.com>                    *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+
+#include "TestMetaCapability.h"
+
+#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
+#include "core/capabilities/EditCapability.h"
+#include "core/capabilities/LastFmCapability.h"
+#include "core/meta/Meta.h"
+
+#include <qtest_kde.h>
+
+#include <QString>
+
+/**
+ * Ad-hoc mock to test MetaCapability
+ */
+class MetaCapabilityMock : public Meta::MetaCapability
+{
+    public:
+	static Capabilities::ActionsCapability *actionsCapability;
+	static Capabilities::BookmarkThisCapability *bookmarkThisCapability;
+
+	virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+	{
+	    switch( type )
+	    {
+		case Capabilities::Capability::Actions:
+		case Capabilities::Capability::BookmarkThis:
+		    return true;
+		default:
+		    break;
+	    }
+	    return false;
+	}
+
+	virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type )
+	{
+	    switch( type )
+	    {
+		case Capabilities::Capability::Actions:
+		    return actionsCapability;
+		case Capabilities::Capability::BookmarkThis:
+		    return bookmarkThisCapability;
+		default:
+		    break;
+	    }
+	    return 0;
+	}
+
+    private:
+	static QAction *action;
+	static QList<QAction*> actionsList;
+};
+
+QAction *MetaCapabilityMock::action = new QAction( 0 );
+QList<QAction*> MetaCapabilityMock::actionsList;
+
+// Create the static instances to be returned for testing
+Capabilities::ActionsCapability *MetaCapabilityMock::actionsCapability = new Capabilities::ActionsCapability( actionsList );
+Capabilities::BookmarkThisCapability *MetaCapabilityMock::bookmarkThisCapability= new Capabilities::BookmarkThisCapability( action );
+
+QTEST_KDEMAIN_CORE( TestMetaCapability )
+
+TestMetaCapability::TestMetaCapability()
+{
+}
+
+void
+TestMetaCapability::testHas()
+{
+    Meta::MetaCapability *metaCapability = new MetaCapabilityMock();
+    QVERIFY( metaCapability );
+
+    // these capabilites should be provided
+    QVERIFY( metaCapability->has<Capabilities::ActionsCapability>() == true );
+    QVERIFY( metaCapability->has<Capabilities::BookmarkThisCapability>() == true );
+
+    // these should not
+    QVERIFY( metaCapability->has<Capabilities::EditCapability>() == false );
+    QVERIFY( metaCapability->has<Capabilities::LastFmCapability>() == false );
+}
+
+void
+TestMetaCapability::testCreate()
+{
+    Meta::MetaCapability *metaCapability = new MetaCapabilityMock();
+    QVERIFY( metaCapability );
+
+    // these capabilites should be provided
+    // check that the correct instances are returned
+    QVERIFY( metaCapability->create<Capabilities::ActionsCapability>() == MetaCapabilityMock::actionsCapability );
+    QVERIFY( metaCapability->create<Capabilities::BookmarkThisCapability>() == MetaCapabilityMock::bookmarkThisCapability );
+
+    // these should not
+    QVERIFY( metaCapability->create<Capabilities::EditCapability>() == 0 );
+    QVERIFY( metaCapability->create<Capabilities::LastFmCapability>() == 0 );
+}
