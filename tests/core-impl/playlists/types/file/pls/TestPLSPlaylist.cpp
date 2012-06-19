@@ -89,10 +89,10 @@ void TestPLSPlaylist::testTracks()
 {
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
 
-    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( "Stream (http://85.214.44.27:8000)" ) );
-    QCOMPARE( tracklist.at( 1 ).data()->name(), QString( "Stream (http://217.20.121.40:8000)" ) );
-    QCOMPARE( tracklist.at( 2 ).data()->name(), QString( "Stream (http://85.214.44.27:8100)" ) );
-    QCOMPARE( tracklist.at( 3 ).data()->name(), QString( "Stream (http://85.214.44.27:8200)" ) );
+    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 1 ).data()->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 2 ).data()->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 3 ).data()->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
 }
 
 void TestPLSPlaylist::testRetrievableUrl()
