@@ -636,7 +636,7 @@ Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 #ifdef HAVE_LIBLASTFM
     readlabel = true;
 #endif
-    return type == Capabilities::Capability::Editable ||
+    return ( type == Capabilities::Capability::Editable && isEditable() ) ||
            type == Capabilities::Capability::Importable ||
            type == Capabilities::Capability::BookmarkThis ||
            type == Capabilities::Capability::WriteTimecode ||
@@ -651,7 +651,10 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
     switch( type )
     {
         case Capabilities::Capability::Editable:
-            return new EditCapabilityImpl( this );
+            if( isEditable() )
+                return new EditCapabilityImpl( this );
+            else
+                return 0;
 
         case Capabilities::Capability::Importable:
             return new StatisticsCapabilityImpl( this );
