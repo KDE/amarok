@@ -809,12 +809,14 @@ if( LIBOFA_FOUND )
     include_directories(
         ${LIBAVCODEC_INCLUDE_DIR}
         ${LIBAVFORMAT_INCLUDE_DIR}
+        ${LIBAVUTIL_INCLUDE_DIR}
     )
     set( EXTRA_LIBS
         ${EXTRA_LIBS}
         ${LIBOFA_LIBRARY}
         ${LIBAVFORMAT_LIBRARY}
         ${LIBAVCODEC_LIBRARY}
+        ${LIBAVUTIL_LIBRARY}
     )
     set( amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}

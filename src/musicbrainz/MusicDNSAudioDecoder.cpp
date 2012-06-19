@@ -124,10 +124,9 @@ MusicDNSAudioDecoder::run()
     AVFormatContext *pFormatCtx = NULL;
     AVCodecContext *pCodecCtx = NULL;
     AVCodec *pCodec = NULL;
+    AVFrame *decodedFrame = NULL;
     AVPacket packet, tmpPacket;
-    int audioStream, decoderRet, outSize, i, j;
-    qint8 *buffer = new qint8[AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
-    qint32 bufferSize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+    int audioStream, decoderRet, i, j;
 
     av_register_all();
 
@@ -135,24 +134,16 @@ MusicDNSAudioDecoder::run()
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
-#if LIBAVFORMAT_VERSION_MAJOR >= 53
         if( avformat_open_input( &pFormatCtx, ( const char * )track->playableUrl().toLocalFile().toLocal8Bit(), NULL, NULL ) )
-#else
-        if( av_open_input_file( &pFormatCtx, ( const char * )track->playableUrl().toLocalFile().toLocal8Bit(), NULL, 0, NULL ) )
-#endif
         {
             warning() << QLatin1String( "Unable to open input file: " ) + track->playableUrl().toLocalFile();
             continue;
         }
 
-#if LIBAVFORMAT_VERSION_MAJOR >= 54
         if( avformat_find_stream_info( pFormatCtx, NULL ) < 0 )
-#else
-        if( av_find_stream_info( pFormatCtx ) < 0 )
-#endif
         {
             warning() << QLatin1String( "Unable to find stream info: " ) + track->playableUrl().toLocalFile();
-            av_close_input_file( pFormatCtx );
+            avformat_close_input( &pFormatCtx );
             continue;
         }
 
@@ -167,7 +158,7 @@ MusicDNSAudioDecoder::run()
         if( audioStream == -1 )
         {
             warning() << QLatin1String( "Unable to find stream: " ) + track->playableUrl().toLocalFile();
-            av_close_input_file( pFormatCtx );
+            avformat_close_input( &pFormatCtx );
             continue;
         }
 
@@ -176,18 +167,14 @@ MusicDNSAudioDecoder::run()
         if( pCodec == NULL )
         {
             warning() << QLatin1String( "Unable to find codec for " ) + track->playableUrl().toLocalFile();
-            av_close_input_file( pFormatCtx );
+            avformat_close_input( &pFormatCtx );
             continue;
         }
 
-#if LIBAVCODEC_VERSION_MAJOR >= 54
         if( avcodec_open2( pCodecCtx, pCodec, NULL ) < 0 )
-#else
-        if( avcodec_open( pCodecCtx, pCodec ) < 0 )
-#endif
         {
             warning() << QLatin1String( "Unable to open codec " ) + track->playableUrl().toLocalFile();
-            av_close_input_file( pFormatCtx );
+            avformat_close_input( &pFormatCtx );
             continue;
         }
 
@@ -195,7 +182,7 @@ MusicDNSAudioDecoder::run()
         {
             warning() << QLatin1String( "Ivalid codec context, file might be corrupted: " ) + track->playableUrl().toLocalFile();
             avcodec_close( pCodecCtx );
-            av_close_input_file( pFormatCtx );
+            avformat_close_input( &pFormatCtx );
             continue;
         }
 
@@ -210,16 +197,22 @@ MusicDNSAudioDecoder::run()
                 tmpPacket = packet;
                 while( tmpPacket.size > 0 )
                 {
-                    if( bufferSize < qMax( AVCODEC_MAX_AUDIO_FRAME_SIZE, tmpPacket.size*2 ) )
+                    int gotFrame = 0;
+
+                    if( !decodedFrame )
                     {
-                        bufferSize = qMax( AVCODEC_MAX_AUDIO_FRAME_SIZE, tmpPacket.size*2 );
-                        delete [] buffer;
-                        buffer = new qint8[bufferSize+FF_INPUT_BUFFER_PADDING_SIZE];
+                        if( !( decodedFrame = avcodec_alloc_frame() ) )
+                        {
+                            warning() << "Unable to allocate enough memory to decode file.";
+                            isOk = false;
+                            break;
+                        }
+                        else
+                            avcodec_get_frame_defaults( decodedFrame );
                     }
 
-                    outSize = bufferSize;
-                    decoderRet = avcodec_decode_audio3( pCodecCtx, ( qint16 * )buffer, &outSize, &tmpPacket );
-                    if( decoderRet <= 0 )
+                    decoderRet = avcodec_decode_audio4( pCodecCtx, decodedFrame, &gotFrame, &tmpPacket );
+                    if( decoderRet < 0 )
                     {
                         warning() << "Error while decoding.";
                         isOk = false;
@@ -229,12 +222,13 @@ MusicDNSAudioDecoder::run()
                     tmpPacket.size -= decoderRet;
                     tmpPacket.data += decoderRet;
 
-                    if( outSize > 0 )
+                    if( gotFrame )
                     {
-                        for( i = 0; i < outSize; i += pCodecCtx->channels*2  )
+                        int dataSize = av_samples_get_buffer_size( NULL, pCodecCtx->channels, decodedFrame->nb_samples, pCodecCtx->sample_fmt, 1);
+                        for( i = 0; i < dataSize; i += pCodecCtx->channels*2  )
                             for( j = 0; j < pCodecCtx->channels*2; j++ )
                                 if( j < 4 )
-                                    data << buffer[i + j];
+                                    data << decodedFrame->data[0][i + j];
                                 else
                                     break;
                     }
@@ -262,11 +256,9 @@ MusicDNSAudioDecoder::run()
                          track->playableUrl().toLocalFile();
 
         avcodec_close( pCodecCtx );
-        av_close_input_file( pFormatCtx );
+        avformat_close_input( &pFormatCtx );
         data.flush();
     }
-
-    delete [] buffer;
 }
 
 
