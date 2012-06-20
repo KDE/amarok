@@ -145,23 +145,26 @@ class Track::Private : public QObject
             if( m_userFetch->error() == QNetworkReply::NoError )
             {
                 lastfm::XmlQuery lfm;
-                if( !lfm.parse( m_userFetch->readAll() ) )
+                if( lfm.parse( m_userFetch->readAll() ) )
+                {
+                    albumUrl = lfm[ "track" ][ "album" ][ "url" ].text();
+                    trackUrl = lfm[ "track" ][ "url" ].text();
+                    artistUrl = lfm[ "track" ][ "artist" ][ "url" ].text();
+
+                    notifyObservers();
+
+                    imageUrl = lfm[ "track" ][ "album" ][ "image size=large" ].text();
+
+                    if( !imageUrl.isEmpty() )
+                    {
+                        KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
+                        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
+                    }
+                }
+                else
                 {
                     debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
                     return;
-                }
-                albumUrl = lfm[ "track" ][ "album" ][ "url" ].text();
-                trackUrl = lfm[ "track" ][ "url" ].text();
-                artistUrl = lfm[ "track" ][ "artist" ][ "url" ].text();
-
-                notifyObservers();
-
-                imageUrl = lfm[ "track" ][ "album" ][ "image size=large" ].text();
-
-                if( !imageUrl.isEmpty() )
-                {
-                    KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
-                    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
                 }
             }
 
