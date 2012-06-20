@@ -37,12 +37,12 @@ TestPlaylistFileProvider::TestPlaylistFileProvider()
 
 void TestPlaylistFileProvider::initTestCase()
 {
-}
+    m_testPlaylistFileProvider = new Playlists::PlaylistFileProvider();
+    QVERIFY( m_testPlaylistFileProvider );
 
-void TestPlaylistFileProvider::init()
-{
     removeConfigPlaylistEntries();
     removeTestPlaylist();
+    m_testPlaylistFileProvider->deletePlaylists( m_testPlaylistFileProvider->playlists() );
 }
 
 void TestPlaylistFileProvider::cleanupTestCase()
@@ -63,40 +63,85 @@ void TestPlaylistFileProvider::testSave()
     Meta::TrackList tempTrackList;
     const KUrl trackUrl = dataPath( "data/audio/Platz 01.mp3" );
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
+    QCOMPARE( tempTrackList.size(), 1 );
 
-    Playlists::PlaylistPtr testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist.m3u" );
+    // no extension, should default to xspf
+    Playlists::PlaylistPtr testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist" );
+    QVERIFY( testPlaylist );
 
+    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.xspf" ) );
+    QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist.xspf" ) );
+    QCOMPARE( testPlaylist->tracks().size(), 1 );
+    QFile::remove( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.xspf" );
+
+    // xspf
+    testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist.xspf" );
+    QVERIFY( testPlaylist );
+
+    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.xspf" ) ); // FAILS
+    QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist.xspf" ) );
+    QCOMPARE( testPlaylist->tracks().size(), 1 );
+    QFile::remove( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.xspf" );
+
+    // m3u
+    testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist.m3u" );
+    QVERIFY( testPlaylist ); //FAILS
+
+    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.m3u" ) );
     QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist.m3u" ) );
     QCOMPARE( testPlaylist->tracks().size(), 1 );
-    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.m3u" ) );
+    QFile::remove( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.m3u" );
+
+    // pls
+    testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist.pls" );
+    QVERIFY( testPlaylist );
+
+    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.pls" ) ); //FAILS
+    QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist.pls" ) );
+    QCOMPARE( testPlaylist->tracks().size(), 1 );
+    QFile::remove( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.pls" );
 }
 
 void TestPlaylistFileProvider::testImportAndDeletePlaylists()
 {
-    QVERIFY( m_testPlaylistFileProvider->import( dataPath( "data/playlists/test.m3u" ) ) );
-
+    m_testPlaylistFileProvider->deletePlaylists( m_testPlaylistFileProvider->playlists() );
     Playlists::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
-    QCOMPARE( tempList.size(), 1 ); // iow: use it with a clean profile
+    QCOMPARE( tempList.size(), 0 );
 
-    // FIXME: deleting playlist causes a confirm dialog to appear
-    // m_testPlaylistFileProvider->deletePlaylists( tempList );
-    // tempList = m_testPlaylistFileProvider->playlists();
-    // QCOMPARE( tempList.size(), 0 );
+    QVERIFY( QFile::exists( dataPath( "data/playlists/test.m3u" ) ) );
+    QFile::copy( dataPath( "data/playlists/test.m3u" ), QDir::tempPath() + QDir::separator() + "test.m3u" );
+    QVERIFY( QFile::exists( QDir::tempPath() + QDir::separator() + "test.m3u" ) );
+
+    QVERIFY( m_testPlaylistFileProvider->import( QDir::tempPath() + QDir::separator() + "test.m3u" ) );
+    tempList = m_testPlaylistFileProvider->playlists();
+    QCOMPARE( tempList.size(), 1 );
+
+    m_testPlaylistFileProvider->deletePlaylists( tempList );
+    tempList = m_testPlaylistFileProvider->playlists();
+    QCOMPARE( tempList.size(), 0 );
 }
 
 void TestPlaylistFileProvider::testRename()
 {
-    QVERIFY( m_testPlaylistFileProvider->import( dataPath( "data/playlists/test.m3u" ) ) );
-
+    m_testPlaylistFileProvider->deletePlaylists( m_testPlaylistFileProvider->playlists() );
     Playlists::PlaylistList tempList = m_testPlaylistFileProvider->playlists();
+    QCOMPARE( tempList.size(), 0 );
+
+    QVERIFY( QFile::exists( dataPath( "data/playlists/test.m3u" ) ) );
+    QFile::copy( dataPath( "data/playlists/test.m3u" ), QDir::tempPath() + QDir::separator() + "test.m3u" );
+    QVERIFY( QFile::exists( QDir::tempPath() + QDir::separator() + "test.m3u" ) );
+
+    QVERIFY( m_testPlaylistFileProvider->import( QDir::tempPath() + QDir::separator() + "test.m3u" ) );
+    tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 );
 
     m_testPlaylistFileProvider->rename( tempList.at( 0 ), "New Test Name" );
     tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.at( 0 )->name(), QString( "New Test Name" ) );
 
-    // FIXME: deleting playlist causes a confirm dialog to appear
-    // m_testPlaylistFileProvider->deletePlaylists( tempList );
+    m_testPlaylistFileProvider->deletePlaylists( tempList );
+    tempList = m_testPlaylistFileProvider->playlists();
+    QCOMPARE( tempList.size(), 0 );
 }
 
 QString TestPlaylistFileProvider::dataPath( const QString &relPath )
@@ -113,7 +158,6 @@ void TestPlaylistFileProvider::removeTestPlaylist()
 
 void TestPlaylistFileProvider::removeConfigPlaylistEntries()
 {
-    m_testPlaylistFileProvider = new Playlists::PlaylistFileProvider();
     KConfigGroup config = Amarok::config( "Loaded Playlist Files" );
     config.deleteGroup();
 }

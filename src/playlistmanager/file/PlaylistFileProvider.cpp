@@ -133,7 +133,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 
     QString ext = Amarok::extension( filename );
     Playlists::PlaylistFormat format = Playlists::getFormat( ext );
-    if( format == Unknown )
+    if( format == Playlists::Unknown )
     {
         format = Playlists::XSPF;
         filename.append( QLatin1String( ".xspf" ) );

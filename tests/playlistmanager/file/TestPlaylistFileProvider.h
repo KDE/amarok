@@ -35,7 +35,6 @@ public:
     TestPlaylistFileProvider();
 
 private slots:
-    void init();
     void initTestCase();
     void cleanupTestCase();
     void testPlaylists();
