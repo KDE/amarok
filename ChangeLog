@@ -8,6 +8,7 @@ VERSION 2.6
       argument.
 
   BUGFIXES:
+    * Don't poll for mounts every second, solid notifies us. (BR 289462)
     * Fix inconsistent Last.fm scrobbling in some cases with GStreamer
       backend.
     * Use colors from KDE style in Dynamic Playlist strip. (BR 301303)
