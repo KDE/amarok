@@ -1340,6 +1340,8 @@ void
 MtpHandler::slotDeviceMatchSucceeded( ThreadWeaver::Job* job )
 {
     DEBUG_BLOCK
+    if( !m_memColl ) // try to fix BUG:279966
+        return;
 
     if ( job->success() )
     {
@@ -1355,6 +1357,9 @@ void
 MtpHandler::slotDeviceMatchFailed( ThreadWeaver::Job* job )
 {
     DEBUG_BLOCK
+    if( !m_memColl ) // try to fix BUG:279966
+        return;
+
     debug() << "Running slot device match failed";
     disconnect( job, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDeviceMatchSucceeded() ) );
     m_memColl->slotAttemptConnectionDone( false );
