@@ -196,15 +196,18 @@ Block::~Block()
         return;
 
 #if QT_VERSION >= 0x040700
-    const double duration = m_startTime.elapsed() / 1000.0;
+    double duration = m_startTime.elapsed() / 1000.0;
 #else
-    const double duration = (double)m_startTime.msecsTo( QTime::currentTime() ) / 1000.0;
+    double duration = (double)m_startTime.msecsTo( QTime::currentTime() ) / 1000.0;
 #endif
 
     mutex.lock();
     IndentPrivate::instance()->m_string.truncate( Debug::indent().length() - 2 );
     mutex.unlock();
 
+#ifdef DEBUG_OVERRIDE_ELAPSED_TIME
+    duration = DEBUG_OVERRIDE_ELAPSED_TIME;
+#endif
     // Print timing information, and a special message (DELAY) if the method took longer than 5s
     if( duration < 5.0 )
     {

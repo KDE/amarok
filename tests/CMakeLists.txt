@@ -59,6 +59,7 @@ target_link_libraries(testcaseconverter ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY
 
 #------------------------ Test Debug -----------------------------
 
+add_definitions(-DDEBUG_OVERRIDE_ELAPSED_TIME=4.9)
 set( testdebug_SRCS
      TestDebug.cpp
      ${AMAROK_SOURCE_TREE}/core/support/Debug.cpp

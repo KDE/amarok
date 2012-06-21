@@ -22,6 +22,7 @@
 #include "core/support/Debug.h"
 #include "config-amarok-test.h"
 
+#include <QtCore/QStack>
 #include <QtTest/QTest>
 
 class TestDebug : public QObject
@@ -36,9 +37,22 @@ private slots:
     void benchDebugBlock_data();
 
 private:
-    void work();
-    void work2();
+    void work( bool debugEnabled, bool colorEnabled );
+    void work2( bool debugEnabled, bool colorEnabled );
+
+    enum BeginOrEnd {
+        Begin,
+        End
+    };
+    void expectMessage( const QString &message, bool debugEnabled );
+    void expectBeginEnd( BeginOrEnd type, const QString &message, bool debugEnabled,
+                         bool colorEnabled );
+    QString colorize( const QString &string, int colorIndex, bool colorEnabled );
+
+    static QString m_indent;
 };
+
+QString TestDebug::m_indent;
 
 void TestDebug::benchDebugBlock_data()
 {
@@ -62,29 +76,92 @@ void TestDebug::benchDebugBlock()
     QVERIFY( Debug::debugEnabled() == debugEnabled );
     QVERIFY( Debug::debugColorEnabled() == colorEnabled );
 
-    QBENCHMARK {
-        work();
+    QBENCHMARK_ONCE {
+        work( debugEnabled, colorEnabled );
     }
 }
 
-void TestDebug::work()
+void TestDebug::work( bool debugEnabled, bool colorEnabled )
 {
+    expectBeginEnd( Begin, __PRETTY_FUNCTION__, debugEnabled, colorEnabled );
     DEBUG_BLOCK
+    expectMessage( "level 1", debugEnabled );
     debug() << "level 1";
 
     for( int i = 0; i < 100; ++i )
     {
+        expectBeginEnd( Begin, __PRETTY_FUNCTION__, debugEnabled, colorEnabled );
         DEBUG_BLOCK
+        expectMessage( "level 2", debugEnabled );
         debug() << "level 2";
-        work2();
+        work2( debugEnabled, colorEnabled );
+        expectBeginEnd( End, __PRETTY_FUNCTION__, debugEnabled, colorEnabled );
     }
+    expectBeginEnd( End, __PRETTY_FUNCTION__, debugEnabled, colorEnabled );
 }
 
-void TestDebug::work2()
+void TestDebug::work2( bool debugEnabled, bool colorEnabled )
 {
+    expectBeginEnd( Begin, __PRETTY_FUNCTION__, debugEnabled, colorEnabled );
     DEBUG_BLOCK
-    for( int j = 0; j < 100; ++j )
+    for( int j = 0; j < 10; ++j )
+    {
+        expectMessage( "limbo", debugEnabled );
         debug() << "limbo";
+    }
+    expectBeginEnd( End, __PRETTY_FUNCTION__, debugEnabled, colorEnabled );
+}
+
+void
+TestDebug::expectMessage( const QString &message, bool debugEnabled )
+{
+    if( !debugEnabled )
+        return;
+    QString exp = QString( "%1:%2 [%3] %4 " ).arg( "amarok", m_indent, DEBUG_PREFIX, message );
+    QTest::ignoreMessage( QtDebugMsg, exp.toLocal8Bit() );
+}
+
+void
+TestDebug::expectBeginEnd( TestDebug::BeginOrEnd type, const QString &message,
+                           bool debugEnabled, bool colorEnabled )
+{
+    static int colorIndex = 0;
+    static QStack<int> colorStack;
+    if( !debugEnabled )
+        return;
+
+    QString beginEnd;
+    QString took;
+    if( type == Begin )
+    {
+        beginEnd = "BEGIN:";
+        colorStack.push( colorIndex );
+        colorIndex = (colorIndex + 1) % 5;
+    }
+    else
+    {
+        beginEnd = "END__:";
+        double duration = DEBUG_OVERRIDE_ELAPSED_TIME;
+        took = " " + colorize( QString( "[Took: %1s]" ).arg( duration, 0, 'g', 2 ),
+            colorStack.top(), colorEnabled );
+        m_indent.truncate( m_indent.length() - 2 );
+    }
+    QString exp = QString( "%1:%2 %3 %4%5 " ).arg( "amarok", m_indent, colorize( beginEnd,
+        colorStack.top(), colorEnabled ), message, took );
+    QTest::ignoreMessage( QtDebugMsg, exp.toLocal8Bit() );
+    if( type == Begin )
+        m_indent.append( "  " );
+    else
+        colorStack.pop();
+}
+
+QString
+TestDebug::colorize( const QString &string, int colorIndex, bool colorEnabled )
+{
+    static int colors[] = { 1, 2, 4, 5, 6 }; // from Debug.cpp
+    if( !colorEnabled )
+        return string;
+    return QString( "\x1b[00;3%1m%2\x1b[00;39m" ).arg( QString::number(colors[colorIndex]), string );
 }
 
 
