@@ -11,6 +11,8 @@ include_directories(
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
+#------------------------ Test CollectionLocation -----------------------------
+
 set( testcollectionlocation_SRCS
     CollectionLocationTest.cpp
     )
@@ -34,4 +36,8 @@ target_link_libraries(testcollectionlocation
                         ${QT_QTTEST_LIBRARY}
                         ${GOOGLEMOCK_LIBRARIES})
 
+#------------------------ Test Collection -----------------------------
 
+set( testcollection_SRCS TestCollection.cpp )
+kde4_add_unit_test( testcollection ${testcollection_SRCS} )
+target_link_libraries( testcollection ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY} amarokcore )
