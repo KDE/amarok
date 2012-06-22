@@ -39,6 +39,8 @@ TestMetaMultiTrack::TestMetaMultiTrack()
 
 void TestMetaMultiTrack::initTestCase()
 {
+    qRegisterMetaType<Meta::TrackPtr>( "Meta::TrackPtr" );
+
     //apparently the engine controller is needed somewhere, or we will get a crash...
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );
