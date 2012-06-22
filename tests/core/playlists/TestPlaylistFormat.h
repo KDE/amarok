@@ -32,6 +32,7 @@ class TestPlaylistFormat : public QObject
          */
         void testGetFormat();
 
+        void testIsPlaylist_data();
         /**
          * Check if the extension format of the playlist file is supported or not
          */

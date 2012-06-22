@@ -71,74 +71,41 @@ TestPlaylistFormat::testGetFormat()
 }
 
 void
+TestPlaylistFormat::testIsPlaylist_data()
+{
+    QTest::addColumn<QString>( "filename" );
+    QTest::addColumn<bool>( "isPlaylist" );
+
+    // valid formats
+    QTest::newRow( "m3u" ) << "playlist.m3u" << true;
+    QTest::newRow( "m3u8" ) << "playlist.m3u8" << true;
+    QTest::newRow( "pls" ) << "playlist.pls" << true;
+    QTest::newRow( "ram" ) << "playlist.ram" << true;
+    QTest::newRow( "smil" ) << "playlist.smil" << true;
+    QTest::newRow( "asx" ) << "playlist.asx" << true;
+    QTest::newRow( "wax" ) << "playlist.wax" << true;
+    QTest::newRow( "xml" ) << "playlist.xml" << true;
+    QTest::newRow( "xspf" ) << "playlist.xspf" << true;
+
+    // unknown or invalid formats
+    QTest::newRow( "vlc" ) << "playlist.vlc" << false;
+    QTest::newRow( "invalidformat" ) << "playlist.invalidformat" << false;
+    QTest::newRow( "dotted invalid" ) << "this.is.an.invalid.format" << false;
+    QTest::newRow( "trailing dot" ) << "this.is.an.invalid.format.with.trailing.dot." << false;
+    QTest::newRow( "no dot" ) << "NoDots" << false;
+    QTest::newRow( "empty string" ) << "" << false;
+}
+
+void
 TestPlaylistFormat::testIsPlaylist()
 {
+    QFETCH( QString, filename );
+    QFETCH( bool, isPlaylist );
     KUrl url( "amarok:///playlists/" );
 
-    // These formats are supported
-    QString filename = "playlist.m3u";
     url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), true );
-
-    filename = "playlist.m3u8";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), true );
-
-    filename = "playlist.pls";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), true );
-
-    filename = "playlist.ram";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), true );
-
-    filename = "playlist.smil";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), true );
-
-    filename = "playlist.asx";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), true );
-
-    filename = "playlist.wax";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), true );
-
-    filename = "playlist.xml";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), true );
-
-    filename = "playlist.xspf";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), true );
-
-    // File extensions in capitals must also pass this test
-    filename = "playlist.M3U";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), true );
-
-    // These shouldn't be supported
-    filename = "playlist.vlc";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), false );
-
-    filename = "playlist.invalidformat";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), false );
-
-    filename = "this.is.an.invalid.format";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), false );
-
-    filename = "this.is.an.invalid.format.with.trailing.dot.";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), false );
-
-    filename = "NoDots";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), false );
-
-    filename = "";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::isPlaylist( url ), false );
+    QCOMPARE( Playlists::isPlaylist( url ), isPlaylist );
+    // file extensions in capitals must also pass this test
+    url.setFileName( filename.toUpper() );
+    QCOMPARE( Playlists::isPlaylist( url ), isPlaylist );
 }
