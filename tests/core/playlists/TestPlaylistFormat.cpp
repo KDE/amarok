@@ -17,9 +17,12 @@
 
 #include "core/playlists/PlaylistFormat.h"
 
+#include <qtest_kde.h>
+
 #include <QString>
 
-#include <qtest_kde.h>
+// so that PlaylistFormat can be used in QTest::addColumn()
+Q_DECLARE_METATYPE( Playlists::PlaylistFormat )
 
 QTEST_KDEMAIN_CORE( TestPlaylistFormat )
 
@@ -28,76 +31,43 @@ TestPlaylistFormat::TestPlaylistFormat()
 }
 
 void
+TestPlaylistFormat::testGetFormat_data()
+{
+    QTest::addColumn<QString>( "filename" );
+    QTest::addColumn<Playlists::PlaylistFormat>( "playlistFormat" );
+
+    // valid formats
+    QTest::newRow( "m3u" ) << "playlist.m3u" << Playlists::M3U;
+    QTest::newRow( "m3u8" ) << "playlist.m3u8" << Playlists::M3U;
+    QTest::newRow( "pls" ) << "playlist.pls" << Playlists::PLS;
+    QTest::newRow( "ram" ) << "playlist.ram" << Playlists::RAM;
+    QTest::newRow( "smil" ) << "playlist.smil" << Playlists::SMIL;
+    QTest::newRow( "asx" ) << "playlist.asx" << Playlists::ASX;
+    QTest::newRow( "wax" ) << "playlist.wax" << Playlists::ASX;
+    QTest::newRow( "xml" ) << "playlist.xml" << Playlists::XML;
+    QTest::newRow( "xspf" ) << "playlist.xspf" << Playlists::XSPF;
+
+    // unknown or invalid formats
+    QTest::newRow( "vlc" ) << "playlist.vlc" << Playlists::Unknown;
+    QTest::newRow( "invalidformat" ) << "playlist.invalidformat" << Playlists::NotPlaylist;
+    QTest::newRow( "dotted invalid" ) << "this.is.an.invalid.format" << Playlists::NotPlaylist;
+    QTest::newRow( "trailing dot" ) << "this.is.an.invalid.format.with.trailing.dot." << Playlists::NotPlaylist;
+    QTest::newRow( "no dot" ) << "NoDots" << Playlists::NotPlaylist;
+    QTest::newRow( "empty string" ) << "" << Playlists::NotPlaylist;
+}
+
+void
 TestPlaylistFormat::testGetFormat()
 {
+    QFETCH( QString, filename );
+    QFETCH( Playlists::PlaylistFormat, playlistFormat );
     KUrl url( "amarok:///playlists/" );
 
-    // Supported formats
-    QString filename = "playlist.m3u";
     url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::M3U );
-
-    filename = "playlist.m3u8";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::M3U );
-
-    filename = "playlist.pls";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::PLS );
-
-    filename = "playlist.ram";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::RAM );
-
-    filename = "playlist.smil";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::SMIL );
-
-    filename = "playlist.asx";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::ASX );
-
-    filename = "playlist.wax";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::ASX );
-
-    filename = "playlist.xml";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::XML );
-
-    filename = "playlist.xspf";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::XSPF );
-
-    // File extensions in capitals must also pass this test
-    filename = "playlist.M3U";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::M3U );
-
-    // Unknown or invalid formats
-    filename = "playlist.vlc";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::Unknown );
-
-    filename = "playlist.invalidformat";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::NotPlaylist );
-
-    filename = "this.is.an.invalid.format";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::NotPlaylist );
-
-    filename = "this.is.an.invalid.format.with.trailing.dot.";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::NotPlaylist );
-
-    filename = "NoDots";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::NotPlaylist );
-
-    filename = "";
-    url.setFileName( filename );
-    QCOMPARE( Playlists::getFormat( url ), Playlists::NotPlaylist );
+    QCOMPARE( Playlists::getFormat( url ), playlistFormat );
+    // file extensions in capitals must also pass this test
+    url.setFileName( filename.toUpper() );
+    QCOMPARE( Playlists::getFormat( url ), playlistFormat );
 }
 
 void
@@ -172,5 +142,3 @@ TestPlaylistFormat::testIsPlaylist()
     url.setFileName( filename );
     QCOMPARE( Playlists::isPlaylist( url ), false );
 }
-
-#include "TestPlaylistFormat.moc"

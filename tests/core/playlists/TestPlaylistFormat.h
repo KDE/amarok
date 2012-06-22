@@ -23,18 +23,19 @@ class TestPlaylistFormat : public QObject
     Q_OBJECT
 
     public:
-	TestPlaylistFormat();
+        TestPlaylistFormat();
 
     private slots:
-	/**
-	 * Check if the correct extension format for the playlist file is returned
-	 */
-	void testGetFormat();
+        void testGetFormat_data();
+        /**
+         * Check if the correct extension format for the playlist file is returned
+         */
+        void testGetFormat();
 
-	/**
-	 * Check if the extension format of the playlist file is supported or not
-	 */
-	void testIsPlaylist();
+        /**
+         * Check if the extension format of the playlist file is supported or not
+         */
+        void testIsPlaylist();
 };
 
 #endif // TESTPLAYLISTFORMAT_H
