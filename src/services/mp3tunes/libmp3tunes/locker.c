@@ -524,7 +524,8 @@ int mp3tunes_locker_session_valid(mp3tunes_locker_object_t *obj) {
         if (result1 == NULL)
             return -1;
 
-        strncpy(result1, result, i);
+        /* ensure result1 is null-terminated */
+        snprintf(result1, i+1, "%s", result);
         /*printf("Header String: %s\n", result1);*/
         result = strstr(result1, value);
         free(result1);
@@ -1457,7 +1458,6 @@ char* mp3tunes_locker_generate_filekey(const char *filename) {
 
 int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, const char *path) {
     request_t *request;
-    CURLcode res;
     FILE * hd_src ;
     int hd ;
     struct stat file_info;
@@ -1497,7 +1497,8 @@ int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, const char *path
     curl_easy_setopt( request->curl, CURLOPT_INFILESIZE_LARGE, (curl_off_t)file_info.st_size);
     curl_easy_setopt( request->curl, CURLOPT_USERAGENT, "liboboe/1.0" );
     /*printf("uploading...\n");*/
-    res = curl_easy_perform(request->curl);
+    /* this returns a CURLcode which should probably be checked for success etc... */
+    curl_easy_perform(request->curl);
 /*    curl_easy_cleanup(request->curl); */
     mp3tunes_request_deinit(&request);
     free(url);

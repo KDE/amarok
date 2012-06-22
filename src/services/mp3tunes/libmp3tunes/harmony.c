@@ -350,6 +350,7 @@ LmHandlerResult harmony_iq_callback(LmMessageHandler* handler, LmConnection *con
     if (harmony_email_node) {
         email = g_strdup(lm_message_node_get_value(harmony_email_node));
         mp3tunes_harmony_set_email(harmony, email);
+        g_free(email);
         harmony_success_reply(connection, message, &err);
         if (err != NULL) {
            error_emit(harmony, MP3TUNES_HARMONY_ERROR_MISC, "Sending success reply failed", err);
@@ -374,6 +375,7 @@ LmHandlerResult harmony_get_device_pin_callback(LmMessageHandler* handler, LmCon
     if (harmony_pin_node) {
         pin = g_strdup(lm_message_node_get_value(harmony_pin_node));
         mp3tunes_harmony_set_pin(harmony, pin);
+        g_free(pin);
         close_connection(harmony);
         open_connection(harmony);
         return LM_HANDLER_RESULT_REMOVE_MESSAGE;
@@ -423,6 +425,7 @@ LmHandlerResult harmony_get_device_email_callback(LmMessageHandler* handler, LmC
                      three times as it grabs pin, then email, then connects completely.
                   */
         mp3tunes_harmony_set_email(harmony, email);
+        g_free(email);
         close_connection(harmony);
         open_connection(harmony);
         return LM_HANDLER_RESULT_REMOVE_MESSAGE;
@@ -594,7 +597,7 @@ void rebuild_connection(MP3tunesHarmony* harmony) {
     jid = mp3tunes_harmony_get_jid(harmony);
     g_debug("Logging in with: %s", jid);
     lm_connection_set_jid(harmony->connection, jid);
-    free(jid);    
+    g_free(jid);
     lm_connection_register_message_handler(harmony->connection, harmony->harmony_iq_message_handler, LM_MESSAGE_TYPE_IQ, LM_HANDLER_PRIORITY_LAST);
 }
 
@@ -689,7 +692,7 @@ void mp3tunes_harmony_send_device_status(MP3tunesHarmony *harmony, GError **err)
             value = g_strdup_printf("%lld", da->attribute_int_value);
         }
         lm_message_node_set_attribute(status_message, name, value);
-        free(value);
+        g_free(value);
         current = g_list_next(current);
     }
 
