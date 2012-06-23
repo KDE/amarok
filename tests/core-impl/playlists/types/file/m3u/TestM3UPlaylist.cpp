@@ -42,6 +42,8 @@ TestM3UPlaylist::dataPath( const QString &relPath )
 
 void TestM3UPlaylist::initTestCase()
 {
+    qRegisterMetaType<Meta::TrackPtr>( "Meta::TrackPtr" );
+
     const KUrl url = dataPath( "data/playlists/test.m3u" );
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
@@ -58,6 +60,9 @@ void TestM3UPlaylist::initTestCase()
 
 void TestM3UPlaylist::cleanupTestCase()
 {
+    // HACK: Wait for other jobs, like MetaProxys fetching meta data, to finish
+    //       to avoid crashing.
+    QTest::qWait( 1000 );
     delete m_testPlaylist;
 }
 
