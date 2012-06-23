@@ -74,6 +74,23 @@ void TestPlaylistFileProvider::testSave()
     QCOMPARE( testPlaylist->tracks().size(), 1 );
     QFile::remove( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.xspf" );
 
+    // directory separators '\' and '/' in file name are being replaced by '-'
+    testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "amarok/playlist" );
+    QVERIFY( testPlaylist );
+
+    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "amarok-playlist.xspf" ) );
+    QCOMPARE( testPlaylist->name(), QString( "amarok-playlist.xspf" ) );
+    QCOMPARE( testPlaylist->tracks().size(), 1 );
+    QFile::remove( Amarok::saveLocation( "playlists" ) + "amarok-playlist.xspf" );
+
+    testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "amarok\\playlist" );
+    QVERIFY( testPlaylist );
+
+    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "amarok-playlist.xspf" ) );
+    QCOMPARE( testPlaylist->name(), QString( "amarok-playlist.xspf" ) );
+    QCOMPARE( testPlaylist->tracks().size(), 1 );
+    QFile::remove( Amarok::saveLocation( "playlists" ) + "amarok-playlist.xspf" );
+
     // xspf
     testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist.xspf" );
     QVERIFY( testPlaylist );

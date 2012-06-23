@@ -54,7 +54,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         * Returns a Playlists::PlaylistPtr to the new playlist, NULL if something failed.
         * @param tracks Tracks being added to that new playlist.
         * @param name File name of the new playlist. If no extension is being given we
-        *             default to xspf.
+        *             default to xspf. '/' and '\' are being replaced by '-'.
         */
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
                                              const QString &name = QString() );

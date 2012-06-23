@@ -129,7 +129,8 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     DEBUG_BLOCK
     QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") : name;
-    filename.replace( QDir::separator(), QLatin1Char('-') );
+    filename.replace( QLatin1Char('/'), QLatin1Char('-') );
+    filename.replace( QLatin1Char('\\'), QLatin1Char('-') );
 
     QString ext = Amarok::extension( filename );
     Playlists::PlaylistFormat format = Playlists::getFormat( ext );
