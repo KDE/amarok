@@ -21,13 +21,14 @@
 #include "config-amarok-test.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 
-#include <KTemporaryFile>
+#include <QDir>
+#include <QFile>
+#include <QTemporaryFile>
+#include <QTest>
 
-#include <QtTest/QTest>
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-
+#include <threadweaver/ThreadWeaver.h>
 #include <qtest_kde.h>
+
 
 QTEST_KDEMAIN( TestM3UPlaylist, GUI )
 
@@ -44,7 +45,7 @@ void TestM3UPlaylist::initTestCase()
 {
     qRegisterMetaType<Meta::TrackPtr>( "Meta::TrackPtr" );
 
-    const KUrl url = dataPath( "data/playlists/test.m3u" );
+    const QUrl url = dataPath( "data/playlists/test.m3u" );
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
@@ -53,6 +54,7 @@ void TestM3UPlaylist::initTestCase()
     QVERIFY( playlistStream.device() );
 
     m_testPlaylist = new Playlists::M3UPlaylist( url );
+    QVERIFY( m_testPlaylist );
     QVERIFY( m_testPlaylist->load( playlistStream ) );
     QCOMPARE( m_testPlaylist->tracks().size(), 10 );
     playlistFile1.close();
@@ -60,9 +62,9 @@ void TestM3UPlaylist::initTestCase()
 
 void TestM3UPlaylist::cleanupTestCase()
 {
-    // HACK: Wait for other jobs, like MetaProxys fetching meta data, to finish
-    //       to avoid crashing.
-    QTest::qWait( 1000 );
+    // Wait for other jobs, like MetaProxys fetching meta data, to finish
+    ThreadWeaver::Weaver::instance()->finish();
+
     delete m_testPlaylist;
 }
 
@@ -120,8 +122,8 @@ void TestM3UPlaylist::testIsWritable()
 
 void TestM3UPlaylist::testSave()
 {
-    KTemporaryFile temp;
-    temp.setSuffix( ".m3u" );
+    QTemporaryFile temp( QDir::tempPath() + "/XXXXXX.m3u" );
     QVERIFY( temp.open() );
     QVERIFY( m_testPlaylist->save( temp.fileName(), false ) );
+    temp.close();
 }

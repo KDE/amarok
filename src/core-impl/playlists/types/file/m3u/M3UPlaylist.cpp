@@ -174,7 +174,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
 
             // KUrl's constructor handles detection of local file paths without
             // file:// etc for us
-            KUrl url ( line );
+            KUrl url( line );
             if( url.isRelative() )
             {
                 url = KUrl( directory );
