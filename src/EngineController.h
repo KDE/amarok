@@ -109,9 +109,6 @@ public:
      */
     void setNextTrack( Meta::TrackPtr track );
 
-    /*enum Filetype { MP3 };*/ //assuming MP3 for time being
-    /*AMAROK_EXPORT*/ static bool installDistroCodec();
-
     /** Returns the media object Amarok is using for playback.
      *  Provides access to the Phonon MediaObject for components that need more information
      *  This is not for normal use, except maybe when you really need

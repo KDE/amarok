@@ -301,68 +301,8 @@ EngineController::supportedMimeTypes() //static
     if( mimeTable.contains( "audio/x-flac" ) && !mimeTable.contains( "audio/flac" ) )
         mimeTable << "audio/flac";
 
-    // We special case this, as otherwise the users would hate us
-    // Again, "audio/mp3" is not a valid mimetype, but is widely used
-    // (the proper one is "audio/mpeg", but that is also for .mp1 and .mp2 files)
-    if( !mimeTable.contains( "audio/mp3" ) && !mimeTable.contains( "audio/x-mp3" ) )
-    {
-        if ( !installDistroCodec() )
-        {
-            QString text = i18n(
-                    "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
-                    "the installation of the backend that phonon uses.</p>"
-                    "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" );
-            // logger is not available at this point in tests; we hesitate to create
-            // logger in 4 tests just because of the next line, so check for it. We cannot
-            // use QApplication::type() != Tty because the tests are GUI-enabled
-            Logger *logger = Amarok::Components::logger();
-            if( logger )
-                logger->longMessage( text, Amarok::Logger::Error );
-            else
-                warning() << text.toLocal8Bit().constData();
-        }
-        mimeTable << "audio/mp3" << "audio/x-mp3";
-    }
-
     mimeTableAlreadyFilled = true;
     return mimeTable;
-}
-
-bool
-EngineController::installDistroCodec()
-{
-    KService::List services = KServiceTypeTrader::self()->query( "Amarok/CodecInstall"
-        , QString( "[X-KDE-Amarok-codec] == 'mp3' and [X-KDE-Amarok-engine] == 'phonon-%1'").arg( "xine" ) );
-    //todo - figure out how to query Phonon for the current backend loaded
-    if( !services.isEmpty() )
-    {
-        KService::Ptr service = services.first(); //list is not empty
-        QString installScript = service->exec();
-
-        if( !installScript.isNull() ) // just a sanity check
-        {
-            if( QApplication::type() != QApplication::Tty )
-            {
-                KGuiItem installButton( i18n( "Install MP3 Support" ) );
-                if(KMessageBox::questionYesNo( The::mainWindow()
-                                               , i18n("Amarok currently cannot play MP3 files. Do you want to install support for MP3?")
-                                               , i18n( "No MP3 Support" )
-                                               , installButton
-                                               , KStandardGuiItem::no()
-                                               , "codecInstallWarning" ) == KMessageBox::Yes )
-                {
-                    KRun::runCommand(installScript, 0);
-                    return true;
-                }
-            }
-            else
-            {
-                warning() << "Amarok currently cannot play MP3 files.";
-            }
-        }
-    }
-
-    return false;
 }
 
 void
