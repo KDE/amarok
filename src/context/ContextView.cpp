@@ -333,7 +333,7 @@ ContextView::resizeEvent( QResizeEvent* event )
     if( testAttribute( Qt::WA_PendingResizeEvent ) )
         return; // lets not do this more than necessary, shall we?
 
-    QRectF rect( QRectF(pos(), maximumViewportSize()) );
+    QRectF rect( pos(), maximumViewportSize() );
     containment()->setGeometry( rect );
     scene()->setSceneRect( rect );
     scene()->update( rect );
