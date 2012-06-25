@@ -50,14 +50,13 @@
 #include <Phonon/MediaObject>
 #include <Phonon/VolumeFaderEffect>
 
+#include <QCoreApplication>
 #include <QTextDocument>
-#include <QtCore/qmath.h>
+#include <qmath.h>
 
 namespace The {
     EngineController* engineController() { return EngineController::instance(); }
 }
-
-QMutex EngineController::s_supportedMimeTypesMutex;
 
 EngineController*
 EngineController::instance()
@@ -83,7 +82,9 @@ EngineController::EngineController()
     , m_mutex( QMutex::Recursive )
 {
     DEBUG_BLOCK
-
+    // ensure this object is created in a main thread
+    Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
+    connect( this, SIGNAL(fillInSupportedMimeTypes()), SLOT(slotFillInSupportedMimeTypes()) );
 }
 
 EngineController::~EngineController()
@@ -217,34 +218,43 @@ EngineController::initializePhonon()
 QStringList
 EngineController::supportedMimeTypes()
 {
-    // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
-    static QStringList mimeTable;
-    // theoretically not needed, but static initialization of mimeTable may have threading
-    // issues, so rather use boolean flag for it:
-    static bool mimeTableAlreadyFilled = false;
+    // this ensures that slotFillInSupportedMimeTypes() is called in the main thread. It
+    // will be called directly if we are called in the main thread (so that no deadlock
+    // can occur) and indirectly if we are called in non-main thread.
+    emit fillInSupportedMimeTypes();
 
-    QMutexLocker locker( &s_supportedMimeTypesMutex );
-    if( mimeTableAlreadyFilled )
-        return mimeTable;
+    // ensure slotFillInSupportedMimeTypes() called above has already finished:
+    m_supportedMimeTypesSemaphore.acquire();
+    return m_supportedMimeTypes;
+}
+
+void
+EngineController::slotFillInSupportedMimeTypes()
+{
+    // we assume non-empty == already filled in
+    if( !m_supportedMimeTypes.isEmpty() )
+    {
+        // unblock waiting for the semaphore in supportedMimeTypes():
+        m_supportedMimeTypesSemaphore.release();
+        return;
+    }
 
     QRegExp avFilter( "^(audio|video)/", Qt::CaseInsensitive );
-    // FIXME: this variable should be updated when
-    // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal is emitted
-    mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
+    m_supportedMimeTypes = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
 
     // Add whitelist hacks
     // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
-    if( !mimeTable.contains( "audio/x-m4b" ) )
-        mimeTable << "audio/x-m4b";
+    if( !m_supportedMimeTypes.contains( "audio/x-m4b" ) )
+        m_supportedMimeTypes << "audio/x-m4b";
 
     // technically, "audio/flac" is not a valid mimetype (not on IANA list), but some things expect it
-    if( mimeTable.contains( "audio/x-flac" ) && !mimeTable.contains( "audio/flac" ) )
-        mimeTable << "audio/flac";
+    if( m_supportedMimeTypes.contains( "audio/x-flac" ) && !m_supportedMimeTypes.contains( "audio/flac" ) )
+        m_supportedMimeTypes << "audio/flac";
 
     // We special case this, as otherwise the users would hate us
     // Again, "audio/mp3" is not a valid mimetype, but is widely used
     // (the proper one is "audio/mpeg", but that is also for .mp1 and .mp2 files)
-    if( !mimeTable.contains( "audio/mp3" ) && !mimeTable.contains( "audio/x-mp3" ) )
+    if( !m_supportedMimeTypes.contains( "audio/mp3" ) && !m_supportedMimeTypes.contains( "audio/x-mp3" ) )
     {
         if ( !installDistroCodec() )
         {
@@ -255,11 +265,15 @@ EngineController::supportedMimeTypes()
                           "the installation of the backend that phonon uses.</p>"
                           "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), Amarok::Logger::Error );
         }
-        mimeTable << "audio/mp3" << "audio/x-mp3";
+        m_supportedMimeTypes << "audio/mp3" << "audio/x-mp3";
     }
 
-    mimeTableAlreadyFilled = true;
-    return mimeTable;
+    // unblock waiting for the semaphore in supportedMimeTypes(). We can over-shoot
+    // resource number so that next call to supportedMimeTypes won't have to
+    // wait for main loop; this is however just an optimization and we could have safely
+    // released just one resource. Note that this code-path is reached only once, so
+    // overflow cannot happen.
+    m_supportedMimeTypesSemaphore.release( 100000 );
 }
 
 bool

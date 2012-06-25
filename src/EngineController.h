@@ -26,6 +26,8 @@
 
 #include <QMutex>
 #include <QObject>
+#include <QSemaphore>
+#include <QStringList>
 #include <QWeakPointer>
 
 #include <Phonon/Path>
@@ -50,6 +52,9 @@ class AMAROK_EXPORT EngineController : public QObject, public Meta::Observer
     Q_OBJECT
 
 public:
+    /**
+     * Construct EngineController. Must be called from the main thread.
+     */
     EngineController();
     ~EngineController();
 
@@ -447,6 +452,12 @@ Q_SIGNALS:
     */
     void audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &audioData );
 
+    /**
+     * A trick to call slotFillInSupportedMimeTypes() in a main thread, not to be used
+     * anywhere else than in supportedMimeTypes().
+     */
+    void fillInSupportedMimeTypes();
+
 private slots:
     /**
      * Sets up the Phonon system
@@ -478,6 +489,14 @@ private slots:
      *  to play something else once one track has finished
      */
     void slotTitleChanged( int titleNumber );
+
+    /**
+     * Fill in m_supportedMimeTypes list and release m_supportedMimeTypesSemaphore. This
+     * method must be called in the main thread so that there is no chance
+     * Phonon::BackendCapabilities::availableMimeTypes() is called in a non-gui thread
+     * for the first time.
+     */
+    void slotFillInSupportedMimeTypes();
 
 protected:
     // reimplemented from Meta::Observer
@@ -528,8 +547,6 @@ private:
 
     Q_DISABLE_COPY( EngineController )
 
-    static QMutex s_supportedMimeTypesMutex; // guards access to supportedMimeTypes()::mimeTable
-
     QWeakPointer<Phonon::MediaObject>       m_media;
     QWeakPointer<Phonon::VolumeFaderEffect> m_preamp;
     QWeakPointer<Phonon::Effect>            m_equalizer;
@@ -569,6 +586,11 @@ private:
     qint64 m_lastTickCount;
 
     QMutex m_mutex;
+
+    // FIXME: this variable should be updated when
+    // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal is emitted
+    QStringList m_supportedMimeTypes;
+    QSemaphore m_supportedMimeTypesSemaphore;
 };
 
 namespace The {
