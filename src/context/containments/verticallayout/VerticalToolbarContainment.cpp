@@ -129,7 +129,8 @@ Context::VerticalToolbarContainment::updateGeometry()
     if(!view())
         return;
 
-    QRectF rect = view()->sceneRect();
+    // mimic ContextView::resizeEvent(), nothing else seems to work, bug 292895
+    QRectF rect( view()->pos(), view()->maximumViewportSize() );
     setGeometry( rect );
     m_applets->setGeometry( rect );
     m_applets->refresh();
