@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
+ * Copyright (c) 2012 Lachlan Dufton <dufton@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -36,6 +37,11 @@ AnimatedBarWidget::AnimatedBarWidget( const QIcon &icon, const QString &text, co
 
     setFocusPolicy( Qt::NoFocus );
     m_hoverHint = false;
+
+    // Need to change the size policy to allow for wrapping
+    QSizePolicy poli( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    poli.setHeightForWidth( true );
+    setSizePolicy( poli );
 }
 
 AnimatedBarWidget::~AnimatedBarWidget()
@@ -128,8 +134,7 @@ AnimatedBarWidget::paintEvent( QPaintEvent* event )
     const QRect textRect( left + (padding * 3) + iconWidth, top,
                           buttonWidth - (left + padding * 3 + iconWidth) - padding, buttonHeight);
     QFontMetrics fm( font() );
-    QString elidedText = fm.elidedText( text(), Qt::ElideRight, textRect.width() );
-    painter.drawText( textRect, Qt::AlignVCenter, elidedText );
+    painter.drawText( textRect, Qt::AlignVCenter | Qt::TextWordWrap, text() );
 }
 
 
@@ -176,3 +181,21 @@ AnimatedBarWidget::sizeHint() const
     return size;
 }
 
+/**
+ * Find the height required to fit the widget with wrapped text
+ * and the icon, plus padding
+ */
+int
+AnimatedBarWidget::heightForWidth(int w) const
+{
+    const int hPadding = 2;
+    const int vPadding = 4;
+    // Padding to the left and right of both the icon and text
+    const QRect bound( 0, 0, (w - hPadding * 4 - iconSize().width()), 0 );
+    QFontMetrics fm( font() );
+    int fontHeight = fm.boundingRect( bound, Qt::TextWordWrap, text() ).height();
+    if( fontHeight < iconSize().height() )
+        return iconSize().height() + 2 * vPadding;
+
+    return fontHeight + 2 * vPadding;
+}
