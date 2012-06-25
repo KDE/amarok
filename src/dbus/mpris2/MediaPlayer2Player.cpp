@@ -158,11 +158,11 @@ void MediaPlayer2Player::Play() const
     The::engineController()->play();
 }
 
-void MediaPlayer2Player::SetPosition( const QDBusObjectPath& TrackId, qlonglong Position ) const
+void MediaPlayer2Player::SetPosition( const QDBusObjectPath& TrackId, qlonglong position ) const
 {
     QDBusObjectPath activeTrackId = activeMprisTrackId();
     if( TrackId == activeTrackId )
-        The::engineController()->seek( Position / 1000 );
+        The::engineController()->seek( position / 1000 );
     else
         debug() << "SetPosition() called with a trackId (" << TrackId.path() << ") which is not for the active track (" << activeTrackId.path() << ")";
 }
@@ -330,8 +330,7 @@ bool MediaPlayer2Player::CanControl() const
 
 void MediaPlayer2Player::trackPositionChanged( qint64 position, bool userSeek )
 {
-    // if we went backwards, we should emit Seeked
-    if ( userSeek || position < m_lastPosition )
+    if ( userSeek )
         emit Seeked( position * 1000 );
     m_lastPosition = position;
 }
