@@ -24,7 +24,6 @@
 #include "core/collections/QueryMaker.h"
 
 #include <QObject>
-#include <QSharedData>
 #include <QString>
 
 #include <KIcon>
@@ -76,7 +75,7 @@ class AMAROK_CORE_EXPORT TrackProvider
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 };
 
-class AMAROK_CORE_EXPORT CollectionBase : public QSharedData
+class AMAROK_CORE_EXPORT CollectionBase
 {
 
     public:
