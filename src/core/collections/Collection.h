@@ -104,7 +104,7 @@ class AMAROK_CORE_EXPORT CollectionBase
          *
          * @returns true if the interface is available, false otherwise
          */
-        template <class CapIface> bool is() const
+        template <class CapIface> bool has() const
         {
             return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
         }
