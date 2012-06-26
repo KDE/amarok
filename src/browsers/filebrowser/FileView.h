@@ -19,6 +19,7 @@
 #define AMAROK_FILEVIEW_H
 
 #include "core/collections/Collection.h"
+#include "core/meta/Meta.h"
 #include "widgets/PrettyTreeView.h"
 
 #include <KFileItem>

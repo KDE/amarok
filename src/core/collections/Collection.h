@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,172 +18,146 @@
 #ifndef AMAROK_COLLECTION_H
 #define AMAROK_COLLECTION_H
 
-#include "core/support/Amarok.h"
+#include "core/interfaces/MetaCapability.h"
 #include "core/support/PluginFactory.h"
 #include "shared/amarok_export.h"
-#include "core/capabilities/Capability.h"
-#include "core/collections/QueryMaker.h"
 
 #include <QObject>
-#include <QString>
 
-#include <KIcon>
-#include <KUrl>
-#include <KPluginInfo>
-
-namespace Playlists {
-class UserPlaylistProvider;
+namespace Meta {
+    class Track;
+    typedef KSharedPtr<Track> TrackPtr;
 }
+namespace Playlists {
+    class UserPlaylistProvider;
+}
+
+class KIcon;
 
 namespace Collections
 {
+    class Collection;
+    class CollectionLocation;
+    class QueryMaker;
 
-class Collection;
-class CollectionLocation;
+    class AMAROK_CORE_EXPORT CollectionFactory : public Plugins::PluginFactory
+    {
+        Q_OBJECT
 
-class AMAROK_CORE_EXPORT CollectionFactory : public Plugins::PluginFactory
-{
-    Q_OBJECT
-    public:
-        CollectionFactory( QObject *parent, const QVariantList &args );
-        virtual ~CollectionFactory();
+        public:
+            CollectionFactory( QObject *parent, const QVariantList &args );
+            virtual ~CollectionFactory();
 
-        virtual void init() = 0;
+            virtual void init() = 0;
 
-    signals:
-        void newCollection( Collections::Collection *newCollection );
+        signals:
+            void newCollection( Collections::Collection *newCollection );
 
-};
+    };
 
-class AMAROK_CORE_EXPORT TrackProvider
-{
-    public:
-        TrackProvider();
-        virtual ~TrackProvider();
+    class AMAROK_CORE_EXPORT TrackProvider
+    {
+        public:
+            TrackProvider();
+            virtual ~TrackProvider();
 
-        /**
-            Returns true if this track provider has a chance of providing the
-            track specified by @p url.
-            This should do a minimal amount of checking, and return quickly.
-        */
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        /**
-            Creates a TrackPtr object for url @p url.  Returns a null track Ptr if
-            it cannot be done.
-            If asynchronysity is desired it is suggested to return a MetaProxy track here
-            and have the proxy watch for the real track.
-        */
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
-};
+            /**
+             * Returns true if this track provider has a chance of providing the
+             * track specified by @p url.
+             * This should do a minimal amount of checking, and return quickly.
+             */
+            virtual bool possiblyContainsTrack( const KUrl &url ) const;
 
-class AMAROK_CORE_EXPORT CollectionBase
-{
+            /**
+             * Creates a TrackPtr object for url @p url.  Returns a null track Ptr if
+             * it cannot be done.
+             * If asynchronysity is desired it is suggested to return a MetaProxy track here
+             * and have the proxy watch for the real track.
+             */
+            virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+    };
 
-    public:
-        CollectionBase() {}
-        virtual ~CollectionBase() {}
+    class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, public MetaCapability
+    {
+        Q_OBJECT
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        public:
+            virtual ~Collection();
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+            /**
+             * The collection's querymaker
+             * @return A querymaker that belongs to this collection.
+             */
+            virtual QueryMaker *queryMaker() = 0;
 
-        /**
-         * Retrieves a specialized interface which represents a capability of this
-         * MetaBase object.
-         *
-         * @returns a pointer to the capability interface if it exists, 0 otherwise
-         */
-        template <class CapIface> CapIface *create()
-        {
-            Capabilities::Capability::Type type = CapIface::capabilityInterfaceType();
-            Capabilities::Capability *iface = createCapabilityInterface(type);
-            return qobject_cast<CapIface *>(iface);
-        }
+            /**
+             * Checks if the given path is covered by this collection.
+             * Not all collections cover directories or even know what a path is.
+             * @returns true if it is covered.
+             */
+            virtual bool isDirInCollection( const QString &path );
 
-        /**
-         * Tests if a MetaBase object provides a given capability interface.
-         *
-         * @returns true if the interface is available, false otherwise
-         */
-        template <class CapIface> bool has() const
-        {
-            return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
-        }
+            /**
+             * The protocol of uids coming from this collection.
+             * @return A string of the protocol, without the ://
+             */
+            virtual QString uidUrlProtocol() const;
 
-        private: // no copy allowed
-            Q_DISABLE_COPY(CollectionBase)
-};
+            /**
+             * @return A unique identifier for this collection
+             */
+            virtual QString collectionId() const = 0;
 
-class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, public CollectionBase
-{
-    Q_OBJECT
-    public:
+            /**
+             * @return a user visible name for this collection, to be displayed in the collectionbrowser and elsewhere
+             */
+            virtual QString prettyName() const = 0;
 
-        Collection();
-        virtual ~Collection();
+            /**
+             * @return an icon representing this collection
+             */
+            virtual KIcon icon() const = 0;
 
-        /**
-            The collection's querymaker
-            @return A querymaker that belongs to this collection.
-        */
-        virtual QueryMaker * queryMaker() = 0;
+            virtual bool hasCapacity() const { return false; }
+            virtual float usedCapacity() const { return 0.0; }
+            virtual float totalCapacity() const { return 0.0; }
 
-        /**
-            Checks if the given path is covered by this collection.
-            Not all collections cover directories or even know what a path is.
-            @returns true if it is covered.
-        */
-        virtual bool isDirInCollection(const QString &path) { Q_UNUSED( path ); return false; }
+            /**
+             * Create collection location that can be used to copy track to this
+             * collection or to delete collection tracks. If you don't call
+             * prepare{Move,Copy,Remove} on it, you must delete it after use.
+             */
+            virtual Collections::CollectionLocation *location();
 
-        /**
-            The protocol of uids coming from this collection.
-            @return A string of the protocol, without the ://
-        */
-        virtual QString uidUrlProtocol() const;
-        /**
-            @return A unique identifier for this type of collection
-        */
-        virtual QString collectionId() const = 0;
-        /**
-            @return a user visible name for this collection, to be displayed in the collectionbrowser and elsewhere
-        */
-        virtual QString prettyName() const = 0;
-        /**
-         * @return an icon representing this collection
-         */
-        virtual KIcon icon() const = 0;
+            /**
+             * Return true if this collection can be written to (tracks added, removed).
+             * Convenience short-cut for calling CollectionLocation's isWritable.
+             */
+            virtual bool isWritable() const;
 
-        /**
-         * A local collection cannot have a capacity since it may be spread over multiple
-         * physical locations (even network components)
-         */
-        virtual bool hasCapacity() const { return false; }
-        virtual float usedCapacity() const { return 0.0; }
-        virtual float totalCapacity() const { return 0.0; }
+            /**
+             * Return true if user can choose track file path within this collection.
+             * Convenience short-cut for calling CollectionLocation's isOrganizable.
+             */
+            virtual bool isOrganizable() const;
 
-        virtual Collections::CollectionLocation* location();
+        public slots:
+            virtual void collectionUpdated() { emit updated(); }
 
-        //convenience methods so that it is not necessary to create a CollectionLocation
-        virtual bool isWritable() const;
-        virtual bool isOrganizable() const;
+        signals:
+            void remove();
 
-    public slots:
-        virtual void collectionUpdated() { emit updated(); }
-
-
-    signals:
-        void remove();
-
-        /** This signal is sent when the collection has changed.
-         *  This signal is sent when the collection more than can be detected by
-         *  Meta::metaDataChanged.
-         *  This is e.g. a new song was added, an old one removed, new device added, ...
-         *
-         *  Specifically this means that previous done searches can no longer
-         *  be considered valid.
-         */
-        void updated();
-};
+            /**
+             * This signal is sent when the collection has changed.
+             * This signal is sent when the collection more than can be detected by
+             * Meta::metaDataChanged.
+             * This is e.g. a new song was added, an old one removed, new device added, ...
+             *
+             * Specifically this means that previous done searches can no longer
+             * be considered valid.
+             */
+            void updated();
+    };
 
 }
 

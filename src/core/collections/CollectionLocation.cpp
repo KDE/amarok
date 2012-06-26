@@ -29,6 +29,7 @@
 #include "core/transcoding/TranscodingConfiguration.h"
 #include "core/transcoding/TranscodingController.h"
 
+#include <QDir>
 #include <QTimer>
 
 using namespace Collections;

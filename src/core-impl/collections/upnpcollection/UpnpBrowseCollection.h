@@ -30,6 +30,7 @@
 
 #include <KIcon>
 #include <KDirNotify>
+#include <kio/udsentry.h>
 
 namespace KIO {
   class Job;

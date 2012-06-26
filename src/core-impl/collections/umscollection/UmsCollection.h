@@ -29,15 +29,13 @@
 #include <QtGlobal>
 #include <QTimer>
 
-using namespace Collections;
-
 class GenericScanManager;
-
 class UmsPodcastProvider;
-
 class UmsCollection;
-
 class UmsCollectionLocation;
+class QAction;
+
+using namespace Collections;
 
 class UmsCollectionFactory : public CollectionFactory
 {

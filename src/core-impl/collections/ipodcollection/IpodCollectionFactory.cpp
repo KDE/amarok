@@ -25,6 +25,7 @@
 #include <solid/storageaccess.h>
 #include <solid/storagevolume.h>
 
+#include <QDir>
 
 AMAROK_EXPORT_COLLECTION( IpodCollectionFactory, ipodcollection )
 

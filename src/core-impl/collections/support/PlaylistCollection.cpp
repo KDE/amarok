@@ -16,9 +16,11 @@
 
 #include "PlaylistCollection.h"
 
-#include "MemoryQueryMaker.h"
-#include "PlaylistCollectionLocation.h"
 #include "core/playlists/PlaylistProvider.h"
+#include "core-impl/collections/support/MemoryQueryMaker.h"
+#include "core-impl/collections/support/PlaylistCollectionLocation.h"
+
+#include <KIcon>
 
 using namespace Collections;
 

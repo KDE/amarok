@@ -16,23 +16,20 @@
 
 #include "LastFmBias.h"
 
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
+#include <QComboBox>
 #include <QDomDocument>
 #include <QDomNode>
-
-#include <QXmlStreamReader>
+#include <QLabel>
 #include <QTimer>
-
-#include "core-impl/collections/support/CollectionManager.h"
+#include <QVBoxLayout>
+#include <QXmlStreamReader>
 
 #include <lastfm/Artist.h>
 #include <lastfm/ws.h>
-
-#include <QLabel>
-#include <QComboBox>
-#include <QVBoxLayout>
-
 
 QString
 Dynamic::LastFmBiasFactory::i18nName() const

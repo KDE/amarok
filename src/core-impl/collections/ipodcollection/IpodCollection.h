@@ -19,11 +19,11 @@
 
 #include "ui_IpodConfiguration.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Meta.h"
 
 #include <QMutex>
 #include <QSharedPointer>
 #include <QTimer>
-
 
 namespace Collections { class MemoryCollection; }
 namespace IpodMeta { class Track; }
@@ -31,6 +31,7 @@ class IphoneMountPoint;
 class IpodParseTracksJob;
 class IpodWriteDatabaseJob;
 class IpodPlaylistProvider;
+class QDir;
 class QTemporaryFile;
 struct _Itdb_iTunesDB;
 typedef _Itdb_iTunesDB Itdb_iTunesDB;

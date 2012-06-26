@@ -29,6 +29,8 @@
 #include <KUrl>
 #include <kio/jobclasses.h>
 
+#include <QDir>
+
 UmsCollectionLocation::UmsCollectionLocation( UmsCollection *umsCollection )
     : CollectionLocation( umsCollection )
     , m_umsCollection( umsCollection )

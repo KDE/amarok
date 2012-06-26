@@ -21,6 +21,8 @@
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
 
+#include <KIcon>
+
 #include <QSharedPointer>
 
 //simple Collections::Collection implementation based on MemoryCollection

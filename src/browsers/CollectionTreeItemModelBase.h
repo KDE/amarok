@@ -29,6 +29,7 @@
 #include <QDateTime>
 #include <QHash>
 #include <QPair>
+#include <QPixmap>
 #include <QSet>
 
 namespace Collections

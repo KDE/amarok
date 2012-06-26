@@ -18,17 +18,18 @@
  ***************************************************************************/
 
 #include "TestPlaylistFileProvider.h"
-#include "core-impl/collections/support/CollectionManager.h"
+
 #include "config-amarok-test.h"
+#include "core/support/Amarok.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
 
 #include <KConfigGroup>
+#include <qtest_kde.h>
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
-
-#include <qtest_kde.h>
 
 QTEST_KDEMAIN( TestPlaylistFileProvider, GUI )
 

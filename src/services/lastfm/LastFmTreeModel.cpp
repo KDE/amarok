@@ -28,6 +28,8 @@
 #include <lastfm/Tag.h>
 #include <lastfm/XmlQuery.h>
 
+#include <KIcon>
+
 #include <QPainter>
 
 using namespace LastFm;

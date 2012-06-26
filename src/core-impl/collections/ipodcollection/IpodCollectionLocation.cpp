@@ -23,8 +23,10 @@
 
 #include <ThreadWeaver/Weaver>
 
-#include <gpod/itdb.h>
+#include <QDir>
+#include <QFile>
 
+#include <gpod/itdb.h>
 
 IpodCollectionLocation::IpodCollectionLocation( QWeakPointer<IpodCollection> parentCollection )
     : CollectionLocation()  // we implement collection(), we need not pass parentCollection

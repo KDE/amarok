@@ -23,6 +23,8 @@
 
 #include <KLocale>
 
+#include <QFile>
+
 SqlBatchImporter::SqlBatchImporter( QObject *parent )
     : DatabaseImporter( parent )
     , m_config( 0 )

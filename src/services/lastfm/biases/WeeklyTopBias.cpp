@@ -17,26 +17,21 @@
 
 #include "WeeklyTopBias.h"
 
+#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-
-#include "TrackSet.h"
-#include "DynamicBiasWidgets.h"
-
-#include <QDomDocument>
-#include <QDomNode>
-#include <QDomElement>
-#include <QXmlStreamReader>
-
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <lastfm/XmlQuery.h>
-
-#include <QNetworkReply>
-
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
 #include <QLabel>
+#include <QNetworkReply>
 #include <QTimeEdit>
 #include <QVBoxLayout>
+#include <QXmlStreamReader>
 
+#include <lastfm/XmlQuery.h>
 
 QString
 Dynamic::WeeklyTopBiasFactory::i18nName() const

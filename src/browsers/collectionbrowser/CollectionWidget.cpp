@@ -23,17 +23,17 @@
 #include "CollectionWidget.h"
 
 #include "amarokconfig.h"
-#include "CollectionTreeItemModel.h"
-#include "CollectionTreeItemModelBase.h"
-#include "CollectionTreeItemDelegate.h"
-#include "CollectionBrowserTreeView.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/collections/proxycollection/ProxyCollection.h"
-#include "core/support/Debug.h"
-#include "SearchWidget.h"
-#include "SingleCollectionTreeItemModel.h"
-#include <amarokconfig.h>
+#include "browsers/CollectionTreeItemModel.h"
+#include "browsers/CollectionTreeItemModelBase.h"
+#include "browsers/SingleCollectionTreeItemModel.h"
+#include "browsers/collectionbrowser/CollectionBrowserTreeView.h"
+#include "browsers/collectionbrowser/CollectionTreeItemDelegate.h"
 #include "core/meta/support/MetaConstants.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/proxycollection/ProxyCollection.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "widgets/SearchWidget.h"
 
 #include <KAction>
 #include <KIcon>

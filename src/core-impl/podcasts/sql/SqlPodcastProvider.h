@@ -21,8 +21,8 @@
 #include "core/podcasts/PodcastProvider.h"
 #include "SqlPodcastMeta.h"
 
-#include <kio/jobclasses.h>
-#include <klocale.h>
+#include <KIcon>
+#include <KLocale>
 
 class PodcastImageFetcher;
 

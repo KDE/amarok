@@ -22,6 +22,7 @@
 #include "core/collections/Collection.h"
 #include "core/collections/CollectionLocation.h"
 
+#include <KIcon>
 #include <qtest_kde.h>
 
 using namespace Collections;

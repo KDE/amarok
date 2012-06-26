@@ -18,13 +18,13 @@
 
 #include "TrackSelectWidget.h"
 
+#include "amarokconfig.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "browsers/CollectionTreeView.h"
 #include "browsers/collectionbrowser/CollectionTreeItemDelegate.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-
-#include <amarokconfig.h>
 
 #include <KLocale>
 #include <KSqueezedTextLabel>
