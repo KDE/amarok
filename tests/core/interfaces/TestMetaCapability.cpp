@@ -19,7 +19,7 @@
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/LastFmCapability.h"
-#include "core/meta/Meta.h"
+#include "core/interfaces/MetaCapability.h"
 
 #include <qtest_kde.h>
 
@@ -28,42 +28,42 @@
 /**
  * Ad-hoc mock to test MetaCapability
  */
-class MetaCapabilityMock : public Meta::MetaCapability
+class MetaCapabilityMock : public MetaCapability
 {
     public:
-	static Capabilities::ActionsCapability *actionsCapability;
-	static Capabilities::BookmarkThisCapability *bookmarkThisCapability;
+        static Capabilities::ActionsCapability *actionsCapability;
+        static Capabilities::BookmarkThisCapability *bookmarkThisCapability;
 
-	virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
-	{
-	    switch( type )
-	    {
-		case Capabilities::Capability::Actions:
-		case Capabilities::Capability::BookmarkThis:
-		    return true;
-		default:
-		    break;
-	    }
-	    return false;
-	}
+        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        {
+            switch( type )
+            {
+            case Capabilities::Capability::Actions:
+            case Capabilities::Capability::BookmarkThis:
+                return true;
+            default:
+                break;
+            }
+            return false;
+        }
 
-	virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type )
-	{
-	    switch( type )
-	    {
-		case Capabilities::Capability::Actions:
-		    return actionsCapability;
-		case Capabilities::Capability::BookmarkThis:
-		    return bookmarkThisCapability;
-		default:
-		    break;
-	    }
-	    return 0;
-	}
+        virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type )
+        {
+            switch( type )
+            {
+            case Capabilities::Capability::Actions:
+                return actionsCapability;
+            case Capabilities::Capability::BookmarkThis:
+                return bookmarkThisCapability;
+            default:
+                break;
+            }
+            return 0;
+        }
 
     private:
-	static QAction *action;
-	static QList<QAction*> actionsList;
+        static QAction *action;
+        static QList<QAction*> actionsList;
 };
 
 QAction *MetaCapabilityMock::action = new QAction( 0 );
@@ -82,7 +82,7 @@ TestMetaCapability::TestMetaCapability()
 void
 TestMetaCapability::testHas()
 {
-    Meta::MetaCapability *metaCapability = new MetaCapabilityMock();
+    MetaCapability *metaCapability = new MetaCapabilityMock();
     QVERIFY( metaCapability );
 
     // these capabilities should be provided
@@ -97,7 +97,7 @@ TestMetaCapability::testHas()
 void
 TestMetaCapability::testCreate()
 {
-    Meta::MetaCapability *metaCapability = new MetaCapabilityMock();
+    MetaCapability *metaCapability = new MetaCapabilityMock();
     QVERIFY( metaCapability );
 
     // these capabilities should be provided

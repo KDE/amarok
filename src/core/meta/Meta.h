@@ -21,7 +21,7 @@
 #include "shared/amarok_export.h"
 #include "shared/MetaReplayGain.h"
 
-#include "core/capabilities/Capability.h"
+#include "core/interfaces/MetaCapability.h"
 
 #include <QList>
 #include <QMetaType>
@@ -104,53 +104,6 @@ namespace Meta
             QSet<ComposerPtr> m_composerSubscriptions;
             QSet<GenrePtr> m_genreSubscriptions;
             QSet<YearPtr> m_yearSubscriptions;
-    };
-
-    class AMAROK_CORE_EXPORT MetaCapability
-    {
-        public:
-            virtual ~MetaCapability() {}
-
-            /**
-             * Return true if this entity has capability @param CapIface, false otherwise.
-             */
-            template <class CapIface> bool has() const
-            {
-                return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
-            }
-
-            /**
-             * Creates a specialized interface which represents a capability of this
-             * MetaBase object. The caller of this method is responsible for deleting
-             * created capability!
-             *
-             * @returns a pointer to the capability interface if it exists, 0 otherwise
-             */
-            template <class CapIface> CapIface *create()
-            {
-                Capabilities::Capability::Type type = CapIface::capabilityInterfaceType();
-                Capabilities::Capability *iface = createCapabilityInterface( type );
-                return qobject_cast<CapIface *>( iface );
-            }
-
-            /**
-             * Subclasses should override this method to denote they provide particular
-             * capability type. Must match @see createCapabilityInterface()
-             *
-             * This method should be considered protected (but is not because of practical
-             * reasons), you should normally call @see has()
-             */
-            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-
-            /**
-             * Subclasses should override this method to create particular capability.
-             * Memory-management of the returned pointer is the responsibility of the
-             * caller of this method. Must match @see hasCapabilityInterface()
-             *
-             * This method should be considered protected (but is not because of practical
-             * reasons), you should normally call @see create()
-             */
-            virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type );
     };
 
     class AMAROK_CORE_EXPORT MetaBase : public QSharedData, public MetaCapability

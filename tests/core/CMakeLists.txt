@@ -1,4 +1,5 @@
-add_subdirectory( meta )
-add_subdirectory( collections )
 add_subdirectory( capabilities )
+add_subdirectory( collections )
+add_subdirectory( interfaces )
+add_subdirectory( meta )
 add_subdirectory( playlists )
