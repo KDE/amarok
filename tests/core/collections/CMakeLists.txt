@@ -41,3 +41,9 @@ target_link_libraries(testcollectionlocation
 set( testcollection_SRCS TestCollection.cpp )
 kde4_add_unit_test( testcollection ${testcollection_SRCS} )
 target_link_libraries( testcollection ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY} amarokcore )
+
+#------------------------ Test QueryMaker -----------------------------
+
+set( testquerymaker_SRCS TestQueryMaker.cpp ../../mocks/MockQueryMaker.cpp )
+kde4_add_unit_test( testquerymaker ${testquerymaker_SRCS} )
+target_link_libraries( testquerymaker ${KDE4_KDECORE_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} amarokcore )
