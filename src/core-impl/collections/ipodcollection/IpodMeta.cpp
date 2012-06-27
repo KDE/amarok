@@ -16,15 +16,15 @@
 
 #include "IpodMeta.h"
 
-#include "IpodCollection.h"
-#include "IpodMetaEditCapability.h"
-#include "config-ipodcollection.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/ipodcollection/IpodCollection.h"
+#include "core-impl/collections/ipodcollection/IpodMetaEditCapability.h"
+#include "core-impl/collections/ipodcollection/config-ipodcollection.h"
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "covermanager/CoverCache.h"
-#include "FileType.h"
+#include "shared/FileType.h"
 
 #include <KTemporaryFile>
 #include <ThreadWeaver/Weaver>
