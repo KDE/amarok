@@ -34,6 +34,11 @@ class MockQueryMaker : public QueryMaker
         virtual ~MockQueryMaker();
 
         /**
+         * To prevent QueryMaker::addMatch( const Meta::LabelPtr& ) from being hidden
+         */
+        using QueryMaker::addMatch;
+
+        /**
          * Mock implementations of pure virtual methods of class Collections::QueryMaker
          * to enable creation of an instance of this mock class
          *
