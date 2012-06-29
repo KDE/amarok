@@ -37,7 +37,7 @@ namespace StatSyncing
 
         public:
             enum {
-                TupleFlagsRole = Qt::UserRole,
+                TupleFlagsRole = CommonModel::UserRole,
             };
 
             /**

@@ -48,6 +48,11 @@ namespace StatSyncing
              */
             static qint64 comparisonFields();
 
+            /**
+             * Return a list of providers participating in the matching
+             */
+            QList<QSharedPointer<Provider> > providers() const;
+
             // results:
             const QList<TrackTuple> &matchedTuples() const { return m_matchedTuples; }
             const PerProviderTrackList &uniqueTracks() const { return m_uniqueTracks; }

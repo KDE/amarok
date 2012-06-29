@@ -24,6 +24,7 @@
 #include <KLocale>
 
 #include <QFontMetrics>
+#include <QHeaderView>
 
 using namespace StatSyncing;
 
@@ -46,6 +47,19 @@ CommonModel::headerData( int section, Qt::Orientation orientation, int role ) co
             return Meta::i18nForField( field );
         case Qt::SizeHintRole:
             return sizeHintData( field );
+        case CommonModel::ResizeModeRole:
+            switch( field )
+            {
+                case Meta::valTitle:
+                    return QHeaderView::Stretch;
+                case Meta::valRating:
+                case Meta::valFirstPlayed:
+                case Meta::valLastPlayed:
+                case Meta::valPlaycount:
+                    return QHeaderView::ResizeToContents;
+                default:
+                    return QHeaderView::Interactive;
+            }
     }
     return QVariant();
 }

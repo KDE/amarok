@@ -67,6 +67,8 @@ Controller::synchronize()
         return;
     }
 
-    m_currentProcess = new Process( providers, this );
+    QList<qint64> fields = QList<qint64>() << Meta::valRating << Meta::valFirstPlayed
+            << Meta::valLastPlayed << Meta::valPlaycount << Meta::valLabel;
+    m_currentProcess = new Process( providers, fields, Process::Interactive, this );
     m_currentProcess.data()->start();
 }

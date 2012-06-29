@@ -28,8 +28,11 @@ namespace ThreadWeaver {
 
 namespace StatSyncing
 {
+
+class ChooseProvidersPage;
     class MatchedTracksPage;
     class MatchedTracksModel;
+    class ProvidersModel;
 
     /**
      * Class that is responsible for one synchronization process from track matching
@@ -43,13 +46,20 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
+            enum Mode {
+                Interactive,
+                NonInteractive,
+            };
+
             /**
              * Creates the synchronization process that will offer user to synchronize
-             * statistics of @param providers. Process does _not_ take ownership of the
-             * provider pointers.
+             * @param fields of @param providers. If @param mode is Interactive,
+             * introductory dialog will be shown that allows subset of fields and
+             * providers to be chosen. Otherwise performs the syncing ing the background
+             * and shows a window only if conflict occurs.
              */
-            explicit Process( const QList<QSharedPointer<Provider> > &providers,
-                              QObject *parent = 0 );
+            Process( const QList<QSharedPointer<Provider> > &providers,
+                     const QList<qint64> &fields, Mode mode, QObject *parent = 0 );
             ~Process();
 
         public slots:
@@ -64,22 +74,22 @@ namespace StatSyncing
              */
             void raise();
 
-        signals:
-            /**
-             * Re-emitted in the raise() slot
-             */
-            void signalRaise();
-
         private slots:
+            void slotMatchTracks();
             void slotTracksMatched( ThreadWeaver::Job* job );
             void slotSynchronize();
 
         private:
             Q_DISABLE_COPY( Process )
 
-            QList<QSharedPointer<Provider> > m_providers;
-            MatchedTracksModel *m_matchedTracksModel;
+            Mode m_mode;
             Options m_options;
+            ProvidersModel *m_providersModel;
+            QList<qint64> m_fields;
+            MatchedTracksModel *m_matchedTracksModel;
+
+            QWeakPointer<ChooseProvidersPage> m_providersPage;
+            QWeakPointer<MatchedTracksPage> m_tracksPage;
     };
 
 } // namespace StatSyncing

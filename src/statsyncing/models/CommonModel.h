@@ -31,6 +31,11 @@ namespace StatSyncing
     class CommonModel
     {
         public:
+            enum {
+                ResizeModeRole = Qt::UserRole,
+                UserRole
+            };
+
             explicit CommonModel( const QList<qint64> &columns );
 
             QVariant headerData( int section, Qt::Orientation orientation,

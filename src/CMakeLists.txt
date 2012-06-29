@@ -594,11 +594,14 @@ set( statsyncing_SRCS
     statsyncing/jobs/SynchronizeTracksJob.cpp
     statsyncing/models/CommonModel.cpp
     statsyncing/models/MatchedTracksModel.cpp
+    statsyncing/models/ProvidersModel.cpp
     statsyncing/models/SingleTracksModel.cpp
+    statsyncing/ui/ChooseProvidersPage.cpp
     statsyncing/ui/MatchedTracksPage.cpp
 )
 
 kde4_add_ui_files(statsyncing_SRCS
+    statsyncing/ui/ChooseProvidersPage.ui
     statsyncing/ui/MatchedTracksPage.ui
 )
 

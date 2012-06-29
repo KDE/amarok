@@ -116,7 +116,9 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
 
     buttonBox->addButton( KGuiItem( i18n( "Synchronize" ), "document-save" ),
                           QDialogButtonBox::AcceptRole );
+    connect( buttonBox, SIGNAL(accepted()), SLOT(deleteLater()) );
     connect( buttonBox, SIGNAL(accepted()), SIGNAL(accepted()) );
+    connect( buttonBox, SIGNAL(rejected()), SLOT(deleteLater()) );
     connect( buttonBox, SIGNAL(rejected()), SIGNAL(rejected()) );
 
     QHeaderView *header = treeView->header();
@@ -159,10 +161,11 @@ void MatchedTracksPage::showEvent( QShowEvent *event )
     QWidget::showEvent( event );
 }
 
-void MatchedTracksPage::closeEvent(QCloseEvent* event)
+void MatchedTracksPage::closeEvent( QCloseEvent *event )
 {
-    emit rejected();
     QWidget::closeEvent( event );
+    deleteLater();
+    emit rejected();
 }
 
 void
@@ -393,13 +396,13 @@ MatchedTracksPage::polish()
 
     matchedRadio->setChecked( true ); // calls showMatchedTracks() that sets the model
     QHeaderView *header = treeView->header();
-    // TODO: don't hard-code column order
-    header->setResizeMode( 0, QHeaderView::Stretch );
-    header->setResizeMode( 1, QHeaderView::ResizeToContents );
-    header->setResizeMode( 2, QHeaderView::ResizeToContents );
-    header->setResizeMode( 3, QHeaderView::ResizeToContents );
-    header->setResizeMode( 4, QHeaderView::ResizeToContents );
-    header->setResizeMode( 5, QHeaderView::Interactive );
+    for( int column = 0; column < m_matchedTracksModel->columnCount(); column++ )
+    {
+        QVariant headerData = m_matchedTracksModel->headerData( column, Qt::Horizontal,
+                                                                CommonModel::ResizeModeRole );
+        QHeaderView::ResizeMode mode = QHeaderView::ResizeMode( headerData.toInt() );
+        header->setResizeMode( column, mode );
+    }
     m_proxyModel->sort( 0, Qt::AscendingOrder );
 
     m_polished = true;

@@ -58,12 +58,14 @@ namespace StatSyncing
 
         signals:
             /**
-             * Emitted when the user clicks the Synchronize button
+             * Emitted when the user clicks the Synchronize button. MatchedTracksPage
+             * auto-destroys itself after emitting this signal.
              */
             void accepted();
 
             /**
-             * Emitted when the user cancels or closes the dialog
+             * Emitted when the user cancels or closes the dialog. MatchedTracksPage
+             * auto-destroys itself after emitting this signal.
              */
             void rejected();
 

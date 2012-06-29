@@ -71,6 +71,12 @@ MatchTracksJob::MatchTracksJob( const QList<QSharedPointer<Provider> > &provider
 {
 }
 
+QList<QSharedPointer<Provider> >
+MatchTracksJob::providers() const
+{
+    return m_providers;
+}
+
 bool
 MatchTracksJob::success() const
 {
