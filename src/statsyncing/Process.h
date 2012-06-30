@@ -22,16 +22,16 @@
 #include <QSharedPointer>
 #include <QMap>
 
+class KDialog;
 namespace ThreadWeaver {
     class Job;
 }
 
 namespace StatSyncing
 {
-
-class ChooseProvidersPage;
-    class MatchedTracksPage;
+    class ChooseProvidersPage;
     class MatchedTracksModel;
+    class MatchedTracksPage;
     class ProvidersModel;
 
     /**
@@ -58,9 +58,9 @@ class ChooseProvidersPage;
              * providers to be chosen. Otherwise performs the syncing ing the background
              * and shows a window only if conflict occurs.
              */
-            Process( const QList<QSharedPointer<Provider> > &providers,
-                     const QList<qint64> &fields, Mode mode, QObject *parent = 0 );
-            ~Process();
+            Process( const QList<QSharedPointer<Provider> > &providers, qint64 fields,
+                     Mode mode, QObject *parent = 0 );
+            virtual ~Process();
 
         public slots:
             /**
@@ -77,6 +77,7 @@ class ChooseProvidersPage;
         private slots:
             void slotMatchTracks();
             void slotTracksMatched( ThreadWeaver::Job* job );
+            void slotBack();
             void slotSynchronize();
 
         private:
@@ -85,9 +86,11 @@ class ChooseProvidersPage;
             Mode m_mode;
             Options m_options;
             ProvidersModel *m_providersModel;
-            QList<qint64> m_fields;
+            QList<qint64> m_availableFields;
+            qint64 m_checkedFields;
             MatchedTracksModel *m_matchedTracksModel;
 
+            QScopedPointer<KDialog> m_dialog;
             QWeakPointer<ChooseProvidersPage> m_providersPage;
             QWeakPointer<MatchedTracksPage> m_tracksPage;
     };

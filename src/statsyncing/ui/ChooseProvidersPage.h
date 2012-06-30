@@ -29,9 +29,10 @@ namespace StatSyncing
 
         public:
             explicit ChooseProvidersPage( QWidget *parent = 0, Qt::WindowFlags f = 0 );
+            virtual ~ChooseProvidersPage();
 
-            void setFields( const QList<qint64> &fields, const QSet<qint64> &checkedFields );
-            QList<qint64> checkedFields() const;
+            void setFields( const QList<qint64> &fields, qint64 checkedFields );
+            qint64 checkedFields() const;
 
             /**
              * Sets the model of providers to choose from. ChooseProvidersPage does _not_
@@ -40,6 +41,7 @@ namespace StatSyncing
             void setProvidersModel( ProvidersModel *model, QItemSelectionModel *selectionModel );
 
         public slots:
+            void disableControls();
             void setProgressBarText( const QString &text );
             void setProgressBarMaximum( int maximum );
             void progressBarIncrementProgress();
@@ -48,18 +50,14 @@ namespace StatSyncing
             void checkedFieldsChanged();
 
             /**
-             * Emitted when the user clicks the Next button.
+             * Emitted when user clicks the Next button.
              */
             void accepted();
 
             /**
-             * Emitted when the user cancels or closes the dialog. ChooseProvidersPage
-             * auto-destroys itself after emitting this signal.
+             * Emitted when user pushes the Cancel button.
              */
             void rejected();
-
-        protected:
-            void closeEvent( QCloseEvent *event );
 
         private slots:
             void updateMatchedLabel();

@@ -35,6 +35,7 @@ namespace StatSyncing
         public:
             ProvidersModel( const ProviderPtrList &providers,
                             const ProviderPtrSet &checkedProviders, QObject *parent = 0 );
+            virtual ~ProvidersModel();
 
             // QAbstractItemModel methods:
             QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;

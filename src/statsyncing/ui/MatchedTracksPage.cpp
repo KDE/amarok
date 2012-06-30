@@ -21,6 +21,9 @@
 #include "statsyncing/TrackTuple.h"
 #include "statsyncing/models/MatchedTracksModel.h"
 
+#include <KStandardGuiItem>
+#include <KPushButton>
+
 #include <QEvent>
 #include <QMenu>
 #include <QSortFilterProxyModel>
@@ -114,11 +117,12 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     connect( filterLine, SIGNAL(textChanged(QString)),
              m_proxyModel, SLOT(setFilterFixedString(QString)) );
 
+    KPushButton *back = buttonBox->addButton( KStandardGuiItem::back(),
+                                              QDialogButtonBox::ActionRole );
     buttonBox->addButton( KGuiItem( i18n( "Synchronize" ), "document-save" ),
                           QDialogButtonBox::AcceptRole );
-    connect( buttonBox, SIGNAL(accepted()), SLOT(deleteLater()) );
+    connect( back, SIGNAL(clicked(bool)), SIGNAL(back()) );
     connect( buttonBox, SIGNAL(accepted()), SIGNAL(accepted()) );
-    connect( buttonBox, SIGNAL(rejected()), SLOT(deleteLater()) );
     connect( buttonBox, SIGNAL(rejected()), SIGNAL(rejected()) );
 
     QHeaderView *header = treeView->header();
@@ -159,13 +163,6 @@ void MatchedTracksPage::showEvent( QShowEvent *event )
     if( !m_polished )
         polish();
     QWidget::showEvent( event );
-}
-
-void MatchedTracksPage::closeEvent( QCloseEvent *event )
-{
-    QWidget::closeEvent( event );
-    deleteLater();
-    emit rejected();
 }
 
 void

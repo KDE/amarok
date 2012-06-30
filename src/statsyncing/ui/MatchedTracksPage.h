@@ -58,20 +58,22 @@ namespace StatSyncing
 
         signals:
             /**
-             * Emitted when the user clicks the Synchronize button. MatchedTracksPage
-             * auto-destroys itself after emitting this signal.
+             * Emitted when user pushes the Back button.
+             */
+            void back();
+
+            /**
+             * Emitted when user clicks the Synchronize button.
              */
             void accepted();
 
             /**
-             * Emitted when the user cancels or closes the dialog. MatchedTracksPage
-             * auto-destroys itself after emitting this signal.
+             * Emitted when user pushes the Cancel button.
              */
             void rejected();
 
         protected:
             virtual void showEvent( QShowEvent *event );
-            virtual void closeEvent( QCloseEvent *event );
 
         private slots:
             void showMatchedTracks( bool checked );

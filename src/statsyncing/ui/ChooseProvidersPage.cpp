@@ -32,11 +32,15 @@ ChooseProvidersPage::ChooseProvidersPage( QWidget *parent, Qt::WindowFlags f )
     setupUi( this );
     buttonBox->addButton( KGuiItem( i18n( "Next" ), "go-next" ), QDialogButtonBox::AcceptRole );
     connect( buttonBox, SIGNAL(accepted()), SIGNAL(accepted()) );
-    connect( buttonBox, SIGNAL(rejected()), SLOT(deleteLater()) );
     connect( buttonBox, SIGNAL(rejected()), SIGNAL(rejected()) );
 }
 
-void ChooseProvidersPage::setFields( const QList<qint64> &fields, const QSet<qint64> &checkedFields )
+ChooseProvidersPage::~ChooseProvidersPage()
+{
+}
+
+void
+ChooseProvidersPage::setFields( const QList<qint64> &fields, qint64 checkedFields )
 {
     QLayout *fieldsLayout = fieldsBox->layout();
     foreach( qint64 field, fields )
@@ -44,7 +48,7 @@ void ChooseProvidersPage::setFields( const QList<qint64> &fields, const QSet<qin
         QString name = Meta::i18nForField( field );
         QCheckBox *checkBox = new QCheckBox( name );
         fieldsLayout->addWidget( checkBox );
-        checkBox->setCheckState( checkedFields.contains( field ) ? Qt::Checked : Qt::Unchecked );
+        checkBox->setCheckState( ( field & checkedFields ) ? Qt::Checked : Qt::Unchecked );
         checkBox->setStyleSheet( "margin-right: 0.5em" );
         checkBox->setProperty( "field", field );
         connect( checkBox, SIGNAL(stateChanged(int)), SIGNAL(checkedFieldsChanged()) );
@@ -55,17 +59,18 @@ void ChooseProvidersPage::setFields( const QList<qint64> &fields, const QSet<qin
     updateSynchronizedLabel();
 }
 
-QList<qint64> ChooseProvidersPage::checkedFields() const
+qint64
+ChooseProvidersPage::checkedFields() const
 {
-    QList<qint64> ret;
+    qint64 ret = 0;
     QLayout *fieldsLayout = fieldsBox->layout();
     for( int i = 0; i < fieldsLayout->count(); i++ )
     {
-        QCheckBox *checkBox = qobject_cast<QCheckBox *>( fieldsBox->layout()->itemAt( i )->widget() );
+        QCheckBox *checkBox = qobject_cast<QCheckBox *>( fieldsLayout->itemAt( i )->widget() );
         if( !checkBox )
             continue;
         if( checkBox->isChecked() && checkBox->property( "field" ).canConvert<qint64>() )
-            ret << checkBox->property( "field" ).value<qint64>();
+            ret |= checkBox->property( "field" ).value<qint64>();
     }
     return ret;
 }
@@ -81,6 +86,29 @@ ChooseProvidersPage::setProvidersModel( ProvidersModel *model, QItemSelectionMod
     connect( model, SIGNAL(selectedProvidersChanged()), SLOT(updateSynchronizedLabel()) );
     updateMatchedLabel();
     updateSynchronizedLabel();
+}
+
+void
+ChooseProvidersPage::disableControls()
+{
+    // disable checkboxes
+    QLayout *fieldsLayout = fieldsBox->layout();
+    for( int i = 0; i < fieldsLayout->count(); i++ )
+    {
+        QWidget *widget = fieldsLayout->itemAt( i )->widget();
+        if( widget )
+            widget->setEnabled( false );
+    }
+
+    // disable view
+    providersView->setEnabled( false );
+
+    // disable Next buton
+    foreach( QAbstractButton *button, buttonBox->buttons() )
+    {
+        if( buttonBox->buttonRole( button ) == QDialogButtonBox::AcceptRole )
+            button->setEnabled( false );
+    }
 }
 
 void
@@ -102,14 +130,6 @@ ChooseProvidersPage::progressBarIncrementProgress()
 }
 
 void
-ChooseProvidersPage::closeEvent( QCloseEvent *event )
-{
-    QWidget::closeEvent( event );
-    emit rejected();
-    deleteLater();
-}
-
-void
 ChooseProvidersPage::updateMatchedLabel()
 {
     qint64 fields = m_providersModel->reliableTrackMetadataIntersection();
@@ -123,9 +143,7 @@ ChooseProvidersPage::updateSynchronizedLabel()
     if( !m_providersModel )
         return;
 
-    qint64 fields = 0;
-    foreach( qint64 field, checkedFields() )
-        fields |= field;
+    qint64 fields = checkedFields();
     // TODO: enable/disable save prefs and close button based on fields variable now
     fields &= m_providersModel->writableTrackStatsDataIntersection();
     QString fieldNames = m_providersModel->fieldsToString( fields );
