@@ -20,6 +20,8 @@
 #include "core/support/Debug.h"
 #include "statsyncing/models/ProvidersModel.h"
 
+#include <KPushButton>
+
 #include <QCheckBox>
 
 using namespace StatSyncing;
@@ -30,7 +32,10 @@ ChooseProvidersPage::ChooseProvidersPage( QWidget *parent, Qt::WindowFlags f )
 {
     DEBUG_BLOCK
     setupUi( this );
+    KPushButton *save = buttonBox->addButton( KGuiItem( i18n( "Save Settings and Close" ) ),
+                                              QDialogButtonBox::ActionRole );
     buttonBox->addButton( KGuiItem( i18n( "Next" ), "go-next" ), QDialogButtonBox::AcceptRole );
+    connect( save, SIGNAL(clicked(bool)), SIGNAL(saveSettings()) );
     connect( buttonBox, SIGNAL(accepted()), SIGNAL(accepted()) );
     connect( buttonBox, SIGNAL(rejected()), SIGNAL(rejected()) );
 }

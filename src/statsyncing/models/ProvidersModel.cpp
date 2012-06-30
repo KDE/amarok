@@ -108,17 +108,16 @@ ProvidersModel::setData( const QModelIndex &index, const QVariant &value, int ro
     return true;
 }
 
-ProviderPtrList
+ProviderPtrSet
 ProvidersModel::checkedProviders() const
 {
-    ProviderPtrList ret;
-    // preserve order, so do it the hard way
-    foreach( QSharedPointer<Provider> provider, m_providers )
-    {
-        if( m_checkedProviders.contains( provider ) )
-            ret << provider;
-    }
-    return ret;
+    return m_checkedProviders;
+}
+
+ProviderPtrSet
+ProvidersModel::unCheckedProviders() const
+{
+    return m_providers.toSet() - m_checkedProviders;
 }
 
 ProviderPtrList

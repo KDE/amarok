@@ -18,18 +18,14 @@
 #define STATSYNCING_CONTROLLER_H
 
 #include "amarok_export.h"
-#include "core-impl/collections/support/CollectionManager.h"
 
-#include <QList>
 #include <QWeakPointer>
-
-namespace ThreadWeaver {
-    class Job;
-}
 
 namespace StatSyncing
 {
     class Process;
+    class Provider;
+    typedef QSet<QSharedPointer<Provider> > ProviderPtrSet;
 
     /**
      * A singleton class that controls statistics synchronization and related tasks.
@@ -48,6 +44,11 @@ namespace StatSyncing
              * way before the synchronization is finished.
              */
             void synchronize();
+
+        private slots:
+            void saveSettings( const ProviderPtrSet &checkedProviders,
+                               const ProviderPtrSet &unCheckedProviders,
+                               qint64 checkedFields );
 
         private:
             Q_DISABLE_COPY(Controller)

@@ -34,12 +34,12 @@
 
 using namespace StatSyncing;
 
-Process::Process( const QList<QSharedPointer<Provider> > &providers, qint64 fields,
-                  Process::Mode mode, QObject *parent )
+Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &checkedProviders,
+                  qint64 checkedFields, Process::Mode mode, QObject *parent )
     : QObject( parent )
     , m_mode( mode )
-    , m_providersModel( new ProvidersModel( providers, providers.toSet(), this ) )
-    , m_checkedFields( fields )
+    , m_providersModel( new ProvidersModel( providers, checkedProviders, this ) )
+    , m_checkedFields( checkedFields )
     , m_matchedTracksModel( 0 )
     , m_dialog( new KDialog( The::mainWindow() ) )
 {
@@ -70,6 +70,7 @@ Process::start()
         m_providersPage.data()->setFields( m_availableFields, m_checkedFields );
         m_providersPage.data()->setProvidersModel( m_providersModel, m_providersModel->selectionModel() );
 
+        connect( m_providersPage.data(), SIGNAL(saveSettings()), SLOT(slotSaveAndClose()) );
         connect( m_providersPage.data(), SIGNAL(accepted()), SLOT(slotMatchTracks()) );
         connect( m_providersPage.data(), SIGNAL(rejected()), SLOT(deleteLater()) );
         m_dialog->mainWidget()->hide(); // otherwise it may last as a ghost image
@@ -89,6 +90,16 @@ Process::raise()
 }
 
 void
+Process::slotSaveAndClose()
+{
+    if( m_providersPage )
+        m_checkedFields = m_providersPage.data()->checkedFields();
+    emit saveSettings( m_providersModel->checkedProviders(),
+                       m_providersModel->unCheckedProviders(), m_checkedFields );
+    m_dialog->close(); // triggers deleteLater on this Process
+}
+
+void
 Process::slotMatchTracks()
 {
     DEBUG_BLOCK
@@ -98,7 +109,6 @@ Process::slotMatchTracks()
     {
         ChooseProvidersPage *page = m_providersPage.data(); // too lazy to type
         m_checkedFields = page->checkedFields();
-        // TODO: remember checkedFields + checkedProviders
 
         page->disableControls();
         page->setProgressBarText( text );
@@ -111,10 +121,6 @@ Process::slotMatchTracks()
     {
         Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
     }
-
-    // remove fields that are not writable:
-    m_checkedFields &= m_providersModel->writableTrackStatsDataIntersection();
-    m_options.setSyncedFields( m_checkedFields );
 
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(slotTracksMatched(ThreadWeaver::Job*)) );
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
@@ -141,10 +147,13 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
         return;
     }
 
+    // remove fields that are not writable:
+    qint64 usedFields = m_checkedFields & m_providersModel->writableTrackStatsDataIntersection();
+    m_options.setSyncedFields( usedFields );
     QList<qint64> columns = QList<qint64>() << Meta::valTitle;
     foreach( qint64 field, m_availableFields )
     {
-        if( field & m_checkedFields )
+        if( field & usedFields )
             columns << field;
     }
 
@@ -184,7 +193,10 @@ Process::slotSynchronize()
 {
     // disconnect, otherwise we prematurely delete Process and thus m_matchedTracksModel
     disconnect( m_dialog.data(), SIGNAL(finished()), this, SLOT(deleteLater()) );
-    m_dialog->hide();
+    m_dialog->close();
+    emit saveSettings( m_providersModel->checkedProviders(),
+                       m_providersModel->unCheckedProviders(), m_checkedFields );
+
     SynchronizeTracksJob *job =
             new SynchronizeTracksJob( m_matchedTracksModel->matchedTuples(), m_options );
     QString text = i18n( "Synchronizing tracks..." );

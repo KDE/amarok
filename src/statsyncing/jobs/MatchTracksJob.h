@@ -36,8 +36,7 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
-            MatchTracksJob( const QList<QSharedPointer<Provider> > &providers,
-                            QObject *parent = 0 );
+            MatchTracksJob( const ProviderPtrList &providers, QObject *parent = 0 );
 
             virtual bool success() const;
 
@@ -51,7 +50,7 @@ namespace StatSyncing
             /**
              * Return a list of providers participating in the matching
              */
-            QList<QSharedPointer<Provider> > providers() const;
+            ProviderPtrList providers() const;
 
             // results:
             const QList<TrackTuple> &matchedTuples() const { return m_matchedTuples; }
@@ -119,7 +118,7 @@ namespace StatSyncing
             static qint64 s_comparisonFields;
 
             bool m_abort;
-            QList<QSharedPointer<Provider> > m_providers;
+            ProviderPtrList m_providers;
 
             /**
              * Per-provider list of tracks that are unique to that provider

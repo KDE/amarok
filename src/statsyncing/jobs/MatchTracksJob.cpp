@@ -63,15 +63,14 @@ MatchTracksJob::comparisonFields()
     return s_comparisonFields;
 }
 
-MatchTracksJob::MatchTracksJob( const QList<QSharedPointer<Provider> > &providers,
-                                QObject *parent )
+MatchTracksJob::MatchTracksJob( const ProviderPtrList &providers, QObject *parent )
     : Job( parent )
     , m_abort( false )
     , m_providers( providers )
 {
 }
 
-QList<QSharedPointer<Provider> >
+ProviderPtrList
 MatchTracksJob::providers() const
 {
     return m_providers;

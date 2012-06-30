@@ -25,3 +25,9 @@ Provider::Provider()
 Provider::~Provider()
 {
 }
+
+bool
+Provider::checkedByDefault()
+{
+    return false;
+}

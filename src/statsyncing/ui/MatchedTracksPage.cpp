@@ -135,7 +135,7 @@ MatchedTracksPage::~MatchedTracksPage()
 }
 
 void
-MatchedTracksPage::setProviders( const QList<QSharedPointer<Provider> > &providers )
+MatchedTracksPage::setProviders( const ProviderPtrList &providers )
 {
     m_providers = providers;
 }

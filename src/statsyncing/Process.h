@@ -18,6 +18,7 @@
 #define STATSYNCING_PROCESS_H
 
 #include "statsyncing/Options.h"
+#include "statsyncing/Provider.h"
 
 #include <QSharedPointer>
 #include <QMap>
@@ -58,8 +59,8 @@ namespace StatSyncing
              * providers to be chosen. Otherwise performs the syncing ing the background
              * and shows a window only if conflict occurs.
              */
-            Process( const QList<QSharedPointer<Provider> > &providers, qint64 fields,
-                     Mode mode, QObject *parent = 0 );
+            Process( const ProviderPtrList &providers, const ProviderPtrSet &checkedProviders,
+                     qint64 checkedFields, Mode mode, QObject *parent = 0 );
             virtual ~Process();
 
         public slots:
@@ -74,7 +75,17 @@ namespace StatSyncing
              */
             void raise();
 
+        signals:
+            /**
+             * Emitted when process wants to permanently save checked providers and
+             * fields.
+             */
+            void saveSettings( const ProviderPtrSet &checkedProviders,
+                               const ProviderPtrSet &unCheckedProviders,
+                               qint64 checkedFields );
+
         private slots:
+            void slotSaveAndClose();
             void slotMatchTracks();
             void slotTracksMatched( ThreadWeaver::Job* job );
             void slotBack();

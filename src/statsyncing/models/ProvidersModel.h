@@ -17,17 +17,16 @@
 #ifndef STATSYNCING_PROVIDERSMODEL_H
 #define STATSYNCING_PROVIDERSMODEL_H
 
+#include "statsyncing/Provider.h"
+
 #include <QAbstractListModel>
 #include <QSet>
 #include <QSharedPointer>
 
 class QItemSelectionModel;
+
 namespace StatSyncing
 {
-    class Provider;
-    typedef QList<QSharedPointer<Provider> > ProviderPtrList;
-    typedef QSet<QSharedPointer<Provider> > ProviderPtrSet;
-
     class ProvidersModel : public QAbstractListModel
     {
         Q_OBJECT
@@ -44,7 +43,9 @@ namespace StatSyncing
             bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
             // ProvidersModel methods:
-            ProviderPtrList checkedProviders() const;
+            ProviderPtrSet checkedProviders() const;
+            /// All providers - checkedProviders
+            ProviderPtrSet unCheckedProviders() const;
             ProviderPtrList selectedProviders() const;
 
             /**

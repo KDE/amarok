@@ -18,11 +18,11 @@
 #define STATSYNCING_MATCHEDTRACKSPAGE_H
 
 #include "ui_MatchedTracksPage.h"
+#include "statsyncing/Provider.h"
 
 namespace StatSyncing
 {
     class MatchedTracksModel;
-    class Provider;
     class SortFilterProxyModel;
 
     class MatchedTracksPage : public QWidget, private Ui::MatchedTracksPage
@@ -36,7 +36,7 @@ namespace StatSyncing
             /**
              * Set provider, you must call this before showing the widget.
              */
-            void setProviders( const QList<QSharedPointer<Provider> > &providers );
+            void setProviders( const ProviderPtrList &providers );
 
             /**
              * Set mathed tracks model. MatchedTracksPage does _not_ take ownership of
@@ -109,7 +109,7 @@ namespace StatSyncing
             bool m_polished;
             int m_matchedTracksComboLastIndex;
             QSet<int> m_expandedTuples;
-            QList<QSharedPointer<Provider> > m_providers;
+            ProviderPtrList m_providers;
             SortFilterProxyModel *m_proxyModel;
             MatchedTracksModel *m_matchedTracksModel;
             QMap<const Provider *, QAbstractItemModel *> m_uniqueTracksModels;

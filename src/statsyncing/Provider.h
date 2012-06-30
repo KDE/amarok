@@ -74,6 +74,14 @@ namespace StatSyncing
             virtual qint64 writableTrackStatsData() const = 0;
 
             /**
+             * Return true if this provider should participate in synchronization by
+             * default even when the user does not actively add it. User can always
+             * disable providers even if they are checked by default. Default
+             * implementation returns false.
+             */
+            virtual bool checkedByDefault();
+
+            /**
              * Return a set of lowercased (all characters lowercased, not just ASCII)
              * track artist names that appear in this provider. This method is guaranteed
              * to be called in non-main thread and is allowed block for a longer time; it
@@ -99,6 +107,8 @@ namespace StatSyncing
      */
     typedef QMap<const Provider *, TrackList> PerProviderTrackList;
 
+    typedef QList<QSharedPointer<Provider> > ProviderPtrList;
+    typedef QSet<QSharedPointer<Provider> > ProviderPtrSet;
 } // namespace StatSyncing
 
 #endif // STATSYNCING_PROVIDER_H

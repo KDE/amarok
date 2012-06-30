@@ -67,13 +67,15 @@ CollectionProvider::writableTrackStatsData() const
     // TODO: this is unreliable and hacky, but serves for now:
     if( id() == "localCollection" )
         return Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed | Meta::valPlaycount | Meta::valLabel;
-    if( id().startsWith( "amarok-ipodtrackuid" ) )
+    else
         return Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed | Meta::valPlaycount;
+}
 
-    // for other collections, assume it just uses Amarok stats writeback settings:
-    if( AmarokConfig::writeBackStatistics() )
-        return Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed | Meta::valPlaycount;
-    return 0;
+bool
+CollectionProvider::checkedByDefault()
+{
+    // currently only Local Collection and iPod one have good syncing capabilities
+    return id() == "localCollection" || id().startsWith( "amarok-ipodtrackuid" );
 }
 
 QSet<QString>

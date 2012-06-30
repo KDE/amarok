@@ -50,6 +50,11 @@ namespace StatSyncing
             void checkedFieldsChanged();
 
             /**
+             * Emitted when user clicks the Save Settings button.
+             */
+            void saveSettings();
+
+            /**
              * Emitted when user clicks the Next button.
              */
             void accepted();
