@@ -117,8 +117,10 @@ namespace StatSyncing
              * Perform actual synchronization. For each track, only sets fields that are
              * in fieldUpdated( .., .., provider). Specifically this method does not write
              * ratings if there's unresolved rating conflict.
+             *
+             * @return number of tracks that were updated
              */
-            void synchronize( const Options &options );
+            int synchronize( const Options &options );
 
         private:
             int syncedRating( const Options &options, const Provider *ratingProvider ) const;

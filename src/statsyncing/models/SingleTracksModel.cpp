@@ -18,7 +18,6 @@
 
 #include "MetaValues.h"
 #include "core/meta/support/MetaConstants.h"
-#include "core/support/Debug.h"
 
 #include <KGlobal>
 #include <KLocale>

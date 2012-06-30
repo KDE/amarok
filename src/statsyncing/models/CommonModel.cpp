@@ -122,7 +122,7 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                         "%1 (%2)", track->playCount(), recent ) : QString::number( track->playCount() );
                 }
                 case Meta::valLabel:
-                    return QStringList( track->labels().toList() ).join( i18nc( "comma between labels", ", " ) );
+                    return QStringList( track->labels().toList() ).join( i18nc( "comma between list words", ", " ) );
                 default:
                     return QString( "Unknown field!" );
             }

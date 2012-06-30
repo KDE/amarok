@@ -16,12 +16,11 @@
 
 #include "SynchronizeTracksJob.h"
 
-#include "core/support/Debug.h"
 #include "statsyncing/TrackTuple.h"
 
 using namespace StatSyncing;
 
-static const int denom = 20;
+static const int denom = 20; // emit incementProgress() signal each N tracks
 static const int fuzz = denom / 2;
 
 SynchronizeTracksJob::SynchronizeTracksJob( const QList<TrackTuple> &tuples,
@@ -42,20 +41,20 @@ SynchronizeTracksJob::abort()
 void
 SynchronizeTracksJob::run()
 {
-    DEBUG_BLOCK
     emit totalSteps( ( m_tuples.size() + fuzz ) / denom );
 
     int i = 0;
+    int updatedTracksCount = 0;
     foreach( TrackTuple tuple, m_tuples )
     {
         if( m_abort )
             break;
 
         // no point in checking for hasUpdate() here, synchronize() is witty enough
-        tuple.synchronize( m_options );
+        updatedTracksCount += tuple.synchronize( m_options );
         if( ( i + fuzz ) % denom == 0 )
             emit incrementProgress();
     }
 
-    emit endProgressOperation( this );
+    emit endProgressOperation( this, updatedTracksCount );
 }

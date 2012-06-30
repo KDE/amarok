@@ -18,7 +18,6 @@
 
 #include "MetaValues.h"
 #include "core/meta/support/MetaConstants.h"
-#include "core/support/Debug.h"
 #include "statsyncing/TrackTuple.h"
 
 #include <KGlobal>
@@ -257,7 +256,7 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
                     return tuple.syncedPlaycount( m_options );
                 case Meta::valLabel:
                     return QStringList( tuple.syncedLabels( m_options ).toList() ).join(
-                        i18nc( "comma between labels", ", " ) );
+                        i18nc( "comma between list words", ", " ) );
                 default:
                     return QString( "Unknown field!" );
             }

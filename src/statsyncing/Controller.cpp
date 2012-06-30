@@ -20,9 +20,10 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "statsyncing/Process.h"
 #include "statsyncing/collection/CollectionProvider.h"
+
+#include <QTimer>
 
 using namespace StatSyncing;
 
@@ -47,7 +48,15 @@ static void writeProviders( KConfigGroup &group, const char *key, const QSet<QSt
 
 Controller::Controller( QObject* parent )
     : QObject( parent )
+    , m_timer( new QTimer( this ) )
 {
+    m_timer->setSingleShot( true );
+    connect( m_timer, SIGNAL(timeout()), SLOT(startNonInteractiveSynchronization()) );
+    CollectionManager *manager = CollectionManager::instance();
+    Q_ASSERT( manager );
+    connect( manager, SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)),
+             SLOT(slotCollectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)) );
+    delayedStartSynchronization();
 }
 
 Controller::~Controller()
@@ -57,14 +66,66 @@ Controller::~Controller()
 void
 Controller::synchronize()
 {
+    synchronize( Process::Interactive );
+}
+
+void
+Controller::delayedStartSynchronization()
+{
+    if( m_timer->isActive() )
+        m_timer->start( 5000 ); // reset the timeout
+    else
+    {
+        m_timer->start( 5000 );
+        CollectionManager *manager = CollectionManager::instance();
+        Q_ASSERT( manager );
+        connect( manager, SIGNAL(collectionDataChanged(Collections::Collection*)),
+                 SLOT(delayedStartSynchronization()) );
+    }
+}
+
+
+void
+Controller::slotCollectionAdded( Collections::Collection *collection,
+                                 CollectionManager::CollectionStatus status )
+{
+    if( status != CollectionManager::CollectionEnabled )
+        return;
+
+    KConfigGroup group = Amarok::config( "StatSyncing" );
+    QSet<QString> checkedProviderIds = readProviders( group, "checkedProviders" );
+    QSet<QString> unCheckedProviderIds = readProviders( group, "unCheckedProviders" );
+    CollectionProvider provider( collection );
+    QString id = provider.id();
+    if( unCheckedProviderIds.contains( id ) )
+        return;
+    if( checkedProviderIds.contains( id ) || provider.checkedByDefault() )
+        delayedStartSynchronization();
+}
+
+void
+Controller::startNonInteractiveSynchronization()
+{
+    CollectionManager *manager = CollectionManager::instance();
+    Q_ASSERT( manager );
+    disconnect( manager, SIGNAL(collectionDataChanged(Collections::Collection*)),
+                this, SLOT(delayedStartSynchronization()) );
+    synchronize( Process::NonInteractive );
+}
+
+void Controller::synchronize( int intMode )
+{
+    Process::Mode mode = Process::Mode( intMode );
     if( m_currentProcess )
     {
-        m_currentProcess.data()->raise();
+        if( mode == StatSyncing::Process::Interactive )
+            m_currentProcess.data()->raise();
         return;
     }
 
     ProviderPtrList providers;
     CollectionManager *manager = CollectionManager::instance();
+    Q_ASSERT( manager );
     QHash<Collections::Collection *, CollectionManager::CollectionStatus> collHash =
         manager->collections();
     QHashIterator<Collections::Collection *, CollectionManager::CollectionStatus> it( collHash );
@@ -80,10 +141,13 @@ Controller::synchronize()
 
     if( providers.count() <= 1 )
     {
-        // the text intentionally doesn't cope with 0 collections
-        QString text = i18n( "You only seem to have one collection. Statistics "
-            "synchronization only makes sense if there is more than one collection." );
-        Amarok::Components::logger()->longMessage( text );
+        if( mode == StatSyncing::Process::Interactive )
+        {
+            // the text intentionally doesn't cope with 0 collections
+            QString text = i18n( "You only seem to have one collection. Statistics "
+                "synchronization only makes sense if there is more than one collection." );
+            Amarok::Components::logger()->longMessage( text );
+        }
         return;
     }
 
@@ -111,7 +175,11 @@ Controller::synchronize()
             checkedProviders.insert( provider );
     }
 
-    m_currentProcess = new Process( providers, checkedProviders, fields, Process::Interactive, this );
+    if( mode == StatSyncing::Process::NonInteractive &&
+        ( checkedProviders.count() <= 1 || fields == 0 ) )
+        return;
+
+    m_currentProcess = new Process( providers, checkedProviders, fields, mode, this );
     connect( m_currentProcess.data(), SIGNAL(saveSettings(ProviderPtrSet,ProviderPtrSet,qint64)),
              SLOT(saveSettings(ProviderPtrSet,ProviderPtrSet,qint64)) );
     m_currentProcess.data()->start();

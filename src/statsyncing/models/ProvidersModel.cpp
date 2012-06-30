@@ -17,7 +17,6 @@
 #include "ProvidersModel.h"
 
 #include "core/meta/support/MetaConstants.h"
-#include "core/support/Debug.h"
 #include "statsyncing/Provider.h"
 
 #include <KLocalizedString>
@@ -33,7 +32,6 @@ ProvidersModel::ProvidersModel( const ProviderPtrList &providers,
     , m_checkedProviders( providers.toSet() & checkedProviders )
     , m_selectionModel( new QItemSelectionModel( this, this ) )
 {
-    DEBUG_BLOCK
     // selection defaults to model's tick state
     for( int i = 0; i < rowCount(); i++ )
     {
@@ -48,7 +46,6 @@ ProvidersModel::ProvidersModel( const ProviderPtrList &providers,
 
 ProvidersModel::~ProvidersModel()
 {
-    DEBUG_BLOCK
 }
 
 QVariant

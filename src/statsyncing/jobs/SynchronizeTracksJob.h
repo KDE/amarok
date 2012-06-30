@@ -58,7 +58,7 @@ class TrackTuple;
             /**
              * Emitted from worker thread when all time-consuming operations are done.
              */
-            void endProgressOperation( QObject *owner );
+            void endProgressOperation( QObject *owner, int updatedTracksCount = 0 );
 
         protected:
             virtual void run();

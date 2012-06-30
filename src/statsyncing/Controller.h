@@ -18,8 +18,11 @@
 #define STATSYNCING_CONTROLLER_H
 
 #include "amarok_export.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
 #include <QWeakPointer>
+
+class QTimer;
 
 namespace StatSyncing
 {
@@ -46,14 +49,26 @@ namespace StatSyncing
             void synchronize();
 
         private slots:
+            /**
+             * Wait a few seconds and if no collectionUpdate() signal arrives until then,
+             * start synchronization. Otherwise postpone the synchronization for a few
+             * seconds.
+             */
+            void delayedStartSynchronization();
+            void slotCollectionAdded( Collections::Collection* collection,
+                                      CollectionManager::CollectionStatus status );
+            void startNonInteractiveSynchronization();
+            void synchronize( int mode );
+
             void saveSettings( const ProviderPtrSet &checkedProviders,
                                const ProviderPtrSet &unCheckedProviders,
                                qint64 checkedFields );
 
         private:
-            Q_DISABLE_COPY(Controller)
+            Q_DISABLE_COPY( Controller )
 
             QWeakPointer<Process> m_currentProcess;
+            QTimer *m_timer;
     };
 
 } // namespace StatSyncing

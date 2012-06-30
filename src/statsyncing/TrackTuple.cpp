@@ -304,9 +304,10 @@ TrackTuple::syncedLabels( const Options &options ) const
     return labels;
 }
 
-void
+int
 TrackTuple::synchronize( const Options &options )
 {
+    QSet<const Provider *> updatedProviders;
     foreach( qint64 field, s_fields )
     {
         // catches if field should not be at all updated (either no change or not in options )
@@ -340,6 +341,7 @@ TrackTuple::synchronize( const Options &options )
             if( field != Meta::valPlaycount && !fieldUpdated( field, options, provider ) )
                 continue; // nothing to do for this field and provider
 
+            updatedProviders.insert( provider );
             TrackPtr track = it.value();
             switch( field )
             {
@@ -361,4 +363,5 @@ TrackTuple::synchronize( const Options &options )
 
     foreach( TrackPtr track, m_map )
         track->commit();
+    return updatedProviders.count();
 }

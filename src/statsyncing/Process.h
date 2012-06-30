@@ -87,9 +87,10 @@ namespace StatSyncing
         private slots:
             void slotSaveAndClose();
             void slotMatchTracks();
-            void slotTracksMatched( ThreadWeaver::Job* job );
+            void slotTracksMatched( ThreadWeaver::Job *job );
             void slotBack();
             void slotSynchronize();
+            void slotLogSynchronization( QObject *job, int updatedTracksCount );
 
         private:
             Q_DISABLE_COPY( Process )

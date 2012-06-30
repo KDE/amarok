@@ -17,7 +17,6 @@
 #include "ChooseProvidersPage.h"
 
 #include "core/meta/support/MetaConstants.h"
-#include "core/support/Debug.h"
 #include "statsyncing/models/ProvidersModel.h"
 
 #include <KPushButton>
@@ -30,7 +29,6 @@ ChooseProvidersPage::ChooseProvidersPage( QWidget *parent, Qt::WindowFlags f )
     : QWidget( parent, f )
     , m_providersModel( 0 )
 {
-    DEBUG_BLOCK
     setupUi( this );
     KPushButton *save = buttonBox->addButton( KGuiItem( i18n( "Save Settings and Close" ) ),
                                               QDialogButtonBox::ActionRole );

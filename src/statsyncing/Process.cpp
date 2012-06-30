@@ -43,7 +43,6 @@ Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &checke
     , m_matchedTracksModel( 0 )
     , m_dialog( new KDialog( The::mainWindow() ) )
 {
-    DEBUG_BLOCK
     m_availableFields << Meta::valRating << Meta::valFirstPlayed << Meta::valLastPlayed
                       << Meta::valPlaycount << Meta::valLabel;
     m_dialog->setCaption( i18n( "Synchronize Statistics" ) );
@@ -56,7 +55,6 @@ Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &checke
 
 Process::~Process()
 {
-    DEBUG_BLOCK
     KConfigGroup group = Amarok::config( "StatSyncingDialog" );
     m_dialog->saveDialogSize( group );
 }
@@ -77,7 +75,7 @@ Process::start()
         m_dialog->setMainWidget( m_providersPage.data() ); // takes ownership
         raise();
     }
-    else
+    else if( m_checkedFields )
         slotMatchTracks();
 }
 
@@ -102,7 +100,6 @@ Process::slotSaveAndClose()
 void
 Process::slotMatchTracks()
 {
-    DEBUG_BLOCK
     MatchTracksJob *job = new MatchTracksJob( m_providersModel->selectedProviders() );
     QString text = i18n( "Matching tracks..." );
     if( m_providersPage )
@@ -130,7 +127,6 @@ Process::slotMatchTracks()
 void
 Process::slotTracksMatched( ThreadWeaver::Job *job )
 {
-    DEBUG_BLOCK
     // won't be needed after this method returns; needs to be before early-returns to
     // prevent memory and refcounting leak
     MatchTracksJob *matchJob = dynamic_cast<MatchTracksJob *>( job );
@@ -157,28 +153,34 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
             columns << field;
     }
 
-    m_tracksPage = new MatchedTracksPage();
-    m_tracksPage.data()->setProviders( matchJob->providers() );
     m_matchedTracksModel = new MatchedTracksModel( matchJob->matchedTuples(), columns,
                                                    m_options, this );
-    m_tracksPage.data()->setMatchedTracksModel( m_matchedTracksModel );
-    foreach( QSharedPointer<Provider> providerPointer, matchJob->providers() )
-    {
-        Provider *provider = providerPointer.data();
-        if( !matchJob->uniqueTracks().value( provider ).isEmpty() )
-            m_tracksPage.data()->addUniqueTracksModel( provider, new SingleTracksModel(
-                    matchJob->uniqueTracks().value( provider ), columns, m_tracksPage.data() ) );
-        if( !matchJob->excludedTracks().value( provider ).isEmpty() )
-            m_tracksPage.data()->addExcludedTracksModel( provider, new SingleTracksModel(
-                matchJob->excludedTracks().value( provider ), columns, m_tracksPage.data() ) );
-    }
 
-    connect( m_tracksPage.data(), SIGNAL(back()), SLOT(slotBack()) );
-    connect( m_tracksPage.data(), SIGNAL(accepted()), SLOT(slotSynchronize()) );
-    connect( m_tracksPage.data(), SIGNAL(rejected()), SLOT(deleteLater()) );
-    m_dialog->mainWidget()->hide(); // otherwise it may last as a ghost image
-    m_dialog->setMainWidget( m_tracksPage.data() ); // takes ownership
-    raise();
+    if( m_matchedTracksModel->hasConflict() || m_mode == Interactive )
+    {
+        m_tracksPage = new MatchedTracksPage();
+        m_tracksPage.data()->setProviders( matchJob->providers() );
+        m_tracksPage.data()->setMatchedTracksModel( m_matchedTracksModel );
+        foreach( QSharedPointer<Provider> providerPointer, matchJob->providers() )
+        {
+            Provider *provider = providerPointer.data();
+            if( !matchJob->uniqueTracks().value( provider ).isEmpty() )
+                m_tracksPage.data()->addUniqueTracksModel( provider, new SingleTracksModel(
+                        matchJob->uniqueTracks().value( provider ), columns, m_tracksPage.data() ) );
+            if( !matchJob->excludedTracks().value( provider ).isEmpty() )
+                m_tracksPage.data()->addExcludedTracksModel( provider, new SingleTracksModel(
+                    matchJob->excludedTracks().value( provider ), columns, m_tracksPage.data() ) );
+        }
+
+        connect( m_tracksPage.data(), SIGNAL(back()), SLOT(slotBack()) );
+        connect( m_tracksPage.data(), SIGNAL(accepted()), SLOT(slotSynchronize()) );
+        connect( m_tracksPage.data(), SIGNAL(rejected()), SLOT(deleteLater()) );
+        m_dialog->mainWidget()->hide(); // otherwise it may last as a ghost image
+        m_dialog->setMainWidget( m_tracksPage.data() ); // takes ownership
+        raise();
+    }
+    else // NonInteractive mode without conflict
+        slotSynchronize();
 }
 
 void
@@ -201,7 +203,23 @@ Process::slotSynchronize()
             new SynchronizeTracksJob( m_matchedTracksModel->matchedTuples(), m_options );
     QString text = i18n( "Synchronizing tracks..." );
     Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
+    connect( job, SIGNAL(endProgressOperation(QObject*,int)),
+             SLOT(slotLogSynchronization(QObject*,int)) );
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(deleteLater()) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
+}
+
+void
+Process::slotLogSynchronization( QObject *job, int updatedTracksCount )
+{
+    Q_UNUSED( job )
+    QStringList providerNames;
+    foreach( QSharedPointer<Provider> provider, m_providersModel->checkedProviders() )
+        providerNames << provider->prettyName();
+    QString providers = providerNames.join( i18nc( "comma between list words", ", " ) );
+    QString text = i18ncp( "%2 is a list of collection names", "Synchronization of %2 "
+            "done. One track was updated.", "Synchronization of %2 done. %1 tracks were "
+            "updated.", updatedTracksCount, providers );
+    Amarok::Components::logger()->longMessage( text );
 }
