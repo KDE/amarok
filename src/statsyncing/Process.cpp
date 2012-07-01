@@ -45,18 +45,22 @@ Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &checke
 {
     m_availableFields << Meta::valRating << Meta::valFirstPlayed << Meta::valLastPlayed
                       << Meta::valPlaycount << Meta::valLabel;
-    m_dialog->setCaption( i18n( "Synchronize Statistics" ) );
-    m_dialog->setButtons( KDialog::None );
-    m_dialog->setInitialSize( QSize( 860, 500 ) );
-    m_dialog->restoreDialogSize( Amarok::config( "StatSyncingDialog" ) );
+    m_dialog.data()->setCaption( i18n( "Synchronize Statistics" ) );
+    m_dialog.data()->setButtons( KDialog::None );
+    m_dialog.data()->setInitialSize( QSize( 860, 500 ) );
+    m_dialog.data()->restoreDialogSize( Amarok::config( "StatSyncingDialog" ) );
     // delete this process when user hits the close button
     connect( m_dialog.data(), SIGNAL(finished()), SLOT(deleteLater()) );
 }
 
 Process::~Process()
 {
-    KConfigGroup group = Amarok::config( "StatSyncingDialog" );
-    m_dialog->saveDialogSize( group );
+    if( m_dialog )
+    {
+        KConfigGroup group = Amarok::config( "StatSyncingDialog" );
+        m_dialog.data()->saveDialogSize( group );
+        delete m_dialog.data(); // we cannot deleteLater, dialog references m_matchedTracksModel
+    }
 }
 
 void
@@ -71,8 +75,8 @@ Process::start()
         connect( m_providersPage.data(), SIGNAL(saveSettings()), SLOT(slotSaveAndClose()) );
         connect( m_providersPage.data(), SIGNAL(accepted()), SLOT(slotMatchTracks()) );
         connect( m_providersPage.data(), SIGNAL(rejected()), SLOT(deleteLater()) );
-        m_dialog->mainWidget()->hide(); // otherwise it may last as a ghost image
-        m_dialog->setMainWidget( m_providersPage.data() ); // takes ownership
+        m_dialog.data()->mainWidget()->hide(); // otherwise it may last as a ghost image
+        m_dialog.data()->setMainWidget( m_providersPage.data() ); // takes ownership
         raise();
     }
     else if( m_checkedFields )
@@ -82,9 +86,9 @@ Process::start()
 void
 Process::raise()
 {
-    m_dialog->show();
-    m_dialog->activateWindow();
-    m_dialog->raise();
+    m_dialog.data()->show();
+    m_dialog.data()->activateWindow();
+    m_dialog.data()->raise();
 }
 
 void
@@ -94,14 +98,14 @@ Process::slotSaveAndClose()
         m_checkedFields = m_providersPage.data()->checkedFields();
     emit saveSettings( m_providersModel->checkedProviders(),
                        m_providersModel->unCheckedProviders(), m_checkedFields );
-    m_dialog->close(); // triggers deleteLater on this Process
+    m_dialog.data()->close(); // triggers deleteLater on this Process
 }
 
 void
 Process::slotMatchTracks()
 {
     MatchTracksJob *job = new MatchTracksJob( m_providersModel->selectedProviders() );
-    QString text = i18n( "Matching tracks..." );
+    QString text = i18n( "Matching Tracks for Statistics Synchronization" );
     if( m_providersPage )
     {
         ChooseProvidersPage *page = m_providersPage.data(); // too lazy to type
@@ -175,8 +179,8 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
         connect( m_tracksPage.data(), SIGNAL(back()), SLOT(slotBack()) );
         connect( m_tracksPage.data(), SIGNAL(accepted()), SLOT(slotSynchronize()) );
         connect( m_tracksPage.data(), SIGNAL(rejected()), SLOT(deleteLater()) );
-        m_dialog->mainWidget()->hide(); // otherwise it may last as a ghost image
-        m_dialog->setMainWidget( m_tracksPage.data() ); // takes ownership
+        m_dialog.data()->mainWidget()->hide(); // otherwise it may last as a ghost image
+        m_dialog.data()->setMainWidget( m_tracksPage.data() ); // takes ownership
         raise();
     }
     else // NonInteractive mode without conflict
@@ -195,13 +199,13 @@ Process::slotSynchronize()
 {
     // disconnect, otherwise we prematurely delete Process and thus m_matchedTracksModel
     disconnect( m_dialog.data(), SIGNAL(finished()), this, SLOT(deleteLater()) );
-    m_dialog->close();
+    m_dialog.data()->close();
     emit saveSettings( m_providersModel->checkedProviders(),
                        m_providersModel->unCheckedProviders(), m_checkedFields );
 
     SynchronizeTracksJob *job =
             new SynchronizeTracksJob( m_matchedTracksModel->matchedTuples(), m_options );
-    QString text = i18n( "Synchronizing tracks..." );
+    QString text = i18n( "Synchronizing Track Statistics" );
     Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
     connect( job, SIGNAL(endProgressOperation(QObject*,int)),
              SLOT(slotLogSynchronization(QObject*,int)) );

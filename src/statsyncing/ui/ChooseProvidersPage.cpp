@@ -147,7 +147,6 @@ ChooseProvidersPage::updateSynchronizedLabel()
         return;
 
     qint64 fields = checkedFields();
-    // TODO: enable/disable save prefs and close button based on fields variable now
     fields &= m_providersModel->writableTrackStatsDataIntersection();
     QString fieldNames = m_providersModel->fieldsToString( fields );
     synchronizedLabel->setText( i18n( "Synchronized: %1", fieldNames ) );

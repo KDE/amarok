@@ -20,8 +20,6 @@
 #include "core/meta/support/MetaConstants.h"
 #include "statsyncing/TrackTuple.h"
 
-#include <KGlobal>
-#include <KLocale>
 #include <KLocalizedString>
 
 using namespace StatSyncing;
@@ -232,7 +230,6 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
 {
     const Provider *firstProvider = tuple.provider( 0 );
     TrackPtr first = tuple.track( firstProvider );
-    KLocale *locale = KGlobal::locale();
     switch( role )
     {
         case Qt::DisplayRole:
@@ -243,17 +240,11 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
                 case Meta::valRating:
                     return tuple.syncedRating( m_options );
                 case Meta::valFirstPlayed:
-                    return tuple.syncedFirstPlayed( m_options ).isValid() ?
-                        locale->formatDateTime( tuple.syncedFirstPlayed( m_options ),
-                                                KLocale::FancyShortDate ) :
-                        QVariant();
+                    return localeDate( tuple.syncedFirstPlayed( m_options ) );
                 case Meta::valLastPlayed:
-                    return tuple.syncedLastPlayed( m_options ).isValid() ?
-                        locale->formatDateTime( tuple.syncedLastPlayed( m_options ),
-                                                KLocale::FancyShortDate ) :
-                        QVariant();
+                    return localeDate( tuple.syncedLastPlayed( m_options ) );
                 case Meta::valPlaycount:
-                    return tuple.syncedPlaycount( m_options );
+                    return QString::number( tuple.syncedPlaycount( m_options ) );
                 case Meta::valLabel:
                     return QStringList( tuple.syncedLabels( m_options ).toList() ).join(
                         i18nc( "comma between list words", ", " ) );

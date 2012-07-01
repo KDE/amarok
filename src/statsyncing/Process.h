@@ -102,7 +102,8 @@ namespace StatSyncing
             qint64 m_checkedFields;
             MatchedTracksModel *m_matchedTracksModel;
 
-            QScopedPointer<KDialog> m_dialog;
+            // has mainWindow as parent, can be deleted by it in corner cases
+            QWeakPointer<KDialog> m_dialog;
             QWeakPointer<ChooseProvidersPage> m_providersPage;
             QWeakPointer<MatchedTracksPage> m_tracksPage;
     };

@@ -20,6 +20,7 @@
 #include "core/support/Debug.h"
 #include "statsyncing/TrackTuple.h"
 #include "statsyncing/models/MatchedTracksModel.h"
+#include "statsyncing/ui/TrackDelegate.h"
 
 #include <KStandardGuiItem>
 #include <KPushButton>
@@ -110,6 +111,7 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     connect( m_proxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(refreshStatusText()) );
     connect( m_proxyModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(refreshStatusText()) );
     treeView->setModel( m_proxyModel );
+    treeView->setItemDelegate( new TrackDelegate( treeView ) );
 
     connect( matchedRadio, SIGNAL(toggled(bool)), SLOT(showMatchedTracks(bool)) );
     connect( uniqueRadio, SIGNAL(toggled(bool)), SLOT(showUniqueTracks(bool)) );

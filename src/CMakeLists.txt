@@ -598,6 +598,7 @@ set( statsyncing_SRCS
     statsyncing/models/SingleTracksModel.cpp
     statsyncing/ui/ChooseProvidersPage.cpp
     statsyncing/ui/MatchedTracksPage.cpp
+    statsyncing/ui/TrackDelegate.cpp
 )
 
 kde4_add_ui_files(statsyncing_SRCS

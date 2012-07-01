@@ -14,47 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef STATSYNCING_COMMONMODEL_H
-#define STATSYNCING_COMMONMODEL_H
+#ifndef STATSYNCING_TRACKDELEGATE_H
+#define STATSYNCING_TRACKDELEGATE_H
 
-#include "statsyncing/Track.h"
-
-#include <QList>
-#include <QVariant>
-#include <QFont>
+#include <QStyledItemDelegate>
 
 namespace StatSyncing
 {
-    /**
-     * Helper class for {Matched,Single}TracksModel's to avoid code duplication
-     */
-    class CommonModel
+    class TrackDelegate : public QStyledItemDelegate
     {
         public:
-            enum {
-                ResizeModeRole = Qt::UserRole,
-                UserRole
-            };
+            explicit TrackDelegate( QObject *parent = 0 );
 
-            explicit CommonModel( const QList<qint64> &columns );
+            void paint( QPainter *painter, const QStyleOptionViewItem &option,
+                        const QModelIndex &index ) const;
+            QSize sizeHint( const QStyleOptionViewItem &option,
+                            const QModelIndex &index ) const;
 
-            QVariant headerData( int section, Qt::Orientation orientation,
-                                 int role = Qt::DisplayRole ) const;
-
-        protected:
-            QVariant sizeHintData( qint64 field ) const;
-            QVariant textAlignmentData( qint64 field ) const;
-
-            QVariant trackData( const TrackPtr &track, qint64 field, int role ) const;
-            QVariant trackTitleData( const TrackPtr &track ) const;
-            QVariant trackToolTipData( const TrackPtr &track ) const;
-            QVariant localeDate( const QDateTime &date ) const;
-
-            QList<qint64> m_columns;
-            QFont m_normalFont;
-            QFont m_boldFont;
+        private:
+            const QSize m_starsSize;
     };
+}
 
-} // namespace StatSyncing
-
-#endif // STATSYNCING_COMMONMODEL_H
+#endif // STATSYNCING_TRACKDELEGATE_H

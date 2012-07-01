@@ -86,6 +86,7 @@ CommonModel::textAlignmentData( qint64 field ) const
 {
     switch( field )
     {
+        case Meta::valRating:
         case Meta::valFirstPlayed:
         case Meta::valLastPlayed:
         case Meta::valPlaycount:
@@ -97,7 +98,6 @@ CommonModel::textAlignmentData( qint64 field ) const
 QVariant
 CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
 {
-    KLocale *locale = KGlobal::locale();
     switch( role )
     {
         case Qt::DisplayRole:
@@ -108,13 +108,9 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                 case Meta::valRating:
                     return track->rating();
                 case Meta::valFirstPlayed:
-                    return track->firstPlayed().isValid() ?
-                        locale->formatDateTime( track->firstPlayed(), KLocale::FancyShortDate ) :
-                        QVariant();
+                    return localeDate( track->firstPlayed() );
                 case Meta::valLastPlayed:
-                    return track->lastPlayed().isValid() ?
-                        locale->formatDateTime( track->lastPlayed(), KLocale::FancyShortDate ) :
-                        QVariant();
+                    return localeDate( track->lastPlayed() );
                 case Meta::valPlaycount:
                 {
                     int recent = track->recentPlayCount();
@@ -154,4 +150,12 @@ QVariant
 CommonModel::trackToolTipData( const TrackPtr &track ) const
 {
     return trackTitleData( track ); // TODO nicer toolTip, display more fields
+}
+
+QVariant
+CommonModel::localeDate(const QDateTime& date) const
+{
+    KLocale *locale = KGlobal::locale();
+    return date.isValid() ? locale->formatDateTime( date, KLocale::FancyShortDate ) :
+           QVariant();
 }
