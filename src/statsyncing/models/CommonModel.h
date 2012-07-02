@@ -33,8 +33,10 @@ namespace StatSyncing
         public:
             enum {
                 ResizeModeRole = Qt::UserRole,
+                FieldRole,
                 UserRole
             };
+            static const QSize s_ratingSize;
 
             explicit CommonModel( const QList<qint64> &columns );
 
@@ -48,7 +50,6 @@ namespace StatSyncing
             QVariant trackData( const TrackPtr &track, qint64 field, int role ) const;
             QVariant trackTitleData( const TrackPtr &track ) const;
             QVariant trackToolTipData( const TrackPtr &track ) const;
-            QVariant localeDate( const QDateTime &date ) const;
 
             QList<qint64> m_columns;
             QFont m_normalFont;

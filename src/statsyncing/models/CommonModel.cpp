@@ -18,15 +18,18 @@
 
 #include "MetaValues.h"
 #include "core/meta/support/MetaConstants.h"
+#include "core/support/Debug.h"
 
-#include <KGlobal>
 #include <KIcon>
-#include <KLocale>
+#include <KLocalizedString>
 
+#include <QApplication>
 #include <QFontMetrics>
 #include <QHeaderView>
 
 using namespace StatSyncing;
+
+const QSize CommonModel::s_ratingSize( 5*16, 16 );
 
 CommonModel::CommonModel( const QList<qint64> &columns )
     : m_columns( columns )
@@ -47,7 +50,7 @@ CommonModel::headerData( int section, Qt::Orientation orientation, int role ) co
             return Meta::i18nForField( field );
         case Qt::SizeHintRole:
             return sizeHintData( field );
-        case CommonModel::ResizeModeRole:
+        case ResizeModeRole:
             switch( field )
             {
                 case Meta::valTitle:
@@ -60,6 +63,8 @@ CommonModel::headerData( int section, Qt::Orientation orientation, int role ) co
                 default:
                     return QHeaderView::Interactive;
             }
+        case FieldRole:
+            return field;
     }
     return QVariant();
 }
@@ -67,16 +72,56 @@ CommonModel::headerData( int section, Qt::Orientation orientation, int role ) co
 QVariant
 CommonModel::sizeHintData( qint64 field ) const
 {
-    static const QSize playCountSize = QFontMetrics( m_boldFont ).size( 0, "888 (88)" ) + QSize( 10, 0 );
-    static const QSize dateSize = QFontMetrics( m_boldFont ).size( 0, "88.88.8888 88:88" ) + QSize( 10, 0 );
-
     switch( field )
     {
-        case Meta::valPlaycount:
-            return playCountSize;
+        case Meta::valRating:
+        {
+            static QSize size;
+            if( size.isValid() ) // optimization
+                return size;
+            QStyleOptionViewItemV4 opt;
+            opt.features = QStyleOptionViewItemV2::HasDisplay
+                         | QStyleOptionViewItemV2::HasCheckIndicator
+                         | QStyleOptionViewItemV2::HasDecoration;
+            opt.state = QStyle::State_Enabled;
+            opt.decorationSize = s_ratingSize;
+
+            const QWidget *widget = opt.widget;
+            QStyle *style = widget ? widget->style() : QApplication::style();
+            size = style->sizeFromContents( QStyle::CT_ItemViewItem, &opt, QSize(), widget );
+            return size;
+        }
         case Meta::valFirstPlayed:
         case Meta::valLastPlayed:
-            return dateSize;
+        {
+            static QSize size;
+            if( size.isValid() ) // optimization
+                return size;
+            QStyleOptionViewItemV4 opt;
+            opt.features = QStyleOptionViewItemV2::HasDisplay;
+            opt.state = QStyle::State_Enabled;
+            opt.text = "88.88.8888 88:88";
+            opt.font.setBold( true );
+
+            QStyle *style = QApplication::style();
+            size = style->sizeFromContents( QStyle::CT_ItemViewItem, &opt, QSize(), 0 );
+            return size;
+        }
+        case Meta::valPlaycount:
+        {
+            static QSize size;
+            if( size.isValid() ) // optimization
+                return size;
+            QStyleOptionViewItemV4 opt;
+            opt.features = QStyleOptionViewItemV2::HasDisplay;
+            opt.state = QStyle::State_Enabled;
+            opt.text = "888 (88)";
+            opt.font.setBold( true );
+
+            QStyle *style = QApplication::style();
+            size = style->sizeFromContents( QStyle::CT_ItemViewItem, &opt, QSize(), 0 );
+            return size;
+        }
     }
     return QVariant();
 }
@@ -108,14 +153,14 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                 case Meta::valRating:
                     return track->rating();
                 case Meta::valFirstPlayed:
-                    return localeDate( track->firstPlayed() );
+                    return track->firstPlayed();
                 case Meta::valLastPlayed:
-                    return localeDate( track->lastPlayed() );
+                    return track->lastPlayed();
                 case Meta::valPlaycount:
                 {
                     int recent = track->recentPlayCount();
-                    return recent ? i18nc( "%1 is play count and %2 is recent play count",
-                        "%1 (%2)", track->playCount(), recent ) : QString::number( track->playCount() );
+                    return recent ? QVariant( i18nc( "%1 is play count and %2 is recent play count",
+                        "%1 (%2)", track->playCount(), recent ) ) : QVariant( track->playCount() );
                 }
                 case Meta::valLabel:
                     return QStringList( track->labels().toList() ).join( i18nc( "comma between list words", ", " ) );
@@ -136,6 +181,10 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
             break;
         case Qt::TextAlignmentRole:
             return textAlignmentData( field );
+        case Qt::SizeHintRole:
+            return sizeHintData( field );
+        case FieldRole:
+            return field;
     }
     return QVariant();
 }
@@ -150,12 +199,4 @@ QVariant
 CommonModel::trackToolTipData( const TrackPtr &track ) const
 {
     return trackTitleData( track ); // TODO nicer toolTip, display more fields
-}
-
-QVariant
-CommonModel::localeDate(const QDateTime& date) const
-{
-    KLocale *locale = KGlobal::locale();
-    return date.isValid() ? locale->formatDateTime( date, KLocale::FancyShortDate ) :
-           QVariant();
 }

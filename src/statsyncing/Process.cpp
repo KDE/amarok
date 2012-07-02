@@ -86,9 +86,14 @@ Process::start()
 void
 Process::raise()
 {
-    m_dialog.data()->show();
-    m_dialog.data()->activateWindow();
-    m_dialog.data()->raise();
+    if( m_providersPage || m_tracksPage )
+    {
+        m_dialog.data()->show();
+        m_dialog.data()->activateWindow();
+        m_dialog.data()->raise();
+    }
+    else
+        m_mode = Interactive; // schedule dialog should be shown when something happens
 }
 
 void

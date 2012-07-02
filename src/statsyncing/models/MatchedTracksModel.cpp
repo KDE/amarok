@@ -240,11 +240,11 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
                 case Meta::valRating:
                     return tuple.syncedRating( m_options );
                 case Meta::valFirstPlayed:
-                    return localeDate( tuple.syncedFirstPlayed( m_options ) );
+                    return tuple.syncedFirstPlayed( m_options );
                 case Meta::valLastPlayed:
-                    return localeDate( tuple.syncedLastPlayed( m_options ) );
+                    return tuple.syncedLastPlayed( m_options );
                 case Meta::valPlaycount:
-                    return QString::number( tuple.syncedPlaycount( m_options ) );
+                    return tuple.syncedPlaycount( m_options );
                 case Meta::valLabel:
                     return QStringList( tuple.syncedLabels( m_options ).toList() ).join(
                         i18nc( "comma between list words", ", " ) );
@@ -263,6 +263,10 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
             return tuple.fieldUpdated( field, m_options ) ? m_boldFont : m_normalFont;
         case Qt::TextAlignmentRole:
             return textAlignmentData( field );
+        case Qt::SizeHintRole:
+            return sizeHintData( field );
+        case CommonModel::FieldRole:
+            return field;
         case TupleFlagsRole:
             int flags = tuple.hasUpdate( m_options ) ? HasUpdate : 0;
             flags |= tuple.hasConflict( m_options ) ? HasConflict : 0;

@@ -16,18 +16,23 @@
 
 #include "TrackDelegate.h"
 
+#include "MetaValues.h"
 #include "core/support/Debug.h"
+#include "statsyncing/models/CommonModel.h"
 #include "widgets/kratingpainter.h"
+
+#include <KGlobal>
+#include <KIcon>
+#include <KLocale>
 
 #include <QApplication>
 #include <QPainter>
-#include <KIcon>
+#include <QDateTime>
 
 using namespace StatSyncing;
 
 TrackDelegate::TrackDelegate( QObject *parent )
     : QStyledItemDelegate( parent )
-    , m_starsSize( 5*16, 16 )
 {
 }
 
@@ -35,14 +40,15 @@ void
 TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
                       const QModelIndex &index ) const
 {
+    qint64 field = index.data( CommonModel::FieldRole ).value<qint64>();
     QVariant data = index.data();
-    if( data.type() == QVariant::Int )
+    if( field == Meta::valRating && data.type() == QVariant::Int )
     {
         // following is largely inspired by QStyledItemDelegate::paint()
         QStyleOptionViewItemV4 opt = option;
         initStyleOption( &opt, index );
 
-        QPixmap starsPixmap( m_starsSize );
+        QPixmap starsPixmap( CommonModel::s_ratingSize );
         starsPixmap.fill( Qt::transparent );
         {
             Amarok::KRatingPainter ratingPainter;
@@ -61,13 +67,13 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
                 rating = 0;
             }
             QPainter starsPainter( &starsPixmap );
-            ratingPainter.paint( &starsPainter, QRect( QPoint( 0, 0 ), m_starsSize ),
-                                 rating, hoverRating );
+            ratingPainter.paint( &starsPainter, QRect( QPoint( 0, 0 ),
+                    CommonModel::s_ratingSize ), rating, hoverRating );
         }
 
         opt.text.clear();
         opt.features |= QStyleOptionViewItemV2::HasDecoration;
-        opt.decorationSize = m_starsSize;
+        opt.decorationSize = CommonModel::s_ratingSize;
         opt.decorationAlignment = Qt::AlignRight | Qt::AlignVCenter;
         opt.decorationPosition = QStyleOptionViewItem::Right;
         opt.icon = QIcon( starsPixmap );
@@ -80,27 +86,15 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
         QStyledItemDelegate::paint( painter, option, index );
 }
 
-QSize
-TrackDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QString
+TrackDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {
-    QVariant data = index.data();
-    if( data.type() == QVariant::Int )
+    if( value.type() == QVariant::DateTime )
     {
-        static QSize size;
-        if( size.isValid() ) // optimization
-            return size;
-        // following is largely inspired by QStyledItemDelegate::sizeHint()
-        QStyleOptionViewItemV4 opt = option;
-        initStyleOption( &opt, index );
-        opt.text.clear();
-        opt.features |= QStyleOptionViewItemV2::HasCheckIndicator;
-        opt.features |= QStyleOptionViewItemV2::HasDecoration;
-        opt.decorationSize = m_starsSize;
-
-        const QWidget *widget = opt.widget;
-        QStyle *style = widget ? widget->style() : QApplication::style();
-        size = style->sizeFromContents( QStyle::CT_ItemViewItem, &opt, QSize(), widget );
-        return size;
+        KLocale *klocale = KGlobal::locale();
+        QDateTime date = value.toDateTime();
+        return date.isValid() ? klocale->formatDateTime( date, KLocale::FancyShortDate )
+               : QString();
     }
-    return QStyledItemDelegate::sizeHint( option, index );
+    return QStyledItemDelegate::displayText( value, locale );
 }

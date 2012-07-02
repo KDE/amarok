@@ -28,11 +28,7 @@ namespace StatSyncing
 
             void paint( QPainter *painter, const QStyleOptionViewItem &option,
                         const QModelIndex &index ) const;
-            QSize sizeHint( const QStyleOptionViewItem &option,
-                            const QModelIndex &index ) const;
-
-        private:
-            const QSize m_starsSize;
+            QString displayText( const QVariant &value, const QLocale &locale ) const;
     };
 }
 
