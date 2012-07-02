@@ -25,7 +25,7 @@ using namespace Amarok;
 
 QStringList FileTypeSupport::s_fileTypeStrings = QStringList()
 #ifndef UTILITIES_BUILD
-        << i18n( "Other" )
+        << I18N_NOOP( "Other" )
 #else
         << QLatin1String( "Other" )
 #endif
@@ -46,7 +46,11 @@ QStringList FileTypeSupport::s_fileTypeStrings = QStringList()
 QString
 FileTypeSupport::toString( Amarok::FileType ft )
 {
+#ifndef UTILITIES_BUILD
+    return i18n( s_fileTypeStrings.at( ft ).toLatin1() );
+#else
     return s_fileTypeStrings.at( ft );
+#endif
 }
 
 QStringList
