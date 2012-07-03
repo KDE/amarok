@@ -46,6 +46,7 @@ namespace AmarokScript
             void clearPlaylist();
             void playByIndex( int index );
             void playMedia( const QUrl &url );
+            void playMediaList( const QVariantList &urls );
             void removeCurrentTrack();
             void removeByIndex( int index );
             void savePlaylist( const QString& path );

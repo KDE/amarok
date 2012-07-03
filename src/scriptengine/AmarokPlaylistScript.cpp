@@ -64,17 +64,16 @@ namespace AmarokScript
 
     void AmarokPlaylistScript::addMedia( const QUrl &url )
     {
-        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-        The::playlistController()->insertOptioned( track, Playlist::Append );
+        QList<KUrl> list = QList<KUrl>() << url;
+        The::playlistController()->insertOptioned( list, Playlist::Append );
     }
 
 	void AmarokPlaylistScript::addMediaList( const QVariantList &urls )
     {
-        KUrl::List list;
+        QList<KUrl> list;
         foreach( const QVariant &url, urls )
             list << url.toUrl();
-        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( list );
-        The::playlistController()->insertOptioned( tracks, Playlist::Append );
+        The::playlistController()->insertOptioned( list, Playlist::Append );
     }
 
     void AmarokPlaylistScript::clearPlaylist()
@@ -89,9 +88,16 @@ namespace AmarokScript
 
     void AmarokPlaylistScript::playMedia( const QUrl &url )
     {
-        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-        if( track )
-            The::playlistController()->insertOptioned( track, Playlist::DirectPlay | Playlist::Unique );
+        QList<KUrl> list = QList<KUrl>() << url;
+        The::playlistController()->insertOptioned( list, Playlist::DirectPlay );
+    }
+
+    void AmarokPlaylistScript::playMediaList(const QVariantList& urls)
+    {
+        QList<KUrl> list;
+        foreach( const QVariant &url, urls )
+            list << url.toUrl();
+        The::playlistController()->insertOptioned( list, Playlist::DirectPlay );
     }
 
     void AmarokPlaylistScript::removeCurrentTrack()

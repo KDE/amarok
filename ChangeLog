@@ -4,10 +4,13 @@ Amarok ChangeLog
 
 VERSION 2.6
   CHANGES:
+    * Add Amarok.Playlist.playMediaList() script bindings for API symmetry.
     * Building the spectrum analyzer applet can now be disabled with a CMake
       argument.
 
   BUGFIXES:
+    * Fix Amarok.Playlist.{add,play}Media() and addMediaList() Qt script
+      bindings methods not being able to add playlists. (BR 232697)
     * Add "Last Played" back to the Edit Filter dialog. (BR 302746)
     * Correct rounding for rating in Track Details dialog. (BR 273363)
     * Fix Context view not being fully formed on startup. (BR 292895)
