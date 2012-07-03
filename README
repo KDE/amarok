@@ -83,8 +83,8 @@ Optional
       * Loudmouth, the Jabber library, http://www.loudmouth-project.org/
       * Qt must be compiled with Glib enabled
 
-    * Liblastfm 0.3
-      (For scrobbling, internet radio, and artist info)
+    * Liblastfm 0.3 (1.0 or newer is incompatible, porting is pending for Amarok 2.7)
+      (scrobbling, internet radio, and artist info)
       http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2
       http://github.com/mxcl/liblastfm/tree/master
 
