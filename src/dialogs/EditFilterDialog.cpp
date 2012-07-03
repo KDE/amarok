@@ -109,6 +109,7 @@ EditFilterDialog::initTokenPool()
     m_ui->tpTokenPool->addToken( tokenForField( Meta::valScore ) );
     m_ui->tpTokenPool->addToken( tokenForField( Meta::valRating ) );
     m_ui->tpTokenPool->addToken( tokenForField( Meta::valFirstPlayed ) );
+    m_ui->tpTokenPool->addToken( tokenForField( Meta::valLastPlayed ) );
     m_ui->tpTokenPool->addToken( tokenForField( Meta::valPlaycount ) );
     m_ui->tpTokenPool->addToken( tokenForField( Meta::valLabel ) );
     m_ui->tpTokenPool->addToken( tokenForField( Meta::valModified ) );
