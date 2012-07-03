@@ -1084,7 +1084,8 @@ TagDialog::getTagsFromMultipleTracks() const
     if( scoreCount > 0 )
         map.insert( Meta::Field::SCORE, scoreSum / scoreCount );
     if( ratingCount > 0 )
-        map.insert( Meta::Field::RATING, ratingSum / ratingCount );
+        // the extra fuzz is for emulating rounding to nearest integer
+        map.insert( Meta::Field::RATING, ( ratingSum + ratingCount / 2 ) / ratingCount );
 
     map.insert( Meta::Field::FIRST_PLAYED, firstPlayed );
     map.insert( Meta::Field::LAST_PLAYED, lastPlayed );

@@ -8,6 +8,7 @@ VERSION 2.6
       argument.
 
   BUGFIXES:
+    * Correct rounding for rating in Track Details dialog. (BR 273363)
     * Fix Context view not being fully formed on startup. (BR 292895)
     * Fix memory leaks and a string zero termination issue in MP3tunes.
     * Don't poll for mounts every second, solid notifies us. (BR 289462)
