@@ -98,14 +98,18 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
             QString uid;
         };
 
-        void cacheUrlsInit();
-        void cacheUrlsInsert( UrlEntry entry );
-        void cacheUrlsRemove( int id );
+        void urlsCacheInit();
+        void urlsCacheInsert( UrlEntry entry );
+        void urlsCacheRemove( int id );
 
+        /// maps UrlEntry id to UrlEntry
         QHash<int, UrlEntry> m_urlsCache;
-        QHash<QString, int> m_urlsCacheUid;
-        QHash<QString, int> m_urlsCachePath;
-        QMultiHash<int, int> m_urlsCacheDirectory;
+        /// maps uid to UrlEntry id
+        QHash<QString, int> m_uidCache;
+        /// maps path to UrlEntry id
+        QHash<QString, int> m_pathCache;
+        /// maps directory if to UrlEntry id
+        QMultiHash<int, int> m_directoryCache;
 
 };
 

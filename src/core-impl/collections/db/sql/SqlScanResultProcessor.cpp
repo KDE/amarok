@@ -73,7 +73,7 @@ SqlScanResultProcessor::commit()
     }
     */
 
-    cacheUrlsInit();
+    urlsCacheInit();
 
     // -- call the base implementation
     ScanResultProcessor::commit();
@@ -176,22 +176,22 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
 
     // --- find an existing track by uid
     KSharedPtr<Meta::SqlTrack> metaTrack;
-    if( m_urlsCacheUid.contains( uid ) )
+    if( m_uidCache.contains( uid ) )
     {
-        UrlEntry entry = m_urlsCache.value( m_urlsCacheUid.value( uid ) );
-        cacheUrlsRemove( entry.id ); // remove the old cache entry
+        UrlEntry entry = m_urlsCache.value( m_uidCache.value( uid ) );
+        urlsCacheRemove( entry.id ); // remove the old cache entry
         entry.path = track->path();
         entry.directoryId = directoryId;
-        cacheUrlsInsert( entry );
+        urlsCacheInsert( entry );
 
         // check if there is an older track at the same position.
-        if( m_urlsCachePath.contains( track->path() ) )
+        if( m_pathCache.contains( track->path() ) )
         {
-            const UrlEntry &otherEntry = m_urlsCache.value( m_urlsCachePath.value( track->path() ) );
+            const UrlEntry &otherEntry = m_urlsCache.value( m_pathCache.value( track->path() ) );
             if( entry.id != otherEntry.id )
             {
                 removeTrack( otherEntry.id, otherEntry.uid );
-                cacheUrlsRemove( otherEntry.id );
+                urlsCacheRemove( otherEntry.id );
             }
         }
         metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_collection->trackForUrl( uid ) );
@@ -202,14 +202,14 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
         UrlEntry entry;
         entry.id = -1;
         entry.path = track->path();
-        if( m_urlsCachePath.contains( track->path() ) )
+        if( m_pathCache.contains( track->path() ) )
         {
-            UrlEntry entry = m_urlsCache.value( m_urlsCachePath.value( track->path() ) );
-            cacheUrlsRemove( entry.id ); // remove the old cache entry
+            UrlEntry entry = m_urlsCache.value( m_pathCache.value( track->path() ) );
+            urlsCacheRemove( entry.id ); // remove the old cache entry
         }
         entry.uid = uid;
         entry.directoryId = directoryId;
-        cacheUrlsInsert( entry ); // and insert it again (or new)
+        urlsCacheInsert( entry ); // and insert it again (or new)
 
         metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_collection->getTrack( deviceId, rpath, directoryId, uid ) );
     }
@@ -365,7 +365,7 @@ void
 SqlScanResultProcessor::deleteDeletedTracks( int directoryId )
 {
     // -- find all tracks
-    QList<int> urlIds = m_urlsCacheDirectory.values( directoryId );
+    QList<int> urlIds = m_directoryCache.values( directoryId );
 
     // -- check if the tracks have been found during the scan
     foreach( int urlId, urlIds )
@@ -375,7 +375,7 @@ SqlScanResultProcessor::deleteDeletedTracks( int directoryId )
         if( !m_foundTracks.contains( uid ) )
         {
             removeTrack( urlId, uid );
-            cacheUrlsRemove( urlId );
+            urlsCacheRemove( urlId );
         }
     }
 }
@@ -392,7 +392,7 @@ SqlScanResultProcessor::removeTrack( int urlId, const QString uid )
 
 
 void
-SqlScanResultProcessor::cacheUrlsInit()
+SqlScanResultProcessor::urlsCacheInit()
 {
     SqlStorage *storage = m_collection->sqlStorage();
 
@@ -421,17 +421,17 @@ SqlScanResultProcessor::cacheUrlsInit()
         entry.directoryId = directoryId;
         entry.uid = uid;
 
-        cacheUrlsInsert( entry );
+        urlsCacheInsert( entry );
     }
 }
 
 void
-SqlScanResultProcessor::cacheUrlsInsert( UrlEntry entry )
+SqlScanResultProcessor::urlsCacheInsert( UrlEntry entry )
 {
     if( !m_urlsCache.contains( entry.id ) )
-        cacheUrlsRemove( entry.id );
+        urlsCacheRemove( entry.id );
 
-    if( !entry.path.isEmpty() && m_urlsCachePath.contains( entry.path ) ) {
+    if( !entry.path.isEmpty() && m_pathCache.contains( entry.path ) ) {
         // no idea how this can happen, but we clean it up
         debug() << "Duplicate path in database:"<<entry.path;
         removeTrack( entry.id, entry.uid ); // this will not delete the statistics
@@ -439,23 +439,20 @@ SqlScanResultProcessor::cacheUrlsInsert( UrlEntry entry )
     }
 
     m_urlsCache.insert( entry.id, entry );
-    m_urlsCacheUid.insert( entry.uid, entry.id );
-    m_urlsCachePath.insert( entry.path, entry.id );
-    m_urlsCacheDirectory.insert( entry.directoryId, entry.id );
+    m_uidCache.insert( entry.uid, entry.id );
+    m_pathCache.insert( entry.path, entry.id );
+    m_directoryCache.insert( entry.directoryId, entry.id );
 }
 
 void
-SqlScanResultProcessor::cacheUrlsRemove( int id )
+SqlScanResultProcessor::urlsCacheRemove( int id )
 {
     if( !m_urlsCache.contains( id ) )
         return;
 
     const UrlEntry &entry = m_urlsCache.value( id );
-    m_urlsCacheUid.remove( entry.uid );
-    m_urlsCachePath.remove( entry.path );
-    m_urlsCacheDirectory.remove( entry.directoryId, id );
+    m_uidCache.remove( entry.uid );
+    m_pathCache.remove( entry.path );
+    m_directoryCache.remove( entry.directoryId, id );
     m_urlsCache.remove( id );
 }
-
-#include "SqlScanResultProcessor.moc"
-
