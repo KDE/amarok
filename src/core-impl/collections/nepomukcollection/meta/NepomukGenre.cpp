@@ -15,74 +15,71 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKCOLLECTION_H
-#define NEPOMUKCOLLECTION_H
+#include "NepomukGenre.h"
+#include "NepomukTrack.h"
 
-#include "core/collections/Collection.h"
+#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
-#include "core/meta/support/MetaKeys.h"
-#include "core-impl/collections/support/MemoryCollection.h"
 
+#include <Nepomuk/Resource>
+#include <Nepomuk/Vocabulary/NMM>
+#include <Nepomuk/Vocabulary/NFO>
+#include <Nepomuk/Query/ComparisonTerm>
+#include <Nepomuk/Query/Query>
+#include <Nepomuk/Query/AndTerm>
+#include <Nepomuk/Query/ResourceTypeTerm>
+#include <Nepomuk/Query/Result>
+#include <Nepomuk/Query/QueryServiceClient>
+#include <Nepomuk/Query/LiteralTerm>
 #include <QString>
-#include <QStringList>
-#include <KIcon>
-#include <QSharedPointer>
-
 
 using namespace Meta;
+using namespace Nepomuk::Query;
 
-namespace Collections
+NepomukGenre::NepomukGenre( QString &name )
+    : Meta::Genre()
+    , m_name( name )
 {
 
-// see if Meta::Observer also has to be inherited
-class NepomukCollection : public Collections::Collection
+}
+
+TrackList
+NepomukGenre::tracks()
 {
-    Q_OBJECT
+    // get all audio tracks
+    ResourceTypeTerm tracks( Nepomuk::Vocabulary::NFO::Audio() );
+    // get all genres with given name
+    ComparisonTerm genre( Nepomuk::Vocabulary::NMM::genre(), LiteralTerm( m_name ) );
+    // now 'and' the two
+    Query query( AndTerm( tracks, genre ) );
+    // get the result set from the constructed query
+    QList<Result> results = QueryServiceClient::syncQuery( query );
 
-public:
-    NepomukCollection();
-    virtual ~NepomukCollection();
+    TrackList tracklist;
 
-    virtual Collections::QueryMaker* queryMaker();
-
-    virtual bool isDirInCollection( const QString &path )
+    // construct tracklist from the obtained result list
+    Q_FOREACH( const Result & result, results )
     {
-        Q_UNUSED( path );
-        return false;
+
+        debug() << "NepomukGenre : track : " << result.resource().genericLabel();
+
+        NepomukTrackPtr track( new NepomukTrack( result.resource() ) );
+        tracklist.append( Meta::TrackPtr::staticCast( track ) );
+
     }
 
-    virtual QString uidUrlProtocol() const;
+    return tracklist;
+}
 
-    // unsure if this is really needed.
-    virtual QString collectionId() const;
+QString
+NepomukGenre::name() const
+{
+    return m_name;
+}
 
-    virtual QString prettyName() const;
+void
+NepomukGenre::notifyObservers() const
+{
 
-    virtual KIcon icon() const;
+}
 
-    virtual bool isWritable() const;
-
-private:
-    // nepomuk specific
-    virtual bool buildCollection();
-    virtual TrackMap& getTrackMap() const;
-    virtual ArtistMap& getArtistMap() const;
-    virtual GenreMap& getGenreMap() const;
-    virtual ComposerMap& getComposerMap() const;
-    virtual AlbumMap& getAlbumMap() const;
-
-    /** this function is used to update the members of the class
-    * whenever the collection is changed (addition, deletion etc)
-    */
-    void updated();
-
-private:
-    bool m_nepomukCollectionReady;
-
-protected:
-    QSharedPointer<Collections::MemoryCollection> m_mc;
-
-};
-
-} //namespace Collections
-#endif // NEPOMUKCOLLECTION_H

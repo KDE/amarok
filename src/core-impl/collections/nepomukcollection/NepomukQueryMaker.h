@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
- * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,106 +18,80 @@
 #ifndef NEPOMUKQUERYMAKER_H
 #define NEPOMUKQUERYMAKER_H
 
-#include "NepomukArtist.h"
+#include "NepomukCollection.h"
 
+#include "amarok_export.h"
 #include "core/collections/QueryMaker.h"
 
-#include <QStack>
-#include <QString>
-#include <QUuid>
+namespace ThreadWeaver
+{
+class Job;
+}
 
-#include <threadweaver/Job.h>
-#include <Soprano/Model>
+namespace Collections
+{
 
-class Kurl;
-class NepomukCollection;
-class NepomukWorkerThread;
-
-class NepomukQueryMaker : public QueryMaker
+// TODO: Check if AMAROK_EXPORT has to be included
+class AMAROK_EXPORT NepomukQueryMaker : public QueryMaker
 {
     Q_OBJECT
 
-	public:
-	    NepomukQueryMaker(NepomukCollection *collection, Soprano::Model* model);
-	    virtual ~NepomukQueryMaker();
+public:
+    NepomukQueryMaker( NepomukCollection *collection );
+    virtual ~NepomukQueryMaker();
 
-	    virtual void abortQuery();
-	    virtual void run();
+    virtual void run();
+    virtual void abortQuery();
 
-            virtual QueryMaker* setQueryType( QueryType type );
+    virtual QueryMaker* setQueryType( QueryType type );
 
-	    virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
-	    virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
-	    virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
-	    virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
-	    virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
-	    virtual QueryMaker* addMatch( const Meta::YearPtr &year );
+    virtual QueryMaker* addReturnValue( qint64 value );
+    virtual QueryMaker* addReturnFunction( ReturnFunction function,
+                                           qint64 value );
 
-	    virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
-	    virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
-	
-	    virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, NumberComparison compare );
-	    virtual QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, NumberComparison compare );
-	
-	    virtual QueryMaker* addReturnValue( qint64 value );
-	    virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
-	    virtual QueryMaker* orderBy( qint64 value, bool descending = false );
-	
-	    virtual QueryMaker* limitMaxResultSize( int size );
-	
-	    //virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
-	
-	    virtual QueryMaker* beginAnd();
-	    virtual QueryMaker* beginOr();
-	    virtual QueryMaker* endAndOr();
-	
-	    //virtual int validFilterMask();
-	    
-	    // functions only for use in nepo collection
+    virtual QueryMaker* orderBy( qint64 value, bool descending = false );
 
-        // for using blocking, defaults to non blocking
-        void blocking( bool enabled );
-        
-        QStringList collectionIds() const;
+    virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
+    virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
+    virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
+    virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
+    virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
+    virtual QueryMaker* addMatch( const Meta::YearPtr &year );
+    virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
 
-        Meta::DataList data( const QString &id ) const;
-        Meta::TrackList tracks( const QString &id ) const;
-        Meta::AlbumList albums( const QString &id ) const;
-        Meta::ArtistList artists( const QString &id ) const;
-        Meta::GenreList genres( const QString &id ) const;
-        Meta::ComposerList composers( const QString &id ) const;
-        Meta::YearList years( const QString &id ) const;
-        QStringList customData( const QString &id ) const;
-        
-	    virtual QString buildQuery();
-	    virtual void doQuery(const QString& );
+    virtual QueryMaker* addFilter( qint64 value, const QString &filter,
+                                   bool matchBegin = false,
+                                   bool matchEnd = false );
+    virtual QueryMaker* excludeFilter( qint64 value, const QString &filter,
+                                       bool matchBegin = false,
+                                       bool matchEnd = false );
 
-	    virtual QueryMaker* addMatch( const KUrl &url);
-        virtual QueryMaker* addMatchId( const QString &uid);
-	
-    public slots:
-        void done( ThreadWeaver::Job * job );
-	    
-	private:
+    virtual Collections::QueryMaker* addNumberFilter( qint64 value, qint64 filter,
+            NumberComparison compare );
+    virtual QueryMaker* excludeNumberFilter( qint64 value, qint64 filter,
+            NumberComparison compare );
 
-        QString likeCondition( const QString &text, bool matchBegin, bool matchEnd ) const;
-        QString andOr() const;
+    virtual QueryMaker* limitMaxResultSize( int size );
 
-        void addEmptyMatch( const qint64 value, bool optional = false );
+    virtual QueryMaker* beginAnd();
+    virtual QueryMaker* beginOr();
+    virtual QueryMaker* endAndOr();
 
-        Meta::DataList m_data;
-        QueryType m_queryType;
-        QString m_queryMatch;
-        QString m_queryFilter;
-        NepomukWorkerThread *m_worker;
-        NepomukCollection *m_collection;
-        Soprano::Model *m_model;
-        QString m_queryOrderBy;
-        bool m_blocking;
-        int m_queryLimit;
-        // used to prevend double use without reseting
-        bool m_used;
-        QStack<bool> m_andStack;
+    virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+    virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
+    virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
+
+private slots:
+    void done( ThreadWeaver::Job * job );
+
+protected:
+    NepomukCollection *m_collection;
+
+    struct Private;
+    Private * const d;
+
 };
 
-#endif /*NEPOMUKQUERYMAKER_H*/
+} // namespace Collections
+
+#endif // NEPOMUKQUERYMAKER_H
