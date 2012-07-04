@@ -114,22 +114,33 @@ NepomukCollection::isWritable() const
 bool
 NepomukCollection::buildCollection()
 {DEBUG_BLOCK
-    // check if m_mc->acquireReadLock or WriteLock is required
+
+    m_mc->acquireWriteLock();
 
     TrackMap trackmap = m_mc->trackMap();
     setupTrackMap(trackmap);
-    m_mc->acquireWriteLock();
     m_mc->setTrackMap(trackmap);
 
-    //m_mc->setArtistMap(getArtistMap());
-    //m_mc->setGenreMap(getGenreMap());
-    //m_mc->setComposerMap(getComposerMap());
+    ArtistMap artistmap = m_mc->artistMap();
+    setupArtistMap(artistmap);
+    m_mc->setArtistMap(artistmap);
+
+    GenreMap genremap = m_mc->genreMap();
+    setupGenreMap(genremap);
+    m_mc->setGenreMap(genremap);
+
+    ComposerMap composermap = m_mc->composerMap();
+    setupComposerMap(composermap);
+    m_mc->setComposerMap(composermap);
+
     //m_mc->setAlbumMap(getAlbumMap());
     // TODO
     // year??
 
     // only checking for trackMap now.
     // Should ideally check for more conditions.
+
+    m_mc->releaseLock();
     if ( m_mc->trackMap().size() == 0 )
         return false;
 
@@ -145,7 +156,6 @@ NepomukCollection::setupTrackMap(TrackMap &trackmap)
 
     Term term =  ResourceTypeTerm( Nepomuk::Vocabulary::NFO::Audio() );
     query.setTerm(term);
-    query.setLimit(100);
 
     QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
 
@@ -238,10 +248,4 @@ NepomukCollection::setupAlbumMap(AlbumMap &albummap)
         albummap.insert(Meta::AlbumPtr::staticCast(albumPtr));
     }
 
-}
-
-void
-NepomukCollection::updated()
-{
-    this->buildCollection();
 }

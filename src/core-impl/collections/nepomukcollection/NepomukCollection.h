@@ -71,11 +71,6 @@ private:
     void setupComposerMap(ComposerMap &composermap);
     void setupAlbumMap(AlbumMap &albummap);
 
-    /** this function is used to update the members of the class
-    * whenever the collection is changed (addition, deletion etc)
-    */
-    void updated();
-
 private:
     bool m_nepomukCollectionReady;
 
