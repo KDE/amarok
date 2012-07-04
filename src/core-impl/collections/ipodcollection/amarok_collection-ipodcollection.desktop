@@ -24,6 +24,7 @@ Name[sr@ijekavian]=Збирка са и‑пода, и‑пада и и‑фон
 Name[sr@ijekavianlatin]=Zbirka sa iPoda, iPada i iPhonea
 Name[sr@latin]=Zbirka sa iPoda, iPada i iPhonea
 Name[sv]=Samling på iPod, iPad och iPhone
+Name[tr]=iPod, iPad & iPhone Koleksiyonu
 Name[uk]=Збірка на iPod, iPad і iPhone
 Name[x-test]=xxiPod, iPad & iPhone Collectionxx
 Comment=Plugin to use iPod-like devices as collections in Amarok
@@ -48,6 +49,7 @@ Comment[sr@ijekavian]=Прикључак за употребу уређаја н
 Comment[sr@ijekavianlatin]=Priključak za upotrebu uređaja nalik na iPod kao zbirki u Amaroku
 Comment[sr@latin]=Priključak za upotrebu uređaja nalik na iPod kao zbirki u Amaroku
 Comment[sv]=Insticksprogram för att använda iPod-liknande enheter som samlingar i Amarok
+Comment[tr]=Amarok için iPod benzeri aygıtları koleksiyon olarak kullanma eklentisi
 Comment[uk]=Додаток для використання iPod-подібних пристроїв як збірок у Amarok
 Comment[x-test]=xxPlugin to use iPod-like devices as collections in Amarokxx
 
