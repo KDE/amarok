@@ -64,12 +64,12 @@ public:
 
 private:
     // nepomuk specific
-    virtual bool buildCollection();
-    virtual TrackMap& getTrackMap() const;
-    virtual ArtistMap& getArtistMap() const;
-    virtual GenreMap& getGenreMap() const;
-    virtual ComposerMap& getComposerMap() const;
-    virtual AlbumMap& getAlbumMap() const;
+    bool buildCollection();
+    void setupTrackMap(TrackMap &trackmap);
+    void setupArtistMap(ArtistMap &artistmap);
+    void setupGenreMap(GenreMap &genremap);
+    void setupComposerMap(ComposerMap &composermap);
+    void setupAlbumMap(AlbumMap &albummap);
 
     /** this function is used to update the members of the class
     * whenever the collection is changed (addition, deletion etc)

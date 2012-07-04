@@ -55,11 +55,15 @@ NepomukCollection::NepomukCollection()
 {
     debug() << "in nepomukcollection constructor";
     if( Nepomuk::ResourceManager::instance()->initialized() )
+    {
         m_nepomukCollectionReady = true;
 
-    if ( buildCollection() )
-        debug()<<"successful! :)";
-    else debug()<<"not successful :(";
+        if ( buildCollection() )
+            debug()<<"successful! :)";
+        else debug()<<"not successful :(";
+    }
+
+    else m_nepomukCollectionReady = false;
 
 }
 
@@ -109,12 +113,17 @@ NepomukCollection::isWritable() const
 
 bool
 NepomukCollection::buildCollection()
-{
+{DEBUG_BLOCK
     // check if m_mc->acquireReadLock or WriteLock is required
-    m_mc->setTrackMap(getTrackMap());
-    m_mc->setArtistMap(getArtistMap());
-    m_mc->setGenreMap(getGenreMap());
-    m_mc->setComposerMap(getComposerMap());
+
+    TrackMap trackmap = m_mc->trackMap();
+    setupTrackMap(trackmap);
+    m_mc->acquireWriteLock();
+    m_mc->setTrackMap(trackmap);
+
+    //m_mc->setArtistMap(getArtistMap());
+    //m_mc->setGenreMap(getGenreMap());
+    //m_mc->setComposerMap(getComposerMap());
     //m_mc->setAlbumMap(getAlbumMap());
     // TODO
     // year??
@@ -129,10 +138,9 @@ NepomukCollection::buildCollection()
 
 
 
-TrackMap&
-NepomukCollection::getTrackMap() const
-{
-    DEBUG_BLOCK
+void
+NepomukCollection::setupTrackMap(TrackMap &trackmap)
+{DEBUG_BLOCK
     Query query;
 
     Term term =  ResourceTypeTerm( Nepomuk::Vocabulary::NFO::Audio() );
@@ -140,20 +148,20 @@ NepomukCollection::getTrackMap() const
     query.setLimit(100);
 
     QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
-    TrackMap map;
 
+    debug()<<"before going to q_foreach, with size: "<<queriedResults.size();
     Q_FOREACH( const Nepomuk::Query::Result & result, queriedResults )
     {
         NepomukTrackPtr track( new NepomukTrack( result.resource() ) );
-        map.insert(track->uidUrl(), Meta::TrackPtr::staticCast(track));
         debug()<<"Inserted track :"<<track->name()<<"into map";
+        trackmap.insert(track->uidUrl(), Meta::TrackPtr::staticCast(track));
+
     }
 
-    return map;
 }
 
-ArtistMap&
-NepomukCollection::getArtistMap() const
+void
+NepomukCollection::setupArtistMap(ArtistMap &artistmap)
 {
     DEBUG_BLOCK
     Query query;
@@ -162,20 +170,18 @@ NepomukCollection::getArtistMap() const
     query.setTerm(term);
 
     QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
-    ArtistMap map;
 
     Q_FOREACH( const Nepomuk::Query::Result & result, queriedResults )
     {
         QString artist = result.resource().genericLabel();
         NepomukArtistPtr artistPtr( new NepomukArtist( artist ) );
-        map.insert(artistPtr->name(), Meta::ArtistPtr::staticCast(artistPtr));
+        artistmap.insert(artistPtr->name(), Meta::ArtistPtr::staticCast(artistPtr));
     }
 
-    return map;
 }
 
-GenreMap&
-NepomukCollection::getGenreMap() const
+void
+NepomukCollection::setupGenreMap(GenreMap &genremap)
 {
     DEBUG_BLOCK
     Query query;
@@ -184,20 +190,18 @@ NepomukCollection::getGenreMap() const
     query.setTerm(term);
 
     QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
-    GenreMap map;
 
     Q_FOREACH( const Nepomuk::Query::Result & result, queriedResults )
     {
         QString genre = result.resource().genericLabel();
         NepomukGenrePtr genrePtr( new NepomukGenre( genre ) );
-        map.insert(genrePtr->name(), Meta::GenrePtr::staticCast(genrePtr));
+        genremap.insert(genrePtr->name(), Meta::GenrePtr::staticCast(genrePtr));
     }
 
-    return map;
 }
 
-ComposerMap&
-NepomukCollection::getComposerMap() const
+void
+NepomukCollection::setupComposerMap(ComposerMap &composermap)
 {
     DEBUG_BLOCK
     Query query;
@@ -206,20 +210,18 @@ NepomukCollection::getComposerMap() const
     query.setTerm(term);
 
     QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
-    ComposerMap map;
 
     Q_FOREACH( const Nepomuk::Query::Result & result, queriedResults )
     {
         QString composer = result.resource().genericLabel();
         NepomukComposerPtr composerPtr( new NepomukComposer( composer ) );
-        map.insert(composerPtr->name(), Meta::ComposerPtr::staticCast(composerPtr));
+        composermap.insert(composerPtr->name(), Meta::ComposerPtr::staticCast(composerPtr));
     }
 
-    return map;
 }
 
-AlbumMap&
-NepomukCollection::getAlbumMap() const
+void
+NepomukCollection::setupAlbumMap(AlbumMap &albummap)
 {
     DEBUG_BLOCK
     Query query;
@@ -228,16 +230,14 @@ NepomukCollection::getAlbumMap() const
     query.setTerm(term);
 
     QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
-    AlbumMap map;
 
     Q_FOREACH( const Nepomuk::Query::Result & result, queriedResults )
     {
         QString album = result.resource().genericLabel();
         NepomukAlbumPtr albumPtr( new NepomukAlbum( album ) );
-        map.insert(Meta::AlbumPtr::staticCast(albumPtr));
+        albummap.insert(Meta::AlbumPtr::staticCast(albumPtr));
     }
 
-    return map;
 }
 
 void
