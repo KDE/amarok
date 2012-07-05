@@ -92,6 +92,18 @@ NepomukTrack::NepomukTrack( KUrl &fileUrl )
 
 }
 
+NepomukTrack::NepomukTrack(Nepomuk::Resource resource, AlbumPtr album, ArtistPtr artist,
+                           ComposerPtr composer, GenrePtr genre )
+    : m_artist( artist )
+    , m_album( album )
+    , m_composer( composer )
+    , m_genre( genre )
+    , m_resource( resource )
+{
+    m_kurl = m_resource.toFile().url();
+    m_name = m_resource.property( Nepomuk::Vocabulary::NFO::fileName() ).toString();
+}
+
 
 QString
 NepomukTrack::name() const

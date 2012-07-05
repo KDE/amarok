@@ -117,9 +117,15 @@ NepomukCollection::buildCollection()
 
     m_mc->acquireWriteLock();
 
-    TrackMap trackmap = m_mc->trackMap();
-    setupTrackMap(trackmap);
-    m_mc->setTrackMap(trackmap);
+    /**
+      * First get the meta data like artist, genre, composers and albums
+      * And then get the tracks
+      * Pass the necessary albums and artists in the track constructor
+      * And construct the track map
+      */
+
+
+
 
     ArtistMap artistmap = m_mc->artistMap();
     setupArtistMap(artistmap);
@@ -132,6 +138,10 @@ NepomukCollection::buildCollection()
     ComposerMap composermap = m_mc->composerMap();
     setupComposerMap(composermap);
     m_mc->setComposerMap(composermap);
+
+    TrackMap trackmap = m_mc->trackMap();
+    setupTrackMap(trackmap);
+    m_mc->setTrackMap(trackmap);
 
     //m_mc->setAlbumMap(getAlbumMap());
     // TODO
