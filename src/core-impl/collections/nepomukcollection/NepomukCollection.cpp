@@ -18,7 +18,6 @@
 #define DEBUG_PREFIX "NepomukCollection"
 
 #include "NepomukCollection.h"
-#include "NepomukQueryMaker.h"
 #include "meta/NepomukTrack.h"
 #include "meta/NepomukAlbum.h"
 #include "meta/NepomukArtist.h"
