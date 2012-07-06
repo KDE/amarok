@@ -314,6 +314,12 @@ svn_prompt() {
 }
 export PS1='\[\e[0;32m\]\u@\h\[\e[m\] \[\e[1;34m\]\w\[\e[m\]\[\033[01;33m\]`__git_ps1`\[\e[m\]\[\e[01;35m\]`svn_prompt`\[\e[m\]\[\033[00m\]  \[\e[1;32m\]\$ \[\e[m\]\[\e[1;37m\] '
 
+Git KDE commit template
+-----------------------
+
+HACKING/commit-template should be used so commits to KDE git servers are properly formatted and using the commit keywords.
+configure git to use the template using:
+git config commit.template HACKING/commmit-template
 
 Copyright
 ---------

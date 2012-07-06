@@ -1,0 +1,23 @@
+
+# --[ Close bug in bugs.kde.org as fixed ]-----------------------------|
+#BUG: <bug number>
+#FIXED-IN: <optional release version>
+#
+# --[ Add to release changelog optionally close wish in bugs.kde.org ]-|
+#FEATURE: <optional bug number>
+#FIXED-IN: <optional release version>
+#
+# --[ Copy commit message to a bug or wish in bugs.kde.org ]-----------|
+#CCBUG: <bug number>
+#
+# --[ Copy commit message to an email address ]------------------------|
+#CCMAIL: <email>
+#
+# --[ Close a review on git.reviewboard.kde.org as submitted ]---------|
+#REVIEW: <review number>
+#
+# --[ Notify documentation team of user visible changes ]--------------|
+#GUI:
+#
+# --[ Notify Commit Digest team of something interesting ]-------------|
+#DIGEST:
