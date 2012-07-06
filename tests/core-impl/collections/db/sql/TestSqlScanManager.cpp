@@ -565,25 +565,6 @@ TestSqlScanManager::testRemoveTrack()
 
     // -- check that the track is really gone
     QCOMPARE( album->tracks().count(), 8 );
-
-    // -- get the track back and verify that the statistics really haven't been deleted
-    Meta::FieldHash values;
-
-    values.insert( Meta::valUniqueId, QVariant("1dc7022c52a3e4c51b46577da9b3c8ff") );
-    values.insert( Meta::valUrl, QVariant("Thriller/Thriller - 01 - Michael Jackson - Track01.mp3") );
-    values.insert( Meta::valTitle, QVariant("Wanna Be Startin' Somethin'") );
-    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
-    values.insert( Meta::valAlbum, QVariant("Thriller") );
-    createTrack( values );
-
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
-
-    // -- check that the track is back
-    QCOMPARE( album->tracks().count(), 9 );
-    track = album->tracks().first();
-    QVERIFY( track->firstPlayed().isValid() );
-    QCOMPARE( track->firstPlayed().toTime_t(), aDate.toTime_t() );
 }
 
 void

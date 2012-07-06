@@ -434,7 +434,7 @@ SqlScanResultProcessor::urlsCacheInsert( UrlEntry entry )
     if( !entry.path.isEmpty() && m_pathCache.contains( entry.path ) ) {
         // no idea how this can happen, but we clean it up
         debug() << "Duplicate path in database:"<<entry.path;
-        removeTrack( entry.id, entry.uid ); // this will not delete the statistics
+        removeTrack( entry.id, entry.uid ); // this will now delete the statistics, too
         entry.path.clear();
     }
 

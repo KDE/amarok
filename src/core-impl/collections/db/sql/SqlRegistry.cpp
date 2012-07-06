@@ -32,6 +32,7 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     , m_blockDatabaseUpdateCount( 0 )
     , m_collectionChanged( false )
 {
+    DEBUG_BLOCK
     setObjectName( "SqlRegistry" );
 
     // -- remove unneeded entries from the database.
@@ -44,6 +45,10 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     databaseUpdater.deleteAllRedundant( "composer" );
     databaseUpdater.deleteAllRedundant( "url" );
     databaseUpdater.deleteAllRedundant( "year" );
+
+    databaseUpdater.deleteOrphanedByUrl( "lyrics" );
+    databaseUpdater.deleteOrphanedByUrl( "statistics" );
+    databaseUpdater.deleteOrphanedByUrl( "urls_labels" );
 
     m_timer = new QTimer( this );
     m_timer->setInterval( 30 * 1000 );  //try to clean up every 30 seconds, change if necessary
@@ -313,19 +318,21 @@ SqlRegistry::removeTrack( int urlId, const QString uid )
 {
     QMutexLocker locker( &m_trackMutex );
 
-    // --- delete the track from database
-    QString query = QString( "DELETE FROM tracks where url=%1;" ).arg( urlId );
-    m_collection->sqlStorage()->query( query );
-    // keep the urls and statistics entry in case a deleted track is restored later.
-    // however we need to change rpath so that it does not block new tracks
-    // (deviceid,rpath is a unique key)
-    // so we just write the uid into the path
-    query = QString( "UPDATE urls SET deviceid=0, rpath='%1', directory=NULL "
-                     "WHERE id=%2;")
-        .arg( m_collection->sqlStorage()->escape(uid) )
-        .arg( urlId );
-    m_collection->sqlStorage()->query( query );
-    query = QString( "UPDATE statistics SET deleted=1 WHERE url=%1;").arg( urlId );
+    // delete all entries linked to the url, including track
+    QStringList tables = QStringList() << "tracks" << "lyrics" << "statistics" << "urls_labels";
+    foreach( const QString &table, tables )
+    {
+        QString query = QString( "DELETE FROM %1 WHERE url=%2" ).arg( table ).arg( urlId );
+        m_collection->sqlStorage()->query( query );
+    }
+
+    // delete url entry from database; we used to keep it and keep its statistics, but
+    // DatabaseUpdater::deleteAllRedundant( url ) removes the url entry on the next Amarok
+    // startup, plus we don't know how long we should keep the entry, so just delete
+    // everything. ScanResultProcessor should be witty enough not to delete tracks that
+    // have been moved to another directory and/or device, even if it is currently
+    // unavailable.
+    QString query = QString( "DELETE FROM urls WHERE id=%1" ).arg( urlId );
     m_collection->sqlStorage()->query( query );
 
     // --- delete the track from memory

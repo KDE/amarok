@@ -203,8 +203,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
          *  this function still tries it's best to notify everyone
          *  That the track is now removed, plus it will also delete it from
          *  the database.
-         *  Do not call this directly as it does not clean up the registy.
-         *  Call m_registry->deleteTrack() instead
          */
         void remove();
 
