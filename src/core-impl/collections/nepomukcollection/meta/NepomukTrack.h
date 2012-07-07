@@ -43,11 +43,11 @@ public:
     NepomukTrack( Nepomuk::Resource resource );
     // construct a NepomukTrack out of a url
     NepomukTrack( KUrl &fileUrl );
-    NepomukTrack( Nepomuk::Resource resource,
-                  AlbumPtr album,
-                  ArtistPtr artist,
+    NepomukTrack( ArtistPtr artist,
+                  GenrePtr genre,
                   ComposerPtr composer,
-                  GenrePtr genre );
+                  AlbumPtr album,
+                  Nepomuk::Resource resource );
 
     virtual QString name() const;
     virtual QString prettyName() const;

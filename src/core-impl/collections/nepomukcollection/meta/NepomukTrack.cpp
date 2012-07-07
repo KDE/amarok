@@ -71,12 +71,13 @@ NepomukTrack::NepomukTrack( KUrl &fileUrl )
     : Track()
     , m_kurl( fileUrl )
 {
-    m_resource = Nepomuk::Resource(m_kurl.pathOrUrl());
+    m_resource = Nepomuk::Resource( m_kurl.pathOrUrl() );
     m_name = m_resource.property( Nepomuk::Vocabulary::NFO::fileName() ).toString();
 
     QString album = m_resource.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toString();
     NepomukAlbumPtr albumPtr( new NepomukAlbum( album ) );
     m_album = Meta::AlbumPtr::staticCast( albumPtr );
+
 
     QString artist = m_resource.property( Nepomuk::Vocabulary::NMM::performer() ).toString();
     NepomukArtistPtr artistPtr( new NepomukArtist( artist ) );
@@ -92,12 +93,15 @@ NepomukTrack::NepomukTrack( KUrl &fileUrl )
 
 }
 
-NepomukTrack::NepomukTrack(Nepomuk::Resource resource, AlbumPtr album, ArtistPtr artist,
-                           ComposerPtr composer, GenrePtr genre )
+NepomukTrack::NepomukTrack( ArtistPtr artist,
+                            GenrePtr genre,
+                            ComposerPtr composer,
+                            AlbumPtr album,
+                            Nepomuk::Resource resource )
     : m_artist( artist )
-    , m_album( album )
-    , m_composer( composer )
     , m_genre( genre )
+    , m_composer( composer )
+    , m_album( album )
     , m_resource( resource )
 {
     m_kurl = m_resource.toFile().url();
@@ -250,7 +254,7 @@ NepomukTrack::bitrate() const
 QDateTime
 NepomukTrack::createDate() const
 {
-    return m_resource.property( Nepomuk::Vocabulary::NIE::created()).toDateTime();
+    return m_resource.property( Nepomuk::Vocabulary::NIE::created() ).toDateTime();
 }
 
 QDateTime
@@ -258,7 +262,7 @@ NepomukTrack::modifyDate() const
 {
 
     return m_resource.property( Nepomuk::Vocabulary::NIE::contentLastModified() )
-            .toDateTime();
+           .toDateTime();
 }
 
 int
