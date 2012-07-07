@@ -3,7 +3,6 @@ find_package( Nepomuk REQUIRED )
 include(NepomukAddOntologyClasses)
 include(SopranoAddOntology)
 
-
 include_directories( ../..
     ${NEPOMUK_INCLUDES}
 )

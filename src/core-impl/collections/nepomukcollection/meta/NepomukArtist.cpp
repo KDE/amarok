@@ -52,10 +52,10 @@ NepomukArtist::tracks()
     ComparisonTerm artists( Nepomuk::Vocabulary::NMM::performer(),
                             LiteralTerm( m_name ) );
     // now 'and' the two
-    Query query(  AndTerm( tracks, artists ) );
+    Query query( AndTerm( tracks, artists ) );
     // get the result set from the constructed query
     QList< Result> results =
-            QueryServiceClient::syncQuery( query );
+        QueryServiceClient::syncQuery( query );
 
     TrackList tracklist;
 

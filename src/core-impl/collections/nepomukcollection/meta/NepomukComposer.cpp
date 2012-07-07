@@ -50,7 +50,7 @@ NepomukComposer::tracks()
     ResourceTypeTerm tracks( Nepomuk::Vocabulary::NFO::Audio() );
     // get all composers/performers with given name
     ComparisonTerm composers( Nepomuk::Vocabulary::NMM::composer(),
-            LiteralTerm( m_name ) );
+                              LiteralTerm( m_name ) );
     // now 'and' the two
     Query query( AndTerm( tracks, composers ) );
     // get the result set from the constructed query
