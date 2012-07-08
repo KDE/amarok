@@ -192,8 +192,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
 
         // SqlTrack specific methods
 
-        int deviceId() const;
-        QString rpath() const;
         int id() const;
         int urlId() const;
         Collections::SqlCollection* sqlCollection() const { return m_collection; }
