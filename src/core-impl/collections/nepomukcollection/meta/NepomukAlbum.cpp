@@ -48,31 +48,7 @@ NepomukAlbum::NepomukAlbum( QString &name )
 TrackList
 NepomukAlbum::tracks()
 {
-
-//    // get all audio tracks
-//    ResourceTypeTerm tracks( Nepomuk::Vocabulary::NFO::Audio() );
-//    // get all albums with given name
-//    ComparisonTerm albums( Nepomuk::Vocabulary::NMM::musicAlbum(), LiteralTerm( m_name ) );
-//    // now 'and' the two
-//    Query query( AndTerm( tracks, albums ) );
-//    // get the result set from the constructed query
-//    QList<Result> results =
-//        QueryServiceClient::syncQuery( query );
-
-//
-
-//    // construct tracklist from the obtained result list
-//    Q_FOREACH( const Result & result, results )
-//    {
-
-//        debug() << "NepomukAlbum : track : " << result.resource().genericLabel();
-
-//        NepomukTrackPtr track( new NepomukTrack( result.resource() ) );
-//        tracklist.append( Meta::TrackPtr::staticCast( track ) );
-
-//    }
-
-    return TrackList();
+    return m_tracks;
 }
 
 bool
@@ -100,6 +76,14 @@ NepomukAlbum::name() const
 {
     return m_name;
 }
+
+void
+NepomukAlbum::addTrack( TrackPtr trackPtr )
+{
+    m_tracks.append( trackPtr );
+}
+
+
 
 void
 NepomukAlbum::notifyObservers() const

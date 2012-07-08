@@ -221,11 +221,17 @@ NepomukCollection::setupTrackMap( TrackMap &trackmap )
         this->m_mc->addComposer( composerPtr );
 
         // album, right now only musicAlbum -> TODO : Change to MusicAlbum
-        QString album = trackResource.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toString();
-        NepomukAlbumPtr nepAlbumPtr( new NepomukAlbum( album ) );
-        debug()<<"inserting album : "<<album;
+        // NMM::musicAlbum() returns resource of album, so get uri
+        QUrl albumuri = trackResource.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toUrl();
+        // Construct resource
+        Nepomuk::Resource albumRes( albumuri );
+        // get label using uri
+        //TODO : use a constructor that takes in a resource as a parameter
+        // for NepomukAlbum
+        QString albumLabel = albumRes.genericLabel();
+        NepomukAlbumPtr nepAlbumPtr( new NepomukAlbum( albumLabel ) );
+        debug() << "inserting album : " << albumLabel;
         albumPtr = Meta::AlbumPtr::staticCast( nepAlbumPtr );
-        this->m_mc->addAlbum(albumPtr);
 
 
         // populated meta pointers, now add track to map.
@@ -248,8 +254,12 @@ NepomukCollection::setupTrackMap( TrackMap &trackmap )
         this->m_mc->addGenre( Meta::GenrePtr::staticCast( nepGenrePtr ) );
 
         // add track to composerPtr
-        nepComposerPtr->addTrack(trackPtr);
+        nepComposerPtr->addTrack( trackPtr );
         this->m_mc->addComposer( Meta::ComposerPtr::staticCast( nepComposerPtr ) );
+
+        // add track to albumPtr
+        nepAlbumPtr->addTrack( trackPtr );
+        this->m_mc->addAlbum( Meta::AlbumPtr::staticCast( nepAlbumPtr ) );
 
     }
 

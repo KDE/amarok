@@ -80,9 +80,9 @@ NepomukComposer::name() const
 }
 
 void
-NepomukComposer::addTrack(TrackPtr trackPtr)
+NepomukComposer::addTrack( TrackPtr trackPtr )
 {
-    m_tracks.append(trackPtr);
+    m_tracks.append( trackPtr );
 }
 
 

@@ -39,6 +39,8 @@ public:
     virtual TrackList tracks();
     virtual QString name() const;
 
+    void addTrack( TrackPtr trackPtr );
+
 private:
 
     TrackList m_tracks;
