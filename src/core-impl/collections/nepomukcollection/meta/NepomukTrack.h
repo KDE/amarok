@@ -82,16 +82,19 @@ protected:
     virtual void notifyObservers() const;
 
 private:
-    Nepomuk::Resource m_resource;
-    KUrl m_kurl;
-    AlbumPtr m_album;
+
+
     ArtistPtr m_artist;
-    ComposerPtr m_composer;
     GenrePtr m_genre;
+    ComposerPtr m_composer;
+    AlbumPtr m_album;
     YearPtr m_year;
     LabelList m_labellist;
-
+    KUrl m_kurl;
     QString m_name;
+    Nepomuk::Resource m_resource;
+
+
 };
 
 }

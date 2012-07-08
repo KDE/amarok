@@ -46,31 +46,31 @@ NepomukComposer::NepomukComposer( QString &name )
 TrackList
 NepomukComposer::tracks()
 {
-    // get all audio tracks
-    ResourceTypeTerm tracks( Nepomuk::Vocabulary::NFO::Audio() );
-    // get all composers/performers with given name
-    ComparisonTerm composers( Nepomuk::Vocabulary::NMM::composer(),
-                              LiteralTerm( m_name ) );
-    // now 'and' the two
-    Query query( AndTerm( tracks, composers ) );
-    // get the result set from the constructed query
-    QList<Result> results =
-        QueryServiceClient::syncQuery( query );
+//    // get all audio tracks
+//    ResourceTypeTerm tracks( Nepomuk::Vocabulary::NFO::Audio() );
+//    // get all composers/performers with given name
+//    ComparisonTerm composers( Nepomuk::Vocabulary::NMM::composer(),
+//                              LiteralTerm( m_name ) );
+//    // now 'and' the two
+//    Query query( AndTerm( tracks, composers ) );
+//    // get the result set from the constructed query
+//    QList<Result> results =
+//        QueryServiceClient::syncQuery( query );
 
-    TrackList tracklist;
+//    TrackList tracklist;
 
-    // construct tracklist from the obtained result list
-    Q_FOREACH( const Result & result, results )
-    {
+//    // construct tracklist from the obtained result list
+//    Q_FOREACH( const Result & result, results )
+//    {
 
-        debug() << "NepomukComposer : track : " << result.resource().genericLabel();
+//        debug() << "NepomukComposer : track : " << result.resource().genericLabel();
 
-        NepomukTrackPtr track( new NepomukTrack( result.resource() ) );
-        tracklist.append( Meta::TrackPtr::staticCast( track ) );
+//        NepomukTrackPtr track( new NepomukTrack( result.resource() ) );
+//        tracklist.append( Meta::TrackPtr::staticCast( track ) );
 
-    }
+//    }
 
-    return tracklist;
+    return m_tracks;
 }
 
 QString
@@ -78,6 +78,14 @@ NepomukComposer::name() const
 {
     return m_name;
 }
+
+void
+NepomukComposer::addTrack(TrackPtr trackPtr)
+{
+    m_tracks.append(trackPtr);
+}
+
+
 
 void
 NepomukComposer::notifyObservers() const

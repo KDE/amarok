@@ -21,8 +21,6 @@
 #include "core/meta/Meta.h"
 #include "NepomukCollection.h"
 
-#include <Nepomuk/Resource>
-
 #include "QString"
 
 namespace Meta
@@ -41,8 +39,13 @@ public:
 
     virtual QString name() const;
 
+    // nepomuk specific function
+    void addTrack( TrackPtr trackPtr );
 private:
     QString m_name;
+    TrackList m_tracks;
+
+
 
 protected:
     virtual void notifyObservers() const;

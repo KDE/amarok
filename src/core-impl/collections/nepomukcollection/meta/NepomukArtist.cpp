@@ -46,31 +46,7 @@ NepomukArtist::NepomukArtist( QString &name )
 TrackList
 NepomukArtist::tracks()
 {
-    // get all audio tracks
-    ResourceTypeTerm tracks( Nepomuk::Vocabulary::NFO::Audio() );
-    // get all composers/performers with given name
-    ComparisonTerm artists( Nepomuk::Vocabulary::NMM::performer(),
-                            LiteralTerm( m_name ) );
-    // now 'and' the two
-    Query query( AndTerm( tracks, artists ) );
-    // get the result set from the constructed query
-    QList< Result> results =
-        QueryServiceClient::syncQuery( query );
-
-    TrackList tracklist;
-
-    // construct tracklist from the obtained result list
-    Q_FOREACH( const  Result & result, results )
-    {
-
-        debug() << "NepomukArtist : track : " << result.resource().genericLabel();
-
-        NepomukTrackPtr track( new NepomukTrack( result.resource() ) );
-        tracklist.append( Meta::TrackPtr::staticCast( track ) );
-
-    }
-
-    return tracklist;
+    return m_tracks;
 }
 
 QString
@@ -79,6 +55,13 @@ NepomukArtist::name() const
     return m_name;
 }
 
+void
+NepomukArtist::addTrack( TrackPtr trackPtr )
+{
+    m_tracks.append( trackPtr );
+}
+
+// TODO
 void
 NepomukArtist::notifyObservers() const
 {

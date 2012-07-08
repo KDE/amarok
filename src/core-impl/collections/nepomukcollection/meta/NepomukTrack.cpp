@@ -106,6 +106,8 @@ NepomukTrack::NepomukTrack( ArtistPtr artist,
 {
     m_kurl = m_resource.toFile().url();
     m_name = m_resource.property( Nepomuk::Vocabulary::NFO::fileName() ).toString();
+
+
 }
 
 

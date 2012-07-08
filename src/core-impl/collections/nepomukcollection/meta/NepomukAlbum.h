@@ -18,12 +18,8 @@
 #ifndef NEPOMUKALBUM_H
 #define NEPOMUKALBUM_H
 
-#include "NepomukCollection.h"
 #include "core/meta/Meta.h"
 
-#include <Nepomuk/Resource>
-
-class Collections::NepomukCollection;
 
 namespace Meta
 {

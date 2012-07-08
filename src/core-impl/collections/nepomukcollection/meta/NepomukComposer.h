@@ -20,9 +20,7 @@
 
 
 #include "core/meta/Meta.h"
-#include "NepomukCollection.h"
 
-#include <Nepomuk/Resource>
 
 namespace Meta
 {
@@ -39,8 +37,11 @@ public:
     virtual TrackList tracks();
     virtual QString name() const;
 
+    void addTrack( TrackPtr trackPtr );
+
 private:
     QString m_name;
+    TrackList m_tracks;
 
 protected:
     virtual void notifyObservers() const;
