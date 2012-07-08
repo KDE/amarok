@@ -75,7 +75,7 @@ NepomukCollection::NepomukCollection()
 
 NepomukCollection::~NepomukCollection()
 {
-
+    m_nepomukCollectionReady = false;
 }
 
 Collections::QueryMaker*
@@ -124,33 +124,7 @@ NepomukCollection::buildCollection()
 
     m_mc->acquireWriteLock();
 
-    /**
-      * First get the meta data like artist, genre, composers and albums
-      * And then get the tracks
-      * Pass the necessary albums and artists in the track constructor
-      * And construct the track map
-      */
-
-
-    //    ArtistMap artistmap = m_mc->artistMap();
-    //    setupArtistMap( artistmap );
-    //    m_mc->setArtistMap( artistmap );
-
-//    GenreMap genremap = m_mc->genreMap();
-//    setupGenreMap( genremap );
-//    m_mc->setGenreMap( genremap );
-
-    //    ComposerMap composermap = m_mc->composerMap();
-    //    setupComposerMap( composermap );
-    //    m_mc->setComposerMap( composermap );
-
-    //    AlbumMap albummap = m_mc->albumMap();
-    //    setupAlbumMap( albummap );
-    //    m_mc->setAlbumMap( albummap );
-
-    TrackMap trackmap = m_mc->trackMap();
-    setupTrackMap( trackmap );
-    m_mc->setTrackMap( trackmap );
+    setupTrackMap();
 
     m_mc->releaseLock();
 
@@ -169,7 +143,7 @@ NepomukCollection::buildCollection()
 
 
 void
-NepomukCollection::setupTrackMap( TrackMap &trackmap )
+NepomukCollection::setupTrackMap()
 {
     DEBUG_BLOCK
     Query query;
@@ -291,15 +265,6 @@ NepomukCollection::setupGenreMap( GenreMap &genremap )
     DEBUG_BLOCK
 
     Query query;
-    //    Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
-    //    QString query = QString( "select ?genre where { ?r a nfo:Audio . ?r nmm:genre ?genre . }" );
-    //    Soprano::QueryResultIterator iter = model->executeQuery(
-    //                query, Soprano::Query::QueryLanguageSparql );
-
-    //    while( iter.next() )
-    //    {
-    //        debug() <<"genre"<< Nepomuk::Resource( iter.binding( "genre" ).uri() ).genericLabel();
-    //    }
 
     Term audioTerm = ResourceTypeTerm( Nepomuk::Vocabulary::NFO::Audio() );
     ComparisonTerm term( Nepomuk::Vocabulary::NMM::genre(), audioTerm );
@@ -323,7 +288,6 @@ NepomukCollection::setupComposerMap( ComposerMap &composermap )
 {
     DEBUG_BLOCK
     Query query;
-
 
     Term term =  ResourceTypeTerm( Nepomuk::Vocabulary::NMM::musicAlbum() );
     query.setTerm( term );

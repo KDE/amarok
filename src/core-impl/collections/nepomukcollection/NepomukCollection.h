@@ -65,7 +65,7 @@ public:
 private:
     // nepomuk specific
     bool buildCollection();
-    void setupTrackMap( TrackMap &trackmap );
+    void setupTrackMap();
     void setupArtistMap( ArtistMap &artistmap );
     void setupGenreMap( GenreMap &genremap );
     void setupComposerMap( ComposerMap &composermap );
