@@ -46,33 +46,6 @@ SqlScanResultProcessor::commit()
     DEBUG_BLOCK
 
     m_collection->sqlStorage()->clearLastErrors();
-
-    // -- fill the registry cache with all the tracks
-    // count the non skipped directories to find out if we should buffer all tracks before committing.
-    int nonSkippedDirectories = 0;
-    foreach( const CollectionScanner::Directory* dir, m_directories )
-        if( !dir->isSkipped() )
-        {
-            debug() << "in commit, dir not skipped" << dir->path();
-            nonSkippedDirectories++;
-        }
-
-    /*
-    if( nonSkippedDirectories > 0 && (m_directories.count() / nonSkippedDirectories < 3) )
-    {
-        debug() << "in commit, buffering all tracks";
-        // ok. enough directories changed. Use the query manager to read
-        // all the tracks into the cache in one go.
-        // that saves us a lot of single database queries later
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( Collections::QueryMaker::Track );
-        qm->setBlocking( true );
-        qm->run();
-        qm->tracks( m_collection->collectionId() );
-        delete qm;
-    }
-    */
-
     urlsCacheInit();
 
     // -- call the base implementation

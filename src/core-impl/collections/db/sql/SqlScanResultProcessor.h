@@ -19,8 +19,8 @@
 #ifndef AMAROK_SQL_SCANRESULTPROCESSOR_H
 #define AMAROK_SQL_SCANRESULTPROCESSOR_H
 
-#include "SqlCollection.h"
-#include <core-impl/collections/db/ScanResultProcessor.h>
+#include "core-impl/collections/db/ScanResultProcessor.h"
+#include "core-impl/collections/db/sql/SqlCollection.h"
 
 #include <QFileInfo>
 #include <QList>
