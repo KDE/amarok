@@ -866,15 +866,6 @@ SqlTrack::commitMetaDataChanges()
         // debug() << "m_cache contains a new URL, setting m_url to " << m_url << " from " << oldUrl;
     }
 
-    // Use the latest uid here
-    if( m_cache.contains( Meta::valUniqueId ) )
-    {
-        QString newUid = m_cache.value( Meta::valUniqueId ).toString();
-        if( oldUid != newUid &&
-            m_collection->registry()->updateCachedUid( oldUid, newUid ) )
-            m_uid = newUid;
-    }
-
     if( m_cache.contains( Meta::valArtist ) )
     {
         //invalidate cache of the old artist...
@@ -969,7 +960,21 @@ SqlTrack::commitMetaDataChanges()
 
     // --- write the file
     if( m_writeFile )
-        writeMetaDataToFile();
+    {
+        Meta::Tag::writeTags( m_url.path(), m_cache );
+        // unique id may have changed
+        QString uid = Meta::Tag::readTags( m_url.path() ).value( Meta::valUniqueId ).toString();
+        if( !uid.isEmpty() )
+            m_cache[ Meta::valUniqueId ] = m_collection->generateUidUrl( uid );
+    }
+
+    // needs to be after writing to file; that may have changed generated uid
+    if( m_cache.contains( Meta::valUniqueId ) )
+    {
+        QString newUid = m_cache.value( Meta::valUniqueId ).toString();
+        if( oldUid != newUid && m_collection->registry()->updateCachedUid( oldUid, newUid ) )
+            m_uid = newUid;
+    }
 
     //updating the fields might have changed the filesize
     //read the current filesize so that we can update the db
@@ -1038,12 +1043,6 @@ SqlTrack::commitMetaDataChanges()
 
     // --- clean up
     m_cache.clear();
-}
-
-void
-SqlTrack::writeMetaDataToFile()
-{
-    Meta::Tag::writeTags( m_url.path(), m_cache );
 }
 
 void

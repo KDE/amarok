@@ -246,7 +246,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
             if( !m_batchUpdate )
                 commitMetaDataChanges();
         }
-        void writeMetaDataToFile();
         void updatePlaylistsToDb( const FieldHash &fields, const QString &oldUid );
         void updateEmbeddedCoversToDb( const FieldHash &fields, const QString &oldUid );
 
