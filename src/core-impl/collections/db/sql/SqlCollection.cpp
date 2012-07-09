@@ -235,6 +235,12 @@ SqlCollection::uidUrlProtocol() const
 }
 
 QString
+SqlCollection::generateUidUrl( const QString &hash )
+{
+    return uidUrlProtocol() + "://" + hash;
+}
+
+QString
 SqlCollection::collectionId() const
 {
     return m_collectionId;

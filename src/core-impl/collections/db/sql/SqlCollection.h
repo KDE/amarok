@@ -81,6 +81,11 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
             The SqlCollection support "amarok-sqltrackuid" and "file" protocol.
         */
         virtual QString uidUrlProtocol() const;
+        /**
+         * Generates uidUrl out of a hash (as returned by tag reader) that can be then
+         * fed to Track::setUidUrl().
+         */
+        QString generateUidUrl( const QString &hash );
         virtual QString collectionId() const;
         virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon("drive-harddisk"); }

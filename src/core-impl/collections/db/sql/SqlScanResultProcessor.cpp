@@ -160,7 +160,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
                              arg(track->path()) );
         return;
     }
-    uid = m_collection->uidUrlProtocol() + "://" + uid;
+    uid = m_collection->generateUidUrl( uid );
 
     int deviceId = m_collection->mountPointManager()->getIdForUrl( track->path() );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, track->path() );
