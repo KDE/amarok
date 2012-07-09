@@ -453,6 +453,12 @@ void
 SqlScanResultProcessor::removeTrack( const UrlEntry &entry )
 {
     debug() << "removeTrack(" << entry << ")";
+    if( !m_lastErrors.isEmpty() )
+    {
+        warning() << "removeTrack(): there were errors, skipping destructive operations";
+        return;
+    }
+
     SqlRegistry *reg = m_collection->registry();
     if( reg->m_uidMap.contains( entry.uid ) )
         Meta::SqlTrackPtr::staticCast( reg->m_uidMap[ entry.uid ] )->remove();
