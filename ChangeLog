@@ -9,7 +9,7 @@ VERSION 2.6
       argument.
 
   BUGFIXES:
-    * Don't loose statictis, labels and lyrics when changing metadata of a
+    * Don't loose statistics, labels and lyrics when changing metadata of a
       track (not tagged by afttagger) followed by moving it. (BR 292245)
     * Fix Amarok.Playlist.{add,play}Media() and addMediaList() Qt script
       bindings methods not being able to add playlists. (BR 232697)
