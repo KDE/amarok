@@ -1273,7 +1273,7 @@ int
 SqlTrack::urlId() const
 {
     QReadLocker locker( &m_lock );
-    return m_trackId;
+    return m_urlId;
 }
 
 void
