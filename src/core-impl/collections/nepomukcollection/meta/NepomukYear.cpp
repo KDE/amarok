@@ -45,9 +45,3 @@ NepomukYear::name() const
 {
     return m_resource.genericLabel();
 }
-
-void
-NepomukYear::notifyObservers() const
-{
-
-}

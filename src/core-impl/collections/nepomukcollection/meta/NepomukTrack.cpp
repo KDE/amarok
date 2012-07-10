@@ -293,12 +293,3 @@ NepomukTrack::type() const
 {
     return m_resource.property( Nepomuk::Vocabulary::NFO::codec() ).toString();
 }
-
-void
-NepomukTrack::notifyObservers() const
-{
-    //TODO
-    // check ipod collection
-
-    //update hash map again
-}

@@ -20,7 +20,6 @@
 
 #include "core/meta/Meta.h"
 
-
 namespace Meta
 {
 
@@ -39,6 +38,11 @@ public:
     virtual TrackList tracks();
     virtual QString name() const;
 
+    /**
+      * A nepomuk specific function used to populate m_tracks
+      * This is called during the construction of the meta maps
+      * in the constructor of NepomukCollection
+      */
     void addTrack( TrackPtr trackPtr );
 
 private:
@@ -48,8 +52,6 @@ private:
     QString m_artist;
     bool m_hasAlbumArtist;
 
-protected:
-    virtual void notifyObservers() const;
 };
 
 }

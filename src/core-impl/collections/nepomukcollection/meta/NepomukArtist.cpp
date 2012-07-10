@@ -60,10 +60,3 @@ NepomukArtist::addTrack( TrackPtr trackPtr )
 {
     m_tracks.append( trackPtr );
 }
-
-// TODO
-void
-NepomukArtist::notifyObservers() const
-{
-
-}

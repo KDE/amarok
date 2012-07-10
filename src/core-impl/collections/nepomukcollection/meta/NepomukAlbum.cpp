@@ -82,11 +82,3 @@ NepomukAlbum::addTrack( TrackPtr trackPtr )
 {
     m_tracks.append( trackPtr );
 }
-
-
-
-void
-NepomukAlbum::notifyObservers() const
-{
-
-}

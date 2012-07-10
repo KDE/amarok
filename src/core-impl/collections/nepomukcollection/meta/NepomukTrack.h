@@ -78,11 +78,8 @@ public:
     virtual int discNumber() const;
     virtual int playCount() const;
     virtual QString type() const;
-protected:
-    virtual void notifyObservers() const;
 
 private:
-
 
     ArtistPtr m_artist;
     GenrePtr m_genre;

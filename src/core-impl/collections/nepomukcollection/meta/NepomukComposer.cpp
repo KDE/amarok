@@ -84,11 +84,3 @@ NepomukComposer::addTrack( TrackPtr trackPtr )
 {
     m_tracks.append( trackPtr );
 }
-
-
-
-void
-NepomukComposer::notifyObservers() const
-{
-
-}

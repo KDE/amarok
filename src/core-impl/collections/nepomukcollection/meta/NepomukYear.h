@@ -44,9 +44,6 @@ private:
     NepomukCollection *m_collection;
     Nepomuk::Resource m_resource;
 
-protected:
-    virtual void notifyObservers() const;
-
 };
 
 }

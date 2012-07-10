@@ -47,28 +47,6 @@ TrackList
 NepomukGenre::tracks()
 {
 
-//    // get all audio tracks
-//    ResourceTypeTerm tracks( Nepomuk::Vocabulary::NFO::Audio() );
-//    // get all genres with given name
-//    ComparisonTerm genre( Nepomuk::Vocabulary::NMM::genre(), LiteralTerm( m_name ) );
-//    // now 'and' the two
-//    Query query( AndTerm( tracks, genre ) );
-//    // get the result set from the constructed query
-//    QList<Result> results = QueryServiceClient::syncQuery( query );
-
-//    TrackList tracklist;
-
-//    // construct tracklist from the obtained result list
-//    Q_FOREACH( const Result & result, results )
-//    {
-
-//        debug() << "NepomukGenre : track : " << result.resource().genericLabel();
-
-//        NepomukTrackPtr track( new NepomukTrack( result.resource() ) );
-//        tracklist.append( Meta::TrackPtr::staticCast( track ) );
-
-//    }
-
     return m_tracks;
 }
 
@@ -83,11 +61,3 @@ NepomukGenre::addTrack( TrackPtr trackPtr )
 {
     m_tracks.append( trackPtr );
 }
-
-
-void
-NepomukGenre::notifyObservers() const
-{
-
-}
-
