@@ -104,8 +104,7 @@ namespace Collections
             emit newCollection( m_collection.data() );
         }
 
-        // TEST: try to login
-        m_controller->login("122360801", "3051851");
+
         QVariantMap map;
         map["_msgtype"] = "getCredentials";
         m_controller->sendMessage(map);
