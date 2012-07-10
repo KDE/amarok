@@ -293,7 +293,9 @@ EngineController::supportedMimeTypes() //static
     {
         if ( !installDistroCodec() )
         {
-            Amarok::Components::logger()->longMessage(
+            Amarok::Logger* logger = Amarok::Components::logger(); // test cases might not have a logger
+            if( logger )
+                logger->longMessage(
                     i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                           "the installation of the backend that phonon uses.</p>"
                           "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), Amarok::Logger::Error );
@@ -1204,7 +1206,9 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
             // reset error count
             errorCount = 0;
 
-            Amarok::Components::logger()->longMessage(
+            Amarok::Logger* logger = Amarok::Components::logger(); // test cases might not have a logger
+            if( logger )
+                logger->longMessage(
                             i18n( "Too many errors encountered in playlist. Playback stopped." ),
                             Amarok::Logger::Warning
                         );
