@@ -49,29 +49,27 @@ namespace Meta
     typedef QList< SpotifyYearPtr > SpotifyYearList;
     typedef KSharedPtr< SpotifyLabel > SpotifyLabelPtr;
     typedef QList< SpotifyLabelPtr > SpotifyLabelList;
-    
+
     class SpotifyTrack : public Track
     {
         public:
-            SpotifyTrack( QString &sid,
-                          QString &playableUrl,
-                          QString &name,
-                          QString &artist,
-                          QString &album,
-                          QString &mimetype,
-                          double score,
-                          qint64 length,
-                          int bitrate,
-                          int filesize,
-                          QString &source );
+            SpotifyTrack( const QString &playableUrl,
+                          const QString &name,
+                          const QString &artist,
+                          const QString &album,
+                          const QString &mimetype,
+                          const double score,
+                          const qint64 length,
+                          const int bitrate,
+                          const int filesize,
+                          const QString &source );
             ~SpotifyTrack();
-            
+
             QString name() const;
             KUrl playableUrl() const;
             QString prettyUrl() const;
             QString uidUrl() const;
-            QString sid() const;
-            
+
             bool isPlayable() const;
             AlbumPtr album() const;
             ArtistPtr artist() const;
@@ -93,19 +91,19 @@ namespace Meta
             int trackNumber() const;
             int discNumber() const;
             int playCount() const;
-            
+
             QString type() const;
-            
+
             void prepareToPlay();
-            
+
             void finishedPlaying( double playedFraction );
-            
+
             bool inCollection() const;
             Collections::Collection* collection() const;
-            
+
             QString cachedLyrics() const;
             void setCachedLyrics( const QString &lyrics );
-            
+
             void addLabel( const QString &label );
             void addLabel( const LabelPtr &label );
             void removeLabel( const LabelPtr &label );
@@ -113,14 +111,14 @@ namespace Meta
             //SpotifyTrack-specific:
             QString source() const;
             QString mimetype() const;
-            
+
             void addToCollection( Collections::SpotifyCollection *collection );
             void setAlbum( SpotifyAlbumPtr album );
             void setArtist( SpotifyArtistPtr artist );
             void setComposer( SpotifyComposerPtr composer );
             void setGenre( SpotifyGenrePtr genre );
             void setYear( SpotifyYearPtr year );
-            
+
             SpotifyAlbumPtr spotifyAlbum();
             SpotifyArtistPtr spotifyArtist();
             SpotifyComposerPtr spotifyComposer();
@@ -130,7 +128,7 @@ namespace Meta
 
         private:
             QWeakPointer< Collections::SpotifyCollection > m_collection;
-            
+
             SpotifyAlbumPtr m_album;
             SpotifyArtistPtr m_artist;
             SpotifyComposerPtr m_composer;
@@ -138,7 +136,6 @@ namespace Meta
             SpotifyYearPtr m_year;
             SpotifyLabelList m_labelList;
 
-            QString m_sid;
             KUrl m_uidUrl;
             QString m_playableUrl;
             QString m_name;
@@ -156,7 +153,7 @@ namespace Meta
 
             QString m_source;
     };
-    
+
     class SpotifyArtist : public Artist
     {
         public:
@@ -170,22 +167,22 @@ namespace Meta
 
             void addTrack( SpotifyTrackPtr newTrack );
             void addAlbum( SpotifyAlbumPtr newAlbum );
-            
+
         private:
             QString m_name;
             TrackList m_tracks;
             AlbumList m_albums;
     };
-    
+
     class SpotifyAlbum : public Album
     {
         public:
             SpotifyAlbum( const QString &name );
             ~SpotifyAlbum();
             bool isCompilation() const;
-            
+
             QString name() const;
-            
+
             bool hasAlbumArtist() const;
             ArtistPtr albumArtist() const;
             TrackList tracks();
@@ -227,7 +224,7 @@ namespace Meta
             QString m_name;
             TrackList m_tracks;
     };
-    
+
     class SpotifyGenre : public Genre
     {
         public:
@@ -244,7 +241,7 @@ namespace Meta
             QString m_name;
             TrackList m_tracks;
     };
-    
+
     class SpotifyYear : public Year
     {
         public:
@@ -261,7 +258,7 @@ namespace Meta
             QString m_name;
             TrackList m_tracks;
     };
-    
+
     class SpotifyLabel : public Label
     {
         public:
@@ -277,5 +274,13 @@ namespace Meta
             TrackList m_tracks;
     };
 }
+
+//Q_DECLARE_METATYPE( Meta::SpotifyTrack )
+//Q_DECLARE_METATYPE( Meta::SpotifyArtist )
+//Q_DECLARE_METATYPE( Meta::SpotifyAlbum )
+//Q_DECLARE_METATYPE( Meta::SpotifyComposer )
+//Q_DECLARE_METATYPE( Meta::SpotifyGenre )
+//Q_DECLARE_METATYPE( Meta::SpotifyYear )
+//Q_DECLARE_METATYPE( Meta::SpotifyLabel )
 
 #endif

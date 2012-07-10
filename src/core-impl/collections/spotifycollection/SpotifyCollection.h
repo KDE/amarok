@@ -19,6 +19,8 @@
 
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/MemoryCollection.h"
+#include "SpotifyMeta.h"
+#include "support/Controller.h"
 #include <QObject>
 #include <QString>
 
@@ -38,18 +40,21 @@ namespace Collections
         private Q_SLOTS:
             void checkStatus();
             void spotifyReady();
-            void slotSpotifyError();
+//            void slotSpotifyError();
             void collectionRemoved();
 
         private:
+
+            Spotify::Controller* m_controller;
             QWeakPointer< SpotifyCollection > m_collection;
+            bool m_collectionIsManaged;
     };
 
     class SpotifyCollection: public Collection
     {
         Q_OBJECT
         public:
-            SpotifyCollection();
+            SpotifyCollection( Spotify::Controller* controller );
             ~SpotifyCollection();
 
             QueryMaker* queryMaker();
@@ -60,32 +65,34 @@ namespace Collections
 
             QString prettyName() const;
             KIcon icon() const;
-            
+
             bool isWritable() const;
             bool isOrganizable() const;
-            
+
             //Methods from Collections::TrackProvider
             bool possiblyContainsTrack( const KUrl &url ) const;
             Meta::TrackPtr trackForUrl( const KUrl &url );
-            
+
             //Methods from Collections::CollectionBase
             bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-            //PlaydarCollection-specific
-            void addNewTrack( Meta::PlaydarTrackPtr track );
+            //SpotifyCollection-specific
+            void addNewTrack( Meta::SpotifyTrackPtr track );
             QSharedPointer< MemoryCollection > memoryCollection();
 
+            Spotify::Controller* controller() { return m_controller; }
         private Q_SLOTS:
-            void slotSpotifyError();
-            
+//            void slotSpotifyError();
+
         private:
             QString m_collectionId;
-            
+
             QSharedPointer< MemoryCollection > m_memoryCollection;
-            QList< QWeakPointer< Spotify::ScriptResolver > > m_proxyResolverList;
+//            QList< QWeakPointer< Spotify::ScriptResolver > > m_proxyResolverList;
+            Spotify::Controller* m_controller;
     };
-};
+} // namespace Collections
 
 
 #endif

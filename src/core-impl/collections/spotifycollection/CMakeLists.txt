@@ -9,7 +9,9 @@ set( amarok_collection-spotifycollection_PART_SRCS
      SpotifyCollection.cpp
      SpotifyQueryMaker.cpp
      SpotifyMeta.cpp
-     support/Resolver.cpp
+     #SpotifyPlaylist.cpp
+     #SpotifyPlaylistProvider.cpp
+     support/Query.cpp
      support/Controller.cpp )
 
 kde4_add_plugin(amarok_collection-spotifycollection ${amarok_collection-spotifycollection_PART_SRCS})

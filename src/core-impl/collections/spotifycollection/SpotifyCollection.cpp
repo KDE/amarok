@@ -25,7 +25,6 @@
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "SpotifyQueryMaker.h"
 #include "support/Controller.h"
-#include "support/ProxyResolver.h"
 #include "core/support/Debug.h"
 
 #include <KIcon>
@@ -59,14 +58,21 @@ namespace Collections
     SpotifyCollectionFactory::init()
     {
         DEBUG_BLOCK
-        m_controller = new Spotify::Controller( this );
+        //m_controller = new Spotify::Controller( this );
+
+        m_controller = new Spotify::Controller( "/home/ofan/Documents/Repos/tomahawk-resolvers/spotify/build/spotify_tomahawkresolver" );
+        Q_ASSERT( m_controller != 0 );
         connect( m_controller, SIGNAL( spotifyReady() ),
                  this, SLOT( spotifyReady() ) );
-        connect( m_controller, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
-                 this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
+
+        m_controller->reload();
+
+
+//        connect( m_controller, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
+//                 this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
         checkStatus();
 
-        m_collection = new SpotifyCollection;
+        m_collection = new SpotifyCollection( m_controller );
         connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
         CollectionManager::instance()->addTrackProvider( m_collection.data() );
 
@@ -76,7 +82,7 @@ namespace Collections
     void
     SpotifyCollectionFactory::checkStatus()
     {
-        m_controller->status();
+        //m_controller->status();
     }
 
 
@@ -87,7 +93,8 @@ namespace Collections
 
         if( !m_collection )
         {
-            m_collection = new SpotifyCollection();
+            Q_ASSERT( m_controller != 0 );
+            m_collection = new SpotifyCollection( m_controller );
             connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
         }
 
@@ -96,21 +103,27 @@ namespace Collections
             m_collectionIsManaged = true;
             emit newCollection( m_collection.data() );
         }
+
+        // TEST: try to login
+        m_controller->login("122360801", "3051851");
+        QVariantMap map;
+        map["_msgtype"] = "getCredentials";
+        m_controller->sendMessage(map);
     }
 
-    void
-    SpotifyCollectionFactory::slotSpotifyError( Spotify::Controller::ErrorState error )
-    {
-        // DEBUG_BLOCK
+//    void
+//    SpotifyCollectionFactory::slotSpotifyError( Spotify::Controller::ErrorState error )
+//    {
+//        // DEBUG_BLOCK
 
-        if( error == Spotify::Controller::ErrorState( 1 ) )
-        {
-            if( m_collection && !m_collectionIsManaged )
-                CollectionManager::instance()->removeTrackProvider( m_collection.data() );
+//        if( error == Spotify::Controller::ErrorState( 1 ) )
+//        {
+//            if( m_collection && !m_collectionIsManaged )
+//                CollectionManager::instance()->removeTrackProvider( m_collection.data() );
 
-            QTimer::singleShot( 10 * 60 * 1000, this, SLOT( checkStatus() ) );
-        }
-    }
+//            QTimer::singleShot( 10 * 60 * 1000, this, SLOT( checkStatus() ) );
+//        }
+//    }
 
     void
     SpotifyCollectionFactory::collectionRemoved()
@@ -121,11 +134,13 @@ namespace Collections
         QTimer::singleShot( 10000, this, SLOT( checkStatus() ) );
     }
 
-    SpotifyCollection::SpotifyCollection()
+    SpotifyCollection::SpotifyCollection( Spotify::Controller *controller )
         : m_collectionId( i18n( "Spotify Collection" ) )
         , m_memoryCollection( new MemoryCollection )
+        , m_controller( controller )
     {
         DEBUG_BLOCK
+
 
     }
 
@@ -141,9 +156,10 @@ namespace Collections
         DEBUG_BLOCK
 
         SpotifyQueryMaker *freshQueryMaker = new SpotifyQueryMaker( this );
-        connect( freshQueryMaker, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
-                 this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
-        return freshQueryMaker;
+//        connect( freshQueryMaker, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
+//                 this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
+//        return freshQueryMaker;
+        return new MemoryQueryMaker( this, collectionId() );
     }
 
     Playlists::UserPlaylistProvider*
@@ -228,10 +244,10 @@ namespace Collections
             proxyTrack->setArtist( url.queryItem( "artist" ) );
             proxyTrack->setAlbum( url.queryItem( "album" ) );
             proxyTrack->setName( url.queryItem( "title" ) );
-            Spotify::ProxyResolver *proxyResolver = new Spotify::ProxyResolver( this, url, proxyTrack );
+//            Spotify::ProxyResolver *proxyResolver = new Spotify::ProxyResolver( this, url, proxyTrack );
 
-            connect( proxyResolver, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
-                     this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
+//            connect( proxyResolver, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
+//                     this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
 
             return Meta::TrackPtr::staticCast( proxyTrack );
         }
@@ -365,10 +381,10 @@ namespace Collections
         return m_memoryCollection;
     }
 
-    void
-    SpotifyCollection::slotSpotifyError( Spotify::Controller::ErrorState error )
-    {
-        if( error == Spotify::Controller::ErrorState( 1 ) )
-            emit remove();
-    }
-}
+//    void
+//    SpotifyCollection::slotSpotifyError( Spotify::Controller::ErrorState error )
+//    {
+//        if( error == Spotify::Controller::ErrorState( 1 ) )
+//            emit remove();
+//    }
+} // namespace Collections

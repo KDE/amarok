@@ -1,158 +1,215 @@
-/****************************************************************************************
- * Copyright (c) 2010 Andrew Coder <andrew.coder@gmail.com>                             *
- * Copyright (c) 2012 Ryan Feng <odayfans@gmail.com>                                    *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 2 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
-#ifndef PLAYDAR_CONTROLLER_H
-#define PLAYDAR_CONTROLLER_H
-
-#include <QObject>
-#include <QWeakPointer>
-
-class KUrl;
-class KJob;
-
-class QString;
-
-/**
- * @namespace Spotify contains the implementation of the Spotify API
- * in Amarok, so far as it is not specific to collection or context use.
+/* === This file is part of Tomahawk Player - <http://tomahawk-player.org> ===
+ *
+ *   Copyright 2010-2011, Christian Muehlhaeuser <muesli@tomahawk-player.org>
+ *   Copyright 2010-2011, Leo Franchi            <lfranchi@kde.org>
+ *   Copyright 2012 Ryan Feng                    <odayfans@gmail.com>
+ *
+ *   Tomahawk is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Tomahawk is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with Tomahawk. If not, see <http://www.gnu.org/licenses/>.
  */
-namespace Spotify
+#ifndef SCRIPTRESOLVER_H
+#define SCRIPTRESOLVER_H
+
+#include <QProcess>
+
+#include <QVariantMap>
+
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
+#include <qjson/qobjecthelper.h>
+
+#include "../SpotifyMeta.h"
+#include "./Query.h"
+
+class QObject;
+
+namespace Collections
 {
-    class Query;
-    class ProxyResolver;
-    
-    /**
-     * This class provides a basic interface to Spotify's resolution
-     * functionality. A user should initialize a Controller, wait for
-     * spotifyReady(), and proceed to use resolve( artist, album, title )
-     * as much as they'd like. Unless some error occurs, queryReady( QueryPtr )
-     * will provide a QueryPtr for each call to resolve(). Results will
-     * be provided by the appropriate Query as they become available, and
-     * the friendly relationship between Controller and Query ensures that
-     * results are properly matched with Querys.
-     */
-    class Controller : public QThread
-    {
-        Q_OBJECT
-        public:
-            /**
-             * We invoke the private function status() here, return immediately,
-             * and will emit spotifyReady() once things are actually set up.
-             * @param queriesShouldWaitForSolutions
-             *        If true, Spotify::Querys created by this controller will
-             *        only use getResultsLongPoll instead of first using getResults.
-             */
-            Controller( bool queriesShouldWaitForSolutions = false );
-            /**
-             * Controllers don't hold on to anything, so the deconstructor does nothing.
-             */
-            ~Controller();
-            
-            /** 
-            * Asks Spotify for status information, which eventually results in
-            * the emission of spotifyReady() if it does or error() otherwise.
-            */
-            void status();
-            
-            /**
-             * Asks Spotify to resolve a query, which eventually results in the
-             * emission of queryReady() if okay, or error() if something goes wrong.
-             * @param artist Name of artist to search for.
-             * @param album Name of album (by artist) to search for.
-             * @param title Name of track on album to search for.
-             * NOTE: Currently, for a query to have any chance of being solved,
-             *       both artist and title must be non-empty!
-             */
-            void resolve( const QString &artist,
-                          const QString &album,
-                          const QString &title );
-            
-            /** These errors are used when Spotify::Controller emits error(). */
-            enum ErrorState
-            {
-                /** Nothing bad happened yet! */
-                NoError,
-                /** Indicates an error from KIO or the Spotify service itself. */
-                ExternalError,
-                /** A request for status revealed a service claiming to not be Spotify. */
-                WrongServiceName,
-                /** A service asked for status didn't identify itself. */
-                MissingServiceName,
-                /** No "qid" field was found in a response to resolve() or getResults(). */
-                MissingQid,
-                /** Results were delivered to the wrong query */
-                WrongQid,
-                /** A response to getResults() didn't include a "results" array. */
-                MissingResults
-            };
-
-        signals:
-            /**
-            * Emitted once after construction, as long as some service responds
-            * from where we think Spotify is, and identifies itself as "spotify".
-            * Clients shouldn't try to resolve things until they get this signal.
-            */
-            void spotifyReady();
-            /**
-            * Emitted after resolve() is invoked, as long as Spotify's response
-            * includes a "qid" field. If the client object's looking for results,
-            * the Query's where they'll be when Spotify's got back to us. The
-            * controller doesn't keep any QueryPtrs around, so interested clients
-            * should keep a QueryList for any QueryPtrs they'd like to have.
-            */
-            void queryReady( Spotify::Query* );
-            /**
-            * Emitted after something unfortunate happens,
-            * along with the (hopefully) appropriate ErrorType
-            */
-            void spotifyError( Spotify::Controller::ErrorState );
-        
-        public:
-            /**
-             * NOTE: Querys handle invoking these on their own.
-             */
-            /**
-             * Asks Spotify for the state of the query with @p qid.
-             * If all goes well, resultsReady() is emitted, error() if something goes wrong.
-             * @param query The query to get results for
-             */
-            void getResults( Spotify::Query* query );
-            /**
-             * Like getResults(), but Spotify will wait to respond until the query
-             * has either been solved or enough time passes, (usually about 4000ms),
-             * that the query would have been solved it was possible.
-             * @param query The query to get results for
-             */
-            void getResultsLongPoll( Spotify::Query* query );
-
-            /**
-             * Makes a naive attempt to produce a KUrl that points to
-             * a playable location of a query result.
-             * @param sid The sid of the result desired.
-             */
-            KUrl urlForSid( const QString &sid ) const;
-            
-        private Q_SLOTS:
-            void processStatus( KJob* statusJob );
-            void processQuery( KJob* queryJob );
-            
-        private:
-            ErrorState m_errorState;
-            bool m_queriesShouldWaitForSolutions;
-    };
+    class SpotifyCollection;
+    class SpotifyQueryMaker;
 }
 
+namespace Spotify
+{
+
+class Controller: public QObject
+{
+    Q_OBJECT
+public:
+    Controller( const QString& exec );
+    virtual ~Controller();
+
+    virtual unsigned int timeout() const { return m_timeout; }
+    virtual void setTimeout( const unsigned int timeout ) { m_timeout = timeout; }
+    virtual QString name() const { return m_name; }
+    virtual QString filePath() const { return m_filePath; }
+    virtual void login(const QString& username, const QString& password);
+    virtual bool running() const;
+
+    virtual void reload();
+
+    virtual void sendMessage( const QVariantMap& map );
+
+
+    /* Resolve a query
+     */
+    virtual Spotify::Query* makeQuery( Collections::SpotifyCollection* collection, const QString& title = QString(), const QString& artist = QString(), const QString& album = QString(), const QString& genre = QString());
+    virtual void resolve( Query *query );
+//    virtual void search( const QueryPtr queryPtr );
+
+    /* Get playlist
+     */
+    virtual void getPlaylist( /* playlist id */ ) {};
+
+    /* Remove a playlist from sync list
+     */
+    virtual void removeFromSyncList( /* playlist id */ ) {};
+
+    /* Set collaborative
+     */
+    virtual void setCollaborative( /* playlist id */ ) {};
+
+    /* Subscribe a playlist
+     */
+    virtual void setSubscription( /* playlist id */ ) {};
+
+    /* Remove tracks from playlist
+     */
+    virtual void removeTracksFromPlaylist( /* playlist id, tracks */ ) {};
+
+    /* Add tracks to playlist
+     */
+    virtual void addTracksToPlaylist( /* playlist id, tracks */ ) {};
+
+    /* Move tracks in playlist
+     */
+    virtual void moveTracksInPlaylist( /* playlist id, tracks, start position */ ) {};
+
+    /* Create a new playlist
+     */
+    virtual void createPlaylist( /* playlist name */ ) {};
+
+    /* Delete a playlist
+     */
+    virtual void deletePlaylist( /* playlist id */ ) {};
+
+    /* Rename a playlist
+     */
+    virtual void renamePlaylit( /* playlist id, new name */ ) {};
+
+    /* Search tracks
+     */
+    virtual void searchTracks( /* query */ ) {};
+
+signals:
+    void started();
+    void terminated();
+    void customMessage( const QString& msgType, const QVariantMap& map );
+    void changed();
+
+    void errorMsgReceived( const QString& msg );
+    void userChanged();
+
+    void loggedIn();
+
+    void spotifyReady();
+    void queryReady( const Spotify::Query* query );
+
+public slots:
+    virtual void stop();
+    virtual void start();
+
+private slots:
+    void readStderr();
+    void readStdout();
+    void procExited( int code, QProcess::ExitStatus status );
+    void removeQueryFromCache( const QString& qid );
+
+private:
+    // Core private methods
+    /* Send raw bytes to Spotify resolver,
+     * the difference between sendRaw and sendMsg is,
+     * sendRaw only sends raw data, that it, msg should contain the message header which is the length of the message body,
+     * while sendMsg inserts the message header to the message then calls sendRaw
+     */
+    void sendRaw( const QByteArray& msg );
+
+    /* Handles all incoming messages from Spotify resolver,
+     * this parses all messages into QVariantMap and resend to specific message handlers.
+     */
+    void handleMsg( const QByteArray& msg );
+
+    /* Calculates the length of @param msg and inserts it to the message then calls sendRaw
+     */
+    void sendMsg( const QByteArray& msg );
+
+    /* Send config data to the Spotify resolver, not much useful in this scenario.
+     */
+    void sendConfig();
+
+    /* This is the method first called when connected to the Spotify resolver,
+     * it sends the proxy settinsg to the Spotify resolver so it will initialize correctly.
+     * Currently the Spotify resolver only runs locally, so the proxy is set to none.
+     */
+    void doSetup( const QVariantMap& map );
+
+    /* Start the Spotify resolver in background.
+     */
+    void startProcess();
+
+    /* Message handler methods
+     * the following methods handle all possible message types received from the Spotify resolver.
+     */
+    void handleSpotifyError( const QVariantMap& map );
+    void handleUserchanged( const QVariantMap& map );
+    void handlePlaylistReceived( const QVariantMap& map );
+    void handlePlaylistRenamed( const QVariantMap& map );
+    void handlePlaylistDeleted( const QVariantMap& map );
+    void handleTracksAdded( const QVariantMap& map );
+    void handleTracksDeleted( const QVariantMap& map );
+    void handleTracksMoved( const QVariantMap& map );
+    void handleTracksRemoved( const QVariantMap& map );
+    void handleLoginResponse( const QVariantMap& map );
+    void handleCredentials( const QVariantMap& map );
+    void handleCredentialsReceived( const QVariantMap& map );
+    void handleSettingsReceived( const QVariantMap& map );
+    void handleAllPlaylists( const QVariantMap& map );
+    void handleSearchResults( const QVariantMap& map );
+    void handleQueryResponse( const QVariantMap& map );
+
+
+    // Members
+    QProcess  m_proc;
+    QString   m_name;
+    QString   m_filePath;
+
+    quint32     m_msgSize;
+    quint32     m_timeout;
+    QByteArray  m_msg;
+
+    bool m_ready;
+    bool m_stopped;
+    bool m_deleting;
+    bool m_configSent;
+
+    QJson::Parser      m_parser;
+    QJson::Serializer  m_serializer;
+
+    // This stores all queries
+    QMap< QString, Spotify::QueryPtr > m_queryCache;
+
+    quint64 m_queryCounter;
+};
+
+} // namespace Spotify
 #endif
