@@ -88,6 +88,14 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
         friend QDebug operator<<( QDebug, const UrlEntry& );
 
         /**
+         * Finds best url id of a track identified by @param uid uniqueid in caches. If
+         * multiple entries are found, tries to use @param path as a hint.
+         *
+         * @returns url id or -1 if nothing is found.
+         */
+        int findBestUrlId( const QString &uid, const QString &path );
+
+        /**
          * Directory id has changed from @param oldDirId to @param newDirId without
          * actual change in the absolute directory path or contents. Try to relocate
          * tracks to the new directory, updating necessary fields.
@@ -106,8 +114,9 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
 
         /** Contains all found directories with their absolute path and id */
         QHash<QString, int> m_foundDirectories;
-        /** Contains all found tracks with the unique id */
-        QSet<QString> m_foundTracks;
+        /** Contains all found tracks with the unique id and url id. QMultiHash only
+         *  because it implements contains( key, value ) */
+        QMultiHash<QString, int> m_foundTracks;
 
         QHash<CollectionScanner::Directory*, int> m_directoryIds;
         QHash<CollectionScanner::Album*, int> m_albumIds;
@@ -124,7 +133,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
         /// maps UrlEntry id to UrlEntry
         QHash<int, UrlEntry> m_urlsCache;
         /// maps uid to UrlEntry id
-        QHash<QString, int> m_uidCache;
+        QMultiHash<QString, int> m_uidCache;
         /// maps path to UrlEntry id
         QHash<QString, int> m_pathCache;
         /// maps directory id to UrlEntry id

@@ -159,20 +159,21 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
         m_lastErrors.append( text );
         return;
     }
-    m_foundTracks.insert( uid );
 
     Meta::SqlTrackPtr metaTrack;
+    UrlEntry entry;
     // find an existing track by uid
     if( m_uidCache.contains( uid ) )
     {
-        int urlId = m_uidCache.value( uid );
+        // uid is sadly not unique. Try to find the best url id.
+        int urlId = findBestUrlId( uid, track->path() );
+        Q_ASSERT( urlId > 0 );
         Q_ASSERT( m_urlsCache.contains( urlId ) );
-        UrlEntry entry = m_urlsCache.value( urlId );
+        entry = m_urlsCache.value( urlId );
         entry.path = track->path();
         entry.directoryId = directoryId;
-        urlsCacheInsert( entry ); // removes the previous entry (by id) first
 
-        metaTrack = Meta::SqlTrackPtr::staticCast( m_collection->trackForUrl( uid ) );
+        metaTrack = Meta::SqlTrackPtr::staticCast( m_collection->registry()->getTrack( urlId ) );
         Q_ASSERT( metaTrack->urlId() == entry.id );
     }
     // find an existing track by path
@@ -180,10 +181,9 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     {
         int urlId = m_pathCache.value( track->path() );
         Q_ASSERT( m_urlsCache.contains( urlId ) );
-        UrlEntry entry = m_urlsCache.value( urlId );
+        entry = m_urlsCache.value( urlId );
         entry.uid = uid;
         entry.directoryId = directoryId;
-        urlsCacheInsert( entry ); // removes the previous entry (by id) first
 
         metaTrack = Meta::SqlTrackPtr::staticCast( m_collection->registry()->getTrack( urlId ) );
         Q_ASSERT( metaTrack->urlId() == entry.id );
@@ -192,12 +192,10 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     else
     {
         static int autoDecrementId = -1;
-        UrlEntry entry;
         entry.id = autoDecrementId--;
         entry.path = track->path();
         entry.uid = uid;
         entry.directoryId = directoryId;
-        urlsCacheInsert( entry );
 
         metaTrack = Meta::SqlTrackPtr::staticCast( m_collection->getTrack( deviceId, rpath, directoryId, uid ) );
     }
@@ -210,6 +208,8 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
         m_lastErrors.append( text );
         return;
     }
+    urlsCacheInsert( entry ); // removes the previous entry (by id) first if necessary
+    m_foundTracks.insert( uid, entry.id );
 
     // TODO: we need to check the modified date of the file agains the last updated of the file
     // to figure out if the track information was updated from outside Amarok.
@@ -393,12 +393,35 @@ SqlScanResultProcessor::deleteDeletedTracks( int directoryId )
         Q_ASSERT( m_urlsCache.contains( urlId ) );
         const UrlEntry &entry = m_urlsCache[ urlId ];
         Q_ASSERT( entry.directoryId == directoryId );
-        if( !m_foundTracks.contains( entry.uid ) )
+        // we need to match both uid and url id, because uid is not unique
+        if( !m_foundTracks.contains( entry.uid, entry.id ) )
         {
             removeTrack( entry );
             urlsCacheRemove( entry );
         }
     }
+}
+
+int
+SqlScanResultProcessor::findBestUrlId( const QString &uid, const QString &path )
+{
+    QList<int> urlIds = m_uidCache.values( uid );
+    if( urlIds.isEmpty() )
+        return -1;
+    if( urlIds.size() == 1 )
+        return urlIds.at( 0 ); // normal operation
+
+    foreach( int testedUrlId, urlIds )
+    {
+        Q_ASSERT( m_urlsCache.contains( testedUrlId ) );
+        if( m_urlsCache[ testedUrlId ].path == path )
+            return testedUrlId;
+    }
+
+    warning() << "multiple url entries with uid" << uid << "found in the database, but"
+              << "none with current path" << path << "Choosing blindly the last one out"
+              << "of url id candidates" << urlIds;
+    return urlIds.last();
 }
 
 bool
@@ -460,10 +483,10 @@ SqlScanResultProcessor::removeTrack( const UrlEntry &entry )
     }
 
     SqlRegistry *reg = m_collection->registry();
-    if( reg->m_uidMap.contains( entry.uid ) )
-        Meta::SqlTrackPtr::staticCast( reg->m_uidMap[ entry.uid ] )->remove();
-    else
-        reg->removeTrack( entry.id, entry.uid );
+    // we must get the track by id, uid is not unique
+    Meta::SqlTrackPtr track = Meta::SqlTrackPtr::staticCast( reg->getTrack( entry.id ) );
+    Q_ASSERT( track->urlId() == entry.id );
+    track->remove();
 }
 
 void
@@ -513,15 +536,7 @@ SqlScanResultProcessor::urlsCacheInsert( const UrlEntry &entry )
     if( m_urlsCache.contains( entry.id ) )
         urlsCacheRemove( m_urlsCache[ entry.id ] );
 
-    // following cases shoudn't normally happen:
-    if( m_uidCache.contains( entry.uid ) )
-    {
-        int oldId = m_uidCache.value( entry.uid );
-        Q_ASSERT( m_urlsCache.contains( oldId ) );
-        const UrlEntry &old = m_urlsCache[ oldId ];
-        warning() << "urlsCacheInsert(): found duplicate in uid. old" << old
-                  << "will be hidden by the new one in the cache:" << entry;
-    }
+    // following shoudn't normally happen:
     if( m_pathCache.contains( entry.path ) )
     {
         int oldId = m_pathCache.value( entry.path );
@@ -532,6 +547,7 @@ SqlScanResultProcessor::urlsCacheInsert( const UrlEntry &entry )
     }
 
     // this will signify error in this class:
+    Q_ASSERT( !m_uidCache.contains( entry.uid, entry.id ) );
     Q_ASSERT( !m_directoryCache.contains( entry.directoryId, entry.id ) );
 
     m_urlsCache.insert( entry.id, entry );
@@ -546,7 +562,7 @@ SqlScanResultProcessor::urlsCacheRemove( const UrlEntry &entry )
     if( !m_urlsCache.contains( entry.id ) )
         return;
 
-    m_uidCache.remove( entry.uid );
+    m_uidCache.remove( entry.uid, entry.id );
     m_pathCache.remove( entry.path );
     m_directoryCache.remove( entry.directoryId, entry.id );
     m_urlsCache.remove( entry.id );
