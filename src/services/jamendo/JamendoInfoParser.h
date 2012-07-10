@@ -37,10 +37,6 @@ public:
     virtual void getInfo( Meta::ArtistPtr artist );
     virtual void getInfo( Meta::AlbumPtr album );
     virtual void getInfo( Meta::TrackPtr track );
-
-signals:
-
-    void info( QString );
 };
 
 #endif
