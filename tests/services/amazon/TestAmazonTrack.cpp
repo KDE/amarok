@@ -65,5 +65,6 @@ TestAmazonTrack::testEmblem()
     list << "id" << "name" << "trackNumber" << "length" << "playableUrl" << "albumId" << "artistId" << "price" << "ASIN";
     Meta::AmazonTrack track( list );
 
+    QSKIP("Emblem is only available once Amarok is installed.", SkipSingle);
     QVERIFY( !track.emblem().isNull() );
 }
