@@ -13,11 +13,6 @@ set(amarok_collection-nepomukcollection_PART_SRCS
 
     NepomukCollection.cpp
     NepomukCollectionFactory.cpp
-    #NepomukQueryMaker.cpp
-    #NepomukQueryMakerInternal.cpp
-    #../support/MemoryCustomValue.cpp
-    #../support/MemoryFilter.cpp
-    #../support/MemoryQueryMakerHelper.cpp
 
     meta/NepomukAlbum.cpp
     meta/NepomukArtist.cpp
