@@ -37,24 +37,22 @@ namespace Collections
     class SpotifyCollection;
 }
 
-Meta::SpotifyTrack::SpotifyTrack( QString &sid,
-                                  QString &playableUrl,
-                                  QString &name,
-                                  QString &artist,
-                                  QString &album,
-                                  QString &mimetype,
-                                  double score,
-                                  qint64 length,
-                                  int bitrate,
-                                  int filesize,
-                                  QString &source )
+Meta::SpotifyTrack::SpotifyTrack( const QString &playableUrl,
+                                  const QString &name,
+                                  const QString &artist,
+                                  const QString &album,
+                                  const QString &mimetype,
+                                  const double score,
+                                  const qint64 length,
+                                  const int bitrate,
+                                  const int filesize,
+                                  const QString &source )
     : m_album( new SpotifyAlbum( album ) )
     , m_artist( new SpotifyArtist( artist ) )
     , m_composer( new SpotifyComposer( QString( "" ) ) )
     , m_genre( new SpotifyGenre( QString( "" ) ) )
     , m_year( new SpotifyYear( QString( "" ) ) )
     , m_labelList(  )
-    , m_sid( sid )
     , m_uidUrl( )
     , m_playableUrl( playableUrl )
     , m_name( name )
@@ -107,11 +105,6 @@ Meta::SpotifyTrack::uidUrl() const
     return m_uidUrl.url();
 }
 
-QString
-Meta::SpotifyTrack::sid() const
-{
-    return m_sid;
-}
 
 bool
 Meta::SpotifyTrack::isPlayable() const
@@ -157,7 +150,7 @@ Meta::SpotifyTrack::labels() const
     {
         labelList.append( LabelPtr::staticCast( label ) );
     }
-    
+
     return labelList;
 }
 
@@ -302,7 +295,7 @@ void
 Meta::SpotifyTrack::addLabel( const QString &label )
 {
     SpotifyLabelPtr newLabel( new SpotifyLabel( label ) );
-    
+
     m_labelList.append( newLabel );
 }
 
@@ -310,7 +303,7 @@ void
 Meta::SpotifyTrack::addLabel( const LabelPtr &label )
 {
     SpotifyLabelPtr newLabel( new SpotifyLabel( label->name() ) );
-    
+
     m_labelList.append( newLabel );
 }
 
@@ -506,7 +499,7 @@ bool
 Meta::SpotifyAlbum::hasImage( int size ) const
 {
     Q_UNUSED( size );
-    
+
     if( !m_cover.isNull() )
         return true;
     else

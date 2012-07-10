@@ -1,120 +1,105 @@
-/****************************************************************************************
- * Copyright (c) 2010 Andrew Coder <andrew.coder@gmail.com>                             *
- * Copyright (c) 2012 Ryan Feng <odayfans@gmail.com>                                    *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 2 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
-#ifndef PLAYDAR_QUERYOBJECT_H
-#define PLAYDAR_QUERYOBJECT_H
+#ifndef SPOTIFY_QUERY_
+#define SPOTIFY_QUERY_
 
-#include "Controller.h"
-#include "core/meta/Meta.h"
 #include "../SpotifyMeta.h"
 
-#include <QWeakPointer>
+namespace Collections
+{
+    class SpotifyCollection;
+}
 
-class KJob;
-
-class QString;
+class QObject;
 
 namespace Spotify
 {
-    /**
-     * A Query provides an interface to a single Spotify query.
-     * Clients should recieve these from their Spotify::Controller,
-     * rather than constructing them. After getting a Query, just
-     * wait for newTrackAdded(), querySolved(), or queryDone(),
-     * as appropriate. Using QueryPtr will make sure a neglected Query
-     * gets deleted, and Controllers won't hold on to the reference,
-     * so interested objects should be sure to store their QueryPtrs.
-     * NOTE: artist(), album(), and title() are all empty until
-     *       the first round of results has come in from Spotify.
-     *       Querys are matched with results by qid().
-     */
-    class Query : public QObject
-    {
-        Q_OBJECT
-        
-        public:
-            //Constructor and Destructor
-            Query( const QString &qid, Spotify::Controller* controller, bool waitForSolution );
-            ~Query();
-            
-            /** @return UID for this query given by Spotify */
-            QString qid() const;
-            /** @return Name of artist used in query */
-            QString artist() const;
-            /** @return Name of album used in query */
-            QString album() const;
-            /** @return Track title used in query */
-            QString title() const;
-            /**
-             * @return @c true A track has received a 1.00 score
-             * @return @c false No track has a 1.00 score
-             */
-            bool isSolved() const;
-            
-            /**
-             * @return 0 if the query is unsolved, and an arbitrary track
-             * with a perfect score of 1.00 if the query is solved.
-             */
-            Meta::SpotifyTrackPtr getSolution() const;
-            /**
-             * @return The (possibly empty) SpotifyTrackList containing any
-             * results found so far.
-             */
-            Meta::SpotifyTrackList getTrackList() const;
-            
-        public Q_SLOTS:
-            void receiveResults( KJob* );
-            
-        signals:
-            /**
-             * Emitted each time a new track is added to the list of results,
-             * returning the latest result as a Meta::SpotifyTrack.
-             */
-            void newTrackAdded( Meta::SpotifyTrackPtr );
-            /**
-             * Emitted once if a query is solved, and returns the first track
-             * with a perfect score of 1.00. Will not be emitted if the query
-             * ends otherwise. (Emitted alongside newTrackAdded).
-             */
-            void querySolved( Meta::SpotifyTrackPtr );
-            /**
-             * Emitted once all results that may be found by our means have
-             * been found, and returns the internal results list in its final state.
-             */
-            void queryDone( Spotify::Query*, Meta::SpotifyTrackList );
-            /**
-             * Indicates an error. Don't bother connecting to this if you're
-             * already connected to Controller::error, since the controller
-             * will pass the signal along.
-             */
-            void spotifyError( Spotify::Controller::ErrorState );
-            
-        private:
-            QWeakPointer< Spotify::Controller > m_controller;
-            bool m_waitForSolution;
-            
-            QString m_qid;
-            QString m_artist;
-            QString m_album;
-            QString m_title;
-            bool m_solved;
-            
-            bool m_receivedFirstResults;
-            
-            Meta::SpotifyTrackList m_trackList;
-    };
-}
+
+class Query;
+typedef KSharedPtr< Query > QueryPtr;
+
+enum QueryErrorNumber {
+    ENoError,
+    EInternalError,
+    ESpotifyNotConnected,
+    ETimedOut
+};
+
+struct QueryError {
+    QueryError(): errno( ENoError ) {}
+    QueryError(const QueryErrorNumber e, const QString& msg): errno( e ), verbose( msg ) {}
+    QueryErrorNumber errno;
+    QString verbose;
+};
+
+class Query: public QObject, public QSharedData
+{
+    Q_OBJECT
+    public:
+        Query( Collections::SpotifyCollection* collection, const QString& qid, const QString& title = QString(), const QString& artist = QString(), const QString& album = QString(), const QString& genre = QString() );
+        ~Query();
+
+        /* @return artist of the query
+         */
+        QString artist() const { return m_artist; }
+        /* @return title of the query
+         */
+        QString title() const { return m_title; }
+        /* @return genre of the query
+         */
+        QString genre() const { return m_genre; }
+        /* @return album of the query
+         */
+        QString album() const { return m_album; }
+
+        /* @return qid of the query
+         */
+        QString qid() const { return m_qid; }
+
+
+        bool isSolved() const { return m_solved; }
+
+        void setAlbum( const QString& album ) { m_album = album; }
+        void setGenre( const QString& genre ) { m_genre = genre; }
+        void setArtist( const QString& artist ) { m_artist = artist; }
+        void setTitle( const QString& title ) { m_title = title; }
+
+        Meta::SpotifyTrackList& getTrackList() { return m_results; }
+
+        /* @return the full query string
+         */
+        QString getFullQueryString() const;
+
+        int error() const { return (int)m_error.errno; }
+        QString errorMsg() const { return m_error.verbose; }
+
+    public slots:
+        void tracksAdded( const Meta::SpotifyTrackList &trackList );
+        /* Abort current query if timed out
+         */
+        void abortQuery();
+        void timedOut();
+        void setError( const Spotify::QueryError& error ) { m_error = error; }
+
+    signals:
+        void queryError( const Spotify::QueryError& error );
+        void newTrackList( const Meta::SpotifyTrackList& trackList );
+        void queryDone( const QString& qid );
+        void queryDone( Spotify::Query*, const Meta::SpotifyTrackList& );
+
+    private:
+        QString m_qid;
+        QString m_title;
+        QString m_artist;
+        QString m_album;
+        QString m_genre;
+
+        Collections::SpotifyCollection* m_collection;
+
+        bool m_solved;
+
+        Meta::SpotifyTrackList m_results;
+
+        Spotify::QueryError m_error;
+};
+} // namesapce Spotify
+
 #endif

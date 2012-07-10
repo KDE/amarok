@@ -34,11 +34,11 @@
 namespace Collections
 {
     class QueryMakerFunction;
-    
+
     class SpotifyQueryMaker : public QueryMaker
     {
         Q_OBJECT
-        
+
         public:
             SpotifyQueryMaker( SpotifyCollection *collection );
             ~SpotifyQueryMaker();
@@ -61,21 +61,21 @@ namespace Collections
 
             QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
             QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
-            
+
             QueryMaker* addNumberFilter( qint64 value, qint64 filter, NumberComparison compare );
             QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, NumberComparison compare );
-            
+
             QueryMaker* limitMaxResultSize( int size );
-            
+
             QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
-            
+
             QueryMaker* setLabelQueryMode( LabelQueryMode mode );
-            
+
             QueryMaker* beginAnd();
             QueryMaker* beginOr();
             QueryMaker* endAndOr();
             QueryMaker* setAutoDelete( bool autoDelete );
-            
+
             int validFilterMask();
 
         signals:
@@ -89,36 +89,36 @@ namespace Collections
             void newResultReady( Meta::LabelList );
 
             void queryDone();
+            void queryAborted();
+//            void spotifyError( Spotify::Controller::ErrorState );
 
-            void spotifyError( Spotify::Controller::ErrorState );
-        
-        private Q_SLOTS:
-            void slotSpotifyError( Spotify::Controller::ErrorState error );
-            void collectQuery( Spotify::Query *query );
-            void collectResult( Meta::SpotifyTrackPtr track );
-            void aQueryEnded( Spotify::Query *query, const Meta::SpotifyTrackList &trackList );
+        public Q_SLOTS:
+//            void slotSpotifyError( Spotify::Controller::ErrorState error );
+            void collectResults( const Meta::SpotifyTrackList &track );
+            void aQueryEnded( Spotify::Query* query, const Meta::SpotifyTrackList trackList );
             void memoryQueryDone();
-            
+
         private:
             QueryType m_queryType;
             bool m_autoDelete;
-            int m_activeQueryCount;
+            int  m_activeQueryCount;
             bool m_memoryQueryIsRunning;
             bool m_collectionUpdated;
+            bool m_querySent;
             QList< CurriedQMFunction* > m_queryMakerFunctions;
-            
+
             typedef QMap< qint64, QString > FilterMap;
             FilterMap m_filterMap;
-            
+
             QWeakPointer< SpotifyCollection > m_collection;
             QWeakPointer< QueryMaker > m_memoryQueryMaker;
-            
+
             QWeakPointer< Spotify::Controller > m_controller;
-            
+
             void runMemoryQueryAgain();
     };
 
-    
+
 
 }
 

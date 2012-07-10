@@ -42,7 +42,8 @@ namespace Collections
     , m_collectionUpdated( false )
     , m_filterMap( )
     , m_collection( collection )
-    , m_controller( new Spotify::Controller() )
+    , m_controller( collection->controller() )
+    , m_querySent( false )
     {
         DEBUG_BLOCK
 
@@ -75,12 +76,15 @@ namespace Collections
     {
         DEBUG_BLOCK
 
+        if( m_querySent ){
+            warning() << "Query still running when destroying SpotifyQueryMaker...";
+        }
         if( !m_queryMakerFunctions.isEmpty() )
         {
             qDeleteAll( m_queryMakerFunctions.begin(), m_queryMakerFunctions.end() );
             m_queryMakerFunctions.clear();
         }
-        
+
         delete m_memoryQueryMaker.data();
     }
 
@@ -89,17 +93,17 @@ namespace Collections
     SpotifyQueryMaker::run()
     {
         DEBUG_BLOCK
-        
+
         if( !m_filterMap.isEmpty() )
         {
-            connect( m_controller.data(), SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
-                     this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
-            connect( m_controller.data(), SIGNAL( queryReady( Spotify::Query* ) ),
-                    this, SLOT( collectQuery( Spotify::Query* ) ) );
+            // TODO: Connect error signals
+            //connect( m_controller.data(), SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
+                     //this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
 
             QString artist( "" );
             QString album( "" );
             QString title( "" );
+            QString genre( "" );
 
             if( m_filterMap.contains( Meta::valArtist ) )
                 artist.append( m_filterMap.value( Meta::valArtist ) );
@@ -107,11 +111,19 @@ namespace Collections
                 album.append( m_filterMap.value( Meta::valAlbum ) );
             if( m_filterMap.contains( Meta::valTitle ) )
                 title.append( m_filterMap.value( Meta::valTitle ) );
+            if( m_filterMap.contains( Meta::valGenre ) )
+                genre.append( m_filterMap.value( Meta::valGenre ) );
 
-            if( !artist.isEmpty() && !title.isEmpty() )
+            if( !artist.isEmpty() || !album.isEmpty() || !title.isEmpty() || !genre.isEmpty() )
             {
-                m_activeQueryCount++;
-                m_controller.data()->resolve( artist, album, title );
+                m_querySent = true;
+                Spotify::Query* query = m_controller.data()->makeQuery( m_collection.data(), title, artist, album, genre );
+                connect( query, SIGNAL(newTrackList(const Meta::SpotifyTrackList&)),
+                         this, SLOT(collectResults(const Meta::SpotifyTrackList&)));
+                connect( query, SIGNAL(queryDone(Spotify::Query*,Meta::SpotifyTrackList)),
+                         this, SLOT(aQueryEnded(Spotify::Query*,Meta::SpotifyTrackList)));
+
+                m_controller.data()->resolve( query );
             }
         }
 
@@ -127,14 +139,17 @@ namespace Collections
 
         m_memoryQueryMaker.data()->abortQuery();
 
-        m_controller.data()->disconnect( this );
+        if( m_querySent )
+        {
+            emit queryAborted();
+        }
     }
 
     QueryMaker*
     SpotifyQueryMaker::setQueryType( QueryType type )
     {
         DEBUG_BLOCK
-
+        debug() << "QueryType" << type;
         CurriedUnaryQMFunction< QueryType >::FunPtr funPtr = &QueryMaker::setQueryType;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< QueryType >( funPtr, type );
         m_queryMakerFunctions.append( curriedFun );
@@ -142,7 +157,7 @@ namespace Collections
         (*curriedFun)( m_memoryQueryMaker.data() );
 
         m_queryType = type;
-        
+
         return this;
     }
 
@@ -156,10 +171,10 @@ namespace Collections
         m_queryMakerFunctions.append( curriedFun );
 
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
     {
@@ -170,10 +185,10 @@ namespace Collections
         m_queryMakerFunctions.append( curriedFun );
 
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::orderBy( qint64 value, bool descending )
     {
@@ -184,7 +199,7 @@ namespace Collections
         m_queryMakerFunctions.append( curriedFun );
 
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
 
@@ -198,83 +213,83 @@ namespace Collections
         m_queryMakerFunctions.append( curriedFun );
 
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::addMatch( const Meta::ArtistPtr &artist )
     {
         DEBUG_BLOCK
-        
+
         CurriedUnaryQMFunction< const Meta::ArtistPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::ArtistPtr& >( funPtr, artist );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
 
         if( artist )
             m_filterMap.insert( Meta::valArtist, artist->name() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::addMatch( const Meta::AlbumPtr &album )
     {
         DEBUG_BLOCK
-        
+
         CurriedUnaryQMFunction< const Meta::AlbumPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::AlbumPtr& >( funPtr, album );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         if( album )
             m_filterMap.insert( Meta::valAlbum, album->name() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::addMatch( const Meta::ComposerPtr &composer )
     {
         DEBUG_BLOCK
-        
+
         CurriedUnaryQMFunction< const Meta::ComposerPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::ComposerPtr& >( funPtr, composer );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::addMatch( const Meta::GenrePtr &genre )
     {
         DEBUG_BLOCK
-        
+
         CurriedUnaryQMFunction< const Meta::GenrePtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::GenrePtr& >( funPtr, genre );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::addMatch( const Meta::YearPtr &year )
     {
         DEBUG_BLOCK
-        
+
         CurriedUnaryQMFunction< const Meta::YearPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::YearPtr& >( funPtr, year );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
 
@@ -282,28 +297,28 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::LabelPtr &label )
     {
         DEBUG_BLOCK
-        
+
         CurriedUnaryQMFunction< const Meta::LabelPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::LabelPtr& >( funPtr, label );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
     {
         DEBUG_BLOCK
-        
+
         CurriedQMStringFilterFunction::FunPtr funPtr = &QueryMaker::addFilter;
         CurriedQMFunction *curriedFun =
             new CurriedQMStringFilterFunction( funPtr, value, filter, matchBegin, matchEnd );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         if( !m_filterMap.isEmpty() && m_filterMap.contains( value ) )
         {
             QString newFilter = m_filterMap.value( value );
@@ -312,37 +327,37 @@ namespace Collections
         }
         else
             m_filterMap.insert( value, filter );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
     {
         DEBUG_BLOCK
-        
+
         CurriedQMStringFilterFunction::FunPtr funPtr = &QueryMaker::excludeFilter;
         CurriedQMFunction *curriedFun =
             new CurriedQMStringFilterFunction( funPtr, value, filter, matchBegin, matchEnd );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         if( m_filterMap.contains( value ) && m_filterMap.value( value ).contains( filter ) )
         {
             QString localFilter = m_filterMap.value( value );
             localFilter.remove( filter );
             m_filterMap.insert( value, localFilter );
         }
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::addNumberFilter( qint64 value, qint64 filter, NumberComparison compare )
     {
         DEBUG_BLOCK
-        
+
         CurriedTrinaryQMFunction< qint64, qint64, NumberComparison >::FunPtr funPtr = &QueryMaker::addNumberFilter;
         CurriedQMFunction *curriedFun =
             new CurriedTrinaryQMFunction< qint64, qint64, NumberComparison >
@@ -350,17 +365,17 @@ namespace Collections
                 funPtr, value, filter, compare
             );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, NumberComparison compare )
     {
         DEBUG_BLOCK
-        
+
         CurriedTrinaryQMFunction< qint64, qint64, NumberComparison >::FunPtr funPtr = &QueryMaker::excludeNumberFilter;
         CurriedQMFunction *curriedFun =
             new CurriedTrinaryQMFunction< qint64, qint64, NumberComparison >
@@ -368,12 +383,12 @@ namespace Collections
                 funPtr, value, filter, compare
             );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::limitMaxResultSize( int size )
     {
@@ -384,38 +399,38 @@ namespace Collections
         m_queryMakerFunctions.append( curriedFun );
 
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
     {
         DEBUG_BLOCK
-        
+
         CurriedUnaryQMFunction< AlbumQueryMode >::FunPtr funPtr = &QueryMaker::setAlbumQueryMode;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< AlbumQueryMode >( funPtr, mode );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::setLabelQueryMode( LabelQueryMode mode )
     {
         DEBUG_BLOCK
-        
+
         CurriedUnaryQMFunction< LabelQueryMode >::FunPtr funPtr = &QueryMaker::setLabelQueryMode;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< LabelQueryMode >( funPtr, mode );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::beginAnd()
     {
@@ -426,90 +441,83 @@ namespace Collections
         m_queryMakerFunctions.append( curriedFun );
 
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::beginOr()
     {
         DEBUG_BLOCK
-        
+
         CurriedZeroArityQMFunction::FunPtr funPtr = &QueryMaker::beginOr;
         CurriedQMFunction *curriedFun = new CurriedZeroArityQMFunction( funPtr );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::endAndOr()
     {
         DEBUG_BLOCK
-        
+
         CurriedZeroArityQMFunction::FunPtr funPtr = &QueryMaker::endAndOr;
         CurriedQMFunction *curriedFun = new CurriedZeroArityQMFunction( funPtr );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     SpotifyQueryMaker::setAutoDelete( bool autoDelete )
     {
         DEBUG_BLOCK
-        
+
         m_autoDelete = autoDelete;
-        
+
         return this;
     }
-    
+
     int
     SpotifyQueryMaker::validFilterMask()
     {
         DEBUG_BLOCK
-        
+
         return QueryMaker::ValidFilters( ArtistFilter ) |
                QueryMaker::ValidFilters( AlbumFilter ) |
                QueryMaker::ValidFilters( TitleFilter ) |
                m_memoryQueryMaker.data()->validFilterMask();
     }
 
+//    void
+//    SpotifyQueryMaker::slotSpotifyError( Spotify::Controller::ErrorState error )
+//    {
+//        DEBUG_BLOCK
+
+//        emit spotifyError( error );
+//    }
+
     void
-    SpotifyQueryMaker::slotSpotifyError( Spotify::Controller::ErrorState error )
+    SpotifyQueryMaker::collectResults( const Meta::SpotifyTrackList& trackList )
     {
         DEBUG_BLOCK
 
-        emit spotifyError( error );
-    }
-    
-    void
-    SpotifyQueryMaker::collectQuery( Spotify::Query* query )
-    {
-        DEBUG_BLOCK
-        
-        connect( query, SIGNAL( newTrackAdded( Meta::SpotifyTrackPtr ) ),
-                 this, SLOT( collectResult( Meta::SpotifyTrackPtr ) ) );
-        connect( query, SIGNAL( queryDone( Spotify::Query*, Meta::SpotifyTrackList ) ),
-                 this, SLOT( aQueryEnded( Spotify::Query*, Meta::SpotifyTrackList ) ) );
+        // Add results to collection
+        foreach( Meta::SpotifyTrackPtr trackPtr, trackList )
+        {
+            trackPtr->addToCollection( m_collection.data() );
+            if( m_collection.data()->trackForUrl( trackPtr->uidUrl() ) == Meta::TrackPtr::staticCast( trackPtr ) )
+                m_collectionUpdated = true;
+        }
     }
 
     void
-    SpotifyQueryMaker::collectResult( Meta::SpotifyTrackPtr track )
-    {
-        DEBUG_BLOCK
-        
-        track->addToCollection( m_collection.data() );
-        if( m_collection.data()->trackForUrl( track->uidUrl() ) == Meta::TrackPtr::staticCast( track ) )
-            m_collectionUpdated = true;
-    }
-    
-    void
-    SpotifyQueryMaker::aQueryEnded( Spotify::Query *query, const Meta::SpotifyTrackList &trackList )
+    SpotifyQueryMaker::aQueryEnded( Spotify::Query *query, const Meta::SpotifyTrackList trackList )
     {
         DEBUG_BLOCK
 
@@ -517,8 +525,8 @@ namespace Collections
         Q_UNUSED( trackList );
 
         m_activeQueryCount--;
+        m_querySent = false;
 
-        
         if( m_activeQueryCount <= 0 )
         {
             if( m_collectionUpdated && !m_memoryQueryIsRunning )
@@ -533,6 +541,7 @@ namespace Collections
                     deleteLater();
             }
         }
+
     }
 
     void
@@ -558,7 +567,7 @@ namespace Collections
 
         if( m_memoryQueryMaker.data() )
             return;
-        
+
         m_memoryQueryMaker = new MemoryQueryMaker( m_collection.data()->memoryCollection().toWeakRef(),
                                                    m_collection.data()->collectionId() );
         connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( Meta::TrackList ) ),
@@ -585,7 +594,7 @@ namespace Collections
 
         foreach( CurriedQMFunction *funPtr, m_queryMakerFunctions )
             (*funPtr)( m_memoryQueryMaker.data() );
-        
+
         m_activeQueryCount++;
         m_memoryQueryIsRunning = true;
         m_memoryQueryMaker.data()->run();
