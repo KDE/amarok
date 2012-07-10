@@ -132,9 +132,8 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     filename.replace( QLatin1Char('/'), QLatin1Char('-') );
     filename.replace( QLatin1Char('\\'), QLatin1Char('-') );
 
-    QString ext = Amarok::extension( filename );
-    Playlists::PlaylistFormat format = Playlists::getFormat( ext );
-    if( format == Playlists::Unknown )
+    Playlists::PlaylistFormat format = Playlists::getFormat( filename );
+    if( format == Playlists::Unknown ) // maybe the name just had a dot in it. We just add .xspf
     {
         format = Playlists::XSPF;
         filename.append( QLatin1String( ".xspf" ) );
@@ -160,8 +159,8 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
         case Playlists::XSPF:
             playlistFile = new Playlists::XSPFPlaylist( tracks );
             break;
-        default:
-            error() << QString("Do not support filetype with extension \"%1!\"").arg( ext );
+        case Playlists::Unknown:
+            // this should not happen since we set the format to XSPF above.
             return Playlists::PlaylistPtr();
     }
     playlistFile->setName( filename );

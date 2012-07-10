@@ -38,6 +38,7 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
     void testPlaylists();
+    void testSave_data();
     void testSave();
     void testImportAndDeletePlaylists();
     void testRename();

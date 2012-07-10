@@ -58,6 +58,20 @@ void TestPlaylistFileProvider::testPlaylists()
     QCOMPARE( tempList.size(), 0 );
 }
 
+void TestPlaylistFileProvider::testSave_data()
+{
+    QTest::addColumn<QString>("name");
+    QTest::addColumn<QString>("result");
+
+    QTest::newRow("no extension, should default to xspf") << "Amarok Test Playlist" << "Amarok Test Playlist.xspf";
+    QTest::newRow("directory separators '\\' and '/' in file name are being replaced by '-'") << "amarok/playlist" << "amarok-playlist.xspf";
+    QTest::newRow("directory separators '\\' and '/' in file name are being replaced by '-'") << "amarok\\playlist" << "amarok-playlist.xspf";
+    QTest::newRow("xspf") << "Amarok Test Playlist.xspf" << "Amarok Test Playlist.xspf";
+    QTest::newRow("m3u") << "Amarok Test Playlist.m3u" << "Amarok Test Playlist.m3u";
+    QTest::newRow("pls") << "Amarok Test Playlist.pls" << "Amarok Test Playlist.pls";
+    QTest::newRow("playlist name with dot in it (BR 290318)") << "Amarok Test Playlist. With dots." << "Amarok Test Playlist. With dots..xspf";
+}
+
 void TestPlaylistFileProvider::testSave()
 {
     Meta::TrackList tempTrackList;
@@ -65,58 +79,16 @@ void TestPlaylistFileProvider::testSave()
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
     QCOMPARE( tempTrackList.size(), 1 );
 
-    // no extension, should default to xspf
-    Playlists::PlaylistPtr testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist" );
+    QFETCH(QString, name);
+    QFETCH(QString, result);
+
+    Playlists::PlaylistPtr testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, name );
     QVERIFY( testPlaylist );
 
-    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.xspf" ) );
-    QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist.xspf" ) );
+    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + result ) );
+    QCOMPARE( testPlaylist->name(), QString( result ) );
     QCOMPARE( testPlaylist->tracks().size(), 1 );
-    QFile::remove( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.xspf" );
-
-    // directory separators '\' and '/' in file name are being replaced by '-'
-    testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "amarok/playlist" );
-    QVERIFY( testPlaylist );
-
-    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "amarok-playlist.xspf" ) );
-    QCOMPARE( testPlaylist->name(), QString( "amarok-playlist.xspf" ) );
-    QCOMPARE( testPlaylist->tracks().size(), 1 );
-    QFile::remove( Amarok::saveLocation( "playlists" ) + "amarok-playlist.xspf" );
-
-    testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "amarok\\playlist" );
-    QVERIFY( testPlaylist );
-
-    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "amarok-playlist.xspf" ) );
-    QCOMPARE( testPlaylist->name(), QString( "amarok-playlist.xspf" ) );
-    QCOMPARE( testPlaylist->tracks().size(), 1 );
-    QFile::remove( Amarok::saveLocation( "playlists" ) + "amarok-playlist.xspf" );
-
-    // xspf
-    testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist.xspf" );
-    QVERIFY( testPlaylist );
-
-    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.xspf" ) ); // FAILS
-    QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist.xspf" ) );
-    QCOMPARE( testPlaylist->tracks().size(), 1 );
-    QFile::remove( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.xspf" );
-
-    // m3u
-    testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist.m3u" );
-    QVERIFY( testPlaylist ); //FAILS
-
-    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.m3u" ) );
-    QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist.m3u" ) );
-    QCOMPARE( testPlaylist->tracks().size(), 1 );
-    QFile::remove( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.m3u" );
-
-    // pls
-    testPlaylist = m_testPlaylistFileProvider->save( tempTrackList, "Amarok Test Playlist.pls" );
-    QVERIFY( testPlaylist );
-
-    QVERIFY( QFile::exists( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.pls" ) ); //FAILS
-    QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist.pls" ) );
-    QCOMPARE( testPlaylist->tracks().size(), 1 );
-    QFile::remove( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.pls" );
+    QFile::remove( Amarok::saveLocation( "playlists" ) + result );
 }
 
 void TestPlaylistFileProvider::testImportAndDeletePlaylists()
