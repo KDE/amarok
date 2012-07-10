@@ -21,6 +21,8 @@
 #include "config-amarok-test.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 
+#include <KGlobal>
+
 #include <QDir>
 #include <QFile>
 #include <QTemporaryFile>
@@ -33,7 +35,9 @@
 QTEST_KDEMAIN( TestM3UPlaylist, GUI )
 
 TestM3UPlaylist::TestM3UPlaylist()
-{}
+{
+    KGlobal::locale();
+}
 
 QString
 TestM3UPlaylist::dataPath( const QString &relPath )
