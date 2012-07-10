@@ -40,9 +40,21 @@ class NepomukCollection : public Collections::Collection
     Q_OBJECT
 
 public:
+    /**
+      * The entry point of Nepomuk Collection.
+      * It gets an instance of NepomukResourceManager and instantiates it.
+      * It returns true if Nepomuk enabled.
+      * The constructor also constructs the {Meta}Maps which will be used
+      * for all queries later on.
+      */
     NepomukCollection();
     virtual ~NepomukCollection();
 
+    /**
+      * This function returns a generic MemoryQueryMaker.
+      * Nepomuk Collection uses a MemoryQueryMaker as its QueryMaker
+      * There is no need to construct a separate NepomukQueryMaker.
+      */
     virtual Collections::QueryMaker* queryMaker();
 
     virtual bool isDirInCollection( const QString &path )
@@ -64,14 +76,17 @@ public:
 
 private:
     // nepomuk specific
+    /**
+      * This function is called to start populating the {Meta}Maps
+      */
     bool buildCollection();
-    void setupTrackMap();
-    void setupArtistMap( ArtistMap &artistmap );
-    void setupGenreMap( GenreMap &genremap );
-    void setupComposerMap( ComposerMap &composermap );
-    void setupAlbumMap( AlbumMap &albummap );
+    void setupMetaMap();
 
 private:
+    /**
+      * This variable return true, if Nepomuk is available and enabled
+      * It is also an indicator that NepomukCollection can be used.
+      */
     bool m_nepomukCollectionReady;
 
 protected:

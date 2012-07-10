@@ -43,9 +43,6 @@
 #include <Nepomuk/Vocabulary/NFO>
 #include <Nepomuk/Vocabulary/NMM>
 #include <Nepomuk/Vocabulary/NIE>
-#include <Soprano/QueryResultIterator>
-#include <Soprano/Query/QueryLanguage>
-#include <Soprano/Model>
 
 #include <KIcon>
 #include <QString>
@@ -59,7 +56,7 @@ NepomukCollection::NepomukCollection()
     : Collection()
     , m_mc( new Collections::MemoryCollection() )
 {
-    debug() << "in nepomukcollection constructor";
+    // check if Nepomuk is available, if yes, initialize.
     if( Nepomuk::ResourceManager::instance()->initialized() )
     {
         m_nepomukCollectionReady = true;
@@ -123,8 +120,7 @@ NepomukCollection::buildCollection()
     DEBUG_BLOCK
 
     m_mc->acquireWriteLock();
-
-    setupTrackMap();
+    setupMetaMap();
 
     m_mc->releaseLock();
 
@@ -143,7 +139,7 @@ NepomukCollection::buildCollection()
 
 
 void
-NepomukCollection::setupTrackMap()
+NepomukCollection::setupMetaMap()
 {
     DEBUG_BLOCK
     Query query;
@@ -192,7 +188,7 @@ NepomukCollection::setupTrackMap()
         NepomukComposerPtr nepComposerPtr( new NepomukComposer( composerLabel ) );
         debug() << "inserting composer : " << composerLabel;
         composerPtr = Meta::ComposerPtr::staticCast( nepComposerPtr );
-        this->m_mc->addComposer( composerPtr );
+        m_mc->addComposer( composerPtr );
 
         // album, right now only musicAlbum -> TODO : Change to MusicAlbum
         // NMM::musicAlbum() returns resource of album, so get uri
@@ -215,112 +211,26 @@ NepomukCollection::setupTrackMap()
                                      albumPtr,
                                      trackResource ) );
         TrackPtr trackPtr = Meta::TrackPtr::staticCast( nepTrackPtr );
-        this->m_mc->addTrack( trackPtr );
+        m_mc->addTrack( trackPtr );
         debug() << "inserting track with track name : " << trackPtr->name();
         //debug()<<"and artist "<<artistPtr->name();
 
         // add track to artistPtr
         nepArtistPtr->addTrack( trackPtr );
-        this->m_mc->addArtist( Meta::ArtistPtr::staticCast( nepArtistPtr ) );
+        m_mc->addArtist( Meta::ArtistPtr::staticCast( nepArtistPtr ) );
 
         // add track to genrePtr
         nepGenrePtr->addTrack( trackPtr );
-        this->m_mc->addGenre( Meta::GenrePtr::staticCast( nepGenrePtr ) );
+        m_mc->addGenre( Meta::GenrePtr::staticCast( nepGenrePtr ) );
 
         // add track to composerPtr
         nepComposerPtr->addTrack( trackPtr );
-        this->m_mc->addComposer( Meta::ComposerPtr::staticCast( nepComposerPtr ) );
+        m_mc->addComposer( Meta::ComposerPtr::staticCast( nepComposerPtr ) );
 
         // add track to albumPtr
         nepAlbumPtr->addTrack( trackPtr );
-        this->m_mc->addAlbum( Meta::AlbumPtr::staticCast( nepAlbumPtr ) );
+        m_mc->addAlbum( Meta::AlbumPtr::staticCast( nepAlbumPtr ) );
 
-    }
-
-}
-
-void
-NepomukCollection::setupArtistMap( ArtistMap &artistmap )
-{
-    DEBUG_BLOCK
-    Query query;
-
-    Term term =  ResourceTypeTerm( Nepomuk::Vocabulary::NMM::performer() );
-    query.setTerm( term );
-
-    QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
-    debug() << "artists scanned :" << queriedResults.size();
-    Q_FOREACH( const Nepomuk::Query::Result & result, queriedResults )
-    {
-        QString artist = result.resource().genericLabel();
-        NepomukArtistPtr artistPtr( new NepomukArtist( artist ) );
-        artistmap.insert( artistPtr->name(), Meta::ArtistPtr::staticCast( artistPtr ) );
-    }
-
-}
-
-void
-NepomukCollection::setupGenreMap( GenreMap &genremap )
-{
-    DEBUG_BLOCK
-
-    Query query;
-
-    Term audioTerm = ResourceTypeTerm( Nepomuk::Vocabulary::NFO::Audio() );
-    ComparisonTerm term( Nepomuk::Vocabulary::NMM::genre(), audioTerm );
-    term.inverted();
-    query.setTerm( term );
-    QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
-
-
-    Q_FOREACH( const Nepomuk::Query::Result & result, queriedResults )
-    {
-        QString genre = result.resource().genericLabel();
-        NepomukGenrePtr genrePtr( new NepomukGenre( genre ) );
-        debug() << "inserting genre : " << genre;
-        genremap.insert( genrePtr->name(), Meta::GenrePtr::staticCast( genrePtr ) );
-    }
-
-}
-
-void
-NepomukCollection::setupComposerMap( ComposerMap &composermap )
-{
-    DEBUG_BLOCK
-    Query query;
-
-    Term term =  ResourceTypeTerm( Nepomuk::Vocabulary::NMM::musicAlbum() );
-    query.setTerm( term );
-
-    QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
-    debug() << "composers scanned :" << queriedResults.size();
-
-    Q_FOREACH( const Nepomuk::Query::Result & result, queriedResults )
-    {
-        QString composer = result.resource().genericLabel();
-        NepomukComposerPtr composerPtr( new NepomukComposer( composer ) );
-        composermap.insert( composerPtr->name(), Meta::ComposerPtr::staticCast( composerPtr ) );
-    }
-
-}
-
-void
-NepomukCollection::setupAlbumMap( AlbumMap &albummap )
-{
-    DEBUG_BLOCK
-    Query query;
-
-    Term term =  ResourceTypeTerm( Nepomuk::Vocabulary::NMM::musicAlbum() );
-    query.setTerm( term );
-
-    QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
-    debug() << "albums scanned :" << queriedResults.size();
-
-    Q_FOREACH( const Nepomuk::Query::Result & result, queriedResults )
-    {
-        QString album = result.resource().genericLabel();
-        NepomukAlbumPtr albumPtr( new NepomukAlbum( album ) );
-        albummap.insert( Meta::AlbumPtr::staticCast( albumPtr ) );
     }
 
 }
