@@ -207,7 +207,7 @@ NepomukTrack::score() const
     // ask dr_lepper
     // seriously no clue
 
-    return double( 10 );
+    return double( 0 );
 }
 
 void
