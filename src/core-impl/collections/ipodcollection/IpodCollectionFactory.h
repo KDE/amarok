@@ -56,14 +56,6 @@ class IpodCollectionFactory : public Collections::CollectionFactory
         void slotRemoveSolidDevice( const QString &udi );
 
         /**
-         * Like @see slotRemoveSolidDevice(), but instructs Collection to eject the
-         * device after it has performed necessary teardown operations.
-         *
-         * Called when user wants to unmount the device from for example Device Notifier
-         */
-        void slotRemoveAndTeardownSolidDevice( const QString &udi );
-
-        /**
          * Called when "tracked" collection is destroyed
          */
         void slotCollectionDestroyed( QObject *collection );

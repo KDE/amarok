@@ -85,14 +85,6 @@ IpodCollectionFactory::slotRemoveSolidDevice( const QString &udi )
 }
 
 void
-IpodCollectionFactory::slotRemoveAndTeardownSolidDevice( const QString &udi )
-{
-    IpodCollection *collection = m_collectionMap.take( udi );
-    if( collection )
-        collection->slotEject();
-}
-
-void
 IpodCollectionFactory::slotCollectionDestroyed( QObject *collection )
 {
     // remove destroyed collection from m_collectionMap
@@ -276,10 +268,12 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
     // when the collection is destroyed by someone else, remove it from m_collectionMap:
     connect( collection, SIGNAL(destroyed(QObject*)), SLOT(slotCollectionDestroyed(QObject*)) );
 
-    // try to gracefully destroy collection when unmounting is requested using
-    // external means: (Device notifier plasmoid etc.). Because the original action could
-    // fail if we hold some files on the device open, we try to tearDown the device too.
-    connect( ssa, SIGNAL(teardownRequested(QString)), SLOT(slotRemoveAndTeardownSolidDevice(QString)) );
+    if( ssa )
+        // try to gracefully destroy collection when unmounting is requested using
+        // external means: Device notifier plasmoid etc.. Because the original action
+        // could fail if we hold some files on the device open, we eject the collection,
+        // not just destroy it.
+        connect( ssa, SIGNAL(teardownRequested(QString)), collection, SLOT(slotEject()) );
 
     if( collection->init() )
         emit newCollection( collection );
