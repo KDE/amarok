@@ -328,6 +328,7 @@ qint64 Meta::fieldForPlaylistName( const QString &name )
 
 QString Meta::iconForField( qint64 field )
 {
+    // see also PlaylistDefines.h::iconNames
     switch( field )
     {
     case Meta::valUrl: return "filename-space-amarok";

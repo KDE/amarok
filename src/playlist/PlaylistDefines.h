@@ -155,6 +155,7 @@ static const QStringList groupableCategories = ( QStringList()
         << "Source"
         << "Year" );
 
+// should be kept in sync with Meta::iconForField() for shared fields
 static const QStringList iconNames = ( QStringList()
         << "filename-space-amarok"
         << "filename-album-amarok"
