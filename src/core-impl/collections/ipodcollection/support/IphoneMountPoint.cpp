@@ -152,5 +152,5 @@ void IphoneMountPoint::logMessage( const QString &message )
 {
     m_messages << message;
     if( !message.isEmpty() )
-        debug() << "IpodCollection: IphoneMountPoint:" << message;
+        debug() << "IpodCollection: IphoneMountPoint:" << message.toLocal8Bit().constData();
 }
