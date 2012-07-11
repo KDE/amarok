@@ -161,7 +161,7 @@ static const QStringList iconNames = ( QStringList()
         << "filename-album-amarok"
         << "filename-artist-amarok"
         << "filename-artist-amarok"
-        << "application-octet-stream"
+        << "audio-x-generic"
         << "filename-bpm-amarok"
         << "filename-comment-amarok"
         << "filename-composer-amarok"

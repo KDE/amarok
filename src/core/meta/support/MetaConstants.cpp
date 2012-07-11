@@ -347,7 +347,7 @@ QString Meta::iconForField( qint64 field )
     case Meta::valDiscNr: return "filename-discnumber-amarok";
     case Meta::valBpm: return "filename-bpm-amarok";
     case Meta::valLength: return "filename-group-length";
-    case Meta::valBitrate: return "application-octet-stream";
+    case Meta::valBitrate: return "audio-x-generic";
     case Meta::valSamplerate: return "filename-sample-rate";
     case Meta::valFormat: return "filename-filetype-amarok";
     case Meta::valScore: return "emblem-favorite";
