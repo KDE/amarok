@@ -1,3 +1,4 @@
+add_subdirectory( support )
 
 include_directories(
   ..
