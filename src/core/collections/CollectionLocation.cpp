@@ -307,8 +307,12 @@ CollectionLocation::getDestinationTranscodingConfig()
         destCollection->create<Capabilities::TranscodeCapability>() );
     if( !tc )
         return configuration;
-    QSet<Transcoding::Encoder> availableEncoders = Amarok::Components::transcodingController()
-                                                   ->availableEncoders();
+
+    Transcoding::Controller* tcC = Amarok::Components::transcodingController();
+    QSet<Transcoding::Encoder> availableEncoders;
+    if( tcC )
+        availableEncoders = tcC->availableEncoders();
+
     if( availableEncoders.isEmpty() )
     {
         debug() << "FFmpeg is not installed or does not support any of the required formats.";
