@@ -31,6 +31,7 @@ class NepomukAlbum : public Album
 {
 public:
     NepomukAlbum( QString &name );
+    NepomukAlbum( QString &albumName, ArtistPtr artistPtr );
 
     virtual bool isCompilation() const;
     virtual bool hasAlbumArtist() const;
@@ -49,7 +50,8 @@ private:
 
     TrackList m_tracks;
     QString m_name;
-    QString m_artist;
+    ArtistPtr m_artist;
+    bool m_isCompilation;
     bool m_hasAlbumArtist;
 
 };

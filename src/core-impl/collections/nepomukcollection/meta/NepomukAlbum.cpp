@@ -40,9 +40,19 @@ using namespace Nepomuk::Query;
 NepomukAlbum::NepomukAlbum( QString &name )
     : Meta::Album()
     , m_name( name )
+    , m_isCompilation( false )
 {
     m_hasAlbumArtist = false;
     // TODO, check if album has unique artist
+}
+
+NepomukAlbum::NepomukAlbum( QString &albumName, ArtistPtr artistPtr )
+    : Meta::Album()
+    , m_name( albumName )
+    , m_artist( artistPtr )
+{
+    m_hasAlbumArtist = true;
+    m_isCompilation = true;
 }
 
 TrackList
@@ -54,8 +64,7 @@ NepomukAlbum::tracks()
 bool
 NepomukAlbum::isCompilation() const
 {
-    return false;
-    // TODO: check for NMM::MusicAlbum
+    return m_isCompilation;
 }
 
 
@@ -68,7 +77,7 @@ NepomukAlbum::hasAlbumArtist() const
 ArtistPtr
 NepomukAlbum::albumArtist() const
 {
-    return ArtistPtr();
+    return m_artist;
 }
 
 QString

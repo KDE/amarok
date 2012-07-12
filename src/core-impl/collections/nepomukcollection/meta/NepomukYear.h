@@ -48,5 +48,4 @@ private:
 
 }
 
-
 #endif // NEPOMUKYEAR_H
