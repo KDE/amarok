@@ -113,10 +113,14 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         /** This are status messages that the scanner emits frequently */
         void message( QString message );
 
-        void succeeded();
         void failed( QString message );
 
         void scanStarted( ScannerJob *job );
+        /**
+         * Emitted when scanning job has finished. You may not cache the pointer as it
+         * is deleteLayer()-ed right after this signal is emitted.
+         */
+        void scanDone( ScannerJob *job );
 
     private slots:
         /** Adds the given directory to the list of directories for the next scan.

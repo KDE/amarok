@@ -334,6 +334,7 @@ ScanManager::slotJobDone()
                                     arg(m_scanner->getLastErrors().join("\n")) );
             }
         }
+        emit scanDone( m_scanner );
 
         m_scanner->deleteLater();
         m_scanner = 0;

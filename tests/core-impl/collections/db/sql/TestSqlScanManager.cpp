@@ -987,13 +987,10 @@ TestSqlScanManager::slotCollectionUpdated()
 void
 TestSqlScanManager::waitScannerFinished()
 {
-    QTest::qWait( 500 );
-    for( int i=0; i<800 && m_scanManager->isRunning(); i++)
-    {
-        QTest::qWait( 100 );
-    }
+    QVERIFY( m_scanManager->isRunning() );
+    QVERIFY2( QTest::kWaitForSignal( m_scanManager, SIGNAL(scanDone(ScannerJob*)), 60*1000 ),
+              "ScanManager didn't finish scan within timeout" );
 }
-
 
 void
 TestSqlScanManager::createTrack( const Meta::FieldHash &values )
