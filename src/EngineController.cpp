@@ -58,6 +58,8 @@ namespace The {
     EngineController* engineController() { return EngineController::instance(); }
 }
 
+QMutex EngineController::s_supportedMimeTypesMutex;
+
 EngineController*
 EngineController::instance()
 {
@@ -262,15 +264,13 @@ EngineController::supportedMimeTypes() //static
 {
     //NOTE this function must be thread-safe
 
-    // mutex to protect the mimetable and the mimeTableAlreadyFilled status
-    static QMutex supportedMimeTypesMutex;
     // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
     static QStringList mimeTable;
     // theoretically not needed, but static initialization of mimeTable may have threading
     // issues, so rather use boolean flag for it:
     static bool mimeTableAlreadyFilled = false;
 
-    QMutexLocker locker( &supportedMimeTypesMutex );
+    QMutexLocker locker( &s_supportedMimeTypesMutex );
     if( mimeTableAlreadyFilled )
         return mimeTable;
 
