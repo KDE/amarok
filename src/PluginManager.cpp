@@ -29,6 +29,7 @@
 #include <KMessageBox>
 #include <KServiceTypeTrader>
 
+#include <QApplication>
 #include <QFile>
 #include <QMetaEnum>
 
@@ -252,16 +253,23 @@ Plugins::PluginManager::handleEmptyCollectionFactories()
 
     if( m_factories.value( key ).isEmpty() )
     {
-        KMessageBox::error( 0, i18n(
-                "<p>Amarok could not find any collection plugins. "
-                "It is possible that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
-                "$ cd /path/to/amarok/source-code/<br>"
-                "$ su -c \"make uninstall\"<br>"
-                "$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>"
-                "$ kbuildsycoca4 --noincremental<br>"
-                "$ amarok</pre>"
-                "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
-        // don't use QApplication::exit, as the eventloop may not have started yet
+        if( QApplication::type() != QApplication::Tty )
+        {
+            KMessageBox::error( 0, i18n(
+                                        "<p>Amarok could not find any collection plugins. "
+                                        "It is possible that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
+                                        "$ cd /path/to/amarok/source-code/<br>"
+                                        "$ su -c \"make uninstall\"<br>"
+                                        "$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>"
+                                        "$ kbuildsycoca4 --noincremental<br>"
+                                        "$ amarok</pre>"
+                                        "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
+            // don't use QApplication::exit, as the eventloop may not have started yet
+        }
+        else
+        {
+            warning() << "Amarok could not find any collection plugins. Bailing out.";
+        }
         std::exit( EXIT_SUCCESS );
     }
 }

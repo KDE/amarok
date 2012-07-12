@@ -51,6 +51,7 @@
 #include <Phonon/MediaObject>
 #include <Phonon/VolumeFaderEffect>
 
+#include <QApplication>
 #include <QTextDocument>
 #include <QtCore/qmath.h>
 
@@ -317,18 +318,26 @@ EngineController::installDistroCodec()
     {
         KService::Ptr service = services.first(); //list is not empty
         QString installScript = service->exec();
-        if( !installScript.isNull() ) //just a sanity check
+
+        if( !installScript.isNull() ) // just a sanity check
         {
-            KGuiItem installButton( i18n( "Install MP3 Support" ) );
-            if(KMessageBox::questionYesNo( The::mainWindow()
-            , i18n("Amarok currently cannot play MP3 files. Do you want to install support for MP3?")
-            , i18n( "No MP3 Support" )
-            , installButton
-            , KStandardGuiItem::no()
-            , "codecInstallWarning" ) == KMessageBox::Yes )
+            if( QApplication::type() != QApplication::Tty )
             {
+                KGuiItem installButton( i18n( "Install MP3 Support" ) );
+                if(KMessageBox::questionYesNo( The::mainWindow()
+                                               , i18n("Amarok currently cannot play MP3 files. Do you want to install support for MP3?")
+                                               , i18n( "No MP3 Support" )
+                                               , installButton
+                                               , KStandardGuiItem::no()
+                                               , "codecInstallWarning" ) == KMessageBox::Yes )
+                {
                     KRun::runCommand(installScript, 0);
                     return true;
+                }
+            }
+            else
+            {
+                warning() << "Amarok currently cannot play MP3 files.";
             }
         }
     }

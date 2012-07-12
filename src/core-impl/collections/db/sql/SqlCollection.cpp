@@ -36,6 +36,8 @@
 #include <KApplication>
 #include <KMessageBox>
 
+#include <QApplication>
+
 /*
  * #ifdef Q_OS_WIN32
  *
@@ -196,11 +198,21 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     // we need a UI-dialog service, but for now just output the messages
     if( !storage->getLastErrors().isEmpty() )
     {
-        KMessageBox::error( The::mainWindow(), //parent
-                            i18n( "The amarok database reported the following errors:\n"
+        if( QApplication::type() != QApplication::Tty )
+        {
+            KMessageBox::error( The::mainWindow(), //parent
+                                i18n( "The amarok database reported the following errors:\n"
+                                      "%1\n"
+                                      "In most cases you will need to resolve these errors before Amarok will run properly." ).
+                                arg(storage->getLastErrors().join( "\n" ) ) );
+        }
+        else
+        {
+            warning() << QString( "The amarok database reported the following errors:\n"
                                   "%1\n"
-                                  "In most cases you will need to resolve these errors before Amarok will run properly." ).
-                            arg(storage->getLastErrors().join("\n")) );
+                                  "In most cases you will need to resolve these errors before Amarok will run properly.").
+                arg(storage->getLastErrors().join( "\n" ) );
+        }
     }
 }
 
