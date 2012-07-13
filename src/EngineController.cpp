@@ -65,12 +65,6 @@ EngineController::instance()
     return Amarok::Components::engineController();
 }
 
-void
-EngineController::destroy()
-{
-    //nothing to do?
-}
-
 EngineController::EngineController()
     : m_fader( 0 )
     , m_fadeoutTimer( 0 )

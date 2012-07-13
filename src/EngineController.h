@@ -59,11 +59,6 @@ public:
     static EngineController* instance();
 
     /**
-     * Destroys the global EngineController instance
-     */
-    static void destroy();
-
-    /**
      * Loads and plays the track that was playing when endSession() was last
      * called (ie: when Amarok was quit)
      */
