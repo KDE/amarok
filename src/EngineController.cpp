@@ -41,7 +41,6 @@
 #include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"
 
-#include <KFileItem>
 #include <KMessageBox>
 #include <KRun>
 #include <KServiceTypeTrader>
@@ -217,47 +216,6 @@ EngineController::initializePhonon()
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
 
-bool
-EngineController::canDecode( const KUrl &url ) //static
-{
-   //NOTE this function must be thread-safe
-
-    // We can't use playlists in the engine
-    if( Playlists::isPlaylist( url ) )
-        return false;
-
-    KFileItem item( KFileItem::Unknown, KFileItem::Unknown, url );
-    // If file has 0 bytes, ignore it and return false
-    if( !item.size() )
-        return false;
-
-    // We can't play directories, regardless of what the engine says.
-    if( item.isDir() )
-        return false;
-
-    // Accept non-local files, since we can't test them for validity at this point
-    if( !item.isLocalFile() )
-        return true;
-
-    // Phonon::BackendCapabilities::isMimeTypeAvailable is too simplistic for our purposes
-    // FIXME: this variable should be updated when
-    // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal is emitted
-    static QStringList mimeTable = supportedMimeTypes();
-
-    const KMimeType::Ptr mimeType = item.mimeTypePtr();
-
-    bool valid = false;
-    foreach( const QString &type, mimeTable )
-    {
-        if( mimeType->is( type ) )
-        {
-            valid = true;
-            break;
-        }
-    }
-
-    return valid;
-}
 
 QStringList
 EngineController::supportedMimeTypes() //static

@@ -24,6 +24,7 @@
 
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
+#include "core-impl/meta/file/File.h"
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
 #include "EngineController.h"
@@ -326,7 +327,7 @@ FileBrowser::itemActivated( const QModelIndex &index )
         }
         else
         {
-            if( EngineController::canDecode( filePath ) )
+            if( MetaFile::Track::isTrack( filePath ) )
             {
                 QList<KUrl> urls;
                 urls << filePath;

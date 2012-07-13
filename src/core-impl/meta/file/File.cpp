@@ -18,21 +18,24 @@
 #include "File.h"
 #include "File_p.h"
 
-#include "core/support/Amarok.h"
-#include "amarokurls/BookmarkMetaActions.h"
-#include "browsers/filebrowser/FileBrowser.h"
 #include <config-amarok.h>
 #include "MainWindow.h"
-#include "core/meta/Meta.h"
+#include "amarokurls/BookmarkMetaActions.h"
+#include "amarokurls/PlayUrlRunner.h"
+#include "browsers/filebrowser/FileBrowser.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/StatisticsCapability.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core/playlists/PlaylistFormat.h"
+#include "core/support/Amarok.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.h"
-#include "core/meta/support/MetaUtility.h"
-#include "amarokurls/PlayUrlRunner.h"
+
+#include <KMimeType>
 
 #include <QAction>
 #include <QFileInfo>
@@ -586,6 +589,30 @@ QString
 Track::type() const
 {
     return Amarok::extension( d->url.fileName() );
+}
+
+bool
+Track::isTrack( const KUrl &url )
+{
+    // some playlists lay under audio/ mime category, filter them
+    if( Playlists::isPlaylist( url ) )
+        return false;
+
+    // accept remote files, it's too slow to check them at this point
+    if( !url.isLocalFile() )
+        return true;
+
+    QFileInfo  fileInfo( url.toLocalFile() );
+    if( fileInfo.size() <= 0 )
+        return false;
+
+    // We can't play directories
+    if( fileInfo.isDir() )
+        return false;
+
+    const KMimeType::Ptr mimeType = KMimeType::findByPath( url.toLocalFile() );
+    const QString name = mimeType->name();
+    return name.startsWith( "audio/" ) || name.startsWith( "video/" );
 }
 
 void

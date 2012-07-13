@@ -24,6 +24,7 @@
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"
+#include "core-impl/meta/file/File.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/interfaces/Logger.h"
 #include "core/playlists/PlaylistFormat.h"
@@ -426,7 +427,8 @@ FileView::addSelectionToPlaylist( bool replace )
     foreach( const QModelIndex& index, indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-        if( EngineController::canDecode( file.url() ) || Playlists::isPlaylist( file.url() ) || file.isDir() )
+        KUrl url = file.url();
+        if( file.isDir() || Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) )
         {
             urls << file.url();
         }

@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.6
   CHANGES:
+    * Show all audio and video files in file browser. (BR 303253)
     * Increase minimal required ffmpeg version up to 0.7.
     * Use audio-x-generic icon for bit rate, not a generic one. (BR 302753)
     * Add Amarok.Playlist.playMediaList() script bindings for API symmetry.

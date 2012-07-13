@@ -75,11 +75,6 @@ public:
     void endSession();
 
     /**
-     * Checks whether the media file at the specified URL can be decoded
-     */
-    static bool canDecode( const KUrl& );
-
-    /**
      * Returns a list of backend supported mime types.
      */
     static QStringList supportedMimeTypes();
