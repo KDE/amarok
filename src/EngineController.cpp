@@ -215,10 +215,8 @@ EngineController::initializePhonon()
 
 
 QStringList
-EngineController::supportedMimeTypes() //static
+EngineController::supportedMimeTypes()
 {
-    //NOTE this function must be thread-safe
-
     // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
     static QStringList mimeTable;
     // theoretically not needed, but static initialization of mimeTable may have threading
@@ -230,6 +228,8 @@ EngineController::supportedMimeTypes() //static
         return mimeTable;
 
     QRegExp avFilter( "^(audio|video)/", Qt::CaseInsensitive );
+    // FIXME: this variable should be updated when
+    // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal is emitted
     mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
 
     // Add whitelist hacks

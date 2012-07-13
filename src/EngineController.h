@@ -70,9 +70,9 @@ public:
     void endSession();
 
     /**
-     * Returns a list of backend supported mime types.
+     * Returns a list of backend supported mime types. This method is thread-safe.
      */
-    static QStringList supportedMimeTypes();
+    QStringList supportedMimeTypes();
 
     /** @return track position (elapsed time) in seconds */
     int trackPosition() const;
