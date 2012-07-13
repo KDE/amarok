@@ -92,8 +92,11 @@ EngineController::~EngineController()
 
     // don't do any of the after-processing that normally happens when
     // the media is stopped - that's what endSession() is for
-    m_media.data()->blockSignals(true);
-    m_media.data()->stop();
+    if( m_media )
+    {
+        m_media.data()->blockSignals(true);
+        m_media.data()->stop();
+    }
 
     delete m_boundedPlayback;
     m_boundedPlayback = 0;
