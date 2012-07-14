@@ -180,15 +180,6 @@ ScrobblerAdapter::trackPositionChanged( qint64 position, bool userSeek )
 }
 
 void
-ScrobblerAdapter::love()
-{
-    DEBUG_BLOCK
-
-    m_current.love();
-    
-}
-
-void
 ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
 {
     DEBUG_BLOCK
@@ -205,14 +196,6 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
 
 void
 ScrobblerAdapter::banTrack() // slot
-{
-    DEBUG_BLOCK
-
-    m_current.ban();
-}
-
-void
-ScrobblerAdapter::ban()
 {
     DEBUG_BLOCK
 

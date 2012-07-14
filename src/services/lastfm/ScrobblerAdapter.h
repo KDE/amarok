@@ -35,9 +35,6 @@ public:
     ScrobblerAdapter( QObject *parent, const QString &clientId );
     virtual ~ScrobblerAdapter();
 
-    void love();
-    void ban();
-
 public slots:
     void loveTrack( Meta::TrackPtr );
     void banTrack();
