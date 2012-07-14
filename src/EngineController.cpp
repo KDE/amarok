@@ -294,10 +294,18 @@ EngineController::supportedMimeTypes() //static
     {
         if ( !installDistroCodec() )
         {
-            Amarok::Components::logger()->longMessage(
-                    i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
-                          "the installation of the backend that phonon uses.</p>"
-                          "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), Amarok::Logger::Error );
+            QString text = i18n(
+                    "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
+                    "the installation of the backend that phonon uses.</p>"
+                    "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" );
+            // logger is not available at this point in tests; we hesitate to create
+            // logger in 4 tests just because of the next line, so check for it. We cannot
+            // use QApplication::type() != Tty because the tests are GUI-enabled
+            Logger *logger = Amarok::Components::logger();
+            if( logger )
+                logger->longMessage( text, Amarok::Logger::Error );
+            else
+                warning() << text.toLocal8Bit().constData();
         }
         mimeTable << "audio/mp3" << "audio/x-mp3";
     }
