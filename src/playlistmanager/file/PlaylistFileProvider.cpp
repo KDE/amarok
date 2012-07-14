@@ -159,7 +159,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
         case Playlists::XSPF:
             playlistFile = new Playlists::XSPFPlaylist( tracks );
             break;
-        case Playlists::Unknown:
+        default:
             // this should not happen since we set the format to XSPF above.
             return Playlists::PlaylistPtr();
     }
