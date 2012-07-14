@@ -21,7 +21,6 @@
 #include <KDialog>
 #include <KLocalizedString>
 
-#include <QApplication>
 #include <QAction>
 #include <QLabel>
 
@@ -31,13 +30,7 @@ Q_DECLARE_METATYPE( PlaylistTrackMap )
 
 Playlists::UserPlaylistProvider::UserPlaylistProvider( QObject *parent )
     : PlaylistProvider( parent )
-    , m_deleteAction( 0 )
-    , m_renameAction( 0 )
-    , m_removeTrackAction( 0 )
 {
-    if (QApplication::type() == QApplication::Tty ) // for test cases we don't need the actions (and it crashes)
-        return;
-
     m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete..." ), this );
     m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
     // object name must match one in PlaylistBrowserNS::PlaylistBrowserView
@@ -63,9 +56,6 @@ Playlists::UserPlaylistProvider::UserPlaylistProvider( QObject *parent )
 
 Playlists::UserPlaylistProvider::~UserPlaylistProvider()
 {
-    delete m_deleteAction;
-    delete m_renameAction;
-    delete m_removeTrackAction;
 }
 
 int
@@ -79,19 +69,13 @@ Playlists::UserPlaylistProvider::playlistActions( Playlists::PlaylistPtr playlis
 {
     QList<QAction *> actions;
 
-    if( m_deleteAction )
-    {
-        Playlists::PlaylistList actionList = m_deleteAction->data().value<Playlists::PlaylistList>();
-        actionList << playlist;
-        m_deleteAction->setData( QVariant::fromValue( actionList ) );
-        actions << m_deleteAction;
-    }
+    Playlists::PlaylistList actionList = m_deleteAction->data().value<Playlists::PlaylistList>();
+    actionList << playlist;
+    m_deleteAction->setData( QVariant::fromValue( actionList ) );
+    actions << m_deleteAction;
 
-    if( m_renameAction )
-    {
-        m_renameAction->setData( QVariant::fromValue( playlist ) );
-        actions << m_renameAction;
-    }
+    m_renameAction->setData( QVariant::fromValue( playlist ) );
+    actions << m_renameAction;
 
     return actions;
 }

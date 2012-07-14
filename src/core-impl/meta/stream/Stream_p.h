@@ -40,10 +40,9 @@ class MetaStream::Track::Private : public QObject
 
             // force a direct connection or slot might not be called because of thread
             // affinity. (see BUG 300334)
-            if( engine ) // test cases might not have an engine
-                connect( engine, SIGNAL(currentMetadataChanged( QVariantMap) ),
-                         this, SLOT(currentMetadataChanged( QVariantMap )),
-                         Qt::DirectConnection );
+            connect( engine, SIGNAL(currentMetadataChanged( QVariantMap) ),
+                     this, SLOT(currentMetadataChanged( QVariantMap )),
+                     Qt::DirectConnection );
         }
 
         void notify() const
