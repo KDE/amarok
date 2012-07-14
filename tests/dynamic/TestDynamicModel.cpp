@@ -41,7 +41,7 @@ QString Amarok::saveLocation( const QString &directory )
     return s_tmpDir->name() + directory;
 }
 
-QTEST_KDEMAIN_CORE( TestDynamicModel )
+QTEST_KDEMAIN( TestDynamicModel, GUI )
 
 TestDynamicModel::TestDynamicModel()
 {
