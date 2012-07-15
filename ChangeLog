@@ -2,8 +2,9 @@ Amarok ChangeLog
 ================
 (C) 2002-2012 the Amarok authors.
 
-VERSION 2.6
+VERSION 2.6-RC1
   CHANGES:
+    * Remove codec install support. It's long ago been implemented in phonon.
     * Prevent lags with large Saved playlists. (BR 301700)
     * Increase minimal required ffmpeg version up to 0.7.
     * Use audio-x-generic icon for bit rate, not a generic one. (BR 302753)
