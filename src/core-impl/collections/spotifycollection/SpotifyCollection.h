@@ -40,7 +40,7 @@ namespace Collections
         private Q_SLOTS:
             void checkStatus();
             void spotifyReady();
-//            void slotSpotifyError();
+            void slotSpotifyError( const Spotify::Controller::ErrorState );
             void collectionRemoved();
 
         private:
@@ -83,13 +83,12 @@ namespace Collections
 
             Spotify::Controller* controller() { return m_controller; }
         private Q_SLOTS:
-//            void slotSpotifyError();
+            void slotSpotifyError( const Spotify::Controller::ErrorState );
 
         private:
             QString m_collectionId;
 
             QSharedPointer< MemoryCollection > m_memoryCollection;
-//            QList< QWeakPointer< Spotify::ScriptResolver > > m_proxyResolverList;
             Spotify::Controller* m_controller;
     };
 } // namespace Collections
