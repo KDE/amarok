@@ -141,13 +141,6 @@ public:
     bool isStopped() const;
 
     /**
-     * @return @c true if Amarok is currently buffering or loading.
-     * Usually Amarok isPlaying is true in those cases too but that depends on the
-     * Phonon backend.
-     */
-    bool isBuffering() const;
-
-    /**
      * Streams sometimes have to be treated specially.
      * For example, it is typically not possible to rewind a stream (at least,
      * not without returning to the start of it).
@@ -502,20 +495,6 @@ protected:
     virtual void metadataChanged( Meta::AlbumPtr album );
 
 private:
-
-    /** Tries to get the url of the given track setting it as current.
-        This function will cause slotPlayableUrlFetched
-        to be called eventually.
-    */
-    void getUrl( Meta::TrackPtr track, uint offset );
-
-    /** Will try to get either the next url or the next track.
-        This function will call or initiate a call to slotPlayableUrlFetched or
-        setNextTrack.
-        slotPlayableUrlFetched, setNextTrack or slotQueueEnded.
-    */
-    void getNextUrlOrTrack();
-
     /**
      * Plays the media at a specified URL
      *
@@ -527,8 +506,6 @@ private:
     void createFadeoutEffect();
     void resetFadeout();
 
-    void setGain();
-
     /** Returns the meta data sub set needed for currentMetadataChanged */
     QVariantMap trackData( Meta::TrackPtr track );
 
@@ -536,11 +513,6 @@ private:
         Some streams are doing advertisment in the metadata. We try to filter that out
     */
     bool isMetadataSpam( QVariantMap meta );
-
-    /** Will change the current track, notifying everybody about the change.
-        This function will also update the different variables connected to the current track e.g. m_boundedPlayback or m_fetchFirst.
-    */
-    void setCurrentTrack( Meta::TrackPtr track );
 
     Q_DISABLE_COPY( EngineController )
 
