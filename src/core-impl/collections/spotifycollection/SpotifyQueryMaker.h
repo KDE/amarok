@@ -90,10 +90,10 @@ namespace Collections
 
             void queryDone();
             void queryAborted();
-//            void spotifyError( Spotify::Controller::ErrorState );
+            void spotifyError( const Spotify::Controller::ErrorState );
 
         public Q_SLOTS:
-//            void slotSpotifyError( Spotify::Controller::ErrorState error );
+            void slotSpotifyError( const Spotify::Controller::ErrorState error );
             void collectResults( const Meta::SpotifyTrackList &track );
             void aQueryEnded( Spotify::Query* query, const Meta::SpotifyTrackList trackList );
             void memoryQueryDone();

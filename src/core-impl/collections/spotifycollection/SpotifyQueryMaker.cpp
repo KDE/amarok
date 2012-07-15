@@ -40,10 +40,10 @@ namespace Collections
     , m_activeQueryCount( 0 )
     , m_memoryQueryIsRunning( false )
     , m_collectionUpdated( false )
+    , m_querySent( false )
     , m_filterMap( )
     , m_collection( collection )
     , m_controller( collection->controller() )
-    , m_querySent( false )
     {
         DEBUG_BLOCK
 
@@ -96,9 +96,8 @@ namespace Collections
 
         if( !m_filterMap.isEmpty() )
         {
-            // TODO: Connect error signals
-            //connect( m_controller.data(), SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
-                     //this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
+            connect( m_controller.data(), SIGNAL( spotifyError( const Spotify::Controller::ErrorState ) ),
+                     this, SLOT( slotSpotifyError( const Spotify::Controller::ErrorState ) ) );
 
             QString artist( "" );
             QString album( "" );
@@ -149,7 +148,7 @@ namespace Collections
     SpotifyQueryMaker::setQueryType( QueryType type )
     {
         DEBUG_BLOCK
-        debug() << "QueryType" << type;
+        warning() << "QueryType" << type;
         CurriedUnaryQMFunction< QueryType >::FunPtr funPtr = &QueryMaker::setQueryType;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< QueryType >( funPtr, type );
         m_queryMakerFunctions.append( curriedFun );
@@ -207,7 +206,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::TrackPtr &track )
     {
         DEBUG_BLOCK
-
+        warning() << "Match track: " << track->prettyName();
         CurriedUnaryQMFunction< const Meta::TrackPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::TrackPtr& >( funPtr, track );
         m_queryMakerFunctions.append( curriedFun );
@@ -221,7 +220,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::ArtistPtr &artist )
     {
         DEBUG_BLOCK
-
+        warning() << "Match artist: " << artist->prettyName();
         CurriedUnaryQMFunction< const Meta::ArtistPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::ArtistPtr& >( funPtr, artist );
         m_queryMakerFunctions.append( curriedFun );
@@ -238,7 +237,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::AlbumPtr &album )
     {
         DEBUG_BLOCK
-
+        warning() << "Match album: " << album->prettyName();
         CurriedUnaryQMFunction< const Meta::AlbumPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::AlbumPtr& >( funPtr, album );
         m_queryMakerFunctions.append( curriedFun );
@@ -255,7 +254,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::ComposerPtr &composer )
     {
         DEBUG_BLOCK
-
+        warning() << "Match composer: " << composer->prettyName();
         CurriedUnaryQMFunction< const Meta::ComposerPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::ComposerPtr& >( funPtr, composer );
         m_queryMakerFunctions.append( curriedFun );
@@ -269,7 +268,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::GenrePtr &genre )
     {
         DEBUG_BLOCK
-
+        warning() << "Match genre: " << genre->prettyName();
         CurriedUnaryQMFunction< const Meta::GenrePtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::GenrePtr& >( funPtr, genre );
         m_queryMakerFunctions.append( curriedFun );
@@ -283,7 +282,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::YearPtr &year )
     {
         DEBUG_BLOCK
-
+        // Currently it will ignore year match
         CurriedUnaryQMFunction< const Meta::YearPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::YearPtr& >( funPtr, year );
         m_queryMakerFunctions.append( curriedFun );
@@ -297,7 +296,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::LabelPtr &label )
     {
         DEBUG_BLOCK
-
+        // Current it will ignore label match
         CurriedUnaryQMFunction< const Meta::LabelPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::LabelPtr& >( funPtr, label );
         m_queryMakerFunctions.append( curriedFun );
@@ -311,7 +310,7 @@ namespace Collections
     SpotifyQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
     {
         DEBUG_BLOCK
-
+        warning() << "Adding filter: " << value << " " << filter;
         CurriedQMStringFilterFunction::FunPtr funPtr = &QueryMaker::addFilter;
         CurriedQMFunction *curriedFun =
             new CurriedQMStringFilterFunction( funPtr, value, filter, matchBegin, matchEnd );
@@ -322,7 +321,7 @@ namespace Collections
         if( !m_filterMap.isEmpty() && m_filterMap.contains( value ) )
         {
             QString newFilter = m_filterMap.value( value );
-            newFilter.append( QString( " " ) ).append( filter );
+//            newFilter.append( QString( " " ) ).append( filter );
             m_filterMap.insert( value, newFilter );
         }
         else
@@ -494,13 +493,13 @@ namespace Collections
                m_memoryQueryMaker.data()->validFilterMask();
     }
 
-//    void
-//    SpotifyQueryMaker::slotSpotifyError( Spotify::Controller::ErrorState error )
-//    {
-//        DEBUG_BLOCK
+    void
+    SpotifyQueryMaker::slotSpotifyError( const Spotify::Controller::ErrorState error )
+    {
+        DEBUG_BLOCK
 
-//        emit spotifyError( error );
-//    }
+        emit spotifyError( error );
+    }
 
     void
     SpotifyQueryMaker::collectResults( const Meta::SpotifyTrackList& trackList )
@@ -555,7 +554,7 @@ namespace Collections
         if( m_activeQueryCount <= 0 )
         {
             emit queryDone();
-            if( m_autoDelete )
+            if( m_autoDelete  && !m_querySent )
                 deleteLater();
         }
     }

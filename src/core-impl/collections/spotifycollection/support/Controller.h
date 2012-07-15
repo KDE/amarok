@@ -46,6 +46,11 @@ class Controller: public QObject
 {
     Q_OBJECT
 public:
+    enum ErrorState {
+        ResolverNotConnected,
+        ResolverNotFound,
+        InvalidCredential
+    };
     Controller( const QString& exec );
     virtual ~Controller();
 
@@ -116,6 +121,7 @@ signals:
     void terminated();
     void customMessage( const QString& msgType, const QVariantMap& map );
     void changed();
+    void spotifyError( const Spotify::Controller::ErrorState error );
 
     void errorMsgReceived( const QString& msg );
     void userChanged();

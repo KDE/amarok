@@ -230,7 +230,6 @@ void
 Controller::handleMsg( const QByteArray& msg )
 {
     DEBUG_BLOCK
-    warning() << "Receiving message:\n" << QString(msg);
     // Drop all messages during desctruction
     if( m_deleting )
         return;
@@ -431,7 +430,7 @@ Controller::handlePlaylistReceived( const QVariantMap& map )
             trackMap["album"].toString(),
             trackMap["mimetype"].toString(),
             trackMap["score"].toDouble(),
-            qint64(trackMap["duration"].toLongLong()),
+            trackMap["duration"].toInt(),
             trackMap["bitrate"].toInt(),
             trackMap["size"].toInt(),
             trackMap["source"].toString()
@@ -546,7 +545,7 @@ Controller::handleSearchResults( const QVariantMap& map )
             trackMap["album"].toString(),
             trackMap["mimetype"].toString(),
             trackMap["score"].toDouble(),
-            (qint64)(trackMap["duration"].toLongLong()),
+            trackMap["duration"].toInt(),
             trackMap["bitrate"].toInt(),
             trackMap["size"].toInt(),
             trackMap["source"].toString()
