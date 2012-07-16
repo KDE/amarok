@@ -18,11 +18,12 @@
 #ifndef AMAROK_STREAM_P_H
 #define AMAROK_STREAM_P_H
 
-#include "core/support/Debug.h"
+#include "EngineController.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
+#include "core/support/Debug.h"
+#include "core-impl/meta/default/DefaultMetaTypes.h"
 #include "covermanager/CoverCache.h"
-#include "EngineController.h"
 
 #include <QObject>
 
@@ -34,7 +35,12 @@ class MetaStream::Track::Private : public QObject
 
     public:
         Private( Track *t )
-            : track( t )
+            : trackNumber( 0 )
+            , length( 0 )
+            , rating( 0 )
+            , score( 0 )
+            , playcount( 0 )
+            , track( t )
         {
             EngineController *engine = The::engineController();
 
@@ -45,23 +51,26 @@ class MetaStream::Track::Private : public QObject
                      Qt::DirectConnection );
         }
 
-        void notify() const
-        {
-            foreach( Meta::Observer *observer, observers )
-                observer->metadataChanged( Meta::TrackPtr( track ) );
-        }
-
     public Q_SLOTS:
         void currentMetadataChanged( QVariantMap metaData )
         {
             if( metaData.value( Meta::Field::URL ) == url.url() )
             {
+                // keep synchronized to EngineController::slotMetaDataChanged()
                 if( metaData.contains( Meta::Field::ARTIST ) )
                     artist = metaData.value( Meta::Field::ARTIST ).toString();
                 if( metaData.contains( Meta::Field::TITLE ) )
                     title = metaData.value( Meta::Field::TITLE ).toString();
                 if( metaData.contains( Meta::Field::ALBUM ) )
                     album = metaData.value( Meta::Field::ALBUM ).toString();
+                if( metaData.contains( Meta::Field::GENRE ) )
+                    genre = metaData.value( Meta::Field::GENRE ).toString();
+                if( metaData.contains( Meta::Field::TRACKNUMBER ) )
+                    trackNumber = metaData.value( Meta::Field::TRACKNUMBER ).toInt();
+                if( metaData.contains( Meta::Field::COMMENT ) )
+                    comment = metaData.value( Meta::Field::COMMENT ).toString();
+                if( metaData.contains( Meta::Field::LENGTH ) )
+                    length = metaData.value( Meta::Field::LENGTH ).value<qint64>();
 
                 //TODO: move special handling to subclass or using some configurable XSPF
                 // Special demangling of artist/title for Shoutcast streams, which usually
@@ -76,16 +85,26 @@ class MetaStream::Track::Private : public QObject
                     }
                 }
 
-                notify();
+                track->notifyObservers();
             }
         }
 
     public:
-        QSet<Meta::Observer *> observers;
         KUrl url;
         QString title;
         QString artist;
         QString album;
+        QString genre;
+        int trackNumber;
+        QString comment;
+        qint64 length;
+
+        // following are useful only sligtly, they are reset as soon as Amarok restarts
+        int rating;
+        double score;
+        QDateTime firstPlayed;
+        QDateTime lastPlayed;
+        int playcount;
 
         Meta::ArtistPtr artistPtr;
         Meta::AlbumPtr albumPtr;
@@ -100,49 +119,29 @@ class MetaStream::Track::Private : public QObject
 
 // internal helper classes
 
-class StreamArtist : public Meta::Artist
+class StreamArtist : public Meta::DefaultArtist
 {
     public:
         StreamArtist( MetaStream::Track::Private *dptr )
-            : Meta::Artist()
+            : DefaultArtist()
             , d( dptr )
             {}
 
-        Meta::TrackList tracks()
-        {
-            return Meta::TrackList();
-        }
-
-        Meta::AlbumList albums()
-        {
-            return Meta::AlbumList();
-        }
-
         QString name() const
         {
-            if( d )
+            if( d && !d->artist.isEmpty() )
                 return d->artist;
-            return QString();
-        }
-
-        QString prettyName() const
-        {
-            return name();
-        }
-
-        bool operator==( const Meta::Artist &other ) const
-        {
-            return name() == other.name();
+            return DefaultArtist::name();
         }
 
         MetaStream::Track::Private * const d;
 };
 
-class StreamAlbum : public Meta::Album
+class StreamAlbum : public Meta::DefaultAlbum
 {
 public:
     StreamAlbum( MetaStream::Track::Private *dptr )
-        : Meta::Album()
+        : DefaultAlbum()
         , d( dptr )
     {}
 
@@ -151,36 +150,16 @@ public:
         CoverCache::invalidateAlbum( this );
     }
 
-    bool isCompilation() const
-    {
-        return false;
-    }
-
     bool hasAlbumArtist() const
     {
         return false;
     }
 
-    Meta::ArtistPtr albumArtist() const
-    {
-        return Meta::ArtistPtr();
-    }
-
-    Meta::TrackList tracks()
-    {
-        return Meta::TrackList();
-    }
-
     QString name() const
     {
-        if( d )
+        if( d && !d->album.isEmpty() )
             return d->album;
-        return QString();
-    }
-
-    QString prettyName() const
-    {
-        return name();
+        return DefaultAlbum::name();
     }
 
     bool hasImage( int size ) const
@@ -205,14 +184,26 @@ public:
         CoverCache::invalidateAlbum( this );
     }
 
-
-    bool operator==( const Meta::Album &other ) const {
-        return name() == other.name();
-    }
-
     MetaStream::Track::Private * const d;
     QImage m_cover;
 };
 
+class StreamGenre : public Meta::DefaultGenre
+{
+public:
+    StreamGenre( MetaStream::Track::Private *dptr )
+        : DefaultGenre()
+        , d( dptr )
+    {}
+
+    QString name() const
+    {
+        if( d && !d->genre.isEmpty() )
+            return d->genre;
+        return DefaultGenre::name();
+    }
+
+    MetaStream::Track::Private * const d;
+};
 
 #endif
