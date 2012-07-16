@@ -88,6 +88,8 @@ EngineController::EngineController()
     // ensure this object is created in a main thread
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
     connect( this, SIGNAL(fillInSupportedMimeTypes()), SLOT(slotFillInSupportedMimeTypes()) );
+    connect( this, SIGNAL(trackFinishedPlaying(Meta::TrackPtr,double)),
+             SLOT(slotTrackFinishedPlaying(Meta::TrackPtr,double)) );
 }
 
 EngineController::~EngineController()
@@ -520,13 +522,12 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
     //let Amarok know that the previous track is no longer playing
     if( m_currentTrack )
     {
-        const qint64 pos = trackPositionMs();
-        const qint64 length = m_currentTrack->length();
-        m_currentTrack->finishedPlaying( double(pos)/double(length) );
-
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
+        const qint64 pos = trackPositionMs();
+        const qint64 length = m_currentTrack->length();
+        emit trackFinishedPlaying( m_currentTrack, pos / qMax<double>( length, pos ) );
 
         m_currentTrack = 0;
         m_currentAlbum = 0;
@@ -944,9 +945,11 @@ EngineController::slotAboutToFinish()
     DEBUG_BLOCK
     debug() << "Track finished completely, updating statistics";
 
-    if( m_currentTrack ) // not sure why this should not be the case, but sometimes happens. don't crash.
+    // not sure why this should not be the case, but sometimes happens. Don't crash:
+    if( m_currentTrack )
     {
-        m_currentTrack->finishedPlaying( 1.0 ); // If we reach aboutToFinish, the track is done as far as we are concerned.
+        // if we reach aboutToFinish, the track is done as far as we are concerned.
+        emit trackFinishedPlaying( m_currentTrack, 1.0 );
     }
     if( m_multiPlayback )
     {
@@ -1304,6 +1307,14 @@ void EngineController::slotMutedChanged( bool mute )
 {
     AmarokConfig::setMuteState( mute );
     emit muteStateChanged( mute );
+}
+
+void
+EngineController::slotTrackFinishedPlaying( Meta::TrackPtr track, double playedFraction )
+{
+    Q_ASSERT( track );
+    debug() << "slotTrackFinishedPlaying(" << track->playableUrl() << "," << playedFraction << ")";
+    track->finishedPlaying( playedFraction );
 }
 
 void

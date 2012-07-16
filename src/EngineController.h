@@ -423,6 +423,18 @@ Q_SIGNALS:
     void trackPositionChanged( qint64 position, bool userSeek );
 
     /**
+     * Emitted when a track finished playing. You generally get this signal once per
+     * played track, but in case of a stream this may be emitted more than once when
+     * stream meta-data changes (which usually indicates that the next track started
+     * playing) - meta-data in the track are updated in this case. When you receive
+     * this signal, track score, play count etc. will be already updated.
+     *
+     * @param track track that has just finished playing
+     * @param playedFraction played/total length fraction, between 0 and 1
+     */
+    void trackFinishedPlaying( Meta::TrackPtr track, double playedFraction );
+
+    /**
        Called when the track length changes, typically because the track has changed but
        also when phonon manages to determine the full track length.
     */
@@ -490,6 +502,12 @@ private slots:
      * for the first time.
      */
     void slotFillInSupportedMimeTypes();
+
+    /**
+     * Calls track->finishedPlaying(), connected to trackFinishedPlaying() signal to
+     * reduce code duplication.
+     */
+    void slotTrackFinishedPlaying( Meta::TrackPtr track, double playedFraction );
 
 protected:
     // reimplemented from Meta::Observer
