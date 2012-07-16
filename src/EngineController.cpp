@@ -54,6 +54,9 @@
 #include <QTextDocument>
 #include <qmath.h>
 
+// for slotMetaDataChanged()
+typedef QPair<Phonon::MetaData, QString> FieldPair;
+
 namespace The {
     EngineController* engineController() { return EngineController::instance(); }
 }
@@ -1222,55 +1225,33 @@ EngineController::slotTrackLengthChanged( qint64 milliseconds )
 void
 EngineController::slotMetaDataChanged()
 {
-    DEBUG_BLOCK
-
     QVariantMap meta;
-
     meta.insert( Meta::Field::URL, m_media.data()->currentSource().url().toString() );
-
-    QStringList artist = m_media.data()->metaData( "ARTIST" );
-    debug() << "Artist     : " << artist;
-    if( !artist.isEmpty() )
-        meta.insert( Meta::Field::ARTIST, artist.first() );
-
-    QStringList album = m_media.data()->metaData( "ALBUM" );
-    debug() << "Album      : " << album;
-    if( !album.isEmpty() )
-        meta.insert( Meta::Field::ALBUM, album.first() );
-
-    QStringList title = m_media.data()->metaData( "TITLE" );
-    debug() << "Title      : " << title;
-    if( !title.isEmpty() )
-        meta.insert( Meta::Field::TITLE, title.first() );
-
-    QStringList genre = m_media.data()->metaData( "GENRE" );
-    debug() << "Genre      : " << genre;
-    if( !genre.isEmpty() )
-        meta.insert( Meta::Field::GENRE, genre.first() );
-
-    QStringList tracknum = m_media.data()->metaData( "TRACKNUMBER" );
-    debug() << "Tracknumber: " << tracknum;
-    if( !tracknum.isEmpty() )
-        meta.insert( Meta::Field::TRACKNUMBER, tracknum.first() );
-
-    QStringList length = m_media.data()->metaData( "LENGTH" );
-    debug() << "Length     : " << length;
-    if( !length.isEmpty() )
-        meta.insert( Meta::Field::LENGTH, length.first() );
-
-    bool trackChanged = false;
-    if( m_lastTrack != m_currentTrack )
+    static const QList<FieldPair> fieldPairs = QList<FieldPair>()
+            << FieldPair( Phonon::ArtistMetaData, Meta::Field::ARTIST )
+            << FieldPair( Phonon::AlbumMetaData, Meta::Field::ALBUM )
+            << FieldPair( Phonon::TitleMetaData, Meta::Field::TITLE )
+            << FieldPair( Phonon::GenreMetaData, Meta::Field::GENRE )
+            << FieldPair( Phonon::TracknumberMetaData, Meta::Field::TRACKNUMBER )
+            << FieldPair( Phonon::DescriptionMetaData, Meta::Field::COMMENT );
+    foreach( FieldPair pair, fieldPairs )
     {
-        trackChanged = true;
-        m_lastTrack = m_currentTrack;
+        QStringList values = m_media.data()->metaData( pair.first );
+        if( !values.isEmpty() )
+            meta.insert( pair.second, values.first() );
     }
-    debug() << "Track changed: " << trackChanged << "current:" << m_currentTrack.data()
-            << "url" << m_media.data()->currentSource().url().toString();
 
-    if( isMetadataSpam( meta ) )
+    // note: don't rely on m_currentTrack here. At least some Phonon backends first emit
+    // totalTimeChanged(), then metaDataChanged() and only then currentSourceChanged()
+    // which currently sets correct m_currentTrack.
+    if( isInRecentMetaDataHistory( meta ) )
+    {
+        debug() << "slotMetaDataChanged() triggered by phonon, but we've already seen"
+                << "exactly the same metadata recently. Ignoring for now.";
         return;
+    }
 
-    debug() << "no spam";
+    debug() << "slotMetaDataChanged(): new meta-data:" << meta;
     emit currentMetadataChanged( meta );
 }
 
@@ -1409,27 +1390,8 @@ QString EngineController::prettyNowPlaying( bool progress ) const
         return i18n( "No track playing" );
 }
 
-QVariantMap
-EngineController::trackData( Meta::TrackPtr track )
-{
-    QVariantMap meta;
-
-    meta.insert( Meta::Field::URL, track->playableUrl() );
-    if( track->artist() )
-        meta.insert( Meta::Field::ARTIST, track->artist()->prettyName() );
-    if( track->album() )
-        meta.insert( Meta::Field::ALBUM, track->album()->name() );
-    meta.insert( Meta::Field::TITLE, track->prettyName() );
-    if( track->genre() )
-        meta.insert( Meta::Field::GENRE, track->genre()->prettyName() );
-    meta.insert( Meta::Field::TRACKNUMBER, track->trackNumber() );
-    meta.insert( Meta::Field::LENGTH, track->length() );
-
-    return meta;
-}
-
 bool
-EngineController::isMetadataSpam( QVariantMap meta )
+EngineController::isInRecentMetaDataHistory( const QVariantMap &meta )
 {
     // search for Metadata in history
     for( int i = 0; i < m_metaDataHistory.size(); i++)

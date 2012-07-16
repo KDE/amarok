@@ -506,13 +506,13 @@ private:
     void createFadeoutEffect();
     void resetFadeout();
 
-    /** Returns the meta data sub set needed for currentMetadataChanged */
-    QVariantMap trackData( Meta::TrackPtr track );
-
-    /** Try to detect MetaData spam in Streams.
-        Some streams are doing advertisment in the metadata. We try to filter that out
-    */
-    bool isMetadataSpam( QVariantMap meta );
+    /**
+     * Try to detect MetaData spam in Streams etc.
+     * Some streams are doing advertisment in the metadata. We try to filter that out.
+     * Additionally, some Phonon back-ends emit more than one metadataChanged() signals
+     * per on track, so filter it all altogether.
+     */
+    bool isInRecentMetaDataHistory( const QVariantMap &meta );
 
     Q_DISABLE_COPY( EngineController )
 
@@ -530,7 +530,6 @@ private:
 
     Meta::TrackPtr  m_currentTrack;
     Meta::AlbumPtr  m_currentAlbum;
-    Meta::TrackPtr  m_lastTrack;
     Meta::TrackPtr  m_nextTrack;
     KUrl            m_nextUrl;
     Capabilities::BoundedPlaybackCapability* m_boundedPlayback;
