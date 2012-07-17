@@ -52,7 +52,6 @@ private:
     QString m_name;
     TrackList m_tracks;
 
-
 };
 
 }

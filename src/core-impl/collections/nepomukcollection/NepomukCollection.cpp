@@ -61,7 +61,10 @@ NepomukCollection::NepomukCollection()
     if( Nepomuk::ResourceManager::instance()->initialized() )
         m_nepomukCollectionReady = true;
 
-    else m_nepomukCollectionReady = false;
+    else {
+        m_nepomukCollectionReady = false;
+        warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk";
+    }
 
     if( buildCollection() )
         debug() << "loaded some tracks";
@@ -70,7 +73,6 @@ NepomukCollection::NepomukCollection()
 
 NepomukCollection::~NepomukCollection()
 {
-    delete m_mc;
     m_nepomukCollectionReady = false;
 }
 
