@@ -120,7 +120,7 @@ NepomukCollection::buildCollection()
 {
     DEBUG_BLOCK
 
-    setupMetaMap();
+            setupMetaMap();
 
 
     // TODO
@@ -156,84 +156,23 @@ NepomukCollection::setupMetaMap()
 
         QString artistLabel = trackRes.property( Nepomuk::Vocabulary::NMM::performer() ).toResource().genericLabel();
         debug() << "Artist found :" << artistLabel;
-
-        if ( !( artistLabel.isNull() || artistLabel.isEmpty() ) )
-        {
-            // see if artist is already present in artistMap
-            if( m_mc->artistMap().contains( artistLabel ) )
-            {
-                debug() << "artist already present!";
-                nepArtistPtr = NepomukArtistPtr::staticCast( m_mc->artistMap().value( artistLabel ) );
-            }
-            else
-            {
-                nepArtistPtr = new NepomukArtist( artistLabel ) ;
-            }
-
-            nepTrackPtr->setArtist( nepArtistPtr );
-//            m_mc->addArtist(  ArtistPtr::staticCast( nepArtistPtr ) );
-        }
+        nepArtistPtr = new NepomukArtist( artistLabel );
+        nepTrackPtr->setArtist( nepArtistPtr );
 
         QString genreLabel = trackRes.property( Nepomuk::Vocabulary::NMM::genre() ).toString();
         debug() << "Genre found :" << genreLabel;
-
-        if ( !( genreLabel.isNull() || genreLabel.isEmpty() ) )
-        {
-            // see if genre is already present in genreMap
-            if( m_mc->genreMap().contains( genreLabel ) )
-            {
-                debug() << "genre already present!";
-                nepGenrePtr = NepomukGenrePtr::staticCast( m_mc->genreMap().value( genreLabel ) );
-            }
-            else
-            {
-                nepGenrePtr = new NepomukGenre( genreLabel ) ;
-            }
-
-            nepTrackPtr->setGenre( nepGenrePtr );
-//            m_mc->addGenre(  GenrePtr::staticCast( nepGenrePtr ) );
-        }
+        nepGenrePtr = new NepomukGenre( genreLabel ) ;
+        nepTrackPtr->setGenre( nepGenrePtr );
 
         QString composerLabel = trackRes.property( Nepomuk::Vocabulary::NMM::composer() ).toResource().genericLabel();
         debug() << "Composer found :" << composerLabel;
-
-        if ( !( composerLabel.isNull() || composerLabel.isEmpty() ) )
-        {
-            // see if composer is already present in composerMap
-            if( m_mc->composerMap().contains( composerLabel ) )
-            {
-                debug() << "composer already present!";
-                nepComposerPtr =  NepomukComposerPtr::staticCast( m_mc->composerMap().value( composerLabel ) );
-            }
-            else
-            {
-                nepComposerPtr = new NepomukComposer( composerLabel ) ;
-            }
-
-            nepTrackPtr->setComposer( nepComposerPtr );
-//            m_mc->addComposer(  ComposerPtr::staticCast( nepComposerPtr ) );
-        }
+        nepComposerPtr = new NepomukComposer( composerLabel ) ;
+        nepTrackPtr->setComposer( nepComposerPtr );
 
         QString albumLabel = trackRes.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toResource().genericLabel();
         debug() << "Album found :" << albumLabel;
-
-        if ( !( albumLabel.isNull() || albumLabel.isEmpty() ) )
-        {
-
-            // see if album is already present in albumMap
-            if( m_mc->albumMap().contains( albumLabel, artistLabel ) )
-            {
-                debug() << "album already present!";
-                nepAlbumPtr =  NepomukAlbumPtr::staticCast( m_mc->albumMap().value( albumLabel, artistLabel ) );
-            }
-            else
-            {
-                nepAlbumPtr = new NepomukAlbum( albumLabel, ArtistPtr::staticCast( nepArtistPtr ) ) ;
-            }
-
-            nepTrackPtr->setAlbum( nepAlbumPtr );
-//            m_mc->addAlbum(  AlbumPtr::staticCast( nepAlbumPtr ) );
-        }
+        nepAlbumPtr = new NepomukAlbum( albumLabel, ArtistPtr::staticCast( nepArtistPtr ) ) ;
+        nepTrackPtr->setAlbum( nepAlbumPtr );
 
         TrackPtr trackPtr =  TrackPtr::staticCast( nepTrackPtr );
 
