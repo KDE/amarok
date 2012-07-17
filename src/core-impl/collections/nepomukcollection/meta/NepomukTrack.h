@@ -18,8 +18,14 @@
 #ifndef NEPOMUKTRACK_H
 #define NEPOMUKTRACK_H
 
-#include "core/meta/Meta.h"
 #include "NepomukCollection.h"
+#include "NepomukGenre.h"
+#include "NepomukComposer.h"
+#include "NepomukAlbum.h"
+#include "NepomukArtist.h"
+#include "NepomukYear.h"
+
+#include "core/meta/Meta.h"
 
 #include <QDateTime>
 #include <QSharedPointer>
@@ -48,6 +54,8 @@ public:
                   ComposerPtr composer,
                   AlbumPtr album,
                   Nepomuk::Resource resource );
+
+    ~NepomukTrack();
 
     virtual QString name() const;
     virtual QString prettyName() const;
@@ -78,6 +86,15 @@ public:
     virtual int discNumber() const;
     virtual int playCount() const;
     virtual QString type() const;
+
+    // NepomukTrack methods
+
+    void setAlbum( NepomukAlbumPtr album );
+    void setArtist( NepomukArtistPtr artist );
+    void setComposer( NepomukComposerPtr composer );
+    void setGenre( NepomukGenrePtr genre );
+    // TODO
+    //void setYear( NepomukYearPtr year );
 
 private:
 

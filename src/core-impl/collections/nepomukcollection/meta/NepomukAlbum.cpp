@@ -40,9 +40,9 @@ using namespace Nepomuk::Query;
 NepomukAlbum::NepomukAlbum( QString &name )
     : Meta::Album()
     , m_name( name )
-    , m_isCompilation( false )
 {
     m_hasAlbumArtist = false;
+    m_isCompilation = false;
     // TODO, check if album has unique artist
 }
 

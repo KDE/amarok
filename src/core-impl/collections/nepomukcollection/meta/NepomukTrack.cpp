@@ -20,6 +20,7 @@
 #include "NepomukComposer.h"
 #include "NepomukAlbum.h"
 #include "NepomukArtist.h"
+#include "NepomukYear.h"
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
@@ -44,26 +45,15 @@ using namespace Nepomuk::Query;
 NepomukTrack::NepomukTrack( Nepomuk::Resource resource )
     : Track()
     , m_resource( resource )
+    , m_artist( 0 )
+    , m_genre( 0 )
+    , m_composer( 0 )
+    , m_album( 0 )
+    , m_year( 0 )
 
 {
     m_kurl = m_resource.toFile().url();
     m_name = m_resource.property( Nepomuk::Vocabulary::NFO::fileName() ).toString();
-
-    QString album = m_resource.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toString();
-    NepomukAlbumPtr albumPtr( new NepomukAlbum( album ) );
-    m_album = Meta::AlbumPtr::staticCast( albumPtr );
-
-    QString artist = m_resource.property( Nepomuk::Vocabulary::NMM::performer() ).toString();
-    NepomukArtistPtr artistPtr( new NepomukArtist( artist ) );
-    m_artist = Meta::ArtistPtr::staticCast( artistPtr );
-
-    QString composer = m_resource.property( Nepomuk::Vocabulary::NMM::composer() ).toString();
-    NepomukComposerPtr composerPtr( new NepomukComposer( composer ) );
-    m_composer = Meta::ComposerPtr::staticCast( composerPtr );
-
-    QString genre = m_resource.property( Nepomuk::Vocabulary::NMM::genre() ).toString();
-    NepomukGenrePtr genrePtr( new NepomukGenre( genre ) );
-    m_genre = Meta::GenrePtr::staticCast( genrePtr );
 
 }
 
@@ -110,6 +100,10 @@ NepomukTrack::NepomukTrack( ArtistPtr artist,
 
 }
 
+NepomukTrack::~NepomukTrack()
+{
+    // TODO
+}
 
 QString
 NepomukTrack::name() const
@@ -293,3 +287,50 @@ NepomukTrack::type() const
 {
     return m_resource.property( Nepomuk::Vocabulary::NFO::codec() ).toString();
 }
+
+void
+NepomukTrack::setArtist( NepomukArtistPtr artist )
+{
+    //TODO
+    // if artist is already present, remove the track and then add
+    // check MemoryMeta::Artist::setArtist for inspiration
+    if( artist )
+        artist->addTrack( TrackPtr( this ) );
+    m_artist = Meta::ArtistPtr::staticCast( artist );
+}
+
+void
+NepomukTrack::setComposer( NepomukComposerPtr composer )
+{
+    //TODO
+    // if composer is already present, remove the track and then add
+    // check MemoryMeta::Composer::setComposer for inspiration
+    if( composer )
+        composer->addTrack( TrackPtr( this ) );
+    m_composer = Meta::ComposerPtr::staticCast( composer );
+}
+
+void
+NepomukTrack::setGenre( NepomukGenrePtr genre )
+{
+    //TODO
+    // if genre is already present, remove the track and then add
+    // check MemoryMeta::Genre::setGenre for inspiration
+    if( genre )
+        genre->addTrack( TrackPtr( this ) );
+    m_genre = Meta::GenrePtr::staticCast( genre );
+}
+
+void
+NepomukTrack::setAlbum( NepomukAlbumPtr album )
+{
+    //TODO
+    // if album is already present, remove the track and then add
+    // check MemoryMeta::Album::setAlbum for inspiration
+    if( album )
+        album->addTrack( TrackPtr( this ) );
+    m_album = Meta::AlbumPtr::staticCast( album );
+}
+
+// TODO
+// NepomukYear?
