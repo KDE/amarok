@@ -769,11 +769,12 @@ EngineController::setNextTrack( Meta::TrackPtr track )
 bool
 EngineController::isStream()
 {
-    DEBUG_BLOCK
-
+    Phonon::MediaSource::Type type = Phonon::MediaSource::Invalid;
     if( m_media )
-        return m_media.data()->currentSource().type() == Phonon::MediaSource::Stream;
-    return false;
+        // type is determined purely from the MediaSource constructor used in
+        // setCurrentSource(). For streams we use the KUrl one, see playUrl()
+        type = m_media.data()->currentSource().type();
+    return type == Phonon::MediaSource::Url || type == Phonon::MediaSource::Stream;
 }
 
 bool
@@ -787,9 +788,7 @@ EngineController::isSeekable() const
 int
 EngineController::trackPosition() const
 {
-    //NOTE: there was a bunch of last.fm logic removed from here
-    //pretty sure it's irrelevant, if not, look back to mid-March 2008
-    return static_cast<int>( m_media.data()->currentTime() / 1000 );
+    return trackPositionMs() / 1000;
 }
 
 int
