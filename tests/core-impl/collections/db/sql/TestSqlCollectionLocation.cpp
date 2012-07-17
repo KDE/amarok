@@ -118,7 +118,7 @@ TestSqlCollectionLocation::initTestCase()
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
     m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );
     SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
-    mock->folders << m_tmpDir->name(); // the target folder needs to have enough space and be writable
+    mock->setCollectionFolders( QStringList() << m_tmpDir->name() ); // the target folder needs to have enough space and be writable
     m_collection->setMountPointManager( mock );
 
     // I just need the table and not the whole playlist manager

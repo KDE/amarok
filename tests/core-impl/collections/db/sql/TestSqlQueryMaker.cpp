@@ -76,7 +76,7 @@ TestSqlQueryMaker::initTestCase()
     mountPoints.insert( 2, "/bar" );
 
     m_mpm = new SqlMountPointManagerMock( this, m_storage );
-    m_mpm->mountPoints = mountPoints;
+    m_mpm->m_mountPoints = mountPoints;
 
     m_collection->setMountPointManager( m_mpm );
 
@@ -667,7 +667,7 @@ TestSqlQueryMaker::testDynamicCollection()
 
     QMap<int, QString> mountPoints;
 
-    mpm.mountPoints = mountPoints;
+    mpm.m_mountPoints = mountPoints;
 
     m_collection->setMountPointManager( &mpm );
 
@@ -677,7 +677,7 @@ TestSqlQueryMaker::testDynamicCollection()
     trackQm.run();
     QCOMPARE( trackQm.tracks().count(), 3 );
 
-    mpm.mountPoints.insert( 1, "/foo" );
+    mpm.m_mountPoints.insert( 1, "/foo" );
 
     Collections::SqlQueryMaker trackQm2( m_collection );
     trackQm2.setQueryType( Collections::QueryMaker::Track );

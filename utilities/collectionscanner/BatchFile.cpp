@@ -19,7 +19,11 @@
 
 #include "BatchFile.h"
 
+#include "config-amarok.h"
+#include "shared/Version.h"  // for AMAROK_VERSION
+
 #include <QFile>
+#include <QDateTime>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
@@ -124,6 +128,7 @@ CollectionScanner::BatchFile::write( const QString &batchPath )
 
     writer.writeStartDocument();
     writer.writeStartElement( QLatin1String("scanner") );
+    writer.writeComment("Batch file for amarokcollectionscanner "AMAROK_VERSION" created on "+QDateTime::currentDateTime().toString());
 
     foreach( const QString &dir, m_directories )
     {

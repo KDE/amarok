@@ -37,9 +37,9 @@ public:
     int getIdForUrl( const KUrl &url )
     {
         QString path = url.path();
-        foreach( int id, mountPoints.keys() )
+        foreach( int id, m_mountPoints.keys() )
         {
-            if( path.startsWith( mountPoints.value( id ) ) )
+            if( path.startsWith( m_mountPoints.value( id ) ) )
             {
                 return id;
             }
@@ -54,7 +54,7 @@ public:
             return relativePath.right( relativePath.length() -1 );
         else
         {
-            return mountPoints.value( deviceId ) + relativePath.right( relativePath.length() -1 );
+            return m_mountPoints.value( deviceId ) + relativePath.right( relativePath.length() -1 );
         }
     }
 
@@ -64,7 +64,7 @@ public:
             return '.' + absolutePath;
         else
         {
-            QString mp = mountPoints.value( deviceId );
+            QString mp = m_mountPoints.value( deviceId );
             return '.' + absolutePath.right( mp.length() );
         }
     }
@@ -73,18 +73,18 @@ public:
     {
         IdList result;
         result << -1;
-        result << mountPoints.keys();
+        result << m_mountPoints.keys();
         return result;
     }
 
     virtual QStringList collectionFolders() const
     {
-        return folders;
+        return m_folders;
     }
 
     void setCollectionFolders( const QStringList &folders )
     {
-        Q_UNUSED( folders );
+        m_folders = folders;
     }
 
     void emitDeviceAdded( int id )
@@ -97,8 +97,8 @@ public:
         emit deviceRemoved( id );
     }
 
-    QMap<int,QString> mountPoints;
-    QStringList folders;
+    QMap<int,QString> m_mountPoints;
+    QStringList m_folders;
 };
 
 #endif // SQLMOUNTPOINTMANAGERMOCK_H

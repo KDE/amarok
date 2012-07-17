@@ -482,7 +482,7 @@ ScannerJob::run()
 
         if( !createScannerProcess( false ) )
         {
-            warning() << "Unable to start Amarok colleciton scanner.";
+            warning() << "Unable to start Amarok collection scanner.";
             emit failed( i18n("Unable to start Amarok collection scanner." ) );
             return;
         }
