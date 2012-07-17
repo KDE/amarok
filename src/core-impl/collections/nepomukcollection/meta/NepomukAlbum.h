@@ -27,6 +27,10 @@ class NepomukAlbum;
 typedef KSharedPtr<NepomukAlbum> NepomukAlbumPtr;
 typedef QList<NepomukAlbumPtr> NepomukAlbumList;
 
+/**
+  * Represents a unit album resource in Amarok
+  */
+
 class NepomukAlbum : public Meta::Album
 {
 public:

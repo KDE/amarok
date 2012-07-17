@@ -59,20 +59,18 @@ NepomukCollection::NepomukCollection()
 {
     // check if Nepomuk is available, if yes, initialize.
     if( Nepomuk::ResourceManager::instance()->initialized() )
-    {
         m_nepomukCollectionReady = true;
-
-        if( buildCollection() )
-            debug() << "successful! :)";
-        else debug() << "not successful :(";
-    }
 
     else m_nepomukCollectionReady = false;
 
+    if( buildCollection() )
+        debug() << "loaded some tracks";
+    else debug() << "didn't load any tracks";
 }
 
 NepomukCollection::~NepomukCollection()
 {
+    delete m_mc;
     m_nepomukCollectionReady = false;
 }
 
@@ -118,26 +116,7 @@ NepomukCollection::isWritable() const
 bool
 NepomukCollection::buildCollection()
 {
-    DEBUG_BLOCK
 
-            setupMetaMap();
-
-
-    // TODO
-    // year??
-
-    // only checking for trackMap now.
-    // Should ideally check for more conditions.
-
-    if( m_mc->trackMap().size() == 0 )
-        return false;
-
-    else return true;
-}
-
-void
-NepomukCollection::setupMetaMap()
-{
     Query query;
     Term term =  ResourceTypeTerm( Nepomuk::Vocabulary::NFO::Audio() );
     query.setTerm( term );
@@ -181,4 +160,8 @@ NepomukCollection::setupMetaMap()
         debug() << "inserting track with track name : " << trackPtr->name();
 
     }
+
+    if ( m_mc->trackMap().size() > 0 )
+        return true;
+    else return false;
 }

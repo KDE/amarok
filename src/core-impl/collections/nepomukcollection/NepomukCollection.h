@@ -77,10 +77,16 @@ public:
 private:
     // nepomuk specific
     /**
-      * This function is called to start populating the {Meta}Maps
+      * This function is called to build the Nepomuk Collection by populating the Meta QMaps.
+      * This function forms the crux of the Nepomuk Collection.
+      * It first executes a query to fetch all resources of type 'audio'
+      * It then enumerates them into Meta QMaps of MemoeryCollection.h
+      *
+      * After each track is extracted, its corresponding properties of artist, genre, composer
+      * album ( year is not yet implemented ) is fetched and inserted into the NepomukTrack
+      * object.
       */
     bool buildCollection();
-    void setupMetaMap();
 
 private:
     /**

@@ -30,6 +30,10 @@ class NepomukGenre;
 typedef KSharedPtr<NepomukGenre> NepomukGenrePtr;
 typedef QList<NepomukGenrePtr> NepomukGenreList;
 
+/**
+  * Represents a unit genre resource in Amarok
+  */
+
 class NepomukGenre : public Genre
 {
 public:

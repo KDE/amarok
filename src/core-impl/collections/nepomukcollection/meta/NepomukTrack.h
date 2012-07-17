@@ -41,6 +41,9 @@ class NepomukTrack;
 typedef KSharedPtr<NepomukTrack> NepomukTrackPtr;
 typedef QList<NepomukTrackPtr> NepomukTrackList;
 
+/**
+  * Represents a unit music track resource in Amarok
+  */
 
 class NepomukTrack : public Track
 {
