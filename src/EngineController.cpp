@@ -1219,7 +1219,7 @@ void
 EngineController::slotMetaDataChanged()
 {
     QVariantMap meta;
-    meta.insert( Meta::Field::URL, m_media.data()->currentSource().url().toString() );
+    meta.insert( Meta::Field::URL, m_media.data()->currentSource().url() );
     static const QList<FieldPair> fieldPairs = QList<FieldPair>()
             << FieldPair( Phonon::ArtistMetaData, Meta::Field::ARTIST )
             << FieldPair( Phonon::AlbumMetaData, Meta::Field::ALBUM )

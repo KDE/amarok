@@ -54,7 +54,7 @@ class MetaStream::Track::Private : public QObject
     public Q_SLOTS:
         void currentMetadataChanged( QVariantMap metaData )
         {
-            if( metaData.value( Meta::Field::URL ) == url.url() )
+            if( metaData.value( Meta::Field::URL ).toUrl() == url )
             {
                 // keep synchronized to EngineController::slotMetaDataChanged()
                 if( metaData.contains( Meta::Field::ARTIST ) )
