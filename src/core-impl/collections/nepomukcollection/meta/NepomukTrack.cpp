@@ -57,49 +57,6 @@ NepomukTrack::NepomukTrack( Nepomuk::Resource resource )
 
 }
 
-NepomukTrack::NepomukTrack( KUrl &fileUrl )
-    : Track()
-    , m_kurl( fileUrl )
-{
-    m_resource = Nepomuk::Resource( m_kurl.pathOrUrl() );
-    m_name = m_resource.property( Nepomuk::Vocabulary::NFO::fileName() ).toString();
-
-    QString album = m_resource.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toString();
-    NepomukAlbumPtr albumPtr( new NepomukAlbum( album ) );
-    m_album = Meta::AlbumPtr::staticCast( albumPtr );
-
-
-    QString artist = m_resource.property( Nepomuk::Vocabulary::NMM::performer() ).toString();
-    NepomukArtistPtr artistPtr( new NepomukArtist( artist ) );
-    m_artist = Meta::ArtistPtr::staticCast( artistPtr );
-
-    QString composer = m_resource.property( Nepomuk::Vocabulary::NMM::composer() ).toString();
-    NepomukComposerPtr composerPtr( new NepomukComposer( composer ) );
-    m_composer = Meta::ComposerPtr::staticCast( composerPtr );
-
-    QString genre = m_resource.property( Nepomuk::Vocabulary::NMM::genre() ).toString();
-    NepomukGenrePtr genrePtr( new NepomukGenre( genre ) );
-    m_genre = Meta::GenrePtr::staticCast( genrePtr );
-
-}
-
-NepomukTrack::NepomukTrack( ArtistPtr artist,
-                            GenrePtr genre,
-                            ComposerPtr composer,
-                            AlbumPtr album,
-                            Nepomuk::Resource resource )
-    : m_artist( artist )
-    , m_genre( genre )
-    , m_composer( composer )
-    , m_album( album )
-    , m_resource( resource )
-{
-    m_kurl = m_resource.toFile().url();
-    m_name = m_resource.property( Nepomuk::Vocabulary::NFO::fileName() ).toString();
-
-
-}
-
 NepomukTrack::~NepomukTrack()
 {
     // TODO

@@ -51,12 +51,6 @@ public:
     // construct a NepomukTrack out of a Nepomuk resource
     NepomukTrack( Nepomuk::Resource resource );
     // construct a NepomukTrack out of a url
-    NepomukTrack( KUrl &fileUrl );
-    NepomukTrack( ArtistPtr artist,
-                  GenrePtr genre,
-                  ComposerPtr composer,
-                  AlbumPtr album,
-                  Nepomuk::Resource resource );
 
     ~NepomukTrack();
 
@@ -101,6 +95,7 @@ public:
 
 private:
 
+    Nepomuk::Resource m_resource;
     ArtistPtr m_artist;
     GenrePtr m_genre;
     ComposerPtr m_composer;
@@ -109,9 +104,6 @@ private:
     LabelList m_labellist;
     KUrl m_kurl;
     QString m_name;
-    Nepomuk::Resource m_resource;
-
-
 };
 
 }
