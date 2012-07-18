@@ -1,10 +1,10 @@
 Amarok Release process
 ----------------------
 
-Dependancies:
+Dependencies:
 - The Ultimate KDE Extragear Release Script from git@git.kde.org:releaseme.git
 
-Section 0: A week in advance
+SECTION 0: A week in advance
 
  * Check that release date doesn't clash with KDE's schedule
  * Notify translators and update http://techbase.kde.org/Schedules/Extragear
@@ -13,15 +13,16 @@ Section 0: A week in advance
 SECTION 1: Preparation
 
  * Check the README file is still relevant
- * Run the "fixuifiles" script from the source-root
- * Run the "bump_plugin_version.rb" script from the folder amarok/
- * Commit the source to Git
+ * Run the "fixuifiles" script from kdesdk from the repository root
+ * Run the "bump_plugin_version.rb" script from the repository root
+ * Commit the source to git
 --------------------------------------------------------------------------------
 
 SECTION 2: Creating and Testing the Tarball
 
  * Run the amarok release script from releaseme.git (amarok2.rb)
-   example: ./amarok2.rb --src ~/Code/amarok --git-branch=master -v 2.5.90 -b trunk -p ssh
+   example: ./amarok2.rb --src ~/Code/amarok -v 2.5.90
+   notice it updates version in shared/Version.h
  * Test the following:
 
      $ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` -DCMAKE_BUILD_TYPE=RelWithDebInfo ./
@@ -36,6 +37,7 @@ SECTION 2: Creating and Testing the Tarball
 
 SECTION 3: Once Happy with the Tarball
 
+ * Tag the commit: "git tag -s v2.5.90"
  * ftp the tarball to upload.kde.org/incoming and file a sysadmin request to have it
    transfered to stable/amarok/$version/src/ or unstable/amarok/$beta-version/src
    Instructions at ftp://upload.kde.org/README
@@ -62,7 +64,7 @@ The Amarok Team
  * Add new version to Bugzilla
 --------------------------------------------------------------------------------
 
-Section 4: The Release Day
+SECTION 4: The Release Day
 
  * Make tarball public
  * Update download page on the wiki
@@ -80,6 +82,8 @@ Section 4: The Release Day
 --------------------------------------------------------------------------------
 
 SECTION 5: After the Release
+
+ * Update shared/Version.h to 2.6-git (if the release was 2.6.0)
 
  If you must change anything about the tarball you need to email sysadmin@kde.org
  because otherwise they gets annoyed that the md5 has changed.
