@@ -223,8 +223,11 @@ public slots:
     /**
      * Stops playing
      * This happens asynchronously.
+     *
+     * @param forceInstant skip any fade-out effects
+     * @param playingWillContinue don't emit stopped() or trackChanged( 0 ) signals
      */
-    void stop( bool forceInstant = false );
+    void stop( bool forceInstant = false, bool playingWillContinue = false );
 
     /**
      * Pauses if Amarok is currently playing, plays if Amarok is stopped or paused

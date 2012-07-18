@@ -357,20 +357,7 @@ EngineController::play( Meta::TrackPtr track, uint offset )
         return;
 
     // clear the current track without sending playbackEnded or trackChangeNotify yet
-    // we want to continue but ::stop() doesn't know that
-    if( m_currentTrack )
-    {
-        const qint64 pos = trackPositionMs();
-        const qint64 length = m_currentTrack->length();
-        m_currentTrack->finishedPlaying( double(pos)/double(length) );
-        unsubscribeFrom( m_currentTrack );
-        if( m_currentAlbum )
-            unsubscribeFrom( m_currentAlbum );
-        m_currentTrack = 0;
-        m_currentAlbum = 0;
-    }
-
-    stop( true );
+    stop( /* forceInstant */ true, /* playingWillContinue */ true );
 
     m_currentTrack = track;
     debug() << "play: bounded is "<<m_boundedPlayback<<"current"<<m_currentTrack->name();
@@ -526,7 +513,7 @@ EngineController::pause() //SLOT
 }
 
 void
-EngineController::stop( bool forceInstant ) //SLOT
+EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
 {
     DEBUG_BLOCK
 
@@ -536,7 +523,6 @@ EngineController::stop( bool forceInstant ) //SLOT
         const qint64 pos = trackPositionMs();
         const qint64 length = m_currentTrack->length();
         m_currentTrack->finishedPlaying( double(pos)/double(length) );
-        emit stopped( pos, length );
 
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
@@ -544,7 +530,11 @@ EngineController::stop( bool forceInstant ) //SLOT
 
         m_currentTrack = 0;
         m_currentAlbum = 0;
-        emit trackChanged( m_currentTrack );
+        if( !playingWillContinue )
+        {
+            emit stopped( pos, length );
+            emit trackChanged( m_currentTrack );
+        }
     }
 
     {
