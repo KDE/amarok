@@ -123,5 +123,7 @@ NepomukCollection::buildCollection()
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
 
-    return true;
+    while ( 1 )
+    if ( job->isFinished() )
+        return true;
 }

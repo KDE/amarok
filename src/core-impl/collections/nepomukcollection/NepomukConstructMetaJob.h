@@ -34,14 +34,12 @@ class NepomukConstructMetaJob : public ThreadWeaver::Job
 public:
     explicit NepomukConstructMetaJob( QSharedPointer<Collections::MemoryCollection> mc );
     void run();
-    bool running();
 
 public slots:
     /**
      * Aborts the job as soon as it is safely possible
      */
     void abort();
-
 
 signals:
     // signals for progress operation:
@@ -52,7 +50,6 @@ signals:
 private:
     QSharedPointer<Collections::MemoryCollection> m_mc;
     bool m_aborted;
-    bool m_running;
 };
 
 }

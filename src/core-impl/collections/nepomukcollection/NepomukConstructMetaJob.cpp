@@ -63,6 +63,7 @@ void NepomukConstructMetaJob::abort()
 void
 NepomukConstructMetaJob::run()
 {
+
     Query query;
     Term term =  ResourceTypeTerm( Nepomuk::Vocabulary::NFO::Audio() );
     query.setTerm( term );
@@ -110,3 +111,4 @@ NepomukConstructMetaJob::run()
 
     emit endProgressOperation( this );
 }
+
