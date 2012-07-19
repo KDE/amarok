@@ -83,7 +83,7 @@ public:
     int trackPosition() const;
 
     /** @return track position (elapsed time) in milliseconds */
-    int trackPositionMs() const;
+    qint64 trackPositionMs() const;
 
     /**
      * Returns the current track that is loaded into the engine.

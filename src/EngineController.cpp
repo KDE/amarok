@@ -795,7 +795,7 @@ EngineController::trackPosition() const
     return trackPositionMs() / 1000;
 }
 
-int
+qint64
 EngineController::trackPositionMs() const
 {
     return m_media.data()->currentTime();
