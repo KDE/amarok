@@ -36,8 +36,8 @@ public:
     virtual ~ScrobblerAdapter();
 
 public slots:
-    void loveTrack( Meta::TrackPtr );
-    void banTrack();
+    void loveTrack( Meta::TrackPtr track );
+    void banTrack( Meta::TrackPtr track );
 
 private slots:
     void stopped( qint64 finalPosition, qint64 trackLength );

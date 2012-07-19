@@ -49,9 +49,11 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     {
         ldir.mkpath( lpath );
     }
-    
-    connect( The::mainWindow(), SIGNAL( loveTrack( Meta::TrackPtr) ), SLOT( loveTrack( Meta::TrackPtr ) ) );
-    connect( The::mainWindow(), SIGNAL( banTrack() ), SLOT( banTrack() ) );
+
+    connect( The::mainWindow(), SIGNAL(loveTrack(Meta::TrackPtr)),
+             SLOT(loveTrack(Meta::TrackPtr)) );
+    connect( The::mainWindow(), SIGNAL(banTrack(Meta::TrackPtr)),
+             SLOT(banTrack(Meta::TrackPtr)) );
 
     EngineController *engine = The::engineController();
 
@@ -182,24 +184,25 @@ ScrobblerAdapter::trackPositionChanged( qint64 position, bool userSeek )
 void
 ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
 {
-    DEBUG_BLOCK
+    if( !track )
+        return;
 
-    if( track )
-    {
-        lastfm::MutableTrack trackInfo;
-	copyTrackMetadata( trackInfo, track );
-
-        trackInfo.love();
-        Amarok::Components::logger()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
-    }
+    lastfm::MutableTrack trackInfo;
+    copyTrackMetadata( trackInfo, track );
+    trackInfo.love();
+    Amarok::Components::logger()->shortMessage( i18nc( "As in Last.fm", "Loved Track: %1", track->prettyName() ) );
 }
 
 void
-ScrobblerAdapter::banTrack() // slot
+ScrobblerAdapter::banTrack( Meta::TrackPtr track ) // slot
 {
-    DEBUG_BLOCK
+    if( !track )
+        return;
 
-    m_current.ban();
+    lastfm::MutableTrack trackInfo;
+    copyTrackMetadata( trackInfo, track );
+    trackInfo.ban();
+    Amarok::Components::logger()->shortMessage( i18nc( "As in Last.fm", "Banned Track: %1", track->prettyName() ) );
 }
 
 void

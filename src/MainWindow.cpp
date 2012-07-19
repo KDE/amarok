@@ -687,6 +687,12 @@ MainWindow::slotLoveTrack()
 }
 
 void
+MainWindow::slotBanTrack()
+{
+    emit banTrack( The::engineController()->currentTrack() );
+}
+
+void
 MainWindow::activate()
 {
 #ifdef Q_WS_X11
@@ -890,7 +896,7 @@ MainWindow::createActions()
     action = new KAction( i18n( "Last.fm: Ban Current Track" ), this );
     ac->addAction( "banTrack", action );
     //action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
-    connect( action, SIGNAL( triggered() ), SIGNAL( banTrack() ) );
+    connect( action, SIGNAL( triggered() ), SLOT(slotBanTrack()) );
 
     action = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
     ac->addAction( "queueTrack", action );
