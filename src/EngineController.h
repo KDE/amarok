@@ -535,6 +535,20 @@ private:
      */
     bool isInRecentMetaDataHistory( const QVariantMap &meta );
 
+    /**
+     * If m_lastStreamStampPosition is non-negative, update it to current position and
+     * update track length in current stream.
+     */
+    void stampStreamTrackLength();
+
+    /**
+     * emit metadataChanged() with info so that MetaStream::Track that is
+     * currently listening updates its length.
+     *
+     * @param length new track length in milliseconds
+     */
+    void updateStreamLength( qint64 length );
+
     Q_DISABLE_COPY( EngineController )
 
     QWeakPointer<Phonon::MediaObject>       m_media;
@@ -562,6 +576,8 @@ private:
     int m_currentAudioCdTrack;
 
     QList<QVariantMap> m_metaDataHistory; // against metadata spam
+    // last position (in ms) when the song changed (within the current stream) or -1 for non-stream
+    qint64 m_lastStreamStampPosition;
 
     /**
      * Some flags to prevent feedback loops in volume updates

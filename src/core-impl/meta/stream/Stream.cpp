@@ -162,6 +162,17 @@ Track::bitrate() const
     return 0;
 }
 
+void
+Track::finishedPlaying( double playedFraction )
+{
+    // playedFraction will nearly always be 1, because EngineController updates length
+    // just before calling finishedPlaying(). Mimic Last.fm scrobbling wrt min length
+    // requirement, tracks shorter than 30s are often ads etc.
+    if( length() < 30 * 1000 )
+        return;
+    Meta::Track::finishedPlaying( playedFraction );
+}
+
 QString
 Track::type() const
 {
