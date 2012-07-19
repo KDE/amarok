@@ -13,6 +13,7 @@ set(amarok_collection-nepomukcollection_PART_SRCS
 
     NepomukCollection.cpp
     NepomukCollectionFactory.cpp
+    NepomukConstructMetaJob.cpp
 
     meta/NepomukAlbum.cpp
     meta/NepomukArtist.cpp
@@ -20,7 +21,6 @@ set(amarok_collection-nepomukcollection_PART_SRCS
     meta/NepomukGenre.cpp
     meta/NepomukTrack.cpp
     meta/NepomukYear.cpp
-
 )
 
 kde4_add_plugin(amarok_collection-nepomukcollection ${amarok_collection-nepomukcollection_PART_SRCS})

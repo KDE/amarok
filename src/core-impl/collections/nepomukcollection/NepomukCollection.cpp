@@ -23,6 +23,7 @@
 #include "meta/NepomukArtist.h"
 #include "meta/NepomukComposer.h"
 #include "meta/NepomukGenre.h"
+#include "NepomukConstructMetaJob.h"
 
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
@@ -48,6 +49,7 @@
 #include <KIcon>
 #include <QString>
 #include <QMap>
+#include <ThreadWeaver/Weaver>
 
 using namespace MemoryMeta;
 using namespace Collections;
@@ -66,9 +68,7 @@ NepomukCollection::NepomukCollection()
         warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk";
     }
 
-    if( buildCollection() )
-        debug() << "loaded some tracks";
-    else debug() << "didn't load any tracks";
+    buildCollection();
 }
 
 NepomukCollection::~NepomukCollection()
@@ -118,52 +118,10 @@ NepomukCollection::isWritable() const
 bool
 NepomukCollection::buildCollection()
 {
+    NepomukConstructMetaJob *job = new NepomukConstructMetaJob( m_mc );
+    m_constructMetaJob = job;
+    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+    ThreadWeaver::Weaver::instance()->enqueue( job );
 
-    Query query;
-    Term term =  ResourceTypeTerm( Nepomuk::Vocabulary::NFO::Audio() );
-    query.setTerm( term );
-    QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
-
-    Q_FOREACH( const Nepomuk::Query::Result & result, queriedResults )
-    {
-        Nepomuk::Resource trackRes = result.resource();
-        NepomukArtistPtr nepArtistPtr;
-        NepomukGenrePtr nepGenrePtr;
-        NepomukComposerPtr nepComposerPtr;
-        NepomukAlbumPtr nepAlbumPtr;
-
-        // check if track doesn't already exist in TrackMap
-        NepomukTrackPtr nepTrackPtr( new NepomukTrack( trackRes ) );
-
-        QString artistLabel = trackRes.property( Nepomuk::Vocabulary::NMM::performer() ).toResource().genericLabel();
-        debug() << "Artist found :" << artistLabel;
-        nepArtistPtr = new NepomukArtist( artistLabel );
-        nepTrackPtr->setArtist( nepArtistPtr );
-
-        QString genreLabel = trackRes.property( Nepomuk::Vocabulary::NMM::genre() ).toString();
-        debug() << "Genre found :" << genreLabel;
-        nepGenrePtr = new NepomukGenre( genreLabel ) ;
-        nepTrackPtr->setGenre( nepGenrePtr );
-
-        QString composerLabel = trackRes.property( Nepomuk::Vocabulary::NMM::composer() ).toResource().genericLabel();
-        debug() << "Composer found :" << composerLabel;
-        nepComposerPtr = new NepomukComposer( composerLabel ) ;
-        nepTrackPtr->setComposer( nepComposerPtr );
-
-        QString albumLabel = trackRes.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toResource().genericLabel();
-        debug() << "Album found :" << albumLabel;
-        nepAlbumPtr = new NepomukAlbum( albumLabel, ArtistPtr::staticCast( nepArtistPtr ) ) ;
-        nepTrackPtr->setAlbum( nepAlbumPtr );
-
-        TrackPtr trackPtr =  TrackPtr::staticCast( nepTrackPtr );
-
-        MemoryMeta::MapChanger mapChanger( m_mc.data() );
-        mapChanger.addTrack(trackPtr);
-        debug() << "inserting track with track name : " << trackPtr->name();
-
-    }
-
-    if ( m_mc->trackMap().size() > 0 )
-        return true;
-    else return false;
+    return true;
 }

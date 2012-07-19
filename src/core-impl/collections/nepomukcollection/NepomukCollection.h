@@ -22,17 +22,18 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
 #include "core-impl/collections/support/MemoryCollection.h"
+#include "NepomukConstructMetaJob.h"
 
 #include <QString>
 #include <QStringList>
 #include <KIcon>
 #include <QSharedPointer>
 
-
 using namespace Meta;
 
 namespace Collections
 {
+class NepomukConstructMetaJob;
 
 // see if Meta::Observer also has to be inherited
 class NepomukCollection : public Collections::Collection
@@ -89,11 +90,15 @@ private:
     bool buildCollection();
 
 private:
+    friend class NepomukConstructMetaJob;
+
+private:
     /**
       * This variable return true, if Nepomuk is available and enabled
       * It is also an indicator that NepomukCollection can be used.
       */
     bool m_nepomukCollectionReady;
+    QWeakPointer<NepomukConstructMetaJob> m_constructMetaJob;
 
 protected:
     QSharedPointer<Collections::MemoryCollection> m_mc;
