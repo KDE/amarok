@@ -372,11 +372,14 @@ Q_SIGNALS:
      */
     void trackChanged( Meta::TrackPtr track );
 
-    /** Emitted when the metadata of the current track changes.
-        You might want to connect also to trackChanged to get more changes because
-        this signal is only emitted when the track metadata changes while it's playing.
-        Also connecting to currentMetadataChanged would give you information when the current track
-        is a stream. In such a case the meta information from track might be unreliable.
+    /**
+     * Emitted when the metadata of the current track changes.
+     *
+     * You might want to connect also to trackChanged() or trackPlaying() to get more
+     * changes because this signal is only emitted when the track metadata changes
+     * while it's playing, not when new track starts playing. This method now works
+     * correctly also for streams and is preferred to currentMetaDataChanged() because
+     * it providers somehow more filtered values.
      */
     void trackMetadataChanged( Meta::TrackPtr track );
 
