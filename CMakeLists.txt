@@ -129,7 +129,11 @@ if( WITH_PLAYER )
     # macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" FALSE "" "" )
 
     macro_optional_find_package(LibLastFm)
-    macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/src/liblastfm-1.0.0.tar.gz" FALSE "1.0.0" "" )
+    set( LIBLASTFM_MIN_VERSION "1.0.0" )
+    if( LIBLASTFM_FOUND )
+        macro_ensure_version( ${LIBLASTFM_MIN_VERSION} ${LIBLASTFM_VERSION} LIBLASTFM_FOUND )
+    endif( LIBLASTFM_FOUND )
+    macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/client/liblastfm-1.0.1.tar.gz" FALSE ${LIBLASTFM_MIN_VERSION} "" )
     macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
     macro_optional_find_package( FFmpeg )
