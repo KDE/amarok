@@ -41,7 +41,6 @@
 #include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"
 
-#include <KFileItem>
 #include <KMessageBox>
 #include <KRun>
 #include <KServiceTypeTrader>
@@ -51,9 +50,9 @@
 #include <Phonon/MediaObject>
 #include <Phonon/VolumeFaderEffect>
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <QTextDocument>
-#include <QtCore/qmath.h>
+#include <qmath.h>
 
 namespace The {
     EngineController* engineController() { return EngineController::instance(); }
@@ -63,12 +62,6 @@ EngineController *
 EngineController::instance()
 {
     return Amarok::Components::engineController();
-}
-
-void
-EngineController::destroy()
-{
-    //nothing to do?
 }
 
 EngineController::EngineController()
@@ -89,7 +82,9 @@ EngineController::EngineController()
     , m_mutex( QMutex::Recursive )
 {
     DEBUG_BLOCK
-
+    // ensure this object is created in a main thread
+    Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
+    connect( this, SIGNAL(fillInSupportedMimeTypes()), SLOT(slotFillInSupportedMimeTypes()) );
 }
 
 EngineController::~EngineController()
@@ -98,8 +93,11 @@ EngineController::~EngineController()
 
     // don't do any of the after-processing that normally happens when
     // the media is stopped - that's what endSession() is for
-    m_media.data()->blockSignals(true);
-    m_media.data()->stop();
+    if( m_media )
+    {
+        m_media.data()->blockSignals(true);
+        m_media.data()->stop();
+    }
 
     delete m_boundedPlayback;
     m_boundedPlayback = 0;
@@ -230,79 +228,49 @@ EngineController::initializePhonon()
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
 
-bool
-EngineController::canDecode( const KUrl &url ) //static
-{
-   //NOTE this function must be thread-safe
-
-    // We can't use playlists in the engine
-    if( Playlists::isPlaylist( url ) )
-        return false;
-
-    KFileItem item( KFileItem::Unknown, KFileItem::Unknown, url );
-    // If file has 0 bytes, ignore it and return false
-    if( !item.size() )
-        return false;
-
-    // We can't play directories, regardless of what the engine says.
-    if( item.isDir() )
-        return false;
-
-    // Accept non-local files, since we can't test them for validity at this point
-    if( !item.isLocalFile() )
-        return true;
-
-    // Phonon::BackendCapabilities::isMimeTypeAvailable is too simplistic for our purposes
-    // FIXME: this variable should be updated when
-    // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal is emitted
-    static QStringList mimeTable = supportedMimeTypes();
-
-    const KMimeType::Ptr mimeType = item.mimeTypePtr();
-
-    bool valid = false;
-    foreach( const QString &type, mimeTable )
-    {
-        if( mimeType->is( type ) )
-        {
-            valid = true;
-            break;
-        }
-    }
-
-    return valid;
-}
 
 QStringList
-EngineController::supportedMimeTypes() //static
+EngineController::supportedMimeTypes()
 {
-    //NOTE this function must be thread-safe
+    // this ensures that slotFillInSupportedMimeTypes() is called in the main thread. It
+    // will be called directly if we are called in the main thread (so that no deadlock
+    // can occur) and indirectly if we are called in non-main thread.
+    emit fillInSupportedMimeTypes();
 
-    // mutex to protect the mimetable and the mimeTableAlreadyFilled status
-    static QMutex supportedMimeTypesMutex;
-    // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
-    static QStringList mimeTable;
-    // theoretically not needed, but static initialization of mimeTable may have threading
-    // issues, so rather use boolean flag for it:
-    static bool mimeTableAlreadyFilled = false;
+    // ensure slotFillInSupportedMimeTypes() called above has already finished:
+    m_supportedMimeTypesSemaphore.acquire();
+    return m_supportedMimeTypes;
+}
 
-    QMutexLocker locker( &supportedMimeTypesMutex );
-    if( mimeTableAlreadyFilled )
-        return mimeTable;
+void
+EngineController::slotFillInSupportedMimeTypes()
+{
+    // we assume non-empty == already filled in
+    if( !m_supportedMimeTypes.isEmpty() )
+    {
+        // unblock waiting for the semaphore in supportedMimeTypes():
+        m_supportedMimeTypesSemaphore.release();
+        return;
+    }
 
     QRegExp avFilter( "^(audio|video)/", Qt::CaseInsensitive );
-    mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
+    m_supportedMimeTypes = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
 
     // Add whitelist hacks
     // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
-    if( !mimeTable.contains( "audio/x-m4b" ) )
-        mimeTable << "audio/x-m4b";
+    if( !m_supportedMimeTypes.contains( "audio/x-m4b" ) )
+        m_supportedMimeTypes << "audio/x-m4b";
 
     // technically, "audio/flac" is not a valid mimetype (not on IANA list), but some things expect it
-    if( mimeTable.contains( "audio/x-flac" ) && !mimeTable.contains( "audio/flac" ) )
-        mimeTable << "audio/flac";
+    if( m_supportedMimeTypes.contains( "audio/x-flac" ) && !m_supportedMimeTypes.contains( "audio/flac" ) )
+        m_supportedMimeTypes << "audio/flac";
 
-    mimeTableAlreadyFilled = true;
-    return mimeTable;
+    // unblock waiting for the semaphore in supportedMimeTypes(). We can over-shoot
+    // resource number so that next call to supportedMimeTypes won't have to
+    // wait for main loop; this is however just an optimization and we could have safely
+    // released just one resource. Note that this code-path is reached only once, so
+    // overflow cannot happen.
+    m_supportedMimeTypesSemaphore.release( 100000 );
 }
 
 void

@@ -28,7 +28,6 @@
 #include "core-impl/meta/file/File.h"
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
-#include "EngineController.h"
 #include "PluginManager.h"
 
 #include <QList>
@@ -445,11 +444,9 @@ CollectionManager::tracksForUrls( const KUrl::List &urls )
 Meta::TrackPtr
 CollectionManager::trackForUrl( const KUrl &url )
 {
-    //TODO method stub
-    //check all collections
-    //might be a podcast, in that case we'll have additional meta information
-    //might be a lastfm track, another stream
-    //or a file which is not in any collection
+    // TODO:
+    // might be a podcast, in that case we'll have additional meta information
+    // might be a lastfm track, another stream
     if( !url.isValid() )
         return Meta::TrackPtr( 0 );
 
@@ -463,12 +460,12 @@ CollectionManager::trackForUrl( const KUrl &url )
         }
     }
 
-    //TODO: create specific TrackProviders for these:
+    // TODO: create specific TrackProviders for these:
     if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("mms") ||
         url.protocol() == QLatin1String("smb") )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
-    if( url.protocol() == QLatin1String("file") && EngineController::canDecode( url ) )       
+    if( url.protocol() == QLatin1String("file") && MetaFile::Track::isTrack( url ) )
         return Meta::TrackPtr( new MetaFile::Track( url ) );
 
     return Meta::TrackPtr( 0 );

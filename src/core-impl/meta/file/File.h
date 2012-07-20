@@ -81,6 +81,15 @@ namespace MetaFile
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         // MetaFile::Track own methods:
+            /**
+             * Return true if file at @param url is a track.
+             *
+             * This method does only basic checking of the mime type and is pretty
+             * optimistic, so it may be possible that is the song is not playable with
+             * current backend even if isTrack() returns true.
+             */
+            static bool isTrack( const KUrl &url );
+
             virtual void beginMetaDataUpdate();
             virtual void endMetaDataUpdate();
 

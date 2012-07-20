@@ -23,7 +23,9 @@
 #include "FileBrowser_p.moc"
 
 #include "amarokconfig.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "core-impl/meta/file/File.h"
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
 #include "EngineController.h"
@@ -190,8 +192,10 @@ FileBrowser::initView()
 {
     d->kdirModel = new DirBrowserModel( this );
 
+    EngineController *engineController = Amarok::Components::engineController();
+    Q_ASSERT( engineController );
     d->mimeFilterProxyModel =
-            new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
+            new MimeTypeFilterProxyModel( engineController->supportedMimeTypes(), this );
     d->mimeFilterProxyModel->setSourceModel( d->kdirModel );
     d->mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
@@ -326,7 +330,7 @@ FileBrowser::itemActivated( const QModelIndex &index )
         }
         else
         {
-            if( EngineController::canDecode( filePath ) )
+            if( MetaFile::Track::isTrack( filePath ) )
             {
                 QList<KUrl> urls;
                 urls << filePath;

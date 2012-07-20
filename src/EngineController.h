@@ -26,6 +26,8 @@
 
 #include <QMutex>
 #include <QObject>
+#include <QSemaphore>
+#include <QStringList>
 #include <QWeakPointer>
 
 #include <Phonon/Path>
@@ -50,6 +52,9 @@ class AMAROK_EXPORT EngineController : public QObject, public Meta::Observer
     Q_OBJECT
 
 public:
+    /**
+     * Construct EngineController. Must be called from the main thread.
+     */
     EngineController();
     ~EngineController();
 
@@ -57,11 +62,6 @@ public:
      * Returns the global EngineController instance
      */
     static EngineController* instance();
-
-    /**
-     * Destroys the global EngineController instance
-     */
-    static void destroy();
 
     /**
      * Loads and plays the track that was playing when endSession() was last
@@ -75,14 +75,9 @@ public:
     void endSession();
 
     /**
-     * Checks whether the media file at the specified URL can be decoded
+     * Returns a list of backend supported mime types. This method is thread-safe.
      */
-    static bool canDecode( const KUrl& );
-
-    /**
-     * Returns a list of backend supported mime types.
-     */
-    static QStringList supportedMimeTypes();
+    QStringList supportedMimeTypes();
 
     /** @return track position (elapsed time) in seconds */
     int trackPosition() const;
@@ -454,6 +449,12 @@ Q_SIGNALS:
     */
     void audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &audioData );
 
+    /**
+     * A trick to call slotFillInSupportedMimeTypes() in a main thread, not to be used
+     * anywhere else than in supportedMimeTypes().
+     */
+    void fillInSupportedMimeTypes();
+
 private slots:
     /**
      * Sets up the Phonon system
@@ -485,6 +486,14 @@ private slots:
      *  to play something else once one track has finished
      */
     void slotTitleChanged( int titleNumber );
+
+    /**
+     * Fill in m_supportedMimeTypes list and release m_supportedMimeTypesSemaphore. This
+     * method must be called in the main thread so that there is no chance
+     * Phonon::BackendCapabilities::availableMimeTypes() is called in a non-gui thread
+     * for the first time.
+     */
+    void slotFillInSupportedMimeTypes();
 
 protected:
     // reimplemented from Meta::Observer
@@ -574,6 +583,11 @@ private:
     qint64 m_lastTickCount;
 
     QMutex m_mutex;
+
+    // FIXME: this variable should be updated when
+    // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal is emitted
+    QStringList m_supportedMimeTypes;
+    QSemaphore m_supportedMimeTypesSemaphore;
 };
 
 namespace The {
