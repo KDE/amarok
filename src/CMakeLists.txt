@@ -374,6 +374,8 @@ set( libcontextview_SRCS
     context/widgets/RecentlyPlayedListWidget.cpp
 )
 
+QT4_ADD_RESOURCES(libcontextview_SRCS context/qml/resources.qrc)
+
 #####################################################################
 # PODCASTS
 #####################################################################
@@ -908,6 +910,8 @@ target_link_libraries(amaroklib
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${KDE4_THREADWEAVER_LIBRARIES}
+    ${KDECLARATIVE_LIBRARIES}
+    ${QT_QTDECLARATIVE_LIBRARY}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}

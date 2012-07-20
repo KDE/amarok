@@ -21,8 +21,11 @@
 
 #include <QWeakPointer>
 
+class KDeclarative;
 class KVBox;
 class QResizeEvent;
+class QDeclarativeView;
+class QDeclarativeError;
 
 namespace Context {
     class ContextScene;
@@ -41,14 +44,12 @@ public:
     void polish();
 
 protected slots:
-    void createContextView( Plasma::Containment *containment );
+    void printWarnings(const QList<QDeclarativeError> & warnings);
 
 private:
     KVBox * m_mainWidget;
-
-    QWeakPointer<Context::ContextScene> m_corona;
-    QWeakPointer<Context::ContextView>  m_contextView;
-    QWeakPointer<Context::ToolbarView>  m_contextToolbarView;
+    QDeclarativeView *m_view;
+    KDeclarative *m_declarative;
 };
 
 #endif // CONTEXTDOCK_H

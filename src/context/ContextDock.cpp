@@ -25,6 +25,10 @@
 #include "core/support/Debug.h"
 
 #include <KVBox>
+#include <kdeclarative.h>
+#include <QDeclarativeView>
+#include <QDeclarativeError>
+#include <QDeclarativeEngine>
 
 ContextDock::ContextDock( QWidget *parent )
     : AmarokDockWidget( i18n( "&Context" ), parent )
@@ -41,11 +45,18 @@ ContextDock::ContextDock( QWidget *parent )
     m_mainWidget->setFrameShape( QFrame::NoFrame );
     setWidget( m_mainWidget );
 
-    m_corona = new Context::ContextScene( this );
-    connect( m_corona.data(), SIGNAL( containmentAdded( Plasma::Containment* ) ),
-            this, SLOT( createContextView( Plasma::Containment* ) ) );
 
-    m_corona.data()->loadDefaultSetup(); // this method adds our containment to the scene
+    m_view = new QDeclarativeView(m_mainWidget);
+    m_declarative = new KDeclarative;
+    connect(m_view->engine(), SIGNAL(warnings(QList<QDeclarativeError>)), this, SLOT(printWarnings(QList<QDeclarativeError>)));
+
+    m_declarative->setDeclarativeEngine(m_view->engine());
+    m_declarative->initialize();
+    m_declarative->setupBindings();
+    m_view->setFrameShape(QFrame::NoFrame);
+    m_view->setSource(QUrl("qrc:/Context.qml"));
+    m_view->setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    m_view->viewport()->setAutoFillBackground(false);
 }
 
 void ContextDock::polish()
@@ -53,26 +64,11 @@ void ContextDock::polish()
     DEBUG_BLOCK
 }
 
-
-void
-ContextDock::createContextView( Plasma::Containment *containment )
+void ContextDock::printWarnings(const QList<QDeclarativeError>& warnings)
 {
-    DEBUG_BLOCK
-    disconnect( m_corona.data(), SIGNAL( containmentAdded( Plasma::Containment* ) ),
-            this, SLOT( createContextView( Plasma::Containment* ) ) );
-
-    debug() << "Creating context view on containmend" << containment->name();
-    PERF_LOG( "Creating ContexView" )
-    m_contextView = new Context::ContextView( containment, m_corona.data(), m_mainWidget );
-    m_contextView.data()->setFrameShape( QFrame::NoFrame );
-    m_contextToolbarView = new Context::ToolbarView( containment, m_corona.data(), m_mainWidget );
-    PERF_LOG( "Created ContexToolbarView" )
-
-    connect( m_corona.data(), SIGNAL(sceneRectChanged(QRectF)), m_contextView.data(), SLOT(updateSceneRect(QRectF)) );
-    connect( m_contextToolbarView.data(), SIGNAL( hideAppletExplorer() ), m_contextView.data(), SLOT( hideAppletExplorer() ) );
-    connect( m_contextToolbarView.data(), SIGNAL( showAppletExplorer() ), m_contextView.data(), SLOT( showAppletExplorer() ) );
-    m_contextView.data()->showHome();
-    PERF_LOG( "ContexView created" )
+    foreach (const QDeclarativeError warning, warnings) {
+        kDebug() << warning.toString();
+    }
 }
 
 #include "ContextDock.moc"

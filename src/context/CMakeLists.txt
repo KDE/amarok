@@ -41,4 +41,3 @@ target_link_libraries(amarokpud
 
 set_target_properties(amarokpud PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS amarokpud ${INSTALL_TARGETS_DEFAULT_ARGS} )
-
