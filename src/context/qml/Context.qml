@@ -89,7 +89,12 @@ Item {
         }
 
 
-       
     }
+    Image {
+            z: -100
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            source: "qrc:images/logo.png"
+        }
 
 }
