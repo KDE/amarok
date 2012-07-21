@@ -61,14 +61,15 @@ NepomukCollection::NepomukCollection()
 {
     // check if Nepomuk is available, if yes, initialize.
     if( Nepomuk::ResourceManager::instance()->initialized() )
+    {
         m_nepomukCollectionReady = true;
+        buildCollection();
+    }
 
     else {
         m_nepomukCollectionReady = false;
-        warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk";
+        warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk. Nepomuk Plugin won't be loaded";
     }
-
-    buildCollection();
 }
 
 NepomukCollection::~NepomukCollection()
@@ -115,15 +116,11 @@ NepomukCollection::isWritable() const
     return m_nepomukCollectionReady;
 }
 
-bool
+void
 NepomukCollection::buildCollection()
 {
     NepomukConstructMetaJob *job = new NepomukConstructMetaJob( this );
     m_constructMetaJob = job;
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
-
-//    while ( 1 )
-//    if ( job->isFinished() )
-        return true;
 }

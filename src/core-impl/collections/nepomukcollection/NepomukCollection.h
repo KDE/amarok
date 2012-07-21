@@ -35,6 +35,7 @@ namespace Collections
 {
 class NepomukConstructMetaJob;
 
+// TODO
 // see if Meta::Observer also has to be inherited
 class NepomukCollection : public Collections::Collection
 {
@@ -66,7 +67,6 @@ public:
 
     virtual QString uidUrlProtocol() const;
 
-    // unsure if this is really needed.
     virtual QString collectionId() const;
 
     virtual QString prettyName() const;
@@ -87,7 +87,7 @@ private:
       * album ( year is not yet implemented ) is fetched and inserted into the NepomukTrack
       * object.
       */
-    bool buildCollection();
+    void buildCollection();
 
 private:
     friend class NepomukConstructMetaJob;
