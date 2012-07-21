@@ -27,12 +27,14 @@
 
 namespace Collections {
 
+class NepomukCollection;
+
 class NepomukConstructMetaJob : public ThreadWeaver::Job
 {
     Q_OBJECT
 
 public:
-    explicit NepomukConstructMetaJob( QSharedPointer<Collections::MemoryCollection> mc );
+    explicit NepomukConstructMetaJob( NepomukCollection* coll );
     void run();
 
 public slots:
@@ -50,6 +52,7 @@ signals:
 private:
     QSharedPointer<Collections::MemoryCollection> m_mc;
     bool m_aborted;
+    NepomukCollection* m_coll;
 };
 
 }

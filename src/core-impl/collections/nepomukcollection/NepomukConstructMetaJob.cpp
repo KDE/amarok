@@ -47,10 +47,11 @@ using namespace MemoryMeta;
 using namespace Collections;
 using namespace Nepomuk::Query;
 
-NepomukConstructMetaJob::NepomukConstructMetaJob(QSharedPointer<MemoryCollection> mc)
+NepomukConstructMetaJob::NepomukConstructMetaJob(NepomukCollection* coll)
     : Job()
-    , m_mc( mc )
+    , m_mc( coll->m_mc )
     , m_aborted( false )
+    , m_coll( coll )
 {
 
 }
@@ -107,8 +108,11 @@ NepomukConstructMetaJob::run()
         debug() << "inserting track with track name : " << trackPtr->name();
 
         emit incrementProgress();
+        emit m_coll->collectionUpdated();
     }
 
     emit endProgressOperation( this );
+    emit m_coll->collectionUpdated();
+
 }
 

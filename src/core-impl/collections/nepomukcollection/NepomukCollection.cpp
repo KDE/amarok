@@ -118,12 +118,12 @@ NepomukCollection::isWritable() const
 bool
 NepomukCollection::buildCollection()
 {
-    NepomukConstructMetaJob *job = new NepomukConstructMetaJob( m_mc );
+    NepomukConstructMetaJob *job = new NepomukConstructMetaJob( this );
     m_constructMetaJob = job;
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
 
-    while ( 1 )
-    if ( job->isFinished() )
+//    while ( 1 )
+//    if ( job->isFinished() )
         return true;
 }

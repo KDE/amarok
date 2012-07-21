@@ -45,11 +45,7 @@ NepomukCollectionFactory::init()
         }
 
         else
-        {
             warning() << "could not load nepomuk in collectionfactory";
-            //TODO:
-            // Generate appropriate warning since Nepomuk not found/enabled
-        }
     }
 }
 
