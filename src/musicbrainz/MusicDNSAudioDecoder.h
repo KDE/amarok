@@ -36,10 +36,12 @@ class DecodedAudioData
         void setChannels( const quint8 channels );
 
         int length();
-        int duration();
-        void addTime( const int ms );
+        qint64 duration();
+        void addTime( const qint64 ms );
 
         const char *data();
+
+        void appendData( const quint8 *data, int length );
         DecodedAudioData &operator<< ( const quint8 &byte );
 
         void flush();
@@ -47,7 +49,7 @@ class DecodedAudioData
     private:
         int m_sRate;
         quint8 m_channels;
-        int m_duration;
+        qint64 m_duration;
 
         QByteArray *m_data;
 };
@@ -65,9 +67,10 @@ class MusicDNSAudioDecoder : public ThreadWeaver::Job
         void trackDecoded( const Meta::TrackPtr, const QString );
 
     private:
+        int decode( const QString &fileName, DecodedAudioData *data, const int length );
+
         Meta::TrackList m_tracks;
         int m_sampleLength;
-
 };
 
 #endif // MUSICDNSAUDIODECODER_H

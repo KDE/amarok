@@ -21,8 +21,9 @@
 #include "MusicDNSAudioDecoder.h"
 #include "MusicDNSXmlParser.h"
 #include "NetworkAccessManagerProxy.h"
-#include <QTimer>
 #include "shared/Version.h"
+
+#include <QTimer>
 
 #define AMAROK_MUSICDNS_CLIENT_ID "0c6019606b1d8a54d0985e448f3603ca"
 
