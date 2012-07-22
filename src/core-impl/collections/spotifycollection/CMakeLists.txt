@@ -11,6 +11,7 @@ set( amarok_collection-spotifycollection_PART_SRCS
      SpotifyMeta.cpp
      #SpotifyPlaylist.cpp
      #SpotifyPlaylistProvider.cpp
+     support/TrackProxy.cpp
      support/Query.cpp
      support/Controller.cpp )
 

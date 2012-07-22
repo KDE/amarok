@@ -17,6 +17,7 @@ Query::Query( Collections::SpotifyCollection* collection, const QString& qid, co
 
 Query::~Query()
 {
+    DEBUG_BLOCK
     //DONE:TODO: Notify controller to remove current query from queue
     emit queryDone( qid() );
 }
@@ -76,6 +77,8 @@ Query::tracksAdded( const Meta::SpotifyTrackList& trackList )
     emit newTrackList( trackList );
     emit queryDone( this, trackList );
     emit queryDone( qid() );
+
+    debug() << "Signals are emitted";
 }
 
 void
@@ -94,9 +97,10 @@ void
 Query::abortQuery()
 {
     //TODO: Notify the controller to remove the query from queue
-    this->deleteLater();
 
     emit queryDone( qid() );
 }
 
 } // namespace Spotify
+
+#include "Query.moc"

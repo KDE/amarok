@@ -25,6 +25,10 @@
 #include <QFileInfo>
 #include <QtEndian>
 #include <QTimer>
+#include <KLocale>
+#include "core/support/Amarok.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 
 namespace Spotify
 {
@@ -45,7 +49,6 @@ Controller::Controller( const QString& exec )
     connect( &m_proc, SIGNAL( readyReadStandardOutput() ), SLOT( readStdout() ) );
     connect( &m_proc, SIGNAL( finished( int, QProcess::ExitStatus ) ), SLOT( procExited( int, QProcess::ExitStatus ) ) );
 
-//    startProcess();
 }
 
 Controller::~Controller()
@@ -73,6 +76,8 @@ Controller::~Controller()
 void
 Controller::start()
 {
+    DEBUG_BLOCK
+    debug() << "Starting Spotify resolver...";
     m_stopped = false;
     if( m_ready )
     {
@@ -81,11 +86,23 @@ Controller::start()
         sendConfig();
     }
     m_stopped = false;
+
+    // Resolve all queries in query queue
+    if( !m_queryQueue.isEmpty() )
+    {
+        foreach( Spotify::QueryPtr queryPtr, m_queryQueue )
+        {
+            resolve( queryPtr.data() );
+        }
+    }
+
+    m_queryQueue.clear();
 }
 
 void
 Controller::sendConfig()
 {
+    DEBUG_BLOCK
     // Sending config is optional, currently config only contains proxy information
     // Only if the Spotify resolver didn't send out settings message(not react after startProcess),
     // this config will be sent.
@@ -119,19 +136,22 @@ Controller::sendMessage( const QVariantMap& map )
     DEBUG_BLOCK
 
     QByteArray data = m_serializer.serialize( map );
-    warning() << "Sending message: \n" << QString(data);
+    debug() << "Sending message: \n" << QString(data);
     sendRaw( data );
 }
 
 void Controller::readStderr()
 {
-    qDebug() << "SCRIPT_STDERR" << filePath() << m_proc.readAllStandardError();
+    debug() << "SCRIPT_STDERR" << filePath() << m_proc.readAllStandardError();
 }
 
 void
 Controller::login(const QString &username, const QString &password)
 {
     DEBUG_BLOCK
+
+    QString msg = i18n( "Trying to login to Spotify..." );
+    Amarok::Components::logger()->shortMessage( msg );
     QVariantMap map;
     map["_msgtype"] = "login";
     map["username"] = username;
@@ -178,6 +198,7 @@ Controller::readStdout()
 Spotify::Query*
 Controller::makeQuery( Collections::SpotifyCollection* collection, const QString &title, const QString &artist, const QString &album, const QString &genre )
 {
+    DEBUG_BLOCK
     QString qid = QString::number( m_queryCounter++ );
     return new Query( collection, qid, title, artist, album, genre );
 }
@@ -186,6 +207,14 @@ void
 Controller::resolve( Spotify::Query* query )
 {
     DEBUG_BLOCK
+    if( m_stopped )
+    {
+        debug() << "Resolver not started yet, resolve query later";
+        // Plugin or resolve not started yet, put the query to queue and resolve later
+        m_queryQueue.append( Spotify::QueryPtr( query ) );
+        return;
+    }
+
     Spotify::QueryPtr queryPtr( query );
     // Ignore current query if the query string is empty
     if( queryPtr->getFullQueryString().isEmpty() )
@@ -211,6 +240,7 @@ Controller::resolve( Spotify::Query* query )
 void
 Controller::removeQueryFromCache( const QString& qid )
 {
+    m_queryCache[ qid ].clear();
     m_queryCache.remove( qid );
 }
 
@@ -336,7 +366,7 @@ Controller::doSetup( const QVariantMap& m )
     m_name = m.value( "name" ).toString();
     m_timeout = m.value( "timeout", 5 ).toUInt() * 1000;
 
-    qDebug() << "RESOLVER" << filePath() << "READY," << "name" << m_name << "timeout" << m_timeout;
+    debug() << "RESOLVER" << filePath() << "READY," << "name" << m_name << "timeout" << m_timeout;
 
     m_ready = true;
     m_configSent = false;
@@ -428,9 +458,10 @@ Controller::handlePlaylistReceived( const QVariantMap& map )
             trackMap["track"].toString(),
             trackMap["artist"].toString(),
             trackMap["album"].toString(),
+            trackMap["genre"].toString(), // NOTE: Spotify doesn't give genre info currently
             trackMap["mimetype"].toString(),
             trackMap["score"].toDouble(),
-            trackMap["duration"].toInt(),
+            trackMap["duration"].toLongLong() * 1000,
             trackMap["bitrate"].toInt(),
             trackMap["size"].toInt(),
             trackMap["source"].toString()
@@ -520,7 +551,7 @@ Controller::handleSearchResults( const QVariantMap& map )
     QString qid = map["qid"].toString();
     if( m_queryCache.find( qid ) == m_queryCache.end() )
     {
-        qWarning() << QString( "qid '%1' is missing in query cache, drop current results" ).arg( qid );
+        warning() << QString( "qid '%1' is missing in query cache, drop current results" ).arg( qid );
         return;
     }
 
@@ -537,15 +568,15 @@ Controller::handleSearchResults( const QVariantMap& map )
     foreach( const QVariant& v, list )
     {
         const QVariantMap trackMap = v.toMap();
-
         Meta::SpotifyTrackPtr track( new Meta::SpotifyTrack(
             trackMap["url"].toString(),
             trackMap["track"].toString(),
             trackMap["artist"].toString(),
             trackMap["album"].toString(),
+            trackMap["genre"].toString(), // NOTE:Spotify doesn't give genre info currently
             trackMap["mimetype"].toString(),
             trackMap["score"].toDouble(),
-            trackMap["duration"].toInt(),
+            trackMap["duration"].toLongLong() * 1000,
             trackMap["bitrate"].toInt(),
             trackMap["size"].toInt(),
             trackMap["source"].toString()

@@ -21,6 +21,7 @@
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "SpotifyMeta.h"
 #include "support/Controller.h"
+#include "core/support/Debug.h"
 #include <QObject>
 #include <QString>
 
@@ -82,6 +83,7 @@ namespace Collections
             QSharedPointer< MemoryCollection > memoryCollection();
 
             Spotify::Controller* controller() { return m_controller; }
+
         private Q_SLOTS:
             void slotSpotifyError( const Spotify::Controller::ErrorState );
 

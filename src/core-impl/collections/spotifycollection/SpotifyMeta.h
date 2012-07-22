@@ -57,12 +57,12 @@ namespace Meta
                           const QString &name,
                           const QString &artist,
                           const QString &album,
+                          const QString &genre,
                           const QString &mimetype,
                           const double score,
                           const qint64 length,
                           const int bitrate,
-                          const int filesize,
-                          const QString &source );
+                          const int filesize, const QString &source );
             ~SpotifyTrack();
 
             QString name() const;
