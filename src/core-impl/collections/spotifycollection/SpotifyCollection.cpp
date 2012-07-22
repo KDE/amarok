@@ -25,7 +25,7 @@
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "SpotifyQueryMaker.h"
 #include "support/Controller.h"
-#include "core/support/Debug.h"
+#include "support/TrackProxy.h"
 
 #include <KIcon>
 
@@ -51,7 +51,7 @@ namespace Collections
     {
         DEBUG_BLOCK
         delete m_collection.data();
-        delete m_controller;
+        m_controller->deleteLater();
     }
 
     void
@@ -65,7 +65,7 @@ namespace Collections
                  this, SLOT( spotifyReady() ) );
 
         m_controller->reload();
-
+        m_controller->start();
 
         connect( m_controller, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
                  this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
@@ -139,13 +139,11 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-
     }
 
     SpotifyCollection::~SpotifyCollection()
     {
         DEBUG_BLOCK
-
     }
 
     QueryMaker*
@@ -153,10 +151,10 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        SpotifyQueryMaker *freshQueryMaker = new SpotifyQueryMaker( this );
-        connect( freshQueryMaker, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
-                 this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
-        return freshQueryMaker;
+        Collections::SpotifyQueryMaker* qm = new Collections::SpotifyQueryMaker( this );
+        connect( qm, SIGNAL( spotifyError(Spotify::Controller::ErrorState)),
+                 this, SLOT(slotSpotifyError(Spotify::Controller::ErrorState)));
+        return qm;
     }
 
     Playlists::UserPlaylistProvider*
@@ -194,7 +192,6 @@ namespace Collections
     bool
     SpotifyCollection::isWritable() const
     {
-        DEBUG_BLOCK
 
         return false;
     }
@@ -226,6 +223,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
+        debug() << "Get track for url: " << url.url();
         m_memoryCollection->acquireReadLock();
 
         if( m_memoryCollection->trackMap().contains( url.url() ) )
@@ -241,11 +239,10 @@ namespace Collections
             proxyTrack->setArtist( url.queryItem( "artist" ) );
             proxyTrack->setAlbum( url.queryItem( "album" ) );
             proxyTrack->setName( url.queryItem( "title" ) );
-            // This is the proxy track used in Playdar, it is to make the track information available when loading Amarok
-//            Spotify::ProxyResolver *proxyResolver = new Spotify::ProxyResolver( this, url, proxyTrack );
+            Spotify::TrackProxy *proxy = new Spotify::TrackProxy( url, proxyTrack, this );
 
-//            connect( proxyResolver, SIGNAL( spotifyError( const Spotify::Controller::ErrorState ) ),
-//                     this, SLOT( slotSpotifyError( const Spotify::Controller::ErrorState ) ) );
+            connect( proxy, SIGNAL( spotifyError( const Spotify::Controller::ErrorState ) ),
+                     this, SLOT( slotSpotifyError( const Spotify::Controller::ErrorState ) ) );
 
             return Meta::TrackPtr::staticCast( proxyTrack );
         }

@@ -213,6 +213,7 @@ private:
 
     // This stores all queries
     QMap< QString, Spotify::QueryPtr > m_queryCache;
+    QList< Spotify::QueryPtr > m_queryQueue;
 
     quint64 m_queryCounter;
 };

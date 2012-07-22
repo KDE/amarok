@@ -41,6 +41,7 @@ Meta::SpotifyTrack::SpotifyTrack( const QString &playableUrl,
                                   const QString &name,
                                   const QString &artist,
                                   const QString &album,
+                                  const QString &genre,
                                   const QString &mimetype,
                                   const double score,
                                   const qint64 length,
@@ -50,7 +51,7 @@ Meta::SpotifyTrack::SpotifyTrack( const QString &playableUrl,
     : m_album( new SpotifyAlbum( album ) )
     , m_artist( new SpotifyArtist( artist ) )
     , m_composer( new SpotifyComposer( QString( "" ) ) )
-    , m_genre( new SpotifyGenre( QString( "" ) ) )
+    , m_genre( new SpotifyGenre( genre ) )
     , m_year( new SpotifyYear( QString( "" ) ) )
     , m_labelList(  )
     , m_uidUrl( )
@@ -74,6 +75,7 @@ Meta::SpotifyTrack::SpotifyTrack( const QString &playableUrl,
     m_uidUrl.addQueryItem( QString( "artist" ), artist );
     m_uidUrl.addQueryItem( QString( "album" ), album );
     m_uidUrl.addQueryItem( QString( "title" ), name );
+    m_uidUrl.addQueryItem( QString( "genre" ), genre );
 }
 
 Meta::SpotifyTrack::~SpotifyTrack()

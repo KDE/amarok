@@ -86,6 +86,9 @@ namespace Collections
         }
 
         delete m_memoryQueryMaker.data();
+
+        disconnect( this, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
+                    m_collection.data(), SLOT( slotSpotifyError( Spotify::Controller::ErrorState)) );
     }
 
 
@@ -117,8 +120,10 @@ namespace Collections
             {
                 m_querySent = true;
                 Spotify::Query* query = m_controller.data()->makeQuery( m_collection.data(), title, artist, album, genre );
-                connect( query, SIGNAL(newTrackList(const Meta::SpotifyTrackList&)),
-                         this, SLOT(collectResults(const Meta::SpotifyTrackList&)));
+                connect( this, SIGNAL( queryAborted() ),
+                         query, SLOT( abortQuery()) );
+                connect( query, SIGNAL(newTrackList( Meta::SpotifyTrackList ) ),
+                         this, SLOT(collectResults( Meta::SpotifyTrackList ) ) );
                 connect( query, SIGNAL(queryDone(Spotify::Query*,Meta::SpotifyTrackList)),
                          this, SLOT(aQueryEnded(Spotify::Query*,Meta::SpotifyTrackList)));
 
@@ -137,6 +142,8 @@ namespace Collections
         DEBUG_BLOCK
 
         m_memoryQueryMaker.data()->abortQuery();
+        m_controller.data()->disconnect( this, SLOT(collectResults(Meta::SpotifyTrackList)) );
+        m_controller.data()->disconnect( this, SLOT(aQueryEnded(Spotify::Query*,Meta::SpotifyTrackList)) );
 
         if( m_querySent )
         {
@@ -148,7 +155,6 @@ namespace Collections
     SpotifyQueryMaker::setQueryType( QueryType type )
     {
         DEBUG_BLOCK
-        warning() << "QueryType" << type;
         CurriedUnaryQMFunction< QueryType >::FunPtr funPtr = &QueryMaker::setQueryType;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< QueryType >( funPtr, type );
         m_queryMakerFunctions.append( curriedFun );
@@ -206,7 +212,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::TrackPtr &track )
     {
         DEBUG_BLOCK
-        warning() << "Match track: " << track->prettyName();
+        debug() << "Match track: " << track->prettyName();
         CurriedUnaryQMFunction< const Meta::TrackPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::TrackPtr& >( funPtr, track );
         m_queryMakerFunctions.append( curriedFun );
@@ -220,7 +226,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::ArtistPtr &artist )
     {
         DEBUG_BLOCK
-        warning() << "Match artist: " << artist->prettyName();
+        debug() << "Match artist: " << artist->prettyName();
         CurriedUnaryQMFunction< const Meta::ArtistPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::ArtistPtr& >( funPtr, artist );
         m_queryMakerFunctions.append( curriedFun );
@@ -237,7 +243,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::AlbumPtr &album )
     {
         DEBUG_BLOCK
-        warning() << "Match album: " << album->prettyName();
+        debug() << "Match album: " << album->prettyName();
         CurriedUnaryQMFunction< const Meta::AlbumPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::AlbumPtr& >( funPtr, album );
         m_queryMakerFunctions.append( curriedFun );
@@ -254,7 +260,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::ComposerPtr &composer )
     {
         DEBUG_BLOCK
-        warning() << "Match composer: " << composer->prettyName();
+        debug() << "Match composer: " << composer->prettyName();
         CurriedUnaryQMFunction< const Meta::ComposerPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::ComposerPtr& >( funPtr, composer );
         m_queryMakerFunctions.append( curriedFun );
@@ -268,7 +274,7 @@ namespace Collections
     SpotifyQueryMaker::addMatch( const Meta::GenrePtr &genre )
     {
         DEBUG_BLOCK
-        warning() << "Match genre: " << genre->prettyName();
+        debug() << "Match genre: " << genre->prettyName();
         CurriedUnaryQMFunction< const Meta::GenrePtr& >::FunPtr funPtr = &QueryMaker::addMatch;
         CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::GenrePtr& >( funPtr, genre );
         m_queryMakerFunctions.append( curriedFun );
@@ -310,7 +316,7 @@ namespace Collections
     SpotifyQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
     {
         DEBUG_BLOCK
-        warning() << "Adding filter: " << value << " " << filter;
+        debug() << "Adding filter: " << value << " " << filter;
         CurriedQMStringFilterFunction::FunPtr funPtr = &QueryMaker::addFilter;
         CurriedQMFunction *curriedFun =
             new CurriedQMStringFilterFunction( funPtr, value, filter, matchBegin, matchEnd );
@@ -321,7 +327,7 @@ namespace Collections
         if( !m_filterMap.isEmpty() && m_filterMap.contains( value ) )
         {
             QString newFilter = m_filterMap.value( value );
-//            newFilter.append( QString( " " ) ).append( filter );
+            newFilter.append( QString( " " ) ).append( filter );
             m_filterMap.insert( value, newFilter );
         }
         else
@@ -506,13 +512,17 @@ namespace Collections
     {
         DEBUG_BLOCK
 
+        Meta::TrackList list;
         // Add results to collection
         foreach( Meta::SpotifyTrackPtr trackPtr, trackList )
         {
+            list.append( Meta::TrackPtr::staticCast( trackPtr ) );
             trackPtr->addToCollection( m_collection.data() );
             if( m_collection.data()->trackForUrl( trackPtr->uidUrl() ) == Meta::TrackPtr::staticCast( trackPtr ) )
                 m_collectionUpdated = true;
         }
+
+        emit newResultReady( list );
     }
 
     void
@@ -522,6 +532,9 @@ namespace Collections
 
         Q_UNUSED( query );
         Q_UNUSED( trackList );
+
+        query->disconnect( this, SLOT(spotifyError(Spotify::Controller::ErrorState)) );
+        query->disconnect( this, SLOT(aQueryEnded(Spotify::Query*,Meta::SpotifyTrackList)) );
 
         m_activeQueryCount--;
         m_querySent = false;
@@ -536,11 +549,10 @@ namespace Collections
             else
             {
                 emit queryDone();
-                if( m_autoDelete )
+                if( m_autoDelete && !m_querySent )
                     deleteLater();
             }
         }
-
     }
 
     void
