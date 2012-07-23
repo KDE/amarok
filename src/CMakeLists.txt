@@ -698,7 +698,7 @@ set(amaroklib_LIB_SRCS
     dialogs/TagGuesser.cpp
     dialogs/LabelListModel.cpp
     equalizer/EqualizerPresets.cpp
-    browsers/filebrowser/MimeTypeFilterProxyModel.cpp
+    browsers/filebrowser/DirPlaylistTrackFilterProxyModel.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/FileView.cpp
     musicbrainz/MusicBrainzFinder.cpp

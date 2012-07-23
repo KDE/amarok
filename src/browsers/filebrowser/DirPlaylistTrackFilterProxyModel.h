@@ -14,34 +14,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MIMETYPEFILTERPROXYMODEL_H
-#define MIMETYPEFILTERPROXYMODEL_H
+#ifndef DIRPLAYLISTTRACKFILTERPROXYMODEL_H
+#define DIRPLAYLISTTRACKFILTERPROXYMODEL_H
 
 #include <KDirSortFilterProxyModel>
 
-#include <QStringList>
-
 /**
- * @class MimeTypeFilterProxyModel a proxy model to filter out KFileItem's that do not match a supplied set of mimetypes
- * Designed to be used with KDirOperator as it uses KDirModel::FileItemRole to retrieve the KFileItem
+ * A proxy model to filter out KFileItems that aren't either directories, playlists or
+ * tracks. Filters the "." directory, too. Designed to be used with KDirOperator as
+ * it uses KDirModel::FileItemRole to retrieve the KFileItem
  */
-class MimeTypeFilterProxyModel : public KDirSortFilterProxyModel
+class DirPlaylistTrackFilterProxyModel : public KDirSortFilterProxyModel
 {
     Q_OBJECT
 
-public:
-    /**
-     * MimeTypeFilterProxyModel
-     * @param mimeList the valid mimetypes
-     */
-     explicit MimeTypeFilterProxyModel( QStringList mimeList, QObject *parent = 0 );
+    public:
+        explicit DirPlaylistTrackFilterProxyModel( QObject *parent = 0 );
 
-
-protected:
-    virtual bool filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const;
-
-private:
-    QStringList m_mimeList;
+    protected:
+        virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
 };
 
-#endif // MIMETYPEFILTERPROXYMODEL_H
+#endif // DIRPLAYLISTTRACKFILTERPROXYMODEL_H

@@ -30,7 +30,7 @@
 #include "BrowserCategoryList.h"
 #include "EngineController.h"
 #include "FileView.h"
-#include "MimeTypeFilterProxyModel.h"
+#include "DirPlaylistTrackFilterProxyModel.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
 
@@ -194,8 +194,7 @@ FileBrowser::initView()
 
     EngineController *engineController = Amarok::Components::engineController();
     Q_ASSERT( engineController );
-    d->mimeFilterProxyModel =
-            new MimeTypeFilterProxyModel( engineController->supportedMimeTypes(), this );
+    d->mimeFilterProxyModel = new DirPlaylistTrackFilterProxyModel( this );
     d->mimeFilterProxyModel->setSourceModel( d->kdirModel );
     d->mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );

@@ -14,20 +14,21 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MimeTypeFilterProxyModel.h"
+#include "DirPlaylistTrackFilterProxyModel.h"
+
+#include "core/playlists/PlaylistFormat.h"
+#include "core-impl/meta/file/File.h"
 
 #include <KDirModel>
 #include <KFileItem>
-#include <KFile>
 
-MimeTypeFilterProxyModel::MimeTypeFilterProxyModel( QStringList mimeList, QObject *parent )
+DirPlaylistTrackFilterProxyModel::DirPlaylistTrackFilterProxyModel( QObject *parent )
     : KDirSortFilterProxyModel( parent )
-    , m_mimeList( mimeList )
 {
 }
 
 bool
-MimeTypeFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
+DirPlaylistTrackFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
 {
     QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
 
@@ -39,9 +40,13 @@ MimeTypeFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex& s
 
     if( item.name() == "." )
         return false;
-    
-    if( item.isDir() || m_mimeList.contains( item.mimetype() ) )
+
+    if( item.isDir() ||
+        Playlists::isPlaylist( item.url() ) ||
+        MetaFile::Track::isTrack( item.url() ) )
+    {
         return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
-    
+    }
+
     return false;
 }

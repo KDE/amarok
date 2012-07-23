@@ -34,7 +34,7 @@ class SearchWidget;
 class FileView;
 class KAction;
 class KFilePlacesModel;
-class MimeTypeFilterProxyModel;
+class DirPlaylistTrackFilterProxyModel;
 
 class FileBrowser::Private
 {
@@ -55,7 +55,7 @@ public:
     DirBrowserModel *kdirModel;
     KFilePlacesModel *placesModel;
 
-    MimeTypeFilterProxyModel *mimeFilterProxyModel;
+    DirPlaylistTrackFilterProxyModel *mimeFilterProxyModel;
 
     SearchWidget *searchWidget;
 
