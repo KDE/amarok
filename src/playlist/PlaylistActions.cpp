@@ -123,23 +123,7 @@ Playlist::Actions::requestNextTrack()
 
     m_nextTrackCandidate = m_navigator->requestNextTrack();
     if( m_nextTrackCandidate == 0 )
-    {
-
-        debug() << "nothing more to play...";
-        //No more stuff to play. make sure to reset the active track so that
-        //pressing play will start at the top of the playlist (or whereever the navigator wants to start)
-        //instead of just replaying the last track.
-        The::playlist()->setActiveRow( -1 );
-
-        //We also need to mark all tracks as unplayed or some navigators might be unhappy.
-        The::playlist()->setAllUnplayed();
-
-        //if what is currently playing is a cd track, we need to stop playback as the cd will otherwise continue playing
-        if( The::engineController()->isPlayingAudioCd() )
-            The::engineController()->stop();
-
         return;
-    }
 
     if( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
     {
@@ -150,6 +134,23 @@ Playlist::Actions::requestNextTrack()
     {
         play( m_nextTrackCandidate, false );
     }
+}
+
+void
+Playlist::Actions::reflectPlaybackFinished()
+{
+    if( m_nextTrackCandidate )
+        // this must ba a result of StopAfterCurrent or similar, nothing to do
+        return;
+
+    debug() << "nothing more to play...";
+    // no more stuff to play. make sure to reset the active track so that pressing play
+    // will start at the top of the playlist (or whereever the navigator wants to start)
+    // instead of just replaying the last track
+    The::playlist()->setActiveRow( -1 );
+
+    // we also need to mark all tracks as unplayed or some navigators might be unhappy
+    The::playlist()->setAllUnplayed();
 }
 
 void

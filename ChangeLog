@@ -7,6 +7,7 @@ VERSION 2.6-RC2
     * Show all audio and video files in file browser. (BR 303253)
 
   BUGFIXES:
+    * Fix a regression where play count would be increased by 2. (BR 299890)
     * Don't loose statistics, labels and lyrics upon collection scan in some
       circumstances, e.g. when disk holding colleciton is swapped. (BR 298275)
 

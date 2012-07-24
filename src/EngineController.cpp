@@ -361,13 +361,15 @@ EngineController::play( Meta::TrackPtr track, uint offset )
     // clear the current track without sending playbackEnded or trackChangeNotify yet
     stop( /* forceInstant */ true, /* playingWillContinue */ true );
 
-    m_currentTrack = track;
-    debug() << "play: bounded is "<<m_boundedPlayback<<"current"<<m_currentTrack->name();
-    m_boundedPlayback = m_currentTrack->create<Capabilities::BoundedPlaybackCapability>();
-    m_multiPlayback = m_currentTrack->create<Capabilities::MultiPlayableCapability>();
-    m_multiSource = m_currentTrack->create<Capabilities::MultiSourceCapability>();
+    // we grant excluve acces to setting new m_currentTrack to newTrackPlaying()
+    m_nextTrack = track;
+    debug() << "play: bounded is "<<m_boundedPlayback<<"current"<<track->name();
+    m_boundedPlayback = track->create<Capabilities::BoundedPlaybackCapability>();
+    m_multiPlayback = track->create<Capabilities::MultiPlayableCapability>();
+    m_multiSource = track->create<Capabilities::MultiSourceCapability>();
 
-    m_currentTrack->prepareToPlay();
+    track->prepareToPlay();
+    m_nextUrl = track->playableUrl();
 
     if( m_multiPlayback )
     {
@@ -380,17 +382,17 @@ EngineController::play( Meta::TrackPtr track, uint offset )
         debug() << "Got a MultiSource Track with " <<  m_multiSource->sources().count() << " sources";
         connect( m_multiSource, SIGNAL(urlChanged( const KUrl & )),
                  SLOT(slotPlayableUrlFetched( const KUrl & )) );
-        playUrl( m_currentTrack->playableUrl(), 0 );
+        playUrl( track->playableUrl(), 0 );
     }
     else if( m_boundedPlayback )
     {
-        debug() << "Starting bounded playback of url " << m_currentTrack->playableUrl() << " at position " << m_boundedPlayback->startPosition();
-        playUrl( m_currentTrack->playableUrl(), m_boundedPlayback->startPosition() );
+        debug() << "Starting bounded playback of url " << track->playableUrl() << " at position " << m_boundedPlayback->startPosition();
+        playUrl( track->playableUrl(), m_boundedPlayback->startPosition() );
     }
     else
     {
         debug() << "Just a normal, boring track... :-P";
-        playUrl( m_currentTrack->playableUrl(), offset );
+        playUrl( track->playableUrl(), offset );
     }
 }
 
@@ -485,14 +487,13 @@ EngineController::playUrl( const KUrl &url, uint offset )
     }
     else
     {
+        // keep in sync with setNextTrack(), slotPlayableUrlFetched()
         if( url.isLocalFile() )
             m_media.data()->setCurrentSource( url.toLocalFile() );
         else
             m_media.data()->setCurrentSource( url );
     }
 
-    m_nextTrack.clear();
-    m_nextUrl.clear();
     m_media.data()->clearQueue();
 
     if( offset )
@@ -738,30 +739,28 @@ void
 EngineController::setNextTrack( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-
-    debug() << "locking mutex";
-    QMutexLocker locker( &m_mutex );
-    debug() << "locked!";
-
     if( !track )
         return;
 
     track->prepareToPlay();
-    if( track->playableUrl().isEmpty() )
+    KUrl url = track->playableUrl();
+    if( url.isEmpty() )
         return;
 
+    QMutexLocker locker( &m_mutex );
     if( isPlaying() )
     {
         m_media.data()->clearQueue();
-        if( track->playableUrl().isLocalFile() )
-            m_media.data()->enqueue( track->playableUrl() );
+        // keep in sync with playUrl(), slotPlayableUrlFetched()
+        if( url.isLocalFile() )
+            m_media.data()->enqueue( url.toLocalFile() );
+        else
+            m_media.data()->enqueue( url );
         m_nextTrack = track;
-        m_nextUrl = track->playableUrl();
+        m_nextUrl = url;
     }
     else
-    {
         play( track );
-    }
 }
 
 bool
@@ -943,14 +942,7 @@ void
 EngineController::slotAboutToFinish()
 {
     DEBUG_BLOCK
-    debug() << "Track finished completely, updating statistics";
 
-    // not sure why this should not be the case, but sometimes happens. Don't crash:
-    if( m_currentTrack )
-    {
-        // if we reach aboutToFinish, the track is done as far as we are concerned.
-        emit trackFinishedPlaying( m_currentTrack, 1.0 );
-    }
     if( m_multiPlayback )
     {
         DEBUG_LINE_INFO
@@ -1004,6 +996,13 @@ EngineController::slotFinished()
 {
     DEBUG_BLOCK
 
+    // paranoia checking, m_currentTrack shouldn't really be null
+    if( m_currentTrack )
+    {
+        debug() << "Track finished completely, updating statistics";
+        emit trackFinishedPlaying( m_currentTrack, 1.0 );
+    }
+
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
         if( !m_nextTrack && m_nextUrl.isEmpty() )
@@ -1014,7 +1013,7 @@ EngineController::slotFinished()
         m_currentTrack = 0;
         m_currentAlbum = 0;
         if( !m_nextTrack && m_nextUrl.isEmpty() ) // we will the trackChanged signal later
-            emit trackChanged( m_currentTrack );
+            emit trackChanged( Meta::TrackPtr() );
         m_media.data()->setCurrentSource( Phonon::MediaSource() );
     }
 
@@ -1032,8 +1031,11 @@ EngineController::slotFinished()
         playUrl( m_nextUrl, 0 );
     }
     else
+    {
+        The::playlistActions()->reflectPlaybackFinished();
         // possibly we are waiting for a fetch
         m_playWhenFetched = true;
+    }
 
     m_mutex.unlock();
 }
@@ -1057,16 +1059,20 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
     }
+    // only update stats if we are called for something new, some phonon back-ends (at
+    // least phonon-gstreamer-4.6.1) call slotNewTrackPlaying twice with the same source
+    if( m_currentTrack && ( m_nextTrack || !m_nextUrl.isEmpty() ) )
+    {
+        debug() << "Previous track finished completely, updating statistics";
+        emit trackFinishedPlaying( m_currentTrack, 1.0 );
+    }
+    m_nextUrl.clear();
 
-    // the new track was taken from the queue, so clear these fields
     if( m_nextTrack )
     {
         m_currentTrack = m_nextTrack;
         m_nextTrack.clear();
     }
-
-    if( !m_nextUrl.isEmpty() )
-        m_nextUrl.clear();
 
     if( m_currentTrack
         && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
@@ -1190,7 +1196,10 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
         DEBUG_LINE_INFO
         m_mutex.lock();
         m_media.data()->clearQueue();
+        // keep synced with setNextTrack(), playUrl()
         if( url.isLocalFile() )
+            m_media.data()->enqueue( url.toLocalFile() );
+        else
             m_media.data()->enqueue( url );
         m_nextTrack.clear();
         m_nextUrl = url;
