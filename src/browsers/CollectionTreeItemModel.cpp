@@ -166,7 +166,7 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
     foreach( Collections::Collection *sourceCollection, collectionTrackMap.uniqueKeys() )
     {
         if( sourceCollection == targetCollection )
-            continue; // should be already catched by ...Model::flags(), but hey
+            continue; // should be already caught by ...Model::flags(), but hey
 
         Collections::CollectionLocation *sourceLocation;
         if( sourceCollection )

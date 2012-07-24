@@ -45,7 +45,7 @@ BrowserMessageArea::BrowserMessageArea( QWidget *parent )
     m_shortMessageTimer->setSingleShot( true );
     connect( m_shortMessageTimer, SIGNAL(timeout()), SLOT(nextShortMessage()) );
 
-    //register to carry MessageType accross threads
+    //register to carry MessageType across threads
     qRegisterMetaType<Amarok::Logger::MessageType>( "MessageType" );
     connect( this, SIGNAL(signalLongMessage( const QString &, MessageType )),
              this, SLOT(slotLongMessage( const QString &, MessageType )),

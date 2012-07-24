@@ -102,7 +102,7 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
 {
     DEBUG_BLOCK
 
-    //there are 4 colums, so for each selected row we get 4 indices...
+    //there are 4 columns, so for each selected row we get 4 indices...
     int selectedRowCount = indices.count() / 4;
 
     QList< KAction * > actions;

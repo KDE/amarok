@@ -344,7 +344,7 @@ FileView::slotMoveTracks( const Meta::TrackList& tracks )
     }
     else
     {
-        warning() << "Cannot handle moving tracks from multipe collections, doing nothing to be safe";
+        warning() << "Cannot handle moving tracks from multiple collections, doing nothing to be safe";
     }
     m_moveActivated = false;
     m_moveAction = 0;

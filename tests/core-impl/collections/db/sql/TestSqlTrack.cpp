@@ -409,7 +409,7 @@ TestSqlTrack::testUnsetValues()
         sqlTrack1->setAlbum( "" );
         sqlTrack1->setArtist( "" );
         sqlTrack1->setComposer( "" );
-        sqlTrack1->setYear( 0 ); // it is not clear what an empty year exacly is
+        sqlTrack1->setYear( 0 ); // it is not clear what an empty year exactly is
         sqlTrack1->setGenre( "" );
 
         // note: Amarok is still not clear if an empty artist means track->artist() == 0

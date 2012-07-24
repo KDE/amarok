@@ -765,7 +765,7 @@ PlaylistBrowserModel::actionsFor( const QModelIndex &idx ) const
         emptyActions << m_createEmptyPlaylistAction;
         return emptyActions;
     }
-    //wheter we use the list from m_appendAction of m_loadAction does not matter they are the same
+    //whether we use the list from m_appendAction of m_loadAction does not matter they are the same
     QModelIndexList actionList = m_appendAction->data().value<QModelIndexList>();
 
     actionList << idx;

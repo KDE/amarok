@@ -42,7 +42,7 @@ TestSimilarArtistsEngine::initTestCase()
     bool invoked = QMetaObject::invokeMethod( controller, "initializePhonon", Qt::DirectConnection );
     Q_ASSERT( invoked );
 
-    //Write here initilizations
+    //Write here initializations
     QList<QVariant> args;
     m_engine = new SimilarArtistsEngine(0, args);
 }

@@ -85,7 +85,7 @@ TestMetaCapability::testHas()
     Meta::MetaCapability *metaCapability = new MetaCapabilityMock();
     QVERIFY( metaCapability );
 
-    // these capabilites should be provided
+    // these capabilities should be provided
     QVERIFY( metaCapability->has<Capabilities::ActionsCapability>() == true );
     QVERIFY( metaCapability->has<Capabilities::BookmarkThisCapability>() == true );
 
@@ -100,7 +100,7 @@ TestMetaCapability::testCreate()
     Meta::MetaCapability *metaCapability = new MetaCapabilityMock();
     QVERIFY( metaCapability );
 
-    // these capabilites should be provided
+    // these capabilities should be provided
     // check that the correct instances are returned
     QVERIFY( metaCapability->create<Capabilities::ActionsCapability>() == MetaCapabilityMock::actionsCapability );
     QVERIFY( metaCapability->create<Capabilities::BookmarkThisCapability>() == MetaCapabilityMock::bookmarkThisCapability );

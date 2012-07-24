@@ -72,7 +72,7 @@ PlaylistsInFoldersProxy::data( const QModelIndex &idx, int role ) const
     if( idx.column() == 0 && isGroup( idx ) && role ==
         PlaylistBrowserNS::PlaylistBrowserModel::ActionRole )
     {
-        //wheter we use the list from m_deleteFolderAction or m_renameFolderAction does not matter
+        //whether we use the list from m_deleteFolderAction or m_renameFolderAction does not matter
         //they are the same anyway
         QPersistentModelIndexList actionList =
                 m_deleteFolderAction->data().value<QPersistentModelIndexList>();

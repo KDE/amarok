@@ -62,7 +62,7 @@ public:
 signals:
     
     /**
-     * Signal emited when the root breadcrumb item is clicked.
+     * Signal emitted when the root breadcrumb item is clicked.
      */
     void toHome();
     

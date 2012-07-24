@@ -248,7 +248,7 @@ FastForwardWorker::run()
             }
             else
             {
-                debug() << c << " smart maching disabled or too few metadata -> discard";
+                debug() << c << " smart matching disabled or too few metadata -> discard";
                 emit trackDiscarded( url );
             }
         }

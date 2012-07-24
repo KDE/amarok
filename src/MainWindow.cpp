@@ -1273,7 +1273,7 @@ MainWindow::restoreLayout()
         const int widgetWidth = totalWidgetWidth / 3;
         const int leftover = totalWidgetWidth - 3*widgetWidth;
 
-        //We need to set fixed widths initially, just until the main window has been properly layed out. As soon as this has
+        //We need to set fixed widths initially, just until the main window has been properly laid out. As soon as this has
         //happened, we will unlock these sizes again so that the elements can be resized by the user.
         const int mins[3] = { m_browserDock.data()->minimumWidth(), m_contextDock.data()->minimumWidth(), m_playlistDock.data()->minimumWidth() };
         const int maxs[3] = { m_browserDock.data()->maximumWidth(), m_contextDock.data()->maximumWidth(), m_playlistDock.data()->maximumWidth() };
