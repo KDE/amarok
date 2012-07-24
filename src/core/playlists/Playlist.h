@@ -128,7 +128,7 @@ namespace Playlists
 
             /** A list of groups or labels this playlist belongs to.
               *
-              * Can be used for grouping in folders (use ex. '/' as seperator) or for
+              * Can be used for grouping in folders (use ex. '/' as separator) or for
               * labels.
               */
             virtual QStringList groups() { return QStringList(); }

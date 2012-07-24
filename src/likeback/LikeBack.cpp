@@ -238,7 +238,7 @@ bool LikeBack::userWantsToShowBar()
 {
     // You can choose to store the button bar status per version.
     // On debug builds from SVN, where the version changes at almost every build,
-    // it's very annoying to have the bar reappearing everytime.
+    // it's very annoying to have the bar reappearing every time.
     // return d->config.readEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), d->showBarByDefault );
 
     return d->showBar;
@@ -256,7 +256,7 @@ void LikeBack::setUserWantsToShowBar( bool showBar )
 
     // You can choose to store the button bar status per version.
     // On debug builds from SVN, where the version changes at almost every build,
-    // it's very annoying to have the bar reappearing everytime.
+    // it's very annoying to have the bar reappearing every time.
     // d->config.writeEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), showBar );
 
     d->config.writeEntry( "userWantToShowBar", showBar );

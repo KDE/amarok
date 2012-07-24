@@ -77,7 +77,7 @@ namespace Amarok
          * @param sender The object sending the required signals. This sender must emit singals
          *        incrementProgress() and endProgressOperation() and optionally totalSteps().
          * @param text An additional text that will be part of the notification
-         * @param maximum The maximum value of the progess operation
+         * @param maximum The maximum value of the progress operation
          * @param obj The object that will be called if the user cancels the network request. If not
          *        set, the progress will not be cancellable
          * @param slot The slot on the given object that will be called if the user cancels the

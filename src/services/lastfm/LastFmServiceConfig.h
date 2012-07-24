@@ -65,7 +65,7 @@ private slots:
 
 private:
     /**
-     * Tries to open KWallet and assigns it to m_wallet if successfull. Takes ignore
+     * Tries to open KWallet and assigns it to m_wallet if successful. Takes ignore
      * wallet configuration key into account.
      *
      * @return true when m_wallet is valid, false otherwise

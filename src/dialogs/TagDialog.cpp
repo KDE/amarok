@@ -1004,7 +1004,7 @@ TagDialog::getTagsFromMultipleTracks() const
 
         // -- figure out which tags do not match.
 
-        // - occure not in every file
+        // - occur not in every file
         mismatchingTags |= map.keys().toSet() - tags.keys().toSet();
         mismatchingTags |= tags.keys().toSet() - map.keys().toSet();
 

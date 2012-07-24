@@ -87,8 +87,8 @@ public:
         Dislike        = 0x02,                           ///< The user select that option to report a frustrating experience he got with the application.
         Bug            = 0x04,                           ///< The user select that option to report a bug in the application.
         Feature        = 0x10,                           ///< The user select that option to ask for a new feature he desire.
-                                                         ///< If not enabled, the user is explicitely informed she cannot ask for new features.
-        AllButtons     = Like | Dislike | Bug | Feature, ///< Usable in the constructor to enable every posible buttons.
+                                                         ///< If not enabled, the user is explicitly informed she cannot ask for new features.
+        AllButtons     = Like | Dislike | Bug | Feature, ///< Usable in the constructor to enable every possible buttons.
         DefaultButtons = Like | Dislike,                 ///< Usable in the constructor to enable only the recommended default set of buttons.
         AllButBugs     = Like | Dislike | Feature
     };
@@ -115,7 +115,7 @@ public:
      *                         Advise: to avoid getting too much noise, enable it only if it is a small application or a development release.
      *                         Notes: This is only a default value, the user will be able to enable or disabled the bar afterward.
      *                         The button-bar display is stored by version. On a new version, your default value will take effect again.
-     *                         This allow you to disable the button-bar once the version is stable enought to be released as final.
+     *                         This allow you to disable the button-bar once the version is stable enough to be released as final.
      * @param config           Set the configuration file where to store the user email address and if the button-bar should be shown.
      *                         By default (null), the KApplication configuration object is used.
      * @param aboutData        Set the KAboutData instance used to get the application name and version. By default (null), the KApplication about data object is used.
@@ -175,7 +175,7 @@ public:
 
     /**
      * Set the path where LikeBack should send every comments.
-     * It is composed of the server host name, the path to the PHP script used to send comments, and optionnaly a port number if it is not 80.
+     * It is composed of the server host name, the path to the PHP script used to send comments, and optionally a port number if it is not 80.
      * This call is mandatory for LikeBack to work.
      * @param hostName   The server host name to contact when sending comments. For instance "myapp.kde.org".
      * @param remotePath The path to the send script on the server. For instance, "/likeback/send.php".
@@ -250,7 +250,7 @@ public slots:
 
     /**
      * Temporarily disable the button-bar: it is hiden from the screen if it was shown.
-     * Does not affect anything if the user has not choosen to show the button-bar.
+     * Does not affect anything if the user has not chosen to show the button-bar.
      * @note Calls to enableBar() and disableBar() are ref-counted.
      * This means that the number of times disableBar() is called is memorized,
      * and enableBar() will only have effect after it has been called as many times as disableBar() was called before.
@@ -262,7 +262,7 @@ public slots:
      * This is the trick used to show the LikeBack button-bar of a Kontact plugin only when the main widget of that plugin is active.
      * In this case, call disableBar() at the begin of your program, so the disable count will never be negative.
      * @note If the bar is enabled, it does not mean the bar is shown. For that, the developer (using showBarByDefault in the construcor)
-     *       or the user (by checking the checkbox in the comment dialog) have to explicitely show the bar.
+     *       or the user (by checking the checkbox in the comment dialog) have to explicitly show the bar.
      */
     void disableBar();
 

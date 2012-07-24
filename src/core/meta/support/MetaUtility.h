@@ -49,7 +49,7 @@ namespace Meta
     /** Returns the character representation for the time duration.
         This is a pretty short representation looking like this: 3:45.
         It is used in the playlist.
-        It is not usefull for times above a 24 hours.
+        It is not useful for times above a 24 hours.
     */
     AMAROK_CORE_EXPORT QString secToPrettyTime( int seconds );
 

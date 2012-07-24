@@ -336,7 +336,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         QString operationText( const Transcoding::Configuration &configuration );
 
         /**
-         * Get nice localised string that can be used as progess bar text for the current
+         * Get nice localised string that can be used as progress bar text for the current
          * operation; meant to be called by the destination collection.
          *
          * @param trackCount number of tracks in the transfer

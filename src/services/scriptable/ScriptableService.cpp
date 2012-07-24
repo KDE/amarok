@@ -77,7 +77,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
 {
 
     /*
-    please dont remove this block as I regularly need it for debugging - nhn
+    please don't remove this block as I regularly need it for debugging - nhn
     DEBUG_BLOCK
     debug() << "level: " << level;
     debug() << "parentId: " << parentId;
