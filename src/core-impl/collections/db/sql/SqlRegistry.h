@@ -85,7 +85,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         virtual ~SqlRegistry();
 
         /** Searches a directory entry in the scanned directories
-            This function searches an exisiting directory entry.
+            This function searches an existing directory entry.
             @param mtime if mtime is != 0 then the mtime of the entry is updated
             @returns the directory id
          */
@@ -98,7 +98,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
             This is kind of dangerous because it can generate a new track in
             the database without a file on the filesystem, so don't call it unless
             you really want tracks to be generate.
-            The new track must be commited by writing
+            The new track must be committed by writing
             some other meta information.
             Use SqlCollection::trackForUrl instead.
          */
@@ -149,12 +149,12 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
 
         // only SqlTrack can change this
         /** Updates the uid of an already cached track.
-            @return true if the update was successfull.
+            @return true if the update was successful.
         */
         bool updateCachedUrl( const QString &oldUrl, const QString &newUrl );
 
         /** Updates the uid of an already cached track.
-            @return true if the update was successfull.
+            @return true if the update was successful.
         */
         bool updateCachedUid( const QString &oldUid, const QString &newUid );
 

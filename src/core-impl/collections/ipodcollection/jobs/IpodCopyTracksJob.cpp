@@ -130,7 +130,7 @@ IpodCopyTracksJob::run()
 
         // wait for copying to finish:
         m_copying.acquire( 1 );
-        /* fsync so that progress bar gives correct info and user doesnt remove the iPod
+        /* fsync so that progress bar gives correct info and user doesn't remove the iPod
          * prematurely */
         QFile destFile( QFile::decodeName( destFilename ) );
         if( !destFile.exists() )
@@ -384,7 +384,7 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
     }
     if( m_sourceTrackStatus.size() != sourceSize )
     {
-        // aborted case was already catched in run()
+        // aborted case was already caught in run()
         details += i18n( "The rest was not transferred because iPod collection disappeared.<br>" );
     }
     KMessageBox::detailedSorry( 0, text, details, caption );

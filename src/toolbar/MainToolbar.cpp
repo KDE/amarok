@@ -547,7 +547,7 @@ MainToolbar::updatePrevAndNext()
     if( hadKey != bool(m_prev.key) )
         needUpdate = true;
 
-    // we may have disbaled it as otherwise the current label gets updated one eventcycle before prev & next
+    // we may have disabled it as otherwise the current label gets updated one eventcycle before prev & next
     // see ::engineTrackChanged()
     m_current.label->setUpdatesEnabled( true );
 

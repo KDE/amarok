@@ -69,7 +69,7 @@ ConstraintTypes::PlaylistDuration::PlaylistDuration( QDomElement& xmlelem, Const
     if ( !a.isNull() ) {
         m_duration = a.value().toInt();
     } else {
-        // Accomodate schema change when PlaylistLength became PlaylistDuration
+        // Accommodate schema change when PlaylistLength became PlaylistDuration
         a = xmlelem.attributeNode( "length" );
         if ( !a.isNull() )
             m_duration = a.value().toInt();

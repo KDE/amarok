@@ -41,7 +41,7 @@ class SqlReadLabelCapability : public Capabilities::ReadLabelCapability
         /**
         *   fetches a list of all labels in the database
         */
-        virtual void fetchGlobalLabels();   //TODO: This shouldnt be in a Track capability
+        virtual void fetchGlobalLabels();   //TODO: This shouldn't be in a Track capability
 
         /**
         *   @returns all labels assigned to this track

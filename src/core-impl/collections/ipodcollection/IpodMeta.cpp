@@ -727,7 +727,7 @@ Track::setCollection( QWeakPointer<IpodCollection> collection )
     // by us, it can be more accurate than file extension, so we prefer it)
     if( !Amarok::FileTypeSupport::possibleFileTypes().contains( type() ) )
         setType( Amarok::extension( playableUrl().path() ) );
-        // we dont make the datbase dirty, this can be recomputed every time
+        // we don't make the datbase dirty, this can be recomputed every time
 }
 
 void

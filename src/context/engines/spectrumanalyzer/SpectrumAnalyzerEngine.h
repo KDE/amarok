@@ -55,7 +55,7 @@ class SpectrumAnalyzerEngine : public Context::DataEngine, public ContextObserve
         void message( const Context::ContextState& state );
 
         /**
-        *   Is called by the applet controler when the track has changed
+        *   Is called by the applet controller when the track has changed
         */
         using Observer::metadataChanged;
         void metadataChanged( Meta::TrackPtr track );

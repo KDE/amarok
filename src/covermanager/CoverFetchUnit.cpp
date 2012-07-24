@@ -468,7 +468,7 @@ CoverFetchArtPayload::prepareUrls()
 
     if( xml.hasError() )
     {
-        debug() << QString( "Error occured when pareparing %1 urls for %2: %3" )
+        debug() << QString( "Error occurred when preparing %1 urls for %2: %3" )
             .arg( sourceString(), (album() ? album()->name() : "'unknown'"), xml.errorString() );
         debug() << urls();
     }

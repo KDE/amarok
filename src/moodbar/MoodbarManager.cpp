@@ -151,7 +151,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
     }
 
 
-    //Do we alrady have this pixmap cached?
+    //Do we already have this pixmap cached?
     const QString pixmapKey = QString( "mood:%1-%2x%3%4" ).arg( track->uidUrl() ).arg(width).arg(height).arg( rtl?"r":"" );
     QPixmap moodbar;
     

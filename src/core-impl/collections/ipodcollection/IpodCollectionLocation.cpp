@@ -39,7 +39,7 @@ IpodCollectionLocation::~IpodCollectionLocation()
 Collections::Collection*
 IpodCollectionLocation::collection() const
 {
-    // overriden to avoid dangling pointers
+    // overridden to avoid dangling pointers
     return m_coll.data();
 }
 

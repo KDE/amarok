@@ -28,7 +28,7 @@
     QPixmaps used in many places of the UI have the drawback that they can be only
     generated from the UI thread.
 
-    On the other hand the collections should be UI independant and thread save.
+    On the other hand the collections should be UI independent and thread save.
     To solve this problem the CoverCache class provides a central repository for
     Album cover QPixmaps.
 */

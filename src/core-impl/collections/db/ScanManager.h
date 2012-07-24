@@ -50,7 +50,7 @@ class KDirWatch;
     watch the collection directories using the KDirWatch and initiate the scanning.
 
     For the scanning an external process with the scanner is started and the result
-    is handled in a seperate thread.
+    is handled in a separate thread.
 
     Notes for the method of checking for changes:
     When Amarok is started we wait a minute (so that the scanner does not slow down
@@ -246,7 +246,7 @@ class ScannerJob : public ThreadWeaver::Job
 
     private:
         /** Creates the scanner process.
-            @returns true if successfull started
+            @returns true if successfully started
         */
         bool createScannerProcess( bool restart );
         bool tryRestart();

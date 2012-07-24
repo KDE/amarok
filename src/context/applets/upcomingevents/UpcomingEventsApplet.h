@@ -158,7 +158,7 @@ private slots:
     QString currentTimeSpan();
 
     /**
-     * Save the time span choosen by the user
+     * Save the time span chosen by the user
      */
     void saveTimeSpan();
 

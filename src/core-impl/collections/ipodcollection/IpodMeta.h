@@ -215,7 +215,7 @@ namespace IpodMeta
 
             /**
              * Set of field types (identified by constants from MetaValues.h) changed by
-             * EditCapability or set{Rating,Score,...} not yet commited to database and
+             * EditCapability or set{Rating,Score,...} not yet committed to database and
              * underlying file
              */
             Meta::FieldHash m_changedFields;

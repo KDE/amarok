@@ -172,7 +172,7 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
     if( xml.hasError() )
     {
-        warning() << "errors occured during reading lyrics xml result:" << xml.errorString();
+        warning() << "errors occurred during reading lyrics xml result:" << xml.errorString();
         lyricsError( i18n("Lyrics data could not be parsed") );
     }
 }

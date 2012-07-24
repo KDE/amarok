@@ -1495,7 +1495,7 @@ SqlAlbum::hasImage( int size ) const
         if( m_imagePath == AMAROK_UNSET_MAGIC )
             m_hasImage = false;
 
-        // if we don't have an image but it was not explicitely blocked
+        // if we don't have an image but it was not explicitly blocked
         else if( m_imagePath.isEmpty() )
         {
             // Cover fetching runs in another thread. If there is a retrieved cover
@@ -1830,7 +1830,7 @@ SqlAlbum::largeImagePath()
         m_imageId = res.at(0).toInt();
         m_imagePath = res.at(1);
 
-        // explicitely deleted image
+        // explicitly deleted image
         if( m_imagePath == AMAROK_UNSET_MAGIC )
             return AMAROK_UNSET_MAGIC;
 

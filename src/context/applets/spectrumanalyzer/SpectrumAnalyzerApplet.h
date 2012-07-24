@@ -59,7 +59,7 @@ class SpectrumAnalyzerApplet: public Context::Applet
         ~SpectrumAnalyzerApplet();
 
         /**
-        *   Called by the applet contoller to initialize the applet
+        *   Called by the applet controller to initialize the applet
         */
         void init();
 
