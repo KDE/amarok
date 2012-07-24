@@ -102,7 +102,7 @@ VorbisCommentTagHelper::tags() const
             data.insert( Meta::valUniqueId, value );
         else if( it->first == uidFieldName( UIDMusicBrainz ) && isValidUID( value, UIDMusicBrainz ) )
         {
-            if( !data.contains( Meta::valUniqueId ) ) // we prefere AFT uids
+            if( !data.contains( Meta::valUniqueId ) ) // we prefer AFT uids
                 data.insert( Meta::valUniqueId, value.prepend( "mb-" ) );
         }
     }

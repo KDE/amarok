@@ -60,7 +60,7 @@ public:
     void setTimeDefinitions( const QList<TimeDefinition> &value );
 
     /** Writes the BatchFile to the disk.
-        @returns true if writing was successfull.
+        @returns true if writing was successful.
     */
     bool write( const QString &path );
 

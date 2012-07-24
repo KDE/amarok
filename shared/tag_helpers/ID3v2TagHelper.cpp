@@ -87,7 +87,7 @@ ID3v2TagHelper::tags() const
                     data.insert( Meta::valUniqueId, identifier );
                 else if( frame->owner() == uidFieldName( UIDMusicBrainz ) && isValidUID( identifier, UIDMusicBrainz ) )
                 {
-                    if( !data.contains( Meta::valUniqueId ) ) // we prefere AFT uids
+                    if( !data.contains( Meta::valUniqueId ) ) // we prefer AFT uids
                         data.insert( Meta::valUniqueId, identifier.prepend( "mb-" ) );
                 }
                 continue;

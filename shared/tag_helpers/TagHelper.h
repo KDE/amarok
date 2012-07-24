@@ -145,7 +145,7 @@ namespace Meta
          * Returns TagHelper for specified @arg fileref.
          * @arg forceCreation If true: selector will force tag creation.
          * @return TagHelper or NULL if file doesn't have tags.
-         * Shoud be deleted by user after use.
+         * Should be deleted by user after use.
          */
         AMAROK_EXPORT TagHelper *selectHelper( const TagLib::FileRef fileref, bool forceCreation = false );
     }

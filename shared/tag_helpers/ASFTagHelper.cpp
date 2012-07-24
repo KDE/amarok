@@ -96,7 +96,7 @@ ASFTagHelper::tags() const
             data.insert( Meta::valUniqueId, strValue );
         else if( it->first == uidFieldName( UIDMusicBrainz ) && isValidUID( strValue, UIDMusicBrainz ) )
         {
-            if( !data.contains( Meta::valUniqueId ) ) // we prefere AFT uids
+            if( !data.contains( Meta::valUniqueId ) ) // we prefer AFT uids
                 data.insert( Meta::valUniqueId, strValue.prepend( "mb-" ) );
         }
     }

@@ -56,7 +56,7 @@ CollectionScanner::Album::artist() const
 QString
 CollectionScanner::Album::cover() const
 {
-    // we prefere covers included in tracks.
+    // we prefer covers included in tracks.
     // At least we know exactly that they really belong to the album
     foreach( Track *track, m_tracks )
     {
