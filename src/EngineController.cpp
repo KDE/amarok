@@ -265,6 +265,10 @@ EngineController::slotFillInSupportedMimeTypes()
     if( m_supportedMimeTypes.contains( "audio/x-flac" ) && !m_supportedMimeTypes.contains( "audio/flac" ) )
         m_supportedMimeTypes << "audio/flac";
 
+    // technically, "audio/mp4" is the official mime type, but sometimes Phonon returns audio/x-m4a
+    if( m_supportedMimeTypes.contains( "audio/x-m4a" ) && !m_supportedMimeTypes.contains( "audio/mp4" ) )
+        m_supportedMimeTypes << "audio/mp4";
+
     // unblock waiting for the semaphore in supportedMimeTypes(). We can over-shoot
     // resource number so that next call to supportedMimeTypes won't have to
     // wait for main loop; this is however just an optimization and we could have safely
