@@ -20,7 +20,7 @@
 #ifndef TESTMETAMULTITRACK_H
 #define TESTMETAMULTITRACK_H
 
-#include "TestBase.h"
+#include "core/playlists/Playlist.h"
 
 #include <QtCore/QObject>
 
@@ -37,15 +37,15 @@ public:
 
 private slots:
     void initTestCase();
-    void cleanupTestCase();
+    void init();
+    void cleanup();
 
-    void testFirst();
-    void testNext();
-    void testCurrentAndSetSource();
     void testSources();
+    void testSetSourceCurrentNextUrl();
     void testHasCapabilityInterface();
 
 private:
+    Playlists::PlaylistPtr m_playlist;
     Meta::MultiTrack *m_testMultiTrack;
 };
 

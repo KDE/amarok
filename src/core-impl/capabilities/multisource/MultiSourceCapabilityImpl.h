@@ -19,32 +19,26 @@
 #define AMAROK_MULTISOURCECAPABILITYIMPL_P_H
 
 #include "core/capabilities/MultiSourceCapability.h"
-
-#include "core/support/Debug.h"
 #include "core-impl/meta/multi/MultiTrack.h"
 
-namespace Capabilities {
-
-class MultiSourceCapabilityImpl : public Capabilities::MultiSourceCapability
+namespace Capabilities
 {
-    Q_OBJECT
-public:
-    MultiSourceCapabilityImpl( Meta::MultiTrack * track );
+    class MultiSourceCapabilityImpl : public MultiSourceCapability
+    {
+        Q_OBJECT
 
+        public:
+            MultiSourceCapabilityImpl( Meta::MultiTrack *track );
+            virtual ~MultiSourceCapabilityImpl();
 
-    virtual KUrl first() { return m_track->first(); }
-    virtual KUrl next() { return m_track->next(); }
-    virtual int current() { return m_track->current(); }
-    virtual QStringList sources() { return m_track->sources(); }
-    virtual void setSource( int source );
+            virtual QStringList sources() const;
+            virtual void setSource( int source );
+            virtual int current() const;
+            virtual KUrl nextUrl() const;
 
-private:
-    Meta::MultiTrack * m_track;
-
-};
-
+        private:
+            Meta::MultiTrack *m_track;
+    };
 }
 
 #endif
-
-

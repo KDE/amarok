@@ -572,7 +572,7 @@ private:
     KUrl            m_nextUrl;
     Capabilities::BoundedPlaybackCapability* m_boundedPlayback;
     Capabilities::MultiPlayableCapability* m_multiPlayback;
-    Capabilities::MultiSourceCapability* m_multiSource;
+    QScopedPointer<Capabilities::MultiSourceCapability> m_multiSource;
     bool m_playWhenFetched;
     int m_volume;
     bool m_currentIsAudioCd;
