@@ -282,7 +282,7 @@ Playlist::Actions::playlistModeChanged()
     {
         //HACK: Migrate the queue to the new navigator
         //TODO: The queue really should not be maintained by the navigators in this way
-        // but should be handled by a seperate and persistant object.
+        // but should be handled by a separate and persistant object.
 
         currentQueue = m_navigator->queue();
         m_navigator->deleteLater();

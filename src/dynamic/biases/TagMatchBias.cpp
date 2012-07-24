@@ -386,7 +386,7 @@ Dynamic::TagMatchBias::newQuery()
             if( m_filter.field == 0 )
             {
                 // simple search
-                // TODO: split different words and make seperate searches
+                // TODO: split different words and make separate searches
                 m_qm->beginOr();
                 m_qm->addFilter( Meta::valArtist,  m_filter.value );
                 m_qm->addFilter( Meta::valTitle,   m_filter.value );

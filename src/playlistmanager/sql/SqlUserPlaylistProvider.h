@@ -62,7 +62,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 
     private slots:
         /**
-         * Overriden only bacause of the m_debug flag
+         * Overridden only bacause of the m_debug flag
          */
         void slotDelete();
 

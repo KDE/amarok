@@ -305,7 +305,7 @@ BiasSolver::annealingOptimize( SolverList *list,
         int newPos = (KRandom::random() % (list->m_trackList.count() - list->m_contextCount))
             + list->m_contextCount;
 
-        // choose a matching track or a random one. Prefere matching
+        // choose a matching track or a random one. Prefer matching
         Meta::TrackPtr newTrack;
         if( iterationLimit % 4 )
         {

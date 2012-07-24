@@ -352,7 +352,7 @@ void
 EqualizerAction::updateContent() //SLOT
 {
     // this slot update the content of equalizer main window menu
-    // according to config blocking is neccessary to prevent
+    // according to config blocking is necessary to prevent
     // circluar loop between menu and config dialog
     blockSignals( true );
     setCurrentItem( AmarokConfig::equalizerMode() );

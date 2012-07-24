@@ -51,7 +51,7 @@ class KDirWatch;
     watch directories using the KDirWatch and initiate the scanning.
 
     For the scanning an external process with the scanner is started and the result
-    is handled in a seperate thread.
+    is handled in a separate thread.
 */
 class AMAROK_EXPORT GenericScanManager : public QObject
 {

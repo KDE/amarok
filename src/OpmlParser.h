@@ -94,7 +94,7 @@ signals:
 
     /**
      * Signal emmited when parsing is complete.
-     * The data is complete now and accesible via results().
+     * The data is complete now and accessible via results().
      * Children of all the outlines are available via OpmlOutline::children().
      */
     void doneParsing();

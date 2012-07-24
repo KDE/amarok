@@ -465,7 +465,7 @@ Dynamic::PartBias::updateResults() const
 
     // debug()<<"compute matching tracks for"<<m_position<<"pc"<<m_playlist.count()<<"context:"<<m_contextCount;
 
-    // -- add all the tracks that have not fullfilled their capacity
+    // -- add all the tracks that have not fulfilled their capacity
     m_tracks = Dynamic::TrackSet( m_universe, false );
     for( int source = 0; source < state.m_sourceCount; source++ )
     {

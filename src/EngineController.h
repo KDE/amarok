@@ -338,7 +338,7 @@ Q_SIGNALS:
      */
     void paused();
 
-    /** While trying to play the track an error occured.
+    /** While trying to play the track an error occurred.
      *  This usually means that the engine will try to play the next track in
      *  the playlist until it gives up.
      *  So you will get a trackPlaying or stopped signal next.

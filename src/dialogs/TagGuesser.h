@@ -56,13 +56,13 @@ class TagGuesser
         void setCaseType( const int caseOptions );
 
         /**
-        *   Sets wether trailing spaces are cut from tags
+        *   Sets whether trailing spaces are cut from tags
         *   @arg cutSpaces should trailing spaces be cut from tags
         **/
         void setCutTrailingSpaces( const bool cutTrailingSpaces );
 
         /**
-        *   Sets wether underscores should be converted to spaces
+        *   Sets whether underscores should be converted to spaces
         *   @arg convertUnderscores should underscores be converted
         */
         void setConvertUnderscores( const bool convertUnderscores );

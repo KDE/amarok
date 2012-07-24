@@ -24,7 +24,7 @@
 namespace Amarok
 {
 
-/** A KMenu wich dynamically responds to Keyboard modifier presses
+/** A KMenu which dynamically responds to Keyboard modifier presses
   * example: Ctrl key is pressed and Trash action is replaced with Delete action.
   */
 class ContextMenu : public KMenu

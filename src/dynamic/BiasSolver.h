@@ -44,7 +44,7 @@ namespace Dynamic
      * code of BiasSolver::run.
 
        The whole operation is a little bit tricky since the bias solver runs as
-       seperate job without it's own event queue.
+       separate job without it's own event queue.
 
        The signals and slots are all handled via the UI threads event queue.
        Since the BiasSolver and all biases are created from the UI thread this
