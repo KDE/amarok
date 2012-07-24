@@ -48,7 +48,7 @@ namespace Playlists
             /** Loads the playlist from the stream adding the newly found tracks to the current playlist.
                 This function is called automatically if the playlist is created with a file.
                 It only needs to be called when the playlist object is created from an url.
-                @returns true if the loading was successfull.
+                @returns true if the loading was successful.
             */
             virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 

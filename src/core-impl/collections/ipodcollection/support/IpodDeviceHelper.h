@@ -32,7 +32,7 @@ namespace IpodDeviceHelper {
 
     /**
      * Tries to parse itunes db from an iPod mounted at @param mountPoint.
-     * @param errorMsg is set appropriately if error occured
+     * @param errorMsg is set appropriately if error occurred
      * @return valid itdb or null, in which case @param errorMsg is not empty
      */
     AMAROK_EXPORT Itdb_iTunesDB *parseItdb( const QString &mountPoint, QString &errorMsg );

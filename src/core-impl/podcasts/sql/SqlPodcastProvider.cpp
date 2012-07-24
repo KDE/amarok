@@ -1332,7 +1332,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
 
     connect( transferJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
              SLOT( addData( KIO::Job *, const QByteArray & ) ) );
-    //need to connect to finished instead of result because it's always emited.
+    //need to connect to finished instead of result because it's always emitted.
     //We need to cleanup after a download is cancled regardless of the argument in
     //KJob::kill()
     connect( transferJob, SIGNAL( finished( KJob * ) ),

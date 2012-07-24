@@ -278,7 +278,7 @@ class AMAROK_EXPORT MapChanger
          * whose proxy is already in MemoryCollection (returns null pointer in this case)
          *
          * @return pointer to a newly created MemoryMeta::Track (may be null if not
-         * successfull)
+         * successful)
          */
         Meta::TrackPtr addTrack( Meta::TrackPtr track );
 
@@ -303,7 +303,7 @@ class AMAROK_EXPORT MapChanger
          * MemoryCollection and to MemoryCollection maps.
          *
          * The one who called MapChanger::addTrack() is responsible to call this method
-         * everytime it detects that some metadata of underlying track have changed
+         * every time it detects that some metadata of underlying track have changed
          * (perhaps by becoming its observer), even in minor fields such as comment. This
          * method instructs proxy track to call notifyObservers().
          *

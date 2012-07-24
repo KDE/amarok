@@ -176,7 +176,7 @@ class UmsCollection : public Collection, public Meta::Observer
         void slotTrackRemoved( const Meta::TrackPtr &track );
 
         /**
-         * Overriden to update m_lastUpdated timestamp
+         * overridden to update m_lastUpdated timestamp
          */
         virtual void collectionUpdated();
 

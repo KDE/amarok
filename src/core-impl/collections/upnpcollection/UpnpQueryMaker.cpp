@@ -65,7 +65,7 @@ QueryMaker* UpnpQueryMaker::reset()
     m_numericFilters.clear();
     m_internalQM->reset();
 
-// the Amarok Collection Model expects atleast one entry
+// the Amarok Collection Model expects at least one entry
 // otherwise it will harass us continuously for more entries.
 // of course due to the poor quality of UPnP servers I've
 // had experience with :P, some may not have sub-results

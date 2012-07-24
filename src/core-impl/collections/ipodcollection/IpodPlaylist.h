@@ -38,8 +38,8 @@ class IpodPlaylist : public Playlists::Playlist
     public:
         enum Type {
             Normal,  // regular iPod playlist
-            Stale,  // playlist containg stale iTunes database entries
-            Orphaned,  // playlist containg track on iPod filesystem that are not it database
+            Stale,  // playlist containing stale iTunes database entries
+            Orphaned,  // playlist containing track on iPod filesystem that are not it database
         };
 
         /**

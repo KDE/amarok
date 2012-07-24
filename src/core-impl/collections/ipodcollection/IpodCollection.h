@@ -138,7 +138,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         /**
          * Start a count-down that initiates iTunes database wrtiging after it expires.
          * Resets the timer to original timeout if already running. This is to ensure
-         * that we dont write the database all the time for batch updates.
+         * that we don't write the database all the time for batch updates.
          *
          * Timers can only be started from "their" thread so use signals & slots for that.
          */
@@ -163,7 +163,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         void slotShowConfigureDialog( const QString &errorMessage = QString() );
 
         /**
-         * Overriden to update m_lastUpdated timestamp
+         * Overridden to update m_lastUpdated timestamp
          */
         virtual void collectionUpdated();
 

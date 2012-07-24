@@ -143,7 +143,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChann
     }
 }
 
-//TODO: why do PodcastMetaCommon and PodcastEpisode not have an apropriate copy constructor?
+//TODO: why do PodcastMetaCommon and PodcastEpisode not have an appropriate copy constructor?
 SqlPodcastEpisode::SqlPodcastEpisode( Podcasts::PodcastEpisodePtr episode )
     : Podcasts::PodcastEpisode()
     , m_dbId( 0 )

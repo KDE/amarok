@@ -153,7 +153,7 @@ IpodCollection::~IpodCollection()
         // call directly from main thread in destructor, we have no other chance:
         writeDatabase();
     }
-    delete m_preventUnmountTempFile; // this shoud have been certaily 0, but why not
+    delete m_preventUnmountTempFile; // this should have been certaily 0, but why not
     m_preventUnmountTempFile = 0;
 
     /* because m_itdb takes ownership of the tracks added to it, we need to remove the
@@ -296,7 +296,7 @@ IpodCollection::metadataChanged( Meta::TrackPtr track )
     // reflect change to ouside world:
     bool mapsChanged = MemoryMeta::MapChanger( m_mc.data() ).trackChanged( track );
     if( mapsChanged )
-        // while docs say somehting different, collection browser doesnt update unless we emit updated()
+        // while docs say somehting different, collection browser doesn't update unless we emit updated()
         emit startUpdateTimer();
     emit startWriteDatabaseTimer();
 }

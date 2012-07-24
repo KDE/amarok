@@ -93,7 +93,7 @@ IpodParseTracksJob::parsePlaylists( const Meta::TrackList &staleTracks,
     {
         prov->m_stalePlaylist = Playlists::PlaylistPtr( new IpodPlaylist( staleTracks,
             i18nc( "iPod playlist name", "Stale tracks" ), m_coll, IpodPlaylist::Stale ) );
-        prov->m_playlists << prov->m_stalePlaylist;  // we dont subscribe to this playlist, no need to update database
+        prov->m_playlists << prov->m_stalePlaylist;  // we don't subscribe to this playlist, no need to update database
         emit prov->playlistAdded( prov->m_stalePlaylist );
     }
 
@@ -102,7 +102,7 @@ IpodParseTracksJob::parsePlaylists( const Meta::TrackList &staleTracks,
     {
         prov->m_orphanedPlaylist = Playlists::PlaylistPtr( new IpodPlaylist( orphanedTracks,
             i18nc( "iPod playlist name", "Orphaned tracks" ), m_coll, IpodPlaylist::Orphaned ) );
-        prov->m_playlists << prov->m_orphanedPlaylist;  // we dont subscribe to this playlist, no need to update database
+        prov->m_playlists << prov->m_orphanedPlaylist;  // we don't subscribe to this playlist, no need to update database
         emit prov->playlistAdded( prov->m_orphanedPlaylist );
     }
 

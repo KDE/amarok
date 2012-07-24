@@ -31,7 +31,7 @@ namespace Playdar
 {
     /**
      * A Query provides an interface to a single Playdar query.
-     * Clients should recieve these from their Playdar::Controller,
+     * Clients should receive these from their Playdar::Controller,
      * rather than constructing them. After getting a Query, just
      * wait for newTrackAdded(), querySolved(), or queryDone(),
      * as appropriate. Using QueryPtr will make sure a neglected Query
