@@ -17,7 +17,7 @@ endif(APPLE)
 
 add_subdirectory( core )
 add_subdirectory( core-impl/collections )
-#dont use our own libplasma anymore, but still pick up our applets/engines/containments
+#don't use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( images )
 add_subdirectory( services )

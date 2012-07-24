@@ -5,3 +5,4 @@ install( FILES
     script.spec
     DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/bbc_service
 )
+

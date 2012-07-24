@@ -6,3 +6,4 @@ install( FILES
         SeeqpodService.html
         DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/seeqpod_service
        )
+

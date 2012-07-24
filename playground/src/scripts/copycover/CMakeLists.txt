@@ -4,3 +4,4 @@ install( FILES
 	copycover.ui
     DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/copycover
 )
+
