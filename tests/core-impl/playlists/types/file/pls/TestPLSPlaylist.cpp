@@ -29,6 +29,7 @@
 #include <QtCore/QDir>
 
 #include <qtest_kde.h>
+#include <ThreadWeaver/Weaver>
 
 QTEST_KDEMAIN_CORE( TestPLSPlaylist )
 
@@ -43,9 +44,12 @@ TestPLSPlaylist::dataPath( const QString &relPath )
 
 void TestPLSPlaylist::initTestCase()
 {
-    //apparently the engine controller is needed somewhere, or we will get a crash...
+    // EngineController is used in a connection in MetaProxy::Track; avoid null sender
+    // warning
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );
+
+    qRegisterMetaType<Meta::TrackPtr>( "Meta::TrackPtr" );
 
     const KUrl url = dataPath( "data/playlists/test.pls" );
     QFile playlistFile1( url.toLocalFile() );
@@ -56,6 +60,7 @@ void TestPLSPlaylist::initTestCase()
     QVERIFY( playlistStream1.device() );
 
     m_testPlaylist1 = new Playlists::PLSPlaylist( url );
+    QVERIFY( m_testPlaylist1 );
     QVERIFY( m_testPlaylist1->load( playlistStream1 ) );
     QCOMPARE( m_testPlaylist1->tracks().size(), 4 );
     playlistFile1.close();
@@ -63,7 +68,11 @@ void TestPLSPlaylist::initTestCase()
 
 void TestPLSPlaylist::cleanupTestCase()
 {
+    // Wait for other jobs, like MetaProxys fetching meta data, to finish
+    ThreadWeaver::Weaver::instance()->finish();
+
     delete m_testPlaylist1;
+    delete Amarok::Components::setEngineController( 0 );
 }
 
 void TestPLSPlaylist::testSetAndGetName()
