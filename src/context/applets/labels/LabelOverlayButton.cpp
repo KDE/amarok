@@ -113,7 +113,4 @@ LabelOverlayButton::paint( QPainter *painter, const QStyleOptionGraphicsItem *op
 
     painter->drawPixmap( 0, 0, m_scaledPixmap );
 }
-
-
-
     
