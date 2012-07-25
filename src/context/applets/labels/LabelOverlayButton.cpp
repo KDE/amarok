@@ -28,7 +28,7 @@ LabelOverlayButton::LabelOverlayButton( QGraphicsItem *parent )
     m_size( 8 )
 {
     setAcceptHoverEvents( true );
-    
+
     m_iconEffect = new KIconEffect();
 }
 
@@ -59,7 +59,7 @@ void
 LabelOverlayButton::setSize( int size )
 {
     m_size = size;
-    
+
     if( isUnderMouse() )
         m_scaledPixmap = m_iconEffect->apply( m_pixmap.scaledToHeight( m_size, Qt::SmoothTransformation ), KIconLoader::Desktop, KIconLoader::ActiveState );
     else
@@ -85,7 +85,7 @@ void
 LabelOverlayButton::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
     Q_UNUSED( event )
-    
+
     m_scaledPixmap = m_iconEffect->apply( m_pixmap.scaledToHeight( m_size, Qt::SmoothTransformation ), KIconLoader::Desktop, KIconLoader::ActiveState );
     update();
 }
@@ -94,7 +94,7 @@ void
 LabelOverlayButton::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 {
     Q_UNUSED( event )
-    
+
     m_scaledPixmap = m_pixmap.scaledToHeight( m_size, Qt::SmoothTransformation );
     update();
 }
@@ -113,4 +113,3 @@ LabelOverlayButton::paint( QPainter *painter, const QStyleOptionGraphicsItem *op
 
     painter->drawPixmap( 0, 0, m_scaledPixmap );
 }
-    
