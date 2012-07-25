@@ -6,6 +6,10 @@ VERSION 2.6-RC2
   CHANGES:
     * Show all audio and video files in file browser. (BR 303253)
 
+  BUGFIXES:
+    * Don't loose statistics, labels and lyrics upon collection scan in some
+      circumstances, e.g. when disk holding colleciton is swapped. (BR 298275)
+
 VERSION 2.6-RC1
   CHANGES:
     * Remove codec install support. It's long ago been implemented in phonon.

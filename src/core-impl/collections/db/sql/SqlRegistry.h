@@ -105,8 +105,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         Meta::TrackPtr getTrack( int deviceId, const QString &rpath, int directoryId, const QString &uidUrl );
 
         /** Returns a track from a specific uid.
-            Returns a complete track, a track containing only the statistics (in case
-            of a previously deleted track with the same uid) or 0.
+            Returns a complete track or 0.
         */
         Meta::TrackPtr getTrackFromUid( const QString &uid );
 
@@ -158,10 +157,12 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         */
         bool updateCachedUid( const QString &oldUid, const QString &newUid );
 
-        /** Removes the track from the database and the cache (but not from the file system)
-            This function is called by SqlTrack. Do not call directly unless you know
-            what you do.
-        */
+        /**
+         * Removes the track and associated entries (url, statistics, lyrics, labels)
+         * from the database and the cache (but not from the file system). This function
+         * is normally called by SqlTrack. Do not call directly unless you know what you
+         * do.
+         */
         void removeTrack( int urlId, const QString uid );
 
         // --- functions needed to commit a track

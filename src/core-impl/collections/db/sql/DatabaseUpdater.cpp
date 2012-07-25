@@ -938,6 +938,14 @@ DatabaseUpdater::deleteAllRedundant( const QString &type )
 }
 
 void
+DatabaseUpdater::deleteOrphanedByUrl( const QString &table )
+{
+    SqlStorage *storage = m_collection->sqlStorage();
+    QString query( "DELETE FROM %1 WHERE url NOT IN ( SELECT id FROM urls )" );
+    storage->query( query.arg( table ) );
+}
+
+void
 DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
 {
     SqlStorage *storage = m_collection->sqlStorage();

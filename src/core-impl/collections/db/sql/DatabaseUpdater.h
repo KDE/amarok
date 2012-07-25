@@ -76,9 +76,15 @@ public:
      *  Note: it can handle also the directories table but that is better
      *  be left to the ScannerProcessor
      *
-     *  TODO: also check the remainding 11 tables
+     *  TODO: also check the remainding 8 tables
      */
-    void deleteAllRedundant( const QString &table );
+    void deleteAllRedundant( const QString &type );
+
+    /**
+     * Use on tables that link to non-existent entries in the urls table, for example
+     * urls_labels, statistics, lyrics. @param table must have a column named url.
+     */
+    void deleteOrphanedByUrl( const QString &table );
 
     void removeFilesInDir( int deviceid, const QString &rdir );
 

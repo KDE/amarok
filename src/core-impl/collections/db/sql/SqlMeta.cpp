@@ -1249,20 +1249,6 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
 }
 
 int
-SqlTrack::deviceId() const
-{
-    QReadLocker locker( &m_lock );
-    return m_deviceId;
-}
-
-QString
-SqlTrack::rpath() const
-{
-    QReadLocker locker( &m_lock );
-    return m_rpath;
-}
-
-int
 SqlTrack::id() const
 {
     QReadLocker locker( &m_lock );

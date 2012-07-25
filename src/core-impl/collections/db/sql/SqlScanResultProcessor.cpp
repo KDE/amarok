@@ -46,34 +46,7 @@ SqlScanResultProcessor::commit()
     DEBUG_BLOCK
 
     m_collection->sqlStorage()->clearLastErrors();
-
-    // -- fill the registry cache with all the tracks
-    // count the non skipped directories to find out if we should buffer all tracks before committing.
-    int nonSkippedDirectories = 0;
-    foreach( const CollectionScanner::Directory* dir, m_directories )
-        if( !dir->isSkipped() )
-        {
-            debug() << "in commit, dir not skipped" << dir->path();
-            nonSkippedDirectories++;
-        }
-
-    /*
-    if( nonSkippedDirectories > 0 && (m_directories.count() / nonSkippedDirectories < 3) )
-    {
-        debug() << "in commit, buffering all tracks";
-        // ok. enough directories changed. Use the query manager to read
-        // all the tracks into the cache in one go.
-        // that saves us a lot of single database queries later
-        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
-        qm->setQueryType( Collections::QueryMaker::Track );
-        qm->setBlocking( true );
-        qm->run();
-        qm->tracks( m_collection->collectionId() );
-        delete qm;
-    }
-    */
-
-    cacheUrlsInit();
+    urlsCacheInit();
 
     // -- call the base implementation
     ScanResultProcessor::commit();
@@ -98,10 +71,16 @@ SqlScanResultProcessor::unblockUpdates()
 void
 SqlScanResultProcessor::commitDirectory( CollectionScanner::Directory *directory )
 {
-    // --- updated the directory entry
-    int dirId = m_collection->registry()->getDirectory( directory->path(), directory->mtime() );
+    QString path = directory->path();
+    // a bit of paranoia:
+    if( m_foundDirectories.contains( path ) )
+        warning() << "commitDirectory(): duplicate directory path" << path << "in"
+                  << "collectionscanner output. This shouldn't happen.";
+
+    // getDirectory() updates the directory entry mtime:
+    int dirId = m_collection->registry()->getDirectory( path, directory->mtime() );
     m_directoryIds.insert( directory, dirId );
-    m_foundDirectories.insert( dirId, directory );
+    m_foundDirectories.insert( path, dirId );
 
     ScanResultProcessor::commitDirectory( directory );
 }
@@ -112,8 +91,8 @@ SqlScanResultProcessor::commitAlbum( CollectionScanner::Album *album )
     // debug() << "SRP::commitAlbum on"<<album->name()<< "artist"<<album->artist();
 
     // --- get or create the album
-    KSharedPtr<Meta::SqlAlbum> metaAlbum;
-    metaAlbum = KSharedPtr<Meta::SqlAlbum>::staticCast( m_collection->getAlbum( album->name(), album->artist() ) );
+    Meta::SqlAlbumPtr metaAlbum;
+    metaAlbum = Meta::SqlAlbumPtr::staticCast( m_collection->getAlbum( album->name(), album->artist() ) );
     m_albumIds.insert( album, metaAlbum->id() );
 
     // --- add all tracks
@@ -147,16 +126,20 @@ void
 SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
                                      CollectionScanner::Album *srcAlbum )
 {
+    Q_ASSERT( track );
     Q_ASSERT( srcAlbum );
 
+    Q_ASSERT( m_directoryIds.contains( track->directory() ) );
     int directoryId = m_directoryIds.value( track->directory() );
+    Q_ASSERT( m_albumIds.contains( srcAlbum ) );
     int albumId = m_albumIds.value( srcAlbum );
 
     QString uid = track->uniqueid();
     if( uid.isEmpty() )
     {
-        warning() << "got track with no unique id from the scanner, not adding";
-        m_lastErrors.append( QString("Not adding track %1 because it has no unique id").
+        warning() << "commitTrack(): got track with empty unique id from the scanner,"
+                  << "not adding it";
+        m_lastErrors.append( QString( "Not adding track %1 because it has no unique id." ).
                              arg(track->path()) );
         return;
     }
@@ -167,58 +150,66 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
 
     if( m_foundTracks.contains( uid ) )
     {
-        warning() << "track"<<track->path()<<"with uid"<<uid<<"already committed. There seems to be a duplicate uid.";
-        m_lastErrors.append( QString("Track %1 with uid %2 already committed. There seems to be a duplicate uid.").
-                                     arg(track->path(), uid) );
+        const UrlEntry old = m_urlsCache.value( m_uidCache.value( uid ) );
+        QString text = QString( "When commiting track %1 with uid %2 we detected that the "
+                "same uid is already commited. This means that you most probably have "
+                "duplicates in your collection folders. The offending track is %3." ).arg(
+                track->path(), uid, old.path );
+        warning() << "commitTrack():" << text.toLocal8Bit().data();
+        m_lastErrors.append( text );
         return;
     }
-    m_foundTracks.insert( uid );
 
-    // --- find an existing track by uid
-    KSharedPtr<Meta::SqlTrack> metaTrack;
-    if( m_urlsCacheUid.contains( uid ) )
+    Meta::SqlTrackPtr metaTrack;
+    UrlEntry entry;
+    // find an existing track by uid
+    if( m_uidCache.contains( uid ) )
     {
-        UrlEntry entry = m_urlsCache.value( m_urlsCacheUid.value( uid ) );
-        cacheUrlsRemove( entry.id ); // remove the old cache entry
+        // uid is sadly not unique. Try to find the best url id.
+        int urlId = findBestUrlId( uid, track->path() );
+        Q_ASSERT( urlId > 0 );
+        Q_ASSERT( m_urlsCache.contains( urlId ) );
+        entry = m_urlsCache.value( urlId );
         entry.path = track->path();
         entry.directoryId = directoryId;
-        cacheUrlsInsert( entry );
 
-        // check if there is an older track at the same position.
-        if( m_urlsCachePath.contains( track->path() ) )
-        {
-            const UrlEntry &otherEntry = m_urlsCache.value( m_urlsCachePath.value( track->path() ) );
-            if( entry.id != otherEntry.id )
-            {
-                removeTrack( otherEntry.id, otherEntry.uid );
-                cacheUrlsRemove( otherEntry.id );
-            }
-        }
-        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_collection->trackForUrl( uid ) );
+        metaTrack = Meta::SqlTrackPtr::staticCast( m_collection->registry()->getTrack( urlId ) );
+        Q_ASSERT( metaTrack->urlId() == entry.id );
     }
-    // --- find an existing track by path or create a new one
-    if( !metaTrack )
+    // find an existing track by path
+    else if( m_pathCache.contains( track->path() ) )
     {
-        UrlEntry entry;
-        entry.id = -1;
-        entry.path = track->path();
-        if( m_urlsCachePath.contains( track->path() ) )
-        {
-            UrlEntry entry = m_urlsCache.value( m_urlsCachePath.value( track->path() ) );
-            cacheUrlsRemove( entry.id ); // remove the old cache entry
-        }
+        int urlId = m_pathCache.value( track->path() );
+        Q_ASSERT( m_urlsCache.contains( urlId ) );
+        entry = m_urlsCache.value( urlId );
         entry.uid = uid;
         entry.directoryId = directoryId;
-        cacheUrlsInsert( entry ); // and insert it again (or new)
 
-        metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( m_collection->getTrack( deviceId, rpath, directoryId, uid ) );
+        metaTrack = Meta::SqlTrackPtr::staticCast( m_collection->registry()->getTrack( urlId ) );
+        Q_ASSERT( metaTrack->urlId() == entry.id );
+    }
+    // create a new one
+    else
+    {
+        static int autoDecrementId = -1;
+        entry.id = autoDecrementId--;
+        entry.path = track->path();
+        entry.uid = uid;
+        entry.directoryId = directoryId;
+
+        metaTrack = Meta::SqlTrackPtr::staticCast( m_collection->getTrack( deviceId, rpath, directoryId, uid ) );
     }
 
     if( !metaTrack )
     {
-        warning() << "Something went wrong when importing track"<<track->path();
+        QString text = QString( "Something went wrong when importing track %1, metaTrack "
+                "is null while it shouldn't be." ).arg( track->path() );
+        warning() << "commitTrack():" << text.toLocal8Bit().data();
+        m_lastErrors.append( text );
         return;
     }
+    urlsCacheInsert( entry ); // removes the previous entry (by id) first if necessary
+    m_foundTracks.insert( uid, entry.id );
 
     // TODO: we need to check the modified date of the file agains the last updated of the file
     // to figure out if the track information was updated from outside Amarok.
@@ -319,11 +310,10 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     metaTrack->setWriteFile( true );
 }
 
-
-
 void
 SqlScanResultProcessor::deleteDeletedDirectories()
 {
+    DEBUG_BLOCK
     SqlStorage *storage = m_collection->sqlStorage();
 
     // -- get a list of all mounted device ids
@@ -331,21 +321,50 @@ SqlScanResultProcessor::deleteDeletedDirectories()
     QString deviceIds;
     foreach( int id, idList )
     {
-        if ( !deviceIds.isEmpty() ) deviceIds += ',';
+        if ( !deviceIds.isEmpty() )
+            deviceIds += ',';
         deviceIds += QString::number( id );
     }
 
     // -- get all (mounted) directories
-    QString query = QString( "SELECT id FROM directories "
-                             "WHERE deviceid IN (%1);").arg( deviceIds );
-
+    QString query = QString( "SELECT id, deviceid, dir FROM directories "
+                             "WHERE deviceid IN (%1)" ).arg( deviceIds );
     QStringList res = storage->query( query );
 
     // -- check if the have been found during the scan
     for( int i = 0; i < res.count(); )
     {
-        int dirId = res.at(i++).toInt();
-        if( !m_foundDirectories.contains( dirId ) )
+        int dirId = res.at( i++ ).toInt();
+        int deviceId = res.at( i++ ).toInt();
+        QString dir = res.at( i++ );
+
+        /* we need to match directories by their (absolute) path, otherwise following
+         * scenario triggers statistics loss (bug 298275):
+         *
+         * 1. user relocates collection to different filesystem, but clones path structure
+         *    or toggles MassStorageDeviceHandler enabled in Config -> plugins.
+         * 2. collectionscanner knows nothings about directory ids, so it doesn't detect
+         *    any track changes and emits a bunch of skipped (unchanged) dirs with no
+         *    tracks.
+         * 3. SqlRegistry::getDirectory() called there from returns different directory id
+         *    then in past.
+         * 4. deleteDeletedDirectories() is called, and if it operates on directory ids,
+         *    it happily removes _all_ directories, taking tracks with it.
+         * 5. Tracks disappear from the UI until full rescan, stats, lyrics, labels are
+         *    lost forever.
+         */
+        QString path = m_collection->mountPointManager()->getAbsolutePath( deviceId, dir );
+        bool deleteThisDir = false;
+        if( !m_foundDirectories.contains( path ) )
+            deleteThisDir = true;
+        else if( m_foundDirectories.value( path ) != dirId )
+        {
+            int newDirId = m_foundDirectories.value( path );
+            // as a safety measure, we don't delete the old dir if relocation fails
+            deleteThisDir = relocateTracksToNewDirectory( dirId, newDirId );
+        }
+
+        if( deleteThisDir )
         {
             deleteDeletedTracks( dirId );
             query = QString( "DELETE FROM directories WHERE id = %1;" ).arg( dirId );
@@ -357,6 +376,7 @@ SqlScanResultProcessor::deleteDeletedDirectories()
 void
 SqlScanResultProcessor::deleteDeletedTracks( CollectionScanner::Directory *directory )
 {
+    Q_ASSERT( m_directoryIds.contains( directory ) );
     int directoryId = m_directoryIds.value( directory );
     deleteDeletedTracks( directoryId );
 }
@@ -365,35 +385,114 @@ void
 SqlScanResultProcessor::deleteDeletedTracks( int directoryId )
 {
     // -- find all tracks
-    QList<int> urlIds = m_urlsCacheDirectory.values( directoryId );
+    QList<int> urlIds = m_directoryCache.values( directoryId );
 
     // -- check if the tracks have been found during the scan
     foreach( int urlId, urlIds )
     {
-        QString uid = m_urlsCache.value( urlId ).uid;
-
-        if( !m_foundTracks.contains( uid ) )
+        Q_ASSERT( m_urlsCache.contains( urlId ) );
+        const UrlEntry &entry = m_urlsCache[ urlId ];
+        Q_ASSERT( entry.directoryId == directoryId );
+        // we need to match both uid and url id, because uid is not unique
+        if( !m_foundTracks.contains( entry.uid, entry.id ) )
         {
-            removeTrack( urlId, uid );
-            cacheUrlsRemove( urlId );
+            removeTrack( entry );
+            urlsCacheRemove( entry );
         }
     }
 }
 
-void
-SqlScanResultProcessor::removeTrack( int urlId, const QString uid )
+int
+SqlScanResultProcessor::findBestUrlId( const QString &uid, const QString &path )
 {
-    debug() << "deleteTrack" << uid <<"url id"<< urlId;
-    if( m_collection->registry()->m_uidMap.contains( uid ) )
-        static_cast<Meta::SqlTrack*>(const_cast<Meta::Track*>(m_collection->registry()->m_uidMap.value( uid ).data()))->remove();
-    else
-        m_collection->registry()->removeTrack( urlId, uid );
+    QList<int> urlIds = m_uidCache.values( uid );
+    if( urlIds.isEmpty() )
+        return -1;
+    if( urlIds.size() == 1 )
+        return urlIds.at( 0 ); // normal operation
+
+    foreach( int testedUrlId, urlIds )
+    {
+        Q_ASSERT( m_urlsCache.contains( testedUrlId ) );
+        if( m_urlsCache[ testedUrlId ].path == path )
+            return testedUrlId;
+    }
+
+    warning() << "multiple url entries with uid" << uid << "found in the database, but"
+              << "none with current path" << path << "Choosing blindly the last one out"
+              << "of url id candidates" << urlIds;
+    return urlIds.last();
 }
 
+bool
+SqlScanResultProcessor::relocateTracksToNewDirectory( int oldDirId, int newDirId )
+{
+    QList<int> urlIds = m_directoryCache.values( oldDirId );
+    if( urlIds.isEmpty() )
+        return true; // nothing to do
+
+    MountPointManager *manager = m_collection->mountPointManager();
+    SqlRegistry *reg = m_collection->registry();
+    SqlStorage *storage = m_collection->sqlStorage();
+
+    // sanity checking, not strictly needed, but imagine new device appearing in the
+    // middle of the scan, so rather prevent db corruption:
+    QStringList res = storage->query( QString( "SELECT deviceid FROM directories "
+                                               "WHERE id = %1" ).arg( newDirId ) );
+    if( res.count() != 1 )
+    {
+        warning() << "relocateTracksToNewDirectory(): no or multiple entries when"
+                  << "quering directory with id" << newDirId;
+        return false;
+    }
+    int newDirDeviceId = res.at( 0 ).toInt();
+
+    foreach( int urlId, urlIds )
+    {
+        Q_ASSERT( m_urlsCache.contains( urlId ) );
+        UrlEntry entry = m_urlsCache.value( urlId );
+        Meta::SqlTrackPtr track = Meta::SqlTrackPtr::staticCast( reg->getTrack( urlId ) );
+        Q_ASSERT( track );
+
+        // not strictly needed, but we want to sanity check it to prevent corrupt db
+        int deviceId = manager->getIdForUrl( entry.path );
+        if( newDirDeviceId != deviceId )
+        {
+            warning() << "relocateTracksToNewDirectory(): device id from newDirId ("
+                      << res.at( 0 ).toInt() << ") and device id from mountPointManager ("
+                      << deviceId << ") don't match!";
+            return false;
+        }
+        QString rpath = manager->getRelativePath( deviceId, entry.path );
+
+        track->setUrl( deviceId, rpath, newDirId );
+        entry.directoryId = newDirId;
+        urlsCacheInsert( entry ); // removes the previous entry (by id) first
+    }
+    return true;
+}
 
 void
-SqlScanResultProcessor::cacheUrlsInit()
+SqlScanResultProcessor::removeTrack( const UrlEntry &entry )
 {
+    debug() << "removeTrack(" << entry << ")";
+    if( !m_lastErrors.isEmpty() )
+    {
+        warning() << "removeTrack(): there were errors, skipping destructive operations";
+        return;
+    }
+
+    SqlRegistry *reg = m_collection->registry();
+    // we must get the track by id, uid is not unique
+    Meta::SqlTrackPtr track = Meta::SqlTrackPtr::staticCast( reg->getTrack( entry.id ) );
+    Q_ASSERT( track->urlId() == entry.id );
+    track->remove();
+}
+
+void
+SqlScanResultProcessor::urlsCacheInit()
+{
+    DEBUG_BLOCK
     SqlStorage *storage = m_collection->sqlStorage();
 
     QString query = QString( "SELECT id, deviceid, rpath, directory, uniqueid FROM urls;");
@@ -407,13 +506,11 @@ SqlScanResultProcessor::cacheUrlsInit()
         int directoryId = res.at(i++).toInt();
         QString uid = res.at(i++);
 
-        if( !directoryId && !rpath.isEmpty() )
-        {
-            warning() << "Found urls entry without directory. A phantom track. Removing"<<rpath;
-            removeTrack( id, uid );
-        }
-
-        QString path = m_collection->mountPointManager()->getAbsolutePath( deviceId, rpath );
+        QString path;
+        if( deviceId )
+            path = m_collection->mountPointManager()->getAbsolutePath( deviceId, rpath );
+        else
+            path = rpath;
 
         UrlEntry entry;
         entry.id = id;
@@ -421,41 +518,60 @@ SqlScanResultProcessor::cacheUrlsInit()
         entry.directoryId = directoryId;
         entry.uid = uid;
 
-        cacheUrlsInsert( entry );
+        if( !directoryId )
+        {
+            warning() << "Found urls entry without directory. A phantom track. Removing" << path;
+            removeTrack( entry );
+            continue;
+        }
+
+        urlsCacheInsert( entry );
     }
 }
 
 void
-SqlScanResultProcessor::cacheUrlsInsert( UrlEntry entry )
+SqlScanResultProcessor::urlsCacheInsert( const UrlEntry &entry )
 {
-    if( !m_urlsCache.contains( entry.id ) )
-        cacheUrlsRemove( entry.id );
+    // this case is normal operation
+    if( m_urlsCache.contains( entry.id ) )
+        urlsCacheRemove( m_urlsCache[ entry.id ] );
 
-    if( !entry.path.isEmpty() && m_urlsCachePath.contains( entry.path ) ) {
-        // no idea how this can happen, but we clean it up
-        debug() << "Duplicate path in database:"<<entry.path;
-        removeTrack( entry.id, entry.uid ); // this will not delete the statistics
-        entry.path.clear();
+    // following shoudn't normally happen:
+    if( m_pathCache.contains( entry.path ) )
+    {
+        int oldId = m_pathCache.value( entry.path );
+        Q_ASSERT( m_urlsCache.contains( oldId ) );
+        const UrlEntry &old = m_urlsCache[ oldId ];
+        warning() << "urlsCacheInsert(): found duplicate in path. old" << old
+                  << "will be hidden by the new one in the cache:" << entry;
     }
+
+    // this will signify error in this class:
+    Q_ASSERT( !m_uidCache.contains( entry.uid, entry.id ) );
+    Q_ASSERT( !m_directoryCache.contains( entry.directoryId, entry.id ) );
 
     m_urlsCache.insert( entry.id, entry );
-    m_urlsCacheUid.insert( entry.uid, entry.id );
-    m_urlsCachePath.insert( entry.path, entry.id );
-    m_urlsCacheDirectory.insert( entry.directoryId, entry.id );
+    m_uidCache.insert( entry.uid, entry.id );
+    m_pathCache.insert( entry.path, entry.id );
+    m_directoryCache.insert( entry.directoryId, entry.id );
 }
 
 void
-SqlScanResultProcessor::cacheUrlsRemove( int id )
+SqlScanResultProcessor::urlsCacheRemove( const UrlEntry &entry )
 {
-    if( !m_urlsCache.contains( id ) )
+    if( !m_urlsCache.contains( entry.id ) )
         return;
 
-    const UrlEntry &entry = m_urlsCache.value( id );
-    m_urlsCacheUid.remove( entry.uid );
-    m_urlsCachePath.remove( entry.path );
-    m_urlsCacheDirectory.remove( entry.directoryId, id );
-    m_urlsCache.remove( id );
+    m_uidCache.remove( entry.uid, entry.id );
+    m_pathCache.remove( entry.path );
+    m_directoryCache.remove( entry.directoryId, entry.id );
+    m_urlsCache.remove( entry.id );
 }
 
-#include "SqlScanResultProcessor.moc"
-
+QDebug
+operator<<( QDebug dbg, const SqlScanResultProcessor::UrlEntry &entry )
+{
+     dbg.nospace() << "Entry(id=" << entry.id << ", path=" << entry.path << ", dirId="
+                   << entry.directoryId << ", uid=" << entry.uid << ")";
+     return dbg.space();
+}
