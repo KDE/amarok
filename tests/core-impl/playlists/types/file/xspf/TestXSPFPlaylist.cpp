@@ -20,20 +20,18 @@
 #include "TestXSPFPlaylist.h"
 
 #include "config-amarok-test.h"
+#include "EngineController.h"
+#include "core/support/Components.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 
-#include "core/support/Components.h"
-#include "EngineController.h"
-
 #include <KStandardDirs>
+#include <qtest_kde.h>
+#include <ThreadWeaver/Weaver>
 
 #include <QDebug>
-
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
-
-#include <qtest_kde.h>
 
 QTEST_KDEMAIN_CORE( TestXSPFPlaylist )
 
@@ -49,31 +47,35 @@ TestXSPFPlaylist::dataPath( const QString &relPath )
 
 void TestXSPFPlaylist::initTestCase()
 {
-  
-    //apparently the engine controller is needed somewhere, or we will get a crash...
+    // EngineController is used in a connection in MetaProxy::Track; avoid null sender
+    // warning
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );
-  
+
+    qRegisterMetaType<Meta::TrackPtr>( "Meta::TrackPtr" );
+
     const QString testXspf = "data/playlists/test.xspf";
     const KUrl url = dataPath( testXspf );
     qDebug() << "got playlist path: " << url.url();
-    
-    
+
     //we need to copy this laylist file to a temp dir as some of the tests we do will delete/overwrite it
     QString tempPath = KStandardDirs::locateLocal( "tmp", "test.xspf" );
     qDebug() << "got temp path: " << tempPath;
     QFile::remove( tempPath );
     QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
     QVERIFY( QFile::exists( tempPath ) );
-    
+
     m_testPlaylist1 = new Playlists::XSPFPlaylist( tempPath, false );
-    
 }
 
 void TestXSPFPlaylist::cleanupTestCase()
 {
     QFile::remove( KStandardDirs::locateLocal( "tmp", "test.xspf" ) );
+    // Wait for other jobs, like MetaProxys fetching meta data, to finish
+    ThreadWeaver::Weaver::instance()->finish();
+
     delete m_testPlaylist1;
+    delete Amarok::Components::setEngineController( 0 );
 }
 
 void TestXSPFPlaylist::testSetAndGetName()

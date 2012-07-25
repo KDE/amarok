@@ -15,13 +15,13 @@ target_link_libraries( testm3uplaylist ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDE
 
 set( testplsplaylist_SRCS pls/TestPLSPlaylist.cpp )
 kde4_add_unit_test( testplsplaylist ${testplsplaylist_SRCS} )
-target_link_libraries( testplsplaylist ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} amarokcore amaroklib )
+target_link_libraries( testplsplaylist ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} amarokcore amaroklib )
 
 #------------------------ Test XSPFPLAYLIST -----------------------------
 
 set( testxspfplaylist_SRCS xspf/TestXSPFPlaylist.cpp )
 kde4_add_unit_test( testxspfplaylist ${testxspfplaylist_SRCS} )
-target_link_libraries( testxspfplaylist ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} amarokcore amaroklib )
+target_link_libraries( testxspfplaylist ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} amarokcore amaroklib )
 
 #------------------------ Test PlaylistFileSupport -----------------------------
 
