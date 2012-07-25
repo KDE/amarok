@@ -70,11 +70,12 @@ NepomukCollection::NepomukCollection()
         m_nepomukCollectionReady = false;
         warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk. Nepomuk Plugin won't be loaded";
     }
+
+    emit collectionUpdated();
 }
 
 NepomukCollection::~NepomukCollection()
 {
-    m_nepomukCollectionReady = false;
 }
 
 Collections::QueryMaker*
@@ -113,7 +114,8 @@ NepomukCollection::isWritable() const
 {
     // Nepomuk if initialized is always writable
     // A check for nepomuk initialized will suffice
-    return m_nepomukCollectionReady;
+    //return m_nepomukCollectionReady;
+    return true;
 }
 
 void

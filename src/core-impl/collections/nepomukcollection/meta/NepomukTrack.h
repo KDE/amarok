@@ -93,6 +93,9 @@ public:
     // TODO
     //void setYear( NepomukYearPtr year );
 
+    // Non pure virtual functions
+    virtual bool inCollection() const;
+
 private:
 
     Nepomuk::Resource m_resource;

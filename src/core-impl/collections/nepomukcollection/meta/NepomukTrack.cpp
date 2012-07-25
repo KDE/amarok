@@ -99,12 +99,7 @@ NepomukTrack::uidUrl() const
 bool
 NepomukTrack::isPlayable() const
 {
-    if( m_kurl.isLocalFile() )
-    {
-        return QFile::exists( m_kurl.fileName() ) && m_kurl.isValid();
-    }
-
-    else return m_kurl.isValid();
+    return m_kurl.isValid();
 }
 
 AlbumPtr
@@ -214,7 +209,7 @@ NepomukTrack::modifyDate() const
 {
 
     return m_resource.property( Nepomuk::Vocabulary::NIE::contentLastModified() )
-           .toDateTime();
+            .toDateTime();
 }
 
 int
@@ -290,3 +285,13 @@ NepomukTrack::setAlbum( NepomukAlbumPtr album )
 
 // TODO
 // NepomukYear?
+
+// non pure virtual functions
+bool
+NepomukTrack::inCollection() const
+{
+    if ( m_resource.isValid() )
+        return true;
+    else return false;
+}
+

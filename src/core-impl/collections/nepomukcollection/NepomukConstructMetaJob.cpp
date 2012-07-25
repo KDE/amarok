@@ -82,21 +82,31 @@ NepomukConstructMetaJob::run()
         NepomukTrackPtr nepTrackPtr( new NepomukTrack( trackRes ) );
 
         QString artistLabel = trackRes.property( Nepomuk::Vocabulary::NMM::performer() ).toResource().genericLabel();
-        debug() << "Artist found :" << artistLabel;
-        nepArtistPtr = new NepomukArtist( artistLabel );
-        nepTrackPtr->setArtist( nepArtistPtr );
+        if ( !artistLabel.isEmpty() )
+        {
+            debug() << "Artist found :" << artistLabel;
+            nepArtistPtr = new NepomukArtist( artistLabel );
+            nepTrackPtr->setArtist( nepArtistPtr );
+        }
 
         QString genreLabel = trackRes.property( Nepomuk::Vocabulary::NMM::genre() ).toString();
-        debug() << "Genre found :" << genreLabel;
-        nepGenrePtr = new NepomukGenre( genreLabel ) ;
-        nepTrackPtr->setGenre( nepGenrePtr );
+        if ( !genreLabel.isEmpty() )
+        {
+            debug() << "Genre found :" << genreLabel;
+            nepGenrePtr = new NepomukGenre( genreLabel ) ;
+            nepTrackPtr->setGenre( nepGenrePtr );
+        }
 
         QString composerLabel = trackRes.property( Nepomuk::Vocabulary::NMM::composer() ).toResource().genericLabel();
-        debug() << "Composer found :" << composerLabel;
-        nepComposerPtr = new NepomukComposer( composerLabel ) ;
-        nepTrackPtr->setComposer( nepComposerPtr );
+        if ( !composerLabel.isEmpty() )
+        {
+            debug() << "Composer found :" << composerLabel;
+            nepComposerPtr = new NepomukComposer( composerLabel ) ;
+            nepTrackPtr->setComposer( nepComposerPtr );
+        }
 
         QString albumLabel = trackRes.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toResource().genericLabel();
+
         debug() << "Album found :" << albumLabel;
         nepAlbumPtr = new NepomukAlbum( albumLabel, ArtistPtr::staticCast( nepArtistPtr ) ) ;
         nepTrackPtr->setAlbum( nepAlbumPtr );
@@ -108,7 +118,6 @@ NepomukConstructMetaJob::run()
         debug() << "inserting track with track name : " << trackPtr->name();
 
         emit incrementProgress();
-        emit m_coll->collectionUpdated();
     }
 
     emit endProgressOperation( this );
