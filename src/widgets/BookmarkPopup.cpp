@@ -104,7 +104,7 @@ void BookmarkPopup::paintEvent ( QPaintEvent* event )
     p.drawPixmap ( m_deleteIconRect.x(), m_deleteIconRect.y(), m_deleteIcon.pixmap ( 16 ) );
 
     p.setOpacity ( 1 );
-    p.drawPixmap ( 5, 1, The::svgHandler()->renderSvg ( "bookmark", 6, 20, "bookmark" ) );
+    p.drawPixmap ( 5, 1, The::svgHandler()->renderSvg ( "bookmarks", 6, 20, "bookmarks" ) );
 
     p.setPen ( Qt::gray );
     rect = QRect ( 15, 3, m_width, m_lineHeight );
