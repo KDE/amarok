@@ -53,6 +53,8 @@ Meta::AlbumKey::operator<( const Meta::AlbumKey &other ) const
 }
 
 Meta::TrackKey::TrackKey()
+    : m_discNumber( 0 )
+    , m_trackNumber( 0 )
 {
 }
 

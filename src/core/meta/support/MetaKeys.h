@@ -22,6 +22,8 @@
 
 #include <QHash>
 
+class TestMetaTrackKey;
+
 namespace Meta
 {
 
@@ -68,6 +70,9 @@ namespace Meta
 
             friend bool operator==( const TrackKey &k1, const TrackKey &k2 );
             friend uint qHash( const TrackKey &key );
+
+            // Required for unit testing
+            friend class ::TestMetaTrackKey;
     };
 
 
