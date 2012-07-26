@@ -1,5 +1,5 @@
-#include "spotifyconfigwidget.h"
-#include "ui_spotifyconfigwidget.h"
+#include "SpotifyConfigWidget.h"
+#include "ui_SpotifyConfigWidget.h"
 
 SpotifyConfigWidget::SpotifyConfigWidget(QWidget *parent) :
     QWidget(parent),
