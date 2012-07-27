@@ -106,10 +106,12 @@ NepomukConstructMetaJob::run()
         }
 
         QString albumLabel = trackRes.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toResource().genericLabel();
-
-        debug() << "Album found :" << albumLabel;
-        nepAlbumPtr = new NepomukAlbum( albumLabel, ArtistPtr::staticCast( nepArtistPtr ) ) ;
-        nepTrackPtr->setAlbum( nepAlbumPtr );
+        if ( !albumLabel.isEmpty() )
+        {
+            debug() << "Album found :" << albumLabel;
+            nepAlbumPtr = new NepomukAlbum( albumLabel, ArtistPtr::staticCast( nepArtistPtr ) ) ;
+            nepTrackPtr->setAlbum( nepAlbumPtr );
+        }
 
         TrackPtr trackPtr =  TrackPtr::staticCast( nepTrackPtr );
 

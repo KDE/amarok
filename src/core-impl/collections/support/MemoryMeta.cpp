@@ -145,6 +145,9 @@ Album::updateCachedValues()
         Track *memoryTrack = static_cast<Track *>( track.data() );
         Meta::AlbumPtr album = memoryTrack->originalTrack()->album();
 
+        if( !album )
+            continue;
+
         if( !m_isCompilation )
             m_isCompilation = album->isCompilation();
         if( !m_canUpdateCompilation )
