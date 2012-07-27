@@ -42,7 +42,7 @@
 using namespace Meta;
 using namespace Nepomuk::Query;
 
-NepomukTrack::NepomukTrack( Nepomuk::Resource resource )
+NepomukTrack::NepomukTrack( Nepomuk::Resource resource, NepomukCollection* coll )
     : Track()
     , m_resource( resource )
     , m_artist( 0 )
@@ -50,6 +50,7 @@ NepomukTrack::NepomukTrack( Nepomuk::Resource resource )
     , m_composer( 0 )
     , m_album( 0 )
     , m_year( 0 )
+    , m_coll( coll )
 
 {
     m_kurl = m_resource.toFile().url();
@@ -176,7 +177,9 @@ NepomukTrack::setRating( int newRating )
 qint64
 NepomukTrack::length() const
 {
-    return m_resource.property( Nepomuk::Vocabulary::NFO::duration() ).toInt64();
+
+    qint64 len = m_resource.property( Nepomuk::Vocabulary::NFO::duration() ).toInt64();
+    return len;
 }
 
 int
@@ -295,3 +298,8 @@ NepomukTrack::inCollection() const
     else return false;
 }
 
+Collections::Collection*
+NepomukTrack::collection() const
+{
+    return m_coll;
+}

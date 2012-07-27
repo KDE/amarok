@@ -79,7 +79,7 @@ NepomukConstructMetaJob::run()
         NepomukAlbumPtr nepAlbumPtr;
 
         // check if track doesn't already exist in TrackMap
-        NepomukTrackPtr nepTrackPtr( new NepomukTrack( trackRes ) );
+        NepomukTrackPtr nepTrackPtr( new NepomukTrack( trackRes, m_coll ) );
 
         QString artistLabel = trackRes.property( Nepomuk::Vocabulary::NMM::performer() ).toResource().genericLabel();
         if ( !artistLabel.isEmpty() )

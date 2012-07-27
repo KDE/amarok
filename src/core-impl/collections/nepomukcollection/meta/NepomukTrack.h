@@ -49,7 +49,7 @@ class NepomukTrack : public Track
 {
 public:
     // construct a NepomukTrack out of a Nepomuk resource
-    NepomukTrack( Nepomuk::Resource resource );
+    NepomukTrack( Nepomuk::Resource resource, NepomukCollection* coll );
     // construct a NepomukTrack out of a url
 
     ~NepomukTrack();
@@ -96,6 +96,11 @@ public:
     // Non pure virtual functions
     virtual bool inCollection() const;
 
+    /**
+      * This should be implemented, else breaks TagDialog::getTagsFromTrack()
+      */
+    virtual Collections::Collection* collection() const;
+
 private:
 
     Nepomuk::Resource m_resource;
@@ -107,6 +112,7 @@ private:
     LabelList m_labellist;
     KUrl m_kurl;
     QString m_name;
+    NepomukCollection *m_coll;
 };
 
 }
