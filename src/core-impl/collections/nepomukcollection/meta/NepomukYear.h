@@ -36,12 +36,11 @@ typedef QList<NepomukYearPtr> NepomukYearList;
 class NepomukYear : public Year
 {
 public:
-    NepomukYear( NepomukCollection const *collection, const Nepomuk::Resource resource );
+    NepomukYear( const Nepomuk::Resource resource );
     virtual TrackList tracks();
     virtual QString name() const;
 
 private:
-    NepomukCollection *m_collection;
     Nepomuk::Resource m_resource;
 
 };
