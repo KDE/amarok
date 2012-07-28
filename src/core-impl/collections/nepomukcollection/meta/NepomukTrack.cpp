@@ -68,14 +68,14 @@ NepomukTrack::name() const
     //TODO
     // Might have to check for hasProperty in all functions
 
-    return m_name;
+    return m_resource.genericLabel();
 }
 
 
 QString
 NepomukTrack::prettyName() const
 {
-    return m_resource.genericLabel();
+    return m_name;
 }
 
 KUrl
@@ -212,7 +212,7 @@ NepomukTrack::modifyDate() const
 {
 
     return m_resource.property( Nepomuk::Vocabulary::NIE::contentLastModified() )
-            .toDateTime();
+           .toDateTime();
 }
 
 int
@@ -293,7 +293,7 @@ NepomukTrack::setAlbum( NepomukAlbumPtr album )
 bool
 NepomukTrack::inCollection() const
 {
-    if ( m_resource.isValid() )
+    if( m_resource.isValid() )
         return true;
     else return false;
 }
