@@ -34,7 +34,7 @@ typedef QList<NepomukArtistPtr> NepomukArtistList;
 class NepomukArtist : public Artist
 {
 public:
-    NepomukArtist( QString &name );
+    NepomukArtist( const QString &name );
 
     virtual TrackList tracks();
 
@@ -46,7 +46,7 @@ public:
       * This is called during the construction of the meta maps
       * in the constructor of NepomukCollection
       */
-    void addTrack( TrackPtr trackPtr );
+    void addTrack( const TrackPtr trackPtr );
 
 private:
     QString m_name;

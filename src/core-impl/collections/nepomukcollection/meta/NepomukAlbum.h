@@ -34,8 +34,8 @@ typedef QList<NepomukAlbumPtr> NepomukAlbumList;
 class NepomukAlbum : public Meta::Album
 {
 public:
-    NepomukAlbum( QString &name );
-    NepomukAlbum( QString &albumName, ArtistPtr artistPtr );
+    NepomukAlbum( const QString &name );
+    NepomukAlbum( const QString &albumName, const ArtistPtr artistPtr );
 
     virtual bool isCompilation() const;
     virtual bool hasAlbumArtist() const;
@@ -48,7 +48,7 @@ public:
       * This is called during the construction of the meta maps
       * in the constructor of NepomukCollection
       */
-    void addTrack( TrackPtr trackPtr );
+    void addTrack( const TrackPtr trackPtr );
 
 private:
 

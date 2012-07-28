@@ -42,7 +42,7 @@
 using namespace Meta;
 using namespace Nepomuk::Query;
 
-NepomukTrack::NepomukTrack( Nepomuk::Resource resource, NepomukCollection* coll )
+NepomukTrack::NepomukTrack( const Nepomuk::Resource resource, NepomukCollection* const coll )
     : Track()
     , m_resource( resource )
     , m_artist( 0 )

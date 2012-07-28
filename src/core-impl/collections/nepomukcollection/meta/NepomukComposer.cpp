@@ -36,7 +36,7 @@
 using namespace Meta;
 using namespace Nepomuk::Query;
 
-NepomukComposer::NepomukComposer( QString &name )
+NepomukComposer::NepomukComposer( const QString &name )
     : Meta::Composer()
     , m_name( name )
 {
@@ -46,30 +46,6 @@ NepomukComposer::NepomukComposer( QString &name )
 TrackList
 NepomukComposer::tracks()
 {
-//    // get all audio tracks
-//    ResourceTypeTerm tracks( Nepomuk::Vocabulary::NFO::Audio() );
-//    // get all composers/performers with given name
-//    ComparisonTerm composers( Nepomuk::Vocabulary::NMM::composer(),
-//                              LiteralTerm( m_name ) );
-//    // now 'and' the two
-//    Query query( AndTerm( tracks, composers ) );
-//    // get the result set from the constructed query
-//    QList<Result> results =
-//        QueryServiceClient::syncQuery( query );
-
-//    TrackList tracklist;
-
-//    // construct tracklist from the obtained result list
-//    Q_FOREACH( const Result & result, results )
-//    {
-
-//        debug() << "NepomukComposer : track : " << result.resource().genericLabel();
-
-//        NepomukTrackPtr track( new NepomukTrack( result.resource() ) );
-//        tracklist.append( Meta::TrackPtr::staticCast( track ) );
-
-//    }
-
     return m_tracks;
 }
 
@@ -80,7 +56,7 @@ NepomukComposer::name() const
 }
 
 void
-NepomukComposer::addTrack( TrackPtr trackPtr )
+NepomukComposer::addTrack( const TrackPtr trackPtr )
 {
     m_tracks.append( trackPtr );
 }

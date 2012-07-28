@@ -37,7 +37,7 @@
 using namespace Meta;
 using namespace Nepomuk::Query;
 
-NepomukAlbum::NepomukAlbum( QString &name )
+NepomukAlbum::NepomukAlbum( const QString &name )
     : Meta::Album()
     , m_name( name )
 {
@@ -46,7 +46,7 @@ NepomukAlbum::NepomukAlbum( QString &name )
     // TODO, check if album has unique artist
 }
 
-NepomukAlbum::NepomukAlbum( QString &albumName, ArtistPtr artistPtr )
+NepomukAlbum::NepomukAlbum( const QString &albumName, const ArtistPtr artistPtr )
     : Meta::Album()
     , m_name( albumName )
     , m_artist( artistPtr )
@@ -87,7 +87,7 @@ NepomukAlbum::name() const
 }
 
 void
-NepomukAlbum::addTrack( TrackPtr trackPtr )
+NepomukAlbum::addTrack( const TrackPtr trackPtr )
 {
     m_tracks.append( trackPtr );
 }

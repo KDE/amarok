@@ -25,7 +25,7 @@ using namespace Collections;
 using namespace Meta;
 using namespace Nepomuk::Query;
 
-NepomukYear::NepomukYear( NepomukCollection *collection, Nepomuk::Resource resource )
+NepomukYear::NepomukYear( NepomukCollection const *collection, const Nepomuk::Resource resource )
     : Meta::Year()
     , m_collection( collection )
     , m_resource( resource )

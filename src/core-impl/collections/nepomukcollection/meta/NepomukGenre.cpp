@@ -36,7 +36,7 @@
 using namespace Meta;
 using namespace Nepomuk::Query;
 
-NepomukGenre::NepomukGenre( QString &name )
+NepomukGenre::NepomukGenre( const QString &name )
     : Meta::Genre()
     , m_name( name )
 {
@@ -57,7 +57,7 @@ NepomukGenre::name() const
 }
 
 void
-NepomukGenre::addTrack( TrackPtr trackPtr )
+NepomukGenre::addTrack( const TrackPtr trackPtr )
 {
     m_tracks.append( trackPtr );
 }

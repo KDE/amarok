@@ -49,7 +49,7 @@ class NepomukTrack : public Track
 {
 public:
     // construct a NepomukTrack out of a Nepomuk resource
-    NepomukTrack( Nepomuk::Resource resource, NepomukCollection* coll );
+    NepomukTrack( const Nepomuk::Resource resource, NepomukCollection* const coll );
     // construct a NepomukTrack out of a url
 
     ~NepomukTrack();

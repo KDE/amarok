@@ -36,7 +36,7 @@
 using namespace Meta;
 using namespace Nepomuk::Query;
 
-NepomukArtist::NepomukArtist( QString &name )
+NepomukArtist::NepomukArtist( const QString &name )
     : Meta::Artist()
     , m_name( name )
 {
@@ -56,7 +56,7 @@ NepomukArtist::name() const
 }
 
 void
-NepomukArtist::addTrack( TrackPtr trackPtr )
+NepomukArtist::addTrack( const TrackPtr trackPtr )
 {
     m_tracks.append( trackPtr );
 }

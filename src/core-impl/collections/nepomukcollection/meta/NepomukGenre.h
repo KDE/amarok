@@ -37,7 +37,7 @@ typedef QList<NepomukGenrePtr> NepomukGenreList;
 class NepomukGenre : public Genre
 {
 public:
-    NepomukGenre( QString &name );
+    NepomukGenre( const QString &name );
 
     virtual TrackList tracks();
 
@@ -49,7 +49,7 @@ public:
       * This is called during the construction of the meta maps
       * in the constructor of NepomukCollection
       */
-    void addTrack( TrackPtr trackPtr );
+    void addTrack( const TrackPtr trackPtr );
 private:
     QString m_name;
     TrackList m_tracks;
