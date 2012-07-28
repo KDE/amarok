@@ -83,18 +83,20 @@ NepomukConstructMetaJob::run()
         // check if track doesn't already exist in TrackMap
         if( m_trackHash.contains( trackRes ) )
             continue;
-        // not present, construct the nepomuk track object and insert it
+        // not present, construct the nepomuk track object and insert it into HashMap
         NepomukTrackPtr nepTrackPtr( new NepomukTrack( trackRes, m_coll ) );
         m_trackHash.insert( trackRes, Meta::TrackPtr::staticCast( nepTrackPtr ) );
 
         Nepomuk::Resource artistRes = trackRes.property( Nepomuk::Vocabulary::NMM::performer() ).toResource();
         QString artistLabel = artistRes.genericLabel();
+        // check if artist doesn't already exist in HashMap
         if( m_artistHash.contains( artistRes ) )
         {
             debug() << "Artist already exists : " << artistLabel;
             ArtistPtr artistPtr = m_artistHash.value( artistRes );
             nepTrackPtr->setArtist( Meta::NepomukArtistPtr::staticCast( artistPtr ) );
         }
+        // not present, construct the nepomuk artist object and insert it into HashMap
         else
         {
             if( !artistLabel.isEmpty() )
@@ -107,12 +109,14 @@ NepomukConstructMetaJob::run()
         }
 
         QString genreLabel = trackRes.property( Nepomuk::Vocabulary::NMM::genre() ).toString();
+        // check if genre doesn't already exist in HashMap
         if( m_genreHash.contains( genreLabel ) )
         {
             debug() << "Genre already exists: " << genreLabel;
             GenrePtr genrePtr = m_genreHash.value( genreLabel );
             nepTrackPtr->setGenre( Meta::NepomukGenrePtr::staticCast( genrePtr ) );
         }
+        // not present, construct the nepomuk genre object and insert it into HashMap
         else
         {
             if( !genreLabel.isEmpty() )
@@ -126,12 +130,14 @@ NepomukConstructMetaJob::run()
 
         Nepomuk::Resource composerRes = trackRes.property( Nepomuk::Vocabulary::NMM::composer() ).toResource();
         QString composerLabel = composerRes.genericLabel();
+        // check if composer doesn't already exist in HashMap
         if( m_composerHash.contains( composerRes ) )
         {
             debug() << "Composer already exists : " << composerLabel;
             ComposerPtr composerPtr = m_composerHash.value( composerRes );
             nepTrackPtr->setComposer( Meta::NepomukComposerPtr::staticCast( composerPtr ) );
         }
+        // not present, construct the nepomuk composer object and insert it into HashMap
         else
         {
             if( !composerLabel.isEmpty() )
@@ -145,12 +151,14 @@ NepomukConstructMetaJob::run()
 
         Nepomuk::Resource albumRes = trackRes.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toResource();
         QString albumLabel = albumRes.genericLabel();
+        // check if album doesn't already exist in HashMap
         if( m_albumHash.contains( albumRes ) )
         {
             debug() << "Album already exists : " << albumLabel;
             AlbumPtr albumPtr = m_albumHash.value( albumRes );
             nepTrackPtr->setAlbum( Meta::NepomukAlbumPtr::staticCast( albumPtr ) );
         }
+        // not present, construct the nepomuk album object and insert it into HashMap
         else
         {
             if( !albumLabel.isEmpty() )
@@ -162,6 +170,9 @@ NepomukConstructMetaJob::run()
             }
         }
 
+        // the nepomuk track object is by now completely populated with whatever
+        // metadata that could be gathered.
+        // cast it and assign it to the MapChanger where it weilds its own magic.
         TrackPtr trackPtr =  TrackPtr::staticCast( nepTrackPtr );
 
         MemoryMeta::MapChanger mapChanger( m_mc.data() );
