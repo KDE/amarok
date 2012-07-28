@@ -24,8 +24,11 @@
 
 #include <ThreadWeaver/Job>
 #include <QSharedPointer>
+#include <Nepomuk/Resource>
+#include <QHash>
 
-namespace Collections {
+namespace Collections
+{
 
 class NepomukCollection;
 
@@ -53,6 +56,21 @@ private:
     QSharedPointer<Collections::MemoryCollection> m_mc;
     bool m_aborted;
     NepomukCollection* m_coll;
+
+    /** These hash maps are used to store each of the {meta}Ptr so that duplicate {meta}
+      * object are not created. In then end, each artist, album, genre, composer and track
+      * will have only one corresponding Nepomuk{meta} Object.
+      *
+      * For the composition of the maps, we could have used
+      * <Nepomuk::Resource, Nepomuk{meta}Ptr
+      * but that will result in a cyclic dependency hell.
+      */
+
+    QHash<Nepomuk::Resource, Meta::TrackPtr> m_trackHash;
+    QHash<Nepomuk::Resource, Meta::ArtistPtr> m_artistHash;
+    QHash<QString, Meta::GenrePtr> m_genreHash;
+    QHash<Nepomuk::Resource, Meta::ComposerPtr> m_composerHash;
+    QHash<Nepomuk::Resource, Meta::AlbumPtr> m_albumHash;
 };
 
 }

@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "NepomukConstructMetaJob"
+
 #include "NepomukConstructMetaJob.h"
 
 #include "NepomukCollection.h"
@@ -47,7 +49,7 @@ using namespace MemoryMeta;
 using namespace Collections;
 using namespace Nepomuk::Query;
 
-NepomukConstructMetaJob::NepomukConstructMetaJob(NepomukCollection* coll)
+NepomukConstructMetaJob::NepomukConstructMetaJob( NepomukCollection* coll )
     : Job()
     , m_mc( coll->m_mc )
     , m_aborted( false )
@@ -79,44 +81,91 @@ NepomukConstructMetaJob::run()
         NepomukAlbumPtr nepAlbumPtr;
 
         // check if track doesn't already exist in TrackMap
+        if( m_trackHash.contains( trackRes ) )
+            continue;
+        // not present, construct the nepomuk track object and insert it
         NepomukTrackPtr nepTrackPtr( new NepomukTrack( trackRes, m_coll ) );
+        m_trackHash.insert( trackRes, Meta::TrackPtr::staticCast( nepTrackPtr ) );
 
-        QString artistLabel = trackRes.property( Nepomuk::Vocabulary::NMM::performer() ).toResource().genericLabel();
-        if ( !artistLabel.isEmpty() )
+        Nepomuk::Resource artistRes = trackRes.property( Nepomuk::Vocabulary::NMM::performer() ).toResource();
+        QString artistLabel = artistRes.genericLabel();
+        if( m_artistHash.contains( artistRes ) )
         {
-            debug() << "Artist found :" << artistLabel;
-            nepArtistPtr = new NepomukArtist( artistLabel );
-            nepTrackPtr->setArtist( nepArtistPtr );
+            debug() << "Artist already exists : " << artistLabel;
+            ArtistPtr artistPtr = m_artistHash.value( artistRes );
+            nepTrackPtr->setArtist( Meta::NepomukArtistPtr::staticCast( artistPtr ) );
+        }
+        else
+        {
+            if( !artistLabel.isEmpty() )
+            {
+                debug() << "Artist found :" << artistLabel;
+                nepArtistPtr = new NepomukArtist( artistLabel );
+                nepTrackPtr->setArtist( nepArtistPtr );
+                m_artistHash.insert( artistRes, Meta::ArtistPtr::staticCast( nepArtistPtr ) );
+            }
         }
 
         QString genreLabel = trackRes.property( Nepomuk::Vocabulary::NMM::genre() ).toString();
-        if ( !genreLabel.isEmpty() )
+        if( m_genreHash.contains( genreLabel ) )
         {
-            debug() << "Genre found :" << genreLabel;
-            nepGenrePtr = new NepomukGenre( genreLabel ) ;
-            nepTrackPtr->setGenre( nepGenrePtr );
+            debug() << "Genre already exists: " << genreLabel;
+            GenrePtr genrePtr = m_genreHash.value( genreLabel );
+            nepTrackPtr->setGenre( Meta::NepomukGenrePtr::staticCast( genrePtr ) );
+        }
+        else
+        {
+            if( !genreLabel.isEmpty() )
+            {
+                debug() << "Genre found :" << genreLabel;
+                nepGenrePtr = new NepomukGenre( genreLabel ) ;
+                nepTrackPtr->setGenre( nepGenrePtr );
+                m_genreHash.insert( genreLabel, Meta::GenrePtr::staticCast( nepGenrePtr ) );
+            }
         }
 
-        QString composerLabel = trackRes.property( Nepomuk::Vocabulary::NMM::composer() ).toResource().genericLabel();
-        if ( !composerLabel.isEmpty() )
+        Nepomuk::Resource composerRes = trackRes.property( Nepomuk::Vocabulary::NMM::composer() ).toResource();
+        QString composerLabel = composerRes.genericLabel();
+        if( m_composerHash.contains( composerRes ) )
         {
-            debug() << "Composer found :" << composerLabel;
-            nepComposerPtr = new NepomukComposer( composerLabel ) ;
-            nepTrackPtr->setComposer( nepComposerPtr );
+            debug() << "Composer already exists : " << composerLabel;
+            ComposerPtr composerPtr = m_composerHash.value( composerRes );
+            nepTrackPtr->setComposer( Meta::NepomukComposerPtr::staticCast( composerPtr ) );
+        }
+        else
+        {
+            if( !composerLabel.isEmpty() )
+            {
+                debug() << "Composer found :" << composerLabel;
+                nepComposerPtr = new NepomukComposer( composerLabel ) ;
+                nepTrackPtr->setComposer( nepComposerPtr );
+                m_composerHash.insert( composerRes, Meta::ComposerPtr::staticCast( nepComposerPtr ) );
+            }
         }
 
-        QString albumLabel = trackRes.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toResource().genericLabel();
-        if ( !albumLabel.isEmpty() )
+        Nepomuk::Resource albumRes = trackRes.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toResource();
+        QString albumLabel = albumRes.genericLabel();
+        if( m_albumHash.contains( albumRes ) )
         {
-            debug() << "Album found :" << albumLabel;
-            nepAlbumPtr = new NepomukAlbum( albumLabel, ArtistPtr::staticCast( nepArtistPtr ) ) ;
-            nepTrackPtr->setAlbum( nepAlbumPtr );
+            debug() << "Album already exists : " << albumLabel;
+            AlbumPtr albumPtr = m_albumHash.value( albumRes );
+            nepTrackPtr->setAlbum( Meta::NepomukAlbumPtr::staticCast( albumPtr ) );
+        }
+        else
+        {
+            if( !albumLabel.isEmpty() )
+            {
+                debug() << "Album found :" << albumLabel;
+                nepAlbumPtr = new NepomukAlbum( albumLabel, ArtistPtr::staticCast( nepArtistPtr ) ) ;
+                nepTrackPtr->setAlbum( nepAlbumPtr );
+                m_albumHash.insert( albumRes, Meta::AlbumPtr::staticCast( nepAlbumPtr ) );
+            }
         }
 
         TrackPtr trackPtr =  TrackPtr::staticCast( nepTrackPtr );
 
         MemoryMeta::MapChanger mapChanger( m_mc.data() );
-        mapChanger.addTrack(trackPtr);
+        mapChanger.addTrack( trackPtr );
         debug() << "inserting track with track name : " << trackPtr->name();
 
         emit incrementProgress();
@@ -126,4 +175,3 @@ NepomukConstructMetaJob::run()
     emit m_coll->collectionUpdated();
 
 }
-

@@ -66,7 +66,8 @@ NepomukCollection::NepomukCollection()
         buildCollection();
     }
 
-    else {
+    else
+    {
         m_nepomukCollectionReady = false;
         warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk. Nepomuk Plugin won't be loaded";
     }
@@ -123,6 +124,6 @@ NepomukCollection::buildCollection()
 {
     NepomukConstructMetaJob *job = new NepomukConstructMetaJob( this );
     m_constructMetaJob = job;
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+    connect( job, SIGNAL( done( ThreadWeaver::Job* ) ), job, SLOT( deleteLater() ) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
 }
