@@ -212,7 +212,7 @@ NepomukTrack::modifyDate() const
 {
 
     return m_resource.property( Nepomuk::Vocabulary::NIE::contentLastModified() )
-           .toDateTime();
+            .toDateTime();
 }
 
 int
@@ -302,4 +302,31 @@ Collections::Collection*
 NepomukTrack::collection() const
 {
     return m_coll;
+}
+
+qreal
+NepomukTrack::replayGain( ReplayGainTag mode ) const
+{
+    qreal gain = 0;
+    switch ( mode )
+    {
+    case 0 :
+        gain = m_resource.property( Nepomuk::Vocabulary::NMM::trackGain() ).toDouble();
+        break;
+    case 1 :
+        gain = m_resource.property( Nepomuk::Vocabulary::NMM::trackPeakGain() ).toDouble();
+        break;
+    case 2 :
+        gain = m_resource.property( Nepomuk::Vocabulary::NMM::albumGain() ).toDouble();
+        break;
+    case 3 :
+        gain = m_resource.property( Nepomuk::Vocabulary::NMM::albumPeakGain() ).toDouble();
+        break;
+    }
+
+    // TODO
+    // Should return the track replay gain if the album
+    // gain is requested but is not available.
+
+    return gain;
 }

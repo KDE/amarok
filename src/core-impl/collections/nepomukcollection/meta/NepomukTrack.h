@@ -95,6 +95,7 @@ public:
 
     // Non pure virtual functions
     virtual bool inCollection() const;
+    virtual qreal replayGain( ReplayGainTag mode ) const;
 
     /**
       * This should be implemented, else breaks TagDialog::getTagsFromTrack()
