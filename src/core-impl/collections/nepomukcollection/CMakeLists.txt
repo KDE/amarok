@@ -21,6 +21,7 @@ if( NEPOMUK_FOUND )
         meta/NepomukComposer.cpp
         meta/NepomukGenre.cpp
         meta/NepomukTrack.cpp
+        meta/NepomukLabel.cpp
         meta/NepomukYear.cpp
     )
 
