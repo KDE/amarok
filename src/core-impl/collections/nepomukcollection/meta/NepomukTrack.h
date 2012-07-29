@@ -95,12 +95,16 @@ public:
 
     // Non pure virtual functions
     virtual bool inCollection() const;
-    virtual qreal replayGain( ReplayGainTag mode ) const;
-
     /**
       * This should be implemented, else breaks TagDialog::getTagsFromTrack()
       */
     virtual Collections::Collection* collection() const;
+    virtual qreal replayGain( ReplayGainTag mode ) const;
+
+    virtual void addLabel( const Meta::LabelPtr &label );
+    virtual void addLabel( const QString &label );
+    virtual Meta::LabelList labels() const;
+    virtual void removeLabel( const Meta::LabelPtr &label );
 
 private:
 

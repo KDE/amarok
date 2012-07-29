@@ -20,6 +20,7 @@
 #include "NepomukComposer.h"
 #include "NepomukAlbum.h"
 #include "NepomukArtist.h"
+#include "NepomukLabel.h"
 #include "NepomukYear.h"
 
 #include "core/support/Amarok.h"
@@ -212,7 +213,7 @@ NepomukTrack::modifyDate() const
 {
 
     return m_resource.property( Nepomuk::Vocabulary::NIE::contentLastModified() )
-            .toDateTime();
+           .toDateTime();
 }
 
 int
@@ -308,7 +309,7 @@ qreal
 NepomukTrack::replayGain( ReplayGainTag mode ) const
 {
     qreal gain = 0;
-    switch ( mode )
+    switch( mode )
     {
     case 0 :
         gain = m_resource.property( Nepomuk::Vocabulary::NMM::trackGain() ).toDouble();
@@ -329,4 +330,30 @@ NepomukTrack::replayGain( ReplayGainTag mode ) const
     // gain is requested but is not available.
 
     return gain;
+}
+
+void
+NepomukTrack::addLabel( const Meta::LabelPtr &label )
+{
+    m_labellist.append( label );
+}
+
+void
+NepomukTrack::addLabel( const QString &label )
+{
+    NepomukLabelPtr labelPtr;
+    labelPtr = new NepomukLabel( label );
+    m_labellist.append( Meta::LabelPtr::staticCast( labelPtr ) );
+}
+
+Meta::LabelList
+NepomukTrack::labels() const
+{
+    return m_labellist;
+}
+
+void
+NepomukTrack::removeLabel( const LabelPtr &label )
+{
+    m_labellist.removeOne( label );
 }
