@@ -23,6 +23,7 @@
 #include "meta/NepomukArtist.h"
 #include "meta/NepomukGenre.h"
 #include "meta/NepomukComposer.h"
+#include "meta/NepomukLabel.h"
 #include "meta/NepomukYear.h"
 #include "meta/NepomukTrack.h"
 
@@ -38,6 +39,7 @@
 #include <Nepomuk/Query/ComparisonTerm>
 #include <Nepomuk/Query/Query>
 #include <Nepomuk/Query/Term>
+#include <Nepomuk/Tag>
 #include <Nepomuk/Query/Result>
 #include <Nepomuk/Query/QueryServiceClient>
 #include <Nepomuk/Query/ResourceTypeTerm>
@@ -45,7 +47,7 @@
 #include <Nepomuk/Vocabulary/NMM>
 #include <Nepomuk/Vocabulary/NIE>
 
-using namespace MemoryMeta;
+using namespace Meta;
 using namespace Collections;
 using namespace Nepomuk::Query;
 
@@ -79,6 +81,7 @@ NepomukConstructMetaJob::run()
         NepomukGenrePtr nepGenrePtr;
         NepomukComposerPtr nepComposerPtr;
         NepomukAlbumPtr nepAlbumPtr;
+        NepomukLabelPtr nepLabelPtr;
 
         // check if track doesn't already exist in TrackMap
         if( m_trackHash.contains( trackRes ) )
@@ -167,6 +170,29 @@ NepomukConstructMetaJob::run()
                 nepAlbumPtr = new NepomukAlbum( albumLabel, ArtistPtr::staticCast( nepArtistPtr ) ) ;
                 nepTrackPtr->setAlbum( nepAlbumPtr );
                 m_albumHash.insert( albumRes, Meta::AlbumPtr::staticCast( nepAlbumPtr ) );
+            }
+        }
+
+        QList<Nepomuk::Tag> taglist = trackRes.tags();
+        Q_FOREACH( const Nepomuk::Tag & tag, taglist )
+        {
+            QString label = tag.genericLabel();
+
+            if( m_labelHash.contains( tag ) )
+            {
+                debug() << "Label already exists : " << label;
+                LabelPtr labelPtr = m_labelHash.value( tag );
+                nepTrackPtr->addLabel( Meta::LabelPtr::staticCast( labelPtr ) );
+            }
+            else
+            {
+                if( !label.isEmpty() )
+                {
+                    debug() << "Label found : " << label;
+                    nepLabelPtr = new NepomukLabel( label );
+                    nepTrackPtr->addLabel( Meta::LabelPtr::staticCast( nepLabelPtr ) );
+                    m_labelHash.insert( tag, Meta::LabelPtr::staticCast( nepLabelPtr ) );
+                }
             }
         }
 

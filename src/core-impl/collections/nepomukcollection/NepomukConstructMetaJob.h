@@ -25,6 +25,7 @@
 #include <ThreadWeaver/Job>
 #include <QSharedPointer>
 #include <Nepomuk/Resource>
+#include <Nepomuk/Tag>
 #include <QHash>
 
 namespace Collections
@@ -71,6 +72,7 @@ private:
     QHash<QString, Meta::GenrePtr> m_genreHash;
     QHash<Nepomuk::Resource, Meta::ComposerPtr> m_composerHash;
     QHash<Nepomuk::Resource, Meta::AlbumPtr> m_albumHash;
+    QHash<Nepomuk::Tag, Meta::LabelPtr> m_labelHash;
 };
 
 }
