@@ -35,11 +35,8 @@ class NepomukArtist : public Artist
 {
 public:
     NepomukArtist( const QString &name );
-
     virtual TrackList tracks();
-
     virtual QString name() const;
-    // nepomuk collection specific functions
 
     /**
       * A nepomuk specific function used to populate m_tracks
@@ -51,7 +48,6 @@ public:
 private:
     QString m_name;
     TrackList m_tracks;
-
 };
 
 }

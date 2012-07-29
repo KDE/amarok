@@ -16,26 +16,13 @@
  ****************************************************************************************/
 
 #include "NepomukAlbum.h"
-#include "NepomukTrack.h"
 
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 
-#include <Nepomuk/Resource>
-#include <Nepomuk/Vocabulary/NMM>
-#include <Nepomuk/Vocabulary/NFO>
-#include <Nepomuk/Query/ComparisonTerm>
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/AndTerm>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Query/Result>
-#include <Nepomuk/Query/QueryServiceClient>
-#include <Nepomuk/Query/QueryParser>
-#include <Nepomuk/Query/LiteralTerm>
 #include <QString>
 
 using namespace Meta;
-using namespace Nepomuk::Query;
 
 NepomukAlbum::NepomukAlbum( const QString &name )
     : Meta::Album()
@@ -52,7 +39,7 @@ NepomukAlbum::NepomukAlbum( const QString &albumName, const ArtistPtr artistPtr 
     , m_artist( artistPtr )
 {
     m_hasAlbumArtist = true;
-    m_isCompilation = true;
+    m_isCompilation = false;
 }
 
 TrackList
