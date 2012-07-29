@@ -17,6 +17,9 @@
 #include "NepomukLabel.h"
 
 #include "core/meta/Meta.h"
+
+#include <QString>
+
 using namespace Meta;
 
 NepomukLabel::NepomukLabel( const QString &name )
@@ -26,20 +29,8 @@ NepomukLabel::NepomukLabel( const QString &name )
 
 }
 
-TrackList
-NepomukLabel::tracks()
-{
-    return m_tracks;
-}
-
 QString
 NepomukLabel::name() const
 {
-    return m_resource.genericLabel();
-}
-
-void
-NepomukLabel::addTrack( const TrackPtr trackPtr )
-{
-    m_tracks.append( trackPtr );
+    return m_name;
 }

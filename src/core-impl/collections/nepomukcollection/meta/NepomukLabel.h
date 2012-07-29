@@ -26,24 +26,19 @@ class NepomukLabel;
 typedef KSharedPtr<NepomukLabel> NepomukLabelPtr;
 typedef QList<NepomukLabelPtr> NepomukLabelList;
 
+/**
+  * Represents a unit label/tag resource in Amarok
+  */
 
 class NepomukLabel : public Label
 {
 public:
     NepomukLabel( const QString &name );
-    virtual TrackList tracks();
     virtual QString name() const;
-
-    /**
-      * A nepomuk specific function used to populate m_tracks
-      * This is called during the construction of the meta maps
-      * in the constructor of NepomukCollection
-      */
-    void addTrack( const TrackPtr trackPtr );
 
 private:
     QString m_name;
-    TrackList m_tracks;
 };
 
+}
 #endif // NEPOMUKLABEL_H
