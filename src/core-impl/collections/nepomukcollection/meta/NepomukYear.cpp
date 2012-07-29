@@ -18,12 +18,10 @@
 #include "NepomukYear.h"
 
 #include "core/meta/Meta.h"
-#include "Nepomuk/Query/Query"
 #include <Nepomuk/Resource>
 
 using namespace Collections;
 using namespace Meta;
-using namespace Nepomuk::Query;
 
 NepomukYear::NepomukYear( const Nepomuk::Resource resource )
     : Meta::Year()

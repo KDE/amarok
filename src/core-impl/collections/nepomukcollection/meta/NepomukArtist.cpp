@@ -17,7 +17,6 @@
 
 #include "NepomukArtist.h"
 
-#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 
 #include <QString>
