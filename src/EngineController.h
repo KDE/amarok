@@ -223,8 +223,11 @@ public slots:
     /**
      * Stops playing
      * This happens asynchronously.
+     *
+     * @param forceInstant skip any fade-out effects
+     * @param playingWillContinue don't emit stopped() or trackChanged( 0 ) signals
      */
-    void stop( bool forceInstant = false );
+    void stop( bool forceInstant = false, bool playingWillContinue = false );
 
     /**
      * Pauses if Amarok is currently playing, plays if Amarok is stopped or paused
@@ -420,6 +423,18 @@ Q_SIGNALS:
     void trackPositionChanged( qint64 position, bool userSeek );
 
     /**
+     * Emitted when a track finished playing. You generally get this signal once per
+     * played track, but in case of a stream this may be emitted more than once when
+     * stream meta-data changes (which usually indicates that the next track started
+     * playing) - meta-data in the track are updated in this case. When you receive
+     * this signal, track score, play count etc. will be already updated.
+     *
+     * @param track track that has just finished playing
+     * @param playedFraction played/total length fraction, between 0 and 1
+     */
+    void trackFinishedPlaying( Meta::TrackPtr track, double playedFraction );
+
+    /**
        Called when the track length changes, typically because the track has changed but
        also when phonon manages to determine the full track length.
     */
@@ -488,6 +503,12 @@ private slots:
      */
     void slotFillInSupportedMimeTypes();
 
+    /**
+     * Calls track->finishedPlaying(), connected to trackFinishedPlaying() signal to
+     * reduce code duplication.
+     */
+    void slotTrackFinishedPlaying( Meta::TrackPtr track, double playedFraction );
+
 protected:
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
@@ -506,13 +527,13 @@ private:
     void createFadeoutEffect();
     void resetFadeout();
 
-    /** Returns the meta data sub set needed for currentMetadataChanged */
-    QVariantMap trackData( Meta::TrackPtr track );
-
-    /** Try to detect MetaData spam in Streams.
-        Some streams are doing advertisment in the metadata. We try to filter that out
-    */
-    bool isMetadataSpam( QVariantMap meta );
+    /**
+     * Try to detect MetaData spam in Streams etc.
+     * Some streams are doing advertisment in the metadata. We try to filter that out.
+     * Additionally, some Phonon back-ends emit more than one metadataChanged() signals
+     * per on track, so filter it all altogether.
+     */
+    bool isInRecentMetaDataHistory( const QVariantMap &meta );
 
     Q_DISABLE_COPY( EngineController )
 
@@ -530,7 +551,6 @@ private:
 
     Meta::TrackPtr  m_currentTrack;
     Meta::AlbumPtr  m_currentAlbum;
-    Meta::TrackPtr  m_lastTrack;
     Meta::TrackPtr  m_nextTrack;
     KUrl            m_nextUrl;
     Capabilities::BoundedPlaybackCapability* m_boundedPlayback;

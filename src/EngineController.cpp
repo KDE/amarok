@@ -54,6 +54,9 @@
 #include <QTextDocument>
 #include <qmath.h>
 
+// for slotMetaDataChanged()
+typedef QPair<Phonon::MetaData, QString> FieldPair;
+
 namespace The {
     EngineController* engineController() { return EngineController::instance(); }
 }
@@ -85,6 +88,8 @@ EngineController::EngineController()
     // ensure this object is created in a main thread
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
     connect( this, SIGNAL(fillInSupportedMimeTypes()), SLOT(slotFillInSupportedMimeTypes()) );
+    connect( this, SIGNAL(trackFinishedPlaying(Meta::TrackPtr,double)),
+             SLOT(slotTrackFinishedPlaying(Meta::TrackPtr,double)) );
 }
 
 EngineController::~EngineController()
@@ -354,28 +359,17 @@ EngineController::play( Meta::TrackPtr track, uint offset )
         return;
 
     // clear the current track without sending playbackEnded or trackChangeNotify yet
-    // we want to continue but ::stop() doesn't know that
-    if( m_currentTrack )
-    {
-        const qint64 pos = trackPositionMs();
-        const qint64 length = m_currentTrack->length();
-        m_currentTrack->finishedPlaying( double(pos)/double(length) );
-        unsubscribeFrom( m_currentTrack );
-        if( m_currentAlbum )
-            unsubscribeFrom( m_currentAlbum );
-        m_currentTrack = 0;
-        m_currentAlbum = 0;
-    }
+    stop( /* forceInstant */ true, /* playingWillContinue */ true );
 
-    stop( true );
+    // we grant excluve acces to setting new m_currentTrack to newTrackPlaying()
+    m_nextTrack = track;
+    debug() << "play: bounded is "<<m_boundedPlayback<<"current"<<track->name();
+    m_boundedPlayback = track->create<Capabilities::BoundedPlaybackCapability>();
+    m_multiPlayback = track->create<Capabilities::MultiPlayableCapability>();
+    m_multiSource = track->create<Capabilities::MultiSourceCapability>();
 
-    m_currentTrack = track;
-    debug() << "play: bounded is "<<m_boundedPlayback<<"current"<<m_currentTrack->name();
-    m_boundedPlayback = m_currentTrack->create<Capabilities::BoundedPlaybackCapability>();
-    m_multiPlayback = m_currentTrack->create<Capabilities::MultiPlayableCapability>();
-    m_multiSource = m_currentTrack->create<Capabilities::MultiSourceCapability>();
-
-    m_currentTrack->prepareToPlay();
+    track->prepareToPlay();
+    m_nextUrl = track->playableUrl();
 
     if( m_multiPlayback )
     {
@@ -388,17 +382,17 @@ EngineController::play( Meta::TrackPtr track, uint offset )
         debug() << "Got a MultiSource Track with " <<  m_multiSource->sources().count() << " sources";
         connect( m_multiSource, SIGNAL(urlChanged( const KUrl & )),
                  SLOT(slotPlayableUrlFetched( const KUrl & )) );
-        playUrl( m_currentTrack->playableUrl(), 0 );
+        playUrl( track->playableUrl(), 0 );
     }
     else if( m_boundedPlayback )
     {
-        debug() << "Starting bounded playback of url " << m_currentTrack->playableUrl() << " at position " << m_boundedPlayback->startPosition();
-        playUrl( m_currentTrack->playableUrl(), m_boundedPlayback->startPosition() );
+        debug() << "Starting bounded playback of url " << track->playableUrl() << " at position " << m_boundedPlayback->startPosition();
+        playUrl( track->playableUrl(), m_boundedPlayback->startPosition() );
     }
     else
     {
         debug() << "Just a normal, boring track... :-P";
-        playUrl( m_currentTrack->playableUrl(), offset );
+        playUrl( track->playableUrl(), offset );
     }
 }
 
@@ -493,14 +487,13 @@ EngineController::playUrl( const KUrl &url, uint offset )
     }
     else
     {
+        // keep in sync with setNextTrack(), slotPlayableUrlFetched()
         if( url.isLocalFile() )
             m_media.data()->setCurrentSource( url.toLocalFile() );
         else
             m_media.data()->setCurrentSource( url );
     }
 
-    m_nextTrack.clear();
-    m_nextUrl.clear();
     m_media.data()->clearQueue();
 
     if( offset )
@@ -523,25 +516,27 @@ EngineController::pause() //SLOT
 }
 
 void
-EngineController::stop( bool forceInstant ) //SLOT
+EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
 {
     DEBUG_BLOCK
 
     //let Amarok know that the previous track is no longer playing
     if( m_currentTrack )
     {
-        const qint64 pos = trackPositionMs();
-        const qint64 length = m_currentTrack->length();
-        m_currentTrack->finishedPlaying( double(pos)/double(length) );
-        emit stopped( pos, length );
-
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
+        const qint64 pos = trackPositionMs();
+        const qint64 length = m_currentTrack->length();
+        emit trackFinishedPlaying( m_currentTrack, pos / qMax<double>( length, pos ) );
 
         m_currentTrack = 0;
         m_currentAlbum = 0;
-        emit trackChanged( m_currentTrack );
+        if( !playingWillContinue )
+        {
+            emit stopped( pos, length );
+            emit trackChanged( m_currentTrack );
+        }
     }
 
     {
@@ -744,30 +739,28 @@ void
 EngineController::setNextTrack( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-
-    debug() << "locking mutex";
-    QMutexLocker locker( &m_mutex );
-    debug() << "locked!";
-
     if( !track )
         return;
 
     track->prepareToPlay();
-    if( track->playableUrl().isEmpty() )
+    KUrl url = track->playableUrl();
+    if( url.isEmpty() )
         return;
 
+    QMutexLocker locker( &m_mutex );
     if( isPlaying() )
     {
         m_media.data()->clearQueue();
-        if( track->playableUrl().isLocalFile() )
-            m_media.data()->enqueue( track->playableUrl() );
+        // keep in sync with playUrl(), slotPlayableUrlFetched()
+        if( url.isLocalFile() )
+            m_media.data()->enqueue( url.toLocalFile() );
+        else
+            m_media.data()->enqueue( url );
         m_nextTrack = track;
-        m_nextUrl = track->playableUrl();
+        m_nextUrl = url;
     }
     else
-    {
         play( track );
-    }
 }
 
 bool
@@ -949,12 +942,7 @@ void
 EngineController::slotAboutToFinish()
 {
     DEBUG_BLOCK
-    debug() << "Track finished completely, updating statistics";
 
-    if( m_currentTrack ) // not sure why this should not be the case, but sometimes happens. don't crash.
-    {
-        m_currentTrack->finishedPlaying( 1.0 ); // If we reach aboutToFinish, the track is done as far as we are concerned.
-    }
     if( m_multiPlayback )
     {
         DEBUG_LINE_INFO
@@ -1008,6 +996,13 @@ EngineController::slotFinished()
 {
     DEBUG_BLOCK
 
+    // paranoia checking, m_currentTrack shouldn't really be null
+    if( m_currentTrack )
+    {
+        debug() << "Track finished completely, updating statistics";
+        emit trackFinishedPlaying( m_currentTrack, 1.0 );
+    }
+
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
         if( !m_nextTrack && m_nextUrl.isEmpty() )
@@ -1018,7 +1013,7 @@ EngineController::slotFinished()
         m_currentTrack = 0;
         m_currentAlbum = 0;
         if( !m_nextTrack && m_nextUrl.isEmpty() ) // we will the trackChanged signal later
-            emit trackChanged( m_currentTrack );
+            emit trackChanged( Meta::TrackPtr() );
         m_media.data()->setCurrentSource( Phonon::MediaSource() );
     }
 
@@ -1036,8 +1031,11 @@ EngineController::slotFinished()
         playUrl( m_nextUrl, 0 );
     }
     else
+    {
+        The::playlistActions()->reflectPlaybackFinished();
         // possibly we are waiting for a fetch
         m_playWhenFetched = true;
+    }
 
     m_mutex.unlock();
 }
@@ -1061,16 +1059,20 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
     }
+    // only update stats if we are called for something new, some phonon back-ends (at
+    // least phonon-gstreamer-4.6.1) call slotNewTrackPlaying twice with the same source
+    if( m_currentTrack && ( m_nextTrack || !m_nextUrl.isEmpty() ) )
+    {
+        debug() << "Previous track finished completely, updating statistics";
+        emit trackFinishedPlaying( m_currentTrack, 1.0 );
+    }
+    m_nextUrl.clear();
 
-    // the new track was taken from the queue, so clear these fields
     if( m_nextTrack )
     {
         m_currentTrack = m_nextTrack;
         m_nextTrack.clear();
     }
-
-    if( !m_nextUrl.isEmpty() )
-        m_nextUrl.clear();
 
     if( m_currentTrack
         && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
@@ -1194,7 +1196,10 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
         DEBUG_LINE_INFO
         m_mutex.lock();
         m_media.data()->clearQueue();
+        // keep synced with setNextTrack(), playUrl()
         if( url.isLocalFile() )
+            m_media.data()->enqueue( url.toLocalFile() );
+        else
             m_media.data()->enqueue( url );
         m_nextTrack.clear();
         m_nextUrl = url;
@@ -1222,55 +1227,33 @@ EngineController::slotTrackLengthChanged( qint64 milliseconds )
 void
 EngineController::slotMetaDataChanged()
 {
-    DEBUG_BLOCK
-
     QVariantMap meta;
-
-    meta.insert( Meta::Field::URL, m_media.data()->currentSource().url().toString() );
-
-    QStringList artist = m_media.data()->metaData( "ARTIST" );
-    debug() << "Artist     : " << artist;
-    if( !artist.isEmpty() )
-        meta.insert( Meta::Field::ARTIST, artist.first() );
-
-    QStringList album = m_media.data()->metaData( "ALBUM" );
-    debug() << "Album      : " << album;
-    if( !album.isEmpty() )
-        meta.insert( Meta::Field::ALBUM, album.first() );
-
-    QStringList title = m_media.data()->metaData( "TITLE" );
-    debug() << "Title      : " << title;
-    if( !title.isEmpty() )
-        meta.insert( Meta::Field::TITLE, title.first() );
-
-    QStringList genre = m_media.data()->metaData( "GENRE" );
-    debug() << "Genre      : " << genre;
-    if( !genre.isEmpty() )
-        meta.insert( Meta::Field::GENRE, genre.first() );
-
-    QStringList tracknum = m_media.data()->metaData( "TRACKNUMBER" );
-    debug() << "Tracknumber: " << tracknum;
-    if( !tracknum.isEmpty() )
-        meta.insert( Meta::Field::TRACKNUMBER, tracknum.first() );
-
-    QStringList length = m_media.data()->metaData( "LENGTH" );
-    debug() << "Length     : " << length;
-    if( !length.isEmpty() )
-        meta.insert( Meta::Field::LENGTH, length.first() );
-
-    bool trackChanged = false;
-    if( m_lastTrack != m_currentTrack )
+    meta.insert( Meta::Field::URL, m_media.data()->currentSource().url() );
+    static const QList<FieldPair> fieldPairs = QList<FieldPair>()
+            << FieldPair( Phonon::ArtistMetaData, Meta::Field::ARTIST )
+            << FieldPair( Phonon::AlbumMetaData, Meta::Field::ALBUM )
+            << FieldPair( Phonon::TitleMetaData, Meta::Field::TITLE )
+            << FieldPair( Phonon::GenreMetaData, Meta::Field::GENRE )
+            << FieldPair( Phonon::TracknumberMetaData, Meta::Field::TRACKNUMBER )
+            << FieldPair( Phonon::DescriptionMetaData, Meta::Field::COMMENT );
+    foreach( FieldPair pair, fieldPairs )
     {
-        trackChanged = true;
-        m_lastTrack = m_currentTrack;
+        QStringList values = m_media.data()->metaData( pair.first );
+        if( !values.isEmpty() )
+            meta.insert( pair.second, values.first() );
     }
-    debug() << "Track changed: " << trackChanged << "current:" << m_currentTrack.data()
-            << "url" << m_media.data()->currentSource().url().toString();
 
-    if( isMetadataSpam( meta ) )
+    // note: don't rely on m_currentTrack here. At least some Phonon backends first emit
+    // totalTimeChanged(), then metaDataChanged() and only then currentSourceChanged()
+    // which currently sets correct m_currentTrack.
+    if( isInRecentMetaDataHistory( meta ) )
+    {
+        debug() << "slotMetaDataChanged() triggered by phonon, but we've already seen"
+                << "exactly the same metadata recently. Ignoring for now.";
         return;
+    }
 
-    debug() << "no spam";
+    debug() << "slotMetaDataChanged(): new meta-data:" << meta;
     emit currentMetadataChanged( meta );
 }
 
@@ -1333,6 +1316,14 @@ void EngineController::slotMutedChanged( bool mute )
 {
     AmarokConfig::setMuteState( mute );
     emit muteStateChanged( mute );
+}
+
+void
+EngineController::slotTrackFinishedPlaying( Meta::TrackPtr track, double playedFraction )
+{
+    Q_ASSERT( track );
+    debug() << "slotTrackFinishedPlaying(" << track->playableUrl() << "," << playedFraction << ")";
+    track->finishedPlaying( playedFraction );
 }
 
 void
@@ -1409,27 +1400,8 @@ QString EngineController::prettyNowPlaying( bool progress ) const
         return i18n( "No track playing" );
 }
 
-QVariantMap
-EngineController::trackData( Meta::TrackPtr track )
-{
-    QVariantMap meta;
-
-    meta.insert( Meta::Field::URL, track->playableUrl() );
-    if( track->artist() )
-        meta.insert( Meta::Field::ARTIST, track->artist()->prettyName() );
-    if( track->album() )
-        meta.insert( Meta::Field::ALBUM, track->album()->name() );
-    meta.insert( Meta::Field::TITLE, track->prettyName() );
-    if( track->genre() )
-        meta.insert( Meta::Field::GENRE, track->genre()->prettyName() );
-    meta.insert( Meta::Field::TRACKNUMBER, track->trackNumber() );
-    meta.insert( Meta::Field::LENGTH, track->length() );
-
-    return meta;
-}
-
 bool
-EngineController::isMetadataSpam( QVariantMap meta )
+EngineController::isInRecentMetaDataHistory( const QVariantMap &meta )
 {
     // search for Metadata in history
     for( int i = 0; i < m_metaDataHistory.size(); i++)

@@ -32,9 +32,6 @@ namespace MetaStream
 
         //methods inherited from Meta::MetaBase
             virtual QString name() const;
-            virtual QString prettyName() const;
-            virtual QString fullPrettyName() const;
-            virtual QString sortableName() const;
 
         //methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
@@ -42,60 +39,33 @@ namespace MetaStream
             virtual QString uidUrl() const;
 
             virtual bool isPlayable() const;
-            virtual bool isEditable() const;
-
             virtual Meta::AlbumPtr album() const;
             virtual Meta::ArtistPtr artist() const;
             virtual Meta::GenrePtr genre() const;
             virtual Meta::ComposerPtr composer() const;
             virtual Meta::YearPtr year() const;
 
-            virtual void setAlbum( const QString &newAlbum );
-            virtual void setArtist( const QString &newArtist );
-            virtual void setGenre( const QString &newGenre );
-            virtual void setComposer( const QString &newComposer );
-            virtual void setYear( int newYear );
-
-            virtual void setTitle( const QString &newTitle );
-
             virtual qreal bpm() const;
 
             virtual QString comment() const;
-            virtual void setComment( const QString &newComment );
-
             virtual double score() const;
             virtual void setScore( double newScore );
-
             virtual int rating() const;
             virtual void setRating( int newRating );
-
             virtual int trackNumber() const;
-            virtual void setTrackNumber( int newTrackNumber );
-
             virtual int discNumber() const;
-            virtual void setDiscNumber( int newDiscNumber );
+            virtual QDateTime lastPlayed() const;
+            virtual QDateTime firstPlayed() const;
+            virtual int playCount() const;
 
             virtual qint64 length() const;
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;
 
-            virtual int playCount() const;
-
             virtual QString type() const;
 
-            virtual void beginMetaDataUpdate();
-            virtual void endMetaDataUpdate();
-
             virtual void finishedPlaying( double playedFraction );
-
-            virtual bool inCollection() const;
-            virtual Collections::Collection *collection() const;
-
-            virtual void subscribe( Meta::Observer *observer );
-            virtual void unsubscribe( Meta::Observer *observer );
-
-            virtual void updateUrl( const KUrl &url );
 
         private:
             Private * const d;

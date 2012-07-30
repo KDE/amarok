@@ -79,6 +79,14 @@ public:
     void requestNextTrack();
 
     /**
+     * Reflect that EngineController was not fed with the next track and therefore
+     * the playback finished. This is mostly a result of requestNextTrack() not
+     * feeding EngineController with a new track. This method peforms necessary
+     * cleanup.
+     */
+    void reflectPlaybackFinished();
+
+    /**
      * Figure out the next track, and start playing it immediately.
      */
     void requestUserNextTrack();

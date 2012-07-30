@@ -17,6 +17,7 @@
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/stream/Stream_p.h"
 
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
@@ -37,7 +38,7 @@ Track::Track( const KUrl &url )
     d->url = url;
     d->artistPtr = Meta::ArtistPtr( new StreamArtist( d ) );
     d->albumPtr = Meta::AlbumPtr( new StreamAlbum( d ) );
-    d->genrePtr = Meta::GenrePtr( new Meta::DefaultGenre() );
+    d->genrePtr = Meta::GenrePtr( new StreamGenre( d ) );
     d->composerPtr = Meta::ComposerPtr( new Meta::DefaultComposer() );
     d->yearPtr = Meta::YearPtr( new Meta::DefaultYear() );
 }
@@ -54,25 +55,6 @@ Track::name() const
         return i18n( "Stream (%1)", d->url.url() );
     return d->title;
 }
-
-QString
-Track::prettyName() const
-{
-    return name();
-}
-
-QString
-Track::fullPrettyName() const
-{
-    return name();
-}
-
-QString
-Track::sortableName() const
-{
-    return name();
-}
-
 
 KUrl
 Track::playableUrl() const
@@ -99,12 +81,6 @@ Track::isPlayable() const
         return false;
 
     return true;
-}
-
-bool
-Track::isEditable() const
-{
-    return false;
 }
 
 Meta::AlbumPtr
@@ -137,44 +113,6 @@ Track::year() const
     return d->yearPtr;
 }
 
-void
-Track::setAlbum( const QString &newAlbum )
-{
-    d->album = newAlbum;
-}
-
-void
-Track::setArtist( const QString& newArtist )
-{
-    d->artist = newArtist;
-}
-
-void
-Track::setGenre( const QString& newGenre )
-{
-    Q_UNUSED( newGenre )
-}
-
-void
-Track::setComposer( const QString& newComposer )
-{
-    Q_UNUSED( newComposer )
-}
-
-void
-Track::setYear( int newYear )
-{
-    Q_UNUSED( newYear )
-}
-
-void
-Track::setTitle( const QString &newTitle )
-{
-    //it is sometimes useful to set a title for a stream so it has a nice name
-    //before we actually start playing it
-    d->title = newTitle;
-}
-
 qreal
 Track::bpm() const
 {
@@ -184,49 +122,39 @@ Track::bpm() const
 QString
 Track::comment() const
 {
-    return QString();
-}
-
-void
-Track::setComment( const QString& newComment )
-{
-    Q_UNUSED( newComment )
+    return d->comment;
 }
 
 double
 Track::score() const
 {
-    return 0.0;
+    return d->score;
 }
 
 void
 Track::setScore( double newScore )
 {
-    Q_UNUSED( newScore )
+    d->score = newScore;
+    notifyObservers();
 }
 
 int
 Track::rating() const
 {
-    return 0;
+    return d->rating;
 }
 
 void
 Track::setRating( int newRating )
 {
-    Q_UNUSED( newRating )
+    d->rating = newRating;
+    notifyObservers();
 }
 
 int
 Track::trackNumber() const
 {
-    return 0;
-}
-
-void
-Track::setTrackNumber( int newTrackNumber )
-{
-    Q_UNUSED( newTrackNumber )
+    return d->trackNumber;
 }
 
 int
@@ -235,17 +163,28 @@ Track::discNumber() const
     return 0;
 }
 
-void
-Track::setDiscNumber( int newDiscNumber )
+QDateTime
+Track::lastPlayed() const
 {
-    Q_UNUSED( newDiscNumber )
+    return d->lastPlayed;
+}
+
+QDateTime
+Track::firstPlayed() const
+{
+    return d->firstPlayed;
+}
+
+int
+Track::playCount() const
+{
+    return d->playcount;
 }
 
 qint64
 Track::length() const
 {
-    //TODO
-    return 0;
+    return d->length;
 }
 
 int
@@ -266,12 +205,6 @@ Track::bitrate() const
     return 0;
 }
 
-int
-Track::playCount() const
-{
-    return 0;
-}
-
 QString
 Track::type() const
 {
@@ -279,59 +212,18 @@ Track::type() const
 }
 
 void
-Track::beginMetaDataUpdate()
-{
-    //not editable
-}
-
-void
-Track::endMetaDataUpdate()
-{
-    //not editable
-}
-
-void
 Track::finishedPlaying( double playedFraction )
 {
-    Q_UNUSED( playedFraction );
-    //TODO
-}
+    // following code is more or less copied from SqlMeta::Track::finishedPlaying()
+    if( playedFraction < 0.8 )
+        return;
 
-bool
-Track::inCollection() const
-{
-    return false;
-}
-
-Collections::Collection*
-Track::collection() const
-{
-    return 0;
-}
-
-void
-Track::subscribe( Meta::Observer *observer )
-{
-    DEBUG_BLOCK
-
-    debug() << "Adding observer: " << observer;
-    d->observers.insert( observer );
-}
-
-void
-Track::unsubscribe( Meta::Observer *observer )
-{
-    DEBUG_BLOCK
-
-    debug() << "Removing observer: " << observer;
-    d->observers.remove( observer );
-}
-
-void Track::updateUrl( const KUrl & url )
-{
-    d->url = url;
+    d->playcount++;
+    if( !firstPlayed().isValid() )
+        d->firstPlayed = QDateTime::currentDateTime();
+    d->lastPlayed = QDateTime::currentDateTime();
+    d->score = Amarok::computeScore( d->score, d->playcount, playedFraction );
     notifyObservers();
 }
 
 #include "Stream_p.moc"
-
