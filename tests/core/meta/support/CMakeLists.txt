@@ -14,3 +14,10 @@ target_link_libraries( testmetaalbumkey ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY
 set( testmetatrackkey_SRCS TestMetaTrackKey.cpp )
 kde4_add_unit_test( testmetatrackkey ${testmetatrackkey_SRCS} )
 target_link_libraries( testmetatrackkey ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarokcore amaroklib )
+
+#------------------------ Test PrivateMetaRegistry -----------------------------
+
+set( testprivatemetaregistry_SRCS TestPrivateMetaRegistry.cpp )
+kde4_add_unit_test( testprivatemetaregistry ${testprivatemetaregistry_SRCS} )
+target_link_libraries( testprivatemetaregistry ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarokcore amaroklib )
+
