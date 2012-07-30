@@ -23,9 +23,9 @@
 using namespace Collections;
 using namespace Meta;
 
-NepomukYear::NepomukYear( const Nepomuk::Resource resource )
+NepomukYear::NepomukYear( const QString &name )
     : Meta::Year()
-    , m_resource( resource )
+    , m_name( name )
 {
 
 }
@@ -33,13 +33,17 @@ NepomukYear::NepomukYear( const Nepomuk::Resource resource )
 TrackList
 NepomukYear::tracks()
 {
-    //TODO
-    return TrackList();
+    return m_tracks;
 }
 
 QString
 NepomukYear::name() const
 {
-    return m_resource.genericLabel();
+    return m_name;
 }
 
+void
+NepomukYear::addTrack( const TrackPtr trackPtr )
+{
+    m_tracks.append( trackPtr );
+}

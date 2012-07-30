@@ -36,13 +36,20 @@ typedef QList<NepomukYearPtr> NepomukYearList;
 class NepomukYear : public Year
 {
 public:
-    NepomukYear( const Nepomuk::Resource resource );
+    NepomukYear( const QString &name );
     virtual TrackList tracks();
     virtual QString name() const;
 
+    // nepomuk specific function
+    /**
+      * A nepomuk specific function used to populate m_tracks
+      * This is called during the construction of the meta maps
+      * in the constructor of NepomukCollection
+      */
+    void addTrack( const TrackPtr trackPtr );
 private:
-    Nepomuk::Resource m_resource;
-
+    QString m_name;
+    TrackList m_tracks;
 };
 
 }
