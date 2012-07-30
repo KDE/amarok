@@ -2,17 +2,9 @@ Amarok ChangeLog
 ================
 (C) 2002-2012 the Amarok authors.
 
-VERSION 2.6-RC2
+VERSION 2.6-RC
   CHANGES:
     * Show all audio and video files in file browser. (BR 303253)
-
-  BUGFIXES:
-    * Fix a regression where play count would be increased by 2. (BR 299890)
-    * Don't loose statistics, labels and lyrics upon collection scan in some
-      circumstances, e.g. when disk holding colleciton is swapped. (BR 298275)
-
-VERSION 2.6-RC1
-  CHANGES:
     * Remove codec install support. It's long ago been implemented in phonon.
     * Prevent lags with large Saved playlists. (BR 301700)
     * Increase minimal required ffmpeg version up to 0.7.
@@ -22,6 +14,9 @@ VERSION 2.6-RC1
       argument.
 
   BUGFIXES:
+    * Fix a regression where play count would be increased by 2. (BR 299890)
+    * Don't loose statistics, labels and lyrics upon collection scan in some
+      circumstances, e.g. when disk holding colleciton is swapped. (BR 298275)
     * Don't loose statistics, labels and lyrics when changing metadata of a
       track (not tagged by afttagger) followed by moving it. (BR 292245)
     * Fix Amarok.Playlist.{add,play}Media() and addMediaList() Qt script
