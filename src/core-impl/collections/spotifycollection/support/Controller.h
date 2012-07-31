@@ -51,15 +51,17 @@ public:
         ResolverNotFound,
         InvalidCredential
     };
-    Controller( const QString& exec );
+    Controller( const QString& exec = QString() );
     virtual ~Controller();
 
     virtual unsigned int timeout() const { return m_timeout; }
     virtual void setTimeout( const unsigned int timeout ) { m_timeout = timeout; }
     virtual QString name() const { return m_name; }
     virtual QString filePath() const { return m_filePath; }
+    virtual void setFilePath( const QString& resolverPath ) { m_filePath = resolverPath; }
     virtual void login(const QString& username, const QString& password);
     virtual bool running() const;
+    virtual bool loaded() const;
 
     virtual void reload();
 
@@ -205,6 +207,7 @@ private:
 
     bool m_ready;
     bool m_stopped;
+    bool m_loaded;
     bool m_deleting;
     bool m_configSent;
 
