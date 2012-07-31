@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Andrew Coder <andrew.coder@gmail.com>                             *
+ * Copyright (c) 2012 Ryan Feng<odayfans@gmail.com>                                     *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,12 +27,21 @@
 #include "SpotifyQueryMaker.h"
 #include "support/Controller.h"
 #include "support/TrackProxy.h"
-
+#include "SpotifyController.h"
 #include <KIcon>
 
 #include <QObject>
 #include <QString>
 #include <QTimer>
+
+namespace The
+{
+    static Spotify::Controller* gSpotifyController = 0;
+    AMAROK_EXPORT Spotify::Controller* SpotifyController()
+    {
+        return gSpotifyController;
+    }
+}
 
 namespace Collections
 {
@@ -44,6 +54,7 @@ namespace Collections
         , m_collectionIsManaged( false )
     {
         m_info = KPluginInfo( "amarok_collection-spotifycollection.desktop", "services" );
+        m_info.setConfig( Amarok::config( SpotifyConfig::configSectionName() ) );
         DEBUG_BLOCK
     }
 
@@ -52,6 +63,7 @@ namespace Collections
         DEBUG_BLOCK
         delete m_collection.data();
         m_controller->deleteLater();
+
     }
 
     void
@@ -59,13 +71,13 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_controller = new Spotify::Controller( "/home/ofan/Documents/Repos/tomahawk-resolvers/spotify/build/spotify_tomahawkresolver" );
+        m_config.load();
+        m_controller = new Spotify::Controller( m_config.resolverPath() );
+
         Q_ASSERT( m_controller != 0 );
+
         connect( m_controller, SIGNAL( spotifyReady() ),
                  this, SLOT( spotifyReady() ) );
-
-        m_controller->reload();
-        m_controller->start();
 
         connect( m_controller, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
                  this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
@@ -103,10 +115,11 @@ namespace Collections
             emit newCollection( m_collection.data() );
         }
 
-
-        QVariantMap map;
-        map["_msgtype"] = "getCredentials";
-        m_controller->sendMessage(map);
+        m_controller->setFilePath( m_config.resolverPath() );
+        if( !m_config.username().isEmpty() && !m_config.password().isEmpty() )
+        {
+            m_controller->login( m_config.username(), m_config.password() );
+        }
     }
 
     void
@@ -138,12 +151,17 @@ namespace Collections
         , m_controller( controller )
     {
         DEBUG_BLOCK
-
     }
 
     SpotifyCollection::~SpotifyCollection()
     {
         DEBUG_BLOCK
+    }
+
+    Spotify::Controller*
+    SpotifyCollection::controller()
+    {
+        return m_controller;
     }
 
     QueryMaker*

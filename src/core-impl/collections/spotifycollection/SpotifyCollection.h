@@ -22,6 +22,7 @@
 #include "SpotifyMeta.h"
 #include "support/Controller.h"
 #include "core/support/Debug.h"
+#include "SpotifyConfig.h"
 #include <QObject>
 #include <QString>
 
@@ -49,6 +50,7 @@ namespace Collections
             Spotify::Controller* m_controller;
             QWeakPointer< SpotifyCollection > m_collection;
             bool m_collectionIsManaged;
+            SpotifyConfig m_config;
     };
 
     class SpotifyCollection: public Collection
@@ -82,7 +84,7 @@ namespace Collections
             void addNewTrack( Meta::SpotifyTrackPtr track );
             QSharedPointer< MemoryCollection > memoryCollection();
 
-            Spotify::Controller* controller() { return m_controller; }
+            Spotify::Controller* controller();
 
         private Q_SLOTS:
             void slotSpotifyError( const Spotify::Controller::ErrorState );
