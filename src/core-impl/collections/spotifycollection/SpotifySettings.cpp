@@ -17,13 +17,23 @@ SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
     DEBUG_BLOCK
 
     debug() << "Creating Spotify settings object...";
-    m_configWidget = new Ui::SpotifyConfigWidget;
-    m_configWidget->setupUi( this );
 
-    connect( m_configWidget->btnLogin, SIGNAL( clicked ),
+    QVBoxLayout* l = new QVBoxLayout( this );
+    QWidget *w = new QWidget;
+    m_configWidget = new Ui::SpotifyConfigWidget;
+    m_configWidget->setupUi( w );
+    l->addWidget( w );
+
+    connect( m_configWidget->btnLogin, SIGNAL( clicked() ),
             this, SLOT( tryLogin() ) );
-    connect( m_configWidget->btnClose, SIGNAL( clicked ),
+    connect( m_configWidget->btnClose, SIGNAL( clicked() ),
             this, SLOT( cancel ) );
+    connect( m_configWidget->lineUsername, SIGNAL( textChanged( const QString& ) ),
+            this, SLOT( settingsChanged() ) );
+    connect( m_configWidget->linePassword, SIGNAL( textChanged( const QString& ) ),
+            this, SLOT( settingsChanged() ) );
+    connect( m_configWidget->checkHighQuality, SIGNAL( clicked() ),
+            this, SLOT( settingsChanged() ) );
 
     load();
 
@@ -114,6 +124,12 @@ SpotifySettings::tryLogin()
 void
 SpotifySettings::tryDownloadResolver()
 {
+}
+
+void
+SpotifySettings::settingsChanged()
+{
+    emit changed();
 }
 
 void

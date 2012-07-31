@@ -11,20 +11,16 @@ class SpotifySettings: public KCModule
     Q_OBJECT
 
 public:
-        explicit SpotifySettings( QWidget *parent = 0, const QVariantList &args = QVariantList() );
+    explicit SpotifySettings( QWidget *parent = 0, const QVariantList &args = QVariantList() );
     virtual ~SpotifySettings();
 
-    void cancel();
 public Q_SLOTS:
     // Methods from KCModule
     virtual void save();
     virtual void load();
     virtual void defaults();
-
-private Q_SLOTS:
-    // SpotifySettings specified methods
-    void login();
-    void error();
+    void settingsChanged();
+    void cancel();
 
 private:
     void tryLogin();
