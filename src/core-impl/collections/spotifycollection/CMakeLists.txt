@@ -10,7 +10,7 @@ set( amarok_collection-spotifycollection_PART_SRCS
      SpotifyCollection.cpp
      SpotifyQueryMaker.cpp
      SpotifyMeta.cpp
-     spotifyconfigwidget.cpp
+     SpotifyConfig.cpp
      #SpotifyPlaylist.cpp
      #SpotifyPlaylistProvider.cpp
      support/TrackProxy.cpp
@@ -18,6 +18,7 @@ set( amarok_collection-spotifycollection_PART_SRCS
      support/Controller.cpp )
 
 kde4_add_plugin(amarok_collection-spotifycollection ${amarok_collection-spotifycollection_PART_SRCS})
+#kde4_add_library(amarok_collection-spotifycollection SHARED ${amarok_collection-spotifycollection_PART_SRCS})
 
 target_link_libraries( amarok_collection-spotifycollection
                        amarokcore
@@ -34,7 +35,8 @@ install( FILES amarok_collection-spotifycollection.desktop DESTINATION ${SERVICE
 
 # Config plugin
 set( kcm_amarok_collection-spotifycollection_PART_SRCS
-     SpotifyConfigWidget.cpp
+     SpotifyConfig.cpp
+     SpotifySettings.cpp
     )
 
 kde4_add_ui_files( kcm_amarok_collection-spotifycollection_PART_SRCS SpotifyConfigWidget.ui )
@@ -44,11 +46,13 @@ kde4_add_plugin( kcm_amarok_collection-spotifycollection ${kcm_amarok_collection
 target_link_libraries( kcm_amarok_collection-spotifycollection
                        amarokcore
                        amaroklib
+                       #amarok_collection-spotifycollection
                        ${KDE4_KDECORE_LIBS}
                        ${KDE4_KDEUI_LIBS}
+                       ${KDE4_KUTILS_LIBS}
                        ${KDE4_THREADWEAVER_LIBRARIES}
                        ${KDE4_KIO_LIBS} )
 
 install( TARGETS kcm_amarok_collection-spotifycollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-install( FILES kcm_amarok_collection-spotifycollection.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+install( FILES amarok_collection-spotifycollection_config.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
