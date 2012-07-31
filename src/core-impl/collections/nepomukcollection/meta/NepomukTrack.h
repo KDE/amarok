@@ -90,8 +90,7 @@ public:
     void setArtist( NepomukArtistPtr artist );
     void setComposer( NepomukComposerPtr composer );
     void setGenre( NepomukGenrePtr genre );
-    // TODO
-    //void setYear( NepomukYearPtr year );
+    void setYear( NepomukYearPtr year );
 
     // Non pure virtual functions
     virtual bool inCollection() const;

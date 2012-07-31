@@ -287,8 +287,16 @@ NepomukTrack::setAlbum( NepomukAlbumPtr album )
     m_album = Meta::AlbumPtr::staticCast( album );
 }
 
-// TODO
-// NepomukYear?
+void
+NepomukTrack::setYear( NepomukYearPtr year )
+{
+    //TODO
+    // if year is already present, remove the track and then add
+    // check MemoryMeta::Year::setYear for inspiration
+    if( year )
+        year->addTrack( TrackPtr( this ) );
+    m_year = Meta::YearPtr::staticCast( year );
+}
 
 // non pure virtual functions
 bool
