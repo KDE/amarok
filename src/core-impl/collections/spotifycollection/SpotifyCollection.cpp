@@ -252,7 +252,7 @@ namespace Collections
         }
         else
         {
-            m_memoryCollection->releaseLock();
+
             MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
             proxyTrack->setArtist( url.queryItem( "artist" ) );
             proxyTrack->setAlbum( url.queryItem( "album" ) );
@@ -262,7 +262,12 @@ namespace Collections
             connect( proxy, SIGNAL( spotifyError( const Spotify::Controller::ErrorState ) ),
                      this, SLOT( slotSpotifyError( const Spotify::Controller::ErrorState ) ) );
 
-            return Meta::TrackPtr::staticCast( proxyTrack );
+            Meta::TrackPtr result = Meta::TrackPtr::staticCast( proxyTrack );
+
+            m_memoryCollection->addTrack( result );
+            m_memoryCollection->releaseLock();
+
+            return result;
         }
     }
 
@@ -343,21 +348,6 @@ namespace Collections
             genrePtr->addTrack( track );
             track->setGenre( genrePtr );
 
-            Meta::SpotifyComposerPtr composerPtr;
-            if( m_memoryCollection->composerMap().contains( track->composer()->name() ) )
-            {
-                Meta::ComposerPtr composer = m_memoryCollection->composerMap().value( track->composer()->name() );
-                composerPtr = Meta::SpotifyComposerPtr::staticCast( composer );
-            }
-            else
-            {
-                composerPtr = track->spotifyComposer();
-                Meta::ComposerPtr composer = Meta::ComposerPtr::staticCast( composerPtr );
-                m_memoryCollection->addComposer( composer );
-            }
-            composerPtr->addTrack( track );
-            track->setComposer( composerPtr );
-
             Meta::SpotifyYearPtr yearPtr;
             if( m_memoryCollection->yearMap().contains( track->year()->year() ) )
             {
@@ -374,12 +364,6 @@ namespace Collections
             track->setYear( yearPtr );
 
             m_memoryCollection->addTrack( Meta::TrackPtr::staticCast( track ) );
-
-            foreach( Meta::SpotifyLabelPtr label, track->spotifyLabels() )
-            {
-                m_memoryCollection->addLabelToTrack( Meta::LabelPtr::staticCast( label ),
-                                                     Meta::TrackPtr::staticCast( track ) );
-            }
 
             m_memoryCollection->releaseLock();
             emit updated();
