@@ -82,6 +82,7 @@ NepomukConstructMetaJob::run()
         NepomukComposerPtr nepComposerPtr;
         NepomukAlbumPtr nepAlbumPtr;
         NepomukLabelPtr nepLabelPtr;
+        NepomukYearPtr nepYearPtr;
 
         // check if track doesn't already exist in TrackMap
         if( m_trackHash.contains( trackRes ) )
@@ -173,6 +174,8 @@ NepomukConstructMetaJob::run()
             }
         }
 
+        // label/tag
+
         QList<Nepomuk::Tag> taglist = trackRes.tags();
         Q_FOREACH( const Nepomuk::Tag & tag, taglist )
         {
@@ -196,6 +199,37 @@ NepomukConstructMetaJob::run()
             }
         }
 
+        // year
+
+        Nepomuk::Resource yearRes = trackRes.property( Nepomuk::Vocabulary::NMM::releaseDate() ).toResource();
+        if ( !yearRes.isValid() )
+        {
+            QDate fullDate = trackRes.property( Nepomuk::Vocabulary::NMM::releaseDate() ).toDate();
+            if ( !fullDate.isNull() )
+            {
+                QString yearLabel = QString( fullDate.year() );
+
+                // check if year doesn't already exist in HashMap
+                if( m_yearHash.contains( yearRes ) )
+                {
+                    debug() << "Year already exists : " << yearLabel;
+                    YearPtr yearPtr = m_yearHash.value( yearRes );
+                    nepTrackPtr->setYear( Meta::NepomukYearPtr::staticCast( yearPtr ) );
+                }
+                // not present, construct the nepomuk year object and insert it into HashMap
+                else
+                {
+                    if( !yearLabel.isEmpty() )
+                    {
+                        debug() << "Year found :" << yearLabel;
+                        nepYearPtr = new NepomukYear( yearLabel ) ;
+                        nepTrackPtr->setYear( nepYearPtr );
+                        m_yearHash.insert( yearRes, Meta::YearPtr::staticCast( nepYearPtr ) );
+                    }
+                }
+
+            }
+        }
         // the nepomuk track object is by now completely populated with whatever
         // metadata that could be gathered.
         // cast it and assign it to the MapChanger where it weilds its own magic.

@@ -73,6 +73,7 @@ private:
     QHash<Nepomuk::Resource, Meta::ComposerPtr> m_composerHash;
     QHash<Nepomuk::Resource, Meta::AlbumPtr> m_albumHash;
     QHash<Nepomuk::Tag, Meta::LabelPtr> m_labelHash;
+    QHash<Nepomuk::Resource, Meta::YearPtr> m_yearHash;
 };
 
 }
