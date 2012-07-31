@@ -3,6 +3,8 @@ Icon=network-workgroup
 Type=Service
 ServiceTypes=Amarok/Plugin
 X-KDE-ServiceTypes=KCModule
+Name=kcm_amarok_spotify
+Categories=Qt;KDE;X-KDE-settings-system;
 
 X-KDE-Library=kcm_amarok_collection-spotifycollection
 X-KDE-ParentApp=amarok_collection-spotifycollection

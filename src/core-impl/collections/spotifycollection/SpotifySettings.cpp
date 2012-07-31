@@ -41,7 +41,7 @@ Spotify::Controller* controller = 0;
         else
         {
             // Close config dialog
-            this->deleteLater();
+            close();
         }
     }
         if( controller )
