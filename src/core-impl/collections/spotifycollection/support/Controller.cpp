@@ -39,6 +39,7 @@ Controller::Controller( const QString& exec )
 , m_timeout ( 5 )
 , m_ready( false )
 , m_stopped( true )
+, m_loaded( false )
 , m_deleting( false )
 , m_configSent( false )
 , m_queryCounter( 0 )
@@ -122,6 +123,12 @@ void
 Controller::reload()
 {
     startProcess();
+}
+
+bool
+Controller::loaded() const
+{
+    return m_loaded;
 }
 
 bool
@@ -348,6 +355,7 @@ Controller::procExited( int code, QProcess::ExitStatus status )
     if( m_stopped )
     {
         qDebug() << "*** Resolver stopped ";
+        m_loaded = false;
         emit terminated();
         return;
     }
@@ -423,6 +431,8 @@ Controller::startProcess()
     {
         m_proc.start( interpreter, QStringList() << filePath() );
     }
+
+    m_loaded = true;
 
     sendConfig();
 
