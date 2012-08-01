@@ -106,10 +106,9 @@ ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
         return;
     }
 
-    const QDateTime realTime = time.isValid() ? time : QDateTime::currentDateTime();
     lastfm::MutableTrack lfmTrack;
     copyTrackMetadata( lfmTrack, track );
-    lfmTrack.stamp(); // TODO: what if realTime is not currentDateTime() ?
+    lfmTrack.setTimeStamp( time.isValid() ? time : QDateTime::currentDateTime() );
     debug() << "scrobble: " << lfmTrack.artist() << "-" << lfmTrack.album() << "-"
             << lfmTrack.title() << "source:" << lfmTrack.source() << "duration:"
             << lfmTrack.duration();
