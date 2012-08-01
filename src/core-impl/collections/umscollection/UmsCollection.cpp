@@ -264,7 +264,9 @@ UmsCollection::init()
 {
     Solid::StorageAccess *storageAccess = m_device.as<Solid::StorageAccess>();
     m_mountPoint = storageAccess->filePath();
-    debug() << "Mounted at: " << m_mountPoint;
+    Solid::StorageVolume *ssv = m_device.as<Solid::StorageVolume>();
+    m_collectionId = ssv ? ssv->uuid() : m_device.udi();
+    debug() << "Mounted at: " << m_mountPoint << "collection id:" << m_collectionId;
 
     // read .is_audio_player from filesystem
     KConfig config( m_mountPoint + "/" + s_settingsFileName, KConfig::SimpleConfig );
@@ -349,6 +351,12 @@ QString
 UmsCollection::uidUrlProtocol() const
 {
     return QString( "file://" );
+}
+
+QString
+UmsCollection::collectionId() const
+{
+    return m_collectionId;
 }
 
 QString

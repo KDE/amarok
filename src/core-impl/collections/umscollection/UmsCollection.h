@@ -113,7 +113,7 @@ class UmsCollection : public Collection, public Meta::Observer
         virtual bool isDirInCollection( const QString &path );
         virtual QString uidUrlProtocol() const;
 
-        virtual QString collectionId() const { return m_device.udi(); }
+        virtual QString collectionId() const;
         virtual QString prettyName() const;
         virtual KIcon icon() const;
 
@@ -225,6 +225,7 @@ class UmsCollection : public Collection, public Meta::Observer
         QString m_regexText;
         QString m_replaceText;
         QString m_collectionName;
+        QString m_collectionId;
 
         GenericScanManager *m_scanManager;
         KDirWatch m_watcher;
