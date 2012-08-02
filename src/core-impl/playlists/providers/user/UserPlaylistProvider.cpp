@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2012 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,13 +16,18 @@
  ****************************************************************************************/
 
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
 #include "playlistmanager/PlaylistManager.h"
+#include "amarokconfig.h"
 
 #include <KDialog>
+#include <KFileDialog>
+#include <kabstractfilewidget.h> // KFileDialog needs this. It's a scandal.
 #include <KLocalizedString>
 
 #include <QAction>
+#include <QCheckBox>
 #include <QLabel>
 
 // For removing multiple tracks from different playlists with one QAction
@@ -44,6 +50,9 @@ Playlists::UserPlaylistProvider::UserPlaylistProvider( QObject *parent )
     // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
     m_renameAction->setShortcut( Qt::Key_F2 );
     connect( m_renameAction, SIGNAL(triggered()), this, SLOT(slotRename()) );
+
+    m_exportAction = new QAction( KIcon( "document-export-amarok" ), i18n("&Export Playlist As..."), this );
+    connect( m_exportAction, SIGNAL(triggered()), this, SLOT(slotExport()) );
 
     m_removeTrackAction = new QAction( KIcon( "media-track-remove-amarok" ), QString( "Placeholder" ), this );
     m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
@@ -76,6 +85,9 @@ Playlists::UserPlaylistProvider::playlistActions( Playlists::PlaylistPtr playlis
 
     m_renameAction->setData( QVariant::fromValue( playlist ) );
     actions << m_renameAction;
+
+    m_exportAction->setData( QVariant::fromValue( playlist ) );
+    actions << m_exportAction;
 
     return actions;
 }
@@ -164,6 +176,45 @@ Playlists::UserPlaylistProvider::slotRename()
         return;
 
     The::playlistManager()->rename( playlist );  // initiates inline rename of the playlist
+}
+
+void
+Playlists::UserPlaylistProvider::slotExport()
+{
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    Playlists::PlaylistPtr playlist = action->data().value<Playlists::PlaylistPtr>();
+    if( playlist.isNull() )
+        return;
+
+    // --- display save location dialog
+    // compare with MainWindow::exportPlaylist
+    // TODO: have this code only once
+    KFileDialog fileDialog( KUrl("kfiledialog:///amarok-playlist-export"), QString(), 0 );
+    QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving") );
+    saveRelativeCheck->setChecked( AmarokConfig::relativePlaylist() );
+
+    QStringList supportedMimeTypes;
+    supportedMimeTypes << "audio/x-mpegurl"; //M3U
+    supportedMimeTypes << "audio/x-scpls"; //PLS
+    supportedMimeTypes << "application/xspf+xml"; //XSPF
+
+    fileDialog.setMimeFilter( supportedMimeTypes, supportedMimeTypes.first() );
+    fileDialog.fileWidget()->setCustomWidget( saveRelativeCheck );
+    fileDialog.setOperationMode( KFileDialog::Saving );
+    fileDialog.setMode( KFile::File );
+    fileDialog.setCaption( i18n("Save As") );
+    fileDialog.setObjectName( "PlaylistExport" );
+
+    fileDialog.exec();
+
+    QString playlistPath = fileDialog.selectedFile();
+
+    // --- actually save the playlist
+    if( !playlistPath.isEmpty() )
+        exportPlaylistFile( playlist->tracks(), playlistPath, saveRelativeCheck->isChecked() );
 }
 
 void

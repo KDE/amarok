@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2012 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -55,24 +56,33 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 
     protected slots:
         /**
-         * Delete selected playlists. Must only be connected to deleting QAction.
+         * Delete selected playlists.
+         * Will only work if the sender is a QAction with a PlaylistPtr as data.
          */
         virtual void slotDelete();
 
         /**
-         * Rename selected playlist. Must only be connected to renaming QAction.
+         * Rename selected playlist.
+         * Will only work if the sender is a QAction with a PlaylistPtr as data.
          */
         virtual void slotRename();
 
         /**
-         * Remove a track (or tracks) from a playlist. Must only be connected to removing
-         * QAction.
+         * Export the selected playlist.
+         * Will only work if the sender is a QAction with a PlaylistPtr as data.
+         */
+        virtual void slotExport();
+
+        /**
+         * Remove a track (or tracks) from a playlist.
+         * Will only work if the sender is a QAction with a PlaylistTrackMap as data.
          */
         virtual void slotRemoveTrack();
 
     protected:
         QAction *m_deleteAction;
         QAction *m_renameAction;
+        QAction *m_exportAction;
         QAction *m_removeTrackAction;
 };
 
