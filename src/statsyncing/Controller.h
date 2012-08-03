@@ -18,6 +18,7 @@
 #define STATSYNCING_CONTROLLER_H
 
 #include "amarok_export.h"
+// for CollectionManager::CollectionStatus that cannont be fwd-declared
 #include "core-impl/collections/support/CollectionManager.h"
 
 #include <QWeakPointer>
@@ -29,6 +30,8 @@ namespace StatSyncing
     class Process;
     class Provider;
     typedef QSet<QSharedPointer<Provider> > ProviderPtrSet;
+    class ScrobblingService;
+    typedef QExplicitlySharedDataPointer<ScrobblingService> ScrobblingServicePtr;
 
     /**
      * A singleton class that controls statistics synchronization and related tasks.
@@ -48,6 +51,20 @@ namespace StatSyncing
              */
             void synchronize();
 
+            /**
+             * Register ScrobblingService with StatSyncing controller. Controller than
+             * listens to EngineController and calls scrobble() etc. when user plays
+             * tracks. Also allows scrobbling for tracks played on just connected iPods.
+             *
+             * @param service
+             */
+            void registerScrobblingService( const ScrobblingServicePtr &service );
+
+            /**
+             * Forget about ScrobblingService @param service
+             */
+            void unregisterScrobblingService( const ScrobblingServicePtr &service );
+
         private slots:
             /**
              * Wait a few seconds and if no collectionUpdate() signal arrives until then,
@@ -64,11 +81,28 @@ namespace StatSyncing
                                const ProviderPtrSet &unCheckedProviders,
                                qint64 checkedFields );
 
+            void slotTrackFinishedPlaying( const Meta::TrackPtr &track, double playedFraction );
+            void scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
+                           const QDateTime &time = QDateTime() );
+            void slotResetLastSubmittedNowPlayingTrack();
+            void slotUpdateNowPlayingWithCurrentTrack();
+
         private:
             Q_DISABLE_COPY( Controller )
 
+            /**
+             * Return true if important metadata of both tracks is equal.
+             */
+            bool tracksVirtuallyEqual( const Meta::TrackPtr &first, const Meta::TrackPtr &second );
+
+            // synchronization-related
             QWeakPointer<Process> m_currentProcess;
-            QTimer *m_timer;
+            QTimer *m_startSyncingTimer;
+
+            // scrobbling-related
+            QList<ScrobblingServicePtr> m_scrobblingServices;
+            QTimer *m_updateNowPlayingTimer;
+            Meta::TrackPtr m_lastSubmittedNowPlayingTrack;
     };
 
 } // namespace StatSyncing

@@ -16,11 +16,14 @@
 
 #include "Controller.h"
 
+#include "amarokconfig.h"
+#include "EngineController.h"
 #include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "statsyncing/Process.h"
+#include "statsyncing/ScrobblingService.h"
 #include "statsyncing/collection/CollectionProvider.h"
 
 #include <QTimer>
@@ -48,15 +51,36 @@ static void writeProviders( KConfigGroup &group, const char *key, const QSet<QSt
 
 Controller::Controller( QObject* parent )
     : QObject( parent )
-    , m_timer( new QTimer( this ) )
+    , m_startSyncingTimer( new QTimer( this ) )
+    , m_updateNowPlayingTimer( new QTimer( this ) )
 {
-    m_timer->setSingleShot( true );
-    connect( m_timer, SIGNAL(timeout()), SLOT(startNonInteractiveSynchronization()) );
+    m_startSyncingTimer->setSingleShot( true );
+    connect( m_startSyncingTimer, SIGNAL(timeout()), SLOT(startNonInteractiveSynchronization()) );
     CollectionManager *manager = CollectionManager::instance();
     Q_ASSERT( manager );
     connect( manager, SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)),
              SLOT(slotCollectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)) );
     delayedStartSynchronization();
+
+    EngineController *engine = Amarok::Components::engineController();
+    Q_ASSERT( engine );
+    connect( engine, SIGNAL(trackFinishedPlaying(Meta::TrackPtr,double)),
+             SLOT(slotTrackFinishedPlaying(Meta::TrackPtr,double)) );
+
+    m_updateNowPlayingTimer->setSingleShot( true );
+    m_updateNowPlayingTimer->setInterval( 10000 ); // wait 10s before updating
+    // We connect the signals to (re)starting the timer to postpone the submission a
+    // little to prevent frequent updates of rapidly - changing metadata
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             m_updateNowPlayingTimer, SLOT(start()) );
+    // following is needed for streams that don't emit newTrackPlaying on song change
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             m_updateNowPlayingTimer, SLOT(start()) );
+    connect( m_updateNowPlayingTimer, SIGNAL(timeout()),
+             SLOT(slotUpdateNowPlayingWithCurrentTrack()) );
+    // we need to reset m_lastSubmittedNowPlayingTrack when a track is played twice
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             SLOT(slotResetLastSubmittedNowPlayingTrack()) );
 }
 
 Controller::~Controller()
@@ -70,13 +94,30 @@ Controller::synchronize()
 }
 
 void
+Controller::registerScrobblingService( const ScrobblingServicePtr &service )
+{
+    if( m_scrobblingServices.contains( service ) )
+    {
+        warning() << __PRETTY_FUNCTION__ << "scrobbling service" << service << "already registered";
+        return;
+    }
+    m_scrobblingServices << service;
+}
+
+void
+Controller::unregisterScrobblingService( const ScrobblingServicePtr &service )
+{
+    m_scrobblingServices.removeAll( service );
+}
+
+void
 Controller::delayedStartSynchronization()
 {
-    if( m_timer->isActive() )
-        m_timer->start( 5000 ); // reset the timeout
+    if( m_startSyncingTimer->isActive() )
+        m_startSyncingTimer->start( 5000 ); // reset the timeout
     else
     {
-        m_timer->start( 5000 );
+        m_startSyncingTimer->start( 5000 );
         CollectionManager *manager = CollectionManager::instance();
         Q_ASSERT( manager );
         connect( manager, SIGNAL(collectionDataChanged(Collections::Collection*)),
@@ -211,4 +252,64 @@ Controller::saveSettings( const ProviderPtrSet &checkedProviders,
     }
     group.writeEntry( "checkedFields", fieldNames );
     group.sync();
+}
+
+void
+Controller::slotTrackFinishedPlaying( const Meta::TrackPtr &track, double playedFraction )
+{
+    if( !AmarokConfig::submitPlayedSongs() )
+        return;
+    Q_ASSERT( track );
+    scrobble( track, playedFraction );
+}
+
+void
+Controller::scrobble( const Meta::TrackPtr &track, double playedFraction, const QDateTime &time )
+{
+    foreach( ScrobblingServicePtr service, m_scrobblingServices )
+    {
+        service->scrobble( track, playedFraction, time );
+    }
+}
+
+void
+Controller::slotResetLastSubmittedNowPlayingTrack()
+{
+    m_lastSubmittedNowPlayingTrack = Meta::TrackPtr();
+}
+
+void
+Controller::slotUpdateNowPlayingWithCurrentTrack()
+{
+    EngineController *engine = Amarok::Components::engineController();
+    if( !engine )
+        return;
+
+    Meta::TrackPtr track = engine->currentTrack(); // null track is okay
+    if( tracksVirtuallyEqual( track, m_lastSubmittedNowPlayingTrack ) )
+    {
+        debug() << __PRETTY_FUNCTION__ << "this track already recently submitted, ignoring";
+    }
+    foreach( ScrobblingServicePtr service, m_scrobblingServices )
+    {
+        service->updateNowPlaying( track );
+    }
+
+    m_lastSubmittedNowPlayingTrack = track;
+}
+
+bool
+Controller::tracksVirtuallyEqual( const Meta::TrackPtr &first, const Meta::TrackPtr &second )
+{
+    if( !first && !second )
+        return true; // both null
+    if( !first || !second )
+        return false; // exactly one is null
+    const QString firstAlbum = first->album() ? first->album()->name() : QString();
+    const QString secondAlbum = second->album() ? second->album()->name() : QString();
+    const QString firstArtist = first->artist() ? first->artist()->name() : QString();
+    const QString secondArtist = second->artist() ? second->artist()->name() : QString();
+    return first->name() == second->name() &&
+           firstAlbum == secondAlbum &&
+           firstArtist == secondArtist;
 }

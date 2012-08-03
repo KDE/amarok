@@ -36,6 +36,7 @@
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
 #include "meta/LastFmMeta.h"
+#include "statsyncing/Controller.h"
 #include "widgets/SearchWidget.h"
 
 #include <KLineEdit>
@@ -138,7 +139,8 @@ LastFmServiceFactory::createLastFmService()
 //     if ( config.username().isEmpty() || config.password().isEmpty() )
 //         return 0;
 
-    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.sessionKey(), config.scrobble(), config.fetchSimilar(), config.scrobbleComposer() );
+    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(),
+            config.sessionKey(), config.scrobble(), config.fetchSimilar() );
     return service;
 }
 
@@ -156,11 +158,11 @@ LastFmServiceFactory::config()
 }
 
 
-LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString& sessionKey, bool scrobble, bool fetchSimilar, bool scrobbleComposer )
+LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username,
+                              QString password, const QString& sessionKey, bool scrobble, bool fetchSimilar )
     : ServiceBase( name, parent, false ),
       m_inited( false),
       m_scrobble( scrobble ),
-      m_scrobbler( 0 ),
       m_collection( 0 ),
       m_polished( false ),
       m_avatarLabel( 0 ),
@@ -169,7 +171,6 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
       m_userName( username ),
       m_sessionKey( sessionKey ),
       m_password( password ),
-      m_scrobbleComposer( scrobbleComposer ),
       m_userNameArray( 0 ),
       m_sessionKeyArray( 0 )
 {
@@ -203,6 +204,9 @@ LastFmService::~LastFmService()
         m_collection = 0;
     }
     ms_service = 0;
+    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+    if( m_scrobbler && controller )
+        controller->unregisterScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
 }
 
 void
@@ -239,7 +243,13 @@ LastFmService::init()
         lastfm::ws::SessionKey = m_sessionKeyArray;
 
         if( m_scrobble )
-            m_scrobbler = new ScrobblerAdapter( this, "ark" );
+        {
+            m_scrobbler = new ScrobblerAdapter( "ark" );
+            StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+            Q_ASSERT( controller );
+            controller->registerScrobblingService(
+                    StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+        }
         QMap< QString, QString > params;
         params[ "method" ] = "user.getInfo";
         m_jobs[ "getUserInfo" ] = lastfm::ws::post( params );
@@ -310,7 +320,13 @@ LastFmService::onAuthenticated()
             config.save();
 
             if( m_scrobble )
-                m_scrobbler = new ScrobblerAdapter( this, "ark" );
+            {
+                m_scrobbler = new ScrobblerAdapter( "ark" );
+                StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+                Q_ASSERT( controller );
+                controller->registerScrobblingService(
+                        StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+            }
             QMap< QString, QString > params;
             params[ "method" ] = "user.getInfo";
             m_jobs[ "getUserInfo" ] = lastfm::ws::post( params );

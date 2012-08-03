@@ -19,6 +19,7 @@
 #define LASTFMSCROBBLERADAPTER_H
 
 #include "core/meta/Meta.h"
+#include "statsyncing/ScrobblingService.h"
 
 #include <QTimer>
 
@@ -26,48 +27,27 @@
 #include <Track.h>
 
 
-class ScrobblerAdapter : public QObject
+class ScrobblerAdapter : public QObject, public StatSyncing::ScrobblingService
 {
     Q_OBJECT
 
     public:
-        ScrobblerAdapter( QObject *parent, const QString &clientId );
+        ScrobblerAdapter( const QString &clientId );
         virtual ~ScrobblerAdapter();
 
-    public slots:
-        /**
-        * Scrobble a track. Scrobbler may check certain criteria such as track length and
-        * refuse to scrobble the track.
-        *
-        * @param track track to scrobble; you may assume it is non-null
-        * @param playedFraction fraction which has been actually played, between 0 and
-        *                       1; the default is 1
-        * @param time time when it was played, invalid QDateTime signifies that the
-        *             track has been played just now. This is the default when the
-        *             parameter is omitted.
-        */
+    public:
+        // ScrobblingService methods:
         void scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
                        const QDateTime &time = QDateTime() );
-
-        /**
-        * Update the "Now Playing" info on the scrobbling site without scrobbling the
-        * track permanently. Scrobbler may check certain criteria and refuse to update
-        * Now Playing if they are not met. If track is null, it means that no track is
-        * playing and scrobbler shoudl clear the Now Playing status.
-        *
-        * @param track that is currently playing or null if playbak was stopped
-        */
         void updateNowPlaying( const Meta::TrackPtr &track );
 
+    public slots:
+        // own methods
         void loveTrack( const Meta::TrackPtr &track );
         void banTrack( const Meta::TrackPtr &track );
 
     private slots:
-        void slotTrackFinishedPlaying( const Meta::TrackPtr &track, double playedFraction );
         void slotScrobblesSubmitted( const QList<lastfm::Track> &tracks );
-
-        void slotResetLastSubmittedNowPlayingTrack();
-        void slotUpdateNowPlayingWithCurrentTrack();
         void slotNowPlayingError( int code, const QString &message );
 
     private:
@@ -77,18 +57,12 @@ class ScrobblerAdapter : public QObject
         void copyTrackMetadata( lastfm::MutableTrack& to, const Meta::TrackPtr &from );
 
         /**
-         * Return true if important metadata of both tracks is equal.
-         */
-        bool tracksVirtuallyEqual( const lastfm::Track &first, const lastfm::Track &second );
-
-        /**
          * Announces Last.fm suggested @param track corrections to Amarok pop-up log.
          */
         void announceTrackCorrections( const lastfm::Track &track );
 
         lastfm::Audioscrobbler m_scrobbler;
-        QTimer m_updateNowPlayingTimer;
-        lastfm::MutableTrack m_lastSubmittedNowPlayingTrack;
+        bool m_scrobbleComposer; // TODO: update when changes
 };
 
 #endif // LASTFMSCROBBLERADAPTER_H

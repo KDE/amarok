@@ -20,8 +20,6 @@
 
 #include "ScrobblerAdapter.h"
 
-#include "EngineController.h"
-#include "amarokconfig.h"
 #include "MainWindow.h"
 #include "core/interfaces/Logger.h"
 #include "core/meta/support/MetaConstants.h"
@@ -35,15 +33,9 @@
 
 #include <misc.h>
 
-ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
-    : QObject( parent )
-    ,  m_scrobbler( clientId )
+ScrobblerAdapter::ScrobblerAdapter( const QString &clientId )
+    :  m_scrobbler( clientId )
 {
-    m_updateNowPlayingTimer.setSingleShot( true );
-    m_updateNowPlayingTimer.setInterval( 10000 ); // wait 10s before updating
-    connect( &m_updateNowPlayingTimer, SIGNAL(timeout()),
-             SLOT(slotUpdateNowPlayingWithCurrentTrack()) );
-
     // work around a bug in liblastfm -- -it doesn't create its config dir, so when it
     // tries to write the track cache, it fails silently. Last check: liblastfm 1.0.!
     QList<QDir> dirs;
@@ -57,29 +49,16 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
         }
     }
 
+    LastFmServiceConfig config;
+    m_scrobbleComposer = config.scrobbleComposer();
+
     connect( The::mainWindow(), SIGNAL(loveTrack(Meta::TrackPtr)),
              SLOT(loveTrack(Meta::TrackPtr)) );
     connect( The::mainWindow(), SIGNAL(banTrack(Meta::TrackPtr)),
              SLOT(banTrack(Meta::TrackPtr)) );
 
-    EngineController *engine = Amarok::Components::engineController();
-    Q_ASSERT( engine );
-
-    connect( engine, SIGNAL(trackFinishedPlaying(Meta::TrackPtr,double)),
-             SLOT(slotTrackFinishedPlaying(Meta::TrackPtr,double)) );
     connect( &m_scrobbler, SIGNAL(scrobblesSubmitted(QList<lastfm::Track>)),
              SLOT(slotScrobblesSubmitted(QList<lastfm::Track>)) );
-
-    // trackChanged() presumably behaves better than trackPlaying() wrt pauses. We
-    // connect the signals to (re)starting the timer to postpone the submission a little
-    // to prevent frequent updates of rapidly - changing metadata
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
-             &m_updateNowPlayingTimer, SLOT(start()) );
-    // we need to reset m_lastSubmittedNowPlayingTrack when a track is played twice
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
-             SLOT(slotResetLastSubmittedNowPlayingTrack()) );
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
-             SLOT(updateNowPlaying(Meta::TrackPtr)) );
     connect( &m_scrobbler, SIGNAL(nowPlayingError(int,QString)),
              SLOT(slotNowPlayingError(int,QString)));
 }
@@ -96,7 +75,7 @@ ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
     if( track->length() * playedFraction < 30 * 1000 )
     {
         debug() << "scrobble(): refusing track" << track->prettyUrl() << "- played time ("
-                << track->length() * playedFraction / 1000 << "s) shorter than 30 s";
+                << track->length() / 1000 << "*" << playedFraction << "s) shorter than 30 s";
         return;
     }
     if( playedFraction < 0.8 )
@@ -123,15 +102,10 @@ ScrobblerAdapter::updateNowPlaying( const Meta::TrackPtr &track )
     if( track )
     {
         copyTrackMetadata( lfmTrack, track );
-        if( tracksVirtuallyEqual( lfmTrack, m_lastSubmittedNowPlayingTrack ) )
-            debug() << "updateNowPlaying(): this track already recently submitted, ignoring";
-        else
-        {
-            debug() << "nowPlaying: " << lfmTrack.artist() << "-" << lfmTrack.album() << "-"
-                    << lfmTrack.title() << "source:" << lfmTrack.source() << "duration:"
-                    << lfmTrack.duration();
-            m_scrobbler.nowPlaying( lfmTrack );
-        }
+        debug() << "nowPlaying: " << lfmTrack.artist() << "-" << lfmTrack.album() << "-"
+                << lfmTrack.title() << "source:" << lfmTrack.source() << "duration:"
+                << lfmTrack.duration();
+        m_scrobbler.nowPlaying( lfmTrack );
     }
     else
     {
@@ -139,7 +113,6 @@ ScrobblerAdapter::updateNowPlaying( const Meta::TrackPtr &track )
         QNetworkReply *reply = lfmTrack.removeNowPlaying(); // works even with empty lfmTrack
         connect( reply, SIGNAL(finished()), reply, SLOT(deleteLater()) ); // don't leak
     }
-    m_lastSubmittedNowPlayingTrack = lfmTrack;
 }
 
 void
@@ -164,15 +137,6 @@ ScrobblerAdapter::banTrack( const Meta::TrackPtr &track ) // slot
     copyTrackMetadata( trackInfo, track );
     trackInfo.ban();
     Amarok::Components::logger()->shortMessage( i18nc( "As in Last.fm", "Banned Track: %1", track->prettyName() ) );
-}
-
-void
-ScrobblerAdapter::slotTrackFinishedPlaying( const Meta::TrackPtr &track, double playedFraction )
-{
-    if( !AmarokConfig::submitPlayedSongs() )
-        return;
-    Q_ASSERT( track );
-    scrobble( track, playedFraction );
 }
 
 void
@@ -203,21 +167,6 @@ ScrobblerAdapter::slotScrobblesSubmitted( const QList<lastfm::Track> &tracks )
 }
 
 void
-ScrobblerAdapter::slotResetLastSubmittedNowPlayingTrack()
-{
-    m_lastSubmittedNowPlayingTrack = lastfm::Track();
-}
-
-void
-ScrobblerAdapter::slotUpdateNowPlayingWithCurrentTrack()
-{
-    EngineController *engine = Amarok::Components::engineController();
-    if( !engine )
-        return;
-    updateNowPlaying( engine->currentTrack() ); // null track is okay
-}
-
-void
 ScrobblerAdapter::slotNowPlayingError( int code, const QString &message )
 {
     Q_UNUSED( code )
@@ -230,9 +179,8 @@ ScrobblerAdapter::copyTrackMetadata( lastfm::MutableTrack &to, const Meta::Track
     to.setTitle( track->name() );
 
     QString artistOrComposer;
-    KConfigGroup config = KGlobal::config()->group( LastFmServiceConfig::configSectionName() );
     Meta::ComposerPtr composer = track->composer();
-    if( config.readEntry( "scrobbleComposer", false ) && composer )
+    if( m_scrobbleComposer && composer )
         artistOrComposer = composer->name();
     Meta::ArtistPtr artist = track->artist();
     if( artistOrComposer.isEmpty() && artist )
@@ -262,14 +210,6 @@ ScrobblerAdapter::copyTrackMetadata( lastfm::MutableTrack &to, const Meta::Track
         source = lastfm::Track::NonPersonalisedBroadcast;
     // TODO: case for scrobbling from media devices
     to.setSource( source );
-}
-
-bool
-ScrobblerAdapter::tracksVirtuallyEqual( const lastfm::Track &first, const lastfm::Track &second )
-{
-    return first.title() == second.title() &&
-           first.album() == second.album() &&
-           first.artist() == second.artist();
 }
 
 static QString
