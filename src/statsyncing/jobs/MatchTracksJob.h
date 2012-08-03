@@ -90,7 +90,7 @@ namespace StatSyncing
              * m_matchedTuples.
              */
             void matchTracksFromArtist( const QString& artist,
-                                        const QSet<Provider *> &artistProviders );
+                                        const ProviderPtrSet &artistProviders );
 
             /**
              * Finds the "smallest" track among provider track lists; assumes individual
@@ -139,7 +139,7 @@ namespace StatSyncing
             /**
              * Per-provider count of matched tracks
              */
-            QMap<const Provider *, int> m_matchedTrackCounts;
+            QMap<ProviderPtr, int> m_matchedTrackCounts;
     };
 
 } // namespace StatSyncing

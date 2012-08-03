@@ -17,6 +17,7 @@
 #ifndef STATSYNCING_TRACKTUPLE_H
 #define STATSYNCING_TRACKTUPLE_H
 
+#include "statsyncing/Provider.h"
 #include "statsyncing/Track.h"
 
 #include <QMap>
@@ -24,7 +25,6 @@
 namespace StatSyncing
 {
     class Options;
-    class Provider;
 
     /**
      * Smallest element of synchronization, a container for provider-to-one-track map with
@@ -45,24 +45,24 @@ namespace StatSyncing
              * It does make sense to only add tracks that are in some sence equal to tracks
              * alredy present in the tuple.
              */
-            void insert( const Provider *provider, const TrackPtr &track );
+            void insert( ProviderPtr provider, const TrackPtr &track );
 
             /**
              * Returns a list of providers that have tracks in this tuple.
              */
-            QList<const Provider *> providers() const;
+            ProviderPtrList providers() const;
 
             /**
              * Returns provider of the i-th track in this tuple. If i is out of bounds,
              * returns null.
              */
-            const Provider *provider( int i ) const;
+            ProviderPtr provider( int i ) const;
 
             /**
              * Returns track associated with @provider provider. Asserts that there's
              * a track from @param provider
              */
-            TrackPtr track( const Provider *provider ) const;
+            TrackPtr track( ProviderPtr provider ) const;
 
             /**
              * Returns a number of tracks in this tuple.
@@ -79,7 +79,7 @@ namespace StatSyncing
              * If @param provider is null, returns true if at least one child track
              * is going to be updated; otherwise works on a track from @param provider.
              */
-            bool fieldUpdated( qint64 field, const Options &options, const Provider *provider = 0 ) const;
+            bool fieldUpdated( qint64 field, const Options &options, ProviderPtr provider = ProviderPtr() ) const;
 
             /**
              * Return true if there's at least one field going to be updated.
@@ -95,13 +95,13 @@ namespace StatSyncing
              * Returns a provider whose track's rating will be used in case of conflict.
              * Will be null if rating provider hasn't been explicitly set.
              */
-            const Provider *ratingProvider() const;
+            ProviderPtr ratingProvider() const;
 
             /**
              * Sets the rating provider. Only accepts null provider or a provider of one
              * track in this tuple.
              */
-            void setRatingProvider( const Provider *provider );
+            void setRatingProvider( ProviderPtr provider );
 
             /**
              * Return synchronized rating. Specifically, returns -1 if there's unsolved
@@ -123,11 +123,11 @@ namespace StatSyncing
             int synchronize( const Options &options );
 
         private:
-            int syncedRating( const Options &options, const Provider *ratingProvider ) const;
+            int syncedRating( const Options &options, ProviderPtr ratingProvider ) const;
 
             static const QList<qint64> s_fields; /// list of Meta::val* fields capable of syncing
-            QMap<const Provider *, TrackPtr> m_map;
-            const Provider *m_ratingProvider; /// source of rating in the event of conflict
+            QMap<ProviderPtr, TrackPtr> m_map;
+            ProviderPtr m_ratingProvider; /// source of rating in the event of conflict
     };
 
 } // namespace StatSyncing

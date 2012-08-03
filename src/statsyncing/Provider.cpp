@@ -18,10 +18,6 @@
 
 using namespace StatSyncing;
 
-Provider::Provider()
-{
-}
-
 Provider::~Provider()
 {
 }

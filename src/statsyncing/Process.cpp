@@ -170,9 +170,8 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
         m_tracksPage = new MatchedTracksPage();
         m_tracksPage.data()->setProviders( matchJob->providers() );
         m_tracksPage.data()->setMatchedTracksModel( m_matchedTracksModel );
-        foreach( QSharedPointer<Provider> providerPointer, matchJob->providers() )
+        foreach( ProviderPtr provider, matchJob->providers() )
         {
-            Provider *provider = providerPointer.data();
             if( !matchJob->uniqueTracks().value( provider ).isEmpty() )
                 m_tracksPage.data()->addUniqueTracksModel( provider, new SingleTracksModel(
                         matchJob->uniqueTracks().value( provider ), columns, m_tracksPage.data() ) );
@@ -224,7 +223,7 @@ Process::slotLogSynchronization( QObject *job, int updatedTracksCount )
 {
     Q_UNUSED( job )
     QStringList providerNames;
-    foreach( QSharedPointer<Provider> provider, m_providersModel->checkedProviders() )
+    foreach( ProviderPtr provider, m_providersModel->checkedProviders() )
         providerNames << provider->prettyName();
     QString providers = providerNames.join( i18nc( "comma between list words", ", " ) );
     QString text = i18ncp( "%2 is a list of collection names", "Synchronization of %2 "

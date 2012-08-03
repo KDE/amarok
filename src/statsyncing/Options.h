@@ -21,8 +21,6 @@
 
 namespace StatSyncing
 {
-    class Provider;
-
     /**
      * A container for options controlling how synchronization of two tracks is
      * performed.

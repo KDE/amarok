@@ -101,11 +101,11 @@ namespace StatSyncing
              * not null and given tuple has no track from provider, its state remains
              * unchanged.
              */
-            void takeRatingsFrom( const Provider *provider );
+            void takeRatingsFrom( ProviderPtr provider );
 
         private:
             QVariant tupleData( const TrackTuple &tuple, qint64 field, int role ) const;
-            QVariant trackData( const Provider *provider, const TrackTuple &tuple,
+            QVariant trackData( ProviderPtr provider, const TrackTuple &tuple,
                                 qint64 field, int role ) const;
             using CommonModel::trackData;
 

@@ -34,25 +34,25 @@ TrackTuple::TrackTuple()
 }
 
 void
-TrackTuple::insert( const Provider *provider, const TrackPtr &track )
+TrackTuple::insert( ProviderPtr provider, const TrackPtr &track )
 {
     m_map.insert( provider, track );
 }
 
-QList<const Provider *>
+ProviderPtrList
 TrackTuple::providers() const
 {
     return m_map.keys();
 }
 
-const Provider *
+ProviderPtr
 TrackTuple::provider( int i ) const
 {
     return m_map.keys().value( i );
 }
 
 TrackPtr
-TrackTuple::track( const Provider *provider ) const
+TrackTuple::track( ProviderPtr provider ) const
 {
     Q_ASSERT( m_map.contains( provider ) );
     return m_map.value( provider );
@@ -71,7 +71,7 @@ TrackTuple::isEmpty() const
 }
 
 bool
-TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *provider ) const
+TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr provider ) const
 {
     if( isEmpty() ||
         ( provider && !m_map.contains( provider ) ) ||
@@ -91,7 +91,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
             if( provider )
                 return track( provider )->rating() != rating;
 
-            foreach( const Provider *prov, m_map.keys() )
+            foreach( ProviderPtr prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -107,7 +107,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
             if( provider )
                 return track( provider )->firstPlayed() != firstPlayed;
 
-            foreach( const Provider *prov, m_map.keys() )
+            foreach( ProviderPtr prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -123,7 +123,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
             if( provider )
                 return track( provider )->lastPlayed() != lastPlayed;
 
-            foreach( const Provider *prov, m_map.keys() )
+            foreach( ProviderPtr prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -139,7 +139,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
             if( provider )
                 return track( provider )->playCount() != playcount;
 
-            foreach( const Provider *prov, m_map.keys() )
+            foreach( ProviderPtr prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -155,7 +155,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, const Provider *
             if( provider )
                 return track( provider )->labels() != labels;
 
-            foreach( const Provider *prov, m_map.keys() )
+            foreach( ProviderPtr prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -183,17 +183,17 @@ bool
 TrackTuple::hasConflict( const Options &options ) const
 {
     // we must disregard currently selected rating provider
-    return syncedRating( options, 0 ) < 0;
+    return syncedRating( options, ProviderPtr() ) < 0;
 }
 
-const Provider *
+ProviderPtr
 TrackTuple::ratingProvider() const
 {
     return m_ratingProvider;
 }
 
 void
-TrackTuple::setRatingProvider( const Provider *provider )
+TrackTuple::setRatingProvider( ProviderPtr provider )
 {
     if( !provider || m_map.contains( provider ) )
         m_ratingProvider = provider;
@@ -206,7 +206,7 @@ TrackTuple::syncedRating( const Options &options ) const
 }
 
 int
-TrackTuple::syncedRating( const Options &options, const Provider *ratingProvider ) const
+TrackTuple::syncedRating( const Options &options, ProviderPtr ratingProvider ) const
 {
     if( isEmpty() || !(options.syncedFields() & Meta::valRating) )
         return 0;
@@ -215,7 +215,7 @@ TrackTuple::syncedRating( const Options &options, const Provider *ratingProvider
 
     // look for conflict:
     int candidate = -1; // rating candidate
-    QMapIterator<const Provider *, TrackPtr> it( m_map );
+    QMapIterator<ProviderPtr, TrackPtr> it( m_map );
     while( it.hasNext() )
     {
         it.next();
@@ -307,7 +307,7 @@ TrackTuple::syncedLabels( const Options &options ) const
 int
 TrackTuple::synchronize( const Options &options )
 {
-    QSet<const Provider *> updatedProviders;
+    ProviderPtrSet updatedProviders;
     foreach( qint64 field, s_fields )
     {
         // catches if field should not be at all updated (either no change or not in options )
@@ -331,11 +331,11 @@ TrackTuple::synchronize( const Options &options )
                 warning() << __PRETTY_FUNCTION__ << "unhandled first switch";
         }
 
-        QMapIterator<const Provider *, TrackPtr> it( m_map );
+        QMapIterator<ProviderPtr, TrackPtr> it( m_map );
         while( it.hasNext() )
         {
             it.next();
-            const Provider *provider = it.key();
+            ProviderPtr provider = it.key();
             // we have special case for playcount because it needs to we written even if
             // apparently unchanged to reset possible nonzero recentPlayCount
             if( field != Meta::valPlaycount && !fieldUpdated( field, options, provider ) )

@@ -33,7 +33,7 @@ using namespace StatSyncing;
 static QSet<QString> providerIds( const ProviderPtrSet &providers )
 {
     QSet<QString> ret;
-    foreach( QSharedPointer<Provider> provider, providers )
+    foreach( ProviderPtr provider, providers )
         ret.insert( provider->id() );
     return ret;
 }
@@ -175,7 +175,7 @@ void Controller::synchronize( int intMode )
         it.next();
         if( it.value() == CollectionManager::CollectionEnabled )
         {
-            QSharedPointer<Provider> provider( new CollectionProvider( it.key() ) );
+            ProviderPtr provider( new CollectionProvider( it.key() ) );
             providers.append( provider );
         }
     }
@@ -207,7 +207,7 @@ void Controller::synchronize( int intMode )
     QSet<QString> checkedProviderIds = readProviders( group, "checkedProviders" );
     QSet<QString> unCheckedProviderIds = readProviders( group, "unCheckedProviders" );
     ProviderPtrSet checkedProviders;
-    foreach( QSharedPointer<Provider> provider, providers )
+    foreach( ProviderPtr provider, providers )
     {
         QString id = provider->id();
         if( unCheckedProviderIds.contains( id ) )

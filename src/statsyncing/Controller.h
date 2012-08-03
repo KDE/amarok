@@ -29,7 +29,8 @@ namespace StatSyncing
 {
     class Process;
     class Provider;
-    typedef QSet<QSharedPointer<Provider> > ProviderPtrSet;
+    typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
+    typedef QSet<ProviderPtr> ProviderPtrSet;
     class ScrobblingService;
     typedef QExplicitlySharedDataPointer<ScrobblingService> ScrobblingServicePtr;
 

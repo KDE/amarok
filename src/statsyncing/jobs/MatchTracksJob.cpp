@@ -27,7 +27,7 @@ using namespace StatSyncing;
 static void printPerProviderTrackList( const PerProviderTrackList &providerTracks,
                                        const QString *fromArtist = 0L )
 {
-    foreach( const Provider *provider, providerTracks.keys() )
+    foreach( ProviderPtr provider, providerTracks.keys() )
     {
         if( fromArtist )
             debug() << provider->prettyName() << "tracks from" << *fromArtist;
@@ -97,12 +97,12 @@ void MatchTracksJob::run()
 
     QSet<QString> allArtists;
     // remember which providers contain particular artists (optimisation)
-    QMap<QString, QSet<Provider *> > artistProviders;
-    foreach( QSharedPointer<Provider> provider, m_providers )
+    QMap<QString, ProviderPtrSet> artistProviders;
+    foreach( ProviderPtr provider, m_providers )
     {
         QSet<QString> artists = provider->artists();
         foreach( const QString &artist, artists )
-            artistProviders[ artist ].insert( provider.data() );
+            artistProviders[ artist ].insert( provider );
         allArtists.unite( artists );
         s_comparisonFields &= provider->reliableTrackMetaData();
     }
@@ -125,7 +125,7 @@ void MatchTracksJob::run()
     debug();
     int tupleCount = m_matchedTuples.count();
     debug() << "Found" << tupleCount << "tuples of matched tracks from multiple collections";
-    foreach( const Provider *provider, m_providers )
+    foreach( ProviderPtr provider, m_providers )
     {
         const TrackDelegateList uniqueList = m_uniqueTracks.value( provider );
         const TrackDelegateList excludedList = m_excludedTracks.value( provider );
@@ -138,10 +138,10 @@ void MatchTracksJob::run()
 
 void
 MatchTracksJob::matchTracksFromArtist( const QString &artist,
-                                       const QSet<Provider *> &artistProviders )
+                                       const ProviderPtrSet &artistProviders )
 {
     PerProviderTrackList providerTracks;
-    foreach( Provider *provider, artistProviders )
+    foreach( ProviderPtr provider, artistProviders )
     {
         if( !artistProviders.contains( provider ) )
             continue;  // optimisation: don't query providers without this artist
@@ -172,7 +172,7 @@ MatchTracksJob::matchTracksFromArtist( const QString &artist,
         // optimisation: continue early if there's only one provider left
         if( equalTracks.keys().count() <= 1 )
         {
-            const Provider *provider = equalTracks.keys().first();
+            ProviderPtr provider = equalTracks.keys().first();
             m_uniqueTracks[ provider ].append( equalTracks[ provider ] );
             continue;
         }
@@ -185,7 +185,7 @@ MatchTracksJob::matchTracksFromArtist( const QString &artist,
 #endif
 
         TrackTuple matchedTuple;
-        foreach( const Provider *provider, equalTracks.keys() )
+        foreach( ProviderPtr provider, equalTracks.keys() )
         {
             int listSize = equalTracks[ provider ].size();
             Q_ASSERT( listSize >= 1 );
@@ -201,14 +201,14 @@ MatchTracksJob::matchTracksFromArtist( const QString &artist,
         else if( matchedTuple.count() == 1 )
         {
             // only one provider
-            const Provider *provider = matchedTuple.provider( 0 );
+            ProviderPtr provider = matchedTuple.provider( 0 );
             m_uniqueTracks[ provider ].append( matchedTuple.track( provider ) );
         }
     }
 
     if( !providerTracks.isEmpty() ) // some tracks from one provider left
     {
-        const Provider *provider = providerTracks.keys().first();
+        ProviderPtr provider = providerTracks.keys().first();
         m_uniqueTracks[ provider ].append( providerTracks[ provider ] );
     }
 }
@@ -231,7 +231,7 @@ MatchTracksJob::takeTracksEqualTo( const TrackPtr &track,
                                    PerProviderTrackList &providerTracks )
 {
     PerProviderTrackList ret;
-    foreach( const Provider *provider, providerTracks.keys() )
+    foreach( ProviderPtr provider, providerTracks.keys() )
     {
         while( !providerTracks[ provider ].isEmpty() &&
                track->equals( *providerTracks[ provider ].first(), s_comparisonFields ) )
@@ -248,7 +248,7 @@ void
 MatchTracksJob::addMatchedTuple( const TrackTuple &tuple )
 {
     m_matchedTuples.append( tuple );
-    foreach( const Provider *provider, tuple.providers() )
+    foreach( ProviderPtr provider, tuple.providers() )
     {
         m_matchedTrackCounts[ provider ]++;
     }

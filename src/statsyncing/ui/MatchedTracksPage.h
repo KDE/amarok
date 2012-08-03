@@ -48,13 +48,13 @@ namespace StatSyncing
              * Add unique tracks model. MatchedTracksPage does _not_ take ownership of the
              * model pointer.
              */
-            void addUniqueTracksModel( const Provider *provider, QAbstractItemModel *model );
+            void addUniqueTracksModel( ProviderPtr provider, QAbstractItemModel *model );
 
             /**
              * Add excluded tracks model. MatchedTracksPage does _not_ take ownership of
              * the model pointer.
              */
-            void addExcludedTracksModel( const Provider *provider, QAbstractItemModel *model );
+            void addExcludedTracksModel( ProviderPtr provider, QAbstractItemModel *model );
 
         signals:
             /**
@@ -82,7 +82,7 @@ namespace StatSyncing
             /**
              * Helper method for show{Unique,Excluded}Tracks
              */
-            void showSingleTracks( const QMap<const Provider *, QAbstractItemModel *> &models );
+            void showSingleTracks( const QMap<ProviderPtr, QAbstractItemModel *> &models );
 
             void changeMatchedTracksFilter( int index );
 
@@ -91,7 +91,7 @@ namespace StatSyncing
             /**
              * Helper method for change{UniqueExcluded}TracksProvider
              */
-            void changeSingleTracksProvider( int index, const QMap<const Provider *, QAbstractItemModel *> &models );
+            void changeSingleTracksProvider( int index, const QMap<ProviderPtr, QAbstractItemModel *> &models );
 
             void refreshStatusText();
 
@@ -112,8 +112,8 @@ namespace StatSyncing
             ProviderPtrList m_providers;
             SortFilterProxyModel *m_proxyModel;
             MatchedTracksModel *m_matchedTracksModel;
-            QMap<const Provider *, QAbstractItemModel *> m_uniqueTracksModels;
-            QMap<const Provider *, QAbstractItemModel *> m_excludedTracksModels;
+            QMap<ProviderPtr, QAbstractItemModel *> m_uniqueTracksModels;
+            QMap<ProviderPtr, QAbstractItemModel *> m_excludedTracksModels;
     };
 
 } // namespace StatSyncing

@@ -56,7 +56,7 @@ ProvidersModel::data( const QModelIndex &index, int role ) const
     {
         return QVariant();
     }
-    QSharedPointer<Provider> provider = m_providers.at( index.row() );
+    ProviderPtr provider = m_providers.at( index.row() );
     switch( role )
     {
         case Qt::DisplayRole:
@@ -96,7 +96,7 @@ ProvidersModel::setData( const QModelIndex &index, const QVariant &value, int ro
         return false;
     }
     Qt::CheckState state = Qt::CheckState( value.toInt() );
-    QSharedPointer<Provider> provider = m_providers.at( index.row() );
+    ProviderPtr provider = m_providers.at( index.row() );
     if( state == Qt::Checked )
         m_checkedProviders.insert( provider );
     else
@@ -136,7 +136,7 @@ ProvidersModel::reliableTrackMetadataIntersection() const
 {
     if( selectedProviders().isEmpty() )
         return 0;
-    QListIterator<QSharedPointer<Provider> > it( selectedProviders() );
+    QListIterator<ProviderPtr> it( selectedProviders() );
     qint64 fields = it.next()->reliableTrackMetaData();
     while( it.hasNext() )
         fields &= it.next()->reliableTrackMetaData();
@@ -147,7 +147,7 @@ qint64
 ProvidersModel::writableTrackStatsDataIntersection() const
 {
     QMap<qint64, int> map; // field to count map
-    foreach( QSharedPointer<Provider> provider, selectedProviders() )
+    foreach( ProviderPtr provider, selectedProviders() )
     {
         qint64 providerFields = provider->writableTrackStatsData();
         for( qint64 i = 0; i < 64; i++ )

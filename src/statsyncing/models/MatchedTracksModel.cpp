@@ -119,7 +119,7 @@ MatchedTracksModel::data( const QModelIndex &index, int role ) const
     else if( index.internalId() >= 0 && index.internalId() < m_matchedTuples.count() )
     {
         TrackTuple tuple = m_matchedTuples.value( index.internalId() );
-        const Provider *provider = tuple.provider( index.row() );
+        ProviderPtr provider = tuple.provider( index.row() );
         if( !provider )
             return QVariant();
         return trackData( provider, tuple, field, role );
@@ -138,7 +138,7 @@ MatchedTracksModel::setData( const QModelIndex &idx, const QVariant &value, int 
         return false;
     }
     TrackTuple &tuple = m_matchedTuples[ idx.internalId() ]; // we need reference
-    const Provider *provider = tuple.provider( idx.row() );
+    ProviderPtr provider = tuple.provider( idx.row() );
     if( !provider )
         return false;
 
@@ -148,7 +148,7 @@ MatchedTracksModel::setData( const QModelIndex &idx, const QVariant &value, int 
             tuple.setRatingProvider( provider );
             break;
         case Qt::Unchecked:
-            tuple.setRatingProvider( 0 );
+            tuple.setRatingProvider( ProviderPtr() );
             break;
         default:
             return false;
@@ -203,7 +203,7 @@ MatchedTracksModel::hasConflict( int i ) const
 }
 
 void
-MatchedTracksModel::takeRatingsFrom( const Provider *provider )
+MatchedTracksModel::takeRatingsFrom( ProviderPtr provider )
 {
     for( int i = 0; i < m_matchedTuples.count(); i++ )
     {
@@ -228,7 +228,7 @@ MatchedTracksModel::takeRatingsFrom( const Provider *provider )
 QVariant
 MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role ) const
 {
-    const Provider *firstProvider = tuple.provider( 0 );
+    ProviderPtr firstProvider = tuple.provider( 0 );
     TrackPtr first = tuple.track( firstProvider );
     switch( role )
     {
@@ -276,7 +276,7 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
 }
 
 QVariant
-MatchedTracksModel::trackData( const Provider *provider, const TrackTuple &tuple,
+MatchedTracksModel::trackData( ProviderPtr provider, const TrackTuple &tuple,
                                qint64 field, int role ) const
 {
     TrackPtr track = tuple.track( provider );

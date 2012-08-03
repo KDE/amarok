@@ -31,7 +31,7 @@
 #include <QStandardItemModel>
 
 // needed for QCombobox payloads:
-Q_DECLARE_METATYPE( const StatSyncing::Provider * )
+Q_DECLARE_METATYPE( StatSyncing::ProviderPtr )
 
 namespace StatSyncing
 {
@@ -149,13 +149,13 @@ MatchedTracksPage::setMatchedTracksModel( MatchedTracksModel *model )
 }
 
 void
-MatchedTracksPage::addUniqueTracksModel( const Provider *provider, QAbstractItemModel *model )
+MatchedTracksPage::addUniqueTracksModel( ProviderPtr provider, QAbstractItemModel *model )
 {
     m_uniqueTracksModels.insert( provider, model );
 }
 
 void
-MatchedTracksPage::addExcludedTracksModel( const Provider* provider, QAbstractItemModel *model )
+MatchedTracksPage::addExcludedTracksModel( ProviderPtr provider, QAbstractItemModel *model )
 {
     m_excludedTracksModels.insert( provider, model );
 }
@@ -250,19 +250,19 @@ MatchedTracksPage::showExcludedTracks( bool checked )
 }
 
 void
-MatchedTracksPage::showSingleTracks( const QMap<const Provider *, QAbstractItemModel *> &models )
+MatchedTracksPage::showSingleTracks( const QMap<ProviderPtr, QAbstractItemModel *> &models )
 {
-    const Provider *lastProvider =
-        filterCombo->itemData( filterCombo->currentIndex() ).value<const Provider *>();
+    ProviderPtr lastProvider =
+        filterCombo->itemData( filterCombo->currentIndex() ).value<ProviderPtr>();
     filterCombo->clear();
     int currentIndex = 0;
     int i = 0;
-    foreach( const Provider *provider, models.keys() )
+    foreach( ProviderPtr provider, models.keys() )
     {
         if( provider == lastProvider )
             currentIndex = i;
         filterCombo->insertItem( i++, provider->icon(), provider->prettyName(),
-                           QVariant::fromValue<const Provider *>( provider ) );
+                           QVariant::fromValue<ProviderPtr>( provider ) );
     }
     filterCombo->setCurrentIndex( currentIndex );
     changeSingleTracksProvider( currentIndex, models );
@@ -290,9 +290,9 @@ MatchedTracksPage::changeExcludedTracksProvider( int index )
 
 void
 MatchedTracksPage::changeSingleTracksProvider( int index,
-    const QMap<const Provider *, QAbstractItemModel *> &models )
+    const QMap<ProviderPtr, QAbstractItemModel *> &models )
 {
-    const Provider *provider = filterCombo->itemData( index ).value<const Provider *>();
+    ProviderPtr provider = filterCombo->itemData( index ).value<ProviderPtr>();
     m_proxyModel->setSourceModel( models.value( provider ) );
 }
 
@@ -354,7 +354,7 @@ MatchedTracksPage::takeRatingsFrom()
         return;
     }
 
-    const Provider *provider = action->data().value<const Provider *>();
+    ProviderPtr provider = action->data().value<ProviderPtr>();
     m_matchedTracksModel->takeRatingsFrom( provider );
 }
 
@@ -383,10 +383,10 @@ MatchedTracksPage::polish()
 
     // populate menu of the "Take Ratings From" button
     QMenu *takeRatingsMenu = new QMenu( takeRatingsButton );
-    foreach( QSharedPointer<Provider> provider, m_providers )
+    foreach( ProviderPtr provider, m_providers )
     {
         QAction *action = takeRatingsMenu->addAction( provider->icon(), provider->prettyName() );
-        action->setData( QVariant::fromValue<const Provider *>( provider.data() ) );
+        action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
         connect( action, SIGNAL(triggered(bool)), SLOT(takeRatingsFrom()) );
     }
     takeRatingsMenu->addAction( i18n( "Reset All Ratings to Undecided" ), this, SLOT(takeRatingsFrom()) );

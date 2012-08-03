@@ -22,7 +22,6 @@
 #include <KIcon>
 
 #include <QMap>
-#include <QMetaType>
 #include <QSet>
 #include <QString>
 
@@ -33,13 +32,12 @@ namespace StatSyncing
      * by local Amarok collections or by online services such as Last.fm.
      *
      * Instances of subclasses are guaranteed to be created in the main thread.
+     * Providers are memory-managed as explicitly shared data, always use ProviderPtr
+     * to stora a reference to Provider.
      */
-    class Provider : public QObject
+    class Provider : public QSharedData
     {
-        Q_OBJECT
-
         public:
-            Provider();
             virtual ~Provider();
 
             /**
@@ -97,18 +95,16 @@ namespace StatSyncing
              * a longer time; it must be implemented in a reentrant manner.
              */
             virtual TrackList artistTracks( const QString &artistName ) = 0;
-
-        private:
-            Q_DISABLE_COPY(Provider)
     };
+
+    typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
+    typedef QList<ProviderPtr> ProviderPtrList;
+    typedef QSet<ProviderPtr> ProviderPtrSet;
 
     /**
      * Container for a set of track frovider lists, one for each provider
      */
-    typedef QMap<const Provider *, TrackList> PerProviderTrackList;
-
-    typedef QList<QSharedPointer<Provider> > ProviderPtrList;
-    typedef QSet<QSharedPointer<Provider> > ProviderPtrSet;
+    typedef QMap<ProviderPtr, TrackList> PerProviderTrackList;
 } // namespace StatSyncing
 
 #endif // STATSYNCING_PROVIDER_H
