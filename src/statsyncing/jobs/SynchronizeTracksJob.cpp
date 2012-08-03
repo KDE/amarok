@@ -54,6 +54,7 @@ SynchronizeTracksJob::run()
         updatedTracksCount += tuple.synchronize( m_options );
         if( ( i + fuzz ) % denom == 0 )
             emit incrementProgress();
+        i++;
     }
 
     emit endProgressOperation( this, updatedTracksCount );
