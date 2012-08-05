@@ -106,7 +106,7 @@ Item {
                         lyrics_text.title = d['artist'] + " - " + d['title']
                     } else {
                         lyrics_text.title = "Lyrics"
-                        lyrics_text.text = d['status']
+                        lyrics_text.text = ""
                     }
                 }
             }
