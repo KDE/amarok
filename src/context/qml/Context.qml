@@ -84,10 +84,31 @@ Item {
             anchors.left: parent.left
             anchors.leftMargin: 15
             initialPage: lyrics_text
-            TextualViewer {
+            RichTextualViewer {
                 id: wikitext
                 title: "Wikipedia - Artist"
                 visible: false
+                html: ""
+            }
+            DataSource {
+                id: wikiSource
+                engine: "amarok-wikipedia"
+                connectedSources: ["wikipedia"]
+                onDataChanged: {
+                    d = wikiSource.data['wikipedia']
+                    anObject = d
+                    for (var prop in anObject) {
+//                         console.log("Object item:", prop, "=", anObject[prop])
+                    }
+//                     if (d['displayReady'] == true) {
+                        wikitext.title = "Wikipedia - " + d['title']
+//                         wikitext.html = d['page']
+                        wikitext.url = d['url']
+//                     } else {
+//                         lyrics_text.title = "Lyrics"
+//                         lyrics_text.text = ""
+//                     }
+                }
             }
             TextualViewer {
                 id: lyrics_text
@@ -97,16 +118,16 @@ Item {
             }
 
             DataSource {
-                id: dataSource
+                id: lyricsSource
                 engine: "amarok-lyrics"
                 connectedSources: ["lyrics"]
                 onDataChanged: {
-                    d = dataSource.data['lyrics']
+                    d = lyricsSource.data['lyrics']
                     if (d['displayReady'] == true) {
                         lyrics_text.title = d['artist'] + " - " + d['title']
                         lyrics_text.text = d['lyrics']
                     } else {
-                        lyrics_text.title = "Lyrics"
+                        lyrics_text.title = "No lyrics available"
                         lyrics_text.text = ""
                     }
                 }

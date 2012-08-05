@@ -27,8 +27,10 @@
     This class provide Wikipedia data for use in Context applets.
 
 NOTE: The QVariant data is structured like this:
-           * the key name is the artist
-           * the data is a QString containing the html of the wikipedia page
+           * "page" -> HTML of the page
+           * "title" -> Title of the Wikipedia page
+           * "url" -> URL of the Wikipedia page
+           * "label" -> QString of the kind of page we're looking at
 */
 
 using namespace Context;

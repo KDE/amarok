@@ -551,6 +551,7 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
     // We now use:  http://en.wikipedia.org/w/index.php?title=The_Beatles&useskin=monobook
     // instead of:  http://en.wikipedia.org/wiki/The_Beatles
     // So that wikipedia skin is forced to default "monoskin", and the page can be parsed correctly (see BUG 205901 )
+    host.prepend( ".m" );
     host.prepend( urlPrefix );
     pageUrl.setHost( host );
     pageUrl.setPath( QLatin1String("/w/index.php") );

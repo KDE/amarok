@@ -6,5 +6,6 @@
         <file>images/logo.png</file>
         <file>Context.qml</file>
         <file>TextualViewer.qml</file>
+        <file>RichTextualViewer.qml</file>
     </qresource>
 </RCC>
