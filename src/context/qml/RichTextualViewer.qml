@@ -5,7 +5,6 @@ import QtWebKit 1.0
 
 Item {
 
-    property alias html: webview.html
     property alias url: webview.url
     property alias title: title.text
 
@@ -36,11 +35,9 @@ Item {
         WebView {
             id: webview
             url: ""
-            html: ""
             anchors.top: parent.top
             anchors.left : parent.left
             width: parent.width - scroll.width - 5
-            //wrapMode: Text.Wrap
             anchors.rightMargin: 50
         }
     }
