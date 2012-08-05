@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
  * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2012 <riccardo@kde.org>                                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,8 +27,13 @@
     This class provides Lyrics data for use in Context applets. 
 
 NOTE: The QVariant data is structured like this:
-           * the key name is lyrics
-           * the data is a QVariantList with title, artist, lyricsurl, lyrics
+           * "title" -> QString title
+           * "artist" -> QString artist
+           * "lyrics" -> QString lyrics, the text of the lyrics
+           * "lyricsUrl" -> KUrl url to the lyrics
+           * "displayReady" -> bool, Whether we can already display lyrics or not.
+                               Status string accessible via the "status" property.
+           * "status" -> QString status (fetching, stopped, no lyrics found, ...) TODO make me an enum
 */
 
 using namespace Context;

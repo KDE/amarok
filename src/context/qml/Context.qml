@@ -15,9 +15,6 @@ Item {
             lyricsdata = dataSource.data['lyrics']
             for (var prop in lyricsdata) {
                 console.log("Lyrics map - key:", prop, "=", lyricsdata[prop])
-                if(lyricsdata.contains('fetching') ){
-                    console.log("FETCHING")
-                }
             }
         }
     }
@@ -107,7 +104,7 @@ Item {
                 id: lyrics_text
                 title: "Lyrics"
                 visible: false
-                text: dataSource.data['lyrics'] //todo: add html detection
+                text: dataSource.data['lyrics']['lyrics'] //todo: add html detection
             }
         }
 

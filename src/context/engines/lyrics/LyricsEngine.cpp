@@ -88,8 +88,9 @@ void LyricsEngine::update()
     {
         debug() << "no current track";
         m_prevLyrics.clear();
-        removeAllData( "lyrics" );
-        setData( "lyrics", "stopped", "stopped" );
+        removeAllData( "lyrics" );;
+        setData( "lyrics", "displayReady", false );
+        setData( "lyrics", "status", "stopped" );
         m_isUpdateInProgress = false;
         return;
     }
@@ -152,7 +153,8 @@ void LyricsEngine::update()
         {
             debug() << "no lyrics script running";
             removeAllData( "lyrics" );
-            setData( "lyrics", "noscriptrunning", "noscriptrunning" );
+            setData( "lyrics", "displayReady", false );
+            setData( "lyrics", "status", "noscriptrunning" );
             disconnect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), this, 0 );
             connect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), SLOT(update()) );
             m_isUpdateInProgress = false;
@@ -161,7 +163,9 @@ void LyricsEngine::update()
 
         // fetch by lyrics script
         removeAllData( "lyrics" );
-        setData( "lyrics", "fetching", "fetching" );
+        setData( "lyrics", "displayReady", false );
+        setData( "lyrics", "status", "fetching..." );
+
         ScriptManager::instance()->notifyFetchLyrics( lyrics.artist, lyrics.title );
     }
     m_isUpdateInProgress = false;
@@ -174,7 +178,14 @@ void LyricsEngine::newLyrics( const LyricsData &lyrics )
     QString key = Qt::mightBeRichText( lyrics.text ) ? QLatin1String( "html" )
                                                      : QLatin1String( "lyrics" );
     removeAllData( "lyrics" );
-    setData( "lyrics", key, QVariant::fromValue(lyrics) );
+
+    setData( "lyrics", "title", lyrics.title );
+    setData( "lyrics", "artist", lyrics.artist );
+    setData( "lyrics", "lyricsUrl", lyrics.site );
+    setData( "lyrics", "lyrics", lyrics.text );
+    setData( "lyrics", "displayReady", true );
+    setData( "lyrics", "status", "" );
+
     m_prevLyrics = lyrics;
 }
 
