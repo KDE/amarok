@@ -1,11 +1,33 @@
-// import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
+
 import QtQuick 1.1
 import org.kde.plasma.components 0.1
-//as PlasmaComponents
+import org.kde.plasma.core 0.1
 
 // Context view
 Item {
+    
+    // Sources and data
+    DataSource {
+        id: dataSource
+        engine: "amarok-lyrics"
+        connectedSources: ["lyrics"]
+        onDataChanged: {
+            lyricsdata = dataSource.data['lyrics']
+            for (var prop in lyricsdata) {
+                console.log("Lyrics map - key:", prop, "=", lyricsdata[prop])
+                if(lyricsdata.contains('fetching') ){
+                    console.log("FETCHING")
+                }
+            }
+        }
+    }
 
+//     PlasmaCore.DataModel {
+//         id: lyricsModel
+//         dataSource: lyricsSource
+//         keyRoleFilter: "[\\d]*"
+//     }
+    
     Flickable {
         id: info
         anchors.fill: parent
@@ -85,6 +107,7 @@ Item {
                 id: lyrics_text
                 title: "Lyrics"
                 visible: false
+                text: dataSource.data['lyrics'] //todo: add html detection
             }
         }
 
