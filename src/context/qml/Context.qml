@@ -7,17 +7,6 @@ import org.kde.plasma.core 0.1
 Item {
     
     // Sources and data
-    DataSource {
-        id: dataSource
-        engine: "amarok-lyrics"
-        connectedSources: ["lyrics"]
-        onDataChanged: {
-            lyricsdata = dataSource.data['lyrics']
-            for (var prop in lyricsdata) {
-                console.log("Lyrics map - key:", prop, "=", lyricsdata[prop])
-            }
-        }
-    }
 
 //     PlasmaCore.DataModel {
 //         id: lyricsModel
@@ -105,6 +94,20 @@ Item {
                 title: "Lyrics"
                 visible: false
                 text: dataSource.data['lyrics']['lyrics'] //todo: add html detection
+            }
+
+            DataSource {
+                id: dataSource
+                engine: "amarok-lyrics"
+                connectedSources: ["lyrics"]
+                onDataChanged: {
+                    d = dataSource.data['lyrics']
+                    if (d['displayReady'] == true) {
+                        lyrics_text.title = d['artist'] + " - " d['title']
+                    } else {
+                        lyrics_text.title = "Lyrics"
+                    }
+                }
             }
         }
 
