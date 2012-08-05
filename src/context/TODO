@@ -3,7 +3,13 @@ Stuff to do for the context view:
 
 * Fix horizontal resizing problems
 
+Theme:
+
+ * SVGize the images
+ * Make the theme colorable, basing on the color scheme
+
 Wikipedia:
+
  * Figure out why wheel-scrolling doesn't work with WebView
  * Understand how to set configuration data to a DataEngine via QML (language)
  * Implement basic navigation buttons (back, forward)
