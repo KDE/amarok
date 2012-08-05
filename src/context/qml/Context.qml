@@ -93,7 +93,7 @@ Item {
                 id: lyrics_text
                 title: "Lyrics"
                 visible: false
-                text: dataSource.data['lyrics']['lyrics'] //todo: add html detection
+                text: ""
             }
 
             DataSource {
@@ -104,6 +104,7 @@ Item {
                     d = dataSource.data['lyrics']
                     if (d['displayReady'] == true) {
                         lyrics_text.title = d['artist'] + " - " + d['title']
+                        lyrics_text.text = d['lyrics']
                     } else {
                         lyrics_text.title = "Lyrics"
                         lyrics_text.text = ""
