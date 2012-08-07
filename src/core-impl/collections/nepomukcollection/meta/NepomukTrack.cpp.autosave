@@ -386,7 +386,7 @@ void NepomukTrack::setAlbumPeakGain(const double albumPeakGain)
     m_albumPeakGain = albumPeakGain;
 }
 
-void
+    void
 NepomukTrack::setKUrl( const KUrl url )
 {
     m_kurl = url;

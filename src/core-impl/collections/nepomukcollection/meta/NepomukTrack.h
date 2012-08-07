@@ -33,6 +33,7 @@
 
 #include <Nepomuk/Resource>
 #include <KUrl>
+#include <QDateTime>
 
 namespace Meta
 {
@@ -49,7 +50,7 @@ class NepomukTrack : public Track
 {
 public:
     // construct a NepomukTrack out of a Nepomuk resource
-    NepomukTrack( const Nepomuk::Resource resource, NepomukCollection* const coll );
+    NepomukTrack( Nepomuk::Resource &res, NepomukCollection* const coll );
     // construct a NepomukTrack out of a url
 
     ~NepomukTrack();
@@ -92,6 +93,26 @@ public:
     void setGenre( NepomukGenrePtr genre );
     void setYear( NepomukYearPtr year );
 
+    void setName( const QString &name );
+    void setType( const QString & type );
+    void setLength( const qint64 length );
+    void setBitrate( const int rate );
+    void setTrackNumber( const int trackNumber );
+    void setUidUrl( const QString &uidUrl );
+    void setDiscNumber( const int discNumber );
+    void setModifyDate( const QDateTime modifyDate );
+    void setCreateDate( const QDateTime createDate );
+    void setbpm( const qreal bpm );
+    void setComment( const QString &comment );
+    void setSampleRate( const int sampleRate );
+    void setFilesize( const int filesize );
+    void setTrackGain( const double trackGain );
+    void setTrackPeakGain( const double trackPeakGain );
+    void setAlbumGain( const double albumGain );
+    void setAlbumPeakGain( const double albumPeakGain );
+
+    void setKUrl( const KUrl url );
+
     // Non pure virtual functions
     virtual bool inCollection() const;
     /**
@@ -107,16 +128,34 @@ public:
 
 private:
 
-    Nepomuk::Resource m_resource;
     ArtistPtr m_artist;
     GenrePtr m_genre;
     ComposerPtr m_composer;
     AlbumPtr m_album;
     YearPtr m_year;
     LabelList m_labellist;
-    KUrl m_kurl;
+
     QString m_name;
+    QString m_type;
+    qint64 m_length;
+    int m_bitrate;
+    int m_trackNumber;
+    QString m_uidUrl;
+    int m_discNumber;
+    QDateTime m_modifyDate;
+    QDateTime m_createDate;
+    qreal m_bpm;
+    QString m_comment;
+    int m_sampleRate;
+    int m_filesize;
+    double m_trackGain;
+    double m_trackPeakGain;
+    double m_albumGain;
+    double m_albumPeakGain;
+
     NepomukCollection *m_coll;
+    KUrl m_kurl;
+    Nepomuk::Resource m_resource;
 };
 
 }
