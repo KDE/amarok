@@ -72,56 +72,19 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), m_ui->checkboxContainer );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), m_ui->checkboxContainer );
-    m_writeBack = new QCheckBox( i18n("Write metadata to file"), m_ui->checkboxContainer );
-    m_writeBackStatistics = new QCheckBox( i18n("Write statistics to file"), m_ui->checkboxContainer );
-    KHBox* writeBackCoverDimensionsBox = new KHBox( m_ui->checkboxContainer );
-    m_writeBackCover = new QCheckBox( i18n("Write covers to file, maximum size:"), writeBackCoverDimensionsBox );
-    m_writeBackCoverDimensions = new KComboBox( writeBackCoverDimensionsBox );
-    m_writeBackCoverDimensions->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Minimum );
-    m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Small (200 px)"), QVariant(200) );
-    m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Medium (400 px)"), QVariant(400) );
-    m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Large (800 px)"), QVariant(800) );
-    m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Huge (1600 px)"), QVariant(1600) );
-    m_charset   = new QCheckBox( i18n("&Enable character set detection in ID3 tags"), m_ui->checkboxContainer );
     connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_monitor  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-    connect( m_writeBack, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-    connect( m_writeBackStatistics, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-    connect( m_writeBackCover, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-    connect( m_writeBackCoverDimensions, SIGNAL( currentIndexChanged( int )), this, SIGNAL( changed() ) );
-    connect( m_charset  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 
     QVBoxLayout *checkboxLayout = new QVBoxLayout();
     checkboxLayout->addWidget( m_recursive );
     checkboxLayout->addWidget( m_monitor );
-    checkboxLayout->addWidget( m_writeBack );
-    checkboxLayout->addWidget( m_writeBackStatistics );
-    checkboxLayout->addWidget( writeBackCoverDimensionsBox );
-    checkboxLayout->addWidget( m_charset );
     m_ui->checkboxContainer->setLayout( checkboxLayout );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
     m_monitor->setToolTip(   i18n( "If selected, the collection folders will be watched for changes.\nThe watcher will not notice changes behind symbolic links." ) );
-    m_writeBack->setToolTip( i18n( "Write meta data changes (including 'stars' rating) back to the original file.\nYou can also prevent writing back by write protecting the file.\nThis might be a good idea if you are currently\nsharing those files via the Internet." ) );
-    m_writeBackStatistics->setToolTip( i18n( "Write play-changing statistics (e.g. score, lastplayed, playcount)\nas tags back to the file." ) );
-    m_writeBackCover->setToolTip( i18n( "Write changed covers back to the file.\nThis will replace existing embedded covers." ) );
-    m_writeBackCoverDimensions->setToolTip( i18n( "Scale covers down if necessary." ) );
-    m_charset->setToolTip(   i18n( "If selected, Amarok will use Mozilla's\nCharacter Set Detector to attempt to automatically guess the\ncharacter sets used in ID3 tags." ) );
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
-    m_writeBack->setChecked( AmarokConfig::writeBack() );
-    m_writeBack->setVisible( false ); // probably not a usecase
-    m_writeBackStatistics->setChecked( AmarokConfig::writeBackStatistics() );
-    m_writeBackStatistics->setEnabled( writeBack() );
-    m_writeBackCover->setChecked( AmarokConfig::writeBackCover() );
-    m_writeBackCover->setEnabled( writeBack() );
-    if( m_writeBackCoverDimensions->findData( AmarokConfig::writeBackCoverDimensions() ) != -1 )
-        m_writeBackCoverDimensions->setCurrentIndex( m_writeBackCoverDimensions->findData( AmarokConfig::writeBackCoverDimensions() ) );
-    else
-        m_writeBackCoverDimensions->setCurrentIndex( 1 );
-    m_writeBackCoverDimensions->setEnabled( m_writeBackCover->isEnabled() && m_writeBackCover->isChecked() );
-    m_charset->setChecked( AmarokConfig::useCharsetDetector() );
 
     // set the model _after_ constructing the checkboxes
     m_model = new CollectionFolder::Model();
@@ -150,19 +113,10 @@ CollectionSetup::hasChanged() const
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
 
-    m_writeBackStatistics->setEnabled( writeBack() );
-    m_writeBackCover->setEnabled( writeBack() );
-    m_writeBackCoverDimensions->setEnabled( m_writeBackCover->isEnabled() && m_writeBackCover->isChecked() );
-
     return
         m_model->directories() != collectionFolders ||
         m_recursive->isChecked() != AmarokConfig::scanRecursively() ||
-        m_monitor->isChecked() != AmarokConfig::monitorChanges() ||
-        m_writeBack->isChecked() != AmarokConfig::writeBack() ||
-        m_writeBackStatistics->isChecked() != AmarokConfig::writeBackStatistics() ||
-        m_writeBackCover->isChecked() != AmarokConfig::writeBackCover() ||
-        m_writeBackCoverDimensions->itemData(m_writeBackCoverDimensions->currentIndex()).toInt() != AmarokConfig::writeBackCoverDimensions() ||
-        m_charset->isChecked() != AmarokConfig::useCharsetDetector();
+        m_monitor->isChecked() != AmarokConfig::monitorChanges();
 }
 
 void
@@ -172,12 +126,6 @@ CollectionSetup::writeConfig()
 
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
-    AmarokConfig::setWriteBack( writeBack() );
-    AmarokConfig::setWriteBackStatistics( writeBackStatistics() );
-    AmarokConfig::setWriteBackCover( writeBackCover() );
-    if( writeBackCoverDimensions() > 0 )
-        AmarokConfig::setWriteBackCoverDimensions( writeBackCoverDimensions() );
-    AmarokConfig::setUseCharsetDetector( charset() );
 
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();

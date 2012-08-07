@@ -22,6 +22,7 @@
 #include "configdialog/dialogs/CollectionConfig.h"
 #include "configdialog/dialogs/DatabaseConfig.h"
 #include "configdialog/dialogs/GeneralConfig.h"
+#include "configdialog/dialogs/MetadataConfig.h"
 #include "configdialog/dialogs/NotificationsConfig.h"
 #include "configdialog/dialogs/PlaybackConfig.h"
 #include "configdialog/dialogs/PluginsConfig.h"
@@ -45,6 +46,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
 
     ConfigDialogBase *general = new GeneralConfig( this );
     ConfigDialogBase *collection = new CollectionConfig( this );
+    ConfigDialogBase *metadata = new MetadataConfig( this );
     ConfigDialogBase *playback = new PlaybackConfig( this );
     ConfigDialogBase *notify = new NotificationsConfig( this );
     ConfigDialogBase *database = new DatabaseConfig( this );
@@ -55,6 +57,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
 
     addPage( general, i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
     addPage( collection, i18n( "Local Collection" ), "collection-amarok", i18n( "Configure Local Collection" ) );
+    addPage( metadata, i18n( "Metadata" ), "amarok_playcount", i18n( "Configure Metadata Handling" ) );
     addPage( playback, i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
     addPage( notify, i18n( "Notifications" ), "preferences-indicator-amarok", i18n( "Configure Notifications" ) );
     addPage( database, i18n( "Database" ), "server-database", i18n( "Configure Database" ) );

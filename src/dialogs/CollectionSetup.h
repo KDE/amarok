@@ -52,11 +52,6 @@ class CollectionSetup : public QWidget, public Ui::CollectionConfig
         QStringList dirs() const { return m_dirs; }
         bool recursive() const { return m_recursive && m_recursive->isChecked(); }
         bool monitor() const { return m_monitor && m_monitor->isChecked(); }
-        bool writeBack() const { return m_writeBack&& m_writeBack->isChecked(); }
-        bool writeBackStatistics() const { return m_writeBackStatistics && m_writeBackStatistics->isChecked(); }
-        bool writeBackCover() const { return m_writeBackCover && m_writeBackCover->isChecked(); }
-        int writeBackCoverDimensions() const { return m_writeBackCoverDimensions ? m_writeBackCoverDimensions->itemData(m_writeBackCoverDimensions->currentIndex()).toInt() : 0; }
-        bool charset() const { return m_charset && m_charset->isChecked(); }
 
         const QString modelFilePath( const QModelIndex &index ) const;
         Transcoding::SelectConfigWidget * transcodingConfig() const { return m_ui->transcodingConfig; }
@@ -75,12 +70,6 @@ class CollectionSetup : public QWidget, public Ui::CollectionConfig
         QStringList m_dirs;
         QCheckBox *m_recursive;
         QCheckBox *m_monitor;
-        QCheckBox *m_writeBack;
-        QCheckBox *m_writeBackStatistics;
-        QCheckBox *m_writeBackCover;
-        KComboBox *m_writeBackCoverDimensions;
-        QCheckBox *m_charset;
-
 };
 
 
