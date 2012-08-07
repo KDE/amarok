@@ -56,7 +56,7 @@ var stationArray = new Array (
     new Station( "SomaFM - Indie Pop Rocks [Indie]",                    "http://somafm.com/indiepop.pls" ),
     new Station( "SomaFM - Secret Agent [Downtempo/Lounge]",            "http://somafm.com/secretagent.pls" ),
     new Station( "SomaFM - Tags Trance Trip [Trance]",                  "http://somafm.com/tagstrance.pls" ),
-    new Station( "Virgin Radio [Rock/Pop]",                             "http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb" )
+    new Station( "Absolute Radio [Rock/Pop]",                           "http://network.absoluteradio.co.uk/core/audio/ogg/live.pls?service=vrbb" )
 );
 
 function CoolStream()
