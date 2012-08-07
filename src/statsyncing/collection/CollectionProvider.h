@@ -43,7 +43,7 @@ namespace StatSyncing
             virtual KIcon icon() const;
             virtual qint64 reliableTrackMetaData() const;
             virtual qint64 writableTrackStatsData() const;
-            virtual bool checkedByDefault();
+            virtual Preference defaultPreference();
             virtual QSet<QString> artists();
             virtual TrackList artistTracks( const QString &artistName );
 

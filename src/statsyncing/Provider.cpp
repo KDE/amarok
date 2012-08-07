@@ -21,9 +21,3 @@ using namespace StatSyncing;
 Provider::~Provider()
 {
 }
-
-bool
-Provider::checkedByDefault()
-{
-    return false;
-}

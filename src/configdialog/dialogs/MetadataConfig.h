@@ -20,6 +20,10 @@
 #include "ui_MetadataConfig.h"
 #include "configdialog/ConfigDialogBase.h"
 
+namespace StatSyncing {
+    class Config;
+}
+
 class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
 {
     Q_OBJECT
@@ -35,8 +39,15 @@ class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
     signals:
         void changed();
 
+    private slots:
+        void slotForgetCollections();
+        void slotUpdateForgetButton();
+
     private:
         int writeBackCoverDimensions() const;
+        qint64 checkedFields() const;
+
+        QWeakPointer<StatSyncing::Config> m_statSyncingConfig;
 };
 
 #endif // METADATACONFIG_H

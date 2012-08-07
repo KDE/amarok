@@ -27,6 +27,7 @@ class QTimer;
 
 namespace StatSyncing
 {
+    class Config;
     class Process;
     class Provider;
     typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
@@ -44,6 +45,12 @@ namespace StatSyncing
         public:
             explicit Controller( QObject *parent = 0 );
             ~Controller();
+
+            /**
+             * Return a list of Meta::val* fields that statistics synchronization can
+             * actually synchronize.
+             */
+            static QList<qint64> availableFields();
 
         public slots:
             /**
@@ -66,6 +73,12 @@ namespace StatSyncing
              */
             void unregisterScrobblingService( const ScrobblingServicePtr &service );
 
+            /**
+             * Return StatSyncing configuration object that describes enabled and
+             * disabled statsyncing providers. You may not cache the pointer.
+             */
+            Config *config();
+
         private slots:
             /**
              * Wait a few seconds and if no collectionUpdate() signal arrives until then,
@@ -77,10 +90,6 @@ namespace StatSyncing
                                       CollectionManager::CollectionStatus status );
             void startNonInteractiveSynchronization();
             void synchronize( int mode );
-
-            void saveSettings( const ProviderPtrSet &checkedProviders,
-                               const ProviderPtrSet &unCheckedProviders,
-                               qint64 checkedFields );
 
             void slotTrackFinishedPlaying( const Meta::TrackPtr &track, double playedFraction );
             void scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
@@ -99,6 +108,7 @@ namespace StatSyncing
             // synchronization-related
             QWeakPointer<Process> m_currentProcess;
             QTimer *m_startSyncingTimer;
+            Config *m_config;
 
             // scrobbling-related
             QList<ScrobblingServicePtr> m_scrobblingServices;

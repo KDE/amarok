@@ -30,10 +30,7 @@ ChooseProvidersPage::ChooseProvidersPage( QWidget *parent, Qt::WindowFlags f )
     , m_providersModel( 0 )
 {
     setupUi( this );
-    KPushButton *save = buttonBox->addButton( KGuiItem( i18n( "Save Settings and Close" ) ),
-                                              QDialogButtonBox::ActionRole );
     buttonBox->addButton( KGuiItem( i18n( "Next" ), "go-next" ), QDialogButtonBox::AcceptRole );
-    connect( save, SIGNAL(clicked(bool)), SIGNAL(saveSettings()) );
     connect( buttonBox, SIGNAL(accepted()), SIGNAL(accepted()) );
     connect( buttonBox, SIGNAL(rejected()), SIGNAL(rejected()) );
 }

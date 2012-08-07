@@ -22,6 +22,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
+#include "statsyncing/Controller.h"
 #include "statsyncing/jobs/MatchTracksJob.h"
 #include "statsyncing/jobs/SynchronizeTracksJob.h"
 #include "statsyncing/models/MatchedTracksModel.h"
@@ -34,17 +35,15 @@
 
 using namespace StatSyncing;
 
-Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &checkedProviders,
+Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &preSelectedProviders,
                   qint64 checkedFields, Process::Mode mode, QObject *parent )
     : QObject( parent )
     , m_mode( mode )
-    , m_providersModel( new ProvidersModel( providers, checkedProviders, this ) )
+    , m_providersModel( new ProvidersModel( providers, preSelectedProviders, this ) )
     , m_checkedFields( checkedFields )
     , m_matchedTracksModel( 0 )
     , m_dialog( new KDialog( The::mainWindow() ) )
 {
-    m_availableFields << Meta::valRating << Meta::valFirstPlayed << Meta::valLastPlayed
-                      << Meta::valPlaycount << Meta::valLabel;
     m_dialog.data()->setCaption( i18n( "Synchronize Statistics" ) );
     m_dialog.data()->setButtons( KDialog::None );
     m_dialog.data()->setInitialSize( QSize( 860, 500 ) );
@@ -69,10 +68,9 @@ Process::start()
     if( m_mode == Interactive )
     {
         m_providersPage = new ChooseProvidersPage();
-        m_providersPage.data()->setFields( m_availableFields, m_checkedFields );
+        m_providersPage.data()->setFields( Controller::availableFields(), m_checkedFields );
         m_providersPage.data()->setProvidersModel( m_providersModel, m_providersModel->selectionModel() );
 
-        connect( m_providersPage.data(), SIGNAL(saveSettings()), SLOT(slotSaveAndClose()) );
         connect( m_providersPage.data(), SIGNAL(accepted()), SLOT(slotMatchTracks()) );
         connect( m_providersPage.data(), SIGNAL(rejected()), SLOT(deleteLater()) );
         m_dialog.data()->mainWidget()->hide(); // otherwise it may last as a ghost image
@@ -94,16 +92,6 @@ Process::raise()
     }
     else
         m_mode = Interactive; // schedule dialog should be shown when something happens
-}
-
-void
-Process::slotSaveAndClose()
-{
-    if( m_providersPage )
-        m_checkedFields = m_providersPage.data()->checkedFields();
-    emit saveSettings( m_providersModel->checkedProviders(),
-                       m_providersModel->unCheckedProviders(), m_checkedFields );
-    m_dialog.data()->close(); // triggers deleteLater on this Process
 }
 
 void
@@ -156,7 +144,7 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
     qint64 usedFields = m_checkedFields & m_providersModel->writableTrackStatsDataIntersection();
     m_options.setSyncedFields( usedFields );
     QList<qint64> columns = QList<qint64>() << Meta::valTitle;
-    foreach( qint64 field, m_availableFields )
+    foreach( qint64 field, Controller::availableFields() )
     {
         if( field & usedFields )
             columns << field;
@@ -204,8 +192,6 @@ Process::slotSynchronize()
     // disconnect, otherwise we prematurely delete Process and thus m_matchedTracksModel
     disconnect( m_dialog.data(), SIGNAL(finished()), this, SLOT(deleteLater()) );
     m_dialog.data()->close();
-    emit saveSettings( m_providersModel->checkedProviders(),
-                       m_providersModel->unCheckedProviders(), m_checkedFields );
 
     SynchronizeTracksJob *job =
             new SynchronizeTracksJob( m_matchedTracksModel->matchedTuples(), m_options );
@@ -223,7 +209,7 @@ Process::slotLogSynchronization( QObject *job, int updatedTracksCount )
 {
     Q_UNUSED( job )
     QStringList providerNames;
-    foreach( ProviderPtr provider, m_providersModel->checkedProviders() )
+    foreach( ProviderPtr provider, m_providersModel->selectedProviders() )
         providerNames << provider->prettyName();
     QString providers = providerNames.join( i18nc( "comma between list words", ", " ) );
     QString text = i18ncp( "%2 is a list of collection names", "Synchronization of %2 "

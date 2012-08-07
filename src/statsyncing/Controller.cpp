@@ -18,40 +18,25 @@
 
 #include "amarokconfig.h"
 #include "EngineController.h"
+#include "MainWindow.h"
 #include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "statsyncing/Config.h"
 #include "statsyncing/Process.h"
 #include "statsyncing/ScrobblingService.h"
 #include "statsyncing/collection/CollectionProvider.h"
 
 #include <QTimer>
+#include <KMessageBox>
 
 using namespace StatSyncing;
-
-static QSet<QString> providerIds( const ProviderPtrSet &providers )
-{
-    QSet<QString> ret;
-    foreach( ProviderPtr provider, providers )
-        ret.insert( provider->id() );
-    return ret;
-}
-
-static QSet<QString> readProviders( const KConfigGroup &group, const char *key )
-{
-    QStringList idList = group.readEntry( key, QStringList() );
-    return idList.toSet();
-}
-
-static void writeProviders( KConfigGroup &group, const char *key, const QSet<QString> &providers )
-{
-    group.writeEntry( key, providers.toList() );
-}
 
 Controller::Controller( QObject* parent )
     : QObject( parent )
     , m_startSyncingTimer( new QTimer( this ) )
+    , m_config( new Config( this ) )
     , m_updateNowPlayingTimer( new QTimer( this ) )
 {
     m_startSyncingTimer->setSingleShot( true );
@@ -87,6 +72,13 @@ Controller::~Controller()
 {
 }
 
+QList<qint64>
+Controller::availableFields()
+{
+    return QList<qint64>() << Meta::valRating << Meta::valFirstPlayed
+            << Meta::valLastPlayed << Meta::valPlaycount << Meta::valLabel;
+}
+
 void
 Controller::synchronize()
 {
@@ -108,6 +100,12 @@ void
 Controller::unregisterScrobblingService( const ScrobblingServicePtr &service )
 {
     m_scrobblingServices.removeAll( service );
+}
+
+Config *
+Controller::config()
+{
+    return m_config;
 }
 
 void
@@ -133,14 +131,43 @@ Controller::slotCollectionAdded( Collections::Collection *collection,
     if( status != CollectionManager::CollectionEnabled )
         return;
 
-    KConfigGroup group = Amarok::config( "StatSyncing" );
-    QSet<QString> checkedProviderIds = readProviders( group, "checkedProviders" );
-    QSet<QString> unCheckedProviderIds = readProviders( group, "unCheckedProviders" );
     CollectionProvider provider( collection );
     QString id = provider.id();
-    if( unCheckedProviderIds.contains( id ) )
-        return;
-    if( checkedProviderIds.contains( id ) || provider.checkedByDefault() )
+    bool enabled;
+    if( m_config->providerKnown( id ) )
+        enabled = m_config->providerEnabled( id, false );
+    else
+    {
+        switch( provider.defaultPreference() )
+        {
+            case Provider::Never:
+            case Provider::NoByDefault:
+                enabled = false;
+                break;
+            case Provider::Ask:
+            {
+                QString text = i18nc( "%1 is collection name", "Collection %1 has an "
+                    "ability to synchronize track meta-data such as play count or rating "
+                    "with other collections. Do you want to keep %1 synchronized?\n\n"
+                    "You can always change the decision in Amarok configuration.",
+                    provider.prettyName() );
+                enabled = KMessageBox::questionYesNo( The::mainWindow(), text ) == KMessageBox::Yes;
+                break;
+            }
+            case Provider::YesByDefault:
+                enabled = true;
+                break;
+        }
+    }
+
+    // don't even register Never-by-default providers
+    if( provider.defaultPreference() != Provider::Never )
+    {
+        m_config->updateProvider( id, provider.prettyName(), provider.icon(), true, enabled );
+        m_config->save();
+    }
+
+    if( enabled )
         delayedStartSynchronization();
 }
 
@@ -193,65 +220,22 @@ void Controller::synchronize( int intMode )
     }
 
     // read saved config
-    KConfigGroup group = Amarok::config( "StatSyncing" );
-    qint64 fields = 0;
-    QStringList fieldNames = group.readEntry( "checkedFields", QStringList( "FIRST" ) );
-    if( fieldNames == QStringList( "FIRST" ) )
-        fields = Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed |
-                Meta::valPlaycount | Meta::valLabel;
-    else
-    {
-        foreach( QString fieldName, fieldNames )
-            fields |= Meta::fieldForName( fieldName );
-    }
-    QSet<QString> checkedProviderIds = readProviders( group, "checkedProviders" );
-    QSet<QString> unCheckedProviderIds = readProviders( group, "unCheckedProviders" );
+    qint64 fields = m_config->checkedFields();
     ProviderPtrSet checkedProviders;
     foreach( ProviderPtr provider, providers )
     {
-        QString id = provider->id();
-        if( unCheckedProviderIds.contains( id ) )
-            continue;
-        if( checkedProviderIds.contains( id ) || provider->checkedByDefault() )
+        if( m_config->providerEnabled( provider->id(), false ) )
             checkedProviders.insert( provider );
     }
 
     if( mode == StatSyncing::Process::NonInteractive &&
         ( checkedProviders.count() <= 1 || fields == 0 ) )
+    {
         return;
+    }
 
     m_currentProcess = new Process( providers, checkedProviders, fields, mode, this );
-    connect( m_currentProcess.data(), SIGNAL(saveSettings(ProviderPtrSet,ProviderPtrSet,qint64)),
-             SLOT(saveSettings(ProviderPtrSet,ProviderPtrSet,qint64)) );
     m_currentProcess.data()->start();
-}
-
-void
-Controller::saveSettings( const ProviderPtrSet &checkedProviders,
-                          const ProviderPtrSet &unCheckedProviders,
-                          qint64 checkedFields )
-{
-    KConfigGroup group = Amarok::config( "StatSyncing" );
-
-    QSet<QString> checked = providerIds( checkedProviders );
-    QSet<QString> savedChecked = readProviders( group, "checkedProviders" );
-    QSet<QString> unChecked = providerIds( unCheckedProviders );
-    QSet<QString> savedUnChecked = readProviders( group, "unCheckedProviders" );
-    checked = ( checked | savedChecked ) - unChecked;
-    unChecked = ( unChecked | savedUnChecked ) - checked;
-    writeProviders( group, "checkedProviders", checked );
-    writeProviders( group, "unCheckedProviders", unChecked );
-
-    // prefer string representation for fwd compatibility and user-readability
-    QStringList fieldNames;
-    for( qint64 i = 0; i < 64; i++ )
-    {
-        qint64 field = 1LL << i;
-        if( field & checkedFields )
-            fieldNames << Meta::nameForField( field );
-    }
-    group.writeEntry( "checkedFields", fieldNames );
-    group.sync();
 }
 
 void

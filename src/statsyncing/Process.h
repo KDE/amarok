@@ -59,7 +59,7 @@ namespace StatSyncing
              * providers to be chosen. Otherwise performs the syncing ing the background
              * and shows a window only if conflict occurs.
              */
-            Process( const ProviderPtrList &providers, const ProviderPtrSet &checkedProviders,
+            Process( const ProviderPtrList &providers, const ProviderPtrSet &preSelectedProviders,
                      qint64 checkedFields, Mode mode, QObject *parent = 0 );
             virtual ~Process();
 
@@ -75,17 +75,7 @@ namespace StatSyncing
              */
             void raise();
 
-        signals:
-            /**
-             * Emitted when process wants to permanently save checked providers and
-             * fields.
-             */
-            void saveSettings( const ProviderPtrSet &checkedProviders,
-                               const ProviderPtrSet &unCheckedProviders,
-                               qint64 checkedFields );
-
         private slots:
-            void slotSaveAndClose();
             void slotMatchTracks();
             void slotTracksMatched( ThreadWeaver::Job *job );
             void slotBack();
@@ -98,7 +88,6 @@ namespace StatSyncing
             Mode m_mode;
             Options m_options;
             ProvidersModel *m_providersModel;
-            QList<qint64> m_availableFields;
             qint64 m_checkedFields;
             MatchedTracksModel *m_matchedTracksModel;
 

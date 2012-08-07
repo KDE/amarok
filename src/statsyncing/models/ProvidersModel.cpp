@@ -26,19 +26,21 @@
 using namespace StatSyncing;
 
 ProvidersModel::ProvidersModel( const ProviderPtrList &providers,
-                                const ProviderPtrSet &checkedProviders, QObject *parent )
+                                const ProviderPtrSet &preSelectedProviders, QObject *parent )
     : QAbstractListModel( parent )
     , m_providers( providers )
-    , m_checkedProviders( providers.toSet() & checkedProviders )
     , m_selectionModel( new QItemSelectionModel( this, this ) )
 {
+    // TODO: sort providers
+
     // selection defaults to model's tick state
-    for( int i = 0; i < rowCount(); i++ )
+    for( int i = 0; i < m_providers.count(); i++ )
     {
-        QModelIndex idx = index( i, 0 );
-        Qt::CheckState state = Qt::CheckState( data( idx, Qt::CheckStateRole ).toInt() );
-        if( state == Qt::Checked )
+        if( preSelectedProviders.contains( m_providers.at( i ) ) )
+        {
+            QModelIndex idx = index( i );
             m_selectionModel->select( idx, QItemSelectionModel::Select );
+        }
     }
     connect( m_selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
              SIGNAL(selectedProvidersChanged()) );
@@ -67,8 +69,6 @@ ProvidersModel::data( const QModelIndex &index, int role ) const
             return i18n( "Can match tracks by: %1\nCan synchronize: %2",
                          fieldsToString( provider->reliableTrackMetaData() ),
                          fieldsToString( provider->writableTrackStatsData() ) );
-        case Qt::CheckStateRole:
-            return m_checkedProviders.contains( provider ) ? Qt::Checked : Qt::Unchecked;
     }
     return QVariant();
 }
@@ -77,44 +77,6 @@ int
 ProvidersModel::rowCount( const QModelIndex &parent ) const
 {
     return parent.isValid() ? 0 : m_providers.count();
-}
-
-Qt::ItemFlags
-ProvidersModel::flags( const QModelIndex &index ) const
-{
-    Q_UNUSED( index )
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
-}
-
-bool
-ProvidersModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-    if( !index.isValid() || index.column() != 0 ||
-        index.row() < 0 || index.row() >= m_providers.count() ||
-        role != Qt::CheckStateRole || !value.isValid() )
-    {
-        return false;
-    }
-    Qt::CheckState state = Qt::CheckState( value.toInt() );
-    ProviderPtr provider = m_providers.at( index.row() );
-    if( state == Qt::Checked )
-        m_checkedProviders.insert( provider );
-    else
-        m_checkedProviders.remove( provider );
-    emit dataChanged( index, index );
-    return true;
-}
-
-ProviderPtrSet
-ProvidersModel::checkedProviders() const
-{
-    return m_checkedProviders;
-}
-
-ProviderPtrSet
-ProvidersModel::unCheckedProviders() const
-{
-    return m_providers.toSet() - m_checkedProviders;
 }
 
 ProviderPtrList

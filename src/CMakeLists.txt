@@ -584,6 +584,7 @@ endif( TAGLIB_FOUND )
 # STATISTICS SYNCHRONIZATION
 #####################################################################
 set( statsyncing_SRCS
+    statsyncing/Config.cpp
     statsyncing/Controller.cpp
     statsyncing/Options.cpp
     statsyncing/Process.cpp

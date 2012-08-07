@@ -71,13 +71,20 @@ namespace StatSyncing
              */
             virtual qint64 writableTrackStatsData() const = 0;
 
+            enum Preference {
+                Never, /// never synchronize automatically
+                NoByDefault, /// don't synchronize automatically by default
+                Ask, /// ask on first appearance whether to synchronize by default
+                YesByDefault, /// enable auto syncing on first appearance without asking
+                              /// intended only for Local Collection
+            };
+
             /**
-             * Return true if this provider should participate in synchronization by
+             * Return if this provider should participate in synchronization by
              * default even when the user does not actively add it. User can always
-             * disable providers even if they are checked by default. Default
-             * implementation returns false.
+             * disable providers even if they are checked by default.
              */
-            virtual bool checkedByDefault();
+            virtual Preference defaultPreference() = 0;
 
             /**
              * Return a set of lowercased (all characters lowercased, not just ASCII)

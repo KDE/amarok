@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>508</width>
-    <height>437</height>
+    <width>604</width>
+    <height>544</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -74,6 +74,48 @@ character sets used in ID3 tags.</string>
          <string>&amp;Enable character set detection in ID3 tags</string>
         </property>
        </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="m_statSyncingGroup">
+     <property name="title">
+      <string>Statistics Synchronization</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QLabel" name="m_syncedCollectionsLabel">
+        <property name="text">
+         <string>&lt;b&gt;Keep following collections synchronized.&lt;/b&gt; This includes scrobbling of tracks played on iPods if you have Last.fm plugin configured:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QListView" name="m_statSyncingProvidersView">
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="m_forgetCollectionsButton">
+        <property name="text">
+         <string>Forget about Selected Collections</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="m_statSyncingFieldsLayout"/>
       </item>
      </layout>
     </widget>

@@ -71,11 +71,15 @@ CollectionProvider::writableTrackStatsData() const
         return Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed | Meta::valPlaycount;
 }
 
-bool
-CollectionProvider::checkedByDefault()
+Provider::Preference
+CollectionProvider::defaultPreference()
 {
     // currently only Local Collection and iPod one have good syncing capabilities
-    return id() == "localCollection" || id().startsWith( "amarok-ipodtrackuid" );
+    if( id() == "localCollection" )
+        return YesByDefault;
+    if( id().startsWith( "amarok-ipodtrackuid" ) )
+        return Ask;
+    return NoByDefault;
 }
 
 QSet<QString>

@@ -33,19 +33,14 @@ namespace StatSyncing
 
         public:
             ProvidersModel( const ProviderPtrList &providers,
-                            const ProviderPtrSet &checkedProviders, QObject *parent = 0 );
+                            const ProviderPtrSet &preSelectedProviders, QObject *parent = 0 );
             virtual ~ProvidersModel();
 
             // QAbstractItemModel methods:
             QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
             int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-            Qt::ItemFlags flags( const QModelIndex &index ) const;
-            bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
             // ProvidersModel methods:
-            ProviderPtrSet checkedProviders() const;
-            /// All providers - checkedProviders
-            ProviderPtrSet unCheckedProviders() const;
             ProviderPtrList selectedProviders() const;
 
             /**
@@ -77,7 +72,6 @@ namespace StatSyncing
 
         private:
             ProviderPtrList m_providers;
-            ProviderPtrSet m_checkedProviders;
             QItemSelectionModel *m_selectionModel;
     };
 } // namespace StatSyncing

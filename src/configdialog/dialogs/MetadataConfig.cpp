@@ -17,6 +17,9 @@
 #include "MetadataConfig.h"
 
 #include "amarokconfig.h"
+#include "core/support/Components.h"
+#include "statsyncing/Config.h"
+#include "statsyncing/Controller.h"
 
 MetadataConfig::MetadataConfig( QWidget *parent )
     : ConfigDialogBase( parent )
@@ -46,24 +49,55 @@ MetadataConfig::MetadataConfig( QWidget *parent )
         m_writeBackCoverDimensions->setCurrentIndex( 1 ); // medium
     m_writeBackCoverDimensions->setEnabled( m_writeBackCover->isEnabled() && m_writeBackCover->isChecked() );
     m_useCharsetDetector->setChecked( AmarokConfig::useCharsetDetector() );
-
     connect( m_writeBack, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
     connect( m_writeBackStatistics, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
     connect( m_writeBackCover, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
     connect( m_writeBackCoverDimensions, SIGNAL(currentIndexChanged(int)), this, SIGNAL(changed()) );
     connect( m_useCharsetDetector, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
+
+    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+    StatSyncing::Config *config = controller ? controller->config() : 0;
+    m_statSyncingConfig = config;
+    m_statSyncingProvidersView->setModel( config );
+    connect( config, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SIGNAL(changed()) );
+    connect( config, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(changed()) );
+    connect( config, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(changed()) );
+    connect( config, SIGNAL(modelReset()), SIGNAL(changed()) );
+    connect( m_forgetCollectionsButton, SIGNAL(clicked(bool)), SLOT(slotForgetCollections()) );
+    connect( m_statSyncingProvidersView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+             SLOT(slotUpdateForgetButton()) );
+    slotUpdateForgetButton();
+
+    qint64 checkedFields = config->checkedFields();
+    foreach( qint64 field, StatSyncing::Controller::availableFields() )
+    {
+        QString name = Meta::i18nForField( field );
+        name = i18nc( "%1 is field name such as Play Count", "Synchronize %1", name );
+        if( field == Meta::valLabel ) // special case, we want plural:
+            name = i18n( "Synchronize Labels" );
+        QCheckBox *checkBox = new QCheckBox( name );
+        m_statSyncingFieldsLayout->addWidget( checkBox );
+        checkBox->setCheckState( ( field & checkedFields ) ? Qt::Checked : Qt::Unchecked );
+        checkBox->setProperty( "field", field );
+        connect( checkBox, SIGNAL(stateChanged(int)), SIGNAL(changed()) );
+    }
+
 }
 
 MetadataConfig::~MetadataConfig()
 {
+    if( m_statSyncingConfig )
+        m_statSyncingConfig.data()->read(); // reset unsaved changes
 }
 
-bool MetadataConfig::isDefault()
+bool
+MetadataConfig::isDefault()
 {
     return false;
 }
 
-bool MetadataConfig::hasChanged()
+bool
+MetadataConfig::hasChanged()
 {
     // a bit hacky, but updating enabled status here does the trick
     m_writeBackStatistics->setEnabled( m_writeBack->isChecked() );
@@ -75,10 +109,13 @@ bool MetadataConfig::hasChanged()
         m_writeBackStatistics->isChecked() != AmarokConfig::writeBackStatistics() ||
         m_writeBackCover->isChecked() != AmarokConfig::writeBackCover() ||
         writeBackCoverDimensions() != AmarokConfig::writeBackCoverDimensions() ||
-        m_useCharsetDetector->isChecked() != AmarokConfig::useCharsetDetector();
+        m_useCharsetDetector->isChecked() != AmarokConfig::useCharsetDetector() ||
+        ( m_statSyncingConfig.data() ? ( checkedFields() != m_statSyncingConfig.data()->checkedFields() ) : false ) ||
+        ( m_statSyncingConfig.data() ? m_statSyncingConfig.data()->hasChanged() : false );
 }
 
-void MetadataConfig::updateSettings()
+void
+MetadataConfig::updateSettings()
 {
     AmarokConfig::setWriteBack( m_writeBack->isChecked() );
     AmarokConfig::setWriteBackStatistics( m_writeBackStatistics->isChecked() );
@@ -86,9 +123,51 @@ void MetadataConfig::updateSettings()
     if( writeBackCoverDimensions() > 0 )
         AmarokConfig::setWriteBackCoverDimensions( writeBackCoverDimensions() );
     AmarokConfig::setUseCharsetDetector( m_useCharsetDetector->isChecked() );
+    if( m_statSyncingConfig )
+    {
+        m_statSyncingConfig.data()->setCheckedFields( checkedFields() );
+        m_statSyncingConfig.data()->save();
+    }
 }
 
-int MetadataConfig::writeBackCoverDimensions() const
+void
+MetadataConfig::slotForgetCollections()
+{
+    if( !m_statSyncingConfig )
+        return;
+    foreach( QModelIndex idx, m_statSyncingProvidersView->selectionModel()->selectedIndexes() )
+    {
+        QString id = idx.data( StatSyncing::Config::ProviderIdRole ).toString();
+        m_statSyncingConfig.data()->forgetProvider( id );
+    }
+}
+
+void
+MetadataConfig::slotUpdateForgetButton()
+{
+    QItemSelectionModel *selectionModel = m_statSyncingProvidersView->selectionModel();
+    // note: hasSelection() and selection() gives false positives!
+    m_forgetCollectionsButton->setEnabled( !selectionModel->selectedIndexes().isEmpty() );
+}
+
+int
+MetadataConfig::writeBackCoverDimensions() const
 {
     return m_writeBackCoverDimensions->itemData( m_writeBackCoverDimensions->currentIndex() ).toInt();
+}
+
+qint64
+MetadataConfig::checkedFields() const
+{
+    qint64 ret = 0;
+    for( int i = 0; i < m_statSyncingFieldsLayout->count(); i++ )
+    {
+        QCheckBox *checkBox = qobject_cast<QCheckBox *>(
+                m_statSyncingFieldsLayout->itemAt( i )->widget() );
+        if( !checkBox )
+            continue;
+        if( checkBox->isChecked() && checkBox->property( "field" ).canConvert<qint64>() )
+            ret |= checkBox->property( "field" ).value<qint64>();
+    }
+    return ret;
 }
