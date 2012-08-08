@@ -374,6 +374,9 @@ SqlRegistry::getArtist( const QString &name )
         id = res[0].toInt();
     }
 
+    if( !id )
+        return Meta::ArtistPtr();
+
     Meta::ArtistPtr artist( new Meta::SqlArtist( m_collection, id, name ) );
     m_artistMap.insert( name, artist );
     m_artistIdMap.insert( id, artist );
@@ -440,6 +443,9 @@ SqlRegistry::getGenre( const QString &name )
         id = res[0].toInt();
     }
 
+    if( !id )
+        return Meta::GenrePtr();
+
     Meta::GenrePtr genre( new Meta::SqlGenre( m_collection, id, name ) );
     m_genreMap.insert( name, genre );
     return genre;
@@ -499,6 +505,9 @@ SqlRegistry::getComposer( const QString &name )
     {
         id = res[0].toInt();
     }
+
+    if( !id )
+        return Meta::ComposerPtr();
 
     Meta::ComposerPtr composer( new Meta::SqlComposer( m_collection, id, name ) );
     m_composerMap.insert( name, composer );
@@ -564,6 +573,10 @@ SqlRegistry::getYear( int year, int yearId )
             yearId = res[0].toInt();
         }
     }
+
+    if( !yearId )
+        return Meta::YearPtr();
+
     Meta::YearPtr yearPtr( new Meta::SqlYear( m_collection, yearId, year ) );
     m_yearMap.insert( year, yearPtr );
     return yearPtr;
@@ -595,6 +608,8 @@ SqlRegistry::getAlbum( const QString &name, const QString &artist )
     else
     {
         Meta::ArtistPtr artistPtr = getArtist( albumArtist );
+        if( !artistPtr )
+            return Meta::AlbumPtr();
         Meta::SqlArtist *sqlArtist = static_cast<Meta::SqlArtist*>(artistPtr.data());
         artistId = sqlArtist->id();
 
@@ -615,6 +630,9 @@ SqlRegistry::getAlbum( const QString &name, const QString &artist )
     {
         albumId = res[0].toInt();
     }
+
+    if( !albumId )
+        return Meta::AlbumPtr();
 
     Meta::SqlAlbum *sqlAlbum = new Meta::SqlAlbum( m_collection, albumId, name, artistId );
     Meta::AlbumPtr album( sqlAlbum );
@@ -686,6 +704,9 @@ SqlRegistry::getLabel( const QString &label )
     {
         id = res[0].toInt();
     }
+
+    if( !id )
+        return Meta::LabelPtr();
 
     Meta::LabelPtr labelPtr( new Meta::SqlLabel( m_collection, id, label ) );
     m_labelMap.insert( label, labelPtr );

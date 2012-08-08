@@ -93,6 +93,8 @@ SqlScanResultProcessor::commitAlbum( CollectionScanner::Album *album )
     // --- get or create the album
     Meta::SqlAlbumPtr metaAlbum;
     metaAlbum = Meta::SqlAlbumPtr::staticCast( m_collection->getAlbum( album->name(), album->artist() ) );
+    if( !metaAlbum )
+        return;
     m_albumIds.insert( album, metaAlbum->id() );
 
     // --- add all tracks
@@ -101,25 +103,22 @@ SqlScanResultProcessor::commitAlbum( CollectionScanner::Album *album )
 
     // --- set the cover if we have one
     // we need to do this after the tracks are added in case of an embedded cover
-    if( metaAlbum )
+    bool suppressAutoFetch = metaAlbum->suppressImageAutoFetch();
+    metaAlbum->setSuppressImageAutoFetch( true );
+    if( m_type == FullScan )
     {
-        bool suppressAutoFetch = metaAlbum->suppressImageAutoFetch();
-        metaAlbum->setSuppressImageAutoFetch( true );
-        if( m_type == FullScan )
+        if( !album->cover().isEmpty() )
         {
-            if( !album->cover().isEmpty() )
-            {
-                metaAlbum->removeImage();
-                metaAlbum->setImage( album->cover() );
-            }
+            metaAlbum->removeImage();
+            metaAlbum->setImage( album->cover() );
         }
-        else
-        {
-            if( !metaAlbum->hasImage() && !album->cover().isEmpty() )
-                metaAlbum->setImage( album->cover() );
-        }
-        metaAlbum->setSuppressImageAutoFetch( suppressAutoFetch );
     }
+    else
+    {
+        if( !metaAlbum->hasImage() && !album->cover().isEmpty() )
+            metaAlbum->setImage( album->cover() );
+    }
+    metaAlbum->setSuppressImageAutoFetch( suppressAutoFetch );
 }
 
 void
