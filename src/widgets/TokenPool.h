@@ -31,8 +31,14 @@ class TokenPool : public KListWidget
     
     public:
         TokenPool( QWidget *parent = 0 );
+
+        /** Adds the \p token into the token pool.
+            The TokenPool takes ownership of the token.
+            Note: The color of the token representation is determined by the text color of the token at the time
+            it is added.
+        */
         void addToken( Token * token );
-    
+
         QString mimeType() const;
         void setMimeType( const QString& mimeType );
     protected:

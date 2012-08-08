@@ -34,7 +34,7 @@ public:
     virtual Token * createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 );
 };
 
-/** A widget that is used in the FilenameLayoutDialog to display part of a filename
+/** A widget that is used in the FilenameLayoutWidget to display part of a filename
     It is drag&droppable in the TokenDropTarget from the TokenPool widget.
 */
 class Token : public QWidget
@@ -49,9 +49,12 @@ class Token : public QWidget
         QString iconName() const;
         QString name() const;
         qint64 value() const;
-        QColor textColor() const;
 
+        QColor textColor() const;
         void setTextColor( QColor textColor );
+
+        /** Return true if somebody has previously set the text color */
+        bool hasCustomColor() const { return m_customColor; };
 
     signals:
         void changed();
@@ -65,6 +68,7 @@ class Token : public QWidget
         KIcon       m_icon;
         QString     m_iconName;
         qint64      m_value;
+        bool        m_customColor;
 
         QLabel      *m_iconContainer;
         QLabel      *m_label;

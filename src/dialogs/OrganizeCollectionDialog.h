@@ -73,7 +73,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         void init();
 
         Ui::OrganizeCollectionDialogBase *ui;
-        FilenameLayoutDialog *m_filenameLayoutDialog;
+        FilenameLayoutWidget *m_filenameLayoutWidget;
         TrackOrganizer *m_trackOrganizer;
         bool m_trackOrganizerDone;
         bool m_detailed;

@@ -28,7 +28,7 @@ class TokenDragger;
 class TokenFactory;
 
 /** A widget that accepts dragging Tokens into it.
-    Used in several dialogs within Amarok e.g. the FilenameLayoutDialog and the
+    Used in several dialogs within Amarok e.g. the FilenameLayoutWidget and the
     LayoutEditWidget.
 
     The DropTarget can have one or more rows, limited by the rowLimit.

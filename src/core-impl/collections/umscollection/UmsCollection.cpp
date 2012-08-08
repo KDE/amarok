@@ -602,23 +602,23 @@ UmsCollection::slotConfigure()
 
     settings->m_collectionName->setText( prettyName() );
 
-    FilenameLayoutDialog filenameLayoutDialog( &umsSettingsDialog, 1 );
+    OrganizeCollectionWidget layoutWidget( &umsSettingsDialog );
     //TODO: save the setting that are normally written in onAccept()
-//    connect( this, SIGNAL(accepted()), &filenameLayoutDialog, SLOT(onAccept()) );
+//    connect( this, SIGNAL(accepted()), &layoutWidget, SLOT(onAccept()) );
     QVBoxLayout layout( &umsSettingsDialog );
-    layout.addWidget( &filenameLayoutDialog );
+    layout.addWidget( &layoutWidget );
     settings->m_filenameSchemeBox->setLayout( &layout );
     //hide the unuse preset selector.
     //TODO: change the presets to concurrent presets for regular albums v.s. compilations
-    filenameLayoutDialog.setformatPresetVisible( false );
+    layoutWidget.setformatPresetVisible( false );
 
-    filenameLayoutDialog.setScheme( m_musicFilenameScheme );
-    filenameLayoutDialog.setVfatCompatible( m_vfatSafe );
-    filenameLayoutDialog.setAsciiOnly( m_asciiOnly );
-    filenameLayoutDialog.setIgnoreThe( m_ignoreThe );
-    filenameLayoutDialog.setReplaceSpaces( m_replaceSpaces );
-    filenameLayoutDialog.setRegexpText( m_regexText );
-    filenameLayoutDialog.setReplaceText( m_replaceText );
+    layoutWidget.setScheme( m_musicFilenameScheme );
+    layoutWidget.setVfatCompatible( m_vfatSafe );
+    layoutWidget.setAsciiOnly( m_asciiOnly );
+    layoutWidget.setIgnoreThe( m_ignoreThe );
+    layoutWidget.setReplaceSpaces( m_replaceSpaces );
+    layoutWidget.setRegexpText( m_regexText );
+    layoutWidget.setReplaceText( m_replaceText );
 
     umsSettingsDialog.setButtons( KDialog::Ok | KDialog::Cancel );
     umsSettingsDialog.setMainWidget( settingsWidget );
@@ -638,7 +638,7 @@ UmsCollection::slotConfigure()
                 m_musicPath = settings->m_musicFolder->url();
                 //TODO: reparse music
             }
-            QString scheme = filenameLayoutDialog.getParsableScheme().simplified();
+            QString scheme = layoutWidget.getParsableScheme().simplified();
             //protect against empty string.
             if( !scheme.isEmpty() )
                 m_musicFilenameScheme = scheme;
@@ -650,12 +650,12 @@ UmsCollection::slotConfigure()
             //TODO: remove all tracks from the MemoryCollection.
         }
 
-        m_vfatSafe = filenameLayoutDialog.vfatCompatible();
-        m_asciiOnly = filenameLayoutDialog.asciiOnly();
-        m_ignoreThe = filenameLayoutDialog.ignoreThe();
-        m_replaceSpaces = filenameLayoutDialog.replaceSpaces();
-        m_regexText = filenameLayoutDialog.regexpText();
-        m_replaceText = filenameLayoutDialog.replaceText();
+        m_vfatSafe = layoutWidget.vfatCompatible();
+        m_asciiOnly = layoutWidget.asciiOnly();
+        m_ignoreThe = layoutWidget.ignoreThe();
+        m_replaceSpaces = layoutWidget.replaceSpaces();
+        m_regexText = layoutWidget.regexpText();
+        m_replaceText = layoutWidget.replaceText();
         m_collectionName = settings->m_collectionName->text();
 
         if( settings->m_podcastCheckBox->isChecked() )

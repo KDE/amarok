@@ -260,8 +260,14 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
         box->removeWidget( token );
     token->setParent( parentWidget() );
 
+    // find the token at the position.
+    QWidget *child = childAt( pos );
+    Token *sibling = qobject_cast<Token*>( child );
+    if( !sibling && child && child->parent() ) // sometimes we get the label of the token.
+        sibling = qobject_cast<Token*>( child->parent() );
+
     QBoxLayout *box = 0;
-    if( Token *sibling = qobject_cast<Token*>( childAt( pos ) ) )
+    if( sibling )
     {   // we hit a sibling, -> prepend
         QPoint idx;
         box = rowBox( sibling, &idx );

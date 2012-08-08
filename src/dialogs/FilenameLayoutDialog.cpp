@@ -2,6 +2,7 @@
  * Copyright (c) 2008 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time.shift.de>                       *
+ * Copyright (c) 2012 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,6 +18,9 @@
  ****************************************************************************************/
 
 #include "FilenameLayoutDialog.h"
+#include "TagGuesser.h"
+
+#include "amarokconfig.h"
 
 #include "MetaValues.h"
 #include "core/support/Amarok.h"
@@ -27,534 +31,61 @@
 #include <KColorScheme>
 #include <KInputDialog>
 
-
-FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeCollection )
-    : QWidget( parent )
-    , m_isOrganizeCollection( isOrganizeCollection )
-    , m_advancedMode( false )
-{
-    setupUi( this );
-    optionsFrame->hide();
-    resultGroupBox->hide();
-
-    m_caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
-
-    m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", filenameLayout );
-    m_dropTarget->setRowLimit( 1 );
-    QVBoxLayout *l = new QVBoxLayout(filenameLayout);
-    l->setContentsMargins( 0, 0, 0, 0 );
-    l->addWidget(m_dropTarget);
-
-    filenameLayoutEdit->hide();
-    syntaxLabel->hide();
-    syntaxLabel->setWordWrap( true );
-
-    //INIT for tokenPool
-    Token *nToken = new Token( i18n( "Track" ),"filename-track-amarok", Track );
-    nToken->setTextColor( m_color_Track );
-    tokenPool->addToken( nToken );
-
-    nToken = new Token( i18n( "Title" ), "filename-title-amarok", Title );
-    nToken->setTextColor( m_color_Title );
-    tokenPool->addToken( nToken );
-
-    nToken = new Token( i18n( "Artist" ), "filename-artist-amarok", Artist );
-    nToken->setTextColor( m_color_Artist );
-    tokenPool->addToken( nToken );
-
-    nToken = new Token( i18n( "Composer" ), "filename-composer-amarok", Composer );
-    nToken->setTextColor( m_color_Composer );
-    tokenPool->addToken( nToken );
-
-    nToken = new Token( i18n( "Year" ), "filename-year-amarok", Year );
-    nToken->setTextColor( m_color_Year );
-    tokenPool->addToken( nToken );
-
-    nToken = new Token( i18n( "Album" ), "filename-album-amarok", Album );
-    nToken->setTextColor( m_color_Album );
-    tokenPool->addToken( nToken );
-
-    nToken = new Token( i18n( "Album Artist" ), "filename-artist-amarok", AlbumArtist );
-    nToken->setTextColor( m_color_AlbumArtist );
-    tokenPool->addToken( nToken );
-
-    nToken = new Token( i18n( "Comment" ), "filename-comment-amarok", Comment );
-    nToken->setTextColor( m_color_Comment );
-    tokenPool->addToken( nToken );
-
-    nToken = new Token( i18n( "Genre" ), "filename-genre-amarok", Genre );
-    nToken->setTextColor( m_color_Genre );
-    tokenPool->addToken( nToken );
-
-    tokenPool->addToken( new Token( "/", "filename-slash-amarok", Slash ) );
-
-    tokenPool->addToken( new Token( "_", "filename-underscore-amarok", Underscore ) );
-    tokenPool->addToken( new Token( "-", "filename-dash-amarok", Dash ) );
-
-    Token *dotToken = new Token( ".", "filename-dot-amarok", Dot );
-    tokenPool->addToken( dotToken );
-    tokenPool->addToken( new Token( " ", "filename-space-amarok", Space ) );
-
-    if( m_isOrganizeCollection )
-        initOrganizeCollection();
-    else
-        initTagGuesser();
-
-    QString mode = Amarok::config( m_configCategory ).readEntry( "Mode" );
-    if( mode == QLatin1String( "Advanced" ) )
-    {
-        setAdvancedMode( true );
-        filenameLayoutEdit->setText( Amarok::config( m_configCategory ).readEntryUntranslated( "Custom Scheme" ) );
-    }
-    else
-    {
-        setAdvancedMode( false );
-        inferScheme( Amarok::config( m_configCategory ).readEntryUntranslated( "Custom Scheme" ) );
-    }
-
-    populateFormatList();
-    
-    connect( cbCase, SIGNAL( toggled( bool ) ),
-             this, SLOT( editStateEnable( bool ) ) );
-    connect( cbCase, SIGNAL( toggled( bool ) ),
-             this, SLOT( updatePreview() ) );
-    connect( rbTitleCase, SIGNAL( toggled(bool) ),
-             this, SLOT( updatePreview() ) );
-    connect( rbFirstLetter, SIGNAL( toggled(bool) ),
-             this, SLOT( updatePreview() ) );
-    connect( rbAllLower, SIGNAL( toggled(bool) ),
-             this, SLOT( updatePreview() ) );
-    connect( rbAllUpper, SIGNAL( toggled(bool) ),
-             this, SLOT( updatePreview() ) );
-    connect( cbEliminateSpaces, SIGNAL( toggled(bool) ),
-             this, SLOT( updatePreview() ) );
-    connect( cbReplaceUnderscores, SIGNAL( toggled(bool) ),
-             this, SLOT( updatePreview() ) );
-    connect( tokenPool, SIGNAL( onDoubleClick( Token * ) ),
-             m_dropTarget, SLOT( insertToken( Token* ) ) );
-    connect( kpbAdvanced, SIGNAL( clicked() ),
-             this, SLOT( toggleAdvancedMode() ) );
-    connect( m_dropTarget, SIGNAL( changed() ),
-             this, SIGNAL( schemeChanged() ) );
-    connect( m_dropTarget, SIGNAL( changed() ),
-             this, SLOT( updatePreview() ) );
-    connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
-             this, SIGNAL( schemeChanged() ) );
-    connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
-             this, SLOT( updatePreview() ) );
-    connect( m_dropTarget, SIGNAL( changed() ),
-             this, SLOT( updatePreview() ) );
-    connect( cbUseFullPath, SIGNAL( toggled( bool ) ),
-             this, SLOT( updatePreview() ) );
-    connect( sbNestingLevel, SIGNAL( valueChanged( int ) ),
-             this, SLOT( updatePreview() ) );
-    connect( addPresetButton, SIGNAL( clicked( bool ) ),
-             this, SLOT( slotAddFormat() ) );
-    connect( removePresetButton, SIGNAL( clicked( bool ) ),
-             this, SLOT( slotRemoveFormat() ) );
-    connect( updatePresetButton, SIGNAL( clicked( bool ) ),
-             this, SLOT( slotUpdateFormat() ) );
-
-    connect( spaceCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
-    connect( ignoreTheCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
-    connect( vfatCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
-    connect( asciiCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
-    connect( regexpEdit, SIGNAL(editingFinished()), SIGNAL(schemeChanged()) );
-    connect( replaceEdit, SIGNAL(editingFinished()), SIGNAL(schemeChanged()) );
-}
-
-//Stores the configuration when the dialog is accepted.
-void
-FilenameLayoutDialog::onAccept()    //SLOT
-{
-    if( !m_isOrganizeCollection )
-    {
-        Amarok::config( "TagGuesser" ).writeEntry( "Case options", getCaseOptions() );
-        Amarok::config( "TagGuesser" ).writeEntry( "Eliminate trailing spaces", getWhitespaceOptions() );
-        Amarok::config( "TagGuesser" ).writeEntry( "Replace underscores", getUnderscoreOptions() );
-        Amarok::config( "TagGuesser" ).writeEntry( "Use full file path", cbUseFullPath->isChecked() );
-        Amarok::config( "TagGuesser" ).writeEntry( "Directories nesting level", sbNestingLevel->value() );
-    }
-
-    slotSaveFormatList();
-}
-
-//Forwards the request for a scheme to TokenLayoutWidget
-QString
-FilenameLayoutDialog::getParsableScheme()
-{
-    QString scheme   = m_advancedMode ? filenameLayoutEdit->text() : parsableScheme();
-
-    Amarok::config( m_configCategory ).writeEntry( "Custom Scheme", scheme );
-    return scheme;
-}
-
-//Sets Filename for Preview
-void
-FilenameLayoutDialog::setFileName( QString FileName )
-{
-    m_filename = FileName;
-    sbNestingLevel->setMaximum( FileName.count( '/' ) - 1 );
-    updatePreview();
-}
-
-// attempts to set the scheme
-void FilenameLayoutDialog::setScheme(const QString& scheme)
-{
-    if( m_advancedMode )
-        filenameLayoutEdit->setText( scheme );
-    else
-        inferScheme( scheme );
-
-    emit schemeChanged();
-}
-
-
-//Updates the Filename Preview
-void
-FilenameLayoutDialog::updatePreview()                 //SLOT
-{
-    if( m_isOrganizeCollection )
-       return;
-
-    QString scheme = this->getParsableScheme();
-    QFileInfo fi( m_filename );
-
-    if( !scheme.isEmpty() )
-    {
-        TagGuesser guesser;
-        guesser.setFilename( parsableFileName( fi ) );
-        guesser.setCaseType( this->getCaseOptions() );
-        guesser.setConvertUnderscores( this->getUnderscoreOptions() );
-        guesser.setCutTrailingSpaces( this->getWhitespaceOptions() );
-        guesser.setSchema( scheme );
-
-        if( guesser.guess() )
-        {
-            QMap<qint64,QString> tags = guesser.tags();
-
-            if( tags.contains( Meta::valAlbum ) )
-                Album_result->setText( "<font color='" + QColor( album_color ).name() + "'>" + tags[Meta::valAlbum] + "</font>" );
-            else
-                Album_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
-
-            if( tags.contains( Meta::valAlbumArtist ) )
-                AlbumArtist_result->setText( "<font color='" + QColor( albumartist_color ).name() + "'>" + tags[Meta::valAlbumArtist] + "</font>" );
-            else
-                AlbumArtist_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
-
-            if( tags.contains( Meta::valTitle ) )
-                Title_result->setText( "<font color='" + QColor( title_color ).name() + "'>" + tags[Meta::valTitle] + "</font>" );
-            else
-                Title_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
-
-            if( tags.contains( Meta::valArtist ) )
-                Artist_result->setText( "<font color='" + QColor( artist_color ).name() + "'>" + tags[Meta::valArtist] + "</font>" );
-            else
-                Artist_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
-
-            if( tags.contains( Meta::valComment ) )
-                Comment_result->setText( "<font color='" + QColor( comment_color ).name() + "'>" + tags[Meta::valComment] + "</font>" );
-            else
-                Comment_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
-
-            if( tags.contains( Meta::valComposer ) )
-                Composer_result->setText( "<font color='" + QColor( composer_color ).name() + "'>" + tags[Meta::valComposer] + "</font>" );
-            else
-                Composer_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
-
-            if( tags.contains( Meta::valGenre ) )
-                Genre_result->setText( "<font color='" + QColor( genre_color ).name() + "'>" + tags[Meta::valGenre] + "</font>" );
-            else
-                Genre_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
-
-            if( tags.contains( Meta::valTrackNr ) )
-                Track_result->setText( "<font color='" + QColor( track_color ).name() + "'>" + tags[Meta::valTrackNr] + "</font>" );
-            else
-                Track_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
-
-            if( tags.contains( Meta::valYear ) )
-                Year_result->setText( "<font color='" + QColor( year_color ).name() + "'>" + tags[Meta::valYear] + "</font>" );
-            else
-                Year_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
-
-            filenamePreview->setText(guesser.coloredFileName());
-        }
-        else
-        {
-            filenamePreview->setText( parsableFileName( fi ) );
-        }
-    }
-    else
-    {
-        filenamePreview->setText( parsableFileName( fi ) );
-    }
-}
-
-//Handles the radiobuttons
-void
-FilenameLayoutDialog::editStateEnable( bool checked )      //SLOT
-{
-    foreach( QRadioButton *rb, m_caseEditRadioButtons )
-        rb->setEnabled( checked );
-}
-
-//Returns a code for the configuration.
-int
-FilenameLayoutDialog::getCaseOptions()
-{
-    //Amarok::config( "TagGuesser" ).readEntry( "Filename schemes", QStringList() );
-    if( !cbCase->isChecked() )
-        return 0;
-    else
-    {
-        if( rbAllLower->isChecked() )
-            return 4;
-        else if( rbAllUpper->isChecked() )
-            return 3;
-        else if( rbFirstLetter->isChecked() )
-            return 2;
-        else if( rbTitleCase->isChecked() )
-            return 1;
-        else
-        {
-            debug() << "OUCH!";
-            return 0;
-        }
-    }
-}
-
-//As above
-bool
-FilenameLayoutDialog::getWhitespaceOptions()
-{
-    if( !cbEliminateSpaces->isChecked() )
-        return false;
-    return true;
-}
-
-//As above
-bool
-FilenameLayoutDialog::getUnderscoreOptions()
-{
-    if( !cbReplaceUnderscores->isChecked() )
-        return false;
-    return true;
-}
-
-//Handles the modifications to the dialog to toggle between advanced and basic editing mode.
-void
-FilenameLayoutDialog::toggleAdvancedMode()
-{
-    setAdvancedMode( !m_advancedMode );
-}
-
-//handles switching between basic and advanced mode
-void
-FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
-{
-    m_advancedMode = isAdvanced;
-
-    if( isAdvanced )
-    {
-        kpbAdvanced->setText( i18n( "&Basic..." ) );
-        filenameLayout->hide();
-        filenameLayoutEdit->show();
-        filenameLayoutEdit->setText( parsableScheme() );
-        tokenPool->hide();
-        syntaxLabel->show();
-
-    }
-    else // set Basic mode
-    {
-        kpbAdvanced->setText( i18n( "&Advanced..." ) );
-        filenameLayout->show();
-        filenameLayoutEdit->hide();
-        tokenPool->show();
-        syntaxLabel->hide();
-        inferScheme( filenameLayoutEdit->text() );
-    }
-
-    QString entryValue  = m_advancedMode ? "Advanced" : "Basic";
-
-    Amarok::config( m_configCategory ).writeEntry( "Mode", entryValue );
-}
-
-
-
-// Iterates over the elements of the TokenLayoutWidget bar
-// (really over the elements of a QList that stores the indexes
-// of the tokens) and generates a string that TagGuesser can digest.
-QString
-FilenameLayoutDialog::parsableScheme() const
-{
-    QString parsableScheme = "";
-
-    QList< Token *> list = m_dropTarget->drags( 0 );
-
-    foreach( Token *token, list )
-    {
-        parsableScheme += typeElements[token->value()];
-    }
-
-    return parsableScheme;
-}
-
-
-
-//tries to populate the widget with tokens according to a string
-void
-FilenameLayoutDialog::inferScheme( const QString &s ) //SLOT
-{
-    DEBUG_BLOCK
-
-    debug() << "infering scheme: " << s;
-
-    m_dropTarget->clear();
-    for( int i = 0; i < s.size(); )
-    {
-        if( s.at(i) == '%')
-        {
-            if( s.mid( i, 7 ) == "%title%" )
-            {
-                Token *nToken = new Token( i18n( "Title" ), "filename-title-amarok", Title );
-                nToken->setTextColor( m_color_Title );
-                m_dropTarget->insertToken( nToken );
-                i += 7;
-            }
-            else if( s.mid( i, 7 ) == "%track%" )
-            {
-                Token *nToken = new Token( i18n( "Track" ), "filename-track-amarok", Track );
-                nToken->setTextColor( m_color_Track );
-                m_dropTarget->insertToken( nToken );
-                i += 7;
-            }
-            else if( s.mid( i, 8 ) == "%artist%" )
-            {
-                Token *nToken = new Token( i18n( "Artist" ), "filename-artist-amarok", Artist );
-                nToken->setTextColor( m_color_Artist );
-                m_dropTarget->insertToken( nToken );
-                i += 8;
-            }
-            else if( s.mid( i, 10 ) == "%composer%" )
-            {
-                Token *nToken = new Token( i18n( "Composer" ), "filename-composer-amarok", Composer );
-                nToken->setTextColor( m_color_Composer );
-                m_dropTarget->insertToken( nToken );
-                i += 10;
-            }
-            else if( s.mid( i, 6 ) == "%year%" )
-            {
-                Token *nToken = new Token( i18n( "Year" ), "filename-year-amarok", Year );
-                nToken->setTextColor( m_color_Year );
-                m_dropTarget->insertToken( nToken );
-                i += 6;
-            }
-            else if( s.mid( i, 13 ) == "%albumartist%" )
-            {
-                Token *nToken = new Token( i18n( "Album Artist" ), "filename-artist-amarok", AlbumArtist );
-                nToken->setTextColor( m_color_Album );
-                m_dropTarget->insertToken( nToken );
-                i += 13;
-            }
-            else if( s.mid( i, 7 ) == "%album%" )
-            {
-                Token *nToken = new Token( i18n( "Album" ), "filename-album-amarok", Album );
-                nToken->setTextColor( m_color_Album );
-                m_dropTarget->insertToken( nToken );
-                i += 7;
-            }
-            else if( s.mid( i, 9 ) == "%comment%" )
-            {
-                Token *nToken = new Token( i18n( "Comment" ), "filename-comment-amarok", Comment );
-                nToken->setTextColor( m_color_Comment );
-                m_dropTarget->insertToken( nToken );
-                i += 9;
-            }
-            else if( s.mid( i, 7 ) == "%genre%" )
-            {
-                Token *nToken = new Token( i18n( "Genre" ), "filename-genre-amarok", Genre );
-                nToken->setTextColor( m_color_Genre );
-                m_dropTarget->insertToken( nToken );
-                i += 7;
-            }
-            else if( s.mid( i, 10 ) == "%filetype%" )
-            {
-                m_dropTarget->insertToken( new Token( i18n( "File type" ), "filename-filetype-amarok", FileType ) );
-                i += 10;
-            }
-            else if( s.mid( i, 8 ) == "%ignore%" )
-            {
-                m_dropTarget->insertToken( new Token( i18n( "Ignore" ), "filename-ignore-amarok", Ignore ) );
-                i += 8;
-            }
-            else if( s.mid( i, 8 ) == "%folder%" )
-            {
-                m_dropTarget->insertToken( new Token( i18n( "Folder" ), "filename-folder-amarok", Folder ) );
-                i += 8;
-            }
-            else if( s.mid( i, 9 ) == "%initial%" )
-            {
-                m_dropTarget->insertToken( new Token( i18nc( "Artist's Initial", "Initial" ), "filename-initial-amarok", Initial ) );
-                i += 9;
-            }
-            else if( s.mid( i, 12 ) == "%discnumber%" )
-            {
-                m_dropTarget->insertToken( new Token( i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber ) );
-                i += 12;
-            }
-            else
-                ++i; // skip junk
-        }
-        else
-        {
-            if( s.at(i) == '_' )
-                m_dropTarget->insertToken( new Token( "_", "filename-underscore-amarok", Underscore ) );
-            else if( s.at(i) == '-' )
-                m_dropTarget->insertToken( new Token( "-", "filename-dash-amarok", Dash ) );
-            else if( s.at(i) == '.' )
-                m_dropTarget->insertToken( new Token( ".", "filename-dot-amarok", Dot ) );
-            else if( s.at(i) == ' ' )
-                m_dropTarget->insertToken( new Token( " ", "filename-space-amarok", Space ) );
-            else if( s.at(i) == '/' )
-                m_dropTarget->insertToken( new Token( "/", "filename-slash-amarok", Slash ) );
-            else
-                debug() << "'" << s.at(i) << "' can't be represented as TokenLayoutWidget Token";
-            i++;
-        }
-    }
-}
-
-QString
-FilenameLayoutDialog::parsableFileName( const QFileInfo &fileInfo ) const
-{
-    if( !cbUseFullPath->isChecked() || !sbNestingLevel->value() )
-        return fileInfo.fileName();
-
-    QString path = fileInfo.absoluteFilePath();
-    int pos, n = sbNestingLevel->value() + 1;
-
-    for( pos = 0; pos < path.length() && n; pos++ )
-        if( path[pos] == '/' )
-            n--;
-
-    return path.mid( pos );
-}
-
-QString
-FilenameLayoutDialog::getParsableFileName()
-{
-    return parsableFileName( QFileInfo( m_filename ) );
-}
-
-
-void
-FilenameLayoutDialog::initOrganizeCollection()
+static const QStringList typeElements = ( QStringList()
+<< QString()
+<< QLatin1String("%ignore%")
+<< QLatin1String("%track%")
+<< QLatin1String("%title%")
+<< QLatin1String("%artist%")
+<< QLatin1String("%composer%")
+<< QLatin1String("%year%")
+<< QLatin1String("%album%")
+<< QLatin1String("%albumartist%")
+<< QLatin1String("%comment%")
+<< QLatin1String("%genre%")
+<< QLatin1String("%filetype%")
+<< QLatin1String("%folder%")
+<< QLatin1String("%initial%")
+<< QLatin1String("%discnumber%")
+<< QLatin1String(" ")
+<< QLatin1String("/")
+<< QLatin1String(".")
+<< QLatin1String("-")
+<< QLatin1String("_") );
+
+
+// ------------------------- OrganizeCollectionWidget -------------------
+
+OrganizeCollectionWidget::OrganizeCollectionWidget( QWidget *parent )
+    : FilenameLayoutWidget( parent )
 {
     m_configCategory = "OrganizeCollectionDialog";
 
-    //INIT for collection root
+    optionsFrame->hide();
+    resultGroupBox->hide();
     filenamePreview->hide();
+
+    tokenPool->addToken( createToken( Track ) );
+    tokenPool->addToken( createToken( Title ) );
+    tokenPool->addToken( createToken( Artist ) );
+    tokenPool->addToken( createToken( Composer ) );
+    tokenPool->addToken( createToken( Year ) );
+    tokenPool->addToken( createToken( Album ) );
+    tokenPool->addToken( createToken( AlbumArtist ) );
+    tokenPool->addToken( createToken( Comment ) );
+    tokenPool->addToken( createToken( Genre ) );
+
+    tokenPool->addToken( createToken( Initial ) );
+    tokenPool->addToken( createToken( FileType ) );
+    tokenPool->addToken( createToken( DiscNumber ) );
+
+    tokenPool->addToken( createToken( Slash ) );
+    tokenPool->addToken( createToken( Underscore ) );
+    tokenPool->addToken( createToken( Dash ) );
+    tokenPool->addToken( createToken( Dot ) );
+    tokenPool->addToken( createToken( Space ) );
+
+    //INIT for collection root
     unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
     collectionRootFrame->setStyleSheet( "\
             color: palette( Text );\
@@ -635,23 +166,40 @@ FilenameLayoutDialog::initOrganizeCollection()
     QPixmap extensionIcon = QPixmap( KIcon( "filename-filetype-amarok" ).pixmap(16, 16) );
     extensionIconLabel->setPixmap( extensionIcon );
 
-    m_color_Album = m_color_Artist = m_color_AlbumArtist = m_color_Comment = \
-    m_color_Composer = m_color_Genre = m_color_Title = m_color_Track = m_color_Year = Qt::black;
-
-    tokenPool->addToken( new Token( i18nc( "Artist's Initial", "Initial" ), "filename-initial-amarok", Initial ) );
-    Token *filetypeToken = new Token( i18n( "File type" ), "filename-filetype-amarok", FileType );
-    tokenPool->addToken( filetypeToken );
-    tokenPool->addToken( new Token( i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber ) );
     syntaxLabel->setText( i18nc("Please do not translate the %foo% words as they define a syntax used internally by a parser to describe a filename.",
                           // xgettext: no-c-format
                           "The following tokens can be used to define a filename scheme: \
-                          <br>%track%, %title%, %artist%, %composer%, %year%, %album%, %albumartist%, %comment%, %genre%, %initial%, %folder%, %filetype%, %discnumber%." ) );    
+                          <br>%track%, %title%, %artist%, %composer%, %year%, %album%, %albumartist%, %comment%, %genre%, %initial%, %folder%, %filetype%, %discnumber%." ) );
+
+    populateConfiguration();
 }
 
-void
-FilenameLayoutDialog::initTagGuesser()
+// ------------------------- TagGuesserWidget -------------------
+
+TagGuesserWidget::TagGuesserWidget( QWidget *parent )
+    : FilenameLayoutWidget( parent )
 {
-    m_configCategory = "FilenameLayoutDialog";
+    m_configCategory = "FilenameLayoutWidget";
+
+    optionsFrame->show();
+    resultGroupBox->show();
+    filenamePreview->show();
+
+    tokenPool->addToken( createToken( Track ) );
+    tokenPool->addToken( createToken( Title ) );
+    tokenPool->addToken( createToken( Artist ) );
+    tokenPool->addToken( createToken( Composer ) );
+    tokenPool->addToken( createToken( Year ) );
+    tokenPool->addToken( createToken( Album ) );
+    tokenPool->addToken( createToken( AlbumArtist ) );
+    tokenPool->addToken( createToken( Comment ) );
+    tokenPool->addToken( createToken( Genre ) );
+    tokenPool->addToken( createToken( Ignore ) );
+    tokenPool->addToken( createToken( Slash ) );
+    tokenPool->addToken( createToken( Underscore ) );
+    tokenPool->addToken( createToken( Dash ) );
+    tokenPool->addToken( createToken( Dot ) );
+    tokenPool->addToken( createToken( Space ) );
 
     int caseOptions = Amarok::config( "TagGuesser" ).readEntry( "Case options", 4 );
     if( !caseOptions )
@@ -678,29 +226,11 @@ FilenameLayoutDialog::initTagGuesser()
         }
     }
 
-    bool whitespaceOptions = Amarok::config( "TagGuesser" ).readEntry( "Eliminate trailing spaces", false );
-    cbEliminateSpaces->setChecked( whitespaceOptions );
-    bool underscoreOptions = Amarok::config( "TagGuesser" ).readEntry( "Replace underscores", false );
-    cbReplaceUnderscores->setChecked( underscoreOptions );
-    bool fullFilePathOptions = Amarok::config( "TagGuesser" ).readEntry( "Use full file path", false );
-    cbUseFullPath->setChecked( fullFilePathOptions );
-    int directodiesNestingLevel = Amarok::config( "TagGuesser" ).readEntry( "Directories nesting level", 0 );
-    sbNestingLevel->setValue( directodiesNestingLevel );
-    
-    optionsFrame->show();
-    resultGroupBox->show();
+    cbEliminateSpaces->setChecked(    Amarok::config( "TagGuesser" ).readEntry( "Eliminate trailing spaces", false ) );
+    cbReplaceUnderscores->setChecked( Amarok::config( "TagGuesser" ).readEntry( "Replace underscores", false ) );
+    cbUseFullPath->setChecked(        Amarok::config( "TagGuesser" ).readEntry( "Use full file path", false ) );
+    sbNestingLevel->setValue(         Amarok::config( "TagGuesser" ).readEntry( "Directories nesting level", 0 ) );
 
-    m_color_Album = QColor( album_color );
-    m_color_Artist = QColor( artist_color );
-    m_color_AlbumArtist = QColor( albumartist_color );
-    m_color_Comment = QColor( comment_color );
-    m_color_Composer = QColor( composer_color );
-    m_color_Genre = QColor( genre_color );
-    m_color_Title = QColor( title_color );
-    m_color_Track = QColor( track_color );
-    m_color_Year = QColor( year_color );
-
-    tokenPool->addToken( new Token( i18n( "Ignore" ), "filename-ignore-amarok", Ignore ) );
     syntaxLabel->setText( i18nc("Please do not translate the %foo% words as they define a syntax used internally by a parser to describe a filename.",
                           // xgettext: no-c-format
                           "The following tokens can be used to define a filename scheme:<br> \
@@ -709,14 +239,545 @@ FilenameLayoutDialog::initTagGuesser()
                           <font color=\"%5\">%year%</font>, <font color=\"%6\">%album%</font>, \
                           <font color=\"%7\">%albumartist%</font>, <font color=\"%8\">%comment%</font>, \
                           <font color=\"%9\">%genre%</font>, %ignore%."
-                          , m_color_Track.name(), m_color_Title.name(), m_color_Artist.name(), \
-                          m_color_Composer.name(), m_color_Year.name(), m_color_Album.name(), m_color_AlbumArtist.name(), \
-                          m_color_Comment.name(), m_color_Genre.name() ) );
+                          , QColor( track_color ).name(), QColor( title_color ).name(), QColor( artist_color ).name(), \
+                          QColor( composer_color ).name(), QColor( year_color ).name(), QColor( album_color ).name(), QColor( albumartist_color ).name(), \
+                          QColor( comment_color ).name(), QColor( genre_color ).name() ) );
+
+    populateConfiguration();
+
+    connect( cbCase, SIGNAL( toggled( bool ) ),
+             this, SLOT( updatePreview() ) );
+    connect( rbTitleCase, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
+    connect( rbFirstLetter, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
+    connect( rbAllLower, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
+    connect( rbAllUpper, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
+    connect( cbEliminateSpaces, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
+    connect( cbReplaceUnderscores, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
+    connect( m_dropTarget, SIGNAL( changed() ),
+             this, SLOT( updatePreview() ) );
+    connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
+             this, SLOT( updatePreview() ) );
+    connect( m_dropTarget, SIGNAL( changed() ),
+             this, SLOT( updatePreview() ) );
+    connect( cbUseFullPath, SIGNAL( toggled( bool ) ),
+             this, SLOT( updatePreview() ) );
+    connect( sbNestingLevel, SIGNAL( valueChanged( int ) ),
+             this, SLOT( updatePreview() ) );
+}
+
+//Sets Filename for Preview
+void
+TagGuesserWidget::setFileName( const QString& fileName )
+{
+    m_filename = fileName;
+    sbNestingLevel->setMaximum( fileName.count( '/' ) - 1 );
+    updatePreview();
+}
+
+QString
+TagGuesserWidget::getParsableFileName()
+{
+    return parsableFileName( QFileInfo( m_filename ) );
+}
+
+//Stores the configuration when the dialog is accepted.
+void
+TagGuesserWidget::onAccept()    //SLOT
+{
+    FilenameLayoutWidget::onAccept();
+
+    Amarok::config( "TagGuesser" ).writeEntry( "Case options", getCaseOptions() );
+    Amarok::config( "TagGuesser" ).writeEntry( "Eliminate trailing spaces", getWhitespaceOptions() );
+    Amarok::config( "TagGuesser" ).writeEntry( "Replace underscores", getUnderscoreOptions() );
+    Amarok::config( "TagGuesser" ).writeEntry( "Use full file path", cbUseFullPath->isChecked() );
+    Amarok::config( "TagGuesser" ).writeEntry( "Directories nesting level", sbNestingLevel->value() );
+}
+
+//Updates the Filename Preview
+void
+TagGuesserWidget::updatePreview()                 //SLOT
+{
+    DEBUG_BLOCK;
+
+    QString scheme = this->getParsableScheme();
+    QString fileName = getParsableFileName();
+
+    if( scheme.isEmpty() )
+    {
+        filenamePreview->setText( fileName );
+        return;
+    }
+
+    TagGuesser guesser;
+    guesser.setFilename( fileName );
+    guesser.setCaseType( getCaseOptions() );
+    guesser.setConvertUnderscores( getUnderscoreOptions() );
+    guesser.setCutTrailingSpaces( getWhitespaceOptions() );
+    guesser.setSchema( scheme );
+
+    if( !guesser.guess() )
+    {
+        filenamePreview->setText( fileName );
+        return;
+    }
+
+    QMap<qint64,QString> tags = guesser.tags();
+    QString emptyTagText = i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" );
+
+    if( tags.contains( Meta::valAlbum ) )
+        Album_result->setText( "<font color='" + QColor( album_color ).name() + "'>" + tags[Meta::valAlbum] + "</font>" );
+    else
+        Album_result->setText( emptyTagText );
+
+    if( tags.contains( Meta::valAlbumArtist ) )
+        AlbumArtist_result->setText( "<font color='" + QColor( albumartist_color ).name() + "'>" + tags[Meta::valAlbumArtist] + "</font>" );
+    else
+        AlbumArtist_result->setText( emptyTagText );
+
+    if( tags.contains( Meta::valTitle ) )
+        Title_result->setText( "<font color='" + QColor( title_color ).name() + "'>" + tags[Meta::valTitle] + "</font>" );
+    else
+        Title_result->setText( emptyTagText );
+
+    if( tags.contains( Meta::valArtist ) )
+        Artist_result->setText( "<font color='" + QColor( artist_color ).name() + "'>" + tags[Meta::valArtist] + "</font>" );
+    else
+        Artist_result->setText( emptyTagText );
+
+    if( tags.contains( Meta::valComment ) )
+        Comment_result->setText( "<font color='" + QColor( comment_color ).name() + "'>" + tags[Meta::valComment] + "</font>" );
+    else
+        Comment_result->setText( emptyTagText );
+
+    if( tags.contains( Meta::valComposer ) )
+        Composer_result->setText( "<font color='" + QColor( composer_color ).name() + "'>" + tags[Meta::valComposer] + "</font>" );
+    else
+        Composer_result->setText( emptyTagText );
+
+    if( tags.contains( Meta::valGenre ) )
+        Genre_result->setText( "<font color='" + QColor( genre_color ).name() + "'>" + tags[Meta::valGenre] + "</font>" );
+    else
+        Genre_result->setText( emptyTagText );
+
+    if( tags.contains( Meta::valTrackNr ) )
+        Track_result->setText( "<font color='" + QColor( track_color ).name() + "'>" + tags[Meta::valTrackNr] + "</font>" );
+    else
+        Track_result->setText( emptyTagText );
+
+    if( tags.contains( Meta::valYear ) )
+        Year_result->setText( "<font color='" + QColor( year_color ).name() + "'>" + tags[Meta::valYear] + "</font>" );
+    else
+        Year_result->setText( emptyTagText );
+
+    filenamePreview->setText(guesser.coloredFileName());
+}
+
+//Returns a code for the configuration.
+int
+TagGuesserWidget::getCaseOptions()
+{
+    //Amarok::config( "TagGuesser" ).readEntry( "Filename schemes", QStringList() );
+    if( !cbCase->isChecked() )
+        return 0;
+    else
+    {
+        if( rbAllLower->isChecked() )
+            return 4;
+        else if( rbAllUpper->isChecked() )
+            return 3;
+        else if( rbFirstLetter->isChecked() )
+            return 2;
+        else if( rbTitleCase->isChecked() )
+            return 1;
+        else
+        {
+            debug() << "OUCH!";
+            return 0;
+        }
+    }
+}
+
+//As above
+bool
+TagGuesserWidget::getWhitespaceOptions()
+{
+    return cbEliminateSpaces->isChecked();
+}
+
+//As above
+bool
+TagGuesserWidget::getUnderscoreOptions()
+{
+    return cbReplaceUnderscores->isChecked();
+}
+
+Token*
+TagGuesserWidget::createToken(qint64 value) const
+{
+    Token* token = FilenameLayoutWidget::createToken( value );
+
+    // return colored tokens.
+    QColor color = Qt::transparent;
+    switch( value )
+    {
+    case Track: color = QColor( track_color ); break;
+    case Title: color = QColor( title_color ); break;
+    case Artist: color = QColor( artist_color ); break;
+    case Composer: color = QColor( composer_color ); break;
+    case Year: color = QColor( year_color ); break;
+    case Album: color = QColor( album_color ); break;
+    case AlbumArtist: color = QColor( albumartist_color ); break;
+    case Comment: color = QColor( comment_color ); break;
+    case Genre: color = QColor( genre_color );
+    }
+    if (color != Qt::transparent)
+        token->setTextColor( color );
+
+    return token;
+}
+
+QString
+TagGuesserWidget::parsableFileName( const QFileInfo &fileInfo ) const
+{
+    if( !cbUseFullPath->isChecked() || !sbNestingLevel->value() )
+        return fileInfo.fileName();
+
+    QString path = fileInfo.absoluteFilePath();
+    int pos, n = sbNestingLevel->value() + 1;
+
+    for( pos = 0; pos < path.length() && n; pos++ )
+        if( path[pos] == '/' )
+            n--;
+
+    return path.mid( pos );
+}
+
+
+
+
+// ------------------------- FilenameLayoutWidget -------------------
+
+FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
+    : QWidget( parent )
+    , m_advancedMode( false )
+{
+    setupUi( this );
+
+    m_caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
+
+    m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", filenameLayout );
+    m_dropTarget->setRowLimit( 1 );
+
+    QVBoxLayout *l = new QVBoxLayout(filenameLayout);
+    l->setContentsMargins( 0, 0, 0, 0 );
+    l->addWidget(m_dropTarget);
+
+    connect( cbCase, SIGNAL( toggled( bool ) ),
+             this, SLOT( editStateEnable( bool ) ) );
+    connect( tokenPool, SIGNAL( onDoubleClick( Token * ) ),
+             m_dropTarget, SLOT( insertToken( Token* ) ) );
+    connect( kpbAdvanced, SIGNAL( clicked() ),
+             this, SLOT( toggleAdvancedMode() ) );
+    connect( m_dropTarget, SIGNAL( changed() ),
+             this, SIGNAL( schemeChanged() ) );
+    connect( addPresetButton, SIGNAL( clicked( bool ) ),
+             this, SLOT( slotAddFormat() ) );
+    connect( removePresetButton, SIGNAL( clicked( bool ) ),
+             this, SLOT( slotRemoveFormat() ) );
+    connect( updatePresetButton, SIGNAL( clicked( bool ) ),
+             this, SLOT( slotUpdateFormat() ) );
+
+    connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
+             this, SIGNAL( schemeChanged() ) );
+    connect( spaceCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
+    connect( ignoreTheCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
+    connect( vfatCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
+    connect( asciiCheck, SIGNAL(toggled(bool)), SIGNAL(schemeChanged()) );
+    connect( regexpEdit, SIGNAL(editingFinished()), SIGNAL(schemeChanged()) );
+    connect( replaceEdit, SIGNAL(editingFinished()), SIGNAL(schemeChanged()) );
+}
+
+Token*
+FilenameLayoutWidget::createToken(qint64 value) const
+{
+    struct TokenDefinition
+    {
+        QString name;
+        const char* iconName;
+        qint64 value;
+    };
+
+    static const TokenDefinition tokenDefinitions[] = {
+        { i18n( "Track number" ),"filename-track-amarok", Track },
+        { i18n( "Title" ), "filename-title-amarok", Title },
+        { i18n( "Artist" ), "filename-artist-amarok", Artist },
+        { i18n( "Composer" ), "filename-composer-amarok", Composer },
+        { i18n( "Year" ), "filename-year-amarok", Year },
+        { i18n( "Album" ), "filename-album-amarok", Album },
+        { i18n( "Album Artist" ), "filename-artist-amarok", AlbumArtist },
+        { i18n( "Comment" ), "filename-comment-amarok", Comment },
+        { i18n( "Genre" ), "filename-genre-amarok", Genre },
+
+        { i18n( "File type" ), "filename-filetype-amarok", FileType },
+        { i18n( "Ignore" ), "filename-ignore-amarok", Ignore },
+        { i18n( "Folder" ), "filename-folder-amarok", Folder },
+        { i18nc( "Artist's Initial", "Initial" ), "filename-initial-amarok", Initial },
+        { i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber },
+
+        { "/", "filename-slash-amarok", Slash },
+        { "_", "filename-underscore-amarok", Underscore },
+        { "-", "filename-dash-amarok", Dash },
+        { ".", "filename-dot-amarok", Dot },
+        { " ", "filename-space-amarok", Space },
+        { QString(), 0, Space }
+    };
+
+    for( int i = 0; !tokenDefinitions[i].name.isNull(); ++i )
+    {
+        if( value == tokenDefinitions[i].value )
+        {
+            return new Token( tokenDefinitions[i].name,
+                              tokenDefinitions[i].iconName,
+                              tokenDefinitions[i].value );
+        }
+    }
+
+    return 0;
+}
+
+//Stores the configuration when the dialog is accepted.
+void
+FilenameLayoutWidget::onAccept()    //SLOT
+{
+    slotSaveFormatList();
+}
+
+//Forwards the request for a scheme to TokenLayoutWidget
+QString
+FilenameLayoutWidget::getParsableScheme()
+{
+    QString scheme   = m_advancedMode ? filenameLayoutEdit->text() : parsableScheme();
+
+    Amarok::config( m_configCategory ).writeEntry( "Custom Scheme", scheme );
+    return scheme;
+}
+
+// attempts to set the scheme
+void FilenameLayoutWidget::setScheme(const QString& scheme)
+{
+    if( m_advancedMode )
+        filenameLayoutEdit->setText( scheme );
+    else
+        inferScheme( scheme );
+
+    emit schemeChanged();
+}
+
+
+
+//Handles the radiobuttons
+void
+FilenameLayoutWidget::editStateEnable( bool checked )      //SLOT
+{
+    foreach( QRadioButton *rb, m_caseEditRadioButtons )
+        rb->setEnabled( checked );
+}
+
+//Handles the modifications to the dialog to toggle between advanced and basic editing mode.
+void
+FilenameLayoutWidget::toggleAdvancedMode()
+{
+    setAdvancedMode( !m_advancedMode );
+}
+
+//handles switching between basic and advanced mode
+void
+FilenameLayoutWidget::setAdvancedMode( bool isAdvanced )
+{
+    m_advancedMode = isAdvanced;
+
+    if( isAdvanced )
+    {
+        kpbAdvanced->setText( i18n( "&Basic..." ) );
+        filenameLayout->hide();
+        filenameLayoutEdit->show();
+        filenameLayoutEdit->setText( parsableScheme() );
+        tokenPool->hide();
+        syntaxLabel->show();
+
+    }
+    else // set Basic mode
+    {
+        kpbAdvanced->setText( i18n( "&Advanced..." ) );
+        filenameLayout->show();
+        filenameLayoutEdit->hide();
+        tokenPool->show();
+        syntaxLabel->hide();
+        inferScheme( filenameLayoutEdit->text() );
+    }
+
+    QString entryValue  = m_advancedMode ? "Advanced" : "Basic";
+
+    Amarok::config( m_configCategory ).writeEntry( "Mode", entryValue );
+}
+
+
+
+// Iterates over the elements of the TokenLayoutWidget bar
+// (really over the elements of a QList that stores the indexes
+// of the tokens) and generates a string that TagGuesser can digest.
+QString
+FilenameLayoutWidget::parsableScheme() const
+{
+    QString parsableScheme = "";
+
+    QList< Token *> list = m_dropTarget->drags( 0 );
+
+    foreach( Token *token, list )
+    {
+        parsableScheme += typeElements[token->value()];
+    }
+
+    return parsableScheme;
+}
+
+
+
+//tries to populate the widget with tokens according to a string
+void
+FilenameLayoutWidget::inferScheme( const QString &s ) //SLOT
+{
+    DEBUG_BLOCK
+
+    debug() << "infering scheme: " << s;
+
+    m_dropTarget->clear();
+    for( int i = 0; i < s.size(); )
+    {
+        if( s.at(i) == '%')
+        {
+            if( s.midRef( i, 7 ) == "%title%" )
+            {
+                m_dropTarget->insertToken( createToken( Title ) );
+                i += 7;
+            }
+            else if( s.midRef( i, 7 ) == "%track%" )
+            {
+                m_dropTarget->insertToken( createToken( Track ) );
+                i += 7;
+            }
+            else if( s.midRef( i, 8 ) == "%artist%" )
+            {
+                m_dropTarget->insertToken( createToken( Artist ) );
+                i += 8;
+            }
+            else if( s.midRef( i, 10 ) == "%composer%" )
+            {
+                m_dropTarget->insertToken( createToken( Composer ) );
+                i += 10;
+            }
+            else if( s.midRef( i, 6 ) == "%year%" )
+            {
+                m_dropTarget->insertToken( createToken( Year ) );
+                i += 6;
+            }
+            else if( s.midRef( i, 13 ) == "%albumartist%" )
+            {
+                m_dropTarget->insertToken( createToken( AlbumArtist ) );
+                i += 13;
+            }
+            else if( s.midRef( i, 7 ) == "%album%" )
+            {
+                m_dropTarget->insertToken( createToken( Album ) );
+                i += 7;
+            }
+            else if( s.midRef( i, 9 ) == "%comment%" )
+            {
+                m_dropTarget->insertToken( createToken( Comment ) );
+                i += 9;
+            }
+            else if( s.midRef( i, 7 ) == "%genre%" )
+            {
+                m_dropTarget->insertToken( createToken( Genre ) );
+                i += 7;
+            }
+            else if( s.midRef( i, 10 ) == "%filetype%" )
+            {
+                m_dropTarget->insertToken( createToken( FileType ) );
+                i += 10;
+            }
+            else if( s.midRef( i, 8 ) == "%ignore%" )
+            {
+                m_dropTarget->insertToken( createToken( Ignore ) );
+                i += 8;
+            }
+            else if( s.midRef( i, 8 ) == "%folder%" )
+            {
+                m_dropTarget->insertToken( createToken( Folder ) );
+                i += 8;
+            }
+            else if( s.midRef( i, 9 ) == "%initial%" )
+            {
+                m_dropTarget->insertToken( createToken( Initial ) );
+                i += 9;
+            }
+            else if( s.midRef( i, 12 ) == "%discnumber%" )
+            {
+                m_dropTarget->insertToken( createToken( DiscNumber ) );
+                i += 12;
+            }
+            else
+                ++i; // skip junk
+        }
+        else
+        {
+            if( s.at(i) == '_' )
+                m_dropTarget->insertToken( createToken( Underscore ) );
+            else if( s.at(i) == '-' )
+                m_dropTarget->insertToken( createToken( Dash ) );
+            else if( s.at(i) == '.' )
+                m_dropTarget->insertToken( createToken( Dot ) );
+            else if( s.at(i) == ' ' )
+                m_dropTarget->insertToken( createToken( Space ) );
+            else if( s.at(i) == '/' )
+                m_dropTarget->insertToken( createToken( Slash ) );
+            else
+                debug() << "'" << s.at(i) << "' can't be represented as TokenLayoutWidget Token";
+            i++;
+        }
+    }
 }
 
 void
-FilenameLayoutDialog::populateFormatList()
+FilenameLayoutWidget::populateConfiguration()
 {
+    QString mode = Amarok::config( m_configCategory ).readEntry( "Mode" );
+    if( mode == QLatin1String( "Advanced" ) )
+    {
+        setAdvancedMode( true );
+        filenameLayoutEdit->setText( Amarok::config( m_configCategory ).readEntryUntranslated( "Custom Scheme" ) );
+    }
+    else
+    {
+        setAdvancedMode( false );
+        inferScheme( Amarok::config( m_configCategory ).readEntryUntranslated( "Custom Scheme" ) );
+    }
+
+    populateFormatList();
+}
+
+
+void
+FilenameLayoutWidget::populateFormatList()
+{
+    DEBUG_BLOCK
+
     // items are stored in the config list in the following format:
     // Label#DELIM#format string#DELIM#selected
     // the last item to have the third parameter is the default selected preset
@@ -724,7 +785,10 @@ FilenameLayoutDialog::populateFormatList()
     QStringList presets_raw;
     int selected_index = -1;
     presetCombo->clear();
-    presets_raw = Amarok::config( m_configCategory ).readEntry( QString::fromLatin1( "Format Presets" ), QStringList() );
+    presets_raw = AmarokConfig::formatPresets();
+    // presets_raw = Amarok::config( m_configCategory ).readEntry( QString::fromLatin1( "Format Presets" ), QStringList() );
+
+    debug() << "--- got preset for" << m_configCategory << presets_raw;
 
     foreach( QString str, presets_raw )
     {
@@ -745,7 +809,7 @@ FilenameLayoutDialog::populateFormatList()
 }
 
 void
-FilenameLayoutDialog::slotSaveFormatList()
+FilenameLayoutWidget::slotSaveFormatList()
 {
     if( !m_formatListModified )
         return;
@@ -772,14 +836,14 @@ FilenameLayoutDialog::slotSaveFormatList()
 }
 
 void
-FilenameLayoutDialog::slotFormatPresetSelected( int index )
+FilenameLayoutWidget::slotFormatPresetSelected( int index )
 {
     QString scheme = presetCombo->itemData( index ).toString();
     setScheme( scheme );
 }
 
 void
-FilenameLayoutDialog::slotAddFormat()
+FilenameLayoutWidget::slotAddFormat()
 {
     bool ok = false;
     QString name = KInputDialog::getText( i18n( "New Format Preset" ), i18n( "Preset Name" ), i18n( "New Preset" ),  &ok, this );
@@ -793,7 +857,7 @@ FilenameLayoutDialog::slotAddFormat()
 }
 
 void
-FilenameLayoutDialog::slotRemoveFormat()
+FilenameLayoutWidget::slotRemoveFormat()
 {
     int idx = presetCombo->currentIndex();
     presetCombo->removeItem( idx );
@@ -801,7 +865,7 @@ FilenameLayoutDialog::slotRemoveFormat()
 }
 
 void
-FilenameLayoutDialog::slotUpdateFormat()
+FilenameLayoutWidget::slotUpdateFormat()
 {
     int idx = presetCombo->currentIndex();
     QString formatString = getParsableScheme();

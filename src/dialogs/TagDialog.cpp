@@ -413,14 +413,14 @@ TagDialog::labelSelected() //SLOT
     ui->removeButton->setEnabled( ui->labelsList->selectionModel()->hasSelection() );
 }
 
-//creates a KDialog and executes the FilenameLayoutDialog. Grabs a filename scheme, extracts tags (via TagGuesser) from filename and fills the appropriate fields on TagDialog.
+//creates a KDialog and executes the FilenameLayoutWidget. Grabs a filename scheme, extracts tags (via TagGuesser) from filename and fills the appropriate fields on TagDialog.
 void
 TagDialog::guessFromFilename() //SLOT
 {
     KDialog dialog;
     dialog.setCaption( i18n( "Filename Layout Chooser" ) );
     dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-    FilenameLayoutDialog widget( &dialog );
+    TagGuesserWidget widget( &dialog );
     widget.setFileName( m_currentTrack->playableUrl().path() );
     dialog.setMainWidget( &widget );
 

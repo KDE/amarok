@@ -73,9 +73,9 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( m_trackOrganizer, SIGNAL(finished()), SLOT(slotOrganizerFinished()) );
     //TODO: s/1/enum/g
     //", 1" means isOrganizeCollection ==> doesn't show Options frame
-    m_filenameLayoutDialog = new FilenameLayoutDialog( mainContainer, 1 );
-    connect( this, SIGNAL( accepted() ),  m_filenameLayoutDialog, SLOT( onAccept() ) );
-    ui->verticalLayout->insertWidget( 1, m_filenameLayoutDialog );
+    m_filenameLayoutWidget = new OrganizeCollectionWidget( mainContainer );
+    connect( this, SIGNAL( accepted() ),  m_filenameLayoutWidget, SLOT( onAccept() ) );
+    ui->verticalLayout->insertWidget( 1, m_filenameLayoutWidget );
 
     ui->folderCombo->insertItems( 0, folders );
     if( ui->folderCombo->contains( AmarokConfig::organizeDirectory() ) )
@@ -84,12 +84,12 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
         ui->folderCombo->setCurrentIndex( 0 ); //TODO possible bug: assumes folder list is not empty.
 
     ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
-    m_filenameLayoutDialog->setReplaceSpaces( AmarokConfig::replaceSpace() );
-    m_filenameLayoutDialog->setIgnoreThe( AmarokConfig::ignoreThe() );
-    m_filenameLayoutDialog->setVfatCompatible( AmarokConfig::vfatCompatible() );
-    m_filenameLayoutDialog->setAsciiOnly( AmarokConfig::asciiOnly() );
-    m_filenameLayoutDialog->setRegexpText( AmarokConfig::replacementRegexp() );
-    m_filenameLayoutDialog->setReplaceText( AmarokConfig::replacementString() );
+    m_filenameLayoutWidget->setReplaceSpaces( AmarokConfig::replaceSpace() );
+    m_filenameLayoutWidget->setIgnoreThe( AmarokConfig::ignoreThe() );
+    m_filenameLayoutWidget->setVfatCompatible( AmarokConfig::vfatCompatible() );
+    m_filenameLayoutWidget->setAsciiOnly( AmarokConfig::asciiOnly() );
+    m_filenameLayoutWidget->setRegexpText( AmarokConfig::replacementRegexp() );
+    m_filenameLayoutWidget->setReplaceText( AmarokConfig::replacementString() );
 
     ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
     ui->conflictLabel->setText("");
@@ -102,9 +102,9 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
              SLOT(slotUpdatePreview()) );
     connect( ui->folderCombo, SIGNAL(currentIndexChanged( const QString & )),
              SLOT(slotUpdatePreview()) );
-    connect( m_filenameLayoutDialog, SIGNAL(schemeChanged()), SLOT(slotUpdatePreview()) );
+    connect( m_filenameLayoutWidget, SIGNAL(schemeChanged()), SLOT(slotUpdatePreview()) );
 
-    connect( this, SIGNAL(finished(int)), SLOT(slotSaveFormatList()) );
+    connect( this, SIGNAL(finished(int)), m_filenameLayoutWidget, SLOT(slotSaveFormatList()) );
     connect( this, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
     connect( ui->folderCombo, SIGNAL(currentIndexChanged( const QString & )),
              SLOT(slotEnableOk( const QString & )) );
@@ -165,9 +165,9 @@ OrganizeCollectionDialog::buildFormatTip() const
 QString
 OrganizeCollectionDialog::buildFormatString() const
 {
-    if( m_filenameLayoutDialog->getParsableScheme().simplified().isEmpty() )
+    if( m_filenameLayoutWidget->getParsableScheme().simplified().isEmpty() )
         return "";
-    return "%folder%/" + m_filenameLayoutDialog->getParsableScheme() + ".%filetype%";
+    return "%folder%/" + m_filenameLayoutWidget->getParsableScheme() + ".%filetype%";
 }
 
 QString
@@ -220,15 +220,15 @@ void
 OrganizeCollectionDialog::slotUpdatePreview()
 {
     QString formatString = buildFormatString();
-    m_trackOrganizer->setAsciiOnly( m_filenameLayoutDialog->asciiOnly() );
+    m_trackOrganizer->setAsciiOnly( m_filenameLayoutWidget->asciiOnly() );
     m_trackOrganizer->setFolderPrefix( ui->folderCombo->currentText() );
     m_trackOrganizer->setFormatString( formatString );
     m_trackOrganizer->setTargetFileExtension( m_targetFileExtension );
-    m_trackOrganizer->setIgnoreThe( m_filenameLayoutDialog->ignoreThe() );
-    m_trackOrganizer->setReplaceSpaces( m_filenameLayoutDialog->replaceSpaces() );
-    m_trackOrganizer->setReplace( m_filenameLayoutDialog->regexpText(),
-                                  m_filenameLayoutDialog->replaceText() );
-    m_trackOrganizer->setVfatSafe( m_filenameLayoutDialog->vfatCompatible() );
+    m_trackOrganizer->setIgnoreThe( m_filenameLayoutWidget->ignoreThe() );
+    m_trackOrganizer->setReplaceSpaces( m_filenameLayoutWidget->replaceSpaces() );
+    m_trackOrganizer->setReplace( m_filenameLayoutWidget->regexpText(),
+                                  m_filenameLayoutWidget->replaceText() );
+    m_trackOrganizer->setVfatSafe( m_filenameLayoutWidget->vfatCompatible() );
 
     //empty the table, not only it's contents
     ui->previewTableWidget->setRowCount( 0 );
@@ -301,14 +301,14 @@ void
 OrganizeCollectionDialog::slotDialogAccepted()
 {
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
-    AmarokConfig::setIgnoreThe( m_filenameLayoutDialog->ignoreThe() );
-    AmarokConfig::setReplaceSpace( m_filenameLayoutDialog->replaceSpaces() );
-    AmarokConfig::setVfatCompatible( m_filenameLayoutDialog->vfatCompatible() );
-    AmarokConfig::setAsciiOnly( m_filenameLayoutDialog->asciiOnly() );
-    AmarokConfig::setReplacementRegexp( m_filenameLayoutDialog->regexpText() );
-    AmarokConfig::setReplacementString( m_filenameLayoutDialog->replaceText() );
+    AmarokConfig::setIgnoreThe( m_filenameLayoutWidget->ignoreThe() );
+    AmarokConfig::setReplaceSpace( m_filenameLayoutWidget->replaceSpaces() );
+    AmarokConfig::setVfatCompatible( m_filenameLayoutWidget->vfatCompatible() );
+    AmarokConfig::setAsciiOnly( m_filenameLayoutWidget->asciiOnly() );
+    AmarokConfig::setReplacementRegexp( m_filenameLayoutWidget->regexpText() );
+    AmarokConfig::setReplacementString( m_filenameLayoutWidget->replaceText() );
 
-    m_filenameLayoutDialog->onAccept();
+    m_filenameLayoutWidget->onAccept();
 }
 
 //The Ok button should be disabled when there's no collection root selected, and when there is no .%filetype in format string

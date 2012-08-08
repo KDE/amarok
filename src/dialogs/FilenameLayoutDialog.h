@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
+ * Copyright (c) 2012 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,39 +21,14 @@
 
 #include "amarok_export.h"
 #include "ui_FilenameLayoutDialog.h"
-#include "TagGuesser.h"
 
 #include <QWidget>
-
-static const QStringList typeElements = ( QStringList()
-<< ""
-<< "%ignore%"
-<< "%track%"
-<< "%title%"
-<< "%artist%"
-<< "%composer%"
-<< "%year%"
-<< "%album%"
-<< "%albumartist%"
-<< "%comment%"
-<< "%genre%"
-<< "%filetype%"
-<< "%folder%"
-<< "%initial%"
-<< "%discnumber%"
-<< " "
-<< "/"
-<< "."
-<< "-"
-<< "_" );
 
 class TokenDropTarget;
 class QFileInfo;
 
 //Holds the TokenLayoutWidget and TokenPool and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
-class AMAROK_EXPORT FilenameLayoutDialog
-    : public QWidget
-    , private Ui::FilenameLayoutDialog
+class AMAROK_EXPORT FilenameLayoutWidget : public QWidget, protected Ui::FilenameLayoutDialog
 {
     Q_OBJECT
 
@@ -83,23 +59,14 @@ class AMAROK_EXPORT FilenameLayoutDialog
         };
 
 
-         explicit FilenameLayoutDialog( QWidget *parent = 0, bool isOrganizeCollection = 0 );
-        ~FilenameLayoutDialog() {}
+        explicit FilenameLayoutWidget( QWidget *parent = 0 );
+        virtual ~FilenameLayoutWidget() {}
 
         QString getParsableScheme();
-        QString getParsableFileName();
-        int getCaseOptions();
-        bool getWhitespaceOptions();
-        bool getUnderscoreOptions();
-
-        /**
-        *   Sets the filename to show colored preview from
-        */
-        void setFileName( QString FileName );
 
         void setScheme( const QString &scheme );
 
-        /* accessors to Ui::FilenameLayoutDialog members */
+        /* accessors to Ui::FilenameLayoutWidget members */
         bool asciiOnly() const { return asciiCheck->isChecked(); }
         void setAsciiOnly( bool enable ) { asciiCheck->setChecked( enable ); }
         bool vfatCompatible() const { return vfatCheck->isChecked(); }
@@ -113,10 +80,9 @@ class AMAROK_EXPORT FilenameLayoutDialog
         QString replaceText() const { return replaceEdit->text(); }
         void setReplaceText( const QString &text ) { replaceEdit->setText( text ); }
 
-        void setformatPresetVisible( bool visible ) { formatPresetWidget->setVisible( visible ); }
 
     public slots:
-        void onAccept();
+        virtual void onAccept();
 
     signals:
         /** emitted when either the scheme, option checkboxes or the replace edits change */
@@ -125,7 +91,6 @@ class AMAROK_EXPORT FilenameLayoutDialog
     private slots:
         void editStateEnable( bool checked );
         void toggleAdvancedMode();
-        void updatePreview();
 
         void slotFormatPresetSelected( int );
         void slotAddFormat();
@@ -134,32 +99,81 @@ class AMAROK_EXPORT FilenameLayoutDialog
         void slotSaveFormatList();
 
     private:
-        void initOrganizeCollection();
-        void initTagGuesser();
+        /** Set the advanced mode, blending out several "advanced" widgets */
         void setAdvancedMode( bool isAdvanced );
         QString parsableScheme() const;
-        QString parsableFileName( const QFileInfo &fileInfo ) const;
-        void inferScheme( const QString &scheme );
-        void populateFormatList();
 
-        QString m_configCategory;
-        QString m_filename;                         //!< Filename to guess from
-        bool m_isOrganizeCollection;
+        /** Fills the m_dropTarget according to the given string scheme. */
+        void inferScheme( const QString &scheme );
+
         bool m_formatListModified;
         bool m_advancedMode;
+
+    protected:
+
+        /** Set's several configuration options.
+            Don't move this function to the constructor. It calls virtuals. */
+        void populateConfiguration();
+        void populateFormatList();
+
+        virtual Token* createToken(qint64 value) const;
+
         TokenDropTarget *m_dropTarget;
-        QColor m_color_Track;
-        QColor m_color_Title;
-        QColor m_color_Artist;
-        QColor m_color_Composer;
-        QColor m_color_Year;
-        QColor m_color_Album;
-        QColor m_color_AlbumArtist;
-        QColor m_color_Comment;
-        QColor m_color_Genre;
+
+        /** The name of the category used for storing the configuration */
+        QString m_configCategory;
 
         QList<QRadioButton*> m_caseEditRadioButtons;
 };
+
+/** This dialog is used in the OrganizeCollection */
+class AMAROK_EXPORT OrganizeCollectionWidget : public FilenameLayoutWidget
+{
+    Q_OBJECT
+
+    public:
+        explicit OrganizeCollectionWidget( QWidget *parent = 0 );
+        virtual ~OrganizeCollectionWidget() {}
+
+        void setformatPresetVisible( bool visible ) { formatPresetWidget->setVisible( visible ); }
+};
+
+/** This dialog allows the user to define a filename scheme from which to guess tags. */
+class AMAROK_EXPORT TagGuesserWidget : public FilenameLayoutWidget
+{
+    Q_OBJECT
+
+    public:
+        explicit TagGuesserWidget( QWidget *parent = 0 );
+        virtual ~TagGuesserWidget() {}
+
+        /** Sets the filename to show colored preview from. */
+        void setFileName( const QString& fileName );
+
+        /** Returns the fileName with added path. */
+        QString getParsableFileName();
+
+        int getCaseOptions();
+        bool getWhitespaceOptions();
+        bool getUnderscoreOptions();
+
+    public slots:
+        virtual void onAccept();
+
+    private slots:
+        /** Updates the result texts. */
+        void updatePreview();
+
+    protected:
+        virtual Token* createToken(qint64 value) const;
+
+        /** Adds the path (depending on cbUseFullPath and sbNestingLevel) to the fileInfo */
+        QString parsableFileName( const QFileInfo &fileInfo ) const;
+
+        /** Filename to guess from. */
+        QString m_filename;
+};
+
 
 #endif    //FILENAMELAYOUTDIALOG_H
 
