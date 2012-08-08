@@ -21,3 +21,9 @@ using namespace StatSyncing;
 Provider::~Provider()
 {
 }
+
+bool
+operator<( const ProviderPtr &a, const ProviderPtr &b )
+{
+    return a.data() < b.data();
+}

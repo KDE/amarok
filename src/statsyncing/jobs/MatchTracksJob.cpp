@@ -18,11 +18,12 @@
 
 #include "MetaValues.h"
 
-//#define VERBOSE_DEBUG
+#undef VERBOSE_DEBUG
 
 using namespace StatSyncing;
 
 #ifdef VERBOSE_DEBUG
+#define DEBUG_PREFIX "StatSyncing"
 #include "core/support/Debug.h"
 static void printPerProviderTrackList( const PerProviderTrackList &providerTracks,
                                        const QString *fromArtist = 0L )
@@ -33,7 +34,7 @@ static void printPerProviderTrackList( const PerProviderTrackList &providerTrack
             debug() << provider->prettyName() << "tracks from" << *fromArtist;
         else
             debug() << provider->prettyName() << "tracks";
-        foreach( TrackDelegatePtr track, providerTracks.value( provider ) )
+        foreach( TrackPtr track, providerTracks.value( provider ) )
         {
             debug() << "  " << track->artist() << "-" << track->album() << "-" << track->name();
         }
@@ -52,6 +53,18 @@ static QString comparisonFieldNames( qint64 fields )
         }
     }
     return names.join( ", " );
+}
+
+QDebug operator<<( QDebug dbg, const ProviderPtr &provider )
+{
+    dbg.nospace() << "ProviderPtr(" << provider->prettyName() << ")";
+    return dbg.space();
+}
+
+QDebug operator<<( QDebug dbg, const TrackPtr &track )
+{
+    dbg.nospace() << "TrackPtr(" << track->artist() << " - " << track->name() << ")";
+    return dbg.space();
 }
 #endif
 
@@ -127,8 +140,8 @@ void MatchTracksJob::run()
     debug() << "Found" << tupleCount << "tuples of matched tracks from multiple collections";
     foreach( ProviderPtr provider, m_providers )
     {
-        const TrackDelegateList uniqueList = m_uniqueTracks.value( provider );
-        const TrackDelegateList excludedList = m_excludedTracks.value( provider );
+        const TrackList uniqueList = m_uniqueTracks.value( provider );
+        const TrackList excludedList = m_excludedTracks.value( provider );
         debug() << provider->prettyName() << "has" << uniqueList.count() << "unique tracks +"
                 << excludedList.count() << "duplicate tracks +" << m_matchedTrackCounts[ provider ]
                 << " matched =" << uniqueList.count() + excludedList.count() + m_matchedTrackCounts[ provider ];
@@ -140,6 +153,10 @@ void
 MatchTracksJob::matchTracksFromArtist( const QString &artist,
                                        const ProviderPtrSet &artistProviders )
 {
+#ifdef VERBOSE_DEBUG
+    DEBUG_BLOCK
+    debug() << "artist:" << artist << "artistProviders:" << artistProviders;
+#endif
     PerProviderTrackList providerTracks;
     foreach( ProviderPtr provider, artistProviders )
     {
@@ -154,6 +171,7 @@ MatchTracksJob::matchTracksFromArtist( const QString &artist,
     }
 
 #ifdef VERBOSE_DEBUG
+    debug() << "providerTracks:" << providerTracks;
     QScopedPointer<Debug::Block> debugBlockPointer;
     if( providerTracks.keys().count() > 1 )
     {
