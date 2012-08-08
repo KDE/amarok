@@ -266,6 +266,8 @@ XSPFPlaylist::triggerTrackLoad()
 void
 XSPFPlaylist::addTrack( Meta::TrackPtr track, int position )
 {
+    if( !track ) // playlists might contain invalid tracks. see BUG: 303056
+        return;
 
     Meta::TrackList trackList = tracks();
     int trackPos = position < 0 ? trackList.count() : position;

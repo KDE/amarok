@@ -317,6 +317,9 @@ PLSPlaylist::save( const KUrl &location, bool relative )
     int i = 1; //PLS starts at File1=
     foreach( Meta::TrackPtr track, m_tracks )
     {
+        if( !track ) // see BUG: 303056
+            continue;
+
         KUrl playableUrl( track->playableUrl() );
         QString file = playableUrl.url();
 
