@@ -16,6 +16,7 @@
 
 #include "ChooseProvidersPage.h"
 
+#include "App.h"
 #include "core/meta/support/MetaConstants.h"
 #include "statsyncing/models/ProvidersModel.h"
 
@@ -30,9 +31,13 @@ ChooseProvidersPage::ChooseProvidersPage( QWidget *parent, Qt::WindowFlags f )
     , m_providersModel( 0 )
 {
     setupUi( this );
+    KGuiItem configure = KStandardGuiItem::configure();
+    configure.setText( i18n( "Configure Automatic Synchronization..." ) );
+    buttonBox->addButton( configure, QDialogButtonBox::ActionRole, this, SLOT(openConfiguration()) );
     buttonBox->addButton( KGuiItem( i18n( "Next" ), "go-next" ), QDialogButtonBox::AcceptRole );
     connect( buttonBox, SIGNAL(accepted()), SIGNAL(accepted()) );
     connect( buttonBox, SIGNAL(rejected()), SIGNAL(rejected()) );
+    progressBar->hide();
 }
 
 ChooseProvidersPage::~ChooseProvidersPage()
@@ -49,14 +54,13 @@ ChooseProvidersPage::setFields( const QList<qint64> &fields, qint64 checkedField
         QCheckBox *checkBox = new QCheckBox( name );
         fieldsLayout->addWidget( checkBox );
         checkBox->setCheckState( ( field & checkedFields ) ? Qt::Checked : Qt::Unchecked );
-        checkBox->setStyleSheet( "margin-right: 0.5em" );
         checkBox->setProperty( "field", field );
         connect( checkBox, SIGNAL(stateChanged(int)), SIGNAL(checkedFieldsChanged()) );
     }
     fieldsLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
 
-    connect( this, SIGNAL(checkedFieldsChanged()), SLOT(updateSynchronizedLabel()) );
-    updateSynchronizedLabel();
+    connect( this, SIGNAL(checkedFieldsChanged()), SLOT(updateEnabledFields()) );
+    updateEnabledFields();
 }
 
 qint64
@@ -83,9 +87,9 @@ ChooseProvidersPage::setProvidersModel( ProvidersModel *model, QItemSelectionMod
     providersView->setSelectionModel( selectionModel );
 
     connect( model, SIGNAL(selectedProvidersChanged()), SLOT(updateMatchedLabel()) );
-    connect( model, SIGNAL(selectedProvidersChanged()), SLOT(updateSynchronizedLabel()) );
+    connect( model, SIGNAL(selectedProvidersChanged()), SLOT(updateEnabledFields()) );
     updateMatchedLabel();
-    updateSynchronizedLabel();
+    updateEnabledFields();
 }
 
 void
@@ -103,10 +107,10 @@ ChooseProvidersPage::disableControls()
     // disable view
     providersView->setEnabled( false );
 
-    // disable Next buton
+    // disable all but Cancel button
     foreach( QAbstractButton *button, buttonBox->buttons() )
     {
-        if( buttonBox->buttonRole( button ) == QDialogButtonBox::AcceptRole )
+        if( buttonBox->buttonRole( button ) != QDialogButtonBox::RejectRole )
             button->setEnabled( false );
     }
 }
@@ -114,18 +118,21 @@ ChooseProvidersPage::disableControls()
 void
 ChooseProvidersPage::setProgressBarText( const QString &text )
 {
+    progressBar->show();
     progressBar->setFormat( text );
 }
 
 void
 ChooseProvidersPage::setProgressBarMaximum( int maximum )
 {
+    progressBar->show();
     progressBar->setMaximum( maximum );
 }
 
 void
 ChooseProvidersPage::progressBarIncrementProgress()
 {
+    progressBar->show();
     progressBar->setValue( progressBar->value() + 1 );
 }
 
@@ -138,15 +145,27 @@ ChooseProvidersPage::updateMatchedLabel()
 }
 
 void
-ChooseProvidersPage::updateSynchronizedLabel()
+ChooseProvidersPage::updateEnabledFields()
 {
     if( !m_providersModel )
         return;
 
-    qint64 fields = checkedFields();
-    fields &= m_providersModel->writableTrackStatsDataIntersection();
-    QString fieldNames = m_providersModel->fieldsToString( fields );
-    synchronizedLabel->setText( i18n( "Synchronized: %1", fieldNames ) );
+    qint64 writableFields = m_providersModel->writableTrackStatsDataIntersection();
+    QLayout *fieldsLayout = fieldsBox->layout();
+    for( int i = 0; i < fieldsLayout->count(); i++ )
+    {
+        QWidget *checkBox = fieldsLayout->itemAt( i )->widget();
+        if( !checkBox || !checkBox->property( "field" ).canConvert<qint64>() )
+            continue;
+        qint64 field = checkBox->property( "field" ).value<qint64>();
+        bool enabled = writableFields & field;
+        checkBox->setEnabled( enabled );
+        QString text = i18nc( "%1 is field name such as Rating", "Less than 2 selected "
+                "collections support writing %1 - it doesn't make sense to synchronize "
+                "it.", Meta::i18nForField( field ) );
+        checkBox->setToolTip( enabled ? QString() : text );
+    }
+
     QAbstractButton *nextButton = 0;
     foreach( QAbstractButton *button, buttonBox->buttons() )
     {
@@ -154,5 +173,12 @@ ChooseProvidersPage::updateSynchronizedLabel()
             nextButton = button;
     }
     if( nextButton )
-        nextButton->setEnabled( fields != 0 );
+        nextButton->setEnabled( writableFields != 0 );
+}
+
+void ChooseProvidersPage::openConfiguration()
+{
+    App *app = App::instance();
+    if( app )
+        app->slotConfigAmarok( "MetadataConfig" );
 }

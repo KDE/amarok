@@ -61,6 +61,19 @@ This will replace existing embedded covers.</string>
           </property>
          </widget>
         </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
        </layout>
       </item>
       <item>
@@ -87,7 +100,7 @@ character sets used in ID3 tags.</string>
       <item>
        <widget class="QLabel" name="m_syncedCollectionsLabel">
         <property name="text">
-         <string>&lt;b&gt;Keep following collections synchronized.&lt;/b&gt; This includes scrobbling of tracks played on iPods if you have Last.fm plugin configured:</string>
+         <string>&lt;b&gt;Check collections to keep them synchronized.&lt;/b&gt; This includes scrobbling of tracks played on iPods if you have Last.fm plugin configured</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -108,11 +121,22 @@ character sets used in ID3 tags.</string>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="m_forgetCollectionsButton">
-        <property name="text">
-         <string>Forget about Selected Collections</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="m_forgetCollectionsButton">
+          <property name="text">
+           <string>Forget about Selected Collections</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="m_synchronizeButton">
+          <property name="text">
+           <string>Perform Synchronization...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <layout class="QVBoxLayout" name="m_statSyncingFieldsLayout"/>

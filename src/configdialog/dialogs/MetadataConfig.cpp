@@ -59,6 +59,8 @@ MetadataConfig::MetadataConfig( QWidget *parent )
     StatSyncing::Config *config = controller ? controller->config() : 0;
     m_statSyncingConfig = config;
     m_statSyncingProvidersView->setModel( config );
+    m_forgetCollectionsButton->setIcon( KIcon( "edit-clear" ) );
+    m_synchronizeButton->setIcon( KIcon( "amarok_playcount" ) );
     connect( config, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SIGNAL(changed()) );
     connect( config, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(changed()) );
     connect( config, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(changed()) );
@@ -66,6 +68,10 @@ MetadataConfig::MetadataConfig( QWidget *parent )
     connect( m_forgetCollectionsButton, SIGNAL(clicked(bool)), SLOT(slotForgetCollections()) );
     connect( m_statSyncingProvidersView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
              SLOT(slotUpdateForgetButton()) );
+    if( controller )
+        connect( m_synchronizeButton, SIGNAL(clicked(bool)), controller, SLOT(synchronize()) );
+    else
+        m_synchronizeButton->setEnabled( false );
     slotUpdateForgetButton();
 
     qint64 checkedFields = config->checkedFields();

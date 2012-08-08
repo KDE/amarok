@@ -16,6 +16,7 @@
 
 #include "MatchedTracksPage.h"
 
+#include "App.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Debug.h"
 #include "statsyncing/TrackTuple.h"
@@ -119,6 +120,9 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     connect( filterLine, SIGNAL(textChanged(QString)),
              m_proxyModel, SLOT(setFilterFixedString(QString)) );
 
+    KGuiItem configure = KStandardGuiItem::configure();
+    configure.setText( i18n( "Configure Automatic Synchronization..." ) );
+    buttonBox->addButton( configure, QDialogButtonBox::ActionRole, this, SLOT(openConfiguration()) );
     KPushButton *back = buttonBox->addButton( KStandardGuiItem::back(),
                                               QDialogButtonBox::ActionRole );
     buttonBox->addButton( KGuiItem( i18n( "Synchronize" ), "document-save" ),
@@ -356,6 +360,14 @@ MatchedTracksPage::takeRatingsFrom()
 
     ProviderPtr provider = action->data().value<ProviderPtr>();
     m_matchedTracksModel->takeRatingsFrom( provider );
+}
+
+void
+MatchedTracksPage::openConfiguration()
+{
+    App *app = App::instance();
+    if( app )
+        app->slotConfigAmarok( "MetadataConfig" );
 }
 
 void

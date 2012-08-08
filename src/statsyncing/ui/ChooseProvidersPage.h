@@ -61,7 +61,8 @@ namespace StatSyncing
 
         private slots:
             void updateMatchedLabel();
-            void updateSynchronizedLabel();
+            void updateEnabledFields();
+            void openConfiguration();
 
         private:
             ProvidersModel *m_providersModel;

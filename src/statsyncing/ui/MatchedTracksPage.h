@@ -99,6 +99,7 @@ namespace StatSyncing
             void restoreExpandedState( const QModelIndex &parent, int start, int end );
 
             void takeRatingsFrom();
+            void openConfiguration();
 
         private:
             void polish();
