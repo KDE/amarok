@@ -2,6 +2,12 @@ Amarok ChangeLog
 ================
 (C) 2002-2012 the Amarok authors.
 
+VERSION 2.7
+  CHANGES:
+
+  BUGFIXES:
+    * Fix problems when sql server is not reachable (BR 298425)
+
 VERSION 2.6-RC
   CHANGES:
     * Show all audio and video files in file browser. (BR 303253)
@@ -37,7 +43,6 @@ VERSION 2.6-RC
       244595)
     * Provide full-size covers via MPRIS1 if available. (BR 278550)
     * Fix serving out of embedded images via MPRIS. (BR 301399)
-    * Fix problems when sql server is not reachable (BR 298425)
 
 VERSION 2.6-Beta 1
   FEATURES:
