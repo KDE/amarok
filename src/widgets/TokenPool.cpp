@@ -76,10 +76,19 @@ TokenPool::TokenPool( QWidget *parent )
 void
 TokenPool::addToken( Token * token )
 {
+    token->setParent( this );
+    token->setVisible( false );
 
     QListWidgetItem *item = new QListWidgetItem( token->icon().pixmap( 48, 48 ), token->name() );
-    item->setData( Qt::ForegroundRole, token->textColor() );
-    item->setToolTip( "<font color=\"" + token->textColor().name() + "\">" + token->name() + "</font>" );
+    if( token->hasCustomColor() ) // don't override the default tooltip color if possible. This very easily produces black test on black tooltip background
+    {
+        item->setData( Qt::ForegroundRole, token->textColor() );
+        item->setToolTip( "<font color=\"" + token->textColor().name() + "\">" + token->name() + "</font>" );
+    }
+    else
+    {
+        item->setToolTip( token->name() );
+    }
     addItem( item );
 
     token->setParent( this );

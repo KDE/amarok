@@ -18,13 +18,12 @@
  ****************************************************************************************/
 
 #include "Token.h"
+#include "TokenDropTarget.h"
 
 #include <KColorScheme>
 #include <QHBoxLayout>
 #include <QPainter>
 #include <QPen>
-
-#include "TokenDropTarget.h"
 
 Token * TokenFactory::createToken(const QString & text, const QString & iconName, qint64 value, QWidget * parent)
 {
@@ -38,6 +37,7 @@ Token::Token( const QString &name, const QString &iconName, qint64 value, QWidge
     , m_icon( KIcon( iconName ) )
     , m_iconName( iconName )
     , m_value( value )
+    , m_customColor( false )
 {
     setAttribute( Qt::WA_Hover );
     if( parent )
@@ -96,6 +96,7 @@ QColor Token::textColor() const
 
 void Token::setTextColor( QColor textColor )
 {
+    m_customColor = true;
     if( textColor == this->textColor() )
         return;
     QPalette myPalette( m_label->palette() );
