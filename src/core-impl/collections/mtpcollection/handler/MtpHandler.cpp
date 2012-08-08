@@ -866,6 +866,8 @@ MtpHandler::libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, 
         uint32_t i = 0;
         foreach( Meta::TrackPtr trk, tracklist )
         {
+            if( !trk ) // playlists might contain invalid tracks. see BUG: 297816
+                continue;
             Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::staticCast( trk );
             tracks[i] = m_mtpTrackHash.value( track )->item_id;
         }
