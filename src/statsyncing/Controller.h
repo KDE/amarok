@@ -31,7 +31,7 @@ namespace StatSyncing
     class Process;
     class Provider;
     typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
-    typedef QSet<ProviderPtr> ProviderPtrSet;
+    typedef QList<ProviderPtr> ProviderPtrList;
     class ScrobblingService;
     typedef QExplicitlySharedDataPointer<ScrobblingService> ScrobblingServicePtr;
 
@@ -52,12 +52,18 @@ namespace StatSyncing
              */
             static QList<qint64> availableFields();
 
-        public slots:
             /**
-             * Start the whole synchronization machinery. This call returns quickly,
-             * way before the synchronization is finished.
+             * Register a StatSyncing::Provider with StatSyncing controller. This makes
+             * it possible to synchronize provider with other providers. You don't need
+             * to call this for Collections that are registered through CollectionManager
+             * (and marked as enabled there) as it is done automatically.
              */
-            void synchronize();
+            void registerProvider( const ProviderPtr &provider );
+
+            /**
+             * Forget about StatSyncing::Provider @param provider.
+             */
+            void unregisterProvider( const ProviderPtr &provider );
 
             /**
              * Register ScrobblingService with StatSyncing controller. Controller than
@@ -79,7 +85,18 @@ namespace StatSyncing
              */
             Config *config();
 
+        public slots:
+            /**
+             * Start the whole synchronization machinery. This call returns quickly,
+             * way before the synchronization is finished.
+             */
+            void synchronize();
+
         private slots:
+            /**
+             * Can only be connected to provider changed() signal
+             */
+            void slotProviderUpdated();
             /**
              * Wait a few seconds and if no collectionUpdate() signal arrives until then,
              * start synchronization. Otherwise postpone the synchronization for a few
@@ -88,6 +105,7 @@ namespace StatSyncing
             void delayedStartSynchronization();
             void slotCollectionAdded( Collections::Collection* collection,
                                       CollectionManager::CollectionStatus status );
+            void slotCollectionRemoved( const QString &id );
             void startNonInteractiveSynchronization();
             void synchronize( int mode );
 
@@ -106,6 +124,7 @@ namespace StatSyncing
             bool tracksVirtuallyEqual( const Meta::TrackPtr &first, const Meta::TrackPtr &second );
 
             // synchronization-related
+            ProviderPtrList m_providers;
             QWeakPointer<Process> m_currentProcess;
             QTimer *m_startSyncingTimer;
             Config *m_config;

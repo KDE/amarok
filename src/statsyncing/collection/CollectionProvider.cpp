@@ -28,6 +28,7 @@ CollectionProvider::CollectionProvider( Collections::Collection *collection )
     : m_coll( collection )
 {
     Q_ASSERT( m_coll );
+    connect( collection, SIGNAL(updated()), SIGNAL(updated()) );
     connect( this, SIGNAL(startArtistSearch()), SLOT(slotStartArtistSearch()) );
     connect( this, SIGNAL(startTrackSearch(QString)), SLOT(slotStartTrackSearch(QString)) );
 }

@@ -35,8 +35,10 @@ namespace StatSyncing
      * Providers are memory-managed as explicitly shared data, always use ProviderPtr
      * to stora a reference to Provider.
      */
-    class Provider : public QSharedData
+    class Provider : public QObject, public QSharedData
     {
+        Q_OBJECT
+
         public:
             virtual ~Provider();
 
@@ -102,6 +104,12 @@ namespace StatSyncing
              * a longer time; it must be implemented in a reentrant manner.
              */
             virtual TrackList artistTracks( const QString &artistName ) = 0;
+
+        signals:
+            /**
+             * Emitted when some data such as prettyName() were updated.
+             */
+            void updated();
     };
 
     typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;

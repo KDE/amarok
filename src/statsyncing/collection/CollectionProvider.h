@@ -27,7 +27,7 @@ namespace StatSyncing
     /**
      * Provider that has Collections::Colections as a back-end.
      */
-    class CollectionProvider : public QObject, public Provider
+    class CollectionProvider : public Provider
     {
         Q_OBJECT
 

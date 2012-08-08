@@ -45,6 +45,7 @@ Controller::Controller( QObject* parent )
     Q_ASSERT( manager );
     connect( manager, SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)),
              SLOT(slotCollectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)) );
+    connect( manager, SIGNAL(collectionRemoved(QString)), SLOT(slotCollectionRemoved(QString)) );
     delayedStartSynchronization();
 
     EngineController *engine = Amarok::Components::engineController();
@@ -80,9 +81,59 @@ Controller::availableFields()
 }
 
 void
-Controller::synchronize()
+Controller::registerProvider( const ProviderPtr &provider )
 {
-    synchronize( Process::Interactive );
+    QString id = provider->id();
+    bool enabled;
+    if( m_config->providerKnown( id ) )
+        enabled = m_config->providerEnabled( id, false );
+    else
+    {
+        switch( provider->defaultPreference() )
+        {
+            case Provider::Never:
+            case Provider::NoByDefault:
+                enabled = false;
+                break;
+            case Provider::Ask:
+            {
+                QString text = i18nc( "%1 is collection name", "%1 has an ability to "
+                    "synchronize track meta-data such as play count or rating "
+                    "with other collections. Do you want to keep %1 synchronized?\n\n"
+                    "You can always change the decision in Amarok configuration.",
+                    provider->prettyName() );
+                enabled = KMessageBox::questionYesNo( The::mainWindow(), text ) == KMessageBox::Yes;
+                break;
+            }
+            case Provider::YesByDefault:
+                enabled = true;
+                break;
+        }
+    }
+
+    // don't tell config about Never-by-default providers
+    if( provider->defaultPreference() != Provider::Never )
+    {
+        m_config->updateProvider( id, provider->prettyName(), provider->icon(), true, enabled );
+        m_config->save();
+    }
+    m_providers.append( provider );
+    connect( provider.data(), SIGNAL(updated()), SLOT(slotProviderUpdated()) );
+    if( enabled )
+        delayedStartSynchronization();
+}
+
+void
+Controller::unregisterProvider( const ProviderPtr &provider )
+{
+    disconnect( provider.data(), 0, this, 0 );
+    if( m_config->providerKnown( provider->id() ) )
+    {
+        m_config->updateProvider( provider->id(), provider->prettyName(),
+                                  provider->icon(), /* online */ false );
+        m_config->save();
+    }
+    m_providers.removeAll( provider );
 }
 
 void
@@ -109,6 +160,28 @@ Controller::config()
 }
 
 void
+Controller::synchronize()
+{
+    synchronize( Process::Interactive );
+}
+
+void
+Controller::slotProviderUpdated()
+{
+    QObject *updatedProvider = sender();
+    Q_ASSERT( updatedProvider );
+    foreach( const ProviderPtr &provider, m_providers )
+    {
+        if( provider.data() == updatedProvider )
+        {
+            m_config->updateProvider( provider->id(), provider->prettyName(),
+                                      provider->icon(), true );
+            m_config->save();
+        }
+    }
+}
+
+void
 Controller::delayedStartSynchronization()
 {
     if( m_startSyncingTimer->isActive() )
@@ -116,6 +189,8 @@ Controller::delayedStartSynchronization()
     else
     {
         m_startSyncingTimer->start( 5000 );
+        // we could as well connect to all m_providers updated signals, but this serves
+        // for now
         CollectionManager *manager = CollectionManager::instance();
         Q_ASSERT( manager );
         connect( manager, SIGNAL(collectionDataChanged(Collections::Collection*)),
@@ -123,52 +198,26 @@ Controller::delayedStartSynchronization()
     }
 }
 
-
 void
 Controller::slotCollectionAdded( Collections::Collection *collection,
                                  CollectionManager::CollectionStatus status )
 {
     if( status != CollectionManager::CollectionEnabled )
         return;
+    ProviderPtr provider( new CollectionProvider( collection ) );
+    registerProvider( provider );
+}
 
-    CollectionProvider provider( collection );
-    QString id = provider.id();
-    bool enabled;
-    if( m_config->providerKnown( id ) )
-        enabled = m_config->providerEnabled( id, false );
-    else
+void
+Controller::slotCollectionRemoved( const QString &id )
+{
+    foreach( const ProviderPtr &provider, m_providers )
     {
-        switch( provider.defaultPreference() )
-        {
-            case Provider::Never:
-            case Provider::NoByDefault:
-                enabled = false;
-                break;
-            case Provider::Ask:
-            {
-                QString text = i18nc( "%1 is collection name", "Collection %1 has an "
-                    "ability to synchronize track meta-data such as play count or rating "
-                    "with other collections. Do you want to keep %1 synchronized?\n\n"
-                    "You can always change the decision in Amarok configuration.",
-                    provider.prettyName() );
-                enabled = KMessageBox::questionYesNo( The::mainWindow(), text ) == KMessageBox::Yes;
-                break;
-            }
-            case Provider::YesByDefault:
-                enabled = true;
-                break;
-        }
+        // here we depend on StatSyncing::CollectionProvider returning identical id
+        // as collection
+        if( provider->id() == id )
+            unregisterProvider( provider );
     }
-
-    // don't even register Never-by-default providers
-    if( provider.defaultPreference() != Provider::Never )
-    {
-        m_config->updateProvider( id, provider.prettyName(), provider.icon(), true, enabled );
-        m_config->save();
-    }
-
-    if( enabled )
-        delayedStartSynchronization();
 }
 
 void
@@ -191,23 +240,7 @@ void Controller::synchronize( int intMode )
         return;
     }
 
-    ProviderPtrList providers;
-    CollectionManager *manager = CollectionManager::instance();
-    Q_ASSERT( manager );
-    QHash<Collections::Collection *, CollectionManager::CollectionStatus> collHash =
-        manager->collections();
-    QHashIterator<Collections::Collection *, CollectionManager::CollectionStatus> it( collHash );
-    while( it.hasNext() )
-    {
-        it.next();
-        if( it.value() == CollectionManager::CollectionEnabled )
-        {
-            ProviderPtr provider( new CollectionProvider( it.key() ) );
-            providers.append( provider );
-        }
-    }
-
-    if( providers.count() <= 1 )
+    if( m_providers.count() <= 1 )
     {
         if( mode == StatSyncing::Process::Interactive )
         {
@@ -222,7 +255,7 @@ void Controller::synchronize( int intMode )
     // read saved config
     qint64 fields = m_config->checkedFields();
     ProviderPtrSet checkedProviders;
-    foreach( ProviderPtr provider, providers )
+    foreach( ProviderPtr provider, m_providers )
     {
         if( m_config->providerEnabled( provider->id(), false ) )
             checkedProviders.insert( provider );
@@ -234,7 +267,7 @@ void Controller::synchronize( int intMode )
         return;
     }
 
-    m_currentProcess = new Process( providers, checkedProviders, fields, mode, this );
+    m_currentProcess = new Process( m_providers, checkedProviders, fields, mode, this );
     m_currentProcess.data()->start();
 }
 
