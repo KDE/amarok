@@ -7,6 +7,7 @@ VERSION 2.7
 
   BUGFIXES:
     * Fix problems when sql server is not reachable (BR 298425)
+    * Fix crash with exporting playlists with invalid tracks (BR 303056)
 
 VERSION 2.6-RC
   CHANGES:

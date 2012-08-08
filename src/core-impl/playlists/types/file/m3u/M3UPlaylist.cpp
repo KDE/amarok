@@ -230,7 +230,8 @@ M3UPlaylist::save( const KUrl &location, bool relative )
     QList<int> lengths;
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        Q_ASSERT(track);
+        if( !track ) // see BUG: 303056
+            continue;
 
         const KUrl &url = track->playableUrl();
         int length = track->length() / 1000;
