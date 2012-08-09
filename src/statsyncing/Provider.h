@@ -17,6 +17,7 @@
 #ifndef STATSYNCING_PROVIDER_H
 #define STATSYNCING_PROVIDER_H
 
+#include "amarok_export.h"
 #include "statsyncing/Track.h"
 
 #include <KIcon>
@@ -35,7 +36,7 @@ namespace StatSyncing
      * Providers are memory-managed as explicitly shared data, always use ProviderPtr
      * to stora a reference to Provider.
      */
-    class Provider : public QObject, public QSharedData
+    class AMAROK_EXPORT Provider : public QObject, public QSharedData
     {
         Q_OBJECT
 

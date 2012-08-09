@@ -37,7 +37,7 @@ namespace StatSyncing
      * Note: This will be probably morphed into Meta::Track someday, keep the interface
      * compatible as much as possible.
      */
-    class Track : public QSharedData
+    class AMAROK_EXPORT Track : public QSharedData
     {
         public:
             Track();
