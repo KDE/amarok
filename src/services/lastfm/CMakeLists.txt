@@ -33,6 +33,7 @@ include_directories(
             LastFmServiceConfig.cpp
 #             LastfmReadLabelCapability.cpp
             ScrobblerAdapter.cpp
+            SynchronizationAdapter.cpp
             LastFmTreeModel.cpp
             LastFmTreeView.cpp
             AvatarDownloader.cpp

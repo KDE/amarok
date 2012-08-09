@@ -18,8 +18,8 @@
 #ifndef LASTFMSERVICE_H
 #define LASTFMSERVICE_H
 
-
-#include "../ServiceBase.h"
+#include "services/ServiceBase.h"
+#include "statsyncing/Provider.h"
 
 class ScrobblerAdapter;
 class LastFmService;
@@ -94,6 +94,7 @@ private:
     bool m_inited;
     bool m_scrobble;
     QExplicitlySharedDataPointer<ScrobblerAdapter> m_scrobbler;
+    StatSyncing::ProviderPtr m_synchronizationAdapter;
     Collections::LastFmServiceCollection *m_collection;
 
     void playLastFmStation( const KUrl &url );

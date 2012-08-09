@@ -36,6 +36,7 @@
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
 #include "meta/LastFmMeta.h"
+#include "SynchronizationAdapter.h"
 #include "statsyncing/Controller.h"
 #include "widgets/SearchWidget.h"
 
@@ -207,6 +208,8 @@ LastFmService::~LastFmService()
     StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
     if( m_scrobbler && controller )
         controller->unregisterScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+    if( m_synchronizationAdapter && controller )
+        controller->unregisterProvider( m_synchronizationAdapter );
 }
 
 void
@@ -242,14 +245,17 @@ LastFmService::init()
         m_sessionKeyArray = qstrdup( m_sessionKey.toLatin1().data() );
         lastfm::ws::SessionKey = m_sessionKeyArray;
 
+        StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+        Q_ASSERT( controller );
         if( m_scrobble )
         {
             m_scrobbler = new ScrobblerAdapter( "ark" );
-            StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
-            Q_ASSERT( controller );
             controller->registerScrobblingService(
                     StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
         }
+        m_synchronizationAdapter = new SynchronizationAdapter( m_userName );
+        controller->registerProvider( m_synchronizationAdapter );
+
         QMap< QString, QString > params;
         params[ "method" ] = "user.getInfo";
         m_jobs[ "getUserInfo" ] = lastfm::ws::post( params );
@@ -319,14 +325,17 @@ LastFmService::onAuthenticated()
             config.setSessionKey( m_sessionKey );
             config.save();
 
+            StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+            Q_ASSERT( controller );
             if( m_scrobble )
             {
                 m_scrobbler = new ScrobblerAdapter( "ark" );
-                StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
-                Q_ASSERT( controller );
                 controller->registerScrobblingService(
                         StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
             }
+            m_synchronizationAdapter = new SynchronizationAdapter( m_userName );
+            controller->registerProvider( m_synchronizationAdapter );
+
             QMap< QString, QString > params;
             params[ "method" ] = "user.getInfo";
             m_jobs[ "getUserInfo" ] = lastfm::ws::post( params );
