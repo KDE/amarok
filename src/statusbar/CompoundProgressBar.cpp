@@ -22,9 +22,11 @@
 #include <KLocale>
 
 #include <QLayout>
+#include <QMutexLocker>
 
 CompoundProgressBar::CompoundProgressBar( QWidget *parent )
         : ProgressBar( parent )
+        , m_mutex( QMutex::Recursive )
 {
     m_progressDetailsWidget = new PopupWidget( parent );
     m_progressDetailsWidget->hide();
@@ -40,6 +42,8 @@ CompoundProgressBar::~CompoundProgressBar()
 
 void CompoundProgressBar::addProgressBar( ProgressBar *childBar, QObject *owner )
 {
+    QMutexLocker locker( &m_mutex );
+
     m_progressMap.insert( owner, childBar );
     m_progressDetailsWidget->layout()->addWidget( childBar );
     if( m_progressDetailsWidget->width() < childBar->width() )
@@ -73,6 +77,8 @@ void CompoundProgressBar::addProgressBar( ProgressBar *childBar, QObject *owner 
 
 void CompoundProgressBar::endProgressOperation( QObject *owner )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( !m_progressMap.contains( owner ) )
         return ;
 
@@ -87,6 +93,8 @@ CompoundProgressBar::slotIncrementProgress()
 
 void CompoundProgressBar::incrementProgress( const QObject *owner )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( !m_progressMap.contains( owner ) )
         return ;
 
@@ -95,6 +103,8 @@ void CompoundProgressBar::incrementProgress( const QObject *owner )
 
 void CompoundProgressBar::setProgress( const QObject *owner, int steps )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( !m_progressMap.contains( owner ) )
         return ;
 
@@ -104,6 +114,8 @@ void CompoundProgressBar::setProgress( const QObject *owner, int steps )
 void
 CompoundProgressBar::mousePressEvent( QMouseEvent *event )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( m_progressDetailsWidget->isHidden() )
     {
         if( m_progressMap.count() )
@@ -119,6 +131,8 @@ CompoundProgressBar::mousePressEvent( QMouseEvent *event )
 
 void CompoundProgressBar::setProgressTotalSteps( const QObject *owner, int value )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( !m_progressMap.contains( owner ) )
         return ;
 
@@ -127,6 +141,8 @@ void CompoundProgressBar::setProgressTotalSteps( const QObject *owner, int value
 
 void CompoundProgressBar::setParent( QWidget *parent )
 {
+    QMutexLocker locker( &m_mutex );
+
     delete m_progressDetailsWidget;
     m_progressDetailsWidget = new PopupWidget( parent );
     m_progressDetailsWidget->hide();
@@ -137,6 +153,8 @@ void CompoundProgressBar::setParent( QWidget *parent )
 
 void CompoundProgressBar::setProgressStatus( const QObject *owner, const QString &text )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( !m_progressMap.contains( owner ) )
         return ;
 
@@ -160,6 +178,8 @@ void CompoundProgressBar::childBarComplete( ProgressBar *childBar )
 
 void CompoundProgressBar::slotObjectDestroyed( QObject *object )
 {
+    QMutexLocker locker( &m_mutex );
+
     if( m_progressMap.contains( object ) )
     {
         childBarFinished( m_progressMap.value( object ) );
@@ -168,6 +188,8 @@ void CompoundProgressBar::slotObjectDestroyed( QObject *object )
 
 void CompoundProgressBar::childBarFinished( ProgressBar *bar )
 {
+    QMutexLocker locker( &m_mutex );
+
     QObject *owner = const_cast<QObject *>( m_progressMap.key( bar ) );
     owner->disconnect( this );
     owner->disconnect( bar );
@@ -204,6 +226,8 @@ void CompoundProgressBar::childBarFinished( ProgressBar *bar )
 
 int CompoundProgressBar::calcCompoundPercentage()
 {
+    QMutexLocker locker( &m_mutex );
+
     int count = m_progressMap.count();
     int total = 0;
 
@@ -215,12 +239,16 @@ int CompoundProgressBar::calcCompoundPercentage()
 
 void CompoundProgressBar::cancelAll()
 {
+    QMutexLocker locker( &m_mutex );
+
     foreach( ProgressBar *currentBar, m_progressMap )
         currentBar->cancel();
 }
 
 void CompoundProgressBar::showDetails()
 {
+    QMutexLocker locker( &m_mutex );
+
     m_progressDetailsWidget->raise();
 
     //Hack to make sure it has the right height first time it is shown...
