@@ -55,13 +55,13 @@ Track::discNumber() const
 
 bool Track::equals( const Track &other, qint64 fieldMask ) const
 {
-    if( fieldMask & Meta::valTitle && name() != other.name() )
+    if( fieldMask & Meta::valTitle && name().toLower() != other.name().toLower() )
         return false;
-    if( fieldMask & Meta::valAlbum && album() != other.album() )
+    if( fieldMask & Meta::valAlbum && album().toLower() != other.album().toLower() )
         return false;
-    if( fieldMask & Meta::valArtist && artist() != other.artist() )
+    if( fieldMask & Meta::valArtist && artist().toLower() != other.artist().toLower() )
         return false;
-    if( fieldMask & Meta::valComposer && composer() != other.composer() )
+    if( fieldMask & Meta::valComposer && composer().toLower() != other.composer().toLower() )
         return false;
     if( fieldMask & Meta::valYear && year() != other.year() )
         return false;
@@ -76,20 +76,20 @@ bool
 Track::lessThan( const Track &other, qint64 fieldMask ) const
 {
     // artist > year > album > discNumber > trackNumber > composer > title
-    if( fieldMask & Meta::valArtist && artist() != other.artist() )
-        return artist() < other.artist();
+    if( fieldMask & Meta::valArtist && artist().toLower() != other.artist().toLower() )
+        return artist().toLower() < other.artist().toLower();
     if( fieldMask & Meta::valYear && year() != other.year() )
         return year() < other.year();
-    if( fieldMask & Meta::valAlbum && album() != other.album() )
-        return album() < other.album();
+    if( fieldMask & Meta::valAlbum && album().toLower() != other.album().toLower() )
+        return album().toLower() < other.album().toLower();
     if( fieldMask & Meta::valDiscNr && discNumber() != other.discNumber() )
         return discNumber() < other.discNumber();
     if( fieldMask & Meta::valTrackNr && trackNumber() != other.trackNumber() )
         return trackNumber() < other.trackNumber();
-    if( fieldMask & Meta::valComposer && composer() != other.composer() )
-        return composer() < other.composer();
-    if( fieldMask & Meta::valTitle && name() != other.name() )
-        return name() < other.name();
+    if( fieldMask & Meta::valComposer && composer().toLower() != other.composer().toLower() )
+        return composer().toLower() < other.composer().toLower();
+    if( fieldMask & Meta::valTitle && name().toLower() != other.name().toLower() )
+        return name().toLower() < other.name().toLower();
     return false;
 }
 
