@@ -72,7 +72,7 @@ private:
     QHash<QString, Meta::GenrePtr> m_genreHash;
     QHash<QUrl, Meta::ComposerPtr> m_composerHash;
     QHash<QUrl, Meta::AlbumPtr> m_albumHash;
-    QHash<Nepomuk::Tag, Meta::LabelPtr> m_labelHash;
+    QHash<QUrl, Meta::LabelPtr> m_labelHash;
     QHash<QString, Meta::YearPtr> m_yearHash;
 };
 
