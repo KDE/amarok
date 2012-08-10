@@ -47,6 +47,10 @@
 #include <Nepomuk/Vocabulary/NMM>
 #include <Nepomuk/Vocabulary/NIE>
 
+#include <Soprano/QueryResultIterator>
+#include <Soprano/Query/QueryLanguage>
+#include <Soprano/Model>
+
 using namespace Meta;
 using namespace Collections;
 using namespace Nepomuk::Query;
@@ -68,15 +72,89 @@ void NepomukConstructMetaJob::abort()
 void
 NepomukConstructMetaJob::run()
 {
+    Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
 
-    Query query;
-    Term term =  ResourceTypeTerm( Nepomuk::Vocabulary::NFO::Audio() );
-    query.setTerm( term );
-    QList<Nepomuk::Query::Result> queriedResults = QueryServiceClient::syncQuery( query );
+    QString query
+            = QString("select distinct ?r ?title ?url ?artist ?composer ?album ?genre "
+                      "?artistRes ?composerRes ?albumRes "
+                      "?year ?bpm ?rating ?length ?sampleRate ?trackNumber ?type "
+                      " ?bitrate ?modifyDate ?createDate ?comment ?filesize "
+                      " ?trackGain ?trackPeakGain ?albumGain ?albumPeakGain "
+                      "{"
+                      "?r a nfo:Audio ."
+                      "?r nie:title ?title ."
+                      "?r nie:url ?url ."
+                      "OPTIONAL {"
+                      "   ?r nmm:performer ?artistRes ."
+                      "   ?artistRes nco:fullname ?artist ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nmm:composer ?composerRes ."
+                      "    ?composerRes nco:fullname ?composer ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nmm:musicAlbum ?albumRes ."
+                      "    ?albumRes nie:title ?album ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nmm:genre ?genre ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nmm:releaseDate ?year ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nmm:beatsPerMinute ?bpm ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nao:numericRating ?rating ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nfo:duration ?length ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nfo:sampleRate ?sampleRate ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nmm:trackNumber ?trackNumer ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nfo:codec ?type ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nfo:averageBitrate ?bitrate ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nie:contentLastModified ?modifyDate ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nie:created ?createDate ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nie:comment ?comment ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nie:contentSize ?filesize ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nmm:trackGain ?trackGain ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nmm:trackPeakGain ?trackPeakGain ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nmm:albumGain ?albumGain ."
+                      "}"
+                      "OPTIONAL {"
+                      "    ?r nmm:albumPeakGain ?albumPeakGain ."
+                      "}"
+                      "}");
 
-    Q_FOREACH( const Nepomuk::Query::Result & result, queriedResults )
+    Soprano::QueryResultIterator it
+            = model->executeQuery( query,
+                                   Soprano::Query::QueryLanguageSparql );
+    while( it.next() )
     {
-        Nepomuk::Resource trackRes = result.resource();
+        QUrl trackResUri = it.binding("r").uri();
         NepomukArtistPtr nepArtistPtr;
         NepomukGenrePtr nepGenrePtr;
         NepomukComposerPtr nepComposerPtr;
@@ -85,38 +163,83 @@ NepomukConstructMetaJob::run()
         NepomukYearPtr nepYearPtr;
 
         // check if track doesn't already exist in TrackMap
-        if( m_trackHash.contains( trackRes ) )
+        if( m_trackHash.contains( trackResUri ) )
             continue;
         // not present, construct the nepomuk track object and insert it into HashMap
-        NepomukTrackPtr nepTrackPtr( new NepomukTrack( trackRes, m_coll ) );
-        m_trackHash.insert( trackRes, Meta::TrackPtr::staticCast( nepTrackPtr ) );
 
-        Nepomuk::Resource artistRes = trackRes.property( Nepomuk::Vocabulary::NMM::performer() ).toResource();
-        QString artistLabel = artistRes.genericLabel();
+        NepomukTrackPtr nepTrackPtr( new NepomukTrack( trackResUri , m_coll ) );
+
+        // many properties are first converted to double and then casted to int
+        // because without this widening conversion in the beginning, it was leading to
+        // erraneous values due to the size limitation of int.
+
+        KUrl kurl(it.binding("url").toString());
+        QString title = it.binding("title").toString();
+        QString type = it.binding("type").toString();
+        int length = (int) it.binding("length").toString().toDouble();
+        int bitrate = (int)it.binding("bitrate").toString().toDouble();
+        int trackNumber = (int)it.binding("trackNumber").toString().toDouble();
+        //disc number is not yet extracted as there is no explicit ontology for the same
+        //QDateTime modifyDate = it.binding("modifyDate").toString();
+        //QDateTime createDate = it.binding("createDate").toString();
+        qreal bpm = it.binding("bpm").toString().toDouble();
+        QString comment = it.binding("comment").toString();
+        int sampleRate = (int)it.binding("sampleRate").toString().toDouble();
+        int filesize = (int)it.binding("filesize").toString().toDouble();
+        double trackGain = it.binding("trackGain").toString().toDouble();
+        double trackPeakGain = it.binding("trackPeakGain").toString().toDouble();
+        double albumGain = it.binding("albumGain").toString().toDouble();
+        double albumPeakGain = it.binding("albumPeakGain").toString().toDouble();
+
+        // populate all the properties into the NepomukTrack based on the availability
+
+        nepTrackPtr->setName( title );
+        nepTrackPtr->setType( type );
+        nepTrackPtr->setLength( length);
+        nepTrackPtr->setBitrate(bitrate);
+        nepTrackPtr->setTrackNumber(trackNumber);
+        nepTrackPtr->setbpm(bpm);
+        nepTrackPtr->setComment(comment);
+        nepTrackPtr->setSampleRate(sampleRate);
+        nepTrackPtr->setFilesize(filesize);
+        nepTrackPtr->setTrackGain(trackGain);
+        nepTrackPtr->setTrackPeakGain(trackPeakGain);
+        nepTrackPtr->setAlbumGain(albumGain);
+        nepTrackPtr->setAlbumPeakGain(albumPeakGain);
+
+        // checking is done on the NepomukTrack side during retrieval
+        nepTrackPtr->setKUrl(kurl);
+
+        m_trackHash.insert( trackResUri, Meta::TrackPtr::staticCast( nepTrackPtr ) );
+
+        // Artist
+
+        QUrl artistResUri = it.binding("artistRes").uri();
+
         // check if artist doesn't already exist in HashMap
-        if( m_artistHash.contains( artistRes ) )
+        if( m_artistHash.contains( artistResUri ) )
         {
-            debug() << "Artist already exists : " << artistLabel;
-            ArtistPtr artistPtr = m_artistHash.value( artistRes );
+            ArtistPtr artistPtr = m_artistHash.value( artistResUri );
             nepTrackPtr->setArtist( Meta::NepomukArtistPtr::staticCast( artistPtr ) );
         }
         // not present, construct the nepomuk artist object and insert it into HashMap
         else
         {
+            QString artistLabel = it.binding("artist").toString();
             if( !artistLabel.isEmpty() )
             {
                 debug() << "Artist found :" << artistLabel;
                 nepArtistPtr = new NepomukArtist( artistLabel );
                 nepTrackPtr->setArtist( nepArtistPtr );
-                m_artistHash.insert( artistRes, Meta::ArtistPtr::staticCast( nepArtistPtr ) );
+                m_artistHash.insert( artistResUri, Meta::ArtistPtr::staticCast( nepArtistPtr ) );
             }
         }
 
-        QString genreLabel = trackRes.property( Nepomuk::Vocabulary::NMM::genre() ).toString();
+        QString genreLabel = it.binding("genre").toString();
+
         // check if genre doesn't already exist in HashMap
         if( m_genreHash.contains( genreLabel ) )
         {
-            debug() << "Genre already exists: " << genreLabel;
             GenrePtr genrePtr = m_genreHash.value( genreLabel );
             nepTrackPtr->setGenre( Meta::NepomukGenrePtr::staticCast( genrePtr ) );
         }
@@ -132,104 +255,49 @@ NepomukConstructMetaJob::run()
             }
         }
 
-        Nepomuk::Resource composerRes = trackRes.property( Nepomuk::Vocabulary::NMM::composer() ).toResource();
-        QString composerLabel = composerRes.genericLabel();
+        //        QString yearLabel = it.binding("year").toString();
+
+        QUrl composerResUri = it.binding("composerRes").uri();
+
         // check if composer doesn't already exist in HashMap
-        if( m_composerHash.contains( composerRes ) )
+        if( m_composerHash.contains( composerResUri ) )
         {
-            debug() << "Composer already exists : " << composerLabel;
-            ComposerPtr composerPtr = m_composerHash.value( composerRes );
+            ComposerPtr composerPtr = m_composerHash.value( composerResUri );
             nepTrackPtr->setComposer( Meta::NepomukComposerPtr::staticCast( composerPtr ) );
         }
         // not present, construct the nepomuk composer object and insert it into HashMap
         else
         {
+            QString composerLabel = it.binding("composer").toString();
             if( !composerLabel.isEmpty() )
             {
                 debug() << "Composer found :" << composerLabel;
                 nepComposerPtr = new NepomukComposer( composerLabel ) ;
                 nepTrackPtr->setComposer( nepComposerPtr );
-                m_composerHash.insert( composerRes, Meta::ComposerPtr::staticCast( nepComposerPtr ) );
+                m_composerHash.insert( composerResUri, Meta::ComposerPtr::staticCast( nepComposerPtr ) );
             }
         }
 
-        Nepomuk::Resource albumRes = trackRes.property( Nepomuk::Vocabulary::NMM::musicAlbum() ).toResource();
-        QString albumLabel = albumRes.genericLabel();
+        QUrl albumResUri = it.binding("albumRes").uri();
         // check if album doesn't already exist in HashMap
-        if( m_albumHash.contains( albumRes ) )
+        if( m_albumHash.contains( albumResUri ) )
         {
-            debug() << "Album already exists : " << albumLabel;
-            AlbumPtr albumPtr = m_albumHash.value( albumRes );
+            AlbumPtr albumPtr = m_albumHash.value( albumResUri );
             nepTrackPtr->setAlbum( Meta::NepomukAlbumPtr::staticCast( albumPtr ) );
         }
         // not present, construct the nepomuk album object and insert it into HashMap
         else
         {
+            QString albumLabel = it.binding("album").toString();
             if( !albumLabel.isEmpty() )
             {
                 debug() << "Album found :" << albumLabel;
                 nepAlbumPtr = new NepomukAlbum( albumLabel, ArtistPtr::staticCast( nepArtistPtr ) ) ;
                 nepTrackPtr->setAlbum( nepAlbumPtr );
-                m_albumHash.insert( albumRes, Meta::AlbumPtr::staticCast( nepAlbumPtr ) );
+                m_albumHash.insert( albumResUri, Meta::AlbumPtr::staticCast( nepAlbumPtr ) );
             }
         }
 
-        // label/tag
-
-        QList<Nepomuk::Tag> taglist = trackRes.tags();
-        Q_FOREACH( const Nepomuk::Tag & tag, taglist )
-        {
-            QString label = tag.genericLabel();
-
-            if( m_labelHash.contains( tag ) )
-            {
-                debug() << "Label already exists : " << label;
-                LabelPtr labelPtr = m_labelHash.value( tag );
-                nepTrackPtr->addLabel( Meta::LabelPtr::staticCast( labelPtr ) );
-            }
-            else
-            {
-                if( !label.isEmpty() )
-                {
-                    debug() << "Label found : " << label;
-                    nepLabelPtr = new NepomukLabel( label );
-                    nepTrackPtr->addLabel( Meta::LabelPtr::staticCast( nepLabelPtr ) );
-                    m_labelHash.insert( tag, Meta::LabelPtr::staticCast( nepLabelPtr ) );
-                }
-            }
-        }
-
-        // year
-
-        Nepomuk::Resource yearRes = trackRes.property( Nepomuk::Vocabulary::NMM::releaseDate() ).toResource();
-        if ( !yearRes.isValid() )
-        {
-            QDate fullDate = trackRes.property( Nepomuk::Vocabulary::NMM::releaseDate() ).toDate();
-            if ( !fullDate.isNull() )
-            {
-                QString yearLabel = QString( fullDate.year() );
-
-                // check if year doesn't already exist in HashMap
-                if( m_yearHash.contains( yearRes ) )
-                {
-                    debug() << "Year already exists : " << yearLabel;
-                    YearPtr yearPtr = m_yearHash.value( yearRes );
-                    nepTrackPtr->setYear( Meta::NepomukYearPtr::staticCast( yearPtr ) );
-                }
-                // not present, construct the nepomuk year object and insert it into HashMap
-                else
-                {
-                    if( !yearLabel.isEmpty() )
-                    {
-                        debug() << "Year found :" << yearLabel;
-                        nepYearPtr = new NepomukYear( yearLabel ) ;
-                        nepTrackPtr->setYear( nepYearPtr );
-                        m_yearHash.insert( yearRes, Meta::YearPtr::staticCast( nepYearPtr ) );
-                    }
-                }
-
-            }
-        }
         // the nepomuk track object is by now completely populated with whatever
         // metadata that could be gathered.
         // cast it and assign it to the MapChanger where it weilds its own magic.
@@ -244,5 +312,6 @@ NepomukConstructMetaJob::run()
 
     emit endProgressOperation( this );
     emit m_coll->collectionUpdated();
+
 
 }

@@ -67,13 +67,13 @@ private:
       * but that will result in a cyclic dependency hell.
       */
 
-    QHash<Nepomuk::Resource, Meta::TrackPtr> m_trackHash;
-    QHash<Nepomuk::Resource, Meta::ArtistPtr> m_artistHash;
+    QHash<QUrl, Meta::TrackPtr> m_trackHash;
+    QHash<QUrl, Meta::ArtistPtr> m_artistHash;
     QHash<QString, Meta::GenrePtr> m_genreHash;
-    QHash<Nepomuk::Resource, Meta::ComposerPtr> m_composerHash;
-    QHash<Nepomuk::Resource, Meta::AlbumPtr> m_albumHash;
+    QHash<QUrl, Meta::ComposerPtr> m_composerHash;
+    QHash<QUrl, Meta::AlbumPtr> m_albumHash;
     QHash<Nepomuk::Tag, Meta::LabelPtr> m_labelHash;
-    QHash<Nepomuk::Resource, Meta::YearPtr> m_yearHash;
+    QHash<QString, Meta::YearPtr> m_yearHash;
 };
 
 }
