@@ -16,7 +16,6 @@
 
 #include "Process.h"
 
-#include "MainWindow.h"
 #include "MetaValues.h"
 #include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
@@ -42,7 +41,7 @@ Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &preSel
     , m_providersModel( new ProvidersModel( providers, preSelectedProviders, this ) )
     , m_checkedFields( checkedFields )
     , m_matchedTracksModel( 0 )
-    , m_dialog( new KDialog( The::mainWindow() ) )
+    , m_dialog( new KDialog() )
 {
     m_dialog.data()->setCaption( i18n( "Synchronize Statistics" ) );
     m_dialog.data()->setButtons( KDialog::None );
