@@ -50,11 +50,9 @@ namespace StatSyncing
             qint64 reliableTrackMetadataIntersection() const;
 
             /**
-             * Return binary OR of fields that can be synchronized across selected
-             * providers. At-least-2 intersection is used - field is considered useful
-             * in synchronization only if at least 2 providers support it.
+             * Return binary OR of fields that at least one selected providers can write
              */
-            qint64 writableTrackStatsDataIntersection() const;
+            qint64 writableTrackStatsDataUnion() const;
 
             /**
              * You must assign this selection model to your view so that selectedProviders

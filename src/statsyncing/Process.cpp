@@ -140,7 +140,7 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
     }
 
     // remove fields that are not writable:
-    qint64 usedFields = m_checkedFields & m_providersModel->writableTrackStatsDataIntersection();
+    qint64 usedFields = m_checkedFields & m_providersModel->writableTrackStatsDataUnion();
     m_options.setSyncedFields( usedFields );
     QList<qint64> columns = QList<qint64>() << Meta::valTitle;
     foreach( qint64 field, Controller::availableFields() )

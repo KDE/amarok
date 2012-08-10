@@ -150,7 +150,7 @@ ChooseProvidersPage::updateEnabledFields()
     if( !m_providersModel )
         return;
 
-    qint64 writableFields = m_providersModel->writableTrackStatsDataIntersection();
+    qint64 writableFields = m_providersModel->writableTrackStatsDataUnion();
     QLayout *fieldsLayout = fieldsBox->layout();
     for( int i = 0; i < fieldsLayout->count(); i++ )
     {
@@ -160,9 +160,9 @@ ChooseProvidersPage::updateEnabledFields()
         qint64 field = checkBox->property( "field" ).value<qint64>();
         bool enabled = writableFields & field;
         checkBox->setEnabled( enabled );
-        QString text = i18nc( "%1 is field name such as Rating", "Less than 2 selected "
-                "collections support writing %1 - it doesn't make sense to synchronize "
-                "it.", Meta::i18nForField( field ) );
+        QString text = i18nc( "%1 is field name such as Rating", "No selected collection "
+                "supports writing %1 - it doesn't make sense to synchronize it.",
+                Meta::i18nForField( field ) );
         checkBox->setToolTip( enabled ? QString() : text );
     }
 

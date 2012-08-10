@@ -106,31 +106,14 @@ ProvidersModel::reliableTrackMetadataIntersection() const
 }
 
 qint64
-ProvidersModel::writableTrackStatsDataIntersection() const
+ProvidersModel::writableTrackStatsDataUnion() const
 {
-    QMap<qint64, int> map; // field to count map
-    foreach( ProviderPtr provider, selectedProviders() )
+    qint64 fields = 0;
+    foreach( const ProviderPtr &provider, selectedProviders() )
     {
-        qint64 providerFields = provider->writableTrackStatsData();
-        for( qint64 i = 0; i < 64; i++ )
-        {
-            qint64 field = 1LL << i;
-            if( !( field & providerFields ) )
-                continue;
-            map[ field ]++;
-        }
+        fields |= provider->writableTrackStatsData();
     }
-
-    // map is ready, now take at-least-2 intersection of it.
-    qint64 ret = 0;
-    QMapIterator<qint64, int> it( map );
-    while( it.hasNext() )
-    {
-        it.next();
-        if( it.value() >= 2 )
-            ret |= it.key();
-    }
-    return ret;
+    return fields;
 }
 
 QItemSelectionModel *
