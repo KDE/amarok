@@ -371,7 +371,7 @@ NepomukTrack::setTrackGain( const double trackGain )
     m_trackGain = trackGain;
 }
 
-void NepomukTrack::setTrackPeakGain(const double trackPeakGain)
+void NepomukTrack::setTrackPeakGain( const double trackPeakGain )
 {
     m_trackPeakGain = trackPeakGain;
 }
@@ -382,12 +382,12 @@ NepomukTrack::setAlbumGain( const double albumGain )
     m_albumGain = albumGain;
 }
 
-void NepomukTrack::setAlbumPeakGain(const double albumPeakGain)
+void NepomukTrack::setAlbumPeakGain( const double albumPeakGain )
 {
     m_albumPeakGain = albumPeakGain;
 }
 
-    void
+void
 NepomukTrack::setKUrl( const KUrl url )
 {
     m_kurl = url;
