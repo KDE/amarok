@@ -54,7 +54,6 @@ NepomukCollectionFactory::NepomukCollectionFactory( QObject *parent,
     : CollectionFactory( parent, args )
 {
     DEBUG_BLOCK
-    debug() << "in nepomukcollectionfactory";
     m_info = KPluginInfo( "amarok_collection-nepomukcollection.desktop", "services" );
 }
 
