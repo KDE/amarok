@@ -75,87 +75,87 @@ NepomukConstructMetaJob::run()
     Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
 
     QString query
-    = QString( "select distinct ?r ?title ?url ?artist ?composer ?album ?genre "
-               "?artistRes ?composerRes ?albumRes "
-               "?year ?bpm ?rating ?length ?sampleRate ?trackNumber ?type "
-               " ?bitrate ?modifyDate ?createDate ?comment ?filesize "
-               " ?trackGain ?trackPeakGain ?albumGain ?albumPeakGain "
-               " ?tags "
-               "{"
-               "?r a nfo:Audio ."
-               "?r nie:title ?title ."
-               "?r nie:url ?url ."
-               "OPTIONAL {"
-               "   ?r nmm:performer ?artistRes ."
-               "   ?artistRes nco:fullname ?artist ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nmm:composer ?composerRes ."
-               "    ?composerRes nco:fullname ?composer ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nmm:musicAlbum ?albumRes ."
-               "    ?albumRes nie:title ?album ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nmm:genre ?genre ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nmm:releaseDate ?year ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nmm:beatsPerMinute ?bpm ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nao:numericRating ?rating ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nfo:duration ?length ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nfo:sampleRate ?sampleRate ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nmm:trackNumber ?trackNumer ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nfo:codec ?type ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nfo:averageBitrate ?bitrate ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nie:contentLastModified ?modifyDate ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nie:created ?createDate ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nie:comment ?comment ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nie:contentSize ?filesize ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nmm:trackGain ?trackGain ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nmm:trackPeakGain ?trackPeakGain ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nmm:albumGain ?albumGain ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nmm:albumPeakGain ?albumPeakGain ."
-               "}"
-               "OPTIONAL {"
-               "    ?r nao:has ?albumPeakGain ."
-               "}"
-               "}" );
+            = QString( "select distinct ?r ?title ?url ?artist ?composer ?album ?genre "
+                       "?artistRes ?composerRes ?albumRes "
+                       "?year ?bpm ?rating ?length ?sampleRate ?trackNumber ?type "
+                       " ?bitrate ?modifyDate ?createDate ?comment ?filesize "
+                       " ?trackGain ?trackPeakGain ?albumGain ?albumPeakGain "
+                       " ?tags "
+                       "{"
+                       "?r a nfo:Audio ."
+                       "?r nie:title ?title ."
+                       "?r nie:url ?url ."
+                       "OPTIONAL {"
+                       "   ?r nmm:performer ?artistRes ."
+                       "   ?artistRes nco:fullname ?artist ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nmm:composer ?composerRes ."
+                       "    ?composerRes nco:fullname ?composer ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nmm:musicAlbum ?albumRes ."
+                       "    ?albumRes nie:title ?album ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nmm:genre ?genre ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nmm:releaseDate ?year ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nmm:beatsPerMinute ?bpm ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nao:numericRating ?rating ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nfo:duration ?length ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nfo:sampleRate ?sampleRate ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nmm:trackNumber ?trackNumer ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nfo:codec ?type ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nfo:averageBitrate ?bitrate ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nie:modified ?modifyDate ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nie:created ?createDate ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nie:comment ?comment ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nie:contentSize ?filesize ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nmm:trackGain ?trackGain ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nmm:trackPeakGain ?trackPeakGain ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nmm:albumGain ?albumGain ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nmm:albumPeakGain ?albumPeakGain ."
+                       "}"
+                       "OPTIONAL {"
+                       "    ?r nao:has ?albumPeakGain ."
+                       "}"
+                       "}" );
 
     Soprano::QueryResultIterator it
-    = model->executeQuery( query,
-                           Soprano::Query::QueryLanguageSparql );
+            = model->executeQuery( query,
+                                   Soprano::Query::QueryLanguageSparql );
     while( it.next() )
     {
         QUrl trackResUri = it.binding( "r" ).uri();
@@ -184,10 +184,6 @@ NepomukConstructMetaJob::run()
         int bitrate = ( int )it.binding( "bitrate" ).toString().toDouble();
         int trackNumber = ( int )it.binding( "trackNumber" ).toString().toDouble();
         //disc number is not yet extracted as there is no explicit ontology for the same
-        QString modifyDate = it.binding("modifyDate").toString();
-        debug()<<"modify: "<<modifyDate;
-        QString createDate = it.binding("createDate").toString();
-        debug()<<"create:"<<createDate;
         qreal bpm = it.binding( "bpm" ).toString().toDouble();
         QString comment = it.binding( "comment" ).toString();
         int sampleRate = ( int )it.binding( "sampleRate" ).toString().toDouble();
@@ -196,6 +192,11 @@ NepomukConstructMetaJob::run()
         double trackPeakGain = it.binding( "trackPeakGain" ).toString().toDouble();
         double albumGain = it.binding( "albumGain" ).toString().toDouble();
         double albumPeakGain = it.binding( "albumPeakGain" ).toString().toDouble();
+
+        QString modifyDate = it.binding("modifyDate").toString();
+        QDateTime modidyDateTime = QDateTime::fromString(modifyDate);
+        QString createDate = it.binding("createDate").toString();
+        QDateTime createDateTime = QDateTime::fromString(createDate);
 
         // populate all the properties into the NepomukTrack based on the availability
 
@@ -212,6 +213,9 @@ NepomukConstructMetaJob::run()
         nepTrackPtr->setTrackPeakGain( trackPeakGain );
         nepTrackPtr->setAlbumGain( albumGain );
         nepTrackPtr->setAlbumPeakGain( albumPeakGain );
+
+        nepTrackPtr->setModifyDate(modidyDateTime);
+        nepTrackPtr->setCreateDate(createDateTime);
 
         // checking is done on the NepomukTrack side during retrieval
         nepTrackPtr->setKUrl( kurl );
@@ -261,8 +265,6 @@ NepomukConstructMetaJob::run()
             }
         }
 
-        //        QString yearLabel = it.binding("year").toString();
-
         QUrl composerResUri = it.binding( "composerRes" ).uri();
 
         // check if composer doesn't already exist in HashMap
@@ -305,11 +307,11 @@ NepomukConstructMetaJob::run()
         }
 
         QString tagQuery
-        = QString( "select distinct ?tag where { %1 nao:hasTag ?tag . }" )
-          .arg( Soprano::Node::resourceToN3( trackResUri ) );
+                = QString( "select distinct ?tag where { %1 nao:hasTag ?tag . }" )
+                .arg( Soprano::Node::resourceToN3( trackResUri ) );
 
         Soprano::QueryResultIterator its
-        = model->executeQuery( tagQuery, Soprano::Query::QueryLanguageSparql );
+                = model->executeQuery( tagQuery, Soprano::Query::QueryLanguageSparql );
         while( its.next() )
         {
             debug() << "TAG : " << its.binding( "tag" ).toString();
@@ -336,41 +338,30 @@ NepomukConstructMetaJob::run()
             }
         }
 
-        //    // year
+        // year
 
 
-        QUrl yearLabel = it.binding( "year" ).dataType();
-        debug() << "Year is " << yearLabel.toString();
+        QString dateAndTime = it.binding("year").toString();
+        QDateTime fullDate = QDateTime::fromString(dateAndTime);
+        QString yearLabel = QString( fullDate.date().year() );
 
-        //    Nepomuk::Resource yearRes = trackRes.property( Nepomuk::Vocabulary::NMM::releaseDate() ).toResource();
-        //    if ( !yearRes.isValid() )
-        //    {
-        //        QDate fullDate = trackRes.property( Nepomuk::Vocabulary::NMM::releaseDate() ).toDate();
-        //        if ( !fullDate.isNull() )
-        //        {
-        //            QString yearLabel = QString( fullDate.year() );
-
-        //            // check if year doesn't already exist in HashMap
-        //            if( m_yearHash.contains( yearRes ) )
-        //            {
-        //                debug() << "Year already exists : " << yearLabel;
-        //                YearPtr yearPtr = m_yearHash.value( yearRes );
-        //                nepTrackPtr->setYear( Meta::NepomukYearPtr::staticCast( yearPtr ) );
-        //            }
-        //            // not present, construct the nepomuk year object and insert it into HashMap
-        //            else
-        //            {
-        //                if( !yearLabel.isEmpty() )
-        //                {
-        //                    debug() << "Year found :" << yearLabel;
-        //                    nepYearPtr = new NepomukYear( yearLabel ) ;
-        //                    nepTrackPtr->setYear( nepYearPtr );
-        //                    m_yearHash.insert( yearRes, Meta::YearPtr::staticCast( nepYearPtr ) );
-        //                }
-        //            }
-
-        //        }
-        //    }
+        // check if year doesn't already exist in YearMap
+        if( m_yearHash.contains( yearLabel ) )
+        {
+            YearPtr yearPtr = m_yearHash.value( yearLabel );
+            nepTrackPtr->setYear( Meta::NepomukYearPtr::staticCast( yearPtr ) );
+        }
+        // not present, construct the nepomuk year object and insert it into HashMap
+        else
+        {
+            if( !yearLabel.isEmpty() )
+            {
+                debug() << "Year found :" << yearLabel;
+                nepYearPtr = new NepomukYear( yearLabel ) ;
+                nepTrackPtr->setYear( nepYearPtr );
+                m_yearHash.insert( yearLabel, Meta::YearPtr::staticCast( nepYearPtr ) );
+            }
+        }
 
         // the nepomuk track object is by now completely populated with whatever
         // metadata that could be gathered.
@@ -387,6 +378,4 @@ NepomukConstructMetaJob::run()
 
     emit endProgressOperation( this );
     emit m_coll->collectionUpdated();
-
-
 }
