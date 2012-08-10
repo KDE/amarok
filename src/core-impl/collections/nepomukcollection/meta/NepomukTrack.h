@@ -50,7 +50,7 @@ class NepomukTrack : public Track
 {
 public:
     // construct a NepomukTrack out of a Nepomuk resource
-    NepomukTrack( Nepomuk::Resource &res, NepomukCollection* const coll );
+    NepomukTrack( const QUrl &resUri, NepomukCollection* const coll );
     // construct a NepomukTrack out of a url
 
     ~NepomukTrack();
@@ -135,6 +135,7 @@ private:
     YearPtr m_year;
     LabelList m_labellist;
 
+    KUrl m_kurl;
     QString m_name;
     QString m_type;
     qint64 m_length;
@@ -154,8 +155,8 @@ private:
     double m_albumPeakGain;
 
     NepomukCollection *m_coll;
-    KUrl m_kurl;
-    Nepomuk::Resource m_resource;
+    // holds the uri of the resource
+    QUrl m_qurl;
 };
 
 }

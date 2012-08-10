@@ -43,9 +43,9 @@
 using namespace Meta;
 using namespace Nepomuk::Query;
 
-NepomukTrack::NepomukTrack( Nepomuk::Resource &res, NepomukCollection* const coll )
+NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection* const coll )
     : Track()
-    , m_resource( res )
+    , m_qurl( resUri )
     , m_artist( 0 )
     , m_genre( 0 )
     , m_composer( 0 )
@@ -90,7 +90,7 @@ NepomukTrack::prettyUrl() const
 QString
 NepomukTrack::uidUrl() const
 {
-    return m_uidUrl;
+    return m_qurl.toString();
 }
 
 bool
@@ -386,7 +386,7 @@ void NepomukTrack::setAlbumPeakGain(const double albumPeakGain)
     m_albumPeakGain = albumPeakGain;
 }
 
-void
+    void
 NepomukTrack::setKUrl( const KUrl url )
 {
     m_kurl = url;
