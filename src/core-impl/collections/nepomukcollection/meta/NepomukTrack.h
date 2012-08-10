@@ -157,6 +157,7 @@ private:
     NepomukCollection *m_coll;
     // holds the uri of the resource
     QUrl m_qurl;
+    Nepomuk::Resource m_resource;
 };
 
 }

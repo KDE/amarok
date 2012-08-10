@@ -54,6 +54,7 @@ NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection* const coll )
     , m_coll( coll )
 
 {
+    m_resource = Nepomuk::Resource( m_qurl );
 }
 
 NepomukTrack::~NepomukTrack()
