@@ -46,8 +46,8 @@ ContextDock::ContextDock( QWidget *parent )
     m_mainWidget->setSpacing( 0 );
     m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
     m_mainWidget->setFrameShape( QFrame::NoFrame );
+    m_mainWidget->setMinimumWidth(150);
     setWidget( m_mainWidget );
-
 
     m_view = new QDeclarativeView(m_mainWidget);
     m_declarative = new KDeclarative;

@@ -80,6 +80,7 @@ Item {
         anchors.leftMargin: 15
         initialPage: lyrics_text
         RichTextualViewer {
+            z: 10
             id: wikitext
             title: "Wikipedia - Artist"
             visible: false
@@ -95,6 +96,7 @@ Item {
             }
         }
         TextualViewer {
+            z: 10
             id: lyrics_text
             title: "Lyrics"
             visible: false

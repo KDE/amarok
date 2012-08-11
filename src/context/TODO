@@ -1,17 +1,15 @@
 Stuff to do for the context view:
 =================================
 
-* Fix horizontal resizing problems
-
 Theme:
 
- * SVGize the images
- * Make the theme colorable, basing on the color scheme
+ * Understand why the Amarok logo is so weird in the SVG (wrong width)
+ * Fix recolrization (get rid of strokes)
 
 Wikipedia:
 
  * Figure out why wheel-scrolling doesn't work with WebView ( <-- won't work, use Plasma's WebView)
- * Understand how to set configuration data to a DataEngine via QML (language)
+ * Understand how to set configuration data to a DataEngine via QML (be able to set wikipedia language)
  * Implement basic navigation buttons (back, forward)
  * Eventually hide Wikipedia search bar (depending on the point above)
 
