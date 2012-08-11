@@ -5,7 +5,13 @@ import org.kde.plasma.core 0.1
 
 // Context view
 Item {
-
+    Svg {
+        id: mainSvg
+//         imagePath: "widgets/arrows"
+        imagePath: "Amarok/theme"
+//         multipleImages: true
+    }
+    
     Item {
         id: buttons
         height: 30
@@ -14,12 +20,16 @@ Item {
         anchors.topMargin: 15
 
         clip: true;
-        Image {
+
+        SvgItem {
             id: lyrics_button
-            source: "qrc:images/lyrics.png"
+            elementId: "text"
+            svg: mainSvg
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
             anchors.leftMargin: 2
+            height: 30
+            width: 30
             MouseArea {
                 anchors.fill: parent
             }
@@ -32,13 +42,15 @@ Item {
             }
         }
 
-        Image {
+        SvgItem {
             id: wikipedia_button
-            source: "qrc:images/wikipedia.png"
-//                 anchors.verticalCenter: parent.verticalCenter
+            elementId: "wikipedia"
+            svg: mainSvg
             anchors.left: lyrics_button.right
             anchors.margins: 2
             anchors.leftMargin: 14
+            height: 30
+            width: 30
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
@@ -47,9 +59,12 @@ Item {
             }
         }
 
-        Image {
+        SvgItem {
             id: more_button
-            source: "qrc:images/more.png"
+            elementId: "more"
+            svg: mainSvg
+            height: 30
+            width: 30
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
         }
@@ -103,11 +118,14 @@ Item {
         }
     }
 
-    Image {
+    SvgItem {
             z: -100
             anchors.bottom: parent.bottom
             anchors.right: parent.right
-            source: "qrc:images/logo.png"
+            elementId: "logo"
+            svg: mainSvg
+            width: 244
+            height: 244
         }
 
 }

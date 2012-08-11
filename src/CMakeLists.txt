@@ -374,8 +374,6 @@ set( libcontextview_SRCS
     context/widgets/RecentlyPlayedListWidget.cpp
 )
 
-QT4_ADD_RESOURCES(libcontextview_SRCS context/qml/resources.qrc)
-
 #####################################################################
 # PODCASTS
 #####################################################################

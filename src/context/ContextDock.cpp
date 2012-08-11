@@ -31,6 +31,8 @@
 #include <QDeclarativeError>
 #include <QDeclarativeEngine>
 
+#include <KStandardDirs>
+
 ContextDock::ContextDock( QWidget *parent )
     : AmarokDockWidget( i18n( "&Context" ), parent )
 {
@@ -55,7 +57,7 @@ ContextDock::ContextDock( QWidget *parent )
     m_declarative->initialize();
     m_declarative->setupBindings();
     m_view->setFrameShape(QFrame::NoFrame);
-    m_view->setSource(QUrl("qrc:/Context.qml"));
+    m_view->setSource(KStandardDirs::locate("appdata", "qml/Context.qml"));
     m_view->setResizeMode(QDeclarativeView::SizeRootObjectToView);
     m_view->viewport()->setAutoFillBackground(false);
 }

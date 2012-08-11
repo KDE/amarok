@@ -4,6 +4,7 @@ add_subdirectory( applets )
 add_subdirectory( engines )
 add_subdirectory( containments )
 add_subdirectory( tools )
+add_subdirectory( qml )
 
 # only compile the javascript engine on KDE >=4.3, as it's tied in pretty
 # closely. will need to investigate possible solutions
