@@ -29,7 +29,6 @@ const QList<qint64> TrackTuple::s_fields = QList<qint64>() << Meta::valRating
     << Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount << Meta::valLabel;
 
 TrackTuple::TrackTuple()
-    : m_ratingProvider( 0 )
 {
 }
 
@@ -52,7 +51,7 @@ TrackTuple::provider( int i ) const
 }
 
 TrackPtr
-TrackTuple::track( ProviderPtr provider ) const
+TrackTuple::track( const ProviderPtr &provider ) const
 {
     Q_ASSERT( m_map.contains( provider ) );
     return m_map.value( provider );
@@ -74,8 +73,8 @@ bool
 TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr provider ) const
 {
     if( isEmpty() ||
-        ( provider && !m_map.contains( provider ) ) ||
         !(options.syncedFields() & field) ||
+        ( provider && !m_map.contains( provider ) ) ||
         ( provider && !(provider->writableTrackStatsData() & field) ) )
     {
         return false;
@@ -91,7 +90,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
             if( provider )
                 return track( provider )->rating() != rating;
 
-            foreach( ProviderPtr prov, m_map.keys() )
+            foreach( const ProviderPtr &prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -107,7 +106,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
             if( provider )
                 return track( provider )->firstPlayed() != firstPlayed;
 
-            foreach( ProviderPtr prov, m_map.keys() )
+            foreach( const ProviderPtr &prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -123,7 +122,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
             if( provider )
                 return track( provider )->lastPlayed() != lastPlayed;
 
-            foreach( ProviderPtr prov, m_map.keys() )
+            foreach( const ProviderPtr &prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -139,7 +138,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
             if( provider )
                 return track( provider )->playCount() != playcount;
 
-            foreach( ProviderPtr prov, m_map.keys() )
+            foreach( const ProviderPtr &prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -151,11 +150,14 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
 
         case Meta::valLabel:
         {
-            QSet<QString> labels = syncedLabels( options );
+            bool hasConflict = true;
+            QSet<QString> labels = syncedLabels( options, m_labelProviders, hasConflict );
+            if( hasConflict )
+                return false; // unresolved conflict, not going to write that
             if( provider )
                 return track( provider )->labels() != labels;
 
-            foreach( ProviderPtr prov, m_map.keys() )
+            foreach( const ProviderPtr &prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -180,10 +182,29 @@ TrackTuple::hasUpdate( const Options &options ) const
 }
 
 bool
+TrackTuple::fieldHasConflict( qint64 field, const Options& options, bool includeResolved ) const
+{
+    switch( field )
+    {
+        case Meta::valRating:
+            // we must disregard currently selected rating provider for includeResolved = true
+            return syncedRating( options, includeResolved ? ProviderPtr() : m_ratingProvider ) < 0;
+        case Meta::valLabel:
+        {
+            bool hasConflict = false;
+            // we must disregard currently selected label providers for includeResolved = true
+            syncedLabels( options, includeResolved ? ProviderPtrSet() : m_labelProviders , hasConflict );
+            return hasConflict;
+        }
+    }
+    return false;
+}
+
+bool
 TrackTuple::hasConflict( const Options &options ) const
 {
-    // we must disregard currently selected rating provider
-    return syncedRating( options, ProviderPtr() ) < 0;
+    return fieldHasConflict( Meta::valRating, options )
+        || fieldHasConflict( Meta::valLabel, options );
 }
 
 ProviderPtr
@@ -197,6 +218,23 @@ TrackTuple::setRatingProvider( ProviderPtr provider )
 {
     if( !provider || m_map.contains( provider ) )
         m_ratingProvider = provider;
+}
+
+ProviderPtrSet
+TrackTuple::labelProviders() const
+{
+    return m_labelProviders;
+}
+
+void
+TrackTuple::setLabelProviders( const ProviderPtrSet &providers )
+{
+    m_labelProviders.clear();
+    foreach( const ProviderPtr &provider, providers )
+    {
+        if( m_map.contains( provider ) )
+            m_labelProviders.insert( provider );
+    }
 }
 
 int
@@ -221,7 +259,7 @@ TrackTuple::syncedRating( const Options &options, ProviderPtr ratingProvider ) c
         it.next();
         int rating = it.value()->rating();
 
-        // take rating candidate only from rated tracks or one from rating-writable collections
+        // take rating candidate only from rated tracks or from rating-writable collections
         bool canWriteRating = it.key()->writableTrackStatsData() & Meta::valRating;
         if( candidate < 0 )
         {
@@ -229,6 +267,7 @@ TrackTuple::syncedRating( const Options &options, ProviderPtr ratingProvider ) c
                 candidate = rating;
             continue; // nothing to do in this loop iteration in either case
         }
+
         if( rating <= 0 && !canWriteRating )
             // skip unrated songs from colls with not-writable rating
             continue;
@@ -293,15 +332,55 @@ TrackTuple::syncedPlaycount( const Options &options ) const
 QSet<QString>
 TrackTuple::syncedLabels( const Options &options ) const
 {
-    QSet<QString> labels;
+    bool dummy = false;
+    return syncedLabels( options, m_labelProviders, dummy );
+}
+
+QSet<QString>
+TrackTuple::syncedLabels( const Options &options, const ProviderPtrSet &labelProviders, bool &hasConflict ) const
+{
+    hasConflict = false;
+    QSet<QString> labelsCandidate;
     if( isEmpty() || !(options.syncedFields() & Meta::valLabel) )
-        return labels;
-    foreach( TrackPtr track, m_map )
+        return labelsCandidate;
+    if( !labelProviders.isEmpty() ) // providers have been chosen
     {
-        // TODO: this is just basic "unite" synchronization, add more options
-        labels |= track->labels();
+        foreach( const ProviderPtr &provider, labelProviders )
+            labelsCandidate |= track( provider )->labels();
+        return labelsCandidate;
     }
-    return labels;
+
+    // look for conflict:
+    bool labelsCandidateAlreadySet = false;
+    QMapIterator<ProviderPtr, TrackPtr> it( m_map );
+    while( it.hasNext() )
+    {
+        it.next();
+        QSet<QString> labels = it.value()->labels();
+
+        // take labels candidate only from labelled tracks or from label-writable collections
+        bool canWriteLabels = it.key()->writableTrackStatsData() & Meta::valLabel;
+        if( !labelsCandidateAlreadySet )
+        {
+            if( !labels.isEmpty() || canWriteLabels )
+            {
+                labelsCandidate = labels;
+                labelsCandidateAlreadySet = true;
+            }
+            continue; // nothing to do in this loop iteration in either case
+        }
+
+        if( labels.isEmpty() && !canWriteLabels )
+            // skip unlabelled songs from colls with not-writable labels
+            continue;
+
+        if( labels != labelsCandidate )
+        {
+            hasConflict = true;
+            return QSet<QString>();
+        }
+    }
+    return labelsCandidate;
 }
 
 int
@@ -361,7 +440,7 @@ TrackTuple::synchronize( const Options &options )
         }
     }
 
-    foreach( TrackPtr track, m_map )
-        track->commit();
+    foreach( const ProviderPtr &provider, updatedProviders )
+        track( provider )->commit();;
     return updatedProviders.count();
 }

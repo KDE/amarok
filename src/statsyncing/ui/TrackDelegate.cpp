@@ -42,7 +42,9 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
 {
     qint64 field = index.data( CommonModel::FieldRole ).value<qint64>();
     QVariant data = index.data();
-    if( field == Meta::valRating && data.type() == QVariant::Int )
+    // display the icon even for label conflicts:
+    if( ( field == Meta::valRating || field == Meta::valLabel ) &&
+        data.type() == QVariant::Int )
     {
         // following is largely inspired by QStyledItemDelegate::paint()
         QStyleOptionViewItemV4 opt = option;

@@ -18,6 +18,7 @@
 
 #include "MetaValues.h"
 #include "core/meta/support/MetaConstants.h"
+#include "core/support/Debug.h"
 #include "statsyncing/TrackTuple.h"
 
 #include <KLocalizedString>
@@ -132,27 +133,53 @@ MatchedTracksModel::setData( const QModelIndex &idx, const QVariant &value, int 
 {
     if( !idx.isValid() || idx.internalId() < 0 ||
         idx.internalId() >= m_matchedTuples.count() ||
-        m_columns.value( idx.column() ) != Meta::valRating ||
         role != Qt::CheckStateRole )
     {
         return false;
     }
+    qint64 field = m_columns.value( idx.column() );
     TrackTuple &tuple = m_matchedTuples[ idx.internalId() ]; // we need reference
     ProviderPtr provider = tuple.provider( idx.row() );
     if( !provider )
         return false;
 
-    switch( Qt::CheckState( value.toInt() ) )
+    switch( field )
     {
-        case Qt::Checked:
-            tuple.setRatingProvider( provider );
+        case Meta::valRating:
+            switch( Qt::CheckState( value.toInt() ) )
+            {
+                case Qt::Checked:
+                    tuple.setRatingProvider( provider );
+                    break;
+                case Qt::Unchecked:
+                    tuple.setRatingProvider( ProviderPtr() );
+                    break;
+                default:
+                    return false;
+            }
             break;
-        case Qt::Unchecked:
-            tuple.setRatingProvider( ProviderPtr() );
+        case Meta::valLabel:
+        {
+            ProviderPtrSet labelProviders = tuple.labelProviders();
+            switch( Qt::CheckState( value.toInt() ) )
+            {
+                case Qt::Checked:
+                    labelProviders.insert( provider );
+                    tuple.setLabelProviders( labelProviders );
+                    break;
+                case Qt::Unchecked:
+                    labelProviders.remove( provider );
+                    tuple.setLabelProviders( labelProviders );
+                    break;
+                default:
+                    return false;
+            }
             break;
+        }
         default:
             return false;
     }
+
     // parent changes:
     QModelIndex parent = idx.parent();
     QModelIndex parentRating = index( parent.row(), idx.column(), parent.parent() );
@@ -208,7 +235,7 @@ MatchedTracksModel::takeRatingsFrom( ProviderPtr provider )
     for( int i = 0; i < m_matchedTuples.count(); i++ )
     {
         TrackTuple &tuple = m_matchedTuples[ i ]; // we need reference
-        if( !tuple.hasConflict( m_options ) )
+        if( !tuple.fieldHasConflict( Meta::valRating, m_options ) )
             continue;
         tuple.setRatingProvider( provider ); // does nothing if non-null provider isn't in tuple
 
@@ -246,6 +273,8 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
                 case Meta::valPlaycount:
                     return tuple.syncedPlaycount( m_options );
                 case Meta::valLabel:
+                    if( tuple.fieldHasConflict( field, m_options, /* includeResolved */ false ) )
+                        return -1; // display same icon as for rating conflict
                     return QStringList( tuple.syncedLabels( m_options ).toList() ).join(
                         i18nc( "comma between list words", ", " ) );
                 default:
@@ -257,6 +286,9 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
             {
                 case Meta::valTitle:
                     return trackToolTipData( first ); // TODO way to specify which additional meta-data to display
+                case Meta::valLabel:
+                    return QStringList( tuple.syncedLabels( m_options ).toList() ).join(
+                        i18nc( "comma between list words", ", " ) );
             }
             break;
         case Qt::FontRole:
@@ -287,7 +319,17 @@ MatchedTracksModel::trackData( ProviderPtr provider, const TrackTuple &tuple,
         return provider->icon();
     else if( role == Qt::FontRole )
         return tuple.fieldUpdated( field, m_options, provider ) ? m_boldFont : m_normalFont;
-    else if( role == Qt::CheckStateRole && field == Meta::valRating && tuple.hasConflict( m_options ) )
-        return ( tuple.ratingProvider() == provider ) ? Qt::Checked : Qt::Unchecked;
+    else if( role == Qt::CheckStateRole && tuple.fieldHasConflict( field, m_options ) )
+    {
+        switch( field )
+        {
+            case Meta::valRating:
+                return ( tuple.ratingProvider() == provider ) ? Qt::Checked : Qt::Unchecked;
+            case Meta::valLabel:
+                return ( tuple.labelProviders().contains( provider ) ) ? Qt::Checked : Qt::Unchecked;
+            default:
+                warning() << __PRETTY_FUNCTION__ << "this should be never reached";
+        }
+    }
     return trackData( track, field, role );
 }

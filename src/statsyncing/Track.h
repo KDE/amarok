@@ -137,6 +137,9 @@ namespace StatSyncing
              * Write back statistics to the underlying storage. You must call this function
              * after calling any of the set* methods. The track may decide whether the
              * actual writeback happens in set* or in commit().
+             *
+             * Guaranteed to be (and must be) called from non-main thread. Can block for
+             * a longer time.
              */
             virtual void commit() = 0;
 

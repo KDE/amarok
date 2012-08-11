@@ -62,7 +62,7 @@ namespace StatSyncing
              * Returns track associated with @provider provider. Asserts that there's
              * a track from @param provider
              */
-            TrackPtr track( ProviderPtr provider ) const;
+            TrackPtr track( const ProviderPtr &provider ) const;
 
             /**
              * Returns a number of tracks in this tuple.
@@ -87,7 +87,12 @@ namespace StatSyncing
             bool hasUpdate( const Options &options ) const;
 
             /**
-             * Return true if there's a (perhaps resolved) rating conflict in this tuple.
+             * Returns true if there's a (perhaps resolved) conflict in field &field
+             */
+            bool fieldHasConflict( qint64 field, const Options &options, bool includeResolved = true ) const;
+
+            /**
+             * Return true if there's a (perhaps resolved) conflict in this tuple.
              */
             bool hasConflict( const Options &options ) const;
 
@@ -104,6 +109,18 @@ namespace StatSyncing
             void setRatingProvider( ProviderPtr provider );
 
             /**
+             * Returns providers whose labels will be OR-ed together in case of conflict.
+             * Will be empty if no provider hasn't been explicitly set.
+             */
+            ProviderPtrSet labelProviders() const;
+
+            /**
+             * Sets label providers. Only accepts empty set a or a set of providers that
+             * are contained in this tuple.
+             */
+            void setLabelProviders( const ProviderPtrSet &providers );
+
+            /**
              * Return synchronized rating. Specifically, returns -1 if there's unsolved
              * rating conflict.
              */
@@ -116,7 +133,8 @@ namespace StatSyncing
             /**
              * Perform actual synchronization. For each track, only sets fields that are
              * in fieldUpdated( .., .., provider). Specifically this method does not write
-             * ratings if there's unresolved rating conflict.
+             * ratings or labels if there's unresolved rating/label conflict. Can only be
+             * called from non-main thread and may block for longer time.
              *
              * @return number of tracks that were updated
              */
@@ -124,10 +142,14 @@ namespace StatSyncing
 
         private:
             int syncedRating( const Options &options, ProviderPtr ratingProvider ) const;
+            // @param hasConflict is set to true or false
+            QSet<QString> syncedLabels( const Options &options, const ProviderPtrSet &labelProviders,
+                                        bool &hasConflict ) const;
 
             static const QList<qint64> s_fields; /// list of Meta::val* fields capable of syncing
             QMap<ProviderPtr, TrackPtr> m_map;
             ProviderPtr m_ratingProvider; /// source of rating in the event of conflict
+            ProviderPtrSet m_labelProviders; /// sources of labels in the event of conflict
     };
 
 } // namespace StatSyncing

@@ -163,7 +163,8 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                         "%1 (%2)", track->playCount(), recent ) ) : QVariant( track->playCount() );
                 }
                 case Meta::valLabel:
-                    return QStringList( track->labels().toList() ).join( i18nc( "comma between list words", ", " ) );
+                    return QStringList( track->labels().toList() ).join( i18nc(
+                        "comma between list words", ", " ) );
                 default:
                     return QString( "Unknown field!" );
             }
@@ -177,6 +178,9 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                     return i18np( "Played %2 times of which one play is recent and unique "
                         "to this source", "Played %2 times of which %1 plays are recent "
                         "and unique to this source", track->recentPlayCount(), track->playCount() );
+                case Meta::valLabel:
+                    return QStringList( track->labels().toList() ).join( i18nc(
+                        "comma between list words", ", " ) );
             }
             break;
         case Qt::TextAlignmentRole:
