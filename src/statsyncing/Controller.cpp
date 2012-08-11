@@ -306,6 +306,7 @@ Controller::slotUpdateNowPlayingWithCurrentTrack()
     if( tracksVirtuallyEqual( track, m_lastSubmittedNowPlayingTrack ) )
     {
         debug() << __PRETTY_FUNCTION__ << "this track already recently submitted, ignoring";
+        return;
     }
     foreach( ScrobblingServicePtr service, m_scrobblingServices )
     {
