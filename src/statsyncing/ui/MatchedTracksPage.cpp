@@ -42,7 +42,10 @@ namespace StatSyncing
             SortFilterProxyModel( QObject *parent = 0 )
                 : QSortFilterProxyModel( parent )
                 , m_tupleFilter( -1 )
-            {}
+            {
+                // filer all columns, accept when at least one column matches:
+                setFilterKeyColumn( -1 );
+            }
 
             /**
              * Filter tuples based on their MatchedTracksModel::TupleFlag flag. Set to -1
