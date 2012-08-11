@@ -103,7 +103,6 @@ Item {
         }
     }
 
-
     Image {
             z: -100
             anchors.bottom: parent.bottom

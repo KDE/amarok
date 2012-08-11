@@ -10,7 +10,7 @@ Theme:
 
 Wikipedia:
 
- * Figure out why wheel-scrolling doesn't work with WebView
+ * Figure out why wheel-scrolling doesn't work with WebView ( <-- won't work, use Plasma's WebView)
  * Understand how to set configuration data to a DataEngine via QML (language)
  * Implement basic navigation buttons (back, forward)
  * Eventually hide Wikipedia search bar (depending on the point above)

@@ -1,7 +1,7 @@
 
 import QtQuick 1.1
+import QtWebKit 1.1
 import org.kde.plasma.components 0.1
-import QtWebKit 1.0
 
 Item {
 
@@ -22,7 +22,7 @@ Item {
     
     Flickable {
         id: it
-        contentWidth: webview.width
+//         contentWidth: webview.width
         contentHeight: webview.height
         anchors.top: title.bottom
         anchors.bottom: parent.bottom
@@ -34,6 +34,7 @@ Item {
 
         WebView {
             id: webview
+            backgroundColor: "transparent"
             url: ""
             anchors.top: parent.top
             anchors.left : parent.left
