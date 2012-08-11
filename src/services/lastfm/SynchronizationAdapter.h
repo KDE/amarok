@@ -21,8 +21,6 @@
 
 #include <QSemaphore>
 
-class QNetworkReply;
-
 class SynchronizationAdapter : public StatSyncing::Provider
 {
     Q_OBJECT
@@ -63,7 +61,6 @@ class SynchronizationAdapter : public StatSyncing::Provider
     private:
         QString m_user;
 
-        QWeakPointer<QNetworkReply> m_currentRequest;
         QSet<QString> m_artists;
         StatSyncing::TrackList m_tracks;
         StatSyncing::TrackList m_tagQueue; // tracks waiting to be assigned tags

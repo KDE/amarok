@@ -1,0 +1,280 @@
+/****************************************************************************************
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+
+#include "SynchronizationTrack.h"
+
+#include "core/support/Debug.h"
+
+#include <QCoreApplication>
+#include <QNetworkReply>
+
+#include <lastfm/Track.h>
+#include <lastfm/XmlQuery.h>
+
+SemaphoreReleaser::SemaphoreReleaser( QSemaphore *semaphore )
+    : m_semaphore( semaphore )
+{
+}
+
+SemaphoreReleaser::~SemaphoreReleaser()
+{
+    if( m_semaphore )
+        m_semaphore->release();
+}
+
+void
+SemaphoreReleaser::dontRelease()
+{
+    m_semaphore = 0;
+}
+
+SynchronizationTrack::SynchronizationTrack( QString artist, QString album, QString name, int playCount )
+    : m_artist( artist )
+    , m_album( album )
+    , m_name( name )
+    , m_rating( 0 )
+    , m_newRating( 0 )
+    , m_playCount( playCount )
+{
+    // ensure this object is created in a main thread
+    Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
+
+    connect( this, SIGNAL(startTagAddition(QStringList)),
+             SLOT(slotStartTagAddition(QStringList)) );
+    connect( this, SIGNAL(startTagRemoval()),
+             SLOT(slotStartTagRemoval()) );
+}
+
+QString
+SynchronizationTrack::name() const
+{
+    return m_name;
+}
+
+QString
+SynchronizationTrack::album() const
+{
+    return m_album;
+}
+
+QString
+SynchronizationTrack::artist() const
+{
+    return m_artist;
+}
+
+int
+SynchronizationTrack::rating() const
+{
+    return m_rating;
+}
+
+void
+SynchronizationTrack::setRating( int rating )
+{
+    m_newRating = rating;
+}
+
+QDateTime
+SynchronizationTrack::firstPlayed() const
+{
+    return QDateTime(); // no support on Last.fm side yet
+}
+
+void
+SynchronizationTrack::setFirstPlayed( const QDateTime &firstPlayed )
+{
+    Q_UNUSED( firstPlayed );
+}
+
+QDateTime
+SynchronizationTrack::lastPlayed() const
+{
+    return QDateTime(); // no support on Last.fm side yet
+}
+
+void
+SynchronizationTrack::setLastPlayed( const QDateTime &lastPlayed )
+{
+    Q_UNUSED( lastPlayed );
+}
+
+int
+SynchronizationTrack::playCount() const
+{
+    return m_playCount;
+}
+
+void
+SynchronizationTrack::setPlayCount( int playCount )
+{
+    Q_UNUSED( playCount ); // we would have to scrobble, but we wouldn't know time
+}
+
+QSet<QString>
+SynchronizationTrack::labels() const
+{
+    return m_labels;
+}
+
+void
+SynchronizationTrack::setLabels( const QSet<QString> &labels )
+{
+    m_newLabels = labels;
+}
+
+void
+SynchronizationTrack::commit()
+{
+    if( m_newRating == m_rating && m_newLabels == m_labels )
+        return;
+
+    const QSet<QString> existingLabels = m_labels | m_ratingLabels;
+    if( m_newRating > 0 )
+    {
+        QString ratingLabel = QString( "%1 of 10 stars" ).arg( m_newRating );
+        m_newLabels.insert( ratingLabel );
+        m_ratingLabels = QSet<QString>() << ratingLabel;
+    }
+
+    QSet<QString> toAdd = m_newLabels - existingLabels;
+    QSet<QString> toRemove = existingLabels - m_newLabels;
+
+    // first remove, than add Last.fm may limit number of track tags
+    if( !toRemove.isEmpty() )
+    {
+        Q_ASSERT( m_semaphore.available() == 0 );
+        m_tagsToRemove = toRemove.toList();
+        emit startTagRemoval();
+        m_semaphore.acquire(); // wait for the job to complete
+        m_tagsToRemove.clear();
+    }
+    if( !toAdd.isEmpty() )
+    {
+        Q_ASSERT( m_semaphore.available() == 0 );
+        emit startTagAddition( toAdd.toList() );
+        m_semaphore.acquire(); // wait for the job to complete
+    }
+
+    m_rating = m_newRating;
+    m_labels = m_newLabels;
+}
+
+void
+SynchronizationTrack::parseAndSaveLastFmTags( const QSet<QString> &tags )
+{
+    m_labels.clear();
+    m_ratingLabels.clear();
+    m_rating = 0;
+
+    QRegExp rx( "([0-9]{1,3}) of ([0-9]{1,3}) stars", Qt::CaseInsensitive );
+    foreach( const QString &tag, tags )
+    {
+        if( rx.exactMatch( tag ) )
+        {
+            m_ratingLabels.insert( tag );
+            QStringList texts = rx.capturedTexts();
+            if( texts.count() != 3 )
+                continue;
+            qreal numerator = texts.at( 1 ).toDouble();
+            qreal denominator = texts.at( 2 ).toDouble();
+            if( denominator == 0.0 )
+                continue;
+            m_rating = qBound( 0, qRound( 10.0 * numerator / denominator ), 10 );
+        }
+        else
+            m_labels.insert( tag );
+    }
+    if( m_ratingLabels.count() > 1 )
+        m_rating = 0; // ambiguous
+
+    m_newLabels = m_labels;
+    m_newRating = m_rating;
+}
+
+void
+SynchronizationTrack::slotStartTagAddition( QStringList tags )
+{
+    lastfm::MutableTrack track;
+    track.setArtist( m_artist );
+    track.setAlbum( m_album );
+    track.setTitle( m_name );
+
+    if( tags.count() > 10 )
+        tags = tags.mid( 0, 10 ); // Last.fm says 10 tags is max
+    QNetworkReply *reply = track.addTags( tags );
+    connect( reply, SIGNAL(finished()), SLOT(slotTagsAdded()) );
+}
+
+void
+SynchronizationTrack::slotStartTagRemoval()
+{
+    Q_ASSERT( m_tagsToRemove.count() );
+    lastfm::MutableTrack track;
+    track.setArtist( m_artist );
+    track.setAlbum( m_album );
+    track.setTitle( m_name );
+
+    QNetworkReply *reply = track.removeTag( m_tagsToRemove.takeFirst() );
+    connect( reply, SIGNAL(finished()), SLOT(slotTagRemoved()) );
+}
+
+void
+SynchronizationTrack::slotTagsAdded()
+{
+    SemaphoreReleaser releaser( &m_semaphore );
+    QNetworkReply *reply =  qobject_cast<QNetworkReply *>( sender() );
+    if( !reply )
+    {
+        warning() << __PRETTY_FUNCTION__ << "cannot cast sender to QNetworkReply. (?)";
+        return;
+    }
+    reply->deleteLater();
+
+    lastfm::XmlQuery lfm;
+    if( !lfm.parse( reply->readAll() ) )
+    {
+        warning() << __PRETTY_FUNCTION__ << "error adding tags:" << lfm.parseError().message();
+        return;
+    }
+}
+
+void
+SynchronizationTrack::slotTagRemoved()
+{
+    SemaphoreReleaser releaser( &m_semaphore );
+    QNetworkReply *reply =  qobject_cast<QNetworkReply *>( sender() );
+    if( !reply )
+    {
+        warning() << __PRETTY_FUNCTION__ << "cannot cast sender to QNetworkReply. (?)";
+        return;
+    }
+    reply->deleteLater();
+
+    lastfm::XmlQuery lfm;
+    if( !lfm.parse( reply->readAll() ) )
+    {
+        warning() << __PRETTY_FUNCTION__ << "error removing a tag:" << lfm.parseError().message();
+        return;
+    }
+
+    // remove the next one, sadly one one at a time can be removed
+    if( !m_tagsToRemove.isEmpty() )
+    {
+        releaser.dontRelease();
+        emit startTagRemoval();
+    }
+}

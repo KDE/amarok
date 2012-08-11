@@ -18,69 +18,22 @@
 
 #include "MetaValues.h"
 #include "core/support/Debug.h"
+#include "services/lastfm/SynchronizationTrack.h"
 
 #include <KLocalizedString>
 
+#include <QCoreApplication>
 #include <QNetworkReply>
 
 #include <Library.h>
 #include <XmlQuery.h>
 
-class AdHocTrack : public StatSyncing::Track
-{
-    public:
-        AdHocTrack( QString artist, QString album, QString name, int playCount )
-            : m_artist( artist ), m_album( album ), m_name( name ), m_playCount( playCount ) {}
-
-        virtual QString name() const { return m_name; }
-        virtual QString album() const { return m_album; }
-        virtual QString artist() const { return m_artist; }
-        virtual int rating() const { return 0; }
-        virtual void setRating( int rating ) {}
-        virtual QDateTime firstPlayed() const { return QDateTime(); }
-        virtual void setFirstPlayed( const QDateTime &firstPlayed ) {}
-        virtual QDateTime lastPlayed() const { return QDateTime(); }
-        virtual void setLastPlayed( const QDateTime &lastPlayed ) {}
-        virtual int playCount() const { return m_playCount; }
-        virtual void setPlayCount( int playCount ) {}
-        virtual QSet<QString> labels() const { return m_labels; }
-        virtual void setLabels( const QSet<QString> &labels ) {}
-        virtual void commit() {}
-
-        /**
-         * Set tags from Last.fm
-         */
-        void setLastFmTags( const QSet<QString> &tags ) { m_labels = tags; }
-
-    private:
-        QString m_artist;
-        QString m_album;
-        QString m_name;
-        int m_playCount;
-        QSet<QString> m_labels;
-};
-
-/**
- * Helper class that releases passed QSemaphore upon deletion. Similar to QMutexLocker.
- */
-class SemaphoreReleaser
-{
-    public:
-        SemaphoreReleaser( QSemaphore *semaphore ) : m_semaphore( semaphore ) {}
-        ~SemaphoreReleaser() { if( m_semaphore ) m_semaphore->release(); }
-
-        /**
-         * Tell SemaphoreReleaser not to release the semaphore upon deletion.
-         */
-        void dontRelease() { m_semaphore = 0; }
-
-    private:
-        QSemaphore *m_semaphore;
-};
-
 SynchronizationAdapter::SynchronizationAdapter( const QString &user )
     : m_user( user )
 {
+    // ensure this object is created in a main thread
+    Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
+
     connect( this, SIGNAL(startArtistSearch(int)),
              SLOT(slotStartArtistSearch(int)), Qt::QueuedConnection );
     connect( this, SIGNAL(startTrackSearch(QString,int)),
@@ -120,7 +73,7 @@ SynchronizationAdapter::reliableTrackMetaData() const
 qint64
 SynchronizationAdapter::writableTrackStatsData() const
 {
-    return Meta::valLabel; // TODO
+    return Meta::valRating | Meta::valLabel;
 }
 
 StatSyncing::Provider::Preference
@@ -146,12 +99,12 @@ SynchronizationAdapter::artists()
 StatSyncing::TrackList
 SynchronizationAdapter::artistTracks( const QString &artistName )
 {
-    DEBUG_BLOCK
     Q_ASSERT( m_semaphore.available() == 0 );
     emit startTrackSearch( artistName, 1 ); // Last.fm indexes from 1
 
     m_semaphore.acquire();
-    debug() << __PRETTY_FUNCTION__ << m_tracks.count() << "tracks from" << artistName;
+    debug() << __PRETTY_FUNCTION__ << m_tracks.count() << "tracks from" << artistName
+            << m_tagQueue.count() << "of them have tags";
 
     // fetch tags
     QMutableListIterator<StatSyncing::TrackPtr> it( m_tagQueue );
@@ -172,16 +125,16 @@ SynchronizationAdapter::artistTracks( const QString &artistName )
 void
 SynchronizationAdapter::slotStartArtistSearch( int page )
 {
-    m_currentRequest = lastfm::Library::getArtists( m_user, 200, page );
-    connect( m_currentRequest.data(), SIGNAL(finished()), SLOT(slotArtistsReceived()) );
+    QNetworkReply *reply = lastfm::Library::getArtists( m_user, 200, page );
+    connect( reply, SIGNAL(finished()), SLOT(slotArtistsReceived()) );
 }
 
 void
 SynchronizationAdapter::slotStartTrackSearch( QString artistName, int page )
 {
     lastfm::Artist artist( artistName );
-    m_currentRequest = lastfm::Library::getTracks( m_user, artist, 200, page );
-    connect( m_currentRequest.data(), SIGNAL(finished()), SLOT(slotTracksReceived()) );
+    QNetworkReply *reply = lastfm::Library::getTracks( m_user, artist, 200, page );
+    connect( reply, SIGNAL(finished()), SLOT(slotTracksReceived()) );
 }
 
 void
@@ -190,18 +143,24 @@ SynchronizationAdapter::slotStartTagSearch( QString artistName, QString trackNam
     lastfm::MutableTrack track;
     track.setArtist( artistName );
     track.setTitle( trackName );
-    m_currentRequest = track.getTags();
-    connect( m_currentRequest.data(), SIGNAL(finished()), SLOT(slotTagsReceived()) );
+    QNetworkReply *reply = track.getTags();
+    connect( reply, SIGNAL(finished()), SLOT(slotTagsReceived()) );
 }
 
 void
 SynchronizationAdapter::slotArtistsReceived()
 {
     SemaphoreReleaser releaser( &m_semaphore );
-    Q_ASSERT( m_currentRequest );
+    QNetworkReply *reply =  qobject_cast<QNetworkReply *>( sender() );
+    if( !reply )
+    {
+        warning() << __PRETTY_FUNCTION__ << "cannot cast sender to QNetworkReply. (?)";
+        return;
+    }
+    reply->deleteLater();
 
     lastfm::XmlQuery lfm;
-    if( !lfm.parse( m_currentRequest.data()->readAll() ) )
+    if( !lfm.parse( reply->readAll() ) )
     {
         warning() << __PRETTY_FUNCTION__ << "Error parsing Last.fm reply:" << lfm.parseError().message();
         return;
@@ -228,8 +187,6 @@ SynchronizationAdapter::slotArtistsReceived()
         lastfm::Artist artist( xq );
         m_artists.insert( artist.name().toLower() );
     }
-    m_currentRequest.data()->deleteLater();
-    m_currentRequest = (QNetworkReply *) 0;
 
     // Last.fm indexes from 1!
     if( page < totalPages )
@@ -243,10 +200,16 @@ void
 SynchronizationAdapter::slotTracksReceived()
 {
     SemaphoreReleaser releaser( &m_semaphore );
-    Q_ASSERT( m_currentRequest );
+    QNetworkReply *reply =  qobject_cast<QNetworkReply *>( sender() );
+    if( !reply )
+    {
+        warning() << __PRETTY_FUNCTION__ << "cannot cast sender to QNetworkReply. (?)";
+        return;
+    }
+    reply->deleteLater();
 
     lastfm::XmlQuery lfm;
-    if( !lfm.parse( m_currentRequest.data()->readAll() ) )
+    if( !lfm.parse( reply->readAll() ) )
     {
         warning() << __PRETTY_FUNCTION__ << "Error parsing Last.fm reply:" << lfm.parseError().message();
         return;
@@ -265,7 +228,6 @@ SynchronizationAdapter::slotTracksReceived()
         warning() << __PRETTY_FUNCTION__ << "cannot read total number or pages";
         return;
     }
-    debug() << "page" << page << "of" << totalPages;
     QString searchedArtist = tracks.attribute( "artist" );
     if( searchedArtist.isEmpty() )
     {
@@ -282,13 +244,11 @@ SynchronizationAdapter::slotTracksReceived()
         QString artist = xq[ "artist" ][ "name" ].text();
         QString album = xq[ "album" ][ "name" ].text();
 
-        StatSyncing::TrackPtr track( new AdHocTrack( artist, album, name, playCount ) );
+        StatSyncing::TrackPtr track( new SynchronizationTrack( artist, album, name, playCount ) );
         m_tracks.append( track );
         if( tagCount > 0 )
             m_tagQueue.append( track );
     }
-    m_currentRequest.data()->deleteLater();
-    m_currentRequest = (QNetworkReply *) 0;
 
     // Last.fm indexes from 1!
     if( page < totalPages )
@@ -302,10 +262,16 @@ void
 SynchronizationAdapter::slotTagsReceived()
 {
     SemaphoreReleaser releaser( &m_semaphore );
-    Q_ASSERT( m_currentRequest );
+    QNetworkReply *reply =  qobject_cast<QNetworkReply *>( sender() );
+    if( !reply )
+    {
+        warning() << __PRETTY_FUNCTION__ << "cannot cast sender to QNetworkReply. (?)";
+        return;
+    }
+    reply->deleteLater();
 
     lastfm::XmlQuery lfm;
-    if( !lfm.parse( m_currentRequest.data()->readAll() ) )
+    if( !lfm.parse( reply->readAll() ) )
     {
         warning() << __PRETTY_FUNCTION__ << "Error parsing Last.fm reply:" << lfm.parseError().message();
         return;
@@ -316,11 +282,7 @@ SynchronizationAdapter::slotTagsReceived()
         tags.insert( xq[ "name" ].text() );
     }
     Q_ASSERT( !m_tagQueue.isEmpty() );
-    AdHocTrack *track = dynamic_cast<AdHocTrack *>( m_tagQueue.first().data() );
+    SynchronizationTrack *track = dynamic_cast<SynchronizationTrack *>( m_tagQueue.first().data() );
     Q_ASSERT( track );
-    debug() << "setting tags" << tags << "for" << track->artist() << "-" << track->name();
-    track->setLastFmTags( tags );
-
-    m_currentRequest.data()->deleteLater();
-    m_currentRequest = (QNetworkReply *) 0;
+    track->parseAndSaveLastFmTags( tags );
 }

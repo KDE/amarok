@@ -34,6 +34,7 @@ include_directories(
 #             LastfmReadLabelCapability.cpp
             ScrobblerAdapter.cpp
             SynchronizationAdapter.cpp
+            SynchronizationTrack.cpp
             LastFmTreeModel.cpp
             LastFmTreeView.cpp
             AvatarDownloader.cpp
