@@ -33,6 +33,8 @@
 
 using namespace Meta::Tag;
 
+static const TagLib::String VORBIS_PICTURE_TAG( "METADATA_BLOCK_PICTURE" );
+
 VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType )
                       : TagHelper( tag, fileType )
                       , m_tag( commentsTag )
@@ -70,6 +72,39 @@ VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::X
     m_uidFieldMap.insert( UIDMusicBrainz,    TagLib::String( "MUSICBRAINZ_TRACKID" ) );
 }
 
+static inline bool
+isAlbumCover( const TagLib::FLAC::Picture* picture )
+{
+    return ( picture->type() == TagLib::FLAC::Picture::FrontCover ||
+             picture->type() == TagLib::FLAC::Picture::Other ) &&
+             picture->data().size() > MIN_COVER_SIZE; // must be at least 1kb
+}
+
+#ifndef UTILITIES_BUILD
+/**
+ * Extract the given FLAC Picture object to QImage picture.
+ *
+ * If the FLAC image is a front cover, store the result in cover and return true.
+ * Otherwise, if otherCover is null, store the image there and return false.
+ */
+static inline bool
+flacPictureToQImage( const TagLib::FLAC::Picture* picture, QImage& cover, QImage& otherCover )
+{
+    QByteArray image_data( picture->data().data(), picture->data().size() );
+
+    if( picture->type() == TagLib::FLAC::Picture::FrontCover )
+    {
+        cover.loadFromData( image_data );
+        return true;
+    }
+    else if( otherCover.isNull() )
+    {
+        otherCover.loadFromData( image_data );
+    }
+    return false;
+}
+#endif //UTILITIES_BUILD
+
 Meta::FieldHash
 VorbisCommentTagHelper::tags() const
 {
@@ -104,6 +139,11 @@ VorbisCommentTagHelper::tags() const
         {
             if( !data.contains( Meta::valUniqueId ) ) // we prefer AFT uids
                 data.insert( Meta::valUniqueId, value.prepend( "mb-" ) );
+        }
+        else if( it->first == VORBIS_PICTURE_TAG )
+        {
+            if( parsePictureBlock( it->second ) )
+                data.insert( Meta::valHasCover, true );
         }
     }
 
@@ -189,6 +229,10 @@ VorbisCommentTagHelper::hasEmbeddedCover() const
             }
         }
     }
+    else if( m_tag->fieldListMap().contains( VORBIS_PICTURE_TAG ) )
+    {
+        return parsePictureBlock( m_tag->fieldListMap()[ VORBIS_PICTURE_TAG ] );
+    }
     else if( !fieldName( Meta::valHasCover ).isEmpty() )
     {
         TagLib::ByteVector field = fieldName( Meta::valHasCover ).toCString();
@@ -233,6 +277,10 @@ VorbisCommentTagHelper::embeddedCover() const
 
         if( cover.isNull() && !otherCover.isNull() )
             cover = otherCover;
+    }
+    else if( m_tag->fieldListMap().contains( VORBIS_PICTURE_TAG ) )
+    {
+        parsePictureBlock( m_tag->fieldListMap()[ VORBIS_PICTURE_TAG ] );
     }
     else if( !fieldName( Meta::valHasCover ).isEmpty() )
     {
@@ -303,3 +351,47 @@ VorbisCommentTagHelper::setEmbeddedCover( const QImage &cover )
     return false;
 }
 #endif  //UTILITIES_BUILD
+
+bool
+VorbisCommentTagHelper::parsePictureBlock( const TagLib::StringList& block, QImage* result )
+{
+#ifndef UTILITIES_BUILD
+    QImage otherCover;
+#endif // UTILITIES_BUILD
+    // Here's what's happening: "block" may contain several FLAC picture entries.
+    // We need to find at least one that satisfies our needs.
+    for( TagLib::StringList::ConstIterator i = block.begin(); i != block.end(); ++i )
+    {
+        QByteArray data( QByteArray::fromBase64( i->to8Bit().c_str() ) );
+        TagLib::ByteVector tdata( data.data(), data.size() );
+        TagLib::FLAC::Picture p;
+
+        if(!p.parse(tdata))
+            continue;
+        if(isAlbumCover(&p))
+        {
+#ifndef UTILITIES_BUILD
+            if( result )
+            {
+                // Now, if the image is a front cover, we just use it and quit
+                // Otherwise, we store it in otherCover and wait for a better one
+                if( flacPictureToQImage( &p, *result, otherCover ) )
+                    return true;
+            }
+            else
+#endif // UTILITIES_BUILD
+                // We found some image, but we don't need best one here, so just leave
+                return true;
+        }
+    }
+#ifndef UTILITIES_BUILD
+    if(result)
+    {
+        // Now here we haven't found any front covers in the file
+        // So we just use otherCover and exit
+        *result = otherCover;
+        return !result->isNull();
+    }
+#endif //UTILITIES_BUILD
+    return false;
+}
