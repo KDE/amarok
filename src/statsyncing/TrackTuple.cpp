@@ -214,7 +214,7 @@ TrackTuple::ratingProvider() const
 }
 
 void
-TrackTuple::setRatingProvider( ProviderPtr provider )
+TrackTuple::setRatingProvider( const ProviderPtr &provider )
 {
     if( !provider || m_map.contains( provider ) )
         m_ratingProvider = provider;

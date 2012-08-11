@@ -118,22 +118,22 @@ ChooseProvidersPage::disableControls()
 void
 ChooseProvidersPage::setProgressBarText( const QString &text )
 {
-    progressBar->show();
     progressBar->setFormat( text );
+    progressBar->show();
 }
 
 void
 ChooseProvidersPage::setProgressBarMaximum( int maximum )
 {
-    progressBar->show();
     progressBar->setMaximum( maximum );
+    progressBar->show();
 }
 
 void
 ChooseProvidersPage::progressBarIncrementProgress()
 {
-    progressBar->show();
     progressBar->setValue( progressBar->value() + 1 );
+    progressBar->show();
 }
 
 void

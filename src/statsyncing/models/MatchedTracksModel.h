@@ -78,7 +78,7 @@ namespace StatSyncing
             // MatchedTracksModel-specific methods:
             /**
              * Return a list of matched tuples, the same passed to model constructor, but
-             * some may be changed, e.g. conflict-resoluted etc.
+             * some may be changed, e.g. conflict-resolved etc.
              */
             const QList<TrackTuple> &matchedTuples();
 
@@ -101,7 +101,24 @@ namespace StatSyncing
              * not null and given tuple has no track from provider, its state remains
              * unchanged.
              */
-            void takeRatingsFrom( ProviderPtr provider );
+            void takeRatingsFrom( const ProviderPtr &provider );
+
+            /**
+             * Go through all tuples with (both resolved and unresolved) labels conflict
+             * and add @param provider to list of their label sources. Tracks that don't
+             * have @param provider in their providers remain unchanged.
+             */
+            void includeLabelsFrom( const ProviderPtr &provider );
+
+            /**
+             * Go through all tuples with (both resolved and unresolved) labels conflict
+             * and remove @param provider from their list of label sources. Tracks that
+             * don't have @param provider in their label sources remain unchanged.
+             *
+             * If @param provider is null, this methods resets all tubles to "undecided"
+             * wrt labels (clears their list of label sources).
+             */
+            void excludeLabelsFrom( const ProviderPtr &provider );
 
         private:
             QVariant tupleData( const TrackTuple &tuple, qint64 field, int role ) const;

@@ -216,6 +216,7 @@ MatchedTracksPage::showMatchedTracks( bool checked )
         connect( filterCombo, SIGNAL(currentIndexChanged(int)), SLOT(changeMatchedTracksFilter(int)) );
 
         takeRatingsButton->setEnabled( hasConflict );
+        labelsButton->setEnabled( hasConflict );
     }
     else
     {
@@ -227,6 +228,7 @@ MatchedTracksPage::showMatchedTracks( bool checked )
         saveExpandedTuples();
         m_proxyModel->setTupleFilter( -1 ); // reset filter for single tracks models
         takeRatingsButton->setEnabled( false );
+        labelsButton->setEnabled( false );
     }
 }
 
@@ -354,7 +356,22 @@ MatchedTracksPage::restoreExpandedState( const QModelIndex &parent, int start, i
 void
 MatchedTracksPage::takeRatingsFrom()
 {
-    QAction *action = dynamic_cast<QAction *>( sender() );
+    QAction *action = qobject_cast<QAction *>( sender() );
+    if( !action )
+    {
+        warning() << __PRETTY_FUNCTION__ << "must only be called from QAction";
+        return;
+    }
+
+    // provider may be null, it means "reset all ratings to undecided"
+    ProviderPtr provider = action->data().value<ProviderPtr>();
+    m_matchedTracksModel->takeRatingsFrom( provider );
+}
+
+void
+MatchedTracksPage::includeLabelsFrom()
+{
+    QAction *action = qobject_cast<QAction *>( sender() );
     if( !action )
     {
         warning() << __PRETTY_FUNCTION__ << "must only be called from QAction";
@@ -362,7 +379,23 @@ MatchedTracksPage::takeRatingsFrom()
     }
 
     ProviderPtr provider = action->data().value<ProviderPtr>();
-    m_matchedTracksModel->takeRatingsFrom( provider );
+    if( provider ) // no sense with null provider
+        m_matchedTracksModel->includeLabelsFrom( provider );
+}
+
+void
+MatchedTracksPage::excludeLabelsFrom()
+{
+    QAction *action = qobject_cast<QAction *>( sender() );
+    if( !action )
+    {
+        warning() << __PRETTY_FUNCTION__ << "must only be called from QAction";
+        return;
+    }
+
+    // provider may be null, it means "reset all labels to undecided"
+    ProviderPtr provider = action->data().value<ProviderPtr>();
+    m_matchedTracksModel->excludeLabelsFrom( provider );
 }
 
 void
@@ -398,15 +431,32 @@ MatchedTracksPage::polish()
 
     // populate menu of the "Take Ratings From" button
     QMenu *takeRatingsMenu = new QMenu( takeRatingsButton );
-    foreach( ProviderPtr provider, m_providers )
+    foreach( const ProviderPtr &provider, m_providers )
     {
-        QAction *action = takeRatingsMenu->addAction( provider->icon(), provider->prettyName() );
+        QAction *action = takeRatingsMenu->addAction( provider->icon(), provider->prettyName(),
+                                                      this, SLOT(takeRatingsFrom()) );
         action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
-        connect( action, SIGNAL(triggered(bool)), SLOT(takeRatingsFrom()) );
     }
     takeRatingsMenu->addAction( i18n( "Reset All Ratings to Undecided" ), this, SLOT(takeRatingsFrom()) );
     takeRatingsButton->setMenu( takeRatingsMenu );
     takeRatingsButton->setIcon( KIcon( Meta::iconForField( Meta::valRating ) ) );
+
+    // populate menu of the "Labels" button
+    QMenu *labelsMenu = new QMenu( labelsButton );
+    foreach( const ProviderPtr &provider, m_providers )
+    {
+        QString text = i18nc( "%1 is collection name", "Include Labels from %1", provider->prettyName() );
+        QAction *action = labelsMenu->addAction( provider->icon(), text, this, SLOT(includeLabelsFrom()) );
+        action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
+
+        text = i18nc( "%1 is collection name", "Exclude Labels from %1", provider->prettyName() );
+        action = labelsMenu->addAction( provider->icon(), text, this, SLOT(excludeLabelsFrom()) );
+        action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
+    }
+    labelsMenu->addAction( i18n( "Reset All Labels to Undecided (Don't Synchronize Them)" ),
+                           this, SLOT(excludeLabelsFrom()) );
+    labelsButton->setMenu( labelsMenu );
+    labelsButton->setIcon( KIcon( Meta::iconForField( Meta::valLabel ) ) );
 
     matchedRadio->setChecked( true ); // calls showMatchedTracks() that sets the model
     QHeaderView *header = treeView->header();

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>860</width>
-    <height>500</height>
+    <width>641</width>
+    <height>465</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -65,9 +65,12 @@
    <item>
     <layout class="QHBoxLayout" name="filterLayout">
      <item>
-      <widget class="QLineEdit" name="filterLine">
-       <property name="placeholderText">
-        <string>Filter tracks...</string>
+      <widget class="KLineEdit" name="filterLine">
+       <property name="clickMessage">
+        <string>Filter Tracks...</string>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -103,8 +106,30 @@
     <layout class="QHBoxLayout" name="statusLayout">
      <item>
       <widget class="QToolButton" name="takeRatingsButton">
+       <property name="toolTip">
+        <string>Affects all applicable tracks, not just shown ones</string>
+       </property>
        <property name="text">
         <string>Take Ratings From</string>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::InstantPopup</enum>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="labelsButton">
+       <property name="toolTip">
+        <string>Affects all applicable tracks, not just shown ones</string>
+       </property>
+       <property name="text">
+        <string>Labels</string>
        </property>
        <property name="popupMode">
         <enum>QToolButton::InstantPopup</enum>
@@ -140,6 +165,11 @@
    <class>KDialogButtonBox</class>
    <extends>QDialogButtonBox</extends>
    <header>kdialogbuttonbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>klineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -230,14 +230,80 @@ MatchedTracksModel::hasConflict( int i ) const
 }
 
 void
-MatchedTracksModel::takeRatingsFrom( ProviderPtr provider )
+MatchedTracksModel::takeRatingsFrom( const ProviderPtr &provider )
 {
     for( int i = 0; i < m_matchedTuples.count(); i++ )
     {
         TrackTuple &tuple = m_matchedTuples[ i ]; // we need reference
         if( !tuple.fieldHasConflict( Meta::valRating, m_options ) )
             continue;
+
+        if( tuple.ratingProvider() == provider )
+            continue; // short-cut
         tuple.setRatingProvider( provider ); // does nothing if non-null provider isn't in tuple
+
+        // parent changes:
+        int ratingColumn = m_columns.indexOf( Meta::valRating );
+        QModelIndex parentRating = index( i, ratingColumn );
+        emit dataChanged( parentRating, parentRating );
+
+        // children change:
+        QModelIndex parent = index( i, 0 );
+        QModelIndex topLeft = index( 0, ratingColumn, parent );
+        QModelIndex bottomRight = index( tuple.count() - 1, ratingColumn, parent );
+        emit dataChanged( topLeft, bottomRight );
+    }
+}
+
+void
+MatchedTracksModel::includeLabelsFrom( const ProviderPtr &provider )
+{
+    if( !provider )
+        return; // has no sense
+    for( int i = 0; i < m_matchedTuples.count(); i++ )
+    {
+        TrackTuple &tuple = m_matchedTuples[ i ]; // we need reference
+        if( !tuple.fieldHasConflict( Meta::valLabel, m_options ) )
+            continue;
+        ProviderPtrSet providers = tuple.labelProviders();
+        providers.insert( provider );
+
+        if( providers == tuple.labelProviders() )
+            continue; // short-cut
+        tuple.setLabelProviders( providers ); // does nothing if provider isn't in tuple
+
+        // parent changes:
+        int ratingColumn = m_columns.indexOf( Meta::valRating );
+        QModelIndex parentRating = index( i, ratingColumn );
+        emit dataChanged( parentRating, parentRating );
+
+        // children change:
+        QModelIndex parent = index( i, 0 );
+        QModelIndex topLeft = index( 0, ratingColumn, parent );
+        QModelIndex bottomRight = index( tuple.count() - 1, ratingColumn, parent );
+        emit dataChanged( topLeft, bottomRight );
+    }
+}
+
+void
+MatchedTracksModel::excludeLabelsFrom( const ProviderPtr &provider )
+{
+    for( int i = 0; i < m_matchedTuples.count(); i++ )
+    {
+        TrackTuple &tuple = m_matchedTuples[ i ]; // we need reference
+        if( !tuple.fieldHasConflict( Meta::valLabel, m_options ) )
+            continue;
+        ProviderPtrSet providers = tuple.labelProviders();
+        if( provider )
+            // normal more, remove one provider
+            providers.remove( provider );
+        else
+            // reset mode, clear providers
+            providers.clear();
+
+        if( providers == tuple.labelProviders() )
+            continue; // short-cut
+        tuple.setLabelProviders( providers ); // does nothing if provider isn't in tuple
 
         // parent changes:
         int ratingColumn = m_columns.indexOf( Meta::valRating );

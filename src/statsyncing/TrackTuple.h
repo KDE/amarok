@@ -106,7 +106,7 @@ namespace StatSyncing
              * Sets the rating provider. Only accepts null provider or a provider of one
              * track in this tuple.
              */
-            void setRatingProvider( ProviderPtr provider );
+            void setRatingProvider( const ProviderPtr &provider );
 
             /**
              * Returns providers whose labels will be OR-ed together in case of conflict.
