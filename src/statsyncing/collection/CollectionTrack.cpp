@@ -151,8 +151,26 @@ CollectionTrack::labels() const
 void
 CollectionTrack::setLabels( const QSet<QString> &labels )
 {
-    Q_UNUSED( labels )
-    AMAROK_NOTIMPLEMENTED
+    QSet<QString> existingLabels;
+    QMap<QString, Meta::LabelPtr> existingLabelsMap;
+    foreach( const Meta::LabelPtr &label, m_track->labels() )
+    {
+        existingLabels.insert( label->name() );
+        existingLabelsMap.insert( label->name(), label );
+    }
+
+    QSet<QString> toRemove = existingLabels - labels;
+    foreach( const QString &labelName, toRemove )
+    {
+        Q_ASSERT( existingLabelsMap.contains( labelName ) );
+        m_track->removeLabel( existingLabelsMap.value( labelName ) );
+    }
+
+    QSet<QString> toAdd = labels - existingLabels;
+    foreach( const QString &labelName, toAdd )
+    {
+        m_track->addLabel( labelName );
+    }
 }
 
 void
