@@ -5,7 +5,7 @@ import org.kde.plasma.components 0.1
 
 Item {
 
-    property alias url: webview.url
+    property alias html: webview.html
     property alias title: title.text
 
     Text {
@@ -35,7 +35,7 @@ Item {
         WebView {
             id: webview
             backgroundColor: "transparent"
-            url: ""
+            html: ""
             anchors.top: parent.top
             anchors.left : parent.left
             width: parent.width - scroll.width - 5

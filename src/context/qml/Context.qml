@@ -10,6 +10,7 @@ Item {
 //         imagePath: "widgets/arrows"
         imagePath: "Amarok/theme"
 //         multipleImages: true
+        usingRenderingCache: false
     }
     
     Item {
@@ -79,7 +80,7 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 15
         initialPage: lyrics_text
-        RichTextualViewer {
+        TextualViewer {
             z: 10
             id: wikitext
             title: "Wikipedia - Artist"
@@ -92,17 +93,16 @@ Item {
             onDataChanged: {
                 d = wikiSource.data['wikipedia']
                 wikitext.title = "Wikipedia - " + d['title']
-                wikitext.url = d['url']
+                wikitext.text = d['page']
             }
         }
+
         TextualViewer {
             z: 10
             id: lyrics_text
             title: "Lyrics"
             visible: false
-            text: ""
         }
-
         DataSource {
             id: lyricsSource
             engine: "amarok-lyrics"

@@ -21,7 +21,6 @@ Item {
     
     Flickable {
         id: it
-//         contentWidth: textview.width
         contentHeight: textview.height
         anchors.top: title.bottom
         anchors.bottom: parent.bottom
@@ -38,6 +37,7 @@ Item {
             width: parent.width - scroll.width - 5
             wrapMode: Text.Wrap
             anchors.rightMargin: 50
+            text: ""
         }
     }
     ScrollBar {

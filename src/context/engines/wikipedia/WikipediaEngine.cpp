@@ -551,7 +551,7 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
     // We now use:  http://en.wikipedia.org/w/index.php?title=The_Beatles&useskin=monobook
     // instead of:  http://en.wikipedia.org/wiki/The_Beatles
     // So that wikipedia skin is forced to default "monoskin", and the page can be parsed correctly (see BUG 205901 )
-    host.prepend( ".m" );
+//     host.prepend( ".m" );
     host.prepend( urlPrefix );
     pageUrl.setHost( host );
     pageUrl.setPath( QLatin1String("/w/index.php") );
@@ -824,6 +824,11 @@ WikipediaEnginePrivate::wikiParse( QString &wiki )
     wiki.remove( QLatin1String("</option>\n")  );
     wiki.remove( QRegExp( QLatin1String("<textarea[^>]*>") ) );
     wiki.remove( QLatin1String("</textarea>") );
+
+    // QML conversion: remove images and links
+    wiki.remove( QRegExp( QLatin1String("<img.* />") ) );
+    wiki.remove( QRegExp( QLatin1String("<a[^>]*>") ) );
+    wiki.remove( QLatin1String("</a>") );
 
     wiki.prepend( QLatin1String("<html>\n") );
     wiki.append( QString(QLatin1String("<head><title>%1</title></head>\n")).arg(title) );
