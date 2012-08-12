@@ -586,5 +586,26 @@ namespace The {
     AMAROK_EXPORT EngineController* engineController();
 }
 
+/**
+ * Helper class that calls seek() followed by play() on Phonon::MediaObject after it
+ * emits stateChanged() with suitable new state and then auto-destructs itself.
+ */
+class DelayedSeeker : public QObject
+{
+    Q_OBJECT
+
+    public:
+        DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo );
+
+    signals:
+        void trackPositionChanged( qint64 position, bool userSeek );
+
+    private slots:
+        void seekAndExplode( Phonon::State newState );
+
+    private:
+        Phonon::MediaObject *m_mediaObject;
+        qint64 m_seekTo;
+};
 
 #endif

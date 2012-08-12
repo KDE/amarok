@@ -29,6 +29,8 @@ VERSION 2.7-Beta 1
     * New optional dependency for Amazon downloads: clamz.
 
   BUGFIXES:
+    * Fix playback resuming with phonon-gstreamer; raise phonon-vlc dependency
+      to at least 0.6.1 as a side-effect. (BR 290612)
     * Create collections even for SD/MMC/etc. cards on PCI-connected slots.
     * Fixed some incorrect logic in the PlaylistLength constraint, which was
       causing the APG to create playlists that were shorter than expected.

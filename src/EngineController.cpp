@@ -498,14 +498,16 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
     if( offset )
     {
-        debug() << "seeking to " << offset;
+        // call to play() is asynchronous and ->seek() can be only called on playing,
+        // buffering or paused media. Calling play() would lead to audible glitches,
+        // so call pause() that doesn't suffer from such problem.
         m_media.data()->pause();
-        m_media.data()->seek( offset );
+        DelayedSeeker *seeker = new DelayedSeeker( m_media.data(), offset );
+        connect( seeker, SIGNAL(trackPositionChanged(qint64,bool)),
+                 SIGNAL(trackPositionChanged(qint64,bool)) );
     }
-    m_media.data()->play();
-    emit trackPositionChanged( offset, true );
-
-    debug() << "track pos after play: " << trackPositionMs();
+    else
+        m_media.data()->play();
 }
 
 void
@@ -1416,4 +1418,32 @@ EngineController::isInRecentMetaDataHistory( const QVariantMap &meta )
     return false;
 }
 
-#include "EngineController.moc"
+DelayedSeeker::DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo )
+    : m_mediaObject( mediaObject )
+    , m_seekTo( seekTo )
+{
+    Q_ASSERT( mediaObject );
+    connect( mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
+                SLOT(seekAndExplode(Phonon::State)) );
+}
+
+void
+DelayedSeeker::seekAndExplode( Phonon::State newState )
+{
+    switch( newState )
+    {
+        case Phonon::PlayingState:
+        case Phonon::BufferingState:
+        case Phonon::PausedState:
+            m_mediaObject->seek( m_seekTo );
+            emit trackPositionChanged( m_seekTo, /* userSeek */ true );
+            m_mediaObject->play();
+            // don't let be called twice, deleteLater() may fire really LATER
+            disconnect( m_mediaObject, 0, this, 0 );
+            deleteLater();
+            return;
+        default:
+            debug() << __PRETTY_FUNCTION__ << "newState" << newState << "not applicable, waiting...";
+            return;
+    }
+}

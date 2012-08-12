@@ -39,7 +39,7 @@ Required
       http://www.kde.org
 
     * Phonon backend, one of the following is strongly recommended
-      * phonon-vlc 0.6 (or newer)
+      * phonon-vlc 0.6.1 (or newer)
       * phonon-gstreamer 4.6.2 (or newer)
 
     * Qt 4.6 (or newer)
