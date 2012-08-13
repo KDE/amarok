@@ -27,8 +27,8 @@ typedef KSharedPtr<NepomukLabel> NepomukLabelPtr;
 typedef QList<NepomukLabelPtr> NepomukLabelList;
 
 /**
-  * Represents a unit label/tag resource in Amarok
-  */
+ * Represents a unit label/tag resource in Amarok
+ */
 
 class NepomukLabel : public Label
 {

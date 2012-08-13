@@ -21,8 +21,6 @@
 #include "core/meta/Meta.h"
 #include "NepomukCollection.h"
 
-#include "QString"
-
 namespace Meta
 {
 
@@ -31,8 +29,8 @@ typedef KSharedPtr<NepomukGenre> NepomukGenrePtr;
 typedef QList<NepomukGenrePtr> NepomukGenreList;
 
 /**
-  * Represents a unit genre resource in Amarok
-  */
+ * Represents a unit genre resource in Amarok
+ */
 
 class NepomukGenre : public Genre
 {
@@ -45,10 +43,10 @@ public:
 
     // nepomuk specific function
     /**
-      * A nepomuk specific function used to populate m_tracks
-      * This is called during the construction of the meta maps
-      * in the constructor of NepomukCollection
-      */
+     * A nepomuk specific function used to populate m_tracks
+     * This is called during the construction of the meta maps
+     * in the constructor of NepomukCollection
+     */
     void addTrack( const TrackPtr trackPtr );
 private:
     QString m_name;

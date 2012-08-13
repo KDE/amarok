@@ -15,43 +15,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "NepomukTrack.h"
-#include "NepomukGenre.h"
-#include "NepomukComposer.h"
-#include "NepomukAlbum.h"
-#include "NepomukArtist.h"
 #include "NepomukLabel.h"
-#include "NepomukYear.h"
+#include "NepomukTrack.h"
 
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core/meta/Meta.h"
-
-#include <QDateTime>
-#include <QFile>
-#include <QString>
-#include <QUrl>
 
 #include <Nepomuk/Resource>
-#include <Nepomuk/File>
-#include <Nepomuk/Variant>
-#include <Nepomuk/Vocabulary/NIE>
-#include <Nepomuk/Vocabulary/NFO>
-#include <Nepomuk/Vocabulary/NMM>
-#include <Nepomuk/Query/Query>
 
 using namespace Meta;
-using namespace Nepomuk::Query;
 
 NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection* const coll )
     : Track()
-    , m_qurl( resUri )
     , m_artist( 0 )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_album( 0 )
     , m_year( 0 )
     , m_coll( coll )
+    , m_qurl( resUri )
 
 {
     m_resource = Nepomuk::Resource( m_qurl );
@@ -201,7 +184,6 @@ NepomukTrack::createDate() const
 QDateTime
 NepomukTrack::modifyDate() const
 {
-
     return m_modifyDate;
 }
 

@@ -28,8 +28,8 @@ typedef KSharedPtr<NepomukArtist> NepomukArtistPtr;
 typedef QList<NepomukArtistPtr> NepomukArtistList;
 
 /**
-  * Represents a unit artist resource in Amarok
-  */
+ * Represents a unit artist resource in Amarok
+ */
 
 class NepomukArtist : public Artist
 {

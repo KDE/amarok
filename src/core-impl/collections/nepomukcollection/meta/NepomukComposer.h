@@ -18,9 +18,7 @@
 #ifndef NEPOMUKCOMPOSER_H
 #define NEPOMUKCOMPOSER_H
 
-
 #include "core/meta/Meta.h"
-
 
 namespace Meta
 {
@@ -30,8 +28,8 @@ typedef KSharedPtr<NepomukComposer> NepomukComposerPtr;
 typedef QList<NepomukComposerPtr> NepomukComposerList;
 
 /**
-  * Represents a unit composer resource in Amarok
-  */
+ * Represents a unit composer resource in Amarok
+ */
 
 class NepomukComposer : public Composer
 {
@@ -42,16 +40,15 @@ public:
     virtual QString name() const;
 
     /**
-      * A nepomuk specific function used to populate m_tracks
-      * This is called during the construction of the meta maps
-      * in the constructor of NepomukCollection
-      */
+     * A nepomuk specific function used to populate m_tracks
+     * This is called during the construction of the meta maps
+     * in the constructor of NepomukCollection
+     */
     void addTrack( const TrackPtr trackPtr );
 
 private:
     QString m_name;
     TrackList m_tracks;
-
 
 };
 

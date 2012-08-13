@@ -18,16 +18,13 @@
 #include "NepomukYear.h"
 
 #include "core/meta/Meta.h"
-#include <Nepomuk/Resource>
 
-using namespace Collections;
 using namespace Meta;
 
 NepomukYear::NepomukYear( const QString &name )
     : Meta::Year()
     , m_name( name )
 {
-
 }
 
 TrackList

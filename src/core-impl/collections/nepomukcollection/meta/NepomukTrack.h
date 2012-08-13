@@ -27,13 +27,9 @@
 
 #include "core/meta/Meta.h"
 
-#include <QDateTime>
 #include <QSharedPointer>
-#include <QString>
 
 #include <Nepomuk/Resource>
-#include <KUrl>
-#include <QDateTime>
 
 namespace Meta
 {
@@ -43,8 +39,8 @@ typedef KSharedPtr<NepomukTrack> NepomukTrackPtr;
 typedef QList<NepomukTrackPtr> NepomukTrackList;
 
 /**
-  * Represents a unit music track resource in Amarok
-  */
+ * Represents a unit music track resource in Amarok
+ */
 
 class NepomukTrack : public Track
 {
@@ -94,7 +90,7 @@ public:
     void setYear( NepomukYearPtr year );
 
     void setName( const QString &name );
-    void setType( const QString & type );
+    void setType( const QString &type );
     void setLength( const qint64 length );
     void setBitrate( const int rate );
     void setTrackNumber( const int trackNumber );
@@ -110,14 +106,13 @@ public:
     void setTrackPeakGain( const double trackPeakGain );
     void setAlbumGain( const double albumGain );
     void setAlbumPeakGain( const double albumPeakGain );
-
     void setKUrl( const KUrl url );
 
     // Non pure virtual functions
     virtual bool inCollection() const;
     /**
-      * This should be implemented, else breaks TagDialog::getTagsFromTrack()
-      */
+     * This should be implemented, else breaks TagDialog::getTagsFromTrack()
+     */
     virtual Collections::Collection* collection() const;
     virtual qreal replayGain( ReplayGainTag mode ) const;
 

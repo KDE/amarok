@@ -19,21 +19,17 @@
 
 #include "core/meta/Meta.h"
 
-#include <QString>
-
 using namespace Meta;
 
 NepomukGenre::NepomukGenre( const QString &name )
     : Meta::Genre()
     , m_name( name )
 {
-
 }
 
 TrackList
 NepomukGenre::tracks()
 {
-
     return m_tracks;
 }
 

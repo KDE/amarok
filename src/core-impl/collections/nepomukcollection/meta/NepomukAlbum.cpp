@@ -19,8 +19,6 @@
 
 #include "core/meta/Meta.h"
 
-#include <QString>
-
 using namespace Meta;
 
 NepomukAlbum::NepomukAlbum( const QString &name )

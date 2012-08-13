@@ -18,15 +18,12 @@
 
 #include "core/meta/Meta.h"
 
-#include <QString>
-
 using namespace Meta;
 
 NepomukLabel::NepomukLabel( const QString &name )
     : Meta::Label()
     , m_name( name )
 {
-
 }
 
 QString

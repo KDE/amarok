@@ -21,8 +21,6 @@
 #include "core/meta/Meta.h"
 #include "NepomukCollection.h"
 
-#include <Nepomuk/Resource>
-
 using namespace Collections;
 
 namespace Meta
@@ -42,10 +40,10 @@ public:
 
     // nepomuk specific function
     /**
-      * A nepomuk specific function used to populate m_tracks
-      * This is called during the construction of the meta maps
-      * in the constructor of NepomukCollection
-      */
+     * A nepomuk specific function used to populate m_tracks
+     * This is called during the construction of the meta maps
+     * in the constructor of NepomukCollection
+     */
     void addTrack( const TrackPtr trackPtr );
 private:
     QString m_name;

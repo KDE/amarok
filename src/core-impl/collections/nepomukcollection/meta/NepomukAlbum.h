@@ -28,8 +28,8 @@ typedef KSharedPtr<NepomukAlbum> NepomukAlbumPtr;
 typedef QList<NepomukAlbumPtr> NepomukAlbumList;
 
 /**
-  * Represents a unit album resource in Amarok
-  */
+ * Represents a unit album resource in Amarok
+ */
 
 class NepomukAlbum : public Meta::Album
 {
@@ -44,10 +44,10 @@ public:
     virtual QString name() const;
 
     /**
-      * A nepomuk specific function used to populate m_tracks
-      * This is called during the construction of the meta maps
-      * in the constructor of NepomukCollection
-      */
+     * A nepomuk specific function used to populate m_tracks
+     * This is called during the construction of the meta maps
+     * in the constructor of NepomukCollection
+     */
     void addTrack( const TrackPtr trackPtr );
 
 private:
