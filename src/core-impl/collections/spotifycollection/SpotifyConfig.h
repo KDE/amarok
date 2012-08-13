@@ -33,6 +33,8 @@ public:
     const QString resolverPath() const { return m_resolverPath; }
     void setResolverPath( const QString& path ) { m_resolverPath = path; }
 
+    const QString resolverDownloadUrl() const { return m_resolverDownloadUrl + resolverName(); }
+
     bool highQuality() const { return m_highQuality; }
     void setHighQuality( const bool highquality ) { m_highQuality = highquality; }
 

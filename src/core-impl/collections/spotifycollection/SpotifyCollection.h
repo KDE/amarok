@@ -22,9 +22,10 @@
 #include "SpotifyMeta.h"
 #include "support/Controller.h"
 #include "core/support/Debug.h"
-#include "SpotifyConfig.h"
+#include "SpotifySettings.h"
 #include <QObject>
 #include <QString>
+#include <QAction>
 
 namespace Collections
 {
@@ -88,12 +89,15 @@ namespace Collections
 
         private Q_SLOTS:
             void slotSpotifyError( const Spotify::Controller::ErrorState );
+            void slotConfigure();
 
         private:
             QString m_collectionId;
 
             QSharedPointer< MemoryCollection > m_memoryCollection;
             Spotify::Controller* m_controller;
+
+            QAction* m_configureAction;
     };
 } // namespace Collections
 

@@ -39,6 +39,13 @@ namespace Collections
     class SpotifyQueryMaker;
 }
 
+namespace Spotify { class Controller; }
+
+namespace The
+{
+    extern Spotify::Controller* SpotifyController( const QString& resolverPath = QString() );
+}
+
 namespace Spotify
 {
 
@@ -59,11 +66,12 @@ public:
     virtual QString name() const { return m_name; }
     virtual QString filePath() const { return m_filePath; }
     virtual void setFilePath( const QString& resolverPath ) { m_filePath = resolverPath; }
-    virtual void login(const QString& username, const QString& password);
+    virtual void login(const QString& username, const QString& password, const bool highQuality = false);
     virtual bool running() const;
     virtual bool loaded() const;
 
     virtual void reload();
+    virtual void unload();
 
     virtual void sendMessage( const QVariantMap& map );
 
@@ -128,7 +136,8 @@ signals:
     void errorMsgReceived( const QString& msg );
     void userChanged();
 
-    void loggedIn();
+    void loginSuccess( const QString& user );
+    void loginFailed();
 
     void spotifyReady();
     void queryReady( const Spotify::Query* query );
