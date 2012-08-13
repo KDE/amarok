@@ -55,7 +55,6 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
 
     m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", m_ui->dtTokens );
     m_dropTarget->setRowLimit( 1 );
-    m_dropTarget->layout()->setContentsMargins( 1, 1, 1, 1 );
 
     QVBoxLayout *l = new QVBoxLayout( m_ui->dtTokens );
     l->setContentsMargins( 0, 0, 0, 0 );

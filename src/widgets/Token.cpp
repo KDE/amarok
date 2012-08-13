@@ -40,34 +40,30 @@ Token::Token( const QString &name, const QString &iconName, qint64 value, QWidge
     , m_value( value )
 {
     setAttribute( Qt::WA_Hover );
-    if ( parent )
+    if( parent )
     {
         if ( TokenDropTarget *editWidget = qobject_cast<TokenDropTarget*>( parent ) )
             connect( this, SIGNAL(changed()), editWidget, SIGNAL(changed()) );
     }
 
-    m_textColor = QPalette::Text;
-
     m_label = new QLabel( this );
     m_label->setAlignment( Qt::AlignCenter );
-    m_label->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    m_label->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_label->setText( name );
 
-    QHBoxLayout *hlayout = new QHBoxLayout( this );
-    setLayout( hlayout );
-    
     m_iconContainer = new QLabel( this );
     m_iconContainer->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     QPixmap pixmap = QPixmap( icon().pixmap( 16, 16 ) );
     m_iconContainer->setPixmap( pixmap );
 
-    setContentsMargins( 4, 2, 4, 2 );
-
+    QHBoxLayout *hlayout = new QHBoxLayout( this );
     hlayout->setContentsMargins( 0, 0, 0, 0 );
     hlayout->addWidget( m_iconContainer );
     hlayout->addWidget( m_label );
-    
-    m_iconContainer->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
+    setLayout( hlayout );
+
+    setContentsMargins( 4, 2, 4, 2 ); // we need extra space for the border
+    setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 }
 
 QString
@@ -95,13 +91,16 @@ QString Token::iconName() const
 
 QColor Token::textColor() const
 {
-    return m_textColor;
+    return m_label->palette().color( QPalette::Foreground );
 }
 
 void Token::setTextColor( QColor textColor )
 {
-    m_textColor = textColor;
-    m_label->setText( "<font color=\"" + m_textColor.name() + "\">" + m_name + "</font>" );
+    if( textColor == this->textColor() )
+        return;
+    QPalette myPalette( m_label->palette() );
+    myPalette.setColor( QPalette::Foreground, textColor );
+    m_label->setPalette( myPalette );
 }
 
 void Token::paintEvent(QPaintEvent *pe)

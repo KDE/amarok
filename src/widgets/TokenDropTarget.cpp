@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Thomas Lbking <thomas.luebking@web.de>                            *
+ * Copyright (c) 2012 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -24,9 +25,6 @@
 #include <QPainter>
 #include <QVBoxLayout>
 
-#include <QtDebug>
-
-static const bool trailingStretch = false;
 
 /** TokenDragger - eventfilter that drags a token, designed to be a child of TokenDropTarget
 This is necessary, as if TokenDropTarget would QDrag::exec() itself, the eventFilter would be blocked
@@ -81,7 +79,7 @@ private:
             return false;
 
         bool ret = false;
-        bool stacked = token->parentWidget() && qobject_cast<TokenDropTarget*>( token->parentWidget() );
+        bool stacked = token->parentWidget() && qobject_cast<TokenDropTarget*>( token->parentWidget() ); // true if token originated from a TokenDropTarget.
         if (stacked)
             token->hide();
 
@@ -103,7 +101,7 @@ private:
 
         if ( stacked )
         {
-            if ( dropAction != Qt::MoveAction && dropAction != Qt::CopyAction ) // dragged out
+            if( dropAction != Qt::MoveAction && dropAction != Qt::CopyAction ) // dragged out and not just dragged to another position.
             {
                 // TODO: nice poof animation? ;-)
                 delete token;
@@ -126,11 +124,13 @@ private:
 };
 
 
-TokenDropTarget::TokenDropTarget( const QString &mimeType, QWidget *parent ) : QWidget( parent ),
-m_tokenDragger( new TokenDragger( mimeType, this ) ),
-m_tokenFactory( new TokenFactory() )
+TokenDropTarget::TokenDropTarget( const QString &mimeType, QWidget *parent )
+    : QWidget( parent )
+    , m_tokenDragger( new TokenDragger( mimeType, this ) )
+    , m_tokenFactory( new TokenFactory() )
+    , m_rows( 0 )
+    , m_horizontalStretch( false ) // DANGER: m_horizontalStretch is used as int in the following code, assuming that true == 1
 {
-    new QVBoxLayout( this );
     m_mimeType = mimeType;
     m_limits[0] = m_limits[1] = 0;
     // let daddy widget be droppable... ;)
@@ -139,10 +139,12 @@ m_tokenFactory( new TokenFactory() )
     parent->removeEventFilter( this );
     parent->installEventFilter( this );
 
+    new QVBoxLayout( this );
     // visual, maybe there should be spacing? however, frames etc. can have contentmargin.
     layout()->setSpacing( 0 );
-    // top-align content
-    layout()->addItem( new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding ) );
+    layout()->setContentsMargins( 1, 1, 1, 1 );
+
+    setMinimumSize( 60, 16 ); // sloppy. The minimum size depends on the size of the "Drag here" text.
 }
 
 bool
@@ -169,29 +171,20 @@ TokenDropTarget::appendRow()
 {
     QHBoxLayout *box = new QHBoxLayout;
     box->setSpacing( 0 );
-//     box->addStretch();
-    static_cast<QVBoxLayout*>(layout())->insertLayout( layout()->count() - 1, box ); // last item is a spacer
+    if( m_horizontalStretch )
+        box->addStretch();
+    static_cast<QVBoxLayout*>(layout())->insertLayout( rows(), box );
+    m_rows++;
     return box;
-}
-
-QWidget *
-TokenDropTarget::childAt( const QPoint &pos ) const
-{
-    for ( int row = 0; row <= rows(); ++row )
-        if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
-            for ( int col = 0; col < rowBox->count(); ++col )
-                if ( QWidget *kid = rowBox->itemAt( col )->widget() )
-                if ( kid->geometry().contains( pos ) )
-                    return kid;
-    return NULL;
 }
 
 void
 TokenDropTarget::clear()
 {
     QLayoutItem *row, *col;
-    while( ( row = layout()->takeAt( 0 ) ) )
+    while( m_rows )
     {
+        row = layout()->takeAt( 0 );
         if ( QLayout *layout = row->layout() )
         {
             while( ( col = layout->takeAt( 0 ) ) )
@@ -201,45 +194,35 @@ TokenDropTarget::clear()
             }
         }
         delete row;
+        m_rows--;
     }
-    //read our spacer
-    layout()->addItem( new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding ) );
-    update(); // reshow the text
 }
 
 int
-TokenDropTarget::count( int row ) const
+TokenDropTarget::count() const
 {
-    int lower = 0, upper = rows();
-    if ( row > -1 && row < rows() )
-    {
-        lower = row;
-        upper = row + 1;
-    }
-
     int c = 0;
-    for ( row = lower; row < upper; ++row )
-        if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
-            c += rowBox->count() - trailingStretch;
+    for( int row = rows() - 1; row >= 0; --row )
+        if( QBoxLayout *box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() ) )
+            c += box->count() - m_horizontalStretch;
+
     return c;
 }
 
 void
 TokenDropTarget::deleteEmptyRows()
 {
-    QBoxLayout *box = 0;
-    for ( int row = 0; row <= rows(); )
+    for( int row = rows() - 1; row >= 0; --row )
     {
-        box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
-        if ( box && box->count() < ( 1 + trailingStretch ) ) // sic! last is spacer
+        QBoxLayout *box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
+        if( box && box->count() < ( 1 + m_horizontalStretch ) ) // sic! last is spacer
         {
-            layout()->removeItem( box );
-            delete box;
+            delete layout()->takeAt( row );
+            m_rows--;
         }
-        else
-            ++row;
     }
-    update(); // in case we're empty now
+
+    update(); // this removes empty layouts somehow for deleted tokens
     emit changed();
 }
 
@@ -258,7 +241,7 @@ TokenDropTarget::drags( int row )
     for ( row = lower; row < upper; ++row )
         if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
         {
-            for ( int col = 0; col < rowBox->count() - trailingStretch; ++col )
+            for( int col = 0; col < rowBox->count() - m_horizontalStretch; ++col )
                 if ( ( token = qobject_cast<Token*>( rowBox->itemAt( col )->widget() ) ) )
                     list << token;
         }
@@ -278,11 +261,11 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
     token->setParent( parentWidget() );
 
     QBoxLayout *box = 0;
-    if ( Token *brother = qobject_cast<Token*>( childAt( pos ) ) )
+    if( Token *sibling = qobject_cast<Token*>( childAt( pos ) ) )
     {   // we hit a sibling, -> prepend
         QPoint idx;
-        box = rowBox( brother, &idx );
-        if ( pos.x() > brother->geometry().x() + 2*brother->width()/3 )
+        box = rowBox( sibling, &idx );
+        if( pos.x() > sibling->geometry().x() + 2 * sibling->width() / 3 )
             box->insertWidget( idx.x() + 1, token );
         else
             box->insertWidget( idx.x(), token );
@@ -298,12 +281,12 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
             if ( !box )
                 box = appendRow();
         }
-        int idx = ( box->count() > trailingStretch && box->itemAt(0)->widget() &&
-                    pos.x() < box->itemAt(0)->widget()->geometry().x() ) ? 0 : box->count() - trailingStretch;
-        box->insertWidget( idx, token ); // append to existing row
+        int col = ( box->count() > m_horizontalStretch && box->itemAt(0)->widget() &&
+                    pos.x() < box->itemAt(0)->widget()->geometry().x() ) ? 0 : box->count() - m_horizontalStretch;
+        box->insertWidget( col, token ); // append to existing row
     }
     token->show();
-    update(); // count changed
+    // update(); // count changed
     emit changed();
 
     token->setFocus( Qt::OtherFocusReason ); // select the new token right away
@@ -330,17 +313,21 @@ TokenDropTarget::eventFilter( QObject *o, QEvent *ev )
             Token *token = qobject_cast<Token*>( de->source() );
             if ( !token )
             {
+                // decode the stream created in TokenPool::dropEvent
                 QByteArray itemData = de->mimeData()->data( m_mimeType );
                 QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
                 QString tokenName;
                 QString tokenIconName;
                 qint64 tokenValue;
+                QColor tokenTextColor;
                 dataStream >> tokenName;
                 dataStream >> tokenIconName;
                 dataStream >> tokenValue;
+                dataStream >> tokenTextColor;
 
                 token = m_tokenFactory->createToken( tokenName, tokenIconName, tokenValue, this );
+                token->setTextColor( tokenTextColor );
                 token->removeEventFilter( m_tokenDragger );
                 token->installEventFilter( m_tokenDragger );
                 token->setCursor( Qt::OpenHandCursor );
@@ -355,23 +342,27 @@ TokenDropTarget::eventFilter( QObject *o, QEvent *ev )
 void
 TokenDropTarget::insertToken( Token *token, int row, int col )
 {
-    QBoxLayout *box = 0;
-    if ( row < 0 && rows() >= (int)rowLimit() )
+    // - validate row
+    if ( row < 0 && rowLimit() && rows() >= (int)rowLimit() )
         row = rowLimit() - 1; // want to append, but we can't so use the last row instead
 
-    if ( row < 0 || row > rows() - 1 )
+    QBoxLayout *box;
+    if( row < 0 || row >= rows() )
         box = appendRow();
     else
         box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
+
+    // - validate col
+    if( col < 0 || col > box->count() - ( 1 + m_horizontalStretch ) )
+        col = box->count() - m_horizontalStretch;
+
     token->setParent( parentWidget() );
-    if ( col < 0 || col > box->count() - ( 1 + trailingStretch ) )
-        col = box->count() - trailingStretch;
     box->insertWidget( col, token );
     token->removeEventFilter( m_tokenDragger );
     token->installEventFilter( m_tokenDragger );
     token->setCursor( Qt::OpenHandCursor );
     emit changed();
-    update(); // count changed
+    // update(); // count changed
 }
 
 void
@@ -400,18 +391,12 @@ TokenDropTarget::row( Token *token ) const
     return -1;
 }
 
-int
-TokenDropTarget::rows() const
-{
-    return layout()->count() - 1;
-}
-
 QBoxLayout *
 TokenDropTarget::rowBox( QWidget *w, QPoint *idx ) const
 {
     QBoxLayout *box = 0;
     int col;
-    for ( int row = 0; row <= rows(); ++row )
+    for ( int row = 0; row < rows(); ++row )
     {
         box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
         if ( box && ( col = box->indexOf( w ) ) > -1 )
@@ -431,7 +416,7 @@ QBoxLayout *
 TokenDropTarget::rowBox( const QPoint &pt ) const
 {
     QBoxLayout *box = 0;
-    for ( int row = 0; row <= rows(); ++row )
+    for ( int row = 0; row < rows(); ++row )
     {
         box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
         if ( !box )

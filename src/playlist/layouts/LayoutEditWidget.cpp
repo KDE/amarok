@@ -26,6 +26,8 @@
 
 #include <QCheckBox>
 #include <QSpinBox>
+#include <QSpacerItem>
+#include <QLayout>
 
 using namespace Playlist;
 
@@ -37,6 +39,11 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     m_dragstack->setCustomTokenFactory( m_tokenFactory );
     connect ( m_dragstack, SIGNAL( focusReceived(QWidget*) ), this, SIGNAL( focusReceived(QWidget*) ) );
     connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( changed() ) );
+
+    // top-align content by adding a stretch
+    QBoxLayout *l = qobject_cast<QBoxLayout*>(layout());
+    l->setStretch( 0, 0 );
+    l->addStretch( 1 );
 
     m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ) , this );
 }

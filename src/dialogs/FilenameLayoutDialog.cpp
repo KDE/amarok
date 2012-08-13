@@ -41,7 +41,6 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
 
     m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", filenameLayout );
     m_dropTarget->setRowLimit( 1 );
-    m_dropTarget->layout()->setContentsMargins( 1, 1, 1, 1 );
     QVBoxLayout *l = new QVBoxLayout(filenameLayout);
     l->setContentsMargins( 0, 0, 0, 0 );
     l->addWidget(m_dropTarget);
@@ -107,7 +106,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         setAdvancedMode( true );
         filenameLayoutEdit->setText( Amarok::config( m_configCategory ).readEntryUntranslated( "Custom Scheme" ) );
     }
-    else if( mode == QLatin1String( "Basic" ) )
+    else
     {
         setAdvancedMode( false );
         inferScheme( Amarok::config( m_configCategory ).readEntryUntranslated( "Custom Scheme" ) );
