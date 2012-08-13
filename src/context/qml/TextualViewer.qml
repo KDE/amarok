@@ -37,6 +37,7 @@ Item {
             width: parent.width - scroll.width - 5
             wrapMode: Text.Wrap
             anchors.rightMargin: 50
+            anchors.leftMargin: 5
             text: ""
         }
     }

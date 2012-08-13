@@ -30,6 +30,7 @@ Item {
                 d = currentSource.data['current']
                 infoSection.track = d['track']
                 infoSection.album_artist = d["artist"] + " - " + d["album"]
+                infoSection.albumart = d["albumart"]
                 for (var stuff in d) {
 //                     console.log(stuff + " uguale a " + d[stuff])
                 }
@@ -42,7 +43,6 @@ Item {
         height: 30
         anchors.right: parent.right; anchors.left: parent.left;
         anchors.top: infoSection.bottom
-        anchors.topMargin: 10
 
         clip: true;
 
@@ -84,26 +84,27 @@ Item {
             }
         }
 
-        SvgItem {
-            id: more_button
-            elementId: "more"
-            svg: mainSvg
-            height: 30
-            width: 30
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
-        }
+//         SvgItem { FIXME: uncomment when ready
+//             id: more_button
+//             elementId: "more"
+//             svg: mainSvg
+//             height: 30
+//             width: 30
+//             anchors.verticalCenter: parent.verticalCenter
+//             anchors.right: parent.right
+//         }
     }
 
     PageStack {
         id: texts
-        anchors.topMargin: 15
+        anchors.topMargin: 10
+        anchors.bottomMargin: 10
         anchors.top: buttons.bottom
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.left: parent.left
-        anchors.leftMargin: 15
         initialPage: lyrics_text
+
         TextualViewer {
             z: 10
             id: wikitext
@@ -116,7 +117,7 @@ Item {
             connectedSources: ["wikipedia"]
             onDataChanged: {
                 d = wikiSource.data['wikipedia']
-                wikitext.title = "Wikipedia - " + d['title']
+                wikitext.title = "Wikipedia" // - " + d['title']
                 wikitext.text = d['page']
             }
         }
@@ -134,7 +135,8 @@ Item {
             onDataChanged: {
                 d = lyricsSource.data['lyrics']
                 if (d['displayReady'] == true) {
-                    lyrics_text.title = d['artist'] + " - " + d['title']
+//                     lyrics_text.title = d['artist'] + " - " + d['title']
+                    lyrics_text.title = "Lyrics"
                     lyrics_text.text = d['lyrics']
                 } else {
                     lyrics_text.title = "No lyrics available"

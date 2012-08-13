@@ -1,34 +1,38 @@
 
 import QtQuick 1.1
+import org.kde.qtextracomponents 0.1
 
 Item {
     property alias track: title.text
     property alias album_artist: albumartist.text
-    property alias albumart: albumart.color // FIXME
+    property alias albumart: albumart.pixmap
 
     Text {
         id: title
         anchors.top: parent.top
         anchors.left: parent.left
-        anchors.right: parent.right
+        anchors.right: albumart.left
+        wrapMode: Text.WordWrap
+        font.pointSize: 15
         text: "No track playing"
-        font.pointSize: 12
     }
     Text {
         id: albumartist
         anchors.top: title.bottom
         anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.topMargin: 5
+        anchors.right: albumart.left
+        clip: true
         text: ""
+        wrapMode: Text.WordWrap
+        anchors.topMargin: 5
+        font.pointSize: 12
     }
-    Rectangle {
+    QPixmapItem {
         id: albumart
-        width: 100
-        height: 100
+        width: nativeWidth
+        height: nativeHeight
         anchors.right: parent.right
         anchors.top: parent.top
-        color: "gray"
         z: -50
     }
 }
