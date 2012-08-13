@@ -222,7 +222,7 @@ safeToWriteWithMessage( const QString &mountPoint, const Itdb_iTunesDB *itdb, QS
         message += ( sysInfoExtendedExists )
                    ? i18n( "%1 family uses %2 file to generate correct database checksum.",
                            gen, sysInfoExtended )
-                   : i18n( "%1 family needs %2 file to generate correct database checksum!",
+                   : i18n( "%1 family needs %2 file to generate correct database checksum.",
                            gen, sysInfoExtended );
         if( !sysInfoExtendedExists )
             return false;
@@ -234,7 +234,7 @@ safeToWriteWithMessage( const QString &mountPoint, const Itdb_iTunesDB *itdb, QS
         message += hashInfoExists
                    ? i18n( "%1 family uses %2 file to generate correct database checksum.",
                            gen, hashInfo )
-                   : i18n( "%1 family needs %2 file to generate correct database checksum!",
+                   : i18n( "%1 family needs %2 file to generate correct database checksum.",
                            gen, hashInfo );
         if( !hashInfoExists )
             return false;
