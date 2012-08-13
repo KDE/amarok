@@ -35,7 +35,6 @@
 #include <QString>
 #include <QTimer>
 
-
 namespace Collections
 {
 
@@ -159,12 +158,6 @@ namespace Collections
         {
             delete m_configureAction;
         }
-    }
-
-    Spotify::Controller*
-    SpotifyCollection::controller()
-    {
-        return m_controller;
     }
 
     Spotify::Controller*
