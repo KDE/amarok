@@ -23,25 +23,18 @@
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "SpotifyQueryMaker.h"
 #include "support/Controller.h"
 #include "support/TrackProxy.h"
-#include "SpotifyController.h"
 #include <KIcon>
 
+#include <QApplication>
 #include <QObject>
 #include <QString>
 #include <QTimer>
 
-namespace The
-{
-    static Spotify::Controller* gSpotifyController = 0;
-    AMAROK_EXPORT Spotify::Controller* SpotifyController()
-    {
-        return gSpotifyController;
-    }
-}
 
 namespace Collections
 {
@@ -71,8 +64,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_config.load();
-        m_controller = new Spotify::Controller( m_config.resolverPath() );
+        m_controller = The::SpotifyController( m_config.resolverPath() );
 
         Q_ASSERT( m_controller != 0 );
 
@@ -86,6 +78,9 @@ namespace Collections
         m_collection = new SpotifyCollection( m_controller );
         connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
         CollectionManager::instance()->addTrackProvider( m_collection.data() );
+
+        // Register collection in CollectionManager
+        emit newCollection( m_collection.data() );
 
         m_initialized = true;
     }
@@ -104,7 +99,6 @@ namespace Collections
 
         if( !m_collection )
         {
-            Q_ASSERT( m_controller != 0 );
             m_collection = new SpotifyCollection( m_controller );
             connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
         }
@@ -112,7 +106,6 @@ namespace Collections
         if( !m_collectionIsManaged )
         {
             m_collectionIsManaged = true;
-            emit newCollection( m_collection.data() );
         }
 
         m_controller->setFilePath( m_config.resolverPath() );
@@ -149,13 +142,29 @@ namespace Collections
         : m_collectionId( i18n( "Spotify Collection" ) )
         , m_memoryCollection( new MemoryCollection )
         , m_controller( controller )
+        , m_configureAction( 0 )
     {
         DEBUG_BLOCK
+
+        // Create configuration action
+        m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure Spotify collection" ), this );
+        m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
+        connect( m_configureAction, SIGNAL( triggered() ), SLOT( slotConfigure() ) );
     }
 
     SpotifyCollection::~SpotifyCollection()
     {
         DEBUG_BLOCK
+        if( m_configureAction )
+        {
+            delete m_configureAction;
+        }
+    }
+
+    Spotify::Controller*
+    SpotifyCollection::controller()
+    {
+        return m_controller;
     }
 
     Spotify::Controller*
@@ -274,17 +283,31 @@ namespace Collections
     bool
     SpotifyCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
     {
-        //TODO: Make this work once capabilities are set.
-        Q_UNUSED( type );
-        return false;
+        //DONE:TODO: Make this work once capabilities are set.
+        switch( type )
+        {
+            case Capabilities::Capability::Actions :
+                return true;
+            default:
+                return false;
+        }
     }
 
     Capabilities::Capability*
     SpotifyCollection::createCapabilityInterface( Capabilities::Capability::Type type )
     {
-        //TODO: Make this work once capabilities are set.
-        Q_UNUSED( type );
-        return 0;
+        //DONE:TODO: Make this work once capabilities are set.
+        switch( type )
+        {
+            case Capabilities::Capability::Actions :
+            {
+                QList< QAction * > actions;
+                actions << m_configureAction;
+                return new Capabilities::ActionsCapability( actions );
+            }
+            default:
+                return 0;
+        }
     }
 
     void
@@ -384,4 +407,16 @@ namespace Collections
         if( error == Spotify::Controller::ErrorState( 1 ) )
             emit remove();
     }
+
+    void
+    SpotifyCollection::slotConfigure()
+    {
+        // settingDialog will be deleted after closed
+        SpotifySettings* settingDialog = new SpotifySettings;
+        settingDialog->setModal( true );
+        // This will return immediately
+        settingDialog->show();
+    }
 } // namespace Collections
+
+#include "SpotifyCollection.moc"

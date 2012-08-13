@@ -21,8 +21,6 @@ SpotifyConfig::SpotifyConfig()
     DEBUG_BLOCK
 
     m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
-
-    load();
 }
 
 SpotifyConfig::~SpotifyConfig()
@@ -158,12 +156,14 @@ SpotifyConfig::save()
 void
 SpotifyConfig::reset()
 {
+    DEBUG_BLOCK
     warning() << "Reset Spotify config";
     m_username = "";
     m_password = "";
     // Use the the API key embedded in Spotify resolver
     m_apikey = "";
-    m_resolverPath = KStandardDirs::locateLocal( "exec", resolverName() );
+    m_resolverPath = KStandardDirs::locateLocal( "exe", resolverName() );
+    debug() << "Resolver path: " << m_resolverPath;
 }
 
 const QString

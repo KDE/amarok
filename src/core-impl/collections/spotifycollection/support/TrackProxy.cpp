@@ -57,4 +57,6 @@ void TrackProxy::queryDone( Spotify::Query* query, const Meta::SpotifyTrackList&
     deleteLater();
 }
 
-}
+} // namespace Spotify
+
+#include "TrackProxy.moc"

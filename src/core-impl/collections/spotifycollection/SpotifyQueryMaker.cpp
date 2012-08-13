@@ -611,3 +611,5 @@ namespace Collections
         m_memoryQueryMaker.data()->run();
     }
 }
+
+#include "SpotifyQueryMaker.moc"

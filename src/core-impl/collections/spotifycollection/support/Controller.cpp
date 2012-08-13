@@ -30,6 +30,39 @@
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
 
+#define ShowMessage(x) Amarok::Components::logger()->shortMessage( x )
+
+namespace Spotify
+{
+
+static Spotify::Controller* GlobalControllerInstance = 0;
+static Spotify::Controller* InitGlobalController( const QString& resolverPath = QString() )
+{
+    if( !GlobalControllerInstance )
+    {
+        GlobalControllerInstance = new Spotify::Controller( resolverPath );
+    }
+
+    return GlobalControllerInstance;
+}
+
+} // namespace Spotify
+
+namespace The
+{
+    Spotify::Controller* SpotifyController( const QString& resolverPath )
+    {
+        if( Spotify::GlobalControllerInstance )
+        {
+            return Spotify::GlobalControllerInstance;
+        }
+        else
+        {
+            return Spotify::InitGlobalController( resolverPath );
+        }
+    }
+} // namespace The
+
 namespace Spotify
 {
 Controller::Controller( const QString& exec )
@@ -56,7 +89,13 @@ Controller::~Controller()
 {
     disconnect( &m_proc, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( procExited( int, QProcess::ExitStatus ) ) );
     m_deleting = true;
+    unload();
+}
 
+void
+Controller::unload()
+{
+    DEBUG_BLOCK
     QVariantMap msg;
     msg[ "_msgtype" ] = "quit";
     sendMessage( msg );
@@ -72,6 +111,8 @@ Controller::~Controller()
         m_proc.terminate();
 #endif
     }
+
+    m_loaded = false;
 }
 
 void
@@ -79,6 +120,12 @@ Controller::start()
 {
     DEBUG_BLOCK
     debug() << "Starting Spotify resolver...";
+    if( !m_loaded )
+    {
+        debug() << "Resolver not loaded...";
+        return;
+    }
+
     m_stopped = false;
     if( m_ready )
     {
@@ -122,6 +169,8 @@ Controller::sendConfig()
 void
 Controller::reload()
 {
+    DEBUG_BLOCK
+    unload();
     startProcess();
 }
 
@@ -142,6 +191,12 @@ Controller::sendMessage( const QVariantMap& map )
 {
     DEBUG_BLOCK
 
+    if( !m_loaded )
+    {
+        debug() << "Spotify resolver not loaded";
+        return;
+    }
+
     QByteArray data = m_serializer.serialize( map );
     debug() << "Sending message: \n" << QString(data);
     sendRaw( data );
@@ -153,16 +208,17 @@ void Controller::readStderr()
 }
 
 void
-Controller::login(const QString &username, const QString &password)
+Controller::login(const QString &username, const QString &password, const bool highQuality)
 {
     DEBUG_BLOCK
 
     QString msg = i18n( "Trying to login to Spotify..." );
-    Amarok::Components::logger()->shortMessage( msg );
+    ShowMessage( msg );
     QVariantMap map;
     map["_msgtype"] = "login";
     map["username"] = username;
     map["password"] = password;
+    map["highQuality"] = highQuality;
 
     sendMessage(map);
 }
@@ -254,6 +310,7 @@ Controller::removeQueryFromCache( const QString& qid )
 void
 Controller::sendRaw( const QByteArray& msg )
 {
+    DEBUG_BLOCK
     if( !m_proc.isOpen() )
         return;
 
@@ -266,6 +323,7 @@ Controller::sendRaw( const QByteArray& msg )
 void
 Controller::handleMsg( const QByteArray& msg )
 {
+    debug() << "Received message: " << msg;
     DEBUG_BLOCK
     // Drop all messages during desctruction
     if( m_deleting )
@@ -347,6 +405,7 @@ Controller::handleMsg( const QByteArray& msg )
 void
 Controller::procExited( int code, QProcess::ExitStatus status )
 {
+    DEBUG_BLOCK
     m_ready = false;
     qDebug() << Q_FUNC_INFO << "RESOVER EXITED, code" << code << "status" << status << filePath();
 
@@ -371,6 +430,7 @@ Controller::procExited( int code, QProcess::ExitStatus status )
 void
 Controller::doSetup( const QVariantMap& m )
 {
+    DEBUG_BLOCK
     m_name = m.value( "name" ).toString();
     m_timeout = m.value( "timeout", 5 ).toUInt() * 1000;
 
@@ -385,13 +445,15 @@ Controller::doSetup( const QVariantMap& m )
 void
 Controller::startProcess()
 {
+    DEBUG_BLOCK
     if( !QFile::exists( filePath() ) )
     {
-        qDebug() << "*** Cannot find file" << filePath() << ", starting process failed";
+        debug() << "*** Cannot find file" << filePath() << ", starting process failed";
         // TODO: Set error message
         return;
     }
 
+    debug() << "Starting " << filePath();
     QFileInfo fi( filePath() );
     QString interpreter;
     QString runPath = filePath();
@@ -520,6 +582,18 @@ Controller::handleTracksRemoved( const QVariantMap& map )
 void
 Controller::handleLoginResponse( const QVariantMap& map )
 {
+    bool success = map["success"].toBool();
+    QString user = map["username"].toString();
+    if( success )
+    {
+        ShowMessage( i18n( "Logged in to Spotify as %1" ).arg( user ) );
+        emit loginSuccess( user );
+    }
+    else
+    {
+        ShowMessage( i18n( "Spotify login failed" ) );
+        emit loginFailed();
+    }
 }
 
 void
@@ -599,3 +673,5 @@ Controller::handleSearchResults( const QVariantMap& map )
 }
 
 } // namespace Spotify
+
+#include "Controller.moc"
