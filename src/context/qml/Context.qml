@@ -12,13 +12,37 @@ Item {
 //         multipleImages: true
         usingRenderingCache: false
     }
+
+    InfoWidget {
+        id: infoSection
+        anchors.right: parent.right; anchors.left: parent.left;
+        anchors.top: parent.top
+        height: 100
+        anchors.rightMargin: 10
+        anchors.leftMargin: 5
+        anchors.topMargin: 15
+        DataSource {
+            id: currentSource
+            engine: "amarok-current"
+            connectedSources: ["current"]
+            onDataChanged: {
+//                 console.log("current has got DATA")
+                d = currentSource.data['current']
+                infoSection.track = d['track']
+                infoSection.album_artist = d["artist"] + " - " + d["album"]
+                for (var stuff in d) {
+                    console.log(stuff + " uguale a " + d[stuff])
+                }
+            }
+        }
+    }
     
     Item {
         id: buttons
         height: 30
         anchors.right: parent.right; anchors.left: parent.left;
-        anchors.top: parent.top
-        anchors.topMargin: 15
+        anchors.top: infoSection.bottom
+        anchors.topMargin: 10
 
         clip: true;
 
@@ -115,19 +139,6 @@ Item {
                 } else {
                     lyrics_text.title = "No lyrics available"
                     lyrics_text.text = ""
-                }
-            }
-        }
-
-        DataSource {
-            id: currentSource
-            engine: "amarok-current"
-            connectedSources: ["current"]
-            onDataChanged: {
-                console.log("current has got DATA")
-                d = currentSource.data['current']
-                for (var stuff in d) {
-                    console.log(stuff + " uguale a " + d[stuff])
                 }
             }
         }

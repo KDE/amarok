@@ -1,6 +1,7 @@
 
 SET(qml_files
     RichTextualViewer.qml
+    InfoWidget.qml
     Context.qml
     TextualViewer.qml)
 
