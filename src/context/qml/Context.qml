@@ -118,6 +118,19 @@ Item {
                 }
             }
         }
+
+        DataSource {
+            id: currentSource
+            engine: "amarok-current"
+            connectedSources: ["current"]
+            onDataChanged: {
+                console.log("current has got DATA")
+                d = currentSource.data['current']
+                for (var stuff in d) {
+                    console.log(stuff + " uguale a " + d[stuff])
+                }
+            }
+        }
     }
 
     SvgItem {

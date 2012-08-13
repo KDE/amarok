@@ -27,6 +27,20 @@
     There is no data source: if you connect to the engine, you immediately
     start getting updates when there is data.
 
+    Data keys:
+        * "artist" QString
+        * "track" QString
+        * "album" QString
+        * "rating" int (0-10)
+        * "score"
+        * "track_length"
+        * "last_played"
+        * "nplayed" Number of times played
+        * "cover" QImage
+        * "albumart" QPixmap
+        * "source_emblem"
+
+    Old doc:
     The key of the data is "current".
     The data is structured as a QVariantList, with the order:
         * Artist

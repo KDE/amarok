@@ -178,7 +178,15 @@ CurrentEngine::update( Meta::TrackPtr track )
 
     Plasma::DataEngine::Data data;
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
-    data["current"] = trackInfo;
+    data["artist"] = trackInfo[Meta::Field::ARTIST];
+    data["track"] =  trackInfo[Meta::Field::TITLE];
+    data["album"] =  trackInfo[Meta::Field::ALBUM];
+    data["rating"] =  trackInfo[Meta::Field::RATING];
+    data["score"] =  trackInfo[Meta::Field::SCORE];
+    data["track_length"] =  trackInfo[Meta::Field::LENGTH];
+    data["last_played"] =  trackInfo[Meta::Field::LAST_PLAYED];
+    data["nplayed"] =  trackInfo[Meta::Field::PLAYCOUNT];
+
     Meta::AlbumPtr album = track->album();
     data["albumart"] = QVariant( album ? The::coverCache()->getCover( album, m_coverWidth) : QPixmap() );
 
