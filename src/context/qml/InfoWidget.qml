@@ -11,7 +11,7 @@ Item {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        text: "The worst day since yesterday"
+        text: "No track playing"
         font.pointSize: 12
     }
     Text {
@@ -20,7 +20,7 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.topMargin: 5
-        text: "Floggin molly - Swagger"
+        text: ""
     }
     Rectangle {
         id: albumart

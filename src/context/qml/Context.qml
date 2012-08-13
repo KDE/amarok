@@ -31,7 +31,7 @@ Item {
                 infoSection.track = d['track']
                 infoSection.album_artist = d["artist"] + " - " + d["album"]
                 for (var stuff in d) {
-                    console.log(stuff + " uguale a " + d[stuff])
+//                     console.log(stuff + " uguale a " + d[stuff])
                 }
             }
         }
