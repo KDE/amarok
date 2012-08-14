@@ -5,11 +5,33 @@ import org.kde.plasma.core 0.1
 
 // Context view
 Item {
+
+    id: root
+    property bool playing;
+
+    onPlayingChanged: {
+
+        infoSection.playing = playing
+        if (playing) {
+            buttons.opacity = 1;
+            texts.opacity = 1;
+        } else {
+            buttons.opacity = 0;
+            texts.opacity = 0;
+        }
+    }
+
+     function startupFunction() {
+         console.log("START UP")
+         playing = true
+         playing = false
+     }
+
+     Component.onCompleted: startupFunction();
+
     Svg {
         id: mainSvg
-//         imagePath: "widgets/arrows"
         imagePath: "Amarok/theme"
-//         multipleImages: true
         usingRenderingCache: false
     }
 
@@ -28,13 +50,16 @@ Item {
             onDataChanged: {
 //                 console.log("current has got DATA")
                 d = currentSource.data['current']
-                infoSection.track = d['track']
-                infoSection.album_artist = d["artist"] + " - " + d["album"]
-                infoSection.albumart = d["albumart"]
+                root.playing = d["displayReady"]
 
-                console.log("Display ready: "+ d["displayReady"])
+                if (root.playing) {
+                    infoSection.track = d['track']
+                    infoSection.album_artist = d["artist"] + " - " + d["album"]
+                    infoSection.albumart = d["albumart"]
+
+                    console.log("Display ready: "+ d["displayReady"])
+                }
                 
-                infoSection.playing = d["displayReady"]
             }
         }
     }
@@ -155,6 +180,6 @@ Item {
             svg: mainSvg
             width: 244
             height: 244
-        }
+    }
 
 }

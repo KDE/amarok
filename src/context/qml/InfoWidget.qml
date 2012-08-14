@@ -12,20 +12,18 @@ Item {
         property bool playing;
         id: notplayingtext
 
-        anchors.fill: parent
-        horizontalAlignment: Text.AlignHCenter
-        playing: false
-        text: "No track playing"
-        font.pointSize: 15
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: parent.width*0.8
+        anchors.horizontalCenter: parent.horizontalCenter
 
-        onPlayingChanged: {
-            console.log("CALLED!!!! : playing = "+ playing)
-            if (playing) {
-                text = ""
-            } else {
-                text = "No track playing"
-            }
-        }
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        wrapMode: Text.WordWrap
+
+        playing: false
+        text: playing? "" : "Play a track to display additional information"
+        font.pointSize: 15
     }
 
     Text {
