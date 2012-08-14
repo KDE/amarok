@@ -25,8 +25,6 @@
 #include "EngineController.h"
 #include "biases/LastFmBias.h"
 #include "biases/WeeklyTopBias.h"
-#include "browsers/CollectionTreeItem.h"
-#include "browsers/CollectionTreeItemModelBase.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
 #include "LoveTrackAction.h"
@@ -34,33 +32,21 @@
 #include "LastFmTreeModel.h"
 #include "LastFmTreeView.h"
 #include "ScrobblerAdapter.h"
-#include "widgets/FlowLayout.h"
-#include "GlobalCollectionActions.h"
 #include "GlobalCurrentTrackActions.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/capabilities/LastFmCapability.h"
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
 #include "meta/LastFmMeta.h"
-#include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"
-#include "NetworkAccessManagerProxy.h"
 
-#include <lastfm/Audioscrobbler> // from liblastfm
-#include <lastfm/XmlQuery>
+#include <lastfm/XmlQuery.h>
 
-#include <KLocale>
-#include <KPasswordDialog>
+#include <KLineEdit>
 #include <KStandardDirs>
-#include <solid/networking.h>
 
-#include <QComboBox>
 #include <QCryptographicHash>
 #include <QGroupBox>
-#include <QNetworkReply>
-#include <QPainter>
-#include <QImage>
-#include <QFrame>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QTextDocument>        //Qt::escape
 
 AMAROK_EXPORT_SERVICE_PLUGIN( lastfm, LastFmServiceFactory )
@@ -224,10 +210,7 @@ LastFmService::init()
 {
     // set the global static Lastfm::Ws stuff
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
-    lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
-    // testing w/ official keys
-    //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
-    //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
+    lastfm::ws::SharedSecret = Amarok::lastfmApiSharedSecret();
     m_userNameArray = qstrdup( m_userName.toLatin1().data() );
     lastfm::ws::Username = m_userNameArray;
     if( lastfm::nam() != The::networkAccessManager() )
@@ -309,7 +292,8 @@ LastFmService::onAuthenticated()
         case QNetworkReply::NoError:
         {
 
-            lastfm::XmlQuery lfm = lastfm::XmlQuery( m_jobs[ "auth" ]->readAll() );
+            lastfm::XmlQuery lfm;
+            lfm.parse( m_jobs[ "auth" ]->readAll() );
             LastFmServiceConfig config;
 
             if( lfm.children( "error" ).size() > 0 )
@@ -359,10 +343,8 @@ LastFmService::onGetUserInfo()
     {
         case QNetworkReply::NoError:
         {
-            try
-            {
-                lastfm::XmlQuery lfm( m_jobs[ "getUserInfo" ]->readAll() );
-
+            lastfm::XmlQuery lfm;
+            if( lfm.parse( m_jobs[ "getUserInfo" ]->readAll() ) ) {
                 m_country = lfm["user"]["country"].text();
                 m_age = lfm["user"]["age"].text();
                 m_gender = lfm["user"]["gender"].text();
@@ -381,9 +363,10 @@ LastFmService::onGetUserInfo()
                 }
                 updateProfileInfo();
 
-            } catch( lastfm::ws::ParseError& e )
+            }
+            else
             {
-                debug() << "Got exception in parsing from last.fm:" << e.what();
+                debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
             }
             break;
         } case QNetworkReply::AuthenticationRequiredError:

@@ -23,14 +23,9 @@
 #include "NetworkAccessManagerProxy.h"
 #include "ui_LastFmConfigWidget.h"
 
-#include <lastfm/Audioscrobbler> // from liblastfm
-#include <lastfm/ws.h>
-#include <lastfm/XmlQuery>
+#include <lastfm/XmlQuery.h>
 
 #include <QCryptographicHash>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QVBoxLayout>
 #include <QRegExpValidator>
 
 #include <KMessageBox>
@@ -100,7 +95,7 @@ LastFmServiceSettings::testLogin()
     m_configDialog->testLogin->setText( i18n( "Testing..." ) );
     // set the global static Lastfm::Ws stuff
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
-    lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
+    lastfm::ws::SharedSecret = Amarok::lastfmApiSharedSecret();
     lastfm::ws::Username = qstrdup( m_configDialog->kcfg_ScrobblerUsername->text().toLatin1().data() );
     if( lastfm::nam() != The::networkAccessManager() )
         lastfm::setNetworkAccessManager( The::networkAccessManager() );
@@ -126,7 +121,8 @@ LastFmServiceSettings::onAuthenticated()
 {
     DEBUG_BLOCK
 
-    lastfm::XmlQuery lfm = lastfm::XmlQuery( m_authQuery->readAll() );
+    lastfm::XmlQuery lfm;
+    lfm.parse( m_authQuery->readAll() );
 
     switch( m_authQuery->error() )
     {

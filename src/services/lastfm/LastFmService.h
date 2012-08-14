@@ -21,8 +21,6 @@
 
 #include "../ServiceBase.h"
 
-#include <KLineEdit>
-#include <QLabel>
 class ScrobblerAdapter;
 class LastFmService;
 
@@ -30,11 +28,12 @@ namespace Collections {
     class LastFmServiceCollection;
 }
 
-class QNetworkReply;
-
 class KHBox;
+class KLineEdit;
 
 class QComboBox;
+class QLabel;
+class QNetworkReply;
 
 namespace The
 {

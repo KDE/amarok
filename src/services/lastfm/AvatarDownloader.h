@@ -21,7 +21,6 @@
 
 #include <QHash>
 #include <QObject>
-#include <QPixmap>
 
 class AvatarDownloader : public QObject
 {

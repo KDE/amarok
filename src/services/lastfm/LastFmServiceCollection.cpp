@@ -19,18 +19,9 @@
 #define DEBUG_PREFIX "lastfm"
 
 #include "LastFmServiceCollection.h"
-#include "LastFmServiceQueryMaker.h"
 #include "meta/LastFmMeta.h"
-#include "ServiceMetaBase.h"
 
-#include "core-impl/collections/support/MemoryQueryMaker.h"
-
-#include <lastfm/ws.h>
-#include <lastfm/XmlQuery>
-
-#include <QNetworkReply>
-
-#include <KLocale>
+#include <lastfm/XmlQuery.h>
 
 using namespace Collections;
 
@@ -154,10 +145,9 @@ void LastFmServiceCollection::slotAddNeighboursLoved()
         case QNetworkReply::NoError:
         {
             // iterate through each neighbour
-            try
+            lastfm::XmlQuery lfm;
+            if( lfm.parse( m_jobs[ "user.getNeighbours" ]->readAll() ) )
             {
-                lastfm::XmlQuery lfm( m_jobs[ "user.getNeighbours" ]->readAll() );
-
                 foreach( const lastfm::XmlQuery &e, lfm[ "neighbours" ].children( "user" ) )
                 {
                     const QString name = e[ "name" ].text();
@@ -168,9 +158,10 @@ void LastFmServiceCollection::slotAddNeighboursLoved()
                     addTrack( trackPtr );
                 }
 
-            } catch( lastfm::ws::ParseError& e )
+            }
+            else
             {
-                debug() << "Got exception in parsing from last.fm:" << e.what();
+                debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
             }
             break;
         }
@@ -195,15 +186,14 @@ void LastFmServiceCollection::slotAddNeighboursPersonal()
         case QNetworkReply::NoError:
         {
             // iterate through each neighbour
-            try
+            if( !m_jobs[ "user.getNeighbours" ] )
             {
-                if( !m_jobs[ "user.getNeighbours" ] )
-                {
-                    debug() << "BAD! got no result object";
-                    return;
-                }
-                lastfm::XmlQuery lfm( m_jobs[ "user.getNeighbours" ]->readAll() );
-
+                debug() << "BAD! got no result object";
+                return;
+            }
+            lastfm::XmlQuery lfm;
+            if( lfm.parse( m_jobs[ "user.getNeighbours" ]->readAll() ) )
+            {
                 // iterate through each neighbour
                 foreach( const lastfm::XmlQuery &e, lfm[ "neighbours" ].children( "user" ) )
                 {
@@ -218,9 +208,10 @@ void LastFmServiceCollection::slotAddNeighboursPersonal()
 
                 // should be safe, as both slots SHOULD get called before we return to the event loop...
                 m_jobs[ "user.getNeighbours" ]->deleteLater();
-            } catch( lastfm::ws::ParseError& e )
+            }
+            else
             {
-                debug() << "Got exception in parsing from last.fm:" << e.what();
+                debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
             }
             break;
         }
@@ -248,10 +239,9 @@ void LastFmServiceCollection::slotAddFriendsLoved()
     {
         case QNetworkReply::NoError:
         {
-            try
+            lastfm::XmlQuery lfm;
+            if( lfm.parse( m_jobs[ "user.getFriends" ]->readAll() ) )
             {
-                lastfm::XmlQuery lfm( m_jobs[ "user.getFriends" ]->readAll() );
-
                 foreach( const lastfm::XmlQuery &e, lfm[ "friends" ].children( "user" ) )
                 {
                     const QString name = e[ "name" ].text();
@@ -261,9 +251,10 @@ void LastFmServiceCollection::slotAddFriendsLoved()
                     addTrack( trackPtr );
                 }
 
-            } catch( lastfm::ws::ParseError& e )
+            }
+            else
             {
-                debug() << "Got exception in parsing from last.fm:" << e.what();
+                debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
             }
             break;
         }
@@ -293,10 +284,9 @@ void LastFmServiceCollection::slotAddFriendsPersonal()
     {
         case QNetworkReply::NoError:
         {
-            try
+            lastfm::XmlQuery lfm;
+            if( lfm.parse( m_jobs[ "user.getFriends" ]->readAll() ) )
             {
-                lastfm::XmlQuery lfm( m_jobs[ "user.getFriends" ]->readAll() );
-
                 foreach( const lastfm::XmlQuery &e, lfm[ "friends" ].children( "user" ) )
                 {
                     const QString name = e[ "name" ].text();
@@ -306,9 +296,10 @@ void LastFmServiceCollection::slotAddFriendsPersonal()
                     addTrack( trackPtr );
                 }
 
-            } catch( lastfm::ws::ParseError& e )
+            }
+            else
             {
-                debug() << "Got exception in parsing from last.fm:" << e.what();
+                debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
             }
             break;
         }

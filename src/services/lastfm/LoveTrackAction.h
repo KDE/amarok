@@ -19,9 +19,7 @@
 
 #include "GlobalCollectionActions.h"
 
-#include "core/meta/Meta.h"
-#include "LastFmService.h"
-
+class LastFmService;
 
 /**
 A last.fm specific global collection action for loving a track.

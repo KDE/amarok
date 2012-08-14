@@ -22,8 +22,7 @@
 #include <QMap>
 #include <QNetworkReply>
 
-#include <lastfm/XmlQuery>
-#include <ws.h>
+#include <lastfm/XmlQuery.h>
 #include "core/support/Amarok.h"
 
 namespace Capabilities
@@ -72,7 +71,8 @@ LastfmReadLabelCapability::onTagsFetched()
     {
         case QNetworkReply::NoError:
         {
-            lastfm::XmlQuery lfm = m_job->readAll();
+            lastfm::XmlQuery lfm;
+            lfm.parse(m_job->readAll());
             QList<lastfm::XmlQuery> tags = lfm.children( "tag" );
             QStringList ret;
             foreach( const lastfm::XmlQuery &child, tags )

@@ -23,13 +23,10 @@
 #include "core/capabilities/Capability.h"
 #include "ServiceMetaBase.h" // for the SourceInfoProvider
 
-
-#include <lastfm/Track>
-
-
-#include <QObject>
-
-class WsReply;
+namespace lastfm
+{
+class Track;
+}
 
 namespace LastFm
 {

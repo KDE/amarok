@@ -23,25 +23,12 @@
 #include "LastFmCapabilityImpl_p.moc"
 #include "MultiPlayableCapabilityImpl_p.h"
 #include "MultiPlayableCapabilityImpl_p.moc"
-#include "ServiceCapabilities.h"
 
-#include "LastFmService.h"
 #include "LastFmStreamInfoCapability.h"
-#include "ScrobblerAdapter.h"
 
 #include "EngineController.h"
-#include "core/support/Debug.h"
-#include "core/capabilities/ActionsCapability.h"
 
-#include <KLocale>
-#include <KSharedPtr>
-#include <KStandardDirs>
 #include <Solid/Networking>
-
-#include <QWeakPointer>
-#include <QUrl>
-
-#include <lastfm/Track>
 
 namespace LastFm {
 
@@ -451,8 +438,7 @@ Track::love()
     DEBUG_BLOCK
 
     debug() << "info:" << d->lastFmTrack.artist() << d->lastFmTrack.title();
-    d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).love();
-    connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
+    lastfm::MutableTrack( d->lastFmTrack ).love();
 }
 
 void
@@ -477,9 +463,9 @@ void Track::slotResultReady()
 {
     if( d->trackFetch->error() == QNetworkReply::NoError )
     {
-        try
+        lastfm::XmlQuery lfm;
+        if( lfm.parse( d->trackFetch->readAll() ) )
         {
-            lastfm::XmlQuery lfm( d->trackFetch->readAll() );
             QString id = lfm[ "track" ][ "id" ].text();
             QString streamable = lfm[ "track" ][ "streamable" ].text();
             if( streamable.toInt() == 1 )
@@ -487,9 +473,10 @@ void Track::slotResultReady()
             else
                 init();
 
-        } catch( lastfm::ws::ParseError& e )
+        }
+        else
         {
-            debug() << "Got exception in parsing from last.fm:" << e.what();
+            debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
         }
     } else
     {
