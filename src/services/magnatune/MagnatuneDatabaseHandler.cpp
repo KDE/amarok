@@ -119,11 +119,11 @@ void
 MagnatuneDatabaseHandler::destroyDatabase( )
 {
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
-    QStringList result = sqlDb->query( "DROP TABLE magnatune_tracks;" );
-    result = sqlDb->query( "DROP TABLE magnatune_albums;" );
-    result = sqlDb->query( "DROP TABLE magnatune_artists;" );
-    result = sqlDb->query( "DROP TABLE magnatune_genre;" );
-    result = sqlDb->query( "DROP TABLE magnatune_moods;" );
+    QStringList result = sqlDb->query( "DROP TABLE IF EXISTS magnatune_tracks;" );
+    result = sqlDb->query( "DROP TABLE IF EXISTS magnatune_albums;" );
+    result = sqlDb->query( "DROP TABLE IF EXISTS magnatune_artists;" );
+    result = sqlDb->query( "DROP TABLE IF EXISTS magnatune_genre;" );
+    result = sqlDb->query( "DROP TABLE IF EXISTS magnatune_moods;" );
 
 
     /* that would only work for db2/oracle. Other databases connect the index to the table (which we just dropped)

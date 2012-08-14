@@ -94,14 +94,14 @@ void
 OpmlDirectoryDatabaseHandler::destroyDatabase()
 {
     SqlStorage *db = CollectionManager::instance()->sqlStorage();
-    QStringList result = db->query( "DROP TABLE opmldirectory_tracks;" );
-    result = db->query( "DROP TABLE opmldirectory_albums;" );
-    result = db->query( "DROP TABLE opmldirectory_artists;" );
-    result = db->query( "DROP TABLE opmldirectory_genre;");
+    QStringList result = db->query( "DROP TABLE IF EXISTS opmldirectory_tracks;" );
+    result = db->query( "DROP TABLE IF EXISTS opmldirectory_albums;" );
+    result = db->query( "DROP TABLE IF EXISTS opmldirectory_artists;" );
+    result = db->query( "DROP TABLE IF EXISTS opmldirectory_genre;");
 
-    result = db->query( "DROP INDEX opmldirectory_tracks_id;");
-    result = db->query( "DROP INDEX opmldirectory_tracks_artist_id;");
-    result = db->query( "DROP INDEX opmldirectory_album_name;");
+    result = db->query( "DROP INDEX IF EXISTS opmldirectory_tracks_id;");
+    result = db->query( "DROP INDEX IF EXISTS opmldirectory_tracks_artist_id;");
+    result = db->query( "DROP INDEX IF EXISTS opmldirectory_album_name;");
 }
 
 int

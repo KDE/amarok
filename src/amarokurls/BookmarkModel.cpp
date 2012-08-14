@@ -458,8 +458,8 @@ void BookmarkModel::deleteTables()
     if( !sqlStorage )
         return;
 
-    sqlStorage->query( "DROP TABLE bookmark_groups;" );
-    sqlStorage->query( "DROP TABLE bookmarks;" );
+    sqlStorage->query( "DROP TABLE IF EXISTS bookmark_groups;" );
+    sqlStorage->query( "DROP TABLE IF EXISTS bookmarks;" );
 
 }
 

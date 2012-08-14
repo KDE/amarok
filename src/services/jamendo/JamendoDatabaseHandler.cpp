@@ -129,10 +129,10 @@ JamendoDatabaseHandler::destroyDatabase( )
     result = db->query( "DROP INDEX jamendo_genre_name ON jamendo_genre;");
 
 
-    result = db->query( "DROP TABLE jamendo_tracks;" );
-    result = db->query( "DROP TABLE jamendo_albums;" );
-    result = db->query( "DROP TABLE jamendo_artists;" );
-    result = db->query( "DROP TABLE jamendo_genre;" );
+    result = db->query( "DROP TABLE IF EXISTS jamendo_tracks;" );
+    result = db->query( "DROP TABLE IF EXISTS jamendo_albums;" );
+    result = db->query( "DROP TABLE IF EXISTS jamendo_artists;" );
+    result = db->query( "DROP TABLE IF EXISTS jamendo_genre;" );
 
     //FIXME: We only support sqlite currently.  DbConnection no longer exists.
 }
