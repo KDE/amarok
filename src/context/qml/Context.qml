@@ -31,9 +31,10 @@ Item {
                 infoSection.track = d['track']
                 infoSection.album_artist = d["artist"] + " - " + d["album"]
                 infoSection.albumart = d["albumart"]
-                for (var stuff in d) {
-//                     console.log(stuff + " uguale a " + d[stuff])
-                }
+
+                console.log("Display ready: "+ d["displayReady"])
+                
+                infoSection.playing = d["displayReady"]
             }
         }
     }
@@ -59,7 +60,6 @@ Item {
                 anchors.fill: parent
             }
             MouseArea {
-//                     color: "red"
                 anchors.fill: parent
                 onClicked: {
                     texts.push(lyrics_text)
@@ -89,6 +89,7 @@ Item {
 //             elementId: "more"
 //             svg: mainSvg
 //             height: 30
+
 //             width: 30
 //             anchors.verticalCenter: parent.verticalCenter
 //             anchors.right: parent.right
@@ -108,7 +109,7 @@ Item {
         TextualViewer {
             z: 10
             id: wikitext
-            title: "Wikipedia - Artist"
+            title: "Wikipedia"
             visible: false
         }
         DataSource {

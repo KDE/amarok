@@ -28,6 +28,7 @@
     start getting updates when there is data.
 
     Data keys:
+        * "displayready" bool - Whether we have some data do display or not
         * "artist" QString
         * "track" QString
         * "album" QString

@@ -130,10 +130,11 @@ CurrentEngine::trackPlaying( Meta::TrackPtr track )
 void
 CurrentEngine::stopped()
 {
+    setData( "current", "displayReady", false ); // We're not playing anything
+
     if( m_requested.value( QLatin1String("current") ) )
     {
         removeAllData( "current" );
-        setData( "current", "notrack", i18n( "No track playing") );
         m_currentTrack.clear();
     }
 
@@ -206,6 +207,7 @@ CurrentEngine::update( Meta::TrackPtr track )
 
     debug() << "updating track" << track->name();
     setData( "current", data );
+    setData( "current", "displayReady", true );
 }
 
 void
