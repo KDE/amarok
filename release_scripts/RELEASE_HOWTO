@@ -42,7 +42,8 @@ SECTION 3: Once Happy with the Tarball
    transfered to stable/amarok/$version/src/ or unstable/amarok/$beta-version/src
    Instructions at ftp://upload.kde.org/README
  * Notify packagers:
-To: kde-packager@kde.org
+To: kde-packager@kde.org, Patrick von Reth (TheOneRing, Windows) <vonreth@kde.org>,
+    Kollide Sysadmins (remember 2.6.0 outage) <sysadmin@kollide.net>
 "
 Dear packagers
 
