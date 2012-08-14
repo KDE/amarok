@@ -47,10 +47,10 @@ QString
 FileTypeSupport::toString( Amarok::FileType ft )
 {
 #ifndef UTILITIES_BUILD
-    return i18n( s_fileTypeStrings.at( ft ).toLatin1() );
-#else
-    return s_fileTypeStrings.at( ft );
+    if( ft == Amarok::Unknown )
+        return i18n( s_fileTypeStrings.at( ft ).toLatin1() );
 #endif
+    return s_fileTypeStrings.at( ft );
 }
 
 QStringList
