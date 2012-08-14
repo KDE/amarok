@@ -7,11 +7,7 @@ Theme:
 
 Wikipedia:
 
- * Understand how to set configuration data to a DataEngine via QML (be able to set wikipedia language)
+ * Get the ability to set wikipedia's language
  * Add buttons for artist/album/song switch
- * Implement basic navigation buttons (back, forward)
-
-Current song info:
-
- * Make me
+ * Open up links in an external browser
 
