@@ -23,13 +23,12 @@
 #include <QObject>
 
 #include <KUrl>
+#include <kio/udsentry.h>
 
 #include "core/collections/QueryMaker.h"
 
 class KJob;
 namespace KIO {
-    class UDSEntry;
-    typedef QList<UDSEntry> UDSEntryList;
     class Job;
     class SimpleJob;
 }

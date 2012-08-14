@@ -52,32 +52,17 @@ Collections::TrackProvider::trackForUrl( const KUrl &url )
     return Meta::TrackPtr();
 }
 
-// CollectionBase
-
-bool
-Collections::CollectionBase::hasCapabilityInterface( Capabilities::Capability::Type type ) const
-{
-    Q_UNUSED( type );
-    return false;
-}
-
-Capabilities::Capability*
-Collections::CollectionBase::createCapabilityInterface( Capabilities::Capability::Type type )
-{
-    Q_UNUSED( type );
-    return 0;
-}
-
 // Collection
-
-Collections::Collection::Collection()
-    : QObject()
-    , Collections::TrackProvider()
-{
-}
 
 Collections::Collection::~Collection()
 {
+}
+
+bool
+Collections::Collection::isDirInCollection( const QString &path )
+{
+    Q_UNUSED( path );
+    return false;
 }
 
 QString

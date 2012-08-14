@@ -17,13 +17,18 @@
 #ifndef UPNPCOLLECTIONFACTORY_H
 #define UPNPCOLLECTIONFACTORY_H
 
-#include <QDBusConnection>
+#include "core/collections/Collection.h"
+#include "core-impl/collections/upnpcollection/deviceinfo.h"
 
 #include <solid/device.h>
+#include <kio/udsentry.h>
 
-#include "core/collections/Collection.h"
+#include <QDBusConnection>
 
-#include "deviceinfo.h"
+namespace KIO {
+    class Job;
+}
+class KJob;
 
 class QDBusInterface;
 

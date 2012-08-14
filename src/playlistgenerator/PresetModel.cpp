@@ -18,16 +18,15 @@
 
 #include "PresetModel.h"
 
-#include "Preset.h"
-#include "PresetEditDialog.h"
-
 #include "amarokconfig.h"
 #include "core/interfaces/Logger.h"
 #include "core/collections/Collection.h"
+#include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
-
+#include "playlistgenerator/Preset.h"
+#include "playlistgenerator/PresetEditDialog.h"
 
 #include <KFileDialog>
 #include <KUrl>

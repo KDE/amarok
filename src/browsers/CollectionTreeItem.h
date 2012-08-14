@@ -46,6 +46,7 @@ namespace CustomRoles
 }
 
 class CollectionTreeItemModelBase;
+class QAction;
 
 class CollectionTreeItem : public QObject
 {
@@ -133,7 +134,7 @@ class CollectionTreeItem : public QObject
         /** Returns a list of collection actions.
             Collection actions are shown on top of the collection tree item as icons (decorations)
         */
-        QList<QAction*> decoratorActions() const;
+        QList<QAction *> decoratorActions() const;
         void prepareForRemoval();
 
         Meta::DataPtr m_data;

@@ -16,12 +16,13 @@
 
 #include "IpodDeleteTracksJob.h"
 
-#include "IpodMeta.h"
 #include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
+#include "core-impl/collections/ipodcollection/IpodMeta.h"
+
+#include <QFile>
 
 #include <gpod/itdb.h>
-
 
 IpodDeleteTracksJob::IpodDeleteTracksJob( const Meta::TrackList &sources,
                                           const QWeakPointer<IpodCollection> &collection )

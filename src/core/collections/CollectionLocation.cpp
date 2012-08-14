@@ -29,6 +29,7 @@
 #include "core/transcoding/TranscodingConfiguration.h"
 #include "core/transcoding/TranscodingController.h"
 
+#include <QDir>
 #include <QTimer>
 
 using namespace Collections;
@@ -301,7 +302,7 @@ CollectionLocation::getDestinationTranscodingConfig()
     Collection *destCollection = destination() ? destination()->collection() : 0;
     if( !destCollection )
         return configuration;
-    if( !destCollection->hasCapabilityInterface( Capabilities::Capability::Transcode ) )
+    if( !destCollection->has<Capabilities::TranscodeCapability>() )
         return configuration;
     QScopedPointer<Capabilities::TranscodeCapability> tc(
         destCollection->create<Capabilities::TranscodeCapability>() );

@@ -24,8 +24,10 @@
 #include "core/support/Debug.h"
 #include "core-impl/meta/file/File.h"
 
-#include <gpod/itdb.h>
+#include <QDir>
+#include <QFileInfo>
 
+#include <gpod/itdb.h>
 
 IpodParseTracksJob::IpodParseTracksJob( IpodCollection *collection )
     : Job()

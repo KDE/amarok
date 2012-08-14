@@ -197,22 +197,6 @@ Meta::Observer::metadataChanged( YearPtr year )
     Q_UNUSED( year );
 }
 
-//Meta::MetaCapability
-
-bool
-Meta::MetaCapability::hasCapabilityInterface( Capabilities::Capability::Type type ) const
-{
-    Q_UNUSED( type );
-    return false;
-}
-
-Capabilities::Capability*
-Meta::MetaCapability::createCapabilityInterface( Capabilities::Capability::Type type )
-{
-    Q_UNUSED( type );
-    return 0;
-}
-
 //Meta::MetaBase
 
 void

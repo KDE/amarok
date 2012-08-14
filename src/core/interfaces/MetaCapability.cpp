@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,43 +14,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef COLLECTIONTESTIMPL_H
-#define COLLECTIONTESTIMPL_H
+#include "MetaCapability.h"
 
-#include "core/collections/Collection.h"
-#include "core-impl/collections/support/MemoryCollection.h"
-#include "core-impl/collections/support/MemoryQueryMaker.h"
-
-#include <KIcon>
-
-#include <QSharedPointer>
-
-//simple Collections::Collection implementation based on MemoryCollection
-
-class CollectionLocationTestImpl;
-
-namespace Collections {
-
-class CollectionTestImpl : public Collections::Collection
+bool
+MetaCapability::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-public:
-    CollectionTestImpl( const QString &collectionId )
-        : Collections::Collection(), mc( new MemoryCollection() )
-    { this->id = collectionId; }
+    Q_UNUSED( type );
+    return false;
+}
 
-    QueryMaker* queryMaker() { return new MemoryQueryMaker( mc.toWeakRef(), id ); }
-
-    KIcon icon() const { return KIcon(); }
-
-    QString collectionId() const { return id; }
-    QString prettyName() const { return id; }
-
-    QString id;
-
-    QSharedPointer<MemoryCollection> mc;
-
-};
-
-} //namespace Collections
-
-#endif
+Capabilities::Capability*
+MetaCapability::createCapabilityInterface( Capabilities::Capability::Type type )
+{
+    Q_UNUSED( type );
+    return 0;
+}

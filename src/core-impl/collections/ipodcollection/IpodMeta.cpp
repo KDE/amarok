@@ -17,6 +17,7 @@
 #include "IpodMeta.h"
 
 #include "amarokconfig.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/ipodcollection/IpodCollection.h"
 #include "core-impl/collections/ipodcollection/IpodMetaEditCapability.h"

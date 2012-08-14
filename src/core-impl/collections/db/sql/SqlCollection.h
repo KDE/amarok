@@ -90,6 +90,9 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon("drive-harddisk"); }
 
+        // Local collection cannot have a capacity since it may be spread over multiple
+        // physical locations (even network components)
+
         SqlRegistry* registry() const;
         ScanManager* scanManager() const;
         SqlStorage* sqlStorage() const;

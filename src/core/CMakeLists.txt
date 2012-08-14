@@ -7,6 +7,7 @@ include_directories(
 
 set(libcore_interfaces_SRCS
     interfaces/Logger.cpp
+    interfaces/MetaCapability.cpp
 )
 
 set(libcore_meta_SRCS

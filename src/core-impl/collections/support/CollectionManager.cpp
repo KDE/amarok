@@ -16,32 +16,26 @@
 
 #define DEBUG_PREFIX "CollectionManager"
 
-#include "core-impl/collections/support/CollectionManager.h"
+#include "CollectionManager.h"
 
-#include "core/support/Debug.h"
-
+#include "EngineController.h"
+#include "PluginManager.h"
 #include "core/capabilities/CollectionScanCapability.h"
 #include "core/collections/Collection.h"
 #include "core/collections/MetaQueryMaker.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "core/support/SmartPointerList.h"
 #include "core-impl/meta/file/File.h"
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
-#include "PluginManager.h"
 
 #include <QList>
 #include <QMetaEnum>
 #include <QMetaObject>
 #include <QPair>
 #include <QTimer>
-
-#include <KConfigGroup>
-#include <KMessageBox>
-#include <KPluginLoader>
-#include <KPluginFactory>
-
-#include <cstdlib>
 
 typedef QPair<Collections::Collection*, CollectionManager::CollectionStatus> CollectionPair;
 
