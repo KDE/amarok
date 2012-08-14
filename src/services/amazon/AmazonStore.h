@@ -169,6 +169,14 @@ private:
 
     QModelIndex m_selectedIndex;
 
+    /**
+     * Convert an ISO 3166 two-letter country code to Amazon
+     * top level domain
+     *
+     * @returns a TLD for corresponding Amazon store, or "none"
+     */
+    static QString iso3166toAmazon(const QString& country);
+
 private slots:
     /**
     * Parse the API reply XML document.

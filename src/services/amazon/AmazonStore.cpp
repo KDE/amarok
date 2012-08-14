@@ -288,16 +288,8 @@ AmazonStore::newSearchRequest( const QString request )
     // make sure we know where to search
     if( AmazonConfig::instance()->country().isEmpty() )
     {
-        KCMultiDialog KCM;
-
-        KCM.setWindowTitle( i18n( "Select your Amazon locale - Amarok" ) );
-        KCM.addModule( KCModuleInfo( QString( "amarok_service_amazonstore_config.desktop" ) ) );
-        KCM.setButtons( KCMultiDialog::Ok | KCMultiDialog::Cancel | KCMultiDialog::Default );
-        KCM.adjustSize();
-
-        // if the user selects an option we continue our quest for search results
-        if( !(KCM.exec() == QDialog::Accepted) )
-            return;
+        QString country(KGlobal::locale()->country());
+        AmazonConfig::instance()->setCountry(iso3166toAmazon(country));
     }
 
     if( AmazonConfig::instance()->country() == QLatin1String( "none" ) || AmazonConfig::instance()->country().isEmpty() )
@@ -486,6 +478,23 @@ AmazonStore::initView()
     connect( m_itemView, SIGNAL( directCheckout() ), this, SLOT( directCheckout() ) );
     connect( m_viewCartButton, SIGNAL( clicked() ), this, SLOT( viewCart() ) );
     connect( m_checkoutButton, SIGNAL( clicked() ), this, SLOT( checkout() ) );
+}
+
+QString AmazonStore::iso3166toAmazon(const QString& country)
+{
+    static QHash<QString, QString> table;
+    if(table.isEmpty())
+    {
+        table["fr"] = "fr";
+        table["at"] = "de";
+        table["ch"] = "de";
+        table["de"] = "de";
+        table["jp"] = "co.jp";
+        table["gb"] = "co.uk";
+        table["us"] = "com";
+    }
+
+    return table.value(country, "none");
 }
 
 /* private slots */
