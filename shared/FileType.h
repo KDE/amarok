@@ -22,39 +22,36 @@
 #include <QStringList>
 #include <QString>
 
-
 namespace Amarok
 {
+    //New FileTypes must also be added to s_fileTypeStrings in FileType.cpp
+    enum FileType
+    {
+        Unknown     =  0,
+        Mp3         =  1,
+        Ogg         =  2,
+        Flac        =  3,
+        Mp4         =  4, // a file in MPEG-4 container that may or may not contain video
+        Wma         =  5,
+        Aiff        =  6,
+        Mpc         =  7,
+        TrueAudio   =  8,
+        Wav         =  9,
+        WavPack     = 10,
+        M4a         = 11, // a file in MPEG-4 container that contains only audio
+        M4v         = 12  // a file in MPEG-4 container that for sure contains video
+    };
 
-//New FileTypes must also be added to s_fileTypeStrings in FileType.cpp
-enum FileType
-{
-    Unknown     =  0,
-    Mp3         =  1,
-    Ogg         =  2,
-    Flac        =  3,
-    Mp4         =  4, // a file in MPEG-4 container that may or may not contain video
-    Wma         =  5,
-    Aiff        =  6,
-    Mpc         =  7,
-    TrueAudio   =  8,
-    Wav         =  9,
-    WavPack     = 10,
-    M4a         = 11, // a file in MPEG-4 container that contains only audio
-    M4v         = 12  // a file in MPEG-4 container that for sure contains video
-};
+    class FileTypeSupport
+    {
+        public:
+            static QString toString( Amarok::FileType ft );
+            static QStringList possibleFileTypes();
+            static Amarok::FileType fileType( const QString& extension );
 
-
-class FileTypeSupport
-{
-public:
-    static QString toString( Amarok::FileType ft );
-    static QStringList possibleFileTypes();
-    static Amarok::FileType fileType( const QString& extension );
-private:
-    static QStringList s_fileTypeStrings;
-};
-
+        private:
+            static QStringList s_fileTypeStrings;
+    };
 }
 
 #endif /* SHARED_FILETYPE_H */
