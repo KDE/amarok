@@ -193,7 +193,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
             trackItem->setTrack( trackPtr );
 
             // bold the current track to make it more visible
-            if( m_currentTrack == trackPtr )
+            if( m_currentTrack && *m_currentTrack == *trackPtr )
             {
                 currentItem = trackItem;
                 trackItem->bold();
@@ -201,7 +201,8 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
             // If compilation and same artist, then highlight, but only if there's a current track
             if( m_currentTrack
-                && (m_currentTrack->artist() == trackPtr->artist())
+                && m_currentTrack->artist() && trackPtr->artist()
+                && (*m_currentTrack->artist() == *trackPtr->artist())
                 && albumPtr->isCompilation() )
             {
                 trackItem->italicise();
