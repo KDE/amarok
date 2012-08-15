@@ -121,11 +121,9 @@ namespace Collections
                 m_querySent = true;
                 Spotify::Query* query = m_controller.data()->makeQuery( m_collection.data(), title, artist, album, genre );
                 connect( this, SIGNAL( queryAborted() ),
-                         query, SLOT( abortQuery()) );
+                         query, SLOT( slotAbortQuery()) );
                 connect( query, SIGNAL(newTrackList( Meta::SpotifyTrackList ) ),
                          this, SLOT(slotCollectResults( Meta::SpotifyTrackList ) ) );
-                connect( query, SIGNAL(queryDone(Spotify::Query*,Meta::SpotifyTrackList)),
-                         this, SLOT(slotQueryDone(Spotify::Query*,Meta::SpotifyTrackList)));
 
                 m_controller.data()->resolve( query );
             }
