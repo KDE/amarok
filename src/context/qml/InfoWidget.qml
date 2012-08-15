@@ -27,7 +27,7 @@ Item {
         font.pointSize: 15
 
         Behavior on opacity {
-            SmoothedAnimation { velocity: 2 }
+            SmoothedAnimation { velocity: 3.5 }
         }
     }
 
@@ -37,7 +37,7 @@ Item {
         opacity: root.playing? 1:0
 
         Behavior on opacity {
-            SmoothedAnimation { velocity: 2 }
+            SmoothedAnimation { velocity: 3.5 }
         }
 
         Text {
