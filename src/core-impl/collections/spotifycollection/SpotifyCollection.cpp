@@ -74,6 +74,15 @@ namespace Collections
         connect( m_controller, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
                  this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
 
+        // Initialize SpotifyCollection
+        m_collection = new SpotifyCollection( m_controller );
+        connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
+        m_collectionIsManaged = true;
+
+        // Register collection
+        emit newCollection( m_collection.data() );
+
+        // Start the controller and try to load Spotify resolver
         m_controller->start();
         slotCheckStatus();
 
@@ -92,23 +101,14 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        if( !m_collection )
-        {
-            m_collection = new SpotifyCollection( m_controller );
-            connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
-        }
-
-        m_collectionIsManaged = true;
-
         m_controller->setFilePath( m_config.resolverPath() );
         if( !m_controller->loggedIn()
             && !m_config.username().isEmpty()
             && !m_config.password().isEmpty() )
         {
-            m_controller->login( m_config.username(), m_config.password() );
+            m_controller->login( m_config.username(), m_config.password(), m_config.highQuality() );
         }
 
-        emit newCollection( m_collection.data() );
     }
 
     void
