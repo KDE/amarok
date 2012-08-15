@@ -16,11 +16,11 @@
 
 #define DEBUG_PREFIX "NepomukCollection Factory"
 
-#include <Nepomuk/ResourceManager>
+#include "NepomukCollectionFactory.h"
 
 #include "core/support/Debug.h"
-#include "NepomukCollectionFactory.h"
-#include "core/support/Debug.h"
+
+#include <Nepomuk/ResourceManager>
 
 using namespace Collections;
 
@@ -53,13 +53,11 @@ NepomukCollectionFactory::NepomukCollectionFactory( QObject *parent,
         const QVariantList &args )
     : CollectionFactory( parent, args )
 {
-    DEBUG_BLOCK
     m_info = KPluginInfo( "amarok_collection-nepomukcollection.desktop", "services" );
 }
 
 NepomukCollectionFactory::~NepomukCollectionFactory()
 {
-
 }
 
 AMAROK_EXPORT_COLLECTION( NepomukCollectionFactory, nepomukcollection )

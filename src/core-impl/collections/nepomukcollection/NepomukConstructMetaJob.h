@@ -18,15 +18,12 @@
 #define NEPOMUKCONSTRUCTMETAJOB_H
 
 #include "NepomukCollection.h"
+
+#include "core-impl/collections/support/MemoryCollection.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
-#include "core-impl/collections/support/MemoryCollection.h"
 
 #include <ThreadWeaver/Job>
-#include <QSharedPointer>
-#include <Nepomuk/Resource>
-#include <Nepomuk/Tag>
-#include <QHash>
 
 namespace Collections
 {
@@ -51,7 +48,8 @@ signals:
     // signals for progress operation:
     void incrementProgress();
     void endProgressOperation( QObject *obj );
-    void totalSteps( int steps ); // not used, defined to keep QObject::conect warning quiet
+    // not used, defined to keep QObject::conect warning quiet
+    void totalSteps( int steps );
 
 private:
     QSharedPointer<Collections::MemoryCollection> m_mc;
@@ -59,13 +57,16 @@ private:
     NepomukCollection* m_coll;
 
     /** These hash maps are used to store each of the {meta}Ptr so that duplicate {meta}
-      * object are not created. In then end, each artist, album, genre, composer and track
-      * will have only one corresponding Nepomuk{meta} Object.
-      *
-      * For the composition of the maps, we could have used
-      * <Nepomuk::Resource, Nepomuk{meta}Ptr
-      * but that will result in a cyclic dependency hell.
-      */
+     * object are not created. In then end, each artist, album, genre, composer and track
+     * will have only one corresponding Nepomuk{meta} Object.
+     *
+     * For the composition of the maps, we could have used
+     * <Q*, Nepomuk{meta}Ptr
+     * but that will result in a cyclic dependency hell.
+     *
+     * Genre and year are properties in Nepomuk and not classes and hence do not possess
+     * associated QUrls. Hence their names are used as keys in the maps of genre & year
+     */
 
     QHash<QUrl, Meta::TrackPtr> m_trackHash;
     QHash<QUrl, Meta::ArtistPtr> m_artistHash;

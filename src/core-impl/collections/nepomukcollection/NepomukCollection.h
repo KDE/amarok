@@ -19,13 +19,11 @@
 #define NEPOMUKCOLLECTION_H
 
 #include "core/collections/Collection.h"
+#include "core-impl/collections/support/MemoryCollection.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
-#include "core-impl/collections/support/MemoryCollection.h"
 #include "NepomukConstructMetaJob.h"
 
-#include <QString>
-#include <QStringList>
 #include <KIcon>
 #include <QSharedPointer>
 
@@ -34,6 +32,22 @@ using namespace Meta;
 namespace Collections
 {
 class NepomukConstructMetaJob;
+
+/**
+  * NepomukCollection is a plugin to use Nepomuk as a backend instead of the SQL
+  * collection that Amarok uses as default.
+  * Nepomuk indexes all data on the machine and categorises them.
+  * So, it is easy to retrieve all resources of type 'music' and use them in Amarok
+  * Nepomuk helps establish a common backend in a KDE environment, which has its own
+  * advantages
+  *
+  * The NepomukCollection uses MemoryCollection as a base. MemoryCollection is usec by
+  * most of the other plugins. The NepomukCollection loads the tracks extracted from the
+  * Nepomuk index into buckets called {Meta}Maps.
+  *
+  * MemoryCollection provides a default implementation of the QueryMaker which handles
+  * all query calls.
+  */
 
 // TODO
 // see if Meta::Observer also has to be inherited

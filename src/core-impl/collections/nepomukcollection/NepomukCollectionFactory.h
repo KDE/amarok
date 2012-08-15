@@ -17,8 +17,9 @@
 #ifndef NEPOMUKCOLLECTIONFACTORY_H
 #define NEPOMUKCOLLECTIONFACTORY_H
 
-#include "core/collections/Collection.h"
 #include "NepomukCollection.h"
+
+#include "core/collections/Collection.h"
 
 class NepomukCollection;
 

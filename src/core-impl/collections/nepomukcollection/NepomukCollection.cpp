@@ -18,48 +18,30 @@
 #define DEBUG_PREFIX "NepomukCollection"
 
 #include "NepomukCollection.h"
-#include "meta/NepomukTrack.h"
-#include "meta/NepomukAlbum.h"
-#include "meta/NepomukArtist.h"
-#include "meta/NepomukComposer.h"
-#include "meta/NepomukGenre.h"
 #include "NepomukConstructMetaJob.h"
 
-#include "core/meta/Meta.h"
-#include "core/meta/support/MetaKeys.h"
 #include "core/collections/QueryMaker.h"
-#include "core/support/Debug.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/collections/support/MemoryMeta.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaKeys.h"
+#include "core/support/Debug.h"
 
 #include <Nepomuk/Resource>
-#include <Nepomuk/Variant>
 #include <Nepomuk/ResourceManager>
-#include <Nepomuk/Query/ComparisonTerm>
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/Term>
-#include <Nepomuk/Query/Result>
-#include <Nepomuk/Query/QueryServiceClient>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Vocabulary/NFO>
-#include <Nepomuk/Vocabulary/NMM>
-#include <Nepomuk/Vocabulary/NIE>
 
 #include <KIcon>
-#include <QString>
-#include <QMap>
 #include <ThreadWeaver/Weaver>
 
 using namespace MemoryMeta;
 using namespace Collections;
-using namespace Nepomuk::Query;
 
 NepomukCollection::NepomukCollection()
     : Collection()
     , m_mc( new Collections::MemoryCollection() )
 {
-    // check if Nepomuk is available, if yes, initialize.
+    // check if Nepomuk is available, if yes, initialize and build up collection.
     if( Nepomuk::ResourceManager::instance()->initialized() )
     {
         m_nepomukCollectionReady = true;
