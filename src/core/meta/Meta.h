@@ -238,7 +238,12 @@ namespace Meta
              */
             virtual qreal replayGain( ReplayGainTag mode ) const;
 
-            /** Returns the type of this track, e.g. "ogg", "mp3", "stream" */
+            /**
+             * Returns the type of this track, e.g. "ogg", "mp3", "stream"
+             *
+             * TODO: change return type to Amarok::FileType enum. Clients needing
+             * user-representation would call FileTypeSupport::toLocalizedString()
+             */
             virtual QString type() const = 0;
 
             /** tell the track to perform any prerequisite

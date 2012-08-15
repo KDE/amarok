@@ -45,8 +45,27 @@ namespace Amarok
     class FileTypeSupport
     {
         public:
+            /**
+             * Return string representation of a filetype.
+             *
+             * WARNING: the return string is only partially localized currenty
+             * TODO: rename to toLocalizedString() and localise all filetypes
+             */
             static QString toString( Amarok::FileType ft );
+
+            /**
+             * Return a list of possible localized filetype strings.
+             *
+             * TODO: actualy localize the types
+             */
             static QStringList possibleFileTypes();
+
+            /**
+             * Return file type given file extension, which must exclude the leading dot.
+             *
+             * @return Amarok::FileType enum, Amarok::Unknown if no other suitable
+             *         type is in the enum
+             */
             static Amarok::FileType fileType( const QString& extension );
 
         private:
