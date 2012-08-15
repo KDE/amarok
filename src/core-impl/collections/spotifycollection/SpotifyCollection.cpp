@@ -61,35 +61,34 @@ namespace Collections
     {
         DEBUG_BLOCK
 
+        // Load credentials
+        m_config.load();
+
         m_controller = The::SpotifyController( m_config.resolverPath() );
 
         Q_ASSERT( m_controller != 0 );
 
         connect( m_controller, SIGNAL( spotifyReady() ),
-                 this, SLOT( spotifyReady() ) );
+                 this, SLOT( slotSpotifyReady() ) );
 
         connect( m_controller, SIGNAL( spotifyError( Spotify::Controller::ErrorState ) ),
                  this, SLOT( slotSpotifyError( Spotify::Controller::ErrorState ) ) );
-        checkStatus();
 
-        m_collection = new SpotifyCollection( m_controller );
-        connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
-
-        // Register collection in CollectionManager
-        emit newCollection( m_collection.data() );
+        m_controller->start();
+        slotCheckStatus();
 
         m_initialized = true;
     }
 
     void
-    SpotifyCollectionFactory::checkStatus()
+    SpotifyCollectionFactory::slotCheckStatus()
     {
         //TODO: Add controller checkStatus function
     }
 
 
     void
-    SpotifyCollectionFactory::spotifyReady()
+    SpotifyCollectionFactory::slotSpotifyReady()
     {
         DEBUG_BLOCK
 
@@ -102,10 +101,14 @@ namespace Collections
         m_collectionIsManaged = true;
 
         m_controller->setFilePath( m_config.resolverPath() );
-        if( !m_config.username().isEmpty() && !m_config.password().isEmpty() )
+        if( !m_controller->loggedIn()
+            && !m_config.username().isEmpty()
+            && !m_config.password().isEmpty() )
         {
             m_controller->login( m_config.username(), m_config.password() );
         }
+
+        emit newCollection( m_collection.data() );
     }
 
     void
@@ -140,6 +143,7 @@ namespace Collections
         m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure Spotify collection" ), this );
         m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
         connect( m_configureAction, SIGNAL( triggered() ), SLOT( slotConfigure() ) );
+        connect( m_controller, SIGNAL( userChanged() ), this, SLOT( slotUserChanged() ) );
     }
 
     SpotifyCollection::~SpotifyCollection()
@@ -394,6 +398,20 @@ namespace Collections
         settingDialog->setModal( true );
         // This will return immediately
         settingDialog->show();
+    }
+
+    void
+    SpotifyCollection::slotUserChanged()
+    {
+        m_memoryCollection->acquireWriteLock();
+        // Clear collection when user changed
+        m_memoryCollection->setAlbumMap( AlbumMap() );
+        m_memoryCollection->setArtistMap( ArtistMap() );
+        m_memoryCollection->setGenreMap( GenreMap() );
+        m_memoryCollection->setTrackMap( TrackMap() );
+        m_memoryCollection->setYearMap( YearMap() );
+        m_memoryCollection->releaseLock();
+        emit updated();
     }
 } // namespace Collections
 
