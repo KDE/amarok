@@ -16,23 +16,29 @@
 #include "Query.h"
 #include "core/support/Debug.h"
 
+#include <QTimer>
+
 namespace Spotify{
 
-Query::Query( Collections::SpotifyCollection* collection, const QString& qid, const QString& title, const QString& artist, const QString& album, const QString& genre )
+Query::Query( Collections::SpotifyCollection* collection, const QString& qid,
+              const QString& title, const QString& artist, const QString& album,
+              const QString& genre )
 :QObject( 0 )
 , m_qid( qid )
 , m_title( title )
 , m_artist( artist )
 , m_album( album )
 , m_genre( genre )
+, m_timeout( 3000 ) // Default timeout is 3 seconds
 , m_collection( collection )
 {
+    // Set timeout, the query will be deleted automatically after timedout
+    QTimer::singleShot( m_timeout, this, SLOT( slotTimedout() ) );
 }
 
 Query::~Query()
 {
     DEBUG_BLOCK
-    emit queryDone( qid() );
 }
 
 QString
@@ -73,7 +79,7 @@ Query::getFullQueryString() const
 }
 
 void
-Query::tracksAdded( const Meta::SpotifyTrackList& trackList )
+Query::slotTracksAdded( const Meta::SpotifyTrackList& trackList )
 {
     DEBUG_BLOCK
     m_results = trackList;
@@ -88,23 +94,21 @@ Query::tracksAdded( const Meta::SpotifyTrackList& trackList )
     }
 
     emit newTrackList( trackList );
-    emit queryDone( this, trackList );
-
+    emit queryDone( qid() );
 }
 
 void
-Query::timedOut()
+Query::slotTimedout()
 {
     emit queryError( QueryError ( ETimedOut, QString( "Query(%1) timed out!" ).arg( qid() ) ) );
+    emit queryDone( qid() );
 
-    // Auto delete self
-    deleteLater();
 }
 
 void
-Query::abortQuery()
+Query::slotAbortQuery()
 {
-    deleteLater();
+    emit queryDone( qid() );
 }
 
 } // namespace Spotify

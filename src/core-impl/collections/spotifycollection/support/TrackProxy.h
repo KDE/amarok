@@ -21,8 +21,8 @@ class TrackProxy : public QObject
 
     private slots:
         void slotSpotifyError( Spotify::Controller::ErrorState );
-        void trackResolved( const Meta::SpotifyTrackList& trackList );
-        void queryDone( Spotify::Query* query, const Meta::SpotifyTrackList& trackList );
+        void slotTrackResolved( const Meta::SpotifyTrackList& trackList );
+        void slotQueryDone( Spotify::Query* query, const Meta::SpotifyTrackList& trackList );
 
     private:
         QPointer< Collections::SpotifyCollection > m_collection;

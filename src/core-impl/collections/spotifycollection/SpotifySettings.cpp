@@ -14,16 +14,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 #define DEBUG_PREFIX "SpotifySettings"
-#include <QtGlobal>
-#include <QFile>
-#include <KLocale>
-#include <KMessageBox>
-#include <stdlib.h>
-#include "core/support/Debug.h"
+
 #include "SpotifySettings.h"
+#include "core/support/Debug.h"
 #include "support/Controller.h"
 #include "ui_SpotifyConfigWidget.h"
 
+#include <KLocale>
+#include <KMessageBox>
+#include <QtGlobal>
+#include <QFile>
 
 SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
 : KDialog( parent )
@@ -48,20 +48,20 @@ SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
     setMainWidget( w );
 
     connect( this, SIGNAL( okClicked() ),
-            this, SLOT( tryLogin() ) );
+            this, SLOT( slotTryLogin() ) );
     connect( this, SIGNAL( cancelClicked() ),
-            this, SLOT( cancel() ) );
+            this, SLOT( slotCancel() ) );
     connect( this, SIGNAL( applyClicked() ),
-            this, SLOT( tryLogin() ) );
+            this, SLOT( slotTryLogin() ) );
     connect( this, SIGNAL( defaultClicked() ),
             this, SLOT( defaults() ) );
 
     connect( m_configWidget->lineUsername, SIGNAL( textChanged( const QString& ) ),
-            this, SLOT( settingsChanged() ) );
+            this, SLOT( slotSettingsChanged() ) );
     connect( m_configWidget->linePassword, SIGNAL( textChanged( const QString& ) ),
-            this, SLOT( settingsChanged() ) );
+            this, SLOT( slotSettingsChanged() ) );
     connect( m_configWidget->checkHighQuality, SIGNAL( clicked() ),
-            this, SLOT( settingsChanged() ) );
+            this, SLOT( slotSettingsChanged() ) );
 
     connect( this, SIGNAL( changed( bool ) ), this, SLOT( enableButtonApply( bool ) ) );
 
@@ -72,7 +72,9 @@ SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
     if( !QFile::exists( m_config.resolverPath() ) )
     {
         int res = KMessageBox::questionYesNo( this,
-i18n( "Spotify resolver is a program required by Spotify collection,it's missing or not installed correctly on your system, you want to download and install it now?" ),
+                    i18n( "Spotify resolver is missing or not installed correctly on your system."
+                          "This program is required by Spotify collection."
+                          "Do you want to download and install it now?" ),
                     i18n( "Spotify resolver" ) );
         if( res == KMessageBox::Yes )
         {
@@ -81,7 +83,7 @@ i18n( "Spotify resolver is a program required by Spotify collection,it's missing
         else
         {
             // Close config dialog
-            cancel();
+            slotCancel();
         }
     }
 }
@@ -121,7 +123,7 @@ SpotifySettings::defaults()
 }
 
 void
-SpotifySettings::tryLogin()
+SpotifySettings::slotTryLogin()
 {
     DEBUG_BLOCK
     Spotify::Controller* controller = The::SpotifyController();
@@ -186,7 +188,7 @@ SpotifySettings::slotDownloadError( QNetworkReply::NetworkError error )
 
     KMessageBox::error( this, i18n( "Error occured while downloading Spotify resolver." ));
 
-    cancel();
+    slotCancel();
 }
 
 void
@@ -201,6 +203,19 @@ void
 SpotifySettings::slotDownloadFinished()
 {
     DEBUG_BLOCK
+
+    if( m_downloadReply->error() != QNetworkReply::NoError )
+    {
+        debug() << "Downloading is interrupted due to " << m_downloadReply->errorString();
+        KMessageBox::warningYesNo( this,
+                i18n( "Error occured while downloading Spotify resolver,"
+                      "please check your internet connection and try again later." ) );
+
+        // Don't show the settings dialog
+        deleteLater();
+        return;
+    }
+
     debug() << "Download finished.";
 
     m_configWidget->progDownload->hide();
@@ -212,21 +227,14 @@ SpotifySettings::slotDownloadFinished()
     }
     else
     {
-        while( m_downloadReply->bytesAvailable() )
-        {
-            file.write( m_downloadReply->read( 102400 ) );
-        }
+        file.write( m_downloadReply->readAll() );
 
+        // Set execution permission
+        file.setPermissions( file.permissions() | QFile::ExeUser );
         file.close();
-
-#if defined(Q_WS_X11) || defined(Q_WS_MAC)
-        // Grant execution permission for *nix systems
-        QString cmd = QString("chmod +x '%1'").arg(m_config.resolverPath());
-        system(qPrintable(cmd));
-#endif
     }
 
-    // Restore
+    // Restore widgets
     m_configWidget->progDownload->hide();
     m_configWidget->frameMain->show();
     m_configWidget->lblNote->show();
@@ -236,13 +244,13 @@ SpotifySettings::slotDownloadFinished()
 }
 
 void
-SpotifySettings::settingsChanged()
+SpotifySettings::slotSettingsChanged()
 {
     emit changed( true );
 }
 
 void
-SpotifySettings::cancel()
+SpotifySettings::slotCancel()
 {
     close();
 

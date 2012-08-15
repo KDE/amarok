@@ -17,8 +17,8 @@
 #define SPOTIFYCONFIG_H_
 
 #include <QObject>
-#include <QString>
 
+class QString;
 namespace KWallet { class Wallet; }
 
 class KDialog;
@@ -31,7 +31,7 @@ public:
     ~SpotifyConfig();
 
     static const char *configSectionName() { return "Collection_Spotify"; }
-    static const QString resolverName();
+    static const QString defaultResolverName();
     void load();
     void save();
     void reset();
@@ -42,13 +42,10 @@ public:
     const QString password() const { return m_password; }
     void setPassword( const QString& password ) { m_password = password; }
 
-    const QByteArray apikey() const { return m_apikey; }
-    void setApiKey( const QString base64 ) { m_apikey = QByteArray::fromBase64( QByteArray( base64.toAscii() ) ); }
-
     const QString resolverPath() const { return m_resolverPath; }
     void setResolverPath( const QString& path ) { m_resolverPath = path; }
 
-    const QString resolverDownloadUrl() const { return m_resolverDownloadUrl + resolverName(); }
+    const QString resolverDownloadUrl() const { return m_resolverDownloadUrl + defaultResolverName(); }
 
     bool highQuality() const { return m_highQuality; }
     void setHighQuality( const bool highquality ) { m_highQuality = highquality; }
@@ -56,7 +53,6 @@ public:
 private:
     QString m_username;
     QString m_password;
-    QByteArray m_apikey;
     QString m_resolverPath;
     bool m_highQuality;
     const static QString m_resolverDownloadUrl;
