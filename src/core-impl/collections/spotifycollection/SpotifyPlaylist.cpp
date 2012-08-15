@@ -28,7 +28,7 @@ SpotifyPlaylist::SpotifyPlaylist( Collections::SpotifyCollection* collection, Sp
 }
 
 SpotifyPlaylist::SpotifyPlaylist( const QString& name, const Meta::SpotifyTracklist& tracks,
-                                  Collections::SpotifyCollection* collection,, SpotifyPlaylistProvider* provider, const sync = true )
+                                  Collections::SpotifyCollection* collection, SpotifyPlaylistProvider* provider, const sync = true )
     :QObject( 0 )
 , m_name( name )
 , m_sync( sync )

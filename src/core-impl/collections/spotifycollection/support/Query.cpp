@@ -27,13 +27,11 @@ Query::Query( Collections::SpotifyCollection* collection, const QString& qid, co
 , m_genre( genre )
 , m_collection( collection )
 {
-    //TODO: Connect singals&slots
 }
 
 Query::~Query()
 {
     DEBUG_BLOCK
-    //DONE:TODO: Notify controller to remove current query from map
     emit queryDone( qid() );
 }
 
@@ -99,7 +97,6 @@ Query::tracksAdded( const Meta::SpotifyTrackList& trackList )
 void
 Query::timedOut()
 {
-    //TODO: Abort current query, notify the controller to remove current query from queue
     emit queryError( QueryError ( ETimedOut, QString( "Query(%1) timed out!" ).arg( qid() ) ) );
 
     // Auto delete self
@@ -111,8 +108,6 @@ Query::timedOut()
 void
 Query::abortQuery()
 {
-    //TODO: Notify the controller to remove the query from queue
-
     emit queryDone( qid() );
 }
 

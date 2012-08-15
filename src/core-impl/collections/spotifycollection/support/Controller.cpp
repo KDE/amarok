@@ -30,6 +30,7 @@
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
 
+
 #define ShowMessage(x) Amarok::Components::logger()->shortMessage( x )
 
 namespace Spotify
