@@ -89,9 +89,7 @@ Query::tracksAdded( const Meta::SpotifyTrackList& trackList )
 
     emit newTrackList( trackList );
     emit queryDone( this, trackList );
-    emit queryDone( qid() );
 
-    debug() << "Signals are emitted";
 }
 
 void
@@ -100,15 +98,13 @@ Query::timedOut()
     emit queryError( QueryError ( ETimedOut, QString( "Query(%1) timed out!" ).arg( qid() ) ) );
 
     // Auto delete self
-    this->deleteLater();
-
-    emit queryDone( qid() );
+    deleteLater();
 }
 
 void
 Query::abortQuery()
 {
-    emit queryDone( qid() );
+    deleteLater();
 }
 
 } // namespace Spotify
