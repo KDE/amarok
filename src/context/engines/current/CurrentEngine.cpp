@@ -41,7 +41,7 @@ using namespace Context;
 
 CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
-    , m_coverWidth( 0 )
+    , m_coverWidth( 100 )
     , m_coverCacheKey( 0 )
     , m_lastQueryMaker( 0 )
 {

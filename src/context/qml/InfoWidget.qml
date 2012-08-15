@@ -48,6 +48,7 @@ Item {
             wrapMode: Text.WordWrap
             font.pointSize: 15
             text: ""
+            clip: true
         }
         Text {
             id: albumartist
