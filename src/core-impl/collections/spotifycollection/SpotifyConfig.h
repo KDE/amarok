@@ -32,9 +32,6 @@ public:
 
     static const char *configSectionName() { return "Collection_Spotify"; }
     static const QString defaultResolverName();
-    void load();
-    void save();
-    void reset();
 
     const QString username() const { return m_username; }
     void setUsername( const QString& username ) { m_username = username; }
@@ -49,6 +46,11 @@ public:
 
     bool highQuality() const { return m_highQuality; }
     void setHighQuality( const bool highquality ) { m_highQuality = highquality; }
+
+public slots:
+    void load();
+    void save();
+    void reset();
 
 private:
     QString m_username;
