@@ -41,8 +41,8 @@ namespace Collections
             virtual void init();
 
         private Q_SLOTS:
-            void checkStatus();
-            void spotifyReady();
+            void slotCheckStatus();
+            void slotSpotifyReady();
             void slotSpotifyError( const Spotify::Controller::ErrorState );
             void collectionRemoved();
 
@@ -88,6 +88,7 @@ namespace Collections
             Spotify::Controller* controller();
 
         private Q_SLOTS:
+            void slotUserChanged();
             void slotSpotifyError( const Spotify::Controller::ErrorState );
             void slotConfigure();
 
