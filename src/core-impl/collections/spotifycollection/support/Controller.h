@@ -60,7 +60,7 @@ public:
         ResolverNotFound,
         InvalidCredential
     };
-    Controller( const QString& exec = QString() );
+    explicit Controller( const QString& exec = QString() );
     virtual ~Controller();
 
     virtual unsigned int timeout() const { return m_timeout; }
@@ -132,12 +132,11 @@ signals:
     void started();
     void terminated();
     void customMessage( const QString& msgType, const QVariantMap& map );
-    void changed();
     void spotifyError( const Spotify::Controller::ErrorState error );
 
     void errorMsgReceived( const QString& msg );
-    void userChanged();
 
+    void userChanged();
     void loginSuccess( const QString& user );
     void loginFailed();
 
