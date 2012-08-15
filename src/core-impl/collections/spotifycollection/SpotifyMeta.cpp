@@ -41,6 +41,9 @@ Meta::SpotifyTrack::SpotifyTrack( const QString &playableUrl,
                                   const QString &name,
                                   const QString &artist,
                                   const QString &album,
+                                  const int     year,
+                                  const int     trackNumber,
+                                  const int     discNumber,
                                   const QString &genre,
                                   const QString &mimetype,
                                   const double score,
@@ -52,7 +55,7 @@ Meta::SpotifyTrack::SpotifyTrack( const QString &playableUrl,
     , m_artist( new SpotifyArtist( artist ) )
     , m_composer( new SpotifyComposer( QString( "" ) ) )
     , m_genre( new SpotifyGenre( genre ) )
-    , m_year( new SpotifyYear( QString( "" ) ) )
+    , m_year( new SpotifyYear( QString::number( year ) ) )
     , m_labelList(  )
     , m_uidUrl( )
     , m_playableUrl( playableUrl )
@@ -62,8 +65,8 @@ Meta::SpotifyTrack::SpotifyTrack( const QString &playableUrl,
     , m_length( length )
     , m_bitrate( bitrate )
     , m_filesize( filesize )
-    , m_trackNumber( 0 )
-    , m_discNumber( 0 )
+    , m_trackNumber( trackNumber )
+    , m_discNumber( discNumber )
     , m_createDate( QDateTime::currentDateTime() )
     , m_comment( QString( "" ) )
     , m_rating( 0 )
