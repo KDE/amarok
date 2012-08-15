@@ -276,7 +276,6 @@ namespace Collections
     bool
     SpotifyCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
     {
-        //DONE:TODO: Make this work once capabilities are set.
         switch( type )
         {
             case Capabilities::Capability::Actions :
@@ -289,7 +288,6 @@ namespace Collections
     Capabilities::Capability*
     SpotifyCollection::createCapabilityInterface( Capabilities::Capability::Type type )
     {
-        //DONE:TODO: Make this work once capabilities are set.
         switch( type )
         {
             case Capabilities::Capability::Actions :
