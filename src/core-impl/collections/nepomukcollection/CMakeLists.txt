@@ -1,9 +1,9 @@
-find_package( Nepomuk REQUIRED )
-
-include(NepomukAddOntologyClasses)
-include(SopranoAddOntology)
+find_package( Nepomuk )
 
 if( NEPOMUK_FOUND )
+    include(NepomukAddOntologyClasses)
+    include(SopranoAddOntology)
+
     include_directories( ../..
         ${NEPOMUK_INCLUDES}
     )
