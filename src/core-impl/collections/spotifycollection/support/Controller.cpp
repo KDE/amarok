@@ -17,19 +17,24 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Tomahawk. If not, see <http://www.gnu.org/licenses/>.
  */
+
+#define DEBUG_PREFIX "SpotifyController"
+
 #include "Controller.h"
 #include "../SpotifyMeta.h"
 #include "core/support/Debug.h"
 
 #include <QtEndian>
+#include <QTimer>
 #include <KLocale>
 
 
 class QFile;
-class QFileInfo;
 
 namespace Spotify
 {
+
+const int ResolverRestartDelay = 2000;
 
 static Spotify::Controller* GlobalControllerInstance = 0;
 static Spotify::Controller* InitGlobalController( const QString& resolverPath = QString() )
@@ -121,8 +126,8 @@ Controller::start()
     debug() << "Starting Spotify resolver...";
     if( !m_loaded )
     {
-        debug() << "Resolver not loaded...";
-        return;
+        debug() << "Resolver not loaded, reloading...";
+        reload();
     }
 
     m_stopped = false;
@@ -132,7 +137,6 @@ Controller::start()
     } else if ( !m_configSent ) {
         sendConfig();
     }
-    m_stopped = false;
 
     // Resolve all queries in query queue
     if( !m_queryQueue.isEmpty() )
@@ -163,6 +167,8 @@ Controller::sendConfig()
     config["proxytype"] = "none";
     m_configSent = true;
     sendMessage(config);
+
+    emit spotifyReady();
 }
 
 void
@@ -416,8 +422,6 @@ Controller::procExited( int code, QProcess::ExitStatus status )
     m_loggedIn = false;
     qDebug() << Q_FUNC_INFO << "RESOVER EXITED, code" << code << "status" << status << resolverPath();
 
-    emit changed();
-
     if( m_stopped )
     {
         qDebug() << "*** Resolver stopped ";
@@ -427,8 +431,7 @@ Controller::procExited( int code, QProcess::ExitStatus status )
     else
     {
         qDebug() << "*** Resolver stoppped by accident, restarting...";
-        startProcess();
-        sendConfig();
+        QTimer::singleShot( ResolverRestartDelay, this, SLOT( startProcess() ) );
     }
 
 }
@@ -444,8 +447,6 @@ Controller::doSetup( const QVariantMap& m )
 
     m_ready = true;
     m_configSent = false;
-
-    emit changed();
 }
 
 void
@@ -468,12 +469,13 @@ Controller::startProcess()
 
     sendConfig();
 
-    emit spotifyReady();
+    emit started();
 }
 
 void
 Controller::stop()
 {
+    DEBUG_BLOCK
     m_stopped = true;
 }
 
@@ -502,6 +504,9 @@ Controller::handlePlaylistReceived( const QVariantMap& map )
             trackMap["track"].toString(),
             trackMap["artist"].toString(),
             trackMap["album"].toString(),
+            trackMap["year"].toInt(),
+            trackMap["albumpos"].toInt(),
+            trackMap["discnumber"].toInt(),
             trackMap["genre"].toString(), // NOTE: Spotify doesn't give genre info currently
             trackMap["mimetype"].toString(),
             trackMap["score"].toDouble(),
@@ -568,6 +573,8 @@ Controller::handleLoginResponse( const QVariantMap& map )
     }
 
     m_loggedIn = success;
+    m_lastUsername = user;
+    emit userChanged();
 }
 
 void
@@ -637,6 +644,9 @@ Controller::handleSearchResults( const QVariantMap& map )
             trackMap["track"].toString(),
             trackMap["artist"].toString(),
             trackMap["album"].toString(),
+            trackMap["year"].toInt(),
+            trackMap["albumpos"].toInt(),
+            trackMap["discnumber"].toInt(),
             trackMap["genre"].toString(), // NOTE:Spotify doesn't give genre info currently
             trackMap["mimetype"].toString(),
             trackMap["score"].toDouble(),
