@@ -356,7 +356,7 @@ NepomukConstructMetaJob::run()
 
             MemoryMeta::MapChanger mapChanger( m_mc.data() );
             mapChanger.addTrack( trackPtr );
-            debug() << "inserting track with track name : " << trackPtr->name();
+            debug() << "found track: " << trackPtr->name();
 
             emit incrementProgress();
         }
