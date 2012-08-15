@@ -68,7 +68,7 @@ namespace Collections
         connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( Meta::LabelList ) ),
                  this, SIGNAL( newResultReady( Meta::LabelList ) ) );
         connect( m_memoryQueryMaker.data(), SIGNAL( queryDone() ),
-                 this, SLOT( memoryQueryDone() ) );
+                 this, SLOT( slotMemoryQueryDone() ) );
         m_memoryQueryMaker.data()->setAutoDelete( true );
     }
 
@@ -123,9 +123,9 @@ namespace Collections
                 connect( this, SIGNAL( queryAborted() ),
                          query, SLOT( abortQuery()) );
                 connect( query, SIGNAL(newTrackList( Meta::SpotifyTrackList ) ),
-                         this, SLOT(collectResults( Meta::SpotifyTrackList ) ) );
+                         this, SLOT(slotCollectResults( Meta::SpotifyTrackList ) ) );
                 connect( query, SIGNAL(queryDone(Spotify::Query*,Meta::SpotifyTrackList)),
-                         this, SLOT(aQueryEnded(Spotify::Query*,Meta::SpotifyTrackList)));
+                         this, SLOT(slotQueryDone(Spotify::Query*,Meta::SpotifyTrackList)));
 
                 m_controller.data()->resolve( query );
             }
@@ -142,8 +142,8 @@ namespace Collections
         DEBUG_BLOCK
 
         m_memoryQueryMaker.data()->abortQuery();
-        m_controller.data()->disconnect( this, SLOT(collectResults(Meta::SpotifyTrackList)) );
-        m_controller.data()->disconnect( this, SLOT(aQueryEnded(Spotify::Query*,Meta::SpotifyTrackList)) );
+        m_controller.data()->disconnect( this, SLOT(slotCollectResults(Meta::SpotifyTrackList)) );
+        m_controller.data()->disconnect( this, SLOT(slotQueryDone(Spotify::Query*,Meta::SpotifyTrackList)) );
 
         if( m_querySent )
         {
@@ -508,7 +508,7 @@ namespace Collections
     }
 
     void
-    SpotifyQueryMaker::collectResults( const Meta::SpotifyTrackList& trackList )
+    SpotifyQueryMaker::slotCollectResults( const Meta::SpotifyTrackList& trackList )
     {
         DEBUG_BLOCK
 
@@ -526,7 +526,7 @@ namespace Collections
     }
 
     void
-    SpotifyQueryMaker::aQueryEnded( Spotify::Query *query, const Meta::SpotifyTrackList trackList )
+    SpotifyQueryMaker::slotQueryDone( Spotify::Query *query, const Meta::SpotifyTrackList trackList )
     {
         DEBUG_BLOCK
 
@@ -534,7 +534,7 @@ namespace Collections
         Q_UNUSED( trackList );
 
         query->disconnect( this, SLOT(spotifyError(Spotify::Controller::ErrorState)) );
-        query->disconnect( this, SLOT(aQueryEnded(Spotify::Query*,Meta::SpotifyTrackList)) );
+        query->disconnect( this, SLOT(slotQueryDone(Spotify::Query*,Meta::SpotifyTrackList)) );
 
         m_activeQueryCount--;
         m_querySent = false;
@@ -556,7 +556,7 @@ namespace Collections
     }
 
     void
-    SpotifyQueryMaker::memoryQueryDone()
+    SpotifyQueryMaker::slotMemoryQueryDone()
     {
         DEBUG_BLOCK
 
@@ -600,7 +600,7 @@ namespace Collections
         connect( m_memoryQueryMaker.data(), SIGNAL( newResultReady( Meta::LabelList ) ),
                  this, SIGNAL( newResultReady( Meta::LabelList ) ) );
         connect( m_memoryQueryMaker.data(), SIGNAL( queryDone() ),
-                 this, SLOT( memoryQueryDone() ) );
+                 this, SLOT( slotMemoryQueryDone() ) );
         m_memoryQueryMaker.data()->setAutoDelete( true );
 
         foreach( CurriedQMFunction *funPtr, m_queryMakerFunctions )

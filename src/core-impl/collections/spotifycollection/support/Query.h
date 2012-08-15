@@ -87,18 +87,16 @@ class Query: public QObject, public QSharedData
         QString errorMsg() const { return m_error.verbose; }
 
     public slots:
-        void tracksAdded( const Meta::SpotifyTrackList &trackList );
-        /* Abort current query if timed out
-         */
-        void abortQuery();
-        void timedOut();
+        void slotTracksAdded( const Meta::SpotifyTrackList &trackList );
+        // Abort current query if timed out
+        void slotAbortQuery();
+        void slotTimedout();
         void setError( const Spotify::QueryError& error ) { m_error = error; }
 
     signals:
         void queryError( const Spotify::QueryError& error );
         void newTrackList( const Meta::SpotifyTrackList& trackList );
         void queryDone( const QString& qid );
-        void queryDone( Spotify::Query*, const Meta::SpotifyTrackList& );
 
     private:
         QString m_qid;
@@ -106,6 +104,8 @@ class Query: public QObject, public QSharedData
         QString m_artist;
         QString m_album;
         QString m_genre;
+
+        int m_timeout;
 
         Collections::SpotifyCollection* m_collection;
 

@@ -20,16 +20,18 @@
 #ifndef SCRIPTRESOLVER_H
 #define SCRIPTRESOLVER_H
 
+#include "../SpotifyMeta.h"
+#include "./Query.h"
+#include "core/support/Amarok.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
+
 #include <QProcess>
-
 #include <QVariantMap>
-
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include <qjson/qobjecthelper.h>
 
-#include "../SpotifyMeta.h"
-#include "./Query.h"
 
 class QObject;
 
@@ -43,7 +45,7 @@ namespace Spotify { class Controller; }
 
 namespace The
 {
-    extern Spotify::Controller* SpotifyController( const QString& resolverPath = QString() );
+    Spotify::Controller* SpotifyController( const QString& resolverPath = QString() );
 }
 
 namespace Spotify
@@ -64,9 +66,10 @@ public:
     virtual unsigned int timeout() const { return m_timeout; }
     virtual void setTimeout( const unsigned int timeout ) { m_timeout = timeout; }
     virtual QString name() const { return m_name; }
-    virtual QString filePath() const { return m_filePath; }
+    virtual QString resolverPath() const { return m_filePath; }
     virtual void setFilePath( const QString& resolverPath ) { m_filePath = resolverPath; }
     virtual void login(const QString& username, const QString& password, const bool highQuality = false);
+    virtual bool loggedIn() const { return m_loggedIn; }
     virtual bool running() const;
     virtual bool loaded() const;
 
@@ -80,7 +83,6 @@ public:
      */
     virtual Spotify::Query* makeQuery( Collections::SpotifyCollection* collection, const QString& title = QString(), const QString& artist = QString(), const QString& album = QString(), const QString& genre = QString());
     virtual void resolve( Query *query );
-//    virtual void search( const QueryPtr queryPtr );
 
     /* Get playlist
      */
@@ -154,6 +156,7 @@ private slots:
 
 private:
     // Core private methods
+    inline void showMessage( const QString& msg ) { Amarok::Components::logger()->shortMessage( msg ); }
     /* Send raw bytes to Spotify resolver,
      * the difference between sendRaw and sendMsg is,
      * sendRaw only sends raw data, that it, msg should contain the message header which is the length of the message body,
@@ -209,6 +212,7 @@ private:
     QProcess  m_proc;
     QString   m_name;
     QString   m_filePath;
+    QString   m_lastUsername;
 
     quint32     m_msgSize;
     quint32     m_timeout;
@@ -219,6 +223,7 @@ private:
     bool m_loaded;
     bool m_deleting;
     bool m_configSent;
+    bool m_loggedIn;
 
     QJson::Parser      m_parser;
     QJson::Serializer  m_serializer;

@@ -16,9 +16,10 @@
 #ifndef SPOTIFYSETTINGS_H_
 #define SPOTIFYSETTINGS_H_
 
-#include <KDialog>
 #include "SpotifyConfig.h"
 #include "network/NetworkAccessManagerProxy.h"
+
+#include <KDialog>
 
 namespace Ui { class SpotifyConfigWidget; }
 
@@ -37,11 +38,11 @@ public Q_SLOTS:
     virtual void save();
     virtual void load();
     virtual void defaults();
-    void settingsChanged();
-    void cancel();
+    void slotSettingsChanged();
+    void slotCancel();
 
 private Q_SLOTS:
-    void tryLogin();
+    void slotTryLogin();
     void slotDownloadError( QNetworkReply::NetworkError error );
     void slotDownloadProgress( qint64 current, qint64 total );
     void slotDownloadFinished();

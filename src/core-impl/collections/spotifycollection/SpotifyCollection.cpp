@@ -18,6 +18,9 @@
 #define DEBUG_PREFIX "SpotifyCollection"
 
 #include "SpotifyCollection.h"
+#include "SpotifyQueryMaker.h"
+#include "support/Controller.h"
+#include "support/TrackProxy.h"
 
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/MemoryCollection.h"
@@ -25,14 +28,8 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
-#include "SpotifyQueryMaker.h"
-#include "support/Controller.h"
-#include "support/TrackProxy.h"
-#include <KIcon>
 
-#include <QApplication>
-#include <QObject>
-#include <QString>
+#include <KIcon>
 #include <QTimer>
 
 namespace Collections
@@ -54,8 +51,9 @@ namespace Collections
     {
         DEBUG_BLOCK
         delete m_collection.data();
-        m_controller->deleteLater();
 
+        if( m_controller )
+            m_controller->deleteLater();
     }
 
     void
@@ -76,7 +74,6 @@ namespace Collections
 
         m_collection = new SpotifyCollection( m_controller );
         connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
-        CollectionManager::instance()->addTrackProvider( m_collection.data() );
 
         // Register collection in CollectionManager
         emit newCollection( m_collection.data() );
@@ -102,10 +99,7 @@ namespace Collections
             connect( m_collection.data(), SIGNAL(remove()), this, SLOT(collectionRemoved()) );
         }
 
-        if( !m_collectionIsManaged )
-        {
-            m_collectionIsManaged = true;
-        }
+        m_collectionIsManaged = true;
 
         m_controller->setFilePath( m_config.resolverPath() );
         if( !m_config.username().isEmpty() && !m_config.password().isEmpty() )
@@ -119,12 +113,10 @@ namespace Collections
     {
         // DEBUG_BLOCK
 
-        if( error == Spotify::Controller::ErrorState( 1 ) )
+        if( error == Spotify::Controller::ResolverNotFound )
         {
             if( m_collection && !m_collectionIsManaged )
                 CollectionManager::instance()->removeTrackProvider( m_collection.data() );
-
-            QTimer::singleShot( 10 * 60 * 1000, this, SLOT( checkStatus() ) );
         }
     }
 
@@ -134,7 +126,6 @@ namespace Collections
         DEBUG_BLOCK
 
         m_collectionIsManaged = false;
-        QTimer::singleShot( 10000, this, SLOT( checkStatus() ) );
     }
 
     SpotifyCollection::SpotifyCollection( Spotify::Controller *controller )
@@ -154,10 +145,6 @@ namespace Collections
     SpotifyCollection::~SpotifyCollection()
     {
         DEBUG_BLOCK
-        if( m_configureAction )
-        {
-            delete m_configureAction;
-        }
     }
 
     Spotify::Controller*

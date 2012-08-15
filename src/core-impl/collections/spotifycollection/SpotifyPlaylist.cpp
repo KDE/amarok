@@ -18,7 +18,6 @@
 using Playlists;
 
 SpotifyPlaylist::SpotifyPlaylist( Collections::SpotifyCollection* collection, SpotifyPlaylistProvider* provider)
-    :QObject( 0 )
 , m_name( i18n("New playlist") )
 , m_sync( true )
 , m_collection( collection )
@@ -29,7 +28,6 @@ SpotifyPlaylist::SpotifyPlaylist( Collections::SpotifyCollection* collection, Sp
 
 SpotifyPlaylist::SpotifyPlaylist( const QString& name, const Meta::SpotifyTracklist& tracks,
                                   Collections::SpotifyCollection* collection, SpotifyPlaylistProvider* provider, const sync = true )
-    :QObject( 0 )
 , m_name( name )
 , m_sync( sync )
 , m_collection( collection )

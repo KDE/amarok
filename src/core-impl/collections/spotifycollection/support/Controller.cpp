@@ -20,18 +20,13 @@
 #include "Controller.h"
 #include "../SpotifyMeta.h"
 #include "core/support/Debug.h"
-#include <QDebug>
-#include <QFile>
-#include <QFileInfo>
+
 #include <QtEndian>
-#include <QTimer>
 #include <KLocale>
-#include "core/support/Amarok.h"
-#include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
 
 
-#define ShowMessage(x) Amarok::Components::logger()->shortMessage( x )
+class QFile;
+class QFileInfo;
 
 namespace Spotify
 {
@@ -69,6 +64,7 @@ namespace Spotify
 Controller::Controller( const QString& exec )
 : QObject(0)
 , m_filePath( exec )
+, m_lastUsername( QString() )
 , m_msgSize( 0 )
 , m_timeout ( 5 )
 , m_ready( false )
@@ -76,6 +72,7 @@ Controller::Controller( const QString& exec )
 , m_loaded( false )
 , m_deleting( false )
 , m_configSent( false )
+, m_loggedIn( false )
 , m_queryCounter( 0 )
 {
     qDebug() << Q_FUNC_INFO << "Spotify Controller created: " << exec;
@@ -114,6 +111,7 @@ Controller::unload()
     }
 
     m_loaded = false;
+    m_loggedIn = false;
 }
 
 void
@@ -205,7 +203,7 @@ Controller::sendMessage( const QVariantMap& map )
 
 void Controller::readStderr()
 {
-    debug() << "SCRIPT_STDERR" << filePath() << m_proc.readAllStandardError();
+    debug() << "SCRIPT_STDERR" << resolverPath() << m_proc.readAllStandardError();
 }
 
 void
@@ -213,15 +211,19 @@ Controller::login(const QString &username, const QString &password, const bool h
 {
     DEBUG_BLOCK
 
+    if( loggedIn() && username == m_lastUsername )
+        return;
+
     QString msg = i18n( "Trying to login to Spotify..." );
-    ShowMessage( msg );
+    showMessage( msg );
+
     QVariantMap map;
     map["_msgtype"] = "login";
     map["username"] = username;
     map["password"] = password;
     map["highQuality"] = highQuality;
 
-    sendMessage(map);
+    sendMessage( map );
 }
 
 void
@@ -250,7 +252,7 @@ Controller::readStdout()
 
         if( m_proc.bytesAvailable() )
         {
-            QTimer::singleShot( 0, this, SLOT( readStdout() ) );
+            readStdout();
         }
     }
     else
@@ -264,6 +266,8 @@ Controller::makeQuery( Collections::SpotifyCollection* collection, const QString
 {
     DEBUG_BLOCK
     QString qid = QString::number( m_queryCounter++ );
+    // Queryies will be deleted after the results are received or times out
+    // see Query::queryDone and Controller::removeQueryFromCache
     return new Query( collection, qid, title, artist, album, genre );
 }
 
@@ -408,14 +412,15 @@ Controller::procExited( int code, QProcess::ExitStatus status )
 {
     DEBUG_BLOCK
     m_ready = false;
-    qDebug() << Q_FUNC_INFO << "RESOVER EXITED, code" << code << "status" << status << filePath();
+    m_loaded = false;
+    m_loggedIn = false;
+    qDebug() << Q_FUNC_INFO << "RESOVER EXITED, code" << code << "status" << status << resolverPath();
 
     emit changed();
 
     if( m_stopped )
     {
         qDebug() << "*** Resolver stopped ";
-        m_loaded = false;
         emit terminated();
         return;
     }
@@ -435,7 +440,7 @@ Controller::doSetup( const QVariantMap& m )
     m_name = m.value( "name" ).toString();
     m_timeout = m.value( "timeout", 5 ).toUInt() * 1000;
 
-    debug() << "RESOLVER" << filePath() << "READY," << "name" << m_name << "timeout" << m_timeout;
+    debug() << "RESOLVER" << resolverPath() << "READY," << "name" << m_name << "timeout" << m_timeout;
 
     m_ready = true;
     m_configSent = false;
@@ -447,53 +452,17 @@ void
 Controller::startProcess()
 {
     DEBUG_BLOCK
-    if( !QFile::exists( filePath() ) )
+    if( !QFile::exists( resolverPath() ) )
     {
-        debug() << "*** Cannot find file" << filePath() << ", starting process failed";
+        debug() << "*** Cannot find file" << resolverPath() << ", starting process failed";
         // TODO: Set error message
         return;
     }
 
-    debug() << "Starting " << filePath();
-    QFileInfo fi( filePath() );
-    QString interpreter;
-    QString runPath = filePath();
+    debug() << "Starting " << resolverPath();
+    QString runPath = resolverPath();
 
-#ifdef Q_OS_WIN
-    if( fi.suffix().toLower() != "exe" )
-    {
-        DWORD dwSize = MAX_PATH;
-
-        wchar_t path[MAX_PATH] = { 0 };
-        wchar_t *ext = (wchar_t *) ("." + fi.suffix()).utf16();
-
-        HRESULT hr = AssocQueryStringW(
-                (ASSOCF) 0,
-                ASSOCSTR_EXECUTABLE,
-                ext,
-                L"open",
-                path,
-                &dwSize
-        );
-
-        if ( ! FAILED( hr ) )
-        {
-            interpreter = QString( "\"%1\"" ).arg(QString::fromUtf16((const ushort *) path));
-        }
-    }
-    else
-    {
-        runPath = QString( "\"%1\"" ).arg( filePath() );
-    }
-#endif // Q_OS_WIN
-    if( interpreter.isEmpty() )
-    {
-        m_proc.start( runPath );
-    }
-    else
-    {
-        m_proc.start( interpreter, QStringList() << filePath() );
-    }
+    m_proc.start( runPath );
 
     m_loaded = true;
 
@@ -519,6 +488,8 @@ Controller::handlePlaylistReceived( const QVariantMap& map )
     QString plId = map["id"].toString();
     QString plName = map["name"].toString();
     bool plSync = map["sync"].toBool();
+    Q_UNUSED( plSync )
+    // TODO: Implement playlist sync
     QVariantList tracks = map["tracks"].toList();
 
     // Get tracks in the playlist
@@ -542,42 +513,42 @@ Controller::handlePlaylistReceived( const QVariantMap& map )
         trackList << track ;
     }
 
-//    Playlists::SpotifyPlaylist* playlist =
-//        new Plaulists::SpotifyPlaylist( plName, trackList, collection );
-//    m_queryResults[qid] = playlist;
-
-    // Notify the collection to retrive query result
-    //emit queryDone( qid );
 }
 
 void
 Controller::handlePlaylistRenamed( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
 Controller::handlePlaylistDeleted( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
 Controller::handleTracksAdded( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
 Controller::handleTracksDeleted( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
 Controller::handleTracksMoved( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
 Controller::handleTracksRemoved( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
@@ -587,44 +558,52 @@ Controller::handleLoginResponse( const QVariantMap& map )
     QString user = map["username"].toString();
     if( success )
     {
-        ShowMessage( i18n( "Logged in to Spotify as %1" ).arg( user ) );
+        showMessage( i18n( "Logged in to Spotify as %1" ).arg( user ) );
         emit loginSuccess( user );
     }
     else
     {
-        ShowMessage( i18n( "Spotify login failed" ) );
+        showMessage( i18n( "Spotify login failed" ) );
         emit loginFailed();
     }
+
+    m_loggedIn = success;
 }
 
 void
 Controller::handleCredentialsReceived( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
 Controller::handleSettingsReceived( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
 Controller::handleAllPlaylists( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
 Controller::handleUserchanged( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
 Controller::handleSpotifyError( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
 Controller::handleQueryResponse( const QVariantMap& map )
 {
+    Q_UNUSED( map )
 }
 
 void
@@ -670,7 +649,7 @@ Controller::handleSearchResults( const QVariantMap& map )
         trackList << track;
     }
 
-    queryPtr->tracksAdded( trackList );
+    queryPtr->slotTracksAdded( trackList );
 }
 
 } // namespace Spotify

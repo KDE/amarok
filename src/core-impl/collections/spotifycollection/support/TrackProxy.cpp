@@ -32,7 +32,7 @@ void TrackProxy::slotSpotifyError( Spotify::Controller::ErrorState e )
     deleteLater();
 }
 
-void TrackProxy::trackResolved( const Meta::SpotifyTrackList& trackList )
+void TrackProxy::slotTrackResolved( const Meta::SpotifyTrackList& trackList )
 {
     if( trackList.isEmpty() )
         return;
@@ -50,7 +50,7 @@ void TrackProxy::trackResolved( const Meta::SpotifyTrackList& trackList )
     m_proxyTrackPtr->updateTrack( realTrack );
 }
 
-void TrackProxy::queryDone( Spotify::Query* query, const Meta::SpotifyTrackList& trackList )
+void TrackProxy::slotQueryDone( Spotify::Query* query, const Meta::SpotifyTrackList& trackList )
 {
     Q_UNUSED( query );
     Q_UNUSED( trackList );

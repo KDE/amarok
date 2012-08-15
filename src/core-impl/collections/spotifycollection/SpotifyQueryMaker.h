@@ -19,7 +19,6 @@
 
 #include "SpotifyMeta.h"
 #include "SpotifyCollection.h"
-
 #include "support/Controller.h"
 #include "support/Query.h"
 #include "support/QMFunctionTypes.h"
@@ -29,7 +28,6 @@
 #include "core/collections/QueryMaker.h"
 
 #include <QMap>
-#include <QStack>
 
 namespace Collections
 {
@@ -94,9 +92,9 @@ namespace Collections
 
         public Q_SLOTS:
             void slotSpotifyError( const Spotify::Controller::ErrorState error );
-            void collectResults( const Meta::SpotifyTrackList &track );
-            void aQueryEnded( Spotify::Query* query, const Meta::SpotifyTrackList trackList );
-            void memoryQueryDone();
+            void slotCollectResults( const Meta::SpotifyTrackList &track );
+            void slotQueryDone( Spotify::Query* query, const Meta::SpotifyTrackList trackList );
+            void slotMemoryQueryDone();
 
         private:
             QueryType m_queryType;

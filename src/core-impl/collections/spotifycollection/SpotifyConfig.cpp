@@ -13,7 +13,9 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+#include "SpotifyConfig.h"
 #include "core/support/Debug.h"
+
 #include <sys/utsname.h>
 #include <KWallet/Wallet>
 #include <KMessageBox>
@@ -21,14 +23,12 @@
 #include <KConfigGroup>
 #include <KStandardDirs>
 #include "App.h"
-#include "SpotifyConfig.h"
 
 const QString SpotifyConfig::m_resolverDownloadUrl = "http://ofan.me/";
 
 SpotifyConfig::SpotifyConfig()
 : m_username ()
 , m_password ()
-, m_apikey ()
 , m_resolverPath ()
 , m_highQuality( false )
 , m_wallet ( 0 )
@@ -88,23 +88,12 @@ SpotifyConfig::load()
             m_username = QString::fromUtf8( rawUsername );
         }
 
-        QByteArray base64_apikey;
-        if( m_wallet->readEntry( "spotify_apikey", base64_apikey ) > 0 )
-        {
-            debug() << "Cannot get Spotify apikey from KWallet.";
-        }
-        else
-        {
-            m_apikey = QByteArray::fromBase64( base64_apikey );
-        }
-
     }
     else
     {
         m_username = config.readEntry( "username", QString() );
         m_resolverPath = config.readEntry( "resolver", QString() );
         m_password = QByteArray::fromBase64( config.readEntry( "password", QString() ).toLocal8Bit() );
-        m_apikey = QByteArray::fromBase64( config.readEntry( "apikey", QString() ).toLocal8Bit() );
     }
 
     m_highQuality = config.readEntry( "highquality", false );
@@ -118,34 +107,41 @@ SpotifyConfig::save()
 
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
-    config.writeEntry( "highquality", m_highQuality );
 
     if( !m_wallet )
     {
         // KWallet not loaded, tell user that we won't save the password
-        int result = KMessageBox::questionYesNo( (QWidget*)this,
+        int result = KMessageBox::questionYesNoCancel( (QWidget*)this,
                 i18n( "Cannot find KWallet, credentials will be saved in plaintext, continue?" ),
                 i18n( "Spotify credentials" ) );
 
         if( result == KMessageBox::Cancel )
         {
+            // Don't save anything
             return;
         }
 
         QByteArray base64_password;
-        QByteArray base64_apikey;
         base64_password.append( m_password.toLocal8Bit() );
-        base64_apikey.append( m_apikey );
 
         config.writeEntry( "username", m_username );
-        config.writeEntry( "password", base64_password.toBase64() );
-        config.writeEntry( "apikey", base64_apikey.toBase64() );
+
+        // Stores password using KConfig if user approved this
+        if( result != KMessageBox::No )
+            config.writeEntry( "password", base64_password.toBase64() );
+
+        // Set default resolver path
+        if( m_resolverPath.isEmpty() )
+            m_resolverPath = KStandardDirs::locateLocal( "exe", defaultResolverName() );
+
         config.writeEntry( "resolver", m_resolverPath );
 
         config.sync();
     }
     else
     {
+        // KWallet found
+
         if( m_wallet->writePassword( "spotify_password", m_password ) > 0 )
         {
             warning() << "Failed to save Spotify password to KWallet.";
@@ -155,17 +151,9 @@ SpotifyConfig::save()
         {
             warning() << "Falied to save Spotify username to KWallet.";
         }
-
-        if( m_wallet->writeEntry( "spotify_apikey", m_apikey.toBase64() ) > 0 )
-        {
-            warning() << "Failed to save Spotify API key to KWallet.";
-        }
-
-        if( m_wallet->writeEntry( "spotify_resolver", QByteArray( m_resolverPath.toLocal8Bit() ) ) > 0 )
-        {
-            warning() << "Failed to save Spotify resolver path to KWallet.";
-        }
     }
+
+    config.writeEntry( "highquality", m_highQuality );
 }
 
 void
@@ -176,13 +164,12 @@ SpotifyConfig::reset()
     m_username = "";
     m_password = "";
     // Use the the API key embedded in Spotify resolver
-    m_apikey = "";
-    m_resolverPath = KStandardDirs::locateLocal( "exe", resolverName() );
+    m_resolverPath = KStandardDirs::locateLocal( "exe", defaultResolverName() );
     debug() << "Resolver path: " << m_resolverPath;
 }
 
 const QString
-SpotifyConfig::resolverName()
+SpotifyConfig::defaultResolverName()
 {
     utsname buf;
     int res = uname( &buf );
