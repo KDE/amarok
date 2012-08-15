@@ -78,6 +78,7 @@ SECTION 4: The Release Day
  * Update IRC channel topics
  * Update social networks
  * Update kde-apps.org
+ * Add new version to bugzilla, disable unstable version reporting
  * Write blog post
  * Publish dot story (for major versions)
 --------------------------------------------------------------------------------
