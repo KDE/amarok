@@ -12,24 +12,16 @@ Item {
     playing: false
 
     onPlayingChanged: {
-
         infoSection.playing = playing
-//         if (playing) {
-//             m.opacity = 1;
-//             texts.opacity = 1;
-//         } else {
-//             buttons.opacity = 0;
-//             texts.opacity = 0;
-//         }
     }
 
-     function startupFunction() {
-         console.log("START UP")
-         playing = true
-         playing = false
-     }
+    function startupFunction() {
+        console.log("START UP")
+        playing = true
+        playing = false
+    }
 
-     Component.onCompleted: startupFunction();
+    Component.onCompleted: startupFunction();
 
     Svg {
         id: mainSvg
@@ -50,7 +42,6 @@ Item {
             engine: "amarok-current"
             connectedSources: ["current"]
             onDataChanged: {
-//                 console.log("current has got DATA")
                 d = currentSource.data['current']
                 root.playing = d["displayReady"]
 
@@ -58,10 +49,7 @@ Item {
                     infoSection.track = d['track']
                     infoSection.album_artist = d["artist"] + " - " + d["album"]
                     infoSection.albumart = d["albumart"]
-
-                    console.log("Display ready: "+ d["displayReady"])
                 }
-                
             }
         }
     }
@@ -140,9 +128,9 @@ Item {
 
         PageStack {
             id: texts
-            anchors.topMargin: 10
+            anchors.topMargin: 4
             anchors.bottomMargin: 10
-            anchors.top: buttons.bottom
+            anchors.top: buttons.top // this was buttons.bottom in the original design
             anchors.bottom: parent.bottom
             anchors.right: parent.right
             anchors.left: parent.left
