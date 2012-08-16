@@ -221,7 +221,8 @@ Plugins::PluginManager::findAllPlugins()
 {
     DEBUG_BLOCK
     QString query = QString::fromLatin1( "[X-KDE-Amarok-framework-version] == %1"
-                                         "and [X-KDE-Amarok-rank] > 0" ).arg( s_pluginFrameworkVersion );
+                                         " and [X-KDE-Amarok-rank] > 0" )
+                    .arg( s_pluginFrameworkVersion );
 
     KConfigGroup pluginsConfig = Amarok::config(QLatin1String("Plugins"));
     KService::List services = KServiceTypeTrader::self()->query( "Amarok/Plugin", query );
