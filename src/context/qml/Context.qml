@@ -146,8 +146,8 @@ Item {
                 Item {
                     anchors.right: parent.right
                     anchors.top: parent.top
-                    width: 50
-                    height: 50
+                    width: Globals.iconSize * 3 + Globals.iconSize
+                    height: Globals.iconSize
                     clip: true
                     z: 5
                     Text {
