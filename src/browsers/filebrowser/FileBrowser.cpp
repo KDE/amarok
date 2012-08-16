@@ -193,15 +193,13 @@ FileBrowser::initView()
 {
     d->kdirModel = new DirBrowserModel( this );
 
-    EngineController *engineController = Amarok::Components::engineController();
-    Q_ASSERT( engineController );
     d->mimeFilterProxyModel = new DirPlaylistTrackFilterProxyModel( this );
     d->mimeFilterProxyModel->setSourceModel( d->kdirModel );
     d->mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setDynamicSortFilter( true );
-    connect( d->searchWidget, SIGNAL( filterChanged( const QString & ) ),
-             d->mimeFilterProxyModel, SLOT( setFilterFixedString( const QString & ) ) );
+    connect( d->searchWidget, SIGNAL(filterChanged( const QString & )),
+             d->mimeFilterProxyModel, SLOT(setFilterFixedString( const QString & )) );
 
     d->fileView->setModel( d->mimeFilterProxyModel );
     d->fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -225,7 +223,7 @@ FileBrowser::initView()
         action->setCheckable( true );
         if( !d->fileView->isColumnHidden( i ) )
             action->setChecked( true );
-        connect( action, SIGNAL( toggled(bool) ), this, SLOT(toggleColumn(bool) ) );
+        connect( action, SIGNAL(toggled(bool)), this, SLOT(toggleColumn(bool) ) );
     }
 
     connect( d->fileView->header(), SIGNAL(geometriesChanged()), this, SLOT(slotSaveHeaderState()) );
@@ -238,7 +236,7 @@ FileBrowser::initView()
                );
     }
 
-    connect( d->placesAction, SIGNAL( triggered( bool) ), this, SLOT( showPlaces() ) );
+    connect( d->placesAction, SIGNAL(triggered( bool)), this, SLOT(showPlaces()) );
 }
 
 FileBrowser::~FileBrowser()
@@ -281,7 +279,7 @@ FileBrowser::itemActivated( const QModelIndex &index )
 {
     if( d->showingPlaces )
     {
-        QString placesUrl = index.data( KFilePlacesModel::UrlRole  ).value<QString>();
+        QString placesUrl = index.data( KFilePlacesModel::UrlRole ).value<QString>();
 
         if( !placesUrl.isEmpty() )
         {
@@ -292,8 +290,8 @@ FileBrowser::itemActivated( const QModelIndex &index )
             d->restoreHeaderState();
             d->showingPlaces = false;
 
-            //needed to make the home folder url look nice. We cannot jsut strip all protocol headers
-            //as that will break remote, trash, ...
+            //needed to make the home folder url look nice. We cannot just strip all
+            //protocol headers as that will break remote, trash, ...
             if( placesUrl.startsWith( "file://" ) )
                 placesUrl = placesUrl.replace( "file://", QString() );
 

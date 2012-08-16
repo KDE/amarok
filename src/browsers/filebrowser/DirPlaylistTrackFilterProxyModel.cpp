@@ -28,7 +28,8 @@ DirPlaylistTrackFilterProxyModel::DirPlaylistTrackFilterProxyModel( QObject *par
 }
 
 bool
-DirPlaylistTrackFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
+DirPlaylistTrackFilterProxyModel::filterAcceptsRow( int source_row,
+                                                    const QModelIndex& source_parent ) const
 {
     QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
 

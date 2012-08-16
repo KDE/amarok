@@ -602,7 +602,7 @@ Track::isTrack( const KUrl &url )
     if( !url.isLocalFile() )
         return true;
 
-    QFileInfo  fileInfo( url.toLocalFile() );
+    QFileInfo fileInfo( url.toLocalFile() );
     if( fileInfo.size() <= 0 )
         return false;
 
