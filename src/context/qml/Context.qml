@@ -2,6 +2,7 @@
 import QtQuick 1.1
 import org.kde.plasma.components 0.1
 import org.kde.plasma.core 0.1
+import "globals.js" as Globals
 
 // Context view
 Item {
@@ -50,6 +51,7 @@ Item {
                     infoSection.album_artist = d["artist"] + " - " + d["album"]
                     infoSection.albumart = d["albumart"]
                 }
+                console.log(Globals.iconSize)
             }
         }
     }
@@ -70,7 +72,7 @@ Item {
 
         Item {
             id: buttons
-            height: 30
+            height: Globals.iconSize
             anchors.right: parent.right
             anchors.left: parent.left;
             anchors.top: parent.top
@@ -84,8 +86,8 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 2
-                height: 30
-                width: 30
+                height: Globals.iconSize
+                width: Globals.iconSize
                 MouseArea {
                     anchors.fill: parent
                 }
@@ -104,8 +106,8 @@ Item {
                 anchors.left: lyrics_button.right
                 anchors.margins: 2
                 anchors.leftMargin: 14
-                height: 30
-                width: 30
+                height: Globals.iconSize
+                width: Globals.iconSize
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
@@ -118,9 +120,9 @@ Item {
     //             id: more_button
     //             elementId: "more"
     //             svg: mainSvg
-    //             height: 30
+    //             height: Globals.iconSize
 
-    //             width: 30
+    //             width: Globals.iconSize
     //             anchors.verticalCenter: parent.verticalCenter
     //             anchors.right: parent.right
     //         }
@@ -141,6 +143,19 @@ Item {
                 id: wikitext
                 title: "Wikipedia"
                 visible: false
+                Item {
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    width: 50
+                    height: 50
+                    clip: true
+                    z: 5
+                    Text {
+                        anchors.fill: parent
+                        text: "Waga"
+                    }
+                }
+                
             }
             DataSource {
                 id: wikiSource

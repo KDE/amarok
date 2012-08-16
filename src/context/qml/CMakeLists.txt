@@ -1,5 +1,6 @@
 
 SET(qml_files
+    globals.js
     RichTextualViewer.qml
     InfoWidget.qml
     Context.qml

@@ -1,0 +1,2 @@
+
+var iconSize = 30;
