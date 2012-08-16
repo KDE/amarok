@@ -63,6 +63,7 @@ private:
     Q_PRIVATE_SLOT( d_ptr, void _goForward() )
     Q_PRIVATE_SLOT( d_ptr, void _gotoAlbum() )
     Q_PRIVATE_SLOT( d_ptr, void _gotoArtist() )
+    Q_PRIVATE_SLOT( d_ptr, void _gotoComposer() )
     Q_PRIVATE_SLOT( d_ptr, void _gotoTrack() )
     Q_PRIVATE_SLOT( d_ptr, void _linkClicked(const QUrl&) )
     Q_PRIVATE_SLOT( d_ptr, void _loadSettings() )

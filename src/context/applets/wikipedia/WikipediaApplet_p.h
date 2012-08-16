@@ -59,6 +59,7 @@ public:
         , dataContainer( 0 )
         , albumIcon( 0 )
         , artistIcon( 0 )
+        , composerIcon( 0 )
         , backwardIcon( 0 )
         , forwardIcon( 0 )
         , reloadIcon( 0 )
@@ -87,6 +88,7 @@ public:
     void _goBackward();
     void _goForward();
     void _gotoArtist();
+    void _gotoComposer();
     void _gotoAlbum();
     void _gotoTrack();
 
@@ -123,6 +125,7 @@ public:
     Plasma::DataContainer *dataContainer;
     Plasma::IconWidget *albumIcon;
     Plasma::IconWidget *artistIcon;
+    Plasma::IconWidget *composerIcon;
     Plasma::IconWidget *backwardIcon;
     Plasma::IconWidget *forwardIcon;
     Plasma::IconWidget *reloadIcon;

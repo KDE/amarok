@@ -1,4 +1,5 @@
 /****************************************************************************************
+ * Copyright (c) 2012 Ryan McCoskrie <ryan.mccoskrie@gmail.com                          *
  * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
  * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2009 Simon Esneault <simon.esneault@gmail.com>                         *
@@ -49,6 +50,7 @@ public:
     enum SelectionType
     {
         Artist,
+        Composer,
         Album,
         Track
     };
@@ -72,11 +74,13 @@ public:
     struct TrackMetadata
     {
         QString artist;
+        QString composer;
         QString album;
         QString track;
         void clear()
         {
             artist.clear();
+            composer.clear();
             album.clear();
             track.clear();
         }
@@ -227,6 +231,11 @@ WikipediaEnginePrivate::_wikiResult( const KUrl &url, QByteArray result, Network
             data[QLatin1String("label")] =  QLatin1String("Artist");
             data[QLatin1String("title")] = currentTrack->artist()->prettyName();
         }
+    }
+    else if( currentSelection == Composer )
+    {
+        data[QLatin1String("label")] = QLatin1String("Title");
+        data[QLatin1String("title")] = currentTrack->composer()->prettyName();
     }
     else if( currentSelection == Track )
     {
@@ -440,32 +449,17 @@ WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
     {
     default:
     case Artist:
-        if( hostLang == QLatin1String("en") )
-            pattern = QLatin1String(".*\\(.*(band|musician|singer).*\\)");
-        else if( hostLang == QLatin1String("fr") )
-            pattern = QLatin1String(".*\\(.*(groupe|musicien|chanteur|chanteuse).*\\)");
-        else if( hostLang == QLatin1String("de") )
-            pattern = QLatin1String(".*\\(.*(band|musiker).*\\)");
-        else if( hostLang == QLatin1String("pl") )
-            pattern = QLatin1String(".*\\(.*(grupa muzyczna).*\\)");
+        pattern = i18nc("Search pattern for an artist or band", ".*\\(.*(artist|band).*\\))").toLatin1();
         break;
-
+    case Composer:
+            pattern = i18nc("Search pattern for a composer", ".*\\(.*(composer|musician).*\\))").toLatin1();
+        break;
     case Album:
-        if( hostLang == QLatin1String("en") )
-            pattern = QLatin1String(".*\\(.*(album|score|soundtrack).*\\)");
-        else if( hostLang == QLatin1String("fr") )
-            pattern = QLatin1String(".*\\(.*(album|BO).*\\)");
-        else if( hostLang == QLatin1String("de") )
-            pattern = QLatin1String(".*\\(.*(album|soundtrack).*\\)");
+            pattern = i18nc("Search pattern for an album", ".*\\(.*(album|score|soundtrack).*\\)").toLatin1();
         break;
 
     case Track:
-        if( hostLang == QLatin1String("en") )
-            pattern = QLatin1String(".*\\(.*(song|track).*\\)");
-        else if( hostLang == QLatin1String("de") )
-            pattern = QLatin1String(".*\\(.*(lied).*\\)");
-        else if( hostLang == QLatin1String("pl") )
-            pattern = QLatin1String(".*\\(.*singel.*\\)");
+            pattern = i18nc("Search pattern for a song", ".*\\(.*(song|track).*\\)").toLatin1();
         break;
     }
 
@@ -490,7 +484,10 @@ WikipediaEnginePrivate::_checkRequireUpdate( Meta::TrackPtr track )
         if( track->artist() )
             updateNeeded = track->artist()->name() != m_previousTrackMetadata.artist;
         break;
-
+    case WikipediaEnginePrivate::Composer:
+        if( track->composer() )
+            updateNeeded = track->composer()->name() != m_previousTrackMetadata.composer;
+        break;
     case WikipediaEnginePrivate::Album:
         if( track->album() )
             updateNeeded = track->album()->name() != m_previousTrackMetadata.album;
@@ -506,6 +503,8 @@ WikipediaEnginePrivate::_checkRequireUpdate( Meta::TrackPtr track )
         m_previousTrackMetadata.clear();
         if( track->artist() )
             m_previousTrackMetadata.artist = track->artist()->name();
+        if( track->composer() )
+            m_previousTrackMetadata.artist = track->composer()->name();
         if( track->album() )
             m_previousTrackMetadata.album = track->album()->name();
         m_previousTrackMetadata.track = track->name();
@@ -618,6 +617,7 @@ WikipediaEnginePrivate::updateEngine()
     if( !currentTrack )
         return;
 
+    //TODO: Look into writing one function that can be used with different arguments for each case in this switch.
     QString tmpWikiStr;
     switch( currentSelection )
     {
@@ -626,11 +626,10 @@ WikipediaEnginePrivate::updateEngine()
         {
             if( currentTrack->artist()->name().isEmpty() )
             {
-                debug() << "Requesting an empty string, skipping !";
                 q->removeAllData( QLatin1String("wikipedia") );
                 q->scheduleSourcesUpdated();
                 q->setData( QLatin1String("wikipedia"), QLatin1String("message"),
-                            i18n( "No information found..." ) );
+                            i18n( "The name of the artist is required for searching Wikipedia..." ) );
                 return;
             }
             if( ( currentTrack->playableUrl().protocol() == QLatin1String("lastfm") ) ||
@@ -642,16 +641,32 @@ WikipediaEnginePrivate::updateEngine()
         }
         break;
 
+    case Composer:
+        if( currentTrack->composer() )
+        {
+            if( currentTrack->composer()->name().isEmpty() )
+            {
+                q->removeAllData( QLatin1String("wikipedia") );
+                q->scheduleSourcesUpdated();
+                q->setData( QLatin1String("wikipedia"), QLatin1String("message"),
+                            i18n( "The name of the composer is needed before searching wikipedia" ) );
+                return;
+            }
+            if( ( currentTrack->playableUrl().protocol() == QLatin1String("lastfm") ) ||
+                ( currentTrack->playableUrl().protocol() == QLatin1String("daap") ) ||
+                !The::engineController()->isStream() )
+                tmpWikiStr = currentTrack->composer()->name();
+        }
+        break;
     case Album:
         if( currentTrack->album() )
         {
             if( currentTrack->album()->name().isEmpty() )
             {
-                debug() << "Requesting an empty string, skipping !";
                 q->removeAllData( QLatin1String("wikipedia") );
                 q->scheduleSourcesUpdated();
                 q->setData( QLatin1String("wikipedia"), QLatin1String("message"),
-                            i18n( "No information found..." ) );
+                            i18n( "The name of this songs album is needed before searching Wikipedia" ) );
                 return;
             }
             if( ( currentTrack->playableUrl().protocol() == QLatin1String("lastfm") ) ||
@@ -665,11 +680,10 @@ WikipediaEnginePrivate::updateEngine()
     case Track:
         if( currentTrack->name().isEmpty() )
         {
-            debug() << "Requesting an empty string, skipping !";
             q->removeAllData( QLatin1String("wikipedia") );
             q->scheduleSourcesUpdated();
             q->setData( QLatin1String("wikipedia"), QLatin1String("message"),
-                        i18n( "No information found..." ) );
+                        i18n( "The name of this track is needed before searching Wikipedia" ) );
             return;
         }
         tmpWikiStr = currentTrack->prettyName();
@@ -886,6 +900,8 @@ WikipediaEnginePrivate::setSelection( const QString &type )
     bool changed( false );
     if( type == QLatin1String("artist") )
         changed = setSelection( Artist );
+    else if( type == QLatin1String("composer") )
+        changed = setSelection( Composer );
     else if( type == QLatin1String("album") )
         changed = setSelection( Album );
     else if( type == QLatin1String("track") )

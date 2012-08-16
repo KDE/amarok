@@ -192,6 +192,13 @@ WikipediaAppletPrivate::_gotoArtist()
 }
 
 void
+WikipediaAppletPrivate::_gotoComposer()
+{
+    dataContainer->setData( "goto", "composer" );
+    scheduleEngineUpdate();
+}
+
+void
 WikipediaAppletPrivate::_gotoTrack()
 {
     dataContainer->setData( "goto", "track" );
@@ -612,6 +619,12 @@ WikipediaApplet::init()
     artistAction->setText( i18n( "Artist" ) );
     d->artistIcon = addRightHeaderAction( artistAction );
     connect( d->artistIcon, SIGNAL(clicked()), this, SLOT(_gotoArtist()) );
+
+    QAction* composerAction = new QAction( this );
+    composerAction->setIcon( KIcon( "filename-composer-amarok" ) );
+    composerAction->setText( i18n( "Composer" ) );
+    d->composerIcon = addRightHeaderAction( composerAction );
+    connect( d->composerIcon, SIGNAL(clicked()), this, SLOT(_gotoComposer()) );
 
     QAction* albumAction = new QAction( this );
     albumAction->setIcon( KIcon( "filename-album-amarok" ) );
