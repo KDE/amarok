@@ -19,6 +19,7 @@
 
 #include "amarokconfig.h"
 #include "shared/MetaTagLib.h"
+#include "core/support/Debug.h"
 #include "core-impl/collections/db/ScanManager.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/db/sql/SqlCollectionFactory.h"
@@ -44,6 +45,8 @@ TestSqlScanManager::TestSqlScanManager()
 void
 TestSqlScanManager::initTestCase()
 {
+    Debug::setDebugEnabled(true);
+
     // setenv( "LC_ALL", "", 1 ); // this breakes the test
     // Amarok does not force LC_ALL=C but obviously the test does it which
     // will prevent scanning of files with umlauts.

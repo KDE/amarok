@@ -16,6 +16,7 @@
 
 #include "TestDatabaseUpdater.h"
 
+#include "core/support/Debug.h"
 #include "SqlCollection.h"
 #include "DatabaseUpdater.h"
 #include "mysqlecollection/MySqlEmbeddedStorage.h"
@@ -38,6 +39,8 @@ DatabaseUpdaterTest::DatabaseUpdaterTest()
 void
 DatabaseUpdaterTest::initTestCase()
 {
+    Debug::setDebugEnabled(true);
+
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
     m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );

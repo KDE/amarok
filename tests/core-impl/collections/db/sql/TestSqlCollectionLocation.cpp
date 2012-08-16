@@ -113,6 +113,8 @@ TestSqlCollectionLocation::TestSqlCollectionLocation()
 void
 TestSqlCollectionLocation::initTestCase()
 {
+    Debug::setDebugEnabled(true);
+
     Amarok::Components::setLogger( new ProxyLogger() );
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );

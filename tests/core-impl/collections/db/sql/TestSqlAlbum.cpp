@@ -18,6 +18,7 @@
 #include "TestSqlAlbum.h"
 
 #include "core/meta/Meta.h"
+#include "core/support/Debug.h"
 #include "mysqlecollection/MySqlEmbeddedStorage.h"
 #include "SqlCollection.h"
 #include "SqlMountPointManagerMock.h"
@@ -46,6 +47,8 @@ TestSqlAlbum::~TestSqlAlbum()
 void
 TestSqlAlbum::initTestCase()
 {
+    Debug::setDebugEnabled(true);
+
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
     m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );

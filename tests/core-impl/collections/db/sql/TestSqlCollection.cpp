@@ -17,6 +17,7 @@
 #include "TestSqlCollection.h"
 
 #include <core/collections/Collection.h>
+#include <core/support/Debug.h>
 #include <core-impl/collections/db/sql/SqlCollection.h>
 #include <core-impl/collections/db/sql/DatabaseUpdater.h>
 #include <core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.h>
@@ -36,6 +37,8 @@ TestSqlCollection::TestSqlCollection()
 void
 TestSqlCollection::initTestCase()
 {
+    Debug::setDebugEnabled(true);
+
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
     m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );
