@@ -3,11 +3,13 @@ Stuff to do for the context view:
 
 Theme:
 
- * Fix recolrization (wait for notmart)
+ * Fix recolorization (wait for notmart)
 
 Wikipedia:
 
  * Get the ability to set wikipedia's language
  * Add buttons for artist/album/song switch
+ * Make icons for artist, album, song (for the switcher), 75% transparent
+ * (eventually evaluate the fact of moving away from icons)
  * Open up links in an external browser
 

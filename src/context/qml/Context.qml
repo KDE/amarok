@@ -51,7 +51,6 @@ Item {
                     infoSection.album_artist = d["artist"] + " - " + d["album"]
                     infoSection.albumart = d["albumart"]
                 }
-                console.log(Globals.iconSize)
             }
         }
     }
