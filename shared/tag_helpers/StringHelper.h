@@ -24,7 +24,7 @@
 #endif
 
 #include <QString>
-#include <taglib/tstring.h>
+#include <tstring.h>
 
 #ifdef Qt4QStringToTString
     #undef Qt4QStringToTString

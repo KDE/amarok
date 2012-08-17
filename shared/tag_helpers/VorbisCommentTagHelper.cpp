@@ -25,7 +25,7 @@
 
 #include "StringHelper.h"
 
-#include <taglib/flacpicture.h>
+#include <flacpicture.h>
 
 #ifndef UTILITIES_BUILD
     #include <QBuffer>

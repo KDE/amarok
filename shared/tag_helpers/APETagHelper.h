@@ -19,7 +19,7 @@
 
 #include "TagHelper.h"
 
-#include <taglib/apetag.h>
+#include <apetag.h>
 
 namespace Meta
 {

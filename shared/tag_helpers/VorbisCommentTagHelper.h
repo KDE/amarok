@@ -20,8 +20,8 @@
 
 #include "TagHelper.h"
 
-#include <taglib/xiphcomment.h>
-#include <taglib/flacfile.h>
+#include <xiphcomment.h>
+#include <flacfile.h>
 
 class QImage;
 

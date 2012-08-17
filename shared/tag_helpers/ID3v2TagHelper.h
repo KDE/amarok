@@ -19,7 +19,7 @@
 
 #include "TagHelper.h"
 
-#include <taglib/id3v2tag.h>
+#include <id3v2tag.h>
 
 namespace Meta
 {

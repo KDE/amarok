@@ -22,10 +22,10 @@
 
 #include "ID3v2TagHelper.h"
 
-#include <taglib/attachedpictureframe.h>
-#include <taglib/popularimeterframe.h>
-#include <taglib/textidentificationframe.h>
-#include <taglib/uniquefileidentifierframe.h>
+#include <attachedpictureframe.h>
+#include <popularimeterframe.h>
+#include <textidentificationframe.h>
+#include <uniquefileidentifierframe.h>
 
 #ifndef UTILITIES_BUILD
     #include <QBuffer>

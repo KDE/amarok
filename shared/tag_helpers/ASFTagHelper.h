@@ -20,7 +20,7 @@
 
 #include "TagHelper.h"
 
-#include <taglib/asftag.h>
+#include <asftag.h>
 
 namespace Meta
 {

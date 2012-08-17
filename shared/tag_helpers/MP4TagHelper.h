@@ -20,7 +20,7 @@
 
 #include "TagHelper.h"
 
-#include <taglib/mp4tag.h>
+#include <mp4tag.h>
 
 namespace Meta
 {
