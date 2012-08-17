@@ -70,10 +70,9 @@ private:
     GpodderTreeItem *m_topTagsItem;
     GpodderTreeItem *m_topPodcastsItem;
     GpodderTreeItem *m_suggestedPodcastsItem;
-    // The gpodder.net topTags
+    //The gpodder.net topTags
     mygpo::TagListPtr m_topTags;
-    // true if the topTagsRequest has finished and all Top Tags are loaded
-    mygpo::ApiRequest *m_request;
+    mygpo::ApiRequest *m_apiRequest;
 };
 
 #endif /* GPODDERSERVICEMODEL_H_ */

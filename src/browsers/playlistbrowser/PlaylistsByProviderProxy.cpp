@@ -250,7 +250,7 @@ PlaylistsByProviderProxy::slotProviderAdded( Playlists::PlaylistProvider *provid
     itemData.insert( Qt::DecorationRole, provider->icon() );
     itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole,
                         QVariant::fromValue( provider->providerActions() ) );
-    itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ByLineRole, i18n( "No playlists" ) );
+
     itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ProviderRole,
                         QVariant::fromValue<Playlists::PlaylistProvider*>( provider ) );
     RowData rowData;

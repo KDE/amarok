@@ -51,18 +51,25 @@ public:
     bool enableProvider() { return m_enableProvider; }
     void setEnableProvider( bool enableProvider ) { m_enableProvider = enableProvider; }
 
+    bool ignoreWallet() { return m_ignoreWallet; }
+    void setIgnoreWallet( bool ignoreWallet ) { m_ignoreWallet = ignoreWallet; }
+
+    bool isDataLoaded() { return m_isDataLoaded; }
+
 private slots:
     void textDialogYes();
     void textDialogNo();
 
 private:
     void askAboutMissingKWallet();
+    void tryToOpenWallet();
 
     QString m_username;
     QString m_password;
-    bool m_enableProvider; //enables PodcastProvider if correct LoginData given
-    bool m_synchronise;
-    
+    bool m_enableProvider; //Enables PodcastProvider if correct LoginData given
+    bool m_ignoreWallet;
+    bool m_isDataLoaded;
+
     KDialog *m_askDiag;
     KWallet::Wallet *m_wallet;
 };

@@ -24,7 +24,6 @@
 #include "core/podcasts/PodcastProvider.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include <mygpo-qt/ApiRequest.h>
 #include "NetworkAccessManagerProxy.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "ui_GpodderConfigWidget.h"
@@ -43,9 +42,9 @@ K_PLUGIN_FACTORY( GpodderServiceSettingsFactory, registerPlugin<GpodderServiceSe
 K_EXPORT_PLUGIN( GpodderServiceSettingsFactory( "kcm_amarok_gpodder" ) )
 
 GpodderServiceSettings::GpodderServiceSettings( QWidget *parent, const QVariantList &args )
-        : KCModule( GpodderServiceSettingsFactory::componentData(), parent, args ),
-          m_enableProvider( false ),
-          m_createDevice( 0 )
+        : KCModule( GpodderServiceSettingsFactory::componentData(), parent, args )
+        , m_enableProvider( false )
+        , m_createDevice( 0 )
 {
     debug() << "Creating gpodder.net config object";
 
@@ -55,19 +54,26 @@ GpodderServiceSettings::GpodderServiceSettings( QWidget *parent, const QVariantL
     m_configDialog->setupUi( w );
     l->addWidget( w );
 
-    connect( m_configDialog->kcfg_GpodderUsername, SIGNAL(textChanged( const QString & )), this, SLOT(settingsChanged()) );
-    connect( m_configDialog->kcfg_GpodderPassword, SIGNAL(textChanged( const QString & )), this, SLOT(settingsChanged()) );
-    connect( m_configDialog->testLogin, SIGNAL(clicked()), this, SLOT(testLogin()) );
+    connect( m_configDialog->kcfg_GpodderUsername,
+             SIGNAL(textChanged( const QString & )), this,
+             SLOT(settingsChanged()) );
+    connect( m_configDialog->kcfg_GpodderPassword,
+             SIGNAL(textChanged( const QString & )), this,
+             SLOT(settingsChanged()) );
+    connect( m_configDialog->testLogin, SIGNAL(clicked()), this,
+             SLOT(testLogin()) );
 
     load();
 }
 
-
 GpodderServiceSettings::~GpodderServiceSettings()
 {
-    delete m_createDevice;
-}
+    if( m_createDevice )
+        m_createDevice->deleteLater();
 
+    if( m_devices )
+        m_devices->deleteLater();
+}
 
 void
 GpodderServiceSettings::save()
@@ -75,6 +81,7 @@ GpodderServiceSettings::save()
     m_config.setUsername( m_configDialog->kcfg_GpodderUsername->text() );
     m_config.setPassword( m_configDialog->kcfg_GpodderPassword->text() );
     m_config.setEnableProvider( m_enableProvider );
+    m_config.setIgnoreWallet( false );
 
     m_config.save();
     KCModule::save();
@@ -85,17 +92,30 @@ GpodderServiceSettings::testLogin()
 {
     DEBUG_BLOCK
 
-    m_configDialog->testLogin->setEnabled( false );
-    m_configDialog->testLogin->setText( i18n( "Testing..." ) );
+    if ( ( !m_configDialog->kcfg_GpodderUsername->text().isEmpty() ) &&
+         ( !m_configDialog->kcfg_GpodderPassword->text().isEmpty() ) )
+    {
 
-    mygpo::ApiRequest api( m_configDialog->kcfg_GpodderUsername->text(),
-                           m_configDialog->kcfg_GpodderPassword->text(), The::networkAccessManager() );
-    m_devices = api.listDevices( m_configDialog->kcfg_GpodderUsername->text() );
+        m_configDialog->testLogin->setEnabled( false );
+        m_configDialog->testLogin->setText( i18n( "Testing..." ) );
 
-    connect( m_devices.data(), SIGNAL(finished()), SLOT(finished()) );
-    connect( m_devices.data(), SIGNAL(requestError( QNetworkReply::NetworkError )),
-             SLOT(onError( QNetworkReply::NetworkError )) );
-    connect( m_devices.data(), SIGNAL(parseError()), SLOT(onParseError()) );
+        mygpo::ApiRequest api( m_configDialog->kcfg_GpodderUsername->text(),
+                               m_configDialog->kcfg_GpodderPassword->text(),
+                               The::networkAccessManager() );
+        m_devices = api.listDevices( m_configDialog->kcfg_GpodderUsername->text() );
+
+        connect( m_devices.data(), SIGNAL(finished()), SLOT(finished()) );
+        connect( m_devices.data(),
+                 SIGNAL(requestError( QNetworkReply::NetworkError )),
+                 SLOT(onError( QNetworkReply::NetworkError )) );
+        connect( m_devices.data(), SIGNAL(parseError()), SLOT(onParseError()) );
+    }
+    else
+    {
+        KMessageBox::error( this,
+                            i18n( "Either the username or the password is empty, please correct and try again." ),
+                            i18n( "Failed" ) );
+    }
 }
 
 void
@@ -125,23 +145,25 @@ GpodderServiceSettings::finished()
     }
     if( !deviceExists )
     {
-        debug() << "create new device " % deviceID;
+        debug() << "Create new device " % deviceID;
+
         mygpo::ApiRequest api( m_configDialog->kcfg_GpodderUsername->text(),
-                               m_configDialog->kcfg_GpodderPassword->text(), The::networkAccessManager() );
+                               m_configDialog->kcfg_GpodderPassword->text(),
+                               The::networkAccessManager() );
 
         m_createDevice = api.renameDevice( m_configDialog->kcfg_GpodderUsername->text(),
                                            deviceID,
                                            QLatin1String( "Amarok on " ) % hostname,
                                            mygpo::Device::OTHER );
 
-        connect( m_createDevice, SIGNAL(finished() ), SLOT(deviceCreationFinished()) );
+        connect( m_createDevice, SIGNAL(finished() ),
+                 SLOT(deviceCreationFinished()) );
         connect( m_createDevice, SIGNAL(error( QNetworkReply::NetworkError )),
-                                 SLOT(deviceCreationError( QNetworkReply::NetworkError )) );
+                 SLOT(deviceCreationError( QNetworkReply::NetworkError )) );
     }
     else
     {
-        debug() << "amarok device was found, everything looks perfect";
-        m_enableProvider = true;
+        debug() << "Amarok device was found and everything looks perfect";
     }
 }
 
@@ -156,13 +178,13 @@ GpodderServiceSettings::onError( QNetworkReply::NetworkError code )
         debug() << "No Error was found, but onError was called - should not happen";
     else if( code == QNetworkReply::AuthenticationRequiredError )
     {
-        debug() << "AuthenticationFailed";
+        debug() << "Authentication failed";
 
         KMessageBox::error( this,
             i18n( "Either the username or the password is incorrect, please correct and try again" ),
                             i18n( "Failed" ) );
 
-        m_configDialog->testLogin->setText( i18n( "Test Login" ) );
+        m_configDialog->testLogin->setText( i18n( "&Test Login" ) );
         m_configDialog->testLogin->setEnabled( true );
     }
     else
@@ -171,7 +193,7 @@ GpodderServiceSettings::onError( QNetworkReply::NetworkError code )
             i18n( "Unable to connect to gpodder.net service or other error occurred." ),
                             i18n( "Failed" ) );
 
-        m_configDialog->testLogin->setText( i18n( "Test Login" ) );
+        m_configDialog->testLogin->setText( i18n( "&Test Login" ) );
         m_configDialog->testLogin->setEnabled( true );
     }
 }
@@ -181,6 +203,7 @@ GpodderServiceSettings::onParseError()
 {
     debug() << "Couldn't parse DeviceList, should not happen if gpodder.net is working correctly";
 
+    m_configDialog->testLogin->setText( i18n( "&Test Login" ) );
     m_configDialog->testLogin->setEnabled( true );
 
     KMessageBox::error( this, i18n( "Error parsing the Reply, check if gpodder.net is working correctly and report a bug" ), i18n( "Failed" ) );
@@ -190,8 +213,6 @@ void
 GpodderServiceSettings::deviceCreationFinished()
 {
     debug() << "Creation of Amarok Device finished";
-
-    m_enableProvider = true;
 }
 
 void
@@ -200,6 +221,7 @@ GpodderServiceSettings::deviceCreationError( QNetworkReply::NetworkError code )
     debug() << "Error creating Amarok Device";
     debug() << code;
 
+    m_configDialog->testLogin->setText( i18n( "&Test Login" ) );
     m_configDialog->testLogin->setEnabled( true );
 }
 
@@ -220,9 +242,9 @@ GpodderServiceSettings::defaults()
 {
     m_config.reset();
 
-    m_enableProvider = false;
     m_configDialog->kcfg_GpodderUsername->setText( "" );
     m_configDialog->kcfg_GpodderPassword->setText( "" );
+    m_enableProvider = false;
 }
 
 void
@@ -230,7 +252,7 @@ GpodderServiceSettings::settingsChanged()
 {
     m_configDialog->testLogin->setText( i18n( "&Test Login" ) );
     m_configDialog->testLogin->setEnabled( true );
-    m_enableProvider = false;
 
+    m_enableProvider = true;
     emit changed( true );
 }

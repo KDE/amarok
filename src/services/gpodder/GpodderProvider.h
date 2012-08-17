@@ -48,8 +48,11 @@ public:
     GpodderProvider( const QString& username, const QString& devicename, ApiRequest *apiRequest );
     ~GpodderProvider();
 
+    //TrackProvider methods
     bool possiblyContainsTrack( const KUrl &url ) const;
     Meta::TrackPtr trackForUrl( const KUrl &url );
+
+    //PodcastProvider methods
     /** Special function to get an episode for a given guid.
      *
      * note: this functions is required because KUrl does not preserve every possible guids.
@@ -118,10 +121,14 @@ private slots:
             const KUrl &toUrl );
     void urlResolveFinished( KJob * );
 
+    void slotEpisodeDownloaded( Podcasts::PodcastEpisodePtr episode );
+    void slotEpisodeDeleted( Podcasts::PodcastEpisodePtr episode );
+    void slotEpisodeMarkedAsNew( Podcasts::PodcastEpisodePtr episode );
+
 private:
     ApiRequest *m_apiRequest;
     const QString m_username;
-    const QString m_devicename;
+    const QString m_deviceName;
     PodcastChannelList m_channels;
     KIO::TransferJob *m_resolveUrlJob;
 
@@ -144,21 +151,32 @@ private:
     void updateLocalPodcasts( const QList< QPair<QUrl,QUrl> > updatedUrls );
 
     KConfigGroup gpodderActionsConfig() const;
-    void loadEpisodeActions();
-    void saveEpisodeActions();
+    void loadCachedEpisodeActions();
+    void saveCachedEpisodeActions();
 
-    QAction *m_removeAction; //remove a subscription
+    KConfigGroup gpodderPodcastsConfig() const;
+    void loadCachedPodcastsChanges();
+    void saveCachedPodcastsChanges();
+
+    QAction *m_removeAction;
+
+    //Lists of podcasts to be added or removed from gpodder.net
     QList<QUrl> m_addList;
     QList<QUrl> m_removeList;
 
+    KUrl resolvedPodcastUrl( const PodcastEpisodePtr episode );
+
     QMap<KUrl,KUrl> m_redirectionUrlMap;
     QQueue<QUrl> m_channelsToRequestActions;
-    QQueue<GpodderPodcastChannelPtr> m_channelsToAdd;
+    QMap<KIO::TransferJob *,GpodderPodcastChannelPtr> m_resolvedPodcasts;
+    //Used as a temporary container for podcasts with already urls resolved
+    //before adding them to m_channels
+    QQueue<GpodderPodcastChannelPtr> m_resolvedChannelsToBeAdded;
+
     QMap<QUrl,EpisodeActionPtr> m_episodeStatusMap;
     QMap<QUrl,EpisodeActionPtr> m_uploadEpisodeStatusMap;
-    QMap<KIO::TransferJob *,GpodderPodcastChannelPtr> m_resolvedPodcasts;
 
-    QTimer *m_timerGenerateEpisodeAction;
+    QTimer *m_timerGeneratePlayAction;
     QTimer *m_timerSynchronizeStatus;
     QTimer *m_timerSynchronizeSubscriptions;
 

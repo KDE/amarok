@@ -64,7 +64,7 @@ PlaylistBrowserNS::PodcastModel::destroy()
 
 PlaylistBrowserNS::PodcastModel::PodcastModel()
     : PlaylistBrowserModel( PlaylistManager::PodcastChannel )
- , m_setNewAction( 0 )
+    , m_setNewAction( 0 )
 {
     s_instance = this;
     m_setNewAction = new QAction( KIcon( "rating" ),
@@ -238,7 +238,6 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 
                     case IsEpisodeColumn:
                         return bool( pmc->podcastType() == Podcasts::EpisodeType );
-
                 }
                 break;
             }
@@ -250,7 +249,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
                 break;
             }
 
-            case ByLineRole:
+            case PlaylistBrowserModel::ByLineRole:
             {
                 if( idx.column() == PlaylistBrowserModel::ProviderColumn )
                 {
@@ -282,12 +281,10 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 bool
 PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
-
     DEBUG_BLOCK
 
     //TODO: implement setNew.
     return PlaylistBrowserModel::setData( idx, value, role );
-
 }
 
 int
@@ -432,7 +429,12 @@ PlaylistBrowserNS::PodcastModel::slotSetNew( bool newState )
     foreach( Podcasts::PodcastEpisodePtr episode, episodes )
     {
         if( !episode.isNull() )
+        {
             episode->setNew( action->isChecked() );
+
+            if( action->isChecked() )
+                emit episodeMarkedAsNew( episode );
+        }
     }
 }
 

@@ -118,6 +118,7 @@ GpodderServiceFactory::createGpodderService()
 GpodderService::GpodderService( GpodderServiceFactory *parent, const QString &name )
     : ServiceBase( name, parent, false )
     , m_inited( false )
+    , m_apiRequest( 0 )
     , m_podcastProvider( 0 )
     , m_proxyModel( 0 )
     , m_subscribeButton( 0 )
@@ -138,23 +139,54 @@ GpodderService::~GpodderService()
 {
     DEBUG_BLOCK
 
-    delete m_podcastProvider;
-    delete m_apiRequest;
+    if( m_podcastProvider )
+    {
+        //Remove the provider
+        The::playlistManager()->removeProvider( m_podcastProvider );
+        delete m_podcastProvider;
+    }
+
+    if ( m_apiRequest )
+        delete m_apiRequest;
 }
 
 //This Method should only contain the most necessary things for initilazing the Service
 void
 GpodderService::init()
 {
+    DEBUG_BLOCK
+
     GpodderServiceConfig config;
 
-    if( config.enableProvider() )
+    const QString &username = config.username();
+    const QString &password = config.password();
+
+    if ( m_apiRequest )
+        delete m_apiRequest;
+
+    //We have to check this here too, since KWallet::openWallet() doesn't
+    //guarantee that it will always return a wallet.
+    //Notice that LastFm service does the same verification.
+    if ( !config.isDataLoaded() )
     {
-        m_apiRequest = new mygpo::ApiRequest( config.username(), config.password(), The::networkAccessManager() );
-        enableGpodderProvider( config.username() );
+        debug() << "Failed to read gpodder credentials.";
+        m_apiRequest = new mygpo::ApiRequest( The::networkAccessManager() );
     }
     else
-        m_apiRequest = new mygpo::ApiRequest( The::networkAccessManager() );
+    {
+        if( config.enableProvider() )
+        {
+            m_apiRequest = new mygpo::ApiRequest( username,
+                                                  password,
+                                                  The::networkAccessManager() );
+            if( m_podcastProvider )
+                delete m_podcastProvider;
+
+            enableGpodderProvider( username );
+        }
+        else
+            m_apiRequest = new mygpo::ApiRequest( The::networkAccessManager() );
+    }
 
     m_serviceready = true;
     m_inited = true;
@@ -231,10 +263,10 @@ GpodderService::subscribe()
     QModelIndex index = m_proxyModel->mapToSource( m_selectionModel->currentIndex() );
     GpodderTreeItem *treeItem = static_cast<GpodderTreeItem*>( index.internalPointer() );
 
-    if( GpodderPodcastTreeItem *pcastTreeItem = qobject_cast<GpodderPodcastTreeItem*>( treeItem ) )
+    if( GpodderPodcastTreeItem *podcastTreeItem = qobject_cast<GpodderPodcastTreeItem*>( treeItem ) )
     {
         Podcasts::PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
-        KUrl kUrl( pcastTreeItem->podcast()->url() );
+        KUrl kUrl( podcastTreeItem->podcast()->url() );
         podcastProvider->addPodcast( kUrl );
     }
 }
@@ -244,9 +276,15 @@ GpodderService::enableGpodderProvider( const QString &username )
 {
     DEBUG_BLOCK
 
-    debug() << "Enabling GpodderProvider";
+    QString deviceName = QLatin1String( "amarok-" ) % QHostInfo::localHostName();
 
-    delete m_podcastProvider;
-    QString device = QLatin1String( "amarok-" ) % QHostInfo::localHostName();
-    m_podcastProvider = new Podcasts::GpodderProvider( username, device, m_apiRequest );
+    debug() << QString( "Enabling GpodderProvider( Username: %1 - Device: %1 )" )
+                        .arg( username )
+                        .arg( deviceName );
+
+    m_podcastProvider = new Podcasts::GpodderProvider( username, deviceName, m_apiRequest );
+
+    //Add the gpodder's provider to the playlist manager
+    The::playlistManager()->addProvider( m_podcastProvider, PlaylistManager::PodcastChannel );
+
 }

@@ -39,7 +39,7 @@ public slots:
 private:
     mygpo::PodcastListPtr m_podcasts;
     QModelIndex m_parentItem;
-    GpodderServiceModel  *m_model;
+    GpodderServiceModel *m_model;
 };
 
 #endif /* GPODDERPODCASTREQUESTHANDLER_H_ */

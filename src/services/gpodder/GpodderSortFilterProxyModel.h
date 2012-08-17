@@ -19,16 +19,20 @@
 #ifndef GPODDERSORTFILTERPROXYMODEL_H_
 #define GPODDERSORTFILTERPROXYMODEL_H_
 
+#include "GpodderServiceModel.h"
+
 #include <QSortFilterProxyModel>
 
 class GpodderSortFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+
 public:
     GpodderSortFilterProxyModel( QObject *parent = 0 );
     virtual ~GpodderSortFilterProxyModel();
+
 protected:
-    virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const;
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 };
 
 #endif /* GPODDERSORTFILTERPROXYMODEL_H_ */

@@ -31,23 +31,16 @@
 #include <QLabel>
 
 GpodderServiceConfig::GpodderServiceConfig()
-    : m_askDiag( 0 )
+    : m_username( "" )
+    , m_password( "" )
+    , m_enableProvider( false )
+    , m_ignoreWallet( false )
+    , m_isDataLoaded( false )
+    , m_askDiag( 0 )
     , m_wallet( 0 )
 {
     DEBUG_BLOCK
     
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
-
-    // we only want to load the wallet if the user has enabled features that require a user/pass
-    bool synchronise = config.readEntry( "synchronise", false );
-    
-    if( synchronise )
-    {
-        // open wallet unless explicitly told not to
-        if( !( config.readEntry( "ignoreWallet", QString() ) == "yes" ) )
-            m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
-    }
-
     load();
 }
 
@@ -65,9 +58,16 @@ GpodderServiceConfig::~GpodderServiceConfig()
 void
 GpodderServiceConfig::load()
 {
+    DEBUG_BLOCK
     debug() << "Load config";
 
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
+
+    m_enableProvider = config.readEntry( "enableProvider", false );
+    m_ignoreWallet = config.readEntry( "ignoreWallet", false );
+
+    //We only want to load the wallet if the user has enabled features that require a user/pass
+    tryToOpenWallet();
 
     if( m_wallet )
     {
@@ -78,57 +78,73 @@ GpodderServiceConfig::load()
         // can remove at some point in the future, post-2.2
         m_wallet->setFolder( "Amarok" );
 
-        if( m_wallet->readPassword( "gpodder_password", m_password ) > 0 )
+        if( m_wallet->readPassword( "gpodder_password", m_password ) != 0 )
             debug() << "Failed to read gpodder.net password from kwallet!";
-
-        QByteArray rawUsername;
-
-        if( m_wallet->readEntry( "gpodder_username", rawUsername ) > 0 )
-            debug() << "failed to read gpodder.net username from kwallet.. :(";
         else
-            m_username = QString::fromUtf8( rawUsername );
+        {
+            QByteArray rawUsername;
+
+            if( m_wallet->readEntry( "gpodder_username", rawUsername ) != 0 )
+                debug() << "Failed to read gpodder.net username from kwallet.. :(";
+            else
+                m_username = QString::fromUtf8( rawUsername );
+        }
     }
-    else if( config.readEntry( "ignoreWallet", QString() ) != "no" )
+    else if( m_ignoreWallet )
     {
         m_username = config.readEntry( "username", QString() );
         m_password = config.readEntry( "password", QString() );
     }
-    
-    m_enableProvider = config.readEntry( "enableProvider", false );
-    m_synchronise = config.readEntry( "synchronise", false );
+    else
+        debug() << "Failed to load the data.";
+
+    m_isDataLoaded = !( m_username.isEmpty() || m_password.isEmpty() );
 }
 
 void
 GpodderServiceConfig::save()
 {
+    DEBUG_BLOCK
+
     debug() << "Save config";
 
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
     config.writeEntry( "enableProvider", m_enableProvider );
-    config.writeEntry( "synchronise", m_synchronise );
+    config.writeEntry( "ignoreWallet", m_ignoreWallet );
 
-    if ( !m_wallet && config.readEntry( "ignoreWallet", QString() ) != "yes" )
-        askAboutMissingKWallet();
+    //Whenever this function is called, we'll assume the user wants to
+    //change something, so blow away the subscription timestamp key
+    config.writeEntry( "subscriptionTimestamp", 0 );
+
+    //Maybe the wallet had already closed or m_enableProvider and m_ignoreWallet
+    //could had changed also. So we try to reopen the wallet if it's not open.
+    tryToOpenWallet();
 
     if( m_wallet )
     {
         m_wallet->setFolder( "Amarok" );
 
-        if( m_wallet->writePassword( "gpodder_password", m_password ) > 0 )
-            debug() << "Failed to save gpodder.net pw to kwallet!";
-
-        if( m_wallet->writeEntry( "gpodder_username", m_username.toUtf8() ) > 0 )
+        if( m_wallet->writeEntry( "gpodder_username", m_username.toUtf8() ) != 0 )
             debug() << "Failed to save gpodder.net username to kwallet!";
+
+        if( m_wallet->writePassword( "gpodder_password", m_password ) != 0 )
+            debug() << "Failed to save gpodder.net pw to kwallet!";
     }
-    else if( config.readEntry( "ignoreWallet", QString() ) == "yes" )
+    else if( m_ignoreWallet )
     {
         config.writeEntry( "username", m_username );
         config.writeEntry( "password", m_password );
     }
     else
     {
-        debug() << "Could not access the wallet to save the gpodder.net credentials";
+        if( m_enableProvider )
+        {
+            debug() << "Couldnt access the wallet to save the gpodder.net credentials";
+            askAboutMissingKWallet();
+        }
+        else
+            debug() << "There isn't valid credentials to be saved";
     }
 
     config.sync();
@@ -153,6 +169,28 @@ GpodderServiceConfig::askAboutMissingKWallet()
     m_askDiag->exec();
 }
 
+void GpodderServiceConfig::tryToOpenWallet()
+{
+    DEBUG_BLOCK
+
+    //We only want to load the wallet if the user has enabled features
+    //that require a user/pass
+    if( ( m_enableProvider ) && ( !m_ignoreWallet ) )
+    {
+        debug() << "Opening wallet";
+
+        //Open wallet unless explicitly told not to
+        m_wallet = KWallet::Wallet::openWallet(
+                       KWallet::Wallet::NetworkWallet(),
+                       0, KWallet::Wallet::Synchronous );
+    }
+    else
+    {
+        debug() << "The wallet was ignored or is not needed.";
+        m_wallet = 0;
+    }
+}
+
 void
 GpodderServiceConfig::reset()
 {
@@ -161,7 +199,7 @@ GpodderServiceConfig::reset()
     m_username = "";
     m_password = "";
     m_enableProvider = false;
-    m_synchronise = false;
+    m_ignoreWallet = false;
 }
 
 void
@@ -169,11 +207,15 @@ GpodderServiceConfig::textDialogYes() //SLOT
 {
     DEBUG_BLOCK
 
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
+    if ( !m_ignoreWallet )
+    {
+        KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
-    config.writeEntry( "ignoreWallet", "yes" );
+        m_ignoreWallet = true;
+        config.writeEntry( "ignoreWallet ", m_ignoreWallet );
 
-    config.sync();
+        config.sync();
+    }
 }
 
 void
@@ -181,11 +223,15 @@ GpodderServiceConfig::textDialogNo() //SLOT
 {
     DEBUG_BLOCK
 
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
+    if ( m_ignoreWallet )
+    {
+        KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
-    config.writeEntry( "ignoreWallet", "no" );
+        m_ignoreWallet = false;
+        config.writeEntry( "ignoreWallet ", m_ignoreWallet );
 
-    config.sync();
+        config.sync();
+    }
 }
 
 #include "GpodderServiceConfig.moc"

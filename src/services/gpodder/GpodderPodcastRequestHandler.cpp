@@ -21,7 +21,11 @@
 #include "core/support/Debug.h"
 
 GpodderPodcastRequestHandler::GpodderPodcastRequestHandler( mygpo::PodcastListPtr podcasts, QModelIndex parentItem,
-        GpodderServiceModel *model ) : QObject( model ), m_podcasts( podcasts ), m_parentItem( parentItem ), m_model( model )
+        GpodderServiceModel *model )
+    : QObject( model )
+    , m_podcasts( podcasts )
+    , m_parentItem( parentItem )
+    , m_model( model )
 {
 }
 

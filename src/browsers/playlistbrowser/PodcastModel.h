@@ -76,6 +76,9 @@ class PodcastModel : public PlaylistBrowserModel
             return Qt::MoveAction | Qt::CopyAction;
         }
 
+    signals:
+        void episodeMarkedAsNew( Podcasts::PodcastEpisodePtr );
+
     public slots:
         void addPodcast();
         void refreshPodcasts();

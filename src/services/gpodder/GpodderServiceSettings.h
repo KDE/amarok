@@ -37,7 +37,8 @@ class GpodderServiceSettings : public KCModule
     Q_OBJECT
 
 public:
-    explicit GpodderServiceSettings( QWidget *parent = 0, const QVariantList &args = QVariantList() );
+    explicit GpodderServiceSettings( QWidget *parent = 0,
+                                     const QVariantList &args = QVariantList() );
 
     virtual ~GpodderServiceSettings();
 
@@ -60,7 +61,6 @@ private:
     Ui::GpodderConfigWidget *m_configDialog;
     GpodderServiceConfig m_config;
 
-    mygpo::ApiRequest *m_apiRequest;
     mygpo::DeviceListPtr m_devices;
     mygpo::AddRemoveResultPtr m_result;
     bool m_enableProvider;

@@ -18,7 +18,8 @@
 
 #include "GpodderSortFilterProxyModel.h"
 
-GpodderSortFilterProxyModel::GpodderSortFilterProxyModel( QObject *parent ) : QSortFilterProxyModel( parent )
+GpodderSortFilterProxyModel::GpodderSortFilterProxyModel( QObject *parent )
+    : QSortFilterProxyModel( parent )
 {
 }
 
@@ -26,15 +27,15 @@ GpodderSortFilterProxyModel::~GpodderSortFilterProxyModel()
 {
 }
 
-bool GpodderSortFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const
+bool GpodderSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
     // Tag Items
-    if( !source_parent.isValid() )
+    if( !sourceParent.isValid() )
     {
         return true;
     }
 
     // Podcast Items
-    QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+    QModelIndex index = sourceModel()->index( sourceRow, 0, sourceParent );
     return sourceModel()->data( index ).toString().contains( filterRegExp() );
 }

@@ -1107,6 +1107,8 @@ SqlPodcastProvider::deleteDownloadedEpisode( Podcasts::SqlPodcastEpisodePtr epis
     KIO::del( episode->localUrl(), KIO::HideProgressInfo );
 
     episode->setLocalUrl( KUrl() );
+
+    emit episodeDeleted( Podcasts::PodcastEpisodePtr::dynamicCast( episode ) );
 }
 
 Podcasts::SqlPodcastChannelPtr
@@ -1553,6 +1555,8 @@ SqlPodcastProvider::downloadResult( KJob *job )
             if( sqlChannel->writeTags() )
                 sqlEpisode->writeTagsToFile();
             //TODO: force a redraw of the view so the icon can be updated in the PlaylistBrowser
+
+            emit episodeDownloaded( Podcasts::PodcastEpisodePtr::dynamicCast( sqlEpisode ) );
         }
         else
         {
