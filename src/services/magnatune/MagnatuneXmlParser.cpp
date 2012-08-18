@@ -39,7 +39,9 @@ MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
 
 
 MagnatuneXmlParser::~MagnatuneXmlParser()
-{}
+{
+    QFile(m_sFileName).remove();
+}
 
 void
 MagnatuneXmlParser::run()

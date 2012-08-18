@@ -289,7 +289,7 @@ void JamendoService::download( JamendoAlbum * album )
 
     KTemporaryFile tempFile;
     tempFile.setSuffix( ".torrent" );
-    tempFile.setAutoRemove( false );
+    tempFile.setAutoRemove( false ); // removed in torrentDownloadComplete()
     if( !tempFile.open() )
         return;
 
@@ -324,6 +324,7 @@ JamendoService::torrentDownloadComplete(KJob * downloadJob)
         KRun::runUrl( KShell::quoteArg( torrentLink ), "application/x-bittorrent", 0, false );
         torrentFile.close();
     }
+    torrentFile.remove();
     downloadJob->deleteLater();
     m_torrentDownloadJob = 0;
 }

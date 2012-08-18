@@ -32,8 +32,6 @@ MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
     , m_currentAlbumFileName()
 {
     m_tempDir = new KTempDir();
-    m_tempDir->setAutoRemove( false );
-
 }
 
 MagnatuneAlbumDownloader::~MagnatuneAlbumDownloader()

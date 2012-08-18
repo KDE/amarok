@@ -297,7 +297,7 @@ Track::setImage( const QImage &newImage, bool doCommit )
             image = newImage;
 
         KTemporaryFile tempImageFile;
-        tempImageFile.setAutoRemove( false );
+        tempImageFile.setAutoRemove( false ); // file will be removed in ~Track()
         tempImageFile.setSuffix( QString( ".png" ) );
         // we save the file to disk rather than pass image data to save several megabytes of RAM
         if( tempImageFile.open() )

@@ -306,7 +306,7 @@ bool MagnatuneStore::updateMagnatuneList()
 
     KTemporaryFile tempFile;
     tempFile.setSuffix( ".bz2" );
-    tempFile.setAutoRemove( false );  //file must be removed later
+    tempFile.setAutoRemove( false );  // file will be removed in MagnatuneXmlParser
     if( !tempFile.open() )
     {
         return false; //error

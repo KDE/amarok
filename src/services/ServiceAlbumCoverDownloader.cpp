@@ -122,7 +122,7 @@ ServiceAlbumCoverDownloader::ServiceAlbumCoverDownloader()
     : m_albumDownloadJob( 0 )
 {
     m_tempDir = new KTempDir();
-    m_tempDir->setAutoRemove( false );
+    m_tempDir->setAutoRemove( true );
 }
 
 ServiceAlbumCoverDownloader::~ServiceAlbumCoverDownloader()
@@ -181,7 +181,6 @@ ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 
     downloadJob->deleteLater();
 
-    m_tempDir->unlink();
     deleteLater();
 }
 
