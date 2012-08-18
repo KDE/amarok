@@ -18,11 +18,12 @@
 #ifndef NEPOMUKCOLLECTION_H
 #define NEPOMUKCOLLECTION_H
 
+#include "NepomukConstructMetaJob.h"
+
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
-#include "NepomukConstructMetaJob.h"
 
 #include <KIcon>
 #include <QSharedPointer>
