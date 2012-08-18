@@ -29,8 +29,10 @@
 
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/collections/support/MemoryMeta.h"
+#include "core/interfaces/Logger.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 
 #include <Nepomuk/ResourceManager>
@@ -140,9 +142,9 @@ NepomukConstructMetaJob::run()
                    "}"
                    "}" );
 
-        Soprano::QueryResultIterator it
-        = model->executeQuery( query,
+        Soprano::QueryResultIterator it = model->executeQuery( query,
                                Soprano::Query::QueryLanguageSparql );
+
         while( it.next() & !m_aborted )
         {
             QUrl trackResUri = it.binding( "r" ).uri();
@@ -356,7 +358,9 @@ NepomukConstructMetaJob::run()
 
             MemoryMeta::MapChanger mapChanger( m_mc.data() );
             mapChanger.addTrack( trackPtr );
-            debug() << "found track: " << trackPtr->name();
+            Amarok::Components::logger()->newProgressOperation( this,
+                                                                i18n( "Updating : %1",
+                                                                trackPtr->prettyName() ) );
 
             emit incrementProgress();
         }
