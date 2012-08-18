@@ -23,6 +23,7 @@ set(amarok_service_magnatune_PART_SRCS
     MagnatuneDownloadInfo.cpp
     MagnatuneInfoParser.cpp
     MagnatuneMeta.cpp
+    MagnatuneNeedUpdateWidget.cpp
     MagnatuneDownloadHandler.cpp
     MagnatuneRedownloadDialog.cpp
     MagnatuneRedownloadHandler.cpp
@@ -35,9 +36,9 @@ set(amarok_service_magnatune_PART_SRCS
 
 kde4_add_ui_files( amarok_service_magnatune_PART_SRCS
     MagnatuneDownloadDialogBase.ui
+    MagnatuneNeedUpdateWidget.ui
     MagnatuneRedownloadDialogBase.ui
     MagnatuneSignupDialogBase.ui
-
 )
 
 kde4_add_plugin(amarok_service_magnatunestore ${amarok_service_magnatune_PART_SRCS})

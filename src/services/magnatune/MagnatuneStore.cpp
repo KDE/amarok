@@ -26,6 +26,7 @@
 #include "MagnatuneConfig.h"
 #include "MagnatuneDatabaseWorker.h"
 #include "MagnatuneInfoParser.h"
+#include "MagnatuneNeedUpdateWidget.h"
 #include "browsers/InfoProxy.h"
 #include "MagnatuneUrlRunner.h"
 
@@ -92,6 +93,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
         : ServiceBase( name, parent )
         , m_downloadHandler( 0 )
         , m_redownloadHandler( 0 )
+        , m_needUpdateWidget( 0 )
         , m_downloadInProgress( 0 )
         , m_currentAlbum( 0 )
         , m_streamType( MagnatuneMetaFactory::OGG )
@@ -283,8 +285,16 @@ void MagnatuneStore::initBottomPanel()
     m_downloadAlbumButton->setObjectName( "downloadButton" );
     m_downloadAlbumButton->setIcon( KIcon( "download-amarok" ) );
     
-
     connect( m_downloadAlbumButton, SIGNAL( clicked() ) , this, SLOT( download() ) );
+
+    if ( !config.lastUpdateTimestamp() )
+    {
+        m_needUpdateWidget = new MagnatuneNeedUpdateWidget(m_bottomPanel);
+
+        connect( m_needUpdateWidget, SIGNAL(wantUpdate()), SLOT(updateButtonClicked()) );
+
+        m_downloadAlbumButton->setParent(0);
+    }
 }
 
 
@@ -292,6 +302,9 @@ void MagnatuneStore::updateButtonClicked()
 {
     DEBUG_BLOCK
     m_updateAction->setEnabled( false );
+    if ( m_needUpdateWidget )
+        m_needUpdateWidget->disable();
+
     updateMagnatuneList();
 }
 
@@ -336,6 +349,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     }
 
     m_updateAction->setEnabled( true );
+
     if ( !downLoadJob->error() == 0 )
     {
         debug() << "Got an error, bailing out: " << downLoadJob->errorString();
@@ -362,6 +376,8 @@ void MagnatuneStore::listDownloadCancelled( )
     debug() << "Aborted xml download";
 
     m_updateAction->setEnabled( true );
+    if ( m_needUpdateWidget )
+        m_needUpdateWidget->enable();
 }
 
 
@@ -380,6 +396,15 @@ void MagnatuneStore::doneParsing()
         config.setLastUpdateTimestamp( m_magnatuneTimestamp );
 
     config.save();
+
+    if ( m_needUpdateWidget )
+    {
+        m_needUpdateWidget->setParent(0);
+        m_needUpdateWidget->deleteLater();
+        m_needUpdateWidget = 0;
+
+        m_downloadAlbumButton->setParent(m_bottomPanel);
+    }
 }
 
 

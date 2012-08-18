@@ -38,6 +38,7 @@
 
 
 class MagnatuneInfoParser;
+class MagnatuneNeedUpdateWidget;
 
 class MagnatuneServiceFactory : public ServiceFactory
 {
@@ -209,6 +210,7 @@ private:
     MagnatuneRedownloadHandler *m_redownloadHandler;
 
     QPushButton *m_downloadAlbumButton;
+    MagnatuneNeedUpdateWidget *m_needUpdateWidget;
 
     QAction * m_updateAction;
 
