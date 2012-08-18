@@ -500,7 +500,8 @@ void MagnatuneStore::polish()
     connect( databaseWorker, SIGNAL( gotMoodMap(QMap< QString, int >) ), this, SLOT( moodMapReady(QMap< QString, int >) ) );
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 
-    checkForUpdates();
+    if ( MagnatuneConfig().autoUpdateDatabase() )
+        checkForUpdates();
 }
 
 
