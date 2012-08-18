@@ -233,7 +233,7 @@ MagnatuneDatabaseHandler::commit( )
     QString queryString = "COMMIT;";
 
     sqlDb->query( queryString );
-
+    sqlDb->query( "FLUSH TABLES;" );
 }
 
 void MagnatuneDatabaseHandler::insertMoods(int trackId, const QStringList &moods)
