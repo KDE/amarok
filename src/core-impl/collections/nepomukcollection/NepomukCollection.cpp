@@ -51,7 +51,8 @@ NepomukCollection::NepomukCollection()
     else
     {
         m_nepomukCollectionReady = false;
-        warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk. Nepomuk Plugin won't be loaded";
+        warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk."
+                     "Nepomuk Plugin won't be loaded";
     }
 
     emit collectionUpdated();
