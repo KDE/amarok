@@ -41,13 +41,12 @@ MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
 MagnatuneXmlParser::~MagnatuneXmlParser()
 {
     QFile(m_sFileName).remove();
+    qDeleteAll(m_currentAlbumTracksList);
 }
 
 void
 MagnatuneXmlParser::run()
 {
-    m_pCurrentArtist = 0;
-    m_pCurrentAlbum = 0;
     readConfigFile( m_sFileName );
 }
 
@@ -111,9 +110,6 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
     m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
     parseElement( docElem );
     m_dbHandler->commit(); //complete transaction
-
-    delete m_pCurrentArtist;
-    delete m_pCurrentAlbum;
 
     return ;
 }
@@ -224,8 +220,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
         n = n.nextSibling();
     }
 
-    delete m_pCurrentAlbum;
-    m_pCurrentAlbum = new MagnatuneAlbum( name );
+    m_pCurrentAlbum.reset(new MagnatuneAlbum( name ));
     m_pCurrentAlbum->setAlbumCode( albumCode);
     m_pCurrentAlbum->setLaunchYear( launchYear );
     m_pCurrentAlbum->setCoverUrl( coverUrl );
@@ -247,14 +242,13 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
         artistId = artistNameIdMap.value( artistName );
     } else  {
         //does not exist, lets create it...
-        delete m_pCurrentArtist;
-        m_pCurrentArtist = new MagnatuneArtist( artistName );
+        m_pCurrentArtist.reset(new MagnatuneArtist( artistName ));
         m_pCurrentArtist->setDescription( artistDescription );
         m_pCurrentArtist->setPhotoUrl( artistPhotoUrl );
         m_pCurrentArtist->setMagnatuneUrl( artistPageUrl );
 
         //this is tricky in postgresql, returns id as 0 (we are within a transaction, might be the cause...)
-        artistId = m_dbHandler->insertArtist( m_pCurrentArtist );
+        artistId = m_dbHandler->insertArtist( m_pCurrentArtist.data() );
 
         m_nNumberOfArtists++;
 
@@ -271,7 +265,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
     }
 
     m_pCurrentAlbum->setArtistId( artistId );
-    int albumId = m_dbHandler->insertAlbum( m_pCurrentAlbum );
+    int albumId = m_dbHandler->insertAlbum( m_pCurrentAlbum.data() );
     if ( albumId == 0 ) // again, postgres can play tricks on us...
     {
             albumId = m_dbHandler->getAlbumIdByAlbumCode( m_pCurrentAlbum->albumCode() );
@@ -281,7 +275,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
     m_nNumberOfAlbums++;
 
-    QList<MagnatuneTrack *>::iterator it;
+    QList<Meta::MagnatuneTrack*>::iterator it;
     for ( it = m_currentAlbumTracksList.begin(); it != m_currentAlbumTracksList.end(); ++it )
     {
 
@@ -309,6 +303,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
     magnatuneGenres.clear();
 
+    qDeleteAll(m_currentAlbumTracksList);
     m_currentAlbumTracksList.clear();
 }
 

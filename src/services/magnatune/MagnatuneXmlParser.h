@@ -21,6 +21,7 @@
 #include "MagnatuneMeta.h"
 
 #include <qdom.h>
+#include <QScopedPointer>
 #include <QString>
 #include <QDomElement>
 #include <QMap>
@@ -117,9 +118,9 @@ private:
      */
     void parseMoods( const QDomElement &e );
 
-    Meta::MagnatuneAlbum *m_pCurrentAlbum;
-    Meta::MagnatuneArtist *m_pCurrentArtist;
-    QList<Meta::MagnatuneTrack *> m_currentAlbumTracksList;
+    QScopedPointer<Meta::MagnatuneAlbum> m_pCurrentAlbum;
+    QScopedPointer<Meta::MagnatuneArtist> m_pCurrentArtist;
+    QList<Meta::MagnatuneTrack*> m_currentAlbumTracksList;
     QStringList m_currentTrackMoodList;
 
     QString m_sFileName;
