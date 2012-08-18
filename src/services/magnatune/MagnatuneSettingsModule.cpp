@@ -49,6 +49,7 @@ MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVarian
     connect ( m_configDialog->typeComboBox, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->isMemberCheckbox, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->streamTypeComboBox, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( settingsChanged() ) );
+    connect ( m_configDialog->autoUpdateDatabase, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
     
 
     load();
@@ -63,6 +64,7 @@ MagnatuneSettingsModule::~MagnatuneSettingsModule()
 void MagnatuneSettingsModule::save()
 {
     m_config.setIsMember( m_configDialog->isMemberCheckbox->checkState() == Qt::Checked );
+    m_config.setAutoUpdateDatabase( m_configDialog->autoUpdateDatabase->checkState() == Qt::Checked );
 
 
     int typeIndex = m_configDialog->typeComboBox->currentIndex();
@@ -90,6 +92,9 @@ void MagnatuneSettingsModule::load()
         m_configDialog->isMemberCheckbox->setCheckState( Qt::Checked );
     else
         m_configDialog->isMemberCheckbox->setCheckState( Qt::Unchecked );
+
+    m_configDialog->autoUpdateDatabase->setCheckState( m_config.autoUpdateDatabase()?
+                                                       Qt::Checked : Qt::Unchecked );
 
     int index = 0;
     if ( m_config.membershipType() == MagnatuneConfig::STREAM ) index = 0;

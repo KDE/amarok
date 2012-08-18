@@ -47,6 +47,9 @@ public:
     bool isMember();
     void setIsMember( bool isMember );
 
+    bool autoUpdateDatabase();
+    void setAutoUpdateDatabase( bool value );
+
     int membershipType();
     void setMembershipType( int membershipType );
     QString membershipPrefix();
@@ -70,6 +73,7 @@ public:
 private:
 
     bool m_hasChanged;
+    bool m_autoUpdate;
     QString m_username;
     QString m_password;
     int m_membershipType;

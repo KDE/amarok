@@ -44,6 +44,7 @@ MagnatuneConfig::load()
 
     m_isMember = config.readEntry( "isMember", false );
 
+    m_autoUpdate = config.readEntry( "autoUpdateDatabase", false );
 
     m_membershipType = config.readEntry( "membershipType", -1 );
 
@@ -89,6 +90,7 @@ MagnatuneConfig::save()
         KConfigGroup config = KGlobal::config()->group( "Service_Magnatune" );
 
         config.writeEntry( "isMember", m_isMember );
+        config.writeEntry( "autoUpdateDatabase", m_autoUpdate );
         config.writeEntry( "membershipType", m_membershipType );
         config.writeEntry( "username", m_username );
         config.writeEntry( "password", m_password );
@@ -119,6 +121,19 @@ MagnatuneConfig::setIsMember( bool isMember )
 {
     m_hasChanged = true;
     m_isMember = isMember;
+}
+
+bool
+MagnatuneConfig::autoUpdateDatabase()
+{
+    return m_autoUpdate;
+}
+
+void
+MagnatuneConfig::setAutoUpdateDatabase( bool value )
+{
+    m_hasChanged = true;
+    m_autoUpdate = value;
 }
 
 int
