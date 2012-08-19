@@ -24,11 +24,10 @@ AMAROK_EXPORT_DEVICE_PLUGIN( smb, SmbDeviceHandlerFactory )
 #include "core/support/Debug.h"
 #include "core/collections/support/SqlStorage.h"
 
-#include <kconfig.h>
-#include <kurl.h>
-#include <kmountpoint.h>
-#include <solid/storagevolume.h>
-#include <solid/storageaccess.h>
+#include <KConfig>
+#include <KUrl>
+#include <Solid/StorageAccess>
+#include <Solid/NetworkShare>
 
 SmbDeviceHandler::SmbDeviceHandler( int deviceId, const QString &server, const QString &share, const QString &mountPoint, const QString &udi )
     : DeviceHandler()
@@ -121,23 +120,31 @@ bool SmbDeviceHandlerFactory::canCreateFromConfig( ) const
 
 bool SmbDeviceHandlerFactory::canHandle( const Solid::Device &device ) const
 {
-    DEBUG_BLOCK
-
-    const Solid::StorageAccess *access = device.as<Solid::StorageAccess>();
- 
-    if( !access || access->filePath().isEmpty() )
+    const Solid::NetworkShare *share = device.as<Solid::NetworkShare>();
+    if( !share )
     {
-        debug() << "Device not accessible";
+        debug() << __PRETTY_FUNCTION__ << device.udi() << "has no NetworkShare interface";
         return false;
     }
-
-    // find mount point
-    KMountPoint::Ptr m = KMountPoint::currentMountPoints().findByPath( access->filePath() );
-
-    if ( m && (m->mountType() == "smb" || m->mountType() == "cifs") )
-      return true;
-
-    return false;
+    if( share->type() != Solid::NetworkShare::Cifs )
+    {
+        debug() << __PRETTY_FUNCTION__ << device.udi() << "has type" << share->type()
+                << "but smbfs/cifs type is" << Solid::NetworkShare::Cifs;
+        return false;
+    }
+    const Solid::StorageAccess *access = device.as<Solid::StorageAccess>();
+    if( !access )
+    {
+        debug() << __PRETTY_FUNCTION__ << device.udi() << "has no StorageAccess interface";
+        return false;
+    }
+    if( !access->isAccessible() || access->filePath().isEmpty() )
+    {
+        debug() << __PRETTY_FUNCTION__ << device.udi() << "is not accessible"
+                << "or has empty mount-point";
+        return false;
+    }
+    return true;
 }
 
 SmbDeviceHandlerFactory::SmbDeviceHandlerFactory( QObject *parent, const QVariantList &args )
@@ -167,24 +174,19 @@ SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QStri
         debug() << "!s, returning 0";
         return 0;
     }
+    if( !canHandle( device ) )
+        return 0;
 
     const Solid::StorageAccess *access = device.as<Solid::StorageAccess>();
-    if( !access )
-    {
-        debug() << "Device isn't valid, can't create a handler";
-        return 0;
-    }
-    if( access->filePath().isEmpty() )
-    {
-        debug() << "not mounted, can't do anything";
-        return 0; // It's not mounted, we can't do anything.
-    }
+    Q_ASSERT( access );  // canHandle() checks it
+    QString mountPoint = access->filePath();
 
-    // find out the mount type of this...
-    KMountPoint::Ptr m = KMountPoint::currentMountPoints().findByPath( access->filePath() );
+    const Solid::NetworkShare *netShare = device.as<Solid::NetworkShare>();
+    Q_ASSERT( netShare );  // canHandle() checks it
+    QUrl url = netShare->url(); // smb://testanot/share2
+    QString server = url.host();
+    QString share = url.path().mid( 1 ); // strip leading slash, not usual in smb shares
 
-    QString server = m->mountedFrom().section( '/', 2, 2 );
-    QString share = m->mountedFrom().section( '/', 3, 3 );
     QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint "
                                          "FROM devices WHERE type = 'smb' "
                                          "AND servername = '%1' AND sharename = '%2';" )
@@ -196,8 +198,8 @@ SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QStri
         s->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
                            "id = %1;" )
                            .arg( ids[0] )
-                           .arg( s->escape( m->mountPoint() ) ) );
-        return new SmbDeviceHandler( ids[0].toInt(), server, share, m->mountPoint(), udi );
+                           .arg( s->escape( mountPoint ) ) );
+        return new SmbDeviceHandler( ids[0].toInt(), server, share, mountPoint, udi );
     }
     else
     {
@@ -206,7 +208,7 @@ SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QStri
                                      "VALUES ( 'smb', '%1', '%2', '%3' );" )
                                      .arg( s->escape( server ) )
                                      .arg( s->escape( share ) )
-                                     .arg( s->escape( m->mountPoint() ) ),
+                                     .arg( s->escape( mountPoint ) ),
                                      "devices" );
         if ( id == 0 )
         {
@@ -214,7 +216,6 @@ SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QStri
             return 0;
         }
         debug() << "Created new SMB device with ID " << id << " , server " << server << " ,share " << share;
-        return new SmbDeviceHandler( id, server, share, m->mountPoint(), udi );
+        return new SmbDeviceHandler( id, server, share, mountPoint, udi );
     }
 }
-
