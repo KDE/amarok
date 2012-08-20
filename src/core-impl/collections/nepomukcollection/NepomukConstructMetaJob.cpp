@@ -64,7 +64,7 @@ NepomukConstructMetaJob::run()
         Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
 
         QString query
-        = QString( "select distinct ?r ?title ?url ?artist ?composer ?album ?genre "
+        = QString::fromLatin1( "select distinct ?r ?title ?url ?artist ?composer ?album ?genre "
                    "?artistRes ?composerRes ?albumRes "
                    "?year ?bpm ?rating ?length ?sampleRate ?trackNumber ?type "
                    " ?bitrate ?modifyDate ?createDate ?comment ?filesize "
@@ -85,6 +85,12 @@ NepomukConstructMetaJob::run()
                    "OPTIONAL {"
                    "    ?r nmm:musicAlbum ?albumRes ."
                    "    ?albumRes nie:title ?album ."
+                        "OPTIONAL {"
+                        "    ?albumRes nmm:albumGain ?albumGain ."
+                        "}"
+                        "OPTIONAL {"
+                        "    ?albumRes nmm:albumPeakGain ?albumPeakGain ."
+                        "}"
                    "}"
                    "OPTIONAL {"
                    "    ?r nmm:genre ?genre ."
@@ -130,15 +136,6 @@ NepomukConstructMetaJob::run()
                    "}"
                    "OPTIONAL {"
                    "    ?r nmm:trackPeakGain ?trackPeakGain ."
-                   "}"
-                   "OPTIONAL {"
-                   "    ?r nmm:albumGain ?albumGain ."
-                   "}"
-                   "OPTIONAL {"
-                   "    ?r nmm:albumPeakGain ?albumPeakGain ."
-                   "}"
-                   "OPTIONAL {"
-                   "    ?r nao:has ?albumPeakGain ."
                    "}"
                    "}" );
 
@@ -298,14 +295,15 @@ NepomukConstructMetaJob::run()
             }
 
             QString tagQuery
-            = QString( "select distinct ?tag where { %1 nao:hasTag ?tag . }" )
-              .arg( Soprano::Node::resourceToN3( trackResUri ) );
+                    = QString( "select ?tagUri ?tag where "
+                               "{ %1 nao:hasTag ?tagUri . ?tagUri nao:identifier ?tag . }"
+                              ).arg( Soprano::Node::resourceToN3( trackResUri ) );
 
             Soprano::QueryResultIterator its
             = model->executeQuery( tagQuery, Soprano::Query::QueryLanguageSparql );
             while( its.next() )
             {
-                QUrl labelResUri = its.binding( "tag" ).uri();
+                QUrl labelResUri = QUrl( its.binding( "tagUri" ).toString() );
 
                 if( m_labelHash.contains( labelResUri ) )
                 {
