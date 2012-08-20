@@ -54,13 +54,13 @@ NepomukCollection::NepomukCollection()
     {
         m_nepomukCollectionReady = false;
         warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk. "
-                     "Nepomuk Plugin won't be loaded";
+                  "Nepomuk Plugin won't be loaded";
 
         Amarok::Components::logger()->longMessage(
-                    i18n( "Couldn't initialize Nepomuk Collection. "
-                          "Check status of Nepomuk. "
-                          "Nepomuk Plugin won't be loaded" ),
-                    Amarok::Logger::Warning );
+            i18n( "Couldn't initialize Nepomuk Collection. "
+                  "Check status of Nepomuk. "
+                  "Nepomuk Plugin won't be loaded" ),
+            Amarok::Logger::Warning );
     }
 
     emit collectionUpdated();
