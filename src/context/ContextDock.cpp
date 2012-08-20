@@ -31,6 +31,8 @@
 #include <QDeclarativeError>
 #include <QDeclarativeEngine>
 
+#include <Plasma/Theme>
+
 #include <KStandardDirs>
 
 ContextDock::ContextDock( QWidget *parent )
@@ -56,6 +58,10 @@ ContextDock::ContextDock( QWidget *parent )
     m_declarative->setDeclarativeEngine(m_view->engine());
     m_declarative->initialize();
     m_declarative->setupBindings();
+
+    Plasma::Theme::defaultTheme()->setUseGlobalSettings(false);
+    Plasma::Theme::defaultTheme()->setThemeName("Amarok");
+
     m_view->setFrameShape(QFrame::NoFrame);
     m_view->setSource(KStandardDirs::locate("appdata", "qml/Context.qml"));
     m_view->setResizeMode(QDeclarativeView::SizeRootObjectToView);
