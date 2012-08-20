@@ -24,8 +24,10 @@
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/collections/support/MemoryMeta.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
+#include "core/interfaces/Logger.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 
 #include <Nepomuk/Resource>
@@ -51,8 +53,14 @@ NepomukCollection::NepomukCollection()
     else
     {
         m_nepomukCollectionReady = false;
-        warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk."
+        warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk. "
                      "Nepomuk Plugin won't be loaded";
+
+        Amarok::Components::logger()->longMessage(
+                    i18n( "Couldn't initialize Nepomuk Collection. "
+                          "Check status of Nepomuk. "
+                          "Nepomuk Plugin won't be loaded" ),
+                    Amarok::Logger::Warning );
     }
 
     emit collectionUpdated();
