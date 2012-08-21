@@ -43,7 +43,7 @@
 using namespace Meta;
 using namespace Collections;
 
-NepomukConstructMetaJob::NepomukConstructMetaJob( NepomukCollection* coll )
+NepomukConstructMetaJob::NepomukConstructMetaJob( NepomukCollection *coll )
     : Job()
     , m_mc( coll->m_mc )
     , m_aborted( false )
@@ -61,7 +61,7 @@ NepomukConstructMetaJob::run()
 {
     if( !m_aborted )
     {
-        Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
+        Soprano::Model *model = Nepomuk::ResourceManager::instance()->mainModel();
 
         QString query
         = QString::fromLatin1( "select distinct ?r ?title ?url ?artist ?composer ?album ?genre "
@@ -145,12 +145,6 @@ NepomukConstructMetaJob::run()
         while( it.next() & !m_aborted )
         {
             QUrl trackResUri = it.binding( "r" ).uri();
-            NepomukArtistPtr nepArtistPtr;
-            NepomukGenrePtr nepGenrePtr;
-            NepomukComposerPtr nepComposerPtr;
-            NepomukAlbumPtr nepAlbumPtr;
-            NepomukLabelPtr nepLabelPtr;
-            NepomukYearPtr nepYearPtr;
 
             // check if track doesn't already exist in TrackMap
             if( m_trackHash.contains( trackResUri ) )
@@ -209,6 +203,7 @@ NepomukConstructMetaJob::run()
             m_trackHash.insert( trackResUri, Meta::TrackPtr::staticCast( nepTrackPtr ) );
 
             // Artist
+            NepomukArtistPtr nepArtistPtr;
 
             QUrl artistResUri = it.binding( "artistRes" ).uri();
 
@@ -231,6 +226,9 @@ NepomukConstructMetaJob::run()
                 }
             }
 
+            //genre
+            NepomukGenrePtr nepGenrePtr;
+
             QString genreLabel = it.binding( "genre" ).toString();
 
             // check if genre doesn't already exist in HashMap
@@ -251,6 +249,9 @@ NepomukConstructMetaJob::run()
                 }
             }
 
+            //composer
+
+            NepomukComposerPtr nepComposerPtr;
             QUrl composerResUri = it.binding( "composerRes" ).uri();
 
             // check if composer doesn't already exist in HashMap
@@ -273,6 +274,10 @@ NepomukConstructMetaJob::run()
                 }
             }
 
+            //album
+
+            NepomukAlbumPtr nepAlbumPtr;
+
             QUrl albumResUri = it.binding( "albumRes" ).uri();
             // check if album doesn't already exist in HashMap
             if( m_albumHash.contains( albumResUri ) )
@@ -293,6 +298,10 @@ NepomukConstructMetaJob::run()
                                             nepAlbumPtr ) );
                 }
             }
+
+            //labels
+
+            NepomukLabelPtr nepLabelPtr;
 
             QString tagQuery
             = QString( "select ?tagUri ?tag where "
@@ -326,6 +335,8 @@ NepomukConstructMetaJob::run()
             }
 
             // year
+
+            NepomukYearPtr nepYearPtr;
 
             QString dateAndTime = it.binding( "year" ).toString();
             QDateTime fullDate = QDateTime::fromString( dateAndTime );

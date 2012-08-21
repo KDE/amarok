@@ -17,11 +17,7 @@
 #ifndef NEPOMUKCOLLECTIONFACTORY_H
 #define NEPOMUKCOLLECTIONFACTORY_H
 
-#include "NepomukCollection.h"
-
 #include "core/collections/Collection.h"
-
-class NepomukCollection;
 
 class NepomukCollectionFactory : public Collections::CollectionFactory
 {

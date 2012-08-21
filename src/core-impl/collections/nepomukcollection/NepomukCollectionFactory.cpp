@@ -16,41 +16,45 @@
 
 #define DEBUG_PREFIX "NepomukCollection Factory"
 
+#include "NepomukCollection.h"
 #include "NepomukCollectionFactory.h"
 
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 
 #include <Nepomuk/ResourceManager>
 
-using namespace Collections;
-
 void
 NepomukCollectionFactory::init()
-{
-    DEBUG_BLOCK
-    // check if Nepomuk service is already initialized
+{DEBUG_BLOCK
+
+    m_initialized = false;
+
+    // check if Nepomuk service is running
     if( Nepomuk::ResourceManager::instance()->initialized() )
     {
-        emit newCollection( new Collections::NepomukCollection() );
+        // if it is, create a new NepomukCollection
         m_initialized = true;
+        emit newCollection( new Collections::NepomukCollection() );
+        return;
     }
 
     else
     {
-        // Nepomuk not initialized, so initiate it
-        if( Nepomuk::ResourceManager::instance()->init() )
-        {
-            emit newCollection( new Collections::NepomukCollection() );
-            m_initialized = true;
-        }
+        warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk. "
+                     "Nepomuk Plugin won't be loaded";
 
-        else
-            warning() << "could not load nepomuk in collectionfactory";
+        Amarok::Components::logger()->longMessage(
+                    i18n( "Couldn't initialize Nepomuk Collection. "
+                          "Check status of Nepomuk. "
+                          "Nepomuk Plugin won't be loaded" ),
+                    Amarok::Logger::Warning );
     }
 }
 
 NepomukCollectionFactory::NepomukCollectionFactory( QObject *parent,
-        const QVariantList &args )
+                                                    const QVariantList &args )
     : CollectionFactory( parent, args )
 {
     m_info = KPluginInfo( "amarok_collection-nepomukcollection.desktop", "services" );

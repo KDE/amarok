@@ -46,7 +46,7 @@ class NepomukTrack : public Track
 {
 public:
     // construct a NepomukTrack out of a Nepomuk resource
-    NepomukTrack( const QUrl &resUri, NepomukCollection* const coll );
+    NepomukTrack( const QUrl &resUri, NepomukCollection *const coll );
     // construct a NepomukTrack out of a url
 
     ~NepomukTrack();
@@ -113,7 +113,7 @@ public:
     /**
      * This should be implemented, else breaks TagDialog::getTagsFromTrack()
      */
-    virtual Collections::Collection* collection() const;
+    virtual Collections::Collection *collection() const;
     virtual qreal replayGain( ReplayGainTag mode ) const;
 
     virtual void addLabel( const Meta::LabelPtr &label );

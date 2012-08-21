@@ -21,14 +21,12 @@
 #include "NepomukConstructMetaJob.h"
 
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaKeys.h"
+#include "core/support/Debug.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/collections/support/MemoryMeta.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
-#include "core/interfaces/Logger.h"
-#include "core/meta/Meta.h"
-#include "core/meta/support/MetaKeys.h"
-#include "core/support/Components.h"
-#include "core/support/Debug.h"
 
 #include <Nepomuk/Resource>
 #include <Nepomuk/ResourceManager>
@@ -41,28 +39,9 @@ using namespace Collections;
 
 NepomukCollection::NepomukCollection()
     : Collection()
-    , m_mc( new Collections::MemoryCollection() )
+    , m_mc( new MemoryCollection() )
 {
-    // check if Nepomuk is available, if yes, initialize and build up collection.
-    if( Nepomuk::ResourceManager::instance()->initialized() )
-    {
-        m_nepomukCollectionReady = true;
-        buildCollection();
-    }
-
-    else
-    {
-        m_nepomukCollectionReady = false;
-        warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk. "
-                  "Nepomuk Plugin won't be loaded";
-
-        Amarok::Components::logger()->longMessage(
-            i18n( "Couldn't initialize Nepomuk Collection. "
-                  "Check status of Nepomuk. "
-                  "Nepomuk Plugin won't be loaded" ),
-            Amarok::Logger::Warning );
-    }
-
+    buildCollection();
     emit collectionUpdated();
 }
 
@@ -70,10 +49,17 @@ NepomukCollection::~NepomukCollection()
 {
 }
 
-Collections::QueryMaker*
+QueryMaker*
 NepomukCollection::queryMaker()
 {
     return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
+}
+
+bool
+NepomukCollection::isDirInCollection( const QString &path )
+{
+    Q_UNUSED( path );
+    return false;
 }
 
 QString
@@ -92,7 +78,8 @@ NepomukCollection::collectionId() const
 QString
 NepomukCollection::prettyName() const
 {
-    return QString( "Nepomuk Collection" );
+    QString q = i18n( "Nepomuk Collection" );
+    return q;
 }
 
 KIcon
@@ -104,17 +91,16 @@ NepomukCollection::icon() const
 bool
 NepomukCollection::isWritable() const
 {
-    // Nepomuk if initialized is always writable
-    // A check for nepomuk initialized will suffice
-    //return m_nepomukCollectionReady;
-    return true;
+    // right now NepomukCollectionLocation isn't implemented, which deals with moving
+    // and copying tracks into collection. So false until that is implemented.
+
+    return false;
 }
 
 void
 NepomukCollection::buildCollection()
 {
     NepomukConstructMetaJob *job = new NepomukConstructMetaJob( this );
-    m_constructMetaJob = job;
     connect( job, SIGNAL( done( ThreadWeaver::Job* ) ), job, SLOT( deleteLater() ) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
 }

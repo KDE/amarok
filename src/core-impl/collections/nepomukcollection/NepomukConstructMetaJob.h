@@ -17,11 +17,9 @@
 #ifndef NEPOMUKCONSTRUCTMETAJOB_H
 #define NEPOMUKCONSTRUCTMETAJOB_H
 
-#include "NepomukCollection.h"
-
-#include "core-impl/collections/support/MemoryCollection.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
+#include "core-impl/collections/support/MemoryCollection.h"
 
 #include <ThreadWeaver/Job>
 
@@ -35,7 +33,9 @@ class NepomukConstructMetaJob : public ThreadWeaver::Job
     Q_OBJECT
 
 public:
-    explicit NepomukConstructMetaJob( NepomukCollection* coll );
+    explicit NepomukConstructMetaJob( NepomukCollection *coll );
+
+protected:
     void run();
 
 public slots:
@@ -54,7 +54,7 @@ signals:
 private:
     QSharedPointer<Collections::MemoryCollection> m_mc;
     bool m_aborted;
-    NepomukCollection* m_coll;
+    NepomukCollection *m_coll;
 
     /** These hash maps are used to store each of the {meta}Ptr so that duplicate {meta}
      * object are not created. In then end, each artist, album, genre, composer and track

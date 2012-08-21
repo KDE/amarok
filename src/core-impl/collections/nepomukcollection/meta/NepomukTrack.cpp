@@ -26,7 +26,7 @@
 
 using namespace Meta;
 
-NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection* const coll )
+NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection *const coll )
     : Track()
     , m_artist( 0 )
     , m_genre( 0 )
