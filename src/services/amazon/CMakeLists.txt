@@ -27,11 +27,13 @@ set( amarok_service_amazonstore_PART_SRCS
     AmazonShoppingCartView.cpp
     AmazonStore.cpp
     AmazonUrlRunner.cpp
+    AmazonWantCountryWidget.cpp
 )
 
 kde4_add_ui_files( amarok_service_amazonstore_PART_SRCS
     AmazonConfigWidget.ui
     AmazonShoppingCartDialog.ui
+    AmazonWantCountryWidget.ui
 )
 
 kde4_add_plugin( amarok_service_amazonstore ${amarok_service_amazonstore_PART_SRCS} )

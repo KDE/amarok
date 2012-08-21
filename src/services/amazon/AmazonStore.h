@@ -41,6 +41,8 @@
 
 class AmazonMetaFactory;
 
+class AmazonWantCountryWidget;
+
 class AmazonServiceFactory : public ServiceFactory
 {
     Q_OBJECT
@@ -74,6 +76,14 @@ public:
 
     virtual Collections::Collection* collection() { return m_collection; }
     void polish();
+
+    /**
+     * Convert an ISO 3166 two-letter country code to Amazon
+     * top level domain
+     *
+     * @returns a TLD for corresponding Amazon store, or "none"
+     */
+    static QString iso3166toAmazon(const QString& country);
 
 public slots:
     /**
@@ -139,6 +149,14 @@ private:
     void initTopPanel();
 
     /**
+     * Initializes the bottom panel of Amazon store browser.
+     *
+     * Currently this contains nothing, except for possible "Select country"
+     * widget.
+     */
+    void initBottomPanel();
+
+    /**
     * Inits the Amazon store browser view with its widgets.
     */
     void initView();
@@ -154,6 +172,8 @@ private:
     QPushButton* m_viewCartButton;
     QPushButton* m_checkoutButton;
 
+    AmazonWantCountryWidget* m_wantCountryWidget;
+
     QSpinBox* m_resultpageSpinBox;
     KAction* m_forwardAction;
     KAction* m_backwardAction;
@@ -168,14 +188,6 @@ private:
     AmazonItemTreeModel* m_itemModel;
 
     QModelIndex m_selectedIndex;
-
-    /**
-     * Convert an ISO 3166 two-letter country code to Amazon
-     * top level domain
-     *
-     * @returns a TLD for corresponding Amazon store, or "none"
-     */
-    static QString iso3166toAmazon(const QString& country);
 
 private slots:
     /**
@@ -202,6 +214,11 @@ private slots:
     * Go forward in Amazon store.
     */
     void forward();
+
+    /**
+     * Country has been updated in the configuration
+     */
+    void countryUpdated();
 };
 
 #endif // AMAZONSTORE_H

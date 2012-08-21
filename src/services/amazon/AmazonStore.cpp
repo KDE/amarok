@@ -25,6 +25,7 @@
 #include "AmazonShoppingCart.h"
 #include "AmazonShoppingCartDialog.h"
 #include "AmazonUrlRunner.h"
+#include "AmazonWantCountryWidget.h"
 
 #include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/CollectionTreeItem.h"
@@ -91,6 +92,7 @@ AmazonServiceFactory::config()
 
 AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     : ServiceBase( name, parent, false )
+    , m_wantCountryWidget(0)
 {
     DEBUG_BLOCK
     setObjectName( name );
@@ -138,6 +140,7 @@ AmazonStore::polish()
         m_polished = true;
 
         initTopPanel();
+        initBottomPanel();
         initView();
 
         connect( m_itemView, SIGNAL( itemSelected( QModelIndex ) ), this, SLOT( itemSelected( QModelIndex ) ) );
@@ -285,13 +288,6 @@ AmazonStore::newSearchRequest( const QString request )
 {
     DEBUG_BLOCK
 
-    // make sure we know where to search
-    if( AmazonConfig::instance()->country().isEmpty() )
-    {
-        QString country(KGlobal::locale()->country());
-        AmazonConfig::instance()->setCountry(iso3166toAmazon(country));
-    }
-
     if( AmazonConfig::instance()->country() == QLatin1String( "none" ) || AmazonConfig::instance()->country().isEmpty() )
     {
         // user explicitly said we are not in a supported country or refused to supply one
@@ -436,6 +432,18 @@ AmazonStore::initTopPanel()
 }
 
 void
+AmazonStore::initBottomPanel()
+{
+    QString country(AmazonConfig::instance()->country());
+    if( country.isEmpty() || country == QLatin1String( "none" ) )
+    {
+        m_wantCountryWidget = new AmazonWantCountryWidget(m_bottomPanel);
+        connect(m_wantCountryWidget, SIGNAL(countrySelected()),
+                SLOT(countryUpdated()));
+    }
+}
+
+void
 AmazonStore::initView()
 {
     m_itemView = new AmazonItemTreeView( this );
@@ -566,4 +574,20 @@ AmazonStore::forward()
     m_backStack.push( m_lastSearch );
     m_isNavigation = true;
     m_searchWidget->setSearchString( request );
+}
+
+void
+AmazonStore::countryUpdated()
+{
+    QString country(AmazonConfig::instance()->country());
+    if( country.isEmpty() || country == QLatin1String( "none" ) )
+        return;
+
+    if( m_wantCountryWidget )
+    {
+        m_wantCountryWidget->setParent(0);
+        m_wantCountryWidget->deleteLater();
+        m_wantCountryWidget = 0;
+    }
+    newSearchRequest( QString() );
 }
