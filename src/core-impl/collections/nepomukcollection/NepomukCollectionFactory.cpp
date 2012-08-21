@@ -27,7 +27,8 @@
 
 void
 NepomukCollectionFactory::init()
-{DEBUG_BLOCK
+{
+    DEBUG_BLOCK
 
     m_initialized = false;
 
@@ -43,18 +44,18 @@ NepomukCollectionFactory::init()
     else
     {
         warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk. "
-                     "Nepomuk Plugin won't be loaded";
+                  "Nepomuk Plugin won't be loaded";
 
         Amarok::Components::logger()->longMessage(
-                    i18n( "Couldn't initialize Nepomuk Collection. "
-                          "Check status of Nepomuk. "
-                          "Nepomuk Plugin won't be loaded" ),
-                    Amarok::Logger::Warning );
+            i18n( "Couldn't initialize Nepomuk Collection. "
+                  "Check status of Nepomuk. "
+                  "Nepomuk Plugin won't be loaded" ),
+            Amarok::Logger::Warning );
     }
 }
 
 NepomukCollectionFactory::NepomukCollectionFactory( QObject *parent,
-                                                    const QVariantList &args )
+        const QVariantList &args )
     : CollectionFactory( parent, args )
 {
     m_info = KPluginInfo( "amarok_collection-nepomukcollection.desktop", "services" );
