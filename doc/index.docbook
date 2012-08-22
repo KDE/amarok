@@ -16,7 +16,7 @@
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
       </authorgroup>
 <legalnotice>&FDLNotice;</legalnotice>
-<date>2012-05-18</date>
+<date>2012-08-21</date>
       <releaseinfo>2.5.0</releaseinfo>
 <abstract>
 <para>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including &Linux;, &MacOS; and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.4.</para>
@@ -33,7 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2012-05-19T14:29:24Z</timestamp>-->
+<!--userbase <timestamp>2012-08-21T19:41:39Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -2812,7 +2812,7 @@
     <para><guilabel>Server</guilabel></para>
     </entry>
     <entry>
-    <para>Enter the name of the existing <guilabel>MySQL</guilabel> server</para>
+    <para>Enter the name of the existing <guilabel>MySQL</guilabel> server.</para>
     </entry>
   </row>
   <row>
@@ -6263,6 +6263,12 @@ automoc cmake qt4-mac dbus libmng kdebase4-runtime exiv2 hicolor-icon-theme kdel
 </para>
 </sect3>
 </sect2>
+<sect2 id="problems-with-collections-on-ipod-etc-"><title>Problems with collections on iPod &etc;</title>
+<sect3 id="amarok-show-no-cover-images-or-images-are-lost-when-transferring-to-device"><title>Amarok show no cover-images or images are lost when transferring to device</title>
+<para>Most likely the wrong version of libgpod4 is installed. On Debian and it's derivatives like Kubuntu the default is libgpod4-nogtk, which comes without support for covers. Simply install the variant libgpod4: <userinput>sudo apt-get install libgpod4</userinput>  The package libgpod4-nogtk can then be removed without problem. This is currently under review for Kubuntu Quantal (to be released as 12.10) and will likely be changed to the default libgpod4 in the future.
+</para>
+</sect3>
+</sect2>
 <sect2 id="crashes-and-bugs"><title>Crashes and bugs</title> 
 <itemizedlist>
 <listitem><para>How to run &amarok; from the command line: <userinput>amarok --debug --nofork</userinput></para></listitem>
@@ -7607,7 +7613,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
   </row>
   <row>
     <entry>
-    <para>Last.fm Skip Current Track</para>
+    <para>Last.fm: Skip Current Track</para>
     </entry>
     <entry>
     <para><keycombo><keycap>Meta</keycap><keycap>S</keycap></keycombo></para>
