@@ -128,7 +128,7 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
             if ( TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token ) )
             {
                 qreal width = 0.0;
-                if ( twl->widthForced() && twl->width() > 0.01) {
+                if ( twl->widthForced() && twl->width() >= 0.01) {
                     width = twl->width();
                 }
                 currentRowConfig.addElement( LayoutItemConfigRowElement( twl->value(), width,
