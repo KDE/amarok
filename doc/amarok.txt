@@ -7,7 +7,7 @@ Below is a short instruction on how to update the manual in this folder.
 1. Prerequisites.
    a. Python 2.x (x>5).
    b. wget to download images.
-   c. grep to find images in UserBase archves.
+   c. grep to find images in UserBase archives.
    d. ImageMagick to convert and scale downloaded images.
    e. advpng to compress images losslessly.
 

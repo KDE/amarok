@@ -32,7 +32,7 @@ public:
     virtual QString description() = 0;
 
     /**
-       Get the the icon for the type of bookmarks created.
+       Get the icon for the type of bookmarks created.
     */
     virtual KIcon icon() = 0;
 

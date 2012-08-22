@@ -169,7 +169,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     Meta::FieldHash fileTags = Meta::Tag::readTags( url );
     QString uid = fileTags.value( Meta::valUniqueId ).toString();
 
-    // -- the the track from the registry
+    // -- the track from the registry
     KSharedPtr<Meta::SqlTrack> metaTrack;
     metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrackFromUid( uid ) );
 

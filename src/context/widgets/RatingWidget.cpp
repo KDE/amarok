@@ -271,7 +271,7 @@ RatingWidget::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, 
     }
 
     // HACK: (this works fine, but if a better fix is found, we should replace it)
-    // Make sure that the the parent item updates itself correctly on startup.
+    // Make sure that the parent item updates itself correctly on startup.
     // We use a counter variable to prevent infinite recursion.
     if( m_startupUpdates )
     {

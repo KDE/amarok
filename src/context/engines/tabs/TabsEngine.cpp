@@ -291,7 +291,7 @@ TabsEngine::resultUltimateGuitarSearch( const KUrl &url, QByteArray data, Networ
             const QString tabUrl = subStringBetween( result, "a href=\"", "\" class", true );
             if( !tabUrl.isEmpty() )
             {
-                // fetch the the actual tab
+                // fetch the actual tab
                 const KUrl tabFetchUrl = KUrl( tabUrl );
                 The::networkAccessManager()->getData( tabFetchUrl, this,
                     SLOT( resultUltimateGuitarTab( KUrl, QByteArray, NetworkAccessManagerProxy::Error ) ) );
