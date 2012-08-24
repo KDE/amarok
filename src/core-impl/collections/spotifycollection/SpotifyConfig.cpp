@@ -82,10 +82,11 @@ SpotifyConfig::load()
     else
     {
         m_username = config.readEntry( "username", QString() );
-        m_resolverPath = config.readEntry( "resolver", QString() );
         m_password = QByteArray::fromBase64( config.readEntry( "password", QString() ).toLocal8Bit() );
     }
 
+    m_resolverPath = config.readEntry( "resolver", KStandardDirs::locateLocal( "data",
+                                     QString("amarok/%1").arg( defaultResolverName() ) ) );
     m_highQuality = config.readEntry( "highquality", false );
 }
 
@@ -120,13 +121,6 @@ SpotifyConfig::save()
         if( result != KMessageBox::No )
             config.writeEntry( "password", base64_password.toBase64() );
 
-        // Set default resolver path
-        if( m_resolverPath.isEmpty() )
-            m_resolverPath = KStandardDirs::locateLocal( "data",
-                               QString("amarok/%1").arg( defaultResolverName() ) );
-
-        config.writeEntry( "resolver", m_resolverPath );
-
         config.sync();
     }
     else
@@ -144,6 +138,12 @@ SpotifyConfig::save()
         }
     }
 
+    // Set default resolver path
+    if( m_resolverPath.isEmpty() )
+        m_resolverPath = KStandardDirs::locateLocal( "data",
+                           QString("amarok/%1").arg( defaultResolverName() ) );
+
+    config.writeEntry( "resolver", m_resolverPath );
     config.writeEntry( "highquality", m_highQuality );
 }
 
