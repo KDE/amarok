@@ -152,6 +152,9 @@ SpotifySettings::tryDownloadResolver()
 {
     DEBUG_BLOCK
 
+    if( m_config.resolverPath().isEmpty() )
+        m_config.reset();
+
     debug() << "Trying to download: " << m_config.resolverDownloadUrl();
 
     NetworkAccessManagerProxy* manager = The::networkAccessManager();
@@ -212,7 +215,7 @@ SpotifySettings::slotDownloadFinished()
                       "please check your internet connection and try again later." ) );
 
         // Don't show the settings dialog
-        deleteLater();
+        slotCancel();
         return;
     }
 
@@ -224,6 +227,7 @@ SpotifySettings::slotDownloadFinished()
     if( !file.open( QIODevice::WriteOnly ) )
     {
         KMessageBox::error( this, i18n( "Failed to open file '%1' to write." ).arg( m_config.resolverPath() ) );
+        slotCancel();
     }
     else
     {
