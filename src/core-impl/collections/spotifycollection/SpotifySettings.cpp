@@ -78,6 +78,7 @@ SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
                     i18n( "Spotify resolver" ) );
         if( res == KMessageBox::Yes )
         {
+            m_config.reset();
             tryDownloadResolver();
         }
         else
