@@ -137,7 +137,9 @@ SpotifySettings::slotTryLogin()
         controller->start();
     }
 
-    controller->login( m_configWidget->lineUsername->text(), m_configWidget->linePassword->text() );
+    controller->login( m_configWidget->lineUsername->text(),
+                       m_configWidget->linePassword->text(),
+                       m_configWidget->checkHighQuality->isChecked() );
     save();
 }
 
