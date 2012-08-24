@@ -131,20 +131,13 @@ SpotifySettings::slotTryLogin()
 
     Q_ASSERT( controller );
 
-    if( !controller->running() )
+    if( !controller->running() || !controller->loaded() )
     {
         controller->setFilePath( m_config.resolverPath() );
-        if( !controller->loaded() )
-        {
-            controller->reload();
-        }
         controller->start();
     }
-    else
-    {
-        controller->login( m_configWidget->lineUsername->text(), m_configWidget->linePassword->text() );
-    }
 
+    controller->login( m_configWidget->lineUsername->text(), m_configWidget->linePassword->text() );
     save();
 }
 
