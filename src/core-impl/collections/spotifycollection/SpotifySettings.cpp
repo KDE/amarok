@@ -241,6 +241,7 @@ SpotifySettings::slotDownloadFinished()
 
     // Notify controller to load the resolver
     Spotify::Controller* controller = The::SpotifyController();
+    controller->setFilePath( m_config.resolverPath() );
     controller->reload();
 
     // Restore widgets
