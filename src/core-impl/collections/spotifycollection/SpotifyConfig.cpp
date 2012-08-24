@@ -122,7 +122,8 @@ SpotifyConfig::save()
 
         // Set default resolver path
         if( m_resolverPath.isEmpty() )
-            m_resolverPath = KStandardDirs::locateLocal( "data", defaultResolverName() );
+            m_resolverPath = KStandardDirs::locateLocal( "data",
+                               QString("amarok/%1").arg( defaultResolverName() ) );
 
         config.writeEntry( "resolver", m_resolverPath );
 
@@ -154,7 +155,8 @@ SpotifyConfig::reset()
     m_username = "";
     m_password = "";
     // Use the the API key embedded in Spotify resolver
-    m_resolverPath = KStandardDirs::locateLocal( "data", defaultResolverName() );
+    m_resolverPath = KStandardDirs::locateLocal( "data",
+                       QString("amarok/%1").arg( defaultResolverName() ) );
     debug() << "Resolver path: " << m_resolverPath;
 }
 
