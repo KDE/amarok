@@ -249,6 +249,8 @@ SpotifySettings::slotDownloadFinished()
 
     enableButtonOk( true );
     enableButton( Default, true );
+
+    adjustSize();
 }
 
 void
