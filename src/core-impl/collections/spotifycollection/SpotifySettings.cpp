@@ -238,6 +238,10 @@ SpotifySettings::slotDownloadFinished()
         file.close();
     }
 
+    // Notify controller to load the resolver
+    Spotify::Controller* controller = The::SpotifyController();
+    controller->reload();
+
     // Restore widgets
     m_configWidget->progDownload->hide();
     m_configWidget->frameMain->show();
