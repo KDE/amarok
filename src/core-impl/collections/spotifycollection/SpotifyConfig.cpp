@@ -52,7 +52,7 @@ SpotifyConfig::load()
 {
     DEBUG_BLOCK
     debug() << "Loading Spotify config...";
-
+    reset();
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
     if( m_wallet )
@@ -66,16 +66,6 @@ SpotifyConfig::load()
         if( m_wallet->readPassword( "spotify_password" , m_password ) > 0 )
         {
             warning() << "Cannot get Spotify password from KWallet!";
-        }
-
-        QByteArray resolverPath;
-        if( m_wallet->readEntry( "spotify_resolver", resolverPath ) > 0 )
-        {
-            warning() << "Cannot get Spotify resolver path from KWallet!";
-        }
-        else
-        {
-            m_resolverPath = resolverPath;
         }
 
         QByteArray rawUsername;
@@ -132,7 +122,7 @@ SpotifyConfig::save()
 
         // Set default resolver path
         if( m_resolverPath.isEmpty() )
-            m_resolverPath = KStandardDirs::locateLocal( "exe", defaultResolverName() );
+            m_resolverPath = KStandardDirs::locateLocal( "data", defaultResolverName() );
 
         config.writeEntry( "resolver", m_resolverPath );
 
@@ -164,7 +154,7 @@ SpotifyConfig::reset()
     m_username = "";
     m_password = "";
     // Use the the API key embedded in Spotify resolver
-    m_resolverPath = KStandardDirs::locateLocal( "exe", defaultResolverName() );
+    m_resolverPath = KStandardDirs::locateLocal( "data", defaultResolverName() );
     debug() << "Resolver path: " << m_resolverPath;
 }
 
