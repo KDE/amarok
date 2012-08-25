@@ -1,4 +1,5 @@
-find_package( Nepomuk )
+macro_optional_find_package( Nepomuk )
+macro_log_feature( NEPOMUK_FOUND "Nepomuk" "Nepomuk Libraries required by Nepomuk Collection" "http://nepomuk.kde.org" FALSE "4.9" "")
 
 if( NEPOMUK_FOUND )
     include(NepomukAddOntologyClasses)

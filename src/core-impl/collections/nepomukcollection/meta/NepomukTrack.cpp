@@ -33,6 +33,7 @@ NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection *const coll )
     , m_composer( 0 )
     , m_album( 0 )
     , m_year( 0 )
+    , m_labellist()
     , m_coll( coll )
     , m_qurl( resUri )
 

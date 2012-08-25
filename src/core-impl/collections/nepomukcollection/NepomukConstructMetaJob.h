@@ -68,13 +68,6 @@ private:
      * associated QUrls. Hence their names are used as keys in the maps of genre & year
      */
 
-    QHash<QUrl, Meta::TrackPtr> m_trackHash;
-    QHash<QUrl, Meta::ArtistPtr> m_artistHash;
-    QHash<QString, Meta::GenrePtr> m_genreHash;
-    QHash<QUrl, Meta::ComposerPtr> m_composerHash;
-    QHash<QUrl, Meta::AlbumPtr> m_albumHash;
-    QHash<QUrl, Meta::LabelPtr> m_labelHash;
-    QHash<QString, Meta::YearPtr> m_yearHash;
 };
 
 }
