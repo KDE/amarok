@@ -25,12 +25,12 @@
 #include "core/meta/Meta.h"
 #include "core/capabilities/MultiPlayableCapability.h"
 
-#include <lastfm/Track.h>
-#include <lastfm/RadioStation.h>
-#include <lastfm/RadioTuner.h>
-#include <lastfm/ws.h>
-
 #include <KLocale>
+
+#include <Track.h>
+#include <RadioStation.h>
+#include <RadioTuner.h>
+#include <ws.h>
 
 class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability, public Meta::Observer
 {

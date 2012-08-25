@@ -22,9 +22,9 @@
 #include "core/meta/Meta.h"
 #include "WeightedStringList.h"
 
-#include <lastfm/User.h>
-
 #include <QAbstractItemModel>
+
+#include <User.h>
 
 class QNetworkReply;
 

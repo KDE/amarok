@@ -21,7 +21,7 @@
 #include "LastFmServiceCollection.h"
 #include "meta/LastFmMeta.h"
 
-#include <lastfm/XmlQuery.h>
+#include <XmlQuery.h>
 
 using namespace Collections;
 

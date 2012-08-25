@@ -27,9 +27,9 @@
 #include "MainWindow.h"
 #include "meta/LastFmMeta.h"
 
-#include <lastfm/Audioscrobbler.h>
-
 #include <KLocale>
+
+#include <Audioscrobbler.h>
 
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),

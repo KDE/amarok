@@ -23,14 +23,13 @@
 #include "NetworkAccessManagerProxy.h"
 #include "ui_LastFmConfigWidget.h"
 
-#include <lastfm/XmlQuery.h>
+#include <KMessageBox>
+#include <KPluginFactory>
 
 #include <QCryptographicHash>
 #include <QRegExpValidator>
 
-#include <KMessageBox>
-#include <KPluginFactory>
-
+#include <XmlQuery.h>
 
 K_PLUGIN_FACTORY( LastFmServiceSettingsFactory, registerPlugin<LastFmServiceSettings>(); )
 K_EXPORT_PLUGIN( LastFmServiceSettingsFactory( "kcm_amarok_lastfm" ) )

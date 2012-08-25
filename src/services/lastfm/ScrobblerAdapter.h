@@ -20,7 +20,7 @@
 
 #include "core/meta/Meta.h"
 
-#include <lastfm/Track.h>
+#include <Track.h>
 
 namespace lastfm
 {

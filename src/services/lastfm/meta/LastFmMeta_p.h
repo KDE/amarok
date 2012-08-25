@@ -26,11 +26,6 @@
 #include "core/statistics/StatisticsProvider.h"
 #include "core-impl/statistics/providers/tag/TagStatisticsProvider.h"
 
-#include <lastfm/Track.h>
-#include <lastfm/ws.h>
-#include <lastfm/RadioTuner.h>
-#include <lastfm/XmlQuery.h>
-
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <KStandardDirs>
@@ -41,7 +36,10 @@
 #include <QPixmap>
 #include <QStringList>
 
-
+#include <Track.h>
+#include <ws.h>
+#include <RadioTuner.h>
+#include <XmlQuery.h>
 
 namespace LastFm
 {

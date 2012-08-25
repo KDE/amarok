@@ -25,12 +25,12 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "AmarokMimeData.h"
 
-#include <lastfm/Tag.h>
-#include <lastfm/XmlQuery.h>
-
 #include <KIcon>
 
 #include <QPainter>
+
+#include <Tag.h>
+#include <XmlQuery.h>
 
 using namespace LastFm;
 

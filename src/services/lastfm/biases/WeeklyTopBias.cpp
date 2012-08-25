@@ -31,7 +31,7 @@
 #include <QVBoxLayout>
 #include <QXmlStreamReader>
 
-#include <lastfm/XmlQuery.h>
+#include <XmlQuery.h>
 
 QString
 Dynamic::WeeklyTopBiasFactory::i18nName() const

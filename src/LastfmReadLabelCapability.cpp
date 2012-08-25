@@ -16,14 +16,14 @@
 
 #include "LastfmReadLabelCapability.h"
 
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 
 #include <QMap>
 #include <QNetworkReply>
 
-#include <lastfm/XmlQuery.h>
-#include "core/support/Amarok.h"
+#include <XmlQuery.h>
 
 namespace Capabilities
 {

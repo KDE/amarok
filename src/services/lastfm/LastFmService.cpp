@@ -38,8 +38,6 @@
 #include "meta/LastFmMeta.h"
 #include "widgets/SearchWidget.h"
 
-#include <lastfm/XmlQuery.h>
-
 #include <KLineEdit>
 #include <KStandardDirs>
 
@@ -48,6 +46,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTextDocument>        //Qt::escape
+
+#include <XmlQuery.h>
 
 AMAROK_EXPORT_SERVICE_PLUGIN( lastfm, LastFmServiceFactory )
 

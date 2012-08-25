@@ -28,8 +28,8 @@
 #include <QVBoxLayout>
 #include <QXmlStreamReader>
 
-#include <lastfm/Artist.h>
-#include <lastfm/ws.h>
+#include <Artist.h>
+#include <ws.h>
 
 QString
 Dynamic::LastFmBiasFactory::i18nName() const
