@@ -179,7 +179,7 @@ public:
      * This call is mandatory for LikeBack to work.
      * @param hostName   The server host name to contact when sending comments. For instance "myapp.kde.org".
      * @param remotePath The path to the send script on the server. For instance, "/likeback/send.php".
-     * @param hostPort   Optionnal port used to contact the server using the HTTP protocol. By default, it is port 80.
+     * @param hostPort   Optional port used to contact the server using the HTTP protocol. By default, it is port 80.
      */
     void setServer(const QString &hostName, const QString &remotePath, quint16 hostPort = 80);
 
@@ -312,7 +312,7 @@ private slots:
 public slots:
 
     /**
-     * Explicitely set if the floating button-bar should be shown or not.
+     * Explicitly set if the floating button-bar should be shown or not.
      * Tehorically, this choice should only be left to the user,
      * and to the developers for the default value, already provided in the constructor.
      */

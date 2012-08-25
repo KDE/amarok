@@ -778,7 +778,7 @@ WikipediaEnginePrivate::wikiParse( QString &wiki )
         }
     }
 
-    { // remove protection policy (we dont't do edits)
+    { // remove protection policy (we don't do edits)
         const QString protec = QLatin1String("<div><a href=\"/wiki/Wikipedia:Protection_policy") ;
         const QString protecEnd = QLatin1String("</a></div>") ;
         const int protecEndSize = protecEnd.size();

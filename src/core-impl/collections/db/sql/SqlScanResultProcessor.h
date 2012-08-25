@@ -99,7 +99,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlScanResultProcessor : public ScanResu
          * Directory id has changed from @param oldDirId to @param newDirId without
          * actual change in the absolute directory path or contents. Try to relocate
          * tracks to the new directory, updating necessary fields.
-         * @return true if all tracks were sucessfully relocated and the old dir can be
+         * @return true if all tracks were successfully relocated and the old dir can be
          * deleted without losses, false otherwise.
          */
         bool relocateTracksToNewDirectory( int oldDirId, int newDirId );

@@ -48,7 +48,7 @@ namespace Amarok
             /**
              * Return string representation of a filetype.
              *
-             * WARNING: the return string is only partially localized currenty
+             * WARNING: the return string is only partially localized currently
              * TODO: rename to toLocalizedString() and localise all filetypes
              */
             static QString toString( Amarok::FileType ft );

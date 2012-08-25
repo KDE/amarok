@@ -233,14 +233,14 @@ GpodderProvider::addPlaylist( Playlists::PlaylistPtr playlist )
         if( !GpodderPodcastChannelPtr::dynamicCast( playlist ) )
         {
             //The service will try to subscribe this podcast in gpodder.net in
-            //the next synchronisation
+            //the next synchronization
             QUrl url = QUrl( slave->url().url() );
             m_removeList.removeAll( url );
             m_addList << url;
         }
     }
 
-    //Create a playlist synchronisation between master and slave
+    //Create a playlist synchronization between master and slave
     The::playlistManager()->setupSync( Playlists::PlaylistPtr::dynamicCast( master ),
                                        Playlists::PlaylistPtr::dynamicCast( slave )
                                        );
@@ -408,7 +408,7 @@ GpodderProvider::slotRemoveChannels()
         removeChannel( channel->url().url() );
 
         //The service will try to unsubscribe this podcast from gpodder.net
-        //in the next synchronisation
+        //in the next synchronization
         m_removeList << channel->url();
     }
 }
@@ -439,7 +439,7 @@ GpodderProvider::slotSyncPlaylistRemoved( Playlists::PlaylistPtr playlist )
             removeChannel( tempChannel->url().url() );
 
             //The service will try to unsubscribe this podcast from gpodder.net
-            //in the next synchronisation
+            //in the next synchronization
             m_removeList << tempChannel->url();
             m_timerSynchronizeSubscriptions->start( 60000 );
             return;
@@ -475,7 +475,7 @@ void GpodderProvider::synchronizeStatus()
                 m_apiRequest->uploadEpisodeActions( m_username,
                                                     m_uploadEpisodeStatusMap.values() );
 
-        //Only clear m_episodeStatusList if the synchronisation with gpodder.net really worked
+        //Only clear m_episodeStatusList if the synchronization with gpodder.net really worked
         connect( m_episodeActionsResult.data(), SIGNAL(finished()),
                  SLOT(slotSuccessfulStatusSynchronisation()) );
         connect( m_episodeActionsResult.data(),
@@ -512,7 +512,7 @@ void GpodderProvider::synchronizeStatusParseError()
 
     QTimer::singleShot( 20000, this, SLOT(timerSynchronizeStatus()) );
 
-    debug() << "synchronizeStatus [Status Synchronisation] - Parse error";
+    debug() << "synchronizeStatus [Status Synchronization] - Parse error";
 }
 
 void GpodderProvider::synchronizeStatusRequestError(QNetworkReply::NetworkError error)
@@ -521,7 +521,7 @@ void GpodderProvider::synchronizeStatusRequestError(QNetworkReply::NetworkError 
 
     QTimer::singleShot( 20000, this, SLOT(timerSynchronizeStatus()) );
 
-    debug() << "synchronizeStatus [Status Synchronisation] - Request error nr.: " << error;
+    debug() << "synchronizeStatus [Status Synchronization] - Request error nr.: " << error;
 }
 
 void
@@ -540,7 +540,7 @@ GpodderProvider::synchronizeSubscriptions()
         m_addRemoveResult =
                 m_apiRequest->addRemoveSubscriptions( m_username, m_deviceName, m_addList, m_removeList );
 
-        //Only clear m_addList and m_removeList if the synchronisation with gpodder.net really worked
+        //Only clear m_addList and m_removeList if the synchronization with gpodder.net really worked
         connect( m_addRemoveResult.data(), SIGNAL(finished()), this,
                  SLOT(slotSuccessfulSubscriptionSynchronisation()) );
 
@@ -779,7 +779,7 @@ GpodderProvider::continueDeviceUpdatesFinished()
         if( !master )
             master =  The::playlistManager()->defaultPodcasts()->addChannel( slave );
 
-        //Create a playlist synchronisation between master and slave
+        //Create a playlist synchronization between master and slave
         The::playlistManager()->setupSync( Playlists::PlaylistPtr::dynamicCast( master ),
                                            Playlists::PlaylistPtr::dynamicCast( slave )
                                            );
@@ -795,7 +795,7 @@ GpodderProvider::deviceUpdatesParseError()
 
     QTimer::singleShot( 10000, this, SLOT(requestDeviceUpdates()) );
 
-    debug() << "deviceUpdates [Subscription Synchronisation] - Parse error";
+    debug() << "deviceUpdates [Subscription Synchronization] - Parse error";
     Amarok::Components::logger()->shortMessage( i18n( "GPodder Service failed to get data from the server. Will retry in 10 seconds..." ) );
 }
 
@@ -806,7 +806,7 @@ GpodderProvider::deviceUpdatesRequestError( QNetworkReply::NetworkError error )
 
     QTimer::singleShot( 10000, this, SLOT(requestDeviceUpdates()) );
 
-    debug() << "deviceUpdates [Subscription Synchronisation] - Request error nr.: " << error;
+    debug() << "deviceUpdates [Subscription Synchronization] - Request error nr.: " << error;
     Amarok::Components::logger()->shortMessage( i18n( "GPodder Service failed to get data from the server. Will retry in 10 seconds..." ) );
 }
 
@@ -943,7 +943,7 @@ GpodderProvider::episodeActionsInCascadeParseError()
     //at the end of the list. In order to be synced later on.
     m_channelsToRequestActions.enqueue( m_channelsToRequestActions.dequeue() );
 
-    debug() << "episodeActionsInCascade [Status Synchronisation] - Parse Error";
+    debug() << "episodeActionsInCascade [Status Synchronization] - Parse Error";
 }
 
 void
@@ -956,7 +956,7 @@ GpodderProvider::episodeActionsInCascadeRequestError( QNetworkReply::NetworkErro
     //at the end of the list. In order to be synced later on.
     m_channelsToRequestActions.enqueue( m_channelsToRequestActions.dequeue() );
 
-    debug() << "episodeActionsInCascade [Status Synchronisation] - Request error nr.: " << error;
+    debug() << "episodeActionsInCascade [Status Synchronization] - Request error nr.: " << error;
 }
 
 void

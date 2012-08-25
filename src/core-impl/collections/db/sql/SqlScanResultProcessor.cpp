@@ -150,8 +150,8 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     if( m_foundTracks.contains( uid ) )
     {
         const UrlEntry old = m_urlsCache.value( m_uidCache.value( uid ) );
-        QString text = QString( "When commiting track %1 with uid %2 we detected that the "
-                "same uid is already commited. This means that you most probably have "
+        QString text = QString( "When committing track %1 with uid %2 we detected that the "
+                "same uid is already committed. This means that you most probably have "
                 "duplicates in your collection folders. The offending track is %3." ).arg(
                 track->path(), uid, old.path );
         warning() << "commitTrack():" << text.toLocal8Bit().data();

@@ -123,7 +123,7 @@
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Press this button to save your preferred settings, and log on to Amazon Store using the provded data:</string>
+         <string>Press this button to save your preferred settings, and log on to Amazon Store using the provided data:</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
