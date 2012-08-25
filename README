@@ -117,6 +117,9 @@ Optional
         * libvorbis (NOT just "vorbis")
         * wmav2
 
+    * CD support requires:
+      * audiocd-kio - http://www.kde.org/ (part of KDE multimedia)
+
     * Building tests require:
       * gmock 1.4 (or newer) - http://code.google.com/p/googlemock/
 
