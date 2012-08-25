@@ -18,7 +18,7 @@
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/EditCapability.h"
-#include "core/capabilities/LastFmCapability.h"
+#include "core/capabilities/MultiSourceCapability.h"
 #include "core/interfaces/MetaCapability.h"
 
 #include <qtest_kde.h>
@@ -91,7 +91,7 @@ TestMetaCapability::testHas()
 
     // these should not
     QVERIFY( metaCapability->has<Capabilities::EditCapability>() == false );
-    QVERIFY( metaCapability->has<Capabilities::LastFmCapability>() == false );
+    QVERIFY( metaCapability->has<Capabilities::MultiSourceCapability>() == false );
 }
 
 void
@@ -107,5 +107,5 @@ TestMetaCapability::testCreate()
 
     // these should not
     QVERIFY( metaCapability->create<Capabilities::EditCapability>() == 0 );
-    QVERIFY( metaCapability->create<Capabilities::LastFmCapability>() == 0 );
+    QVERIFY( metaCapability->create<Capabilities::MultiSourceCapability>() == 0 );
 }

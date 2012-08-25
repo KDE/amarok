@@ -19,8 +19,6 @@
 #include "LastFmMeta.h"
 #include "LastFmMeta_p.h"
 #include "LastFmMeta_p.moc"
-#include "LastFmCapabilityImpl_p.h"
-#include "LastFmCapabilityImpl_p.moc"
 #include "MultiPlayableCapabilityImpl_p.h"
 #include "MultiPlayableCapabilityImpl_p.moc"
 
@@ -494,18 +492,17 @@ Track::slotWsReply()
         //debug() << "successfully completed WS transaction";
     } else
     {
-        debug() << "ERROR in last.fm skip or ban!" << d->wsReply->error();
+        debug() << "ERROR in last.fm ban!" << d->wsReply->error();
     }
 }
 
 bool
 Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return type == Capabilities::Capability::LastFm
-                || type == Capabilities::Capability::MultiPlayable
-                || type == Capabilities::Capability::SourceInfo
-                || type == Capabilities::Capability::Actions
-                || type == Capabilities::Capability::StreamInfo;
+    return type == Capabilities::Capability::MultiPlayable ||
+           type == Capabilities::Capability::SourceInfo ||
+           type == Capabilities::Capability::Actions ||
+           type == Capabilities::Capability::StreamInfo;
 }
 
 Capabilities::Capability*
@@ -513,8 +510,6 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Capabilities::Capability::LastFm:
-            return new LastFmCapabilityImpl( this );
         case Capabilities::Capability::MultiPlayable:
             return new MultiPlayableCapabilityImpl( this );
         case Capabilities::Capability::SourceInfo:

@@ -38,7 +38,6 @@ set(libcore_capabilities_SRCS
     capabilities/CollectionImportCapability.cpp
     capabilities/EditCapability.cpp
     capabilities/FindInSourceCapability.cpp
-    capabilities/LastFmCapability.cpp
     capabilities/MultiPlayableCapability.cpp
     capabilities/MultiSourceCapability.cpp
     capabilities/OrganiseCapability.cpp

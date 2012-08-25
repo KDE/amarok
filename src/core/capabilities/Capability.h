@@ -41,7 +41,7 @@ namespace Capabilities
             //add additional capabilities here
             enum Type { Unknown = 0
                         , Editable = 1
-                        , LastFm = 2
+                        // not longer used
                         , Buyable = 3
                         , Actions = 4
                         , EditablePlaylist = 5
