@@ -44,7 +44,7 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
         {
             Meta::TrackPtr trackptr( track );
             subscribeTo( trackptr );
-            
+
             connect( track, SIGNAL( skipTrack() ), this, SLOT( skip() ) );
             connect( The::mainWindow(), SIGNAL( skipTrack() ), SLOT( skip() ) );
         }
@@ -102,18 +102,18 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
             //KUrl url = m_track->playableUrl();
             //emit playableUrlFetched( url );
         }
-        
+
         void error( lastfm::ws::Error e )
         {
             if( e == lastfm::ws::SubscribersOnly || e == lastfm::ws::AuthenticationFailed )
             {   // last.fm is returning an AuthenticationFailed message when the user is not a subscriber, even if the credentials are OK
-                Amarok::Components::logger()->shortMessage(
-                    i18n( "To listen to this stream you need to be a paying Last.fm subscriber. " \
+                Amarok::Components::logger()->longMessage(
+                    i18n( "To listen to this stream you need to be a paying Last.fm subscriber. "
                           "All the other Last.fm features are unaffected." ) );
             }
             else
             {
-                Amarok::Components::logger()->shortMessage(
+                Amarok::Components::logger()->longMessage(
                             i18n( "Error starting track from Last.fm radio" ) );
             }
         }
@@ -123,7 +123,6 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
         KUrl m_url;
         LastFm::TrackPtr m_track;
 
-        
         lastfm::Track m_currentTrack;
         lastfm::RadioTuner* m_tuner;
 };
