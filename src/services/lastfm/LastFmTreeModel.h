@@ -23,6 +23,7 @@
 #include "WeightedStringList.h"
 
 #include <QAbstractItemModel>
+#include <QPixmap>
 
 #include <User.h>
 
