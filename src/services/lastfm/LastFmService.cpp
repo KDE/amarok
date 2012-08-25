@@ -550,19 +550,6 @@ LastFmService::ban()
         lastfmTrack->ban();
 }
 
-
-void
-LastFmService::skip()
-{
-    DEBUG_BLOCK
-
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
-    if( lastfmTrack )
-        lastfmTrack->skip();
-}
-
-
 LastFmService *LastFmService::ms_service = 0;
 
 

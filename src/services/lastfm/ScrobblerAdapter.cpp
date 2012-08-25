@@ -179,17 +179,6 @@ ScrobblerAdapter::trackPositionChanged( qint64 position, bool userSeek )
     //debug() << "userSeek" << userSeek << "position:" << position << "m_lastPosition" << m_lastPosition << "m_totalPlayed" << m_totalPlayed;
 }
 
-
-void
-ScrobblerAdapter::skip()
-{
-    DEBUG_BLOCK
-
-    // NOTE doesn't exist in 1.2.1 lib... find replacement
-    //m_current.setRatingFlag( Track::Skipped );
-}
-
-
 void
 ScrobblerAdapter::love()
 {

@@ -44,9 +44,6 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
         {
             Meta::TrackPtr trackptr( track );
             subscribeTo( trackptr );
-
-            connect( track, SIGNAL( skipTrack() ), this, SLOT( skip() ) );
-            connect( The::mainWindow(), SIGNAL( skipTrack() ), SLOT( skip() ) );
         }
 
         virtual ~MultiPlayableCapabilityImpl() 
@@ -93,14 +90,6 @@ class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability
                 m_currentTrack = m_tuner->takeNextTrack();
                 m_track->setTrackInfo( m_currentTrack );
             }
-        }
-
-        virtual void skip()
-        {
-            fetchNext();
-            // now we force a new signal to be emitted to kick the enginecontroller to moving on
-            //KUrl url = m_track->playableUrl();
-            //emit playableUrlFetched( url );
         }
 
         void error( lastfm::ws::Error e )

@@ -80,7 +80,6 @@ public:
 
 private slots:
     void love();
-    void skip();
     void ban();
 
     void playCustomStation();

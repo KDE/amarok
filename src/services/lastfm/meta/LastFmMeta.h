@@ -106,14 +106,11 @@ namespace LastFm
         public slots:
             void love();
             void ban();
-            void skip();
 
         private slots:
             void slotResultReady();
             void slotWsReply();
 
-        signals:
-            void skipTrack(); // needed for communication with multiplayablecapability
         private:
             void init( int id = -1 );
             //use a d-pointer because some code is going to work directly with LastFm::Track

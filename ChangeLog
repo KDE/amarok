@@ -6,6 +6,7 @@ VERSION 2.7-Beta 1
   FEATURES:
 
   CHANGES:
+    * Last.fm Skip button removed; Last.fm API no longer provides it. (BR 305576)
     * Optional liblastfm dependency raised to 1.0.0. (BR 302597)
     * Add composer button to wikipedia applet (BR 272982)
 

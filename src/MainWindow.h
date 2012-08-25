@@ -116,7 +116,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
     signals:
         void loveTrack( Meta::TrackPtr track );
         void banTrack();
-        void skipTrack();
         void switchQueueStateShortcut();
 
     public slots:

@@ -35,7 +35,6 @@ public:
     ScrobblerAdapter( QObject *parent, const QString &clientId );
     virtual ~ScrobblerAdapter();
 
-    void skip();
     void love();
     void ban();
 
