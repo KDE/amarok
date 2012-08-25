@@ -111,7 +111,7 @@ Playlist::StandardTrackNavigator::chooseNextTrack( bool repeatPlaylist )
     if( !playableTrackFound && repeatPlaylist )
     {
         //nextRow=0; This row is still invalid if 'rowCount() == 0'.
-        for( nextRow = 0 ; nextRow < m_model->activeRow() ; nextRow++)
+        for( nextRow = 0 ; nextRow <= m_model->activeRow() ; nextRow++)
         {
             track = m_model->trackAt( nextRow );
             if( track->isPlayable() )
