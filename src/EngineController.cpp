@@ -361,7 +361,7 @@ EngineController::play( Meta::TrackPtr track, uint offset )
     // clear the current track without sending playbackEnded or trackChangeNotify yet
     stop( /* forceInstant */ true, /* playingWillContinue */ true );
 
-    // we grant excluve access to setting new m_currentTrack to newTrackPlaying()
+    // we grant exclusive access to setting new m_currentTrack to newTrackPlaying()
     m_nextTrack = track;
     debug() << "play: bounded is "<<m_boundedPlayback<<"current"<<track->name();
     m_boundedPlayback = track->create<Capabilities::BoundedPlaybackCapability>();
