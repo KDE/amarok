@@ -1,11 +1,46 @@
 Stuff to do for the context view:
 =================================
 
-Wikipedia:
+Level 0 (must-have items):
+--------------------------
 
- * Get the ability to set wikipedia's language
- * Add buttons for artist/album/song switch
- * Make icons for artist, album, song (for the switcher), 75% transparent
- * (eventually evaluate the fact of moving away from icons)
- * Open up links in an external browser
+This set of items must be implemented before any merge is done.
+
+ + Lyrics
+ - Wikipedia
+    * Get the ability to set wikipedia's language
+    * Add buttons for artist/album/song switch
+    * Make icons for artist, album, song (for the switcher), 75% transparent
+    * (eventually evaluate the fact of moving away from icons)
+    * Open up links in an external browser
+
+ - Labels
+ - Current song info
+ - Similar artists
+
+
+Level 1 (must-release items):
+----------------------------
+
+These items are blockers for a release, but it's not a big deal if they get in
+during the development.
+
+ - Photos
+ - Tabs
+ - ...?
+
+Level 2 (maybe items):
+----------------------
+
+This set would contain the applets which don't really work well and are
+definitely marginal, which get in the main UI only if a good interaction
+paradigm is found. Nice to have, but nobody will cry if they're missing.
+
+ - Events
+ - Videos
+ - Visualization
+ - ...?
+
+
+
 
