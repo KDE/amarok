@@ -42,6 +42,7 @@
 
 using namespace Meta;
 using namespace Collections;
+using namespace Soprano;
 
 NepomukConstructMetaJob::NepomukConstructMetaJob( NepomukCollection *coll )
     : Job()
@@ -61,7 +62,13 @@ NepomukConstructMetaJob::run()
 {
     if( !m_aborted )
     {
-        Soprano::Model *model = Nepomuk::ResourceManager::instance()->mainModel();
+        Model *model = Nepomuk::ResourceManager::instance()->mainModel();
+
+        // a simple query to calculate the number of tracks.
+        QString countQuery = QString::fromLatin1("select count(distinct ?r) where { ?r a nmm:MusicPiece . }");
+        QueryResultIterator its = model->executeQuery( countQuery,
+                                                       Query::QueryLanguageSparql );
+        int totalTracks = its.binding(0).toString().toInt();
 
         QString query
                 = QString::fromLatin1( "select distinct ?r ?title ?url ?artist ?composer ?album ?genre "
@@ -139,8 +146,11 @@ NepomukConstructMetaJob::run()
                                        "}"
                                        "}" );
 
-        Soprano::QueryResultIterator it = model->executeQuery( query,
-                                                               Soprano::Query::QueryLanguageSparql );
+        QueryResultIterator it = model->executeQuery( query, Query::QueryLanguageSparql );
+        QString operationText = i18n( "Updating Nepomuk Collection" );
+        Amarok::Components::logger()->newProgressOperation( this, operationText,
+                                                            totalTracks, this,
+                                                            SLOT( abort() ) );
 
         MemoryMeta::MapChanger mapChanger( m_mc.data() );
         while( it.next() & !m_aborted )
@@ -239,9 +249,9 @@ NepomukConstructMetaJob::run()
             NepomukLabelPtr nepLabelPtr;
             QString tagQuery = QString( "select ?tagUri ?tag where "
                                         "{ %1 nao:hasTag ?tagUri . ?tagUri nao:identifier ?tag . }"
-                                        ).arg( Soprano::Node::resourceToN3( trackResUri ) );
-            Soprano::QueryResultIterator its
-                    = model->executeQuery( tagQuery, Soprano::Query::QueryLanguageSparql );
+                                        ).arg( Node::resourceToN3( trackResUri ) );
+            QueryResultIterator its
+                    = model->executeQuery( tagQuery, Query::QueryLanguageSparql );
             while( its.next() )
             {
                 QString label = its.binding( "tag" ).toString();
@@ -269,9 +279,6 @@ NepomukConstructMetaJob::run()
             // cast it and assign it to the MapChanger where it weilds its own magic.
             TrackPtr trackPtr =  TrackPtr::staticCast( nepTrackPtr );
             mapChanger.addTrack( trackPtr );
-            Amarok::Components::logger()->newProgressOperation( this,
-                                                                i18n( "Updating : %1",
-                                                                      trackPtr->prettyName() ) );
 
             emit incrementProgress();
         }
