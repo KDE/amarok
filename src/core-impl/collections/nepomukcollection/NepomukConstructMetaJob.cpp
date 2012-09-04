@@ -151,7 +151,6 @@ NepomukConstructMetaJob::run()
         Amarok::Components::logger()->newProgressOperation( this, operationText,
                                                             totalTracks, this,
                                                             SLOT( abort() ) );
-
         MemoryMeta::MapChanger mapChanger( m_mc.data() );
         while( it.next() & !m_aborted )
         {
