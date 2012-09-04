@@ -55,19 +55,6 @@ private:
     QSharedPointer<Collections::MemoryCollection> m_mc;
     bool m_aborted;
     NepomukCollection *m_coll;
-
-    /** These hash maps are used to store each of the {meta}Ptr so that duplicate {meta}
-     * object are not created. In then end, each artist, album, genre, composer and track
-     * will have only one corresponding Nepomuk{meta} Object.
-     *
-     * For the composition of the maps, we could have used
-     * <Q*, Nepomuk{meta}Ptr
-     * but that will result in a cyclic dependency hell.
-     *
-     * Genre and year are properties in Nepomuk and not classes and hence do not possess
-     * associated QUrls. Hence their names are used as keys in the maps of genre & year
-     */
-
 };
 
 }
