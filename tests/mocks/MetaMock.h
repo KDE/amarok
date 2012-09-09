@@ -31,7 +31,7 @@
 class MetaMock : public Meta::Track
 {
 public:
-    MetaMock( const QVariantMap &data ) : Meta::Track(), m_data( data ) {}
+    MetaMock( const QVariantMap &data ) : Meta::Track(), m_data( data ), m_labels( Meta::LabelList() ) {}
     virtual ~MetaMock() {}
 
     Meta::AlbumPtr album() const { return m_album; }
@@ -65,6 +65,8 @@ public:
     int rating() const { return m_data.value( Meta::Field::RATING ).toInt(); }
     void setRating( int newRating ) { Q_UNUSED( newRating ); }
 
+    Meta::LabelList labels() const { return m_labels; }
+
 public:
     QVariantMap m_data;
     Meta::ArtistPtr m_artist;
@@ -72,6 +74,7 @@ public:
     Meta::GenrePtr m_genre;
     Meta::YearPtr m_year;
     Meta::ComposerPtr m_composer;
+    Meta::LabelList m_labels;
 };
 
 class MockYear : public Meta::Year
@@ -136,14 +139,28 @@ class MockAlbum : public Meta::Album
 public:
     MockAlbum( const QString &name )
         : Meta::Album()
-        , m_name( name ) {}
+        , m_name( name )
+        , m_albumArtist( Meta::ArtistPtr() ) {}
 
     QString name() const { return m_name; }
     QString prettyName() const { return m_name; }
     Meta::TrackList tracks() { return Meta::TrackList(); }
-    bool hasAlbumArtist() const { return false; }
-    Meta::ArtistPtr albumArtist() const { return Meta::ArtistPtr(); }
+    bool hasAlbumArtist() const { return ( m_albumArtist ) ? true : false; }
+    Meta::ArtistPtr albumArtist() const { return m_albumArtist; }
     bool isCompilation() const { return !hasAlbumArtist(); }
+
+    QString m_name;
+    Meta::ArtistPtr m_albumArtist;
+};
+
+class MockLabel : public Meta::Label
+{
+    public:
+        MockLabel( const QString &name )
+            : Meta::Label()
+            , m_name( name ) {}
+
+    QString name() const { return m_name; }
 
     QString m_name;
 };

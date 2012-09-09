@@ -21,3 +21,8 @@ set( testprivatemetaregistry_SRCS TestPrivateMetaRegistry.cpp )
 kde4_add_unit_test( testprivatemetaregistry ${testprivatemetaregistry_SRCS} )
 target_link_libraries( testprivatemetaregistry ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarokcore amaroklib )
 
+#------------------------ Test MetaConstants -----------------------------
+
+set( testmetaconstants_SRCS TestMetaConstants.cpp ../../../../shared/FileType.cpp )
+kde4_add_unit_test( testmetaconstants ${testmetaconstants_SRCS} )
+target_link_libraries( testmetaconstants ${KDE4_KDECORE_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} amarokcore amaroklib )
