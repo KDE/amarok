@@ -137,13 +137,14 @@ double
 NepomukTrack::score() const
 {
     // TODO
-    return double( 0 );
+    return 0;
 }
 
 void
 NepomukTrack::setScore( double newScore )
 {
-    debug() << "Nepomuk Collection, setScore" << newScore;
+    // TODO
+    // Nepomuk is yet to have a concept of scores
 }
 
 int
@@ -205,14 +206,13 @@ int
 NepomukTrack::discNumber() const
 {
     //TODO
-    return int( 1 );
+    return 0;
 
 }
 
 int
 NepomukTrack::playCount() const
 {
-    // ask vHanda
     return m_resource.usageCount();
 }
 
@@ -387,9 +387,13 @@ NepomukTrack::replayGain( ReplayGainTag mode ) const
         break;
     case 2 :
         gain = m_albumGain;
+        if ( gain == 0 )
+            gain = m_trackGain;
         break;
     case 3 :
         gain = m_albumPeakGain;
+        if ( gain == 0 )
+            gain = m_trackPeakGain;
         break;
     }
 
