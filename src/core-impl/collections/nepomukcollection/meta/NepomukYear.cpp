@@ -30,17 +30,11 @@ NepomukYear::NepomukYear( const QString &name )
 TrackList
 NepomukYear::tracks()
 {
-    return m_tracks;
+    return TrackList();
 }
 
 QString
 NepomukYear::name() const
 {
     return m_name;
-}
-
-void
-NepomukYear::addTrack( const TrackPtr trackPtr )
-{
-    m_tracks.append( trackPtr );
 }
