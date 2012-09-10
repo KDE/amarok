@@ -30,17 +30,11 @@ NepomukGenre::NepomukGenre( const QString &name )
 TrackList
 NepomukGenre::tracks()
 {
-    return m_tracks;
+    return TrackList();
 }
 
 QString
 NepomukGenre::name() const
 {
     return m_name;
-}
-
-void
-NepomukGenre::addTrack( const TrackPtr trackPtr )
-{
-    m_tracks.append( trackPtr );
 }
