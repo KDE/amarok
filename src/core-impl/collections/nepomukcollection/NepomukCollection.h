@@ -32,6 +32,9 @@ class NepomukConstructMetaJob;
 /**
   * NepomukCollection is a plugin to use Nepomuk as a backend instead of the SQL
   * collection that Amarok uses as default.
+  * Until the NepomukCollection is feature complete and easy to use, it shall run
+  * along with the existing SQL Collection.
+  * However, the goal of the plugin remains to replace the SQL Collection.
   * Nepomuk indexes all data on the machine and categorises them.
   * So, it is easy to retrieve all resources of type 'music' and use them in Amarok
   * Nepomuk helps establish a common backend in a KDE environment, which has its own
@@ -54,9 +57,6 @@ class NepomukCollection : public Collection
 public:
     /**
       * The entry point of Nepomuk Collection.
-      * It checks if Nepomuk enabled and if it is not, pops a warning to the user
-      * The constructor also constructs the {Meta}Maps which will be used
-      * for all queries later on.
       */
     NepomukCollection();
     virtual ~NepomukCollection();
