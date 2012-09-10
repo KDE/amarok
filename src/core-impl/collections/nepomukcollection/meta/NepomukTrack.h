@@ -46,7 +46,7 @@ class NepomukTrack : public Track
 {
 public:
     // construct a NepomukTrack out of a Nepomuk resource
-    NepomukTrack( const QUrl &resUri, NepomukCollection *const coll );
+    NepomukTrack( const QUrl &resUri, NepomukCollection *coll );
     // construct a NepomukTrack out of a url
 
     ~NepomukTrack();

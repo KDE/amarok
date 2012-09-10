@@ -26,7 +26,7 @@
 
 using namespace Meta;
 
-NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection *const coll )
+NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection *coll )
     : Track()
     , m_artist( 0 )
     , m_genre( 0 )
@@ -218,55 +218,30 @@ NepomukTrack::type() const
 void
 NepomukTrack::setArtist( NepomukArtistPtr artist )
 {
-    //TODO
-    // if artist is already present, remove the track and then add
-    // check MemoryMeta::Artist::setArtist for inspiration
-    if( artist )
-        artist->addTrack( TrackPtr( this ) );
     m_artist = Meta::ArtistPtr::staticCast( artist );
 }
 
 void
 NepomukTrack::setComposer( NepomukComposerPtr composer )
 {
-    //TODO
-    // if composer is already present, remove the track and then add
-    // check MemoryMeta::Composer::setComposer for inspiration
-    if( composer )
-        composer->addTrack( TrackPtr( this ) );
     m_composer = Meta::ComposerPtr::staticCast( composer );
 }
 
 void
 NepomukTrack::setGenre( NepomukGenrePtr genre )
 {
-    //TODO
-    // if genre is already present, remove the track and then add
-    // check MemoryMeta::Genre::setGenre for inspiration
-    if( genre )
-        genre->addTrack( TrackPtr( this ) );
     m_genre = Meta::GenrePtr::staticCast( genre );
 }
 
 void
 NepomukTrack::setAlbum( NepomukAlbumPtr album )
 {
-    //TODO
-    // if album is already present, remove the track and then add
-    // check MemoryMeta::Album::setAlbum for inspiration
-    if( album )
-        album->addTrack( TrackPtr( this ) );
     m_album = Meta::AlbumPtr::staticCast( album );
 }
 
 void
 NepomukTrack::setYear( NepomukYearPtr year )
 {
-    //TODO
-    // if year is already present, remove the track and then add
-    // check MemoryMeta::Year::setYear for inspiration
-    if( year )
-        year->addTrack( TrackPtr( this ) );
     m_year = Meta::YearPtr::staticCast( year );
 }
 
