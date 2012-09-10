@@ -78,7 +78,7 @@ NepomukCollection::collectionId() const
 QString
 NepomukCollection::prettyName() const
 {
-   return i18n( "Nepomuk Collection" );
+    return i18n( "Nepomuk Collection" );
 }
 
 KIcon
