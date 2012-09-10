@@ -76,7 +76,7 @@ QString
 NepomukTrack::prettyUrl() const
 {
     // check if path() or prettyUrl() should be used
-    return m_playableUrl.prettyUrl();
+    return m_playableUrl.path();
 }
 
 QString
