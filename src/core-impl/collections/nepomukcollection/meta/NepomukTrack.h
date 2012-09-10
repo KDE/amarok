@@ -52,7 +52,6 @@ public:
     ~NepomukTrack();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
     virtual KUrl playableUrl() const;
     virtual QString prettyUrl() const;
     virtual QString uidUrl() const;

@@ -58,18 +58,10 @@ NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection *coll )
 
 NepomukTrack::~NepomukTrack()
 {
-    // TODO
 }
 
 QString
 NepomukTrack::name() const
-{
-    return m_name;
-}
-
-
-QString
-NepomukTrack::prettyName() const
 {
     return m_name;
 }
