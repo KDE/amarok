@@ -35,10 +35,8 @@ NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection *coll )
     , m_year( 0 )
     , m_labellist()
     , m_coll( coll )
-    , m_qurl( resUri )
-
 {
-    m_resource = Nepomuk::Resource( m_qurl );
+    m_resource = Nepomuk::Resource( resUri );
 }
 
 NepomukTrack::~NepomukTrack()
@@ -62,26 +60,26 @@ NepomukTrack::prettyName() const
 KUrl
 NepomukTrack::playableUrl() const
 {
-    return m_kurl;
+    return m_playableUrl;
 }
 
 QString
 NepomukTrack::prettyUrl() const
 {
     // check if path() or prettyUrl() should be used
-    return m_kurl.prettyUrl();
+    return m_playableUrl.prettyUrl();
 }
 
 QString
 NepomukTrack::uidUrl() const
 {
-    return m_qurl.toString();
+    return m_uidUrl;
 }
 
 bool
 NepomukTrack::isPlayable() const
 {
-    return m_kurl.isValid();
+    return m_playableUrl.isValid();
 }
 
 AlbumPtr
@@ -288,13 +286,13 @@ NepomukTrack::setDiscNumber( const int discNumber )
 }
 
 void
-NepomukTrack::setModifyDate( const QDateTime modifyDate )
+NepomukTrack::setModifyDate( const QDateTime &modifyDate )
 {
     m_modifyDate = modifyDate;
 }
 
 void
-NepomukTrack::setCreateDate( const QDateTime createDate )
+NepomukTrack::setCreateDate( const QDateTime &createDate )
 {
     m_createDate = createDate;
 }
@@ -346,9 +344,9 @@ void NepomukTrack::setAlbumPeakGain( const double albumPeakGain )
 }
 
 void
-NepomukTrack::setKUrl( const KUrl url )
+NepomukTrack::setPlayableUrl( const KUrl &url )
 {
-    m_kurl = url;
+    m_playableUrl = url;
 }
 
 // non pure virtual functions

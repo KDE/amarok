@@ -96,8 +96,8 @@ public:
     void setTrackNumber( const int trackNumber );
     void setUidUrl( const QString &uidUrl );
     void setDiscNumber( const int discNumber );
-    void setModifyDate( const QDateTime modifyDate );
-    void setCreateDate( const QDateTime createDate );
+    void setModifyDate( const QDateTime &modifyDate );
+    void setCreateDate( const QDateTime &createDate );
     void setbpm( const qreal bpm );
     void setComment( const QString &comment );
     void setSampleRate( const int sampleRate );
@@ -106,12 +106,12 @@ public:
     void setTrackPeakGain( const double trackPeakGain );
     void setAlbumGain( const double albumGain );
     void setAlbumPeakGain( const double albumPeakGain );
-    void setKUrl( const KUrl url );
+    void setPlayableUrl( const KUrl &url );
 
     // Non pure virtual functions
     virtual bool inCollection() const;
     /**
-     * This should be implemented, else breaks TagDialog::getTagsFromTrack()
+     * This should be implemented whenever you return true in inCollection()
      */
     virtual Collections::Collection *collection() const;
     virtual qreal replayGain( ReplayGainTag mode ) const;
@@ -130,7 +130,7 @@ private:
     YearPtr m_year;
     LabelList m_labellist;
 
-    KUrl m_kurl;
+    KUrl m_playableUrl;
     QString m_name;
     QString m_type;
     qint64 m_length;
@@ -150,8 +150,6 @@ private:
     double m_albumPeakGain;
 
     NepomukCollection *m_coll;
-    // holds the uri of the resource
-    QUrl m_qurl;
     Nepomuk::Resource m_resource;
 };
 
