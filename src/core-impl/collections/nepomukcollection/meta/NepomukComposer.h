@@ -25,7 +25,6 @@ namespace Meta
 
 class NepomukComposer;
 typedef KSharedPtr<NepomukComposer> NepomukComposerPtr;
-typedef QList<NepomukComposerPtr> NepomukComposerList;
 
 /**
  * Represents a unit composer resource in Amarok

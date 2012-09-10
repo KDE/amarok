@@ -28,7 +28,6 @@ namespace Meta
 
 class NepomukYear;
 typedef KSharedPtr<NepomukYear> NepomukYearPtr;
-typedef QList<NepomukYearPtr> NepomukYearList;
 
 
 class NepomukYear : public Year

@@ -24,7 +24,6 @@ namespace Meta
 
 class NepomukLabel;
 typedef KSharedPtr<NepomukLabel> NepomukLabelPtr;
-typedef QList<NepomukLabelPtr> NepomukLabelList;
 
 /**
  * Represents a unit label/tag resource in Amarok
