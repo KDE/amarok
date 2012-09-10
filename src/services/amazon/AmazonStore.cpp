@@ -192,7 +192,7 @@ AmazonStore::addToCart()
     }
 
     AmazonShoppingCart::instance()->add( asin, price, name );
-    Amarok::Components::logger()->shortMessage( i18n( "<em>%1</em> has been added to your shopping cart.", name ) );
+    Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/><em>%1</em> has been added to your shopping cart.", name ) );
     m_checkoutButton->setEnabled( true );
 }
 
@@ -323,7 +323,7 @@ AmazonStore::newSearchRequest( const QString request )
 
     if( !tempFile.open() )
     {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to write temporary file. :-(" ) );
+        Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Error: Unable to write temporary file. :-(" ) );
         return;
     }
 
@@ -513,7 +513,7 @@ AmazonStore::parseReply( KJob* requestJob )
     DEBUG_BLOCK
     if( requestJob->error() )
     {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Querying MP3 Music Store database failed. :-(" ) );
+        Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Error: Querying MP3 Music Store database failed. :-(" ) );
         debug() << requestJob->errorString();
         requestJob->deleteLater();
         m_searchWidget->searchEnded();
@@ -548,7 +548,7 @@ void
 AmazonStore::parsingFailed( ThreadWeaver::Job* parserJob )
 {
     Q_UNUSED( parserJob )
-    Amarok::Components::logger()->shortMessage( i18n( "Error: Received an invalid reply. :-(" ) );
+    Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Error: Received an invalid reply. :-(" ) );
     m_searchWidget->searchEnded();
 }
 
