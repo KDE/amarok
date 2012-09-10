@@ -42,7 +42,7 @@ NepomukAlbum::NepomukAlbum( const QString &albumName, const ArtistPtr artistPtr 
 TrackList
 NepomukAlbum::tracks()
 {
-    return m_tracks;
+    return TrackList();
 }
 
 bool
@@ -68,10 +68,4 @@ QString
 NepomukAlbum::name() const
 {
     return m_name;
-}
-
-void
-NepomukAlbum::addTrack( const TrackPtr trackPtr )
-{
-    m_tracks.append( trackPtr );
 }

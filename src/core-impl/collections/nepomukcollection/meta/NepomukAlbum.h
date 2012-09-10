@@ -43,16 +43,8 @@ public:
     virtual TrackList tracks();
     virtual QString name() const;
 
-    /**
-     * A nepomuk specific function used to populate m_tracks
-     * This is called during the construction of the meta maps
-     * in the constructor of NepomukCollection
-     */
-    void addTrack( const TrackPtr trackPtr );
-
 private:
 
-    TrackList m_tracks;
     QString m_name;
     ArtistPtr m_artist;
     bool m_isCompilation;
