@@ -31,17 +31,11 @@ NepomukComposer::NepomukComposer( const QString &name )
 TrackList
 NepomukComposer::tracks()
 {
-    return m_tracks;
+    return TrackList();
 }
 
 QString
 NepomukComposer::name() const
 {
     return m_name;
-}
-
-void
-NepomukComposer::addTrack( const TrackPtr trackPtr )
-{
-    m_tracks.append( trackPtr );
 }
