@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
+#include "AmazonShoppingCart.h"
 #include "AmazonUrlRunner.h"
 
 #include <KLocale>
@@ -59,6 +60,18 @@ AmazonUrlRunner::run( AmarokUrl url )
         {
             QString request = url.args().value( "filter" );
             emit( search( request ) );
+        }
+        else if( command == "addToCart")
+        {
+            QString asin = url.args().value( "asin" );
+            QString name = url.args().value( "name" );
+            QString price = url.args().value( "price" );
+
+            // do nothing if url is invalid
+            if( asin.isEmpty() || name.isEmpty() || price.isEmpty() )
+                return false;
+            else
+                AmazonShoppingCart::instance()->add( asin, price, name );
         }
     }
     return true;
