@@ -37,6 +37,23 @@ NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection *coll )
     , m_coll( coll )
 {
     m_resource = Nepomuk::Resource( resUri );
+
+    m_playableUrl = NULL;
+    m_name = "";
+    m_type = "";
+    m_length = NULL;
+    m_bitrate = NULL;
+    m_trackNumber = NULL;
+    m_uidUrl = "";
+    m_discNumber = NULL;
+    m_bpm = NULL;
+    m_comment = "";
+    m_sampleRate = NULL;
+    m_filesize = NULL;
+    m_trackGain = NULL;
+    m_trackPeakGain = NULL;
+    m_albumGain = NULL;
+    m_albumPeakGain = NULL;
 }
 
 NepomukTrack::~NepomukTrack()
