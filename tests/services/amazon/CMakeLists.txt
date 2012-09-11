@@ -44,7 +44,7 @@ ${AMAROK_SOURCE_TREE}/services/amazon/AmazonShoppingCartItem.cpp
  )
 
 kde4_add_unit_test( testamazonshoppingcart ${testamazonshoppingcart_SRCS} )
-target_link_libraries( testamazonshoppingcart ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
+target_link_libraries( testamazonshoppingcart amarokcore ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} )
 
 
 #------------------------ Test AmazonShoppingCartItem ----------------------

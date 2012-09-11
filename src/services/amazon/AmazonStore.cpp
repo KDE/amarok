@@ -194,7 +194,6 @@ AmazonStore::addToCart()
     }
 
     AmazonShoppingCart::instance()->add( asin, price, name );
-    Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/><em>%1</em> has been added to your shopping cart.", name ) );
     m_checkoutButton->setEnabled( true );
 }
 

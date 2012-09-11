@@ -21,7 +21,8 @@
 #include "Amazon.h"
 #include "AmazonConfig.h"
 
-#include <QDebug>
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 
 AmazonShoppingCart* AmazonShoppingCart::m_instance = 0;
 
@@ -58,6 +59,7 @@ AmazonShoppingCart::add( QString asin, QString price, QString name )
     AmazonShoppingCartItem item( asin, price, name );
     m_price = m_price + price.toInt();
     insert( size(), item );
+    Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/><em>%1</em> has been added to your shopping cart.", name ) );
 }
 
 void
