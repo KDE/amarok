@@ -20,6 +20,7 @@
 #define AMAZONSTORE_H
 
 #include "AmazonCollection.h"
+#include "AmazonInfoParser.h"
 #include "AmazonItemTreeModel.h"
 #include "AmazonItemTreeView.h"
 #include "AmazonMeta.h"
@@ -40,6 +41,7 @@
 #include <threadweaver/ThreadWeaver.h>
 
 class AmazonMetaFactory;
+class AmazonInfoParser;
 
 class AmazonWantCountryWidget;
 
@@ -113,7 +115,7 @@ public slots:
     void itemDoubleClicked( QModelIndex index );
 
     /**
-    * Activates buttons required to interact with the currently selected item.
+    * Activates buttons required to interact with the currently selected item and updates the context view.
     * @param index The QModelIndex of the item.
     */
     void itemSelected( QModelIndex index );
@@ -188,6 +190,8 @@ private:
     AmazonItemTreeModel* m_itemModel;
 
     QModelIndex m_selectedIndex;
+
+    AmazonInfoParser* m_amazonInfoParser;
 
 private slots:
     /**

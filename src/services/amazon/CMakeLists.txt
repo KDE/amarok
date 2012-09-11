@@ -16,6 +16,7 @@ add_subdirectory( images )
 set( amarok_service_amazonstore_PART_SRCS
     AmazonCollection.cpp
     AmazonConfig.cpp
+    AmazonInfoParser.cpp
     AmazonItemTreeModel.cpp
     AmazonItemTreeView.cpp
     AmazonParser.cpp

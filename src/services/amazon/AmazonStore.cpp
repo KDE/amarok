@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2011, 2012 Sven Krohlas <sven@getamarok.com>                           *
  * The Amazon store in based upon the Magnatune store in Amarok,                        *
  * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  *                                                                                      *
@@ -147,6 +147,10 @@ AmazonStore::polish()
         connect( m_itemView, SIGNAL( itemDoubleClicked( QModelIndex ) ), this, SLOT( itemDoubleClicked( QModelIndex ) ) );
         connect( m_itemView, SIGNAL( searchForAlbum( QModelIndex ) ), this, SLOT( searchForAlbum( QModelIndex ) ) );
 
+        m_amazonInfoParser = new AmazonInfoParser();
+        setInfoParser( m_amazonInfoParser );
+        m_amazonInfoParser->showFrontPage();
+
         AmazonUrlRunner *runner = new AmazonUrlRunner();
         connect( runner, SIGNAL( search( const QString ) ), this, SLOT( newSearchRequest( QString ) ) );
         The::amarokUrlHandler()->registerRunner( runner, runner->command() );
@@ -160,13 +164,12 @@ void
 AmazonStore::addToCart()
 {
     QString asin, name, price;
-    int id = 0;
+    int id = m_itemModel->idForIndex( m_selectedIndex );;
 
     // get item from collection
     if( m_itemModel->isAlbum( m_selectedIndex ) ) // album
     {
         Meta::AmazonAlbum* album;
-        id = m_itemModel->idForIndex( m_selectedIndex );
 
         album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( id ).data() );
 
@@ -180,7 +183,6 @@ AmazonStore::addToCart()
     else // track
     {
         Meta::AmazonTrack* track;
-        id = m_itemModel->idForIndex( m_selectedIndex );
         track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() );
 
         if( !track )
@@ -248,12 +250,11 @@ AmazonStore::itemDoubleClicked( QModelIndex index )
     // for albums: search for the album ASIN to get details about it
     // for tracks: add it to the playlist
 
-    int id = 0;
+    int id = m_itemModel->idForIndex( index );
 
     if( m_itemModel->isAlbum( index ) ) // album
     {
         Meta::AmazonAlbum* album;
-        id = m_itemModel->idForIndex( index );
         album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( id ).data() );
 
         if( !album )
@@ -264,7 +265,6 @@ AmazonStore::itemDoubleClicked( QModelIndex index )
     else // track
     {
         Meta::AmazonTrack* track;
-        id = m_itemModel->idForIndex( index );
         track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() );
 
         if( !track )
@@ -281,6 +281,16 @@ AmazonStore::itemSelected( QModelIndex index )
 {
     m_addToCartButton->setEnabled( true );
     m_selectedIndex = index;
+
+    int id = m_itemModel->idForIndex( index );
+    Meta::AlbumPtr album;
+
+    if( m_itemModel->isAlbum( index ) )
+        album = m_collection->albumById( id ).data();
+    else // track
+        album = m_collection->trackById( id ).data()->album();
+
+    m_amazonInfoParser->getInfo( album );
 }
 
 void
@@ -488,10 +498,10 @@ AmazonStore::initView()
     connect( m_checkoutButton, SIGNAL( clicked() ), this, SLOT( checkout() ) );
 }
 
-QString AmazonStore::iso3166toAmazon(const QString& country)
+QString AmazonStore::iso3166toAmazon( const QString& country )
 {
     static QHash<QString, QString> table;
-    if(table.isEmpty())
+    if( table.isEmpty() )
     {
         table["fr"] = "fr";
         table["at"] = "de";
@@ -502,7 +512,7 @@ QString AmazonStore::iso3166toAmazon(const QString& country)
         table["us"] = "com";
     }
 
-    return table.value(country, "none");
+    return table.value( country, "none" );
 }
 
 /* private slots */
@@ -579,13 +589,13 @@ AmazonStore::forward()
 void
 AmazonStore::countryUpdated()
 {
-    QString country(AmazonConfig::instance()->country());
+    QString country( AmazonConfig::instance()->country() );
     if( country.isEmpty() || country == QLatin1String( "none" ) )
         return;
 
     if( m_wantCountryWidget )
     {
-        m_wantCountryWidget->setParent(0);
+        m_wantCountryWidget->setParent( 0 );
         m_wantCountryWidget->deleteLater();
         m_wantCountryWidget = 0;
     }

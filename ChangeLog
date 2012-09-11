@@ -5,6 +5,7 @@ Amarok ChangeLog
 VERSION 2.7-Beta 1
   FEATURES:
     * Amazon store: It is now possible to add items to your shopping cart using amarok:// URLs.
+    * Amazon store: Use the context info applet to show further infos about a selected item.
 
   CHANGES:
     * Last.fm Skip button removed; Last.fm API no longer provides it. (BR 305576)
