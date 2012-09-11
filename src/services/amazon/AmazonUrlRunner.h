@@ -25,8 +25,14 @@
 #include <QObject>
 
 /**
-        @author Nikolaj Hald Nielsen <nhn@kde.org>
-        @author Sven Krohlas <sven@getamarok.com>
+@author Nikolaj Hald Nielsen <nhn@kde.org>
+@author Sven Krohlas <sven@getamarok.com>
+
+We support URLs like
+amarok://service-amazonstore?asin=B004UQSB8I&command=addToCart&name=The%20Cure%20-%20Disintegration%20(Remastered)&price=989
+to add something to the shopping cart and
+amarok://navigate/MP3%20Music%20Store/?filter=something_to_search_for
+to search in the mp3 database of the store.
 */
 class AmazonUrlRunner : public QObject, public AmarokUrlRunnerBase
 {
