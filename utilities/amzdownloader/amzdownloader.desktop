@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=AMZ Downloader
+Comment=Download with AMZ Downloader
+ServiceTypes=audio/x-amzxml,audio/x-amzaudio
+Exec=amzdownloader --amz %f

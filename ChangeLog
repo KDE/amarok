@@ -9,11 +9,13 @@ VERSION 2.7-Beta 1
     * Amazon store: It is now possible to add items to your shopping cart using amarok:// URLs.
     * Amazon store: Use the context info applet to show further infos about a selected item.
     * New argument --debug-audio to enable Phonon debugging.
+    * Amazon store: We now ship a utility to handle downloads from Amazon.
 
   CHANGES:
     * Last.fm Skip button removed; Last.fm API no longer provides it. (BR 305576)
     * Optional liblastfm dependency raised to 1.0.0. (BR 302597)
     * Add composer button to wikipedia applet (BR 272982)
+    * New optional dependency for Amazon downloads: clamz.
 
   BUGFIXES:
     * Repeat playlist correctly with a single track playlist. (BR 290955)

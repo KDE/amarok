@@ -1,3 +1,4 @@
+add_subdirectory( amzdownloader )
 add_subdirectory( collectionscanner )
 
 if( TAGLIB_FOUND )
