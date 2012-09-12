@@ -203,6 +203,9 @@ if( WITH_PLAYER )
     macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
     endif( WITH_IPOD OR WITH_MP3Tunes )
 
+    find_program( CLAMZ_FOUND clamz PATH )
+    macro_log_feature( CLAMZ_FOUND "clamz" "Optional requirement to download songs from the Amazon MP3 store. Highly recommended on Linux, as the official downloader from Amazon is quite broken on many systems." "https://code.google.com/p/clamz/" FALSE )
+
     #These two are currently unused
     #macro_optional_find_package(Soprano)
     #macro_log_feature( Soprano_FOUND "soprano" "Soprano is a RDF framework required by Nepomuk Collection" "http://soprano.sourceforge.net" FALSE "2.1.0" "")
