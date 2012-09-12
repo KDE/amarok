@@ -274,6 +274,12 @@ int main( int argc, char *argv[] )
     Debug::setDebugEnabled( debugEnabled );
     Debug::setColoredDebug( debugColorsEnabled );
 
+    if ( args->isSet( "debug-audio" ) ) {
+        qputenv( "PHONON_DEBUG", QByteArray( "3" ) );
+        qputenv( "PHONON_BACKEND_DEBUG", QByteArray( "3" ) );
+        qputenv( "PHONON_PULSEAUDIO_DEBUG", QByteArray( "3" ) );
+    }
+
     if( !KUniqueApplication::start( startFlag ) ) {
         QList<QByteArray> instanceOptions;
         instanceOptions << "previous" << "play" << "play-pause" << "stop" << "next"

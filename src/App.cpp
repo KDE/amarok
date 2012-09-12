@@ -427,6 +427,7 @@ App::initCliArgs() //static
     options.add("load", ki18n("Load URLs, replacing current playlist"));
     options.add("d");
     options.add("debug", ki18n("Print verbose debugging information"));
+    options.add("debug-audio", ki18n("Print verbose debugging information from the audio system"));
     options.add("c");
     options.add("coloroff", ki18n("Disable colorization for debug output."));
     options.add("m");
