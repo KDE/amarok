@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.7-Beta 1
   FEATURES:
+    * Support for reading and writing tags from/to mod, s3m, it and xm files.
+      Patch by Mathias Panzenböck.
     * Amazon store: It is now possible to add items to your shopping cart using amarok:// URLs.
     * Amazon store: Use the context info applet to show further infos about a selected item.
     * New argument --debug-audio to enable Phonon debugging.

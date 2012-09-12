@@ -41,6 +41,15 @@ if(TAGLIB_FOUND)
         message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
     endif( NOT TAGLIB_MP4_FOUND )
 
+    check_cxx_source_compiles("#include <modtag.h>
+    #include <modfile.h>
+    #include <s3mfile.h>
+    #include <itfile.h>
+    #include <xmfile.h>
+    using namespace TagLib;
+    int main() { char *s; Mod::Tag tag; Mod::File modfile(s); S3M::File s3mfile(s);
+    IT::File itfile(s); XM::File xmfile(s); return 0; }" TAGLIB_MOD_FOUND)
+
     set(CMAKE_REQUIRED_INCLUDES)
     set(CMAKE_REQUIRED_LIBRARIES)
 
@@ -221,6 +230,8 @@ if( WITH_PLAYER )
 
     # Also display taglib in the feature log
     macro_log_feature( TAGLIB_FOUND "taglib" "Support for Audio metadata." "http://developer.kde.org/~wheeler/taglib.html" FALSE "" "STRONGLY RECOMMENDED" )
+    # following line is here (and not near TAGLIB_MOD_FOUND) because there may be no MacroLogFeature without kdelibs
+    macro_log_feature( TAGLIB_MOD_FOUND "taglib" "Support for Audio metadata of mod, s3m, it and xm files." "http://developer.kde.org/~wheeler/taglib.html" FALSE "1.8" "" )
 
     macro_display_feature_log()
 

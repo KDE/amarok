@@ -39,7 +39,11 @@ namespace Amarok
         Wav         =  9,
         WavPack     = 10,
         M4a         = 11, // a file in MPEG-4 container that contains only audio
-        M4v         = 12  // a file in MPEG-4 container that for sure contains video
+        M4v         = 12, // a file in MPEG-4 container that for sure contains video
+        Mod         = 13,
+        S3M         = 14,
+        IT          = 15,
+        XM          = 16
     };
 
     class FileTypeSupport

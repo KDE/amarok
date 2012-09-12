@@ -47,6 +47,7 @@ Required
 
     * TagLib 1.7 (or newer)
       (Metadata tagging library)
+      When compiling against 1.8 more file types are supported (MOD, IT, S3M, XM).
       http://developer.kde.org/~wheeler/taglib.html
       https://github.com/taglib/taglib
 

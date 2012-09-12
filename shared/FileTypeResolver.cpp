@@ -42,6 +42,12 @@
 #include <vorbisfile.h>
 #include <wavfile.h>
 #include <wavpackfile.h>
+#ifdef TAGLIB_MOD_FOUND
+#include <modfile.h>
+#include <s3mfile.h>
+#include <itfile.h>
+#include <xmfile.h>
+#endif
 
 TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,
@@ -117,6 +123,24 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
     {
         result = new TagLib::TrueAudio::File(fileName, readProperties, propertiesStyle);
     }
+#ifdef TAGLIB_MOD_FOUND
+    else if( mimetype->is( QLatin1String("audio/x-mod") ) )
+    {
+        result = new TagLib::Mod::File(fileName, readProperties, propertiesStyle);
+    }
+    else if( mimetype->is( QLatin1String("audio/x-s3m") ) )
+    {
+        result = new TagLib::S3M::File(fileName, readProperties, propertiesStyle);
+    }
+    else if( mimetype->is( QLatin1String("audio/x-it") ) )
+    {
+        result = new TagLib::IT::File(fileName, readProperties, propertiesStyle);
+    }
+    else if( mimetype->is( QLatin1String("audio/x-xm") ) )
+    {
+        result = new TagLib::XM::File(fileName, readProperties, propertiesStyle);
+    }
+#endif
 
     // -- check by extension
     else if( suffix == QLatin1String("m4a")

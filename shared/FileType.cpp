@@ -40,7 +40,11 @@ QStringList FileTypeSupport::s_fileTypeStrings = QStringList()
         << QLatin1String( "wav" )
         << QLatin1String( "wv" )
         << QLatin1String( "m4a" )
-        << QLatin1String( "m4v" );
+        << QLatin1String( "m4v" )
+        << QLatin1String( "mod" )
+        << QLatin1String( "s3m" )
+        << QLatin1String( "it" )
+        << QLatin1String( "xm" );
 
 QString
 FileTypeSupport::toString( Amarok::FileType ft )
