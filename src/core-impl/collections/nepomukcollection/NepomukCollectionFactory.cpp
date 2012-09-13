@@ -30,13 +30,12 @@ NepomukCollectionFactory::init()
 {
     DEBUG_BLOCK
 
-    m_initialized = false;
+    m_initialized = true;
 
     // check if Nepomuk service is running
     if( Nepomuk::ResourceManager::instance()->initialized() )
     {
         // if it is, create a new NepomukCollection
-        m_initialized = true;
         emit newCollection( new Collections::NepomukCollection() );
         return;
     }
