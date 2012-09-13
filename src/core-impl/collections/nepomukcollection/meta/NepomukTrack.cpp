@@ -41,19 +41,19 @@ NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection *coll )
     m_playableUrl = NULL;
     m_name = "";
     m_type = "";
-    m_length = NULL;
-    m_bitrate = NULL;
-    m_trackNumber = NULL;
+    m_length = 0;
+    m_bitrate = 0;
+    m_trackNumber = 0;
     m_uidUrl = "";
-    m_discNumber = NULL;
-    m_bpm = NULL;
+    m_discNumber = 0;
+    m_bpm = 0;
     m_comment = "";
-    m_sampleRate = NULL;
-    m_filesize = NULL;
-    m_trackGain = NULL;
-    m_trackPeakGain = NULL;
-    m_albumGain = NULL;
-    m_albumPeakGain = NULL;
+    m_sampleRate = 0;
+    m_filesize = 0;
+    m_trackGain = 0;
+    m_trackPeakGain = 0;
+    m_albumGain = 0;
+    m_albumPeakGain = 0;
 }
 
 NepomukTrack::~NepomukTrack()
@@ -75,7 +75,6 @@ NepomukTrack::playableUrl() const
 QString
 NepomukTrack::prettyUrl() const
 {
-    // check if path() or prettyUrl() should be used
     return m_playableUrl.path();
 }
 
@@ -205,9 +204,8 @@ NepomukTrack::trackNumber() const
 int
 NepomukTrack::discNumber() const
 {
-    //TODO
+    //TODO No disc number equivalent ontology yet
     return 0;
-
 }
 
 int
@@ -397,11 +395,7 @@ NepomukTrack::replayGain( ReplayGainTag mode ) const
         break;
     }
 
-    // TODO
-    // Should return the track replay gain if the album
-    // gain is requested but is not available.
-
-    return gain;
+     return gain;
 }
 
 void
