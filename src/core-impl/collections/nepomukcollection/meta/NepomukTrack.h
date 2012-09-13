@@ -91,20 +91,20 @@ public:
     void setName( const QString &name );
     void setType( const QString &type );
     void setLength( const qint64 length );
-    void setBitrate( const int rate );
-    void setTrackNumber( const int trackNumber );
+    void setBitrate( int rate );
+    void setTrackNumber( int trackNumber );
     void setUidUrl( const QString &uidUrl );
-    void setDiscNumber( const int discNumber );
+    void setDiscNumber( int discNumber );
     void setModifyDate( const QDateTime &modifyDate );
     void setCreateDate( const QDateTime &createDate );
     void setbpm( const qreal bpm );
     void setComment( const QString &comment );
-    void setSampleRate( const int sampleRate );
-    void setFilesize( const int filesize );
-    void setTrackGain( const double trackGain );
-    void setTrackPeakGain( const double trackPeakGain );
-    void setAlbumGain( const double albumGain );
-    void setAlbumPeakGain( const double albumPeakGain );
+    void setSampleRate( int sampleRate );
+    void setFilesize( int filesize );
+    void setTrackGain( double trackGain );
+    void setTrackPeakGain( double trackPeakGain );
+    void setAlbumGain( double albumGain );
+    void setAlbumPeakGain( double albumPeakGain );
     void setPlayableUrl( const KUrl &url );
 
     // Non pure virtual functions

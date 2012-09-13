@@ -271,13 +271,13 @@ NepomukTrack::setLength( const qint64 length )
 }
 
 void
-NepomukTrack::setBitrate( const int rate )
+NepomukTrack::setBitrate( int rate )
 {
     m_bitrate = rate;
 }
 
 void
-NepomukTrack::setTrackNumber( const int trackNumber )
+NepomukTrack::setTrackNumber( int trackNumber )
 {
     m_trackNumber = trackNumber;
 }
@@ -289,7 +289,7 @@ NepomukTrack::setUidUrl( const QString &uidUrl )
 }
 
 void
-NepomukTrack::setDiscNumber( const int discNumber )
+NepomukTrack::setDiscNumber( int discNumber )
 {
     m_discNumber = discNumber;
 }
@@ -319,35 +319,35 @@ NepomukTrack::setComment( const QString &comment )
 }
 
 void
-NepomukTrack::setSampleRate( const int sampleRate )
+NepomukTrack::setSampleRate( int sampleRate )
 {
     m_sampleRate = sampleRate;
 }
 
 void
-NepomukTrack::setFilesize( const int filesize )
+NepomukTrack::setFilesize( int filesize )
 {
     m_filesize = filesize;
 }
 
 void
-NepomukTrack::setTrackGain( const double trackGain )
+NepomukTrack::setTrackGain( double trackGain )
 {
     m_trackGain = trackGain;
 }
 
-void NepomukTrack::setTrackPeakGain( const double trackPeakGain )
+void NepomukTrack::setTrackPeakGain( double trackPeakGain )
 {
     m_trackPeakGain = trackPeakGain;
 }
 
 void
-NepomukTrack::setAlbumGain( const double albumGain )
+NepomukTrack::setAlbumGain( double albumGain )
 {
     m_albumGain = albumGain;
 }
 
-void NepomukTrack::setAlbumPeakGain( const double albumPeakGain )
+void NepomukTrack::setAlbumPeakGain( double albumPeakGain )
 {
     m_albumPeakGain = albumPeakGain;
 }
@@ -407,7 +407,8 @@ NepomukTrack::replayGain( ReplayGainTag mode ) const
 void
 NepomukTrack::addLabel( const Meta::LabelPtr &label )
 {
-    m_labellist.append( label );
+    if ( !m_labellist.contains( label ) )
+        m_labellist.append( label );
 }
 
 void
@@ -427,5 +428,5 @@ NepomukTrack::labels() const
 void
 NepomukTrack::removeLabel( const LabelPtr &label )
 {
-    m_labellist.removeOne( label );
+    m_labellist.removeAll( label );
 }
