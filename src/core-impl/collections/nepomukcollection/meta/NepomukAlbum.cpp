@@ -30,7 +30,7 @@ NepomukAlbum::NepomukAlbum( const QString &name )
     // TODO, check if album has unique artist
 }
 
-NepomukAlbum::NepomukAlbum( const QString &albumName, const ArtistPtr artistPtr )
+NepomukAlbum::NepomukAlbum( const QString &albumName, const ArtistPtr &artistPtr )
     : Meta::Album()
     , m_name( albumName )
     , m_artist( artistPtr )

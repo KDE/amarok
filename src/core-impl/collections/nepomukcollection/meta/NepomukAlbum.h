@@ -34,7 +34,7 @@ class NepomukAlbum : public Meta::Album
 {
 public:
     NepomukAlbum( const QString &name );
-    NepomukAlbum( const QString &albumName, const ArtistPtr artistPtr );
+    NepomukAlbum( const QString &albumName, const ArtistPtr &artistPtr );
 
     virtual bool isCompilation() const;
     virtual bool hasAlbumArtist() const;
