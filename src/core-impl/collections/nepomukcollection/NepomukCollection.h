@@ -49,7 +49,8 @@ class NepomukConstructMetaJob;
   */
 
 // TODO
-// see if Meta::Observer also has to be inherited
+// Meta::Observer also has to be inherited
+// when NepomukCollection reaches a stage where it does metadata manipulation
 class NepomukCollection : public Collection
 {
     Q_OBJECT
