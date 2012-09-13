@@ -140,7 +140,7 @@ public slots:
 
 private:
     /**
-    * Helper function. Creates a valid request URL for the Amazon service.
+    * Helper method. Creates a valid request URL for the Amazon service.
     * @param request string to search for.
     */
     QUrl createRequestUrl( const QString request );

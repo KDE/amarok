@@ -215,6 +215,8 @@ AmazonStore::checkout()
         m_checkoutButton->setEnabled( false );
         AmazonShoppingCart::instance()->clear();
     }
+
+    Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>You are now being redirected to Amazon for the checkout process.<br/>To simplify that process please click <a href=\"%1\">this link</a> to tell Amazon that you have a downloader application for their MP3s installed.", Amazon::createCookieUrl().toString() ) );
 }
 
 void

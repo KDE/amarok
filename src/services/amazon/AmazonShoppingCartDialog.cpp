@@ -32,6 +32,7 @@ AmazonShoppingCartDialog::AmazonShoppingCartDialog( QWidget *parent, AmazonStore
     m_model->setStringList( AmazonShoppingCart::instance()->stringList() );
     ui->listView->setModel( m_model );
     ui->cartValueLabel->setText( i18n( "Shopping cart value: %1", Amazon::prettyPrice( AmazonShoppingCart::instance()->price() ) ) );
+    ui->cookieLabel->setText( i18n( "When clicking checkout you are being redirected to Amazon for the checkout process. To simplify that process please click <a href=\"%1\">this link</a> to tell Amazon that you have a downloader application for their MP3s installed.", Amazon::createCookieUrl().toString() ) );
     ui->checkoutButton->setIcon( KIcon( "download-amarok" ) );
 
     if( AmazonShoppingCart::instance()->isEmpty() )
