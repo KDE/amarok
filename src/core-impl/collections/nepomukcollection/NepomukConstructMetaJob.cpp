@@ -286,6 +286,6 @@ NepomukConstructMetaJob::run()
     }
 
     emit endProgressOperation( this );
-    emit m_coll->collectionUpdated();
+    emit updated();
 
 }

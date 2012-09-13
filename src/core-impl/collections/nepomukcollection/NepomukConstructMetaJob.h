@@ -50,6 +50,7 @@ signals:
     void endProgressOperation( QObject *obj );
     // not used, defined to keep QObject::conect warning quiet
     void totalSteps( int steps );
+    void updated();
 
 private:
     QSharedPointer<Collections::MemoryCollection> m_mc;
