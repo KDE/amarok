@@ -71,13 +71,16 @@ namespace Meta
 
     class AMAROK_CORE_EXPORT Observer
     {
+        friend class MetaBase; // so that is can call destroyedNotify()
+
         public:
             virtual ~Observer();
 
             /**
-             * Subscribe to changes made by @param entity. Note that by being subscribed
-             * to it you prevent its deletion, so please unsubscribe as soon as you don't
-             * need the updates.
+             * Subscribe to changes made by @param entity.
+             *
+             * Changed in 2.7: being subscribed to an entity no longer prevents its
+             * destruction.
              */
             template <typename T>
             void subscribeTo( KSharedPtr<T> entity ) { subscribeTo( entity.data() ); }
@@ -95,17 +98,28 @@ namespace Meta
             virtual void metadataChanged( ComposerPtr composer );
             virtual void metadataChanged( YearPtr year );
 
+            /**
+             * One of the subscribed entities was destroyed. You don't get which one
+             * because it is already invalid.
+             */
+            virtual void entityDestroyed();
+
         private:
             void subscribeTo( MetaBase *ptr );
             void unsubscribeFrom( MetaBase *ptr );
 
-            QSet<DataPtr> m_subscriptions;
+            /**
+             * Called in MetaBase destructor so that Observer doesn't have a stale pointer.
+             */
+            void destroyedNotify( MetaBase *ptr );
+
+            QSet<MetaBase *> m_subscriptions;
             QMutex m_subscriptionsMutex; /// mutex guarding access to m_subscriptions
     };
 
     class AMAROK_CORE_EXPORT MetaBase : public QSharedData, public MetaCapability
     {
-        friend class Observer;
+        friend class Observer; // so that Observer can call (un)subscribe()
 
         Q_PROPERTY( QString name READ name )
         Q_PROPERTY( QString prettyName READ prettyName )
@@ -114,7 +128,7 @@ namespace Meta
 
         public:
             MetaBase() {}
-            virtual ~MetaBase() {}
+            virtual ~MetaBase();
 
             /** The textual label for this object.
                 For a track this is the track title, for an album it is the

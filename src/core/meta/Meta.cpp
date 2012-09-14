@@ -27,12 +27,14 @@
 
 #include <KLocale>
 
+using namespace Meta;
+
 //Meta::Observer
 
 Meta::Observer::~Observer()
 {
     // Unsubscribe all stray Meta subscriptions:
-    foreach( DataPtr ptr, m_subscriptions )
+    foreach( MetaBase *ptr, m_subscriptions )
     {
         if( ptr )
             ptr->unsubscribe( this );
@@ -76,13 +78,18 @@ Meta::Observer::metadataChanged( YearPtr year )
 }
 
 void
+Meta::Observer::entityDestroyed()
+{
+}
+
+void
 Meta::Observer::subscribeTo( Meta::MetaBase *ptr )
 {
     if( !ptr )
         return;
     QMutexLocker locker( &m_subscriptionsMutex );
     ptr->subscribe( this );
-    m_subscriptions.insert( DataPtr( ptr ) );
+    m_subscriptions.insert( ptr );
 }
 
 void
@@ -91,10 +98,28 @@ Meta::Observer::unsubscribeFrom( Meta::MetaBase *ptr )
     QMutexLocker locker( &m_subscriptionsMutex );
     if( ptr )
         ptr->unsubscribe( this );
-    m_subscriptions.remove( DataPtr( ptr ) );
+    m_subscriptions.remove( ptr );
+}
+
+void
+Meta::Observer::destroyedNotify( Meta::MetaBase *ptr )
+{
+    {
+        QMutexLocker locker( &m_subscriptionsMutex );
+        m_subscriptions.remove( ptr );
+    }
+    entityDestroyed();
 }
 
 //Meta::MetaBase
+
+Meta::MetaBase::~MetaBase()
+{
+    foreach( Observer *observer, m_observers )
+    {
+        observer->destroyedNotify( this );
+    }
+}
 
 void
 Meta::MetaBase::subscribe( Observer *observer )
