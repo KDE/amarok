@@ -18,6 +18,8 @@ VERSION 2.7-Beta 1
     * New optional dependency for Amazon downloads: clamz.
 
   BUGFIXES:
+    * Fix some track tag modifications not being updated until restart
+      (e.g. changing disc number from 1 to 0).
     * Repeat playlist correctly with a single track playlist. (BR 290955)
     * Don't append playlist when pressing enter while editing. (BR 305203)
     * Fix track transfer to iPods in de (and perhaps other) locale. (BR 305134)

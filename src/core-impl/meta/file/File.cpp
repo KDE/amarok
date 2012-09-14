@@ -624,7 +624,7 @@ Track::beginMetaDataUpdate()
 void
 Track::endMetaDataUpdate()
 {
- DEBUG_LINE_INFO
+    DEBUG_BLOCK
     debug() << "CHANGES HERE: " << d->changes;
     d->writeMetaData();
     d->batchUpdate = false;

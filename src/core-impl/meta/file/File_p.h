@@ -152,57 +152,40 @@ void Track::Private::readMetaData()
 
     Meta::FieldHash values = Meta::Tag::readTags( fi.absoluteFilePath() );
 
-    if( values.contains(Meta::valTitle) )
-        m_data.title = values.value(Meta::valTitle).toString();
-    if( values.contains(Meta::valArtist) )
-        m_data.artist = values.value(Meta::valArtist).toString();
-    if( values.contains(Meta::valAlbum) )
-        m_data.album = values.value(Meta::valAlbum).toString();
-    if( values.contains(Meta::valAlbumArtist) )
-        m_data.albumArtist = values.value(Meta::valAlbumArtist).toString();
-    if( values.contains(Meta::valHasCover) )
-        m_data.embeddedImage = values.value(Meta::valHasCover).toBool();
-    if( values.contains(Meta::valComment) )
-        m_data.comment = values.value(Meta::valComment).toString();
-    if( values.contains(Meta::valGenre) )
-        m_data.genre = values.value(Meta::valGenre).toString();
-    if( values.contains(Meta::valYear) )
-        m_data.year = values.value(Meta::valYear).toInt();
-    if( values.contains(Meta::valDiscNr) )
-        m_data.discNumber = values.value(Meta::valDiscNr).toInt();
-    if( values.contains(Meta::valTrackNr) )
-        m_data.trackNumber = values.value(Meta::valTrackNr).toInt();
-    if( values.contains(Meta::valBpm) )
-        m_data.bpm = values.value(Meta::valBpm).toReal();
-    if( values.contains(Meta::valBitrate) )
-        m_data.bitRate = values.value(Meta::valBitrate).toInt();
-    if( values.contains(Meta::valLength) )
-        m_data.length = values.value(Meta::valLength).toLongLong();
-    if( values.contains(Meta::valSamplerate) )
-        m_data.sampleRate = values.value(Meta::valSamplerate).toInt();
-    if( values.contains(Meta::valFilesize) )
-        m_data.fileSize = values.value(Meta::valFilesize).toLongLong();
+    // (re)set all fields to behave the same as the constructor. E.g. catch even complete
+    // removal of tags etc.
+    MetaData def; // default
+    m_data.title = values.value( Meta::valTitle, def.title ).toString();
+    m_data.artist = values.value( Meta::valArtist, def.artist ).toString();
+    m_data.album = values.value( Meta::valAlbum, def.album ).toString();
+    m_data.albumArtist = values.value( Meta::valAlbumArtist, def.albumArtist ).toString();
+    m_data.embeddedImage = values.value( Meta::valHasCover, def.embeddedImage ).toBool();
+    m_data.comment = values.value( Meta::valComment, def.comment ).toString();
+    m_data.genre = values.value( Meta::valGenre, def.genre ).toString();
+    m_data.year = values.value( Meta::valYear, def.year ).toInt();
+    m_data.discNumber = values.value( Meta::valDiscNr, def.discNumber ).toInt();
+    m_data.trackNumber = values.value( Meta::valTrackNr, def.trackNumber ).toInt();
+    m_data.bpm = values.value( Meta::valBpm, def.bpm ).toReal();
+    m_data.bitRate = values.value( Meta::valBitrate, def.bitRate ).toInt();
+    m_data.length = values.value( Meta::valLength, def.length ).toLongLong();
+    m_data.sampleRate = values.value( Meta::valSamplerate, def.sampleRate ).toInt();
+    m_data.fileSize = values.value( Meta::valFilesize, def.fileSize ).toLongLong();
 
-    if( values.contains(Meta::valTrackGain) )
-        m_data.trackGain = values.value(Meta::valTrackGain).toReal();
-    if( values.contains(Meta::valTrackGainPeak) )
-        m_data.trackPeak= values.value(Meta::valTrackGainPeak).toReal();
-    if( values.contains(Meta::valAlbumGain) )
-        m_data.albumGain = values.value(Meta::valAlbumGain).toReal();
-    if( values.contains(Meta::valAlbumGainPeak) )
-        m_data.albumPeak= values.value(Meta::valAlbumGainPeak).toReal();
+    m_data.trackGain = values.value( Meta::valTrackGain, def.trackGain ).toReal();
+    m_data.trackPeak= values.value( Meta::valTrackGainPeak, def.trackPeak ).toReal();
+    m_data.albumGain = values.value( Meta::valAlbumGain, def.albumGain ).toReal();
+    m_data.albumPeak= values.value( Meta::valAlbumGainPeak, def.albumPeak ).toReal();
 
-    if( values.contains(Meta::valComposer) )
-        m_data.composer = values.value(Meta::valComposer).toString();
+    m_data.composer = values.value( Meta::valComposer, def.composer ).toString();
 
     if( provider )
     {
         if( values.contains(Meta::valRating) )
-            provider->setRating( values.value(Meta::valRating).toReal() );
+            provider->setRating( values.value( Meta::valRating ).toReal() );
         if( values.contains(Meta::valScore) )
-            provider->setScore( values.value(Meta::valScore).toReal() );
+            provider->setScore( values.value( Meta::valScore ).toReal() );
         if( values.contains(Meta::valPlaycount) )
-            provider->setPlayCount( values.value(Meta::valPlaycount).toReal() );
+            provider->setPlayCount( values.value( Meta::valPlaycount ).toReal() );
     }
 
     if(url.isLocalFile())
