@@ -80,6 +80,7 @@ Meta::Observer::subscribeTo( Meta::MetaBase *ptr )
 {
     if( !ptr )
         return;
+    QMutexLocker locker( &m_subscriptionsMutex );
     ptr->subscribe( this );
     m_subscriptions.insert( DataPtr( ptr ) );
 }
@@ -87,6 +88,7 @@ Meta::Observer::subscribeTo( Meta::MetaBase *ptr )
 void
 Meta::Observer::unsubscribeFrom( Meta::MetaBase *ptr )
 {
+    QMutexLocker locker( &m_subscriptionsMutex );
     if( ptr )
         ptr->unsubscribe( this );
     m_subscriptions.remove( DataPtr( ptr ) );

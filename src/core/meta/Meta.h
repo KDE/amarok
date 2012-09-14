@@ -25,6 +25,7 @@
 
 #include <QList>
 #include <QMetaType>
+#include <QMutex>
 #include <QImage>
 #include <QDateTime>
 #include <QSet>
@@ -99,6 +100,7 @@ namespace Meta
             void unsubscribeFrom( MetaBase *ptr );
 
             QSet<DataPtr> m_subscriptions;
+            QMutex m_subscriptionsMutex; /// mutex guarding access to m_subscriptions
     };
 
     class AMAROK_CORE_EXPORT MetaBase : public QSharedData, public MetaCapability
