@@ -27,137 +27,17 @@
 
 #include <KLocale>
 
+using namespace Meta;
+
 //Meta::Observer
 
 Meta::Observer::~Observer()
 {
     // Unsubscribe all stray Meta subscriptions:
-
-    foreach( TrackPtr ptr, m_trackSubscriptions )
+    foreach( MetaBase *ptr, m_subscriptions )
+    {
         if( ptr )
             ptr->unsubscribe( this );
-    foreach( ArtistPtr ptr, m_artistSubscriptions )
-        if( ptr )
-            ptr->unsubscribe( this );
-    foreach( AlbumPtr ptr, m_albumSubscriptions )
-        if( ptr )
-            ptr->unsubscribe( this );
-    foreach( GenrePtr ptr, m_genreSubscriptions )
-        if( ptr )
-            ptr->unsubscribe( this );
-    foreach( ComposerPtr ptr, m_composerSubscriptions )
-        if( ptr )
-            ptr->unsubscribe( this );
-    foreach( YearPtr ptr, m_yearSubscriptions )
-        if( ptr )
-            ptr->unsubscribe( this );
-}
-
-void
-Meta::Observer::subscribeTo( TrackPtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_trackSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( TrackPtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_trackSubscriptions.remove( ptr );
-    }
-}
-
-void
-Meta::Observer::subscribeTo( ArtistPtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_artistSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( ArtistPtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_artistSubscriptions.remove( ptr );
-    }
-}
-
-void
-Meta::Observer::subscribeTo( AlbumPtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_albumSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( AlbumPtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_albumSubscriptions.remove( ptr );
-    }
-}
-
-void
-Meta::Observer::subscribeTo( ComposerPtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_composerSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( ComposerPtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_composerSubscriptions.remove( ptr );
-    }
-}
-
-void
-Meta::Observer::subscribeTo( GenrePtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_genreSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( GenrePtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_genreSubscriptions.remove( ptr );
-    }
-}
-
-void
-Meta::Observer::subscribeTo( YearPtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_yearSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( YearPtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_yearSubscriptions.remove( ptr );
     }
 }
 
@@ -197,7 +77,49 @@ Meta::Observer::metadataChanged( YearPtr year )
     Q_UNUSED( year );
 }
 
+void
+Meta::Observer::entityDestroyed()
+{
+}
+
+void
+Meta::Observer::subscribeTo( Meta::MetaBase *ptr )
+{
+    if( !ptr )
+        return;
+    QMutexLocker locker( &m_subscriptionsMutex );
+    ptr->subscribe( this );
+    m_subscriptions.insert( ptr );
+}
+
+void
+Meta::Observer::unsubscribeFrom( Meta::MetaBase *ptr )
+{
+    QMutexLocker locker( &m_subscriptionsMutex );
+    if( ptr )
+        ptr->unsubscribe( this );
+    m_subscriptions.remove( ptr );
+}
+
+void
+Meta::Observer::destroyedNotify( Meta::MetaBase *ptr )
+{
+    {
+        QMutexLocker locker( &m_subscriptionsMutex );
+        m_subscriptions.remove( ptr );
+    }
+    entityDestroyed();
+}
+
 //Meta::MetaBase
+
+Meta::MetaBase::~MetaBase()
+{
+    foreach( Observer *observer, m_observers )
+    {
+        observer->destroyedNotify( this );
+    }
+}
 
 void
 Meta::MetaBase::subscribe( Observer *observer )

@@ -25,6 +25,7 @@
 
 #include <QList>
 #include <QMetaType>
+#include <QMutex>
 #include <QImage>
 #include <QDateTime>
 #include <QSet>
@@ -70,45 +71,55 @@ namespace Meta
 
     class AMAROK_CORE_EXPORT Observer
     {
-        public:
-            void subscribeTo( TrackPtr );
-            void unsubscribeFrom( TrackPtr );
-            void subscribeTo( ArtistPtr );
-            void unsubscribeFrom( ArtistPtr );
-            void subscribeTo( AlbumPtr );
-            void unsubscribeFrom( AlbumPtr );
-            void subscribeTo( ComposerPtr );
-            void unsubscribeFrom( ComposerPtr );
-            void subscribeTo( GenrePtr );
-            void unsubscribeFrom( GenrePtr );
-            void subscribeTo( YearPtr );
-            void unsubscribeFrom( YearPtr );
+        friend class MetaBase; // so that is can call destroyedNotify()
 
-            /** This method is called when the metadata of a track has changed.
-                The called class may not cache the pointer */
+        public:
+            virtual ~Observer();
+
+            /**
+             * Subscribe to changes made by @param entity.
+             *
+             * Changed in 2.7: being subscribed to an entity no longer prevents its
+             * destruction.
+             */
+            template <typename T>
+            void subscribeTo( KSharedPtr<T> entity ) { subscribeTo( entity.data() ); }
+            template <typename T>
+            void unsubscribeFrom( KSharedPtr<T> entity ) { unsubscribeFrom( entity.data() ); }
+
+            /**
+             * This method is called when the metadata of a track has changed.
+             * The called class may not cache the pointer.
+             */
             virtual void metadataChanged( TrackPtr track );
             virtual void metadataChanged( ArtistPtr artist );
             virtual void metadataChanged( AlbumPtr album );
             virtual void metadataChanged( GenrePtr genre );
             virtual void metadataChanged( ComposerPtr composer );
             virtual void metadataChanged( YearPtr year );
-            virtual ~Observer();
 
-            // TODO: we really need a deleted notification.
-            // TODO: Why not change this Java-like observer pattern to a normal QObject
+            /**
+             * One of the subscribed entities was destroyed. You don't get which one
+             * because it is already invalid.
+             */
+            virtual void entityDestroyed();
 
         private:
-            QSet<TrackPtr> m_trackSubscriptions;
-            QSet<ArtistPtr> m_artistSubscriptions;
-            QSet<AlbumPtr> m_albumSubscriptions;
-            QSet<ComposerPtr> m_composerSubscriptions;
-            QSet<GenrePtr> m_genreSubscriptions;
-            QSet<YearPtr> m_yearSubscriptions;
+            void subscribeTo( MetaBase *ptr );
+            void unsubscribeFrom( MetaBase *ptr );
+
+            /**
+             * Called in MetaBase destructor so that Observer doesn't have a stale pointer.
+             */
+            void destroyedNotify( MetaBase *ptr );
+
+            QSet<MetaBase *> m_subscriptions;
+            QMutex m_subscriptionsMutex; /// mutex guarding access to m_subscriptions
     };
 
     class AMAROK_CORE_EXPORT MetaBase : public QSharedData, public MetaCapability
     {
-        friend class Observer;
+        friend class Observer; // so that Observer can call (un)subscribe()
 
         Q_PROPERTY( QString name READ name )
         Q_PROPERTY( QString prettyName READ prettyName )
@@ -117,7 +128,7 @@ namespace Meta
 
         public:
             MetaBase() {}
-            virtual ~MetaBase() {}
+            virtual ~MetaBase();
 
             /** The textual label for this object.
                 For a track this is the track title, for an album it is the
