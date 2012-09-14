@@ -71,16 +71,51 @@ namespace Meta
     class AMAROK_CORE_EXPORT Observer
     {
         public:
+            /**
+             * Subscribe to changes made by @param track. Note that ty being subscribed
+             * to it you prevent its deletion, so please unsubscribe as soon as you don't
+             * need the updates.
+             */
             void subscribeTo( TrackPtr );
             void unsubscribeFrom( TrackPtr );
+
+            /**
+             * Subscribe to changes made by @param artist. Note that ty being subscribed
+             * to it you prevent its deletion, so please unsubscribe as soon as you don't
+             * need the updates.
+             */
             void subscribeTo( ArtistPtr );
             void unsubscribeFrom( ArtistPtr );
+
+            /**
+             * Subscribe to changes made by @param album. Note that ty being subscribed
+             * to it you prevent its deletion, so please unsubscribe as soon as you don't
+             * need the updates.
+             */
             void subscribeTo( AlbumPtr );
             void unsubscribeFrom( AlbumPtr );
+
+            /**
+             * Subscribe to changes made by @param composer. Note that ty being subscribed
+             * to it you prevent its deletion, so please unsubscribe as soon as you don't
+             * need the updates.
+             */
             void subscribeTo( ComposerPtr );
             void unsubscribeFrom( ComposerPtr );
+
+            /**
+             * Subscribe to changes made by @param genre. Note that ty being subscribed
+             * to it you prevent its deletion, so please unsubscribe as soon as you don't
+             * need the updates.
+             */
             void subscribeTo( GenrePtr );
             void unsubscribeFrom( GenrePtr );
+
+            /**
+             * Subscribe to changes made by @param year. Note that ty being subscribed
+             * to it you prevent its deletion, so please unsubscribe as soon as you don't
+             * need the updates.
+             */
             void subscribeTo( YearPtr );
             void unsubscribeFrom( YearPtr );
 
@@ -93,9 +128,6 @@ namespace Meta
             virtual void metadataChanged( ComposerPtr composer );
             virtual void metadataChanged( YearPtr year );
             virtual ~Observer();
-
-            // TODO: we really need a deleted notification.
-            // TODO: Why not change this Java-like observer pattern to a normal QObject
 
         private:
             QSet<TrackPtr> m_trackSubscriptions;
