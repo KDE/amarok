@@ -71,71 +71,34 @@ namespace Meta
     class AMAROK_CORE_EXPORT Observer
     {
         public:
+            virtual ~Observer();
+
             /**
-             * Subscribe to changes made by @param track. Note that ty being subscribed
+             * Subscribe to changes made by @param entity. Note that by being subscribed
              * to it you prevent its deletion, so please unsubscribe as soon as you don't
              * need the updates.
              */
-            void subscribeTo( TrackPtr );
-            void unsubscribeFrom( TrackPtr );
+            template <typename T>
+            void subscribeTo( KSharedPtr<T> entity ) { subscribeTo( entity.data() ); }
+            template <typename T>
+            void unsubscribeFrom( KSharedPtr<T> entity ) { unsubscribeFrom( entity.data() ); }
 
             /**
-             * Subscribe to changes made by @param artist. Note that ty being subscribed
-             * to it you prevent its deletion, so please unsubscribe as soon as you don't
-             * need the updates.
+             * This method is called when the metadata of a track has changed.
+             * The called class may not cache the pointer.
              */
-            void subscribeTo( ArtistPtr );
-            void unsubscribeFrom( ArtistPtr );
-
-            /**
-             * Subscribe to changes made by @param album. Note that ty being subscribed
-             * to it you prevent its deletion, so please unsubscribe as soon as you don't
-             * need the updates.
-             */
-            void subscribeTo( AlbumPtr );
-            void unsubscribeFrom( AlbumPtr );
-
-            /**
-             * Subscribe to changes made by @param composer. Note that ty being subscribed
-             * to it you prevent its deletion, so please unsubscribe as soon as you don't
-             * need the updates.
-             */
-            void subscribeTo( ComposerPtr );
-            void unsubscribeFrom( ComposerPtr );
-
-            /**
-             * Subscribe to changes made by @param genre. Note that ty being subscribed
-             * to it you prevent its deletion, so please unsubscribe as soon as you don't
-             * need the updates.
-             */
-            void subscribeTo( GenrePtr );
-            void unsubscribeFrom( GenrePtr );
-
-            /**
-             * Subscribe to changes made by @param year. Note that ty being subscribed
-             * to it you prevent its deletion, so please unsubscribe as soon as you don't
-             * need the updates.
-             */
-            void subscribeTo( YearPtr );
-            void unsubscribeFrom( YearPtr );
-
-            /** This method is called when the metadata of a track has changed.
-                The called class may not cache the pointer */
             virtual void metadataChanged( TrackPtr track );
             virtual void metadataChanged( ArtistPtr artist );
             virtual void metadataChanged( AlbumPtr album );
             virtual void metadataChanged( GenrePtr genre );
             virtual void metadataChanged( ComposerPtr composer );
             virtual void metadataChanged( YearPtr year );
-            virtual ~Observer();
 
         private:
-            QSet<TrackPtr> m_trackSubscriptions;
-            QSet<ArtistPtr> m_artistSubscriptions;
-            QSet<AlbumPtr> m_albumSubscriptions;
-            QSet<ComposerPtr> m_composerSubscriptions;
-            QSet<GenrePtr> m_genreSubscriptions;
-            QSet<YearPtr> m_yearSubscriptions;
+            void subscribeTo( MetaBase *ptr );
+            void unsubscribeFrom( MetaBase *ptr );
+
+            QSet<DataPtr> m_subscriptions;
     };
 
     class AMAROK_CORE_EXPORT MetaBase : public QSharedData, public MetaCapability
