@@ -103,10 +103,10 @@ public:
     void setComment( const QString &comment );
     void setSampleRate( int sampleRate );
     void setFilesize( int filesize );
-    void setTrackGain( double trackGain );
-    void setTrackPeakGain( double trackPeakGain );
-    void setAlbumGain( double albumGain );
-    void setAlbumPeakGain( double albumPeakGain );
+    void setTrackGain( qreal trackGain );
+    void setTrackPeakGain( qreal trackPeakGain );
+    void setAlbumGain( qreal albumGain );
+    void setAlbumPeakGain( qreal albumPeakGain );
     void setPlayableUrl( const KUrl &url );
 
     // Non pure virtual functions

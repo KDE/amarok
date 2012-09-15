@@ -329,23 +329,23 @@ NepomukTrack::setFilesize( int filesize )
 }
 
 void
-NepomukTrack::setTrackGain( double trackGain )
+NepomukTrack::setTrackGain( qreal trackGain )
 {
     m_trackGain = trackGain;
 }
 
-void NepomukTrack::setTrackPeakGain( double trackPeakGain )
+void NepomukTrack::setTrackPeakGain( qreal trackPeakGain )
 {
     m_trackPeakGain = trackPeakGain;
 }
 
 void
-NepomukTrack::setAlbumGain( double albumGain )
+NepomukTrack::setAlbumGain( qreal albumGain )
 {
     m_albumGain = albumGain;
 }
 
-void NepomukTrack::setAlbumPeakGain( double albumPeakGain )
+void NepomukTrack::setAlbumPeakGain( qreal albumPeakGain )
 {
     m_albumPeakGain = albumPeakGain;
 }
