@@ -25,7 +25,6 @@ class NepomukCollectionFactory : public Collections::CollectionFactory
 public:
     NepomukCollectionFactory( QObject *parent, const QVariantList &args );
     virtual ~NepomukCollectionFactory();
-
     virtual void init();
 
 };

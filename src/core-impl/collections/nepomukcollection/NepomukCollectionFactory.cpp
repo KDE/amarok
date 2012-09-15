@@ -39,7 +39,6 @@ NepomukCollectionFactory::init()
         emit newCollection( new Collections::NepomukCollection() );
         return;
     }
-
     else
     {
         warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk. "

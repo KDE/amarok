@@ -47,8 +47,6 @@ class NepomukTrack : public Track
 public:
     // construct a NepomukTrack out of a Nepomuk resource
     NepomukTrack( const QUrl &resUri, NepomukCollection *coll );
-    // construct a NepomukTrack out of a url
-
     ~NepomukTrack();
 
     virtual QString name() const;
@@ -80,14 +78,18 @@ public:
     virtual int playCount() const;
     virtual QString type() const;
 
-    // NepomukTrack methods
-
+    // NepomukTrack meta methods
     void setAlbum( NepomukAlbumPtr album );
     void setArtist( NepomukArtistPtr artist );
     void setComposer( NepomukComposerPtr composer );
     void setGenre( NepomukGenrePtr genre );
     void setYear( NepomukYearPtr year );
+    virtual void addLabel( const Meta::LabelPtr &label );
+    virtual void addLabel( const QString &label );
+    virtual Meta::LabelList labels() const;
+    virtual void removeLabel( const Meta::LabelPtr &label );
 
+    // NepomukTrack secondary metadata methods
     void setName( const QString &name );
     void setType( const QString &type );
     void setLength( const qint64 length );
@@ -114,11 +116,6 @@ public:
      */
     virtual Collections::Collection *collection() const;
     virtual qreal replayGain( ReplayGainTag mode ) const;
-
-    virtual void addLabel( const Meta::LabelPtr &label );
-    virtual void addLabel( const QString &label );
-    virtual Meta::LabelList labels() const;
-    virtual void removeLabel( const Meta::LabelPtr &label );
 
 private:
 

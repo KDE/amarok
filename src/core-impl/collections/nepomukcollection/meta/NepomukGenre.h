@@ -37,7 +37,6 @@ public:
     NepomukGenre( const QString &name );
 
     virtual TrackList tracks();
-
     virtual QString name() const;
 
 private:
