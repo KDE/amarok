@@ -158,25 +158,25 @@ NepomukConstructMetaJob::run()
         QUrl trackResUri = it.binding( "r" ).uri();
         NepomukTrackPtr nepTrackPtr( new NepomukTrack( trackResUri , m_coll ) );
 
-        // many properties are first converted to double and then casted to int
-        // because without this widening conversion in the beginning, it was leading
-        // to erraneous values due to the size limitation of int.
+        // A few ontologies have the range of float.
+        // Hence many properties are first converted to double and
+        // then casted to int to be able to parse the real number stored as int.
 
         KUrl kurl( it.binding( "url" ).toString() );
         QString title = it.binding( "title" ).toString();
         QString type = it.binding( "type" ).toString();
-        int length = ( int ) it.binding( "length" ).toString().toDouble();
-        int bitrate = ( int ) it.binding( "bitrate" ).toString().toDouble();
-        int trackNumber = ( int ) it.binding( "trackNumber" ).toString().toDouble();
+        int length = it.binding( "length" ).toString().toDouble();
+        int bitrate = it.binding( "bitrate" ).toString().toFloat();
+        int trackNumber = it.binding( "trackNumber" ).toString().toInt();
         //disc number is not yet extracted as there is no explicit ontology for it
-        qreal bpm = it.binding( "bpm" ).toString().toDouble();
+        qreal bpm = it.binding( "bpm" ).toString().toInt();
         QString comment = it.binding( "comment" ).toString();
-        int sampleRate = ( int )it.binding( "sampleRate" ).toString().toDouble();
-        int filesize = ( int )it.binding( "filesize" ).toString().toDouble();
-        double trackGain = it.binding( "trackGain" ).toString().toDouble();
-        double trackPeakGain = it.binding( "trackPeakGain" ).toString().toDouble();
-        double albumGain = it.binding( "albumGain" ).toString().toDouble();
-        double albumPeakGain = it.binding( "albumPeakGain" ).toString().toDouble();
+        int sampleRate = it.binding( "sampleRate" ).toString().toFloat();
+        int filesize = it.binding( "filesize" ).toString().toInt();
+        qreal trackGain = it.binding( "trackGain" ).toString().toFloat();
+        qreal trackPeakGain = it.binding( "trackPeakGain" ).toString().toFloat();
+        qreal albumGain = it.binding( "albumGain" ).toString().toFloat();
+        qreal albumPeakGain = it.binding( "albumPeakGain" ).toString().toFloat();
 
         QString modifyDate = it.binding( "modifyDate" ).toString();
         QDateTime modidyDateTime = QDateTime::fromString( modifyDate );
@@ -184,7 +184,6 @@ NepomukConstructMetaJob::run()
         QDateTime createDateTime = QDateTime::fromString( createDate );
 
         // fill all the properties into the NepomukTrack
-
         nepTrackPtr->setName( title );
         nepTrackPtr->setType( type );
         nepTrackPtr->setLength( length );
