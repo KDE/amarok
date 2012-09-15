@@ -37,7 +37,7 @@ namespace Playlist {
     
     m_listWidget = new QListWidget();
 
-    QPushButton * okButton = new QPushButton( i18n( "Ok" ) );
+    QPushButton * okButton = new QPushButton( i18n( "OK" ) );
     connect( okButton, SIGNAL( clicked() ), SLOT( accept() ) );
 
     connect( m_listWidget, SIGNAL( itemDoubleClicked( QListWidgetItem * ) ), this, SLOT( sourceSelected( QListWidgetItem * ) ) );
