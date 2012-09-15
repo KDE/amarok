@@ -27,8 +27,6 @@ namespace Meta
 {
 
 class NepomukYear;
-typedef KSharedPtr<NepomukYear> NepomukYearPtr;
-
 
 class NepomukYear : public Year
 {

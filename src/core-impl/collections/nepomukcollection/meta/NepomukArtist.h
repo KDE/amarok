@@ -24,7 +24,6 @@ namespace Meta
 {
 
 class NepomukArtist;
-typedef KSharedPtr<NepomukArtist> NepomukArtistPtr;
 
 /**
  * Represents a unit artist resource in Amarok

@@ -23,7 +23,6 @@ namespace Meta
 {
 
 class NepomukLabel;
-typedef KSharedPtr<NepomukLabel> NepomukLabelPtr;
 
 /**
  * Represents a unit label/tag resource in Amarok

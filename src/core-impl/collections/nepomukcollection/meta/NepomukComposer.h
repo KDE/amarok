@@ -24,7 +24,6 @@ namespace Meta
 {
 
 class NepomukComposer;
-typedef KSharedPtr<NepomukComposer> NepomukComposerPtr;
 
 /**
  * Represents a unit composer resource in Amarok

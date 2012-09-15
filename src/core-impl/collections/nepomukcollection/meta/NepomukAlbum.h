@@ -24,7 +24,6 @@ namespace Meta
 {
 
 class NepomukAlbum;
-typedef KSharedPtr<NepomukAlbum> NepomukAlbumPtr;
 
 /**
  * Represents a unit album resource in Amarok

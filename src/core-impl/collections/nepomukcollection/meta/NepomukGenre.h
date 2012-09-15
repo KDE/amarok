@@ -25,7 +25,6 @@ namespace Meta
 {
 
 class NepomukGenre;
-typedef KSharedPtr<NepomukGenre> NepomukGenrePtr;
 
 /**
  * Represents a unit genre resource in Amarok
