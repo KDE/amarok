@@ -70,6 +70,10 @@ NepomukConstructMetaJob::run()
     QueryResultIterator its = model->executeQuery( countQuery,
                               Query::QueryLanguageSparql );
     int totalTracks = its.binding( 0 ).toString().toInt();
+    QString operationText = i18n( "Updating Nepomuk Collection" );
+    Amarok::Components::logger()->newProgressOperation( this, operationText,
+            totalTracks, this,
+            SLOT( abort() ) );
 
     QString query
     = QString::fromLatin1( "select distinct ?r ?title ?url ?artist ?composer ?album ?genre "
@@ -148,10 +152,6 @@ NepomukConstructMetaJob::run()
                            "}" );
 
     QueryResultIterator it = model->executeQuery( query, Query::QueryLanguageSparql );
-    QString operationText = i18n( "Updating Nepomuk Collection" );
-    Amarok::Components::logger()->newProgressOperation( this, operationText,
-            totalTracks, this,
-            SLOT( abort() ) );
 
     while( it.next() && !m_aborted )
     {
