@@ -43,8 +43,6 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
 
         Meta::TrackPtr realTrack;
 
-        QList<Meta::Observer *> observers;
-
         QString cachedArtist;
         QString cachedAlbum;
         QString cachedName;
@@ -63,22 +61,11 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         Meta::YearPtr yearPtr;
 
     public:
-        void notifyObservers()
-        {
-            if( proxy )
-            {
-                foreach( Meta::Observer *observer, observers )
-                {
-                    if( observer != this )
-                        observer->metadataChanged( Meta::TrackPtr( const_cast<MetaProxy::Track*>(proxy) ) );
-                }
-            }
-        }
         using Observer::metadataChanged;
         void metadataChanged( Meta::TrackPtr track )
         {
             Q_UNUSED( track )
-            notifyObservers();
+            proxy->notifyObservers();
         }
 
     public slots:
@@ -88,7 +75,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
             {
                 subscribeTo( track );
                 realTrack = track;
-                notifyObservers();
+                proxy->notifyObservers();
             }
         }
 };

@@ -274,18 +274,6 @@ UpnpTrack::type() const
     return m_type;
 }
 
-void
-UpnpTrack::subscribe( Observer *observer )
-{
-    Q_UNUSED( observer )    //read only
-}
-
-void
-UpnpTrack::unsubscribe( Observer *observer )
-{
-    Q_UNUSED( observer )    //read only
-}
-
 bool
 UpnpTrack::inCollection() const
 {

@@ -526,20 +526,6 @@ Track::removeLabel( const Meta::LabelPtr &label )
 }
 
 void
-MetaProxy::Track::subscribe( Meta::Observer *observer )
-{
-    if( observer && !d->observers.contains( observer ) )
-        d->observers.append( observer );
-}
-
-void
-MetaProxy::Track::unsubscribe( Meta::Observer *observer )
-{
-    if( observer )
-        d->observers.removeAll( observer );
-}
-
-void
 MetaProxy::Track::lookupTrack( Collections::TrackProvider *provider )
 {
     if( provider->possiblyContainsTrack( d->url ) )

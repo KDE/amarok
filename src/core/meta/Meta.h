@@ -159,8 +159,18 @@ namespace Meta
             virtual QString fixedName() const { return prettyName(); }
 
         protected:
-            virtual void subscribe( Observer *observer );
-            virtual void unsubscribe( Observer *observer );
+            /**
+             * Subscribe @param observer for change updates. Don't ever think of calling
+             * this method yourself or overriding it, it's highly coupled with Observer.
+             */
+            void subscribe( Observer *observer );
+
+            /**
+             * Unsubscribe @param observer from change updates. Don't ever think of
+             * calling this method yourself or overriging it, it's highly coupled with
+             * Observer.
+             */
+            void unsubscribe( Observer *observer );
 
             virtual void notifyObservers() const = 0;
 

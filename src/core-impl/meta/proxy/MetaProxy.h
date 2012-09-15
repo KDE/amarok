@@ -52,9 +52,6 @@ namespace MetaProxy
             virtual QString sortableName() const;
             virtual QString fixedName() const;
 
-            virtual void subscribe( Meta::Observer *observer );
-            virtual void unsubscribe( Meta::Observer *observer );
-
         // methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;

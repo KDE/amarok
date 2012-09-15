@@ -115,6 +115,7 @@ Meta::Observer::destroyedNotify( Meta::MetaBase *ptr )
 
 Meta::MetaBase::~MetaBase()
 {
+    // we need to notify all observers that we're deleted to avoid stale pointers
     foreach( Observer *observer, m_observers )
     {
         observer->destroyedNotify( this );

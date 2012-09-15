@@ -244,18 +244,6 @@ AudioCdTrack::type() const
     return m_collection->encodingFormat();
 }
 
-void
-AudioCdTrack::subscribe( Observer *observer )
-{
-    Q_UNUSED( observer )    //read only
-}
-
-void
-AudioCdTrack::unsubscribe( Observer *observer )
-{
-    Q_UNUSED( observer )    //read only
-}
-
 bool
 AudioCdTrack::inCollection() const
 {

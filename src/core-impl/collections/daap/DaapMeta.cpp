@@ -257,18 +257,6 @@ DaapTrack::type() const
     return m_type;
 }
 
-void
-DaapTrack::subscribe( Observer *observer )
-{
-    Q_UNUSED( observer )    //read only
-}
-
-void
-DaapTrack::unsubscribe( Observer *observer )
-{
-    Q_UNUSED( observer )    //read only
-}
-
 bool
 DaapTrack::inCollection() const
 {
