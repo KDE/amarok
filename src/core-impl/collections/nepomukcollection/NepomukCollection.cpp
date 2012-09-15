@@ -42,7 +42,6 @@ NepomukCollection::NepomukCollection()
     , m_mc( new MemoryCollection() )
 {
     buildCollection();
-    emit collectionUpdated();
 }
 
 NepomukCollection::~NepomukCollection()
