@@ -79,11 +79,11 @@ public:
     virtual QString type() const;
 
     // NepomukTrack meta methods
-    void setAlbum( NepomukAlbumPtr album );
-    void setArtist( NepomukArtistPtr artist );
-    void setComposer( NepomukComposerPtr composer );
-    void setGenre( NepomukGenrePtr genre );
-    void setYear( NepomukYearPtr year );
+    void setAlbum( AlbumPtr album );
+    void setArtist( ArtistPtr artist );
+    void setComposer( ComposerPtr composer );
+    void setGenre( GenrePtr genre );
+    void setYear( YearPtr year );
     virtual void addLabel( const Meta::LabelPtr &label );
     virtual void addLabel( const QString &label );
     virtual Meta::LabelList labels() const;

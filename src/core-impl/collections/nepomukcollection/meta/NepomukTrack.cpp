@@ -221,33 +221,60 @@ NepomukTrack::type() const
 }
 
 void
-NepomukTrack::setArtist( NepomukArtistPtr artist )
+NepomukTrack::setArtist( ArtistPtr artist )
 {
-    m_artist = Meta::ArtistPtr::staticCast( artist );
+    m_artist = artist;
 }
 
 void
-NepomukTrack::setComposer( NepomukComposerPtr composer )
+NepomukTrack::setComposer( ComposerPtr composer )
 {
-    m_composer = Meta::ComposerPtr::staticCast( composer );
+    m_composer = composer;
 }
 
 void
-NepomukTrack::setGenre( NepomukGenrePtr genre )
+NepomukTrack::setGenre( GenrePtr genre )
 {
-    m_genre = Meta::GenrePtr::staticCast( genre );
+    m_genre = genre;
 }
 
 void
-NepomukTrack::setAlbum( NepomukAlbumPtr album )
+NepomukTrack::setAlbum( AlbumPtr album )
 {
-    m_album = Meta::AlbumPtr::staticCast( album );
+    m_album = album;
 }
 
 void
-NepomukTrack::setYear( NepomukYearPtr year )
+NepomukTrack::setYear( YearPtr year )
 {
-    m_year = Meta::YearPtr::staticCast( year );
+    m_year = year;
+}
+
+void
+NepomukTrack::addLabel( const Meta::LabelPtr &label )
+{
+    if ( !m_labellist.contains( label ) )
+        m_labellist.append( label );
+}
+
+void
+NepomukTrack::addLabel( const QString &label )
+{
+    LabelPtr labelPtr;
+    labelPtr = new NepomukLabel( label );
+    m_labellist.append( labelPtr );
+}
+
+Meta::LabelList
+NepomukTrack::labels() const
+{
+    return m_labellist;
+}
+
+void
+NepomukTrack::removeLabel( const LabelPtr &label )
+{
+    m_labellist.removeAll( label );
 }
 
 void
@@ -396,31 +423,4 @@ NepomukTrack::replayGain( ReplayGainTag mode ) const
     }
 
      return gain;
-}
-
-void
-NepomukTrack::addLabel( const Meta::LabelPtr &label )
-{
-    if ( !m_labellist.contains( label ) )
-        m_labellist.append( label );
-}
-
-void
-NepomukTrack::addLabel( const QString &label )
-{
-    NepomukLabelPtr labelPtr;
-    labelPtr = new NepomukLabel( label );
-    m_labellist.append( Meta::LabelPtr::staticCast( labelPtr ) );
-}
-
-Meta::LabelList
-NepomukTrack::labels() const
-{
-    return m_labellist;
-}
-
-void
-NepomukTrack::removeLabel( const LabelPtr &label )
-{
-    m_labellist.removeAll( label );
 }

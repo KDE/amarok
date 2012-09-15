@@ -206,7 +206,7 @@ NepomukConstructMetaJob::run()
         nepTrackPtr->setUidUrl( trackResUri.toString() );
 
         // Artist
-        NepomukArtistPtr nepArtistPtr;
+        ArtistPtr nepArtistPtr;
         QString artistLabel = it.binding( "artist" ).toString();
         if( !artistLabel.isEmpty() )
         {
@@ -215,7 +215,7 @@ NepomukConstructMetaJob::run()
         }
 
         //genre
-        NepomukGenrePtr nepGenrePtr;
+        GenrePtr nepGenrePtr;
         QString genreLabel = it.binding( "genre" ).toString();
         if( !genreLabel.isEmpty() )
         {
@@ -225,7 +225,7 @@ NepomukConstructMetaJob::run()
 
         //composer
 
-        NepomukComposerPtr nepComposerPtr;
+        ComposerPtr nepComposerPtr;
         QString composerLabel = it.binding( "composer" ).toString();
         if( !composerLabel.isEmpty() )
         {
@@ -235,18 +235,17 @@ NepomukConstructMetaJob::run()
 
         //album
 
-        NepomukAlbumPtr nepAlbumPtr;
+        AlbumPtr nepAlbumPtr;
         QString albumLabel = it.binding( "album" ).toString();
         if( !albumLabel.isEmpty() )
         {
-            nepAlbumPtr = new NepomukAlbum( albumLabel, ArtistPtr::staticCast(
-                                                nepArtistPtr ) ) ;
+            nepAlbumPtr = new NepomukAlbum( albumLabel, nepArtistPtr ) ;
             nepTrackPtr->setAlbum( nepAlbumPtr );
         }
 
         //labels
 
-        NepomukLabelPtr nepLabelPtr;
+        LabelPtr nepLabelPtr;
         QString tagQuery = QString( "select ?tagUri ?tag where "
                                     "{ %1 nao:hasTag ?tagUri . ?tagUri nao:identifier ?tag . }"
                                   ).arg( Node::resourceToN3( trackResUri ) );
@@ -258,13 +257,13 @@ NepomukConstructMetaJob::run()
             if( !label.isEmpty() )
             {
                 nepLabelPtr = new NepomukLabel( label );
-                nepTrackPtr->addLabel( Meta::LabelPtr::staticCast( nepLabelPtr ) );
+                nepTrackPtr->addLabel( nepLabelPtr );
             }
         }
 
         // year
 
-        NepomukYearPtr nepYearPtr;
+        YearPtr nepYearPtr;
         QString dateAndTime = it.binding( "year" ).toString();
         QDateTime fullDate = QDateTime::fromString( dateAndTime );
         QString yearLabel = QString( fullDate.date().year() );
