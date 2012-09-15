@@ -67,8 +67,6 @@ TestSqlQueryMaker::TestSqlQueryMaker()
 void
 TestSqlQueryMaker::initTestCase()
 {
-    Debug::setDebugEnabled(true);
-
     m_tmpDir = new KTempDir();
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
     m_collection = new Collections::SqlCollection( "testId", "testcollection", m_storage );
