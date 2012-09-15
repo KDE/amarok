@@ -19,7 +19,6 @@
 #define NEPOMUKYEAR_H
 
 #include "core/meta/Meta.h"
-#include "NepomukCollection.h"
 
 using namespace Collections;
 

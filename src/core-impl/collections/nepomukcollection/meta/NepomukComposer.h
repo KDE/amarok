@@ -33,13 +33,11 @@ class NepomukComposer : public Composer
 {
 public:
     NepomukComposer( const QString &name );
-
     virtual TrackList tracks();
     virtual QString name() const;
 
 private:
     QString m_name;
-
 };
 
 }

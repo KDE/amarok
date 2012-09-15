@@ -253,7 +253,7 @@ NepomukTrack::setYear( YearPtr year )
 void
 NepomukTrack::addLabel( const Meta::LabelPtr &label )
 {
-    if ( !m_labellist.contains( label ) )
+    if( !m_labellist.contains( label ) )
         m_labellist.append( label );
 }
 
@@ -412,15 +412,15 @@ NepomukTrack::replayGain( ReplayGainTag mode ) const
         break;
     case 2 :
         gain = m_albumGain;
-        if ( gain == 0 )
+        if( gain == 0 )
             gain = m_trackGain;
         break;
     case 3 :
         gain = m_albumPeakGain;
-        if ( gain == 0 )
+        if( gain == 0 )
             gain = m_trackPeakGain;
         break;
     }
 
-     return gain;
+    return gain;
 }

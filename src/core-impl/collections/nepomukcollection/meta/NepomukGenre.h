@@ -19,7 +19,6 @@
 #define NEPOMUKGENRE_H
 
 #include "core/meta/Meta.h"
-#include "NepomukCollection.h"
 
 namespace Meta
 {
@@ -40,7 +39,6 @@ public:
 
 private:
     QString m_name;
-
 };
 
 }

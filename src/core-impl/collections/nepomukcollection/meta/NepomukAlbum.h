@@ -47,7 +47,6 @@ private:
     ArtistPtr m_artist;
     bool m_isCompilation;
     bool m_hasAlbumArtist;
-
 };
 
 }
