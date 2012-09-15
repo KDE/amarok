@@ -41,7 +41,7 @@ namespace Podcasts {
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class AMAROK_CORE_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
+class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
 {
     Q_OBJECT
     public:
