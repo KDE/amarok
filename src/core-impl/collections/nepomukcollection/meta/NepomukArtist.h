@@ -22,13 +22,9 @@
 
 namespace Meta
 {
-
-class NepomukArtist;
-
 /**
  * Represents a unit artist resource in Amarok
  */
-
 class NepomukArtist : public Artist
 {
 public:
@@ -41,5 +37,4 @@ private:
 };
 
 }
-
 #endif // NEPOMUKARTIST_H

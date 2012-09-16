@@ -26,7 +26,6 @@ public:
     NepomukCollectionFactory( QObject *parent, const QVariantList &args );
     virtual ~NepomukCollectionFactory();
     virtual void init();
-
 };
 
 #endif // NEPOMUKCOLLECTIONFACTORY_H

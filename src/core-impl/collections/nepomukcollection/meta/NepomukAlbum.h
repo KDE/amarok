@@ -22,19 +22,13 @@
 
 namespace Meta
 {
-
-class NepomukAlbum;
-
 /**
  * Represents a unit album resource in Amarok
  */
-
 class NepomukAlbum : public Meta::Album
 {
 public:
-    NepomukAlbum( const QString &name );
     NepomukAlbum( const QString &albumName, const ArtistPtr &artistPtr );
-
     virtual bool isCompilation() const;
     virtual bool hasAlbumArtist() const;
     virtual ArtistPtr albumArtist() const;
@@ -42,11 +36,9 @@ public:
     virtual QString name() const;
 
 private:
-
     QString m_name;
     ArtistPtr m_artist;
     bool m_isCompilation;
-    bool m_hasAlbumArtist;
 };
 
 }

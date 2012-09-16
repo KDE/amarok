@@ -404,22 +404,22 @@ NepomukTrack::replayGain( ReplayGainTag mode ) const
     qreal gain = 0;
     switch( mode )
     {
-    case 0 :
-        gain = m_trackGain;
-        break;
-    case 1 :
-        gain = m_trackPeakGain;
-        break;
-    case 2 :
-        gain = m_albumGain;
-        if( gain == 0 )
+        case ReplayGain_Track_Gain :
             gain = m_trackGain;
-        break;
-    case 3 :
-        gain = m_albumPeakGain;
-        if( gain == 0 )
+            break;
+        case ReplayGain_Track_Peak :
             gain = m_trackPeakGain;
-        break;
+            break;
+        case ReplayGain_Album_Gain :
+            gain = m_albumGain;
+            if( gain == 0 )
+                gain = m_trackGain;
+            break;
+        case ReplayGain_Album_Peak :
+            gain = m_albumPeakGain;
+            if( gain == 0 )
+                gain = m_trackPeakGain;
+            break;
     }
 
     return gain;

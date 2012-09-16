@@ -39,7 +39,6 @@ typedef KSharedPtr<NepomukTrack> NepomukTrackPtr;
 /**
  * Represents a unit music track resource in Amarok
  */
-
 class NepomukTrack : public Track
 {
 public:

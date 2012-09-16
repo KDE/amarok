@@ -21,13 +21,9 @@
 
 namespace Meta
 {
-
-class NepomukLabel;
-
 /**
  * Represents a unit label/tag resource in Amarok
  */
-
 class NepomukLabel : public Label
 {
 public:

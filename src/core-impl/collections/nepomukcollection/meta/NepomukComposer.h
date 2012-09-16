@@ -22,13 +22,9 @@
 
 namespace Meta
 {
-
-class NepomukComposer;
-
 /**
  * Represents a unit composer resource in Amarok
  */
-
 class NepomukComposer : public Composer
 {
 public:
@@ -41,5 +37,4 @@ private:
 };
 
 }
-
 #endif // NEPOMUKCOMPOSER_H

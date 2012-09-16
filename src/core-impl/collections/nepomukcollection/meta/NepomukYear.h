@@ -24,9 +24,6 @@ using namespace Collections;
 
 namespace Meta
 {
-
-class NepomukYear;
-
 class NepomukYear : public Year
 {
 public:

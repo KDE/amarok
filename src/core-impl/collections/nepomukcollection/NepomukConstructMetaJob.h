@@ -35,9 +35,6 @@ class NepomukConstructMetaJob : public ThreadWeaver::Job
 public:
     explicit NepomukConstructMetaJob( NepomukCollection *coll );
 
-protected:
-    void run();
-
 public slots:
     /**
      * Aborts the job as soon as it is safely possible
@@ -51,6 +48,9 @@ signals:
     // not used, defined to keep QObject::conect warning quiet
     void totalSteps( int steps );
     void updated();
+
+protected:
+    void run();
 
 private:
     QSharedPointer<Collections::MemoryCollection> m_mc;

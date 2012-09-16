@@ -276,7 +276,7 @@ NepomukConstructMetaJob::run()
         // the nepomuk track object is by now completely populated with whatever
         // metadata that could be gathered.
         // cast it and assign it to the MapChanger where it weilds its own magic.
-        TrackPtr trackPtr =  TrackPtr::staticCast( nepTrackPtr );
+        TrackPtr trackPtr =  TrackPtr( nepTrackPtr.data() );
         MemoryMeta::MapChanger mapChanger( m_mc.data() );
         mapChanger.addTrack( trackPtr );
 

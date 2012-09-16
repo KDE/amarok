@@ -22,18 +22,13 @@
 
 namespace Meta
 {
-
-class NepomukGenre;
-
 /**
  * Represents a unit genre resource in Amarok
  */
-
 class NepomukGenre : public Genre
 {
 public:
     NepomukGenre( const QString &name );
-
     virtual TrackList tracks();
     virtual QString name() const;
 
@@ -42,5 +37,4 @@ private:
 };
 
 }
-
 #endif // NEPOMUKGENRE_H

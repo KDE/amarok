@@ -75,6 +75,9 @@ public:
     virtual KIcon icon() const;
     virtual bool isWritable() const;
 
+protected:
+    QSharedPointer<MemoryCollection> m_mc;
+
 private:
     // nepomuk specific
     /**
@@ -90,20 +93,7 @@ private:
       * object.
       */
     void buildCollection();
-
-private:
     friend class NepomukConstructMetaJob;
-
-private:
-    /**
-      * This variable return true, if Nepomuk is available and enabled
-      * It is also an indicator that NepomukCollection can be used.
-      */
-    bool m_nepomukCollectionReady;
-
-protected:
-    QSharedPointer<MemoryCollection> m_mc;
-
 };
 
 } //namespace Collections
