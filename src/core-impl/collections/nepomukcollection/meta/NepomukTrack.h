@@ -31,14 +31,13 @@
 
 namespace Meta
 {
-
 class NepomukTrack;
 typedef KSharedPtr<NepomukTrack> NepomukTrackPtr;
 
 /**
  * Represents a unit music track resource in Amarok
  */
-class NepomukTrack : public Track
+class NepomukTrack : public Track, public Statistics
 {
 public:
     // construct a NepomukTrack out of a Nepomuk resource
@@ -59,10 +58,6 @@ public:
 
     virtual qreal bpm() const;
     virtual QString comment() const;
-    virtual double score() const;
-    virtual void setScore( double newScore );
-    virtual int rating() const;
-    virtual void setRating( int newRating );
     virtual qint64 length() const;
     virtual int filesize() const;
     virtual int sampleRate() const;
@@ -71,8 +66,22 @@ public:
     virtual QDateTime modifyDate() const;
     virtual int trackNumber() const;
     virtual int discNumber() const;
-    virtual int playCount() const;
     virtual QString type() const;
+
+    virtual StatisticsPtr statistics();
+
+    // Meta::Statistics methods
+    // TODO: introduce scores into Nepomuk and implement score(), setScore()
+
+    virtual int rating() const;
+    virtual void setRating( int newRating );
+
+    // TODO: implement (set)First/LastPlayed()
+
+    virtual int playCount() const;
+    // TODO: implement setPlayCount();
+
+    // TODO: implement beginUpdate()/endUpdate() once other stats methods are here
 
     // NepomukTrack meta methods
     void setAlbum( AlbumPtr album );

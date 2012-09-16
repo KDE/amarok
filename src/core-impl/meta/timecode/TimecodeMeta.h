@@ -74,12 +74,6 @@ public:
     virtual QString comment() const;
     virtual void setComment ( const QString &newComment );
 
-    virtual double score() const;
-    virtual void setScore ( double newScore );
-
-    virtual int rating() const;
-    virtual void setRating ( int newRating );
-
     virtual qint64 length() const;
 
     virtual int filesize() const;
@@ -91,8 +85,6 @@ public:
 
     virtual int discNumber() const;
     virtual void setDiscNumber ( int newDiscNumber );
-
-    virtual int playCount() const;
 
     virtual QString type() const;
 

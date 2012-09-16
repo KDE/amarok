@@ -182,6 +182,8 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
         metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrack( deviceId, rpath, directoryId, uid ) );
     }
 
+    Meta::ConstStatisticsPtr origStats = track->statistics();
+
     // -- set the values
     metaTrack->setWriteFile( false ); // no need to write the tags back
     metaTrack->beginMetaDataUpdate();
@@ -204,10 +206,10 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     if( !track->comment().isEmpty() )
         metaTrack->setComment( track->comment() );
 
-    if( track->score() > 0 )
-        metaTrack->setScore( track->score() );
-    if( track->rating() > 0 )
-        metaTrack->setRating( track->rating() );
+    if( origStats->score() > 0 )
+        metaTrack->setScore( origStats->score() );
+    if( origStats->rating() > 0 )
+        metaTrack->setRating( origStats->rating() );
 
     /* These tags change when transcoding. Prefer to read those from file */
     if( fileTags.value( Meta::valLength, 0 ).toLongLong() > 0 )
@@ -234,12 +236,12 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     if( track->discNumber() > 0 )
         metaTrack->setDiscNumber( track->discNumber() );
 
-    if( track->lastPlayed().isValid() )
-        metaTrack->setLastPlayed( track->lastPlayed() );
-    if( track->firstPlayed().isValid() )
-        metaTrack->setFirstPlayed( track->firstPlayed() );
-    if( track->playCount() > 0 )
-        metaTrack->setPlayCount( track->playCount() );
+    if( origStats->lastPlayed().isValid() )
+        metaTrack->setLastPlayed( origStats->lastPlayed() );
+    if( origStats->firstPlayed().isValid() )
+        metaTrack->setFirstPlayed( origStats->firstPlayed() );
+    if( origStats->playCount() > 0 )
+        metaTrack->setPlayCount( origStats->playCount() );
 
     Meta::ReplayGainTag modes[] = { Meta::ReplayGain_Track_Gain,
         Meta::ReplayGain_Track_Peak,

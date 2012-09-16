@@ -184,30 +184,6 @@ UpnpTrack::setComment( const QString &newComment )
     Q_UNUSED( newComment )
 }
 
-double
-UpnpTrack::score() const
-{
-    return 0.0;
-}
-
-void
-UpnpTrack::setScore( double newScore )
-{
-    Q_UNUSED( newScore )
-}
-
-int
-UpnpTrack::rating() const
-{
-    return 0;
-}
-
-void
-UpnpTrack::setRating( int newRating )
-{
-    Q_UNUSED( newRating )
-}
-
 qint64
 UpnpTrack::length() const
 {
@@ -254,18 +230,6 @@ void
 UpnpTrack::setDiscNumber( int newDiscNumber )
 {
     Q_UNUSED( newDiscNumber )
-}
-
-int
-UpnpTrack::playCount() const
-{
-    return 0;
-}
-
-QDateTime
-UpnpTrack::lastPlayed() const
-{
-    return QDateTime::fromTime_t(0);
 }
 
 QString

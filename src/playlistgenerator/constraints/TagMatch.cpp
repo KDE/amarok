@@ -460,19 +460,19 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
                 v = m_comparer->compareDate( track->createDate().toTime_t(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valScore:
-                v = m_comparer->compareNum( track->score(), m_comparison, m_value.toDouble(), m_strictness, fmv );
+                v = m_comparer->compareNum( track->statistics()->score(), m_comparison, m_value.toDouble(), m_strictness, fmv );
                 break;
             case Meta::valRating:
-                v = m_comparer->compareNum( track->rating(), m_comparison, m_value.toInt(), m_strictness, fmv );
+                v = m_comparer->compareNum( track->statistics()->rating(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valFirstPlayed:
-                v = m_comparer->compareDate( track->firstPlayed().toTime_t(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->statistics()->firstPlayed().toTime_t(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valLastPlayed:
-                v = m_comparer->compareDate( track->lastPlayed().toTime_t(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->statistics()->lastPlayed().toTime_t(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valPlaycount:
-                v = m_comparer->compareNum( track->playCount(), m_comparison, m_value.toInt(), m_strictness, fmv );
+                v = m_comparer->compareNum( track->statistics()->playCount(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valLabel:
                 v = m_comparer->compareLabels( track, m_comparison, m_value.toString() );

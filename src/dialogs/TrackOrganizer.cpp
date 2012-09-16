@@ -90,7 +90,7 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
         args["filetype"] = track->type();
     else
         args["filetype"] = m_targetFileExtension;
-    args["rating"] = track->rating();
+    args["rating"] = track->statistics()->rating();
     args["filesize"] = track->filesize();
     args["length"] = track->length() / 1000;
 

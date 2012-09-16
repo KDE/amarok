@@ -125,32 +125,6 @@ Track::comment() const
     return d->comment;
 }
 
-double
-Track::score() const
-{
-    return d->score;
-}
-
-void
-Track::setScore( double newScore )
-{
-    d->score = newScore;
-    notifyObservers();
-}
-
-int
-Track::rating() const
-{
-    return d->rating;
-}
-
-void
-Track::setRating( int newRating )
-{
-    d->rating = newRating;
-    notifyObservers();
-}
-
 int
 Track::trackNumber() const
 {
@@ -161,24 +135,6 @@ int
 Track::discNumber() const
 {
     return 0;
-}
-
-QDateTime
-Track::lastPlayed() const
-{
-    return d->lastPlayed;
-}
-
-QDateTime
-Track::firstPlayed() const
-{
-    return d->firstPlayed;
-}
-
-int
-Track::playCount() const
-{
-    return d->playcount;
 }
 
 qint64
@@ -209,21 +165,6 @@ QString
 Track::type() const
 {
     return "stream";
-}
-
-void
-Track::finishedPlaying( double playedFraction )
-{
-    // following code is more or less copied from SqlMeta::Track::finishedPlaying()
-    if( playedFraction < 0.8 )
-        return;
-
-    d->playcount++;
-    if( !firstPlayed().isValid() )
-        d->firstPlayed = QDateTime::currentDateTime();
-    d->lastPlayed = QDateTime::currentDateTime();
-    d->score = Amarok::computeScore( d->score, d->playcount, playedFraction );
-    notifyObservers();
 }
 
 #include "Stream_p.moc"

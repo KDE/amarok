@@ -58,7 +58,6 @@
 QVariantMap
 Meta::Field::mapFromTrack( const Meta::TrackPtr track )
 {
-    //note: track does not support first_played yet
     QVariantMap map;
     if( !track )
         return map;
@@ -100,10 +99,12 @@ Meta::Field::mapFromTrack( const Meta::TrackPtr track )
 
     map.insert( Meta::Field::UNIQUEID, QVariant( track->uidUrl() ) );
     map.insert( Meta::Field::URL, QVariant( track->prettyUrl() ) );
-    map.insert( Meta::Field::RATING, QVariant( track->rating() ) );
-    map.insert( Meta::Field::SCORE, QVariant( track->score() ) );
-    map.insert( Meta::Field::PLAYCOUNT, QVariant( track->playCount() ) );
-    map.insert( Meta::Field::LAST_PLAYED, QVariant( track->lastPlayed() ) );
+    Meta::ConstStatisticsPtr statistics = track->statistics();
+    map.insert( Meta::Field::RATING, QVariant( statistics->rating() ) );
+    map.insert( Meta::Field::SCORE, QVariant( statistics->score() ) );
+    map.insert( Meta::Field::PLAYCOUNT, QVariant( statistics->playCount() ) );
+    map.insert( Meta::Field::LAST_PLAYED, QVariant( statistics->lastPlayed() ) );
+    map.insert( Meta::Field::FIRST_PLAYED, QVariant( statistics->firstPlayed() ) );
 
     return map;
 }
@@ -148,7 +149,7 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
             map["genre"] = track->genre()->name();
 
         map["comment"] = track->comment();
-        map["rating"] = track->rating()/2;  //out of 5, not 10.
+        map["rating"] = track->statistics()->rating()/2;  //out of 5, not 10.
 
         if( track->year() )
             map["year"] = track->year()->name();
@@ -206,7 +207,8 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
         if( track->bpm() > 0 )
             map["xesam:audioBPM"] = int(track->bpm());
 
-        map["xesam:autoRating"] = track->score();
+        Meta::ConstStatisticsPtr statistics = track->statistics();
+        map["xesam:autoRating"] = statistics->score();
 
         map["xesam:comment"] = QStringList() << track->comment();
 
@@ -223,14 +225,14 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
         if( track->discNumber() )
             map["xesam:discNumber"] = track->discNumber();
 
-        if( track->firstPlayed().isValid() )
-            map["xesam:firstUsed"] = track->firstPlayed().toString(Qt::ISODate);
+        if( statistics->firstPlayed().isValid() )
+            map["xesam:firstUsed"] = statistics->firstPlayed().toString(Qt::ISODate);
 
         if( track->genre() )
             map["xesam:genre"] = QStringList() << track->genre()->name();
 
-        if( track->lastPlayed().isValid() )
-            map["xesam:lastUsed"] = track->lastPlayed().toString(Qt::ISODate);
+        if( statistics->lastPlayed().isValid() )
+            map["xesam:lastUsed"] = statistics->lastPlayed().toString(Qt::ISODate);
 
         map["xesam:title"] = track->prettyName();
 
@@ -238,9 +240,9 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
 
         map["xesam:url"] = track->playableUrl().url();
 
-        map["xesam:useCount"] = track->playCount();
+        map["xesam:useCount"] = statistics->playCount();
 
-        map["xesam:userRating"] = track->rating() / 10.; // xesam:userRating is a float
+        map["xesam:userRating"] = statistics->rating() / 10.; // xesam:userRating is a float
     }
     return map;
 }

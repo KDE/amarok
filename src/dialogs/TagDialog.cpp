@@ -942,11 +942,12 @@ TagDialog::getTagsFromTrack( const Meta::TrackPtr &track ) const
     if( track->filesize() )
         map.insert( Meta::Field::FILESIZE, track->filesize() );
 
-    map.insert( Meta::Field::SCORE, track->score() );
-    map.insert( Meta::Field::RATING, track->rating() );
-    map.insert( Meta::Field::PLAYCOUNT, track->playCount() );
-    map.insert( Meta::Field::FIRST_PLAYED, track->firstPlayed() );
-    map.insert( Meta::Field::LAST_PLAYED, track->lastPlayed() );
+    Meta::ConstStatisticsPtr statistics = track->statistics();
+    map.insert( Meta::Field::SCORE, statistics->score() );
+    map.insert( Meta::Field::RATING, statistics->rating() );
+    map.insert( Meta::Field::PLAYCOUNT, statistics->playCount() );
+    map.insert( Meta::Field::FIRST_PLAYED, statistics->firstPlayed() );
+    map.insert( Meta::Field::LAST_PLAYED, statistics->lastPlayed() );
     map.insert( Meta::Field::URL, track->prettyUrl() );
 
     map.insert( Meta::Field::TYPE, track->type() );
@@ -990,8 +991,8 @@ TagDialog::getTagsFromMultipleTracks() const
     if( map.value( Meta::Field::RATING ).toInt() )
         ratingCount++;
 
-    QDateTime firstPlayed = first->firstPlayed();
-    QDateTime lastPlayed = first->lastPlayed();
+    QDateTime firstPlayed = first->statistics()->firstPlayed();
+    QDateTime lastPlayed = first->statistics()->lastPlayed();
 
     qint64 length = first->length();
     qint64 size = first->filesize();
@@ -1056,13 +1057,14 @@ TagDialog::getTagsFromMultipleTracks() const
         if( tags.value( Meta::Field::RATING ).toInt() )
             ratingCount++;
 
-        if( track->firstPlayed().isValid() &&
-            (!firstPlayed.isValid() || track->firstPlayed() < firstPlayed) )
-            firstPlayed = track->firstPlayed();
+        Meta::StatisticsPtr statistics = track->statistics();
+        if( statistics->firstPlayed().isValid() &&
+            (!firstPlayed.isValid() || statistics->firstPlayed() < firstPlayed) )
+            firstPlayed = statistics->firstPlayed();
 
-        if( track->lastPlayed().isValid() &&
-            (!lastPlayed.isValid() || track->lastPlayed() > lastPlayed) )
-            lastPlayed = track->lastPlayed();
+        if( statistics->lastPlayed().isValid() &&
+            (!lastPlayed.isValid() || statistics->lastPlayed() > lastPlayed) )
+            lastPlayed = statistics->lastPlayed();
 
         length += track->length();
         size += track->filesize();
@@ -1310,9 +1312,9 @@ TagDialog::saveTags()
             debug() << "File info changed....";
 
             if( data.contains( Meta::Field::SCORE ) )
-                track->setScore( data.value( Meta::Field::SCORE ).toInt() );
+                track->statistics()->setScore( data.value( Meta::Field::SCORE ).toInt() );
             if( data.contains( Meta::Field::RATING ) )
-                track->setRating( data.value( Meta::Field::RATING ).toInt() );
+                track->statistics()->setRating( data.value( Meta::Field::RATING ).toInt() );
             if( data.contains( Meta::Field::LYRICS ) )
             {
                 track->setCachedLyrics( data.value( Meta::Field::LYRICS ).toString() );

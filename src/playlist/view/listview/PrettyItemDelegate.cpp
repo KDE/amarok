@@ -743,7 +743,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
     if(changeMap.contains(Rating))
     {
         int rating = changeMap.value(Rating).toInt();
-        track->setRating( rating );
+        track->statistics()->setRating( rating );
         changeMap.remove( Rating );
     }
 
@@ -866,7 +866,7 @@ Playlist::PrettyItemDelegate::buildTrackArgsMap( const Meta::TrackPtr track ) co
     args["initial"] = albumartist.mid( 0, 1 ).toUpper();    //artists starting with The are already handled above
     args["filetype"] = track->type();
 
-    args["rating"] = track->rating();
+    args["rating"] = track->statistics()->rating();
     args["filesize"] = track->filesize();
     args["length"] = track->length() / 1000;
 

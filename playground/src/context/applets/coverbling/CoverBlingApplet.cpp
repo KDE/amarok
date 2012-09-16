@@ -231,7 +231,7 @@ void CoverBlingApplet::slideChanged( int islideindex )
         {
             nbtracks++;
             if ( track )
-                rating += track->rating();
+                rating += track->statistics()->rating();
         }
 
         if ( nbtracks )

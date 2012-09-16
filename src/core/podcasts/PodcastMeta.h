@@ -125,10 +125,6 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
 
         virtual QString comment() const { return QString(); }
         virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ); }
-        virtual double score() const { return 0; }
-        virtual void setScore( double newScore ) { Q_UNUSED( newScore ); }
-        virtual int rating() const { return 0; }
-        virtual void setRating( int newRating ) { Q_UNUSED( newRating ); }
         virtual qint64 length() const { return m_duration * 1000; }
         virtual int filesize() const { return m_fileSize; }
         virtual int sampleRate() const { return 0; }
@@ -137,8 +133,6 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual void setTrackNumber( int newTrackNumber ) { Q_UNUSED( newTrackNumber ); }
         virtual int discNumber() const { return 0; }
         virtual void setDiscNumber( int newDiscNumber ) { Q_UNUSED( newDiscNumber ); }
-        virtual QDateTime lastPlayed() const { return QDateTime(); }
-        virtual int playCount() const { return 0; }
         virtual QString mimeType() const { return m_mimeType; }
 
         virtual QString type() const

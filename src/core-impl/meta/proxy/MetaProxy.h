@@ -67,10 +67,6 @@ namespace MetaProxy
             virtual Meta::LabelList labels() const;
             virtual qreal bpm() const;
             virtual QString comment() const;
-            virtual double score() const;
-            virtual void setScore( double newScore );
-            virtual int rating() const;
-            virtual void setRating( int newRating );
             virtual qint64 length() const;
             virtual int filesize() const;
             virtual int sampleRate() const;
@@ -79,9 +75,6 @@ namespace MetaProxy
             virtual QDateTime modifyDate() const;
             virtual int trackNumber() const;
             virtual int discNumber() const;
-            virtual QDateTime lastPlayed() const;
-            virtual QDateTime firstPlayed() const;
-            virtual int playCount() const;
             virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
 
             virtual QString type() const;
@@ -100,6 +93,7 @@ namespace MetaProxy
             virtual void removeLabel( const Meta::LabelPtr &label );
 
             virtual bool operator==( const Meta::Track &track ) const;
+            virtual Meta::StatisticsPtr statistics();
 
         // custom MetaProxy methods
             virtual void setName( const QString &name );

@@ -527,7 +527,7 @@ ServiceTrack::setYear( YearPtr year )
 }
 
 void
-ServiceTrack::setStatisticsProvider( Statistics::StatisticsProvider *provider )
+ServiceTrack::setStatisticsProvider( ::Statistics::StatisticsProvider *provider )
 {
     if( m_provider )
         delete m_provider;
@@ -552,6 +552,13 @@ void ServiceTrack::processInfoOf(InfoParserBase * infoParser)
 {
     infoParser->getInfo( TrackPtr( this ) );
 }
+
+StatisticsPtr
+ServiceTrack::statistics()
+{
+    return StatisticsPtr( this );
+}
+
 
 
 //ServiceArtist

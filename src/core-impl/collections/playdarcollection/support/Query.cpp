@@ -101,18 +101,7 @@ namespace Playdar
         
         return m_solved;
     }
-    
-    Meta::PlaydarTrackPtr
-    Query::getSolution() const
-    {
-        DEBUG_BLOCK
-        
-        if( !m_trackList.isEmpty() && m_trackList[0]->score() >= 1.00 )
-            return m_trackList[0];
-        else
-            return Meta::PlaydarTrackPtr();
-    }
-    
+
     Meta::PlaydarTrackList
     Query::getTrackList() const
     {

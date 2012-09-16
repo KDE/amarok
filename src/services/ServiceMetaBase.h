@@ -136,6 +136,7 @@ typedef QList<ServiceGenrePtr > ServiceGenreList;
 typedef QList<ServiceYearPtr > ServiceYearList;
 
 class AMAROK_EXPORT ServiceTrack : public Meta::Track,
+                                   public Meta::Statistics,
                                    public ServiceDisplayInfoProvider,
                                    public ActionsProvider,
                                    public SourceInfoProvider,
@@ -210,9 +211,6 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 
         virtual QString type() const;
 
-        virtual void beginMetaDataUpdate() {}    //read only
-        virtual void endMetaDataUpdate() {}      //read only
-
         virtual void processInfoOf( InfoParserBase * infoParser );
 
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
@@ -236,6 +234,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
             return 0;
         }
 
+        virtual StatisticsPtr statistics();
+
         //ServiceTrack specific methods
 
         virtual void setAlbumPtr( Meta::AlbumPtr album );
@@ -243,7 +243,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void setComposer( Meta::ComposerPtr composer );
         void setGenre( Meta::GenrePtr genre );
         void setYear( Meta::YearPtr year );
-        void setStatisticsProvider( Statistics::StatisticsProvider *provider );
+        void setStatisticsProvider( ::Statistics::StatisticsProvider *provider );
 
         void setLength( qint64 length );
 
@@ -259,7 +259,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void update( Meta::TrackPtr track );
 
     private:
-        Statistics::StatisticsProvider* m_provider;
+        ::Statistics::StatisticsProvider* m_provider;
         ArtistPtr   m_artist;
         AlbumPtr    m_album;
         GenrePtr    m_genre;

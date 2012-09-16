@@ -119,20 +119,6 @@ NepomukTrack::comment() const
     return m_comment;
 }
 
-double
-NepomukTrack::score() const
-{
-    // TODO
-    return 0;
-}
-
-void
-NepomukTrack::setScore( double newScore )
-{
-    // TODO
-    // Nepomuk is yet to have a concept of scores
-}
-
 int
 NepomukTrack::rating() const
 {
@@ -205,6 +191,12 @@ QString
 NepomukTrack::type() const
 {
     return m_type;
+}
+
+StatisticsPtr
+NepomukTrack::statistics()
+{
+    return StatisticsPtr( this );
 }
 
 void

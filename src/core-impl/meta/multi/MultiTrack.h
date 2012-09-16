@@ -64,23 +64,17 @@ public:
 
     virtual qreal bpm() const { return m_currentTrack->bpm(); }
     virtual QString comment() const { return m_currentTrack->comment(); }
-    virtual double score() const { return m_currentTrack->score(); }
-    virtual void setScore( double newScore ) { m_currentTrack->setScore( newScore ); }
-    virtual int rating() const { return m_currentTrack->rating(); }
-    virtual void setRating( int newRating ) { m_currentTrack->setRating( newRating ); }
     virtual qint64 length() const { return m_currentTrack->length(); }
     virtual int filesize() const { return m_currentTrack->filesize(); }
     virtual int sampleRate() const { return m_currentTrack->sampleRate(); }
     virtual int bitrate() const { return m_currentTrack->bitrate(); }
     virtual int trackNumber() const { return m_currentTrack->trackNumber(); }
     virtual int discNumber() const { return m_currentTrack->discNumber(); }
-    // The logic is broken here. The playlist itself is last played at the earlies lastPlayed date of all tracks.
-    virtual QDateTime lastPlayed() const { return m_currentTrack->lastPlayed(); }
-    virtual QDateTime firstPlayed() const { return m_currentTrack->firstPlayed(); }
-    virtual int playCount() const { return m_currentTrack->playCount(); }
 
     virtual bool isPlayable() const { return m_currentTrack->isPlayable(); }
     virtual QString type() const { return m_currentTrack->type(); }
+
+    virtual StatisticsPtr statistics() { return m_currentTrack->statistics(); }
 
     using Observer::metadataChanged;
     virtual void metadataChanged( Meta::TrackPtr track );

@@ -46,17 +46,9 @@ namespace MetaStream
             virtual Meta::YearPtr year() const;
 
             virtual qreal bpm() const;
-
             virtual QString comment() const;
-            virtual double score() const;
-            virtual void setScore( double newScore );
-            virtual int rating() const;
-            virtual void setRating( int newRating );
             virtual int trackNumber() const;
             virtual int discNumber() const;
-            virtual QDateTime lastPlayed() const;
-            virtual QDateTime firstPlayed() const;
-            virtual int playCount() const;
 
             virtual qint64 length() const;
             virtual int filesize() const;
@@ -64,8 +56,6 @@ namespace MetaStream
             virtual int bitrate() const;
 
             virtual QString type() const;
-
-            virtual void finishedPlaying( double playedFraction );
 
         private:
             Private * const d;

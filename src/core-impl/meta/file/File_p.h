@@ -116,7 +116,7 @@ public:
     Meta::GenrePtr genre;
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
-    Statistics::StatisticsProvider *provider;
+    ::Statistics::StatisticsProvider *provider;
     QWeakPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
     QWeakPointer<Collections::Collection> collection;
 

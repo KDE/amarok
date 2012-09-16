@@ -108,36 +108,38 @@ void TestMetaTrack::testComment()
 
 void TestMetaTrack::testSetAndGetScore()
 {
-    QCOMPARE( m_testTrack1->score(), 0.0 );
+    Meta::StatisticsPtr statistics = m_testTrack1->statistics();
+    QCOMPARE( statistics->score(), 0.0 );
 
-    m_testTrack1->setScore( 3 );
-    QCOMPARE( m_testTrack1->score(), 3.0 );
+    statistics->setScore( 3 );
+    QCOMPARE( statistics->score(), 3.0 );
 
-    m_testTrack1->setScore( 12.55 );
-    QCOMPARE( m_testTrack1->score(), 12.55 );
+    statistics->setScore( 12.55 );
+    QCOMPARE( statistics->score(), 12.55 );
 
-    m_testTrack1->setScore( 100 );
-    QCOMPARE( m_testTrack1->score(), 100.0 );
+    statistics->setScore( 100 );
+    QCOMPARE( statistics->score(), 100.0 );
 
-    m_testTrack1->setScore( -12.55 ); // well...
-    QCOMPARE( m_testTrack1->score(), -12.55 );
+    statistics->setScore( -12.55 ); // well...
+    QCOMPARE( statistics->score(), -12.55 );
 
-    m_testTrack1->setScore( 0 );
-    QCOMPARE( m_testTrack1->score(), 0.0 );
+    statistics->setScore( 0 );
+    QCOMPARE( statistics->score(), 0.0 );
 }
 
 void TestMetaTrack::testSetAndGetRating()
 {
-    QCOMPARE( m_testTrack1->rating(), 0 );
+    Meta::StatisticsPtr statistics = m_testTrack1->statistics();
+    QCOMPARE( statistics->rating(), 0 );
 
-    m_testTrack1->setRating( 3 );
-    QCOMPARE( m_testTrack1->rating(), 3 );
+    statistics->setRating( 3 );
+    QCOMPARE( statistics->rating(), 3 );
 
-    m_testTrack1->setRating( 10 );
-    QCOMPARE( m_testTrack1->rating(), 10 );
+    statistics->setRating( 10 );
+    QCOMPARE( statistics->rating(), 10 );
 
-    m_testTrack1->setRating( 0 );
-    QCOMPARE( m_testTrack1->rating(), 0 );
+    statistics->setRating( 0 );
+    QCOMPARE( statistics->rating(), 0 );
 }
 
 void TestMetaTrack::testLength()
@@ -172,17 +174,17 @@ void TestMetaTrack::testDiscNumber()
 
 void TestMetaTrack::testLastPlayed()
 {
-    QCOMPARE( m_testTrack1->lastPlayed().toTime_t(), 4294967295U ); // portability?
+    QCOMPARE( m_testTrack1->statistics()->lastPlayed().toTime_t(), 4294967295U ); // portability?
 }
 
 void TestMetaTrack::testFirstPlayed()
 {
-    QCOMPARE( m_testTrack1->firstPlayed().toTime_t(), 4294967295U ); // portability?
+    QCOMPARE( m_testTrack1->statistics()->firstPlayed().toTime_t(), 4294967295U ); // portability?
 }
 
 void TestMetaTrack::testPlayCount()
 {
-    QCOMPARE( m_testTrack1->playCount(), 0 );
+    QCOMPARE( m_testTrack1->statistics()->playCount(), 0 );
 }
 
 void TestMetaTrack::testReplayGain()

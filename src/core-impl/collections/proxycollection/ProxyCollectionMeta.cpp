@@ -286,8 +286,9 @@ ProxyTrack::score() const
     int totalCount = 0;
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
-        totalCount += track->playCount();
-        weightedSum += track->playCount() * track->score();
+        ConstStatisticsPtr statistics = track->statistics();
+        totalCount += statistics->playCount();
+        weightedSum += statistics->playCount() * statistics->score();
     }
     if( totalCount )
         return weightedSum / totalCount;
@@ -300,7 +301,7 @@ ProxyTrack::setScore( double newScore )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        track->setScore( newScore );
+        track->statistics()->setScore( newScore );
     }
 }
 
@@ -312,8 +313,8 @@ ProxyTrack::rating() const
     int result = 0;
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
-        if( track->rating() > result )
-            result = track->rating();
+        if( track->statistics()->rating() > result )
+            result = track->statistics()->rating();
     }
     return result;
 }
@@ -323,7 +324,7 @@ ProxyTrack::setRating( int newRating )
 {
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        track->setRating( newRating );
+        track->statistics()->setRating( newRating );
     }
 }
 
@@ -333,14 +334,15 @@ ProxyTrack::firstPlayed() const
     QDateTime result;
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
+        ConstStatisticsPtr statistics = track->statistics();
         //use the track's firstPlayed value if it represents an earlier timestamp than
         //the current result, or use it directly if result has not been set yet
         //this should result in the earliest timestamp for first play of all internal
         //tracks being returned
-        if( ( track->firstPlayed().isValid() && result.isValid() && track->firstPlayed() < result ) ||
-            ( track->firstPlayed().isValid() && !result.isValid() ) )
+        if( ( statistics->firstPlayed().isValid() && result.isValid() && statistics->firstPlayed() < result ) ||
+            ( statistics->firstPlayed().isValid() && !result.isValid() ) )
         {
-            result = track->firstPlayed();
+            result = statistics->firstPlayed();
         }
     }
     return result;
@@ -355,9 +357,9 @@ ProxyTrack::lastPlayed() const
     //when are we going to perform the refactoring as discussed in Berlin?
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
-        if( track->lastPlayed() > result )
+        if( track->statistics()->lastPlayed() > result )
         {
-            result = track->lastPlayed();
+            result = track->statistics()->lastPlayed();
         }
     }
     return result;
@@ -371,9 +373,9 @@ ProxyTrack::playCount() const
     int result = 0;
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
-        if( track->playCount() > result )
+        if( track->statistics()->playCount() > result )
         {
-            result = track->playCount();
+            result = track->statistics()->playCount();
         }
     }
     return result;
@@ -622,6 +624,11 @@ ProxyTrack::labels() const
     return result;
 }
 
+StatisticsPtr
+ProxyTrack::statistics()
+{
+    return StatisticsPtr( this );
+}
 
 void
 ProxyTrack::add( const Meta::TrackPtr &track )

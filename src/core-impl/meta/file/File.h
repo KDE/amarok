@@ -25,7 +25,7 @@ namespace MetaFile
 
     typedef KSharedPtr<Track> TrackPtr;
 
-    class AMAROK_EXPORT Track : public Meta::Track
+    class AMAROK_EXPORT Track : public Meta::Track, Meta::Statistics
     {
         public:
             Track( const KUrl &url );
@@ -51,12 +51,6 @@ namespace MetaFile
             virtual qreal bpm() const;
             virtual QString comment() const;
 
-            virtual double score() const;
-            virtual void setScore( double newScore );
-
-            virtual int rating() const;
-            virtual void setRating( int newRating );
-
             virtual int trackNumber() const;
             virtual int discNumber() const;
 
@@ -65,9 +59,6 @@ namespace MetaFile
             virtual int sampleRate() const;
             virtual int bitrate() const;
             virtual QDateTime createDate() const;
-            virtual QDateTime lastPlayed() const;
-            virtual QDateTime firstPlayed() const;
-            virtual int playCount() const;
 
             virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
 
@@ -79,6 +70,19 @@ namespace MetaFile
 
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+
+            virtual Meta::StatisticsPtr statistics();
+
+        // Meta::Statistics methods:
+            virtual double score() const;
+            virtual void setScore( double newScore );
+
+            virtual int rating() const;
+            virtual void setRating( int newRating );
+
+            virtual QDateTime lastPlayed() const;
+            virtual QDateTime firstPlayed() const;
+            virtual int playCount() const;
 
         // MetaFile::Track own methods:
             /**

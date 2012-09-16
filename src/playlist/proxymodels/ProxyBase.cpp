@@ -340,7 +340,7 @@ ProxyBase::rowMatch( int sourceModelRow, const QString &searchTerms, int searchF
         {
             bool ok;
             int rating = QString( searchTerm ).remove( "rating:" ).toInt( &ok );
-            if( ok && ( track->rating() == rating ) )
+            if( ok && ( track->statistics()->rating() == rating ) )
                 match = true;
         }
 

@@ -29,7 +29,7 @@ namespace Collections {
 
 namespace Meta {
 
-    class AMAROK_EXPORT_TESTS ProxyTrack : public Meta::Track, private Meta::Observer
+    class AMAROK_EXPORT_TESTS ProxyTrack : public Meta::Track, public Meta::Statistics, private Meta::Observer
     {
         public:
             ProxyTrack( Collections::ProxyCollection *coll, const Meta::TrackPtr &track );
@@ -53,13 +53,6 @@ namespace Meta {
             QString comment() const;
             qreal   bpm() const;
 
-            double score() const;
-            void setScore( double newScore );
-            int rating() const;
-            void setRating( int newRating );
-            QDateTime firstPlayed() const;
-            QDateTime lastPlayed() const;
-            int playCount() const;
             void finishedPlaying( double playedFraction );
 
             qint64 length() const;
@@ -80,6 +73,17 @@ namespace Meta {
             virtual void addLabel( const Meta::LabelPtr &label );
             virtual void removeLabel( const Meta::LabelPtr &label );
             virtual Meta::LabelList labels() const;
+
+            virtual StatisticsPtr statistics();
+
+            // Meta::Statistics methods:
+            double score() const;
+            void setScore( double newScore );
+            int rating() const;
+            void setRating( int newRating );
+            QDateTime firstPlayed() const;
+            QDateTime lastPlayed() const;
+            int playCount() const;
 
             void add( const Meta::TrackPtr &track );
 

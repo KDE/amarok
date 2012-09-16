@@ -22,6 +22,7 @@
 #include "shared/MetaReplayGain.h"
 
 #include "core/interfaces/MetaCapability.h"
+#include "core/meta/Statistics.h"
 
 #include <QList>
 #include <QMetaType>
@@ -117,7 +118,8 @@ namespace Meta
             QMutex m_subscriptionsMutex; /// mutex guarding access to m_subscriptions
     };
 
-    class AMAROK_CORE_EXPORT MetaBase : public QSharedData, public MetaCapability
+    class AMAROK_CORE_EXPORT MetaBase : public virtual QSharedData, public MetaCapability
+    // virtual inherit. so that implementations can be both Meta::Track and Meta::Statistics
     {
         friend class Observer; // so that Observer can call (un)subscribe()
 
@@ -219,12 +221,6 @@ namespace Meta
             virtual qreal bpm() const = 0;
             /** Returns the comment of this track */
             virtual QString comment() const = 0;
-            /** Returns the score of this track */
-            virtual double score() const = 0;
-            virtual void setScore( double newScore ) = 0;
-            /** Returns the rating of this track */
-            virtual int rating() const = 0;
-            virtual void setRating( int newRating ) = 0;
             /** Returns the length of this track in milliseconds, or 0 if unknown */
             virtual qint64 length() const = 0;
             /** Returns the filesize of this track in bytes */
@@ -243,12 +239,6 @@ namespace Meta
             virtual int trackNumber() const = 0;
             /** Returns the discnumber of this track */
             virtual int discNumber() const = 0;
-            /** Returns the time the song was last played, or an invalid QDateTime if it has not been played yet */
-            virtual QDateTime lastPlayed() const;
-            /** Returns the time the song was first played, or an invalid QDateTime if it has not been played yet */
-            virtual QDateTime firstPlayed() const;
-            /** Returns the number of times the track was played (what about unknown?)*/
-            virtual int playCount() const = 0;
             /**
              * Returns the gain adjustment for a given replay gain mode.
              *
@@ -310,6 +300,14 @@ namespace Meta
             virtual bool operator==( const Track &track ) const;
 
             static bool lessThan( const TrackPtr& left, const TrackPtr& right );
+
+            /**
+             * Return a pointer to track's Statistics interface. May never be null.
+             *
+             * Subclasses: always return the default implementation instead of returning 0.
+             */
+            virtual StatisticsPtr statistics();
+            ConstStatisticsPtr statistics() const; // allow const statistics methods on const tracks
 
         protected:
             virtual void notifyObservers() const;

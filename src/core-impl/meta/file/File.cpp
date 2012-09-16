@@ -711,6 +711,12 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
     }
 }
 
+Meta::StatisticsPtr
+Track::statistics()
+{
+    return Meta::StatisticsPtr( this );
+}
+
 QImage
 Track::getEmbeddedCover() const
 {

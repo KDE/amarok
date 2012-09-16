@@ -35,7 +35,7 @@ namespace IpodMeta
      * proxied in the MemoMeta track. All methods in this class are thread-safe with a few
      * exceptions that are noted in relevant method docstrings.
      */
-    class Track : public Meta::Track
+    class Track : public Meta::Track, public Meta::Statistics
     {
         public:
             /**
@@ -72,13 +72,6 @@ namespace IpodMeta
             virtual qreal bpm() const;
             virtual QString comment() const;
 
-            virtual double score() const;
-            virtual void setScore( double newScore );
-
-            virtual int rating() const;
-            virtual void setRating( int newRating ) { setRating( newRating, true ); }
-            virtual void setRating( int newRating, bool doCommit );
-
             virtual qint64 length() const;
             virtual int filesize() const;
             virtual int sampleRate() const;
@@ -90,9 +83,6 @@ namespace IpodMeta
             virtual int trackNumber() const;
             virtual int discNumber() const;
 
-            virtual QDateTime lastPlayed() const;
-            virtual QDateTime firstPlayed() const;
-            virtual int playCount() const;
 
             virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
             virtual QString type() const;
@@ -102,7 +92,21 @@ namespace IpodMeta
             virtual bool inCollection() const;
             virtual Collections::Collection* collection() const;
 
+            virtual Meta::StatisticsPtr statistics();
+
+            // Meta::Statistics methods:
+            virtual double score() const;
+            virtual void setScore( double newScore );
+
+            virtual int rating() const;
+            virtual void setRating( int newRating ) { setRating( newRating, true ); }
+
+            virtual QDateTime lastPlayed() const;
+            virtual QDateTime firstPlayed() const;
+            virtual int playCount() const;
+
             // IpodMeta::Track methods:
+            virtual void setRating( int newRating, bool doCommit );
 
             /**
              * Return a pointer to IpodMeta::Track given pointer to underlying libgpod

@@ -981,13 +981,14 @@ MainWindow::setRating( int n )
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
+        Meta::StatisticsPtr statistics = track->statistics();
         // if we're setting an identical rating then we really must
         // want to set the half-star below rating
-        if( track->rating() == n )
+        if( statistics->rating() == n )
             n -= 1;
 
-        track->setRating( n );
-        Amarok::OSD::instance()->OSDWidget::ratingChanged( track->rating() );
+        statistics->setRating( n );
+        Amarok::OSD::instance()->OSDWidget::ratingChanged( statistics->rating() );
     }
 }
 

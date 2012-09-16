@@ -28,13 +28,7 @@
 
 #include <Solid/Networking>
 
-namespace LastFm {
-
-class LastFmArtist;
-class LastFmAlbum;
-class LastFmGenre;
-class LastFmComposer;
-class LastFmYear;
+using namespace LastFm;
 
 Track::Track( const QString &lastFmUri )
     : QObject()
@@ -507,7 +501,11 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
     }
 }
 
-} // namespace LastFm
+Meta::StatisticsPtr
+Track::statistics()
+{
+    return Meta::StatisticsPtr( this );
+}
 
 QString LastFm::Track::sourceName()
 {
@@ -536,6 +534,3 @@ QString LastFm::Track::scalableEmblem()
 }
 
 #include "LastFmMeta.moc"
-
-
-

@@ -67,8 +67,6 @@ Meta::PlaydarTrack::PlaydarTrack( QString &sid,
     , m_discNumber( 0 )
     , m_createDate( QDateTime::currentDateTime() )
     , m_comment( QString( "" ) )
-    , m_rating( 0 )
-    , m_playcount( 0 )
     , m_source( source )
 {
     m_uidUrl.setProtocol( QString( "playdar" ) );
@@ -180,24 +178,6 @@ Meta::PlaydarTrack::score() const
     return m_score;
 }
 
-void
-Meta::PlaydarTrack::setScore( double newScore )
-{
-    m_score = newScore;
-}
-
-int
-Meta::PlaydarTrack::rating() const
-{
-    return m_rating;
-}
-
-void
-Meta::PlaydarTrack::setRating( int newRating )
-{
-    m_rating = newRating;
-}
-
 qint64
 Meta::PlaydarTrack::length() const
 {
@@ -240,12 +220,6 @@ Meta::PlaydarTrack::discNumber() const
     return m_discNumber;
 }
 
-int
-Meta::PlaydarTrack::playCount() const
-{
-    return m_playcount;
-}
-
 QString
 Meta::PlaydarTrack::type() const
 {
@@ -262,16 +236,6 @@ void
 Meta::PlaydarTrack::prepareToPlay()
 {
     /** TODO: Anything? */
-}
-
-void
-Meta::PlaydarTrack::finishedPlaying( double playedFraction )
-{
-    if( playedFraction >= 1.0 )
-    {
-        m_playcount++;
-        notifyObservers();
-    }
 }
 
 bool

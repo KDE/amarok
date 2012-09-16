@@ -133,24 +133,6 @@ TimecodeTrack::comment() const
     return m_comment;
 }
 
-double
-TimecodeTrack::score() const
-{
-    return 0.0;
-}
-
-void
-TimecodeTrack::setScore( double newScore )
-{
-    Q_UNUSED( newScore )
-}
-
-int
-TimecodeTrack::rating() const
-{
-    return -1;
-}
-
 int
 TimecodeTrack::bitrate() const
 {
@@ -175,12 +157,6 @@ TimecodeTrack::length() const
     return m_length;
 }
 
-void
-TimecodeTrack::setRating( int newRating )
-{
-    Q_UNUSED( newRating )
-}
-
 int
 TimecodeTrack::trackNumber() const
 {
@@ -191,12 +167,6 @@ int
 TimecodeTrack::discNumber() const
 {
     return m_discNumber;
-}
-
-int
-TimecodeTrack::playCount() const
-{
-    return 0;
 }
 
 QString

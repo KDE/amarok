@@ -1312,6 +1312,12 @@ SqlTrack::labels() const
     }
 }
 
+StatisticsPtr
+SqlTrack::statistics()
+{
+    return StatisticsPtr( this );
+}
+
 void
 SqlTrack::remove()
 {

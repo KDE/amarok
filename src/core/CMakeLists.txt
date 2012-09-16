@@ -12,6 +12,7 @@ set(libcore_interfaces_SRCS
 
 set(libcore_meta_SRCS
     meta/Meta.cpp
+    meta/Statistics.cpp
     meta/support/MetaConstants.cpp
     meta/support/MetaUtility.cpp
     meta/support/MetaKeys.cpp

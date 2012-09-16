@@ -58,7 +58,7 @@ namespace Meta
 
     The whole class should be thread save.
 */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statistics
 {
     public:
         /** Creates a new SqlTrack without.
@@ -124,12 +124,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual QString comment() const;
         virtual void setComment( const QString &newComment );
 
-        virtual double score() const;
-        virtual void setScore( double newScore );
-
-        virtual int rating() const;
-        virtual void setRating( int newRating );
-
         virtual qint64 length() const;
         virtual void setLength( qint64 newLength );
 
@@ -151,15 +145,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
 
         virtual int discNumber() const;
         virtual void setDiscNumber( int newDiscNumber );
-
-        virtual QDateTime firstPlayed() const;
-        virtual void setFirstPlayed( const QDateTime &newTime );
-
-        virtual QDateTime lastPlayed() const;
-        virtual void setLastPlayed( const QDateTime &newTime );
-
-        virtual int playCount() const;
-        virtual void setPlayCount( const int newCount );
 
         virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
         virtual void setReplayGain( Meta::ReplayGainTag mode, qreal value );
@@ -189,6 +174,24 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual void addLabel( const Meta::LabelPtr &label );
         virtual void removeLabel( const Meta::LabelPtr &label );
         virtual Meta::LabelList labels() const;
+
+        virtual StatisticsPtr statistics();
+
+        // Meta::Statistics methods:
+        virtual double score() const;
+        virtual void setScore( double newScore );
+
+        virtual int rating() const;
+        virtual void setRating( int newRating );
+
+        virtual QDateTime firstPlayed() const;
+        virtual void setFirstPlayed( const QDateTime &newTime );
+
+        virtual QDateTime lastPlayed() const;
+        virtual void setLastPlayed( const QDateTime &newTime );
+
+        virtual int playCount() const;
+        virtual void setPlayCount( const int newCount );
 
         // SqlTrack specific methods
 

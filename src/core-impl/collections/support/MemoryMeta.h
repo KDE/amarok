@@ -178,10 +178,6 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual Meta::LabelList labels() const { return Meta::LabelList(); }
         virtual qreal bpm() const { return m_track->bpm(); }
         virtual QString comment() const { return m_track->comment(); }
-        virtual double score() const { return m_track->score(); }
-        virtual void setScore( double newScore ) { m_track->setScore( newScore ); }
-        virtual int rating() const { return m_track->rating(); }
-        virtual void setRating( int newRating ) { m_track->setRating( newRating ); }
         virtual qint64 length() const { return m_track->length(); }
         virtual int filesize() const { return m_track->filesize(); }
         virtual int sampleRate() const { return m_track->sampleRate(); }
@@ -190,9 +186,6 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual QDateTime modifyDate() const { return m_track->modifyDate(); }
         virtual int trackNumber() const { return m_track->trackNumber(); }
         virtual int discNumber() const { return m_track->discNumber(); }
-        virtual QDateTime lastPlayed() const { return m_track->lastPlayed(); }
-        virtual QDateTime firstPlayed() const { return m_track->firstPlayed(); }
-        virtual int playCount() const { return m_track->playCount(); }
 
         virtual qreal replayGain( Meta::ReplayGainTag mode ) const
                 { return m_track->replayGain( mode ); }
@@ -211,6 +204,8 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual void addLabel( const QString &label ) { Q_UNUSED( label ) }
         virtual void addLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
         virtual void removeLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
+
+        virtual Meta::StatisticsPtr statistics() { return m_track->statistics(); }
 
         // MemoryMeta::Track methods:
 

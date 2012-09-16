@@ -232,18 +232,6 @@ Meta::Track::notifyObservers() const
     }
 }
 
-QDateTime
-Meta::Track::lastPlayed() const
-{
-    return QDateTime();
-}
-
-QDateTime
-Meta::Track::firstPlayed() const
-{
-    return QDateTime();
-}
-
 bool
 Meta::Track::operator==( const Meta::Track &track ) const
 {
@@ -290,6 +278,21 @@ Meta::Track::lessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right )
 
     return QString::localeAwareCompare( left->prettyName(), right->prettyName() ) < 0;
 }
+
+StatisticsPtr
+Track::statistics()
+{
+    // return dummy implementation
+    return StatisticsPtr( new Statistics() );
+}
+
+ConstStatisticsPtr
+Track::statistics() const
+{
+    StatisticsPtr statistics = const_cast<Track *>( this )->statistics();
+    return ConstStatisticsPtr( statistics.data() );
+}
+
 
 //Meta::Artist
 

@@ -94,14 +94,16 @@ Track::Track( const Meta::TrackPtr &origTrack )
     if( albumArtist.isEmpty() )
         albumArtist = i18n( "Various Artists" );
 
+    Meta::ConstStatisticsPtr origStats = origTrack->statistics();
+
     setAlbumArtist( albumArtist );
     setIsCompilation( isCompilation, /* doCommit */ false );
 
     setBpm( origTrack->bpm() );
     setComment( origTrack->comment() );
 
-    setScore( origTrack->score() );
-    setRating( origTrack->rating(), /* doCommit */ false );
+    setScore( origStats->score() );
+    setRating( origStats->rating(), /* doCommit */ false );
 
     setLength( origTrack->length() );
     // filesize is set in finalizeCopying(), which could be more accurate
@@ -114,9 +116,9 @@ Track::Track( const Meta::TrackPtr &origTrack )
     setTrackNumber( origTrack->trackNumber() );
     setDiscNumber( origTrack->discNumber() );
 
-    setLastPlayed( origTrack->lastPlayed() );
-    setFirstPlayed( origTrack->firstPlayed() );
-    setPlayCount( origTrack->playCount() );
+    setLastPlayed( origStats->lastPlayed() );
+    setFirstPlayed( origStats->firstPlayed() );
+    setPlayCount( origStats->playCount() );
 
     setReplayGain( Meta::ReplayGain_Track_Gain, origTrack->replayGain( Meta::ReplayGain_Track_Gain ) );
     setReplayGain( Meta::ReplayGain_Track_Peak, origTrack->replayGain( Meta::ReplayGain_Track_Peak ) );
@@ -677,6 +679,12 @@ Collections::Collection*
 Track::collection() const
 {
     return m_coll.data();
+}
+
+Meta::StatisticsPtr
+Track::statistics()
+{
+    return Meta::StatisticsPtr( this );
 }
 
 Meta::TrackPtr
