@@ -30,7 +30,10 @@ namespace Meta
      * rating, score, first/last played, play count.
      *
      * This class is memory-managed exclusively using KSharedPtrs: always use
-     * StatisticsPtr to store or pass pointer to this class.
+     * StatisticsPtr to store or pass pointer to this class. This class must be
+     * implemented in a reentrant manner. Additionally, underlying Meta::Track must be
+     * thread-safe -- if you return same instance of Statistics every time then it means
+     * that even the instance must be thread-safe.
      */
     class AMAROK_CORE_EXPORT Statistics : public virtual QSharedData // virtual inheritance
     // so that Track implementations can inherit both Meta::Track and Meta::Statistics
