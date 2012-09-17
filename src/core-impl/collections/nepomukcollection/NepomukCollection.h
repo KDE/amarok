@@ -51,7 +51,7 @@ class NepomukConstructMetaJob;
 // TODO
 // Meta::Observer also has to be inherited
 // when NepomukCollection reaches a stage where it does metadata manipulation
-class NepomukCollection : public Collection
+class NepomukCollection : public Collection, public Meta::Observer
 {
     Q_OBJECT
 
@@ -74,6 +74,11 @@ public:
     virtual QString prettyName() const;
     virtual KIcon icon() const;
     virtual bool isWritable() const;
+
+    // Observer methods:
+    virtual void metadataChanged( Meta::TrackPtr track );
+    // so that the compiler doesn't complain about hidden virtual functions:
+    using Meta::Observer::metadataChanged;
 
 protected:
     QSharedPointer<MemoryCollection> m_mc;

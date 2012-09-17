@@ -96,6 +96,17 @@ NepomukCollection::isWritable() const
 }
 
 void
+NepomukCollection::metadataChanged( Meta::TrackPtr track )
+{
+    // reflect change to ouside world:
+    bool mapsChanged = MapChanger( m_mc.data() ).trackChanged( track );
+    if( mapsChanged )
+        // while docs say somehting different,
+        // collection browser doesnt update unless we emit updated()
+        emit updated();
+}
+
+void
 NepomukCollection::buildCollection()
 {
     NepomukConstructMetaJob *job = new NepomukConstructMetaJob( this );
