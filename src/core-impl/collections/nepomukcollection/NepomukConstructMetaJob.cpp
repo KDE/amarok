@@ -279,7 +279,7 @@ NepomukConstructMetaJob::run()
         TrackPtr trackPtr =  TrackPtr( nepTrackPtr.data() );
         MemoryMeta::MapChanger mapChanger( m_mc.data() );
         mapChanger.addTrack( trackPtr );
-
+        m_coll->subscribeTo( trackPtr );
         emit incrementProgress();
     }
 
