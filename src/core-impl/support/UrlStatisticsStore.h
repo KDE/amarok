@@ -14,25 +14,27 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PERMANENTURLSTATISTICSPROVIDER_H
-#define PERMANENTURLSTATISTICSPROVIDER_H
+#ifndef URLSTATISTICSSTORE_H
+#define URLSTATISTICSSTORE_H
 
-#include "core/statistics/StatisticsProvider.h"
-
-#include "shared/amarok_export.h"
+#include "core-impl/support/PersistentStatisticsStore.h"
 
 #include <QString>
 
-class AMAROK_EXPORT PermanentUrlStatisticsProvider : public Statistics::StatisticsProvider
+class AMAROK_EXPORT UrlStatisticsStore : public PersistentStatisticsStore
 {
-public:
-    PermanentUrlStatisticsProvider( const QString &permanentUrl );
+    public:
+        /**
+         * Construct persistent per-url statistics store. If @param permanentUrl is not
+         * specified, track->uidUrl() is used.
+         */
+        UrlStatisticsStore( Meta::Track *track, const QString &permanentUrl = QString() );
 
-protected:
-    virtual void save();
+    protected:
+        virtual void save();
 
-private:
-    QString m_permanentUrl;
+    private:
+        QString m_permanentUrl;
 };
 
-#endif // PERMANENTURLSTATISTICSPROVIDER_H
+#endif // URLSTATISTICSSTORE_H

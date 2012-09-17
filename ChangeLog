@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.7-Beta 1
   FEATURES:
+    * Remember rating, play count & co. in stream tracks.
     * Nepomuk plugin: Play and manage tracks using the Nepomuk database.
     * Support for reading and writing tags from/to mod, s3m, it and xm files.
       Patch by Mathias Panzenböck.

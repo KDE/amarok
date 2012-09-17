@@ -29,7 +29,7 @@ namespace lastfm {
 
 namespace LastFm
 {
-    class Track : public QObject, public Meta::Track, public Meta::Statistics, public SourceInfoProvider
+    class Track : public QObject, public Meta::Track, public SourceInfoProvider
     {
         Q_OBJECT
         public:
@@ -82,17 +82,7 @@ namespace LastFm
 
             virtual Meta::StatisticsPtr statistics();
 
-        // Meta::Statistics methods:
-            virtual double score() const;
-            virtual void setScore( double newScore );
-
-            virtual int rating() const;
-            virtual void setRating( int newRating );
-
-            virtual QDateTime lastPlayed() const;
-            virtual QDateTime firstPlayed() const;
-            virtual int playCount() const;
-
+        // own methods:
             void setTrackInfo( const lastfm::Track &trackInfo );
 
             virtual QString sourceName();

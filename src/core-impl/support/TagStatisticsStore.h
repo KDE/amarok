@@ -17,24 +17,22 @@
 #ifndef TAGSTATISTICSPROVIDER_H
 #define TAGSTATISTICSPROVIDER_H
 
-#include "core/statistics/StatisticsProvider.h"
-
-#include "core/support/Amarok.h"
+#include "core-impl/support/PersistentStatisticsStore.h"
 
 #include <QString>
 
-class AMAROK_EXPORT TagStatisticsProvider : public Statistics::StatisticsProvider
+class AMAROK_EXPORT TagStatisticsStore : public PersistentStatisticsStore
 {
-public:
-    TagStatisticsProvider( const QString &name, const QString &artist, const QString &album );
+    public:
+        TagStatisticsStore( Meta::Track *track );
 
-protected:
-    virtual void save();
+    protected:
+        virtual void save();
 
-private:
-    QString m_name;
-    QString m_artist;
-    QString m_album;
+    private:
+        QString m_name;
+        QString m_artist;
+        QString m_album;
 };
 
 #endif // PERMANENTURLSTATISTICSPROVIDER_H

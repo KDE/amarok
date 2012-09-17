@@ -26,10 +26,6 @@ set(libcore_playlists_SRCS
     playlists/PlaylistProvider.cpp
 )
 
-set(libcore_statistics_SRCS
-    statistics/StatisticsProvider.cpp
-)
-
 set(libcore_capabilities_SRCS
     capabilities/Capability.cpp
     capabilities/ActionsCapability.cpp
@@ -93,7 +89,6 @@ set(libcore_LIB_SRCS
     ${libcore_podcasts_SRCS}
     ${libcore_interfaces_SRCS}
     ${libcore_collection_SRCS}
-    ${libcore_statistics_SRCS}
     ${libcore_playlists_SRCS}
     ${libcore_meta_SRCS}
     ${libcore_capabilities_SRCS}

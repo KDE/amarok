@@ -19,6 +19,7 @@
 #include "src/amarokconfig.h"
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
+#include "core-impl/support/UrlStatisticsStore.h"
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverCache.h"
 #include "PlaydarCollection.h"
@@ -74,6 +75,7 @@ Meta::PlaydarTrack::PlaydarTrack( QString &sid,
     m_uidUrl.addQueryItem( QString( "artist" ), artist );
     m_uidUrl.addQueryItem( QString( "album" ), album );
     m_uidUrl.addQueryItem( QString( "title" ), name );
+    m_statsStore = new UrlStatisticsStore( this );
 }
 
 Meta::PlaydarTrack::~PlaydarTrack()
@@ -232,12 +234,6 @@ Meta::PlaydarTrack::mimetype() const
     return m_mimetype;
 }
 
-void
-Meta::PlaydarTrack::prepareToPlay()
-{
-    /** TODO: Anything? */
-}
-
 bool
 Meta::PlaydarTrack::inCollection() const
 {
@@ -289,6 +285,12 @@ Meta::PlaydarTrack::removeLabel( const LabelPtr &label )
             return;
         }
     }
+}
+
+Meta::StatisticsPtr
+Meta::PlaydarTrack::statistics()
+{
+    return m_statsStore;
 }
 
 QString

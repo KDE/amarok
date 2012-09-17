@@ -14,28 +14,24 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.h"
+#include "TagStatisticsStore.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
-#include "core/support/Debug.h"
-
-PermanentUrlStatisticsProvider::PermanentUrlStatisticsProvider( const QString &permanentUrl )
-        : StatisticsProvider()
-        , m_permanentUrl( permanentUrl )
+TagStatisticsStore::TagStatisticsStore( Meta::Track *track )
+    : PersistentStatisticsStore( track )
+    , m_name( track->name() )
+    , m_artist( track->artist() ? track->artist()->name() : QString() )
+    , m_album( track->album() ? track->album()->name() : QString() )
 {
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
-    if( !sql )
-    {
-        debug() << "Could not get SqlStorage, aborting" << endl;
-        return;
-    }
 
-
-    const QString query = "SELECT firstplayed, lastplayed, score, rating, playcount FROM "
-                          "statistics_permanent WHERE url = '%1'";
-    QStringList result = sql->query( query.arg( sql->escape( permanentUrl ) ) );
+    const QString query = "SELECT firstPlayed, lastPlayed, score, rating, playcount FROM "
+                          "statistics_tag WHERE name = '%1' AND artist = '%2' AND album = '%3'";
+    QStringList result = sql->query( query.arg( sql->escape( m_name ),
+                                                sql->escape( m_artist ),
+                                                sql->escape( m_album ) ) );
     if( !result.isEmpty() )
     {
         m_firstPlayed = QDateTime::fromString( result.value( 0 ), "yy-MM-dd hh:mm:ss" );
@@ -47,37 +43,38 @@ PermanentUrlStatisticsProvider::PermanentUrlStatisticsProvider( const QString &p
 }
 
 void
-PermanentUrlStatisticsProvider::save()
+TagStatisticsStore::save()
 {
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
-    if( !sql )
-    {
-        debug() << "Could not get SqlStorage, aborting" << endl;
-        return;
-    }
 
-    const QString check = "SELECT COUNT(*) FROM statistics_permanent WHERE url = '%1'";
-    QStringList rsCheck = sql->query( check.arg( sql->escape( m_permanentUrl ) ) );
+    const QString check = "SELECT COUNT(*) FROM statistics_tag WHERE name = '%1' "
+                          "AND artist = '%2' AND album = '%3'";
+    QStringList rsCheck = sql->query( check.arg( sql->escape( m_name ),
+                                                 sql->escape( m_artist ),
+                                                 sql->escape( m_album ) ) );
     if( !rsCheck.isEmpty() )
     {
         QString sqlString;
         if( rsCheck.first().toInt() )
         {
-            sqlString = "UPDATE statistics_permanent SET firstplayed = '%1',lastplayed = '%2',"
-                        "score = %3,rating = %4,playcount=%5 WHERE url = '%6'";
+            sqlString = "UPDATE statistics_tag SET firstPlayed = '%1',lastPlayed = '%2',"
+                        "score = %3,rating = %4,playcount=%5 WHERE name = '%6' "
+                        "AND artist = '%7' AND album = '%8'";
         }
         else
         {
-            sqlString = "INSERT INTO statistics_permanent(firstplayed,lastplayed,score,"
-                        "rating,playcount,url) VALUE ('%1','%2',%3,%4,%5,'%6')";
+            sqlString = "INSERT INTO statistics_tag(firstPlayed,lastPlayed,score,"
+                        "rating,playcount,name,artist,album) "
+                        "VALUE ('%1','%2',%3,%4,%5,'%6','%7','%8')";
         }
         sqlString = sqlString.arg( m_firstPlayed.toString( "yy-MM-dd hh:mm:ss" ),
                                    m_lastPlayed.toString( "yy-MM-dd hh:mm:ss" ),
                                    QString::number( m_score ),
                                    QString::number( m_rating ),
                                    QString::number( m_playCount ),
-                                   sql->escape( m_permanentUrl ) );
+                                   sql->escape( m_name ),
+                                   sql->escape( m_artist ),
+                                   sql->escape( m_album ) );
         sql->query( sqlString );
     }
 }
-

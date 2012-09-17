@@ -288,8 +288,9 @@ set(libmetaimpl_SRCS
     core-impl/meta/proxy/MetaProxyWorker.cpp
     core-impl/meta/stream/Stream.cpp
     core-impl/playlists/types/file/PlaylistFile.cpp
-    core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
-    core-impl/statistics/providers/tag/TagStatisticsProvider.cpp
+    core-impl/support/PersistentStatisticsStore.cpp
+    core-impl/support/TagStatisticsStore.cpp
+    core-impl/support/UrlStatisticsStore.cpp
 )
 
 if( TAGLIB_FOUND )

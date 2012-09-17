@@ -41,6 +41,7 @@ namespace Collections
     class Collection;
     class QueryMaker;
 }
+class PersistentStatisticsStore;
 
 namespace Meta
 {
@@ -106,6 +107,7 @@ namespace Meta
             virtual void entityDestroyed();
 
         private:
+            friend class ::PersistentStatisticsStore; // so that is can call KSharedPtr-free subscribe:
             void subscribeTo( MetaBase *ptr );
             void unsubscribeFrom( MetaBase *ptr );
 
@@ -310,6 +312,7 @@ namespace Meta
             ConstStatisticsPtr statistics() const; // allow const statistics methods on const tracks
 
         protected:
+            friend class ::PersistentStatisticsStore; // so that it can call notifyObservers
             virtual void notifyObservers() const;
 
     };

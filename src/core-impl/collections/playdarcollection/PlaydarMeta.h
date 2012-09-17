@@ -100,8 +100,6 @@ namespace Meta
             
             QString type() const;
             
-            void prepareToPlay();
-            
             bool inCollection() const;
             Collections::Collection* collection() const;
             
@@ -111,6 +109,8 @@ namespace Meta
             void addLabel( const QString &label );
             void addLabel( const LabelPtr &label );
             void removeLabel( const LabelPtr &label );
+
+            StatisticsPtr statistics();
 
             //PlaydarTrack-specific:
             QString source() const;
@@ -139,6 +139,7 @@ namespace Meta
             PlaydarGenrePtr m_genre;
             PlaydarYearPtr m_year;
             PlaydarLabelList m_labelList;
+            Meta::StatisticsPtr m_statsStore;
 
             QString m_sid;
             KUrl m_uidUrl;

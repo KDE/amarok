@@ -25,7 +25,7 @@ namespace MetaFile
 
     typedef KSharedPtr<Track> TrackPtr;
 
-    class AMAROK_EXPORT Track : public Meta::Track, Meta::Statistics
+    class AMAROK_EXPORT Track : public Meta::Track
     {
         public:
             Track( const KUrl &url );
@@ -73,17 +73,6 @@ namespace MetaFile
 
             virtual Meta::StatisticsPtr statistics();
 
-        // Meta::Statistics methods:
-            virtual double score() const;
-            virtual void setScore( double newScore );
-
-            virtual int rating() const;
-            virtual void setRating( int newRating );
-
-            virtual QDateTime lastPlayed() const;
-            virtual QDateTime firstPlayed() const;
-            virtual int playCount() const;
-
         // MetaFile::Track own methods:
             /**
              * Return true if file at @param url is a track.
@@ -111,9 +100,6 @@ namespace MetaFile
             virtual void setBpm( const qreal newBpm );
             virtual void setComment( const QString &newComment );
             virtual void setDiscNumber( int newDiscNumber );
-            virtual void setLastPlayed( const QDateTime &newTime );
-            virtual void setFirstPlayed( const QDateTime &newTime );
-            virtual void setPlayCount( int newCount );
 
             // publish method so that it can be called by Private.
             using Meta::MetaBase::notifyObservers;

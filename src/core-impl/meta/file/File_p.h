@@ -26,10 +26,10 @@
 #include "core/meta/support/MetaUtility.h"
 #include "shared/MetaReplayGain.h"
 #include "shared/MetaTagLib.h"
-#include "core/statistics/StatisticsProvider.h"
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
+#include "core-impl/support/PersistentStatisticsStore.h"
 #include "covermanager/CoverCache.h"
 
 #include <ThreadWeaver/Weaver>
@@ -103,7 +103,7 @@ public:
         , album()
         , artist()
         , albumArtist()
-        , provider( 0 )
+        , statsStore( 0 )
         , track( t )
     {}
 
@@ -116,7 +116,7 @@ public:
     Meta::GenrePtr genre;
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
-    ::Statistics::StatisticsProvider *provider;
+    KSharedPtr<PersistentStatisticsStore> statsStore;
     QWeakPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
     QWeakPointer<Collections::Collection> collection;
 
@@ -178,14 +178,14 @@ void Track::Private::readMetaData()
 
     m_data.composer = values.value( Meta::valComposer, def.composer ).toString();
 
-    if( provider )
+    if( statsStore )
     {
         if( values.contains(Meta::valRating) )
-            provider->setRating( values.value( Meta::valRating ).toReal() );
+            statsStore->setRating( values.value( Meta::valRating ).toReal() );
         if( values.contains(Meta::valScore) )
-            provider->setScore( values.value( Meta::valScore ).toReal() );
+            statsStore->setScore( values.value( Meta::valScore ).toReal() );
         if( values.contains(Meta::valPlaycount) )
-            provider->setPlayCount( values.value( Meta::valPlaycount ).toReal() );
+            statsStore->setPlayCount( values.value( Meta::valPlaycount ).toReal() );
     }
 
     if(url.isLocalFile())
