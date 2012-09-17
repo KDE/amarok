@@ -156,6 +156,7 @@ void
 NepomukTrack::setRating( int newRating )
 {
     m_resource.setRating( newRating );
+    notifyObservers();
 }
 
 qint64
