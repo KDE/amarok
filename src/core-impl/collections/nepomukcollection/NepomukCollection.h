@@ -47,10 +47,6 @@ class NepomukConstructMetaJob;
   * MemoryCollection provides a default implementation of the QueryMaker which handles
   * all query calls.
   */
-
-// TODO
-// Meta::Observer also has to be inherited
-// when NepomukCollection reaches a stage where it does metadata manipulation
 class NepomukCollection : public Collection, public Meta::Observer
 {
     Q_OBJECT
@@ -80,9 +76,6 @@ public:
     // so that the compiler doesn't complain about hidden virtual functions:
     using Meta::Observer::metadataChanged;
 
-protected:
-    QSharedPointer<MemoryCollection> m_mc;
-
 private:
     // nepomuk specific
     /**
@@ -99,6 +92,7 @@ private:
       */
     void buildCollection();
     friend class NepomukConstructMetaJob;
+    QSharedPointer<MemoryCollection> m_mc;
 };
 
 } //namespace Collections
