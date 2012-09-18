@@ -455,7 +455,7 @@ ServiceTrack::setYear( YearPtr year )
 }
 
 void
-ServiceTrack::setStatisticsProvider( PersistentStatisticsStore *provider )
+ServiceTrack::setStatisticsProvider( StatisticsPtr provider )
 {
     m_statsStore = provider;
 }
@@ -482,7 +482,7 @@ StatisticsPtr
 ServiceTrack::statistics()
 {
     if( m_statsStore )
-        return StatisticsPtr( m_statsStore.data() );
+        return m_statsStore;
     return Meta::Track::statistics();
 }
 

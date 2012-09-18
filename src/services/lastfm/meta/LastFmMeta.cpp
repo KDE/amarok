@@ -432,7 +432,7 @@ Meta::StatisticsPtr
 Track::statistics()
 {
     if( d->statsStore )
-        return Meta::StatisticsPtr( d->statsStore.data() );
+        return d->statsStore;
     return Meta::Track::statistics();
 }
 

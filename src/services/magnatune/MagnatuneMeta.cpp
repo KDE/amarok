@@ -79,7 +79,7 @@ MagnatuneMetaFactory::createTrack(const QStringList & rows)
     } else if (  m_streamType == LOFI ) {
         track->setUidUrl( track->lofiUrl() );
     }
-    track->setStatisticsProvider( new UrlStatisticsStore( track ) );
+    track->setStatisticsProvider( Meta::StatisticsPtr( new UrlStatisticsStore( track ) ) );
 
     if ( !m_membershipPrefix.isEmpty() ) {
         QString url = track->uidUrl();

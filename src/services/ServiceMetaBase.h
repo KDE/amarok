@@ -23,7 +23,6 @@
 #include "core/support/Debug.h"
 #include "InfoParserBase.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
-#include "core-impl/support/PersistentStatisticsStore.h"
 #include "ServiceCapabilities.h"
 
 #include <QAction>
@@ -230,7 +229,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void setComposer( Meta::ComposerPtr composer );
         void setGenre( Meta::GenrePtr genre );
         void setYear( Meta::YearPtr year );
-        void setStatisticsProvider( PersistentStatisticsStore *provider );
+        void setStatisticsProvider( Meta::StatisticsPtr provider );
 
         void setLength( qint64 length );
 
@@ -246,7 +245,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void update( Meta::TrackPtr track );
 
     private:
-        KSharedPtr<PersistentStatisticsStore> m_statsStore;
+        Meta::StatisticsPtr m_statsStore;
         ArtistPtr   m_artist;
         AlbumPtr    m_album;
         GenrePtr    m_genre;

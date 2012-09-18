@@ -29,7 +29,6 @@
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
-#include "core-impl/support/PersistentStatisticsStore.h"
 #include "covermanager/CoverCache.h"
 
 #include <ThreadWeaver/Weaver>
@@ -116,7 +115,7 @@ public:
     Meta::GenrePtr genre;
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
-    KSharedPtr<PersistentStatisticsStore> statsStore;
+    Meta::StatisticsPtr statsStore;
     QWeakPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
     QWeakPointer<Collections::Collection> collection;
 

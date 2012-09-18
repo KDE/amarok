@@ -74,7 +74,7 @@ class Track::Private : public QObject
         QNetworkReply* trackFetch;
         QNetworkReply* wsReply;
 
-        KSharedPtr<PersistentStatisticsStore> statsStore;
+        Meta::StatisticsPtr statsStore;
         uint currentTrackStartTime;
 
     public:
