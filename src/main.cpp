@@ -187,7 +187,6 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("William Viana Soares"), ki18n("Context view"), "vianasw@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
-
     //Former Contributors
     aboutData.addCredit( ki18n("Former contributors"), ki18n("People listed below have contributed to Amarok in the past. Thank you!"), "" );
         ocsData.addCredit( "%%category%%", aboutData.credits().last() );
