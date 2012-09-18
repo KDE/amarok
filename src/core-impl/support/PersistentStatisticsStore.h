@@ -75,6 +75,8 @@ class AMAROK_EXPORT PersistentStatisticsStore : public Meta::Statistics, private
     protected:
         virtual void save() = 0; // called with m_lock locked for writing!
 
+        static const QString s_sqlDateFormat;
+
         Meta::Track *m_track; // plain pointer not to hold reference
         QDateTime m_lastPlayed;
         QDateTime m_firstPlayed;

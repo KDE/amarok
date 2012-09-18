@@ -20,6 +20,8 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
+const QString PersistentStatisticsStore::s_sqlDateFormat( "yyyy-MM-dd hh:mm:ss" );
+
 PersistentStatisticsStore::PersistentStatisticsStore( Meta::Track *track )
     : m_track( track )
     , m_score( 0.0 )

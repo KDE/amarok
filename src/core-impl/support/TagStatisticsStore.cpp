@@ -34,8 +34,8 @@ TagStatisticsStore::TagStatisticsStore( Meta::Track *track )
                                                 sql->escape( m_album ) ) );
     if( !result.isEmpty() )
     {
-        m_firstPlayed = QDateTime::fromString( result.value( 0 ), "yy-MM-dd hh:mm:ss" );
-        m_lastPlayed = QDateTime::fromString( result.value( 1 ), "yy-MM-dd hh:mm:ss" );
+        m_firstPlayed = QDateTime::fromString( result.value( 0 ), s_sqlDateFormat );
+        m_lastPlayed = QDateTime::fromString( result.value( 1 ), s_sqlDateFormat );
         m_score = result.value( 2 ).toDouble();
         m_rating = result.value( 3 ).toInt();
         m_playCount = result.value( 4 ).toInt();
@@ -67,8 +67,8 @@ TagStatisticsStore::save()
                         "rating,playcount,name,artist,album) "
                         "VALUE ('%1','%2',%3,%4,%5,'%6','%7','%8')";
         }
-        sqlString = sqlString.arg( m_firstPlayed.toString( "yy-MM-dd hh:mm:ss" ),
-                                   m_lastPlayed.toString( "yy-MM-dd hh:mm:ss" ),
+        sqlString = sqlString.arg( m_firstPlayed.toString( s_sqlDateFormat ),
+                                   m_lastPlayed.toString( s_sqlDateFormat ),
                                    QString::number( m_score ),
                                    QString::number( m_rating ),
                                    QString::number( m_playCount ),

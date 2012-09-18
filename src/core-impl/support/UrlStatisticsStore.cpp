@@ -29,7 +29,7 @@ UrlStatisticsStore::UrlStatisticsStore( Meta::Track *track, const QString &perma
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
     if( !sql )
     {
-        debug() << "Could not get SqlStorage, aborting" << endl;
+        warning() << __PRETTY_FUNCTION__ << "could not get SqlStorage, aborting";
         return;
     }
 
@@ -39,8 +39,8 @@ UrlStatisticsStore::UrlStatisticsStore( Meta::Track *track, const QString &perma
     QStringList result = sql->query( query.arg( sql->escape( m_permanentUrl ) ) );
     if( !result.isEmpty() )
     {
-        m_firstPlayed = QDateTime::fromString( result.value( 0 ), "yy-MM-dd hh:mm:ss" );
-        m_lastPlayed = QDateTime::fromString( result.value( 1 ), "yy-MM-dd hh:mm:ss" );
+        m_firstPlayed = QDateTime::fromString( result.value( 0 ), s_sqlDateFormat );
+        m_lastPlayed = QDateTime::fromString( result.value( 1 ), s_sqlDateFormat );
         m_score = result.value( 2 ).toDouble();
         m_rating = result.value( 3 ).toInt();
         m_playCount = result.value( 4 ).toInt();
@@ -53,7 +53,7 @@ UrlStatisticsStore::save()
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
     if( !sql )
     {
-        debug() << "Could not get SqlStorage, aborting" << endl;
+        warning() << __PRETTY_FUNCTION__ << "could not get SqlStorage, aborting";
         return;
     }
 
@@ -72,8 +72,8 @@ UrlStatisticsStore::save()
             sqlString = "INSERT INTO statistics_permanent(firstplayed,lastplayed,score,"
                         "rating,playcount,url) VALUE ('%1','%2',%3,%4,%5,'%6')";
         }
-        sqlString = sqlString.arg( m_firstPlayed.toString( "yy-MM-dd hh:mm:ss" ),
-                                   m_lastPlayed.toString( "yy-MM-dd hh:mm:ss" ),
+        sqlString = sqlString.arg( m_firstPlayed.toString( s_sqlDateFormat ),
+                                   m_lastPlayed.toString( s_sqlDateFormat ),
                                    QString::number( m_score ),
                                    QString::number( m_rating ),
                                    QString::number( m_playCount ),
