@@ -19,7 +19,7 @@ VERSION 2.7-Beta 1
     * New optional dependency for Amazon downloads: clamz.
 
   BUGFIXES:
-    * Amarok doesn't use nepomuk to rate music files. (BR 174630)
+    * Nepomuk plugin now makes Nepomuk ratings visible in Amarok. (BR 174630)
     * Fix some track tag modifications not being updated until restart
       (e.g. changing disc number from 1 to 0).
     * Repeat playlist correctly with a single track playlist. (BR 290955)
