@@ -166,7 +166,8 @@ NepomukConstructMetaJob::run()
         QString title = it.binding( "title" ).toString();
         QString type = it.binding( "type" ).toString();
         int length = it.binding( "length" ).toString().toDouble();
-        int bitrate = it.binding( "bitrate" ).toString().toFloat();
+        // Nepomuk has bitrate in bps and Amarok in kbps. So divide by 1000.
+        int bitrate = it.binding( "bitrate" ).toString().toFloat()/1000;
         int trackNumber = it.binding( "trackNumber" ).toString().toInt();
         //disc number is not yet extracted as there is no explicit ontology for it
         qreal bpm = it.binding( "bpm" ).toString().toInt();
