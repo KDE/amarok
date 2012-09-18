@@ -49,6 +49,7 @@ gpointer AmarokItdbUserDataDuplicateFunc( gpointer userdata )
 
 Track::Track( Itdb_Track *ipodTrack )
     : m_track( ipodTrack )
+    , m_batch( 0 )
 {
     Q_ASSERT( m_track != 0 );
     m_track->usertype = m_gpodTrackUserTypeAmarokTrackPtr;
@@ -58,6 +59,7 @@ Track::Track( Itdb_Track *ipodTrack )
 
 Track::Track( const Meta::TrackPtr &origTrack )
     : m_track( itdb_track_new() )
+    , m_batch( 0 )
 {
     Q_ASSERT( m_track != 0 );
     m_track->usertype = m_gpodTrackUserTypeAmarokTrackPtr;
@@ -67,6 +69,7 @@ Track::Track( const Meta::TrackPtr &origTrack )
     Meta::AlbumPtr origAlbum = origTrack->album();
     Meta::ArtistPtr origArtist = origTrack->artist();
 
+    beginUpdate();
     setTitle( origTrack->name() );
     // url is set in setCollection()
     setAlbum( origAlbum ? origAlbum->name() : QString() );
@@ -84,7 +87,7 @@ Track::Track( const Meta::TrackPtr &origTrack )
             albumArtist = origAlbum->albumArtist()->name();
 
         if( origAlbum->hasImage() )
-            setImage( origAlbum->image(), /* doCommit */ false );
+            setImage( origAlbum->image() );
     }
     /* iPod doesn't handle empty album artist well for compilation albums (splits these
      * albums). Ensure that we have something in albumArtist. We filter it for Amarok for
@@ -97,13 +100,13 @@ Track::Track( const Meta::TrackPtr &origTrack )
     Meta::ConstStatisticsPtr origStats = origTrack->statistics();
 
     setAlbumArtist( albumArtist );
-    setIsCompilation( isCompilation, /* doCommit */ false );
+    setIsCompilation( isCompilation );
 
     setBpm( origTrack->bpm() );
     setComment( origTrack->comment() );
 
     setScore( origStats->score() );
-    setRating( origStats->rating(), /* doCommit */ false );
+    setRating( origStats->rating() );
 
     setLength( origTrack->length() );
     // filesize is set in finalizeCopying(), which could be more accurate
@@ -128,6 +131,7 @@ Track::Track( const Meta::TrackPtr &origTrack )
     setType( origTrack->type() );
     m_changedFields.clear();  // some of the set{Something} insert to m_changedFields, not
                               // desirable for constructor
+    endUpdate();
 }
 
 Track::~Track()
@@ -176,7 +180,7 @@ Track::setTitle( const QString &newTitle )
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->title );
     m_track->title = g_strdup( newTitle.toUtf8() );
-    m_changedFields.insert( Meta::valTitle, newTitle );
+    commitIfInNonBatchUpdate( Meta::valTitle, newTitle );
 }
 
 KUrl
@@ -249,7 +253,7 @@ Track::setAlbum( const QString &newAlbum )
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->album );
     m_track->album = g_strdup( newAlbum.toUtf8() );
-    m_changedFields.insert( Meta::valAlbum, newAlbum );
+    commitIfInNonBatchUpdate( Meta::valAlbum, newAlbum );
 }
 
 void
@@ -258,29 +262,23 @@ Track::setAlbumArtist( const QString &newAlbumArtist )
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->albumartist );
     m_track->albumartist = g_strdup( newAlbumArtist.toUtf8() );
-    m_changedFields.insert( Meta::valAlbumArtist, newAlbumArtist );
+    commitIfInNonBatchUpdate( Meta::valAlbumArtist, newAlbumArtist );
 }
 
 void
-Track::setIsCompilation( bool newIsCompilation, bool doCommit )
+Track::setIsCompilation( bool newIsCompilation )
 {
     // libgpod says: m_track->combination: True if set to 0x1, false if set to 0x0.
     if( m_track->compilation == newIsCompilation )
         return;  // nothing to do
 
-    // we need to call commitChanges() without m_trackLock held, so create extra scope for it
-    {
-        QWriteLocker locker( &m_trackLock );
-        m_track->compilation = newIsCompilation ? 0x1 : 0x0;
-        m_changedFields.insert( Meta::valCompilation, newIsCompilation );
-    }
-    if( doCommit )
-         // setIsCompilation() is not a part of EditCapability, we have to commit ourselves:
-        commitChanges();
+    QWriteLocker locker( &m_trackLock );
+    m_track->compilation = newIsCompilation ? 0x1 : 0x0;
+    commitIfInNonBatchUpdate( Meta::valCompilation, newIsCompilation );
 }
 
 void
-Track::setImage( const QImage &newImage, bool doCommit )
+Track::setImage( const QImage &newImage )
 {
     QWriteLocker locker( &m_trackLock );
     if( !m_tempImageFilePath.isEmpty() )
@@ -309,12 +307,7 @@ Track::setImage( const QImage &newImage, bool doCommit )
              * and sets artwork_size, artwork_count and has_artwork m_track fields */
             itdb_track_set_thumbnails( m_track, QFile::encodeName( m_tempImageFilePath ) );
     }
-    m_changedFields.insert( Meta::valImage, newImage );
-    locker.unlock();
-
-    if( doCommit )
-         // setImage() is not a part of EditCapability, we have to commit ourselves:
-        commitChanges();
+    commitIfInNonBatchUpdate( Meta::valImage, newImage );
 }
 
 Meta::ArtistPtr
@@ -330,7 +323,7 @@ Track::setArtist( const QString &newArtist )
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->artist );
     m_track->artist = g_strdup( newArtist.toUtf8() );
-    m_changedFields.insert( Meta::valArtist, newArtist );
+    commitIfInNonBatchUpdate( Meta::valArtist, newArtist );
 }
 
 Meta::ComposerPtr
@@ -346,7 +339,7 @@ Track::setComposer( const QString &newComposer )
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->composer );
     m_track->composer = g_strdup( newComposer.toUtf8() );
-    m_changedFields.insert( Meta::valComposer, newComposer );
+    commitIfInNonBatchUpdate( Meta::valComposer, newComposer );
 }
 
 Meta::GenrePtr
@@ -362,7 +355,7 @@ Track::setGenre( const QString &newGenre )
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->genre );
     m_track->genre = g_strdup( newGenre.toUtf8() );
-    m_changedFields.insert( Meta::valGenre, newGenre );
+    commitIfInNonBatchUpdate( Meta::valGenre, newGenre );
 }
 
 Meta::YearPtr
@@ -376,7 +369,7 @@ void Track::setYear( int newYear )
 {
     QWriteLocker locker( &m_trackLock );
     m_track->year = newYear;
-    m_changedFields.insert( Meta::valYear, newYear );
+    commitIfInNonBatchUpdate( Meta::valYear, newYear );
 }
 
 qreal
@@ -390,7 +383,7 @@ void Track::setBpm( const qreal newBpm )
 {
     QWriteLocker locker( &m_trackLock );
     m_track->BPM = newBpm;
-    m_changedFields.insert( Meta::valBpm, newBpm );
+    commitIfInNonBatchUpdate( Meta::valBpm, newBpm );
 }
 
 QString
@@ -405,19 +398,7 @@ void Track::setComment( const QString &newComment )
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->comment );
     m_track->comment = g_strdup( newComment.toUtf8() );
-    m_changedFields.insert( Meta::valComment, newComment );
-}
-
-double
-Track::score() const
-{
-    return 0.0; // cannot be represented on iPod
-}
-
-void
-Track::setScore( double newScore )
-{
-    Q_UNUSED(newScore)
+    commitIfInNonBatchUpdate( Meta::valComment, newComment );
 }
 
 int
@@ -429,20 +410,15 @@ Track::rating() const
 }
 
 void
-Track::setRating( int newRating, bool doCommit )
+Track::setRating( int newRating )
 {
     newRating = ( newRating * ITDB_RATING_STEP ) / 2;
     if( newRating == (int) m_track->rating ) // casting prevents compiler waring about signedness
         return; // nothing to do, do not notify observers
 
-    // we need to call commitChanges() without m_trackLock held, so create extra scope for it
-    {
-        QWriteLocker locker( &m_trackLock );
-        m_track->rating = newRating;
-        m_changedFields.insert( Meta::valRating, newRating );
-    }
-    if( doCommit )
-        commitChanges(); // setRating() is not a part of EditCapability, we have to commit ourselves
+    QWriteLocker locker( &m_trackLock );
+    m_track->rating = newRating;
+    commitIfInNonBatchUpdate( Meta::valRating, newRating );
 }
 
 qint64
@@ -454,7 +430,9 @@ Track::length() const
 void
 Track::setLength( qint64 newLength )
 {
+    QWriteLocker locker( &m_trackLock );
     m_track->tracklen = newLength;
+    commitIfInNonBatchUpdate( Meta::valLength, newLength );
 }
 
 int
@@ -472,7 +450,9 @@ Track::sampleRate() const
 void
 Track::setSampleRate( int newSampleRate )
 {
+    QWriteLocker locker( &m_trackLock );
     m_track->samplerate = newSampleRate;
+    commitIfInNonBatchUpdate( Meta::valSamplerate, newSampleRate );
 }
 
 int
@@ -484,7 +464,9 @@ Track::bitrate() const
 void
 Track::setBitrate( int newBitrate )
 {
+    QWriteLocker locker( &m_trackLock );
     m_track->bitrate = newBitrate;
+    commitIfInNonBatchUpdate( Meta::valBitrate, newBitrate );
 }
 
 QDateTime
@@ -499,7 +481,9 @@ Track::createDate() const
 void
 Track::setCreateDate( const QDateTime &newDate )
 {
+    QWriteLocker locker( &m_trackLock );
     m_track->time_added = newDate.isValid() ? newDate.toTime_t() : 0;
+    commitIfInNonBatchUpdate( Meta::valCreateDate, newDate );
 }
 
 QDateTime
@@ -511,7 +495,8 @@ Track::modifyDate() const
     return QDateTime::fromTime_t( time );
 }
 
-void Track::setModifyDate( const QDateTime &newDate )
+void
+Track::setModifyDate( const QDateTime &newDate )
 {
     // this method _cannot_ lock m_trackLock or deadlock will occur in commitChanges()
     m_track->time_modified = newDate.isValid() ? newDate.toTime_t() : 0;
@@ -529,7 +514,7 @@ Track::setTrackNumber( int newTrackNumber )
 {
     QWriteLocker locker( &m_trackLock );
     m_track->track_nr = newTrackNumber;
-    m_changedFields.insert( Meta::valTrackNr, newTrackNumber );
+    commitIfInNonBatchUpdate( Meta::valTrackNr, newTrackNumber );
 }
 
 int
@@ -544,7 +529,7 @@ Track::setDiscNumber( int newDiscNumber )
 {
     QWriteLocker locker( &m_trackLock );
     m_track->cd_nr = newDiscNumber;
-    m_changedFields.insert( Meta::valDiscNr, newDiscNumber );
+    commitIfInNonBatchUpdate( Meta::valDiscNr, newDiscNumber );
 }
 
 QDateTime
@@ -558,7 +543,7 @@ Track::setLastPlayed( const QDateTime &time )
 {
     QWriteLocker locker( &m_trackLock );
     m_track->time_played = time.isValid() ? time.toTime_t() : 0;
-    m_changedFields.insert( Meta::valLastPlayed, time );
+    commitIfInNonBatchUpdate( Meta::valLastPlayed, time );
 }
 
 QDateTime
@@ -574,7 +559,7 @@ Track::setFirstPlayed( const QDateTime &time )
 {
     QWriteLocker locker( &m_trackLock );
     m_track->time_released = time.isValid() ? time.toTime_t() : 0;
-    m_changedFields.insert( Meta::valFirstPlayed, time );
+    commitIfInNonBatchUpdate( Meta::valFirstPlayed, time );
 }
 
 int
@@ -588,7 +573,7 @@ Track::setPlayCount( const int playcount )
 {
     QWriteLocker locker( &m_trackLock );
     m_track->playcount = playcount;
-    m_changedFields.insert( Meta::valLastPlayed, playcount );
+    commitIfInNonBatchUpdate( Meta::valLastPlayed, playcount );
 }
 
 qreal
@@ -649,6 +634,7 @@ Track::setType( const QString &newType )
     QWriteLocker locker( &m_trackLock );
     g_free( m_track->filetype );
     m_track->filetype = g_strdup( newType.toUtf8() );
+    commitIfInNonBatchUpdate( Meta::valFormat, newType );
 }
 
 void Track::finishedPlaying( double playedFraction )
@@ -662,11 +648,12 @@ void Track::finishedPlaying( double playedFraction )
     if( !doUpdate )
         return;
 
+    beginUpdate();
     setPlayCount( playCount() + 1 );
     if( !firstPlayed().isValid() )
         setFirstPlayed( QDateTime::currentDateTime() );
     setLastPlayed( QDateTime::currentDateTime() );
-    commitChanges();
+    endUpdate();
 }
 
 bool
@@ -739,33 +726,57 @@ Track::setCollection( QWeakPointer<IpodCollection> collection )
         // we don't make the datbase dirty, this can be recomputed every time
 }
 
+void Track::beginUpdate()
+{
+    QWriteLocker locker( &m_trackLock );
+    m_batch++;
+}
+
+void Track::endUpdate()
+{
+    QWriteLocker locker( &m_trackLock );
+    m_batch--;
+    commitIfInNonBatchUpdate();
+}
+
 void
-Track::commitChanges()
+Track::commitIfInNonBatchUpdate( qint64 field, const QVariant &value )
+{
+    m_changedFields.insert( field, value );
+    commitIfInNonBatchUpdate();
+}
+
+void
+Track::commitIfInNonBatchUpdate()
 {
     static const QSet<qint64> statFields = ( QSet<qint64>() << Meta::valFirstPlayed <<
         Meta::valLastPlayed << Meta::valPlaycount << Meta::valScore << Meta::valRating );
 
-    QString path = playableUrl().path(); // needs to be here because it locks m_trackLock too
-    // extra scope for m_trackLock locker:
+    if( m_batch > 0 || m_changedFields.isEmpty() )
+        return;
+
+    // we block changing the track meta-data of read-only iPod Collections;
+    // it would only be cofusing to the user as the changes would get discarded.
+    if( !m_coll || !m_coll.data()->isWritable() )
+        return;
+
+    if( AmarokConfig::writeBackStatistics() ||
+        !(QSet<qint64>::fromList( m_changedFields.keys() ) - statFields).isEmpty() )
     {
-        QWriteLocker locker( &m_trackLock ); // guard access to m_changedFields
-        if( m_changedFields.isEmpty() )
-            return;
-
-        if( AmarokConfig::writeBackStatistics() ||
-            !(QSet<qint64>::fromList( m_changedFields.keys() ) - statFields).isEmpty() )
-        {
-            setModifyDate( QDateTime::currentDateTime() );
-        }
-
-        // write tags to file in a thread in order not to block
-        WriteTagsJob *job = new WriteTagsJob( path, m_changedFields );
-        job->connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-        ThreadWeaver::Weaver::instance()->enqueue( job );
-
-        m_changedFields.clear();
+        setModifyDate( QDateTime::currentDateTime() );
     }
+
+    m_trackLock.unlock(); // playableUrl() locks it too, notifyObservers() better without lock
+    QString path = playableUrl().path(); // needs to be here because it locks m_trackLock too
+
+    // write tags to file in a thread in order not to block
+    WriteTagsJob *job = new WriteTagsJob( path, m_changedFields );
+    job->connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+    ThreadWeaver::Weaver::instance()->enqueue( job );
+
     notifyObservers();
+    m_trackLock.lockForWrite(); // reset to original state when this was called
+    m_changedFields.clear();
 }
 
 // IpodMeta:Album

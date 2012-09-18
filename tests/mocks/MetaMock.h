@@ -63,9 +63,7 @@ public:
 
     // Meta::Statistics methods
     double score() const { return m_data.value( Meta::Field::SCORE ).toDouble(); }
-    void setScore( double newScore ) { Q_UNUSED( newScore ); }
     int rating() const { return m_data.value( Meta::Field::RATING ).toInt(); }
-    void setRating( int newRating ) { Q_UNUSED( newRating ); }
     QDateTime firstPlayed() const { return m_data.value( Meta::Field::FIRST_PLAYED ).toDateTime(); }
     QDateTime lastPlayed() const { return m_data.value( Meta::Field::LAST_PLAYED ).toDateTime(); }
     int playCount() const { return m_data.value( Meta::Field::PLAYCOUNT ).toInt(); }

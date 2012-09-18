@@ -20,7 +20,6 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"
-#include "core/capabilities/StatisticsCapability.h"
 #include "core-impl/meta/file/File.h"
 #include "core/meta/support/MetaConstants.h"
 
@@ -370,25 +369,14 @@ FastForwardWorker::setTrackMetadata( Meta::TrackPtr track, double score, int rat
      * insertStatistics() afterwards) while Meta::SqlTrack directly saves data to
      * database (thus no insertStatistics() call is necessary)
      */
-    Capabilities::StatisticsCapability *ec = track->create<Capabilities::StatisticsCapability>();
-    if( ec )
-    {
-        ec->beginStatisticsUpdate();
-        ec->setScore( score );
-        ec->setRating( rating );
-        ec->setFirstPlayed( firstPlayed );
-        ec->setLastPlayed( lastPlayed );
-        ec->setPlayCount( playCount );
-        ec->endStatisticsUpdate();
-
-        delete ec;
-    }
-    else
-    {
-        warning() << "    track->create<Capabilities::StatisticsCapability>() returned 0!";
-        emit showMessage( QString( "<font color='red'>%1</font>" ).arg(
-                i18n( "Cannot import statistics for %1", track->prettyUrl() ) ) );
-    }
+    Meta::StatisticsPtr statistics = track->statistics();
+    statistics->beginUpdate();
+    statistics->setScore( score );
+    statistics->setRating( rating );
+    statistics->setFirstPlayed( firstPlayed );
+    statistics->setLastPlayed( lastPlayed );
+    statistics->setPlayCount( playCount );
+    statistics->endUpdate();
 }
 
 void

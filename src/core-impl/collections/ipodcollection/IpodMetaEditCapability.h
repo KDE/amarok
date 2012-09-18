@@ -48,13 +48,6 @@ namespace IpodMeta
             virtual void endMetaDataUpdate();
 
         private:
-            /**
-            * Tells the underlying track to write back changes if and only if current update
-            * is not a part of a larger batch (initiated by beginMetaDataUpdate())
-            */
-            void commitIfInNonBatchUpdate();
-
-            bool m_inBatchUpdate;
             KSharedPtr<Track> m_track;
     };
 

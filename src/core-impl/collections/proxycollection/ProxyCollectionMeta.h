@@ -82,8 +82,11 @@ namespace Meta {
             int rating() const;
             void setRating( int newRating );
             QDateTime firstPlayed() const;
+            void setFirstPlayed( const QDateTime &date );
             QDateTime lastPlayed() const;
+            void setLastPlayed( const QDateTime &date );
             int playCount() const;
+            void setPlayCount( int newPlayCount );
 
             void add( const Meta::TrackPtr &track );
 

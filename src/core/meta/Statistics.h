@@ -49,7 +49,7 @@ namespace Meta
 
             /**
              * Set score of this track. If you touch more fields, consider using
-             * @see beginUpdate()
+             * @see beginUpdate(), @see endUpdate()
              */
             virtual void setScore( double newScore );
 
@@ -61,7 +61,7 @@ namespace Meta
 
             /**
              * Set rating of this track. If you touch more fields, consider using
-             * @see beginUpdate()
+             * @see beginUpdate(), @see endUpdate()
              */
             virtual void setRating( int newRating );
 
@@ -72,16 +72,36 @@ namespace Meta
             virtual QDateTime lastPlayed() const;
 
             /**
+             * Set the last played time. @param date may be an invalid date to reset
+             * the date to "never played". If you touch more fields, consider using
+             * @see beginUpdate(), @see endUpdate()
+             */
+            virtual void setLastPlayed( const QDateTime &date );
+
+            /**
              * Return the time the song was first played, or an invalid QDateTime if it
              * has not been played yet (done by the default implementation).
              */
             virtual QDateTime firstPlayed() const;
 
             /**
+             * Set the first played time. @param date may be an invalid date to reset
+             * the date to "never played". If you touch more fields, consider using
+             * @see beginUpdate(), @see endUpdate()
+             */
+            virtual void setFirstPlayed( const QDateTime &date );
+
+            /**
              * Returns the number of times the track was played, 0 id it is unknown.
              * Default implementation returns 0.
              */
             virtual int playCount() const;
+
+            /**
+             * Set play count. If you touch more fields, consider using
+             * @see beginUpdate(), @see endUpdate()
+             */
+            virtual void setPlayCount( int newPlayCount );
 
             /**
              * If you call multiple set*() methods, enclose the calls in beginUpdate() ...

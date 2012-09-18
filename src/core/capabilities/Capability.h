@@ -51,7 +51,7 @@ namespace Capabilities
                         // not longer used
                         , StreamInfo = 10
                         // not longer used
-                        , Importable = 12
+                        // not longe used
                         // not longer used
                         , BookmarkThis = 14
                         , WriteTimecode = 15

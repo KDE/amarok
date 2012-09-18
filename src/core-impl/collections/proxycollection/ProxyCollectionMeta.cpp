@@ -348,6 +348,21 @@ ProxyTrack::firstPlayed() const
     return result;
 }
 
+void
+ProxyTrack::setFirstPlayed( const QDateTime &date )
+{
+    foreach( Meta::TrackPtr track, m_tracks )
+    {
+        // only "lower" the first played
+        Meta::StatisticsPtr trackStats = track->statistics();
+        if( !trackStats->firstPlayed().isValid() ||
+            trackStats->firstPlayed() > date )
+        {
+            trackStats->setFirstPlayed( date );
+        }
+    }
+}
+
 QDateTime
 ProxyTrack::lastPlayed() const
 {
@@ -365,11 +380,25 @@ ProxyTrack::lastPlayed() const
     return result;
 }
 
+void
+ProxyTrack::setLastPlayed(const QDateTime& date)
+{
+    foreach( Meta::TrackPtr track, m_tracks )
+    {
+        // only "raise" the last played
+        Meta::StatisticsPtr trackStats = track->statistics();
+        if( !trackStats->lastPlayed().isValid() ||
+            trackStats->lastPlayed() < date )
+        {
+            trackStats->setLastPlayed( date );
+        }
+    }
+}
+
 int
 ProxyTrack::playCount() const
 {
-    //hm, there are two ways to implement this:
-    //show the sum of all play counts, or show the maximum of all play counts.
+    // show the maximum of all play counts.
     int result = 0;
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
@@ -379,6 +408,13 @@ ProxyTrack::playCount() const
         }
     }
     return result;
+}
+
+void
+ProxyTrack::setPlayCount( int newPlayCount )
+{
+    Q_UNUSED( newPlayCount )
+    // no safe thing to do here. Notice we override finishedPlaying()
 }
 
 void

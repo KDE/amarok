@@ -54,16 +54,34 @@ Statistics::lastPlayed() const
     return QDateTime();
 }
 
+void
+Statistics::setLastPlayed( const QDateTime &date )
+{
+    Q_UNUSED( date )
+}
+
 QDateTime
 Statistics::firstPlayed() const
 {
     return QDateTime();
 }
 
+void
+Statistics::setFirstPlayed( const QDateTime &date )
+{
+    Q_UNUSED( date )
+}
+
 int
 Statistics::playCount() const
 {
     return 0;
+}
+
+void
+Statistics::setPlayCount( int newPlayCount )
+{
+    Q_UNUSED( newPlayCount )
 }
 
 void

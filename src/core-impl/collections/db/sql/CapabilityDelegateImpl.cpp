@@ -29,7 +29,6 @@
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
-#include "core/capabilities/StatisticsCapability.h"
 #include "core/capabilities/OrganiseCapability.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core/meta/support/MetaConstants.h"
@@ -68,46 +67,6 @@ class EditCapabilityImpl : public Capabilities::EditCapability
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
-
-    private:
-        KSharedPtr<Meta::SqlTrack> m_track;
-};
-
-class StatisticsCapabilityImpl : public Capabilities::StatisticsCapability
-{
-    public:
-        StatisticsCapabilityImpl( Meta::SqlTrack *track )
-            : Capabilities::StatisticsCapability()
-            , m_track( track ) {}
-
-        virtual void setScore( const int score ) {
-            if( score > 0 ) // don't reset it
-                m_track->setScore( score );
-        }
-        virtual void setRating( const int rating ) {
-            if( rating > 0 ) // don't reset it
-                m_track->setRating( rating );
-        }
-        virtual void setFirstPlayed( const QDateTime &time ) {
-            if( time < m_track->firstPlayed() ) // only update if older
-                m_track->setFirstPlayed( time );
-        }
-        virtual void setLastPlayed( const QDateTime &time ) {
-            if( time > m_track->lastPlayed() ) // only update if newer
-                m_track->setLastPlayed( time );
-        }
-        virtual void setPlayCount( const int playcount ) {
-            if( playcount > 0 ) // don't reset it
-                m_track->setPlayCount( playcount );
-        }
-        virtual void beginStatisticsUpdate()
-        {
-            m_track->beginMetaDataUpdate();
-        }
-        virtual void endStatisticsUpdate()
-        {
-            m_track->endMetaDataUpdate();
-        }
 
     private:
         KSharedPtr<Meta::SqlTrack> m_track;
@@ -245,7 +204,6 @@ TrackCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::T
     switch( type )
     {
         case Capabilities::Capability::Actions:
-        case Capabilities::Capability::Importable:
         case Capabilities::Capability::Organisable:
         case Capabilities::Capability::BookmarkThis:
         case Capabilities::Capability::WriteTimecode:
@@ -277,9 +235,6 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
     {
         case Capabilities::Capability::Editable:
             return new EditCapabilityImpl( track );
-
-        case Capabilities::Capability::Importable:
-            return new StatisticsCapabilityImpl( track );
 
         case Capabilities::Capability::Actions:
         {

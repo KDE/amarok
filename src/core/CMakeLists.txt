@@ -40,7 +40,6 @@ set(libcore_capabilities_SRCS
     capabilities/OrganiseCapability.cpp
     capabilities/ReadLabelCapability.cpp
     capabilities/SourceInfoCapability.cpp
-    capabilities/StatisticsCapability.cpp
     capabilities/StreamInfoCapability.cpp
     capabilities/TranscodeCapability.cpp
     capabilities/WriteLabelCapability.cpp
