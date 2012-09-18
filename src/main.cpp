@@ -164,6 +164,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Peter Zhou Lei"), ki18n("Scripting interface"), "peterzhoulei@gmail.com" );
         ocsData.addCredit( "peterzl", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Phalgun Guduthur"), ki18n("Nepomuk Collection (phalgun)"), "me@phalgun.in" );
+        ocsData.addCredit( "phalgun", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Sam Lade"), ki18n("Developer (Sentynel)"), "sam@sentynel.com");
         ocsData.addCredit( "Sentynel", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Scott Wheeler"), ki18n("TagLib & ktrm code"), "wheeler@kde.org" );
