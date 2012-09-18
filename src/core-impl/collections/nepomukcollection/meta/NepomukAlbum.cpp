@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,35 +14,48 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "NepomukArtist.h"
+#include "NepomukAlbum.h"
 
-#include "NepomukCollection.h"
-#include "NepomukQueryMaker.h"
-
-#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
-
-#include <QString>
-
 
 using namespace Meta;
 
-NepomukArtist::NepomukArtist( NepomukCollection *collection, const QString &name )
-        : Artist()
-        , m_collection( collection )
-        , m_name( name )
+NepomukAlbum::NepomukAlbum( const QString &albumName, const ArtistPtr &artistPtr )
+    : Meta::Album()
+    , m_name( albumName )
+    , m_artist( artistPtr )
 {
-}
-
-QString
-NepomukArtist::name() const
-{
-    return m_name;
+    // TODO, check if album has unique artist
+    m_isCompilation = false;
 }
 
 TrackList
-NepomukArtist::tracks()
+NepomukAlbum::tracks()
 {
     return TrackList();
 }
 
+bool
+NepomukAlbum::isCompilation() const
+{
+    return m_isCompilation;
+}
+
+
+bool
+NepomukAlbum::hasAlbumArtist() const
+{
+    return m_artist;
+}
+
+ArtistPtr
+NepomukAlbum::albumArtist() const
+{
+    return m_artist;
+}
+
+QString
+NepomukAlbum::name() const
+{
+    return m_name;
+}

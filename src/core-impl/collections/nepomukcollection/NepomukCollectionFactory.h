@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,28 +14,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKCOMPOSER_H
-#define NEPOMUKCOMPOSER_H
+#ifndef NEPOMUKCOLLECTIONFACTORY_H
+#define NEPOMUKCOLLECTIONFACTORY_H
 
-#include "core/meta/Meta.h"
+#include "core/collections/Collection.h"
 
-#include "QString"
-
-namespace Meta
+class NepomukCollectionFactory : public Collections::CollectionFactory
 {
-
-class NepomukComposer : public Composer
-{
-    public:
-        NepomukComposer( const QString &name );
-
-        virtual QString name() const;
-
-        virtual TrackList tracks();
-
-    private:
-        QString m_name;
+    Q_OBJECT
+public:
+    NepomukCollectionFactory( QObject *parent, const QVariantList &args );
+    virtual ~NepomukCollectionFactory();
+    virtual void init();
 };
 
-}
-#endif /*NEPOMUKCOMPOSER_H*/
+#endif // NEPOMUKCOLLECTIONFACTORY_H

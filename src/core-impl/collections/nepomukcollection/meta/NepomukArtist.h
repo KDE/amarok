@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,30 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "NepomukGenre.h"
+#ifndef NEPOMUKARTIST_H
+#define NEPOMUKARTIST_H
 
 #include "core/meta/Meta.h"
 
-#include <QString>
-
-using namespace Meta;
-
-NepomukGenre::NepomukGenre( const QString &name )
-        : Meta::Genre()
-        , m_name( name )
+namespace Meta
 {
-}
-
-QString
- NepomukGenre::name() const
+/**
+ * Represents a unit artist resource in Amarok
+ */
+class NepomukArtist : public Artist
 {
-    return m_name;
+public:
+    NepomukArtist( const QString &name );
+    virtual TrackList tracks();
+    virtual QString name() const;
+
+private:
+    QString m_name;
+};
+
 }
-
-TrackList
-NepomukGenre::tracks()
-{
-    return TrackList();
-}
-
-
+#endif // NEPOMUKARTIST_H

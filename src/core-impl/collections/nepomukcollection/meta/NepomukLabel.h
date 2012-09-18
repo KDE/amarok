@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,32 +14,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKARTIST_H
-#define NEPOMUKARTIST_H
-
-#include "NepomukCollection.h"
+#ifndef NEPOMUKLABEL_H
+#define NEPOMUKLABEL_H
 
 #include "core/meta/Meta.h"
 
-class NepomukCollection;
-
 namespace Meta
 {
-
-class NepomukArtist : public Artist
+/**
+ * Represents a unit label/tag resource in Amarok
+ */
+class NepomukLabel : public Label
 {
-    public:
-        NepomukArtist( NepomukCollection *collection, const QString &name );
-        virtual ~NepomukArtist() {};
+public:
+    NepomukLabel( const QString &name );
+    virtual QString name() const;
 
-        virtual QString name() const;
-
-        virtual TrackList tracks();
-
-    private:
-        NepomukCollection *m_collection;
-        QString m_name;
+private:
+    QString m_name;
 };
 
 }
-#endif /*NEPOMUKARTIST_H*/
+#endif // NEPOMUKLABEL_H

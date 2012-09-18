@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,30 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "NepomukComposer.h"
+#ifndef NEPOMUKCOMPOSER_H
+#define NEPOMUKCOMPOSER_H
 
 #include "core/meta/Meta.h"
 
-#include <QString>
-
-using namespace Meta;
-
-
-NepomukComposer::NepomukComposer( const QString &name )
-        : Meta::Composer()
-        , m_name( name )
+namespace Meta
 {
+/**
+ * Represents a unit composer resource in Amarok
+ */
+class NepomukComposer : public Composer
+{
+public:
+    NepomukComposer( const QString &name );
+    virtual TrackList tracks();
+    virtual QString name() const;
+
+private:
+    QString m_name;
+};
 
 }
-
-QString
-NepomukComposer::name() const
-{
-    return m_name;
-}
-
-TrackList
-NepomukComposer::tracks()
-{
-    return TrackList();
-}
+#endif // NEPOMUKCOMPOSER_H

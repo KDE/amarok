@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,28 +14,20 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKGENRE_H
-#define NEPOMUKGENRE_H
+#include "NepomukLabel.h"
 
 #include "core/meta/Meta.h"
 
-#include "QString"
+using namespace Meta;
 
-namespace Meta
+NepomukLabel::NepomukLabel( const QString &name )
+    : Meta::Label()
+    , m_name( name )
 {
-
-class NepomukGenre : public Genre
-{
-    public:
-        NepomukGenre( const QString &name );
-
-        virtual QString name() const;
-
-        virtual TrackList tracks();
-        
-    private:
-        QString m_name;
-};
-
 }
-#endif /*NEPOMUKENRE_H*/
+
+QString
+NepomukLabel::name() const
+{
+    return m_name;
+}

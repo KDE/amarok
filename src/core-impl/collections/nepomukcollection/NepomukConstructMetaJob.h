@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,28 +14,50 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKYEAR_H
-#define NEPOMUKYEAR_H
+#ifndef NEPOMUKCONSTRUCTMETAJOB_H
+#define NEPOMUKCONSTRUCTMETAJOB_H
 
 #include "core/meta/Meta.h"
+#include "core/meta/support/MetaKeys.h"
+#include "core-impl/collections/support/MemoryCollection.h"
 
-#include <QString>
+#include <ThreadWeaver/Job>
 
-namespace Meta
+namespace Collections
 {
 
-class NepomukYear : public Year
+class NepomukCollection;
+
+class NepomukConstructMetaJob : public ThreadWeaver::Job
 {
-    public:
-        NepomukYear( const QString &name );
+    Q_OBJECT
 
-        virtual QString name() const;
+public:
+    explicit NepomukConstructMetaJob( NepomukCollection *coll );
 
-        virtual TrackList tracks();
+public slots:
+    /**
+     * Aborts the job as soon as it is safely possible
+     */
+    void abort();
 
-    private:
-        QString m_name;
+signals:
+    // signals for progress operation:
+    void incrementProgress();
+    void endProgressOperation( QObject *obj );
+    // not used, defined to keep QObject::conect warning quiet
+    void totalSteps( int steps );
+    void updated();
+
+protected:
+    void run();
+
+private:
+    QSharedPointer<Collections::MemoryCollection> m_mc;
+    bool m_aborted;
+    NepomukCollection *m_coll;
 };
 
 }
-#endif /*NEPOMUKYEAR_H*/
+
+#endif // NEPOMUKCONSTRUCTMETAJOB_H

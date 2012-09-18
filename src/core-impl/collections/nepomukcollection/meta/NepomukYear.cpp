@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,25 +18,22 @@
 
 #include "core/meta/Meta.h"
 
-#include <QString>
-
 using namespace Meta;
 
 NepomukYear::NepomukYear( const QString &name )
-         : Meta::Year()
-         , m_name( name )
+    : Meta::Year()
+    , m_name( name )
 {
-
-}
-
-QString
- NepomukYear::name() const
-{
-    return m_name;
 }
 
 TrackList
 NepomukYear::tracks()
 {
     return TrackList();
+}
+
+QString
+NepomukYear::name() const
+{
+    return m_name;
 }

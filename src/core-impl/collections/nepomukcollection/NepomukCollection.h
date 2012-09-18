@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ * Copyright (c) 2012 Phalgun Guduthur <me@phalgun.in>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,67 +17,82 @@
 #ifndef NEPOMUKCOLLECTION_H
 #define NEPOMUKCOLLECTION_H
 
-#include "core/collections/Collection.h"
+#include "NepomukConstructMetaJob.h"
 
-#include <QString>
-#include <QStringList>
-#include <QHash>
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/MemoryCollection.h"
 
 #include <KIcon>
 
-#include <Soprano/Model>
+namespace Collections
+{
+class NepomukConstructMetaJob;
 
-class KUrl;
-class NepomukRegistry;
-
-class NepomukCollectionFactory : public Collections::CollectionFactory
+/**
+  * NepomukCollection is a plugin to use Nepomuk as a backend instead of the SQL
+  * collection that Amarok uses as default.
+  * Until the NepomukCollection is feature complete and easy to use, it shall run
+  * along with the existing SQL Collection.
+  * However, the goal of the plugin remains to replace the SQL Collection.
+  * Nepomuk indexes all data on the machine and categorises them.
+  * So, it is easy to retrieve all resources of type 'music' and use them in Amarok
+  * Nepomuk helps establish a common backend in a KDE environment, which has its own
+  * advantages
+  *
+  * The NepomukCollection uses MemoryCollection as a base. MemoryCollection is usec by
+  * most of the other plugins. The NepomukCollection loads the tracks extracted from the
+  * Nepomuk index into buckets called {Meta}Maps.
+  *
+  * MemoryCollection provides a default implementation of the QueryMaker which handles
+  * all query calls.
+  */
+class NepomukCollection : public Collection, public Meta::Observer
 {
     Q_OBJECT
-    public:
-        NepomukCollectionFactory() {};
-        virtual ~NepomukCollectionFactory() {};
 
-        virtual void init();
-};
-
-class NepomukCollection : public Collection
-{
 public:
-    NepomukCollection( Soprano::Model* model, bool isFast );
+    /**
+      * The entry point of Nepomuk Collection.
+      */
+    NepomukCollection();
     virtual ~NepomukCollection();
-    
-    virtual QueryMaker* queryMaker();
-    
+
+    /**
+      * This function returns a generic MemoryQueryMaker.
+      * Nepomuk Collection uses a MemoryQueryMaker as its QueryMaker
+      * There is no need to construct a separate NepomukQueryMaker.
+      */
+    virtual QueryMaker *queryMaker();
+    virtual bool isDirInCollection( const QString &path );
     virtual QString uidUrlProtocol() const;
     virtual QString collectionId() const;
     virtual QString prettyName() const;
-    virtual KIcon icon() const { return KIcon("nepomuk"); }
-    
-    virtual bool possiblyContainsTrack( const KUrl &url ) const;
-    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
-    
-    // only for nepomuk collection plugin
+    virtual KIcon icon() const;
+    virtual bool isWritable() const;
 
-    bool isEmpty() const;
-    
-    QString getNameForValue( const qint64 ) const;
-    QString getUrlForValue( const qint64 ) const;
-    qint64 valueForUrl( const QString& ) const;
-    const QStringList& getAllNamesAndUrls( void ) const;
-    NepomukRegistry* registry() const;
-   
+    // Observer methods:
+    virtual void metadataChanged( Meta::TrackPtr track );
+    // so that the compiler doesn't complain about hidden virtual functions:
+    using Meta::Observer::metadataChanged;
 
 private:
-    
-    void initHashMaps();
-    
-    Soprano::Model *m_model;
-    QHash< qint64, QString > m_nameForValue;
-    QHash< qint64, QString > m_urlForValue;
-    QHash< QString, qint64 > m_valueForUrl;
-    QStringList m_allNamesAndUrls;
-    bool m_isFast;
-    NepomukRegistry *m_registry;
+    // nepomuk specific
+    /**
+      * This function is called to build the Nepomuk Collection by populating the Meta QMaps.
+      * This function forms the crux of the Nepomuk Collection.
+      * It first executes a query to fetch all resources of type 'audio' and returns
+      * immediately.
+      * Enumeration of the queried results into Meta QMaps of MemoeryCollection.h happens
+      * as a background job.
+      *
+      * After each track is extracted, its corresponding properties of artist, genre, composer
+      * album ( year is not yet implemented ) is fetched and inserted into the NepomukTrack
+      * object.
+      */
+    void buildCollection();
+    friend class NepomukConstructMetaJob;
+    QSharedPointer<MemoryCollection> m_mc;
 };
 
-#endif /*NEPOMUKCOLLECTION_H*/
+} //namespace Collections
+#endif // NEPOMUKCOLLECTION_H

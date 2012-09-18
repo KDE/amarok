@@ -1,53 +1,47 @@
+macro_optional_find_package( Nepomuk )
+macro_log_feature( NEPOMUK_FOUND "Nepomuk" "Nepomuk Libraries required by Nepomuk Collection" "http://nepomuk.kde.org" FALSE "" "")
 
-include_directories( ../..
-   ../../collection
-   ../../dialogs
-#./search-api
-   ${CMAKE_CURRENT_BINARY_DIR}/../..
-   ${KDE4_INCLUDE_DIR}
-   ${QT_INCLUDES} 
-   ${NEPOMUK_INCLUDES}
-   ${SOPRANO_INCLUDE_DIR})
+if( NEPOMUK_FOUND )
+    include(NepomukAddOntologyClasses)
+    include(SopranoAddOntology)
 
+    include_directories( ../..
+        ${NEPOMUK_INCLUDES}
+    )
 
-########### next target ###############
+    ########### next target ###############
 
-set(amarok_collection-nepomukcollection_PART_SRCS
-   NepomukAlbum.cpp
-   NepomukCollection.cpp
-   NepomukComposer.cpp
-   NepomukGenre.cpp
-   NepomukQueryMaker.cpp
-   NepomukRegistry.cpp
-   NepomukArtist.cpp
-   NepomukTrack.cpp
-   NepomukYear.cpp)
-#./search-api/query.cpp
-#   ./search-api/queryparser.cpp
-#   ./search-api/searchcore.cpp
-#   ./search-api/searchthread.cpp
-#  ./search-api/term.cpp
-#   ./search-api/searchresult.cpp
+    set(amarok_collection-nepomukcollection_PART_SRCS
 
+        NepomukCollection.cpp
+        NepomukCollectionFactory.cpp
+        NepomukConstructMetaJob.cpp
 
-kde4_add_plugin(amarok_collection-nepomukcollection ${amarok_collection-nepomukcollection_PART_SRCS})
+        meta/NepomukAlbum.cpp
+        meta/NepomukArtist.cpp
+        meta/NepomukComposer.cpp
+        meta/NepomukGenre.cpp
+        meta/NepomukTrack.cpp
+        meta/NepomukLabel.cpp
+        meta/NepomukYear.cpp
+    )
 
-target_link_libraries(amarok_collection-nepomukcollection 
-    amarokcore
-    amaroklib
-    amarokpud
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${KDE4_KDEUI_LIBS}
-    ${NEPOMUK_LIBRARIES}
-    ${SOPRANO_LIBRARIES})
+    kde4_add_plugin(amarok_collection-nepomukcollection ${amarok_collection-nepomukcollection_PART_SRCS})
 
-if(APPLE)
-	SET_TARGET_PROPERTIES(amarok_collection-nepomukcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    target_link_libraries(amarok_collection-nepomukcollection
+        amarokcore
+        amaroklib
+        ${KDE4_THREADWEAVER_LIBRARIES}
+        ${NEPOMUK_LIBRARIES}
+        ${KDE4_KDEUI_LIBS}
+        ${KDE4_KDECORE_LIBS}
+        ${NEPOMUK_QUERY_LIBRARIES}
+    )
 
-install(TARGETS amarok_collection-nepomukcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
+    install(TARGETS amarok_collection-nepomukcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
+    ########### install files ###############
 
-########### install files ###############
+    install( FILES amarok_collection-nepomukcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-install( FILES amarok_collection-nepomukcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+endif ( NEPOMUK_FOUND )
