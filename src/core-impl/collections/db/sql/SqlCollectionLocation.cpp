@@ -186,7 +186,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 
     // -- set the values
     metaTrack->setWriteFile( false ); // no need to write the tags back
-    metaTrack->beginMetaDataUpdate();
+    metaTrack->beginUpdate();
 
     if( !track->name().isEmpty() )
         metaTrack->setTitle( track->name() );
@@ -272,7 +272,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 
     }
 
-    metaTrack->endMetaDataUpdate();
+    metaTrack->endUpdate();
     metaTrack->setWriteFile( true );
 
     // we have a first shot at the meta data (expecially ratings and playcounts from media

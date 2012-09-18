@@ -216,7 +216,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
 
     // -- set the values
     metaTrack->setWriteFile( false ); // no need to write the tags back
-    metaTrack->beginMetaDataUpdate();
+    metaTrack->beginUpdate();
 
     metaTrack->setUidUrl( uid );
     metaTrack->setUrl( deviceId, rpath, directoryId );
@@ -305,7 +305,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
             metaTrack->setReplayGain( modes[i], track->replayGain( modes[i] ) );
     }
 
-    metaTrack->endMetaDataUpdate();
+    metaTrack->endUpdate();
     metaTrack->setWriteFile( true );
 }
 

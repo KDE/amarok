@@ -374,12 +374,12 @@ TestSqlTrack::testSetAllValuesBatch()
         MetaNotificationSpy metaSpy;
         metaSpy.subscribeTo( track1 );
 
-        sqlTrack1->beginMetaDataUpdate();
+        sqlTrack1->beginUpdate();
 
         setAllValues( sqlTrack1 );
         QCOMPARE( metaSpy.notificationsFromTracks().count(), 1 ); // add label does one notify
 
-        sqlTrack1->endMetaDataUpdate();
+        sqlTrack1->endUpdate();
         QCOMPARE( metaSpy.notificationsFromTracks().count(), 2 ); // only one notificate for all the changes
 
         getAllValues( sqlTrack1 );
@@ -483,9 +483,9 @@ TestSqlTrack::testAlbumRemaingsNonCompilationAfterChangingAlbumName()
     Meta::SqlTrack *sqlTrack1 = static_cast<Meta::SqlTrack*>( track1.data() );
     sqlTrack1->setAlbum( "album2" );
     Meta::SqlTrack *sqlTrack2 = static_cast<Meta::SqlTrack*>( track2.data() );
-    sqlTrack2->beginMetaDataUpdate();
+    sqlTrack2->beginUpdate();
     sqlTrack2->setAlbum( "album2" );
-    sqlTrack2->endMetaDataUpdate();
+    sqlTrack2->endUpdate();
 
     QCOMPARE( track1->album()->name(), QString( "album2" ) );
     QVERIFY( track1->album()->hasAlbumArtist() );
@@ -514,9 +514,9 @@ TestSqlTrack::testAlbumRemainsCompilationAfterChangingAlbumName()
     Meta::SqlTrack *sqlTrack1 = static_cast<Meta::SqlTrack*>( track1.data() );
     Meta::SqlTrack *sqlTrack2 = static_cast<Meta::SqlTrack*>( track2.data() );
     sqlTrack1->setAlbum( "album2" );
-    sqlTrack2->beginMetaDataUpdate();
+    sqlTrack2->beginUpdate();
     sqlTrack2->setAlbum( "album2" );
-    sqlTrack2->endMetaDataUpdate();
+    sqlTrack2->endUpdate();
 
     QCOMPARE( track1->album()->name(), QString( "album2" ) );
     QVERIFY( track1->album()->isCompilation() );

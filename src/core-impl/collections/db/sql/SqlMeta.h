@@ -148,8 +148,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statisti
 
         virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
         virtual void setReplayGain( Meta::ReplayGainTag mode, qreal value );
-        virtual void beginMetaDataUpdate();
-        virtual void endMetaDataUpdate();
 
         /** Enables or disables writing changes to the file.
          *  This function can be useful when changes are imported from the file.
@@ -193,6 +191,9 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statisti
         virtual int playCount() const;
         virtual void setPlayCount( const int newCount );
 
+        virtual void beginUpdate();
+        virtual void endUpdate();
+
         // SqlTrack specific methods
 
         int id() const;
@@ -232,19 +233,18 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statisti
 
 
     protected:
-        /** Will commit all changes in m_cache.
-         *  commitMetaDataChanges will do three things:<br>
+        /**
+         * Will commit all changes in m_cache if m_batch == 0. Must be called with m_lock
+         * locked for writing.
+         *
+         *  commitIfInNonBatchUpdate() will do three things:
          *  1. It will update the member variables.
          *  2. It will call all write methods
          *  3. It will notify all observers and the collection about the changes.
          */
-        void commitMetaDataChanges();
-        void commitMetaDataChanges( qint64 field, const QVariant &value )
-        {
-            m_cache.insert( field, value );
-            if( !m_batchUpdate )
-                commitMetaDataChanges();
-        }
+        void commitIfInNonBatchUpdate( qint64 field, const QVariant &value );
+        void commitIfInNonBatchUpdate();
+
         void updatePlaylistsToDb( const FieldHash &fields, const QString &oldUid );
         void updateEmbeddedCoversToDb( const FieldHash &fields, const QString &oldUid );
 
@@ -296,7 +296,11 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statisti
 
         Amarok::FileType m_filetype;
 
-        bool m_batchUpdate;
+        /**
+         * Number of current batch operations started by @see beginUpdate() and not
+         * yet ended by @see endUpdate(). Must only be accessed with m_lock held.
+         */
+        int m_batchUpdate;
         bool m_writeFile;
         bool m_writeAllStatisticsFields;
         FieldHash m_cache;
