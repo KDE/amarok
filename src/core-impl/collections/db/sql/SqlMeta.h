@@ -156,8 +156,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statisti
         virtual void setWriteFile( const bool enable )
         { m_writeFile = enable; }
 
-        virtual void finishedPlaying( double playedFraction );
-
         virtual bool inCollection() const;
         virtual Collections::Collection* collection() const;
 

@@ -637,25 +637,6 @@ Track::setType( const QString &newType )
     commitIfInNonBatchUpdate( Meta::valFormat, newType );
 }
 
-void Track::finishedPlaying( double playedFraction )
-{
-    // following code is more or less copied from SqlMeta::Track::finishedPlaying()
-    bool doUpdate;
-    if( length() < 60000 ) // less than 1min
-        doUpdate = ( playedFraction >= 0.9 );
-    else
-        doUpdate = ( playedFraction >= 0.7 );
-    if( !doUpdate )
-        return;
-
-    beginUpdate();
-    setPlayCount( playCount() + 1 );
-    if( !firstPlayed().isValid() )
-        setFirstPlayed( QDateTime::currentDateTime() );
-    setLastPlayed( QDateTime::currentDateTime() );
-    endUpdate();
-}
-
 bool
 Track::inCollection() const
 {

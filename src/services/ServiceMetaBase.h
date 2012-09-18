@@ -196,8 +196,6 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         virtual int discNumber() const;
         virtual void setDiscNumber( int newDiscNumber );
 
-        virtual void finishedPlaying( double playedFraction );
-
         virtual QString type() const;
 
         virtual void processInfoOf( InfoParserBase * infoParser );

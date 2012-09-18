@@ -241,12 +241,6 @@ Track::type() const
 {
     return "stream/lastfm";
 }
-void
-Track::finishedPlaying( double playedFraction )
-{
-    if( d->statsStore )
-        d->statsStore->played( playedFraction, Meta::TrackPtr( this ) );
-}
 
 bool
 Track::inCollection() const

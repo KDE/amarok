@@ -86,8 +86,6 @@ namespace IpodMeta
             virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
             virtual QString type() const;
 
-            virtual void finishedPlaying( double playedFraction );
-
             virtual bool inCollection() const;
             virtual Collections::Collection* collection() const;
 

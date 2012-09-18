@@ -64,7 +64,6 @@ namespace MetaFile
 
             virtual QString type() const;
 
-            virtual void finishedPlaying( double playedFraction );
             virtual bool inCollection() const;
             virtual Collections::Collection *collection() const;
 

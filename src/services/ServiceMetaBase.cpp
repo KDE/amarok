@@ -417,16 +417,6 @@ ServiceTrack::setDiscNumber( int newDiscNumber )
     Q_UNUSED( newDiscNumber )
 }
 
-void
-ServiceTrack::finishedPlaying( double playedFraction )
-{
-    if( m_statsStore )
-    {
-        m_statsStore->played( playedFraction, TrackPtr( this ) );
-        notifyObservers();
-    }
-}
-
 QString
 ServiceTrack::type() const
 {

@@ -218,8 +218,28 @@ Meta::Track::prepareToPlay()
 }
 
 void
-Meta::Track::finishedPlaying( double /*playedFraction*/ )
+Meta::Track::finishedPlaying( double playedFraction )
 {
+    qint64 len = length();
+    bool updatePlayCount;
+    if( len <= 30 * 1000 )
+        updatePlayCount = ( playedFraction >= 1.0 );
+    else
+        // at least half the song or at least 5 minutes played
+        updatePlayCount = ( playedFraction >= 0.5 || ( playedFraction * len ) >= 5 * 60 * 1000 );
+
+    StatisticsPtr stats = statistics();
+    stats->beginUpdate();
+    // we should update score even if updatePlayCount is false to record skips
+    stats->setScore( Amarok::computeScore( stats->score(), stats->playCount(), playedFraction ) );
+    if( updatePlayCount )
+    {
+        stats->setPlayCount( stats->playCount() + 1 );
+        if( !stats->firstPlayed().isValid() )
+            stats->setFirstPlayed( QDateTime::currentDateTime() );
+        stats->setLastPlayed( QDateTime::currentDateTime() );
+    }
+    stats->endUpdate();
 }
 
 void

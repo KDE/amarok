@@ -1117,31 +1117,6 @@ SqlTrack::prettyTitle( const QString &filename ) //static
     return s;
 }
 
-void
-SqlTrack::finishedPlaying( double playedFraction )
-{
-    beginUpdate(); // Batch updates, so we only bother our observers once.
-
-    bool doUpdate = false;
-
-    if( m_length < 60000 ) // less than 1min
-        doUpdate = playedFraction >= 0.9;
-    else
-        doUpdate = playedFraction >= 0.7;
-
-    if( doUpdate )
-    {
-        setPlayCount( playCount() + 1 );
-        if( !firstPlayed().isValid() )
-            setFirstPlayed( QDateTime::currentDateTime() );
-        setLastPlayed( QDateTime::currentDateTime() );
-    }
-
-    setScore( Amarok::computeScore( score(), playCount(), playedFraction ) );
-
-    endUpdate();
-}
-
 bool
 SqlTrack::inCollection() const
 {

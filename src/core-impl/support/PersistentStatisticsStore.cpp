@@ -131,41 +131,6 @@ PersistentStatisticsStore::entityDestroyed()
 }
 
 void
-PersistentStatisticsStore::played( double playedFraction, Meta::TrackPtr track )
-{
-    DEBUG_BLOCK
-    debug() << "called with playedFraction = " << playedFraction;
-
-    m_lastPlayed = QDateTime::currentDateTime();
-    if( !m_firstPlayed.isValid() )
-    {
-        m_firstPlayed = QDateTime::currentDateTime();
-    }
-
-    bool doUpdate = false;
-    int oldPlayCount = m_playCount;
-
-    if( track->length() < 30000 && playedFraction == 1.0 )
-        doUpdate = true;
-    if( playedFraction >= 0.5 && track->length() >= 30000 ) //song >= 30 seconds and at least half played
-        doUpdate = true;
-    if( playedFraction * track->length() > 240000 )
-        doUpdate = true;
-
-    beginUpdate();
-    if( doUpdate )
-    {
-        setPlayCount( m_playCount++ );
-        if( !m_firstPlayed.isValid() )
-            setFirstPlayed( QDateTime::currentDateTime() );
-        setLastPlayed( QDateTime::currentDateTime() );
-    }
-
-    setScore( Amarok::computeScore( m_score, oldPlayCount, playedFraction ) );
-    endUpdate();
-}
-
-void
 PersistentStatisticsStore::commitIfInNonBatchUpdate()
 {
     if( m_batch > 0 )

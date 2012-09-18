@@ -72,11 +72,6 @@ class AMAROK_EXPORT PersistentStatisticsStore : public Meta::Statistics, private
          */
         virtual void entityDestroyed();
 
-        // PersistentStatisticsStore methods
-
-        /** indicate to the statistics provider that a song was played */
-        void played( double playedFraction, Meta::TrackPtr track );
-
     protected:
         virtual void save() = 0; // called with m_lock locked for writing!
 

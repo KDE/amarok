@@ -141,7 +141,6 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
             return Amarok::extension( fileName );
         }
 
-        virtual void finishedPlaying( double playedFraction ) { Q_UNUSED( playedFraction ); }
         virtual void addMatchTo( Collections::QueryMaker* qm ) { Q_UNUSED( qm ); }
         virtual bool inCollection() const { return false; }
         virtual QString cachedLyrics() const { return QString(); }

@@ -409,7 +409,7 @@ void TestMetaFileTrack::testSetGetPlayCount()
     QCOMPARE( m_track->statistics()->playCount(), 0 );
 
     m_track->finishedPlaying( 1.0 );
-    QVERIFY( m_track->statistics()->playCount() == 0 );
+    QCOMPARE( m_track->statistics()->playCount(), 1 );
 }
 
 void TestMetaFileTrack::testReplayGain()
