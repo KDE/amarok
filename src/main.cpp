@@ -122,8 +122,7 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Edward \"Hades\" Toroshchin"), ki18n("Developer"), "edward.hades@gmail.com" );
         ocsData.addCredit( "hadeschief", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Frank Meerkötter"), ki18n("Podcast improvements"),
-                         "frank@meerkoetter.org" );
+    aboutData.addCredit( ki18n("Frank Meerkötter"), ki18n("Podcast improvements"), "frank@meerkoetter.org" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Greg Meyer"), ki18n("Live CD, Bug squashing (oggb4mp3)"), "greg@gkmweb.com" );
         ocsData.addCredit( "oggb4mp3", aboutData.credits().last() );
@@ -185,6 +184,9 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("William Viana Soares"), ki18n("Context view"), "vianasw@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
+
+
+    //Former Contributors
     aboutData.addCredit( ki18n("Former contributors"), ki18n("People listed below have contributed to Amarok in the past. Thank you!"), "" );
         ocsData.addCredit( "%%category%%", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Adam Pigg"), ki18n("Analyzers, patches, shoutcast"), "adam@piggz.co.uk" );
