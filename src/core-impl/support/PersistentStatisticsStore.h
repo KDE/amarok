@@ -88,6 +88,10 @@ class AMAROK_EXPORT PersistentStatisticsStore : public Meta::Statistics, private
     private:
         void commitIfInNonBatchUpdate(); // must be called with the m_lock locked for writing
 
+        /**
+         * Number of current batch operations started by @see beginUpdate() and not
+         * yet ended by @see endUpdate(). Must only be accessed with m_track held.
+         */
         int m_batch;
 };
 

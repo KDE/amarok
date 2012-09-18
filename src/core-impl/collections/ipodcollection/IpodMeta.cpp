@@ -716,6 +716,7 @@ void Track::beginUpdate()
 void Track::endUpdate()
 {
     QWriteLocker locker( &m_trackLock );
+    Q_ASSERT( m_batch > 0 );
     m_batch--;
     commitIfInNonBatchUpdate();
 }

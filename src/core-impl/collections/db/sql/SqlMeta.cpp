@@ -783,6 +783,7 @@ void
 SqlTrack::endUpdate()
 {
     QWriteLocker locker( &m_lock );
+    Q_ASSERT( m_batchUpdate > 0 );
     m_batchUpdate--;
     commitIfInNonBatchUpdate();
 }
