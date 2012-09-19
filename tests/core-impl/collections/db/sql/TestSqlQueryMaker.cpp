@@ -290,7 +290,7 @@ TestSqlQueryMaker::testAlbumQueryMode()
 
 void
 TestSqlQueryMaker::testDeleteQueryMakerWithRunningQuery()
-{    
+{
     int iteration = 0;
     bool queryNotDoneYet = true;
 
@@ -313,7 +313,6 @@ TestSqlQueryMaker::testDeleteQueryMakerWithRunningQuery()
         {
             break;
         }
-        QTest::qWait( 1000 - 10 * iteration );
         iteration++;
     } while ( queryNotDoneYet );
     qDebug() << "Iterations: " << iteration;
