@@ -193,6 +193,17 @@ NepomukTrack::type() const
     return m_type;
 }
 
+void
+NepomukTrack::finishedPlaying( double playedFraction )
+{
+    // track length unreliable currently, so don't take into account
+    if( playedFraction < 0.5 )
+        return;
+
+    // this handles playCount() and lastPlayed() (once we implement its reading)
+    m_resource.increaseUsageCount();
+}
+
 StatisticsPtr
 NepomukTrack::statistics()
 {
@@ -362,7 +373,6 @@ NepomukTrack::setPlayableUrl( const KUrl &url )
     m_playableUrl = url;
 }
 
-// non pure virtual functions
 bool
 NepomukTrack::inCollection() const
 {
@@ -374,6 +384,7 @@ NepomukTrack::inCollection() const
 Collections::Collection*
 NepomukTrack::collection() const
 {
+    // This should be implemented whenever you return true in inCollection()
     return m_coll;
 }
 
