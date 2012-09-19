@@ -24,7 +24,6 @@ NepomukArtist::NepomukArtist( const QString &name )
     : Meta::Artist()
     , m_name( name )
 {
-
 }
 
 TrackList

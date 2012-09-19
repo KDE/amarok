@@ -24,9 +24,8 @@ NepomukAlbum::NepomukAlbum( const QString &albumName, const ArtistPtr &artistPtr
     : Meta::Album()
     , m_name( albumName )
     , m_artist( artistPtr )
+    , m_isCompilation( false )
 {
-    // TODO, check if album has unique artist
-    m_isCompilation = false;
 }
 
 TrackList

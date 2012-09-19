@@ -24,7 +24,6 @@ NepomukComposer::NepomukComposer( const QString &name )
     : Meta::Composer()
     , m_name( name )
 {
-
 }
 
 TrackList

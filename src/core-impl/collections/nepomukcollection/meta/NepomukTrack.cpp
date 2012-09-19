@@ -27,32 +27,20 @@ using namespace Meta;
 
 NepomukTrack::NepomukTrack( const QUrl &resUri, NepomukCollection *coll )
     : Track()
-    , m_artist( 0 )
-    , m_genre( 0 )
-    , m_composer( 0 )
-    , m_album( 0 )
-    , m_year( 0 )
-    , m_labellist()
+    , m_length( 0 )
+    , m_bitrate( 0 )
+    , m_trackNumber( 0 )
+    , m_discNumber( 0 )
+    , m_bpm( 0.0 )
+    , m_sampleRate( 0 )
+    , m_filesize( 0 )
+    , m_trackGain( 0.0 )
+    , m_trackPeakGain( 0.0 )
+    , m_albumGain( 0.0 )
+    , m_albumPeakGain( 0.0 )
     , m_coll( coll )
+    , m_resource( resUri )
 {
-    m_resource = Nepomuk::Resource( resUri );
-
-    m_playableUrl = NULL;
-    m_name = "";
-    m_type = "";
-    m_length = 0;
-    m_bitrate = 0;
-    m_trackNumber = 0;
-    m_uidUrl = "";
-    m_discNumber = 0;
-    m_bpm = 0;
-    m_comment = "";
-    m_sampleRate = 0;
-    m_filesize = 0;
-    m_trackGain = 0;
-    m_trackPeakGain = 0;
-    m_albumGain = 0;
-    m_albumPeakGain = 0;
 }
 
 NepomukTrack::~NepomukTrack()
@@ -204,8 +192,7 @@ NepomukTrack::trackNumber() const
 int
 NepomukTrack::discNumber() const
 {
-    //TODO No disc number equivalent ontology yet
-    return 0;
+    return m_discNumber;
 }
 
 int
