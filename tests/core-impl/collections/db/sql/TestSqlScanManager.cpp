@@ -378,7 +378,7 @@ TestSqlScanManager::testBlock()
     m_scanManager->blockScan(); // block the incremental scanning
     m_scanManager->requestFullScan();
 
-    QTest::qWait( 2000 );
+    QTest::qWait( 100 );
     track = m_collection->registry()->getTrack( 1 );
     QVERIFY( !track );
     QVERIFY( !m_scanManager->isRunning() );
@@ -787,6 +787,9 @@ TestSqlScanManager::testMerges()
 void
 TestSqlScanManager::testLargeInsert()
 {
+    if( qgetenv("AMAROK_RUN_LONG_TESTS").isNull() )
+        QSKIP( "takes too long to be run by default;\nDefine AMAROK_RUN_LONG_TESTS "
+               "environment variable to run all tests.", SkipAll );
     // the old large insert test was misleading as the problems with
     // the insertion started upwards of 20000 tracks.
     //
