@@ -128,7 +128,8 @@ SqlQueryMaker::~SqlQueryMaker()
 {
     disconnect();
     abortQuery();
-    // TODO: check d->worker. Shouldn't it be deleted?
+    if( d->worker )
+        d->worker->deleteLater();
     delete d;
 }
 
@@ -175,7 +176,7 @@ SqlQueryMaker::run()
             connect( qmi, SIGNAL(newResultReady(QStringList)),        SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(Meta::LabelList)),    SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
             d->worker = new SqlWorkerThread( qmi );
-            connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
+            connect( d->worker, SIGNAL(done(ThreadWeaver::Job*)), SLOT(done(ThreadWeaver::Job*)) );
             ThreadWeaver::Weaver::instance()->enqueue( d->worker );
         }
         else //use it blocking
@@ -198,9 +199,8 @@ SqlQueryMaker::run()
 void
 SqlQueryMaker::done( ThreadWeaver::Job *job )
 {
-    ThreadWeaver::Weaver::instance()->dequeue( job );
     job->deleteLater();
-    d->worker = 0;
+    d->worker = 0; // d->worker *is* the job, prevent stale pointer
     emit queryDone();
 }
 
