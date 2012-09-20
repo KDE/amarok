@@ -29,7 +29,6 @@ void
 NepomukCollectionFactory::init()
 {
     DEBUG_BLOCK
-
     m_initialized = true;
 
     // check if Nepomuk service is running
@@ -41,13 +40,14 @@ NepomukCollectionFactory::init()
     }
     else
     {
-        warning() << "Couldn't initialize Nepomuk Collection. Check status of Nepomuk. "
-                  "Nepomuk Plugin won't be loaded";
+        warning() << "Couldn't initialize Nepomuk Collection. "
+                  "Check if 'Nepomuk Semantic Desktop' is enabled in System Settings -> Desktop Search. "
+                  "Nepomuk Plugin won't be loaded unless Nepomuk is enabled.";
 
         Amarok::Components::logger()->longMessage(
             i18n( "Couldn't initialize Nepomuk Collection. "
-                  "Check status of Nepomuk. "
-                  "Nepomuk Plugin won't be loaded" ),
+                  "Check if 'Nepomuk Semantic Desktop' is enabled in System Settings -> Desktop Search. "
+                  "Nepomuk Plugin won't be loaded unless Nepomuk is enabled." ),
             Amarok::Logger::Warning );
     }
 }
