@@ -7,6 +7,7 @@ if( NEPOMUK_FOUND )
 
     include_directories( ../..
         ${NEPOMUK_INCLUDES}
+        ${SOPRANO_INCLUDE_DIR}
     )
 
     ########### next target ###############
