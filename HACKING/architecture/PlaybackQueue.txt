@@ -8,3 +8,7 @@ A QAbstractItemModel for the PlaybackQueue is exposed as the main interface. It'
 Using extra columns and data roles the PlaybackQueueModel gives info about certain queue-only information associated with a track. An example of this is whether a track is part of a tracked playlist or if a manual user interaction locked the track at it's current place.
 
 Playback history is not part of the PlaybackQueue. It has to be implemented separately using a PlaybackObserver.
+
+Old Playlist Queue Manager Behavior
+-----------------------------------
+Select in order and press Ctrl+U to move those tracks in selection order to the top of the queue.

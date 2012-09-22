@@ -84,3 +84,5 @@ The shuffling of tracks should be a visual animation to make it clear what is ha
 
 Old Playlist Queue Manager Behavior
 -----------------------------------
+
+Implemented in PlaybackQueue.
