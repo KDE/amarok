@@ -104,6 +104,7 @@ namespace IpodMeta
             virtual void setFirstPlayed( const QDateTime &time );
 
             virtual int playCount() const;
+            virtual int recentPlayCount() const;
             virtual void setPlayCount( const int playcount );
 
             virtual void beginUpdate();
