@@ -52,15 +52,17 @@ int main( int argc, char *argv[] )
             ki18n("Developer (Stecchino)"), "bart.cerneels@kde.org", "http://commonideas.blogspot.com" );
     ocsData.addAuthor( "Stecchino", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Edward \"Hades\" Toroshchin"), ki18n("Developer"), "edward.hades@gmail.com" );
-        ocsData.addAuthor( "hadeschief", aboutData.authors().last() );
+    aboutData.addAuthor( ki18n("Edward \"Hades\" Toroshchin"),
+            ki18n("Developer (dr_lepper)"), "edward.hades@gmail.com" );
+    ocsData.addAuthor( "hadeschief", aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann" ), //krazy:exclude=contractions
             ki18n("Project founder (markey)"), "kretschmann@kde.org", "http://amarok.kde.org/blog/categories/1-markey" );
     ocsData.addAuthor( "MarkKretschmann", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Matěj Laitl"), ki18n("iPod collection rewrite & more"), "matej@laitl.cz" );
-        ocsData.addAuthor( "strohel", aboutData.authors().last() );
+    aboutData.addAuthor( ki18n("Matěj Laitl"),
+            ki18n("iPod collection rewrite & more (strohel)"), "matej@laitl.cz", "http://strohel.blogspot.com/" );
+    ocsData.addAuthor( "strohel", aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Myriam Schweingruber"), ki18n("Rokymoter, Bug triaging (Mamarok)"), "myriam@kde.org" );
     ocsData.addAuthor( "Mamarok", aboutData.authors().last() );
@@ -69,15 +71,17 @@ int main( int argc, char *argv[] )
             ki18n("Developer (rengels)"), "ralf.engels@nokia.com" );
     ocsData.addAuthor( QString(), aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Patrick von Reth"), ki18n("Windows build (TheOneRing)"), "patrick.vonreth@gmail.com" );
-        ocsData.addAuthor( QString(), aboutData.authors().last() );
+    aboutData.addAuthor( ki18n("Patrick von Reth"), ki18n("Windows build (TheOneRing)"),
+            "patrick.vonreth@gmail.com" );
+    ocsData.addAuthor( QString(), aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Rick W. Chen"),
             ki18n("Developer (stuffcorpse)"), "stuffcorpse@archlinux.us" );
     ocsData.addAuthor( "stuffcorpse", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Sam Lade"), ki18n("Developer (Sentynel)"), "sam@sentynel.com" );
-        ocsData.addAuthor( "Sentynel", aboutData.authors().last() );
+    aboutData.addAuthor( ki18n("Sam Lade"), ki18n("Developer (Sentynel)"),
+            "sam@sentynel.com" );
+    ocsData.addAuthor( "Sentynel", aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Sven Krohlas"), ki18n("Rokymoter, Developer (sven423)"), "sven@asbest-online.de" );
     ocsData.addAuthor( "krohlas", aboutData.authors().last() );
