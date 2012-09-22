@@ -26,6 +26,9 @@ public:
     TestAmazonShoppingCart();
 
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
+
     void testAdd();
     void testClear();
     void testStringList();

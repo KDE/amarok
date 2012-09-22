@@ -16,6 +16,8 @@
 
 #include "TestAmazonShoppingCart.h"
 
+#include "core/support/Components.h"
+#include "mocks/MockLogger.h"
 #include "services/amazon/AmazonConfig.h"
 #include "services/amazon/AmazonShoppingCart.h"
 #include "services/amazon/AmazonShoppingCartItem.h"
@@ -29,6 +31,19 @@ QTEST_KDEMAIN_CORE( TestAmazonShoppingCart )
 TestAmazonShoppingCart::TestAmazonShoppingCart() :
     QObject()
 {
+}
+
+void
+TestAmazonShoppingCart::initTestCase()
+{
+    // AmazonShoppingCart::add() calls Amarok::Components::logger()->longMessage()
+    Amarok::Components::setLogger( new Amarok::MockLogger() );
+}
+
+void
+TestAmazonShoppingCart::cleanupTestCase()
+{
+    delete Amarok::Components::setLogger( 0 );
 }
 
 void
