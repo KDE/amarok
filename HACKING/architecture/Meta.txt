@@ -1,0 +1,13 @@
+Meta Architecture
+-----------------
+
+Objects representing a media in a hierarchy. There are classes for Tracks, Albums, Artists, Composers, Genres, Years and Labels.
+These classes all derive from Meta::MetaBase to facilitate their common methods (name and sorting) and observer interaction. They are not QObjects to avoid the overhead of the Qt MetaObject support variables. Collections are potentially millions of tracks where a significant proportion of tracks (in the case of MemoryCollections: all tracks) could at any time be loaded in memory.
+
+Meta::Observer is a virtual class that can be derived from by components that are interested in changes to the tracks during application lifetime. It has metadataChanged() methods for each of the Meta types and the ability to subscribe to any Meta object.
+
+[Note] Playlists will be made part of Meta as well. They have a similar Observer pattern but have been kept seperate because PlaylistObserver requires more functions. Pollution of the Observer class could be avoided using a playlistChanged(enum Change, QVariant value) type method.
+
+KSharedPtr is used for all functions returning a pointer in the Meta classes. It strong, reference tracking smart pointer which will only delete an object once the last reference holding KSharedPtr goes out of scope or is deleted.
+
+[Matĕj's proposal] Use only value-passing for Meta types with implicit data sharing. This can be implemented using QSharedDataPointer. An example of such a value class is QString.
