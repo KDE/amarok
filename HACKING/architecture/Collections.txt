@@ -1,0 +1,14 @@
+Collection Architecture
+-----------------------
+
+Collection is a container for a set of objects that collectively provider tracks to the application. 
+
+On plugin load a CollectionFactory is registered with CollectionManager which listens to the newCollection() signal. CollectionManager is responsible for integrating the new Collection within the rest of the application.
+Collection makes user visible strings, icons and other information available for the UI to use.
+
+TrackProvider actually creates the Meta::Track objects using trackForUrl() which has a specially formatted URL that is unique accross application settings. A collection has it's own URL protocol which all uidUrl's of the collection's tracks start with.
+
+For getting tracks according to metadata or statistical information each Collection has a QueryMaker implementation. Any component can get an instance of this specialized QueryMaker using Collection::queryMaker().
+CollectionManager has a special QueryMaker that will return results of all the registered collections using their queryMaker(). Use this if you want a track resolved without caring about it's origin.
+
+TrackProvider and QueryMakers can be used seperatly from the collections. In practice though you'll find only TrackProvider getting used by Services and the filesystem browser. If needing to combinine it with a QueryMaker you are probably creating a Collection anyway.
