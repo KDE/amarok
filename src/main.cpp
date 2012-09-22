@@ -53,14 +53,14 @@ int main( int argc, char *argv[] )
     ocsData.addAuthor( "Stecchino", aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Edward \"Hades\" Toroshchin"), ki18n("Developer"), "edward.hades@gmail.com" );
-        ocsData.addAuthor( "hadeschief", aboutData.credits().last() );
+        ocsData.addAuthor( "hadeschief", aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann" ), //krazy:exclude=contractions
             ki18n("Project founder (markey)"), "kretschmann@kde.org", "http://amarok.kde.org/blog/categories/1-markey" );
     ocsData.addAuthor( "MarkKretschmann", aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Matěj Laitl"), ki18n("iPod collection rewrite & more"), "matej@laitl.cz" );
-        ocsData.addAutor( "strohel", aboutData.authors().last() );
+        ocsData.addAuthor( "strohel", aboutData.authors().last() );
 
     aboutData.addAuthor( ki18n("Myriam Schweingruber"), ki18n("Rokymoter, Bug triaging (Mamarok)"), "myriam@kde.org" );
     ocsData.addAuthor( "Mamarok", aboutData.authors().last() );
