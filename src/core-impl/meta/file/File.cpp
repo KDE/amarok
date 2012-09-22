@@ -165,6 +165,11 @@ Track::Track( const KUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
+    /* HACK: readMetaData() below may cause notifyObservers() to be called, and if there
+     * are some observers, KSharedPtr to this track is created and destoroyed, which
+     * destroys the track being constucted in turn -> BOOM! prevent this by temporarily
+     * increasing the reference count. */
+    ref.ref();
     d->url = url;
     d->statsStore = new UrlStatisticsStore( this );
     d->readMetaData();
@@ -174,6 +179,7 @@ Track::Track( const KUrl &url )
     d->genre = Meta::GenrePtr( new MetaFile::FileGenre( d ) );
     d->composer = Meta::ComposerPtr( new MetaFile::FileComposer( d ) );
     d->year = Meta::YearPtr( new MetaFile::FileYear( d ) );
+    ref.deref();
 }
 
 Track::~Track()
