@@ -1,0 +1,10 @@
+Playback Queue Architecture
+---------------------------
+
+Simple sequential list of upcoming tracks. The PlaybackController takes the first track on this list for playback. It does not include the currently playing track.
+There are no modes (random, repeat, etc) affecting the playback order. The behavior of these modes are implemented using Playlists and playlist-tracking who change the actual content of the queue to get the same result.
+
+A QAbstractItemModel for the PlaybackQueue is exposed as the main interface. It's possible to insert and remove rows using the default methods and drag/drop of mime-data containing meta types is supported. It's a flat QModelIndex containing only tracks. For purposes of display it can be used with proxy models such as QtGroupingProxy to group by album/artist/composer. Sorting of the queue is possible but is one undoable QAction. How the new order is determined does not matter, but use a proxy models such as QSortFilterProxyModel is suggested because of it's well known semantics and uses within Amarok.
+Using extra columns and data roles the PlaybackQueueModel gives info about certain queue-only information associated with a track. An example of this is whether a track is part of a tracked playlist or if a manual user interaction locked the track at it's current place.
+
+Playback history is not part of the PlaybackQueue. It has to be implemented separately using a PlaybackObserver.
