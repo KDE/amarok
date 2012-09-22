@@ -9,5 +9,3 @@ Meta::Observer is a virtual class that can be derived from by components that ar
 [Note] Playlists will be made part of Meta as well. They have a similar Observer pattern but have been kept seperate because PlaylistObserver requires more functions. Pollution of the Observer class could be avoided using a playlistChanged(enum Change, QVariant value) type method.
 
 KSharedPtr is used for all functions returning a pointer in the Meta classes. It strong, reference tracking smart pointer which will only delete an object once the last reference holding KSharedPtr goes out of scope or is deleted.
-
-[Matĕj's proposal] Use only value-passing for Meta types with implicit data sharing. This can be implemented using QSharedDataPointer. An example of such a value class is QString.
