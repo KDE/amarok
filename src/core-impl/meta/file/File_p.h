@@ -68,6 +68,9 @@ struct MetaData
         , albumGain( 0.0 )
         , albumPeak( 0.0 )
         , embeddedImage( false )
+        , rating( 0 )
+        , score( 0.0 )
+        , playCount( 0 )
     { }
     QString title;
     QString artist;
@@ -90,6 +93,10 @@ struct MetaData
     qreal albumGain;
     qreal albumPeak;
     bool embeddedImage;
+
+    int rating;
+    double score;
+    int playCount;
 };
 
 class Track::Private : public QObject
@@ -98,32 +105,37 @@ public:
     Private( Track *t )
         : QObject()
         , url()
-        , batchUpdate( false )
         , album()
         , artist()
         , albumArtist()
-        , statsStore( 0 )
+        , batchUpdate( 0 )
         , track( t )
     {}
 
 public:
     KUrl url;
-    bool batchUpdate;
+
     Meta::AlbumPtr album;
     Meta::ArtistPtr artist;
     Meta::ArtistPtr albumArtist;
     Meta::GenrePtr genre;
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
-    Meta::StatisticsPtr statsStore;
     QWeakPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
     QWeakPointer<Collections::Collection> collection;
 
+    /**
+     * Number of current batch operations started by @see beginUpdate() and not
+     * yet ended by @see endUpdate(). Must only be accessed with lock held.
+     */
+    int batchUpdate;
     Meta::FieldHash changes;
+    QReadWriteLock lock;
 
     void writeMetaData()
     {
         DEBUG_BLOCK;
+        debug() << "changes:" << changes;
         Meta::Tag::writeTags( url.isLocalFile() ? url.toLocalFile() : url.path(), changes );
         changes.clear();
         readMetaData();
@@ -161,6 +173,7 @@ void Track::Private::readMetaData()
     m_data.embeddedImage = values.value( Meta::valHasCover, def.embeddedImage ).toBool();
     m_data.comment = values.value( Meta::valComment, def.comment ).toString();
     m_data.genre = values.value( Meta::valGenre, def.genre ).toString();
+    m_data.composer = values.value( Meta::valComposer, def.composer ).toString();
     m_data.year = values.value( Meta::valYear, def.year ).toInt();
     m_data.discNumber = values.value( Meta::valDiscNr, def.discNumber ).toInt();
     m_data.trackNumber = values.value( Meta::valTrackNr, def.trackNumber ).toInt();
@@ -175,16 +188,13 @@ void Track::Private::readMetaData()
     m_data.albumGain = values.value( Meta::valAlbumGain, def.albumGain ).toReal();
     m_data.albumPeak= values.value( Meta::valAlbumGainPeak, def.albumPeak ).toReal();
 
-    m_data.composer = values.value( Meta::valComposer, def.composer ).toString();
-
-    if( statsStore )
+    // only read the stats if we can write them later. Would be annoying to have
+    // read-only rating that you don't like
+    if( AmarokConfig::writeBackStatistics() )
     {
-        if( values.contains(Meta::valRating) )
-            statsStore->setRating( values.value( Meta::valRating ).toReal() );
-        if( values.contains(Meta::valScore) )
-            statsStore->setScore( values.value( Meta::valScore ).toReal() );
-        if( values.contains(Meta::valPlaycount) )
-            statsStore->setPlayCount( values.value( Meta::valPlaycount ).toReal() );
+        m_data.rating = values.value( Meta::valRating, def.rating ).toInt();
+        m_data.score = values.value( Meta::valScore, def.score ).toDouble();
+        m_data.playCount = values.value( Meta::valPlaycount, def.playCount ).toInt();
     }
 
     if(url.isLocalFile())

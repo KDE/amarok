@@ -24,6 +24,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
+#include <KTempDir>
 
 class TestMetaTrack : public QObject
 {
@@ -72,7 +73,8 @@ private slots:
 private:
     Meta::TrackPtr m_testTrack1;
     Meta::TrackPtr m_testTrack2;
-    const QString  m_trackPath;
+    QString  m_trackPath;
+    KTempDir m_tempDir;
 
     QString dataPath( const QString &relPath );
 };

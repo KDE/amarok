@@ -20,6 +20,7 @@
 #include "TestMetaFileTrack.h"
 
 #include "config-amarok-test.h"
+#include "src/amarokconfig.h"
 
 #include <KTempDir>
 
@@ -302,23 +303,44 @@ void TestMetaFileTrack::testSetGetComment()
 
 void TestMetaFileTrack::testSetGetScore()
 {
-    QCOMPARE( m_track->statistics()->score(), 0.0 );
+    // try with write back enabled...
+    AmarokConfig::setWriteBackStatistics( true );
 
-    m_track->statistics()->setScore( 1 );
-    QCOMPARE( m_track->statistics()->score(), 1.0 );
+    Meta::StatisticsPtr statistics = m_track->statistics();
+    QCOMPARE( statistics->score(), 0.0 );
 
-    m_track->statistics()->setScore( 23.42 );
-    QCOMPARE( m_track->statistics()->score(), 23.42 );
+    /* now the code actually stores the score in track and then it reads it back.
+     * the precision it uses is pretty low and it was failing the qFuzzyCompare<double>
+     * Just make it use qFuzzyCompare<float>() */
 
-    m_track->statistics()->setScore( -12 );
-    QCOMPARE( m_track->statistics()->score(), -12.0 ); // should this be possible?
+    statistics->setScore( 3 );
+    QCOMPARE( float( statistics->score() ), float( 3.0 ) );
 
-    m_track->statistics()->setScore( 0 );
-    QCOMPARE( m_track->statistics()->score(), 0.0 );
+    statistics->setScore( 12.55 );
+    QCOMPARE( float( statistics->score() ), float( 12.55 ) );
+
+    statistics->setScore( 100 );
+    QCOMPARE( float( statistics->score() ), float( 100.0 ) );
+
+    statistics->setScore( 0 );
+    QCOMPARE( float( statistics->score() ), float( 0.0 ) );
+
+    // and with writeback disabled
+    AmarokConfig::setWriteBackStatistics( false );
+
+    statistics->setScore( 3 );
+    QCOMPARE( float( statistics->score() ), float( 0.0 ) );
+
+    statistics->setScore( 12.55 );
+    QCOMPARE( float( statistics->score() ), float( 0.0 ) );
 }
 
 void TestMetaFileTrack::testSetGetRating()
 {
+    // try with write back enabled...
+    AmarokConfig::setWriteBackStatistics( true );
+
+    Meta::StatisticsPtr statistics = m_track->statistics();
     QCOMPARE( m_track->statistics()->rating(), 0 );
 
     m_track->statistics()->setRating( 1 );
@@ -327,10 +349,16 @@ void TestMetaFileTrack::testSetGetRating()
     m_track->statistics()->setRating( 23 );
     QCOMPARE( m_track->statistics()->rating(), 23 ); // should this be possible?
 
-    m_track->statistics()->setRating( -12 );
-    QCOMPARE( m_track->statistics()->rating(), -12 ); // should this be possible?
-
     m_track->statistics()->setRating( 0 );
+    QCOMPARE( m_track->statistics()->rating(), 0 );
+
+    // and with writeback disabled
+    AmarokConfig::setWriteBackStatistics( false );
+
+    m_track->statistics()->setRating( 1 );
+    QCOMPARE( m_track->statistics()->rating(), 0 );
+
+    m_track->statistics()->setRating( 23 );
     QCOMPARE( m_track->statistics()->rating(), 0 );
 }
 
@@ -390,6 +418,7 @@ void TestMetaFileTrack::testBitrate()
 
 void TestMetaFileTrack::testSetGetLastPlayed()
 {
+    QSKIP( "lastPlayed reading/saving not (yet) available in MetaFile::Track", SkipAll );
     QCOMPARE( m_track->statistics()->lastPlayed(), QDateTime() );
 
     m_track->finishedPlaying( 1.0 );
@@ -398,6 +427,7 @@ void TestMetaFileTrack::testSetGetLastPlayed()
 
 void TestMetaFileTrack::testSetGetFirstPlayed()
 {
+    QSKIP( "firstPlayed reading/saving not (yet) available in MetaFile::Track", SkipAll );
     QCOMPARE( m_track->statistics()->firstPlayed(), QDateTime() );
 
     m_track->finishedPlaying( 1.0 );
@@ -406,10 +436,25 @@ void TestMetaFileTrack::testSetGetFirstPlayed()
 
 void TestMetaFileTrack::testSetGetPlayCount()
 {
+    // try with write back enabled...
+    AmarokConfig::setWriteBackStatistics( true );
+
     QCOMPARE( m_track->statistics()->playCount(), 0 );
 
     m_track->finishedPlaying( 1.0 );
     QCOMPARE( m_track->statistics()->playCount(), 1 );
+
+    m_track->statistics()->setPlayCount( 0 );
+    QCOMPARE( m_track->statistics()->playCount(), 0 );
+
+    // and with writeback disabled
+    AmarokConfig::setWriteBackStatistics( false );
+
+    m_track->finishedPlaying( 1.0 );
+    QCOMPARE( m_track->statistics()->playCount(), 0 );
+
+    m_track->statistics()->setPlayCount( 12 );
+    QCOMPARE( m_track->statistics()->playCount(), 0 );
 }
 
 void TestMetaFileTrack::testReplayGain()

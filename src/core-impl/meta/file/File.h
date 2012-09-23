@@ -25,7 +25,7 @@ namespace MetaFile
 
     typedef KSharedPtr<Track> TrackPtr;
 
-    class AMAROK_EXPORT Track : public Meta::Track
+    class AMAROK_EXPORT Track : public Meta::Track, public Meta::Statistics
     {
         public:
             Track( const KUrl &url );
@@ -72,6 +72,19 @@ namespace MetaFile
 
             virtual Meta::StatisticsPtr statistics();
 
+        // Meta::Statistics methods:
+            virtual double score() const;
+            virtual void setScore( double newScore );
+
+            virtual int rating() const;
+            virtual void setRating( int newRating );
+
+            virtual int playCount() const;
+            virtual void setPlayCount( int newPlayCount );
+
+            virtual void beginUpdate();
+            virtual void endUpdate();
+
         // MetaFile::Track own methods:
             /**
              * Return true if file at @param url is a track.
@@ -81,9 +94,6 @@ namespace MetaFile
              * current backend even if isTrack() returns true.
              */
             static bool isTrack( const KUrl &url );
-
-            virtual void beginMetaDataUpdate();
-            virtual void endMetaDataUpdate();
 
             virtual QImage getEmbeddedCover() const;
 
@@ -107,6 +117,14 @@ namespace MetaFile
 
         private:
             Private * const d;
+
+            /**
+             * Must be called at end of every set*() method, with d->lock locked for
+             * writing. Takes care of writing back the fields, re-reading them and
+             * notifying observers.
+             */
+            void commitIfInNonBatchUpdate( qint64 field, const QVariant &value );
+            void commitIfInNonBatchUpdate();
     };
 }
 

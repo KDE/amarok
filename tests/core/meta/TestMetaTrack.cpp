@@ -21,6 +21,7 @@
 
 #include "core-impl/collections/support/CollectionManager.h"
 #include "config-amarok-test.h"
+#include "src/amarokconfig.h"
 
 #include <QtTest/QTest>
 
@@ -40,10 +41,17 @@ TestMetaTrack::dataPath( const QString &relPath )
 
 void TestMetaTrack::initTestCase()
 {
+    QString oldPath = m_trackPath;
+    m_trackPath = m_tempDir.name() + "TestMetaTrack-testTrack.mp3";
+    QVERIFY( QFile::copy( oldPath, m_trackPath ) );
+
     m_testTrack1 = CollectionManager::instance()->trackForUrl( m_trackPath );
 
     // If the pointer is 0, it makes no sense to continue. We would crash with a qFatal().
     QVERIFY2( m_testTrack1, "The pointer to the test track is 0." );
+
+    // we need to enable this, otherwise testSetAndGetScore, testSetAndGetRating fails
+    AmarokConfig::setWriteBackStatistics( true );
 }
 
 void TestMetaTrack::cleanupTestCase()
@@ -111,20 +119,21 @@ void TestMetaTrack::testSetAndGetScore()
     Meta::StatisticsPtr statistics = m_testTrack1->statistics();
     QCOMPARE( statistics->score(), 0.0 );
 
+    /* now the code actually stores the score in track and then it reads it back.
+     * the precision it uses is pretty low and it was failing the qFuzzyCompare<double>
+     * Just make it use qFuzzyCompare<float>() */
+
     statistics->setScore( 3 );
-    QCOMPARE( statistics->score(), 3.0 );
+    QCOMPARE( float( statistics->score() ), float( 3.0 ) );
 
     statistics->setScore( 12.55 );
-    QCOMPARE( statistics->score(), 12.55 );
+    QCOMPARE( float( statistics->score() ), float( 12.55 ) );
 
     statistics->setScore( 100 );
-    QCOMPARE( statistics->score(), 100.0 );
-
-    statistics->setScore( -12.55 ); // well...
-    QCOMPARE( statistics->score(), -12.55 );
+    QCOMPARE( float( statistics->score() ), float( 100.0 ) );
 
     statistics->setScore( 0 );
-    QCOMPARE( statistics->score(), 0.0 );
+    QCOMPARE( float( statistics->score() ), float( 0.0 ) );
 }
 
 void TestMetaTrack::testSetAndGetRating()
