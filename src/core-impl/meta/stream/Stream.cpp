@@ -42,8 +42,6 @@ Track::Track( const KUrl &url )
     d->genrePtr = Meta::GenrePtr( new StreamGenre( d ) );
     d->composerPtr = Meta::ComposerPtr( new Meta::DefaultComposer() );
     d->yearPtr = Meta::YearPtr( new Meta::DefaultYear() );
-
-    m_statsStore = new UrlStatisticsStore( this );
 }
 
 Track::~Track()
@@ -168,12 +166,6 @@ QString
 Track::type() const
 {
     return "stream";
-}
-
-Meta::StatisticsPtr
-Track::statistics()
-{
-    return m_statsStore;
 }
 
 #include "Stream_p.moc"

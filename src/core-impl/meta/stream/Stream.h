@@ -57,11 +57,8 @@ namespace MetaStream
 
             virtual QString type() const;
 
-            virtual Meta::StatisticsPtr statistics();
-
         private:
             Private * const d;
-            Meta::StatisticsPtr m_statsStore;
     };
 
 }
