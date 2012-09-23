@@ -372,7 +372,7 @@ class ScoreReturnValue : public CustomReturnValue
     public:
         ScoreReturnValue() {}
         virtual ~ScoreReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->score() ); }
+        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->statistics()->score() ); }
 };
 
 class RatingReturnValue : public CustomReturnValue
@@ -380,7 +380,7 @@ class RatingReturnValue : public CustomReturnValue
     public:
         RatingReturnValue() {}
         virtual ~RatingReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->rating() ); }
+        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->statistics()->rating() ); }
 };
 
 class PlaycountReturnValue : public CustomReturnValue
@@ -388,7 +388,7 @@ class PlaycountReturnValue : public CustomReturnValue
     public:
         PlaycountReturnValue() {}
         virtual ~PlaycountReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->playCount() ); }
+        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->statistics()->playCount() ); }
 };
 
 class LengthReturnValue : public CustomReturnValue

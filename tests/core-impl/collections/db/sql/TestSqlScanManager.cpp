@@ -160,10 +160,11 @@ TestSqlScanManager::testScanSingle()
     QVERIFY( track->createDate().secsTo( aDate ) >= 0 );
     QVERIFY( track->modifyDate().secsTo( aDate ) < 5 ); // I just wrote the file
     QVERIFY( track->modifyDate().secsTo( aDate ) >= 0 );
-    qFuzzyCompare( track->score(), 0.875 );
-    QCOMPARE( track->playCount(), 5 );
-    QVERIFY( !track->firstPlayed().isValid() );
-    QVERIFY( !track->lastPlayed().isValid() );
+    Meta::StatisticsPtr statistics = track->statistics();
+    qFuzzyCompare( statistics->score(), 0.875 );
+    QCOMPARE( statistics->playCount(), 5 );
+    QVERIFY( !statistics->firstPlayed().isValid() );
+    QVERIFY( !statistics->lastPlayed().isValid() );
     QVERIFY( track->createDate().isValid() );
 
     // -- check that a further scan doesn't change anything
@@ -554,7 +555,7 @@ TestSqlScanManager::testRemoveTrack()
     QVERIFY( !album->isCompilation() );
     track = album->tracks().first(); // the tracks are sorted, so this is always the same track
     QCOMPARE( track->trackNumber(), 1 );
-    QVERIFY( !track->firstPlayed().isValid() );
+    QVERIFY( !track->statistics()->firstPlayed().isValid() );
     static_cast<Meta::SqlTrack*>(track.data())->setFirstPlayed( aDate );
 
     // -- remove one track
@@ -604,7 +605,7 @@ TestSqlScanManager::testMove()
     // -- check that the track is moved
     QVERIFY( createDate == track->createDate() ); // create date should not have changed
     QVERIFY( modifyDate == track->modifyDate() ); // we just changed the track. it should have changed
-    QCOMPARE( track->firstPlayed(), aDate );
+    QCOMPARE( track->statistics()->firstPlayed(), aDate );
     QCOMPARE( track->playableUrl().path(), targetPath );
 
     // --- move a directory
@@ -756,10 +757,11 @@ TestSqlScanManager::testMerges()
     QCOMPARE( track->length(), qint64(12000) );
     QCOMPARE( track->sampleRate(), 44100 );
     QCOMPARE( track->filesize(), 389679 );
-    qFuzzyCompare( track->score(), 0.875 );
-    QCOMPARE( track->playCount(), 5 );
-    QVERIFY( !track->firstPlayed().isValid() );
-    QVERIFY( !track->lastPlayed().isValid() );
+    Meta::StatisticsPtr statistics = track->statistics();
+    qFuzzyCompare( statistics->score(), 0.875 );
+    QCOMPARE( statistics->playCount(), 5 );
+    QVERIFY( !statistics->firstPlayed().isValid() );
+    QVERIFY( !statistics->lastPlayed().isValid() );
     QVERIFY( track->createDate().isValid() );
 
 

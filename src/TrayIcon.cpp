@@ -146,13 +146,14 @@ Amarok::TrayIcon::updateToolTip()
         }
         tooltip << i18n( "<i>Volume: %1</i>", volume );
 
-        const float score = m_track->score();
+        Meta::StatisticsPtr statistics = m_track->statistics();
+        const float score = statistics->score();
         if( score > 0.f )
         {
             tooltip << i18n( "Score: %1", QString::number( score, 'f', 2 ) );
         }
 
-        const int rating = m_track->rating();
+        const int rating = statistics->rating();
         if( rating > 0 )
         {
             QString stars;
@@ -170,13 +171,13 @@ Amarok::TrayIcon::updateToolTip()
             tooltip << i18n( "Rating: %1", stars );
         }
 
-        const int count = m_track->playCount();
+        const int count = statistics->playCount();
         if( count > 0 )
         {
             tooltip << i18n( "Play count: %1", count );
         }
 
-        const QDateTime lastPlayed = m_track->lastPlayed();
+        const QDateTime lastPlayed = statistics->lastPlayed();
         tooltip << i18n( "Last played: %1", Amarok::verboseTimeSince( lastPlayed ) );
 
         setToolTipSubTitle( tooltip.join("<br>") );

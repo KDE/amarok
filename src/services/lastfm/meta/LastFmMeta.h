@@ -23,9 +23,8 @@
 #include "core/capabilities/Capability.h"
 #include "ServiceMetaBase.h" // for the SourceInfoProvider
 
-namespace lastfm
-{
-class Track;
+namespace lastfm {
+    class Track;
 }
 
 namespace LastFm
@@ -62,12 +61,6 @@ namespace LastFm
 
             virtual QString comment() const;
 
-            virtual double score() const;
-            virtual void setScore( double newScore );
-
-            virtual int rating() const;
-            virtual void setRating( int newRating );
-
             virtual int trackNumber() const;
 
             virtual int discNumber() const;
@@ -76,21 +69,18 @@ namespace LastFm
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;
-            virtual QDateTime lastPlayed() const;
-            virtual QDateTime firstPlayed() const;
-            virtual int playCount() const;
 
             virtual QString type() const;
-
-            virtual void finishedPlaying( double playedFraction );
 
             virtual bool inCollection() const;
             virtual Collections::Collection *collection() const;
 
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
+            virtual Meta::StatisticsPtr statistics();
+
+        // own methods:
             void setTrackInfo( const lastfm::Track &trackInfo );
 
             virtual QString sourceName();

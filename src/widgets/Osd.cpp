@@ -653,7 +653,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
     }
     else
     {
-        setRating( track->rating() );
+        setRating( track->statistics()->rating() );
         text = track->prettyName();
         if( track->artist() && !track->artist()->prettyName().isEmpty() )
             text = track->artist()->prettyName() + " - " + text;

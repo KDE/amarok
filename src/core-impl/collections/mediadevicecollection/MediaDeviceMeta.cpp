@@ -394,6 +394,12 @@ MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type
     }
 }
 
+StatisticsPtr
+MediaDeviceTrack::statistics()
+{
+    return StatisticsPtr( this );
+}
+
 void
 MediaDeviceTrack::setAlbum( const QString &newAlbum )
 {

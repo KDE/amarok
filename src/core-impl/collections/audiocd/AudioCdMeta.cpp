@@ -160,30 +160,6 @@ AudioCdTrack::setComment( const QString &newComment )
     Q_UNUSED( newComment )
 }
 
-double
-AudioCdTrack::score() const
-{
-    return 0.0;
-}
-
-void
-AudioCdTrack::setScore( double newScore )
-{
-    Q_UNUSED( newScore )
-}
-
-int
-AudioCdTrack::rating() const
-{
-    return 0;
-}
-
-void
-AudioCdTrack::setRating( int newRating )
-{
-    Q_UNUSED( newRating )
-}
-
 qint64
 AudioCdTrack::length() const
 {
@@ -230,12 +206,6 @@ void
 AudioCdTrack::setDiscNumber( int newDiscNumber )
 {
     Q_UNUSED( newDiscNumber )
-}
-
-int
-AudioCdTrack::playCount() const
-{
-    return 0;
 }
 
 QString

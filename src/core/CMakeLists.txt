@@ -12,6 +12,7 @@ set(libcore_interfaces_SRCS
 
 set(libcore_meta_SRCS
     meta/Meta.cpp
+    meta/Statistics.cpp
     meta/support/MetaConstants.cpp
     meta/support/MetaUtility.cpp
     meta/support/MetaKeys.cpp
@@ -23,10 +24,6 @@ set(libcore_playlists_SRCS
     playlists/Playlist.cpp
     playlists/PlaylistFormat.cpp
     playlists/PlaylistProvider.cpp
-)
-
-set(libcore_statistics_SRCS
-    statistics/StatisticsProvider.cpp
 )
 
 set(libcore_capabilities_SRCS
@@ -43,7 +40,6 @@ set(libcore_capabilities_SRCS
     capabilities/OrganiseCapability.cpp
     capabilities/ReadLabelCapability.cpp
     capabilities/SourceInfoCapability.cpp
-    capabilities/StatisticsCapability.cpp
     capabilities/StreamInfoCapability.cpp
     capabilities/TranscodeCapability.cpp
     capabilities/WriteLabelCapability.cpp
@@ -92,7 +88,6 @@ set(libcore_LIB_SRCS
     ${libcore_podcasts_SRCS}
     ${libcore_interfaces_SRCS}
     ${libcore_collection_SRCS}
-    ${libcore_statistics_SRCS}
     ${libcore_playlists_SRCS}
     ${libcore_meta_SRCS}
     ${libcore_capabilities_SRCS}

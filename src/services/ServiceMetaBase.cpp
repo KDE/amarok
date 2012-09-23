@@ -128,7 +128,6 @@ ServiceTrack::ServiceTrack( const QString & name )
     , ActionsProvider()
     , SourceInfoProvider()
     , BookmarkThisProvider()
-    , m_provider( 0 )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
@@ -148,7 +147,6 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
     , ActionsProvider()
     , SourceInfoProvider()
     , BookmarkThisProvider()
-    , m_provider( 0 )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
@@ -168,7 +166,6 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
 
 ServiceTrack::~ServiceTrack()
 {
-    delete m_provider;
 }
 
 void
@@ -372,38 +369,6 @@ ServiceTrack::setDescription( const QString &newDescription )
     m_description = newDescription;
 }
 
-double
-ServiceTrack::score() const
-{
-    if( m_provider )
-        return m_provider->score();
-    else
-        return 0.0;
-}
-
-void
-ServiceTrack::setScore( double newScore )
-{
-    if( m_provider )
-        m_provider->setScore( newScore );
-}
-
-int
-ServiceTrack::rating() const
-{
-    if( m_provider )
-        return m_provider->rating();
-    else
-        return 0;
-}
-
-void
-ServiceTrack::setRating( int newRating )
-{
-    if( m_provider )
-        m_provider->setRating( newRating );
-}
-
 qint64
 ServiceTrack::length() const
 {
@@ -452,43 +417,6 @@ ServiceTrack::setDiscNumber( int newDiscNumber )
     Q_UNUSED( newDiscNumber )
 }
 
-int
-ServiceTrack::playCount() const
-{
-    if( m_provider )
-        return m_provider->playCount();
-    else
-        return 0;
-}
-
-QDateTime
-ServiceTrack::lastPlayed() const
-{
-    if( m_provider )
-        return m_provider->lastPlayed();
-    else
-        return QDateTime();
-}
-
-QDateTime
-ServiceTrack::firstPlayed() const
-{
-    if( m_provider )
-        return m_provider->firstPlayed();
-    else
-        return QDateTime();
-}
-
-void
-ServiceTrack::finishedPlaying( double playedFraction )
-{
-    if( m_provider )
-    {
-        m_provider->played( playedFraction, TrackPtr( this ) );
-        notifyObservers();
-    }
-}
-
 QString
 ServiceTrack::type() const
 {
@@ -527,12 +455,9 @@ ServiceTrack::setYear( YearPtr year )
 }
 
 void
-ServiceTrack::setStatisticsProvider( Statistics::StatisticsProvider *provider )
+ServiceTrack::setStatisticsProvider( StatisticsPtr provider )
 {
-    if( m_provider )
-        delete m_provider;
-
-    m_provider = provider;
+    m_statsStore = provider;
 }
 
 void
@@ -552,6 +477,15 @@ void ServiceTrack::processInfoOf(InfoParserBase * infoParser)
 {
     infoParser->getInfo( TrackPtr( this ) );
 }
+
+StatisticsPtr
+ServiceTrack::statistics()
+{
+    if( m_statsStore )
+        return m_statsStore;
+    return Meta::Track::statistics();
+}
+
 
 
 //ServiceArtist

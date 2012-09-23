@@ -28,13 +28,7 @@
 
 #include <Solid/Networking>
 
-namespace LastFm {
-
-class LastFmArtist;
-class LastFmAlbum;
-class LastFmGenre;
-class LastFmComposer;
-class LastFmYear;
+using namespace LastFm;
 
 Track::Track( const QString &lastFmUri )
     : QObject()
@@ -206,44 +200,6 @@ Track::comment() const
     return QString();
 }
 
-double
-Track::score() const
-{
-    if( d->statisticsProvider )
-        return d->statisticsProvider->score();
-    else
-        return 0.0;
-}
-
-void
-Track::setScore( double newScore )
-{
-    if( d->statisticsProvider )
-    {
-        d->statisticsProvider->setScore( newScore );
-        notifyObservers();
-    }
-}
-
-int
-Track::rating() const
-{
-    if( d->statisticsProvider )
-        return d->statisticsProvider->rating();
-    else
-        return 0;
-}
-
-void
-Track::setRating( int newRating )
-{
-    if( d->statisticsProvider )
-    {
-        d->statisticsProvider->setRating( newRating );
-        notifyObservers();
-    }
-}
-
 int
 Track::trackNumber() const
 {
@@ -280,45 +236,10 @@ Track::bitrate() const
     return 0; //does the engine deliver this??
 }
 
-QDateTime
-Track::lastPlayed() const
-{
-    if( d->statisticsProvider )
-        return d->statisticsProvider->lastPlayed();
-    else
-        return QDateTime();
-}
-
-QDateTime
-Track::firstPlayed() const
-{
-    if( d->statisticsProvider )
-        return d->statisticsProvider->firstPlayed();
-    else
-        return QDateTime();
-}
-
-int
-Track::playCount() const
-{
-    if( d->statisticsProvider )
-        return d->statisticsProvider->playCount();
-    return 0;
-}
-
 QString
 Track::type() const
 {
     return "stream/lastfm";
-}
-void
-Track::finishedPlaying( double playedFraction )
-{
-    if( d->statisticsProvider )
-    {
-        d->statisticsProvider->played( playedFraction, Meta::TrackPtr( this ) );
-        notifyObservers();
-    }
 }
 
 bool
@@ -507,7 +428,13 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
     }
 }
 
-} // namespace LastFm
+Meta::StatisticsPtr
+Track::statistics()
+{
+    if( d->statsStore )
+        return d->statsStore;
+    return Meta::Track::statistics();
+}
 
 QString LastFm::Track::sourceName()
 {
@@ -536,6 +463,3 @@ QString LastFm::Track::scalableEmblem()
 }
 
 #include "LastFmMeta.moc"
-
-
-

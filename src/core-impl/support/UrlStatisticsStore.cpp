@@ -14,32 +14,33 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.h"
+#include "UrlStatisticsStore.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/support/SqlStorage.h"
-
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
-PermanentUrlStatisticsProvider::PermanentUrlStatisticsProvider( const QString &permanentUrl )
-        : StatisticsProvider()
-        , m_permanentUrl( permanentUrl )
+UrlStatisticsStore::UrlStatisticsStore( Meta::Track *track, const QString &permanentUrl )
+    : PersistentStatisticsStore( track )
+    , m_permanentUrl( permanentUrl )
 {
+    if( m_permanentUrl.isEmpty() )
+        m_permanentUrl = track->uidUrl();
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
     if( !sql )
     {
-        debug() << "Could not get SqlStorage, aborting" << endl;
+        warning() << __PRETTY_FUNCTION__ << "could not get SqlStorage, aborting";
         return;
     }
 
 
     const QString query = "SELECT firstplayed, lastplayed, score, rating, playcount FROM "
                           "statistics_permanent WHERE url = '%1'";
-    QStringList result = sql->query( query.arg( sql->escape( permanentUrl ) ) );
+    QStringList result = sql->query( query.arg( sql->escape( m_permanentUrl ) ) );
     if( !result.isEmpty() )
     {
-        m_firstPlayed = QDateTime::fromString( result.value( 0 ), "yy-MM-dd hh:mm:ss" );
-        m_lastPlayed = QDateTime::fromString( result.value( 1 ), "yy-MM-dd hh:mm:ss" );
+        m_firstPlayed = QDateTime::fromString( result.value( 0 ), s_sqlDateFormat );
+        m_lastPlayed = QDateTime::fromString( result.value( 1 ), s_sqlDateFormat );
         m_score = result.value( 2 ).toDouble();
         m_rating = result.value( 3 ).toInt();
         m_playCount = result.value( 4 ).toInt();
@@ -47,12 +48,12 @@ PermanentUrlStatisticsProvider::PermanentUrlStatisticsProvider( const QString &p
 }
 
 void
-PermanentUrlStatisticsProvider::save()
+UrlStatisticsStore::save()
 {
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
     if( !sql )
     {
-        debug() << "Could not get SqlStorage, aborting" << endl;
+        warning() << __PRETTY_FUNCTION__ << "could not get SqlStorage, aborting";
         return;
     }
 
@@ -71,8 +72,8 @@ PermanentUrlStatisticsProvider::save()
             sqlString = "INSERT INTO statistics_permanent(firstplayed,lastplayed,score,"
                         "rating,playcount,url) VALUE ('%1','%2',%3,%4,%5,'%6')";
         }
-        sqlString = sqlString.arg( m_firstPlayed.toString( "yy-MM-dd hh:mm:ss" ),
-                                   m_lastPlayed.toString( "yy-MM-dd hh:mm:ss" ),
+        sqlString = sqlString.arg( m_firstPlayed.toString( s_sqlDateFormat ),
+                                   m_lastPlayed.toString( s_sqlDateFormat ),
                                    QString::number( m_score ),
                                    QString::number( m_rating ),
                                    QString::number( m_playCount ),
@@ -80,4 +81,3 @@ PermanentUrlStatisticsProvider::save()
         sql->query( sqlString );
     }
 }
-

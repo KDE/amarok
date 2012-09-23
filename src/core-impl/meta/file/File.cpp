@@ -26,14 +26,13 @@
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
-#include "core/capabilities/StatisticsCapability.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core/support/Amarok.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
-#include "core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.h"
+#include "core-impl/support/UrlStatisticsStore.h"
 
 #include <KMimeType>
 
@@ -71,26 +70,6 @@ class EditCapabilityImpl : public Capabilities::EditCapability
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
-
-    private:
-        KSharedPtr<MetaFile::Track> m_track;
-};
-
-class StatisticsCapabilityImpl : public Capabilities::StatisticsCapability
-{
-    public:
-        StatisticsCapabilityImpl( MetaFile::Track *track )
-            : Capabilities::StatisticsCapability()
-            , m_track( track )
-        {}
-
-        virtual void setScore( const int score ) { m_track->setScore( score ); }
-        virtual void setRating( const int rating ) { m_track->setRating( rating ); }
-        virtual void setFirstPlayed( const QDateTime &time ) { m_track->setFirstPlayed( time ); }
-        virtual void setLastPlayed( const QDateTime &time ) { m_track->setLastPlayed( time ); }
-        virtual void setPlayCount( const int playcount ) { m_track->setPlayCount( playcount ); }
-        virtual void beginStatisticsUpdate() {};
-        virtual void endStatisticsUpdate() {};
 
     private:
         KSharedPtr<MetaFile::Track> m_track;
@@ -186,8 +165,13 @@ Track::Track( const KUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
+    /* HACK: readMetaData() below may cause notifyObservers() to be called, and if there
+     * are some observers, KSharedPtr to this track is created and destoroyed, which
+     * destroys the track being constucted in turn -> BOOM! prevent this by temporarily
+     * increasing the reference count. */
+    ref.ref();
     d->url = url;
-    d->provider = new PermanentUrlStatisticsProvider( url.url() );
+    d->statsStore = new UrlStatisticsStore( this );
     d->readMetaData();
     d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( d ) );
     d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( d ) );
@@ -195,11 +179,11 @@ Track::Track( const KUrl &url )
     d->genre = Meta::GenrePtr( new MetaFile::FileGenre( d ) );
     d->composer = Meta::ComposerPtr( new MetaFile::FileComposer( d ) );
     d->year = Meta::YearPtr( new MetaFile::FileYear( d ) );
+    ref.deref();
 }
 
 Track::~Track()
 {
-    delete d->provider;
     delete d;
 }
 
@@ -409,39 +393,6 @@ Track::setComment( const QString& newComment )
     }
 }
 
-double
-Track::score() const
-{
-
-    if( d->provider )
-        return d->provider->score();
-    else
-        return 0.0;
-}
-
-void
-Track::setScore( double newScore )
-{
-    if( d->provider )
-        d->provider->setScore( newScore );
-}
-
-int
-Track::rating() const
-{
-    if( d->provider )
-        return d->provider->rating();
-    else
-        return 0;
-}
-
-void
-Track::setRating( int newRating )
-{
-    if( d->provider )
-        d->provider->setRating( newRating );
-}
-
 int
 Track::trackNumber() const
 {
@@ -520,54 +471,6 @@ Track::createDate() const
         return QDateTime();
 }
 
-QDateTime
-Track::lastPlayed() const
-{
-    if( d->provider )
-        return d->provider->lastPlayed();
-    else
-        return QDateTime();
-}
-
-void
-Track::setLastPlayed( const QDateTime &newTime )
-{
-    if( d->provider )
-        d->provider->setLastPlayed( newTime );
-}
-
-QDateTime
-Track::firstPlayed() const
-{
-    if( d->provider )
-        return d->provider->firstPlayed();
-    else
-        return QDateTime();
-}
-
-void
-Track::setFirstPlayed( const QDateTime &newTime )
-{
-    if( d->provider )
-        d->provider->setFirstPlayed( newTime );
-}
-
-int
-Track::playCount() const
-{
-    if( d->provider )
-        return d->provider->playCount();
-    else
-        return 0;
-}
-
-void
-Track::setPlayCount( int newCount )
-{
-    if( d->provider )
-        d->provider->setPlayCount( newCount );
-}
-
 qreal
 Track::replayGain( Meta::ReplayGainTag mode ) const
 {
@@ -631,13 +534,6 @@ Track::endMetaDataUpdate()
     notifyObservers();
 }
 
-void
-Track::finishedPlaying( double playedFraction )
-{
-    if( d->provider )
-        d->provider->played( playedFraction, Meta::TrackPtr( this ) );
-}
-
 bool
 Track::inCollection() const
 {
@@ -664,7 +560,6 @@ Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
     readlabel = true;
 #endif
     return ( type == Capabilities::Capability::Editable && isEditable() ) ||
-           type == Capabilities::Capability::Importable ||
            type == Capabilities::Capability::BookmarkThis ||
            type == Capabilities::Capability::WriteTimecode ||
            type == Capabilities::Capability::LoadTimecode ||
@@ -682,9 +577,6 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
                 return new EditCapabilityImpl( this );
             else
                 return 0;
-
-        case Capabilities::Capability::Importable:
-            return new StatisticsCapabilityImpl( this );
 
         case Capabilities::Capability::BookmarkThis:
             return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
@@ -709,6 +601,14 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
 
         return 0;
     }
+}
+
+Meta::StatisticsPtr
+Track::statistics()
+{
+    if( d->statsStore )
+        return d->statsStore;
+    return Meta::Track::statistics();
 }
 
 QImage

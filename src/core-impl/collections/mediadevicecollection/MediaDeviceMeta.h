@@ -52,7 +52,7 @@ typedef KSharedPtr<MediaDeviceYear> MediaDeviceYearPtr;
 
 typedef QList<MediaDeviceTrackPtr> MediaDeviceTrackList;
 
-class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public Statistics
 {
     public:
         MediaDeviceTrack( Collections::MediaDeviceCollection *collection );
@@ -86,12 +86,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual QString comment() const;
         virtual void setComment ( const QString &newComment );
 
-        virtual double score() const;
-        virtual void setScore ( double newScore );
-
-        virtual int rating() const;
-        virtual void setRating ( int newRating );
-
         virtual qint64 length() const;
 
         void setFileSize( int newFileSize );
@@ -112,12 +106,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual int discNumber() const;
         virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual QDateTime lastPlayed() const;
-        void setLastPlayed( const QDateTime &newTime );
-
-        virtual int playCount() const;
-        void setPlayCount( const int newCount );
-
         virtual qreal replayGain( ReplayGainTag mode ) const;
         /* Set the track replay gain (other types unsupported) */
         void setReplayGain( qreal newReplayGain );
@@ -130,6 +118,23 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
 
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+
+        virtual StatisticsPtr statistics();
+
+        // Meta::Statistics methods
+        virtual double score() const;
+        virtual void setScore ( double newScore );
+
+        virtual int rating() const;
+        virtual void setRating ( int newRating );
+
+        virtual QDateTime lastPlayed() const;
+        void setLastPlayed( const QDateTime &newTime );
+
+        // firstPlayed() not available in any media device
+
+        virtual int playCount() const;
+        void setPlayCount( const int newCount );
 
         //MediaDeviceTrack specific methods
 

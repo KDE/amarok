@@ -31,14 +31,13 @@
 
 namespace Meta
 {
-
 class NepomukTrack;
 typedef KSharedPtr<NepomukTrack> NepomukTrackPtr;
 
 /**
  * Represents a unit music track resource in Amarok
  */
-class NepomukTrack : public Track
+class NepomukTrack : public Track, public Statistics
 {
 public:
     // construct a NepomukTrack out of a Nepomuk resource
@@ -57,12 +56,9 @@ public:
     virtual GenrePtr genre() const;
     virtual YearPtr year() const;
 
+    virtual LabelList labels() const;
     virtual qreal bpm() const;
     virtual QString comment() const;
-    virtual double score() const;
-    virtual void setScore( double newScore );
-    virtual int rating() const;
-    virtual void setRating( int newRating );
     virtual qint64 length() const;
     virtual int filesize() const;
     virtual int sampleRate() const;
@@ -71,8 +67,34 @@ public:
     virtual QDateTime modifyDate() const;
     virtual int trackNumber() const;
     virtual int discNumber() const;
-    virtual int playCount() const;
+    virtual qreal replayGain( ReplayGainTag mode ) const;
+
     virtual QString type() const;
+    // TODO: switch to default finishedPlaying() implementation from Meta::Track once
+    // we implement setPlaycount(), setLastPlayed().
+    virtual void finishedPlaying( double playedFraction );
+
+    virtual bool inCollection() const;
+    virtual Collections::Collection *collection() const;
+
+    virtual void addLabel( const LabelPtr &label );
+    virtual void addLabel( const QString &label );
+    virtual void removeLabel( const LabelPtr &label );
+
+    virtual StatisticsPtr statistics();
+
+    // Meta::Statistics methods
+    // TODO: introduce scores into Nepomuk and implement score(), setScore()
+
+    virtual int rating() const;
+    virtual void setRating( int newRating );
+
+    // TODO: implement (set)First/LastPlayed()
+
+    virtual int playCount() const;
+    // TODO: implement setPlayCount();
+
+    // TODO: implement beginUpdate()/endUpdate() once other stats methods are here
 
     // NepomukTrack meta methods
     void setAlbum( AlbumPtr album );
@@ -80,10 +102,6 @@ public:
     void setComposer( ComposerPtr composer );
     void setGenre( GenrePtr genre );
     void setYear( YearPtr year );
-    virtual void addLabel( const Meta::LabelPtr &label );
-    virtual void addLabel( const QString &label );
-    virtual Meta::LabelList labels() const;
-    virtual void removeLabel( const Meta::LabelPtr &label );
 
     // NepomukTrack secondary metadata methods
     void setName( const QString &name );
@@ -104,14 +122,6 @@ public:
     void setAlbumGain( qreal albumGain );
     void setAlbumPeakGain( qreal albumPeakGain );
     void setPlayableUrl( const KUrl &url );
-
-    // Non pure virtual functions
-    virtual bool inCollection() const;
-    /**
-     * This should be implemented whenever you return true in inCollection()
-     */
-    virtual Collections::Collection *collection() const;
-    virtual qreal replayGain( ReplayGainTag mode ) const;
 
 private:
 

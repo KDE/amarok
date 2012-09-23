@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,11 +14,27 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core/capabilities/StatisticsCapability.h"
+#ifndef URLSTATISTICSSTORE_H
+#define URLSTATISTICSSTORE_H
 
-Capabilities::StatisticsCapability::~StatisticsCapability()
+#include "core-impl/support/PersistentStatisticsStore.h"
+
+#include <QString>
+
+class AMAROK_EXPORT UrlStatisticsStore : public PersistentStatisticsStore
 {
-    //nothing to do
-}
+    public:
+        /**
+         * Construct persistent per-url statistics store. If @param permanentUrl is not
+         * specified, track->uidUrl() is used.
+         */
+        UrlStatisticsStore( Meta::Track *track, const QString &permanentUrl = QString() );
 
-#include "StatisticsCapability.moc"
+    protected:
+        virtual void save();
+
+    private:
+        QString m_permanentUrl;
+};
+
+#endif // URLSTATISTICSSTORE_H

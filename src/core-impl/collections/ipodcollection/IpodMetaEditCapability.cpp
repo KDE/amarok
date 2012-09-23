@@ -23,7 +23,6 @@ using namespace IpodMeta;
 
 EditCapability::EditCapability( const KSharedPtr<Track> &track )
     : Capabilities::EditCapability()
-    , m_inBatchUpdate( false )
     , m_track( track )
 {
 }
@@ -44,98 +43,78 @@ void
 EditCapability::setAlbum( const QString &newAlbum )
 {
     m_track->setAlbum( newAlbum );
-    commitIfInNonBatchUpdate();
 }
 
 void
 EditCapability::setAlbumArtist( const QString &newAlbumArtist )
 {
     m_track->setAlbumArtist( newAlbumArtist );
-    commitIfInNonBatchUpdate();
 }
 
 void
 EditCapability::setArtist( const QString &newArtist )
 {
     m_track->setArtist( newArtist );
-    commitIfInNonBatchUpdate();
 }
 
 void
 EditCapability::setComposer( const QString &newComposer )
 {
     m_track->setComposer( newComposer );
-    commitIfInNonBatchUpdate();
 }
 
 void
 EditCapability::setGenre( const QString &newGenre )
 {
     m_track->setGenre( newGenre );
-    commitIfInNonBatchUpdate();
 }
 
 void
 EditCapability::setYear( int newYear )
 {
     m_track->setYear( newYear );
-    commitIfInNonBatchUpdate();
 }
 
 void
 EditCapability::setBpm( const qreal newBpm )
 {
     m_track->setBpm( newBpm );
-    commitIfInNonBatchUpdate();
 }
 
 void
 EditCapability::setTitle( const QString &newTitle )
 {
     m_track->setTitle( newTitle );
-    commitIfInNonBatchUpdate();
 }
 
 void
 EditCapability::setComment( const QString &newComment )
 {
     m_track->setComment( newComment );
-    commitIfInNonBatchUpdate();
 }
 
 void
 EditCapability::setTrackNumber( int newTrackNumber )
 {
     m_track->setTrackNumber( newTrackNumber );
-    commitIfInNonBatchUpdate();
 }
 
 void
 EditCapability::setDiscNumber( int newDiscNumber )
 {
     m_track->setDiscNumber( newDiscNumber );
-    commitIfInNonBatchUpdate();
 }
 
 void
 EditCapability::beginMetaDataUpdate()
 {
-    m_inBatchUpdate = true;
+    m_track->beginUpdate();
 }
 
 void
 EditCapability::endMetaDataUpdate()
 {
-    m_inBatchUpdate = false;
-    m_track->commitChanges();
-}
-
-void
-EditCapability::commitIfInNonBatchUpdate()
-{
-    if( m_inBatchUpdate )
-        return;
-    m_track->commitChanges();
+    m_track->endUpdate();
 }
 
 #include "IpodMetaEditCapability.moc"

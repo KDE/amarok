@@ -37,9 +37,6 @@ class MetaStream::Track::Private : public QObject
         Private( Track *t )
             : trackNumber( 0 )
             , length( 0 )
-            , rating( 0 )
-            , score( 0 )
-            , playcount( 0 )
             , track( t )
         {
             EngineController *engine = The::engineController();
@@ -98,13 +95,6 @@ class MetaStream::Track::Private : public QObject
         int trackNumber;
         QString comment;
         qint64 length;
-
-        // following are useful only sligtly, they are reset as soon as Amarok restarts
-        int rating;
-        double score;
-        QDateTime firstPlayed;
-        QDateTime lastPlayed;
-        int playcount;
 
         Meta::ArtistPtr artistPtr;
         Meta::AlbumPtr albumPtr;

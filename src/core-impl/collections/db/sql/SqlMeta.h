@@ -58,7 +58,7 @@ namespace Meta
 
     The whole class should be thread save.
 */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statistics
 {
     public:
         /** Creates a new SqlTrack without.
@@ -124,12 +124,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual QString comment() const;
         virtual void setComment( const QString &newComment );
 
-        virtual double score() const;
-        virtual void setScore( double newScore );
-
-        virtual int rating() const;
-        virtual void setRating( int newRating );
-
         virtual qint64 length() const;
         virtual void setLength( qint64 newLength );
 
@@ -152,19 +146,8 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual int discNumber() const;
         virtual void setDiscNumber( int newDiscNumber );
 
-        virtual QDateTime firstPlayed() const;
-        virtual void setFirstPlayed( const QDateTime &newTime );
-
-        virtual QDateTime lastPlayed() const;
-        virtual void setLastPlayed( const QDateTime &newTime );
-
-        virtual int playCount() const;
-        virtual void setPlayCount( const int newCount );
-
         virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
         virtual void setReplayGain( Meta::ReplayGainTag mode, qreal value );
-        virtual void beginMetaDataUpdate();
-        virtual void endMetaDataUpdate();
 
         /** Enables or disables writing changes to the file.
          *  This function can be useful when changes are imported from the file.
@@ -172,8 +155,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
          */
         virtual void setWriteFile( const bool enable )
         { m_writeFile = enable; }
-
-        virtual void finishedPlaying( double playedFraction );
 
         virtual bool inCollection() const;
         virtual Collections::Collection* collection() const;
@@ -189,6 +170,27 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
         virtual void addLabel( const Meta::LabelPtr &label );
         virtual void removeLabel( const Meta::LabelPtr &label );
         virtual Meta::LabelList labels() const;
+
+        virtual StatisticsPtr statistics();
+
+        // Meta::Statistics methods:
+        virtual double score() const;
+        virtual void setScore( double newScore );
+
+        virtual int rating() const;
+        virtual void setRating( int newRating );
+
+        virtual QDateTime firstPlayed() const;
+        virtual void setFirstPlayed( const QDateTime &newTime );
+
+        virtual QDateTime lastPlayed() const;
+        virtual void setLastPlayed( const QDateTime &newTime );
+
+        virtual int playCount() const;
+        virtual void setPlayCount( const int newCount );
+
+        virtual void beginUpdate();
+        virtual void endUpdate();
 
         // SqlTrack specific methods
 
@@ -229,19 +231,18 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
 
 
     protected:
-        /** Will commit all changes in m_cache.
-         *  commitMetaDataChanges will do three things:<br>
+        /**
+         * Will commit all changes in m_cache if m_batch == 0. Must be called with m_lock
+         * locked for writing.
+         *
+         *  commitIfInNonBatchUpdate() will do three things:
          *  1. It will update the member variables.
          *  2. It will call all write methods
          *  3. It will notify all observers and the collection about the changes.
          */
-        void commitMetaDataChanges();
-        void commitMetaDataChanges( qint64 field, const QVariant &value )
-        {
-            m_cache.insert( field, value );
-            if( !m_batchUpdate )
-                commitMetaDataChanges();
-        }
+        void commitIfInNonBatchUpdate( qint64 field, const QVariant &value );
+        void commitIfInNonBatchUpdate();
+
         void updatePlaylistsToDb( const FieldHash &fields, const QString &oldUid );
         void updateEmbeddedCoversToDb( const FieldHash &fields, const QString &oldUid );
 
@@ -293,7 +294,11 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Meta::Track
 
         Amarok::FileType m_filetype;
 
-        bool m_batchUpdate;
+        /**
+         * Number of current batch operations started by @see beginUpdate() and not
+         * yet ended by @see endUpdate(). Must only be accessed with m_lock held.
+         */
+        int m_batchUpdate;
         bool m_writeFile;
         bool m_writeAllStatisticsFields;
         FieldHash m_cache;

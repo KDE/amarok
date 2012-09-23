@@ -85,17 +85,17 @@ namespace Amarok
      * Compute score for a track that has finished playing.
      * The resulting score is between 0 and 100
      */
-    inline double computeScore( double oldScore, unsigned int playCount, double playedFraction )
+    inline double computeScore( double oldScore, unsigned int oldPlayCount, double playedFraction )
     {
-        const int percentage = qBound(0, static_cast<int>(playedFraction * 100), 100);
+        const int percentage = qBound(0, int(playedFraction * 100), 100);
         double newScore;
 
-        if( playCount <= 0 )
+        if( oldPlayCount <= 0 )
             newScore = ( oldScore + percentage ) / 2;
         else
-            newScore = ( ( oldScore * playCount ) + percentage ) / ( playCount + 1 );
+            newScore = ( ( oldScore * oldPlayCount ) + percentage ) / ( oldPlayCount + 1 );
 
-        return qBound( double(0.0), newScore, double(100.0) );
+        return qBound( 0.0, newScore, 100.0 );
     }
 
     /**

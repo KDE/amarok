@@ -51,12 +51,6 @@ namespace MetaFile
             virtual qreal bpm() const;
             virtual QString comment() const;
 
-            virtual double score() const;
-            virtual void setScore( double newScore );
-
-            virtual int rating() const;
-            virtual void setRating( int newRating );
-
             virtual int trackNumber() const;
             virtual int discNumber() const;
 
@@ -65,20 +59,18 @@ namespace MetaFile
             virtual int sampleRate() const;
             virtual int bitrate() const;
             virtual QDateTime createDate() const;
-            virtual QDateTime lastPlayed() const;
-            virtual QDateTime firstPlayed() const;
-            virtual int playCount() const;
 
             virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
 
             virtual QString type() const;
 
-            virtual void finishedPlaying( double playedFraction );
             virtual bool inCollection() const;
             virtual Collections::Collection *collection() const;
 
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+
+            virtual Meta::StatisticsPtr statistics();
 
         // MetaFile::Track own methods:
             /**
@@ -107,9 +99,6 @@ namespace MetaFile
             virtual void setBpm( const qreal newBpm );
             virtual void setComment( const QString &newComment );
             virtual void setDiscNumber( int newDiscNumber );
-            virtual void setLastPlayed( const QDateTime &newTime );
-            virtual void setFirstPlayed( const QDateTime &newTime );
-            virtual void setPlayCount( int newCount );
 
             // publish method so that it can be called by Private.
             using Meta::MetaBase::notifyObservers;

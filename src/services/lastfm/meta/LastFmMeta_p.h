@@ -20,11 +20,10 @@
 
 #include "core/support/Debug.h"
 
-#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "core/meta/Meta.h"
-#include "core/statistics/StatisticsProvider.h"
-#include "core-impl/statistics/providers/tag/TagStatisticsProvider.h"
+#include "core/support/Amarok.h"
+#include "core-impl/support/TagStatisticsStore.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -75,13 +74,12 @@ class Track::Private : public QObject
         QNetworkReply* trackFetch;
         QNetworkReply* wsReply;
 
-        Statistics::StatisticsProvider *statisticsProvider;
+        Meta::StatisticsPtr statsStore;
         uint currentTrackStartTime;
 
     public:
         Private()
             : lastFmUri( QUrl() )
-            , statisticsProvider( 0 )
             , currentTrackStartTime( 0 )
         {
             artist = QString ( "Last.fm" );
@@ -115,8 +113,7 @@ class Track::Private : public QObject
 
             if( newTrackInfo )
             {
-                delete statisticsProvider;
-                statisticsProvider = new TagStatisticsProvider( track, artist, album );
+                statsStore = new TagStatisticsStore( t );
                 currentTrackStartTime = QDateTime::currentDateTime().toTime_t();
             }
 

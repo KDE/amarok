@@ -76,12 +76,6 @@ class UpnpTrack : public Meta::Track
         virtual QString comment() const;
         virtual void setComment ( const QString &newComment );
 
-        virtual double score() const;
-        virtual void setScore ( double newScore );
-
-        virtual int rating() const;
-        virtual void setRating ( int newRating );
-
         virtual qint64 length() const;
 
         virtual int filesize() const;
@@ -93,9 +87,6 @@ class UpnpTrack : public Meta::Track
 
         virtual int discNumber() const;
         virtual void setDiscNumber ( int newDiscNumber );
-
-        virtual QDateTime lastPlayed() const;
-        virtual int playCount() const;
 
         virtual QString type() const;
 

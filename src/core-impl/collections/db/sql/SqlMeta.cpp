@@ -104,10 +104,11 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, int deviceId,
                     const QString &rpath, int directoryId, const QString uidUrl )
     : Track()
     , m_collection( QPointer<Collections::SqlCollection>( collection ) )
+    , m_batchUpdate( 0 )
     , m_writeFile( true )
     , m_labelsInCache( false )
 {
-    m_batchUpdate = true; // I don't want commits yet
+    m_batchUpdate = 1; // I don't want commits yet
 
     m_urlId = -1; // this will be set with the first database write
     m_trackId = -1; // this will be set with the first database write
@@ -144,7 +145,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, int deviceId,
     m_albumGain = 0.0;
     m_albumPeakGain = 0.0;
 
-    m_batchUpdate = false;
+    m_batchUpdate = 0; // reset in-batch-update without commiting
 
     m_filetype = Amarok::Unknown;
 }
@@ -152,7 +153,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, int deviceId,
 SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &result )
     : Track()
     , m_collection( QPointer<Collections::SqlCollection>( collection ) )
-    , m_batchUpdate( false )
+    , m_batchUpdate( 0 )
     , m_writeFile( true )
     , m_labelsInCache( false )
 {
@@ -288,7 +289,7 @@ SqlTrack::setTitle( const QString &newTitle )
     QWriteLocker locker( &m_lock );
 
     if ( m_title != newTitle )
-        commitMetaDataChanges( Meta::valTitle, newTitle );
+        commitIfInNonBatchUpdate( Meta::valTitle, newTitle );
 }
 
 
@@ -320,7 +321,7 @@ SqlTrack::setUrl( int deviceId, const QString &rpath, int directoryId )
     m_rpath = rpath;
     m_directoryId = directoryId;
 
-    commitMetaDataChanges( Meta::valUrl,
+    commitIfInNonBatchUpdate( Meta::valUrl,
                            m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
 }
 
@@ -346,10 +347,10 @@ SqlTrack::setUidUrl( const QString &uid )
 
     m_cache.insert( Meta::valUniqueId, newid );
 
-    if( !m_batchUpdate )
+    if( m_batchUpdate == 0 )
     {
         debug() << "setting uidUrl manually...did you really mean to do this?";
-        commitMetaDataChanges();
+        commitIfInNonBatchUpdate();
     }
 }
 
@@ -385,7 +386,7 @@ SqlTrack::setAlbum( const QString &newAlbum )
     QWriteLocker locker( &m_lock );
 
     if( !m_album || m_album->name() != newAlbum )
-        commitMetaDataChanges( Meta::valAlbum, newAlbum );
+        commitIfInNonBatchUpdate( Meta::valAlbum, newAlbum );
 }
 
 void
@@ -393,7 +394,7 @@ SqlTrack::setAlbum( int albumId )
 {
     QWriteLocker locker( &m_lock );
 
-    commitMetaDataChanges( Meta::valAlbumId, albumId );
+    commitIfInNonBatchUpdate( Meta::valAlbumId, albumId );
 }
 
 Meta::ArtistPtr
@@ -409,7 +410,7 @@ SqlTrack::setArtist( const QString &newArtist )
     QWriteLocker locker( &m_lock );
 
     if( !m_artist || m_artist->name() != newArtist )
-        commitMetaDataChanges( Meta::valArtist, newArtist );
+        commitIfInNonBatchUpdate( Meta::valArtist, newArtist );
 }
 
 void
@@ -421,13 +422,13 @@ SqlTrack::setAlbumArtist( const QString &newAlbumArtist )
     if( !newAlbumArtist.compare( "Various Artists", Qt::CaseInsensitive ) ||
         !newAlbumArtist.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) )
     {
-        commitMetaDataChanges( Meta::valCompilation, true );
+        commitIfInNonBatchUpdate( Meta::valCompilation, true );
     }
     else
     {
         m_cache.insert( Meta::valAlbumArtist, ArtistHelper::realTrackArtist( newAlbumArtist ) );
         m_cache.insert( Meta::valCompilation, false );
-        commitMetaDataChanges();
+        commitIfInNonBatchUpdate();
     }
 }
 
@@ -444,7 +445,7 @@ SqlTrack::setComposer( const QString &newComposer )
     QWriteLocker locker( &m_lock );
 
     if( !m_composer || m_composer->name() != newComposer )
-        commitMetaDataChanges( Meta::valComposer, newComposer );
+        commitIfInNonBatchUpdate( Meta::valComposer, newComposer );
 }
 
 Meta::YearPtr
@@ -460,7 +461,7 @@ SqlTrack::setYear( int newYear )
     QWriteLocker locker( &m_lock );
 
     if( !m_year || m_year->year() != newYear )
-        commitMetaDataChanges( Meta::valYear, newYear );
+        commitIfInNonBatchUpdate( Meta::valYear, newYear );
 }
 
 Meta::GenrePtr
@@ -476,7 +477,7 @@ SqlTrack::setGenre( const QString &newGenre )
     QWriteLocker locker( &m_lock );
 
     if( !m_genre || m_genre->name() != newGenre )
-        commitMetaDataChanges( Meta::valGenre, newGenre );
+        commitIfInNonBatchUpdate( Meta::valGenre, newGenre );
 }
 
 QString
@@ -495,7 +496,7 @@ SqlTrack::setType( Amarok::FileType newType )
     QWriteLocker locker( &m_lock );
 
     if ( m_filetype != newType )
-        commitMetaDataChanges( Meta::valFormat, int(newType) );
+        commitIfInNonBatchUpdate( Meta::valFormat, int(newType) );
 }
 
 qreal
@@ -511,7 +512,7 @@ SqlTrack::setBpm( const qreal newBpm )
     QWriteLocker locker( &m_lock );
 
     if ( m_bpm != newBpm )
-        commitMetaDataChanges( Meta::valBpm, newBpm );
+        commitIfInNonBatchUpdate( Meta::valBpm, newBpm );
 }
 
 QString
@@ -527,7 +528,7 @@ SqlTrack::setComment( const QString &newComment )
     QWriteLocker locker( &m_lock );
 
     if( newComment != m_comment )
-        commitMetaDataChanges( Meta::valComment, newComment );
+        commitIfInNonBatchUpdate( Meta::valComment, newComment );
 }
 
 double
@@ -544,7 +545,7 @@ SqlTrack::setScore( double newScore )
 
     newScore = qBound( double(0), newScore, double(100) );
     if( qAbs( newScore - m_score ) > 0.001 ) // we don't commit for minimal changes
-        commitMetaDataChanges( Meta::valScore, newScore );
+        commitIfInNonBatchUpdate( Meta::valScore, newScore );
 }
 
 int
@@ -561,7 +562,7 @@ SqlTrack::setRating( int newRating )
 
     newRating = qBound( 0, newRating, 10 );
     if( newRating != m_rating )
-        commitMetaDataChanges( Meta::valRating, newRating );
+        commitIfInNonBatchUpdate( Meta::valRating, newRating );
 }
 
 qint64
@@ -577,7 +578,7 @@ SqlTrack::setLength( qint64 newLength )
     QWriteLocker locker( &m_lock );
 
     if( newLength != m_length )
-        commitMetaDataChanges( Meta::valLength, newLength );
+        commitIfInNonBatchUpdate( Meta::valLength, newLength );
 }
 
 int
@@ -600,7 +601,7 @@ SqlTrack::setSampleRate( int newSampleRate )
     QWriteLocker locker( &m_lock );
 
     if( newSampleRate != m_sampleRate )
-        commitMetaDataChanges( Meta::valSamplerate, newSampleRate );
+        commitIfInNonBatchUpdate( Meta::valSamplerate, newSampleRate );
 }
 
 int
@@ -616,7 +617,7 @@ SqlTrack::setBitrate( int newBitrate )
     QWriteLocker locker( &m_lock );
 
     if( newBitrate != m_bitrate )
-        commitMetaDataChanges( Meta::valBitrate, newBitrate );
+        commitIfInNonBatchUpdate( Meta::valBitrate, newBitrate );
 }
 
 QDateTime
@@ -639,7 +640,7 @@ SqlTrack::setModifyDate( const QDateTime &newTime )
     QWriteLocker locker( &m_lock );
 
     if( newTime != m_modifyDate )
-        commitMetaDataChanges( Meta::valModified, newTime );
+        commitIfInNonBatchUpdate( Meta::valModified, newTime );
 }
 
 int
@@ -655,7 +656,7 @@ SqlTrack::setTrackNumber( int newTrackNumber )
     QWriteLocker locker( &m_lock );
 
     if( newTrackNumber != m_trackNumber )
-        commitMetaDataChanges( Meta::valTrackNr, newTrackNumber );
+        commitIfInNonBatchUpdate( Meta::valTrackNr, newTrackNumber );
 }
 
 int
@@ -671,7 +672,7 @@ SqlTrack::setDiscNumber( int newDiscNumber )
     QWriteLocker locker( &m_lock );
 
     if( newDiscNumber != m_discNumber )
-        commitMetaDataChanges( Meta::valDiscNr, newDiscNumber );
+        commitIfInNonBatchUpdate( Meta::valDiscNr, newDiscNumber );
 }
 
 QDateTime
@@ -687,7 +688,7 @@ SqlTrack::setLastPlayed( const QDateTime &newTime )
     QWriteLocker locker( &m_lock );
 
     if( newTime != m_lastPlayed )
-        commitMetaDataChanges( Meta::valLastPlayed, newTime );
+        commitIfInNonBatchUpdate( Meta::valLastPlayed, newTime );
 }
 
 QDateTime
@@ -703,7 +704,7 @@ SqlTrack::setFirstPlayed( const QDateTime &newTime )
     QWriteLocker locker( &m_lock );
 
     if( newTime != m_firstPlayed )
-        commitMetaDataChanges( Meta::valFirstPlayed, newTime );
+        commitIfInNonBatchUpdate( Meta::valFirstPlayed, newTime );
 }
 
 int
@@ -719,7 +720,7 @@ SqlTrack::setPlayCount( const int newCount )
     QWriteLocker locker( &m_lock );
 
     if( newCount != m_playCount )
-        commitMetaDataChanges( Meta::valPlaycount, newCount );
+        commitIfInNonBatchUpdate( Meta::valPlaycount, newCount );
 }
 
 qreal
@@ -766,34 +767,38 @@ SqlTrack::setReplayGain( Meta::ReplayGainTag mode, qreal value )
             break;
         }
 
-        commitMetaDataChanges();
+        commitIfInNonBatchUpdate();
     }
 }
 
 
 void
-SqlTrack::beginMetaDataUpdate()
+SqlTrack::beginUpdate()
 {
     QWriteLocker locker( &m_lock );
-
-    m_batchUpdate = true;
+    m_batchUpdate++;
 }
 
 void
-SqlTrack::endMetaDataUpdate()
+SqlTrack::endUpdate()
 {
     QWriteLocker locker( &m_lock );
-
-    m_batchUpdate = false;
-    commitMetaDataChanges();
+    Q_ASSERT( m_batchUpdate > 0 );
+    m_batchUpdate--;
+    commitIfInNonBatchUpdate();
 }
 
 void
-SqlTrack::commitMetaDataChanges()
+SqlTrack::commitIfInNonBatchUpdate( qint64 field, const QVariant &value )
 {
-    if( m_batchUpdate )
-        return;
-    if( m_cache.isEmpty() )
+    m_cache.insert( field, value );
+    commitIfInNonBatchUpdate();
+}
+
+void
+SqlTrack::commitIfInNonBatchUpdate()
+{
+    if( m_batchUpdate > 0 || m_cache.isEmpty() )
         return; // nothing to do
 
     // debug() << "SqlTrack::commitMetaDataChanges " << m_cache;
@@ -1032,8 +1037,8 @@ SqlTrack::commitMetaDataChanges()
         newAlbum->setSuppressImageAutoFetch( newSupp );
     }
 
-    registry->commitDirtyTracks();
-    m_lock.lockForWrite();
+    registry->commitDirtyTracks(); // calls notifyObservers() as appropriate
+    m_lock.lockForWrite(); // reset back to state it was during call
 
     if( m_uid != oldUid )
     {
@@ -1111,31 +1116,6 @@ SqlTrack::prettyTitle( const QString &filename ) //static
     s = KUrl::fromPercentEncoding( s.toAscii() );
 
     return s;
-}
-
-void
-SqlTrack::finishedPlaying( double playedFraction )
-{
-    beginMetaDataUpdate(); // Batch updates, so we only bother our observers once.
-
-    bool doUpdate = false;
-
-    if( m_length < 60000 ) // less than 1min
-        doUpdate = playedFraction >= 0.9;
-    else
-        doUpdate = playedFraction >= 0.7;
-
-    if( doUpdate )
-    {
-        setPlayCount( playCount() + 1 );
-        if( !firstPlayed().isValid() )
-            setFirstPlayed( QDateTime::currentDateTime() );
-        setLastPlayed( QDateTime::currentDateTime() );
-    }
-
-    setScore( Amarok::computeScore( score(), playCount(), playedFraction ) );
-
-    endMetaDataUpdate();
 }
 
 bool
@@ -1222,7 +1202,7 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
     if( sqlLabel )
     {
         QWriteLocker locker( &m_lock );
-        commitMetaDataChanges(); // we need to have a up-to-date m_urlId
+        commitIfInNonBatchUpdate(); // we need to have a up-to-date m_urlId
         if( m_urlId <= 0 )
         {
             warning() << "Track does not have an urlId.";
@@ -1310,6 +1290,12 @@ SqlTrack::labels() const
     {
         return Meta::LabelList();
     }
+}
+
+StatisticsPtr
+SqlTrack::statistics()
+{
+    return StatisticsPtr( this );
 }
 
 void

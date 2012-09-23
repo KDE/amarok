@@ -214,7 +214,7 @@ CurrentTrack::trackRatingChanged( int rating )
     if( !track )
         return;
 
-    track->setRating( rating );
+    track->statistics()->setRating( rating );
 }
 
 QList<QAction*>

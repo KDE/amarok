@@ -23,7 +23,6 @@
 #include "core/support/Debug.h"
 #include "InfoParserBase.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
-#include "core/statistics/StatisticsProvider.h"
 #include "ServiceCapabilities.h"
 
 #include <QAction>
@@ -184,12 +183,6 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         virtual QString description() const;
         virtual void setDescription( const QString &newDescription );
 
-        virtual double score() const;
-        virtual void setScore( double newScore );
-
-        virtual int rating() const;
-        virtual void setRating( int newRating );
-
         virtual qint64 length() const;
 
         virtual int filesize() const;
@@ -202,16 +195,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         virtual int discNumber() const;
         virtual void setDiscNumber( int newDiscNumber );
 
-        virtual QDateTime lastPlayed() const;
-        virtual QDateTime firstPlayed() const;
-        virtual int playCount() const;
-
-        virtual void finishedPlaying( double playedFraction );
-
         virtual QString type() const;
-
-        virtual void beginMetaDataUpdate() {}    //read only
-        virtual void endMetaDataUpdate() {}      //read only
 
         virtual void processInfoOf( InfoParserBase * infoParser );
 
@@ -236,6 +220,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
             return 0;
         }
 
+        virtual StatisticsPtr statistics();
+
         //ServiceTrack specific methods
 
         virtual void setAlbumPtr( Meta::AlbumPtr album );
@@ -243,7 +229,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void setComposer( Meta::ComposerPtr composer );
         void setGenre( Meta::GenrePtr genre );
         void setYear( Meta::YearPtr year );
-        void setStatisticsProvider( Statistics::StatisticsProvider *provider );
+        void setStatisticsProvider( Meta::StatisticsPtr provider );
 
         void setLength( qint64 length );
 
@@ -259,7 +245,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void update( Meta::TrackPtr track );
 
     private:
-        Statistics::StatisticsProvider* m_provider;
+        Meta::StatisticsPtr m_statsStore;
         ArtistPtr   m_artist;
         AlbumPtr    m_album;
         GenrePtr    m_genre;

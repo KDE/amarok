@@ -19,9 +19,9 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core-impl/support/UrlStatisticsStore.h"
 #include "MagnatuneActions.h"
 #include "MagnatuneConfig.h"
-#include "core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.h"
 #include "SvgHandler.h"
 
 #include <KLocale>
@@ -30,7 +30,6 @@
 #include <QObject>
 
 using namespace Meta;
-using namespace Statistics;
 
 MagnatuneMetaFactory::MagnatuneMetaFactory( const QString & dbPrefix, MagnatuneStore * store )
     : ServiceMetaFactory( dbPrefix )
@@ -70,34 +69,35 @@ QString MagnatuneMetaFactory::getTrackSqlRows()
     return sqlRows;
 }
 
-TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
+TrackPtr
+MagnatuneMetaFactory::createTrack(const QStringList & rows)
 {
-    MagnatuneTrack * track = new MagnatuneTrack( rows );
+    MagnatuneTrack *track = new MagnatuneTrack( rows );
 
     if ( m_streamType == OGG ) {
         track->setUidUrl( track->oggUrl() );
     } else if (  m_streamType == LOFI ) {
         track->setUidUrl( track->lofiUrl() );
     }
-    track->setStatisticsProvider( new PermanentUrlStatisticsProvider( track->uidUrl() ) );
+    track->setStatisticsProvider( Meta::StatisticsPtr( new UrlStatisticsStore( track ) ) );
 
     if ( !m_membershipPrefix.isEmpty() ) {
         QString url = track->uidUrl();
         url.replace( "http://he3.", "http://" + m_userName + ":" + m_password + "@" + m_membershipPrefix + "." );
-        
+
         if ( m_streamType == MP3 ) {
             url.replace( ".mp3", "_nospeech.mp3" );
         }  else if ( m_streamType == OGG ) {
             url.replace( ".ogg", "_nospeech.ogg" );
         }
-        
+
         track->setUidUrl( url );
-        
+
         if ( m_membershipPrefix == "download" )
             track->setDownloadMembership();
     }
 
-    return TrackPtr( track );
+    return Meta::TrackPtr( track );
 }
 
 int MagnatuneMetaFactory::getAlbumSqlRowCount()

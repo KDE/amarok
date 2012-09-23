@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
+#include "core-impl/support/UrlStatisticsStore.h"
 
 #include <Solid/Networking>
 
@@ -41,6 +42,8 @@ Track::Track( const KUrl &url )
     d->genrePtr = Meta::GenrePtr( new StreamGenre( d ) );
     d->composerPtr = Meta::ComposerPtr( new Meta::DefaultComposer() );
     d->yearPtr = Meta::YearPtr( new Meta::DefaultYear() );
+
+    m_statsStore = new UrlStatisticsStore( this );
 }
 
 Track::~Track()
@@ -125,32 +128,6 @@ Track::comment() const
     return d->comment;
 }
 
-double
-Track::score() const
-{
-    return d->score;
-}
-
-void
-Track::setScore( double newScore )
-{
-    d->score = newScore;
-    notifyObservers();
-}
-
-int
-Track::rating() const
-{
-    return d->rating;
-}
-
-void
-Track::setRating( int newRating )
-{
-    d->rating = newRating;
-    notifyObservers();
-}
-
 int
 Track::trackNumber() const
 {
@@ -161,24 +138,6 @@ int
 Track::discNumber() const
 {
     return 0;
-}
-
-QDateTime
-Track::lastPlayed() const
-{
-    return d->lastPlayed;
-}
-
-QDateTime
-Track::firstPlayed() const
-{
-    return d->firstPlayed;
-}
-
-int
-Track::playCount() const
-{
-    return d->playcount;
 }
 
 qint64
@@ -211,19 +170,10 @@ Track::type() const
     return "stream";
 }
 
-void
-Track::finishedPlaying( double playedFraction )
+Meta::StatisticsPtr
+Track::statistics()
 {
-    // following code is more or less copied from SqlMeta::Track::finishedPlaying()
-    if( playedFraction < 0.8 )
-        return;
-
-    d->playcount++;
-    if( !firstPlayed().isValid() )
-        d->firstPlayed = QDateTime::currentDateTime();
-    d->lastPlayed = QDateTime::currentDateTime();
-    d->score = Amarok::computeScore( d->score, d->playcount, playedFraction );
-    notifyObservers();
+    return m_statsStore;
 }
 
 #include "Stream_p.moc"

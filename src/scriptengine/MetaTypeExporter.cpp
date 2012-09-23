@@ -56,14 +56,14 @@ double
 MetaTrackPrototype::score() const
 {
     GET_TRACK
-    return track ? track->score() : 0.0;
+    return track ? track->statistics()->score() : 0.0;
 }
 
 int
 MetaTrackPrototype::rating() const
 {
     GET_TRACK
-    return track ? track->rating() : 0;
+    return track ? track->statistics()->rating() : 0;
 }
 
 bool
@@ -112,7 +112,7 @@ int
 MetaTrackPrototype::playCount() const
 {
     GET_TRACK
-    return track ? track->playCount() : 0;
+    return track ? track->statistics()->playCount() : 0;
 }
 
 bool
@@ -238,14 +238,14 @@ void
 MetaTrackPrototype::setScore( double score )
 {
     GET_TRACK
-    if ( track ) track->setScore( score );
+    if ( track ) track->statistics()->setScore( score );
 }
 
 void
 MetaTrackPrototype::setRating( int rating )
 {
     GET_TRACK
-    if ( track ) track->setRating( rating );
+    if ( track ) track->statistics()->setRating( rating );
 }
 
 void

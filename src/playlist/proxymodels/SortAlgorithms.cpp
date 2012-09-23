@@ -66,9 +66,9 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel, int sourc
             //played.
             if( currentCategory == Playlist::LastPlayed )
             {
-                if( trackA->lastPlayed() < trackB->lastPlayed() )
+                if( trackA->statistics()->lastPlayed() < trackB->statistics()->lastPlayed() )
                     return inverted;
-                else if( trackA->lastPlayed() > trackB->lastPlayed() )
+                else if( trackA->statistics()->lastPlayed() > trackB->statistics()->lastPlayed() )
                     return !inverted;
             }
 

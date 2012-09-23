@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,25 +14,82 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PERMANENTURLSTATISTICSPROVIDER_H
-#define PERMANENTURLSTATISTICSPROVIDER_H
+#include "Statistics.h"
 
-#include "core/statistics/StatisticsProvider.h"
+#include <QDateTime>
 
-#include "shared/amarok_export.h"
+using namespace Meta;
 
-#include <QString>
-
-class AMAROK_EXPORT PermanentUrlStatisticsProvider : public Statistics::StatisticsProvider
+Statistics::~Statistics()
 {
-public:
-    PermanentUrlStatisticsProvider( const QString &permanentUrl );
+}
 
-protected:
-    virtual void save();
+double
+Statistics::score() const
+{
+    return 0.0;
+}
 
-private:
-    QString m_permanentUrl;
-};
+void
+Statistics::setScore( double newScore )
+{
+    Q_UNUSED( newScore )
+}
 
-#endif // PERMANENTURLSTATISTICSPROVIDER_H
+int
+Statistics::rating() const
+{
+    return 0;
+}
+
+void
+Statistics::setRating( int newRating )
+{
+    Q_UNUSED( newRating )
+}
+
+QDateTime
+Statistics::lastPlayed() const
+{
+    return QDateTime();
+}
+
+void
+Statistics::setLastPlayed( const QDateTime &date )
+{
+    Q_UNUSED( date )
+}
+
+QDateTime
+Statistics::firstPlayed() const
+{
+    return QDateTime();
+}
+
+void
+Statistics::setFirstPlayed( const QDateTime &date )
+{
+    Q_UNUSED( date )
+}
+
+int
+Statistics::playCount() const
+{
+    return 0;
+}
+
+void
+Statistics::setPlayCount( int newPlayCount )
+{
+    Q_UNUSED( newPlayCount )
+}
+
+void
+Statistics::beginUpdate()
+{
+}
+
+void
+Statistics::endUpdate()
+{
+}

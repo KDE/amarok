@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,36 +14,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_STATISTICSCAPABILITY_H
-#define AMAROK_STATISTICSCAPABILITY_H
+#ifndef TAGSTATISTICSPROVIDER_H
+#define TAGSTATISTICSPROVIDER_H
 
-#include "shared/amarok_export.h"
-#include "core/capabilities/Capability.h"
+#include "core-impl/support/PersistentStatisticsStore.h"
 
-#include <QDateTime>
+#include <QString>
 
-namespace Capabilities
+class AMAROK_EXPORT TagStatisticsStore : public PersistentStatisticsStore
 {
-    class AMAROK_CORE_EXPORT StatisticsCapability : public Capabilities::Capability
-    {
-        Q_OBJECT
-        public:
-            virtual ~StatisticsCapability();
+    public:
+        TagStatisticsStore( Meta::Track *track );
 
-            static Type capabilityInterfaceType() { return Capabilities::Capability::Importable; }
+    protected:
+        virtual void save();
 
-            virtual void setScore( const int score ) = 0;
-            virtual void setRating( const int rating ) = 0;
-            virtual void setFirstPlayed( const QDateTime &time ) = 0;
-            virtual void setLastPlayed( const QDateTime &time ) = 0;
-            virtual void setPlayCount( const int playcount ) = 0;
+    private:
+        QString m_name;
+        QString m_artist;
+        QString m_album;
+};
 
-            /** The track object should not store changed meta data immediately but cache the
-            changes until endStatisticsUpdate() is called */
-            virtual void beginStatisticsUpdate() = 0;
-            /** All meta data has been updated and the object should commit the changed */
-            virtual void endStatisticsUpdate() = 0;
-    };
-}
-
-#endif
+#endif // PERMANENTURLSTATISTICSPROVIDER_H

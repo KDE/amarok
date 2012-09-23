@@ -79,7 +79,7 @@ RecentlyPlayedListWidget::updateWidget()
         labelWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
         labelWidget->setWidget( squeezer );
 
-        QLabel *lastPlayed = new QLabel( Amarok::verboseTimeSince( track->lastPlayed() ) );
+        QLabel *lastPlayed = new QLabel( Amarok::verboseTimeSince( track->statistics()->lastPlayed() ) );
         lastPlayed->setAttribute( Qt::WA_NoSystemBackground );
         lastPlayed->setAlignment( Qt::AlignRight );
         lastPlayed->setWordWrap( false );
@@ -109,13 +109,13 @@ RecentlyPlayedListWidget::addTrack( const Meta::TrackPtr &track )
 {
     if( !track )
         return;
-    if( !track->lastPlayed().isValid() )
+    if( !track->statistics()->lastPlayed().isValid() )
         return;
 
     if( m_recentTracks.size() > 12 )
         m_recentTracks.erase( m_recentTracks.begin() );
 
-    m_recentTracks.insert( track->lastPlayed().toTime_t(), track );
+    m_recentTracks.insert( track->statistics()->lastPlayed().toTime_t(), track );
 }
 
 void
@@ -186,7 +186,7 @@ void
 RecentlyPlayedListWidget::tracksReturned( Meta::TrackList tracks )
 {
     foreach( const Meta::TrackPtr &track, tracks )
-        m_recentTracks.insert( track->lastPlayed().toTime_t(), track );
+        m_recentTracks.insert( track->statistics()->lastPlayed().toTime_t(), track );
 }
 
 void

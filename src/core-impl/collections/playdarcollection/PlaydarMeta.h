@@ -90,9 +90,6 @@ namespace Meta
             qreal bpm() const;
             QString comment() const;
             double score() const;
-            void setScore( double newScore );
-            int rating() const;
-            void setRating( int newRating );
             qint64 length() const;
             int filesize() const;
             int sampleRate() const;
@@ -100,13 +97,8 @@ namespace Meta
             QDateTime createDate() const;
             int trackNumber() const;
             int discNumber() const;
-            int playCount() const;
             
             QString type() const;
-            
-            void prepareToPlay();
-            
-            void finishedPlaying( double playedFraction );
             
             bool inCollection() const;
             Collections::Collection* collection() const;
@@ -117,6 +109,8 @@ namespace Meta
             void addLabel( const QString &label );
             void addLabel( const LabelPtr &label );
             void removeLabel( const LabelPtr &label );
+
+            StatisticsPtr statistics();
 
             //PlaydarTrack-specific:
             QString source() const;
@@ -145,6 +139,7 @@ namespace Meta
             PlaydarGenrePtr m_genre;
             PlaydarYearPtr m_year;
             PlaydarLabelList m_labelList;
+            Meta::StatisticsPtr m_statsStore;
 
             QString m_sid;
             KUrl m_uidUrl;
@@ -159,8 +154,6 @@ namespace Meta
             int m_discNumber;
             QDateTime m_createDate;
             QString m_comment;
-            int m_rating;
-            int m_playcount;
 
             QString m_source;
     };

@@ -22,7 +22,6 @@
 #include "core/collections/CollectionLocation.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"
-#include "core/capabilities/StatisticsCapability.h"
 #include "core-impl/meta/file/File.h"
 
 #include <kio/job.h>
@@ -98,33 +97,29 @@ ITunesImporterWorker::readTrackElement()
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
     if( track )
     {
-        QScopedPointer<Capabilities::StatisticsCapability> ec( track->create<Capabilities::StatisticsCapability>() );
-        if( ec )
-        {   
-            ec->beginStatisticsUpdate();
-            if( rating != -1 ) 
-                ec->setRating( rating );
-            if( lastplayed.isValid() )
-                ec->setLastPlayed( lastplayed );
-            if( playcount != -1 ) 
-                ec->setPlayCount( playcount );
-            ec->endStatisticsUpdate();
-        
-            if( !track->inCollection() )
-            {
-                m_tracksForInsert.insert( track, track->playableUrl().url() );
-                debug() << " inserting track:" << track->playableUrl();
-            }
-            else {
-                Collections::Collection* collection = track->collection();
-                if (collection)
-                    debug() << "track in collection (" << collection->location()->prettyLocation() << "):" << track->playableUrl();
-            }
+        Meta::StatisticsPtr statistics = track->statistics();
+        statistics->beginUpdate();
+        if( rating != -1 )
+            statistics->setRating( rating );
+        if( lastplayed.isValid() )
+            statistics->setLastPlayed( lastplayed );
+        if( playcount != -1 )
+            statistics->setPlayCount( playcount );
+        statistics->endUpdate();
 
-            emit trackAdded( track );
+        if( !track->inCollection() )
+        {
+            m_tracksForInsert.insert( track, track->playableUrl().url() );
+            debug() << " inserting track:" << track->playableUrl();
         }
+        else {
+            Collections::Collection* collection = track->collection();
+            if (collection)
+                debug() << "track in collection (" << collection->location()->prettyLocation() << "):" << track->playableUrl();
+        }
+
+        emit trackAdded( track );
     }
-    
 }
 
 void

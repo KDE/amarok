@@ -14,28 +14,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core-impl/statistics/providers/tag/TagStatisticsProvider.h"
+#include "TagStatisticsStore.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
-TagStatisticsProvider::TagStatisticsProvider( const QString &name, const QString &artist, const QString &album )
-        : StatisticsProvider()
-        , m_name( name )
-        , m_artist( artist )
-        , m_album( album )
+TagStatisticsStore::TagStatisticsStore( Meta::Track *track )
+    : PersistentStatisticsStore( track )
+    , m_name( track->name() )
+    , m_artist( track->artist() ? track->artist()->name() : QString() )
+    , m_album( track->album() ? track->album()->name() : QString() )
 {
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
 
     const QString query = "SELECT firstPlayed, lastPlayed, score, rating, playcount FROM "
                           "statistics_tag WHERE name = '%1' AND artist = '%2' AND album = '%3'";
-    QStringList result = sql->query( query.arg( sql->escape( name ),
-                                                sql->escape( artist ),
-                                                sql->escape( album ) ) );
+    QStringList result = sql->query( query.arg( sql->escape( m_name ),
+                                                sql->escape( m_artist ),
+                                                sql->escape( m_album ) ) );
     if( !result.isEmpty() )
     {
-        m_firstPlayed = QDateTime::fromString( result.value( 0 ), "yy-MM-dd hh:mm:ss" );
-        m_lastPlayed = QDateTime::fromString( result.value( 1 ), "yy-MM-dd hh:mm:ss" );
+        m_firstPlayed = QDateTime::fromString( result.value( 0 ), s_sqlDateFormat );
+        m_lastPlayed = QDateTime::fromString( result.value( 1 ), s_sqlDateFormat );
         m_score = result.value( 2 ).toDouble();
         m_rating = result.value( 3 ).toInt();
         m_playCount = result.value( 4 ).toInt();
@@ -43,7 +43,7 @@ TagStatisticsProvider::TagStatisticsProvider( const QString &name, const QString
 }
 
 void
-TagStatisticsProvider::save()
+TagStatisticsStore::save()
 {
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
 
@@ -67,8 +67,8 @@ TagStatisticsProvider::save()
                         "rating,playcount,name,artist,album) "
                         "VALUE ('%1','%2',%3,%4,%5,'%6','%7','%8')";
         }
-        sqlString = sqlString.arg( m_firstPlayed.toString( "yy-MM-dd hh:mm:ss" ),
-                                   m_lastPlayed.toString( "yy-MM-dd hh:mm:ss" ),
+        sqlString = sqlString.arg( m_firstPlayed.toString( s_sqlDateFormat ),
+                                   m_lastPlayed.toString( s_sqlDateFormat ),
                                    QString::number( m_score ),
                                    QString::number( m_rating ),
                                    QString::number( m_playCount ),
@@ -78,4 +78,3 @@ TagStatisticsProvider::save()
         sql->query( sqlString );
     }
 }
-

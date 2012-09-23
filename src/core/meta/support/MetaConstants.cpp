@@ -406,11 +406,11 @@ QVariant Meta::valueForField( qint64 field, Meta::TrackPtr track )
     case Meta::valFormat:      return int(Amarok::FileTypeSupport::fileType(track->type()));
 
     case Meta::valCreateDate:  return track->createDate();
-    case Meta::valScore:       return track->score();
-    case Meta::valRating:      return track->rating();
-    case Meta::valFirstPlayed: return track->firstPlayed();
-    case Meta::valLastPlayed:  return track->lastPlayed();
-    case Meta::valPlaycount:   return track->playCount();
+    case Meta::valScore:       return track->statistics()->score();
+    case Meta::valRating:      return track->statistics()->rating();
+    case Meta::valFirstPlayed: return track->statistics()->firstPlayed();
+    case Meta::valLastPlayed:  return track->statistics()->lastPlayed();
+    case Meta::valPlaycount:   return track->statistics()->playCount();
     case Meta::valUniqueId:    return track->uidUrl();
 
     // todo

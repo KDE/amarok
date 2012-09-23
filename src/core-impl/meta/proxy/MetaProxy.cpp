@@ -297,36 +297,6 @@ MetaProxy::Track::comment() const
         return QString();       //do we cache the comment??
 }
 
-double
-MetaProxy::Track::score() const
-{
-    if( d->realTrack )
-        return d->realTrack->score();
-    return 0.0;     //do we cache the score
-}
-
-void
-MetaProxy::Track::setScore( double newScore )
-{
-    if( d->realTrack )
-        d->realTrack->setScore( newScore );
-}
-
-int
-MetaProxy::Track::rating() const
-{
-    if( d->realTrack )
-        return d->realTrack->rating();
-    return 0;
-}
-
-void
-MetaProxy::Track::setRating( int newRating )
-{
-    if( d->realTrack )
-        d->realTrack->setRating( newRating );
-}
-
 int
 MetaProxy::Track::trackNumber() const
 {
@@ -407,30 +377,6 @@ Track::modifyDate() const
     if( d->realTrack )
         return d->realTrack->modifyDate();
     return Meta::Track::modifyDate();
-}
-
-QDateTime
-MetaProxy::Track::firstPlayed() const
-{
-    if( d->realTrack )
-        return d->realTrack->firstPlayed();
-    return QDateTime();
-}
-
-QDateTime
-MetaProxy::Track::lastPlayed() const
-{
-    if( d->realTrack )
-        return d->realTrack->lastPlayed();
-    return QDateTime();
-}
-
-int
-MetaProxy::Track::playCount() const
-{
-    if( d->realTrack )
-        return d->realTrack->playCount();
-    return 0;
 }
 
 qreal
@@ -573,4 +519,12 @@ MetaProxy::Track::operator==( const Meta::Track &track ) const
         return d->url == proxy->d->url;
 
     return d->realTrack && d->realTrack.data() == &track;
+}
+
+Meta::StatisticsPtr
+Track::statistics()
+{
+    if( d->realTrack )
+        return d->realTrack->statistics();
+    return Meta::Track::statistics();
 }
