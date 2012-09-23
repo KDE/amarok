@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2002 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2020 Àlex Fiestas <afiestas@kde.org>					*
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -48,6 +49,10 @@ int main( int argc, char *argv[] )
 
     //Currently active Authors
     extern OcsData ocsData;
+    aboutData.addAuthor( ki18n("Àlex 'Caudillo, Generalisimo and Rey of Amarok' Fiestas"),
+            ki18n("Committer (afiestas)"), "afiestas@kde.org", "http://afiestas.org" );
+    ocsData.addAuthor( "Afiestas", aboutData.authors().last() );
+
     aboutData.addAuthor( ki18n("Bart 'Where are my toothpicks' Cerneels"),
             ki18n("Developer (Stecchino)"), "bart.cerneels@kde.org", "http://commonideas.blogspot.com" );
     ocsData.addAuthor( "Stecchino", aboutData.authors().last() );
