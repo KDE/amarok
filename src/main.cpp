@@ -56,10 +56,6 @@ int main( int argc, char *argv[] )
             ki18n("Developer (dr_lepper)"), "edward.hades@gmail.com" );
     ocsData.addAuthor( "hadeschief", aboutData.authors().last() );
 
-    aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann" ), //krazy:exclude=contractions
-            ki18n("Project founder (markey)"), "kretschmann@kde.org", "http://amarok.kde.org/blog/categories/1-markey" );
-    ocsData.addAuthor( "MarkKretschmann", aboutData.authors().last() );
-
     aboutData.addAuthor( ki18n("Matěj Laitl"),
             ki18n("iPod collection rewrite & more (strohel)"), "matej@laitl.cz", "http://strohel.blogspot.com/" );
     ocsData.addAuthor( "strohel", aboutData.authors().last() );
@@ -144,6 +140,9 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "x8lucas8x", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Lydia 'is wrong(TM)' Pintscher"), ki18n("Release Vixen (Nightrose)"), "lydia@kde.org" );
         ocsData.addCredit( "nightrose", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Mark 'It's good, but it's not irssi' Kretschmann" ), //krazy:exclude=contractions
+            ki18n("Project founder (markey)"), "kretschmann@kde.org", "http://amarok.kde.org/blog/categories/1-markey" );
+        ocsData.addCredit( "MarkKretschmann", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Mathias Panzenböck"), ki18n("Podcast improvements"), "grosser.meister.morti@gmx.net" );
         ocsData.addCredit( "panzi", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Max Howell"), ki18n("Developer, Vision"), "max.howell@methylblue.com" );
