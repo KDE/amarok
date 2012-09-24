@@ -45,7 +45,7 @@ namespace MetaProxy
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-        // methods inherited from Meta::MetaBase
+        // methods inherited from Meta::Base
             virtual QString name() const;
             virtual QString prettyName() const;
             virtual QString fullPrettyName() const;

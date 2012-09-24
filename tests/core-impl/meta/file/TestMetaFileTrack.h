@@ -41,13 +41,13 @@ private slots:
 
     void init();
 
-    //methods inherited from Meta::MetaBase
+    // methods inherited from Meta::Base
     void testNameAndSetTitle();
     void testPrettyName();
     void testFullPrettyName();
     void testSortableName();
 
-    //methods inherited from Meta::Track
+    // methods inherited from Meta::Track
     void testPlayableUrl();
     void testPrettyUrl();
     void testUidUrl();

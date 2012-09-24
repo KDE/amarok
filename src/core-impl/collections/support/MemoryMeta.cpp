@@ -50,7 +50,7 @@ Base::removeTrack( Track *track )
 }
 
 Album::Album( const Meta::AlbumPtr &other )
-    : Base( other->name() )
+    : MemoryMeta::Base( other->name() )
     , m_isCompilation( other->isCompilation() )
     , m_canUpdateCompilation( other->canUpdateCompilation() )
     , m_image( other->image() )
@@ -481,7 +481,7 @@ MapChanger::referencedAsAlbumArtist( const Meta::ArtistPtr &artist, const AlbumM
     return false;
 }
 
-bool MapChanger::entitiesDiffer( const Meta::MetaBase *first, const Meta::MetaBase *second )
+bool MapChanger::entitiesDiffer( const Meta::Base *first, const Meta::Base *second )
 {
     if( !first && !second )
         return false;  // both null -> do not differ

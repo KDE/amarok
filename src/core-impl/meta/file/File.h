@@ -31,7 +31,7 @@ namespace MetaFile
             Track( const KUrl &url );
             virtual ~Track();
 
-        //methods inherited from Meta::MetaBase
+        //methods inherited from Meta::Base
             virtual QString name() const;
 
         //methods inherited from Meta::Track
@@ -111,7 +111,7 @@ namespace MetaFile
             virtual void setDiscNumber( int newDiscNumber );
 
             // publish method so that it can be called by Private.
-            using Meta::MetaBase::notifyObservers;
+            using Meta::Base::notifyObservers;
 
             class Private;
 

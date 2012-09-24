@@ -45,7 +45,7 @@ class PersistentStatisticsStore;
 
 namespace Meta
 {
-    class MetaBase;
+    class Base;
     class Track;
     class Artist;
     class Album;
@@ -54,7 +54,7 @@ namespace Meta
     class Year;
     class Label;
 
-    typedef KSharedPtr<MetaBase> DataPtr;
+    typedef KSharedPtr<Base> DataPtr;
     typedef QList<DataPtr> DataList;
     typedef KSharedPtr<Track> TrackPtr;
     typedef QList<TrackPtr> TrackList;
@@ -73,7 +73,7 @@ namespace Meta
 
     class AMAROK_CORE_EXPORT Observer
     {
-        friend class MetaBase; // so that is can call destroyedNotify()
+        friend class Base; // so that is can call destroyedNotify()
 
         public:
             virtual ~Observer();
@@ -108,19 +108,19 @@ namespace Meta
 
         private:
             friend class ::PersistentStatisticsStore; // so that is can call KSharedPtr-free subscribe:
-            void subscribeTo( MetaBase *ptr );
-            void unsubscribeFrom( MetaBase *ptr );
+            void subscribeTo( Base *ptr );
+            void unsubscribeFrom( Base *ptr );
 
             /**
-             * Called in MetaBase destructor so that Observer doesn't have a stale pointer.
+             * Called in Meta::Base destructor so that Observer doesn't have a stale pointer.
              */
-            void destroyedNotify( MetaBase *ptr );
+            void destroyedNotify( Base *ptr );
 
-            QSet<MetaBase *> m_subscriptions;
+            QSet<Base *> m_subscriptions;
             QMutex m_subscriptionsMutex; /// mutex guarding access to m_subscriptions
     };
 
-    class AMAROK_CORE_EXPORT MetaBase : public virtual QSharedData, public MetaCapability
+    class AMAROK_CORE_EXPORT Base : public virtual QSharedData, public MetaCapability
     // virtual inherit. so that implementations can be both Meta::Track and Meta::Statistics
     {
         friend class Observer; // so that Observer can call (un)subscribe()
@@ -131,8 +131,8 @@ namespace Meta
         Q_PROPERTY( QString sortableName READ sortableName )
 
         public:
-            MetaBase() {}
-            virtual ~MetaBase();
+            Base() {}
+            virtual ~Base();
 
             /** The textual label for this object.
                 For a track this is the track title, for an album it is the
@@ -181,10 +181,10 @@ namespace Meta
             QSet<Meta::Observer*> m_observers;
 
         private: // no copy allowed, since it's not safe with observer list
-            Q_DISABLE_COPY(MetaBase)
+            Q_DISABLE_COPY(Base)
     };
 
-    class AMAROK_CORE_EXPORT Track : public MetaBase
+    class AMAROK_CORE_EXPORT Track : public Base
     {
         public:
 
@@ -317,7 +317,7 @@ namespace Meta
 
     };
 
-    class AMAROK_CORE_EXPORT Artist : public MetaBase
+    class AMAROK_CORE_EXPORT Artist : public Base
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         public:
@@ -355,7 +355,7 @@ namespace Meta
          the specific artist.
         There should be one album without title and artist for all the rest.
     */
-    class AMAROK_CORE_EXPORT Album : public MetaBase
+    class AMAROK_CORE_EXPORT Album : public Base
     {
         Q_PROPERTY( bool compilation READ isCompilation )
         Q_PROPERTY( bool hasAlbumArtist READ hasAlbumArtist )
@@ -436,7 +436,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_CORE_EXPORT Composer : public MetaBase
+    class AMAROK_CORE_EXPORT Composer : public Base
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         public:
@@ -452,7 +452,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_CORE_EXPORT Genre : public MetaBase
+    class AMAROK_CORE_EXPORT Genre : public Base
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         public:
@@ -468,7 +468,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_CORE_EXPORT Year : public MetaBase
+    class AMAROK_CORE_EXPORT Year : public Base
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         public:
@@ -492,13 +492,13 @@ namespace Meta
     /**
       A Label represents an arbitrary classification of a Track.
       */
-    class AMAROK_CORE_EXPORT Label : public MetaBase
+    class AMAROK_CORE_EXPORT Label : public Base
     {
     public:
         /**
           Constructs a new Label.
           */
-        Label() : MetaBase() {}
+        Label() : Base() {}
         /**
           Destructs an existing Label.
           */

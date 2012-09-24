@@ -34,7 +34,7 @@ using namespace Meta;
 Meta::Observer::~Observer()
 {
     // Unsubscribe all stray Meta subscriptions:
-    foreach( MetaBase *ptr, m_subscriptions )
+    foreach( Base *ptr, m_subscriptions )
     {
         if( ptr )
             ptr->unsubscribe( this );
@@ -83,7 +83,7 @@ Meta::Observer::entityDestroyed()
 }
 
 void
-Meta::Observer::subscribeTo( Meta::MetaBase *ptr )
+Meta::Observer::subscribeTo( Meta::Base *ptr )
 {
     if( !ptr )
         return;
@@ -93,7 +93,7 @@ Meta::Observer::subscribeTo( Meta::MetaBase *ptr )
 }
 
 void
-Meta::Observer::unsubscribeFrom( Meta::MetaBase *ptr )
+Meta::Observer::unsubscribeFrom( Meta::Base *ptr )
 {
     QMutexLocker locker( &m_subscriptionsMutex );
     if( ptr )
@@ -102,7 +102,7 @@ Meta::Observer::unsubscribeFrom( Meta::MetaBase *ptr )
 }
 
 void
-Meta::Observer::destroyedNotify( Meta::MetaBase *ptr )
+Meta::Observer::destroyedNotify( Meta::Base *ptr )
 {
     {
         QMutexLocker locker( &m_subscriptionsMutex );
@@ -111,9 +111,9 @@ Meta::Observer::destroyedNotify( Meta::MetaBase *ptr )
     entityDestroyed();
 }
 
-//Meta::MetaBase
+// Meta::Base
 
-Meta::MetaBase::~MetaBase()
+Meta::Base::~Base()
 {
     // we need to notify all observers that we're deleted to avoid stale pointers
     foreach( Observer *observer, m_observers )
@@ -123,14 +123,14 @@ Meta::MetaBase::~MetaBase()
 }
 
 void
-Meta::MetaBase::subscribe( Observer *observer )
+Meta::Base::subscribe( Observer *observer )
 {
     if( observer )
         m_observers.insert( observer );
 }
 
 void
-Meta::MetaBase::unsubscribe( Observer *observer )
+Meta::Base::unsubscribe( Observer *observer )
 {
     m_observers.remove( observer );
 }

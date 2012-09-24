@@ -30,7 +30,7 @@ namespace MetaStream
             Track( const KUrl &url );
             virtual ~Track();
 
-        //methods inherited from Meta::MetaBase
+        //methods inherited from Meta::Base
             virtual QString name() const;
 
         //methods inherited from Meta::Track

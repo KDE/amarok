@@ -103,10 +103,10 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
 
         virtual ~PodcastEpisode() {}
 
-        //MetaBase methods
+        // Meta::Base methods
         virtual QString name() const { return m_title; }
 
-        //Track Methods
+        // Meta::Track Methods
         virtual KUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
         virtual QString prettyUrl() const { return playableUrl().prettyUrl(); }
         virtual QString uidUrl() const { return m_url.url(); }

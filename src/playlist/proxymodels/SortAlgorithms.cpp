@@ -72,7 +72,7 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel, int sourc
                     return !inverted;
             }
 
-            //Handle Title, Album, Artist as special cases with Meta::MetaBase::sortableName().
+            //Handle Title, Album, Artist as special cases with Meta::Base::sortableName().
             //This is necessary in order to have the same sort order policy regarding "The" in
             //both the playlist and the collection browser.
             else if( currentCategory == Playlist::Title )

@@ -55,9 +55,10 @@ namespace IpodMeta
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type );
 
-            // Meeta::MetaBase methods:
+            // Meta::Base methods:
             virtual QString name() const;
 
+            // Meta::Track methods:
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;

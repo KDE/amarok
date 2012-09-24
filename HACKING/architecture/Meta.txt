@@ -2,7 +2,7 @@ Meta Architecture
 -----------------
 
 Objects representing a media in a hierarchy. There are classes for Tracks, Albums, Artists, Composers, Genres, Years and Labels.
-These classes all derive from Meta::MetaBase to facilitate their common methods (name and sorting) and observer interaction. They are not QObjects to avoid the overhead of the Qt MetaObject support variables. Collections are potentially millions of tracks where a significant proportion of tracks (in the case of MemoryCollections: all tracks) could at any time be loaded in memory.
+These classes all derive from Meta::Base to facilitate their common methods (name and sorting) and observer interaction. They are not QObjects to avoid the overhead of the Qt MetaObject support variables. Collections are potentially millions of tracks where a significant proportion of tracks (in the case of MemoryCollections: all tracks) could at any time be loaded in memory.
 
 Meta::Observer is a virtual class that can be derived from by components that are interested in changes to the tracks during application lifetime. It has metadataChanged() methods for each of the Meta types and the ability to subscribe to any Meta object.
 

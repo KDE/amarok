@@ -61,7 +61,7 @@ class Base
 class Artist : public Meta::Artist, public Base
 {
     public:
-        Artist( const QString &name ) : Base( name ) {}
+        Artist( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
@@ -71,7 +71,7 @@ class Album : public Meta::Album, public Base
 {
     public:
         Album( const QString &name, const Meta::ArtistPtr &albumArtist )
-            : Base( name )
+            : MemoryMeta::Base( name )
             , m_albumArtist( albumArtist )
             , m_isCompilation( false )
             , m_canUpdateCompilation( false )
@@ -86,7 +86,7 @@ class Album : public Meta::Album, public Base
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-        /* Meta::MetaBase virtual methods */
+        /* Meta::Base virtual methods */
         virtual QString name() const { return Base::name(); }
 
         /* Meta::Album virtual methods */
@@ -122,7 +122,7 @@ class Album : public Meta::Album, public Base
 class Composer : public Meta::Composer, public Base
 {
     public:
-        Composer( const QString &name ) : Base( name ) {}
+        Composer( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
@@ -131,7 +131,7 @@ class Composer : public Meta::Composer, public Base
 class Genre : public Meta::Genre, public Base
 {
     public:
-        Genre( const QString &name ) : Base( name ) {}
+        Genre( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
@@ -140,7 +140,7 @@ class Genre : public Meta::Genre, public Base
 class Year : public Meta::Year, public Base
 {
     public:
-        Year( const QString &name ) : Base( name ) {}
+        Year( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
@@ -158,7 +158,7 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type )
             { return m_track->createCapabilityInterface( type ); }
 
-        /* Meta::MetaBase virtual methods */
+        /* Meta::Base virtual methods */
         virtual QString name() const { return m_track->name(); }
 
         /* Meta::Track virtual methods */
@@ -343,7 +343,7 @@ class AMAROK_EXPORT MapChanger
          * returns true if one entity is null and the other non-null, but returns true if
          * both are null.
          */
-        static bool entitiesDiffer( const Meta::MetaBase *first, const Meta::MetaBase *second );
+        static bool entitiesDiffer( const Meta::Base *first, const Meta::Base *second );
         /**
          * Overload for albums, we compare album artist, isCollection and image too
          */

@@ -35,7 +35,7 @@ class AMAROK_CORE_EXPORT MetaCapability
 
         /**
          * Creates a specialized interface which represents a capability of this
-         * MetaBase object. The caller of this method is responsible for deleting
+         * Meta::Base object. The caller of this method is responsible for deleting
          * created capability!
          *
          * @returns a pointer to the capability interface if it exists, 0 otherwise

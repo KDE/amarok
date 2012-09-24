@@ -39,12 +39,13 @@ namespace LastFm
             Track( lastfm::Track track ); //Convienience Constructor to allow constructing a Meta::LastFmTrack from a LastFmTrack (confusing?)
             virtual ~Track();
 
-        //methods inherited from Meta::MetaBase
+        // methods inherited from Meta::Base
             virtual QString name() const;
             virtual QString fullPrettyName() const;
             virtual QString sortableName() const;
             virtual QString fixedName() const;
-        //methods inherited from Meta::Track
+
+        // methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
