@@ -116,7 +116,7 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Greg Meyer"), ki18n("Live CD, Bug squashing (oggb4mp3)"), "greg@gkmweb.com" );
         ocsData.addCredit( "oggb4mp3", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Harald Sitter"), ki18n("Rokymoter (apachelogger)"), "harald.sitter@kdemail.net" );
+    aboutData.addCredit( ki18n("Harald Sitter"), ki18n("Phonon, Lord-President of KDE Multimedia (apachelogger)"), "harald.sitter@kdemail.net" );
         ocsData.addCredit( "apachelogger", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Ian 'The Beard' Monroe"), ki18n("Developer (eean)"), "ian@monroe.nu" );
         ocsData.addCredit( "eean", aboutData.credits().last() );
