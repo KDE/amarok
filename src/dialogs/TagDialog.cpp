@@ -430,62 +430,56 @@ TagDialog::guessFromFilename() //SLOT
 
         int cur = 0;
 
-        TagGuesser guesser;
-        guesser.setFilename( widget.getParsableFileName() );
-        guesser.setSchema( widget.getParsableScheme() );
-        guesser.setCaseType( widget.getCaseOptions() );
-        guesser.setConvertUnderscores( widget.getUnderscoreOptions() );
-        guesser.setCutTrailingSpaces( widget.getWhitespaceOptions() );
+        QMap<qint64,QString> tags = widget.guessedTags();
 
-        if( guesser.guess() )
+        if( !tags.isEmpty() )
         {
-            QMap<qint64,QString> Tags = guesser.tags();
 
-            if( Tags.contains( Meta::valTitle ) )
-                ui->kLineEdit_title->setText( Tags[Meta::valTitle] );
+            if( tags.contains( Meta::valTitle ) )
+                ui->kLineEdit_title->setText( tags[Meta::valTitle] );
 
-            if( Tags.contains( Meta::valArtist ) )
+            if( tags.contains( Meta::valArtist ) )
             {
                 cur = ui->kComboBox_artist->currentIndex();
-                ui->kComboBox_artist->setItemText( cur, Tags[Meta::valArtist] );
+                ui->kComboBox_artist->setItemText( cur, tags[Meta::valArtist] );
             }
 
-            if( Tags.contains( Meta::valAlbum ) )
+            if( tags.contains( Meta::valAlbum ) )
             {
                 cur = ui->kComboBox_album->currentIndex();
-                ui->kComboBox_album->setItemText( cur, Tags[Meta::valAlbum] );
+                ui->kComboBox_album->setItemText( cur, tags[Meta::valAlbum] );
             }
 
-            if( Tags.contains( Meta::valAlbumArtist ) )
+            if( tags.contains( Meta::valAlbumArtist ) )
             {
                 cur = ui->kComboBox_albumArtist->currentIndex();
-                ui->kComboBox_albumArtist->setItemText( cur, Tags[Meta::valAlbumArtist] );
+                ui->kComboBox_albumArtist->setItemText( cur, tags[Meta::valAlbumArtist] );
             }
 
-            if( Tags.contains( Meta::valTrackNr ) )
-                ui->qSpinBox_track->setValue( Tags[Meta::valTrackNr].toInt() );
+            if( tags.contains( Meta::valTrackNr ) )
+                ui->qSpinBox_track->setValue( tags[Meta::valTrackNr].toInt() );
 
-            if( Tags.contains( Meta::valComment ) )
-                ui->qPlainTextEdit_comment->setPlainText( Tags[Meta::valComment] );
+            if( tags.contains( Meta::valComment ) )
+                ui->qPlainTextEdit_comment->setPlainText( tags[Meta::valComment] );
 
-            if( Tags.contains( Meta::valYear ) )
-                ui->qSpinBox_year->setValue( Tags[Meta::valYear].toInt() );
+            if( tags.contains( Meta::valYear ) )
+                ui->qSpinBox_year->setValue( tags[Meta::valYear].toInt() );
 
-            if( Tags.contains( Meta::valComposer ) )
+            if( tags.contains( Meta::valComposer ) )
             {
                 cur = ui->kComboBox_composer->currentIndex();
-                ui->kComboBox_composer->setItemText( cur, Tags[Meta::valComposer] );
+                ui->kComboBox_composer->setItemText( cur, tags[Meta::valComposer] );
             }
 
-            if( Tags.contains( Meta::valGenre ) )
+            if( tags.contains( Meta::valGenre ) )
             {
                 cur = ui->kComboBox_genre->currentIndex();
-                ui->kComboBox_genre->setItemText( cur, Tags[Meta::valGenre] );
+                ui->kComboBox_genre->setItemText( cur, tags[Meta::valGenre] );
             }
 
-            if( Tags.contains( Meta::valDiscNr ) )
+            if( tags.contains( Meta::valDiscNr ) )
             {
-                ui->qSpinBox_discNumber->setValue( Tags[Meta::valDiscNr].toInt() );
+                ui->qSpinBox_discNumber->setValue( tags[Meta::valDiscNr].toInt() );
             }
         }
         else

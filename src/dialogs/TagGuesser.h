@@ -82,6 +82,11 @@ class TagGuesser
         */
         QString coloredFileName();
 
+        /**
+         * @Returns color name for specified metadata field
+         */
+        static QString fieldColor( qint64 field );
+
     private:
 
         QMap<qint64,QString> m_tags;        //!< Taglist (e.g. < Meta::valArtist,"some artist" >
@@ -99,11 +104,6 @@ class TagGuesser
         *   @returns    the converted tag
         */
         QString convertTagCaseType( const QString &tag, int type );
-
-        /**
-         * @Returns color name for specified metadata field
-         */
-        QString fieldColor( qint64 field );
 };
 
 #endif /* TAGGUESSER_H */

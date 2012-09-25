@@ -38,6 +38,7 @@ Token::Token( const QString &name, const QString &iconName, qint64 value, QWidge
     , m_iconName( iconName )
     , m_value( value )
     , m_customColor( false )
+    , m_active( true )
 {
     setAttribute( Qt::WA_Hover );
     if( parent )
@@ -112,7 +113,7 @@ void Token::paintEvent(QPaintEvent *pe)
     p.setBrush( Qt::NoBrush );
     p.setRenderHint( QPainter::Antialiasing );
     QColor c;
-    if ( hasFocus() )
+    if( !m_active || hasFocus() )
     {
         c = KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color();
     }
