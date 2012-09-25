@@ -32,7 +32,7 @@
 #include "core/meta/Meta.h"
 #include "core/collections/QueryMaker.h"
 #include "CoverFetchingActions.h"
-#include <config-amarok.h>
+#include "config.h"
 #include "PixmapViewer.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/LineEdit.h"

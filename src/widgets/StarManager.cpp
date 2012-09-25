@@ -17,7 +17,7 @@
 #include "StarManager.h"
 
 #include "core/support/Amarok.h"
-#include <config-amarok.h>  
+#include "config.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 
@@ -28,15 +28,12 @@
 #include <QPixmap>
 
 
-
 StarManager* StarManager::s_instance = 0;
-
 
 StarManager* StarManager::instance()
 {
     return s_instance ? s_instance : new StarManager( The::mainWindow() );
 }
-
 
 StarManager::StarManager( QObject* parent )
     : QObject( parent )

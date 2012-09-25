@@ -17,11 +17,10 @@
 #ifndef AMAROK_APP_H
 #define AMAROK_APP_H
 
-#include <config-amarok.h>
-
-#include "aboutdialog/OcsData.h"
-#include "amarok_export.h"
 #include "MainWindow.h"
+#include "amarok_export.h"
+#include "config.h"
+#include "aboutdialog/OcsData.h"
 
 #include <KAboutData>
 #include <KSplashScreen>

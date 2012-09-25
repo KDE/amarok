@@ -19,7 +19,7 @@
 #include "File.h"
 #include "File_p.h"
 
-#include <config-amarok.h>
+#include "config.h"
 #include "MainWindow.h"
 #include "amarokurls/BookmarkMetaActions.h"
 #include "amarokurls/PlayUrlRunner.h"

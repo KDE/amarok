@@ -204,7 +204,7 @@ if( WITH_PLAYER )
         set( DEBUG_BUILD_TYPE ON )
     endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 
-    configure_file( config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config-amarok.h )
+    configure_file( shared/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config.h )
 
     include_directories( ${KDE4_INCLUDES} )
 

@@ -16,7 +16,7 @@
 
 #include "TagHelper.h"
 
-#include <config-amarok.h>
+#include "config.h"
 
 #include <QRegExp>
 #include <QStringList>

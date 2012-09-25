@@ -16,9 +16,8 @@
 
 #include "ScriptImporter.h"
 
-#include "config-amarok.h"
-
 #include "App.h"
+#include "config.h"
 #include "core/support/Debug.h"
 
 #include <KUrl>

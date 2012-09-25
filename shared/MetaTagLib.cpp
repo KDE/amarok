@@ -26,8 +26,7 @@
 #include "MetaTagLib.h"
 #include "FileType.h"
 #include "TagsFromFileNameGuesser.h"
-
-#include "config-amarok.h"
+#include "config.h"
 
 #ifndef UTILITIES_BUILD
 #include "amarokconfig.h"

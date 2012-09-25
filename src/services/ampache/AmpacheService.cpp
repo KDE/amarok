@@ -26,7 +26,7 @@
 #include "core/interfaces/Logger.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include <config-amarok.h>
+#include "config.h"
 #include "core/support/Debug.h"
 
 #ifdef HAVE_LIBLASTFM

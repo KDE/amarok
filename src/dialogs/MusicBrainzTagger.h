@@ -17,7 +17,7 @@
 #ifndef MUSICBRAINZTAGGER_H
 #define MUSICBRAINZTAGGER_H
 
-#include <config-amarok.h>
+#include "config.h"
 #include <KDialog>
 #include "core/meta/Meta.h"
 #include "musicbrainz/MusicBrainzFinder.h"

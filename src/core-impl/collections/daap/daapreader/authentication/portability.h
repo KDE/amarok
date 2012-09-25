@@ -22,7 +22,6 @@
 #define SYSTEM_POSIX
 
 #include <sys/types.h>
-#include <config-amarok.h>  
 
 #if !defined(HAVE_U_INT64_T) && defined(HAVE_UINT64_T)
  typedef uint64_t u_int64_t;
@@ -58,5 +57,3 @@ typedef unsigned char u_int8_t;
 #endif
 
 #endif /* _PORTABILITY_H */
-
-

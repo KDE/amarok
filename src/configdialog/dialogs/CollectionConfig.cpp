@@ -20,7 +20,7 @@
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "CollectionSetup.h"
 #include "amarokconfig.h"
-#include <config-amarok.h>
+#include "config.h"
 
 
 CollectionConfig::CollectionConfig( QWidget* parent )

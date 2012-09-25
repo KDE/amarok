@@ -18,7 +18,7 @@
 
 #include "MusicDNSAudioDecoder.h"
 
-#include <config-amarok.h>
+#include "config.h"
 #include "core/support/Debug.h"
 
 extern "C" {

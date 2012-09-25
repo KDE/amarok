@@ -18,7 +18,7 @@
 #define AMAROK_NETWORKACCESSMANAGERPROXY
 
 #include "amarok_export.h"
-#include "config-amarok.h"
+#include "config.h"
 
 #include <KIO/AccessManager>
 #include <KUrl>

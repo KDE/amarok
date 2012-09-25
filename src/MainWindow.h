@@ -18,7 +18,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <config-amarok.h>
+#include "config.h"
 
 #include "amarok_export.h"
 #include "core/meta/Meta.h"

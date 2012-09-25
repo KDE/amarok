@@ -20,6 +20,9 @@
 #include <QImage>
 #include <QPixmap>
 
+/**
+ * TODO: only used in Osd.cpp, remove! We can paint stars using KRatingWidget
+ */
 class StarManager : public QObject
 {
     Q_OBJECT
