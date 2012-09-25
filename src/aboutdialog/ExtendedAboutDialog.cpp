@@ -250,7 +250,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         creditLayout->setSpacing( 2 );
         m_creditWidget.data()->setLayout( creditLayout );
 
-        tabWidget->addTab( m_creditWidget.data(), i18n("&Thanks To"));
+        tabWidget->addTab( m_creditWidget.data(), i18n("&Contributors"));
         m_isOfflineCreditWidget = true; //is this still used?
     }
 
