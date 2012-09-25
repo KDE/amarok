@@ -17,8 +17,8 @@
 #ifndef SQLPODCASTPROVIDER_H
 #define SQLPODCASTPROVIDER_H
 
-#include "core/podcasts/PodcastReader.h"
 #include "core/podcasts/PodcastProvider.h"
+#include "core/podcasts/PodcastReader.h"
 #include "SqlPodcastMeta.h"
 
 #include <KIcon>
@@ -99,6 +99,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         void autoUpdate();
         void slotDeleteDownloadedEpisodes();
         void slotDownloadEpisodes();
+        void slotSetKeep();
         void slotConfigureChannel();
         void slotRemoveChannels();
         void slotUpdateChannels();
@@ -194,6 +195,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         QAction *m_configureChannelAction; //Configure a Channel
         QAction *m_deleteAction; //delete a downloaded Episode
         QAction *m_downloadAction;
+        QAction *m_keepAction;
         QAction *m_removeAction; //remove a subscription
         QAction *m_renameAction; //rename a Channel or Episode
         QAction *m_updateAction;

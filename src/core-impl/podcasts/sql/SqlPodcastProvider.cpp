@@ -16,18 +16,17 @@
  ****************************************************************************************/
 
 #include "SqlPodcastProvider.h"
-#include <kprogressdialog.h>
 
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/interfaces/Logger.h"
 #include "core/podcasts/PodcastImageFetcher.h"
 #include "core/podcasts/PodcastReader.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "MainWindow.h"
 #include "OpmlWriter.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
@@ -39,26 +38,27 @@
 #include "ui_SqlPodcastProviderSettingsWidget.h"
 
 #include <KCodecs>
-#include <KLocale>
 #include <KFileDialog>
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KIO/Job>
 #include <KIO/NetAccess>
+#include <KLocale>
+#include <KProgressDialog>
 #include <KStandardDirs>
 #include <KUrl>
 #include <Solid/Networking>
 
 #include <QAction>
-#include <QFile>
-#include <QDir>
-#include <QTimer>
 #include <QCheckBox>
+#include <QDir>
+#include <QFile>
 #include <QMap>
+#include <QTimer>
 
 using namespace Podcasts;
 
-static const int PODCAST_DB_VERSION = 5;
+static const int PODCAST_DB_VERSION = 6;
 static const QString key( "AMAROK_PODCAST" );
 static const QString PODCAST_TMP_POSTFIX( ".tmp" );
 
@@ -71,13 +71,14 @@ SqlPodcastProvider::SqlPodcastProvider()
         , m_configureChannelAction( 0 )
         , m_deleteAction( 0 )
         , m_downloadAction( 0 )
+        , m_keepAction( 0 )
         , m_removeAction( 0 )
         , m_renameAction( 0 )
         , m_updateAction( 0 )
         , m_writeTagsAction( 0 )
         , m_podcastImageFetcher( 0 )
 {
-    connect( m_updateTimer, SIGNAL( timeout() ), SLOT( autoUpdate() ) );
+    connect( m_updateTimer, SIGNAL(timeout()), SLOT(autoUpdate()) );
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
@@ -201,7 +202,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
 
     QString command = "SELECT id, url, channel, localurl, guid, "
             "title, subtitle, sequencenumber, description, mimetype, pubdate, "
-            "duration, filesize, isnew FROM podcastepisodes "
+            "duration, filesize, isnew, iskeep FROM podcastepisodes "
             "WHERE guid='%1' OR url='%1' OR localurl='%1' ORDER BY id DESC;";
     command = command.arg( sqlStorage->escape( string ) );
     QStringList dbResult = sqlStorage->query( command );
@@ -237,7 +238,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
 
     //The episode was found in the database but it's channel didn't have it in it's list.
     //That probably is because it's beyond the purgecount limit or the tracks were not loaded yet.
-    return SqlPodcastEpisodePtr( new SqlPodcastEpisode( dbResult.mid( 0, 14 ), channel ) );
+    return SqlPodcastEpisodePtr( new SqlPodcastEpisode( dbResult.mid( 0, 15 ), channel ) );
 }
 
 bool
@@ -423,14 +424,31 @@ SqlPodcastProvider::trackActions( Playlists::PlaylistPtr playlist, int trackInde
         connect( m_writeTagsAction, SIGNAL( triggered() ), SLOT( slotWriteTagsToFiles() ) );
     }
 
+    if( m_keepAction == 0 )
+    {
+        m_keepAction = new QAction( KIcon( "podcast-amarok" ),
+                                       i18nc( "toggle the \"keep\" downloaded file status of this podcast episode. "
+                                              "Notice that downloaded files with this status wouldn't be deleted if we apply a purge.",
+                                              "&Keep downloaded file" ),
+                                       this
+                                       );
+        m_keepAction->setProperty( "popupdropper_svg_id", "keep" );
+        m_keepAction->setCheckable( true );
+
+        connect( m_keepAction, SIGNAL(triggered(bool)), SLOT(slotSetKeep()) );
+    }
+
     Podcasts::SqlPodcastEpisodeList actionEpisodes;
     if( !sqlEpisode->localUrl().isEmpty() )
     {
         actionEpisodes = m_deleteAction->data().value<Podcasts::SqlPodcastEpisodeList>();
         actionEpisodes << sqlEpisode;
+        m_keepAction->setChecked( sqlEpisode->isKeep() );
+        m_keepAction->setData( QVariant::fromValue( actionEpisodes ) );
         m_deleteAction->setData( QVariant::fromValue( actionEpisodes ) );
         //these lists are the same anyway
         m_writeTagsAction->setData( QVariant::fromValue( actionEpisodes ) );
+        actions << m_keepAction;
         actions << m_deleteAction;
         actions << m_writeTagsAction;
     }
@@ -766,12 +784,11 @@ SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel 
         /* changed from purge to no-purge or increase purge count:
         we need to reload all episodes from the database. */
         sqlChannel->loadEpisodes();
-        emit( updated() );
     }
     else
-    {
         sqlChannel->applyPurge();
-    }
+
+    emit updated();
 
     if( oldSaveLocation != sqlChannel->saveLocation() )
     {
@@ -808,7 +825,6 @@ SqlPodcastProvider::episodeActions( Podcasts::PodcastEpisodeList episodes )
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDeleteDownloadedEpisodes() ) );
     }
 
-
     actionEpisodes.clear();
     if( m_writeTagsAction == 0 )
     {
@@ -821,7 +837,22 @@ SqlPodcastProvider::episodeActions( Podcasts::PodcastEpisodeList episodes )
         connect( m_writeTagsAction, SIGNAL( triggered() ), SLOT( slotWriteTagsToFiles() ) );
     }
 
+    if( m_keepAction == 0 )
+    {
+        m_keepAction = new QAction( KIcon( "podcast-amarok" ),
+                                       i18nc( "toggle the \"keep\" downloaded file status of this podcast episode. "
+                                              "Notice that downloaded files with this status wouldn't be deleted if we apply a purge.",
+                                              "&Keep downloaded file" ),
+                                       this
+                                       );
+        m_keepAction->setProperty( "popupdropper_svg_id", "keep" );
+        m_keepAction->setCheckable( true );
+
+        connect( m_keepAction, SIGNAL(triggered(bool)), SLOT(slotSetKeep()) );
+    }
+
     bool hasDownloaded = false;
+    bool hasKeep = false;
     foreach( Podcasts::PodcastEpisodePtr episode, episodes )
     {
         Podcasts::SqlPodcastEpisodePtr sqlEpisode
@@ -832,6 +863,10 @@ SqlPodcastProvider::episodeActions( Podcasts::PodcastEpisodeList episodes )
         if( !sqlEpisode->localUrl().isEmpty() )
         {
             hasDownloaded = true;
+
+            if ( sqlEpisode->isKeep() )
+                hasKeep = true;
+
             break;
         }
     }
@@ -839,9 +874,14 @@ SqlPodcastProvider::episodeActions( Podcasts::PodcastEpisodeList episodes )
     {
         Podcasts::PodcastEpisodeList actionEpisodes = m_deleteAction->data().value<Podcasts::PodcastEpisodeList>();
         actionEpisodes << episodes;
-        m_deleteAction->setData( QVariant::fromValue( actionEpisodes ) );
         //these lists are the same anyway
+        m_keepAction->setData( QVariant::fromValue( actionEpisodes ) );
+        m_deleteAction->setData( QVariant::fromValue( actionEpisodes ) );
         m_writeTagsAction->setData( QVariant::fromValue( actionEpisodes ) );
+
+        m_keepAction->setChecked( hasKeep );
+
+        actions << m_keepAction;
         actions << m_deleteAction;
         actions << m_writeTagsAction;
     }
@@ -993,6 +1033,19 @@ SqlPodcastProvider::slotDownloadEpisodes()
 
     foreach( Podcasts::SqlPodcastEpisodePtr episode, episodes )
         downloadEpisode( episode );
+}
+
+void
+SqlPodcastProvider::slotSetKeep()
+{
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    Podcasts::SqlPodcastEpisodeList episodes = action->data().value<Podcasts::SqlPodcastEpisodeList>();
+
+    foreach( Podcasts::SqlPodcastEpisodePtr episode, episodes )
+        episode->setKeep( action->isChecked() );
 }
 
 QPair<bool, bool>
@@ -1619,7 +1672,8 @@ SqlPodcastProvider::createTables() const
                                 ",pubdate "  + sqlStorage->textColumnType() +
                                 ",duration INTEGER"
                                 ",filesize INTEGER"
-                                ",isnew BOOL ) ENGINE = MyISAM;" ) );
+                                ",isnew BOOL"
+                                ",iskeep BOOL) ENGINE = MyISAM;" ) );
 
     sqlStorage->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url );" );
     sqlStorage->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url );" );
@@ -1680,7 +1734,8 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
                                     ",pubdate "  + sqlStorage->textColumnType() +
                                     ",duration INTEGER"
                                     ",filesize INTEGER"
-                                    ",isnew BOOL ) ENGINE = MyISAM;" ) );
+                                    ",isnew BOOL"
+                                    ",iskeep BOOL) ENGINE = MyISAM;" ) );
 
         sqlStorage->query( "INSERT INTO podcastchannels_temp SELECT * FROM podcastchannels;" );
         sqlStorage->query( "INSERT INTO podcastepisodes_temp SELECT * FROM podcastepisodes;" );
@@ -1708,7 +1763,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
         sqlStorage->query( setWriteTagsQuery );
     }
 
-    if(fromVersion < 5 && toVersion == 5 )
+    if( fromVersion < 5 && toVersion == 5 )
     {
         QString updateChannelQuery = QString ( "ALTER TABLE podcastchannels"
                                                " ADD filenamelayout VARCHAR(1024);" );
@@ -1717,6 +1772,14 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
         sqlStorage->query( setWriteTagsQuery );
     }
 
+    if( fromVersion < 6 && toVersion == 6 )
+    {
+        QString updateEpisodeQuery = QString ( "ALTER TABLE podcastepisodes"
+                                               " ADD iskeep BOOL;" );
+        sqlStorage->query( updateEpisodeQuery );
+        QString setIsKeepQuery = QString( "UPDATE podcastepisodes SET iskeep=FALSE;" );
+        sqlStorage->query( setIsKeepQuery );
+    }
 
     QString updateAdmin = QString( "UPDATE admin SET version=%1 WHERE component='%2';" );
     sqlStorage->query( updateAdmin.arg( toVersion ).arg( escape( key ) ) );

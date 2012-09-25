@@ -51,8 +51,10 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
 
         //PodcastEpisode methods
         PodcastChannelPtr channel() const { return PodcastChannelPtr::dynamicCast( m_channel ); }
-        virtual bool isNew() const { return m_isNew; }
+        virtual bool isKeep() const { return m_isKeep; }
+
         virtual void setNew( bool isNew );
+        virtual void setKeep( bool isKeep );
         virtual void setLocalUrl( const KUrl &url );
 
         //Track Methods
@@ -81,6 +83,7 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         bool m_batchUpdate;
 
         int m_dbId; //database ID
+        bool m_isKeep; //Keep the download after purge or not?
         SqlPodcastChannelPtr m_channel; //the parent of this episode
 
         MetaFile::TrackPtr m_localFile;

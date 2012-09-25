@@ -36,7 +36,7 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
         virtual QString subtitle() const { return m_master->subtitle(); }
         virtual QString summary() const { return m_master->summary(); }
         virtual QString author() const { return m_master->author(); }
-        int podcastType() { return m_master->podcastType(); }
+        virtual int podcastType() const { return m_master->podcastType(); }
 
         //Podcasts::PodcastChannel methods
         virtual KUrl url() const { return m_master->url(); }
@@ -44,7 +44,7 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
         virtual bool hasImage() const { return m_master->hasImage(); }
         virtual KUrl imageUrl() const { return m_master->imageUrl(); }
         virtual QImage image() const { return m_master->image(); }
-        virtual QString copyright() { return m_master->copyright(); }
+        virtual QString copyright() const { return m_master->copyright(); }
         virtual QStringList labels() const { return m_master->labels(); }
         virtual QDate subscribeDate() const { return m_master->subscribeDate(); }
 
@@ -67,9 +67,9 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
 
         //Settings
         virtual KUrl saveLocation() const { return m_master->saveLocation(); }
-        virtual bool autoScan() { return m_master->autoScan(); }
-        virtual bool hasPurge() { return m_master->hasPurge(); }
-        virtual int purgeCount() { return m_master->purgeCount(); }
+        virtual bool autoScan() const { return m_master->autoScan(); }
+        virtual bool hasPurge() const { return m_master->hasPurge(); }
+        virtual int purgeCount() const { return m_master->purgeCount(); }
 
         void setSaveLocation( const KUrl &url ) { m_master->setSaveLocation( url ); }
         void setAutoScan( bool autoScan ) { m_master->setAutoScan( autoScan ); }
