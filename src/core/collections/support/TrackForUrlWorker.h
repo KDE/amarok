@@ -17,8 +17,8 @@
 #ifndef TRACKFORURLWORKER_H
 #define TRACKFORURLWORKER_H
 
+#include "amarok_export.h"
 #include "core/support/Amarok.h"
-#include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
 
 #include <KUrl>

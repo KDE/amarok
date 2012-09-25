@@ -19,7 +19,7 @@
 #ifndef AMAROK_SCRIPTMANAGER_H
 #define AMAROK_SCRIPTMANAGER_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 
 #include <KPluginInfo>
 #include <KUrl>

@@ -18,8 +18,8 @@
 #ifndef AMAROK_META_H
 #define AMAROK_META_H
 
-#include "shared/amarok_export.h"
-#include "shared/MetaReplayGain.h"
+#include "amarok_export.h"
+#include "MetaReplayGain.h"
 
 #include "core/interfaces/MetaCapability.h"
 

@@ -19,10 +19,10 @@
 #ifndef AMAROK_SEARCHQUERYBIAS_H
 #define AMAROK_SEARCHQUERYBIAS_H
 
-#include "shared/amarok_export.h"
-#include "Bias.h"
-#include "BiasFactory.h"
-#include "TagMatchBias.h"
+#include "amarok_export.h"
+#include "dynamic/Bias.h"
+#include "dynamic/BiasFactory.h"
+#include "dynamic/biases/TagMatchBias.h"
 
 namespace Dynamic
 {

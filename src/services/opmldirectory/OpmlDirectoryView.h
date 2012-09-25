@@ -17,7 +17,7 @@
 #ifndef OPMLDIRECTORYVIEW_H
 #define OPMLDIRECTORYVIEW_H
 
-#include "src/widgets/PrettyTreeView.h"
+#include "widgets/PrettyTreeView.h"
 
 class QContextMenuEvent;
 class QKeyEvent;

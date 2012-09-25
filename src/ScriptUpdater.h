@@ -17,7 +17,7 @@
 #ifndef AMAROK_SCRIPTUPDATER_H
 #define AMAROK_SCRIPTUPDATER_H
 
-#include "shared/ScriptUpdaterStatic.h"
+#include "ScriptUpdaterStatic.h"
 
 #include <QTemporaryFile>
 

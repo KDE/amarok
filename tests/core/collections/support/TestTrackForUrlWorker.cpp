@@ -17,7 +17,7 @@
 
 #include "config-amarok-test.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "tests/mocks/MockTrackForUrlWorker.h"
+#include "mocks/MockTrackForUrlWorker.h"
 
 #include <KUrl>
 #include <ThreadWeaver/Job>

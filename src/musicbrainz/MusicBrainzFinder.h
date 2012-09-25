@@ -17,10 +17,10 @@
 #ifndef MUSICBRAINZFINDER_H
 #define MUSICBRAINZFINDER_H
 
+#include "Version.h"
 #include "core/meta/Meta.h"
-#include "MusicBrainzXmlParser.h"
-#include "NetworkAccessManagerProxy.h"
-#include "shared/Version.h"
+#include "musicbrainz/MusicBrainzXmlParser.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 class MusicBrainzFinder : public QObject
 {

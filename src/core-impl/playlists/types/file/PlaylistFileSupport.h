@@ -17,7 +17,7 @@
 #ifndef AMAROK_META_PLAYLISTFILESUPPORT_H
 #define AMAROK_META_PLAYLISTFILESUPPORT_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core-impl/playlists/types/file/PlaylistFile.h"
 

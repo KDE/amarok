@@ -25,7 +25,7 @@
 #include "widgets/MetaQueryWidget.h"
 #include "widgets/kdatecombo.h"
 #include "widgets/kratingwidget.h"
-#include "shared/FileType.h"
+#include "FileType.h"
 
 #include <typeinfo>
 

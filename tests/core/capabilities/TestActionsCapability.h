@@ -16,7 +16,7 @@
 #ifndef TESTACTIONSCAPABILITY_H
 #define TESTACTIONSCAPABILITY_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 
 #include <QAction>

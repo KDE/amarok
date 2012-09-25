@@ -21,8 +21,8 @@
 #ifndef AMAROK_DYNAMICBIASWIDGETS_H
 #define AMAROK_DYNAMICBIASWIDGETS_H
 
-#include "shared/amarok_export.h"
-#include "Bias.h"
+#include "amarok_export.h"
+#include "dynamic/Bias.h"
 
 #include <QDialog>
 

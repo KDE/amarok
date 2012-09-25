@@ -21,8 +21,8 @@
 #ifndef AMAROK_BIAS_H
 #define AMAROK_BIAS_H
 
-#include "shared/amarok_export.h"
-#include "TrackSet.h"
+#include "amarok_export.h"
+#include "dynamic/TrackSet.h"
 
 #include <QObject>
 #include <QRect>

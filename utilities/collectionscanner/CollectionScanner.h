@@ -22,6 +22,8 @@
 #ifndef COLLECTIONSCANNER_H
 #define COLLECTIONSCANNER_H
 
+#include "collectionscanner/ScanningState.h"
+
 #include <QCoreApplication>
 #include <QHash>
 #include <QSet>
@@ -39,49 +41,10 @@ class QSharedMemory;
 namespace CollectionScanner
 {
 
-/** A class used to store the current scanning state in a shared memory segment.
-    Storing the state of the scanner shouldn't cause a file access.
-    We are using a shared memory that the amarok process holds open until the scanning
-    is finished to store the state.
- */
-class AMAROK_EXPORT ScanningState
-{
-    public:
-        ScanningState();
-        ~ScanningState();
-
-        void setKey( const QString &key );
-        bool isValid() const;
-        void readFull();
-
-        QString lastDirectory() const;
-        void setLastDirectory( const QString &dir );
-        QStringList directories() const;
-        void setDirectories( const QStringList &directories );
-
-        QStringList badFiles() const;
-        void setBadFiles( const QStringList &badFiles );
-        QString lastFile() const;
-        void setLastFile( const QString &file );
-
-    private:
-        void writeFull();
-
-        QSharedMemory *m_sharedMemory;
-
-        QString m_lastDirectory;
-        QStringList m_directories;
-        QStringList m_badFiles;
-        QString m_lastFile;
-        qint64 m_lastFilePos;
-};
-
-
 /**
  * @class Scanner
  * @short Scans directories and builds the Collection
  */
-
 class Scanner : public QCoreApplication
 {
     Q_OBJECT

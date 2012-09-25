@@ -19,8 +19,8 @@
 #ifndef AMAROK_BIAS_FACTORY_H
 #define AMAROK_BIAS_FACTORY_H
 
-#include "shared/amarok_export.h"
-#include "Bias.h"
+#include "amarok_export.h"
+#include "dynamic/Bias.h"
 
 #include <QObject>
 

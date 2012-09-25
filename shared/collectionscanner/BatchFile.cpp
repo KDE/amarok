@@ -19,8 +19,7 @@
 
 #include "BatchFile.h"
 
-#include "config-amarok.h"
-#include "shared/Version.h"  // for AMAROK_VERSION
+#include "Version.h"  // for AMAROK_VERSION
 
 #include <QFile>
 #include <QDateTime>
@@ -154,4 +153,3 @@ CollectionScanner::BatchFile::write( const QString &batchPath )
 
     return true;
 }
-

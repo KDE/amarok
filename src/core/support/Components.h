@@ -17,7 +17,7 @@
 #ifndef AMAROK_COMPONENTS_H
 #define AMAROK_COMPONENTS_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 
 namespace Amarok
 {

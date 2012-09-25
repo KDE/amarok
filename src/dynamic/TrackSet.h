@@ -19,7 +19,7 @@
 #ifndef AMAROK_TRACKSET_H
 #define AMAROK_TRACKSET_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 #include "core/meta/Meta.h"
 
 #include <QBitArray>

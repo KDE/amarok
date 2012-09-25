@@ -17,9 +17,9 @@
 #ifndef UMSCOLLECTION_H
 #define UMSCOLLECTION_H
 
-#include <core/collections/Collection.h>
-#include <core-impl/collections/support/MemoryCollection.h>
-#include <utilities/collectionscanner/Directory.h>
+#include "collectionscanner/Directory.h"
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/MemoryCollection.h"
 
 #include <KDirWatch>
 #include <KIcon>

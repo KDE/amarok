@@ -21,13 +21,11 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "CollectionScanner.h"
-#include "Directory.h"
-#include "Track.h"
-#include "BatchFile.h"
-
-#include "config-amarok.h"
-#include "shared/Version.h"  // for AMAROK_VERSION
+#include "Version.h"  // for AMAROK_VERSION
+#include "collectionscanner/BatchFile.h"
+#include "collectionscanner/CollectionScanner.h"
+#include "collectionscanner/Directory.h"
+#include "collectionscanner/Track.h"
 
 #include <QTimer>
 #include <QThread>
@@ -52,163 +50,6 @@ main( int argc, char *argv[] )
     CollectionScanner::Scanner scanner( argc, argv );
     return scanner.exec();
 }
-
-
-// ------------ the scanning state -----------
-
-CollectionScanner::ScanningState::ScanningState()
-        : m_sharedMemory(0)
-        , m_lastFilePos(0)
-{
-}
-
-CollectionScanner::ScanningState::~ScanningState()
-{
-    delete m_sharedMemory;
-}
-
-void
-CollectionScanner::ScanningState::setKey( const QString &key )
-{
-    delete m_sharedMemory;
-    m_sharedMemory = new QSharedMemory( key );
-    m_sharedMemory->attach();
-}
-
-bool
-CollectionScanner::ScanningState::isValid() const
-{
-    return m_sharedMemory && m_sharedMemory->isAttached();
-}
-
-QString
-CollectionScanner::ScanningState::lastDirectory() const
-{ return m_lastDirectory; }
-
-void
-CollectionScanner::ScanningState::setLastDirectory( const QString &dir )
-{
-    if( dir == m_lastDirectory )
-        return;
-
-    m_lastDirectory = dir;
-    writeFull();
-}
-
-QStringList
-CollectionScanner::ScanningState::directories() const
-{ return m_directories; }
-
-void
-CollectionScanner::ScanningState::setDirectories( const QStringList &directories )
-{
-    if( directories == m_directories )
-        return;
-
-    m_directories = directories;
-    writeFull();
-}
-
-QStringList
-CollectionScanner::ScanningState::badFiles() const
-{ return m_badFiles; }
-
-void
-CollectionScanner::ScanningState::setBadFiles( const QStringList &badFiles )
-{
-    if( badFiles == m_badFiles )
-        return;
-
-    m_badFiles = badFiles;
-    writeFull();
-}
-
-QString
-CollectionScanner::ScanningState::lastFile() const
-{ return m_lastFile; }
-
-void
-CollectionScanner::ScanningState::setLastFile( const QString &file )
-{
-    if( file == m_lastFile )
-        return;
-
-    m_lastFile = file;
-
-    if( !isValid() )
-        return;
-
-    QBuffer buffer;
-    QDataStream out(&buffer);
-
-    buffer.open(QBuffer::WriteOnly);
-
-    out << m_lastFile;
-    int size = buffer.size();
-
-    if( size + m_lastFilePos < m_sharedMemory->size() )
-    {
-        char *to = (char*)m_sharedMemory->data();
-        const char *from = buffer.data().data();
-        memcpy(to + m_lastFilePos, from, size);
-    }
-
-    m_sharedMemory->unlock();
-}
-
-void
-CollectionScanner::ScanningState::readFull()
-{
-    if( !isValid() )
-        return;
-
-    QBuffer buffer;
-    QDataStream in(&buffer);
-
-    m_sharedMemory->lock();
-    buffer.setData((char*)m_sharedMemory->constData(), m_sharedMemory->size());
-    buffer.open(QBuffer::ReadOnly);
-
-    in >> m_lastDirectory;
-    in >> m_directories;
-    in >> m_badFiles;
-    m_lastFilePos = buffer.pos();
-    in >> m_lastFile;
-
-    m_sharedMemory->unlock();
-}
-
-void
-CollectionScanner::ScanningState::writeFull()
-{
-    if( !isValid() )
-        return;
-
-    QBuffer buffer;
-    QDataStream out(&buffer);
-
-    m_sharedMemory->lock();
-    buffer.open(QBuffer::WriteOnly);
-
-    out << m_lastDirectory;
-    out << m_directories;
-    out << m_badFiles;
-    m_lastFilePos = buffer.pos();
-    out << m_lastFile;
-    int size = buffer.size();
-
-    if( size < m_sharedMemory->size() )
-    {
-        char *to = (char*)m_sharedMemory->data();
-        const char *from = buffer.data().data();
-        memcpy(to, from, size);
-    }
-
-    m_sharedMemory->unlock();
-}
-
-
-// ------------ the scanner -----------
 
 CollectionScanner::Scanner::Scanner( int &argc, char **argv )
         : QCoreApplication( argc, argv )

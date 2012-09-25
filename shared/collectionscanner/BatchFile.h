@@ -71,5 +71,3 @@ private:
 
 }
 #endif // COLLECTIONSCANNER_BATCHFILE_H
-
-

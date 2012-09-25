@@ -19,10 +19,10 @@
 
 #include "TestMetaTrack.h"
 
+#include "amarokconfig.h"
 #include "config-amarok-test.h"
 #include "core/meta/Statistics.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "src/amarokconfig.h"
 
 #include <QtTest/QTest>
 

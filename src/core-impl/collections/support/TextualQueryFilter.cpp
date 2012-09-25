@@ -22,7 +22,7 @@
 #include "TextualQueryFilter.h"
 #include "Expression.h"
 
-#include "shared/FileType.h"
+#include "FileType.h"
 #include "core/support/Debug.h"
 
 #include <KLocale>

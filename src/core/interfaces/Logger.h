@@ -17,7 +17,7 @@
 #ifndef AMAROK_LOGGER_H
 #define AMAROK_LOGGER_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 
 #include <QMetaType>
 #include <QObject>

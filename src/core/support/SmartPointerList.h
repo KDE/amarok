@@ -19,10 +19,10 @@
 #ifndef AMAROK_SMART_POINTER_LIST_H
 #define AMAROK_SMART_POINTER_LIST_H
 
+#include "amarok_export.h"
+
 #include <QList>   //baseclass
 #include <QObject> //baseclass
-
-#include "shared/amarok_export.h"
 
 #ifdef Q_CC_MSVC
 class SmartPointerListDaddy : public QObject

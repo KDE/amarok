@@ -17,13 +17,13 @@
 
 #include "TestSimilarArtistsEngine.h"
 
+#include "context/engines/similarartists/SimilarArtistsEngine.h"
 #include "core/support/Components.h"
 #include "EngineController.h"
 
-#include <QtTest/QTest>
 #include <qtest_kde.h>
 
-#include "src/context/engines/similarartists/SimilarArtistsEngine.h"
+#include <QtTest/QTest>
 
 QTEST_KDEMAIN_CORE( TestSimilarArtistsEngine )
 

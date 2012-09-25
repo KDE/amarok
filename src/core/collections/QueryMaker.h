@@ -17,7 +17,7 @@
 #ifndef AMAROK_COLLECTION_QUERYMAKER_H
 #define AMAROK_COLLECTION_QUERYMAKER_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 

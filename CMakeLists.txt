@@ -64,15 +64,6 @@ else()
     message(WARNING "You are building Amarok without taglib. This has been known to cause many strange behaviours and is strongly advised against.")
 endif()
 
-# --------------------------
-
-# Figure out problems inside KAboutData before re-enabling
-#execute_process( COMMAND "git" "describe" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} RESULT_VARIABLE GIT_OUTPUT_VALUE OUTPUT_VARIABLE CURRENT_GIT_VERSION )
-#if(GIT_OUTPUT_VALUE EQUAL 0)
-#    message(STATUS "Building git version ${CURRENT_GIT_VERSION}")
-#endif(GIT_OUTPUT_VALUE EQUAL 0)
-
-
 # Needed to conditionally build tests and gui
 if(KDE4_BUILD_TESTS)
    add_definitions(-DDEBUG)
@@ -89,7 +80,9 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/shared )
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/shared
+    ${CMAKE_CURRENT_BINARY_DIR}/shared )
 
 if( WITH_PLAYER )
     set(KDE_MIN_VERSION "4.6.0")
@@ -206,22 +199,14 @@ if( WITH_PLAYER )
     find_program( CLAMZ_FOUND clamz PATH )
     macro_log_feature( CLAMZ_FOUND "clamz" "Optional requirement to download songs from the Amazon MP3 store. Highly recommended on Linux, as the official downloader from Amazon is quite broken on many systems." "https://code.google.com/p/clamz/" FALSE )
 
-    #These two are currently unused
-    #macro_optional_find_package(Soprano)
-    #macro_log_feature( Soprano_FOUND "soprano" "Soprano is a RDF framework required by Nepomuk Collection" "http://soprano.sourceforge.net" FALSE "2.1.0" "")
-    #macro_optional_find_package(Nepomuk)
-    #macro_log_feature( NEPOMUK_FOUND "nepomuk" "Nepomuk Libraries required by Nepomuk Collection (part of kdelibs)" "http://www.kde.org" FALSE "4.1" "")
-
-    macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
-
     string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
     if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
         set( DEBUG_BUILD_TYPE ON )
     endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 
-    configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
+    configure_file( config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config-amarok.h )
 
-    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES})
+    include_directories( ${KDE4_INCLUDES} )
 
     if( KDE4_BUILD_TESTS AND NOT WIN32 )
         ENABLE_TESTING()
@@ -244,12 +229,8 @@ if( WITH_PLAYER )
     #DOC_SUBDIR
 
 else( WITH_PLAYER )
-
     find_package( Qt4 REQUIRED )
-    set( CMAKE_INCLUDE_CURRENT_DIR ON )
     add_definitions(${QT_DEFINITIONS})
-    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-
 endif( WITH_PLAYER )
 
 if( WITH_UTILITIES )

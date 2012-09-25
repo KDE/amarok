@@ -17,7 +17,7 @@
 #ifndef AMAROK_ACTIONSCAPABILITY_H
 #define AMAROK_ACTIONSCAPABILITY_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 
 #include <QAction>

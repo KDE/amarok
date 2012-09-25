@@ -20,7 +20,7 @@
 #include "mocks/MetaMock.h"
 #include "mocks/MockTrack.h"
 
-#include "shared/FileType.h"
+#include "FileType.h"
 
 #include <QVariantMap>
 #include <QSharedPointer>

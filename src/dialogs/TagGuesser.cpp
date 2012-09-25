@@ -20,7 +20,7 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "shared/TagsFromFileNameGuesser.h"
+#include "TagsFromFileNameGuesser.h"
 
 TagGuesser::TagGuesser()
           : m_guessed( false )

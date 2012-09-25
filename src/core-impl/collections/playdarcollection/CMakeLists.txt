@@ -1,9 +1,6 @@
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
-include_directories( ${Amarok_SOURCE_DIR}/src
-                     ${KDE4_INCLUDE_DIR}
-                     ${QT_INCLUDES}
-                     ${QJSON_INCLUDE_DIR} )
+include_directories( ${QJSON_INCLUDE_DIR} )
 
 set( amarok_collection-playdarcollection_PART_SRCS
      PlaydarMeta.cpp

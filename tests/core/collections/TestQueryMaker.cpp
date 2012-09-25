@@ -15,7 +15,7 @@
 
 #include "TestQueryMaker.h"
 
-#include "tests/mocks/MockQueryMaker.h"
+#include "mocks/MockQueryMaker.h"
 
 #include <qtest_kde.h>
 

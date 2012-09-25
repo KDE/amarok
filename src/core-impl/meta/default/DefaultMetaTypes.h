@@ -19,7 +19,7 @@
 #ifndef DEFAULTMETATYPES_H
 #define DEFAULTMETATYPES_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 

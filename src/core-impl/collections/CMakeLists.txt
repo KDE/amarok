@@ -7,7 +7,6 @@ include_directories(
 set(AMAROK_COLLECTION_SUPPORT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/support)
 
 add_subdirectory( daap )
-# NOTE: disabled until ported to new framework
 add_subdirectory( audiocd )
 
 add_subdirectory( ipodcollection )

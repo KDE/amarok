@@ -17,11 +17,11 @@
 #ifndef MUSICDNSFINDER_H
 #define MUSICDNSFINDER_H
 
+#include "Version.h"
 #include "core/meta/Meta.h"
-#include "MusicDNSAudioDecoder.h"
-#include "MusicDNSXmlParser.h"
-#include "NetworkAccessManagerProxy.h"
-#include "shared/Version.h"
+#include "musicbrainz/MusicDNSAudioDecoder.h"
+#include "musicbrainz/MusicDNSXmlParser.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 #include <QTimer>
 

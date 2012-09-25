@@ -19,7 +19,7 @@
 
 #include "TranscodingDefines.h"
 #include "TranscodingProperty.h"
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 
 #include <KConfigGroup>
 

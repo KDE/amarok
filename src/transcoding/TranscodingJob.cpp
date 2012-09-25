@@ -16,8 +16,8 @@
 
 #include "TranscodingJob.h"
 
-#include "src/core/transcoding/TranscodingController.h"
-#include "src/core/support/Debug.h"
+#include "core/support/Debug.h"
+#include "core/transcoding/TranscodingController.h"
 
 #include <KProcess>
 

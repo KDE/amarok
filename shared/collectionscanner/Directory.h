@@ -106,4 +106,3 @@ private:
 }
 
 #endif // COLLECTIONSCANNER_DIRECTORY_H
-

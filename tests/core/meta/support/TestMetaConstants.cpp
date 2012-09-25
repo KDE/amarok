@@ -17,8 +17,8 @@
 
 #include "core/meta/support/MetaConstants.h"
 #include "mocks/MetaMock.h"
-#include "shared/MetaValues.h"
-#include "shared/FileType.h"
+#include "MetaValues.h"
+#include "FileType.h"
 
 #include <QDateTime>
 #include <qtest_kde.h>

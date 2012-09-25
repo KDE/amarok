@@ -17,7 +17,7 @@
 #ifndef AMAROK_SQLSTORAGE_H
 #define AMAROK_SQLSTORAGE_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 
 #include <QMetaType>
 #include <QString>

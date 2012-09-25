@@ -79,4 +79,3 @@ private:
 }
 
 #endif // COLLECTIONSCANNER_ALBUM_H
-

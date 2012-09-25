@@ -22,8 +22,8 @@
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core/transcoding/TranscodingController.h"
-#include "shared/MetaTagLib.h"
-#include "shared/FileType.h"
+#include "MetaTagLib.h"
+#include "FileType.h"
 #include "transcoding/TranscodingJob.h"
 
 #include <KIO/CopyJob>

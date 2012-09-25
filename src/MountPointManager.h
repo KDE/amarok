@@ -17,9 +17,9 @@
 #ifndef AMAROK_MOUNTPOINTMANAGER_H
 #define AMAROK_MOUNTPOINTMANAGER_H
 
+#include "amarok_export.h"
 #include "core/support/Amarok.h"
 #include "core/support/PluginFactory.h"
-#include "shared/amarok_export.h"
 
 #include <KConfigGroup>
 #include <KUrl>

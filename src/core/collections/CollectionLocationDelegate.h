@@ -18,7 +18,7 @@
 #ifndef COLLECTIONLOCATIONDELEGATE_H
 #define COLLECTIONLOCATIONDELEGATE_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/transcoding/TranscodingConfiguration.h"
 

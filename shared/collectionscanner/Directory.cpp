@@ -21,8 +21,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "CollectionScanner.h"
 #include "Directory.h"
+
+#include "collectionscanner/ScanningState.h"
 
 #include <QDebug>
 #include <QString>
@@ -247,4 +248,3 @@ CollectionScanner::Directory::toXml( QXmlStreamWriter *writer ) const
     }
 }
 #endif // UTILITIES_BUILD
-

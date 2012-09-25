@@ -17,8 +17,8 @@
 #ifndef AMAROK_PLUGINMANAGER_H
 #define AMAROK_PLUGINMANAGER_H
 
+#include "amarok_export.h"
 #include "core/support/PluginFactory.h"
-#include "shared/amarok_export.h"
 
 class MountPointManager;
 class ServicePluginManager;

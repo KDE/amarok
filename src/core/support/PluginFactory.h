@@ -17,7 +17,7 @@
 #ifndef AMAROK_PLUGINFACTORY_H
 #define AMAROK_PLUGINFACTORY_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 
 #include <KPluginInfo>
 

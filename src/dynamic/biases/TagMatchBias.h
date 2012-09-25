@@ -21,11 +21,10 @@
 #ifndef AMAROK_METATAGBIAS_H
 #define AMAROK_METATAGBIAS_H
 
-#include "shared/amarok_export.h"
-#include "Bias.h"
-#include "BiasFactory.h"
-
-#include <widgets/MetaQueryWidget.h>
+#include "amarok_export.h"
+#include "dynamic/Bias.h"
+#include "dynamic/BiasFactory.h"
+#include "widgets/MetaQueryWidget.h"
 
 class QWidget;
 class QCheckBox;

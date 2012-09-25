@@ -546,5 +546,3 @@ CollectionScanner::Track::setUseCharsetDetector( bool value )
 {
     s_useCharsetDetector = value;
 }
-
-

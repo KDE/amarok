@@ -25,7 +25,7 @@
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "covermanager/CoverCache.h"
-#include "shared/FileType.h"
+#include "FileType.h"
 
 #include <KTemporaryFile>
 #include <ThreadWeaver/Weaver>

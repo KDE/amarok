@@ -17,9 +17,10 @@
 #ifndef AMAROK_METACONSTANTS_H
 #define AMAROK_METACONSTANTS_H
 
-#include <shared/MetaValues.h>
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
+#include "MetaValues.h"
 #include "core/meta/Meta.h"
+
 #include <QString>
 
 namespace Meta

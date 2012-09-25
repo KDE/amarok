@@ -17,14 +17,14 @@
 #ifndef TRANSCODING_FORMAT_H
 #define TRANSCODING_FORMAT_H
 
-#include "TranscodingDefines.h"
-#include "TranscodingProperty.h"
-#include "TranscodingConfiguration.h"
-#include "shared/amarok_export.h"
-
-#include <QStringList>
+#include "amarok_export.h"
+#include "core/transcoding/TranscodingDefines.h"
+#include "core/transcoding/TranscodingProperty.h"
+#include "core/transcoding/TranscodingConfiguration.h"
 
 #include <KIcon>
+
+#include <QStringList>
 
 namespace Transcoding
 {

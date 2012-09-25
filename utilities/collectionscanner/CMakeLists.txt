@@ -16,14 +16,15 @@ add_definitions( "-DUTILITIES_BUILD" )
 
 set(amarokcollectionscanner_SRCS
     CollectionScanner.cpp
-    Directory.cpp
-    Album.cpp
-    Track.cpp
-    Playlist.cpp
-    BatchFile.cpp
-    ../../shared/FileType.cpp
-    ../../shared/MetaTagLib.cpp
-    ../../shared/TagsFromFileNameGuesser.cpp
+    ${CMAKE_SOURCE_DIR}/shared/FileType.cpp
+    ${CMAKE_SOURCE_DIR}/shared/MetaTagLib.cpp
+    ${CMAKE_SOURCE_DIR}/shared/TagsFromFileNameGuesser.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Album.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/BatchFile.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Directory.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Playlist.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/ScanningState.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Track.cpp
 )
 if( TAGLIB_FOUND )
     set(amarokcollectionscanner_SRCS

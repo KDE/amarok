@@ -11,10 +11,12 @@ set( STRESS_TEST_TRACK_COUNT 20000 )
 
 configure_file(config-amarok-test.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok-test.h )
 
-include_directories( .
-  ${AMAROK_SOURCE_TREE}
-  ${GOOGLEMOCK_INCLUDE_DIR}
-)
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_BINARY_DIR}/src
+    ${GOOGLEMOCK_INCLUDE_DIR} )
 
 add_subdirectory( amarokurls )
 add_subdirectory( browsers )

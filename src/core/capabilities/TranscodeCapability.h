@@ -17,9 +17,9 @@
 #ifndef TRANSCODECAPABILITY_H
 #define TRANSCODECAPABILITY_H
 
+#include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 #include "core/transcoding/TranscodingConfiguration.h"
-#include "shared/amarok_export.h"
 
 #include <QStringList>
 

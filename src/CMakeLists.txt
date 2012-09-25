@@ -15,6 +15,11 @@ if(APPLE)
     set( MAC_FILES_DIR  ${CMAKE_SOURCE_DIR}/src/mac )
 endif(APPLE)
 
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
+
 add_subdirectory( core )
 add_subdirectory( core-impl/collections )
 #don't use our own libplasma anymore, but still pick up our applets/engines/containments
@@ -28,12 +33,7 @@ add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
 
-# if( STRIGI_FOUND )
-    # add_subdirectory( strigi )
-# endif( STRIGI_FOUND )
-
 include_directories(
-    ${CMAKE_SOURCE_DIR}
     aboutdialog
     aboutdialog/libattica-ocsclient
     amarokurls
@@ -63,9 +63,6 @@ include_directories(
     synchronization
     transcoding
     widgets
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES}
-    ${QT_QTSCRIPT_INCLUDE_DIR}
 )
 
 if ( KDEMULTIMEDIA_FOUND )
@@ -269,8 +266,6 @@ set(libstatusbar_SRCS
 #####################################################################
 set(libmetaimpl_SRCS
     core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
-    ../shared/MetaTagLib.cpp
-    ../shared/TagsFromFileNameGuesser.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp
@@ -292,21 +287,6 @@ set(libmetaimpl_SRCS
     core-impl/support/TagStatisticsStore.cpp
     core-impl/support/UrlStatisticsStore.cpp
 )
-
-if( TAGLIB_FOUND )
-    set(libmetaimpl_SRCS
-        ${libmetaimpl_SRCS}
-        ../shared/MetaReplayGain.cpp
-        ../shared/FileTypeResolver.cpp
-        ../shared/tag_helpers/APETagHelper.cpp
-        ../shared/tag_helpers/ASFTagHelper.cpp
-        ../shared/tag_helpers/ID3v2TagHelper.cpp
-        ../shared/tag_helpers/MP4TagHelper.cpp
-        ../shared/tag_helpers/StringHelper.cpp
-        ../shared/tag_helpers/TagHelper.cpp
-        ../shared/tag_helpers/VorbisCommentTagHelper.cpp
-    )
-endif( TAGLIB_FOUND )
 
 #####################################################################
 # COLLECTION
@@ -338,11 +318,6 @@ set(collection_SRCS
 #####################################################################
 set( scanner_SRCS
     scanner/GenericScanManager.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Album.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/BatchFile.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Directory.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Playlist.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Track.cpp
 )
 
 #####################################################################
@@ -606,6 +581,35 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 
 #####################################################################
+# SHARED
+#####################################################################
+set( shared_SRCS
+    ${CMAKE_SOURCE_DIR}/shared/MetaTagLib.cpp
+    ${CMAKE_SOURCE_DIR}/shared/TagsFromFileNameGuesser.cpp
+    ${CMAKE_SOURCE_DIR}/shared/FileType.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Album.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/BatchFile.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Directory.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Playlist.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Track.cpp
+)
+
+if( TAGLIB_FOUND )
+    set( shared_SRCS
+        ${shared_SRCS}
+        ${CMAKE_SOURCE_DIR}/shared/MetaReplayGain.cpp
+        ${CMAKE_SOURCE_DIR}/shared/FileTypeResolver.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/APETagHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/ASFTagHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/ID3v2TagHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/MP4TagHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/StringHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/TagHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/VorbisCommentTagHelper.cpp
+    )
+endif( TAGLIB_FOUND )
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -639,6 +643,7 @@ set(amaroklib_LIB_SRCS
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
+    ${shared_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
@@ -757,7 +762,6 @@ set(amaroklib_LIB_SRCS
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
     moodbar/MoodbarManager.cpp
-    ../shared/FileType.cpp
 )
 
 if( NOT BUILD_MYSQLE_COLLECTION )
@@ -878,7 +882,6 @@ set( amaroklib_DEPENDS "amarok-transcoding" ) # depends on generated ui_*.h file
 
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 add_custom_target(amarokconfig_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/amarokconfig.h)
-
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui

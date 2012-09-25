@@ -17,10 +17,10 @@
 #ifndef TRANSCODING_CONTROLLER_H
 #define TRANSCODING_CONTROLLER_H
 
-#include "shared/amarok_export.h"
-#include "TranscodingDefines.h"
-#include "TranscodingFormat.h"
+#include "amarok_export.h"
 #include "core/support/Components.h"
+#include "core/transcoding/TranscodingDefines.h"
+#include "core/transcoding/TranscodingFormat.h"
 
 #include <KProcess>
 

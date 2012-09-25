@@ -22,11 +22,8 @@
 #include "GenericScanManager.h"
 
 #include "App.h"
-#include <core/support/Debug.h>
-
-// include files from the collection scanner utility
-#include <utilities/collectionscanner/BatchFile.h>
-#include <utilities/collectionscanner/CollectionScanner.h>
+#include "core/support/Debug.h"
+#include "collectionscanner/BatchFile.h"
 
 #include <KStandardDirs>
 #include <threadweaver/ThreadWeaver.h>

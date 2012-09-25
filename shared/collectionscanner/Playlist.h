@@ -68,4 +68,3 @@ private:
 }
 
 #endif // COLLECTIONSCANNER_PLAYLIST_H
-

@@ -17,7 +17,7 @@
 #ifndef META_STATISTICS_H
 #define META_STATISTICS_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 
 #include <KSharedPtr>
 

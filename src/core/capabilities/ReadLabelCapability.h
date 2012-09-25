@@ -17,9 +17,9 @@
 #ifndef READLABELCAPABILITY_H
 #define READLABELCAPABILITY_H
 
+#include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 #include "core/meta/Meta.h"
-#include "shared/amarok_export.h"
 
 #include <QStringList>
 

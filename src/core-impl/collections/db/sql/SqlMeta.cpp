@@ -21,19 +21,19 @@
 #include "SqlMeta.h"
 
 #include "amarokconfig.h"
+#include "MetaTagLib.h" // for getting an embedded cover
+#include "core/collections/support/SqlStorage.h"
+#include "core/meta/support/MetaUtility.h"
 #include "core/support/Amarok.h"
-#include "CapabilityDelegate.h"
-#include <core/support/Debug.h>
-#include <core/meta/support/MetaUtility.h>
-#include <shared/MetaTagLib.h> // for getting an embedded cover
+#include "core/support/Debug.h"
+#include "core-impl/collections/db/sql/CapabilityDelegate.h"
+#include "core-impl/collections/db/sql/SqlCollection.h"
+#include "core-impl/collections/db/sql/SqlQueryMaker.h"
+#include "core-impl/collections/db/sql/SqlRegistry.h"
+#include "core-impl/collections/support/ArtistHelper.h"
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
-#include <core-impl/collections/support/ArtistHelper.h>
-#include "SqlCollection.h"
-#include "SqlQueryMaker.h"
-#include "SqlRegistry.h"
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetcher.h"
-#include "core/collections/support/SqlStorage.h"
 
 #include <QAction>
 #include <QDateTime>

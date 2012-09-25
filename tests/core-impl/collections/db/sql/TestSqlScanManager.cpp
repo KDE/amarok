@@ -18,7 +18,7 @@
 #include "TestSqlScanManager.h"
 
 #include "amarokconfig.h"
-#include "shared/MetaTagLib.h"
+#include "MetaTagLib.h"
 #include "core-impl/collections/db/ScanManager.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/db/sql/SqlCollectionFactory.h"

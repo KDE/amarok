@@ -17,11 +17,10 @@
 #ifndef WRITETAGSJOB_H
 #define WRITETAGSJOB_H
 
+#include "amarok_export.h"
 #include "MetaValues.h"
 
-#include "amarok_export.h"
 #include <ThreadWeaver/Job>
-
 
 /**
  * Calls Meta::Tag::writeTags( path, changedFields ) in a thread so that main thread

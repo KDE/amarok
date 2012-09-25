@@ -17,7 +17,7 @@
 #ifndef STREAMINFOCAPABILITY_H
 #define STREAMINFOCAPABILITY_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 
 #include <QString>

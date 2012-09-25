@@ -20,7 +20,7 @@
 #ifndef POPUPDROPPER_H
 #define POPUPDROPPER_H
 
-#include <QtGui/QGraphicsScene>
+#include <QGraphicsScene>
 #include <QtGui/QGraphicsView>
 #include <QtCore/QStack>
 

@@ -1,10 +1,5 @@
 add_subdirectory( support )
 
-include_directories( .
-  ${AMAROK_TEST_TREE}
-  ${CMAKE_BINARY_DIR}/tests
-)
-
 #------------------------ Test MetaTrack -----------------------------
 
 set( testmetatrack_SRCS TestMetaTrack.cpp )

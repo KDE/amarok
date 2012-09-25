@@ -17,7 +17,7 @@
 #ifndef TRANSCODING_PROPERTY_H
 #define TRANSCODING_PROPERTY_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 
 #include <QPointer>
 #include <QStringList>

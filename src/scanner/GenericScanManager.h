@@ -23,8 +23,7 @@
 #define GENERICSCANMANAGER_H
 
 #include "amarok_export.h"
-
-#include <utilities/collectionscanner/Directory.h>
+#include "collectionscanner/Directory.h"
 
 #include <KProcess>
 #include <threadweaver/Job.h>

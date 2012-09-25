@@ -17,10 +17,9 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "amarok_export.h"
 #include "core/support/Debug.h"
 #include "core/support/Debug_p.h"
-
-#include "shared/amarok_export.h"
 
 #include <KConfigGroup>
 #include <KCmdLineArgs>

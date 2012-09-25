@@ -18,7 +18,7 @@
 
 #include "CapabilityDelegateImpl.h"
 
-#include "core/support/Debug.h"
+#include "MetaValues.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
 #include "SqlReadLabelCapability.h"
@@ -32,11 +32,11 @@
 #include "core/capabilities/OrganiseCapability.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core/meta/support/MetaConstants.h"
+#include "core/support/Debug.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "amarokurls/PlayUrlRunner.h"
-#include "shared/MetaValues.h"
 
 #include <QAction>
 #include <QFile>

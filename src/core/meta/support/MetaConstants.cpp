@@ -17,7 +17,7 @@
 #include "MetaConstants.h"
 
 #include "core/meta/Statistics.h"
-#include "shared/FileType.h"
+#include "FileType.h"
 
 #include <KLocalizedString>
 

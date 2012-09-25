@@ -21,20 +21,20 @@
 
 #include "SqlCollectionLocation.h"
 
+#include "MetaTagLib.h" // for getting the uid
+#include "MountPointManager.h"
 #include "core/collections/CollectionLocationDelegate.h"
+#include "core/collections/support/SqlStorage.h"
+#include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core/interfaces/Logger.h"
-#include "core/collections/support/SqlStorage.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
+#include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/db/ScanManager.h"
-#include "MountPointManager.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
 #include "transcoding/TranscodingJob.h"
-#include "core/transcoding/TranscodingController.h"
-#include <shared/MetaTagLib.h> // for getting the uid
 
 #include <QDir>
 #include <QFile>

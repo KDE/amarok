@@ -69,4 +69,3 @@ CollectionScanner::Playlist::toXml( QXmlStreamWriter *writer ) const
     writer->writeTextElement( QLatin1String("path"), m_path );
     writer->writeTextElement( QLatin1String("rpath"), m_rpath );
 }
-

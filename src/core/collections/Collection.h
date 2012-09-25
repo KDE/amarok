@@ -18,9 +18,9 @@
 #ifndef AMAROK_COLLECTION_H
 #define AMAROK_COLLECTION_H
 
+#include "amarok_export.h"
 #include "core/interfaces/MetaCapability.h"
 #include "core/support/PluginFactory.h"
-#include "shared/amarok_export.h"
 
 #include <QObject>
 

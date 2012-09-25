@@ -17,7 +17,7 @@
 #ifndef FINDINSOURCECAPABILITY_H
 #define FINDINSOURCECAPABILITY_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 #include "core/capabilities/Capability.h"
 
 namespace Capabilities {

@@ -25,8 +25,8 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include "shared/FileType.h"
-#include "shared/MetaReplayGain.h"
+#include "FileType.h"
+#include "MetaReplayGain.h"
 
 #ifndef UTILITIES_BUILD
     #include "amarok_export.h"
@@ -164,4 +164,3 @@ private:
 }
 
 #endif // COLLECTIONSCANNER_TRACK_H
-
