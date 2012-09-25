@@ -94,7 +94,7 @@ int main( int argc, char *argv[] )
     /* This list should contain people who still hold major copyright on the current code
      * For instance: does not include authors of 1.4 who have not contributed to 2.x */
     aboutData.addAuthor( ki18n("Inactive authors"),
-                         ki18n("Amarok authorship is not a hobby, it's a lifestyle."
+                         ki18n("Amarok authorship is not a hobby, it's a lifestyle. "
                                "But when people move on we want to keep respecting "
                                "them by mentioning them here:"), "" );
         ocsData.addAuthor( "%%category%%", aboutData.authors().last() );
