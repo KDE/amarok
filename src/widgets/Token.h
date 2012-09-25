@@ -56,6 +56,11 @@ class Token : public QWidget
         /** Return true if somebody has previously set the text color */
         bool hasCustomColor() const { return m_customColor; };
 
+        /** Marks the Token as inactive.
+            It will get a different colored frame. */
+        bool isActive() const { return m_active; }
+        void setActive( bool value ) { m_active = value; update(); }
+
     signals:
         void changed();
 
@@ -63,12 +68,12 @@ class Token : public QWidget
         virtual void paintEvent(QPaintEvent *pe);
 
     protected:
-
         QString     m_name;
         KIcon       m_icon;
         QString     m_iconName;
         qint64      m_value;
         bool        m_customColor;
+        bool        m_active;
 
         QLabel      *m_iconContainer;
         QLabel      *m_label;

@@ -613,12 +613,13 @@ UmsCollection::slotConfigure()
     layoutWidget.setformatPresetVisible( false );
 
     layoutWidget.setScheme( m_musicFilenameScheme );
-    layoutWidget.setVfatCompatible( m_vfatSafe );
-    layoutWidget.setAsciiOnly( m_asciiOnly );
-    layoutWidget.setIgnoreThe( m_ignoreThe );
-    layoutWidget.setReplaceSpaces( m_replaceSpaces );
-    layoutWidget.setRegexpText( m_regexText );
-    layoutWidget.setReplaceText( m_replaceText );
+    FilenameLayoutOptionWidget* optionsWidget = layoutWidget.m_optionsWidget;
+    optionsWidget->setVfatCompatible( m_vfatSafe );
+    optionsWidget->setAsciiOnly( m_asciiOnly );
+    optionsWidget->setIgnoreThe( m_ignoreThe );
+    optionsWidget->setReplaceSpaces( m_replaceSpaces );
+    optionsWidget->setRegexpText( m_regexText );
+    optionsWidget->setReplaceText( m_replaceText );
 
     umsSettingsDialog.setButtons( KDialog::Ok | KDialog::Cancel );
     umsSettingsDialog.setMainWidget( settingsWidget );
@@ -650,12 +651,12 @@ UmsCollection::slotConfigure()
             //TODO: remove all tracks from the MemoryCollection.
         }
 
-        m_vfatSafe = layoutWidget.vfatCompatible();
-        m_asciiOnly = layoutWidget.asciiOnly();
-        m_ignoreThe = layoutWidget.ignoreThe();
-        m_replaceSpaces = layoutWidget.replaceSpaces();
-        m_regexText = layoutWidget.regexpText();
-        m_replaceText = layoutWidget.replaceText();
+        FilenameLayoutOptionWidget* optionsWidget = layoutWidget.m_optionsWidget;
+        m_asciiOnly = optionsWidget->asciiOnly();
+        m_ignoreThe = optionsWidget->ignoreThe();
+        m_replaceSpaces = optionsWidget->replaceSpaces();
+        m_regexText = optionsWidget->regexpText();
+        m_replaceText = optionsWidget->replaceText();
         m_collectionName = settings->m_collectionName->text();
 
         if( settings->m_podcastCheckBox->isChecked() )

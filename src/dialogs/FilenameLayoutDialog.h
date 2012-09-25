@@ -21,11 +21,62 @@
 
 #include "amarok_export.h"
 #include "ui_FilenameLayoutDialog.h"
+#include "ui_TagGuessOptions.h"
+#include "ui_FilenameLayoutOptions.h"
 
 #include <QWidget>
 
 class TokenDropTarget;
 class QFileInfo;
+
+class AMAROK_EXPORT TagGuessOptionWidget : public QWidget, public Ui::TagGuessOptions
+{
+    Q_OBJECT
+
+    public:
+        TagGuessOptionWidget( QWidget *parent = 0 );
+
+        int getCaseOptions();
+        bool getWhitespaceOptions();
+        bool getUnderscoreOptions();
+
+    signals:
+        void optionsChanged();
+
+    private slots:
+        // Handles the radiobuttons
+        void editStateEnable( bool checked );
+
+    private:
+        QList<QRadioButton*> m_caseEditRadioButtons;
+};
+
+
+/** A couple of options used in the filename layout dialog. */
+class AMAROK_EXPORT FilenameLayoutOptionWidget : public QWidget, public Ui::FilenameLayoutOptions
+{
+    Q_OBJECT
+
+    public:
+        FilenameLayoutOptionWidget( QWidget *parent = 0 );
+
+        bool asciiOnly() const { return asciiCheck->isChecked(); }
+        void setAsciiOnly( bool enable ) { asciiCheck->setChecked( enable ); }
+        bool vfatCompatible() const { return vfatCheck->isChecked(); }
+        void setVfatCompatible( bool enable ) { vfatCheck->setChecked( enable ); }
+        bool ignoreThe() const { return ignoreTheCheck->isChecked(); }
+        void setIgnoreThe( bool enable ) { ignoreTheCheck->setChecked( enable ); }
+        bool replaceSpaces() const { return spaceCheck->isChecked(); }
+        void setReplaceSpaces( bool enable ) { spaceCheck->setChecked( enable ); }
+        QString regexpText() const { return regexpEdit->text(); }
+        void setRegexpText( const QString &text ) { regexpEdit->setText( text ); }
+        QString replaceText() const { return replaceEdit->text(); }
+        void setReplaceText( const QString &text ) { replaceEdit->setText( text ); }
+
+    signals:
+        void optionsChanged();
+};
+
 
 //Holds the TokenLayoutWidget and TokenPool and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
 class AMAROK_EXPORT FilenameLayoutWidget : public QWidget, protected Ui::FilenameLayoutDialog
@@ -56,29 +107,16 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget, protected Ui::Filenam
             , Dot
             , Dash
             , Underscore
+            , CollectionRoot
         };
 
 
         explicit FilenameLayoutWidget( QWidget *parent = 0 );
         virtual ~FilenameLayoutWidget() {}
 
-        QString getParsableScheme();
+        QString getParsableScheme() const;
 
         void setScheme( const QString &scheme );
-
-        /* accessors to Ui::FilenameLayoutWidget members */
-        bool asciiOnly() const { return asciiCheck->isChecked(); }
-        void setAsciiOnly( bool enable ) { asciiCheck->setChecked( enable ); }
-        bool vfatCompatible() const { return vfatCheck->isChecked(); }
-        void setVfatCompatible( bool enable ) { vfatCheck->setChecked( enable ); }
-        bool ignoreThe() const { return ignoreTheCheck->isChecked(); }
-        void setIgnoreThe( bool enable ) { ignoreTheCheck->setChecked( enable ); }
-        bool replaceSpaces() const { return spaceCheck->isChecked(); }
-        void setReplaceSpaces( bool enable ) { spaceCheck->setChecked( enable ); }
-        QString regexpText() const { return regexpEdit->text(); }
-        void setRegexpText( const QString &text ) { regexpEdit->setText( text ); }
-        QString replaceText() const { return replaceEdit->text(); }
-        void setReplaceText( const QString &text ) { replaceEdit->setText( text ); }
 
 
     public slots:
@@ -89,19 +127,24 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget, protected Ui::Filenam
         void schemeChanged();
 
     private slots:
-        void editStateEnable( bool checked );
         void toggleAdvancedMode();
 
+        /* Updates the update preset button */
+        void slotUpdatePresetButton();
+        void slotSaveFormatList();
         void slotFormatPresetSelected( int );
         void slotAddFormat();
         void slotRemoveFormat();
         void slotUpdateFormat();
-        void slotSaveFormatList();
 
     private:
         /** Set the advanced mode, blending out several "advanced" widgets */
         void setAdvancedMode( bool isAdvanced );
-        QString parsableScheme() const;
+
+        /* Iterates over the elements of the TokenLayoutWidget bar
+           (really over the elements of a QList that stores the indexes
+           of the tokens) and generates a string that TagGuesser can digest. */
+        QString dropTargetScheme() const;
 
         /** Fills the m_dropTarget according to the given string scheme. */
         void inferScheme( const QString &scheme );
@@ -110,7 +153,6 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget, protected Ui::Filenam
         bool m_advancedMode;
 
     protected:
-
         /** Set's several configuration options.
             Don't move this function to the constructor. It calls virtuals. */
         void populateConfiguration();
@@ -118,12 +160,14 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget, protected Ui::Filenam
 
         virtual Token* createToken(qint64 value) const;
 
+        /** Returns a styled token to be used in as pre and
+            postfix on the schema editing line. */
+        virtual Token* createStaticToken(qint64 value) const;
+
         TokenDropTarget *m_dropTarget;
 
         /** The name of the category used for storing the configuration */
         QString m_configCategory;
-
-        QList<QRadioButton*> m_caseEditRadioButtons;
 };
 
 /** This dialog is used in the OrganizeCollection */
@@ -136,6 +180,8 @@ class AMAROK_EXPORT OrganizeCollectionWidget : public FilenameLayoutWidget
         virtual ~OrganizeCollectionWidget() {}
 
         void setformatPresetVisible( bool visible ) { formatPresetWidget->setVisible( visible ); }
+
+        FilenameLayoutOptionWidget* m_optionsWidget;
 };
 
 /** This dialog allows the user to define a filename scheme from which to guess tags. */
@@ -150,12 +196,8 @@ class AMAROK_EXPORT TagGuesserWidget : public FilenameLayoutWidget
         /** Sets the filename to show colored preview from. */
         void setFileName( const QString& fileName );
 
-        /** Returns the fileName with added path. */
-        QString getParsableFileName();
-
-        int getCaseOptions();
-        bool getWhitespaceOptions();
-        bool getUnderscoreOptions();
+        /** Returns the current guessed tags */
+        QMap<qint64,QString> guessedTags();
 
     public slots:
         virtual void onAccept();
@@ -167,11 +209,20 @@ class AMAROK_EXPORT TagGuesserWidget : public FilenameLayoutWidget
     protected:
         virtual Token* createToken(qint64 value) const;
 
-        /** Adds the path (depending on cbUseFullPath and sbNestingLevel) to the fileInfo */
+        /** returns a filename with the same number of directory
+            levels as the scheme.
+            Also removes the extension.
+        */
         QString parsableFileName( const QFileInfo &fileInfo ) const;
+
+        /** Returns the fileName with added path. */
+        QString getParsableFileName();
 
         /** Filename to guess from. */
         QString m_filename;
+
+        QLabel* m_filenamePreview;
+        TagGuessOptionWidget* m_optionsWidget;
 };
 
 
