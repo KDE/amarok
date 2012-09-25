@@ -695,7 +695,7 @@ void GpodderProvider::timerGenerateEpisodeAction()
                                                        EpisodeAction::Play,
                                                        QDateTime::currentMSecsSinceEpoch(),
                                                        1,
-                                                       positionSeconds,
+                                                       positionSeconds + 1,
                                                        lengthSeconds
                                                        ) );
 
