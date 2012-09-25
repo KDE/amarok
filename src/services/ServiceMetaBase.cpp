@@ -17,6 +17,7 @@
 
 #include "ServiceMetaBase.h"
 
+#include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"

@@ -22,7 +22,6 @@
 #include "shared/MetaReplayGain.h"
 
 #include "core/interfaces/MetaCapability.h"
-#include "core/meta/Statistics.h"
 
 #include <QList>
 #include <QMetaType>
@@ -53,6 +52,10 @@ namespace Meta
     class Composer;
     class Year;
     class Label;
+
+    class Statistics;
+    typedef KSharedPtr<Statistics> StatisticsPtr;
+    typedef KSharedPtr<const Statistics> ConstStatisticsPtr;
 
     typedef KSharedPtr<Base> DataPtr;
     typedef QList<DataPtr> DataList;

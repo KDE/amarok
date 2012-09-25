@@ -19,19 +19,19 @@
 
 #include "CoverBlingApplet.h"
 
-// Amarok
-#include "core/support/Amarok.h"
 #include "EngineController.h"
-#include "core/support/Debug.h"
 #include "context/ContextView.h"
+#include "context/widgets/RatingWidget.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Statistics.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "context/widgets/RatingWidget.h"
 #include "playlist/PlaylistModelStack.h"
 #include "SearchBarTextItem.h"
 #include "playlist/PlaylistController.h"
-// KDE
+
 #include <KAction>
 #include <KColorScheme>
 #include <KConfigDialog>
@@ -40,7 +40,6 @@
 #include <Plasma/IconWidget>
 #include <Plasma/Theme>
 
-// Qt
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsSimpleTextItem>

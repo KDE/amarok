@@ -14,9 +14,12 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core/meta/support/MetaConstants.h"
+#include "MetaConstants.h"
+
+#include "core/meta/Statistics.h"
 #include "shared/FileType.h"
-#include <klocalizedstring.h>
+
+#include <KLocalizedString>
 
 QString Meta::nameForField( qint64 field )
 {

@@ -19,8 +19,8 @@
 #include "core-impl/meta/proxy/MetaProxy_p.moc"
 #include "core-impl/meta/proxy/MetaProxyWorker.h"
 
+#include "core/meta/Statistics.h"
 #include "core/capabilities/EditCapability.h"
-
 #include "core-impl/collections/support/CollectionManager.h"
 
 #include <QObject>

@@ -17,8 +17,9 @@
 #ifndef MEDIADEVICEMETA_H
 #define MEDIADEVICEMETA_H
 
-#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
+#include "core/support/Debug.h"
 #include "mediadevicecollection_export.h"
 
 #include <QList>

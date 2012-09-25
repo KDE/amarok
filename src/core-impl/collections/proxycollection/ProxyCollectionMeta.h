@@ -20,6 +20,7 @@
 #define PROXYCOLLECTIONMETA_H
 
 #include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
 
 #include <QList>
 

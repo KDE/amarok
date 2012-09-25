@@ -31,6 +31,7 @@
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
 #include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "moodbar/MoodbarManager.h"

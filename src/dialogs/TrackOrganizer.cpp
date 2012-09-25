@@ -20,8 +20,9 @@
 
 #include "TrackOrganizer.h"
 
-#include "core/support/Amarok.h"
 #include "QStringx.h"
+#include "core/meta/Statistics.h"
+#include "core/support/Amarok.h"
 
 #include <KLocale>
 

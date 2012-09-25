@@ -22,6 +22,7 @@
 #include "playlistgenerator/ConstraintFactory.h"
 
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Statistics.h"
 #include "core/support/Debug.h"
 
 #include <KRandom>

@@ -25,6 +25,7 @@
 
 #include "aboutdialog/ExtendedAboutDialog.h"
 #include "ActionClasses.h"
+#include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "EngineController.h" //for actions in ctor

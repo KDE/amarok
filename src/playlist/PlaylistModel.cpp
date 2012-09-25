@@ -36,6 +36,7 @@
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PlaylistColumnNames.h"
 #include "PlaylistActions.h"

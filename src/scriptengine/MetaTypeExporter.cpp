@@ -17,6 +17,8 @@ Image*                                                                          
 
 #include "MetaTypeExporter.h"
 
+#include "core/meta/Statistics.h"
+
 #include <QtScript>
 
 #define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );

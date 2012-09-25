@@ -74,7 +74,7 @@ public:
     virtual bool isPlayable() const { return m_currentTrack->isPlayable(); }
     virtual QString type() const { return m_currentTrack->type(); }
 
-    virtual StatisticsPtr statistics() { return m_currentTrack->statistics(); }
+    virtual StatisticsPtr statistics();
 
     using Observer::metadataChanged;
     virtual void metadataChanged( Meta::TrackPtr track );

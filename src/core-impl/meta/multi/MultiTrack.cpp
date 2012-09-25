@@ -16,6 +16,7 @@
 
 #include "core-impl/meta/multi/MultiTrack.h"
 
+#include "core/meta/Statistics.h"
 #include "core/support/Debug.h"
 #include "core-impl/capabilities/multisource/MultiSourceCapabilityImpl.h"
 
@@ -118,6 +119,11 @@ Capabilities::Capability * Meta::MultiTrack::createCapabilityInterface(Capabilit
     }
 }
 
+}
+
+Meta::StatisticsPtr Meta::MultiTrack::statistics()
+{
+    return m_currentTrack->statistics();
 }
 
 void Meta::MultiTrack::metadataChanged( Meta::TrackPtr track )

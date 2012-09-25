@@ -25,22 +25,23 @@
 
 #include "TagDialog.h"
 
+#include "MainWindow.h"
+#include "SvgHandler.h"
+#include "core/capabilities/EditCapability.h"
+#include "core/collections/QueryMaker.h"
+#include "core/interfaces/Logger.h"
+#include "core/meta/Statistics.h"
+#include "core/meta/support/MetaUtility.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "CoverLabel.h"
-#include "covermanager/CoverFetchingActions.h"
 #include "core/support/Debug.h"
-#include "core/capabilities/EditCapability.h"
-#include "FilenameLayoutDialog.h"
-#include "MainWindow.h"
-#include "MusicBrainzTagger.h"
-#include "core/meta/support/MetaUtility.h"
-#include "core/collections/QueryMaker.h"
-#include "SvgHandler.h"
-#include "TagGuesser.h"
-#include "ui_TagDialogBase.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "covermanager/CoverFetchingActions.h"
+#include "dialogs/FilenameLayoutDialog.h"
+#include "dialogs/MusicBrainzTagger.h"
+#include "dialogs/TagGuesser.h"
+#include "widgets/CoverLabel.h"
+#include "ui_TagDialogBase.h" // needs to be after including CoverLabel, silly
 
 #include <KLineEdit>
 #include <KMenu>

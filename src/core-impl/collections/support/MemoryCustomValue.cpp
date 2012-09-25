@@ -16,6 +16,8 @@
 
 #include "MemoryCustomValue.h"
 
+#include "core/meta/Statistics.h"
+
 #include <QSet>
 
 class SumReturnFunction : public CustomReturnFunction

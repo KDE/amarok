@@ -27,6 +27,7 @@
 
 #include "core/support/Debug.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "playlist/PlaylistDefines.h"

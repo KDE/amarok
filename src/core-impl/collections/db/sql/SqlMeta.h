@@ -20,6 +20,7 @@
 #define SQLMETA_H
 
 #include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
 #include "core/meta/support/MetaConstants.h"
 #include "amarok_sqlcollection_export.h"
 #include "FileType.h"

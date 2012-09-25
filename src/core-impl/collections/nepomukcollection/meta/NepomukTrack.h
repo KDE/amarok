@@ -23,7 +23,9 @@
 #include "NepomukAlbum.h"
 #include "NepomukArtist.h"
 #include "NepomukYear.h"
+
 #include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
 
 #include <QSharedPointer>
 

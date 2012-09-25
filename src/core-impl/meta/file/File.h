@@ -18,6 +18,7 @@
 #define AMAROK_META_FILE_H
 
 #include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
 
 namespace MetaFile
 {

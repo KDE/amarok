@@ -18,6 +18,7 @@
 #include "SortAlgorithms.h"
 
 #include "AbstractModel.h"
+#include "core/meta/Statistics.h"
 
 namespace Playlist
 {

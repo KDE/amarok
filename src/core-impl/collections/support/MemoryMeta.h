@@ -205,7 +205,7 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual void addLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
         virtual void removeLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
 
-        virtual Meta::StatisticsPtr statistics() { return m_track->statistics(); }
+        virtual Meta::StatisticsPtr statistics();
 
         // MemoryMeta::Track methods:
 

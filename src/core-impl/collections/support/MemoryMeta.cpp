@@ -16,6 +16,8 @@
  ****************************************************************************************/
 
 #include "MemoryMeta.h"
+
+#include "core/meta/Statistics.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "covermanager/CoverCache.h"
 
@@ -184,6 +186,12 @@ Track::~Track()
         static_cast<Genre *>( m_genre.data() )->removeTrack( this );
     if( m_year )
         static_cast<Year *>( m_year.data() )->removeTrack( this );
+}
+
+Meta::StatisticsPtr
+Track::statistics()
+{
+    return m_track->statistics();
 }
 
 void

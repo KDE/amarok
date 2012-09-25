@@ -32,6 +32,7 @@
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
+#include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
 #include "MainWindow.h"
 #include "PaletteHandler.h"
