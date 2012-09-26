@@ -25,22 +25,21 @@
 #include "PrettyItemDelegate.h"
 
 #include "App.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "InlineEditorWidget.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
-#include "core/meta/Meta.h"
-#include "core/meta/Statistics.h"
+#include "QStringx.h"
+#include "core/support/Debug.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
+#include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
 #include "moodbar/MoodbarManager.h"
-#include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/layouts/LayoutManager.h"
-#include "QStringx.h"
-
-#include "kratingpainter.h"
+#include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/view/listview/InlineEditorWidget.h"
+#include "widgets/kratingpainter.h"
 
 #include <QFontMetricsF>
 #include <QPainter>

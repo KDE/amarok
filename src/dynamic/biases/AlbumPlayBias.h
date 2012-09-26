@@ -19,9 +19,9 @@
 #ifndef AMAROK_ALBUMPLAY_BIAS_H
 #define AMAROK_ALBUMPLAY_BIAS_H
 
-#include "Bias.h"
-#include "BiasFactory.h"
-#include <widgets/MetaQueryWidget.h>
+#include "dynamic/Bias.h"
+#include "dynamic/BiasFactory.h"
+#include "widgets/MetaQueryWidget.h"
 
 namespace Dynamic
 {

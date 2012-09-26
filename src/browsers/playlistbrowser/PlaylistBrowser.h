@@ -17,7 +17,7 @@
 #ifndef PLAYLISTBROWSERNSPLAYLISTBROWSER_H
 #define PLAYLISTBROWSERNSPLAYLISTBROWSER_H
 
-#include "BrowserCategoryList.h"
+#include "browsers/BrowserCategoryList.h"
 
 #include <QMap>
 

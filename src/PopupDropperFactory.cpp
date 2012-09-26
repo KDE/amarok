@@ -16,12 +16,12 @@
 
 #include "PopupDropperFactory.h"
 
-#include "core/support/Debug.h"
-#include "ContextView.h"
-#include "PaletteHandler.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "MainWindow.h"
+#include "PaletteHandler.h"
 #include "SvgHandler.h"
+#include "core/support/Debug.h"
+#include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "context/ContextView.h"
 
 #include <kglobal.h>
 

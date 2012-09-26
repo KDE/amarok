@@ -18,21 +18,20 @@
 
 #define DEBUG_PREFIX "XSPFPlaylist"
 
-#include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
+#include "XSPFPlaylist.h"
 
+#include "core/meta/support/MetaUtility.h"
+#include "core/capabilities/StreamInfoCapability.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
-#include "core/meta/support/MetaUtility.h"
 #include "core-impl/meta/stream/Stream.h"
-#include "core/capabilities/StreamInfoCapability.h"
+#include "core-impl/meta/timecode/TimecodeMeta.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
-#include "PlaylistManager.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-
-#include "core-impl/meta/timecode/TimecodeMeta.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <KUrl>
 #include <KMessageBox>

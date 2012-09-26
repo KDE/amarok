@@ -19,17 +19,15 @@
 #include "ConfigDialog.h"
 
 #include "amarokconfig.h"
+#include "configdialog/dialogs/CollectionConfig.h"
+#include "configdialog/dialogs/DatabaseConfig.h"
+#include "configdialog/dialogs/GeneralConfig.h"
+#include "configdialog/dialogs/NotificationsConfig.h"
+#include "configdialog/dialogs/PlaybackConfig.h"
+#include "configdialog/dialogs/PluginsConfig.h"
+#include "configdialog/dialogs/ScriptsConfig.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-
-#include "CollectionConfig.h"
-#include "DatabaseConfig.h"
-#include "GeneralConfig.h"
-//#include "MediadeviceConfig.h"
-#include "NotificationsConfig.h"
-#include "PlaybackConfig.h"
-#include "PluginsConfig.h"
-#include "ScriptsConfig.h"
 
 #include <KLocalizedString>
 

@@ -16,12 +16,12 @@
 
 #include "BookmarkManagerWidget.h"
 
-#include "AmarokUrl.h"
-#include "BookmarkModel.h"
-#include "BookmarkCurrentButton.h"
-#include "NavigationUrlGenerator.h"
-#include "PlayUrlGenerator.h"
-#include "ProgressWidget.h"
+#include "amarokurls/AmarokUrl.h"
+#include "amarokurls/BookmarkModel.h"
+#include "amarokurls/BookmarkCurrentButton.h"
+#include "amarokurls/NavigationUrlGenerator.h"
+#include "amarokurls/PlayUrlGenerator.h"
+#include "widgets/ProgressWidget.h"
 
 #include <KAction>
 #include <KIcon>

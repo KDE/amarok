@@ -17,9 +17,8 @@
 #ifndef MEDIADEVICEHANDLER_ARTWORK_CAPABILITY_H
 #define MEDIADEVICEHANDLER_ARTWORK_CAPABILITY_H
 
-#include "mediadevicecollection_export.h"
-#include "../MediaDeviceHandlerCapability.h"
-#include "../../MediaDeviceMeta.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceMeta.h"
+#include "core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.h"
 
 namespace Handler
 {

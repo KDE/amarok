@@ -40,11 +40,8 @@ public:
      */
     static ContextView* self();
 
-        
 private:
     static ContextView* s_self;
-
-   
 };
 
 } // Context namespace

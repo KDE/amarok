@@ -20,9 +20,9 @@
 #ifndef AMAROK_COVERFOUNDDIALOG_H
 #define AMAROK_COVERFOUNDDIALOG_H
 
-#include "CoverFetchUnit.h"
 #include "core/meta/Meta.h"
-#include "NetworkAccessManagerProxy.h"
+#include "covermanager/CoverFetchUnit.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 #include <KProgressDialog>
 #include <KVBox>

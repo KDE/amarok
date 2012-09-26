@@ -17,14 +17,14 @@
 
 #include "AppletToolbar.h"
 
-#include "core/support/Amarok.h"
 #include "App.h"
-#include "AppletToolbarAddItem.h"
-#include "AppletToolbarAppletItem.h"
-#include "AppletToolbarConfigItem.h"
-#include "Containment.h"
-#include "core/support/Debug.h"
 #include "PaletteHandler.h"
+#include "context/toolbar/AppletToolbarAddItem.h"
+#include "context/toolbar/AppletToolbarAppletItem.h"
+#include "context/toolbar/AppletToolbarConfigItem.h"
+#include "context/Containment.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <QGraphicsScene>
 #include <QPainter>

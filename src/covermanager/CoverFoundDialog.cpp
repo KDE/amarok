@@ -18,17 +18,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CoverFoundDialog"
+
 #include "CoverFoundDialog.h"
 
-#define DEBUG_PREFIX "CoverFoundDialog"
-#include "core/support/Debug.h"
-
-#include "AlbumBreadcrumbWidget.h"
-#include "core/support/Amarok.h"
-#include "CoverViewDialog.h"
-#include "PixmapViewer.h"
-#include "statusbar/KJobProgressBar.h"
 #include "SvgHandler.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "covermanager/CoverViewDialog.h"
+#include "statusbar/KJobProgressBar.h"
+#include "widgets/AlbumBreadcrumbWidget.h"
+#include "widgets/PixmapViewer.h"
 
 #include <KComboBox>
 #include <KConfigGroup>

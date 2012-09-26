@@ -17,11 +17,11 @@
  ****************************************************************************************/
 
 #include "FilenameLayoutDialog.h"
-#include "TokenDropTarget.h"
 
+#include "MetaValues.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "MetaValues.h"
+#include "widgets/TokenDropTarget.h"
 
 #include <KConfig>
 #include <KColorScheme>

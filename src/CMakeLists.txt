@@ -33,38 +33,6 @@ add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
 
-include_directories(
-    aboutdialog
-    aboutdialog/libattica-ocsclient
-    amarokurls
-    browsers/
-    browsers/playlistbrowser
-    browsers/servicebrowser
-    core-impl/collections
-    core-impl/collections/support
-    core-impl/collections/mediadevicecollection
-    core-impl/collections/mediadevicecollection/handler  # for Handler
-    core-impl/collections/mediadevicecollection/support  # for MediaDeviceInfo
-    core-impl/collections/mediadevicecollection/playlist # for MediaDevicePlaylist etc.
-    core-impl/collections/mediadevicecollection/podcast
-    configdialog
-    configdialog/dialogs
-    context
-    context/widgets
-    context/widgets/appletexplorer/
-    dbus
-    dialogs
-    dynamic
-    likeback
-    musicbrainz
-    network
-    playlistmanager
-    statusbar
-    synchronization
-    transcoding
-    widgets
-)
-
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
 endif ( KDEMULTIMEDIA_FOUND )

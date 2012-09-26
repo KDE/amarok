@@ -19,19 +19,15 @@
 #ifndef MEDIADEVICEHANDLER_H
 #define MEDIADEVICEHANDLER_H
 
-#include "MediaDeviceHandlerCapability.h"
-#include "capabilities/PlaylistCapability.h"
-#include "capabilities/PodcastCapability.h"
-#include "capabilities/ReadCapability.h"
-#include "capabilities/WriteCapability.h"
-
-#include "MediaDeviceMeta.h"
-#include "MemoryCollection.h"
-#include "playlist/MediaDeviceUserPlaylistProvider.h"
-#include "core/meta/Meta.h"
-
-#include "mediadevicecollection_export.h"
-
+#include "core-impl/collections/mediadevicecollection/MediaDeviceMeta.h"
+#include "core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.h"
+#include "core-impl/collections/mediadevicecollection/handler/capabilities/PlaylistCapability.h"
+#include "core-impl/collections/mediadevicecollection/handler/capabilities/PodcastCapability.h"
+#include "core-impl/collections/mediadevicecollection/handler/capabilities/ReadCapability.h"
+#include "core-impl/collections/mediadevicecollection/handler/capabilities/WriteCapability.h"
+#include "core-impl/collections/mediadevicecollection/playlist/MediaDevicePlaylist.h"
+#include "core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.h"
+#include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 
 #include <threadweaver/Job.h>

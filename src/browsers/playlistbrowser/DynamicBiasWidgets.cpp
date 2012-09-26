@@ -20,17 +20,17 @@
 
 #include "DynamicBiasWidgets.h"
 
-#include "Bias.h"
-#include "BiasFactory.h"
 #include "core/support/Debug.h"
+#include "dynamic/Bias.h"
+#include "dynamic/BiasFactory.h"
 
-#include <QLabel>
+#include <KComboBox>
+#include <KLocale>
+
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
-
-#include <KComboBox>
-#include <klocale.h>
+#include <QLabel>
 
 PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* parent )
     : QDialog( parent )

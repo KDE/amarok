@@ -21,8 +21,8 @@
 #ifndef AMAROK_IFELSEBIAS_H
 #define AMAROK_IFELSEBIAS_H
 
-#include "Bias.h"
-#include "BiasFactory.h"
+#include "dynamic/Bias.h"
+#include "dynamic/BiasFactory.h"
 
 namespace Dynamic
 {

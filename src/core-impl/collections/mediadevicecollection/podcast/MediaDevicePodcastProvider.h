@@ -18,7 +18,7 @@
 #define MEDIADEVICEPODCASTPROVIDER_H
 
 #include "core/podcasts/PodcastProvider.h"
-#include "handler/MediaDeviceHandler.h"
+#include "core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.h"
 
 namespace Podcasts {
 

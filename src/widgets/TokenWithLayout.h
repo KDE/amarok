@@ -17,8 +17,9 @@
 #ifndef TOKENWITHLAYOUT_H
 #define TOKENWITHLAYOUT_H
 
+#include "widgets/Token.h"
+
 #include <QWeakPointer>
-#include <Token.h>
 
 class LayoutEditDialog;
 

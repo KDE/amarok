@@ -19,7 +19,7 @@
 #ifndef AMAROK_COLLECTION_WIDGET
 #define AMAROK_COLLECTION_WIDGET
 
-#include "BrowserCategory.h"
+#include "browsers/BrowserCategory.h"
 
 class QAction;
 

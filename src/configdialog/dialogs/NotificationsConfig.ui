@@ -309,7 +309,7 @@
   </customwidget>
  </customwidgets>
  <includes>
-  <include location="local">Osd.h</include>
+  <include location="local">widgets/Osd.h</include>
   <include location="local">ktextedit.h</include>
   <include location="local">knuminput.h</include>
  </includes>

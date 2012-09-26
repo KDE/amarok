@@ -21,7 +21,7 @@
 
 #include "amarok_export.h"
 #include "core/collections/Collection.h"
-#include "support/MemoryCollection.h"
+#include "core-impl/collections/support/MemoryCollection.h"
 #include "ServiceBase.h"
 
 #include <KIcon>

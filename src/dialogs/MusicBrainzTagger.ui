@@ -77,7 +77,7 @@
   <customwidget>
    <class>MusicBrainzTagsView</class>
    <extends>QTreeView</extends>
-   <header>MusicBrainzTags.h</header>
+   <header>musicbrainz/MusicBrainzTags.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

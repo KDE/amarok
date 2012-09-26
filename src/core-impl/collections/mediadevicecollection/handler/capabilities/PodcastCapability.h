@@ -18,11 +18,8 @@
 #ifndef PODCASTCAPABILITY_H
 #define PODCASTCAPABILITY_H
 
-#include "mediadevicecollection_export.h"
-#include "../MediaDeviceHandlerCapability.h"
-#include "../../MediaDeviceMeta.h"
-
-#include "mediadevicecollection/podcast/MediaDevicePodcastMeta.h"
+#include "core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.h"
+#include "core-impl/collections/mediadevicecollection/podcast/MediaDevicePodcastMeta.h"
 
 namespace Handler
 {

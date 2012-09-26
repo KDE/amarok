@@ -18,20 +18,13 @@
 
 #define DEBUG_PREFIX "MediaDeviceCollection"
 
-#include "MediaDeviceCollection.h"
-#include "MediaDeviceInfo.h"
-#include "MediaDeviceMeta.h"
-
-#include "core/capabilities/ActionsCapability.h"
-
 #include "MediaDeviceMonitor.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
+#include "core-impl/collections/mediadevicecollection/support/MediaDeviceInfo.h"
+#include "core-impl/collections/support/MemoryQueryMaker.h"
 
-#include "amarokconfig.h"
-#include "core/support/Debug.h"
-#include "MediaDeviceCache.h"
-#include "MemoryQueryMaker.h"
-
-#include <kdiskfreespaceinfo.h>
+#include <KDiskFreeSpaceInfo>
 
 using namespace Collections;
 

@@ -16,15 +16,15 @@
 
 #include "PlaylistBrowser.h"
 
+#include "browsers/playlistbrowser/APGCategory.h"
+#include "browsers/playlistbrowser/DynamicCategory.h"
+#include "browsers/playlistbrowser/UserPlaylistCategory.h"
+#include "core/playlists/Playlist.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "APGCategory.h"
-#include "DynamicCategory.h"
-#include "core/playlists/Playlist.h"
-#include "UserPlaylistCategory.h"
-#include "PlaylistManager.h"
+#include "playlistmanager/PlaylistManager.h"
 
-#include <klocale.h>
+#include <KLocale>
 #include <KStandardDirs>
 
 #include <QList>

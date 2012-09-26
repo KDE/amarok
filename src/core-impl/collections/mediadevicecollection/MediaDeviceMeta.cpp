@@ -15,18 +15,17 @@
  ****************************************************************************************/
 
 #include "MediaDeviceMeta.h"
-#include "MediaDeviceCollection.h"
-#include "MediaDeviceHandler.h"
 
-#include "MediaDeviceEditCapability.h"
-#include "handler/capabilities/ArtworkCapability.h"
-#include "covermanager/CoverCache.h"
-#include "covermanager/CoverFetchingActions.h"
-#include "core/support/Debug.h"
 #include "SvgHandler.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/EditCapability.h"
+#include "core/support/Debug.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceEditCapability.h"
+#include "core-impl/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.h"
+#include "covermanager/CoverCache.h"
+#include "covermanager/CoverFetchingActions.h"
 
 #include <KIcon>
 #include <KUrl>

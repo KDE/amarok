@@ -14,15 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
+#include "PLSPlaylist.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/meta/Meta.h"
-#include "PlaylistManager.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <KMimeType>
 #include <KLocale>

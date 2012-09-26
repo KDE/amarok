@@ -22,9 +22,9 @@
 
 #include "DBusAmarokApp.h"
 
-#include "core/support/Debug.h"
-#include "Osd.h"
 #include "SvgHandler.h"
+#include "core/support/Debug.h"
+#include "widgets/Osd.h"
 
 using namespace Amarok;
 

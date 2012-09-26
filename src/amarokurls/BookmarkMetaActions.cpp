@@ -16,16 +16,15 @@
 
 #include "BookmarkMetaActions.h"
 
-#include "AmarokUrlHandler.h"
-#include "BookmarkModel.h"
 #include "EngineController.h"
-#include "ProgressWidget.h"
 #include "SvgHandler.h"
+#include "amarokurls/AmarokUrlHandler.h"
+#include "amarokurls/BookmarkModel.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
+#include "widgets/ProgressWidget.h"
 
 #include <KIcon>
 #include <KLocale>
-
 
 BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album )
     : QAction( i18n( "Bookmark this Album" ), parent )

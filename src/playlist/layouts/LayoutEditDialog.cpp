@@ -15,8 +15,9 @@
  ****************************************************************************************/
 
 #include "LayoutEditDialog.h"
-#include "TokenWithLayout.h"
-#include "TokenDropTarget.h"
+
+#include "widgets/TokenWithLayout.h"
+#include "widgets/TokenDropTarget.h"
 
 #include <KIcon>
 #include <KLocale>

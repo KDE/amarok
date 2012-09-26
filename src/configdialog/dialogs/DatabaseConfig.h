@@ -19,8 +19,7 @@
 #define DATABASECONFIG_H
 
 #include "ui_DatabaseConfig.h"
-#include "ConfigDialogBase.h"
-
+#include "configdialog/ConfigDialogBase.h"
 
 class DatabaseConfig : public ConfigDialogBase, public Ui_DatabaseConfig
 {

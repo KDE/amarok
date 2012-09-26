@@ -17,7 +17,7 @@
 #ifndef AMAROK_PLUGINSCONFIG_H
 #define AMAROK_PLUGINSCONFIG_H
 
-#include "ConfigDialogBase.h"
+#include "configdialog/ConfigDialogBase.h"
 
 class KPluginSelector;
 

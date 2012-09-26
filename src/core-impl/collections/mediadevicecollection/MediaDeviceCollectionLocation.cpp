@@ -16,14 +16,12 @@
 
 #include "MediaDeviceCollectionLocation.h"
 
-#include "core/support/Debug.h"
-#include "core/meta/Meta.h"
-#include "MediaDeviceCollection.h"
-#include "MediaDeviceHandler.h"
-//#include "MediaDeviceMeta.h"
 #include "MediaDeviceCache.h" // for collection refresh hack
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
 
-#include <kjob.h>
+#include <KJob>
 #include <KLocale>
 #include <kio/job.h>
 #include <kio/jobclasses.h>

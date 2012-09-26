@@ -20,13 +20,12 @@
 
 #include "QuizPlayBias.h"
 
+#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
-
-#include "TrackSet.h"
-#include "DynamicBiasWidgets.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "dynamic/TrackSet.h"
 
 #include <QLabel>
 #include <QComboBox>

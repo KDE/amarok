@@ -44,6 +44,3 @@ ContextView* ContextView::self()
 }
 
 } // Context namespace
-
-#include "ContextView.moc"
-

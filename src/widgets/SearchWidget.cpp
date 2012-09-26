@@ -16,8 +16,8 @@
  ****************************************************************************************/
 
 #include "SearchWidget.h"
-#include "EditFilterDialog.h"
 #include "core/support/Debug.h"
+#include "dialogs/EditFilterDialog.h"
 
 #include <KLocale>
 

@@ -21,18 +21,18 @@
 #define DEBUG_PREFIX "Bias"
 
 #include "Bias.h"
-#include "BiasFactory.h"
-#include "DynamicModel.h"
-#include "biases/SearchQueryBias.h"
 
+#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/support/Debug.h"
-#include "DynamicBiasWidgets.h"
+#include "dynamic/BiasFactory.h"
+#include "dynamic/DynamicModel.h"
+#include "dynamic/biases/SearchQueryBias.h"
+
+#include <KLocale>
 
 #include <QPainter>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#include <klocale.h>
 
 // -------- AbstractBias -------------
 

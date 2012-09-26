@@ -20,22 +20,22 @@
 #define DEBUG_PREFIX "CoverManager"
 
 #include "CoverManager.h"
-#include "CoverViewDialog.h"
 
-#include "core/support/Amarok.h"
 #include "amarokconfig.h"
-#include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "CompoundProgressBar.h"
-#include "core/support/Debug.h"
-#include "core/capabilities/ActionsCapability.h"
-#include "core/meta/Meta.h"
-#include "core/collections/QueryMaker.h"
-#include "CoverFetchingActions.h"
 #include "config.h"
-#include "PixmapViewer.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/collections/Collection.h"
+#include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "covermanager/CoverFetchingActions.h"
+#include "covermanager/CoverViewDialog.h"
 #include "playlist/PlaylistController.h"
+#include "statusbar/CompoundProgressBar.h"
 #include "widgets/LineEdit.h"
+#include "widgets/PixmapViewer.h"
 
 #include <KApplication>
 #include <KIO/NetAccess>

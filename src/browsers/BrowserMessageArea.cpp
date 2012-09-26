@@ -15,9 +15,10 @@
  ****************************************************************************************/
 
 #include "BrowserMessageArea.h"
-#include "KJobProgressBar.h"
-#include "LongMessageWidget.h"
-#include "NetworkProgressBar.h"
+
+#include "statusbar/KJobProgressBar.h"
+#include "statusbar/LongMessageWidget.h"
+#include "statusbar/NetworkProgressBar.h"
 
 #define SHORT_MESSAGE_DURATION 5000
 #define POPUP_MESSAGE_DURATION 5000

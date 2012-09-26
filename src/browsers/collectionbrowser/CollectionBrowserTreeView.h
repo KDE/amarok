@@ -18,7 +18,7 @@
 #ifndef COLLECTIONBROWSERTREEVIEW_H
 #define COLLECTIONBROWSERTREEVIEW_H
 
-#include "CollectionTreeView.h"
+#include "browsers/CollectionTreeView.h"
 
 /**
  * Specialized CollectionTreeView that handles actions to top level items ( collections ) in a custom way.

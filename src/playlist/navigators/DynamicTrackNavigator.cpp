@@ -20,12 +20,12 @@
 
 #include "DynamicTrackNavigator.h"
 
+#include "amarokconfig.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "dynamic/DynamicPlaylist.h"
 #include "dynamic/DynamicModel.h"
-#include "DynamicPlaylist.h"
-#include "core/meta/Meta.h"
-#include "amarokconfig.h"
+#include "dynamic/DynamicPlaylist.h"
 #include "playlist/PlaylistController.h"
 
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator()

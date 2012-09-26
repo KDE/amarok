@@ -230,7 +230,7 @@
   <customwidget>
    <class>Transcoding::OptionsStackedWidget</class>
    <extends>QWidget</extends>
-   <header>TranscodingOptionsStackedWidget.h</header>
+   <header>transcoding/TranscodingOptionsStackedWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

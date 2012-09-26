@@ -16,17 +16,16 @@
  ****************************************************************************************/
 
 #include "BookmarkPopup.h"
-#include "BookmarkTriangle.h"
-#include "SvgHandler.h"
-#include "core/support/Debug.h"
 
+#include "SvgHandler.h"
+#include "amarokurls/BookmarkModel.h"
+#include "core/support/Debug.h"
+#include "widgets/BookmarkTriangle.h"
 
 #include <KLocale>
 
 #include <QPainter>
 #include <QHBoxLayout>
-#include <BookmarkModel.h>
-
 
 BookmarkPopup::BookmarkPopup ( QWidget* parent, QString label, BookmarkTriangle* triangle )
         : QWidget ( parent )

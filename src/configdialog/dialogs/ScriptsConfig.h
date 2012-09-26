@@ -17,7 +17,7 @@
 #ifndef AMAROK_SCRIPTSCONFIG_H
 #define AMAROK_SCRIPTSCONFIG_H
 
-#include "ConfigDialogBase.h"
+#include "configdialog/ConfigDialogBase.h"
 
 class ScriptSelector;
 

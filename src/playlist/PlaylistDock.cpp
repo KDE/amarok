@@ -22,25 +22,25 @@
 #include "PlaylistDock.h"
 
 #include "ActionClasses.h"
-#include "amarokconfig.h"
 #include "App.h"
-#include "core/support/Debug.h"
-#include "layouts/LayoutManager.h"
 #include "MainWindow.h"
-#include "navigators/NavigatorConfigAction.h"
 #include "PaletteHandler.h"
-#include "PlaylistController.h"
-#include "PlaylistDefines.h"
-#include "PlaylistInfoWidget.h"
-#include "PlaylistManager.h"
-#include "PlaylistModelStack.h"
-#include "PlaylistQueueEditor.h"
-#include "PlaylistToolBar.h"
-#include "ProgressiveSearchWidget.h"
+#include "amarokconfig.h"
+#include "amarokurls/AmarokUrl.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistDefines.h"
+#include "playlist/PlaylistInfoWidget.h"
+#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistQueueEditor.h"
+#include "playlist/PlaylistToolBar.h"
+#include "playlist/ProgressiveSearchWidget.h"
+#include "playlist/layouts/LayoutManager.h"
+#include "playlist/navigators/NavigatorConfigAction.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "widgets/HorizontalDivider.h"
-#include "amarokurls/AmarokUrl.h"
 
 #include <KActionMenu>
 #include <KStandardDirs>
@@ -50,7 +50,6 @@
 #include <QLabel>
 #include <QToolBar>
 #include <QHBoxLayout>
-
 
 static const QString s_dynMode( "dynamic_mode" );
 static const QString s_repopulate( "repopulate" );

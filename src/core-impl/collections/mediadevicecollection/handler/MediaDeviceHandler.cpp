@@ -18,13 +18,11 @@
 
 #include "MediaDeviceHandler.h"
 
-#include "MediaDeviceHandlerCapability.h"
 #include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
 #include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
+#include "core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.h"
 #include "core-impl/collections/support/ArtistHelper.h"
-#include "playlist/MediaDeviceUserPlaylistProvider.h"
-#include "playlist/MediaDevicePlaylist.h"
 #include "playlistmanager/PlaylistManager.h"
 
 #include <KMessageBox>

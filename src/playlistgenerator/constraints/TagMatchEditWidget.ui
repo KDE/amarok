@@ -733,7 +733,7 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>Amarok::KRatingWidget</class>
    <extends>QFrame</extends>
-   <header>kratingwidget.h</header>
+   <header>widgets/kratingwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

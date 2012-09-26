@@ -1238,13 +1238,13 @@
   <customwidget>
    <class>Amarok::KRatingWidget</class>
    <extends>QFrame</extends>
-   <header>kratingwidget.h</header>
+   <header>widgets/kratingwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ClearSpinBox</class>
    <extends>QSpinBox</extends>
-   <header>ClearSpinBox.h</header>
+   <header>widgets/ClearSpinBox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

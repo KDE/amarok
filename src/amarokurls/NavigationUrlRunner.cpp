@@ -16,18 +16,16 @@
 
 #include "NavigationUrlRunner.h"
 
-#include <amarokconfig.h>
-#include "core/support/Debug.h"
-
-#include "AmarokUrlHandler.h"
-
 #include "MainWindow.h"
-#include "PlaylistManager.h"
+#include "amarokconfig.h"
+#include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
+#include "core/support/Debug.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "services/ServiceBase.h"
 
 NavigationUrlRunner::NavigationUrlRunner()

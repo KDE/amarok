@@ -17,18 +17,17 @@
 
 #include "MediaDeviceUserPlaylistProvider.h"
 
+#include "SvgHandler.h"
+#include "browsers/playlistbrowser/UserPlaylistModel.h"
 #include "core/support/Amarok.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "MediaDeviceCollection.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "PlaylistManager.h"
-//#include "MediaDeviceStorage.h"
-#include "SvgHandler.h"
-#include "UserPlaylistModel.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <KIcon>
 #include <KInputDialog>

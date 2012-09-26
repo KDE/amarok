@@ -19,11 +19,11 @@
  
 #include "ServicePluginManager.h"
 
+#include "PluginManager.h"
+#include "browsers/servicebrowser/ServiceBrowser.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "PluginManager.h"
-#include "ServiceBase.h"
-#include "ServiceBrowser.h"
+#include "services/ServiceBase.h"
 
 #include <KService>
 

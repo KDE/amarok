@@ -18,7 +18,7 @@
 #ifndef AMAROK_NETWORK_SCRIPT_H
 #define AMAROK_NETWORK_SCRIPT_H
 
-#include "NetworkAccessManagerProxy.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 #include <QObject>
 #include <QtScript>

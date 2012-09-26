@@ -15,19 +15,20 @@
  ****************************************************************************************/
  
 #include "NavigationUrlGenerator.h"
-#include <amarokconfig.h>
-#include "AmarokUrl.h"
-#include "AmarokUrlHandler.h"
-#include "core/support/Debug.h"
+
 #include "MainWindow.h"
-#include "ServiceBrowser.h"
-#include "core/capabilities/SourceInfoCapability.h"
+#include "amarokconfig.h"
+#include "amarokurls/AmarokUrl.h"
+#include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
-#include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/filebrowser/FileBrowser.h"
+#include "browsers/playlistbrowser/PlaylistBrowser.h"
+#include "browsers/servicebrowser/ServiceBrowser.h"
+#include "core/support/Debug.h"
+#include "core/capabilities/SourceInfoCapability.h"
 #include "core-impl/collections/db/sql/SqlMeta.h"
-#include "PlaylistManager.h"
+#include "playlistmanager/PlaylistManager.h"
 
 NavigationUrlGenerator * NavigationUrlGenerator::s_instance = 0;
 

@@ -19,8 +19,7 @@
 #define PLAYBACKCONFIG_H
 
 #include "ui_PlaybackConfig.h"
-#include "ConfigDialogBase.h"
-
+#include "configdialog/ConfigDialogBase.h"
 
 class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
 {

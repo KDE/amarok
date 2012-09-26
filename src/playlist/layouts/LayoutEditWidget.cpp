@@ -15,11 +15,11 @@
  ****************************************************************************************/
 
 #include "LayoutEditWidget.h"
-#include "TokenDropTarget.h"
-#include "playlist/PlaylistDefines.h"
-#include "playlist/PlaylistColumnNames.h"
 
 #include "core/support/Debug.h"
+#include "playlist/PlaylistColumnNames.h"
+#include "playlist/PlaylistDefines.h"
+#include "widgets/TokenDropTarget.h"
 
 #include <KHBox>
 #include <KMessageBox>

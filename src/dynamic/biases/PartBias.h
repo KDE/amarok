@@ -21,8 +21,8 @@
 #ifndef AMAROK_PARTBIAS_H
 #define AMAROK_PARTBIAS_H
 
-#include "Bias.h"
-#include "BiasFactory.h"
+#include "dynamic/Bias.h"
+#include "dynamic/BiasFactory.h"
 
 #include <QList>
 #include <QVector>

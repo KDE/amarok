@@ -18,15 +18,10 @@
 #define DEBUG_PREFIX "MediaDeviceMonitor"
 
 #include "MediaDeviceMonitor.h"
-#include "ConnectionAssistant.h"
-
-#include "core/support/Debug.h"
 
 #include "MediaDeviceCache.h"
 
-//solid specific includes
 #include <solid/devicenotifier.h>
-
 #include <solid/device.h>
 #include <solid/opticaldisc.h>
 #include <solid/storageaccess.h>

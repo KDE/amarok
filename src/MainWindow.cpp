@@ -23,24 +23,26 @@
 
 #include "MainWindow.h"
 
-#include "aboutdialog/ExtendedAboutDialog.h"
 #include "ActionClasses.h"
-#include "core/meta/Statistics.h"
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
 #include "EngineController.h" //for actions in ctor
 #include "KNotificationBackend.h"
-#include "Osd.h"
 #include "PaletteHandler.h"
+#include "PluginManager.h"
+#include "SvgHandler.h"
 #include "amarokconfig.h"
+#include "aboutdialog/ExtendedAboutDialog.h"
 #include "aboutdialog/OcsData.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/BookmarkManager.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
+#include "browsers/playlistbrowser/PodcastCategory.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 #include "context/ContextDock.h"
+#include "core/meta/Statistics.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "dialogs/DiagnosticDialog.h"
@@ -59,13 +61,10 @@
 #include "playlist/ProgressiveSearchWidget.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "PodcastCategory.h"
 #include "services/scriptable/ScriptableService.h"
 #include "toolbar/SlimToolbar.h"
 #include "toolbar/MainToolbar.h"
-#include "SvgHandler.h"
-#include "PluginManager.h"
-//#include "mediabrowser.h"
+#include "widgets/Osd.h"
 
 #include <KAction>          //m_actionCollection
 #include <KActionCollection>

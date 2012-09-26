@@ -165,7 +165,7 @@
   <customwidget>
    <class>FramedLabel</class>
    <extends>QLabel</extends>
-   <header>FramedLabel.h</header>
+   <header>aboutdialog/FramedLabel.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

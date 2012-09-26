@@ -19,12 +19,12 @@
 
 #include "Applet.h"
 
-#include "AppletHeader.h"
 #include "amarokconfig.h"
 #include "Containment.h"
-#include "ContextView.h"
-#include "core/support/Debug.h"
 #include "PaletteHandler.h"
+#include "context/ContextView.h"
+#include "core/support/Debug.h"
+#include "context/widgets/AppletHeader.h"
 
 #include <KMessageBox>
 #include <KServiceTypeTrader>

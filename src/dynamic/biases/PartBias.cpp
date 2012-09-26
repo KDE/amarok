@@ -20,24 +20,23 @@
 
 #include "PartBias.h"
 
+#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/support/Debug.h"
-#include "DynamicBiasWidgets.h"
+#include "widgets/SliderWidget.h"
+
+#include <KLocale>
 
 #include <QtGlobal> // for qRound
 #include <QApplication>
+#include <QGridLayout>
+#include <QLabel>
+#include <QSlider>
 #include <QStyle>
 #include <QStyleOption>
+#include <QWidget>
 #include <QXmlStreamReader>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#include "SliderWidget.h"
-#include <QGridLayout>
-#include <QSlider>
-#include <QWidget>
-#include <QLabel>
-
-#include <klocale.h>
 
 QString
 Dynamic::PartBiasFactory::i18nName() const

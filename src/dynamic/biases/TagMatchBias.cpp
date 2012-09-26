@@ -22,23 +22,20 @@
 
 #include "TagMatchBias.h"
 
+#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
-
-#include "TrackSet.h"
-#include "DynamicBiasWidgets.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "dynamic/TrackSet.h"
 
 #include <QDateTime>
+#include <QCheckBox>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QTimer>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#include <QHBoxLayout>
-#include <QCheckBox>
-#include <QLabel>
-
 
 QString
 Dynamic::TagMatchBiasFactory::i18nName() const

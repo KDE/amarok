@@ -17,19 +17,19 @@
 
 #include "PlayerHandler.h"
 
-#include "amarokconfig.h"
 #include "ActionClasses.h"
 #include "App.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
+#include "Mpris1AmarokPlayerAdaptor.h"
+#include "Mpris1PlayerAdaptor.h"
+#include "SvgHandler.h"
+#include "amarokconfig.h"
+#include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
-#include "Mpris1PlayerAdaptor.h"
-#include "Mpris1AmarokPlayerAdaptor.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
-#include "Osd.h"
-#include "SvgHandler.h"
+#include "widgets/Osd.h"
 
 #include <Phonon/Global>
 

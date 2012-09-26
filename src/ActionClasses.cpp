@@ -28,16 +28,15 @@
 #include "config.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "dialogs/EqualizerDialog.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
+#include "widgets/Osd.h"
 
 #include <KAuthorized>
 #include <KHelpMenu>
 #include <KLocale>
 #include <KToolBar>
-#include <Osd.h>
-#include <EqualizerDialog.h>
-
 
 extern OcsData ocsData;
 

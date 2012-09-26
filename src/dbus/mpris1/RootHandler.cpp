@@ -18,12 +18,12 @@
 #include "RootHandler.h"
 
 #include "App.h"
-#include "core/support/Debug.h"
 #include "Mpris1AmarokAppAdaptor.h"
 #include "Mpris1RootAdaptor.h"
-#include "Osd.h"
 #include "SvgHandler.h"
 #include "Version.h"
+#include "core/support/Debug.h"
+#include "widgets/Osd.h"
 
 // Marshall the DBusVersion data into a D-BUS argument
 QDBusArgument &operator<<(QDBusArgument &argument, const Mpris1::Version &version)

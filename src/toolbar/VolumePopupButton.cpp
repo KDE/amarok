@@ -18,9 +18,9 @@
 #include "VolumePopupButton.h"
 
 #include "ActionClasses.h"
-#include "core/support/Amarok.h"
 #include "EngineController.h"
-#include "SliderWidget.h"
+#include "core/support/Amarok.h"
+#include "widgets/SliderWidget.h"
 
 #include <KLocale>
 #include <KVBox>

@@ -18,9 +18,9 @@
 #ifndef ECHO_NEST_BIAS_H
 #define ECHO_NEST_BIAS_H
 
-#include "Bias.h"
-#include "BiasFactory.h"
-#include "TagMatchBias.h"
+#include "dynamic/Bias.h"
+#include "dynamic/BiasFactory.h"
+#include "dynamic/biases/TagMatchBias.h"
 
 #include <QMutex>
 #include <QNetworkReply>

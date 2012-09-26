@@ -17,7 +17,7 @@
 #ifndef MEDIADEVICEHANDLER_CAPABILITY_H
 #define MEDIADEVICEHANDLER_CAPABILITY_H
 
-#include "mediadevicecollection_export.h"
+#include "core-impl/collections/mediadevicecollection/support/mediadevicecollection_export.h"
 
 #include <QObject>
 

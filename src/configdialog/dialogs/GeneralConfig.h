@@ -18,7 +18,7 @@
 #define GENERALCONFIG_H
 
 #include "ui_GeneralConfig.h"
-#include "ConfigDialogBase.h"
+#include "configdialog/ConfigDialogBase.h"
 
 class GeneralConfig : public ConfigDialogBase, public Ui_GeneralConfig
 {

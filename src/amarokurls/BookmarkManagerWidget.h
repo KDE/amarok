@@ -18,8 +18,8 @@
 #define BOOKMARKMANAGERWIDGET_H
 
 #include "amarok_export.h"
-#include "BookmarkTreeView.h"
-#include "LineEdit.h"
+#include "amarokurls/BookmarkTreeView.h"
+#include "widgets/LineEdit.h"
 
 #include <KVBox>
 

@@ -19,7 +19,7 @@
 #define NOTIFICATIONSCONFIG_H
 
 #include "ui_NotificationsConfig.h"
-#include "ConfigDialogBase.h"
+#include "configdialog/ConfigDialogBase.h"
 
 class OSDPreviewWidget;
 

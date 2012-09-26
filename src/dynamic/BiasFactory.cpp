@@ -14,10 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "BiasFactory.h"
-#include "Bias.h"
-#include "DynamicBiasWidgets.h"
+#define DEBUG_PREFIX "BiasFactory"
 
+#include "BiasFactory.h"
+
+#include "App.h"
 #include "biases/AlbumPlayBias.h"
 #include "biases/IfElseBias.h"
 #include "biases/PartBias.h"
@@ -25,19 +26,15 @@
 #include "biases/SearchQueryBias.h"
 #include "biases/QuizPlayBias.h"
 #include "biases/EchoNestBias.h"
-
-#define DEBUG_PREFIX "BiasFactory"
-
-#include "App.h"
+#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/support/Debug.h"
 #include "core/collections/QueryMaker.h"
+#include "dynamic/Bias.h"
 
+#include <QFormLayout>
+#include <QLabel>
 #include <QList>
 #include <QXmlStreamReader>
-
-#include <QLabel>
-#include <QFormLayout>
-
 
 Dynamic::BiasPtr
 Dynamic::AbstractBiasFactory::createFromXml( QXmlStreamReader *reader )

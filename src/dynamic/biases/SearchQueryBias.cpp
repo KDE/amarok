@@ -25,15 +25,14 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/collections/support/TextualQueryFilter.h"
-
-#include "TrackSet.h"
+#include "dynamic/TrackSet.h"
 
 #include <KLineEdit>
+
 #include <QLabel>
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 

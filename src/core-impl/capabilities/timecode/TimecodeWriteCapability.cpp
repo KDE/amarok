@@ -15,16 +15,16 @@
  ****************************************************************************************/
 
 
-#include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
+#include "TimecodeWriteCapability.h"
 
-#include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
+#include "EngineController.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
-#include "amarokurls/PlayUrlGenerator.h"
 #include "amarokurls/BookmarkModel.h"
+#include "amarokurls/PlayUrlGenerator.h"
 #include "core/support/Debug.h"
-#include "ProgressWidget.h"
-#include "EngineController.h"
+#include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
+#include "widgets/ProgressWidget.h"
 
 #include <KLocale>
 

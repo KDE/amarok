@@ -18,14 +18,13 @@
 
 #include "BookmarkTriangle.h"
 
-
-#include "BookmarkModel.h"
-#include "core/support/Debug.h"
-#include "MainWindow.h"
-#include "core/meta/support/MetaUtility.h"
-#include "SvgHandler.h"
 #include "EngineController.h"
-#include "PlayUrlGenerator.h"
+#include "MainWindow.h"
+#include "SvgHandler.h"
+#include "amarokurls/BookmarkModel.h"
+#include "amarokurls/PlayUrlGenerator.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core/support/Debug.h"
 
 #include <KLocale>
 

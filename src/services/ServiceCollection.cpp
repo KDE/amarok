@@ -20,13 +20,11 @@
 
 #include "ServiceCollection.h"
 
-#include "ServiceCollectionLocation.h"
 #include "amarokconfig.h"
-#include "ServiceMetaBase.h"
 #include "core/support/Debug.h"
-#include "support/MemoryQueryMaker.h"
-//#include "reader.h"
-
+#include "core-impl/collections/support/MemoryQueryMaker.h"
+#include "services/ServiceCollectionLocation.h"
+#include "services/ServiceMetaBase.h"
 
 using namespace Collections;
 

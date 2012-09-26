@@ -39,8 +39,6 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 
-using namespace Amarok;
-
 class RatingWidget::Private
 {
 public:

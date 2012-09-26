@@ -16,10 +16,9 @@
 
 #include "AmarokOSDScript.h"
 
-#include "amarokconfig.h"
 #include "App.h"
-#include "Osd.h"
-
+#include "amarokconfig.h"
+#include "widgets/Osd.h"
 
 namespace AmarokScript
 {

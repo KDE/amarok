@@ -18,12 +18,11 @@
 #include "PlaylistViewUrlRunner.h"
 
 #include "MainWindow.h"
-#include "AmarokUrlHandler.h"
+#include "amarokurls/AmarokUrlHandler.h"
 #include "core/support/Debug.h"
-#include "MainWindow.h"
-#include "PlaylistDock.h"
-#include "ProgressiveSearchWidget.h"
 #include "layouts/LayoutManager.h"
+#include "playlist/PlaylistDock.h"
+#include "playlist/ProgressiveSearchWidget.h"
 
 #include <KStandardDirs>
 

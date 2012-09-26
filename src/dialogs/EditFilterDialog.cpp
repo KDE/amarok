@@ -17,15 +17,12 @@
 
 #define DEBUG_PREFIX "EditFilterDialog"
 
-#include "EditFilterDialog.h"
-
-#include "ui_EditFilterDialog.h"
-
 #include "amarokconfig.h"
-
-#include "Expression.h"
+#include "ui_EditFilterDialog.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/Expression.h"
+#include "dialogs/EditFilterDialog.h"
 #include "widgets/TokenDropTarget.h"
 
 #include <KGlobal>

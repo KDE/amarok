@@ -17,7 +17,7 @@
 #ifndef FILEBROWSERMKII_H
 #define FILEBROWSERMKII_H
 
-#include "BrowserCategory.h"
+#include "browsers/BrowserCategory.h"
 
 #include <KUrl>
 

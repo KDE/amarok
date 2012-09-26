@@ -17,14 +17,11 @@
 #ifndef MEDIADEVICECOLLECTION_H
 #define MEDIADEVICECOLLECTION_H
 
-#include "ConnectionAssistant.h"
-#include "MediaDeviceHandler.h"
-#include "MediaDeviceCollectionLocation.h"
-
 #include "core/collections/Collection.h"
-#include "MemoryCollection.h"
-
-#include "mediadevicecollection_export.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceCollectionLocation.h"
+#include "core-impl/collections/mediadevicecollection/support/ConnectionAssistant.h"
+#include "core-impl/collections/mediadevicecollection/support/mediadevicecollection_export.h"
+#include "core-impl/collections/support/MemoryCollection.h"
 
 #include <KIcon>
 

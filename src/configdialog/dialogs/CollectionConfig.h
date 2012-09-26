@@ -18,7 +18,7 @@
 #define COLLECTIONCONFIG_H
 
 #include "ui_CollectionConfig.h"
-#include "ConfigDialogBase.h"
+#include "configdialog/ConfigDialogBase.h"
 
 class CollectionSetup;
 

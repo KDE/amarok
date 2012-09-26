@@ -17,10 +17,10 @@
 #ifndef MEDIADEVICEHANDLER_PLAYLISTCAPABILITY_H
 #define MEDIADEVICEHANDLER_PLAYLISTCAPABILITY_H
 
-#include "mediadevicecollection_export.h"
-#include "../MediaDeviceHandlerCapability.h"
-#include "../../MediaDeviceMeta.h"
-#include "../../playlist/MediaDevicePlaylist.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceMeta.h"
+#include "core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.h"
+#include "core-impl/collections/mediadevicecollection/playlist/MediaDevicePlaylist.h"
+#include "core-impl/collections/mediadevicecollection/support/mediadevicecollection_export.h"
 
 namespace Handler
 {
@@ -120,7 +120,7 @@ namespace Handler
              * @param name the name of the playlist
              */
             virtual void savePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name ) = 0;
-            
+
             /**
              * Deletes a particular playlist from the device
              * @param playlist the playlist to remove

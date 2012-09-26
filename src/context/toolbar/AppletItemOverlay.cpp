@@ -17,16 +17,15 @@
 #define DEBUG_PREFIX "AppletItemOverlay"
 
 #include "AppletItemOverlay.h"
-#include "core/support/Debug.h"
-#include "toolbar/AppletToolbarAppletItem.h"
-#include "ToolbarView.h"
 
-#include <plasma/applet.h>
-#include <plasma/theme.h>
-#include <plasma/paintutils.h>
+#include "context/toolbar/AppletToolbarAppletItem.h"
+#include "core/support/Debug.h"
 
 #include <KIcon>
 #include <KGlobalSettings>
+#include <Plasma/Applet>
+#include <Plasma/PaintUtils>
+#include <Plasma/Theme>
 
 #include <QAction>
 #include <QGraphicsLinearLayout>
@@ -92,7 +91,7 @@ Context::AppletItemOverlay::AppletItemOverlay( Context::AppletToolbarAppletItem 
         for(; i < m_layout->count(); ++i) 
         {
             QGraphicsWidget *w = dynamic_cast< QGraphicsWidget* >( m_layout->itemAt( i ) );
-            if( w == m_applet ) 
+            if( w == m_applet )
             {
                 m_index = i;
                 break;

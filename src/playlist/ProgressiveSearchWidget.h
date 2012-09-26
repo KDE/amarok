@@ -17,12 +17,11 @@
 #ifndef PROGRESSIVESEARCHWIDGET_H
 #define PROGRESSIVESEARCHWIDGET_H
 
+#include "widgets/LineEdit.h"
+
 #include <KVBox>
 
-#include "LineEdit.h"
-
 class KAction;
-
 class QKeyEvent;
 class QLabel;
 class QMenu;

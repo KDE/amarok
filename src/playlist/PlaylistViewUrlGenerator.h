@@ -18,8 +18,8 @@
 #define PLAYLISTVIEWURLGENERATOR_H
 
 #include "amarok_export.h"
-#include "AmarokUrlGenerator.h"
-#include "AmarokUrl.h"
+#include "amarokurls/AmarokUrl.h"
+#include "amarokurls/AmarokUrlGenerator.h"
 
 namespace Playlist
 {

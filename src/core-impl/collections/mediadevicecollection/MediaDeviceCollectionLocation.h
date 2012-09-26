@@ -18,12 +18,11 @@
 #define AMAROK_MEDIADEVICECOLLECTIONLOCATION_H
 
 #include "core/collections/CollectionLocation.h"
-#include "MediaDeviceHandler.h"
+#include "core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.h"
+#include "core-impl/collections/mediadevicecollection/support/mediadevicecollection_export.h"
 
-#include "mediadevicecollection_export.h"
-
-#include <QSet>
 #include <QMap>
+#include <QSet>
 #include <QString>
 
 class KJob;

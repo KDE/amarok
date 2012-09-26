@@ -16,11 +16,12 @@
 
 #include "AppletToolbarAddItem.h"
 
-#include "core/support/Amarok.h"
 #include "App.h"
-#include "ContextView.h"
-#include "core/support/Debug.h"
 #include "PaletteHandler.h"
+#include "context/Containment.h"
+#include "context/ContextView.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <KIcon>
 
@@ -67,10 +68,10 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     m_icon->setMaximumSize( iconSize );
     m_icon->resize( iconSize );
     m_icon->setZValue( zValue() + 1 );
-    
+
     m_label = new QGraphicsSimpleTextItem( i18n( "Add Applet..." ), this );
     m_label->hide();
-    
+
     if( m_cont )
         connect( m_cont->view(), SIGNAL( appletExplorerHid() ), this, SLOT( appletExplorerHid() ) );
 

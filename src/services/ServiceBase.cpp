@@ -16,17 +16,15 @@
 
 #include "ServiceBase.h"
 
-#include "core/support/Amarok.h"
-
-#include "core/support/Debug.h"
-
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModelBase.h"
-#include "core/collections/Collection.h"
-#include "SearchWidget.h"
 #include "browsers/InfoProxy.h"
+#include "core/collections/Collection.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "widgets/SearchWidget.h"
 
-#include <khbox.h>
+#include <KHBox>
 #include <KMenuBar>
 
 #include <QFrame>

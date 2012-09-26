@@ -22,9 +22,9 @@
 
 #include "amarok_export.h"
 
+#include "browsers/CollectionTreeItem.h"
 #include "core/meta/Meta.h"
 #include "core/collections/QueryMaker.h"
-#include "CollectionTreeItem.h"
 
 #include <QAbstractItemModel>
 #include <QDateTime>

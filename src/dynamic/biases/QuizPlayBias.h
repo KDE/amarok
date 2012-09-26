@@ -19,9 +19,9 @@
 #ifndef AMAROK_QUIZPLAY_BIAS_H
 #define AMAROK_QUIZPLAY_BIAS_H
 
-#include "TagMatchBias.h"
-#include "BiasFactory.h"
-#include <widgets/MetaQueryWidget.h>
+#include "dynamic/BiasFactory.h"
+#include "dynamic/biases/TagMatchBias.h"
+#include "widgets/MetaQueryWidget.h"
 
 namespace Dynamic
 {

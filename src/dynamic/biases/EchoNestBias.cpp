@@ -17,30 +17,25 @@
 
 #include "EchoNestBias.h"
 
-#include "core/support/Debug.h"
-
-#include "TrackSet.h"
-#include "DynamicBiasWidgets.h"
-
-#include <QDomDocument>
-#include <QDomNode>
-#include <QDomElement>
-
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
-#include <QTimer>
-
-#include "core/meta/Meta.h"
+#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "dynamic/TrackSet.h"
 
-#include <kio/job.h>
+#include <KIO/Job>
 
-#include <QLabel>
 #include <QComboBox>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
+#include <QLabel>
+#include <QTimer>
 #include <QVBoxLayout>
-
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 QString
 Dynamic::EchoNestBiasFactory::i18nName() const

@@ -20,18 +20,16 @@
 
 #include "AlbumPlayBias.h"
 
+#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/support/Debug.h"
+#include "dynamic/TrackSet.h"
 
-#include "TrackSet.h"
-#include "DynamicBiasWidgets.h"
+#include <KLocale>
 
 #include <QComboBox>
 #include <QFormLayout>
-
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#include <klocale.h>
 
 QString
 Dynamic::AlbumPlayBiasFactory::i18nName() const

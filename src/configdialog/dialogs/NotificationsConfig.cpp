@@ -17,11 +17,10 @@
 
 #include "NotificationsConfig.h"
 
+#include "KNotificationBackend.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
-#include "KNotificationBackend.h"
-#include "Osd.h"
-//#include "QStringx.h"
+#include "widgets/Osd.h"
 
 #include <QDesktopWidget>
 

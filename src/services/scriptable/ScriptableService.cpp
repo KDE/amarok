@@ -16,14 +16,14 @@
 
 #include "ScriptableService.h"
 
+#include "ScriptManager.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
-#include "ScriptManager.h"
-#include "ServiceBrowser.h"
-#include "ScriptableServiceInfoParser.h"
+#include "browsers/servicebrowser/ServiceBrowser.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "SearchWidget.h"
+#include "services/scriptable/ScriptableServiceInfoParser.h"
+#include "widgets/SearchWidget.h"
 
 #include <KStandardDirs>
 

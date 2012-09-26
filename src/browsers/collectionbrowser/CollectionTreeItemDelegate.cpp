@@ -17,10 +17,12 @@
  ****************************************************************************************/
 
 #include "CollectionTreeItemDelegate.h"
-#include "CollectionTreeItem.h"
 
 #include "App.h"
+#include "browsers/CollectionTreeItem.h"
 #include "core/support/Debug.h"
+
+#include <kcapacitybar.h>
 
 #include <QAction>
 #include <QApplication>
@@ -29,8 +31,6 @@
 #include <QPainter>
 #include <QMenu>
 #include <QToolButton>
-
-#include <kcapacitybar.h>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
