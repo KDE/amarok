@@ -893,7 +893,6 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/EqualizerDialog.ui
     dialogs/MusicBrainzTagger.ui
     dialogs/TagDialogBase.ui
-    dialogs/FilenameLayoutDialog.ui
     dialogs/TagGuessOptions.ui
     dialogs/FilenameLayoutOptions.ui
     dialogs/OrganizeCollectionDialogBase.ui

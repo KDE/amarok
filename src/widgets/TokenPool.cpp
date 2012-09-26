@@ -70,7 +70,7 @@ TokenPool::TokenPool( QWidget *parent )
     : KListWidget( parent )
 {
     setAcceptDrops( true );
-    setItemDelegate( new PoolDelegate(this) );
+    // setItemDelegate( new PoolDelegate(this) );
 }
 
 void
@@ -79,7 +79,7 @@ TokenPool::addToken( Token * token )
     token->setParent( this );
     token->setVisible( false );
 
-    QListWidgetItem *item = new QListWidgetItem( token->icon().pixmap( 48, 48 ), token->name() );
+    QListWidgetItem *item = new QListWidgetItem( token->icon(), token->name() );
     if( token->hasCustomColor() ) // don't override the default tooltip color if possible. This very easily produces black test on black tooltip background
     {
         item->setData( Qt::ForegroundRole, token->textColor() );

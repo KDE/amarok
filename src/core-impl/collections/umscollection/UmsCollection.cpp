@@ -610,7 +610,7 @@ UmsCollection::slotConfigure()
     settings->m_filenameSchemeBox->setLayout( &layout );
     //hide the unuse preset selector.
     //TODO: change the presets to concurrent presets for regular albums v.s. compilations
-    layoutWidget.setformatPresetVisible( false );
+    // layoutWidget.setformatPresetVisible( false );
 
     layoutWidget.setScheme( m_musicFilenameScheme );
     FilenameLayoutOptionWidget* optionsWidget = layoutWidget.m_optionsWidget;

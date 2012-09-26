@@ -58,12 +58,11 @@ Token::Token( const QString &name, const QString &iconName, qint64 value, QWidge
     m_iconContainer->setPixmap( pixmap );
 
     QHBoxLayout *hlayout = new QHBoxLayout( this );
-    hlayout->setContentsMargins( 0, 0, 0, 0 );
+    hlayout->setContentsMargins( 6, 4, 6, 4 );
     hlayout->addWidget( m_iconContainer );
     hlayout->addWidget( m_label );
     setLayout( hlayout );
 
-    setContentsMargins( 4, 2, 4, 2 ); // we need extra space for the border
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 }
 
