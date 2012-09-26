@@ -20,14 +20,22 @@
 #define FILENAMELAYOUTDIALOG_H
 
 #include "amarok_export.h"
-#include "ui_FilenameLayoutDialog.h"
+// #include "ui_FilenameLayoutDialog.h"
 #include "ui_TagGuessOptions.h"
 #include "ui_FilenameLayoutOptions.h"
 
 #include <QWidget>
 
+class Token;
+class TokenPool;
 class TokenDropTarget;
 class QFileInfo;
+class QStackedWidget;
+class QLabel;
+class QComboBox;
+class QPushButton;
+class QVBoxLayout;
+class QHBoxLayout;
 
 class AMAROK_EXPORT TagGuessOptionWidget : public QWidget, public Ui::TagGuessOptions
 {
@@ -79,7 +87,7 @@ class AMAROK_EXPORT FilenameLayoutOptionWidget : public QWidget, public Ui::File
 
 
 //Holds the TokenLayoutWidget and TokenPool and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
-class AMAROK_EXPORT FilenameLayoutWidget : public QWidget, protected Ui::FilenameLayoutDialog
+class AMAROK_EXPORT FilenameLayoutWidget : public QWidget //, protected Ui::FilenameLayoutDialog
 {
     Q_OBJECT
 
@@ -153,9 +161,12 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget, protected Ui::Filenam
         bool m_advancedMode;
 
     protected:
+
         /** Set's several configuration options.
             Don't move this function to the constructor. It calls virtuals. */
         void populateConfiguration();
+
+        /** Populates the preset combo box */
         void populateFormatList();
 
         virtual Token* createToken(qint64 value) const;
@@ -164,7 +175,24 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget, protected Ui::Filenam
             postfix on the schema editing line. */
         virtual Token* createStaticToken(qint64 value) const;
 
+        QVBoxLayout *m_mainLayout;
+
+        QComboBox *m_presetCombo;
+        QPushButton *m_addPresetButton;
+        QPushButton *m_updatePresetButton;
+        QPushButton *m_removePresetButton;
+
+        QPushButton *m_advancedButton;
+
+        TokenPool *m_tokenPool;
+        QStackedWidget *m_schemeStack;
+        QHBoxLayout *m_schemaLineLayout;
         TokenDropTarget *m_dropTarget;
+
+        QLabel *m_syntaxLabel;
+        QFrame *m_filenameLayout;
+        KLineEdit *m_filenameLayoutEdit;
+
 
         /** The name of the category used for storing the configuration */
         QString m_configCategory;
@@ -179,7 +207,7 @@ class AMAROK_EXPORT OrganizeCollectionWidget : public FilenameLayoutWidget
         explicit OrganizeCollectionWidget( QWidget *parent = 0 );
         virtual ~OrganizeCollectionWidget() {}
 
-        void setformatPresetVisible( bool visible ) { formatPresetWidget->setVisible( visible ); }
+        // void setformatPresetVisible( bool visible ) { formatPresetWidget->setVisible( visible ); }
 
         FilenameLayoutOptionWidget* m_optionsWidget;
 };

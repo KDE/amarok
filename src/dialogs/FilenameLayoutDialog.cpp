@@ -19,6 +19,8 @@
 
 #include "FilenameLayoutDialog.h"
 #include "TagGuesser.h"
+#include "../widgets/TokenDropTarget.h"
+#include "../widgets/TokenPool.h"
 
 #include "amarokconfig.h"
 
@@ -30,6 +32,12 @@
 #include <KConfig>
 #include <KColorScheme>
 #include <KInputDialog>
+
+#include <QComboBox>
+#include <QLabel>
+#include <QPushButton>
+#include <QBoxLayout>
+#include <QStackedWidget>
 
 static const QStringList typeElements = ( QStringList()
 << QString()
@@ -179,37 +187,42 @@ OrganizeCollectionWidget::OrganizeCollectionWidget( QWidget *parent )
 {
     m_configCategory = "OrganizeCollectionDialog";
 
-    tokenPool->addToken( createToken( Title ) );
-    tokenPool->addToken( createToken( Artist ) );
-    tokenPool->addToken( createToken( Composer ) );
-    tokenPool->addToken( createToken( Track ) );
-    tokenPool->addToken( createToken( Year ) );
-    tokenPool->addToken( createToken( Album ) );
-    tokenPool->addToken( createToken( AlbumArtist ) );
-    tokenPool->addToken( createToken( Comment ) );
-    tokenPool->addToken( createToken( Genre ) );
+    m_tokenPool->addToken( createToken( Title ) );
+    m_tokenPool->addToken( createToken( Artist ) );
+    m_tokenPool->addToken( createToken( Composer ) );
+    m_tokenPool->addToken( createToken( Track ) );
+    m_tokenPool->addToken( createToken( Year ) );
+    m_tokenPool->addToken( createToken( Album ) );
+    m_tokenPool->addToken( createToken( AlbumArtist ) );
+    m_tokenPool->addToken( createToken( Comment ) );
+    m_tokenPool->addToken( createToken( Genre ) );
 
-    tokenPool->addToken( createToken( Initial ) );
-    tokenPool->addToken( createToken( FileType ) );
-    tokenPool->addToken( createToken( DiscNumber ) );
+    m_tokenPool->addToken( createToken( Initial ) );
+    m_tokenPool->addToken( createToken( FileType ) );
+    m_tokenPool->addToken( createToken( DiscNumber ) );
 
-    tokenPool->addToken( createToken( Slash ) );
-    tokenPool->addToken( createToken( Underscore ) );
-    tokenPool->addToken( createToken( Dash ) );
-    tokenPool->addToken( createToken( Dot ) );
-    tokenPool->addToken( createToken( Space ) );
+    m_tokenPool->addToken( createToken( Slash ) );
+    m_tokenPool->addToken( createToken( Underscore ) );
+    m_tokenPool->addToken( createToken( Dash ) );
+    m_tokenPool->addToken( createToken( Dot ) );
+    m_tokenPool->addToken( createToken( Space ) );
 
     m_optionsWidget = new FilenameLayoutOptionWidget();
-    verticalLayout_3->addWidget( m_optionsWidget );
+    m_mainLayout->addWidget( m_optionsWidget );
 
-    schemaLineLayout->insertWidget( 0,
-                                    createStaticToken( CollectionRoot ), 0 );
-    schemaLineLayout->insertWidget( 1,
-                                    createStaticToken( Slash ), 0 );
+    // show some non-editable tags before and after
+    m_schemaLineLayout->insertWidget( 0,
+                                      createStaticToken( CollectionRoot ), 0 );
+    m_schemaLineLayout->insertWidget( 1,
+                                      createStaticToken( Slash ), 0 );
+
+    m_schemaLineLayout->insertWidget( m_schemaLineLayout->count(),
+                                      createStaticToken( Dot ) );
+    m_schemaLineLayout->insertWidget( m_schemaLineLayout->count(),
+                                      createStaticToken( FileType ) );
 
 
-
-    syntaxLabel->setText( i18nc("Please do not translate the %foo% words as they define a syntax used internally by a parser to describe a filename.",
+    m_syntaxLabel->setText( i18nc("Please do not translate the %foo% words as they define a syntax used internally by a parser to describe a filename.",
                           // xgettext: no-c-format
                           "The following tokens can be used to define a filename scheme: \
                           <br>%track%, %title%, %artist%, %composer%, %year%, %album%, %albumartist%, %comment%, %genre%, %initial%, %folder%, %filetype%, %discnumber%." ) );
@@ -229,28 +242,28 @@ TagGuesserWidget::TagGuesserWidget( QWidget *parent )
 
     m_filenamePreview = new QLabel();
     m_filenamePreview->setAlignment( Qt::AlignHCenter );
-    verticalLayout_3->addWidget( m_filenamePreview );
+    m_mainLayout->addWidget( m_filenamePreview );
 
     m_optionsWidget =  new TagGuessOptionWidget();
-    verticalLayout_3->addWidget( m_optionsWidget );
+    m_mainLayout->addWidget( m_optionsWidget );
 
-    tokenPool->addToken( createToken( Title ) );
-    tokenPool->addToken( createToken( Artist ) );
-    tokenPool->addToken( createToken( Composer ) );
-    tokenPool->addToken( createToken( Track ) );
-    tokenPool->addToken( createToken( Year ) );
-    tokenPool->addToken( createToken( Album ) );
-    tokenPool->addToken( createToken( AlbumArtist ) );
-    tokenPool->addToken( createToken( Comment ) );
-    tokenPool->addToken( createToken( Genre ) );
-    tokenPool->addToken( createToken( Ignore ) );
-    tokenPool->addToken( createToken( Slash ) );
-    tokenPool->addToken( createToken( Underscore ) );
-    tokenPool->addToken( createToken( Dash ) );
-    tokenPool->addToken( createToken( Dot ) );
-    tokenPool->addToken( createToken( Space ) );
+    m_tokenPool->addToken( createToken( Title ) );
+    m_tokenPool->addToken( createToken( Artist ) );
+    m_tokenPool->addToken( createToken( Composer ) );
+    m_tokenPool->addToken( createToken( Track ) );
+    m_tokenPool->addToken( createToken( Year ) );
+    m_tokenPool->addToken( createToken( Album ) );
+    m_tokenPool->addToken( createToken( AlbumArtist ) );
+    m_tokenPool->addToken( createToken( Comment ) );
+    m_tokenPool->addToken( createToken( Genre ) );
+    m_tokenPool->addToken( createToken( Ignore ) );
+    m_tokenPool->addToken( createToken( Slash ) );
+    m_tokenPool->addToken( createToken( Underscore ) );
+    m_tokenPool->addToken( createToken( Dash ) );
+    m_tokenPool->addToken( createToken( Dot ) );
+    m_tokenPool->addToken( createToken( Space ) );
 
-    syntaxLabel->setText( i18nc("Please do not translate the %foo% words as they define a syntax used internally by a parser to describe a filename.",
+    m_syntaxLabel->setText( i18nc("Please do not translate the %foo% words as they define a syntax used internally by a parser to describe a filename.",
                           // xgettext: no-c-format
                           "The following tokens can be used to define a filename scheme:<br> \
                           <font color=\"%1\">%track%</font>, <font color=\"%2\">%title%</font>, \
@@ -269,7 +282,7 @@ TagGuesserWidget::TagGuesserWidget( QWidget *parent )
 
     connect( m_dropTarget, SIGNAL( changed() ),
              this, SLOT( updatePreview() ) );
-    connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
+    connect( m_filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
              this, SLOT( updatePreview() ) );
 }
 
@@ -425,37 +438,103 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     : QWidget( parent )
     , m_advancedMode( false )
 {
-    setupUi( this );
+    m_mainLayout = new QVBoxLayout( this );
 
-    m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", filenameLayout );
+    // --- presets
+    QHBoxLayout* presetLayout1 = new QHBoxLayout();
+
+    QLabel* presetLabel = new QLabel( i18n("Preset:"), this );
+    presetLayout1->addWidget( presetLabel, 0 );
+
+    m_presetCombo = new QComboBox( this );
+    m_presetCombo->setWhatsThis( i18n("A list of selectable filename scheme/format presets." ) );
+    presetLayout1->addWidget( m_presetCombo, 1 );
+
+    m_mainLayout->addLayout( presetLayout1 );
+
+    // - the preset buttons
+    QHBoxLayout* presetLayout2 = new QHBoxLayout();
+
+    m_addPresetButton = new QPushButton( i18n("Add preset"), this );
+    m_addPresetButton->setToolTip( i18n("Saves the current scheme/format above as a preset.", 0));
+    presetLayout2->addWidget( m_addPresetButton );
+
+    m_updatePresetButton = new QPushButton( i18n("Update preset"), this );
+    presetLayout2->addWidget( m_updatePresetButton );
+
+    m_removePresetButton = new QPushButton( i18n("Remove preset"), this );
+    m_removePresetButton->setToolTip( i18n("Removes the currently selected format preset") );
+    presetLayout2->addWidget( m_removePresetButton );
+    presetLayout2->addStretch( 1 );
+
+    m_mainLayout->addLayout( presetLayout2 );
+
+    // -- stacked widget
+    QGroupBox* schemeGroup = new QGroupBox( i18n("Scheme"), this );
+    QVBoxLayout* schemeGroupLayout = new QVBoxLayout( schemeGroup );
+
+    m_advancedButton = new QPushButton( i18n("Advanced"), this );
+    schemeGroupLayout->addWidget( m_advancedButton );
+
+    m_schemeStack = new QStackedWidget( this );
+
+    // - simple schema
+    QWidget* simpleLayoutWidget = new QWidget( this );
+    QVBoxLayout *simpleLayout = new QVBoxLayout( simpleLayoutWidget );
+
+    // a token pool
+    m_tokenPool = new TokenPool( this );
+    simpleLayout->addWidget( m_tokenPool );
+
+    // token drop target inside a frame
+    QFrame* dropTargetFrame = new QFrame( this );
+    dropTargetFrame->setFrameShape(QFrame::StyledPanel);
+    dropTargetFrame->setFrameShadow(QFrame::Sunken);
+    m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", this );
     m_dropTarget->setRowLimit( 1 );
 
-    QVBoxLayout *l = new QVBoxLayout(filenameLayout);
-    l->setContentsMargins( 0, 0, 0, 0 );
-    l->addWidget(m_dropTarget);
+    m_schemaLineLayout = new QHBoxLayout();
+    m_schemaLineLayout->addWidget( m_dropTarget );
+    dropTargetFrame->setLayout( m_schemaLineLayout );
+    simpleLayout->addWidget( dropTargetFrame );
 
-    schemaLineLayout->insertWidget( schemaLineLayout->count() - 1,
-                                    createStaticToken( Dot ) );
-    schemaLineLayout->insertWidget( schemaLineLayout->count() - 1,
-                                    createStaticToken( FileType ) );
+    m_schemeStack->addWidget( simpleLayoutWidget );
 
-    connect( tokenPool, SIGNAL( onDoubleClick( Token * ) ),
+    // - advanced schema
+    QWidget* advancedLayoutWidget = new QWidget( this );
+    QVBoxLayout *advancedLayout = new QVBoxLayout( advancedLayoutWidget );
+
+    m_syntaxLabel = new QLabel( this ); // placeholder for format description
+    advancedLayout->addWidget( m_syntaxLabel );
+
+    m_filenameLayoutEdit = new KLineEdit( this );
+    advancedLayout->addWidget( m_filenameLayoutEdit );
+
+    m_schemeStack->addWidget( advancedLayoutWidget );
+
+    schemeGroupLayout->addWidget( m_schemeStack );
+    // --
+
+    m_mainLayout->addWidget( schemeGroup );
+
+    connect( m_tokenPool, SIGNAL( onDoubleClick( Token * ) ),
              m_dropTarget, SLOT( insertToken( Token* ) ) );
-    connect( kpbAdvanced, SIGNAL( clicked() ),
+    connect( m_advancedButton, SIGNAL( clicked() ),
              this, SLOT( toggleAdvancedMode() ) );
     connect( m_dropTarget, SIGNAL( changed() ),
              this, SIGNAL( schemeChanged() ) );
     connect( m_dropTarget, SIGNAL( changed() ),
              this, SLOT( slotUpdatePresetButton() ) );
-    connect( addPresetButton, SIGNAL( clicked( bool ) ),
+    connect( m_addPresetButton, SIGNAL( clicked( bool ) ),
              this, SLOT( slotAddFormat() ) );
-    connect( removePresetButton, SIGNAL( clicked( bool ) ),
+    connect( m_removePresetButton, SIGNAL( clicked( bool ) ),
              this, SLOT( slotRemoveFormat() ) );
-    connect( updatePresetButton, SIGNAL( clicked( bool ) ),
+    connect( m_updatePresetButton, SIGNAL( clicked( bool ) ),
              this, SLOT( slotUpdateFormat() ) );
 
-    connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
+    connect( m_filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
              this, SIGNAL( schemeChanged() ) );
+debug() << "st3.1";
 }
 
 Token*
@@ -527,7 +606,7 @@ FilenameLayoutWidget::onAccept()    //SLOT
 QString
 FilenameLayoutWidget::getParsableScheme() const
 {
-    QString scheme = m_advancedMode ? filenameLayoutEdit->text() : dropTargetScheme();
+    QString scheme = m_advancedMode ? m_filenameLayoutEdit->text() : dropTargetScheme();
 
     Amarok::config( m_configCategory ).writeEntry( "Custom Scheme", scheme );
     return scheme;
@@ -536,7 +615,7 @@ FilenameLayoutWidget::getParsableScheme() const
 // attempts to set the scheme
 void FilenameLayoutWidget::setScheme(const QString& scheme)
 {
-    filenameLayoutEdit->setText( scheme );
+    m_filenameLayoutEdit->setText( scheme );
     inferScheme( scheme );
 
     slotUpdatePresetButton();
@@ -561,20 +640,13 @@ FilenameLayoutWidget::setAdvancedMode( bool isAdvanced )
 
     if( isAdvanced )
     {
-        kpbAdvanced->setText( i18n( "&Basic..." ) );
-        filenameLayout->hide();
-        filenameLayoutEdit->show();
-        tokenPool->hide();
-        syntaxLabel->show();
-
+        m_advancedButton->setText( i18n( "&Basic..." ) );
+        m_schemeStack->setCurrentIndex( 1 );
     }
     else // set Basic mode
     {
-        kpbAdvanced->setText( i18n( "&Advanced..." ) );
-        filenameLayout->show();
-        filenameLayoutEdit->hide();
-        tokenPool->show();
-        syntaxLabel->hide();
+        m_advancedButton->setText( i18n( "&Advanced..." ) );
+        m_schemeStack->setCurrentIndex( 0 );
     }
 
     QString entryValue  = m_advancedMode ? "Advanced" : "Basic";
@@ -725,7 +797,7 @@ FilenameLayoutWidget::populateFormatList()
     // the third param isnis optional
     QStringList presets_raw;
     int selected_index = -1;
-    presetCombo->clear();
+    m_presetCombo->clear();
     presets_raw = AmarokConfig::formatPresets();
     // presets_raw = Amarok::config( m_configCategory ).readEntry( QString::fromLatin1( "Format Presets" ), QStringList() );
 
@@ -737,23 +809,23 @@ FilenameLayoutWidget::populateFormatList()
         items = str.split( "#DELIM#", QString::SkipEmptyParts );
         if( items.size() < 2 )
             continue;
-        presetCombo->addItem( items.at( 0 ), items.at( 1 ) ); // Label, format string
+        m_presetCombo->addItem( items.at( 0 ), items.at( 1 ) ); // Label, format string
         if( items.size() == 3 )
-            selected_index = presetCombo->findData( items.at( 1 ) );
+            selected_index = m_presetCombo->findData( items.at( 1 ) );
     }
 
     if( selected_index > 0 )
-        presetCombo->setCurrentIndex( selected_index );
+        m_presetCombo->setCurrentIndex( selected_index );
 
     slotFormatPresetSelected( selected_index );
-    connect( presetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotFormatPresetSelected( int ) ) );
+    connect( m_presetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotFormatPresetSelected( int ) ) );
 }
 
 void
 FilenameLayoutWidget::slotUpdatePresetButton()
 {
-    QString comboScheme = presetCombo->itemData( presetCombo->currentIndex() ).  toString();
-    updatePresetButton->setEnabled( comboScheme != getParsableScheme() );
+    QString comboScheme = m_presetCombo->itemData( m_presetCombo->currentIndex() ).  toString();
+    m_updatePresetButton->setEnabled( comboScheme != getParsableScheme() );
 }
 
 void
@@ -763,8 +835,8 @@ FilenameLayoutWidget::slotSaveFormatList()
         return;
 
     QStringList presets;
-    int n = presetCombo->count();
-    int current_idx = presetCombo->currentIndex();
+    int n = m_presetCombo->count();
+    int current_idx = m_presetCombo->currentIndex();
 
     for( int i = 0; i < n; ++i )
     {
@@ -774,8 +846,8 @@ FilenameLayoutWidget::slotSaveFormatList()
         else
             item = "%1#DELIM#%2";
 
-        QString scheme = presetCombo->itemData( i ).toString();
-        QString label = presetCombo->itemText( i );
+        QString scheme = m_presetCombo->itemData( i ).toString();
+        QString label = m_presetCombo->itemText( i );
         item = item.arg( label, scheme );
         presets.append( item );
     }
@@ -786,7 +858,7 @@ FilenameLayoutWidget::slotSaveFormatList()
 void
 FilenameLayoutWidget::slotFormatPresetSelected( int index )
 {
-    QString scheme = presetCombo->itemData( index ).toString();
+    QString scheme = m_presetCombo->itemData( index ).toString();
     setScheme( scheme );
 }
 
@@ -799,25 +871,25 @@ FilenameLayoutWidget::slotAddFormat()
         return; // user canceled.
 
     QString format = getParsableScheme();
-    presetCombo->insertItem(0, name, format);
-    presetCombo->setCurrentIndex( 0 );
+    m_presetCombo->insertItem(0, name, format);
+    m_presetCombo->setCurrentIndex( 0 );
     m_formatListModified = true;
 }
 
 void
 FilenameLayoutWidget::slotRemoveFormat()
 {
-    int idx = presetCombo->currentIndex();
-    presetCombo->removeItem( idx );
+    int idx = m_presetCombo->currentIndex();
+    m_presetCombo->removeItem( idx );
     m_formatListModified = true;
 }
 
 void
 FilenameLayoutWidget::slotUpdateFormat()
 {
-    int idx = presetCombo->currentIndex();
+    int idx = m_presetCombo->currentIndex();
     QString formatString = getParsableScheme();
-    presetCombo->setItemData( idx, formatString );
-    updatePresetButton->setEnabled( false );
+    m_presetCombo->setItemData( idx, formatString );
+    m_updatePresetButton->setEnabled( false );
     m_formatListModified = true;
 }
