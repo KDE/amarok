@@ -21,6 +21,8 @@ VERSION 2.7-Beta 1
     * New optional dependency for Amazon downloads: clamz.
 
   BUGFIXES:
+    * Enforce constraint for attributes of GPodder Episode Actions. (BR 261062)
+    * Mark downloaded podcast episodes to keep even with a purge count setted.
     * Fix first & last played time not remembered for files outside of collection.
     * Nepomuk plugin now makes Nepomuk ratings visible in Amarok. (BR 174630)
     * Fix some track tag modifications not being updated until restart
