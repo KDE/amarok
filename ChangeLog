@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.7-Beta 1
   FEATURES:
+    * Mark downloaded podcast episodes to keep, even when purge is enabled. (BR 261062)
     * Nepomuk plugin: Play and manage tracks using the Nepomuk database.
     * Support for reading and writing tags from/to mod, s3m, it and xm files.
       Patch by Mathias Panzenböck.
@@ -21,7 +22,6 @@ VERSION 2.7-Beta 1
     * New optional dependency for Amazon downloads: clamz.
 
   BUGFIXES:
-    * Mark downloaded podcast episodes to keep even with a purge count setted. (BR 261062)
     * Fix first & last played time not remembered for files outside of collection.
     * Nepomuk plugin now makes Nepomuk ratings visible in Amarok. (BR 174630)
     * Fix some track tag modifications not being updated until restart
