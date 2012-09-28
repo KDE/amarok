@@ -63,17 +63,6 @@ MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
 
     connect( MediaDeviceCache::instance(), SIGNAL( deviceAdded( QString ) ), SLOT( deviceAdded( QString ) ) );
     connect( MediaDeviceCache::instance(), SIGNAL( deviceRemoved( QString ) ), SLOT( deviceRemoved( QString ) ) );
-
-//     SqlStorage *collDB = CollectionManager::instance()->sqlStorage();
-
-    //FIXME: Port 2.0
-//     if ( collDB->adminValue( "Database Stats Version" ).toInt() >= 9 && /* make sure that deviceid actually exists*/
-//          collDB->query( "SELECT COUNT(url) FROM statistics WHERE deviceid = -2;" ).first().toInt() != 0 )
-//     {
-//         connect( this, SIGNAL( mediumConnected( int ) ), SLOT( migrateStatistics() ) );
-//         QTimer::singleShot( 0, this, SLOT( migrateStatistics() ) );
-//     }
-    updateStatisticsURLs();
 }
 
 
@@ -255,63 +244,6 @@ MountPointManager::getRelativePath( const int deviceId, const QString& absoluteP
     }
 }
 
-
-// void
-// MountPointManager::mediumChanged( const Medium *m )
-// {
-//     DEBUG_BLOCK
-//     if ( !m ) return;
-//     if ( m->isMounted() )
-//     {
-//         foreach( DeviceHandlerFactory *factory, m_mediumFactories )
-//         {
-//             if ( factory->canHandle ( m ) )
-//             {
-//                 debug() << "found handler for " << m->id();
-//                 DeviceHandler *handler = factory->createHandler( m );
-//                 if( !handler )
-//                 {
-//                     debug() << "Factory " << factory->type() << "could not create device handler";
-//                     break;
-//                 }
-//                 int key = handler->getDeviceID();
-//                 m_handlerMapMutex.lock();
-//                 if ( m_handlerMap.contains( key ) )
-//                 {
-//                     debug() << "Key " << key << " already exists in handlerMap, replacing";
-//                     delete m_handlerMap[key];
-//                     m_handlerMap.remove( key );
-//                 }
-//                 m_handlerMap.insert( key, handler );
-//                 m_handlerMapMutex.unlock();
-//                 debug() << "added device " << key << " with mount point " << m->mountPoint();
-//                 emit mediumConnected( key );
-//                 break;  //we found the added medium and don't have to check the other device handlers
-//             }
-//         }
-//     }
-//     else
-//     {
-//         m_handlerMapMutex.lock();
-//         foreach( DeviceHandler *dh, m_handlerMap )
-//         {
-//             if ( dh->deviceIsMedium( m ) )
-//             {
-//                 int key = m_handlerMap.key( dh );
-//                 m_handlerMap.remove( key );
-//                 delete dh;
-//                 debug() << "removed device " << key;
-//                 m_handlerMapMutex.unlock();
-//                 emit mediumRemoved( key );
-//                 //we found the medium which was removed, so we can abort the loop
-//                 return;
-//             }
-//         }
-//         m_handlerMapMutex.unlock();
-//     }
-// }
-//
-
 IdList
 MountPointManager::getMountedDeviceIds() const
 {
@@ -402,47 +334,6 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
         i.next();
         folderConf.writeEntry( QString::number( i.key() ), i.value() );
     }
-}
-
-void
-MountPointManager::migrateStatistics()
-{
-    QStringList urls = m_storage->query( "SELECT url FROM statistics WHERE deviceid = -2;" );
-    foreach( const QString &url, urls )
-    {
-        if ( QFile::exists( url ) )
-        {
-            int deviceid = getIdForUrl( url );
-            QString rpath = getRelativePath( deviceid, url );
-            QString update = QString( "UPDATE statistics SET deviceid = %1, url = '%2'" )
-                                      .arg( deviceid )
-                                      .arg( m_storage->escape( rpath ) );
-            update += QString( " WHERE url = '%1' AND deviceid = -2;" )
-                               .arg( m_storage->escape( url ) );
-            m_storage->query( update );
-        }
-    }
-}
-
-void
-MountPointManager::updateStatisticsURLs( bool changed )
-{
-    if ( changed )
-        QTimer::singleShot( 0, this, SLOT( startStatisticsUpdateJob() ) );
-}
-
-void
-MountPointManager::startStatisticsUpdateJob()
-{
-    AMAROK_NOTIMPLEMENTED
-    //ThreadWeaver::Weaver::instance()->enqueue( new UrlUpdateJob( this ) );
-}
-
-void
-MountPointManager::checkDeviceAvailability()
-{
-    //code to actively scan for devices which are not supported by KDE mediamanager should go here
-    //method is not actually called yet
 }
 
 void

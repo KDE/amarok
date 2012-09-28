@@ -191,28 +191,11 @@ public:
 
     void loadDevicePlugins( const QList<Plugins::PluginFactory*> &factories );
 
-public slots:
-//     void mediumAdded( const Medium *m );
-//     /**
-//      * initiates the update of the class' internal list of mounted mediums.
-//      * @param m the medium whose status changed
-//      */
-//     void mediumChanged( const Medium* m );
-//     void mediumRemoved( const Medium* m );
-
-    virtual void updateStatisticsURLs( bool changed = true );
-
 signals:
     void deviceAdded( int id );
     void deviceRemoved( int id );
 
-private slots:
-    void migrateStatistics();
-    void checkDeviceAvailability();
-    void startStatisticsUpdateJob();
-
 private:
-
     /**
      * checks whether a medium identified by its unique database id is currently mounted.
      * Note: does not handle deviceId = -1! It only checks real devices

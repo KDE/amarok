@@ -99,9 +99,10 @@ Plugins::PluginManager::init()
     }
     else
     {
-        m_mountPointManager = static_cast<Collections::SqlCollection*>( coll )->mountPointManager();
+        MountPointManager *mountPointManager;
+        mountPointManager = static_cast<Collections::SqlCollection*>( coll )->mountPointManager();
         m_factories[ key ] = createFactories( key );
-        m_mountPointManager->loadDevicePlugins( m_factories.value( key ) );
+        mountPointManager->loadDevicePlugins( m_factories.value( key ) );
     }
     PERF_LOG( "Loaded device plugins" )
 }
