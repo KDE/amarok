@@ -1,24 +1,12 @@
-#build-time only dependency in XesamDbus.h
-#remove at some point
-remove_definitions(-DMAKE_AMAROK_DATABASECOLLECTION_LIB)
-
 add_definitions(${MYSQL_CFLAGS})
-
-include_directories(
-        ..
-        .
-        ${CMAKE_SOURCE_DIR}/src
-        ${CMAKE_BINARY_DIR}/src
-        ${QTIQTCORE_INCLUDES}
-        ${MYSQL_INCLUDE_DIR}
-        )
 
 ########### mysqlserver ###############
 
-set(amarok_collection-mysqlservercollection_PART_SRCS
-    ../mysql-shared/MySqlStorage.cpp
-    MySqlServerCollection.cpp
- )
+set( amarok_collection-mysqlservercollection_PART_SRCS
+     ../mysql-shared/MySqlStorage.cpp
+     MySqlServerCollection.cpp
+
+)
 
 kde4_add_plugin(amarok_collection-mysqlservercollection ${amarok_collection-mysqlservercollection_PART_SRCS})
 
@@ -51,4 +39,3 @@ endif(APPLE)
 install(TARGETS amarok_collection-mysqlservercollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 install(FILES amarok_collection-mysqlservercollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-

@@ -26,15 +26,12 @@ Collections::SqlCollectionFactory::SqlCollectionFactory()
 }
 
 Collections::SqlCollection*
-Collections::SqlCollectionFactory::createSqlCollection( const QString &id, const QString &prettyName, SqlStorage *storage ) const
+Collections::SqlCollectionFactory::createSqlCollection( const QString &id,
+                                                        const QString &prettyName,
+                                                        SqlStorage *storage ) const
 {
     SqlCollection *coll = new SqlCollection( id, prettyName, storage );
-
     MountPointManager *mpm = new MountPointManager( coll, storage );
-
     coll->setMountPointManager( mpm );
-
-    //everything has been set up
-    coll->init();
     return coll;
 }

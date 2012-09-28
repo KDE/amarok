@@ -1,25 +1,13 @@
-#build-time only dependency in XesamDbus.h
-#remove at some point
-
 add_definitions(${MYSQL_EMBEDDED_CFLAGS})
-
-include_directories(
-        .
-        ..
-        ${CMAKE_SOURCE_DIR}/src
-        ${QT_QTCORE_INCLUDES}
-        ${MYSQL_INCLUDE_DIR}
-        )
 
 ########### mysqle ###############
 
-set(amarok_collection-mysqlecollection_PART_SRCS
-    ../mysql-shared/MySqlStorage.cpp
-    MySqlEmbeddedCollection.cpp
-    MySqlEmbeddedStorage.cpp
- )
+set( amarok_collection-mysqlecollection_PART_SRCS
+     ../mysql-shared/MySqlStorage.cpp
+     MySqlEmbeddedCollection.cpp
+     MySqlEmbeddedStorage.cpp
+)
 
-remove_definitions(-DMAKE_AMAROK_DATABASECOLLECTION_LIB)
 kde4_add_plugin(amarok_collection-mysqlecollection ${amarok_collection-mysqlecollection_PART_SRCS})
 
 STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN "${CMAKE_SHARED_LINKER_FLAGS}")
@@ -51,4 +39,3 @@ endif(APPLE)
 install(TARGETS amarok_collection-mysqlecollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 install(FILES amarok_collection-mysqlecollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-

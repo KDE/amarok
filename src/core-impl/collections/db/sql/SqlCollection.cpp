@@ -26,6 +26,7 @@
 #include "core/capabilities/TranscodeCapability.h"
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/db/ScanManager.h"
+#include "dialogs/OrganizeCollectionDialog.h"
 #include "MountPointManager.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
@@ -37,23 +38,6 @@
 #include <KMessageBox>
 
 #include <QApplication>
-
-/*
- * #ifdef Q_OS_WIN32
- *
- * #include <QTimer>
- *
- * class XesamCollectionBuilder
- * {
- * public:
- *     XesamCollectionBuilder(Collections::SqlCollection *collection) {}
- * };
- * #else
- * #include "XesamCollectionBuilder.h"
- * #endif
- */
-
-#include "dialogs/OrganizeCollectionDialog.h"
 
 namespace Collections {
 
@@ -145,7 +129,6 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     , m_mpm( 0 )
     , m_collectionId( id )
     , m_prettyName( prettyName )
-    // , m_xesamBuilder( 0 )
     , m_blockUpdatedSignalCount( 0 )
     , m_updatedSignalRequested( false )
 {
@@ -228,16 +211,6 @@ SqlCollection::~SqlCollection()
     delete m_sqlStorage;
     delete m_registry;
     delete m_mpm;
-}
-
-void
-SqlCollection::init()
-{
-    // QTimer::singleShot( 0, this, SLOT( initXesam() ) );
-
-    // note: do not start scanning here.
-    // on first start up the application will ask the user and then initiate a scan
-    // else the ScanManager will continuously scan for updates
 }
 
 QString
@@ -378,12 +351,6 @@ SqlCollection::slotScanStarted( ScannerJob *job )
     }
 }
 
-void
-SqlCollection::removeCollection()
-{
-    emit remove();
-}
-
 bool
 SqlCollection::isDirInCollection( const QString &p )
 {
@@ -475,14 +442,6 @@ SqlCollection::setCollectionFolders( const QStringList &folders )
 {
     mountPointManager()->setCollectionFolders( folders );
 }
-
-/*
- * void
- * SqlCollection::initXesam() //SLOT
- * {
- *     m_xesamBuilder = new XesamCollectionBuilder( this );
- * }
- */
 
 void
 SqlCollection::slotDeviceAdded( int id )

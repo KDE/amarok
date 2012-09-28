@@ -39,7 +39,6 @@ namespace Capabilities {
 }
 
 class ScanManager;
-// class XesamCollectionBuilder;
 
 namespace Collections {
 
@@ -72,10 +71,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         SqlCollection( const QString &id, const QString &prettyName, SqlStorage *storage );
         virtual ~SqlCollection();
 
-        //this method MUST be called before using the collection
-        void init();
-
-        virtual QueryMaker* queryMaker();
+        virtual QueryMaker *queryMaker();
 
         /** Returns the protocol for the uid urls of this collection.
             The SqlCollection support "amarok-sqltrackuid" and "file" protocol.
@@ -97,8 +93,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         ScanManager* scanManager() const;
         SqlStorage* sqlStorage() const;
         MountPointManager* mountPointManager() const;
-
-        void removeCollection();    //testing, remove later
 
         /** Returns true if the directory is already known in the database. */
         virtual bool isDirInCollection( const QString &path );
@@ -160,7 +154,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         void slotScanStarted( ScannerJob *job );
 
     private slots:
-        // void initXesam();
         void slotDeviceAdded( int id );
         void slotDeviceRemoved( int id );
 
@@ -178,8 +171,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
 
         QString m_collectionId;
         QString m_prettyName;
-
-        // XesamCollectionBuilder *m_xesamBuilder;
 
         int m_blockUpdatedSignalCount;
         bool m_updatedSignalRequested;

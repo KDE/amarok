@@ -22,7 +22,6 @@
 #define AMAROK_DATABASE_SCANMANAGER_H
 
 #include "AmarokProcess.h"
-#include "amarok_databasecollection_export.h"
 #include "ScanResultProcessor.h"
 #include "DatabaseCollection.h"
 
@@ -58,7 +57,7 @@ class KDirWatch;
     After that we use KDirWatch to track directory changes.
     KDirWatch will not track changes to symbolic links!
 */
-class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
+class ScanManager : public QObject
 {
     Q_OBJECT
 

@@ -29,8 +29,6 @@
 #include <QString>
 #include <QStringList>
 
-#include "amarok_databasecollection_export.h"
-
 namespace CollectionScanner
 {
     class Track;
@@ -49,7 +47,7 @@ class DatabaseUpdater;
 
 /** The ScanResulProcessor class takes the results from the ScanManager and puts them into the database.
 */
-class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObject
+class ScanResultProcessor : public QObject
 {
     Q_OBJECT
 

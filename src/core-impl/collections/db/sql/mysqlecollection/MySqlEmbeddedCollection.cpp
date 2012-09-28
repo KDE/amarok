@@ -18,8 +18,8 @@
 #include "MySqlEmbeddedCollection.h"
 
 #include "MySqlEmbeddedStorage.h"
-#include "SqlCollection.h"
-#include "SqlCollectionFactory.h"
+#include "core-impl/collections/db/sql/SqlCollection.h"
+#include "core-impl/collections/db/sql/SqlCollectionFactory.h"
 
 #include <KLocale>
 

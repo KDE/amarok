@@ -20,14 +20,13 @@
 #define AMAROK_COLLECTION_DATABASECOLLECTION_H
 
 #include "core/collections/Collection.h"
-#include "core-impl/collections/db/amarok_databasecollection_export.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/collections/db/ScanResultProcessor.h"
 #include "MountPointManager.h"
 
-#include <QMutex>
-
 #include <KIcon>
+
+#include <QMutex>
 
 typedef QHash<QString, QString> TrackUrls;
 typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
@@ -41,14 +40,13 @@ namespace Capabilities {
 
 class ScanManager;
 class ScannerJob;
-class XesamCollectionBuilder;
 
 namespace Collections {
 
 class CollectionLocation;
 class DatabaseCollectionLocationFactory;
 
-class AMAROK_DATABASECOLLECTION_EXPORT DatabaseCollection : public Collections::Collection
+class DatabaseCollection : public Collections::Collection
 {
     Q_OBJECT
 
@@ -63,37 +61,14 @@ class AMAROK_DATABASECOLLECTION_EXPORT DatabaseCollection : public Collections::
          *  @param storage The storage this collection should work on. It will be freed by the collection.
          */
         DatabaseCollection( const QString &id, const QString &prettyName );
-
         virtual ~DatabaseCollection();
 
-        //this method MUST be called before using the collection
-        virtual void init() = 0;
-
-        virtual QueryMaker* queryMaker() = 0;
-
-        virtual QString uidUrlProtocol() const = 0;
-        virtual QString collectionId() const = 0;
-        virtual QString prettyName() const = 0;
-        virtual KIcon icon() const { return KIcon("drive-harddisk"); }
-
-        virtual ScanManager* scanManager() const = 0;
-        virtual MountPointManager* mountPointManager() const = 0;
-
-        virtual void removeCollection() = 0;    //testing, remove later
+        virtual ScanManager *scanManager() const = 0;
+        virtual MountPointManager *mountPointManager() const = 0;
 
         virtual QStringList getDatabaseDirectories( QList<int> idList ) const = 0;
         virtual QStringList collectionFolders() const = 0;
         virtual void setCollectionFolders( const QStringList &folders ) = 0;
-
-        /** Returns true if the directory is already known in the database. */
-        virtual bool isDirInCollection( const QString &path ) = 0;
-
-        /** Every collection has this function. */
-        virtual bool possiblyContainsTrack( const KUrl &url ) const = 0;
-
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url ) = 0;
-
-        virtual CollectionLocation* location() = 0;
 
         /** Call this function to prevent the collection updated signal emitted.
          *  This function can be called in preparation of larger updates.
@@ -105,7 +80,7 @@ class AMAROK_DATABASECOLLECTION_EXPORT DatabaseCollection : public Collections::
 
         /** Returns a new ScanResultProcessor for this collection.
             caller has to free the processor. */
-        virtual ScanResultProcessor* getNewScanResultProcessor() = 0;
+        virtual ScanResultProcessor *getNewScanResultProcessor() = 0;
 
     public slots:
         /** Emit updated if the signal is not blocked by blockUpdatedSignal */
@@ -125,8 +100,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT DatabaseCollection : public Collections::
         QString m_collectionId;
         QString m_prettyName;
 
-        XesamCollectionBuilder *m_xesamBuilder;
-
         int m_blockUpdatedSignalCount;
         bool m_updatedSignalRequested;
         QMutex m_mutex;
@@ -138,4 +111,3 @@ Q_DECLARE_METATYPE( TrackUrls )
 Q_DECLARE_METATYPE( ChangedTrackUrls )
 
 #endif /* AMAROK_COLLECTION_DATABASECOLLECTION_H */
-

@@ -19,10 +19,6 @@
 #define AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
 
 #include "core/collections/Collection.h"
-#include "amarok_export.h"
-#include "amarok_sqlcollection_export.h"
-
-#include <QString>
 
 namespace Collections {
 

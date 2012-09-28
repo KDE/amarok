@@ -18,20 +18,15 @@
 
 #include "DatabaseCollection.h"
 
-namespace Collections {
+using namespace Collections;
 
-    DatabaseCollection:: DatabaseCollection( const QString &id, const QString &prettyName )
-        : Collection()
-    {
-        Q_UNUSED(id)
-        Q_UNUSED(prettyName)
-    }
-
-    DatabaseCollection::~DatabaseCollection()
-    {
-    }
-
+DatabaseCollection::DatabaseCollection( const QString &id, const QString &prettyName )
+    : Collection()
+{
+    Q_UNUSED( id )
+    Q_UNUSED( prettyName )
 }
 
-#include "DatabaseCollection.moc"
-
+DatabaseCollection::~DatabaseCollection()
+{
+}

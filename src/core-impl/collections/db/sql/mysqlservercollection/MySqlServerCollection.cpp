@@ -18,11 +18,11 @@
 
 #include "MySqlServerCollection.h"
 
+#include "amarokconfig.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "amarokconfig.h"
-#include "SqlCollection.h"
-#include "SqlCollectionFactory.h"
+#include "core-impl/collections/db/sql/SqlCollection.h"
+#include "core-impl/collections/db/sql/SqlCollectionFactory.h"
 
 #include <QMutexLocker>
 #include <QThreadStorage>

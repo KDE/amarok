@@ -18,9 +18,8 @@
 #ifndef AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
 #define AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
 
-#include "mysql-shared/MySqlStorage.h"
 #include "core/collections/Collection.h"
-#include "amarok_export.h"
+#include "core-impl/collections/db/sql/mysql-shared/MySqlStorage.h"
 
 namespace Collections {
 

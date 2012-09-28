@@ -1,20 +1,4 @@
-
-include_directories(
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/utilities
-    ${CMAKE_BINARY_DIR}/src
-    ${KDE4_INCLUDE_DIR}
-    # ${STRIGI_INCLUDE_DIR}
-    ${QT_INCLUDES}
-)
-
-# if (NOT WIN32)
- # set (extra_src
-    # ../sql/XesamDbus.cpp
-    # ../sql/XesamCollectionBuilder.cpp)
-# endif (NOT WIN32)
-
-set(amarok_collection-sqlcollection_SRCS
+set( amarok_collection-sqlcollection_SRCS
     CapabilityDelegateImpl.cpp
     DatabaseUpdater.cpp
     ../ScanManager.cpp
@@ -32,8 +16,7 @@ set(amarok_collection-sqlcollection_SRCS
     SqlWriteLabelCapability.cpp
     SqlScanResultProcessor.cpp
     ${CMAKE_SOURCE_DIR}/shared/FileType.cpp
-    ${extra_src}
- )
+)
 
 kde4_add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
 
@@ -66,4 +49,3 @@ endif( BUILD_MYSQLE_COLLECTION )
 if( MYSQL_FOUND )
     add_subdirectory( mysqlservercollection )
 endif( MYSQL_FOUND )
-
