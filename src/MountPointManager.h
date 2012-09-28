@@ -223,21 +223,8 @@ private slots:
 
 };
 
-class UrlUpdateJob : public ThreadWeaver::Job
-{
-public:
-    UrlUpdateJob( QObject *dependent );
-
-    virtual void run();
-
-private:
-    void updateStatistics();
-    void updateLabels();
-};
-
 #define AMAROK_EXPORT_DEVICE_PLUGIN(libname, classname) \
 K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
 K_EXPORT_PLUGIN(factory("amarok_device_" #libname))\
-
 
 #endif
