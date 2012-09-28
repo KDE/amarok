@@ -1,5 +1,11 @@
+****************************************************************************
+* BIG FAT WARNING:                                                         *
+* Media Device Framework is outdated and is going to be removed as soon as *
+* we rewrite MtpCollection and AudioCdColleciton not to use it anymore.    *
+****************************************************************************
+
 Media Device Framework
-==
+======================
 
 1. Solid Interface
 
@@ -12,7 +18,7 @@ present media devices and external hard drives, even if Amarok does not
 support them.
 
 MediaDeviceMonitor(singleton) - Talks to the MDC to see what devices are
-available.  Keeps track of the kind of devices that Amarok supports. 
+available.  Keeps track of the kind of devices that Amarok supports.
 It does this by receiving and caching a single ConnectionAssistant
 object from the MediaDeviceCollectionFactory of the particular device
 type, so that as devices are detected, they can be tested for
@@ -91,7 +97,7 @@ top-level logic already standardized and done in the main
 MediaDeviceHandler class.
 
 Note: To see the logic hereto referred, check the MediaDeviceHandler's
-calls to the Capability classes, and the order of the function calls. 
+calls to the Capability classes, and the order of the function calls.
 This helps to understand how best to map the functions of the
 Capability interface, to function calls or member-data access using the
 appropriate library.
