@@ -19,15 +19,14 @@
 #define DEBUG_PREFIX "ScanResultProcessor"
 
 #include "ScanResultProcessor.h"
+
+#include "MountPointManager.h"
+#include "collectionscanner/Directory.h"
+#include "collectionscanner/Album.h"
+#include "collectionscanner/Track.h"
+#include "collectionscanner/Playlist.h"
 #include "core/support/Debug.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "MountPointManager.h"
-
-// include files from the collection scanner utility
-#include <collectionscanner/Directory.h>
-#include <collectionscanner/Album.h>
-#include <collectionscanner/Track.h>
-#include <collectionscanner/Playlist.h>
 
 ScanResultProcessor::ScanResultProcessor( QObject *parent )
     : QObject( parent )

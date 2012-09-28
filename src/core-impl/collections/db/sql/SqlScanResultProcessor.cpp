@@ -20,15 +20,13 @@
 
 #include "SqlScanResultProcessor.h"
 
+#include "collectionscanner/Directory.h"
+#include "collectionscanner/Album.h"
+#include "collectionscanner/Track.h"
+#include "collectionscanner/Playlist.h"
 #include "core/support/Debug.h"
-#include "SqlQueryMaker.h"
+#include "core-impl/collections/db/sql/SqlQueryMaker.h"
 #include "playlistmanager/PlaylistManager.h"
-
-// include files from the collection scanner utility
-#include <collectionscanner/Directory.h>
-#include <collectionscanner/Album.h>
-#include <collectionscanner/Track.h>
-#include <collectionscanner/Playlist.h>
 
 SqlScanResultProcessor::SqlScanResultProcessor( Collections::SqlCollection *collection, QObject *parent )
     : ScanResultProcessor( parent ),
