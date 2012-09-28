@@ -214,7 +214,6 @@ if( WITH_PLAYER )
     endif( KDE4_BUILD_TESTS AND NOT WIN32 )
 
     add_subdirectory( src )
-    add_subdirectory( external )
 
     # Also display taglib in the feature log
     macro_log_feature( TAGLIB_FOUND "taglib" "Support for Audio metadata." "http://developer.kde.org/~wheeler/taglib.html" FALSE "" "STRONGLY RECOMMENDED" )
