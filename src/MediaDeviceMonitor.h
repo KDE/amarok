@@ -60,29 +60,9 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     void init(); // connect to MediaDeviceCache
 
     QStringList getDevices(); // get list of devices
-    /* TODO: checking for cd etc. goes in cdcollection dir now, needs porting
-    void checkDevicesForCd();
 
-    QString isCdPresent();
-    void ejectCd( const QString &udi );
-
-    
-    QString currentCdId();
-    void setCurrentCdId( const QString &id );
-
-    signals:
-
-        void audioCdDetected( const QString &udi );
-
-    private:
-        
-        bool isAudioCd( const QString &udi );
-
-        QString m_currentCdId;
-*/
     /// Get assistant for a given udi
-
-    ConnectionAssistant* getUdiAssistant( const QString &udi )
+    ConnectionAssistant *getUdiAssistant( const QString &udi )
     {
         return m_udiAssistants[ udi ];
     }
@@ -128,26 +108,23 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
         void deviceAdded( const QString &udi );
         void slotDeviceRemoved( const QString &udi );
         void slotAccessibilityChanged( bool accessible, const QString & udi );
-	
-	void slotDequeueWaitingAssistant();
+
+        void slotDequeueWaitingAssistant();
 
 
     private:
-
-        static MediaDeviceMonitor* s_instance;
+        static MediaDeviceMonitor *s_instance;
 
         // keeps track of which CA to contact for which udi
         QHash<QString,ConnectionAssistant*> m_udiAssistants;
         // holds all registered assistants
         QList<ConnectionAssistant*> m_assistants;
-	// holds all waiting assistants
+        // holds all waiting assistants
         QList<ConnectionAssistant*> m_waitingassistants;
-	// holds index of next waiting assistant to check
-	// devices with, during initialization of device
-	// factories
-	int m_nextassistant;
-
-
+        // holds index of next waiting assistant to check
+        // devices with, during initialization of device
+        // factories
+        int m_nextassistant;
 };
 
 #endif /* AMAROK_MEDIADEVICEMONITOR_H */
