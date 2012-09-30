@@ -184,11 +184,11 @@ namespace Meta
             template <typename T>
             void notifyObserversHelper( const T *self ) const;
 
-            QSet<Meta::Observer*> m_observers;
-
         private:
             // no copy allowed, since it's not safe with observer list
             Q_DISABLE_COPY( Base )
+
+            QSet<Meta::Observer*> m_observers;
     };
 
     class AMAROK_CORE_EXPORT Track : public Base
