@@ -172,7 +172,11 @@ UpcomingEventsWidget::setImage( const KUrl &url )
 void
 UpcomingEventsWidget::loadImage()
 {
-    QNetworkReply *reply = static_cast<QNetworkReply*>( sender() );
+    QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
+    if( !reply )
+        return;
+
+    reply->deleteLater();
     const KUrl &url = reply->request().url();
     if( m_imageUrl != url )
         return;
@@ -188,7 +192,6 @@ UpcomingEventsWidget::loadImage()
         QPixmapCache::insert( url.url(), image );
         m_image->setPixmap( image );
     }
-    reply->deleteLater();
 }
 
 void
