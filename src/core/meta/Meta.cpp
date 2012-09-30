@@ -136,6 +136,19 @@ Meta::Base::unsubscribe( Observer *observer )
     m_observers.remove( observer );
 }
 
+// this is a template method that should be normally in the .h file, the thing is that
+// only legit callers of this are also lie in this .cpp file, so it works like this
+template <typename T>
+void
+Meta::Base::notifyObserversHelper( const T *self ) const
+{
+    foreach( Observer *observer, m_observers )
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->metadataChanged( KSharedPtr<T>( const_cast<T *>( self ) ) );
+    }
+}
+
 //Meta::Track
 
 QString
@@ -246,11 +259,7 @@ Meta::Track::finishedPlaying( double playedFraction )
 void
 Meta::Track::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( Meta::TrackPtr( const_cast<Meta::Track*>(this) ) );
-    }
+    notifyObserversHelper<Track>( this );
 }
 
 bool
@@ -328,11 +337,7 @@ Meta::Artist::prettyName() const
 void
 Meta::Artist::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( Meta::ArtistPtr( const_cast<Meta::Artist*>(this) ) );
-    }
+    notifyObserversHelper<Artist>( this );
 }
 
 bool
@@ -378,11 +383,7 @@ Meta::Album::prettyName() const
 void
 Meta::Album::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( Meta::AlbumPtr( const_cast<Meta::Album*>(this) ));
-    }
+    notifyObserversHelper<Album>( this );
 }
 
 /*
@@ -415,13 +416,7 @@ Meta::Genre::prettyName() const
 void
 Meta::Genre::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-        {
-            observer->metadataChanged( Meta::GenrePtr( const_cast<Meta::Genre*>(this) ) );
-        }
-    }
+    notifyObserversHelper<Genre>( this );
 }
 
 bool
@@ -443,11 +438,7 @@ Meta::Composer::prettyName() const
 void
 Meta::Composer::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( Meta::ComposerPtr( const_cast<Meta::Composer*>(this) ) );
-    }
+    notifyObserversHelper<Composer>( this );
 }
 
 bool
@@ -461,11 +452,7 @@ Meta::Composer::operator==( const Meta::Composer &composer ) const
 void
 Meta::Year::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( Meta::YearPtr( const_cast<Meta::Year *>(this) ) );
-    }
+    notifyObserversHelper<Year>( this );
 }
 
 bool
@@ -477,6 +464,6 @@ Meta::Year::operator==( const Meta::Year &year ) const
 void
 Meta::Label::notifyObservers() const
 {
-    //TODO: not sure if labels have to be observable, or whether it makes sense for them to notify observers
+    // labels are not observable
 }
 
