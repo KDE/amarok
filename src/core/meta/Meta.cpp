@@ -114,6 +114,11 @@ Meta::Observer::destroyedNotify( Meta::Base *ptr )
 
 // Meta::Base
 
+Base::Base()
+    : m_observersLock( QReadWriteLock::Recursive )
+{
+}
+
 Meta::Base::~Base()
 {
     // we need to notify all observers that we're deleted to avoid stale pointers
@@ -127,12 +132,16 @@ void
 Meta::Base::subscribe( Observer *observer )
 {
     if( observer )
+    {
+        QWriteLocker locker( &m_observersLock );
         m_observers.insert( observer );
+    }
 }
 
 void
 Meta::Base::unsubscribe( Observer *observer )
 {
+    QWriteLocker locker( &m_observersLock );
     m_observers.remove( observer );
 }
 
@@ -142,9 +151,16 @@ template <typename T>
 void
 Meta::Base::notifyObserversHelper( const T *self ) const
 {
+    // observers ale allowed to remove themselves during metadataChanged() call. That's
+    // why the lock needs to be recursive.
+    QReadLocker locker( &m_observersLock );
     foreach( Observer *observer, m_observers )
     {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+        // observers can potentially remove or even destory other observers during
+        // metadataChanged() call. Guard against it. The guarding doesn't need to be
+        // thread-safe,  because we already hold m_observersLock (which is recursive),
+        // so other threads wait on potential unsubscribe().
+        if( m_observers.contains( observer ) )
             observer->metadataChanged( KSharedPtr<T>( const_cast<T *>( self ) ) );
     }
 }

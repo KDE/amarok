@@ -31,6 +31,7 @@
 #include <QSet>
 #include <QSharedData>
 #include <QString>
+#include <QReadWriteLock>
 
 #include <KSharedPtr>
 #include <KUrl>
@@ -134,7 +135,7 @@ namespace Meta
         Q_PROPERTY( QString sortableName READ sortableName )
 
         public:
-            Base() {}
+            Base();
             virtual ~Base();
 
             /** The textual label for this object.
@@ -189,6 +190,7 @@ namespace Meta
             Q_DISABLE_COPY( Base )
 
             QSet<Meta::Observer*> m_observers;
+            mutable QReadWriteLock m_observersLock; // guards access to m_observers
     };
 
     class AMAROK_CORE_EXPORT Track : public Base
