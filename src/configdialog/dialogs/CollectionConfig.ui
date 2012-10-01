@@ -6,42 +6,97 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>404</width>
-    <height>215</height>
+    <width>350</width>
+    <height>391</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Collection Setup</string>
   </property>
-  <layout class="QVBoxLayout" name="rootLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="collectionFoldersBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>Collection Folders</string>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="importingBox">
-     <property name="title">
-      <string>Importing Music</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="transcodeLabel">
-        <property name="toolTip">
-         <string>Whether Amarok should transcode tracks when they are copied or moved to Local Collection.</string>
-        </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QLabel" name="descriptionLabel">
         <property name="text">
-         <string>Transcode tracks:</string>
+         <string>These folders will be scanned for media to make up your collection. You can right-click on a folder to individually rescan it, if it was previously selected:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignJustify|Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="Transcoding::SelectConfigWidget" name="transcodingConfig">
-        <property name="toolTip">
-         <string>Whether Amarok should transcode tracks when they are copied or moved to Local Collection.</string>
+      <item>
+       <widget class="CollectionSetupTreeView" name="view">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
         </property>
+        <property name="headerHidden">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="buttonContainer" native="true"/>
+      </item>
+      <item>
+       <widget class="QWidget" name="checkboxContainer" native="true"/>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="importingBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="title">
+         <string>Importing Music</string>
+        </property>
+        <layout class="QFormLayout" name="formLayout">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::ExpandingFieldsGrow</enum>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="transcodeLabel">
+           <property name="toolTip">
+            <string>Whether Amarok should transcode tracks when they are copied or moved to Local Collection.</string>
+           </property>
+           <property name="text">
+            <string>Transcode tracks:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="Transcoding::SelectConfigWidget" name="transcodingConfig">
+           <property name="toolTip">
+            <string>Whether Amarok should transcode tracks when they are copied or moved to Local Collection.</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -54,6 +109,11 @@
    <class>Transcoding::SelectConfigWidget</class>
    <extends>QComboBox</extends>
    <header>transcoding/TranscodingSelectConfigWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CollectionSetupTreeView</class>
+   <extends>QTreeView</extends>
+   <header>widgets/CollectionSetupTreeView.h</header>
   </customwidget>
  </customwidgets>
  <includes>

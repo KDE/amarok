@@ -20,7 +20,6 @@
 #ifndef AMAROK_COLLECTIONSETUP_H
 #define AMAROK_COLLECTIONSETUP_H
 
-#include <KVBox>      //baseclass
 #include <KComboBox>
 
 #include <QCheckBox>
@@ -29,30 +28,13 @@
 
 #include "core/support/Debug.h"
 
-class QTreeView;
+#include "ui_CollectionConfig.h"
 
+class TranscodingConfig;
 namespace CollectionFolder { class Model; }
 
-class CollectionSetupTreeView : public QTreeView
-{
-    Q_OBJECT
 
-    public:
-        CollectionSetupTreeView( QWidget* );
-        ~CollectionSetupTreeView();
-
-    protected slots:
-        /** Shows a context menu if the right mouse button is pressed over a directory. */
-        void slotPressed( const QModelIndex &index );
-        void slotRescanDirTriggered();
-
-    private:
-        QAction *m_rescanDirAction;
-        QString m_currDir;
-
-};
-
-class CollectionSetup : public KVBox
+class CollectionSetup : public QWidget, public Ui::CollectionConfig
 {
     Q_OBJECT
 
@@ -62,6 +44,7 @@ class CollectionSetup : public KVBox
         static CollectionSetup* instance() { return s_instance; }
 
         CollectionSetup( QWidget* );
+        virtual ~CollectionSetup() {}
 
         void writeConfig();
         bool hasChanged() const;
@@ -76,6 +59,7 @@ class CollectionSetup : public KVBox
         bool charset() const { return m_charset && m_charset->isChecked(); }
 
         const QString modelFilePath( const QModelIndex &index ) const;
+        Transcoding::SelectConfigWidget * transcodingConfig() const { return m_ui->transcodingConfig; }
 
     signals:
         void changed();
@@ -86,7 +70,7 @@ class CollectionSetup : public KVBox
     private:
         static CollectionSetup* s_instance;
 
-        CollectionSetupTreeView *m_view;
+        Ui::CollectionConfig *m_ui;
         CollectionFolder::Model *m_model;
         QStringList m_dirs;
         QCheckBox *m_recursive;

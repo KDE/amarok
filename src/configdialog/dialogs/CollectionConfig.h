@@ -17,13 +17,12 @@
 #ifndef COLLECTIONCONFIG_H
 #define COLLECTIONCONFIG_H
 
-#include "ui_CollectionConfig.h"
 #include "configdialog/ConfigDialogBase.h"
 
 class CollectionSetup;
 
 
-class CollectionConfig : public ConfigDialogBase, public Ui_CollectionConfig
+class CollectionConfig : public ConfigDialogBase
 {
     Q_OBJECT
 

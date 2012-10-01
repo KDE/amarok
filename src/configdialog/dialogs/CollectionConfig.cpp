@@ -25,18 +25,16 @@
 CollectionConfig::CollectionConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
-    setupUi( this );
-
-    m_collectionSetup = new CollectionSetup( collectionFoldersBox );
+    m_collectionSetup = new CollectionSetup( this );
     connect( m_collectionSetup, SIGNAL( changed() ), parent, SLOT( updateButtons() ) );
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( m_collectionSetup );
-    collectionFoldersBox->setLayout( layout );
+    setLayout( layout );
 
     KConfigGroup transcodeGroup = Amarok::config( Collections::SQL_TRANSCODING_GROUP_NAME );
-    transcodingConfig->fillInChoices( Transcoding::Configuration::fromConfigGroup( transcodeGroup ) );
-    connect( transcodingConfig, SIGNAL(currentIndexChanged(int)), parent, SLOT(updateButtons()) );
+    m_collectionSetup->transcodingConfig()->fillInChoices( Transcoding::Configuration::fromConfigGroup( transcodeGroup ) );
+    connect( m_collectionSetup->transcodingConfig(), SIGNAL(currentIndexChanged(int)), parent, SLOT(updateButtons()) );
 }
 
 CollectionConfig::~CollectionConfig()
@@ -52,7 +50,7 @@ CollectionConfig::hasChanged()
 {
     DEBUG_BLOCK
 
-    return m_collectionSetup->hasChanged() || transcodingConfig->hasChanged();
+    return m_collectionSetup->hasChanged() || m_collectionSetup->transcodingConfig()->hasChanged();
 }
 
 bool
@@ -67,7 +65,7 @@ CollectionConfig::updateSettings()
     m_collectionSetup->writeConfig();
 
     KConfigGroup transcodeGroup = Amarok::config( Collections::SQL_TRANSCODING_GROUP_NAME );
-    transcodingConfig->currentChoice().saveToConfigGroup( transcodeGroup );
+    m_collectionSetup->transcodingConfig()->currentChoice().saveToConfigGroup( transcodeGroup );
 }
 
 #include "CollectionConfig.moc"

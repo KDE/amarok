@@ -38,109 +38,51 @@
 #include <QLabel>
 #include <QMenu>
 
-CollectionSetupTreeView::CollectionSetupTreeView( QWidget *parent )
-        : QTreeView( parent )
-{
-    DEBUG_BLOCK
-    m_rescanDirAction = new QAction( this );
-    connect( this, SIGNAL( pressed(const QModelIndex &) ), this, SLOT( slotPressed(const QModelIndex&) ) );
-    connect( m_rescanDirAction, SIGNAL( triggered() ), this, SLOT( slotRescanDirTriggered() ) );
-}
-
-CollectionSetupTreeView::~CollectionSetupTreeView()
-{
-    this->disconnect();
-    delete m_rescanDirAction;
-}
-
-void
-CollectionSetupTreeView::slotPressed( const QModelIndex &index )
-{
-    DEBUG_BLOCK
-    // --- show context menu on right mouse button
-    if( ( QApplication::mouseButtons() & Qt::RightButton ) && parent() )
-    {
-        m_currDir = qobject_cast<CollectionSetup*>(parent())->modelFilePath( index );
-        debug() << "Setting current dir to " << m_currDir;
-
-        // check if there is an sql collection covering the directory
-        bool covered = false;
-        QList<Collections::Collection*> queryableCollections = CollectionManager::instance()->queryableCollections();
-        foreach( Collections::Collection *collection, queryableCollections )
-        {
-            if( collection->isDirInCollection( m_currDir ) )
-                covered = true;
-        }
-
-        // it's covered, so we can show the rescan option
-        if( covered )
-        {
-            m_rescanDirAction->setText( i18n( "Rescan '%1'", m_currDir ) );
-            QMenu menu;
-            menu.addAction( m_rescanDirAction );
-            menu.exec( QCursor::pos() );
-        }
-    }
-}
-
-void
-CollectionSetupTreeView::slotRescanDirTriggered()
-{
-    DEBUG_BLOCK
-    CollectionManager::instance()->startIncrementalScan( m_currDir );
-}
-
 CollectionSetup* CollectionSetup::s_instance;
 
 
 CollectionSetup::CollectionSetup( QWidget *parent )
-        : KVBox( parent )
+        : QWidget( parent )
+        , Ui::CollectionConfig()
+        , m_ui( new Ui::CollectionConfig() )
 {
-    DEBUG_BLOCK
+    m_ui->setupUi(this);
 
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     setObjectName( "CollectionSetup" );
     s_instance = this;
 
-    QLabel* descriptionLabel = new QLabel( i18n(
-        "These folders will be scanned for "
-        "media to make up your collection. You can "
-        "right-click on a folder to individually "
-        "rescan it, if it was previously selected:" ), this );
-    descriptionLabel->setAlignment( Qt::AlignJustify );
-    descriptionLabel->setWordWrap( true );
-
-    m_view  = new CollectionSetupTreeView( this );
-    m_view->setHeaderHidden( true );
-    m_view->setRootIsDecorated( true );
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
-        m_view->setAnimated( true );
-    m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    connect( m_view, SIGNAL( clicked( const QModelIndex & ) ), this, SIGNAL( changed() ) );
+        m_ui->view->setAnimated( true );
+    connect( m_ui->view, SIGNAL( clicked( const QModelIndex & ) ), this, SIGNAL( changed() ) );
 
-    KHBox* buttonBox = new KHBox( this );
-
-    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), buttonBox );
+    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui->buttonContainer );
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
     connect( rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
-    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import" ), buttonBox );
+    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import" ), m_ui->buttonContainer );
     import->setToolTip( i18n( "Import collection and/or statistics from older Amarok versions, the batch scanner or media players." ) );
     connect( import, SIGNAL( clicked() ), this, SLOT( importCollection() ) );
 
-    m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), this );
-    m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
-    m_writeBack = new QCheckBox( i18n("Write metadata to file"), this );
-    m_writeBackStatistics = new QCheckBox( i18n("Write statistics to file"), this );
-    KHBox* writeBackCoverDimensionsBox = new KHBox( this );
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    buttonLayout->addWidget( rescan );
+    buttonLayout->addWidget( import );
+    m_ui->buttonContainer->setLayout( buttonLayout );
+
+    m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), m_ui->checkboxContainer );
+    m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), m_ui->checkboxContainer );
+    m_writeBack = new QCheckBox( i18n("Write metadata to file"), m_ui->checkboxContainer );
+    m_writeBackStatistics = new QCheckBox( i18n("Write statistics to file"), m_ui->checkboxContainer );
+    KHBox* writeBackCoverDimensionsBox = new KHBox( m_ui->checkboxContainer );
     m_writeBackCover = new QCheckBox( i18n("Write covers to file, maximum size:"), writeBackCoverDimensionsBox );
     m_writeBackCoverDimensions = new KComboBox( writeBackCoverDimensionsBox );
+    m_writeBackCoverDimensions->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Minimum );
     m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Small (200 px)"), QVariant(200) );
     m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Medium (400 px)"), QVariant(400) );
     m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Large (800 px)"), QVariant(800) );
     m_writeBackCoverDimensions->addItem( i18nc("Maximum cover size option","Huge (1600 px)"), QVariant(1600) );
-    m_charset   = new QCheckBox( i18n("&Enable character set detection in ID3 tags"), this );
+    m_charset   = new QCheckBox( i18n("&Enable character set detection in ID3 tags"), m_ui->checkboxContainer );
     connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_monitor  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_writeBack, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
@@ -148,6 +90,15 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     connect( m_writeBackCover, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_writeBackCoverDimensions, SIGNAL( currentIndexChanged( int )), this, SIGNAL( changed() ) );
     connect( m_charset  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+
+    QVBoxLayout *checkboxLayout = new QVBoxLayout();
+    checkboxLayout->addWidget( m_recursive );
+    checkboxLayout->addWidget( m_monitor );
+    checkboxLayout->addWidget( m_writeBack );
+    checkboxLayout->addWidget( m_writeBackStatistics );
+    checkboxLayout->addWidget( writeBackCoverDimensionsBox );
+    checkboxLayout->addWidget( m_charset );
+    m_ui->checkboxContainer->setLayout( checkboxLayout );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
     m_monitor->setToolTip(   i18n( "If selected, the collection folders will be watched for changes.\nThe watcher will not notice changes behind symbolic links." ) );
@@ -174,11 +125,11 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     // set the model _after_ constructing the checkboxes
     m_model = new CollectionFolder::Model();
-    m_view->setModel( m_model );
+    m_ui->view->setModel( m_model );
     #ifndef Q_OS_WIN
-    m_view->setRootIndex( m_model->setRootPath( QDir::rootPath() ) );
+    m_ui->view->setRootIndex( m_model->setRootPath( QDir::rootPath() ) );
     #else
-    m_view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
+    m_ui->view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
     #endif
 
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
@@ -189,10 +140,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     foreach( const QString &dir, dirs )
     {
         QModelIndex index = m_model->index( dir );
-        m_view->scrollTo( index, QAbstractItemView::EnsureVisible );
+        m_ui->view->scrollTo( index, QAbstractItemView::EnsureVisible );
     }
-
-    setSpacing( 6 );
 }
 
 bool
