@@ -165,13 +165,16 @@ Reader::loginFinished( int /* id */, bool error )
     }
     QDataStream raw( http->results() );
     Map loginResults = parse( raw );
-    debug() << "list size is " << loginResults["mlog"].toList().size();
-    if( loginResults["mlog"].toList().size() == 0 )
+    QVariantList list = loginResults.value( "mlog" ).toList();
+    debug() << "list size is " << list.size();
+    QVariantList innerList = list.value( 0 ).toMap().value( "mlid" ).toList();
+    debug() << "innerList size is " << innerList.size();
+    if( innerList.isEmpty() )
+    {
+        http->deleteLater();
         return;
-    QVariant tmp = loginResults["mlog"].toList()[0];
-    Debug::stamp();
-    m_sessionId = tmp.toMap()["mlid"].toList()[0].toInt();
-    Debug::stamp();
+    }
+    m_sessionId = innerList.value( 0 ).toInt();
     m_loginString = "session-id=" + QString::number( m_sessionId );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( updateFinished( int, bool ) ) );
     http->getDaap( "/update?" + m_loginString );
