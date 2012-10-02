@@ -112,8 +112,6 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
 Meta::TrackPtr
 SqlRegistry::getTrack( int urlId )
 {
-    QMutexLocker locker( &m_trackMutex );
-
     QString query = "SELECT %1 FROM urls %2 "
         "WHERE urls.id = %3";
     query = query.arg( Meta::SqlTrack::getTrackReturnValues(),
@@ -127,6 +125,7 @@ SqlRegistry::getTrack( int urlId )
                 rowData[Meta::SqlTrack::returnIndex_urlRPath] );
     QString uid = rowData[Meta::SqlTrack::returnIndex_urlUid];
 
+    QMutexLocker locker( &m_trackMutex );
     if( m_trackMap.contains( id ) )
         return m_trackMap.value( id );
     else if( m_uidMap.contains( uid ) )
@@ -147,8 +146,9 @@ SqlRegistry::getTrack( const QString &path )
 {
     int deviceId = m_collection->mountPointManager()->getIdForUrl( path );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, path );
+    TrackPath id( deviceId, rpath );
 
-    TrackPath id(deviceId, rpath);
+    QMutexLocker locker( &m_trackMutex );
     if( m_trackMap.contains( id ) )
         return m_trackMap.value( id );
     else
@@ -179,7 +179,8 @@ SqlRegistry::getTrack( const QString &path )
 Meta::TrackPtr
 SqlRegistry::getTrack( int deviceId, const QString &rpath, int directoryId, const QString &uidUrl )
 {
-    TrackPath id(deviceId, rpath);
+    TrackPath id( deviceId, rpath );
+
     QMutexLocker locker( &m_trackMutex );
     if( m_trackMap.contains( id ) )
         return m_trackMap.value( id );
@@ -241,15 +242,15 @@ SqlRegistry::getTrack( int trackId, const QStringList &rowData )
 bool
 SqlRegistry::updateCachedUrl( const QString &oldUrl, const QString &newUrl )
 {
-    QMutexLocker locker( &m_trackMutex );
     int deviceId = m_collection->mountPointManager()->getIdForUrl( oldUrl );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, oldUrl );
-    TrackPath oldId(deviceId, rpath);
+    TrackPath oldId( deviceId, rpath );
 
     int newdeviceId = m_collection->mountPointManager()->getIdForUrl( newUrl );
     QString newRpath = m_collection->mountPointManager()->getRelativePath( newdeviceId, newUrl );
     TrackPath newId( newdeviceId, newRpath );
 
+    QMutexLocker locker( &m_trackMutex );
     if( m_trackMap.contains( newId ) )
         warning() << "updating path to an already existing path.";
     else if( !m_trackMap.contains( oldId ) )
@@ -316,8 +317,6 @@ SqlRegistry::getTrackFromUid( const QString &uid )
 void
 SqlRegistry::removeTrack( int urlId, const QString uid )
 {
-    QMutexLocker locker( &m_trackMutex );
-
     // delete all entries linked to the url, including track
     QStringList tables = QStringList() << "tracks" << "lyrics" << "statistics" << "urls_labels";
     foreach( const QString &table, tables )
@@ -336,6 +335,7 @@ SqlRegistry::removeTrack( int urlId, const QString uid )
     m_collection->sqlStorage()->query( query );
 
     // --- delete the track from memory
+    QMutexLocker locker( &m_trackMutex );
     if( m_uidMap.contains( uid ) )
     {
         // -- remove from hashes
@@ -589,10 +589,9 @@ SqlRegistry::getAlbum( const QString &name, const QString &artist )
 {
     QString albumArtist( artist );
     // we allow albums with empty name but nonempty artist, see bug 272471
+    AlbumKey key( name, albumArtist );
 
     QMutexLocker locker( &m_albumMutex );
-
-    AlbumKey key(name, albumArtist);
     if( m_albumMap.contains( key ) )
         return m_albumMap.value( key );
 
@@ -647,8 +646,12 @@ SqlRegistry::getAlbum( int albumId )
 {
     Q_ASSERT( albumId > 0 ); // must be a valid id
 
-    if( m_albumIdMap.contains( albumId ) )
-        return m_albumIdMap.value( albumId );
+    {
+        // we want locker only for this block because we call another getAlbum() below
+        QMutexLocker locker( &m_albumMutex );
+        if( m_albumIdMap.contains( albumId ) )
+            return m_albumIdMap.value( albumId );
+    }
 
     QString query = QString( "SELECT name, artist FROM albums WHERE id = %1" ).arg( albumId );
     QStringList res = m_collection->sqlStorage()->query( query );
@@ -664,8 +667,8 @@ Meta::AlbumPtr
 SqlRegistry::getAlbum( int albumId, const QString &name, int artistId )
 {
     Q_ASSERT( albumId > 0 ); // must be a valid id
-    QMutexLocker locker( &m_albumMutex );
 
+    QMutexLocker locker( &m_albumMutex );
     if( m_albumIdMap.contains( albumId ) )
         return m_albumIdMap.value( albumId );
 
@@ -687,7 +690,6 @@ Meta::LabelPtr
 SqlRegistry::getLabel( const QString &label )
 {
     QMutexLocker locker( &m_labelMutex );
-
     if( m_labelMap.contains( label ) )
         return m_labelMap.value( label );
 
@@ -752,7 +754,7 @@ void
 SqlRegistry::blockDatabaseUpdate()
 {
     QMutexLocker locker( &m_blockMutex );
-    m_blockDatabaseUpdateCount ++;
+    m_blockDatabaseUpdateCount++;
 }
 
 void
@@ -761,7 +763,7 @@ SqlRegistry::unblockDatabaseUpdate()
     {
         QMutexLocker locker( &m_blockMutex );
         Q_ASSERT( m_blockDatabaseUpdateCount > 0 );
-        m_blockDatabaseUpdateCount --;
+        m_blockDatabaseUpdateCount--;
     }
 
     // update the database

@@ -24,6 +24,7 @@ VERSION 2.7-Beta 1
     * New optional dependency for Amazon downloads: clamz.
 
   BUGFIXES:
+    * Fix crashes in SqlRegistry because of its false thread-safety. (BR 230991)
     * Fix crash on malformed DAAP reply. (BR 284186)
     * Fix first & last played time not remembered for files outside of collection.
     * Nepomuk plugin now makes Nepomuk ratings visible in Amarok. (BR 174630)

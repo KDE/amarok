@@ -203,13 +203,13 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         QHash<int, Meta::AlbumPtr > m_albumIdMap;
         QHash<QString, Meta::LabelPtr > m_labelMap;
 
-        QMutex m_trackMutex;
-        QMutex m_artistMutex;
-        QMutex m_composerMutex;
-        QMutex m_genreMutex;
-        QMutex m_yearMutex;
-        QMutex m_albumMutex;
-        QMutex m_labelMutex;
+        QMutex m_trackMutex; // guards access to m_trackMap, m_uidMap
+        QMutex m_artistMutex; // guards acces to m_artistMap, m_artistIdMap
+        QMutex m_composerMutex; // guards access to m_composerMap
+        QMutex m_genreMutex; // guards access to m_genreMap
+        QMutex m_yearMutex; // guards access to m_yearMap
+        QMutex m_albumMutex; // guards access to m_albumMap, m_albumIdMap
+        QMutex m_labelMutex; // guards access to m_labelMap
 
         /** The timer is used for cleaning up the different caches. */
         QTimer *m_timer;
