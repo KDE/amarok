@@ -36,11 +36,9 @@ PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const QString &name, QWidge
     setMargin( 0 );
     setContentsMargins(0,0,0,0);
 
-    BrowserCategoryList::addCategory( new DynamicCategory( 0 ) );
-    BrowserCategoryList::addCategory( new UserPlaylistCategory( 0 ) );
-    BrowserCategoryList::addCategory( new APGCategory( 0 ) );
-
-    connect( The::playlistManager(), SIGNAL( categoryAdded( int ) ), SLOT( addCategory( int ) ) );
+    addCategory( new DynamicCategory( 0 ) );
+    addCategory( new UserPlaylistCategory( 0 ) );
+    addCategory( new APGCategory( 0 ) );
 
     setLongDescription( i18n( "The playlist browser contains your list of imported and saved playlists. It is also where you can specify powerful dynamic playlists and manage your podcast subscriptions and episodes." ) );
 
@@ -49,13 +47,6 @@ PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const QString &name, QWidge
 
 PlaylistBrowserNS::PlaylistBrowser::~PlaylistBrowser()
 {
-}
-
-//SLOT
-void
-PlaylistBrowserNS::PlaylistBrowser::addCategory( int )
-{
-    DEBUG_BLOCK
 }
 
 #include "PlaylistBrowser.moc"

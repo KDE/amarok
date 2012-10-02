@@ -37,10 +37,6 @@ class PlaylistBrowser : public BrowserCategoryList
         PlaylistBrowser( const QString &name, QWidget *parent = 0 );
         ~PlaylistBrowser();
 
-
-    public slots:
-        void addCategory( int category );
-
     private:
         PodcastCollection* m_localPodcasts;
         PodcastCategory* m_podcastCategory;
