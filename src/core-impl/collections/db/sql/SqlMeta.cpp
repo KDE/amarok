@@ -100,10 +100,10 @@ SqlTrack::getTrackReturnValueCount()
     return count;
 }
 
-SqlTrack::SqlTrack( Collections::SqlCollection* collection, int deviceId,
+SqlTrack::SqlTrack( Collections::SqlCollection *collection, int deviceId,
                     const QString &rpath, int directoryId, const QString uidUrl )
     : Track()
-    , m_collection( QPointer<Collections::SqlCollection>( collection ) )
+    , m_collection( collection )
     , m_batchUpdate( 0 )
     , m_writeFile( true )
     , m_labelsInCache( false )
@@ -150,9 +150,9 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, int deviceId,
     m_filetype = Amarok::Unknown;
 }
 
-SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &result )
+SqlTrack::SqlTrack( Collections::SqlCollection *collection, const QStringList &result )
     : Track()
-    , m_collection( QPointer<Collections::SqlCollection>( collection ) )
+    , m_collection( collection )
     , m_batchUpdate( 0 )
     , m_writeFile( true )
     , m_labelsInCache( false )
@@ -1334,11 +1334,12 @@ SqlTrack::remove()
 
 //---------------------- class Artist --------------------------
 
-SqlArtist::SqlArtist( Collections::SqlCollection* collection, int id, const QString &name ) : Artist()
-    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
-    ,m_id( id )
-    ,m_name( name )
-    ,m_tracksLoaded( false )
+SqlArtist::SqlArtist( Collections::SqlCollection *collection, int id, const QString &name )
+    : Artist()
+    , m_collection( collection )
+    , m_id( id )
+    , m_name( name )
+    , m_tracksLoaded( false )
 {
     Q_ASSERT( m_collection );
     Q_ASSERT( m_id > 0 );
@@ -1393,8 +1394,9 @@ SqlArtist::createCapabilityInterface( Capabilities::Capability::Type type )
 //--------------- class Album ---------------------------------
 const QString SqlAlbum::AMAROK_UNSET_MAGIC = QString( "AMAROK_UNSET_MAGIC" );
 
-SqlAlbum::SqlAlbum( Collections::SqlCollection* collection, int id, const QString &name, int artist ) : Album()
-    , m_collection( QPointer<Collections::SqlCollection>( collection ) )
+SqlAlbum::SqlAlbum( Collections::SqlCollection *collection, int id, const QString &name, int artist )
+    : Album()
+    , m_collection( collection )
     , m_name( name )
     , m_id( id )
     , m_artistId( artist )
@@ -1970,11 +1972,12 @@ SqlAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 
 //---------------SqlComposer---------------------------------
 
-SqlComposer::SqlComposer( Collections::SqlCollection* collection, int id, const QString &name ) : Composer()
-    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
-    ,m_id( id )
-    ,m_name( name )
-    ,m_tracksLoaded( false )
+SqlComposer::SqlComposer( Collections::SqlCollection *collection, int id, const QString &name )
+    : Composer()
+    , m_collection( collection )
+    , m_id( id )
+    , m_name( name )
+    , m_tracksLoaded( false )
 {
     Q_ASSERT( m_collection );
     Q_ASSERT( m_id > 0 );
@@ -2014,11 +2017,12 @@ SqlComposer::tracks()
 
 //---------------SqlGenre---------------------------------
 
-SqlGenre::SqlGenre( Collections::SqlCollection* collection, int id, const QString &name ) : Genre()
-    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
-    ,m_id( id )
-    ,m_name( name )
-    ,m_tracksLoaded( false )
+SqlGenre::SqlGenre( Collections::SqlCollection *collection, int id, const QString &name )
+    : Genre()
+    , m_collection( collection )
+    , m_id( id )
+    , m_name( name )
+    , m_tracksLoaded( false )
 {
     Q_ASSERT( m_collection );
     Q_ASSERT( m_id > 0 );
@@ -2052,11 +2056,12 @@ SqlGenre::tracks()
 
 //---------------SqlYear---------------------------------
 
-SqlYear::SqlYear( Collections::SqlCollection* collection, int id, int year) : Year()
-    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
-    ,m_id( id )
-    ,m_year( year )
-    ,m_tracksLoaded( false )
+SqlYear::SqlYear( Collections::SqlCollection *collection, int id, int year)
+    : Year()
+    , m_collection( collection )
+    , m_id( id )
+    , m_year( year )
+    , m_tracksLoaded( false )
 {
     Q_ASSERT( m_collection );
     Q_ASSERT( m_id > 0 );
@@ -2090,11 +2095,12 @@ SqlYear::tracks()
 
 //---------------SqlLabel---------------------------------
 
-SqlLabel::SqlLabel( Collections::SqlCollection *collection, int id, const QString &name ) : Meta::Label()
-    ,m_collection( QPointer<Collections::SqlCollection>( collection ) )
-    ,m_id( id )
-    ,m_name( name )
-    ,m_tracksLoaded( false )
+SqlLabel::SqlLabel( Collections::SqlCollection *collection, int id, const QString &name )
+    : Label()
+    , m_collection( collection )
+    , m_id( id )
+    , m_name( name )
+    , m_tracksLoaded( false )
 {
     Q_ASSERT( m_collection );
     Q_ASSERT( m_id > 0 );
