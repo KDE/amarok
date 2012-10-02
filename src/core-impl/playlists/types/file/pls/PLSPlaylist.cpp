@@ -149,7 +149,7 @@ PLSPlaylist::removeTrack( int position )
 bool
 PLSPlaylist::loadPls( QTextStream &textStream )
 {
-    MetaProxy::Track *proxyTrack = 0;
+    MetaProxy::TrackPtr proxyTrack;
 
     // Counted number of "File#=" lines.
     unsigned int entryCnt = 0;
@@ -244,7 +244,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
                 url.cleanPath();
             }
             proxyTrack = new MetaProxy::Track( url );
-            m_tracks << Meta::TrackPtr( proxyTrack );
+            m_tracks << Meta::TrackPtr( proxyTrack.data() );
             continue;
         }
         if( (*i).contains(regExp_Title) )

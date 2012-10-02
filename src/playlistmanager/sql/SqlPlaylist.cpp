@@ -284,13 +284,12 @@ SqlPlaylist::loadTracks()
         QStringList row = result.mid( i*7, 7 );
         KUrl url = KUrl( row[2] );
 
-        MetaProxy::Track *proxyTrack = new MetaProxy::Track( url );
+        MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
 
         proxyTrack->setName( row[3] );
         proxyTrack->setAlbum( row[4] );
         proxyTrack->setArtist( row[5] );
-        Meta::TrackPtr trackPtr = Meta::TrackPtr( proxyTrack );
-        m_tracks << trackPtr;
+        m_tracks << Meta::TrackPtr( proxyTrack.data() );
     }
 
     m_tracksLoaded = true;

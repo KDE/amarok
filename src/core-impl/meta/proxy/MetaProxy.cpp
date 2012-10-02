@@ -66,23 +66,23 @@ class EditCapabilityProxy : public Capabilities::EditCapability
 };
 
 MetaProxy::Track::Track( const KUrl &url )
-:Meta::Track()
-,d( new Private() )
+    : Meta::Track()
+    , d( new Private() )
 {
-	init( url, false );
+    init( url, false );
 }
 
 MetaProxy::Track::Track( const KUrl &url, bool awaitLookupNotification )
-	:Meta::Track()
-	,d( new Private() )
+    : Meta::Track()
+    , d( new Private() )
 {
-	init( url, awaitLookupNotification );
+    init( url, awaitLookupNotification );
 }
 
 void
 MetaProxy::Track::init( const KUrl &url, bool awaitLookupNotification )
 {
-	d->url = url;
+    d->url = url;
     d->proxy = this;
     d->cachedLength = 0;
     d->albumPtr = Meta::AlbumPtr( new ProxyAlbum( d ) );

@@ -249,14 +249,14 @@ XSPFPlaylist::triggerTrackLoad()
 
     foreach( const XSPFTrack &track, xspfTracks )
     {
-       MetaProxy::Track *proxyTrack = new MetaProxy::Track( track.location );
+       MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( track.location ) );
        //Fill in values from xspf..
        proxyTrack->setName( track.title );
        proxyTrack->setAlbum( track.album );
        proxyTrack->setArtist( track.creator );
        proxyTrack->setLength( track.duration );
        proxyTrack->setTrackNumber( track.trackNum );
-       m_tracks << Meta::TrackPtr( proxyTrack );
+       m_tracks << Meta::TrackPtr( proxyTrack.data() );
     }
 
     m_tracksLoaded = true;

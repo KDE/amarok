@@ -167,7 +167,6 @@ M3UPlaylist::loadM3u( QTextStream &stream )
         }
         else if( !line.startsWith( '#' ) && !line.isEmpty() )
         {
-            MetaProxy::Track *proxyTrack;
             line = line.replace( "\\", "/" );
 
             // KUrl's constructor handles detection of local file paths without
@@ -180,7 +179,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 url.cleanPath();
             }
 
-            proxyTrack = new MetaProxy::Track( url );
+            MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
             QString artist = extinfTitle.section( " - ", 0, 0 );
             QString title = extinfTitle.section( " - ", 1, 1 );
             //if title and artist are saved such as in M3UPlaylist::save()
@@ -194,7 +193,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 proxyTrack->setName( extinfTitle );
             }
             proxyTrack->setLength( length );
-            m_tracks << Meta::TrackPtr( proxyTrack );
+            m_tracks << Meta::TrackPtr( proxyTrack.data() );
             m_tracksLoaded = true;
         }
     } while( !stream.atEnd() );
