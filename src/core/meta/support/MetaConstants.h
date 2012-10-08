@@ -65,7 +65,11 @@ namespace Meta
     /** Returns the value for the given field.
      */
     AMAROK_CORE_EXPORT QVariant valueForField( qint64 field, TrackPtr track );
-    /** The Field variables can be used in cases where a key for metadate is needed.
+
+    /**
+     * The Field variables. Please note that these constants are considered deprecated.
+     * Use Meta::val* (e.g. Meta::valArtist, Meta::valAlbum) constants instead of these
+     * in new code unless you have to.
      */
     namespace Field
     {
