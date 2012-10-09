@@ -12,144 +12,207 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="showLayout">
-     <item>
-      <widget class="QLabel" name="showLabel">
-       <property name="text">
-        <string>Show:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="matchedRadio">
-       <property name="text">
-        <string>Matched Tracks</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="uniqueRadio">
-       <property name="toolTip">
-        <string>Tracks that are unique to their sources</string>
-       </property>
-       <property name="text">
-        <string>Unique Tracks</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="excludedRadio">
-       <property name="toolTip">
-        <string>Tracks that have been excluded from synchronization due to ambiguity</string>
-       </property>
-       <property name="text">
-        <string>Excluded Tracks</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="showSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="filterLayout">
-     <item>
-      <widget class="KLineEdit" name="filterLine">
-       <property name="clickMessage">
-        <string>Filter Tracks...</string>
-       </property>
-       <property name="showClearButton" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="filterCombo">
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QTreeView" name="treeView">
-     <property name="alternatingRowColors">
-      <bool>true</bool>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <property name="uniformRowHeights">
-      <bool>true</bool>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
-     </property>
-     <property name="animated">
-      <bool>true</bool>
-     </property>
-     <property name="allColumnsShowFocus">
-      <bool>true</bool>
-     </property>
+     <widget class="QWidget" name="matchedTab">
+      <attribute name="title">
+       <string>Matched Tracks</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="matchedFilterLayout">
+         <item>
+          <widget class="KLineEdit" name="matchedFilterLine">
+           <property name="clickMessage">
+            <string>Filter Tracks...</string>
+           </property>
+           <property name="showClearButton" stdset="0">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="matchedFilterCombo"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTreeView" name="matchedTreeView">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="uniformRowHeights">
+          <bool>true</bool>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="animated">
+          <bool>true</bool>
+         </property>
+         <property name="allColumnsShowFocus">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="matchedStatusLayout">
+         <item>
+          <widget class="QToolButton" name="matchedRatingsButton">
+           <property name="toolTip">
+            <string>Affects all applicable tracks, not just shown ones</string>
+           </property>
+           <property name="text">
+            <string>Take Ratings From</string>
+           </property>
+           <property name="popupMode">
+            <enum>QToolButton::InstantPopup</enum>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="matchedLabelsButton">
+           <property name="toolTip">
+            <string>Affects all applicable tracks, not just shown ones</string>
+           </property>
+           <property name="text">
+            <string>Labels</string>
+           </property>
+           <property name="popupMode">
+            <enum>QToolButton::InstantPopup</enum>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="matchedStatusBar">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+      <zorder>matchedFilterLine</zorder>
+      <zorder></zorder>
+      <zorder>matchedTreeView</zorder>
+      <zorder></zorder>
+     </widget>
+     <widget class="QWidget" name="uniqueTab">
+      <attribute name="title">
+       <string>Unique Tracks</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <layout class="QHBoxLayout" name="uniqueFilterLayout">
+         <item>
+          <widget class="KLineEdit" name="uniqueFilterLine">
+           <property name="clickMessage">
+            <string>Filter Tracks...</string>
+           </property>
+           <property name="showClearButton" stdset="0">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="uniqueFilterCombo"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTreeView" name="uniqueTreeView">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="uniformRowHeights">
+          <bool>true</bool>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="animated">
+          <bool>true</bool>
+         </property>
+         <property name="allColumnsShowFocus">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="uniqueStatusBar">
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="excludedTab">
+      <attribute name="title">
+       <string>Excluded Tracks</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <layout class="QHBoxLayout" name="excludedFilterLayout">
+         <item>
+          <widget class="KLineEdit" name="excludedFilterLine">
+           <property name="clickMessage">
+            <string>Filter Tracks...</string>
+           </property>
+           <property name="showClearButton" stdset="0">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="excludedFilterCombo"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTreeView" name="excludedTreeView">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="uniformRowHeights">
+          <bool>true</bool>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="animated">
+          <bool>true</bool>
+         </property>
+         <property name="allColumnsShowFocus">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="excludedStatusBar">
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="statusLayout">
-     <item>
-      <widget class="QToolButton" name="takeRatingsButton">
-       <property name="toolTip">
-        <string>Affects all applicable tracks, not just shown ones</string>
-       </property>
-       <property name="text">
-        <string>Take Ratings From</string>
-       </property>
-       <property name="popupMode">
-        <enum>QToolButton::InstantPopup</enum>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="labelsButton">
-       <property name="toolTip">
-        <string>Affects all applicable tracks, not just shown ones</string>
-       </property>
-       <property name="text">
-        <string>Labels</string>
-       </property>
-       <property name="popupMode">
-        <enum>QToolButton::InstantPopup</enum>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="statusBar">
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item>
     <widget class="KDialogButtonBox" name="buttonBox">

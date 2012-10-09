@@ -20,6 +20,8 @@
 #include "ui_MatchedTracksPage.h"
 #include "statsyncing/Provider.h"
 
+class QSortFilterProxyModel;
+
 namespace StatSyncing
 {
     class MatchedTracksModel;
@@ -72,28 +74,15 @@ namespace StatSyncing
              */
             void rejected();
 
-        protected:
-            virtual void showEvent( QShowEvent *event );
-
         private slots:
-            void showMatchedTracks( bool checked );
-            void showUniqueTracks( bool checked );
-            void showExcludedTracks( bool checked );
-            /**
-             * Helper method for show{Unique,Excluded}Tracks
-             */
-            void showSingleTracks( const QMap<ProviderPtr, QAbstractItemModel *> &models );
-
             void changeMatchedTracksFilter( int index );
 
             void changeUniqueTracksProvider( int index );
             void changeExcludedTracksProvider( int index );
-            /**
-             * Helper method for change{UniqueExcluded}TracksProvider
-             */
-            void changeSingleTracksProvider( int index, const QMap<ProviderPtr, QAbstractItemModel *> &models );
 
-            void refreshStatusText();
+            void refreshMatchedStatusText();
+            void refreshUniqueStatusText();
+            void refreshExcludedStatusText();
 
             void rememberExpandedState( const QModelIndex &parent, int start, int end );
             void restoreExpandedState( const QModelIndex &parent, int start, int end );
@@ -105,16 +94,14 @@ namespace StatSyncing
             void openConfiguration();
 
         private:
-            void polish();
-            void saveExpandedTuples();
-            void restoreExpandedTuples();
+            void refreshStatusTextHelper( QSortFilterProxyModel *topModel, QLabel *label );
+            static void setHeaderSizePoliciesFromModel( QHeaderView *header, QAbstractItemModel *model );
             Q_DISABLE_COPY( MatchedTracksPage )
 
-            bool m_polished;
-            int m_matchedTracksComboLastIndex;
             QSet<int> m_expandedTuples;
-            ProviderPtrList m_providers;
-            SortFilterProxyModel *m_proxyModel;
+            SortFilterProxyModel *m_matchedProxyModel;
+            QSortFilterProxyModel *m_uniqueProxyModel;
+            QSortFilterProxyModel *m_excludedProxyModel;
             MatchedTracksModel *m_matchedTracksModel;
             QMap<ProviderPtr, QAbstractItemModel *> m_uniqueTracksModels;
             QMap<ProviderPtr, QAbstractItemModel *> m_excludedTracksModels;

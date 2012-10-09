@@ -101,27 +101,35 @@ using namespace StatSyncing;
 
 MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     : QWidget( parent, f )
-    , m_polished( false )
-    , m_matchedTracksComboLastIndex( 2 ) // tracks with conflict
-    , m_proxyModel( 0 )
     , m_matchedTracksModel( 0 )
 {
     setupUi( this );
-    m_proxyModel = new SortFilterProxyModel( this );
-    m_proxyModel->setSortLocaleAware( true );
-    m_proxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
-    m_proxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
-    connect( m_proxyModel, SIGNAL(modelReset()), SLOT(refreshStatusText()) );
-    connect( m_proxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(refreshStatusText()) );
-    connect( m_proxyModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(refreshStatusText()) );
-    treeView->setModel( m_proxyModel );
-    treeView->setItemDelegate( new TrackDelegate( treeView ) );
+    m_matchedProxyModel = new SortFilterProxyModel( this );
+    m_uniqueProxyModel = new QSortFilterProxyModel( this );
+    m_excludedProxyModel = new QSortFilterProxyModel( this );
 
-    connect( matchedRadio, SIGNAL(toggled(bool)), SLOT(showMatchedTracks(bool)) );
-    connect( uniqueRadio, SIGNAL(toggled(bool)), SLOT(showUniqueTracks(bool)) );
-    connect( excludedRadio, SIGNAL(toggled(bool)), SLOT(showExcludedTracks(bool)) );
-    connect( filterLine, SIGNAL(textChanged(QString)),
-             m_proxyModel, SLOT(setFilterFixedString(QString)) );
+#define SETUP_MODEL( proxyModel, name, Name ) \
+    proxyModel->setSortLocaleAware( true ); \
+    proxyModel->setSortCaseSensitivity( Qt::CaseInsensitive ); \
+    proxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive ); \
+    connect( proxyModel, SIGNAL(modelReset()), SLOT(refresh##Name##StatusText()) ); \
+    connect( proxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(refresh##Name##StatusText()) ); \
+    connect( proxyModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(refresh##Name##StatusText()) ); \
+    name##TreeView->setModel( m_##name##ProxyModel ); \
+    name##TreeView->setItemDelegate( new TrackDelegate( name##TreeView ) ); \
+    connect( name##FilterLine, SIGNAL(textChanged(QString)), proxyModel, SLOT(setFilterFixedString(QString)) ); \
+    name##TreeView->header()->setStretchLastSection( false ); \
+    name##TreeView->header()->setDefaultSectionSize( 80 );
+
+    SETUP_MODEL( m_matchedProxyModel, matched, Matched )
+    SETUP_MODEL( m_uniqueProxyModel, unique, Unique )
+    SETUP_MODEL( m_excludedProxyModel, excluded, Excluded )
+#undef SETUP_MODEL
+
+    connect( uniqueFilterCombo, SIGNAL(currentIndexChanged(int)),
+             SLOT(changeUniqueTracksProvider(int)) );
+    connect( excludedFilterCombo, SIGNAL(currentIndexChanged(int)),
+             SLOT(changeExcludedTracksProvider(int)) );
 
     KGuiItem configure = KStandardGuiItem::configure();
     configure.setText( i18n( "Configure Automatic Synchronization..." ) );
@@ -134,9 +142,12 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     connect( buttonBox, SIGNAL(accepted()), SIGNAL(accepted()) );
     connect( buttonBox, SIGNAL(rejected()), SIGNAL(rejected()) );
 
-    QHeaderView *header = treeView->header();
-    header->setStretchLastSection( false );
-    header->setDefaultSectionSize( 80 );
+    tabWidget->setTabEnabled( 1, false );;
+    tabWidget->setTabToolTip( 1, i18n( "There are no tracks unique to one of the sources "
+                                       "participating in the synchronization" ) );
+    tabWidget->setTabEnabled( 2, false );
+    tabWidget->setTabToolTip( 2, i18n( "There are no tracks excluded from "
+                                       "synchronization" ) );
 }
 
 MatchedTracksPage::~MatchedTracksPage()
@@ -146,180 +157,189 @@ MatchedTracksPage::~MatchedTracksPage()
 void
 MatchedTracksPage::setProviders( const ProviderPtrList &providers )
 {
-    m_providers = providers;
+    // populate menu of the "Take Ratings From" button
+    QMenu *takeRatingsMenu = new QMenu( matchedRatingsButton );
+    foreach( const ProviderPtr &provider, providers )
+    {
+        QAction *action = takeRatingsMenu->addAction( provider->icon(), provider->prettyName(),
+                                                      this, SLOT(takeRatingsFrom()) );
+        action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
+    }
+    takeRatingsMenu->addAction( i18n( "Reset All Ratings to Undecided" ), this, SLOT(takeRatingsFrom()) );
+    matchedRatingsButton->setMenu( takeRatingsMenu );
+    matchedRatingsButton->setIcon( KIcon( Meta::iconForField( Meta::valRating ) ) );
+
+    // populate menu of the "Labels" button
+    QMenu *labelsMenu = new QMenu( matchedLabelsButton );
+    foreach( const ProviderPtr &provider, providers )
+    {
+        QString text = i18nc( "%1 is collection name", "Include Labels from %1", provider->prettyName() );
+        QAction *action = labelsMenu->addAction( provider->icon(), text, this, SLOT(includeLabelsFrom()) );
+        action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
+
+        text = i18nc( "%1 is collection name", "Exclude Labels from %1", provider->prettyName() );
+        action = labelsMenu->addAction( provider->icon(), text, this, SLOT(excludeLabelsFrom()) );
+        action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
+    }
+    labelsMenu->addAction( i18n( "Reset All Labels to Undecided (Don't Synchronize Them)" ),
+                           this, SLOT(excludeLabelsFrom()) );
+    matchedLabelsButton->setMenu( labelsMenu );
+    matchedLabelsButton->setIcon( KIcon( Meta::iconForField( Meta::valLabel ) ) );
 }
 
 void
 MatchedTracksPage::setMatchedTracksModel( MatchedTracksModel *model )
 {
     m_matchedTracksModel = model;
+    Q_ASSERT( m_matchedTracksModel );
+    m_matchedProxyModel->setSourceModel( m_matchedTracksModel );
+
+    setHeaderSizePoliciesFromModel( matchedTreeView->header(), m_matchedTracksModel );
+    m_matchedProxyModel->sort( 0, Qt::AscendingOrder );
+
+    // initially, expand tuples with conflicts:
+    for( int i = 0; i < m_matchedTracksModel->rowCount(); i++ )
+    {
+        if( m_matchedTracksModel->hasConflict( i ) )
+            m_expandedTuples.insert( i );
+    }
+    restoreExpandedState( QModelIndex(), 0, m_matchedProxyModel->rowCount() );
+
+    connect( m_matchedProxyModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+                SLOT(rememberExpandedState(QModelIndex,int,int)) );
+    connect( m_matchedProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
+                SLOT(restoreExpandedState(QModelIndex,int,int)) );
+
+    // re-fill combo box and disable choices without tracks
+    bool hasConflict = m_matchedTracksModel->hasConflict();
+    matchedFilterCombo->clear();
+    matchedFilterCombo->addItem( i18n( "All Tracks" ), -1 );
+    matchedFilterCombo->addItem( i18n( "Updated Tracks" ), int( MatchedTracksModel::HasUpdate ) );
+    matchedFilterCombo->addItem( i18n( "Tracks With Conflicts" ), int( MatchedTracksModel::HasConflict ) );
+    QStandardItemModel *comboModel = dynamic_cast<QStandardItemModel *>( matchedFilterCombo->model() );
+    int bestIndex = 0;
+    if( comboModel )
+    {
+        bestIndex = 2;
+        if( !hasConflict )
+        {
+            comboModel->item( 2 )->setFlags( Qt::NoItemFlags );
+            matchedFilterCombo->setItemData( 2, i18n( "There are no tracks with conflicts" ),
+                                        Qt::ToolTipRole );
+            bestIndex = 1;
+            if( !m_matchedTracksModel->hasUpdate() )
+            {
+                comboModel->item( 1 )->setFlags( Qt::NoItemFlags );
+                matchedFilterCombo->setItemData( 1, i18n( "There are no tracks going to be "
+                                            "updated" ), Qt::ToolTipRole );
+                bestIndex = 0; // no other possibility
+            }
+        }
+    }
+
+    matchedFilterCombo->setCurrentIndex( bestIndex );
+    changeMatchedTracksFilter( bestIndex );
+    connect( matchedFilterCombo, SIGNAL(currentIndexChanged(int)), SLOT(changeMatchedTracksFilter(int)) );
+
+    matchedRatingsButton->setEnabled( hasConflict );
+    matchedLabelsButton->setEnabled( hasConflict );
 }
 
 void
 MatchedTracksPage::addUniqueTracksModel( ProviderPtr provider, QAbstractItemModel *model )
 {
+    bool first = m_uniqueTracksModels.isEmpty();
     m_uniqueTracksModels.insert( provider, model );
+    uniqueFilterCombo->addItem( provider->icon(), provider->prettyName(),
+                                QVariant::fromValue<ProviderPtr>( provider ) );
+
+    if( first )
+    {
+        tabWidget->setTabEnabled( 1, true );
+        tabWidget->setTabToolTip( 1, i18n( "Tracks that are unique to their sources" ) );
+        setHeaderSizePoliciesFromModel( uniqueTreeView->header(), model );
+        uniqueFilterCombo->setCurrentIndex( 0 );
+        m_uniqueProxyModel->sort( 0, Qt::AscendingOrder );
+    }
 }
 
 void
 MatchedTracksPage::addExcludedTracksModel( ProviderPtr provider, QAbstractItemModel *model )
 {
+    bool first = m_excludedTracksModels.isEmpty();
     m_excludedTracksModels.insert( provider, model );
-}
+    excludedFilterCombo->addItem( provider->icon(), provider->prettyName(),
+                                  QVariant::fromValue<ProviderPtr>( provider ) );
 
-void MatchedTracksPage::showEvent( QShowEvent *event )
-{
-    if( !m_polished )
-        polish();
-    QWidget::showEvent( event );
-}
-
-void
-MatchedTracksPage::showMatchedTracks( bool checked )
-{
-    if( checked )
+    if( first )
     {
-        m_proxyModel->setSourceModel( m_matchedTracksModel );
-        restoreExpandedTuples();
-        connect( m_proxyModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
-                 SLOT(rememberExpandedState(QModelIndex,int,int)) );
-        connect( m_proxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                 SLOT(restoreExpandedState(QModelIndex,int,int)) );
-
-        // re-fill combo box and disable choices without tracks
-        bool hasConflict = m_matchedTracksModel->hasConflict();
-        filterCombo->clear();
-        filterCombo->addItem( i18n( "All Tracks" ), -1 );
-        filterCombo->addItem( i18n( "Updated Tracks" ), int( MatchedTracksModel::HasUpdate ) );
-        filterCombo->addItem( i18n( "Tracks With Conflicts" ), int( MatchedTracksModel::HasConflict ) );
-        QStandardItemModel *comboModel = dynamic_cast<QStandardItemModel *>( filterCombo->model() );
-        if( comboModel )
-        {
-            if( !hasConflict )
-            {
-                comboModel->item( 2 )->setFlags( Qt::NoItemFlags );
-                filterCombo->setItemData( 2, i18n( "There are no tracks with conflicts" ),
-                                          Qt::ToolTipRole );
-                m_matchedTracksComboLastIndex = qBound( 0, m_matchedTracksComboLastIndex, 1 );
-                if( !m_matchedTracksModel->hasUpdate() )
-                {
-                    comboModel->item( 1 )->setFlags( Qt::NoItemFlags );
-                    filterCombo->setItemData( 1, i18n( "There are no tracks going to be "
-                                              "updated" ), Qt::ToolTipRole );
-                    m_matchedTracksComboLastIndex = 0; // no other possibility
-                }
-            }
-        }
-
-        filterCombo->setCurrentIndex( m_matchedTracksComboLastIndex );
-        changeMatchedTracksFilter( m_matchedTracksComboLastIndex );
-        connect( filterCombo, SIGNAL(currentIndexChanged(int)), SLOT(changeMatchedTracksFilter(int)) );
-
-        takeRatingsButton->setEnabled( hasConflict );
-        labelsButton->setEnabled( hasConflict );
+        tabWidget->setTabEnabled( 2, true );
+        tabWidget->setTabToolTip( 2, i18n( "Tracks that have been excluded from "
+                                           "synchronization due to ambiguity" ) );
+        setHeaderSizePoliciesFromModel( excludedTreeView->header(), model );
+        excludedFilterCombo->setCurrentIndex( 0 );
+        m_excludedProxyModel->sort( 0, Qt::AscendingOrder );
     }
-    else
-    {
-        disconnect( filterCombo, 0, this, SLOT(changeMatchedTracksFilter(int)) );
-        disconnect( m_proxyModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
-                    this, SLOT(rememberExpandedState(QModelIndex,int,int)) );
-        disconnect( m_proxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                    this, SLOT(restoreExpandedState(QModelIndex,int,int)) );
-        saveExpandedTuples();
-        m_proxyModel->setTupleFilter( -1 ); // reset filter for single tracks models
-        takeRatingsButton->setEnabled( false );
-        labelsButton->setEnabled( false );
-    }
-}
-
-void
-MatchedTracksPage::showUniqueTracks( bool checked )
-{
-    if( checked )
-    {
-        showSingleTracks( m_uniqueTracksModels );
-        connect( filterCombo, SIGNAL(currentIndexChanged(int)),
-                 SLOT(changeUniqueTracksProvider(int)) );
-    }
-    else
-        disconnect( filterCombo, 0, this, SLOT(changeUniqueTracksProvider(int)) );
-}
-
-void
-MatchedTracksPage::showExcludedTracks( bool checked )
-{
-    if( checked )
-    {
-        showSingleTracks( m_excludedTracksModels );
-        connect( filterCombo, SIGNAL(currentIndexChanged(int)),
-                 SLOT(changeExcludedTracksProvider(int)) );
-    }
-    else
-        disconnect( filterCombo, 0, this, SLOT(changeExcludedTracksProvider(int)) );
-}
-
-void
-MatchedTracksPage::showSingleTracks( const QMap<ProviderPtr, QAbstractItemModel *> &models )
-{
-    ProviderPtr lastProvider =
-        filterCombo->itemData( filterCombo->currentIndex() ).value<ProviderPtr>();
-    filterCombo->clear();
-    int currentIndex = 0;
-    int i = 0;
-    foreach( ProviderPtr provider, models.keys() )
-    {
-        if( provider == lastProvider )
-            currentIndex = i;
-        filterCombo->insertItem( i++, provider->icon(), provider->prettyName(),
-                           QVariant::fromValue<ProviderPtr>( provider ) );
-    }
-    filterCombo->setCurrentIndex( currentIndex );
-    changeSingleTracksProvider( currentIndex, models );
 }
 
 void
 MatchedTracksPage::changeMatchedTracksFilter( int index )
 {
-    m_matchedTracksComboLastIndex = index;
-    int filter = filterCombo->itemData( index ).toInt();
-    m_proxyModel->setTupleFilter( filter );
+    int filter = matchedFilterCombo->itemData( index ).toInt();
+    m_matchedProxyModel->setTupleFilter( filter );
 }
 
 void
 MatchedTracksPage::changeUniqueTracksProvider( int index )
 {
-    changeSingleTracksProvider( index, m_uniqueTracksModels );
+    ProviderPtr provider = uniqueFilterCombo->itemData( index ).value<ProviderPtr>();
+    m_uniqueProxyModel->setSourceModel( m_uniqueTracksModels.value( provider ) );
+    // trigger re-sort, Qt doesn't do that automatically apparently
+    m_uniqueProxyModel->sort( m_uniqueProxyModel->sortColumn(), m_uniqueProxyModel->sortOrder() );
 }
 
 void
 MatchedTracksPage::changeExcludedTracksProvider( int index )
 {
-    changeSingleTracksProvider( index, m_excludedTracksModels );
+    ProviderPtr provider = excludedFilterCombo->itemData( index ).value<ProviderPtr>();
+    m_excludedProxyModel->setSourceModel( m_excludedTracksModels.value( provider ) );
+    // trigger re-sort, Qt doesn't do that automatically apparently
+    m_excludedProxyModel->sort( m_excludedProxyModel->sortColumn(), m_excludedProxyModel->sortOrder() );
 }
 
 void
-MatchedTracksPage::changeSingleTracksProvider( int index,
-    const QMap<ProviderPtr, QAbstractItemModel *> &models )
+MatchedTracksPage::refreshMatchedStatusText()
 {
-    ProviderPtr provider = filterCombo->itemData( index ).value<ProviderPtr>();
-    m_proxyModel->setSourceModel( models.value( provider ) );
+    refreshStatusTextHelper( m_matchedProxyModel, matchedStatusBar );
 }
 
 void
-MatchedTracksPage::refreshStatusText()
+MatchedTracksPage::refreshUniqueStatusText()
 {
-    int bottomModelRows = m_proxyModel->sourceModel() ?
-        m_proxyModel->sourceModel()->rowCount() : 0;
-    int topModelRows = m_proxyModel->rowCount();
+    refreshStatusTextHelper( m_uniqueProxyModel, uniqueStatusBar );
+}
+
+void
+MatchedTracksPage::refreshExcludedStatusText()
+{
+    refreshStatusTextHelper( m_excludedProxyModel, excludedStatusBar );
+}
+
+void
+MatchedTracksPage::refreshStatusTextHelper( QSortFilterProxyModel *topModel , QLabel *label )
+{
+    int bottomModelRows = topModel->sourceModel() ?
+        topModel->sourceModel()->rowCount() : 0;
+    int topModelRows = topModel->rowCount();
 
     QString bottomText = i18np( "%1 track", "%1 tracks", bottomModelRows );
     if( topModelRows == bottomModelRows )
-        statusBar->setText( bottomText );
+        label->setText( bottomText );
     else
     {
         QString text = i18nc( "%2 is the above '%1 track(s)' message", "Showing %1 out "
             "of %2", topModelRows, bottomText );
-        statusBar->setText( text );
+        label->setText( text );
     }
 }
 
@@ -330,9 +350,9 @@ MatchedTracksPage::rememberExpandedState( const QModelIndex &parent, int start, 
         return;
     for( int topModelRow = start; topModelRow <= end; topModelRow++ )
     {
-        QModelIndex topModelIndex = m_proxyModel->index( topModelRow, 0 );
-        int bottomModelRow = m_proxyModel->mapToSource( topModelIndex ).row();
-        if( treeView->isExpanded( topModelIndex ) )
+        QModelIndex topModelIndex = m_matchedProxyModel->index( topModelRow, 0 );
+        int bottomModelRow = m_matchedProxyModel->mapToSource( topModelIndex ).row();
+        if( matchedTreeView->isExpanded( topModelIndex ) )
             m_expandedTuples.insert( bottomModelRow );
         else
             m_expandedTuples.remove( bottomModelRow );
@@ -346,10 +366,10 @@ MatchedTracksPage::restoreExpandedState( const QModelIndex &parent, int start, i
         return;
     for( int topModelRow = start; topModelRow <= end; topModelRow++ )
     {
-        QModelIndex topIndex = m_proxyModel->index( topModelRow, 0 );
-        int bottomModelRow = m_proxyModel->mapToSource( topIndex ).row();
+        QModelIndex topIndex = m_matchedProxyModel->index( topModelRow, 0 );
+        int bottomModelRow = m_matchedProxyModel->mapToSource( topIndex ).row();
         if( m_expandedTuples.contains( bottomModelRow ) )
-            treeView->expand( topIndex );
+            matchedTreeView->expand( topIndex );
     }
 }
 
@@ -407,85 +427,13 @@ MatchedTracksPage::openConfiguration()
 }
 
 void
-MatchedTracksPage::polish()
+MatchedTracksPage::setHeaderSizePoliciesFromModel( QHeaderView *header, QAbstractItemModel *model )
 {
-    Q_ASSERT( m_matchedTracksModel );
-    // initially, expand tuples with conflicts:
-    for( int i = 0; i < m_matchedTracksModel->rowCount(); i++ )
+    for( int column = 0; column < model->columnCount(); column++ )
     {
-        if( m_matchedTracksModel->hasConflict( i ) )
-            m_expandedTuples.insert( i );
-    }
-    if( m_uniqueTracksModels.isEmpty() )
-    {
-        uniqueRadio->setEnabled( false );
-        uniqueRadio->setToolTip( i18n( "There are no tracks unique to one of the sources "
-            "participating in the synchronization" ) );
-    }
-    if( m_excludedTracksModels.isEmpty() )
-    {
-        excludedRadio->setEnabled( false );
-        excludedRadio->setToolTip( i18n( "There are no tracks excluded from "
-            "synchronization" ) );
-    }
-
-    // populate menu of the "Take Ratings From" button
-    QMenu *takeRatingsMenu = new QMenu( takeRatingsButton );
-    foreach( const ProviderPtr &provider, m_providers )
-    {
-        QAction *action = takeRatingsMenu->addAction( provider->icon(), provider->prettyName(),
-                                                      this, SLOT(takeRatingsFrom()) );
-        action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
-    }
-    takeRatingsMenu->addAction( i18n( "Reset All Ratings to Undecided" ), this, SLOT(takeRatingsFrom()) );
-    takeRatingsButton->setMenu( takeRatingsMenu );
-    takeRatingsButton->setIcon( KIcon( Meta::iconForField( Meta::valRating ) ) );
-
-    // populate menu of the "Labels" button
-    QMenu *labelsMenu = new QMenu( labelsButton );
-    foreach( const ProviderPtr &provider, m_providers )
-    {
-        QString text = i18nc( "%1 is collection name", "Include Labels from %1", provider->prettyName() );
-        QAction *action = labelsMenu->addAction( provider->icon(), text, this, SLOT(includeLabelsFrom()) );
-        action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
-
-        text = i18nc( "%1 is collection name", "Exclude Labels from %1", provider->prettyName() );
-        action = labelsMenu->addAction( provider->icon(), text, this, SLOT(excludeLabelsFrom()) );
-        action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
-    }
-    labelsMenu->addAction( i18n( "Reset All Labels to Undecided (Don't Synchronize Them)" ),
-                           this, SLOT(excludeLabelsFrom()) );
-    labelsButton->setMenu( labelsMenu );
-    labelsButton->setIcon( KIcon( Meta::iconForField( Meta::valLabel ) ) );
-
-    matchedRadio->setChecked( true ); // calls showMatchedTracks() that sets the model
-    QHeaderView *header = treeView->header();
-    for( int column = 0; column < m_matchedTracksModel->columnCount(); column++ )
-    {
-        QVariant headerData = m_matchedTracksModel->headerData( column, Qt::Horizontal,
-                                                                CommonModel::ResizeModeRole );
+        QVariant headerData = model->headerData( column, Qt::Horizontal,
+                                                 CommonModel::ResizeModeRole );
         QHeaderView::ResizeMode mode = QHeaderView::ResizeMode( headerData.toInt() );
         header->setResizeMode( column, mode );
-    }
-    m_proxyModel->sort( 0, Qt::AscendingOrder );
-
-    m_polished = true;
-}
-
-void
-MatchedTracksPage::saveExpandedTuples()
-{
-    rememberExpandedState( QModelIndex(), 0, m_proxyModel->rowCount() - 1 );
-}
-
-void
-MatchedTracksPage::restoreExpandedTuples()
-{
-    foreach( int bottomModelRow, m_expandedTuples )
-    {
-        QModelIndex bottomIndex = m_matchedTracksModel->index( bottomModelRow, 0 );
-        QModelIndex topIndex = m_proxyModel->mapFromSource( bottomIndex );
-        if( topIndex.isValid() )
-            treeView->expand( topIndex );
     }
 }
