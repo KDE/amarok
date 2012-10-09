@@ -49,9 +49,11 @@ CollectionSetupTreeView::slotPressed( const QModelIndex &index )
 {
     DEBUG_BLOCK
     // --- show context menu on right mouse button
-    if( ( QApplication::mouseButtons() & Qt::RightButton ) && parent() )
+    QObject *grandParent = parent() ? parent()->parent() : 0;
+    CollectionSetup *collSetup = qobject_cast<CollectionSetup *>( grandParent );
+    if( ( QApplication::mouseButtons() & Qt::RightButton ) && collSetup )
     {
-        m_currDir = qobject_cast<CollectionSetup*>(parent())->modelFilePath( index );
+        m_currDir = collSetup->modelFilePath( index );
         debug() << "Setting current dir to " << m_currDir;
 
         // check if there is an sql collection covering the directory
