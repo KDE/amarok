@@ -44,6 +44,26 @@
 #include <QBuffer>
 #include <QDebug>
 
+#ifdef Q_OS_LINUX
+// for ioprio
+#include <unistd.h>
+#include <sys/syscall.h>
+enum {
+    IOPRIO_CLASS_NONE,
+    IOPRIO_CLASS_RT,
+    IOPRIO_CLASS_BE,
+    IOPRIO_CLASS_IDLE
+};
+
+enum {
+    IOPRIO_WHO_PROCESS = 1,
+    IOPRIO_WHO_PGRP,
+    IOPRIO_WHO_USER
+};
+#define IOPRIO_CLASS_SHIFT  13
+#endif
+
+
 int
 main( int argc, char *argv[] )
 {
@@ -66,7 +86,17 @@ CollectionScanner::Scanner::Scanner( int &argc, char **argv )
 
     if( m_idlePriority )
     {
-        if( QThread::currentThread() )
+        bool ioPriorityWorked = false;
+#if defined(Q_OS_LINUX) && defined(SYS_ioprio_set)
+        // try setting the idle priority class
+        ioPriorityWorked = ( syscall( SYS_ioprio_set, IOPRIO_WHO_PROCESS, 0,
+                                      IOPRIO_CLASS_IDLE << IOPRIO_CLASS_SHIFT ) >= 0 );
+        // try setting the lowest priority in the best-effort priority class (the default class)
+        if( !ioPriorityWorked )
+            ioPriorityWorked = ( syscall( SYS_ioprio_set, IOPRIO_WHO_PROCESS, 0,
+                                          7 | ( IOPRIO_CLASS_BE << IOPRIO_CLASS_SHIFT ) ) >= 0 );
+#endif
+        if( !ioPriorityWorked && QThread::currentThread() )
             QThread::currentThread()->setPriority( QThread::IdlePriority );
     }
 }
