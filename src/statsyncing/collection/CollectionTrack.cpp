@@ -173,6 +173,12 @@ CollectionTrack::setLabels( const QSet<QString> &labels )
     }
 }
 
+Meta::TrackPtr
+CollectionTrack::metaTrack() const
+{
+    return m_track;
+}
+
 void
 CollectionTrack::commit()
 {

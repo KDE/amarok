@@ -171,8 +171,14 @@
        </item>
        <item>
         <widget class="QTreeView" name="uniqueTreeView">
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::DragOnly</enum>
+         </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
          </property>
          <property name="uniformRowHeights">
           <bool>true</bool>
@@ -221,8 +227,14 @@
        </item>
        <item>
         <widget class="QTreeView" name="excludedTreeView">
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::DragOnly</enum>
+         </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
          </property>
          <property name="uniformRowHeights">
           <bool>true</bool>

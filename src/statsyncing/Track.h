@@ -26,6 +26,11 @@
 #include <QSharedData>
 #include <QStringList>
 
+namespace Meta {
+    class Track;
+    typedef KSharedPtr<Track> TrackPtr;
+}
+
 namespace StatSyncing
 {
     /**
@@ -132,6 +137,16 @@ namespace StatSyncing
              */
             virtual QSet<QString> labels() const = 0;
             virtual void setLabels( const QSet<QString> &labels ) = 0;
+
+            /**
+             * If this StatSyncing::Track represents a Meta::Track, this method returns a
+             * pointer to it, otherwise it should return return a null pointer.
+             *
+             * This is used to enable drag in views and to enable scrobbling.
+             *
+             * Default implementation returns null pointer.
+             */
+            virtual Meta::TrackPtr metaTrack() const;
 
             /**
              * Write back statistics to the underlying storage. You must call this function

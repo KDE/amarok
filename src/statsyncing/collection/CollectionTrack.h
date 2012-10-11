@@ -49,6 +49,7 @@ namespace StatSyncing
             virtual QSet<QString> labels() const;
             virtual void setLabels( const QSet<QString> &labels );
 
+            virtual Meta::TrackPtr metaTrack() const;
             virtual void commit();
 
         private:

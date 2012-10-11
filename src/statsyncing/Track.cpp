@@ -17,6 +17,7 @@
 #include "Track.h"
 
 #include "MetaValues.h"
+#include "core/meta/Meta.h"
 
 using namespace StatSyncing;
 
@@ -97,4 +98,10 @@ int
 Track::recentPlayCount() const
 {
     return 0;
+}
+
+Meta::TrackPtr
+Track::metaTrack() const
+{
+    return Meta::TrackPtr();
 }

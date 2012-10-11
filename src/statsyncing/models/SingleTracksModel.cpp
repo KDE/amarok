@@ -16,6 +16,7 @@
 
 #include "SingleTracksModel.h"
 
+#include "AmarokMimeData.h"
 #include "MetaValues.h"
 #include "core/meta/support/MetaConstants.h"
 
@@ -64,4 +65,38 @@ SingleTracksModel::data( const QModelIndex &index, int role ) const
     qint64 field = m_columns.at( index.column() );
     const TrackPtr &track = m_tracks.at( index.row() );
     return trackData( track, field, role );
+}
+
+Qt::ItemFlags
+SingleTracksModel::flags( const QModelIndex &index ) const
+{
+    return QAbstractItemModel::flags( index ) | Qt::ItemIsDragEnabled;
+}
+
+QStringList
+SingleTracksModel::mimeTypes() const
+{
+    return QStringList() << AmarokMimeData::TRACK_MIME << "text/uri-list" << "text/plain";
+}
+
+QMimeData *
+SingleTracksModel::mimeData( const QModelIndexList &indexes ) const
+{
+    Meta::TrackList tracks;
+    foreach( const QModelIndex &idx, indexes )
+    {
+        if( idx.isValid() && idx.row() >= 0 && idx.row() < m_tracks.count() &&
+            idx.column() == 0 )
+        {
+            Meta::TrackPtr metaTrack = m_tracks.at( idx.row() )->metaTrack();
+            if( metaTrack )
+                tracks << metaTrack;
+        }
+    }
+    if( tracks.isEmpty() )
+        return 0;
+
+    AmarokMimeData *mime = new AmarokMimeData();
+    mime->setTracks( tracks );
+    return mime;
 }
