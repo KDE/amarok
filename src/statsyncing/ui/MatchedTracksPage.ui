@@ -98,6 +98,45 @@
           </widget>
          </item>
          <item>
+          <widget class="KSeparator" name="kseparator">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="matchedExpandButton">
+           <property name="text">
+            <string>Expand</string>
+           </property>
+           <property name="popupMode">
+            <enum>QToolButton::InstantPopup</enum>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="matchedCollapseButton">
+           <property name="text">
+            <string>Collapse</string>
+           </property>
+           <property name="popupMode">
+            <enum>QToolButton::InstantPopup</enum>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QLabel" name="matchedStatusBar">
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -107,10 +146,6 @@
         </layout>
        </item>
       </layout>
-      <zorder>matchedFilterLine</zorder>
-      <zorder></zorder>
-      <zorder>matchedTreeView</zorder>
-      <zorder></zorder>
      </widget>
      <widget class="QWidget" name="uniqueTab">
       <attribute name="title">
@@ -233,6 +268,11 @@
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
    <header>klineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KSeparator</class>
+   <extends>QFrame</extends>
+   <header>kseparator.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

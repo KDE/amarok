@@ -148,6 +148,22 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     tabWidget->setTabEnabled( 2, false );
     tabWidget->setTabToolTip( 2, i18n( "There are no tracks excluded from "
                                        "synchronization" ) );
+
+    QMenu *menu = new QMenu( matchedExpandButton );
+    menu->addAction( i18n( "Expand Tracks With Conflicts" ), this, SLOT(expand()) )->setData(
+        MatchedTracksModel::HasConflict );
+    menu->addAction( i18n( "Expand Updated" ), this, SLOT(expand()) )->setData(
+        MatchedTracksModel::HasUpdate );
+    menu->addAction( i18n( "Expand All" ), this, SLOT(expand()) )->setData( 0 );
+    matchedExpandButton->setMenu( menu );
+
+    menu = new QMenu( matchedCollapseButton );
+    menu->addAction( i18n( "Collapse Tracks Without Conflicts" ), this, SLOT(collapse()) )->setData(
+        MatchedTracksModel::HasConflict );
+    menu->addAction( i18n( "Collapse Not Updated" ), this, SLOT(collapse()) )->setData(
+        MatchedTracksModel::HasUpdate );
+    menu->addAction( i18n( "Collapse All" ), this, SLOT(collapse()) )->setData( 0 );
+    matchedCollapseButton->setMenu( menu );
 }
 
 MatchedTracksPage::~MatchedTracksPage()
@@ -196,14 +212,8 @@ MatchedTracksPage::setMatchedTracksModel( MatchedTracksModel *model )
 
     setHeaderSizePoliciesFromModel( matchedTreeView->header(), m_matchedTracksModel );
     m_matchedProxyModel->sort( 0, Qt::AscendingOrder );
-
     // initially, expand tuples with conflicts:
-    for( int i = 0; i < m_matchedTracksModel->rowCount(); i++ )
-    {
-        if( m_matchedTracksModel->hasConflict( i ) )
-            m_expandedTuples.insert( i );
-    }
-    restoreExpandedState( QModelIndex(), 0, m_matchedProxyModel->rowCount() );
+    expand( MatchedTracksModel::HasConflict );
 
     connect( m_matchedProxyModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
                 SLOT(rememberExpandedState(QModelIndex,int,int)) );
@@ -416,6 +426,52 @@ MatchedTracksPage::excludeLabelsFrom()
     // provider may be null, it means "reset all labels to undecided"
     ProviderPtr provider = action->data().value<ProviderPtr>();
     m_matchedTracksModel->excludeLabelsFrom( provider );
+}
+
+void
+MatchedTracksPage::expand( int onlyWithTupleFlags )
+{
+    if( onlyWithTupleFlags < 0 )
+    {
+        QAction *action = qobject_cast<QAction *>( sender() );
+        if( action )
+            onlyWithTupleFlags = action->data().toInt();
+        else
+            onlyWithTupleFlags = 0;
+    }
+
+    for( int i = 0; i < m_matchedProxyModel->rowCount(); i++ )
+    {
+        QModelIndex idx = m_matchedProxyModel->index( i, 0 );
+        if( matchedTreeView->isExpanded( idx ) )
+            continue;
+
+        int flags = idx.data( MatchedTracksModel::TupleFlagsRole ).toInt();
+        if( ( flags & onlyWithTupleFlags ) == onlyWithTupleFlags )
+            matchedTreeView->expand( idx );
+    }
+}
+
+void
+MatchedTracksPage::collapse()
+{
+    int excludingFlags;
+    QAction *action = qobject_cast<QAction *>( sender() );
+    if( action )
+        excludingFlags = action->data().toInt();
+    else
+        excludingFlags = 0;
+
+    for( int i = 0; i < m_matchedProxyModel->rowCount(); i++ )
+    {
+        QModelIndex idx = m_matchedProxyModel->index( i, 0 );
+        if( !matchedTreeView->isExpanded( idx ) )
+            continue;
+
+        int flags = idx.data( MatchedTracksModel::TupleFlagsRole ).toInt();
+        if( ( flags & excludingFlags ) == 0 )
+            matchedTreeView->collapse( idx );
+    }
 }
 
 void

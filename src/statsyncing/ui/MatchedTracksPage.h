@@ -91,6 +91,9 @@ namespace StatSyncing
             void includeLabelsFrom();
             void excludeLabelsFrom();
 
+            void expand( int onlyWithTupleFlags = -1 );
+            void collapse();
+
             void openConfiguration();
 
         private:
