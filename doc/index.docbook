@@ -4,7 +4,7 @@
   <!ENTITY % English "INCLUDE">
 ]>
 <book id="amarok" lang="&language;">
-<book id="amarok"info>
+<bookinfo>
 <title>The Amarok Handbook</title>
 <authorgroup>
 <author>
