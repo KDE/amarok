@@ -3,8 +3,8 @@
   <!ENTITY % addindex "IGNORE">
   <!ENTITY % English "INCLUDE">
 ]>
-<book lang="&language;">
-<bookinfo>
+<book id="amarok" lang="&language;">
+<book id="amarok"info>
 <title>The Amarok Handbook</title>
 <authorgroup>
 <author>
