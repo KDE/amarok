@@ -66,12 +66,12 @@ prettyPrice( QString price )
     QString value;
 
     // determine human readable value
-    if( country == "de" || country == "fr" || country == "com" || country == "co.uk" )
+    if( country == "com" || country == "co.uk" || country == "de" || country == "es" || country == "fr" || country == "it" )
         value.setNum( price.toDouble() / 100 );
     else if( country == "co.jp" )
         value.setNum( price.toInt() );
 
-    if( country == "de" || country == "fr" )
+    if( country == "de" || country == "es" || country == "fr" || country == "it" )
         return KGlobal::locale()->formatMoney( value.toFloat(), "€" , 2 );
     if( country == "co.uk" )
         return KGlobal::locale()->formatMoney( value.toFloat(), "£" , 2 );

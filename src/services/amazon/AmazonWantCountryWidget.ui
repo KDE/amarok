@@ -115,6 +115,16 @@
         </item>
         <item>
          <property name="text">
+          <string>Italy</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Spain</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>none of the above (store won't work)</string>
          </property>
         </item>

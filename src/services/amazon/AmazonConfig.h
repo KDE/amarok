@@ -29,22 +29,26 @@ public:
 
     /**
     * Returns the domain for the store we want to interact with.
-    * France: fr
-    * Austria, Germany, Switzerland: de
-    * Japan: co.jp
-    * United Kingdom: co.uk
-    * United States: com
+    * com: United States
+    * co.jp: Japan
+    * co.uk: United Kingdom
+    * de: Germany
+    * es: Spain
+    * fr: France
+    * it: Italy
     */
     QString country() const;
 
     /**
     * Sets the domain for the store we want to interact with.
     * @param country the domain to set.
-    * France: fr
-    * Austria, Germany, Switzerland: de
-    * Japan: co.jp
-    * United Kingdom: co.uk
-    * United States: com
+    * com: United States
+    * co.jp: Japan
+    * co.uk: United Kingdom
+    * de: Germany
+    * es: Spain
+    * fr: France
+    * it: Italy
     */
     void setCountry( QString country );
 

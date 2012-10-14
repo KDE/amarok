@@ -35,6 +35,8 @@ enum Location
     AMAZON_JP,
     AMAZON_UK,
     AMAZON_COM,
+    AMAZON_IT,
+    AMAZON_ES,
     AMAZON_NONE // user explicitly doesn't want to set a country
 };
 

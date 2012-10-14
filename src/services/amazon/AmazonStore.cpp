@@ -504,10 +504,12 @@ QString AmazonStore::iso3166toAmazon( const QString& country )
     static QHash<QString, QString> table;
     if( table.isEmpty() )
     {
-        table["fr"] = "fr";
         table["at"] = "de";
         table["ch"] = "de";
         table["de"] = "de";
+        table["es"] = "es";
+        table["fr"] = "fr";
+        table["it"] = "it";
         table["jp"] = "co.jp";
         table["gb"] = "co.uk";
         table["us"] = "com";

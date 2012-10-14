@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.7-Beta 1
   FEATURES:
+    * Amazon store: Added support for Amazon MP3 in Italy and Spain. (BR 307981)
     * Mark downloaded podcast episodes to keep, even when purge is enabled. (BR 261062)
     * Nepomuk plugin: Play and manage tracks using the Nepomuk database.
     * Support for reading and writing tags from/to mod, s3m, it and xm files.

@@ -54,12 +54,24 @@ AmazonSettingsModule::save()
 {
     switch( m_configDialog->countrySelectionComboBox->currentIndex() )
     {
-    case AMAZON_FR:
-        AmazonConfig::instance()->setCountry( QLatin1String( "fr" ) );
+    case AMAZON_COM:
+        AmazonConfig::instance()->setCountry( QLatin1String( "com" ) );
         break;
 
     case AMAZON_DE:
         AmazonConfig::instance()->setCountry( QLatin1String( "de" ) );
+        break;
+
+    case AMAZON_ES:
+        AmazonConfig::instance()->setCountry( QLatin1String( "es" ) );
+        break;
+
+    case AMAZON_FR:
+        AmazonConfig::instance()->setCountry( QLatin1String( "fr" ) );
+        break;
+
+    case AMAZON_IT:
+        AmazonConfig::instance()->setCountry( QLatin1String( "it" ) );
         break;
 
     case AMAZON_JP:
@@ -68,10 +80,6 @@ AmazonSettingsModule::save()
 
     case AMAZON_UK:
         AmazonConfig::instance()->setCountry( QLatin1String( "co.uk" ) );
-        break;
-
-    case AMAZON_COM:
-        AmazonConfig::instance()->setCountry( QLatin1String( "com" ) );
         break;
 
     case AMAZON_NONE:
@@ -89,16 +97,20 @@ AmazonSettingsModule::load()
     int index = -1;
     QString text = AmazonConfig::instance()->country();
 
-    if( text == QLatin1String( "fr" ) )
-        index = AMAZON_FR;
-    else if ( text == QLatin1String( "de" ) )
-        index = AMAZON_DE;
-    else if ( text == QLatin1String( "co.jp" ) )
+    if ( text == QLatin1String( "co.jp" ) )
         index = AMAZON_JP;
     else if ( text == QLatin1String( "co.uk" ) )
         index = AMAZON_UK;
     else if ( text == QLatin1String( "com" ) )
         index = AMAZON_COM;
+    else if ( text == QLatin1String( "de" ) )
+        index = AMAZON_DE;
+    else if ( text == QLatin1String( "es" ) )
+        index = AMAZON_ES;
+    else if( text == QLatin1String( "fr" ) )
+        index = AMAZON_FR;
+    else if ( text == QLatin1String( "it" ) )
+        index = AMAZON_IT;
     else if ( text == QLatin1String( "none" ) )
         index = AMAZON_NONE;
 
@@ -142,6 +154,10 @@ AmazonSettingsModule::defaults()
         index = AMAZON_FR;
     else if ( guess == QLatin1String( "de" ) || guess == QLatin1String( "at" ) || guess == QLatin1String( "ch" ) )
         index = AMAZON_DE;
+    else if ( guess == QLatin1String( "es" ) )
+        index = AMAZON_ES;
+    else if ( guess == QLatin1String( "it" ) )
+        index = AMAZON_IT;
     else if ( guess == QLatin1String( "jp" ) )
         index = AMAZON_JP;
     else if ( guess == QLatin1String( "gb" ) )
