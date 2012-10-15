@@ -105,7 +105,7 @@ Optional
       * LibOFA - http://code.google.com/p/musicip-libofa/
 
     * gpodder.net Podcast Provider & Service
-      * libmygpo-qt 1.0.5 (or newer)
+      * libmygpo-qt 1.0.6 (or newer)
 
     * Transcoding requires (at runtime):
       * FFmpeg 0.7.0 (or newer) - http://ffmpeg.org/
