@@ -58,6 +58,13 @@ SynchronizationAdapter::prettyName() const
     return i18n( "Last.fm" );
 }
 
+QString
+SynchronizationAdapter::description() const
+{
+    return i18nc( "description of the Last.fm statistics synchronization provider",
+                  "slows down track matching" );
+}
+
 KIcon
 SynchronizationAdapter::icon() const
 {

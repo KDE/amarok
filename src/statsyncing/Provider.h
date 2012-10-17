@@ -55,6 +55,12 @@ namespace StatSyncing
             virtual QString prettyName() const = 0;
 
             /**
+             * User-visible short localized description. Default implementation returns
+             * an empy string.
+             */
+            virtual QString description() const;
+
+            /**
              * Icon of this provider; must be thread-safe
              */
             virtual KIcon icon() const = 0;

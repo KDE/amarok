@@ -22,6 +22,12 @@ Provider::~Provider()
 {
 }
 
+QString
+Provider::description() const
+{
+    return QString();
+}
+
 bool
 operator<( const ProviderPtr &a, const ProviderPtr &b )
 {

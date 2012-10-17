@@ -62,7 +62,10 @@ ProvidersModel::data( const QModelIndex &index, int role ) const
     switch( role )
     {
         case Qt::DisplayRole:
-            return provider->prettyName();
+            if( provider->description().isEmpty() )
+                return provider->prettyName();
+            return i18nc( "%1: name, %2: description", "%1 (%2)", provider->prettyName(),
+                          provider->description() );
         case Qt::DecorationRole:
             return provider->icon();
         case Qt::ToolTipRole:
