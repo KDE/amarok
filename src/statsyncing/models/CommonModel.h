@@ -17,6 +17,7 @@
 #ifndef STATSYNCING_COMMONMODEL_H
 #define STATSYNCING_COMMONMODEL_H
 
+#include "statsyncing/Options.h"
 #include "statsyncing/Track.h"
 
 #include <QList>
@@ -38,7 +39,7 @@ namespace StatSyncing
             };
             static const QSize s_ratingSize;
 
-            explicit CommonModel( const QList<qint64> &columns );
+            explicit CommonModel( const QList<qint64> &columns, const Options &options );
 
             QVariant headerData( int section, Qt::Orientation orientation,
                                  int role = Qt::DisplayRole ) const;
@@ -52,6 +53,7 @@ namespace StatSyncing
             QVariant trackToolTipData( const TrackPtr &track ) const;
 
             QList<qint64> m_columns;
+            Options m_options;
             QFont m_normalFont;
             QFont m_boldFont;
     };

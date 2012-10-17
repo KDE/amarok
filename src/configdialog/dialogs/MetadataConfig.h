@@ -42,6 +42,8 @@ class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
     private slots:
         void slotForgetCollections();
         void slotUpdateForgetButton();
+        void slotUpdateConfigureExcludedLabelsLabel();
+        void slotConfigureExcludedLabels();
 
     private:
         int writeBackCoverDimensions() const;

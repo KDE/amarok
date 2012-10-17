@@ -18,6 +18,7 @@
 #define STATSYNCING_CONFIG_H
 
 #include <QModelIndex>
+#include <QSet>
 
 class QIcon;
 
@@ -94,6 +95,17 @@ namespace StatSyncing
             void setCheckedFields( qint64 fields );
 
             /**
+             * Get a list of labels that are black-listed from synchronization (not
+             * touched at all).
+             */
+            QSet<QString> excludedLabels() const;
+
+            /**
+             * Set which labels to exclude from synchronization.
+             */
+            void setExcludedLabels( const QSet<QString> &labels );
+
+            /**
              * Return true if configuration has changed since last saving or reading data.
              */
             bool hasChanged() const;
@@ -116,6 +128,7 @@ namespace StatSyncing
 
             QList<ProviderData> m_providerData;
             qint64 m_checkedFields;
+            QSet<QString> m_excludedLabels;
             bool m_hasChanged;
     };
 }

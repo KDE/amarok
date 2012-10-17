@@ -21,6 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
+#include "statsyncing/Config.h"
 #include "statsyncing/Controller.h"
 #include "statsyncing/jobs/MatchTracksJob.h"
 #include "statsyncing/jobs/SynchronizeTracksJob.h"
@@ -138,10 +139,18 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
         deleteLater();
         return;
     }
+    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+    if( !controller )
+    {
+        warning() << __PRETTY_FUNCTION__ << "StatSyncing::Controller disappeared";
+        deleteLater();
+        return;
+    }
 
     // remove fields that are not writable:
     qint64 usedFields = m_checkedFields & m_providersModel->writableTrackStatsDataUnion();
     m_options.setSyncedFields( usedFields );
+    m_options.setExcludedLabels( controller->config()->excludedLabels() );
     QList<qint64> columns = QList<qint64>() << Meta::valTitle;
     foreach( qint64 field, Controller::availableFields() )
     {
@@ -161,10 +170,10 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
         {
             if( !matchJob->uniqueTracks().value( provider ).isEmpty() )
                 m_tracksPage.data()->addUniqueTracksModel( provider, new SingleTracksModel(
-                        matchJob->uniqueTracks().value( provider ), columns, m_tracksPage.data() ) );
+                        matchJob->uniqueTracks().value( provider ), columns, m_options, m_tracksPage.data() ) );
             if( !matchJob->excludedTracks().value( provider ).isEmpty() )
                 m_tracksPage.data()->addExcludedTracksModel( provider, new SingleTracksModel(
-                    matchJob->excludedTracks().value( provider ), columns, m_tracksPage.data() ) );
+                    matchJob->excludedTracks().value( provider ), columns, m_options, m_tracksPage.data() ) );
         }
 
         connect( m_tracksPage.data(), SIGNAL(back()), SLOT(slotBack()) );

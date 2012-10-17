@@ -132,7 +132,7 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
              SLOT(changeExcludedTracksProvider(int)) );
 
     KGuiItem configure = KStandardGuiItem::configure();
-    configure.setText( i18n( "Configure Automatic Synchronization..." ) );
+    configure.setText( i18n( "Configure Synchronization..." ) );
     buttonBox->addButton( configure, QDialogButtonBox::ActionRole, this, SLOT(openConfiguration()) );
     KPushButton *back = buttonBox->addButton( KStandardGuiItem::back(),
                                               QDialogButtonBox::ActionRole );

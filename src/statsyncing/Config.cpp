@@ -245,6 +245,19 @@ Config::setCheckedFields( qint64 fields )
     m_hasChanged = true;
 }
 
+QSet<QString>
+Config::excludedLabels() const
+{
+    return m_excludedLabels;
+}
+
+void
+Config::setExcludedLabels( const QSet<QString> &labels )
+{
+    m_excludedLabels = labels;
+    m_hasChanged = true;
+}
+
 bool
 Config::hasChanged() const
 {
@@ -284,6 +297,8 @@ Config::read()
             m_checkedFields |= Meta::fieldForName( fieldName );
     }
 
+    m_excludedLabels = group.readEntry( "excludedLabels", QStringList() ).toSet();
+
     m_hasChanged = false;
 }
 
@@ -314,6 +329,8 @@ Config::save()
             fieldNames << Meta::nameForField( field );
     }
     group.writeEntry( "checkedFields", fieldNames );
+
+    group.writeEntry( "excludedLabels", m_excludedLabels.toList() );
 
     group.sync();
     m_hasChanged = false;

@@ -30,9 +30,8 @@ static const int tupleIndexIndernalId = -1;
 MatchedTracksModel::MatchedTracksModel( const QList<TrackTuple> &matchedTuples,
     const QList<qint64> &columns, const Options &options, QObject *parent )
     : QAbstractItemModel( parent )
-    , CommonModel( columns )
+    , CommonModel( columns, options )
     , m_matchedTuples( matchedTuples )
-    , m_options( options )
 {
     m_titleColumn = m_columns.indexOf( Meta::valTitle );
 }

@@ -42,7 +42,7 @@ namespace StatSyncing
              *                valFirstPlayed, valLastPlayed, valPlaycount, valLabel.
              */
             SingleTracksModel( const TrackList &tracks, const QList<qint64> &columns,
-                               QObject *parent = 0 );
+                               const Options &options, QObject *parent = 0 );
 
             int rowCount( const QModelIndex &parent = QModelIndex() ) const;
             int columnCount( const QModelIndex &parent = QModelIndex() ) const;

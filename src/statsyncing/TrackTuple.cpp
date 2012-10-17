@@ -155,13 +155,13 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
             if( hasConflict )
                 return false; // unresolved conflict, not going to write that
             if( provider )
-                return track( provider )->labels() != labels;
+                return track( provider )->labels() - options.excludedLabels() != labels;
 
             foreach( const ProviderPtr &prov, m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
-                if( track( prov )->labels() != labels )
+                if( track( prov )->labels() - options.excludedLabels() != labels )
                     return true;
             }
             return false;
@@ -347,7 +347,7 @@ TrackTuple::syncedLabels( const Options &options, const ProviderPtrSet &labelPro
     {
         foreach( const ProviderPtr &provider, labelProviders )
             labelsCandidate |= track( provider )->labels();
-        return labelsCandidate;
+        return labelsCandidate - options.excludedLabels();
     }
 
     // look for conflict:
@@ -356,7 +356,7 @@ TrackTuple::syncedLabels( const Options &options, const ProviderPtrSet &labelPro
     while( it.hasNext() )
     {
         it.next();
-        QSet<QString> labels = it.value()->labels();
+        QSet<QString> labels = it.value()->labels() - options.excludedLabels();
 
         // take labels candidate only from labelled tracks or from label-writable collections
         bool canWriteLabels = it.key()->writableTrackStatsData() & Meta::valLabel;
@@ -433,7 +433,16 @@ TrackTuple::synchronize( const Options &options )
                 case Meta::valPlaycount:
                     track->setPlayCount( synced.toInt() ); break;
                 case Meta::valLabel:
-                    track->setLabels( synced.value<QSet<QString> >() ); break;
+                {
+                    QSet<QString> desiredLabels = synced.value<QSet<QString> >();
+                    /* add back blacklisted labels; we say we don't touch them, so we
+                     * should neither add them (handled in syncedLabels()) nor remove them
+                     * (handled here)
+                     */
+                    desiredLabels |= track->labels() & options.excludedLabels();
+                    track->setLabels( desiredLabels );
+                    break;
+                }
                 default:
                     warning() << __PRETTY_FUNCTION__ << "unhandled second switch";
             }

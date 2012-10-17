@@ -18,6 +18,7 @@
 #define STATSYNCING_OPTIONS_H
 
 #include <QtGlobal>
+#include <QSet>
 
 namespace StatSyncing
 {
@@ -36,8 +37,15 @@ namespace StatSyncing
             qint64 syncedFields() const;
             void setSyncedFields( qint64 fields );
 
+            /**
+             * A list of labels statsyncing should not touch at all.
+             */
+            QSet<QString> excludedLabels() const;
+            void setExcludedLabels( const QSet<QString> &labels );
+
         private:
             qint64 m_syncedFields;
+            QSet<QString> m_excludedLabels;
     };
 
 } // namespace StatSyncing

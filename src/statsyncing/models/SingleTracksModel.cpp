@@ -27,9 +27,10 @@
 using namespace StatSyncing;
 
 SingleTracksModel::SingleTracksModel( const TrackList &tracks,
-                                      const QList<qint64> &columns, QObject *parent )
+                                      const QList<qint64> &columns, const Options &options,
+                                      QObject *parent )
     : QAbstractTableModel( parent )
-    , CommonModel( columns )
+    , CommonModel( columns, options )
     , m_tracks( tracks )
 {
 }

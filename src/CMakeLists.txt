@@ -144,6 +144,7 @@ set(libconfigdialog_SRCS
     configdialog/ConfigDialog.cpp
     configdialog/ConfigDialogBase.cpp
     configdialog/dialogs/CollectionConfig.cpp
+    configdialog/dialogs/ExcludedLabelsDialog.cpp
     configdialog/dialogs/GeneralConfig.cpp
     configdialog/dialogs/MetadataConfig.cpp
     configdialog/dialogs/NotificationsConfig.cpp

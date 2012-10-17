@@ -17,7 +17,9 @@
 #include "MetadataConfig.h"
 
 #include "amarokconfig.h"
+#include "configdialog/dialogs/ExcludedLabelsDialog.h"
 #include "core/support/Components.h"
+#include "core/support/Debug.h"
 #include "statsyncing/Config.h"
 #include "statsyncing/Controller.h"
 
@@ -77,17 +79,35 @@ MetadataConfig::MetadataConfig( QWidget *parent )
     qint64 checkedFields = config->checkedFields();
     foreach( qint64 field, StatSyncing::Controller::availableFields() )
     {
-        QString name = Meta::i18nForField( field );
-        name = i18nc( "%1 is field name such as Play Count", "Synchronize %1", name );
+        QCheckBox *checkBox;
         if( field == Meta::valLabel ) // special case, we want plural:
-            name = i18n( "Synchronize Labels" );
-        QCheckBox *checkBox = new QCheckBox( name );
-        m_statSyncingFieldsLayout->addWidget( checkBox );
+        {
+            QString name = i18n( "Synchronize Labels" );
+            QHBoxLayout *lineLayout = new QHBoxLayout();
+            checkBox = new QCheckBox( name );
+            QLabel *button = new QLabel();
+            button->setObjectName( "configureLabelExceptions" );
+            connect( button, SIGNAL(linkActivated(QString)),
+                     SLOT(slotConfigureExcludedLabels()) );
+
+            lineLayout->addWidget( checkBox );
+            lineLayout->addWidget( button );
+            lineLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+            m_statSyncingFieldsLayout->addLayout( lineLayout );
+
+            slotUpdateConfigureExcludedLabelsLabel();
+        }
+        else
+        {
+            QString name = Meta::i18nForField( field );
+            name = i18nc( "%1 is field name such as Play Count", "Synchronize %1", name );
+            checkBox = new QCheckBox( name );
+            m_statSyncingFieldsLayout->addWidget( checkBox );
+        }
         checkBox->setCheckState( ( field & checkedFields ) ? Qt::Checked : Qt::Unchecked );
         checkBox->setProperty( "field", field );
         connect( checkBox, SIGNAL(stateChanged(int)), SIGNAL(changed()) );
     }
-
 }
 
 MetadataConfig::~MetadataConfig()
@@ -156,6 +176,33 @@ MetadataConfig::slotUpdateForgetButton()
     m_forgetCollectionsButton->setEnabled( !selectionModel->selectedIndexes().isEmpty() );
 }
 
+void
+MetadataConfig::slotUpdateConfigureExcludedLabelsLabel()
+{
+    QLabel *label = findChild<QLabel *>( "configureLabelExceptions" );
+    if( !label || !m_statSyncingConfig )
+    {
+        warning() << __PRETTY_FUNCTION__ << "label or m_statSyncingConfig is null!";
+        return;
+    }
+    int exceptions = m_statSyncingConfig.data()->excludedLabels().count();
+    QString begin = "<a href='dummy'>";
+    QString end = "</a>";
+    label->setText( i18np( "(%2one exception%3)", "(%2%1 exceptions%3)", exceptions,
+                           begin, end ) );
+}
+
+void
+MetadataConfig::slotConfigureExcludedLabels()
+{
+    ExcludedLabelsDialog dialog( m_statSyncingConfig.data(), this );
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        slotUpdateConfigureExcludedLabelsLabel();
+        emit changed();
+    }
+}
+
 int
 MetadataConfig::writeBackCoverDimensions() const
 {
@@ -166,12 +213,8 @@ qint64
 MetadataConfig::checkedFields() const
 {
     qint64 ret = 0;
-    for( int i = 0; i < m_statSyncingFieldsLayout->count(); i++ )
+    foreach( QCheckBox *checkBox, m_statSyncingFieldsLayout->parentWidget()->findChildren<QCheckBox *>() )
     {
-        QCheckBox *checkBox = qobject_cast<QCheckBox *>(
-                m_statSyncingFieldsLayout->itemAt( i )->widget() );
-        if( !checkBox )
-            continue;
         if( checkBox->isChecked() && checkBox->property( "field" ).canConvert<qint64>() )
             ret |= checkBox->property( "field" ).value<qint64>();
     }

@@ -32,7 +32,7 @@ ChooseProvidersPage::ChooseProvidersPage( QWidget *parent, Qt::WindowFlags f )
 {
     setupUi( this );
     KGuiItem configure = KStandardGuiItem::configure();
-    configure.setText( i18n( "Configure Automatic Synchronization..." ) );
+    configure.setText( i18n( "Configure Synchronization..." ) );
     buttonBox->addButton( configure, QDialogButtonBox::ActionRole, this, SLOT(openConfiguration()) );
     buttonBox->addButton( KGuiItem( i18n( "Next" ), "go-next" ), QDialogButtonBox::AcceptRole );
     connect( buttonBox, SIGNAL(accepted()), SIGNAL(accepted()) );

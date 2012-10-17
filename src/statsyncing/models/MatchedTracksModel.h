@@ -128,7 +128,6 @@ namespace StatSyncing
 
             QList<TrackTuple> m_matchedTuples;
             int m_titleColumn;
-            Options m_options;
     };
 
 } // namespace StatSyncing

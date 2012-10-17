@@ -14,35 +14,41 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Options.h"
+#ifndef EXCLUDEDLABELSDIALOG_H
+#define EXCLUDEDLABELSDIALOG_H
 
-using namespace StatSyncing;
+#include "core/meta/Meta.h"
 
-Options::Options()
-    : m_syncedFields( 0 )
-{
+#include <KDialog>
+
+namespace StatSyncing {
+    class Config;
 }
+class KLineEdit;
+class QGridLayout;
+class QListWidget;
 
-qint64
-Options::syncedFields() const
+class ExcludedLabelsDialog : public KDialog
 {
-    return m_syncedFields;
-}
+    Q_OBJECT
 
-void
-Options::setSyncedFields( qint64 fields )
-{
-    m_syncedFields = fields;
-}
+    public:
+        explicit ExcludedLabelsDialog( StatSyncing::Config *config, QWidget *parent = 0,
+                                       Qt::WFlags flags = 0 );
 
-QSet<QString>
-Options::excludedLabels() const
-{
-    return m_excludedLabels;
-}
+    private slots:
+        void slowNewResultReady( const Meta::LabelList &labels );
+        void slotAddExcludedLabel();
+        void slotSaveToConfig();
 
-void
-Options::setExcludedLabels( const QSet<QString> &labels )
-{
-    m_excludedLabels = labels;
-}
+    private:
+        void addLabel( const QString &label, bool selected = false );
+        void addLabels( const QSet<QString> &labels, bool selected = false );
+
+        StatSyncing::Config *m_statSyncingConfig;
+        QGridLayout *m_layout;
+        KLineEdit *m_addLabelLine;
+        QListWidget *m_listWidget;
+};
+
+#endif // EXCLUDEDLABELSDIALOG_H

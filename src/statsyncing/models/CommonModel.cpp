@@ -19,6 +19,7 @@
 #include "MetaValues.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Debug.h"
+#include "statsyncing/Options.h"
 
 #include <KIcon>
 #include <KLocalizedString>
@@ -31,8 +32,9 @@ using namespace StatSyncing;
 
 const QSize CommonModel::s_ratingSize( 5*16, 16 );
 
-CommonModel::CommonModel( const QList<qint64> &columns )
+CommonModel::CommonModel( const QList<qint64> &columns, const Options &options )
     : m_columns( columns )
+    , m_options( options )
 {
     Q_ASSERT( m_columns.value( 0 ) == Meta::valTitle );
     m_boldFont.setBold( true );
@@ -163,7 +165,7 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                         "%1 (%2)", track->playCount(), recent ) ) : QVariant( track->playCount() );
                 }
                 case Meta::valLabel:
-                    return QStringList( track->labels().toList() ).join( i18nc(
+                    return QStringList( ( track->labels() - m_options.excludedLabels() ).toList() ).join( i18nc(
                         "comma between list words", ", " ) );
                 default:
                     return QString( "Unknown field!" );
@@ -179,8 +181,18 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                         "to this source", "Played %2 times of which %1 plays are recent "
                         "and unique to this source", track->recentPlayCount(), track->playCount() );
                 case Meta::valLabel:
-                    return QStringList( track->labels().toList() ).join( i18nc(
-                        "comma between list words", ", " ) );
+                {
+                    QSet<QString> labels = track->labels() - m_options.excludedLabels();
+                    QSet<QString> excludedLabels = track->labels() & m_options.excludedLabels();
+                    QStringList texts;
+                    if( !labels.isEmpty() )
+                        texts << i18n( "Labels: %1", QStringList( labels.toList() ).join( i18nc(
+                        "comma between list words", ", " ) ) );
+                    if( !excludedLabels.isEmpty() )
+                        texts << i18n( "Ignored labels: %1", QStringList( excludedLabels.toList() ).join( i18nc(
+                            "comma between list words", ", " ) ) );
+                    return texts.isEmpty() ? QVariant() : texts.join( "\n" );
+                }
             }
             break;
         case Qt::TextAlignmentRole:
