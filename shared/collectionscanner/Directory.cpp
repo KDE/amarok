@@ -22,6 +22,7 @@
  ***************************************************************************/
 
 #include "Directory.h"
+#include "utils.h"
 
 #include "collectionscanner/ScanningState.h"
 
@@ -221,8 +222,8 @@ CollectionScanner::Directory::playlists() const
 void
 CollectionScanner::Directory::toXml( QXmlStreamWriter *writer ) const
 {
-    writer->writeTextElement( "path", m_path );
-    writer->writeTextElement( "rpath", m_rpath );
+    writer->writeTextElement( "path", escapeXml10(m_path) );
+    writer->writeTextElement( "rpath", escapeXml10(m_rpath) );
     writer->writeTextElement( "mtime", QString::number( m_mtime ) );
     if( m_skipped )
         writer->writeEmptyElement( "skipped" );
@@ -231,7 +232,7 @@ CollectionScanner::Directory::toXml( QXmlStreamWriter *writer ) const
 
     foreach( const QString &cover, m_covers )
     {
-        writer->writeTextElement( "cover", cover );
+        writer->writeTextElement( "cover", escapeXml10(cover) );
     }
     foreach( CollectionScanner::Track *track, m_tracks )
     {

@@ -1,5 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2010 Ralf Engels <ralf-engels@gmx.de>                  *
+ *   Copyright (C) 2010 Ralf Engels <ralf-engels@gmx.de>                   *
+ *   Copyright (C) 2012 Edward Toroshchin <amarok@hades.name>              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,56 +18,35 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "Playlist.h"
-#include "utils.h"
+#ifndef COLLECTIONSCANNER_UTILS_H
+#define COLLECTIONSCANNER_UTILS_H
 
-#include <QDir>
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
+#include <QString>
 
-CollectionScanner::Playlist::Playlist( const QString &path )
+namespace CollectionScanner
 {
-    m_path = path;
-    m_rpath = QDir::current().relativeFilePath( path );
-}
 
-CollectionScanner::Playlist::Playlist( QXmlStreamReader *reader )
+/** Removes all characters not allowed by xml 1.0 specification.
+    We need this because the Qt 4.6 xml scanner is behaving very badly
+    when encountering such characters in the input.
+    ...and because Qt 4.whatever xml writer outputs such characters without
+    any remorse.
+    see http://en.wikipedia.org/wiki/Valid_Characters_in_XML
+    */
+inline QString
+escapeXml10( QString str )
 {
-   while (!reader->atEnd()) {
-        reader->readNext();
-
-        if( reader->isStartElement() )
-        {
-            if( reader->name() == QLatin1String("path") )
-                m_path = reader->readElementText();
-            else if( reader->name() == QLatin1String("rpath") )
-                m_rpath = reader->readElementText();
-            else
-                reader->readElementText(); // just read over the element
-        }
-
-        else if( reader->isEndElement() )
-        {
-            break;
-        }
+    for( int i = 0; i < str.length(); ++i )
+    {
+        ushort c = str.at(i).unicode();
+        if( (c < 0x20 && c != 0x09 && c != 0x0A && c != 0x0D) ||
+            (c > 0xD7FF && c < 0xE000) ||
+            (c > 0xFFFD) )
+            str[i] = '?';
     }
+    return str;
 }
 
-QString
-CollectionScanner::Playlist::path() const
-{
-    return m_path;
 }
 
-QString
-CollectionScanner::Playlist::rpath() const
-{
-    return m_rpath;
-}
-
-void
-CollectionScanner::Playlist::toXml( QXmlStreamWriter *writer ) const
-{
-    writer->writeTextElement( QLatin1String("path"), escapeXml10(m_path) );
-    writer->writeTextElement( QLatin1String("rpath"), escapeXml10(m_rpath) );
-}
+#endif // COLLECTIONSCANNER_UTILS_H

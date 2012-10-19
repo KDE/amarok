@@ -116,7 +116,6 @@ public:
 
 private:
 
-    QString escape( QString str ) const;
     void write( QXmlStreamWriter *writer, const QString &tag, const QString &str ) const;
     bool m_valid;
 

@@ -22,6 +22,7 @@
  ***************************************************************************/
 
 #include "Track.h"
+#include "utils.h"
 
 #include "MetaTagLib.h"
 #include "MetaReplayGain.h"
@@ -262,31 +263,12 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader, CollectionScanner::Di
     }
 }
 
-/** Removes all characters not allowed by xml 1.0 specification.
-    We need this because the Qt 4.6 xml scanner is behaving very badly
-    when encountering such characters in the input.
-    see http://en.wikipedia.org/wiki/Valid_Characters_in_XML
-    */
-QString
-CollectionScanner::Track::escape( QString str ) const
-{
-    for( int i = 0; i < str.length(); ++i )
-    {
-        ushort c = str.at(i).unicode();
-        if( (c < 0x20 && c != 0x09 && c != 0x0A && c != 0x0D) ||
-            (c > 0xD7FF && c < 0xE000) ||
-            (c > 0xFFFD) )
-            str[i] = '?';
-    }
-    return str;
-}
-
 void
 CollectionScanner::Track::write( QXmlStreamWriter *writer,
                                  const QString &tag, const QString &str ) const
 {
     if( !str.isEmpty() )
-        writer->writeTextElement( tag, escape(str) );
+        writer->writeTextElement( tag, escapeXml10(str) );
 }
 
 
