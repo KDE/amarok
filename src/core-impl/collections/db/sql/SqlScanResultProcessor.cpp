@@ -148,12 +148,11 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     if( m_foundTracks.contains( uid ) )
     {
         const UrlEntry old = m_urlsCache.value( m_uidCache.value( uid ) );
-        QString text = QString( "When committing track %1 with uid %2 we detected that the "
-                "same uid is already committed. This means that you most probably have "
-                "duplicates in your collection folders. The offending track is %3." ).arg(
-                track->path(), uid, old.path );
-        warning() << "commitTrack():" << text.toLocal8Bit().data();
-        m_lastErrors.append( text );
+        const char *pattern = I18N_NOOP( "Duplicates found, the second file will be ignored:\n%1\n%2" );
+
+        // we want translated version for GUI and non-translated for debug log
+        warning() << "commitTrack():" << QString( pattern ).arg( old.path, track->path() );
+        m_lastErrors.append( i18n( pattern, old.path, track->path() ) );
         return;
     }
 

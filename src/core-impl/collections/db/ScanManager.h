@@ -151,7 +151,6 @@ class ScanManager : public QObject
         Collections::DatabaseCollection *m_collection;
 
         ScannerJob *m_scanner;
-        bool m_errorsReported;
 
         int m_restartCount;
         int m_blockCount;

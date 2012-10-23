@@ -56,7 +56,6 @@ ScanManager::ScanManager( Collections::DatabaseCollection *collection, QObject *
     : QObject( parent )
     , m_collection( static_cast<Collections::SqlCollection*>( collection ) )
     , m_scanner( 0 )
-    , m_errorsReported( false )
     , m_blockCount( 0 )
     , m_fullScanRequested( false )
     , m_importRequested( 0 )
@@ -319,20 +318,16 @@ ScanManager::slotJobDone()
     if( m_scanner )
     {
         // -- error reporting
-        if (QApplication::type() != QApplication::Tty && !m_errorsReported )
+        QStringList errors = m_scanner->getLastErrors();
+        if( !errors.isEmpty() && QApplication::type() != QApplication::Tty )
         {
-            m_errorsReported = true;
-
-            if( !m_scanner->getLastErrors().isEmpty() )
-            {
-                KMessageBox::error( The::mainWindow(), //parent
-                                    i18n( "The collection scanner reported the following errors:\n"
-                                          "%1\n"
-                                          "In most cases this means that not all of your tracks "
-                                          "were imported.\n"
-                                          "Further errors will only be reported on the console." ).
-                                    arg(m_scanner->getLastErrors().join("\n")) );
-            }
+            QString errorList = errors.join( "</li><li>" ).replace( '\n', "<br>" );
+            QString text = i18n( "<ul><li>%1</li></ul>"
+                    "In most cases this means that not all of your tracks were imported.<br>"
+                    "See <a href='http://userbase.kde.org/Amarok/Manual/Various/TroubleshootingAndCommonProblems#Duplicate_Tracks'>"
+                    "Amarok Manual</a> for information about duplicate tracks." ).arg( errorList );
+            KMessageBox::error( The::mainWindow(), text, i18n( "Errors During Collection Scan" ),
+                                KMessageBox::AllowLink );
         }
         emit scanDone( m_scanner );
 
