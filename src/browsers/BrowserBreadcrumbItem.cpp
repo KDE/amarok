@@ -39,8 +39,8 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory* category, QWidget
     if( parentList )
     {
         m_menuButton = new BreadcrumbItemMenuButton( this );
-        QMenu *menu = new QMenu( 0 );
-        
+        QMenu *menu = new QMenu( this ); //see QMenu docs: it's still a top-level widget.
+                                         //parent is only for memory management.
         QMap<QString,BrowserCategory *> siblingMap = parentList->categories();
 
         QStringList siblingNames = siblingMap.keys();
@@ -100,7 +100,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
     if ( !childItems.isEmpty() )
     {
         m_menuButton = new BreadcrumbItemMenuButton( this );
-        QMenu *menu = new QMenu( 0 );
+        QMenu *menu = new QMenu( this );
 
         foreach( const QString &siblingName, childItems )
         {
@@ -137,8 +137,6 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
 
 BrowserBreadcrumbItem::~BrowserBreadcrumbItem()
 {
-    if( m_menuButton )
-        delete m_menuButton->menu();
 }
 
 void

@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.7
   BUGFIXES:
+    * Prevent crash when using File Browser breadcrumbs. (BR 265626)
     * Prevent crash in ServiceBase::setModel triggered by Last.fm rewrite. (BR 311723)
     * Fix incorrect display of Last.fm tags and other items. (BR 244555)
 
