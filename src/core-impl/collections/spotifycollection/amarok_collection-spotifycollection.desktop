@@ -84,7 +84,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Ryan Feng
 X-KDE-Amarok-email=odayfans@gmail.com
-X-KDE-Amarok-framework-version=68
+X-KDE-Amarok-framework-version=69
 X-KDE-Amarok-name=spotifycollection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
