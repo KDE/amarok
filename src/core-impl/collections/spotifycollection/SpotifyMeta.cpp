@@ -14,14 +14,16 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
 #include "SpotifyMeta.h"
 
-#include "amarokconfig.h"
-#include "core/meta/Meta.h"
-#include "core-impl/meta/default/DefaultMetaTypes.h"
-#include "covermanager/CoverFetcher.h"
-#include "covermanager/CoverCache.h"
 #include "SpotifyCollection.h"
+
+#include "amarokconfig.h"
+#include "core-impl/meta/default/DefaultMetaTypes.h"
+#include "core/meta/Meta.h"
+#include "covermanager/CoverCache.h"
+#include "covermanager/CoverFetcher.h"
 
 #include <QDateTime>
 #include <QList>

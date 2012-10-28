@@ -16,10 +16,11 @@
 #ifndef SPOTIFYPLAYLISTPROVIDER_H
 #define SPOTIFYPLAYLISTPROVIDER_H
 
-#include "core-impl/playlists/UserPlaylistProvider.h"
-#include "SpotifyMeta.h"
 #include "SpotifyCollection.h"
-#include "./support/Controller.h"
+#include "SpotifyMeta.h"
+#include "support/Controller.h"
+
+#include "core-impl/playlists/UserPlaylistProvider.h"
 
 class QAction;
 

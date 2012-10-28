@@ -17,6 +17,7 @@
 #define SPOTIFYSETTINGS_H_
 
 #include "SpotifyConfig.h"
+
 #include "network/NetworkAccessManagerProxy.h"
 
 #include <KDialog>

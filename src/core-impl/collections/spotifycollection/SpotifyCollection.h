@@ -17,15 +17,17 @@
 #ifndef SPOTIFY_COLLECTION_H
 #define SPOTIFY_COLLECTION_H
 
-#include "core/collections/Collection.h"
-#include "core-impl/collections/support/MemoryCollection.h"
 #include "SpotifyMeta.h"
-#include "support/Controller.h"
-#include "core/support/Debug.h"
 #include "SpotifySettings.h"
+#include "support/Controller.h"
+
+#include "core-impl/collections/support/MemoryCollection.h"
+#include "core/collections/Collection.h"
+#include "core/support/Debug.h"
+
+#include <QAction>
 #include <QObject>
 #include <QString>
-#include <QAction>
 
 namespace Collections
 {

@@ -14,20 +14,20 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
 #include "SpotifyQueryMaker.h"
 
-#include "SpotifyMeta.h"
 #include "SpotifyCollection.h"
-
+#include "SpotifyMeta.h"
 #include "support/Controller.h"
-#include "support/Query.h"
 #include "support/QMFunctionTypes.h"
+#include "support/Query.h"
 
+#include "core-impl/collections/support/MemoryQueryMaker.h"
 #include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Debug.h"
-#include "core-impl/collections/support/MemoryQueryMaker.h"
 
 #include <QObject>
 #include <QStack>

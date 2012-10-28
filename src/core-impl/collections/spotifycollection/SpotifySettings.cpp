@@ -16,14 +16,17 @@
 #define DEBUG_PREFIX "SpotifySettings"
 
 #include "SpotifySettings.h"
+
+#include "ui_SpotifyConfigWidget.h"
+
 #include "core/support/Debug.h"
 #include "support/Controller.h"
-#include "ui_SpotifyConfigWidget.h"
 
 #include <KLocale>
 #include <KMessageBox>
-#include <QtGlobal>
+
 #include <QFile>
+#include <QtGlobal>
 
 SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
 : KDialog( parent )
