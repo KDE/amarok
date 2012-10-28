@@ -18,9 +18,9 @@
 
 #include "SpotifyConfig.h"
 
-#include "network/NetworkAccessManagerProxy.h"
-
 #include <KDialog>
+
+#include <QNetworkReply>
 
 namespace Ui { class SpotifyConfigWidget; }
 

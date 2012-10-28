@@ -27,28 +27,29 @@ namespace Collections
 
 namespace Meta
 {
-    class SpotifyTrack;
-    class SpotifyArtist;
     class SpotifyAlbum;
-    class SpotifyGenre;
+    class SpotifyArtist;
     class SpotifyComposer;
-    class SpotifyYear;
+    class SpotifyGenre;
     class SpotifyLabel;
+    class SpotifyTrack;
+    class SpotifyYear;
 
-    typedef KSharedPtr< SpotifyTrack > SpotifyTrackPtr;
-    typedef QList< SpotifyTrackPtr > SpotifyTrackList;
-    typedef KSharedPtr< SpotifyArtist > SpotifyArtistPtr;
-    typedef QList< SpotifyArtistPtr > SpotifyArtistList;
     typedef KSharedPtr< SpotifyAlbum > SpotifyAlbumPtr;
-    typedef QList< SpotifyAlbumPtr > SpotifyAlbumList;
+    typedef KSharedPtr< SpotifyArtist > SpotifyArtistPtr;
     typedef KSharedPtr< SpotifyComposer > SpotifyComposerPtr;
-    typedef QList< SpotifyComposerPtr > SpotifyComposerList;
     typedef KSharedPtr< SpotifyGenre > SpotifyGenrePtr;
-    typedef QList< SpotifyGenrePtr > SpotifyGenreList;
-    typedef KSharedPtr< SpotifyYear > SpotifyYearPtr;
-    typedef QList< SpotifyYearPtr > SpotifyYearList;
     typedef KSharedPtr< SpotifyLabel > SpotifyLabelPtr;
+    typedef KSharedPtr< SpotifyTrack > SpotifyTrackPtr;
+    typedef KSharedPtr< SpotifyYear > SpotifyYearPtr;
+
+    typedef QList< SpotifyAlbumPtr > SpotifyAlbumList;
+    typedef QList< SpotifyArtistPtr > SpotifyArtistList;
+    typedef QList< SpotifyComposerPtr > SpotifyComposerList;
+    typedef QList< SpotifyGenrePtr > SpotifyGenreList;
     typedef QList< SpotifyLabelPtr > SpotifyLabelList;
+    typedef QList< SpotifyTrackPtr > SpotifyTrackList;
+    typedef QList< SpotifyYearPtr > SpotifyYearList;
 
     class SpotifyTrack : public Track
     {

@@ -20,6 +20,7 @@
 #include "SpotifyCollection.h"
 
 #include "SpotifyQueryMaker.h"
+#include "SpotifySettings.h"
 #include "support/Controller.h"
 #include "support/TrackProxy.h"
 
@@ -29,6 +30,7 @@
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/collections/Collection.h"
+#include "core/support/Debug.h"
 
 #include <KIcon>
 
