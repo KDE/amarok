@@ -20,7 +20,6 @@
 #define FILENAMELAYOUTDIALOG_H
 
 #include "amarok_export.h"
-// #include "ui_FilenameLayoutDialog.h"
 #include "ui_TagGuessOptions.h"
 #include "ui_FilenameLayoutOptions.h"
 
@@ -37,31 +36,8 @@ class QPushButton;
 class QVBoxLayout;
 class QHBoxLayout;
 
-class AMAROK_EXPORT TagGuessOptionWidget : public QWidget, public Ui::TagGuessOptions
-{
-    Q_OBJECT
-
-    public:
-        TagGuessOptionWidget( QWidget *parent = 0 );
-
-        int getCaseOptions();
-        bool getWhitespaceOptions();
-        bool getUnderscoreOptions();
-
-    signals:
-        void optionsChanged();
-
-    private slots:
-        // Handles the radiobuttons
-        void editStateEnable( bool checked );
-
-    private:
-        QList<QRadioButton*> m_caseEditRadioButtons;
-};
-
-
 /** A couple of options used in the filename layout dialog. */
-class AMAROK_EXPORT FilenameLayoutOptionWidget : public QWidget, public Ui::FilenameLayoutOptions
+class AMAROK_EXPORT FilenameLayoutOptionWidget : public QGroupBox, public Ui::FilenameLayoutOptions
 {
     Q_OBJECT
 
@@ -210,47 +186,6 @@ class AMAROK_EXPORT OrganizeCollectionWidget : public FilenameLayoutWidget
         // void setformatPresetVisible( bool visible ) { formatPresetWidget->setVisible( visible ); }
 
         FilenameLayoutOptionWidget* m_optionsWidget;
-};
-
-/** This dialog allows the user to define a filename scheme from which to guess tags. */
-class AMAROK_EXPORT TagGuesserWidget : public FilenameLayoutWidget
-{
-    Q_OBJECT
-
-    public:
-        explicit TagGuesserWidget( QWidget *parent = 0 );
-        virtual ~TagGuesserWidget() {}
-
-        /** Sets the filename to show colored preview from. */
-        void setFileName( const QString& fileName );
-
-        /** Returns the current guessed tags */
-        QMap<qint64,QString> guessedTags();
-
-    public slots:
-        virtual void onAccept();
-
-    private slots:
-        /** Updates the result texts. */
-        void updatePreview();
-
-    protected:
-        virtual Token* createToken(qint64 value) const;
-
-        /** returns a filename with the same number of directory
-            levels as the scheme.
-            Also removes the extension.
-        */
-        QString parsableFileName( const QFileInfo &fileInfo ) const;
-
-        /** Returns the fileName with added path. */
-        QString getParsableFileName();
-
-        /** Filename to guess from. */
-        QString m_filename;
-
-        QLabel* m_filenamePreview;
-        TagGuessOptionWidget* m_optionsWidget;
 };
 
 
