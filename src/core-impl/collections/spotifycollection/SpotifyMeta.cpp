@@ -16,7 +16,7 @@
  ****************************************************************************************/
 #include "SpotifyMeta.h"
 
-#include "src/amarokconfig.h"
+#include "amarokconfig.h"
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
 #include "covermanager/CoverFetcher.h"
