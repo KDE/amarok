@@ -19,6 +19,7 @@
 
 #include "Token.h"
 #include "TokenPool.h"
+#include "core/support/Debug.h"
 
 #include <KLocale>
 
@@ -27,145 +28,52 @@
 #include <QVBoxLayout>
 
 
-/** TokenDragger - eventfilter that drags a token, designed to be a child of TokenDropTarget
-This is necessary, as if TokenDropTarget would QDrag::exec() itself, the eventFilter would be blocked
-and thus not be able to handle other events for the parenting widget, like e.g. dragEnter... */
-
-class TokenDragger : public QObject
-{
-public:
-    TokenDragger( const QString &mimeType, TokenDropTarget *parent ) : QObject(parent), m_mimeType( mimeType )
-    {}
-protected:
-    bool eventFilter( QObject *o, QEvent *e )
-    {
-        if ( e->type() == QEvent::MouseMove )
-        {
-            if ( static_cast<QMouseEvent*>(e)->buttons() & Qt::LeftButton )
-                return drag( qobject_cast<Token*>(o) );
-        }
-        else if ( e->type() == QEvent::MouseButtonPress )
-        {
-            if ( static_cast<QMouseEvent*>(e)->buttons() & Qt::LeftButton )
-            {
-                setCursor( qobject_cast<QWidget*>(o), Qt::ClosedHandCursor );
-                return true; // don't propagate to parents
-            }
-            return false;
-        }
-        else if ( e->type() == QEvent::MouseButtonRelease )
-        {
-            if ( !( static_cast<QMouseEvent*>(e)->buttons() & Qt::LeftButton ) )
-            {
-                setCursor( qobject_cast<QWidget*>(o), Qt::OpenHandCursor );
-                emit static_cast<TokenDropTarget*>( parent() )->focusReceived( qobject_cast<QWidget*>(o) );
-                return true; // don't propagate to parents
-            }
-            return false;
-        }
-        else if ( e->type() == QEvent::FocusIn )
-            emit static_cast<TokenDropTarget*>( parent() )->focusReceived( qobject_cast<QWidget*>(o) );
-        else if ( e->type() == QEvent::Hide )
-        {
-            setCursor( qobject_cast<QWidget*>(o), Qt::OpenHandCursor );
-            return false;
-        }
-        return false;
-    }
-
-private:
-    bool drag( Token *token )
-    {
-        if ( !token )
-            return false;
-
-        bool ret = false;
-        bool stacked = token->parentWidget() && qobject_cast<TokenDropTarget*>( token->parentWidget() ); // true if token originated from a TokenDropTarget.
-        if (stacked)
-            token->hide();
-
-        QPixmap pixmap( token->size() );
-        token->render( &pixmap );
-        QDrag *drag = new QDrag( token );
-        QMimeData *data = new QMimeData;
-
-        QByteArray itemData;
-        QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-//         dataStream << child->name() << child->iconName() << child->value();
-
-        data->setData( m_mimeType, itemData );
-        drag->setMimeData( data );
-        drag->setPixmap( pixmap );
-        drag->setHotSpot ( pixmap.rect().center() );
-
-        Qt::DropAction dropAction = drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
-
-        if ( stacked )
-        {
-            if( dropAction != Qt::MoveAction && dropAction != Qt::CopyAction ) // dragged out and not just dragged to another position.
-            {
-                // TODO: nice poof animation? ;-)
-                delete token;
-                ret = true; // THIS IS IMPORTANT
-            }
-            // anyway, tell daddy to wipe empty rows NOW
-            static_cast<TokenDropTarget*>(parent())->deleteEmptyRows();
-        }
-        return ret;
-    }
-    inline void setCursor( QWidget *w, Qt::CursorShape shape )
-    {
-        if ( !w )
-            return;
-        w->setCursor( shape );
-    }
-private:
-    QString m_mimeType;
-    QPoint m_startPos;
-};
-
-
-TokenDropTarget::TokenDropTarget( const QString &mimeType, QWidget *parent )
+TokenDropTarget::TokenDropTarget( QWidget *parent )
     : QWidget( parent )
-    , m_tokenDragger( new TokenDragger( mimeType, this ) )
-    , m_tokenFactory( new TokenFactory() )
+    , m_rowLimit( 0 )
     , m_rows( 0 )
     , m_horizontalStretch( false ) // DANGER: m_horizontalStretch is used as int in the following code, assuming that true == 1
+    , m_verticalStretch( true )
+    , m_tokenFactory( new TokenFactory() )
 {
-    m_mimeType = mimeType;
-    m_limits[0] = m_limits[1] = 0;
-    // let daddy widget be droppable... ;)
-    parent->setAcceptDrops(true);
-    // ...and handle drop events for him
-    parent->removeEventFilter( this );
-    parent->installEventFilter( this );
+    setAcceptDrops( true );
 
-    new QVBoxLayout( this );
-    // visual, maybe there should be spacing? however, frames etc. can have contentmargin.
-    layout()->setSpacing( 0 );
-    layout()->setContentsMargins( 1, 1, 1, 1 );
+    QBoxLayout* mainLayout = new QVBoxLayout( this );
+    mainLayout->setSpacing( 0 );
+    mainLayout->addStretch( 1 ); // the vertical stretch
 
-    setMinimumSize( 60, 16 ); // sloppy. The minimum size depends on the size of the "Drag here" text.
+    mainLayout->setContentsMargins( 0, 0, 0, 0 );
 }
 
-bool
-TokenDropTarget::accept( QDropEvent *de )
+TokenDropTarget::~TokenDropTarget()
 {
-    if ( !de->mimeData()->hasFormat( m_mimeType ) )
-    {
-        de->ignore();
-        return false;
-    }
-
-    if ( de->source() && parentWidget() && de->source()->parentWidget() == parentWidget() )
-    {   // move
-        de->setDropAction(Qt::MoveAction);
-        de->accept();
-    }
-    else
-        de->acceptProposedAction();
-    return true;
+    delete m_tokenFactory;
 }
+
+QSize
+TokenDropTarget::sizeHint() const
+{
+    QSize result = QWidget::sizeHint();
+
+     // we need at least space for the "empty" text.
+    int h = fontMetrics().height();
+    result = result.expandedTo( QSize( 36 * h, 2 * h ) );
+
+    return result;
+}
+
+QSize
+TokenDropTarget::minimumSizeHint() const
+{
+    QSize result = QWidget::minimumSizeHint();
+
+     // we need at least space for the "empty" text.
+    int h = fontMetrics().height();
+    result = result.expandedTo( QSize( 36 * h, 2 * h ) );
+
+    return result;
+}
+
 
 QHBoxLayout *
 TokenDropTarget::appendRow()
@@ -182,21 +90,9 @@ TokenDropTarget::appendRow()
 void
 TokenDropTarget::clear()
 {
-    QLayoutItem *row, *col;
-    while( m_rows )
-    {
-        row = layout()->takeAt( 0 );
-        if ( QLayout *layout = row->layout() )
-        {
-            while( ( col = layout->takeAt( 0 ) ) )
-            {
-                delete col->widget();
-                delete col;
-            }
-        }
-        delete row;
-        m_rows--;
-    }
+    QList< Token *> allTokens = tokensAtRow();
+    foreach( Token* token, allTokens )
+        delete token;
 }
 
 int
@@ -208,6 +104,12 @@ TokenDropTarget::count() const
             c += box->count() - m_horizontalStretch;
 
     return c;
+}
+
+void
+TokenDropTarget::setRowLimit( uint r )
+{
+    m_rowLimit = r;
 }
 
 void
@@ -223,12 +125,11 @@ TokenDropTarget::deleteEmptyRows()
         }
     }
 
-    update(); // this removes empty layouts somehow for deleted tokens
-    emit changed();
+    update(); // this removes empty layouts somehow for deleted tokens. don't remove
 }
 
 QList< Token *>
-TokenDropTarget::drags( int row )
+TokenDropTarget::tokensAtRow( int row )
 {
     int lower = 0, upper = rows();
     if ( row > -1 && row < rows() )
@@ -251,102 +152,6 @@ TokenDropTarget::drags( int row )
 }
 
 void
-TokenDropTarget::drop( Token *token, const QPoint &pos )
-{
-    if ( !token )
-        return;
-
-    // unlayout in case of move
-    if ( QBoxLayout *box = rowBox( token ) )
-        box->removeWidget( token );
-    token->setParent( parentWidget() );
-
-    // find the token at the position.
-    QWidget *child = childAt( pos );
-    Token *sibling = qobject_cast<Token*>( child );
-    if( !sibling && child && child->parent() ) // sometimes we get the label of the token.
-        sibling = qobject_cast<Token*>( child->parent() );
-
-    QBoxLayout *box = 0;
-    if( sibling )
-    {   // we hit a sibling, -> prepend
-        QPoint idx;
-        box = rowBox( sibling, &idx );
-        if( pos.x() > sibling->geometry().x() + 2 * sibling->width() / 3 )
-            box->insertWidget( idx.x() + 1, token );
-        else
-            box->insertWidget( idx.x(), token );
-    }
-    else
-    {
-        if ( rowLimit() && rows() >= (int)rowLimit() ) // we usually don't want more rows
-            box = qobject_cast<QBoxLayout*>( layout()->itemAt( rows() - 1 )->layout() );
-
-        if ( !box )
-        {
-            box = rowBox( pos ); // maybe this is on an existing row
-            if ( !box )
-                box = appendRow();
-        }
-        int col = ( box->count() > m_horizontalStretch && box->itemAt(0)->widget() &&
-                    pos.x() < box->itemAt(0)->widget()->geometry().x() ) ? 0 : box->count() - m_horizontalStretch;
-        box->insertWidget( col, token ); // append to existing row
-    }
-    token->show();
-    // update(); // count changed
-    emit changed();
-
-    token->setFocus( Qt::OtherFocusReason ); // select the new token right away
-}
-
-bool
-TokenDropTarget::eventFilter( QObject *o, QEvent *ev )
-{
-    Q_UNUSED( o )
-
-    if ( ev->type() == QEvent::DragMove ||
-         ev->type() == QEvent::DragEnter )
-    {
-        accept( static_cast<QDropEvent*>( ev ) );
-        return false; // TODO: return accept boolean ?
-    }
-
-//     if ( ev->type() == QEvent::DragLeave )
-    if ( ev->type() == QEvent::Drop )
-    {
-        QDropEvent *de = static_cast<QDropEvent*>( ev );
-        if ( accept( de ) )
-        {
-            Token *token = qobject_cast<Token*>( de->source() );
-            if ( !token )
-            {
-                // decode the stream created in TokenPool::dropEvent
-                QByteArray itemData = de->mimeData()->data( m_mimeType );
-                QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-
-                QString tokenName;
-                QString tokenIconName;
-                qint64 tokenValue;
-                QColor tokenTextColor;
-                dataStream >> tokenName;
-                dataStream >> tokenIconName;
-                dataStream >> tokenValue;
-                dataStream >> tokenTextColor;
-
-                token = m_tokenFactory->createToken( tokenName, tokenIconName, tokenValue, this );
-                token->setTextColor( tokenTextColor );
-                token->removeEventFilter( m_tokenDragger );
-                token->installEventFilter( m_tokenDragger );
-                token->setCursor( Qt::OpenHandCursor );
-            }
-            drop( token, de->pos() );
-        }
-        return false;
-    }
-    return false;
-}
-
-void
 TokenDropTarget::insertToken( Token *token, int row, int col )
 {
     // - validate row
@@ -363,6 +168,89 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
     if( col < 0 || col > box->count() - ( 1 + m_horizontalStretch ) )
         col = box->count() - m_horizontalStretch;
 
+    token->setParent( this );
+    token->show();
+    box->insertWidget( col, token );
+
+    connect( token, SIGNAL(changed()), this, SIGNAL(changed()) );
+    connect( token, SIGNAL(gotFocus(Token*)), this, SIGNAL(tokenSelected(Token*)) );
+    connect( token, SIGNAL(destroyed(QObject*)), this, SIGNAL(changed()) );
+    connect( token, SIGNAL(destroyed(QObject*)), this, SLOT(deleteEmptyRows()) );
+
+    emit changed();
+}
+
+
+Token*
+TokenDropTarget::tokenAt( const QPoint &pos ) const
+{
+    for( int row = 0; row < rows(); ++row )
+        if( QBoxLayout *rowBox = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() ) )
+            for( int col = 0; col < rowBox->count(); ++col )
+                if( QWidget *kid = rowBox->itemAt( col )->widget() )
+                {
+                    if( kid->geometry().contains( pos ) )
+                        return qobject_cast<Token*>(kid);
+                }
+    return 0;
+}
+
+void
+TokenDropTarget::drop( Token *token, const QPoint &pos )
+{
+    DEBUG_BLOCK;
+
+    if ( !token )
+        return;
+
+    // find the token at the position.
+    QWidget *child = childAt( pos );
+    Token *targetToken = qobject_cast<Token*>(child); // tokenAt( pos );
+    if( !targetToken && child && child->parent() ) // sometimes we get the label of the token.
+        targetToken = qobject_cast<Token*>( child->parent() );
+
+    // unlayout in case of move
+    if( QBoxLayout *box = rowBox( token ) )
+        box->removeWidget( token );
+
+    if( targetToken )
+    {   // we hit a sibling, -> prepend
+        QPoint idx;
+        rowBox( targetToken, &idx );
+
+        if( pos.x() > targetToken->geometry().x() + targetToken->width() / 2 )
+            insertToken( token, idx.y(), idx.x() + 1);
+        else
+            insertToken( token, idx.y(), idx.x() );
+    }
+    else
+    {
+        insertToken( token );
+    }
+
+    deleteEmptyRows(); // a row could now be empty due to a move
+    token->setFocus( Qt::OtherFocusReason ); // select the new token right away
+}
+
+void
+TokenDropTarget::dragEnterEvent( QDragEnterEvent *event )
+{
+    if( event->mimeData()->hasFormat( Token::mimeType() ) )
+        event->acceptProposedAction();
+}
+
+void
+TokenDropTarget::dropEvent( QDropEvent *event )
+{
+    if( event->mimeData()->hasFormat( Token::mimeType() ) )
+    {
+        event->acceptProposedAction();
+
+        Token *token = qobject_cast<Token*>( event->source() );
+
+        if ( !token ) // decode the stream created in TokenPool::dropEvent
+            token = m_tokenFactory->createTokenFromMime( event->mimeData(), this );
+
     // - copy the token if it belongs to a token pool (fix BR 296136)
     if( qobject_cast<TokenPool*>(token->parent() ) ) {
         token = m_tokenFactory->createToken( token->name(),
@@ -370,13 +258,9 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
                                              token->value() );
     }
 
-    token->setParent( parentWidget() );
-    box->insertWidget( col, token );
-    token->removeEventFilter( m_tokenDragger );
-    token->installEventFilter( m_tokenDragger );
-    token->setCursor( Qt::OpenHandCursor );
-    emit changed();
-    // update(); // count changed
+        if( token )
+            drop( token, event->pos() );
+    }
 }
 
 void
@@ -455,4 +339,19 @@ TokenDropTarget::setCustomTokenFactory( TokenFactory * factory )
     delete m_tokenFactory;
     m_tokenFactory = factory;
 }
+
+void
+TokenDropTarget::setVerticalStretch( bool value )
+{
+    if( value == m_verticalStretch )
+        return;
+
+    m_verticalStretch = value;
+
+    if( m_verticalStretch )
+        qobject_cast<QBoxLayout*>( layout() )->addStretch( 1 );
+    else
+        delete layout()->takeAt( layout()->count() - 1 );
+}
+
 

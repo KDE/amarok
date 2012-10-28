@@ -707,6 +707,7 @@ set(amaroklib_LIB_SRCS
     dialogs/TrackOrganizer.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
+    dialogs/TagGuesserDialog.cpp
     dialogs/LabelListModel.cpp
     equalizer/EqualizerPresets.cpp
     browsers/filebrowser/DirPlaylistTrackFilterProxyModel.cpp

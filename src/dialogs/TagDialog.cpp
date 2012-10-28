@@ -42,6 +42,7 @@
 #include "dialogs/TagGuesser.h"
 #include "widgets/CoverLabel.h"
 #include "ui_TagDialogBase.h" // needs to be after including CoverLabel, silly
+#include "TagGuesserDialog.h"
 
 #include <KLineEdit>
 #include <KMenu>
@@ -417,20 +418,15 @@ TagDialog::labelSelected() //SLOT
 void
 TagDialog::guessFromFilename() //SLOT
 {
-    KDialog dialog;
-    dialog.setCaption( i18n( "Filename Layout Chooser" ) );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-    TagGuesserWidget widget( &dialog );
-    widget.setFileName( m_currentTrack->playableUrl().path() );
-    dialog.setMainWidget( &widget );
+    TagGuesserDialog dialog( m_currentTrack->playableUrl().path() );
 
     if( dialog.exec() == KDialog::Accepted )
     {
-        widget.onAccept();
+        dialog.onAccept();
 
         int cur = 0;
 
-        QMap<qint64,QString> tags = widget.guessedTags();
+        QMap<qint64,QString> tags = dialog.guessedTags();
 
         if( !tags.isEmpty() )
         {
