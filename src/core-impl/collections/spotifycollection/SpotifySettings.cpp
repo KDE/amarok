@@ -20,6 +20,7 @@
 #include "ui_SpotifyConfigWidget.h"
 
 #include "core/support/Debug.h"
+#include "network/NetworkAccessManagerProxy.h"
 #include "support/Controller.h"
 
 #include <KLocale>

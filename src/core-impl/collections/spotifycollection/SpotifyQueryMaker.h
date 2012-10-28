@@ -17,21 +17,24 @@
 #ifndef SPOTIFY_QUERYMAKER_H
 #define SPOTIFY_QUERYMAKER_H
 
-#include "SpotifyCollection.h"
 #include "SpotifyMeta.h"
 #include "support/Controller.h"
 #include "support/QMFunctionTypes.h"
-#include "support/Query.h"
 
 #include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
-#include "core/meta/support/MetaConstants.h"
 
 #include <QMap>
+
+namespace Spotify
+{
+    class Query;
+}
 
 namespace Collections
 {
     class QueryMakerFunction;
+    class SpotifyCollection;
 
     class SpotifyQueryMaker : public QueryMaker
     {
