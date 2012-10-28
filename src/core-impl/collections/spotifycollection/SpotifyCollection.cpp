@@ -18,18 +18,20 @@
 #define DEBUG_PREFIX "SpotifyCollection"
 
 #include "SpotifyCollection.h"
+
 #include "SpotifyQueryMaker.h"
 #include "support/Controller.h"
 #include "support/TrackProxy.h"
 
-#include "core/collections/Collection.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/capabilities/ActionsCapability.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/collections/Collection.h"
 
 #include <KIcon>
+
 #include <QTimer>
 
 namespace Collections

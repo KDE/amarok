@@ -13,16 +13,19 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
 #include "SpotifyConfig.h"
+
+#include "App.h"
 #include "core/support/Debug.h"
 
-#include <sys/utsname.h>
-#include <KWallet/Wallet>
-#include <KMessageBox>
 #include <KConfig>
 #include <KConfigGroup>
+#include <KMessageBox>
 #include <KStandardDirs>
-#include "App.h"
+#include <KWallet/Wallet>
+
+#include <sys/utsname.h>
 
 const QString SpotifyConfig::m_resolverDownloadUrl = "http://ofan.me/";
 

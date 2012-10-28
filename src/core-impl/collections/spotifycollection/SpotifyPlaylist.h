@@ -16,8 +16,9 @@
 #ifndef SPOTIFYPLAYLIST_H
 #define SPOTIFYPLAYLIST_H
 
-#include "core/playlists/Playlist.h"
 #include "SpotifyCollection.h"
+
+#include "core/playlists/Playlist.h"
 
 class QObject;
 
