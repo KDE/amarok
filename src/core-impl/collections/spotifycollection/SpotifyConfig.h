@@ -31,6 +31,7 @@ public:
     ~SpotifyConfig();
 
     static const char *configSectionName() { return "Collection_Spotify"; }
+    static const QString supportedPlatformName();
     static const QString defaultResolverName();
 
     const QString username() const { return m_username; }

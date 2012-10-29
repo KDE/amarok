@@ -25,7 +25,7 @@
 #include <KStandardDirs>
 #include <KWallet/Wallet>
 
-#include <sys/utsname.h>
+#include <QSysInfo>
 
 const QString SpotifyConfig::m_resolverDownloadUrl = "http://ofan.me/";
 
@@ -164,15 +164,23 @@ SpotifyConfig::reset()
 }
 
 const QString
+SpotifyConfig::supportedPlatformName()
+{
+#ifdef Q_OS_WIN32
+    return "win32";
+#else
+#ifdef Q_OS_LINUX
+    return QString("linux%1").arg(QSysInfo::WordSize);
+#else
+    return QString();
+#endif
+#endif
+}
+
+const QString
 SpotifyConfig::defaultResolverName()
 {
-    utsname buf;
-    int res = uname( &buf );
-    QString name = "spotify_resolver_";
-    if( !res )
-        name.append( buf.machine );
-
-    return name;
+    return QString("spotify_resolver_%1").arg(supportedPlatformName());
 }
 
 #include "SpotifyConfig.moc"
