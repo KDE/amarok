@@ -27,7 +27,7 @@
 
 #include <QSysInfo>
 
-const QString SpotifyConfig::m_resolverDownloadUrl = "http://ofan.me/";
+const QString SpotifyConfig::m_resolverDownloadUrl = "http://hades.name/static/amarok/";
 
 SpotifyConfig::SpotifyConfig()
 : m_username ()
