@@ -183,4 +183,10 @@ SpotifyConfig::defaultResolverName()
     return QString("spotify_resolver_%1").arg(supportedPlatformName());
 }
 
+const QString
+SpotifyConfig::resolverDownloadPath()
+{
+    return KStandardDirs::locateLocal( "data", "amarok" );
+}
+
 #include "SpotifyConfig.moc"

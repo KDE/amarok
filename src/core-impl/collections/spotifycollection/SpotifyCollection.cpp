@@ -69,6 +69,9 @@ namespace Collections
         m_config.load();
 
         m_controller = The::SpotifyController( m_config.resolverPath() );
+#ifdef Q_OS_LINUX
+        m_controller->environment().insert("LD_LIBRARY_PATH", SpotifyConfig::resolverDownloadPath());
+#endif
 
         Q_ASSERT( m_controller != 0 );
 

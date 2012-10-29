@@ -33,6 +33,7 @@ public:
     static const char *configSectionName() { return "Collection_Spotify"; }
     static const QString supportedPlatformName();
     static const QString defaultResolverName();
+    static const QString resolverDownloadPath();
 
     const QString username() const { return m_username; }
     void setUsername( const QString& username ) { m_username = username; }
@@ -43,7 +44,7 @@ public:
     const QString resolverPath() const { return m_resolverPath; }
     void setResolverPath( const QString& path ) { m_resolverPath = path; }
 
-    const QString resolverDownloadUrl() const { return m_resolverDownloadUrl + defaultResolverName(); }
+    const QString resolverDownloadUrl() const { return m_resolverDownloadUrl + defaultResolverName() + ".zip"; }
 
     bool highQuality() const { return m_highQuality; }
     void setHighQuality( const bool highquality ) { m_highQuality = highquality; }
