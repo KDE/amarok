@@ -75,6 +75,15 @@ SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
     debug() << "Checking Spotify resolver: " << m_config.resolverPath();
     if( !QFile::exists( m_config.resolverPath() ) )
     {
+        if( SpotifyConfig::supportedPlatformName().isEmpty() )
+        {
+            KMessageBox::information( this,
+                                      i18n( "Your platform is not currently supported by Amarok Spotify resolver." ),
+                                      i18n( "Spotify resolver" ) );
+            slotCancel();
+            return;
+        }
+
         int res = KMessageBox::questionYesNo( this,
                     i18n( "Spotify resolver is missing or not installed correctly on your system."
                           "This program is required by Spotify collection."
