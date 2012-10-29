@@ -25,8 +25,11 @@
 
 #include <KLocale>
 #include <KMessageBox>
+#include <KZip>
 
+#include <QBuffer>
 #include <QFile>
+#include <QScopedPointer>
 #include <QtGlobal>
 
 SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
@@ -232,20 +235,29 @@ SpotifySettings::slotDownloadFinished()
 
     m_configWidget->progDownload->hide();
 
-    QFile file( m_config.resolverPath() );
-    if( !file.open( QIODevice::WriteOnly ) )
-    {
-        KMessageBox::error( this, i18n( "Failed to open file '%1' to write." ).arg( m_config.resolverPath() ) );
-        slotCancel();
-    }
-    else
-    {
-        file.write( m_downloadReply->readAll() );
+    QByteArray data( m_downloadReply->readAll() );
+    QScopedPointer<QBuffer> data_buffer(new QBuffer(&data));
 
-        // Set execution permission
-        file.setPermissions( file.permissions() | QFile::ExeUser );
-        file.close();
+    KZip archive( data_buffer.data() );
+    if( !archive.open( QIODevice::ReadOnly ) || !archive.directory() )
+    {
+        KMessageBox::error( this, i18n( "Failed to read data from the downloaded file. "
+                                        "Please try again later." ) );
+        slotCancel();
+        return;
     }
+
+    archive.directory()->copyTo( SpotifyConfig::resolverDownloadPath() );
+
+    QFile file( m_config.resolverPath() );
+    if( !file.exists() )
+    {
+        KMessageBox::error( this, i18n( "Failed to extract the Spotify resolver to %1 "
+                                        "Please check if the path is writeable." ).arg( SpotifyConfig::resolverDownloadPath() ) );
+        slotCancel();
+        return;
+    }
+    file.setPermissions( file.permissions() | QFile::ExeUser );
 
     // Notify controller to load the resolver
     Spotify::Controller* controller = The::SpotifyController();

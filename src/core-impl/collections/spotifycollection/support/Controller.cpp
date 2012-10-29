@@ -68,6 +68,7 @@ namespace Spotify
 {
 Controller::Controller( const QString& exec )
 : QObject(0)
+, m_procEnv( QProcessEnvironment::systemEnvironment() )
 , m_filePath( exec )
 , m_lastUsername( QString() )
 , m_msgSize( 0 )
@@ -463,6 +464,7 @@ Controller::startProcess()
     debug() << "Starting " << resolverPath();
     QString runPath = resolverPath();
 
+    m_proc.setProcessEnvironment( m_procEnv );
     m_proc.start( runPath );
 
     m_loaded = true;

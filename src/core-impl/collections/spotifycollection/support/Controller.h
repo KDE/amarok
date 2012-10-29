@@ -27,6 +27,7 @@
 #include "core/interfaces/Logger.h"
 
 #include <QProcess>
+#include <QProcessEnvironment>
 #include <QVariantMap>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
@@ -68,6 +69,7 @@ public:
     virtual QString name() const { return m_name; }
     virtual QString resolverPath() const { return m_filePath; }
     virtual void setFilePath( const QString& resolverPath ) { m_filePath = resolverPath; }
+    virtual QProcessEnvironment& environment() { return m_procEnv; }
     virtual void login(const QString& username, const QString& password, const bool highQuality = false);
     virtual bool loggedIn() const { return m_loggedIn; }
     virtual bool running() const;
@@ -209,6 +211,7 @@ private:
 
     // Members
     QProcess  m_proc;
+    QProcessEnvironment  m_procEnv;
     QString   m_name;
     QString   m_filePath;
     QString   m_lastUsername;
