@@ -33,8 +33,9 @@
 
 #include <misc.h>
 
-ScrobblerAdapter::ScrobblerAdapter( const QString &clientId )
-    :  m_scrobbler( clientId )
+ScrobblerAdapter::ScrobblerAdapter( const QString &clientId, const LastFmServiceConfig *config )
+    : m_scrobbler( clientId )
+    , m_config( config )
 {
     // work around a bug in liblastfm -- -it doesn't create its config dir, so when it
     // tries to write the track cache, it fails silently. Last check: liblastfm 1.0.!
@@ -48,9 +49,6 @@ ScrobblerAdapter::ScrobblerAdapter( const QString &clientId )
             dir.mkpath( "." );
         }
     }
-
-    LastFmServiceConfig config;
-    m_scrobbleComposer = config.scrobbleComposer();
 
     connect( The::mainWindow(), SIGNAL(loveTrack(Meta::TrackPtr)),
              SLOT(loveTrack(Meta::TrackPtr)) );
@@ -180,7 +178,7 @@ ScrobblerAdapter::copyTrackMetadata( lastfm::MutableTrack &to, const Meta::Track
 
     QString artistOrComposer;
     Meta::ComposerPtr composer = track->composer();
-    if( m_scrobbleComposer && composer )
+    if( m_config && m_config.data()->scrobbleComposer() && composer )
         artistOrComposer = composer->name();
     Meta::ArtistPtr artist = track->artist();
     if( artistOrComposer.isEmpty() && artist )

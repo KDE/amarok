@@ -18,6 +18,7 @@
 
 #include "MetaValues.h"
 #include "core/support/Debug.h"
+#include "services/lastfm/LastFmServiceConfig.h"
 #include "services/lastfm/SynchronizationTrack.h"
 
 #include <KLocalizedString>
@@ -28,8 +29,8 @@
 #include <Library.h>
 #include <XmlQuery.h>
 
-SynchronizationAdapter::SynchronizationAdapter( const QString &user )
-    : m_user( user )
+SynchronizationAdapter::SynchronizationAdapter( const LastFmServiceConfig *config )
+    : m_config( config )
 {
     // ensure this object is created in a main thread
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
@@ -132,7 +133,8 @@ SynchronizationAdapter::artistTracks( const QString &artistName )
 void
 SynchronizationAdapter::slotStartArtistSearch( int page )
 {
-    QNetworkReply *reply = lastfm::Library::getArtists( m_user, 200, page );
+    QString user = m_config ? m_config.data()->username() : QString();
+    QNetworkReply *reply = lastfm::Library::getArtists( user, 200, page );
     connect( reply, SIGNAL(finished()), SLOT(slotArtistsReceived()) );
 }
 
@@ -140,7 +142,8 @@ void
 SynchronizationAdapter::slotStartTrackSearch( QString artistName, int page )
 {
     lastfm::Artist artist( artistName );
-    QNetworkReply *reply = lastfm::Library::getTracks( m_user, artist, 200, page );
+    QString user = m_config ? m_config.data()->username() : QString();
+    QNetworkReply *reply = lastfm::Library::getTracks( user, artist, 200, page );
     connect( reply, SIGNAL(finished()), SLOT(slotTracksReceived()) );
 }
 

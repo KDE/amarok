@@ -32,7 +32,6 @@ LastFmServiceConfig::LastFmServiceConfig()
 {
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
-
     // we only want to load the wallet if the user has enabled features that require a user/pass
     bool scrobble = config.readEntry( "scrobble", false );
     bool fetch_sim = config.readEntry( "fetchSimilar", false );

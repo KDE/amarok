@@ -26,13 +26,14 @@
 #include <Audioscrobbler.h>
 #include <Track.h>
 
+class LastFmServiceConfig;
 
 class ScrobblerAdapter : public QObject, public StatSyncing::ScrobblingService
 {
     Q_OBJECT
 
     public:
-        ScrobblerAdapter( const QString &clientId );
+        ScrobblerAdapter( const QString &clientId, const LastFmServiceConfig *config );
         virtual ~ScrobblerAdapter();
 
     public:
@@ -62,7 +63,7 @@ class ScrobblerAdapter : public QObject, public StatSyncing::ScrobblingService
         void announceTrackCorrections( const lastfm::Track &track );
 
         lastfm::Audioscrobbler m_scrobbler;
-        bool m_scrobbleComposer; // TODO: update when changes
+        QWeakPointer<const LastFmServiceConfig> m_config;
 };
 
 #endif // LASTFMSCROBBLERADAPTER_H

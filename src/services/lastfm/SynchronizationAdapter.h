@@ -21,6 +21,8 @@
 
 #include <QSemaphore>
 
+class LastFmServiceConfig;
+
 class SynchronizationAdapter : public StatSyncing::Provider
 {
     Q_OBJECT
@@ -29,7 +31,7 @@ class SynchronizationAdapter : public StatSyncing::Provider
         /**
          * @param user Last.fm username
          */
-        SynchronizationAdapter( const QString &user );
+        SynchronizationAdapter( const LastFmServiceConfig *config );
         virtual ~SynchronizationAdapter();
 
         virtual QString id() const;
@@ -60,7 +62,7 @@ class SynchronizationAdapter : public StatSyncing::Provider
         void slotTagsReceived();
 
     private:
-        QString m_user;
+        QWeakPointer<const LastFmServiceConfig> m_config;
 
         QSet<QString> m_artists;
         StatSyncing::TrackList m_tracks;
