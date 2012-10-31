@@ -29,6 +29,7 @@
 
 #include <Nepomuk/Resource>
 #include <Nepomuk/ResourceManager>
+#include <Nepomuk/Vocabulary/NFO>
 
 #include <KIcon>
 #include <ThreadWeaver/Weaver>
@@ -103,6 +104,36 @@ NepomukCollection::metadataChanged( Meta::TrackPtr track )
         // while docs say somehting different,
         // collection browser doesnt update unless we emit updated()
         emit updated();
+}
+
+bool
+NepomukCollection::possiblyContainsTrack(const KUrl &url) const
+{
+    // construct a Nepomuk resource using the url
+    // if a resource of type audio is created successfully return true
+
+    Nepomuk::Resource fileRes( url );
+    Nepomuk::Resource res( fileRes.resourceUri() );
+    if ( res.exists() && res.hasType( Nepomuk::Vocabulary::NFO::Audio() ) )
+            return true;
+    else return false;
+}
+
+Meta::TrackPtr
+NepomukCollection::trackForUrl( const KUrl &url )
+{
+    Nepomuk::Resource fileRes( url );
+    QString uidUrl = fileRes.resourceUri().toString();
+    return trackForUidUrl( uidUrl );
+}
+
+Meta::TrackPtr
+NepomukCollection::trackForUidUrl( const QString &uidUrl )
+{
+    m_mc->acquireReadLock();
+    Meta::TrackPtr ret = m_mc->trackMap().value( uidUrl, Meta::TrackPtr() );
+    m_mc->releaseLock();
+    return ret;
 }
 
 void

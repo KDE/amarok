@@ -75,6 +75,10 @@ public:
     // so that the compiler doesn't complain about hidden virtual functions:
     using Meta::Observer::metadataChanged;
 
+    // TrackProvider methods
+    virtual bool possiblyContainsTrack( const KUrl &url ) const;
+    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+
 private:
     // nepomuk specific
     /**
@@ -90,6 +94,15 @@ private:
       * object.
       */
     void buildCollection();
+    /**
+      * Inspired by iPod Collection.
+      * This function is quite self explanatory.
+      * Given a uidUrl, ( Resource URI in the language of Nepomuk )
+      * it returns a TrackPtr to the music track with that URI.
+      *
+      * Note : the function doesn't check if the passed uidUrl is valid or if it exists
+      */
+    Meta::TrackPtr trackForUidUrl( const QString &uidUrl );
     friend class NepomukConstructMetaJob;
     QSharedPointer<MemoryCollection> m_mc;
 };
