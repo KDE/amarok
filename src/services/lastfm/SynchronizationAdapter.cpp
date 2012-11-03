@@ -81,7 +81,8 @@ SynchronizationAdapter::reliableTrackMetaData() const
 qint64
 SynchronizationAdapter::writableTrackStatsData() const
 {
-    return Meta::valRating | Meta::valLabel;
+    bool useRating = m_config ? m_config.data()->useFancyRatingTags() : false;
+    return ( useRating ? Meta::valRating : 0 ) | Meta::valLabel;
 }
 
 StatSyncing::Provider::Preference
@@ -254,7 +255,9 @@ SynchronizationAdapter::slotTracksReceived()
         QString artist = xq[ "artist" ][ "name" ].text();
         QString album = xq[ "album" ][ "name" ].text();
 
-        StatSyncing::TrackPtr track( new SynchronizationTrack( artist, album, name, playCount ) );
+        bool useRatings = m_config ? m_config.data()->useFancyRatingTags() : false;
+        StatSyncing::TrackPtr track( new SynchronizationTrack( artist, album, name,
+                                                               playCount, useRatings ) );
         m_tracks.append( track );
         if( tagCount > 0 )
             m_tagQueue.append( track );

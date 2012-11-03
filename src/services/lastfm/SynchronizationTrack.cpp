@@ -41,13 +41,15 @@ SemaphoreReleaser::dontRelease()
     m_semaphore = 0;
 }
 
-SynchronizationTrack::SynchronizationTrack( QString artist, QString album, QString name, int playCount )
+SynchronizationTrack::SynchronizationTrack( QString artist, QString album, QString name,
+                                            int playCount, bool useFancyRatingTags )
     : m_artist( artist )
     , m_album( album )
     , m_name( name )
     , m_rating( 0 )
     , m_newRating( 0 )
     , m_playCount( playCount )
+    , m_useFancyRatingTags( useFancyRatingTags )
 {
     // ensure this object is created in a main thread
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
@@ -143,12 +145,18 @@ SynchronizationTrack::commit()
         return;
 
     const QSet<QString> existingLabels = m_labels | m_ratingLabels;
-    if( m_newRating > 0 )
+    if( m_useFancyRatingTags )
     {
-        QString ratingLabel = QString( "%1 of 10 stars" ).arg( m_newRating );
-        m_newLabels.insert( ratingLabel );
-        m_ratingLabels = QSet<QString>() << ratingLabel;
+        // implicitly we remove all ratingLabels here by not including them in m_newLabels
+        if( m_newRating > 0 )
+        {
+            QString ratingLabel = QString( "%1 of 10 stars" ).arg( m_newRating );
+            m_newLabels.insert( ratingLabel );
+            m_ratingLabels = QSet<QString>() << ratingLabel;
+        }
     }
+    else
+        m_newLabels |= m_ratingLabels; // preserve all rating labels
 
     QSet<QString> toAdd = m_newLabels - existingLabels;
     QSet<QString> toRemove = existingLabels - m_newLabels;
@@ -170,7 +178,7 @@ SynchronizationTrack::commit()
     }
 
     m_rating = m_newRating;
-    m_labels = m_newLabels;
+    m_labels = m_newLabels - m_ratingLabels;
 }
 
 void
@@ -180,6 +188,7 @@ SynchronizationTrack::parseAndSaveLastFmTags( const QSet<QString> &tags )
     m_ratingLabels.clear();
     m_rating = 0;
 
+    // we still match and explicitly ignore rating tags even in m_useFancyRatingTags is false
     QRegExp rx( "([0-9]{1,3}) of ([0-9]{1,3}) stars", Qt::CaseInsensitive );
     foreach( const QString &tag, tags )
     {
@@ -198,8 +207,8 @@ SynchronizationTrack::parseAndSaveLastFmTags( const QSet<QString> &tags )
         else
             m_labels.insert( tag );
     }
-    if( m_ratingLabels.count() > 1 )
-        m_rating = 0; // ambiguous
+    if( !m_useFancyRatingTags || m_ratingLabels.count() > 1 )
+        m_rating = 0; // ambiguous or not requested
 
     m_newLabels = m_labels;
     m_newRating = m_rating;

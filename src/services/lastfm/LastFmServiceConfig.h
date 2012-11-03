@@ -57,6 +57,9 @@ public:
     bool scrobbleComposer() const { return m_scrobbleComposer; }
     void setScrobbleComposer( bool scrobbleComposer ) { m_scrobbleComposer = scrobbleComposer; }
 
+    bool useFancyRatingTags() const { return m_useFancyRatingTags; }
+    void setUseFancyRatingTags( bool useFancyRatingTags ) { m_useFancyRatingTags = useFancyRatingTags; }
+
 private slots:
     void textDialogYes();
     void textDialogNo();
@@ -86,6 +89,7 @@ private:
     bool m_scrobble;
     bool m_fetchSimilar;
     bool m_scrobbleComposer;
+    bool m_useFancyRatingTags;
 
     KDialog* m_askDiag;
     KWallet::Wallet* m_wallet;

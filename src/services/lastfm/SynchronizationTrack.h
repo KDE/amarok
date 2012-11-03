@@ -52,7 +52,7 @@ class SynchronizationTrack : public QObject, public StatSyncing::Track
          * Create track used for synchronization with Last.fm. Can only be called from
          * the main thread.
          */
-        SynchronizationTrack( QString artist, QString album, QString name, int playCount );
+        SynchronizationTrack( QString artist, QString album, QString name, int playCount, bool useFancyRatingTags );
 
         virtual QString name() const;
         virtual QString album() const;
@@ -93,6 +93,7 @@ class SynchronizationTrack : public QObject, public StatSyncing::Track
         int m_rating;
         int m_newRating;
         int m_playCount;
+        bool m_useFancyRatingTags;
         QSet<QString> m_labels;
         QSet<QString> m_newLabels;
         QSet<QString> m_ratingLabels;
