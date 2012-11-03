@@ -44,13 +44,8 @@ QString md5( const QByteArray& src )
 LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantList &args )
     : KCModule( LastFmServiceSettingsFactory::componentData(), parent, args )
 {
-    debug() << "Creating Last.fm config object";
-
-    QVBoxLayout* l = new QVBoxLayout( this );
-    QWidget *w = new QWidget;
     m_configDialog = new Ui::LastFmConfigWidget;
-    m_configDialog->setupUi( w );
-    l->addWidget( w );
+    m_configDialog->setupUi( this );
 
     // whenever this gets opened, we'll assume the user wants to change something,
     // so blow away the saved session key
