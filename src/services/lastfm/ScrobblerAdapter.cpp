@@ -66,7 +66,7 @@ ScrobblerAdapter::~ScrobblerAdapter()
 {
 }
 
-void
+StatSyncing::ScrobblingService::ScrobbleError
 ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
                             const QDateTime &time )
 {
@@ -75,13 +75,13 @@ ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
     {
         debug() << "scrobble(): refusing track" << track->prettyUrl() << "- played time ("
                 << track->length() / 1000 << "*" << playedFraction << "s) shorter than 30 s";
-        return;
+        return TooShort;
     }
     if( playedFraction < 0.8 )
     {
         debug() << "scrobble(): refusing track" << track->prettyUrl() << "- played "
                 << "fraction (" << playedFraction * 100 << "%) less than 80 %";
-        return;
+        return TooShort;
     }
 
     lastfm::MutableTrack lfmTrack;
@@ -92,6 +92,7 @@ ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
             << lfmTrack.duration();
     m_scrobbler.cache( lfmTrack );
     m_scrobbler.submit();
+    return NoError;
 }
 
 void

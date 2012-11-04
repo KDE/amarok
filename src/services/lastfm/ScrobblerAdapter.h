@@ -38,8 +38,8 @@ class ScrobblerAdapter : public QObject, public StatSyncing::ScrobblingService
 
     public:
         // ScrobblingService methods:
-        void scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
-                       const QDateTime &time = QDateTime() );
+        ScrobbleError scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
+                                const QDateTime &time = QDateTime() );
         void updateNowPlaying( const Meta::TrackPtr &track );
 
     public slots:

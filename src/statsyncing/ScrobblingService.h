@@ -43,6 +43,14 @@ namespace StatSyncing
         public:
             virtual ~ScrobblingService();
 
+            enum ScrobbleError {
+                NoError,
+                TooShort, // to short song or too short played time
+                BadMetadata, // invalid artist, album, title...
+                FromTheFuture,
+                FromTheDistantPast
+            };
+
             /**
              * Scrobble a track. Scrobbling service may check certain criteria such as
              * track length and refuse to scrobble the track.
@@ -54,8 +62,8 @@ namespace StatSyncing
              *             track has been played just now. This is the default when the
              *             parameter is omitted.
              */
-            virtual void scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
-                                   const QDateTime &time = QDateTime() ) = 0;
+            virtual ScrobbleError scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
+                                            const QDateTime &time = QDateTime() ) = 0;
 
             /**
              * Update the "Now Playing" info on the scrobbling site without scrobbling the
