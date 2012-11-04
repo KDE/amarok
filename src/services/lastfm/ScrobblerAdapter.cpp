@@ -21,6 +21,7 @@
 #include "ScrobblerAdapter.h"
 
 #include "MainWindow.h"
+#include "core/collections/Collection.h"
 #include "core/interfaces/Logger.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Components.h"
@@ -206,7 +207,8 @@ ScrobblerAdapter::copyTrackMetadata( lastfm::MutableTrack &to, const Meta::Track
         source = lastfm::Track::LastFmRadio;
     else if( track->type().startsWith( "stream" ) )
         source = lastfm::Track::NonPersonalisedBroadcast;
-    // TODO: case for scrobbling from media devices
+    else if( track->collection() && track->collection()->collectionId() != "localCollection" )
+        source = lastfm::Track::MediaDevice;
     to.setSource( source );
 }
 
