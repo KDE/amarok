@@ -67,6 +67,7 @@ namespace StatSyncing
             /// collection can disappear at any time, use weak pointer to notice it
             QWeakPointer<Collections::Collection> m_coll;
             QSet<QString> m_foundArtists;
+            QString m_currentArtistName;
             TrackList m_foundTracks;
             QSemaphore m_queryMakerSemaphore;
     };

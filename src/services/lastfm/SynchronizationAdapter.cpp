@@ -108,6 +108,9 @@ SynchronizationAdapter::artists()
 StatSyncing::TrackList
 SynchronizationAdapter::artistTracks( const QString &artistName )
 {
+    /* This method should match track artists case-sensitively, but we don't do it.
+     * Last.fm webservice returns only the preferred capitalisation in artsts(), so no
+     * duplicates threat us. */
     Q_ASSERT( m_semaphore.available() == 0 );
     emit startTrackSearch( artistName, 1 ); // Last.fm indexes from 1
 
@@ -196,7 +199,7 @@ SynchronizationAdapter::slotArtistsReceived()
     foreach( lastfm::XmlQuery xq, lfm.children( "artist" ) )
     {
         lastfm::Artist artist( xq );
-        m_artists.insert( artist.name().toLower() );
+        m_artists.insert( artist.name() );
     }
 
     // Last.fm indexes from 1!

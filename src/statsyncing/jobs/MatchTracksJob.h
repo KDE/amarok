@@ -89,8 +89,8 @@ namespace StatSyncing
              * artist and separates them into m_uniqueTracks, m_excludedTracks and
              * m_matchedTuples.
              */
-            void matchTracksFromArtist( const QString& artist,
-                                        const ProviderPtrSet &artistProviders );
+            void matchTracksFromArtist( const QString& lowercasedArtist,
+                                        const QMultiMap<ProviderPtr, QString> &artistProviders );
 
             /**
              * Finds the "smallest" track among provider track lists; assumes individual

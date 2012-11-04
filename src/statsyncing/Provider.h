@@ -96,19 +96,24 @@ namespace StatSyncing
             virtual Preference defaultPreference() = 0;
 
             /**
-             * Return a set of lowercased (all characters lowercased, not just ASCII)
-             * track artist names that appear in this provider. This method is guaranteed
-             * to be called in non-main thread and is allowed block for a longer time; it
-             * must be implemented in a reentrant manner.
+             * Return a set of track artist names that appear in this provider. Multiple
+             * artists differing just in letter case are allowed, or rather mandated,
+             * because @see artistTracks() method is case-sensitive.
+             *
+             * This method is guaranteed to be called in non-main thread and is allowed
+             * to block for a longer time; it must be implemented in a reentrant manner.
              */
             virtual QSet<QString> artists() = 0;
 
             /**
              * Return a list of track delegates from (track) artist @param artistName that
-             * appear in this provider; the matching should be performed case-isensitively
-             * but should match the whole string, not just substring. This method is
-             * guaranteed to be called in non-main thread and is allowed block for
-             * a longer time; it must be implemented in a reentrant manner.
+             * appear in this provider; the matching should be performed CASE-SENSITIVELY
+             * and should match the whole string, not just substring. If you have multiple
+             * variants of the artist name differing just in letter case, you should
+             * return all of the variants in @see artists().
+             *
+             * This method is guaranteed to be called in non-main thread and is allowed
+             * to block for a longer time; it must be implemented in a reentrant manner.
              */
             virtual TrackList artistTracks( const QString &artistName ) = 0;
 

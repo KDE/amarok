@@ -108,28 +108,27 @@ void MatchTracksJob::run()
     const qint64 requiredFields = Meta::valTitle | Meta::valArtist | Meta::valAlbum;
     s_comparisonFields = possibleFields;
 
-    QSet<QString> allArtists;
-    // remember which providers contain particular artists (optimisation)
-    QMap<QString, ProviderPtrSet> artistProviders;
+    // map of lowercase artist names to a list of providers that contain it plus their
+    // preferred representation of the artist name
+    QMap<QString, QMultiMap<ProviderPtr, QString> > providerArtists;
     foreach( ProviderPtr provider, m_providers )
     {
         QSet<QString> artists = provider->artists();
         foreach( const QString &artist, artists )
-            artistProviders[ artist ].insert( provider );
-        allArtists.unite( artists );
+            providerArtists[ artist.toLower() ].insert( provider, artist );
         s_comparisonFields &= provider->reliableTrackMetaData();
     }
     Q_ASSERT( ( s_comparisonFields & requiredFields ) == requiredFields );
-    emit totalSteps( allArtists.size() );
+    emit totalSteps( providerArtists.size() );
 #ifdef VERBOSE_DEBUG
     debug() << "Matching using:" << comparisonFieldNames( s_comparisonFields ).toLocal8Bit().constData();
 #endif
 
-    foreach( const QString &artist, allArtists )
+    foreach( const QString &lowercasedArtist, providerArtists.keys() )
     {
         if( m_abort )
             break;
-        matchTracksFromArtist( artist, artistProviders.value( artist ) );
+        matchTracksFromArtist( lowercasedArtist, providerArtists.value( lowercasedArtist ) );
         emit incrementProgress();
     }
     emit endProgressOperation( this );
@@ -150,19 +149,19 @@ void MatchTracksJob::run()
 }
 
 void
-MatchTracksJob::matchTracksFromArtist( const QString &artist,
-                                       const ProviderPtrSet &artistProviders )
+MatchTracksJob::matchTracksFromArtist( const QString &lowercasedArtist,
+                                       const QMultiMap<ProviderPtr, QString> &providerArtists )
 {
 #ifdef VERBOSE_DEBUG
     DEBUG_BLOCK
-    debug() << "artist:" << artist << "artistProviders:" << artistProviders;
+    debug() << "lowercasedArtist:" << lowercasedArtist << "providerArtists:" << providerArtists;
 #endif
     PerProviderTrackList providerTracks;
-    foreach( ProviderPtr provider, artistProviders )
+    foreach( ProviderPtr provider, providerArtists.uniqueKeys() )
     {
-        if( !artistProviders.contains( provider ) )
-            continue;  // optimisation: don't query providers without this artist
-        TrackList trackList = provider->artistTracks( artist );
+        TrackList trackList;
+        foreach( const QString &artist, providerArtists.values( provider ) )
+            trackList << provider->artistTracks( artist );
         if( trackList.isEmpty() )
             continue;  // don't add empty lists to providerTracks
         // the sorting is important and makes our matching algorithm work

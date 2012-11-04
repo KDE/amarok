@@ -109,6 +109,7 @@ CollectionProvider::artistTracks( const QString &artistName )
     m_queryMakerSemaphore.acquire(); // blocks until slotQueryDone() releases the semaphore
     TrackList ret = m_foundTracks;
     m_foundTracks.clear();  // don't waste memory
+    m_currentArtistName.clear();
 
     return ret;
 }
@@ -143,7 +144,8 @@ CollectionProvider::slotStartTrackSearch( QString artistName )
     Collections::QueryMaker *qm = m_coll.data()->queryMaker();
     qm->setAutoDelete( true );
     qm->setQueryType( Collections::QueryMaker::Track );
-    qm->addFilter( Meta::valArtist, artistName, true, true );
+    m_currentArtistName = artistName;
+    qm->addFilter( Meta::valArtist, m_currentArtistName, true, true );
     connect( qm, SIGNAL(newResultReady(Meta::TrackList)),
              SLOT(slotNewResultReady(Meta::TrackList)) );
     connect( qm, SIGNAL(queryDone()), SLOT(slotQueryDone()) );
@@ -155,7 +157,7 @@ CollectionProvider::slotNewResultReady( Meta::ArtistList list )
 {
     foreach( const Meta::ArtistPtr &artist, list )
     {
-        m_foundArtists.insert( artist->name().toLower() );
+        m_foundArtists.insert( artist->name() );
     }
 }
 
@@ -164,7 +166,12 @@ CollectionProvider::slotNewResultReady( Meta::TrackList list )
 {
     foreach( Meta::TrackPtr track, list )
     {
-        m_foundTracks.append( TrackPtr( new CollectionTrack( track ) ) );
+        Meta::ArtistPtr artistPtr = track->artist();
+        QString artist = artistPtr ? artistPtr->name() : QString();
+        // QueryMaker interface is case-insensitive and cannot be configured otherwise.
+        // StatSyncing::Provicer interface is case-sensitive, so we must filter here
+        if( artist == m_currentArtistName )
+            m_foundTracks.append( TrackPtr( new CollectionTrack( track ) ) );
     }
 }
 
