@@ -56,8 +56,9 @@ namespace StatSyncing
              * track length and refuse to scrobble the track.
              *
              * @param track track to scrobble; you may assume it is non-null
-             * @param playedFraction fraction which has been actually played, between 0
-             *                       and 1; the default is 1
+             * @param playedFraction fraction which has been actually played, or a number
+             *                       greater than 1 if the track was played multiple times
+             *                       (for example on a media device)
              * @param time time when it was played, invalid QDateTime signifies that the
              *             track has been played just now. This is the default when the
              *             parameter is omitted.

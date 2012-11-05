@@ -155,6 +155,8 @@ MatchTracksJob::matchTracksFromArtist( const QString &lowercasedArtist,
 #ifdef VERBOSE_DEBUG
     DEBUG_BLOCK
     debug() << "lowercasedArtist:" << lowercasedArtist << "providerArtists:" << providerArtists;
+#else
+    Q_UNUSED( lowercasedArtist )
 #endif
     PerProviderTrackList providerTracks;
     foreach( ProviderPtr provider, providerArtists.uniqueKeys() )

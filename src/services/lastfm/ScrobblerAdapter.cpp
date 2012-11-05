@@ -71,28 +71,39 @@ ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
                             const QDateTime &time )
 {
     Q_ASSERT( track );
-    if( track->length() * playedFraction < 30 * 1000 )
+    if( track->length() * qMin( 1.0, playedFraction ) < 30 * 1000 )
     {
         debug() << "scrobble(): refusing track" << track->prettyUrl() << "- played time ("
                 << track->length() / 1000 << "*" << playedFraction << "s) shorter than 30 s";
         return TooShort;
     }
-    if( playedFraction < 0.8 )
+    int playcount = qRound( playedFraction );
+    if( playcount <= 0 )
     {
         debug() << "scrobble(): refusing track" << track->prettyUrl() << "- played "
-                << "fraction (" << playedFraction * 100 << "%) less than 80 %";
+                << "fraction (" << playedFraction * 100 << "%) less than 50 %";
         return TooShort;
     }
 
     lastfm::MutableTrack lfmTrack;
     copyTrackMetadata( lfmTrack, track );
+    // since liblastfm >= 1.0.3 it interprets following extra property:
+    lfmTrack.setExtra( "playCount", QString::number( playcount ) );
     lfmTrack.setTimeStamp( time.isValid() ? time : QDateTime::currentDateTime() );
     debug() << "scrobble: " << lfmTrack.artist() << "-" << lfmTrack.album() << "-"
             << lfmTrack.title() << "source:" << lfmTrack.source() << "duration:"
             << lfmTrack.duration();
-    m_scrobbler.cache( lfmTrack );
-    m_scrobbler.submit();
-    return NoError;
+    m_scrobbler.cache( lfmTrack ); // automatically calls submit()
+    switch( lfmTrack.scrobbleStatus() )
+    {
+        case lastfm::Track::Cached:
+        case lastfm::Track::Submitted:
+            return NoError;
+        case lastfm::Track::Null:
+        case lastfm::Track::Error:
+            break;
+    }
+    return BadMetadata;
 }
 
 void
