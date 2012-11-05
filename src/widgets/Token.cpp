@@ -20,7 +20,6 @@
 
 #include "Token.h"
 #include "TokenDropTarget.h"
-#include "core/support/Debug.h"
 
 #include <KApplication>
 
@@ -188,7 +187,6 @@ void
 Token::focusInEvent( QFocusEvent* event )
 {
     QWidget::focusInEvent( event );
-    debug() << "focusInEvent for:"<<this;
     emit gotFocus( this );
 }
 

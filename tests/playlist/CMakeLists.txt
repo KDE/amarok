@@ -17,7 +17,7 @@ set( testplaylistmodels_SRCS
 	${AMAROK_SOURCE_TREE}/EngineController.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
         ${AMAROK_SOURCE_TREE}/core/capabilities/MultiSourceCapability.cpp
-	${AMAROK_SOURCE_TREE}/playlist/PlaylistColumnNames.cpp
+	${AMAROK_SOURCE_TREE}/playlist/PlaylistDefines.cpp
         ${AMAROK_SOURCE_TREE}/playlist/PlaylistModel.cpp
         ${AMAROK_SOURCE_TREE}/playlist/PlaylistModelStack.cpp
 	${AMAROK_SOURCE_TREE}/playlist/proxymodels/ProxyBase.cpp

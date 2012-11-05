@@ -132,7 +132,7 @@ void TestPlaylistModels::testSorting()
     //******************************//
     
     SortScheme scheme = SortScheme();
-    scheme.addLevel( SortLevel( internalColumnNames.indexOf( "Title" ), Qt::AscendingOrder ) );
+    scheme.addLevel( SortLevel( Playlist::Title, Qt::AscendingOrder ) );
     ModelStack::instance()->sortProxy()->updateSortMap( scheme );
     
     AbstractModel * topModel = The::playlist();
@@ -150,9 +150,9 @@ void TestPlaylistModels::testSorting()
     
     SortScheme scheme2 = SortScheme();
 
-    scheme2.addLevel( SortLevel( internalColumnNames.indexOf( "Artist" ), Qt::AscendingOrder ) );
-    scheme2.addLevel( SortLevel( internalColumnNames.indexOf( "Album" ), Qt::AscendingOrder ) );
-    scheme2.addLevel( SortLevel( internalColumnNames.indexOf( "Title" ), Qt::AscendingOrder ) );
+    scheme2.addLevel( SortLevel( Playlist::Artist, Qt::AscendingOrder ) );
+    scheme2.addLevel( SortLevel( Playlist::Album, Qt::AscendingOrder ) );
+    scheme2.addLevel( SortLevel( Playlist::Title, Qt::AscendingOrder ) );
     
     QCOMPARE( scheme2.length(), 3 );
     
@@ -173,9 +173,9 @@ void TestPlaylistModels::testSorting()
 
     SortScheme scheme3 = SortScheme();
 
-    scheme3.addLevel( SortLevel( internalColumnNames.indexOf( "Artist" ), Qt::AscendingOrder ) );
-    scheme3.addLevel( SortLevel( internalColumnNames.indexOf( "Album" ), Qt::DescendingOrder ) );
-    scheme3.addLevel( SortLevel( internalColumnNames.indexOf( "Title" ), Qt::AscendingOrder ) );
+    scheme3.addLevel( SortLevel( Playlist::Artist, Qt::AscendingOrder ) );
+    scheme3.addLevel( SortLevel( Playlist::Album, Qt::DescendingOrder ) );
+    scheme3.addLevel( SortLevel( Playlist::Title, Qt::AscendingOrder ) );
 
     ModelStack::instance()->sortProxy()->updateSortMap( scheme3 );
     topModel->qaim()->revert();

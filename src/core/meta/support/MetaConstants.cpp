@@ -173,8 +173,8 @@ QString Meta::i18nForField( qint64 field )
     case 0:                    return i18nc("The field name in case nothing specific is selected e.g. in the automatic playlist generator", "anything");
     case Meta::valUrl:         return i18nc( "The name of the file this track is stored in", "File Name" );
     case Meta::valTitle:       return i18n("Title");
-    case Meta::valArtist:      return i18n("Artist Name");
-    case Meta::valAlbum:       return i18n("Album Name");
+    case Meta::valArtist:      return i18n("Artist");
+    case Meta::valAlbum:       return i18n("Album");
     case Meta::valGenre:       return i18n("Genre");
     case Meta::valComposer:    return i18n("Composer");
     case Meta::valYear:        return i18n("Year");
@@ -200,7 +200,7 @@ QString Meta::i18nForField( qint64 field )
     case Meta::valAlbumGain:   return i18n("Album Gain");
     case Meta::valAlbumGainPeak:   return i18n("Album Gain Peak");
 
-    case Meta::valAlbumArtist: return i18n("Album Artist Name");
+    case Meta::valAlbumArtist: return i18n("Album Artist");
     case Meta::valLabel:       return i18n("Label");
     case Meta::valModified:    return i18n("Last Modified");
     default:                   return QString();
@@ -336,12 +336,12 @@ QString Meta::iconForField( qint64 field )
     {
     case Meta::valUrl: return "filename-space-amarok";
     case Meta::valTitle: return "filename-title-amarok";
-    case Meta::valArtist:
+    case Meta::valArtist: return "filename-artist-amarok";
     case Meta::valAlbumArtist: return "filename-artist-amarok";
     case Meta::valAlbum: return "filename-album-amarok";
     case Meta::valGenre: return "filename-genre-amarok";
     case Meta::valComposer: return "filename-composer-amarok";
-    case Meta::valYear:
+    case Meta::valYear: return "filename-year-amarok";
     case Meta::valModified:
     case Meta::valCreateDate: return "filename-year-amarok";
     case Meta::valComment:
@@ -349,7 +349,7 @@ QString Meta::iconForField( qint64 field )
     case Meta::valTrackNr: return "filename-track-amarok";
     case Meta::valDiscNr: return "filename-discnumber-amarok";
     case Meta::valBpm: return "filename-bpm-amarok";
-    case Meta::valLength: return "filename-group-length";
+    case Meta::valLength: return "chronometer";
     case Meta::valBitrate: return "audio-x-generic";
     case Meta::valSamplerate: return "filename-sample-rate";
     case Meta::valFormat: return "filename-filetype-amarok";

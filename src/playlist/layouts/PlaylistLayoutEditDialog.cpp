@@ -22,7 +22,6 @@
 
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/PlaylistDefines.h"
-#include "playlist/PlaylistColumnNames.h"
 
 #include <KMessageBox>
 
@@ -35,7 +34,7 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     setupUi( this );
 
     // -- add tokens to the token pool
-    qint64 tokenValues[] = {
+    Column tokenValues[] = {
         Album,
         AlbumArtist,
         Artist,
@@ -68,7 +67,9 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
         Year };
 
     for( uint i = 0; i < sizeof( tokenValues ) / sizeof( tokenValues[0] ); i++ )
-        tokenPool->addToken( new Token( columnNames( tokenValues[i] ), iconNames[tokenValues[i]], tokenValues[i] ) );
+        tokenPool->addToken( new Token( columnName( tokenValues[i] ),
+                                        iconName( tokenValues[i] ),
+                                        static_cast<qint64>(tokenValues[i]) ) );
 
     m_firstActiveLayout = LayoutManager::instance()->activeLayoutName();
 
@@ -295,6 +296,7 @@ Playlist::PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //S
         inlineControlsChekbox->setChecked( layout.inlineControls() );
         tooltipsCheckbox->setChecked( layout.tooltips() );
         groupByComboBox->setCurrentIndex( groupByComboBox->findData( layout.groupBy() ) );
+
         setEnabledTabs();
         //make sure that it is not marked dirty (it will be because of the changed signal triggereing when loagin it)
         //unless it is actually changed
@@ -493,11 +495,11 @@ Playlist::PlaylistLayoutEditDialog::setEnabledTabs()
 void
 Playlist::PlaylistLayoutEditDialog::setupGroupByCombo()
 {
-    foreach ( const QString &it, Playlist::groupableCategories )
+    foreach( Playlist::Column col, Playlist::groupableCategories() )
     {
-        QString prettyCategoryName = columnNames( internalColumnNames.indexOf( it ) );
-        QString iconName = iconNames.at( internalColumnNames.indexOf( it ) );
-        groupByComboBox->addItem( KIcon( iconName ), prettyCategoryName, QVariant( it ) );
+        groupByComboBox->addItem( KIcon( iconName( col ) ),
+                                  columnName( col ),
+                                  QVariant( internalColumnName( col ) ) );
     }
 
     //Add the option to not perform grouping

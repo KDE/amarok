@@ -26,6 +26,7 @@
 #include "MetaValues.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core/meta/support/MetaConstants.h"
 
 #include <KInputDialog>
 #include <KLineEdit>
@@ -62,6 +63,7 @@ static const QStringList typeElements = ( QStringList()
 << QLatin1String("-")
 << QLatin1String("_") );
 
+using namespace Meta;
 
 // ------------------------- FilenameLayoutWidget -------------------
 
@@ -173,26 +175,26 @@ FilenameLayoutWidget::createToken(qint64 value) const
     struct TokenDefinition
     {
         QString name;
-        const char* iconName;
-        qint64 value;
+        QString iconName;
+        Type    value;
     };
 
     static const TokenDefinition tokenDefinitions[] = {
-        { i18n( "Track number" ),"filename-track-amarok", TrackNumber },
-        { i18n( "Title" ), "filename-title-amarok", Title },
-        { i18n( "Artist" ), "filename-artist-amarok", Artist },
-        { i18n( "Composer" ), "filename-composer-amarok", Composer },
-        { i18n( "Year" ), "filename-year-amarok", Year },
-        { i18n( "Album" ), "filename-album-amarok", Album },
-        { i18n( "Album Artist" ), "filename-artist-amarok", AlbumArtist },
-        { i18n( "Comment" ), "filename-comment-amarok", Comment },
-        { i18n( "Genre" ), "filename-genre-amarok", Genre },
+        { i18nForField( valTrackNr ),     iconForField( valTrackNr ),     TrackNumber },
+        { i18nForField( valDiscNr ),      iconForField( valDiscNr ),      DiscNumber },
+        { i18nForField( valTitle ),       iconForField( valTitle ),       Title },
+        { i18nForField( valArtist ),      iconForField( valArtist ),      Artist },
+        { i18nForField( valComposer ),    iconForField( valComposer ),    Composer },
+        { i18nForField( valYear ),        iconForField( valYear ),        Year },
+        { i18nForField( valAlbum ),       iconForField( valAlbum ),       Album },
+        { i18nForField( valAlbumArtist ), iconForField( valAlbumArtist ), AlbumArtist },
+        { i18nForField( valComment ),     iconForField( valComment ),     Comment },
+        { i18nForField( valGenre ),       iconForField( valGenre ),       Genre },
+        { i18nForField( valFormat ),      iconForField( valFormat ),      FileType },
 
-        { i18n( "File type" ), "filename-filetype-amarok", FileType },
         { i18n( "Ignore" ), "filename-ignore-amarok", Ignore },
         { i18n( "Folder" ), "filename-folder-amarok", Folder },
         { i18nc( "Artist's Initial", "Initial" ), "filename-initial-amarok", Initial },
-        { i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber },
 
         { "/", "filename-slash-amarok", Slash },
         { "_", "filename-underscore-amarok", Underscore },
@@ -209,7 +211,7 @@ FilenameLayoutWidget::createToken(qint64 value) const
         {
             return new Token( tokenDefinitions[i].name,
                               tokenDefinitions[i].iconName,
-                              tokenDefinitions[i].value );
+                              static_cast<qint64>(tokenDefinitions[i].value) );
         }
     }
 

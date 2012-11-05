@@ -23,6 +23,7 @@
 #include "PlaylistSortWidget.h"
 #include "ProgressiveSearchWidget.h"
 
+#include <KLocale>
 #include <KStandardDirs>
 
 namespace Playlist

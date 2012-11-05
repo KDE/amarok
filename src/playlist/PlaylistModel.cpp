@@ -38,7 +38,7 @@
 #include "core/collections/Collection.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
-#include "PlaylistColumnNames.h"
+#include "PlaylistDefines.h"
 #include "PlaylistActions.h"
 #include "PlaylistController.h"
 #include "PlaylistItem.h"
@@ -132,7 +132,7 @@ HTMLLine( const Playlist::Column& column, const QString& value, bool force = fal
     {
         QString line;
         line += "<tr><td align=\"right\">";
-        line += "<img src=\""+KIconLoader::global()->iconPath( Playlist::iconNames[column] , -16)+"\" />";
+        line += "<img src=\""+KIconLoader::global()->iconPath( Playlist::iconName( column ), -16)+"\" />";
         line += "</td><td align=\"left\">";
         line += breakLongLinesHTML( value );
         line += "</td></tr>";
@@ -220,7 +220,7 @@ Playlist::Model::headerData( int section, Qt::Orientation orientation, int role 
     if ( role != Qt::DisplayRole )
         return QVariant();
 
-    return columnNames( section );
+    return columnName( static_cast<Playlist::Column>( section ) );
 }
 
 void

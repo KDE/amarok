@@ -17,7 +17,8 @@
 #include "PlaylistBreadcrumbLevel.h"
 
 #include "PlaylistDefines.h"
-#include "PlaylistColumnNames.h"
+
+#include <KLocale>
 
 namespace Playlist
 {
@@ -25,27 +26,28 @@ namespace Playlist
 BreadcrumbLevel::BreadcrumbLevel( QString internalColumnName )
     : m_name( internalColumnName )
 {
-    if( m_name == "Shuffle" )
+    Column col = columnForName( internalColumnName );
+
+    if( col == Shuffle )
     {
         m_icon = KIcon( "media-playlist-shuffle" );
         m_prettyName = i18n( "Shuffle" );
     }
     else
     {
-        m_icon = KIcon( iconNames.at( internalColumnNames.indexOf( internalColumnName ) ) );
-        m_prettyName = columnNames( internalColumnNames.indexOf( internalColumnName ) );
+        m_icon = KIcon( iconName( col ) );
+        m_prettyName = columnName( col );
     }
 
     for( int i = 0; i < NUM_COLUMNS; ++i )  //might be faster if it used a const_iterator
     {
-        QString currentInternalColumnName = internalColumnNames.at( i );
-        if( !sortableCategories.contains( currentInternalColumnName ) ||
-            m_name == currentInternalColumnName )
+        Column currentCol = static_cast<Column>(i);
+        if( !isSortableColumn( currentCol ) || currentCol == col )
             continue;
-        m_siblings.insert( currentInternalColumnName,
-                           QPair< KIcon, QString>( KIcon( iconNames.at( i ) ), columnNames( i ) ) );
+        m_siblings.insert( Playlist::internalColumnName( currentCol ),
+                           QPair< KIcon, QString>( KIcon( iconName( currentCol ) ), columnName( currentCol ) ) );
     }
-    if( m_name != "Shuffle" )
+    if( col != Shuffle )
         m_siblings.insert( "Shuffle", QPair< KIcon, QString>( KIcon( "media-playlist-shuffle" ), i18n("Shuffle" ) ) );
 }
 

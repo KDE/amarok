@@ -11,7 +11,7 @@ include_directories( .
 set( testplaylistfileprovider_SRCS
      TestPlaylistFileProvider.cpp
      ${AMAROK_SOURCE_TREE}/playlistmanager/file/PlaylistFileProvider.cpp
-     ${AMAROK_SOURCE_TREE}/playlist/PlaylistColumnNames.cpp
+     ${AMAROK_SOURCE_TREE}/playlist/PlaylistDefines.cpp
      ${AMAROK_SOURCE_TREE}/playlist/PlaylistModelStack.cpp
      ${AMAROK_SOURCE_TREE}/playlist/proxymodels/GroupingProxy.cpp
      ${AMAROK_SOURCE_TREE}/playlist/proxymodels/ProxyBase.cpp

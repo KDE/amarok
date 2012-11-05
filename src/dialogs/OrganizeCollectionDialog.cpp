@@ -64,17 +64,17 @@ OrganizeCollectionWidget::OrganizeCollectionWidget( QWidget *parent )
     // folder theartist thealbumartist rating filesize length
     m_tokenPool->addToken( createToken( Title ) );
     m_tokenPool->addToken( createToken( Artist ) );
-    m_tokenPool->addToken( createToken( Composer ) );
-    m_tokenPool->addToken( createToken( TrackNumber ) );
-    m_tokenPool->addToken( createToken( Year ) );
-    m_tokenPool->addToken( createToken( Album ) );
     m_tokenPool->addToken( createToken( AlbumArtist ) );
-    m_tokenPool->addToken( createToken( Comment ) );
+    m_tokenPool->addToken( createToken( Album ) );
     m_tokenPool->addToken( createToken( Genre ) );
-
-    m_tokenPool->addToken( createToken( Initial ) );
-    m_tokenPool->addToken( createToken( FileType ) );
+    m_tokenPool->addToken( createToken( Composer ) );
+    m_tokenPool->addToken( createToken( Comment ) );
+    m_tokenPool->addToken( createToken( Year ) );
+    m_tokenPool->addToken( createToken( TrackNumber ) );
     m_tokenPool->addToken( createToken( DiscNumber ) );
+
+    m_tokenPool->addToken( createToken( FileType ) );
+    m_tokenPool->addToken( createToken( Initial ) );
 
     m_tokenPool->addToken( createToken( Slash ) );
     m_tokenPool->addToken( createToken( Underscore ) );
