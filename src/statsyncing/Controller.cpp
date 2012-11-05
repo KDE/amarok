@@ -39,6 +39,8 @@ Controller::Controller( QObject* parent )
     , m_config( new Config( this ) )
     , m_updateNowPlayingTimer( new QTimer( this ) )
 {
+    qRegisterMetaType<ScrobblingServicePtr>();
+
     m_startSyncingTimer->setSingleShot( true );
     connect( m_startSyncingTimer, SIGNAL(timeout()), SLOT(startNonInteractiveSynchronization()) );
     CollectionManager *manager = CollectionManager::instance();
@@ -166,6 +168,19 @@ Controller::synchronize()
 }
 
 void
+Controller::scrobble( const Meta::TrackPtr &track, double playedFraction, const QDateTime &time )
+{
+    foreach( ScrobblingServicePtr service, m_scrobblingServices )
+    {
+        ScrobblingService::ScrobbleError error = service->scrobble( track, playedFraction, time );
+        if( error == ScrobblingService::NoError )
+            emit trackScrobbled( service, track );
+        else
+            emit scrobbleFailed( service, track, error );
+    }
+}
+
+void
 Controller::slotProviderUpdated()
 {
     QObject *updatedProvider = sender();
@@ -278,15 +293,6 @@ Controller::slotTrackFinishedPlaying( const Meta::TrackPtr &track, double played
         return;
     Q_ASSERT( track );
     scrobble( track, playedFraction );
-}
-
-void
-Controller::scrobble( const Meta::TrackPtr &track, double playedFraction, const QDateTime &time )
-{
-    foreach( ScrobblingServicePtr service, m_scrobblingServices )
-    {
-        service->scrobble( track, playedFraction, time );
-    }
 }
 
 void

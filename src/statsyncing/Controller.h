@@ -92,6 +92,36 @@ namespace StatSyncing
              */
             void synchronize();
 
+            /**
+             * Scrobble a track using all registered scrobbling services. They may check
+             * certain criteria such as track length and refuse to scrobble the track.
+             *
+             * @param track track to scrobble
+             * @param playedFraction fraction which has been actually played, or a number
+             *                       greater than 1 if the track was played multiple times
+             *                       (for example on a media device)
+             * @param time time when it was played, invalid QDateTime signifies that the
+             *             track has been played just now. This is the default when the
+             *             parameter is omitted.
+             */
+            void scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
+                           const QDateTime &time = QDateTime() );
+
+        signals:
+            /**
+             * Emitted when a track passed to scrobble() is succesfully queued for
+             * scrobbling submission. This signal is emitted for every scrobbling service.
+             * For each service, you either get this or scrobbleFailed().
+             */
+            void trackScrobbled( const ScrobblingServicePtr &service, const Meta::TrackPtr &track );
+
+            /**
+             * Emitted when a scrobbling service @service was unable to scrobble() a track.
+             *
+             * @param error is a ScrobblingService::ScrobbleError enum value.
+             */
+            void scrobbleFailed( const ScrobblingServicePtr &service, const Meta::TrackPtr &track, int error );
+
         private slots:
             /**
              * Can only be connected to provider changed() signal
@@ -110,8 +140,6 @@ namespace StatSyncing
             void synchronize( int mode );
 
             void slotTrackFinishedPlaying( const Meta::TrackPtr &track, double playedFraction );
-            void scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
-                           const QDateTime &time = QDateTime() );
             void slotResetLastSubmittedNowPlayingTrack();
             void slotUpdateNowPlayingWithCurrentTrack();
 

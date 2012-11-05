@@ -20,6 +20,7 @@
 #include "amarok_export.h"
 
 #include <QDateTime>
+#include <QMetaType>
 
 template<class T> class KSharedPtr;
 namespace Meta {
@@ -80,5 +81,7 @@ namespace StatSyncing
 
     typedef QExplicitlySharedDataPointer<ScrobblingService> ScrobblingServicePtr;
 }
+
+Q_DECLARE_METATYPE( StatSyncing::ScrobblingServicePtr )
 
 #endif // STATSYNCING_SCROBBLINGSERVICE_H
