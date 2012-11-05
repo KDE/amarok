@@ -15,14 +15,16 @@
  ****************************************************************************************/
 
 #include "SortScheme.h"
-#include "playlist/PlaylistColumnNames.h"
+#include "playlist/PlaylistDefines.h"
 
 #include "core/support/Debug.h"
+
+#include <KLocale>
 
 namespace Playlist
 {
 
-SortLevel::SortLevel( int sortCategory, Qt::SortOrder sortOrder )
+SortLevel::SortLevel( Column sortCategory, Qt::SortOrder sortOrder )
     : m_category( sortCategory )
     , m_order( sortOrder )
 {
@@ -32,7 +34,7 @@ SortLevel::SortLevel( int sortCategory, Qt::SortOrder sortOrder )
         debug() << "Error:   Playlist::SortLevel: column number overflow.";
 }
 
-int
+Column
 SortLevel::category() const
 {
     return m_category;
@@ -45,7 +47,7 @@ SortLevel::order() const
 }
 
 void
-SortLevel::setCategory(int sortCategory)
+SortLevel::setCategory(Column sortCategory)
 {
     m_category = sortCategory;
 }
@@ -59,15 +61,13 @@ SortLevel::setOrder( Qt::SortOrder sortOrder )
 bool
 SortLevel::isComparable() const
 {
-    if( sortableCategories.contains( internalColumnNames.at( category() ) ) )
-        return true;
-    return false;
+    return isSortableColumn( category() );
 }
 
 bool
 SortLevel::isString() const
 {
-    QList< int > strCategories;
+    QList< Column > strCategories;
     strCategories << Album << AlbumArtist << Artist << Comment << Composer << Directory << Filename
         << Genre << LastPlayed << Source << Title << Year;
     if( isComparable() && strCategories.contains( category() ) )
@@ -78,9 +78,9 @@ SortLevel::isString() const
 bool
 SortLevel::isFloat() const
 {
-    QList< int > strCategories;
-    strCategories << Bpm;
-    if( isComparable() && strCategories.contains( category() ) )
+    QList< Column > floatCategories;
+    floatCategories << Bpm;
+    if( isComparable() && floatCategories.contains( category() ) )
         return true;
     return false;
 }
@@ -90,7 +90,7 @@ SortLevel::prettyName() const
 {
     if( m_category == -1 )
         return i18n( "Shuffle" );
-    return columnNames( m_category );
+    return columnName( m_category );
 }
 
 // BEGIN SortScheme

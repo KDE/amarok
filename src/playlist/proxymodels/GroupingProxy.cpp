@@ -88,7 +88,7 @@ void
 Playlist::GroupingProxy::setGroupingCategory( const QString &groupingCategory )
 {
     m_groupingCategory = groupingCategory;
-    m_groupingCategoryIndex = groupableCategories.indexOf( m_groupingCategory );    // May be -1
+    m_groupingCategoryIndex = groupableCategories().indexOf( columnForName( m_groupingCategory ) );    // May be -1
 
     invalidateGrouping();
 

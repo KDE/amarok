@@ -229,7 +229,7 @@ void InlineEditorWidget::createChildWidgets()
 
                 //check if this is a column that is editable. If not, make the
                 //line edit read only.
-                if ( !editableColumns.contains( value ) )
+                if( !isEditableColumn( static_cast<Playlist::Column>(value) ) )
                 {
                     edit->setReadOnly( true );
                     edit->setDisabled( true );

@@ -33,17 +33,17 @@ namespace Playlist
 class SortLevel
 {
     public:
-        explicit SortLevel( int sortCategory = PlaceHolder, Qt::SortOrder sortOrder = Qt::AscendingOrder );
-        int category() const;
+        explicit SortLevel( Column sortCategory = PlaceHolder, Qt::SortOrder sortOrder = Qt::AscendingOrder );
+        Column category() const;
         Qt::SortOrder order() const;
-        void setCategory( int sortCategory );
+        void setCategory( Column sortCategory );
         void setOrder( Qt::SortOrder sortOrder );
         bool isComparable() const;
         bool isString() const;
         bool isFloat() const;
         QString prettyName() const;
     private:
-        int m_category;     //Column from PlaylistDefines.h
+        Column m_category;     //Column from PlaylistDefines.h
         Qt::SortOrder m_order;
 };
 

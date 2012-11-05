@@ -20,7 +20,6 @@
 
 #include "Token.h"
 #include "TokenDropTarget.h"
-#include "core/support/Debug.h"
 
 #include <KApplication>
 
@@ -159,10 +158,7 @@ QSize
 Token::sizeHint() const
 {
     QSize result = QWidget::sizeHint();
-    debug() << "widget min size hint:" << result;
-
     result += QSize( 6, 6 ); // the border
-    result.expandedTo( QSize( 60, 16 ) ); // we need at least space for the "empty" text.
 
     return result;
 }
@@ -171,10 +167,7 @@ QSize
 Token::minimumSizeHint() const
 {
     QSize result = QWidget::minimumSizeHint();
-    debug() << "widget min size hint:" << result;
-
     result += QSize( 6, 6 ); // the border
-    result.expandedTo( QSize( 60, 16 ) ); // we need at least space for the "empty" text.
 
     return result;
 }
@@ -191,7 +184,6 @@ void
 Token::focusInEvent( QFocusEvent* event )
 {
     QWidget::focusInEvent( event );
-    debug() << "focusInEvent for:"<<this;
     emit gotFocus( this );
 }
 

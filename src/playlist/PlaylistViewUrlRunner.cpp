@@ -25,6 +25,7 @@
 #include "playlist/ProgressiveSearchWidget.h"
 
 #include <KStandardDirs>
+#include <KLocale>
 
 #include <QList>
 #include <QStringList>

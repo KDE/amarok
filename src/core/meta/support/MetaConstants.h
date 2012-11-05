@@ -25,8 +25,6 @@
 
 namespace Meta
 {
-
-
     /** Returns a textual identification for the given field.
         This name can be used e.g. for identifying the field in a xml file.
      */

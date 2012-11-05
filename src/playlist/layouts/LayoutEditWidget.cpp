@@ -17,10 +17,10 @@
 #include "LayoutEditWidget.h"
 
 #include "core/support/Debug.h"
-#include "playlist/PlaylistColumnNames.h"
 #include "playlist/PlaylistDefines.h"
 #include "widgets/TokenDropTarget.h"
 
+#include <KLocale>
 #include <KMessageBox>
 
 #include <QBoxLayout>
@@ -88,7 +88,10 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
 
             }
 
-            TokenWithLayout *token =  new TokenWithLayout( columnNames( element.value() ), iconNames[element.value()], element.value() );
+            Column col = static_cast<Column>(element.value());
+            TokenWithLayout *token =  new TokenWithLayout( columnName( col ),
+                                                           iconName( col ),
+                                                           element.value() );
             token->setBold( element.bold() );
             token->setItalic( element.italic() );
             token->setUnderline( element.underline() );
