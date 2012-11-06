@@ -564,6 +564,7 @@ Controller::handleLoginResponse( const QVariantMap& map )
 {
     bool success = map["success"].toBool();
     QString user = map["username"].toString();
+    QString message = map["message"].toString();
     if( success )
     {
         showMessage( i18n( "Logged in to Spotify as %1" ).arg( user ) );
@@ -572,7 +573,7 @@ Controller::handleLoginResponse( const QVariantMap& map )
     else
     {
         showMessage( i18n( "Spotify login failed" ) );
-        emit loginFailed();
+        emit loginFailed( message );
     }
 
     m_loggedIn = success;
@@ -607,7 +608,7 @@ Controller::handleUserchanged( const QVariantMap& map )
 void
 Controller::handleSpotifyError( const QVariantMap& map )
 {
-    Q_UNUSED( map )
+    emit customMessage("SpotifyError", map);
 }
 
 void
