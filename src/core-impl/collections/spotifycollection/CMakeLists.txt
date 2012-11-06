@@ -12,12 +12,16 @@ set( amarok_collection-spotifycollection_PART_SRCS
      SpotifyMeta.cpp
      SpotifyConfig.cpp
      SpotifySettings.cpp
+     SpotifyDownloadDialog.cpp
      support/TrackProxy.cpp
      support/Query.cpp
      support/Controller.cpp )
 
 kde4_add_ui_files( amarok_collection-spotifycollection_PART_SRCS
-    SpotifyConfigWidget.ui )
+    SpotifyConfigWidget.ui
+    SpotifyDownloadDialog.ui
+)
+
 kde4_add_plugin(amarok_collection-spotifycollection ${amarok_collection-spotifycollection_PART_SRCS})
 #kde4_add_library(amarok_collection-spotifycollection SHARED ${amarok_collection-spotifycollection_PART_SRCS})
 
