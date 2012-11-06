@@ -181,6 +181,7 @@ SpotifySettings::tryDownloadResolver()
     connect( reply, SIGNAL( finished() ),
             this, SLOT( slotDownloadFinished() ) );
 
+    //TODO: move the progress bar to the dialog requesting download
     // Show progress bar
     m_configWidget->progDownload->setMinimum( 0 );
     m_configWidget->progDownload->setMaximum( 1000 );

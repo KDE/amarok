@@ -467,6 +467,7 @@ Controller::startProcess()
     m_proc.setProcessEnvironment( m_procEnv );
     m_proc.start( runPath );
 
+    debug() << "spotify-resolver process started with PID: " << m_proc.pid();
     m_loaded = true;
 
     sendConfig();
