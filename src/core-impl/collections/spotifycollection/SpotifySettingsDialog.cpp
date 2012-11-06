@@ -15,9 +15,10 @@
  ****************************************************************************************/
 #define DEBUG_PREFIX "SpotifySettings"
 
-#include "SpotifySettings.h"
+#include "SpotifySettingsDialog.h"
 
-#include "ui_SpotifyConfigWidget.h"
+#include "ui_SpotifySettingsWidget.h"
+#include "ui_SpotifyDownloadDialog.h"
 
 #include "core/support/Debug.h"
 #include "network/NetworkAccessManagerProxy.h"
@@ -32,7 +33,7 @@
 #include <QScopedPointer>
 #include <QtGlobal>
 
-SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
+SpotifySettingsDialog::SpotifySettingsDialog( QWidget* parent, const QVariantList& args )
 : KDialog( parent )
 , m_downloadReply( 0 )
 {
@@ -46,12 +47,9 @@ SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
     setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply | KDialog::Default );
     enableButtonApply( false );
 
-    QWidget* w = new QWidget;
-    m_configWidget = new Ui::SpotifyConfigWidget;
-    m_configWidget->setupUi( w );
-
-    m_configWidget->progDownload->hide();
-
+    QWidget *w = new QWidget(this);
+    m_settingsWidget = new Ui::SpotifySettingsWidget;
+    m_settingsWidget->setupUi( w );
     setMainWidget( w );
 
     connect( this, SIGNAL( okClicked() ),
@@ -63,11 +61,11 @@ SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
     connect( this, SIGNAL( defaultClicked() ),
             this, SLOT( defaults() ) );
 
-    connect( m_configWidget->lineUsername, SIGNAL( textChanged( const QString& ) ),
+    connect( m_settingsWidget->lineUsername, SIGNAL( textChanged( const QString& ) ),
             this, SLOT( slotSettingsChanged() ) );
-    connect( m_configWidget->linePassword, SIGNAL( textChanged( const QString& ) ),
+    connect( m_settingsWidget->linePassword, SIGNAL( textChanged( const QString& ) ),
             this, SLOT( slotSettingsChanged() ) );
-    connect( m_configWidget->checkHighQuality, SIGNAL( clicked() ),
+    connect( m_settingsWidget->checkHighQuality, SIGNAL( clicked() ),
             this, SLOT( slotSettingsChanged() ) );
 
     connect( this, SIGNAL( changed( bool ) ), this, SLOT( enableButtonApply( bool ) ) );
@@ -105,42 +103,42 @@ SpotifySettings::SpotifySettings( QWidget* parent, const QVariantList& args )
     }
 }
 
-SpotifySettings::~SpotifySettings()
+SpotifySettingsDialog::~SpotifySettingsDialog()
 {
-    delete m_configWidget;
+    delete m_settingsWidget;
 }
 
 void
-SpotifySettings::load()
+SpotifySettingsDialog::load()
 {
     DEBUG_BLOCK
     m_config.load();
-    m_configWidget->lineUsername->setText( m_config.username() );
-    m_configWidget->linePassword->setText( m_config.password() );
-    m_configWidget->checkHighQuality->setChecked( m_config.highQuality() );
+    m_settingsWidget->lineUsername->setText( m_config.username() );
+    m_settingsWidget->linePassword->setText( m_config.password() );
+    m_settingsWidget->checkHighQuality->setChecked( m_config.highQuality() );
 }
 
 void
-SpotifySettings::save()
+SpotifySettingsDialog::save()
 {
     DEBUG_BLOCK
-    m_config.setUsername( m_configWidget->lineUsername->text() );
-    m_config.setPassword( m_configWidget->linePassword->text() );
-    m_config.setHighQuality( m_configWidget->checkHighQuality->isChecked() );
+    m_config.setUsername( m_settingsWidget->lineUsername->text() );
+    m_config.setPassword( m_settingsWidget->linePassword->text() );
+    m_config.setHighQuality( m_settingsWidget->checkHighQuality->isChecked() );
     m_config.save();
 }
 
 void
-SpotifySettings::defaults()
+SpotifySettingsDialog::defaults()
 {
     m_config.reset();
-    m_configWidget->lineUsername->setText( m_config.username() );
-    m_configWidget->linePassword->setText( m_config.password() );
-    m_configWidget->checkHighQuality->setChecked( m_config.highQuality() );
+    m_settingsWidget->lineUsername->setText( m_config.username() );
+    m_settingsWidget->linePassword->setText( m_config.password() );
+    m_settingsWidget->checkHighQuality->setChecked( m_config.highQuality() );
 }
 
 void
-SpotifySettings::slotTryLogin()
+SpotifySettingsDialog::slotTryLogin()
 {
     DEBUG_BLOCK
     Spotify::Controller* controller = The::SpotifyController();
@@ -153,14 +151,14 @@ SpotifySettings::slotTryLogin()
         controller->start();
     }
 
-    controller->login( m_configWidget->lineUsername->text(),
-                       m_configWidget->linePassword->text(),
-                       m_configWidget->checkHighQuality->isChecked() );
+    controller->login( m_settingsWidget->lineUsername->text(),
+                       m_settingsWidget->linePassword->text(),
+                       m_settingsWidget->checkHighQuality->isChecked() );
     save();
 }
 
 void
-SpotifySettings::tryDownloadResolver()
+SpotifySettingsDialog::tryDownloadResolver()
 {
     DEBUG_BLOCK
 
@@ -181,16 +179,11 @@ SpotifySettings::tryDownloadResolver()
     connect( reply, SIGNAL( finished() ),
             this, SLOT( slotDownloadFinished() ) );
 
-    //TODO: move the progress bar to the dialog requesting download
-    // Show progress bar
-    m_configWidget->progDownload->setMinimum( 0 );
-    m_configWidget->progDownload->setMaximum( 1000 );
-    m_configWidget->progDownload->setValue( 0 );
-    m_configWidget->progDownload->show();
-
-    // Hide settings
-    m_configWidget->frameMain->hide();
-    m_configWidget->lblNote->hide();
+    //set-up progress bar
+    m_downloadDialog->progDownload->setMinimum( 0 );
+    m_downloadDialog->progDownload->setMaximum( 1000 );
+    m_downloadDialog->progDownload->setValue( 0 );
+    m_downloadDialog->progDownload->show();
 
     enableButtonApply( false );
     enableButtonOk( false );
@@ -198,7 +191,7 @@ SpotifySettings::tryDownloadResolver()
 }
 
 void
-SpotifySettings::slotDownloadError( QNetworkReply::NetworkError error )
+SpotifySettingsDialog::slotDownloadError( QNetworkReply::NetworkError error )
 {
     Q_UNUSED( error )
 
@@ -208,15 +201,15 @@ SpotifySettings::slotDownloadError( QNetworkReply::NetworkError error )
 }
 
 void
-SpotifySettings::slotDownloadProgress( qint64 current, qint64 total )
+SpotifySettingsDialog::slotDownloadProgress( qint64 current, qint64 total )
 {
-    int value = (double)current/total * m_configWidget->progDownload->maximum();
+    int value = (double)current/total * m_downloadDialog->progDownload->maximum();
 
-    m_configWidget->progDownload->setValue( value );
+    m_downloadDialog->progDownload->setValue( value );
 }
 
 void
-SpotifySettings::slotDownloadFinished()
+SpotifySettingsDialog::slotDownloadFinished()
 {
     DEBUG_BLOCK
 
@@ -234,7 +227,7 @@ SpotifySettings::slotDownloadFinished()
 
     debug() << "Download finished.";
 
-    m_configWidget->progDownload->hide();
+    m_downloadDialog->progDownload->hide();
 
     QByteArray data( m_downloadReply->readAll() );
     QScopedPointer<QBuffer> data_buffer(new QBuffer(&data));
@@ -266,9 +259,9 @@ SpotifySettings::slotDownloadFinished()
     controller->reload();
 
     // Restore widgets
-    m_configWidget->progDownload->hide();
-    m_configWidget->frameMain->show();
-    m_configWidget->lblNote->show();
+    m_downloadDialog->progDownload->hide();
+    m_settingsWidget->frameMain->show();
+    m_settingsWidget->lblNote->show();
 
     enableButtonOk( true );
     enableButton( Default, true );
@@ -277,13 +270,13 @@ SpotifySettings::slotDownloadFinished()
 }
 
 void
-SpotifySettings::slotSettingsChanged()
+SpotifySettingsDialog::slotSettingsChanged()
 {
     emit changed( true );
 }
 
 void
-SpotifySettings::slotCancel()
+SpotifySettingsDialog::slotCancel()
 {
     close();
 
@@ -292,5 +285,3 @@ SpotifySettings::slotCancel()
 
     deleteLater();
 }
-
-#include "SpotifySettings.moc"

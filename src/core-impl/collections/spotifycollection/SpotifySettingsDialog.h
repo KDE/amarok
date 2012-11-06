@@ -22,15 +22,18 @@
 
 #include <QNetworkReply>
 
-namespace Ui { class SpotifyConfigWidget; }
+namespace Ui {
+    class SpotifySettingsWidget;
+    class SpotifyDownloadDialog;
+}
 
-class SpotifySettings: public KDialog
+class SpotifySettingsDialog: public KDialog
 {
     Q_OBJECT
 
 public:
-    explicit SpotifySettings( QWidget *parent = 0, const QVariantList &args = QVariantList() );
-    virtual ~SpotifySettings();
+    explicit SpotifySettingsDialog( QWidget *parent = 0, const QVariantList &args = QVariantList() );
+    virtual ~SpotifySettingsDialog();
 
 signals:
     void changed( bool );
@@ -50,7 +53,8 @@ private Q_SLOTS:
 
 private:
     void tryDownloadResolver();
-    Ui::SpotifyConfigWidget *m_configWidget;
+    Ui::SpotifySettingsWidget *m_settingsWidget;
+    Ui::SpotifyDownloadDialog *m_downloadDialog;
     SpotifyConfig m_config;
     QNetworkReply* m_downloadReply;
 };

@@ -11,14 +11,14 @@ set( amarok_collection-spotifycollection_PART_SRCS
      SpotifyQueryMaker.cpp
      SpotifyMeta.cpp
      SpotifyConfig.cpp
-     SpotifySettings.cpp
+     SpotifySettingsDialog.cpp
      SpotifyDownloadDialog.cpp
      support/TrackProxy.cpp
      support/Query.cpp
      support/Controller.cpp )
 
 kde4_add_ui_files( amarok_collection-spotifycollection_PART_SRCS
-    SpotifyConfigWidget.ui
+    SpotifySettingsWidget.ui
     SpotifyDownloadDialog.ui
 )
 

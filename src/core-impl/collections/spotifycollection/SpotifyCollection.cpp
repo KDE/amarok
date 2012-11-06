@@ -20,7 +20,7 @@
 #include "SpotifyCollection.h"
 
 #include "SpotifyQueryMaker.h"
-#include "SpotifySettings.h"
+#include "SpotifySettingsDialog.h"
 #include "support/Controller.h"
 #include "support/TrackProxy.h"
 
@@ -401,7 +401,7 @@ namespace Collections
     SpotifyCollection::slotConfigure()
     {
         // settingDialog will be deleted after closed
-        SpotifySettings* settingDialog = new SpotifySettings;
+        SpotifySettingsDialog* settingDialog = new SpotifySettingsDialog;
         settingDialog->setModal( true );
         // This will return immediately
         settingDialog->show();
