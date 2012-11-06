@@ -27,6 +27,8 @@ namespace Ui {
     class SpotifyDownloadDialog;
 }
 
+class KMessageWidget;
+
 class SpotifySettingsDialog: public KDialog
 {
     Q_OBJECT
@@ -47,13 +49,18 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void slotTryLogin();
+    void slotLoginSuccess(const QString &user);
+    void slotLogonFailed(const QString &message);
+    void slotCustomMessage(const QString &messageType, const QVariantMap &map);
+
     void slotDownloadError( QNetworkReply::NetworkError error );
     void slotDownloadProgress( qint64 current, qint64 total );
     void slotDownloadFinished();
+    void tryDownloadResolver();
 
 private:
-    void tryDownloadResolver();
     Ui::SpotifySettingsWidget *m_settingsWidget;
+    KMessageWidget *m_messageWidget;
     Ui::SpotifyDownloadDialog *m_downloadDialog;
     SpotifyConfig m_config;
     QNetworkReply* m_downloadReply;

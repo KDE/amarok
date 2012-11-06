@@ -16,6 +16,7 @@
 #define DEBUG_PREFIX "SpotifySettings"
 
 #include "SpotifySettingsDialog.h"
+#include "SpotifyDownloadDialog.h"
 
 #include "ui_SpotifySettingsWidget.h"
 #include "ui_SpotifyDownloadDialog.h"
@@ -25,7 +26,7 @@
 #include "support/Controller.h"
 
 #include <KLocale>
-#include <KMessageBox>
+#include <KMessageWidget>
 #include <KZip>
 
 #include <QBuffer>
@@ -34,8 +35,9 @@
 #include <QtGlobal>
 
 SpotifySettingsDialog::SpotifySettingsDialog( QWidget* parent, const QVariantList& args )
-: KDialog( parent )
-, m_downloadReply( 0 )
+    : KDialog( parent )
+    , m_settingsWidget(new Ui::SpotifySettingsWidget)
+    , m_downloadReply( 0 )
 {
     DEBUG_BLOCK
 
@@ -48,8 +50,8 @@ SpotifySettingsDialog::SpotifySettingsDialog( QWidget* parent, const QVariantLis
     enableButtonApply( false );
 
     QWidget *w = new QWidget(this);
-    m_settingsWidget = new Ui::SpotifySettingsWidget;
     m_settingsWidget->setupUi( w );
+    m_settingsWidget->messageWidget->hide();
     setMainWidget( w );
 
     connect( this, SIGNAL( okClicked() ),
@@ -78,28 +80,15 @@ SpotifySettingsDialog::SpotifySettingsDialog( QWidget* parent, const QVariantLis
     {
         if( SpotifyConfig::supportedPlatformName().isEmpty() )
         {
-            KMessageBox::information( this,
-                                      i18n( "Your platform is not currently supported by Amarok Spotify resolver." ),
-                                      i18n( "Spotify resolver" ) );
-            slotCancel();
-            return;
+            m_settingsWidget->messageWidget->setText(i18n( "Your platform is not currently "
+                                           "supported by Amarok Spotify resolver." ));
+            m_settingsWidget->messageWidget->animatedShow();
         }
 
-        int res = KMessageBox::questionYesNo( this,
-                    i18n( "Spotify resolver is missing or not installed correctly on your system."
-                          "This program is required by Spotify collection."
-                          "Do you want to download and install it now?" ),
-                    i18n( "Spotify resolver" ) );
-        if( res == KMessageBox::Yes )
-        {
-            m_config.reset();
-            tryDownloadResolver();
-        }
-        else
-        {
-            // Close config dialog
-            slotCancel();
-        }
+        m_downloadDialog = new Ui::SpotifyDownloadDialog;
+        m_config.reset();
+        connect(m_downloadDialog->buttonBox, SIGNAL(accepted()),
+                SLOT(tryDownloadResolver()));
     }
 }
 
@@ -151,10 +140,40 @@ SpotifySettingsDialog::slotTryLogin()
         controller->start();
     }
 
+    connect(controller, SIGNAL(customMessage(QString,QVariantMap)),
+                        SLOT(slotCustomMessage(QString,QVariantMap)));
+    connect(controller, SIGNAL(loginSuccess(QString)), SLOT(slotLoginSuccess(QString)));
+    connect(controller, SIGNAL(loginFailed(QString)), SLOT(slotLogonFailed(QString)));
+
     controller->login( m_settingsWidget->lineUsername->text(),
                        m_settingsWidget->linePassword->text(),
                        m_settingsWidget->checkHighQuality->isChecked() );
     save();
+}
+
+void SpotifySettingsDialog::slotLoginSuccess(const QString &username)
+{
+    m_settingsWidget->messageWidget->setText(i18n("%1 logged in").arg(username));
+    m_settingsWidget->messageWidget->setMessageType(KMessageWidget::Positive);
+    m_settingsWidget->messageWidget->animatedShow();
+}
+
+void SpotifySettingsDialog::slotLogonFailed(const QString &message)
+{
+    //TODO: translate message
+    m_settingsWidget->messageWidget->setText(message);
+    m_settingsWidget->messageWidget->setMessageType(KMessageWidget::Error);
+    m_settingsWidget->messageWidget->animatedShow();
+}
+
+void SpotifySettingsDialog::slotCustomMessage(const QString &messageType,
+                                              const QVariantMap &map)
+{
+    debug() << messageType;
+    debug() << map;
+    //TODO: take message from map and display in m_settingsWidget->messageWidget
+    m_settingsWidget->messageWidget->setText("custom message received");
+    m_settingsWidget->messageWidget->animatedShow();
 }
 
 void
@@ -194,10 +213,7 @@ void
 SpotifySettingsDialog::slotDownloadError( QNetworkReply::NetworkError error )
 {
     Q_UNUSED( error )
-
-    KMessageBox::error( this, i18n( "Error occured while downloading Spotify resolver." ));
-
-    slotCancel();
+    //TODO: display error to the user
 }
 
 void
@@ -216,12 +232,7 @@ SpotifySettingsDialog::slotDownloadFinished()
     if( m_downloadReply->error() != QNetworkReply::NoError )
     {
         debug() << "Downloading is interrupted due to " << m_downloadReply->errorString();
-        KMessageBox::warningYesNo( this,
-                i18n( "Error occured while downloading Spotify resolver,"
-                      "please check your internet connection and try again later." ) );
-
-        // Don't show the settings dialog
-        slotCancel();
+        //TODO: display error to the user
         return;
     }
 
@@ -235,9 +246,8 @@ SpotifySettingsDialog::slotDownloadFinished()
     KZip archive( data_buffer.data() );
     if( !archive.open( QIODevice::ReadOnly ) || !archive.directory() )
     {
-        KMessageBox::error( this, i18n( "Failed to read data from the downloaded file. "
-                                        "Please try again later." ) );
-        slotCancel();
+        //TODO: display error to the user
+        debug() << i18n( "Failed to read data from the downloaded file. Please try again later." );
         return;
     }
 
@@ -246,9 +256,10 @@ SpotifySettingsDialog::slotDownloadFinished()
     QFile file( m_config.resolverPath() );
     if( !file.exists() )
     {
-        KMessageBox::error( this, i18n( "Failed to extract the Spotify resolver to %1 "
-                                        "Please check if the path is writeable." ).arg( SpotifyConfig::resolverDownloadPath() ) );
-        slotCancel();
+        //TODO: display error to the user
+        debug() << i18n( "Failed to extract the Spotify resolver to %1 "
+                                        "Please check if the path is writeable." )
+                                 .arg( SpotifyConfig::resolverDownloadPath() );
         return;
     }
     file.setPermissions( file.permissions() | QFile::ExeUser );
@@ -258,15 +269,7 @@ SpotifySettingsDialog::slotDownloadFinished()
     controller->setFilePath( m_config.resolverPath() );
     controller->reload();
 
-    // Restore widgets
-    m_downloadDialog->progDownload->hide();
-    m_settingsWidget->frameMain->show();
-    m_settingsWidget->lblNote->show();
-
-    enableButtonOk( true );
-    enableButton( Default, true );
-
-    adjustSize();
+    //TODO: load the settingsWidget
 }
 
 void

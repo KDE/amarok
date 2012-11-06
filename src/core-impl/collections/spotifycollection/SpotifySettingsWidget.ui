@@ -7,24 +7,24 @@
     <x>0</x>
     <y>0</y>
     <width>320</width>
-    <height>263</height>
+    <height>319</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Spotify Settings</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="0">
-    <widget class="QLabel" name="lblNote">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Note: &lt;br/&gt;Spotify service is only avaiable in certain countries. And content and policy may vary in different regions.&lt;/p&gt;&lt;p&gt;Only Spotify Premium user can use this feature. You may need to subscribe Premium first to continue using it with Amarok.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="KMessageWidget" name="messageWidget">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
      </property>
-     <property name="wordWrap">
-      <bool>true</bool>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item>
     <widget class="QFrame" name="frameMain">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -65,8 +65,26 @@
      </layout>
     </widget>
    </item>
+   <item>
+    <widget class="QLabel" name="lblNote">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Note: &lt;br/&gt;Spotify service is only avaiable in certain countries. And content and policy may vary in different regions.&lt;/p&gt;&lt;p&gt;Only Spotify Premium user can use this feature. You may need to subscribe Premium first to continue using it with Amarok.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KMessageWidget</class>
+   <extends>QFrame</extends>
+   <header location="global">kmessagewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

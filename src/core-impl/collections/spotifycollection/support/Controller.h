@@ -140,7 +140,7 @@ signals:
 
     void userChanged();
     void loginSuccess( const QString& user );
-    void loginFailed();
+    void loginFailed( const QString &message );
 
     void spotifyReady();
     void queryReady( const Spotify::Query* query );
