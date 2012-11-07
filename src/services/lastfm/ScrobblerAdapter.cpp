@@ -66,6 +66,12 @@ ScrobblerAdapter::~ScrobblerAdapter()
 {
 }
 
+QString
+ScrobblerAdapter::prettyName() const
+{
+    return i18n( "Last.fm" );
+}
+
 StatSyncing::ScrobblingService::ScrobbleError
 ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
                             const QDateTime &time )

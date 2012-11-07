@@ -53,6 +53,12 @@ namespace StatSyncing
             };
 
             /**
+             * Return (possibly) localized user-displayable pretty name identifying
+             * this scrobbling service.
+             */
+            virtual QString prettyName() const = 0;
+
+            /**
              * Scrobble a track. Scrobbling service may check certain criteria such as
              * track length and refuse to scrobble the track.
              *
