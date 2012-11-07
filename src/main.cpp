@@ -267,11 +267,10 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
     //Donors:
-    //Last update: 2011/12/08, post Rocktober 2011
-    ocsData.addDonor( "drew826", KAboutPerson( ki18n( "Andrew Browning" ) ) );
-    ocsData.addDonor( QString(), KAboutPerson( ki18n( "David Roth" ) ) );
-    ocsData.addDonor( QString(), KAboutPerson( ki18n( "Dr. Tilmann Bubeck" ) ) );
-    ocsData.addDonor( "valoriez", KAboutPerson( ki18n( "Valorie Zimmerman" ) ) );
+    //Last update: 2012/11/07, post Roktober 2012
+    ocsData.addDonor( "ayleph", KAboutPerson( ki18n( "Andrew Browning" ) ) );
+    ocsData.addDonor( QString(), KAboutPerson( ki18n( "Chris Wales" ) ) );
+    ocsData.addDonor( QString(), KAboutPerson( ki18n( "ZImin Stanislav" ) ) );
 
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
