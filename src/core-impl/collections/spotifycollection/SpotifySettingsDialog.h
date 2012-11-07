@@ -20,8 +20,6 @@
 
 #include <KDialog>
 
-#include <QNetworkReply>
-
 namespace Ui {
     class SpotifySettingsWidget;
     class SpotifyDownloadDialog;
@@ -34,7 +32,7 @@ class SpotifySettingsDialog: public KDialog
     Q_OBJECT
 
 public:
-    explicit SpotifySettingsDialog( QWidget *parent = 0, const QVariantList &args = QVariantList() );
+    explicit SpotifySettingsDialog( QWidget *parent = 0 );
     virtual ~SpotifySettingsDialog();
 
 signals:
@@ -50,20 +48,12 @@ public Q_SLOTS:
 private Q_SLOTS:
     void slotTryLogin();
     void slotLoginSuccess(const QString &user);
-    void slotLogonFailed(const QString &message);
+    void slotLoginFailed(const QString &message);
     void slotCustomMessage(const QString &messageType, const QVariantMap &map);
-
-    void slotDownloadError( QNetworkReply::NetworkError error );
-    void slotDownloadProgress( qint64 current, qint64 total );
-    void slotDownloadFinished();
-    void tryDownloadResolver();
 
 private:
     Ui::SpotifySettingsWidget *m_settingsWidget;
-    KMessageWidget *m_messageWidget;
-    Ui::SpotifyDownloadDialog *m_downloadDialog;
     SpotifyConfig m_config;
-    QNetworkReply* m_downloadReply;
 };
 
 #endif

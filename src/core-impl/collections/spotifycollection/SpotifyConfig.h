@@ -31,20 +31,12 @@ public:
     ~SpotifyConfig();
 
     static const char *configSectionName() { return "Collection_Spotify"; }
-    static const QString supportedPlatformName();
-    static const QString defaultResolverName();
-    static const QString resolverDownloadPath();
 
     const QString username() const { return m_username; }
     void setUsername( const QString& username ) { m_username = username; }
 
     const QString password() const { return m_password; }
     void setPassword( const QString& password ) { m_password = password; }
-
-    const QString resolverPath() const { return m_resolverPath; }
-    void setResolverPath( const QString& path ) { m_resolverPath = path; }
-
-    const QString resolverDownloadUrl() const { return m_resolverDownloadUrl + defaultResolverName() + ".zip"; }
 
     bool highQuality() const { return m_highQuality; }
     void setHighQuality( const bool highquality ) { m_highQuality = highquality; }
@@ -57,9 +49,7 @@ public slots:
 private:
     QString m_username;
     QString m_password;
-    QString m_resolverPath;
     bool m_highQuality;
-    const static QString m_resolverDownloadUrl;
 
     KWallet::Wallet* m_wallet;
 };

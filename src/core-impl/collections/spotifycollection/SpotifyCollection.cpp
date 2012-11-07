@@ -33,7 +33,9 @@
 #include "core/support/Debug.h"
 
 #include <KIcon>
+#include <KStandardDirs>
 
+#include <QSysInfo>
 #include <QTimer>
 
 namespace Collections
@@ -68,9 +70,10 @@ namespace Collections
         // Load credentials
         m_config.load();
 
-        m_controller = The::SpotifyController( m_config.resolverPath() );
+        m_controller = The::SpotifyController( SpotifyCollection::resolverPath() );
 #ifdef Q_OS_LINUX
-        m_controller->environment().insert("LD_LIBRARY_PATH", SpotifyConfig::resolverDownloadPath());
+        m_controller->environment().insert("LD_LIBRARY_PATH",
+                                           SpotifyCollection::resolverDownloadPath());
 #endif
 
         Q_ASSERT( m_controller != 0 );
@@ -108,7 +111,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        m_controller->setFilePath( m_config.resolverPath() );
+        m_controller->setFilePath( SpotifyCollection::resolverPath() );
         if( !m_controller->loggedIn()
             && !m_config.username().isEmpty()
             && !m_config.password().isEmpty() )
@@ -136,6 +139,46 @@ namespace Collections
         DEBUG_BLOCK
 
         m_collectionIsManaged = false;
+    }
+
+    const QString
+    SpotifyCollection::supportedPlatformName()
+    {
+    #ifdef Q_OS_WIN32
+        return "win32";
+    #else
+    #ifdef Q_OS_LINUX
+        return QString("linux%1").arg(QSysInfo::WordSize);
+    #else
+        return QString();
+    #endif
+    #endif
+    }
+
+    //TODO: replace with link on files.kde.org or redirect from amarok.kde.org
+    const QString SpotifyCollection::s_resolverDownloadUrl =
+            "http://hades.name/static/amarok/";
+
+    const QString
+    SpotifyCollection::defaultResolverName()
+    {
+        return QString("spotify_resolver_%1").arg(supportedPlatformName());
+    }
+
+    const QString
+    SpotifyCollection::resolverDownloadPath()
+    {
+        return KStandardDirs::locateLocal( "data", "amarok" );
+    }
+
+    const QString SpotifyCollection::resolverDownloadUrl()
+    {
+        return s_resolverDownloadUrl + defaultResolverName() + ".zip";
+    }
+
+    const QString SpotifyCollection::resolverPath()
+    {
+        return resolverDownloadPath() + "/" + defaultResolverName();
     }
 
     SpotifyCollection::SpotifyCollection( Spotify::Controller *controller )
@@ -400,11 +443,10 @@ namespace Collections
     void
     SpotifyCollection::slotConfigure()
     {
-        // settingDialog will be deleted after closed
-        SpotifySettingsDialog* settingDialog = new SpotifySettingsDialog;
-        settingDialog->setModal( true );
+        SpotifySettingsDialog settingDialog;
+        settingDialog.setModal( true );
         // This will return immediately
-        settingDialog->show();
+        settingDialog.exec();
     }
 
     void
