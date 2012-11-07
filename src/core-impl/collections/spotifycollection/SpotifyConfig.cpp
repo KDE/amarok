@@ -22,17 +22,11 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <KMessageBox>
-#include <KStandardDirs>
 #include <KWallet/Wallet>
-
-#include <QSysInfo>
-
-const QString SpotifyConfig::m_resolverDownloadUrl = "http://hades.name/static/amarok/";
 
 SpotifyConfig::SpotifyConfig()
 : m_username ()
 , m_password ()
-, m_resolverPath ()
 , m_highQuality( false )
 , m_wallet ( 0 )
 {
@@ -88,8 +82,6 @@ SpotifyConfig::load()
         m_password = QByteArray::fromBase64( config.readEntry( "password", QString() ).toLocal8Bit() );
     }
 
-    m_resolverPath = config.readEntry( "resolver", KStandardDirs::locateLocal( "data",
-                                     QString("amarok/%1").arg( defaultResolverName() ) ) );
     m_highQuality = config.readEntry( "highquality", false );
 }
 
@@ -104,6 +96,7 @@ SpotifyConfig::save()
 
     if( !m_wallet )
     {
+        //TODO: move this question to the settings dialog
         // KWallet not loaded, tell user that we won't save the password
         int result = KMessageBox::questionYesNoCancel( (QWidget*)this,
                 i18n( "Cannot find KWallet, credentials will be saved in plaintext, continue?" ),
@@ -141,12 +134,6 @@ SpotifyConfig::save()
         }
     }
 
-    // Set default resolver path
-    if( m_resolverPath.isEmpty() )
-        m_resolverPath = KStandardDirs::locateLocal( "data",
-                           QString("amarok/%1").arg( defaultResolverName() ) );
-
-    config.writeEntry( "resolver", m_resolverPath );
     config.writeEntry( "highquality", m_highQuality );
 }
 
@@ -157,36 +144,6 @@ SpotifyConfig::reset()
     warning() << "Reset Spotify config";
     m_username = "";
     m_password = "";
-    // Use the the API key embedded in Spotify resolver
-    m_resolverPath = KStandardDirs::locateLocal( "data",
-                       QString("amarok/%1").arg( defaultResolverName() ) );
-    debug() << "Resolver path: " << m_resolverPath;
-}
-
-const QString
-SpotifyConfig::supportedPlatformName()
-{
-#ifdef Q_OS_WIN32
-    return "win32";
-#else
-#ifdef Q_OS_LINUX
-    return QString("linux%1").arg(QSysInfo::WordSize);
-#else
-    return QString();
-#endif
-#endif
-}
-
-const QString
-SpotifyConfig::defaultResolverName()
-{
-    return QString("spotify_resolver_%1").arg(supportedPlatformName());
-}
-
-const QString
-SpotifyConfig::resolverDownloadPath()
-{
-    return KStandardDirs::locateLocal( "data", "amarok" );
 }
 
 #include "SpotifyConfig.moc"

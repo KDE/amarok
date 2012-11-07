@@ -28,6 +28,7 @@
 
 class QAction;
 
+//TODO: move out of Collections namespace
 namespace Collections
 {
     class MemoryCollection;
@@ -60,6 +61,14 @@ namespace Collections
     {
         Q_OBJECT
         public:
+
+            static const QString s_resolverDownloadUrl;
+            static const QString supportedPlatformName();
+            static const QString defaultResolverName();
+            static const QString resolverDownloadPath();
+            static const QString resolverDownloadUrl();
+            static const QString resolverPath();
+
             SpotifyCollection( Spotify::Controller* controller );
             ~SpotifyCollection();
 
