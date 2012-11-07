@@ -281,6 +281,14 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         donorLayout->addWidget( m_donorListWidget.data() );
         donorLayout->setMargin( 0 );
         donorLayout->setSpacing( 2 );
+        QLabel *roktoberLabel =
+            new QLabel(i18n("<p>Each year in October the Amarok team organizes a funding "
+                            "drive called <b>Roktober</b>.</p>"
+                            "<p>I you want your name mentioned on this list "
+                            "<a href=\"http://amarok.kde.org/donations\"> donate "
+                            "during Roktober</a> and opt-in.</p>"));
+        roktoberLabel->setOpenExternalLinks(true);
+        donorLayout->addWidget(roktoberLabel);
         m_donorWidget.data()->setLayout( donorLayout );
 
         tabWidget->addTab( m_donorWidget.data(), i18n("&Donors"));
