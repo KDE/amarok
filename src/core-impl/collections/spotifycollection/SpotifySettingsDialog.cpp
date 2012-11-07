@@ -34,16 +34,29 @@
 #include <QScopedPointer>
 #include <QtGlobal>
 
-SpotifySettingsDialog::SpotifySettingsDialog( QWidget* parent, const QVariantList& args )
+SpotifySettingsDialog::SpotifySettingsDialog( QWidget *parent )
     : KDialog( parent )
     , m_settingsWidget(new Ui::SpotifySettingsWidget)
     , m_downloadReply( 0 )
 {
-    DEBUG_BLOCK
-
-    Q_UNUSED( args )
-
-    debug() << "Creating Spotify settings object...";
+    debug() << "Checking Spotify resolver: " << m_config.resolverPath();
+    if( !QFile::exists( m_config.resolverPath() ) )
+    {
+        QDialog dialog;
+        m_downloadDialog = new Ui::SpotifyDownloadDialog;
+        m_downloadDialog->setupUi(&dialog);
+        m_config.reset();
+        connect(m_downloadDialog->buttonBox, SIGNAL(accepted()),
+                SLOT(tryDownloadResolver()));
+        if( SpotifyConfig::supportedPlatformName().isEmpty() )
+        {
+            m_downloadDialog->messageWidget->setText(i18n( "Your platform is not currently "
+                                           "supported by Amarok Spotify resolver." ));
+            m_downloadDialog->messageWidget->animatedShow();
+            m_downloadDialog->buttonBox->setEnabled(false);
+        }
+        dialog.exec();
+    }
 
     setCaption( i18n( "Spotify configuration" ) );
     setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply | KDialog::Default );
@@ -74,22 +87,6 @@ SpotifySettingsDialog::SpotifySettingsDialog( QWidget* parent, const QVariantLis
 
     // Load config from KConfig or KWallet
     load();
-
-    debug() << "Checking Spotify resolver: " << m_config.resolverPath();
-    if( !QFile::exists( m_config.resolverPath() ) )
-    {
-        if( SpotifyConfig::supportedPlatformName().isEmpty() )
-        {
-            m_settingsWidget->messageWidget->setText(i18n( "Your platform is not currently "
-                                           "supported by Amarok Spotify resolver." ));
-            m_settingsWidget->messageWidget->animatedShow();
-        }
-
-        m_downloadDialog = new Ui::SpotifyDownloadDialog;
-        m_config.reset();
-        connect(m_downloadDialog->buttonBox, SIGNAL(accepted()),
-                SLOT(tryDownloadResolver()));
-    }
 }
 
 SpotifySettingsDialog::~SpotifySettingsDialog()
@@ -143,7 +140,7 @@ SpotifySettingsDialog::slotTryLogin()
     connect(controller, SIGNAL(customMessage(QString,QVariantMap)),
                         SLOT(slotCustomMessage(QString,QVariantMap)));
     connect(controller, SIGNAL(loginSuccess(QString)), SLOT(slotLoginSuccess(QString)));
-    connect(controller, SIGNAL(loginFailed(QString)), SLOT(slotLogonFailed(QString)));
+    connect(controller, SIGNAL(loginFailed(QString)), SLOT(slotLoginFailed(QString)));
 
     controller->login( m_settingsWidget->lineUsername->text(),
                        m_settingsWidget->linePassword->text(),
@@ -158,7 +155,7 @@ void SpotifySettingsDialog::slotLoginSuccess(const QString &username)
     m_settingsWidget->messageWidget->animatedShow();
 }
 
-void SpotifySettingsDialog::slotLogonFailed(const QString &message)
+void SpotifySettingsDialog::slotLoginFailed(const QString &message)
 {
     //TODO: translate message
     m_settingsWidget->messageWidget->setText(message);
@@ -202,11 +199,6 @@ SpotifySettingsDialog::tryDownloadResolver()
     m_downloadDialog->progDownload->setMinimum( 0 );
     m_downloadDialog->progDownload->setMaximum( 1000 );
     m_downloadDialog->progDownload->setValue( 0 );
-    m_downloadDialog->progDownload->show();
-
-    enableButtonApply( false );
-    enableButtonOk( false );
-    enableButton( Default, false );
 }
 
 void

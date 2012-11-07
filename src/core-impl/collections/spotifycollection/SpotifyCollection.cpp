@@ -400,11 +400,10 @@ namespace Collections
     void
     SpotifyCollection::slotConfigure()
     {
-        // settingDialog will be deleted after closed
-        SpotifySettingsDialog* settingDialog = new SpotifySettingsDialog;
-        settingDialog->setModal( true );
+        SpotifySettingsDialog settingDialog;
+        settingDialog.setModal( true );
         // This will return immediately
-        settingDialog->show();
+        settingDialog.exec();
     }
 
     void

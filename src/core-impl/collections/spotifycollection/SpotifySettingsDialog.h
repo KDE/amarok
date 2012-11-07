@@ -34,7 +34,7 @@ class SpotifySettingsDialog: public KDialog
     Q_OBJECT
 
 public:
-    explicit SpotifySettingsDialog( QWidget *parent = 0, const QVariantList &args = QVariantList() );
+    explicit SpotifySettingsDialog( QWidget *parent = 0 );
     virtual ~SpotifySettingsDialog();
 
 signals:
@@ -50,7 +50,7 @@ public Q_SLOTS:
 private Q_SLOTS:
     void slotTryLogin();
     void slotLoginSuccess(const QString &user);
-    void slotLogonFailed(const QString &message);
+    void slotLoginFailed(const QString &message);
     void slotCustomMessage(const QString &messageType, const QVariantMap &map);
 
     void slotDownloadError( QNetworkReply::NetworkError error );
