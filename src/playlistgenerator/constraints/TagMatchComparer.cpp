@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,17 +20,6 @@
 
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
-// #include "core/meta/support/MetaUtility.h"
-
-/*
-#include "playlistgenerator/Constraint.h"
-#include "playlistgenerator/ConstraintFactory.h"
-
-#include "core/collections/QueryMaker.h"
-#include "core/support/Debug.h"
-
-#include <KRandom>
-*/
 
 #include <math.h>
 

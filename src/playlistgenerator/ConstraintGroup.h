@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -50,11 +50,7 @@ class ConstraintGroup : public ConstraintNode {
 
         virtual Collections::QueryMaker* initQueryMaker( Collections::QueryMaker* ) const;
         virtual double satisfaction( const Meta::TrackList& ) const;
-        virtual quint32 suggestInitialPlaylistSize() const;
-
-#ifndef KDE_NO_DEBUG_OUTPUT
-        virtual void audit(const Meta::TrackList&) const;
-#endif
+        virtual quint32 suggestPlaylistSize() const;
 
     private slots:
         void setMatchAny();

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,9 +20,6 @@
 
 #include "playlistgenerator/Constraint.h"
 
-#include "core/support/Debug.h"
-
-#include <QtGlobal>
 #include <math.h>
 #include <stdlib.h>
 
@@ -42,7 +39,6 @@ ConstraintTypes::TrackSpreader::registerMe()
 }
 
 ConstraintTypes::TrackSpreader::TrackSpreader( ConstraintNode* p ) : Constraint( p ) {
-    DEBUG_BLOCK
 }
 
 QWidget*
@@ -71,26 +67,6 @@ ConstraintTypes::TrackSpreader::satisfaction( const Meta::TrackList& tl ) const
 
     return 1.0 / exp( 0.1 * dist );
 }
-
-#ifndef KDE_NO_DEBUG_OUTPUT
-void
-ConstraintTypes::TrackSpreader::audit( const Meta::TrackList& tl ) const
-{
-    QHash<Meta::TrackPtr, int> locations;
-    for ( int i = 0; i < tl.size(); i++ ) {
-        locations.insertMulti( tl.value( i ), i );
-    }
-
-    foreach ( Meta::TrackPtr t, locations.keys() ) {
-        QString output;
-        output += t->prettyName() + ": ";
-        foreach ( int idx, locations.values( t ) ) {
-            output += QString::number( idx ) + " ";
-        }
-        debug() << output;
-    }
-}
-#endif
 
 double
 ConstraintTypes::TrackSpreader::distance( const int a, const int b ) const

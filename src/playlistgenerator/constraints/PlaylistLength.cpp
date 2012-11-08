@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,12 +20,6 @@
 
 #include "playlistgenerator/Constraint.h"
 #include "playlistgenerator/ConstraintFactory.h"
-
-#include "core/support/Debug.h"
-
-#include <KRandom>
-
-#include <QtGlobal>
 
 #include <stdlib.h>
 #include <math.h>
@@ -61,6 +55,9 @@ ConstraintTypes::PlaylistLength::registerMe()
 
 ConstraintTypes::PlaylistLength::PlaylistLength( QDomElement& xmlelem, ConstraintNode* p )
         : Constraint( p )
+        , m_length( 30 )
+        , m_comparison( CompareNumEquals )
+        , m_strictness( 1.0 )
 {
     QDomAttr a;
 
@@ -127,7 +124,10 @@ ConstraintTypes::PlaylistLength::satisfaction( const Meta::TrackList& tl ) const
 {
     quint32 l = static_cast<quint32>( tl.size() );
     if ( m_comparison == CompareNumEquals ) {
-        return ( l == m_length ) ? 1.0 : transformLength( qAbs( l - m_length ) );
+        if ( l > m_length )
+            return ( l == m_length ) ? 1.0 : transformLength( l - m_length );
+        else
+            return ( l == m_length ) ? 1.0 : transformLength( m_length - l );
     } else if ( m_comparison == CompareNumGreaterThan ) {
         return ( l > m_length ) ? 1.0 : transformLength( m_length - l );
     } else if ( m_comparison == CompareNumLessThan ) {
@@ -138,7 +138,7 @@ ConstraintTypes::PlaylistLength::satisfaction( const Meta::TrackList& tl ) const
 }
 
 quint32
-ConstraintTypes::PlaylistLength::suggestInitialPlaylistSize() const
+ConstraintTypes::PlaylistLength::suggestPlaylistSize() const
 {
     return m_length;
 }
@@ -161,8 +161,8 @@ double
 ConstraintTypes::PlaylistLength::transformLength( const int delta ) const
 {
     // Note: delta must be positive
-    const double w = 8.0;
-    return exp( -10.0 * ( 0.1 + m_strictness ) / w * ( delta + 1 ) );
+    const double w = 5.0;
+    return exp( -2.0 * ( 0.01 + m_strictness ) / w * ( delta + 1 ) );
 }
 
 void

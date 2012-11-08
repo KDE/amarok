@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,9 +21,7 @@
 #include "playlistgenerator/ConstraintFactory.h"
 
 #include "core/meta/Meta.h"
-#include "core/support/Debug.h"
 
-#include <QtGlobal>
 #include <QSet>
 
 #include <math.h>
@@ -58,22 +56,18 @@ ConstraintTypes::PreventDuplicates::registerMe()
 ConstraintTypes::PreventDuplicates::PreventDuplicates( QDomElement& xmlelem, ConstraintNode* p )
         : Constraint( p )
 {
-    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "field" );
     if ( !a.isNull() ) {
         m_field = static_cast<DupeField>( a.value().toInt() );
     }
-    debug() << getName();
 }
 
 ConstraintTypes::PreventDuplicates::PreventDuplicates( ConstraintNode* p )
         : Constraint( p )
         , m_field( DupeTrack )
 {
-    DEBUG_BLOCK
-    debug() << "new default PreventDuplicates";
 }
 
 QWidget*
@@ -146,54 +140,6 @@ ConstraintTypes::PreventDuplicates::satisfaction( const Meta::TrackList& tl ) co
             
     return exp( (double)d / -3.0 );
 }
-
-#ifndef KDE_NO_DEBUG_OUTPUT
-void
-ConstraintTypes::PreventDuplicates::audit( const Meta::TrackList& tl ) const
-{
-    QHash<Meta::TrackPtr, int> tracks;
-    QHash<Meta::AlbumPtr, int> albums;
-    QHash<Meta::ArtistPtr, int> artists;
-    switch ( m_field ) {
-        case DupeTrack:
-            foreach( Meta::TrackPtr t, tl ) {
-                if ( tracks.contains(t) ) {
-                    tracks.insert(t, tracks.value(t) + 1);
-                } else {
-                    tracks.insert(t, 0);
-                }
-            }
-            foreach( Meta::TrackPtr t, tracks.keys() ) {
-                debug() << t->prettyName() << ": " << tracks.value(t);
-            }
-            break;
-        case DupeAlbum:
-            foreach( Meta::TrackPtr t, tl ) {
-                if ( albums.contains( t->album() ) ) {
-                    albums.insert( t->album(), albums.value(t->album()) + 1 );
-                } else {
-                    albums.insert( t->album(), 0 );
-                }
-            }
-            foreach( Meta::AlbumPtr a, albums.keys() ) {
-                debug() << a->prettyName() << ": " << albums.value(a);
-            }
-            break;
-        case DupeArtist:
-            foreach( Meta::TrackPtr t, tl ) {
-                if ( artists.contains( t->artist() ) ) {
-                    artists.insert( t->artist(), artists.value(t->artist()) + 1 );
-                } else {
-                    artists.insert( t->artist(), 0 );
-                }
-            }
-            foreach( Meta::ArtistPtr a, artists.keys() ) {
-                debug() << a->prettyName() << ": " << artists.value(a);
-            }
-            break;
-    }
-}
-#endif
 
 void
 ConstraintTypes::PreventDuplicates::setField( const int c )

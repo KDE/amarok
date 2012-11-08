@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -198,12 +198,12 @@ ConstraintGroup::satisfaction( const Meta::TrackList& l ) const
 }
 
 quint32
-ConstraintGroup::suggestInitialPlaylistSize() const
+ConstraintGroup::suggestPlaylistSize() const
 {
     quint32 s = 0;
     quint32 c = 0;
     foreach( ConstraintNode* child, m_children ) {
-        quint32 x = child->suggestInitialPlaylistSize();
+        quint32 x = child->suggestPlaylistSize();
         if ( x > 0 ) {
             s += x;
             c++;
@@ -215,16 +215,6 @@ ConstraintGroup::suggestInitialPlaylistSize() const
         return 0;
     }
 }
-
-#ifndef KDE_NO_DEBUG_OUTPUT
-void
-ConstraintGroup::audit( const Meta::TrackList& tl ) const
-{
-    foreach( ConstraintNode* child, m_children ) {
-        child->audit( tl );
-    }
-}
-#endif
 
 double
 ConstraintGroup::combineInterdependentConstraints( const Meta::TrackList& l, const double s, const QHash<int,int>& cmt ) const

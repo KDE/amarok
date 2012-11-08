@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -24,11 +24,6 @@
 #include "core/collections/QueryMaker.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Debug.h"
-
-#include <KRandom>
-#include <KLocalizedString>
-
-#include <QtGlobal>
 
 #include <math.h>
 #include <stdlib.h>
@@ -65,15 +60,12 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
         , m_comparer( new Comparer() )
         , m_fieldsModel( new TagMatchFieldsModel() )
 {
-    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "field" );
     if ( !a.isNull() ) {
         if ( m_fieldsModel->contains( a.value() ) )
             m_field = a.value();
-        else
-            debug() << a.value() << "is not a recognized field name" << endl;
     }
 
     a = xmlelem.attributeNode( "comparison" );
@@ -114,8 +106,6 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
     a = xmlelem.attributeNode( "strictness" );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
-
-    debug() << getName();
 }
 
 ConstraintTypes::TagMatch::TagMatch( ConstraintNode* p )
@@ -128,8 +118,6 @@ ConstraintTypes::TagMatch::TagMatch( ConstraintNode* p )
         , m_comparer( new Comparer() )
         , m_fieldsModel( new TagMatchFieldsModel() )
 {
-    DEBUG_BLOCK
-    debug() << "new default TagMatch";
 }
 
 ConstraintTypes::TagMatch::~TagMatch()
@@ -318,14 +306,6 @@ ConstraintTypes::TagMatch::satisfaction( const Meta::TrackList& tl ) const
     }
     satisfaction /= ( double )tl.size();
     return satisfaction;
-}
-
-void
-ConstraintTypes::TagMatch::audit( const Meta::TrackList& tl ) const
-{
-    foreach( const Meta::TrackPtr t, tl ) {
-        debug() << t->prettyName() << matches( t );
-    }
 }
 
 const QBitArray

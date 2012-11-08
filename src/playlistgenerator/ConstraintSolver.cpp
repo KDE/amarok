@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -50,9 +50,7 @@ APG::ConstraintSolver::ConstraintSolver( ConstraintNode* r, int qualityFactor )
         , m_abortRequested( false )
         , m_maxGenerations( 100 )
         , m_populationSize( 40 )
-        , m_minPlaylistSize( 4 )
         , m_suggestedPlaylistSize( 15 )
-        , m_maxPlaylistSize( 100 )
 {
     Q_UNUSED( qualityFactor); // FIXME
 
@@ -149,11 +147,6 @@ APG::ConstraintSolver::run()
 
     debug() << "Running ConstraintSolver" << m_serialNumber;
 
-    quint32 sips = m_constraintTreeRoot->suggestInitialPlaylistSize();
-    if ( ( sips >= m_minPlaylistSize ) && ( sips <= m_maxPlaylistSize ) ) {
-        m_suggestedPlaylistSize = sips;
-    }
-    
     emit totalSteps( m_maxGenerations );
 
     // GENETIC ALGORITHM LOOP
@@ -161,6 +154,7 @@ APG::ConstraintSolver::run()
     quint32 generation = 0;
     Meta::TrackList* best = NULL;
     while ( !m_abortRequested && ( generation < m_maxGenerations ) ) {
+        m_suggestedPlaylistSize = m_constraintTreeRoot->suggestPlaylistSize();
         fill_population( population );
         best = find_best( population );
         if ( population.value( best ) < m_satisfactionThreshold ) {
@@ -176,10 +170,6 @@ APG::ConstraintSolver::run()
     
     m_solvedPlaylist = best->mid( 0 );
     m_finalSatisfaction = m_constraintTreeRoot->satisfaction( m_solvedPlaylist );
-
-#ifndef KDE_NO_DEBUG_OUTPUT
-    m_constraintTreeRoot->audit( m_solvedPlaylist );
-#endif
 
     /* clean up */
     Population::iterator it = population.begin();
@@ -337,11 +327,7 @@ APG::ConstraintSolver::sample( Meta::TrackList domain, const int sampleSize ) co
 quint32
 APG::ConstraintSolver::playlist_size() const
 {
-    quint32 size = 0;
-    do {
-        size = rng_poisson( (double)m_suggestedPlaylistSize );
-    } while ( ( size < m_minPlaylistSize ) || ( size > m_maxPlaylistSize ) );
-    return size;
+    return rng_poisson( (double)m_suggestedPlaylistSize );
 }
 
 bool

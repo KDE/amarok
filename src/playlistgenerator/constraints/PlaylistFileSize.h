@@ -14,10 +14,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef APG_PLAYLISTLENGTH_CONSTRAINT
-#define APG_PLAYLISTLENGTH_CONSTRAINT
+#ifndef APG_PLAYLISTFILESIZE_CONSTRAINT
+#define APG_PLAYLISTFILESIZE_CONSTRAINT
 
-#include "ui_PlaylistLengthEditWidget.h"
+#include "ui_PlaylistFileSizeEditWidget.h"
 
 #include "playlistgenerator/Constraint.h"
 
@@ -28,10 +28,7 @@ class QWidget;
 
 namespace ConstraintTypes {
 
-    /* This constraint derives its name from the fact that it specifies the
-     * length (ie, number of tracks) of the Playlist. */
-
-    class PlaylistLength : public Constraint {
+    class PlaylistFileSize : public Constraint {
         Q_OBJECT
 
         enum NumComparison { CompareNumLessThan, CompareNumEquals, CompareNumGreaterThan };
@@ -51,44 +48,50 @@ namespace ConstraintTypes {
 
         private slots:
             void setComparison( const int );
-            void setLength( const int );
+            void setSize( const int );
             void setStrictness( const int );
+            void setUnit( const int );
 
         private:
-            PlaylistLength( QDomElement&, ConstraintNode* );
-            PlaylistLength( ConstraintNode* );
+            PlaylistFileSize( QDomElement&, ConstraintNode* );
+            PlaylistFileSize( ConstraintNode* );
 
             // constraint parameters
-            quint32 m_length;
+            int m_size;
+            int m_unit;
             int m_comparison;
             double m_strictness;
 
             // convenience functions
             QString comparisonToString() const;
+            QString unitToString() const;
 
             // internal mathematical functions
-            double transformLength( const int ) const;
+            quint64 getWantedSize() const;
+            double transformFileSize( const quint64 ) const;
     };
 
-    class PlaylistLengthEditWidget : public QWidget {
+    class PlaylistFileSizeEditWidget : public QWidget {
         Q_OBJECT
 
         public:
-            PlaylistLengthEditWidget( const int, const int, const int );
+            PlaylistFileSizeEditWidget( const int, const int, const int, const int );
 
         signals:
             void updated();
-            void lengthChanged( const int );
+            void sizeChanged( const int );
+            void unitChanged( const int );
             void comparisonChanged( const int );
             void strictnessChanged( const int );
 
         private slots:
-            void on_spinBox_Length_valueChanged( const int );
+            void on_spinBox_Size_valueChanged( const int );
+            void on_comboBox_Unit_currentIndexChanged( const int );
             void on_comboBox_Comparison_currentIndexChanged( const int );
             void on_slider_Strictness_valueChanged( const int );
 
         private:
-            Ui::PlaylistLengthEditWidget ui;
+            Ui::PlaylistFileSizeEditWidget ui;
     };
 } // namespace ConstraintTypes
 

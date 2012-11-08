@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,6 +22,7 @@
 #include "ConstraintNode.h"
 #include "constraints/Checkpoint.h"
 #include "constraints/PlaylistDuration.h"
+#include "constraints/PlaylistFileSize.h"
 #include "constraints/PlaylistLength.h"
 #include "constraints/PreventDuplicates.h"
 #include "constraints/TagMatch.h"
@@ -96,6 +97,11 @@ ConstraintFactory::ConstraintFactory()
 
     r = ConstraintTypes::Checkpoint::registerMe();
     m_registryIds[4] = r;
+    m_registryNames[r->m_name] = r;
+    m_registryUntranslateNames[r->m_i18nName] = r->m_name;
+
+    r = ConstraintTypes::PlaylistFileSize::registerMe();
+    m_registryIds[5] = r;
     m_registryNames[r->m_name] = r;
     m_registryUntranslateNames[r->m_i18nName] = r->m_name;
 

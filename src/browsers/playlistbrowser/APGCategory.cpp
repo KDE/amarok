@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -147,5 +147,6 @@ PlaylistBrowserNS::APGCategory::setQualityFactor( int f )
 void
 PlaylistBrowserNS::APGCategory::runGenerator()
 {
+    APG::PresetModel::instance()->savePresetsToXml();
     APG::PresetModel::instance()->runGenerator( m_qualityFactor );
 }

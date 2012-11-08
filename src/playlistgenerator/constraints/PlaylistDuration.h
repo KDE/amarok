@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -47,7 +47,7 @@ namespace ConstraintTypes {
             virtual QString getName() const;
 
             virtual double satisfaction(const Meta::TrackList&) const;
-            virtual quint32 suggestInitialPlaylistSize() const;
+            virtual quint32 suggestPlaylistSize() const;
 
         private slots:
             void setComparison( const int );

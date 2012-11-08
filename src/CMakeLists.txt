@@ -513,6 +513,7 @@ set(apg_SRCS
     playlistgenerator/constraints/Checkpoint.cpp
     playlistgenerator/constraints/Matching.cpp
     playlistgenerator/constraints/PlaylistDuration.cpp
+    playlistgenerator/constraints/PlaylistFileSize.cpp
     playlistgenerator/constraints/PlaylistLength.cpp
     playlistgenerator/constraints/PreventDuplicates.cpp
     playlistgenerator/constraints/TagMatch.cpp
@@ -525,6 +526,7 @@ kde4_add_ui_files(apg_SRCS
     playlistgenerator/PresetEditDialog.ui
     playlistgenerator/constraints/CheckpointEditWidget.ui
     playlistgenerator/constraints/PlaylistDurationEditWidget.ui
+    playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui
     playlistgenerator/constraints/PlaylistLengthEditWidget.ui
     playlistgenerator/constraints/PreventDuplicatesEditWidget.ui
     playlistgenerator/constraints/TagMatchEditWidget.ui

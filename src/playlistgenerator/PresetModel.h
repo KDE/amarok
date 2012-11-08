@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -60,6 +60,7 @@ namespace APG {
             void removeActive();
             void runGenerator( int );
             void setActivePreset( const QModelIndex& );
+            void savePresetsToXml() const; // force saving to default location
 
         private slots:
             void savePresetsToXml( const QString&, const QList<APG::PresetPtr> & ) const;

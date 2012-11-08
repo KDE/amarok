@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -113,7 +113,7 @@ ConstraintNode::where_is( const ConstraintNode* n ) const
 }
 
 quint32
-ConstraintNode::suggestInitialPlaylistSize() const
+ConstraintNode::suggestPlaylistSize() const
 {
     return 0;
 }

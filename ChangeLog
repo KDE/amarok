@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.7-Beta 1
   FEATURES:
+    * New APG constraint: Specify a total file size for playlist. (BR 283618)
     * Amazon store: Added support for Amazon MP3 in Italy and Spain. (BR 307981)
     * Mark downloaded podcast episodes to keep, even when purge is enabled. (BR 261062)
     * Nepomuk plugin: Play and manage tracks using the Nepomuk database.
@@ -15,6 +16,9 @@ VERSION 2.7-Beta 1
     * Amazon store: We now ship a utility to handle downloads from Amazon.
 
   CHANGES:
+    * APG now saves its presets each time it's run, to lessen preset loss if
+      Amarok crashes. (BR 294743)
+    * APG playlists no longer limited to 100 tracks. (BR 301829)
     * The confusing "Local Collection Backends" category of plugins was removed
       from the Configure dialog. All backends are enabled from now on.
     * Statistics of tracks outside of collections are only read/saved to file
@@ -25,6 +29,9 @@ VERSION 2.7-Beta 1
     * New optional dependency for Amazon downloads: clamz.
 
   BUGFIXES:
+    * Fixed some incorrect logic in the PlaylistLength constraint, which was
+      causing the APG to create playlists that were shorter than expected.
+      (BR 293616)
     * Improve Duplicate files found dialog. (BR 308762)
     * Fix crashes in SqlRegistry because of its false thread-safety. (BR 230991)
     * Fix crash on malformed DAAP reply. (BR 284186)

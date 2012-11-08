@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -106,9 +106,7 @@ namespace APG {
             // internal mathematical parameters
             quint32 m_maxGenerations;
             quint32 m_populationSize;
-            quint32 m_minPlaylistSize;
             quint32 m_suggestedPlaylistSize;
-            quint32 m_maxPlaylistSize;
     };
 } // namespace APG
 

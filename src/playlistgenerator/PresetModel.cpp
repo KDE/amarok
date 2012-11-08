@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -189,6 +189,12 @@ APG::PresetModel::setActivePreset( const QModelIndex& index )
     if ( m_activePresetIndex )
         delete m_activePresetIndex;
     m_activePresetIndex = new QPersistentModelIndex( index );
+}
+
+void
+APG::PresetModel::savePresetsToXml() const
+{
+    savePresetsToXml( Amarok::saveLocation() + "playlistgenerator.xml", m_presetList );
 }
 
 void

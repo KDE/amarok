@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,12 +20,6 @@
 
 #include "playlistgenerator/Constraint.h"
 #include "playlistgenerator/ConstraintFactory.h"
-
-#include "core/support/Debug.h"
-
-#include <KRandom>
-
-#include <QtGlobal>
 
 #include <stdlib.h>
 #include <math.h>
@@ -61,8 +55,10 @@ ConstraintTypes::PlaylistDuration::registerMe()
 
 ConstraintTypes::PlaylistDuration::PlaylistDuration( QDomElement& xmlelem, ConstraintNode* p )
         : Constraint( p )
+        , m_duration( 0 )
+        , m_comparison( CompareNumEquals )
+        , m_strictness( 1.0 )
 {
-    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "duration" );
@@ -83,8 +79,6 @@ ConstraintTypes::PlaylistDuration::PlaylistDuration( QDomElement& xmlelem, Const
     a = xmlelem.attributeNode( "strictness" );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
-
-    debug() << getName();
 }
 
 ConstraintTypes::PlaylistDuration::PlaylistDuration( ConstraintNode* p )
@@ -93,8 +87,6 @@ ConstraintTypes::PlaylistDuration::PlaylistDuration( ConstraintNode* p )
         , m_comparison( CompareNumEquals )
         , m_strictness( 1.0 )
 {
-    DEBUG_BLOCK
-    debug() << "new default PlaylistLength";
 }
 
 QWidget*
@@ -146,7 +138,7 @@ ConstraintTypes::PlaylistDuration::satisfaction( const Meta::TrackList& tl ) con
 }
 
 quint32
-ConstraintTypes::PlaylistDuration::suggestInitialPlaylistSize() const
+ConstraintTypes::PlaylistDuration::suggestPlaylistSize() const
 {
     if ( m_comparison == CompareNumLessThan ) {
         return static_cast<quint32>( m_duration ) / 300000 ;

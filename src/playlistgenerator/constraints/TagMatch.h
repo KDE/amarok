@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -69,10 +69,6 @@ namespace ConstraintTypes {
 
             virtual Collections::QueryMaker* initQueryMaker(Collections::QueryMaker*) const;
             virtual double satisfaction(const Meta::TrackList&) const;
-
-#ifndef KDE_NO_DEBUG_OUTPUT
-            virtual void audit( const Meta::TrackList& ) const;
-#endif
 
             // Implementation of MatchingConstraint virtuals
             const QBitArray whatTracksMatch( const Meta::TrackList& );

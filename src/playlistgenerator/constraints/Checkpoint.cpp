@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -25,10 +25,7 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <KRandom>
 #include <KUrl>
-
-#include <QtGlobal>
 
 #include <algorithm>
 #include <climits>
@@ -70,7 +67,6 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
         , m_checkpointType( CheckpointTrack )
         , m_matcher( 0 )
 {
-    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "position" );
@@ -93,7 +89,6 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
             } else {
                 m_checkpointObject = Meta::DataPtr::dynamicCast( trk );
             }
-            debug() << "loaded" << m_checkpointObject->prettyName() << "from XML";
         }
     }
 
@@ -112,8 +107,6 @@ ConstraintTypes::Checkpoint::Checkpoint( ConstraintNode* p )
         , m_checkpointType( CheckpointTrack )
         , m_matcher( 0 )
 {
-    DEBUG_BLOCK
-    debug() << "new default Checkpoint";
 }
 
 ConstraintTypes::Checkpoint::~Checkpoint()
@@ -263,26 +256,9 @@ ConstraintTypes::Checkpoint::penalty( const qint64 d ) const
 }
 
 quint32
-ConstraintTypes::Checkpoint::suggestInitialPlaylistSize() const
+ConstraintTypes::Checkpoint::suggestPlaylistSize() const
 {
     return static_cast<quint32>( m_position / 300000 ) + 1;
-}
-
-void
-ConstraintTypes::Checkpoint::audit( const Meta::TrackList& tl ) const
-{
-    qint64 position = 0;
-    foreach ( Meta::TrackPtr t, tl ) {
-        qint64 start = position;
-        qint64 end = ( position += t->length() );
-        QStringList out;
-        out << t->prettyName();
-        if ( m_matcher->match( t ) )
-            out << "MATCHES";
-        if ( ( start <= m_position ) && ( end >= m_position ) )
-            out << "[checkpoint is here]";
-        debug() << out.join(" ");
-    }
 }
 
 void
