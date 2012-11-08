@@ -284,7 +284,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         QLabel *roktoberLabel =
             new QLabel(i18n("<p>Each year in October the Amarok team organizes a funding "
                             "drive called <b>Roktober</b>.</p>"
-                            "<p>I you want your name mentioned on this list "
+                            "<p>If you want your name mentioned on this list "
                             "<a href=\"http://amarok.kde.org/donations\"> donate "
                             "during Roktober</a> and opt-in.</p>"));
         roktoberLabel->setOpenExternalLinks(true);
