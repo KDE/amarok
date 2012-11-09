@@ -107,12 +107,12 @@ NepomukCollection::metadataChanged( Meta::TrackPtr track )
 }
 
 bool
-NepomukCollection::possiblyContainsTrack(const KUrl &url) const
+NepomukCollection::possiblyContainsTrack( const KUrl &url ) const
 {
     // if a resource of type audio is created successfully return true
     Nepomuk::Resource res( url );
-    if ( res.exists() && res.hasType( Nepomuk::Vocabulary::NFO::Audio() ) )
-            return true;
+    if( res.exists() && res.hasType( Nepomuk::Vocabulary::NFO::Audio() ) )
+        return true;
     else return false;
 }
 

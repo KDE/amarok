@@ -76,19 +76,7 @@ public:
     using Meta::Observer::metadataChanged;
 
     // TrackProvider methods
-    /**
-     * Returns true if this track provider has a chance of providing the
-     * track specified by @p url.
-     * This should do a minimal amount of checking, and return quickly.
-     */
     virtual bool possiblyContainsTrack( const KUrl &url ) const;
-
-    /**
-     * Creates a TrackPtr object for url @p url.  Returns a null track Ptr if
-     * it cannot be done.
-     * If asynchronysity is desired it is suggested to return a MetaProxy track here
-     * and have the proxy watch for the real track.
-     */
     virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
 private:
@@ -109,7 +97,7 @@ private:
     /**
       * Inspired by iPod Collection.
       * This function is quite self explanatory.
-      * Given a uidUrl, ( Resource URI in the language of Nepomuk )
+      * Given an @p uidUrl, ( Resource URI in the language of Nepomuk )
       * it returns a TrackPtr to the music track with that URI.
       *
       * Note : the function doesn't check if the passed uidUrl is valid or if it exists
