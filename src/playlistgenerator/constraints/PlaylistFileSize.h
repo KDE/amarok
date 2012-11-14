@@ -64,7 +64,6 @@ namespace ConstraintTypes {
 
             // convenience functions
             QString comparisonToString() const;
-            QString unitToString() const;
 
             // internal mathematical functions
             quint64 getWantedSize() const;

@@ -72,14 +72,14 @@
           <item>
            <widget class="QComboBox" name="comboBox_Unit">
             <property name="whatsThis">
-             <string>The file size units used by the constraint.  Note that KB is 1,000 bytes; MB is 1,000,000 bytes; and so forth.</string>
+             <string>The file size units used by the constraint.  Note that kB is 1,000 bytes; MB is 1,000,000 bytes; and so forth.</string>
             </property>
             <property name="currentIndex">
              <number>1</number>
             </property>
             <item>
              <property name="text">
-              <string>KB</string>
+              <string>kB</string>
              </property>
             </item>
             <item>

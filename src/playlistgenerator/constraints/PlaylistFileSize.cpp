@@ -48,7 +48,7 @@ ConstraintFactoryEntry*
 ConstraintTypes::PlaylistFileSize::registerMe()
 {
     return new ConstraintFactoryEntry( "PlaylistFileSize",
-                                       i18n("Playlist Total File Size"),
+                                       i18n("Total File Size of Playlist"),
                                        i18n("Sets the preferred total file size of the playlist"),
                                        &PlaylistFileSize::createFromXml, &PlaylistFileSize::createNew );
 }
@@ -114,9 +114,10 @@ ConstraintTypes::PlaylistFileSize::toXml( QDomDocument& doc, QDomElement& elem )
 QString
 ConstraintTypes::PlaylistFileSize::getName() const
 {
-    QString v( i18nc( "%2 is e.g. 'more than' or 'less than' or 'equals'; %3 is e.g. 'KB' (kilobytes) or 'MB' or 'GB' or 'TB'",
-                       "Playlist FileSize: %2 %1 %3",
-                       m_size, comparisonToString(), unitToString() ) );
+    QString v( i18nc( "%2 is e.g. 'more than' or 'less than' or 'equals'; %1 is a file size (e.g. 50 MB)",
+                       "Total File Size of Playlist: %2 %1",
+                       KGlobal::locale()->formatByteSize( (double)getWantedSize(), 1, KLocale::MetricBinaryDialect ),
+                       comparisonToString() ) );
     return v;
 }
 
@@ -164,22 +165,6 @@ ConstraintTypes::PlaylistFileSize::comparisonToString() const
         return QString( i18n("less than") );
     } else {
         return QString( i18n("unknown comparison") );
-    }
-}
-
-QString
-ConstraintTypes::PlaylistFileSize::unitToString() const
-{
-    if ( m_unit == 0 ) {
-        return QString( i18nc("kilobytes", "KB") );
-    } else if ( m_unit == 1 ) {
-        return QString( i18nc("megabytes", "MB") );
-    } else if ( m_unit == 2 ) {
-        return QString( i18nc("gigabytes", "GB") );
-    } else if ( m_unit == 3 ) {
-        return QString( i18nc("terabytes", "TB") );
-    } else {
-        return QString( i18n("unknown unit") );
     }
 }
 
