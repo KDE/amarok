@@ -275,7 +275,6 @@ set(collection_SRCS
     core-impl/collections/support/PlaylistCollectionLocation.cpp
     core-impl/collections/support/TrashCollectionLocation.cpp
     core-impl/collections/support/XmlQueryReader.cpp
-    core-impl/collections/support/XmlQueryWriter.cpp
     core-impl/collections/support/FileCollectionLocation.cpp
     core-impl/collections/support/Expression.cpp
     core-impl/collections/support/TextualQueryFilter.cpp
