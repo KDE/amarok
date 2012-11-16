@@ -21,3 +21,9 @@ using namespace StatSyncing;
 ScrobblingService::~ScrobblingService()
 {
 }
+
+bool
+operator<( const ScrobblingServicePtr &a, const ScrobblingServicePtr &b )
+{
+    return a.data() < b.data();
+}

@@ -56,6 +56,7 @@ namespace StatSyncing
             const QList<TrackTuple> &matchedTuples() const { return m_matchedTuples; }
             const PerProviderTrackList &uniqueTracks() const { return m_uniqueTracks; }
             const PerProviderTrackList &excludedTracks() const { return m_excludedTracks; }
+            const TrackList &tracksToScrobble() const { return m_tracksToScrobble; }
 
         public slots:
             /**
@@ -85,12 +86,11 @@ namespace StatSyncing
 
         private:
             /**
-             * Queries each provider from @param artistProviders for tracks from @param
-             * artist and separates them into m_uniqueTracks, m_excludedTracks and
+             * Queries each provider from @param artistProviders for tracks from artist
+             * they specify and separates them into m_uniqueTracks, m_excludedTracks and
              * m_matchedTuples.
              */
-            void matchTracksFromArtist( const QString& lowercasedArtist,
-                                        const QMultiMap<ProviderPtr, QString> &artistProviders );
+            void matchTracksFromArtist( const QMultiMap<ProviderPtr, QString> &artistProviders );
 
             /**
              * Finds the "smallest" track among provider track lists; assumes individual
@@ -110,6 +110,12 @@ namespace StatSyncing
              * Adds @param tuple to m_matchedTuples and updated m_matchedTrackCounts
              */
             void addMatchedTuple( const TrackTuple &tuple );
+
+            /**
+             * Scan for tracks in @param trackList eligible for scrobbling and add them to
+             * m_tracksToScrobble.
+             */
+            void scanForScrobblableTracks( const TrackList &trackList );
 
             /**
              * Must be static because comparisonFields needs to be static.
@@ -135,6 +141,11 @@ namespace StatSyncing
              * Our raison d'etre: tuples of matched tracks
              */
             QList<TrackTuple> m_matchedTuples;
+
+            /**
+             * Tracks with non-zero recent playCount, eligible for being scrobbled.
+             */
+            TrackList m_tracksToScrobble;
 
             /**
              * Per-provider count of matched tracks

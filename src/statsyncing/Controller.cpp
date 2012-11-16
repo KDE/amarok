@@ -155,6 +155,12 @@ Controller::unregisterScrobblingService( const ScrobblingServicePtr &service )
     m_scrobblingServices.removeAll( service );
 }
 
+QList<ScrobblingServicePtr>
+Controller::scrobblingServices() const
+{
+    return m_scrobblingServices;
+}
+
 Config *
 Controller::config()
 {

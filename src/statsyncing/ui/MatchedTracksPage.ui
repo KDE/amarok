@@ -262,6 +262,22 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="scrobblingGroupBox">
+     <property name="title">
+      <string>Scrobbling</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_5">
+      <item>
+       <widget class="QLabel" name="scrobblingLabel">
+        <property name="text">
+         <string notr="true">1234 plays of 123 tracks will be scrobbled to Last.fm [placeholder]</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="KDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel</set>

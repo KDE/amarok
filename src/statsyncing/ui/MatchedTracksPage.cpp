@@ -104,6 +104,9 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     , m_matchedTracksModel( 0 )
 {
     setupUi( this );
+    // this group box is only shown upon setTracksToScrobble() call
+    scrobblingGroupBox->hide();
+
     m_matchedProxyModel = new SortFilterProxyModel( this );
     m_uniqueProxyModel = new QSortFilterProxyModel( this );
     m_excludedProxyModel = new QSortFilterProxyModel( this );
@@ -290,6 +293,36 @@ MatchedTracksPage::addExcludedTracksModel( ProviderPtr provider, QAbstractItemMo
         excludedFilterCombo->setCurrentIndex( 0 );
         m_excludedProxyModel->sort( 0, Qt::AscendingOrder );
     }
+}
+
+void
+MatchedTracksPage::setTracksToScrobble( const TrackList &tracksToScrobble,
+                                        const QList<ScrobblingServicePtr> &services )
+{
+    int tracks = tracksToScrobble.count();
+    int plays = 0;
+    foreach( const TrackPtr &track, tracksToScrobble )
+    {
+        plays += track->recentPlayCount();
+    }
+    QStringList serviceNames;
+    foreach( const ScrobblingServicePtr &service, services )
+    {
+        serviceNames << "<b>" + service->prettyName() + "</b>";
+    }
+
+    if( plays )
+    {
+        QString playsText = i18np( "<b>One</b> play", "<b>%1</b> plays", plays );
+        QString text = i18ncp( "%2 is the 'X plays message above'",
+                "%2 of <b>one</b> track will be scrobbled to %3.",
+                "%2 of <b>%1</b> tracks will be scrobbled to %3.", tracks, playsText,
+                serviceNames.join( i18nc( "comma between list words", ", " ) ) );
+        scrobblingLabel->setText( text );
+        scrobblingGroupBox->show();
+    }
+    else
+        scrobblingGroupBox->hide();
 }
 
 void

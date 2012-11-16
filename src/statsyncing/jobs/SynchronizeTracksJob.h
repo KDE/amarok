@@ -17,14 +17,19 @@
 #ifndef STATSYNCING_SYNCHRONIZETRACKSJOB_H
 #define STATSYNCING_SYNCHRONIZETRACKSJOB_H
 
+#include "core/meta/Meta.h"
 #include "statsyncing/Options.h"
+#include "statsyncing/ScrobblingService.h"
+#include "statsyncing/Track.h"
 
 #include <ThreadWeaver/Job>
 
+#include <QMap>
+
 namespace StatSyncing
 {
+    class TrackTuple;
 
-class TrackTuple;
     /**
      * A job to call TrackTuple::synchronize() in order not to make delays in the main
      * loop.
@@ -35,7 +40,18 @@ class TrackTuple;
 
         public:
             explicit SynchronizeTracksJob( const QList<TrackTuple> &tuples,
+                                           const TrackList &trackToScrobble,
                                            const Options &options, QObject *parent = 0 );
+
+            /**
+             * Return count of tracks that were updated during synchronization
+             */
+            int updatedTracksCount() const;
+
+            /**
+             * Return scrobble counts per scrobbling service and their status.
+             */
+            QMap<ScrobblingServicePtr, QMap<ScrobblingService::ScrobbleError, int> > scrobbles();
 
         public slots:
             /**
@@ -58,14 +74,29 @@ class TrackTuple;
             /**
              * Emitted from worker thread when all time-consuming operations are done.
              */
-            void endProgressOperation( QObject *owner, int updatedTracksCount = 0 );
+            void endProgressOperation( QObject *owner );
+
+            /**
+             * Helper to cross thread boundary between this worker thread and main thread
+             * where StatSyncing::Controller lives.
+             */
+            void scrobble( const Meta::TrackPtr &track, double playedFraction,
+                           const QDateTime &time );
 
         protected:
             virtual void run();
 
+        private slots:
+            void slotTrackScrobbled( const ScrobblingServicePtr &service, const Meta::TrackPtr &track );
+            void slotScrobbleFailed( const ScrobblingServicePtr &service, const Meta::TrackPtr &track, int error );
+
         private:
             bool m_abort;
             QList<TrackTuple> m_tuples;
+            TrackList m_tracksToScrobble;
+            QSet<Meta::TrackPtr> m_scrobbledTracks;
+            QMap<ScrobblingServicePtr, QMap<ScrobblingService::ScrobbleError, int> > m_scrobbles;
+            int m_updatedTracksCount;
             const Options m_options;
     };
 

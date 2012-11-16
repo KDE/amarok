@@ -17,6 +17,7 @@
 #include "MatchTracksJob.h"
 
 #include "MetaValues.h"
+#include "core/meta/Meta.h"
 
 #undef VERBOSE_DEBUG
 
@@ -101,6 +102,9 @@ MatchTracksJob::abort()
     m_abort = true;
 }
 
+// work-around macro vs. template argument clash in foreach
+typedef QMultiMap<ProviderPtr, QString> ArtistProviders;
+
 void MatchTracksJob::run()
 {
     const qint64 possibleFields = Meta::valTitle | Meta::valArtist | Meta::valAlbum |
@@ -124,11 +128,11 @@ void MatchTracksJob::run()
     debug() << "Matching using:" << comparisonFieldNames( s_comparisonFields ).toLocal8Bit().constData();
 #endif
 
-    foreach( const QString &lowercasedArtist, providerArtists.keys() )
+    foreach( const ArtistProviders &artistProviders, providerArtists )
     {
         if( m_abort )
             break;
-        matchTracksFromArtist( lowercasedArtist, providerArtists.value( lowercasedArtist ) );
+        matchTracksFromArtist( artistProviders );
         emit incrementProgress();
     }
     emit endProgressOperation( this );
@@ -149,14 +153,11 @@ void MatchTracksJob::run()
 }
 
 void
-MatchTracksJob::matchTracksFromArtist( const QString &lowercasedArtist,
-                                       const QMultiMap<ProviderPtr, QString> &providerArtists )
+MatchTracksJob::matchTracksFromArtist( const QMultiMap<ProviderPtr, QString> &providerArtists )
 {
 #ifdef VERBOSE_DEBUG
     DEBUG_BLOCK
-    debug() << "lowercasedArtist:" << lowercasedArtist << "providerArtists:" << providerArtists;
-#else
-    Q_UNUSED( lowercasedArtist )
+    debug() << "providerArtists:" << providerArtists;
 #endif
     PerProviderTrackList providerTracks;
     foreach( ProviderPtr provider, providerArtists.uniqueKeys() )
@@ -168,6 +169,8 @@ MatchTracksJob::matchTracksFromArtist( const QString &lowercasedArtist,
             continue;  // don't add empty lists to providerTracks
         // the sorting is important and makes our matching algorithm work
         qSort( trackList.begin(), trackList.end(), trackDelegatePtrLessThan<MatchTracksJob> );
+
+        scanForScrobblableTracks( trackList );
         providerTracks[ provider ] = trackList;
     }
 
@@ -270,5 +273,16 @@ MatchTracksJob::addMatchedTuple( const TrackTuple &tuple )
     foreach( ProviderPtr provider, tuple.providers() )
     {
         m_matchedTrackCounts[ provider ]++;
+    }
+}
+
+void
+MatchTracksJob::scanForScrobblableTracks( const TrackList &trackList )
+{
+    foreach( const TrackPtr &track, trackList )
+    {
+        // ScrobblingServices take Meta::Track, ensure there is an underlying one
+        if( track->recentPlayCount() > 0 && track->metaTrack() )
+            m_tracksToScrobble << track;
     }
 }

@@ -80,7 +80,8 @@ namespace StatSyncing
             void slotTracksMatched( ThreadWeaver::Job *job );
             void slotBack();
             void slotSynchronize();
-            void slotLogSynchronization( QObject *job, int updatedTracksCount );
+            void slotLogSynchronization( ThreadWeaver::Job *job );
+            void slotSaveSizeAndDelete();
 
         private:
             Q_DISABLE_COPY( Process )
@@ -90,6 +91,7 @@ namespace StatSyncing
             ProvidersModel *m_providersModel;
             qint64 m_checkedFields;
             MatchedTracksModel *m_matchedTracksModel;
+            TrackList m_tracksToScrobble;
 
             // has mainWindow as parent, can be deleted by it in corner cases
             QWeakPointer<KDialog> m_dialog;

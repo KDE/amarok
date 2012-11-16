@@ -135,11 +135,10 @@ namespace StatSyncing
 } // namespace StatSyncing
 
 /**
- * As of version 4.8.2, Qt doesn't provide operator< for QExplicitlySharedDataPointer<T>.
+ * Qt doesn't provide operator< for QExplicitlySharedDataPointer<T>.
  * QMap<Key,T> needs operator< for key, however QExplicitlySharedDataPointer<T> silently
  * coerces to bool, which gives really hard to find bugs, because it makes QMap with it
- * useless. Define the operator here, use our type to prevent clashes when Qt adds the
- * operator.
+ * useless. Define the operator here.
  */
 bool operator<( const StatSyncing::ProviderPtr& a, const StatSyncing::ProviderPtr &b );
 

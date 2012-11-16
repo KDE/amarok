@@ -49,17 +49,12 @@ Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &preSel
     m_dialog.data()->setInitialSize( QSize( 860, 500 ) );
     m_dialog.data()->restoreDialogSize( Amarok::config( "StatSyncingDialog" ) );
     // delete this process when user hits the close button
-    connect( m_dialog.data(), SIGNAL(finished()), SLOT(deleteLater()) );
+    connect( m_dialog.data(), SIGNAL(finished()), SLOT(slotSaveSizeAndDelete()) );
 }
 
 Process::~Process()
 {
-    if( m_dialog )
-    {
-        KConfigGroup group = Amarok::config( "StatSyncingDialog" );
-        m_dialog.data()->saveDialogSize( group );
-        delete m_dialog.data(); // we cannot deleteLater, dialog references m_matchedTracksModel
-    }
+    delete m_dialog.data(); // we cannot deleteLater, dialog references m_matchedTracksModel
 }
 
 void
@@ -72,7 +67,7 @@ Process::start()
         m_providersPage.data()->setProvidersModel( m_providersModel, m_providersModel->selectionModel() );
 
         connect( m_providersPage.data(), SIGNAL(accepted()), SLOT(slotMatchTracks()) );
-        connect( m_providersPage.data(), SIGNAL(rejected()), SLOT(deleteLater()) );
+        connect( m_providersPage.data(), SIGNAL(rejected()), SLOT(slotSaveSizeAndDelete()) );
         m_dialog.data()->mainWidget()->hide(); // otherwise it may last as a ghost image
         m_dialog.data()->setMainWidget( m_providersPage.data() ); // takes ownership
         raise();
@@ -124,8 +119,6 @@ Process::slotMatchTracks()
 void
 Process::slotTracksMatched( ThreadWeaver::Job *job )
 {
-    // won't be needed after this method returns; needs to be before early-returns to
-    // prevent memory and refcounting leak
     MatchTracksJob *matchJob = dynamic_cast<MatchTracksJob *>( job );
     if( !matchJob )
     {
@@ -160,27 +153,32 @@ Process::slotTracksMatched( ThreadWeaver::Job *job )
 
     m_matchedTracksModel = new MatchedTracksModel( matchJob->matchedTuples(), columns,
                                                    m_options, this );
+    QList<ScrobblingServicePtr> services = controller->scrobblingServices();
+    // only fill in m_tracksToScrobble if there are actual scrobbling services available
+    m_tracksToScrobble = services.isEmpty() ? TrackList() : matchJob->tracksToScrobble();
 
     if( m_matchedTracksModel->hasConflict() || m_mode == Interactive )
     {
         m_tracksPage = new MatchedTracksPage();
-        m_tracksPage.data()->setProviders( matchJob->providers() );
-        m_tracksPage.data()->setMatchedTracksModel( m_matchedTracksModel );
+        MatchedTracksPage *page = m_tracksPage.data(); // convenience
+        page->setProviders( matchJob->providers() );
+        page->setMatchedTracksModel( m_matchedTracksModel );
         foreach( ProviderPtr provider, matchJob->providers() )
         {
             if( !matchJob->uniqueTracks().value( provider ).isEmpty() )
-                m_tracksPage.data()->addUniqueTracksModel( provider, new SingleTracksModel(
-                        matchJob->uniqueTracks().value( provider ), columns, m_options, m_tracksPage.data() ) );
+                page->addUniqueTracksModel( provider, new SingleTracksModel(
+                        matchJob->uniqueTracks().value( provider ), columns, m_options, page ) );
             if( !matchJob->excludedTracks().value( provider ).isEmpty() )
-                m_tracksPage.data()->addExcludedTracksModel( provider, new SingleTracksModel(
-                    matchJob->excludedTracks().value( provider ), columns, m_options, m_tracksPage.data() ) );
+                page->addExcludedTracksModel( provider, new SingleTracksModel(
+                    matchJob->excludedTracks().value( provider ), columns, m_options, page ) );
         }
+        page->setTracksToScrobble( m_tracksToScrobble, services );
 
-        connect( m_tracksPage.data(), SIGNAL(back()), SLOT(slotBack()) );
-        connect( m_tracksPage.data(), SIGNAL(accepted()), SLOT(slotSynchronize()) );
-        connect( m_tracksPage.data(), SIGNAL(rejected()), SLOT(deleteLater()) );
+        connect( page, SIGNAL(back()), SLOT(slotBack()) );
+        connect( page, SIGNAL(accepted()), SLOT(slotSynchronize()) );
+        connect( page, SIGNAL(rejected()), SLOT(slotSaveSizeAndDelete()) );
         m_dialog.data()->mainWidget()->hide(); // otherwise it may last as a ghost image
-        m_dialog.data()->setMainWidget( m_tracksPage.data() ); // takes ownership
+        m_dialog.data()->setMainWidget( page ); // takes ownership
         raise();
     }
     else // NonInteractive mode without conflict
@@ -198,30 +196,89 @@ void
 Process::slotSynchronize()
 {
     // disconnect, otherwise we prematurely delete Process and thus m_matchedTracksModel
-    disconnect( m_dialog.data(), SIGNAL(finished()), this, SLOT(deleteLater()) );
+    disconnect( m_dialog.data(), SIGNAL(finished()), this, SLOT(slotSaveSizeAndDelete()) );
     m_dialog.data()->close();
 
-    SynchronizeTracksJob *job =
-            new SynchronizeTracksJob( m_matchedTracksModel->matchedTuples(), m_options );
+    SynchronizeTracksJob *job = new SynchronizeTracksJob(
+            m_matchedTracksModel->matchedTuples(), m_tracksToScrobble, m_options );
     QString text = i18n( "Synchronizing Track Statistics" );
     Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
-    connect( job, SIGNAL(endProgressOperation(QObject*,int)),
-             SLOT(slotLogSynchronization(QObject*,int)) );
+    connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(slotLogSynchronization(ThreadWeaver::Job*)) );
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(deleteLater()) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
 }
 
 void
-Process::slotLogSynchronization( QObject *job, int updatedTracksCount )
+Process::slotLogSynchronization( ThreadWeaver::Job *job )
 {
-    Q_UNUSED( job )
+    deleteLater(); // our work is done
+    SynchronizeTracksJob *syncJob = qobject_cast<SynchronizeTracksJob *>( job );
+    if( !syncJob )
+    {
+        warning() << __PRETTY_FUNCTION__ << "syncJob is null";
+        return;
+    }
+
+    int updatedTracksCount = syncJob->updatedTracksCount();
+    QMap<ScrobblingServicePtr, QMap<ScrobblingService::ScrobbleError, int> > scrobbles =
+            syncJob->scrobbles();
+
     QStringList providerNames;
     foreach( ProviderPtr provider, m_providersModel->selectedProviders() )
-        providerNames << provider->prettyName();
+        providerNames << "<b>" + provider->prettyName() + "</b>";
     QString providers = providerNames.join( i18nc( "comma between list words", ", " ) );
-    QString text = i18ncp( "%2 is a list of collection names", "Synchronization of %2 "
-            "done. One track was updated.", "Synchronization of %2 done. %1 tracks were "
-            "updated.", updatedTracksCount, providers );
-    Amarok::Components::logger()->longMessage( text );
+
+    QStringList text = QStringList() << i18ncp( "%2 is a list of collection names",
+            "Synchronization of %2 done. <b>One</b> track was updated.",
+            "Synchronization of %2 done. <b>%1</b> tracks were updated.",
+            updatedTracksCount, providers );
+
+    int fromDistantPast = 0;
+    int otherErrors = 0;
+    foreach( const ScrobblingServicePtr &provider, scrobbles.keys() )
+    {
+        QString name = "<b>" + provider->prettyName() + "</b>";
+        QMap<ScrobblingService::ScrobbleError, int> &providerScrobbles = scrobbles[ provider ];
+
+        QMapIterator<ScrobblingService::ScrobbleError, int> it( providerScrobbles );
+        while( it.hasNext() )
+        {
+            it.next();
+            switch( it.key() )
+            {
+                case ScrobblingService::NoError:
+                    text << i18np( "<b>One</b> track was scrobbled to %2.",
+                            "<b>%1</b> tracks were scrobbled to %2.", it.value(), name );
+                    break;
+                case ScrobblingService::FromTheDistantPast:
+                    fromDistantPast += it.value();
+                    break;
+                case ScrobblingService::TooShort:
+                case ScrobblingService::BadMetadata:
+                case ScrobblingService::FromTheFuture:
+                    otherErrors += it.value();
+                    break;
+            }
+        }
+    }
+    if( fromDistantPast )
+        text << i18np( "<b>One</b> track was last played in too distant past to be scrobbled.",
+                       "<b>%1</b> tracks were last played in too distant past to be scrobbled.",
+                       fromDistantPast );
+    if( otherErrors )
+        text << i18np( "Failed to scrobble <b>one</b> track.",
+                       "Failed to scrobble <b>%1</b> tracks.", otherErrors );
+
+    Amarok::Components::logger()->longMessage( text.join( "<br>\n" ) );
+}
+
+void
+Process::slotSaveSizeAndDelete()
+{
+    if( m_dialog )
+    {
+        KConfigGroup group = Amarok::config( "StatSyncingDialog" );
+        m_dialog.data()->saveDialogSize( group );
+    }
+    deleteLater();
 }

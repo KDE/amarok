@@ -80,6 +80,12 @@ namespace StatSyncing
             void unregisterScrobblingService( const ScrobblingServicePtr &service );
 
             /**
+             * Return a list of currently registered scrobbling services (in arbitrary
+             * order).
+             */
+            QList<ScrobblingServicePtr> scrobblingServices() const;
+
+            /**
              * Return StatSyncing configuration object that describes enabled and
              * disabled statsyncing providers. You may not cache the pointer.
              */

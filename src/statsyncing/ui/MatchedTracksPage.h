@@ -19,6 +19,7 @@
 
 #include "ui_MatchedTracksPage.h"
 #include "statsyncing/Provider.h"
+#include "statsyncing/ScrobblingService.h"
 
 class QSortFilterProxyModel;
 
@@ -57,6 +58,11 @@ namespace StatSyncing
              * the model pointer.
              */
             void addExcludedTracksModel( ProviderPtr provider, QAbstractItemModel *model );
+
+            /**
+             * Set a list of tracks that are going to be scrobbled
+             */
+            void setTracksToScrobble( const TrackList &tracksToScrobble, const QList<ScrobblingServicePtr> &services );
 
         signals:
             /**
