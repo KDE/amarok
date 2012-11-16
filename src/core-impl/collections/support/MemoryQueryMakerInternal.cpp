@@ -38,7 +38,6 @@ MemoryQueryMakerInternal::MemoryQueryMakerInternal( const QWeakPointer<MemoryCol
     , m_maxSize( 0 )
     , m_type( QueryMaker::None )
     , m_albumQueryMode( QueryMaker::AllAlbums )
-    , m_artistQueryMode( QueryMaker::TrackArtists )
     , m_orderDescending( false )
     , m_orderByNumberField( false )
     , m_orderByField( 0 )

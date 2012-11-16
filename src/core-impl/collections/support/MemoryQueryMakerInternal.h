@@ -69,7 +69,6 @@ public:
     void setCustomReturnFunctions( const QList<CustomReturnFunction*> &functions );
     void setCustomReturnValues( const QList<CustomReturnValue*> &values );
     void setAlbumQueryMode( Collections::QueryMaker::AlbumQueryMode mode ) { m_albumQueryMode = mode; }
-    void setArtistQueryMode( Collections::QueryMaker::ArtistQueryMode mode ) { m_artistQueryMode = mode; }
     void setOrderDescending( bool orderDescending ) { m_orderDescending = orderDescending; }
     void setOrderByNumberField( bool orderByNumberField ) { m_orderByNumberField = orderByNumberField; }
     void setOrderByField( qint64 orderByField ) { m_orderByField = orderByField; }
@@ -100,7 +99,6 @@ private:
     bool m_returnAsDataPtrs;
     Collections::QueryMaker::QueryType m_type;
     Collections::QueryMaker::AlbumQueryMode m_albumQueryMode;
-    Collections::QueryMaker::ArtistQueryMode m_artistQueryMode;
     Collections::QueryMaker::LabelQueryMode m_labelQueryMode;
     bool m_orderDescending;
     bool m_orderByNumberField;

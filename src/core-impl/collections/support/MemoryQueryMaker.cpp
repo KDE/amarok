@@ -144,7 +144,6 @@ MemoryQueryMaker::run()
         qmi->setCustomReturnValues( d->returnValues );
         d->returnValues.clear(); //will be deleted by MemoryQueryMakerInternal
         qmi->setAlbumQueryMode( d->albumQueryMode );
-        qmi->setArtistQueryMode( d->artistQueryMode );
         qmi->setLabelQueryMode( d->labelQueryMode );
         qmi->setOrderDescending( d->orderDescending );
         qmi->setOrderByNumberField( d->orderByNumberField );
