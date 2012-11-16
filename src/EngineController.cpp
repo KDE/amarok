@@ -833,20 +833,16 @@ EngineController::eqBandsFreq() const
     foreach( const Phonon::EffectParameter &mParam, mEqPar )
     {
         if( mParam.name().contains( QString( "pre-amp" ) ) )
-        {
             mBandsFreq << i18n( "Preamp" );
-        }
         else if ( mParam.name().contains( rx ) )
         {
             if( rx.cap( 0 ).toInt() < 1000 )
-            {
                 mBandsFreq << i18n( "%0\nHz" ).arg( rx.cap( 0 ) );
-            }
             else
-            {
                 mBandsFreq << i18n( "%0\nkHz" ).arg( QString::number( rx.cap( 0 ).toInt()/1000 ) );
-            }
         }
+        else
+            mBandsFreq << mParam.name();
     }
     return mBandsFreq;
 }
