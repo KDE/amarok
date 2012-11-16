@@ -262,8 +262,7 @@ IpodCopyTracksJob::slotStartDuplicateTrackSearch( const Meta::TrackPtr &track )
     // we cannot qm->addMatch( track ) - it matches by uidUrl()
     qm->addFilter( Meta::valTitle, track->name(), true, true );
     qm->addMatch( track->album() );
-    qm->setArtistQueryMode( Collections::QueryMaker::TrackArtists );
-    qm->addMatch( track->artist() );
+    qm->addMatch( track->artist(), Collections::QueryMaker::TrackArtists );
     qm->addMatch( track->composer() );
     qm->addMatch( track->year() );
     qm->addNumberFilter( Meta::valTrackNr, track->trackNumber(), Collections::QueryMaker::Equals );

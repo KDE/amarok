@@ -162,12 +162,13 @@ QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::GenrePtr &genre 
     return this;
 }
 
-QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::ArtistPtr & artist )
+QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::ArtistPtr & artist, QueryMaker::ArtistMatchBehaviour behaviour )
 {
-    if ( d->closestParent > Private::ARTIST )
+    Q_UNUSED( behaviour );
+    const Meta::ScriptableServiceArtist *scriptableArtist = dynamic_cast<const Meta::ScriptableServiceArtist *>( artist.data() );
+    if ( scriptableArtist && d->closestParent > Private::ARTIST )
     {
         d->closestParent = Private::ARTIST;
-        const Meta::ScriptableServiceArtist * scriptableArtist = static_cast< const Meta::ScriptableServiceArtist * >( artist.data() );
         d->callbackString = scriptableArtist->callbackString();
         d->parentId = scriptableArtist->id();
     }

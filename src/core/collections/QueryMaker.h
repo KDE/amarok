@@ -36,13 +36,13 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
                               , OnlyCompilations = 1
                               , OnlyNormalAlbums = 2 };
 
-        enum ArtistQueryMode { TrackArtists         = 0,
-                               AlbumArtists         = 1,
-                               AlbumOrTrackArtists  = 2 };
-
         enum LabelQueryMode { NoConstraint = 0
                                 , OnlyWithLabels = 1
                                 , OnlyWithoutLabels = 2 };
+
+        enum ArtistMatchBehaviour { TrackArtists,
+                                    AlbumArtists,
+                                    AlbumOrTrackArtists };
 
         //Filters that the QueryMaker accepts for searching.
         //not all implementations will accept all filter levels, so make it possible to
@@ -125,7 +125,15 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual QueryMaker* orderBy( qint64 value, bool descending = false ) = 0;
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track ) = 0;
-        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist ) = 0;
+        /**
+         * Match given artist. Depending on @param behaviour matches:
+         *   track artist if TrackArtists is given,
+         *   album artist if AlbumArtists is given,
+         *   any of track or album artist if AlbumOrTrackArtists is given.
+         *
+         * By default matches only track artist.
+         */
+        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists ) = 0;
         virtual QueryMaker* addMatch( const Meta::AlbumPtr &album ) = 0;
         virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer ) = 0;
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre ) = 0;
@@ -164,15 +172,6 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          * QueryMaker defaults to AlbumQueryMode::AllAlbums.
          */
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
-
-        /**
-         * Set artist query mode. If this method is not called,
-         * QueryMaker defaults to ArtistQueryMode::TrackArtist.
-         *
-         * WARNING: this gets reset to TrackArtist at the end of the following call to
-         * addMatch( Meta::Artist )
-         */
-        virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
 
         /**
           * Sets the label query mode. This method restricts a query to tracks

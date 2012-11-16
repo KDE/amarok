@@ -79,7 +79,6 @@ struct ServiceSqlQueryMaker::Private
     //bool includedBuilder;
     //bool collectionRestriction;
     AlbumQueryMode albumMode;
-    ArtistQueryMode artistMode;
     bool withoutDuplicates;
     int maxResultSize;
     ServiceSqlWorkerThread *worker;
@@ -99,7 +98,6 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
 
     d->queryType = Private::NONE;
     d->linkedTables = 0;
-    d->artistMode = TrackArtists;
     d->withoutDuplicates = false;
     d->maxResultSize = -1;
     d->andStack.push( true );
@@ -281,19 +279,22 @@ ServiceSqlQueryMaker::addMatch( const Meta::TrackPtr &track )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
+ServiceSqlQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::ArtistMatchBehaviour behaviour )
 {
     QString prefix = m_metaFactory->tablePrefix();
 
     if( !d )
         return this;
 
+    if( behaviour == AlbumArtists || behaviour == AlbumOrTrackArtists )
+        d->linkedTables |= Private::ALBUMARTISTS_TABLE;
+
     //this should NOT be made into a static cast as this might get called with an incompatible type!
     const Meta::ServiceArtist * serviceArtist = dynamic_cast<const Meta::ServiceArtist *>( artist.data() );
     d->linkedTables |= Private::ARTISTS_TABLE;
     if( serviceArtist )
     {
-        switch( d->artistMode )
+        switch( behaviour )
         {
             case TrackArtists:
                  d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
@@ -308,7 +309,7 @@ ServiceSqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
     }
     else
     {
-        switch( d->artistMode )
+        switch( behaviour )
         {
             case TrackArtists:
                  d->queryMatch += QString( " AND " + prefix + "_artists.name= '%1'" ).arg( escape( artist->name() ) );
@@ -321,7 +322,6 @@ ServiceSqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
                  break;
         }
     }
-    d->artistMode = TrackArtists;
     return this;
 }
 
@@ -845,15 +845,4 @@ ServiceSqlQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
     return this;
 }
 
-QueryMaker *
-ServiceSqlQueryMaker::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
-{
-    if( mode == AlbumArtists || mode == AlbumOrTrackArtists )
-        d->linkedTables |= Private::ALBUMARTISTS_TABLE;
-    d->artistMode = mode;
-    return this;
-}
-
-
 #include "ServiceSqlQueryMaker.moc"
-

@@ -57,7 +57,7 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
-        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
+        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
         virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
         virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
@@ -77,7 +77,6 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* endAndOr();
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
-        virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
         virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
     private slots:

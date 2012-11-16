@@ -196,10 +196,10 @@ ProxyQueryMaker::addMatch( const Meta::TrackPtr &track )
 }
 
 QueryMaker*
-ProxyQueryMaker::addMatch( const Meta::ArtistPtr &artist )
+ProxyQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::ArtistMatchBehaviour behaviour )
 {
     foreach( QueryMaker *b, m_builders )
-        b->addMatch( artist );
+        b->addMatch( artist, behaviour );
     return this;
 }
 
@@ -284,14 +284,6 @@ ProxyQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
     foreach( QueryMaker *b, m_builders )
         b->setAlbumQueryMode( mode );
-    return this;
-}
-
-QueryMaker*
-ProxyQueryMaker::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
-{
-    foreach( QueryMaker *b, m_builders )
-        b->setArtistQueryMode( mode );
     return this;
 }
 

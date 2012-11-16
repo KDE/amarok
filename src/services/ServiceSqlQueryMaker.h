@@ -42,7 +42,7 @@ class ServiceSqlQueryMaker : public QueryMaker
         virtual QueryMaker* setQueryType( QueryType type );
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
-        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
+        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
         virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
         virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
@@ -66,7 +66,6 @@ class ServiceSqlQueryMaker : public QueryMaker
         virtual QueryMaker* endAndOr();
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
-        virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
 
         QString query();
         QStringList runQuery( const QString &query );

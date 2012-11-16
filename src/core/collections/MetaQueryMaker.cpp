@@ -159,11 +159,12 @@ MetaQueryMaker::addMatch( const Meta::TrackPtr &track )
     return this;
 }
 
+
 QueryMaker*
-MetaQueryMaker::addMatch( const Meta::ArtistPtr &artist )
+MetaQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::ArtistMatchBehaviour behaviour )
 {
     foreach( QueryMaker *b, builders )
-        b->addMatch( artist );
+        b->addMatch( artist, behaviour );
     return this;
 }
 
@@ -244,14 +245,6 @@ MetaQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
     foreach( QueryMaker *qm, builders )
         qm->setAlbumQueryMode( mode );
-    return this;
-}
-
-QueryMaker*
-MetaQueryMaker::setArtistQueryMode( ArtistQueryMode mode )
-{
-    foreach( QueryMaker *qm, builders )
-        qm->setArtistQueryMode( mode );
     return this;
 }
 

@@ -85,7 +85,6 @@ struct SqlQueryMaker::Private
     bool withoutDuplicates;
     int maxResultSize;
     AlbumQueryMode albumMode;
-    ArtistQueryMode artistMode;
     LabelQueryMode labelMode;
     SqlWorkerThread *worker;
 
@@ -114,7 +113,6 @@ SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
     d->linkedTables = 0;
     d->withoutDuplicates = false;
     d->albumMode = AllAlbums;
-    d->artistMode = TrackArtists;
     d->labelMode = QueryMaker::NoConstraint;
     d->maxResultSize = -1;
     d->andStack.clear();
@@ -346,10 +344,13 @@ SqlQueryMaker::addMatch( const Meta::TrackPtr &track )
     return this;
 }
 
+
 QueryMaker*
-SqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
+SqlQueryMaker::addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour )
 {
     d->linkedTables |= Private::ARTIST_TAB;
+    if( behaviour == AlbumArtists || behaviour == AlbumOrTrackArtists )
+        d->linkedTables |= Private::ALBUMARTIST_TAB;
 
     QString artistQuery;
     QString albumArtistQuery;
@@ -365,7 +366,7 @@ SqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
         albumArtistQuery = "( albumartists.name IS NULL OR albumartists.name = '')";
     }
 
-    switch( d->artistMode )
+    switch( behaviour )
     {
     case TrackArtists:
         d->queryMatch += " AND " + artistQuery;
@@ -377,8 +378,6 @@ SqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
         d->queryMatch += " AND ( (" + artistQuery + " ) OR ( " + albumArtistQuery + " ) )";
         break;
     }
-    //Turn back default value, so we don't need to worry about this until the next AlbumArtist request.
-    d->artistMode = TrackArtists;
     return this;
 }
 
@@ -630,16 +629,6 @@ SqlQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
         d->linkedTables |= Private::ALBUM_TAB;
     }
     d->albumMode = mode;
-    return this;
-}
-
-QueryMaker*
-SqlQueryMaker::setArtistQueryMode( ArtistQueryMode mode )
-{
-    if( mode == AlbumArtists || mode == AlbumOrTrackArtists )
-        d->linkedTables |= Private::ALBUMARTIST_TAB;
-
-    d->artistMode = mode;
     return this;
 }
 

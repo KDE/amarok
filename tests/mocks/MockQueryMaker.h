@@ -84,7 +84,7 @@ class MockQueryMaker : public QueryMaker
             return 0;
         }
 
-        virtual QueryMaker *addMatch( const Meta::ArtistPtr& )
+        virtual QueryMaker *addMatch( const Meta::ArtistPtr& , ArtistMatchBehaviour )
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
             return 0;

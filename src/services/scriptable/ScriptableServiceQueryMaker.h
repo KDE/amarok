@@ -46,7 +46,7 @@ public:
 
     using QueryMaker::addMatch;
     virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
-    virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
+    virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
 
     virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );

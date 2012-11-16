@@ -53,7 +53,7 @@ namespace Collections
             QueryMaker* orderBy( qint64 value, bool descending = false );
 
             QueryMaker* addMatch( const Meta::TrackPtr &track );
-            QueryMaker* addMatch( const Meta::ArtistPtr &artist );
+            QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
             QueryMaker* addMatch( const Meta::AlbumPtr &album );
             QueryMaker* addMatch( const Meta::ComposerPtr &composer );
             QueryMaker* addMatch( const Meta::GenrePtr &genre );

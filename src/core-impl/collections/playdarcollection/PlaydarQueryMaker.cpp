@@ -201,24 +201,24 @@ namespace Collections
         
         return this;
     }
-    
+
     QueryMaker*
-    PlaydarQueryMaker::addMatch( const Meta::ArtistPtr &artist )
+    PlaydarQueryMaker::addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour )
     {
         DEBUG_BLOCK
-        
-        CurriedUnaryQMFunction< const Meta::ArtistPtr& >::FunPtr funPtr = &QueryMaker::addMatch;
-        CurriedQMFunction *curriedFun = new CurriedUnaryQMFunction< const Meta::ArtistPtr& >( funPtr, artist );
+
+        CurriedBinaryQMFunction<const Meta::ArtistPtr &, ArtistMatchBehaviour>::FunPtr funPtr = &QueryMaker::addMatch;
+        CurriedQMFunction *curriedFun = new CurriedBinaryQMFunction<const Meta::ArtistPtr &, ArtistMatchBehaviour>( funPtr, artist, behaviour );
         m_queryMakerFunctions.append( curriedFun );
-        
+
         (*curriedFun)( m_memoryQueryMaker.data() );
 
         if( artist )
             m_filterMap.insert( Meta::valArtist, artist->name() );
-        
+
         return this;
     }
-    
+
     QueryMaker*
     PlaydarQueryMaker::addMatch( const Meta::AlbumPtr &album )
     {

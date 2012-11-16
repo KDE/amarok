@@ -81,7 +81,7 @@ TrackList TrackMatcher::match( const TrackList &tracks )
 
 
 
-ArtistMatcher::ArtistMatcher( ArtistPtr artist, Collections::QueryMaker::ArtistQueryMode artistMode )
+ArtistMatcher::ArtistMatcher( ArtistPtr artist, Collections::QueryMaker::ArtistMatchBehaviour artistMode )
     : MemoryMatcher()
     , m_artist( artist )
     , m_queryMode( artistMode )

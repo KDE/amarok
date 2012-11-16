@@ -55,10 +55,11 @@ QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::TrackPtr & track)
     return this;
 }
 
-QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::ArtistPtr & artist)
+QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::ArtistPtr & artist, QueryMaker::ArtistMatchBehaviour behaviour )
 {
     DEBUG_BLOCK
     Q_UNUSED( artist );
+    Q_UNUSED( behaviour );
     return this;
 }
 

@@ -216,9 +216,10 @@ DEBUG_BLOCK
     return this;
 }
 
-QueryMaker* UpnpQueryMaker::addMatch( const Meta::ArtistPtr &artist )
+QueryMaker* UpnpQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::ArtistMatchBehaviour behaviour )
 {
 DEBUG_BLOCK
+    Q_UNUSED( behaviour ); // TODO: does UPnP tell between track and album artists?
     debug() << this << "Adding artist match" << artist->name();
     m_query.addMatch( "( upnp:artist = \"" + artist->name() + "\" )" );
     return this;

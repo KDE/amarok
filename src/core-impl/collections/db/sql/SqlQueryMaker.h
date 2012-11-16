@@ -41,7 +41,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
         virtual QueryMaker* setQueryType( QueryType type );
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
-        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
+        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
         virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
         virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
@@ -61,7 +61,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
         virtual QueryMaker* limitMaxResultSize( int size );
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
-        virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
         virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
         virtual QueryMaker* beginAnd();

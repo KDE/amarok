@@ -59,14 +59,14 @@ class AMAROK_EXPORT TrackMatcher : public MemoryMatcher
 class AMAROK_EXPORT ArtistMatcher : public MemoryMatcher
 {
     public:
-        ArtistMatcher( Meta::ArtistPtr artist, Collections::QueryMaker::ArtistQueryMode artistMode
+        ArtistMatcher( Meta::ArtistPtr artist, Collections::QueryMaker::ArtistMatchBehaviour artistMode
                        = Collections::QueryMaker::TrackArtists );
         virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
         virtual Meta::TrackList match( const Meta::TrackList &tracks );
 
     private:
         Meta::ArtistPtr m_artist;
-        Collections::QueryMaker::ArtistQueryMode m_queryMode;
+        Collections::QueryMaker::ArtistMatchBehaviour m_queryMode;
 };
 
 class AMAROK_EXPORT AlbumMatcher : public MemoryMatcher

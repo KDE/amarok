@@ -123,18 +123,6 @@ XmlQueryReader::readQuery()
             {
                 d->qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
             }
-            else if( name() == "onlyTrackArtists" )
-            {
-                d->qm->setArtistQueryMode( Collections::QueryMaker::TrackArtists );
-            }
-            else if( name() == "onlyAlbumArtists" )
-            {
-                d->qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
-            }
-            else if( name() == "AlbumOrTrackArtists" )
-            {
-                d->qm->setArtistQueryMode( Collections::QueryMaker::AlbumOrTrackArtists );
-            }
             else if( name() == "returnValues" )
                 readReturnValues();
             //add more container elements here
@@ -334,4 +322,3 @@ XmlQueryReader::compareVal( QStringRef compare )
     else
         return -1;
 }
-
