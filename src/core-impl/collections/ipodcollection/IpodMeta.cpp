@@ -838,13 +838,13 @@ Album::image( int size ) const
         if( gdk_pixbuf_get_colorspace( pixbuf ) != GDK_COLORSPACE_RGB )
         {
             warning() << __PRETTY_FUNCTION__ << "Unsupported GTK colorspace.";
-            gdk_pixbuf_unref( pixbuf );
+            g_object_unref( pixbuf );
             break;
         }
         if( gdk_pixbuf_get_bits_per_sample( pixbuf ) != 8 )
         {
             warning() << __PRETTY_FUNCTION__ << "Unsupported number of bits per sample.";
-            gdk_pixbuf_unref( pixbuf );
+            g_object_unref( pixbuf );
             break;
         }
         int n_channels = gdk_pixbuf_get_n_channels( pixbuf );
@@ -857,7 +857,7 @@ Album::image( int size ) const
         else
         {
             warning() << __PRETTY_FUNCTION__ << "Unsupported n_channels / has_alpha combination.";
-            gdk_pixbuf_unref( pixbuf );
+            g_object_unref( pixbuf );
             break;
         }
 
@@ -869,7 +869,7 @@ Album::image( int size ) const
                              format );
         // force deep copy so that memory from gdk pixbuf can be unreferenced:
         albumImage.setDotsPerMeterX( 2835 );
-        gdk_pixbuf_unref( pixbuf );
+        g_object_unref( pixbuf );
     } while( false );
 #endif
     return albumImage;
