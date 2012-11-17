@@ -147,7 +147,10 @@ UmsCollectionFactory::identifySolidDevice( const QString &udi ) const
         if( device.is<Solid::StorageDrive>() )
         {
             Solid::StorageDrive *sd = device.as<Solid::StorageDrive>();
-            return sd->isHotpluggable() && sd->driveType() != Solid::StorageDrive::CdromDrive;
+            if( sd->driveType() == Solid::StorageDrive::CdromDrive )
+                return false;
+            // USB Flash discs are usually hotpluggable, SD/MMC card slots are usually removable
+            return sd->isHotpluggable() || sd->isRemovable();
         }
         device = device.parent();
     }
