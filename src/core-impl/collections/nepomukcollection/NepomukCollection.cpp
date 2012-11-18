@@ -113,7 +113,8 @@ NepomukCollection::possiblyContainsTrack( const KUrl &url ) const
     Nepomuk::Resource res( url );
     if( res.exists() && res.hasType( Nepomuk::Vocabulary::NFO::Audio() ) )
         return true;
-    else return false;
+    else
+        return false;
 }
 
 Meta::TrackPtr
