@@ -163,6 +163,18 @@ namespace StatSyncing
             QTimer *m_startSyncingTimer;
             Config *m_config;
 
+            /**
+             * When a new collection appears, StatSyncing::Controller will automatically
+             * trigger synchronization. It however waits s_syncingTriggerTimeout
+             * milliseconds to let the collection settle down. Moreover, if the newly
+             * added collection emits updated(), the timeout will run from start again.
+             *
+             * (reason: e.g. iPod Collectin appears quickly, but with no tracks, which
+             * are added gradually as they are parsed. This "ensures" we only start
+             * syncing as soon as all tracks are parsed.)
+             */
+            static const int s_syncingTriggerTimeout;
+
             // scrobbling-related
             QList<ScrobblingServicePtr> m_scrobblingServices;
             QTimer *m_updateNowPlayingTimer;

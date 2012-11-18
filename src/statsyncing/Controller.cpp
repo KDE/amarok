@@ -34,6 +34,8 @@
 
 using namespace StatSyncing;
 
+const int Controller::s_syncingTriggerTimeout( 5000 );
+
 Controller::Controller( QObject* parent )
     : QObject( parent )
     , m_startSyncingTimer( new QTimer( this ) )
@@ -207,10 +209,10 @@ void
 Controller::delayedStartSynchronization()
 {
     if( m_startSyncingTimer->isActive() )
-        m_startSyncingTimer->start( 5000 ); // reset the timeout
+        m_startSyncingTimer->start( s_syncingTriggerTimeout ); // reset the timeout
     else
     {
-        m_startSyncingTimer->start( 5000 );
+        m_startSyncingTimer->start( s_syncingTriggerTimeout );
         // we could as well connect to all m_providers updated signals, but this serves
         // for now
         CollectionManager *manager = CollectionManager::instance();
