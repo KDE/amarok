@@ -33,12 +33,11 @@ const int SynchronizationAdapter::s_entriesPerQuery( 200 );
 SynchronizationAdapter::SynchronizationAdapter( const LastFmServiceConfig *config )
     : m_config( config )
 {
-    connect( this, SIGNAL(startArtistSearch(int)),
-             SLOT(slotStartArtistSearch(int)), Qt::QueuedConnection );
+    connect( this, SIGNAL(startArtistSearch(int)), SLOT(slotStartArtistSearch(int)) );
     connect( this, SIGNAL(startTrackSearch(QString,int)),
-             SLOT(slotStartTrackSearch(QString,int)), Qt::QueuedConnection );
+             SLOT(slotStartTrackSearch(QString,int)) );
     connect( this, SIGNAL(startTagSearch(QString,QString)),
-             SLOT(slotStartTagSearch(QString,QString)), Qt::QueuedConnection );
+             SLOT(slotStartTagSearch(QString,QString)) );
 }
 
 SynchronizationAdapter::~SynchronizationAdapter()
