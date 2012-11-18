@@ -88,8 +88,9 @@ public:
 
     /**
      * Checks if FFmpeg supports the current format.
-     * @param ffmpegOutput the output of the command "ffmpeg -codecs"
-     * @return true if the format is supported by an encoder in FFmpeg, otherwise false
+     * @param ffmpegOutput one line of the output of the command "ffmpeg -codecs"
+     * @return true if the format is supported by an encoder in FFmpeg on this output line,
+     *         otherwise false
      */
     virtual bool verifyAvailability( const QString &ffmpegOutput ) const = 0;
 

@@ -18,8 +18,7 @@
 
 #include <KLocale>
 
-namespace Transcoding
-{
+using namespace Transcoding;
 
 WmaFormat::WmaFormat()
 {
@@ -116,7 +115,5 @@ WmaFormat::toFfmpegBitrate( int setting ) const
 bool
 WmaFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( ".EA... wmav2" ) );
-}
-
+    return ffmpegOutput.contains( QRegExp( "^ .EA....*wmav2" ) );
 }

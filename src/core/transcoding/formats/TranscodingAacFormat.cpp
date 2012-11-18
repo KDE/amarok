@@ -20,8 +20,7 @@
 
 #include <QVariant>
 
-namespace Transcoding
-{
+using namespace Transcoding;
 
 AacFormat::AacFormat()
 {
@@ -114,7 +113,5 @@ AacFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 AacFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( ".EA... libfaac" ) );
-}
-
+    return ffmpegOutput.contains( QRegExp( "^ .EA....*libfaac" ) );
 }

@@ -18,8 +18,7 @@
 
 #include <KLocale>
 
-namespace Transcoding
-{
+using namespace Transcoding;
 
 VorbisFormat::VorbisFormat()
 {
@@ -111,7 +110,5 @@ VorbisFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 VorbisFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( ".EA... libvorbis" ) );
-}
-
+    return ffmpegOutput.contains( QRegExp( "^ .EA....*libvorbis" ) );
 }

@@ -18,8 +18,7 @@
 
 #include <KLocale>
 
-namespace Transcoding
-{
+using namespace Transcoding;
 
 AlacFormat::AlacFormat()
 {
@@ -61,7 +60,5 @@ AlacFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 AlacFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( ".EA... alac" ) );
-}
-
+    return ffmpegOutput.contains( QRegExp( "^ .EA....*alac" ) );
 }

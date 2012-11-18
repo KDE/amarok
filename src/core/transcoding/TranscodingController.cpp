@@ -57,15 +57,23 @@ Controller::onAvailabilityVerified( int exitCode, QProcess::ExitStatus exitStatu
 {
     Q_UNUSED( exitCode )
     Q_UNUSED( exitStatus )
+    sender()->deleteLater();
     QString output = qobject_cast< KProcess * >( sender() )->readAllStandardOutput().data();
     if( output.simplified().isEmpty() )
         return;
+    QStringList lines = output.split( QRegExp( "\r|\n" ), QString::SkipEmptyParts );
     foreach( Format *format, m_formats )
     {
-        if( format->verifyAvailability( output ) )
+        bool formatAvailable = false;
+        foreach( const QString &line, lines )
+        {
+            formatAvailable |= format->verifyAvailability( line );
+            if( formatAvailable )
+                break;
+        }
+        if( formatAvailable )
             m_availableEncoders.insert( format->encoder() );
     }
-    sender()->deleteLater();
 }
 
 Format *
