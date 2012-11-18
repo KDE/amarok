@@ -159,6 +159,7 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/CollectionConfig.ui
     configdialog/dialogs/GeneralConfig.ui
     configdialog/dialogs/MetadataConfig.ui
+    configdialog/dialogs/ExcludedLabelsDialog.ui
     configdialog/dialogs/NotificationsConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
     configdialog/dialogs/DatabaseConfig.ui

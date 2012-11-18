@@ -31,29 +31,11 @@ ExcludedLabelsDialog::ExcludedLabelsDialog( StatSyncing::Config *config, QWidget
                                             Qt::WFlags flags )
     : KDialog( parent, flags )
     , m_statSyncingConfig( config )
-    , m_layout( new QGridLayout( mainWidget() ) )
-    , m_addLabelLine( new KLineEdit() )
-    , m_listWidget( new QListWidget() )
 {
     Q_ASSERT( m_statSyncingConfig );
+    setupUi( mainWidget() );
     setButtons( Ok | Cancel );
     setCaption( i18n( "Excluded Labels" ) );
-
-    QLabel *label = new QLabel( i18n( "Selected labels won't by touched by statistics "
-            "synchronization" ) );
-    label->setWordWrap( true );
-    m_layout->addWidget( label, 0, 0, 1, 2 );
-
-    m_addLabelLine->setClickMessage( i18n( "Add Label to Exclude" ) );
-    m_layout->addWidget( m_addLabelLine, 1, 0 );
-    QAbstractButton *addButton = new QToolButton();
-    addButton->setIcon( KIcon( "list-add" ) );
-    addButton->setToolTip( i18n( "Add this label to the list of excluded labels" ) );
-    connect( addButton, SIGNAL(clicked(bool)), SLOT(slotAddExcludedLabel()) );
-    m_layout->addWidget( addButton, 1, 1 );
-
-    m_listWidget->setSelectionMode( QAbstractItemView::MultiSelection );
-    m_layout->addWidget( m_listWidget, 2, 0, 1, 2 );
 
     addLabels( config->excludedLabels(), true );
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
@@ -63,6 +45,8 @@ ExcludedLabelsDialog::ExcludedLabelsDialog( StatSyncing::Config *config, QWidget
              SLOT(slowNewResultReady(Meta::LabelList)) );
     qm->run();
 
+    connect( addButton, SIGNAL(clicked(bool)), SLOT(slotAddExcludedLabel()) );
+    connect( addLabelLine, SIGNAL(returnPressed(QString)), SLOT(slotAddExcludedLabel()) );
     connect( this, SIGNAL(okClicked()), SLOT(slotSaveToConfig()) );
 }
 
@@ -76,15 +60,15 @@ ExcludedLabelsDialog::slowNewResultReady( const Meta::LabelList &labels )
 void
 ExcludedLabelsDialog::slotAddExcludedLabel()
 {
-    addLabel( m_addLabelLine->text(), true );
-    m_addLabelLine->setText( "" );
+    addLabel( addLabelLine->text(), true );
+    addLabelLine->setText( QString() );
 }
 
 void
 ExcludedLabelsDialog::slotSaveToConfig()
 {
     QSet<QString> excluded;
-    foreach( const QListWidgetItem *item, m_listWidget->selectedItems() )
+    foreach( const QListWidgetItem *item, listWidget->selectedItems() )
     {
         excluded.insert( item->text() );
     }
@@ -94,31 +78,31 @@ ExcludedLabelsDialog::slotSaveToConfig()
 void
 ExcludedLabelsDialog::addLabel( const QString &label, bool selected )
 {
-    int count = m_listWidget->count();
+    int count = listWidget->count();
     for( int i = 0; i <= count; i++ )
     {
         QModelIndex idx;
         if( i == count )
         {
             // reached end of the list
-            m_listWidget->addItem( label );
-            idx = m_listWidget->model()->index( i, 0 );
+            listWidget->addItem( label );
+            idx = listWidget->model()->index( i, 0 );
         }
-        else if( m_listWidget->item( i )->text() == label )
+        else if( listWidget->item( i )->text() == label )
         {
             // already in list
             return;
         }
-        else if( QString::localeAwareCompare( m_listWidget->item( i )->text(), label ) > 0 )
+        else if( QString::localeAwareCompare( listWidget->item( i )->text(), label ) > 0 )
         {
-            m_listWidget->insertItem( i, label );
-            idx = m_listWidget->model()->index( i, 0 );
+            listWidget->insertItem( i, label );
+            idx = listWidget->model()->index( i, 0 );
         }
         // else continue to next iteration
 
         // just inserted
         if( idx.isValid() && selected )
-            m_listWidget->selectionModel()->select( idx, QItemSelectionModel::Select );
+            listWidget->selectionModel()->select( idx, QItemSelectionModel::Select );
         if( idx.isValid() )
             return;
     }

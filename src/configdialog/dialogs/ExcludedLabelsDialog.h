@@ -17,6 +17,7 @@
 #ifndef EXCLUDEDLABELSDIALOG_H
 #define EXCLUDEDLABELSDIALOG_H
 
+#include "ui_ExcludedLabelsDialog.h"
 #include "core/meta/Meta.h"
 
 #include <KDialog>
@@ -28,7 +29,7 @@ class KLineEdit;
 class QGridLayout;
 class QListWidget;
 
-class ExcludedLabelsDialog : public KDialog
+class ExcludedLabelsDialog : public KDialog, private Ui_ExcludedLabelsDialog
 {
     Q_OBJECT
 
@@ -46,9 +47,6 @@ class ExcludedLabelsDialog : public KDialog
         void addLabels( const QSet<QString> &labels, bool selected = false );
 
         StatSyncing::Config *m_statSyncingConfig;
-        QGridLayout *m_layout;
-        KLineEdit *m_addLabelLine;
-        QListWidget *m_listWidget;
 };
 
 #endif // EXCLUDEDLABELSDIALOG_H
