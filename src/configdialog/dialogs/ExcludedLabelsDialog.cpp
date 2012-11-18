@@ -16,11 +16,11 @@
 
 #include "ExcludedLabelsDialog.h"
 
-#include "statsyncing/Config.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "statsyncing/Config.h"
 
-#include <KLocalizedString>
 #include <KLineEdit>
+#include <KLocalizedString>
 
 #include <QGridLayout>
 #include <QLabel>

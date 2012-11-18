@@ -24,7 +24,6 @@
 #include "MainWindow.h"
 
 #include "ActionClasses.h"
-#include "core/support/Components.h"
 #include "EngineController.h" //for actions in ctor
 #include "KNotificationBackend.h"
 #include "PaletteHandler.h"
@@ -43,6 +42,7 @@
 #include "context/ContextDock.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverManager.h" // for actions
@@ -54,18 +54,18 @@
 #ifdef DEBUG_BUILD_TYPE
 #include "network/NetworkAccessViewer.h"
 #endif // DEBUG_BUILD_TYPE
-#include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistDock.h"
 #include "playlist/ProgressiveSearchWidget.h"
-#include "playlistmanager/file/PlaylistFileProvider.h"
+#include "playlist/layouts/LayoutConfigAction.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "playlistmanager/file/PlaylistFileProvider.h"
 #include "services/scriptable/ScriptableService.h"
-#include "toolbar/SlimToolbar.h"
-#include "toolbar/MainToolbar.h"
 #include "statsyncing/Controller.h"
+#include "toolbar/MainToolbar.h"
+#include "toolbar/SlimToolbar.h"
 #include "widgets/Osd.h"
 
 #include <KAction>          //m_actionCollection

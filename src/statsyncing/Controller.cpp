@@ -16,9 +16,9 @@
 
 #include "Controller.h"
 
-#include "amarokconfig.h"
 #include "EngineController.h"
 #include "MainWindow.h"
+#include "amarokconfig.h"
 #include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
@@ -28,8 +28,9 @@
 #include "statsyncing/ScrobblingService.h"
 #include "statsyncing/collection/CollectionProvider.h"
 
-#include <QTimer>
 #include <KMessageBox>
+
+#include <QTimer>
 
 using namespace StatSyncing;
 
