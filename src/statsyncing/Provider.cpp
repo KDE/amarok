@@ -16,7 +16,15 @@
 
 #include "Provider.h"
 
+#include <QCoreApplication>
+
 using namespace StatSyncing;
+
+Provider::Provider()
+{
+    // ensure this object is created in a main thread
+    Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
+}
 
 Provider::~Provider()
 {

@@ -41,6 +41,7 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
+            Provider();
             virtual ~Provider();
 
             /**

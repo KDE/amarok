@@ -23,7 +23,6 @@
 
 #include <KLocalizedString>
 
-#include <QCoreApplication>
 #include <QNetworkReply>
 
 #include <Library.h>
@@ -34,9 +33,6 @@ const int SynchronizationAdapter::s_entriesPerQuery( 200 );
 SynchronizationAdapter::SynchronizationAdapter( const LastFmServiceConfig *config )
     : m_config( config )
 {
-    // ensure this object is created in a main thread
-    Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
-
     connect( this, SIGNAL(startArtistSearch(int)),
              SLOT(slotStartArtistSearch(int)), Qt::QueuedConnection );
     connect( this, SIGNAL(startTrackSearch(QString,int)),
