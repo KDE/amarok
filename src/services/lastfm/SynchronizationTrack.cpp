@@ -280,7 +280,7 @@ SynchronizationTrack::slotTagRemoved()
         return;
     }
 
-    // remove the next one, sadly one one at a time can be removed
+    // remove the next one, sadly only one at a time can be removed
     if( !m_tagsToRemove.isEmpty() )
     {
         releaser.dontRelease();

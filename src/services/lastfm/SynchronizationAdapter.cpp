@@ -29,6 +29,8 @@
 #include <Library.h>
 #include <XmlQuery.h>
 
+const int SynchronizationAdapter::s_entriesPerQuery( 200 );
+
 SynchronizationAdapter::SynchronizationAdapter( const LastFmServiceConfig *config )
     : m_config( config )
 {
@@ -109,7 +111,7 @@ StatSyncing::TrackList
 SynchronizationAdapter::artistTracks( const QString &artistName )
 {
     /* This method should match track artists case-sensitively, but we don't do it.
-     * Last.fm webservice returns only the preferred capitalisation in artsts(), so no
+     * Last.fm webservice returns only the preferred capitalisation in artists(), so no
      * duplicates threat us. */
     Q_ASSERT( m_semaphore.available() == 0 );
     emit startTrackSearch( artistName, 1 ); // Last.fm indexes from 1
@@ -138,7 +140,7 @@ void
 SynchronizationAdapter::slotStartArtistSearch( int page )
 {
     QString user = m_config ? m_config.data()->username() : QString();
-    QNetworkReply *reply = lastfm::Library::getArtists( user, 200, page );
+    QNetworkReply *reply = lastfm::Library::getArtists( user, s_entriesPerQuery, page );
     connect( reply, SIGNAL(finished()), SLOT(slotArtistsReceived()) );
 }
 
@@ -147,7 +149,7 @@ SynchronizationAdapter::slotStartTrackSearch( QString artistName, int page )
 {
     lastfm::Artist artist( artistName );
     QString user = m_config ? m_config.data()->username() : QString();
-    QNetworkReply *reply = lastfm::Library::getTracks( user, artist, 200, page );
+    QNetworkReply *reply = lastfm::Library::getTracks( user, artist, s_entriesPerQuery, page );
     connect( reply, SIGNAL(finished()), SLOT(slotTracksReceived()) );
 }
 

@@ -64,6 +64,13 @@ class SynchronizationAdapter : public StatSyncing::Provider
     private:
         QWeakPointer<const LastFmServiceConfig> m_config;
 
+        /**
+         * number of artist or track entries to request from Last.fm in earch webservice
+         * query. Last.fm default is 50; the greater the number, the faster the fetching
+         * (of long lists) is. On the other hand, Last.fm has own limit, 200 works well.
+         */
+        static const int s_entriesPerQuery;
+
         QSet<QString> m_artists;
         StatSyncing::TrackList m_tracks;
         StatSyncing::TrackList m_tagQueue; // tracks waiting to be assigned tags
