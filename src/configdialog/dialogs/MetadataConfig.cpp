@@ -25,7 +25,6 @@
 
 MetadataConfig::MetadataConfig( QWidget *parent )
     : ConfigDialogBase( parent )
-    , Ui_MetadataConfig() // seems needed or memory allocation is wrong (gcc bug?)
 {
     connect( this, SIGNAL(changed()), parent, SLOT(updateButtons()) );
 
