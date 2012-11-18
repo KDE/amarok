@@ -18,6 +18,7 @@
 #define STATSYNCING_SCROBBLINGSERVICE_H
 
 #include "amarok_export.h"
+#include "support/QSharedDataPointerMisc.h" // operator<() for ScrobblingServicePtr
 
 #include <QDateTime>
 #include <QMetaType>
@@ -89,13 +90,5 @@ namespace StatSyncing
 }
 
 Q_DECLARE_METATYPE( StatSyncing::ScrobblingServicePtr )
-
-/**
- * Qt doesn't provide operator< for QExplicitlySharedDataPointer<T>.
- * QMap<Key,T> needs operator< for key, however QExplicitlySharedDataPointer<T> silently
- * coerces to bool, which gives really hard to find bugs, because it makes QMap with it
- * useless. Define the operator here.
- */
-bool operator<( const StatSyncing::ScrobblingServicePtr &a, const StatSyncing::ScrobblingServicePtr &b );
 
 #endif // STATSYNCING_SCROBBLINGSERVICE_H

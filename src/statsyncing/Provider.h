@@ -19,6 +19,7 @@
 
 #include "amarok_export.h"
 #include "statsyncing/Track.h"
+#include "support/QSharedDataPointerMisc.h" // operator<() for ProviderPtr
 
 #include <KIcon>
 
@@ -134,13 +135,5 @@ namespace StatSyncing
      */
     typedef QMap<ProviderPtr, TrackList> PerProviderTrackList;
 } // namespace StatSyncing
-
-/**
- * Qt doesn't provide operator< for QExplicitlySharedDataPointer<T>.
- * QMap<Key,T> needs operator< for key, however QExplicitlySharedDataPointer<T> silently
- * coerces to bool, which gives really hard to find bugs, because it makes QMap with it
- * useless. Define the operator here.
- */
-bool operator<( const StatSyncing::ProviderPtr& a, const StatSyncing::ProviderPtr &b );
 
 #endif // STATSYNCING_PROVIDER_H
