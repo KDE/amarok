@@ -102,8 +102,8 @@ namespace StatSyncing
              * artists differing just in letter case are allowed, or rather mandated,
              * because @see artistTracks() method is case-sensitive.
              *
-             * This method is guaranteed to be called in non-main thread and is allowed
-             * to block for a longer time; it must be implemented in a reentrant manner.
+             * This method must be called in non-main thread and is allowed to block for
+             * a longer time; it must be implemented in a reentrant manner.
              */
             virtual QSet<QString> artists() = 0;
 
@@ -114,8 +114,8 @@ namespace StatSyncing
              * variants of the artist name differing just in letter case, you should
              * return all of the variants in @see artists().
              *
-             * This method is guaranteed to be called in non-main thread and is allowed
-             * to block for a longer time; it must be implemented in a reentrant manner.
+             * This method must be called in non-main thread and is allowed to block for
+             * a longer time; it must be implemented in a reentrant manner.
              */
             virtual TrackList artistTracks( const QString &artistName ) = 0;
 
