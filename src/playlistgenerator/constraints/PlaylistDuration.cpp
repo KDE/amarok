@@ -113,9 +113,18 @@ ConstraintTypes::PlaylistDuration::toXml( QDomDocument& doc, QDomElement& elem )
 QString
 ConstraintTypes::PlaylistDuration::getName() const
 {
-    return i18n("Playlist duration: %1 %2",
-                comparisonToString(),
-                QTime().addMSecs( m_duration ).toString( "H:mm:ss" ));
+    KLocalizedString v;
+    if ( m_comparison == CompareNumEquals ) {
+        v = ki18nc( "%1 is a length of time (e.g. 5:00 for 5 minutes)", "Playlist duration: equals %1");
+    } else if ( m_comparison == CompareNumGreaterThan ) {
+        v = ki18nc( "%1 is a length of time (e.g. 5:00 for 5 minutes)", "Playlist duration: more than %1");
+    } else if ( m_comparison == CompareNumLessThan ) {
+        v = ki18nc( "%1 is a length of time (e.g. 5:00 for 5 minutes)", "Playlist duration: less than %1");
+    } else {
+        v = ki18n( "Playlist duration: unknown");
+    }
+    v = v.subs( QTime().addMSecs( m_duration ).toString( "H:mm:ss" ) );
+    return v.toString();
 }
 
 double
@@ -146,20 +155,6 @@ ConstraintTypes::PlaylistDuration::suggestPlaylistSize() const
         return static_cast<quint32>( m_duration ) / 180000;
     } else {
         return static_cast<quint32>( m_duration ) / 240000;
-    }
-}
-
-QString
-ConstraintTypes::PlaylistDuration::comparisonToString() const
-{
-    if ( m_comparison == CompareNumEquals ) {
-        return QString( i18nc("duration of playlist equals some time", "equals") );
-    } else if ( m_comparison == CompareNumGreaterThan ) {
-        return QString( i18n("longer than") );
-    } else if ( m_comparison == CompareNumLessThan ) {
-        return QString( i18n("shorter than") );
-    } else {
-        return QString( i18n("unknown comparison") );
     }
 }
 

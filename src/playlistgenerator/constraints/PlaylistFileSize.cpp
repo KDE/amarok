@@ -114,11 +114,18 @@ ConstraintTypes::PlaylistFileSize::toXml( QDomDocument& doc, QDomElement& elem )
 QString
 ConstraintTypes::PlaylistFileSize::getName() const
 {
-    QString v( i18nc( "%2 is e.g. 'more than' or 'less than' or 'equals'; %1 is a file size (e.g. 50 MB)",
-                       "Total File Size of Playlist: %2 %1",
-                       KGlobal::locale()->formatByteSize( (double)getWantedSize(), 1, KLocale::MetricBinaryDialect ),
-                       comparisonToString() ) );
-    return v;
+    KLocalizedString v;
+    if ( m_comparison == CompareNumEquals ) {
+        v = ki18nc( "%1 is a file size (e.g. 50 MB)", "Total file size of playlist: equals %1");
+    } else if ( m_comparison == CompareNumGreaterThan ) {
+        v = ki18nc( "%1 is a file size (e.g. 50 MB)", "Total file size of playlist: more than %1");
+    } else if ( m_comparison == CompareNumLessThan ) {
+        v = ki18nc( "%1 is a file size (e.g. 50 MB)", "Total file size of playlist: less than %1");
+    } else {
+        v = ki18n( "Total file size of playlist: unknown");
+    }
+    v = v.subs( KGlobal::locale()->formatByteSize( (double)getWantedSize(), 1, KLocale::MetricBinaryDialect ) );
+    return v.toString();
 }
 
 double
@@ -152,20 +159,6 @@ ConstraintTypes::PlaylistFileSize::suggestPlaylistSize() const
     // estimate that each file is about 8MB large
     quint64 s = getWantedSize() / static_cast<quint64>( 8000000 );
     return static_cast<quint32>( s );
-}
-
-QString
-ConstraintTypes::PlaylistFileSize::comparisonToString() const
-{
-    if ( m_comparison == CompareNumEquals ) {
-        return QString( i18nc("total file size of playlist equals some number", "equals") );
-    } else if ( m_comparison == CompareNumGreaterThan ) {
-        return QString( i18n("more than") );
-    } else if ( m_comparison == CompareNumLessThan ) {
-        return QString( i18n("less than") );
-    } else {
-        return QString( i18n("unknown comparison") );
-    }
 }
 
 quint64

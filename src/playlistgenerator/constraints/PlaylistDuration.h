@@ -62,10 +62,6 @@ namespace ConstraintTypes {
             qint64 m_duration; // time in msec
             int m_comparison;
             double m_strictness;
-
-            // convenience functions
-            QString comparisonToString() const;
-
     };
 
     class PlaylistDurationEditWidget : public QWidget {

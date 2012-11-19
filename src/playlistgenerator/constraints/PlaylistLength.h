@@ -63,9 +63,6 @@ namespace ConstraintTypes {
             int m_comparison;
             double m_strictness;
 
-            // convenience functions
-            QString comparisonToString() const;
-
             // internal mathematical functions
             double transformLength( const int ) const;
     };

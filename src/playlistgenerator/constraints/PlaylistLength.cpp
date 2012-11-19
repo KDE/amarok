@@ -112,11 +112,19 @@ ConstraintTypes::PlaylistLength::toXml( QDomDocument& doc, QDomElement& elem ) c
 QString
 ConstraintTypes::PlaylistLength::getName() const
 {
-    QString v( i18ncp( "%2 is e.g. 'more than' or 'less than' or 'equals'",
-                       "Playlist length: %2 1 track",
-                       "Playlist length: %2 %1 tracks",
-                       m_length, comparisonToString() ) );
-    return v;
+
+    KLocalizedString v;
+    if ( m_comparison == CompareNumEquals ) {
+        v = ki18nc( "%1 is a number", "Playlist length: %1 tracks");
+    } else if ( m_comparison == CompareNumGreaterThan ) {
+        v = ki18nc( "%1 is a number", "Playlist length: more than %1 tracks");
+    } else if ( m_comparison == CompareNumLessThan ) {
+        v = ki18nc( "%1 is a number", "Playlist length: less than %1 tracks");
+    } else {
+        v = ki18n( "Playlist length: unknown");
+    }
+    v = v.subs( m_length );
+    return v.toString();
 }
 
 double
@@ -141,20 +149,6 @@ quint32
 ConstraintTypes::PlaylistLength::suggestPlaylistSize() const
 {
     return m_length;
-}
-
-QString
-ConstraintTypes::PlaylistLength::comparisonToString() const
-{
-    if ( m_comparison == CompareNumEquals ) {
-        return QString( i18nc("number of tracks in playlist equals some number", "equals") );
-    } else if ( m_comparison == CompareNumGreaterThan ) {
-        return QString( i18n("more than") );
-    } else if ( m_comparison == CompareNumLessThan ) {
-        return QString( i18n("less than") );
-    } else {
-        return QString( i18n("unknown comparison") );
-    }
 }
 
 double
