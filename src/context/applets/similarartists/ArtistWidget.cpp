@@ -146,7 +146,7 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     m_similarArtistButton = new Plasma::PushButton( this );
     m_similarArtistButton->setMaximumSize( QSizeF( 22, 22 ) );
     m_similarArtistButton->setIcon( KIcon( "similarartists-amarok" ) );
-    m_similarArtistButton->setToolTip( i18n( "Show Similar Artists of %1", m_artist->name() ) );
+    m_similarArtistButton->setToolTip( i18n( "Show Similar Artists to %1", m_artist->name() ) );
     connect( m_similarArtistButton, SIGNAL(clicked()), this, SIGNAL(showSimilarArtists()) );
 
     QGraphicsLinearLayout *buttonsLayout = new QGraphicsLinearLayout( Qt::Horizontal );

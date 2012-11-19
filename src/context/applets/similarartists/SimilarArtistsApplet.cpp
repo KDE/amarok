@@ -199,7 +199,7 @@ SimilarArtistsApplet::artistsUpdate()
 
     if( !m_similars.isEmpty() )
     {
-        setHeaderText( i18n( "Similar Artists of %1", m_artist ) );
+        setHeaderText( i18n( "Similar Artists to %1", m_artist ) );
         m_scroll->addArtists( m_similars );
         m_scroll->show();
         setCollapseOff();

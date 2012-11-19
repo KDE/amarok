@@ -95,7 +95,7 @@ public:
 
 signals:
     /**
-     * Show similar artists of the artist associated with this widget
+     * Show similar artists to the artist associated with this widget
      */
     void showSimilarArtists();
 
@@ -189,7 +189,7 @@ private:
     Plasma::PushButton *m_urlButton;
 
     /**
-     * Button to show similar artists of the artist associated with this widget
+     * Button to show similar artists to the artist associated with this widget
      */
     Plasma::PushButton *m_similarArtistButton;
 
