@@ -264,20 +264,10 @@ void Controller::synchronize( int intMode )
         return;
     }
 
-    if( m_providers.count() <= 1 )
-    {
-        if( mode == StatSyncing::Process::Interactive )
-        {
-            // the text intentionally doesn't cope with 0 collections
-            QString text = i18n( "You only seem to have one collection. Statistics "
-                "synchronization only makes sense if there is more than one collection." );
-            Amarok::Components::logger()->longMessage( text );
-        }
-        return;
-    }
-
     // read saved config
     qint64 fields = m_config->checkedFields();
+    if( mode == Process::NonInteractive && fields == 0 )
+        return; // nothing to do
     ProviderPtrSet checkedProviders;
     foreach( ProviderPtr provider, m_providers )
     {
@@ -285,9 +275,26 @@ void Controller::synchronize( int intMode )
             checkedProviders.insert( provider );
     }
 
-    if( mode == StatSyncing::Process::NonInteractive &&
-        ( checkedProviders.count() <= 1 || fields == 0 ) )
+    ProviderPtrList usedProviders;
+    switch( mode )
     {
+        case Process::Interactive:
+            usedProviders = m_providers;
+            break;
+        case Process::NonInteractive:
+            usedProviders = checkedProviders.toList();
+            break;
+    }
+    if( usedProviders.isEmpty() )
+        return; // nothing to do
+    if( usedProviders.count() == 1 && usedProviders.first()->id() == "localCollection" )
+    {
+        if( mode == StatSyncing::Process::Interactive )
+        {
+            QString text = i18n( "You only seem to have the Local Collection. Statistics "
+                "synchronization only makes sense if there is more than one collection." );
+            Amarok::Components::logger()->longMessage( text );
+        }
         return;
     }
 
