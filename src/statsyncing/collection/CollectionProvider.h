@@ -69,6 +69,13 @@ namespace StatSyncing
             QSet<QString> m_foundArtists;
             QString m_currentArtistName;
             TrackList m_foundTracks;
+            /**
+             * Semaphore for the simplified producer-consumer pattern, where
+             * slotNewResultReady( ArtistList ) along with slotQueryDone() is producer
+             * and artists() is consumer, or
+             * slotNewResultReady( TrackList ) along with slotQueryDone() is producer
+             * and artistTracks() is consumer.
+             */
             QSemaphore m_queryMakerSemaphore;
     };
 

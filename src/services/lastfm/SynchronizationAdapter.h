@@ -74,6 +74,12 @@ class SynchronizationAdapter : public StatSyncing::Provider
         QSet<QString> m_artists;
         StatSyncing::TrackList m_tracks;
         StatSyncing::TrackList m_tagQueue; // tracks waiting to be assigned tags
+        /**
+         * Semaphore for the simplified producer-consumer pattern, where
+         * slotArtistsReceived() is producer and artist() is consumer, or
+         * slotTracksReceived() is producer and artistTracks() is consumer, or
+         * slotTagsReceived() is producer and artistTracks() is consumer.
+         */
         QSemaphore m_semaphore;
 };
 
