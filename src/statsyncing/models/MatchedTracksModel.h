@@ -17,7 +17,6 @@
 #ifndef STATSYNCING_MATCHEDTRACKSMODEL_H
 #define STATSYNCING_MATCHEDTRACKSMODEL_H
 
-#include "statsyncing/Options.h"
 #include "statsyncing/Provider.h"
 #include "statsyncing/models/CommonModel.h"
 

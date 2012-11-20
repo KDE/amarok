@@ -63,11 +63,6 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
                 ratingPainter.setEnabled( false );
                 ratingPainter.setMaxRating( 2 );
             }
-            else if( !opt.font.bold() )
-            {
-                hoverRating = rating;
-                rating = 0;
-            }
             QPainter starsPainter( &starsPixmap );
             ratingPainter.paint( &starsPainter, QRect( QPoint( 0, 0 ),
                     CommonModel::s_ratingSize ), rating, hoverRating );

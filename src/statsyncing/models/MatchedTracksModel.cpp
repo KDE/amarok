@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 #include "statsyncing/TrackTuple.h"
 
+#include <KColorScheme>
 #include <KLocalizedString>
 
 using namespace StatSyncing;
@@ -356,8 +357,10 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
                         i18nc( "comma between list words", ", " ) );
             }
             break;
-        case Qt::FontRole:
-            return tuple.fieldUpdated( field, m_options ) ? m_boldFont : m_normalFont;
+        case Qt::BackgroundRole:
+            if( tuple.fieldUpdated( field, m_options ) )
+                return KColorScheme( QPalette::Active ).background( KColorScheme::PositiveBackground );
+            break;
         case Qt::TextAlignmentRole:
             return textAlignmentData( field );
         case Qt::SizeHintRole:
@@ -382,8 +385,14 @@ MatchedTracksModel::trackData( ProviderPtr provider, const TrackTuple &tuple,
         return provider->prettyName();
     else if( role == Qt::DecorationRole && field == Meta::valTitle )
         return provider->icon();
-    else if( role == Qt::FontRole )
-        return tuple.fieldUpdated( field, m_options, provider ) ? m_boldFont : m_normalFont;
+    // no special background if the the field in whole tuple is not updated
+    else if( role == Qt::BackgroundRole && tuple.fieldUpdated( field, m_options ) )
+    {
+        KColorScheme::BackgroundRole backgroundRole =
+                tuple.fieldUpdated( field, m_options, provider ) ? KColorScheme::NegativeBackground
+                                                                 : KColorScheme::PositiveBackground;
+        return KColorScheme( QPalette::Active ).background( backgroundRole );
+    }
     else if( role == Qt::CheckStateRole && tuple.fieldHasConflict( field, m_options ) )
     {
         switch( field )

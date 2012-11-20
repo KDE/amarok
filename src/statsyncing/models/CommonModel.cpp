@@ -25,7 +25,6 @@
 #include <KLocalizedString>
 
 #include <QApplication>
-#include <QFontMetrics>
 #include <QHeaderView>
 
 using namespace StatSyncing;
@@ -37,7 +36,6 @@ CommonModel::CommonModel( const QList<qint64> &columns, const Options &options )
     , m_options( options )
 {
     Q_ASSERT( m_columns.value( 0 ) == Meta::valTitle );
-    m_boldFont.setBold( true );
 }
 
 QVariant
@@ -103,7 +101,6 @@ CommonModel::sizeHintData( qint64 field ) const
             opt.features = QStyleOptionViewItemV2::HasDisplay;
             opt.state = QStyle::State_Enabled;
             opt.text = "88.88.8888 88:88";
-            opt.font.setBold( true );
 
             QStyle *style = QApplication::style();
             size = style->sizeFromContents( QStyle::CT_ItemViewItem, &opt, QSize(), 0 );

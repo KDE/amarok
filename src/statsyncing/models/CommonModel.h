@@ -22,7 +22,6 @@
 
 #include <QList>
 #include <QVariant>
-#include <QFont>
 
 namespace StatSyncing
 {
@@ -54,8 +53,6 @@ namespace StatSyncing
 
             QList<qint64> m_columns;
             Options m_options;
-            QFont m_normalFont;
-            QFont m_boldFont;
     };
 
 } // namespace StatSyncing

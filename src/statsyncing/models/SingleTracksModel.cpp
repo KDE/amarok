@@ -20,10 +20,6 @@
 #include "MetaValues.h"
 #include "core/meta/support/MetaConstants.h"
 
-#include <KGlobal>
-#include <KLocale>
-#include <KLocalizedString>
-
 using namespace StatSyncing;
 
 SingleTracksModel::SingleTracksModel( const TrackList &tracks,
