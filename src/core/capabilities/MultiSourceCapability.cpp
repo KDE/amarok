@@ -14,20 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core/capabilities/MultiSourceCapability.h"
+#include "MultiSourceCapability.h"
 
-namespace Capabilities {
+using namespace Capabilities;
 
 MultiSourceCapability::MultiSourceCapability()
- : Capability()
+    : Capability()
 {
 }
-
 
 MultiSourceCapability::~MultiSourceCapability()
 {
 }
-
-}
-
-#include "MultiSourceCapability.moc"

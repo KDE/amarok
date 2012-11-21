@@ -35,6 +35,11 @@ namespace Transcoding
     class Controller;
 }
 
+namespace StatSyncing
+{
+    class Controller;
+}
+
 class CollectionManager;
 class EngineController;
 class SqlStorage;
@@ -63,6 +68,9 @@ namespace Amarok
 
         AMAROK_CORE_EXPORT Transcoding::Controller *transcodingController();
         AMAROK_CORE_EXPORT Transcoding::Controller *setTranscodingController( Transcoding::Controller *controller );
+
+        AMAROK_CORE_EXPORT StatSyncing::Controller *statSyncingController();
+        AMAROK_CORE_EXPORT StatSyncing::Controller *setStatSyncingController( StatSyncing::Controller *controller );
     }
 }
 

@@ -55,6 +55,8 @@ namespace MetaStream
             virtual int sampleRate() const;
             virtual int bitrate() const;
 
+            virtual void finishedPlaying( double playedFraction );
+
             virtual QString type() const;
 
         private:

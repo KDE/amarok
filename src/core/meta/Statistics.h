@@ -98,6 +98,14 @@ namespace Meta
             virtual int playCount() const;
 
             /**
+             * Return play count on device since it has been last connected to a computer.
+             * This number is _already_ _included_ in playCount()! Subclasses returning
+             * nonzero must also implement setPlayCount() and setting play count must
+             * reset recent playcount to 0. Default implementation returns 0.
+             */
+            virtual int recentPlayCount() const;
+
+            /**
              * Set play count. If you touch more fields, consider using
              * @see beginUpdate(), @see endUpdate()
              */

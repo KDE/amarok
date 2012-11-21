@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MetadataConfig</class>
+ <widget class="QWidget" name="MetadataConfig">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>604</width>
+    <height>544</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="m_tagsGroup">
+     <property name="title">
+      <string>File Tags</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="m_writeBack">
+        <property name="toolTip">
+         <string>Write meta data changes (including 'stars' rating) back to the original file.
+You can also prevent writing back by write protecting the file.
+This might be a good idea if you are currently
+sharing those files via the Internet.</string>
+        </property>
+        <property name="text">
+         <string>Write metadata to file</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="m_writeBackStatistics">
+        <property name="toolTip">
+         <string>Write play-changing statistics (e.g. score, lastplayed, playcount)
+as tags back to the file.</string>
+        </property>
+        <property name="text">
+         <string>Write statistics to file</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="m_writeBackCoverDimensionsBox">
+        <item>
+         <widget class="QCheckBox" name="m_writeBackCover">
+          <property name="toolTip">
+           <string>Write changed covers back to the file.
+This will replace existing embedded covers.</string>
+          </property>
+          <property name="text">
+           <string>Write covers to file, maximum size:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="KComboBox" name="m_writeBackCoverDimensions">
+          <property name="toolTip">
+           <string>Scale covers down if necessary.</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="m_useCharsetDetector">
+        <property name="toolTip">
+         <string>If selected, Amarok will use Mozilla's
+Character Set Detector to attempt to automatically guess the
+character sets used in ID3 tags.</string>
+        </property>
+        <property name="text">
+         <string>&amp;Enable character set detection in ID3 tags</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="m_statSyncingGroup">
+     <property name="title">
+      <string>Statistics Synchronization</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QLabel" name="m_syncedCollectionsLabel">
+        <property name="text">
+         <string>&lt;b&gt;Check collections to keep them synchronized.&lt;/b&gt; This includes scrobbling of tracks played on iPods if you have Last.fm plugin configured</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QListView" name="m_statSyncingProvidersView">
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="m_forgetCollectionsButton">
+          <property name="text">
+           <string>Forget about Selected Collections</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="m_synchronizeButton">
+          <property name="text">
+           <string>Perform Synchronization...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="m_statSyncingFieldsLayout"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

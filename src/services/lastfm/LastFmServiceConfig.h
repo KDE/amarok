@@ -24,7 +24,6 @@
 namespace KWallet {
     class Wallet;
 }
-
 class KDialog;
 
 class LastFmServiceConfig : public QObject
@@ -33,37 +32,48 @@ class LastFmServiceConfig : public QObject
 public:
     static const char *configSectionName() { return "Service_LastFm"; }
 
-    LastFmServiceConfig();
     ~LastFmServiceConfig();
 
     void load();
     void save();
     void reset();
 
-    const QString &username() { return m_username; }
+    QString username() const { return m_username; }
     void setUsername( const QString &username ) { m_username = username; }
 
-    const QString &password() { return m_password; }
+    QString password() const { return m_password; }
     void setPassword( const QString &password ) { m_password = password; }
 
-    const QString sessionKey() { return m_sessionKey; }
+    QString sessionKey() const { return m_sessionKey; }
     void setSessionKey( const QString& sessionKey ) { m_sessionKey = sessionKey; }
     void clearSessionKey();
 
-    bool scrobble() { return m_scrobble; }
+    bool scrobble() const { return m_scrobble; }
     void setScrobble( bool scrobble ) { m_scrobble = scrobble; }
 
-    bool fetchSimilar() { return m_fetchSimilar; }
+    bool fetchSimilar() const { return m_fetchSimilar; }
     void setFetchSimilar( bool fetchSimilar ) { m_fetchSimilar = fetchSimilar; }
 
-    bool scrobbleComposer() { return m_scrobbleComposer; }
+    bool scrobbleComposer() const { return m_scrobbleComposer; }
     void setScrobbleComposer( bool scrobbleComposer ) { m_scrobbleComposer = scrobbleComposer; }
+
+    bool useFancyRatingTags() const { return m_useFancyRatingTags; }
+    void setUseFancyRatingTags( bool useFancyRatingTags ) { m_useFancyRatingTags = useFancyRatingTags; }
 
 private slots:
     void textDialogYes();
     void textDialogNo();
 
 private:
+    friend class LastFmService; // to be able to call constructor
+    friend class LastFmServiceSettings; // to be able to call constructor
+
+    /**
+     * Construct LastFmServiceConfig. Reserved only to LastFmService. (and temporarily to
+     * LastFmServiceSettings too)
+     */
+    LastFmServiceConfig();
+
     /**
      * Tries to open KWallet and assigns it to m_wallet if successful. Takes ignore
      * wallet configuration key into account.
@@ -79,6 +89,7 @@ private:
     bool m_scrobble;
     bool m_fetchSimilar;
     bool m_scrobbleComposer;
+    bool m_useFancyRatingTags;
 
     KDialog* m_askDiag;
     KWallet::Wallet* m_wallet;

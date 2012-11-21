@@ -14,13 +14,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core-impl/meta/multi/MultiTrack.h"
+#include "MultiTrack.h"
 
 #include "core/meta/Statistics.h"
 #include "core/support/Debug.h"
 #include "core-impl/capabilities/multisource/MultiSourceCapabilityImpl.h"
 
-namespace Meta {
+using namespace Meta;
 
 MultiTrack::MultiTrack( Playlists::PlaylistPtr playlist )
     : QObject()
@@ -38,61 +38,8 @@ MultiTrack::~MultiTrack()
 {
 }
 
-void Meta::MultiTrack::setSource( int source )
-{
-    if( source >= m_playlist->tracks().count() ) // avaid crash by doing nothing
-        return;
-
-    if( m_currentTrack )
-        unsubscribeFrom( m_currentTrack );
-
-    m_index = source;
-    m_currentTrack = m_playlist->tracks()[ m_index ];
-    subscribeTo( m_currentTrack );
-
-    notifyObservers();
-    emit urlChanged( playableUrl() );
-}
-
-
-KUrl Meta::MultiTrack::first()
-{
-    if( m_currentTrack )
-        unsubscribeFrom( m_currentTrack );
-    
-    m_index = 0;
-    if ( m_playlist->tracks().count() > m_index ) {
-        m_currentTrack = m_playlist->tracks()[ m_index ];
-        subscribeTo( m_currentTrack );
-        return m_currentTrack->playableUrl();
-    }
-
-    return KUrl();
-}
-
-KUrl Meta::MultiTrack::next()
-{
-    if( m_currentTrack )
-        unsubscribeFrom( m_currentTrack );
-    
-    m_index++;
-    
-    if ( m_playlist->tracks().count() > m_index ){
-        m_currentTrack = m_playlist->tracks()[ m_index ];
-        subscribeTo( m_currentTrack );
-        return m_currentTrack->playableUrl();
-    }
-
-    return KUrl();
-}
-
-
-int Meta::MultiTrack::current()
-{
-    return m_index;
-}
-
-QStringList Meta::MultiTrack::sources()
+QStringList
+Meta::MultiTrack::sources() const
 {
     QStringList trackNames;
     foreach ( TrackPtr track, m_playlist->tracks() )
@@ -103,12 +50,50 @@ QStringList Meta::MultiTrack::sources()
     return trackNames;
 }
 
-bool Meta::MultiTrack::hasCapabilityInterface(Capabilities::Capability::Type type) const
+void
+MultiTrack::setSource( int source )
+{
+    if( source < 0 || source >= m_playlist->tracks().count() )
+        return;
+
+    if( m_currentTrack )
+        unsubscribeFrom( m_currentTrack );
+
+    m_index = source;
+    m_currentTrack = m_playlist->tracks().at( m_index );
+    subscribeTo( m_currentTrack );
+
+    notifyObservers();
+    emit urlChanged( playableUrl() );
+}
+
+int
+Meta::MultiTrack::current() const
+{
+    return m_index;
+}
+
+KUrl
+MultiTrack::nextUrl() const
+{
+    int index = m_index + 1;
+    Meta::TrackPtr track = m_playlist->tracks().value( index );
+    if( track )
+    {
+        track->prepareToPlay();
+        return track->playableUrl();
+    }
+    return KUrl();
+}
+
+bool
+MultiTrack::hasCapabilityInterface(Capabilities::Capability::Type type) const
 {
     return type == Capabilities::Capability::MultiSource;
 }
 
-Capabilities::Capability * Meta::MultiTrack::createCapabilityInterface(Capabilities::Capability::Type type)
+Capabilities::Capability *
+MultiTrack::createCapabilityInterface(Capabilities::Capability::Type type)
 {
     switch( type )
     {
@@ -119,20 +104,15 @@ Capabilities::Capability * Meta::MultiTrack::createCapabilityInterface(Capabilit
     }
 }
 
-}
-
 Meta::StatisticsPtr Meta::MultiTrack::statistics()
 {
     return m_currentTrack->statistics();
 }
 
-void Meta::MultiTrack::metadataChanged( Meta::TrackPtr track )
+void
+Meta::MultiTrack::metadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
     //forward changes from active tracks
     notifyObservers();
 }
-
-
-#include "MultiTrack.moc"
-

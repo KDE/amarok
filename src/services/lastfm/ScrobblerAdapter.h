@@ -19,46 +19,52 @@
 #define LASTFMSCROBBLERADAPTER_H
 
 #include "core/meta/Meta.h"
+#include "statsyncing/ScrobblingService.h"
 
+#include <QTimer>
+
+#include <Audioscrobbler.h>
 #include <Track.h>
 
-namespace lastfm
-{
-class Audioscrobbler;
-}
+class LastFmServiceConfig;
 
-class ScrobblerAdapter : public QObject
+class ScrobblerAdapter : public QObject, public StatSyncing::ScrobblingService
 {
     Q_OBJECT
 
-public:
-    ScrobblerAdapter( QObject *parent, const QString &clientId );
-    virtual ~ScrobblerAdapter();
+    public:
+        ScrobblerAdapter( const QString &clientId, const LastFmServiceConfig *config );
+        virtual ~ScrobblerAdapter();
 
-    void love();
-    void ban();
+    public:
+        // ScrobblingService methods:
+        QString prettyName() const;
+        ScrobbleError scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
+                                const QDateTime &time = QDateTime() );
+        void updateNowPlaying( const Meta::TrackPtr &track );
 
-public slots:
-    void loveTrack( Meta::TrackPtr );
-    void banTrack();
+    public slots:
+        // own methods
+        void loveTrack( const Meta::TrackPtr &track );
+        void banTrack( const Meta::TrackPtr &track );
 
-private slots:
-    void stopped( qint64 finalPosition, qint64 trackLength );
-    void trackPositionChanged( qint64 position, bool userSeek );
-    void trackPlaying( Meta::TrackPtr track );
-    void trackMetadataChanged( Meta::TrackPtr track );
+    private slots:
+        void slotScrobblesSubmitted( const QList<lastfm::Track> &tracks );
+        void slotNowPlayingError( int code, const QString &message );
 
-private:
-    void resetVariables();
-    void checkScrobble();
-    void copyTrackMetadata( lastfm::MutableTrack& to, Meta::TrackPtr from );
-    bool scrobbleComposer( Meta::TrackPtr track );
+    private:
+        /**
+         * Copies metadata from @param from to @param to.
+         */
+        void copyTrackMetadata( lastfm::MutableTrack& to, const Meta::TrackPtr &from );
 
-    lastfm::Audioscrobbler *m_scrobbler;
-    lastfm::MutableTrack m_current;
-    qint64 m_lastPosition;
-    qint64 m_totalPlayed;
-    QString m_clientId;
+        /**
+         * Announces Last.fm suggested @param track corrections to Amarok pop-up log.
+         */
+        void announceTrackCorrections( const lastfm::Track &track );
+
+        lastfm::Audioscrobbler m_scrobbler;
+        QWeakPointer<const LastFmServiceConfig> m_config;
 };
 
 #endif // LASTFMSCROBBLERADAPTER_H

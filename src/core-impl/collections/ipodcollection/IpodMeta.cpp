@@ -568,11 +568,20 @@ Track::playCount() const
     return m_track->playcount;
 }
 
+int
+Track::recentPlayCount() const
+{
+    if( !m_coll || !m_coll.data()->isWritable() )
+        return 0; // we must be able to reset recent playcount if we return nonzero
+    return m_track->recent_playcount;
+}
+
 void
 Track::setPlayCount( const int playcount )
 {
     QWriteLocker locker( &m_trackLock );
     m_track->playcount = playcount;
+    m_track->recent_playcount = 0;
     commitIfInNonBatchUpdate( Meta::valLastPlayed, playcount );
 }
 

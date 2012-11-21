@@ -22,6 +22,7 @@
 #include "configdialog/dialogs/CollectionConfig.h"
 #include "configdialog/dialogs/DatabaseConfig.h"
 #include "configdialog/dialogs/GeneralConfig.h"
+#include "configdialog/dialogs/MetadataConfig.h"
 #include "configdialog/dialogs/NotificationsConfig.h"
 #include "configdialog/dialogs/PlaybackConfig.h"
 #include "configdialog/dialogs/PluginsConfig.h"
@@ -43,23 +44,25 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     DEBUG_BLOCK
     setAttribute( Qt::WA_DeleteOnClose );
 
-    ConfigDialogBase* general     = new GeneralConfig( this );
-    ConfigDialogBase* collection  = new CollectionConfig( this );
-    ConfigDialogBase* plugins     = new PluginsConfig( this );
-    ConfigDialogBase* playback    = new PlaybackConfig( this );
-    ConfigDialogBase* notify      = new NotificationsConfig( this );
-    ConfigDialogBase* database    = new DatabaseConfig( this );
-    ConfigDialogBase* scripts     = new ScriptsConfig( this );
+    ConfigDialogBase *general = new GeneralConfig( this );
+    ConfigDialogBase *collection = new CollectionConfig( this );
+    ConfigDialogBase *metadata = new MetadataConfig( this );
+    ConfigDialogBase *playback = new PlaybackConfig( this );
+    ConfigDialogBase *notify = new NotificationsConfig( this );
+    ConfigDialogBase *database = new DatabaseConfig( this );
+    ConfigDialogBase *plugins = new PluginsConfig( this );
+    ConfigDialogBase *scripts = new ScriptsConfig( this );
 
     //ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
-    addPage( general,     i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
-    addPage( collection,  i18n( "Local Collection" ), "collection-amarok", i18n( "Configure Local Collection" ) );
-    addPage( playback,    i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
-    addPage( notify,      i18n( "Notifications" ), "preferences-indicator-amarok", i18n( "Configure Notifications" ) );
-    addPage( database,    i18n( "Database" ), "server-database", i18n( "Configure Database" ) );
-    addPage( plugins,     i18n( "Plugins" ), "preferences-plugin", i18n( "Configure Plugins" ) );
-    addPage( scripts,     i18n( "Scripts" ), "preferences-plugin-script", i18n( "Configure Scripts" ) );
+    addPage( general, i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
+    addPage( collection, i18n( "Local Collection" ), "collection-amarok", i18n( "Configure Local Collection" ) );
+    addPage( metadata, i18n( "Metadata" ), "amarok_playcount", i18n( "Configure Metadata Handling" ) );
+    addPage( playback, i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
+    addPage( notify, i18n( "Notifications" ), "preferences-indicator-amarok", i18n( "Configure Notifications" ) );
+    addPage( database, i18n( "Database" ), "server-database", i18n( "Configure Database" ) );
+    addPage( plugins, i18n( "Plugins" ), "preferences-plugin", i18n( "Configure Plugins" ) );
+    addPage( scripts, i18n( "Scripts" ), "preferences-plugin-script", i18n( "Configure Scripts" ) );
     //addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
     setButtons( Help | Ok | Apply | Cancel );

@@ -55,6 +55,7 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "statemanagement/ApplicationController.h"
 #include "statemanagement/DefaultApplicationController.h"
+#include "statsyncing/Controller.h"
 #include "widgets/Osd.h"
 
 
@@ -536,6 +537,10 @@ App::continueInit()
         splash->show();
     }
 #endif
+
+    // Instantiate statistics synchronization controller. Needs to be before creating
+    // MainWindow as MainWindow connects a signal to StatSyncing::Controller.
+    Amarok::Components::setStatSyncingController( new StatSyncing::Controller( this ) );
 
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();

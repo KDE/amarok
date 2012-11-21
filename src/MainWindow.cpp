@@ -42,6 +42,7 @@
 #include "context/ContextDock.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverManager.h" // for actions
@@ -53,17 +54,18 @@
 #ifdef DEBUG_BUILD_TYPE
 #include "network/NetworkAccessViewer.h"
 #endif // DEBUG_BUILD_TYPE
-#include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistDock.h"
 #include "playlist/ProgressiveSearchWidget.h"
-#include "playlistmanager/file/PlaylistFileProvider.h"
+#include "playlist/layouts/LayoutConfigAction.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "playlistmanager/file/PlaylistFileProvider.h"
 #include "services/scriptable/ScriptableService.h"
-#include "toolbar/SlimToolbar.h"
+#include "statsyncing/Controller.h"
 #include "toolbar/MainToolbar.h"
+#include "toolbar/SlimToolbar.h"
 #include "widgets/Osd.h"
 
 #include <KAction>          //m_actionCollection
@@ -685,6 +687,12 @@ MainWindow::slotLoveTrack()
 }
 
 void
+MainWindow::slotBanTrack()
+{
+    emit banTrack( The::engineController()->currentTrack() );
+}
+
+void
 MainWindow::activate()
 {
 #ifdef Q_WS_X11
@@ -799,6 +807,10 @@ MainWindow::createActions()
     connect ( action, SIGNAL( triggered( bool ) ), CollectionManager::instance(), SLOT( checkCollectionChanges() ) );
     ac->addAction( "update_collection", action );
 
+    action =  new KAction( KIcon( "amarok_playcount" ), i18n( "Synchronize Statistics..." ), this );
+    ac->addAction( "synchronize_statistics", action );
+    connect( action, SIGNAL(triggered(bool)), Amarok::Components::statSyncingController(), SLOT(synchronize()) );
+
     action = new KAction( this );
     ac->addAction( "prev", action );
     action->setIcon( KIcon("media-skip-backward-amarok") );
@@ -884,7 +896,7 @@ MainWindow::createActions()
     action = new KAction( i18n( "Last.fm: Ban Current Track" ), this );
     ac->addAction( "banTrack", action );
     //action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
-    connect( action, SIGNAL( triggered() ), SIGNAL( banTrack() ) );
+    connect( action, SIGNAL( triggered() ), SLOT(slotBanTrack()) );
 
     action = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
     ac->addAction( "queueTrack", action );
@@ -1060,6 +1072,7 @@ MainWindow::createMenus()
 #endif // DEBUG_BUILD_TYPE
     m_toolsMenu.data()->addSeparator();
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("update_collection") );
+    m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("synchronize_statistics") );
     //END Tools menu
 
     //BEGIN Settings menu

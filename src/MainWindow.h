@@ -115,19 +115,21 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
 
     signals:
         void loveTrack( Meta::TrackPtr track );
-        void banTrack();
+        void banTrack( Meta::TrackPtr track );
         void switchQueueStateShortcut();
 
     public slots:
         void showHide();
         void slotFullScreen();
-        void slotLoveTrack();
         void showNotificationPopup();
         void setLayoutLocked( bool locked );
         void showAbout();
         void showReportBug();
 
     private slots:
+        void slotLoveTrack();
+        void slotBanTrack();
+
         void slotStopped();
         void slotPaused();
         void slotNewTrackPlaying();

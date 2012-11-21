@@ -44,59 +44,26 @@ void TestMetaMultiTrack::initTestCase()
     //apparently the engine controller is needed somewhere, or we will get a crash...
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );
-  
+
     const QString path = QString( AMAROK_TEST_DIR ) + "/data/playlists/test.pls";
     const QFileInfo file( QDir::toNativeSeparators( path ) );
     QVERIFY( file.exists() );
     const QString filePath = file.absoluteFilePath();
-    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( Playlists::loadPlaylistFile( filePath ) );
-    QVERIFY( playlist ); // no playlist -> no test. that's life ;)
-    playlist->triggerTrackLoad();
-    QCOMPARE( playlist->name(), QString("test.pls") );
-    QCOMPARE( playlist->trackCount(), 4 );
-
-    m_testMultiTrack = new Meta::MultiTrack( playlist );
+    m_playlist = Playlists::PlaylistPtr::dynamicCast( Playlists::loadPlaylistFile( filePath ) );
+    QVERIFY( m_playlist ); // no playlist -> no test. that's life ;)
+    m_playlist->triggerTrackLoad();
+    QCOMPARE( m_playlist->name(), QString("test.pls") );
+    QCOMPARE( m_playlist->trackCount(), 4 );
 }
 
-void TestMetaMultiTrack::cleanupTestCase()
+void TestMetaMultiTrack::init()
+{
+    m_testMultiTrack = new Meta::MultiTrack( m_playlist );
+}
+
+void TestMetaMultiTrack::cleanup()
 {
     delete m_testMultiTrack;
-}
-
-void TestMetaMultiTrack::testFirst()
-{
-    QCOMPARE( m_testMultiTrack->first().pathOrUrl(), QString( "http://85.214.44.27:8000" ) );
-    m_testMultiTrack->next();
-    m_testMultiTrack->setSource( 2 );
-    QCOMPARE( m_testMultiTrack->first().pathOrUrl(), QString( "http://85.214.44.27:8000" ) );
-}
-
-void TestMetaMultiTrack::testNext()
-{
-    QCOMPARE( m_testMultiTrack->first().pathOrUrl(), QString( "http://85.214.44.27:8000" ) );
-    QCOMPARE( m_testMultiTrack->next().pathOrUrl(), QString( "http://217.20.121.40:8000" ) );
-    QCOMPARE( m_testMultiTrack->next().pathOrUrl(), QString( "http://85.214.44.27:8100" ) );
-    QCOMPARE( m_testMultiTrack->next().pathOrUrl(), QString( "http://85.214.44.27:8200" ) );
-    QCOMPARE( m_testMultiTrack->next().pathOrUrl(), QString( "" ) );
-    QCOMPARE( m_testMultiTrack->next().pathOrUrl(), QString( "" ) );
-}
-
-void TestMetaMultiTrack::testCurrentAndSetSource()
-{
-    m_testMultiTrack->first();
-    QCOMPARE( m_testMultiTrack->current(), 0 );
-
-    m_testMultiTrack->setSource( 1 );
-    QCOMPARE( m_testMultiTrack->current(), 1 );
-
-    m_testMultiTrack->setSource( 2 );
-    QCOMPARE( m_testMultiTrack->current(), 2 );
-
-    m_testMultiTrack->setSource( 3 );
-    QCOMPARE( m_testMultiTrack->current(), 3 );
-
-    m_testMultiTrack->setSource( 4 );
-    QCOMPARE( m_testMultiTrack->current(), 3 );
 }
 
 void TestMetaMultiTrack::testSources()
@@ -107,6 +74,33 @@ void TestMetaMultiTrack::testSources()
     QCOMPARE( sources.at( 1 ), QString( "http://217.20.121.40:8000" ) );
     QCOMPARE( sources.at( 2 ), QString( "http://85.214.44.27:8100" ) );
     QCOMPARE( sources.at( 3 ), QString( "http://85.214.44.27:8200" ) );
+}
+
+void TestMetaMultiTrack::testSetSourceCurrentNextUrl()
+{
+    QCOMPARE( m_testMultiTrack->current(), 0 );
+    QCOMPARE( m_testMultiTrack->playableUrl(), KUrl( "http://85.214.44.27:8000" ) );
+    QCOMPARE( m_testMultiTrack->nextUrl(), KUrl( "http://217.20.121.40:8000" ) );
+
+    m_testMultiTrack->setSource( 1 );
+    QCOMPARE( m_testMultiTrack->current(), 1 );
+    QCOMPARE( m_testMultiTrack->playableUrl(), KUrl( "http://217.20.121.40:8000" ) );
+    QCOMPARE( m_testMultiTrack->nextUrl(), KUrl( "http://85.214.44.27:8100" ) );
+
+    m_testMultiTrack->setSource( 2 );
+    QCOMPARE( m_testMultiTrack->current(), 2 );
+    QCOMPARE( m_testMultiTrack->playableUrl(), KUrl( "http://85.214.44.27:8100" ) );
+    QCOMPARE( m_testMultiTrack->nextUrl(), KUrl( "http://85.214.44.27:8200" ) );
+
+    m_testMultiTrack->setSource( 3 );
+    QCOMPARE( m_testMultiTrack->current(), 3 );
+    QCOMPARE( m_testMultiTrack->playableUrl(), KUrl( "http://85.214.44.27:8200" ) );
+    QCOMPARE( m_testMultiTrack->nextUrl(), KUrl() );
+
+    m_testMultiTrack->setSource( 4 );
+    QCOMPARE( m_testMultiTrack->current(), 3 );
+    m_testMultiTrack->setSource( -1 );
+    QCOMPARE( m_testMultiTrack->current(), 3 );
 }
 
 void TestMetaMultiTrack::testHasCapabilityInterface()

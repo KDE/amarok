@@ -144,7 +144,9 @@ set(libconfigdialog_SRCS
     configdialog/ConfigDialog.cpp
     configdialog/ConfigDialogBase.cpp
     configdialog/dialogs/CollectionConfig.cpp
+    configdialog/dialogs/ExcludedLabelsDialog.cpp
     configdialog/dialogs/GeneralConfig.cpp
+    configdialog/dialogs/MetadataConfig.cpp
     configdialog/dialogs/NotificationsConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
     configdialog/dialogs/PluginsConfig.cpp
@@ -156,6 +158,8 @@ set(libconfigdialog_SRCS
 kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/CollectionConfig.ui
     configdialog/dialogs/GeneralConfig.ui
+    configdialog/dialogs/MetadataConfig.ui
+    configdialog/dialogs/ExcludedLabelsDialog.ui
     configdialog/dialogs/NotificationsConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
     configdialog/dialogs/DatabaseConfig.ui
@@ -579,6 +583,36 @@ if( TAGLIB_FOUND )
 endif( TAGLIB_FOUND )
 
 #####################################################################
+# STATISTICS SYNCHRONIZATION
+#####################################################################
+set( statsyncing_SRCS
+    statsyncing/Config.cpp
+    statsyncing/Controller.cpp
+    statsyncing/Options.cpp
+    statsyncing/Process.cpp
+    statsyncing/Provider.cpp
+    statsyncing/ScrobblingService.cpp
+    statsyncing/Track.cpp
+    statsyncing/TrackTuple.cpp
+    statsyncing/collection/CollectionProvider.cpp
+    statsyncing/collection/CollectionTrack.cpp
+    statsyncing/jobs/MatchTracksJob.cpp
+    statsyncing/jobs/SynchronizeTracksJob.cpp
+    statsyncing/models/CommonModel.cpp
+    statsyncing/models/MatchedTracksModel.cpp
+    statsyncing/models/ProvidersModel.cpp
+    statsyncing/models/SingleTracksModel.cpp
+    statsyncing/ui/ChooseProvidersPage.cpp
+    statsyncing/ui/MatchedTracksPage.cpp
+    statsyncing/ui/TrackDelegate.cpp
+)
+
+kde4_add_ui_files(statsyncing_SRCS
+    statsyncing/ui/ChooseProvidersPage.ui
+    statsyncing/ui/MatchedTracksPage.ui
+)
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -613,6 +647,7 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
     ${shared_SRCS}
+    ${statsyncing_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp

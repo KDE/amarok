@@ -32,7 +32,6 @@ LastFmServiceConfig::LastFmServiceConfig()
 {
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
-
     // we only want to load the wallet if the user has enabled features that require a user/pass
     bool scrobble = config.readEntry( "scrobble", false );
     bool fetch_sim = config.readEntry( "fetchSimilar", false );
@@ -88,6 +87,7 @@ LastFmServiceConfig::load()
     m_scrobble = config.readEntry( "scrobble", true );
     m_fetchSimilar = config.readEntry( "fetchSimilar", true );
     m_scrobbleComposer = config.readEntry( "scrobbleComposer", false );
+    m_useFancyRatingTags = config.readEntry( "useFancyRatingTags", true );
 }
 
 
@@ -100,6 +100,7 @@ void LastFmServiceConfig::save()
     config.writeEntry( "scrobble", m_scrobble );
     config.writeEntry( "fetchSimilar", m_fetchSimilar );
     config.writeEntry( "scrobbleComposer", m_scrobbleComposer );
+    config.writeEntry( "useFancyRatingTags", m_useFancyRatingTags );
 
     if ( !tryToOpenWallet() && config.readEntry( "ignoreWallet", QString() ) != "yes" )
         askAboutMissingKWallet();
@@ -173,6 +174,7 @@ LastFmServiceConfig::reset()
     m_scrobble = false;
     m_fetchSimilar = false;
     m_scrobbleComposer = false;
+    m_useFancyRatingTags = true;
 }
 
 

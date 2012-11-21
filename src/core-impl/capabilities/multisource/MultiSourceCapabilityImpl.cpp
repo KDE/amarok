@@ -14,7 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core-impl/capabilities/multisource/MultiSourceCapabilityImpl.h"
+#include "MultiSourceCapabilityImpl.h"
+
+#include "core/support/Debug.h"
 
 using namespace Capabilities;
 
@@ -23,17 +25,33 @@ MultiSourceCapabilityImpl::MultiSourceCapabilityImpl(Meta::MultiTrack * track)
     , m_track( track )
 {
     //forward from track, as there might  be several instances of MultiSourceCapabilityImpl active for one track.
-    connect( m_track, SIGNAL( urlChanged( const KUrl &) ), this, SIGNAL( urlChanged( const KUrl &) ) );
+    connect( m_track, SIGNAL(urlChanged(KUrl)), this, SIGNAL(urlChanged(KUrl)) );
 }
 
-void MultiSourceCapabilityImpl::setSource( int source )
+MultiSourceCapabilityImpl::~MultiSourceCapabilityImpl()
 {
-    DEBUG_BLOCK
-    m_track->setSource( source );
-    const KUrl url = m_track->playableUrl();
-
 }
 
+QStringList
+MultiSourceCapabilityImpl::sources() const
+{
+    return m_track->sources();
+}
 
+void
+MultiSourceCapabilityImpl::setSource( int source )
+{
+    m_track->setSource( source );
+}
 
-#include "MultiSourceCapabilityImpl.moc"
+int
+MultiSourceCapabilityImpl::current() const
+{
+    return m_track->current();
+}
+
+KUrl
+MultiSourceCapabilityImpl::nextUrl() const
+{
+    return m_track->nextUrl();
+}

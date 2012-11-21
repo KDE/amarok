@@ -78,6 +78,12 @@ Statistics::playCount() const
     return 0;
 }
 
+int
+Statistics::recentPlayCount() const
+{
+    return 0;
+}
+
 void
 Statistics::setPlayCount( int newPlayCount )
 {
