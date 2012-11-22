@@ -88,9 +88,9 @@ Optional
       * Loudmouth, the Jabber library, http://www.loudmouth-project.org/
       * Qt must be compiled with Glib enabled
 
-    * Liblastfm 1.0 (or newer)
+    * Liblastfm 1.0.3 (or newer)
       (For scrobbling, internet radio, and artist info)
-      http://cdn.last.fm/client/liblastfm-1.0.1.tar.gz
+      http://cdn.last.fm/client/liblastfm-1.0.3.tar.gz
       https://github.com/eartle/liblastfm
 
     * QJson 0.7 (or newer)

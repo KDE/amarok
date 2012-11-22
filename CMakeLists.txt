@@ -135,7 +135,12 @@ if( WITH_PLAYER )
     if( LIBLASTFM_FOUND )
         macro_ensure_version( ${LIBLASTFM_MIN_VERSION} ${LIBLASTFM_VERSION} LIBLASTFM_FOUND )
     endif( LIBLASTFM_FOUND )
-    macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/client/liblastfm-1.0.1.tar.gz" FALSE ${LIBLASTFM_MIN_VERSION} "" )
+    # We tell users that we need 1.0.3, but we really check just >= 1.0.0. This is because
+    # upstream forgot to update version in lastfm/global.h, so it looks like 1.0.2. :-(
+    # will be fixed in liblastfm-1.0.4
+    set( LIBLASTFM_MIN_VERSION "1.0.3" )
+    macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists"
+                       "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" FALSE ${LIBLASTFM_MIN_VERSION} "" )
     macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
     macro_optional_find_package( FFmpeg )

@@ -26,6 +26,8 @@ VERSION 2.7-Beta 1
     * Amazon store: We now ship a utility to handle downloads from Amazon.
 
   CHANGES:
+    * If liblastfm is provided, it is strongly recommended to use version 1.0.3 or newer
+      for fixes of bugs that otherwise prevent iPod scrobbling and synchronization.
     * Configure Amarok dialog gets new Metadata tab to grab some weight from the
       Collection tab and to configure statistics synchronization.
     * APG now saves its presets each time it's run, to lessen preset loss if
