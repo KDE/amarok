@@ -122,6 +122,7 @@ void MatchTracksJob::run()
             providerArtists[ artist.toLower() ].insert( provider, artist );
         s_comparisonFields &= provider->reliableTrackMetaData();
     }
+    Q_UNUSED( requiredFields ) // silence gcc warning about unused var in non-debug build
     Q_ASSERT( ( s_comparisonFields & requiredFields ) == requiredFields );
     emit totalSteps( providerArtists.size() );
 #ifdef VERBOSE_DEBUG

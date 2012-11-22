@@ -89,7 +89,7 @@ void
 Controller::registerProvider( const ProviderPtr &provider )
 {
     QString id = provider->id();
-    bool enabled;
+    bool enabled = false;
     if( m_config->providerKnown( id ) )
         enabled = m_config->providerEnabled( id, false );
     else
