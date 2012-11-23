@@ -27,9 +27,9 @@
 #include "core-impl/collections/support/MemoryMeta.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
 
-#include <Nepomuk/Resource>
-#include <Nepomuk/ResourceManager>
-#include <Nepomuk/Vocabulary/NFO>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/ResourceManager>
+#include <Nepomuk2/Vocabulary/NFO>
 
 #include <KIcon>
 #include <ThreadWeaver/Weaver>
@@ -110,8 +110,8 @@ bool
 NepomukCollection::possiblyContainsTrack( const KUrl &url ) const
 {
     // if a resource of type audio is created successfully return true
-    Nepomuk::Resource res( url );
-    if( res.exists() && res.hasType( Nepomuk::Vocabulary::NFO::Audio() ) )
+    Nepomuk2::Resource res( url );
+    if( res.exists() && res.hasType( Nepomuk2::Vocabulary::NFO::Audio() ) )
         return true;
     else
         return false;
@@ -120,8 +120,8 @@ NepomukCollection::possiblyContainsTrack( const KUrl &url ) const
 Meta::TrackPtr
 NepomukCollection::trackForUrl( const KUrl &url )
 {
-    Nepomuk::Resource fileRes( url );
-    QString uidUrl = fileRes.resourceUri().toString();
+    Nepomuk2::Resource fileRes( url );
+    QString uidUrl = fileRes.uri().toString();
     return trackForUidUrl( uidUrl );
 }
 

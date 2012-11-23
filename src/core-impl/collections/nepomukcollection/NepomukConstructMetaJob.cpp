@@ -35,7 +35,7 @@
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 
-#include <Nepomuk/ResourceManager>
+#include <Nepomuk2/ResourceManager>
 #include <Soprano/Model>
 #include <Soprano/Query/QueryLanguage>
 #include <Soprano/QueryResultIterator>
@@ -63,7 +63,7 @@ NepomukConstructMetaJob::run()
     if( m_aborted )
         return;
 
-    Model *model = Nepomuk::ResourceManager::instance()->mainModel();
+    Model *model = Nepomuk2::ResourceManager::instance()->mainModel();
 
     // a simple query to calculate the number of tracks.
     QString countQuery = QString::fromLatin1( "select count(distinct ?r) where { ?r a nmm:MusicPiece . }" );

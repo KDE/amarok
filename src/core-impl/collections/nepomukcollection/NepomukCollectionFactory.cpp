@@ -23,7 +23,7 @@
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 
-#include <Nepomuk/ResourceManager>
+#include <Nepomuk2/ResourceManager>
 
 void
 NepomukCollectionFactory::init()
@@ -32,7 +32,7 @@ NepomukCollectionFactory::init()
     m_initialized = true;
 
     // check if Nepomuk service is running
-    if( Nepomuk::ResourceManager::instance()->initialized() )
+    if( Nepomuk2::ResourceManager::instance()->initialized() )
     {
         // if it is, create a new NepomukCollection
         emit newCollection( new Collections::NepomukCollection() );

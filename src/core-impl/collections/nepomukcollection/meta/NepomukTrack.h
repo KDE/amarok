@@ -29,7 +29,7 @@
 
 #include <QSharedPointer>
 
-#include <Nepomuk/Resource>
+#include <Nepomuk2/Resource>
 
 namespace Meta
 {
@@ -154,7 +154,7 @@ private:
     double m_albumPeakGain;
 
     NepomukCollection *m_coll;
-    Nepomuk::Resource m_resource;
+    Nepomuk2::Resource m_resource;
 };
 
 }
