@@ -1,14 +1,14 @@
 macro_optional_find_package(NepomukCore)
-macro_log_feature(NepomukCore_FOUND "Nepomuk" "Nepomuk Libraries required by Nepomuk Collection" "http://nepomuk.kde.org" FALSE "" "")
+macro_log_feature(NepomukCore_FOUND "nepomuk-core" "NepomukCore Libraries required by Nepomuk Collection" "http://kde.org/download/#v4.9" FALSE "4.9.0")
 macro_optional_find_package(Soprano)
-macro_log_feature(Soprano_FOUND "Soprano" "Soprano libraries required by Nepomuk Collection" "http://soprano.sourceforge.net/" FALSE "" "")
+macro_log_feature(Soprano_FOUND "Soprano" "Soprano libraries required by Nepomuk Collection" "http://soprano.sourceforge.net/" FALSE)
 
 if(NepomukCore_FOUND AND Soprano_FOUND)
     include(NepomukAddOntologyClasses)
-    
+
     include_directories( ../..
-    	${SOPRANO_INCLUDE_DIR}
-	${NEPOMUK_CORE_INCLUDE_DIR}
+        ${SOPRANO_INCLUDE_DIR}
+        ${NEPOMUK_CORE_INCLUDE_DIR}
     )
 
     ########### next target ###############
@@ -37,7 +37,7 @@ if(NepomukCore_FOUND AND Soprano_FOUND)
         ${NEPOMUK_CORE_LIBRARY}
         ${KDE4_KDEUI_LIBS}
         ${KDE4_KDECORE_LIBS}
-	${SOPRANO_LIBRARIES}
+        ${SOPRANO_LIBRARIES}
     )
 
     install(TARGETS amarok_collection-nepomukcollection DESTINATION ${PLUGIN_INSTALL_DIR})
