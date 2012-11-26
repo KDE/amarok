@@ -994,10 +994,10 @@ EngineController::slotFinished()
         emit trackFinishedPlaying( m_currentTrack, 1.0 );
     }
 
-    if( m_currentTrack && !m_multiPlayback && !m_multiSource )
+    if( !m_multiPlayback && !m_multiSource )
     {
         if( !m_nextTrack && m_nextUrl.isEmpty() )
-            emit stopped( trackPositionMs(), m_currentTrack->length() );
+            emit stopped( trackPositionMs(), m_currentTrack ? m_currentTrack->length() : 0 );
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
@@ -1023,7 +1023,7 @@ EngineController::slotFinished()
     }
     else
     {
-        The::playlistActions()->reflectPlaybackFinished();
+        DEBUG_LINE_INFO
         // possibly we are waiting for a fetch
         m_playWhenFetched = true;
     }

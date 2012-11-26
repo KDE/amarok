@@ -71,16 +71,16 @@ Playlist::Actions::destroy()
 Playlist::Actions::Actions()
         : QObject()
         , m_nextTrackCandidate( 0 )
-        , m_trackToBeLast( 0 )
+        , m_stopAfterPlayingTrackId( 0 )
         , m_navigator( 0 )
-        , m_stopAfterMode( StopNever )
         , m_waitingForNextTrack( false )
 {
     EngineController *engine = The::engineController();
 
     if( engine ) // test cases might create a playlist without having an EngineController
-        connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-                 this, SLOT( slotTrackPlaying( Meta::TrackPtr ) ) );
+        connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr) ),
+                 this, SLOT(slotTrackPlaying(Meta::TrackPtr)) );
+        connect( engine, SIGNAL(stopped(qint64,qint64)), SLOT(slotPlayingStopped()) );
 }
 
 Playlist::Actions::~Actions()
@@ -114,43 +114,15 @@ Playlist::Actions::requestNextTrack()
     if ( m_nextTrackCandidate != 0 )
         return;
 
-    debug() << "so far so good!";
-    if( stopAfterMode() == StopAfterQueue && The::playlist()->activeId() == m_trackToBeLast )
-    {
-        setStopAfterMode( StopAfterCurrent );
-        m_trackToBeLast = 0;
-    }
-
     m_nextTrackCandidate = m_navigator->requestNextTrack();
     if( m_nextTrackCandidate == 0 )
         return;
 
-    if( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
-    {
+    if( willStopAfterTrack( ModelStack::instance()->bottom()->activeId() ) )
+        // Tell playlist what track to play after users hits Play again:
         The::playlist()->setActiveId( m_nextTrackCandidate );
-        setStopAfterMode( StopNever );
-    }
     else
-    {
         play( m_nextTrackCandidate, false );
-    }
-}
-
-void
-Playlist::Actions::reflectPlaybackFinished()
-{
-    if( m_nextTrackCandidate )
-        // this must ba a result of StopAfterCurrent or similar, nothing to do
-        return;
-
-    debug() << "nothing more to play...";
-    // no more stuff to play. make sure to reset the active track so that pressing play
-    // will start at the top of the playlist (or whereever the navigator wants to start)
-    // instead of just replaying the last track
-    The::playlist()->setActiveRow( -1 );
-
-    // we also need to mark all tracks as unplayed or some navigators might be unhappy
-    The::playlist()->setAllUnplayed();
 }
 
 void
@@ -173,6 +145,23 @@ Playlist::Actions::requestTrack( quint64 id )
     m_nextTrackCandidate = id;
 }
 
+void
+Playlist::Actions::stopAfterPlayingTrack( quint64 id )
+{
+    if( id == quint64( -1 ) )
+        id = ModelStack::instance()->bottom()->activeId(); // 0 is fine
+    if( id != m_stopAfterPlayingTrackId )
+    {
+        m_stopAfterPlayingTrackId = id;
+        repaintPlaylist(); // to get the visual change
+    }
+}
+
+bool
+Playlist::Actions::willStopAfterTrack( const quint64 id ) const
+{
+    return m_stopAfterPlayingTrackId && m_stopAfterPlayingTrackId == id;
+}
 
 void
 Playlist::Actions::play()
@@ -457,6 +446,24 @@ Playlist::Actions::slotTrackPlaying( Meta::TrackPtr engineTrack )
     m_nextTrackCandidate = 0;
 }
 
+void
+Playlist::Actions::slotPlayingStopped()
+{
+    stopAfterPlayingTrack( 0 ); // reset possible "Stop after playing track";
+
+    if( m_nextTrackCandidate )
+        // this must ba a result of StopAfterCurrent or similar, nothing to do
+        return;
+
+    debug() << "nothing more to play...";
+    // no more stuff to play. make sure to reset the active track so that pressing play
+    // will start at the top of the playlist (or whereever the navigator wants to start)
+    // instead of just replaying the last track
+    The::playlist()->setActiveRow( -1 );
+
+    // we also need to mark all tracks as unplayed or some navigators might be unhappy
+    The::playlist()->setAllUnplayed();
+}
 
 void
 Playlist::Actions::normalizeDynamicPlaylist()
@@ -470,7 +477,7 @@ Playlist::Actions::normalizeDynamicPlaylist()
 void
 Playlist::Actions::repaintPlaylist()
 {
-    The::mainWindow()->playlistDock()->currentView()->repaint();
+    The::mainWindow()->playlistDock()->currentView()->update();
 }
 
 void

@@ -181,7 +181,7 @@ namespace Mpris1
 
     void PlayerHandler::StopAfterCurrent()
     {
-        The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
+        The::playlistActions()->stopAfterPlayingTrack();
     }
 
     int PlayerHandler::VolumeGet()

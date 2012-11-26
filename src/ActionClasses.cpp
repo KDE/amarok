@@ -499,12 +499,6 @@ StopAction::playing()
 void
 StopAction::stop()
 {
-    if( The::playlistActions()->stopAfterMode() )
-    {
-        The::playlistActions()->setStopAfterMode( Playlist::StopNever );
-        The::playlistActions()->setTrackToBeLast( 0 );
-        The::playlistActions()->repaintPlaylist();
-    }
     The::engineController()->stop();
 }
 
@@ -526,21 +520,24 @@ StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionC
 void
 StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
 {
-    if ( !The::playlistActions()->willStopAfterTrack( Playlist::ModelStack::instance()->bottom()->activeId() ) )
+    quint64 activeTrack = Playlist::ModelStack::instance()->bottom()->activeId();
+    if( !activeTrack )
     {
-        The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
-        The::playlistActions()->setTrackToBeLast( Playlist::ModelStack::instance()->bottom()->activeId() );
-        The::playlistActions()->repaintPlaylist();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
-        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: On" ) );
-    } else {
-        The::playlistActions()->setStopAfterMode( Playlist::StopNever );
-        The::playlistActions()->setTrackToBeLast( 0 );
-        The::playlistActions()->repaintPlaylist();
+        Amarok::OSD::instance()->OSDWidget::show( i18n( "No track playing" ) );
+        return;
+    }
+
+    if( The::playlistActions()->willStopAfterTrack( activeTrack ) )
+    {
+        The::playlistActions()->stopAfterPlayingTrack( 0 );
         Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: Off" ) );
     }
+    else
+    {
+        The::playlistActions()->stopAfterPlayingTrack( activeTrack );
+        Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: On" ) );
+    }
 }
-
-#include "ActionClasses.moc"
-

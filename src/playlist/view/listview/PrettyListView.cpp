@@ -414,18 +414,11 @@ Playlist::PrettyListView::dragLeaveEvent( QDragLeaveEvent* event )
 void
 Playlist::PrettyListView::stopAfterTrack()
 {
-    DEBUG_BLOCK
     const quint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
     if( Actions::instance()->willStopAfterTrack( id ) )
-    {
-        Actions::instance()->setStopAfterMode( StopNever );
-        Actions::instance()->setTrackToBeLast( 0 );
-    }
+        Actions::instance()->stopAfterPlayingTrack( 0 ); // disable stopping
     else
-    {
-        Actions::instance()->setStopAfterMode( StopAfterQueue );
-        Actions::instance()->setTrackToBeLast( id );
-    }
+        Actions::instance()->stopAfterPlayingTrack( id );
 }
 
 void

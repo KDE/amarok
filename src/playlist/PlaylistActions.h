@@ -43,14 +43,6 @@ namespace Playlist
 {
 class TrackNavigator;
 
-enum StopAfterMode
-{
-    StopNever = 0,
-    StopAfterCurrent,
-    StopAfterQueue
-};
-
-
 /**
  * This class is a central hub between the playlist model stack, the playlist navigators,
  * and the track playback engine. It ties them together to provide simple "Play", "Play
@@ -79,14 +71,6 @@ public:
     void requestNextTrack();
 
     /**
-     * Reflect that EngineController was not fed with the next track and therefore
-     * the playback finished. This is mostly a result of requestNextTrack() not
-     * feeding EngineController with a new track. This method peforms necessary
-     * cleanup.
-     */
-    void reflectPlaybackFinished();
-
-    /**
      * Figure out the next track, and start playing it immediately.
      */
     void requestUserNextTrack();
@@ -101,10 +85,15 @@ public:
      */
     void requestTrack( quint64 id );
 
-    StopAfterMode stopAfterMode() const { return m_stopAfterMode; }
-    void setStopAfterMode( StopAfterMode m ) { m_stopAfterMode = m; }
-    void setTrackToBeLast( quint64 id ) { m_trackToBeLast = id; }
-    bool willStopAfterTrack( const quint64 id ) const { return m_trackToBeLast == id; }
+    /**
+     * Request that Amarok stops playback after playing certain track.
+     * @param id playlist id of a track to stop playing after or 0 to disable
+     *           stopping after some track. If not specified, enable stopping
+     *           after currently playing track.
+     */
+    void stopAfterPlayingTrack( quint64 id = -1 );
+
+    bool willStopAfterTrack( const quint64 id ) const;
 
     // This shouldn't be in Actions, it doesn't make sense
     int queuePosition( quint64 id );
@@ -151,8 +140,9 @@ public slots:
 signals:
     void navigatorChanged();
 
-protected slots:
+private slots:
     void slotTrackPlaying( Meta::TrackPtr engineTrack );
+    void slotPlayingStopped();
 
 private:
     Actions();
@@ -161,9 +151,12 @@ private:
     void init();
 
     quint64 m_nextTrackCandidate;
-    quint64 m_trackToBeLast;
+    /**
+     * Playlist id if a track where the playback should be stopped or 0 if playback
+     * shouldn't be stopped after certain track
+     */
+    quint64 m_stopAfterPlayingTrackId;
     TrackNavigator* m_navigator;                //!< the strategy of what to do when a track finishes playing
-    Playlist::StopAfterMode m_stopAfterMode;
     bool m_waitingForNextTrack;
 
     static Actions* s_instance; //!< instance variable

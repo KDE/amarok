@@ -118,12 +118,15 @@ namespace AmarokScript
 
     void AmarokPlaylistScript::setStopAfterCurrent( bool on )
     {
-        The::playlistActions()->setStopAfterMode( on ? Playlist::StopAfterCurrent : Playlist::StopNever );
+        if( on )
+            The::playlistActions()->stopAfterPlayingTrack();
+        else
+            The::playlistActions()->stopAfterPlayingTrack( 0 );
     }
 
     bool AmarokPlaylistScript::stopAfterCurrent()
     {
-        return The::playlistActions()->stopAfterMode();
+        return The::playlistActions()->willStopAfterTrack( The::playlist()->activeId() );
     }
 
     void AmarokPlaylistScript::togglePlaylist()

@@ -152,7 +152,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
             QObject::connect( m_stopAfterTrackAction, SIGNAL(triggered()),
                               parent, SLOT(stopAfterTrack()) );
         }
-            actions << m_stopAfterTrackAction;
+        actions << m_stopAfterTrackAction;
     }
 
     //actions << separator;

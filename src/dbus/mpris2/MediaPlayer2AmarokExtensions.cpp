@@ -52,7 +52,7 @@ void MediaPlayer2AmarokExtensions::setMuted( bool muted )
 
 void MediaPlayer2AmarokExtensions::StopAfterCurrent()
 {
-    The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
+    The::playlistActions()->stopAfterPlayingTrack();
 }
 
 void MediaPlayer2AmarokExtensions::AdjustVolume( double increaseBy )
