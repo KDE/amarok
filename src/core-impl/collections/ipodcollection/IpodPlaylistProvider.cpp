@@ -187,6 +187,12 @@ IpodPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistlist )
 }
 
 void
+IpodPlaylistProvider::metadataChanged( Playlists::PlaylistPtr )
+{
+    emit startWriteDatabaseTimer();
+}
+
+void
 IpodPlaylistProvider::trackAdded( Playlists::PlaylistPtr, Meta::TrackPtr, int )
 {
     emit startWriteDatabaseTimer();

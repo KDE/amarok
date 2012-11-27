@@ -511,6 +511,19 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
 }
 
 void
+PlaylistBrowserModel::metadataChanged( Playlists::PlaylistPtr playlist )
+{
+    int indexNumber = m_playlists.indexOf( playlist );
+    if( indexNumber == -1 )
+    {
+        error() << "This playlist is not in the list of this model.";
+        return;
+    }
+    QModelIndex playlistIdx = index( indexNumber, 0 );
+    emit dataChanged( playlistIdx, playlistIdx );
+}
+
+void
 PlaylistBrowserModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
                                           int position )
 {

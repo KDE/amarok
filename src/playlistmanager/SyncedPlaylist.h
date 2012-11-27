@@ -47,6 +47,7 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual QActionList trackActions( int trackIndex );
 
         //PlaylistObserver methods
+        virtual void metadataChanged( Playlists::PlaylistPtr playlist );
         virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
                                  int position );
         virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );

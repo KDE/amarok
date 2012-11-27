@@ -122,6 +122,16 @@ SyncedPlaylist::trackActions( int trackIndex )
 }
 
 void
+SyncedPlaylist::metadataChanged( Playlists::PlaylistPtr playlist )
+{
+    if( !m_playlists.contains( playlist ) )
+        return;
+
+    // we pass on every subplaylist change because our description changes
+    notifyObserversMetadataChanged();
+}
+
+void
 SyncedPlaylist::trackAdded( Playlists::PlaylistPtr playlist, TrackPtr track, int position )
 {
     if( !m_playlists.contains( playlist ) )

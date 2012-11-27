@@ -17,16 +17,18 @@
 #include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistProvider.h"
 
-Playlists::PlaylistObserver::~PlaylistObserver()
+using namespace Playlists;
+
+PlaylistObserver::~PlaylistObserver()
 {
-    foreach( Playlists::PlaylistPtr playlist, m_playlistSubscriptions )
+    foreach( PlaylistPtr playlist, m_playlistSubscriptions )
     {
         playlist->unsubscribe( this );
     }
 }
 
 void
-Playlists::PlaylistObserver::subscribeTo( Playlists::PlaylistPtr playlist )
+PlaylistObserver::subscribeTo( PlaylistPtr playlist )
 {
     if( playlist )
     {
@@ -36,7 +38,7 @@ Playlists::PlaylistObserver::subscribeTo( Playlists::PlaylistPtr playlist )
 }
 
 void
-Playlists::PlaylistObserver::unsubscribeFrom( Playlists::PlaylistPtr playlist )
+PlaylistObserver::unsubscribeFrom( PlaylistPtr playlist )
 {
     if( playlist )
     {
@@ -45,19 +47,72 @@ Playlists::PlaylistObserver::unsubscribeFrom( Playlists::PlaylistPtr playlist )
     }
 }
 
+Playlist::~Playlist()
+{
+}
+
+void
+Playlist::triggerTrackLoad()
+{
+}
+
 QActionList
-Playlists::Playlist::actions()
+Playlist::actions()
 {
     if( provider() )
-        return provider()->playlistActions( Playlists::PlaylistPtr( this ) );
+        return provider()->playlistActions( PlaylistPtr( this ) );
 
     return QActionList();
 }
 
 QActionList
-Playlists::Playlist::trackActions( int trackIndex )
+Playlist::trackActions( int trackIndex )
 {
     if( provider() )
-        return provider()->trackActions( Playlists::PlaylistPtr( this ), trackIndex );
+        return provider()->trackActions( PlaylistPtr( this ), trackIndex );
     return QActionList();
+}
+
+void
+Playlist::notifyObserversMetadataChanged()
+{
+    foreach( PlaylistObserver *observer, m_observers )
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->metadataChanged( PlaylistPtr( this ) );
+    }
+}
+
+void
+Playlist::notifyObserversTrackAdded( const Meta::TrackPtr &track, int position )
+{
+    Q_ASSERT( position >= 0 ); // notice bug 293295 early
+    foreach( PlaylistObserver *observer, m_observers )
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->trackAdded( PlaylistPtr( this ), track, position );
+    }
+}
+
+void
+Playlist::notifyObserversTrackRemoved( int position )
+{
+    foreach( PlaylistObserver *observer, m_observers )
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->trackRemoved( PlaylistPtr( this ), position );
+    }
+}
+
+void
+Playlist::subscribe( PlaylistObserver* observer )
+{
+    if( observer )
+        m_observers.insert( observer );
+}
+
+void
+Playlist::unsubscribe( PlaylistObserver* observer )
+{
+    m_observers.remove( observer );
 }

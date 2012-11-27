@@ -53,17 +53,26 @@ namespace Playlists
     class AMAROK_CORE_EXPORT PlaylistObserver
     {
         public:
+            virtual ~PlaylistObserver();
+
             void subscribeTo( PlaylistPtr );
             void unsubscribeFrom( PlaylistPtr );
 
-            /** This method is called when a track has been added to the playlist.
+            /**
+             * This method is called when playlist metadata (such as title) has changed.
+             * This isn't called when just a list of tracks changes.
+             */
+            virtual void metadataChanged( PlaylistPtr playlist ) = 0;
+
+            /**
+             * This method is called when a track has been added to the playlist.
              */
             virtual void trackAdded( PlaylistPtr playlist, Meta::TrackPtr track, int position ) = 0;
 
-            /** This method is called after a track is removed from to the playlist. */
+            /**
+             * This method is called after a track is removed from to the playlist.
+             */
             virtual void trackRemoved( PlaylistPtr playlist, int position ) = 0;
-
-            virtual ~PlaylistObserver();
 
         private:
             QSet<PlaylistPtr> m_playlistSubscriptions;
@@ -72,7 +81,8 @@ namespace Playlists
     class AMAROK_CORE_EXPORT Playlist : public virtual QSharedData
     {
         public:
-            virtual ~Playlist() {}
+            virtual ~Playlist();
+
             /**
              * @returns a unique identifier for a playlist. Should be similar to
              * Meta::Track::uidUrl
@@ -88,20 +98,34 @@ namespace Playlists
             /**override showing just the filename */
             virtual void setName( const QString &name ) { Q_UNUSED( name ); }
 
-            /** @returns the number of tracks this playlist contains. -1 if this can not
-              * be determined before loading them all.
-              */
+            /**
+             * @returns the number of tracks this playlist contains. -1 if this can not
+             * be determined before loading them all.
+             *
+             * Default implementation returns -1.
+             */
             virtual int trackCount() const { return -1; }
 
-            /** returns all tracks in this playlist */
+            /**
+             * Returns loaded tracks in this playlist. Note that the list may be incomplete,
+             * to be sure, you have to become playlist observer, watch for trackAdded()
+             * methods and call triggerTrackLoad()
+             */
             virtual Meta::TrackList tracks() = 0;
 
-            /** Called to make a playlist load it's tracks in memory.
-              * This is used by PlaylistBrowserModel to do on-demand loading.
-              * It's recommended that this function starts a background task in order not to block
-              * the GUI thread.
-              */
-            virtual void triggerTrackLoad() {}
+            /**
+             * Trigger full background loading of this playlist. Observer's trackAdded()
+             * and metadataChanged() will be called as appropriate. This may even change
+             * playlist metadata;
+             *
+             * Implementators, you should start a background job in this method to
+             * actually load tracks, calling notifyObservers[Something]Added/Changed()
+             * as appropriate. You should also use MetaProxy::Track as a second-level
+             * lazy-loading so that you can return more quickly.
+             *
+             * Default implementation does nothing.
+             */
+            virtual void triggerTrackLoad();
 
             /** Add the track to a certain position in the playlist
              *  @arg position: place to add this track. The default value -1 appends to
@@ -121,61 +145,71 @@ namespace Playlists
             virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack )
                     { Q_UNUSED(position); Q_UNUSED(otherTrack); }
 
-            virtual void subscribe( PlaylistObserver *observer )
-                    { if( observer ) m_observers.insert( observer ); }
-            virtual void unsubscribe( PlaylistObserver *observer )
-                    { m_observers.remove( observer ); }
-
-            /** A list of groups or labels this playlist belongs to.
-              *
-              * Can be used for grouping in folders (use ex. '/' as separator) or for
-              * labels.
-              */
-            virtual QStringList groups() { return QStringList(); }
-
+            /**
+             * Return user-activable actions for this playlist. Default implementation
+             * just returns provider actions for this playlist.
+             */
             virtual QActionList actions();
+
+            /**
+             * Return actions for track at position @trackIndex fot this playlist. Default
+             * implementation returns provider()'s trackActions().
+             */
             virtual QActionList trackActions( int trackIndex );
 
             /**
-            * "labels" the playlist as part of a group. In a folder-like hierachy this means adding
-            * the playlist to the folder with name groups.first().
-            * If groups is empty that means removing all groups from the playlist.
-            */
+             * A list of groups or labels this playlist belongs to.
+             *
+             * Can be used for grouping in folders (use ex. '/' as separator) or for
+             * labels.
+             */
+            virtual QStringList groups() { return QStringList(); }
+
+            /**
+             * Labels the playlist as part of a group.
+             *
+             * In a folder-like hierachy this means adding the playlist to the folder with
+             * name groups.first(). If groups is empty that means removing all groups from
+             * the playlist.
+             */
             virtual void setGroups( const QStringList &groups ) { Q_UNUSED(groups) }
 
         protected:
             /**
+             * Implementations must call this when metadata such as title has changed. Do
+             * not call this when just a list of track changes.
+             *
+             * @param position is the actual new position of the added track, never negative
+             * @note calling this from (code called by) Playlist constructor is FORBIDDEN.
+             *
+             * TODO: find all occurences where this should be called in Playlist subclasses
+             * and add the call!
+             */
+            void notifyObserversMetadataChanged();
+
+            /**
              * Implementations must call this when a track is added to playlist
              *
              * @param position is the actual new position of the added track, never negative
+             * @note calling this from (code called by) Playlist constructor is FORBIDDEN.
              */
-            inline void notifyObserversTrackAdded( Meta::TrackPtr track, int position )
-            {
-                Q_ASSERT( position >= 0 ); // notice bug 293295 early
-                foreach( Playlists::PlaylistObserver *observer, m_observers )
-                {
-                    if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-                        observer->trackAdded( Playlists::PlaylistPtr( this ), track, position );
-                }
-            }
+            void notifyObserversTrackAdded( const Meta::TrackPtr &track, int position );
 
             /**
              * Implementations must call this when a track is added to playlist
              *
              * @param position is the position where the track was before removal
+             * @note calling this from (code called by) Playlist constructor is FORBIDDEN.
              */
-            inline void notifyObserversTrackRemoved( int position )
-            {
-                foreach( Playlists::PlaylistObserver *observer, m_observers )
-                {
-                    if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-                        observer->trackRemoved( Playlists::PlaylistPtr( this ), position );
-                }
-            }
+            void notifyObserversTrackRemoved( int position );
 
-            QSet<Playlists::PlaylistObserver*> m_observers;
+        private:
+            friend class PlaylistObserver; // so that it can call (un)subscribe()
+            void subscribe( PlaylistObserver *observer );
+            void unsubscribe( PlaylistObserver *observer );
+
+            QSet<PlaylistObserver *> m_observers;
     };
-
 }
 
 Q_DECLARE_METATYPE( Playlists::PlaylistPtr )
