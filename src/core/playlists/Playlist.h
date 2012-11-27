@@ -53,34 +53,59 @@ namespace Playlists
     class AMAROK_CORE_EXPORT PlaylistObserver
     {
         public:
+            PlaylistObserver();
             virtual ~PlaylistObserver();
 
-            void subscribeTo( PlaylistPtr );
-            void unsubscribeFrom( PlaylistPtr );
+            /**
+             * Subscribe to changes made by @param playlist. Does nothing if playlist is
+             * null or if already subscribed.
+             *
+             * This method is thread-safe.
+             */
+            void subscribeTo( PlaylistPtr playlist );
+
+            /**
+             * Unsubscribe from changes made by @param playlist. Does nothing if not yet
+             * subscribed to playlist.
+             *
+             * This method is thread-safe.
+             */
+            void unsubscribeFrom( PlaylistPtr playlist );
 
             /**
              * This method is called when playlist metadata (such as title) has changed.
              * This isn't called when just a list of tracks changes.
+             *
+             * @note this method may get called from non-main thread and must be
+             * implemented in a thread-safe manner
              */
             virtual void metadataChanged( PlaylistPtr playlist ) = 0;
 
             /**
              * This method is called when a track has been added to the playlist.
+             *
+             * @note this method may get called from non-main thread and must be
+             * implemented in a thread-safe manner
              */
             virtual void trackAdded( PlaylistPtr playlist, Meta::TrackPtr track, int position ) = 0;
 
             /**
              * This method is called after a track is removed from to the playlist.
+             *
+             * @note this method may get called from non-main thread and must be
+             * implemented in a thread-safe manner
              */
             virtual void trackRemoved( PlaylistPtr playlist, int position ) = 0;
 
         private:
             QSet<PlaylistPtr> m_playlistSubscriptions;
+            QMutex m_playlistSubscriptionsMutex; // guards access to m_playlistSubscriptions
     };
 
     class AMAROK_CORE_EXPORT Playlist : public virtual QSharedData
     {
         public:
+            Playlist();
             virtual ~Playlist();
 
             /**
@@ -209,6 +234,7 @@ namespace Playlists
             void unsubscribe( PlaylistObserver *observer );
 
             QSet<PlaylistObserver *> m_observers;
+            QReadWriteLock m_observersLock; // guards access to m_observers
     };
 }
 
