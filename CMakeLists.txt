@@ -120,6 +120,10 @@ if( WITH_PLAYER )
     if( WITH_SPECTRUM_ANALYZER )
         # OpenGL is required for the spectrum analyzer
         macro_optional_find_package(OpenGL)
+        if( OPENGL_FOUND AND NOT OPENGL_INCLUDE_DIR )
+            set( OPENGL_FOUND OFF)
+            message( "-- cmake bug: found libGL.so, but no gl.h, install headers!")
+        endif( OPENGL_FOUND AND NOT OPENGL_INCLUDE_DIR )
         macro_log_feature( OPENGL_FOUND "OpenGL" "Support for hardware acceleration (enables the Spectrum Analyzer)" "http://www.opengl.org/" FALSE "" "" )
     endif( WITH_SPECTRUM_ANALYZER )
 
