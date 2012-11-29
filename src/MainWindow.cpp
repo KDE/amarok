@@ -961,7 +961,7 @@ MainWindow::createActions()
 
     LikeBack *likeBack = new LikeBack( LikeBack::AllButBugs,
         LikeBack::isDevelopmentVersion( KGlobal::mainComponent().aboutData()->version() ) );
-    likeBack->setServer( "likeback.kollide.net", "/send.php" );
+    likeBack->setServer( "amarok.likeback.kde.org", "/send.php" );
     likeBack->setAcceptedLanguages( QStringList( "en" ) );
     likeBack->setWindowNamesListing( LikeBack::WarnUnnamedWindows );    //Notify if a window has no name
 
