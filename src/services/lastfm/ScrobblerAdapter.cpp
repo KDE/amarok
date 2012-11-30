@@ -172,7 +172,7 @@ ScrobblerAdapter::slotScrobblesSubmitted( const QList<lastfm::Track> &tracks )
                           << "has Cached scrobble status, strange";
                 break;
             case lastfm::Track::Submitted:
-                if( track.corrected() )
+                if( track.corrected() && m_config && m_config.data()->announceCorrections() )
                     announceTrackCorrections( track );
                 break;
             case lastfm::Track::Error:

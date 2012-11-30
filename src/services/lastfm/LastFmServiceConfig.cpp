@@ -88,6 +88,7 @@ LastFmServiceConfig::load()
     m_fetchSimilar = config.readEntry( "fetchSimilar", true );
     m_scrobbleComposer = config.readEntry( "scrobbleComposer", false );
     m_useFancyRatingTags = config.readEntry( "useFancyRatingTags", true );
+    m_announceCorrections = config.readEntry( "announceCorrections", true );
 }
 
 
@@ -101,6 +102,7 @@ void LastFmServiceConfig::save()
     config.writeEntry( "fetchSimilar", m_fetchSimilar );
     config.writeEntry( "scrobbleComposer", m_scrobbleComposer );
     config.writeEntry( "useFancyRatingTags", m_useFancyRatingTags );
+    config.writeEntry( "announceCorrections", m_announceCorrections );
 
     if ( !tryToOpenWallet() && config.readEntry( "ignoreWallet", QString() ) != "yes" )
         askAboutMissingKWallet();
@@ -175,6 +177,7 @@ LastFmServiceConfig::reset()
     m_fetchSimilar = false;
     m_scrobbleComposer = false;
     m_useFancyRatingTags = true;
+    m_announceCorrections = true;
 }
 
 
@@ -198,5 +201,3 @@ LastFmServiceConfig::textDialogNo() //SLOT
     config.writeEntry( "ignoreWallet", "no" );
     config.sync();
 }
-
-#include "LastFmServiceConfig.moc"

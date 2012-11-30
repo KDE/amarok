@@ -166,6 +166,16 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_AnnounceCorrections">
+        <property name="toolTip">
+         <string>&lt;html&gt;When scrobbling tracks to Last.fm, it autocorrects common errors in track tags like artist, album and title. Check this to be notified when this happens and what the autocorrection was&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Announce correction suggestions for track tags</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

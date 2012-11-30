@@ -26,6 +26,11 @@ namespace KWallet {
 }
 class KDialog;
 
+/**
+ * BIG FAT TODO: This class is compiled twice, first in amarok_service_lastfm target and
+ * then in kcm_amarok_service_lastfm. This causes that settings made in the kcm are only
+ * applied after restart, which is way suboptimal.
+ */
 class LastFmServiceConfig : public QObject
 {
     Q_OBJECT
@@ -60,6 +65,9 @@ public:
     bool useFancyRatingTags() const { return m_useFancyRatingTags; }
     void setUseFancyRatingTags( bool useFancyRatingTags ) { m_useFancyRatingTags = useFancyRatingTags; }
 
+    bool announceCorrections() const { return m_announceCorrections; }
+    void setAnnounceCorrections( bool announceCorrections ) { m_announceCorrections = announceCorrections; }
+
 private slots:
     void textDialogYes();
     void textDialogNo();
@@ -90,6 +98,7 @@ private:
     bool m_fetchSimilar;
     bool m_scrobbleComposer;
     bool m_useFancyRatingTags;
+    bool m_announceCorrections;
 
     KDialog* m_askDiag;
     KWallet::Wallet* m_wallet;

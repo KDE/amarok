@@ -8,7 +8,8 @@ VERSION 2.7-Beta 1
       allows you to do a "diff" between collections and transfer missing tracks. (BR 237266)
     * Amarok now scrobbles tracks in streams if the stream correctly updates
       meta-data. (BR 240732)
-    * When scrobbling to Last.fm, Amarok announces suggested tag corrections. (BR 309697)
+    * When scrobbling to Last.fm, Amarok announces suggested tag corrections
+      (configurable). (BR 309697)
     * Ability to scrobble recently played tracks from iPod (and the like) to Last.fm.
     * Synchronization of labels and rating between Last.fm and Amarok collections;
       play count can be synchronized one-way from Last.fm to Amarok. (BR 206249)
