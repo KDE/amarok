@@ -2,6 +2,7 @@
  * Copyright (c) 2008 Bonne Eggleston <b.eggleston@gmail.com>                           *
  * Copyright (c) 2008 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2012 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,20 +21,109 @@
 #define AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H
 
 #include "OrganizeCollectionDialog.h"
+#include "../widgets/TokenPool.h"
+
+#include "amarokconfig.h"
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "amarokconfig.h"
 #include "core-impl/meta/file/File.h"
-#include "QStringx.h"
+
 #include "ui_OrganizeCollectionDialogBase.h"
 #include "TrackOrganizer.h"
+
 #include <kcolorscheme.h>
 #include <KInputDialog>
 
 #include <QApplication>
 #include <QDir>
 #include <QTimer>
+
+// -------------- OrganizeCollectionOptionWidget ------------
+OrganizeCollectionOptionWidget::OrganizeCollectionOptionWidget( QWidget *parent )
+    : QGroupBox( parent )
+{
+    setupUi( this );
+
+    connect( spaceCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
+    connect( ignoreTheCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
+    connect( vfatCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
+    connect( asciiCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
+    connect( regexpEdit, SIGNAL(editingFinished()), SIGNAL(optionsChanged()) );
+    connect( replaceEdit, SIGNAL(editingFinished()), SIGNAL(optionsChanged()) );
+}
+
+// ------------------------- OrganizeCollectionWidget -------------------
+
+OrganizeCollectionWidget::OrganizeCollectionWidget( QWidget *parent )
+    : FilenameLayoutWidget( parent )
+{
+    m_configCategory = "OrganizeCollectionDialog";
+
+    // TODO: also supported by TrackOrganizer:
+    // folder theartist thealbumartist rating filesize length
+    m_tokenPool->addToken( createToken( Title ) );
+    m_tokenPool->addToken( createToken( Artist ) );
+    m_tokenPool->addToken( createToken( Composer ) );
+    m_tokenPool->addToken( createToken( TrackNumber ) );
+    m_tokenPool->addToken( createToken( Year ) );
+    m_tokenPool->addToken( createToken( Album ) );
+    m_tokenPool->addToken( createToken( AlbumArtist ) );
+    m_tokenPool->addToken( createToken( Comment ) );
+    m_tokenPool->addToken( createToken( Genre ) );
+
+    m_tokenPool->addToken( createToken( Initial ) );
+    m_tokenPool->addToken( createToken( FileType ) );
+    m_tokenPool->addToken( createToken( DiscNumber ) );
+
+    m_tokenPool->addToken( createToken( Slash ) );
+    m_tokenPool->addToken( createToken( Underscore ) );
+    m_tokenPool->addToken( createToken( Dash ) );
+    m_tokenPool->addToken( createToken( Dot ) );
+    m_tokenPool->addToken( createToken( Space ) );
+
+    // show some non-editable tags before and after
+    m_schemaLineLayout->insertWidget( 0,
+                                      createStaticToken( CollectionRoot ), 0 );
+    m_schemaLineLayout->insertWidget( 1,
+                                      createStaticToken( Slash ), 0 );
+
+    m_schemaLineLayout->insertWidget( m_schemaLineLayout->count(),
+                                      createStaticToken( Dot ) );
+    m_schemaLineLayout->insertWidget( m_schemaLineLayout->count(),
+                                      createStaticToken( FileType ) );
+
+    m_syntaxLabel->setText( buildFormatTip() );
+
+    populateConfiguration();
+}
+
+
+QString
+OrganizeCollectionWidget::buildFormatTip() const
+{
+    QMap<QString, QString> args;
+    args["albumartist"] = i18n( "%1 or %2", QLatin1String("Album Artist, The") , QLatin1String("The Album Artist") );
+    args["thealbumartist"] = "The Album Artist";
+    args["theartist"] = "The Artist";
+    args["artist"] = i18n( "%1 or %2", QLatin1String("Artist, The") , QLatin1String("The Artist") );
+    args["initial"] = i18n( "Artist's Initial" );
+    args["filetype"] = i18n( "File Extension of Source" );
+    args["track"] = i18n( "Track Number" );
+
+    QString tooltip = i18n( "You can use the following tokens:" );
+    tooltip += "<ul>";
+
+    for( QMap<QString, QString>::iterator it = args.begin(); it != args.end(); ++it )
+        tooltip += QString( "<li>%1 - %%2%" ).arg( it.value(), it.key() );
+
+    tooltip += "</ul>";
+    tooltip += i18n( "If you surround sections of text that contain a token with curly-braces, "
+            "that section will be hidden if the token is empty." );
+
+    return tooltip;
+}
+
 
 OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &tracks,
                                                     const QStringList &folders,
@@ -71,8 +161,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     m_trackOrganizer = new TrackOrganizer( m_allTracks, this );
     connect( m_trackOrganizer, SIGNAL(finished()), SLOT(slotOrganizerFinished()) );
-    //TODO: s/1/enum/g
-    //", 1" means isOrganizeCollection ==> doesn't show Options frame
+
     m_organizeCollectionWidget = new OrganizeCollectionWidget( mainContainer );
     connect( this, SIGNAL( accepted() ),  m_organizeCollectionWidget, SLOT( onAccept() ) );
     ui->verticalLayout->insertWidget( 1, m_organizeCollectionWidget );
@@ -85,13 +174,15 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
 
-    FilenameLayoutOptionWidget* optionsWidget = m_organizeCollectionWidget->m_optionsWidget;
-    optionsWidget->setReplaceSpaces( AmarokConfig::replaceSpace() );
-    optionsWidget->setIgnoreThe( AmarokConfig::ignoreThe() );
-    optionsWidget->setVfatCompatible( AmarokConfig::vfatCompatible() );
-    optionsWidget->setAsciiOnly( AmarokConfig::asciiOnly() );
-    optionsWidget->setRegexpText( AmarokConfig::replacementRegexp() );
-    optionsWidget->setReplaceText( AmarokConfig::replacementString() );
+    m_optionsWidget = new OrganizeCollectionOptionWidget();
+    ui->verticalLayout->insertWidget( 2, m_optionsWidget );
+
+    m_optionsWidget->setReplaceSpaces( AmarokConfig::replaceSpace() );
+    m_optionsWidget->setIgnoreThe( AmarokConfig::ignoreThe() );
+    m_optionsWidget->setVfatCompatible( AmarokConfig::vfatCompatible() );
+    m_optionsWidget->setAsciiOnly( AmarokConfig::asciiOnly() );
+    m_optionsWidget->setRegexpText( AmarokConfig::replacementRegexp() );
+    m_optionsWidget->setReplaceText( AmarokConfig::replacementString() );
 
     ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
     ui->conflictLabel->setText("");
@@ -104,7 +195,10 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
              SLOT(slotUpdatePreview()) );
     connect( ui->folderCombo, SIGNAL(currentIndexChanged( const QString & )),
              SLOT(slotUpdatePreview()) );
-    connect( m_organizeCollectionWidget, SIGNAL(schemeChanged()), SLOT(slotUpdatePreview()) );
+    connect( m_organizeCollectionWidget, SIGNAL(schemeChanged()),
+             SLOT(slotUpdatePreview()) );
+    connect( m_optionsWidget, SIGNAL(optionsChanged()),
+             SLOT(slotUpdatePreview()));
 
     connect( this, SIGNAL(finished(int)), m_organizeCollectionWidget, SLOT(slotSaveFormatList()) );
     connect( this, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
@@ -118,8 +212,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
 {
-    QApplication::restoreOverrideCursor();
-
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     delete ui;
 }
@@ -134,33 +226,6 @@ bool
 OrganizeCollectionDialog::overwriteDestinations() const
 {
     return ui->overwriteCheck->isChecked();
-}
-
-QString
-OrganizeCollectionDialog::buildFormatTip() const
-{
-    //FIXME: This is directly copied from mediadevice/generic/genericmediadeviceconfigdialog.ui.h
-    QMap<QString, QString> args;
-    args["albumartist"] = i18n( "%1 or %2", QLatin1String("Album Artist, The") , QLatin1String("The Album Artist") );
-    args["thealbumartist"] = "The Album Artist";
-    args["theartist"] = "The Artist";
-    args["artist"] = i18n( "%1 or %2", QLatin1String("Artist, The") , QLatin1String("The Artist") );
-    args["initial"] = i18n( "Artist's Initial" );
-    args["filetype"] = i18n( "File Extension of Source" );
-    args["track"] = i18n( "Track Number" );
-
-    QString tooltip = i18n( "<h3>Custom Format String</h3>" );
-    tooltip += i18n( "You can use the following tokens:" );
-    tooltip += "<ul>";
-
-    for( QMap<QString, QString>::iterator it = args.begin(); it != args.end(); ++it )
-        tooltip += QString( "<li>%1 - %%2%" ).arg( it.value(), it.key() );
-
-    tooltip += "</ul>";
-    tooltip += i18n( "If you surround sections of text that contain a token with curly-braces, "
-            "that section will be hidden if the token is empty." );
-
-    return tooltip;
 }
 
 
@@ -221,24 +286,26 @@ OrganizeCollectionDialog::init()
 void
 OrganizeCollectionDialog::slotUpdatePreview()
 {
+    DEBUG_BLOCK;
+
     QString formatString = buildFormatString();
-    FilenameLayoutOptionWidget* optionsWidget = m_organizeCollectionWidget->m_optionsWidget;
-    m_trackOrganizer->setAsciiOnly( optionsWidget->asciiOnly() );
+
+    m_trackOrganizer->setAsciiOnly( m_optionsWidget->asciiOnly() );
     m_trackOrganizer->setFolderPrefix( ui->folderCombo->currentText() );
     m_trackOrganizer->setFormatString( formatString );
     m_trackOrganizer->setTargetFileExtension( m_targetFileExtension );
-    m_trackOrganizer->setIgnoreThe( optionsWidget->ignoreThe() );
-    m_trackOrganizer->setReplaceSpaces( optionsWidget->replaceSpaces() );
-    m_trackOrganizer->setReplace( optionsWidget->regexpText(),
-                                  optionsWidget->replaceText() );
-    m_trackOrganizer->setVfatSafe( optionsWidget->vfatCompatible() );
+    m_trackOrganizer->setIgnoreThe( m_optionsWidget->ignoreThe() );
+    m_trackOrganizer->setReplaceSpaces( m_optionsWidget->replaceSpaces() );
+    m_trackOrganizer->setReplace( m_optionsWidget->regexpText(),
+                                  m_optionsWidget->replaceText() );
+    m_trackOrganizer->setVfatSafe( m_optionsWidget->vfatCompatible() );
 
     //empty the table, not only it's contents
     ui->previewTableWidget->setRowCount( 0 );
     m_conflict = false;
     m_trackOrganizerDone = false;
 
-    QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
+    setCursor( Qt::BusyCursor );
 
     previewNextBatch();
 }
@@ -297,7 +364,7 @@ void
 OrganizeCollectionDialog::slotOrganizerFinished()
 {
     m_trackOrganizerDone = true;
-    QApplication::restoreOverrideCursor();
+    unsetCursor();
 }
 
 void
@@ -305,13 +372,12 @@ OrganizeCollectionDialog::slotDialogAccepted()
 {
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
 
-    FilenameLayoutOptionWidget* optionsWidget = m_organizeCollectionWidget->m_optionsWidget;
-    AmarokConfig::setIgnoreThe( optionsWidget->ignoreThe() );
-    AmarokConfig::setReplaceSpace( optionsWidget->replaceSpaces() );
-    AmarokConfig::setVfatCompatible( optionsWidget->vfatCompatible() );
-    AmarokConfig::setAsciiOnly( optionsWidget->asciiOnly() );
-    AmarokConfig::setReplacementRegexp( optionsWidget->regexpText() );
-    AmarokConfig::setReplacementString( optionsWidget->replaceText() );
+    AmarokConfig::setIgnoreThe( m_optionsWidget->ignoreThe() );
+    AmarokConfig::setReplaceSpace( m_optionsWidget->replaceSpaces() );
+    AmarokConfig::setVfatCompatible( m_optionsWidget->vfatCompatible() );
+    AmarokConfig::setAsciiOnly( m_optionsWidget->asciiOnly() );
+    AmarokConfig::setReplacementRegexp( m_optionsWidget->regexpText() );
+    AmarokConfig::setReplacementString( m_optionsWidget->replaceText() );
 
     m_organizeCollectionWidget->onAccept();
 }

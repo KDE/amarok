@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FilenameLayoutOptions</class>
- <widget class="QGroupBox" name="FilenameLayoutOptions">
+ <class>OrganizeCollectionsOptions</class>
+ <widget class="QGroupBox" name="OrganizeCollectionsOptions">
   <property name="geometry">
    <rect>
     <x>0</x>

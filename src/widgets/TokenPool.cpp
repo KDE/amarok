@@ -21,56 +21,16 @@
 
 #include <KApplication>
 
-#include <QAbstractItemDelegate>
 #include <QMouseEvent>
-#include <QPainter>
 
-class PoolDelegate : public QAbstractItemDelegate
-{
-public:
-    PoolDelegate( QObject *parent = 0 ) : QAbstractItemDelegate(parent) {}
-
-    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
-    {
-        if (!option.rect.isValid())
-            return;
-
-        const QRect &rect = option.rect;
-
-        // draw icon
-        const int x = rect.x() + (rect.width() - option.decorationSize.width()) / 2;
-        if ( option.state & QStyle::State_MouseOver )
-            painter->drawPixmap( x, rect.y(), index.data(Qt::DecorationRole).value<QIcon>().pixmap( option.decorationSize ));
-        else
-            painter->drawPixmap( x + 3, rect.y() + 3, index.data(Qt::DecorationRole).value<QIcon>().pixmap( option.decorationSize - QSize(6,6) ) );
-
-        // and (eilided) text
-        const int textFlags = Qt::AlignBottom | Qt::AlignHCenter | Qt::TextSingleLine | Qt::TextShowMnemonic;
-        QString text = painter->fontMetrics().elidedText( index.data().toString(), Qt::ElideMiddle, rect.width(), textFlags );
-        painter->setPen( index.data( Qt::ForegroundRole ).value< QColor >() );
-        painter->drawText( rect, textFlags, text );
-
-    }
-
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
-    {
-        const QFontMetrics fm(option.font);
-        const int is = option.decorationSize.height();
-        int w = fm.width(index.data().toString());
-        if ( w < is + 16 )
-            w = is + 16;
-        else if ( w > is + 32 )
-            w = is + 32;
-        return QSize( w, is + fm.height() + 4 );
-    }
-};
-
+#include "core/support/Debug.h"
 
 TokenPool::TokenPool( QWidget *parent )
     : KListWidget( parent )
 {
     setAcceptDrops( true );
-    // setItemDelegate( new PoolDelegate(this) );
+    setWrapping( true );
+    setResizeMode( QListView::Adjust );
 }
 
 void
@@ -94,17 +54,19 @@ TokenPool::addToken( Token * token )
     m_itemTokenMap.insert( item, token );
 }
 
-QString
-TokenPool::mimeType() const
+QSize
+TokenPool::sizeHint() const
 {
-    return m_mimeType;
-}
+    int h = iconSize().height();
+    if (h <= 0) {
+        h = style()->pixelMetric(QStyle::PM_SmallIconSize, 0, this);
+    }
 
-
-void
-TokenPool::setMimeType( const QString& mimeType )
-{
-    m_mimeType = mimeType;
+    // we are planning the size for three columns of token text
+    // with eight rows (note: we might get less than eight rows if because
+    // of the space the border and the scroll bar uses).
+    return QSize(fontMetrics().width(QLatin1String("Artist's Initial")) * 3,
+                 h * 8 );
 }
 
 // Executed on doubleclick of the TokenPool, emits signal onDoubleClick( QString )
@@ -114,7 +76,7 @@ TokenPool::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QListWidgetItem *tokenItem = itemAt( event->pos() );
     if( tokenItem )
-        emit onDoubleClick( m_itemTokenMap.value( tokenItem ) ); //token->name() << token->iconName() << token->value()
+        emit onDoubleClick( m_itemTokenMap.value( tokenItem ) );
 }
 
 //Executed on mouse press, handles start of drag.
@@ -134,36 +96,22 @@ TokenPool::mouseMoveEvent( QMouseEvent *event )
     {
         int distance = ( event->pos() - m_startPos ).manhattanLength();
         if ( distance >= KApplication::startDragDistance() )
-            performDrag( event );
+            performDrag();
     }
     KListWidget::mouseMoveEvent( event );
 }
 
-//This doesn't do much since TokenPool doesn't accept objects.
 void
 TokenPool::dragEnterEvent( QDragEnterEvent *event )
 {
-    QWidget *source = qobject_cast<QWidget *>( event->source() );
-    if ( source && source != this )
+    QObject *source = event->source();
+    if( source != this && event->mimeData()->hasFormat( Token::mimeType() ) )
     {
         event->setDropAction( Qt::MoveAction );
         event->accept();
     }
 }
 
-//Same as above.
-void
-TokenPool::dragMoveEvent( QDragMoveEvent *event )        //overrides QListWidget's implementation
-{
-    QWidget *source = qobject_cast<QWidget *>( event->source() );
-    if ( source && source != this )
-    {
-        event->setDropAction( Qt::MoveAction );
-        event->accept();
-    }
-}
-
-//Same as above.
 void
 TokenPool::dropEvent( QDropEvent *event )
 {
@@ -173,25 +121,28 @@ TokenPool::dropEvent( QDropEvent *event )
 
 //Handles the creation of a QDrag object that carries the (text-only) QDataStream from an item in TokenPool
 void
-TokenPool::performDrag( QMouseEvent *event )
+TokenPool::performDrag()
 {
     QListWidgetItem *item = currentItem();
 
     if( item )
     {
         Token *token = m_itemTokenMap.value( item );
-        QByteArray itemData;
-
-        QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-        dataStream << token->name() << token->iconName() << token->value() << token->textColor() << QPoint( event->pos() - rect().topLeft() );
-
-        QMimeData *mimeData = new QMimeData;
-        mimeData->setData( m_mimeType, itemData );
 
         QDrag *drag = new QDrag( this );
-        drag->setMimeData( mimeData );
+        drag->setMimeData( token->mimeData() );
 
-        //TODO: set a pointer for the drag, like this: drag->setPixmap( QPixmap("foo.png" ) );
+        // -- icon for pointer
+        // since the TokenPools tokens are invisible we need to resize them before drawing
+        // in the pixmap buffer
+        token->resize( token->sizeHint() );
+
+        // now draw in the pixmap buffer
+        QPixmap pixmap( token->size() );
+        token->render( &pixmap );
+        drag->setPixmap( pixmap );
+        drag->setHotSpot ( pixmap.rect().center() );
+
         drag->exec( Qt::MoveAction | Qt::CopyAction, Qt::CopyAction );
     }
 }

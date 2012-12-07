@@ -21,46 +21,41 @@
 #include "playlist/PlaylistDefines.h"
 #include "widgets/TokenDropTarget.h"
 
-#include <KHBox>
 #include <KMessageBox>
 
+#include <QBoxLayout>
 #include <QCheckBox>
-#include <QSpinBox>
-#include <QSpacerItem>
 #include <QLayout>
 
 using namespace Playlist;
 
 LayoutEditWidget::LayoutEditWidget( QWidget *parent )
-    : KVBox(parent)
+    : QWidget( parent )
 {
-    m_tokenFactory = new TokenWithLayoutFactory;
-    m_dragstack = new TokenDropTarget( "application/x-amarok-tag-token", this );
-    m_dragstack->setCustomTokenFactory( m_tokenFactory );
+    QVBoxLayout* mainLayout = new QVBoxLayout( this );
+
+    m_dragstack = new TokenDropTarget( this );
+    m_dragstack->setCustomTokenFactory( new TokenWithLayoutFactory() );
+    mainLayout->addWidget( m_dragstack, 1 );
+
     connect ( m_dragstack, SIGNAL( focusReceived(QWidget*) ), this, SIGNAL( focusReceived(QWidget*) ) );
     connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( changed() ) );
 
-    // top-align content by adding a stretch
-    QBoxLayout *l = qobject_cast<QBoxLayout*>(layout());
-    l->setStretch( 0, 0 );
-    l->addStretch( 1 );
-
-    m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ) , this );
+    m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ), this );
+    connect ( m_showCoverCheckBox, SIGNAL( stateChanged( int ) ), this, SIGNAL( changed() ) );
+    mainLayout->addWidget( m_showCoverCheckBox, 0 );
 }
 
 
 LayoutEditWidget::~LayoutEditWidget()
-{
-//     delete m_tokenFactory; m_tokenFactory = 0;
-}
+{ }
 
 void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
 {
     DEBUG_BLOCK
     int rowCount = config.rows();
 
-    delete m_showCoverCheckBox;
-    m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ) , this );
+    disconnect ( m_showCoverCheckBox, SIGNAL( stateChanged( int ) ), this, SIGNAL( changed() ) );
     m_showCoverCheckBox->setChecked( config.showCover() );
     connect ( m_showCoverCheckBox, SIGNAL( stateChanged( int ) ), this, SIGNAL( changed() ) );
 
@@ -122,7 +117,7 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
 
         LayoutItemConfigRow currentRowConfig;
 
-        QList<Token *> tokens = m_dragstack->drags( i );
+        QList<Token *> tokens = m_dragstack->tokensAtRow( i );
 
         foreach( Token * token, tokens ) {
             if ( TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token ) )

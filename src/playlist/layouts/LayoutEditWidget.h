@@ -21,14 +21,10 @@
 
 #include "widgets/TokenWithLayout.h"
 
-#include <KVBox>
+#include <QWidget>
 
-class KHBox;
 class QCheckBox;
-class QSpinBox;
 class TokenDropTarget;
-
-
 
 namespace Playlist {
 
@@ -36,7 +32,7 @@ namespace Playlist {
  * A widget to define the layout of a single type of playlist item ( head, body or single )
  * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
-class LayoutEditWidget : public KVBox
+class LayoutEditWidget : public QWidget
 {
     Q_OBJECT
 
@@ -81,7 +77,6 @@ class LayoutEditWidget : public KVBox
     private:
         QCheckBox *m_showCoverCheckBox;
         TokenDropTarget *m_dragstack;
-        TokenWithLayoutFactory *m_tokenFactory;
 };
 
 }

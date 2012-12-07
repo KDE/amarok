@@ -37,7 +37,11 @@ class TokenDropTarget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TokenDropTarget( const QString &mimeType, QWidget *parent = 0);
+    explicit TokenDropTarget( QWidget *parent = 0 );
+    virtual ~TokenDropTarget();
+
+    QSize sizeHint() const;
+    QSize minimumSizeHint() const;
 
     /** Removes all tokens from the drop target. */
     void clear();
@@ -57,21 +61,41 @@ public:
     /** Returns the maximum allowed number of rows.
         A number of 0 means that the row count is not limited at all.
     */
-    inline uint rowLimit() const { return m_limits[1]; }
-    inline void setRowLimit( uint r ) { m_limits[1] = r; }
+    uint rowLimit() const { return m_rowLimit; }
+    void setRowLimit( uint r );
+
+    /** Set a custom factory that creates tokens.
+        The default factory is the one that creates normal tokens.
+        LayoutEditWidget set's this for the factory that creates StyledTokens.
+
+        The factory will be deleted by the TokenDropTarget.
+    */
     void setCustomTokenFactory( TokenFactory * factory );
-    QList< Token *> drags( int row = -1 );
+
+    void setVerticalStretch( bool value );
+
+    /** Returns all the tokens from the specified row.
+        If row == -1 returns all tokens. */
+    QList< Token *> tokensAtRow( int row = -1 );
 
 public slots:
+    /** Insert the token at the given row and col position.
+        The token will be reparented for the TokenDropTarget.
+    */
     void insertToken( Token*, int row = -1, int col = -1 ); // -1 -> append to last row
-//     inline uint columnLimit() const { return m_limits[0]; }
-//     inline void setColumnLimit( uint c ) { m_limits[0] = c; }
+
+    void deleteEmptyRows();
 signals:
     void changed();
-    void focusReceived( QWidget* );
+
+    /** Emitted if a new token got the focus. */
+    void tokenSelected( Token* );
 
 protected:
-    bool eventFilter( QObject *, QEvent * );
+    void dragEnterEvent( QDragEnterEvent *event );
+    void dropEvent( QDropEvent *event );
+
+    /** Draws a "drop here" text if empty */
     void paintEvent(QPaintEvent *);
 
     /** Return the enclosing box layout and the row and column position of the widget \p w.  */
@@ -79,23 +103,33 @@ protected:
 
     /** Return the box layout at the position \p pt. */
     QBoxLayout *rowBox( const QPoint &pt ) const;
-protected:
-    friend class TokenDragger;
-    void deleteEmptyRows();
 
 private:
-    bool accept( QDropEvent* );
     QHBoxLayout *appendRow();
+
+    /** Returns the token at the given global position */
+    Token* tokenAt( const QPoint &pos ) const;
+
     void drop( Token*, const QPoint &pos = QPoint(0,0) );
 
 private:
-    uint m_limits[2];
-    QString m_mimeType;
-    TokenDragger *m_tokenDragger;
-    TokenFactory *m_tokenFactory;
+    /** Maximum number of allowed rows.
+        If 0 the number is unlimited. */
+    uint m_rowLimit;
 
-    int m_rows; // contains the number of real rows (using the layout is not very practical in that since it seems that the layout adds at least one empty entry by itself)
+    /** contains the number of real rows
+        (using the layout is not very practical in that since it seems that the layout
+        adds at least one empty entry by itself if it's empty) */
+    int m_rows;
+
+    /** True if stretch are inserted at the ends of every row. */
     bool m_horizontalStretch;
+
+    /** True if a stretch is inserted as a last row.
+        For now we always have a vertical strech if the m_rowLimit > 1 */
+    bool m_verticalStretch;
+
+    TokenFactory *m_tokenFactory;
 };
 
 #endif

@@ -86,7 +86,7 @@ const QString ActionAlignLeftName = QLatin1String( "ActionAlignLeft" );
 const QString ActionAlignCenterName = QLatin1String( "ActionAlignCenter" );
 const QString ActionAlignRightName = QLatin1String( "ActionAlignRight" );
 
-Token * TokenWithLayoutFactory::createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent )
+Token * TokenWithLayoutFactory::createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent ) const
 {
     return new TokenWithLayout( text, iconName, value, parent );
 }

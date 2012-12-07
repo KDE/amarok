@@ -17,9 +17,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "FilenameLayoutDialog.h"
-#include "../widgets/TokenDropTarget.h"
-#include "../widgets/TokenPool.h"
+#include "FilenameLayoutWidget.h"
+#include "TokenDropTarget.h"
+#include "TokenPool.h"
 
 #include "amarokconfig.h"
 
@@ -28,13 +28,18 @@
 #include "core/support/Debug.h"
 
 #include <KInputDialog>
+#include <KLineEdit>
+#include <KLocalizedString>
 
 #include <QComboBox>
+#include <QGroupBox>
 #include <QLabel>
 #include <QPushButton>
 #include <QBoxLayout>
 #include <QStackedWidget>
 
+// the order of these strings depends on the order of the
+// Type enum.
 static const QStringList typeElements = ( QStringList()
 << QString()
 << QLatin1String("%ignore%")
@@ -56,75 +61,6 @@ static const QStringList typeElements = ( QStringList()
 << QLatin1String(".")
 << QLatin1String("-")
 << QLatin1String("_") );
-
-
-// -------------- FilenameLayoutOptionWidget ------------
-FilenameLayoutOptionWidget::FilenameLayoutOptionWidget( QWidget *parent )
-    : QGroupBox( parent )
-{
-    setupUi( this );
-
-    connect( spaceCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( ignoreTheCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( vfatCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( asciiCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( regexpEdit, SIGNAL(editingFinished()), SIGNAL(optionsChanged()) );
-    connect( replaceEdit, SIGNAL(editingFinished()), SIGNAL(optionsChanged()) );
-}
-
-
-// ------------------------- OrganizeCollectionWidget -------------------
-
-OrganizeCollectionWidget::OrganizeCollectionWidget( QWidget *parent )
-    : FilenameLayoutWidget( parent )
-{
-    m_configCategory = "OrganizeCollectionDialog";
-
-    m_tokenPool->addToken( createToken( Title ) );
-    m_tokenPool->addToken( createToken( Artist ) );
-    m_tokenPool->addToken( createToken( Composer ) );
-    m_tokenPool->addToken( createToken( Track ) );
-    m_tokenPool->addToken( createToken( Year ) );
-    m_tokenPool->addToken( createToken( Album ) );
-    m_tokenPool->addToken( createToken( AlbumArtist ) );
-    m_tokenPool->addToken( createToken( Comment ) );
-    m_tokenPool->addToken( createToken( Genre ) );
-
-    m_tokenPool->addToken( createToken( Initial ) );
-    m_tokenPool->addToken( createToken( FileType ) );
-    m_tokenPool->addToken( createToken( DiscNumber ) );
-
-    m_tokenPool->addToken( createToken( Slash ) );
-    m_tokenPool->addToken( createToken( Underscore ) );
-    m_tokenPool->addToken( createToken( Dash ) );
-    m_tokenPool->addToken( createToken( Dot ) );
-    m_tokenPool->addToken( createToken( Space ) );
-
-    m_optionsWidget = new FilenameLayoutOptionWidget();
-    m_mainLayout->addWidget( m_optionsWidget );
-
-    // show some non-editable tags before and after
-    m_schemaLineLayout->insertWidget( 0,
-                                      createStaticToken( CollectionRoot ), 0 );
-    m_schemaLineLayout->insertWidget( 1,
-                                      createStaticToken( Slash ), 0 );
-
-    m_schemaLineLayout->insertWidget( m_schemaLineLayout->count(),
-                                      createStaticToken( Dot ) );
-    m_schemaLineLayout->insertWidget( m_schemaLineLayout->count(),
-                                      createStaticToken( FileType ) );
-
-
-    m_syntaxLabel->setText( i18nc("Please do not translate the %foo% words as they define a syntax used internally by a parser to describe a filename.",
-                          // xgettext: no-c-format
-                          "The following tokens can be used to define a filename scheme: \
-                          <br>%track%, %title%, %artist%, %composer%, %year%, %album%, %albumartist%, %comment%, %genre%, %initial%, %folder%, %filetype%, %discnumber%." ) );
-
-    populateConfiguration();
-
-    connect( m_optionsWidget, SIGNAL(optionsChanged()), SIGNAL(schemeChanged()));
-}
-
 
 
 // ------------------------- FilenameLayoutWidget -------------------
@@ -162,32 +98,34 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 
     schemeGroupLayout->addLayout( presetLayout1 );
 
-    // -- stacked widget
+    // --- stacked widget
     m_schemeStack = new QStackedWidget( this );
 
-    // - simple schema
+    // -- simple schema
     QWidget* simpleLayoutWidget = new QWidget( this );
     QVBoxLayout *simpleLayout = new QVBoxLayout( simpleLayoutWidget );
 
     // a token pool
     m_tokenPool = new TokenPool( this );
-    simpleLayout->addWidget( m_tokenPool );
+    simpleLayout->addWidget( m_tokenPool, 1 );
 
     // token drop target inside a frame
     QFrame* dropTargetFrame = new QFrame( this );
     dropTargetFrame->setFrameShape(QFrame::StyledPanel);
     dropTargetFrame->setFrameShadow(QFrame::Sunken);
-    m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", this );
+    m_dropTarget = new TokenDropTarget( this );
     m_dropTarget->setRowLimit( 1 );
 
     m_schemaLineLayout = new QHBoxLayout();
+    m_schemaLineLayout->setSpacing( 0 );
+    m_schemaLineLayout->setContentsMargins( 0, 0, 0, 0 );
     m_schemaLineLayout->addWidget( m_dropTarget );
     dropTargetFrame->setLayout( m_schemaLineLayout );
-    simpleLayout->addWidget( dropTargetFrame );
+    simpleLayout->addWidget( dropTargetFrame, 0 );
 
     m_schemeStack->addWidget( simpleLayoutWidget );
 
-    // - advanced schema
+    // -- advanced schema
     QWidget* advancedLayoutWidget = new QWidget( this );
     QVBoxLayout *advancedLayout = new QVBoxLayout( advancedLayoutWidget );
 
@@ -239,7 +177,7 @@ FilenameLayoutWidget::createToken(qint64 value) const
     };
 
     static const TokenDefinition tokenDefinitions[] = {
-        { i18n( "Track number" ),"filename-track-amarok", Track },
+        { i18n( "Track number" ),"filename-track-amarok", TrackNumber },
         { i18n( "Title" ), "filename-title-amarok", Title },
         { i18n( "Artist" ), "filename-artist-amarok", Artist },
         { i18n( "Composer" ), "filename-composer-amarok", Composer },
@@ -281,7 +219,7 @@ Token*
 FilenameLayoutWidget::createStaticToken(qint64 value) const
 {
     Token* token = createToken( value );
-    token->setActive( false );
+    token->setEnabled( false );
     token->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
 
     return token;
@@ -351,7 +289,7 @@ FilenameLayoutWidget::dropTargetScheme() const
 {
     QString parsableScheme = "";
 
-    QList< Token *> list = m_dropTarget->drags( 0 );
+    QList< Token *> list = m_dropTarget->tokensAtRow();
 
     foreach( Token *token, list )
     {
@@ -371,96 +309,25 @@ FilenameLayoutWidget::inferScheme( const QString &s ) //SLOT
     m_dropTarget->clear();
     for( int i = 0; i < s.size(); )
     {
-        if( s.at(i) == '%')
+        // - search if there is a type with the matching string
+        //   representation.
+        bool found = false;
+        for( int j = 1; j < typeElements.size() && !found; j++ )
         {
-            if( s.midRef( i, 7 ) == "%title%" )
+            int typeNameLength = typeElements[j].length();
+            Type type = static_cast<Type>(j);
+            if( s.midRef( i, typeNameLength ) == typeElements[j] )
             {
-                m_dropTarget->insertToken( createToken( Title ) );
-                i += 7;
+                m_dropTarget->insertToken( createToken( type ) );
+                i += typeNameLength;
+                found = true;
             }
-            else if( s.midRef( i, 7 ) == "%track%" )
-            {
-                m_dropTarget->insertToken( createToken( Track ) );
-                i += 7;
-            }
-            else if( s.midRef( i, 8 ) == "%artist%" )
-            {
-                m_dropTarget->insertToken( createToken( Artist ) );
-                i += 8;
-            }
-            else if( s.midRef( i, 10 ) == "%composer%" )
-            {
-                m_dropTarget->insertToken( createToken( Composer ) );
-                i += 10;
-            }
-            else if( s.midRef( i, 6 ) == "%year%" )
-            {
-                m_dropTarget->insertToken( createToken( Year ) );
-                i += 6;
-            }
-            else if( s.midRef( i, 13 ) == "%albumartist%" )
-            {
-                m_dropTarget->insertToken( createToken( AlbumArtist ) );
-                i += 13;
-            }
-            else if( s.midRef( i, 7 ) == "%album%" )
-            {
-                m_dropTarget->insertToken( createToken( Album ) );
-                i += 7;
-            }
-            else if( s.midRef( i, 9 ) == "%comment%" )
-            {
-                m_dropTarget->insertToken( createToken( Comment ) );
-                i += 9;
-            }
-            else if( s.midRef( i, 7 ) == "%genre%" )
-            {
-                m_dropTarget->insertToken( createToken( Genre ) );
-                i += 7;
-            }
-            else if( s.midRef( i, 10 ) == "%filetype%" )
-            {
-                m_dropTarget->insertToken( createToken( FileType ) );
-                i += 10;
-            }
-            else if( s.midRef( i, 8 ) == "%ignore%" )
-            {
-                m_dropTarget->insertToken( createToken( Ignore ) );
-                i += 8;
-            }
-            else if( s.midRef( i, 8 ) == "%folder%" )
-            {
-                m_dropTarget->insertToken( createToken( Folder ) );
-                i += 8;
-            }
-            else if( s.midRef( i, 9 ) == "%initial%" )
-            {
-                m_dropTarget->insertToken( createToken( Initial ) );
-                i += 9;
-            }
-            else if( s.midRef( i, 12 ) == "%discnumber%" )
-            {
-                m_dropTarget->insertToken( createToken( DiscNumber ) );
-                i += 12;
-            }
-            else
-                ++i; // skip junk
         }
-        else
+
+        if( !found )
         {
-            if( s.at(i) == '_' )
-                m_dropTarget->insertToken( createToken( Underscore ) );
-            else if( s.at(i) == '-' )
-                m_dropTarget->insertToken( createToken( Dash ) );
-            else if( s.at(i) == '.' )
-                m_dropTarget->insertToken( createToken( Dot ) );
-            else if( s.at(i) == ' ' )
-                m_dropTarget->insertToken( createToken( Space ) );
-            else if( s.at(i) == '/' )
-                m_dropTarget->insertToken( createToken( Slash ) );
-            else
-                debug() << "'" << s.at(i) << "' can't be represented as TokenLayoutWidget Token";
-            i++;
+            ++i; // skip junk
+            debug() << "'" << s.at(i) << "' can't be represented as TokenLayoutWidget Token";
         }
     }
 }

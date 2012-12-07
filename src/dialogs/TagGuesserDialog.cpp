@@ -155,14 +155,16 @@ TagGuesserWidget::TagGuesserWidget( QWidget *parent )
 
     m_tokenPool->addToken( createToken( Title ) );
     m_tokenPool->addToken( createToken( Artist ) );
-    m_tokenPool->addToken( createToken( Composer ) );
-    m_tokenPool->addToken( createToken( Track ) );
-    m_tokenPool->addToken( createToken( Year ) );
-    m_tokenPool->addToken( createToken( Album ) );
     m_tokenPool->addToken( createToken( AlbumArtist ) );
-    m_tokenPool->addToken( createToken( Comment ) );
+    m_tokenPool->addToken( createToken( Album ) );
     m_tokenPool->addToken( createToken( Genre ) );
+    m_tokenPool->addToken( createToken( Composer ) );
+    m_tokenPool->addToken( createToken( Comment ) );
+    m_tokenPool->addToken( createToken( Year ) );
+    m_tokenPool->addToken( createToken( TrackNumber ) );
+    m_tokenPool->addToken( createToken( DiscNumber ) );
     m_tokenPool->addToken( createToken( Ignore ) );
+
     m_tokenPool->addToken( createToken( Slash ) );
     m_tokenPool->addToken( createToken( Underscore ) );
     m_tokenPool->addToken( createToken( Dash ) );
@@ -193,7 +195,7 @@ TagGuesserWidget::createToken(qint64 value) const
     QColor color = Qt::transparent;
     switch( value )
     {
-    case Track: color = QColor( track_color ); break;
+    case TrackNumber: color = QColor( track_color ); break;
     case Title: color = QColor( title_color ); break;
     case Artist: color = QColor( artist_color ); break;
     case Composer: color = QColor( composer_color ); break;
@@ -260,12 +262,13 @@ TagGuesserDialog::onAccept()    //SLOT
     Amarok::config( "TagGuesser" ).writeEntry( "Case options", m_optionsWidget->getCaseOptions() );
     Amarok::config( "TagGuesser" ).writeEntry( "Eliminate trailing spaces", m_optionsWidget->getWhitespaceOptions() );
     Amarok::config( "TagGuesser" ).writeEntry( "Replace underscores", m_optionsWidget->getUnderscoreOptions() );
-    // Amarok::config( "TagGuesser" ).writeEntry( "Use full file path", cbUseFullPath->isChecked() );
 }
 
 QMap<qint64,QString>
 TagGuesserDialog::guessedTags()
 {
+    DEBUG_BLOCK;
+
     QString scheme = m_layoutWidget->getParsableScheme();
     QString fileName = getParsableFileName();
 
@@ -285,7 +288,6 @@ TagGuesserDialog::guessedTags()
         return QMap<qint64,QString>();
     }
 
-    m_filenamePreview->setText( coloredFileName() );
     return guesser.tags();
 }
 
@@ -297,6 +299,8 @@ TagGuesserDialog::updatePreview()                 //SLOT
     DEBUG_BLOCK;
 
     QMap<qint64,QString> tags = guessedTags();
+
+    m_filenamePreview->setText( coloredFileName( tags ) );
 
     QString emptyTagText = i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" );
 
@@ -338,7 +342,10 @@ TagGuesserDialog::updatePreview()                 //SLOT
 QString
 TagGuesserDialog::parsableFileName( const QFileInfo &fileInfo ) const
 {
+    DEBUG_BLOCK;
     QString path = fileInfo.absoluteFilePath();
+
+    debug() << m_layoutWidget->getParsableScheme() << "; " << path;
 
     int schemaLevels = m_layoutWidget->getParsableScheme().count( '/' );
     int pathLevels   = path.count( '/' );
@@ -354,6 +361,7 @@ TagGuesserDialog::parsableFileName( const QFileInfo &fileInfo ) const
     if( dotPos >= 0 )
         dotPos -= pos;
 
+debug() << "parsableFileName schemaLevels:" << schemaLevels << "pathLevels:" << pathLevels << "path:" << path << "pos:" << pos << dotPos << path.mid( pos, dotPos );
     return path.mid( pos, dotPos );
 }
 
@@ -365,10 +373,9 @@ TagGuesserDialog::getParsableFileName()
 
 // creates a colored version of the filename
 QString
-TagGuesserDialog::coloredFileName()
+TagGuesserDialog::coloredFileName( QMap<qint64,QString> tags )
 {
     QString coloredFileName = m_fileName;
-    QMap<qint64,QString> tags = guessedTags();
 
     foreach( qint64 key, tags.keys() )
     {

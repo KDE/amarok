@@ -258,7 +258,7 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
                 int row = editWidget->row( m_token.data() );
                 if ( row > -1 )
                 {
-                    QList<Token*> tokens = editWidget->drags( row );
+                    QList<Token*> tokens = editWidget->tokensAtRow( row );
                     foreach ( Token *token, tokens )
                     {
                         if ( token == m_token.data() )

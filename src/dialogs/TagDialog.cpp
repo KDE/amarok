@@ -37,10 +37,9 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverFetchingActions.h"
-#include "dialogs/FilenameLayoutDialog.h"
 #include "dialogs/MusicBrainzTagger.h"
-#include "dialogs/TagGuesser.h"
 #include "widgets/CoverLabel.h"
+#include "widgets/FilenameLayoutWidget.h"
 #include "ui_TagDialogBase.h" // needs to be after including CoverLabel, silly
 #include "TagGuesserDialog.h"
 
